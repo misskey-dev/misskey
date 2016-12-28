@@ -1,0 +1,26 @@
+maintainer: '@syuilo'
+url: 'https://misskey.xyz'
+secondary_url: 'https://himasaku.net'
+port: 80
+https:
+  enable: false
+  key: null
+  cert: null
+  ca: null
+mongodb:
+  host: localhost
+  port: 27017
+  db: misskey
+  user: syuilo
+  pass: ''
+redis:
+  host: localhost
+  port: 6379
+  pass: ''
+elasticsearch:
+  host: localhost
+  port: 9200
+  pass: ''
+recaptcha:
+  siteKey: hima
+  secretKey: saku

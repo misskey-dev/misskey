@@ -1,0 +1,199 @@
+html {
+	font-family: sans-serif;
+}
+
+body {
+	margin: 0;
+	color: #34495e;
+}
+
+nav {
+	display: block;
+	float: left;
+	width: 210px;
+}
+nav ul {
+	display: block;
+	margin: 0 0 16px 0;
+	padding: 0 0 0 16px;
+	list-style: none;
+}
+nav ul li {
+	margin: 0;
+	padding: 0;
+}
+nav ul li p {
+	margin: 16px 0 0 0;
+}
+@media screen and (max-width: 910px) {
+	nav {
+		display: none;
+	}
+}
+
+main {
+	float: left;
+	box-sizing: border-box;
+	padding: 32px;
+	width: 100%;
+	max-width: 700px;
+}
+@media screen and (max-width: 700px) {
+	main {
+		font-size: 8px;
+	}
+}
+
+footer {
+	padding: 32px 0 0 0;
+	margin: 32px 0 0 0;
+	border-top: solid 1px #eee;
+}
+
+footer .contribution {
+	margin: 0 0 16px 0;
+}
+
+footer .copyright {
+	margin: 16px 0 0 0;
+	color: #aaa;
+}
+
+a {
+	text-decoration: none;
+	color: #f76d6c;
+}
+	a:hover {
+		text-decoration: underline;
+	}
+
+section {
+	margin: 32px 0;
+}
+
+h1 {
+	margin: 0 0 24px 0;
+	padding: 16px 0;
+	font-size: 1.5em;
+	border-bottom: solid 2px #eee;
+}
+
+h2 {
+	margin: 0 0 24px 0;
+	padding: 0 0 16px 0;
+	font-size: 1.4em;
+	border-bottom: solid 1px #eee;
+}
+
+h3 {
+	margin: 0;
+	padding: 0;
+	font-size: 1.25em;
+}
+
+h4 {
+	margin: 0;
+}
+
+p {
+	margin: 1em 0;
+	line-height: 1.6em;
+}
+
+p.tip {
+	position: relative;
+	padding: 12px 24px 12px 30px;
+	margin: 1em 0;
+	font-size: 0.9em;
+	border-left: 4px solid #f66;
+	background-color: #f8f8f8;
+	border-bottom-right-radius: 2px;
+	border-top-right-radius: 2px;
+}
+	p.tip:before {
+		position: absolute;
+		top: 14px;
+		left: -12px;
+		background-color: #f66;
+		color: #fff;
+		content: "!";
+		width: 20px;
+		height: 20px;
+		border-radius: 100%;
+		text-align: center;
+		line-height: 20px;
+		font-weight: bold;
+		font-family: 'Dosis', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+		font-size: 14px;
+	}
+
+table {
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+table thead {
+	font-weight: bold;
+	border-bottom: solid 2px #eee;
+}
+
+table tbody tr {
+	border-bottom: dashed 1px #eee;
+}
+
+table th, table td {
+	padding: 8px 16px;
+}
+
+table.entity tbody tr td:nth-child(1) {
+	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
+}
+
+table.entity tbody tr td:nth-child(2) {
+	font-style: italic;
+}
+
+table.entity tr td:nth-child(3):after {
+	margin-left: 8px;
+	opacity: 0.7;
+}
+
+table.entity tr.nullable td:nth-child(2):after {
+	content: "?";
+	opacity: 0.7;
+}
+table.entity tr.nullable td:nth-child(3):after {
+	content: "(Null許容)";
+}
+
+table.entity tr.optional {
+	opacity: 0.7;
+}
+table.entity tr.optional td:nth-child(3):after {
+	content: "(省略可能)";
+}
+
+table.entity tr.nullable.optional td:nth-child(3):after {
+	content: "(Null許容かつ省略可能)";
+}
+
+pre, code, var, samp, kbd {
+	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
+}
+
+code {
+	display: inline-block;
+	margin: 0 4px;
+	padding: 0 8px;
+	color: #525252;
+	background: #f8f8f8;
+	border-radius: 2px;
+}
+
+pre code {
+	display: block;
+	overflow: auto;
+	margin: 0;
+	padding: 32px;
+}

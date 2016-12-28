@@ -1,0 +1,23 @@
+doctype html
+
+!= '\r\n<!-- Thank you for using Misskey! @syuilo -->\r\n'
+
+html(lang='ja', dir='ltr')
+
+	head
+		meta(charset='utf-8')
+		meta(name='application-name', content='Misskey')
+		meta(name='theme-color', content= themeColor)
+		meta(name='referrer', content='origin')
+		title Misskey
+		style
+			include ./../../../built/web/resources/init.css
+		script(src='https://use.fontawesome.com/22aba0df4f.js', async)
+		block head
+
+	body
+		noscript: div: p JavaScriptを有効にしてください
+		div#init: p
+			span .
+			span .
+			span .
