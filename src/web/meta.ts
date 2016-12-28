@@ -8,6 +8,6 @@ module.exports = async (req: express.Request, res: express.Response) => {
 			commit: commit
 		});
 	}, {
-		dst: `${__dirname}/../../misskey`
+		dst: `${__dirname}/../../`
 	});
 };
