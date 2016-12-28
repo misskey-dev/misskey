@@ -458,6 +458,7 @@ gulp.task('copy:client', [
 
 	return es.merge(
 		gulp.src('./resources/**/*').pipe(gulp.dest('./built/web/resources/')),
+		gulp.src('./src/web/resources/**/*').pipe(gulp.dest('./built/web/resources/')),
 		gulp.src('./src/web/app/desktop/resources/**/*').pipe(gulp.dest('./built/web/resources/desktop/')),
 		gulp.src('./src/web/app/mobile/resources/**/*').pipe(gulp.dest('./built/web/resources/mobile/')),
 		gulp.src('./src/web/app/dev/resources/**/*').pipe(gulp.dest('./built/web/resources/dev/')),
