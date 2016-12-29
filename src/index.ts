@@ -178,7 +178,7 @@ async function init(): Promise<State> {
 	checkDependencies();
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
-		Logger.error('You need root privilages to listen on port below 1024 on Linux');
+		Logger.error('You need root privileges to listen on port below 1024 on Linux');
 		return State.failed;
 	}
 
