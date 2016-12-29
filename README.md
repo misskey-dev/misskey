@@ -6,6 +6,8 @@
 
 A miniblog-based SNS.
 
+![ss](./resources/ss.jpg)
+
 ## Dependencies
 * Node.js
 * MongoDB
