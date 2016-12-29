@@ -3,6 +3,8 @@
 		"noEmitOnError": false,
 		"noImplicitAny": false,
 		"noImplicitReturns": true,
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
 		"experimentalDecorators": true,
 		"declaration": false,
