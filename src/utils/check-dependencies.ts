@@ -15,8 +15,8 @@ function checkDependency(serviceName: string, command: string, transform: (x: st
 	};
 	const x = exec(command, { silent: true }) as any;
 	if (x.code === code.success) {
-		log('Info', `${serviceName} ${transform(x.stdout)}`, 'Deps');
+		log('Info', `${serviceName} ${transform(x.stdout)} found`, 'Deps');
 	} else if (x.code === code.notFound) {
-		log('Warn', `${serviceName} not found`);
+		log('Warn', `${serviceName} not found`, 'Deps');
 	}
 }
