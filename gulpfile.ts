@@ -2,6 +2,7 @@
  * Gulp tasks
  */
 
+import * as path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as babel from 'gulp-babel';
@@ -36,6 +37,7 @@ const tsProject = ts.createProject('tsconfig.json');
 gulp.task('build', [
 	'build:js',
 	'build:ts',
+	'build:pug',
 	'build:copy',
 	'build:client'
 ]);
@@ -60,15 +62,34 @@ gulp.task('build:ts', () =>
 		.pipe(gulp.dest('./built/'))
 );
 
-gulp.task('build:copy', () => {
-	gulp.src([
-		'./src/**/resources/**/*',
-		'!./src/web/app/**/resources/**/*'
-	]).pipe(gulp.dest('./built/'));
-	gulp.src([
-		'./src/web/about/**/*'
-	]).pipe(gulp.dest('./built/web/about/'));
+gulp.task('build:pug', () => {
+	const pugs = glob.sync('./src/web/about/pages/**/*.pug');
+	const streams = pugs.map(file => {
+		const page = file.replace('./src/web/about/pages/', '').replace('.pug', '');
+		return gulp.src(file)
+			.pipe(pug({
+				locals: Object.assign({
+					path: page
+				}, config)
+			}))
+			.pipe(gulp.dest('./built/web/about/pages/' + path.parse(page).dir));
+	});
+
+	return es.merge.apply(es, streams);
 });
+
+gulp.task('build:copy', () =>
+	es.merge(
+		gulp.src([
+			'./src/**/resources/**/*',
+			'!./src/web/app/**/resources/**/*'
+		]).pipe(gulp.dest('./built/')),
+		gulp.src([
+			'./src/web/about/**/*',
+			'!./src/web/about/**/*.pug'
+		]).pipe(gulp.dest('./built/web/about/'))
+	)
+);
 
 gulp.task('test', ['lint', 'build']);
 

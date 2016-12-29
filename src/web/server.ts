@@ -17,7 +17,6 @@ import serveApp from './serve-app';
  */
 const app = express();
 app.disable('x-powered-by');
-app.set('view engine', 'pug');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
@@ -64,17 +63,11 @@ app.use('/@/about/resources', express.static(`${__dirname}/about/resources`, {
 }));
 
 app.get('/@/about/', (req, res) => {
-	res.render(`${__dirname}/about/pages/index`, {
-		path: 'index',
-		config: config
-	});
+	res.sendFile(`${__dirname}/about/pages/index.html`);
 });
 
 app.get('/@/about/:page(*)', (req, res) => {
-	res.render(`${__dirname}/about/pages/${req.params.page}`, {
-		path: req.params.page,
-		config: config
-	});
+	res.sendFile(`${__dirname}/about/pages/${req.params.page}.html`);
 });
 
 app.get('/@/auth/*', serveApp('auth')); // authorize form
