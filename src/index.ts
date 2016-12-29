@@ -73,14 +73,14 @@ async function master(): Promise<void> {
 
 	switch (state) {
 		case State.failed:
-			Logger.error(chalk.red('Fatal error occurred :('));
+			Logger.error(chalk.red('Fatal error occurred during initializing :('));
 			process.exit();
 			return;
 		case State.warn:
-			Logger.warn(chalk.yellow('Some problem(s) :|'));
+			Logger.warn(chalk.yellow('Initialized with some problem(s) :|'));
 			break;
 		case State.success:
-			Logger.info(chalk.green('OK :)'));
+			Logger.info(chalk.green('Successfully initialized :)'));
 			break;
 	}
 
