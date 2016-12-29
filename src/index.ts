@@ -223,5 +223,5 @@ function spawn(callback: any): void {
 
 // Dying away...
 process.on('exit', () => {
-	Logger.info('Misskey is going down');
+	Logger.info('The process is going exit');
 });
