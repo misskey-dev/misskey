@@ -152,7 +152,7 @@ async function init(): Promise<State> {
 	log('Info', typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`, 'Env');
 	if (IS_DEBUG) {
 		log('Warn', 'The environment is not in production mode', 'Env');
-		log('Warn', 'Do not use for production purpose.', 'Env');
+		log('Warn', 'Do not use for production purpose', 'Env');
 	}
 
 	// Get machine info
