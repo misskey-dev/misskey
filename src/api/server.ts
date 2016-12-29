@@ -22,6 +22,10 @@ app.use(cors({
 	origin: true
 }));
 
+app.get('/', (req, res) => {
+	res.send('YEE HAW');
+});
+
 /**
  * Authetication
  */
