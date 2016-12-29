@@ -152,7 +152,8 @@ async function init(): Promise<State> {
 	log('Info', 'Initializing...');
 
 	if (IS_DEBUG) {
-		log('Warn', 'It is not in the Production mode. Do not use in the Production environment.');
+		log('Warn', 'The environment is not in production mode');
+		log('Warn', 'Do not use for production purpose.');
 	}
 
 	log('Info', `environment: ${env}`);
