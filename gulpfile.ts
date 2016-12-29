@@ -3,7 +3,7 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
+import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as babel from 'gulp-babel';
@@ -71,9 +71,20 @@ function getLicenseHtml(path: string): string {
 		.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
 }
 
+function getLicenseSectionHtml(path: string): string {
+	try {
+		const pkg = JSON.parse(fs.readFileSync(Path.parse(path).dir + '/package.json', 'utf-8'));
+		const licenseHtml = getLicenseHtml(path);
+		return `<details><summary>${pkg.name} <small>v${pkg.version}</small></summary>${licenseHtml}</details>`;
+	} catch (e) {
+		return null;
+	}
+}
+
 gulp.task('build:about:docs', () => {
 	const licenses = glob.sync('./node_modules/**/LICENSE*');
-	const licenseHtml = [getLicenseHtml('./LICENSE')].concat(licenses.map(license => getLicenseHtml(license))).join('<hr>');
+	const licenseHtml = getLicenseHtml('./LICENSE');
+	const thirdpartyLicensesHtml = licenses.map(license => getLicenseSectionHtml(license)).join('');
 	const pugs = glob.sync('./src/web/about/pages/**/*.pug');
 	const streams = pugs.map(file => {
 		const page = file.replace('./src/web/about/pages/', '').replace('.pug', '');
@@ -81,10 +92,11 @@ gulp.task('build:about:docs', () => {
 			.pipe(pug({
 				locals: Object.assign({
 					path: page,
-					license: licenseHtml
+					license: licenseHtml,
+					thirdpartyLicenses: thirdpartyLicensesHtml
 				}, config)
 			}))
-			.pipe(gulp.dest('./built/web/about/pages/' + path.parse(page).dir));
+			.pipe(gulp.dest('./built/web/about/pages/' + Path.parse(page).dir));
 	});
 
 	return es.merge.apply(es, streams);
