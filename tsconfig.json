@@ -3,7 +3,7 @@
 		"noEmitOnError": false,
 		"noImplicitAny": false,
 		"noImplicitReturns": true,
-		"noUnusedParameters": true,
+		"noUnusedParameters": false,
 		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
 		"experimentalDecorators": true,
