@@ -40,10 +40,7 @@ gulp.task('build', [
 	'build:client'
 ]);
 
-gulp.task('rebuild', [
-	'clean',
-	'build'
-]);
+gulp.task('rebuild', ['clean', 'build']);
 
 gulp.task('build:js', () =>
 	gulp.src(['./src/**/*.js', '!./src/web/**/*.js'])
