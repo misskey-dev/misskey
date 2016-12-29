@@ -184,7 +184,7 @@ async function init(): Promise<State> {
 
 	// Check if a port is being used
 	if (await portUsed.check(config.port)) {
-		Logger.error(`Port: ${config.port} is already used!`);
+		Logger.error(`Port ${config.port} is already used`);
 		return State.failed;
 	}
 
