@@ -94,7 +94,6 @@
     "inquirer": "2.0.0",
     "js-yaml": "3.7.0",
     "livescript": "1.5.0",
-    "log-cool": "1.1.0",
     "mime-types": "2.1.13",
     "mongodb": "2.2.16",
     "ms": "0.7.2",

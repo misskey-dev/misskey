@@ -11,7 +11,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
 const prominence = require('prominence');
-import { logInfo, logDone, logWarn, logFailed } from 'log-cool';
+import { log } from './utils/logger';
 import * as chalk from 'chalk';
 const git = require('git-last-commit');
 const portUsed = require('tcp-port-used');
@@ -151,41 +151,41 @@ async function init(): Promise<State> {
 	console.log('\nInitializing...\n');
 
 	if (IS_DEBUG) {
-		logWarn('It is not in the Production mode. Do not use in the Production environment.');
+		log('Warn', 'It is not in the Production mode. Do not use in the Production environment.');
 	}
 
-	logInfo(`environment: ${env}`);
+	log('Info', `environment: ${env}`);
 
 	// Get machine info
 	const totalmem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
 	const freemem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
-	logInfo(`MACHINE: ${os.hostname()}`);
-	logInfo(`MACHINE: CPU: ${os.cpus().length}core`);
-	logInfo(`MACHINE: MEM: ${totalmem}GB (available: ${freemem}GB)`);
+	log('Info', `MACHINE: ${os.hostname()}`);
+	log('Info', `MACHINE: CPU: ${os.cpus().length}core`);
+	log('Info', `MACHINE: MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
-		logFailed('Configuration not found');
+		log('Error', 'Configuration not found');
 		return State.failed;
 	}
 
-	logDone('Success to load configuration');
-	logInfo(`maintainer: ${config.maintainer}`);
+	log('Info', 'Success to load configuration');
+	log('Info', `maintainer: ${config.maintainer}`);
 
 	checkDependencies();
 
 	// Check if a port is being used
 	if (await portUsed.check(config.port)) {
-		logFailed(`Port: ${config.port} is already used!`);
+		log('Error', `Port: ${config.port} is already used!`);
 		return State.failed;
 	}
 
 	// Try to connect to MongoDB
 	try {
 		const db = await initdb(config);
-		logDone('Success to connect to MongoDB');
+		log('Info', 'Success to connect to MongoDB');
 		db.close();
 	} catch (e) {
-		logFailed(`MongoDB: ${e}`);
+		log('Error', `MongoDB: ${e}`);
 		return State.failed;
 	}
 
