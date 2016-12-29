@@ -66,7 +66,7 @@ gulp.task('build:ts', () =>
 gulp.task('build:about:docs', () => {
 	const licenseHtml = fs.readFileSync('./LICENSE', 'utf-8')
 		.replace(/\r\n/g, '\n')
-		.replace(/.\n./g, '<wbr>')
+		.replace(/(.)\n(.)/g, '$1 $2')
 		.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
 	const pugs = glob.sync('./src/web/about/pages/**/*.pug');
 	const streams = pugs.map(file => {
