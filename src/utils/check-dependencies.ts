@@ -4,7 +4,7 @@ import { exec } from 'shelljs';
 export default function(): void {
 	checkDependency('Node.js', 'node -v', x => x.match(/^v(.*)\r?\n$/));
 	checkDependency('npm', 'npm -v', x => x.match(/^(.*)\r?\n$/));
-	checkDependency('MongoDB', 'mongo --version', x => x.match(/^MongoDDB shell version: (.*)\r?\n$/));
+	checkDependency('MongoDB', 'mongo --version', x => x.match(/^MongoDB shell version: (.*)\r?\n$/));
 	checkDependency('Redis', 'redis-server --version', x => x.match(/v=([0-9\.]*)/));
 }
 
