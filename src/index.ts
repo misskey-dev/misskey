@@ -148,7 +148,7 @@ async function init(): Promise<State> {
 		lastCommitLogger.info(`${shortHash}${chalk.gray(hash.substr(shortHash.length))}`);
 		lastCommitLogger.info(`${commit.subject} ${chalk.green(`(${commitDate} ${commitTime})`)} ${chalk.blue(`<${commit.author.name}>`)}`);
 	} catch (e) {
-		lastCommitLogger.info('No commit information found')
+		lastCommitLogger.info('No commit information found');
 	}
 
 	let envLogger = new Logger('Env');
