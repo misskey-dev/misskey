@@ -6,7 +6,6 @@ import User from '../models/user';
 import { validateUsername } from '../models/user';
 import serialize from '../serializers/user';
 
-
 recaptcha.init({
 	secret_key: config.recaptcha.secretKey
 });
