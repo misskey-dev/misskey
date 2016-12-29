@@ -139,10 +139,14 @@ async function init(): Promise<State> {
 	// Get commit info
 	try {
 		const commit = await prominence(git).getLastCommit();
-		log('Info', `commit: ${commit.shortHash} ${commit.author.name} <${commit.author.email}>`);
-		log('Info', `        ${new Date(parseInt(commit.committedOn, 10) * 1000)}`);
+		const shortHash: string = commit.shortHash;
+		const hash: string = commit.hash;
+		const commitDate = new Date(parseInt(commit.committedOn, 10) * 1000).toLocaleDateString('ja-JP');
+		const commitTime = new Date(parseInt(commit.committedOn, 10) * 1000).toLocaleTimeString('ja-JP');
+		log('Info', `${shortHash}${chalk.gray(hash.substr(shortHash.length))}`, 'LastCommit');
+		log('Info', `${commit.subject} ${chalk.green(`(${commitDate} ${commitTime})`)} ${chalk.blue(`<${commit.author.name}>`)}`, 'LastCommit');
 	} catch (e) {
-		// noop
+		log('Info', `No commit information found`, 'LastCommit');
 	}
 
 	log('Info', 'Initializing...');

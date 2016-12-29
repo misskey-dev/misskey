@@ -10,8 +10,14 @@ function toLevelColor(level: LogLevel): chalk.ChalkStyle {
 	}
 }
 
-export function log(level: LogLevel, message: string): void {
-	let color = toLevelColor(level);
-	let time = (new Date()).toLocaleTimeString([], { hour12: false });
-	console.log(`[${time} ${color.bold(level.toUpperCase())}]: ${message}`);
+export function log(level: LogLevel, message: string): void;
+export function log(level: LogLevel, message: string, domain: string): void;
+export function log(level: LogLevel, message: string, domain?: string): void {
+	if (typeof domain == 'string') {
+		log(level, `[${domain}] ${message}`);
+	} else {
+		let color = toLevelColor(level);
+		let time = (new Date()).toLocaleTimeString('ja-JP');
+		console.log(`[${time} ${color.bold(level.toUpperCase())}]: ${message}`);
+	}
 }
