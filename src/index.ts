@@ -130,11 +130,11 @@ function worker(): void {
  * Init app
  */
 async function init(): Promise<State> {
-	log('Info', 'Welcome to Misskey!');
-
-	log('Info', chalk.bold('Misskey Core <aoi>'));
-
 	let warn = false;
+
+	log('Info', 'Welcome to Misskey!');
+	log('Info', chalk.bold('Misskey Core <aoi>'));
+	log('Info', 'Initializing...');
 
 	// Get commit info
 	try {
@@ -149,14 +149,11 @@ async function init(): Promise<State> {
 		log('Info', `No commit information found`, 'LastCommit');
 	}
 
-	log('Info', 'Initializing...');
-
+	log('Info', typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`, 'Env');
 	if (IS_DEBUG) {
-		log('Warn', 'The environment is not in production mode');
-		log('Warn', 'Do not use for production purpose.');
+		log('Warn', 'The environment is not in production mode', 'Env');
+		log('Warn', 'Do not use for production purpose.', 'Env');
 	}
-
-	log('Info', `environment: ${env}`);
 
 	// Get machine info
 	const totalmem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
