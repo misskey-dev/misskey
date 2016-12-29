@@ -68,7 +68,7 @@
 		// Maintainability
 		"eofline": true,
 		"indent": [true, "tabs"],
-		"linebreak-style": [true, "CRLF"],
+		"linebreak-style": false,
 		"max-file-line-count": false,
 		"max-line-length": [true, 140],
 		"no-default-export": false,
