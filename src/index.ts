@@ -160,9 +160,9 @@ async function init(): Promise<State> {
 	// Get machine info
 	const totalmem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
 	const freemem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
-	log('Info', `MACHINE: ${os.hostname()}`);
-	log('Info', `MACHINE: CPU: ${os.cpus().length}core`);
-	log('Info', `MACHINE: MEM: ${totalmem}GB (available: ${freemem}GB)`);
+	log('Info', `${os.hostname()}`, 'Machine');
+	log('Info', `CPU: ${os.cpus().length}core`, 'Machine');
+	log('Info', `MEM: ${totalmem}GB (available: ${freemem}GB)`, 'Machine');
 
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
 		log('Error', 'Configuration not found');
