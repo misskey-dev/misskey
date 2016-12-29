@@ -15,6 +15,7 @@ import Logger from './utils/logger';
 import * as chalk from 'chalk';
 const git = require('git-last-commit');
 const portUsed = require('tcp-port-used');
+const isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
 import checkDependencies from './utils/check-dependencies';
@@ -175,6 +176,11 @@ async function init(): Promise<State> {
 	configLogger.info(`maintainer: ${config.maintainer}`);
 
 	checkDependencies();
+
+	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
+		Logger.error('You need root privilages to listen on port below 1024 on Linux');
+		return State.failed;
+	}
 
 	// Check if a port is being used
 	if (await portUsed.check(config.port)) {

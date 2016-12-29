@@ -92,6 +92,7 @@
     "gulp-uglify": "2.0.0",
     "gulp-util": "3.0.8",
     "inquirer": "2.0.0",
+    "is-root": "1.0.0",
     "js-yaml": "3.7.0",
     "livescript": "1.5.0",
     "mime-types": "2.1.13",
