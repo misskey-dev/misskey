@@ -24,6 +24,7 @@ const transformify = require('syuilo-transformify');
 const pug = require('gulp-pug');
 const git = require('git-last-commit');
 import * as rimraf from 'rimraf';
+import * as escapeHtml from 'escape-html';
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -63,11 +64,16 @@ gulp.task('build:ts', () =>
 		.pipe(gulp.dest('./built/'))
 );
 
-gulp.task('build:about:docs', () => {
-	const licenseHtml = fs.readFileSync('./LICENSE', 'utf-8')
+function getLicenseHtml(path: string): string {
+	return escapeHtml(fs.readFileSync(path, 'utf-8'))
 		.replace(/\r\n/g, '\n')
 		.replace(/(.)\n(.)/g, '$1 $2')
 		.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
+}
+
+gulp.task('build:about:docs', () => {
+	const licenses = glob.sync('./node_modules/**/LICENSE*');
+	const licenseHtml = [getLicenseHtml('./LICENSE')].concat(licenses.map(license => getLicenseHtml(license))).join('<hr>');
 	const pugs = glob.sync('./src/web/about/pages/**/*.pug');
 	const streams = pugs.map(file => {
 		const page = file.replace('./src/web/about/pages/', '').replace('.pug', '');
