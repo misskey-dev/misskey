@@ -169,8 +169,8 @@ async function init(): Promise<State> {
 		return State.failed;
 	}
 
-	log('Info', 'Success to load configuration');
-	log('Info', `maintainer: ${config.maintainer}`);
+	log('Info', 'Successfully loaded', 'Config');
+	log('Info', `maintainer: ${config.maintainer}`, 'Config');
 
 	checkDependencies();
 
