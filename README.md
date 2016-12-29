@@ -33,7 +33,7 @@ Misskey requires two domains called the primary domain and the secondary domain.
 5. `npm run build`
 
 ## Launch
-`npm start`
+`sudo npm start`
 
 ## License
 [MIT](LICENSE)
