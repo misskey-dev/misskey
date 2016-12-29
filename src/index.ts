@@ -183,10 +183,10 @@ async function init(): Promise<State> {
 	// Try to connect to MongoDB
 	try {
 		const db = await initdb(config);
-		log('Info', 'Success to connect to MongoDB');
+		log('Info', 'Successfully connected', 'MongoDB');
 		db.close();
 	} catch (e) {
-		log('Error', `MongoDB: ${e}`);
+		log('Error', `${e}`, 'MongoDB');
 		return State.failed;
 	}
 
