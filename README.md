@@ -18,12 +18,17 @@ A miniblog-based SNS.
 * Elasticsearch
 
 ## Get started
+### Domains
 Misskey requires two domains called the primary domain and the secondary domain.
 
 * The primary domain is used to provide main service of Misskey.
 * The secondary domain is used to avoid vulnerabilities such as XSS.
 
 **Ensure that the secondary domain is not a subdomain of the primary domain.**
+
+### reCAPTCHA
+Visit and generate keys
+https://www.google.com/recaptcha/intro/
 
 ## Build
 1. `git clone git://github.com/syuilo/misskey.git`
