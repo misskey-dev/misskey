@@ -1,5 +1,5 @@
 import { log } from './logger';
-import {exec} from 'shelljs';
+import { exec } from 'shelljs';
 
 export default function(): void {
 	checkDependency('Node.js', 'node -v', x => x.match(/^v(.*)\r?\n$/)[1]);
