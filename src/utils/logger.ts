@@ -12,5 +12,6 @@ function toLevelColor(level: LogLevel): chalk.ChalkStyle {
 
 export function log(level: LogLevel, message: string): void {
 	let color = toLevelColor(level);
-	console.log(`[${color.bold(level.toUpperCase())}] ${message}`);
+	let time = (new Date()).toLocaleTimeString([], { hour12: false });
+	console.log(`[${time} ${color.bold(level.toUpperCase())}]: ${message}`);
 }
