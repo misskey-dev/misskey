@@ -63,6 +63,13 @@ app.use('/@/about/resources', express.static(`${__dirname}/about/resources`, {
 	maxAge: ms('7 days')
 }));
 
+app.get('/@/about/', (req, res) => {
+	res.render(`${__dirname}/about/pages/index`, {
+		path: 'index',
+		config: config
+	});
+});
+
 app.get('/@/about/:page(*)', (req, res) => {
 	res.render(`${__dirname}/about/pages/${req.params.page}`, {
 		path: req.params.page,
