@@ -31,7 +31,7 @@ const isProduction = env === 'production';
 const isDebug = !isProduction;
 
 if (!fs.existsSync('./.config/config.yml')) {
-	console.log('設定ファイルが見つかりません。npm run configしてください');
+	console.log('npm run configを実行して設定ファイルを作成してください');
 	process.exit();
 }
 
