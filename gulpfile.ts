@@ -190,7 +190,7 @@ gulp.task('build:client:scripts', done => {
 
 					.transform(transformify((source, file) => {
 						if (file.substr(-4) !== '.tag') return source;
-						console.log(file);
+						gutil.log('Build Tag: ' + file);
 						return source;
 					}))
 
