@@ -70,19 +70,16 @@ async function master(): Promise<void> {
 		process.exit(1);
 	}
 
-	const res = (t: string, c: string) =>
-		console.log(chalk.bold(`--> ${(chalk as any)[c](t)}\n`));
-
 	switch (state) {
 		case State.failed:
-			res('Fatal error occurred :(', 'red');
+			log('Error', chalk.red('Fatal error occurred :('));
 			process.exit();
 			return;
 		case State.warn:
-			res('Some problem(s) :|', 'yellow');
+			log('Warn', chalk.yellow('Some problem(s) :|'));
 			break;
 		case State.success:
-			res('OK :)', 'green');
+			log('Info', chalk.green('OK :)'));
 			break;
 	}
 
