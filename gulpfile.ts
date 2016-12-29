@@ -2,6 +2,7 @@
  * Gulp tasks
  */
 
+import * as fs from 'fs';
 import * as path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
@@ -63,13 +64,15 @@ gulp.task('build:ts', () =>
 );
 
 gulp.task('build:about:docs', () => {
+	const licenseHtml = fs.readFileSync('./LICENSE', 'utf-8').replace(/\r\n|\n/g, '<br>');
 	const pugs = glob.sync('./src/web/about/pages/**/*.pug');
 	const streams = pugs.map(file => {
 		const page = file.replace('./src/web/about/pages/', '').replace('.pug', '');
 		return gulp.src(file)
 			.pipe(pug({
 				locals: Object.assign({
-					path: page
+					path: page,
+					license: licenseHtml
 				}, config)
 			}))
 			.pipe(gulp.dest('./built/web/about/pages/' + path.parse(page).dir));
