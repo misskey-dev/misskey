@@ -67,7 +67,7 @@
 		"indent": [true, "tabs"],
 		"linebreak-style": false,
 		"max-file-line-count": false,
-		"max-line-length": [true, 140],
+		"max-line-length": false,
 		"no-default-export": false,
 		"no-mergeable-namespace": true,
 		"no-require-imports": false,
