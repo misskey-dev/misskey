@@ -30,6 +30,11 @@ const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDebug = !isProduction;
 
+if (!fs.existsSync('./.config/config.yml')) {
+	console.log('設定ファイルが見つかりません。npm run configしてください');
+	process.exit();
+}
+
 import { IConfig } from './src/config';
 const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString()))
 	('.config/config.yml') as IConfig;
