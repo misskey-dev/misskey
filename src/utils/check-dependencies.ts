@@ -1,4 +1,4 @@
-import { log } from './logger';
+import Logger from './logger';
 import { exec } from 'shelljs';
 
 export default function(): void {
@@ -14,9 +14,10 @@ function checkDependency(serviceName: string, command: string, transform: (x: st
 		notFound: 127
 	};
 	const x = exec(command, { silent: true }) as any;
+	let depsLogger = new Logger('Deps');
 	if (x.code === code.success) {
-		log('Info', `${serviceName} ${transform(x.stdout)} found`, 'Deps');
+		depsLogger.info(`${serviceName} ${transform(x.stdout)} found`);
 	} else if (x.code === code.notFound) {
-		log('Warn', `${serviceName} not found`, 'Deps');
+		depsLogger.warn(`${serviceName} not found`);
 	}
 }

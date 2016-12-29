@@ -11,7 +11,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
 const prominence = require('prominence');
-import { log } from './utils/logger';
+import Logger from './utils/logger';
 import * as chalk from 'chalk';
 const git = require('git-last-commit');
 const portUsed = require('tcp-port-used');
@@ -72,14 +72,14 @@ async function master(): Promise<void> {
 
 	switch (state) {
 		case State.failed:
-			log('Error', chalk.red('Fatal error occurred :('));
+			Logger.error(chalk.red('Fatal error occurred :('));
 			process.exit();
 			return;
 		case State.warn:
-			log('Warn', chalk.yellow('Some problem(s) :|'));
+			Logger.warn(chalk.yellow('Some problem(s) :|'));
 			break;
 		case State.success:
-			log('Info', chalk.green('OK :)'));
+			Logger.info(chalk.green('OK :)'));
 			break;
 	}
 
@@ -132,59 +132,64 @@ function worker(): void {
 async function init(): Promise<State> {
 	let warn = false;
 
-	log('Info', 'Welcome to Misskey!');
-	log('Info', chalk.bold('Misskey Core <aoi>'));
-	log('Info', 'Initializing...');
+	Logger.info('Welcome to Misskey!');
+	Logger.info(chalk.bold('Misskey Core <aoi>'));
+	Logger.info('Initializing...');
 
 	// Get commit info
+	let lastCommitLogger = new Logger('LastCommit');
 	try {
 		const commit = await prominence(git).getLastCommit();
 		const shortHash: string = commit.shortHash;
 		const hash: string = commit.hash;
 		const commitDate = new Date(parseInt(commit.committedOn, 10) * 1000).toLocaleDateString('ja-JP');
 		const commitTime = new Date(parseInt(commit.committedOn, 10) * 1000).toLocaleTimeString('ja-JP');
-		log('Info', `${shortHash}${chalk.gray(hash.substr(shortHash.length))}`, 'LastCommit');
-		log('Info', `${commit.subject} ${chalk.green(`(${commitDate} ${commitTime})`)} ${chalk.blue(`<${commit.author.name}>`)}`, 'LastCommit');
+		lastCommitLogger.info(`${shortHash}${chalk.gray(hash.substr(shortHash.length))}`);
+		lastCommitLogger.info(`${commit.subject} ${chalk.green(`(${commitDate} ${commitTime})`)} ${chalk.blue(`<${commit.author.name}>`)}`);
 	} catch (e) {
-		log('Info', `No commit information found`, 'LastCommit');
+		lastCommitLogger.info('No commit information found')
 	}
 
-	log('Info', typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`, 'Env');
+	let envLogger = new Logger('Env');
+	envLogger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
 	if (IS_DEBUG) {
-		log('Warn', 'The environment is not in production mode', 'Env');
-		log('Warn', 'Do not use for production purpose', 'Env');
+		envLogger.warn('The environment is not in production mode');
+		envLogger.warn('Do not use for production purpose');
 	}
 
 	// Get machine info
 	const totalmem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
 	const freemem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
-	log('Info', `${os.hostname()}`, 'Machine');
-	log('Info', `CPU: ${os.cpus().length}core`, 'Machine');
-	log('Info', `MEM: ${totalmem}GB (available: ${freemem}GB)`, 'Machine');
+	let machineLogger = new Logger('Machine');
+	machineLogger.info(os.hostname());
+	machineLogger.info(`CPU: ${os.cpus().length}core`);
+	machineLogger.info(`MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
-		log('Error', 'Configuration not found');
+		Logger.error('Configuration not found');
 		return State.failed;
 	}
 
-	log('Info', 'Successfully loaded', 'Config');
-	log('Info', `maintainer: ${config.maintainer}`, 'Config');
+	let configLogger = new Logger('Config');
+	configLogger.info('Successfully loaded');
+	configLogger.info(`maintainer: ${config.maintainer}`);
 
 	checkDependencies();
 
 	// Check if a port is being used
 	if (await portUsed.check(config.port)) {
-		log('Error', `Port: ${config.port} is already used!`);
+		Logger.error(`Port: ${config.port} is already used!`);
 		return State.failed;
 	}
 
 	// Try to connect to MongoDB
+	let mongoDBLogger = new Logger('MongoDB');
 	try {
 		const db = await initdb(config);
-		log('Info', 'Successfully connected', 'MongoDB');
+		mongoDBLogger.info('Successfully connected');
 		db.close();
 	} catch (e) {
-		log('Error', `${e}`, 'MongoDB');
+		mongoDBLogger.error(`${e}`);
 		return State.failed;
 	}
 
@@ -218,5 +223,5 @@ function spawn(callback: any): void {
 
 // Dying away...
 process.on('exit', () => {
-	log('Info', 'Misskey is going down');
+	Logger.info('Misskey is going down');
 });
