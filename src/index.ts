@@ -85,7 +85,7 @@ async function master(): Promise<void> {
 
 	// Spawn workers
 	spawn(() => {
-		console.log(chalk.bold.green(`\nMisskey Core is now running. [port:${config.port}]`));
+		console.log(chalk.bold.green(`\nMisskey is now running. [port:${config.port}]`));
 
 		// Listen new workers
 		cluster.on('fork', worker => {
