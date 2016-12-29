@@ -37,7 +37,7 @@ const tsProject = ts.createProject('tsconfig.json');
 gulp.task('build', [
 	'build:js',
 	'build:ts',
-	'build:pug',
+	'build:about:docs',
 	'build:copy',
 	'build:client'
 ]);
@@ -62,7 +62,7 @@ gulp.task('build:ts', () =>
 		.pipe(gulp.dest('./built/'))
 );
 
-gulp.task('build:pug', () => {
+gulp.task('build:about:docs', () => {
 	const pugs = glob.sync('./src/web/about/pages/**/*.pug');
 	const streams = pugs.map(file => {
 		const page = file.replace('./src/web/about/pages/', '').replace('.pug', '');
