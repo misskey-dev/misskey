@@ -37,6 +37,7 @@ main {
 	padding: 32px;
 	width: 100%;
 	max-width: 700px;
+	word-wrap: break-word;
 }
 @media screen and (max-width: 700px) {
 	main {
@@ -66,6 +67,10 @@ a {
 	a:hover {
 		text-decoration: underline;
 	}
+
+hr {
+	border-top: solid 1px #eee;
+}
 
 section {
 	margin: 32px 0;
