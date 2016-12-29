@@ -128,7 +128,7 @@
     "vhost": "3.0.2",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
-    "websocket": "1.0.23",
+    "websocket": "1.0.24",
     "whatwg-fetch": "2.0.1",
     "xml2json": "0.10.0",
     "yargs": "6.5.0"
