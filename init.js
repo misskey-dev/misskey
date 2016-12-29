@@ -170,7 +170,7 @@ inquirer.prompt(form).then(as => {
 		}
 	};
 
-	console.log('Thanks. Writing the configuration to a file...');
+	console.log(`Thanks. Writing the configuration to ${configPath}`);
 
 	try {
 		fs.mkdirSync(configDirPath);
