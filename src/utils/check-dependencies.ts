@@ -17,6 +17,6 @@ function checkDependency(serviceName: string, command: string, transform: (x: st
 	if (x.code === code.success) {
 		log('Info', `${serviceName} ${transform(x.stdout)}`, 'Deps');
 	} else if (x.code === code.notFound) {
-		log('Warn', `Unable to find ${serviceName}`);
+		log('Warn', `${serviceName} not found`);
 	}
 }
