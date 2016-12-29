@@ -95,7 +95,7 @@ mk-signup
 				autocomplete='off',
 				required)
 			p
-				a() 利用規約
+				a(href={ CONFIG.urls.about + '/tou' }, target='_blank') 利用規約
 				| に同意する
 
 		button(onclick={ onsubmit })
