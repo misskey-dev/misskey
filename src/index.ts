@@ -133,22 +133,22 @@ function worker(): void {
  * Init app
  */
 async function init(): Promise<State> {
-	console.log('Welcome to Misskey!\n');
+	log('Info', 'Welcome to Misskey!');
 
-	console.log(chalk.bold('Misskey Core <aoi>'));
+	log('Info', chalk.bold('Misskey Core <aoi>'));
 
 	let warn = false;
 
 	// Get commit info
 	try {
 		const commit = await prominence(git).getLastCommit();
-		console.log(`commit: ${commit.shortHash} ${commit.author.name} <${commit.author.email}>`);
-		console.log(`        ${new Date(parseInt(commit.committedOn, 10) * 1000)}`);
+		log('Info', `commit: ${commit.shortHash} ${commit.author.name} <${commit.author.email}>`);
+		log('Info', `        ${new Date(parseInt(commit.committedOn, 10) * 1000)}`);
 	} catch (e) {
 		// noop
 	}
 
-	console.log('\nInitializing...\n');
+	log('Info', 'Initializing...');
 
 	if (IS_DEBUG) {
 		log('Warn', 'It is not in the Production mode. Do not use in the Production environment.');
@@ -219,5 +219,5 @@ function spawn(callback: any): void {
 
 // Dying away...
 process.on('exit', () => {
-	console.log('Bye.');
+	log('Info', 'Bye.');
 });
