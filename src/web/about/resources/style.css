@@ -132,6 +132,10 @@ p.tip {
 		font-size: 14px;
 	}
 
+hr {
+	margin: 1em 0;
+}
+
 table {
 	width: 100%;
 	border-spacing: 0;
