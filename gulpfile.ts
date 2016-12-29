@@ -31,7 +31,7 @@ import { IConfig } from './src/config';
 const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString()))
 	('.config/config.yml') as IConfig;
 
-const project = ts.createProject('tsconfig.json');
+const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('build', [
 	'build:js',
@@ -51,9 +51,9 @@ gulp.task('build:js', () =>
 );
 
 gulp.task('build:ts', () =>
-	project
+	tsProject
 		.src()
-		.pipe(project())
+		.pipe(tsProject())
 		.pipe(babel({
 			presets: ['es2015', 'stage-3']
 		}))
