@@ -1,5 +1,5 @@
 /**
- * Misskey Core Entory Point!
+ * Misskey Entory Point!
  */
 
 Error.stackTraceLimit = Infinity;
