@@ -18,7 +18,7 @@ const portUsed = require('tcp-port-used');
 const isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
-import checkDependencies from './utils/check-dependencies';
+import checkDependencies from './utils/checkDependencies';
 
 // Init babel
 require('babel-core/register');
