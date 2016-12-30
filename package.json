@@ -16,7 +16,7 @@
     "clean": "gulp clean",
     "cleanall": "gulp cleanall",
     "lint": "gulp lint",
-    "test": "gulp test"
+    "test": "mocha"
   },
   "dependencies": {
     "@types/bcrypt": "1.0.0",
@@ -96,6 +96,7 @@
     "js-yaml": "3.7.0",
     "livescript": "1.5.0",
     "mime-types": "2.1.13",
+    "mocha": "3.2.0",
     "mongodb": "2.2.16",
     "ms": "0.7.2",
     "multer": "1.2.1",
