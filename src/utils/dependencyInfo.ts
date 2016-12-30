@@ -1,23 +1,23 @@
 import Logger from './logger';
 import { exec } from 'shelljs';
 
-export default class DependencyChecker {
+export default class DependencyInfo {
 	logger: Logger;
 
 	constructor() {
 		this.logger = new Logger('Deps');
 	}
 
-	checkAll(): void {
+	showAll(): void {
 		this.logger.info('Checking started');
-		this.check('Node.js', 'node -v', x => x.match(/^v(.*)\r?\n$/));
-		this.check('npm', 'npm -v', x => x.match(/^(.*)\r?\n$/));
-		this.check('MongoDB', 'mongo --version', x => x.match(/^MongoDB shell version: (.*)\r?\n$/));
-		this.check('Redis', 'redis-server --version', x => x.match(/v=([0-9\.]*)/));
+		this.show('Node.js', 'node -v', x => x.match(/^v(.*)\r?\n$/));
+		this.show('npm', 'npm -v', x => x.match(/^(.*)\r?\n$/));
+		this.show('MongoDB', 'mongo --version', x => x.match(/^MongoDB shell version: (.*)\r?\n$/));
+		this.show('Redis', 'redis-server --version', x => x.match(/v=([0-9\.]*)/));
 		this.logger.info('Checking finished');
 	}
 
-	check(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
+	show(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
 		const code = {
 			success: 0,
 			notFound: 127

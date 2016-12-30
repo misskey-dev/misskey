@@ -19,7 +19,7 @@ const isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
 import MachineInfo from './utils/machineInfo';
-import DependencyChecker from './utils/dependencyChecker';
+import DependencyInfo from './utils/dependencyInfo';
 
 // Init babel
 require('babel-core/register');
@@ -160,7 +160,7 @@ async function init(): Promise<State> {
 	}
 
 	MachineInfo.show();
-	new DependencyChecker().checkAll();
+	new DependencyInfo().showAll();
 
 	let configLogger = new Logger('Config');
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
