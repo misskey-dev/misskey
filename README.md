@@ -49,6 +49,8 @@ Please create issue to report it.
 Currently Misskey is missing documents so writing documents would be appreciated.
 Pull requests are always welcome.
 
+We love contributions from anybody.
+
 ## License
 [The MIT License](LICENSE)
 
