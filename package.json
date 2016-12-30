@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "misskey",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A miniblog-based SNS",
   "author": "syuilo <i@syuilo.com>",
   "license": "MIT",
