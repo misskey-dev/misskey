@@ -21,12 +21,15 @@ A miniblog-based SNS.
 `npm test`
 
 ## Setup
-### Dependencies
+### Dependencies :package:
 Please install these softwares.
 * **[MongoDB](https://www.mongodb.com/)**
 * **[Redis](https://redis.io/)**
 * **[GraphicsMagick](http://www.graphicsmagick.org/)**
-* [Elasticsearch](https://www.elastic.co/) (optional)
+
+#### Optional
+* [Elasticsearch](https://www.elastic.co/)
+  * If omit it, Misskey use the *MongoDB* for search instead. If not, Misskey will can better search.
 
 ### Domains
 Misskey requires two domains called the primary domain and the secondary domain.
