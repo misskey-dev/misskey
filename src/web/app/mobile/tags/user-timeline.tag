@@ -1,5 +1,5 @@
 mk-user-timeline
-	mk-timeline(init={ init }, more={ more }, empty={ with-media ? 'メディア付き投稿はありません。' : 'このユーザーはまだ投稿していないようです。' })
+	mk-timeline@timeline(init={ init }, more={ more }, empty={ with-media ? 'メディア付き投稿はありません。' : 'このユーザーはまだ投稿していないようです。' })
 
 style.
 	display block
