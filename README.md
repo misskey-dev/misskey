@@ -51,6 +51,11 @@ Pull requests are always welcome.
 
 We love contributions from anybody.
 
+### TODO
+* More tests!
+* More docs!
+* More refactorings!
+
 ## License
 [The MIT License](LICENSE)
 
