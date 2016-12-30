@@ -15,7 +15,7 @@ A miniblog-based SNS.
 * Redis
 * GraphicsMagick
 
-## Optional dependencies
+### Optional
 * Elasticsearch
 
 ## Get started
