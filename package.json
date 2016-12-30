@@ -133,6 +133,6 @@
     "websocket": "1.0.24",
     "whatwg-fetch": "2.0.1",
     "xml2json": "0.10.0",
-    "yargs": "6.5.0"
+    "yargs": "6.6.0"
   }
 }
