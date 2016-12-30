@@ -42,6 +42,13 @@ Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 ## Launch
 `sudo npm start`
 
+## Contribute
+Do you have feature request or problem with Misskey?
+Please create issue to report it.
+
+Currently Misskey is missing documents so writing documents would be appreciated.
+Pull requests are always welcome.
+
 ## License
 [MIT](LICENSE)
 
