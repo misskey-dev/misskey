@@ -9,16 +9,20 @@ A miniblog-based SNS.
 
 ![ss](./resources/ss.jpg)
 
-## Dependencies
-* Node.js
-* MongoDB
-* Redis
-* GraphicsMagick
+## Build
+1. Install git, Node.js and npm
+2. `git clone git://github.com/syuilo/misskey.git`
+3. `cd misskey`
+4. `npm install`
+5. `npm run config`
+6. `npm run build`
 
-### Optional
-* Elasticsearch
+## Test
+`npm test`
 
-## Get started
+## Setup
+Install MongoDB, Redis, GraphicsMagick and optionally Elasticsearch
+
 ### Domains
 Misskey requires two domains called the primary domain and the secondary domain.
 
@@ -29,16 +33,6 @@ Misskey requires two domains called the primary domain and the secondary domain.
 
 ### reCAPTCHA
 Please visit https://www.google.com/recaptcha/intro/ and generate keys.
-
-## Build
-1. `git clone git://github.com/syuilo/misskey.git`
-2. `cd misskey`
-3. `npm install`
-4. `npm run config`
-5. `npm run build`
-
-## Test
-`npm test`
 
 ## Launch
 `sudo npm start`
