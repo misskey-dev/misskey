@@ -28,8 +28,7 @@ Misskey requires two domains called the primary domain and the secondary domain.
 **Ensure that the secondary domain is not a subdomain of the primary domain.**
 
 ### reCAPTCHA
-Visit and generate keys
-https://www.google.com/recaptcha/intro/
+Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
 ## Build
 1. `git clone git://github.com/syuilo/misskey.git`
