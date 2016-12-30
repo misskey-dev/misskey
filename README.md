@@ -70,6 +70,8 @@ Pull requests are always welcome.
 
 We love contributions from anybody.
 
+[Contribution guide](./CONTRIBUTING.md)
+
 ### TODO
 * More tests!
 * More docs!
