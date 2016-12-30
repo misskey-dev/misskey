@@ -4,7 +4,7 @@ const analyze = require('../src/common/text');
 //const complie = require('../src/web/app/common/scripts/text-compiler');
 
 describe('Text', () => {
-	it('正しく解析される', () => {
+	it('is correctly analyzed', () => {
 		const tokens = analyze('@himawari お腹ペコい #yryr');
 		assert.deepEqual([
 			{ type: 'mention', content: '@himawari', username: 'himawari' },
