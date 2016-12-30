@@ -17,16 +17,13 @@ const isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
 import LastCommitInfo from './utils/lastCommitInfo';
+import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 
 // Init babel
 require('babel-core/register');
 require('babel-polyfill');
-
-const env = process.env.NODE_ENV;
-const IS_PRODUCTION = env === 'production';
-const IS_DEBUG = !IS_PRODUCTION;
 
 global.config = require('./config').default(`${__dirname}/../.config/config.yml`);
 
@@ -138,14 +135,7 @@ async function init(): Promise<State> {
 	Logger.info('Initializing...');
 
 	await LastCommitInfo.show();
-
-	let envLogger = new Logger('Env');
-	envLogger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
-	if (IS_DEBUG) {
-		envLogger.warn('The environment is not in production mode');
-		envLogger.warn('Do not use for production purpose');
-	}
-
+	EnvironmentInfo.show();
 	MachineInfo.show();
 	new DependencyInfo().showAll();
 
