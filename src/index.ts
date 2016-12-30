@@ -166,6 +166,8 @@ async function init(): Promise<State> {
 	machineLogger.info(`CPU: ${os.cpus().length}core`);
 	machineLogger.info(`MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
+	new DependencyChecker().checkAll();
+
 	let configLogger = new Logger('Config');
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
 		configLogger.error('Configuration not found');
@@ -175,7 +177,6 @@ async function init(): Promise<State> {
 	configLogger.info('Successfully loaded');
 	configLogger.info(`maintainer: ${config.maintainer}`);
 
-	new DependencyChecker().checkAll();
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
 		Logger.error('You need root privileges to listen on port below 1024 on Linux');
