@@ -21,7 +21,12 @@ A miniblog-based SNS.
 `npm test`
 
 ## Setup
-Install MongoDB, Redis, GraphicsMagick and optionally Elasticsearch
+### Dependencies
+Please install these softwares.
+* MongoDB
+* Redis
+* GraphicsMagick
+* Elasticsearch (optional)
 
 ### Domains
 Misskey requires two domains called the primary domain and the secondary domain.
