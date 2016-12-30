@@ -22,6 +22,7 @@ module.exports = ~>
 	data =
 		cache: true
 		debug: false
+		nya: true
 		home: home-data
 
 	return data

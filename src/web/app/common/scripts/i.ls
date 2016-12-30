@@ -14,3 +14,5 @@ module.exports = (me) ->
 			if data?
 				Object.assign me, data
 			me.trigger \updated
+
+		me: me

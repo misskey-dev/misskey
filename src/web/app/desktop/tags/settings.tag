@@ -58,6 +58,10 @@ mk-settings
 				input(type='checkbox', checked={ I.data.debug }, onclick={ update-debug })
 				p 開発者モード
 				p デバッグ等の開発者モードを有効にします。
+			label.checkbox
+				input(type='checkbox', checked={ I.data.nya }, onclick={ update-nya })
+				p <i>な</i>を<i>にゃ</i>に変換する
+				p 攻撃的な投稿が多少和らぐ可能性があります。
 
 		section.signin(show={ page == 'signin' })
 			h1 ログイン履歴
@@ -251,5 +255,13 @@ script.
 		@api \i/appdata/set do
 			data: JSON.stringify do
 				debug: @I.data.debug
+		.then ~>
+			@update-i!
+
+	@update-nya = ~>
+		@I.data.nya = !@I.data.nya
+		@api \i/appdata/set do
+			data: JSON.stringify do
+				nya: @I.data.nya
 		.then ~>
 			@update-i!

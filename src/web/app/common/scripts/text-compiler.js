@@ -1,3 +1,5 @@
+const riot = require('riot');
+
 module.exports = function(tokens, canBreak, escape) {
 	if (canBreak == null) {
 		canBreak = true;
@@ -5,7 +7,10 @@ module.exports = function(tokens, canBreak, escape) {
 	if (escape == null) {
 		escape = true;
 	}
-	return tokens.map(function(token) {
+
+	const me = riot.mixin('i').me;
+
+	let text = tokens.map(function(token) {
 		switch (token.type) {
 			case 'text':
 				if (escape) {
@@ -27,4 +32,10 @@ module.exports = function(tokens, canBreak, escape) {
 				return '<a>' + token.content + '</a>';
 		}
 	}).join('');
+
+	if (me && me.data && me.data.nya) {
+		text = text.replace(/な/g, 'にゃ');
+	}
+
+	return text;
 }
