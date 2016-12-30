@@ -23,10 +23,10 @@ A miniblog-based SNS.
 ## Setup
 ### Dependencies
 Please install these softwares.
-* MongoDB
-* Redis
-* GraphicsMagick
-* Elasticsearch (optional)
+* **[MongoDB](https://www.mongodb.com/)**
+* **[Redis](https://redis.io/)**
+* **[GraphicsMagick](http://www.graphicsmagick.org/)**
+* [Elasticsearch](https://www.elastic.co/) (optional)
 
 ### Domains
 Misskey requires two domains called the primary domain and the secondary domain.
