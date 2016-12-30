@@ -18,7 +18,7 @@ const portUsed = require('tcp-port-used');
 const isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
-import checkDependencies from './utils/checkDependencies';
+import DependencyChecker from './utils/dependencyChecker';
 
 // Init babel
 require('babel-core/register');
@@ -175,7 +175,7 @@ async function init(): Promise<State> {
 	configLogger.info('Successfully loaded');
 	configLogger.info(`maintainer: ${config.maintainer}`);
 
-	checkDependencies();
+	new DependencyChecker().checkAll();
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
 		Logger.error('You need root privileges to listen on port below 1024 on Linux');
