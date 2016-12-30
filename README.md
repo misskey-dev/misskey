@@ -1,6 +1,7 @@
 # Misskey
 
 [![][travis-badge]][travis-link]
+[![][appveyor-badge]][appveyor-link]
 [![][dependencies-badge]][dependencies-link]
 [![][mit-badge]][mit]
 
@@ -50,5 +51,7 @@ https://www.google.com/recaptcha/intro/
 [mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
 [travis-link]:        https://travis-ci.org/syuilo/misskey
 [travis-badge]:       http://img.shields.io/travis/syuilo/misskey.svg?style=flat-square
+[appveyor-link]:      https://ci.appveyor.com/project/syuilo/misskey
+[appveyor-badge]:     https://ci.appveyor.com/api/projects/status/dqr8fot0m7bfh3ug?svg=true
 [dependencies-link]:  https://gemnasium.com/syuilo/misskey
 [dependencies-badge]: https://img.shields.io/gemnasium/syuilo/misskey.svg?style=flat-square
