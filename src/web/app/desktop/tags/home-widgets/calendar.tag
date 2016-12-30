@@ -122,8 +122,8 @@ script.
 		@day-denom   = 1000ms * 60s * 60m * 24h
 		@month-numer = (now - (new Date ny, nm, 1))
 		@month-denom = (new Date ny, nm + 1,  1) - (new Date ny, nm, 1)
-		@year-numer  = (now - (new Date ny, 0, 0))
-		@year-denom  = (new Date ny + 1, 0,  0) - (new Date ny, 0, 0)
+		@year-numer  = (now - (new Date ny, 0, 1))
+		@year-denom  = (new Date ny + 1, 0,  1) - (new Date ny, 0, 1)
 
 		@day-p   = @day-numer   / @day-denom   * 100
 		@month-p = @month-numer / @month-denom * 100
