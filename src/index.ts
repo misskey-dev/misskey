@@ -166,12 +166,12 @@ async function init(): Promise<State> {
 	machineLogger.info(`CPU: ${os.cpus().length}core`);
 	machineLogger.info(`MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
+	let configLogger = new Logger('Config');
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
-		Logger.error('Configuration not found');
+		configLogger.error('Configuration not found');
 		return State.failed;
 	}
 
-	let configLogger = new Logger('Config');
 	configLogger.info('Successfully loaded');
 	configLogger.info(`maintainer: ${config.maintainer}`);
 
