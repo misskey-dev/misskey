@@ -34,7 +34,8 @@ module.exports = function(tokens, canBreak, escape) {
 	}).join('');
 
 	if (me && me.data && me.data.nya) {
-		text = text.replace(/な/g, 'にゃ');
+		text = text.replace(/な/g, 'にゃ')
+			.replace(/にゃでにゃで/g, 'なでなで');
 	}
 
 	return text;
