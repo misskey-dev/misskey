@@ -355,7 +355,7 @@ script.
 			focus @root, (e) -> e.previous-element-sibling
 		| e.which == 40 or e.which == 75 or e.which == 9 => # ↓, k or Tab
 			focus @root, (e) -> e.next-element-sibling
-		| e.which == 69 => # e
+		| e.which == 81 or e.which == 69 => # q or e
 			@repost!
 		| e.which == 70 or e.which == 76 => # f or l
 			@like!
