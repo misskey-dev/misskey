@@ -21,7 +21,7 @@ install:
   # 必須! node-gyp のバージョンを上げないと、ネイティブモジュールのコンパイルに失敗します
   - npm install -g node-gyp
 
-	- npm install
+  - npm install
 
 init:
   # git clone の際の改行を変換しないようにします
