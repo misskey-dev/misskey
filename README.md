@@ -50,7 +50,7 @@ Currently Misskey is missing documents so writing documents would be appreciated
 Pull requests are always welcome.
 
 ## License
-[MIT](LICENSE)
+[The MIT License](LICENSE)
 
 [mit]:                http://opensource.org/licenses/MIT
 [mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
