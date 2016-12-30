@@ -18,6 +18,7 @@ const portUsed = require('tcp-port-used');
 const isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
+import MachineInfo from './utils/machineInfo';
 import DependencyChecker from './utils/dependencyChecker';
 
 // Init babel
@@ -158,14 +159,7 @@ async function init(): Promise<State> {
 		envLogger.warn('Do not use for production purpose');
 	}
 
-	// Get machine info
-	const totalmem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
-	const freemem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
-	let machineLogger = new Logger('Machine');
-	machineLogger.info(os.hostname());
-	machineLogger.info(`CPU: ${os.cpus().length}core`);
-	machineLogger.info(`MEM: ${totalmem}GB (available: ${freemem}GB)`);
-
+	MachineInfo.show();
 	new DependencyChecker().checkAll();
 
 	let configLogger = new Logger('Config');
