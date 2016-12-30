@@ -37,6 +37,9 @@ https://www.google.com/recaptcha/intro/
 4. `npm run config`
 5. `npm run build`
 
+## Test
+`npm test`
+
 ## Launch
 `sudo npm start`
 
