@@ -10,7 +10,7 @@ A miniblog-based SNS.
 ![ss](./resources/ss.jpg)
 
 ## Build
-1. Install git, Node.js and npm
+1. Install *git*, *Node.js* and *npm*
 2. `git clone git://github.com/syuilo/misskey.git`
 3. `cd misskey`
 4. `npm install`
