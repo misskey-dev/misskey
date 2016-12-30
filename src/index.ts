@@ -10,14 +10,13 @@ Error.stackTraceLimit = Infinity;
 import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
-const prominence = require('prominence');
 import Logger from './utils/logger';
 import * as chalk from 'chalk';
-const git = require('git-last-commit');
 const portUsed = require('tcp-port-used');
 const isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
+import LastCommitInfo from './utils/lastCommitInfo';
 import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 
@@ -138,19 +137,7 @@ async function init(): Promise<State> {
 	Logger.info(chalk.bold('Misskey Core <aoi>'));
 	Logger.info('Initializing...');
 
-	// Get commit info
-	let lastCommitLogger = new Logger('LastCommit');
-	try {
-		const commit = await prominence(git).getLastCommit();
-		const shortHash: string = commit.shortHash;
-		const hash: string = commit.hash;
-		const commitDate = new Date(parseInt(commit.committedOn, 10) * 1000).toLocaleDateString('ja-JP');
-		const commitTime = new Date(parseInt(commit.committedOn, 10) * 1000).toLocaleTimeString('ja-JP');
-		lastCommitLogger.info(`${shortHash}${chalk.gray(hash.substr(shortHash.length))}`);
-		lastCommitLogger.info(`${commit.subject} ${chalk.green(`(${commitDate} ${commitTime})`)} ${chalk.blue(`<${commit.author.name}>`)}`);
-	} catch (e) {
-		lastCommitLogger.info('No commit information found');
-	}
+	await LastCommitInfo.show();
 
 	let envLogger = new Logger('Env');
 	envLogger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
