@@ -13,17 +13,17 @@ function checkDependency(serviceName: string, command: string, transform: (x: st
 		success: 0,
 		notFound: 127
 	};
-	let depsLogger = new Logger('Deps');
+	let logger = new Logger('Deps');
 	const x = exec(command, { silent: true }) as any;
 	if (x.code === code.success) {
 		let ver = transform(x.stdout);
 		if (ver != null) {
-			depsLogger.info(`${serviceName} ${ver[1]} found`);
+			logger.info(`${serviceName} ${ver[1]} found`);
 		} else {
-			depsLogger.warn(`${serviceName} not found`);
-			depsLogger.warn(`Regexp used for version check of ${serviceName} is probably messed up`);
+			logger.warn(`${serviceName} not found`);
+			logger.warn(`Regexp used for version check of ${serviceName} is probably messed up`);
 		}
 	} else if (x.code === code.notFound) {
-		depsLogger.warn(`${serviceName} not found`);
+		logger.warn(`${serviceName} not found`);
 	}
 }
