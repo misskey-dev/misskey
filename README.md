@@ -39,7 +39,7 @@ Misskey requires two domains called the primary domain and the secondary domain.
 ### reCAPTCHA
 Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
-## Setup with Docker
+## Setup with Docker :whale:
 Ensure that the working directory is the repository root directory.
 
 To create misskey image:
