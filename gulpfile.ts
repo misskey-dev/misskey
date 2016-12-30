@@ -90,9 +90,9 @@ gulp.task('build:about:docs', () => {
 	const licenses = glob.sync('./node_modules/**/LICENSE*');
 	const licenseHtml = getLicenseHtml('./LICENSE');
 	const thirdpartyLicensesHtml = licenses.map(license => getLicenseSectionHtml(license)).join('');
-	const pugs = glob.sync('./src/web/about/pages/**/*.pug');
+	const pugs = glob.sync('./docs/**/*.pug');
 	const streams = pugs.map(file => {
-		const page = file.replace('./src/web/about/pages/', '').replace('.pug', '');
+		const page = file.replace('./docs/', '').replace('.pug', '');
 		return gulp.src(file)
 			.pipe(pug({
 				locals: Object.assign({
