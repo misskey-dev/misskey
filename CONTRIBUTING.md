@@ -1,4 +1,4 @@
-# Philosphy
+# Philosophy
 Keep It Simple, Stupid.
 
 # Tag
