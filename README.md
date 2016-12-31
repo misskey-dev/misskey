@@ -78,7 +78,7 @@ Note that `$(pwd)` is the working directory.
 
 ## Contribute
 Do you have feature request or problem with Misskey?
-Please create issue to report it.
+Please create issue to report it if it is about the Misskey implementation itself.
 
 Currently Misskey is missing documents so writing documents would be appreciated.
 Pull requests are always welcome.
