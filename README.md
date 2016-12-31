@@ -76,7 +76,7 @@ We love contributions from anybody.
 ### TODO
 * More [tests](./test)!
 * More [docs](./docs)!
-* More refactorings!
+* More cleaning up code!
 
 ## License
 [The MIT License](LICENSE)
