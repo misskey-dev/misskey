@@ -15,7 +15,7 @@ Misskey is a completely open source, ultimately sophisticated new type of mini-b
 * Private chatting (messaging)
 * Free 1GB storage
 * Mobile device support (smartphone, tablet, etc)
-* Thirdparty app support
+* Thirdparty application support
 
 and more!
 
