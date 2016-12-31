@@ -5,7 +5,7 @@
 const riot = require('riot');
 document.title = 'Misskey | アプリの連携';
 require('./tags.ls');
-const boot = require('../boot.ls');
+const boot = require('../boot.js');
 
 /**
  * Boot
