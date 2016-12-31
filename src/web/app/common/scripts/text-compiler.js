@@ -1,8 +1,8 @@
 const riot = require('riot');
 
-module.exports = function(tokens, canBreak, escape) {
-	if (canBreak == null) {
-		canBreak = true;
+module.exports = function(tokens, shouldBreak, escape) {
+	if (shouldBreak == null) {
+		shouldBreak = true;
 	}
 	if (escape == null) {
 		escape = true;
@@ -17,10 +17,10 @@ module.exports = function(tokens, canBreak, escape) {
 					return token.content
 						.replace(/>/g, '&gt;')
 						.replace(/</g, '&lt;')
-						.replace(/(\r\n|\n|\r)/g, canBreak ? '<br>' : ' ');
+						.replace(/(\r\n|\n|\r)/g, shouldBreak ? '<br>' : ' ');
 				} else {
 					return token.content
-						.replace(/(\r\n|\n|\r)/g, canBreak ? '<br>' : ' ');
+						.replace(/(\r\n|\n|\r)/g, shouldBreak ? '<br>' : ' ');
 				}
 			case 'bold':
 				return '<strong>' + token.bold + '</strong>';
