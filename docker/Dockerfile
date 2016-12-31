@@ -17,12 +17,7 @@ RUN pacman -Syyu --noconfirm
 
 RUN pacman -S --noconfirm git nodejs npm mongodb redis
 
-RUN echo '#!/bin/sh'                    >> /root/misskey.sh
-RUN echo 'redis-server --daemonize yes' >> /root/misskey.sh
-RUN echo 'mongod > /dev/null &'         >> /root/misskey.sh
-RUN echo 'cd /root/misskey'             >> /root/misskey.sh
-RUN echo 'npm start'                    >> /root/misskey.sh
-RUN echo 'tail -f /dev/null'            >> /root/misskey.sh
+COPY misskey.sh /root/misskey.sh
 RUN chmod u+x /root/misskey.sh
 
 EXPOSE 80
