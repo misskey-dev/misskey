@@ -45,7 +45,7 @@ Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 Ensure that the working directory is the repository root directory.
 
 To create misskey image:
-`sudo docker build -t misskey`
+`sudo docker build -t misskey ./docker`
 
 To run misskey:
 `sudo docker run --rm -i -t -p $PORT:80 -v $(pwd):/root/misskey -v $DBPATH:/data/db misskey`
