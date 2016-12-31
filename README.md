@@ -13,7 +13,7 @@ Misskey is a completely open source, ultimately sophisticated new type of mini-b
 ## Features
 * Automatically updated timeline
 * Private chatting (messaging)
-* Free 1GB storge
+* Free 1GB storage
 * Mobile device support (smartphone, tablet, etc)
 * Thirdparty app support
 
