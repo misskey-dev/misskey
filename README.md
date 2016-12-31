@@ -19,7 +19,7 @@ Misskey is a completely open source, ultimately sophisticated new type of mini-b
 
 and more!
 
-## Build
+## Building
 1. Install *git*, *Node.js* and *npm*
 2. `git clone git://github.com/syuilo/misskey.git`
 3. `cd misskey`
