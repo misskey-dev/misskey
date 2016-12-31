@@ -7,7 +7,7 @@
 
 Welcome!
 
-Missy is a completely open source, ultimately sophisticated new type of mini-blog based SNS.
+Misskey is a completely open source, ultimately sophisticated new type of mini-blog based SNS.
 
 ![ss](./resources/ss.jpg)
 
