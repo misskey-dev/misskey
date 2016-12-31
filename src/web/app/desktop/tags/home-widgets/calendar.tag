@@ -9,21 +9,21 @@ mk-calendar-home-widget(data-special={ special })
 		div
 			p
 				| 今日:
-				b { day-p.to-fixed(1) }%
+				b { Math.floor(day-p*100)/100 }%
 			div.meter
 				div.val(style={ 'width:' + day-p + '%' })
 
 		div
 			p
 				| 今月:
-				b { month-p.to-fixed(1) }%
+				b { Math.floor(month-p*100)/100 }%
 			div.meter
 				div.val(style={ 'width:' + month-p + '%' })
 
 		div
 			p
 				| 今年:
-				b { year-p.to-fixed(1) }%
+				b { Math.floor(year-p*100)/100 }%
 			div.meter
 				div.val(style={ 'width:' + year-p + '%' })
 
