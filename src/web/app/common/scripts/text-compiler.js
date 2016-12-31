@@ -35,7 +35,9 @@ module.exports = function(tokens, shouldBreak, escape) {
 
 	if (me && me.data && me.data.nya) {
 		text = text.replace(/な/g, 'にゃ')
-			.replace(/にゃでにゃで/g, 'なでなで');
+			.replace(/ニャ/g, 'にゃ')
+			.replace(/にゃでにゃで/g, 'なでなで')
+			.replace(/ニャデニャデ/g, 'ナデナデ');
 	}
 
 	return text;
