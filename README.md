@@ -28,8 +28,7 @@ Please install these softwares.
 * **[GraphicsMagick](http://www.graphicsmagick.org/)**
 
 #### Optional
-* [Elasticsearch](https://www.elastic.co/)
-  * If omit it, Misskey use the *MongoDB* for search instead. If not, Misskey will can better search.
+* [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB
 
 ### Domains
 Misskey requires two domains called the primary domain and the secondary domain.
