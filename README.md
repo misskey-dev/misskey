@@ -1,5 +1,4 @@
 # Misskey
-
 [![][travis-badge]][travis-link]
 [![][appveyor-badge]][appveyor-link]
 [![][dependencies-badge]][dependencies-link]
