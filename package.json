@@ -44,7 +44,7 @@
     "@types/multer": "0.0.32",
     "@types/ratelimiter": "2.1.28",
     "@types/redis": "0.12.34",
-    "@types/request": "0.0.38",
+    "@types/request": "0.0.39",
     "@types/rimraf": "0.0.28",
     "@types/serve-favicon": "2.2.28",
     "@types/shelljs": "0.3.33",
