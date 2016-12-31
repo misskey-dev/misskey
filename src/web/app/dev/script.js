@@ -3,7 +3,7 @@
  */
 
 require('./tags.ls');
-const boot = require('../boot.ls');
+const boot = require('../boot.js');
 const route = require('./router.ls');
 
 /**
