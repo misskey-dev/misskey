@@ -5,7 +5,9 @@
 [![][dependencies-badge]][dependencies-link]
 [![][mit-badge]][mit]
 
-A miniblog-based SNS.
+Welcome!
+
+Missy is a completely open source, ultimately sophisticated new type of mini-blog based SNS.
 
 ![ss](./resources/ss.jpg)
 
