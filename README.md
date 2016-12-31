@@ -69,7 +69,7 @@ ex: `sudo docker run --rm -i -t -p 80:80 -v $(pwd):/root/misskey -v /data/db:/da
 
 If you want to run misskey in production mode, add `--env NODE_ENV=production` like this:
 
-`sudo docker run --rm -i -t -p 80:80 -p 27017:27017 -v $(pwd):/root/misskey -v /data/db:/data/db --env NODE_ENV=production misskey`
+`sudo docker run --rm -i -t -p 80:80 -v $(pwd):/root/misskey -v /data/db:/data/db --env NODE_ENV=production misskey`
 
 Note that $(pwd) is the working directory.
 
