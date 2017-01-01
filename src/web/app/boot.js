@@ -111,7 +111,7 @@ function fetchme(token, silent, cb) {
 	}).then(res => {
 		// When failed to authenticate user
 		if (res.status !== 200) {
-			signout();
+			return signout();
 		}
 		res.json().then(i => {
 			me = i;
