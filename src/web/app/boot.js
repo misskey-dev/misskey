@@ -11,7 +11,6 @@ Misskeyを起動します。
 
 const riot = require('riot');
 require('velocity');
-const log = require('./common/scripts/log.ls');
 const api = require('./common/scripts/api.ls');
 const signout = require('./common/scripts/signout.ls');
 const generateDefaultUserdata = require('./common/scripts/generate-default-userdata.ls');
@@ -41,19 +40,11 @@ try {
 	Storage.prototype.setItem = () => { }; // noop
 }
 
-// MAIN PROCESS
-
-log("Misskey (aoi) v:" + VERSION);
-
 // Check for Update
 checkForUpdate();
 
 // Get token from cookie
 const i = (document.cookie.match(/i=(\w+)/) || [null, null])[1];
-
-if (i != null) {
-	log("ME: " + i);
-}
 
 // ユーザーをフェッチしてコールバックする
 module.exports = callback => {
@@ -86,7 +77,6 @@ module.exports = callback => {
 					localStorage.setItem('me', JSON.stringify(me));
 				});
 			}
-			log("Fetched! Hello " + me.username + ".");
 		}
 		mixins(me);
 		const init = document.getElementById('init');
