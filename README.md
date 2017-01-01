@@ -93,7 +93,7 @@ We love contributions from anybody.
 * More cleaning up code!
 
 ## Copyright
-Misskey is open-source software released under [The MIT License](LICENSE).
+Misskey is open-source software licensed under [The MIT License](LICENSE).
 
 [mit]:                http://opensource.org/licenses/MIT
 [mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
