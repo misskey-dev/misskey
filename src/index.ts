@@ -19,7 +19,6 @@ import initdb from './db/mongodb';
 import LastCommitInfo from './utils/lastCommitInfo';
 import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
-import DependencyInfo from './utils/dependencyInfo';
 
 // Init babel
 require('babel-core/register');
@@ -137,7 +136,6 @@ async function init(): Promise<State> {
 	await LastCommitInfo.show();
 	EnvironmentInfo.show();
 	MachineInfo.show();
-	new DependencyInfo().showAll();
 
 	let configLogger = new Logger('Config');
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
