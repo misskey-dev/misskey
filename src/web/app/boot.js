@@ -108,7 +108,7 @@ function fetchme(token, silent, cb) {
 
 	// Return when not signed in
   if (token == null) {
-    done();
+    return done();
   }
 
 	// Fetch user
