@@ -1,13 +1,6 @@
-/*
-MISSKEY BOOT LOADER
-
-Misskeyを起動します。
-1. 初期化
-2. ユーザー取得(ログインしていれば)
-3. アプリケーションをマウント
-*/
-
-// LOAD DEPENDENCIES
+/**
+ * boot
+ */
 
 const riot = require('riot');
 require('velocity');
@@ -18,7 +11,9 @@ const mixins = require('./common/mixins.ls');
 const checkForUpdate = require('./common/scripts/check-for-update.ls');
 require('./common/tags.ls');
 
-// MISSKEY ENTORY POINT
+/**
+ * MISSKEY ENTORY POINT!
+ */
 
 document.domain = CONFIG.host;
 
@@ -64,26 +59,33 @@ module.exports = callback => {
 		if (cachedMe != null) {
 			localStorage.removeItem('me');
 		}
+
 		fetchme(i, false, fetched);
 	}
 
 	function fetched(me) {
 		if (me != null) {
 			riot.observable(me);
+
 			if (me.data.cache) {
 				localStorage.setItem('me', JSON.stringify(me));
+
 				me.on('updated', () => {
 					// キャッシュ更新
 					localStorage.setItem('me', JSON.stringify(me));
 				});
 			}
 		}
+
 		mixins(me);
+
 		const init = document.getElementById('init');
 		init.parentNode.removeChild(init);
+
 		const app = document.createElement('div');
 		app.setAttribute('id', 'app');
 		document.body.appendChild(app);
+
 		try {
 			callback(me);
 		} catch (e) {
@@ -113,6 +115,7 @@ function fetchme(token, silent, cb) {
 		if (res.status !== 200) {
 			return signout();
 		}
+
 		res.json().then(i => {
 			me = i;
 			me.token = token;
