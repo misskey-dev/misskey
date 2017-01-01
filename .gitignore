@@ -3,3 +3,5 @@
 /node_modules
 /built
 npm-debug.log
+*.pem
+run.bat
