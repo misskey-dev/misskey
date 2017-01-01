@@ -142,8 +142,7 @@ function fetchme(token, silent, cb) {
 	}
 
 	function init() {
-		var data, this$ = this;
-		data = generateDefaultUserdata();
+		const data = generateDefaultUserdata();
 		api(token, 'i/appdata/set', {
 			data: JSON.stringify(data)
 		}).then(() => {
