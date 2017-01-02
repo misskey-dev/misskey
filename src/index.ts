@@ -33,7 +33,6 @@ enum InitResult {
 	Failure
 }
 
-// Set process title
 process.title = 'Misskey';
 
 // Start app
