@@ -9,8 +9,6 @@ export default class {
 	}
 
 	showAll(): void {
-		this.show('Node.js', 'node -v', x => x.match(/^v(.*)\r?\n$/));
-		this.show('npm', 'npm -v', x => x.match(/^(.*)\r?\n$/));
 		this.show('MongoDB', 'mongo --version', x => x.match(/^MongoDB shell version: (.*)\r?\n$/));
 		this.show('Redis', 'redis-server --version', x => x.match(/v=([0-9\.]*)/));
 		this.show('GraphicsMagick', 'gm -version', x => x.match(/^GraphicsMagick ([0-9\.]*) .*/));
