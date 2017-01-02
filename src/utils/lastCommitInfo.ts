@@ -3,7 +3,7 @@ import * as chalk from 'chalk';
 const prominence = require('prominence');
 const git = require('git-last-commit');
 
-export default class LastCommitInfo {
+export default class {
 	static async show(): Promise<void> {
 		let logger = new Logger('LastCommit');
 		try {

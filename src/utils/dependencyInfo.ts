@@ -1,7 +1,7 @@
 import Logger from './logger';
 import { exec } from 'shelljs';
 
-export default class DependencyInfo {
+export default class {
 	logger: Logger;
 
 	constructor() {

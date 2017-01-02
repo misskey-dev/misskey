@@ -5,7 +5,7 @@ import * as chalk from 'chalk';
 /**
  * Progress bar
  */
-export default class ProgressBar extends ev.EventEmitter {
+export default class extends ev.EventEmitter {
 	public max: number;
 	public value: number;
 	public text: string;

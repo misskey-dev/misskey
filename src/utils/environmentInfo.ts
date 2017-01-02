@@ -1,6 +1,6 @@
 import Logger from './logger';
 
-export default class EnvironmentInfo {
+export default class {
 	static show(): void {
 		const env = process.env.NODE_ENV;
 		let logger = new Logger('Env');
