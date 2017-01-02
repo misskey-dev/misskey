@@ -13,7 +13,7 @@ import * as cluster from 'cluster';
 import Logger from './utils/logger';
 import * as chalk from 'chalk';
 const portUsed = require('tcp-port-used');
-const isRoot = require('is-root');
+import isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
 import initdb from './db/mongodb';
 import LastCommitInfo from './utils/lastCommitInfo';
