@@ -43,16 +43,16 @@ main();
  */
 function main(): void {
 	if (cluster.isMaster) {
-		master();
+		masterMain();
 	} else {
-		worker();
+		workerMain();
 	}
 }
 
 /**
  * Init master proccess
  */
-async function master(): Promise<void> {
+async function masterMain(): Promise<void> {
 	let initResult: InitResult;
 
 	try {
@@ -103,7 +103,7 @@ async function master(): Promise<void> {
 /**
  * Init worker proccess
  */
-function worker(): void {
+function workerMain(): void {
 	// Register config
 	global.config = config;
 
