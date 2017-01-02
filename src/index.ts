@@ -66,16 +66,16 @@ async function master(): Promise<void> {
 	}
 
 	switch (initResult) {
+		case InitResult.Success:
+			Logger.info(chalk.green('Successfully initialized :)'));
+			break;
+		case InitResult.Warn:
+			Logger.warn(chalk.yellow('Initialized with some problem(s) :|'));
+			break;
 		case InitResult.Failure:
 			Logger.error(chalk.red('Fatal error occurred during initializing :('));
 			process.exit();
 			return;
-		case InitResult.Warn:
-			Logger.warn(chalk.yellow('Initialized with some problem(s) :|'));
-			break;
-		case InitResult.Success:
-			Logger.info(chalk.green('Successfully initialized :)'));
-			break;
 	}
 
 	// Spawn workers
