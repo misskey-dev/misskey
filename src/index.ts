@@ -43,10 +43,9 @@ main();
  * Init proccess
  */
 function main(): void {
-	// Master
 	if (cluster.isMaster) {
 		master();
-	} else { // Workers
+	} else {
 		worker();
 	}
 }
