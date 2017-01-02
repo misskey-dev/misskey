@@ -17,7 +17,7 @@ Misskey is a completely open source, ultimately sophisticated new type of mini-b
 * Mobile device support (smartphone, tablet, etc)
 * Thirdparty application support
 
-and more!
+and more! You can touch with your own eyes at https://misskey.xyz/.
 
 ## Building
 1. Install *git*, *Node.js* and *npm*
