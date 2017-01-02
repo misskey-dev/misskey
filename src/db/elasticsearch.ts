@@ -12,7 +12,7 @@ client.ping({
 
 	// Undocumented params are appended to the query string
 	hello: 'elasticsearch!'
-}, error => {
+} as any, error => {
 	if (error) {
 		console.error('elasticsearch is down!');
 	}
