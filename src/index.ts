@@ -27,13 +27,10 @@ require('babel-polyfill');
 
 global.config = require('./config').default(`${__dirname}/../.config/config.yml`);
 
-/**
- * Initialize state
- */
-enum State {
-	success,
-	warn,
-	failed
+enum InitResult {
+	Success,
+	Warn,
+	Failure
 }
 
 // Set process title
@@ -58,25 +55,25 @@ function main(): void {
  * Init master proccess
  */
 async function master(): Promise<void> {
-	let state: State;
+	let initResult: InitResult;
 
 	try {
 		// initialize app
-		state = await init();
+		initResult = await init();
 	} catch (e) {
 		console.error(e);
 		process.exit(1);
 	}
 
-	switch (state) {
-		case State.failed:
+	switch (initResult) {
+		case InitResult.Failure:
 			Logger.error(chalk.red('Fatal error occurred during initializing :('));
 			process.exit();
 			return;
-		case State.warn:
+		case InitResult.Warn:
 			Logger.warn(chalk.yellow('Initialized with some problem(s) :|'));
 			break;
-		case State.success:
+		case InitResult.Success:
 			Logger.info(chalk.green('Successfully initialized :)'));
 			break;
 	}
@@ -127,7 +124,7 @@ function worker(): void {
 /**
  * Init app
  */
-async function init(): Promise<State> {
+async function init(): Promise<InitResult> {
 	let warn = false;
 
 	Logger.info('Welcome to Misskey!');
@@ -142,7 +139,7 @@ async function init(): Promise<State> {
 	let configLogger = new Logger('Config');
 	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
 		configLogger.error('Configuration not found');
-		return State.failed;
+		return InitResult.Failure;
 	}
 
 	configLogger.info('Successfully loaded');
@@ -150,13 +147,13 @@ async function init(): Promise<State> {
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
 		Logger.error('You need root privileges to listen on port below 1024 on Linux');
-		return State.failed;
+		return InitResult.Failure;
 	}
 
 	// Check if a port is being used
 	if (await portUsed.check(config.port)) {
 		Logger.error(`Port ${config.port} is already used`);
-		return State.failed;
+		return InitResult.Failure;
 	}
 
 	// Try to connect to MongoDB
@@ -167,10 +164,10 @@ async function init(): Promise<State> {
 		db.close();
 	} catch (e) {
 		mongoDBLogger.error(`${e}`);
-		return State.failed;
+		return InitResult.Failure;
 	}
 
-	return warn ? State.warn : State.success;
+	return warn ? InitResult.Warn : InitResult.Success;
 }
 
 /**
