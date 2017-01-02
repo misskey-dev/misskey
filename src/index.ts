@@ -156,7 +156,7 @@ async function init(): Promise<InitResult> {
 	// Try to connect to MongoDB
 	let mongoDBLogger = new Logger('MongoDB');
 	try {
-		const db = await initdb(config);
+		const db = await initdb();
 		mongoDBLogger.info('Successfully connected');
 		db.close();
 	} catch (e) {
