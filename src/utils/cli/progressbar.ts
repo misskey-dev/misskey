@@ -5,7 +5,7 @@ import * as chalk from 'chalk';
 /**
  * Progress bar
  */
-class ProgressBar extends ev.EventEmitter {
+export default class ProgressBar extends ev.EventEmitter {
 	public max: number;
 	public value: number;
 	public text: string;
@@ -75,8 +75,6 @@ class ProgressBar extends ev.EventEmitter {
 		return `${i} ${t}[${vs}${ps}] ${this.value}/${this.max} ${percentages}`;
 	}
 }
-
-export default ProgressBar;
 
 /**
  * Clear current line
