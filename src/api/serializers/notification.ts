@@ -7,7 +7,7 @@ import * as mongo from 'mongodb';
 import Notification from '../models/notification';
 import serializeUser from './user';
 import serializePost from './post';
-const deepcopy = require('deepcopy');
+import deepcopy = require('deepcopy');
 
 /**
  * Serialize a notification

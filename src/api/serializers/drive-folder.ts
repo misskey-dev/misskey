@@ -5,7 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import DriveFolder from '../models/drive-folder';
-const deepcopy = require('deepcopy');
+import deepcopy = require('deepcopy');
 
 /**
  * Serialize a drive folder

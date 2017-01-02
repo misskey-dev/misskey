@@ -6,7 +6,7 @@
 import * as mongo from 'mongodb';
 import DriveFile from '../models/drive-file';
 import serializeDriveTag from './drive-tag';
-const deepcopy = require('deepcopy');
+import deepcopy = require('deepcopy');
 
 /**
  * Serialize a drive file

@@ -1,7 +1,7 @@
 import Logger from './logger';
 import * as chalk from 'chalk';
-const prominence = require('prominence');
-const git = require('git-last-commit');
+import prominence = require('prominence');
+import git = require('git-last-commit');
 
 export default class {
 	static async show(): Promise<void> {

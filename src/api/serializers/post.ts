@@ -8,7 +8,7 @@ import Post from '../models/post';
 import Like from '../models/like';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
-const deepcopy = require('deepcopy');
+import deepcopy = require('deepcopy');
 
 /**
  * Serialize a post

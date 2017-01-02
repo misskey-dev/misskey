@@ -5,9 +5,8 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
-
 import * as express from 'express';
-const vhost = require('vhost');
+import vhost = require('vhost');
 
 /**
  * Init app

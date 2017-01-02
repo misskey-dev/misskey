@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as express from 'express';
-import * as ms from 'ms';
+import ms = require('ms');
 
 export default (name: string) => (req: express.Request, res: express.Response) => {
 	res.sendFile(path.resolve(`${__dirname}/app/${name}/view.html`), {

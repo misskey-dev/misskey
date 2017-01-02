@@ -7,7 +7,7 @@ import * as mongo from 'mongodb';
 import Message from '../models/messaging-message';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
-const deepcopy = require('deepcopy');
+import deepcopy = require('deepcopy');
 
 /**
  * Serialize a message

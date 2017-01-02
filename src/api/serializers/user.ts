@@ -4,7 +4,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-const deepcopy = require('deepcopy');
+import deepcopy = require('deepcopy');
 import User from '../models/user';
 import Following from '../models/following';
 import getFriends from '../common/get-friends';

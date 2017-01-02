@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-const deepcopy = require('deepcopy');
+import deepcopy = require('deepcopy');
 
 /**
  * Serialize a signin record

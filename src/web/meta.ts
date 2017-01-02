@@ -1,5 +1,5 @@
 import * as express from 'express';
-const git = require('git-last-commit');
+import git = require('git-last-commit');
 
 module.exports = async (req: express.Request, res: express.Response) => {
 	// Get commit info

@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as bcrypt from 'bcrypt';
 import rndstr from 'rndstr';
-const recaptcha = require('recaptcha-promise');
+import recaptcha = require('recaptcha-promise');
 import User from '../models/user';
 import { validateUsername } from '../models/user';
 import serialize from '../serializers/user';

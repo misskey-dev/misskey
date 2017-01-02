@@ -1,8 +1,8 @@
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
 import * as gm from 'gm';
-const fileType = require('file-type');
-const prominence = require('prominence');
+import fileType = require('file-type');
+import prominence = require('prominence');
 import DriveFile from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';

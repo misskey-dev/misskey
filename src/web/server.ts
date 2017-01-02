@@ -2,7 +2,7 @@
  * Web Server
  */
 
-import * as ms from 'ms';
+import ms = require('ms');
 
 // express modules
 import * as express from 'express';
