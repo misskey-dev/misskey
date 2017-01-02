@@ -76,8 +76,7 @@ async function masterMain(): Promise<void> {
 			return;
 	}
 
-	// Spawn workers
-	spawn(() => {
+	spawnWorkers(() => {
 		Logger.info(chalk.bold.green(`Now listening on port ${config.port}`));
 
 		// Listen new workers
@@ -168,10 +167,7 @@ async function init(): Promise<InitResult> {
 	return warn ? InitResult.Warn : InitResult.Success;
 }
 
-/**
- * Spawn workers
- */
-function spawn(callback: any): void {
+function spawnWorkers(callback: any): void {
 	// Count the machine's CPUs
 	const cpuCount = os.cpus().length;
 
