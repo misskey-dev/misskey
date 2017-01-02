@@ -167,7 +167,7 @@ async function init(): Promise<InitResult> {
 	return warn ? InitResult.Warn : InitResult.Success;
 }
 
-function spawnWorkers(callback: any): void {
+function spawnWorkers(onComplete: any): void {
 	// Count the machine's CPUs
 	const cpuCount = os.cpus().length;
 
@@ -185,7 +185,7 @@ function spawnWorkers(callback: any): void {
 
 	// On all workers started
 	progress.on('complete', () => {
-		callback();
+		onComplete();
 	});
 }
 
