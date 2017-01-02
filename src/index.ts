@@ -160,7 +160,7 @@ async function init(): Promise<InitResult> {
 		mongoDBLogger.info('Successfully connected');
 		db.close();
 	} catch (e) {
-		mongoDBLogger.error(`${e}`);
+		mongoDBLogger.error(e);
 		return InitResult.Failure;
 	}
 
