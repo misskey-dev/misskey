@@ -98,7 +98,7 @@
     "livescript": "1.5.0",
     "mime-types": "2.1.13",
     "mocha": "3.2.0",
-    "mongodb": "2.2.16",
+    "mongodb": "2.2.19",
     "ms": "0.7.2",
     "multer": "1.2.1",
     "nprogress": "0.2.0",
