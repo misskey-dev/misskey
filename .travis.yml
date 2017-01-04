@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - "7.3.0"
+services:
+  - mongodb
+  - redis-server
 before_script:
   - "mkdir -p ./.config && cp ./.ci-files/config.yml ./.config"
 env:
