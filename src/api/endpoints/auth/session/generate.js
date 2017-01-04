@@ -8,6 +8,36 @@ import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 
 /**
+ * @swagger
+ * /auth/session/generate:
+ *   post:
+ *     summary: Generate a session
+ *     parameters:
+ *       -
+ *         name: app_secret
+ *         in: formData
+ *         required: true
+ *         type: string
+ *         
+ *     responses:
+ *       200:
+ *         description: OK
+ *         schema:
+ *           type: object
+ *           properties:
+ *             token:
+ *               type: string
+ *               description: API Token
+ *             url:
+ *               type: string
+ *               description: Callback URL
+ *       400:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Generate a session
  *
  * @param {Object} params
