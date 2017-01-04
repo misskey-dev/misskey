@@ -24,7 +24,7 @@
     "@types/browserify": "12.0.30",
     "@types/chalk": "0.4.31",
     "@types/compression": "0.0.33",
-    "@types/cors": "0.0.33",
+    "@types/cors": "2.8.0",
     "@types/elasticsearch": "5.0.9",
     "@types/escape-html": "0.0.19",
     "@types/event-stream": "3.3.30",
