@@ -3,7 +3,7 @@ module.exports = (date) ->
 
 	text =
 		date.get-full-year! + \年 +
-		date.get-month!     + \月 +
+		date.get-month! + 1 + \月 +
 		date.get-date!      + \日 +
 		' ' +
 		date.get-hours!     + \時 +
