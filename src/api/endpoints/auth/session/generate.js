@@ -15,6 +15,7 @@ import AuthSess from '../../../models/auth-session';
  *     parameters:
  *       -
  *         name: app_secret
+ *         description: App Secret
  *         in: formData
  *         required: true
  *         type: string
