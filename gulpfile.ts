@@ -149,6 +149,7 @@ const aliasifyConfig = {
 		'chart.js': './node_modules/chart.js/src/chart.js',
 		'textarea-caret-position': './node_modules/textarea-caret/index.js',
 		'misskey-text': './src/common/text/index.js',
+		'nyaize': './node_modules/nyaize/built/index.js',
 		'strength.js': './node_modules/syuilo-password-strength/strength.js',
 		'cropper': './node_modules/cropperjs/dist/cropper.js',
 		'Sortable': './node_modules/sortablejs/Sortable.js',
