@@ -11,7 +11,7 @@ script.
 
 	@absolute =
 		@time.get-full-year! + \年 +
-		@time.get-month!     + \月 +
+		@time.get-month! + 1 + \月 +
 		@time.get-date!      + \日 +
 		' ' +
 		@time.get-hours!     + \時 +
