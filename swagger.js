@@ -43,7 +43,7 @@ options.apis = files.map(c => {return `${apiRoot}/${c}`;});
 
 if(fs.existsSync('.config/config.yml')){
   var config = yaml.safeLoad(fs.readFileSync('./.config/config.yml', 'utf8'));
-  options.swaggerDefinition.host = config.url;
+  options.swaggerDefinition.host = `api.${config.url}`;
   options.swaggerDefinition.schemes = config.https.enable ? ['https'] : ['http'];
 }
 
