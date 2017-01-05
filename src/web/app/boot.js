@@ -39,7 +39,7 @@ try {
 checkForUpdate();
 
 // Get token from cookie
-const i = (document.cookie.match(/i=(\w+)/) || [null, null])[1];
+const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1];
 
 // ユーザーをフェッチしてコールバックする
 module.exports = callback => {

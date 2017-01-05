@@ -9,7 +9,7 @@ class Connection
 		@event = riot.observable!
 		@me = me
 		host = CONFIG.api.url.replace \http \ws
-		@socket = new ReconnectingWebSocket "#{host}/messaging?otherparty=#{otherparty}"
+		@socket = new ReconnectingWebSocket "#{host}/messaging?i=#{me.token}&otherparty=#{otherparty}"
 
 		@socket.add-event-listener \open @on-open
 		@socket.add-event-listener \message @on-message
