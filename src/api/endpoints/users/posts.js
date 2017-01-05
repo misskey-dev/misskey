@@ -19,13 +19,13 @@ module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'user_id' parameter
-	const userId = params.user_id;
+	let userId = params.user_id;
 	if (userId === undefined || userId === null || userId === '') {
 		userId = null;
 	}
 
 	// Get 'username' parameter
-	const username = params.username;
+	let username = params.username;
 	if (username === undefined || username === null || username === '') {
 		username = null;
 	}
