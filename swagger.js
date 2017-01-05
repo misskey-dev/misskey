@@ -7,6 +7,9 @@ const yaml = require('js-yaml');
 const apiRoot = './src/api/endpoints';
 const files = [
   'users.js',
+  //auth
+  'auth/accept.js',
+  //auth/session
   'auth/session/generate.js',
   'auth/session/show.js',
   'auth/session/userkey.js',

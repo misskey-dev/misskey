@@ -8,6 +8,29 @@ import AuthSess from '../../models/auth-session';
 import Userkey from '../../models/userkey';
 
 /**
+ * @swagger
+ * /auth/accept:
+ *   post:
+ *     summary: Accept a session
+ *     parameters:
+ *       - $ref: "#/parameters/ShouldSecureKey"
+ *       - 
+ *         name: token
+ *         description: Session Token
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       204:
+ *         description: OK
+ *       
+ *       default:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Accept
  *
  * @param {Object} params
