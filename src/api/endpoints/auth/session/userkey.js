@@ -22,7 +22,7 @@ import serialize from '../../../serializers/user';
  *         type: string
  *       -
  *         name: token
- *         description: API Token
+ *         description: Session Token
  *         in: formData
  *         required: true
  *         type: string

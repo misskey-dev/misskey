@@ -34,7 +34,7 @@ import serialize from '../../../serializers/auth-session';
  *               description: Application ID
  *             token:
  *               type: string
- *               description: API Token
+ *               description: Session Token
  *             user_id:
  *               type: string
  *               description: de

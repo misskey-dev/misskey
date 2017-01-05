@@ -28,10 +28,10 @@ import AuthSess from '../../../models/auth-session';
  *           properties:
  *             token:
  *               type: string
- *               description: API Token
+ *               description: Session Token
  *             url:
  *               type: string
- *               description: Callback URL
+ *               description: Authentication form's URL
  *       400:
  *         description: Failed
  *         schema:
