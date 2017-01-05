@@ -32,7 +32,7 @@ import AuthSess from '../../../models/auth-session';
  *             url:
  *               type: string
  *               description: Authentication form's URL
- *       400:
+ *       default:
  *         description: Failed
  *         schema:
  *           $ref: "#/definitions/Error"

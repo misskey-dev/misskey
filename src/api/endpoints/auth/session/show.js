@@ -40,7 +40,7 @@ import serialize from '../../../serializers/auth-session';
  *               description: de
  *             app:
  *               $ref: "#/definitions/Application"
- *       400:
+ *       default:
  *         description: Failed
  *         schema:
  *           $ref: "#/definitions/Error"

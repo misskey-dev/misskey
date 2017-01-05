@@ -38,7 +38,7 @@ import serialize from '../../../serializers/user';
  *               description: User Key
  *             user:
  *               $ref: "#/definitions/User"
- *       400:
+ *       default:
  *         description: Failed
  *         schema:
  *           $ref: "#/definitions/Error"
