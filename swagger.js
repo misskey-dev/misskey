@@ -28,6 +28,29 @@ const defaultSwagger = {
   "produces": [
     "application/json"
   ],
+
+  "responses": {
+    "ShouldSecureKey": {
+      "name": "i",
+      "description": "secure key",
+      "in": "formData",
+      "required": true,
+      "type": "string"
+    },
+    "SecureKey": {
+      "name": "i",
+      "description": "secure key",
+      "in": "formData",
+      "type": "string"
+    },
+    "NormalKey": {
+      "name": "_userkey",
+      "description": "normal key",
+      "in": "formData",
+      "type": "string"
+    }
+  },
+
   "definitions": {
     "Error": {
       "type": "object",
@@ -173,8 +196,6 @@ const defaultSwagger = {
       }
     }
   },
-  "responses": {},
-  "parameters": {},
   "securityDefinitions": {},
   "tags": []
 };
