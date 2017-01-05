@@ -20,10 +20,14 @@ export interface IAuthContext {
 	isSecure: boolean;
 }
 
-export default (req: express.Request) =>
-	new Promise<IAuthContext>(async (resolve, reject) => {
-	const token = req.body['i'];
-	if (token) {
+export default (req: express.Request) => new Promise<IAuthContext>(async (resolve, reject) => {
+	const token = req.body['i'] || req.body['_userkey']; // そのうち_userkeyは削除
+
+	if (token == null) {
+		return resolve({ app: null, user: null, isSecure: false });
+	}
+
+	if (token[0] == '!') {
 		const user = await User
 			.findOne({ token: token });
 
@@ -36,12 +40,9 @@ export default (req: express.Request) =>
 			user: user,
 			isSecure: true
 		});
-	}
-
-	const userkey = req.headers['userkey'] || req.body['_userkey'];
-	if (userkey) {
+	} else {
 		const userkeyDoc = await Userkey.findOne({
-			key: userkey
+			key: token
 		});
 
 		if (userkeyDoc === null) {
@@ -56,6 +57,4 @@ export default (req: express.Request) =>
 
 		return resolve({ app: app, user: user, isSecure: false });
 	}
-
-	return resolve({ app: null, user: null, isSecure: false });
 });
