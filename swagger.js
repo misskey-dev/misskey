@@ -8,6 +8,7 @@ const apiRoot = './src/api/endpoints';
 const files = [
   'users.js',
   'auth/session/generate.js',
+  'auth/session/show.js',
   'auth/session/userkey.js',
 ];
 
@@ -193,6 +194,4 @@ if(fs.existsSync('.config/config.yml')){
 var swaggerSpec = swaggerJSDoc(options);
 
 fs.writeFileSync('api-docs.json', JSON.stringify(swaggerSpec));
-
-console.log(JSON.stringify(swaggerSpec));
 

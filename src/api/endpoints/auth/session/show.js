@@ -7,6 +7,46 @@ import AuthSess from '../../../models/auth-session';
 import serialize from '../../../serializers/auth-session';
 
 /**
+ * @swagger
+ * /auth/session/show:
+ *   post:
+ *     summary: Show a session information
+ *     parameters:
+ *       -
+ *         name: token
+ *         description: API Token
+ *         in: formData
+ *         required: true
+ *         type: string
+ *         
+ *     responses:
+ *       200:
+ *         description: OK
+ *         schema: 
+ *           type: object
+ *           properties:
+ *             created_at:
+ *               type: string
+ *               format: date
+ *               description: de
+ *             app_id:
+ *               type: string
+ *               description: Application ID
+ *             token:
+ *               type: string
+ *               description: API Token
+ *             user_id:
+ *               type: string
+ *               description: de
+ *             app:
+ *               $ref: "#/definitions/Application"
+ *       400:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Show a session
  *
  * @param {Object} params
