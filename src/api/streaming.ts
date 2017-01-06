@@ -68,7 +68,7 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 			});
 
 			if (accessToken == null) {
-				return reject('invalid token');
+				return reject('invalid signature');
 			}
 
 			// Fetch user

@@ -47,7 +47,7 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 		});
 
 		if (accessToken === null) {
-			return reject('invalid token');
+			return reject('invalid signature');
 		}
 
 		const app = await App
