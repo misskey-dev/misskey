@@ -7,7 +7,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import App from '../models/app';
 import User from '../models/user';
-import Userkey from '../models/userkey';
+import AccessToken from '../models/access-token';
 
 /**
  * Serialize an app
@@ -71,7 +71,7 @@ export default (
 
 	if (me) {
 		// 既に連携しているか
-		const exist = await Userkey.count({
+		const exist = await AccessToken.count({
 			app_id: _app.id,
 			user_id: me,
 		}, {

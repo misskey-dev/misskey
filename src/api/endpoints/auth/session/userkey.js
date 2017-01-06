@@ -5,7 +5,7 @@
  */
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
-import Userkey from '../../../models/userkey';
+import AccessToken from '../../../models/access-token';
 import serialize from '../../../serializers/user';
 
 /**
@@ -53,8 +53,8 @@ module.exports = (params) =>
 		return rej('this session is not allowed yet');
 	}
 
-	// Lookup userkey
-	const userkey = await Userkey.findOne({
+	// Lookup access token
+	const accessToken = await AccessToken.findOne({
 		app_id: app._id,
 		user_id: session.user_id
 	});
@@ -66,7 +66,7 @@ module.exports = (params) =>
 
 	// Response
 	res({
-		userkey: userkey.key,
+		access_token: accessToken.token,
 		user: await serialize(session.user_id, null, {
 			detail: true
 		})

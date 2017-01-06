@@ -1,7 +1,7 @@
 import * as express from 'express';
 import App from './models/app';
 import User from './models/user';
-import Userkey from './models/userkey';
+import AccessToken from './models/access-token';
 import isNativeToken from './common/is-native-token';
 
 export interface IAuthContext {
@@ -42,19 +42,19 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 			isSecure: true
 		});
 	} else {
-		const userkeyDoc = await Userkey.findOne({
+		const accessToken = await AccessToken.findOne({
 			hash: token
 		});
 
-		if (userkeyDoc === null) {
-			return reject('invalid userkey');
+		if (accessToken === null) {
+			return reject('invalid token');
 		}
 
 		const app = await App
-			.findOne({ _id: userkeyDoc.app_id });
+			.findOne({ _id: accessToken.app_id });
 
 		const user = await User
-			.findOne({ _id: userkeyDoc.user_id });
+			.findOne({ _id: accessToken.user_id });
 
 		return resolve({ app: app, user: user, isSecure: false });
 	}

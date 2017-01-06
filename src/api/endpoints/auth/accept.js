@@ -7,7 +7,7 @@ import rndstr from 'rndstr';
 const crypto = require('crypto');
 import App from '../../models/app';
 import AuthSess from '../../models/auth-session';
-import Userkey from '../../models/userkey';
+import AccessToken from '../../models/access-token';
 
 /**
  * Accept
@@ -20,24 +20,24 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'token' parameter
-	const token = params.token;
-	if (token == null) {
+	const sesstoken = params.token;
+	if (sesstoken == null) {
 		return rej('token is required');
 	}
 
 	// Fetch token
 	const session = await AuthSess
-		.findOne({ token: token });
+		.findOne({ token: sesstoken });
 
 	if (session === null) {
 		return rej('session not found');
 	}
 
-	// Generate userkey
-	const key = rndstr('a-zA-Z0-9', 32);
+	// Generate access token
+	const token = rndstr('a-zA-Z0-9', 32);
 
-	// Fetch exist userkey
-	const exist = await Userkey.findOne({
+	// Fetch exist access token
+	const exist = await AccessToken.findOne({
 		app_id: session.app_id,
 		user_id: user._id,
 	});
@@ -50,15 +50,15 @@ module.exports = (params, user) =>
 
 		// Generate Hash
 		const sha512 = crypto.createHash('sha512');
-		sha512.update(key + app.secret);
+		sha512.update(token + app.secret);
 		const hash = sha512.digest('hex');
 
-		// Insert userkey doc
-		await Userkey.insert({
+		// Insert access token doc
+		await AccessToken.insert({
 			created_at: new Date(),
 			app_id: session.app_id,
 			user_id: user._id,
-			key: key,
+			token: token,
 			hash: hash
 		});
 	}

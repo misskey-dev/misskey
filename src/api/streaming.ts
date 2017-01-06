@@ -2,7 +2,7 @@ import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import User from './models/user';
-import Userkey from './models/userkey';
+import AccessToken from './models/access-token';
 import isNativeToken from './common/is-native-token';
 
 import homeStream from './stream/home';
@@ -63,18 +63,18 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 
 			resolve(user);
 		} else {
-			const userkey = await Userkey.findOne({
+			const accessToken = await AccessToken.findOne({
 				hash: token
 			});
 
-			if (userkey == null) {
-				return reject('invalid userkey');
+			if (accessToken == null) {
+				return reject('invalid token');
 			}
 
 			// Fetch user
 			// SELECT _id
 			const user = await User
-				.findOne({ _id: userkey.user_id }, {
+				.findOne({ _id: accessToken.user_id }, {
 					_id: true
 				});
 
