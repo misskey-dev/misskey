@@ -16,7 +16,7 @@ export interface IAuthContext {
 	user: any;
 
 	/**
-	 * Weather if the request is via the (Misskey Web Client or user direct) or not
+	 * Weather if the request is via the User-Native Token or not
 	 */
 	isSecure: boolean;
 }
