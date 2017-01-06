@@ -64,7 +64,7 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 			resolve(user);
 		} else {
 			const userkey = await Userkey.findOne({
-				key: token
+				hash: token
 			});
 
 			if (userkey == null) {

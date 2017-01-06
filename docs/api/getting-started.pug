@@ -70,5 +70,7 @@ block content
 				| 次に、<code>#{api_url}/auth/session/userkey</code>へ<code>app_secret</code>としてApp Secretを、<code>token</code>としてセッションのトークンをパラメータとして付与したリクエストを送信してください。
 				br
 				| 上手くいけば、認証したユーザーのアクセストークンがレスポンスとして取得できます。おめでとうございます！
+			p
+				| 以降アクセストークンは、<strong>ユーザーのアクセストークン+アプリのシークレットキーをsha512したもの</strong>として扱います。
 
 	p アクセストークンを取得できたら、あとは簡単です。REST APIなら、リクエストにアクセストークンを<code>i</code>としてパラメータに含めるだけです。

@@ -43,7 +43,7 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 		});
 	} else {
 		const userkeyDoc = await Userkey.findOne({
-			key: token
+			hash: token
 		});
 
 		if (userkeyDoc === null) {

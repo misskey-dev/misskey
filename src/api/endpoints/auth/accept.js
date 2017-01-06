@@ -4,6 +4,8 @@
  * Module dependencies
  */
 import rndstr from 'rndstr';
+const crypto = require('crypto');
+import App from '../../models/app';
 import AuthSess from '../../models/auth-session';
 import Userkey from '../../models/userkey';
 
@@ -41,12 +43,23 @@ module.exports = (params, user) =>
 	});
 
 	if (exist === null) {
+		// Lookup app
+		const app = await App.findOne({
+			app_id: session.app_id
+		});
+
+		// Generate Hash
+		const sha512 = crypto.createHash('sha512');
+		sha512.update(key + app.secret);
+		const hash = sha512.digest('hex');
+
 		// Insert userkey doc
 		await Userkey.insert({
 			created_at: new Date(),
 			app_id: session.app_id,
 			user_id: user._id,
-			key: key
+			key: key,
+			hash: hash
 		});
 	}
 
