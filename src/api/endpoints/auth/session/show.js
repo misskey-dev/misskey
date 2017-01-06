@@ -27,7 +27,7 @@ import serialize from '../../../serializers/auth-session';
  *           properties:
  *             created_at:
  *               type: string
- *               format: date
+ *               format: date-time
  *               description: Date and time of the session creation
  *             app_id:
  *               type: string

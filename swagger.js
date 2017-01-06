@@ -99,11 +99,12 @@ const defaultSwagger = {
         },
         "birthday": {
           "type": "string",
+          "format": "date",
           "description": "誕生日"
         },
         "created_at": {
           "type": "string",
-          "format": "date",
+          "format": "date-time",
           "description": "アカウント作成日時"
         },
         "drive_capacity": {
@@ -161,7 +162,7 @@ const defaultSwagger = {
       "properties": {
         "created_at": {
           "type": "string",
-          "format": "date",
+          "format": "date-time",
           "description": "アプリケーションの作成日時"
         },
         "user_id": {
