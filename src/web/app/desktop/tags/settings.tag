@@ -41,6 +41,9 @@ mk-settings
 			label
 				p 自己紹介
 				textarea@account-bio { I.bio }
+			label
+				p 誕生日
+				input@account-birthday(type='date', value={ I.birthday })
 			button.style-primary(onclick={ update-account }) 保存
 
 		section.web(show={ page == 'web' })
@@ -236,6 +239,7 @@ script.
 			name: @refs.account-name.value
 			location: @refs.account-location.value
 			bio: @refs.account-bio.value
+			birthday: @refs.account-birthday.value
 		.then (i) ~>
 			@update-i i
 			alert \ok
