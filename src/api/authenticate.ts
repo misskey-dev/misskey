@@ -1,7 +1,8 @@
 import * as express from 'express';
 import App from './models/app';
 import User from './models/user';
-import Userkey from './models/userkey';
+import AccessToken from './models/access-token';
+import isNativeToken from './common/is-native-token';
 
 export interface IAuthContext {
 	/**
@@ -20,10 +21,14 @@ export interface IAuthContext {
 	isSecure: boolean;
 }
 
-export default (req: express.Request) =>
-	new Promise<IAuthContext>(async (resolve, reject) => {
+export default (req: express.Request) => new Promise<IAuthContext>(async (resolve, reject) => {
 	const token = req.body['i'];
-	if (token) {
+
+	if (token == null) {
+		return resolve({ app: null, user: null, isSecure: false });
+	}
+
+	if (isNativeToken(token)) {
 		const user = await User
 			.findOne({ token: token });
 
@@ -36,26 +41,21 @@ export default (req: express.Request) =>
 			user: user,
 			isSecure: true
 		});
-	}
-
-	const userkey = req.headers['userkey'] || req.body['_userkey'];
-	if (userkey) {
-		const userkeyDoc = await Userkey.findOne({
-			key: userkey
+	} else {
+		const accessToken = await AccessToken.findOne({
+			hash: token
 		});
 
-		if (userkeyDoc === null) {
-			return reject('invalid userkey');
+		if (accessToken === null) {
+			return reject('invalid signature');
 		}
 
 		const app = await App
-			.findOne({ _id: userkeyDoc.app_id });
+			.findOne({ _id: accessToken.app_id });
 
 		const user = await User
-			.findOne({ _id: userkeyDoc.user_id });
+			.findOne({ _id: accessToken.user_id });
 
 		return resolve({ app: app, user: user, isSecure: false });
 	}
-
-	return resolve({ app: null, user: null, isSecure: false });
 });

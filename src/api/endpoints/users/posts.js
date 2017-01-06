@@ -19,9 +19,19 @@ module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'user_id' parameter
-	const userId = params.user_id;
-	if (userId === undefined || userId === null) {
-		return rej('user_id is required');
+	let userId = params.user_id;
+	if (userId === undefined || userId === null || userId === '') {
+		userId = null;
+	}
+
+	// Get 'username' parameter
+	let username = params.username;
+	if (username === undefined || username === null || username === '') {
+		username = null;
+	}
+
+	if (userId === null && username === null) {
+		return rej('user_id or username is required');
 	}
 
 	// Get 'with_replies' parameter
@@ -62,9 +72,9 @@ module.exports = (params, me) =>
 	}
 
 	// Lookup user
-	const user = await User.findOne({
-		_id: new mongo.ObjectID(userId)
-	});
+	const user = userId !== null
+		? await User.findOne({ _id: new mongo.ObjectID(userId) })
+		: await User.findOne({ username_lower: username.toLowerCase() });
 
 	if (user === null) {
 		return rej('user not found');

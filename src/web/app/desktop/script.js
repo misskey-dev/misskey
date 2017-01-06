@@ -32,11 +32,6 @@ boot(me => {
 	// Register mixins
 	mixins(me);
 
-	// Debug
-	if (me != null && me.data.debug) {
-		riot.mount(document.body.appendChild(document.createElement('mk-log-window')));
-	}
-
 	// Start routing
 	route(me);
 });

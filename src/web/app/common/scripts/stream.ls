@@ -9,13 +9,12 @@ module.exports = (me) ~>
 	state-ev = riot.observable!
 	event = riot.observable!
 
-	socket = new ReconnectingWebSocket CONFIG.api.url.replace \http \ws
+	host = CONFIG.api.url.replace \http \ws
+	socket = new ReconnectingWebSocket "#{host}?i=#{me.token}"
 
 	socket.onopen = ~>
 		state := \connected
 		state-ev.trigger \connected
-		socket.send JSON.stringify do
-			i: me.token
 
 	socket.onclose = ~>
 		state := \reconnecting

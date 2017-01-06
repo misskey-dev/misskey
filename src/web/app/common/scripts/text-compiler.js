@@ -1,4 +1,5 @@
 const riot = require('riot');
+const nyaize = require('nyaize').default;
 
 module.exports = function(tokens, shouldBreak, escape) {
 	if (shouldBreak == null) {
@@ -34,10 +35,7 @@ module.exports = function(tokens, shouldBreak, escape) {
 	}).join('');
 
 	if (me && me.data && me.data.nya) {
-		text = text.replace(/な/g, 'にゃ')
-			.replace(/ニャ/g, 'にゃ')
-			.replace(/にゃでにゃで/g, 'なでなで')
-			.replace(/ニャデニャデ/g, 'ナデナデ');
+		text = nyaize(text);
 	}
 
 	return text;
