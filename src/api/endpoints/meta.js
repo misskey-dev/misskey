@@ -3,7 +3,8 @@
 /**
  * Module dependencies
  */
-import Git from 'nodegit';
+import prominence from 'prominence';
+import git from 'git-last-commit';
 
 /**
  * Show core info
@@ -14,11 +15,11 @@ import Git from 'nodegit';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	const repository = await Git.Repository.open(__dirname + '/../../');
+	const commit = await prominence(git).getLastCommit();
 
 	res({
 		maintainer: config.maintainer,
-		commit: (await repository.getHeadCommit()).sha(),
+		commit: commit.shortHash,
 		secure: config.https.enable
 	});
 });
