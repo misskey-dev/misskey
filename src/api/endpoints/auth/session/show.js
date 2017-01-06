@@ -14,7 +14,7 @@ import serialize from '../../../serializers/auth-session';
  *     parameters:
  *       -
  *         name: token
- *         description: API Token
+ *         description: Session Token
  *         in: formData
  *         required: true
  *         type: string
@@ -28,7 +28,7 @@ import serialize from '../../../serializers/auth-session';
  *             created_at:
  *               type: string
  *               format: date
- *               description: de
+ *               description: Date and time of the session creation
  *             app_id:
  *               type: string
  *               description: Application ID
@@ -37,7 +37,7 @@ import serialize from '../../../serializers/auth-session';
  *               description: Session Token
  *             user_id:
  *               type: string
- *               description: de
+ *               description: ID of user who create the session
  *             app:
  *               $ref: "#/definitions/Application"
  *       default:

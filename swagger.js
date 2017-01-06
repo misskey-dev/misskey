@@ -23,7 +23,8 @@ const defaultSwagger = {
   },
   "host": "api.misskey.local",
   "schemes": [
-    "http"
+    "http",
+    "ws"
   ],
   "consumes": [
     "application/x-www-form-urlencoded"
@@ -33,24 +34,21 @@ const defaultSwagger = {
   ],
 
   "responses": {
-    "ShouldSecureKey": {
+    "AccessToken": {
       "name": "i",
-      "description": "secure key",
+      "description": "Access Token",
       "in": "formData",
       "required": true,
       "type": "string"
     },
-    "SecureKey": {
+
+    "NativeToken": {
       "name": "i",
-      "description": "secure key",
+      "description": "Native Access Token",
       "in": "formData",
-      "type": "string"
-    },
-    "NormalKey": {
-      "name": "_userkey",
-      "description": "normal key",
-      "in": "formData",
-      "type": "string"
+      "required": true,
+      "type": "string",
+      "pattern": "^\!.+"
     }
   },
 
@@ -212,7 +210,9 @@ options.apis = files.map(c => {return `${apiRoot}/${c}`;});
 if(fs.existsSync('.config/config.yml')){
   var config = yaml.safeLoad(fs.readFileSync('./.config/config.yml', 'utf8'));
   options.swaggerDefinition.host = `api.${config.url}`;
-  options.swaggerDefinition.schemes = config.https.enable ? ['https'] : ['http'];
+  options.swaggerDefinition.schemes = config.https.enable ? 
+                                      ['https', 'wss'] : 
+                                      ['http', 'ws'];
 }
 
 var swaggerSpec = swaggerJSDoc(options);

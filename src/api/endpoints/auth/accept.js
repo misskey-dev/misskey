@@ -15,7 +15,7 @@ import AccessToken from '../../models/access-token';
  *   post:
  *     summary: Accept a session
  *     parameters:
- *       - $ref: "#/parameters/ShouldSecureKey"
+ *       - $ref: "#/parameters/NativeToken"
  *       - 
  *         name: token
  *         description: Session Token
