@@ -6,7 +6,7 @@ const yaml = require('js-yaml');
 
 const apiRoot = './src/api/endpoints';
 const files = [
-  'users.js',
+  'meta.js',
   //app
   'app/show.js',
   'app/create.js',
@@ -217,7 +217,7 @@ options.apis = files.map(c => {return `${apiRoot}/${c}`;});
 
 if(fs.existsSync('.config/config.yml')){
   var config = yaml.safeLoad(fs.readFileSync('./.config/config.yml', 'utf8'));
-  options.swaggerDefinition.host = `api.${config.url}`;
+  options.swaggerDefinition.host = `api.${config.url.match(/\:\/\/(.+)$/)[1]}`;
   options.swaggerDefinition.schemes = config.https.enable ? 
                                       ['https'] : 
                                       ['http'];
