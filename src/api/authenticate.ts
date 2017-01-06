@@ -22,7 +22,7 @@ export interface IAuthContext {
 }
 
 export default (req: express.Request) => new Promise<IAuthContext>(async (resolve, reject) => {
-	const token = req.body['i'] || req.body['_userkey']; // そのうち_userkeyは削除
+	const token = req.body['i'];
 
 	if (token == null) {
 		return resolve({ app: null, user: null, isSecure: false });
