@@ -7,6 +7,8 @@ const yaml = require('js-yaml');
 const apiRoot = './src/api/endpoints';
 const files = [
   'users.js',
+  //app
+  'app/show.js',
   //auth
   'auth/accept.js',
   //auth/session
@@ -21,10 +23,9 @@ const defaultSwagger = {
     "title": "Misskey API",
     "version": "aoi"
   },
-  "host": "api.misskey.local",
+  "host": "api.misskey.xyz",
   "schemes": [
-    "http",
-    "ws"
+    "https"
   ],
   "consumes": [
     "application/x-www-form-urlencoded"
@@ -33,7 +34,7 @@ const defaultSwagger = {
     "application/json"
   ],
 
-  "responses": {
+  "parameters": {
     "AccessToken": {
       "name": "i",
       "description": "Access Token",
@@ -171,6 +172,10 @@ const defaultSwagger = {
           "type": "string",
           "description": "アプリケーションの名前"
         },
+        "name_id": {
+          "type": "string",
+          "description": "アプリケーションのユニークな名前"
+        },
         "description": {
           "type": "string",
           "description": "アプリケーションの説明"
@@ -211,8 +216,8 @@ if(fs.existsSync('.config/config.yml')){
   var config = yaml.safeLoad(fs.readFileSync('./.config/config.yml', 'utf8'));
   options.swaggerDefinition.host = `api.${config.url}`;
   options.swaggerDefinition.schemes = config.https.enable ? 
-                                      ['https', 'wss'] : 
-                                      ['http', 'ws'];
+                                      ['https'] : 
+                                      ['http'];
 }
 
 var swaggerSpec = swaggerJSDoc(options);
