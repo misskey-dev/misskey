@@ -2,6 +2,7 @@ import * as express from 'express';
 import App from './models/app';
 import User from './models/user';
 import Userkey from './models/userkey';
+import isNativeToken from './common/is-native-token';
 
 export interface IAuthContext {
 	/**
@@ -27,7 +28,7 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 		return resolve({ app: null, user: null, isSecure: false });
 	}
 
-	if (token[0] == '!') {
+	if (isNativeToken(token)) {
 		const user = await User
 			.findOne({ token: token });
 

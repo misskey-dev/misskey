@@ -3,6 +3,7 @@ import * as websocket from 'websocket';
 import * as redis from 'redis';
 import User from './models/user';
 import Userkey from './models/userkey';
+import isNativeToken from './common/is-native-token';
 
 import homeStream from './stream/home';
 import messagingStream from './stream/messaging';
@@ -50,7 +51,7 @@ module.exports = (server: http.Server) => {
 
 function authenticate(connection: websocket.connection, token: string): Promise<any> {
 	return new Promise(async (resolve, reject) => {
-		if (token[0] == '!') {
+		if (isNativeToken(token)) {
 			// Fetch user
 			// SELECT _id
 			const user = await User
