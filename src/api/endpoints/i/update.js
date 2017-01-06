@@ -5,6 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import User from '../../models/user';
+import { isValidBirthday } from '../../models/user';
 import serialize from '../../serializers/user';
 import event from '../../event';
 
@@ -48,6 +49,16 @@ module.exports = async (params, user, _, isSecure) =>
 		}
 
 		user.bio = bio;
+	}
+
+	// Get 'birthday' parameter
+	const birthday = params.birthday;
+	if (birthday != null) {
+		if (!isValidBirthday(birthday)) {
+			return rej('invalid birthday');
+		}
+
+		user.birthday = birthday;
 	}
 
 	// Get 'avatar_id' parameter
