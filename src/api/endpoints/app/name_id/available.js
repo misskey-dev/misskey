@@ -6,6 +6,35 @@
 import App from '../../../models/app';
 
 /**
+ * @swagger
+ * /app/name_id/available:
+ *   post:
+ *     summary: Check available name_id on creation an application
+ *     parameters:
+ *       -
+ *         name: name_id
+ *         description: Application unique name
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     
+ *     responses:
+ *       200:
+ *         description: Success
+ *         schema:
+ *           type: object
+ *           properties:
+ *             available:
+ *               description: Whether name_id is available
+ *               type: boolean
+ *         
+ *       default:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Check available name_id of app
  *
  * @param {Object} params
