@@ -3,6 +3,9 @@ mk-user-profile
 		mk-big-follow-button(user={ user })
 		p.followed(if={ user.is_followed }) フォローされています
 	div.bio(if={ user.bio != '' }) { user.bio }
+	div.birthday(if={ user.birthday }): p
+		i.fa.fa-birthday-cake
+		| { user.birthday.replace('-', '年').replace('-', '月') + '日' }
 	div.friends
 		p.following
 			i.fa.fa-angle-right
@@ -43,6 +46,17 @@ style.
 		padding 16px
 		color #555
 		border-top solid 1px #eee
+
+	> .birthday
+		padding 16px
+		color #555
+		border-top solid 1px #eee
+
+		> p
+			margin 0
+
+			> i
+				margin-right 8px
 
 	> .friends
 		padding 16px

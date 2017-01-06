@@ -18,6 +18,9 @@ mk-user
 					p.location(if={ user.location })
 						i.fa.fa-map-marker
 						| { user.location }
+					p.birthday(if={ user.birthday })
+						i.fa.fa-birthday-cake
+						| { user.birthday.replace('-', '年').replace('-', '月') + '日' }
 
 				div.friends
 					a(href='{ user.username }/following')
@@ -115,9 +118,9 @@ style.
 				> .info
 					margin 8px 0
 
-					> .location
+					> p
 						display inline
-						margin 0
+						margin 0 16px 0 0
 						color #555
 
 						> i
