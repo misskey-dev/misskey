@@ -8,6 +8,59 @@ import App from '../../models/app';
 import serialize from '../../serializers/app';
 
 /**
+ * @swagger
+ * /app/create:
+ *   post:
+ *     summary: Create an application
+ *     parameters:
+ *       - $ref: "#/parameters/AccessToken"
+ *       -
+ *         name: name_id
+ *         description: Application unique name
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       -
+ *         name: name
+ *         description: Application name
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       -
+ *         name: description
+ *         description: Application description
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       -
+ *         name: permission
+ *         description: Permissions that application has
+ *         in: formData
+ *         required: true
+ *         type: array
+ *         items:
+ *           type: string
+ *           collectionFormat: csv
+ *       -
+ *         name: callback_url
+ *         description: URL called back after authentication
+ *         in: formData
+ *         required: false
+ *         type: string
+ *       
+ *     responses:
+ *       200:
+ *         description: Created application's information
+ *         schema:
+ *           $ref: "#/definitions/Application"
+ *       
+ *       default:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Create an app
  *
  * @param {Object} params

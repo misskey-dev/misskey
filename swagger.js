@@ -9,6 +9,7 @@ const files = [
   'users.js',
   //app
   'app/show.js',
+  'app/create.js',
   'app/name_id/available.js',
   //auth
   'auth/accept.js',
