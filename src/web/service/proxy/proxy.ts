@@ -10,7 +10,7 @@ module.exports = (req: express.Request, res: express.Response) => {
 	}
 
 	request({
-		url: url + (URL.parse(req.url, true).search || ''),
+		url: url + URL.parse(req.url, true).search,
 		encoding: null
 	}, (err, response, content) => {
 		if (err) {
