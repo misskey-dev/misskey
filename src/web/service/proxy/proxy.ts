@@ -1,11 +1,12 @@
 import * as URL from 'url';
 import * as express from 'express';
 import * as request from 'request';
+import * as isUrl from 'is-url';
 
 module.exports = (req: express.Request, res: express.Response) => {
 	const url = req.params.url;
 
-	if (!url) {
+	if (!url || !isUrl(url)) {
 		return;
 	}
 
