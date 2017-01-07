@@ -4,6 +4,7 @@
 
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import * as isUrl from 'is-url';
 
 /**
  * ユーザーが設定する必要のある情報
@@ -72,6 +73,10 @@ export default (path: string) => {
 
 	const mixin: Mixin = {} as Mixin;
 
+	// Validate URLs
+	if (!isUrl(config.url)) urlError(config.url);
+	if (!isUrl(config.secondary_url)) urlError(config.secondary_url);
+
 	config.url = normalizeUrl(config.url);
 	config.secondary_url = normalizeUrl(config.secondary_url);
 
@@ -92,4 +97,9 @@ export default (path: string) => {
 
 function normalizeUrl(url: string): string {
 	return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
+}
+
+function urlError(url: string): void {
+	console.error(`「${url}」は、正しいURLではありません。先頭に http:// または https:// をつけ忘れてないかなど確認してください。`);
+	process.exit();
 }
