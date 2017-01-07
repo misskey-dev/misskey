@@ -7,10 +7,9 @@ module.exports = (req: express.Request, res: express.Response) => {
 
 	request(url, (err, response, xml) => {
 		if (err) {
-			console.error(err);
-			return;
+			res.sendStatus(500);
+		} else {
+			res.send(xml2json.toJson(xml));
 		}
-
-		res.send(xml2json.toJson(xml));
 	});
 };
