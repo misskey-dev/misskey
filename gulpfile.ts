@@ -171,7 +171,7 @@ gulp.task('build:client', [
 	gutil.log('ビルドが終了しました。');
 
 	if (isDebug) {
-		gutil.log('■　注意！　開発モードでのビルドです。');
+		gutil.log('■　注意！　開発モードでのビルドです。(成果物の圧縮などはスキップされます)');
 	}
 });
 
