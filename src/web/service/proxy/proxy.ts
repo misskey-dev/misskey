@@ -1,16 +1,16 @@
-import * as url from 'url';
+import * as URL from 'url';
 import * as express from 'express';
 import * as request from 'request';
 
 module.exports = (req: express.Request, res: express.Response) => {
-	const _url = req.params.url;
+	const url = req.params.url;
 
-	if (!_url) {
+	if (!url) {
 		return;
 	}
 
 	request({
-		url: _url + (url.parse(req.url, true).search || ''),
+		url: url + (URL.parse(req.url, true).search || ''),
 		encoding: null
 	}, (err, response, content) => {
 		if (err) {
