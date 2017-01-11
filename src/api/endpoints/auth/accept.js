@@ -10,6 +10,29 @@ import AuthSess from '../../models/auth-session';
 import AccessToken from '../../models/access-token';
 
 /**
+ * @swagger
+ * /auth/accept:
+ *   post:
+ *     summary: Accept a session
+ *     parameters:
+ *       - $ref: "#/parameters/NativeToken"
+ *       - 
+ *         name: token
+ *         description: Session Token
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       204:
+ *         description: OK
+ *       
+ *       default:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Accept
  *
  * @param {Object} params

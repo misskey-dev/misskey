@@ -9,6 +9,42 @@ import AccessToken from '../../../models/access-token';
 import serialize from '../../../serializers/user';
 
 /**
+ * @swagger
+ * /auth/session/userkey:
+ *   post:
+ *     summary: Get a access token(userkey)
+ *     parameters:
+ *       -
+ *         name: app_secret
+ *         description: App Secret
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       -
+ *         name: token
+ *         description: Session Token
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     
+ *     responses:
+ *       200:
+ *         description: OK
+ *         schema:
+ *           type: object
+ *           properties:
+ *             userkey:
+ *               type: string
+ *               description: Access Token
+ *             user:
+ *               $ref: "#/definitions/User"
+ *       default:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Generate a session
  *
  * @param {Object} params

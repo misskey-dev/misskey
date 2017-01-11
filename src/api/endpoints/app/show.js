@@ -8,6 +8,36 @@ import App from '../../models/app';
 import serialize from '../../serializers/app';
 
 /**
+ * @swagger
+ * /app/show:
+ *   post:
+ *     summary: Show an application's information
+ *     description: Require app_id or name_id
+ *     parameters:
+ *       -
+ *         name: app_id
+ *         description: Application ID
+ *         in: formData
+ *         type: string
+ *       -
+ *         name: name_id
+ *         description: Application unique name
+ *         in: formData
+ *         type: string
+ *         
+ *     responses:
+ *       200:
+ *         description: Success
+ *         schema:
+ *           $ref: "#/definitions/Application"
+ *           
+ *       default:
+ *         description: Failed
+ *         schema:
+ *           $ref: "#/definitions/Error"
+ */
+
+/**
  * Show an app
  *
  * @param {Object} params
