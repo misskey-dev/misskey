@@ -1,28 +1,28 @@
 <mk-drive-browser-file-contextmenu>
 	<mk-contextmenu ref="ctx">
 		<ul>
-			<li onclick="{ parent.rename }">
+			<li onclick={ parent.rename }>
 				<p><i class="fa fa-i-cursor"></i>名前を変更</p>
 			</li>
-			<li onclick="{ parent.copyUrl }">
+			<li onclick={ parent.copyUrl }>
 				<p><i class="fa fa-link"></i>URLをコピー</p>
 			</li>
-			<li><a href="{ parent.file.url + '?download' }" download="{ parent.file.name }" onclick="{ parent.download }"><i class="fa fa-download"></i>ダウンロード</a></li>
+			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }><i class="fa fa-download"></i>ダウンロード</a></li>
 			<li class="separator"></li>
-			<li onclick="{ parent.delete }">
+			<li onclick={ parent.delete }>
 				<p><i class="fa fa-trash-o"></i>削除</p>
 			</li>
 			<li class="separator"></li>
 			<li class="has-child">
 				<p>その他...<i class="fa fa-caret-right"></i></p>
 				<ul>
-					<li onclick="{ parent.setAvatar }">
+					<li onclick={ parent.setAvatar }>
 						<p>アバターに設定</p>
 					</li>
-					<li onclick="{ parent.setBanner }">
+					<li onclick={ parent.setBanner }>
 						<p>バナーに設定</p>
 					</li>
-					<li onclick="{ parent.setWallpaper }">
+					<li onclick={ parent.setWallpaper }>
 						<p>壁紙に設定</p>
 					</li>
 				</ul>
@@ -30,7 +30,7 @@
 			<li class="has-child">
 				<p>アプリで開く...<i class="fa fa-caret-right"></i></p>
 				<ul>
-					<li onclick="{ parent.addApp }">
+					<li onclick={ parent.addApp }>
 						<p>アプリを追加...</p>
 					</li>
 				</ul>

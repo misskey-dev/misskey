@@ -1,9 +1,9 @@
 <mk-ui-header-nav>
-	<ul if="{ SIGNIN }">
-		<li class="home { active: page == 'home' }"><a href="{ CONFIG.url }"><i class="fa fa-home"></i>
+	<ul if={ SIGNIN }>
+		<li class="home { active: page == 'home' }"><a href={ CONFIG.url }><i class="fa fa-home"></i>
 				<p>ホーム</p></a></li>
-		<li class="messaging"><a onclick="{ messaging }"><i class="fa fa-comments"></i>
-				<p>メッセージ</p><i class="fa fa-circle" if="{ hasUnreadMessagingMessages }"></i></a></li>
+		<li class="messaging"><a onclick={ messaging }><i class="fa fa-comments"></i>
+				<p>メッセージ</p><i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i></a></li>
 		<li class="info"><a href="https://twitter.com/misskey_xyz" target="_blank"><i class="fa fa-info"></i>
 				<p>お知らせ</p></a></li>
 		<li class="tv"><a href="https://misskey.tk" target="_blank"><i class="fa fa-television"></i>

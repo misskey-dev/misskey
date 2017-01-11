@@ -1,5 +1,5 @@
 <mk-search-posts>
-	<mk-timeline init="{ init }" more="{ more }" empty="{ '「' + query + '」に関する投稿は見つかりませんでした。' }"></mk-timeline>
+	<mk-timeline init={ init } more={ more } empty={ '「' + query + '」に関する投稿は見つかりませんでした。' }></mk-timeline>
 	<style type="stylus">
 		:scope
 			display block

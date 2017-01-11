@@ -1,11 +1,11 @@
 <mk-repost-form>
-	<mk-post-preview post="{ opts.post }"></mk-post-preview>
-	<div class="form" if="{ quote }">
-		<textarea ref="text" disabled="{ wait }" placeholder="この投稿を引用..."></textarea>
+	<mk-post-preview post={ opts.post }></mk-post-preview>
+	<div class="form" if={ quote }>
+		<textarea ref="text" disabled={ wait } placeholder="この投稿を引用..."></textarea>
 	</div>
-	<footer><a class="quote" if="{ !quote }" onclick="{ onquote }">引用する...</a>
-		<button class="cancel" onclick="{ cancel }">キャンセル</button>
-		<button class="ok" onclick="{ ok }">Repost</button>
+	<footer><a class="quote" if={ !quote } onclick={ onquote }>引用する...</a>
+		<button class="cancel" onclick={ cancel }>キャンセル</button>
+		<button class="ok" onclick={ ok }>Repost</button>
 	</footer>
 	<style type="stylus">
 		:scope

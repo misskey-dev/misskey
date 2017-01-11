@@ -1,11 +1,11 @@
 <mk-user>
-	<div class="user" if="{ !fetching }">
+	<div class="user" if={ !fetching }>
 		<header>
-			<mk-user-header user="{ user }"></mk-user-header>
+			<mk-user-header user={ user }></mk-user-header>
 		</header>
 		<div class="body">
-			<mk-user-home if="{ page == 'home' }" user="{ user }"></mk-user-home>
-			<mk-user-graphs if="{ page == 'graphs' }" user="{ user }"></mk-user-graphs>
+			<mk-user-home if={ page == 'home' } user={ user }></mk-user-home>
+			<mk-user-graphs if={ page == 'graphs' } user={ user }></mk-user-graphs>
 		</div>
 	</div>
 	<style type="stylus">

@@ -1,12 +1,12 @@
-<mk-user-header data-is-dark-background="{ user.banner_url != null }">
-	<div class="banner" ref="banner" style="{ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&amp;size=1024)' : '' }" onclick="{ onUpdateBanner }"></div><img class="avatar" src="{ user.avatar_url + '?thumbnail&amp;size=150' }" alt="avatar"/>
+<mk-user-header data-is-dark-background={ user.banner_url != null }>
+	<div class="banner" ref="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&amp;size=1024)' : '' } onclick={ onUpdateBanner }></div><img class="avatar" src={ user.avatar_url + '?thumbnail&amp;size=150' } alt="avatar"/>
 	<div class="title">
-		<p class="name" href="{ CONFIG.url + '/' + user.username }">{ user.name }</p>
+		<p class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</p>
 		<p class="username">@{ user.username }</p>
-		<p class="location" if="{ user.location }"><i class="fa fa-map-marker"></i>{ user.location }</p>
+		<p class="location" if={ user.location }><i class="fa fa-map-marker"></i>{ user.location }</p>
 	</div>
-	<footer><a href="{ '/' + user.username }">投稿</a><a href="{ '/' + user.username + '/media' }">メディア</a><a href="{ '/' + user.username + '/graphs' }">グラフ</a>
-		<button onclick="{ NotImplementedException }"><i class="fa fa-ellipsis-h"></i></button>
+	<footer><a href={ '/' + user.username }>投稿</a><a href={ '/' + user.username + '/media' }>メディア</a><a href={ '/' + user.username + '/graphs' }>グラフ</a>
+		<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
 	</footer>
 	<style type="stylus">
 		:scope

@@ -1,5 +1,5 @@
 <mk-time>
-	<time datetime="{ opts.time }"><span if="{ mode == 'relative' }">{ relative }</span><span if="{ mode == 'absolute' }">{ absolute }</span><span if="{ mode == 'detail' }">{ absolute } ({ relative })</span></time>
+	<time datetime={ opts.time }><span if={ mode == 'relative' }>{ relative }</span><span if={ mode == 'absolute' }>{ absolute }</span><span if={ mode == 'detail' }>{ absolute } ({ relative })</span></time>
 	<script>
 		@time = new Date @opts.time
 		@mode = @opts.mode || \relative

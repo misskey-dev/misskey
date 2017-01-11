@@ -1,18 +1,18 @@
 <mk-drive-browser-folder-contextmenu>
 	<mk-contextmenu ref="ctx">
 		<ul>
-			<li onclick="{ parent.move }">
+			<li onclick={ parent.move }>
 				<p><i class="fa fa-arrow-right"></i>このフォルダへ移動</p>
 			</li>
-			<li onclick="{ parent.newWindow }">
+			<li onclick={ parent.newWindow }>
 				<p><i class="fa fa-share-square-o"></i>新しいウィンドウで表示</p>
 			</li>
 			<li class="separator"></li>
-			<li onclick="{ parent.rename }">
+			<li onclick={ parent.rename }>
 				<p><i class="fa fa-i-cursor"></i>名前を変更</p>
 			</li>
 			<li class="separator"></li>
-			<li onclick="{ parent.delete }">
+			<li onclick={ parent.delete }>
 				<p><i class="fa fa-trash-o"></i>削除</p>
 			</li>
 		</ul>

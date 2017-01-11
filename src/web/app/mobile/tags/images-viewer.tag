@@ -1,5 +1,5 @@
 <mk-images-viewer>
-	<div class="image" ref="view" onclick="{ click }"><img ref="img" src="{ image.url + '?thumbnail&amp;size=512' }" alt="{ image.name }" title="{ image.name }"/></div>
+	<div class="image" ref="view" onclick={ click }><img ref="img" src={ image.url + '?thumbnail&amp;size=512' } alt={ image.name } title={ image.name }/></div>
 	<style type="stylus">
 		:scope
 			display block

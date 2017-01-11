@@ -1,10 +1,10 @@
 <mk-timeline-post-sub>
-	<article><a class="avatar-anchor" href="{ '/' + post.user.username }"><img class="avatar" src="{ post.user.avatar_url + '?thumbnail&amp;size=96' }" alt="avatar"/></a>
+	<article><a class="avatar-anchor" href={ '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&amp;size=96' } alt="avatar"/></a>
 		<div class="main">
-			<header><a class="name" href="{ '/' + post.user.username }">{ post.user.name }</a><span class="username">@{ post.user.username }</span><a class="created-at" href="{ '/' + post.user.username + '/' + post.id }">
-					<mk-time time="{ post.created_at }"></mk-time></a></header>
+			<header><a class="name" href={ '/' + post.user.username }>{ post.user.name }</a><span class="username">@{ post.user.username }</span><a class="created-at" href={ '/' + post.user.username + '/' + post.id }>
+					<mk-time time={ post.created_at }></mk-time></a></header>
 			<div class="body">
-				<mk-sub-post-content class="text" post="{ post }"></mk-sub-post-content>
+				<mk-sub-post-content class="text" post={ post }></mk-sub-post-content>
 			</div>
 		</div>
 	</article>

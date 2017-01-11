@@ -1,12 +1,12 @@
 <mk-signin>
-	<form class="{ signing: signing }" onsubmit="{ onsubmit }">
+	<form class={ signing: signing } onsubmit={ onsubmit }>
 		<label class="user-name">
-			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="ユーザー名" autofocus="autofocus" required="required" oninput="{ oninput }"/><i class="fa fa-at"></i>
+			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="ユーザー名" autofocus="autofocus" required="required" oninput={ oninput }/><i class="fa fa-at"></i>
 		</label>
 		<label class="password">
 			<input ref="password" type="password" placeholder="パスワード" required="required"/><i class="fa fa-lock"></i>
 		</label>
-		<button type="submit" disabled="{ signing }">{ signing ? 'やっています...' : 'サインイン' }</button>
+		<button type="submit" disabled={ signing }>{ signing ? 'やっています...' : 'サインイン' }</button>
 	</form>
 	<style type="stylus">
 		:scope

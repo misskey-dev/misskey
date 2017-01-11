@@ -1,4 +1,4 @@
-<mk-drive-browser-nav-folder data-draghover="{ draghover }" onclick="{ onclick }" ondragover="{ ondragover }" ondragenter="{ ondragenter }" ondragleave="{ ondragleave }" ondrop="{ ondrop }"><i class="fa fa-cloud" if="{ folder == null }"></i><span>{ folder == null ? 'ドライブ' : folder.name }</span>
+<mk-drive-browser-nav-folder data-draghover={ draghover } onclick={ onclick } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }><i class="fa fa-cloud" if={ folder == null }></i><span>{ folder == null ? 'ドライブ' : folder.name }</span>
 	<style type="stylus">
 		:scope
 			&[data-draghover]

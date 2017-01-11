@@ -1,10 +1,10 @@
 <mk-drive-browser-base-contextmenu>
 	<mk-contextmenu ref="ctx">
 		<ul>
-			<li onclick="{ parent.createFolder }">
+			<li onclick={ parent.createFolder }>
 				<p><i class="fa fa-folder-o"></i>フォルダーを作成</p>
 			</li>
-			<li onclick="{ parent.upload }">
+			<li onclick={ parent.upload }>
 				<p><i class="fa fa-upload"></i>ファイルをアップロード</p>
 			</li>
 		</ul>

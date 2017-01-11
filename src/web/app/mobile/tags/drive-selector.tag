@@ -1,11 +1,11 @@
 <mk-drive-selector>
 	<div class="body">
 		<header>
-			<h1>ファイルを選択<span class="count" if="{ files.length &gt; 0 }">({ files.length })</span></h1>
-			<button class="close" onclick="{ cancel }"><i class="fa fa-times"></i></button>
-			<button class="ok" onclick="{ ok }"><i class="fa fa-check"></i></button>
+			<h1>ファイルを選択<span class="count" if={ files.length &gt; 0 }>({ files.length })</span></h1>
+			<button class="close" onclick={ cancel }><i class="fa fa-times"></i></button>
+			<button class="ok" onclick={ ok }><i class="fa fa-check"></i></button>
 		</header>
-		<mk-drive ref="browser" select="{ true }" multiple="{ opts.multiple }"></mk-drive>
+		<mk-drive ref="browser" select={ true } multiple={ opts.multiple }></mk-drive>
 	</div>
 	<style type="stylus">
 		:scope

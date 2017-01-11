@@ -1,17 +1,17 @@
 <mk-messaging-room>
 	<div class="stream" ref="stream">
-		<p class="initializing" if="{ init }"><i class="fa fa-spinner fa-spin"></i>読み込み中</p>
-		<p class="empty" if="{ !init &amp;&amp; messages.length == 0 }"><i class="fa fa-info-circle"></i>このユーザーとまだ会話したことがありません</p>
-		<virtual each="{ message, i in messages }">
-			<mk-messaging-message message="{ message }"></mk-messaging-message>
-			<p class="date" if="{ i != messages.length - 1 &amp;&amp; message._date != messages[i + 1]._date }"><span>{ messages[i + 1]._datetext }</span></p>
+		<p class="initializing" if={ init }><i class="fa fa-spinner fa-spin"></i>読み込み中</p>
+		<p class="empty" if={ !init &amp;&amp; messages.length == 0 }><i class="fa fa-info-circle"></i>このユーザーとまだ会話したことがありません</p>
+		<virtual each={ message, i in messages }>
+			<mk-messaging-message message={ message }></mk-messaging-message>
+			<p class="date" if={ i != messages.length - 1 &amp;&amp; message._date != messages[i + 1]._date }><span>{ messages[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
 	<div class="typings"></div>
 	<footer>
 		<div ref="notifications"></div>
 		<div class="grippie" title="ドラッグしてフォームの広さを調整"></div>
-		<mk-messaging-form user="{ user }"></mk-messaging-form>
+		<mk-messaging-form user={ user }></mk-messaging-form>
 	</footer>
 	<style type="stylus">
 		:scope

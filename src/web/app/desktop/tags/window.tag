@@ -1,21 +1,21 @@
-<mk-window data-flexible="{ isFlexible }" data-colored="{ opts.colored }" ondragover="{ ondragover }">
-	<div class="bg" ref="bg" show="{ isModal }" onclick="{ bgClick }"></div>
-	<div class="main" ref="main" tabindex="-1" data-is-modal="{ isModal }" onmousedown="{ onBodyMousedown }" onkeydown="{ onKeydown }">
+<mk-window data-flexible={ isFlexible } data-colored={ opts.colored } ondragover={ ondragover }>
+	<div class="bg" ref="bg" show={ isModal } onclick={ bgClick }></div>
+	<div class="main" ref="main" tabindex="-1" data-is-modal={ isModal } onmousedown={ onBodyMousedown } onkeydown={ onKeydown }>
 		<div class="body">
-			<header ref="header" onmousedown="{ onHeaderMousedown }">
+			<header ref="header" onmousedown={ onHeaderMousedown }>
 				<h1 data-yield="header"><yield from="header"/></h1>
-				<button class="close" if="{ canClose }" onmousedown="{ repelMove }" onclick="{ close }" title="閉じる"><i class="fa fa-times"></i></button>
+				<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
 			</header>
 			<div class="content" data-yield="content"><yield from="content"/></div>
 		</div>
-		<div class="handle top" if="{ canResize }" onmousedown="{ onTopHandleMousedown }"></div>
-		<div class="handle right" if="{ canResize }" onmousedown="{ onRightHandleMousedown }"></div>
-		<div class="handle bottom" if="{ canResize }" onmousedown="{ onBottomHandleMousedown }"></div>
-		<div class="handle left" if="{ canResize }" onmousedown="{ onLeftHandleMousedown }"></div>
-		<div class="handle top-left" if="{ canResize }" onmousedown="{ onTopLeftHandleMousedown }"></div>
-		<div class="handle top-right" if="{ canResize }" onmousedown="{ onTopRightHandleMousedown }"></div>
-		<div class="handle bottom-right" if="{ canResize }" onmousedown="{ onBottomRightHandleMousedown }"></div>
-		<div class="handle bottom-left" if="{ canResize }" onmousedown="{ onBottomLeftHandleMousedown }"></div>
+		<div class="handle top" if={ canResize } onmousedown={ onTopHandleMousedown }></div>
+		<div class="handle right" if={ canResize } onmousedown={ onRightHandleMousedown }></div>
+		<div class="handle bottom" if={ canResize } onmousedown={ onBottomHandleMousedown }></div>
+		<div class="handle left" if={ canResize } onmousedown={ onLeftHandleMousedown }></div>
+		<div class="handle top-left" if={ canResize } onmousedown={ onTopLeftHandleMousedown }></div>
+		<div class="handle top-right" if={ canResize } onmousedown={ onTopRightHandleMousedown }></div>
+		<div class="handle bottom-right" if={ canResize } onmousedown={ onBottomRightHandleMousedown }></div>
+		<div class="handle bottom-left" if={ canResize } onmousedown={ onBottomLeftHandleMousedown }></div>
 	</div>
 	<style type="stylus">
 		:scope

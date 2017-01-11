@@ -1,11 +1,11 @@
-<mk-url-preview><a href="{ url }" target="_blank" title="{ url }" if="{ !loading }">
-		<div class="thumbnail" if="{ thumbnail }" style="{ 'background-image: url(' + thumbnail + ')' }"></div>
+<mk-url-preview><a href={ url } target="_blank" title={ url } if={ !loading }>
+		<div class="thumbnail" if={ thumbnail } style={ 'background-image: url(' + thumbnail + ')' }></div>
 		<article>
 			<header>
 				<h1>{ title }</h1>
 			</header>
 			<p>{ description }</p>
-			<footer><img class="icon" if="{ icon }" src="{ icon }"/>
+			<footer><img class="icon" if={ icon } src={ icon }/>
 				<p>{ sitename }</p>
 			</footer>
 		</article></a>

@@ -1,5 +1,5 @@
 <mk-ui-header-search>
-	<form class="search" onsubmit="{ onsubmit }">
+	<form class="search" onsubmit={ onsubmit }>
 		<input ref="q" type="search" placeholder="&#xf002; 検索"/>
 		<div class="result"></div>
 	</form>

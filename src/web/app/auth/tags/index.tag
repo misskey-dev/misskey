@@ -1,25 +1,25 @@
 <mk-index>
-	<main if="{ SIGNIN }">
-		<p class="fetching" if="{ fetching }">読み込み中
+	<main if={ SIGNIN }>
+		<p class="fetching" if={ fetching }>読み込み中
 			<mk-ellipsis></mk-ellipsis>
 		</p>
-		<mk-form ref="form" if="{ state == null &amp;&amp; !fetching }" session="{ session }"></mk-form>
-		<div class="denied" if="{ state == 'denied' }">
+		<mk-form ref="form" if={ state == null &amp;&amp; !fetching } session={ session }></mk-form>
+		<div class="denied" if={ state == 'denied' }>
 			<h1>アプリケーションの連携をキャンセルしました。</h1>
 			<p>このアプリがあなたのアカウントにアクセスすることはありません。</p>
 		</div>
-		<div class="accepted" if="{ state == 'accepted' }">
+		<div class="accepted" if={ state == 'accepted' }>
 			<h1>{ session.app.is_authorized ? 'このアプリは既に連携済みです' : 'アプリケーションの連携を許可しました'}</h1>
-			<p if="{ session.app.callback_url }">アプリケーションに戻っています
+			<p if={ session.app.callback_url }>アプリケーションに戻っています
 				<mk-ellipsis></mk-ellipsis>
 			</p>
-			<p if="{ !session.app.callback_url }">アプリケーションに戻って、やっていってください。</p>
+			<p if={ !session.app.callback_url }>アプリケーションに戻って、やっていってください。</p>
 		</div>
-		<div class="error" if="{ state == 'fetch-session-error' }">
+		<div class="error" if={ state == 'fetch-session-error' }>
 			<p>セッションが存在しません。</p>
 		</div>
 	</main>
-	<main class="signin" if="{ !SIGNIN }">
+	<main class="signin" if={ !SIGNIN }>
 		<h1>サインインしてください</h1>
 		<mk-signin></mk-signin>
 	</main>

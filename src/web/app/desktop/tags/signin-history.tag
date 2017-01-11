@@ -1,8 +1,8 @@
 <mk-signin-history>
-	<div class="records" if="{ history.length != 0 }">
-		<div each="{ history }">
-			<mk-time time="{ created_at }"></mk-time>
-			<header><i class="fa fa-check" if="{ success }"></i><i class="fa fa-times" if="{ !success }"></i><span class="ip">{ ip }</span></header>
+	<div class="records" if={ history.length != 0 }>
+		<div each={ history }>
+			<mk-time time={ created_at }></mk-time>
+			<header><i class="fa fa-check" if={ success }></i><i class="fa fa-times" if={ !success }></i><span class="ip">{ ip }</span></header>
 			<pre><code>{ JSON.stringify(headers, null, '    ') }</code></pre>
 		</div>
 	</div>

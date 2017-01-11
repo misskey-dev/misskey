@@ -1,10 +1,10 @@
 <mk-rss-reader-home-widget>
 	<p class="title"><i class="fa fa-rss-square"></i>RSS</p>
-	<button onclick="{ settings }" title="設定"><i class="fa fa-cog"></i></button>
-	<div class="feed" if="{ !initializing }">
-		<virtual each="{ item in items }"><a href="{ item.link }" target="_blank">{ item.title }</a></virtual>
+	<button onclick={ settings } title="設定"><i class="fa fa-cog"></i></button>
+	<div class="feed" if={ !initializing }>
+		<virtual each={ item in items }><a href={ item.link } target="_blank">{ item.title }</a></virtual>
 	</div>
-	<p class="initializing" if="{ initializing }"><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p>
 	<style type="stylus">

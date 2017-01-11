@@ -1,5 +1,5 @@
 <mk-ui-header-post-button>
-	<button onclick="{ post }" title="新規投稿"><i class="fa fa-pencil-square-o"></i></button>
+	<button onclick={ post } title="新規投稿"><i class="fa fa-pencil-square-o"></i></button>
 	<style type="stylus">
 		:scope
 			display inline-block

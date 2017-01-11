@@ -1,6 +1,6 @@
-<mk-set-banner-suggestion onclick="{ set }">
+<mk-set-banner-suggestion onclick={ set }>
 	<p><b>バナーを設定</b>してみませんか？
-		<button onclick="{ close }"><i class="fa fa-times"></i></button>
+		<button onclick={ close }><i class="fa fa-times"></i></button>
 	</p>
 	<style type="stylus">
 		:scope

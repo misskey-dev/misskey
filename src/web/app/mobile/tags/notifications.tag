@@ -1,12 +1,12 @@
 <mk-notifications>
-	<div class="notifications" if="{ notifications.length != 0 }">
-		<virtual each="{ notification, i in notifications }">
-			<mk-notification notification="{ notification }"></mk-notification>
-			<p class="date" if="{ i != notifications.length - 1 &amp;&amp; notification._date != notifications[i + 1]._date }"><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
+	<div class="notifications" if={ notifications.length != 0 }>
+		<virtual each={ notification, i in notifications }>
+			<mk-notification notification={ notification }></mk-notification>
+			<p class="date" if={ i != notifications.length - 1 &amp;&amp; notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
-	<p class="empty" if="{ notifications.length == 0 &amp;&amp; !loading }">ありません！</p>
-	<p class="loading" if="{ loading }"><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
+	<p class="empty" if={ notifications.length == 0 &amp;&amp; !loading }>ありません！</p>
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p>
 	<style type="stylus">

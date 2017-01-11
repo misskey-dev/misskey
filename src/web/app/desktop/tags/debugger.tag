@@ -1,21 +1,21 @@
 <mk-debugger>
-	<mk-window ref="window" is-modal="{ false }" width="{ '700px' }" height="{ '550px' }"><yield to="header"><i class="fa fa-wrench"></i>Debugger</yield>
+	<mk-window ref="window" is-modal={ false } width={ '700px' } height={ '550px' }><yield to="header"><i class="fa fa-wrench"></i>Debugger</yield>
 <yield to="content">
 		<section class="progress-dialog">
 			<h1>progress-dialog</h1>
-			<button class="style-normal" onclick="{ parent.progressDialog }"><i class="fa fa-play"></i></button>
-			<button class="style-normal" onclick="{ parent.progressDialogDestroy }"><i class="fa fa-stop"></i></button>
+			<button class="style-normal" onclick={ parent.progressDialog }><i class="fa fa-play"></i></button>
+			<button class="style-normal" onclick={ parent.progressDialogDestroy }><i class="fa fa-stop"></i></button>
 			<label>
 				<p>TITLE:</p>
 				<input ref="progressTitle" value="Title"/>
 			</label>
 			<label>
 				<p>VAL:</p>
-				<input ref="progressValue" type="number" oninput="{ parent.progressChange }" value="0"/>
+				<input ref="progressValue" type="number" oninput={ parent.progressChange } value="0"/>
 			</label>
 			<label>
 				<p>MAX:</p>
-				<input ref="progressMax" type="number" oninput="{ parent.progressChange }" value="100"/>
+				<input ref="progressMax" type="number" oninput={ parent.progressChange } value="100"/>
 			</label>
 		</section></yield>
 	</mk-window>

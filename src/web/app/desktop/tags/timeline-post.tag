@@ -1,41 +1,41 @@
-<mk-timeline-post tabindex="-1" title="{ title }" onkeydown="{ onKeyDown }">
-	<div class="reply-to" if="{ p.reply_to }">
-		<mk-timeline-post-sub post="{ p.reply_to }"></mk-timeline-post-sub>
+<mk-timeline-post tabindex="-1" title={ title } onkeydown={ onKeyDown }>
+	<div class="reply-to" if={ p.reply_to }>
+		<mk-timeline-post-sub post={ p.reply_to }></mk-timeline-post-sub>
 	</div>
-	<div class="repost" if="{ isRepost }">
-		<p><a class="avatar-anchor" href="{ CONFIG.url + '/' + post.user.username }" data-user-preview="{ post.user_id }"><img class="avatar" src="{ post.user.avatar_url + '?thumbnail&amp;size=32' }" alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href="{ CONFIG.url + '/' + post.user.username }" data-user-preview="{ post.user_id }">{ post.user.name }</a>がRepost</p>
-		<mk-time time="{ post.created_at }"></mk-time>
+	<div class="repost" if={ isRepost }>
+		<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&amp;size=32' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>がRepost</p>
+		<mk-time time={ post.created_at }></mk-time>
 	</div>
-	<article><a class="avatar-anchor" href="{ CONFIG.url + '/' + p.user.username }"><img class="avatar" src="{ p.user.avatar_url + '?thumbnail&amp;size=64' }" alt="avatar" data-user-preview="{ p.user.id }"/></a>
+	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar" data-user-preview={ p.user.id }/></a>
 		<div class="main">
-			<header><a class="name" href="{ CONFIG.url + '/' + p.user.username }" data-user-preview="{ p.user.id }">{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="created-at" href="{ url }">
-					<mk-time time="{ p.created_at }"></mk-time></a></header>
+			<header><a class="name" href={ CONFIG.url + '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="created-at" href={ url }>
+					<mk-time time={ p.created_at }></mk-time></a></header>
 			<div class="body">
-				<div class="text"><a class="reply" if="{ p.reply_to }"><i class="fa fa-reply"></i></a><span ref="text"></span><a class="quote" if="{ p.repost != null }">RP:</a></div>
-				<div class="media" if="{ p.media }">
-					<mk-images-viewer images="{ p.media }"></mk-images-viewer>
+				<div class="text"><a class="reply" if={ p.reply_to }><i class="fa fa-reply"></i></a><span ref="text"></span><a class="quote" if={ p.repost != null }>RP:</a></div>
+				<div class="media" if={ p.media }>
+					<mk-images-viewer images={ p.media }></mk-images-viewer>
 				</div>
-				<div class="repost" if="{ p.repost }"><i class="fa fa-quote-right fa-flip-horizontal"></i>
-					<mk-post-preview class="repost" post="{ p.repost }"></mk-post-preview>
+				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
+					<mk-post-preview class="repost" post={ p.repost }></mk-post-preview>
 				</div>
 			</div>
 			<footer>
-				<button onclick="{ reply }" title="返信"><i class="fa fa-reply"></i>
-					<p class="count" if="{ p.replies_count &gt; 0 }">{ p.replies_count }</p>
+				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
+					<p class="count" if={ p.replies_count &gt; 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick="{ repost }" title="Repost"><i class="fa fa-retweet"></i>
-					<p class="count" if="{ p.repost_count &gt; 0 }">{ p.repost_count }</p>
+				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
+					<p class="count" if={ p.repost_count &gt; 0 }>{ p.repost_count }</p>
 				</button>
-				<button class="{ liked: p.is_liked }" onclick="{ like }" title="善哉"><i class="fa fa-thumbs-o-up"></i>
-					<p class="count" if="{ p.likes_count &gt; 0 }">{ p.likes_count }</p>
+				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
+					<p class="count" if={ p.likes_count &gt; 0 }>{ p.likes_count }</p>
 				</button>
-				<button onclick="{ NotImplementedException }"><i class="fa fa-ellipsis-h"></i></button>
-				<button onclick="{ toggleDetail }" title="詳細"><i class="fa fa-caret-down" if="{ !isDetailOpened }"></i><i class="fa fa-caret-up" if="{ isDetailOpened }"></i></button>
+				<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
+				<button onclick={ toggleDetail } title="詳細"><i class="fa fa-caret-down" if={ !isDetailOpened }></i><i class="fa fa-caret-up" if={ isDetailOpened }></i></button>
 			</footer>
 		</div>
 	</article>
-	<div class="detail" if="{ isDetailOpened }">
-		<mk-post-status-graph width="462" height="130" post="{ p }"></mk-post-status-graph>
+	<div class="detail" if={ isDetailOpened }>
+		<mk-post-status-graph width="462" height="130" post={ p }></mk-post-status-graph>
 	</div>
 	<style type="stylus">
 		:scope

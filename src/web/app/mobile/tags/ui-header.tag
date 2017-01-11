@@ -5,7 +5,7 @@
 		<div class="content">
 			<button class="nav" id="hamburger"><i class="fa fa-bars"></i></button>
 			<h1 ref="title">Misskey</h1>
-			<button class="post" onclick="{ post }"><i class="fa fa-pencil"></i></button>
+			<button class="post" onclick={ post }><i class="fa fa-pencil"></i></button>
 		</div>
 	</div>
 	<style type="stylus">

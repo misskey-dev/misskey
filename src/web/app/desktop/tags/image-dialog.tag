@@ -1,5 +1,5 @@
 <mk-image-dialog>
-	<div class="bg" ref="bg" onclick="{ close }"></div><img ref="img" src="{ image.url }" alt="{ image.name }" title="{ image.name }" onclick="{ close }"/>
+	<div class="bg" ref="bg" onclick={ close }></div><img ref="img" src={ image.url } alt={ image.name } title={ image.name } onclick={ close }/>
 	<style type="stylus">
 		:scope
 			display block

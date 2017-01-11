@@ -1,15 +1,15 @@
-<mk-drive-browser-file data-is-selected="{ (file._selected || false).toString() }" data-is-contextmenu-showing="{ isContextmenuShowing.toString() }" onclick="{ onclick }" oncontextmenu="{ oncontextmenu }" draggable="true" ondragstart="{ ondragstart }" ondragend="{ ondragend }" title="{ title }">
-	<div class="label" if="{ I.avatar_id == file.id }"><img src="/_/resources/label.svg"/>
+<mk-drive-browser-file data-is-selected={ (file._selected || false).toString() } data-is-contextmenu-showing={ isContextmenuShowing.toString() } onclick={ onclick } oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
+	<div class="label" if={ I.avatar_id == file.id }><img src="/_/resources/label.svg"/>
 		<p>アバター</p>
 	</div>
-	<div class="label" if="{ I.banner_id == file.id }"><img src="/_/resources/label.svg"/>
+	<div class="label" if={ I.banner_id == file.id }><img src="/_/resources/label.svg"/>
 		<p>バナー</p>
 	</div>
-	<div class="label" if="{ I.data.wallpaper == file.id }"><img src="/_/resources/label.svg"/>
+	<div class="label" if={ I.data.wallpaper == file.id }><img src="/_/resources/label.svg"/>
 		<p>壁紙</p>
 	</div>
-	<div class="thumbnail"><img src="{ file.url + '?thumbnail&amp;size=128' }" alt=""/></div>
-	<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if="{ file.name.lastIndexOf('.') != -1 }">{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
+	<div class="thumbnail"><img src={ file.url + '?thumbnail&amp;size=128' } alt=""/></div>
+	<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
 	<style type="stylus">
 		:scope
 			display block

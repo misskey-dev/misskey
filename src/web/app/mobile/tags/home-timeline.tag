@@ -1,5 +1,5 @@
 <mk-home-timeline>
-	<mk-timeline ref="timeline" init="{ init }" more="{ more }" empty="{ '表示する投稿がありません。誰かしらをフォローするなどしましょう。' }"></mk-timeline>
+	<mk-timeline ref="timeline" init={ init } more={ more } empty={ '表示する投稿がありません。誰かしらをフォローするなどしましょう。' }></mk-timeline>
 	<style type="stylus">
 		:scope
 			display block

@@ -1,27 +1,27 @@
 <mk-post-form>
 	<header>
 		<div>
-			<button class="cancel" onclick="{ cancel }"><i class="fa fa-times"></i></button>
+			<button class="cancel" onclick={ cancel }><i class="fa fa-times"></i></button>
 			<div><span class="text-count { over: refs.text.value.length &gt; 300 }">{ 300 - refs.text.value.length }</span>
-				<button class="submit" onclick="{ post }">投稿</button>
+				<button class="submit" onclick={ post }>投稿</button>
 			</div>
 		</div>
 	</header>
 	<div class="form">
-		<mk-post-preview if="{ opts.reply }" post="{ opts.reply }"></mk-post-preview>
-		<textarea ref="text" disabled="{ wait }" oninput="{ update }" onkeypress="{ onkeypress }" onpaste="{ onpaste }" placeholder="{ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }"></textarea>
-		<div class="attaches" if="{ files.length != 0 }">
+		<mk-post-preview if={ opts.reply } post={ opts.reply }></mk-post-preview>
+		<textarea ref="text" disabled={ wait } oninput={ update } onkeypress={ onkeypress } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
+		<div class="attaches" if={ files.length != 0 }>
 			<ul class="files" ref="attaches">
-				<li class="file" each="{ files }">
-					<div class="img" style="background-image: url({ url + &quot;?thumbnail&amp;size=64&quot; })" title="{ name }"></div>
+				<li class="file" each={ files }>
+					<div class="img" style="background-image: url({ url + &quot;?thumbnail&amp;size=64&quot; })" title={ name }></div>
 				</li>
-				<li class="add" if="{ files.length &lt; 4 }" title="PCからファイルを添付" onclick="{ selectFile }"><i class="fa fa-plus"></i></li>
+				<li class="add" if={ files.length &lt; 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
 		</div>
 		<mk-uploader ref="uploader"></mk-uploader>
-		<button ref="upload" onclick="{ selectFile }"><i class="fa fa-upload"></i></button>
-		<button ref="drive" onclick="{ selectFileFromDrive }"><i class="fa fa-cloud"></i></button>
-		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange="{ changeFile }"/>
+		<button ref="upload" onclick={ selectFile }><i class="fa fa-upload"></i></button>
+		<button ref="drive" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
+		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
 	<style type="stylus">
 		:scope

@@ -1,5 +1,5 @@
 <mk-notify>
-	<mk-notification-preview notification="{ opts.notification }"></mk-notification-preview>
+	<mk-notification-preview notification={ opts.notification }></mk-notification-preview>
 	<style type="stylus">
 		:scope
 			display block

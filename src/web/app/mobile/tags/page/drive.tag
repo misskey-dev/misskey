@@ -1,6 +1,6 @@
 <mk-drive-page>
 	<mk-ui ref="ui">
-		<mk-drive ref="browser" folder="{ parent.opts.folder }" file="{ parent.opts.file }"></mk-drive>
+		<mk-drive ref="browser" folder={ parent.opts.folder } file={ parent.opts.file }></mk-drive>
 	</mk-ui>
 	<style type="stylus">
 		:scope

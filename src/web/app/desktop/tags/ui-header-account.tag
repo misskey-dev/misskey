@@ -1,20 +1,20 @@
 <mk-ui-header-account>
-	<button class="header" data-active="{ isOpen.toString() }" onclick="{ toggle }"><span class="username">{ I.username }<i class="fa fa-angle-down" if="{ !isOpen }"></i><i class="fa fa-angle-up" if="{ isOpen }"></i></span><img class="avatar" src="{ I.avatar_url + '?thumbnail&amp;size=64' }" alt="avatar"/></button>
-	<div class="menu" if="{ isOpen }">
+	<button class="header" data-active={ isOpen.toString() } onclick={ toggle }><span class="username">{ I.username }<i class="fa fa-angle-down" if={ !isOpen }></i><i class="fa fa-angle-up" if={ isOpen }></i></span><img class="avatar" src={ I.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></button>
+	<div class="menu" if={ isOpen }>
 		<ul>
-			<li><a href="{ '/' + I.username }"><i class="fa fa-user"></i>プロフィール<i class="fa fa-angle-right"></i></a></li>
-			<li onclick="{ drive }">
+			<li><a href={ '/' + I.username }><i class="fa fa-user"></i>プロフィール<i class="fa fa-angle-right"></i></a></li>
+			<li onclick={ drive }>
 				<p><i class="fa fa-cloud"></i>ドライブ<i class="fa fa-angle-right"></i></p>
 			</li>
 			<li><a href="/i&gt;mentions"><i class="fa fa-at"></i>あなた宛て<i class="fa fa-angle-right"></i></a></li>
 		</ul>
 		<ul>
-			<li onclick="{ settings }">
+			<li onclick={ settings }>
 				<p><i class="fa fa-cog"></i>設定<i class="fa fa-angle-right"></i></p>
 			</li>
 		</ul>
 		<ul>
-			<li onclick="{ signout }">
+			<li onclick={ signout }>
 				<p><i class="fa fa-power-off"></i>サインアウト<i class="fa fa-angle-right"></i></p>
 			</li>
 		</ul>

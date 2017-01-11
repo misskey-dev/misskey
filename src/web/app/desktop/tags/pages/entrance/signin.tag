@@ -1,12 +1,12 @@
-<mk-entrance-signin><a class="help" href="{ CONFIG.urls.about + '/help' }" title="お困りですか？"><i class="fa fa-question"></i></a>
+<mk-entrance-signin><a class="help" href={ CONFIG.urls.about + '/help' } title="お困りですか？"><i class="fa fa-question"></i></a>
 	<div class="form">
-		<h1><img if="{ user }" src="{ user.avatar_url + '?thumbnail&amp;size=32' }"/>
+		<h1><img if={ user } src={ user.avatar_url + '?thumbnail&amp;size=32' }/>
 			<p>{ user ? user.name : 'アカウント' }</p>
 		</h1>
 		<mk-signin ref="signin"></mk-signin>
 	</div>
 	<div class="divider"><span>or</span></div>
-	<button class="signup" onclick="{ parent.signup }">新規登録</button><a class="introduction" onclick="{ introduction }">Misskeyについて</a>
+	<button class="signup" onclick={ parent.signup }>新規登録</button><a class="introduction" onclick={ introduction }>Misskeyについて</a>
 	<style type="stylus">
 		:scope
 			display block

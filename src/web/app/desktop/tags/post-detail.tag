@@ -1,63 +1,63 @@
-<mk-post-detail title="{ title }">
-	<div class="fetching" if="{ fetching }">
+<mk-post-detail title={ title }>
+	<div class="fetching" if={ fetching }>
 		<mk-ellipsis-icon></mk-ellipsis-icon>
 	</div>
-	<div class="main" if="{ !fetching }">
-		<button class="read-more" if="{ p.reply_to &amp;&amp; p.reply_to.reply_to_id &amp;&amp; context == null }" title="会話をもっと読み込む" onclick="{ loadContext }" disabled="{ loadingContext }"><i class="fa fa-ellipsis-v" if="{ !loadingContext }"></i><i class="fa fa-spinner fa-pulse" if="{ loadingContext }"></i></button>
+	<div class="main" if={ !fetching }>
+		<button class="read-more" if={ p.reply_to &amp;&amp; p.reply_to.reply_to_id &amp;&amp; context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ loadingContext }><i class="fa fa-ellipsis-v" if={ !loadingContext }></i><i class="fa fa-spinner fa-pulse" if={ loadingContext }></i></button>
 		<div class="context">
-			<virtual each="{ post in context }">
-				<mk-post-detail-sub post="{ post }"></mk-post-detail-sub>
+			<virtual each={ post in context }>
+				<mk-post-detail-sub post={ post }></mk-post-detail-sub>
 			</virtual>
 		</div>
-		<div class="reply-to" if="{ p.reply_to }">
-			<mk-post-detail-sub post="{ p.reply_to }"></mk-post-detail-sub>
+		<div class="reply-to" if={ p.reply_to }>
+			<mk-post-detail-sub post={ p.reply_to }></mk-post-detail-sub>
 		</div>
-		<div class="repost" if="{ isRepost }">
-			<p><a class="avatar-anchor" href="{ CONFIG.url + '/' + post.user.username }" data-user-preview="{ post.user_id }"><img class="avatar" src="{ post.user.avatar_url + '?thumbnail&amp;size=32' }" alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href="{ CONFIG.url + '/' + post.user.username }">{ post.user.name }</a>がRepost</p>
+		<div class="repost" if={ isRepost }>
+			<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&amp;size=32' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>がRepost</p>
 		</div>
-		<article><a class="avatar-anchor" href="{ CONFIG.url + '/' + p.user.username }"><img class="avatar" src="{ p.user.avatar_url + '?thumbnail&amp;size=64' }" alt="avatar" data-user-preview="{ p.user.id }"/></a>
-			<header><a class="name" href="{ CONFIG.url + '/' + p.user.username }" data-user-preview="{ p.user.id }">{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="time" href="{ url }">
-					<mk-time time="{ p.created_at }"></mk-time></a></header>
+		<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar" data-user-preview={ p.user.id }/></a>
+			<header><a class="name" href={ CONFIG.url + '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="time" href={ url }>
+					<mk-time time={ p.created_at }></mk-time></a></header>
 			<div class="body">
 				<div class="text" ref="text"></div>
-				<div class="media" if="{ p.media }">
-					<virtual each="{ file in p.media }"><img src="{ file.url + '?thumbnail&amp;size=512' }" alt="{ file.name }" title="{ file.name }"/></virtual>
+				<div class="media" if={ p.media }>
+					<virtual each={ file in p.media }><img src={ file.url + '?thumbnail&amp;size=512' } alt={ file.name } title={ file.name }/></virtual>
 				</div>
 			</div>
 			<footer>
-				<button onclick="{ reply }" title="返信"><i class="fa fa-reply"></i>
-					<p class="count" if="{ p.replies_count &gt; 0 }">{ p.replies_count }</p>
+				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
+					<p class="count" if={ p.replies_count &gt; 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick="{ repost }" title="Repost"><i class="fa fa-retweet"></i>
-					<p class="count" if="{ p.repost_count &gt; 0 }">{ p.repost_count }</p>
+				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
+					<p class="count" if={ p.repost_count &gt; 0 }>{ p.repost_count }</p>
 				</button>
-				<button class="{ liked: p.is_liked }" onclick="{ like }" title="善哉"><i class="fa fa-thumbs-o-up"></i>
-					<p class="count" if="{ p.likes_count &gt; 0 }">{ p.likes_count }</p>
+				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
+					<p class="count" if={ p.likes_count &gt; 0 }>{ p.likes_count }</p>
 				</button>
-				<button onclick="{ NotImplementedException }"><i class="fa fa-ellipsis-h"></i></button>
+				<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
 			</footer>
 			<div class="reposts-and-likes">
-				<div class="reposts" if="{ reposts &amp;&amp; reposts.length &gt; 0 }">
+				<div class="reposts" if={ reposts &amp;&amp; reposts.length &gt; 0 }>
 					<header><a>{ p.repost_count }</a>
 						<p>Repost</p>
 					</header>
 					<ol class="users">
-						<li class="user" each="{ reposts }"><a class="avatar-anchor" href="{ CONFIG.url + '/' + user.username }" title="{ user.name }" data-user-preview="{ user.id }"><img class="avatar" src="{ user.avatar_url + '?thumbnail&amp;size=32' }" alt=""/></a></li>
+						<li class="user" each={ reposts }><a class="avatar-anchor" href={ CONFIG.url + '/' + user.username } title={ user.name } data-user-preview={ user.id }><img class="avatar" src={ user.avatar_url + '?thumbnail&amp;size=32' } alt=""/></a></li>
 					</ol>
 				</div>
-				<div class="likes" if="{ likes &amp;&amp; likes.length &gt; 0 }">
+				<div class="likes" if={ likes &amp;&amp; likes.length &gt; 0 }>
 					<header><a>{ p.likes_count }</a>
 						<p>いいね</p>
 					</header>
 					<ol class="users">
-						<li class="user" each="{ likes }"><a class="avatar-anchor" href="{ CONFIG.url + '/' + username }" title="{ name }" data-user-preview="{ id }"><img class="avatar" src="{ avatar_url + '?thumbnail&amp;size=32' }" alt=""/></a></li>
+						<li class="user" each={ likes }><a class="avatar-anchor" href={ CONFIG.url + '/' + username } title={ name } data-user-preview={ id }><img class="avatar" src={ avatar_url + '?thumbnail&amp;size=32' } alt=""/></a></li>
 					</ol>
 				</div>
 			</div>
 		</article>
 		<div class="replies">
-			<virtual each="{ post in replies }">
-				<mk-post-detail-sub post="{ post }"></mk-post-detail-sub>
+			<virtual each={ post in replies }>
+				<mk-post-detail-sub post={ post }></mk-post-detail-sub>
 			</virtual>
 		</div>
 	</div>

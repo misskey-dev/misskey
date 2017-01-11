@@ -1,7 +1,7 @@
 <mk-drive-browser-window>
-	<mk-window ref="window" is-modal="{ false }" width="{ '800px' }" height="{ '500px' }"><yield to="header"><i class="fa fa-cloud"></i>ドライブ</yield>
+	<mk-window ref="window" is-modal={ false } width={ '800px' } height={ '500px' }><yield to="header"><i class="fa fa-cloud"></i>ドライブ</yield>
 <yield to="content">
-		<mk-drive-browser multiple="{ true }" folder="{ parent.folder }"></mk-drive-browser></yield>
+		<mk-drive-browser multiple={ true } folder={ parent.folder }></mk-drive-browser></yield>
 	</mk-window>
 	<style type="stylus">
 		:scope

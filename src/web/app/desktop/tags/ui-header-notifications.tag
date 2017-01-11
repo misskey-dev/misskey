@@ -1,6 +1,6 @@
 <mk-ui-header-notifications>
-	<button class="header" data-active="{ isOpen }" onclick="{ toggle }"><i class="fa fa-bell-o"></i></button>
-	<div class="notifications" if="{ isOpen }">
+	<button class="header" data-active={ isOpen } onclick={ toggle }><i class="fa fa-bell-o"></i></button>
+	<div class="notifications" if={ isOpen }>
 		<mk-notifications></mk-notifications>
 	</div>
 	<style type="stylus">

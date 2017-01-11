@@ -1,6 +1,6 @@
 <mk-search-page>
 	<mk-ui ref="ui">
-		<mk-search ref="search" query="{ parent.opts.query }"></mk-search>
+		<mk-search ref="search" query={ parent.opts.query }></mk-search>
 	</mk-ui>
 	<style type="stylus">
 		:scope

@@ -2,27 +2,27 @@
 	<div class="search">
 		<div class="form">
 			<label for="search-input"><i class="fa fa-search"></i></label>
-			<input ref="searchInput" type="search" oninput="{ search }" placeholder="ユーザーを探す"/>
+			<input ref="searchInput" type="search" oninput={ search } placeholder="ユーザーを探す"/>
 		</div>
 		<div class="result">
-			<ol class="users" if="{ searchResult.length &gt; 0 }">
-				<li each="{ user in searchResult }"><a onclick="{ user._click }"><img class="avatar" src="{ user.avatar_url + '?thumbnail&amp;size=32' }" alt=""/><span class="name">{ user.name }</span><span class="username">@{ user.username }</span></a></li>
+			<ol class="users" if={ searchResult.length &gt; 0 }>
+				<li each={ user in searchResult }><a onclick={ user._click }><img class="avatar" src={ user.avatar_url + '?thumbnail&amp;size=32' } alt=""/><span class="name">{ user.name }</span><span class="username">@{ user.username }</span></a></li>
 			</ol>
 		</div>
 	</div>
 	<div class="main">
-		<div class="history" if="{ history.length &gt; 0 }">
-			<virtual each="{ history }"><a class="user" data-is-me="{ is_me }" data-is-read="{ is_read }" onclick="{ _click }">
-					<div><img class="avatar" src="{ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&amp;size=64' }" alt=""/>
+		<div class="history" if={ history.length &gt; 0 }>
+			<virtual each={ history }><a class="user" data-is-me={ is_me } data-is-read={ is_read } onclick={ _click }>
+					<div><img class="avatar" src={ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&amp;size=64' } alt=""/>
 						<header><span class="name">{ is_me ? recipient.name : user.name }</span><span class="username">{ '@' + (is_me ? recipient.username : user.username ) }</span>
-							<mk-time time="{ created_at }"></mk-time>
+							<mk-time time={ created_at }></mk-time>
 						</header>
 						<div class="body">
-							<p class="text"><span class="me" if="{ is_me }">あなた:</span>{ text }</p>
+							<p class="text"><span class="me" if={ is_me }>あなた:</span>{ text }</p>
 						</div>
 					</div></a></virtual>
 		</div>
-		<p class="no-history" if="{ history.length == 0 }">履歴はありません。<br/>ユーザーを検索して、いつでもメッセージを送受信できます。</p>
+		<p class="no-history" if={ history.length == 0 }>履歴はありません。<br/>ユーザーを検索して、いつでもメッセージを送受信できます。</p>
 	</div>
 	<style type="stylus">
 		:scope

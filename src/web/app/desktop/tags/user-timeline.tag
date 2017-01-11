@@ -1,10 +1,10 @@
 <mk-user-timeline>
-	<header><span data-is-active="{ mode == 'default' }" onclick="{ setMode.bind(this, 'default') }">投稿</span><span data-is-active="{ mode == 'with-replies' }" onclick="{ setMode.bind(this, 'with-replies') }">投稿と返信</span></header>
-	<div class="loading" if="{ isLoading }">
+	<header><span data-is-active={ mode == 'default' } onclick={ setMode.bind(this, 'default') }>投稿</span><span data-is-active={ mode == 'with-replies' } onclick={ setMode.bind(this, 'with-replies') }>投稿と返信</span></header>
+	<div class="loading" if={ isLoading }>
 		<mk-ellipsis-icon></mk-ellipsis-icon>
 	</div>
-	<p class="empty" if="{ isEmpty }"><i class="fa fa-comments-o"></i>このユーザーはまだ何も投稿していないようです。</p>
-	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if="{ !parent.moreLoading }"></i><i class="fa fa-spinner fa-pulse fa-fw" if="{ parent.moreLoading }"></i></yield></mk-timeline>
+	<p class="empty" if={ isEmpty }><i class="fa fa-comments-o"></i>このユーザーはまだ何も投稿していないようです。</p>
+	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i></yield></mk-timeline>
 	<style type="stylus">
 		:scope
 			display block

@@ -1,6 +1,6 @@
 <mk-notifications-home-widget>
 	<p class="title"><i class="fa fa-bell-o"></i>通知</p>
-	<button onclick="{ settings }" title="通知の設定"><i class="fa fa-cog"></i></button>
+	<button onclick={ settings } title="通知の設定"><i class="fa fa-cog"></i></button>
 	<mk-notifications></mk-notifications>
 	<style type="stylus">
 		:scope

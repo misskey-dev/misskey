@@ -1,10 +1,10 @@
 <mk-user-home>
 	<div class="side">
-		<mk-user-profile user="{ user }"></mk-user-profile>
-		<mk-user-photos user="{ user }"></mk-user-photos>
+		<mk-user-profile user={ user }></mk-user-profile>
+		<mk-user-photos user={ user }></mk-user-photos>
 	</div>
 	<main>
-		<mk-user-timeline ref="tl" user="{ user }"></mk-user-timeline>
+		<mk-user-timeline ref="tl" user={ user }></mk-user-timeline>
 	</main>
 	<style type="stylus">
 		:scope

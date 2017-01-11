@@ -1,6 +1,6 @@
 <mk-home-page>
-	<mk-ui ref="ui" page="{ page }">
-		<mk-home ref="home" mode="{ parent.opts.mode }"></mk-home>
+	<mk-ui ref="ui" page={ page }>
+		<mk-home ref="home" mode={ parent.opts.mode }></mk-home>
 	</mk-ui>
 	<style type="stylus">
 		:scope

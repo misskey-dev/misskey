@@ -1,10 +1,10 @@
 <mk-entrance>
 	<main><img src="/_/resources/title.svg" alt="Misskey"/>
-		<mk-entrance-signin if="{ mode == 'signin' }"></mk-entrance-signin>
-		<mk-entrance-signup if="{ mode == 'signup' }"></mk-entrance-signup>
-		<div class="introduction" if="{ mode == 'introduction' }">
+		<mk-entrance-signin if={ mode == 'signin' }></mk-entrance-signin>
+		<mk-entrance-signup if={ mode == 'signup' }></mk-entrance-signup>
+		<div class="introduction" if={ mode == 'introduction' }>
 			<mk-introduction></mk-introduction>
-			<button onclick="{ signin }">わかった</button>
+			<button onclick={ signin }>わかった</button>
 		</div>
 	</main>
 	<footer>

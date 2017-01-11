@@ -1,35 +1,35 @@
-<mk-timeline-post class="{ repost: isRepost }">
-	<div class="reply-to" if="{ p.reply_to }">
-		<mk-timeline-post-sub post="{ p.reply_to }"></mk-timeline-post-sub>
+<mk-timeline-post class={ repost: isRepost }>
+	<div class="reply-to" if={ p.reply_to }>
+		<mk-timeline-post-sub post={ p.reply_to }></mk-timeline-post-sub>
 	</div>
-	<div class="repost" if="{ isRepost }">
-		<p><a class="avatar-anchor" href="{ CONFIG.url + '/' + post.user.username }"><img class="avatar" src="{ post.user.avatar_url + '?thumbnail&amp;size=64' }" alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href="{ CONFIG.url + '/' + post.user.username }">{ post.user.name }</a>がRepost</p>
-		<mk-time time="{ post.created_at }"></mk-time>
+	<div class="repost" if={ isRepost }>
+		<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>がRepost</p>
+		<mk-time time={ post.created_at }></mk-time>
 	</div>
-	<article><a class="avatar-anchor" href="{ CONFIG.url + '/' + p.user.username }"><img class="avatar" src="{ p.user.avatar_url + '?thumbnail&amp;size=96' }" alt="avatar"/></a>
+	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&amp;size=96' } alt="avatar"/></a>
 		<div class="main">
-			<header><a class="name" href="{ CONFIG.url + '/' + p.user.username }">{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="created-at" href="{ url }">
-					<mk-time time="{ p.created_at }"></mk-time></a></header>
+			<header><a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="created-at" href={ url }>
+					<mk-time time={ p.created_at }></mk-time></a></header>
 			<div class="body">
-				<div class="text"><a class="reply" if="{ p.reply_to }"><i class="fa fa-reply"></i></a>
-					<soan ref="text"></soan><a class="quote" if="{ p.repost != null }">RP:</a>
+				<div class="text"><a class="reply" if={ p.reply_to }><i class="fa fa-reply"></i></a>
+					<soan ref="text"></soan><a class="quote" if={ p.repost != null }>RP:</a>
 				</div>
-				<div class="media" if="{ p.media }">
-					<mk-images-viewer images="{ p.media }"></mk-images-viewer>
+				<div class="media" if={ p.media }>
+					<mk-images-viewer images={ p.media }></mk-images-viewer>
 				</div>
-				<div class="repost" if="{ p.repost }"><i class="fa fa-quote-right fa-flip-horizontal"></i>
-					<mk-post-preview class="repost" post="{ p.repost }"></mk-post-preview>
+				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
+					<mk-post-preview class="repost" post={ p.repost }></mk-post-preview>
 				</div>
 			</div>
 			<footer>
-				<button onclick="{ reply }"><i class="fa fa-reply"></i>
-					<p class="count" if="{ p.replies_count &gt; 0 }">{ p.replies_count }</p>
+				<button onclick={ reply }><i class="fa fa-reply"></i>
+					<p class="count" if={ p.replies_count &gt; 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick="{ repost }" title="Repost"><i class="fa fa-retweet"></i>
-					<p class="count" if="{ p.repost_count &gt; 0 }">{ p.repost_count }</p>
+				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
+					<p class="count" if={ p.repost_count &gt; 0 }>{ p.repost_count }</p>
 				</button>
-				<button class="{ liked: p.is_liked }" onclick="{ like }"><i class="fa fa-thumbs-o-up"></i>
-					<p class="count" if="{ p.likes_count &gt; 0 }">{ p.likes_count }</p>
+				<button class={ liked: p.is_liked } onclick={ like }><i class="fa fa-thumbs-o-up"></i>
+					<p class="count" if={ p.likes_count &gt; 0 }>{ p.likes_count }</p>
 				</button>
 			</footer>
 		</div>

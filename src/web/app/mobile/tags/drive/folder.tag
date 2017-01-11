@@ -1,4 +1,4 @@
-<mk-drive-folder onclick="{ onclick }">
+<mk-drive-folder onclick={ onclick }>
 	<div class="container">
 		<p class="name"><i class="fa fa-folder"></i>{ folder.name }</p><i class="fa fa-angle-right"></i>
 	</div>

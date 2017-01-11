@@ -1,36 +1,36 @@
 <mk-drive>
 	<nav>
-		<p onclick="{ goRoot }"><i class="fa fa-cloud"></i>ドライブ</p>
-		<virtual each="{ folder in hierarchyFolders }"><span><i class="fa fa-angle-right"></i></span>
-			<p onclick="{ _move }">{ folder.name }</p>
-		</virtual><span if="{ folder != null }"><i class="fa fa-angle-right"></i></span>
-		<p if="{ folder != null }">{ folder.name }</p>
+		<p onclick={ goRoot }><i class="fa fa-cloud"></i>ドライブ</p>
+		<virtual each={ folder in hierarchyFolders }><span><i class="fa fa-angle-right"></i></span>
+			<p onclick={ _move }>{ folder.name }</p>
+		</virtual><span if={ folder != null }><i class="fa fa-angle-right"></i></span>
+		<p if={ folder != null }>{ folder.name }</p>
 	</nav>
-	<div class="browser { loading: loading }" if="{ file == null }">
-		<div class="folders" if="{ folders.length &gt; 0 }">
-			<virtual each="{ folder in folders }">
-				<mk-drive-folder folder="{ folder }"></mk-drive-folder>
+	<div class="browser { loading: loading }" if={ file == null }>
+		<div class="folders" if={ folders.length &gt; 0 }>
+			<virtual each={ folder in folders }>
+				<mk-drive-folder folder={ folder }></mk-drive-folder>
 			</virtual>
-			<p if="{ moreFolders }">もっと読み込む</p>
+			<p if={ moreFolders }>もっと読み込む</p>
 		</div>
-		<div class="files" if="{ files.length &gt; 0 }">
-			<virtual each="{ file in files }">
-				<mk-drive-file file="{ file }"></mk-drive-file>
+		<div class="files" if={ files.length &gt; 0 }>
+			<virtual each={ file in files }>
+				<mk-drive-file file={ file }></mk-drive-file>
 			</virtual>
-			<p if="{ moreFiles }">もっと読み込む</p>
+			<p if={ moreFiles }>もっと読み込む</p>
 		</div>
-		<div class="empty" if="{ files.length == 0 &amp;&amp; folders.length == 0 &amp;&amp; !loading }">
-			<p if="{ !folder == null }">ドライブには何もありません。</p>
-			<p if="{ folder != null }">このフォルダーは空です</p>
+		<div class="empty" if={ files.length == 0 &amp;&amp; folders.length == 0 &amp;&amp; !loading }>
+			<p if={ !folder == null }>ドライブには何もありません。</p>
+			<p if={ folder != null }>このフォルダーは空です</p>
 		</div>
-		<div class="loading" if="{ loading }">
+		<div class="loading" if={ loading }>
 			<div class="spinner">
 				<div class="dot1"></div>
 				<div class="dot2"></div>
 			</div>
 		</div>
 	</div>
-	<mk-drive-file-viewer if="{ file != null }" file="{ file }"></mk-drive-file-viewer>
+	<mk-drive-file-viewer if={ file != null } file={ file }></mk-drive-file-viewer>
 	<style type="stylus">
 		:scope
 			display block

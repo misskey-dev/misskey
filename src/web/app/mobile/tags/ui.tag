@@ -1,7 +1,7 @@
 <mk-ui>
 	<div class="global" ref="global">
-		<mk-ui-header ref="header" ready="{ ready }"></mk-ui-header>
-		<mk-ui-nav ref="nav" ready="{ ready }"></mk-ui-nav>
+		<mk-ui-header ref="header" ready={ ready }></mk-ui-header>
+		<mk-ui-nav ref="nav" ready={ ready }></mk-ui-nav>
 		<div class="content" ref="main"><yield /></div>
 	</div>
 	<mk-stream-indicator></mk-stream-indicator>

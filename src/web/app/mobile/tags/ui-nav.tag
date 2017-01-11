@@ -1,6 +1,6 @@
 <mk-ui-nav>
 	<div class="body">
-		<div class="content"><a class="me" if="{ SIGNIN }" href="{ CONFIG.url + '/' + I.username }"><img class="avatar" src="{ I.avatar_url + '?thumbnail&amp;size=128' }" alt="avatar"/>
+		<div class="content"><a class="me" if={ SIGNIN } href={ CONFIG.url + '/' + I.username }><img class="avatar" src={ I.avatar_url + '?thumbnail&amp;size=128' } alt="avatar"/>
 				<p class="name">{ I.name }</p></a>
 			<div class="links">
 				<ul>
@@ -13,7 +13,7 @@
 					<li class="messaging"><a><i class="icon fa fa-comments-o"></i>メッセージ<i class="angle fa fa-angle-right"></i></a></li>
 				</ul>
 				<ul>
-					<li class="settings"><a onclick="{ search }"><i class="icon fa fa-search"></i>検索<i class="angle fa fa-angle-right"></i></a></li>
+					<li class="settings"><a onclick={ search }><i class="icon fa fa-search"></i>検索<i class="angle fa fa-angle-right"></i></a></li>
 				</ul>
 				<ul>
 					<li class="settings"><a href="/i/drive"><i class="icon fa fa-cloud"></i>ドライブ<i class="angle fa fa-angle-right"></i></a></li>

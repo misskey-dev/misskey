@@ -1,23 +1,23 @@
-<mk-drive-file onclick="{ onclick }" data-is-selected="{ isSelected }">
+<mk-drive-file onclick={ onclick } data-is-selected={ isSelected }>
 	<div class="container">
-		<div class="thumbnail" style="{ 'background-image: url(' + file.url + '?thumbnail&amp;size=128)' }"></div>
+		<div class="thumbnail" style={ 'background-image: url(' + file.url + '?thumbnail&amp;size=128)' }></div>
 		<div class="body">
 			<p class="name">{ file.name }</p>
 			<!--
 			if file.tags.length > 0
 				ul.tags
 					each tag in file.tags
-						li.tag(style="{background: tag.color, color: contrast(tag.color)}")= tag.name
+						li.tag(style={background: tag.color, color: contrast(tag.color)})= tag.name
 			-->
 			<footer>
 				<p class="type">
-					<mk-file-type-icon file="{ file }"></mk-file-type-icon>{ file.type }
+					<mk-file-type-icon file={ file }></mk-file-type-icon>{ file.type }
 				</p>
 				<p class="separator"></p>
 				<p class="data-size">{ bytesToSize(file.datasize) }</p>
 				<p class="separator"></p>
 				<p class="created-at"><i class="fa fa-clock-o"></i>
-					<mk-time time="{ file.created_at }"></mk-time>
+					<mk-time time={ file.created_at }></mk-time>
 				</p>
 			</footer>
 		</div>

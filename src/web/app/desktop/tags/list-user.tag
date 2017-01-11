@@ -1,14 +1,14 @@
-<mk-list-user><a class="avatar-anchor" href="{ CONFIG.url + '/' + user.username }"><img class="avatar" src="{ user.avatar_url + '?thumbnail&amp;size=64' }" alt="avatar"/></a>
+<mk-list-user><a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }><img class="avatar" src={ user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
 	<div class="main">
 		<header>
-			<div class="left"><a class="name" href="{ CONFIG.url + '/' + user.username }">{ user.name }</a><span class="username">@{ user.username }</span></div>
+			<div class="left"><a class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</a><span class="username">@{ user.username }</span></div>
 		</header>
 		<div class="body">
-			<p class="followed" if="{ user.is_followed }">フォローされています</p>
+			<p class="followed" if={ user.is_followed }>フォローされています</p>
 			<div class="bio">{ user.bio }</div>
 		</div>
 	</div>
-	<mk-follow-button user="{ user }"></mk-follow-button>
+	<mk-follow-button user={ user }></mk-follow-button>
 	<style type="stylus">
 		:scope
 			display block

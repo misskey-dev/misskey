@@ -3,7 +3,7 @@
 	<h1>
 		<mk-ripple-string>サーバーに接続できません</mk-ripple-string>
 	</h1>
-	<p class="text">インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから<a onclick="{ retry }">再度お試し</a>ください。</p>
+	<p class="text">インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから<a onclick={ retry }>再度お試し</a>ください。</p>
 	<p class="thanks">いつもMisskeyをご利用いただきありがとうございます。</p>
 	<style type="stylus">
 		:scope

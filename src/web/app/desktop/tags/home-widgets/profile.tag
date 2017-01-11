@@ -1,5 +1,5 @@
 <mk-profile-home-widget>
-	<div class="banner" style="{ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&amp;size=256)' : '' }" onclick="{ setBanner }"></div><img class="avatar" src="{ I.avatar_url + '?thumbnail&amp;size=64' }" onclick="{ setAvatar }" alt="avatar" data-user-preview="{ I.id }"/><a class="name" href="{ CONFIG.url + '/' + I.username }">{ I.name }</a>
+	<div class="banner" style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&amp;size=256)' : '' } onclick={ setBanner }></div><img class="avatar" src={ I.avatar_url + '?thumbnail&amp;size=64' } onclick={ setAvatar } alt="avatar" data-user-preview={ I.id }/><a class="name" href={ CONFIG.url + '/' + I.username }>{ I.name }</a>
 	<p class="username">@{ I.username }</p>
 	<style type="stylus">
 		:scope

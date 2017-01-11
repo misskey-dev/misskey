@@ -1,23 +1,23 @@
-<mk-post-form ondragover="{ ondragover }" ondragenter="{ ondragenter }" ondragleave="{ ondragleave }" ondrop="{ ondrop }">
-	<textarea class="{ withfiles: files.length != 0 }" ref="text" disabled="{ wait }" oninput="{ update }" onkeydown="{ onkeydown }" onpaste="{ onpaste }" placeholder="{ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }"></textarea>
-	<div class="attaches" if="{ files.length != 0 }">
+<mk-post-form ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
+	<textarea class={ withfiles: files.length != 0 } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
+	<div class="attaches" if={ files.length != 0 }>
 		<ul class="files" ref="attaches">
-			<li class="file" each="{ files }">
-				<div class="img" style="background-image: url({ url + &quot;?thumbnail&amp;size=64&quot; })" title="{ name }"></div><img class="remove" onclick="{ _remove }" src="/_/resources/desktop/remove.png" title="添付取り消し" alt=""/>
+			<li class="file" each={ files }>
+				<div class="img" style="background-image: url({ url + &quot;?thumbnail&amp;size=64&quot; })" title={ name }></div><img class="remove" onclick={ _remove } src="/_/resources/desktop/remove.png" title="添付取り消し" alt=""/>
 			</li>
-			<li class="add" if="{ files.length &lt; 4 }" title="PCからファイルを添付" onclick="{ selectFile }"><i class="fa fa-plus"></i></li>
+			<li class="add" if={ files.length &lt; 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 		</ul>
 		<p class="remain">残り{ 4 - files.length }</p>
 	</div>
 	<mk-uploader ref="uploader"></mk-uploader>
-	<button ref="upload" title="PCからファイルを添付" onclick="{ selectFile }"><i class="fa fa-upload"></i></button>
-	<button ref="drive" title="ドライブからファイルを添付" onclick="{ selectFileFromDrive }"><i class="fa fa-cloud"></i></button>
+	<button ref="upload" title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-upload"></i></button>
+	<button ref="drive" title="ドライブからファイルを添付" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
 	<p class="text-count { over: refs.text.value.length &gt; 300 }">のこり{ 300 - refs.text.value.length }文字</p>
-	<button class="{ wait: wait }" ref="submit" disabled="{ wait || (refs.text.value.length == 0 &amp;&amp; files.length == 0) }" onclick="{ post }">{ wait ? '投稿中' : opts.reply ? '返信' : '投稿' }
-		<mk-ellipsis if="{ wait }"></mk-ellipsis>
+	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 &amp;&amp; files.length == 0) } onclick={ post }>{ wait ? '投稿中' : opts.reply ? '返信' : '投稿' }
+		<mk-ellipsis if={ wait }></mk-ellipsis>
 	</button>
-	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange="{ changeFile }"/>
-	<div class="dropzone" if="{ draghover }"></div>
+	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>
+	<div class="dropzone" if={ draghover }></div>
 	<style type="stylus">
 		:scope
 			display block

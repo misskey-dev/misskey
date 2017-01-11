@@ -1,44 +1,44 @@
 <mk-drive-browser>
 	<nav>
-		<div class="path" oncontextmenu="{ pathOncontextmenu }">
-			<mk-drive-browser-nav-folder class="{ current: folder == null }" folder="{ null }"></mk-drive-browser-nav-folder>
-			<virtual each="{ folder in hierarchyFolders }"><span class="separator"><i class="fa fa-angle-right"></i></span>
-				<mk-drive-browser-nav-folder folder="{ folder }"></mk-drive-browser-nav-folder>
-			</virtual><span class="separator" if="{ folder != null }"><i class="fa fa-angle-right"></i></span><span class="folder current" if="{ folder != null }">{ folder.name }</span>
+		<div class="path" oncontextmenu={ pathOncontextmenu }>
+			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }></mk-drive-browser-nav-folder>
+			<virtual each={ folder in hierarchyFolders }><span class="separator"><i class="fa fa-angle-right"></i></span>
+				<mk-drive-browser-nav-folder folder={ folder }></mk-drive-browser-nav-folder>
+			</virtual><span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span><span class="folder current" if={ folder != null }>{ folder.name }</span>
 		</div>
 		<input class="search" type="search" placeholder="&#xf002; 検索"/>
 	</nav>
-	<div class="main { uploading: uploads.length &gt; 0, loading: loading }" ref="main" onmousedown="{ onmousedown }" ondragover="{ ondragover }" ondragenter="{ ondragenter }" ondragleave="{ ondragleave }" ondrop="{ ondrop }" oncontextmenu="{ oncontextmenu }">
+	<div class="main { uploading: uploads.length &gt; 0, loading: loading }" ref="main" onmousedown={ onmousedown } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu }>
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
-			<div class="folders" ref="foldersContainer" if="{ folders.length &gt; 0 }">
-				<virtual each="{ folder in folders }">
-					<mk-drive-browser-folder class="folder" folder="{ folder }"></mk-drive-browser-folder>
+			<div class="folders" ref="foldersContainer" if={ folders.length &gt; 0 }>
+				<virtual each={ folder in folders }>
+					<mk-drive-browser-folder class="folder" folder={ folder }></mk-drive-browser-folder>
 				</virtual>
-				<button if="{ moreFolders }">もっと読み込む</button>
+				<button if={ moreFolders }>もっと読み込む</button>
 			</div>
-			<div class="files" ref="filesContainer" if="{ files.length &gt; 0 }">
-				<virtual each="{ file in files }">
-					<mk-drive-browser-file class="file" file="{ file }"></mk-drive-browser-file>
+			<div class="files" ref="filesContainer" if={ files.length &gt; 0 }>
+				<virtual each={ file in files }>
+					<mk-drive-browser-file class="file" file={ file }></mk-drive-browser-file>
 				</virtual>
-				<button if="{ moreFiles }">もっと読み込む</button>
+				<button if={ moreFiles }>もっと読み込む</button>
 			</div>
-			<div class="empty" if="{ files.length == 0 &amp;&amp; folders.length == 0 &amp;&amp; !loading }">
-				<p if="{ draghover }">ドロップですか？いいですよ、ボクはカワイイですからね</p>
-				<p if="{ !draghover &amp;&amp; folder == null }"><strong>ドライブには何もありません。</strong><br/>右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。</p>
-				<p if="{ !draghover &amp;&amp; folder != null }">このフォルダーは空です</p>
+			<div class="empty" if={ files.length == 0 &amp;&amp; folders.length == 0 &amp;&amp; !loading }>
+				<p if={ draghover }>ドロップですか？いいですよ、ボクはカワイイですからね</p>
+				<p if={ !draghover &amp;&amp; folder == null }><strong>ドライブには何もありません。</strong><br/>右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。</p>
+				<p if={ !draghover &amp;&amp; folder != null }>このフォルダーは空です</p>
 			</div>
 		</div>
-		<div class="loading" if="{ loading }">
+		<div class="loading" if={ loading }>
 			<div class="spinner">
 				<div class="dot1"></div>
 				<div class="dot2"></div>
 			</div>
 		</div>
 	</div>
-	<div class="dropzone" if="{ draghover }"></div>
+	<div class="dropzone" if={ draghover }></div>
 	<mk-uploader ref="uploader"></mk-uploader>
-	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" onchange="{ changeFileInput }"/>
+	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" onchange={ changeFileInput }/>
 	<style type="stylus">
 		:scope
 			display block

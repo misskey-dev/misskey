@@ -1,18 +1,18 @@
 <mk-ui-header>
-	<mk-donation if="{ SIGNIN &amp;&amp; !I.data.no_donation }"></mk-donation>
+	<mk-donation if={ SIGNIN &amp;&amp; !I.data.no_donation }></mk-donation>
 	<mk-special-message></mk-special-message>
 	<div class="main">
 		<div class="backdrop"></div>
 		<div class="main">
 			<div class="container">
 				<div class="left">
-					<mk-ui-header-nav page="{ opts.page }"></mk-ui-header-nav>
+					<mk-ui-header-nav page={ opts.page }></mk-ui-header-nav>
 				</div>
 				<div class="right">
 					<mk-ui-header-search></mk-ui-header-search>
-					<mk-ui-header-account if="{ SIGNIN }"></mk-ui-header-account>
-					<mk-ui-header-notifications if="{ SIGNIN }"></mk-ui-header-notifications>
-					<mk-ui-header-post-button if="{ SIGNIN }"></mk-ui-header-post-button>
+					<mk-ui-header-account if={ SIGNIN }></mk-ui-header-account>
+					<mk-ui-header-notifications if={ SIGNIN }></mk-ui-header-notifications>
+					<mk-ui-header-post-button if={ SIGNIN }></mk-ui-header-post-button>
 					<mk-ui-header-clock></mk-ui-header-clock>
 				</div>
 			</div>

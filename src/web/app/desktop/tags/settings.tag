@@ -1,28 +1,28 @@
 <mk-settings>
 	<div class="nav">
-		<p class="{ active: page == 'account' }" onmousedown="{ setPage.bind(null, 'account') }"><i class="fa fa-fw fa-user"></i>アカウント</p>
-		<p class="{ active: page == 'web' }" onmousedown="{ setPage.bind(null, 'web') }"><i class="fa fa-fw fa-desktop"></i>Web</p>
-		<p class="{ active: page == 'notification' }" onmousedown="{ setPage.bind(null, 'notification') }"><i class="fa fa-fw fa-bell-o"></i>通知</p>
-		<p class="{ active: page == 'drive' }" onmousedown="{ setPage.bind(null, 'drive') }"><i class="fa fa-fw fa-cloud"></i>ドライブ</p>
-		<p class="{ active: page == 'apps' }" onmousedown="{ setPage.bind(null, 'apps') }"><i class="fa fa-fw fa-puzzle-piece"></i>アプリ</p>
-		<p class="{ active: page == 'signin' }" onmousedown="{ setPage.bind(null, 'signin') }"><i class="fa fa-fw fa-sign-in"></i>ログイン履歴</p>
-		<p class="{ active: page == 'password' }" onmousedown="{ setPage.bind(null, 'password') }"><i class="fa fa-fw fa-unlock-alt"></i>パスワード</p>
-		<p class="{ active: page == 'api' }" onmousedown="{ setPage.bind(null, 'api') }"><i class="fa fa-fw fa-key"></i>API</p>
+		<p class={ active: page == 'account' } onmousedown={ setPage.bind(null, 'account') }><i class="fa fa-fw fa-user"></i>アカウント</p>
+		<p class={ active: page == 'web' } onmousedown={ setPage.bind(null, 'web') }><i class="fa fa-fw fa-desktop"></i>Web</p>
+		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }><i class="fa fa-fw fa-bell-o"></i>通知</p>
+		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }><i class="fa fa-fw fa-cloud"></i>ドライブ</p>
+		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }><i class="fa fa-fw fa-puzzle-piece"></i>アプリ</p>
+		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }><i class="fa fa-fw fa-sign-in"></i>ログイン履歴</p>
+		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }><i class="fa fa-fw fa-unlock-alt"></i>パスワード</p>
+		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }><i class="fa fa-fw fa-key"></i>API</p>
 	</div>
 	<div class="pages">
-		<section class="account" show="{ page == 'account' }">
+		<section class="account" show={ page == 'account' }>
 			<h1>アカウント</h1>
 			<label class="avatar">
-				<p>アバター</p><img class="avatar" src="{ I.avatar_url + '?thumbnail&amp;size=64' }" alt="avatar"/>
-				<button class="style-normal" onclick="{ avatar }">画像を選択</button>
+				<p>アバター</p><img class="avatar" src={ I.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/>
+				<button class="style-normal" onclick={ avatar }>画像を選択</button>
 			</label>
 			<label>
 				<p>名前</p>
-				<input ref="accountName" type="text" value="{ I.name }"/>
+				<input ref="accountName" type="text" value={ I.name }/>
 			</label>
 			<label>
 				<p>場所</p>
-				<input ref="accountLocation" type="text" value="{ I.location }"/>
+				<input ref="accountLocation" type="text" value={ I.location }/>
 			</label>
 			<label>
 				<p>自己紹介</p>
@@ -30,46 +30,46 @@
 			</label>
 			<label>
 				<p>誕生日</p>
-				<input ref="accountBirthday" type="date" value="{ I.birthday }"/>
+				<input ref="accountBirthday" type="date" value={ I.birthday }/>
 			</label>
-			<button class="style-primary" onclick="{ updateAccount }">保存</button>
+			<button class="style-primary" onclick={ updateAccount }>保存</button>
 		</section>
-		<section class="web" show="{ page == 'web' }">
+		<section class="web" show={ page == 'web' }>
 			<h1>デザイン</h1>
 			<label>
 				<p>壁紙</p>
-				<button class="style-normal" onclick="{ wallpaper }">画像を選択</button>
+				<button class="style-normal" onclick={ wallpaper }>画像を選択</button>
 			</label>
 		</section>
-		<section class="web" show="{ page == 'web' }">
+		<section class="web" show={ page == 'web' }>
 			<h1>その他</h1>
 			<label class="checkbox">
-				<input type="checkbox" checked="{ I.data.cache }" onclick="{ updateCache }"/>
+				<input type="checkbox" checked={ I.data.cache } onclick={ updateCache }/>
 				<p>読み込みを高速化する</p>
 				<p>API通信時に新鮮なユーザー情報をキャッシュすることでフェッチのオーバーヘッドを無くします。(実験的)</p>
 			</label>
 			<label class="checkbox">
-				<input type="checkbox" checked="{ I.data.debug }" onclick="{ updateDebug }"/>
+				<input type="checkbox" checked={ I.data.debug } onclick={ updateDebug }/>
 				<p>開発者モード</p>
 				<p>デバッグ等の開発者モードを有効にします。</p>
 			</label>
 			<label class="checkbox">
-				<input type="checkbox" checked="{ I.data.nya }" onclick="{ updateNya }"/>
+				<input type="checkbox" checked={ I.data.nya } onclick={ updateNya }/>
 				<p><i>な</i>を<i>にゃ</i>に変換する</p>
 				<p>攻撃的な投稿が多少和らぐ可能性があります。</p>
 			</label>
 		</section>
-		<section class="signin" show="{ page == 'signin' }">
+		<section class="signin" show={ page == 'signin' }>
 			<h1>ログイン履歴</h1>
 			<mk-signin-history></mk-signin-history>
 		</section>
-		<section class="api" show="{ page == 'api' }">
+		<section class="api" show={ page == 'api' }>
 			<h1>API</h1>
 			<p>Token:<code>{ I.token }</code></p>
 			<p>APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。</p>
 			<p>アカウントを乗っ取られてしまう可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。</p>
 			<p>万が一このトークンが漏れたりその可能性がある場合は
-				<button class="regenerate" onclick="{ regenerateToken }">トークンを再生成</button>できます。(副作用として、ログインしているすべてのデバイスでログアウトが発生します)
+				<button class="regenerate" onclick={ regenerateToken }>トークンを再生成</button>できます。(副作用として、ログインしているすべてのデバイスでログアウトが発生します)
 			</p>
 		</section>
 	</div>

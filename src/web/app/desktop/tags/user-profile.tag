@@ -1,15 +1,15 @@
 <mk-user-profile>
-	<div class="friend-form" if="{ SIGNIN &amp;&amp; I.id != user.id }">
-		<mk-big-follow-button user="{ user }"></mk-big-follow-button>
-		<p class="followed" if="{ user.is_followed }">フォローされています</p>
+	<div class="friend-form" if={ SIGNIN &amp;&amp; I.id != user.id }>
+		<mk-big-follow-button user={ user }></mk-big-follow-button>
+		<p class="followed" if={ user.is_followed }>フォローされています</p>
 	</div>
-	<div class="bio" if="{ user.bio != '' }">{ user.bio }</div>
-	<div class="birthday" if="{ user.birthday }">
+	<div class="bio" if={ user.bio != '' }>{ user.bio }</div>
+	<div class="birthday" if={ user.birthday }>
 		<p><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
 	</div>
 	<div class="friends">
-		<p class="following"><i class="fa fa-angle-right"></i><a onclick="{ showFollowing }">{ user.following_count }</a>人を<b>フォロー</b></p>
-		<p class="followers"><i class="fa fa-angle-right"></i><a onclick="{ showFollowers }">{ user.followers_count }</a>人の<b>フォロワー</b></p>
+		<p class="following"><i class="fa fa-angle-right"></i><a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
+		<p class="followers"><i class="fa fa-angle-right"></i><a onclick={ showFollowers }>{ user.followers_count }</a>人の<b>フォロワー</b></p>
 	</div>
 	<style type="stylus">
 		:scope

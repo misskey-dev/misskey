@@ -1,5 +1,5 @@
 <mk-messaging-window>
-	<mk-window ref="window" is-modal="{ false }" width="{ '500px' }" height="{ '560px' }"><yield to="header"><i class="fa fa-comments"></i>メッセージ</yield>
+	<mk-window ref="window" is-modal={ false } width={ '500px' } height={ '560px' }><yield to="header"><i class="fa fa-comments"></i>メッセージ</yield>
 <yield to="content">
 		<mk-messaging ref="index"></mk-messaging></yield>
 	</mk-window>

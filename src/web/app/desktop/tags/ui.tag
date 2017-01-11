@@ -1,8 +1,8 @@
 <mk-ui>
 	<div class="global" ref="global">
-		<mk-ui-header ref="header" page="{ opts.page }"></mk-ui-header>
-		<mk-set-avatar-suggestion if="{ SIGNIN &amp;&amp; I.avatar_id == null }"></mk-set-avatar-suggestion>
-		<mk-set-banner-suggestion if="{ SIGNIN &amp;&amp; I.banner_id == null }"></mk-set-banner-suggestion>
+		<mk-ui-header ref="header" page={ opts.page }></mk-ui-header>
+		<mk-set-avatar-suggestion if={ SIGNIN &amp;&amp; I.avatar_id == null }></mk-set-avatar-suggestion>
+		<mk-set-banner-suggestion if={ SIGNIN &amp;&amp; I.banner_id == null }></mk-set-banner-suggestion>
 		<div class="content"><yield /></div>
 	</div>
 	<mk-stream-indicator></mk-stream-indicator>

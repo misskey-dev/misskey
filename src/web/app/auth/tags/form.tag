@@ -1,6 +1,6 @@
 <mk-form>
 	<header>
-		<h1><i>{ app.name }</i>があなたの<b>アカウント</b>に<b>アクセス</b>することを<b>許可</b>しますか？</h1><img src="{ app.icon_url + '?thumbnail&amp;size=64' }"/>
+		<h1><i>{ app.name }</i>があなたの<b>アカウント</b>に<b>アクセス</b>することを<b>許可</b>しますか？</h1><img src={ app.icon_url + '?thumbnail&amp;size=64' }/>
 	</header>
 	<div class="app">
 		<section>
@@ -11,23 +11,23 @@
 		<section>
 			<h2>このアプリは次の権限を要求しています:</h2>
 			<ul>
-				<virtual each="{ p in app.permission }">
-					<li if="{ p == 'account-read' }">アカウントの情報を見る。</li>
-					<li if="{ p == 'account-write' }">アカウントの情報を操作する。</li>
-					<li if="{ p == 'post-write' }">投稿する。</li>
-					<li if="{ p == 'like-write' }">いいねしたりいいね解除する。</li>
-					<li if="{ p == 'following-write' }">フォローしたりフォロー解除する。</li>
-					<li if="{ p == 'drive-read' }">ドライブを見る。</li>
-					<li if="{ p == 'drive-write' }">ドライブを操作する。</li>
-					<li if="{ p == 'notification-read' }">通知を見る。</li>
-					<li if="{ p == 'notification-write' }">通知を操作する。</li>
+				<virtual each={ p in app.permission }>
+					<li if={ p == 'account-read' }>アカウントの情報を見る。</li>
+					<li if={ p == 'account-write' }>アカウントの情報を操作する。</li>
+					<li if={ p == 'post-write' }>投稿する。</li>
+					<li if={ p == 'like-write' }>いいねしたりいいね解除する。</li>
+					<li if={ p == 'following-write' }>フォローしたりフォロー解除する。</li>
+					<li if={ p == 'drive-read' }>ドライブを見る。</li>
+					<li if={ p == 'drive-write' }>ドライブを操作する。</li>
+					<li if={ p == 'notification-read' }>通知を見る。</li>
+					<li if={ p == 'notification-write' }>通知を操作する。</li>
 				</virtual>
 			</ul>
 		</section>
 	</div>
 	<div class="action">
-		<button onclick="{ cancel }">キャンセル</button>
-		<button onclick="{ accept }">アクセスを許可</button>
+		<button onclick={ cancel }>キャンセル</button>
+		<button onclick={ accept }>アクセスを許可</button>
 	</div>
 	<style type="stylus">
 		:scope

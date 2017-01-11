@@ -1,7 +1,7 @@
 <mk-post-page>
 	<mk-ui ref="ui">
 		<main>
-			<mk-post-detail ref="detail" post="{ parent.post }"></mk-post-detail>
+			<mk-post-detail ref="detail" post={ parent.post }></mk-post-detail>
 		</main>
 	</mk-ui>
 	<style type="stylus">

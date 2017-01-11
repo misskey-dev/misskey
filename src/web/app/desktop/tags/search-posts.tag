@@ -1,9 +1,9 @@
 <mk-search-posts>
-	<div class="loading" if="{ isLoading }">
+	<div class="loading" if={ isLoading }>
 		<mk-ellipsis-icon></mk-ellipsis-icon>
 	</div>
-	<p class="empty" if="{ isEmpty }"><i class="fa fa-search"></i>「{ query }」に関する投稿は見つかりませんでした。</p>
-	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if="{ !parent.moreLoading }"></i><i class="fa fa-spinner fa-pulse fa-fw" if="{ parent.moreLoading }"></i></yield></mk-timeline>
+	<p class="empty" if={ isEmpty }><i class="fa fa-search"></i>「{ query }」に関する投稿は見つかりませんでした。</p>
+	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i></yield></mk-timeline>
 	<style type="stylus">
 		:scope
 			display block

@@ -1,27 +1,27 @@
 <mk-user>
-	<div class="user" if="{ !fetching }">
+	<div class="user" if={ !fetching }>
 		<header>
-			<div class="banner" style="{ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&amp;size=1024)' : '' }"></div>
+			<div class="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&amp;size=1024)' : '' }></div>
 			<div class="body">
-				<div class="top"><a class="avatar"><img src="{ user.avatar_url + '?thumbnail&amp;size=160' }" alt="avatar"/></a>
-					<mk-follow-button if="{ SIGNIN &amp;&amp; I.id != user.id }" user="{ user }"></mk-follow-button>
+				<div class="top"><a class="avatar"><img src={ user.avatar_url + '?thumbnail&amp;size=160' } alt="avatar"/></a>
+					<mk-follow-button if={ SIGNIN &amp;&amp; I.id != user.id } user={ user }></mk-follow-button>
 				</div>
 				<div class="title">
-					<h1>{ user.name }</h1><span class="username">@{ user.username }</span><span class="followed" if="{ user.is_followed }">フォローされています</span>
+					<h1>{ user.name }</h1><span class="username">@{ user.username }</span><span class="followed" if={ user.is_followed }>フォローされています</span>
 				</div>
 				<div class="bio">{ user.bio }</div>
 				<div class="info">
-					<p class="location" if="{ user.location }"><i class="fa fa-map-marker"></i>{ user.location }</p>
-					<p class="birthday" if="{ user.birthday }"><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
+					<p class="location" if={ user.location }><i class="fa fa-map-marker"></i>{ user.location }</p>
+					<p class="birthday" if={ user.birthday }><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
 				</div>
 				<div class="friends"><a href="{ user.username }/following"><b>{ user.following_count }</b><i>フォロー</i></a><a href="{ user.username }/followers"><b>{ user.followers_count }</b><i>フォロワー</i></a></div>
 			</div>
-			<nav><a data-is-active="{ page == 'posts' }" onclick="{ goPosts }">投稿</a><a data-is-active="{ page == 'media' }" onclick="{ goMedia }">メディア</a><a data-is-active="{ page == 'graphs' }" onclick="{ goGraphs }">グラフ</a><a data-is-active="{ page == 'likes' }" onclick="{ goLikes }">いいね</a></nav>
+			<nav><a data-is-active={ page == 'posts' } onclick={ goPosts }>投稿</a><a data-is-active={ page == 'media' } onclick={ goMedia }>メディア</a><a data-is-active={ page == 'graphs' } onclick={ goGraphs }>グラフ</a><a data-is-active={ page == 'likes' } onclick={ goLikes }>いいね</a></nav>
 		</header>
 		<div class="body">
-			<mk-user-timeline if="{ page == 'posts' }" user="{ user }"></mk-user-timeline>
-			<mk-user-timeline if="{ page == 'media' }" user="{ user }" with-media="{ true }"></mk-user-timeline>
-			<mk-user-graphs if="{ page == 'graphs' }" user="{ user }"></mk-user-graphs>
+			<mk-user-timeline if={ page == 'posts' } user={ user }></mk-user-timeline>
+			<mk-user-timeline if={ page == 'media' } user={ user } with-media={ true }></mk-user-timeline>
+			<mk-user-graphs if={ page == 'graphs' } user={ user }></mk-user-graphs>
 		</div>
 	</div>
 	<style type="stylus">

@@ -1,13 +1,13 @@
 <mk-uploader>
-	<ol if="{ uploads.length &gt; 0 }">
-		<li each="{ uploads }">
+	<ol if={ uploads.length &gt; 0 }>
+		<li each={ uploads }>
 			<div class="img" style="background-image: url({ img })"></div>
 			<p class="name"><i class="fa fa-spinner fa-pulse"></i>{ name }</p>
-			<p class="status"><span class="initing" if="{ progress == undefined }">待機中
-					<mk-ellipsis></mk-ellipsis></span><span class="kb" if="{ progress != undefined }">{ String(Math.floor(progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i> / { String(Math.floor(progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i></span><span class="percentage" if="{ progress != undefined }">{ Math.floor((progress.value / progress.max) * 100) }</span></p>
-			<progress if="{ progress != undefined &amp;&amp; progress.value != progress.max }" value="{ progress.value }" max="{ progress.max }"></progress>
-			<div class="progress initing" if="{ progress == undefined }"></div>
-			<div class="progress waiting" if="{ progress != undefined &amp;&amp; progress.value == progress.max }"></div>
+			<p class="status"><span class="initing" if={ progress == undefined }>待機中
+					<mk-ellipsis></mk-ellipsis></span><span class="kb" if={ progress != undefined }>{ String(Math.floor(progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i> / { String(Math.floor(progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i></span><span class="percentage" if={ progress != undefined }>{ Math.floor((progress.value / progress.max) * 100) }</span></p>
+			<progress if={ progress != undefined &amp;&amp; progress.value != progress.max } value={ progress.value } max={ progress.max }></progress>
+			<div class="progress initing" if={ progress == undefined }></div>
+			<div class="progress waiting" if={ progress != undefined &amp;&amp; progress.value == progress.max }></div>
 		</li>
 	</ol>
 	<style type="stylus">
