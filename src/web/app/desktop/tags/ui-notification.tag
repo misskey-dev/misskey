@@ -1,41 +1,44 @@
-mk-ui-notification
-	p { opts.message }
+<mk-ui-notification>
+	<p>{ opts.message }</p>
+	<style type="stylus">
+		:scope
+			display block
+			position fixed
+			z-index 10000
+			top -64px
+			left 0
+			right 0
+			margin 0 auto
+			width 500px
+			color rgba(#000, 0.6)
+			background rgba(#fff, 0.9)
+			border-radius 0 0 8px 8px
+			box-shadow 0 2px 4px rgba(#000, 0.2)
 
-style.
-	display block
-	position fixed
-	z-index 10000
-	top -64px
-	left 0
-	right 0
-	margin 0 auto
-	width 500px
-	color rgba(#000, 0.6)
-	background rgba(#fff, 0.9)
-	border-radius 0 0 8px 8px
-	box-shadow 0 2px 4px rgba(#000, 0.2)
+			> p
+				margin 0
+				line-height 64px
+				text-align center
 
-	> p
-		margin 0
-		line-height 64px
-		text-align center
-
-script.
-	@on \mount ~>
-		Velocity @root, {
-			top: \0px
-		} {
-			duration: 500ms
-			easing: \ease-out
-		}
-
-		set-timeout ~>
+	</style>
+	<script>
+		@on \mount ~>
 			Velocity @root, {
-				top: \-64px
+				top: \0px
 			} {
 				duration: 500ms
 				easing: \ease-out
-				complete: ~>
-					@unmount!
 			}
-		, 6000ms
+
+			set-timeout ~>
+				Velocity @root, {
+					top: \-64px
+				} {
+					duration: 500ms
+					easing: \ease-out
+					complete: ~>
+						@unmount!
+				}
+			, 6000ms
+	</script>
+</mk-ui-notification>

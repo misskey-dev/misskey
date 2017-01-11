@@ -1,50 +1,51 @@
-mk-ui
-	div.global@global
-		mk-ui-header@header(ready={ ready })
-		mk-ui-nav@nav(ready={ ready })
+<mk-ui>
+	<div class="global" ref="global">
+		<mk-ui-header ref="header" ready="{ ready }"></mk-ui-header>
+		<mk-ui-nav ref="nav" ready="{ ready }"></mk-ui-nav>
+		<div class="content" ref="main"><yield /></div>
+	</div>
+	<mk-stream-indicator></mk-stream-indicator>
+	<style type="stylus">
+		:scope
+			display block
 
-		div.content@main
-			<yield />
+			> .global
+				> .content
+					background #fff
 
-	mk-stream-indicator
+	</style>
+	<script>
+		@mixin \stream
 
-style.
-	display block
+		@ready-count = 0
 
-	> .global
-		> .content
-			background #fff
+		#@ui.on \notification (text) ~>
+		#	alert text
 
-script.
-	@mixin \stream
+		@on \mount ~>
+			@stream.on \notification @on-stream-notification
+			@ready!
 
-	@ready-count = 0
+		@on \unmount ~>
+			@stream.off \notification @on-stream-notification
+			@slide.slide-close!
 
-	#@ui.on \notification (text) ~>
-	#	alert text
+		@ready = ~>
+			@ready-count++
 
-	@on \mount ~>
-		@stream.on \notification @on-stream-notification
-		@ready!
+			if @ready-count == 2
+				@slide = SpSlidemenu @refs.main, @refs.nav.root, \#hamburger {direction: \left}
+				@init-view-position!
 
-	@on \unmount ~>
-		@stream.off \notification @on-stream-notification
-		@slide.slide-close!
+		@init-view-position = ~>
+			top = @refs.header.root.offset-height
+			@refs.main.style.padding-top = top + \px
+			@refs.nav.root.style.margin-top = top + \px
+			@refs.nav.root.query-selector '.body > .content' .style.padding-bottom = top + \px
 
-	@ready = ~>
-		@ready-count++
-
-		if @ready-count == 2
-			@slide = SpSlidemenu @refs.main, @refs.nav.root, \#hamburger {direction: \left}
-			@init-view-position!
-
-	@init-view-position = ~>
-		top = @refs.header.root.offset-height
-		@refs.main.style.padding-top = top + \px
-		@refs.nav.root.style.margin-top = top + \px
-		@refs.nav.root.query-selector '.body > .content' .style.padding-bottom = top + \px
-
-	@on-stream-notification = (notification) ~>
-		el = document.body.append-child document.create-element \mk-notify
-		riot.mount el, do
-			notification: notification
+		@on-stream-notification = (notification) ~>
+			el = document.body.append-child document.create-element \mk-notify
+			riot.mount el, do
+				notification: notification
+	</script>
+</mk-ui>

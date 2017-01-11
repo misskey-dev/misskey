@@ -1,126 +1,126 @@
-mk-form
-	header
-		h1
-			i { app.name }
-			| があなたの
-			b アカウント
-			| に
-			b アクセス
-			| することを
-			b 許可
-			| しますか？
-		img(src={ app.icon_url + '?thumbnail&size=64' })
-	div.app
-		section
-			h2 { app.name }
-			p.nid { app.name_id }
-			p.description { app.description }
-		section
-			h2 このアプリは次の権限を要求しています:
-			ul
-				virtual(each={ p in app.permission })
-					li(if={ p == 'account-read' }) アカウントの情報を見る。
-					li(if={ p == 'account-write' }) アカウントの情報を操作する。
-					li(if={ p == 'post-write' }) 投稿する。
-					li(if={ p == 'like-write' }) いいねしたりいいね解除する。
-					li(if={ p == 'following-write' }) フォローしたりフォロー解除する。
-					li(if={ p == 'drive-read' }) ドライブを見る。
-					li(if={ p == 'drive-write' }) ドライブを操作する。
-					li(if={ p == 'notification-read' }) 通知を見る。
-					li(if={ p == 'notification-write' }) 通知を操作する。
+<mk-form>
+	<header>
+		<h1><i>{ app.name }</i>があなたの<b>アカウント</b>に<b>アクセス</b>することを<b>許可</b>しますか？</h1><img src="{ app.icon_url + '?thumbnail&amp;size=64' }"/>
+	</header>
+	<div class="app">
+		<section>
+			<h2>{ app.name }</h2>
+			<p class="nid">{ app.name_id }</p>
+			<p class="description">{ app.description }</p>
+		</section>
+		<section>
+			<h2>このアプリは次の権限を要求しています:</h2>
+			<ul>
+				<virtual each="{ p in app.permission }">
+					<li if="{ p == 'account-read' }">アカウントの情報を見る。</li>
+					<li if="{ p == 'account-write' }">アカウントの情報を操作する。</li>
+					<li if="{ p == 'post-write' }">投稿する。</li>
+					<li if="{ p == 'like-write' }">いいねしたりいいね解除する。</li>
+					<li if="{ p == 'following-write' }">フォローしたりフォロー解除する。</li>
+					<li if="{ p == 'drive-read' }">ドライブを見る。</li>
+					<li if="{ p == 'drive-write' }">ドライブを操作する。</li>
+					<li if="{ p == 'notification-read' }">通知を見る。</li>
+					<li if="{ p == 'notification-write' }">通知を操作する。</li>
+				</virtual>
+			</ul>
+		</section>
+	</div>
+	<div class="action">
+		<button onclick="{ cancel }">キャンセル</button>
+		<button onclick="{ accept }">アクセスを許可</button>
+	</div>
+	<style type="stylus">
+		:scope
+			display block
 
-	div.action
-		button(onclick={ cancel }) キャンセル
-		button(onclick={ accept }) アクセスを許可
+			> header
+				> h1
+					margin 0
+					padding 32px 32px 20px 32px
+					font-size 24px
+					font-weight normal
+					color #777
 
-style.
-	display block
+					i
+						color #77aeca
 
-	> header
-		> h1
-			margin 0
-			padding 32px 32px 20px 32px
-			font-size 24px
-			font-weight normal
-			color #777
+						&:before
+							content '「'
 
-			i
-				color #77aeca
+						&:after
+							content '」'
 
-				&:before
-					content '「'
+					b
+						color #666
+
+				> img
+					display block
+					z-index 1
+					width 84px
+					height 84px
+					margin 0 auto -38px auto
+					border solid 5px #fff
+					border-radius 100%
+					box-shadow 0 2px 2px rgba(0, 0, 0, 0.1)
+
+			> .app
+				padding 44px 16px 0 16px
+				color #555
+				background #eee
+				box-shadow 0 2px 2px rgba(0, 0, 0, 0.1) inset
 
 				&:after
-					content '」'
+					content ''
+					display block
+					clear both
 
-			b
-				color #666
+				> section
+					float left
+					width 50%
+					padding 8px
+					text-align left
 
-		> img
-			display block
-			z-index 1
-			width 84px
-			height 84px
-			margin 0 auto -38px auto
-			border solid 5px #fff
-			border-radius 100%
-			box-shadow 0 2px 2px rgba(0, 0, 0, 0.1)
+					> h2
+						margin 0
+						font-size 16px
+						color #777
 
-	> .app
-		padding 44px 16px 0 16px
-		color #555
-		background #eee
-		box-shadow 0 2px 2px rgba(0, 0, 0, 0.1) inset
+			> .action
+				padding 16px
 
-		&:after
-			content ''
-			display block
-			clear both
+				> button
+					margin 0 8px
 
-		> section
-			float left
-			width 50%
-			padding 8px
-			text-align left
+			@media (max-width 600px)
+				> header
+					> img
+						box-shadow none
 
-			> h2
-				margin 0
-				font-size 16px
-				color #777
+				> .app
+					box-shadow none
 
-	> .action
-		padding 16px
+			@media (max-width 500px)
+				> header
+					> h1
+						font-size 16px
 
-		> button
-			margin 0 8px
+	</style>
+	<script>
+		@mixin \api
 
-	@media (max-width 600px)
-		> header
-			> img
-				box-shadow none
+		@session = @opts.session
+		@app = @session.app
 
-		> .app
-			box-shadow none
+		@cancel = ~>
+			@api \auth/deny do
+				token: @session.token
+			.then ~>
+				@trigger \denied
 
-	@media (max-width 500px)
-		> header
-			> h1
-				font-size 16px
-
-script.
-	@mixin \api
-
-	@session = @opts.session
-	@app = @session.app
-
-	@cancel = ~>
-		@api \auth/deny do
-			token: @session.token
-		.then ~>
-			@trigger \denied
-
-	@accept = ~>
-		@api \auth/accept do
-			token: @session.token
-		.then ~>
-			@trigger \accepted
+		@accept = ~>
+			@api \auth/accept do
+				token: @session.token
+			.then ~>
+				@trigger \accepted
+	</script>
+</mk-form>

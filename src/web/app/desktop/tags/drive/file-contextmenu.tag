@@ -1,97 +1,103 @@
-mk-drive-browser-file-contextmenu
-	mk-contextmenu@ctx: ul
-		li(onclick={ parent.rename }): p
-			i.fa.fa-i-cursor
-			| 名前を変更
-		li(onclick={ parent.copy-url }): p
-			i.fa.fa-link
-			| URLをコピー
-		li: a(href={ parent.file.url + '?download' }, download={ parent.file.name }, onclick={ parent.download })
-			i.fa.fa-download
-			| ダウンロード
-		li.separator
-		li(onclick={ parent.delete }): p
-			i.fa.fa-trash-o
-			| 削除
-		li.separator
-		li.has-child
-			p
-				| その他...
-				i.fa.fa-caret-right
-			ul
-				li(onclick={ parent.set-avatar }): p
-					| アバターに設定
-				li(onclick={ parent.set-banner }): p
-					| バナーに設定
-				li(onclick={ parent.set-wallpaper }): p
-					| 壁紙に設定
-		li.has-child
-			p
-				| アプリで開く...
-				i.fa.fa-caret-right
-			ul
-				li(onclick={ parent.add-app }): p
-					| アプリを追加...
+<mk-drive-browser-file-contextmenu>
+	<mk-contextmenu ref="ctx">
+		<ul>
+			<li onclick="{ parent.rename }">
+				<p><i class="fa fa-i-cursor"></i>名前を変更</p>
+			</li>
+			<li onclick="{ parent.copyUrl }">
+				<p><i class="fa fa-link"></i>URLをコピー</p>
+			</li>
+			<li><a href="{ parent.file.url + '?download' }" download="{ parent.file.name }" onclick="{ parent.download }"><i class="fa fa-download"></i>ダウンロード</a></li>
+			<li class="separator"></li>
+			<li onclick="{ parent.delete }">
+				<p><i class="fa fa-trash-o"></i>削除</p>
+			</li>
+			<li class="separator"></li>
+			<li class="has-child">
+				<p>その他...<i class="fa fa-caret-right"></i></p>
+				<ul>
+					<li onclick="{ parent.setAvatar }">
+						<p>アバターに設定</p>
+					</li>
+					<li onclick="{ parent.setBanner }">
+						<p>バナーに設定</p>
+					</li>
+					<li onclick="{ parent.setWallpaper }">
+						<p>壁紙に設定</p>
+					</li>
+				</ul>
+			</li>
+			<li class="has-child">
+				<p>アプリで開く...<i class="fa fa-caret-right"></i></p>
+				<ul>
+					<li onclick="{ parent.addApp }">
+						<p>アプリを追加...</p>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</mk-contextmenu>
+	<script>
+		@mixin \api
+		@mixin \i
+		@mixin \update-avatar
+		@mixin \update-banner
+		@mixin \update-wallpaper
+		@mixin \input-dialog
+		@mixin \NotImplementedException
 
-script.
-	@mixin \api
-	@mixin \i
-	@mixin \update-avatar
-	@mixin \update-banner
-	@mixin \update-wallpaper
-	@mixin \input-dialog
-	@mixin \NotImplementedException
+		@browser = @opts.browser
+		@file = @opts.file
 
-	@browser = @opts.browser
-	@file = @opts.file
+		@on \mount ~>
+			@refs.ctx.on \closed ~>
+				@trigger \closed
+				@unmount!
 
-	@on \mount ~>
-		@refs.ctx.on \closed ~>
-			@trigger \closed
-			@unmount!
+		@open = (pos) ~>
+			@refs.ctx.open pos
 
-	@open = (pos) ~>
-		@refs.ctx.open pos
+		@rename = ~>
+			@refs.ctx.close!
 
-	@rename = ~>
-		@refs.ctx.close!
+			name <~ @input-dialog do
+				'ファイル名の変更'
+				'新しいファイル名を入力してください'
+				@file.name
 
-		name <~ @input-dialog do
-			'ファイル名の変更'
-			'新しいファイル名を入力してください'
-			@file.name
+			@api \drive/files/update do
+				file_id: @file.id
+				name: name
+			.then ~>
+				# something
+			.catch (err) ~>
+				console.error err
 
-		@api \drive/files/update do
-			file_id: @file.id
-			name: name
-		.then ~>
-			# something
-		.catch (err) ~>
-			console.error err
+		@copy-url = ~>
+			@NotImplementedException!
 
-	@copy-url = ~>
-		@NotImplementedException!
+		@download = ~>
+			@refs.ctx.close!
 
-	@download = ~>
-		@refs.ctx.close!
+		@set-avatar = ~>
+			@refs.ctx.close!
+			@update-avatar @I, (i) ~>
+				@update-i i
+			, @file
 
-	@set-avatar = ~>
-		@refs.ctx.close!
-		@update-avatar @I, (i) ~>
-			@update-i i
-		, @file
+		@set-banner = ~>
+			@refs.ctx.close!
+			@update-banner @I, (i) ~>
+				@update-i i
+			, @file
 
-	@set-banner = ~>
-		@refs.ctx.close!
-		@update-banner @I, (i) ~>
-			@update-i i
-		, @file
+		@set-wallpaper = ~>
+			@refs.ctx.close!
+			@update-wallpaper @I, (i) ~>
+				@update-i i
+			, @file
 
-	@set-wallpaper = ~>
-		@refs.ctx.close!
-		@update-wallpaper @I, (i) ~>
-			@update-i i
-		, @file
-
-	@add-app = ~>
-		@NotImplementedException!
+		@add-app = ~>
+			@NotImplementedException!
+	</script>
+</mk-drive-browser-file-contextmenu>

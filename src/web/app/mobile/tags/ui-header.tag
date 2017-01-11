@@ -1,98 +1,103 @@
-mk-ui-header
-	mk-special-message
-	div.main
-		div.backdrop
-		div.content
-			button.nav#hamburger: i.fa.fa-bars
-			h1@title Misskey
-			button.post(onclick={ post }): i.fa.fa-pencil
+<mk-ui-header>
+	<mk-special-message></mk-special-message>
+	<div class="main">
+		<div class="backdrop"></div>
+		<div class="content">
+			<button class="nav" id="hamburger"><i class="fa fa-bars"></i></button>
+			<h1 ref="title">Misskey</h1>
+			<button class="post" onclick="{ post }"><i class="fa fa-pencil"></i></button>
+		</div>
+	</div>
+	<style type="stylus">
+		:scope
+			$height = 48px
 
-style.
-	$height = 48px
-
-	display block
-	position fixed
-	top 0
-	z-index 1024
-	width 100%
-	box-shadow 0 1px 0 rgba(#000, 0.075)
-
-	> .main
-		color rgba(#000, 0.6)
-
-		> .backdrop
-			position absolute
+			display block
+			position fixed
 			top 0
-			z-index 1023
-			width 100%
-			height $height
-			-webkit-backdrop-filter blur(12px)
-			backdrop-filter blur(12px)
-			background-color rgba(#fff, 0.75)
-
-		> .content
 			z-index 1024
+			width 100%
+			box-shadow 0 1px 0 rgba(#000, 0.075)
 
-			> h1
-				display block
-				margin 0 auto
-				padding 0
-				width 100%
-				max-width calc(100% - 112px)
-				text-align center
-				font-size 1.1em
-				font-weight normal
-				line-height $height
-				white-space nowrap
-				overflow hidden
-				text-overflow ellipsis
+			> .main
+				color rgba(#000, 0.6)
 
-				> i
-					margin-right 8px
+				> .backdrop
+					position absolute
+					top 0
+					z-index 1023
+					width 100%
+					height $height
+					-webkit-backdrop-filter blur(12px)
+					backdrop-filter blur(12px)
+					background-color rgba(#fff, 0.75)
 
-				> img
-					display inline-block
-					vertical-align bottom
-					width ($height - 16px)
-					height ($height - 16px)
-					margin 8px
-					border-radius 6px
+				> .content
+					z-index 1024
 
-			> .nav
-				display block
-				position absolute
-				top 0
-				left 0
-				width $height
-				font-size 1.4em
-				line-height $height
-				border-right solid 1px rgba(#000, 0.1)
+					> h1
+						display block
+						margin 0 auto
+						padding 0
+						width 100%
+						max-width calc(100% - 112px)
+						text-align center
+						font-size 1.1em
+						font-weight normal
+						line-height $height
+						white-space nowrap
+						overflow hidden
+						text-overflow ellipsis
 
-				> i
-					transition all 0.2s ease
+						> i
+							margin-right 8px
 
-			> .post
-				display block
-				position absolute
-				top 0
-				right 0
-				width $height
-				text-align center
-				font-size 1.4em
-				color inherit
-				line-height $height
-				border-left solid 1px rgba(#000, 0.1)
+						> img
+							display inline-block
+							vertical-align bottom
+							width ($height - 16px)
+							height ($height - 16px)
+							margin 8px
+							border-radius 6px
 
-script.
-	@mixin \ui
-	@mixin \open-post-form
+					> .nav
+						display block
+						position absolute
+						top 0
+						left 0
+						width $height
+						font-size 1.4em
+						line-height $height
+						border-right solid 1px rgba(#000, 0.1)
 
-	@on \mount ~>
-		@opts.ready!
+						> i
+							transition all 0.2s ease
 
-	@ui.one \title (title) ~>
-		if @refs.title?
-			@refs.title.innerHTML = title
+					> .post
+						display block
+						position absolute
+						top 0
+						right 0
+						width $height
+						text-align center
+						font-size 1.4em
+						color inherit
+						line-height $height
+						border-left solid 1px rgba(#000, 0.1)
 
-	@post = ~>
-		@open-post-form!
+	</style>
+	<script>
+		@mixin \ui
+		@mixin \open-post-form
+
+		@on \mount ~>
+			@opts.ready!
+
+		@ui.one \title (title) ~>
+			if @refs.title?
+				@refs.title.innerHTML = title
+
+		@post = ~>
+			@open-post-form!
+	</script>
+</mk-ui-header>

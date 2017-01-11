@@ -1,89 +1,86 @@
-mk-post-preview
-	article
-		a.avatar-anchor(href={ CONFIG.url + '/' + post.user.username })
-			img.avatar(src={ post.user.avatar_url + '?thumbnail&size=64' }, alt='avatar')
-		div.main
-			header
-				a.name(href={ CONFIG.url + '/' + post.user.username })
-					| { post.user.name }
-				span.username
-					| @{ post.user.username }
-				a.time(href={ CONFIG.url + '/' + post.user.username + '/' + post.id })
-					mk-time(time={ post.created_at })
-			div.body
-				mk-sub-post-content.text(post={ post })
-
-style.
-	display block
-	margin 0
-	padding 0
-	font-size 0.9em
-	background #fff
-
-	> article
-
-		&:after
-			content ""
+<mk-post-preview>
+	<article><a class="avatar-anchor" href="{ CONFIG.url + '/' + post.user.username }"><img class="avatar" src="{ post.user.avatar_url + '?thumbnail&amp;size=64' }" alt="avatar"/></a>
+		<div class="main">
+			<header><a class="name" href="{ CONFIG.url + '/' + post.user.username }">{ post.user.name }</a><span class="username">@{ post.user.username }</span><a class="time" href="{ CONFIG.url + '/' + post.user.username + '/' + post.id }">
+					<mk-time time="{ post.created_at }"></mk-time></a></header>
+			<div class="body">
+				<mk-sub-post-content class="text" post="{ post }"></mk-sub-post-content>
+			</div>
+		</div>
+	</article>
+	<style type="stylus">
+		:scope
 			display block
-			clear both
+			margin 0
+			padding 0
+			font-size 0.9em
+			background #fff
 
-		&:hover
-			> .main > footer > button
-				color #888
+			> article
 
-		> .avatar-anchor
-			display block
-			float left
-			margin 0 12px 0 0
+				&:after
+					content ""
+					display block
+					clear both
 
-			> .avatar
-				display block
-				width 48px
-				height 48px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
+				&:hover
+					> .main > footer > button
+						color #888
 
-		> .main
-			float left
-			width calc(100% - 60px)
+				> .avatar-anchor
+					display block
+					float left
+					margin 0 12px 0 0
 
-			> header
-				margin-bottom 4px
-				white-space nowrap
+					> .avatar
+						display block
+						width 48px
+						height 48px
+						margin 0
+						border-radius 8px
+						vertical-align bottom
 
-				> .name
-					display inline
-					margin 0
-					padding 0
-					color #607073
-					font-size 1em
-					font-weight 700
-					text-align left
-					text-decoration none
+				> .main
+					float left
+					width calc(100% - 60px)
 
-					&:hover
-						text-decoration underline
+					> header
+						margin-bottom 4px
+						white-space nowrap
 
-				> .username
-					text-align left
-					margin 0 0 0 8px
-					color #d1d8da
+						> .name
+							display inline
+							margin 0
+							padding 0
+							color #607073
+							font-size 1em
+							font-weight 700
+							text-align left
+							text-decoration none
 
-				> .time
-					position absolute
-					top 0
-					right 0
-					color #b2b8bb
+							&:hover
+								text-decoration underline
 
-			> .body
+						> .username
+							text-align left
+							margin 0 0 0 8px
+							color #d1d8da
 
-				> .text
-					cursor default
-					margin 0
-					padding 0
-					font-size 1.1em
-					color #717171
+						> .time
+							position absolute
+							top 0
+							right 0
+							color #b2b8bb
 
-script.
-	@post = @opts.post
+					> .body
+
+						> .text
+							cursor default
+							margin 0
+							padding 0
+							font-size 1.1em
+							color #717171
+
+	</style>
+	<script>@post = @opts.post</script>
+</mk-post-preview>

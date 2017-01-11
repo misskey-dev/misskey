@@ -1,73 +1,75 @@
-mk-signin-history
-	div.records(if={ history.length != 0 })
-		div(each={ history })
-			mk-time(time={ created_at })
-			header
-				i.fa.fa-check(if={ success })
-				i.fa.fa-times(if={ !success })
-				span.ip { ip }
-			pre: code { JSON.stringify(headers, null, '    ') }
+<mk-signin-history>
+	<div class="records" if="{ history.length != 0 }">
+		<div each="{ history }">
+			<mk-time time="{ created_at }"></mk-time>
+			<header><i class="fa fa-check" if="{ success }"></i><i class="fa fa-times" if="{ !success }"></i><span class="ip">{ ip }</span></header>
+			<pre><code>{ JSON.stringify(headers, null, '    ') }</code></pre>
+		</div>
+	</div>
+	<style type="stylus">
+		:scope
+			display block
 
-style.
-	display block
+			> .records
+				> div
+					padding 16px 0 0 0
+					border-bottom solid 1px #eee
 
-	> .records
-		> div
-			padding 16px 0 0 0
-			border-bottom solid 1px #eee
+					> header
 
-			> header
+						> i
+							margin-right 8px
 
-				> i
-					margin-right 8px
+							&.fa-check
+								color #0fda82
 
-					&.fa-check
-						color #0fda82
+							&.fa-times
+								color #ff3100
 
-					&.fa-times
-						color #ff3100
+						> .ip
+							display inline-block
+							color #444
+							background #f8f8f8
 
-				> .ip
-					display inline-block
-					color #444
-					background #f8f8f8
+					> mk-time
+						position absolute
+						top 16px
+						right 0
+						color #777
 
-			> mk-time
-				position absolute
-				top 16px
-				right 0
-				color #777
+					> pre
+						overflow auto
+						max-height 100px
 
-			> pre
-				overflow auto
-				max-height 100px
+						> code
+							white-space pre-wrap
+							word-break break-all
+							color #4a535a
 
-				> code
-					white-space pre-wrap
-					word-break break-all
-					color #4a535a
+	</style>
+	<script>
+		@mixin \api
+		@mixin \stream
 
-script.
-	@mixin \api
-	@mixin \stream
+		@history = []
+		@fetching = true
 
-	@history = []
-	@fetching = true
+		@on \mount ~>
+			@api \i/signin_history
+			.then (history) ~>
+				@history = history
+				@fetching = false
+				@update!
+			.catch (err) ~>
+				console.error err
 
-	@on \mount ~>
-		@api \i/signin_history
-		.then (history) ~>
-			@history = history
-			@fetching = false
+			@stream.on \signin @on-signin
+
+		@on \unmount ~>
+			@stream.off \signin @on-signin
+
+		@on-signin = (signin) ~>
+			@history.unshift signin
 			@update!
-		.catch (err) ~>
-			console.error err
-
-		@stream.on \signin @on-signin
-
-	@on \unmount ~>
-		@stream.off \signin @on-signin
-
-	@on-signin = (signin) ~>
-		@history.unshift signin
-		@update!
+	</script>
+</mk-signin-history>

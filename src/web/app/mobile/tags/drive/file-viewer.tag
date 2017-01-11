@@ -1,8 +1,9 @@
-mk-drive-file-viewer
-	p.name { file.name }
+<mk-drive-file-viewer>
+	<p class="name">{ file.name }</p>
+	<style type="stylus">
+		:scope
+			display block
 
-style.
-	display block
-
-script.
-	@file = @opts.file
+	</style>
+	<script>@file = @opts.file</script>
+</mk-drive-file-viewer>

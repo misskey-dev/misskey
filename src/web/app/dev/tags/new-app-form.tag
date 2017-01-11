@@ -1,260 +1,243 @@
-mk-new-app-form
-	form(onsubmit={ onsubmit }, autocomplete='off')
-		section.name: label
-			p.caption
-				| アプリケーション名
-			input@name(
-				type='text'
-				placeholder='ex) Misskey for iOS'
-				autocomplete='off'
-				required)
-
-		section.nid: label
-			p.caption
-				| Named ID
-			input@nid(
-				type='text'
-				pattern='^[a-zA-Z0-9\-]{3,30}$'
-				placeholder='ex) misskey-for-ios'
-				autocomplete='off'
-				required
-				onkeyup={ on-change-nid })
-
-			p.info(if={ nid-state == 'wait' }, style='color:#999')
-				i.fa.fa-fw.fa-spinner.fa-pulse
-				| 確認しています...
-			p.info(if={ nid-state == 'ok' }, style='color:#3CB7B5')
-				i.fa.fa-fw.fa-check
-				| 利用できます
-			p.info(if={ nid-state == 'unavailable' }, style='color:#FF1161')
-				i.fa.fa-fw.fa-exclamation-triangle
-				| 既に利用されています
-			p.info(if={ nid-state == 'error' }, style='color:#FF1161')
-				i.fa.fa-fw.fa-exclamation-triangle
-				| 通信エラー
-			p.info(if={ nid-state == 'invalid-format' }, style='color:#FF1161')
-				i.fa.fa-fw.fa-exclamation-triangle
-				| a~z、A~Z、0~9、-(ハイフン)が使えます
-			p.info(if={ nid-state == 'min-range' }, style='color:#FF1161')
-				i.fa.fa-fw.fa-exclamation-triangle
-				| 3文字以上でお願いします！
-			p.info(if={ nid-state == 'max-range' }, style='color:#FF1161')
-				i.fa.fa-fw.fa-exclamation-triangle
-				| 30文字以内でお願いします
-
-		section.description: label
-			p.caption
-				| アプリの概要
-			textarea@description(
-				placeholder='ex) Misskey iOSクライアント。'
-				autocomplete='off'
-				required)
-
-		section.callback: label
-			p.caption
-				| コールバックURL (オプション)
-			input@cb(
-				type='url'
-				placeholder='ex) https://your.app.example.com/callback.php'
-				autocomplete='off')
-
-		section.permission
-			p.caption
-				| 権限
-			div@permission
-				label
-					input(type='checkbox', value='account-read')
-					p アカウントの情報を見る。
-				label
-					input(type='checkbox', value='account-write')
-					p アカウントの情報を操作する。
-				label
-					input(type='checkbox', value='post-write')
-					p 投稿する。
-				label
-					input(type='checkbox', value='like-write')
-					p いいねしたりいいね解除する。
-				label
-					input(type='checkbox', value='following-write')
-					p フォローしたりフォロー解除する。
-				label
-					input(type='checkbox', value='drive-read')
-					p ドライブを見る。
-				label
-					input(type='checkbox', value='drive-write')
-					p ドライブを操作する。
-				label
-					input(type='checkbox', value='notification-read')
-					p 通知を見る。
-				label
-					input(type='checkbox', value='notification-write')
-					p 通知を操作する。
-			p
-				i.fa.fa-exclamation-triangle
-				| アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。
-
-		button(onclick={ onsubmit })
-			| アプリ作成
-
-style.
-	display block
-	overflow hidden
-
-	> form
-
-		section
+<mk-new-app-form>
+	<form onsubmit="{ onsubmit }" autocomplete="off">
+		<section class="name">
+			<label>
+				<p class="caption">アプリケーション名</p>
+				<input ref="name" type="text" placeholder="ex) Misskey for iOS" autocomplete="off" required="required"/>
+			</label>
+		</section>
+		<section class="nid">
+			<label>
+				<p class="caption">Named ID</p>
+				<input ref="nid" type="text" pattern="^[a-zA-Z0-9-]{3,30}$" placeholder="ex) misskey-for-ios" autocomplete="off" required="required" onkeyup="{ onChangeNid }"/>
+				<p class="info" if="{ nidState == 'wait' }" style="color:#999"><i class="fa fa-fw fa-spinner fa-pulse"></i>確認しています...</p>
+				<p class="info" if="{ nidState == 'ok' }" style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>利用できます</p>
+				<p class="info" if="{ nidState == 'unavailable' }" style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>既に利用されています</p>
+				<p class="info" if="{ nidState == 'error' }" style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>通信エラー</p>
+				<p class="info" if="{ nidState == 'invalid-format' }" style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>a~z、A~Z、0~9、-(ハイフン)が使えます</p>
+				<p class="info" if="{ nidState == 'min-range' }" style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>3文字以上でお願いします！</p>
+				<p class="info" if="{ nidState == 'max-range' }" style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>30文字以内でお願いします</p>
+			</label>
+		</section>
+		<section class="description">
+			<label>
+				<p class="caption">アプリの概要</p>
+				<textarea ref="description" placeholder="ex) Misskey iOSクライアント。" autocomplete="off" required="required"></textarea>
+			</label>
+		</section>
+		<section class="callback">
+			<label>
+				<p class="caption">コールバックURL (オプション)</p>
+				<input ref="cb" type="url" placeholder="ex) https://your.app.example.com/callback.php" autocomplete="off"/>
+			</label>
+		</section>
+		<section class="permission">
+			<p class="caption">権限</p>
+			<div ref="permission">
+				<label>
+					<input type="checkbox" value="account-read"/>
+					<p>アカウントの情報を見る。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="account-write"/>
+					<p>アカウントの情報を操作する。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="post-write"/>
+					<p>投稿する。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="like-write"/>
+					<p>いいねしたりいいね解除する。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="following-write"/>
+					<p>フォローしたりフォロー解除する。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="drive-read"/>
+					<p>ドライブを見る。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="drive-write"/>
+					<p>ドライブを操作する。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="notification-read"/>
+					<p>通知を見る。</p>
+				</label>
+				<label>
+					<input type="checkbox" value="notification-write"/>
+					<p>通知を操作する。</p>
+				</label>
+			</div>
+			<p><i class="fa fa-exclamation-triangle"></i>アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。</p>
+		</section>
+		<button onclick="{ onsubmit }">アプリ作成</button>
+	</form>
+	<style type="stylus">
+		:scope
 			display block
-			margin 16px 0
+			overflow hidden
 
-			.caption
-				margin 0 0 4px 0
-				color #616161
-				font-size 0.95em
+			> form
 
-				> i
-					margin-right 0.25em
-					color #96adac
+				section
+					display block
+					margin 16px 0
 
-			.info
-				display block
-				margin 4px 0
-				font-size 0.8em
+					.caption
+						margin 0 0 4px 0
+						color #616161
+						font-size 0.95em
 
-				> i
-					margin-right 0.3em
+						> i
+							margin-right 0.25em
+							color #96adac
 
-		section.permission
-			div
-				padding 8px 0
-				max-height 160px
-				overflow auto
-				background #fff
-				border solid 1px #cecece
-				border-radius 4px
+					.info
+						display block
+						margin 4px 0
+						font-size 0.8em
 
-			label
-				display block
-				padding 0 12px
-				line-height 32px
-				cursor pointer
+						> i
+							margin-right 0.3em
 
-				&:hover
-					> p
+				section.permission
+					div
+						padding 8px 0
+						max-height 160px
+						overflow auto
+						background #fff
+						border solid 1px #cecece
+						border-radius 4px
+
+					label
+						display block
+						padding 0 12px
+						line-height 32px
+						cursor pointer
+
+						&:hover
+							> p
+								color #999
+
+							[type='checkbox']:checked + p
+								color #000
+
+						[type='checkbox']
+							margin-right 4px
+
+						[type='checkbox']:checked + p
+							color #111
+
+						> p
+							display inline
+							color #aaa
+							user-select none
+
+					> p:last-child
+						margin 6px
+						font-size 0.8em
 						color #999
 
-					[type='checkbox']:checked + p
-						color #000
+						> i
+							margin-right 4px
 
-				[type='checkbox']
-					margin-right 4px
+				[type=text]
+				[type=url]
+				textarea
+					user-select text
+					display inline-block
+					cursor auto
+					padding 8px 12px
+					margin 0
+					width 100%
+					font-size 1em
+					color #333
+					background #fff
+					outline none
+					border solid 1px #cecece
+					border-radius 4px
 
-				[type='checkbox']:checked + p
+					&:hover
+						border-color #bbb
+
+					&:focus
+						border-color $theme-color
+
+					&:disabled
+						opacity 0.5
+
+				> button
+					margin 20px 0 32px 0
+					width 100%
+					font-size 1em
 					color #111
+					border-radius 3px
 
-				> p
-					display inline
-					color #aaa
-					user-select none
+	</style>
+	<script>
+		@mixin \api
 
-			> p:last-child
-				margin 6px
-				font-size 0.8em
-				color #999
+		@nid-state = null
 
-				> i
-					margin-right 4px
+		@on-change-nid = ~>
+			nid = @refs.nid.value
 
-		[type=text]
-		[type=url]
-		textarea
-			user-select text
-			display inline-block
-			cursor auto
-			padding 8px 12px
-			margin 0
-			width 100%
-			font-size 1em
-			color #333
-			background #fff
-			outline none
-			border solid 1px #cecece
-			border-radius 4px
+			if nid == ''
+				@nid-state = null
+				@update!
+				return
 
-			&:hover
-				border-color #bbb
+			err = switch
+				| not nid.match /^[a-zA-Z0-9\-]+$/ => \invalid-format
+				| nid.length < 3chars              => \min-range
+				| nid.length > 30chars             => \max-range
+				| _                                     => null
 
-			&:focus
-				border-color $theme-color
+			if err?
+				@nid-state = err
+				@update!
+			else
+				@nid-state = \wait
+				@update!
 
-			&:disabled
-				opacity 0.5
+				@api \app/name_id/available do
+					name_id: nid
+				.then (result) ~>
+					if result.available
+						@nid-state = \ok
+					else
+						@nid-state = \unavailable
+					@update!
+				.catch (err) ~>
+					@nid-state = \error
+					@update!
 
-		> button
-			margin 20px 0 32px 0
-			width 100%
-			font-size 1em
-			color #111
-			border-radius 3px
+		@onsubmit = ~>
+			name = @refs.name.value
+			nid = @refs.nid.value
+			description = @refs.description.value
+			cb = @refs.cb.value
+			permission = []
 
-script.
-	@mixin \api
+			@refs.permission.query-selector-all \input .for-each (el) ~>
+				if el.checked then permission.push el.value
 
-	@nid-state = null
+			locker = document.body.append-child document.create-element \mk-locker
 
-	@on-change-nid = ~>
-		nid = @refs.nid.value
-
-		if nid == ''
-			@nid-state = null
-			@update!
-			return
-
-		err = switch
-			| not nid.match /^[a-zA-Z0-9\-]+$/ => \invalid-format
-			| nid.length < 3chars              => \min-range
-			| nid.length > 30chars             => \max-range
-			| _                                     => null
-
-		if err?
-			@nid-state = err
-			@update!
-		else
-			@nid-state = \wait
-			@update!
-
-			@api \app/name_id/available do
+			@api \app/create do
+				name: name
 				name_id: nid
-			.then (result) ~>
-				if result.available
-					@nid-state = \ok
-				else
-					@nid-state = \unavailable
-				@update!
-			.catch (err) ~>
-				@nid-state = \error
-				@update!
+				description: description
+				callback_url: cb
+				permission: permission.join \,
+			.then ~>
+				location.href = '/apps'
+			.catch ~>
+				alert 'アプリの作成に失敗しました。再度お試しください。'
 
-	@onsubmit = ~>
-		name = @refs.name.value
-		nid = @refs.nid.value
-		description = @refs.description.value
-		cb = @refs.cb.value
-		permission = []
-
-		@refs.permission.query-selector-all \input .for-each (el) ~>
-			if el.checked then permission.push el.value
-
-		locker = document.body.append-child document.create-element \mk-locker
-
-		@api \app/create do
-			name: name
-			name_id: nid
-			description: description
-			callback_url: cb
-			permission: permission.join \,
-		.then ~>
-			location.href = '/apps'
-		.catch ~>
-			alert 'アプリの作成に失敗しました。再度お試しください。'
-
-			locker.parent-node.remove-child locker
+				locker.parent-node.remove-child locker
+	</script>
+</mk-new-app-form>

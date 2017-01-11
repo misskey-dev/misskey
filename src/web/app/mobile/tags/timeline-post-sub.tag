@@ -1,99 +1,96 @@
-mk-timeline-post-sub
-	article
-		a.avatar-anchor(href={ '/' + post.user.username })
-			img.avatar(src={ post.user.avatar_url + '?thumbnail&size=96' }, alt='avatar')
-		div.main
-			header
-				a.name(href={ '/' + post.user.username })
-					| { post.user.name }
-				span.username
-					| @{ post.user.username }
-				a.created-at(href={ '/' + post.user.username + '/' + post.id })
-					mk-time(time={ post.created_at })
-			div.body
-				mk-sub-post-content.text(post={ post })
-
-style.
-	display block
-	margin 0
-	padding 0
-	font-size 0.9em
-
-	> article
-		padding 16px
-
-		&:after
-			content ""
+<mk-timeline-post-sub>
+	<article><a class="avatar-anchor" href="{ '/' + post.user.username }"><img class="avatar" src="{ post.user.avatar_url + '?thumbnail&amp;size=96' }" alt="avatar"/></a>
+		<div class="main">
+			<header><a class="name" href="{ '/' + post.user.username }">{ post.user.name }</a><span class="username">@{ post.user.username }</span><a class="created-at" href="{ '/' + post.user.username + '/' + post.id }">
+					<mk-time time="{ post.created_at }"></mk-time></a></header>
+			<div class="body">
+				<mk-sub-post-content class="text" post="{ post }"></mk-sub-post-content>
+			</div>
+		</div>
+	</article>
+	<style type="stylus">
+		:scope
 			display block
-			clear both
+			margin 0
+			padding 0
+			font-size 0.9em
 
-		&:hover
-			> .main > footer > button
-				color #888
+			> article
+				padding 16px
 
-		> .avatar-anchor
-			display block
-			float left
-			margin 0 10px 0 0
+				&:after
+					content ""
+					display block
+					clear both
 
-			@media (min-width 500px)
-				margin-right 16px
+				&:hover
+					> .main > footer > button
+						color #888
 
-			> .avatar
-				display block
-				width 44px
-				height 44px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
+				> .avatar-anchor
+					display block
+					float left
+					margin 0 10px 0 0
 
-				@media (min-width 500px)
-					width 52px
-					height 52px
+					@media (min-width 500px)
+						margin-right 16px
 
-		> .main
-			float left
-			width calc(100% - 54px)
+					> .avatar
+						display block
+						width 44px
+						height 44px
+						margin 0
+						border-radius 8px
+						vertical-align bottom
 
-			@media (min-width 500px)
-				width calc(100% - 68px)
+						@media (min-width 500px)
+							width 52px
+							height 52px
 
-			> header
-				margin-bottom 4px
-				white-space nowrap
+				> .main
+					float left
+					width calc(100% - 54px)
 
-				> .name
-					display inline
-					margin 0
-					padding 0
-					color #607073
-					font-size 1em
-					font-weight 700
-					text-align left
-					text-decoration none
+					@media (min-width 500px)
+						width calc(100% - 68px)
 
-					&:hover
-						text-decoration underline
+					> header
+						margin-bottom 4px
+						white-space nowrap
 
-				> .username
-					text-align left
-					margin 0 0 0 8px
-					color #d1d8da
+						> .name
+							display inline
+							margin 0
+							padding 0
+							color #607073
+							font-size 1em
+							font-weight 700
+							text-align left
+							text-decoration none
 
-				> .created-at
-					position absolute
-					top 0
-					right 0
-					color #b2b8bb
+							&:hover
+								text-decoration underline
 
-			> .body
+						> .username
+							text-align left
+							margin 0 0 0 8px
+							color #d1d8da
 
-				> .text
-					cursor default
-					margin 0
-					padding 0
-					font-size 1.1em
-					color #717171
+						> .created-at
+							position absolute
+							top 0
+							right 0
+							color #b2b8bb
 
-script.
-	@post = @opts.post
+					> .body
+
+						> .text
+							cursor default
+							margin 0
+							padding 0
+							font-size 1.1em
+							color #717171
+
+	</style>
+	<script>@post = @opts.post</script>
+</mk-timeline-post-sub>

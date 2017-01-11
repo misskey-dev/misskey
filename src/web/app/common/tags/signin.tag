@@ -1,136 +1,131 @@
-mk-signin
-	form(onsubmit={ onsubmit }, class={ signing: signing })
-		label.user-name
-			input@username(
-				type='text'
-				pattern='^[a-zA-Z0-9\-]+$'
-				placeholder='ユーザー名'
-				autofocus
-				required
-				oninput={ oninput })
-			i.fa.fa-at
-		label.password
-			input@password(
-				type='password'
-				placeholder='パスワード'
-				required)
-			i.fa.fa-lock
-		button(type='submit', disabled={ signing }) { signing ? 'やっています...' : 'サインイン' }
-
-style.
-	display block
-
-	> form
-		display block
-		z-index 2
-
-		&.signing
-			&, *
-				cursor wait !important
-
-		label
+<mk-signin>
+	<form class="{ signing: signing }" onsubmit="{ onsubmit }">
+		<label class="user-name">
+			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="ユーザー名" autofocus="autofocus" required="required" oninput="{ oninput }"/><i class="fa fa-at"></i>
+		</label>
+		<label class="password">
+			<input ref="password" type="password" placeholder="パスワード" required="required"/><i class="fa fa-lock"></i>
+		</label>
+		<button type="submit" disabled="{ signing }">{ signing ? 'やっています...' : 'サインイン' }</button>
+	</form>
+	<style type="stylus">
+		:scope
 			display block
-			margin 12px 0
 
-			i
+			> form
 				display block
-				pointer-events none
-				position absolute
-				bottom 0
-				top 0
-				left 0
-				z-index 1
-				margin auto
-				padding 0 16px
-				height 1em
-				color #898786
+				z-index 2
 
-			input[type=text]
-			input[type=password]
-				user-select text
-				display inline-block
-				cursor auto
-				padding 0 0 0 38px
-				margin 0
-				width 100%
-				line-height 44px
-				font-size 1em
-				color rgba(0, 0, 0, 0.7)
-				background #fff
-				outline none
-				border solid 1px #eee
-				border-radius 4px
+				&.signing
+					&, *
+						cursor wait !important
 
-				&:hover
-					background rgba(255, 255, 255, 0.7)
-					border-color #ddd
+				label
+					display block
+					margin 12px 0
 
-					& + i
-						color #797776
+					i
+						display block
+						pointer-events none
+						position absolute
+						bottom 0
+						top 0
+						left 0
+						z-index 1
+						margin auto
+						padding 0 16px
+						height 1em
+						color #898786
 
-				&:focus
-					background #fff
-					border-color #ccc
+					input[type=text]
+					input[type=password]
+						user-select text
+						display inline-block
+						cursor auto
+						padding 0 0 0 38px
+						margin 0
+						width 100%
+						line-height 44px
+						font-size 1em
+						color rgba(0, 0, 0, 0.7)
+						background #fff
+						outline none
+						border solid 1px #eee
+						border-radius 4px
 
-					& + i
-						color #797776
+						&:hover
+							background rgba(255, 255, 255, 0.7)
+							border-color #ddd
 
-		[type=submit]
-			cursor pointer
-			padding 16px
-			margin -6px 0 0 0
-			width 100%
-			font-size 1.2em
-			color rgba(0, 0, 0, 0.5)
-			outline none
-			border none
-			border-radius 0
-			background transparent
-			transition all .5s ease
+							& + i
+								color #797776
 
-			&:hover
-				color $theme-color
-				transition all .2s ease
+						&:focus
+							background #fff
+							border-color #ccc
 
-			&:focus
-				color $theme-color
-				transition all .2s ease
+							& + i
+								color #797776
 
-			&:active
-				color darken($theme-color, 30%)
-				transition all .2s ease
+				[type=submit]
+					cursor pointer
+					padding 16px
+					margin -6px 0 0 0
+					width 100%
+					font-size 1.2em
+					color rgba(0, 0, 0, 0.5)
+					outline none
+					border none
+					border-radius 0
+					background transparent
+					transition all .5s ease
 
-			&:disabled
-				opacity 0.7
+					&:hover
+						color $theme-color
+						transition all .2s ease
 
-script.
-	@mixin \api
+					&:focus
+						color $theme-color
+						transition all .2s ease
 
-	@user = null
-	@signing = false
+					&:active
+						color darken($theme-color, 30%)
+						transition all .2s ease
 
-	@oninput = ~>
-		@api \users/show do
-			username: @refs.username.value
-		.then (user) ~>
-			@user = user
-			@trigger \user user
+					&:disabled
+						opacity 0.7
+
+	</style>
+	<script>
+		@mixin \api
+
+		@user = null
+		@signing = false
+
+		@oninput = ~>
+			@api \users/show do
+				username: @refs.username.value
+			.then (user) ~>
+				@user = user
+				@trigger \user user
+				@update!
+
+		@onsubmit = (e) ~>
+			e.prevent-default!
+
+			@signing = true
 			@update!
 
-	@onsubmit = (e) ~>
-		e.prevent-default!
+			@api \signin do
+				username: @refs.username.value
+				password: @refs.password.value
+			.then ~>
+				location.reload!
+			.catch ~>
+				alert 'something happened'
+				@signing = false
+				@update!
 
-		@signing = true
-		@update!
-
-		@api \signin do
-			username: @refs.username.value
-			password: @refs.password.value
-		.then ~>
-			location.reload!
-		.catch ~>
-			alert 'something happened'
-			@signing = false
-			@update!
-
-		false
+			false
+	</script>
+</mk-signin>

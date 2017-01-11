@@ -1,128 +1,120 @@
-mk-timeline
-	div.init(if={ init })
-		i.fa.fa-spinner.fa-pulse
-		| 読み込んでいます
-	div.empty(if={ !init && posts.length == 0 })
-		i.fa.fa-comments-o
-		| { opts.empty || '表示するものがありません' }
-	virtual(each={ post, i in posts })
-		mk-timeline-post(post={ post })
-		p.date(if={ i != posts.length - 1 && post._date != posts[i + 1]._date })
-			span
-				i.fa.fa-angle-up
-				| { post._datetext }
-			span
-				i.fa.fa-angle-down
-				| { posts[i + 1]._datetext }
-	footer(if={ !init })
-		button(if={ can-fetch-more }, onclick={ more }, disabled={ fetching })
-			span(if={ !fetching }) もっとみる
-			span(if={ fetching })
-				| 読み込み中
-				mk-ellipsis
-
-style.
-	display block
-	background #fff
-	background-clip content-box
-	overflow hidden
-
-	> .init
-		padding 64px 0
-		text-align center
-		color #999
-
-		> i
-			margin-right 4px
-
-	> .empty
-		margin 0 auto
-		padding 32px
-		max-width 400px
-		text-align center
-		color #999
-
-		> i
+<mk-timeline>
+	<div class="init" if="{ init }"><i class="fa fa-spinner fa-pulse"></i>読み込んでいます</div>
+	<div class="empty" if="{ !init &amp;&amp; posts.length == 0 }"><i class="fa fa-comments-o"></i>{ opts.empty || '表示するものがありません' }</div>
+	<virtual each="{ post, i in posts }">
+		<mk-timeline-post post="{ post }"></mk-timeline-post>
+		<p class="date" if="{ i != posts.length - 1 &amp;&amp; post._date != posts[i + 1]._date }"><span><i class="fa fa-angle-up"></i>{ post._datetext }</span><span><i class="fa fa-angle-down"></i>{ posts[i + 1]._datetext }</span></p>
+	</virtual>
+	<footer if="{ !init }">
+		<button if="{ canFetchMore }" onclick="{ more }" disabled="{ fetching }"><span if="{ !fetching }">もっとみる</span><span if="{ fetching }">読み込み中
+				<mk-ellipsis></mk-ellipsis></span></button>
+	</footer>
+	<style type="stylus">
+		:scope
 			display block
-			margin-bottom 16px
-			font-size 3em
-			color #ccc
+			background #fff
+			background-clip content-box
+			overflow hidden
 
-	> mk-timeline-post
-		border-bottom solid 1px #eaeaea
+			> .init
+				padding 64px 0
+				text-align center
+				color #999
 
-		&:last-of-type
-			border-bottom none
+				> i
+					margin-right 4px
 
-	> .date
-		display block
-		margin 0
-		line-height 32px
-		text-align center
-		font-size 0.9em
-		color #aaa
-		background #fdfdfd
-		border-bottom solid 1px #eaeaea
+			> .empty
+				margin 0 auto
+				padding 32px
+				max-width 400px
+				text-align center
+				color #999
 
-		span
-			margin 0 16px
+				> i
+					display block
+					margin-bottom 16px
+					font-size 3em
+					color #ccc
 
-		i
-			margin-right 8px
+			> mk-timeline-post
+				border-bottom solid 1px #eaeaea
 
-	> footer
-		text-align center
-		border-top solid 1px #eaeaea
-		border-bottom-left-radius 4px
-		border-bottom-right-radius 4px
+				&:last-of-type
+					border-bottom none
 
-		> button
-			margin 0
-			padding 16px
-			width 100%
-			color $theme-color
+			> .date
+				display block
+				margin 0
+				line-height 32px
+				text-align center
+				font-size 0.9em
+				color #aaa
+				background #fdfdfd
+				border-bottom solid 1px #eaeaea
 
-			&:disabled
-				opacity 0.7
+				span
+					margin 0 16px
 
-script.
-	@posts = []
-	@init = true
-	@fetching = false
-	@can-fetch-more = true
+				i
+					margin-right 8px
 
-	@on \mount ~>
-		@opts.init.then (posts) ~>
-			@init = false
-			@set-posts posts
+			> footer
+				text-align center
+				border-top solid 1px #eaeaea
+				border-bottom-left-radius 4px
+				border-bottom-right-radius 4px
 
-	@on \update ~>
-		@posts.for-each (post) ~>
-			date = (new Date post.created_at).get-date!
-			month = (new Date post.created_at).get-month! + 1
-			post._date = date
-			post._datetext = month + '月 ' + date + '日'
+				> button
+					margin 0
+					padding 16px
+					width 100%
+					color $theme-color
 
-	@more = ~>
-		if @init or @fetching or @posts.length == 0 then return
-		@fetching = true
-		@update!
-		@opts.more!.then (posts) ~>
-			@fetching = false
-			@prepend-posts posts
+					&:disabled
+						opacity 0.7
 
-	@set-posts = (posts) ~>
-		@posts = posts
-		@update!
+	</style>
+	<script>
+		@posts = []
+		@init = true
+		@fetching = false
+		@can-fetch-more = true
 
-	@prepend-posts = (posts) ~>
-		posts.for-each (post) ~>
-			@posts.push post
+		@on \mount ~>
+			@opts.init.then (posts) ~>
+				@init = false
+				@set-posts posts
+
+		@on \update ~>
+			@posts.for-each (post) ~>
+				date = (new Date post.created_at).get-date!
+				month = (new Date post.created_at).get-month! + 1
+				post._date = date
+				post._datetext = month + '月 ' + date + '日'
+
+		@more = ~>
+			if @init or @fetching or @posts.length == 0 then return
+			@fetching = true
+			@update!
+			@opts.more!.then (posts) ~>
+				@fetching = false
+				@prepend-posts posts
+
+		@set-posts = (posts) ~>
+			@posts = posts
 			@update!
 
-	@add-post = (post) ~>
-		@posts.unshift post
-		@update!
+		@prepend-posts = (posts) ~>
+			posts.for-each (post) ~>
+				@posts.push post
+				@update!
 
-	@tail = ~>
-		@posts[@posts.length - 1]
+		@add-post = (post) ~>
+			@posts.unshift post
+			@update!
+
+		@tail = ~>
+			@posts[@posts.length - 1]
+	</script>
+</mk-timeline>

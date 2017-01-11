@@ -1,125 +1,116 @@
-mk-users-list
-	nav
-		span(data-is-active={ mode == 'all' }, onclick={ set-mode.bind(this, 'all') })
-			| すべて
-			span { opts.count }
-		// ↓ https://github.com/riot/riot/issues/2080
-		span(if={ SIGNIN && opts.you-know-count != '' }, data-is-active={ mode == 'iknow' }, onclick={ set-mode.bind(this, 'iknow') })
-			| 知り合い
-			span { opts.you-know-count }
-
-	div.users(if={ !fetching && users.length != 0 })
-		mk-user-preview(each={ users }, user={ this })
-
-	button.more(if={ !fetching && next != null }, onclick={ more }, disabled={ more-fetching })
-		span(if={ !more-fetching }) もっと
-		span(if={ more-fetching })
-			| 読み込み中
-			mk-ellipsis
-
-	p.no(if={ !fetching && users.length == 0 })
-		| { opts.no-users }
-	p.fetching(if={ fetching })
-		i.fa.fa-spinner.fa-pulse.fa-fw
-		| 読み込んでいます
-		mk-ellipsis
-
-style.
-	display block
-	background #fff
-
-	> nav
-		display flex
-		justify-content center
-		margin 0 auto
-		max-width 600px
-		border-bottom solid 1px #ddd
-
-		> span
+<mk-users-list>
+	<nav><span data-is-active="{ mode == 'all' }" onclick="{ setMode.bind(this, 'all') }">すべて<span>{ opts.count }</span></span>
+		<!-- ↓ https://github.com/riot/riot/issues/2080--><span if="{ SIGNIN &amp;&amp; opts.youKnowCount != '' }" data-is-active="{ mode == 'iknow' }" onclick="{ setMode.bind(this, 'iknow') }">知り合い<span>{ opts.youKnowCount }</span></span>
+	</nav>
+	<div class="users" if="{ !fetching &amp;&amp; users.length != 0 }">
+		<mk-user-preview each="{ users }" user="{ this }"></mk-user-preview>
+	</div>
+	<button class="more" if="{ !fetching &amp;&amp; next != null }" onclick="{ more }" disabled="{ moreFetching }"><span if="{ !moreFetching }">もっと</span><span if="{ moreFetching }">読み込み中
+			<mk-ellipsis></mk-ellipsis></span></button>
+	<p class="no" if="{ !fetching &amp;&amp; users.length == 0 }">{ opts.noUsers }</p>
+	<p class="fetching" if="{ fetching }"><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
+		<mk-ellipsis></mk-ellipsis>
+	</p>
+	<style type="stylus">
+		:scope
 			display block
-			flex 1 1
-			text-align center
-			line-height 52px
-			font-size 14px
-			color #657786
-			border-bottom solid 2px transparent
+			background #fff
 
-			&[data-is-active]
-				font-weight bold
-				color $theme-color
-				border-color $theme-color
+			> nav
+				display flex
+				justify-content center
+				margin 0 auto
+				max-width 600px
+				border-bottom solid 1px #ddd
 
-			> span
-				display inline-block
-				margin-left 4px
-				padding 2px 5px
-				font-size 12px
-				line-height 1
-				color #888
-				background #eee
-				border-radius 20px
+				> span
+					display block
+					flex 1 1
+					text-align center
+					line-height 52px
+					font-size 14px
+					color #657786
+					border-bottom solid 2px transparent
 
-	> .users
-		> *
-			max-width 600px
-			margin 0 auto
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
+					&[data-is-active]
+						font-weight bold
+						color $theme-color
+						border-color $theme-color
 
-	> .no
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
+					> span
+						display inline-block
+						margin-left 4px
+						padding 2px 5px
+						font-size 12px
+						line-height 1
+						color #888
+						background #eee
+						border-radius 20px
 
-	> .fetching
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
+			> .users
+				> *
+					max-width 600px
+					margin 0 auto
+					border-bottom solid 1px rgba(0, 0, 0, 0.05)
 
-		> i
-			margin-right 4px
+			> .no
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
 
-script.
-	@mixin \i
+			> .fetching
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
 
-	@limit = 30users
-	@mode = \all
+				> i
+					margin-right 4px
 
-	@fetching = true
-	@more-fetching = false
+	</style>
+	<script>
+		@mixin \i
 
-	@on \mount ~>
-		@fetch ~>
-			@trigger \loaded
+		@limit = 30users
+		@mode = \all
 
-	@fetch = (cb) ~>
 		@fetching = true
-		@update!
-		obj <~ @opts.fetch do
-			@mode == \iknow
-			@limit
-			null
-		@users = obj.users
-		@next = obj.next
-		@fetching = false
-		@update!
-		if cb? then cb!
-
-	@more = ~>
-		@more-fetching = true
-		@update!
-		obj <~ @opts.fetch do
-			@mode == \iknow
-			@limit
-			@cursor
-		@users = @users.concat obj.users
-		@next = obj.next
 		@more-fetching = false
-		@update!
 
-	@set-mode = (mode) ~>
-		@update do
-			mode: mode
+		@on \mount ~>
+			@fetch ~>
+				@trigger \loaded
 
-		@fetch!
+		@fetch = (cb) ~>
+			@fetching = true
+			@update!
+			obj <~ @opts.fetch do
+				@mode == \iknow
+				@limit
+				null
+			@users = obj.users
+			@next = obj.next
+			@fetching = false
+			@update!
+			if cb? then cb!
+
+		@more = ~>
+			@more-fetching = true
+			@update!
+			obj <~ @opts.fetch do
+				@mode == \iknow
+				@limit
+				@cursor
+			@users = @users.concat obj.users
+			@next = obj.next
+			@more-fetching = false
+			@update!
+
+		@set-mode = (mode) ~>
+			@update do
+				mode: mode
+
+			@fetch!
+	</script>
+</mk-users-list>

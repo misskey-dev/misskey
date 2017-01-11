@@ -1,7 +1,8 @@
-mk-raw
+<mk-raw>
+	<style type="stylus">
+		:scope
+			display inline
 
-style.
-	display inline
-
-script.
-	@root.innerHTML = @opts.content
+	</style>
+	<script>@root.innerHTML = @opts.content</script>
+</mk-raw>

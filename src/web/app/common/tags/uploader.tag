@@ -1,201 +1,195 @@
-mk-uploader
-	ol(if={ uploads.length > 0 })
-		li(each={ uploads })
-			div.img(style='background-image: url({ img })')
-			p.name
-				i.fa.fa-spinner.fa-pulse
-				| { name }
-			p.status
-				span.initing(if={ progress == undefined })
-					| 待機中
-					mk-ellipsis
-				span.kb(if={ progress != undefined })
-					| { String(Math.floor(progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }
-					i KB
-					= ' / '
-					| { String(Math.floor(progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }
-					i KB
-				span.percentage(if={ progress != undefined }) { Math.floor((progress.value / progress.max) * 100) }
-			progress(if={ progress != undefined && progress.value != progress.max }, value={ progress.value }, max={ progress.max })
-			div.progress.initing(if={ progress == undefined })
-			div.progress.waiting(if={ progress != undefined && progress.value == progress.max })
-
-style.
-	display block
-	overflow auto
-
-	&:empty
-		display none
-
-	> ol
-		display block
-		margin 0
-		padding 0
-		list-style none
-
-		> li
+<mk-uploader>
+	<ol if="{ uploads.length &gt; 0 }">
+		<li each="{ uploads }">
+			<div class="img" style="background-image: url({ img })"></div>
+			<p class="name"><i class="fa fa-spinner fa-pulse"></i>{ name }</p>
+			<p class="status"><span class="initing" if="{ progress == undefined }">待機中
+					<mk-ellipsis></mk-ellipsis></span><span class="kb" if="{ progress != undefined }">{ String(Math.floor(progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i> / { String(Math.floor(progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i></span><span class="percentage" if="{ progress != undefined }">{ Math.floor((progress.value / progress.max) * 100) }</span></p>
+			<progress if="{ progress != undefined &amp;&amp; progress.value != progress.max }" value="{ progress.value }" max="{ progress.max }"></progress>
+			<div class="progress initing" if="{ progress == undefined }"></div>
+			<div class="progress waiting" if="{ progress != undefined &amp;&amp; progress.value == progress.max }"></div>
+		</li>
+	</ol>
+	<style type="stylus">
+		:scope
 			display block
-			margin 8px 0 0 0
-			padding 0
-			height 36px
-			box-shadow 0 -1px 0 rgba($theme-color, 0.1)
-			border-top solid 8px transparent
+			overflow auto
 
-			&:first-child
-				margin 0
-				box-shadow none
-				border-top none
+			&:empty
+				display none
 
-			> .img
+			> ol
 				display block
-				position absolute
-				top 0
-				left 0
-				width 36px
-				height 36px
-				background-size cover
-				background-position center center
-
-			> .name
-				display block
-				position absolute
-				top 0
-				left 44px
 				margin 0
 				padding 0
-				max-width 256px
-				font-size 0.8em
-				color rgba($theme-color, 0.7)
-				white-space nowrap
-				text-overflow ellipsis
-				overflow hidden
+				list-style none
 
-				> i
-					margin-right 4px
+				> li
+					display block
+					margin 8px 0 0 0
+					padding 0
+					height 36px
+					box-shadow 0 -1px 0 rgba($theme-color, 0.1)
+					border-top solid 8px transparent
 
-			> .status
-				display block
-				position absolute
-				top 0
-				right 0
-				margin 0
-				padding 0
-				font-size 0.8em
+					&:first-child
+						margin 0
+						box-shadow none
+						border-top none
 
-				> .initing
-					color rgba($theme-color, 0.5)
+					> .img
+						display block
+						position absolute
+						top 0
+						left 0
+						width 36px
+						height 36px
+						background-size cover
+						background-position center center
 
-				> .kb
-					color rgba($theme-color, 0.5)
+					> .name
+						display block
+						position absolute
+						top 0
+						left 44px
+						margin 0
+						padding 0
+						max-width 256px
+						font-size 0.8em
+						color rgba($theme-color, 0.7)
+						white-space nowrap
+						text-overflow ellipsis
+						overflow hidden
 
-				> .percentage
-					display inline-block
-					width 48px
-					text-align right
+						> i
+							margin-right 4px
 
-					color rgba($theme-color, 0.7)
+					> .status
+						display block
+						position absolute
+						top 0
+						right 0
+						margin 0
+						padding 0
+						font-size 0.8em
 
-					&:after
-						content '%'
+						> .initing
+							color rgba($theme-color, 0.5)
 
-			> progress
-				display block
-				position absolute
-				bottom 0
-				right 0
-				margin 0
-				width calc(100% - 44px)
-				height 8px
-				background transparent
-				border none
-				border-radius 4px
-				overflow hidden
+						> .kb
+							color rgba($theme-color, 0.5)
 
-				&::-webkit-progress-value
-					background $theme-color
+						> .percentage
+							display inline-block
+							width 48px
+							text-align right
 
-				&::-webkit-progress-bar
-					background rgba($theme-color, 0.1)
+							color rgba($theme-color, 0.7)
 
-			> .progress
-				display block
-				position absolute
-				bottom 0
-				right 0
-				margin 0
-				width calc(100% - 44px)
-				height 8px
-				border none
-				border-radius 4px
-				background linear-gradient(
-					45deg,
-					lighten($theme-color, 30%) 25%,
-					$theme-color               25%,
-					$theme-color               50%,
-					lighten($theme-color, 30%) 50%,
-					lighten($theme-color, 30%) 75%,
-					$theme-color               75%,
-					$theme-color
-				)
-				background-size 32px 32px
-				animation bg 1.5s linear infinite
+							&:after
+								content '%'
 
-				&.initing
-					opacity 0.3
+					> progress
+						display block
+						position absolute
+						bottom 0
+						right 0
+						margin 0
+						width calc(100% - 44px)
+						height 8px
+						background transparent
+						border none
+						border-radius 4px
+						overflow hidden
 
-				@keyframes bg
-					from {background-position: 0 0;}
-					to   {background-position: -64px 32px;}
+						&::-webkit-progress-value
+							background $theme-color
 
-script.
-	@mixin \i
+						&::-webkit-progress-bar
+							background rgba($theme-color, 0.1)
 
-	@uploads = []
+					> .progress
+						display block
+						position absolute
+						bottom 0
+						right 0
+						margin 0
+						width calc(100% - 44px)
+						height 8px
+						border none
+						border-radius 4px
+						background linear-gradient(
+							45deg,
+							lighten($theme-color, 30%) 25%,
+							$theme-color               25%,
+							$theme-color               50%,
+							lighten($theme-color, 30%) 50%,
+							lighten($theme-color, 30%) 75%,
+							$theme-color               75%,
+							$theme-color
+						)
+						background-size 32px 32px
+						animation bg 1.5s linear infinite
 
+						&.initing
+							opacity 0.3
 
-	@upload = (file, folder) ~>
-		id = Math.random!
+						@keyframes bg
+							from {background-position: 0 0;}
+							to   {background-position: -64px 32px;}
 
-		ctx =
-			id: id
-			name: file.name || \untitled
-			progress: undefined
+	</style>
+	<script>
+		@mixin \i
 
-		@uploads.push ctx
-		@trigger \change-uploads @uploads
-		@update!
+		@uploads = []
 
-		reader = new FileReader!
-		reader.onload = (e) ~>
-			ctx.img = e.target.result
-			@update!
-		reader.read-as-data-URL file
+		
+		@upload = (file, folder) ~>
+			id = Math.random!
 
-		data = new FormData!
-		data.append \i @I.token
-		data.append \file file
+			ctx =
+				id: id
+				name: file.name || \untitled
+				progress: undefined
 
-		if folder?
-			data.append \folder_id folder
-
-		xhr = new XMLHttpRequest!
-		xhr.open \POST CONFIG.api.url + '/drive/files/create' true
-		xhr.onload = (e) ~>
-			drive-file = JSON.parse e.target.response
-
-			@trigger \uploaded drive-file
-
-			@uploads = @uploads.filter (x) -> x.id != id
+			@uploads.push ctx
 			@trigger \change-uploads @uploads
-
 			@update!
 
-		xhr.upload.onprogress = (e) ~>
-			if e.length-computable
-				if ctx.progress == undefined
-					ctx.progress = {}
-				ctx.progress.max = e.total
-				ctx.progress.value = e.loaded
+			reader = new FileReader!
+			reader.onload = (e) ~>
+				ctx.img = e.target.result
+				@update!
+			reader.read-as-data-URL file
+
+			data = new FormData!
+			data.append \i @I.token
+			data.append \file file
+
+			if folder?
+				data.append \folder_id folder
+
+			xhr = new XMLHttpRequest!
+			xhr.open \POST CONFIG.api.url + '/drive/files/create' true
+			xhr.onload = (e) ~>
+				drive-file = JSON.parse e.target.response
+
+				@trigger \uploaded drive-file
+
+				@uploads = @uploads.filter (x) -> x.id != id
+				@trigger \change-uploads @uploads
+
 				@update!
 
-		xhr.send data
+			xhr.upload.onprogress = (e) ~>
+				if e.length-computable
+					if ctx.progress == undefined
+						ctx.progress = {}
+					ctx.progress.max = e.total
+					ctx.progress.value = e.loaded
+					@update!
+
+			xhr.send data
+	</script>
+</mk-uploader>

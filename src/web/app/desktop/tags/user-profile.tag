@@ -1,86 +1,83 @@
-mk-user-profile
-	div.friend-form(if={ SIGNIN && I.id != user.id })
-		mk-big-follow-button(user={ user })
-		p.followed(if={ user.is_followed }) フォローされています
-	div.bio(if={ user.bio != '' }) { user.bio }
-	div.birthday(if={ user.birthday }): p
-		i.fa.fa-birthday-cake
-		| { user.birthday.replace('-', '年').replace('-', '月') + '日' }
-	div.friends
-		p.following
-			i.fa.fa-angle-right
-			a(onclick={ show-following }) { user.following_count }
-			| 人を
-			b フォロー
-		p.followers
-			i.fa.fa-angle-right
-			a(onclick={ show-followers }) { user.followers_count }
-			| 人の
-			b フォロワー
+<mk-user-profile>
+	<div class="friend-form" if="{ SIGNIN &amp;&amp; I.id != user.id }">
+		<mk-big-follow-button user="{ user }"></mk-big-follow-button>
+		<p class="followed" if="{ user.is_followed }">フォローされています</p>
+	</div>
+	<div class="bio" if="{ user.bio != '' }">{ user.bio }</div>
+	<div class="birthday" if="{ user.birthday }">
+		<p><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
+	</div>
+	<div class="friends">
+		<p class="following"><i class="fa fa-angle-right"></i><a onclick="{ showFollowing }">{ user.following_count }</a>人を<b>フォロー</b></p>
+		<p class="followers"><i class="fa fa-angle-right"></i><a onclick="{ showFollowers }">{ user.followers_count }</a>人の<b>フォロワー</b></p>
+	</div>
+	<style type="stylus">
+		:scope
+			display block
+			background #fff
 
-style.
-	display block
-	background #fff
+			> *:first-child
+				border-top none !important
 
-	> *:first-child
-		border-top none !important
+			> .friend-form
+				padding 16px
+				border-top solid 1px #eee
 
-	> .friend-form
-		padding 16px
-		border-top solid 1px #eee
+				> mk-big-follow-button
+					width 100%
 
-		> mk-big-follow-button
-			width 100%
+				> .followed
+					margin 12px 0 0 0
+					padding 0
+					text-align center
+					line-height 24px
+					font-size 0.8em
+					color #71afc7
+					background #eefaff
+					border-radius 4px
 
-		> .followed
-			margin 12px 0 0 0
-			padding 0
-			text-align center
-			line-height 24px
-			font-size 0.8em
-			color #71afc7
-			background #eefaff
-			border-radius 4px
+			> .bio
+				padding 16px
+				color #555
+				border-top solid 1px #eee
 
-	> .bio
-		padding 16px
-		color #555
-		border-top solid 1px #eee
+			> .birthday
+				padding 16px
+				color #555
+				border-top solid 1px #eee
 
-	> .birthday
-		padding 16px
-		color #555
-		border-top solid 1px #eee
+				> p
+					margin 0
 
-		> p
-			margin 0
+					> i
+						margin-right 8px
 
-			> i
-				margin-right 8px
+			> .friends
+				padding 16px
+				color #555
+				border-top solid 1px #eee
 
-	> .friends
-		padding 16px
-		color #555
-		border-top solid 1px #eee
+				> p
+					margin 8px 0
 
-		> p
-			margin 8px 0
+					> i
+						margin-left 8px
+						margin-right 8px
 
-			> i
-				margin-left 8px
-				margin-right 8px
+	</style>
+	<script>
+		@mixin \i
 
-script.
-	@mixin \i
+		@user = @opts.user
 
-	@user = @opts.user
+		@show-following = ~>
+			window = document.body.append-child document.create-element \mk-user-following-window
+			riot.mount window, do
+				user: @user
 
-	@show-following = ~>
-		window = document.body.append-child document.create-element \mk-user-following-window
-		riot.mount window, do
-			user: @user
-
-	@show-followers = ~>
-		window = document.body.append-child document.create-element \mk-user-followers-window
-		riot.mount window, do
-			user: @user
+		@show-followers = ~>
+			window = document.body.append-child document.create-element \mk-user-followers-window
+			riot.mount window, do
+				user: @user
+	</script>
+</mk-user-profile>

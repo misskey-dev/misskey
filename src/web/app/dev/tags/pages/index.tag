@@ -1,5 +1,11 @@
-mk-index
-	a(href='/apps') アプリ
+<mk-index><a href="/apps">アプリ</a>
+	<style type="stylus">
+		:scope
+			display block
 
-style.
-	display block
+			
+
+			
+
+	</style>
+</mk-index>
