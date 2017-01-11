@@ -1,5 +1,5 @@
 <mk-post-preview title={ title }>
-	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar" data-user-preview={ post.user_id }/></a>
+	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar" data-user-preview={ post.user_id }/></a>
 		<div class="main">
 			<header><a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a><span class="username">@{ post.user.username }</span><a class="time" href={ CONFIG.url + '/' + post.user.username + '/' + post.id }>
 					<mk-time time={ post.created_at }></mk-time></a></header>

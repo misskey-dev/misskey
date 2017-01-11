@@ -8,7 +8,7 @@
 				<mk-ellipsis></mk-ellipsis>
 			</p>
 			<p class="percentage" if={ !isNaN(parent.value) }>{ Math.floor((parent.value / parent.max) * 100) }</p>
-			<progress if={ !isNaN(parent.value) &amp;&amp; parent.value &lt; parent.max } value={ isNaN(parent.value) ? 0 : parent.value } max={ parent.max }></progress>
+			<progress if={ !isNaN(parent.value) && parent.value &lt; parent.max } value={ isNaN(parent.value) ? 0 : parent.value } max={ parent.max }></progress>
 			<div class="progress waiting" if={ parent.value &gt;= parent.max }></div>
 		</div></yield>
 	</mk-window>

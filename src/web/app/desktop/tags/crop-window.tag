@@ -1,7 +1,7 @@
 <mk-crop-window>
 	<mk-window ref="window" is-modal={ true } width={ '800px' }><yield to="header"><i class="fa fa-crop"></i>{ parent.title }</yield>
 <yield to="content">
-		<div class="body"><img ref="img" src={ parent.image.url + '?thumbnail&amp;quality=80' } alt=""/></div>
+		<div class="body"><img ref="img" src={ parent.image.url + '?thumbnail&quality=80' } alt=""/></div>
 		<div class="action">
 			<button class="skip" onclick={ parent.skip }>クロップをスキップ</button>
 			<button class="cancel" onclick={ parent.cancel }>キャンセル</button>

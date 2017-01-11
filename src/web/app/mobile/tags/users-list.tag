@@ -1,13 +1,13 @@
 <mk-users-list>
 	<nav><span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>すべて<span>{ opts.count }</span></span>
-		<!-- ↓ https://github.com/riot/riot/issues/2080--><span if={ SIGNIN &amp;&amp; opts.youKnowCount != '' } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>知り合い<span>{ opts.youKnowCount }</span></span>
+		<!-- ↓ https://github.com/riot/riot/issues/2080--><span if={ SIGNIN && opts.youKnowCount != '' } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>知り合い<span>{ opts.youKnowCount }</span></span>
 	</nav>
-	<div class="users" if={ !fetching &amp;&amp; users.length != 0 }>
+	<div class="users" if={ !fetching && users.length != 0 }>
 		<mk-user-preview each={ users } user={ this }></mk-user-preview>
 	</div>
-	<button class="more" if={ !fetching &amp;&amp; next != null } onclick={ more } disabled={ moreFetching }><span if={ !moreFetching }>もっと</span><span if={ moreFetching }>読み込み中
+	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }><span if={ !moreFetching }>もっと</span><span if={ moreFetching }>読み込み中
 			<mk-ellipsis></mk-ellipsis></span></button>
-	<p class="no" if={ !fetching &amp;&amp; users.length == 0 }>{ opts.noUsers }</p>
+	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>
 	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p>

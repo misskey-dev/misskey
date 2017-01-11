@@ -1,31 +1,31 @@
 <mk-notification class={ notification.type }>
 	<mk-time time={ notification.created_at }></mk-time>
-	<div class="main" if={ notification.type == 'like' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
+	<div class="main" if={ notification.type == 'like' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 		<div class="text">
 			<p><i class="fa fa-thumbs-o-up"></i><a href={ CONFIG.url + '/' + notification.user.username }>{ notification.user.name }</a></p><a class="post-ref" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
 	</div>
-	<div class="main" if={ notification.type == 'repost' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
+	<div class="main" if={ notification.type == 'repost' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 		<div class="text">
 			<p><i class="fa fa-retweet"></i><a href={ CONFIG.url + '/' + notification.post.user.username }>{ notification.post.user.name }</a></p><a class="post-ref" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post.repost) }</a>
 		</div>
 	</div>
-	<div class="main" if={ notification.type == 'quote' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
+	<div class="main" if={ notification.type == 'quote' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 		<div class="text">
 			<p><i class="fa fa-quote-left"></i><a href={ CONFIG.url + '/' + notification.post.user.username }>{ notification.post.user.name }</a></p><a class="post-preview" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
 	</div>
-	<div class="main" if={ notification.type == 'follow' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
+	<div class="main" if={ notification.type == 'follow' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 		<div class="text">
 			<p><i class="fa fa-user-plus"></i><a href={ CONFIG.url + '/' + notification.user.username }>{ notification.user.name }</a></p>
 		</div>
 	</div>
-	<div class="main" if={ notification.type == 'reply' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
+	<div class="main" if={ notification.type == 'reply' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 		<div class="text">
 			<p><i class="fa fa-reply"></i><a href={ CONFIG.url + '/' + notification.post.user.username }>{ notification.post.user.name }</a></p><a class="post-preview" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
 	</div>
-	<div class="main" if={ notification.type == 'mention' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
+	<div class="main" if={ notification.type == 'mention' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 		<div class="text">
 			<p><i class="fa fa-at"></i><a href={ CONFIG.url + '/' + notification.post.user.username }>{ notification.post.user.name }</a></p><a class="post-preview" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>

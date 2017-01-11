@@ -3,10 +3,10 @@
 		<mk-timeline-post-sub post={ p.reply_to }></mk-timeline-post-sub>
 	</div>
 	<div class="repost" if={ isRepost }>
-		<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>がRepost</p>
+		<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>がRepost</p>
 		<mk-time time={ post.created_at }></mk-time>
 	</div>
-	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&amp;size=96' } alt="avatar"/></a>
+	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=96' } alt="avatar"/></a>
 		<div class="main">
 			<header><a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="created-at" href={ url }>
 					<mk-time time={ p.created_at }></mk-time></a></header>

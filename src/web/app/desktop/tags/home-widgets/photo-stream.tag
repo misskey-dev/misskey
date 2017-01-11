@@ -3,12 +3,12 @@
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p>
-	<div class="stream" if={ !initializing &amp;&amp; images.length &gt; 0 }>
+	<div class="stream" if={ !initializing && images.length &gt; 0 }>
 		<virtual each={ image in images }>
-			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&amp;size=256)' }></div>
+			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>
 		</virtual>
 	</div>
-	<p class="empty" if={ !initializing &amp;&amp; images.length == 0 }>写真はありません</p>
+	<p class="empty" if={ !initializing && images.length == 0 }>写真はありません</p>
 	<style type="stylus">
 		:scope
 			display block

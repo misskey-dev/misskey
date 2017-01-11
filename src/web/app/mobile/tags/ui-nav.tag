@@ -1,6 +1,6 @@
 <mk-ui-nav>
 	<div class="body">
-		<div class="content"><a class="me" if={ SIGNIN } href={ CONFIG.url + '/' + I.username }><img class="avatar" src={ I.avatar_url + '?thumbnail&amp;size=128' } alt="avatar"/>
+		<div class="content"><a class="me" if={ SIGNIN } href={ CONFIG.url + '/' + I.username }><img class="avatar" src={ I.avatar_url + '?thumbnail&size=128' } alt="avatar"/>
 				<p class="name">{ I.name }</p></a>
 			<div class="links">
 				<ul>

@@ -6,7 +6,7 @@
 		</div>
 		<div class="action">
 			<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
-			<button class="ok" disabled={ !parent.allowEmpty &amp;&amp; refs.text.value.length == 0 } onclick={ parent.ok }>決定</button>
+			<button class="ok" disabled={ !parent.allowEmpty && refs.text.value.length == 0 } onclick={ parent.ok }>決定</button>
 		</div></yield>
 	</mk-window>
 	<style type="stylus">

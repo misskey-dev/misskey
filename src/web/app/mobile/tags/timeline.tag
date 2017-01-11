@@ -1,9 +1,9 @@
 <mk-timeline>
 	<div class="init" if={ init }><i class="fa fa-spinner fa-pulse"></i>読み込んでいます</div>
-	<div class="empty" if={ !init &amp;&amp; posts.length == 0 }><i class="fa fa-comments-o"></i>{ opts.empty || '表示するものがありません' }</div>
+	<div class="empty" if={ !init && posts.length == 0 }><i class="fa fa-comments-o"></i>{ opts.empty || '表示するものがありません' }</div>
 	<virtual each={ post, i in posts }>
 		<mk-timeline-post post={ post }></mk-timeline-post>
-		<p class="date" if={ i != posts.length - 1 &amp;&amp; post._date != posts[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ post._datetext }</span><span><i class="fa fa-angle-down"></i>{ posts[i + 1]._datetext }</span></p>
+		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ post._datetext }</span><span><i class="fa fa-angle-down"></i>{ posts[i + 1]._datetext }</span></p>
 	</virtual>
 	<footer if={ !init }>
 		<button if={ canFetchMore } onclick={ more } disabled={ fetching }><span if={ !fetching }>もっとみる</span><span if={ fetching }>読み込み中

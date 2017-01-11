@@ -1,7 +1,7 @@
-<mk-messaging-message data-is-me={ message.is_me }><a class="avatar-anchor" href={ CONFIG.url + '/' + message.user.username } title={ message.user.username } target="_blank"><img class="avatar" src={ message.user.avatar_url + '?thumbnail&amp;size=64' } alt=""/></a>
+<mk-messaging-message data-is-me={ message.is_me }><a class="avatar-anchor" href={ CONFIG.url + '/' + message.user.username } title={ message.user.username } target="_blank"><img class="avatar" src={ message.user.avatar_url + '?thumbnail&size=64' } alt=""/></a>
 	<div class="content-container">
 		<div class="balloon">
-			<p class="read" if={ message.is_me &amp;&amp; message.is_read }>既読</p>
+			<p class="read" if={ message.is_me && message.is_read }>既読</p>
 			<button class="delete-button" if={ message.is_me } title="メッセージを削除"><img src="/_/resources/desktop/messaging/delete.png" alt="Delete"/></button>
 			<div class="content" if={ !message.is_deleted }>
 				<div ref="text"></div>

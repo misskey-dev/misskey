@@ -1,10 +1,10 @@
 <mk-messaging-room>
 	<div class="stream" ref="stream">
 		<p class="initializing" if={ init }><i class="fa fa-spinner fa-spin"></i>読み込み中</p>
-		<p class="empty" if={ !init &amp;&amp; messages.length == 0 }><i class="fa fa-info-circle"></i>このユーザーとまだ会話したことがありません</p>
+		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>このユーザーとまだ会話したことがありません</p>
 		<virtual each={ message, i in messages }>
 			<mk-messaging-message message={ message }></mk-messaging-message>
-			<p class="date" if={ i != messages.length - 1 &amp;&amp; message._date != messages[i + 1]._date }><span>{ messages[i + 1]._datetext }</span></p>
+			<p class="date" if={ i != messages.length - 1 && message._date != messages[i + 1]._date }><span>{ messages[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
 	<div class="typings"></div>

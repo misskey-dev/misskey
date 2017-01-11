@@ -1,4 +1,4 @@
-<mk-post-detail-sub title={ title }><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar" data-user-preview={ post.user_id }/></a>
+<mk-post-detail-sub title={ title }><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar" data-user-preview={ post.user_id }/></a>
 	<div class="main">
 		<header>
 			<div class="left"><a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a><span class="username">@{ post.user.username }</span></div>
@@ -8,7 +8,7 @@
 		<div class="body">
 			<div class="text" ref="text"></div>
 			<div class="media" if={ post.media }>
-				<virtual each={ file in post.media }><img src={ file.url + '?thumbnail&amp;size=512' } alt={ file.name } title={ file.name }/></virtual>
+				<virtual each={ file in post.media }><img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/></virtual>
 			</div>
 		</div>
 	</div>

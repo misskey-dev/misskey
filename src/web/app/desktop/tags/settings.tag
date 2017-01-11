@@ -13,7 +13,7 @@
 		<section class="account" show={ page == 'account' }>
 			<h1>アカウント</h1>
 			<label class="avatar">
-				<p>アバター</p><img class="avatar" src={ I.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/>
+				<p>アバター</p><img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 				<button class="style-normal" onclick={ avatar }>画像を選択</button>
 			</label>
 			<label>

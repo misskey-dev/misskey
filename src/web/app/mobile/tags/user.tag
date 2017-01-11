@@ -1,10 +1,10 @@
 <mk-user>
 	<div class="user" if={ !fetching }>
 		<header>
-			<div class="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&amp;size=1024)' : '' }></div>
+			<div class="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=1024)' : '' }></div>
 			<div class="body">
-				<div class="top"><a class="avatar"><img src={ user.avatar_url + '?thumbnail&amp;size=160' } alt="avatar"/></a>
-					<mk-follow-button if={ SIGNIN &amp;&amp; I.id != user.id } user={ user }></mk-follow-button>
+				<div class="top"><a class="avatar"><img src={ user.avatar_url + '?thumbnail&size=160' } alt="avatar"/></a>
+					<mk-follow-button if={ SIGNIN && I.id != user.id } user={ user }></mk-follow-button>
 				</div>
 				<div class="title">
 					<h1>{ user.name }</h1><span class="username">@{ user.username }</span><span class="followed" if={ user.is_followed }>フォローされています</span>

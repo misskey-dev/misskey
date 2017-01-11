@@ -1,12 +1,12 @@
 <mk-select-file-from-drive-window>
 	<mk-window ref="window" is-modal={ true } width={ '800px' } height={ '500px' }><yield to="header">
-		<mk-raw content={ parent.title }></mk-raw><span class="count" if={ parent.multiple &amp;&amp; parent.file.length &gt; 0 }>({ parent.file.length }ファイル選択中)</span></yield>
+		<mk-raw content={ parent.title }></mk-raw><span class="count" if={ parent.multiple && parent.file.length &gt; 0 }>({ parent.file.length }ファイル選択中)</span></yield>
 <yield to="content">
 		<mk-drive-browser ref="browser" multiple={ parent.multiple }></mk-drive-browser>
 		<div>
 			<button class="upload" title="PCからドライブにファイルをアップロード" onclick={ parent.upload }><i class="fa fa-upload"></i></button>
 			<button class="cancel" onclick={ parent.close }>キャンセル</button>
-			<button class="ok" disabled={ parent.multiple &amp;&amp; parent.file.length == 0 } onclick={ parent.ok }>決定</button>
+			<button class="ok" disabled={ parent.multiple && parent.file.length == 0 } onclick={ parent.ok }>決定</button>
 		</div></yield>
 	</mk-window>
 	<style type="stylus">

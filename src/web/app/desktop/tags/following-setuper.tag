@@ -1,14 +1,14 @@
 <mk-following-setuper>
 	<p class="title">気になるユーザーをフォロー:</p>
-	<div class="users" if={ !loading &amp;&amp; users.length &gt; 0 }>
-		<div class="user" each={ users }><a class="avatar-anchor" href={ CONFIG.url + '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&amp;size=42' } alt="" data-user-preview={ id }/></a>
+	<div class="users" if={ !loading && users.length &gt; 0 }>
+		<div class="user" each={ users }><a class="avatar-anchor" href={ CONFIG.url + '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ id }/></a>
 			<div class="body"><a class="name" href={ CONFIG.url + '/' + username } target="_blank" data-user-preview={ id }>{ name }</a>
 				<p class="username">@{ username }</p>
 			</div>
 			<mk-follow-button user={ this }></mk-follow-button>
 		</div>
 	</div>
-	<p class="empty" if={ !loading &amp;&amp; users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
+	<p class="empty" if={ !loading && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
 	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p><a class="refresh" onclick={ refresh }>もっと見る</a>

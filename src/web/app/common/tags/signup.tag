@@ -3,7 +3,7 @@
 		<label class="username">
 			<p class="caption"><i class="fa fa-at"></i>ユーザー名</p>
 			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required="required" onkeyup={ onChangeUsername }/>
-			<p class="profile-page-url-preview" if={ refs.username.value != '' &amp;&amp; username-state != 'invalidFormat' &amp;&amp; username-state != 'minRange' &amp;&amp; username-state != 'maxRange' }>{ CONFIG.url + '/' + refs.username.value }</p>
+			<p class="profile-page-url-preview" if={ refs.username.value != '' && username-state != 'invalidFormat' && username-state != 'minRange' && username-state != 'maxRange' }>{ CONFIG.url + '/' + refs.username.value }</p>
 			<p class="info" if={ usernameState == 'wait' } style="color:#999"><i class="fa fa-fw fa-spinner fa-pulse"></i>確認しています...</p>
 			<p class="info" if={ usernameState == 'ok' } style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>利用できます</p>
 			<p class="info" if={ usernameState == 'unavailable' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>既に利用されています</p>

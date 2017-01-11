@@ -1,6 +1,6 @@
 <mk-special-message>
-	<p if={ m == 1 &amp;&amp; d == 1 }>Happy New Year! </p>
-	<p if={ m == 12 &amp;&amp; d == 25 }>Merry Christmas!</p>
+	<p if={ m == 1 && d == 1 }>Happy New Year! </p>
+	<p if={ m == 12 && d == 25 }>Merry Christmas!</p>
 	<style type="stylus">
 		:scope
 			display block

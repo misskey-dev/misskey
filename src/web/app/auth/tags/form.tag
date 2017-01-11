@@ -1,6 +1,6 @@
 <mk-form>
 	<header>
-		<h1><i>{ app.name }</i>があなたの<b>アカウント</b>に<b>アクセス</b>することを<b>許可</b>しますか？</h1><img src={ app.icon_url + '?thumbnail&amp;size=64' }/>
+		<h1><i>{ app.name }</i>があなたの<b>アカウント</b>に<b>アクセス</b>することを<b>許可</b>しますか？</h1><img src={ app.icon_url + '?thumbnail&size=64' }/>
 	</header>
 	<div class="app">
 		<section>

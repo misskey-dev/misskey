@@ -23,10 +23,10 @@
 				</virtual>
 				<button if={ moreFiles }>もっと読み込む</button>
 			</div>
-			<div class="empty" if={ files.length == 0 &amp;&amp; folders.length == 0 &amp;&amp; !loading }>
+			<div class="empty" if={ files.length == 0 && folders.length == 0 && !loading }>
 				<p if={ draghover }>ドロップですか？いいですよ、ボクはカワイイですからね</p>
-				<p if={ !draghover &amp;&amp; folder == null }><strong>ドライブには何もありません。</strong><br/>右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。</p>
-				<p if={ !draghover &amp;&amp; folder != null }>このフォルダーは空です</p>
+				<p if={ !draghover && folder == null }><strong>ドライブには何もありません。</strong><br/>右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。</p>
+				<p if={ !draghover && folder != null }>このフォルダーは空です</p>
 			</div>
 		</div>
 		<div class="loading" if={ loading }>

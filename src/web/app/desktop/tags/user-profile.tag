@@ -1,5 +1,5 @@
 <mk-user-profile>
-	<div class="friend-form" if={ SIGNIN &amp;&amp; I.id != user.id }>
+	<div class="friend-form" if={ SIGNIN && I.id != user.id }>
 		<mk-big-follow-button user={ user }></mk-big-follow-button>
 		<p class="followed" if={ user.is_followed }>フォローされています</p>
 	</div>

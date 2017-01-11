@@ -1,4 +1,4 @@
-<mk-user-preview><a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }><img class="avatar" src={ user.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></a>
+<mk-user-preview><a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }><img class="avatar" src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 	<div class="main">
 		<header><a class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</a><span class="username">@{ user.username }</span></header>
 		<div class="body">

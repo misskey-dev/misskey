@@ -19,7 +19,7 @@
 			</virtual>
 			<p if={ moreFiles }>もっと読み込む</p>
 		</div>
-		<div class="empty" if={ files.length == 0 &amp;&amp; folders.length == 0 &amp;&amp; !loading }>
+		<div class="empty" if={ files.length == 0 && folders.length == 0 && !loading }>
 			<p if={ !folder == null }>ドライブには何もありません。</p>
 			<p if={ folder != null }>このフォルダーは空です</p>
 		</div>

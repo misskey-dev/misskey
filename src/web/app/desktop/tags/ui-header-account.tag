@@ -1,5 +1,5 @@
 <mk-ui-header-account>
-	<button class="header" data-active={ isOpen.toString() } onclick={ toggle }><span class="username">{ I.username }<i class="fa fa-angle-down" if={ !isOpen }></i><i class="fa fa-angle-up" if={ isOpen }></i></span><img class="avatar" src={ I.avatar_url + '?thumbnail&amp;size=64' } alt="avatar"/></button>
+	<button class="header" data-active={ isOpen.toString() } onclick={ toggle }><span class="username">{ I.username }<i class="fa fa-angle-down" if={ !isOpen }></i><i class="fa fa-angle-up" if={ isOpen }></i></span><img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/></button>
 	<div class="menu" if={ isOpen }>
 		<ul>
 			<li><a href={ '/' + I.username }><i class="fa fa-user"></i>プロフィール<i class="fa fa-angle-right"></i></a></li>

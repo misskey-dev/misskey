@@ -3,41 +3,41 @@
 		<virtual each={ notification, i in notifications }>
 			<div class="notification { notification.type }">
 				<mk-time time={ notification.created_at }></mk-time>
-				<div class="main" if={ notification.type == 'like' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&amp;size=48' } alt="avatar"/></a>
+				<div class="main" if={ notification.type == 'like' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/></a>
 					<div class="text">
 						<p><i class="fa fa-thumbs-o-up"></i><a href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</div>
-				<div class="main" if={ notification.type == 'repost' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=48' } alt="avatar"/></a>
+				<div class="main" if={ notification.type == 'repost' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/></a>
 					<div class="text">
 						<p><i class="fa fa-retweet"></i><a href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-ref" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post.repost) }</a>
 					</div>
 				</div>
-				<div class="main" if={ notification.type == 'quote' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=48' } alt="avatar"/></a>
+				<div class="main" if={ notification.type == 'quote' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/></a>
 					<div class="text">
 						<p><i class="fa fa-quote-left"></i><a href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</div>
-				<div class="main" if={ notification.type == 'follow' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&amp;size=48' } alt="avatar"/></a>
+				<div class="main" if={ notification.type == 'follow' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/></a>
 					<div class="text">
 						<p><i class="fa fa-user-plus"></i><a href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p>
 					</div>
 				</div>
-				<div class="main" if={ notification.type == 'reply' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=48' } alt="avatar"/></a>
+				<div class="main" if={ notification.type == 'reply' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/></a>
 					<div class="text">
 						<p><i class="fa fa-reply"></i><a href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</div>
-				<div class="main" if={ notification.type == 'mention' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&amp;size=48' } alt="avatar"/></a>
+				<div class="main" if={ notification.type == 'mention' }><a class="avatar-anchor" href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/></a>
 					<div class="text">
 						<p><i class="fa fa-at"></i><a href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</div>
 			</div>
-			<p class="date" if={ i != notifications.length - 1 &amp;&amp; notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
+			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
-	<p class="empty" if={ notifications.length == 0 &amp;&amp; !loading }>ありません！</p>
+	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
 	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p>

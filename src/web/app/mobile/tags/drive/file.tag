@@ -1,6 +1,6 @@
 <mk-drive-file onclick={ onclick } data-is-selected={ isSelected }>
 	<div class="container">
-		<div class="thumbnail" style={ 'background-image: url(' + file.url + '?thumbnail&amp;size=128)' }></div>
+		<div class="thumbnail" style={ 'background-image: url(' + file.url + '?thumbnail&size=128)' }></div>
 		<div class="body">
 			<p class="name">{ file.name }</p>
 			<!--
