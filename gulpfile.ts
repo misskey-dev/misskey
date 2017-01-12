@@ -25,6 +25,8 @@ import pug = require('gulp-pug');
 import git = require('git-last-commit');
 import * as rimraf from 'rimraf';
 import * as escapeHtml from 'escape-html';
+import prominence = require('prominence');
+import promiseify = require('promiseify');
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -175,75 +177,77 @@ gulp.task('build:client', [
 	}
 });
 
-gulp.task('build:client:scripts', done => {
+gulp.task('build:client:scripts', async (done) => {
 	gutil.log('スクリプトを構築します...');
 
 	// Get commit info
-	git.getLastCommit((err, commit) => {
-		glob('./src/web/app/*/script.js', (err, files) => {
-			const tasks = files.map(entry => {
-				let bundle =
-					browserify({
-						entries: [entry]
-					})
-					.transform(ls)
-					.transform(aliasify, aliasifyConfig)
+	const commit = await prominence(git).getLastCommit();
 
-					// スペースでインデントされてないとエラーが出る
-					.transform(transformify((source, file) => {
-						if (file.substr(-4) !== '.tag') return source;
-						return source.replace(/\t/g, '  ');
-					}))
+	// Get all app scripts
+	const files = await promiseify(glob)('./src/web/app/*/script.js');
 
-					.transform(transformify((source, file) => {
-						return source
-							.replace(/VERSION/g, `'${commit ? commit.hash : 'null'}'`)
-							.replace(/\$theme\-color\-foreground/g, '#fff')
-							.replace(/\$theme\-color/g, config.themeColor)
-							.replace(/CONFIG\.theme-color/g, `'${config.themeColor}'`)
-							.replace(/CONFIG\.themeColor/g, `'${config.themeColor}'`)
-							.replace(/CONFIG\.api\.url/g, `'${config.scheme}://api.${config.host}'`)
-							.replace(/CONFIG\.urls\.about/g, `'${config.scheme}://about.${config.host}'`)
-							.replace(/CONFIG\.urls\.dev/g, `'${config.scheme}://dev.${config.host}'`)
-							.replace(/CONFIG\.url/g, `'${config.url}'`)
-							.replace(/CONFIG\.host/g, `'${config.host}'`)
-							.replace(/CONFIG\.recaptcha\.siteKey/g, `'${config.recaptcha.siteKey}'`)
-							;
-					}))
+	// Compile for each scripts
+	const tasks = files.map(entry => {
+		let bundle =
+			browserify({
+				entries: [entry]
+			})
+			.transform(ls)
+			.transform(aliasify, aliasifyConfig)
 
-					.transform(riotify, {
-						type: 'livescript',
-						expr: false,
-						compact: true,
-						parserOptions: {
-							style: {
-								compress: true,
-								rawDefine: config
-							}
-						}
-					})
-					.bundle()
-					.pipe(source(entry.replace('./src/web/app/', './').replace('.ls', '.js')));
+			// スペースでインデントされてないとエラーが出る
+			.transform(transformify((source, file) => {
+				if (file.substr(-4) !== '.tag') return source;
+				return source.replace(/\t/g, '  ');
+			}))
 
-				if (isProduction) {
-					bundle = bundle
-						.pipe(buffer())
-						// ↓ https://github.com/mishoo/UglifyJS2/issues/448
-						.pipe(babel({
-							presets: ['es2015']
-						}))
-						.pipe(uglify({
-							compress: true
-						}));
+			.transform(transformify((source, file) => {
+				return source
+					.replace(/VERSION/g, `'${commit ? commit.hash : 'null'}'`)
+					.replace(/\$theme\-color\-foreground/g, '#fff')
+					.replace(/\$theme\-color/g, config.themeColor)
+					.replace(/CONFIG\.theme-color/g, `'${config.themeColor}'`)
+					.replace(/CONFIG\.themeColor/g, `'${config.themeColor}'`)
+					.replace(/CONFIG\.api\.url/g, `'${config.scheme}://api.${config.host}'`)
+					.replace(/CONFIG\.urls\.about/g, `'${config.scheme}://about.${config.host}'`)
+					.replace(/CONFIG\.urls\.dev/g, `'${config.scheme}://dev.${config.host}'`)
+					.replace(/CONFIG\.url/g, `'${config.url}'`)
+					.replace(/CONFIG\.host/g, `'${config.host}'`)
+					.replace(/CONFIG\.recaptcha\.siteKey/g, `'${config.recaptcha.siteKey}'`)
+					;
+			}))
+
+			.transform(riotify, {
+				type: 'livescript',
+				expr: false,
+				compact: true,
+				parserOptions: {
+					style: {
+						compress: true,
+						rawDefine: config
+					}
 				}
+			})
+			.bundle()
+			.pipe(source(entry.replace('./src/web/app/', './').replace('.ls', '.js')));
 
-				return bundle
-					.pipe(gulp.dest('./built/web/resources/'));
-			});
+		if (isProduction) {
+			bundle = bundle
+				.pipe(buffer())
+				// ↓ https://github.com/mishoo/UglifyJS2/issues/448
+				.pipe(babel({
+					presets: ['es2015']
+				}))
+				.pipe(uglify({
+					compress: true
+				}));
+		}
 
-			es.merge(tasks).on('end', done);
-		});
+		return bundle
+			.pipe(gulp.dest('./built/web/resources/'));
 	});
+
+	es.merge(tasks).on('end', done);
 });
 
 gulp.task('build:client:styles', () => {
