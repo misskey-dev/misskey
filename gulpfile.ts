@@ -194,13 +194,6 @@ gulp.task('build:client:scripts', async (done) => {
 			})
 			.transform(ls)
 			.transform(aliasify, aliasifyConfig)
-
-			// スペースでインデントされてないとエラーが出る
-			.transform(transformify((source, file) => {
-				if (file.substr(-4) !== '.tag') return source;
-				return source.replace(/\t/g, '  ');
-			}))
-
 			.transform(transformify((source, file) => {
 				return source
 					.replace(/VERSION/g, `'${commit ? commit.hash : 'null'}'`)
@@ -216,7 +209,6 @@ gulp.task('build:client:scripts', async (done) => {
 					.replace(/CONFIG\.recaptcha\.siteKey/g, `'${config.recaptcha.siteKey}'`)
 					;
 			}))
-
 			.transform(riotify, {
 				type: 'livescript',
 				expr: false,
