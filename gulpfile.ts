@@ -156,8 +156,6 @@ gulp.task('build:client', [
 });
 
 gulp.task('build:client:scripts', async (done) => {
-	gutil.log('スクリプトを構築します...');
-
 	// Get commit info
 	const commit = await prominence(git).getLastCommit();
 
@@ -219,10 +217,8 @@ gulp.task('build:client:scripts', async (done) => {
 	es.merge(tasks).on('end', done);
 });
 
-gulp.task('build:client:styles', () => {
-	gutil.log('フロントサイドスタイルを構築します...');
-
-	return gulp.src('./src/web/app/**/*.styl')
+gulp.task('build:client:styles', () =>
+	gulp.src('./src/web/app/**/*.styl')
 		.pipe(stylus({
 			'include css': true,
 			compress: true,
@@ -233,33 +229,29 @@ gulp.task('build:client:styles', () => {
 				safe: true // 高度な圧縮は無効にする (一部デザインが不適切になる場合があるため)
 			})
 			: gutil.noop())
-		.pipe(gulp.dest('./built/web/resources/'));
-});
+		.pipe(gulp.dest('./built/web/resources/'))
+);
 
 gulp.task('copy:client', [
 	'build:client:scripts',
 	'build:client:styles'
-], () => {
-	gutil.log('必要なリソースをコピーします...');
-
-	return es.merge(
+], () =>
+	es.merge(
 		gulp.src('./resources/**/*').pipe(gulp.dest('./built/web/resources/')),
 		gulp.src('./src/web/resources/**/*').pipe(gulp.dest('./built/web/resources/')),
 		gulp.src('./src/web/app/desktop/resources/**/*').pipe(gulp.dest('./built/web/resources/desktop/')),
 		gulp.src('./src/web/app/mobile/resources/**/*').pipe(gulp.dest('./built/web/resources/mobile/')),
 		gulp.src('./src/web/app/dev/resources/**/*').pipe(gulp.dest('./built/web/resources/dev/')),
 		gulp.src('./src/web/app/auth/resources/**/*').pipe(gulp.dest('./built/web/resources/auth/'))
-	);
-});
+	)
+);
 
 gulp.task('build:client:pug', [
 	'copy:client',
 	'build:client:scripts',
 	'build:client:styles'
-], () => {
-	gutil.log('Pugをコンパイルします...');
-
-	return gulp.src([
+], () =>
+	gulp.src([
 		'./src/web/app/*/view.pug'
 	])
 		.pipe(pug({
@@ -267,5 +259,5 @@ gulp.task('build:client:pug', [
 				themeColor: config.themeColor
 			}
 		}))
-		.pipe(gulp.dest('./built/web/app/'));
-});
+		.pipe(gulp.dest('./built/web/app/'))
+);
