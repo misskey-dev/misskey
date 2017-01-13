@@ -70,24 +70,24 @@ gulp.task('build:ts', () =>
 		.pipe(gulp.dest('./built/'))
 );
 
-function getLicenseHtml(path: string): string {
-	return escapeHtml(fs.readFileSync(path, 'utf-8'))
-		.replace(/\r\n/g, '\n')
-		.replace(/(.)\n(.)/g, '$1 $2')
-		.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
-}
-
-function getLicenseSectionHtml(path: string): string {
-	try {
-		const pkg = JSON.parse(fs.readFileSync(Path.parse(path).dir + '/package.json', 'utf-8'));
-		const licenseHtml = getLicenseHtml(path);
-		return `<details><summary>${pkg.name} <small>v${pkg.version}</small></summary>${licenseHtml}</details>`;
-	} catch (e) {
-		return null;
-	}
-}
-
 gulp.task('build:about:docs', () => {
+	function getLicenseHtml(path: string): string {
+		return escapeHtml(fs.readFileSync(path, 'utf-8'))
+			.replace(/\r\n/g, '\n')
+			.replace(/(.)\n(.)/g, '$1 $2')
+			.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
+	}
+
+	function getLicenseSectionHtml(path: string): string {
+		try {
+			const pkg = JSON.parse(fs.readFileSync(Path.parse(path).dir + '/package.json', 'utf-8'));
+			const licenseHtml = getLicenseHtml(path);
+			return `<details><summary>${pkg.name} <small>v${pkg.version}</small></summary>${licenseHtml}</details>`;
+		} catch (e) {
+			return null;
+		}
+	}
+
 	const licenses = glob.sync('./node_modules/**/LICENSE*');
 	const licenseHtml = getLicenseHtml('./LICENSE');
 	const thirdpartyLicensesHtml = licenses.map(license => getLicenseSectionHtml(license)).join('');
