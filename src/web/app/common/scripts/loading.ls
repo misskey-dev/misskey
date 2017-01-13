@@ -1,4 +1,4 @@
-NProgress = require 'NProgress'
+NProgress = require \nprogress
 NProgress.configure do
 	trickle-speed: 500ms
 	show-spinner: false

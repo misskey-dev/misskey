@@ -9,7 +9,7 @@ module.exports = (me) ~>
 		api: (require './scripts/api.ls').bind null i
 
 	riot.mixin \cropper do
-		Cropper: require \cropper
+		Cropper: require \cropperjs
 
 	riot.mixin \signout do
 		signout: require './scripts/signout.ls'
@@ -27,11 +27,11 @@ module.exports = (me) ~>
 		date-stringify: require './scripts/date-stringify.ls'
 
 	riot.mixin \text do
-		analyze: require 'misskey-text'
+		analyze: require '../../../common/text/index.js'
 		compile: require './scripts/text-compiler.js'
 
 	riot.mixin \get-password-strength do
-		get-password-strength: require 'strength.js'
+		get-password-strength: require 'syuilo-password-strength'
 
 	riot.mixin \ui-progress do
 		Progress: require './scripts/loading.ls'

@@ -56,7 +56,6 @@
     "@types/vinyl-source-stream": "0.0.28",
     "@types/websocket": "0.0.32",
     "accesses": "1.2.0",
-    "aliasify": "2.1.0",
     "argv": "0.0.2",
     "babel-core": "6.21.0",
     "babel-polyfill": "6.20.0",

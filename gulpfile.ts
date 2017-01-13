@@ -18,7 +18,6 @@ import stylus = require('gulp-stylus');
 import cssnano = require('gulp-cssnano');
 import * as uglify from 'gulp-uglify';
 import ls = require('browserify-livescript');
-import aliasify = require('aliasify');
 import riotify = require('riotify');
 import transformify = require('syuilo-transformify');
 import pug = require('gulp-pug');
@@ -142,27 +141,6 @@ gulp.task('cleanall', ['clean'], cb =>
 
 gulp.task('default', ['build']);
 
-const aliasifyConfig = {
-	aliases: {
-		'fetch': './node_modules/whatwg-fetch/fetch.js',
-		'page': './node_modules/page/page.js',
-		'NProgress': './node_modules/nprogress/nprogress.js',
-		'velocity': './node_modules/velocity-animate/velocity.js',
-		'chart.js': './node_modules/chart.js/src/chart.js',
-		'textarea-caret-position': './node_modules/textarea-caret/index.js',
-		'misskey-text': './src/common/text/index.js',
-		'nyaize': './node_modules/nyaize/built/index.js',
-		'strength.js': './node_modules/syuilo-password-strength/strength.js',
-		'cropper': './node_modules/cropperjs/dist/cropper.js',
-		'Sortable': './node_modules/sortablejs/Sortable.js',
-		'fuck-adblock': './node_modules/fuckadblock/fuckadblock.js',
-		'reconnecting-websocket': './node_modules/reconnecting-websocket/dist/index.js'
-	},
-	appliesTo: {
-		'includeExtensions': ['.js', '.ls']
-	}
-};
-
 gulp.task('build:client', [
 	'build:ts', 'build:js',
 	'build:client:scripts',
@@ -193,7 +171,6 @@ gulp.task('build:client:scripts', async (done) => {
 				entries: [entry]
 			})
 			.transform(ls)
-			.transform(aliasify, aliasifyConfig)
 			.transform(transformify((source, file) => {
 				return source
 					.replace(/VERSION/g, `'${commit ? commit.hash : 'null'}'`)

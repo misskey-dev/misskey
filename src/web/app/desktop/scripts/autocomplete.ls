@@ -1,7 +1,7 @@
 # Autocomplete
 #================================
 
-get-caret-coordinates = require 'textarea-caret-position'
+get-caret-coordinates = require 'textarea-caret'
 riot = require 'riot'
 
 # オートコンプリートを管理するクラスです。

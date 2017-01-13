@@ -1,7 +1,7 @@
 # FUCK AD BLOCK
 #================================
 
-require 'fuck-adblock'
+require \fuckadblock
 dialog = require './dialog.ls'
 
 module.exports = ~>

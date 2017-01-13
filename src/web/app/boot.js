@@ -3,7 +3,7 @@
  */
 
 const riot = require('riot');
-require('velocity');
+require('velocity-animate');
 const api = require('./common/scripts/api.ls');
 const signout = require('./common/scripts/signout.ls');
 const generateDefaultUserdata = require('./common/scripts/generate-default-userdata.ls');
@@ -18,7 +18,7 @@ require('./common/tags.ls');
 document.domain = CONFIG.host;
 
 // ↓ iOS待ちPolyfill (SEE: http://caniuse.com/#feat=fetch)
-require('fetch');
+require('whatwg-fetch');
 
 // ↓ NodeList、HTMLCollectionで forEach を使えるようにする
 if (NodeList.prototype.forEach === undefined) {
