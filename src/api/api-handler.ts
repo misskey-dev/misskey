@@ -35,6 +35,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 		try {
 			await limitter(endpoint, ctx); // Rate limit
 		} catch (e) {
+			// drop request if limit exceeded
 			return reply(429);
 		}
 	}
