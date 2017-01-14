@@ -9,8 +9,9 @@
   "bugs": "https://github.com/syuilo/misskey/issues",
   "main": "./built/index.js",
   "scripts": {
-    "config": "node ./init.js",
+    "config": "node ./tools/init.js",
     "start": "node ./built/index.js",
+    "update": "./tools/update.sh",
     "swagger": "node ./swagger.js",
     "build": "gulp build",
     "rebuild": "gulp rebuild",

@@ -2,7 +2,7 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const inquirer = require('inquirer');
 
-const configDirPath = `${__dirname}/.config`;
+const configDirPath = `${__dirname}/../.config`;
 const configPath = `${configDirPath}/config.yml`;
 
 const form = [
