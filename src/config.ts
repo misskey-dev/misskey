@@ -58,7 +58,6 @@ interface Mixin {
 	auth_url: string;
 	dev_url: string;
 	drive_url: string;
-	proxy_url: string;
 }
 
 export type IConfig = ISource & Mixin;
@@ -90,7 +89,6 @@ export default (path: string) => {
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;
 	mixin.dev_url = `${mixin.scheme}://dev.${mixin.host}`;
 	mixin.drive_url = `${mixin.secondary_scheme}://file.${mixin.secondary_host}`;
-	mixin.proxy_url = `${mixin.secondary_scheme}://proxy.${mixin.secondary_host}`;
 
 	return Object.assign(config || {}, mixin) as IConfig;
 };

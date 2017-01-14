@@ -29,7 +29,6 @@ app.use((req, res, next) => {
 app.use(vhost(`api.${config.host}`, require('./api/server')));
 app.use(vhost(config.secondary_host, require('./himasaku/server')));
 app.use(vhost(`file.${config.secondary_host}`, require('./file/server')));
-app.use(vhost(`proxy.${config.secondary_host}`, require('./web/service/proxy/server')));
 app.use(require('./web/server'));
 
 /**

@@ -9,5 +9,7 @@ module.exports = async (req: express.Request, res: express.Response) => {
 };
 
 function wrap(url: string): string {
-	return `${config.proxy_url}/${url}`;
+	return url != null
+		? `https://images.weserv.nl/?url=${url.replace(/^https?:\/\//, '')}`
+		: null;
 }
