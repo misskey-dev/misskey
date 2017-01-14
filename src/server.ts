@@ -14,7 +14,7 @@ import vhost = require('vhost');
 const app = express();
 app.disable('x-powered-by');
 
-// Reject request that without 'Host' header
+// Drop request that without 'Host' header
 app.use((req, res, next) => {
 	if (!req.headers.host) {
 		res.sendStatus(400);
