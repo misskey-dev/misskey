@@ -17,7 +17,7 @@ import event from '../../event';
 /**
  * 最大文字数
  */
-const maxTextLength = 300;
+const maxTextLength = 500;
 
 /**
  * 添付できるファイルの数
