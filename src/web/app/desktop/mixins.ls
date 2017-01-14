@@ -1,9 +1,6 @@
 riot = require \riot
 
 module.exports = (me) ~>
-	riot.mixin \sortable do
-		Sortable: require \sortablejs
-
 	if me?
 		(require './scripts/stream.ls') me
 

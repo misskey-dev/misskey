@@ -286,7 +286,6 @@
 		@mixin \api
 		@mixin \notify
 		@mixin \autocomplete
-		@mixin \sortable
 
 		@wait = false
 		@uploadings = []
@@ -405,10 +404,6 @@
 			@files.push file
 			@trigger \change-files @files
 			@update!
-
-			new @Sortable @refs.attaches, do
-				draggable: \.file
-				animation: 150ms
 
 		@post = (e) ~>
 			@wait = true
