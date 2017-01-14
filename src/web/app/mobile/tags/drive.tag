@@ -7,13 +7,13 @@
 		<p if={ folder != null }>{ folder.name }</p>
 	</nav>
 	<div class="browser { loading: loading }" if={ file == null }>
-		<div class="folders" if={ folders.length &gt; 0 }>
+		<div class="folders" if={ folders.length > 0 }>
 			<virtual each={ folder in folders }>
 				<mk-drive-folder folder={ folder }></mk-drive-folder>
 			</virtual>
 			<p if={ moreFolders }>もっと読み込む</p>
 		</div>
-		<div class="files" if={ files.length &gt; 0 }>
+		<div class="files" if={ files.length > 0 }>
 			<virtual each={ file in files }>
 				<mk-drive-file file={ file }></mk-drive-file>
 			</virtual>

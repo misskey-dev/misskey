@@ -2,7 +2,7 @@
 	<header>
 		<div>
 			<button class="cancel" onclick={ cancel }><i class="fa fa-times"></i></button>
-			<div><span class="text-count { over: refs.text.value.length &gt; 500 }">{ 500 - refs.text.value.length }</span>
+			<div><span class="text-count { over: refs.text.value.length > 500 }">{ 500 - refs.text.value.length }</span>
 				<button class="submit" onclick={ post }>投稿</button>
 			</div>
 		</div>
@@ -15,7 +15,7 @@
 				<li class="file" each={ files }>
 					<div class="img" style="background-image: url({ url + &quot;?thumbnail&size=64&quot; })" title={ name }></div>
 				</li>
-				<li class="add" if={ files.length &lt; 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
+				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
 		</div>
 		<mk-uploader ref="uploader"></mk-uploader>

@@ -5,14 +5,14 @@
 			<li class="file" each={ files }>
 				<div class="img" style="background-image: url({ url + &quot;?thumbnail&size=64&quot; })" title={ name }></div><img class="remove" onclick={ _remove } src="/_/resources/desktop/remove.png" title="添付取り消し" alt=""/>
 			</li>
-			<li class="add" if={ files.length &lt; 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
+			<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 		</ul>
 		<p class="remain">残り{ 4 - files.length }</p>
 	</div>
 	<mk-uploader ref="uploader"></mk-uploader>
 	<button ref="upload" title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 	<button ref="drive" title="ドライブからファイルを添付" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
-	<p class="text-count { over: refs.text.value.length &gt; 500 }">のこり{ 500 - refs.text.value.length }文字</p>
+	<p class="text-count { over: refs.text.value.length > 500 }">のこり{ 500 - refs.text.value.length }文字</p>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0) } onclick={ post }>{ wait ? '投稿中' : opts.reply ? '返信' : '投稿' }
 		<mk-ellipsis if={ wait }></mk-ellipsis>
 	</button>

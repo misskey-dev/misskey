@@ -1,5 +1,5 @@
 <mk-uploader>
-	<ol if={ uploads.length &gt; 0 }>
+	<ol if={ uploads.length > 0 }>
 		<li each={ uploads }>
 			<div class="img" style="background-image: url({ img })"></div>
 			<p class="name"><i class="fa fa-spinner fa-pulse"></i>{ name }</p>

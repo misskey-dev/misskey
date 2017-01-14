@@ -8,16 +8,16 @@
 		</div>
 		<input class="search" type="search" placeholder="&#xf002; 検索"/>
 	</nav>
-	<div class="main { uploading: uploads.length &gt; 0, loading: loading }" ref="main" onmousedown={ onmousedown } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu }>
+	<div class="main { uploading: uploads.length > 0, loading: loading }" ref="main" onmousedown={ onmousedown } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu }>
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
-			<div class="folders" ref="foldersContainer" if={ folders.length &gt; 0 }>
+			<div class="folders" ref="foldersContainer" if={ folders.length > 0 }>
 				<virtual each={ folder in folders }>
 					<mk-drive-browser-folder class="folder" folder={ folder }></mk-drive-browser-folder>
 				</virtual>
 				<button if={ moreFolders }>もっと読み込む</button>
 			</div>
-			<div class="files" ref="filesContainer" if={ files.length &gt; 0 }>
+			<div class="files" ref="filesContainer" if={ files.length > 0 }>
 				<virtual each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }></mk-drive-browser-file>
 				</virtual>

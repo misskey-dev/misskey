@@ -5,13 +5,13 @@
 			<input ref="searchInput" type="search" oninput={ search } placeholder="ユーザーを探す"/>
 		</div>
 		<div class="result">
-			<ol class="users" if={ searchResult.length &gt; 0 }>
+			<ol class="users" if={ searchResult.length > 0 }>
 				<li each={ user in searchResult }><a onclick={ user._click }><img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/><span class="name">{ user.name }</span><span class="username">@{ user.username }</span></a></li>
 			</ol>
 		</div>
 	</div>
 	<div class="main">
-		<div class="history" if={ history.length &gt; 0 }>
+		<div class="history" if={ history.length > 0 }>
 			<virtual each={ history }><a class="user" data-is-me={ is_me } data-is-read={ is_read } onclick={ _click }>
 					<div><img class="avatar" src={ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&size=64' } alt=""/>
 						<header><span class="name">{ is_me ? recipient.name : user.name }</span><span class="username">{ '@' + (is_me ? recipient.username : user.username ) }</span>

@@ -6,7 +6,7 @@
 			<li onclick={ drive }>
 				<p><i class="fa fa-cloud"></i>ドライブ<i class="fa fa-angle-right"></i></p>
 			</li>
-			<li><a href="/i&gt;mentions"><i class="fa fa-at"></i>あなた宛て<i class="fa fa-angle-right"></i></a></li>
+			<li><a href="/i>mentions"><i class="fa fa-at"></i>あなた宛て<i class="fa fa-angle-right"></i></a></li>
 		</ul>
 		<ul>
 			<li onclick={ settings }>

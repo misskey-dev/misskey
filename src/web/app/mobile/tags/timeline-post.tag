@@ -23,13 +23,13 @@
 			</div>
 			<footer>
 				<button onclick={ reply }><i class="fa fa-reply"></i>
-					<p class="count" if={ p.replies_count &gt; 0 }>{ p.replies_count }</p>
+					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
-					<p class="count" if={ p.repost_count &gt; 0 }>{ p.repost_count }</p>
+					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
 				<button class={ liked: p.is_liked } onclick={ like }><i class="fa fa-thumbs-o-up"></i>
-					<p class="count" if={ p.likes_count &gt; 0 }>{ p.likes_count }</p>
+					<p class="count" if={ p.likes_count > 0 }>{ p.likes_count }</p>
 				</button>
 			</footer>
 		</div>

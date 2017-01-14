@@ -26,18 +26,18 @@
 			</div>
 			<footer>
 				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
-					<p class="count" if={ p.replies_count &gt; 0 }>{ p.replies_count }</p>
+					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
-					<p class="count" if={ p.repost_count &gt; 0 }>{ p.repost_count }</p>
+					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
 				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
-					<p class="count" if={ p.likes_count &gt; 0 }>{ p.likes_count }</p>
+					<p class="count" if={ p.likes_count > 0 }>{ p.likes_count }</p>
 				</button>
 				<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
 			</footer>
 			<div class="reposts-and-likes">
-				<div class="reposts" if={ reposts && reposts.length &gt; 0 }>
+				<div class="reposts" if={ reposts && reposts.length > 0 }>
 					<header><a>{ p.repost_count }</a>
 						<p>Repost</p>
 					</header>
@@ -45,7 +45,7 @@
 						<li class="user" each={ reposts }><a class="avatar-anchor" href={ CONFIG.url + '/' + user.username } title={ user.name } data-user-preview={ user.id }><img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/></a></li>
 					</ol>
 				</div>
-				<div class="likes" if={ likes && likes.length &gt; 0 }>
+				<div class="likes" if={ likes && likes.length > 0 }>
 					<header><a>{ p.likes_count }</a>
 						<p>いいね</p>
 					</header>
