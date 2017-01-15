@@ -13,7 +13,7 @@
 		<div class="attaches" if={ files.length != 0 }>
 			<ul class="files" ref="attaches">
 				<li class="file" each={ files }>
-					<div class="img" style="background-image: url({ url + &quot;?thumbnail&size=64&quot; })" title={ name }></div>
+					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
 				</li>
 				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
