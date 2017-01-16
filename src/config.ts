@@ -38,7 +38,7 @@ interface ISource {
 		host: string;
 		port: number;
 		db: string;
-		user_id: string;
+		user: string;
 		pass: string;
 	};
 	redis: {
