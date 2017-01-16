@@ -5,6 +5,7 @@ import recaptcha = require('recaptcha-promise');
 import User from '../models/user';
 import { validateUsername } from '../models/user';
 import serialize from '../serializers/user';
+import config from '../../conf';
 
 recaptcha.init({
 	secret_key: config.recaptcha.secretKey
@@ -12,11 +13,14 @@ recaptcha.init({
 
 export default async (req: express.Request, res: express.Response) => {
 	// Verify recaptcha
-	const success = await recaptcha(req.body['g-recaptcha-response']);
+	// ただしテスト時はこの機構は障害となるため無効にする
+	if (process.env.NODE_ENV !== 'test') {
+		const success = await recaptcha(req.body['g-recaptcha-response']);
 
-	if (!success) {
-		res.status(400).send('recaptcha-failed');
-		return;
+		if (!success) {
+			res.status(400).send('recaptcha-failed');
+			return;
+		}
 	}
 
 	const username = req.body['username'];
