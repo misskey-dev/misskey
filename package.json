@@ -100,7 +100,7 @@
     "is-url": "1.2.2",
     "js-yaml": "3.7.0",
     "livescript": "1.5.0",
-    "mime-types": "2.1.13",
+    "mime-types": "2.1.14",
     "mocha": "3.2.0",
     "mongodb": "2.2.21",
     "ms": "0.7.2",
