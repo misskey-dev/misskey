@@ -54,3 +54,8 @@ server.listen(config.port, () => {
 	// Send a 'ready' message to parent process
 	process.send('ready');
 });
+
+/**
+ * Export app for testing
+ */
+module.exports = app;

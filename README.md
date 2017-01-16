@@ -28,6 +28,7 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 6. `npm run build`
 
 ## Test
+ビルドしてから:
 `npm test`
 
 ## Setup
