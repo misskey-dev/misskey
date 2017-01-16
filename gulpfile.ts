@@ -38,7 +38,7 @@ if (!fs.existsSync('./.config/config.yml')) {
 
 (global as any).MISSKEY_CONFIG_PATH = '.config/config.yml';
 import { IConfig } from './src/config';
-const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString())) as IConfig;
+const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString()))() as IConfig;
 
 const tsProject = ts.createProject('tsconfig.json');
 

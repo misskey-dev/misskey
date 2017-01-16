@@ -21,11 +21,12 @@ import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 
+import { path as configPath } from './config';
+import loadConfig from './config';
+
 // Init babel
 require('babel-core/register');
 require('babel-polyfill');
-
-global.config = require('./config').default(`${__dirname}/../.config/config.yml`);
 
 enum InitResult {
 	Success,
@@ -76,6 +77,8 @@ async function masterMain(): Promise<void> {
 			return;
 	}
 
+	const config = loadConfig();
+
 	spawnWorkers(() => {
 		Logger.info(chalk.bold.green(`Now listening on port ${config.port}`));
 
@@ -103,9 +106,6 @@ async function masterMain(): Promise<void> {
  * Init worker proccess
  */
 function workerMain(): void {
-	// Register config
-	global.config = config;
-
 	// Init mongo
 	initdb().then(db => {
 		global.db = db;
@@ -134,10 +134,12 @@ async function init(): Promise<InitResult> {
 	new DependencyInfo().showAll();
 
 	let configLogger = new Logger('Config');
-	if (!fs.existsSync(`${__dirname}/../.config/config.yml`)) {
+	if (!fs.existsSync(configPath)) {
 		configLogger.error('Configuration not found');
 		return InitResult.Failure;
 	}
+
+	const config = loadConfig();
 
 	configLogger.info('Successfully loaded');
 	configLogger.info(`maintainer: ${config.maintainer}`);

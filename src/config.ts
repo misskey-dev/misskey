@@ -6,6 +6,8 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as isUrl from 'is-url';
 
+export const path = (global as any).MISSKEY_CONFIG_PATH ? (global as any).MISSKEY_CONFIG_PATH : `${__dirname}/../.config/config.yml`;
+
 /**
  * ユーザーが設定する必要のある情報
  */
@@ -62,10 +64,7 @@ interface Mixin {
 
 export type IConfig = ISource & Mixin;
 
-export default load();
-
-function load() {
-	const path = (global as any).MISSKEY_CONFIG_PATH ? (global as any).MISSKEY_CONFIG_PATH : `${__dirname}/../.config/config.yml`;
+export default function load() {
 	const config = yaml.safeLoad(fs.readFileSync(path, 'utf8')) as ISource;
 
 	const mixin: Mixin = {} as Mixin;
