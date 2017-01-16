@@ -8,6 +8,8 @@ import * as https from 'https';
 import * as express from 'express';
 import vhost = require('vhost');
 
+import config from './config';
+
 /**
  * Init app
  */

@@ -62,12 +62,10 @@ interface Mixin {
 
 export type IConfig = ISource & Mixin;
 
-/**
- * 設定を取得します
- * @param  {string} path 設定ファイルのパス
- * @return {IConfig}     設定
- */
-export default (path: string) => {
+export default load();
+
+function load() {
+	const path = (global as any).MISSKEY_CONFIG_PATH ? (global as any).MISSKEY_CONFIG_PATH : `${__dirname}/../.config/config.yml`;
 	const config = yaml.safeLoad(fs.readFileSync(path, 'utf8')) as ISource;
 
 	const mixin: Mixin = {} as Mixin;
@@ -90,14 +88,14 @@ export default (path: string) => {
 	mixin.dev_url = `${mixin.scheme}://dev.${mixin.host}`;
 	mixin.drive_url = `${mixin.secondary_scheme}://file.${mixin.secondary_host}`;
 
-	return Object.assign(config || {}, mixin) as IConfig;
-};
+	return Object.assign(config, mixin);
+}
 
-function normalizeUrl(url: string): string {
+function normalizeUrl(url: string) {
 	return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
 }
 
-function urlError(url: string): void {
+function urlError(url: string) {
 	console.error(`「${url}」は、正しいURLではありません。先頭に http:// または https:// をつけ忘れてないかなど確認してください。`);
 	process.exit();
 }
