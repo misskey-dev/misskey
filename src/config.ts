@@ -6,7 +6,19 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as isUrl from 'is-url';
 
-export const path = (global as any).MISSKEY_CONFIG_PATH ? (global as any).MISSKEY_CONFIG_PATH : `${__dirname}/../.config/config.yml`;
+/**
+ * Path of configuration directory
+ */
+const dir = `${__dirname}/../.config`;
+
+/**
+ * Path of configuration file
+ */
+export const path = (global as any).MISSKEY_CONFIG_PATH
+	? (global as any).MISSKEY_CONFIG_PATH
+	: process.env.NODE_ENV == 'test'
+		? `${dir}/test.yml`
+		: `${dir}/default.yml`;
 
 /**
  * ユーザーが設定する必要のある情報

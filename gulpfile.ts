@@ -31,12 +31,12 @@ const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDebug = !isProduction;
 
-if (!fs.existsSync('./.config/config.yml')) {
+if (!fs.existsSync('./.config/default.yml')) {
 	console.log('npm run configを実行して設定ファイルを作成してください');
 	process.exit();
 }
 
-(global as any).MISSKEY_CONFIG_PATH = '.config/config.yml';
+(global as any).MISSKEY_CONFIG_PATH = '.config/default.yml';
 import { IConfig } from './src/config';
 const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString()))() as IConfig;
 

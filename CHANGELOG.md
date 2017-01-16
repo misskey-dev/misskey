@@ -1,4 +1,7 @@
 # Server
+## 2
+configのファイル名: config.yml --> default.yml
+
 ## 1
 First version
 
