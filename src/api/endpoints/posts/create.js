@@ -68,6 +68,11 @@ module.exports = (params, user, app) =>
 		for (let i = 0; i < media.length; i++) {
 			const image = media[i];
 
+			// Validate id
+			if (!mongo.ObjectID.isValid(image)) {
+				return rej('incorrect media id');
+			}
+
 			// Fetch file
 			// SELECT _id
 			const entity = await DriveFile.findOne({
@@ -90,6 +95,11 @@ module.exports = (params, user, app) =>
 	// Get 'repost_id' parameter
 	let repost = params.repost_id;
 	if (repost !== undefined && repost !== null) {
+		// Validate id
+		if (!mongo.ObjectID.isValid(repost)) {
+			return rej('incorrect repost_id');
+		}
+
 		// Fetch repost to post
 		repost = await Post.findOne({
 			_id: new mongo.ObjectID(repost)
@@ -131,6 +141,12 @@ module.exports = (params, user, app) =>
 	// Get 'reply_to_id' parameter
 	let replyTo = params.reply_to_id;
 	if (replyTo !== undefined && replyTo !== null) {
+		// Validate id
+		if (!mongo.ObjectID.isValid(replyTo)) {
+			return rej('incorrect reply_to_id');
+		}
+
+		// Fetch reply
 		replyTo = await Post.findOne({
 			_id: new mongo.ObjectID(replyTo)
 		});
