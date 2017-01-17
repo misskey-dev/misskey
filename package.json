@@ -18,7 +18,7 @@
     "clean": "gulp clean",
     "cleanall": "gulp cleanall",
     "lint": "gulp lint",
-    "test": "mocha"
+    "test": "mocha --harmony"
   },
   "dependencies": {
     "@types/bcrypt": "1.0.0",

@@ -18,16 +18,18 @@ const request = (endpoint, params, me) => new Promise((ok, ng) => {
 	chai.request(server)
 		.post(endpoint)
 		.set('content-type', 'application/x-www-form-urlencoded')
-		.send(Object.assign({ i: me }, params))
+		.send(Object.assign({ i: (me || { token: null }).token }, params))
 		.end((err, res) => {
 			ok(res);
 		});
 });
 
 describe('API', () => {
-	// Reset database
-	db.get('users').drop();
-	db.get('posts').drop();
+	// Reset database each test
+	beforeEach(() => Promise.all([
+		db.get('users').drop(),
+		db.get('posts').drop()
+	]));
 
 	it('greet server', done => {
 		chai.request(server)
@@ -39,18 +41,11 @@ describe('API', () => {
 			});
 	});
 
-	const account = {
-		username: 'sakurako',
-		password: 'HimawariDaisuki06160907'
-	};
-
-	let me;
-
 	describe('signup', () => {
 		it('不正なユーザー名でアカウントが作成できない', done => {
 			request('/signup', {
 				username: 'sakurako.',
-				password: account.password
+				password: 'HimawariDaisuki06160907'
 			}).then(res => {
 				res.should.have.status(400);
 				done();
@@ -59,7 +54,7 @@ describe('API', () => {
 
 		it('空のパスワードでアカウントが作成できない', done => {
 			request('/signup', {
-				username: account.username,
+				username: 'sakurako',
 				password: ''
 			}).then(res => {
 				res.should.have.status(400);
@@ -68,44 +63,58 @@ describe('API', () => {
 		});
 
 		it('正しくアカウントが作成できる', done => {
-			request('/signup', account).then(res => {
+			const me = {
+				username: 'sakurako',
+				password: 'HimawariDaisuki06160907'
+			};
+			request('/signup', me).then(res => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
-				res.body.should.have.property('username').eql(account.username);
+				res.body.should.have.property('username').eql(me.username);
 				done();
 			});
 		});
 
-		it('同じユーザー名のアカウントは作成できない', done => {
-			request('/signup', account).then(res => {
+		it('同じユーザー名のアカウントは作成できない', () => new Promise(async (done) => {
+			const user = await insertSakurako();
+			request('/signup', {
+				username: user.username,
+				password: 'HimawariDaisuki06160907'
+			}).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		});
+		}));
 	});
 
 	describe('signin', () => {
-		it('間違ったパスワードでサインインできない', done => {
+		it('間違ったパスワードでサインインできない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
 			request('/signin', {
-				username: account.username,
-				password: account.password + '.'
+				username: me.username,
+				password: 'kyoppie'
 			}).then(res => {
 				res.should.have.status(400);
 				res.text.should.be.equal('incorrect password');
 				done();
 			});
-		});
+		}));
 
-		it('正しい情報でサインインできる', done => {
-			request('/signin', account).then(res => {
+		it('正しい情報でサインインできる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/signin', {
+				username: me.username,
+				password: 'HimawariDaisuki06160907'
+			}).then(res => {
 				res.should.have.status(204);
-				me = res.header['set-cookie'][0].match(/i=(!\w+)/)[1];
 				done();
 			});
-		});
+		}));
 	});
 
-	it('i/update', done => {
+	it('i/update', () => new Promise(async (done) => {
+		const me = await insertSakurako();
+
 		const myName = '大室櫻子';
 		const myLocation = '七森中';
 		const myBirthday = '2000-09-07';
@@ -122,19 +131,21 @@ describe('API', () => {
 			res.body.should.have.property('birthday').eql(myBirthday);
 			done();
 		});
-	});
+	}));
 
 	describe('posts/create', () => {
-		it('simple', done => {
+		it('simple', () => new Promise(async (done) => {
+			const me = await insertSakurako();
 			const post = {
 				text: 'ひまわりー'
 			};
 			request('/posts/create', post, me).then(res => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
+				res.body.should.have.property('text').eql(post.text);
 				done();
 			});
-		});
+		}));
 
 		it('reply', () => {
 
@@ -145,3 +156,12 @@ describe('API', () => {
 		});
 	});
 });
+
+async function insertSakurako() {
+	return await db.get('users').insert({
+		token: '!00000000000000000000000000000000',
+		username: 'sakurako',
+		username_lower: 'sakurako',
+		password: '$2a$14$wlDw/gDIEE7hHpkJA4yZE.bRUZc.ykHhPfVXPaw2cfOldyParYM76' // HimawariDaisuki06160907
+	});
+}
