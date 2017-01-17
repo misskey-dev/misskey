@@ -10,7 +10,9 @@ export default async (me: mongodb.ObjectID, includeMe: boolean = true) => {
 			// 削除されたドキュメントは除く
 			deleted_at: { $exists: false }
 		}, {
-			followee_id: true
+			fields: {
+				followee_id: true
+			}
 		});
 
 	// ID list of other users who the I follows
