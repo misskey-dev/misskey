@@ -70,8 +70,7 @@ module.exports = (params) =>
 					count: '$count'
 				}}
 			} }
-		])
-		.toArray();
+		]);
 
 	datas.forEach(data => {
 		data.date = data._id;

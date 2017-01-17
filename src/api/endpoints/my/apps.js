@@ -44,14 +44,13 @@ module.exports = (params, user) =>
 
 	// Execute query
 	const apps = await App
-		.find(query, {}, {
+		.find(query, {
 			limit: limit,
 			skip: offset,
 			sort: {
 				created_at: -1
 			}
-		})
-		.toArray();
+		});
 
 	// Reply
 	res(await Promise.all(apps.map(async app =>

@@ -13,6 +13,7 @@ import serialize from '../../serializers/post';
 import createFile from '../../common/add-file-to-drive';
 import notify from '../../common/notify';
 import event from '../../event';
+import config from '../../../conf';
 
 /**
  * 最大文字数
@@ -103,7 +104,7 @@ module.exports = (params, user, app) =>
 		// Fetch recently post
 		const latestPost = await Post.findOne({
 			user_id: user._id
-		}, {}, {
+		}, {
 			sort: {
 				_id: -1
 			}
@@ -152,7 +153,7 @@ module.exports = (params, user, app) =>
 	}
 
 	// 投稿を作成
-	const inserted = await Post.insert({
+	const post = await Post.insert({
 		created_at: new Date(),
 		media_ids: media ? files.map(file => file._id) : undefined,
 		reply_to_id: replyTo ? replyTo._id : undefined,
@@ -161,8 +162,6 @@ module.exports = (params, user, app) =>
 		user_id: user._id,
 		app_id: app ? app._id : null
 	});
-
-	const post = inserted.ops[0];
 
 	// Serialize
 	const postObj = await serialize(post);
@@ -200,15 +199,14 @@ module.exports = (params, user, app) =>
 		}, {
 			follower_id: true,
 			_id: false
-		})
-		.toArray();
+		});
 
 	// Publish event to followers stream
 	followers.forEach(following =>
 		event(following.follower_id, 'post', postObj));
 
 	// Increment my posts count
-	User.updateOne({ _id: user._id }, {
+	User.update({ _id: user._id }, {
 		$inc: {
 			posts_count: 1
 		}
@@ -217,7 +215,7 @@ module.exports = (params, user, app) =>
 	// If has in reply to post
 	if (replyTo) {
 		// Increment replies count
-		Post.updateOne({ _id: replyTo._id }, {
+		Post.update({ _id: replyTo._id }, {
 			$inc: {
 				replies_count: 1
 			}
@@ -262,7 +260,7 @@ module.exports = (params, user, app) =>
 
 		if (!existRepost) {
 			// Update repostee status
-			Post.updateOne({ _id: repost._id }, {
+			Post.update({ _id: repost._id }, {
 				$inc: {
 					repost_count: 1
 				}
@@ -336,7 +334,7 @@ module.exports = (params, user, app) =>
 
 	// Append mentions data
 	if (mentions.length > 0) {
-		Post.updateOne({ _id: post._id }, {
+		Post.update({ _id: post._id }, {
 			$set: {
 				mentions: mentions
 			}

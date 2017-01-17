@@ -44,14 +44,13 @@ module.exports = (params) =>
 	const favorites = await Favorites
 		.find({
 			user_id: user._id
-		}, {}, {
+		}, {
 			limit: limit,
 			skip: offset,
 			sort: {
 				_id: sort == 'asc' ? 1 : -1
 			}
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(favorites.map(async favorite =>

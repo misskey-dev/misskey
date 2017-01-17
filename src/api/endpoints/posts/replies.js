@@ -58,14 +58,13 @@ module.exports = (params, user) =>
 
 	// Issue query
 	const replies = await Post
-		.find({ reply_to_id: post._id }, {}, {
+		.find({ reply_to_id: post._id }, {
 			limit: limit,
 			skip: offset,
 			sort: {
 				_id: sort == 'asc' ? 1 : -1
 			}
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(replies.map(async post =>

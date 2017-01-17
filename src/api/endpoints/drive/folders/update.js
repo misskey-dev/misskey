@@ -99,9 +99,7 @@ module.exports = (params, user) =>
 	}
 
 	// Update
-	DriveFolder.updateOne({ _id: folder._id }, {
-		$set: folder
-	});
+	DriveFolder.update(folder._id, folder);
 
 	// Serialize
 	const folderObj = await serialize(folder);

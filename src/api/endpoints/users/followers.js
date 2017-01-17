@@ -78,11 +78,10 @@ module.exports = (params, me) =>
 
 	// Get followers
 	const following = await Following
-		.find(query, {}, {
+		.find(query, {
 			limit: limit + 1,
 			sort: { _id: -1 }
-		})
-		.toArray();
+		});
 
 	// 「次のページ」があるかどうか
 	const inStock = following.length === limit + 1;

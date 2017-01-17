@@ -63,8 +63,7 @@ async function byNative(res, rej, me, query, offset, max) {
 			}, {
 				name: new RegExp(escapedQuery)
 			}]
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>
@@ -106,8 +105,7 @@ async function byElasticsearch(res, rej, me, query, offset, max) {
 				_id: {
 					$in: hits
 				}
-			})
-			.toArray();
+			});
 
 		// Serialize
 		res(await Promise.all(users.map(async user =>

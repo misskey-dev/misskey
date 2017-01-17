@@ -87,12 +87,8 @@ module.exports = (params, user) =>
 	}
 
 	// Update session
-	await AuthSess.updateOne({
-		_id: session._id
-	}, {
-		$set: {
-			user_id: user._id
-		}
+	await AuthSess.update(session._id, {
+		user_id: user._id
 	});
 
 	// Response

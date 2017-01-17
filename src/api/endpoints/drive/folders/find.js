@@ -37,8 +37,7 @@ module.exports = (params, user) =>
 			name: name,
 			user_id: user._id,
 			parent_id: parentId
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(folders.map(async folder =>

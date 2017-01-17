@@ -73,8 +73,7 @@ module.exports = (params, user, app) =>
 		}, {
 			limit: limit,
 			sort: sort
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(folders.map(async folder =>

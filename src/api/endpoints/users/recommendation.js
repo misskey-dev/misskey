@@ -46,14 +46,13 @@ module.exports = (params, me) =>
 			_id: {
 				$nin: followingIds
 			}
-		}, {}, {
+		}, {
 			limit: limit,
 			skip: offset,
 			sort: {
 				followers_count: -1
 			}
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>

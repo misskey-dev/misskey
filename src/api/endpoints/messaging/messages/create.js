@@ -125,7 +125,7 @@ module.exports = (params, user) =>
 	}
 
 	// 履歴作成(自分)
-	History.updateOne({
+	History.update({
 		user_id: user._id,
 		partner: recipient._id
 	}, {
@@ -138,7 +138,7 @@ module.exports = (params, user) =>
 	});
 
 	// 履歴作成(相手)
-	History.updateOne({
+	History.update({
 		user_id: recipient._id,
 		partner: user._id
 	}, {

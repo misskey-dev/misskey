@@ -46,8 +46,7 @@ module.exports = (params) =>
 			followee_id: false
 		}, {
 			sort: { created_at: -1 }
-		})
-		.toArray();
+		});
 
 	const graph = [];
 

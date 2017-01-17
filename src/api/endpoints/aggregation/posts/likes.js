@@ -45,8 +45,7 @@ module.exports = (params) =>
 			post_id: false
 		}, {
 			sort: { created_at: -1 }
-		})
-		.toArray();
+		});
 
 	const graph = [];
 

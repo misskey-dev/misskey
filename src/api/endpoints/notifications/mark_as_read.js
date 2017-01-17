@@ -37,7 +37,7 @@ module.exports = (params, user) =>
 
 	// Update
 	notification.is_read = true;
-	Notification.updateOne({ _id: notification._id }, {
+	Notification.update({ _id: notification._id }, {
 		$set: {
 			is_read: true
 		}

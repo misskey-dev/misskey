@@ -62,14 +62,13 @@ module.exports = (params, user) =>
 		.find({
 			post_id: post._id,
 			deleted_at: { $exists: false }
-		}, {}, {
+		}, {
 			limit: limit,
 			skip: offset,
 			sort: {
 				_id: sort == 'asc' ? 1 : -1
 			}
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(likes.map(async like =>

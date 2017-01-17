@@ -8,6 +8,7 @@ import User from '../../models/user';
 import { isValidBirthday } from '../../models/user';
 import serialize from '../../serializers/user';
 import event from '../../event';
+import config from '../../../conf';
 
 /**
  * Update myself
@@ -73,9 +74,7 @@ module.exports = async (params, user, _, isSecure) =>
 		user.banner_id = new mongo.ObjectID(banner);
 	}
 
-	await User.updateOne({ _id: user._id }, {
-		$set: user
-	});
+	await User.update(user._id, user);
 
 	// Serialize
 	const iObj = await serialize(user, user, {

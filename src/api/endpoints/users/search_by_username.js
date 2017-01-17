@@ -56,8 +56,7 @@ module.exports = (params, me) =>
 		}, {
 			limit: limit,
 			skip: offset
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>

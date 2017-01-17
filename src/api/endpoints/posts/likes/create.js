@@ -66,21 +66,21 @@ module.exports = (params, user) =>
 	res();
 
 	// Increment likes count
-	Post.updateOne({ _id: post._id }, {
+	Post.update({ _id: post._id }, {
 		$inc: {
 			likes_count: 1
 		}
 	});
 
 	// Increment user likes count
-	User.updateOne({ _id: user._id }, {
+	User.update({ _id: user._id }, {
 		$inc: {
 			likes_count: 1
 		}
 	});
 
 	// Increment user liked count
-	User.updateOne({ _id: post.user_id }, {
+	User.update({ _id: post.user_id }, {
 		$inc: {
 			liked_count: 1
 		}

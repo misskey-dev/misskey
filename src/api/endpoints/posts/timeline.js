@@ -65,11 +65,10 @@ module.exports = (params, user, app) =>
 
 	// Issue query
 	const timeline = await Post
-		.find(query, {}, {
+		.find(query, {
 			limit: limit,
 			sort: sort
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(timeline.map(async post =>

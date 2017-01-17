@@ -59,11 +59,10 @@ module.exports = (params, user) =>
 
 	// Issue query
 	const history = await Signin
-		.find(query, {}, {
+		.find(query, {
 			limit: limit,
 			sort: sort
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(history.map(async record =>

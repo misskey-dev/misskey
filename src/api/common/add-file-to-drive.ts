@@ -72,8 +72,7 @@ export default (
 		.find({ user_id: user._id }, {
 			datasize: true,
 			_id: false
-		})
-		.toArray();
+		});
 
 	// Calculate drive usage (in byte)
 	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);

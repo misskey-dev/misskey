@@ -65,8 +65,7 @@ async function byNative(res, rej, me, query, offset, max) {
 			},
 			limit: max,
 			skip: offset
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(posts.map(async post =>
@@ -120,12 +119,11 @@ async function byElasticsearch(res, rej, me, query, offset, max) {
 				_id: {
 					$in: hits
 				}
-			}, {}, {
+			}, {
 				sort: {
 					_id: -1
 				}
-			})
-			.toArray();
+			});
 
 		posts.map(post => {
 			post._highlight = response.hits.hits.filter(hit => post._id.equals(hit._id))[0].highlight.text[0];

@@ -55,11 +55,10 @@ module.exports = (params, me) =>
 
 	// Issue query
 	const users = await User
-		.find(query, {}, {
+		.find(query, {
 			limit: limit,
 			sort: sort
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>

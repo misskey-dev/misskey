@@ -72,11 +72,10 @@ module.exports = (params, user) =>
 
 	// Issue query
 	const mentions = await Post
-		.find(query, {}, {
+		.find(query, {
 			limit: limit,
 			sort: sort
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(mentions.map(async mention =>

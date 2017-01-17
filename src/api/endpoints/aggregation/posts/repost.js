@@ -47,8 +47,7 @@ module.exports = (params) =>
 				_id: '$date',
 				count: { $sum: 1 }
 			}}
-		])
-		.toArray();
+		]);
 
 	datas.forEach(data => {
 		data.date = data._id;

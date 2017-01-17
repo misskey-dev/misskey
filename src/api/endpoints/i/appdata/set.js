@@ -29,7 +29,7 @@ module.exports = (params, user, app, isSecure) =>
 				data: Object.assign(user.data || {}, JSON.parse(data))
 			}
 		};
-		await User.updateOne({ _id: user._id }, set);
+		await User.update({ _id: user._id }, set);
 		res(204);
 	} else {
 		const appdata = await Appdata.findOne({
@@ -41,7 +41,7 @@ module.exports = (params, user, app, isSecure) =>
 				data: Object.assign((appdata || {}).data || {}, JSON.parse(data))
 			}
 		};
-		await Appdata.updateOne({
+		await Appdata.update({
 			app_id: app._id,
 			user_id: user._id
 		}, Object.assign({

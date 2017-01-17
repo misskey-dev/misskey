@@ -39,8 +39,7 @@ module.exports = (params, user) =>
 			folder_id: folder
 		}, {
 			data: false
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(files.map(async file =>

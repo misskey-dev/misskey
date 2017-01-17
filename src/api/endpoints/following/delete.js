@@ -53,7 +53,7 @@ module.exports = (params, user) =>
 	}
 
 	// Delete following
-	await Following.updateOne({
+	await Following.update({
 		_id: exist._id
 	}, {
 		$set: {
@@ -65,14 +65,14 @@ module.exports = (params, user) =>
 	res();
 
 	// Decrement following count
-	User.updateOne({ _id: follower._id }, {
+	User.update({ _id: follower._id }, {
 		$inc: {
 			following_count: -1
 		}
 	});
 
 	// Decrement followers count
-	User.updateOne({ _id: followee._id }, {
+	User.update({ _id: followee._id }, {
 		$inc: {
 			followers_count: -1
 		}

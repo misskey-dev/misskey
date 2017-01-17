@@ -64,14 +64,14 @@ module.exports = (params, user) =>
 	res();
 
 	// Increment following count
-	User.updateOne({ _id: follower._id }, {
+	User.update(follower._id, {
 		$inc: {
 			following_count: 1
 		}
 	});
 
 	// Increment followers count
-	User.updateOne({ _id: followee._id }, {
+	User.update({ _id: followee._id }, {
 		$inc: {
 			followers_count: 1
 		}

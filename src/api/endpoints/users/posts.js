@@ -111,11 +111,10 @@ module.exports = (params, me) =>
 
 	// Issue query
 	const posts = await Post
-		.find(query, {}, {
+		.find(query, {
 			limit: limit,
 			sort: sort
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(posts.map(async (post) =>

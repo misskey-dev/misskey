@@ -34,13 +34,12 @@ module.exports = (params, user) =>
 	const history = await History
 		.find({
 			user_id: user._id
-		}, {}, {
+		}, {
 			limit: limit,
 			sort: {
 				updated_at: -1
 			}
-		})
-		.toArray();
+		});
 
 	// Serialize
 	res(await Promise.all(history.map(async h =>
