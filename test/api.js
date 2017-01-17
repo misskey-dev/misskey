@@ -15,10 +15,13 @@ const server = require('../built/api/server');
 const db = require('../built/db/mongodb').default;
 
 const request = (endpoint, params, me) => new Promise((ok, ng) => {
+	const auth = me ? {
+		i: me.token
+	} : {};
 	chai.request(server)
 		.post(endpoint)
 		.set('content-type', 'application/x-www-form-urlencoded')
-		.send(Object.assign({ i: (me || { token: null }).token }, params))
+		.send(Object.assign(auth, params))
 		.end((err, res) => {
 			ok(res);
 		});
@@ -132,6 +135,38 @@ describe('API', () => {
 			done();
 		});
 	}));
+
+	describe('users/show', () => {
+		it('ユーザーが取得できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/users/show', {
+				user_id: me._id.toString()
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('id').eql(me._id.toString());
+				done();
+			});
+		}));
+
+		it('ユーザーが存在しなかったら怒る', () => new Promise(async (done) => {
+			request('/users/show', {
+				user_id: '000000000000000000000000'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			request('/users/show', {
+				user_id: 'kyoppie'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
 
 	describe('posts/create', () => {
 		it('投稿できる', () => new Promise(async (done) => {
@@ -291,7 +326,6 @@ describe('API', () => {
 				user_id: hima._id.toString()
 			}, me).then(res => {
 				res.should.have.status(204);
-				res.body.should.be.a('object');
 				done();
 			});
 		}));
