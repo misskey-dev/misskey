@@ -14,15 +14,13 @@ export default (
 	}
 
 	// Create notification
-	const res = await Notification.insert(Object.assign({
+	const notification = await Notification.insert(Object.assign({
 		created_at: new Date(),
 		notifiee_id: notifiee,
 		notifier_id: notifier,
 		type: type,
 		is_read: false
 	}, content));
-
-	const notification = res.ops[0];
 
 	resolve(notification);
 
