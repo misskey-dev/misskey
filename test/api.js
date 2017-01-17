@@ -2,6 +2,9 @@
  * API TESTS
  */
 
+// During the test the env variable is set to test
+process.env.NODE_ENV = 'test';
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();
@@ -9,8 +12,12 @@ const should = chai.should();
 chai.use(chaiHttp);
 
 const server = require('../built/api/server');
+const db = require('../built/db/mongodb').default;
 
 describe('API', () => {
+	// Reset database
+	db.get('users').drop();
+
 	it('greet server', done => {
 		chai.request(server)
 			.get('/')
