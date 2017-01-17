@@ -5,6 +5,7 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
+import * as cluster from 'cluster';
 import * as express from 'express';
 import vhost = require('vhost');
 
@@ -53,8 +54,10 @@ require('./api/streaming')(server);
  * Server listen
  */
 server.listen(config.port, () => {
-	// Send a 'ready' message to parent process
-	process.send('ready');
+	if (cluster.isWorker) {
+		// Send a 'ready' message to parent process
+		process.send('ready');
+	}
 });
 
 /**
