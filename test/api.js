@@ -365,6 +365,92 @@ describe('API', () => {
 			});
 		}));
 	});
+
+	describe('following/delete', () => {
+		it('フォロー解除できる', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const me = await insertSakurako();
+			await db.get('following').insert({
+				followee_id: hima._id,
+				follower_id: me._id
+			});
+			request('/following/delete', {
+				user_id: hima._id.toString()
+			}, me).then(res => {
+				res.should.have.status(204);
+				done();
+			});
+		}));
+
+		it('過去にフォロー歴があった状態でフォロー解除できる', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const me = await insertSakurako();
+			await db.get('following').insert({
+				followee_id: hima._id,
+				follower_id: me._id,
+				deleted_at: new Date()
+			});
+			await db.get('following').insert({
+				followee_id: hima._id,
+				follower_id: me._id
+			});
+			request('/following/delete', {
+				user_id: hima._id.toString()
+			}, me).then(res => {
+				res.should.have.status(204);
+				done();
+			});
+		}));
+
+		it('フォローしていない場合は怒る', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const me = await insertSakurako();
+			request('/following/delete', {
+				user_id: hima._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しないユーザーはフォロー解除できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/following/delete', {
+				user_id: '000000000000000000000000'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('自分自身はフォロー解除できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/following/delete', {
+				user_id: me._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/following/delete', {}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/following/delete', {
+				user_id: 'kyoppie'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
 });
 
 async function insertSakurako() {
