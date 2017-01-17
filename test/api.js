@@ -96,7 +96,7 @@ describe('API', () => {
 			});
 		});
 
-		it('正しい情報で正しくサインインできる', done => {
+		it('正しい情報でサインインできる', done => {
 			request('/signin', account).then(res => {
 				res.should.have.status(204);
 				me = res.header['set-cookie'][0].match(/i=(!\w+)/)[1];
