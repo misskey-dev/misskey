@@ -55,11 +55,24 @@ describe('API', () => {
 		});
 	});
 
-	it('signin', done => {
-		request('/signin', account).then(res => {
-			res.should.have.status(204);
-			me = res.header['set-cookie'][0].match(/i=(!\w+)/)[1];
-			done();
+	describe('signin', () => {
+		it('間違ったパスワードでサインインできない', done => {
+			request('/signin', {
+				username: account.username,
+				password: account.password + '.'
+			}).then(res => {
+				res.should.have.status(400);
+				res.text.should.be.equal('incorrect password');
+				done();
+			});
+		});
+
+		it('正しい情報で正しくサインインできる', done => {
+			request('/signin', account).then(res => {
+				res.should.have.status(204);
+				me = res.header['set-cookie'][0].match(/i=(!\w+)/)[1];
+				done();
+			});
 		});
 	});
 
@@ -72,6 +85,18 @@ describe('API', () => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
 				res.body.should.have.property('name').eql(myName);
+				done();
+			});
+		});
+
+		it('update my location', done => {
+			const myLocation = '七森中';
+			request('/i/update', {
+				location: myLocation
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('location').eql(myLocation);
 				done();
 			});
 		});
