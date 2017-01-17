@@ -14,6 +14,31 @@ chai.use(chaiHttp);
 const server = require('../built/api/server');
 
 describe('API', () => {
+	it('greet server', done => {
+		chai.request(server)
+			.get('/')
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.text.should.be.equal('YEE HAW');
+				done();
+			});
+	});
+
+	it('create account', done => {
+		const account = {
+			username: 'sakurako',
+			password: 'HimawariDaisuki06160907'
+		};
+		chai.request(server)
+			.post('/signup')
+			.send(account)
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				done();
+			});
+	});
+
 	describe('posts/create', () => {
 		it('simple', done => {
 			const post = {
