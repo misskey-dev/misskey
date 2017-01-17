@@ -12,6 +12,8 @@ import * as compression from 'compression';
 const subdomain = require('subdomain');
 import serveApp from './serve-app';
 
+import config from '../conf';
+
 /**
  * Init app
  */
