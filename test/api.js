@@ -147,9 +147,28 @@ describe('API', () => {
 			});
 		}));
 
-		it('reply', () => {
+		it('reply', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const himaPost = await db.get('posts').insert({
+				user_id: hima._id,
+				text: 'ひま'
+			});
 
-		});
+			const me = await insertSakurako();
+			const post = {
+				text: 'さく',
+				reply_to_id: himaPost._id.toString()
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('text').eql(post.text);
+				res.body.should.have.property('reply_to_id').eql(post.reply_to_id);
+				res.body.should.have.property('reply_to');
+				res.body.reply_to.should.have.property('text').eql(himaPost.text;
+				done();
+			});
+		}));
 
 		it('repost', () => {
 
@@ -163,5 +182,14 @@ async function insertSakurako() {
 		username: 'sakurako',
 		username_lower: 'sakurako',
 		password: '$2a$14$wlDw/gDIEE7hHpkJA4yZE.bRUZc.ykHhPfVXPaw2cfOldyParYM76' // HimawariDaisuki06160907
+	});
+}
+
+async function insertHimawari() {
+	return await db.get('users').insert({
+		token: '!00000000000000000000000000000001',
+		username: 'himawari',
+		username_lower: 'himawari',
+		password: '$2a$14$8kwC/akV/Gzk58vsTDAate2ixGjQRtC1j3c4IQAqZ7QLvawRMQsPO' // ilovesakurako
 	});
 }
