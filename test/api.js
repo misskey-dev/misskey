@@ -46,12 +46,41 @@ describe('API', () => {
 
 	let me;
 
-	it('create account', done => {
-		request('/signup', account).then(res => {
-			res.should.have.status(200);
-			res.body.should.be.a('object');
-			res.body.should.have.property('username').eql(account.username);
-			done();
+	describe('signup', () => {
+		it('不正なユーザー名でアカウントが作成できない', done => {
+			request('/signup', {
+				username: 'sakurako.',
+				password: account.password
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+
+		it('空のパスワードでアカウントが作成できない', done => {
+			request('/signup', {
+				username: account.username,
+				password: ''
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+
+		it('正しくアカウントが作成できる', done => {
+			request('/signup', account).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('username').eql(account.username);
+				done();
+			});
+		});
+
+		it('同じユーザー名のアカウントは作成できない', done => {
+			request('/signup', account).then(res => {
+				res.should.have.status(400);
+				done();
+			});
 		});
 	});
 
