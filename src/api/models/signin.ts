@@ -1,1 +1,3 @@
-export default global.db.collection('signin');
+import db from '../../db/mongodb';
+
+export default db.collection('signin');

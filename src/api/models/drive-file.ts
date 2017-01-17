@@ -1,4 +1,6 @@
-export default global.db.collection('drive_files');
+import db from '../../db/mongodb';
+
+export default db.collection('drive_files');
 
 export function validateFileName(name: string): boolean {
 	return (

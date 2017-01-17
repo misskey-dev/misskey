@@ -108,6 +108,7 @@
     "mime-types": "2.1.14",
     "mocha": "3.2.0",
     "mongodb": "2.2.21",
+    "mongoskin": "^2.1.0",
     "ms": "0.7.2",
     "multer": "1.2.1",
     "nprogress": "0.2.0",

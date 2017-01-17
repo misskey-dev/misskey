@@ -1,4 +1,6 @@
-const collection = global.db.collection('access_tokens');
+import db from '../../db/mongodb';
+
+const collection = db.collection('access_tokens');
 
 collection.createIndex('token');
 collection.createIndex('hash');

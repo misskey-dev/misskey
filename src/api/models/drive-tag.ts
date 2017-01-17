@@ -1,1 +1,3 @@
-export default global.db.collection('drive_tags');
+import db from '../../db/mongodb';
+
+export default db.collection('drive_tags');

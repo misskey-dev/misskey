@@ -1,1 +1,3 @@
-export default global.db.collection('likes');
+import db from '../../db/mongodb';
+
+export default db.collection('likes');

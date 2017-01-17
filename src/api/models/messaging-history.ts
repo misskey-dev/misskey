@@ -1,1 +1,3 @@
-export default global.db.collection('messaging_histories');
+import db from '../../db/mongodb';
+
+export default db.collection('messaging_histories');

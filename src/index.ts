@@ -15,7 +15,6 @@ import * as chalk from 'chalk';
 import portUsed = require('tcp-port-used');
 import isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
-import initdb from './db/mongodb';
 import LastCommitInfo from './utils/lastCommitInfo';
 import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
@@ -106,16 +105,8 @@ async function masterMain(): Promise<void> {
  * Init worker proccess
  */
 function workerMain(): void {
-	// Init mongo
-	initdb().then(db => {
-		global.db = db;
-
-		// start server
-		require('./server');
-	}, err => {
-		console.error(err);
-		process.exit(0);
-	});
+	// start server
+	require('./server');
 }
 
 /**
@@ -158,7 +149,7 @@ async function init(): Promise<InitResult> {
 	// Try to connect to MongoDB
 	let mongoDBLogger = new Logger('MongoDB');
 	try {
-		const db = await initdb();
+		const db = require('./db/mongodb').default;
 		mongoDBLogger.info('Successfully connected');
 		db.close();
 	} catch (e) {

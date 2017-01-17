@@ -1,4 +1,6 @@
-const collection = global.db.collection('users');
+import db from '../../db/mongodb';
+
+const collection = db.collection('users');
 
 collection.createIndex('username');
 collection.createIndex('token');
