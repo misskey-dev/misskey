@@ -5,7 +5,7 @@ services:
   - mongodb
   - redis-server
 before_script:
-  - "mkdir -p ./.config && cp ./.ci-files/config.yml ./.config"
+  - "mkdir -p ./.config && cp ./.ci-files/default.yml ./.config && cp ./.ci-files/test.yml ./.config"
 env:
   - CXX=g++-4.8
 addons:
