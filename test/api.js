@@ -215,16 +215,15 @@ describe('API', () => {
 		}));
 	});
 
-	describe('followings/create', () => {
+	describe('following/create', () => {
 		it('フォローできる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
-			request('/followings/create', {
+			request('/following/create', {
 				user_id: hima._id.toString()
 			}, me).then(res => {
-				res.should.have.status(200);
+				res.should.have.status(204);
 				res.body.should.be.a('object');
-				res.body.should.have.property('id').eql(hima._id.toString());
 				done();
 			});
 		}));
@@ -232,17 +231,15 @@ describe('API', () => {
 		it('過去にフォロー歴があった状態でフォローできる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
-			await db.get('followings').insert({
+			await db.get('following').insert({
 				followee_id: hima._id,
 				follower_id: me._id,
 				deleted_at: new Date()
 			});
-			request('/followings/create', {
+			request('/following/create', {
 				user_id: hima._id.toString()
 			}, me).then(res => {
-				res.should.have.status(200);
-				res.body.should.be.a('object');
-				res.body.should.have.property('id').eql(hima._id.toString());
+				res.should.have.status(204);
 				done();
 			});
 		}));
@@ -250,11 +247,11 @@ describe('API', () => {
 		it('既にフォローしている場合は怒る', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
-			await db.get('followings').insert({
+			await db.get('following').insert({
 				followee_id: hima._id,
 				follower_id: me._id
 			});
-			request('/followings/create', {
+			request('/following/create', {
 				user_id: hima._id.toString()
 			}, me).then(res => {
 				res.should.have.status(400);
@@ -264,8 +261,8 @@ describe('API', () => {
 
 		it('存在しないユーザーはフォローできない', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			request('/followings/create', {
-				user_id: 'kyoppie'
+			request('/following/create', {
+				user_id: '587e7c4b520fb00aa49a5684'
 			}, me).then(res => {
 				res.should.have.status(400);
 				done();
@@ -274,7 +271,7 @@ describe('API', () => {
 
 		it('自分自身はフォローできない', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			request('/followings/create', {
+			request('/following/create', {
 				user_id: me._id.toString()
 			}, me).then(res => {
 				res.should.have.status(400);
@@ -284,7 +281,17 @@ describe('API', () => {
 
 		it('空のパラメータで怒られる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			request('/followings/create', {}, me).then(res => {
+			request('/following/create', {}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/following/create', {
+				user_id: 'kyoppie'
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
