@@ -214,6 +214,64 @@ describe('API', () => {
 			});
 		}));
 	});
+
+	describe('followings/create', () => {
+		it('フォローできる', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const me = await insertSakurako();
+			request('/followings/create', {
+				user_id: hima._id.toString()
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('id').eql(hima._id.toString());
+				done();
+			});
+		}));
+
+		it('既にフォローしている場合は怒る', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const me = await insertSakurako();
+			await db.get('followings').insert({
+				followee_id: hima._id,
+				follower_id: me._id
+			});
+			request('/followings/create', {
+				user_id: hima._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しないユーザーはフォローできない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/followings/create', {
+				user_id: 'kyoppie'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('自分自身はフォローできない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/followings/create', {
+				user_id: me._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/followings/create', {}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
 });
 
 async function insertSakurako() {
