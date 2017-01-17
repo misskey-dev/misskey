@@ -134,7 +134,7 @@ describe('API', () => {
 	}));
 
 	describe('posts/create', () => {
-		it('simple', () => new Promise(async (done) => {
+		it('投稿できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'ひまわりー'
@@ -147,7 +147,7 @@ describe('API', () => {
 			});
 		}));
 
-		it('reply', () => new Promise(async (done) => {
+		it('返信できる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -170,7 +170,7 @@ describe('API', () => {
 			});
 		}));
 
-		it('repost', () => new Promise(async (done) => {
+		it('repostできる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -191,7 +191,7 @@ describe('API', () => {
 			});
 		}));
 
-		it('引用repost', () => new Promise(async (done) => {
+		it('引用repostできる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -210,6 +210,28 @@ describe('API', () => {
 				res.body.should.have.property('repost_id').eql(post.repost_id);
 				res.body.should.have.property('repost');
 				res.body.repost.should.have.property('text').eql(himaPost.text);
+				done();
+			});
+		}));
+
+		it('文字数ぎりぎりで怒られない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const post = {
+				text: '!'.repeat(500)
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(200);
+				done();
+			});
+		}));
+
+		it('文字数オーバーで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const post = {
+				text: '!'.repeat(501)
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(400);
 				done();
 			});
 		}));
