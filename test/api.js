@@ -165,14 +165,54 @@ describe('API', () => {
 				res.body.should.have.property('text').eql(post.text);
 				res.body.should.have.property('reply_to_id').eql(post.reply_to_id);
 				res.body.should.have.property('reply_to');
-				res.body.reply_to.should.have.property('text').eql(himaPost.text;
+				res.body.reply_to.should.have.property('text').eql(himaPost.text);
 				done();
 			});
 		}));
 
-		it('repost', () => {
+		it('repost', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const himaPost = await db.get('posts').insert({
+				user_id: hima._id,
+				text: 'こらっさくらこ！'
+			});
 
-		});
+			const me = await insertSakurako();
+			const post = {
+				repost_id: himaPost._id.toString()
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('repost_id').eql(post.repost_id);
+				res.body.should.have.property('repost');
+				res.body.repost.should.have.property('text').eql(himaPost.text);
+				done();
+			});
+		}));
+
+		it('引用repost', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const himaPost = await db.get('posts').insert({
+				user_id: hima._id,
+				text: 'こらっさくらこ！'
+			});
+
+			const me = await insertSakurako();
+			const post = {
+				text: 'さく',
+				repost_id: himaPost._id.toString()
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('text').eql(post.text);
+				res.body.should.have.property('repost_id').eql(post.repost_id);
+				res.body.should.have.property('repost');
+				res.body.repost.should.have.property('text').eql(himaPost.text);
+				done();
+			});
+		}));
 	});
 });
 
