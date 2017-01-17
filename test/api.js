@@ -17,6 +17,7 @@ const db = require('../built/db/mongodb').default;
 describe('API', () => {
 	// Reset database
 	db.get('users').drop();
+	db.get('posts').drop();
 
 	it('greet server', done => {
 		chai.request(server)
@@ -28,11 +29,14 @@ describe('API', () => {
 			});
 	});
 
+	const account = {
+		username: 'sakurako',
+		password: 'HimawariDaisuki06160907'
+	};
+
+	let me;
+
 	it('create account', done => {
-		const account = {
-			username: 'sakurako',
-			password: 'HimawariDaisuki06160907'
-		};
 		chai.request(server)
 			.post('/signup')
 			.set('content-type', 'application/x-www-form-urlencoded')
@@ -45,6 +49,36 @@ describe('API', () => {
 			});
 	});
 
+	it('signin', done => {
+		chai.request(server)
+			.post('/signin')
+			.set('content-type', 'application/x-www-form-urlencoded')
+			.send(account)
+			.end((err, res) => {
+				res.should.have.status(204);
+				me = res.header['set-cookie'][0].match(/i=(!\w+)/)[1];
+				done();
+			});
+	});
+
+	describe('i/update', () => {
+		it('update my name', done => {
+			const myName = '大室櫻子';
+			chai.request(server)
+				.post('/i/update')
+				.set('content-type', 'application/x-www-form-urlencoded')
+				.send(Object.assign({ i: me }, {
+					name: myName
+				}))
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.should.have.property('name').eql(myName);
+					done();
+				});
+		});
+	});
+
 	describe('posts/create', () => {
 		it('simple', done => {
 			const post = {
@@ -52,7 +86,8 @@ describe('API', () => {
 			};
 			chai.request(server)
 				.post('/posts/create')
-				.send(post)
+				.set('content-type', 'application/x-www-form-urlencoded')
+				.send(Object.assign({ i: me }, post))
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.a('object');
