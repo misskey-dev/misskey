@@ -4,6 +4,7 @@ import User from '../models/user';
 import Signin from '../models/signin';
 import serialize from '../serializers/signin';
 import event from '../event';
+import config from '../../conf';
 
 export default async (req: express.Request, res: express.Response) => {
 	res.header('Access-Control-Allow-Credentials', 'true');

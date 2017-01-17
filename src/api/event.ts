@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import * as redis from 'redis';
+import config from '../conf';
 
 type ID = string | mongo.ObjectID;
 

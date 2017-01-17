@@ -1,1 +1,3 @@
-export default global.db.collection('notifications');
+import db from '../../db/mongodb';
+
+export default db.collection('notifications');

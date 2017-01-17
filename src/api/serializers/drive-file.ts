@@ -7,6 +7,7 @@ import * as mongo from 'mongodb';
 import DriveFile from '../models/drive-file';
 import serializeDriveTag from './drive-tag';
 import deepcopy = require('deepcopy');
+import config from '../../conf';
 
 /**
  * Serialize a drive file

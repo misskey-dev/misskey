@@ -8,6 +8,7 @@ import deepcopy = require('deepcopy');
 import App from '../models/app';
 import User from '../models/user';
 import AccessToken from '../models/access-token';
+import config from '../../conf';
 
 /**
  * Serialize an app

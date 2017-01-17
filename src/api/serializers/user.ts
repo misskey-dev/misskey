@@ -8,6 +8,7 @@ import deepcopy = require('deepcopy');
 import User from '../models/user';
 import Following from '../models/following';
 import getFriends from '../common/get-friends';
+import config from '../../conf';
 
 /**
  * Serialize a user
