@@ -42,15 +42,13 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Append signin history
-	const inserted = await Signin.insert({
+	const record = await Signin.insert({
 		created_at: new Date(),
 		user_id: user._id,
 		ip: req.ip,
 		headers: req.headers,
 		success: same
 	});
-
-	const record = inserted.ops[0];
 
 	// Publish signin event
 	event(user._id, 'signin', await serialize(record));
