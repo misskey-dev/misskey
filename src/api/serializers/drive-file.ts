@@ -33,13 +33,17 @@ export default (
 		_file = await DriveFile.findOne({
 			_id: file
 		}, {
-			data: false
+			fields: {
+				data: false
+			}
 		});
 	} else if (typeof file === 'string') {
 		_file = await DriveFile.findOne({
 			_id: new mongo.ObjectID(file)
 		}, {
-			data: false
+			fields: {
+				data: false
+			}
 		});
 	} else {
 		_file = deepcopy(file);

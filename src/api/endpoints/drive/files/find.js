@@ -38,7 +38,9 @@ module.exports = (params, user) =>
 			user_id: user._id,
 			folder_id: folder
 		}, {
-			data: false
+			fields: {
+				data: false
+			}
 		});
 
 	// Serialize

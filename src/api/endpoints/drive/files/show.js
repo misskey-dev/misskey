@@ -28,7 +28,9 @@ module.exports = (params, user) =>
 			_id: new mongo.ObjectID(fileId),
 			user_id: user._id
 		}, {
-			data: false
+			fields: {
+				data: false
+			}
 		});
 
 	if (file === null) {

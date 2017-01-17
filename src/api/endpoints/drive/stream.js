@@ -72,8 +72,9 @@ module.exports = (params, user) =>
 	// Issue query
 	const files = await DriveFile
 		.find(query, {
-			data: false
-		}, {
+			fields: {
+				data: false
+			},
 			limit: limit,
 			sort: sort
 		});

@@ -69,8 +69,6 @@ module.exports = (params, user, app) =>
 	// Issue query
 	const folders = await DriveFolder
 		.find(query, {
-			data: false
-		}, {
 			limit: limit,
 			sort: sort
 		});
