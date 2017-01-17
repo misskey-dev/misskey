@@ -1,4 +1,5 @@
 import * as elasticsearch from 'elasticsearch';
+import config from '../conf';
 
 // Init ElasticSearch connection
 const client = new elasticsearch.Client({

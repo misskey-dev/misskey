@@ -1,4 +1,5 @@
 import * as redis from 'redis';
+import config from '../conf';
 
 export default redis.createClient(
 	config.redis.port,
