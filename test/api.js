@@ -14,6 +14,16 @@ chai.use(chaiHttp);
 const server = require('../built/api/server');
 const db = require('../built/db/mongodb').default;
 
+const request = (endpoint, params, me) => new Promise((ok, ng) => {
+	chai.request(server)
+		.post(endpoint)
+		.set('content-type', 'application/x-www-form-urlencoded')
+		.send(Object.assign({ i: me }, params))
+		.end((err, res) => {
+			ok(res);
+		});
+});
+
 describe('API', () => {
 	// Reset database
 	db.get('users').drop();
@@ -37,45 +47,33 @@ describe('API', () => {
 	let me;
 
 	it('create account', done => {
-		chai.request(server)
-			.post('/signup')
-			.set('content-type', 'application/x-www-form-urlencoded')
-			.send(account)
-			.end((err, res) => {
-				res.should.have.status(200);
-				res.body.should.be.a('object');
-				res.body.should.have.property('username').eql(account.username);
-				done();
-			});
+		request('/signup', account).then(res => {
+			res.should.have.status(200);
+			res.body.should.be.a('object');
+			res.body.should.have.property('username').eql(account.username);
+			done();
+		});
 	});
 
 	it('signin', done => {
-		chai.request(server)
-			.post('/signin')
-			.set('content-type', 'application/x-www-form-urlencoded')
-			.send(account)
-			.end((err, res) => {
-				res.should.have.status(204);
-				me = res.header['set-cookie'][0].match(/i=(!\w+)/)[1];
-				done();
-			});
+		request('/signin', account).then(res => {
+			res.should.have.status(204);
+			me = res.header['set-cookie'][0].match(/i=(!\w+)/)[1];
+			done();
+		});
 	});
 
 	describe('i/update', () => {
 		it('update my name', done => {
 			const myName = '大室櫻子';
-			chai.request(server)
-				.post('/i/update')
-				.set('content-type', 'application/x-www-form-urlencoded')
-				.send(Object.assign({ i: me }, {
-					name: myName
-				}))
-				.end((err, res) => {
-					res.should.have.status(200);
-					res.body.should.be.a('object');
-					res.body.should.have.property('name').eql(myName);
-					done();
-				});
+			request('/i/update', {
+				name: myName
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('name').eql(myName);
+				done();
+			});
 		});
 	});
 
@@ -84,15 +82,11 @@ describe('API', () => {
 			const post = {
 				text: 'Hi'
 			};
-			chai.request(server)
-				.post('/posts/create')
-				.set('content-type', 'application/x-www-form-urlencoded')
-				.send(Object.assign({ i: me }, post))
-				.end((err, res) => {
-					res.should.have.status(200);
-					res.body.should.be.a('object');
-					done();
-				});
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				done();
+			});
 		});
 
 		it('reply', () => {
