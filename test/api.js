@@ -105,29 +105,22 @@ describe('API', () => {
 		});
 	});
 
-	describe('i/update', () => {
-		it('update my name', done => {
-			const myName = '大室櫻子';
-			request('/i/update', {
-				name: myName
-			}, me).then(res => {
-				res.should.have.status(200);
-				res.body.should.be.a('object');
-				res.body.should.have.property('name').eql(myName);
-				done();
-			});
-		});
+	it('i/update', done => {
+		const myName = '大室櫻子';
+		const myLocation = '七森中';
+		const myBirthday = '2000-09-07';
 
-		it('update my location', done => {
-			const myLocation = '七森中';
-			request('/i/update', {
-				location: myLocation
-			}, me).then(res => {
-				res.should.have.status(200);
-				res.body.should.be.a('object');
-				res.body.should.have.property('location').eql(myLocation);
-				done();
-			});
+		request('/i/update', {
+			name: myName,
+			location: myLocation,
+			birthday: myBirthday
+		}, me).then(res => {
+			res.should.have.status(200);
+			res.body.should.be.a('object');
+			res.body.should.have.property('name').eql(myName);
+			res.body.should.have.property('location').eql(myLocation);
+			res.body.should.have.property('birthday').eql(myBirthday);
+			done();
 		});
 	});
 
