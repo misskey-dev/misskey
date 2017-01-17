@@ -33,6 +33,12 @@ export default async (req: express.Request, res: express.Response) => {
 		return;
 	}
 
+	// Validate password
+	if (password == '') {
+		res.sendStatus(400);
+		return;
+	}
+
 	// Fetch exist user that same username
 	const usernameExist = await User
 		.count({
