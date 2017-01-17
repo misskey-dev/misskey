@@ -33,6 +33,11 @@ module.exports = (params, me) =>
 		return rej('user_id or username is required');
 	}
 
+	// Validate id
+	if (userId && !mongo.ObjectID.isValid(userId)) {
+		return rej('incorrect user_id');
+	}
+
 	// Lookup user
 	const user = userId !== null
 		? await User.findOne({ _id: new mongo.ObjectID(userId) })
