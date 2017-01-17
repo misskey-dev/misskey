@@ -80,7 +80,7 @@ describe('API', () => {
 	describe('posts/create', () => {
 		it('simple', done => {
 			const post = {
-				text: 'Hi'
+				text: 'ひまわりー'
 			};
 			request('/posts/create', post, me).then(res => {
 				res.should.have.status(200);
