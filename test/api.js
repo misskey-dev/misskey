@@ -28,6 +28,7 @@ describe('API', () => {
 		};
 		chai.request(server)
 			.post('/signup')
+			.set('content-type', 'application/x-www-form-urlencoded')
 			.send(account)
 			.end((err, res) => {
 				res.should.have.status(200);
