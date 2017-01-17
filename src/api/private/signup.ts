@@ -55,7 +55,7 @@ export default async (req: express.Request, res: express.Response) => {
 	const secret = '!' + rndstr('a-zA-Z0-9', 32);
 
 	// Create account
-	const inserted = await User.insert({
+	const account = await User.insert({
 		token: secret,
 		avatar_id: null,
 		banner_id: null,
@@ -76,8 +76,6 @@ export default async (req: express.Request, res: express.Response) => {
 		username: username,
 		username_lower: username.toLowerCase()
 	});
-
-	const account = inserted.ops[0];
 
 	// Response
 	res.send(await serialize(account));

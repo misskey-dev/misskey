@@ -1,6 +1,6 @@
 import db from '../../db/mongodb';
 
-export default db.collection('drive_files');
+export default db.get('drive_files');
 
 export function validateFileName(name: string): boolean {
 	return (

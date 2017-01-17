@@ -1,3 +1,3 @@
 import db from '../../db/mongodb';
 
-export default db.collection('favorites');
+export default db.get('favorites');

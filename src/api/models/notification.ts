@@ -1,3 +1,3 @@
 import db from '../../db/mongodb';
 
-export default db.collection('notifications');
+export default db.get('notifications');

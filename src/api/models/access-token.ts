@@ -1,8 +1,8 @@
 import db from '../../db/mongodb';
 
-const collection = db.collection('access_tokens');
+const collection = db.get('access_tokens');
 
-collection.createIndex('token');
-collection.createIndex('hash');
+(collection as any).index('token'); // fuck type definition
+(collection as any).index('hash'); // fuck type definition
 
 export default collection;

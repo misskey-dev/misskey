@@ -1,3 +1,3 @@
 import db from '../../db/mongodb';
 
-export default db.collection('messaging_messages');
+export default db.get('messaging_messages');

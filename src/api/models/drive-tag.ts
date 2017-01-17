@@ -1,3 +1,3 @@
 import db from '../../db/mongodb';
 
-export default db.collection('drive_tags');
+export default db.get('drive_tags');

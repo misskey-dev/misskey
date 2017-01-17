@@ -1,3 +1,3 @@
 import db from '../../db/mongodb';
 
-export default db.collection('following');
+export default db.get('following');

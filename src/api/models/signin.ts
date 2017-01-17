@@ -1,3 +1,3 @@
 import db from '../../db/mongodb';
 
-export default db.collection('signin');
+export default db.get('signin');
