@@ -213,6 +213,52 @@ describe('API', () => {
 				done();
 			});
 		}));
+
+		it('存在しないリプライ先で怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const post = {
+				text: 'さく',
+				reply_to_id: '000000000000000000000000'
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しないrepost対象で怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const post = {
+				repost_id: '000000000000000000000000'
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('不正なリプライ先IDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const post = {
+				text: 'さく',
+				reply_to_id: 'kyoppie'
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('不正なrepost対象IDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const post = {
+				repost_id: 'kyoppie'
+			};
+			request('/posts/create', post, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
 	});
 
 	describe('following/create', () => {
@@ -262,7 +308,7 @@ describe('API', () => {
 		it('存在しないユーザーはフォローできない', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			request('/following/create', {
-				user_id: '587e7c4b520fb00aa49a5684'
+				user_id: '000000000000000000000000'
 			}, me).then(res => {
 				res.should.have.status(400);
 				done();
