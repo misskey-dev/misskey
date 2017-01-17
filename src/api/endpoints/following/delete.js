@@ -27,6 +27,11 @@ module.exports = (params, user) =>
 		return rej('user_id is required');
 	}
 
+	// Validate id
+	if (!mongo.ObjectID.isValid(userId)) {
+		return rej('incorrect user_id');
+	}
+
 	// Check if the followee is yourself
 	if (user._id.equals(userId)) {
 		return rej('followee is yourself');
