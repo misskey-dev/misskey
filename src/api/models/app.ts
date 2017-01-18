@@ -6,4 +6,4 @@ const collection = db.get('apps');
 (collection as any).index('name_id_lower'); // fuck type definition
 (collection as any).index('secret'); // fuck type definition
 
-export default collection;
+export default collection as any; // fuck type definition
