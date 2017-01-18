@@ -31,10 +31,10 @@ init:
   - git config --global core.autocrlf false
 
 before_test:
-  - "mkdir .\\.config"
-  - "copy .\\.ci-files\\default.yml .\\.config"
-  - "copy .\\.ci-files\\test.yml .\\.config"
-  - "npm run build"
+  - mkdir .\.config
+  - copy .\.ci-files\default.yml .\.config
+  - copy .\.ci-files\test.yml .\.config
+  - npm run build
 
 test_script:
   - npm test

@@ -11,10 +11,10 @@ services:
   - redis-server
 
 before_script:
-  - "mkdir ./.config"
-  - "cp ./.ci-files/default.yml ./.config"
-  - "cp ./.ci-files/test.yml ./.config"
-  - "npm run build"
+  - mkdir ./.config
+  - cp ./.ci-files/default.yml ./.config
+  - cp ./.ci-files/test.yml ./.config
+  - npm run build
 
 env:
   - CXX=g++-4.8
