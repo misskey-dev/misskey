@@ -11,7 +11,7 @@ services:
   - redis-server
 
 before_script:
-  - "mkdir -p ./.config"
+  - "mkdir ./.config"
   - "cp ./.ci-files/default.yml ./.config"
   - "cp ./.ci-files/test.yml ./.config"
   - "npm run build"

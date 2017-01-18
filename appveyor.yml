@@ -31,7 +31,7 @@ init:
   - git config --global core.autocrlf false
 
 before_test:
-  - "mkdir -p ./.config"
+  - "mkdir ./.config"
   - "cp ./.ci-files/default.yml ./.config"
   - "cp ./.ci-files/test.yml ./.config"
   - "npm run build"
