@@ -32,10 +32,9 @@ init:
 
 before_test:
   # Redisをインストール
-  - nuget restore .\Hangfire.Redis.StackExchange.sln
-  - packages\Redis-32.2.6.12.1\tools\redis-server.exe --service-install
-  - packages\Redis-32.2.6.12.1\tools\redis-server.exe --service-start
-  - '@ECHO Redis Started'
+  - nuget install redis-64 -excludeversion
+  - redis-64\tools\redis-server.exe --service-install
+  - redis-64\tools\redis-server.exe --service-start
 
   - mkdir .\.config
   - copy .\.ci-files\default.yml .\.config
