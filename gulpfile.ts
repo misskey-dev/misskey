@@ -155,7 +155,7 @@ gulp.task('build:client', [
 	}
 });
 
-gulp.task('build:client:scripts', async (done) => {
+gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 	// Get commit info
 	const commit = await prominence(git).getLastCommit();
 
@@ -214,8 +214,8 @@ gulp.task('build:client:scripts', async (done) => {
 			.pipe(gulp.dest('./built/web/resources/'));
 	});
 
-	es.merge(tasks).on('end', done);
-});
+	es.merge(tasks).on('end', ok);
+}));
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/web/app/**/*.styl')
