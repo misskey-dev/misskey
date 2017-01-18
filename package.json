@@ -32,7 +32,7 @@
     "@types/elasticsearch": "5.0.12",
     "@types/escape-html": "0.0.19",
     "@types/event-stream": "3.3.30",
-    "@types/express": "4.0.34",
+    "@types/express": "4.0.35",
     "@types/glob": "5.0.30",
     "@types/gm": "1.17.29",
     "@types/gulp": "3.8.32",
