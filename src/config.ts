@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import * as isUrl from 'is-url';
+import isUrl = require('is-url');
 
 /**
  * Path of configuration directory
