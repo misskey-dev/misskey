@@ -1,20 +1,29 @@
+# travis file
+# https://docs.travis-ci.com/user/customizing-the-build
+
 language: node_js
+
 node_js:
   - "7.3.0"
+
 services:
   - mongodb
   - redis-server
+
 before_script:
   - "mkdir -p ./.config && cp ./.ci-files/default.yml ./.config && cp ./.ci-files/test.yml ./.config"
   - "npm run build"
+
 env:
   - CXX=g++-4.8
+
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+
 cache:
   directories:
     - node_modules
