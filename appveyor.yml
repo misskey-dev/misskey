@@ -31,6 +31,12 @@ init:
   - git config --global core.autocrlf false
 
 before_test:
+  # Redisをインストール
+  - nuget restore .\Hangfire.Redis.StackExchange.sln
+  - packages\Redis-32.2.6.12.1\tools\redis-server.exe --service-install
+  - packages\Redis-32.2.6.12.1\tools\redis-server.exe --service-start
+  - '@ECHO Redis Started'
+
   - mkdir .\.config
   - copy .\.ci-files\default.yml .\.config
   - copy .\.ci-files\test.yml .\.config
