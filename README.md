@@ -4,6 +4,8 @@
 [![][dependencies-badge]][dependencies-link]
 [![][mit-badge]][mit]
 
+[![Sauce Test Status][saucelabs-image]][saucelabs-url]
+
 Welcome!
 
 Misskey is a completely open source, ultimately sophisticated new type of mini-blog based SNS.
@@ -104,3 +106,5 @@ Misskey is open-source software licensed under [The MIT License](LICENSE).
 [appveyor-badge]:     https://img.shields.io/appveyor/ci/syuilo/misskey/master.svg?style=flat-square&label=Windows
 [dependencies-link]:  https://gemnasium.com/syuilo/misskey
 [dependencies-badge]: https://img.shields.io/gemnasium/syuilo/misskey.svg?style=flat-square
+[saucelabs-image]:    https://saucelabs.com/browser-matrix/syuilo.svg
+[saucelabs-url]:      https://saucelabs.com/u/syuilo
