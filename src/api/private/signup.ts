@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import recaptcha = require('recaptcha-promise');
 import User from '../models/user';
@@ -54,7 +54,7 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Generate hash of password
-	const salt = bcrypt.genSaltSync(14);
+	const salt = bcrypt.genSaltSync(8);
 	const hash = bcrypt.hashSync(password, salt);
 
 	// Generate secret

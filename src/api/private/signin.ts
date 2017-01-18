@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import User from '../models/user';
 import Signin from '../models/signin';
 import serialize from '../serializers/signin';
@@ -23,7 +23,7 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = bcrypt.compareSync(password, user.password);
 
 	if (same) {
 		const expires = 1000 * 60 * 60 * 24 * 365; // One Year

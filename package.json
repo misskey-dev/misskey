@@ -21,7 +21,7 @@
     "test": "mocha --harmony"
   },
   "dependencies": {
-    "@types/bcrypt": "1.0.0",
+    "@types/bcryptjs": "2.4.0",
     "@types/body-parser": "0.0.33",
     "@types/browserify": "12.0.30",
     "@types/chai": "3.4.34",
@@ -66,7 +66,7 @@
     "babel-polyfill": "6.20.0",
     "babel-preset-es2015": "6.18.0",
     "babel-preset-stage-3": "6.17.0",
-    "bcrypt": "1.0.2",
+    "bcryptjs": "2.4.0",
     "body-parser": "1.15.2",
     "browserify": "13.3.0",
     "browserify-livescript": "0.2.3",
