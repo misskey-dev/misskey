@@ -32,8 +32,8 @@ init:
 
 before_test:
   - "mkdir ./.config"
-  - "cp ./.ci-files/default.yml ./.config"
-  - "cp ./.ci-files/test.yml ./.config"
+  - "copy ./.ci-files/default.yml ./.config"
+  - "copy ./.ci-files/test.yml ./.config"
   - "npm run build"
 
 test_script:
