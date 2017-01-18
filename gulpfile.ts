@@ -71,14 +71,14 @@ gulp.task('build:ts', () =>
 );
 
 gulp.task('build:about:docs', () => {
-	function getLicenseHtml(path: string): string {
+	function getLicenseHtml(path: string) {
 		return escapeHtml(fs.readFileSync(path, 'utf-8'))
 			.replace(/\r\n/g, '\n')
 			.replace(/(.)\n(.)/g, '$1 $2')
 			.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
 	}
 
-	function getLicenseSectionHtml(path: string): string {
+	function getLicenseSectionHtml(path: string) {
 		try {
 			const pkg = JSON.parse(fs.readFileSync(Path.parse(path).dir + '/package.json', 'utf-8'));
 			const licenseHtml = getLicenseHtml(path);
