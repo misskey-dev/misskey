@@ -26,10 +26,15 @@ import * as rimraf from 'rimraf';
 import * as escapeHtml from 'escape-html';
 import prominence = require('prominence');
 import promiseify = require('promiseify');
+import * as chalk from 'chalk';
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDebug = !isProduction;
+
+if (isDebug) {
+	console.log(chalk.yellow.bold('！！！注意！！！　開発モードでのビルドです。(成果物の圧縮などはスキップされます)'));
+}
 
 if (!fs.existsSync('./.config/default.yml')) {
 	console.log('npm run configを実行して設定ファイルを作成してください');
@@ -147,13 +152,7 @@ gulp.task('build:client', [
 	'build:client:styles',
 	'build:client:pug',
 	'copy:client'
-], () => {
-	gutil.log('ビルドが終了しました。');
-
-	if (isDebug) {
-		gutil.log('！！！注意！！！　開発モードでのビルドです。(成果物の圧縮などはスキップされます)');
-	}
-});
+]);
 
 gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 	// Get commit info
