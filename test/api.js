@@ -5,6 +5,13 @@
 // During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
 
+// Display detail of unhandled promise rejection
+process.on('unhandledRejection', console.dir);
+
+// Init babel
+require('babel-core/register');
+require('babel-polyfill');
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();
