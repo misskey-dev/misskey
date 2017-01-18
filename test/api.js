@@ -492,7 +492,7 @@ async function insertSakurako() {
 		token: '!00000000000000000000000000000000',
 		username: 'sakurako',
 		username_lower: 'sakurako',
-		password: '$2a$14$wlDw/gDIEE7hHpkJA4yZE.bRUZc.ykHhPfVXPaw2cfOldyParYM76' // HimawariDaisuki06160907
+		password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy' // HimawariDaisuki06160907
 	});
 }
 
@@ -501,6 +501,6 @@ async function insertHimawari() {
 		token: '!00000000000000000000000000000001',
 		username: 'himawari',
 		username_lower: 'himawari',
-		password: '$2a$14$8kwC/akV/Gzk58vsTDAate2ixGjQRtC1j3c4IQAqZ7QLvawRMQsPO' // ilovesakurako
+		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O' // ilovesakurako
 	});
 }
