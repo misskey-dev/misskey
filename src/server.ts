@@ -19,7 +19,7 @@ app.disable('x-powered-by');
 
 // Drop request that without 'Host' header
 app.use((req, res, next) => {
-	if (!req.headers.host) {
+	if (!req.headers['host']) {
 		res.sendStatus(400);
 	} else {
 		next();
