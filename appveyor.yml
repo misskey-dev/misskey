@@ -36,3 +36,6 @@ before_test:
 
 test_script:
   - npm test
+
+cache:
+  - node_modules
