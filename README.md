@@ -95,6 +95,11 @@ We love contributions from anybody.
 * More [docs](./docs)!
 * More cleaning up code!
 
+## Collaborators
+| ![syuilo](https://avatars2.githubusercontent.com/u/4439005?v=3&s=70) | ![Morisawa Aya](https://avatars0.githubusercontent.com/u/10798641?v=3&s=70)
+|---|---|
+| [syuilo](https://syuilo.com) | [Aya Morisawa](https://github.com/ayamorisawa)|
+
 ## Copyright
 Misskey is open-source software licensed under [The MIT License](LICENSE).
 
