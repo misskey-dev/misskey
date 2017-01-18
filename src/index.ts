@@ -182,6 +182,9 @@ function spawnWorkers(onComplete: any): void {
 	});
 }
 
+// Display detail of unhandled promise rejection
+process.on('unhandledRejection', console.dir);
+
 // Dying away...
 process.on('exit', () => {
 	Logger.info('The process is going exit');
