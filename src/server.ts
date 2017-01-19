@@ -7,6 +7,7 @@ import * as http from 'http';
 import * as https from 'https';
 import * as cluster from 'cluster';
 import * as express from 'express';
+import * as morgan from 'morgan';
 import vhost = require('vhost');
 
 import config from './conf';
@@ -16,6 +17,10 @@ import config from './conf';
  */
 const app = express();
 app.disable('x-powered-by');
+
+// Log
+app.use(morgan(
+	process.env.NODE_ENV == 'production' ? 'combined' : 'dev'));
 
 // Drop request that without 'Host' header
 app.use((req, res, next) => {
