@@ -254,9 +254,7 @@ gulp.task('build:client:pug', [
 	'build:client:scripts',
 	'build:client:styles'
 ], () =>
-	gulp.src([
-		'./src/web/app/*/view.pug'
-	])
+	gulp.src('./src/web/app/*/view.pug')
 		.pipe(pug({
 			locals: {
 				themeColor: config.themeColor
