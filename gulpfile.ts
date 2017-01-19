@@ -27,6 +27,8 @@ import * as escapeHtml from 'escape-html';
 import prominence = require('prominence');
 import promiseify = require('promiseify');
 import * as chalk from 'chalk';
+import imagemin = require('gulp-imagemin');
+import * as rename from 'gulp-rename';
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -235,14 +237,16 @@ gulp.task('copy:client', [
 	'build:client:scripts',
 	'build:client:styles'
 ], () =>
-	es.merge(
-		gulp.src('./resources/**/*').pipe(gulp.dest('./built/web/resources/')),
-		gulp.src('./src/web/resources/**/*').pipe(gulp.dest('./built/web/resources/')),
-		gulp.src('./src/web/app/desktop/resources/**/*').pipe(gulp.dest('./built/web/resources/desktop/')),
-		gulp.src('./src/web/app/mobile/resources/**/*').pipe(gulp.dest('./built/web/resources/mobile/')),
-		gulp.src('./src/web/app/dev/resources/**/*').pipe(gulp.dest('./built/web/resources/dev/')),
-		gulp.src('./src/web/app/auth/resources/**/*').pipe(gulp.dest('./built/web/resources/auth/'))
-	)
+	gulp.src([
+		'./resources/**/*',
+		'./src/web/resources/**/*',
+		'./src/web/app/*/resources/**/*'
+	])
+	.pipe(imagemin())
+	.pipe(rename(path => {
+		path.dirname = path.dirname.replace('resources', '.');
+	}))
+	.pipe(gulp.dest('./built/web/resources/'))
 );
 
 gulp.task('build:client:pug', [
