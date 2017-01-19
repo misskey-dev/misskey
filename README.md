@@ -100,7 +100,7 @@ We love contributions from anybody.
 | [syuilo](https://syuilo.com) | [Aya Morisawa](https://github.com/ayamorisawa)|
 
 ## Copyright
-Misskey is open-source software licensed under [The MIT License](LICENSE).
+Misskey is an open-source software licensed under [The MIT License](LICENSE).
 
 [mit]:                http://opensource.org/licenses/MIT
 [mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
