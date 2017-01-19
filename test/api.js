@@ -124,26 +124,38 @@ describe('API', () => {
 		}));
 	});
 
-	it('i/update', () => new Promise(async (done) => {
-		const me = await insertSakurako();
+	describe('i/update', () => {
+		it('アカウント設定を更新できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
 
-		const myName = '大室櫻子';
-		const myLocation = '七森中';
-		const myBirthday = '2000-09-07';
+			const myName = '大室櫻子';
+			const myLocation = '七森中';
+			const myBirthday = '2000-09-07';
 
-		request('/i/update', {
-			name: myName,
-			location: myLocation,
-			birthday: myBirthday
-		}, me).then(res => {
-			res.should.have.status(200);
-			res.body.should.be.a('object');
-			res.body.should.have.property('name').eql(myName);
-			res.body.should.have.property('location').eql(myLocation);
-			res.body.should.have.property('birthday').eql(myBirthday);
-			done();
-		});
-	}));
+			request('/i/update', {
+				name: myName,
+				location: myLocation,
+				birthday: myBirthday
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('name').eql(myName);
+				res.body.should.have.property('location').eql(myLocation);
+				res.body.should.have.property('birthday').eql(myBirthday);
+				done();
+			});
+		}));
+
+		it('不正な誕生日の形式で怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/i/update', {
+				birthday: '2000/09/07'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
 
 	describe('users/show', () => {
 		it('ユーザーが取得できる', () => new Promise(async (done) => {
