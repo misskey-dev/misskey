@@ -116,7 +116,7 @@ async function init(): Promise<InitResult> {
 	let warn = false;
 
 	Logger.info('Welcome to Misskey!');
-	Logger.info(chalk.bold('Misskey Core <aoi>'));
+	Logger.info(chalk.bold('Misskey <aoi>'));
 	Logger.info('Initializing...');
 
 	await LastCommitInfo.show();
