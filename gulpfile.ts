@@ -35,7 +35,7 @@ const isProduction = env === 'production';
 const isDebug = !isProduction;
 
 if (isDebug) {
-	console.log(chalk.yellow.bold('！！！注意！！！　開発モードでのビルドです。(成果物の圧縮などはスキップされます)'));
+	console.log(chalk.yellow.bold('！！！注意！！！　開発モードが有効です。(成果物の圧縮などはスキップされます)'));
 }
 
 if (!fs.existsSync('./.config/default.yml')) {
