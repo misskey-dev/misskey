@@ -113,6 +113,13 @@
 		@onsubmit = (e) ~>
 			e.prevent-default!
 
+			if @refs.username.value == ''
+				@refs.username.focus!
+				return false
+			if @refs.password.value == ''
+				@refs.password.focus!
+				return false
+
 			@signing = true
 			@update!
 
