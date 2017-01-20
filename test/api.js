@@ -341,6 +341,70 @@ describe('API', () => {
 		}));
 	});
 
+	describe('posts/likes/create', () => {
+		it('いいねできる', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const himaPost = await db.get('posts').insert({
+				user_id: hima._id,
+				text: 'ひま'
+			});
+
+			const me = await insertSakurako();
+			request('/posts/likes/create', {
+				post_id: himaPost._id.toString()
+			}, me).then(res => {
+				res.should.have.status(200);
+				done();
+			});
+		}));
+
+		it('自分の投稿にはいいねできない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const myPost = await db.get('posts').insert({
+				user_id: me._id,
+				text: 'お腹ペコい'
+			});
+
+			request('/posts/likes/create', {
+				post_id: myPost._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('二重にいいねできない', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const himaPost = await db.get('posts').insert({
+				user_id: hima._id,
+				text: 'ひま'
+			});
+
+			await db.get('likes').insert({
+				user_id: me._id,
+				post_id: himaPost._id
+			});
+
+			const me = await insertSakurako();
+			request('/posts/likes/create', {
+				post_id: himaPost._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しない投稿にはいいねできない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/likes/create', {
+				post_id: '000000000000000000000000'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
+
 	describe('following/create', () => {
 		it('フォローできる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
