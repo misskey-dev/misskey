@@ -54,13 +54,11 @@ module.exports = (params, user) =>
 	}
 
 	// Create like
-	const inserted = await Like.insert({
+	await Like.insert({
 		created_at: new Date(),
 		post_id: post._id,
 		user_id: user._id
 	});
-
-	const like = inserted.ops[0];
 
 	// Send response
 	res();
