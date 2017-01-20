@@ -341,6 +341,42 @@ describe('API', () => {
 		}));
 	});
 
+	describe('posts/show', () => {
+		it('投稿が取得できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const myPost = await db.get('posts').insert({
+				user_id: me._id,
+				text: 'お腹ペコい'
+			});
+			request('/posts/show', {
+				post_id: myPost._id.toString()
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('id').eql(myPost._id.toString());
+				done();
+			});
+		}));
+
+		it('投稿が存在しなかったら怒る', () => new Promise(async (done) => {
+			request('/posts/show', {
+				post_id: '000000000000000000000000'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			request('/posts/show', {
+				post_id: 'kyoppie'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
+
 	describe('posts/likes/create', () => {
 		it('いいねできる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
