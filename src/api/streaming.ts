@@ -59,7 +59,9 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 				.findOne({
 					token: token
 				}, {
-					_id: true
+					fields: {
+						_id: true
+					}
 				});
 
 			resolve(user);
@@ -76,7 +78,9 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 			// SELECT _id
 			const user = await User
 				.findOne({ _id: accessToken.user_id }, {
-					_id: true
+					fields: {
+						_id: true
+					}
 				});
 
 			resolve(user);
