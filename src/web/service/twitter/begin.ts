@@ -1,10 +1,11 @@
 import * as express from 'express';
 //import * as Twitter from 'twitter';
-import Twitter = require('twitter');
+const Twitter = require('twitter');
+import config from '../../../conf';
 
 const client = new Twitter({
-	consumer_key: process.env.TWITTER_CONSUMER_KEY,
-	consumer_secret: process.env.TWITTER_CONSUMER_SECRET
+	consumer_key: config.twitter.consumer_key,
+	consumer_secret: config.twitter.consumer_secret
 });
 
 module.exports = (req: express.Request, res: express.Response) => {
