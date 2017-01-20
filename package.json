@@ -65,7 +65,7 @@
     "@types/websocket": "0.0.32",
     "accesses": "1.2.0",
     "argv": "0.0.2",
-    "babel-core": "6.21.0",
+    "babel-core": "6.22.1",
     "babel-polyfill": "6.20.0",
     "babel-preset-es2015": "6.22.0",
     "babel-preset-stage-3": "6.17.0",
