@@ -353,7 +353,7 @@ describe('API', () => {
 			request('/posts/likes/create', {
 				post_id: himaPost._id.toString()
 			}, me).then(res => {
-				res.should.have.status(200);
+				res.should.have.status(204);
 				done();
 			});
 		}));
@@ -380,12 +380,12 @@ describe('API', () => {
 				text: 'ひま'
 			});
 
+			const me = await insertSakurako();
 			await db.get('likes').insert({
 				user_id: me._id,
 				post_id: himaPost._id
 			});
 
-			const me = await insertSakurako();
 			request('/posts/likes/create', {
 				post_id: himaPost._id.toString()
 			}, me).then(res => {
