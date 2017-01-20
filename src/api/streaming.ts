@@ -51,6 +51,10 @@ module.exports = (server: http.Server) => {
 };
 
 function authenticate(connection: websocket.connection, token: string): Promise<any> {
+	if (token == null) {
+		return Promise.resolve(null);
+	}
+
 	return new Promise(async (resolve, reject) => {
 		if (isNativeToken(token)) {
 			// Fetch user
