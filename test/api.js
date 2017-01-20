@@ -423,6 +423,73 @@ describe('API', () => {
 		}));
 	});
 
+	describe('posts/likes/delete', () => {
+		it('いいね解除できる', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const himaPost = await db.get('posts').insert({
+				user_id: hima._id,
+				text: 'ひま'
+			});
+
+			const me = await insertSakurako();
+			await db.get('likes').insert({
+				user_id: me._id,
+				post_id: himaPost._id
+			});
+
+			request('/posts/likes/delete', {
+				post_id: himaPost._id.toString()
+			}, me).then(res => {
+				res.should.have.status(204);
+				done();
+			});
+		}));
+
+		it('いいねしていない投稿はいいね解除できない', () => new Promise(async (done) => {
+			const hima = await insertHimawari();
+			const himaPost = await db.get('posts').insert({
+				user_id: hima._id,
+				text: 'ひま'
+			});
+
+			const me = await insertSakurako();
+			request('/posts/likes/delete', {
+				post_id: himaPost._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しない投稿はいいね解除できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/likes/delete', {
+				post_id: '000000000000000000000000'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/likes/delete', {}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/likes/delete', {
+				post_id: 'kyoppie'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
+
 	describe('following/create', () => {
 		it('フォローできる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
