@@ -43,7 +43,7 @@ describe('API', () => {
 		db.get('posts').drop()
 	]));
 
-	afterEach(cb => setTimeout(cb, 10));
+	afterEach(cb => setTimeout(cb, 100));
 
 	it('greet server', done => {
 		chai.request(server)
