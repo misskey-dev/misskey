@@ -4,9 +4,10 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+const escapeRegexp = require('escape-regexp');
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
-const escapeRegexp = require('escape-regexp');
+import config from '../../../conf';
 
 /**
  * Search a post
