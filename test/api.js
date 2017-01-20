@@ -403,6 +403,24 @@ describe('API', () => {
 				done();
 			});
 		}));
+
+		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/likes/create', {}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/likes/create', {
+				post_id: 'kyoppie'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
 	});
 
 	describe('following/create', () => {
