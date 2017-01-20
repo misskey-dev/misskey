@@ -242,7 +242,7 @@ gulp.task('copy:client', [
 		'./src/web/resources/**/*',
 		'./src/web/app/*/resources/**/*'
 	])
-	.pipe(imagemin())
+	.pipe(isProduction ? imagemin() : gutil.noop())
 	.pipe(rename(path => {
 		path.dirname = path.dirname.replace('resources', '.');
 	}))
