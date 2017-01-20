@@ -48,6 +48,8 @@ app.get(/\/api:meta/, require('./meta'));
 app.get(/\/api:url/,  require('./service/url-preview'));
 app.post(/\/api:rss/, require('./service/rss-proxy'));
 
+app.get(/\/connect:twitter/, require('./service/twitter/begin'));
+
 /**
  * Subdomain
  */

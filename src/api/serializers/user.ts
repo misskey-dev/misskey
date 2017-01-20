@@ -64,6 +64,7 @@ export default (
 	delete _user.password;
 	delete _user.token;
 	delete _user.username_lower;
+	delete _user.twitter;
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {

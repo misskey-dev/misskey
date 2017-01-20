@@ -57,6 +57,10 @@ interface ISource {
 		secretKey: string;
 	};
 	accesslog: string;
+	twitter: {
+		consumer_key: string;
+		consumer_secret: string;
+	};
 }
 
 /**
