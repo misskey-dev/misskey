@@ -77,7 +77,7 @@ module.exports = (params, user) =>
 	}
 
 	// メッセージを作成
-	const inserted = await Message.insert({
+	const message = await Message.insert({
 		created_at: new Date(),
 		file_id: file ? file._id : undefined,
 		recipient_id: recipient._id,
@@ -85,8 +85,6 @@ module.exports = (params, user) =>
 		user_id: user._id,
 		is_read: false
 	});
-
-	const message = inserted.ops[0];
 
 	// Serialize
 	const messageObj = await serialize(message);

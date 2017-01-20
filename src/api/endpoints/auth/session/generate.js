@@ -66,13 +66,11 @@ module.exports = (params) =>
 	const token = uuid.v4();
 
 	// Create session token document
-	const inserted = await AuthSess.insert({
+	const doc = await AuthSess.insert({
 		created_at: new Date(),
 		app_id: app._id,
 		token: token
 	});
-
-	const doc = inserted.ops[0];
 
 	// Response
 	res({

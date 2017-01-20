@@ -43,13 +43,11 @@ module.exports = (params, user) =>
 	}
 
 	// Create favorite
-	const inserted = await Favorite.insert({
+	await Favorite.insert({
 		created_at: new Date(),
 		post_id: post._id,
 		user_id: user._id
 	});
-
-	const favorite = inserted.ops[0];
 
 	// Send response
 	res();

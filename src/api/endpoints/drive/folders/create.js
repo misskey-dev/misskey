@@ -59,14 +59,12 @@ module.exports = (params, user) =>
 	}
 
 	// Create folder
-	const inserted = await DriveFolder.insert({
+	const folder = await DriveFolder.insert({
 		created_at: new Date(),
 		name: name,
 		parent_id: parent !== null ? parent._id : null,
 		user_id: user._id
 	});
-
-	const folder = inserted.ops[0];
 
 	// Serialize
 	const folderObj = await serialize(folder);

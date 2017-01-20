@@ -109,7 +109,7 @@ module.exports = async (params, user) =>
 	const secret = rndstr('a-zA-Z0-9', 32);
 
 	// Create account
-	const inserted = await App.insert({
+	const app = await App.insert({
 		created_at: new Date(),
 		user_id: user._id,
 		name: name,
@@ -120,8 +120,6 @@ module.exports = async (params, user) =>
 		callback_url: callback,
 		secret: secret
 	});
-
-	const app = inserted.ops[0];
 
 	// Response
 	res(await serialize(app));
