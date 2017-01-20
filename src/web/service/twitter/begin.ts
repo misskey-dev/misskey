@@ -9,7 +9,7 @@ const client = new Twitter({
 });
 
 module.exports = (req: express.Request, res: express.Response) => {
-	client.get('oauth/request_token', (x, y, z) => {
+	client.post('oauth/request_token', (x, y, z) => {
 		console.log(x);
 		console.log(y);
 		console.log(z);
