@@ -28,6 +28,11 @@ module.exports = (params, user) =>
 		return rej('post_id is required');
 	}
 
+	// Validate id
+	if (!mongo.ObjectID.isValid(postId)) {
+		return rej('incorrect post_id');
+	}
+
 	// Get likee
 	const post = await Post.findOne({
 		_id: new mongo.ObjectID(postId)
