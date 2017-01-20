@@ -19,8 +19,10 @@ const app = express();
 app.disable('x-powered-by');
 
 // Log
-app.use(morgan(
-	process.env.NODE_ENV == 'production' ? 'combined' : 'dev'));
+app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev', {
+	// create a write stream (in append mode)
+	stream: config.accesslog ? fs.createWriteStream(config.accesslog) : null
+}));
 
 // Drop request that without 'Host' header
 app.use((req, res, next) => {

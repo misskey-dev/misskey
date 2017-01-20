@@ -56,6 +56,7 @@ interface ISource {
 		siteKey: string;
 		secretKey: string;
 	};
+	accesslog: string;
 }
 
 /**
