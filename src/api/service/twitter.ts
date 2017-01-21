@@ -14,8 +14,8 @@ module.exports = (app: express.Application) => {
 		const user = await User.findOneAndUpdate({
 			token: res.locals.user
 		}, {
-			$unset: {
-				twitter: ''
+			$set: {
+				twitter: null
 			}
 		});
 
