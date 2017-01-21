@@ -18,7 +18,7 @@ Misskey is a completely open source, ultimately sophisticated new type of mini-b
 * Free 1GB storage
 * Mobile device support (smartphone, tablet, etc)
 * Thirdparty application support
-* Twitter連携
+* Link to Twitter
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
 
