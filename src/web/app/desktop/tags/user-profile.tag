@@ -7,6 +7,9 @@
 	<div class="birthday" if={ user.birthday }>
 		<p><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
 	</div>
+	<div class="twitter" if={ user.twitter }>
+		<p><i class="fa fa-twitter"></i><a href={ 'https://twitter.com/' + user.twitter.screenName } target='_blank'>@{ user.twitter.screenName }</a></p>
+	</div>
 	<div class="friends">
 		<p class="following"><i class="fa fa-angle-right"></i><a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
 		<p class="followers"><i class="fa fa-angle-right"></i><a onclick={ showFollowers }>{ user.followers_count }</a>人の<b>フォロワー</b></p>
@@ -42,6 +45,17 @@
 				border-top solid 1px #eee
 
 			> .birthday
+				padding 16px
+				color #555
+				border-top solid 1px #eee
+
+				> p
+					margin 0
+
+					> i
+						margin-right 8px
+
+			> .twitter
 				padding 16px
 				color #555
 				border-top solid 1px #eee

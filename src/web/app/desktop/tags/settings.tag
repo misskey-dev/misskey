@@ -65,9 +65,9 @@
 
 		<section class="twitter" show={ page == 'twitter' }>
 			<h1>Twitter</h1>
-			<p>お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようにな<del>ります</del><strong>る予定です</strong>。</p>
+			<p>お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。</p>
 			<p if={ I.twitter }>アカウントは次のTwitterアカウントに接続されています: <strong>@{ I.twitter.screenName }</strong></p>
-			<a href={ CONFIG.api.url + '/connect/twitter' } target='_blank'>Twitterと接続する</a>
+			<a href={ CONFIG.api.url + '/connect/twitter' } target='_blank'>{ I.twitter ? '再接続する' : 'Twitterと接続する' }</a>
 		</section>
 
 		<section class="signin" show={ page == 'signin' }>
