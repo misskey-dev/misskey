@@ -250,12 +250,10 @@
 			@page = page
 
 		@avatar = ~>
-			@update-avatar @I, (i) ~>
-				@update-i i
+			@update-avatar @I
 
 		@wallpaper = ~>
-			@update-wallpaper @I, (i) ~>
-				@update-i i
+			@update-wallpaper @I
 
 		@update-account = ~>
 			@api \i/update do
@@ -264,7 +262,6 @@
 				bio: @refs.account-bio.value
 				birthday: @refs.account-birthday.value
 			.then (i) ~>
-				@update-i i
 				alert \ok
 			.catch (err) ~>
 				console.error err
@@ -274,23 +271,17 @@
 			@api \i/appdata/set do
 				data: JSON.stringify do
 					cache: @I.data.cache
-			.then ~>
-				@update-i!
 
 		@update-debug = ~>
 			@I.data.debug = !@I.data.debug
 			@api \i/appdata/set do
 				data: JSON.stringify do
 					debug: @I.data.debug
-			.then ~>
-				@update-i!
 
 		@update-nya = ~>
 			@I.data.nya = !@I.data.nya
 			@api \i/appdata/set do
 				data: JSON.stringify do
 					nya: @I.data.nya
-			.then ~>
-				@update-i!
 	</script>
 </mk-settings>

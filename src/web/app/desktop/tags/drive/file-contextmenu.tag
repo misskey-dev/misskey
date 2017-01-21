@@ -81,21 +81,15 @@
 
 		@set-avatar = ~>
 			@refs.ctx.close!
-			@update-avatar @I, (i) ~>
-				@update-i i
-			, @file
+			@update-avatar @I, null, @file
 
 		@set-banner = ~>
 			@refs.ctx.close!
-			@update-banner @I, (i) ~>
-				@update-i i
-			, @file
+			@update-banner @I, null, @file
 
 		@set-wallpaper = ~>
 			@refs.ctx.close!
-			@update-wallpaper @I, (i) ~>
-				@update-i i
-			, @file
+			@update-wallpaper @I, null, @file
 
 		@add-app = ~>
 			@NotImplementedException!

@@ -35,8 +35,7 @@
 		@mixin \update-avatar
 
 		@set = ~>
-			@update-avatar @I, (i) ~>
-				@update-i i
+			@update-avatar @I
 
 		@close = (e) ~>
 			e.prevent-default!

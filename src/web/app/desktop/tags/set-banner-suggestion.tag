@@ -35,8 +35,7 @@
 		@mixin \update-banner
 
 		@set = ~>
-			@update-banner @I, (i) ~>
-				@update-i i
+			@update-banner @I
 
 		@close = (e) ~>
 			e.prevent-default!

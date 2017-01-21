@@ -5,6 +5,8 @@
  */
 import Appdata from '../../../models/appdata';
 import User from '../../../models/user';
+import serialize from '../../../serializers/user';
+import event from '../../../event';
 
 /**
  * Set app data
@@ -24,30 +26,34 @@ module.exports = (params, user, app, isSecure) =>
 	}
 
 	if (isSecure) {
-		const set = {
+		const _user = await User.findOneAndUpdate(user._id, {
 			$set: {
 				data: Object.assign(user.data || {}, JSON.parse(data))
 			}
-		};
-		await User.update({ _id: user._id }, set);
+		});
 		res(204);
+
+		// Publish i updated event
+		event(user._id, 'i_updated', await serialize(_user, user, {
+			detail: true,
+			includeSecrets: true
+		}));
 	} else {
 		const appdata = await Appdata.findOne({
 			app_id: app._id,
 			user_id: user._id
 		});
-		const set = {
-			$set: {
-				data: Object.assign((appdata || {}).data || {}, JSON.parse(data))
-			}
-		};
 		await Appdata.update({
 			app_id: app._id,
 			user_id: user._id
 		}, Object.assign({
 			app_id: app._id,
 			user_id: user._id
-		}, set), {
+		}, {
+			$set: {
+				data: Object.assign((appdata || {}).data || {}, JSON.parse(data))
+			}
+		}), {
 			upsert: true
 		});
 		res(204);

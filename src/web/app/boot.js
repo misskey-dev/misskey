@@ -67,6 +67,11 @@ module.exports = callback => {
 		if (me != null) {
 			riot.observable(me);
 
+			me.update = data => {
+				if (data) Object.assign(me, data);
+				me.trigger('updated');
+			};
+
 			if (me.data.cache) {
 				localStorage.setItem('me', JSON.stringify(me));
 

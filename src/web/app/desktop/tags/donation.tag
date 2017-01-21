@@ -55,11 +55,10 @@
 			e.stop-propagation!
 
 			@I.data.no_donation = true
+			@I.update!
 			@api \i/appdata/set do
 				data: JSON.stringify do
 					no_donation: @I.data.no_donation
-			.then ~>
-				@update-i!
 
 			@unmount!
 

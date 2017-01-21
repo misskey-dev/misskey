@@ -46,11 +46,9 @@
 		@mixin \update-banner
 
 		@set-avatar = ~>
-			@update-avatar @I, (i) ~>
-				@update-i i
+			@update-avatar @I
 
 		@set-banner = ~>
-			@update-banner @I, (i) ~>
-				@update-i i
+			@update-banner @I
 	</script>
 </mk-profile-home-widget>
