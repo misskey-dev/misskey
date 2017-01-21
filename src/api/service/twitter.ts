@@ -9,6 +9,25 @@ import event from '../event';
 import config from '../../conf';
 
 module.exports = (app: express.Application) => {
+	app.get('/disconnect/twitter', async (req, res): Promise<any> => {
+		if (res.locals.user == null) return res.send('plz signin');
+		const user = await User.findOneAndUpdate({
+			token: res.locals.user
+		}, {
+			$unset: {
+				twitter: ''
+			}
+		});
+
+		res.send(`Twitterの連携を解除しました :v:`);
+
+		// Publish i updated event
+		event(user._id, 'i_updated', await serialize(user, user, {
+			detail: true,
+			includeSecrets: true
+		}));
+	});
+
 	if (config.twitter == null) {
 		app.get('/connect/twitter', (req, res) => {
 			res.send('現在Twitterへ接続できません');
