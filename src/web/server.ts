@@ -29,7 +29,7 @@ app.use(compression());
 app.use((req, res, next) => {
 	res.header('X-Frame-Options', 'DENY');
 
-	res.locals.user = (req.headers['cookie'].match(/i=(!\w+)/) || [null, null])[1];
+	res.locals.user = ((req.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
 
 	next();
 });
