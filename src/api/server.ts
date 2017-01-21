@@ -53,4 +53,11 @@ endpoints.forEach(endpoint =>
 app.post('/signup', require('./private/signup').default);
 app.post('/signin', require('./private/signin').default);
 
+app.use((req, res, next) => {
+	res.locals.user = ((req.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+	next();
+});
+
+require('./service/twitter')(app);
+
 module.exports = app;
