@@ -28,6 +28,9 @@ app.use(compression());
  */
 app.use((req, res, next) => {
 	res.header('X-Frame-Options', 'DENY');
+
+	res.locals.user = (req.headers['cookie'].match(/i=(!\w+)/) || [null, null])[1];
+
 	next();
 });
 
@@ -48,7 +51,7 @@ app.get(/\/api:meta/, require('./meta'));
 app.get(/\/api:url/,  require('./service/url-preview'));
 app.post(/\/api:rss/, require('./service/rss-proxy'));
 
-app.get(/\/connect:twitter/, require('./service/twitter/begin'));
+require('./service/twitter')(app);
 
 /**
  * Subdomain
