@@ -14,7 +14,7 @@ module.exports = (app: express.Application) => {
 		callbackUrl: config.url + '/tw/cb'
 	});
 
-	app.get('connect/twitter', async (req, res): Promise<any> => {
+	app.get('/connect/twitter', async (req, res): Promise<any> => {
 		if (res.locals.user == null) return res.send('plz signin');
 		const ctx = await twAuth.begin();
 		redis.set(res.locals.user, JSON.stringify(ctx));
