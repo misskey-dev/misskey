@@ -65,8 +65,8 @@ export default (
 	delete _user.token;
 	delete _user.username_lower;
 	if (_user.twitter) {
-		delete _user.twitter.accessToken;
-		delete _user.twitter.accessTokenSecret;
+		delete _user.twitter.access_token;
+		delete _user.twitter.access_token_secret;
 	}
 
 	// Visible via only the official client

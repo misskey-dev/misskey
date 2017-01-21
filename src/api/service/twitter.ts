@@ -38,7 +38,12 @@ module.exports = (app: express.Application) => {
 				token: res.locals.user
 			}, {
 				$set: {
-					twitter: result
+					twitter: {
+						access_token: result.accessToken,
+						access_token_secret: result.accessTokenSecret,
+						user_id: result.userId,
+						screen_name: result.screenName
+					}
 				}
 			});
 

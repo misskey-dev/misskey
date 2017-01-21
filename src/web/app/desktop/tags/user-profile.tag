@@ -8,7 +8,7 @@
 		<p><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
 	</div>
 	<div class="twitter" if={ user.twitter }>
-		<p><i class="fa fa-twitter"></i><a href={ 'https://twitter.com/' + user.twitter.screenName } target='_blank'>@{ user.twitter.screenName }</a></p>
+		<p><i class="fa fa-twitter"></i><a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
 	</div>
 	<div class="friends">
 		<p class="following"><i class="fa fa-angle-right"></i><a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
