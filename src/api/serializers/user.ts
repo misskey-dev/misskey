@@ -64,7 +64,10 @@ export default (
 	delete _user.password;
 	delete _user.token;
 	delete _user.username_lower;
-	delete _user.twitter;
+	if (_user.twitter) {
+		delete _user.twitter.accessToken;
+		delete _user.twitter.accessTokenSecret;
+	}
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {

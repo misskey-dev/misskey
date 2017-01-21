@@ -5,6 +5,7 @@
 		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }><i class="fa fa-fw fa-bell-o"></i>通知</p>
 		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }><i class="fa fa-fw fa-cloud"></i>ドライブ</p>
 		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }><i class="fa fa-fw fa-puzzle-piece"></i>アプリ</p>
+		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }><i class="fa fa-fw fa-twitter"></i>Twitter</p>
 		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }><i class="fa fa-fw fa-sign-in"></i>ログイン履歴</p>
 		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }><i class="fa fa-fw fa-unlock-alt"></i>パスワード</p>
 		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }><i class="fa fa-fw fa-key"></i>API</p>
@@ -34,6 +35,7 @@
 			</label>
 			<button class="style-primary" onclick={ updateAccount }>保存</button>
 		</section>
+
 		<section class="web" show={ page == 'web' }>
 			<h1>デザイン</h1>
 			<label>
@@ -41,6 +43,7 @@
 				<button class="style-normal" onclick={ wallpaper }>画像を選択</button>
 			</label>
 		</section>
+
 		<section class="web" show={ page == 'web' }>
 			<h1>その他</h1>
 			<label class="checkbox">
@@ -59,10 +62,19 @@
 				<p>攻撃的な投稿が多少和らぐ可能性があります。</p>
 			</label>
 		</section>
+
+		<section class="twitter" show={ page == 'twitter' }>
+			<h1>Twitter</h1>
+			<p>お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようにな<del>ります</del><strong>る予定です</strong>。</p>
+			<p if={ I.twitter }>アカウントは次のTwitterアカウントに接続されています: <strong>@{ I.twitter.screenName }</strong></p>
+			<a href={ CONFIG.api.url + '/connect/twitter' } target='_blank'>Twitterと接続する</a>
+		</section>
+
 		<section class="signin" show={ page == 'signin' }>
 			<h1>ログイン履歴</h1>
 			<mk-signin-history></mk-signin-history>
 		</section>
+
 		<section class="api" show={ page == 'api' }>
 			<h1>API</h1>
 			<p>Token:<code>{ I.token }</code></p>
