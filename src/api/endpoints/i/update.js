@@ -80,7 +80,7 @@ module.exports = async (params, user, _, isSecure) =>
 	const iObj = await serialize(user, user, {
 		detail: true,
 		includeSecrets: isSecure
-	})
+	});
 
 	// Send response
 	res(iObj);
