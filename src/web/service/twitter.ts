@@ -14,14 +14,14 @@ module.exports = (app: express.Application) => {
 		callbackUrl: config.url + '/tw/cb'
 	});
 
-	app.get('/twitter:connect', async (req, res): Promise<any> => {
+	app.get(/\/connect:twitter/, async (req, res): Promise<any> => {
 		if (res.locals.user == null) return res.send('plz signin');
 		const ctx = await twAuth.begin();
 		redis.set(res.locals.user, JSON.stringify(ctx));
 		res.redirect(ctx.url);
 	});
 
-	app.get('/twitter/callback', (req, res): any => {
+	app.get('/tw/cb', (req, res): any => {
 		if (res.locals.user == null) return res.send('plz signin');
 		redis.get(res.locals.user, async (_, ctx) => {
 			const tokens = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
