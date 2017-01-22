@@ -9,3 +9,5 @@ module.exports = (me) ->
 			if @SIGNIN
 				@on \mount   ~> me.on  \updated @update
 				@on \unmount ~> me.off \updated @update
+
+		me: me
