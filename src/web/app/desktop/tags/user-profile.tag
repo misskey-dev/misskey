@@ -5,7 +5,7 @@
 	</div>
 	<div class="bio" if={ user.bio != '' }>{ user.bio }</div>
 	<div class="birthday" if={ user.birthday }>
-		<p><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
+		<p><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.birthday) }歳)</p>
 	</div>
 	<div class="twitter" if={ user.twitter }>
 		<p><i class="fa fa-twitter"></i><a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
@@ -80,6 +80,8 @@
 
 	</style>
 	<script>
+		@age = require \s-age
+
 		@mixin \i
 
 		@user = @opts.user

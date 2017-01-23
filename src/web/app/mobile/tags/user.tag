@@ -12,7 +12,7 @@
 				<div class="bio">{ user.bio }</div>
 				<div class="info">
 					<p class="location" if={ user.location }><i class="fa fa-map-marker"></i>{ user.location }</p>
-					<p class="birthday" if={ user.birthday }><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' }</p>
+					<p class="birthday" if={ user.birthday }><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.birthday) }歳)</p>
 				</div>
 				<div class="friends"><a href="{ user.username }/following"><b>{ user.following_count }</b><i>フォロー</i></a><a href="{ user.username }/followers"><b>{ user.followers_count }</b><i>フォロワー</i></a></div>
 			</div>
@@ -154,6 +154,8 @@
 
 	</style>
 	<script>
+		@age = require \s-age
+
 		@mixin \i
 		@mixin \api
 
