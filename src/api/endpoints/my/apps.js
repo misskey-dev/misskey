@@ -48,7 +48,7 @@ module.exports = (params, user) =>
 			limit: limit,
 			skip: offset,
 			sort: {
-				created_at: -1
+				_id: -1
 			}
 		});
 

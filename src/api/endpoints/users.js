@@ -39,11 +39,11 @@ module.exports = (params, me) =>
 
 	// Construct query
 	const sort = {
-		created_at: -1
+		_id: -1
 	};
 	const query = {};
 	if (since !== null) {
-		sort.created_at = 1;
+		sort._id = 1;
 		query._id = {
 			$gt: new mongo.ObjectID(since)
 		};

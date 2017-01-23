@@ -49,14 +49,14 @@ module.exports = (params, user, app) =>
 
 	// Construct query
 	const sort = {
-		created_at: -1
+		_id: -1
 	};
 	const query = {
 		user_id: user._id,
 		parent_id: folder
 	};
 	if (since !== null) {
-		sort.created_at = 1;
+		sort._id = 1;
 		query._id = {
 			$gt: new mongo.ObjectID(since)
 		};
