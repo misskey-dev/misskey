@@ -79,9 +79,9 @@ Note that `$(pwd)` is the working directory.
 ## Launch
 `sudo npm start`
 
-## Debug
-### Show debug messages
-Misskey uses [debug](https://github.com/visionmedia/debug) and namespace is 'misskey:*'.
+## Debug :bug:
+### Show a debug messages
+Misskey uses [debug](https://github.com/visionmedia/debug) and namespace is `misskey:*`.
 
 ## Contribute
 Do you have feature request or problem with Misskey?
