@@ -3,6 +3,7 @@
 [![][appveyor-badge]][appveyor-link]
 [![][dependencies-badge]][dependencies-link]
 [![][mit-badge]][mit]
+[![][saythanks-badge]][saythanks]
 
 [![Sauce Test Status][saucelabs-image]][saucelabs-url]
 
@@ -121,3 +122,5 @@ Misskey is an open-source software licensed under [The MIT License](LICENSE).
 [dependencies-badge]: https://img.shields.io/gemnasium/syuilo/misskey.svg?style=flat-square
 [saucelabs-image]:    https://saucelabs.com/browser-matrix/syuilo.svg
 [saucelabs-url]:      https://saucelabs.com/u/syuilo
+[saythanks]:          https://saythanks.io/to/syuilo
+[saythanks-badge]:    https://img.shields.io/badge/SayThanks.io-☼-1EAEDB.svg
