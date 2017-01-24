@@ -34,9 +34,10 @@
 			left 0
 			z-index -1
 			width 240px
-			color #fff
-			background #313538
+			color #777
+			background #fff
 			visibility hidden
+			border-right solid 1px rgba(#000, 0.1)
 
 			.body
 				height 100%
@@ -64,7 +65,7 @@
 					left 80px
 					padding 0
 					width calc(100% - 112px)
-					color #fff
+					color #777
 					line-height 96px
 					overflow hidden
 					text-overflow ellipsis
@@ -83,19 +84,19 @@
 					display block
 					font-size 1em
 					line-height 1em
-					border-top solid 1px rgba(0, 0, 0, 0.2)
-					background #353A3E
+					border-top solid 1px rgba(#000, 0.1)
+					background #fcfcfc
 					background-clip content-box
 
 					&:last-child
-						border-bottom solid 1px rgba(0, 0, 0, 0.2)
+						border-bottom solid 1px rgba(#000, 0.1)
 
 					a
 						display block
 						padding 0 20px
 						line-height 3rem
 						line-height calc(1rem + 30px)
-						color #eee
+						color #777
 						text-decoration none
 
 						> .icon
@@ -110,22 +111,6 @@
 							line-height calc(1rem + 30px)
 							color #ccc
 
-						> .unread-count
-							position absolute
-							height calc(0.9em + 10px)
-							line-height calc(0.9em + 10px)
-							top 0
-							bottom 0
-							right 38px
-							margin auto 0
-							padding 0px 8px
-							min-width 2em
-							font-size 0.9em
-							text-align center
-							color #fff
-							background rgba(255, 255, 255, 0.1)
-							border-radius 1em
-
 			.about
 				margin 1em 1em 2em 1em
 				text-align center
@@ -133,7 +118,7 @@
 				opacity 0.3
 
 				a
-					color #fff
+					color #777
 
 	</style>
 	<script>
