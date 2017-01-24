@@ -15,6 +15,10 @@ module.exports = (me) ~>
 	route \/i/drive drive
 	route \/i/drive/folder/:folder drive
 	route \/i/drive/file/:file drive
+	route \/i/settings settings
+	route \/i/settings/signin-history settings-signin
+	route \/i/settings/api settings-api
+	route \/i/settings/twitter settings-twitter
 	route \/post/new new-post
 	route \/post::post post
 	route \/search::query search
@@ -47,6 +51,16 @@ module.exports = (me) ~>
 	# 新規投稿
 	function new-post
 		mount document.create-element \mk-new-post-page
+
+	# 設定
+	function settings
+		mount document.create-element \mk-settings-page
+	function settings-signin
+		mount document.create-element \mk-signin-history-page
+	function settings-api
+		mount document.create-element \mk-api-info-page
+	function settings-twitter
+		mount document.create-element \mk-twitter-setting-page
 
 	# 検索
 	function search ctx
