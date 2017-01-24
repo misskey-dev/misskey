@@ -83,8 +83,6 @@
 					display block
 					font-size 1em
 					line-height 1em
-					background #fcfcfc
-					background-clip content-box
 
 					a
 						display block
