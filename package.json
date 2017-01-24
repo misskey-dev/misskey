@@ -107,7 +107,7 @@
     "gulp-stylus": "2.6.0",
     "gulp-tslint": "7.0.1",
     "gulp-typescript": "3.1.4",
-    "gulp-uglify": "2.0.0",
+    "gulp-uglify": "2.0.1",
     "gulp-util": "3.0.8",
     "inquirer": "2.0.0",
     "is-root": "1.0.0",
