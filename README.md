@@ -90,7 +90,7 @@ Please create issue to report it if it is about the Misskey implementation itsel
 Currently Misskey is missing documents so writing documents would be appreciated.
 Pull requests are always welcome.
 
-We love contributions from anybody.
+*We love contributions from anybody.*
 
 [Contribution guide](./CONTRIBUTING.md)
 
