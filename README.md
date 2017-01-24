@@ -29,6 +29,8 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 4. `npm install`
 5. `npm run config`
 6. `npm run build`
+7. ✌🏻💴✌🏻
+8. 🤔
 
 ## Test
 Run `npm test` after building
