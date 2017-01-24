@@ -23,7 +23,7 @@ module.exports = (file, params, user) =>
 	new Promise(async (res, rej) =>
 {
 	const buffer = fs.readFileSync(file.path);
-	fs.unlink(file.path);
+	fs.unlink(file.path, (err) => { if (err) console.log(err) });
 
 	// Get 'name' parameter
 	let name = file.originalname;
