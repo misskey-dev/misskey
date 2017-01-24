@@ -10,6 +10,7 @@ Error.stackTraceLimit = Infinity;
 import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
+import * as debug from 'debug';
 import Logger from './utils/logger';
 import * as chalk from 'chalk';
 import portUsed = require('tcp-port-used');
@@ -22,6 +23,8 @@ import DependencyInfo from './utils/dependencyInfo';
 
 import { path as configPath } from './config';
 import loadConfig from './config';
+
+const clusterLog = debug('misskey:cluster');
 
 // Init babel
 require('babel-core/register');
@@ -41,7 +44,7 @@ main();
 /**
  * Init proccess
  */
-function main(): void {
+function main() {
 	if (cluster.isMaster) {
 		masterMain();
 	} else {
@@ -52,7 +55,7 @@ function main(): void {
 /**
  * Init master proccess
  */
-async function masterMain(): Promise<void> {
+async function masterMain() {
 	let initResult: InitResult;
 
 	try {
@@ -76,35 +79,15 @@ async function masterMain(): Promise<void> {
 			return;
 	}
 
-	const config = loadConfig();
-
 	spawnWorkers(() => {
-		Logger.info(chalk.bold.green(`Now listening on port ${config.port}`));
-
-		// Listen new workers
-		cluster.on('fork', worker => {
-			console.log(`Process forked: [${worker.id}]`);
-		});
-
-		// Listen online workers
-		cluster.on('online', worker => {
-			console.log(`Process is now online: [${worker.id}]`);
-		});
-
-		// Listen for dying workers
-		cluster.on('exit', worker => {
-			// Replace the dead worker,
-			// we're not sentimental
-			console.log(chalk.red(`[${worker.id}] died :(`));
-			cluster.fork();
-		});
+		Logger.info(chalk.bold.green(`Now listening on port ${loadConfig().port}`));
 	});
 }
 
 /**
  * Init worker proccess
  */
-function workerMain(): void {
+function workerMain() {
 	// start server
 	require('./server');
 }
@@ -112,7 +95,7 @@ function workerMain(): void {
 /**
  * Init app
  */
-async function init(): Promise<InitResult> {
+async function init() {
 	let warn = false;
 
 	Logger.info('Welcome to Misskey!');
@@ -160,7 +143,7 @@ async function init(): Promise<InitResult> {
 	return warn ? InitResult.Warn : InitResult.Success;
 }
 
-function spawnWorkers(onComplete: any): void {
+function spawnWorkers(onComplete: any) {
 	// Count the machine's CPUs
 	const cpuCount = os.cpus().length;
 
@@ -181,6 +164,24 @@ function spawnWorkers(onComplete: any): void {
 		onComplete();
 	});
 }
+
+// Listen new workers
+cluster.on('fork', worker => {
+	clusterLog(`Process forked: [${worker.id}]`);
+});
+
+// Listen online workers
+cluster.on('online', worker => {
+	clusterLog(`Process is now online: [${worker.id}]`);
+});
+
+// Listen for dying workers
+cluster.on('exit', worker => {
+	// Replace the dead worker,
+	// we're not sentimental
+	clusterLog(chalk.red(`[${worker.id}] died :(`));
+	cluster.fork();
+});
 
 // Display detail of unhandled promise rejection
 process.on('unhandledRejection', console.dir);
