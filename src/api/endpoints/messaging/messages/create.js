@@ -11,6 +11,7 @@ import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
 import { publishMessagingStream } from '../../../event';
+import config from '../../../../conf';
 
 /**
  * 最大文字数
