@@ -110,7 +110,7 @@ export default (
 	}
 
 	// Create DriveFile document
-	const res = await DriveFile.insert({
+	const file = await DriveFile.insert({
 		created_at: new Date(),
 		user_id: user._id,
 		folder_id: folder !== null ? folder._id : null,
@@ -122,8 +122,6 @@ export default (
 		hash: hash,
 		properties: properties
 	});
-
-	const file = res.ops[0];
 
 	resolve(file);
 
