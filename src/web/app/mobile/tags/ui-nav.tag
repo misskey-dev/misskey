@@ -37,7 +37,6 @@
 			color #777
 			background #fff
 			visibility hidden
-			border-right solid 1px rgba(#000, 0.1)
 
 			.body
 				height 100%
@@ -84,12 +83,8 @@
 					display block
 					font-size 1em
 					line-height 1em
-					border-top solid 1px rgba(#000, 0.1)
 					background #fcfcfc
 					background-clip content-box
-
-					&:last-child
-						border-bottom solid 1px rgba(#000, 0.1)
 
 					a
 						display block
