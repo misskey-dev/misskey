@@ -123,4 +123,4 @@ Misskey is an open-source software licensed under [The MIT License](LICENSE).
 [saucelabs-image]:    https://saucelabs.com/browser-matrix/syuilo.svg
 [saucelabs-url]:      https://saucelabs.com/u/syuilo
 [saythanks]:          https://saythanks.io/to/syuilo
-[saythanks-badge]:    https://img.shields.io/badge/SayThanks.io-☼-1EAEDB.svg
+[saythanks-badge]:    https://img.shields.io/badge/SayThanks.io-☼-1EAEDB.svg?style=flat-square
