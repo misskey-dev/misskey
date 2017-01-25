@@ -38,7 +38,7 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 
 GLHF!
 
-## Test
+## Testing
 Run `npm test` after building
 
 ## Setup
@@ -87,7 +87,7 @@ Note that `$(pwd)` is the working directory.
 ## Launch
 `sudo npm start`
 
-## Debug :bug:
+## Debugging :bug:
 ### Show a debug messages
 Misskey uses [debug](https://github.com/visionmedia/debug) and namespace is `misskey:*`.
 
