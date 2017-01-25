@@ -1,5 +1,5 @@
 import Logger from './logger';
-import { exec } from 'shelljs';
+import { execSync } from 'child_process';
 
 export default class {
 	logger: Logger;
@@ -15,20 +15,16 @@ export default class {
 	}
 
 	show(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
-		const code = {
-			success: 0,
-			notFound: 127
-		};
-		const x = exec(command, { silent: true }) as any;
-		if (x.code === code.success) {
-			let ver = transform(x.stdout);
+		try {
+			const x = execSync(command, { stdio: ['pipe', 'pipe', 'ignore'] });
+			const ver = transform(x.toString());
 			if (ver != null) {
 				this.logger.info(`${serviceName} ${ver[1]} found`);
 			} else {
 				this.logger.warn(`${serviceName} not found`);
 				this.logger.warn(`Regexp used for version check of ${serviceName} is probably messed up`);
 			}
-		} else if (x.code === code.notFound) {
+		} catch (e) {
 			this.logger.warn(`${serviceName} not found`);
 		}
 	}
