@@ -36,6 +36,8 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 7. ✌🏻💴✌🏻
 8. 🤔
 
+GLHF!
+
 ## Test
 Run `npm test` after building
 
