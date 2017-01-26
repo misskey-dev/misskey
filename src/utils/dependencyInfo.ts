@@ -16,6 +16,8 @@ export default class {
 
 	show(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
 		try {
+			// ステータス0以外のときにexecSyncはstderrをコンソール上に出力してしまうので
+			// プロセスからのstderrをすべて無視するように stdio オプションをセット
 			const x = execSync(command, { stdio: ['pipe', 'pipe', 'ignore'] });
 			const ver = transform(x.toString());
 			if (ver != null) {
