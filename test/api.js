@@ -148,6 +148,20 @@ describe('API', () => {
 			});
 		}));
 
+		it('誕生日の設定を削除できる', () => new Promise(async (done) => {
+			const me = await insertSakurako({
+				birthday: '2000-09-07'
+			});
+			request('/i/update', {
+				birthday: ''
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('birthday').eql(null);
+				done();
+			});
+		}));
+
 		it('不正な誕生日の形式で怒られる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			request('/i/update', {
@@ -695,20 +709,20 @@ describe('API', () => {
 	});
 });
 
-async function insertSakurako() {
-	return await db.get('users').insert({
+async function insertSakurako(opts) {
+	return await db.get('users').insert(Object.assign({
 		token: '!00000000000000000000000000000000',
 		username: 'sakurako',
 		username_lower: 'sakurako',
 		password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy' // HimawariDaisuki06160907
-	});
+	}, opts));
 }
 
-async function insertHimawari() {
-	return await db.get('users').insert({
+async function insertHimawari(opts) {
+	return await db.get('users').insert(Object.assign({
 		token: '!00000000000000000000000000000001',
 		username: 'himawari',
 		username_lower: 'himawari',
 		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O' // ilovesakurako
-	});
+	}, opts));
 }
