@@ -89,7 +89,8 @@ const self = (
 		const liked = await Like
 			.count({
 				user_id: me._id,
-				post_id: id
+				post_id: id,
+				deleted_at: { $exists: false }
 			}, {
 				limit: 1
 			});
