@@ -68,7 +68,7 @@ module.exports = (params, user) =>
 	if (exist === null) {
 		// Lookup app
 		const app = await App.findOne({
-			app_id: session.app_id
+			_id: session.app_id
 		});
 
 		// Generate Hash
