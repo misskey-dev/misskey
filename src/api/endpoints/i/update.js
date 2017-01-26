@@ -55,11 +55,15 @@ module.exports = async (params, user, _, isSecure) =>
 	// Get 'birthday' parameter
 	const birthday = params.birthday;
 	if (birthday != null) {
-		if (!isValidBirthday(birthday)) {
-			return rej('invalid birthday');
-		}
+		if (birthday != '') {
+			if (!isValidBirthday(birthday)) {
+				return rej('invalid birthday');
+			}
 
-		user.birthday = birthday;
+			user.birthday = birthday;
+		} else {
+			user.birthday = null;
+		}
 	}
 
 	// Get 'avatar_id' parameter
