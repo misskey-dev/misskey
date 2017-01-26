@@ -93,8 +93,11 @@ function send(data: Buffer, type: string, req: express.Request, res: express.Res
 app.get('/:id', async (req, res): Promise<void> => {
 	const file = await File.findOne({_id: new mongodb.ObjectID(req.params.id)});
 
-	if (file === null) {
+	if (file == null) {
 		res.status(404).sendFile(__dirname + '/resources/dummy.png');
+		return;
+	} else if (file.data == null) {
+		res.status(400);
 		return;
 	}
 
@@ -104,8 +107,11 @@ app.get('/:id', async (req, res): Promise<void> => {
 app.get('/:id/:name', async (req, res): Promise<void> => {
 	const file = await File.findOne({_id: new mongodb.ObjectID(req.params.id)});
 
-	if (file === null) {
+	if (file == null) {
 		res.status(404).sendFile(__dirname + '/resources/dummy.png');
+		return;
+	} else if (file.data == null) {
+		res.status(400);
 		return;
 	}
 
