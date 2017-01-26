@@ -40,7 +40,6 @@
 
 				> header
 					margin-bottom 2px
-					white-space nowrap
 
 					&:after
 						content ""
