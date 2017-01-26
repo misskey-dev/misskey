@@ -6,6 +6,7 @@
 import * as uuid from 'uuid';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
+import config from '../../../../conf';
 
 /**
  * @swagger
