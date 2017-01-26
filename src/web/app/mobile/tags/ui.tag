@@ -12,12 +12,12 @@
 			> .global
 				> .content
 					background #fff
-
 	</style>
 	<script>
 		@mixin \stream
 
 		@ready-count = 0
+		@is-drawer-opening = false
 
 		#@ui.on \notification (text) ~>
 		#	alert text
@@ -28,20 +28,20 @@
 
 		@on \unmount ~>
 			@stream.off \notification @on-stream-notification
-			@slide.slide-close!
 
 		@ready = ~>
 			@ready-count++
 
 			if @ready-count == 2
-				@slide = SpSlidemenu @refs.main, @refs.nav.root, \#hamburger {direction: \left}
 				@init-view-position!
 
 		@init-view-position = ~>
 			top = @refs.header.root.offset-height
 			@refs.main.style.padding-top = top + \px
-			@refs.nav.root.style.margin-top = top + \px
-			@refs.nav.root.query-selector '.body > .content' .style.padding-bottom = top + \px
+
+		@toggle-drawer = ~>
+			@is-drawer-opening = !@is-drawer-opening
+			@refs.nav.root.style.display = if @is-drawer-opening then \block else \none
 
 		@on-stream-notification = (notification) ~>
 			el = document.body.append-child document.create-element \mk-notify

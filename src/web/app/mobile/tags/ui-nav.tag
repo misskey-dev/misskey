@@ -1,49 +1,52 @@
 <mk-ui-nav>
+	<div class="backdrop" onclick={ parent.toggleDrawer }></div>
 	<div class="body">
-		<div class="content"><a class="me" if={ SIGNIN } href={ CONFIG.url + '/' + I.username }><img class="avatar" src={ I.avatar_url + '?thumbnail&size=128' } alt="avatar"/>
-				<p class="name">{ I.name }</p></a>
-			<div class="links">
-				<ul>
-					<li class="post"><a href="/i/post"><i class="icon fa fa-pencil-square-o"></i>新規投稿<i class="angle fa fa-angle-right"></i></a></li>
-				</ul>
-				<ul>
-					<li class="home"><a href="/"><i class="icon fa fa-home"></i>ホーム<i class="angle fa fa-angle-right"></i></a></li>
-					<li class="mentions"><a href="/i/mentions"><i class="icon fa fa-at"></i>あなた宛て<i class="angle fa fa-angle-right"></i></a></li>
-					<li class="notifications"><a href="/i/notifications"><i class="icon fa fa-bell-o"></i>通知<i class="angle fa fa-angle-right"></i></a></li>
-					<li class="messaging"><a><i class="icon fa fa-comments-o"></i>メッセージ<i class="angle fa fa-angle-right"></i></a></li>
-				</ul>
-				<ul>
-					<li class="settings"><a onclick={ search }><i class="icon fa fa-search"></i>検索<i class="angle fa fa-angle-right"></i></a></li>
-				</ul>
-				<ul>
-					<li class="settings"><a href="/i/drive"><i class="icon fa fa-cloud"></i>ドライブ<i class="angle fa fa-angle-right"></i></a></li>
-					<li class="settings"><a href="/i/upload"><i class="icon fa fa-upload"></i>アップロード<i class="angle fa fa-angle-right"></i></a></li>
-				</ul>
-				<ul>
-					<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>設定<i class="angle fa fa-angle-right"></i></a></li>
-				</ul>
-			</div>
-			<p class="about"><a>Misskeyについて</a></p>
+		<a class="me" if={ SIGNIN } href={ CONFIG.url + '/' + I.username }>
+			<img class="avatar" src={ I.avatar_url + '?thumbnail&size=128' } alt="avatar"/>
+			<p class="name">{ I.name }</p>
+		</a>
+		<div class="links">
+			<ul>
+				<li class="home"><a href="/"><i class="icon fa fa-home"></i>ホーム<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="mentions"><a href="/i/mentions"><i class="icon fa fa-at"></i>あなた宛て<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="notifications"><a href="/i/notifications"><i class="icon fa fa-bell-o"></i>通知<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="messaging"><a><i class="icon fa fa-comments-o"></i>メッセージ<i class="angle fa fa-angle-right"></i></a></li>
+			</ul>
+			<ul>
+				<li class="settings"><a onclick={ search }><i class="icon fa fa-search"></i>検索<i class="angle fa fa-angle-right"></i></a></li>
+			</ul>
+			<ul>
+				<li class="settings"><a href="/i/drive"><i class="icon fa fa-cloud"></i>ドライブ<i class="angle fa fa-angle-right"></i></a></li>
+			</ul>
+			<ul>
+				<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>設定<i class="angle fa fa-angle-right"></i></a></li>
+			</ul>
 		</div>
+		<p class="about" href={ CONFIG.urls.about }><a>Misskeyについて</a></p>
 	</div>
 	<style type="stylus">
 		:scope
-			display block
-			position fixed
-			top 0
-			left 0
-			z-index -1
-			width 240px
-			color #777
-			background #fff
-			visibility hidden
+			display none
 
-			.body
+			.backdrop
+				position fixed
+				top 0
+				left 0
+				z-index 1025
+				width 100%
 				height 100%
-				overflow hidden
-
-			.content
-				min-height 100%
+				background rgba(0, 0, 0, 0.2)
+			
+			.body
+				position fixed
+				top 0
+				left 0
+				z-index 1026
+				width 240px
+				height 100%
+				overflow auto
+				color #777
+				background #fff
 
 			.me
 				display block
