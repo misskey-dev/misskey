@@ -86,7 +86,7 @@ interface Mixin {
 export type IConfig = ISource & Mixin;
 
 export default function load() {
-	const config = yaml.safeLoad(fs.readFileSync(path, 'utf8')) as ISource;
+	const config = yaml.safeLoad(fs.readFileSync(path, 'utf-8')) as ISource;
 
 	const mixin: Mixin = {} as Mixin;
 
