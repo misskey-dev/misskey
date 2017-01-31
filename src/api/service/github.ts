@@ -29,14 +29,15 @@ module.exports = async (app: express.Application) => {
 	});
 
 	handler.on('issues', event => {
+		const info = event.payload;
 		let title: string;
-		switch (event.payload.action) {
+		switch (info.action) {
 			case 'opened': title = 'Issueが立ちました'; break;
 			case 'closed': title = 'Issueが閉じられました'; break;
 			case 'reopened': title = 'Issueが開きました'; break;
 			default: return;
 		}
-		const text = `${title}: ${event.payload.issue.number}「${event.payload.issue.title}」\n${event.payload.issue.html_url}`;
+		const text = `${title}: ${info.issue.number}「${info.issue.title}」\n${info.issue.html_url}`;
 		post(text);
 	});
 };
