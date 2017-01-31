@@ -3,15 +3,37 @@
 		<mk-timeline-post-sub post={ p.reply_to }></mk-timeline-post-sub>
 	</div>
 	<div class="repost" if={ isRepost }>
-		<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>がRepost</p>
+		<p>
+			<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>
+				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
+			</a>
+			<i class="fa fa-retweet"></i>
+			<a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>
+			がRepost
+		</p>
 		<mk-time time={ post.created_at }></mk-time>
 	</div>
-	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar" data-user-preview={ p.user.id }/></a>
+	<article>
+		<a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }>
+			<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar" data-user-preview={ p.user.id }/>
+		</a>
 		<div class="main">
-			<header><a class="name" href={ CONFIG.url + '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="created-at" href={ url }>
-					<mk-time time={ p.created_at }></mk-time></a></header>
+			<header>
+				<a class="name" href={ CONFIG.url + '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
+				<span class="is-bot" if={ p.user.is_bot }>bot</span>
+				<span class="username">@{ p.user.username }</span>
+				<a class="created-at" href={ url }>
+					<mk-time time={ p.created_at }></mk-time>
+				</a>
+			</header>
 			<div class="body">
-				<div class="text"><a class="reply" if={ p.reply_to }><i class="fa fa-reply"></i></a><span ref="text"></span><a class="quote" if={ p.repost != null }>RP:</a></div>
+				<div class="text">
+					<a class="reply" if={ p.reply_to }>
+						<i class="fa fa-reply"></i>
+					</a>
+					<span ref="text"></span>
+					<a class="quote" if={ p.repost != null }>RP:</a>
+				</div>
 				<div class="media" if={ p.media }>
 					<mk-images-viewer images={ p.media }></mk-images-viewer>
 				</div>
@@ -146,6 +168,15 @@
 
 							&:hover
 								text-decoration underline
+
+						> .is-bot
+							text-align left
+							margin 0 0 0 8px
+							padding 1px 6px
+							font-size 12px
+							color #bbb
+							border solid 1px #eee
+							border-radius 3px
 
 						> .username
 							text-align left

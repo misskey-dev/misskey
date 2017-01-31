@@ -8,8 +8,14 @@
 	</div>
 	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=96' } alt="avatar"/></a>
 		<div class="main">
-			<header><a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a><span class="username">@{ p.user.username }</span><a class="created-at" href={ url }>
-					<mk-time time={ p.created_at }></mk-time></a></header>
+			<header>
+				<a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a>
+				<span class="is-bot" if={ p.user.is_bot }>bot</span>
+				<span class="username">@{ p.user.username }</span>
+				<a class="created-at" href={ url }>
+					<mk-time time={ p.created_at }></mk-time>
+				</a>
+			</header>
 			<div class="body">
 				<div class="text"><a class="reply" if={ p.reply_to }><i class="fa fa-reply"></i></a>
 					<soan ref="text"></soan><a class="quote" if={ p.repost != null }>RP:</a>
@@ -148,6 +154,15 @@
 
 							&:hover
 								text-decoration underline
+
+						> .is-bot
+							text-align left
+							margin 0 0 0 8px
+							padding 1px 6px
+							font-size 12px
+							color #bbb
+							border solid 1px #eee
+							border-radius 3px
 
 						> .username
 							text-align left
