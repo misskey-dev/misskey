@@ -285,6 +285,8 @@
 
 	</style>
 	<script>
+		get-cat = require '../../common/scripts/get-cat'
+
 		@mixin \api
 		@mixin \notify
 		@mixin \autocomplete
@@ -429,6 +431,6 @@
 				@update!
 
 		@cat = ~>
-			@refs.text.value = @refs.text.value + '(=^・・^=)'
+			@refs.text.value = @refs.text.value + get-cat!
 	</script>
 </mk-post-form>

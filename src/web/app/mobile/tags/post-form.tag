@@ -178,6 +178,8 @@
 
 	</style>
 	<script>
+		get-cat = require '../../common/scripts/get-cat'
+
 		@mixin \api
 
 		@wait = false
@@ -264,6 +266,6 @@
 			@unmount!
 
 		@cat = ~>
-			@refs.text.value = @refs.text.value + '(=^・・^=)'
+			@refs.text.value = @refs.text.value + get-cat!
 	</script>
 </mk-post-form>
