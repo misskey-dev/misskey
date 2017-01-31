@@ -73,6 +73,6 @@ module.exports = (app: express.Application) => {
 				detail: true,
 				includeSecrets: true
 			}));
-		})
+		});
 	});
 };
