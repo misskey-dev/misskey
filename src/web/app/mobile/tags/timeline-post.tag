@@ -160,8 +160,8 @@
 							margin 0 0 0 8px
 							padding 1px 6px
 							font-size 12px
-							color #bbb
-							border solid 1px #eee
+							color #aaa
+							border solid 1px #ddd
 							border-radius 3px
 
 						> .username
