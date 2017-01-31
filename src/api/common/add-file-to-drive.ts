@@ -70,8 +70,10 @@ export default (
 	// Fetch all files to calculate drive usage
 	const files = await DriveFile
 		.find({ user_id: user._id }, {
-			datasize: true,
-			_id: false
+			fields: {
+				datasize: true,
+				_id: false
+			}
 		});
 
 	// Calculate drive usage (in byte)
