@@ -21,6 +21,7 @@
 		<mk-uploader ref="uploader"></mk-uploader>
 		<button ref="upload" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 		<button ref="drive" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
+		<button class="cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
 	<style type="stylus">
@@ -161,6 +162,7 @@
 
 				> [ref='upload']
 				> [ref='drive']
+				.cat
 					display inline-block
 					padding 0
 					margin 0
@@ -260,5 +262,8 @@
 		@cancel = ~>
 			@trigger \cancel
 			@unmount!
+
+		@cat = ~>
+			@refs.text.value = @refs.text.value + '(=^・・^=)'
 	</script>
 </mk-post-form>
