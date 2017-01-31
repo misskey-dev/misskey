@@ -35,7 +35,7 @@ module.exports = async (app: express.Application) => {
 			case 'closed': title = 'Issueが閉じられました'; break;
 			case 'reopened': title = 'Issueが開きました'; break;
 		}
-		const text = `${title}: ${event.payload.issue.number}「${event.payload.issue.title}」\n${event.payload.issue.url}`;
+		const text = `${title}: ${event.payload.issue.number}「${event.payload.issue.title}」\n${event.payload.issue.html_url}`;
 		post(text);
 	});
 };
