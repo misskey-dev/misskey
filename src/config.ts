@@ -63,7 +63,7 @@ interface ISource {
 	};
 	github_bot?: {
 		hook_secret: string;
-		bot_token: string;
+		username: string;
 	};
 }
 
