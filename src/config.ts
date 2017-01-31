@@ -56,10 +56,14 @@ interface ISource {
 		siteKey: string;
 		secretKey: string;
 	};
-	accesslog: string;
-	twitter: {
+	accesslog?: string;
+	twitter?: {
 		consumer_key: string;
 		consumer_secret: string;
+	};
+	github_bot?: {
+		hook_secret: string;
+		bot_token: string;
 	};
 }
 

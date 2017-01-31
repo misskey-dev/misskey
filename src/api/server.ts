@@ -58,6 +58,7 @@ app.use((req, res, next) => {
 	next();
 });
 
+require('./service/github')(app);
 require('./service/twitter')(app);
 
 module.exports = app;
