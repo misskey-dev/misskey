@@ -54,11 +54,10 @@ export default (
 		.digest('hex') as string;
 
 	if (!force) {
-		// Check if there is a file with the same hash and same data size (to be safe)
+		// Check if there is a file with the same hash
 		const much = await DriveFile.findOne({
 			user_id: user._id,
-			hash: hash,
-			datasize: size
+			hash: hash
 		});
 
 		if (much !== null) {
