@@ -1,6 +1,10 @@
 import db from '../../db/mongodb';
 
-export default db.get('drive_files') as any; // fuck type definition
+const collection = db.get('drive_files');
+
+(collection as any).index('hash'); // fuck type definition
+
+export default collection as any; // fuck type definition
 
 export function validateFileName(name: string): boolean {
 	return (
