@@ -2,7 +2,7 @@
  * Developer Center
  */
 
-require('./tags/index.ls');
+require('./tags');
 const boot = require('../boot.js');
 const route = require('./router.ls');
 

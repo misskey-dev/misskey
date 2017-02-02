@@ -3,7 +3,7 @@
  */
 
 require('chart.js');
-require('./tags/index.ls');
+require('./tags');
 const riot = require('riot');
 const boot = require('../boot.js');
 const mixins = require('./mixins.ls');
