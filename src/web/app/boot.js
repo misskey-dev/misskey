@@ -9,7 +9,7 @@ const signout = require('./common/scripts/signout.ls');
 const generateDefaultUserdata = require('./common/scripts/generate-default-userdata.ls');
 const mixins = require('./common/mixins.ls');
 const checkForUpdate = require('./common/scripts/check-for-update.ls');
-require('./common/tags.ls');
+require('./common/tags/index.ls');
 
 /**
  * MISSKEY ENTORY POINT!

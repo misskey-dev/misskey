@@ -2,7 +2,7 @@
  * Mobile Client
  */
 
-require('./tags.ls');
+require('./tags/index.ls');
 const boot = require('../boot.js');
 const mixins = require('./mixins.ls');
 const route = require('./router.ls');
