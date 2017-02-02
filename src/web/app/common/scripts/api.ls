@@ -10,7 +10,11 @@ riot.mixin \net do
 
 module.exports = (i, endpoint, data) ->
 	pending++
-
+	if pending == 1
+		spinner := document.create-element \div
+			..set-attribute \id \wait
+		document.body.append-child spinner
+	
 	if i? and typeof i == \object then i = i.token
 
 	body = []
@@ -35,11 +39,6 @@ module.exports = (i, endpoint, data) ->
 	ep = if (endpoint.index-of '://') > -1
 		then endpoint
 		else "#{CONFIG.api.url}/#{endpoint}"
-
-	if pending == 1
-		spinner := document.create-element \div
-			..set-attribute \id \wait
-		document.body.append-child spinner
 
 	new Promise (resolve, reject) ->
 		timer = set-timeout ->
