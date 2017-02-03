@@ -9,8 +9,7 @@ riot.mixin \net do
 	net: net
 
 module.exports = (i, endpoint, data) ->
-	pending++
-	if pending == 1
+	if ++pending == 1
 		spinner := document.create-element \div
 			..set-attribute \id \wait
 		document.body.append-child spinner
@@ -47,9 +46,8 @@ module.exports = (i, endpoint, data) ->
 
 		fetch ep, opts
 		.then (res) ->
-			pending--
 			clear-timeout timer
-			if pending == 0
+			if --pending == 0
 				spinner.parent-node.remove-child spinner
 
 			if res.status == 200
