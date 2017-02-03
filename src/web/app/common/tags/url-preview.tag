@@ -56,13 +56,14 @@
 
 					> footer
 						margin-top 8px
+						height 16px
 
 						> img
 							display inline-block
 							width 16px
 							heigth 16px
 							margin-right 4px
-							vertical-align bottom
+							vertical-align top
 
 						> p
 							display inline-block
@@ -70,6 +71,7 @@
 							color #666
 							font-size 0.8em
 							line-height 16px
+							vertical-align top
 
 			@media (max-width 500px)
 				font-size 8px
