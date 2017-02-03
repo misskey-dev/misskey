@@ -102,7 +102,7 @@
     "gulp-rename": "1.2.2",
     "gulp-replace": "0.5.4",
     "gulp-stylus": "2.6.0",
-    "gulp-tslint": "7.0.1",
+    "gulp-tslint": "7.1.0",
     "gulp-typescript": "3.1.4",
     "gulp-uglify": "2.0.1",
     "gulp-util": "3.0.8",
