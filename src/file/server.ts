@@ -90,28 +90,40 @@ function send(data: Buffer, type: string, req: express.Request, res: express.Res
  * Routing
  */
 
-app.get('/:id', async (req, res): Promise<void> => {
+app.get('/:id', async (req, res) => {
+	// Validate id
+	if (!mongodb.ObjectID.isValid(req.params.id)) {
+		res.status(400).send('incorrect id');
+		return;
+	}
+
 	const file = await File.findOne({_id: new mongodb.ObjectID(req.params.id)});
 
 	if (file == null) {
 		res.status(404).sendFile(__dirname + '/resources/dummy.png');
 		return;
 	} else if (file.data == null) {
-		res.status(400);
+		res.sendStatus(400);
 		return;
 	}
 
 	send(file.data.buffer, file.type, req, res);
 });
 
-app.get('/:id/:name', async (req, res): Promise<void> => {
+app.get('/:id/:name', async (req, res) => {
+	// Validate id
+	if (!mongodb.ObjectID.isValid(req.params.id)) {
+		res.status(400).send('incorrect id');
+		return;
+	}
+
 	const file = await File.findOne({_id: new mongodb.ObjectID(req.params.id)});
 
 	if (file == null) {
 		res.status(404).sendFile(__dirname + '/resources/dummy.png');
 		return;
 	} else if (file.data == null) {
-		res.status(400);
+		res.sendStatus(400);
 		return;
 	}
 
