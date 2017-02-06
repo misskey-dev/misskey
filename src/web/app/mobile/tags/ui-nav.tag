@@ -8,7 +8,6 @@
 		<div class="links">
 			<ul>
 				<li class="home"><a href="/"><i class="icon fa fa-home"></i>ホーム<i class="angle fa fa-angle-right"></i></a></li>
-				<li class="mentions"><a href="/i/mentions"><i class="icon fa fa-at"></i>あなた宛て<i class="angle fa fa-angle-right"></i></a></li>
 				<li class="notifications"><a href="/i/notifications"><i class="icon fa fa-bell-o"></i>通知<i class="angle fa fa-angle-right"></i></a></li>
 				<li class="messaging"><a><i class="icon fa fa-comments-o"></i>メッセージ<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
