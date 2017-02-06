@@ -83,7 +83,8 @@
 						position sticky
 						top 16px
 
-						img
+						> img
+							display block
 							min-width 36px
 							min-height 36px
 							max-width 36px
