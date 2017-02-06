@@ -17,7 +17,6 @@
 					//border solid 1px #eaeaea
 					border solid 1px rgba(0, 0, 0, 0.075)
 					border-radius 6px
-					overflow hidden
 
 					&:not(:last-child)
 						margin-bottom 16px

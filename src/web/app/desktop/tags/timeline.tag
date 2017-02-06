@@ -12,8 +12,8 @@
 				border-bottom solid 1px #eaeaea
 
 				&:first-child
-					border-top-left-radius 4px
-					border-top-right-radius 4px
+					border-top-left-radius 6px
+					border-top-right-radius 6px
 
 				&:last-of-type
 					border-bottom none
