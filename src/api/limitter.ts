@@ -40,7 +40,7 @@ export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reje
 				return reject('ERR');
 			}
 
-			log(`min remaining: ${info.remaining}`);
+			log(`@${ctx.user.username} ${endpoint.name} min remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('BRIEF_REQUEST_INTERVAL');
@@ -68,7 +68,7 @@ export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reje
 				return reject('ERR');
 			}
 
-			log(`max remaining: ${info.remaining}`);
+			log(`@${ctx.user.username} ${endpoint.name} max remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('RATE_LIMIT_EXCEEDED');
