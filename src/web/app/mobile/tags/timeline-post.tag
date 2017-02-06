@@ -180,6 +180,7 @@
 							color #c0c0c0
 
 					> .body
+						overflow hidden
 
 						> .text
 							cursor default
