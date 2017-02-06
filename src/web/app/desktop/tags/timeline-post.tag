@@ -138,6 +138,7 @@
 					display block
 					float left
 					margin 0 16px 10px 0
+					position -webkit-sticky
 					position sticky
 					top 74px
 
