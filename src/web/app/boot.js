@@ -38,9 +38,6 @@ try {
 // Check for Update
 checkForUpdate();
 
-// Get token from cookie
-const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1];
-
 // ユーザーをフェッチしてコールバックする
 module.exports = callback => {
 	// Get cached account data
@@ -50,7 +47,7 @@ module.exports = callback => {
 		fetched(cachedMe);
 
 		// 後から新鮮なデータをフェッチ
-		fetchme(i, true, freshData => {
+		fetchme(cachedMe.token, freshData => {
 			Object.assign(cachedMe, freshData);
 			cachedMe.trigger('updated');
 		});
@@ -60,7 +57,10 @@ module.exports = callback => {
 			localStorage.removeItem('me');
 		}
 
-		fetchme(i, false, fetched);
+		// Get token from cookie
+		const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1];
+
+		fetchme(i, fetched);
 	}
 
 	function fetched(me) {
@@ -100,7 +100,7 @@ module.exports = callback => {
 };
 
 // ユーザーをフェッチしてコールバックする
-function fetchme(token, silent, cb) {
+function fetchme(token, cb) {
 	let me = null;
 
 	// Return when not signed in
@@ -132,15 +132,13 @@ function fetchme(token, silent, cb) {
 				init();
 			}
 		});
-	}).catch(() => {
-		if (!silent) {
-			const info = document.body.appendChild(document.createElement('mk-core-error'));
-			riot.mount(info, {
-				retry: () => {
-					fetchme(token, false, cb);
-				}
-			});
-		}
+	}, () => {
+		const info = document.body.appendChild(document.createElement('mk-core-error'));
+		riot.mount(info, {
+			retry: () => {
+				fetchme(token, cb);
+			}
+		});
 	});
 
 	function done() {
