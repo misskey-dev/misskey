@@ -114,7 +114,7 @@
 					margin 0 10px 8px 0
 					position -webkit-sticky
 					position sticky
-					top 64px
+					top 62px
 
 					@media (min-width 500px)
 						margin-right 16px
