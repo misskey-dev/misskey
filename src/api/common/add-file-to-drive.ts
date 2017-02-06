@@ -1,6 +1,7 @@
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
 import * as gm from 'gm';
+import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 import DriveFile from '../models/drive-file';
@@ -8,6 +9,8 @@ import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event from '../event';
 import config from '../../conf';
+
+const log = debug('misskey:register-drive-file');
 
 /**
  * Add file to drive
@@ -29,8 +32,12 @@ export default (
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
 ) => new Promise<any>(async (resolve, reject) => {
+	log(`registering ${name} (user: ${user.username})`);
+
 	// File size
 	const size = data.byteLength;
+
+	log(`size is ${size}`);
 
 	// File type
 	let mime = 'application/octet-stream';
@@ -47,11 +54,15 @@ export default (
 		}
 	}
 
+	log(`type is ${mime}`);
+
 	// Generate hash
 	const hash = crypto
 		.createHash('sha256')
 		.update(data)
 		.digest('hex') as string;
+
+	log(`hash is ${hash}`);
 
 	if (!force) {
 		// Check if there is a file with the same hash
@@ -61,8 +72,10 @@ export default (
 		});
 
 		if (much !== null) {
-			resolve(much);
-			return;
+			log('file with same hash is found');
+			return resolve(much);
+		} else {
+			log('file with same hash is not found');
 		}
 	}
 
@@ -77,6 +90,8 @@ export default (
 
 	// Calculate drive usage (in byte)
 	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
+
+	log(`drive usage is ${usage}`);
 
 	// If usage limit exceeded
 	if (usage + size > user.drive_capacity) {
@@ -108,6 +123,8 @@ export default (
 			width: size.width,
 			height: size.height
 		};
+
+		log('image width and height is calculated');
 	}
 
 	// Create DriveFile document
@@ -123,6 +140,8 @@ export default (
 		hash: hash,
 		properties: properties
 	});
+
+	log(`drive file has been created ${file._id}`);
 
 	resolve(file);
 
