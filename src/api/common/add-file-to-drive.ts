@@ -141,6 +141,8 @@ export default (
 		properties: properties
 	});
 
+	delete file.data;
+
 	log(`drive file has been created ${file._id}`);
 
 	resolve(file);
