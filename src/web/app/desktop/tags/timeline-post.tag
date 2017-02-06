@@ -137,7 +137,9 @@
 				> .avatar-anchor
 					display block
 					float left
-					margin 0 16px 0 0
+					margin 0 16px 10px 0
+					position sticky
+					top 74px
 
 					> .avatar
 						display block

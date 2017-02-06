@@ -13,8 +13,6 @@
 		:scope
 			display block
 			background #fff
-			background-clip content-box
-			overflow hidden
 
 			> .init
 				padding 64px 0

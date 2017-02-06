@@ -29,7 +29,7 @@
 						//border solid 1px #eaeaea
 						border solid 1px rgba(0, 0, 0, 0.075)
 						border-radius 6px
-						overflow hidden
+						//box-shadow 0px 2px 16px rgba(0, 0, 0, 0.2)
 
 						&:not(:last-child)
 							margin-bottom 16px

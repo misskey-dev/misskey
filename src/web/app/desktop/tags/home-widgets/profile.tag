@@ -4,6 +4,7 @@
 	<style type="stylus">
 		:scope
 			display block
+			overflow hidden
 			background #fff
 
 			> .banner

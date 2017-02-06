@@ -111,7 +111,9 @@
 				> .avatar-anchor
 					display block
 					float left
-					margin 0 10px 0 0
+					margin 0 10px 8px 0
+					position sticky
+					top 66px
 
 					@media (min-width 500px)
 						margin-right 16px
