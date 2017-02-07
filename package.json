@@ -110,7 +110,7 @@
     "inquirer": "3.0.1",
     "is-root": "1.0.0",
     "is-url": "1.2.2",
-    "js-yaml": "3.7.0",
+    "js-yaml": "3.8.0",
     "livescript": "1.5.0",
     "mime-types": "2.1.14",
     "mocha": "3.2.0",
