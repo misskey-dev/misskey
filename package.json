@@ -26,7 +26,7 @@
     "@types/body-parser": "0.0.33",
     "@types/browserify": "12.0.30",
     "@types/chai": "3.4.34",
-    "@types/chai-http": "0.0.29",
+    "@types/chai-http": "0.0.30",
     "@types/chalk": "0.4.31",
     "@types/compression": "0.0.33",
     "@types/cors": "2.8.0",
