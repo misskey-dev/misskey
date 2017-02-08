@@ -57,9 +57,14 @@ module.exports = async (app: express.Application) => {
 		post(text);
 	});
 
+	handler.on('started', event => {
+		const sender = event.payload.sender;
+		post(`⭐️Started by ${sender.login}`);
+	});
+
 	handler.on('fork', event => {
 		const repo = event.payload.forkee;
-		post(`Forked:\n${repo.html_url}`);
+		post(`🍴Forked:\n${repo.html_url}`);
 	});
 
 	handler.on('pull_request', event => {
