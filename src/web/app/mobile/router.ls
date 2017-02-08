@@ -19,6 +19,7 @@ module.exports = (me) ~>
 	route \/i/settings/signin-history settings-signin
 	route \/i/settings/api settings-api
 	route \/i/settings/twitter settings-twitter
+	route \/i/settings/authorized-apps settings-authorized-apps
 	route \/post/new new-post
 	route \/post::post post
 	route \/search::query search
@@ -61,6 +62,8 @@ module.exports = (me) ~>
 		mount document.create-element \mk-api-info-page
 	function settings-twitter
 		mount document.create-element \mk-twitter-setting-page
+	function settings-authorized-apps
+		mount document.create-element \mk-authorized-apps-page
 
 	# 検索
 	function search ctx

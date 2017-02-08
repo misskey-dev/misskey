@@ -63,6 +63,11 @@
 			</label>
 		</section>
 
+		<section class="apps" show={ page == 'apps' }>
+			<h1>アプリケーション</h1>
+			<mk-authorized-apps></mk-authorized-apps>
+		</section>
+
 		<section class="twitter" show={ page == 'twitter' }>
 			<h1>Twitter</h1>
 			<mk-twitter-setting></mk-twitter-setting>

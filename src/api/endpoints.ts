@@ -46,6 +46,7 @@ export default [
 	{ name: 'i/appdata/get',    shouldBeSignin: true },
 	{ name: 'i/appdata/set',    shouldBeSignin: true },
 	{ name: 'i/signin_history', shouldBeSignin: true, kind: 'account-read' },
+	{ name: 'i/authorized_apps', shouldBeSignin: true, secure: true },
 
 	{ name: 'i/notifications',                shouldBeSignin: true, kind: 'notification-read' },
 	{ name: 'notifications/delete',           shouldBeSignin: true, kind: 'notification-write' },

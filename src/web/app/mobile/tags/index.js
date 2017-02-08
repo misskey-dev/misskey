@@ -17,6 +17,7 @@ require('./page/search.tag');
 require('./page/settings.tag');
 require('./page/settings/signin.tag');
 require('./page/settings/api.tag');
+require('./page/settings/authorized-apps.tag');
 require('./page/settings/twitter.tag');
 require('./home.tag');
 require('./home-timeline.tag');
