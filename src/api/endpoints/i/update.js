@@ -78,7 +78,9 @@ module.exports = async (params, user, _, isSecure) =>
 		user.banner_id = new mongo.ObjectID(banner);
 	}
 
-	await User.update(user._id, user);
+	await User.update(user._id, {
+		$set: user
+	});
 
 	// Serialize
 	const iObj = await serialize(user, user, {

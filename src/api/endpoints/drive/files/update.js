@@ -76,7 +76,9 @@ module.exports = (params, user) =>
 		}
 	}
 
-	DriveFile.update(file._id, file);
+	DriveFile.update(file._id, {
+		$set: file
+	});
 
 	// Serialize
 	const fileObj = await serialize(file);
