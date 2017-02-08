@@ -108,11 +108,12 @@
 					border-color #aeaeae
 
 			> .nav
+				flex 0 0 200px
 				width 100%
 				height 100%
 				padding 16px 0 0 0
+				overflow auto
 				border-right solid 1px #ddd
-				flex: 0 0 200px
 
 				> p
 					display block
