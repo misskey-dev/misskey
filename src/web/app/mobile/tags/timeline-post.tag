@@ -191,6 +191,7 @@
 							display block
 							margin 0
 							padding 0
+							white-space pre-wrap
 							word-wrap break-word
 							font-size 1.1em
 							color #717171
