@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import Post from '../models/post';
 import Like from '../models/like';
+import serializeApp from './app';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
 import deepcopy = require('deepcopy');
@@ -58,6 +59,11 @@ const self = (
 
 	// Populate user
 	_post.user = await serializeUser(_post.user_id, me);
+
+	// Populate app
+	if (_post.app_id) {
+		_post.app = await serializeApp(_post.app_id);
+	}
 
 	if (_post.media_ids) {
 		// Populate media
