@@ -5,7 +5,6 @@
  */
 import * as mongo from 'mongodb';
 import AccessToken from '../../models/access-token';
-import App from '../../models/app';
 import serialize from '../../serializers/app';
 
 /**
