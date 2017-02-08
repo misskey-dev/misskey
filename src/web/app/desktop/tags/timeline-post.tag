@@ -22,9 +22,12 @@
 				<a class="name" href={ CONFIG.url + '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
 				<span class="is-bot" if={ p.user.is_bot }>bot</span>
 				<span class="username">@{ p.user.username }</span>
-				<a class="created-at" href={ url }>
-					<mk-time time={ p.created_at }></mk-time>
-				</a>
+				<div class="info">
+					<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>
+					<a class="created-at" href={ url }>
+						<mk-time time={ p.created_at }></mk-time>
+					</a>
+				</div>
 			</header>
 			<div class="body">
 				<div class="text">
@@ -186,12 +189,21 @@
 							margin 0 0 0 8px
 							color #ccc
 
-						> .created-at
+						> .info
 							position absolute
 							top 0
 							right 0
+							text-align right
 							font-size 0.9em
-							color #c0c0c0
+
+							> .app
+								margin-right 8px
+								padding-right 8px
+								color #ccc
+								border-right solid 1px #eaeaea
+
+							> .created-at
+								color #c0c0c0
 
 					> .body
 
