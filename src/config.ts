@@ -23,7 +23,7 @@ export const path = (global as any).MISSKEY_CONFIG_PATH
 /**
  * ユーザーが設定する必要のある情報
  */
-interface ISource {
+interface Source {
 	maintainer: string;
 	url: string;
 	secondary_url: string;
@@ -83,12 +83,10 @@ interface Mixin {
 	drive_url: string;
 }
 
-export type IConfig = ISource & Mixin;
-
 export default function load() {
-	const config = yaml.safeLoad(fs.readFileSync(path, 'utf-8')) as ISource;
+	const config = yaml.safeLoad(fs.readFileSync(path, 'utf-8')) as Source;
 
-	const mixin: Mixin = {} as Mixin;
+	const mixin = {} as Mixin;
 
 	// Validate URLs
 	if (!isUrl(config.url)) urlError(config.url);
