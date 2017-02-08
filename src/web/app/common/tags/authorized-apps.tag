@@ -1,7 +1,7 @@
 <mk-authorized-apps>
 	<p class="none" if={ apps.length == 0 }>連携しているアプリケーションはありません。</p>
 	<div class="apps" if={ apps.length != 0 }>
-		<div each={ apps }>
+		<div each={ app in apps }>
 			<p><b>{ app.name }</b></p>
 			<p>{ app.description }</p>
 		</div>
