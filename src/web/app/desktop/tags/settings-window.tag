@@ -11,7 +11,7 @@
 						margin-right 4px
 
 				[data-yield='content']
-					overflow auto
+					overflow hidden
 
 	</style>
 	<script>

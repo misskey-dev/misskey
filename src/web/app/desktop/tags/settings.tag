@@ -85,7 +85,9 @@
 	</div>
 	<style type="stylus">
 		:scope
-			display block
+			display flex
+			width 100%
+			height 100%
 
 			input:not([type])
 			input[type='text']
@@ -106,13 +108,11 @@
 					border-color #aeaeae
 
 			> .nav
-				position absolute
-				top 0
-				left 0
-				width 200px
+				width 100%
 				height 100%
 				padding 16px 0 0 0
 				border-right solid 1px #ddd
+				flex: 0 0 200px
 
 				> p
 					display block
@@ -139,10 +139,10 @@
 						color $theme-color !important
 
 			> .pages
-				position absolute
-				top 0
-				left 200px
-				width calc(100% - 200px)
+				width 100%
+				height 100%
+				flex auto
+				overflow auto
 
 				> section
 					padding 32px
