@@ -22,7 +22,7 @@ export interface IAuthContext {
 }
 
 export default (req: express.Request) => new Promise<IAuthContext>(async (resolve, reject) => {
-	const token = req.body['i'];
+	const token = req.body['i'] as string;
 
 	if (token == null) {
 		return resolve({ app: null, user: null, isSecure: false });
@@ -43,7 +43,7 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 		});
 	} else {
 		const accessToken = await AccessToken.findOne({
-			hash: token
+			hash: token.toLowerCase()
 		});
 
 		if (accessToken === null) {
