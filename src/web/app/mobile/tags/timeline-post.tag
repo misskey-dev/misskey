@@ -191,11 +191,9 @@
 							display block
 							margin 0
 							padding 0
+							word-wrap break-word
 							font-size 1.1em
 							color #717171
-
-							&, *
-								word-wrap break-word
 
 							mk-url-preview
 								margin-top 8px
