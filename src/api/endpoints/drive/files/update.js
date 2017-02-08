@@ -77,7 +77,10 @@ module.exports = (params, user) =>
 	}
 
 	DriveFile.update(file._id, {
-		$set: file
+		$set: {
+			name: file.name,
+			folder_id: file.folder_id
+		}
 	});
 
 	// Serialize

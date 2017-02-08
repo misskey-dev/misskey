@@ -79,7 +79,14 @@ module.exports = async (params, user, _, isSecure) =>
 	}
 
 	await User.update(user._id, {
-		$set: user
+		$set: {
+			name: user.name,
+			location: user.location,
+			bio: user.bio,
+			birthday: user.birthday,
+			avatar_id: user.avatar_id,
+			banner_id: user.banner_id
+		}
 	});
 
 	// Serialize

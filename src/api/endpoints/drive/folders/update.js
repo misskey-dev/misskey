@@ -100,7 +100,10 @@ module.exports = (params, user) =>
 
 	// Update
 	DriveFolder.update(folder._id, {
-		$set: folder
+		$set: {
+			name: folder.name,
+			parent_id: folder.parent_id
+		}
 	});
 
 	// Serialize
