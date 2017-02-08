@@ -72,9 +72,9 @@ module.exports = (params, user) =>
 		});
 
 		// Generate Hash
-		const sha512 = crypto.createHash('sha512');
-		sha512.update(token + app.secret);
-		const hash = sha512.digest('hex');
+		const sha256 = crypto.createHash('sha256');
+		sha256.update(token + app.secret);
+		const hash = sha256.digest('hex');
 
 		// Insert access token doc
 		await AccessToken.insert({
