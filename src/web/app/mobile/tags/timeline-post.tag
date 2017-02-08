@@ -17,12 +17,17 @@
 				</a>
 			</header>
 			<div class="body">
-				<div class="text"><a class="reply" if={ p.reply_to }><i class="fa fa-reply"></i></a>
-					<soan ref="text"></soan><a class="quote" if={ p.repost != null }>RP:</a>
+				<div class="text" ref="text">
+					<a class="reply" if={ p.reply_to }>
+						<i class="fa fa-reply"></i>
+					</a>
+					<p>DUMMY</p>
+					<a class="quote" if={ p.repost != null }>RP:</a>
 				</div>
 				<div class="media" if={ p.media }>
 					<mk-images-viewer images={ p.media }></mk-images-viewer>
 				</div>
+				<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>
 				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
 					<mk-post-preview class="repost" post={ p.repost }></mk-post-preview>
 				</div>
@@ -180,16 +185,17 @@
 							color #c0c0c0
 
 					> .body
-						overflow hidden
 
 						> .text
 							cursor default
 							display block
 							margin 0
 							padding 0
-							word-wrap break-word
 							font-size 1.1em
 							color #717171
+
+							&, *
+								word-wrap break-word
 
 							mk-url-preview
 								margin-top 8px
@@ -203,10 +209,24 @@
 								font-style oblique
 								color #a0bf46
 
+							pre
+								padding 16px
+								overflow auto
+								font-size 80%
+								color #525252
+								background #f8f8f8
+								border-radius 2px
+
+								> code
+									font-family Consolas, 'Courier New', Courier, Monaco, monospace
+
 						> .media
 							> img
 								display block
 								max-width 100%
+
+						> .app
+							color #ccc
 
 						> .repost
 							margin 8px 0
@@ -266,7 +286,7 @@
 					then @analyze @p._highlight
 					else @analyze @p.text
 
-				@refs.text.innerHTML = if @p._highlight?
+				@refs.text.innerHTML = @refs.text.innerHTML.replace \<p>DUMMY</p> if @p._highlight?
 					then @compile tokens, true, false
 					else @compile tokens
 
