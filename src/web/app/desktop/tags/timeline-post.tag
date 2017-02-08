@@ -30,11 +30,11 @@
 				</div>
 			</header>
 			<div class="body">
-				<div class="text">
+				<div class="text" ref="text">
 					<a class="reply" if={ p.reply_to }>
 						<i class="fa fa-reply"></i>
 					</a>
-					<span ref="text"></span>
+					<p>DUMMY</p>
 					<a class="quote" if={ p.repost != null }>RP:</a>
 				</div>
 				<div class="media" if={ p.media }>
@@ -228,6 +228,17 @@
 								font-style oblique
 								color #a0bf46
 
+							pre
+								padding 16px
+								overflow auto
+								font-size 80%
+								color #525252
+								background #f8f8f8
+								border-radius 2px
+
+								> code
+									font-family Consolas, 'Courier New', Courier, Monaco, monospace
+
 						> .media
 							> img
 								display block
@@ -304,7 +315,7 @@
 					then @analyze @p._highlight
 					else @analyze @p.text
 
-				@refs.text.innerHTML = if @p._highlight?
+				@refs.text.innerHTML = @refs.text.innerHTML.replace \<p>DUMMY</p> if @p._highlight?
 					then @compile tokens, true, false
 					else @compile tokens
 

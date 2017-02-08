@@ -6,7 +6,8 @@ const elements = [
 	require('./elements/bold'),
 	require('./elements/url'),
 	require('./elements/mention'),
-	require('./elements/hashtag')
+	require('./elements/hashtag'),
+	require('./elements/code')
 ];
 
 function analyze(source) {

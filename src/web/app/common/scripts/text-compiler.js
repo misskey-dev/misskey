@@ -1,12 +1,18 @@
 const riot = require('riot');
 const nyaize = require('nyaize').default;
 
-module.exports = function(tokens, shouldBreak, escape) {
+const escape = function(text) {
+	return text
+		.replace(/>/g, '&gt;')
+		.replace(/</g, '&lt;');
+};
+
+module.exports = function(tokens, shouldBreak, shouldEscape) {
 	if (shouldBreak == null) {
 		shouldBreak = true;
 	}
-	if (escape == null) {
-		escape = true;
+	if (shouldEscape != null) {
+		alert('do not use this option')
 	}
 
 	const me = riot.mixin('i').me;
@@ -14,25 +20,22 @@ module.exports = function(tokens, shouldBreak, escape) {
 	let text = tokens.map(function(token) {
 		switch (token.type) {
 			case 'text':
-				if (escape) {
-					return token.content
-						.replace(/>/g, '&gt;')
-						.replace(/</g, '&lt;')
-						.replace(/(\r\n|\n|\r)/g, shouldBreak ? '<br>' : ' ');
-				} else {
-					return token.content
-						.replace(/(\r\n|\n|\r)/g, shouldBreak ? '<br>' : ' ');
-				}
+				return escape(token.content)
+					.replace(/(\r\n|\n|\r)/g, shouldBreak ? '<br>' : ' ');
 			case 'bold':
-				return '<strong>' + token.bold + '</strong>';
+				return '<strong>' + escape(token.bold) + '</strong>';
 			case 'link':
-				return '<mk-url href="' + token.content + '" target="_blank"></mk-url>';
+				return '<mk-url href="' + escape(token.content) + '" target="_blank"></mk-url>';
 			case 'mention':
-				return '<a href="' + CONFIG.url + '/' + token.username + '" target="_blank" data-user-preview="' + token.content + '">' + token.content + '</a>';
+				return '<a href="' + CONFIG.url + '/' + escape(token.username) + '" target="_blank" data-user-preview="' + token.content + '">' + token.content + '</a>';
 			case 'hashtag': // TODO
-				return '<a>' + token.content + '</a>';
+				return '<a>' + escape(token.content) + '</a>';
+			case 'code':
+				return '<pre><code>' + escape(token.code) + '</code></pre>';
 		}
 	}).join('');
+
+	text = text.replace(/<br><code><pre>/g, '<code><pre>').replace(/<\/code><\/pre><br>/g, '</code></pre>');
 
 	if (me && me.data && me.data.nya) {
 		text = nyaize(text);
