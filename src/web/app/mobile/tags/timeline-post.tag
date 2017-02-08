@@ -226,6 +226,7 @@
 								max-width 100%
 
 						> .app
+							font-size 14px
 							color #ccc
 
 						> .repost
