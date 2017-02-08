@@ -96,7 +96,13 @@ module.exports = (params) =>
 	});
 
 	// Delete session
+
+	/* https://github.com/Automattic/monk/issues/178
 	AuthSess.deleteOne({
+		_id: session._id
+	});
+	*/
+	AuthSess.remove({
 		_id: session._id
 	});
 
