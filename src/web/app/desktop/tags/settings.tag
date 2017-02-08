@@ -85,7 +85,9 @@
 	</div>
 	<style type="stylus">
 		:scope
-			display block
+			display flex
+			width 100%
+			height 100%
 
 			input:not([type])
 			input[type='text']
