@@ -31,6 +31,7 @@ const keywords = [
 	'null',
 	'nil',
 	'undefined',
+	'void',
 	'var',
 	'const',
 	'let',
@@ -62,6 +63,10 @@ const keywords = [
 	'new',
 	'this',
 	'class',
+	'public',
+	'private',
+	'protected',
+	'extends',
 	'constructor'
 ].sort((a, b) => b.length - a.length);
 
