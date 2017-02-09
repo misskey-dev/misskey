@@ -132,6 +132,35 @@ const elements = [
 		}
 	},
 
+	// regexp
+	code => {
+		if (code[0] != '/') return null;
+		let regexp = '';
+		let thisIsNotARegexp = false;
+		for (let i = 1; i < code.length; i++) {
+			const char = code[i];
+			if (char == '\\') {
+				i++;
+				continue;
+			} else if (char == '/') {
+				break;
+			} else if (char == '\n' || i == (code.length - 1)) {
+				thisIsNotARegexp = true;
+				break;
+			} else {
+				regexp += char;
+			}
+		}
+		
+		if (thisIsNotARegexp) return null;
+		if (regexp[0] == ' ' && regexp[regexp.length - 1] == ' ') return null;
+
+		return {
+			html: `<span class="regexp">/${escape(regexp)}/</span>`,
+			next: regexp.length + 2
+		};
+	},
+
 	// extract vars
 	(code, i, source, vars) => {
 		const prev = source[i - 1];
