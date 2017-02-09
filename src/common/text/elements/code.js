@@ -288,23 +288,6 @@ const elements = [
 		}
 	},
 
-	// keyword
-	(code, i, source) => {
-		const prev = source[i - 1];
-		if (prev && /[a-zA-Z]/.test(prev)) return null;
-
-		const match = keywords.filter(k => code.substr(0, k.length) == k)[0];
-		if (match) {
-			if (/^[a-zA-Z]/.test(code.substr(match.length))) return null;
-			return {
-				html: `<span class="keyword ${match}">${match}</span>`,
-				next: match.length
-			};
-		} else {
-			return null;
-		}
-	},
-
 	// method
 	code => {
 		const match = code.match(/^([a-zA-Z_-]+?)\(/);
@@ -330,6 +313,23 @@ const elements = [
 			html: `<span class="property">${match[0]}</span>`,
 			next: match[0].length
 		};
+	},
+
+	// keyword
+	(code, i, source) => {
+		const prev = source[i - 1];
+		if (prev && /[a-zA-Z]/.test(prev)) return null;
+
+		const match = keywords.filter(k => code.substr(0, k.length) == k)[0];
+		if (match) {
+			if (/^[a-zA-Z]/.test(code.substr(match.length))) return null;
+			return {
+				html: `<span class="keyword ${match}">${match}</span>`,
+				next: match.length
+			};
+		} else {
+			return null;
+		}
 	},
 
 	// symbol
