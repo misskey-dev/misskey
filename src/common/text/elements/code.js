@@ -80,6 +80,7 @@ const _keywords = [
 	'as',
 	'using',
 	'use',
+	'internal',
 	'module',
 	'namespace',
 	'where',
