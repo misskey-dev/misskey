@@ -71,6 +71,7 @@ const keywords = [
 	'import',
 	'export',
 	'from',
+	'as',
 	'using',
 	'use',
 	'module',
