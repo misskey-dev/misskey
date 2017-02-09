@@ -91,9 +91,9 @@
 							font-size 1.1em
 							color #717171
 
-			
-
-			
+							pre
+								max-height 120px
+								font-size 80%
 
 	</style>
 </mk-timeline-post-sub>

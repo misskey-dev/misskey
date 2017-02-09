@@ -212,7 +212,6 @@
 
 							pre
 								padding 16px
-								overflow auto
 								font-size 80%
 								color #525252
 								background #f8f8f8

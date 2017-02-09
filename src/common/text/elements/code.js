@@ -188,6 +188,16 @@ const elements = [
 		};
 	},
 
+	// label
+	code => {
+		if (code[0] != '@') return null;
+		const label = code.match(/^@([a-zA-Z_-]+?)\n/)[0];
+		return {
+			html: `<span class="label">${label}</span>`,
+			next: label.length
+		};
+	},
+
 	// extract vars
 	(code, i, source, vars) => {
 		const prev = source[i - 1];

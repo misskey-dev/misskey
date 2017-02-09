@@ -107,46 +107,52 @@ a
 	*
 		cursor pointer
 
-pre > code
-	font-family Consolas, 'Courier New', Courier, Monaco, monospace
-	tab-size 2
+pre
+	overflow auto
 
-	.comment
-		opacity 0.5
+	> code
+		font-family Consolas, 'Courier New', Courier, Monaco, monospace
+		tab-size 2
 
-	.string
-		color #e96900
+		.comment
+			opacity 0.5
 
-	.regexp
-		color #e9003f
+		.string
+			color #e96900
 
-	.keyword
-		color #2973b7
+		.regexp
+			color #e9003f
 
-		&.true
-		&.false
-		&.null
-		&.nil
-		&.undefined
+		.keyword
+			color #2973b7
+
+			&.true
+			&.false
+			&.null
+			&.nil
+			&.undefined
+				color #ae81ff
+
+		.symbol
+			color #42b983
+
+		.number
 			color #ae81ff
 
-	.symbol
-		color #42b983
+		.var:not(.keyword)
+			font-weight bold
+			font-style italic
+			//text-decoration underline
 
-	.number
-		color #ae81ff
+		.method
+			font-style italic
+			color #8964c1
 
-	.var:not(.keyword)
-		font-weight bold
-		font-style italic
-		//text-decoration underline
+		.property
+			color #a71d5d
 
-	.method
-		font-style italic
-		color #8964c1
-
-	.property
-		color #a71d5d
+		.label
+			color #e9003f
 
 mk-locker
 	display block
