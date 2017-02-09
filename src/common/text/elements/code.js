@@ -140,7 +140,9 @@ const elements = [
 	// comment
 	code => {
 		if (code.substr(0, 2) != '//') return null;
-		const comment = code.match(/^\/\/(.+?)\n/)[0];
+		const match = code.match(/^\/\/(.+?)\n/);
+		if (!match) return null;
+		const comment = match[0];
 		return {
 			html: `<span class="comment">${escape(comment)}</span>`,
 			next: comment.length
