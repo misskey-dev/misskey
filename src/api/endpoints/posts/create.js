@@ -18,7 +18,7 @@ import config from '../../../conf';
 /**
  * 最大文字数
  */
-const maxTextLength = 500;
+const maxTextLength = 1000;
 
 /**
  * 添付できるファイルの数
