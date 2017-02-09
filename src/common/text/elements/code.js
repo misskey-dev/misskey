@@ -141,7 +141,6 @@ const elements = [
 			const bar = code.substr(match.length + 1).match(/^[a-zA-Z0-9_-]+/);
 			if (bar) {
 				if (!keywords.some(k => k == bar)) {
-					console.log(bar[0]);
 					vars.push(bar[0]);
 				}
 			}
