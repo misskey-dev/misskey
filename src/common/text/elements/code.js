@@ -110,6 +110,8 @@ const elements = [
 		for (let i = 1; i < code.length; i++) {
 			const char = code[i];
 			if (char == '\\') {
+				str += char;
+				str += code[i + 1] || '';
 				i++;
 				continue;
 			} else if (char == begin) {
@@ -140,6 +142,8 @@ const elements = [
 		for (let i = 1; i < code.length; i++) {
 			const char = code[i];
 			if (char == '\\') {
+				regexp += char;
+				regexp += code[i + 1] || '';
 				i++;
 				continue;
 			} else if (char == '/') {
