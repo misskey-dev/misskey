@@ -21,7 +21,7 @@
 					<a class="reply" if={ p.reply_to }>
 						<i class="fa fa-reply"></i>
 					</a>
-					<p>DUMMY</p>
+					<p class="dummy"></p>
 					<a class="quote" if={ p.repost != null }>RP:</a>
 				</div>
 				<div class="media" if={ p.media }>
@@ -195,6 +195,9 @@
 							font-size 1.1em
 							color #717171
 
+							> .dummy
+								display none
+
 							mk-url-preview
 								margin-top 8px
 
@@ -282,7 +285,7 @@
 					then @analyze @p._highlight
 					else @analyze @p.text
 
-				@refs.text.innerHTML = @refs.text.innerHTML.replace \<p>DUMMY</p> if @p._highlight?
+				@refs.text.innerHTML = @refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
 					then @compile tokens, true, false
 					else @compile tokens
 
