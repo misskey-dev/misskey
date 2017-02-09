@@ -36,6 +36,7 @@ const _keywords = [
 	'const',
 	'let',
 	'mut',
+	'dim',
 	'if',
 	'then',
 	'else',
@@ -126,7 +127,8 @@ const varDef = [
 	'var',
 	'const',
 	'let',
-	'mut'
+	'mut',
+	'dim'
 ];
 
 const elements = [
