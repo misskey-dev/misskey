@@ -25,7 +25,7 @@ function escape(text) {
 
 // 文字数が多い順にソートします
 // そうしないと、「function」という文字列が与えられたときに「func」が先にマッチしてしまう可能性があるためです
-const keywords = [
+const _keywords = [
 	'true',
 	'false',
 	'null',
@@ -94,7 +94,12 @@ const keywords = [
 	'extends',
 	'implements',
 	'constructor'
-].sort((a, b) => b.length - a.length);
+];
+
+const keywords = _keywords
+	.concat(_keywords.map(k => k[0].toUpperCase() + k.substr(1)))
+	.concat(_keywords.map(k => k.toUpperCase()))
+	.sort((a, b) => b.length - a.length);
 
 const symbols = [
 	'=',
