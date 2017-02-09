@@ -173,11 +173,13 @@ const elements = [
 		const match = varDef.filter(v => code.substr(0, v.length + 1) == v + ' ')[0];
 
 		if (match) {
-			const bar = code.substr(match.length + 1).match(/^[a-zA-Z0-9_-]+/);
-			if (bar) {
-				if (!keywords.some(k => k == bar)) {
-					vars.push(bar[0]);
-				}
+			const bars = code.substr(match.length + 1).match(/^[a-zA-Z0-9_\-,\s]+/);
+			if (bars) {
+				bars[0].replace(/,/g, ' ').split(' ').filter(x => x != '').forEach(bar => {
+					if (!keywords.some(k => k == bar)) {
+						vars.push(bar);
+					}
+				});
 			}
 		}
 
@@ -187,7 +189,9 @@ const elements = [
 	// vars
 	(code, i, source, vars) => {
 		const prev = source[i - 1];
-		if (prev && /[a-zA-Z]/.test(prev)) return null;
+		// プロパティは変数と認識させないために、
+		// 前に . や > (PHPなどではプロパティに -> でアクセスするため) が無いかチェック
+		if (prev && /[a-zA-Z\.>]/.test(prev)) return null;
 
 		const match = vars.sort((a, b) => b.length - a.length)
 			.filter(v => code.substr(0, v.length) == v)[0];
