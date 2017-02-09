@@ -236,9 +236,6 @@
 								background #f8f8f8
 								border-radius 2px
 
-								> code
-									font-family Consolas, 'Courier New', Courier, Monaco, monospace
-
 						> .media
 							> img
 								display block
