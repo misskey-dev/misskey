@@ -62,11 +62,19 @@ const keywords = [
 	'export',
 	'new',
 	'this',
+	'super',
+	'base',
 	'class',
+	'interface',
+	'abstract',
+	'static',
 	'public',
 	'private',
 	'protected',
+	'virtual',
+	'override',
 	'extends',
+	'implements',
 	'constructor'
 ].sort((a, b) => b.length - a.length);
 
