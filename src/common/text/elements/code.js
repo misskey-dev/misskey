@@ -62,6 +62,7 @@ const keywords = [
 	'func',
 	'fn',
 	'return',
+	'yield',
 	'async',
 	'await',
 	'require',
