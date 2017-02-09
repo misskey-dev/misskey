@@ -81,6 +81,8 @@ const _keywords = [
 	'using',
 	'use',
 	'module',
+	'where',
+	'select',
 	'struct',
 	'union',
 	'new',
