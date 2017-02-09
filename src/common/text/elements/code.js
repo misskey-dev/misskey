@@ -40,6 +40,7 @@ const keywords = [
 	'then',
 	'else',
 	'switch',
+	'match',
 	'case',
 	'for',
 	'each',
@@ -291,7 +292,7 @@ const elements = [
 		const prev = source[i - 1];
 		if (prev != '.') return null;
 
-		const match = code.match(/^[a-zA-Z_-]+/);
+		const match = code.match(/^[a-zA-Z0-9_-]+/);
 		if (!match) return null;
 
 		return {
