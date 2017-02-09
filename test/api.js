@@ -289,7 +289,7 @@ describe('API', () => {
 		it('文字数ぎりぎりで怒られない', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const post = {
-				text: '!'.repeat(500)
+				text: '!'.repeat(1000)
 			};
 			request('/posts/create', post, me).then(res => {
 				res.should.have.status(200);
@@ -300,7 +300,7 @@ describe('API', () => {
 		it('文字数オーバーで怒られる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const post = {
-				text: '!'.repeat(501)
+				text: '!'.repeat(1001)
 			};
 			request('/posts/create', post, me).then(res => {
 				res.should.have.status(400);
