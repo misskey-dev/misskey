@@ -240,6 +240,33 @@ const elements = [
 		}
 	},
 
+	// method
+	code => {
+		const match = code.match(/^([a-zA-Z_-]+?)\(/);
+		if (!match) return null;
+
+		if (match[1] == '-') return null;
+
+		return {
+			html: `<span class="method">${match[1]}</span>`,
+			next: match[1].length
+		};
+	},
+
+	// property
+	(code, i, source) => {
+		const prev = source[i - 1];
+		if (prev != '.') return null;
+
+		const match = code.match(/^[a-zA-Z_-]+/);
+		if (!match) return null;
+
+		return {
+			html: `<span class="property">${match[0]}</span>`,
+			next: match[0].length
+		};
+	},
+
 	// symbol
 	code => {
 		const match = symbols.filter(s => code[0] == s)[0];
