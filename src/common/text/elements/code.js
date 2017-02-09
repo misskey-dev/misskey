@@ -62,6 +62,7 @@ const keywords = [
 	'import',
 	'export',
 	'using',
+	'use',
 	'struct',
 	'new',
 	'this',
