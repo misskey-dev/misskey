@@ -101,6 +101,16 @@ const elements = [
 		};
 	},
 
+	// block comment
+	code => {
+		const match = code.match(/^\/\*([\s\S]+?)\*\//);
+		if (!match) return null;
+		return {
+			html: `<span class="comment">${escape(match[0])}</span>`,
+			next: match[0].length
+		};
+	},
+
 	// string
 	code => {
 		if (!/^['"`]/.test(code)) return null;
