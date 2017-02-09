@@ -271,6 +271,20 @@ const elements = [
 		}
 	},
 
+	// nan
+	(code, i, source) => {
+		const prev = source[i - 1];
+		if (prev && /[a-zA-Z]/.test(prev)) return null;
+		if (code.substr(0, 3) == 'NaN') {
+			return {
+				html: `<span class="nan">NaN</span>`,
+				next: 3
+			};
+		} else {
+			return null;
+		}
+	},
+
 	// keyword
 	(code, i, source) => {
 		const prev = source[i - 1];
