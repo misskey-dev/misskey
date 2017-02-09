@@ -221,7 +221,9 @@ const elements = [
 	// label
 	code => {
 		if (code[0] != '@') return null;
-		const label = code.match(/^@([a-zA-Z_-]+?)\n/)[0];
+		const match = code.match(/^@([a-zA-Z_-]+?)\n/);
+		if (!match) return null;
+		const label = match[0];
 		return {
 			html: `<span class="label">${label}</span>`,
 			next: label.length
