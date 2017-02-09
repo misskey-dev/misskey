@@ -60,6 +60,7 @@ const keywords = [
 	'enum',
 	'function',
 	'func',
+	'fun',
 	'fn',
 	'return',
 	'yield',
