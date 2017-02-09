@@ -64,6 +64,7 @@ const keywords = [
 	'from',
 	'using',
 	'use',
+	'module',
 	'struct',
 	'new',
 	'this',
