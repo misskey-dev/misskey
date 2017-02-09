@@ -105,7 +105,7 @@ const elements = [
 		const begin = code[0];
 		let str = begin;
 		let thisIsNotAString = false;
-		for (i = 1; i < code.length; i++) {
+		for (let i = 1; i < code.length; i++) {
 			const char = code[i];
 			if (char == '\\') {
 				i++;
