@@ -61,6 +61,7 @@ const _keywords = [
 	'catch',
 	'finally',
 	'enum',
+	'deledate',
 	'function',
 	'func',
 	'fun',
