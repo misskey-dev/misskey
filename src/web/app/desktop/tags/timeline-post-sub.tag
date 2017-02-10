@@ -55,7 +55,7 @@
 
 					> header
 						display flex
-						margin-bottom 4px
+						margin-bottom 2px
 						white-space nowrap
 						line-height 21px
 
