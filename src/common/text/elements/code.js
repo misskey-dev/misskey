@@ -129,15 +129,6 @@ const symbols = [
 	'?'
 ];
 
-// 変数宣言
-const varDef = [
-	'var',
-	'const',
-	'let',
-	'mut',
-	'dim'
-];
-
 const elements = [
 	// comment
 	code => {
@@ -237,48 +228,6 @@ const elements = [
 		};
 	},
 
-	// extract vars
-	(code, i, source, vars) => {
-		const prev = source[i - 1];
-		if (prev && /[a-zA-Z]/.test(prev)) return null;
-
-		const match = varDef.filter(v => code.substr(0, v.length + 1) == v + ' ')[0];
-
-		if (match) {
-			const bars = code.substr(match.length + 1).match(/^[a-zA-Z0-9_\-,\s]+/);
-			if (bars) {
-				bars[0].replace(/,/g, ' ').split(' ').filter(x => x != '').forEach(bar => {
-					if (!keywords.some(k => k == bar)) {
-						vars.push(bar);
-					}
-				});
-			}
-		}
-
-		return null;
-	},
-
-	// vars
-	(code, i, source, vars) => {
-		const prev = source[i - 1];
-		// プロパティは変数と認識させないために、
-		// 前に . や > (PHPなどではプロパティに -> でアクセスするため) が無いかチェック
-		if (prev && /[a-zA-Z\.>]/.test(prev)) return null;
-
-		const match = vars.sort((a, b) => b.length - a.length)
-			.filter(v => code.substr(0, v.length) == v)[0];
-
-		if (match) {
-			if (/^[a-zA-Z]/.test(code.substr(match.length))) return null;
-			return {
-				html: `<span class="var">${match}</span>`,
-				next: match.length
-			};
-		} else {
-			return null;
-		}
-	},
-
 	// number
 	(code, i, source) => {
 		const prev = source[i - 1];
@@ -372,8 +321,6 @@ function genHtml(source, lang) {
 	let code = source;
 	let html = '';
 
-	let vars = [];
-
 	let i = 0;
 
 	function push(token) {
@@ -384,7 +331,7 @@ function genHtml(source, lang) {
 
 	while (code != '') {
 		const parsed = elements.some(el => {
-			const e = el(code, i, source, vars);
+			const e = el(code, i, source);
 			if (e) {
 				push(e);
 				return true;
