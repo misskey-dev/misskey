@@ -55,7 +55,7 @@
 						width calc(100% - 68px)
 
 					> header
-					    display flex
+						display flex
 						flex-wrap wrap
 						margin-bottom 4px
 						white-space nowrap
