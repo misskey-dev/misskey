@@ -158,26 +158,29 @@
 					width calc(100% - 74px)
 
 					> header
+						display flex
 						margin-bottom 4px
 						white-space nowrap
-						line-height 24px
+						line-height 1.4
 
 						> .name
-							display inline
-							margin 0
+							display block
+							margin 0 .5em 0 0
 							padding 0
+							overflow hidden
 							color #777
 							font-size 1em
 							font-weight 700
 							text-align left
 							text-decoration none
+							text-overflow ellipsis
 
 							&:hover
 								text-decoration underline
 
 						> .is-bot
 							text-align left
-							margin 0 0 0 8px
+							margin 0 .5em 0 0
 							padding 1px 6px
 							font-size 12px
 							color #aaa
@@ -186,13 +189,11 @@
 
 						> .username
 							text-align left
-							margin 0 0 0 8px
+							margin 0 .5em 0 0
 							color #ccc
 
 						> .info
-							position absolute
-							top 0
-							right 0
+							margin-left auto
 							text-align right
 							font-size 0.9em
 
