@@ -2,19 +2,16 @@
  * Code
  */
 
-const regexp = /```([\s\S]+?)```/;
-
-module.exports = {
-	test: x => new RegExp('^' + regexp.source).test(x),
-	parse: text => {
-		const code = text.match(new RegExp('^' + regexp.source))[0];
-		return {
-			type: 'code',
-			content: code,
-			code: code.substr(3, code.length - 6).trim(),
-			codeHtml: genHtml(code.substr(3, code.length - 6).trim())
-		};
-	}
+module.exports = text => {
+	const match = text.match(/^```([\s\S]+?)```/);
+	if (!match) return null;
+	const code = match[0];
+	return {
+		type: 'code',
+		content: code,
+		code: code.substr(3, code.length - 6).trim(),
+		codeHtml: genHtml(code.substr(3, code.length - 6).trim())
+	};
 };
 
 function escape(text) {

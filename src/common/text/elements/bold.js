@@ -2,16 +2,13 @@
  * Bold
  */
 
-const regexp = /\*\*(.+?)\*\*/;
-
-module.exports = {
-	test: x => new RegExp('^' + regexp.source).test(x),
-	parse: text => {
-		const bold = text.match(new RegExp('^' + regexp.source))[0];
-		return {
-			type: 'bold',
-			content: bold,
-			bold: bold.substr(2, bold.length - 4)
-		};
-	}
+module.exports = text => {
+	const match = text.match(/^\*\*(.+?)\*\*/);
+	if (!match) return null;
+	const bold = match[0];
+	return {
+		type: 'bold',
+		content: bold,
+		bold: bold.substr(2, bold.length - 4)
+	};
 };

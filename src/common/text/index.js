@@ -30,8 +30,8 @@ function analyze(source) {
 	// パース
 	while (source != '') {
 		const parsed = elements.some(el => {
-			if (el.test(source, i)) {
-				let tokens = el.parse(source);
+			let tokens = el(source, i);
+			if (tokens) {
 				if (!Array.isArray(tokens)) {
 					tokens = [tokens];
 				}
