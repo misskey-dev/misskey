@@ -17,6 +17,10 @@
 			background #fff
 
 			> article
+				padding 8px 16px 8px 16px
+				
+				@media (min-width 500px)
+					padding 8px 32px 8px 32px
 
 				&:after
 					content ""
@@ -45,31 +49,32 @@
 					width calc(100% - 60px)
 
 					> header
+						display flex
 						margin-bottom 4px
 						white-space nowrap
 
 						> .name
-							display inline
-							margin 0
+							display block
+							margin 0 .5em 0 0
 							padding 0
+							overflow hidden
 							color #607073
 							font-size 1em
 							font-weight 700
 							text-align left
 							text-decoration none
+							text-overflow ellipsis
 
 							&:hover
 								text-decoration underline
 
 						> .username
 							text-align left
-							margin 0 0 0 8px
+							margin 0 .5em 0 0
 							color #d1d8da
 
 						> .time
-							position absolute
-							top 0
-							right 0
+							margin-left auto
 							color #b2b8bb
 
 					> .body
