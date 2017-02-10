@@ -15,8 +15,8 @@
 		<div class="repost" if={ isRepost }>
 			<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>がRepost</p>
 		</div>
-		<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
-			<header><a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a><span class="username">@{ p.user.username }</span></header>
+		<article>
+			<header><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a><div><a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a><span class="username">@{ p.user.username }</span></div></header>
 			<div class="body">
 				<div class="text" ref="text"></div>
 				<div class="media" if={ p.media }>
@@ -148,49 +148,45 @@
 						> .main > footer > button
 							color #888
 
-					> .avatar-anchor
-						display block
-
-						> .avatar
-							display block
-							width 54px
-							height 54px
-							margin 0
-							border-radius 8px
-							vertical-align bottom
-
-							@media (min-width 500px)
-								width 60px
-								height 60px
-
 					> header
-						position absolute
-						top 18px
-						left 80px
-						width calc(100% - 80px)
+						display flex
+						line-height 1.1em
 
-						@media (min-width 500px)
-							top 28px
-							left 108px
-							width calc(100% - 108px)
-
-						> .name
-							display inline-block
-							margin 0
-							color #777
-							font-size 16px
-							font-weight bold
-							text-align left
-							text-decoration none
-
-							&:hover
-								text-decoration underline
-
-						> .username
+						> .avatar-anchor
 							display block
-							text-align left
-							margin 0
-							color #ccc
+							padding 0 .5em 0 0
+
+							> .avatar
+								display block
+								width 54px
+								height 54px
+								margin 0
+								border-radius 8px
+								vertical-align bottom
+
+								@media (min-width 500px)
+									width 60px
+									height 60px
+
+						> div
+
+							> .name
+								display inline-block
+								margin .4em 0
+								color #777
+								font-size 16px
+								font-weight bold
+								text-align left
+								text-decoration none
+
+								&:hover
+									text-decoration underline
+
+							> .username
+								display block
+								text-align left
+								margin 0
+								color #ccc
 
 					> .body
 						padding 8px 0
