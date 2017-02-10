@@ -27,7 +27,7 @@ module.exports = function(tokens, shouldBreak, shouldEscape) {
 			case 'link':
 				return '<mk-url href="' + escape(token.content) + '" target="_blank"></mk-url>';
 			case 'mention':
-				return '<a href="' + CONFIG.url + '/' + escape(token.username) + '" target="_blank" data-user-preview="' + token.content + '">' + token.content + '</a>';
+				return '<a href="' + CONFIG.url + '/' + escape(token.username) + '" target="_blank" data-user-preview="' + token.content + '" ' + (me && me.username == token.username ? 'data-is-me' : '') + '>' + token.content + '</a>';
 			case 'hashtag': // TODO
 				return '<a>' + escape(token.content) + '</a>';
 			case 'code':

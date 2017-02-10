@@ -219,6 +219,14 @@
 								background #f8f8f8
 								border-radius 2px
 
+							[data-is-me]:after
+								content "you"
+								padding 0 4px
+								margin-left 4px
+								font-size 80%
+								color $theme-color-foreground
+								background $theme-color
+
 						> .media
 							> img
 								display block
