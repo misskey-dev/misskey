@@ -150,7 +150,7 @@
 
 					> header
 						display flex
-						line-height 1.1em
+						line-height 1.1
 
 						> .avatar-anchor
 							display block
