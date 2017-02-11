@@ -43,7 +43,7 @@ const request = (endpoint, params, me) => new Promise((ok, ng) => {
 		req = req.attach(file[0], file[1]);
 	}
 
-	req.set('content-type', 'application/x-www-form-urlencoded').send(Object.assign(auth, params))
+	req.send(Object.assign(auth, params))
 		.end((err, res) => {
 			ok(res);
 		});
