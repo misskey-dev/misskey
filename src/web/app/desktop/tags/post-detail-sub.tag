@@ -89,7 +89,7 @@
 						display block
 						margin 0
 						padding 0
-						word-wrap break-word
+						overflow-wrap break-word
 						font-size 1em
 						color #717171
 

@@ -64,7 +64,7 @@
 						font-weight bold
 						color #555
 						text-overflow ellipsis
-						word-wrap break-word
+						overflow-wrap break-word
 
 					> .tags
 						display block

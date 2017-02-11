@@ -37,7 +37,7 @@ main {
 	padding: 32px;
 	width: 100%;
 	max-width: 700px;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 @media screen and (max-width: 700px) {
 	main {

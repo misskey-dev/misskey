@@ -7,7 +7,7 @@
 	<style type="stylus">
 		:scope
 			display block
-			word-wrap break-word
+			overflow-wrap break-word
 
 			> .body
 				> .reply

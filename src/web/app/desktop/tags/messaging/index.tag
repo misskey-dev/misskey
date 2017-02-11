@@ -239,7 +239,7 @@
 									margin 0 0 0 0
 									padding 0
 									overflow hidden
-									word-wrap break-word
+									overflow-wrap break-word
 									font-size 1.1em
 									color rgba(0, 0, 0, 0.8)
 
