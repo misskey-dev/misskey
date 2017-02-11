@@ -753,20 +753,22 @@ describe('API', () => {
 		}));
 
 		it('ファイルが存在しなかったら怒る', () => new Promise(async (done) => {
+			const me = await insertSakurako();
 			request('/drive/files/update', {
 				file_id: '000000000000000000000000',
 				name: 'いちごパスタ.png'
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
 		}));
 
 		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
 			request('/drive/files/update', {
 				file_id: 'kyoppie',
 				name: 'いちごパスタ.png'
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
