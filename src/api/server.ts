@@ -18,7 +18,9 @@ const app = express();
 app.disable('x-powered-by');
 app.set('etag', false);
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+	type: ['application/json', 'text/plain']
+}));
 app.use(cors({
 	origin: true
 }));
