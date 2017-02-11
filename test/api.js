@@ -733,6 +733,45 @@ describe('API', () => {
 			});
 		}));
 	});
+
+	describe('drive/files/update', () => {
+		it('ドライブのファイルを更新できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const file = await insertDriveFile({
+				user_id: me._id
+			});
+			const newName = 'いちごパスタ.png';
+			request('/drive/files/update', {
+				file_id: file._id.toString(),
+				name: newName
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('name').eql(newName);
+				done();
+			});
+		}));
+
+		it('ファイルが存在しなかったら怒る', () => new Promise(async (done) => {
+			request('/drive/files/update', {
+				file_id: '000000000000000000000000',
+				name: 'いちごパスタ.png'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+			request('/drive/files/update', {
+				file_id: 'kyoppie',
+				name: 'いちごパスタ.png'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
 });
 
 async function insertSakurako(opts) {
@@ -750,5 +789,11 @@ async function insertHimawari(opts) {
 		username: 'himawari',
 		username_lower: 'himawari',
 		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O' // ilovesakurako
+	}, opts));
+}
+
+async function insertDriveFile(opts) {
+	return await db.get('drive_files').insert(Object.assign({
+		name: 'strawberry-pasta.png'
 	}, opts));
 }
