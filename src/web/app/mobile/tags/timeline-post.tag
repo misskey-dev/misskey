@@ -226,6 +226,7 @@
 								font-size 80%
 								color $theme-color-foreground
 								background $theme-color
+								border-radius 4px
 
 						> .media
 							> img
