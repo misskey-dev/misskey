@@ -30,18 +30,6 @@ app.get('/', (req, res) => {
 });
 
 /**
- * Authetication
- */
-/*app.post('*', async (req, res, next) => {
-	try {
-		ctx = await authenticate(req);
-		next();
-	} catch (e) {
-		res.status(403).send('AUTHENTICATION_FAILED');
-	}
-});
-*/
-/**
  * Register endpoint handlers
  */
 endpoints.forEach(endpoint =>
