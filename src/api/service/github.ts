@@ -29,16 +29,16 @@ module.exports = async (app: express.Application) => {
 	});
 
 	handler.on('push', event => {
-		const ref = event.payload.ref;
+		const ref = event.ref;
 		if (ref != 'refs/heads/master') return;
-		const pusher = event.payload.pusher;
-		const compare = event.payload.compare;
+		const pusher = event.pusher;
+		const compare = event.compare;
 		post(`Pushed! (Pusher: ${pusher.name})\nCompare changes: ${compare}`);
 	});
 
 	handler.on('issues', event => {
-		const issue = event.payload.issue;
-		const action = event.payload.action;
+		const issue = event.issue;
+		const action = event.action;
 		let title: string;
 		switch (action) {
 			case 'opened': title = 'New Issue'; break;
@@ -50,9 +50,9 @@ module.exports = async (app: express.Application) => {
 	});
 
 	handler.on('issue_comment', event => {
-		const issue = event.payload.issue;
-		const comment = event.payload.comment;
-		const action = event.payload.action;
+		const issue = event.issue;
+		const comment = event.comment;
+		const action = event.action;
 		let text: string;
 		switch (action) {
 			case 'created': text = `Comment to「${issue.title}」:${comment.user.login}「${comment.body}」\n${comment.html_url}`; break;
@@ -62,18 +62,18 @@ module.exports = async (app: express.Application) => {
 	});
 
 	handler.on('started', event => {
-		const sender = event.payload.sender;
+		const sender = event.sender;
 		post(`⭐️Started by ${sender.login}`);
 	});
 
 	handler.on('fork', event => {
-		const repo = event.payload.forkee;
+		const repo = event.forkee;
 		post(`🍴Forked:\n${repo.html_url}`);
 	});
 
 	handler.on('pull_request', event => {
-		const pr = event.payload.pull_request;
-		const action = event.payload.action;
+		const pr = event.pull_request;
+		const action = event.action;
 		let text: string;
 		switch (action) {
 			case 'opened': text = `New Pull Request:「${pr.title}」\n${pr.html_url}`; break;
