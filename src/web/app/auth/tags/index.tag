@@ -3,7 +3,7 @@
 		<p class="fetching" if={ fetching }>読み込み中
 			<mk-ellipsis></mk-ellipsis>
 		</p>
-		<mk-form ref="form" if={ state == null && !fetching } session={ session }></mk-form>
+		<mk-form ref="form" if={ state == 'waiting' } session={ session }></mk-form>
 		<div class="denied" if={ state == 'denied' }>
 			<h1>アプリケーションの連携をキャンセルしました。</h1>
 			<p>このアプリがあなたのアカウントにアクセスすることはありません。</p>
@@ -113,6 +113,7 @@
 					.then ~>
 						@accepted!
 				else
+					@state = \waiting
 					@update!
 
 					@refs.form.on \denied ~>
