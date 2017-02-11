@@ -14,6 +14,7 @@ process.on('unhandledRejection', console.dir);
 require('babel-core/register');
 require('babel-polyfill');
 
+const fs = require('fs');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();
@@ -27,10 +28,22 @@ const request = (endpoint, params, me) => new Promise((ok, ng) => {
 	const auth = me ? {
 		i: me.token
 	} : {};
-	chai.request(server)
-		.post(endpoint)
-		.set('content-type', 'application/x-www-form-urlencoded')
-		.send(Object.assign(auth, params))
+
+	let file = null;
+
+	if (params._file) {
+		file = params._file;
+		delete params._file;
+	}
+
+	let req = chai.request(server)
+		.post(endpoint);
+
+	if (file) {
+		req = req.attach(file[0], file[1]);
+	}
+
+	req.set('content-type', 'application/x-www-form-urlencoded').send(Object.assign(auth, params))
 		.end((err, res) => {
 			ok(res);
 		});
@@ -702,6 +715,26 @@ describe('API', () => {
 			request('/following/delete', {
 				user_id: 'kyoppie'
 			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
+
+	describe('drive/files/create', () => {
+		it('ドライブのファイルを作成できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/drive/files/create', {
+				_file: ['file', fs.readFileSync(__dirname + '/resources/Lenna.png')]
+			}, me).then(res => {
+				res.should.have.status(204);
+				done();
+			});
+		}));
+
+		it('ファイル無しで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/drive/files/create', {}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
