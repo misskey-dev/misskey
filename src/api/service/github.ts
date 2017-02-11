@@ -1,5 +1,5 @@
+import * as EventEmitter from 'events';
 import * as express from 'express';
-const createHandler = require('github-webhook-handler');
 import User from '../models/user';
 import config from '../../conf';
 
@@ -17,12 +17,15 @@ module.exports = async (app: express.Application) => {
 
 	const post = text => require('../endpoints/posts/create')({ text }, bot);
 
-	const handler = createHandler({
-		path: '/hooks/github',
-		secret: config.github_bot.hook_secret
-	});
+	const handler = new EventEmitter();
 
-	app.post('/hooks/github', handler);
+	app.post('/hooks/github', (req, res, next) => {
+		if (req.headers['x-hub-signature'] == config.github_bot.hook_secret) {
+			handler.emit(req.headers['x-github-event'], req.body);
+		} else {
+			res.sendStatus(400);
+		}
+	});
 
 	handler.on('push', event => {
 		const ref = event.payload.ref;
