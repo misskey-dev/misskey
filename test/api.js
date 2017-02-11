@@ -29,21 +29,9 @@ const request = (endpoint, params, me) => new Promise((ok, ng) => {
 		i: me.token
 	} : {};
 
-	let file = null;
-
-	if (params._file) {
-		file = params._file;
-		delete params._file;
-	}
-
-	let req = chai.request(server)
-		.post(endpoint);
-
-	if (file) {
-		req = req.attach(file[0], file[1]);
-	}
-
-	req.send(Object.assign(auth, params))
+	chai.request(server)
+		.post(endpoint)
+		.send(Object.assign(auth, params))
 		.end((err, res) => {
 			ok(res);
 		});
@@ -724,12 +712,17 @@ describe('API', () => {
 	describe('drive/files/create', () => {
 		it('ドライブのファイルを作成できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			request('/drive/files/create', {
-				_file: ['file', fs.readFileSync(__dirname + '/resources/Lenna.png')]
-			}, me).then(res => {
-				res.should.have.status(204);
-				done();
-			});
+			chai.request(server)
+				.post('/drive/files/create')
+				.field('i', me.token)
+				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png')
+				.end((err, res) => {
+					if (err) console.error(err);
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.should.have.property('name').eql('Lenna.png');
+					done();
+				});
 		}));
 
 		it('ファイル無しで怒られる', () => new Promise(async (done) => {
