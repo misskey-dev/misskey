@@ -8,7 +8,7 @@ net = riot.observable!
 riot.mixin \net do
 	net: net
 
-module.exports = (i, endpoint, data) ->
+module.exports = (i, endpoint, data = {}) ->
 	if ++pending == 1
 		spinner := document.create-element \div
 			..set-attribute \id \wait
@@ -16,21 +16,12 @@ module.exports = (i, endpoint, data) ->
 	
 	if i? and typeof i == \object then i = i.token
 
-	body = []
-
 	# append user token when signed in
-	if i? then body.push "i=#i"
-
-	for k, v of data
-		if v != undefined
-			v = encodeURIComponent v
-			body.push "#k=#v"
+	if i? then data.i = i
 
 	opts =
 		method: \POST
-		headers:
-			'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-		body: body.join \&
+		body: JSON.stringify data
 
 	if endpoint == \signin
 		opts.credentials = \include

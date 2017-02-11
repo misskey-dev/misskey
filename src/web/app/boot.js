@@ -111,10 +111,9 @@ function fetchme(token, cb) {
 	// Fetch user
 	fetch(CONFIG.api.url + "/i", {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-		},
-		body: "i=" + token
+		body: JSON.stringify({
+			i: token
+		})
 	}).then(res => {
 		// When failed to authenticate user
 		if (res.status !== 200) {
