@@ -1,3 +1,7 @@
+/**
+ * Text Tests!
+ */
+
 const assert = require('assert');
 
 const analyze = require('../src/common/text');
