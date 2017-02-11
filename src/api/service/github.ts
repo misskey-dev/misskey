@@ -1,5 +1,6 @@
 import * as EventEmitter from 'events';
 import * as express from 'express';
+const crypto = require('crypto');
 import User from '../models/user';
 import config from '../../conf';
 
@@ -20,7 +21,7 @@ module.exports = async (app: express.Application) => {
 	const handler = new EventEmitter();
 
 	app.post('/hooks/github', (req, res, next) => {
-		if (req.headers['x-hub-signature'] == config.github_bot.hook_secret) {
+		if ((new Buffer(req.headers['x-hub-signature'])).equals(new Buffer('sha1=' + crypto.createHmac('sha1', config.github_bot.hook_secret).update(JSON.stringify(req.body)).digest('hex')))) {
 			handler.emit(req.headers['x-github-event'], req.body);
 		} else {
 			res.sendStatus(400);
