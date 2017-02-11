@@ -125,7 +125,7 @@
     "prominence": "0.2.0",
     "promiseify": "0.2.0",
     "pug": "2.0.0-beta9",
-    "ratelimiter": "2.1.3",
+    "ratelimiter": "2.2.0",
     "recaptcha-promise": "0.1.2",
     "reconnecting-websocket": "3.0.3",
     "redis": "2.6.5",
