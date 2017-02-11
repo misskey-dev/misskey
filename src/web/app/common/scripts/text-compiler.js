@@ -31,9 +31,9 @@ module.exports = function(tokens, shouldBreak, shouldEscape) {
 			case 'hashtag': // TODO
 				return '<a>' + escape(token.content) + '</a>';
 			case 'code':
-				return '<pre><code>' + token.codeHtml + '</code></pre>';
+				return '<pre><code>' + token.html + '</code></pre>';
 			case 'inline-code':
-				return '<code>' + escape(token.code) + '</code>';
+				return '<code>' + token.html + '</code>';
 		}
 	}).join('');
 
