@@ -26,6 +26,11 @@ module.exports = (params, user) =>
 		return rej('file_id is required');
 	}
 
+	// Validate id
+	if (!mongo.ObjectID.isValid(fileId)) {
+		return rej('incorrect file_id');
+	}
+
 	const file = await DriveFile
 		.findOne({
 			_id: new mongo.ObjectID(fileId),
