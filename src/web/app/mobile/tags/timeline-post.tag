@@ -212,12 +212,17 @@
 								font-style oblique
 								color #a0bf46
 
-							pre
-								padding 16px
+							code
+								padding 4px 8px
+								margin 0 0.5em
 								font-size 80%
 								color #525252
 								background #f8f8f8
 								border-radius 2px
+
+							pre > code
+								padding 16px
+								margin 0
 
 							[data-is-me]:after
 								content "you"

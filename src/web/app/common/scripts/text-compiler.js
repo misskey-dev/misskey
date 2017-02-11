@@ -32,6 +32,8 @@ module.exports = function(tokens, shouldBreak, shouldEscape) {
 				return '<a>' + escape(token.content) + '</a>';
 			case 'code':
 				return '<pre><code>' + token.codeHtml + '</code></pre>';
+			case 'inline-code':
+				return '<code>' + escape(token.code) + '</code>';
 		}
 	}).join('');
 

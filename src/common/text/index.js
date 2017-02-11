@@ -7,7 +7,8 @@ const elements = [
 	require('./elements/url'),
 	require('./elements/mention'),
 	require('./elements/hashtag'),
-	require('./elements/code')
+	require('./elements/code'),
+	require('./elements/inline-code')
 ];
 
 function analyze(source) {
