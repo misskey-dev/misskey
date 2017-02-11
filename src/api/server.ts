@@ -17,6 +17,7 @@ const app = express();
 
 app.disable('x-powered-by');
 app.set('etag', false);
+require('./service/github')(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({
 	type: ['application/json', 'text/plain']
@@ -61,7 +62,6 @@ app.use((req, res, next) => {
 	next();
 });
 
-require('./service/github')(app);
 require('./service/twitter')(app);
 
 module.exports = app;
