@@ -53,8 +53,6 @@ module.exports = (params, user, app) =>
 	let media = params.media_ids;
 	let files = [];
 	if (media !== undefined && media !== null) {
-		media = media.split(',');
-
 		if (media.length > maxMediaCount) {
 			return rej('too many media');
 		}

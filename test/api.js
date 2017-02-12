@@ -220,6 +220,19 @@ describe('API', () => {
 			});
 		}));
 
+		it('ファイルを添付できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const file = await insertDriveFile();
+			request('/posts/create', {
+				media_ids: [file._id.toString()]
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('media_ids').eql([file._id.toString()]);
+				done();
+			});
+		}));
+
 		it('返信できる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
