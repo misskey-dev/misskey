@@ -54,7 +54,6 @@ require('./following-setuper.tag');
 require('./ellipsis-icon.tag');
 require('./ui.tag');
 require('./home.tag');
-require('./detect-slow-internet-connection-notice.tag');
 require('./user-header.tag');
 require('./user-profile.tag');
 require('./user-timeline.tag');

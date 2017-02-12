@@ -7,7 +7,6 @@
 		</main>
 		<div class="right" ref="right"></div>
 	</div>
-	<mk-detect-slow-internet-connection-notice></mk-detect-slow-internet-connection-notice>
 	<style type="stylus">
 		:scope
 			display block

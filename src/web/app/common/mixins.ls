@@ -6,7 +6,7 @@ module.exports = (me) ~>
 	(require './scripts/i.ls') me
 
 	riot.mixin \api do
-		api: (require './scripts/api.ls').bind null i
+		api: (require './scripts/api').bind null i
 
 	riot.mixin \cropper do
 		Cropper: require \cropperjs

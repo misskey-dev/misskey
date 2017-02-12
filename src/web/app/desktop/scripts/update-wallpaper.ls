@@ -3,7 +3,7 @@
 
 riot = require 'riot'
 dialog = require './dialog.ls'
-api = require '../../common/scripts/api.ls'
+api = require '../../common/scripts/api'
 
 module.exports = (I, cb, file = null) ~>
 
