@@ -759,7 +759,7 @@ describe('API', () => {
 	});
 
 	describe('drive/files/create', () => {
-		it('ドライブのファイルを作成できる', () => new Promise(async (done) => {
+		it('ファイルを作成できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			chai.request(server)
 				.post('/drive/files/create')
@@ -784,7 +784,7 @@ describe('API', () => {
 	});
 
 	describe('drive/files/update', () => {
-		it('ファイルの名前を更新できる', () => new Promise(async (done) => {
+		it('名前を更新できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -816,7 +816,7 @@ describe('API', () => {
 			});
 		}));
 
-		it('ファイルのフォルダを更新できる', () => new Promise(async (done) => {
+		it('親フォルダを更新できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -831,6 +831,23 @@ describe('API', () => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
 				res.body.should.have.property('folder_id').eql(folder._id.toString());
+				done();
+			});
+		}));
+
+		it('親フォルダを無しにできる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const file = await insertDriveFile({
+				user_id: me._id,
+				folder_id: '000000000000000000000000'
+			});
+			request('/drive/files/update', {
+				file_id: file._id.toString(),
+				folder_id: null
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('folder_id').eql(null);
 				done();
 			});
 		}));
@@ -905,7 +922,7 @@ describe('API', () => {
 	});
 
 	describe('drive/folders/create', () => {
-		it('ドライブのフォルダを作成できる', () => new Promise(async (done) => {
+		it('フォルダを作成できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			request('/drive/folders/create', {
 				name: 'my folder'
@@ -919,9 +936,11 @@ describe('API', () => {
 	});
 
 	describe('drive/folders/update', () => {
-		it('ドライブのフォルダの名前を更新できる', () => new Promise(async (done) => {
+		it('名前を更新できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			const folder = await insertDriveFolder();
+			const folder = await insertDriveFolder({
+				user_id: me._id
+			});
 			request('/drive/folders/update', {
 				folder_id: folder._id.toString(),
 				name: 'new name'
@@ -933,10 +952,29 @@ describe('API', () => {
 			});
 		}));
 
-		it('ドライブのフォルダの親フォルダを更新できる', () => new Promise(async (done) => {
+		it('他人のフォルダを更新できない', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			const folder = await insertDriveFolder();
-			const parentFolder = await insertDriveFolder();
+			const hima = await insertHimawari();
+			const folder = await insertDriveFolder({
+				user_id: hima._id
+			});
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				name: 'new name'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('親フォルダを更新できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folder = await insertDriveFolder({
+				user_id: me._id
+			});
+			const parentFolder = await insertDriveFolder({
+				user_id: me._id
+			});
 			request('/drive/folders/update', {
 				folder_id: folder._id.toString(),
 				parent_id: parentFolder._id.toString()
@@ -948,7 +986,42 @@ describe('API', () => {
 			});
 		}));
 
-		it('ドライブのフォルダが循環するような構造にできない', () => new Promise(async (done) => {
+		it('親フォルダを無しに更新できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folder = await insertDriveFolder({
+				user_id: me._id,
+				parent_id: '000000000000000000000000'
+			});
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				parent_id: null
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('parent_id').eql(null);
+				done();
+			});
+		}));
+
+		it('他人のフォルダを親フォルダに設定できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const hima = await insertHimawari();
+			const folder = await insertDriveFolder({
+				user_id: me._id
+			});
+			const parentFolder = await insertDriveFolder({
+				user_id: hima._id
+			});
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				parent_id: parentFolder._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('フォルダが循環するような構造にできない', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder();
 			const parentFolder = await insertDriveFolder({
@@ -963,7 +1036,7 @@ describe('API', () => {
 			});
 		}));
 
-		it('ドライブのフォルダが循環するような構造にできない(再帰的)', () => new Promise(async (done) => {
+		it('フォルダが循環するような構造にできない(再帰的)', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const folderA = await insertDriveFolder();
 			const folderB = await insertDriveFolder({
@@ -1084,14 +1157,15 @@ async function insertDriveFile(opts) {
 
 async function insertDriveFolder(opts) {
 	return await db.get('drive_folders').insert(Object.assign({
-		name: 'my folder'
-	}), opts);
+		name: 'my folder',
+		parent_id: null
+	}, opts));
 }
 
 async function insertApp(opts) {
 	return await db.get('apps').insert(Object.assign({
 		name: 'my app',
 		secret: 'mysecret'
-	}), opts);
+	}, opts));
 }
 
