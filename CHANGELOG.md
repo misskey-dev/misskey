@@ -6,6 +6,9 @@ configのファイル名: config.yml --> default.yml
 First version
 
 # API
+## 3
+application/x-www-form-urlencoded is now deperecated
+
 ## 2
 * パラメータ: _userkey --> i
 * トークンは、アクセストークン + アプリのシークレットキーをsha512したものに
