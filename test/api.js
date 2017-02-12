@@ -816,6 +816,114 @@ describe('API', () => {
 			});
 		}));
 	});
+
+	describe('drive/folders/update', () => {
+		it('ドライブのフォルダの名前を更新できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folder = await insertDriveFolder();
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				name: 'new name'
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('name').eql('new name');
+				done();
+			});
+		}));
+
+		it('ドライブのフォルダの親フォルダを更新できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folder = await insertDriveFolder();
+			const parentFolder = await insertDriveFolder();
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				parent_id: parentFolder._id.toString()
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('parent_id').eql(parentFolder._id.toString());
+				done();
+			});
+		}));
+
+		it('ドライブのフォルダが循環するような構造にできない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folder = await insertDriveFolder();
+			const parentFolder = await insertDriveFolder({
+				parent_id: folder._id
+			});
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				parent_id: parentFolder._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('ドライブのフォルダが循環するような構造にできない(再帰的)', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folderA = await insertDriveFolder();
+			const folderB = await insertDriveFolder({
+				parent_id: folderA._id
+			});
+			const folderC = await insertDriveFolder({
+				parent_id: folderB._id
+			});
+			request('/drive/folders/update', {
+				folder_id: folderA._id.toString(),
+				parent_id: folderC._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しない親フォルダを設定できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folder = await insertDriveFolder();
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				parent_id: '000000000000000000000000'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('不正な親フォルダIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const folder = await insertDriveFolder();
+			request('/drive/folders/update', {
+				folder_id: folder._id.toString(),
+				parent_id: 'kyoppie'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しないフォルダを更新できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/drive/folders/update', {
+				folder_id: '000000000000000000000000'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('不正なフォルダIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/drive/folders/update', {
+				folder_id: 'kyoppie'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
 });
 
 async function insertSakurako(opts) {
@@ -840,4 +948,10 @@ async function insertDriveFile(opts) {
 	return await db.get('drive_files').insert(Object.assign({
 		name: 'strawberry-pasta.png'
 	}, opts));
+}
+
+async function insertDriveFolder(opts) {
+	return await db.get('drive_folders').insert(Object.assign({
+		name: 'my folder'
+	}), opts);
 }
