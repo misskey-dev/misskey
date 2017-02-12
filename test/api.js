@@ -235,6 +235,40 @@ describe('API', () => {
 			});
 		}));
 
+		it('他人のファイルは添付できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const hima = await insertHimawari();
+			const file = await insertDriveFile({
+				user_id: hima._id
+			});
+			request('/posts/create', {
+				media_ids: [file._id.toString()]
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('存在しないファイルは添付できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/create', {
+				media_ids: ['000000000000000000000000']
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('不正なファイルIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/create', {
+				media_ids: ['kyoppie']
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
 		it('返信できる', () => new Promise(async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
