@@ -752,6 +752,34 @@ describe('API', () => {
 			});
 		}));
 
+		it('存在しないフォルダで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const file = await insertDriveFile({
+				user_id: me._id
+			});
+			request('/drive/files/update', {
+				file_id: file._id.toString(),
+				folder_id: '000000000000000000000000'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('不正なフォルダIDで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const file = await insertDriveFile({
+				user_id: me._id
+			});
+			request('/drive/files/update', {
+				file_id: file._id.toString(),
+				folder_id: 'kyoppie'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
 		it('ファイルが存在しなかったら怒る', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			request('/drive/files/update', {
@@ -770,6 +798,20 @@ describe('API', () => {
 				name: 'いちごパスタ.png'
 			}, me).then(res => {
 				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
+
+	describe('drive/folders/create', () => {
+		it('ドライブのフォルダを作成できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/drive/folders/create', {
+				name: 'my folder'
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('name').eql('my folder');
 				done();
 			});
 		}));
