@@ -25,6 +25,11 @@ module.exports = (params, user) =>
 		return rej('folder_id is required');
 	}
 
+	// Validate id
+	if (!mongo.ObjectID.isValid(folderId)) {
+		return rej('incorrect folder_id');
+	}
+
 	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
@@ -49,17 +54,19 @@ module.exports = (params, user) =>
 
 	// Get 'parent_id' parameter
 	let parentId = params.parent_id;
-	if (parentId !== undefined && parentId !== 'null') {
-		parentId = new mongo.ObjectID(parentId);
-	}
-
-	let parent = null;
-	if (parentId !== undefined && parentId !== null) {
-		if (parentId === 'null') {
+	if (parentId !== undefined) {
+		if (parentId === null) {
 			folder.parent_id = null;
 		} else {
+			// Validate id
+			if (!mongo.ObjectID.isValid(parentId)) {
+				return rej('incorrect parent_id');
+			}
+
+			parentId = new mongo.ObjectID(parentId);
+
 			// Get parent folder
-			parent = await DriveFolder
+			const parent = await DriveFolder
 				.findOne({
 					_id: parentId,
 					user_id: user._id

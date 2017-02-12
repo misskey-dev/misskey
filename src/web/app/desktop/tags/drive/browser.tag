@@ -407,7 +407,7 @@
 				@remove-file file
 				@api \drive/files/update do
 					file_id: file
-					folder_id: if @folder? then @folder.id else \null
+					folder_id: if @folder? then @folder.id else null
 				.then ~>
 					# something
 				.catch (err, text-status) ~>
@@ -424,7 +424,7 @@
 				@remove-folder folder
 				@api \drive/folders/update do
 					folder_id: folder
-					parent_id: if @folder? then @folder.id else \null
+					parent_id: if @folder? then @folder.id else null
 				.then ~>
 					# something
 				.catch (err) ~>

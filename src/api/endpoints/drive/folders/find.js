@@ -25,7 +25,7 @@ module.exports = (params, user) =>
 
 	// Get 'parent_id' parameter
 	let parentId = params.parent_id;
-	if (parentId === undefined || parentId === null || parentId === 'null') {
+	if (parentId === undefined || parentId === null) {
 		parentId = null;
 	} else {
 		parentId = new mongo.ObjectID(parentId);

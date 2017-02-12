@@ -58,16 +58,18 @@ module.exports = (params, user) =>
 
 	// Get 'folder_id' parameter
 	let folderId = params.folder_id;
-	if (folderId !== undefined && folderId !== 'null') {
-		folderId = new mongo.ObjectID(folderId);
-	}
-
-	let folder = null;
-	if (folderId !== undefined && folderId !== null) {
-		if (folderId === 'null') {
+	if (folderId !== undefined) {
+		if (folderId === null) {
 			file.folder_id = null;
 		} else {
-			folder = await DriveFolder
+			// Validate id
+			if (!mongo.ObjectID.isValid(folderId)) {
+				return rej('incorrect folder_id');
+			}
+
+			folderId = new mongo.ObjectID(folderId);
+
+			const folder = await DriveFolder
 				.findOne({
 					_id: folderId,
 					user_id: user._id

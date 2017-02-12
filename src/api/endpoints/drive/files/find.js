@@ -25,7 +25,7 @@ module.exports = (params, user) =>
 
 	// Get 'folder_id' parameter
 	let folder = params.folder_id;
-	if (folder === undefined || folder === null || folder === 'null') {
+	if (folder === undefined || folder === null) {
 		folder = null;
 	} else {
 		folder = new mongo.ObjectID(folder);
