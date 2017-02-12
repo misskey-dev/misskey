@@ -924,6 +924,37 @@ describe('API', () => {
 			});
 		}));
 	});
+
+	describe('auth/session/generate', () => {
+		it('認証セッションを作成できる', () => new Promise(async (done) => {
+			const app = await insertApp();
+			request('/auth/session/generate', {
+				app_secret: app.secret
+			}).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('token');
+				res.body.should.have.property('url');
+				done();
+			});
+		}));
+
+		it('app_secret 無しで怒られる', () => new Promise(async (done) => {
+			request('/auth/session/generate', {}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('誤った app secret で怒られる', () => new Promise(async (done) => {
+			request('/auth/session/generate', {
+				app_secret: 'kyoppie'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+	});
 });
 
 async function insertSakurako(opts) {
@@ -955,3 +986,11 @@ async function insertDriveFolder(opts) {
 		name: 'my folder'
 	}), opts);
 }
+
+async function insertApp(opts) {
+	return await db.get('apps').insert(Object.assign({
+		name: 'my app',
+		secret: 'mysecret'
+	}), opts);
+}
+
