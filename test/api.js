@@ -222,7 +222,9 @@ describe('API', () => {
 
 		it('ファイルを添付できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			const file = await insertDriveFile();
+			const file = await insertDriveFile({
+				user_id: me._id
+			});
 			request('/posts/create', {
 				media_ids: [file._id.toString()]
 			}, me).then(res => {
