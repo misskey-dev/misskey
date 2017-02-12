@@ -74,7 +74,7 @@ module.exports = (params, user) =>
 				});
 
 			if (folder === null) {
-				return reject('folder-not-found');
+				return rej('folder-not-found');
 			}
 
 			file.folder_id = folder._id;
