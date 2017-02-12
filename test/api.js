@@ -784,7 +784,7 @@ describe('API', () => {
 	});
 
 	describe('drive/files/update', () => {
-		it('ドライブのファイルを更新できる', () => new Promise(async (done) => {
+		it('ファイルの名前を更新できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -797,6 +797,58 @@ describe('API', () => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
 				res.body.should.have.property('name').eql(newName);
+				done();
+			});
+		}));
+
+		it('他人のファイルは更新できない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const hima = await insertHimawari();
+			const file = await insertDriveFile({
+				user_id: hima._id
+			});
+			request('/drive/files/update', {
+				file_id: file._id.toString(),
+				name: 'いちごパスタ.png'
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('ファイルのフォルダを更新できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const file = await insertDriveFile({
+				user_id: me._id
+			});
+			const folder = await insertDriveFolder({
+				user_id: me._id
+			});
+			request('/drive/files/update', {
+				file_id: file._id.toString(),
+				folder_id: folder._id.toString()
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('folder_id').eql(folder._id.toString());
+				done();
+			});
+		}));
+
+		it('他人のフォルダには入れられない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			const hima = await insertHimawari();
+			const file = await insertDriveFile({
+				user_id: me._id
+			});
+			const folder = await insertDriveFolder({
+				user_id: hima._id
+			});
+			request('/drive/files/update', {
+				file_id: file._id.toString(),
+				folder_id: folder._id.toString()
+			}, me).then(res => {
+				res.should.have.status(400);
 				done();
 			});
 		}));
