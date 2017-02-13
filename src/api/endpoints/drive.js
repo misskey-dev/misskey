@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import DriveFile from './models/drive-file';
+import DriveFile from '../models/drive-file';
 
 /**
  * Get drive information
@@ -16,11 +16,11 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Fetch all files to calculate drive usage
-		const files = await DriveFile
-			.find({ user_id: user._id }, {
-				datasize: true,
-				_id: false
-			});
+	const files = await DriveFile
+		.find({ user_id: user._id }, {
+			datasize: true,
+			_id: false
+		});
 
 	// Calculate drive usage (in byte)
 	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
