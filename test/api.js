@@ -766,14 +766,22 @@ describe('API', () => {
 	describe('drive', () => {
 		it('ドライブ情報を取得できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			const file = await insertDriveFile({
+			await insertDriveFile({
+				user_id: me._id,
+				datasize: 256
+			});
+			await insertDriveFile({
+				user_id: me._id,
+				datasize: 512
+			});
+			await insertDriveFile({
 				user_id: me._id,
 				datasize: 1024
 			});
 			request('/drive', {}, me).then(res => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
-				res.body.should.have.property('usage').eql(1024);
+				res.body.should.have.property('usage').eql(1792);
 				done();
 			});
 		}));
