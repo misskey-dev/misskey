@@ -1,12 +1,24 @@
 <mk-drive-browser-window>
-	<mk-window ref="window" is-modal={ false } width={ '800px' } height={ '500px' }><yield to="header"><i class="fa fa-cloud"></i>ドライブ</yield>
-<yield to="content">
-		<mk-drive-browser multiple={ true } folder={ parent.folder }></mk-drive-browser></yield>
+	<mk-window ref="window" is-modal={ false } width={ '800px' } height={ '500px' }>
+		<yield to="header">
+			<p class="info" if={ parent.usage }><b>{ parent.usage.toFixed(1) }%</b>使用中</p>
+			<i class="fa fa-cloud"></i>ドライブ
+		</yield>
+		<yield to="content">
+			<mk-drive-browser multiple={ true } folder={ parent.folder }></mk-drive-browser>
+		</yield>
 	</mk-window>
 	<style type="stylus">
 		:scope
 			> mk-window
 				[data-yield='header']
+					> .info
+						position absolute
+						top 0
+						left 16px
+						margin 0
+						font-size 80%
+
 					> i
 						margin-right 4px
 
@@ -16,11 +28,17 @@
 
 	</style>
 	<script>
+		@mixin \api
+
 		@folder = if @opts.folder? then @opts.folder else null
 
 		@on \mount ~>
 			@refs.window.on \closed ~>
 				@unmount!
+
+			@api \drive .then (info) ~>
+				@update do
+					usage: info.usage / info.capacity * 100
 
 		@close = ~>
 			@refs.window.close!
