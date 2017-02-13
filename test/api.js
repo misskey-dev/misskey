@@ -41,7 +41,12 @@ describe('API', () => {
 	// Reset database each test
 	beforeEach(() => Promise.all([
 		db.get('users').drop(),
-		db.get('posts').drop()
+		db.get('posts').drop(),
+		db.get('drive_files').drop(),
+		db.get('drive_folders').drop(),
+		db.get('apps').drop(),
+		db.get('access_tokens').drop(),
+		db.get('auth_sessions').drop()
 	]));
 
 	afterEach(cb => setTimeout(cb, 100));
