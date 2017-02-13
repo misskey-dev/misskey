@@ -62,19 +62,7 @@ app.use(subdomain({
 /**
  * Routing
  */
-
-app.use('/@/about/resources', express.static(`${__dirname}/about/resources`, {
-	maxAge: ms('7 days')
-}));
-
-app.get('/@/about/', (req, res) => {
-	res.sendFile(`${__dirname}/about/pages/index.html`);
-});
-
-app.get('/@/about/:page(*)', (req, res) => {
-	res.sendFile(`${__dirname}/about/pages/${req.params.page}.html`);
-});
-
+app.use(require('./about')); // about docs
 app.get('/@/auth/*', serveApp('auth')); // authorize form
 app.get('/@/dev/*',  serveApp('dev')); // developer center
 app.get('*',         serveApp('client')); // client
