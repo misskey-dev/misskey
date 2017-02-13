@@ -79,17 +79,20 @@ export default (
 		}
 	}
 
-	// Fetch all files to calculate drive usage
-	const files = await DriveFile
-		.find({ user_id: user._id }, {
-			fields: {
-				datasize: true,
-				_id: false
-			}
-		});
-
-	// Calculate drive usage (in byte)
-	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
+	// Calculate drive usage
+	const usage = ((await DriveFile
+		.aggregate([
+			{ $match: { user_id: user._id } },
+			{ $project: {
+				datasize: true
+			}},
+			{ $group: {
+				_id: null,
+				usage: { $sum: '$datasize' }
+			}}
+		]))[0] || {
+			usage: 0
+		}).usage;
 
 	log(`drive usage is ${usage}`);
 
