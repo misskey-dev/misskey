@@ -1,6 +1,6 @@
 # Philosophy
-Keep It Simple, Stupid.
+> Keep It Simple, Stupid.
 
 # Tag
 [Riot.js](http://riotjs.com)を採用していて、
-HTML + Stylus + LiveScript で書きます。
+HTML + Stylus + JavaScript で書きます。
