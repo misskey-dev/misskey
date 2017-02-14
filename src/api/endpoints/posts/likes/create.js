@@ -8,9 +8,6 @@ import Like from '../../../models/like';
 import Post from '../../../models/post';
 import User from '../../../models/user';
 import notify from '../../../common/notify';
-import event from '../../../event';
-import serializeUser from '../../../serializers/user';
-import serializePost from '../../../serializers/post';
 
 /**
  * Like a post
