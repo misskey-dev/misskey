@@ -18,8 +18,8 @@
 				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
 		</div>
+		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }></mk-poll-editor>
 		<mk-uploader ref="uploader"></mk-uploader>
-		<div ref="pollZone"></div>
 		<button ref="upload" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 		<button ref="drive" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
 		<button class="cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
@@ -188,7 +188,7 @@
 		@wait = false
 		@uploadings = []
 		@files = []
-		@poll = null
+		@poll = false
 
 		@on \mount ~>
 			@refs.uploader.on \uploaded (file) ~>
@@ -246,11 +246,11 @@
 			@update!
 
 		@add-poll = ~>
-			if @poll?
-				@poll.unmount!
-				@poll = null
-				return
-			@poll = riot.mount(@refs.pollZone.append-child document.create-element \mk-poll-editor).0
+			@poll = true
+
+		@on-poll-destroyed = ~>
+			@update do
+				poll: false
 
 		@post = ~>
 			@wait = true
@@ -263,7 +263,7 @@
 				text: @refs.text.value
 				media_ids: files
 				reply_to_id: if @opts.reply? then @opts.reply.id else undefined
-				poll: if @poll? then @poll.get! else undefined
+				poll: if @poll then @refs.poll.get! else undefined
 			.then (data) ~>
 				@trigger \post
 				@unmount!

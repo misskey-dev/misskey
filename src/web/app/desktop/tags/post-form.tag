@@ -1,16 +1,18 @@
 <mk-post-form ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
-	<textarea class={ withfiles: files.length != 0 } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
-	<div class="attaches" if={ files.length != 0 }>
-		<ul class="files" ref="attaches">
-			<li class="file" each={ files }>
-				<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div><img class="remove" onclick={ _remove } src="/_/resources/desktop/remove.png" title="添付取り消し" alt=""/>
-			</li>
-			<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
-		</ul>
-		<p class="remain">残り{ 4 - files.length }</p>
+	<div class="content">
+		<textarea class={ with: (files.length != 0 || poll) } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
+		<div class="medias { with: poll }" if={ files.length != 0 }>
+			<ul>
+				<li each={ files }>
+					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div><img class="remove" onclick={ _remove } src="/_/resources/desktop/remove.png" title="添付取り消し" alt=""/>
+				</li>
+				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
+			</ul>
+			<p class="remain">残り{ 4 - files.length }</p>
+		</div>
+		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }></mk-poll-editor>
 	</div>
 	<mk-uploader ref="uploader"></mk-uploader>
-	<div ref="pollZone"></div>
 	<button ref="upload" title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 	<button ref="drive" title="ドライブからファイルを添付" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
 	<button class="cat" title="Insert The Cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
@@ -32,82 +34,140 @@
 				display block
 				clear both
 
-			> .attaches
-				margin 0
-				padding 0
-				background lighten($theme-color, 98%)
-				border solid 1px rgba($theme-color, 0.1)
-				border-top none
-				border-radius 0 0 4px 4px
-				transition border-color .3s ease
+			> .content
 
-				> .remain
+				[ref='text']
 					display block
-					position absolute
-					top 8px
-					right 8px
+					padding 12px
+					margin 0
+					width 100%
+					max-width 100%
+					min-width 100%
+					min-height calc(16px + 12px + 12px)
+					font-size 16px
+					color #333
+					background #fff
+					outline none
+					border solid 1px rgba($theme-color, 0.1)
+					border-radius 4px
+					transition border-color .3s ease
+
+					&:hover
+						border-color rgba($theme-color, 0.2)
+						transition border-color .1s ease
+
+						& + *
+						& + * + *
+							border-color rgba($theme-color, 0.2)
+							transition border-color .1s ease
+
+					&:focus
+						color $theme-color
+						border-color rgba($theme-color, 0.5)
+						transition border-color 0s ease
+
+						& + *
+						& + * + *
+							border-color rgba($theme-color, 0.5)
+							transition border-color 0s ease
+
+					&:disabled
+						opacity 0.5
+
+					&::-webkit-input-placeholder
+						color rgba($theme-color, 0.3)
+
+					&.with
+						border-bottom solid 1px rgba($theme-color, 0.1) !important
+						border-radius 4px 4px 0 0
+
+				> .medias
 					margin 0
 					padding 0
-					color rgba($theme-color, 0.4)
+					background lighten($theme-color, 98%)
+					border solid 1px rgba($theme-color, 0.1)
+					border-top none
+					border-radius 0 0 4px 4px
+					transition border-color .3s ease
 
-				> .files
-					display block
-					margin 0
-					padding 4px
-					list-style none
+					&.with
+						border-bottom solid 1px rgba($theme-color, 0.1) !important
+						border-radius 4px 4px 0 0
 
-					&:after
-						content ""
+					> .remain
 						display block
-						clear both
-
-					> .file
-						display block
-						float left
-						margin 4px
+						position absolute
+						top 8px
+						right 8px
+						margin 0
 						padding 0
-						cursor move
+						color rgba($theme-color, 0.4)
 
-						&:hover > .remove
+					> ul
+						display block
+						margin 0
+						padding 4px
+						list-style none
+
+						&:after
+							content ""
 							display block
+							clear both
 
-						> .img
-							width 64px
-							height 64px
-							background-size cover
-							background-position center center
+						> li
+							display block
+							float left
+							margin 4px
+							padding 0
+							cursor move
 
-						> .remove
-							display none
-							position absolute
-							top -6px
-							right -6px
-							width 16px
-							height 16px
+							&:hover > .remove
+								display block
+
+							> .img
+								width 64px
+								height 64px
+								background-size cover
+								background-position center center
+
+							> .remove
+								display none
+								position absolute
+								top -6px
+								right -6px
+								width 16px
+								height 16px
+								cursor pointer
+
+						> .add
+							display block
+							float left
+							margin 4px
+							padding 0
+							border dashed 2px rgba($theme-color, 0.2)
 							cursor pointer
 
-					> .add
-						display block
-						float left
-						margin 4px
-						padding 0
-						border dashed 2px rgba($theme-color, 0.2)
-						cursor pointer
+							&:hover
+								border-color rgba($theme-color, 0.3)
 
-						&:hover
-							border-color rgba($theme-color, 0.3)
+								> i
+									color rgba($theme-color, 0.4)
 
 							> i
-								color rgba($theme-color, 0.4)
+								display block
+								width 60px
+								height 60px
+								line-height 60px
+								text-align center
+								font-size 1.2em
+								color rgba($theme-color, 0.2)
 
-						> i
-							display block
-							width 60px
-							height 60px
-							line-height 60px
-							text-align center
-							font-size 1.2em
-							color rgba($theme-color, 0.2)
+				> mk-poll-editor
+					background lighten($theme-color, 98%)
+					border solid 1px rgba($theme-color, 0.1)
+					border-top none
+					border-radius 0 0 4px 4px
+					transition border-color .3s ease
 
 			> mk-uploader
 				margin 8px 0 0 0
@@ -117,49 +177,6 @@
 
 			[ref='file']
 				display none
-
-			[ref='text']
-				display block
-				padding 12px
-				margin 0
-				width 100%
-				max-width 100%
-				min-width 100%
-				min-height calc(16px + 12px + 12px)
-				font-size 16px
-				color #333
-				background #fff
-				outline none
-				border solid 1px rgba($theme-color, 0.1)
-				border-radius 4px
-				transition border-color .3s ease
-
-				&:hover
-					border-color rgba($theme-color, 0.2)
-					transition border-color .1s ease
-
-				&:focus
-					color $theme-color
-					border-color rgba($theme-color, 0.5)
-					transition border-color 0s ease
-
-				&:disabled
-					opacity 0.5
-
-				&::-webkit-input-placeholder
-					color rgba($theme-color, 0.3)
-
-				&.withfiles
-					border-bottom solid 1px rgba($theme-color, 0.1) !important
-					border-radius 4px 4px 0 0
-
-					&:hover + .attaches
-						border-color rgba($theme-color, 0.2)
-						transition border-color .1s ease
-
-					&:focus + .attaches
-						border-color rgba($theme-color, 0.5)
-						transition border-color 0s ease
 
 			.text-count
 				pointer-events none
@@ -298,7 +315,7 @@
 		@uploadings = []
 		@files = []
 		@autocomplete = null
-		@poll = null
+		@poll = false
 
 		@in-reply-to-post = @opts.reply
 
@@ -414,11 +431,11 @@
 			@update!
 
 		@add-poll = ~>
-			if @poll?
-				@poll.unmount!
-				@poll = null
-				return
-			@poll = riot.mount(@refs.pollZone.append-child document.create-element \mk-poll-editor).0
+			@poll = true
+
+		@on-poll-destroyed = ~>
+			@update do
+				poll: false
 
 		@post = (e) ~>
 			@wait = true
@@ -431,7 +448,7 @@
 				text: @refs.text.value
 				media_ids: files
 				reply_to_id: if @in-reply-to-post? then @in-reply-to-post.id else undefined
-				poll: if @poll? then @poll.get! else undefined
+				poll: if @poll then @refs.poll.get! else undefined
 			.then (data) ~>
 				@trigger \post
 				@notify if @in-reply-to-post? then '返信しました！' else '投稿しました！'
