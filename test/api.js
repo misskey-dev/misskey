@@ -423,6 +423,40 @@ describe('API', () => {
 				done();
 			});
 		}));
+
+		it('投票の選択肢が無くて怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/create', {
+				poll: {}
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('投票の選択肢が無くて怒られる (空の配列)', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/create', {
+				poll: {
+					choices: []
+				}
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
+		it('投票の選択肢が1つで怒られる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/create', {
+				poll: {
+					choices: ['Strawberry Pasta']
+				}
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
 	});
 
 	describe('posts/show', () => {
