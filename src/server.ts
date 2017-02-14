@@ -17,6 +17,7 @@ import config from './conf';
  */
 const app = express();
 app.disable('x-powered-by');
+app.set('trust proxy', 'loopback');
 
 // Log
 app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev', {
