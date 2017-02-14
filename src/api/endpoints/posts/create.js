@@ -174,6 +174,11 @@ module.exports = (params, user, app) =>
 			return rej('poll choices must be an array');
 		}
 
+		// 選択肢が空の配列でエラー
+		if (poll.choices.length == 0) {
+			return rej('poll choices is required');
+		}
+
 		// Validate each choices
 		const shouldReject = poll.choices.some(choice => {
 			if (typeof choice !== 'string') return true;
