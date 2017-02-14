@@ -19,9 +19,11 @@
 			</ul>
 		</div>
 		<mk-uploader ref="uploader"></mk-uploader>
+		<div ref="pollZone"></div>
 		<button ref="upload" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 		<button ref="drive" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
 		<button class="cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
+		<button class="poll" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
 	<style type="stylus">
@@ -163,6 +165,7 @@
 				> [ref='upload']
 				> [ref='drive']
 				.cat
+				.poll
 					display inline-block
 					padding 0
 					margin 0
@@ -185,6 +188,7 @@
 		@wait = false
 		@uploadings = []
 		@files = []
+		@poll = null
 
 		@on \mount ~>
 			@refs.uploader.on \uploaded (file) ~>
@@ -241,6 +245,13 @@
 			@trigger \change-files @files
 			@update!
 
+		@add-poll = ~>
+			if @poll?
+				@poll.unmount!
+				@poll = null
+				return
+			@poll = riot.mount(@refs.pollZone.append-child document.create-element \mk-poll-editor).0
+
 		@post = ~>
 			@wait = true
 
@@ -252,6 +263,7 @@
 				text: @refs.text.value
 				media_ids: files
 				reply_to_id: if @opts.reply? then @opts.reply.id else undefined
+				poll: if @poll? then @poll.get! else undefined
 			.then (data) ~>
 				@trigger \post
 				@unmount!

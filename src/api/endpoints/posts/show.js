@@ -39,7 +39,6 @@ module.exports = (params, user) =>
 
 	// Serialize
 	res(await serialize(post, user, {
-		serializeReplyTo: true,
-		includeIsLiked: true
+		detail: true
 	}));
 });

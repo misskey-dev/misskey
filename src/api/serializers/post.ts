@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import Post from '../models/post';
 import Like from '../models/like';
+import Vote from '../models/poll-vote';
 import serializeApp from './app';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
@@ -23,15 +24,11 @@ const self = (
 	post: any,
 	me?: any,
 	options?: {
-		serializeReplyTo: boolean,
-		serializeRepost: boolean,
-		includeIsLiked: boolean
+		detail: boolean
 	}
 ) => new Promise<Object>(async (resolve, reject) => {
 	const opts = options || {
-		serializeReplyTo: true,
-		serializeRepost: true,
-		includeIsLiked: true
+		detail: true,
 	};
 
 	let _post: any;
@@ -72,26 +69,35 @@ const self = (
 		));
 	}
 
-	if (_post.reply_to_id && opts.serializeReplyTo) {
+	if (_post.reply_to_id && opts.detail) {
 		// Populate reply to post
 		_post.reply_to = await self(_post.reply_to_id, me, {
-			serializeReplyTo: false,
-			serializeRepost: false,
-			includeIsLiked: false
+			detail: false
 		});
 	}
 
-	if (_post.repost_id && opts.serializeRepost) {
+	if (_post.repost_id && opts.detail) {
 		// Populate repost
 		_post.repost = await self(_post.repost_id, me, {
-			serializeReplyTo: _post.text == null,
-			serializeRepost: _post.text == null,
-			includeIsLiked: _post.text == null
+			detail: _post.text == null
 		});
+	}
+
+	// Poll
+	if (me && _post.poll && opts.detail) {
+		const vote = await Vote
+			.findOne({
+				user_id: me._id,
+				post_id: id
+			});
+
+		if (vote != null) {
+			_post.poll.choices.filter(c => c.id == vote.choice)[0].is_voted = true;
+		}
 	}
 
 	// Check if it is liked
-	if (me && opts.includeIsLiked) {
+	if (me && opts.detail) {
 		const liked = await Like
 			.count({
 				user_id: me._id,

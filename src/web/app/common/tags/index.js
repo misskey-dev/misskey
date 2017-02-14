@@ -18,3 +18,5 @@ require('./signin-history.tag');
 require('./api-info.tag');
 require('./twitter-setting.tag');
 require('./authorized-apps.tag');
+require('./poll.tag');
+require('./poll-editor.tag');

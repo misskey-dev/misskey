@@ -10,9 +10,11 @@
 		<p class="remain">残り{ 4 - files.length }</p>
 	</div>
 	<mk-uploader ref="uploader"></mk-uploader>
+	<div ref="pollZone"></div>
 	<button ref="upload" title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 	<button ref="drive" title="ドライブからファイルを添付" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
 	<button class="cat" title="Insert The Cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
+	<button class="poll" title="投票を作成" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
 	<p class="text-count { over: refs.text.value.length > 1000 }">のこり{ 1000 - refs.text.value.length }文字</p>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0) } onclick={ post }>{ wait ? '投稿中' : opts.reply ? '返信' : '投稿' }
 		<mk-ellipsis if={ wait }></mk-ellipsis>
@@ -239,6 +241,7 @@
 			[ref='upload']
 			[ref='drive']
 			.cat
+			.poll
 				display inline-block
 				cursor pointer
 				padding 0
@@ -295,6 +298,7 @@
 		@uploadings = []
 		@files = []
 		@autocomplete = null
+		@poll = null
 
 		@in-reply-to-post = @opts.reply
 
@@ -409,6 +413,13 @@
 			@trigger \change-files @files
 			@update!
 
+		@add-poll = ~>
+			if @poll?
+				@poll.unmount!
+				@poll = null
+				return
+			@poll = riot.mount(@refs.pollZone.append-child document.create-element \mk-poll-editor).0
+
 		@post = (e) ~>
 			@wait = true
 
@@ -420,6 +431,7 @@
 				text: @refs.text.value
 				media_ids: files
 				reply_to_id: if @in-reply-to-post? then @in-reply-to-post.id else undefined
+				poll: if @poll? then @poll.get! else undefined
 			.then (data) ~>
 				@trigger \post
 				@notify if @in-reply-to-post? then '返信しました！' else '投稿しました！'

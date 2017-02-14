@@ -408,6 +408,21 @@ describe('API', () => {
 				done();
 			});
 		}));
+
+		it('投票を添付できる', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/posts/create', {
+				text: 'インデントするなら？',
+				poll: {
+					choices: ['スペース', 'タブ']
+				}
+			}, me).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('poll');
+				done();
+			});
+		}));
 	});
 
 	describe('posts/show', () => {

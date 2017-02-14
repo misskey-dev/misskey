@@ -93,6 +93,7 @@ export default [
 	{ name: 'posts/likes/delete',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like-write' },
 	{ name: 'posts/favorites/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
 	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
+	{ name: 'posts/polls/vote',       shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'vote-write' },
 
 	{ name: 'messaging/history',         shouldBeSignin: true, kind: 'messaging-read' },
 	{ name: 'messaging/unread',          shouldBeSignin: true, kind: 'messaging-read' },

@@ -27,6 +27,7 @@
 				<div class="media" if={ p.media }>
 					<mk-images-viewer images={ p.media }></mk-images-viewer>
 				</div>
+				<mk-poll if={ p.poll } post={ p }></mk-poll>
 				<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>
 				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
 					<mk-post-preview class="repost" post={ p.repost }></mk-post-preview>
@@ -241,6 +242,9 @@
 						> .app
 							font-size 12px
 							color #ccc
+
+						> mk-poll
+							font-size 80%
 
 						> .repost
 							margin 8px 0

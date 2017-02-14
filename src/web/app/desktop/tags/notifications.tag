@@ -39,6 +39,12 @@
 						<p><i class="fa fa-at"></i><a href={ CONFIG.url + '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
+				<virtual if={ notification.type == 'poll_vote' }>
+					<a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/></a>
+					<div class="text">
+						<p><i class="fa fa-pie-chart"></i><a href={ CONFIG.url + '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+					</div>
+				</virtual>
 			</div>
 			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
 		</virtual>

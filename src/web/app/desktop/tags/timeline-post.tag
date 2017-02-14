@@ -40,6 +40,7 @@
 				<div class="media" if={ p.media }>
 					<mk-images-viewer images={ p.media }></mk-images-viewer>
 				</div>
+				<mk-poll if={ p.poll } post={ p }></mk-poll>
 				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
 					<mk-post-preview class="repost" post={ p.repost }></mk-post-preview>
 				</div>
@@ -257,6 +258,9 @@
 							> img
 								display block
 								max-width 100%
+
+						> mk-poll
+							font-size 80%
 
 						> .repost
 							margin 8px 0

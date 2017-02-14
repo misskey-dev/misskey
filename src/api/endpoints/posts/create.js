@@ -161,9 +161,59 @@ module.exports = (params, user, app) =>
 		replyTo = null;
 	}
 
-	// テキストが無いかつ添付ファイルが無いかつRepostも無かったらエラー
-	if (text === null && files === null && repost === null) {
-		return rej('text, media_ids or repost_id is required');
+	// Get 'poll' parameter
+	let poll = params.poll;
+	if (poll !== undefined && poll !== null) {
+		// 選択肢が無かったらエラー
+		if (poll.choices == null) {
+			return rej('poll choices is required');
+		}
+
+		// 選択肢が配列でなかったらエラー
+		if (!Array.isArray(poll.choices)) {
+			return rej('poll choices must be an array');
+		}
+
+		// Validate each choices
+		const shouldReject = poll.choices.some(choice => {
+			if (typeof choice !== 'string') return true;
+			if (choice.trim().length === 0) return true;
+			if (choice.trim().length > 100) return true;
+		});
+
+		if (shouldReject) {
+			return rej('invalid poll choices');
+		}
+
+		// Trim choices
+		poll.choices = poll.choices.map(choice => choice.trim());
+
+		// Drop duplicates
+		poll.choices = poll.choices.filter((x, i, s) => s.indexOf(x) == i);
+
+		// 選択肢がひとつならエラー
+		if (poll.choices.length == 1) {
+			return rej('poll choices must be ひとつ以上');
+		}
+
+		// 選択肢が多すぎてもエラー
+		if (poll.choices.length > 10) {
+			return rej('many poll choices');
+		}
+
+		// serialize
+		poll.choices = poll.choices.map((choice, i) => ({
+			id: i, // IDを付与
+			text: choice,
+			votes: 0
+		}));
+	} else {
+		poll = null;
+	}
+
+	// テキストが無いかつ添付ファイルが無いかつRepostも無いかつ投票も無かったらエラー
+	if (text === null && files === null && repost === null && poll === null) {
+		return rej('text, media_ids, repost_id or poll is required');
 	}
 
 	// 投稿を作成
@@ -172,6 +222,7 @@ module.exports = (params, user, app) =>
 		media_ids: media ? files.map(file => file._id) : undefined,
 		reply_to_id: replyTo ? replyTo._id : undefined,
 		repost_id: repost ? repost._id : undefined,
+		poll: poll ? poll : undefined,
 		text: text,
 		user_id: user._id,
 		app_id: app ? app._id : null
