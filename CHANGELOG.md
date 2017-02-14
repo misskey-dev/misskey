@@ -11,7 +11,7 @@ application/x-www-form-urlencoded is now deperecated
 
 ## 2
 * パラメータ: _userkey --> i
-* トークンは、アクセストークン + アプリのシークレットキーをsha512したものに
+* トークンは、アクセストークン + アプリのシークレットキーをsha256したものに
 
 ## 1
 First version
