@@ -113,7 +113,7 @@
     "livescript": "1.5.0",
     "mime-types": "2.1.14",
     "mocha": "3.2.0",
-    "mongodb": "2.2.22",
+    "mongodb": "2.2.24",
     "monk": "4.0.0",
     "morgan": "1.8.1",
     "ms": "0.7.2",
