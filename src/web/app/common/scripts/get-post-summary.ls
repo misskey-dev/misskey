@@ -3,7 +3,11 @@ get-post-summary = (post) ~>
 
 	# メディアが添付されているとき
 	if post.media?
-		summary += " (#{post.media.length}枚の画像)"
+		summary += " (#{post.media.length}枚のメディア)"
+
+	# 投票が添付されているとき
+	if post.poll?
+		summary += " (投票)"
 
 	# 返信のとき
 	if post.reply_to_id?
