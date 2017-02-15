@@ -113,8 +113,6 @@
 	<script>
 		@mixin \api
 
-		@user = @opts.user
-
 		@onpaste = (e) ~>
 			data = e.clipboard-data
 			items = data.items
@@ -143,7 +141,7 @@
 		@send = ~>
 			@sending = true
 			@api \messaging/messages/create do
-				user_id: @user.id
+				user_id: @opts.user.id
 				text: @refs.text.value
 			.then (message) ~>
 				@clear!

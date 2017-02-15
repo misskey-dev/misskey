@@ -6,31 +6,42 @@
 		</div>
 		<div class="result">
 			<ol class="users" if={ searchResult.length > 0 }>
-				<li each={ user in searchResult }><a onclick={ user._click }><img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/><span class="name">{ user.name }</span><span class="username">@{ user.username }</span></a></li>
+				<li each={ user in searchResult }>
+					<a onclick={ user._click }>
+						<img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/>
+						<span class="name">{ user.name }</span>
+						<span class="username">@{ user.username }</span>
+					</a>
+				</li>
 			</ol>
 		</div>
 	</div>
-	<div class="main">
-		<div class="history" if={ history.length > 0 }>
-			<virtual each={ history }><a class="user" data-is-me={ is_me } data-is-read={ is_read } onclick={ _click }>
-					<div><img class="avatar" src={ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&size=64' } alt=""/>
-						<header><span class="name">{ is_me ? recipient.name : user.name }</span><span class="username">{ '@' + (is_me ? recipient.username : user.username ) }</span>
-							<mk-time time={ created_at }></mk-time>
-						</header>
-						<div class="body">
-							<p class="text"><span class="me" if={ is_me }>あなた:</span>{ text }</p>
-						</div>
-					</div></a></virtual>
-		</div>
-		<p class="no-history" if={ history.length == 0 }>履歴はありません。<br/>ユーザーを検索して、いつでもメッセージを送受信できます。</p>
+	<div class="history" if={ history.length > 0 }>
+		<virtual each={ history }>
+			<a class="user" data-is-me={ is_me } data-is-read={ is_read } onclick={ _click }>
+				<div>
+					<img class="avatar" src={ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&size=64' } alt=""/>
+					<header>
+						<span class="name">{ is_me ? recipient.name : user.name }</span>
+						<span class="username">{ '@' + (is_me ? recipient.username : user.username ) }</span>
+						<mk-time time={ created_at }></mk-time>
+					</header>
+					<div class="body">
+						<p class="text"><span class="me" if={ is_me }>あなた:</span>{ text }</p>
+					</div>
+				</div>
+			</a>
+		</virtual>
 	</div>
+	<p class="no-history" if={ history.length == 0 }>履歴はありません。<br/>ユーザーを検索して、いつでもメッセージを送受信できます。</p>
 	<style type="stylus">
 		:scope
 			display block
 
 			> .search
 				display block
-				position absolute
+				position -webkit-sticky
+				position sticky
 				top 0
 				left 0
 				z-index 1
@@ -153,110 +164,126 @@
 									font-weight normal
 									color rgba(0, 0, 0, 0.3)
 
-			> .main
-				padding-top 56px
 
-				> .history
+			> .history
 
-					> a
+				> a
+					display block
+					padding 20px 30px
+					text-decoration none
+					background #fff
+					border-bottom solid 1px #eee
+
+					*
+						pointer-events none
+						user-select none
+
+					&:hover
+						background #fafafa
+
+						> .avatar
+							filter saturate(200%)
+
+					&:active
+						background #eee
+
+					&[data-is-read]
+					&[data-is-me]
+						opacity 0.8
+
+					&:not([data-is-me]):not([data-is-read])
+						background-image url("/_/resources/desktop/unread.svg")
+						background-repeat no-repeat
+						background-position 0 center
+
+					&:after
+						content ""
 						display block
-						padding 20px 30px
-						text-decoration none
-						background #fff
-						border-bottom solid 1px #eee
+						clear both
 
-						*
-							pointer-events none
-							user-select none
+					> div
+						max-width 500px
+						margin 0 auto
 
-						&:hover
-							background #fafafa
+						> header
+							margin-bottom 2px
+							white-space nowrap
+							overflow hidden
 
-							> .avatar
-								filter saturate(200%)
-
-						&:active
-							background #eee
-
-						&[data-is-read]
-						&[data-is-me]
-							opacity 0.8
-
-						&:not([data-is-me]):not([data-is-read])
-							background-image url("/_/resources/desktop/unread.svg")
-							background-repeat no-repeat
-							background-position 0 center
-
-						&:after
-							content ""
-							display block
-							clear both
-
-						> div
-							max-width 500px
-							margin 0 auto
-
-							> header
-								margin-bottom 2px
-								white-space nowrap
-								overflow hidden
-
-								> .name
-									text-align left
-									display inline
-									margin 0
-									padding 0
-									font-size 1em
-									color rgba(0, 0, 0, 0.9)
-									font-weight bold
-									transition all 0.1s ease
-
-								> .username
-									text-align left
-									margin 0 0 0 8px
-									color rgba(0, 0, 0, 0.5)
-
-								> mk-time
-									position absolute
-									top 0
-									right 0
-									display inline
-									color rgba(0, 0, 0, 0.5)
-									font-size small
-
-							> .avatar
-								float left
-								width 54px
-								height 54px
-								margin 0 16px 0 0
-								border-radius 8px
+							> .name
+								text-align left
+								display inline
+								margin 0
+								padding 0
+								font-size 1em
+								color rgba(0, 0, 0, 0.9)
+								font-weight bold
 								transition all 0.1s ease
 
-							> .body
+							> .username
+								text-align left
+								margin 0 0 0 8px
+								color rgba(0, 0, 0, 0.5)
 
-								> .text
-									display block
-									margin 0 0 0 0
-									padding 0
-									overflow hidden
-									overflow-wrap break-word
-									font-size 1.1em
-									color rgba(0, 0, 0, 0.8)
+							> mk-time
+								position absolute
+								top 0
+								right 0
+								display inline
+								color rgba(0, 0, 0, 0.5)
+								font-size 80%
 
-									.me
-										color rgba(0, 0, 0, 0.4)
+						> .avatar
+							float left
+							width 54px
+							height 54px
+							margin 0 16px 0 0
+							border-radius 8px
+							transition all 0.1s ease
 
-								> .image
-									display block
-									max-width 100%
-									max-height 512px
+						> .body
 
-				> .no-history
-					margin 0
-					padding 2em 1em
-					text-align center
-					color #999
-					font-weight 500
+							> .text
+								display block
+								margin 0 0 0 0
+								padding 0
+								overflow hidden
+								overflow-wrap break-word
+								font-size 1.1em
+								color rgba(0, 0, 0, 0.8)
+
+								.me
+									color rgba(0, 0, 0, 0.4)
+
+							> .image
+								display block
+								max-width 100%
+								max-height 512px
+
+			> .no-history
+				margin 0
+				padding 2em 1em
+				text-align center
+				color #999
+				font-weight 500
+
+			// TODO: element base media query
+			@media (max-width 400px)
+				> .search
+					> .result
+						> .users
+							> li
+								> a
+									padding 8px 16px
+
+				> .history
+					> a
+						padding 16px
+						font-size 14px
+
+						> div
+							> .avatar
+								margin 0 12px 0 0
 
 	</style>
 	<script>

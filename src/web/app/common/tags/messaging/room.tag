@@ -18,12 +18,8 @@
 			display block
 
 			> .stream
-				position absolute
-				top 0
-				left 0
-				width 100%
-				height calc(100% - 100px)
-				overflow auto
+				max-width 600px
+				margin 0 auto
 
 				> .empty
 					width 100%
@@ -77,11 +73,12 @@
 						background #fff
 
 			> footer
-				position absolute
+				position -webkit-sticky
+				position sticky
 				z-index 2
 				bottom 0
-				width 600px
-				max-width 100%
+				width 100%
+				max-width 600px
 				margin 0 auto
 				padding 0
 				background rgba(255, 255, 255, 0.95)

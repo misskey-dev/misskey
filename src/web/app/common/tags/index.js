@@ -20,3 +20,7 @@ require('./twitter-setting.tag');
 require('./authorized-apps.tag');
 require('./poll.tag');
 require('./poll-editor.tag');
+require('./messaging/room.tag');
+require('./messaging/message.tag');
+require('./messaging/index.tag');
+require('./messaging/form.tag');

@@ -12,6 +12,8 @@ module.exports = (me) ~>
 
 	route \/ index
 	route \/i/notifications notifications
+	route \/i/messaging messaging
+	route \/i/messaging/:username messaging
 	route \/i/drive drive
 	route \/i/drive/folder/:folder drive
 	route \/i/drive/file/:file drive
@@ -48,6 +50,15 @@ module.exports = (me) ~>
 	# 通知
 	function notifications
 		mount document.create-element \mk-notifications-page
+
+	# メッセージ
+	function messaging ctx
+		if ctx.params.username
+			p = document.create-element \mk-messaging-room-page
+			p.set-attribute \username ctx.params.username
+			mount p
+		else
+			mount document.create-element \mk-messaging-page
 
 	# 新規投稿
 	function new-post

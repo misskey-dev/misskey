@@ -1,9 +1,11 @@
 <mk-drive>
 	<nav>
 		<p onclick={ goRoot }><i class="fa fa-cloud"></i>ドライブ</p>
-		<virtual each={ folder in hierarchyFolders }><span><i class="fa fa-angle-right"></i></span>
+		<virtual each={ folder in hierarchyFolders }>
+			<span><i class="fa fa-angle-right"></i></span>
 			<p onclick={ _move }>{ folder.name }</p>
-		</virtual><span if={ folder != null }><i class="fa fa-angle-right"></i></span>
+		</virtual>
+		<span if={ folder != null }><i class="fa fa-angle-right"></i></span>
 		<p if={ folder != null }>{ folder.name }</p>
 	</nav>
 	<div class="browser { loading: loading }" if={ file == null }>
