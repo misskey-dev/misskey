@@ -1,5 +1,5 @@
 <mk-messaging-room>
-	<div class="stream" ref="stream">
+	<div class="stream">
 		<p class="initializing" if={ init }><i class="fa fa-spinner fa-spin"></i>読み込み中</p>
 		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>このユーザーとまだ会話したことがありません</p>
 		<virtual each={ message, i in messages }>
@@ -191,12 +191,12 @@
 					@update!
 
 		@is-bottom = ~>
-			current = @refs.stream.scroll-top + @refs.stream.offset-height
-			max = @refs.stream.scroll-height
+			current = @root.scroll-top + @root.offset-height
+			max = @root.scroll-height
 			current > (max - 32)
 
 		@scroll-to-bottom = ~>
-			@refs.stream.scroll-top = @refs.stream.scroll-height
+			@root.scroll-top = @root.scroll-height
 
 		@notify = (message) ~>
 			n = document.create-element \p
