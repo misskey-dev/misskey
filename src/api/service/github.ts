@@ -23,6 +23,7 @@ module.exports = async (app: express.Application) => {
 	app.post('/hooks/github', (req, res, next) => {
 		if ((new Buffer(req.headers['x-hub-signature'])).equals(new Buffer('sha1=' + crypto.createHmac('sha1', config.github_bot.hook_secret).update(JSON.stringify(req.body)).digest('hex')))) {
 			handler.emit(req.headers['x-github-event'], req.body);
+			res.sendStatus(200);
 		} else {
 			res.sendStatus(400);
 		}
