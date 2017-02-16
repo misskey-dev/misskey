@@ -35,6 +35,3 @@ module.exports = (me) ~>
 
 	riot.mixin \ui-progress do
 		Progress: require './scripts/loading.ls'
-
-	riot.mixin \bytes-to-size do
-		bytes-to-size: require './scripts/bytes-to-size.js'

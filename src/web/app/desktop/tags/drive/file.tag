@@ -144,8 +144,9 @@
 
 	</style>
 	<script>
+		@bytes-to-size = require '../../../common/scripts/bytes-to-size.js'
+
 		@mixin \i
-		@mixin \bytes-to-size
 
 		@file = @opts.file
 		@browser = @parent
