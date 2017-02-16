@@ -56,7 +56,7 @@
     "@types/multer": "0.0.33",
     "@types/ratelimiter": "2.1.28",
     "@types/redis": "0.12.35",
-    "@types/request": "0.0.39",
+    "@types/request": "0.0.40",
     "@types/rimraf": "0.0.28",
     "@types/serve-favicon": "2.2.28",
     "@types/twitter": "0.0.28",
