@@ -169,7 +169,6 @@
 
 				> a
 					display block
-					padding 20px 30px
 					text-decoration none
 					background #fff
 					border-bottom solid 1px #eee
@@ -192,9 +191,10 @@
 						opacity 0.8
 
 					&:not([data-is-me]):not([data-is-read])
-						background-image url("/_/resources/desktop/unread.svg")
-						background-repeat no-repeat
-						background-position 0 center
+						> div
+							background-image url("/_/resources/unread.svg")
+							background-repeat no-repeat
+							background-position 0 center
 
 					&:after
 						content ""
@@ -204,6 +204,7 @@
 					> div
 						max-width 500px
 						margin 0 auto
+						padding 20px 30px
 
 						> header
 							margin-bottom 2px
