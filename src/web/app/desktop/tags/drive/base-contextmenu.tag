@@ -7,6 +7,9 @@
 			<li onclick={ parent.upload }>
 				<p><i class="fa fa-upload"></i>ファイルをアップロード</p>
 			</li>
+			<li onclick={ parent.urlUpload }>
+				<p><i class="fa fa-cloud-upload"></i>URLからアップロード</p>
+			</li>
 		</ul>
 	</mk-contextmenu>
 	<script>
@@ -26,6 +29,10 @@
 
 		@upload = ~>
 			@browser.select-local-file!
+			@refs.ctx.close!
+
+		@url-upload = ~>
+			@browser.url-upload!
 			@refs.ctx.close!
 	</script>
 </mk-drive-browser-base-contextmenu>

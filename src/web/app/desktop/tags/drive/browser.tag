@@ -455,6 +455,24 @@
 		@select-local-file = ~>
 			@refs.file-input.click!
 
+		@url-upload = ~>
+			url <~ @input-dialog do
+				'URLアップロード'
+				'アップロードしたいファイルのURL'
+				null
+
+			if url? and url != ''
+				@api \drive/files/upload_from_url do
+					url: url
+					folder_id: if @folder? then @folder.id else undefined
+
+				@dialog do
+					'<i class="fa fa-check"></i>アップロードをリクエストしました'
+					'アップロードが完了するまで時間がかかる場合があります。'
+					[
+						text: \OK
+					]
+
 		@create-folder = ~>
 			name <~ @input-dialog do
 				'フォルダー作成'
