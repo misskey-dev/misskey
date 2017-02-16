@@ -1,6 +1,6 @@
 <mk-poll data-is-voted={ isVoted }>
 	<ul>
-		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted }>
+		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted } title={ !parent.isVoted ? '「' + text + '」に投票する' : '' }>
 			<div class="backdrop" if={ parent.result } style={ 'width:' + (votes / parent.total * 100) + '%' }></div>
 			<span>
 				<i class="fa fa-check" if={ is_voted }></i>
