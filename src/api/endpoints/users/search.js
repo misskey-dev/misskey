@@ -64,6 +64,8 @@ async function byNative(res, rej, me, query, offset, max) {
 			}, {
 				name: new RegExp(escapedQuery)
 			}]
+		}, {
+			limit: max
 		});
 
 	// Serialize
