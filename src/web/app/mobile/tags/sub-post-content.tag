@@ -4,6 +4,10 @@
 		<summary>({ post.media.length }つのメディア)</summary>
 		<mk-images-viewer images={ post.media }></mk-images-viewer>
 	</details>
+	<details if={ post.poll }>
+		<summary>投票</summary>
+		<mk-poll post={ post }></mk-poll>
+	</details>
 	<style type="stylus">
 		:scope
 			display block
@@ -18,6 +22,9 @@
 					margin-left 4px
 					font-style oblique
 					color #a0bf46
+
+			mk-poll
+				font-size 80%
 
 	</style>
 	<script>
