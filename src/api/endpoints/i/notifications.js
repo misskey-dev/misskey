@@ -19,14 +19,12 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'following' parameter
-	const following = params.following === 'true';
+	const following = params.following;
 
 	// Get 'mark_as_read' parameter
 	let markAsRead = params.mark_as_read;
 	if (markAsRead == null) {
 		markAsRead = true;
-	} else {
-		markAsRead = markAsRead === 'true';
 	}
 
 	// Get 'type' parameter

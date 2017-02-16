@@ -38,8 +38,6 @@ module.exports = (params, user) =>
 	let markAsRead = params.mark_as_read;
 	if (markAsRead == null) {
 		markAsRead = true;
-	} else {
-		markAsRead = markAsRead === 'true';
 	}
 
 	// Get 'limit' parameter

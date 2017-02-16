@@ -19,7 +19,7 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'following' parameter
-	const following = params.following === 'true';
+	const following = params.following;
 
 	// Get 'limit' parameter
 	let limit = params.limit;

@@ -26,7 +26,7 @@ module.exports = (params, me) =>
 	}
 
 	// Get 'iknow' parameter
-	const iknow = params.iknow === 'true';
+	const iknow = params.iknow;
 
 	// Get 'limit' parameter
 	let limit = params.limit;

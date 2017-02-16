@@ -36,17 +36,13 @@ module.exports = (params, me) =>
 
 	// Get 'with_replies' parameter
 	let withReplies = params.with_replies;
-	if (withReplies !== undefined && withReplies !== null && withReplies === 'true') {
-		withReplies = true;
-	} else {
+	if (withReplies == null) {
 		withReplies = false;
 	}
 
 	// Get 'with_media' parameter
 	let withMedia = params.with_media;
-	if (withMedia !== undefined && withMedia !== null && withMedia === 'true') {
-		withMedia = true;
-	} else {
+	if (withMedia == null) {
 		withMedia = false;
 	}
 
