@@ -1,6 +1,10 @@
 <mk-autocomplete-suggestion>
 	<ol class="users" ref="users" if={ users.length > 0 }>
-		<li each={ users } onclick={ parent.onClick } onkeydown={ parent.onKeydown } tabindex="-1"><img class="avatar" src={ avatar_url + '?thumbnail&size=32' } alt=""/><span class="name">{ name }</span><span class="username">@{ username }</span></li>
+		<li each={ users } onclick={ parent.onClick } onkeydown={ parent.onKeydown } tabindex="-1">
+			<img class="avatar" src={ avatar_url + '?thumbnail&size=32' } alt=""/>
+			<span class="name">{ name }</span>
+			<span class="username">@{ username }</span>
+		</li>
 	</ol>
 	<style type="stylus">
 		:scope
