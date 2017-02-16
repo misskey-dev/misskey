@@ -11,7 +11,7 @@
 			-->
 			<footer>
 				<p class="type">
-					<mk-file-type-icon file={ file }></mk-file-type-icon>{ file.type }
+					<mk-file-type-icon type={ file.type }></mk-file-type-icon>{ file.type }
 				</p>
 				<p class="separator"></p>
 				<p class="data-size">{ bytesToSize(file.datasize) }</p>
@@ -122,7 +122,7 @@
 
 	</style>
 	<script>
-		@mixin \bytes-to-size
+		@bytes-to-size = require '../../../common/scripts/bytes-to-size.js'
 
 		@browser = @parent
 		@file = @opts.file

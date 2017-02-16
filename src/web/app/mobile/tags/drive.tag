@@ -5,8 +5,14 @@
 			<span><i class="fa fa-angle-right"></i></span>
 			<p onclick={ _move }>{ folder.name }</p>
 		</virtual>
-		<span if={ folder != null }><i class="fa fa-angle-right"></i></span>
-		<p if={ folder != null }>{ folder.name }</p>
+		<virtual if={ folder != null }>
+			<span><i class="fa fa-angle-right"></i></span>
+			<p>{ folder.name }</p>
+		</virtual>
+		<virtual if={ file != null }>
+			<span><i class="fa fa-angle-right"></i></span>
+			<p>{ file.name }</p>
+		</virtual>
 	</nav>
 	<div class="browser { loading: loading }" if={ file == null }>
 		<div class="folders" if={ folders.length > 0 }>
@@ -150,6 +156,8 @@
 			#if @opts.folder?
 			if @opts.folder? and @opts.folder != ''
 				@cd @opts.folder
+			else if @opts.file? and @opts.file != ''
+				@cf @opts.file
 			else
 				@load!
 
@@ -186,6 +194,8 @@
 			@cd target-folder, true
 
 		@cd = (target-folder, is-move) ~>
+			@file = null
+
 			if target-folder? and typeof target-folder == \object
 				target-folder = target-folder.id
 
@@ -263,7 +273,8 @@
 			@update!
 
 		@go-root = ~>
-			if @folder != null
+			if @folder != null or @file != null
+				@file = null
 				@folder = null
 				@hierarchy-folders = []
 				@update!
@@ -337,7 +348,30 @@
 				@update!
 				@trigger \change-selected @selected-files
 			else
+				@cf file
+
+		@cf = (file) ~>
+			if typeof file == \object
+				file = file.id
+
+			@loading = true
+			@update!
+
+			@api \drive/files/show do
+				file_id: file
+			.then (file) ~>
 				@file = file
+				@folder = null
+				@hierarchy-folders = []
+
+				x = (f) ~>
+					@hierarchy-folders.unshift f
+					if f.parent?
+						x f.parent
+
+				if file.folder?
+					x file.folder
+
 				@update!
 				@trigger \open-file @file
 	</script>

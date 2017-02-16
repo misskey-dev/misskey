@@ -50,6 +50,7 @@
 						text-overflow ellipsis
 
 						> i
+						> .icon
 							margin-right 8px
 
 						> img
@@ -93,7 +94,7 @@
 		@on \mount ~>
 			@opts.ready!
 
-		@ui.one \title (title) ~>
+		@ui.on \title (title) ~>
 			if @refs.title?
 				@refs.title.innerHTML = title
 
