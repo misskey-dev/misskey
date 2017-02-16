@@ -36,6 +36,6 @@ module.exports = (params, user) =>
 
 	// Serialize
 	res(await serialize(folder, {
-		includeParent: true
+		detail: true
 	}));
 });

@@ -38,5 +38,7 @@ module.exports = (params, user) =>
 	}
 
 	// Serialize
-	res(await serialize(file));
+	res(await serialize(file, {
+		detail: true
+	}));
 });

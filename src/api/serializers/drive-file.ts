@@ -5,6 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import DriveFile from '../models/drive-file';
+import serializeDriveFolder from './drive-folder';
 import serializeDriveTag from './drive-tag';
 import deepcopy = require('deepcopy');
 import config from '../../conf';
@@ -19,12 +20,12 @@ import config from '../../conf';
 export default (
 	file: any,
 	options?: {
-		includeTags: boolean
+		detail: boolean
 	}
 ) => new Promise<Object>(async (resolve, reject) => {
-	const opts = options || {
-		includeTags: true
-	};
+	const opts = Object.assign({
+		detail: false
+	}, options);
 
 	let _file: any;
 
@@ -57,7 +58,14 @@ export default (
 
 	_file.url = `${config.drive_url}/${_file.id}/${encodeURIComponent(_file.name)}`;
 
-	if (opts.includeTags && _file.tags) {
+	if (opts.detail && _file.folder_id) {
+		// Populate folder
+		_file.folder = await serializeDriveFolder(_file.folder_id, {
+			detail: true
+		});
+	}
+
+	if (opts.detail && _file.tags) {
 		// Populate tags
 		_file.tags = await _file.tags.map(async (tag: any) =>
 			await serializeDriveTag(tag)

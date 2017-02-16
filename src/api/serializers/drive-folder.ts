@@ -17,12 +17,12 @@ import deepcopy = require('deepcopy');
 const self = (
 	folder: any,
 	options?: {
-		includeParent: boolean
+		detail: boolean
 	}
 ) => new Promise<Object>(async (resolve, reject) => {
-	const opts = options || {
-		includeParent: false
-	};
+	const opts = Object.assign({
+		detail: false
+	}, options);
 
 	let _folder: any;
 
@@ -39,10 +39,10 @@ const self = (
 	_folder.id = _folder._id;
 	delete _folder._id;
 
-	if (opts.includeParent && _folder.parent_id) {
+	if (opts.detail && _folder.parent_id) {
 		// Populate parent folder
 		_folder.parent = await self(_folder.parent_id, {
-			includeParent: true
+			detail: true
 		});
 	}
 
