@@ -1,8 +1,16 @@
 <mk-post-preview>
-	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
+	<article>
+		<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }>
+			<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+		</a>
 		<div class="main">
-			<header><a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a><span class="username">@{ post.user.username }</span><a class="time" href={ CONFIG.url + '/' + post.user.username + '/' + post.id }>
-					<mk-time time={ post.created_at }></mk-time></a></header>
+			<header>
+				<a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>
+				<span class="username">@{ post.user.username }</span>
+				<a class="time" href={ CONFIG.url + '/' + post.user.username + '/' + post.id }>
+					<mk-time time={ post.created_at }></mk-time>
+				</a>
+			</header>
 			<div class="body">
 				<mk-sub-post-content class="text" post={ post }></mk-sub-post-content>
 			</div>
@@ -17,11 +25,6 @@
 			background #fff
 
 			> article
-				padding 8px 16px 8px 16px
-				
-				@media (min-width 500px)
-					padding 8px 32px 8px 32px
-
 				&:after
 					content ""
 					display block
