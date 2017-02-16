@@ -2,16 +2,14 @@
 	<div class="search">
 		<div class="form">
 			<label for="search-input"><i class="fa fa-search"></i></label>
-			<input ref="searchInput" type="search" oninput={ search } placeholder="ユーザーを探す"/>
+			<input ref="search" type="search" oninput={ search } onkeydown={ onSearchKeydown } placeholder="ユーザーを探す"/>
 		</div>
 		<div class="result">
-			<ol class="users" if={ searchResult.length > 0 }>
-				<li each={ user in searchResult }>
-					<a onclick={ user._click }>
-						<img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/>
-						<span class="name">{ user.name }</span>
-						<span class="username">@{ user.username }</span>
-					</a>
+			<ol class="users" if={ searchResult.length > 0 } ref="searchResult">
+				<li each={ user, i in searchResult } onkeydown={ parent.onSearchResultKeydown.bind(null, i) } onclick={ user._click } tabindex="-1">
+					<img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/>
+					<span class="name">{ user.name }</span>
+					<span class="username">@{ user.username }</span>
 				</li>
 			</ol>
 		</div>
@@ -113,56 +111,57 @@
 						list-style none
 
 						> li
-							> a
-								display inline-block
-								z-index 1
-								width 100%
-								padding 8px 32px
-								vertical-align top
-								white-space nowrap
-								overflow hidden
-								color rgba(0, 0, 0, 0.8)
-								text-decoration none
-								transition none
+							display inline-block
+							z-index 1
+							width 100%
+							padding 8px 32px
+							vertical-align top
+							white-space nowrap
+							overflow hidden
+							color rgba(0, 0, 0, 0.8)
+							text-decoration none
+							transition none
+							cursor pointer
 
-								&:hover
-									color #fff
-									background $theme-color
-
-									.name
-										color #fff
-
-									.username
-										color #fff
-
-								&:active
-									color #fff
-									background darken($theme-color, 10%)
-
-									.name
-										color #fff
-
-									.username
-										color #fff
-
-								.avatar
-									vertical-align middle
-									min-width 32px
-									min-height 32px
-									max-width 32px
-									max-height 32px
-									margin 0 8px 0 0
-									border-radius 6px
+							&:hover
+							&:focus
+								color #fff
+								background $theme-color
 
 								.name
-									margin 0 8px 0 0
-									/*font-weight bold*/
-									font-weight normal
-									color rgba(0, 0, 0, 0.8)
+									color #fff
 
 								.username
-									font-weight normal
-									color rgba(0, 0, 0, 0.3)
+									color #fff
+
+							&:active
+								color #fff
+								background darken($theme-color, 10%)
+
+								.name
+									color #fff
+
+								.username
+									color #fff
+
+							.avatar
+								vertical-align middle
+								min-width 32px
+								min-height 32px
+								max-width 32px
+								max-height 32px
+								margin 0 8px 0 0
+								border-radius 6px
+
+							.name
+								margin 0 8px 0 0
+								/*font-weight bold*/
+								font-weight normal
+								color rgba(0, 0, 0, 0.8)
+
+							.username
+								font-weight normal
+								color rgba(0, 0, 0, 0.3)
 
 
 			> .history
@@ -274,8 +273,7 @@
 					> .result
 						> .users
 							> li
-								> a
-									padding 8px 16px
+								padding 8px 16px
 
 				> .history
 					> a
@@ -310,12 +308,13 @@
 				console.error err
 
 		@search = ~>
-			q = @refs.search-input.value
+			q = @refs.search.value
 			if q == ''
 				@search-result = []
 			else
 				@api \users/search do
 					query: q
+					max: 5
 				.then (users) ~>
 					users.for-each (user) ~>
 						user._click = ~>
@@ -325,5 +324,34 @@
 					@update!
 				.catch (err) ~>
 					console.error err
+
+		@on-search-keydown = (e) ~>
+			key = e.which
+			switch (key)
+				| 9, 40 => # Key[TAB] or Key[↓]
+					e.prevent-default!
+					e.stop-propagation!
+					@refs.search-result.child-nodes[0].focus!
+
+		@on-search-result-keydown = (i, e) ~>
+			key = e.which
+			switch (key)
+				| 10, 13 => # Key[ENTER]
+					e.prevent-default!
+					e.stop-propagation!
+					@search-result[i]._click!
+				| 27 => # Key[ESC]
+					e.prevent-default!
+					e.stop-propagation!
+					@refs.search.focus!
+				| 38 => # Key[↑]
+					e.prevent-default!
+					e.stop-propagation!
+					(@refs.search-result.child-nodes[i].previous-element-sibling || @refs.search-result.child-nodes[@search-result.length - 1]).focus!
+				| 9, 40 => # Key[TAB] or Key[↓]
+					e.prevent-default!
+					e.stop-propagation!
+					(@refs.search-result.child-nodes[i].next-element-sibling || @refs.search-result.child-nodes[0]).focus!
+
 	</script>
 </mk-messaging>
