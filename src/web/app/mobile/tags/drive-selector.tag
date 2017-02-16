@@ -16,14 +16,10 @@
 				z-index 2048
 				top 0
 				left 0
-				right 0
-				margin 0 auto
 				width 100%
-				max-width 500px
 				height 100%
 				overflow hidden
 				background #fff
-				box-shadow 0 0 16px rgba(#000, 0.3)
 
 				> header
 					border-bottom solid 1px #eee
