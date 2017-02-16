@@ -27,9 +27,10 @@
 
 				> li
 					display block
-					margin 4px
+					margin 4px 0
 					padding 4px 8px
 					width 100%
+					border solid 1px #eee
 					border-radius 4px
 					overflow hidden
 					cursor pointer
