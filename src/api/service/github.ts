@@ -62,7 +62,7 @@ module.exports = async (app: express.Application) => {
 		post(text);
 	});
 
-	handler.on('started', event => {
+	handler.on('watch', event => {
 		const sender = event.sender;
 		post(`⭐️Started by ${sender.login}`);
 	});
