@@ -63,7 +63,7 @@
     "@types/uuid": "2.0.29",
     "@types/vinyl-buffer": "0.0.28",
     "@types/vinyl-source-stream": "0.0.28",
-    "@types/websocket": "0.0.32",
+    "@types/websocket": "0.0.33",
     "autwh": "0.0.1",
     "babel-core": "6.23.1",
     "babel-polyfill": "6.22.0",
