@@ -195,7 +195,7 @@
 					file_id: @file.id
 					name: name
 				.then ~>
-					@parent.cf @file
+					@parent.cf @file, true
 
 	</script>
 </mk-drive-file-viewer>

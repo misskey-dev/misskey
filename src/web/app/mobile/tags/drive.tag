@@ -155,9 +155,9 @@
 			# https://github.com/riot/riot/issues/2080
 			#if @opts.folder?
 			if @opts.folder? and @opts.folder != ''
-				@cd @opts.folder
+				@cd @opts.folder, true
 			else if @opts.file? and @opts.file != ''
-				@cf @opts.file
+				@cf @opts.file, true
 			else
 				@load!
 
@@ -191,9 +191,9 @@
 			@move ev.item.folder
 
 		@move = (target-folder) ~>
-			@cd target-folder, true
+			@cd target-folder
 
-		@cd = (target-folder, is-move) ~>
+		@cd = (target-folder, silent = false) ~>
 			@file = null
 
 			if target-folder? and typeof target-folder == \object
@@ -221,8 +221,7 @@
 					x folder.parent
 
 				@update!
-				if is-move then @trigger \move @folder
-				@trigger \cd @folder
+				@trigger \open-folder @folder, silent
 				@load!
 			.catch (err, text-status) ->
 				console.error err
@@ -350,7 +349,7 @@
 			else
 				@cf file
 
-		@cf = (file) ~>
+		@cf = (file, silent = false) ~>
 			if typeof file == \object
 				file = file.id
 
@@ -373,6 +372,6 @@
 					x file.folder
 
 				@update!
-				@trigger \open-file @file
+				@trigger \open-file @file, silent
 	</script>
 </mk-drive>
