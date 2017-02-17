@@ -25,27 +25,31 @@
 				@Progress.done!
 
 			@refs.ui.refs.browser.on \move-root ~>
-				@ui.trigger \title '<i class="fa fa-cloud"></i>ドライブ'
-
 				# Rewrite URL
 				history.push-state null null '/i/drive'
 
-			@refs.ui.refs.browser.on \open-folder (folder, silent) ~>
-				# TODO: escape html characters in folder.name
-				@ui.trigger \title '<i class="fa fa-folder-open"></i>' + folder.name
+				document.title = 'Misskey Drive'
+				@ui.trigger \title '<i class="fa fa-cloud"></i>ドライブ'
 
+			@refs.ui.refs.browser.on \open-folder (folder, silent) ~>
 				if !silent
 					# Rewrite URL
 					history.push-state null null '/i/drive/folder/' + folder.id
 
+				document.title = folder.name + ' | Misskey Drive'
+				# TODO: escape html characters in folder.name
+				@ui.trigger \title '<i class="fa fa-folder-open"></i>' + folder.name
+
 			@refs.ui.refs.browser.on \open-file (file, silent) ~>
+				if !silent
+					# Rewrite URL
+					history.push-state null null '/i/drive/file/' + file.id
+
+				document.title = file.name + ' | Misskey Drive'
 				# TODO: escape html characters in file.name
 				@ui.trigger \title '<mk-file-type-icon class="icon"></mk-file-type-icon>' + file.name
 				riot.mount \mk-file-type-icon do
 					type: file.type
 
-				if !silent
-					# Rewrite URL
-					history.push-state null null '/i/drive/file/' + file.id
 	</script>
 </mk-drive-page>
