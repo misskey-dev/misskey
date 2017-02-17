@@ -4,7 +4,7 @@
 
 require('./tags');
 const boot = require('../boot.js');
-const mixins = require('./mixins.ls');
+const mixins = require('./mixins');
 const route = require('./router.ls');
 
 /**
