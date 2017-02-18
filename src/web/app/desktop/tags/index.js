@@ -85,7 +85,6 @@ require('./user-posts-graph.tag');
 require('./user-friends-graph.tag');
 require('./user-likes-graph.tag');
 require('./post-status-graph.tag');
-require('./debugger.tag');
 require('./users-list.tag');
 require('./user-following.tag');
 require('./user-followers.tag');
