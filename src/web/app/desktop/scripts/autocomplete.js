@@ -12,6 +12,10 @@ class Autocomplete {
 	constructor(textarea) {
 		this.suggestion = null;
 		this.textarea = textarea;
+
+		this.onInput = this.onInput.bind(this);
+		this.complete = this.complete.bind(this);
+		this.close = this.close.bind(this);
 	}
 
 	/**
