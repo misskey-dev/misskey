@@ -5,8 +5,8 @@
 const riot = require('riot');
 require('velocity-animate');
 const api = require('./common/scripts/api');
-const signout = require('./common/scripts/signout.ls');
-const generateDefaultUserdata = require('./common/scripts/generate-default-userdata.ls');
+const signout = require('./common/scripts/signout');
+const generateDefaultUserdata = require('./common/scripts/generate-default-userdata');
 const mixins = require('./common/mixins.ls');
 const checkForUpdate = require('./common/scripts/check-for-update.ls');
 require('./common/tags');
