@@ -277,10 +277,10 @@
 
 				> .history
 					> a
-						padding 16px
-						font-size 14px
-
 						> div
+							padding 16px
+							font-size 14px
+
 							> .avatar
 								margin 0 12px 0 0
 
