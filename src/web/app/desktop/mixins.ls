@@ -6,7 +6,7 @@ module.exports = (me) ~>
 
 	require './scripts/user-preview'
 
-	require './scripts/open-window.ls'
+	require './scripts/open-window'
 
 	riot.mixin \notify do
 		notify: require './scripts/notify.ls'
