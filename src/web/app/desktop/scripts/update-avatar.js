@@ -19,7 +19,7 @@ module.exports = (I, cb, file = null) => {
 				name: 'アイコン'
 			}).then(iconFolder => {
 				if (iconFolder.length === 0) {
-					 api(I, 'drive/folders/create', {
+					api(I, 'drive/folders/create', {
 						name: 'アイコン'
 					}).then(iconFolder => {
 						uplaod(data, iconFolder);
