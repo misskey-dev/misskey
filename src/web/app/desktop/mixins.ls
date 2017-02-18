@@ -39,6 +39,3 @@ module.exports = (me) ~>
 
 	riot.mixin \autocomplete do
 		Autocomplete: require './scripts/autocomplete'
-
-	riot.mixin \follow-scroll do
-		Follower: require './scripts/follow-scroll.ls'
