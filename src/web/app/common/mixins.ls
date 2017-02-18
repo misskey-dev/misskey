@@ -12,23 +12,23 @@ module.exports = (me) ~>
 		Cropper: require \cropperjs
 
 	riot.mixin \signout do
-		signout: require './scripts/signout.js'
+		signout: require './scripts/signout'
 
 	riot.mixin \messaging-stream do
 		MessagingStreamConnection: require './scripts/messaging-stream'
 
 	riot.mixin \is-promise do
-		is-promise: require './scripts/is-promise.ls'
+		is-promise: require './scripts/is-promise'
 
 	riot.mixin \get-post-summary do
-		get-post-summary: require './scripts/get-post-summary.js'
+		get-post-summary: require './scripts/get-post-summary'
 
 	riot.mixin \date-stringify do
-		date-stringify: require './scripts/date-stringify.ls'
+		date-stringify: require './scripts/date-stringify'
 
 	riot.mixin \text do
-		analyze: require '../../../common/text/index.js'
-		compile: require './scripts/text-compiler.js'
+		analyze: require '../../../common/text/index'
+		compile: require './scripts/text-compiler'
 
 	riot.mixin \get-password-strength do
 		get-password-strength: require 'syuilo-password-strength'
