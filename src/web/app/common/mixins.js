@@ -43,6 +43,6 @@ module.exports = me => {
 	});
 
 	riot.mixin('ui-progress', {
-		Progress: require('./scripts/loading.ls')
+		Progress: require('./scripts/loading')
 	});
 };
