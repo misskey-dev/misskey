@@ -26,7 +26,7 @@ module.exports = (me) ~>
 				]
 
 	riot.mixin \input-dialog do
-		input-dialog: require './scripts/input-dialog.ls'
+		input-dialog: require './scripts/input-dialog'
 
 	riot.mixin \update-avatar do
 		update-avatar: require './scripts/update-avatar.ls'
