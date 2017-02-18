@@ -4,7 +4,7 @@ module.exports = (me) ~>
 	if me?
 		(require './scripts/stream') me
 
-	require './scripts/user-preview.ls'
+	require './scripts/user-preview'
 
 	require './scripts/open-window.ls'
 
