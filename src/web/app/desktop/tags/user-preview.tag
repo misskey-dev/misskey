@@ -53,7 +53,7 @@
 
 			> .title
 				display block
-				padding 8px 0 8px 85px
+				padding 8px 0 8px 82px
 
 				> .name
 					display block
