@@ -2,7 +2,7 @@ const riot = require('riot');
 
 module.exports = me => {
 	riot.mixin('i', {
-		init: () => {
+		init: function() {
 			this.I = me;
 			this.SIGNIN = me != null;
 

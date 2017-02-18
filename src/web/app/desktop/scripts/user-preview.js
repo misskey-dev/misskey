@@ -1,7 +1,7 @@
 const riot = require('riot');
 
 riot.mixin('user-preview', {
-	init: () => {
+	init: function() {
 		const scan = () => {
 			this.root.querySelectorAll('[data-user-preview]:not([data-user-preview-attached])')
 				.forEach(attach.bind(this));
