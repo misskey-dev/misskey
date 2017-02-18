@@ -10,12 +10,14 @@ class Autocomplete {
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
 	constructor(textarea) {
+		// BIND ---------------------------------
+		this.onInput =  this.onInput.bind(this);
+		this.complete = this.complete.bind(this);
+		this.close =    this.close.bind(this);
+		// --------------------------------------
+
 		this.suggestion = null;
 		this.textarea = textarea;
-
-		this.onInput = this.onInput.bind(this);
-		this.complete = this.complete.bind(this);
-		this.close = this.close.bind(this);
 	}
 
 	/**
