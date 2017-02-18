@@ -5,7 +5,7 @@ module.exports = me => {
 		require('./scripts/stream')(me);
 	}
 
-	require('./scripts/ui.ls');
+	require('./scripts/ui');
 
 	riot.mixin('open-post-form', {
 		openPostForm: opts => {
