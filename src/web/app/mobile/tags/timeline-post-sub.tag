@@ -56,7 +56,6 @@
 
 					> header
 						display flex
-						flex-wrap wrap
 						margin-bottom 2px
 						white-space nowrap
 

@@ -45,31 +45,31 @@
 					width calc(100% - 68px)
 
 					> header
-						margin-bottom 4px
+						display flex
+						margin 4px 0
 						white-space nowrap
 
 						> .name
-							display inline
-							margin 0
+							margin 0 .5em 0 0
 							padding 0
 							color #607073
 							font-size 1em
+							line-height 1.1em
 							font-weight 700
 							text-align left
 							text-decoration none
+							white-space normal
 
 							&:hover
 								text-decoration underline
 
 						> .username
 							text-align left
-							margin 0 0 0 8px
+							margin 0 .5em 0 0
 							color #d1d8da
 
 						> .time
-							position absolute
-							top 0
-							right 0
+							margin-left auto
 							color #b2b8bb
 
 					> .body
