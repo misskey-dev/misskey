@@ -3,8 +3,8 @@
  */
 
 require('./tags');
-const boot = require('../boot.js');
-const route = require('./router.ls');
+const boot = require('../boot');
+const route = require('./router');
 
 /**
  * Boot
