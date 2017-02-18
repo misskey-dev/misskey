@@ -21,7 +21,7 @@ module.exports = (me) ~>
 		is-promise: require './scripts/is-promise.ls'
 
 	riot.mixin \get-post-summary do
-		get-post-summary: require './scripts/get-post-summary.ls'
+		get-post-summary: require './scripts/get-post-summary.js'
 
 	riot.mixin \date-stringify do
 		date-stringify: require './scripts/date-stringify.ls'
