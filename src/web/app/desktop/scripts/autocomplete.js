@@ -61,7 +61,7 @@ class Autocomplete {
 		this.close();
 
 		// サジェスト要素作成
-		const suggestion = document.createElement('mk-autocomplete-suggestion');
+		const tag = document.createElement('mk-autocomplete-suggestion');
 
 		// ~ サジェストを表示すべき位置を計算 ~
 
@@ -72,11 +72,11 @@ class Autocomplete {
 		const x = rect.left + window.pageXOffset + caretPosition.left;
 		const y = rect.top + window.pageYOffset + caretPosition.top;
 
-		suggestion.style.left = x + 'px';
-		suggestion.style.top = y + 'px';
+		tag.style.left = x + 'px';
+		tag.style.top = y + 'px';
 
 		// 要素追加
-		const el = document.body.appendChild(suggestion);
+		const el = document.body.appendChild(tag);
 
 		// マウント
 		this.suggestion = riot.mount(el, {
