@@ -11,10 +11,12 @@ module.exports = me => {
 		openPostForm: opts => {
 			const app = document.getElementById('app');
 			app.style.display = 'none';
-			const form = riot.mount(document.body.appendChild(document.createElement('mk-post-form')), opts)[0];
+
 			function recover() {
 				app.style.display = 'block';
 			}
+
+			const form = riot.mount(document.body.appendChild(document.createElement('mk-post-form')), opts)[0];
 			form
 				.on('cancel', recover)
 				.on('post', recover);
