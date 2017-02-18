@@ -38,10 +38,6 @@
 
 		<section class="web" show={ page == 'web' }>
 			<h1>デザイン</h1>
-			<label>
-				<p>壁紙</p>
-				<button class="style-normal" onclick={ wallpaper }>画像を選択</button>
-			</label>
 		</section>
 
 		<section class="web" show={ page == 'web' }>
@@ -121,12 +117,7 @@
 					margin 0
 					color #666
 					cursor pointer
-
-					-ms-user-select none
-					-moz-user-select none
-					-webkit-user-select none
 					user-select none
-
 					transition margin-left 0.2s ease
 
 					> i
@@ -211,7 +202,6 @@
 		@mixin \api
 		@mixin \dialog
 		@mixin \update-avatar
-		@mixin \update-wallpaper
 
 		@page = \account
 
@@ -220,9 +210,6 @@
 
 		@avatar = ~>
 			@update-avatar @I
-
-		@wallpaper = ~>
-			@update-wallpaper @I
 
 		@update-account = ~>
 			@api \i/update do

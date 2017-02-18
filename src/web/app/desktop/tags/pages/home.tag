@@ -6,10 +6,6 @@
 		:scope
 			display block
 
-			background-position center center
-			background-attachment fixed
-			background-size cover
-
 	</style>
 	<script>
 		@mixin \i
@@ -30,11 +26,6 @@
 				@Progress.done!
 
 			document.title = 'Misskey'
-			if @I.data.wallpaper
-				@api \drive/files/show do
-					file_id: @I.data.wallpaper
-				.then (file) ~>
-					@root.style.background-image = 'url(' + file.url + ')'
 			@Progress.start!
 			@stream.on \post @on-stream-post
 			document.add-event-listener \visibilitychange @window-on-visibilitychange, false
