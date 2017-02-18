@@ -3,6 +3,12 @@ const riot = require('riot');
 
 class Connection {
 	constructor(me, otherparty) {
+		// BIND -----------------------------------
+		this.onOpen =    this.onOpen.bind(this);
+		this.onMessage = this.onMessage.bind(this);
+		this.close =     this.close.bind(this);
+		// ----------------------------------------
+
 		this.event = riot.observable();
 		this.me = me;
 
@@ -20,8 +26,8 @@ class Connection {
 
 	onMessage(message) {
 		try {
-			const message = JSON.parse(message.data);
-			if (message.type) this.event.trigger(message.type, message.body);
+			const msg = JSON.parse(message.data);
+			if (msg.type) this.event.trigger(msg.type, msg.body);
 		} catch(e) {
 			// noop
 		}
