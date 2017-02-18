@@ -1,4 +1,4 @@
-const getPostSummary = post => {
+const summarize = post => {
 	let summary = post.text ? post.text : '';
 
 	// メディアが添付されているとき
@@ -14,7 +14,7 @@ const getPostSummary = post => {
 	// 返信のとき
 	if (post.reply_to_id) {
 		if (post.reply_to) {
-			replySummary = getPostSummary(post.reply_to);
+			replySummary = summarize(post.reply_to);
 			summary += ` RE: ${replySummary}`;
 		} else {
 			summary += ' RE: ...';
@@ -24,7 +24,7 @@ const getPostSummary = post => {
 	// Repostのとき
 	if (post.repost_id) {
 		if (post.repost) {
-			repostSummary = getPostSummary(post.repost);
+			repostSummary = summarize(post.repost);
 			summary += ` RP: ${repostSummary}`;
 		} else {
 			summary += ' RP: ...';
@@ -34,4 +34,4 @@ const getPostSummary = post => {
 	return summary.trim();
 };
 
-module.exports = getPostSummary;
+module.exports = summarize;
