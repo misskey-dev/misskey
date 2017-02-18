@@ -15,7 +15,7 @@ module.exports = (me) ~>
 		signout: require './scripts/signout.js'
 
 	riot.mixin \messaging-stream do
-		MessagingStreamConnection: require './scripts/messaging-stream.ls'
+		MessagingStreamConnection: require './scripts/messaging-stream'
 
 	riot.mixin \is-promise do
 		is-promise: require './scripts/is-promise.ls'
