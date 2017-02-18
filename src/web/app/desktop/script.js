@@ -5,9 +5,9 @@
 require('chart.js');
 require('./tags');
 const riot = require('riot');
-const boot = require('../boot.js');
+const boot = require('../boot');
 const mixins = require('./mixins.ls');
-const route = require('./router.ls');
+const route = require('./router');
 const fuckAdBlock = require('./scripts/fuck-ad-block.ls');
 
 /**
