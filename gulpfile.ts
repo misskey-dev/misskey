@@ -17,7 +17,6 @@ import * as es from 'event-stream';
 import stylus = require('gulp-stylus');
 import cssnano = require('gulp-cssnano');
 import * as uglify from 'gulp-uglify';
-import ls = require('browserify-livescript');
 import riotify = require('riotify');
 import transformify = require('syuilo-transformify');
 import pug = require('gulp-pug');
@@ -169,7 +168,6 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 			browserify({
 				entries: [entry]
 			})
-			.transform(ls)
 			.transform(transformify((source, file) => {
 				return source
 					.replace(/VERSION/g, `'${commit ? commit.hash : 'null'}'`)
