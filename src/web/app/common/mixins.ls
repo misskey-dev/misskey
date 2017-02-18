@@ -12,7 +12,7 @@ module.exports = (me) ~>
 		Cropper: require \cropperjs
 
 	riot.mixin \signout do
-		signout: require './scripts/signout.ls'
+		signout: require './scripts/signout.js'
 
 	riot.mixin \messaging-stream do
 		MessagingStreamConnection: require './scripts/messaging-stream.ls'
