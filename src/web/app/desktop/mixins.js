@@ -4,7 +4,6 @@ module.exports = me => {
 	if (me) require('./scripts/stream')(me);
 
 	require('./scripts/user-preview');
-	require('./scripts/open-window');
 
 	riot.mixin('notify', {
 		notify: require('./scripts/notify')
