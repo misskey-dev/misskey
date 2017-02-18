@@ -1,5 +1,5 @@
 const getPostSummary = post => {
-	let = post.text ? post.text : '';
+	let summary = post.text ? post.text : '';
 
 	// メディアが添付されているとき
 	if (post.media) {
