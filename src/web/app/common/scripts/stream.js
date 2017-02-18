@@ -20,9 +20,9 @@ module.exports = me => {
 
 	socket.onmessage = message => {
 		try {
-			const message = JSON.parse(message.data);
-			if (message.type) {
-				event.trigger(message.type, message.body);
+			const msg = JSON.parse(message.data);
+			if (msg.type) {
+				event.trigger(msg.type, msg.body);
 			}
 		} catch (e) {
 			// noop
