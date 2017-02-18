@@ -3,7 +3,7 @@ riot = require \riot
 module.exports = (me) ~>
 	i = if me? then me.token else null
 
-	(require './scripts/i.ls') me
+	(require './scripts/i') me
 
 	riot.mixin \api do
 		api: (require './scripts/api').bind null i
