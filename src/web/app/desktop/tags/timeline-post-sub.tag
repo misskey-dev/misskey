@@ -63,6 +63,7 @@
 							display block
 							margin 0 .5em 0 0
 							padding 0
+							overflow hidden
 							color #607073
 							font-size 1em
 							font-weight 700

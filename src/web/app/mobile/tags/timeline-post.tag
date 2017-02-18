@@ -147,7 +147,6 @@
 
 					> header
 						display flex
-						flex-wrap wrap
 						white-space nowrap
 
 						@media (min-width 500px)
@@ -179,7 +178,7 @@
 
 						> .username
 							text-align left
-							margin 0
+							margin 0 0.5em 0 0
 							color #ccc
 
 						> .created-at
