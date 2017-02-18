@@ -2,16 +2,12 @@ const riot = require('riot');
 
 riot.mixin('user-preview', {
 	init: () => {
-		this.on('mount', () => {
-			scan.call(this);
-		});
-		this.on('updated', () => {
-			scan.call(this);
-		});
-		function scan(){
+		const scan = () => {
 			this.root.querySelectorAll('[data-user-preview]:not([data-user-preview-attached])')
 				.forEach(attach.bind(this));
-		}
+		};
+		this.on('mount', scan);
+		this.on('updated', scan);
 	}
 });
 
@@ -59,12 +55,12 @@ function attach(el) {
 		tag = riot.mount(document.body.appendChild(preview), {
 			user: user
 		})[0];
-	}
+	};
 
 	const close = () => {
 		if (tag) {
 			tag.close();
 			tag = null;
 		}
-	}
+	};
 }
