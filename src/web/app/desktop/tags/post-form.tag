@@ -18,7 +18,7 @@
 	<button class="cat" title="Insert The Cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
 	<button class="poll" title="投票を作成" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
 	<p class="text-count { over: refs.text.value.length > 1000 }">のこり{ 1000 - refs.text.value.length }文字</p>
-	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && ！poll) } onclick={ post }>{ wait ? '投稿中' : opts.reply ? '返信' : '投稿' }
+	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll) } onclick={ post }>{ wait ? '投稿中' : opts.reply ? '返信' : '投稿' }
 		<mk-ellipsis if={ wait }></mk-ellipsis>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>
