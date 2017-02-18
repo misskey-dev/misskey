@@ -38,7 +38,7 @@ module.exports = (me) ~>
 		update-wallpaper: require './scripts/update-wallpaper.ls'
 
 	riot.mixin \autocomplete do
-		Autocomplete: require './scripts/autocomplete.ls'
+		Autocomplete: require './scripts/autocomplete'
 
 	riot.mixin \follow-scroll do
 		Follower: require './scripts/follow-scroll.ls'
