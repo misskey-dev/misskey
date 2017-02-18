@@ -1,7 +1,7 @@
 # Stream
 #================================
 
-stream = require '../../common/scripts/stream.ls'
+stream = require '../../common/scripts/stream'
 riot = require \riot
 
 module.exports = (me) ~>

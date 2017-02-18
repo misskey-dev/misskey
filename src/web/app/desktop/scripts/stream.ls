@@ -1,8 +1,8 @@
 # Stream
 #================================
 
-stream = require '../../common/scripts/stream.ls'
-get-post-summary = require '../../common/scripts/get-post-summary.ls'
+stream = require '../../common/scripts/stream'
+get-post-summary = require '../../common/scripts/get-post-summary'
 riot = require \riot
 
 module.exports = (me) ~>
