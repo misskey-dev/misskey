@@ -88,7 +88,7 @@ class Autocomplete {
 	 * [Private] サジェストを閉じます。
 	 */
 	close() {
-		if (this.suggestion == nul) return;
+		if (this.suggestion == null) return;
 
 		this.suggestion.unmount();
 		this.suggestion = null;
