@@ -2,7 +2,8 @@
 	<header>
 		<div>
 			<button class="cancel" onclick={ cancel }><i class="fa fa-times"></i></button>
-			<div><span class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
+			<div>
+				<span if={ refs.text } class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
 				<button class="submit" onclick={ post }>投稿</button>
 			</div>
 		</div>
