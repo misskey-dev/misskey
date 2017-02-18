@@ -43,7 +43,7 @@ module.exports = callback => {
 	// Get cached account data
 	let cachedMe = JSON.parse(localStorage.getItem('me'));
 
-	if (cachedMe != null && cachedMe.data != null && cachedMe.data.cache) {
+	if (cachedMe && cachedMe.data && cachedMe.data.cache) {
 		fetched(cachedMe);
 
 		// 後から新鮮なデータをフェッチ
@@ -53,7 +53,7 @@ module.exports = callback => {
 		});
 	} else {
 		// キャッシュ無効なのにキャッシュが残ってたら掃除
-		if (cachedMe != null) {
+		if (cachedMe) {
 			localStorage.removeItem('me');
 		}
 
@@ -64,7 +64,7 @@ module.exports = callback => {
 	}
 
 	function fetched(me) {
-		if (me != null) {
+		if (me) {
 			riot.observable(me);
 
 			me.update = data => {
@@ -109,7 +109,7 @@ function fetchme(token, cb) {
 	}
 
 	// Fetch user
-	fetch(CONFIG.api.url + "/i", {
+	fetch(CONFIG.api.url + '/i', {
 		method: 'POST',
 		body: JSON.stringify({
 			i: token
@@ -125,15 +125,10 @@ function fetchme(token, cb) {
 			me.token = token;
 
 			// initialize it if user data is empty
-			if (me.data != null) {
-				done();
-			} else {
-				init();
-			}
+			me.data ? done() : init();
 		});
 	}, () => {
-		const info = document.body.appendChild(document.createElement('mk-core-error'));
-		riot.mount(info, {
+		riot.mount(document.body.appendChild(document.createElement('mk-core-error')), {
 			retry: () => {
 				fetchme(token, cb);
 			}
@@ -141,9 +136,7 @@ function fetchme(token, cb) {
 	});
 
 	function done() {
-		if (cb != null) {
-			cb(me);
-		}
+		if (cb) cb(me);
 	}
 
 	function init() {
@@ -160,4 +153,5 @@ function fetchme(token, cb) {
 function panic(e) {
 	console.error(e);
 	document.body.innerHTML = '<div id="error"><p>致命的な問題が発生しました。</p></div>';
+	// TODO: Report the bug
 }
