@@ -10,24 +10,22 @@ import * as babel from 'gulp-babel';
 import * as ts from 'gulp-typescript';
 import * as tslint from 'gulp-tslint';
 import * as glob from 'glob';
-import * as browserify from 'browserify';
-import * as source from 'vinyl-source-stream';
-import * as buffer from 'vinyl-buffer';
 import * as es from 'event-stream';
+import * as Webpack from 'webpack';
+import * as webpack from 'webpack-stream';
 import stylus = require('gulp-stylus');
 import cssnano = require('gulp-cssnano');
 import * as uglify from 'gulp-uglify';
 import riotify = require('riotify');
-import transformify = require('syuilo-transformify');
 import pug = require('gulp-pug');
 import git = require('git-last-commit');
 import * as rimraf from 'rimraf';
 import * as escapeHtml from 'escape-html';
 import prominence = require('prominence');
-import promiseify = require('promiseify');
 import * as chalk from 'chalk';
 import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
+import named = require('vinyl-named');
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -43,8 +41,8 @@ if (!fs.existsSync('./.config/default.yml')) {
 }
 
 (global as any).MISSKEY_CONFIG_PATH = '.config/default.yml';
-import { IConfig } from './src/config';
-const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString()))() as IConfig;
+import { Config } from './src/config';
+const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString()))() as Config;
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -150,7 +148,6 @@ gulp.task('default', ['build']);
 gulp.task('build:client', [
 	'build:ts', 'build:js',
 	'build:client:scripts',
-	'build:client:styles',
 	'build:client:pug',
 	'copy:client'
 ]);
@@ -159,69 +156,99 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 	// Get commit info
 	const commit = await prominence(git).getLastCommit();
 
-	// Get all app scripts
-	const files = await promiseify(glob)('./src/web/app/*/script.js');
+	const StringReplacePlugin = require('string-replace-webpack-plugin');
 
-	// Compile for each scripts
-	const tasks = files.map(entry => {
-		let bundle =
-			browserify({
-				entries: [entry]
-			})
-			.transform(transformify((source, file) => {
-				return source
-					.replace(/VERSION/g, `'${commit ? commit.hash : 'null'}'`)
-					.replace(/\$theme\-color\-foreground/g, '#fff')
-					.replace(/\$theme\-color/g, config.themeColor)
-					.replace(/CONFIG\.theme-color/g, `'${config.themeColor}'`)
-					.replace(/CONFIG\.themeColor/g, `'${config.themeColor}'`)
-					.replace(/CONFIG\.api\.url/g, `'${config.scheme}://api.${config.host}'`)
-					.replace(/CONFIG\.urls\.about/g, `'${config.scheme}://about.${config.host}'`)
-					.replace(/CONFIG\.urls\.dev/g, `'${config.scheme}://dev.${config.host}'`)
-					.replace(/CONFIG\.url/g, `'${config.url}'`)
-					.replace(/CONFIG\.host/g, `'${config.host}'`)
-					.replace(/CONFIG\.recaptcha\.siteKey/g, `'${config.recaptcha.siteKey}'`)
-					;
-			}))
-			.transform(riotify, {
-				type: 'livescript',
-				expr: false,
-				compact: true,
-				parserOptions: {
-					style: {
-						compress: true,
-						rawDefine: config
+	/* webpack options */
+	const pack = {
+		entry: {
+			'client': './src/web/app/client/script.js',
+			'desktop': './src/web/app/desktop/script.js',
+			'mobile': './src/web/app/mobile/script.js',
+			'dev': './src/web/app/dev/script.js',
+			'auth': './src/web/app/auth/script.js'
+		},
+		module: {
+			preLoaders: [
+				{
+					test: /\.(tag|js|styl)$/,
+					exclude: /node_modules/,
+					loader: StringReplacePlugin.replace({
+						replacements: [
+							{	pattern: /VERSION/g, replacement: () => `'${commit ? commit.hash : 'null'}'` },
+							{ pattern: /\$theme\-color\-foreground/g, replacement: () => '#fff' },
+							{ pattern: /\$theme\-color/g, replacement: () => config.themeColor },
+							{ pattern: /CONFIG\.theme\-color/g, replacement: () => `'${config.themeColor}'` },
+							{ pattern: /CONFIG\.themeColor/g, replacement: () => `'${config.themeColor}'` },
+							{ pattern: /CONFIG\.api\.url/g, replacement: () => `'${config.api_url}'` },
+							{ pattern: /CONFIG\.urls\.about/g, replacement: () => `'${config.about_url}'` },
+							{ pattern: /CONFIG\.urls\.dev/g, replacement: () => `'${config.dev_url}'` },
+							{ pattern: /CONFIG\.url/g, replacement: () => `'${config.url}'` },
+							{ pattern: /CONFIG\.host/g, replacement: () => `'${config.host}'` },
+							{ pattern: /CONFIG\.recaptcha\.siteKey/g, replacement: () => `'${config.recaptcha.siteKey}'` },
+						]})
+				},
+			],
+			loaders: [
+				{
+					test: /\.tag$/,
+					exclude: /node_modules/,
+					loader: 'riot-tag-loader',
+					query: {
+						hot: false,
+						type: 'livescript',
+						style: 'stylus',
+						expr: false,
+						compact: true,
+						parserOptions: {
+							style: {
+								compress: true
+							}
+						}
 					}
+				},
+				{
+					test: /\.styl$/,
+					loaders: ['style', 'css', 'stylus']
 				}
-			})
-			.bundle()
-			.pipe(source(entry.replace('./src/web/app/', './').replace('.ls', '.js')));
-
-		if (isProduction) {
-			bundle = bundle
-				.pipe(buffer())
-				// ↓ https://github.com/mishoo/UglifyJS2/issues/448
-				.pipe(babel({
-					presets: ['es2015']
-				}))
-				.pipe(uglify({
-					compress: true
-				}));
+			]
+		},
+		plugins: [
+			new StringReplacePlugin()
+		],
+		output: {
+			filename: '[name]/script.js'
 		}
+	};
 
-		return bundle
-			.pipe(gulp.dest('./built/web/resources/'));
-	});
+	if (isProduction) {
+		// TODO.
+		// see https://github.com/webpack/webpack/issues/2545
+		//pack.plugins.push(new Webpack.optimize.UglifyJsPlugin())
+	}
 
-	es.merge(tasks).on('end', ok);
+	let stream = webpack(pack);
+
+	// TODO: remove this block
+	if (isProduction) {
+		stream = stream
+			// ↓ https://github.com/mishoo/UglifyJS2/issues/448
+			.pipe(babel({
+				presets: ['es2015']
+			}))
+			.pipe(uglify({
+				compress: true
+			}));
+	}
+
+	stream.pipe(gulp.dest('./built/web/resources/'));
+
+	ok();
 }));
 
 gulp.task('build:client:styles', () =>
-	gulp.src('./src/web/app/**/*.styl')
+	gulp.src('./src/web/app/init.styl')
 		.pipe(stylus({
-			'include css': true,
-			compress: true,
-			rawDefine: config
+			compress: true
 		}))
 		.pipe(isProduction
 			? cssnano({
@@ -232,8 +259,7 @@ gulp.task('build:client:styles', () =>
 );
 
 gulp.task('copy:client', [
-	'build:client:scripts',
-	'build:client:styles'
+	'build:client:scripts'
 ], () =>
 	gulp.src([
 		'./resources/**/*',

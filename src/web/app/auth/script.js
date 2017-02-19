@@ -2,6 +2,10 @@
  * Authorize Form
  */
 
+// Style
+//import './style.styl';
+require('./style.styl');
+
 const riot = require('riot');
 document.title = 'Misskey | アプリの連携';
 require('./tags');

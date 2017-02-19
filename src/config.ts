@@ -79,9 +79,12 @@ interface Mixin {
 	secondary_scheme: string;
 	api_url: string;
 	auth_url: string;
+	about_url: string;
 	dev_url: string;
 	drive_url: string;
 }
+
+export type Config = Source & Mixin;
 
 export default function load() {
 	const config = yaml.safeLoad(fs.readFileSync(path, 'utf-8')) as Source;
@@ -104,6 +107,7 @@ export default function load() {
 	mixin.api_url = `${mixin.scheme}://api.${mixin.host}`;
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;
 	mixin.dev_url = `${mixin.scheme}://dev.${mixin.host}`;
+	mixin.about_url = `${mixin.scheme}://about.${mixin.host}`;
 	mixin.drive_url = `${mixin.secondary_scheme}://file.${mixin.secondary_host}`;
 
 	return Object.assign(config, mixin);

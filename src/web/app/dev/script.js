@@ -2,6 +2,10 @@
  * Developer Center
  */
 
+// Style
+//import './style.styl';
+require('./style.styl');
+
 require('./tags');
 const boot = require('../boot');
 const route = require('./router');

@@ -2,6 +2,10 @@
  * Desktop Client
  */
 
+// Style
+//import './style.styl';
+require('./style.styl');
+
 require('chart.js');
 require('./tags');
 const riot = require('riot');

@@ -2,6 +2,10 @@
  * Mobile Client
  */
 
+// Style
+//import './style.styl';
+require('./style.styl');
+
 require('./tags');
 const boot = require('../boot');
 const mixins = require('./mixins');
