@@ -3,8 +3,7 @@
  */
 
 // Style
-//import './style.styl';
-require('./style.styl');
+import './style.styl';
 
 require('./tags');
 const boot = require('../boot');

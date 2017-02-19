@@ -3,8 +3,7 @@
  */
 
 // Style
-//import './style.styl';
-require('./style.styl');
+import './style.styl';
 
 require('chart.js');
 require('./tags');

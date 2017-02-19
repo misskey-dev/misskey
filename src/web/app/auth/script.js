@@ -3,8 +3,7 @@
  */
 
 // Style
-//import './style.styl';
-require('./style.styl');
+import './style.styl';
 
 const riot = require('riot');
 document.title = 'Misskey | アプリの連携';
