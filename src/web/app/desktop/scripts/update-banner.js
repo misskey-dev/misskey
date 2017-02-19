@@ -43,7 +43,7 @@ module.exports = (I, cb, file = null) => {
 		if (folder) data.append('folder_id', folder.id);
 	
 		const xhr = new XMLHttpRequest();
-		xhr.open('POST', CONFIG.api.url + '/drive/files/create', true);
+		xhr.open('POST', CONFIG.apiUrl + '/drive/files/create', true);
 		xhr.onload = e => {
 			const file = JSON.parse(e.target.response);
 			progress.close();

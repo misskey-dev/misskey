@@ -12,7 +12,7 @@ class Connection {
 		this.event = riot.observable();
 		this.me = me;
 
-		const host = CONFIG.api.url.replace('http', 'ws');
+		const host = CONFIG.apiUrl.replace('http', 'ws');
 		this.socket = new ReconnectingWebSocket(`${host}/messaging?i=${me.token}&otherparty=${otherparty}`);
 		this.socket.addEventListener('open', this.onOpen);
 		this.socket.addEventListener('message', this.onMessage);

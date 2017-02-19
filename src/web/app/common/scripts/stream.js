@@ -5,7 +5,7 @@ module.exports = me => {
 	let state = 'initializing';
 	const stateEv = riot.observable();
 	const event = riot.observable();
-	const host = CONFIG.api.url.replace('http', 'ws');
+	const host = CONFIG.apiUrl.replace('http', 'ws');
 	const socket = new ReconnectingWebSocket(`${host}?i=${me.token}`);
 
 	socket.onopen = () => {

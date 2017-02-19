@@ -24,7 +24,7 @@ module.exports = (i, endpoint, data = {}) => {
 
 	return new Promise((resolve, reject) => {
 		// Send request
-		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${CONFIG.api.url}/${endpoint}`, {
+		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${CONFIG.apiUrl}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: endpoint === 'signin' ? 'include' : 'omit'

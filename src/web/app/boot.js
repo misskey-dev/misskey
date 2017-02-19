@@ -17,6 +17,11 @@ require('./common/tags');
 
 document.domain = CONFIG.host;
 
+// Set global configration
+riot.mixin({
+	CONFIG: CONFIG
+});
+
 // ↓ iOS待ちPolyfill (SEE: http://caniuse.com/#feat=fetch)
 require('whatwg-fetch');
 
@@ -109,7 +114,7 @@ function fetchme(token, cb) {
 	}
 
 	// Fetch user
-	fetch(CONFIG.api.url + '/i', {
+	fetch(CONFIG.apiUrl + '/i', {
 		method: 'POST',
 		body: JSON.stringify({
 			i: token

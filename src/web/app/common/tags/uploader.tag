@@ -171,7 +171,7 @@
 				data.append \folder_id folder
 
 			xhr = new XMLHttpRequest!
-			xhr.open \POST CONFIG.api.url + '/drive/files/create' true
+			xhr.open \POST CONFIG.apiUrl + '/drive/files/create' true
 			xhr.onload = (e) ~>
 				drive-file = JSON.parse e.target.response
 

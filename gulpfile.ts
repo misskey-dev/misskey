@@ -168,8 +168,9 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 			'auth': './src/web/app/auth/script.js'
 		},
 		module: {
-			preLoaders: [
+			rules: [
 				{
+					enforce: 'pre',
 					test: /\.tag$/,
 					exclude: /node_modules/,
 					loader: StringReplacePlugin.replace({
@@ -179,8 +180,6 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 						]
 					})
 				},
-			],
-			loaders: [
 				{
 					test: /\.tag$/,
 					exclude: /node_modules/,
@@ -201,7 +200,17 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 				{
 					test: /\.styl$/,
 					exclude: /node_modules/,
-					loaders: ['style', 'css', 'stylus']
+					use: [
+						{
+							loader: 'style-loader'
+						},
+						{
+							loader: 'css-loader'
+						},
+						{
+							loader: 'stylus-loader'
+						}
+					]
 				}
 			]
 		},
@@ -233,7 +242,7 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 		//pack.plugins.push(new Webpack.optimize.UglifyJsPlugin())
 	}
 
-	let stream = webpack(pack);
+	let stream = webpack(pack, Webpack);
 
 	// TODO: remove this block
 	if (isProduction) {
