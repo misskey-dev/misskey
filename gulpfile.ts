@@ -159,7 +159,7 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 	const StringReplacePlugin = require('string-replace-webpack-plugin');
 
 	/* webpack options */
-	const pack = {
+	const pack: Webpack.Configuration = {
 		entry: {
 			'client': './src/web/app/client/script.js',
 			'desktop': './src/web/app/desktop/script.js',
@@ -170,22 +170,14 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 		module: {
 			preLoaders: [
 				{
-					test: /\.(tag|js|styl)$/,
+					test: /\.tag$/,
 					exclude: /node_modules/,
 					loader: StringReplacePlugin.replace({
 						replacements: [
-							{	pattern: /VERSION/g, replacement: () => `'${commit ? commit.hash : 'null'}'` },
 							{ pattern: /\$theme\-color\-foreground/g, replacement: () => '#fff' },
 							{ pattern: /\$theme\-color/g, replacement: () => config.themeColor },
-							{ pattern: /CONFIG\.theme\-color/g, replacement: () => `'${config.themeColor}'` },
-							{ pattern: /CONFIG\.themeColor/g, replacement: () => `'${config.themeColor}'` },
-							{ pattern: /CONFIG\.api\.url/g, replacement: () => `'${config.api_url}'` },
-							{ pattern: /CONFIG\.urls\.about/g, replacement: () => `'${config.about_url}'` },
-							{ pattern: /CONFIG\.urls\.dev/g, replacement: () => `'${config.dev_url}'` },
-							{ pattern: /CONFIG\.url/g, replacement: () => `'${config.url}'` },
-							{ pattern: /CONFIG\.host/g, replacement: () => `'${config.host}'` },
-							{ pattern: /CONFIG\.recaptcha\.siteKey/g, replacement: () => `'${config.recaptcha.siteKey}'` },
-						]})
+						]
+					})
 				},
 			],
 			loaders: [
@@ -208,12 +200,27 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 				},
 				{
 					test: /\.styl$/,
+					exclude: /node_modules/,
 					loaders: ['style', 'css', 'stylus']
 				}
 			]
 		},
 		plugins: [
-			new StringReplacePlugin()
+			new Webpack.DefinePlugin({
+				VERSION: JSON.stringify(commit ? commit.hash : null),
+				CONFIG: {
+					themeColor: JSON.stringify(config.themeColor),
+					apiUrl: JSON.stringify(config.api_url),
+					aboutUrl: JSON.stringify(config.about_url),
+					devUrl: JSON.stringify(config.dev_url),
+					host: JSON.stringify(config.host),
+					url: JSON.stringify(config.url),
+					recaptcha: {
+						siteKey: JSON.stringify(config.recaptcha.siteKey),
+					}
+				}
+			}),
+			new StringReplacePlugin(),
 		],
 		output: {
 			filename: '[name]/script.js'
