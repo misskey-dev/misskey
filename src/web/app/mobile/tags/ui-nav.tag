@@ -21,7 +21,7 @@
 				<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>設定<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 		</div>
-		<p class="about" href={ CONFIG.urls.about }><a>Misskeyについて</a></p>
+		<p class="about" href={ CONFIG.aboutUrl }><a>Misskeyについて</a></p>
 	</div>
 	<style>
 		:scope

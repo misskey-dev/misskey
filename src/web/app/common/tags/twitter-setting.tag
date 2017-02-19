@@ -1,10 +1,10 @@
 <mk-twitter-setting>
-	<p>お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。<a href={ CONFIG.urls.about + '/link-to-twitter' } target="_blank">詳細...</a></p>
+	<p>お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。<a href={ CONFIG.aboutUrl + '/link-to-twitter' } target="_blank">詳細...</a></p>
 	<p class="account" if={ I.twitter } title={ 'Twitter ID: ' + I.twitter.user_id }>次のTwitterアカウントに接続されています: <a href={ 'https://twitter.com/' + I.twitter.screen_name } target="_blank">@{ I.twitter.screen_name }</a></p>
 	<p>
-		<a href={ CONFIG.api.url + '/connect/twitter' } target="_blank">{ I.twitter ? '再接続する' : 'Twitterと接続する' }</a>
+		<a href={ CONFIG.apiUrl + '/connect/twitter' } target="_blank">{ I.twitter ? '再接続する' : 'Twitterと接続する' }</a>
 		<span if={ I.twitter }> or </span>
-		<a href={ CONFIG.api.url + '/disconnect/twitter' } target="_blank" if={ I.twitter }>切断する</a>
+		<a href={ CONFIG.apiUrl + '/disconnect/twitter' } target="_blank" if={ I.twitter }>切断する</a>
 	</p>
 	<p class="id" if={ I.twitter }>Twitter ID: { I.twitter.user_id }</p>
 	<style>

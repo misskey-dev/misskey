@@ -34,7 +34,7 @@
 		</label>
 		<label class="agree-tou">
 			<input name="agree-tou" type="checkbox" autocomplete="off" required="required"/>
-			<p><a href={ CONFIG.urls.about + '/tou' } target="_blank">利用規約</a>に同意する</p>
+			<p><a href={ CONFIG.aboutUrl + '/tou' } target="_blank">利用規約</a>に同意する</p>
 		</label>
 		<button onclick={ onsubmit }>アカウント作成</button>
 	</form>
