@@ -129,7 +129,7 @@
     "request": "2.79.0",
     "rimraf": "2.6.0",
     "riot": "3.3.0",
-    "riot-compiler": "3.2.0",
+    "riot-compiler": "3.2.1",
     "riot-tag-loader": "1.0.0",
     "riotify": "2.0.0",
     "rndstr": "1.0.0",
