@@ -1,6 +1,6 @@
 <mk-notify>
 	<mk-notification-preview notification={ opts.notification }></mk-notification-preview>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			position fixed

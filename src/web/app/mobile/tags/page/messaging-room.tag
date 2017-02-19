@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-messaging-room if={ !parent.fetching } user={ parent.user }></mk-messaging-room>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 	</style>

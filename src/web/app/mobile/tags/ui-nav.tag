@@ -23,7 +23,7 @@
 		</div>
 		<p class="about" href={ CONFIG.urls.about }><a>Misskeyについて</a></p>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display none
 

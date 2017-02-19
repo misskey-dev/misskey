@@ -11,7 +11,7 @@
 	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff

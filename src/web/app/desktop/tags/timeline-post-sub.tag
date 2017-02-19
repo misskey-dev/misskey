@@ -17,7 +17,7 @@
 		@title = @date-stringify @post.created_at
 
 	</script>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			margin 0

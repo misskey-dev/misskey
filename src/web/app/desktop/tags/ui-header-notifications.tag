@@ -3,7 +3,7 @@
 	<div class="notifications" if={ isOpen }>
 		<mk-notifications></mk-notifications>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			float left

@@ -1,6 +1,6 @@
 <mk-user-following>
 	<mk-users-list ref="list" fetch={ fetch } count={ user.following_count } you-know-count={ user.following_you_know_count } no-users={ 'フォロー中のユーザーはいないようです。' }></mk-users-list>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-home ref="home"></mk-home>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

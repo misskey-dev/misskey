@@ -9,7 +9,7 @@
 		<button if={ canFetchMore } onclick={ more } disabled={ fetching }><span if={ !fetching }>もっとみる</span><span if={ fetching }>読み込み中
 				<mk-ellipsis></mk-ellipsis></span></button>
 	</footer>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff

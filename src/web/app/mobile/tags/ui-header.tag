@@ -8,7 +8,7 @@
 			<button class="post" onclick={ post }><i class="fa fa-pencil"></i></button>
 		</div>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			$height = 48px
 

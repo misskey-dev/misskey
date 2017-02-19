@@ -7,7 +7,7 @@
 			もしご興味があれば、<a href="/syuilo" data-user-preview="@syuilo">@syuilo</a>までご連絡ください。ご協力ありがとうございます。
 		</p>
 	</article>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff

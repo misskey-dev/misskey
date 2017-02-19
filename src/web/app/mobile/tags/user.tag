@@ -24,7 +24,7 @@
 			<mk-user-graphs if={ page == 'graphs' } user={ user }></mk-user-graphs>
 		</div>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

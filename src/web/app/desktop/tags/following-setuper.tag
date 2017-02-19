@@ -13,7 +13,7 @@
 		<mk-ellipsis></mk-ellipsis>
 	</p><a class="refresh" onclick={ refresh }>もっと見る</a>
 	<button class="close" onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			padding 24px

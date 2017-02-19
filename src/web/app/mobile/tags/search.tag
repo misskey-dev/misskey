@@ -1,6 +1,6 @@
 <mk-search>
 	<mk-search-posts ref="posts" query={ query }></mk-search-posts>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

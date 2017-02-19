@@ -15,7 +15,7 @@
 			<mk-time time={ message.created_at }></mk-time><i class="fa fa-pencil is-edited" if={ message.is_edited }></i>
 		</footer>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			$me-balloon-color = #23A7B6
 

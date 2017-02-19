@@ -44,7 +44,7 @@
 			<code>{ file.hash }</code>
 		</div>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

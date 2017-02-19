@@ -10,7 +10,7 @@
 	<footer>
 		<mk-copyright></mk-copyright>
 	</footer>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			height 100%

@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-user-following ref="list" if={ !parent.fetching } user={ parent.user }></mk-user-following>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

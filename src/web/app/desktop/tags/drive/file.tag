@@ -10,7 +10,7 @@
 	</div>
 	<div class="thumbnail"><img src={ file.url + '?thumbnail&size=128' } alt=""/></div>
 	<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			margin 4px

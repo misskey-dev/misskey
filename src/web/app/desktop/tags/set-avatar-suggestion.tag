@@ -2,7 +2,7 @@
 	<p><b>アバターを設定</b>してみませんか？
 		<button onclick={ close }><i class="fa fa-times"></i></button>
 	</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			cursor pointer

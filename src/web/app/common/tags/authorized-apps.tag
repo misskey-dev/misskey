@@ -6,7 +6,7 @@
 			<p>{ app.description }</p>
 		</div>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

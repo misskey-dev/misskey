@@ -1,6 +1,6 @@
 <mk-tips-home-widget>
 	<p ref="tip"><i class="fa fa-lightbulb-o"></i><span ref="text"></span></p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background transparent !important

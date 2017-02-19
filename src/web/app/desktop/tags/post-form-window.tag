@@ -9,7 +9,7 @@
 			<mk-post-form ref="form" reply={ parent.opts.reply }></mk-post-form>
 		</div></yield>
 	</mk-window>
-	<style type="stylus">
+	<style>
 		:scope
 			> mk-window
 

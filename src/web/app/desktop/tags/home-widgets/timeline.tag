@@ -5,7 +5,7 @@
 	</div>
 	<p class="empty" if={ isEmpty }><i class="fa fa-comments-o"></i>自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
 	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i></yield></mk-timeline>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff

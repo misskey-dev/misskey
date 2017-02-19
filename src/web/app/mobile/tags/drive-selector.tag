@@ -7,7 +7,7 @@
 		</header>
 		<mk-drive ref="browser" select={ true } multiple={ opts.multiple }></mk-drive>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

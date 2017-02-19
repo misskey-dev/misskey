@@ -8,7 +8,7 @@
 	<footer><a href={ '/' + user.username }>投稿</a><a href={ '/' + user.username + '/media' }>メディア</a><a href={ '/' + user.username + '/graphs' }>グラフ</a>
 		<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
 	</footer>
-	<style type="stylus">
+	<style>
 		:scope
 			$footer-height = 58px
 

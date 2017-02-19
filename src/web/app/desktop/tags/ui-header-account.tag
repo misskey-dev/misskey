@@ -19,7 +19,7 @@
 			</li>
 		</ul>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			float left

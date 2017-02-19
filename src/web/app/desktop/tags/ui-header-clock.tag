@@ -5,7 +5,7 @@
 	<div class="content">
 		<mk-analog-clock></mk-analog-clock>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display inline-block
 			overflow visible

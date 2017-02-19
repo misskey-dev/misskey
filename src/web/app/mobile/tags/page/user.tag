@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-user ref="user" user={ parent.user } page={ parent.opts.page }></mk-user>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

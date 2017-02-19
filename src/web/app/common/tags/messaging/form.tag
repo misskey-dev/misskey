@@ -6,7 +6,7 @@
 	<button class="attach-from-local" type="button" title="PCから画像を添付する"><i class="fa fa-upload"></i></button>
 	<button class="attach-from-drive" type="button" title="アルバムから画像を添付する"><i class="fa fa-folder-open"></i></button>
 	<input name="file" type="file" accept="image/*"/>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

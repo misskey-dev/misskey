@@ -1,6 +1,6 @@
 <mk-home>
 	<mk-home-timeline ref="tl"></mk-home-timeline>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

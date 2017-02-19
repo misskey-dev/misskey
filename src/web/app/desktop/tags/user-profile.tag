@@ -14,7 +14,7 @@
 		<p class="following"><i class="fa fa-angle-right"></i><a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
 		<p class="followers"><i class="fa fa-angle-right"></i><a onclick={ showFollowers }>{ user.followers_count }</a>人の<b>フォロワー</b></p>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff

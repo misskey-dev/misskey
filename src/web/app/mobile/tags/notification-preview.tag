@@ -40,7 +40,7 @@
 			<p class="post-ref">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			margin 0

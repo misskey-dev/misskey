@@ -1,6 +1,6 @@
 <mk-images-viewer>
 	<div class="image" ref="view" onmousemove={ mousemove } style={ 'background-image: url(' + image.url + '?thumbnail' } onclick={ click }><img src={ image.url + '?thumbnail&size=512' } alt={ image.name } title={ image.name }/></div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			padding 8px

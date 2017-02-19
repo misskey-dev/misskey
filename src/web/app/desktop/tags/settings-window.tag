@@ -3,7 +3,7 @@
 <yield to="content">
 		<mk-settings></mk-settings></yield>
 	</mk-window>
-	<style type="stylus">
+	<style>
 		:scope
 			> mk-window
 				[data-yield='header']

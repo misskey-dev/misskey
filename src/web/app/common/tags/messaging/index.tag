@@ -32,7 +32,7 @@
 		</virtual>
 	</div>
 	<p class="no-history" if={ history.length == 0 }>履歴はありません。<br/>ユーザーを検索して、いつでもメッセージを送受信できます。</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

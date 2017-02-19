@@ -1,6 +1,6 @@
 <mk-user-likes-graph>
 	<canvas ref="canv" width="750" height="250"></canvas>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			width 750px

@@ -79,7 +79,7 @@
 			<mk-api-info></mk-api-info>
 		</section>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display flex
 			width 100%

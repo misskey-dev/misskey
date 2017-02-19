@@ -3,7 +3,7 @@
 <yield to="content">
 		<mk-user-following user={ parent.user }></mk-user-following></yield>
 	</mk-window>
-	<style type="stylus">
+	<style>
 		:scope
 			> mk-window
 				[data-yield='header']

@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-messaging ref="index"></mk-messaging>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 	</style>

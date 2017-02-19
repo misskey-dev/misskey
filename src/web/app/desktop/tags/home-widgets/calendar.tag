@@ -24,7 +24,7 @@
 			</div>
 		</div>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			padding 16px 0

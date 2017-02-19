@@ -8,7 +8,7 @@
 				<p>お知らせ</p></a></li>
 		<li class="tv"><a href="https://misskey.tk" target="_blank"><i class="fa fa-television"></i>
 				<p>MisskeyTV™</p></a></li>
-		<style type="stylus">
+		<style>
 			:scope
 				display inline-block
 				margin 0

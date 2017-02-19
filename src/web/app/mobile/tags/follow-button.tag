@@ -1,7 +1,7 @@
 <mk-follow-button>
 	<button class={ wait: wait, follow: !user.is_following, unfollow: user.is_following } if={ !init } onclick={ onclick } disabled={ wait }><i class="fa fa-minus" if={ !wait && user.is_following }></i><i class="fa fa-plus" if={ !wait && !user.is_following }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ wait }></i>{ user.is_following ? 'フォロー解除' : 'フォロー' }</button>
 	<div class="init" if={ init }><i class="fa fa-spinner fa-pulse fa-fw"></i></div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

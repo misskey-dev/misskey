@@ -3,7 +3,7 @@
 		<h1>{ query }</h1>
 	</header>
 	<mk-search-posts ref="posts" query={ query }></mk-search-posts>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			padding-bottom 32px

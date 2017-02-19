@@ -5,7 +5,7 @@
 	<p>万が一このトークンが漏れたりその可能性がある場合は
 		<button class="regenerate" onclick={ regenerateToken }>トークンを再生成</button>できます。(副作用として、ログインしているすべてのデバイスでログアウトが発生します)
 	</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

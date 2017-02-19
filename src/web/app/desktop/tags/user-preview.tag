@@ -19,7 +19,7 @@
 		</div>
 		<mk-follow-button if={ SIGNIN && user.id != I.id } user={ userPromise }></mk-follow-button>
 	</virtual>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			position absolute

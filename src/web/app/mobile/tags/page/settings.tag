@@ -8,7 +8,7 @@
 			<li><a href="./settings/api"><i class="fa fa-key"></i>API</a></li>
 		</ul>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 	</style>

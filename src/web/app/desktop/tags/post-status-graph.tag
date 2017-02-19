@@ -1,6 +1,6 @@
 <mk-post-status-graph>
 	<canvas ref="canv" width={ opts.width } height={ opts.height }></canvas>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

@@ -6,7 +6,7 @@
 	<main>
 		<mk-user-timeline ref="tl" user={ user }></mk-user-timeline>
 	</main>
-	<style type="stylus">
+	<style>
 		:scope
 			display flex
 			justify-content center

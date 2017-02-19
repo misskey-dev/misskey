@@ -6,7 +6,7 @@
 			<pre><code>{ JSON.stringify(headers, null, '    ') }</code></pre>
 		</div>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

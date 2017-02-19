@@ -38,7 +38,7 @@
 		</label>
 		<button onclick={ onsubmit }>アカウント作成</button>
 	</form>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			min-width 302px

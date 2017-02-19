@@ -2,7 +2,7 @@
 	<div class="container">
 		<p class="name"><i class="fa fa-folder"></i>{ folder.name }</p><i class="fa fa-angle-right"></i>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			color #777

@@ -5,7 +5,7 @@
 			<div class="mask"></div>
 		</main>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

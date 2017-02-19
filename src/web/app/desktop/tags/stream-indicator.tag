@@ -4,7 +4,7 @@
 	<p if={ state == 'reconnecting' }><i class="fa fa-spinner fa-spin"></i><span>切断されました 接続中
 			<mk-ellipsis></mk-ellipsis></span></p>
 	<p if={ state == 'connected' }><i class="fa fa-check"></i><span>接続完了</span></p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			pointer-events none

@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-notifications ref="notifications"></mk-notifications>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

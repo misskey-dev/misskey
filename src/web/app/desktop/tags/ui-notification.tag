@@ -1,6 +1,6 @@
 <mk-ui-notification>
 	<p>{ opts.message }</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			position fixed

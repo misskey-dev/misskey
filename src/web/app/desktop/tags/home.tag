@@ -7,7 +7,7 @@
 		</main>
 		<div class="right" ref="right"></div>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

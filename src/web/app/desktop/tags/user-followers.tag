@@ -1,6 +1,6 @@
 <mk-user-followers>
 	<mk-users-list fetch={ fetch } count={ user.followers_count } you-know-count={ user.followers_you_know_count } no-users={ 'フォロワーはいないようです。' }></mk-users-list>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			height 100%

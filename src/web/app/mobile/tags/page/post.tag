@@ -4,7 +4,7 @@
 			<mk-post-detail ref="post" post={ parent.post }></mk-post-detail>
 		</main>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

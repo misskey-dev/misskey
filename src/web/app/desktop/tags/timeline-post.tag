@@ -63,7 +63,7 @@
 	<div class="detail" if={ isDetailOpened }>
 		<mk-post-status-graph width="462" height="130" post={ p }></mk-post-status-graph>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			margin 0

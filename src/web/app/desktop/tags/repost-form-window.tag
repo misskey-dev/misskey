@@ -3,7 +3,7 @@
 <yield to="content">
 		<mk-repost-form ref="form" post={ parent.opts.post }></mk-repost-form></yield>
 	</mk-window>
-	<style type="stylus">
+	<style>
 		:scope
 			> mk-window
 				[data-yield='header']

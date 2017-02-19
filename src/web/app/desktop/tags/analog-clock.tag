@@ -1,6 +1,6 @@
 <mk-analog-clock>
 	<canvas ref="canvas" width="256" height="256"></canvas>
-	<style type="stylus">
+	<style>
 		:scope
 			> canvas
 				display block

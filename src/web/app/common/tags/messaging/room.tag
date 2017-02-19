@@ -13,7 +13,7 @@
 		<div class="grippie" title="ドラッグしてフォームの広さを調整"></div>
 		<mk-messaging-form user={ user }></mk-messaging-form>
 	</footer>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

@@ -7,7 +7,7 @@
 		<a href={ CONFIG.api.url + '/disconnect/twitter' } target="_blank" if={ I.twitter }>切断する</a>
 	</p>
 	<p class="id" if={ I.twitter }>Twitter ID: { I.twitter.user_id }</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

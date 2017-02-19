@@ -7,7 +7,7 @@
 		<button class="cancel" onclick={ cancel }>キャンセル</button>
 		<button class="ok" onclick={ ok }>Repost</button>
 	</footer>
-	<style type="stylus">
+	<style>
 		:scope
 
 			> mk-post-preview

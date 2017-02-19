@@ -16,7 +16,7 @@
 			</div>
 		</div>
 	</article>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			margin 0

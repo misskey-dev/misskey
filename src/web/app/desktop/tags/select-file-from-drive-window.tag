@@ -9,7 +9,7 @@
 			<button class="ok" disabled={ parent.multiple && parent.file.length == 0 } onclick={ parent.ok }>決定</button>
 		</div></yield>
 	</mk-window>
-	<style type="stylus">
+	<style>
 		:scope
 			> mk-window
 				[data-yield='header']

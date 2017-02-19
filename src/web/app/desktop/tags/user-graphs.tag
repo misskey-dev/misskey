@@ -11,7 +11,7 @@
 		<h1>いいね</h1>
 		<mk-user-likes-graph user={ opts.user }></mk-user-likes-graph>
 	</section>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

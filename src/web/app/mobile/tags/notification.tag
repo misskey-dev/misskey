@@ -83,7 +83,7 @@
 			<a class="post-ref" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
 	</virtual>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			margin 0

@@ -5,7 +5,7 @@
 <p>無料で誰でも利用でき、広告は一切掲載していません。</p>
 <p><a href={ CONFIG.urls.about } target="_blank">もっと知りたい方はこちら</a></p>
 	</article>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

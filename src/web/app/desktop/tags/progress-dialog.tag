@@ -12,7 +12,7 @@
 			<div class="progress waiting" if={ parent.value >= parent.max }></div>
 		</div></yield>
 	</mk-window>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

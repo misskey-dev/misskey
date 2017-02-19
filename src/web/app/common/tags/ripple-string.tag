@@ -1,5 +1,5 @@
 <mk-ripple-string><yield/>
-	<style type="stylus">
+	<style>
 		:scope
 			display inline
 

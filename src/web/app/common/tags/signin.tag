@@ -8,7 +8,7 @@
 		</label>
 		<button type="submit" disabled={ signing }>{ signing ? 'やっています...' : 'サインイン' }</button>
 	</form>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

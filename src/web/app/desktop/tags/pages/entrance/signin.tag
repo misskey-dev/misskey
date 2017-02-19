@@ -7,7 +7,7 @@
 	</div>
 	<div class="divider"><span>or</span></div>
 	<button class="signup" onclick={ parent.signup }>新規登録</button><a class="introduction" onclick={ introduction }>Misskeyについて</a>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			width 290px

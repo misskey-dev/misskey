@@ -14,7 +14,7 @@
 	<button class="destroy" onclick={ destroy } title="投票を破棄">
 		<i class="fa fa-times"></i>
 	</button>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			padding 8px

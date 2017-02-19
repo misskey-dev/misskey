@@ -3,7 +3,7 @@
 		<input ref="q" type="search" placeholder="&#xf002; 検索"/>
 		<div class="result"></div>
 	</form>
-	<style type="stylus">
+	<style>
 		:scope
 
 			> form

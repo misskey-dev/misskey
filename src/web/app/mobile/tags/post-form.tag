@@ -27,7 +27,7 @@
 		<button class="poll" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			padding-top 50px

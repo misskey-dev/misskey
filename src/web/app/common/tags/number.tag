@@ -1,5 +1,5 @@
 <mk-number>
-	<style type="stylus">
+	<style>
 		:scope
 			display inline
 

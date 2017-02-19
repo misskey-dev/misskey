@@ -6,7 +6,7 @@
 			<span class="username">@{ username }</span>
 		</li>
 	</ol>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			position absolute

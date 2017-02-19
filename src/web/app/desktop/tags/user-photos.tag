@@ -9,7 +9,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !initializing && images.length == 0 }>写真はありません</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff

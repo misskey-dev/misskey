@@ -1,5 +1,5 @@
 <mk-raw>
-	<style type="stylus">
+	<style>
 		:scope
 			display inline
 

@@ -9,7 +9,7 @@
 				<p>{ sitename }</p>
 			</footer>
 		</article></a>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			font-size 16px

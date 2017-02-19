@@ -1,5 +1,5 @@
 <mk-url><a href={ url } target={ opts.target }><span class="schema">{ schema }//</span><span class="hostname">{ hostname }</span><span class="port" if={ port != '' }>:{ port }</span><span class="pathname" if={ pathname != '' }>{ pathname }</span><span class="query">{ query }</span><span class="hash">{ hash }</span></a>
-	<style type="stylus">
+	<style>
 		:scope
 			word-break break-all
 

@@ -19,7 +19,7 @@
 		}
 
 	</style>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			height 100%

@@ -2,7 +2,7 @@
 	<div></div>
 	<div></div>
 	<div></div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			width 70px

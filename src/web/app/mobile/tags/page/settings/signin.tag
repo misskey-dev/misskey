@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-signin-history></mk-signin-history>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 	</style>

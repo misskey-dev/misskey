@@ -10,7 +10,7 @@
 	</div>
 	<h1>開発者募集中！</h1>
 	<p><a href="https://github.com/syuilo/misskey" target="_blank">Misskeyはオープンソースで開発されています。リポジトリはこちら。</a></p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			padding 10px 10px 10px 50px

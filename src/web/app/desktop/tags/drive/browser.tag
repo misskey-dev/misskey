@@ -39,7 +39,7 @@
 	<div class="dropzone" if={ draghover }></div>
 	<mk-uploader ref="uploader"></mk-uploader>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" onchange={ changeFileInput }/>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

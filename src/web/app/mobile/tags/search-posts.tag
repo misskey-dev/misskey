@@ -1,6 +1,6 @@
 <mk-search-posts>
 	<mk-timeline init={ init } more={ more } empty={ '「' + query + '」に関する投稿は見つかりませんでした。' }></mk-timeline>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff

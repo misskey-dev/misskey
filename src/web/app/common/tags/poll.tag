@@ -15,7 +15,7 @@
 		<a if={ !isVoted } onclick={ toggleResult }>{ result ? '投票する' : '結果を見る' }</a>
 		<span if={ isVoted }>投票済み</span>
 	</p>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

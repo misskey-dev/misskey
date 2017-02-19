@@ -6,7 +6,7 @@
 		<div class="content"><yield /></div>
 	</div>
 	<mk-stream-indicator></mk-stream-indicator>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

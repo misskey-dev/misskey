@@ -9,7 +9,7 @@
 			<input value={ app.secret } readonly="readonly"/>
 		</div>
 	</main>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 

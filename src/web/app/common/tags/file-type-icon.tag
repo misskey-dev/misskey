@@ -1,6 +1,6 @@
 <mk-file-type-icon>
 	<i class="fa fa-file-image-o" if={ kind == 'image' }></i>
-	<style type="stylus">
+	<style>
 		:scope
 			display inline
 	</style>

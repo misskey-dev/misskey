@@ -1,6 +1,6 @@
 <mk-ui-header-post-button>
 	<button onclick={ post } title="新規投稿"><i class="fa fa-pencil-square-o"></i></button>
-	<style type="stylus">
+	<style>
 		:scope
 			display inline-block
 			padding 8px

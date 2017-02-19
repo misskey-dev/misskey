@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-twitter-setting></mk-twitter-setting>
 	</mk-ui>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 	</style>

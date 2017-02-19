@@ -20,7 +20,7 @@
 			よろしくお願いいたします。
 		</p>
 	</div>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			color #fff

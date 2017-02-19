@@ -39,7 +39,7 @@
 		</div>
 	</div>
 	<mk-drive-file-viewer if={ file != null } file={ file }></mk-drive-file-viewer>
-	<style type="stylus">
+	<style>
 		:scope
 			display block
 			background #fff
