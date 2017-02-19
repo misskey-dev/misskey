@@ -6,7 +6,6 @@
 		"noUnusedParameters": false,
 		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
-		"experimentalDecorators": true,
 		"declaration": false,
 		"sourceMap": false,
 		"target": "es6",
@@ -19,7 +18,9 @@
 	"compileOnSave": false,
 	"include": [
 		"./node_modules/typescript/lib/lib.es6.d.ts",
-		"./src/**/*.ts",
-		"!./src/web/**/*.ts"
+		"./src/**/*.ts"
+	],
+	"exclude": [
+		"./src/web/**/*.ts"
 	]
 }
