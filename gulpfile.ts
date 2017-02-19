@@ -12,7 +12,6 @@ import * as tslint from 'gulp-tslint';
 import * as glob from 'glob';
 import * as es from 'event-stream';
 import * as webpack from 'webpack-stream';
-import stylus = require('gulp-stylus');
 import cssnano = require('gulp-cssnano');
 import * as uglify from 'gulp-uglify';
 import riotify = require('riotify');
@@ -164,25 +163,36 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 			.pipe(babel({
 				presets: ['es2015']
 			}))
+			.pipe(uglify());
+	}
+
+	let entryPointStream = gulp.src('./src/web/app/client/script.js');
+
+	if (isProduction) {
+		entryPointStream = entryPointStream
+			// ↓ https://github.com/mishoo/UglifyJS2/issues/448
+			.pipe(babel({
+				presets: ['es2015']
+			}))
 			.pipe(uglify({
-				compress: true
+				mangle: {
+					toplevel: true
+				}
 			}));
 	}
 
-	stream.pipe(gulp.dest('./built/web/resources/'));
+	es.merge(
+		stream.pipe(gulp.dest('./built/web/resources/')),
+		entryPointStream.pipe(gulp.dest('./built/web/resources/client/'))
+	);
 
 	ok();
 }));
 
 gulp.task('build:client:styles', () =>
-	gulp.src('./src/web/app/init.styl')
-		.pipe(stylus({
-			compress: true
-		}))
+	gulp.src('./src/web/app/init.css')
 		.pipe(isProduction
-			? cssnano({
-				safe: true // 高度な圧縮は無効にする (一部デザインが不適切になる場合があるため)
-			})
+			? cssnano()
 			: gutil.noop())
 		.pipe(gulp.dest('./built/web/resources/'))
 );

@@ -101,7 +101,6 @@
     "gulp-pug": "3.2.0",
     "gulp-rename": "1.2.2",
     "gulp-replace": "0.5.4",
-    "gulp-stylus": "2.6.0",
     "gulp-tslint": "7.1.0",
     "gulp-typescript": "3.1.5",
     "gulp-uglify": "2.0.1",

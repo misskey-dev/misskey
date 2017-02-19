@@ -7,7 +7,6 @@ module.exports = (config, commit, env) => {
 
 	const pack: webpack.Configuration = {
 		entry: {
-			'client': './src/web/app/client/script.js',
 			'desktop': './src/web/app/desktop/script.js',
 			'mobile': './src/web/app/mobile/script.js',
 			'dev': './src/web/app/dev/script.js',
