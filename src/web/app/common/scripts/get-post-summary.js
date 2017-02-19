@@ -14,8 +14,7 @@ const summarize = post => {
 	// 返信のとき
 	if (post.reply_to_id) {
 		if (post.reply_to) {
-			replySummary = summarize(post.reply_to);
-			summary += ` RE: ${replySummary}`;
+			summary += ` RE: ${summarize(post.reply_to)}`;
 		} else {
 			summary += ' RE: ...';
 		}
@@ -24,8 +23,7 @@ const summarize = post => {
 	// Repostのとき
 	if (post.repost_id) {
 		if (post.repost) {
-			repostSummary = summarize(post.repost);
-			summary += ` RP: ${repostSummary}`;
+			summary += ` RP: ${summarize(post.repost)}`;
 		} else {
 			summary += ' RP: ...';
 		}
