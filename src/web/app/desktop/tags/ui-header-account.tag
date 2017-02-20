@@ -159,54 +159,54 @@
 
 	</style>
 	<script>
+		const contains = require('../../common/scripts/contains');
+
 		this.mixin('i');
 		this.mixin('signout');
 
-		this.is-open = false
+		this.isOpen = false;
 
 		this.on('before-unmount', () => {
-			@close();
+			this.close();
+		});
 
 		this.toggle = () => {
-			if @is-open
-				@close();
-			else
-				@open!
+			this.isOpen ? this.close() : this.open();
+		};
 
 		this.open = () => {
-			this.is-open = true
-			this.update();
-			all = document.query-selector-all 'body *'
-			Array.prototype.forEach.call all, (el) =>
-				el.addEventListener 'mousedown' @mousedown
+			this.update({
+				isOpen: true
+			});
+			document.querySelectorAll('body *').forEach(el => {
+				el.addEventListener('mousedown', this.mousedown);
+			});
+		};
 
 		this.close = () => {
-			this.is-open = false
-			this.update();
-			all = document.query-selector-all 'body *'
-			Array.prototype.forEach.call all, (el) =>
-				el.removeEventListener 'mousedown' @mousedown
+			this.update({
+				isOpen: false
+			});
+			document.querySelectorAll('body *').forEach(el => {
+				el.removeEventListener('mousedown', this.mousedown);
+			});
+		};
 
-		this.mousedown = (e) => {
+		this.mousedown = e => {
 			e.preventDefault();
-			if (!contains this.root, e.target) and (this.root != e.target)
-				@close();
-			return false
+			if (!contains(this.root, e.target) && this.root != e.target) this.close();
+			return false;
+		};
 
 		this.drive = () => {
-			@close();
-			riot.mount document.body.appendChild(document.createElement('mk-drive-browser-window'));
- 
+			this.close();
+			riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-window')));
+		};
+
 		this.settings = () => {
-			@close();
-			riot.mount document.body.appendChild(document.createElement('mk-settings-window'));
- 
-		function contains(parent, child)
-			node = child.parentNode
-			while node?
-				if node == parent
-					return true
-				node = node.parentNode
-			return false
+			this.close();
+			riot.mount(document.body.appendChild(document.createElement('mk-settings-window')));
+		};
+
 	</script>
 </mk-ui-header-account>

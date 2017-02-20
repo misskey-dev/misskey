@@ -1,6 +1,9 @@
 <mk-ui-header-clock>
 	<div class="header">
-		<time ref="time"></time>
+		<time ref="time">
+			<span class="yyyymmdd">{ yyyy }/{ mm }/{ dd }</span>
+			<span class="hhnn">{ hh }<span style="visibility:{ now.getSeconds() % 2 == 0 ? 'visible' : 'hidden' }">:</span>{ nn }</span>
+		</time>
 	</div>
 	<div class="content">
 		<mk-analog-clock></mk-analog-clock>
@@ -13,7 +16,7 @@
 			> .header
 				padding 0 12px
 				text-align center
-				font-size 0.5em
+				font-size 10px
 
 				&, *
 					cursor: default
@@ -59,29 +62,21 @@
 	</style>
 	<script>
 		this.draw = () => {
-			const now = new Date();
-
-			yyyy = now.getFullYear()
-			mm = (\0 + (now.getMonth() + 1)).slice -2
-			dd = (\0 + now.getDate()).slice -2
-			yyyymmdd = "<span class='yyyymmdd'>#yyyy/#mm/#dd</span>"
-
-			hh = (\0 + now.getHours()).slice -2
-			mm = (\0 + now.getMinutes()).slice -2
-			hhmm = "<span class='hhmm'>#hh:#mm</span>"
-
-			if now.get-seconds! % 2 == 0
-				hhmm .= replace ':' '<span style=\'visibility:visible\'>:</span>'
-			else
-				hhmm .= replace ':' '<span style=\'visibility:hidden\'>:</span>'
-
-			this.refs.time.innerHTML = "#yyyymmdd<br>#hhmm"
+			this.now = new Date();
+			this.yyyy = now.getFullYear();
+			this.mm = ('0' + (now.getMonth() + 1)).slice(-2);
+			this.dd = ('0' + now.getDate()).slice(-2);
+			this.hh = ('0' + now.getHours()).slice(-2);
+			this.nn = ('0' + now.getMinutes()).slice(-2);
+		};
 
 		this.on('mount', () => {
-			@draw!
-			this.clock = setInterval @draw, 1000ms
+			this.draw();
+			this.clock = setInterval(this.draw, 1000);
+		});
 
 		this.on('unmount', () => {
-			clearInterval @clock
+			clearInterval(this.clock);
+		});
 	</script>
 </mk-ui-header-clock>
