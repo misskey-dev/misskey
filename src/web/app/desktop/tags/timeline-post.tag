@@ -318,14 +318,14 @@
 		this.mixin('user-preview');
 		this.mixin('NotImplementedException');
 
-		this.post = this.opts.post
-		this.is-repost = this.post.repost? and !this.post.text?
-		this.p = if @is-repost then this.post.repost else this.post
+		this.post = this.opts.post;
+		this.isRepost = this.post.repost != null && this.post.text == null;
+		this.p = this.isRepost ? this.post.repost : this.post;
 
-		this.title = @date-stringify this.p.created_at
+		this.title = this.dateStringify(this.p.created_at);
 
-		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id
-		this.is-detail-opened = false
+		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id;
+		this.isDetailOpened = false;
 
 		this.on('mount', () => {
 			if this.p.text?
