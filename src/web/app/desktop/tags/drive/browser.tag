@@ -243,24 +243,24 @@
 		this.mixin('input-dialog');
 		this.mixin('stream');
 
-		this.files = []
-		this.folders = []
-		this.hierarchy-folders = []
+		this.files = [];
+		this.folders = [];
+		this.hierarchyFolders = [];
 
-		this.uploads = []
+		this.uploads = [];
 
 		// 現在の階層(フォルダ)
 		// * null でルートを表す
-		this.folder = null
+		this.folder = null;
 
 		this.multiple = if this.opts.multiple? then this.opts.multiple else false
 
 		// ドロップされようとしているか
-		this.draghover = false
+		this.draghover = false;
 
 		// 自信の所有するアイテムがドラッグをスタートさせたか
 		// (自分自身の階層にドロップできないようにするためのフラグ)
-		this.is-drag-source = false
+		this.is-drag-source = false;
 
 		this.on('mount', () => {
 			this.refs.uploader.on('uploaded', (file) => {
@@ -270,10 +270,10 @@
 				this.uploads = uploads
 				this.update();
 
-			@stream.on 'drive_file_created' this.on-stream-drive-file-created
-			@stream.on 'drive_file_updated' this.on-stream-drive-file-updated
-			@stream.on 'drive_folder_created' this.on-stream-drive-folder-created
-			@stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.on 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.on 'drive_file_updated' this.on-stream-drive-file-updated
+			this.stream.on 'drive_folder_created' this.on-stream-drive-folder-created
+			this.stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
 
 			// Riotのバグでnullを渡しても""になる
 			// https://github.com/riot/riot/issues/2080
@@ -284,10 +284,10 @@
 				@load!
 
 		this.on('unmount', () => {
-			@stream.off 'drive_file_created' this.on-stream-drive-file-created
-			@stream.off 'drive_file_updated' this.on-stream-drive-file-updated
-			@stream.off 'drive_folder_created' this.on-stream-drive-folder-created
-			@stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.off 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.off 'drive_file_updated' this.on-stream-drive-file-updated
+			this.stream.off 'drive_folder_created' this.on-stream-drive-folder-created
+			this.stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
 
 		this.on-stream-drive-file-created = (file) => {
 			@add-file file, true
@@ -315,30 +315,30 @@
 
 			rect = this.refs.main.get-bounding-client-rect!
 
-			left = e.page-x + this.refs.main.scroll-left - rect.left - window.page-x-offset
-			top = e.page-y + this.refs.main.scroll-top - rect.top - window.page-y-offset
+			left = e.pageX + this.refs.main.scroll-left - rect.left - window.pageXOffset
+			top = e.pageY + this.refs.main.scroll-top - rect.top - window.pageYOffset
 
 			move = (e) =>
 				this.refs.selection.style.display = 'block' 
 
-				cursor-x = e.page-x + this.refs.main.scroll-left - rect.left - window.page-x-offset
-				cursor-y = e.page-y + this.refs.main.scroll-top - rect.top - window.page-y-offset
-				w = cursor-x - left
-				h = cursor-y - top
+				cursorX = e.pageX + this.refs.main.scroll-left - rect.left - window.pageXOffset
+				cursorY = e.pageY + this.refs.main.scroll-top - rect.top - window.pageYOffset
+				w = cursorX - left
+				h = cursorY - top
 
 				if w > 0
 					this.refs.selection.style.width = w + 'px' 
 					this.refs.selection.style.left = left + 'px' 
 				else
 					this.refs.selection.style.width = -w + 'px' 
-					this.refs.selection.style.left = cursor-x + 'px' 
+					this.refs.selection.style.left = cursorX + 'px' 
 
 				if h > 0
 					this.refs.selection.style.height = h + 'px' 
 					this.refs.selection.style.top = top + 'px' 
 				else
 					this.refs.selection.style.height = -h + 'px' 
-					this.refs.selection.style.top = cursor-y + 'px' 
+					this.refs.selection.style.top = cursorY + 'px' 
 
 			up = (e) =>
 				document.document-element.removeEventListener 'mousemove' move
@@ -351,7 +351,7 @@
 
 		this.path-oncontextmenu = (e) => {
 			e.preventDefault();
-			e.stop-immediate-propagation!
+			e.stopImmediatePropagation();
 			return false
 
 		this.ondragover = (e) => {
@@ -361,7 +361,7 @@
 			// ドラッグ元が自分自身の所有するアイテムかどうか
 			if !@is-drag-source
 				// ドラッグされてきたものがファイルだったら
-				if e.dataTransfer.effect-allowed == 'all' 
+				if e.dataTransfer.effectAllowed == 'all' 
 					e.dataTransfer.dropEffect = 'copy' 
 				else
 					e.dataTransfer.dropEffect = 'move' 
@@ -387,7 +387,7 @@
 
 			// ドロップされてきたものがファイルだったら
 			if e.dataTransfer.files.length > 0
-				Array.prototype.for-each.call e.dataTransfer.files, (file) =>
+				Array.prototype.forEach.call e.dataTransfer.files, (file) =>
 					@upload file, this.folder
 				return false
 
@@ -440,20 +440,20 @@
 
 		this.oncontextmenu = (e) => {
 			e.preventDefault();
-			e.stop-immediate-propagation!
+			e.stopImmediatePropagation();
 
 			ctx = document.body.appendChild document.createElement 'mk-drive-browser-base-contextmenu' 
 			ctx = riot.mount ctx, do
-				browser: @
+				browser: this
 			ctx = ctx.0
 			ctx.open do
-				x: e.page-x - window.page-x-offset
-				y: e.page-y - window.page-y-offset
+				x: e.pageX - window.pageXOffset
+				y: e.pageY - window.pageYOffset
 
 			return false
 
 		this.select-local-file = () => {
-			this.refs.file-input.click!
+			this.refs.file-input.click();
 
 		this.url-upload = () => {
 			url <~ @input-dialog do
@@ -522,10 +522,10 @@
 				folder_id: target-folder
 			.then (folder) =>
 				this.folder = folder
-				this.hierarchy-folders = []
+				this.hierarchyFolders = []
 
 				x = (f) =>
-					@hierarchy-folders.unshift f
+					@hierarchyFolders.unshift f
 					if f.parent?
 						x f.parent
 
@@ -588,7 +588,7 @@
 		this.go-root = () => {
 			if this.folder != null
 				this.folder = null
-				this.hierarchy-folders = []
+				this.hierarchyFolders = []
 				this.update();
 				@load!
 
@@ -635,9 +635,9 @@
 			flag = false
 			complete = =>
 				if flag
-					load-folders.for-each (folder) =>
+					load-folders.forEach (folder) =>
 						@add-folder folder
-					load-files.for-each (file) =>
+					load-files.forEach (file) =>
 						@add-file file
 					this.loading = false
 					this.update();

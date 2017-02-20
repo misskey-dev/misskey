@@ -80,10 +80,10 @@
 	</style>
 	<script>
 		this.can-through = if opts.can-through? then opts.can-through else true
-		this.opts.buttons.for-each (button) =>
+		this.opts.buttons.forEach (button) =>
 			button._onclick = =>
 				if button.onclick?
-					button.onclick!
+					button.onclick();
 				@close!
 
 		this.on('mount', () => {

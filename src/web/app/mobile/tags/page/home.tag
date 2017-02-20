@@ -22,14 +22,14 @@
 
 			this.Progress.start();
 
-			@stream.on 'post' this.on-stream-post
+			this.stream.on 'post' this.on-stream-post
 			document.addEventListener 'visibilitychange' @window-on-visibilitychange, false
 
 			this.refs.ui.refs.home.on('loaded', () => {
 				this.Progress.done();
 
 		this.on('unmount', () => {
-			@stream.off 'post' this.on-stream-post
+			this.stream.off 'post' this.on-stream-post
 			document.removeEventListener 'visibilitychange' @window-on-visibilitychange
 
 		this.on-stream-post = (post) => {

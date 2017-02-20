@@ -349,18 +349,18 @@
 				this.post = post
 				this.trigger('loaded');
 
-				this.is-repost = @post.repost?
-				this.p = if @is-repost then @post.repost else @post
+				this.is-repost = this.post.repost?
+				this.p = if @is-repost then this.post.repost else this.post
 
-				this.title = @date-stringify @p.created_at
+				this.title = @date-stringify this.p.created_at
 
 				this.update();
 
-				if @p.text?
-					tokens = @analyze @p.text
+				if this.p.text?
+					tokens = @analyze this.p.text
 					this.refs.text.innerHTML = @compile tokens
 
-					this.refs.text.children.for-each (e) =>
+					this.refs.text.children.forEach (e) =>
 						if e.tag-name == 'MK-URL' 
 							riot.mount e
 
@@ -369,12 +369,12 @@
 						.filter (t) -> t.type == 'link' 
 						.map (t) =>
 							this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
-							riot.mount @preview, do
+							riot.mount this.preview, do
 								url: t.content
 
 				// Get likes
 				this.api 'posts/likes' do
-					post_id: @p.id
+					post_id: this.p.id
 					limit: 8
 				.then (likes) =>
 					this.likes = likes
@@ -382,7 +382,7 @@
 
 				// Get reposts
 				this.api 'posts/reposts' do
-					post_id: @p.id
+					post_id: this.p.id
 					limit: 8
 				.then (reposts) =>
 					this.reposts = reposts
@@ -390,7 +390,7 @@
 
 				// Get replies
 				this.api 'posts/replies' do
-					post_id: @p.id
+					post_id: this.p.id
 					limit: 8
 				.then (replies) =>
 					this.replies = replies
@@ -401,25 +401,25 @@
 		this.reply = () => {
 			form = document.body.appendChild document.createElement 'mk-post-form-window' 
 			riot.mount form, do
-				reply: @p
+				reply: this.p
 
 		this.repost = () => {
 			form = document.body.appendChild document.createElement 'mk-repost-form-window' 
 			riot.mount form, do
-				post: @p
+				post: this.p
 
 		this.like = () => {
-			if @p.is_liked
+			if this.p.is_liked
 				this.api 'posts/likes/delete' do
-					post_id: @p.id
+					post_id: this.p.id
 				.then =>
-					@p.is_liked = false
+					this.p.is_liked = false
 					this.update();
 			else
 				this.api 'posts/likes/create' do
-					post_id: @p.id
+					post_id: this.p.id
 				.then =>
-					@p.is_liked = true
+					this.p.is_liked = true
 					this.update();
 
 		this.load-context = () => {
@@ -427,7 +427,7 @@
 
 			// Get context
 			this.api 'posts/context' do
-				post_id: @p.reply_to_id
+				post_id: this.p.reply_to_id
 			.then (context) =>
 				this.context = context.reverse!
 				this.loading-context = false

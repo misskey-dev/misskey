@@ -86,7 +86,7 @@
 			this.fetching = true
 			this.update();
 			obj <~ this.opts.fetch do
-				@mode == 'iknow' 
+				this.mode == 'iknow' 
 				@limit
 				null
 			this.users = obj.users
@@ -99,7 +99,7 @@
 			this.more-fetching = true
 			this.update();
 			obj <~ this.opts.fetch do
-				@mode == 'iknow' 
+				this.mode == 'iknow' 
 				@limit
 				@cursor
 			this.users = @users.concat obj.users

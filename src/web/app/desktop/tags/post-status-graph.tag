@@ -16,24 +16,24 @@
 		this.post-promise = if @is-promise this.opts.post then this.opts.post else Promise.resolve this.opts.post
 
 		this.on('mount', () => {
-			post <~ @post-promise.then
+			post <~ this.post-promise.then
 			this.post = post
 			this.update();
 
 			this.api 'aggregation/posts/like' do
-				post_id: @post.id
+				post_id: this.post.id
 				limit: 30days
 			.then (likes) =>
 				likes = likes.reverse!
 
 				this.api 'aggregation/posts/repost' do
-					post_id: @post.id
+					post_id: this.post.id
 					limit: 30days
 				.then (repost) =>
 					repost = repost.reverse!
 
 					this.api 'aggregation/posts/reply' do
-						post_id: @post.id
+						post_id: this.post.id
 						limit: 30days
 					.then (replies) =>
 						replies = replies.reverse!

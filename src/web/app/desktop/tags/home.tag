@@ -62,7 +62,7 @@
 		this.mode = this.opts.mode || 'timeline' 
 
 		// https://github.com/riot/riot/issues/2080
-		if @mode == '' then this.mode = 'timeline' 
+		if this.mode == '' then this.mode = 'timeline' 
 
 		this.home = []
 
@@ -70,7 +70,7 @@
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 
-			this.I.data.home.for-each (widget) =>
+			this.I.data.home.forEach (widget) =>
 				try
 					el = document.createElement 'mk-' + widget.name + '-home-widget' 
 					switch widget.place
@@ -84,7 +84,7 @@
 					// noop
 
 		this.on('unmount', () => {
-			@home.for-each (widget) =>
+			@home.forEach (widget) =>
 				widget.unmount!
 	</script>
 </mk-home>

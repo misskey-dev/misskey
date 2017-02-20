@@ -105,7 +105,7 @@
 
 		this.open = (pos) => {
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) =>
+			Array.prototype.forEach.call all, (el) =>
 				el.addEventListener 'mousedown' @mousedown
 			this.root.style.display = 'block' 
 			this.root.style.left = pos.x + 'px' 
@@ -123,7 +123,7 @@
 
 		this.close = () => {
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) =>
+			Array.prototype.forEach.call all, (el) =>
 				el.removeEventListener 'mousedown' @mousedown
 			this.trigger('closed');
 			this.unmount();

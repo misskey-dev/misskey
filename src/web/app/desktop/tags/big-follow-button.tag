@@ -84,12 +84,12 @@
 				this.user = user
 				this.init = false
 				this.update();
-				@stream.on 'follow' this.on-stream-follow
-				@stream.on 'unfollow' this.on-stream-unfollow
+				this.stream.on 'follow' this.on-stream-follow
+				this.stream.on 'unfollow' this.on-stream-unfollow
 
 		this.on('unmount', () => {
-			@stream.off 'follow' this.on-stream-follow
-			@stream.off 'unfollow' this.on-stream-unfollow
+			this.stream.off 'follow' this.on-stream-follow
+			this.stream.off 'unfollow' this.on-stream-unfollow
 
 		this.on-stream-follow = (user) => {
 			if user.id == @user.id

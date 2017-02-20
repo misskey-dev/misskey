@@ -292,22 +292,22 @@
 		this.mixin('open-post-form');
 
 		this.post = this.opts.post
-		this.is-repost = @post.repost? and !@post.text?
-		this.p = if @is-repost then @post.repost else @post
-		this.summary = @get-post-summary @p
-		this.url = CONFIG.url + '/' + @p.user.username + '/' + @p.id
+		this.is-repost = this.post.repost? and !this.post.text?
+		this.p = if @is-repost then this.post.repost else this.post
+		this.summary = @get-post-summary this.p
+		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id
 
 		this.on('mount', () => {
-			if @p.text?
-				tokens = if @p._highlight?
-					then @analyze @p._highlight
-					else @analyze @p.text
+			if this.p.text?
+				tokens = if this.p._highlight?
+					then @analyze this.p._highlight
+					else @analyze this.p.text
 
-				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if this.p._highlight?
 					then @compile tokens, true, false
 					else @compile tokens
 
-				this.refs.text.children.for-each (e) =>
+				this.refs.text.children.forEach (e) =>
 					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
@@ -316,32 +316,32 @@
 					.filter (t) -> t.type == 'link' 
 					.map (t) =>
 						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
-						riot.mount @preview, do
+						riot.mount this.preview, do
 							url: t.content
 
 		this.reply = () => {
 			@open-post-form do
-				reply: @p
+				reply: this.p
 
 		this.repost = () => {
 			text = window.prompt '「' + @summary + '」をRepost'
 			if text?
 				this.api 'posts/create' do
-					repost_id: @p.id
+					repost_id: this.p.id
 					text: if text == '' then undefined else text
 
 		this.like = () => {
-			if @p.is_liked
+			if this.p.is_liked
 				this.api 'posts/likes/delete' do
-					post_id: @p.id
+					post_id: this.p.id
 				.then =>
-					@p.is_liked = false
+					this.p.is_liked = false
 					this.update();
 			else
 				this.api 'posts/likes/create' do
-					post_id: @p.id
+					post_id: this.p.id
 				.then =>
-					@p.is_liked = true
+					this.p.is_liked = true
 					this.update();
 	</script>
 </mk-timeline-post>

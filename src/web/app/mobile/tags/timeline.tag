@@ -85,34 +85,34 @@
 				@set-posts posts
 
 		this.on('update', () => {
-			@posts.for-each (post) =>
-				date = (new Date post.created_at).get-date!
-				month = (new Date post.created_at).get-month! + 1
+			this.posts.forEach (post) =>
+				date = (new Date post.created_at).getDate()
+				month = (new Date post.created_at).getMonth() + 1
 				post._date = date
 				post._datetext = month + '月 ' + date + '日'
 
 		this.more = () => {
-			if @init or @fetching or @posts.length == 0 then return
+			if @init or @fetching or this.posts.length == 0 then return
 			this.fetching = true
 			this.update();
 			this.opts.more!.then (posts) =>
 				this.fetching = false
-				@prepend-posts posts
+				this.prepend-posts posts
 
 		this.set-posts = (posts) => {
 			this.posts = posts
 			this.update();
 
 		this.prepend-posts = (posts) => {
-			posts.for-each (post) =>
-				@posts.push post
+			posts.forEach (post) =>
+				this.posts.push post
 				this.update();
 
 		this.add-post = (post) => {
-			@posts.unshift post
+			this.posts.unshift post
 			this.update();
 
 		this.tail = () => {
-			@posts[@posts.length - 1]
+			this.posts[this.posts.length - 1]
 	</script>
 </mk-timeline>

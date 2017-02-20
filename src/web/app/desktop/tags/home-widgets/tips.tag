@@ -43,10 +43,10 @@
 
 		this.on('mount', () => {
 			@set!
-			this.clock = set-interval @change, 20000ms
+			this.clock = setInterval @change, 20000ms
 
 		this.on('unmount', () => {
-			clear-interval @clock
+			clearInterval @clock
 
 		this.set = () => {
 			this.refs.text.innerHTML = @tips[Math.floor Math.random! * @tips.length]

@@ -36,6 +36,6 @@
 
 		this.onsubmit = (e) => {
 			e.preventDefault();
-			@page '/search:' + this.refs.q.value
+			this.page '/search:' + this.refs.q.value
 	</script>
 </mk-ui-header-search>

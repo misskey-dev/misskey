@@ -88,6 +88,6 @@
 
 		this.post = this.opts.post
 
-		this.title = @date-stringify @post.created_at
+		this.title = @date-stringify this.post.created_at
 	</script>
 </mk-post-preview>

@@ -84,8 +84,8 @@
 			this.page = this.opts.page
 
 			this.on('mount', () => {
-				@stream.on 'read_all_messaging_messages' this.on-read-all-messaging-messages
-				@stream.on 'unread_messaging_message' this.on-unread-messaging-message
+				this.stream.on 'read_all_messaging_messages' this.on-read-all-messaging-messages
+				this.stream.on 'unread_messaging_message' this.on-unread-messaging-message
 
 				// Fetch count of unread messaging messages
 				this.api 'messaging/unread' 
@@ -95,8 +95,8 @@
 						this.update();
 
 			this.on('unmount', () => {
-				@stream.off 'read_all_messaging_messages' this.on-read-all-messaging-messages
-				@stream.off 'unread_messaging_message' this.on-unread-messaging-message
+				this.stream.off 'read_all_messaging_messages' this.on-read-all-messaging-messages
+				this.stream.off 'unread_messaging_message' this.on-unread-messaging-message
 
 			this.on-read-all-messaging-messages = () => {
 				this.has-unread-messaging-messages = false

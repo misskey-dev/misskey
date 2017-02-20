@@ -11,16 +11,16 @@
 	<script>
 		this.on('mount', () => {
 			@draw!
-			this.clock = set-interval @draw, 1000ms
+			this.clock = setInterval @draw, 1000ms
 
 		this.on('unmount', () => {
-			clear-interval @clock
+			clearInterval @clock
 
 		this.draw = () => {
-			now = new Date!
+			const now = new Date();
 			s = now.get-seconds!
-			m = now.get-minutes!
-			h = now.get-hours!
+			m = now.getMinutes()
+			h = now.getHours()
 
 			vec2 = (x, y) ->
 				this.x = x

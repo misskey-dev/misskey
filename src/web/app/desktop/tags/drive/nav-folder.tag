@@ -33,7 +33,7 @@
 			if this.folder == null and this.browser.folder == null
 				e.dataTransfer.dropEffect = 'none' 
 			// ドラッグされてきたものがファイルだったら
-			else if e.dataTransfer.effect-allowed == 'all' 
+			else if e.dataTransfer.effectAllowed == 'all' 
 				e.dataTransfer.dropEffect = 'copy' 
 			else
 				e.dataTransfer.dropEffect = 'move' 
@@ -53,7 +53,7 @@
 
 			// ファイルだったら
 			if e.dataTransfer.files.length > 0
-				Array.prototype.for-each.call e.dataTransfer.files, (file) =>
+				Array.prototype.forEach.call e.dataTransfer.files, (file) =>
 					this.browser.upload file, this.folder
 				return false
 

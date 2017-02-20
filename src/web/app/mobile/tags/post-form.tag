@@ -202,7 +202,7 @@
 
 		this.onkeypress = (e) => {
 			if (e.char-code == 10 || e.char-code == 13) && e.ctrlKey
-				@post!
+				this.post!
 			else
 				return true
 
@@ -217,7 +217,7 @@
 			return true
 
 		this.select-file = () => {
-			this.refs.file.click!
+			this.refs.file.click();
 
 		this.select-file-from-drive = () => {
 			browser = document.body.appendChild document.createElement 'mk-drive-selector' 
@@ -225,7 +225,7 @@
 				multiple: true
 			.0
 			browser.on('selected', (files) => {
-				files.for-each @add-file
+				files.forEach @add-file
 
 		this.change-file = () => {
 			files = this.refs.file.files
@@ -264,7 +264,7 @@
 				text: this.refs.text.value
 				media_ids: files
 				reply_to_id: if this.opts.reply? then this.opts.reply.id else undefined
-				poll: if @poll then this.refs.poll.get! else undefined
+				poll: if this.poll then this.refs.poll.get! else undefined
 			.then (data) =>
 				this.trigger('post');
 				this.unmount();

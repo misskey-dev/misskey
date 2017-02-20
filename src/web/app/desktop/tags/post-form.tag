@@ -348,7 +348,7 @@
 			e.stopPropagation();
 			this.draghover = true
 			// ドラッグされてきたものがファイルだったら
-			if e.dataTransfer.effect-allowed == 'all' 
+			if e.dataTransfer.effectAllowed == 'all' 
 				e.dataTransfer.dropEffect = 'copy' 
 			else
 				e.dataTransfer.dropEffect = 'move' 
@@ -367,7 +367,7 @@
 
 			// ファイルだったら
 			if e.dataTransfer.files.length > 0
-				Array.prototype.for-each.call e.dataTransfer.files, (file) =>
+				Array.prototype.forEach.call e.dataTransfer.files, (file) =>
 					@upload file
 				return false
 
@@ -390,7 +390,7 @@
 
 		this.onkeydown = (e) => {
 			if (e.which == 10 || e.which == 13) && (e.ctrlKey || e.meta-key)
-				@post!
+				this.post!
 
 		this.onpaste = (e) => {
 			data = e.clipboardData
@@ -402,14 +402,14 @@
 						@upload item.getAsFile();
 
 		this.select-file = () => {
-			this.refs.file.click!
+			this.refs.file.click();
 
 		this.select-file-from-drive = () => {
 			browser = document.body.appendChild document.createElement 'mk-select-file-from-drive-window' 
 			i = riot.mount browser, do
 				multiple: true
 			i[0].one 'selected' (files) =>
-				files.for-each @add-file
+				files.forEach @add-file
 
 		this.change-file = () => {
 			files = this.refs.file.files
@@ -448,7 +448,7 @@
 				text: this.refs.text.value
 				media_ids: files
 				reply_to_id: if @in-reply-to-post? then @in-reply-to-post.id else undefined
-				poll: if @poll then this.refs.poll.get! else undefined
+				poll: if this.poll then this.refs.poll.get! else undefined
 			.then (data) =>
 				this.trigger('post');
 				@notify if @in-reply-to-post? then '返信しました！' else '投稿しました！'

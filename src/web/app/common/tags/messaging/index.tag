@@ -314,11 +314,11 @@
 					query: q
 					max: 5
 				.then (users) =>
-					users.for-each (user) =>
+					users.forEach (user) =>
 						user._click = =>
 							this.trigger 'navigate-user' user
-							this.search-result = []
-					this.search-result = users
+							this.searchResult = []
+					this.searchResult = users
 					this.update();
 				.catch (err) =>
 					console.error err
@@ -330,16 +330,16 @@
 				| 9, 40 => // Key[TAB] or Key[↓]
 					e.preventDefault();
 					e.stopPropagation();
-					this.refs.search-result.childNodes[0].focus();
+					this.refs.searchResult.childNodes[0].focus();
 		};
 
-		this.on-search-result-keydown = (i, e) => {
+		this.on-searchResult-keydown = (i, e) => {
 			key = e.which
 			switch (key)
 				| 10, 13 => // Key[ENTER]
 					e.preventDefault();
 					e.stopPropagation();
-					@search-result[i]._click!
+					this.searchResult[i]._click();
 				| 27 => // Key[ESC]
 					e.preventDefault();
 					e.stopPropagation();
@@ -347,11 +347,11 @@
 				| 38 => // Key[↑]
 					e.preventDefault();
 					e.stopPropagation();
-					(this.refs.search-result.childNodes[i].previous-element-sibling || this.refs.search-result.childNodes[@search-result.length - 1]).focus();
+					(this.refs.searchResult.childNodes[i].previousElementSibling || this.refs.searchResult.childNodes[this.searchResult.length - 1]).focus();
 				| 9, 40 => // Key[TAB] or Key[↓]
 					e.preventDefault();
 					e.stopPropagation();
-					(this.refs.search-result.childNodes[i].next-element-sibling || this.refs.search-result.childNodes[0]).focus();
+					(this.refs.searchResult.childNodes[i].nextElementSibling || this.refs.searchResult.childNodes[0]).focus();
 		};
 
 	</script>

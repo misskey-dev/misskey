@@ -107,10 +107,10 @@
 	</style>
 	<script>
 		this.draw = () => {
-			now = new Date!
-			nd = now.get-date!
-			nm = now.get-month!
-			ny = now.get-full-year!
+			const now = new Date();
+			nd = now.getDate()
+			nm = now.getMonth()
+			ny = now.getFullYear()
 
 			this.year = ny
 			this.month = nm + 1
@@ -140,9 +140,9 @@
 		@draw!
 
 		this.on('mount', () => {
-			this.clock = set-interval @draw, 1000ms
+			this.clock = setInterval @draw, 1000ms
 
 		this.on('unmount', () => {
-			clear-interval @clock
+			clearInterval @clock
 	</script>
 </mk-calendar-home-widget>

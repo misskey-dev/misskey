@@ -33,11 +33,11 @@
 		this.post = this.opts.post
 
 		this.on('mount', () => {
-			if @post.text?
-				tokens = @analyze @post.text
+			if this.post.text?
+				tokens = @analyze this.post.text
 				this.refs.text.innerHTML = @compile tokens, false
 
-				this.refs.text.children.for-each (e) =>
+				this.refs.text.children.forEach (e) =>
 					if e.tag-name == 'MK-URL' 
 						riot.mount e
 	</script>

@@ -63,16 +63,16 @@
 					this.refs.timeline.focus();
 
 		this.more = () => {
-			if @more-loading or @is-loading or @timeline.posts.length == 0
+			if @more-loading or @is-loading or this.timeline.posts.length == 0
 				return
 			this.more-loading = true
 			this.update();
 			this.api 'posts/search' do
 				query: @query
-				page: @page + 1
+				page: this.page + 1
 			.then (posts) =>
 				this.more-loading = false
-				@page++
+				this.page++
 				this.update();
 				this.refs.timeline.prepend-posts posts
 			.catch (err) =>

@@ -304,7 +304,7 @@
 			z = 0
 
 			ws = document.query-selector-all 'mk-window' 
-			ws.for-each (w) !=>
+			ws.forEach (w) !=>
 				if w == this.root then return
 				m = w.query-selector ':scope > .main'
 				mz = Number(document.default-view.get-computed-style m, null .z-index)

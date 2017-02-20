@@ -23,11 +23,11 @@
 		// alert text
 
 		this.on('mount', () => {
-			@stream.on 'notification' this.on-stream-notification
+			this.stream.on 'notification' this.on-stream-notification
 			@ready!
 
 		this.on('unmount', () => {
-			@stream.off 'notification' this.on-stream-notification
+			this.stream.off 'notification' this.on-stream-notification
 
 		this.ready = () => {
 			@ready-count++

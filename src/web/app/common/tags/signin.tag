@@ -127,7 +127,7 @@
 				username: this.refs.username.value
 				password: this.refs.password.value
 			.then =>
-				location.reload!
+				location.reload();
 			.catch =>
 				alert 'something happened'
 				this.signing = false

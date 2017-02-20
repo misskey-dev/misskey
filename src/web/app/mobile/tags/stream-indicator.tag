@@ -35,7 +35,7 @@
 			if @state == 'connected' 
 				this.root.style.opacity = 0
 
-		@stream-state-ev.on('connected', () => {
+		this.stream-state-ev.on('connected', () => {
 			this.state = @get-stream-state!
 			this.update();
 			setTimeout =>
@@ -44,7 +44,7 @@
 				} 200ms 'linear' 
 			, 1000ms
 
-		@stream-state-ev.on('closed', () => {
+		this.stream-state-ev.on('closed', () => {
 			this.state = @get-stream-state!
 			this.update();
 			Velocity this.root, {

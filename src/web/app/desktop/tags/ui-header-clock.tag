@@ -59,15 +59,15 @@
 	</style>
 	<script>
 		this.draw = () => {
-			now = new Date!
+			const now = new Date();
 
-			yyyy = now.get-full-year!
-			mm = (\0 + (now.get-month! + 1)).slice -2
-			dd = (\0 + now.get-date!).slice -2
+			yyyy = now.getFullYear()
+			mm = (\0 + (now.getMonth() + 1)).slice -2
+			dd = (\0 + now.getDate()).slice -2
 			yyyymmdd = "<span class='yyyymmdd'>#yyyy/#mm/#dd</span>"
 
-			hh = (\0 + now.get-hours!).slice -2
-			mm = (\0 + now.get-minutes!).slice -2
+			hh = (\0 + now.getHours()).slice -2
+			mm = (\0 + now.getMinutes()).slice -2
 			hhmm = "<span class='hhmm'>#hh:#mm</span>"
 
 			if now.get-seconds! % 2 == 0
@@ -79,9 +79,9 @@
 
 		this.on('mount', () => {
 			@draw!
-			this.clock = set-interval @draw, 1000ms
+			this.clock = setInterval @draw, 1000ms
 
 		this.on('unmount', () => {
-			clear-interval @clock
+			clearInterval @clock
 	</script>
 </mk-ui-header-clock>

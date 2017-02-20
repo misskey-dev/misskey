@@ -110,31 +110,31 @@
 
 		this.post = this.opts.post
 
-		this.url = CONFIG.url + '/' + @post.user.username + '/' + @post.id
+		this.url = CONFIG.url + '/' + this.post.user.username + '/' + this.post.id
 
-		this.title = @date-stringify @post.created_at
+		this.title = @date-stringify this.post.created_at
 
 		this.on('mount', () => {
-			if @post.text?
-				tokens = @analyze @post.text
+			if this.post.text?
+				tokens = @analyze this.post.text
 				this.refs.text.innerHTML = @compile tokens
 
-				this.refs.text.children.for-each (e) =>
+				this.refs.text.children.forEach (e) =>
 					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
 		this.like = () => {
-			if @post.is_liked
+			if this.post.is_liked
 				this.api 'posts/likes/delete' do
-					post_id: @post.id
+					post_id: this.post.id
 				.then =>
-					@post.is_liked = false
+					this.post.is_liked = false
 					this.update();
 			else
 				this.api 'posts/likes/create' do
-					post_id: @post.id
+					post_id: this.post.id
 				.then =>
-					@post.is_liked = true
+					this.post.is_liked = true
 					this.update();
 	</script>
 </mk-post-detail-sub>

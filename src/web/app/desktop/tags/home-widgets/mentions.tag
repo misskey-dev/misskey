@@ -73,7 +73,7 @@
 
 		this.fetch = (cb) => {
 			this.api 'posts/mentions' do
-				following: @mode == 'following' 
+				following: this.mode == 'following' 
 			.then (posts) =>
 				this.is-loading = false
 				this.is-empty = posts.length == 0
@@ -90,7 +90,7 @@
 			this.more-loading = true
 			this.update();
 			this.api 'posts/mentions' do
-				following: @mode == 'following' 
+				following: this.mode == 'following' 
 				max_id: this.refs.timeline.tail!.id
 			.then (posts) =>
 				this.more-loading = false

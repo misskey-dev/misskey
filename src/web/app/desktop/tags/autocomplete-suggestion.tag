@@ -92,7 +92,7 @@
 			@textarea.addEventListener 'keydown' this.on-keydown
 
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) =>
+			Array.prototype.forEach.call all, (el) =>
 				el.addEventListener 'mousedown' @mousedown
 
 			this.api 'users/search_by_username' do
@@ -109,7 +109,7 @@
 			@textarea.removeEventListener 'keydown' this.on-keydown
 
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) =>
+			Array.prototype.forEach.call all, (el) =>
 				el.removeEventListener 'mousedown' @mousedown
 
 		this.mousedown = (e) => {
@@ -164,7 +164,7 @@
 			@apply-select!
 
 		this.apply-select = () => {
-			this.refs.users.children.for-each (el) =>
+			this.refs.users.children.forEach (el) =>
 				el.remove-attribute 'data-selected' 
 
 			this.refs.users.children[@select].setAttribute 'data-selected' \true

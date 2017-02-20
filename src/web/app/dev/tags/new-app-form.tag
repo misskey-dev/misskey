@@ -222,7 +222,7 @@
 			cb = this.refs.cb.value
 			permission = []
 
-			this.refs.permission.query-selector-all 'input' .for-each (el) =>
+			this.refs.permission.query-selector-all 'input' .forEach (el) =>
 				if el.checked then permission.push el.value
 
 			locker = document.body.appendChild document.createElement 'mk-locker' 

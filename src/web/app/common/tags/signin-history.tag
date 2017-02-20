@@ -63,10 +63,10 @@
 			.catch (err) =>
 				console.error err
 
-			@stream.on 'signin' this.on-signin
+			this.stream.on 'signin' this.on-signin
 
 		this.on('unmount', () => {
-			@stream.off 'signin' this.on-signin
+			this.stream.off 'signin' this.on-signin
 
 		this.on-signin = (signin) => {
 			@history.unshift signin

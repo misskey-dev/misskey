@@ -77,8 +77,8 @@
 					limit: 9posts
 				.then (posts) =>
 					this.initializing = false
-					posts.for-each (post) =>
-						post.media.for-each (image) =>
+					posts.forEach (post) =>
+						post.media.forEach (image) =>
 							if @images.length < 9
 								@images.push image
 					this.update();

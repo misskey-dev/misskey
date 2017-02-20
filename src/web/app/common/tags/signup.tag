@@ -268,15 +268,15 @@
 		this.onsubmit = (e) => {
 			e.preventDefault();
 
-			username = this.refs.username.value
-			password = this.refs.password.value
+			const username = this.refs.username.value;
+			const password = this.refs.password.value;
 
 			locker = document.body.appendChild document.createElement 'mk-locker' 
 
 			this.api 'signup' do
-				username: username
-				password: password
-				'g-recaptcha-response': grecaptcha.get-response!
+				username: username,
+				password: password,
+				'g-recaptcha-response': grecaptcha.getResponse()
 			.then =>
 				this.api 'signin' do
 					username: username

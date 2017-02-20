@@ -142,7 +142,7 @@
 
 			this.api 'users/recommendation' do
 				limit: @limit
-				offset: @limit * @page
+				offset: @limit * this.page
 			.then (users) =>
 				this.loading = false
 				this.users = users
@@ -154,7 +154,7 @@
 			if @users.length < @limit
 				this.page = 0
 			else
-				@page++
+				this.page++
 			@load!
 
 		this.close = () => {

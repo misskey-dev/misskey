@@ -177,14 +177,14 @@
 			this.is-open = true
 			this.update();
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) =>
+			Array.prototype.forEach.call all, (el) =>
 				el.addEventListener 'mousedown' @mousedown
 
 		this.close = () => {
 			this.is-open = false
 			this.update();
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) =>
+			Array.prototype.forEach.call all, (el) =>
 				el.removeEventListener 'mousedown' @mousedown
 
 		this.mousedown = (e) => {

@@ -64,7 +64,7 @@
 		this.initializing = true
 
 		this.on('mount', () => {
-			@stream.on 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.on 'drive_file_created' this.on-stream-drive-file-created
 
 			this.api 'drive/stream' do
 				type: 'image/*'
@@ -75,7 +75,7 @@
 				this.update();
 
 		this.on('unmount', () => {
-			@stream.off 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.off 'drive_file_created' this.on-stream-drive-file-created
 
 		this.on-stream-drive-file-created = (file) => {
 			if /^image\/.+$/.test file.type

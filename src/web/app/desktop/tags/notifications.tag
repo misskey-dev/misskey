@@ -194,19 +194,19 @@
 			.catch (err, text-status) ->
 				console.error err
 
-			@stream.on 'notification' this.on-notification
+			this.stream.on 'notification' this.on-notification
 
 		this.on('unmount', () => {
-			@stream.off 'notification' this.on-notification
+			this.stream.off 'notification' this.on-notification
 
 		this.on-notification = (notification) => {
 			@notifications.unshift notification
 			this.update();
 
 		this.on('update', () => {
-			@notifications.for-each (notification) =>
-				date = (new Date notification.created_at).get-date!
-				month = (new Date notification.created_at).get-month! + 1
+			@notifications.forEach (notification) =>
+				date = (new Date notification.created_at).getDate()
+				month = (new Date notification.created_at).getMonth() + 1
 				notification._date = date
 				notification._datetext = month + '月 ' + date + '日'
 	</script>

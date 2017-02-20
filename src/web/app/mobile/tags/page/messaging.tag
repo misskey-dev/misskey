@@ -15,7 +15,7 @@
 			this.ui.trigger('title', '<i class="fa fa-comments-o"></i>メッセージ');
 
 			this.refs.ui.refs.index.on('navigate-user', (user) => {
-				@page '/i/messaging/' + user.username
+				this.page '/i/messaging/' + user.username
 
 	</script>
 </mk-messaging-page>

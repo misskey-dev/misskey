@@ -319,25 +319,25 @@
 		this.mixin('NotImplementedException');
 
 		this.post = this.opts.post
-		this.is-repost = @post.repost? and !@post.text?
-		this.p = if @is-repost then @post.repost else @post
+		this.is-repost = this.post.repost? and !this.post.text?
+		this.p = if @is-repost then this.post.repost else this.post
 
-		this.title = @date-stringify @p.created_at
+		this.title = @date-stringify this.p.created_at
 
-		this.url = CONFIG.url + '/' + @p.user.username + '/' + @p.id
+		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id
 		this.is-detail-opened = false
 
 		this.on('mount', () => {
-			if @p.text?
-				tokens = if @p._highlight?
-					then @analyze @p._highlight
-					else @analyze @p.text
+			if this.p.text?
+				tokens = if this.p._highlight?
+					then @analyze this.p._highlight
+					else @analyze this.p.text
 
-				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if this.p._highlight?
 					then @compile tokens, true, false
 					else @compile tokens
 
-				this.refs.text.children.for-each (e) =>
+				this.refs.text.children.forEach (e) =>
 					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
@@ -346,31 +346,31 @@
 					.filter (t) -> t.type == 'link' 
 					.map (t) =>
 						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
-						riot.mount @preview, do
+						riot.mount this.preview, do
 							url: t.content
 
 		this.reply = () => {
 			form = document.body.appendChild document.createElement 'mk-post-form-window' 
 			riot.mount form, do
-				reply: @p
+				reply: this.p
 
 		this.repost = () => {
 			form = document.body.appendChild document.createElement 'mk-repost-form-window' 
 			riot.mount form, do
-				post: @p
+				post: this.p
 
 		this.like = () => {
-			if @p.is_liked
+			if this.p.is_liked
 				this.api 'posts/likes/delete' do
-					post_id: @p.id
+					post_id: this.p.id
 				.then =>
-					@p.is_liked = false
+					this.p.is_liked = false
 					this.update();
 			else
 				this.api 'posts/likes/create' do
-					post_id: @p.id
+					post_id: this.p.id
 				.then =>
-					@p.is_liked = true
+					this.p.is_liked = true
 					this.update();
 
 		this.toggle-detail = () => {
@@ -381,9 +381,9 @@
 			should-be-cancel = true
 			switch
 			| e.which == 38 or e.which == 74 or (e.which == 9 and e.shift-key) => // ↑, j or Shift+Tab
-				focus this.root, (e) -> e.previous-element-sibling
+				focus this.root, (e) -> e.previousElementSibling
 			| e.which == 40 or e.which == 75 or e.which == 9 => // ↓, k or Tab
-				focus this.root, (e) -> e.next-element-sibling
+				focus this.root, (e) -> e.nextElementSibling
 			| e.which == 81 or e.which == 69 => // q or e
 				@repost!
 			| e.which == 70 or e.which == 76 => // f or l

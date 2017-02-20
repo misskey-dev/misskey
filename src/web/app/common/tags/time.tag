@@ -6,25 +6,25 @@
 		this.tickid = null
 
 		this.absolute = 
-			@time.get-full-year! + '年' +
-			@time.get-month! + 1 + '月' +
-			@time.get-date!      + '日' +
+			this.time.getFullYear() + '年' +
+			this.time.getMonth() + 1 + '月' +
+			this.time.getDate()      + '日' +
 			' ' +
-			@time.get-hours!     + '時' +
-			@time.get-minutes!   + '分' 
+			this.time.getHours()     + '時' +
+			this.time.getMinutes()   + '分' 
 
 		this.on('mount', () => {
-			if @mode == 'relative' or @mode == 'detail' 
-				@tick!
-				this.tickid = set-interval @tick, 1000ms
+			if this.mode == 'relative' or this.mode == 'detail' 
+				this.tick!
+				this.tickid = setInterval this.tick, 1000ms
 
 		this.on('unmount', () => {
-			if @mode == 'relative' or @mode == 'detail' 
-				clear-interval @tickid
+			if this.mode == 'relative' or this.mode == 'detail' 
+				clearInterval this.tickid
 
 		this.tick = () => {
-			now = new Date!
-			ago = (now - @time) / 1000ms
+			const now = new Date();
+			ago = (now - this.time) / 1000ms
 			this.relative = switch
 				| ago >= 31536000s => ~~(ago / 31536000s) + '年前'
 				| ago >= 2592000s  => ~~(ago / 2592000s)  + 'ヶ月前'

@@ -133,7 +133,7 @@
 
 		this.files = []
 		this.folders = []
-		this.hierarchy-folders = []
+		this.hierarchyFolders = []
 		this.selected-files = []
 
 		// 現在の階層(フォルダ)
@@ -146,10 +146,10 @@
 		this.multiple = if this.opts.multiple? then this.opts.multiple else false
 
 		this.on('mount', () => {
-			@stream.on 'drive_file_created' this.on-stream-drive-file-created
-			@stream.on 'drive_file_updated' this.on-stream-drive-file-updated
-			@stream.on 'drive_folder_created' this.on-stream-drive-folder-created
-			@stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.on 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.on 'drive_file_updated' this.on-stream-drive-file-updated
+			this.stream.on 'drive_folder_created' this.on-stream-drive-folder-created
+			this.stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
 
 			// Riotのバグでnullを渡しても""になる
 			// https://github.com/riot/riot/issues/2080
@@ -162,10 +162,10 @@
 				@load!
 
 		this.on('unmount', () => {
-			@stream.off 'drive_file_created' this.on-stream-drive-file-created
-			@stream.off 'drive_file_updated' this.on-stream-drive-file-updated
-			@stream.off 'drive_folder_created' this.on-stream-drive-folder-created
-			@stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.off 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.off 'drive_file_updated' this.on-stream-drive-file-updated
+			this.stream.off 'drive_folder_created' this.on-stream-drive-folder-created
+			this.stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
 
 		this.on-stream-drive-file-created = (file) => {
 			@add-file file, true
@@ -210,10 +210,10 @@
 				folder_id: target-folder
 			.then (folder) =>
 				this.folder = folder
-				this.hierarchy-folders = []
+				this.hierarchyFolders = []
 
 				x = (f) =>
-					@hierarchy-folders.unshift f
+					@hierarchyFolders.unshift f
 					if f.parent?
 						x f.parent
 
@@ -275,7 +275,7 @@
 			if this.folder != null or this.file != null
 				this.file = null
 				this.folder = null
-				this.hierarchy-folders = []
+				this.hierarchyFolders = []
 				this.update();
 				this.trigger('move-root');
 				@load!
@@ -325,9 +325,9 @@
 			flag = false
 			complete = =>
 				if flag
-					load-folders.for-each (folder) =>
+					load-folders.forEach (folder) =>
 						@add-folder folder
-					load-files.for-each (file) =>
+					load-files.forEach (file) =>
 						@add-file file
 					this.loading = false
 					this.update();
@@ -361,10 +361,10 @@
 			.then (file) =>
 				this.file = file
 				this.folder = null
-				this.hierarchy-folders = []
+				this.hierarchyFolders = []
 
 				x = (f) =>
-					@hierarchy-folders.unshift f
+					@hierarchyFolders.unshift f
 					if f.parent?
 						x f.parent
 

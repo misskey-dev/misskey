@@ -166,14 +166,14 @@
 				if this.file._selected
 					this.browser.trigger 'selected' this.file
 				else
-					this.browser.files.for-each (file) =>
+					this.browser.files.forEach (file) =>
 						file._selected = false
 					this.file._selected = true
 					this.browser.trigger 'change-selection' this.file
 
 		this.oncontextmenu = (e) => {
 			e.preventDefault();
-			e.stop-immediate-propagation!
+			e.stopImmediatePropagation();
 
 			this.is-contextmenu-showing = true
 			this.update();
@@ -183,15 +183,15 @@
 				file: this.file
 			ctx = ctx.0
 			ctx.open do
-				x: e.page-x - window.page-x-offset
-				y: e.page-y - window.page-y-offset
+				x: e.pageX - window.pageXOffset
+				y: e.pageY - window.pageYOffset
 			ctx.on('closed', () => {
 				this.is-contextmenu-showing = false
 				this.update();
 			return false
 
 		this.ondragstart = (e) => {
-			e.dataTransfer.effect-allowed = 'move' 
+			e.dataTransfer.effectAllowed = 'move' 
 			e.dataTransfer.set-data 'text' JSON.stringify do
 				type: 'file' 
 				id: this.file.id

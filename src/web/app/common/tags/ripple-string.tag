@@ -17,7 +17,7 @@
 		this.on('mount', () => {
 			text = this.root.innerHTML
 			this.root.innerHTML = ''
-			(text.split '').for-each (c, i) =>
+			(text.split '').forEach (c, i) =>
 				ce = document.createElement 'span' 
 				ce.innerHTML = c
 				ce.style.animationDelay = (i / 10) + 's'

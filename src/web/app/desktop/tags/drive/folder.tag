@@ -77,7 +77,7 @@
 			// 自分自身がドラッグされていない場合
 			if !@is-dragging
 				// ドラッグされてきたものがファイルだったら
-				if e.dataTransfer.effect-allowed == 'all' 
+				if e.dataTransfer.effectAllowed == 'all' 
 					e.dataTransfer.dropEffect = 'copy' 
 				else
 					e.dataTransfer.dropEffect = 'move' 
@@ -99,7 +99,7 @@
 
 			// ファイルだったら
 			if e.dataTransfer.files.length > 0
-				Array.prototype.for-each.call e.dataTransfer.files, (file) =>
+				Array.prototype.forEach.call e.dataTransfer.files, (file) =>
 					this.browser.upload file, this.folder
 				return false
 
@@ -147,7 +147,7 @@
 			return false
 
 		this.ondragstart = (e) => {
-			e.dataTransfer.effect-allowed = 'move' 
+			e.dataTransfer.effectAllowed = 'move' 
 			e.dataTransfer.set-data 'text' JSON.stringify do
 				type: 'folder' 
 				id: this.folder.id
@@ -163,7 +163,7 @@
 
 		this.oncontextmenu = (e) => {
 			e.preventDefault();
-			e.stop-immediate-propagation!
+			e.stopImmediatePropagation();
 
 			this.is-contextmenu-showing = true
 			this.update();
@@ -173,8 +173,8 @@
 				folder: this.folder
 			ctx = ctx.0
 			ctx.open do
-				x: e.page-x - window.page-x-offset
-				y: e.page-y - window.page-y-offset
+				x: e.pageX - window.pageXOffset
+				y: e.pageY - window.pageYOffset
 			ctx.on('closed', () => {
 				this.is-contextmenu-showing = false
 				this.update();

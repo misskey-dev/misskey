@@ -73,10 +73,10 @@
 
 		this.on('mount', () => {
 			@fetch!
-			this.clock = set-interval @fetch, 60000ms
+			this.clock = setInterval @fetch, 60000ms
 
 		this.on('unmount', () => {
-			clear-interval @clock
+			clearInterval @clock
 
 		this.fetch = () => {
 			this.api CONFIG.url + '/api:rss' do

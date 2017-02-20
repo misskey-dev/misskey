@@ -126,6 +126,6 @@
 		this.search = () => {
 			query = window.prompt '検索' 
 			if query? and query != ''
-				@page '/search:' + query
+				this.page '/search:' + query
 	</script>
 </mk-ui-nav>

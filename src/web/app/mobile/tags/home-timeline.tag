@@ -16,14 +16,14 @@
 				this.trigger('loaded');
 
 		this.on('mount', () => {
-			@stream.on 'post' this.on-stream-post
-			@stream.on 'follow' this.on-stream-follow
-			@stream.on 'unfollow' this.on-stream-unfollow
+			this.stream.on 'post' this.on-stream-post
+			this.stream.on 'follow' this.on-stream-follow
+			this.stream.on 'unfollow' this.on-stream-unfollow
 
 		this.on('unmount', () => {
-			@stream.off 'post' this.on-stream-post
-			@stream.off 'follow' this.on-stream-follow
-			@stream.off 'unfollow' this.on-stream-unfollow
+			this.stream.off 'post' this.on-stream-post
+			this.stream.off 'follow' this.on-stream-follow
+			this.stream.off 'unfollow' this.on-stream-unfollow
 
 		this.more = () => {
 			this.api 'posts/timeline' do

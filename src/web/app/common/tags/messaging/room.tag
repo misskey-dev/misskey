@@ -159,9 +159,9 @@
 			document.removeEventListener 'visibilitychange' this.on-visibilitychange
 
 		this.on('update', () => {
-			@messages.for-each (message) =>
-				date = (new Date message.created_at).get-date!
-				month = (new Date message.created_at).get-month! + 1
+			@messages.forEach (message) =>
+				date = (new Date message.created_at).getDate()
+				month = (new Date message.created_at).getMonth() + 1
 				message._date = date
 				message._datetext = month + '月 ' + date + '日'
 
@@ -184,7 +184,7 @@
 
 		this.on-read = (ids) => {
 			if not Array.isArray ids then ids = [ids]
-			ids.for-each (id) =>
+			ids.forEach (id) =>
 				if (@messages.some (x) => x.id == id)
 					exist = (@messages.map (x) -> x.id).index-of id
 					@messages[exist].is_read = true
@@ -215,7 +215,7 @@
 
 		this.on-visibilitychange = () => {
 			if document.hidden then return
-			@messages.for-each (message) =>
+			@messages.forEach (message) =>
 				if message.user_id != this.I.id and not message.is_read
 					@connection.socket.send JSON.stringify do
 						type: 'read' 

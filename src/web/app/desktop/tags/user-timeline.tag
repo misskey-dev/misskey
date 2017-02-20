@@ -84,7 +84,7 @@
 		this.fetch = (cb) => {
 			this.api 'users/posts' do
 				user_id: @user.id
-				with_replies: @mode == 'with-replies' 
+				with_replies: this.mode == 'with-replies' 
 			.then (posts) =>
 				this.is-loading = false
 				this.is-empty = posts.length == 0
@@ -102,7 +102,7 @@
 			this.update();
 			this.api 'users/posts' do
 				user_id: @user.id
-				with_replies: @mode == 'with-replies' 
+				with_replies: this.mode == 'with-replies' 
 				max_id: this.refs.timeline.tail!.id
 			.then (posts) =>
 				this.more-loading = false

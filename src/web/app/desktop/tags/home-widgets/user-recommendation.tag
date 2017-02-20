@@ -120,13 +120,13 @@
 
 		this.on('mount', () => {
 			@fetch!
-			this.clock = set-interval =>
+			this.clock = setInterval =>
 				if @users.length < @limit
 					@fetch true
 			, 60000ms
 
 		this.on('unmount', () => {
-			clear-interval @clock
+			clearInterval @clock
 
 		this.fetch = (quiet = false) => {
 			this.loading = true
@@ -134,7 +134,7 @@
 			if not quiet then this.update();
 			this.api 'users/recommendation' do
 				limit: @limit
-				offset: @limit * @page
+				offset: @limit * this.page
 			.then (users) =>
 				this.loading = false
 				this.users = users
@@ -146,7 +146,7 @@
 			if @users.length < @limit
 				this.page = 0
 			else
-				@page++
+				this.page++
 			@fetch!
 	</script>
 </mk-user-recommendation-home-widget>
