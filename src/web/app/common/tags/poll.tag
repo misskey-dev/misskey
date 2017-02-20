@@ -68,23 +68,23 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@post = @opts.post
-		@poll = @post.poll
-		@total = @poll.choices.reduce ((a, b) -> a + b.votes), 0
-		@is-voted = @poll.choices.some (c) -> c.is_voted
-		@result = @is-voted
+		this.post = this.opts.post
+		this.poll = @post.poll
+		this.total = @poll.choices.reduce ((a, b) -> a + b.votes), 0
+		this.is-voted = @poll.choices.some (c) -> c.is_voted
+		this.result = @is-voted
 
-		@toggle-result = ~>
-			@result = !@result
+		toggle-result() {
+			this.result = !@result
 
-		@vote = (id) ~>
+		vote(id) {
 			if (@poll.choices.some (c) -> c.is_voted) then return
-			@api \posts/polls/vote do
+			this.api 'posts/polls/vote' do
 				post_id: @post.id
 				choice: id
-			.then ~>
+			.then =>
 				@poll.choices.for-each (c) ->
 					if c.id == id
 						c.votes++

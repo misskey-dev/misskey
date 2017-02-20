@@ -70,44 +70,44 @@
 
 	</style>
 	<script>
-		@mixin \i
+		this.mixin('i');
 
-		@limit = 30users
-		@mode = \all
+		this.limit = 30users
+		this.mode = 'all' 
 
-		@fetching = true
-		@more-fetching = false
+		this.fetching = true
+		this.more-fetching = false
 
-		@on \mount ~>
-			@fetch ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			@fetch =>
+				this.trigger('loaded');
 
-		@fetch = (cb) ~>
-			@fetching = true
-			@update!
-			obj <~ @opts.fetch do
-				@mode == \iknow
+		fetch(cb) {
+			this.fetching = true
+			this.update();
+			obj <~ this.opts.fetch do
+				@mode == 'iknow' 
 				@limit
 				null
-			@users = obj.users
-			@next = obj.next
-			@fetching = false
-			@update!
+			this.users = obj.users
+			this.next = obj.next
+			this.fetching = false
+			this.update();
 			if cb? then cb!
 
-		@more = ~>
-			@more-fetching = true
-			@update!
-			obj <~ @opts.fetch do
-				@mode == \iknow
+		more() {
+			this.more-fetching = true
+			this.update();
+			obj <~ this.opts.fetch do
+				@mode == 'iknow' 
 				@limit
 				@cursor
-			@users = @users.concat obj.users
-			@next = obj.next
-			@more-fetching = false
-			@update!
+			this.users = @users.concat obj.users
+			this.next = obj.next
+			this.more-fetching = false
+			this.update();
 
-		@set-mode = (mode) ~>
+		set-mode(mode) {
 			@update do
 				mode: mode
 

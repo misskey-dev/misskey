@@ -109,42 +109,42 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \user-preview
+		this.mixin('api');
+		this.mixin('user-preview');
 
-		@users = null
-		@loading = true
+		this.users = null
+		this.loading = true
 
-		@limit = 3users
-		@page = 0
+		this.limit = 3users
+		this.page = 0
 
-		@on \mount ~>
+		this.on('mount', () => {
 			@fetch!
-			@clock = set-interval ~>
+			this.clock = set-interval =>
 				if @users.length < @limit
 					@fetch true
 			, 60000ms
 
-		@on \unmount ~>
+		this.on('unmount', () => {
 			clear-interval @clock
 
-		@fetch = (quiet = false) ~>
-			@loading = true
-			@users = null
-			if not quiet then @update!
-			@api \users/recommendation do
+		fetch(quiet = false) {
+			this.loading = true
+			this.users = null
+			if not quiet then this.update();
+			this.api 'users/recommendation' do
 				limit: @limit
 				offset: @limit * @page
-			.then (users) ~>
-				@loading = false
-				@users = users
-				@update!
+			.then (users) =>
+				this.loading = false
+				this.users = users
+				this.update();
 			.catch (err, text-status) ->
 				console.error err
 
-		@refresh = ~>
+		refresh() {
 			if @users.length < @limit
-				@page = 0
+				this.page = 0
 			else
 				@page++
 			@fetch!

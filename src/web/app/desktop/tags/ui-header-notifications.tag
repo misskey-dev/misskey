@@ -75,31 +75,31 @@
 
 	</style>
 	<script>
-		@is-open = false
+		this.is-open = false
 
-		@toggle = ~>
+		toggle() {
 			if @is-open
 				@close!
 			else
 				@open!
 
-		@open = ~>
-			@is-open = true
-			@update!
+		open() {
+			this.is-open = true
+			this.update();
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.add-event-listener \mousedown @mousedown
+			Array.prototype.for-each.call all, (el) =>
+				el.add-event-listener 'mousedown' @mousedown
 
-		@close = ~>
-			@is-open = false
-			@update!
+		close() {
+			this.is-open = false
+			this.update();
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.remove-event-listener \mousedown @mousedown
+			Array.prototype.for-each.call all, (el) =>
+				el.remove-event-listener 'mousedown' @mousedown
 
-		@mousedown = (e) ~>
+		mousedown(e) {
 			e.prevent-default!
-			if (!contains @root, e.target) and (@root != e.target)
+			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 			return false
 

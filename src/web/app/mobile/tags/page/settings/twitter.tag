@@ -7,10 +7,10 @@
 			display block
 	</style>
 	<script>
-		@mixin \ui
+		this.mixin('ui');
 
-		@on \mount ~>
+		this.on('mount', () => {
 			document.title = 'Misskey | Twitter連携'
-			@ui.trigger \title '<i class="fa fa-twitter"></i>Twitter連携'
+			this.ui.trigger('title', '<i class="fa fa-twitter"></i>Twitter連携');
 	</script>
 </mk-twitter-setting-page>

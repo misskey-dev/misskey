@@ -38,60 +38,60 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
-		@mixin \api
-		@mixin \i
-		@mixin \update-avatar
-		@mixin \update-banner
-		@mixin \update-wallpaper
-		@mixin \input-dialog
-		@mixin \NotImplementedException
+		this.mixin('api');
+		this.mixin('i');
+		this.mixin('update-avatar');
+		this.mixin('update-banner');
+		this.mixin('update-wallpaper');
+		this.mixin('input-dialog');
+		this.mixin('NotImplementedException');
 
-		@browser = @opts.browser
-		@file = @opts.file
+		this.browser = this.opts.browser
+		this.file = this.opts.file
 
-		@on \mount ~>
-			@refs.ctx.on \closed ~>
-				@trigger \closed
-				@unmount!
+		this.on('mount', () => {
+			this.refs.ctx.on('closed', () => {
+				this.trigger('closed');
+				this.unmount();
 
-		@open = (pos) ~>
-			@refs.ctx.open pos
+		open(pos) {
+			this.refs.ctx.open pos
 
-		@rename = ~>
-			@refs.ctx.close!
+		rename() {
+			this.refs.ctx.close!
 
 			name <~ @input-dialog do
 				'ファイル名の変更'
 				'新しいファイル名を入力してください'
 				@file.name
 
-			@api \drive/files/update do
+			this.api 'drive/files/update' do
 				file_id: @file.id
 				name: name
-			.then ~>
-				# something
-			.catch (err) ~>
+			.then =>
+				// something
+			.catch (err) =>
 				console.error err
 
-		@copy-url = ~>
+		copy-url() {
 			@NotImplementedException!
 
-		@download = ~>
-			@refs.ctx.close!
+		download() {
+			this.refs.ctx.close!
 
-		@set-avatar = ~>
-			@refs.ctx.close!
+		set-avatar() {
+			this.refs.ctx.close!
 			@update-avatar @I, null, @file
 
-		@set-banner = ~>
-			@refs.ctx.close!
+		set-banner() {
+			this.refs.ctx.close!
 			@update-banner @I, null, @file
 
-		@set-wallpaper = ~>
-			@refs.ctx.close!
+		set-wallpaper() {
+			this.refs.ctx.close!
 			@update-wallpaper @I, null, @file
 
-		@add-app = ~>
+		add-app() {
 			@NotImplementedException!
 	</script>
 </mk-drive-browser-file-contextmenu>

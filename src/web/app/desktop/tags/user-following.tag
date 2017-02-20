@@ -7,12 +7,12 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@user = @opts.user
+		this.user = this.opts.user
 
-		@fetch = (iknow, limit, cursor, cb) ~>
-			@api \users/following do
+		fetch(iknow, limit, cursor, cb) {
+			this.api 'users/following' do
 				user_id: @user.id
 				iknow: iknow
 				limit: limit

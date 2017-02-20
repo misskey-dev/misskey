@@ -26,19 +26,19 @@
 
 	</style>
 	<script>
-		@images = @opts.images
-		@image = @images.0
+		this.images = this.opts.images
+		this.image = @images.0
 
-		@mousemove = (e) ~>
-			rect = @refs.view.get-bounding-client-rect!
+		mousemove(e) {
+			rect = this.refs.view.get-bounding-client-rect!
 			mouse-x = e.client-x - rect.left
 			mouse-y = e.client-y - rect.top
-			xp = mouse-x / @refs.view.offset-width * 100
-			yp = mouse-y / @refs.view.offset-height * 100
-			@refs.view.style.background-position = xp + '% ' + yp + '%'
+			xp = mouse-x / this.refs.view.offset-width * 100
+			yp = mouse-y / this.refs.view.offset-height * 100
+			this.refs.view.style.background-position = xp + '% ' + yp + '%'
 
-		@click = ~>
-			dialog = document.body.append-child document.create-element \mk-image-dialog
+		click() {
+			dialog = document.body.appendChild document.createElement 'mk-image-dialog' 
 			riot.mount dialog, do
 				image: @image
 	</script>

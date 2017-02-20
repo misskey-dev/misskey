@@ -177,34 +177,34 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \stream
-		@mixin \user-preview
-		@mixin \get-post-summary
+		this.mixin('api');
+		this.mixin('stream');
+		this.mixin('user-preview');
+		this.mixin('get-post-summary');
 
-		@notifications = []
-		@loading = true
+		this.notifications = []
+		this.loading = true
 
-		@on \mount ~>
-			@api \i/notifications
-			.then (notifications) ~>
-				@notifications = notifications
-				@loading = false
-				@update!
+		this.on('mount', () => {
+			this.api 'i/notifications' 
+			.then (notifications) =>
+				this.notifications = notifications
+				this.loading = false
+				this.update();
 			.catch (err, text-status) ->
 				console.error err
 
-			@stream.on \notification @on-notification
+			@stream.on 'notification' this.on-notification
 
-		@on \unmount ~>
-			@stream.off \notification @on-notification
+		this.on('unmount', () => {
+			@stream.off 'notification' this.on-notification
 
-		@on-notification = (notification) ~>
+		on-notification(notification) {
 			@notifications.unshift notification
-			@update!
+			this.update();
 
-		@on \update ~>
-			@notifications.for-each (notification) ~>
+		this.on('update', () => {
+			@notifications.for-each (notification) =>
 				date = (new Date notification.created_at).get-date!
 				month = (new Date notification.created_at).get-month! + 1
 				notification._date = date

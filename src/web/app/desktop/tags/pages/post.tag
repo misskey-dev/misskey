@@ -16,17 +16,17 @@
 
 	</style>
 	<script>
-		@mixin \ui-progress
+		this.mixin('ui-progress');
 
-		@post = @opts.post
+		this.post = this.opts.post
 
-		@on \mount ~>
-			@Progress.start!
+		this.on('mount', () => {
+			this.Progress.start();
 
-			@refs.ui.refs.detail.on \post-fetched ~>
-				@Progress.set 0.5
+			this.refs.ui.refs.detail.on('post-fetched', () => {
+				this.Progress.set(0.5);
 
-			@refs.ui.refs.detail.on \loaded ~>
-				@Progress.done!
+			this.refs.ui.refs.detail.on('loaded', () => {
+				this.Progress.done();
 	</script>
 </mk-post-page>

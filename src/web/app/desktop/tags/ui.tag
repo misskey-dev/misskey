@@ -12,25 +12,25 @@
 
 	</style>
 	<script>
-		@mixin \i
+		this.mixin('i');
 
-		@open-post-form = ~>
-			riot.mount document.body.append-child document.create-element \mk-post-form-window
+		open-post-form() {
+			riot.mount document.body.appendChild document.createElement 'mk-post-form-window' 
 
-		@set-root-layout = ~>
-			@root.style.padding-top = @refs.header.root.client-height + \px
+		set-root-layout() {
+			this.root.style.padding-top = this.refs.header.root.client-height + 'px' 
 
-		@on \mount ~>
+		this.on('mount', () => {
 			@set-root-layout!
-			document.add-event-listener \keydown @onkeydown
+			document.add-event-listener 'keydown' this.onkeydown
 
-		@on \unmount ~>
-			document.remove-event-listener \keydown @onkeydown
+		this.on('unmount', () => {
+			document.remove-event-listener 'keydown' this.onkeydown
 
-		@onkeydown = (e) ~>
+		onkeydown(e) {
 			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 80 or e.which == 78 # p or n
+			if tag != 'input' and tag != 'textarea' 
+				if e.which == 80 or e.which == 78 // p or n
 					e.prevent-default!
 					@open-post-form!
 	</script>

@@ -329,108 +329,108 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \text
-		@mixin \user-preview
-		@mixin \date-stringify
-		@mixin \NotImplementedException
+		this.mixin('api');
+		this.mixin('text');
+		this.mixin('user-preview');
+		this.mixin('date-stringify');
+		this.mixin('NotImplementedException');
 
-		@fetching = true
-		@loading-context = false
-		@content = null
-		@post = null
+		this.fetching = true
+		this.loading-context = false
+		this.content = null
+		this.post = null
 
-		@on \mount ~>
+		this.on('mount', () => {
 
-			@api \posts/show do
-				post_id: @opts.post
-			.then (post) ~>
-				@fetching = false
-				@post = post
-				@trigger \loaded
+			this.api 'posts/show' do
+				post_id: this.opts.post
+			.then (post) =>
+				this.fetching = false
+				this.post = post
+				this.trigger('loaded');
 
-				@is-repost = @post.repost?
-				@p = if @is-repost then @post.repost else @post
+				this.is-repost = @post.repost?
+				this.p = if @is-repost then @post.repost else @post
 
-				@title = @date-stringify @p.created_at
+				this.title = @date-stringify @p.created_at
 
-				@update!
+				this.update();
 
 				if @p.text?
 					tokens = @analyze @p.text
-					@refs.text.innerHTML = @compile tokens
+					this.refs.text.innerHTML = @compile tokens
 
-					@refs.text.children.for-each (e) ~>
-						if e.tag-name == \MK-URL
+					this.refs.text.children.for-each (e) =>
+						if e.tag-name == 'MK-URL' 
 							riot.mount e
 
-					# URLをプレビュー
+					// URLをプレビュー
 					tokens
-						.filter (t) -> t.type == \link
-						.map (t) ~>
-							@preview = @refs.text.append-child document.create-element \mk-url-preview
+						.filter (t) -> t.type == 'link' 
+						.map (t) =>
+							this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
 							riot.mount @preview, do
 								url: t.content
 
-				# Get likes
-				@api \posts/likes do
+				// Get likes
+				this.api 'posts/likes' do
 					post_id: @p.id
 					limit: 8
-				.then (likes) ~>
-					@likes = likes
-					@update!
+				.then (likes) =>
+					this.likes = likes
+					this.update();
 
-				# Get reposts
-				@api \posts/reposts do
+				// Get reposts
+				this.api 'posts/reposts' do
 					post_id: @p.id
 					limit: 8
-				.then (reposts) ~>
-					@reposts = reposts
-					@update!
+				.then (reposts) =>
+					this.reposts = reposts
+					this.update();
 
-				# Get replies
-				@api \posts/replies do
+				// Get replies
+				this.api 'posts/replies' do
 					post_id: @p.id
 					limit: 8
-				.then (replies) ~>
-					@replies = replies
-					@update!
+				.then (replies) =>
+					this.replies = replies
+					this.update();
 
-				@update!
+				this.update();
 
-		@reply = ~>
-			form = document.body.append-child document.create-element \mk-post-form-window
+		reply() {
+			form = document.body.appendChild document.createElement 'mk-post-form-window' 
 			riot.mount form, do
 				reply: @p
 
-		@repost = ~>
-			form = document.body.append-child document.create-element \mk-repost-form-window
+		repost() {
+			form = document.body.appendChild document.createElement 'mk-repost-form-window' 
 			riot.mount form, do
 				post: @p
 
-		@like = ~>
+		like() {
 			if @p.is_liked
-				@api \posts/likes/delete do
+				this.api 'posts/likes/delete' do
 					post_id: @p.id
-				.then ~>
+				.then =>
 					@p.is_liked = false
-					@update!
+					this.update();
 			else
-				@api \posts/likes/create do
+				this.api 'posts/likes/create' do
 					post_id: @p.id
-				.then ~>
+				.then =>
 					@p.is_liked = true
-					@update!
+					this.update();
 
-		@load-context = ~>
-			@loading-context = true
+		load-context() {
+			this.loading-context = true
 
-			# Get context
-			@api \posts/context do
+			// Get context
+			this.api 'posts/context' do
 				post_id: @p.reply_to_id
-			.then (context) ~>
-				@context = context.reverse!
-				@loading-context = false
-				@update!
+			.then (context) =>
+				this.context = context.reverse!
+				this.loading-context = false
+				this.update();
 	</script>
 </mk-post-detail>

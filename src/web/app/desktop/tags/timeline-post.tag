@@ -312,83 +312,83 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \text
-		@mixin \date-stringify
-		@mixin \user-preview
-		@mixin \NotImplementedException
+		this.mixin('api');
+		this.mixin('text');
+		this.mixin('date-stringify');
+		this.mixin('user-preview');
+		this.mixin('NotImplementedException');
 
-		@post = @opts.post
-		@is-repost = @post.repost? and !@post.text?
-		@p = if @is-repost then @post.repost else @post
+		this.post = this.opts.post
+		this.is-repost = @post.repost? and !@post.text?
+		this.p = if @is-repost then @post.repost else @post
 
-		@title = @date-stringify @p.created_at
+		this.title = @date-stringify @p.created_at
 
-		@url = CONFIG.url + '/' + @p.user.username + '/' + @p.id
-		@is-detail-opened = false
+		this.url = CONFIG.url + '/' + @p.user.username + '/' + @p.id
+		this.is-detail-opened = false
 
-		@on \mount ~>
+		this.on('mount', () => {
 			if @p.text?
 				tokens = if @p._highlight?
 					then @analyze @p._highlight
 					else @analyze @p.text
 
-				@refs.text.innerHTML = @refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
 					then @compile tokens, true, false
 					else @compile tokens
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
+				this.refs.text.children.for-each (e) =>
+					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
-				# URLをプレビュー
+				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == \link
-					.map (t) ~>
-						@preview = @refs.text.append-child document.create-element \mk-url-preview
+					.filter (t) -> t.type == 'link' 
+					.map (t) =>
+						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
 						riot.mount @preview, do
 							url: t.content
 
-		@reply = ~>
-			form = document.body.append-child document.create-element \mk-post-form-window
+		reply() {
+			form = document.body.appendChild document.createElement 'mk-post-form-window' 
 			riot.mount form, do
 				reply: @p
 
-		@repost = ~>
-			form = document.body.append-child document.create-element \mk-repost-form-window
+		repost() {
+			form = document.body.appendChild document.createElement 'mk-repost-form-window' 
 			riot.mount form, do
 				post: @p
 
-		@like = ~>
+		like() {
 			if @p.is_liked
-				@api \posts/likes/delete do
+				this.api 'posts/likes/delete' do
 					post_id: @p.id
-				.then ~>
+				.then =>
 					@p.is_liked = false
-					@update!
+					this.update();
 			else
-				@api \posts/likes/create do
+				this.api 'posts/likes/create' do
 					post_id: @p.id
-				.then ~>
+				.then =>
 					@p.is_liked = true
-					@update!
+					this.update();
 
-		@toggle-detail = ~>
-			@is-detail-opened = !@is-detail-opened
-			@update!
+		toggle-detail() {
+			this.is-detail-opened = !@is-detail-opened
+			this.update();
 
-		@on-key-down = (e) ~>
+		on-key-down(e) {
 			should-be-cancel = true
 			switch
-			| e.which == 38 or e.which == 74 or (e.which == 9 and e.shift-key) => # ↑, j or Shift+Tab
-				focus @root, (e) -> e.previous-element-sibling
-			| e.which == 40 or e.which == 75 or e.which == 9 => # ↓, k or Tab
-				focus @root, (e) -> e.next-element-sibling
-			| e.which == 81 or e.which == 69 => # q or e
+			| e.which == 38 or e.which == 74 or (e.which == 9 and e.shift-key) => // ↑, j or Shift+Tab
+				focus this.root, (e) -> e.previous-element-sibling
+			| e.which == 40 or e.which == 75 or e.which == 9 => // ↓, k or Tab
+				focus this.root, (e) -> e.next-element-sibling
+			| e.which == 81 or e.which == 69 => // q or e
 				@repost!
-			| e.which == 70 or e.which == 76 => # f or l
+			| e.which == 70 or e.which == 76 => // f or l
 				@like!
-			| e.which == 82 => # r
+			| e.which == 82 => // r
 				@reply!
 			| _ =>
 				should-be-cancel = false
@@ -399,8 +399,8 @@
 		function focus(el, fn)
 			target = fn el
 			if target?
-				if target.has-attribute \tabindex
-					target.focus!
+				if target.has-attribute 'tabindex' 
+					target.focus();
 				else
 					focus target, fn
 	</script>

@@ -30,19 +30,19 @@
 
 	</style>
 	<script>
-		@url = @opts.href
+		this.url = this.opts.href
 
-		@on \before-mount ~>
-			parser = document.create-element \a
+		this.on('before-mount', () => {
+			parser = document.createElement 'a' 
 			parser.href = @url
 
-			@schema = parser.protocol
-			@hostname = parser.hostname
-			@port = parser.port
-			@pathname = parser.pathname
-			@query = parser.search
-			@hash = parser.hash
+			this.schema = parser.protocol
+			this.hostname = parser.hostname
+			this.port = parser.port
+			this.pathname = parser.pathname
+			this.query = parser.search
+			this.hash = parser.hash
 
-			@update!
+			this.update();
 	</script>
 </mk-url>

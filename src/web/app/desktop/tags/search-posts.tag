@@ -28,59 +28,59 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \get-post-summary
+		this.mixin('api');
+		this.mixin('get-post-summary');
 
-		@query = @opts.query
-		@is-loading = true
-		@is-empty = false
-		@more-loading = false
-		@page = 0
+		this.query = this.opts.query
+		this.is-loading = true
+		this.is-empty = false
+		this.more-loading = false
+		this.page = 0
 
-		@on \mount ~>
-			document.add-event-listener \keydown @on-document-keydown
-			window.add-event-listener \scroll @on-scroll
+		this.on('mount', () => {
+			document.add-event-listener 'keydown' this.on-document-keydown
+			window.add-event-listener 'scroll' this.on-scroll
 
-			@api \posts/search do
+			this.api 'posts/search' do
 				query: @query
-			.then (posts) ~>
-				@is-loading = false
-				@is-empty = posts.length == 0
-				@update!
-				@refs.timeline.set-posts posts
-				@trigger \loaded
-			.catch (err) ~>
+			.then (posts) =>
+				this.is-loading = false
+				this.is-empty = posts.length == 0
+				this.update();
+				this.refs.timeline.set-posts posts
+				this.trigger('loaded');
+			.catch (err) =>
 				console.error err
 
-		@on \unmount ~>
-			document.remove-event-listener \keydown @on-document-keydown
-			window.remove-event-listener \scroll @on-scroll
+		this.on('unmount', () => {
+			document.remove-event-listener 'keydown' this.on-document-keydown
+			window.remove-event-listener 'scroll' this.on-scroll
 
-		@on-document-keydown = (e) ~>
+		on-document-keydown(e) {
 			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 84 # t
-					@refs.timeline.focus!
+			if tag != 'input' and tag != 'textarea' 
+				if e.which == 84 // t
+					this.refs.timeline.focus();
 
-		@more = ~>
+		more() {
 			if @more-loading or @is-loading or @timeline.posts.length == 0
 				return
-			@more-loading = true
-			@update!
-			@api \posts/search do
+			this.more-loading = true
+			this.update();
+			this.api 'posts/search' do
 				query: @query
 				page: @page + 1
-			.then (posts) ~>
-				@more-loading = false
+			.then (posts) =>
+				this.more-loading = false
 				@page++
-				@update!
-				@refs.timeline.prepend-posts posts
-			.catch (err) ~>
+				this.update();
+				this.refs.timeline.prepend-posts posts
+			.catch (err) =>
 				console.error err
 
-		@on-scroll = ~>
+		on-scroll() {
 			current = window.scroll-y + window.inner-height
-			if current > document.body.offset-height - 16 # 遊び
+			if current > document.body.offset-height - 16 // 遊び
 				@more!
 	</script>
 </mk-search-posts>

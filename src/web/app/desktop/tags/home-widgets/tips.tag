@@ -29,7 +29,7 @@
 
 	</style>
 	<script>
-		@tips = [
+		this.tips = [
 			'<kbd>t</kbd>でタイムラインにフォーカスできます'
 			'<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます'
 			'投稿フォームにはファイルをドラッグ&ドロップできます'
@@ -41,31 +41,31 @@
 			'MisskeyはMIT Licenseです'
 		]
 
-		@on \mount ~>
+		this.on('mount', () => {
 			@set!
-			@clock = set-interval @change, 20000ms
+			this.clock = set-interval @change, 20000ms
 
-		@on \unmount ~>
+		this.on('unmount', () => {
 			clear-interval @clock
 
-		@set = ~>
-			@refs.text.innerHTML = @tips[Math.floor Math.random! * @tips.length]
-			@update!
+		set() {
+			this.refs.text.innerHTML = @tips[Math.floor Math.random! * @tips.length]
+			this.update();
 
-		@change = ~>
-			Velocity @refs.tip, {
+		change() {
+			Velocity this.refs.tip, {
 				opacity: 0
 			} {
 				duration: 500ms
-				easing: \linear
+				easing: 'linear' 
 				complete: @set
 			}
 
-			Velocity @refs.tip, {
+			Velocity this.refs.tip, {
 				opacity: 1
 			} {
 				duration: 500ms
-				easing: \linear
+				easing: 'linear' 
 			}
 	</script>
 </mk-tips-home-widget>

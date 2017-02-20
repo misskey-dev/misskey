@@ -198,45 +198,45 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
-		@mixin \dialog
-		@mixin \update-avatar
+		this.mixin('i');
+		this.mixin('api');
+		this.mixin('dialog');
+		this.mixin('update-avatar');
 
-		@page = \account
+		this.page = 'account' 
 
-		@set-page = (page) ~>
-			@page = page
+		set-page(page) {
+			this.page = page
 
-		@avatar = ~>
+		avatar() {
 			@update-avatar @I
 
-		@update-account = ~>
-			@api \i/update do
-				name: @refs.account-name.value
-				location: @refs.account-location.value
-				bio: @refs.account-bio.value
-				birthday: @refs.account-birthday.value
-			.then (i) ~>
-				alert \ok
-			.catch (err) ~>
+		update-account() {
+			this.api 'i/update' do
+				name: this.refs.account-name.value
+				location: this.refs.account-location.value
+				bio: this.refs.account-bio.value
+				birthday: this.refs.account-birthday.value
+			.then (i) =>
+				alert 'ok' 
+			.catch (err) =>
 				console.error err
 
-		@update-cache = ~>
+		update-cache() {
 			@I.data.cache = !@I.data.cache
-			@api \i/appdata/set do
+			this.api 'i/appdata/set' do
 				data: JSON.stringify do
 					cache: @I.data.cache
 
-		@update-debug = ~>
+		update-debug() {
 			@I.data.debug = !@I.data.debug
-			@api \i/appdata/set do
+			this.api 'i/appdata/set' do
 				data: JSON.stringify do
 					debug: @I.data.debug
 
-		@update-nya = ~>
+		update-nya() {
 			@I.data.nya = !@I.data.nya
-			@api \i/appdata/set do
+			this.api 'i/appdata/set' do
 				data: JSON.stringify do
 					nya: @I.data.nya
 	</script>

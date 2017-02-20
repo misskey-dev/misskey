@@ -180,22 +180,22 @@
 
 	</style>
 	<script>
-		@bytes-to-size = require '../../../common/scripts/bytes-to-size.js'
-		@get-gcd = require '../../../common/scripts/gcd.js'
+		this.bytes-to-size = require('../../../common/scripts/bytes-to-size.js');
+		this.get-gcd = require('../../../common/scripts/gcd.js');
 
-		@mixin \api
+		this.mixin('api');
 
-		@file = @opts.file
-		@kind = @file.type.split \/ .0
+		this.file = this.opts.file
+		this.kind = @file.type.split '/' .0
 
-		@rename = ~>
+		rename() {
 			name = window.prompt '名前を変更' @file.name
 			if name? and name != '' and name != @file.name
-				@api \drive/files/update do
+				this.api 'drive/files/update' do
 					file_id: @file.id
 					name: name
-				.then ~>
-					@parent.cf @file, true
+				.then =>
+					this.parent.cf @file, true
 
 	</script>
 </mk-drive-file-viewer>

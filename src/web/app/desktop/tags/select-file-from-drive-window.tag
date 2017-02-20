@@ -131,31 +131,31 @@
 
 	</style>
 	<script>
-		@file = []
+		this.file = []
 
-		@multiple = if @opts.multiple? then @opts.multiple else false
-		@title = @opts.title || '<i class="fa fa-file-o"></i>ファイルを選択'
+		this.multiple = if this.opts.multiple? then this.opts.multiple else false
+		this.title = this.opts.title || '<i class="fa fa-file-o"></i>ファイルを選択'
 
-		@on \mount ~>
-			@refs.window.refs.browser.on \selected (file) ~>
-				@file = file
+		this.on('mount', () => {
+			this.refs.window.refs.browser.on('selected', (file) => {
+				this.file = file
 				@ok!
 
-			@refs.window.refs.browser.on \change-selection (files) ~>
-				@file = files
-				@update!
+			this.refs.window.refs.browser.on('change-selection', (files) => {
+				this.file = files
+				this.update();
 
-			@refs.window.on \closed ~>
-				@unmount!
+			this.refs.window.on('closed', () => {
+				this.unmount();
 
-		@close = ~>
-			@refs.window.close!
+		close() {
+			this.refs.window.close!
 
-		@upload = ~>
-			@refs.window.refs.browser.select-local-file!
+		upload() {
+			this.refs.window.refs.browser.select-local-file!
 
-		@ok = ~>
-			@trigger \selected @file
-			@refs.window.close!
+		ok() {
+			this.trigger 'selected' @file
+			this.refs.window.close!
 	</script>
 </mk-select-file-from-drive-window>

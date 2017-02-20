@@ -106,43 +106,43 @@
 
 	</style>
 	<script>
-		@draw = ~>
+		draw() {
 			now = new Date!
 			nd = now.get-date!
 			nm = now.get-month!
 			ny = now.get-full-year!
 
-			@year = ny
-			@month = nm + 1
-			@day = nd
-			@week-day = [\日 \月 \火 \水 \木 \金 \土][now.get-day!]
+			this.year = ny
+			this.month = nm + 1
+			this.day = nd
+			this.week-day = [\日 '月' \火 '水' \木 '金' \土][now.get-day!]
 
 			@day-numer   = (now - (new Date ny, nm, nd))
 			@day-denom   = 1000ms * 60s * 60m * 24h
-			@month-numer = (now - (new Date ny, nm, 1))
-			@month-denom = (new Date ny, nm + 1,  1) - (new Date ny, nm, 1)
+			this.month-numer = (now - (new Date ny, nm, 1))
+			this.month-denom = (new Date ny, nm + 1,  1) - (new Date ny, nm, 1)
 			@year-numer  = (now - (new Date ny, 0, 1))
 			@year-denom  = (new Date ny + 1, 0,  1) - (new Date ny, 0, 1)
 
 			@day-p   = @day-numer   / @day-denom   * 100
-			@month-p = @month-numer / @month-denom * 100
+			this.month-p = @month-numer / @month-denom * 100
 			@year-p  = @year-numer  / @year-denom  * 100
 
-			@is-holiday =
+			this.is-holiday = 
 				(now.get-day! == 0 or now.get-day! == 6)
 
-			@special =
-				| nm == 0 and nd == 1 => \on-new-years-day
+			this.special = 
+				| nm == 0 and nd == 1 => 'on-new-years-day' 
 				| _ => false
 
-			@update!
+			this.update();
 
 		@draw!
 
-		@on \mount ~>
-			@clock = set-interval @draw, 1000ms
+		this.on('mount', () => {
+			this.clock = set-interval @draw, 1000ms
 
-		@on \unmount ~>
+		this.on('unmount', () => {
 			clear-interval @clock
 	</script>
 </mk-calendar-home-widget>

@@ -15,5 +15,5 @@
 						border-radius 4px
 
 	</style>
-	<script>@user = @opts.user</script>
+	<script>this.user = this.opts.user</script>
 </mk-user-followers-window>

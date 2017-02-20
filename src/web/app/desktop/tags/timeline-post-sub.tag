@@ -9,12 +9,12 @@
 		</div>
 	</article>
 	<script>
-		@mixin \date-stringify
-		@mixin \user-preview
+		this.mixin('date-stringify');
+		this.mixin('user-preview');
 
-		@post = @opts.post
+		this.post = this.opts.post
 
-		@title = @date-stringify @post.created_at
+		this.title = @date-stringify @post.created_at
 
 	</script>
 	<style>

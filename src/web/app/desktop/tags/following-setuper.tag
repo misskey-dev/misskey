@@ -123,41 +123,41 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \user-preview
+		this.mixin('api');
+		this.mixin('user-preview');
 
-		@users = null
-		@loading = true
+		this.users = null
+		this.loading = true
 
-		@limit = 6users
-		@page = 0
+		this.limit = 6users
+		this.page = 0
 
-		@on \mount ~>
+		this.on('mount', () => {
 			@load!
 
-		@load = ~>
-			@loading = true
-			@users = null
-			@update!
+		load() {
+			this.loading = true
+			this.users = null
+			this.update();
 
-			@api \users/recommendation do
+			this.api 'users/recommendation' do
 				limit: @limit
 				offset: @limit * @page
-			.then (users) ~>
-				@loading = false
-				@users = users
-				@update!
+			.then (users) =>
+				this.loading = false
+				this.users = users
+				this.update();
 			.catch (err, text-status) ->
 				console.error err
 
-		@refresh = ~>
+		refresh() {
 			if @users.length < @limit
-				@page = 0
+				this.page = 0
 			else
 				@page++
 			@load!
 
-		@close = ~>
-			@unmount!
+		close() {
+			this.unmount();
 	</script>
 </mk-following-setuper>

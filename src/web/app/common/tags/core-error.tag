@@ -57,8 +57,8 @@
 
 	</style>
 	<script>
-		@retry = ~>
-			@unmount!
-			@opts.retry!
+		retry() {
+			this.unmount();
+			this.opts.retry!
 	</script>
 </mk-core-error>

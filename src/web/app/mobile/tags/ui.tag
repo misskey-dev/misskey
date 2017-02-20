@@ -14,37 +14,37 @@
 					background #fff
 	</style>
 	<script>
-		@mixin \stream
+		this.mixin('stream');
 
-		@ready-count = 0
-		@is-drawer-opening = false
+		this.ready-count = 0
+		this.is-drawer-opening = false
 
-		#@ui.on \notification (text) ~>
-		#	alert text
+		#this.ui.on('notification', (text) => {
+		// alert text
 
-		@on \mount ~>
-			@stream.on \notification @on-stream-notification
+		this.on('mount', () => {
+			@stream.on 'notification' this.on-stream-notification
 			@ready!
 
-		@on \unmount ~>
-			@stream.off \notification @on-stream-notification
+		this.on('unmount', () => {
+			@stream.off 'notification' this.on-stream-notification
 
-		@ready = ~>
+		ready() {
 			@ready-count++
 
 			if @ready-count == 2
 				@init-view-position!
 
-		@init-view-position = ~>
-			top = @refs.header.root.offset-height
-			@refs.main.style.padding-top = top + \px
+		init-view-position() {
+			top = this.refs.header.root.offset-height
+			this.refs.main.style.padding-top = top + 'px' 
 
-		@toggle-drawer = ~>
-			@is-drawer-opening = !@is-drawer-opening
-			@refs.nav.root.style.display = if @is-drawer-opening then \block else \none
+		toggle-drawer() {
+			this.is-drawer-opening = !@is-drawer-opening
+			this.refs.nav.root.style.display = if @is-drawer-opening then 'block' else 'none' 
 
-		@on-stream-notification = (notification) ~>
-			el = document.body.append-child document.create-element \mk-notify
+		on-stream-notification(notification) {
+			el = document.body.appendChild document.createElement 'mk-notify' 
 			riot.mount el, do
 				notification: notification
 	</script>

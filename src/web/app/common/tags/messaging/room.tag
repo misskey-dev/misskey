@@ -124,101 +124,101 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
-		@mixin \messaging-stream
+		this.mixin('i');
+		this.mixin('api');
+		this.mixin('messaging-stream');
 
-		@user = @opts.user
-		@init = true
-		@sending = false
-		@messages = []
+		this.user = this.opts.user
+		this.init = true
+		this.sending = false
+		this.messages = []
 
-		@connection = new @MessagingStreamConnection @I, @user.id
+		this.connection = new @MessagingStreamConnection @I, @user.id
 
-		@on \mount ~>
-			@connection.event.on \message @on-message
-			@connection.event.on \read @on-read
+		this.on('mount', () => {
+			@connection.event.on 'message' this.on-message
+			@connection.event.on 'read' this.on-read
 
-			document.add-event-listener \visibilitychange @on-visibilitychange
+			document.add-event-listener 'visibilitychange' this.on-visibilitychange
 
-			@api \messaging/messages do
+			this.api 'messaging/messages' do
 				user_id: @user.id
-			.then (messages) ~>
-				@init = false
-				@messages = messages.reverse!
-				@update!
+			.then (messages) =>
+				this.init = false
+				this.messages = messages.reverse!
+				this.update();
 				@scroll-to-bottom!
-			.catch (err) ~>
+			.catch (err) =>
 				console.error err
 
-		@on \unmount ~>
-			@connection.event.off \message @on-message
-			@connection.event.off \read @on-read
+		this.on('unmount', () => {
+			@connection.event.off 'message' this.on-message
+			@connection.event.off 'read' this.on-read
 			@connection.close!
 
-			document.remove-event-listener \visibilitychange @on-visibilitychange
+			document.remove-event-listener 'visibilitychange' this.on-visibilitychange
 
-		@on \update ~>
-			@messages.for-each (message) ~>
+		this.on('update', () => {
+			@messages.for-each (message) =>
 				date = (new Date message.created_at).get-date!
 				month = (new Date message.created_at).get-month! + 1
 				message._date = date
 				message._datetext = month + '月 ' + date + '日'
 
-		@on-message = (message) ~>
+		on-message(message) {
 			is-bottom = @is-bottom!
 
 			@messages.push message
 			if message.user_id != @I.id and not document.hidden
 				@connection.socket.send JSON.stringify do
-					type: \read
+					type: 'read' 
 					id: message.id
-			@update!
+			this.update();
 
 			if is-bottom
-				# Scroll to bottom
+				// Scroll to bottom
 				@scroll-to-bottom!
 			else if message.user_id != @I.id
-				# Notify
+				// Notify
 				@notify '新しいメッセージがあります'
 
-		@on-read = (ids) ~>
+		on-read(ids) {
 			if not Array.isArray ids then ids = [ids]
-			ids.for-each (id) ~>
-				if (@messages.some (x) ~> x.id == id)
+			ids.for-each (id) =>
+				if (@messages.some (x) => x.id == id)
 					exist = (@messages.map (x) -> x.id).index-of id
 					@messages[exist].is_read = true
-					@update!
+					this.update();
 
-		@is-bottom = ~>
-			current = @root.scroll-top + @root.offset-height
-			max = @root.scroll-height
+		is-bottom() {
+			current = this.root.scroll-top + this.root.offset-height
+			max = this.root.scroll-height
 			current > (max - 32)
 
-		@scroll-to-bottom = ~>
-			@root.scroll-top = @root.scroll-height
+		scroll-to-bottom() {
+			this.root.scroll-top = this.root.scroll-height
 
-		@notify = (message) ~>
-			n = document.create-element \p
+		notify(message) {
+			n = document.createElement 'p' 
 			n.inner-HTML = '<i class="fa fa-arrow-circle-down"></i>' + message
-			n.onclick = ~>
+			n.onclick = =>
 				@scroll-to-bottom!
 				n.parent-node.remove-child n
-			@refs.notifications.append-child n
+			this.refs.notifications.appendChild n
 
-			set-timeout ~>
+			setTimeout =>
 				n.style.opacity = 0
-				set-timeout ~>
+				setTimeout =>
 					n.parent-node.remove-child n
 				, 1000ms
 			, 4000ms
 
-		@on-visibilitychange = ~>
+		on-visibilitychange() {
 			if document.hidden then return
-			@messages.for-each (message) ~>
+			@messages.for-each (message) =>
 				if message.user_id != @I.id and not message.is_read
 					@connection.socket.send JSON.stringify do
-						type: \read
+						type: 'read' 
 						id: message.id
 	</script>
 </mk-messaging-room>

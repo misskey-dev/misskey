@@ -128,91 +128,91 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \stream
+		this.mixin('api');
+		this.mixin('stream');
 
-		@files = []
-		@folders = []
-		@hierarchy-folders = []
-		@selected-files = []
+		this.files = []
+		this.folders = []
+		this.hierarchy-folders = []
+		this.selected-files = []
 
-		# 現在の階層(フォルダ)
-		# * null でルートを表す
-		@folder = null
+		// 現在の階層(フォルダ)
+		// * null でルートを表す
+		this.folder = null
 
-		@file = null
+		this.file = null
 
-		@is-select-mode = @opts.select? and @opts.select
-		@multiple = if @opts.multiple? then @opts.multiple else false
+		this.is-select-mode = this.opts.select? and this.opts.select
+		this.multiple = if this.opts.multiple? then this.opts.multiple else false
 
-		@on \mount ~>
-			@stream.on \drive_file_created @on-stream-drive-file-created
-			@stream.on \drive_file_updated @on-stream-drive-file-updated
-			@stream.on \drive_folder_created @on-stream-drive-folder-created
-			@stream.on \drive_folder_updated @on-stream-drive-folder-updated
+		this.on('mount', () => {
+			@stream.on 'drive_file_created' this.on-stream-drive-file-created
+			@stream.on 'drive_file_updated' this.on-stream-drive-file-updated
+			@stream.on 'drive_folder_created' this.on-stream-drive-folder-created
+			@stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
 
-			# Riotのバグでnullを渡しても""になる
-			# https://github.com/riot/riot/issues/2080
-			#if @opts.folder?
-			if @opts.folder? and @opts.folder != ''
-				@cd @opts.folder, true
-			else if @opts.file? and @opts.file != ''
-				@cf @opts.file, true
+			// Riotのバグでnullを渡しても""になる
+			// https://github.com/riot/riot/issues/2080
+			#if this.opts.folder?
+			if this.opts.folder? and this.opts.folder != ''
+				@cd this.opts.folder, true
+			else if this.opts.file? and this.opts.file != ''
+				@cf this.opts.file, true
 			else
 				@load!
 
-		@on \unmount ~>
-			@stream.off \drive_file_created @on-stream-drive-file-created
-			@stream.off \drive_file_updated @on-stream-drive-file-updated
-			@stream.off \drive_folder_created @on-stream-drive-folder-created
-			@stream.off \drive_folder_updated @on-stream-drive-folder-updated
+		this.on('unmount', () => {
+			@stream.off 'drive_file_created' this.on-stream-drive-file-created
+			@stream.off 'drive_file_updated' this.on-stream-drive-file-updated
+			@stream.off 'drive_folder_created' this.on-stream-drive-folder-created
+			@stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
 
-		@on-stream-drive-file-created = (file) ~>
+		on-stream-drive-file-created(file) {
 			@add-file file, true
 
-		@on-stream-drive-file-updated = (file) ~>
+		on-stream-drive-file-updated(file) {
 			current = if @folder? then @folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
 				@add-file file, true
 
-		@on-stream-drive-folder-created = (folder) ~>
+		on-stream-drive-folder-created(folder) {
 			@add-folder folder, true
 
-		@on-stream-drive-folder-updated = (folder) ~>
+		on-stream-drive-folder-updated(folder) {
 			current = if @folder? then @folder.id else null
 			if current != folder.parent_id
 				@remove-folder folder
 			else
 				@add-folder folder, true
 
-		@_move = (ev) ~>
+		@_move = (ev) =>
 			@move ev.item.folder
 
-		@move = (target-folder) ~>
+		move(target-folder) {
 			@cd target-folder
 
-		@cd = (target-folder, silent = false) ~>
-			@file = null
+		cd(target-folder, silent = false) {
+			this.file = null
 
-			if target-folder? and typeof target-folder == \object
+			if target-folder? and typeof target-folder == 'object' 
 				target-folder = target-folder.id
 
 			if target-folder == null
 				@go-root!
 				return
 
-			@loading = true
-			@update!
+			this.loading = true
+			this.update();
 
-			@api \drive/folders/show do
+			this.api 'drive/folders/show' do
 				folder_id: target-folder
-			.then (folder) ~>
-				@folder = folder
-				@hierarchy-folders = []
+			.then (folder) =>
+				this.folder = folder
+				this.hierarchy-folders = []
 
-				x = (f) ~>
+				x = (f) =>
 					@hierarchy-folders.unshift f
 					if f.parent?
 						x f.parent
@@ -220,18 +220,18 @@
 				if folder.parent?
 					x folder.parent
 
-				@update!
-				@trigger \open-folder @folder, silent
+				this.update();
+				this.trigger 'open-folder' @folder, silent
 				@load!
 			.catch (err, text-status) ->
 				console.error err
 
-		@add-folder = (folder, unshift = false) ~>
+		add-folder(folder, unshift = false) {
 			current = if @folder? then @folder.id else null
 			if current != folder.parent_id
 				return
 
-			if (@folders.some (f) ~> f.id == folder.id)
+			if (@folders.some (f) => f.id == folder.id)
 				return
 
 			if unshift
@@ -239,17 +239,17 @@
 			else
 				@folders.push folder
 
-			@update!
+			this.update();
 
-		@add-file = (file, unshift = false) ~>
+		add-file(file, unshift = false) {
 			current = if @folder? then @folder.id else null
 			if current != file.folder_id
 				return
 
-			if (@files.some (f) ~> f.id == file.id)
+			if (@files.some (f) => f.id == file.id)
 				exist = (@files.map (f) -> f.id).index-of file.id
 				@files[exist] = file
-				@update!
+				this.update();
 				return
 
 			if unshift
@@ -257,38 +257,38 @@
 			else
 				@files.push file
 
-			@update!
+			this.update();
 
-		@remove-folder = (folder) ~>
-			if typeof folder == \object
+		remove-folder(folder) {
+			if typeof folder == 'object' 
 				folder = folder.id
-			@folders = @folders.filter (f) -> f.id != folder
-			@update!
+			this.folders = @folders.filter (f) -> f.id != folder
+			this.update();
 
-		@remove-file = (file) ~>
-			if typeof file == \object
+		remove-file(file) {
+			if typeof file == 'object' 
 				file = file.id
-			@files = @files.filter (f) -> f.id != file
-			@update!
+			this.files = @files.filter (f) -> f.id != file
+			this.update();
 
-		@go-root = ~>
+		go-root() {
 			if @folder != null or @file != null
-				@file = null
-				@folder = null
-				@hierarchy-folders = []
-				@update!
-				@trigger \move-root
+				this.file = null
+				this.folder = null
+				this.hierarchy-folders = []
+				this.update();
+				this.trigger('move-root');
 				@load!
 
-		@load = ~>
-			@folders = []
-			@files = []
-			@more-folders = false
-			@more-files = false
-			@loading = true
-			@update!
+		load() {
+			this.folders = []
+			this.files = []
+			this.more-folders = false
+			this.more-files = false
+			this.loading = true
+			this.update();
 
-			@trigger \begin-load
+			this.trigger('begin-load');
 
 			load-folders = null
 			load-files = null
@@ -296,74 +296,74 @@
 			folders-max = 20
 			files-max = 20
 
-			# フォルダ一覧取得
-			@api \drive/folders do
+			// フォルダ一覧取得
+			this.api 'drive/folders' do
 				folder_id: if @folder? then @folder.id else null
 				limit: folders-max + 1
-			.then (folders) ~>
+			.then (folders) =>
 				if folders.length == folders-max + 1
-					@more-folders = true
+					this.more-folders = true
 					folders.pop!
 				load-folders := folders
 				complete!
-			.catch (err, text-status) ~>
+			.catch (err, text-status) =>
 				console.error err
 
-			# ファイル一覧取得
-			@api \drive/files do
+			// ファイル一覧取得
+			this.api 'drive/files' do
 				folder_id: if @folder? then @folder.id else null
 				limit: files-max + 1
-			.then (files) ~>
+			.then (files) =>
 				if files.length == files-max + 1
-					@more-files = true
+					this.more-files = true
 					files.pop!
 				load-files := files
 				complete!
-			.catch (err, text-status) ~>
+			.catch (err, text-status) =>
 				console.error err
 
 			flag = false
-			complete = ~>
+			complete = =>
 				if flag
-					load-folders.for-each (folder) ~>
+					load-folders.for-each (folder) =>
 						@add-folder folder
-					load-files.for-each (file) ~>
+					load-files.for-each (file) =>
 						@add-file file
-					@loading = false
-					@update!
+					this.loading = false
+					this.update();
 
-					@trigger \loaded
+					this.trigger('loaded');
 				else
 					flag := true
-					@trigger \load-mid
+					this.trigger('load-mid');
 
-		@choose-file = (file) ~>
+		choose-file(file) {
 			if @is-select-mode
-				exist = @selected-files.some (f) ~> f.id == file.id
+				exist = @selected-files.some (f) => f.id == file.id
 				if exist
-					@selected-files = (@selected-files.filter (f) ~> f.id != file.id)
+					selected-files(@selected-files.filter (f) { f.id != file.id)
 				else
 					@selected-files.push file
-				@update!
-				@trigger \change-selected @selected-files
+				this.update();
+				this.trigger 'change-selected' @selected-files
 			else
 				@cf file
 
-		@cf = (file, silent = false) ~>
-			if typeof file == \object
+		cf(file, silent = false) {
+			if typeof file == 'object' 
 				file = file.id
 
-			@loading = true
-			@update!
+			this.loading = true
+			this.update();
 
-			@api \drive/files/show do
+			this.api 'drive/files/show' do
 				file_id: file
-			.then (file) ~>
-				@file = file
-				@folder = null
-				@hierarchy-folders = []
+			.then (file) =>
+				this.file = file
+				this.folder = null
+				this.hierarchy-folders = []
 
-				x = (f) ~>
+				x = (f) =>
 					@hierarchy-folders.unshift f
 					if f.parent?
 						x f.parent
@@ -371,7 +371,7 @@
 				if file.folder?
 					x file.folder
 
-				@update!
-				@trigger \open-file @file, silent
+				this.update();
+				this.trigger 'open-file' @file, silent
 	</script>
 </mk-drive>

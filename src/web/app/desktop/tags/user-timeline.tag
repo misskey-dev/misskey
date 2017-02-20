@@ -46,91 +46,91 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
-		@mixin \get-post-summary
+		this.mixin('api');
+		this.mixin('is-promise');
+		this.mixin('get-post-summary');
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
-		@is-loading = true
-		@is-empty = false
-		@more-loading = false
-		@unread-count = 0
-		@mode = \default
+		this.user = null
+		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
+		this.is-loading = true
+		this.is-empty = false
+		this.more-loading = false
+		this.unread-count = 0
+		this.mode = 'default' 
 
-		@on \mount ~>
-			document.add-event-listener \visibilitychange @window-on-visibilitychange, false
-			document.add-event-listener \keydown @on-document-keydown
-			window.add-event-listener \scroll @on-scroll
+		this.on('mount', () => {
+			document.add-event-listener 'visibilitychange' @window-on-visibilitychange, false
+			document.add-event-listener 'keydown' this.on-document-keydown
+			window.add-event-listener 'scroll' this.on-scroll
 
-			@user-promise.then (user) ~>
-				@user = user
-				@update!
+			@user-promise.then (user) =>
+				this.user = user
+				this.update();
 
-				@fetch ~>
-					@trigger \loaded
+				@fetch =>
+					this.trigger('loaded');
 
-		@on \unmount ~>
-			document.remove-event-listener \visibilitychange @window-on-visibilitychange
-			document.remove-event-listener \keydown @on-document-keydown
-			window.remove-event-listener \scroll @on-scroll
+		this.on('unmount', () => {
+			document.remove-event-listener 'visibilitychange' @window-on-visibilitychange
+			document.remove-event-listener 'keydown' this.on-document-keydown
+			window.remove-event-listener 'scroll' this.on-scroll
 
-		@on-document-keydown = (e) ~>
+		on-document-keydown(e) {
 			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 84 # t
-					@refs.timeline.focus!
+			if tag != 'input' and tag != 'textarea' 
+				if e.which == 84 // t
+					this.refs.timeline.focus();
 
-		@fetch = (cb) ~>
-			@api \users/posts do
+		fetch(cb) {
+			this.api 'users/posts' do
 				user_id: @user.id
-				with_replies: @mode == \with-replies
-			.then (posts) ~>
-				@is-loading = false
-				@is-empty = posts.length == 0
-				@update!
-				@refs.timeline.set-posts posts
+				with_replies: @mode == 'with-replies' 
+			.then (posts) =>
+				this.is-loading = false
+				this.is-empty = posts.length == 0
+				this.update();
+				this.refs.timeline.set-posts posts
 				if cb? then cb!
-			.catch (err) ~>
+			.catch (err) =>
 				console.error err
 				if cb? then cb!
 
-		@more = ~>
-			if @more-loading or @is-loading or @refs.timeline.posts.length == 0
+		more() {
+			if @more-loading or @is-loading or this.refs.timeline.posts.length == 0
 				return
-			@more-loading = true
-			@update!
-			@api \users/posts do
+			this.more-loading = true
+			this.update();
+			this.api 'users/posts' do
 				user_id: @user.id
-				with_replies: @mode == \with-replies
-				max_id: @refs.timeline.tail!.id
-			.then (posts) ~>
-				@more-loading = false
-				@update!
-				@refs.timeline.prepend-posts posts
-			.catch (err) ~>
+				with_replies: @mode == 'with-replies' 
+				max_id: this.refs.timeline.tail!.id
+			.then (posts) =>
+				this.more-loading = false
+				this.update();
+				this.refs.timeline.prepend-posts posts
+			.catch (err) =>
 				console.error err
 
-		@on-stream-post = (post) ~>
-			@is-empty = false
-			@update!
-			@refs.timeline.add-post post
+		on-stream-post(post) {
+			this.is-empty = false
+			this.update();
+			this.refs.timeline.add-post post
 
 			if document.hidden
 				@unread-count++
 				document.title = '(' + @unread-count + ') ' + @get-post-summary post
 
-		@window-on-visibilitychange = ~>
+		window-on-visibilitychange() {
 			if !document.hidden
-				@unread-count = 0
+				this.unread-count = 0
 				document.title = 'Misskey'
 
-		@on-scroll = ~>
+		on-scroll() {
 			current = window.scroll-y + window.inner-height
-			if current > document.body.offset-height - 16 # 遊び
+			if current > document.body.offset-height - 16 // 遊び
 				@more!
 
-		@set-mode = (mode) ~>
+		set-mode(mode) {
 			@update do
 				mode: mode
 			@fetch!

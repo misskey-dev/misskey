@@ -81,5 +81,5 @@
 
 	</style>
 
-	<script>@mixin \i</script>
+	<script>this.mixin('i');</script>
 </mk-ui-header>

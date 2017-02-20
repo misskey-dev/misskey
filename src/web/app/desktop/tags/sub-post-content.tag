@@ -28,18 +28,18 @@
 
 	</style>
 	<script>
-		@mixin \text
-		@mixin \user-preview
+		this.mixin('text');
+		this.mixin('user-preview');
 
-		@post = @opts.post
+		this.post = this.opts.post
 
-		@on \mount ~>
+		this.on('mount', () => {
 			if @post.text?
 				tokens = @analyze @post.text
-				@refs.text.innerHTML = @compile tokens, false
+				this.refs.text.innerHTML = @compile tokens, false
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
+				this.refs.text.children.for-each (e) =>
+					if e.tag-name == 'MK-URL' 
 						riot.mount e
 	</script>
 </mk-sub-post-content>

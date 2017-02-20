@@ -86,24 +86,24 @@
 
 	</style>
 	<script>
-		@choices = ['', '']
+		this.choices = ['', '']
 
-		@oninput = (i, e) ~>
+		oninput(i, e) {
 			@choices[i] = e.target.value
 
-		@add = ~>
+		add() {
 			@choices.push ''
-			@update!
-			@refs.choices.child-nodes[@choices.length - 1].child-nodes[0].focus!
+			this.update();
+			this.refs.choices.child-nodes[@choices.length - 1].child-nodes[0].focus();
 
-		@remove = (i) ~>
-			@choices = @choices.filter((_, _i) -> _i != i)
-			@update!
+		remove(i) {
+			this.choices = @choices.filter((_, _i) -> _i != i)
+			this.update();
 
-		@destroy = ~>
-			@opts.ondestroy!
+		destroy() {
+			this.opts.ondestroy!
 
-		@get = ~>
+		get() {
 			return {
 				choices: @choices.filter (choice) -> choice != ''
 			}

@@ -174,117 +174,117 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \get-password-strength
+		this.mixin('api');
+		this.mixin('get-password-strength');
 
-		@username-state = null
-		@password-strength = ''
-		@password-retype-state = null
-		@recaptchaed = false
+		this.username-state = null
+		this.password-strength = ''
+		this.password-retype-state = null
+		this.recaptchaed = false
 
-		window.on-recaptchaed = ~>
-			@recaptchaed = true
-			@update!
+		window.on-recaptchaed = =>
+			this.recaptchaed = true
+			this.update();
 
-		window.on-recaptcha-expired = ~>
-			@recaptchaed = false
-			@update!
+		window.on-recaptcha-expired = =>
+			this.recaptchaed = false
+			this.update();
 
-		@on \mount ~>
-			head = (document.get-elements-by-tag-name \head).0
-			script = document.create-element \script
-				..set-attribute \src \https://www.google.com/recaptcha/api.js
-			head.append-child script
+		this.on('mount', () => {
+			head = (document.get-elements-by-tag-name 'head).0' 
+			script = document.createElement 'script' 
+				..set-attribute 'src' \https://www.google.com/recaptcha/api.js
+			head.appendChild script
 
-		@on-change-username = ~>
-			username = @refs.username.value
+		on-change-username() {
+			username = this.refs.username.value
 
 			if username == ''
-				@username-state = null
-				@update!
+				this.username-state = null
+				this.update();
 				return
 
 			err = switch
-				| not username.match /^[a-zA-Z0-9\-]+$/ => \invalid-format
-				| username.length < 3chars              => \min-range
-				| username.length > 20chars             => \max-range
+				| not username.match /^[a-zA-Z0-9\-]+$/ => 'invalid-format' 
+				| username.length < 3chars              => 'min-range' 
+				| username.length > 20chars             => 'max-range' 
 				| _                                     => null
 
 			if err?
-				@username-state = err
-				@update!
+				this.username-state = err
+				this.update();
 			else
-				@username-state = \wait
-				@update!
+				this.username-state = 'wait' 
+				this.update();
 
-				@api \username/available do
+				this.api 'username/available' do
 					username: username
-				.then (result) ~>
+				.then (result) =>
 					if result.available
-						@username-state = \ok
+						this.username-state = 'ok' 
 					else
-						@username-state = \unavailable
-					@update!
-				.catch (err) ~>
-					@username-state = \error
-					@update!
+						this.username-state = 'unavailable' 
+					this.update();
+				.catch (err) =>
+					this.username-state = 'error' 
+					this.update();
 
-		@on-change-password = ~>
-			password = @refs.password.value
+		on-change-password() {
+			password = this.refs.password.value
 
 			if password == ''
-				@password-strength = ''
+				this.password-strength = ''
 				return
 
 			strength = @get-password-strength password
 
 			if strength > 0.3
-				@password-strength = \medium
+				this.password-strength = 'medium' 
 				if strength > 0.7
-					@password-strength = \high
+					this.password-strength = 'high' 
 			else
-				@password-strength = \low
+				this.password-strength = 'low' 
 
-			@update!
+			this.update();
 
-			@refs.password-metar.style.width = (strength * 100) + \%
+			this.refs.password-metar.style.width = (strength * 100) + '%' 
 
-		@on-change-password-retype = ~>
-			password = @refs.password.value
-			retyped-password = @refs.password-retype.value
+		on-change-password-retype() {
+			password = this.refs.password.value
+			retyped-password = this.refs.password-retype.value
 
 			if retyped-password == ''
-				@password-retype-state = null
+				this.password-retype-state = null
 				return
 
 			if password == retyped-password
-				@password-retype-state = \match
+				this.password-retype-state = 'match' 
 			else
-				@password-retype-state = \not-match
+				this.password-retype-state = 'not-match' 
 
-		@onsubmit = (e) ~>
+		onsubmit(e) {
 			e.prevent-default!
 
-			username = @refs.username.value
-			password = @refs.password.value
+			username = this.refs.username.value
+			password = this.refs.password.value
 
-			locker = document.body.append-child document.create-element \mk-locker
+			locker = document.body.appendChild document.createElement 'mk-locker' 
 
-			@api \signup do
+			this.api 'signup' do
 				username: username
 				password: password
 				'g-recaptcha-response': grecaptcha.get-response!
-			.then ~>
-				@api \signin do
+			.then =>
+				this.api 'signin' do
 					username: username
 					password: password
-				.then ~>
+				.then =>
 					location.href = CONFIG.url
-			.catch ~>
+			.catch =>
 				alert '何らかの原因によりアカウントの作成に失敗しました。再度お試しください。'
 
 				grecaptcha.reset!
-				@recaptchaed = false
+				this.recaptchaed = false
 
 				locker.parent-node.remove-child locker
 

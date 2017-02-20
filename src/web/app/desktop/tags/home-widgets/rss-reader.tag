@@ -64,31 +64,31 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \NotImplementedException
+		this.mixin('api');
+		this.mixin('NotImplementedException');
 
-		@url = 'http://news.yahoo.co.jp/pickup/rss.xml'
-		@items = []
-		@initializing = true
+		this.url = 'http://news.yahoo.co.jp/pickup/rss.xml'
+		this.items = []
+		this.initializing = true
 
-		@on \mount ~>
+		this.on('mount', () => {
 			@fetch!
-			@clock = set-interval @fetch, 60000ms
+			this.clock = set-interval @fetch, 60000ms
 
-		@on \unmount ~>
+		this.on('unmount', () => {
 			clear-interval @clock
 
-		@fetch = ~>
-			@api CONFIG.url + '/api:rss' do
+		fetch() {
+			this.api CONFIG.url + '/api:rss' do
 				url: @url
-			.then (feed) ~>
-				@items = feed.rss.channel.item
-				@initializing = false
-				@update!
+			.then (feed) =>
+				this.items = feed.rss.channel.item
+				this.initializing = false
+				this.update();
 			.catch (err) ->
 				console.error err
 
-		@settings = ~>
+		settings() {
 			@NotImplementedException!
 	</script>
 </mk-rss-reader-home-widget>

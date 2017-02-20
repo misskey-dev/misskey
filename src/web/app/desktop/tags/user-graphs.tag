@@ -34,7 +34,7 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			@trigger \loaded
+		this.on('mount', () => {
+			this.trigger('loaded');
 	</script>
 </mk-user-graphs>

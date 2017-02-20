@@ -57,30 +57,30 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
+		this.mixin('api');
+		this.mixin('is-promise');
 
-		@images = []
-		@initializing = true
+		this.images = []
+		this.initializing = true
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
+		this.user = null
+		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
 
-		@on \mount ~>
-			@user-promise.then (user) ~>
-				@user = user
-				@update!
+		this.on('mount', () => {
+			@user-promise.then (user) =>
+				this.user = user
+				this.update();
 
-				@api \users/posts do
+				this.api 'users/posts' do
 					user_id: @user.id
 					with_media: true
 					limit: 9posts
-				.then (posts) ~>
-					@initializing = false
-					posts.for-each (post) ~>
-						post.media.for-each (image) ~>
+				.then (posts) =>
+					this.initializing = false
+					posts.for-each (post) =>
+						post.media.for-each (image) =>
 							if @images.length < 9
 								@images.push image
-					@update!
+					this.update();
 	</script>
 </mk-user-photos>

@@ -305,161 +305,161 @@
 
 	</style>
 	<script>
-		get-cat = require '../../common/scripts/get-cat'
+		get-cat = require('../../common/scripts/get-cat');
 
-		@mixin \api
-		@mixin \notify
-		@mixin \autocomplete
+		this.mixin('api');
+		this.mixin('notify');
+		this.mixin('autocomplete');
 
-		@wait = false
-		@uploadings = []
-		@files = []
-		@autocomplete = null
-		@poll = false
+		this.wait = false
+		this.uploadings = []
+		this.files = []
+		this.autocomplete = null
+		this.poll = false
 
-		@in-reply-to-post = @opts.reply
+		this.in-reply-to-post = this.opts.reply
 
-		# https://github.com/riot/riot/issues/2080
-		if @in-reply-to-post == '' then @in-reply-to-post = null
+		// https://github.com/riot/riot/issues/2080
+		if @in-reply-to-post == '' then this.in-reply-to-post = null
 
-		@on \mount ~>
-			@refs.uploader.on \uploaded (file) ~>
+		this.on('mount', () => {
+			this.refs.uploader.on('uploaded', (file) => {
 				@add-file file
 
-			@refs.uploader.on \change-uploads (uploads) ~>
-				@trigger \change-uploading-files uploads
+			this.refs.uploader.on('change-uploads', (uploads) => {
+				this.trigger 'change-uploading-files' uploads
 
-			@autocomplete = new @Autocomplete @refs.text
+			this.autocomplete = new @Autocomplete this.refs.text
 			@autocomplete.attach!
 
-		@on \unmount ~>
+		this.on('unmount', () => {
 			@autocomplete.detach!
 
-		@focus = ~>
-			@refs.text.focus!
+		focus() {
+			this.refs.text.focus();
 
-		@clear = ~>
-			@refs.text.value = ''
-			@files = []
-			@trigger \change-files
-			@update!
+		clear() {
+			this.refs.text.value = ''
+			this.files = []
+			this.trigger('change-files');
+			this.update();
 
-		@ondragover = (e) ~>
+		ondragover(e) {
 			e.stop-propagation!
-			@draghover = true
-			# ドラッグされてきたものがファイルだったら
-			if e.data-transfer.effect-allowed == \all
-				e.data-transfer.drop-effect = \copy
+			this.draghover = true
+			// ドラッグされてきたものがファイルだったら
+			if e.data-transfer.effect-allowed == 'all' 
+				e.data-transfer.drop-effect = 'copy' 
 			else
-				e.data-transfer.drop-effect = \move
+				e.data-transfer.drop-effect = 'move' 
 			return false
 
-		@ondragenter = (e) ~>
-			@draghover = true
+		ondragenter(e) {
+			this.draghover = true
 
-		@ondragleave = (e) ~>
-			@draghover = false
+		ondragleave(e) {
+			this.draghover = false
 
-		@ondrop = (e) ~>
+		ondrop(e) {
 			e.prevent-default!
 			e.stop-propagation!
-			@draghover = false
+			this.draghover = false
 
-			# ファイルだったら
+			// ファイルだったら
 			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) ~>
+				Array.prototype.for-each.call e.data-transfer.files, (file) =>
 					@upload file
 				return false
 
-			# データ取得
+			// データ取得
 			data = e.data-transfer.get-data 'text'
 			if !data?
 				return false
 
 			try
-				# パース
+				// パース
 				obj = JSON.parse data
 
-				# (ドライブの)ファイルだったら
-				if obj.type == \file
+				// (ドライブの)ファイルだったら
+				if obj.type == 'file' 
 					@add-file obj.file
 			catch
-				# ignore
+				// ignore
 
 			return false
 
-		@onkeydown = (e) ~>
-			if (e.which == 10 || e.which == 13) && (e.ctrl-key || e.meta-key)
+		onkeydown(e) {
+			if (e.which == 10 || e.which == 13) && (e.ctrlKey || e.meta-key)
 				@post!
 
-		@onpaste = (e) ~>
-			data = e.clipboard-data
+		onpaste(e) {
+			data = e.clipboardData
 			items = data.items
 			for i from 0 to items.length - 1
 				item = items[i]
 				switch (item.kind)
-					| \file =>
-						@upload item.get-as-file!
+					| 'file' =>
+						@upload item.getAsFile();
 
-		@select-file = ~>
-			@refs.file.click!
+		select-file() {
+			this.refs.file.click!
 
-		@select-file-from-drive = ~>
-			browser = document.body.append-child document.create-element \mk-select-file-from-drive-window
+		select-file-from-drive() {
+			browser = document.body.appendChild document.createElement 'mk-select-file-from-drive-window' 
 			i = riot.mount browser, do
 				multiple: true
-			i[0].one \selected (files) ~>
+			i[0].one 'selected' (files) =>
 				files.for-each @add-file
 
-		@change-file = ~>
-			files = @refs.file.files
+		change-file() {
+			files = this.refs.file.files
 			for i from 0 to files.length - 1
 				file = files.item i
 				@upload file
 
-		@upload = (file) ~>
-			@refs.uploader.upload file
+		upload(file) {
+			this.refs.uploader.upload file
 
-		@add-file = (file) ~>
-			file._remove = ~>
-				@files = @files.filter (x) -> x.id != file.id
-				@trigger \change-files @files
-				@update!
+		add-file(file) {
+			file._remove = =>
+				this.files = @files.filter (x) -> x.id != file.id
+				this.trigger 'change-files' @files
+				this.update();
 
 			@files.push file
-			@trigger \change-files @files
-			@update!
+			this.trigger 'change-files' @files
+			this.update();
 
-		@add-poll = ~>
-			@poll = true
+		add-poll() {
+			this.poll = true
 
-		@on-poll-destroyed = ~>
+		on-poll-destroyed() {
 			@update do
 				poll: false
 
-		@post = (e) ~>
-			@wait = true
+		post(e) {
+			this.wait = true
 
 			files = if @files? and @files.length > 0
 				then @files.map (f) -> f.id
 				else undefined
 
-			@api \posts/create do
-				text: @refs.text.value
+			this.api 'posts/create' do
+				text: this.refs.text.value
 				media_ids: files
 				reply_to_id: if @in-reply-to-post? then @in-reply-to-post.id else undefined
-				poll: if @poll then @refs.poll.get! else undefined
-			.then (data) ~>
-				@trigger \post
+				poll: if @poll then this.refs.poll.get! else undefined
+			.then (data) =>
+				this.trigger('post');
 				@notify if @in-reply-to-post? then '返信しました！' else '投稿しました！'
-			.catch (err) ~>
+			.catch (err) =>
 				console.error err
 				@notify '投稿できませんでした'
-			.then ~>
-				@wait = false
-				@update!
+			.then =>
+				this.wait = false
+				this.update();
 
-		@cat = ~>
-			@refs.text.value = @refs.text.value + get-cat!
+		cat() {
+			this.refs.text.value = this.refs.text.value + get-cat!
 	</script>
 </mk-post-form>

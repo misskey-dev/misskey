@@ -238,211 +238,211 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \dialog
-		@mixin \input-dialog
-		@mixin \stream
+		this.mixin('api');
+		this.mixin('dialog');
+		this.mixin('input-dialog');
+		this.mixin('stream');
 
-		@files = []
-		@folders = []
-		@hierarchy-folders = []
+		this.files = []
+		this.folders = []
+		this.hierarchy-folders = []
 
-		@uploads = []
+		this.uploads = []
 
-		# 現在の階層(フォルダ)
-		# * null でルートを表す
-		@folder = null
+		// 現在の階層(フォルダ)
+		// * null でルートを表す
+		this.folder = null
 
-		@multiple = if @opts.multiple? then @opts.multiple else false
+		this.multiple = if this.opts.multiple? then this.opts.multiple else false
 
-		# ドロップされようとしているか
-		@draghover = false
+		// ドロップされようとしているか
+		this.draghover = false
 
-		# 自信の所有するアイテムがドラッグをスタートさせたか
-		# (自分自身の階層にドロップできないようにするためのフラグ)
-		@is-drag-source = false
+		// 自信の所有するアイテムがドラッグをスタートさせたか
+		// (自分自身の階層にドロップできないようにするためのフラグ)
+		this.is-drag-source = false
 
-		@on \mount ~>
-			@refs.uploader.on \uploaded (file) ~>
+		this.on('mount', () => {
+			this.refs.uploader.on('uploaded', (file) => {
 				@add-file file, true
 
-			@refs.uploader.on \change-uploads (uploads) ~>
-				@uploads = uploads
-				@update!
+			this.refs.uploader.on('change-uploads', (uploads) => {
+				this.uploads = uploads
+				this.update();
 
-			@stream.on \drive_file_created @on-stream-drive-file-created
-			@stream.on \drive_file_updated @on-stream-drive-file-updated
-			@stream.on \drive_folder_created @on-stream-drive-folder-created
-			@stream.on \drive_folder_updated @on-stream-drive-folder-updated
+			@stream.on 'drive_file_created' this.on-stream-drive-file-created
+			@stream.on 'drive_file_updated' this.on-stream-drive-file-updated
+			@stream.on 'drive_folder_created' this.on-stream-drive-folder-created
+			@stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
 
-			# Riotのバグでnullを渡しても""になる
-			# https://github.com/riot/riot/issues/2080
-			#if @opts.folder?
-			if @opts.folder? and @opts.folder != ''
-				@move @opts.folder
+			// Riotのバグでnullを渡しても""になる
+			// https://github.com/riot/riot/issues/2080
+			#if this.opts.folder?
+			if this.opts.folder? and this.opts.folder != ''
+				@move this.opts.folder
 			else
 				@load!
 
-		@on \unmount ~>
-			@stream.off \drive_file_created @on-stream-drive-file-created
-			@stream.off \drive_file_updated @on-stream-drive-file-updated
-			@stream.off \drive_folder_created @on-stream-drive-folder-created
-			@stream.off \drive_folder_updated @on-stream-drive-folder-updated
+		this.on('unmount', () => {
+			@stream.off 'drive_file_created' this.on-stream-drive-file-created
+			@stream.off 'drive_file_updated' this.on-stream-drive-file-updated
+			@stream.off 'drive_folder_created' this.on-stream-drive-folder-created
+			@stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
 
-		@on-stream-drive-file-created = (file) ~>
+		on-stream-drive-file-created(file) {
 			@add-file file, true
 
-		@on-stream-drive-file-updated = (file) ~>
+		on-stream-drive-file-updated(file) {
 			current = if @folder? then @folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
 				@add-file file, true
 
-		@on-stream-drive-folder-created = (folder) ~>
+		on-stream-drive-folder-created(folder) {
 			@add-folder folder, true
 
-		@on-stream-drive-folder-updated = (folder) ~>
+		on-stream-drive-folder-updated(folder) {
 			current = if @folder? then @folder.id else null
 			if current != folder.parent_id
 				@remove-folder folder
 			else
 				@add-folder folder, true
 
-		@onmousedown = (e) ~>
-			if (contains @refs.folders-container, e.target) or (contains @refs.files-container, e.target)
+		onmousedown(e) {
+			if (contains this.refs.folders-container, e.target) or (contains this.refs.files-container, e.target)
 				return true
 
-			rect = @refs.main.get-bounding-client-rect!
+			rect = this.refs.main.get-bounding-client-rect!
 
-			left = e.page-x + @refs.main.scroll-left - rect.left - window.page-x-offset
-			top = e.page-y + @refs.main.scroll-top - rect.top - window.page-y-offset
+			left = e.page-x + this.refs.main.scroll-left - rect.left - window.page-x-offset
+			top = e.page-y + this.refs.main.scroll-top - rect.top - window.page-y-offset
 
-			move = (e) ~>
-				@refs.selection.style.display = \block
+			move = (e) =>
+				this.refs.selection.style.display = 'block' 
 
-				cursor-x = e.page-x + @refs.main.scroll-left - rect.left - window.page-x-offset
-				cursor-y = e.page-y + @refs.main.scroll-top - rect.top - window.page-y-offset
+				cursor-x = e.page-x + this.refs.main.scroll-left - rect.left - window.page-x-offset
+				cursor-y = e.page-y + this.refs.main.scroll-top - rect.top - window.page-y-offset
 				w = cursor-x - left
 				h = cursor-y - top
 
 				if w > 0
-					@refs.selection.style.width = w + \px
-					@refs.selection.style.left = left + \px
+					this.refs.selection.style.width = w + 'px' 
+					this.refs.selection.style.left = left + 'px' 
 				else
-					@refs.selection.style.width = -w + \px
-					@refs.selection.style.left = cursor-x + \px
+					this.refs.selection.style.width = -w + 'px' 
+					this.refs.selection.style.left = cursor-x + 'px' 
 
 				if h > 0
-					@refs.selection.style.height = h + \px
-					@refs.selection.style.top = top + \px
+					this.refs.selection.style.height = h + 'px' 
+					this.refs.selection.style.top = top + 'px' 
 				else
-					@refs.selection.style.height = -h + \px
-					@refs.selection.style.top = cursor-y + \px
+					this.refs.selection.style.height = -h + 'px' 
+					this.refs.selection.style.top = cursor-y + 'px' 
 
-			up = (e) ~>
-				document.document-element.remove-event-listener \mousemove move
-				document.document-element.remove-event-listener \mouseup up
+			up = (e) =>
+				document.document-element.remove-event-listener 'mousemove' move
+				document.document-element.remove-event-listener 'mouseup' up
 
-				@refs.selection.style.display = \none
+				this.refs.selection.style.display = 'none' 
 
-			document.document-element.add-event-listener \mousemove move
-			document.document-element.add-event-listener \mouseup up
+			document.document-element.add-event-listener 'mousemove' move
+			document.document-element.add-event-listener 'mouseup' up
 
-		@path-oncontextmenu = (e) ~>
+		path-oncontextmenu(e) {
 			e.prevent-default!
 			e.stop-immediate-propagation!
 			return false
 
-		@ondragover = (e) ~>
+		ondragover(e) {
 			e.prevent-default!
 			e.stop-propagation!
 
-			# ドラッグ元が自分自身の所有するアイテムかどうか
+			// ドラッグ元が自分自身の所有するアイテムかどうか
 			if !@is-drag-source
-				# ドラッグされてきたものがファイルだったら
-				if e.data-transfer.effect-allowed == \all
-					e.data-transfer.drop-effect = \copy
+				// ドラッグされてきたものがファイルだったら
+				if e.data-transfer.effect-allowed == 'all' 
+					e.data-transfer.drop-effect = 'copy' 
 				else
-					e.data-transfer.drop-effect = \move
-				@draghover = true
+					e.data-transfer.drop-effect = 'move' 
+				this.draghover = true
 			else
-				# 自分自身にはドロップさせない
-				e.data-transfer.drop-effect = \none
+				// 自分自身にはドロップさせない
+				e.data-transfer.drop-effect = 'none' 
 			return false
 
-		@ondragenter = (e) ~>
+		ondragenter(e) {
 			e.prevent-default!
 			if !@is-drag-source
-				@draghover = true
+				this.draghover = true
 
-		@ondragleave = (e) ~>
-			@draghover = false
+		ondragleave(e) {
+			this.draghover = false
 
-		@ondrop = (e) ~>
+		ondrop(e) {
 			e.prevent-default!
 			e.stop-propagation!
 
-			@draghover = false
+			this.draghover = false
 
-			# ドロップされてきたものがファイルだったら
+			// ドロップされてきたものがファイルだったら
 			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) ~>
+				Array.prototype.for-each.call e.data-transfer.files, (file) =>
 					@upload file, @folder
 				return false
 
-			# データ取得
+			// データ取得
 			data = e.data-transfer.get-data 'text'
 			if !data?
 				return false
 
-			# パース
+			// パース
 			obj = JSON.parse data
 
-			# (ドライブの)ファイルだったら
-			if obj.type == \file
+			// (ドライブの)ファイルだったら
+			if obj.type == 'file' 
 				file = obj.id
-				if (@files.some (f) ~> f.id == file)
+				if (@files.some (f) => f.id == file)
 					return false
 				@remove-file file
-				@api \drive/files/update do
+				this.api 'drive/files/update' do
 					file_id: file
 					folder_id: if @folder? then @folder.id else null
-				.then ~>
-					# something
-				.catch (err, text-status) ~>
+				.then =>
+					// something
+				.catch (err, text-status) =>
 					console.error err
 
-			# (ドライブの)フォルダーだったら
-			else if obj.type == \folder
+			// (ドライブの)フォルダーだったら
+			else if obj.type == 'folder' 
 				folder = obj.id
-				# 移動先が自分自身ならreject
+				// 移動先が自分自身ならreject
 				if @folder? and folder == @folder.id
 					return false
-				if (@folders.some (f) ~> f.id == folder)
+				if (@folders.some (f) => f.id == folder)
 					return false
 				@remove-folder folder
-				@api \drive/folders/update do
+				this.api 'drive/folders/update' do
 					folder_id: folder
 					parent_id: if @folder? then @folder.id else null
-				.then ~>
-					# something
-				.catch (err) ~>
+				.then =>
+					// something
+				.catch (err) =>
 					if err == 'detected-circular-definition'
 						@dialog do
 							'<i class="fa fa-exclamation-triangle"></i>操作を完了できません'
 							'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。'
 							[
-								text: \OK
+								text: 'OK' 
 							]
 
 			return false
 
-		@oncontextmenu = (e) ~>
+		oncontextmenu(e) {
 			e.prevent-default!
 			e.stop-immediate-propagation!
 
-			ctx = document.body.append-child document.create-element \mk-drive-browser-base-contextmenu
+			ctx = document.body.appendChild document.createElement 'mk-drive-browser-base-contextmenu' 
 			ctx = riot.mount ctx, do
 				browser: @
 			ctx = ctx.0
@@ -452,17 +452,17 @@
 
 			return false
 
-		@select-local-file = ~>
-			@refs.file-input.click!
+		select-local-file() {
+			this.refs.file-input.click!
 
-		@url-upload = ~>
+		url-upload() {
 			url <~ @input-dialog do
 				'URLアップロード'
 				'アップロードしたいファイルのURL'
 				null
 
 			if url? and url != ''
-				@api \drive/files/upload_from_url do
+				this.api 'drive/files/upload_from_url' do
 					url: url
 					folder_id: if @folder? then @folder.id else undefined
 
@@ -470,61 +470,61 @@
 					'<i class="fa fa-check"></i>アップロードをリクエストしました'
 					'アップロードが完了するまで時間がかかる場合があります。'
 					[
-						text: \OK
+						text: 'OK' 
 					]
 
-		@create-folder = ~>
+		create-folder() {
 			name <~ @input-dialog do
 				'フォルダー作成'
 				'フォルダー名'
 				null
 
-			@api \drive/folders/create do
+			this.api 'drive/folders/create' do
 				name: name
 				folder_id: if @folder? then @folder.id else undefined
-			.then (folder) ~>
+			.then (folder) =>
 				@add-folder folder, true
-				@update!
-			.catch (err) ~>
+				this.update();
+			.catch (err) =>
 				console.error err
 
-		@change-file-input = ~>
-			files = @refs.file-input.files
+		change-file-input() {
+			files = this.refs.file-input.files
 			for i from 0 to files.length - 1
 				file = files.item i
 				@upload file, @folder
 
-		@upload = (file, folder) ~>
-			if folder? and typeof folder == \object
+		upload(file, folder) {
+			if folder? and typeof folder == 'object' 
 				folder = folder.id
-			@refs.uploader.upload file, folder
+			this.refs.uploader.upload file, folder
 
-		@get-selection = ~>
+		get-selection() {
 			@files.filter (file) -> file._selected
 
-		@new-window = (folder-id) ~>
-			browser = document.body.append-child document.create-element \mk-drive-browser-window
+		new-window(folder-id) {
+			browser = document.body.appendChild document.createElement 'mk-drive-browser-window' 
 			riot.mount browser, do
 				folder: folder-id
 
-		@move = (target-folder) ~>
-			if target-folder? and typeof target-folder == \object
+		move(target-folder) {
+			if target-folder? and typeof target-folder == 'object' 
 				target-folder = target-folder.id
 
 			if target-folder == null
 				@go-root!
 				return
 
-			@loading = true
-			@update!
+			this.loading = true
+			this.update();
 
-			@api \drive/folders/show do
+			this.api 'drive/folders/show' do
 				folder_id: target-folder
-			.then (folder) ~>
-				@folder = folder
-				@hierarchy-folders = []
+			.then (folder) =>
+				this.folder = folder
+				this.hierarchy-folders = []
 
-				x = (f) ~>
+				x = (f) =>
 					@hierarchy-folders.unshift f
 					if f.parent?
 						x f.parent
@@ -532,20 +532,20 @@
 				if folder.parent?
 					x folder.parent
 
-				@update!
+				this.update();
 				@load!
 			.catch (err, text-status) ->
 				console.error err
 
-		@add-folder = (folder, unshift = false) ~>
+		add-folder(folder, unshift = false) {
 			current = if @folder? then @folder.id else null
 			if current != folder.parent_id
 				return
 
-			if (@folders.some (f) ~> f.id == folder.id)
+			if (@folders.some (f) => f.id == folder.id)
 				exist = (@folders.map (f) -> f.id).index-of folder.id
 				@folders[exist] = folder
-				@update!
+				this.update();
 				return
 
 			if unshift
@@ -553,17 +553,17 @@
 			else
 				@folders.push folder
 
-			@update!
+			this.update();
 
-		@add-file = (file, unshift = false) ~>
+		add-file(file, unshift = false) {
 			current = if @folder? then @folder.id else null
 			if current != file.folder_id
 				return
 
-			if (@files.some (f) ~> f.id == file.id)
+			if (@files.some (f) => f.id == file.id)
 				exist = (@files.map (f) -> f.id).index-of file.id
 				@files[exist] = file
-				@update!
+				this.update();
 				return
 
 			if unshift
@@ -571,34 +571,34 @@
 			else
 				@files.push file
 
-			@update!
+			this.update();
 
-		@remove-folder = (folder) ~>
-			if typeof folder == \object
+		remove-folder(folder) {
+			if typeof folder == 'object' 
 				folder = folder.id
-			@folders = @folders.filter (f) -> f.id != folder
-			@update!
+			this.folders = @folders.filter (f) -> f.id != folder
+			this.update();
 
-		@remove-file = (file) ~>
-			if typeof file == \object
+		remove-file(file) {
+			if typeof file == 'object' 
 				file = file.id
-			@files = @files.filter (f) -> f.id != file
-			@update!
+			this.files = @files.filter (f) -> f.id != file
+			this.update();
 
-		@go-root = ~>
+		go-root() {
 			if @folder != null
-				@folder = null
-				@hierarchy-folders = []
-				@update!
+				this.folder = null
+				this.hierarchy-folders = []
+				this.update();
 				@load!
 
-		@load = ~>
-			@folders = []
-			@files = []
-			@more-folders = false
-			@more-files = false
-			@loading = true
-			@update!
+		load() {
+			this.folders = []
+			this.files = []
+			this.more-folders = false
+			this.more-files = false
+			this.loading = true
+			this.update();
 
 			load-folders = null
 			load-files = null
@@ -606,41 +606,41 @@
 			folders-max = 30
 			files-max = 30
 
-			# フォルダ一覧取得
-			@api \drive/folders do
+			// フォルダ一覧取得
+			this.api 'drive/folders' do
 				folder_id: if @folder? then @folder.id else null
 				limit: folders-max + 1
-			.then (folders) ~>
+			.then (folders) =>
 				if folders.length == folders-max + 1
-					@more-folders = true
+					this.more-folders = true
 					folders.pop!
 				load-folders := folders
 				complete!
-			.catch (err, text-status) ~>
+			.catch (err, text-status) =>
 				console.error err
 
-			# ファイル一覧取得
-			@api \drive/files do
+			// ファイル一覧取得
+			this.api 'drive/files' do
 				folder_id: if @folder? then @folder.id else null
 				limit: files-max + 1
-			.then (files) ~>
+			.then (files) =>
 				if files.length == files-max + 1
-					@more-files = true
+					this.more-files = true
 					files.pop!
 				load-files := files
 				complete!
-			.catch (err, text-status) ~>
+			.catch (err, text-status) =>
 				console.error err
 
 			flag = false
-			complete = ~>
+			complete = =>
 				if flag
-					load-folders.for-each (folder) ~>
+					load-folders.for-each (folder) =>
 						@add-folder folder
-					load-files.for-each (file) ~>
+					load-files.for-each (file) =>
 						@add-file file
-					@loading = false
-					@update!
+					this.loading = false
+					this.update();
 				else
 					flag := true
 

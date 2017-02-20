@@ -15,11 +15,11 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			@refs.window.on \closed ~>
-				@unmount!
+		this.on('mount', () => {
+			this.refs.window.on('closed', () => {
+				this.unmount();
 
-		@close = ~>
-			@refs.window.close!
+		close() {
+			this.refs.window.close!
 	</script>
 </mk-settings-window>

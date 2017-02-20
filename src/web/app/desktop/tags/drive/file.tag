@@ -144,40 +144,40 @@
 
 	</style>
 	<script>
-		@bytes-to-size = require '../../../common/scripts/bytes-to-size.js'
+		this.bytes-to-size = require('../../../common/scripts/bytes-to-size.js');
 
-		@mixin \i
+		this.mixin('i');
 
-		@file = @opts.file
-		@browser = @parent
+		this.file = this.opts.file
+		this.browser = this.parent
 
-		@title = @file.name + '\n' + @file.type + ' ' + (@bytes-to-size @file.datasize)
+		this.title = @file.name + '\n' + @file.type + ' ' + (@bytes-to-size @file.datasize)
 
-		@is-contextmenu-showing = false
+		this.is-contextmenu-showing = false
 
-		@onclick = ~>
+		onclick() {
 			if @browser.multiple
 				if @file._selected?
 					@file._selected = !@file._selected
 				else
 					@file._selected = true
-				@browser.trigger \change-selection @browser.get-selection!
+				@browser.trigger 'change-selection' @browser.get-selection!
 			else
 				if @file._selected
-					@browser.trigger \selected @file
+					@browser.trigger 'selected' @file
 				else
-					@browser.files.for-each (file) ~>
+					@browser.files.for-each (file) =>
 						file._selected = false
 					@file._selected = true
-					@browser.trigger \change-selection @file
+					@browser.trigger 'change-selection' @file
 
-		@oncontextmenu = (e) ~>
+		oncontextmenu(e) {
 			e.prevent-default!
 			e.stop-immediate-propagation!
 
-			@is-contextmenu-showing = true
-			@update!
-			ctx = document.body.append-child document.create-element \mk-drive-browser-file-contextmenu
+			this.is-contextmenu-showing = true
+			this.update();
+			ctx = document.body.appendChild document.createElement 'mk-drive-browser-file-contextmenu' 
 			ctx = riot.mount ctx, do
 				browser: @browser
 				file: @file
@@ -185,25 +185,25 @@
 			ctx.open do
 				x: e.page-x - window.page-x-offset
 				y: e.page-y - window.page-y-offset
-			ctx.on \closed ~>
-				@is-contextmenu-showing = false
-				@update!
+			ctx.on('closed', () => {
+				this.is-contextmenu-showing = false
+				this.update();
 			return false
 
-		@ondragstart = (e) ~>
-			e.data-transfer.effect-allowed = \move
+		ondragstart(e) {
+			e.data-transfer.effect-allowed = 'move' 
 			e.data-transfer.set-data 'text' JSON.stringify do
-				type: \file
+				type: 'file' 
 				id: @file.id
 				file: @file
-			@is-dragging = true
+			this.is-dragging = true
 
-			# 親ブラウザに対して、ドラッグが開始されたフラグを立てる
-			# (=あなたの子供が、ドラッグを開始しましたよ)
+			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
+			// (=あなたの子供が、ドラッグを開始しましたよ)
 			@browser.is-drag-source = true
 
-		@ondragend = (e) ~>
-			@is-dragging = false
+		ondragend(e) {
+			this.is-dragging = false
 			@browser.is-drag-source = false
 	</script>
 </mk-drive-browser-file>

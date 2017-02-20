@@ -14,13 +14,13 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			text = @root.innerHTML
-			@root.innerHTML = ''
-			(text.split '').for-each (c, i) ~>
-				ce = document.create-element \span
+		this.on('mount', () => {
+			text = this.root.innerHTML
+			this.root.innerHTML = ''
+			(text.split '').for-each (c, i) =>
+				ce = document.createElement 'span' 
 				ce.innerHTML = c
-				ce.style.animation-delay = (i / 10) + 's'
-				@root.append-child ce
+				ce.style.animationDelay = (i / 10) + 's'
+				this.root.appendChild ce
 	</script>
 </mk-ripple-string>

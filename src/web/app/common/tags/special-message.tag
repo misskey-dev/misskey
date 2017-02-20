@@ -21,7 +21,7 @@
 	</style>
 	<script>
 		now = new Date!
-		@d = now.get-date!
-		@m = now.get-month! + 1
+		this.d = now.get-date!
+		this.m = now.get-month! + 1
 	</script>
 </mk-special-message>

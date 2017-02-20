@@ -8,32 +8,32 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
+		this.mixin('api');
+		this.mixin('is-promise');
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
+		this.user = null
+		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
 
-		@on \mount ~>
+		this.on('mount', () => {
 			user <~ @user-promise.then
-			@user = user
-			@update!
+			this.user = user
+			this.update();
 
-			@api \aggregation/users/like do
+			this.api 'aggregation/users/like' do
 				user_id: @user.id
 				limit: 30days
-			.then (likes) ~>
+			.then (likes) =>
 				likes = likes.reverse!
 
-				new Chart @refs.canv, do
-					type: \bar
+				new Chart this.refs.canv, do
+					type: 'bar' 
 					data:
-						labels: likes.map (x, i) ~> if i % 3 == 2 then x.date.day + '日' else ''
+						labels: likes.map (x, i) => if i % 3 == 2 then x.date.day + '日' else ''
 						datasets: [
 							{
-								label: \いいねした数
-								data: likes.map (x) ~> x.count
-								background-color: \#F7796C
+								label: 'いいねした数' 
+								data: likes.map (x) => x.count
+								background-color: '#F7796C' 
 							}
 						]
 					options:

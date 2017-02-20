@@ -80,101 +80,101 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@q = @opts.q
-		@textarea = @opts.textarea
-		@loading = true
-		@users = []
-		@select = -1
+		this.q = this.opts.q
+		this.textarea = this.opts.textarea
+		this.loading = true
+		this.users = []
+		this.select = -1
 
-		@on \mount ~>
-			@textarea.add-event-listener \keydown @on-keydown
+		this.on('mount', () => {
+			@textarea.add-event-listener 'keydown' this.on-keydown
 
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.add-event-listener \mousedown @mousedown
+			Array.prototype.for-each.call all, (el) =>
+				el.add-event-listener 'mousedown' @mousedown
 
-			@api \users/search_by_username do
+			this.api 'users/search_by_username' do
 				query: @q
 				limit: 30users
-			.then (users) ~>
-				@users = users
-				@loading = false
-				@update!
-			.catch (err) ~>
+			.then (users) =>
+				this.users = users
+				this.loading = false
+				this.update();
+			.catch (err) =>
 				console.error err
 
-		@on \unmount ~>
-			@textarea.remove-event-listener \keydown @on-keydown
+		this.on('unmount', () => {
+			@textarea.remove-event-listener 'keydown' this.on-keydown
 
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.remove-event-listener \mousedown @mousedown
+			Array.prototype.for-each.call all, (el) =>
+				el.remove-event-listener 'mousedown' @mousedown
 
-		@mousedown = (e) ~>
-			if (!contains @root, e.target) and (@root != e.target)
+		mousedown(e) {
+			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 
-		@on-click = (e) ~>
+		on-click(e) {
 			@complete e.item
 
-		@on-keydown = (e) ~>
+		on-keydown(e) {
 			key = e.which
 			switch (key)
-				| 10, 13 => # Key[ENTER]
+				| 10, 13 => // Key[ENTER]
 					if @select != -1
 						e.prevent-default!
 						e.stop-propagation!
 						@complete @users[@select]
 					else
 						@close!
-				| 27 => # Key[ESC]
+				| 27 => // Key[ESC]
 					e.prevent-default!
 					e.stop-propagation!
 					@close!
-				| 38 => # Key[↑]
+				| 38 => // Key[↑]
 					if @select != -1
 						e.prevent-default!
 						e.stop-propagation!
 						@select-prev!
 					else
 						@close!
-				| 9, 40 => # Key[TAB] or Key[↓]
+				| 9, 40 => // Key[TAB] or Key[↓]
 					e.prevent-default!
 					e.stop-propagation!
 					@select-next!
 				| _ =>
 					@close!
 
-		@select-next = ~>
+		select-next() {
 			@select++
 
 			if @select >= @users.length
-				@select = 0
+				this.select = 0
 
 			@apply-select!
 
-		@select-prev = ~>
+		select-prev() {
 			@select--
 
 			if @select < 0
-				@select = @users.length - 1
+				this.select = @users.length - 1
 
 			@apply-select!
 
-		@apply-select = ~>
-			@refs.users.children.for-each (el) ~>
-				el.remove-attribute \data-selected
+		apply-select() {
+			this.refs.users.children.for-each (el) =>
+				el.remove-attribute 'data-selected' 
 
-			@refs.users.children[@select].set-attribute \data-selected \true
-			@refs.users.children[@select].focus!
+			this.refs.users.children[@select].set-attribute 'data-selected' \true
+			this.refs.users.children[@select].focus();
 
-		@complete = (user) ~>
-			@opts.complete user
+		complete(user) {
+			this.opts.complete user
 
-		@close = ~>
-			@opts.close!
+		close() {
+			this.opts.close!
 
 		function contains(parent, child)
 			node = child.parent-node

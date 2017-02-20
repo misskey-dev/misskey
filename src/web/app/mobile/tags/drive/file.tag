@@ -122,16 +122,16 @@
 
 	</style>
 	<script>
-		@bytes-to-size = require '../../../common/scripts/bytes-to-size.js'
+		this.bytes-to-size = require('../../../common/scripts/bytes-to-size.js');
 
-		@browser = @parent
-		@file = @opts.file
-		@is-selected = @browser.selected-files.some (f) ~> f.id == @file.id
+		this.browser = this.parent
+		this.file = this.opts.file
+		this.is-selected = @browser.selected-files.some (f) => f.id == @file.id
 
-		@browser.on \change-selected (selects) ~>
-			@is-selected = selects.some (f) ~> f.id == @file.id
+		@browser.on('change-selected', (selects) => {
+			this.is-selected = selects.some (f) => f.id == @file.id
 
-		@onclick = ~>
+		onclick() {
 			@browser.choose-file @file
 	</script>
 </mk-drive-file>

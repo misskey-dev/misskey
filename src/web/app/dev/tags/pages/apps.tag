@@ -16,15 +16,15 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@fetching = true
+		this.fetching = true
 
-		@on \mount ~>
-			@api \my/apps
-			.then (apps) ~>
-				@fetching = false
-				@apps = apps
-				@update!
+		this.on('mount', () => {
+			this.api 'my/apps' 
+			.then (apps) =>
+				this.fetching = false
+				this.apps = apps
+				this.update();
 	</script>
 </mk-apps-page>

@@ -117,14 +117,14 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \page
+		this.mixin('i');
+		this.mixin('page');
 
-		@on \mount ~>
-			@opts.ready!
+		this.on('mount', () => {
+			this.opts.ready!
 
-		@search = ~>
-			query = window.prompt \検索
+		search() {
+			query = window.prompt '検索' 
 			if query? and query != ''
 				@page '/search:' + query
 	</script>

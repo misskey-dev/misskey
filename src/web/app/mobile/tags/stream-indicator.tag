@@ -27,27 +27,27 @@
 
 	</style>
 	<script>
-		@mixin \stream
+		this.mixin('stream');
 
-		@on \before-mount ~>
-			@state = @get-stream-state!
+		this.on('before-mount', () => {
+			this.state = @get-stream-state!
 
-			if @state == \connected
-				@root.style.opacity = 0
+			if @state == 'connected' 
+				this.root.style.opacity = 0
 
-		@stream-state-ev.on \connected ~>
-			@state = @get-stream-state!
-			@update!
-			set-timeout ~>
-				Velocity @root, {
+		@stream-state-ev.on('connected', () => {
+			this.state = @get-stream-state!
+			this.update();
+			setTimeout =>
+				Velocity this.root, {
 					opacity: 0
-				} 200ms \linear
+				} 200ms 'linear' 
 			, 1000ms
 
-		@stream-state-ev.on \closed ~>
-			@state = @get-stream-state!
-			@update!
-			Velocity @root, {
+		@stream-state-ev.on('closed', () => {
+			this.state = @get-stream-state!
+			this.update();
+			Velocity this.root, {
 				opacity: 1
 			} 0ms
 	</script>

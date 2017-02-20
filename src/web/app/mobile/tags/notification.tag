@@ -167,7 +167,7 @@
 
 	</style>
 	<script>
-		@mixin \get-post-summary
-		@notification = @opts.notification
+		this.mixin('get-post-summary');
+		this.notification = this.opts.notification
 	</script>
 </mk-notification>

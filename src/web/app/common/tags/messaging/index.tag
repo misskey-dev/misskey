@@ -286,72 +286,72 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@search-result = []
+		this.search-result = []
 
-		@on \mount ~>
-			@api \messaging/history
-			.then (history) ~>
-				@is-loading = false
-				history.for-each (message) ~>
+		this.on('mount', () => {
+			this.api 'messaging/history' 
+			.then (history) =>
+				this.is-loading = false
+				history.for-each (message) =>
 					message.is_me = message.user_id == @I.id
-					message._click = ~>
+					message._click = =>
 						if message.is_me
-							@trigger \navigate-user message.recipient
+							this.trigger 'navigate-user' message.recipient
 						else
-							@trigger \navigate-user message.user
-				@history = history
-				@update!
-			.catch (err) ~>
+							this.trigger 'navigate-user' message.user
+				this.history = history
+				this.update();
+			.catch (err) =>
 				console.error err
 
-		@search = ~>
-			q = @refs.search.value
+		search() {
+			q = this.refs.search.value
 			if q == ''
-				@search-result = []
+				this.search-result = []
 			else
-				@api \users/search do
+				this.api 'users/search' do
 					query: q
 					max: 5
-				.then (users) ~>
-					users.for-each (user) ~>
-						user._click = ~>
-							@trigger \navigate-user user
-							@search-result = []
-					@search-result = users
-					@update!
-				.catch (err) ~>
+				.then (users) =>
+					users.for-each (user) =>
+						user._click = =>
+							this.trigger 'navigate-user' user
+							this.search-result = []
+					this.search-result = users
+					this.update();
+				.catch (err) =>
 					console.error err
 
-		@on-search-keydown = (e) ~>
+		on-search-keydown(e) {
 			key = e.which
 			switch (key)
-				| 9, 40 => # Key[TAB] or Key[↓]
+				| 9, 40 => // Key[TAB] or Key[↓]
 					e.prevent-default!
 					e.stop-propagation!
-					@refs.search-result.child-nodes[0].focus!
+					this.refs.search-result.child-nodes[0].focus();
 
-		@on-search-result-keydown = (i, e) ~>
+		on-search-result-keydown(i, e) {
 			key = e.which
 			switch (key)
-				| 10, 13 => # Key[ENTER]
+				| 10, 13 => // Key[ENTER]
 					e.prevent-default!
 					e.stop-propagation!
 					@search-result[i]._click!
-				| 27 => # Key[ESC]
+				| 27 => // Key[ESC]
 					e.prevent-default!
 					e.stop-propagation!
-					@refs.search.focus!
-				| 38 => # Key[↑]
+					this.refs.search.focus();
+				| 38 => // Key[↑]
 					e.prevent-default!
 					e.stop-propagation!
-					(@refs.search-result.child-nodes[i].previous-element-sibling || @refs.search-result.child-nodes[@search-result.length - 1]).focus!
-				| 9, 40 => # Key[TAB] or Key[↓]
+					(this.refs.search-result.child-nodes[i].previous-element-sibling || this.refs.search-result.child-nodes[@search-result.length - 1]).focus();
+				| 9, 40 => // Key[TAB] or Key[↓]
 					e.prevent-default!
 					e.stop-propagation!
-					(@refs.search-result.child-nodes[i].next-element-sibling || @refs.search-result.child-nodes[0]).focus!
+					(this.refs.search-result.child-nodes[i].next-element-sibling || this.refs.search-result.child-nodes[0]).focus();
 
 	</script>
 </mk-messaging>

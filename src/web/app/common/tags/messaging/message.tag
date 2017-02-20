@@ -203,27 +203,27 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \text
+		this.mixin('i');
+		this.mixin('text');
 
-		@message = @opts.message
+		this.message = this.opts.message
 		@message.is_me = @message.user.id == @I.id
 
-		@on \mount ~>
+		this.on('mount', () => {
 			if @message.text?
 				tokens = @analyze @message.text
 
-				@refs.text.innerHTML = @compile tokens
+				this.refs.text.innerHTML = @compile tokens
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
+				this.refs.text.children.for-each (e) =>
+					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
-				# URLをプレビュー
+				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == \link
-					.map (t) ~>
-						@preview = @refs.text.append-child document.create-element \mk-url-preview
+					.filter (t) -> t.type == 'link' 
+					.map (t) =>
+						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
 						riot.mount @preview, do
 							url: t.content
 	</script>

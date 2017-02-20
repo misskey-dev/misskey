@@ -43,18 +43,18 @@
 
 	</style>
 	<script>
-		@mode = \signin
+		this.mode = 'signin' 
 
-		@signup = ~>
-			@mode = \signup
-			@update!
+		signup() {
+			this.mode = 'signup' 
+			this.update();
 
-		@signin = ~>
-			@mode = \signin
-			@update!
+		signin() {
+			this.mode = 'signin' 
+			this.update();
 
-		@introduction = ~>
-			@mode = \introduction
-			@update!
+		introduction() {
+			this.mode = 'introduction' 
+			this.update();
 	</script>
 </mk-entrance>

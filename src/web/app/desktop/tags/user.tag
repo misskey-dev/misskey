@@ -32,20 +32,20 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@username = @opts.user
-		@page = if @opts.page? then @opts.page else \home
-		@fetching = true
-		@user = null
+		this.username = this.opts.user
+		this.page = if this.opts.page? then this.opts.page else 'home' 
+		this.fetching = true
+		this.user = null
 
-		@on \mount ~>
-			@api \users/show do
+		this.on('mount', () => {
+			this.api 'users/show' do
 				username: @username
-			.then (user) ~>
-				@fetching = false
-				@user = user
-				@update!
-				@trigger \loaded
+			.then (user) =>
+				this.fetching = false
+				this.user = user
+				this.update();
+				this.trigger('loaded');
 	</script>
 </mk-user>

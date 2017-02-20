@@ -88,48 +88,48 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@state = null
-		@fetching = true
+		this.state = null
+		this.fetching = true
 
-		@token = window.location.href.split \/ .pop!
+		this.token = window.location.href.split '/' .pop!
 
-		@on \mount ~>
+		this.on('mount', () => {
 			if not @SIGNIN then return
 
-			# Fetch session
-			@api \auth/session/show do
+			// Fetch session
+			this.api 'auth/session/show' do
 				token: @token
-			.then (session) ~>
-				@session = session
-				@fetching = false
+			.then (session) =>
+				this.session = session
+				this.fetching = false
 
-				# 既に連携していた場合
+				// 既に連携していた場合
 				if @session.app.is_authorized
-					@api \auth/accept do
+					this.api 'auth/accept' do
 						token: @session.token
-					.then ~>
+					.then =>
 						@accepted!
 				else
-					@state = \waiting
-					@update!
+					this.state = 'waiting' 
+					this.update();
 
-					@refs.form.on \denied ~>
-						@state = \denied
-						@update!
+					this.refs.form.on('denied', () => {
+						this.state = 'denied' 
+						this.update();
 
-					@refs.form.on \accepted @accepted
+					this.refs.form.on 'accepted' @accepted
 
-			.catch (error) ~>
-				@fetching = false
-				@state = \fetch-session-error
-				@update!
+			.catch (error) =>
+				this.fetching = false
+				this.state = 'fetch-session-error' 
+				this.update();
 
-		@accepted = ~>
-			@state = \accepted
-			@update!
+		accepted() {
+			this.state = 'accepted' 
+			this.update();
 
 			if @session.app.callback_url
 				location.href = @session.app.callback_url + '?token=' + @session.token

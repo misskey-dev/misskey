@@ -192,101 +192,101 @@
 
 	</style>
 	<script>
-		@min-height = 40px
-		@min-width = 200px
+		this.min-height = 40px
+		this.min-width = 200px
 
-		@is-modal = if @opts.is-modal? then @opts.is-modal else false
-		@can-close = if @opts.can-close? then @opts.can-close else true
-		@is-flexible = !@opts.height?
-		@can-resize = not @is-flexible
+		this.is-modal = if this.opts.is-modal? then this.opts.is-modal else false
+		this.can-close = if this.opts.can-close? then this.opts.can-close else true
+		this.is-flexible = !this.opts.height?
+		this.can-resize = not @is-flexible
 
-		@on \mount ~>
-			@refs.main.style.width = @opts.width || \530px
-			@refs.main.style.height = @opts.height || \auto
+		this.on('mount', () => {
+			this.refs.main.style.width = this.opts.width || '530px' 
+			this.refs.main.style.height = this.opts.height || 'auto' 
 
-			@refs.main.style.top = \15%
-			@refs.main.style.left = (window.inner-width / 2) - (@refs.main.offset-width / 2) + \px
+			this.refs.main.style.top = '15%' 
+			this.refs.main.style.left = (window.inner-width / 2) - (this.refs.main.offset-width / 2) + 'px' 
 
-			@refs.header.add-event-listener \contextmenu (e) ~>
+			this.refs.header.add-event-listener 'contextmenu' (e) =>
 				e.prevent-default!
 
-			window.add-event-listener \resize @on-browser-resize
+			window.add-event-listener 'resize' this.on-browser-resize
 
 			@open!
 
-		@on \unmount ~>
-			window.remove-event-listener \resize @on-browser-resize
+		this.on('unmount', () => {
+			window.remove-event-listener 'resize' this.on-browser-resize
 
-		@on-browser-resize = ~>
-			position = @refs.main.get-bounding-client-rect!
+		on-browser-resize() {
+			position = this.refs.main.get-bounding-client-rect!
 			browser-width = window.inner-width
 			browser-height = window.inner-height
-			window-width = @refs.main.offset-width
-			window-height = @refs.main.offset-height
+			window-width = this.refs.main.offset-width
+			window-height = this.refs.main.offset-height
 
 			if position.left < 0
-				@refs.main.style.left = 0
+				this.refs.main.style.left = 0
 
 			if position.top < 0
-				@refs.main.style.top = 0
+				this.refs.main.style.top = 0
 
 			if position.left + window-width > browser-width
-				@refs.main.style.left = browser-width - window-width + \px
+				this.refs.main.style.left = browser-width - window-width + 'px' 
 
 			if position.top + window-height > browser-height
-				@refs.main.style.top = browser-height - window-height + \px
+				this.refs.main.style.top = browser-height - window-height + 'px' 
 
-		@open = ~>
-			@trigger \opening
+		open() {
+			this.trigger('opening');
 
 			@top!
 
 			if @is-modal
-				@refs.bg.style.pointer-events = \auto
-				Velocity @refs.bg, \finish true
-				Velocity @refs.bg, {
+				this.refs.bg.style.pointer-events = 'auto' 
+				Velocity this.refs.bg, 'finish' true
+				Velocity this.refs.bg, {
 					opacity: 1
 				} {
 					queue: false
 					duration: 100ms
-					easing: \linear
+					easing: 'linear' 
 				}
 
-			@refs.main.style.pointer-events = \auto
-			Velocity @refs.main, \finish true
-			Velocity @refs.main, {scale: 1.1} 0ms
-			Velocity @refs.main, {
+			this.refs.main.style.pointer-events = 'auto' 
+			Velocity this.refs.main, 'finish' true
+			Velocity this.refs.main, {scale: 1.1} 0ms
+			Velocity this.refs.main, {
 				opacity: 1
 				scale: 1
 			} {
 				queue: false
 				duration: 200ms
-				easing: \ease-out
+				easing: 'ease-out' 
 			}
 
-			#@refs.main.focus!
+			#this.refs.main.focus();
 
-			set-timeout ~>
-				@trigger \opened
+			setTimeout =>
+				this.trigger('opened');
 			, 300ms
 
-		@close = ~>
-			@trigger \closing
+		close() {
+			this.trigger('closing');
 
 			if @is-modal
-				@refs.bg.style.pointer-events = \none
-				Velocity @refs.bg, \finish true
-				Velocity @refs.bg, {
+				this.refs.bg.style.pointer-events = 'none' 
+				Velocity this.refs.bg, 'finish' true
+				Velocity this.refs.bg, {
 					opacity: 0
 				} {
 					queue: false
 					duration: 300ms
-					easing: \linear
+					easing: 'linear' 
 				}
 
-			@refs.main.style.pointer-events = \none
-			Velocity @refs.main, \finish true
-			Velocity @refs.main, {
+			this.refs.main.style.pointer-events = 'none' 
+			Velocity this.refs.main, 'finish' true
+			Velocity this.refs.main, {
 				opacity: 0
 				scale: 0.8
 			} {
@@ -295,45 +295,45 @@
 				easing: [ 0.5, -0.5, 1, 0.5 ]
 			}
 
-			set-timeout ~>
-				@trigger \closed
+			setTimeout =>
+				this.trigger('closed');
 			, 300ms
 
-		# 最前面へ移動します
-		@top = ~>
+		// 最前面へ移動します
+		top() {
 			z = 0
 
-			ws = document.query-selector-all \mk-window
-			ws.for-each (w) !~>
-				if w == @root then return
+			ws = document.query-selector-all 'mk-window' 
+			ws.for-each (w) !=>
+				if w == this.root then return
 				m = w.query-selector ':scope > .main'
 				mz = Number(document.default-view.get-computed-style m, null .z-index)
 				if mz > z then z := mz
 
 			if z > 0
-				@refs.main.style.z-index = z + 1
-				if @is-modal then @refs.bg.style.z-index = z + 1
+				this.refs.main.style.z-index = z + 1
+				if @is-modal then this.refs.bg.style.z-index = z + 1
 
-		@repel-move = (e) ~>
+		repel-move(e) {
 			e.stop-propagation!
 			return true
 
-		@bg-click = ~>
+		bg-click() {
 			if @can-close
 				@close!
 
-		@on-body-mousedown = (e) ~>
+		on-body-mousedown(e) {
 			@top!
 			true
 
-		# ヘッダー掴み時
-		@on-header-mousedown = (e) ~>
+		// ヘッダー掴み時
+		on-header-mousedown(e) {
 			e.prevent-default!
 
-			if not contains @refs.main, document.active-element
-				@refs.main.focus!
+			if not contains this.refs.main, document.active-element
+				this.refs.main.focus();
 
-			position = @refs.main.get-bounding-client-rect!
+			position = this.refs.main.get-bounding-client-rect!
 
 			click-x = e.client-x
 			click-y = e.client-y
@@ -341,168 +341,168 @@
 			move-base-y = click-y - position.top
 			browser-width = window.inner-width
 			browser-height = window.inner-height
-			window-width = @refs.main.offset-width
-			window-height = @refs.main.offset-height
+			window-width = this.refs.main.offset-width
+			window-height = this.refs.main.offset-height
 
-			# 動かした時
-			drag-listen (me) ~>
+			// 動かした時
+			drag-listen (me) =>
 				move-left = me.client-x - move-base-x
 				move-top = me.client-y - move-base-y
 
-				# 上はみ出し
+				// 上はみ出し
 				if move-top < 0
 					move-top = 0
 
-				# 左はみ出し
+				// 左はみ出し
 				if move-left < 0
 					move-left = 0
 
-				# 下はみ出し
+				// 下はみ出し
 				if move-top + window-height > browser-height
 					move-top = browser-height - window-height
 
-				# 右はみ出し
+				// 右はみ出し
 				if move-left + window-width > browser-width
 					move-left = browser-width - window-width
 
-				@refs.main.style.left = move-left + \px
-				@refs.main.style.top = move-top + \px
+				this.refs.main.style.left = move-left + 'px' 
+				this.refs.main.style.top = move-top + 'px' 
 
-		# 上ハンドル掴み時
-		@on-top-handle-mousedown = (e) ~>
+		// 上ハンドル掴み時
+		on-top-handle-mousedown(e) {
 			e.prevent-default!
 
 			base = e.client-y
-			height = parse-int((get-computed-style @refs.main, '').height, 10)
-			top = parse-int((get-computed-style @refs.main, '').top, 10)
+			height = parse-int((get-computed-style this.refs.main, '').height, 10)
+			top = parse-int((get-computed-style this.refs.main, '').top, 10)
 
-			# 動かした時
-			drag-listen (me) ~>
+			// 動かした時
+			drag-listen (me) =>
 				move = me.client-y - base
 				if top + move > 0
 					if height + -move > @min-height
 						@apply-transform-height height + -move
 						@apply-transform-top top + move
-					else # 最小の高さより小さくなろうとした時
+					else // 最小の高さより小さくなろうとした時
 						@apply-transform-height @min-height
 						@apply-transform-top top + (height - @min-height)
-				else # 上のはみ出し時
+				else // 上のはみ出し時
 					@apply-transform-height top + height
 					@apply-transform-top 0
 
-		# 右ハンドル掴み時
-		@on-right-handle-mousedown = (e) ~>
+		// 右ハンドル掴み時
+		on-right-handle-mousedown(e) {
 			e.prevent-default!
 
 			base = e.client-x
-			width = parse-int((get-computed-style @refs.main, '').width, 10)
-			left = parse-int((get-computed-style @refs.main, '').left, 10)
+			width = parse-int((get-computed-style this.refs.main, '').width, 10)
+			left = parse-int((get-computed-style this.refs.main, '').left, 10)
 			browser-width = window.inner-width
 
-			# 動かした時
-			drag-listen (me) ~>
+			// 動かした時
+			drag-listen (me) =>
 				move = me.client-x - base
 				if left + width + move < browser-width
 					if width + move > @min-width
 						@apply-transform-width width + move
-					else # 最小の幅より小さくなろうとした時
+					else // 最小の幅より小さくなろうとした時
 						@apply-transform-width @min-width
-				else # 右のはみ出し時
+				else // 右のはみ出し時
 					@apply-transform-width browser-width - left
 
-		# 下ハンドル掴み時
-		@on-bottom-handle-mousedown = (e) ~>
+		// 下ハンドル掴み時
+		on-bottom-handle-mousedown(e) {
 			e.prevent-default!
 
 			base = e.client-y
-			height = parse-int((get-computed-style @refs.main, '').height, 10)
-			top = parse-int((get-computed-style @refs.main, '').top, 10)
+			height = parse-int((get-computed-style this.refs.main, '').height, 10)
+			top = parse-int((get-computed-style this.refs.main, '').top, 10)
 			browser-height = window.inner-height
 
-			# 動かした時
-			drag-listen (me) ~>
+			// 動かした時
+			drag-listen (me) =>
 				move = me.client-y - base
 				if top + height + move < browser-height
 					if height + move > @min-height
 						@apply-transform-height height + move
-					else # 最小の高さより小さくなろうとした時
+					else // 最小の高さより小さくなろうとした時
 						@apply-transform-height @min-height
-				else # 下のはみ出し時
+				else // 下のはみ出し時
 					@apply-transform-height browser-height - top
 
-		# 左ハンドル掴み時
-		@on-left-handle-mousedown = (e) ~>
+		// 左ハンドル掴み時
+		on-left-handle-mousedown(e) {
 			e.prevent-default!
 
 			base = e.client-x
-			width = parse-int((get-computed-style @refs.main, '').width, 10)
-			left = parse-int((get-computed-style @refs.main, '').left, 10)
+			width = parse-int((get-computed-style this.refs.main, '').width, 10)
+			left = parse-int((get-computed-style this.refs.main, '').left, 10)
 
-			# 動かした時
-			drag-listen (me) ~>
+			// 動かした時
+			drag-listen (me) =>
 				move = me.client-x - base
 				if left + move > 0
 					if width + -move > @min-width
 						@apply-transform-width width + -move
 						@apply-transform-left left + move
-					else # 最小の幅より小さくなろうとした時
+					else // 最小の幅より小さくなろうとした時
 						@apply-transform-width @min-width
 						@apply-transform-left left + (width - @min-width)
-				else # 左のはみ出し時
+				else // 左のはみ出し時
 					@apply-transform-width left + width
 					@apply-transform-left 0
 
-		# 左上ハンドル掴み時
-		@on-top-left-handle-mousedown = (e) ~>
-			@on-top-handle-mousedown e
-			@on-left-handle-mousedown e
+		// 左上ハンドル掴み時
+		on-top-left-handle-mousedown(e) {
+			this.on-top-handle-mousedown e
+			this.on-left-handle-mousedown e
 
-		# 右上ハンドル掴み時
-		@on-top-right-handle-mousedown = (e) ~>
-			@on-top-handle-mousedown e
-			@on-right-handle-mousedown e
+		// 右上ハンドル掴み時
+		on-top-right-handle-mousedown(e) {
+			this.on-top-handle-mousedown e
+			this.on-right-handle-mousedown e
 
-		# 右下ハンドル掴み時
-		@on-bottom-right-handle-mousedown = (e) ~>
-			@on-bottom-handle-mousedown e
-			@on-right-handle-mousedown e
+		// 右下ハンドル掴み時
+		on-bottom-right-handle-mousedown(e) {
+			this.on-bottom-handle-mousedown e
+			this.on-right-handle-mousedown e
 
-		# 左下ハンドル掴み時
-		@on-bottom-left-handle-mousedown = (e) ~>
-			@on-bottom-handle-mousedown e
-			@on-left-handle-mousedown e
+		// 左下ハンドル掴み時
+		on-bottom-left-handle-mousedown(e) {
+			this.on-bottom-handle-mousedown e
+			this.on-left-handle-mousedown e
 
-		# 高さを適用
-		@apply-transform-height = (height) ~>
-			@refs.main.style.height = height + \px
+		// 高さを適用
+		apply-transform-height(height) {
+			this.refs.main.style.height = height + 'px' 
 
-		# 幅を適用
-		@apply-transform-width = (width) ~>
-			@refs.main.style.width = width + \px
+		// 幅を適用
+		apply-transform-width(width) {
+			this.refs.main.style.width = width + 'px' 
 
-		# Y座標を適用
-		@apply-transform-top = (top) ~>
-			@refs.main.style.top = top + \px
+		// Y座標を適用
+		apply-transform-top(top) {
+			this.refs.main.style.top = top + 'px' 
 
-		# X座標を適用
-		@apply-transform-left = (left) ~>
-			@refs.main.style.left = left + \px
+		// X座標を適用
+		apply-transform-left(left) {
+			this.refs.main.style.left = left + 'px' 
 
 		function drag-listen fn
-			window.add-event-listener \mousemove  fn
-			window.add-event-listener \mouseleave drag-clear.bind null fn
-			window.add-event-listener \mouseup    drag-clear.bind null fn
+			window.add-event-listener 'mousemove'  fn
+			window.add-event-listener 'mouseleave' drag-clear.bind null fn
+			window.add-event-listener 'mouseup'    drag-clear.bind null fn
 
 		function drag-clear fn
-			window.remove-event-listener \mousemove  fn
-			window.remove-event-listener \mouseleave drag-clear
-			window.remove-event-listener \mouseup    drag-clear
+			window.remove-event-listener 'mousemove'  fn
+			window.remove-event-listener 'mouseleave' drag-clear
+			window.remove-event-listener 'mouseup'    drag-clear
 
-		@ondragover = (e) ~>
-			e.data-transfer.drop-effect = \none
+		ondragover(e) {
+			e.data-transfer.drop-effect = 'none' 
 
-		@on-keydown = (e) ~>
-			if e.which == 27 # Esc
+		on-keydown(e) {
+			if e.which == 27 // Esc
 				if @can-close
 					e.prevent-default!
 					e.stop-propagation!

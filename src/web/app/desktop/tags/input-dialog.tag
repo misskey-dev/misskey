@@ -116,40 +116,40 @@
 
 	</style>
 	<script>
-		@done = false
+		this.done = false
 
-		@title = @opts.title
-		@placeholder = @opts.placeholder
-		@default = @opts.default
-		@allow-empty = if @opts.allow-empty? then @opts.allow-empty else true
+		this.title = this.opts.title
+		this.placeholder = this.opts.placeholder
+		this.default = this.opts.default
+		this.allow-empty = if this.opts.allow-empty? then this.opts.allow-empty else true
 
-		@on \mount ~>
-			@text = @refs.window.refs.text
+		this.on('mount', () => {
+			this.text = this.refs.window.refs.text
 			if @default?
 				@text.value = @default
-			@text.focus!
+			@text.focus();
 
-			@refs.window.on \closing ~>
+			this.refs.window.on('closing', () => {
 				if @done
-					@opts.on-ok @text.value
+					this.opts.on-ok @text.value
 				else
-					if @opts.on-cancel?
-						@opts.on-cancel!
+					if this.opts.on-cancel?
+						this.opts.on-cancel!
 
-			@refs.window.on \closed ~>
-				@unmount!
+			this.refs.window.on('closed', () => {
+				this.unmount();
 
-		@cancel = ~>
-			@done = false
-			@refs.window.close!
+		cancel() {
+			this.done = false
+			this.refs.window.close!
 
-		@ok = ~>
+		ok() {
 			if not @allow-empty and @text.value == '' then return
-			@done = true
-			@refs.window.close!
+			this.done = true
+			this.refs.window.close!
 
-		@on-keydown = (e) ~>
-			if e.which == 13 # Enter
+		on-keydown(e) {
+			if e.which == 13 // Enter
 				e.prevent-default!
 				e.stop-propagation!
 				@ok!

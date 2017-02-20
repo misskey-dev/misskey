@@ -74,45 +74,45 @@
 
 	</style>
 	<script>
-		@posts = []
-		@init = true
-		@fetching = false
-		@can-fetch-more = true
+		this.posts = []
+		this.init = true
+		this.fetching = false
+		this.can-fetch-more = true
 
-		@on \mount ~>
-			@opts.init.then (posts) ~>
-				@init = false
+		this.on('mount', () => {
+			this.opts.init.then (posts) =>
+				this.init = false
 				@set-posts posts
 
-		@on \update ~>
-			@posts.for-each (post) ~>
+		this.on('update', () => {
+			@posts.for-each (post) =>
 				date = (new Date post.created_at).get-date!
 				month = (new Date post.created_at).get-month! + 1
 				post._date = date
 				post._datetext = month + '月 ' + date + '日'
 
-		@more = ~>
+		more() {
 			if @init or @fetching or @posts.length == 0 then return
-			@fetching = true
-			@update!
-			@opts.more!.then (posts) ~>
-				@fetching = false
+			this.fetching = true
+			this.update();
+			this.opts.more!.then (posts) =>
+				this.fetching = false
 				@prepend-posts posts
 
-		@set-posts = (posts) ~>
-			@posts = posts
-			@update!
+		set-posts(posts) {
+			this.posts = posts
+			this.update();
 
-		@prepend-posts = (posts) ~>
-			posts.for-each (post) ~>
+		prepend-posts(posts) {
+			posts.for-each (post) =>
 				@posts.push post
-				@update!
+				this.update();
 
-		@add-post = (post) ~>
+		add-post(post) {
 			@posts.unshift post
-			@update!
+			this.update();
 
-		@tail = ~>
+		tail() {
 			@posts[@posts.length - 1]
 	</script>
 </mk-timeline>

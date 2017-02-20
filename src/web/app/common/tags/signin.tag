@@ -97,41 +97,41 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@user = null
-		@signing = false
+		this.user = null
+		this.signing = false
 
-		@oninput = ~>
-			@api \users/show do
-				username: @refs.username.value
-			.then (user) ~>
-				@user = user
-				@trigger \user user
-				@update!
+		oninput() {
+			this.api 'users/show' do
+				username: this.refs.username.value
+			.then (user) =>
+				this.user = user
+				this.trigger 'user' user
+				this.update();
 
-		@onsubmit = (e) ~>
+		onsubmit(e) {
 			e.prevent-default!
 
-			if @refs.username.value == ''
-				@refs.username.focus!
+			if this.refs.username.value == ''
+				this.refs.username.focus();
 				return false
-			if @refs.password.value == ''
-				@refs.password.focus!
+			if this.refs.password.value == ''
+				this.refs.password.focus();
 				return false
 
-			@signing = true
-			@update!
+			this.signing = true
+			this.update();
 
-			@api \signin do
-				username: @refs.username.value
-				password: @refs.password.value
-			.then ~>
+			this.api 'signin' do
+				username: this.refs.username.value
+				password: this.refs.password.value
+			.then =>
 				location.reload!
-			.catch ~>
+			.catch =>
 				alert 'something happened'
-				@signing = false
-				@update!
+				this.signing = false
+				this.update();
 
 			false
 	</script>

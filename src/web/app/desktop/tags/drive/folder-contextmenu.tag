@@ -18,49 +18,49 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
-		@mixin \api
-		@mixin \input-dialog
+		this.mixin('api');
+		this.mixin('input-dialog');
 
-		@browser = @opts.browser
-		@folder = @opts.folder
+		this.browser = this.opts.browser
+		this.folder = this.opts.folder
 
-		@open = (pos) ~>
-			@refs.ctx.open pos
+		open(pos) {
+			this.refs.ctx.open pos
 
-			@refs.ctx.on \closed ~>
-				@trigger \closed
-				@unmount!
+			this.refs.ctx.on('closed', () => {
+				this.trigger('closed');
+				this.unmount();
 
-		@move = ~>
+		move() {
 			@browser.move @folder.id
-			@refs.ctx.close!
+			this.refs.ctx.close!
 
-		@new-window = ~>
+		new-window() {
 			@browser.new-window @folder.id
-			@refs.ctx.close!
+			this.refs.ctx.close!
 
-		@create-folder = ~>
+		create-folder() {
 			@browser.create-folder!
-			@refs.ctx.close!
+			this.refs.ctx.close!
 
-		@upload = ~>
+		upload() {
 			@browser.select-lcoal-file!
-			@refs.ctx.close!
+			this.refs.ctx.close!
 
-		@rename = ~>
-			@refs.ctx.close!
+		rename() {
+			this.refs.ctx.close!
 
 			name <~ @input-dialog do
 				'フォルダ名の変更'
 				'新しいフォルダ名を入力してください'
 				@folder.name
 
-			@api \drive/folders/update do
+			this.api 'drive/folders/update' do
 				folder_id: @folder.id
 				name: name
-			.then ~>
-				# something
-			.catch (err) ~>
+			.then =>
+				// something
+			.catch (err) =>
 				console.error err
 	</script>
 </mk-drive-browser-folder-contextmenu>

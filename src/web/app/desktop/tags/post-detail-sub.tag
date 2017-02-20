@@ -103,38 +103,38 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \text
-		@mixin \date-stringify
-		@mixin \user-preview
+		this.mixin('api');
+		this.mixin('text');
+		this.mixin('date-stringify');
+		this.mixin('user-preview');
 
-		@post = @opts.post
+		this.post = this.opts.post
 
-		@url = CONFIG.url + '/' + @post.user.username + '/' + @post.id
+		this.url = CONFIG.url + '/' + @post.user.username + '/' + @post.id
 
-		@title = @date-stringify @post.created_at
+		this.title = @date-stringify @post.created_at
 
-		@on \mount ~>
+		this.on('mount', () => {
 			if @post.text?
 				tokens = @analyze @post.text
-				@refs.text.innerHTML = @compile tokens
+				this.refs.text.innerHTML = @compile tokens
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
+				this.refs.text.children.for-each (e) =>
+					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
-		@like = ~>
+		like() {
 			if @post.is_liked
-				@api \posts/likes/delete do
+				this.api 'posts/likes/delete' do
 					post_id: @post.id
-				.then ~>
+				.then =>
 					@post.is_liked = false
-					@update!
+					this.update();
 			else
-				@api \posts/likes/create do
+				this.api 'posts/likes/create' do
 					post_id: @post.id
-				.then ~>
+				.then =>
 					@post.is_liked = true
-					@update!
+					this.update();
 	</script>
 </mk-post-detail-sub>

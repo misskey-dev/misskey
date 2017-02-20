@@ -57,31 +57,31 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \stream
+		this.mixin('api');
+		this.mixin('stream');
 
-		@images = []
-		@initializing = true
+		this.images = []
+		this.initializing = true
 
-		@on \mount ~>
-			@stream.on \drive_file_created @on-stream-drive-file-created
+		this.on('mount', () => {
+			@stream.on 'drive_file_created' this.on-stream-drive-file-created
 
-			@api \drive/stream do
+			this.api 'drive/stream' do
 				type: 'image/*'
 				limit: 9images
-			.then (images) ~>
-				@initializing = false
-				@images = images
-				@update!
+			.then (images) =>
+				this.initializing = false
+				this.images = images
+				this.update();
 
-		@on \unmount ~>
-			@stream.off \drive_file_created @on-stream-drive-file-created
+		this.on('unmount', () => {
+			@stream.off 'drive_file_created' this.on-stream-drive-file-created
 
-		@on-stream-drive-file-created = (file) ~>
+		on-stream-drive-file-created(file) {
 			if /^image\/.+$/.test file.type
 				@images.unshift file
 				if @images.length > 9
 					@images.pop!
-				@update!
+				this.update();
 	</script>
 </mk-photo-stream-home-widget>

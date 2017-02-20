@@ -114,31 +114,31 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \notify
+		this.mixin('api');
+		this.mixin('notify');
 
-		@wait = false
-		@quote = false
+		this.wait = false
+		this.quote = false
 
-		@cancel = ~>
-			@trigger \cancel
+		cancel() {
+			this.trigger('cancel');
 
-		@ok = ~>
-			@wait = true
-			@api \posts/create do
-				repost_id: @opts.post.id
-				text: if @quote then @refs.text.value else undefined
-			.then (data) ~>
-				@trigger \posted
+		ok() {
+			this.wait = true
+			this.api 'posts/create' do
+				repost_id: this.opts.post.id
+				text: if @quote then this.refs.text.value else undefined
+			.then (data) =>
+				this.trigger('posted');
 				@notify 'Repostしました！'
-			.catch (err) ~>
+			.catch (err) =>
 				console.error err
 				@notify 'Repostできませんでした'
-			.then ~>
-				@wait = false
-				@update!
+			.then =>
+				this.wait = false
+				this.update();
 
-		@onquote = ~>
-			@quote = true
+		onquote() {
+			this.quote = true
 	</script>
 </mk-repost-form>

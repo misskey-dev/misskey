@@ -93,5 +93,5 @@
 				right 16px
 
 	</style>
-	<script>@user = @opts.user</script>
+	<script>this.user = this.opts.user</script>
 </mk-list-user>

@@ -44,36 +44,36 @@
 
 	</style>
 	<script>
-		@posts = []
+		this.posts = []
 
-		@set-posts = (posts) ~>
-			@posts = posts
-			@update!
+		set-posts(posts) {
+			this.posts = posts
+			this.update();
 
-		@prepend-posts = (posts) ~>
-			posts.for-each (post) ~>
+		prepend-posts(posts) {
+			posts.for-each (post) =>
 				@posts.push post
-				@update!
+				this.update();
 
-		@add-post = (post) ~>
+		add-post(post) {
 			@posts.unshift post
-			@update!
+			this.update();
 
-		@clear = ~>
-			@posts = []
-			@update!
+		clear() {
+			this.posts = []
+			this.update();
 
-		@focus = ~>
-			@root.children.0.focus!
+		focus() {
+			this.root.children.0.focus();
 
-		@on \update ~>
-			@posts.for-each (post) ~>
+		this.on('update', () => {
+			@posts.for-each (post) =>
 				date = (new Date post.created_at).get-date!
 				month = (new Date post.created_at).get-month! + 1
 				post._date = date
 				post._datetext = month + '月 ' + date + '日'
 
-		@tail = ~>
+		tail() {
 			@posts[@posts.length - 1]
 	</script>
 </mk-timeline>

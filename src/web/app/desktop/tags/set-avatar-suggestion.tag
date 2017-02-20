@@ -31,15 +31,15 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \update-avatar
+		this.mixin('i');
+		this.mixin('update-avatar');
 
-		@set = ~>
+		set() {
 			@update-avatar @I
 
-		@close = (e) ~>
+		close(e) {
 			e.prevent-default!
 			e.stop-propagation!
-			@unmount!
+			this.unmount();
 	</script>
 </mk-set-avatar-suggestion>

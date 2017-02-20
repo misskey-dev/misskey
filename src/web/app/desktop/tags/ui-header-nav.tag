@@ -77,37 +77,37 @@
 
 		</style>
 		<script>
-			@mixin \i
-			@mixin \api
-			@mixin \stream
+			this.mixin('i');
+			this.mixin('api');
+			this.mixin('stream');
 
-			@page = @opts.page
+			this.page = this.opts.page
 
-			@on \mount ~>
-				@stream.on \read_all_messaging_messages @on-read-all-messaging-messages
-				@stream.on \unread_messaging_message @on-unread-messaging-message
+			this.on('mount', () => {
+				@stream.on 'read_all_messaging_messages' this.on-read-all-messaging-messages
+				@stream.on 'unread_messaging_message' this.on-unread-messaging-message
 
-				# Fetch count of unread messaging messages
-				@api \messaging/unread
-				.then (count) ~>
+				// Fetch count of unread messaging messages
+				this.api 'messaging/unread' 
+				.then (count) =>
 					if count.count > 0
-						@has-unread-messaging-messages = true
-						@update!
+						this.has-unread-messaging-messages = true
+						this.update();
 
-			@on \unmount ~>
-				@stream.off \read_all_messaging_messages @on-read-all-messaging-messages
-				@stream.off \unread_messaging_message @on-unread-messaging-message
+			this.on('unmount', () => {
+				@stream.off 'read_all_messaging_messages' this.on-read-all-messaging-messages
+				@stream.off 'unread_messaging_message' this.on-unread-messaging-message
 
-			@on-read-all-messaging-messages = ~>
-				@has-unread-messaging-messages = false
-				@update!
+			on-read-all-messaging-messages() {
+				this.has-unread-messaging-messages = false
+				this.update();
 
-			@on-unread-messaging-message = ~>
-				@has-unread-messaging-messages = true
-				@update!
+			on-unread-messaging-message() {
+				this.has-unread-messaging-messages = true
+				this.update();
 
-			@messaging = ~>
-				riot.mount document.body.append-child document.create-element \mk-messaging-window
+			messaging() {
+				riot.mount document.body.appendChild document.createElement 'mk-messaging-window' 
 		</script>
 	</ul>
 </mk-ui-header-nav>

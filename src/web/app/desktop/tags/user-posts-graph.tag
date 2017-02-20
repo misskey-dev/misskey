@@ -8,50 +8,50 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
+		this.mixin('api');
+		this.mixin('is-promise');
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
+		this.user = null
+		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
 
-		@on \mount ~>
+		this.on('mount', () => {
 			user <~ @user-promise.then
-			@user = user
-			@update!
+			this.user = user
+			this.update();
 
-			@api \aggregation/users/post do
+			this.api 'aggregation/users/post' do
 				user_id: @user.id
 				limit: 30days
-			.then (data) ~>
+			.then (data) =>
 				data = data.reverse!
-				new Chart @refs.canv, do
-					type: \line
+				new Chart this.refs.canv, do
+					type: 'line' 
 					data:
-						labels: data.map (x, i) ~> if i % 3 == 2 then x.date.day + '日' else ''
+						labels: data.map (x, i) => if i % 3 == 2 then x.date.day + '日' else ''
 						datasets: [
 							{
-								label: \投稿
-								data: data.map (x) ~> x.posts
+								label: '投稿' 
+								data: data.map (x) => x.posts
 								line-tension: 0
 								point-radius: 0
-								background-color: \#555
-								border-color: \transparent
+								background-color: '#555' 
+								border-color: 'transparent' 
 							},
 							{
-								label: \Repost
-								data: data.map (x) ~> x.reposts
+								label: 'Repost' 
+								data: data.map (x) => x.reposts
 								line-tension: 0
 								point-radius: 0
-								background-color: \#a2d61e
-								border-color: \transparent
+								background-color: '#a2d61e' 
+								border-color: 'transparent' 
 							},
 							{
-								label: \返信
-								data: data.map (x) ~> x.replies
+								label: '返信' 
+								data: data.map (x) => x.replies
 								line-tension: 0
 								point-radius: 0
-								background-color: \#F7796C
-								border-color: \transparent
+								background-color: '#F7796C' 
+								border-color: 'transparent' 
 							}
 						]
 					options:

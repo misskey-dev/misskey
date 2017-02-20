@@ -140,55 +140,55 @@
 
 	</style>
 	<script>
-		@mixin \i
+		this.mixin('i');
 
-		@uploads = []
+		this.uploads = []
 
 		
-		@upload = (file, folder) ~>
+		upload(file, folder) {
 			id = Math.random!
 
 			ctx =
 				id: id
-				name: file.name || \untitled
+				name: file.name || 'untitled' 
 				progress: undefined
 
 			@uploads.push ctx
-			@trigger \change-uploads @uploads
-			@update!
+			this.trigger 'change-uploads' @uploads
+			this.update();
 
 			reader = new FileReader!
-			reader.onload = (e) ~>
+			reader.onload = (e) =>
 				ctx.img = e.target.result
-				@update!
+				this.update();
 			reader.read-as-data-URL file
 
 			data = new FormData!
-			data.append \i @I.token
-			data.append \file file
+			data.append 'i' @I.token
+			data.append 'file' file
 
 			if folder?
-				data.append \folder_id folder
+				data.append 'folder_id' folder
 
 			xhr = new XMLHttpRequest!
-			xhr.open \POST CONFIG.apiUrl + '/drive/files/create' true
-			xhr.onload = (e) ~>
+			xhr.open 'POST' CONFIG.apiUrl + '/drive/files/create' true
+			xhr.onload = (e) =>
 				drive-file = JSON.parse e.target.response
 
-				@trigger \uploaded drive-file
+				this.trigger 'uploaded' drive-file
 
-				@uploads = @uploads.filter (x) -> x.id != id
-				@trigger \change-uploads @uploads
+				this.uploads = @uploads.filter (x) -> x.id != id
+				this.trigger 'change-uploads' @uploads
 
-				@update!
+				this.update();
 
-			xhr.upload.onprogress = (e) ~>
+			xhr.upload.onprogress = (e) =>
 				if e.length-computable
 					if ctx.progress == undefined
 						ctx.progress = {}
 					ctx.progress.max = e.total
 					ctx.progress.value = e.loaded
-					@update!
+					this.update();
 
 			xhr.send data
 	</script>

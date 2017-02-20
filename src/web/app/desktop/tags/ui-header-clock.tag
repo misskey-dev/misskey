@@ -58,7 +58,7 @@
 
 	</style>
 	<script>
-		@draw = ~>
+		draw() {
 			now = new Date!
 
 			yyyy = now.get-full-year!
@@ -71,17 +71,17 @@
 			hhmm = "<span class='hhmm'>#hh:#mm</span>"
 
 			if now.get-seconds! % 2 == 0
-				hhmm .= replace \: '<span style=\'visibility:visible\'>:</span>'
+				hhmm .= replace ':' '<span style=\'visibility:visible\'>:</span>'
 			else
-				hhmm .= replace \: '<span style=\'visibility:hidden\'>:</span>'
+				hhmm .= replace ':' '<span style=\'visibility:hidden\'>:</span>'
 
-			@refs.time.innerHTML = "#yyyymmdd<br>#hhmm"
+			this.refs.time.innerHTML = "#yyyymmdd<br>#hhmm"
 
-		@on \mount ~>
+		this.on('mount', () => {
 			@draw!
-			@clock = set-interval @draw, 1000ms
+			this.clock = set-interval @draw, 1000ms
 
-		@on \unmount ~>
+		this.on('unmount', () => {
 			clear-interval @clock
 	</script>
 </mk-ui-header-clock>

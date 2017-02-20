@@ -19,10 +19,10 @@
 
 	</style>
 	<script>
-		@user = @opts.user
+		this.user = this.opts.user
 
-		@on \mount ~>
-			@refs.window.on \closed ~>
-				@unmount!
+		this.on('mount', () => {
+			this.refs.window.on('closed', () => {
+				this.unmount();
 	</script>
 </mk-messaging-room-window>

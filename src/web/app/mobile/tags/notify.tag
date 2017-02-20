@@ -16,22 +16,22 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			Velocity @root, {
-				bottom: \0px
+		this.on('mount', () => {
+			Velocity this.root, {
+				bottom: '0px' 
 			} {
 				duration: 500ms
-				easing: \ease-out
+				easing: 'ease-out' 
 			}
 
-			set-timeout ~>
-				Velocity @root, {
-					bottom: \-64px
+			setTimeout =>
+				Velocity this.root, {
+					bottom: '-64px' 
 				} {
 					duration: 500ms
-					easing: \ease-out
-					complete: ~>
-						@unmount!
+					easing: 'ease-out' 
+					complete: =>
+						this.unmount();
 				}
 			, 6000ms
 	</script>

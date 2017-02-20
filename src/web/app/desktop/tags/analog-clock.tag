@@ -9,29 +9,29 @@
 
 	</style>
 	<script>
-		@on \mount ~>
+		this.on('mount', () => {
 			@draw!
-			@clock = set-interval @draw, 1000ms
+			this.clock = set-interval @draw, 1000ms
 
-		@on \unmount ~>
+		this.on('unmount', () => {
 			clear-interval @clock
 
-		@draw = ~>
+		draw() {
 			now = new Date!
 			s = now.get-seconds!
 			m = now.get-minutes!
 			h = now.get-hours!
 
 			vec2 = (x, y) ->
-				@x = x
-				@y = y
+				this.x = x
+				this.y = y
 
-			ctx = @refs.canvas.get-context \2d
-			canv-w = @refs.canvas.width
-			canv-h = @refs.canvas.height
+			ctx = this.refs.canvas.get-context '2d' 
+			canv-w = this.refs.canvas.width
+			canv-h = this.refs.canvas.height
 			ctx.clear-rect 0, 0, canv-w, canv-h
 
-			# 背景
+			// 背景
 			center = (Math.min (canv-w / 2), (canv-h / 2))
 			line-start = center * 0.90
 			line-end-short = center * 0.87
@@ -56,12 +56,12 @@
 						(canv-h / 2) + uv.y * line-end-short
 				ctx.stroke!
 
-			# 分
+			// 分
 			angle = Math.PI * (m + s / 60) / 30
 			length = (Math.min canv-w, canv-h) / 2.6
 			uv = new vec2 (Math.sin angle), (-Math.cos angle)
 			ctx.begin-path!
-			ctx.stroke-style = \#ffffff
+			ctx.stroke-style = '#ffffff' 
 			ctx.line-width = 2
 			ctx.move-to do
 				(canv-w / 2) - uv.x * length / 5
@@ -71,12 +71,12 @@
 				(canv-h / 2) + uv.y * length
 			ctx.stroke!
 
-			# 時
+			// 時
 			angle = Math.PI * (h % 12 + m / 60) / 6
 			length = (Math.min canv-w, canv-h) / 4
 			uv = new vec2 (Math.sin angle), (-Math.cos angle)
 			ctx.begin-path!
-			#ctx.stroke-style = \#ffffff
+			#ctx.stroke-style = '#ffffff' 
 			ctx.stroke-style = CONFIG.theme-color
 			ctx.line-width = 2
 			ctx.move-to do
@@ -87,7 +87,7 @@
 				(canv-h / 2) + uv.y * length
 			ctx.stroke!
 
-			# 秒
+			// 秒
 			angle = Math.PI * s / 30
 			length = (Math.min canv-w, canv-h) / 2.6
 			uv = new vec2 (Math.sin angle), (-Math.cos angle)

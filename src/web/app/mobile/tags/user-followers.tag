@@ -6,20 +6,20 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@user = @opts.user
+		this.user = this.opts.user
 
-		@fetch = (iknow, limit, cursor, cb) ~>
-			@api \users/followers do
+		fetch(iknow, limit, cursor, cb) {
+			this.api 'users/followers' do
 				user_id: @user.id
 				iknow: iknow
 				limit: limit
 				cursor: if cursor? then cursor else undefined
 			.then cb
 
-		@on \mount ~>
-			@refs.list.on \loaded ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			this.refs.list.on('loaded', () => {
+				this.trigger('loaded');
 	</script>
 </mk-user-followers>

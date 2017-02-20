@@ -8,57 +8,57 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
+		this.mixin('api');
+		this.mixin('is-promise');
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
+		this.user = null
+		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
 
-		@on \mount ~>
+		this.on('mount', () => {
 			user <~ @user-promise.then
-			@user = user
-			@update!
+			this.user = user
+			this.update();
 
-			@api \aggregation/users/followers do
+			this.api 'aggregation/users/followers' do
 				user_id: @user.id
 				limit: 30days
-			.then (followers) ~>
+			.then (followers) =>
 				followers = followers.reverse!
 
-				@api \aggregation/users/following do
+				this.api 'aggregation/users/following' do
 					user_id: @user.id
 					limit: 30days
-				.then (following) ~>
+				.then (following) =>
 					following = following.reverse!
 
-					new Chart @refs.canv, do
-						type: \line
+					new Chart this.refs.canv, do
+						type: 'line' 
 						data:
-							labels: following.map (x, i) ~> if i % 3 == 2 then x.date.day + '日' else ''
+							labels: following.map (x, i) => if i % 3 == 2 then x.date.day + '日' else ''
 							datasets: [
 								{
-									label: \フォロー
-									data: following.map (x) ~> x.count
+									label: 'フォロー' 
+									data: following.map (x) => x.count
 									line-tension: 0
 									border-width: 2
 									fill: true
 									background-color: 'rgba(127, 221, 64, 0.2)'
-									point-background-color: \#fff
+									point-background-color: '#fff' 
 									point-radius: 4
 									point-border-width: 2
-									border-color: \#7fdd40
+									border-color: '#7fdd40' 
 								},
 								{
-									label: \フォロワー
-									data: followers.map (x) ~> x.count
+									label: 'フォロワー' 
+									data: followers.map (x) => x.count
 									line-tension: 0
 									border-width: 2
 									fill: true
 									background-color: 'rgba(255, 99, 132, 0.2)'
-									point-background-color: \#fff
+									point-background-color: '#fff' 
 									point-radius: 4
 									point-border-width: 2
-									border-color: \#FF6384
+									border-color: '#FF6384' 
 								}
 							]
 						options:

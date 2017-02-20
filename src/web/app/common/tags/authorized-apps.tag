@@ -17,18 +17,18 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@apps = []
-		@fetching = true
+		this.apps = []
+		this.fetching = true
 
-		@on \mount ~>
-			@api \i/authorized_apps
-			.then (apps) ~>
-				@apps = apps
-				@fetching = false
-				@update!
-			.catch (err) ~>
+		this.on('mount', () => {
+			this.api 'i/authorized_apps' 
+			.then (apps) =>
+				this.apps = apps
+				this.fetching = false
+				this.update();
+			.catch (err) =>
 				console.error err
 	</script>
 </mk-authorized-apps>

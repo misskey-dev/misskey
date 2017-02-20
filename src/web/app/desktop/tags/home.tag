@@ -58,33 +58,33 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mode = @opts.mode || \timeline
+		this.mixin('i');
+		this.mode = this.opts.mode || 'timeline' 
 
-		# https://github.com/riot/riot/issues/2080
-		if @mode == '' then @mode = \timeline
+		// https://github.com/riot/riot/issues/2080
+		if @mode == '' then this.mode = 'timeline' 
 
-		@home = []
+		this.home = []
 
-		@on \mount ~>
-			@refs.tl.on \loaded ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			this.refs.tl.on('loaded', () => {
+				this.trigger('loaded');
 
-			@I.data.home.for-each (widget) ~>
+			@I.data.home.for-each (widget) =>
 				try
-					el = document.create-element \mk- + widget.name + \-home-widget
+					el = document.createElement 'mk-' + widget.name + '-home-widget' 
 					switch widget.place
-						| \left => @refs.left.append-child el
-						| \right => @refs.right.append-child el
+						| 'left' => this.refs.left.appendChild el
+						| 'right' => this.refs.right.appendChild el
 					@home.push (riot.mount el, do
 						id: widget.id
 						data: widget.data
 					.0)
 				catch e
-					# noop
+					// noop
 
-		@on \unmount ~>
-			@home.for-each (widget) ~>
+		this.on('unmount', () => {
+			@home.for-each (widget) =>
 				widget.unmount!
 	</script>
 </mk-home>

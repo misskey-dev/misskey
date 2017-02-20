@@ -154,38 +154,38 @@
 
 	</style>
 	<script>
-		@age = require \s-age
+		this.age = require 's-age' 
 
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@username = @opts.user
-		@page = if @opts.page? then @opts.page else \posts
-		@fetching = true
+		this.username = this.opts.user
+		this.page = if this.opts.page? then this.opts.page else 'posts' 
+		this.fetching = true
 
-		@on \mount ~>
-			@api \users/show do
+		this.on('mount', () => {
+			this.api 'users/show' do
 				username: @username
-			.then (user) ~>
-				@fetching = false
-				@user = user
-				@trigger \loaded user
-				@update!
+			.then (user) =>
+				this.fetching = false
+				this.user = user
+				this.trigger 'loaded' user
+				this.update();
 
-		@go-posts = ~>
-			@page = \posts
-			@update!
+		go-posts() {
+			this.page = 'posts' 
+			this.update();
 
-		@go-media = ~>
-			@page = \media
-			@update!
+		go-media() {
+			this.page = 'media' 
+			this.update();
 
-		@go-graphs = ~>
-			@page = \graphs
-			@update!
+		go-graphs() {
+			this.page = 'graphs' 
+			this.update();
 
-		@go-likes = ~>
-			@page = \likes
-			@update!
+		go-likes() {
+			this.page = 'likes' 
+			this.update();
 	</script>
 </mk-user>

@@ -8,17 +8,17 @@
 
 	</style>
 	<script>
-		@mixin \ui
-		@mixin \ui-progress
+		this.mixin('ui');
+		this.mixin('ui-progress');
 
-		@on \mount ~>
-			document.title = '検索: ' + @opts.query + ' | Misskey'
-			# TODO: クエリをHTMLエスケープ
-			@ui.trigger \title '<i class="fa fa-search"></i>' + @opts.query
+		this.on('mount', () => {
+			document.title = '検索: ' + this.opts.query + ' | Misskey'
+			// TODO: クエリをHTMLエスケープ
+			this.ui.trigger('title', '<i class="fa fa-search"></i>'); + this.opts.query
 
-			@Progress.start!
+			this.Progress.start();
 
-			@refs.ui.refs.search.on \loaded ~>
-				@Progress.done!
+			this.refs.ui.refs.search.on('loaded', () => {
+				this.Progress.done();
 	</script>
 </mk-search-page>

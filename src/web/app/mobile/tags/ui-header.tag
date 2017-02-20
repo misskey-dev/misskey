@@ -88,17 +88,17 @@
 
 	</style>
 	<script>
-		@mixin \ui
-		@mixin \open-post-form
+		this.mixin('ui');
+		this.mixin('open-post-form');
 
-		@on \mount ~>
-			@opts.ready!
+		this.on('mount', () => {
+			this.opts.ready!
 
-		@ui.on \title (title) ~>
-			if @refs.title?
-				@refs.title.innerHTML = title
+		this.ui.on('title', (title) => {
+			if this.refs.title?
+				this.refs.title.innerHTML = title
 
-		@post = ~>
+		post() {
 			@open-post-form!
 	</script>
 </mk-ui-header>

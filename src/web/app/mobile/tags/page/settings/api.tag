@@ -7,10 +7,10 @@
 			display block
 	</style>
 	<script>
-		@mixin \ui
+		this.mixin('ui');
 
-		@on \mount ~>
+		this.on('mount', () => {
 			document.title = 'Misskey | API'
-			@ui.trigger \title '<i class="fa fa-key"></i>API'
+			this.ui.trigger('title', '<i class="fa fa-key"></i>API');
 	</script>
 </mk-api-info-page>

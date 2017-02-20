@@ -75,20 +75,20 @@
 
 	</style>
 	<script>
-		@title = @opts.title
-		@value = parse-int @opts.value, 10
-		@max = parse-int @opts.max, 10
+		this.title = this.opts.title
+		this.value = parse-int this.opts.value, 10
+		this.max = parse-int this.opts.max, 10
 
-		@on \mount ~>
-			@refs.window.on \closed ~>
-				@unmount!
+		this.on('mount', () => {
+			this.refs.window.on('closed', () => {
+				this.unmount();
 
-		@update-progress = (value, max) ~>
-			@value = parse-int value, 10
-			@max = parse-int max, 10
-			@update!
+		update-progress(value, max) {
+			this.value = parse-int value, 10
+			this.max = parse-int max, 10
+			this.update();
 
-		@close = ~>
-			@refs.window.close!
+		close() {
+			this.refs.window.close!
 	</script>
 </mk-progress-dialog>

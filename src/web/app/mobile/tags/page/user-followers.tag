@@ -8,29 +8,29 @@
 
 	</style>
 	<script>
-		@mixin \ui
-		@mixin \ui-progress
-		@mixin \api
+		this.mixin('ui');
+		this.mixin('ui-progress');
+		this.mixin('api');
 
-		@fetching = true
-		@user = null
+		this.fetching = true
+		this.user = null
 
-		@on \mount ~>
-			@Progress.start!
+		this.on('mount', () => {
+			this.Progress.start();
 
-			@api \users/show do
-				username: @opts.user
-			.then (user) ~>
-				@user = user
-				@fetching = false
+			this.api 'users/show' do
+				username: this.opts.user
+			.then (user) =>
+				this.user = user
+				this.fetching = false
 
 				document.title = user.name + 'のフォロワー | Misskey'
-				# TODO: ユーザー名をエスケープ
-				@ui.trigger \title '<img src="' + user.avatar_url + '?thumbnail&size=64">' + user.name + 'のフォロワー'
+				// TODO: ユーザー名をエスケープ
+				this.ui.trigger('title', '<img src="'); + user.avatar_url + '?thumbnail&size=64">' + user.name + 'のフォロワー'
 
-				@update!
+				this.update();
 
-				@refs.ui.refs.list.on \loaded ~>
-					@Progress.done!
+				this.refs.ui.refs.list.on('loaded', () => {
+					this.Progress.done();
 	</script>
 </mk-user-followers-page>

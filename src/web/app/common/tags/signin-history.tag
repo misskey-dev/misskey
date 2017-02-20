@@ -48,28 +48,28 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \stream
+		this.mixin('api');
+		this.mixin('stream');
 
-		@history = []
-		@fetching = true
+		this.history = []
+		this.fetching = true
 
-		@on \mount ~>
-			@api \i/signin_history
-			.then (history) ~>
-				@history = history
-				@fetching = false
-				@update!
-			.catch (err) ~>
+		this.on('mount', () => {
+			this.api 'i/signin_history' 
+			.then (history) =>
+				this.history = history
+				this.fetching = false
+				this.update();
+			.catch (err) =>
 				console.error err
 
-			@stream.on \signin @on-signin
+			@stream.on 'signin' this.on-signin
 
-		@on \unmount ~>
-			@stream.off \signin @on-signin
+		this.on('unmount', () => {
+			@stream.off 'signin' this.on-signin
 
-		@on-signin = (signin) ~>
+		on-signin(signin) {
 			@history.unshift signin
-			@update!
+			this.update();
 	</script>
 </mk-signin-history>

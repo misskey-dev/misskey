@@ -9,64 +9,64 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
+		this.mixin('api');
+		this.mixin('is-promise');
 
-		@post = null
-		@post-promise = if @is-promise @opts.post then @opts.post else Promise.resolve @opts.post
+		this.post = null
+		this.post-promise = if @is-promise this.opts.post then this.opts.post else Promise.resolve this.opts.post
 
-		@on \mount ~>
+		this.on('mount', () => {
 			post <~ @post-promise.then
-			@post = post
-			@update!
+			this.post = post
+			this.update();
 
-			@api \aggregation/posts/like do
+			this.api 'aggregation/posts/like' do
 				post_id: @post.id
 				limit: 30days
-			.then (likes) ~>
+			.then (likes) =>
 				likes = likes.reverse!
 
-				@api \aggregation/posts/repost do
+				this.api 'aggregation/posts/repost' do
 					post_id: @post.id
 					limit: 30days
-				.then (repost) ~>
+				.then (repost) =>
 					repost = repost.reverse!
 
-					@api \aggregation/posts/reply do
+					this.api 'aggregation/posts/reply' do
 						post_id: @post.id
 						limit: 30days
-					.then (replies) ~>
+					.then (replies) =>
 						replies = replies.reverse!
 
-						new Chart @refs.canv, do
-							type: \bar
+						new Chart this.refs.canv, do
+							type: 'bar' 
 							data:
-								labels: likes.map (x, i) ~> if i % 3 == 2 then x.date.day + '日' else ''
+								labels: likes.map (x, i) => if i % 3 == 2 then x.date.day + '日' else ''
 								datasets: [
 									{
-										label: \いいね
-										type: \line
-										data: likes.map (x) ~> x.count
+										label: 'いいね' 
+										type: 'line' 
+										data: likes.map (x) => x.count
 										line-tension: 0
 										border-width: 2
 										fill: true
 										background-color: 'rgba(247, 121, 108, 0.2)'
-										point-background-color: \#fff
+										point-background-color: '#fff' 
 										point-radius: 4
 										point-border-width: 2
-										border-color: \#F7796C
+										border-color: '#F7796C' 
 									},
 									{
-										label: \返信
-										type: \bar
-										data: replies.map (x) ~> x.count
-										background-color: \#555
+										label: '返信' 
+										type: 'bar' 
+										data: replies.map (x) => x.count
+										background-color: '#555' 
 									},
 									{
-										label: \Repost
-										type: \bar
-										data: repost.map (x) ~> x.count
-										background-color: \#a2d61e
+										label: 'Repost' 
+										type: 'bar' 
+										data: repost.map (x) => x.count
+										background-color: '#a2d61e' 
 									}
 								]
 							options:

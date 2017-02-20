@@ -182,103 +182,103 @@
 
 	</style>
 	<script>
-		get-cat = require '../../common/scripts/get-cat'
+		get-cat = require('../../common/scripts/get-cat');
 
-		@mixin \api
+		this.mixin('api');
 
-		@wait = false
-		@uploadings = []
-		@files = []
-		@poll = false
+		this.wait = false
+		this.uploadings = []
+		this.files = []
+		this.poll = false
 
-		@on \mount ~>
-			@refs.uploader.on \uploaded (file) ~>
+		this.on('mount', () => {
+			this.refs.uploader.on('uploaded', (file) => {
 				@add-file file
 
-			@refs.uploader.on \change-uploads (uploads) ~>
-				@trigger \change-uploading-files uploads
+			this.refs.uploader.on('change-uploads', (uploads) => {
+				this.trigger 'change-uploading-files' uploads
 
-			@refs.text.focus!
+			this.refs.text.focus();
 
-		@onkeypress = (e) ~>
-			if (e.char-code == 10 || e.char-code == 13) && e.ctrl-key
+		onkeypress(e) {
+			if (e.char-code == 10 || e.char-code == 13) && e.ctrlKey
 				@post!
 			else
 				return true
 
-		@onpaste = (e) ~>
-			data = e.clipboard-data
+		onpaste(e) {
+			data = e.clipboardData
 			items = data.items
 			for i from 0 to items.length - 1
 				item = items[i]
 				switch (item.kind)
-					| \file =>
-						@upload item.get-as-file!
+					| 'file' =>
+						@upload item.getAsFile();
 			return true
 
-		@select-file = ~>
-			@refs.file.click!
+		select-file() {
+			this.refs.file.click!
 
-		@select-file-from-drive = ~>
-			browser = document.body.append-child document.create-element \mk-drive-selector
+		select-file-from-drive() {
+			browser = document.body.appendChild document.createElement 'mk-drive-selector' 
 			browser = riot.mount browser, do
 				multiple: true
 			.0
-			browser.on \selected (files) ~>
+			browser.on('selected', (files) => {
 				files.for-each @add-file
 
-		@change-file = ~>
-			files = @refs.file.files
+		change-file() {
+			files = this.refs.file.files
 			for i from 0 to files.length - 1
 				file = files.item i
 				@upload file
 
-		@upload = (file) ~>
-			@refs.uploader.upload file
+		upload(file) {
+			this.refs.uploader.upload file
 
-		@add-file = (file) ~>
-			file._remove = ~>
-				@files = @files.filter (x) -> x.id != file.id
-				@trigger \change-files @files
-				@update!
+		add-file(file) {
+			file._remove = =>
+				this.files = @files.filter (x) -> x.id != file.id
+				this.trigger 'change-files' @files
+				this.update();
 
 			@files.push file
-			@trigger \change-files @files
-			@update!
+			this.trigger 'change-files' @files
+			this.update();
 
-		@add-poll = ~>
-			@poll = true
+		add-poll() {
+			this.poll = true
 
-		@on-poll-destroyed = ~>
+		on-poll-destroyed() {
 			@update do
 				poll: false
 
-		@post = ~>
-			@wait = true
+		post() {
+			this.wait = true
 
 			files = if @files? and @files.length > 0
 				then @files.map (f) -> f.id
 				else undefined
 
-			@api \posts/create do
-				text: @refs.text.value
+			this.api 'posts/create' do
+				text: this.refs.text.value
 				media_ids: files
-				reply_to_id: if @opts.reply? then @opts.reply.id else undefined
-				poll: if @poll then @refs.poll.get! else undefined
-			.then (data) ~>
-				@trigger \post
-				@unmount!
-			.catch (err) ~>
+				reply_to_id: if this.opts.reply? then this.opts.reply.id else undefined
+				poll: if @poll then this.refs.poll.get! else undefined
+			.then (data) =>
+				this.trigger('post');
+				this.unmount();
+			.catch (err) =>
 				console.error err
-				#@opts.ui.trigger \notification 'Error!'
-				@wait = false
-				@update!
+				#this.opts.ui.trigger 'notification' 'Error!'
+				this.wait = false
+				this.update();
 
-		@cancel = ~>
-			@trigger \cancel
-			@unmount!
+		cancel() {
+			this.trigger('cancel');
+			this.unmount();
 
-		@cat = ~>
-			@refs.text.value = @refs.text.value + get-cat!
+		cat() {
+			this.refs.text.value = this.refs.text.value + get-cat!
 	</script>
 </mk-post-form>

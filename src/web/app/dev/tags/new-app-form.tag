@@ -178,64 +178,64 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@nid-state = null
+		this.nid-state = null
 
-		@on-change-nid = ~>
-			nid = @refs.nid.value
+		on-change-nid() {
+			nid = this.refs.nid.value
 
 			if nid == ''
-				@nid-state = null
-				@update!
+				this.nid-state = null
+				this.update();
 				return
 
 			err = switch
-				| not nid.match /^[a-zA-Z0-9\-]+$/ => \invalid-format
-				| nid.length < 3chars              => \min-range
-				| nid.length > 30chars             => \max-range
+				| not nid.match /^[a-zA-Z0-9\-]+$/ => 'invalid-format' 
+				| nid.length < 3chars              => 'min-range' 
+				| nid.length > 30chars             => 'max-range' 
 				| _                                     => null
 
 			if err?
-				@nid-state = err
-				@update!
+				this.nid-state = err
+				this.update();
 			else
-				@nid-state = \wait
-				@update!
+				this.nid-state = 'wait' 
+				this.update();
 
-				@api \app/name_id/available do
+				this.api 'app/name_id/available' do
 					name_id: nid
-				.then (result) ~>
+				.then (result) =>
 					if result.available
-						@nid-state = \ok
+						this.nid-state = 'ok' 
 					else
-						@nid-state = \unavailable
-					@update!
-				.catch (err) ~>
-					@nid-state = \error
-					@update!
+						this.nid-state = 'unavailable' 
+					this.update();
+				.catch (err) =>
+					this.nid-state = 'error' 
+					this.update();
 
-		@onsubmit = ~>
-			name = @refs.name.value
-			nid = @refs.nid.value
-			description = @refs.description.value
-			cb = @refs.cb.value
+		onsubmit() {
+			name = this.refs.name.value
+			nid = this.refs.nid.value
+			description = this.refs.description.value
+			cb = this.refs.cb.value
 			permission = []
 
-			@refs.permission.query-selector-all \input .for-each (el) ~>
+			this.refs.permission.query-selector-all 'input' .for-each (el) =>
 				if el.checked then permission.push el.value
 
-			locker = document.body.append-child document.create-element \mk-locker
+			locker = document.body.appendChild document.createElement 'mk-locker' 
 
-			@api \app/create do
+			this.api 'app/create' do
 				name: name
 				name_id: nid
 				description: description
 				callback_url: cb
-				permission: permission.join \,
-			.then ~>
+				permission: permission.join ',' 
+			.then =>
 				location.href = '/apps'
-			.catch ~>
+			.catch =>
 				alert 'アプリの作成に失敗しました。再度お試しください。'
 
 				locker.parent-node.remove-child locker

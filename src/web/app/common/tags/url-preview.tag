@@ -91,22 +91,22 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@url = @opts.url
-		@loading = true
+		this.url = this.opts.url
+		this.loading = true
 
-		@on \mount ~>
+		this.on('mount', () => {
 			fetch CONFIG.url + '/api:url?url=' + @url
-			.then (res) ~>
+			.then (res) =>
 				info <~ res.json!.then
-				@title = info.title
-				@description = info.description
-				@thumbnail = info.thumbnail
-				@icon = info.icon
-				@sitename = info.sitename
+				this.title = info.title
+				this.description = info.description
+				this.thumbnail = info.thumbnail
+				this.icon = info.icon
+				this.sitename = info.sitename
 
-				@loading = false
-				@update!
+				this.loading = false
+				this.update();
 	</script>
 </mk-url-preview>

@@ -50,124 +50,124 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \dialog
+		this.mixin('api');
+		this.mixin('dialog');
 
-		@folder = @opts.folder
-		@browser = @parent
+		this.folder = this.opts.folder
+		this.browser = this.parent
 
-		@title = @folder.name
-		@hover = false
-		@draghover = false
-		@is-contextmenu-showing = false
+		this.title = @folder.name
+		this.hover = false
+		this.draghover = false
+		this.is-contextmenu-showing = false
 
-		@onclick = ~>
+		onclick() {
 			@browser.move @folder
 
-		@onmouseover = ~>
-			@hover = true
+		onmouseover() {
+			this.hover = true
 
-		@onmouseout = ~>
-			@hover = false
+		onmouseout() {
+			this.hover = false
 
-		@ondragover = (e) ~>
+		ondragover(e) {
 			e.prevent-default!
 			e.stop-propagation!
 
-			# 自分自身がドラッグされていない場合
+			// 自分自身がドラッグされていない場合
 			if !@is-dragging
-				# ドラッグされてきたものがファイルだったら
-				if e.data-transfer.effect-allowed == \all
-					e.data-transfer.drop-effect = \copy
+				// ドラッグされてきたものがファイルだったら
+				if e.data-transfer.effect-allowed == 'all' 
+					e.data-transfer.drop-effect = 'copy' 
 				else
-					e.data-transfer.drop-effect = \move
+					e.data-transfer.drop-effect = 'move' 
 			else
-				# 自分自身にはドロップさせない
-				e.data-transfer.drop-effect = \none
+				// 自分自身にはドロップさせない
+				e.data-transfer.drop-effect = 'none' 
 			return false
 
-		@ondragenter = ~>
+		ondragenter() {
 			if !@is-dragging
-				@draghover = true
+				this.draghover = true
 
-		@ondragleave = ~>
-			@draghover = false
+		ondragleave() {
+			this.draghover = false
 
-		@ondrop = (e) ~>
+		ondrop(e) {
 			e.stop-propagation!
-			@draghover = false
+			this.draghover = false
 
-			# ファイルだったら
+			// ファイルだったら
 			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) ~>
+				Array.prototype.for-each.call e.data-transfer.files, (file) =>
 					@browser.upload file, @folder
 				return false
 
-			# データ取得
+			// データ取得
 			data = e.data-transfer.get-data 'text'
 			if !data?
 				return false
 
-			# パース
+			// パース
 			obj = JSON.parse data
 
-			# (ドライブの)ファイルだったら
-			if obj.type == \file
+			// (ドライブの)ファイルだったら
+			if obj.type == 'file' 
 				file = obj.id
 				@browser.remove-file file
-				@api \drive/files/update do
+				this.api 'drive/files/update' do
 					file_id: file
 					folder_id: @folder.id
-				.then ~>
-					# something
-				.catch (err, text-status) ~>
+				.then =>
+					// something
+				.catch (err, text-status) =>
 					console.error err
 
-			# (ドライブの)フォルダーだったら
-			else if obj.type == \folder
+			// (ドライブの)フォルダーだったら
+			else if obj.type == 'folder' 
 				folder = obj.id
-				# 移動先が自分自身ならreject
+				// 移動先が自分自身ならreject
 				if folder == @folder.id
 					return false
 				@browser.remove-folder folder
-				@api \drive/folders/update do
+				this.api 'drive/folders/update' do
 					folder_id: folder
 					parent_id: @folder.id
-				.then ~>
-					# something
-				.catch (err) ~>
+				.then =>
+					// something
+				.catch (err) =>
 					if err == 'detected-circular-definition'
 						@dialog do
 							'<i class="fa fa-exclamation-triangle"></i>操作を完了できません'
 							'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。'
 							[
-								text: \OK
+								text: 'OK' 
 							]
 
 			return false
 
-		@ondragstart = (e) ~>
-			e.data-transfer.effect-allowed = \move
+		ondragstart(e) {
+			e.data-transfer.effect-allowed = 'move' 
 			e.data-transfer.set-data 'text' JSON.stringify do
-				type: \folder
+				type: 'folder' 
 				id: @folder.id
-			@is-dragging = true
+			this.is-dragging = true
 
-			# 親ブラウザに対して、ドラッグが開始されたフラグを立てる
-			# (=あなたの子供が、ドラッグを開始しましたよ)
+			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
+			// (=あなたの子供が、ドラッグを開始しましたよ)
 			@browser.is-drag-source = true
 
-		@ondragend = (e) ~>
-			@is-dragging = false
+		ondragend(e) {
+			this.is-dragging = false
 			@browser.is-drag-source = false
 
-		@oncontextmenu = (e) ~>
+		oncontextmenu(e) {
 			e.prevent-default!
 			e.stop-immediate-propagation!
 
-			@is-contextmenu-showing = true
-			@update!
-			ctx = document.body.append-child document.create-element \mk-drive-browser-folder-contextmenu
+			this.is-contextmenu-showing = true
+			this.update();
+			ctx = document.body.appendChild document.createElement 'mk-drive-browser-folder-contextmenu' 
 			ctx = riot.mount ctx, do
 				browser: @browser
 				folder: @folder
@@ -175,9 +175,9 @@
 			ctx.open do
 				x: e.page-x - window.page-x-offset
 				y: e.page-y - window.page-y-offset
-			ctx.on \closed ~>
-				@is-contextmenu-showing = false
-				@update!
+			ctx.on('closed', () => {
+				this.is-contextmenu-showing = false
+				this.update();
 
 			return false
 	</script>

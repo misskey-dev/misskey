@@ -97,5 +97,5 @@
 								font-size 80%
 
 	</style>
-	<script>@post = @opts.post</script>
+	<script>this.post = this.opts.post</script>
 </mk-timeline-post-sub>

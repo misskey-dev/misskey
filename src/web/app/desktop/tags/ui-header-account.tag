@@ -159,47 +159,47 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \signout
+		this.mixin('i');
+		this.mixin('signout');
 
-		@is-open = false
+		this.is-open = false
 
-		@on \before-unmount ~>
+		this.on('before-unmount', () => {
 			@close!
 
-		@toggle = ~>
+		toggle() {
 			if @is-open
 				@close!
 			else
 				@open!
 
-		@open = ~>
-			@is-open = true
-			@update!
+		open() {
+			this.is-open = true
+			this.update();
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.add-event-listener \mousedown @mousedown
+			Array.prototype.for-each.call all, (el) =>
+				el.add-event-listener 'mousedown' @mousedown
 
-		@close = ~>
-			@is-open = false
-			@update!
+		close() {
+			this.is-open = false
+			this.update();
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.remove-event-listener \mousedown @mousedown
+			Array.prototype.for-each.call all, (el) =>
+				el.remove-event-listener 'mousedown' @mousedown
 
-		@mousedown = (e) ~>
+		mousedown(e) {
 			e.prevent-default!
-			if (!contains @root, e.target) and (@root != e.target)
+			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 			return false
 
-		@drive = ~>
+		drive() {
 			@close!
-			riot.mount document.body.append-child document.create-element \mk-drive-browser-window
+			riot.mount document.body.appendChild document.createElement 'mk-drive-browser-window' 
 
-		@settings = ~>
+		settings() {
 			@close!
-			riot.mount document.body.append-child document.create-element \mk-settings-window
+			riot.mount document.body.appendChild document.createElement 'mk-settings-window' 
 
 		function contains(parent, child)
 			node = child.parent-node

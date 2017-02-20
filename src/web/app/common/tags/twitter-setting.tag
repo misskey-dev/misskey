@@ -24,6 +24,6 @@
 				color #8899a6
 	</style>
 	<script>
-		@mixin \i
+		this.mixin('i');
 	</script>
 </mk-twitter-setting>

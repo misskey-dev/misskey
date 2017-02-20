@@ -8,18 +8,18 @@
 
 	</style>
 	<script>
-		@mixin \ui
-		@mixin \ui-progress
+		this.mixin('ui');
+		this.mixin('ui-progress');
 
-		@user = @opts.user
+		this.user = this.opts.user
 
-		@on \mount ~>
-			@Progress.start!
+		this.on('mount', () => {
+			this.Progress.start();
 
-			@refs.ui.refs.user.on \loaded (user) ~>
-				@Progress.done!
+			this.refs.ui.refs.user.on('loaded', (user) => {
+				this.Progress.done();
 				document.title = user.name + ' | Misskey'
-				# TODO: ユーザー名をエスケープ
-				@ui.trigger \title '<i class="fa fa-user"></i>' + user.name
+				// TODO: ユーザー名をエスケープ
+				this.ui.trigger('title', '<i class="fa fa-user"></i>'); + user.name
 	</script>
 </mk-user-page>

@@ -32,24 +32,24 @@
 
 	</style>
 	<script>
-		@uploading-files = []
-		@files = []
+		this.uploading-files = []
+		this.files = []
 
-		@on \mount ~>
-			@refs.window.refs.form.focus!
+		this.on('mount', () => {
+			this.refs.window.refs.form.focus();
 
-			@refs.window.on \closed ~>
-				@unmount!
+			this.refs.window.on('closed', () => {
+				this.unmount();
 
-			@refs.window.refs.form.on \post ~>
-				@refs.window.close!
+			this.refs.window.refs.form.on('post', () => {
+				this.refs.window.close!
 
-			@refs.window.refs.form.on \change-uploading-files (files) ~>
-				@uploading-files = files
-				@update!
+			this.refs.window.refs.form.on('change-uploading-files', (files) => {
+				this.uploading-files = files
+				this.update();
 
-			@refs.window.refs.form.on \change-files (files) ~>
-				@files = files
-				@update!
+			this.refs.window.refs.form.on('change-files', (files) => {
+				this.files = files
+				this.update();
 	</script>
 </mk-post-form-window>

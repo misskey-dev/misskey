@@ -2,9 +2,15 @@
 	<textarea ref="text" onkeypress={ onkeypress } onpaste={ onpaste } placeholder="ここにメッセージを入力"></textarea>
 	<div class="files"></div>
 	<mk-uploader ref="uploader"></mk-uploader>
-	<button class="send" onclick={ send } disabled={ sending } title="メッセージを送信"><i class="fa fa-paper-plane" if={ !sending }></i><i class="fa fa-spinner fa-spin" if={ sending }></i></button>
-	<button class="attach-from-local" type="button" title="PCから画像を添付する"><i class="fa fa-upload"></i></button>
-	<button class="attach-from-drive" type="button" title="アルバムから画像を添付する"><i class="fa fa-folder-open"></i></button>
+	<button class="send" onclick={ send } disabled={ sending } title="メッセージを送信">
+		<i class="fa fa-paper-plane" if={ !sending }></i><i class="fa fa-spinner fa-spin" if={ sending }></i>
+	</button>
+	<button class="attach-from-local" type="button" title="PCから画像を添付する">
+		<i class="fa fa-upload"></i>
+	</button>
+	<button class="attach-from-drive" type="button" title="アルバムから画像を添付する">
+		<i class="fa fa-folder-open"></i>
+	</button>
 	<input name="file" type="file" accept="image/*"/>
 	<style>
 		:scope
@@ -111,49 +117,56 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@onpaste = (e) ~>
-			data = e.clipboard-data
-			items = data.items
-			for i from 0 to items.length - 1
-				item = items[i]
-				switch (item.kind)
-					| \file =>
-						@upload item.get-as-file!
+		onpaste(e) {
+			const data = e.clipboardData;
+			const items = data.items;
+			for (let i = 0; i < items.length; i++) {
+				const item = items[i];
+				if (item.kind == 'file') {
+					this.upload(item.getAsFile());
+				}
+			}
+		}
 
-		@onkeypress = (e) ~>
-			if (e.which == 10 || e.which == 13) && e.ctrl-key
-				@send!
+		onkeypress(e) {
+			if ((e.which == 10 || e.which == 13) && e.ctrlKey) {
+				this.send();
+			}
+		}
 
-		@select-file = ~>
-			@refs.file.click!
+		selectFile() {
+			this.refs.file.click();
+		}
 
-		@select-file-from-drive = ~>
-			browser = document.body.append-child document.create-element \mk-select-file-from-drive-window
-			event = riot.observable!
-			riot.mount browser, do
-				multiple: true
+		selectFileFromDrive() {
+			const browser = document.body.appendChild(document.createElement('mk-select-file-from-drive-window'));
+			const event = riot.observable();
+			riot.mount(browser, {
+				multiple: true,
 				event: event
-			event.one \selected (files) ~>
-				files.for-each @add-file
+			});
+			event.one('selected', files => {
+				files.forEach(this.addFile);
+			});
 
-		@send = ~>
-			@sending = true
-			@api \messaging/messages/create do
-				user_id: @opts.user.id
-				text: @refs.text.value
-			.then (message) ~>
+		send() {
+			this.sending = true
+			this.api 'messaging/messages/create' do
+				user_id: this.opts.user.id
+				text: this.refs.text.value
+			.then (message) =>
 				@clear!
-			.catch (err) ~>
+			.catch (err) =>
 				console.error err
-			.then ~>
-				@sending = false
-				@update!
+			.then =>
+				this.sending = false
+				this.update();
 
-		@clear = ~>
-			@refs.text.value = ''
-			@files = []
-			@update!
+		clear() {
+			this.refs.text.value = ''
+			this.files = []
+			this.update();
 	</script>
 </mk-messaging-form>

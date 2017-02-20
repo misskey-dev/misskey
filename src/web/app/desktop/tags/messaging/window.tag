@@ -19,12 +19,12 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			@refs.window.on \closed ~>
-				@unmount!
+		this.on('mount', () => {
+			this.refs.window.on('closed', () => {
+				this.unmount();
 
-			@refs.window.refs.index.on \navigate-user (user) ~>
-				w = document.body.append-child document.create-element \mk-messaging-room-window
+			this.refs.window.refs.index.on('navigate-user', user => {
+				w = document.body.appendChild document.createElement 'mk-messaging-room-window' 
 				riot.mount w, do
 					user: user
 	</script>

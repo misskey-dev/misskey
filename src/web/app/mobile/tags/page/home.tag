@@ -8,38 +8,38 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \ui
-		@mixin \ui-progress
-		@mixin \stream
-		@mixin \get-post-summary
+		this.mixin('i');
+		this.mixin('ui');
+		this.mixin('ui-progress');
+		this.mixin('stream');
+		this.mixin('get-post-summary');
 
-		@unread-count = 0
+		this.unread-count = 0
 
-		@on \mount ~>
+		this.on('mount', () => {
 			document.title = 'Misskey'
-			@ui.trigger \title '<i class="fa fa-home"></i>ホーム'
+			this.ui.trigger('title', '<i class="fa fa-home"></i>ホーム');
 
-			@Progress.start!
+			this.Progress.start();
 
-			@stream.on \post @on-stream-post
-			document.add-event-listener \visibilitychange @window-on-visibilitychange, false
+			@stream.on 'post' this.on-stream-post
+			document.add-event-listener 'visibilitychange' @window-on-visibilitychange, false
 
-			@refs.ui.refs.home.on \loaded ~>
-				@Progress.done!
+			this.refs.ui.refs.home.on('loaded', () => {
+				this.Progress.done();
 
-		@on \unmount ~>
-			@stream.off \post @on-stream-post
-			document.remove-event-listener \visibilitychange @window-on-visibilitychange
+		this.on('unmount', () => {
+			@stream.off 'post' this.on-stream-post
+			document.remove-event-listener 'visibilitychange' @window-on-visibilitychange
 
-		@on-stream-post = (post) ~>
+		on-stream-post(post) {
 			if document.hidden and post.user_id !== @I.id
 				@unread-count++
 				document.title = '(' + @unread-count + ') ' + @get-post-summary post
 
-		@window-on-visibilitychange = ~>
+		window-on-visibilitychange() {
 			if !document.hidden
-				@unread-count = 0
+				this.unread-count = 0
 				document.title = 'Misskey'
 	</script>
 </mk-home-page>

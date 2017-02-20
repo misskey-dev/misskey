@@ -104,39 +104,39 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \update-banner
-		@mixin \NotImplementedException
+		this.mixin('i');
+		this.mixin('update-banner');
+		this.mixin('NotImplementedException');
 
-		@user = @opts.user
+		this.user = this.opts.user
 
-		@on \mount ~>
-			window.add-event-listener \load @scroll
-			window.add-event-listener \scroll @scroll
-			window.add-event-listener \resize @scroll
+		this.on('mount', () => {
+			window.add-event-listener 'load' @scroll
+			window.add-event-listener 'scroll' @scroll
+			window.add-event-listener 'resize' @scroll
 
-		@on \unmount ~>
-			window.remove-event-listener \load @scroll
-			window.remove-event-listener \scroll @scroll
-			window.remove-event-listener \resize @scroll
+		this.on('unmount', () => {
+			window.remove-event-listener 'load' @scroll
+			window.remove-event-listener 'scroll' @scroll
+			window.remove-event-listener 'resize' @scroll
 
-		@scroll = ~>
+		scroll() {
 			top = window.scroll-y
 			height = 280px
 
 			pos = 50 - ((top / height) * 50)
-			@refs.banner.style.background-position = 'center ' + pos + '%'
+			this.refs.banner.style.background-position = 'center ' + pos + '%'
 
 			blur = top / 32
 			if blur <= 10
-				@refs.banner.style.filter = 'blur(' + blur + 'px)'
+				this.refs.banner.style.filter = 'blur(' + blur + 'px)'
 
-		@on-update-banner = ~>
+		on-update-banner() {
 			if not @SIGNIN or @I.id != @user.id
 				return
 
-			@update-banner @I, (i) ~>
+			@update-banner @I, (i) =>
 				@user.banner_url = i.banner_url
-				@update!
+				this.update();
 	</script>
 </mk-user-header>

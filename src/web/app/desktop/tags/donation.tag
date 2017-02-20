@@ -47,21 +47,21 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \i
+		this.mixin('api');
+		this.mixin('i');
 
-		@close = (e) ~>
+		close(e) {
 			e.prevent-default!
 			e.stop-propagation!
 
 			@I.data.no_donation = true
 			@I.update!
-			@api \i/appdata/set do
+			this.api 'i/appdata/set' do
 				data: JSON.stringify do
 					no_donation: @I.data.no_donation
 
-			@unmount!
+			this.unmount();
 
-			@parent.parent.set-root-layout!
+			this.parent.parent.set-root-layout!
 	</script>
 </mk-donation>

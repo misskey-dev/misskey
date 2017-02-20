@@ -94,39 +94,39 @@
 
 	</style>
 	<script>
-		@root.add-event-listener \contextmenu (e) ~>
+		this.root.add-event-listener 'contextmenu' (e) =>
 			e.prevent-default!
 
-		@mousedown = (e) ~>
+		mousedown(e) {
 			e.prevent-default!
-			if (!contains @root, e.target) and (@root != e.target)
+			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 			return false
 
-		@open = (pos) ~>
+		open(pos) {
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.add-event-listener \mousedown @mousedown
-			@root.style.display = \block
-			@root.style.left = pos.x + \px
-			@root.style.top = pos.y + \px
+			Array.prototype.for-each.call all, (el) =>
+				el.add-event-listener 'mousedown' @mousedown
+			this.root.style.display = 'block' 
+			this.root.style.left = pos.x + 'px' 
+			this.root.style.top = pos.y + 'px' 
 
-			Velocity @root, \finish true
-			Velocity @root, { opacity: 0 } 0ms
-			Velocity @root, {
+			Velocity this.root, 'finish' true
+			Velocity this.root, { opacity: 0 } 0ms
+			Velocity this.root, {
 				opacity: 1
 			} {
 				queue: false
 				duration: 100ms
-				easing: \linear
+				easing: 'linear' 
 			}
 
-		@close = ~>
+		close() {
 			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.remove-event-listener \mousedown @mousedown
-			@trigger \closed
-			@unmount!
+			Array.prototype.for-each.call all, (el) =>
+				el.remove-event-listener 'mousedown' @mousedown
+			this.trigger('closed');
+			this.unmount();
 
 		function contains(parent, child)
 			node = child.parent-node

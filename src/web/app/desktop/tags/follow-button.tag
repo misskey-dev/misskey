@@ -67,58 +67,58 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
-		@mixin \stream
+		this.mixin('api');
+		this.mixin('is-promise');
+		this.mixin('stream');
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
-		@init = true
-		@wait = false
+		this.user = null
+		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
+		this.init = true
+		this.wait = false
 
-		@on \mount ~>
-			@user-promise.then (user) ~>
-				@user = user
-				@init = false
-				@update!
-				@stream.on \follow @on-stream-follow
-				@stream.on \unfollow @on-stream-unfollow
+		this.on('mount', () => {
+			@user-promise.then (user) =>
+				this.user = user
+				this.init = false
+				this.update();
+				@stream.on 'follow' this.on-stream-follow
+				@stream.on 'unfollow' this.on-stream-unfollow
 
-		@on \unmount ~>
-			@stream.off \follow @on-stream-follow
-			@stream.off \unfollow @on-stream-unfollow
+		this.on('unmount', () => {
+			@stream.off 'follow' this.on-stream-follow
+			@stream.off 'unfollow' this.on-stream-unfollow
 
-		@on-stream-follow = (user) ~>
+		on-stream-follow(user) {
 			if user.id == @user.id
-				@user = user
-				@update!
+				this.user = user
+				this.update();
 
-		@on-stream-unfollow = (user) ~>
+		on-stream-unfollow(user) {
 			if user.id == @user.id
-				@user = user
-				@update!
+				this.user = user
+				this.update();
 
-		@onclick = ~>
-			@wait = true
+		onclick() {
+			this.wait = true
 			if @user.is_following
-				@api \following/delete do
+				this.api 'following/delete' do
 					user_id: @user.id
-				.then ~>
+				.then =>
 					@user.is_following = false
 				.catch (err) ->
 					console.error err
-				.then ~>
-					@wait = false
-					@update!
+				.then =>
+					this.wait = false
+					this.update();
 			else
-				@api \following/create do
+				this.api 'following/create' do
 					user_id: @user.id
-				.then ~>
+				.then =>
 					@user.is_following = true
 				.catch (err) ->
 					console.error err
-				.then ~>
-					@wait = false
-					@update!
+				.then =>
+					this.wait = false
+					this.update();
 	</script>
 </mk-follow-button>

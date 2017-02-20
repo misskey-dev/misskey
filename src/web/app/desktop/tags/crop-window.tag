@@ -158,31 +158,31 @@
 
 	</style>
 	<script>
-		@mixin \cropper
+		this.mixin('cropper');
 
-		@image = @opts.file
-		@title = @opts.title
-		@aspect-ratio = @opts.aspect-ratio
-		@cropper = null
+		this.image = this.opts.file
+		this.title = this.opts.title
+		this.aspect-ratio = this.opts.aspect-ratio
+		this.cropper = null
 
-		@on \mount ~>
-			@img = @refs.window.refs.img
-			@cropper = new @Cropper @img, do
+		this.on('mount', () => {
+			this.img = this.refs.window.refs.img
+			this.cropper = new @Cropper @img, do
 				aspect-ratio: @aspect-ratio
 				highlight: no
 				view-mode: 1
 
-		@ok = ~>
-			@cropper.get-cropped-canvas!.to-blob (blob) ~>
-				@trigger \cropped blob
-				@refs.window.close!
+		ok() {
+			@cropper.get-cropped-canvas!.to-blob (blob) =>
+				this.trigger 'cropped' blob
+				this.refs.window.close!
 
-		@skip = ~>
-			@trigger \skiped
-			@refs.window.close!
+		skip() {
+			this.trigger('skiped');
+			this.refs.window.close!
 
-		@cancel = ~>
-			@trigger \canceled
-			@refs.window.close!
+		cancel() {
+			this.trigger('canceled');
+			this.refs.window.close!
 	</script>
 </mk-crop-window>

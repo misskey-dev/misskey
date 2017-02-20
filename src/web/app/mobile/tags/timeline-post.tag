@@ -286,62 +286,62 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \text
-		@mixin \get-post-summary
-		@mixin \open-post-form
+		this.mixin('api');
+		this.mixin('text');
+		this.mixin('get-post-summary');
+		this.mixin('open-post-form');
 
-		@post = @opts.post
-		@is-repost = @post.repost? and !@post.text?
-		@p = if @is-repost then @post.repost else @post
-		@summary = @get-post-summary @p
-		@url = CONFIG.url + '/' + @p.user.username + '/' + @p.id
+		this.post = this.opts.post
+		this.is-repost = @post.repost? and !@post.text?
+		this.p = if @is-repost then @post.repost else @post
+		this.summary = @get-post-summary @p
+		this.url = CONFIG.url + '/' + @p.user.username + '/' + @p.id
 
-		@on \mount ~>
+		this.on('mount', () => {
 			if @p.text?
 				tokens = if @p._highlight?
 					then @analyze @p._highlight
 					else @analyze @p.text
 
-				@refs.text.innerHTML = @refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
 					then @compile tokens, true, false
 					else @compile tokens
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
+				this.refs.text.children.for-each (e) =>
+					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
-				# URLをプレビュー
+				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == \link
-					.map (t) ~>
-						@preview = @refs.text.append-child document.create-element \mk-url-preview
+					.filter (t) -> t.type == 'link' 
+					.map (t) =>
+						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
 						riot.mount @preview, do
 							url: t.content
 
-		@reply = ~>
+		reply() {
 			@open-post-form do
 				reply: @p
 
-		@repost = ~>
+		repost() {
 			text = window.prompt '「' + @summary + '」をRepost'
 			if text?
-				@api \posts/create do
+				this.api 'posts/create' do
 					repost_id: @p.id
 					text: if text == '' then undefined else text
 
-		@like = ~>
+		like() {
 			if @p.is_liked
-				@api \posts/likes/delete do
+				this.api 'posts/likes/delete' do
 					post_id: @p.id
-				.then ~>
+				.then =>
 					@p.is_liked = false
-					@update!
+					this.update();
 			else
-				@api \posts/likes/create do
+				this.api 'posts/likes/create' do
 					post_id: @p.id
-				.then ~>
+				.then =>
 					@p.is_liked = true
-					@update!
+					this.update();
 	</script>
 </mk-timeline-post>
