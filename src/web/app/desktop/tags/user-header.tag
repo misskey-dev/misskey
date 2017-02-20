@@ -108,35 +108,38 @@
 		this.mixin('update-banner');
 		this.mixin('NotImplementedException');
 
-		this.user = this.opts.user
+		this.user = this.opts.user;
 
 		this.on('mount', () => {
-			window.addEventListener 'load' @scroll
-			window.addEventListener 'scroll' @scroll
-			window.addEventListener 'resize' @scroll
+			window.addEventListener('load', this.scroll);
+			window.addEventListener('scroll', this.scroll);
+			window.addEventListener('resize', this.scroll);
+		});
 
 		this.on('unmount', () => {
-			window.removeEventListener 'load' @scroll
-			window.removeEventListener 'scroll' @scroll
-			window.removeEventListener 'resize' @scroll
+			window.removeEventListener('load', this.scroll);
+			window.removeEventListener('scroll', this.scroll);
+			window.removeEventListener('resize', this.scroll);
+		});
 
 		this.scroll = () => {
-			top = window.scroll-y
-			height = 280px
+			const top = window.scrollY;
+			const height = 280/*px*/;
 
-			pos = 50 - ((top / height) * 50)
-			this.refs.banner.style.background-position = 'center ' + pos + '%'
+			const pos = 50 - ((top / height) * 50);
+			this.refs.banner.style.backgroundPosition = `center ${pos}%`;
 
-			blur = top / 32
-			if blur <= 10
-				this.refs.banner.style.filter = 'blur(' + blur + 'px)'
+			const blur = top / 32
+			if (blur <= 10) this.refs.banner.style.filter = `blur(${blur}px)`;
+		};
 
-		this.on-update-banner = () => {
-			if not @SIGNIN or this.I.id != @user.id
-				return
+		this.onUpdateBanner = () => {
+			if (!this.SIGNIN || this.I.id != this.user.id) return;
 
-			@update-banner this.I, (i) =>
-				@user.banner_url = i.banner_url
+			this.updateBanner(this.I, i => {
+				this.user.banner_url = i.banner_url;
 				this.update();
+			});
+		};
 	</script>
 </mk-user-header>

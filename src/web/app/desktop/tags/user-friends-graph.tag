@@ -15,18 +15,18 @@
 		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
 
 		this.on('mount', () => {
-			user <~ @user-promise.then
+			user <~ this.user-promise.then
 			this.user = user
 			this.update();
 
 			this.api 'aggregation/users/followers' do
-				user_id: @user.id
+				user_id: this.user.id
 				limit: 30days
 			.then (followers) =>
 				followers = followers.reverse!
 
 				this.api 'aggregation/users/following' do
-					user_id: @user.id
+					user_id: this.user.id
 					limit: 30days
 				.then (following) =>
 					following = following.reverse!

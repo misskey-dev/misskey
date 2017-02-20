@@ -38,34 +38,34 @@
 		this.image = this.opts.image
 
 		this.on('mount', () => {
-			Velocity this.root, {
+			Velocity(this.root, {
 				opacity: 1
-			} {
+			}, {
 				duration: 100ms
 				easing: 'linear' 
 			}
 
-			#Velocity @img, {
+			#Velocity(@img, {
 			// scale: 1
 			// opacity: 1
-			#} {
+			#}, {
 			// duration: 200ms
 			// easing: 'ease-out' 
 			#}
 
 		this.close = () => {
-			Velocity this.root, {
+			Velocity(this.root, {
 				opacity: 0
-			} {
+			}, {
 				duration: 100ms
 				easing: 'linear' 
 				complete: => this.unmount();
 			}
 
-			#Velocity @img, {
+			#Velocity(@img, {
 			// scale: 0.9
 			// opacity: 0
-			#} {
+			#}, {
 			// duration: 200ms
 			// easing: 'ease-in' 
 			// complete: =>

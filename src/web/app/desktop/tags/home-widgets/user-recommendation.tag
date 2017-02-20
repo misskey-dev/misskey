@@ -121,7 +121,7 @@
 		this.on('mount', () => {
 			@fetch!
 			this.clock = setInterval =>
-				if @users.length < @limit
+				if this.users.length < @limit
 					@fetch true
 			, 60000ms
 
@@ -143,7 +143,7 @@
 				console.error err
 
 		this.refresh = () => {
-			if @users.length < @limit
+			if this.users.length < @limit
 				this.page = 0
 			else
 				this.page++

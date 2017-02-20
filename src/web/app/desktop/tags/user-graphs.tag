@@ -36,5 +36,6 @@
 	<script>
 		this.on('mount', () => {
 			this.trigger('loaded');
+		});
 	</script>
 </mk-user-graphs>

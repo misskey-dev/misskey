@@ -114,27 +114,27 @@
 				Promise.resolve @u
 
 		this.on('mount', () => {
-			@user-promise.then (user) =>
+			this.user-promise.then (user) =>
 				this.user = user
 				this.update();
 
-			Velocity this.root, {
+			Velocity(this.root, {
 				opacity: 0
 				'margin-top': '-8px' 
 			} 0ms
-			Velocity this.root, {
+			Velocity(this.root, {
 				opacity: 1
 				'margin-top': 0
-			} {
+			}, {
 				duration: 200ms
 				easing: 'ease-out' 
 			}
 
 		this.close = () => {
-			Velocity this.root, {
+			Velocity(this.root, {
 				opacity: 0
 				'margin-top': '-8px' 
-			} {
+			}, {
 				duration: 200ms
 				easing: 'ease-out' 
 				complete: => this.unmount();

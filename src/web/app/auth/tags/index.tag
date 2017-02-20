@@ -97,7 +97,7 @@
 		this.token = window.location.href.split '/' .pop!
 
 		this.on('mount', () => {
-			if not @SIGNIN then return
+			if not this.SIGNIN then return
 
 			// Fetch session
 			this.api 'auth/session/show' do

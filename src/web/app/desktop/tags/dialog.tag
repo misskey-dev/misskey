@@ -91,46 +91,46 @@
 			this.refs.body.innerHTML = this.opts.text
 
 			this.refs.bg.style.pointer-events = 'auto' 
-			Velocity this.refs.bg, 'finish' true
-			Velocity this.refs.bg, {
+			Velocity(this.refs.bg, 'finish' true
+			Velocity(this.refs.bg, {
 				opacity: 1
-			} {
+			}, {
 				queue: false
 				duration: 100ms
 				easing: 'linear' 
 			}
 
-			Velocity this.refs.main, {
+			Velocity(this.refs.main, {
 				opacity: 0
 				scale: 1.2
-			} {
+			}, {
 				duration: 0
 			}
-			Velocity this.refs.main, {
+			Velocity(this.refs.main, {
 				opacity: 1
 				scale: 1
-			} {
+			}, {
 				duration: 300ms
 				easing: [ 0, 0.5, 0.5, 1 ]
 			}
 
 		this.close = () => {
 			this.refs.bg.style.pointer-events = 'none' 
-			Velocity this.refs.bg, 'finish' true
-			Velocity this.refs.bg, {
+			Velocity(this.refs.bg, 'finish' true
+			Velocity(this.refs.bg, {
 				opacity: 0
-			} {
+			}, {
 				queue: false
 				duration: 300ms
 				easing: 'linear' 
 			}
 
 			this.refs.main.style.pointer-events = 'none' 
-			Velocity this.refs.main, 'finish' true
-			Velocity this.refs.main, {
+			Velocity(this.refs.main, 'finish' true
+			Velocity(this.refs.main, {
 				opacity: 0
 				scale: 0.8
-			} {
+			}, {
 				queue: false
 				duration: 300ms
 				easing: [ 0.5, -0.5, 1, 0.5 ]

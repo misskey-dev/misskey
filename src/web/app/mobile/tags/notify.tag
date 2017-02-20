@@ -17,17 +17,17 @@
 	</style>
 	<script>
 		this.on('mount', () => {
-			Velocity this.root, {
+			Velocity(this.root, {
 				bottom: '0px' 
-			} {
+			}, {
 				duration: 500ms
 				easing: 'ease-out' 
 			}
 
 			setTimeout =>
-				Velocity this.root, {
+				Velocity(this.root, {
 					bottom: '-64px' 
-				} {
+				}, {
 					duration: 500ms
 					easing: 'ease-out' 
 					complete: =>

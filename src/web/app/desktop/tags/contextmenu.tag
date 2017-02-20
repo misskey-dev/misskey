@@ -111,11 +111,11 @@
 			this.root.style.left = pos.x + 'px' 
 			this.root.style.top = pos.y + 'px' 
 
-			Velocity this.root, 'finish' true
-			Velocity this.root, { opacity: 0 } 0ms
-			Velocity this.root, {
+			Velocity(this.root, 'finish' true
+			Velocity(this.root, { opacity: 0 } 0ms
+			Velocity(this.root, {
 				opacity: 1
-			} {
+			}, {
 				queue: false
 				duration: 100ms
 				easing: 'linear' 

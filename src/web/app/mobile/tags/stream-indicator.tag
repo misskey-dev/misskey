@@ -30,24 +30,24 @@
 		this.mixin('stream');
 
 		this.on('before-mount', () => {
-			this.state = @get-stream-state!
+			this.state = this.getStreamState();
 
-			if @state == 'connected' 
+			if this.state == 'connected' 
 				this.root.style.opacity = 0
 
 		this.stream-state-ev.on('connected', () => {
-			this.state = @get-stream-state!
+			this.state = this.getStreamState();
 			this.update();
 			setTimeout =>
-				Velocity this.root, {
+				Velocity(this.root, {
 					opacity: 0
 				} 200ms 'linear' 
 			, 1000ms
 
 		this.stream-state-ev.on('closed', () => {
-			this.state = @get-stream-state!
+			this.state = this.getStreamState();
 			this.update();
-			Velocity this.root, {
+			Velocity(this.root, {
 				opacity: 1
 			} 0ms
 	</script>

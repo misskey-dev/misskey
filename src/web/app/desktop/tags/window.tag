@@ -243,22 +243,22 @@
 
 			if @is-modal
 				this.refs.bg.style.pointer-events = 'auto' 
-				Velocity this.refs.bg, 'finish' true
-				Velocity this.refs.bg, {
+				Velocity(this.refs.bg, 'finish' true
+				Velocity(this.refs.bg, {
 					opacity: 1
-				} {
+				}, {
 					queue: false
 					duration: 100ms
 					easing: 'linear' 
 				}
 
 			this.refs.main.style.pointer-events = 'auto' 
-			Velocity this.refs.main, 'finish' true
-			Velocity this.refs.main, {scale: 1.1} 0ms
-			Velocity this.refs.main, {
+			Velocity(this.refs.main, 'finish' true
+			Velocity(this.refs.main, {scale: 1.1} 0ms
+			Velocity(this.refs.main, {
 				opacity: 1
 				scale: 1
-			} {
+			}, {
 				queue: false
 				duration: 200ms
 				easing: 'ease-out' 
@@ -275,21 +275,21 @@
 
 			if @is-modal
 				this.refs.bg.style.pointer-events = 'none' 
-				Velocity this.refs.bg, 'finish' true
-				Velocity this.refs.bg, {
+				Velocity(this.refs.bg, 'finish' true
+				Velocity(this.refs.bg, {
 					opacity: 0
-				} {
+				}, {
 					queue: false
 					duration: 300ms
 					easing: 'linear' 
 				}
 
 			this.refs.main.style.pointer-events = 'none' 
-			Velocity this.refs.main, 'finish' true
-			Velocity this.refs.main, {
+			Velocity(this.refs.main, 'finish' true
+			Velocity(this.refs.main, {
 				opacity: 0
 				scale: 0.8
-			} {
+			}, {
 				queue: false
 				duration: 300ms
 				easing: [ 0.5, -0.5, 1, 0.5 ]

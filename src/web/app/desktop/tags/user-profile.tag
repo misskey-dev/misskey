@@ -89,11 +89,11 @@
 		this.show-following = () => {
 			window = document.body.appendChild document.createElement 'mk-user-following-window' 
 			riot.mount window, do
-				user: @user
+				user: this.user
 
 		this.show-followers = () => {
 			window = document.body.appendChild document.createElement 'mk-user-followers-window' 
 			riot.mount window, do
-				user: @user
+				user: this.user
 	</script>
 </mk-user-profile>

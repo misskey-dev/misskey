@@ -9,14 +9,15 @@
 	<script>
 		this.mixin('api');
 
-		this.user = this.opts.user
+		this.user = this.opts.user;
 
 		this.fetch = (iknow, limit, cursor, cb) => {
-			this.api 'users/following' do
-				user_id: @user.id
-				iknow: iknow
-				limit: limit
-				cursor: if cursor? then cursor else undefined
-			.then cb
+			this.api('users/following', {
+				user_id: this.user.id,
+				iknow: iknow,
+				limit: limit,
+				cursor: cursor ? cursor : undefined
+			}).then(cb);
+		};
 	</script>
 </mk-user-following>

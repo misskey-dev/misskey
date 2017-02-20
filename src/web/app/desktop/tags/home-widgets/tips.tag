@@ -53,17 +53,17 @@
 			this.update();
 
 		this.change = () => {
-			Velocity this.refs.tip, {
+			Velocity(this.refs.tip, {
 				opacity: 0
-			} {
+			}, {
 				duration: 500ms
 				easing: 'linear' 
 				complete: @set
 			}
 
-			Velocity this.refs.tip, {
+			Velocity(this.refs.tip, {
 				opacity: 1
-			} {
+			}, {
 				duration: 500ms
 				easing: 'linear' 
 			}

@@ -80,7 +80,7 @@
 		this.wait = false
 
 		this.on('mount', () => {
-			@user-promise.then (user) =>
+			this.user-promise.then (user) =>
 				this.user = user
 				this.init = false
 				this.update();
@@ -92,22 +92,22 @@
 			this.stream.off 'unfollow' this.on-stream-unfollow
 
 		this.on-stream-follow = (user) => {
-			if user.id == @user.id
+			if user.id == this.user.id
 				this.user = user
 				this.update();
 
 		this.on-stream-unfollow = (user) => {
-			if user.id == @user.id
+			if user.id == this.user.id
 				this.user = user
 				this.update();
 
 		this.onclick = () => {
 			this.wait = true
-			if @user.is_following
+			if this.user.is_following
 				this.api 'following/delete' do
-					user_id: @user.id
+					user_id: this.user.id
 				.then =>
-					@user.is_following = false
+					this.user.is_following = false
 				.catch (err) ->
 					console.error err
 				.then =>
@@ -115,9 +115,9 @@
 					this.update();
 			else
 				this.api 'following/create' do
-					user_id: @user.id
+					user_id: this.user.id
 				.then =>
-					@user.is_following = true
+					this.user.is_following = true
 				.catch (err) ->
 					console.error err
 				.then =>

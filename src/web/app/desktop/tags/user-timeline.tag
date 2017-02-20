@@ -63,7 +63,7 @@
 			document.addEventListener 'keydown' this.on-document-keydown
 			window.addEventListener 'scroll' this.on-scroll
 
-			@user-promise.then (user) =>
+			this.user-promise.then (user) =>
 				this.user = user
 				this.update();
 
@@ -83,7 +83,7 @@
 
 		this.fetch = (cb) => {
 			this.api 'users/posts' do
-				user_id: @user.id
+				user_id: this.user.id
 				with_replies: this.mode == 'with-replies' 
 			.then (posts) =>
 				this.is-loading = false
@@ -101,7 +101,7 @@
 			this.more-loading = true
 			this.update();
 			this.api 'users/posts' do
-				user_id: @user.id
+				user_id: this.user.id
 				with_replies: this.mode == 'with-replies' 
 				max_id: this.refs.timeline.tail!.id
 			.then (posts) =>
@@ -126,7 +126,7 @@
 				document.title = 'Misskey'
 
 		this.on-scroll = () => {
-			current = window.scroll-y + window.inner-height
+			current = window.scrollY + window.inner-height
 			if current > document.body.offset-height - 16 // 遊び
 				@more!
 

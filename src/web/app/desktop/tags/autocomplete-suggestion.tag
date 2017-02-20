@@ -126,7 +126,7 @@
 					if @select != -1
 						e.preventDefault();
 						e.stopPropagation();
-						@complete @users[@select]
+						@complete this.users[@select]
 					else
 						@close!
 				| 27 => // Key[ESC]
@@ -150,7 +150,7 @@
 		this.select-next = () => {
 			@select++
 
-			if @select >= @users.length
+			if @select >= this.users.length
 				this.select = 0
 
 			@apply-select!
@@ -159,7 +159,7 @@
 			@select--
 
 			if @select < 0
-				this.select = @users.length - 1
+				this.select = this.users.length - 1
 
 			@apply-select!
 

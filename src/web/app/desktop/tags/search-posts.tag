@@ -79,7 +79,7 @@
 				console.error err
 
 		this.on-scroll = () => {
-			current = window.scroll-y + window.inner-height
+			current = window.scrollY + window.inner-height
 			if current > document.body.offset-height - 16 // 遊び
 				@more!
 	</script>

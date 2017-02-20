@@ -16,7 +16,7 @@
 
 		this.init = new Promise (res, rej) =>
 			this.api 'users/posts' do
-				user_id: @user.id
+				user_id: this.user.id
 				with_media: @with-media
 			.then (posts) =>
 				res posts
@@ -24,7 +24,7 @@
 
 		this.more = () => {
 			this.api 'users/posts' do
-				user_id: @user.id
+				user_id: this.user.id
 				with_media: @with-media
 				max_id: this.refs.timeline.tail!.id
 	</script>

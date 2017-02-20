@@ -120,7 +120,7 @@
 				this.mode == 'iknow' 
 				@limit
 				@cursor
-			this.users = @users.concat obj.users
+			this.users = this.users.concat obj.users
 			this.next = obj.next
 			this.more-fetching = false
 			this.update();

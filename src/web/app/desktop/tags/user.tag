@@ -41,7 +41,7 @@
 
 		this.on('mount', () => {
 			this.api 'users/show' do
-				username: @username
+				username: this.username
 			.then (user) =>
 				this.fetching = false
 				this.user = user
