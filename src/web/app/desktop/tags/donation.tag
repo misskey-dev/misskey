@@ -50,7 +50,7 @@
 		this.mixin('api');
 		this.mixin('i');
 
-		this.close = (e) => {
+		this.close = e => {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -61,7 +61,6 @@
 					no_donation: this.I.data.no_donation
 
 			this.unmount();
-
-			this.parent.parent.set-root-layout!
+		};
 	</script>
 </mk-donation>

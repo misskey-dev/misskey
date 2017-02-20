@@ -21,7 +21,7 @@
 	<style>
 		:scope
 			display block
-			position fixed
+			position sticky
 			top 0
 			z-index 1024
 			width 100%

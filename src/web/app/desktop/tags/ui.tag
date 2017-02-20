@@ -9,29 +9,28 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
 		this.mixin('i');
 
-		this.open-post-form = () => {
-			riot.mount document.body.appendChild document.createElement 'mk-post-form-window' 
-
-		this.set-root-layout = () => {
-			this.root.style.padding-top = this.refs.header.root.client-height + 'px' 
+		this.openPostForm = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window');
+		};
 
 		this.on('mount', () => {
-			@set-root-layout!
-			document.addEventListener 'keydown' this.onkeydown
+			document.addEventListener('keydown', this.onkeydown);
+		});
 
 		this.on('unmount', () => {
-			document.removeEventListener 'keydown' this.onkeydown
+			document.removeEventListener('keydown', this.onkeydown);
+		});
 
-		this.onkeydown = (e) => {
-			tag = e.target.tag-name.to-lower-case!
-			if tag != 'input' and tag != 'textarea' 
-				if e.which == 80 or e.which == 78 // p or n
-					e.preventDefault();
-					@open-post-form!
+		this.onkeydown = e => {
+			if (e.target.tagName == 'input' || e.target.tagName == 'textarea') return;
+
+			if (e.which == 80 || e.which == 78) { // p or n
+				e.preventDefault();
+				this.openPostForm();
+		};
 	</script>
 </mk-ui>
