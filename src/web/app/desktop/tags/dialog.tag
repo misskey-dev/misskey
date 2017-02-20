@@ -79,69 +79,72 @@
 
 	</style>
 	<script>
-		this.can-through = if opts.can-through? then opts.can-through else true
-		this.opts.buttons.forEach (button) =>
-			button._onclick = =>
-				if button.onclick?
-					button.onclick();
-				@close();
+		this.canThrough = opts.canThrough != null ? opts.canThrough : true;
+		this.opts.buttons.forEach(button => {
+			button._onclick = () => {
+				if (button.onclick) button.onclick();
+				this.close();
+			};
+		});
 
 		this.on('mount', () => {
-			this.refs.header.innerHTML = this.opts.title
-			this.refs.body.innerHTML = this.opts.text
+			this.refs.header.innerHTML = this.opts.title;
+			this.refs.body.innerHTML = this.opts.text;
 
-			this.refs.bg.style.pointer-events = 'auto' 
-			Velocity(this.refs.bg, 'finish' true
+			this.refs.bg.style.pointerEvents = 'auto';
+			Velocity(this.refs.bg, 'finish', true);
 			Velocity(this.refs.bg, {
 				opacity: 1
 			}, {
-				queue: false
-				duration: 100ms
-				easing: 'linear' 
-			}
+				queue: false,
+				duration: 100,
+				easing: 'linear'
+			});
 
 			Velocity(this.refs.main, {
-				opacity: 0
+				opacity: 0,
 				scale: 1.2
 			}, {
 				duration: 0
-			}
+			});
 			Velocity(this.refs.main, {
-				opacity: 1
+				opacity: 1,
 				scale: 1
 			}, {
-				duration: 300ms
+				duration: 300,
 				easing: [ 0, 0.5, 0.5, 1 ]
-			}
+			});
+		});
 
 		this.close = () => {
-			this.refs.bg.style.pointer-events = 'none' 
-			Velocity(this.refs.bg, 'finish' true
+			this.refs.bg.style.pointerEvents = 'none';
+			Velocity(this.refs.bg, 'finish', true);
 			Velocity(this.refs.bg, {
 				opacity: 0
 			}, {
-				queue: false
-				duration: 300ms
+				queue: false,
+				duration: 300,
 				easing: 'linear' 
-			}
+			});
 
-			this.refs.main.style.pointer-events = 'none' 
-			Velocity(this.refs.main, 'finish' true
+			this.refs.main.style.pointerEvents = 'none';
+			Velocity(this.refs.main, 'finish', true);
 			Velocity(this.refs.main, {
-				opacity: 0
+				opacity: 0,
 				scale: 0.8
 			}, {
-				queue: false
-				duration: 300ms
-				easing: [ 0.5, -0.5, 1, 0.5 ]
-				complete: =>
-					this.unmount();
-			}
+				queue: false,
+				duration: 300,
+				easing: [ 0.5, -0.5, 1, 0.5 ],
+				complete: () => this.unmount()
+			});
+		};
 
-		this.bg-click = () => {
-			if @can-through
-				if this.opts.on-through?
-					this.opts.on-through!
-				@close();
+		this.bgClick = () => {
+			if (this.canThrough) {
+				if (this.opts.onThrough) this.opts.onThrough();
+				this.close();
+			}
+		};
 	</script>
 </mk-dialog>

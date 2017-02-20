@@ -110,7 +110,7 @@
 				if @session.app.is_authorized
 					this.api('auth/accept', {
 						token: @session.token
-					.then =>
+					}).then(() => {
 						@accepted!
 				else
 					this.state = 'waiting' 

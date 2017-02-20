@@ -68,7 +68,7 @@
 			this.api('drive/files/update', {
 				file_id: this.file.id
 				name: name
-			.then =>
+			}).then(() => {
 				// something
 			.catch (err) =>
 				console.error err

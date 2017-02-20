@@ -80,108 +80,118 @@
 
 	</style>
 	<script>
+		const contains = require('../../common/scripts/contains');
+
 		this.mixin('api');
 
-		this.q = this.opts.q
-		this.textarea = this.opts.textarea
-		this.loading = true
-		this.users = []
-		this.select = -1
+		this.q = this.opts.q;
+		this.textarea = this.opts.textarea;
+		this.fetching = true;
+		this.users = [];
+		this.select = -1;
 
 		this.on('mount', () => {
-			@textarea.addEventListener 'keydown' this.on-keydown
+			this.textarea.addEventListener('keydown', this.onKeydown);
 
-			all = document.query-selector-all 'body *'
-			Array.prototype.forEach.call all, (el) =>
-				el.addEventListener 'mousedown' @mousedown
+			document.querySelectorAll('body *').forEach(el => {
+				el.addEventListener('mousedown', this.mousedown);
+			});
 
 			this.api('users/search_by_username', {
-				query: @q
-				limit: 30users
-			}).then((users) => {
-				this.users = users
-				this.loading = false
-				this.update();
-			.catch (err) =>
-				console.error err
+				query: this.q,
+				limit: 30
+			}).then(users => {
+				this.update({
+					fetching: false,
+					users: users
+				});
+			});
+		});
 
 		this.on('unmount', () => {
-			@textarea.removeEventListener 'keydown' this.on-keydown
+			this.textarea.removeEventListener('keydown', this.onKeydown);
 
-			all = document.query-selector-all 'body *'
-			Array.prototype.forEach.call all, (el) =>
-				el.removeEventListener 'mousedown' @mousedown
+			document.querySelectorAll('body *').forEach(el => {
+				el.removeEventListener('mousedown', this.mousedown);
+			});
+		});
 
-		this.mousedown = (e) => {
-			if (!contains this.root, e.target) and (this.root != e.target)
-				@close();
+		this.mousedown = e => {
+			if (!contains(this.root, e.target) && (this.root != e.target)) this.close();
+		};
 
-		this.on-click = (e) => {
-			@complete e.item
+		this.onClick = e => {
+			this.complete(e.item);
+		};
 
-		this.on-keydown = (e) => {
-			key = e.which
-			switch (key)
-				| 10, 13 => // Key[ENTER]
-					if @select != -1
-						e.preventDefault();
-						e.stopPropagation();
-						@complete this.users[@select]
-					else
-						@close();
-				| 27 => // Key[ESC]
-					e.preventDefault();
-					e.stopPropagation();
-					@close();
-				| 38 => // Key[↑]
-					if @select != -1
-						e.preventDefault();
-						e.stopPropagation();
-						@select-prev!
-					else
-						@close();
-				| 9, 40 => // Key[TAB] or Key[↓]
-					e.preventDefault();
-					e.stopPropagation();
-					@select-next!
-				| _ =>
-					@close();
+		this.onKeydown = e => {
+			const cancel = () => {
+				e.preventDefault();
+				e.stopPropagation();
+			};
 
-		this.select-next = () => {
-			@select++
+			switch (e.which) {
+				case 10: // [ENTER]
+				case 13: // [ENTER]
+					if (this.select !== -1) {
+						cancel();
+						this.complete(this.users[this.select]);
+					} else {
+						this.close();
+					}
+					break;
 
-			if @select >= this.users.length
-				this.select = 0
+				case 27: // [ESC]
+					cancel();
+					this.close();
+					break;
 
-			@apply-select!
+				case 38: // [↑]
+					if (this.select !== -1) {
+						cancel();
+						this.selectPrev();
+					} else {
+						this.close();
+					}
+					break;
 
-		this.select-prev = () => {
-			@select--
+				case 9: // [TAB]
+				case 40: // [↓]
+					cancel();
+					this.selectNext();
+					break;
 
-			if @select < 0
-				this.select = this.users.length - 1
+				default:
+					this.close();
+			}
+		};
 
-			@apply-select!
+		this.selectNext = () => {
+			if (++this.select >= this.users.length) this.select = 0;
+			this.applySelect();
+		};
 
-		this.apply-select = () => {
-			this.refs.users.children.forEach (el) =>
-				el.remove-attribute 'data-selected' 
+		this.selectPrev = () => {
+			if (--this.select < 0) this.select = this.users.length - 1;
+			this.applySelect();
+		};
 
-			this.refs.users.children[@select].setAttribute 'data-selected' \true
-			this.refs.users.children[@select].focus();
+		this.applySelect = () => {
+			this.refs.users.children.forEach(el => {
+				el.removeAttribute('data-selected');
+			});
 
-		this.complete = (user) => {
-			this.opts.complete user
+			this.refs.users.children[this.select].setAttribute('data-selected', 'true');
+			this.refs.users.children[this.select].focus();
+		};
+
+		this.complete = user => {
+			this.opts.complete(user);
+		};
 
 		this.close = () => {
 			this.opts.close();
+		};
 
-		function contains(parent, child)
-			node = child.parentNode
-			while node?
-				if node == parent
-					return true
-				node = node.parentNode
-			return false
 	</script>
 </mk-autocomplete-suggestion>

@@ -277,11 +277,11 @@
 				username: username,
 				password: password,
 				'g-recaptcha-response': grecaptcha.getResponse()
-			.then =>
+			}).then(() => {
 				this.api('signin', {
 					username: username
 					password: password
-				.then =>
+				}).then(() => {
 					location.href = CONFIG.url
 			.catch =>
 				alert '何らかの原因によりアカウントの作成に失敗しました。再度お試しください。'

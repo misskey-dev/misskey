@@ -103,21 +103,21 @@
 			if this.user.is_following
 				this.api('following/delete', {
 					user_id: this.user.id
-				.then =>
+				}).then(() => {
 					this.user.is_following = false
 				.catch (err) ->
 					console.error err
-				.then =>
+				}).then(() => {
 					this.wait = false
 					this.update();
 			else
 				this.api('following/create', {
 					user_id: this.user.id
-				.then =>
+				}).then(() => {
 					this.user.is_following = true
 				.catch (err) ->
 					console.error err
-				.then =>
+				}).then(() => {
 					this.wait = false
 					this.update();
 	</script>

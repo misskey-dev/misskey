@@ -408,7 +408,7 @@
 				this.api('drive/files/update', {
 					file_id: file
 					folder_id: if this.folder? then this.folder.id else null
-				.then =>
+				}).then(() => {
 					// something
 				.catch (err, text-status) =>
 					console.error err
@@ -425,7 +425,7 @@
 				this.api('drive/folders/update', {
 					folder_id: folder
 					parent_id: if this.folder? then this.folder.id else null
-				.then =>
+				}).then(() => {
 					// something
 				.catch (err) =>
 					if err == 'detected-circular-definition'

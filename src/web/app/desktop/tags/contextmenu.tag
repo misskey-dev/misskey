@@ -1,4 +1,5 @@
-<mk-contextmenu><yield />
+<mk-contextmenu>
+	<yield />
 	<style>
 		:scope
 			$width = 240px
@@ -94,46 +95,45 @@
 
 	</style>
 	<script>
-		this.root.addEventListener 'contextmenu' (e) =>
+		const contains = require('../../common/scripts/contains');
+
+		this.root.addEventListener('contextmenu', e => {
 			e.preventDefault();
+		});
 
-		this.mousedown = (e) => {
+		this.mousedown = e => {
 			e.preventDefault();
-			if (!contains this.root, e.target) and (this.root != e.target)
-				@close();
-			return false
+			if (!contains(this.root, e.target) && (this.root != e.target)) this.close();
+			return false;
+		};
 
-		this.open = (pos) => {
-			all = document.query-selector-all 'body *'
-			Array.prototype.forEach.call all, (el) =>
-				el.addEventListener 'mousedown' @mousedown
-			this.root.style.display = 'block' 
-			this.root.style.left = pos.x + 'px' 
-			this.root.style.top = pos.y + 'px' 
+		this.open = pos => {
+			document.querySelectorAll('body *').forEach(el => {
+				el.addEventListener('mousedown', this.mousedown);
+			});
 
-			Velocity(this.root, 'finish' true
-			Velocity(this.root, { opacity: 0 } 0ms
+			this.root.style.display = 'block';
+			this.root.style.left = pos.x + 'px';
+			this.root.style.top = pos.y + 'px';
+
+			Velocity(this.root, 'finish', true);
+			Velocity(this.root, { opacity: 0 }, 0);
 			Velocity(this.root, {
 				opacity: 1
 			}, {
-				queue: false
-				duration: 100ms
-				easing: 'linear' 
-			}
+				queue: false,
+				duration: 100,
+				easing: 'linear'
+			});
+		};
 
 		this.close = () => {
-			all = document.query-selector-all 'body *'
-			Array.prototype.forEach.call all, (el) =>
-				el.removeEventListener 'mousedown' @mousedown
+			document.querySelectorAll('body *').forEach(el => {
+				el.removeEventListener('mousedown', this.mousedown);
+			});
+
 			this.trigger('closed');
 			this.unmount();
-
-		function contains(parent, child)
-			node = child.parentNode
-			while (node != null)
-				if (node == parent)
-					return true
-				node = node.parentNode
-			return false
+		};
 	</script>
 </mk-contextmenu>

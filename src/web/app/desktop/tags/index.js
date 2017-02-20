@@ -16,7 +16,6 @@ require('./crop-window.tag');
 require('./settings.tag');
 require('./settings-window.tag');
 require('./analog-clock.tag');
-require('./go-top.tag');
 require('./ui-header.tag');
 require('./ui-header-account.tag');
 require('./ui-header-notifications.tag');

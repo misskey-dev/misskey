@@ -501,7 +501,7 @@
 		this.ondragover = (e) => {
 			e.dataTransfer.dropEffect = 'none' 
 
-		this.on-keydown = (e) => {
+		this.onKeydown = (e) => {
 			if e.which == 27 // Esc
 				if @can-close
 					e.preventDefault();

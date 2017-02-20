@@ -39,7 +39,7 @@
 
 		this.click = () => {
 			dialog = document.body.appendChild(document.createElement('mk-image-dialog'));
- 			riot.mount dialog, do
+			riot.mount dialog, do
 				image: @image
 	</script>
 </mk-images-viewer>

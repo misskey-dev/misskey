@@ -455,7 +455,7 @@
 			.catch (err) =>
 				console.error err
 				@notify '投稿できませんでした'
-			.then =>
+			}).then(() => {
 				this.wait = false
 				this.update();
 

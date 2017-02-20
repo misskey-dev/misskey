@@ -1,13 +1,17 @@
 <mk-input-dialog>
-	<mk-window ref="window" is-modal={ true } width={ '500px' }><yield to="header"><i class="fa fa-i-cursor"></i>{ parent.title }</yield>
-<yield to="content">
-		<div class="body">
-			<input ref="text" oninput={ parent.update } onkeydown={ parent.onKeydown } placeholder={ parent.placeholder }/>
-		</div>
-		<div class="action">
-			<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
-			<button class="ok" disabled={ !parent.allowEmpty && refs.text.value.length == 0 } onclick={ parent.ok }>決定</button>
-		</div></yield>
+	<mk-window ref="window" is-modal={ true } width={ '500px' }>
+		<yield to="header">
+			<i class="fa fa-i-cursor"></i>{ parent.title }
+		</yield>
+		<yield to="content">
+			<div class="body">
+				<input ref="text" oninput={ parent.update } onkeydown={ parent.onKeydown } placeholder={ parent.placeholder }/>
+			</div>
+			<div class="action">
+				<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
+				<button class="ok" disabled={ !parent.allowEmpty && refs.text.value.length == 0 } onclick={ parent.ok }>決定</button>
+			</div>
+		</yield>
 	</mk-window>
 	<style>
 		:scope
@@ -116,18 +120,17 @@
 
 	</style>
 	<script>
-		this.done = false
+		this.done = false;
 
-		this.title = this.opts.title
-		this.placeholder = this.opts.placeholder
-		this.default = this.opts.default
-		this.allow-empty = if this.opts.allow-empty? then this.opts.allow-empty else true
+		this.title = this.opts.title;
+		this.placeholder = this.opts.placeholder;
+		this.default = this.opts.default;
+		this.allowEmpty = this.opts.allowEmpty != null ? this.opts.allowEmpty : true;
 
 		this.on('mount', () => {
-			this.text = this.refs.window.refs.text
-			if @default?
-				@text.value = @default
-			@text.focus();
+			this.text = this.refs.window.refs.text;
+			if (this.default) this.text.value = this.default;
+			this.text.focus();
 
 			this.refs.window.on('closing', () => {
 				if @done
@@ -138,6 +141,7 @@
 
 			this.refs.window.on('closed', () => {
 				this.unmount();
+			});
 
 		this.cancel = () => {
 			this.done = false
@@ -148,7 +152,7 @@
 			this.done = true
 			this.refs.window.close();
 
-		this.on-keydown = (e) => {
+		this.onKeydown = (e) => {
 			if e.which == 13 // Enter
 				e.preventDefault();
 				e.stopPropagation();

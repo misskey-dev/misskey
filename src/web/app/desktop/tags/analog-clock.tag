@@ -6,100 +6,92 @@
 				display block
 				width 256px
 				height 256px
-
 	</style>
 	<script>
+		class Vec2 {
+			constructor(x, y) {
+				this.x = x;
+				this.y = y;
+			}
+		}
+
 		this.on('mount', () => {
-			@draw!
-			this.clock = setInterval @draw, 1000ms
+			this.draw()
+			this.clock = setInterval(this.draw, 1000);
+		});
 
 		this.on('unmount', () => {
-			clearInterval @clock
+			clearInterval(this.clock);
+		});
 
 		this.draw = () => {
 			const now = new Date();
-			s = now.get-seconds!
-			m = now.getMinutes()
-			h = now.getHours()
+			const s = now.getSeconds();
+			const m = now.getMinutes();
+			const h = now.getHours();
 
-			vec2 = (x, y) ->
-				this.x = x
-				this.y = y
+			const ctx = this.refs.canvas.getContext('2d');
+			const canvW = this.refs.canvas.width;
+			const canvH = this.refs.canvas.height;
+			ctx.clearRect(0, 0, canvW, canvH);
 
-			ctx = this.refs.canvas.get-context '2d' 
-			canv-w = this.refs.canvas.width
-			canv-h = this.refs.canvas.height
-			ctx.clear-rect 0, 0, canv-w, canv-h
+			{ // 背景
+				const center = Math.min((canvW / 2), (canvH / 2));
+				const lineStart =    center * 0.90;
+				const shortLineEnd = center * 0.87;
+				const longLineEnd =  center * 0.84;
+				for (let i = 0; i < 60; i++) {
+					const angle = Math.PI * i / 30;
+					const uv = new Vec2(Math.sin(angle), -Math.cos(angle));
+					ctx.beginPath();
+					ctx.lineWidth = 1;
+					ctx.moveTo((canv-w / 2) + uv.x * lineStart, (canv-h / 2) + uv.y * lineStart);
+					if (i % 5 == 0) {
+						ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+						ctx.lineTo((canv-w / 2) + uv.x * longLineEnd, (canv-h / 2) + uv.y * longLineEnd);
+					} else {
+						ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+						ctx.lineTo((canv-w / 2) + uv.x * shortLineEnd, (canv-h / 2) + uv.y * shortLineEnd);
+					}
+					ctx.stroke();
+				}
+			}
 
-			// 背景
-			center = (Math.min (canv-w / 2), (canv-h / 2))
-			line-start = center * 0.90
-			line-end-short = center * 0.87
-			line-end-long = center * 0.84
-			for i from 0 to 59 by 1
-				angle = Math.PI * i / 30
-				uv = new vec2 (Math.sin angle), (-Math.cos angle)
-				ctx.begin-path!
-				ctx.line-width = 1
-				ctx.move-to do
-					(canv-w / 2) + uv.x * line-start
-					(canv-h / 2) + uv.y * line-start
-				if i % 5 == 0
-					ctx.stroke-style = 'rgba(255, 255, 255, 0.2)'
-					ctx.line-to do
-						(canv-w / 2) + uv.x * line-end-long
-						(canv-h / 2) + uv.y * line-end-long
-				else
-					ctx.stroke-style = 'rgba(255, 255, 255, 0.1)'
-					ctx.line-to do
-						(canv-w / 2) + uv.x * line-end-short
-						(canv-h / 2) + uv.y * line-end-short
-				ctx.stroke!
+			{ // 分
+				const angle = Math.PI * (m + s / 60) / 30;
+				const length = Math.min(canvW, canvH) / 2.6;
+				const uv = new vec2(Math.sin(angle), -Math.cos(angle));
+				ctx.beginPath();
+				ctx.strokeStyle = '#ffffff';
+				ctx.lineWidth = 2;
+				ctx.moveTo(canvW / 2 - uv.x * length / 5, canvH / 2 - uv.y * length / 5);
+				ctx.lineTo(canvW / 2 + uv.x * length,     canvH / 2 + uv.y * length);
+				ctx.stroke();
+			}
 
-			// 分
-			angle = Math.PI * (m + s / 60) / 30
-			length = (Math.min canv-w, canv-h) / 2.6
-			uv = new vec2 (Math.sin angle), (-Math.cos angle)
-			ctx.begin-path!
-			ctx.stroke-style = '#ffffff' 
-			ctx.line-width = 2
-			ctx.move-to do
-				(canv-w / 2) - uv.x * length / 5
-				(canv-h / 2) - uv.y * length / 5
-			ctx.line-to do
-				(canv-w / 2) + uv.x * length
-				(canv-h / 2) + uv.y * length
-			ctx.stroke!
+			{ // 時
+				const angle = Math.PI * (h % 12 + m / 60) / 6;
+				const length = Math.min(canvW, canvH) / 4;
+				const uv = new vec2(Math.sin(angle), -Math.cos(angle));
+				ctx.beginPath();
+				ctx.strokeStyle = CONFIG.themeColor;
+				ctx.lineWidth = 2;
+				ctx.moveTo(canvW / 2 - uv.x * length / 5, canvH / 2 - uv.y * length / 5);
+				ctx.lineTo(canvW / 2 + uv.x * length,     canvH / 2 + uv.y * length);
+				ctx.stroke();
+			}
 
-			// 時
-			angle = Math.PI * (h % 12 + m / 60) / 6
-			length = (Math.min canv-w, canv-h) / 4
-			uv = new vec2 (Math.sin angle), (-Math.cos angle)
-			ctx.begin-path!
-			#ctx.stroke-style = '#ffffff' 
-			ctx.stroke-style = CONFIG.theme-color
-			ctx.line-width = 2
-			ctx.move-to do
-				(canv-w / 2) - uv.x * length / 5
-				(canv-h / 2) - uv.y * length / 5
-			ctx.line-to do
-				(canv-w / 2) + uv.x * length
-				(canv-h / 2) + uv.y * length
-			ctx.stroke!
-
-			// 秒
-			angle = Math.PI * s / 30
-			length = (Math.min canv-w, canv-h) / 2.6
-			uv = new vec2 (Math.sin angle), (-Math.cos angle)
-			ctx.begin-path!
-			ctx.stroke-style = 'rgba(255, 255, 255, 0.5)'
-			ctx.line-width = 1
-			ctx.move-to do
-				(canv-w / 2) - uv.x * length / 5
-				(canv-h / 2) - uv.y * length / 5
-			ctx.line-to do
-				(canv-w / 2) + uv.x * length
-				(canv-h / 2) + uv.y * length
-			ctx.stroke!
+			{ // 秒
+				const angle = Math.PI * s / 30;
+				const length = Math.min(canvW, canvH) / 2.6;
+				const uv = new vec2(Math.sin(angle), -Math.cos(angle));
+				ctx.beginPath();
+				ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+				ctx.lineWidth = 1;
+				ctx.moveTo(canvW / 2 - uv.x * length / 5, canvH / 2 - uv.y * length / 5);
+				ctx.lineTo(canvW / 2 + uv.x * length,     canvH / 2 + uv.y * length);
+				ctx.stroke();
+			}
+		};
 	</script>
 </mk-analog-clock>

@@ -54,7 +54,7 @@
 			this.api('drive/folders/update', {
 				folder_id: this.folder.id
 				name: name
-			.then =>
+			}).then(() => {
 				// something
 			.catch (err) =>
 				console.error err

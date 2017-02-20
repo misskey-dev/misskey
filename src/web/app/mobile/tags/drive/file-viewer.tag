@@ -192,9 +192,9 @@
 			name = window.prompt '名前を変更' this.file.name
 			if name? and name != '' and name != this.file.name
 				this.api('drive/files/update', {
-					file_id: this.file.id
+					file_id: this.file.id,
 					name: name
-				.then =>
+				}).then(() => {
 					this.parent.cf this.file, true
 
 	</script>

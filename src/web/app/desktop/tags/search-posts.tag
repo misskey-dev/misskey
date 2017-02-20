@@ -42,7 +42,7 @@
 			window.addEventListener 'scroll' this.on-scroll
 
 			this.api('posts/search', {
-				query: @query
+				query: this.query
 			}).then((posts) => {
 				this.is-loading = false
 				this.is-empty = posts.length == 0
@@ -68,7 +68,7 @@
 			this.more-loading = true
 			this.update();
 			this.api('posts/search', {
-				query: @query
+				query: this.query
 				page: this.page + 1
 			}).then((posts) => {
 				this.more-loading = false

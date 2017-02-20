@@ -412,13 +412,13 @@
 			if this.p.is_liked
 				this.api('posts/likes/delete', {
 					post_id: this.p.id
-				.then =>
+				}).then(() => {
 					this.p.is_liked = false
 					this.update();
 			else
 				this.api('posts/likes/create', {
 					post_id: this.p.id
-				.then =>
+				}).then(() => {
 					this.p.is_liked = true
 					this.update();
 

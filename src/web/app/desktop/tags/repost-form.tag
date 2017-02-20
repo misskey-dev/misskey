@@ -127,14 +127,14 @@
 			this.wait = true
 			this.api('posts/create', {
 				repost_id: this.opts.post.id
-				text: if @quote then this.refs.text.value else undefined
+				text: if this.quote then this.refs.text.value else undefined
 			}).then((data) => {
 				this.trigger('posted');
 				@notify 'Repostしました！'
 			.catch (err) =>
 				console.error err
 				@notify 'Repostできませんでした'
-			.then =>
+			}).then(() => {
 				this.wait = false
 				this.update();
 

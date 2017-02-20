@@ -126,7 +126,7 @@
 			this.api('signin', {
 				username: this.refs.username.value
 				password: this.refs.password.value
-			.then =>
+			}).then(() => {
 				location.reload();
 			.catch =>
 				alert 'something happened'

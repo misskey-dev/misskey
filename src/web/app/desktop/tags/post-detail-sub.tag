@@ -127,13 +127,13 @@
 			if this.post.is_liked
 				this.api('posts/likes/delete', {
 					post_id: this.post.id
-				.then =>
+				}).then(() => {
 					this.post.is_liked = false
 					this.update();
 			else
 				this.api('posts/likes/create', {
 					post_id: this.post.id
-				.then =>
+				}).then(() => {
 					this.post.is_liked = true
 					this.update();
 	</script>

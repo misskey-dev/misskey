@@ -114,13 +114,13 @@
 		this.cancel = () => {
 			this.api('auth/deny', {
 				token: @session.token
-			.then =>
+			}).then(() => {
 				this.trigger('denied');
 
 		this.accept = () => {
 			this.api('auth/accept', {
 				token: @session.token
-			.then =>
+			}).then(() => {
 				this.trigger('accepted');
 	</script>
 </mk-form>

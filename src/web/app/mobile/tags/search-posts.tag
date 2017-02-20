@@ -9,24 +9,24 @@
 	<script>
 		this.mixin('api');
 
-		this.max = 30
-		this.offset = 0
+		this.max = 30;
+		this.offset = 0;
 
-		this.query = this.opts.query
-		this.with-media = this.opts.with-media
+		this.query = this.opts.query;
+		this.withMedia = this.opts.withMedia;
 
 		this.init = new Promise (res, rej) =>
 			this.api('posts/search', {
-				query: @query
-			}).then((posts) => {
+				query: this.query
+			}).then(posts => {
 				res posts
 				this.trigger('loaded');
 
 		this.more = () => {
-			@offset += @max
+			this.offset += this.max;
 			this.api('posts/search', {
-				query: @query
-				max: @max
-				offset: @offset
+				query: this.query
+				max: this.max
+				offset: this.offset
 	</script>
 </mk-search-posts>

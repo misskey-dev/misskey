@@ -233,7 +233,7 @@
 				description: description
 				callback_url: cb
 				permission: permission.join ',' 
-			.then =>
+			}).then(() => {
 				location.href = '/apps'
 			.catch =>
 				alert 'アプリの作成に失敗しました。再度お試しください。'

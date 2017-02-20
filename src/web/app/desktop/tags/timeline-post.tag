@@ -324,7 +324,7 @@
 		this.mixin('NotImplementedException');
 
 		this.post = this.opts.post;
-		this.isRepost = this.post.repost != null && this.post.text == null;
+		this.isRepost = this.post.repost && this.post.text == null;
 		this.p = this.isRepost ? this.post.repost : this.post;
 
 		this.title = this.dateStringify(this.p.created_at);
@@ -354,58 +354,87 @@
 		});
 
 		this.reply = () => {
-			form = document.body.appendChild(document.createElement('mk-post-form-window'));
- 			riot.mount form, do
+			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
 				reply: this.p
+			});
+		};
 
 		this.repost = () => {
-			form = document.body.appendChild(document.createElement('mk-repost-form-window'));
- 			riot.mount form, do
+			riot.mount(document.body.appendChild(document.createElement('mk-repost-form-window')), {
 				post: this.p
+			});
+		};
 
 		this.like = () => {
-			if this.p.is_liked
+			if (this.p.is_liked) {
 				this.api('posts/likes/delete', {
 					post_id: this.p.id
-				.then =>
-					this.p.is_liked = false
+				}).then(() => {
+					this.p.is_liked = false;
 					this.update();
-			else
+				});
+			} else {
 				this.api('posts/likes/create', {
 					post_id: this.p.id
-				.then =>
-					this.p.is_liked = true
+				}).then(() => {
+					this.p.is_liked = true;
 					this.update();
+				});
+			}
+		};
 
-		this.toggle-detail = () => {
-			this.is-detail-opened = !@is-detail-opened
-			this.update();
+		this.toggleDetail = () => {
+			this.update({
+				isDetailOpened: !this.isDetailOpened
+			});
+		};
 
-		this.on-key-down = (e) => {
-			should-be-cancel = true
-			switch
-			| e.which == 38 or e.which == 74 or (e.which == 9 and e.shift-key) => // ↑, j or Shift+Tab
-				focus this.root, (e) -> e.previousElementSibling
-			| e.which == 40 or e.which == 75 or e.which == 9 => // ↓, k or Tab
-				focus this.root, (e) -> e.nextElementSibling
-			| e.which == 81 or e.which == 69 => // q or e
-				@repost!
-			| e.which == 70 or e.which == 76 => // f or l
-				@like!
-			| e.which == 82 => // r
-				@reply!
-			| _ =>
-				should-be-cancel = false
+		this.onKeyDown = e => {
+			let shouldBeCancel = true;
 
-			if should-be-cancel
-				e.preventDefault();
+			switch (true) {
+				case e.which == 38: // [↑]
+				case e.which == 74: // [j]
+				case e.which == 9 && e.shiftKey: // [Shift] + [Tab]
+					focus(this.root, e => e.previousElementSibling);
+					break;
 
-		function focus(el, fn)
-			target = fn el
-			if target?
-				if target.has-attribute 'tabindex' 
+				case e.which == 40: // [↓]
+				case e.which == 75: // [k]
+				case e.which == 9: // [Tab]
+					focus(this.root, e => e.nextElementSibling);
+					break;
+
+				case e.which == 81: // [q]
+				case e.which == 69: // [e]
+					this.repost();
+					break;
+
+				case e.which == 70: // [f]
+				case e.which == 76: // [l]
+					this.like();
+					break;
+
+				case e.which == 82: // [r]
+					this.reply();
+					break;
+				
+				default:
+					shouldBeCancel = false;
+			}
+
+			if (shouldBeCancel) e.preventDefault();
+		};
+
+		function focus(el, fn) {
+			const target = fn(el);
+			if (target) {
+				if (target.hasAttribute('tabindex')) {
 					target.focus();
-				else
-					focus target, fn
+				} else {
+					focus(target, fn);
+				}
+			}
+		}
 	</script>
 </mk-timeline-post>

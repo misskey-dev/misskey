@@ -33,9 +33,5 @@
 				40%
 					transform scale(1)
 
-			
-
-			
-
 	</style>
 </mk-ellipsis-icon>
