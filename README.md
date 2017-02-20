@@ -57,14 +57,14 @@ Misskey requires two domains called the primary domain and the secondary domain.
 
 **Ensure that the secondary domain is not a subdomain of the primary domain.**
 
-#### Dubdomains
-Misskey uses subdomains below:
+#### Subdomains
+Misskey uses following subdomains:
 
-* **api**.<primary domain>
-* **auth**.<primary domain>
-* **about**.<primary domain>
-* **dev**.<primary domain>
-* **file**.<secondary domain>
+* **api**.*{primary domain}*
+* **auth**.*{primary domain}*
+* **about**.*{primary domain}*
+* **dev**.*{primary domain}*
+* **file**.*{secondary domain}*
 
 ### reCAPTCHA
 Please visit https://www.google.com/recaptcha/intro/ and generate keys.
