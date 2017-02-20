@@ -34,9 +34,5 @@
 				> i
 					padding 14px
 
-			
-
-			
-
 	</style>
 </mk-entrance-signup>

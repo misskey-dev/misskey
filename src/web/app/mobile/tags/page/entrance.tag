@@ -43,18 +43,24 @@
 
 	</style>
 	<script>
-		this.mode = 'signin' 
+		this.mode = 'signin';
 
 		this.signup = () => {
-			this.mode = 'signup' 
-			this.update();
+			this.update({
+				mode: 'signup'
+			});
+		};
 
 		this.signin = () => {
-			this.mode = 'signin' 
-			this.update();
+			this.update({
+				mode: 'signin'
+			});
+		};
 
 		this.introduction = () => {
-			this.mode = 'introduction' 
-			this.update();
+			this.update({
+				mode: 'introduction'
+			});
+		};
 	</script>
 </mk-entrance>

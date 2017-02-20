@@ -226,7 +226,7 @@
 			, 4000ms
 		};
 
-		this.on-visibilitychange = () => {
+		this.onVisibilitychange = () => {
 			if document.hidden then return
 			@messages.forEach (message) =>
 				if message.user_id != this.I.id and not message.is_read

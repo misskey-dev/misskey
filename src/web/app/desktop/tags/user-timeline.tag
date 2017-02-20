@@ -59,7 +59,7 @@
 		this.mode = 'default' 
 
 		this.on('mount', () => {
-			document.addEventListener 'visibilitychange' @window-on-visibilitychange, false
+			document.addEventListener 'visibilitychange' @window-onVisibilitychange, false
 			document.addEventListener 'keydown' this.on-document-keydown
 			window.addEventListener 'scroll' this.on-scroll
 
@@ -71,7 +71,7 @@
 					this.trigger('loaded');
 
 		this.on('unmount', () => {
-			document.removeEventListener 'visibilitychange' @window-on-visibilitychange
+			document.removeEventListener 'visibilitychange' @window-onVisibilitychange
 			document.removeEventListener 'keydown' this.on-document-keydown
 			window.removeEventListener 'scroll' this.on-scroll
 
@@ -120,7 +120,7 @@
 				@unread-count++
 				document.title = '(' + @unread-count + ') ' + @get-post-summary post
 
-		this.window-on-visibilitychange = () => {
+		this.window-onVisibilitychange = () => {
 			if !document.hidden
 				this.unread-count = 0
 				document.title = 'Misskey'

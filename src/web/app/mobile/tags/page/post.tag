@@ -21,18 +21,21 @@
 		this.mixin('ui');
 		this.mixin('ui-progress');
 
-		this.post = this.opts.post
+		this.post = this.opts.post;
 
 		this.on('mount', () => {
-			document.title = 'Misskey'
+			document.title = 'Misskey';
 			this.ui.trigger('title', '<i class="fa fa-sticky-note-o"></i>投稿');
 
 			this.Progress.start();
 
 			this.refs.ui.refs.post.on('post-fetched', () => {
 				this.Progress.set(0.5);
+			});
 
 			this.refs.ui.refs.post.on('loaded', () => {
 				this.Progress.done();
+			});
+		});
 	</script>
 </mk-post-page>

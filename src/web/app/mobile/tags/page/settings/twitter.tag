@@ -10,7 +10,8 @@
 		this.mixin('ui');
 
 		this.on('mount', () => {
-			document.title = 'Misskey | Twitter連携'
+			document.title = 'Misskey | Twitter連携';
 			this.ui.trigger('title', '<i class="fa fa-twitter"></i>Twitter連携');
+		});
 	</script>
 </mk-twitter-setting-page>

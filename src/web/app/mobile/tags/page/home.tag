@@ -5,7 +5,6 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
 		this.mixin('i');
@@ -14,7 +13,7 @@
 		this.mixin('stream');
 		this.mixin('get-post-summary');
 
-		this.unread-count = 0
+		this.unreadCount = 0;
 
 		this.on('mount', () => {
 			document.title = 'Misskey'
@@ -22,24 +21,31 @@
 
 			this.Progress.start();
 
-			this.stream.on 'post' this.on-stream-post
-			document.addEventListener 'visibilitychange' @window-on-visibilitychange, false
+			this.stream.on('post', this.onStreamPost);
+			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 			this.refs.ui.refs.home.on('loaded', () => {
 				this.Progress.done();
+			});
+		});
 
 		this.on('unmount', () => {
-			this.stream.off 'post' this.on-stream-post
-			document.removeEventListener 'visibilitychange' @window-on-visibilitychange
+			this.stream.off('post', this.onStreamPost);
+			document.removeEventListener('visibilitychange', this.onVisibilitychange);
+		});
 
-		this.on-stream-post = (post) => {
-			if document.hidden and post.user_id !== this.I.id
-				@unread-count++
-				document.title = '(' + @unread-count + ') ' + @get-post-summary post
+		this.onStreamPost = post => {
+			if (document.hidden && post.user_id !== this.I.id) {
+				this.unreadCount++;
+				document.title = `(${this.unreadCount}) ${this.getPostSummary(post)}`;
+			}
+		};
 
-		this.window-on-visibilitychange = () => {
-			if !document.hidden
-				this.unread-count = 0
-				document.title = 'Misskey'
+		this.onVisibilitychange = () => {
+			if (!document.hidden) {
+				this.unreadCount = 0;
+				document.title = 'Misskey';
+			}
+		};
 	</script>
 </mk-home-page>

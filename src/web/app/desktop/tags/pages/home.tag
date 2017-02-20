@@ -28,18 +28,18 @@
 			document.title = 'Misskey'
 			this.Progress.start();
 			this.stream.on 'post' this.on-stream-post
-			document.addEventListener 'visibilitychange' @window-on-visibilitychange, false
+			document.addEventListener 'visibilitychange' @window-onVisibilitychange, false
 
 		this.on('unmount', () => {
 			this.stream.off 'post' this.on-stream-post
-			document.removeEventListener 'visibilitychange' @window-on-visibilitychange
+			document.removeEventListener 'visibilitychange' @window-onVisibilitychange
 
 		this.on-stream-post = (post) => {
 			if document.hidden and post.user_id !== this.I.id
 				@unread-count++
 				document.title = '(' + @unread-count + ') ' + @get-post-summary post
 
-		this.window-on-visibilitychange = () => {
+		this.window-onVisibilitychange = () => {
 			if !document.hidden
 				this.unread-count = 0
 				document.title = 'Misskey'

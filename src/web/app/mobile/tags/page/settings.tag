@@ -16,7 +16,8 @@
 		this.mixin('ui');
 
 		this.on('mount', () => {
-			document.title = 'Misskey | 設定'
+			document.title = 'Misskey | 設定';
 			this.ui.trigger('title', '<i class="fa fa-cog"></i>設定');
+		});
 	</script>
 </mk-settings-page>

@@ -10,7 +10,8 @@
 		this.mixin('ui');
 
 		this.on('mount', () => {
-			document.title = 'Misskey | ログイン履歴'
+			document.title = 'Misskey | ログイン履歴';
 			this.ui.trigger('title', '<i class="fa fa-sign-in"></i>ログイン履歴');
+		});
 	</script>
 </mk-signin-history-page>

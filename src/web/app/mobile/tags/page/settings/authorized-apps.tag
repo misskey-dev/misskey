@@ -10,7 +10,8 @@
 		this.mixin('ui');
 
 		this.on('mount', () => {
-			document.title = 'Misskey | アプリケーション'
+			document.title = 'Misskey | アプリケーション';
 			this.ui.trigger('title', '<i class="fa fa-puzzle-piece"></i>アプリケーション');
+		});
 	</script>
 </mk-authorized-apps-page>
