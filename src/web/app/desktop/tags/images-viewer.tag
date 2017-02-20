@@ -30,7 +30,7 @@
 		this.image = @images.0
 
 		this.mousemove = (e) => {
-			rect = this.refs.view.get-bounding-client-rect!
+			rect = this.refs.view.getBoundingClientRect();
 			mouse-x = e.client-x - rect.left
 			mouse-y = e.client-y - rect.top
 			xp = mouse-x / this.refs.view.offset-width * 100

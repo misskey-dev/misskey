@@ -146,10 +146,10 @@
 		this.multiple = if this.opts.multiple? then this.opts.multiple else false
 
 		this.on('mount', () => {
-			this.stream.on 'drive_file_created' this.on-stream-drive-file-created
-			this.stream.on 'drive_file_updated' this.on-stream-drive-file-updated
-			this.stream.on 'drive_folder_created' this.on-stream-drive-folder-created
-			this.stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.on 'drive_file_created' this.onStreamDriveFileCreated
+			this.stream.on 'drive_file_updated' this.onStreamDriveFileUpdated
+			this.stream.on 'drive_folder_created' this.onStreamDriveFolderCreated
+			this.stream.on 'drive_folder_updated' this.onStreamDriveFolderUpdated
 
 			// Riotのバグでnullを渡しても""になる
 			// https://github.com/riot/riot/issues/2080
@@ -159,36 +159,36 @@
 			else if this.opts.file? and this.opts.file != ''
 				@cf this.opts.file, true
 			else
-				@load!
+				this.load();
 
 		this.on('unmount', () => {
-			this.stream.off 'drive_file_created' this.on-stream-drive-file-created
-			this.stream.off 'drive_file_updated' this.on-stream-drive-file-updated
-			this.stream.off 'drive_folder_created' this.on-stream-drive-folder-created
-			this.stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.off 'drive_file_created' this.onStreamDriveFileCreated
+			this.stream.off 'drive_file_updated' this.onStreamDriveFileUpdated
+			this.stream.off 'drive_folder_created' this.onStreamDriveFolderCreated
+			this.stream.off 'drive_folder_updated' this.onStreamDriveFolderUpdated
 
-		this.on-stream-drive-file-created = (file) => {
-			@add-file file, true
+		this.onStreamDriveFileCreated = (file) => {
+			this.addFile file, true
 
-		this.on-stream-drive-file-updated = (file) => {
+		this.onStreamDriveFileUpdated = (file) => {
 			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
-				@add-file file, true
+				this.addFile file, true
 
-		this.on-stream-drive-folder-created = (folder) => {
-			@add-folder folder, true
+		this.onStreamDriveFolderCreated = (folder) => {
+			this.addFolder folder, true
 
-		this.on-stream-drive-folder-updated = (folder) => {
+		this.onStreamDriveFolderUpdated = (folder) => {
 			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
-				@remove-folder folder
+				this.removeFolder folder
 			else
-				@add-folder folder, true
+				this.addFolder folder, true
 
 		@_move = (ev) =>
-			@move ev.item.folder
+			this.move ev.item.folder
 
 		this.move = (target-folder) => {
 			@cd target-folder
@@ -222,7 +222,7 @@
 
 				this.update();
 				this.trigger 'open-folder' this.folder, silent
-				@load!
+				this.load();
 			.catch (err, text-status) ->
 				console.error err
 
@@ -278,7 +278,7 @@
 				this.hierarchyFolders = []
 				this.update();
 				this.trigger('move-root');
-				@load!
+				this.load();
 
 		this.load = () => {
 			this.folders = []
@@ -326,9 +326,9 @@
 			complete = =>
 				if flag
 					load-folders.forEach (folder) =>
-						@add-folder folder
+						this.addFolder folder
 					load-files.forEach (file) =>
-						@add-file file
+						this.addFile file
 					this.loading = false
 					this.update();
 

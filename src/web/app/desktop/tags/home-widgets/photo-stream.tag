@@ -64,7 +64,7 @@
 		this.initializing = true
 
 		this.on('mount', () => {
-			this.stream.on 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.on 'drive_file_created' this.onStreamDriveFileCreated
 
 			this.api('drive/stream', {
 				type: 'image/*'
@@ -75,9 +75,9 @@
 				this.update();
 
 		this.on('unmount', () => {
-			this.stream.off 'drive_file_created' this.on-stream-drive-file-created
+			this.stream.off 'drive_file_created' this.onStreamDriveFileCreated
 
-		this.on-stream-drive-file-created = (file) => {
+		this.onStreamDriveFileCreated = (file) => {
 			if /^image\/.+$/.test file.type
 				@images.unshift file
 				if @images.length > 9

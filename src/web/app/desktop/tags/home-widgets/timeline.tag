@@ -98,10 +98,10 @@
 			this.refs.timeline.add-post post
 
 		this.on-stream-follow = () => {
-			@load!
+			this.load();
 
 		this.on-stream-unfollow = () => {
-			@load!
+			this.load();
 
 		this.on-scroll = () => {
 			current = window.scrollY + window.inner-height

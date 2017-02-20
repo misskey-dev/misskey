@@ -142,54 +142,57 @@
 	<script>
 		this.mixin('i');
 
-		this.uploads = []
+		this.uploads = [];
 
-		
 		this.upload = (file, folder) => {
-			id = Math.random!
+			const id = Math.random();
 
-			ctx =
-				id: id
-				name: file.name || 'untitled' 
+			const ctx = {
+				id: id,
+				name: file.name || 'untitled',
 				progress: undefined
+			};
 
-			@uploads.push ctx
-			this.trigger 'change-uploads' @uploads
+			this.uploads.push(ctx);
+			this.trigger('change-uploads', this.uploads);
 			this.update();
 
-			reader = new FileReader!
-			reader.onload = (e) =>
-				ctx.img = e.target.result
+			const reader = new FileReader();
+			reader.onload = e => {
+				ctx.img = e.target.result;
 				this.update();
-			reader.read-as-data-URL file
+			};
+			reader.readAsDataURL(file);
 
-			data = new FormData!
-			data.append 'i' this.I.token
-			data.append 'file' file
+			const data = new FormData();
+			data.append('i', this.I.token);
+			data.append('file', file);
 
-			if folder?
-				data.append 'folder_id' folder
+			if (folder) data.append('folder_id', folder);
 
-			xhr = new XMLHttpRequest!
-			xhr.open 'POST' CONFIG.apiUrl + '/drive/files/create' true
-			xhr.onload = (e) =>
-				drive-file = JSON.parse e.target.response
+			const xhr = new XMLHttpRequest();
+			xhr.open('POST', CONFIG.apiUrl + '/drive/files/create', true);
+			xhr.onload = e => {
+				const driveFile = JSON.parse(e.target.response);
 
-				this.trigger 'uploaded' drive-file
+				this.trigger('uploaded', driveFile);
 
-				this.uploads = @uploads.filter (x) -> x.id != id
-				this.trigger 'change-uploads' @uploads
+				this.uploads = this.uploads.filter(x => x.id != id);
+				this.trigger('change-uploads', this.uploads);
 
 				this.update();
+			};
 
-			xhr.upload.onprogress = (e) =>
-				if e.length-computable
-					if ctx.progress == undefined
-						ctx.progress = {}
-					ctx.progress.max = e.total
-					ctx.progress.value = e.loaded
+			xhr.upload.onprogress = e => {
+				if (e.lengthComputable) {
+					if (ctx.progress == undefined) ctx.progress = {};
+					ctx.progress.max = e.total;
+					ctx.progress.value = e.loaded;
 					this.update();
+				}
+			};
 
-			xhr.send data
+			xhr.send(data);
+		};
 	</script>
 </mk-uploader>

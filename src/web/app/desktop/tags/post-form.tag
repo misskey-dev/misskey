@@ -324,7 +324,7 @@
 
 		this.on('mount', () => {
 			this.refs.uploader.on('uploaded', (file) => {
-				@add-file file
+				this.addFile file
 
 			this.refs.uploader.on('change-uploads', (uploads) => {
 				this.trigger 'change-uploading-files' uploads
@@ -382,7 +382,7 @@
 
 				// (ドライブの)ファイルだったら
 				if obj.type == 'file' 
-					@add-file obj.file
+					this.addFile obj.file
 			catch
 				// ignore
 
@@ -409,7 +409,7 @@
  			i = riot.mount browser, do
 				multiple: true
 			i[0].one 'selected' (files) =>
-				files.forEach @add-file
+				files.forEach this.addFile
 
 		this.change-file = () => {
 			files = this.refs.file.files

@@ -155,11 +155,11 @@
 
 			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
 			// (=あなたの子供が、ドラッグを開始しましたよ)
-			this.browser.is-drag-source = true
+			this.browser.isDragSource = true
 
 		this.ondragend = (e) => {
 			this.is-dragging = false
-			this.browser.is-drag-source = false
+			this.browser.isDragSource = false
 
 		this.oncontextmenu = (e) => {
 			e.preventDefault();

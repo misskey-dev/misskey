@@ -193,7 +193,7 @@
 
 		this.on('mount', () => {
 			this.refs.uploader.on('uploaded', (file) => {
-				@add-file file
+				this.addFile file
 
 			this.refs.uploader.on('change-uploads', (uploads) => {
 				this.trigger 'change-uploading-files' uploads
@@ -225,7 +225,7 @@
 				multiple: true
 			.0
 			browser.on('selected', (files) => {
-				files.forEach @add-file
+				files.forEach this.addFile
 
 		this.change-file = () => {
 			files = this.refs.file.files

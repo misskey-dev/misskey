@@ -238,6 +238,8 @@
 
 	</style>
 	<script>
+		const contains = require('../../../common/scripts/contains');
+
 		this.mixin('api');
 		this.mixin('dialog');
 		this.mixin('input-dialog');
@@ -253,67 +255,70 @@
 		// * null でルートを表す
 		this.folder = null;
 
-		this.multiple = if this.opts.multiple? then this.opts.multiple else false
+		this.multiple = this.opts.multiple != null ? this.opts.multiple : false;
 
 		// ドロップされようとしているか
 		this.draghover = false;
 
 		// 自信の所有するアイテムがドラッグをスタートさせたか
 		// (自分自身の階層にドロップできないようにするためのフラグ)
-		this.is-drag-source = false;
+		this.isDragSource = false;
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', (file) => {
-				@add-file file, true
+			this.refs.uploader.on('uploaded', file => {
+				this.addFile(file, true);
+			});
 
-			this.refs.uploader.on('change-uploads', (uploads) => {
-				this.uploads = uploads
-				this.update();
+			this.refs.uploader.on('change-uploads', uploads => {
+				this.update({
+					uploads: uploads
+				});
+			});
 
-			this.stream.on 'drive_file_created' this.on-stream-drive-file-created
-			this.stream.on 'drive_file_updated' this.on-stream-drive-file-updated
-			this.stream.on 'drive_folder_created' this.on-stream-drive-folder-created
-			this.stream.on 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.on 'drive_file_created' this.onStreamDriveFileCreated
+			this.stream.on 'drive_file_updated' this.onStreamDriveFileUpdated
+			this.stream.on 'drive_folder_created' this.onStreamDriveFolderCreated
+			this.stream.on 'drive_folder_updated' this.onStreamDriveFolderUpdated
 
 			// Riotのバグでnullを渡しても""になる
 			// https://github.com/riot/riot/issues/2080
 			#if this.opts.folder?
 			if this.opts.folder? and this.opts.folder != ''
-				@move this.opts.folder
+				this.move this.opts.folder
 			else
-				@load!
+				this.load();
 
 		this.on('unmount', () => {
-			this.stream.off 'drive_file_created' this.on-stream-drive-file-created
-			this.stream.off 'drive_file_updated' this.on-stream-drive-file-updated
-			this.stream.off 'drive_folder_created' this.on-stream-drive-folder-created
-			this.stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
+			this.stream.off 'drive_file_created' this.onStreamDriveFileCreated
+			this.stream.off 'drive_file_updated' this.onStreamDriveFileUpdated
+			this.stream.off 'drive_folder_created' this.onStreamDriveFolderCreated
+			this.stream.off 'drive_folder_updated' this.onStreamDriveFolderUpdated
 
-		this.on-stream-drive-file-created = (file) => {
-			@add-file file, true
+		this.onStreamDriveFileCreated = (file) => {
+			this.addFile file, true
 
-		this.on-stream-drive-file-updated = (file) => {
+		this.onStreamDriveFileUpdated = (file) => {
 			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
-				@add-file file, true
+				this.addFile file, true
 
-		this.on-stream-drive-folder-created = (folder) => {
-			@add-folder folder, true
+		this.onStreamDriveFolderCreated = (folder) => {
+			this.addFolder folder, true
 
-		this.on-stream-drive-folder-updated = (folder) => {
+		this.onStreamDriveFolderUpdated = (folder) => {
 			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
-				@remove-folder folder
+				this.removeFolder folder
 			else
-				@add-folder folder, true
+				this.addFolder folder, true
 
 		this.onmousedown = (e) => {
 			if (contains this.refs.folders-container, e.target) or (contains this.refs.files-container, e.target)
 				return true
 
-			rect = this.refs.main.get-bounding-client-rect!
+			rect = this.refs.main.getBoundingClientRect();
 
 			left = e.pageX + this.refs.main.scroll-left - rect.left - window.pageXOffset
 			top = e.pageY + this.refs.main.scroll-top - rect.top - window.pageYOffset
@@ -341,13 +346,13 @@
 					this.refs.selection.style.top = cursorY + 'px' 
 
 			up = (e) =>
-				document.document-element.removeEventListener 'mousemove' move
-				document.document-element.removeEventListener 'mouseup' up
+				document.documentElement.removeEventListener 'mousemove' move
+				document.documentElement.removeEventListener 'mouseup' up
 
 				this.refs.selection.style.display = 'none' 
 
-			document.document-element.addEventListener 'mousemove' move
-			document.document-element.addEventListener 'mouseup' up
+			document.documentElement.addEventListener 'mousemove' move
+			document.documentElement.addEventListener 'mouseup' up
 
 		this.path-oncontextmenu = (e) => {
 			e.preventDefault();
@@ -359,7 +364,7 @@
 			e.stopPropagation();
 
 			// ドラッグ元が自分自身の所有するアイテムかどうか
-			if !@is-drag-source
+			if !@isDragSource
 				// ドラッグされてきたものがファイルだったら
 				if e.dataTransfer.effectAllowed == 'all' 
 					e.dataTransfer.dropEffect = 'copy' 
@@ -373,7 +378,7 @@
 
 		this.ondragenter = (e) => {
 			e.preventDefault();
-			if !@is-drag-source
+			if !@isDragSource
 				this.draghover = true
 
 		this.ondragleave = (e) => {
@@ -421,7 +426,7 @@
 					return false
 				if (this.folders.some (f) => f.id == folder)
 					return false
-				@remove-folder folder
+				this.removeFolder folder
 				this.api('drive/folders/update', {
 					folder_id: folder
 					parent_id: if this.folder? then this.folder.id else null
@@ -483,7 +488,7 @@
 				name: name
 				folder_id: if this.folder? then this.folder.id else undefined
 			}).then((folder) => {
-				@add-folder folder, true
+				this.addFolder folder, true
 				this.update();
 			.catch (err) =>
 				console.error err
@@ -533,7 +538,7 @@
 					x folder.parent
 
 				this.update();
-				@load!
+				this.load();
 			.catch (err, text-status) ->
 				console.error err
 
@@ -590,7 +595,7 @@
 				this.folder = null
 				this.hierarchyFolders = []
 				this.update();
-				@load!
+				this.load();
 
 		this.load = () => {
 			this.folders = []
@@ -636,20 +641,13 @@
 			complete = =>
 				if flag
 					load-folders.forEach (folder) =>
-						@add-folder folder
+						this.addFolder folder
 					load-files.forEach (file) =>
-						@add-file file
+						this.addFile file
 					this.loading = false
 					this.update();
 				else
 					flag := true
 
-		function contains(parent, child)
-			node = child.parentNode
-			while node?
-				if node == parent
-					return true
-				node = node.parentNode
-			return false
 	</script>
 </mk-drive-browser>

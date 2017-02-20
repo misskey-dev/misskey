@@ -133,7 +133,7 @@
 		this.page = 0
 
 		this.on('mount', () => {
-			@load!
+			this.load();
 
 		this.load = () => {
 			this.loading = true
@@ -155,7 +155,7 @@
 				this.page = 0
 			else
 				this.page++
-			@load!
+			this.load();
 
 		this.close = () => {
 			this.unmount();
