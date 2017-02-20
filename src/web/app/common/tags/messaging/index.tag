@@ -303,7 +303,7 @@
 				this.history = history;
 				this.update();
 			});
-		}
+		});
 
 		this.search = () => {
 			const q = this.refs.search.value;
@@ -322,14 +322,16 @@
 					this.update();
 				.catch (err) =>
 					console.error err
+		};
 
-		this.on-search-keydown = (e) => {
-			key = e.which
+		this.on-search-keydown = e => {
+			const key = e.which;
 			switch (key)
 				| 9, 40 => // Key[TAB] or Key[↓]
 					e.preventDefault();
 					e.stopPropagation();
 					this.refs.search-result.childNodes[0].focus();
+		};
 
 		this.on-search-result-keydown = (i, e) => {
 			key = e.which
@@ -350,6 +352,7 @@
 					e.preventDefault();
 					e.stopPropagation();
 					(this.refs.search-result.childNodes[i].next-element-sibling || this.refs.search-result.childNodes[0]).focus();
+		};
 
 	</script>
 </mk-messaging>

@@ -206,25 +206,29 @@
 		this.mixin('i');
 		this.mixin('text');
 
-		this.message = this.opts.message
-		@message.is_me = @message.user.id == this.I.id
+		this.message = this.opts.message;
+		this.message.is_me = this.message.user.id == this.I.id;
 
 		this.on('mount', () => {
-			if @message.text?
-				tokens = @analyze @message.text
+			if (this.message.text) {
+				const tokens = this.analyze(this.message.text);
 
-				this.refs.text.innerHTML = @compile tokens
+				this.refs.text.innerHTML = this.compile(tokens);
 
-				this.refs.text.children.for-each (e) =>
-					if e.tag-name == 'MK-URL' 
-						riot.mount e
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
 
 				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == 'link' 
-					.map (t) =>
-						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
-						riot.mount @preview, do
+					.filter(t => t.type == 'link')
+					.map(t => {
+						const el = this.refs.text.appendChild(document.createElement('mk-url-preview'));
+						riot.mount(el, {
 							url: t.content
+						});
+					});
+			}
+		});
 	</script>
 </mk-messaging-message>

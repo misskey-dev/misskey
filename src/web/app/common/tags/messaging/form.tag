@@ -128,17 +128,17 @@
 					this.upload(item.getAsFile());
 				}
 			}
-		}
+		};
 
 		this.onkeypress = (e) => {
 			if ((e.which == 10 || e.which == 13) && e.ctrlKey) {
 				this.send();
 			}
-		}
+		};
 
 		this.selectFile = () => {
 			this.refs.file.click();
-		}
+		};
 
 		this.selectFileFromDrive = () => {
 			const browser = document.body.appendChild(document.createElement('mk-select-file-from-drive-window'));
@@ -150,7 +150,7 @@
 			event.one('selected', files => {
 				files.forEach(this.addFile);
 			});
-		}
+		};
 
 		this.send = () => {
 			this.sending = true;
@@ -165,11 +165,12 @@
 				this.sending = false;
 				this.update();
 			});
+		};
 
 		this.clear = () => {
 			this.refs.text.value = '';
 			this.files = [];
 			this.update();
-		}
+		};
 	</script>
 </mk-messaging-form>
