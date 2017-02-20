@@ -5,7 +5,6 @@
 // Style
 import './style.styl';
 
-require('chart.js');
 require('./tags');
 const riot = require('riot');
 const boot = require('../boot');
