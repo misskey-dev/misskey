@@ -35,10 +35,12 @@
 
 	</style>
 	<script>
-		this.user = this.opts.user
+		this.user = this.opts.user;
 
 		this.on('mount', () => {
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
+			});
+		});
 	</script>
 </mk-user-home>
