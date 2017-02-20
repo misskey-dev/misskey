@@ -15,6 +15,8 @@ require('./common/tags');
  * MISSKEY ENTORY POINT!
  */
 
+"use strict";
+
 document.domain = CONFIG.host;
 
 // Set global configration
