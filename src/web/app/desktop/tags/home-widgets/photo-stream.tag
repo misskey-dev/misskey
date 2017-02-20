@@ -77,7 +77,7 @@
 		this.on('unmount', () => {
 			@stream.off 'drive_file_created' this.on-stream-drive-file-created
 
-		on-stream-drive-file-created(file) {
+		this.on-stream-drive-file-created = (file) => {
 			if /^image\/.+$/.test file.type
 				@images.unshift file
 				if @images.length > 9

@@ -43,7 +43,7 @@
 
 	</style>
 	<script>
-		settings() {
+		this.settings = () => {
 			w = riot.mount document.body.appendChild document.createElement 'mk-settings-window' .0
 			w.switch 'notification' 
 	</script>

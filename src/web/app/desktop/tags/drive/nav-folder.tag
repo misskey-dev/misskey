@@ -16,16 +16,16 @@
 
 		this.hover = false
 
-		onclick() {
+		this.onclick = () => {
 			this.browser.move this.folder
 
-		onmouseover() {
+		this.onmouseover = () => {
 			this.hover = true
 
-		onmouseout() {
+		this.onmouseout = () => {
 			this.hover = false
 
-		ondragover(e) {
+		this.ondragover = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -39,15 +39,15 @@
 				e.dataTransfer.dropEffect = 'move' 
 			return false
 
-		ondragenter() {
+		this.ondragenter = () => {
 			if this.folder != null or this.browser.folder != null
 				this.draghover = true
 
-		ondragleave() {
+		this.ondragleave = () => {
 			if this.folder != null or this.browser.folder != null
 				this.draghover = false
 
-		ondrop(e) {
+		this.ondrop = (e) => {
 			e.stopPropagation();
 			this.draghover = false
 

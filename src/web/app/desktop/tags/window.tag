@@ -207,17 +207,17 @@
 			this.refs.main.style.top = '15%' 
 			this.refs.main.style.left = (window.inner-width / 2) - (this.refs.main.offset-width / 2) + 'px' 
 
-			this.refs.header.add-event-listener 'contextmenu' (e) =>
+			this.refs.header.addEventListener 'contextmenu' (e) =>
 				e.preventDefault();
 
-			window.add-event-listener 'resize' this.on-browser-resize
+			window.addEventListener 'resize' this.on-browser-resize
 
 			@open!
 
 		this.on('unmount', () => {
-			window.remove-event-listener 'resize' this.on-browser-resize
+			window.removeEventListener 'resize' this.on-browser-resize
 
-		on-browser-resize() {
+		this.on-browser-resize = () => {
 			position = this.refs.main.get-bounding-client-rect!
 			browser-width = window.inner-width
 			browser-height = window.inner-height
@@ -236,7 +236,7 @@
 			if position.top + window-height > browser-height
 				this.refs.main.style.top = browser-height - window-height + 'px' 
 
-		open() {
+		this.open = () => {
 			this.trigger('opening');
 
 			@top!
@@ -270,7 +270,7 @@
 				this.trigger('opened');
 			, 300ms
 
-		close() {
+		this.close = () => {
 			this.trigger('closing');
 
 			if @is-modal
@@ -300,7 +300,7 @@
 			, 300ms
 
 		// 最前面へ移動します
-		top() {
+		this.top = () => {
 			z = 0
 
 			ws = document.query-selector-all 'mk-window' 
@@ -314,20 +314,20 @@
 				this.refs.main.style.z-index = z + 1
 				if @is-modal then this.refs.bg.style.z-index = z + 1
 
-		repel-move(e) {
+		this.repel-move = (e) => {
 			e.stopPropagation();
 			return true
 
-		bg-click() {
+		this.bg-click = () => {
 			if @can-close
 				@close!
 
-		on-body-mousedown(e) {
+		this.on-body-mousedown = (e) => {
 			@top!
 			true
 
 		// ヘッダー掴み時
-		on-header-mousedown(e) {
+		this.on-header-mousedown = (e) => {
 			e.preventDefault();
 
 			if not contains this.refs.main, document.active-element
@@ -369,7 +369,7 @@
 				this.refs.main.style.top = move-top + 'px' 
 
 		// 上ハンドル掴み時
-		on-top-handle-mousedown(e) {
+		this.on-top-handle-mousedown = (e) => {
 			e.preventDefault();
 
 			base = e.client-y
@@ -391,7 +391,7 @@
 					@apply-transform-top 0
 
 		// 右ハンドル掴み時
-		on-right-handle-mousedown(e) {
+		this.on-right-handle-mousedown = (e) => {
 			e.preventDefault();
 
 			base = e.client-x
@@ -411,7 +411,7 @@
 					@apply-transform-width browser-width - left
 
 		// 下ハンドル掴み時
-		on-bottom-handle-mousedown(e) {
+		this.on-bottom-handle-mousedown = (e) => {
 			e.preventDefault();
 
 			base = e.client-y
@@ -431,7 +431,7 @@
 					@apply-transform-height browser-height - top
 
 		// 左ハンドル掴み時
-		on-left-handle-mousedown(e) {
+		this.on-left-handle-mousedown = (e) => {
 			e.preventDefault();
 
 			base = e.client-x
@@ -453,55 +453,55 @@
 					@apply-transform-left 0
 
 		// 左上ハンドル掴み時
-		on-top-left-handle-mousedown(e) {
+		this.on-top-left-handle-mousedown = (e) => {
 			this.on-top-handle-mousedown e
 			this.on-left-handle-mousedown e
 
 		// 右上ハンドル掴み時
-		on-top-right-handle-mousedown(e) {
+		this.on-top-right-handle-mousedown = (e) => {
 			this.on-top-handle-mousedown e
 			this.on-right-handle-mousedown e
 
 		// 右下ハンドル掴み時
-		on-bottom-right-handle-mousedown(e) {
+		this.on-bottom-right-handle-mousedown = (e) => {
 			this.on-bottom-handle-mousedown e
 			this.on-right-handle-mousedown e
 
 		// 左下ハンドル掴み時
-		on-bottom-left-handle-mousedown(e) {
+		this.on-bottom-left-handle-mousedown = (e) => {
 			this.on-bottom-handle-mousedown e
 			this.on-left-handle-mousedown e
 
 		// 高さを適用
-		apply-transform-height(height) {
+		this.apply-transform-height = (height) => {
 			this.refs.main.style.height = height + 'px' 
 
 		// 幅を適用
-		apply-transform-width(width) {
+		this.apply-transform-width = (width) => {
 			this.refs.main.style.width = width + 'px' 
 
 		// Y座標を適用
-		apply-transform-top(top) {
+		this.apply-transform-top = (top) => {
 			this.refs.main.style.top = top + 'px' 
 
 		// X座標を適用
-		apply-transform-left(left) {
+		this.apply-transform-left = (left) => {
 			this.refs.main.style.left = left + 'px' 
 
 		function drag-listen fn
-			window.add-event-listener 'mousemove'  fn
-			window.add-event-listener 'mouseleave' drag-clear.bind null fn
-			window.add-event-listener 'mouseup'    drag-clear.bind null fn
+			window.addEventListener 'mousemove'  fn
+			window.addEventListener 'mouseleave' drag-clear.bind null fn
+			window.addEventListener 'mouseup'    drag-clear.bind null fn
 
 		function drag-clear fn
-			window.remove-event-listener 'mousemove'  fn
-			window.remove-event-listener 'mouseleave' drag-clear
-			window.remove-event-listener 'mouseup'    drag-clear
+			window.removeEventListener 'mousemove'  fn
+			window.removeEventListener 'mouseleave' drag-clear
+			window.removeEventListener 'mouseup'    drag-clear
 
-		ondragover(e) {
+		this.ondragover = (e) => {
 			e.dataTransfer.dropEffect = 'none' 
 
-		on-keydown(e) {
+		this.on-keydown = (e) => {
 			if e.which == 27 // Esc
 				if @can-close
 					e.preventDefault();

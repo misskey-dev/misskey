@@ -98,7 +98,7 @@
 			if this.refs.title?
 				this.refs.title.innerHTML = title
 
-		post() {
+		this.post = () => {
 			@open-post-form!
 	</script>
 </mk-ui-header>

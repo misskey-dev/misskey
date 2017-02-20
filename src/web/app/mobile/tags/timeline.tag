@@ -91,7 +91,7 @@
 				post._date = date
 				post._datetext = month + '月 ' + date + '日'
 
-		more() {
+		this.more = () => {
 			if @init or @fetching or @posts.length == 0 then return
 			this.fetching = true
 			this.update();
@@ -99,20 +99,20 @@
 				this.fetching = false
 				@prepend-posts posts
 
-		set-posts(posts) {
+		this.set-posts = (posts) => {
 			this.posts = posts
 			this.update();
 
-		prepend-posts(posts) {
+		this.prepend-posts = (posts) => {
 			posts.for-each (post) =>
 				@posts.push post
 				this.update();
 
-		add-post(post) {
+		this.add-post = (post) => {
 			@posts.unshift post
 			this.update();
 
-		tail() {
+		this.tail = () => {
 			@posts[@posts.length - 1]
 	</script>
 </mk-timeline>

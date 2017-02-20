@@ -398,17 +398,17 @@
 
 				this.update();
 
-		reply() {
+		this.reply = () => {
 			form = document.body.appendChild document.createElement 'mk-post-form-window' 
 			riot.mount form, do
 				reply: @p
 
-		repost() {
+		this.repost = () => {
 			form = document.body.appendChild document.createElement 'mk-repost-form-window' 
 			riot.mount form, do
 				post: @p
 
-		like() {
+		this.like = () => {
 			if @p.is_liked
 				this.api 'posts/likes/delete' do
 					post_id: @p.id
@@ -422,7 +422,7 @@
 					@p.is_liked = true
 					this.update();
 
-		load-context() {
+		this.load-context = () => {
 			this.loading-context = true
 
 			// Get context

@@ -88,26 +88,26 @@
 	<script>
 		this.choices = ['', ''];
 
-		oninput(i, e) {
+		this.oninput = (i, e) => {
 			this.choices[i] = e.target.value;
 		}
 
-		add() {
+		this.add = () => {
 			this.choices.push('');
 			this.update();
 			this.refs.choices.childNodes[this.choices.length - 1].childNodes[0].focus();
 		}
 
-		remove(i) {
+		this.remove = (i) => {
 			this.choices = this.choices.filter((_, _i) => _i != i);
 			this.update();
 		}
 
-		destroy() {
+		this.destroy = () => {
 			this.opts.ondestroy();
 		}
 
-		get() {
+		this.get = () => {
 			return {
 				choices: this.choices.filter(choice => choice != '')
 			}

@@ -120,10 +120,10 @@
 		this.wait = false
 		this.quote = false
 
-		cancel() {
+		this.cancel = () => {
 			this.trigger('cancel');
 
-		ok() {
+		this.ok = () => {
 			this.wait = true
 			this.api 'posts/create' do
 				repost_id: this.opts.post.id
@@ -138,7 +138,7 @@
 				this.wait = false
 				this.update();
 
-		onquote() {
+		this.onquote = () => {
 			this.quote = true
 	</script>
 </mk-repost-form>

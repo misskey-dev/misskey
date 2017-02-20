@@ -172,19 +172,19 @@
 				this.trigger 'loaded' user
 				this.update();
 
-		go-posts() {
+		this.go-posts = () => {
 			this.page = 'posts' 
 			this.update();
 
-		go-media() {
+		this.go-media = () => {
 			this.page = 'media' 
 			this.update();
 
-		go-graphs() {
+		this.go-graphs = () => {
 			this.page = 'graphs' 
 			this.update();
 
-		go-likes() {
+		this.go-likes = () => {
 			this.page = 'likes' 
 			this.update();
 	</script>

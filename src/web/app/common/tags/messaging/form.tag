@@ -119,7 +119,7 @@
 	<script>
 		this.mixin('api');
 
-		onpaste(e) {
+		this.onpaste = (e) => {
 			const data = e.clipboardData;
 			const items = data.items;
 			for (let i = 0; i < items.length; i++) {
@@ -130,17 +130,17 @@
 			}
 		}
 
-		onkeypress(e) {
+		this.onkeypress = (e) => {
 			if ((e.which == 10 || e.which == 13) && e.ctrlKey) {
 				this.send();
 			}
 		}
 
-		selectFile() {
+		this.selectFile = () => {
 			this.refs.file.click();
 		}
 
-		selectFileFromDrive() {
+		this.selectFileFromDrive = () => {
 			const browser = document.body.appendChild(document.createElement('mk-select-file-from-drive-window'));
 			const event = riot.observable();
 			riot.mount(browser, {
@@ -152,7 +152,7 @@
 			});
 		}
 
-		send() {
+		this.send = () => {
 			this.sending = true;
 			this.api('messaging/messages/create', {
 				user_id: this.opts.user.id,
@@ -166,7 +166,7 @@
 				this.update();
 			});
 
-		clear() {
+		this.clear = () => {
 			this.refs.text.value = '';
 			this.files = [];
 			this.update();

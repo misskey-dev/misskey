@@ -48,11 +48,11 @@
 		this.on('unmount', () => {
 			clear-interval @clock
 
-		set() {
+		this.set = () => {
 			this.refs.text.innerHTML = @tips[Math.floor Math.random! * @tips.length]
 			this.update();
 
-		change() {
+		this.change = () => {
 			Velocity this.refs.tip, {
 				opacity: 0
 			} {

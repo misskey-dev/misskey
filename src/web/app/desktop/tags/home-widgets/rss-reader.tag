@@ -78,7 +78,7 @@
 		this.on('unmount', () => {
 			clear-interval @clock
 
-		fetch() {
+		this.fetch = () => {
 			this.api CONFIG.url + '/api:rss' do
 				url: @url
 			.then (feed) =>
@@ -88,7 +88,7 @@
 			.catch (err) ->
 				console.error err
 
-		settings() {
+		this.settings = () => {
 			@NotImplementedException!
 	</script>
 </mk-rss-reader-home-widget>

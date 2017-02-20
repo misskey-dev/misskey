@@ -155,7 +155,7 @@
 
 		this.is-contextmenu-showing = false
 
-		onclick() {
+		this.onclick = () => {
 			if this.browser.multiple
 				if this.file._selected?
 					this.file._selected = !this.file._selected
@@ -171,7 +171,7 @@
 					this.file._selected = true
 					this.browser.trigger 'change-selection' this.file
 
-		oncontextmenu(e) {
+		this.oncontextmenu = (e) => {
 			e.preventDefault();
 			e.stop-immediate-propagation!
 
@@ -190,7 +190,7 @@
 				this.update();
 			return false
 
-		ondragstart(e) {
+		this.ondragstart = (e) => {
 			e.dataTransfer.effect-allowed = 'move' 
 			e.dataTransfer.set-data 'text' JSON.stringify do
 				type: 'file' 
@@ -202,7 +202,7 @@
 			// (=あなたの子供が、ドラッグを開始しましたよ)
 			this.browser.is-drag-source = true
 
-		ondragend(e) {
+		this.ondragend = (e) => {
 			this.is-dragging = false
 			this.browser.is-drag-source = false
 	</script>

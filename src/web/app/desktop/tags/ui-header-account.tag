@@ -167,37 +167,37 @@
 		this.on('before-unmount', () => {
 			@close!
 
-		toggle() {
+		this.toggle = () => {
 			if @is-open
 				@close!
 			else
 				@open!
 
-		open() {
+		this.open = () => {
 			this.is-open = true
 			this.update();
 			all = document.query-selector-all 'body *'
 			Array.prototype.for-each.call all, (el) =>
-				el.add-event-listener 'mousedown' @mousedown
+				el.addEventListener 'mousedown' @mousedown
 
-		close() {
+		this.close = () => {
 			this.is-open = false
 			this.update();
 			all = document.query-selector-all 'body *'
 			Array.prototype.for-each.call all, (el) =>
-				el.remove-event-listener 'mousedown' @mousedown
+				el.removeEventListener 'mousedown' @mousedown
 
-		mousedown(e) {
+		this.mousedown = (e) => {
 			e.preventDefault();
 			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 			return false
 
-		drive() {
+		this.drive = () => {
 			@close!
 			riot.mount document.body.appendChild document.createElement 'mk-drive-browser-window' 
 
-		settings() {
+		this.settings = () => {
 			@close!
 			riot.mount document.body.appendChild document.createElement 'mk-settings-window' 
 

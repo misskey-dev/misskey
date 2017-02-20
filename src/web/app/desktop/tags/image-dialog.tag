@@ -53,7 +53,7 @@
 			// easing: 'ease-out' 
 			#}
 
-		close() {
+		this.close = () => {
 			Velocity this.root, {
 				opacity: 0
 			} {

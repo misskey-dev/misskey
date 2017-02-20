@@ -19,7 +19,7 @@
 			this.refs.window.on('closed', () => {
 				this.unmount();
 
-		close() {
+		this.close = () => {
 			this.refs.window.close!
 	</script>
 </mk-settings-window>

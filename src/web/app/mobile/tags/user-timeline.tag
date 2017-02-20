@@ -22,7 +22,7 @@
 				res posts
 				this.trigger('loaded');
 
-		more() {
+		this.more = () => {
 			this.api 'users/posts' do
 				user_id: @user.id
 				with_media: @with-media

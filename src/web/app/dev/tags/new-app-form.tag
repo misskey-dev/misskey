@@ -182,7 +182,7 @@
 
 		this.nid-state = null
 
-		on-change-nid() {
+		this.on-change-nid = () => {
 			nid = this.refs.nid.value
 
 			if nid == ''
@@ -215,7 +215,7 @@
 					this.nid-state = 'error' 
 					this.update();
 
-		onsubmit() {
+		this.onsubmit = () => {
 			name = this.refs.name.value
 			nid = this.refs.nid.value
 			description = this.refs.description.value

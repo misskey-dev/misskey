@@ -114,7 +114,7 @@
 				easing: [ 0, 0.5, 0.5, 1 ]
 			}
 
-		close() {
+		this.close = () => {
 			this.refs.bg.style.pointer-events = 'none' 
 			Velocity this.refs.bg, 'finish' true
 			Velocity this.refs.bg, {
@@ -138,7 +138,7 @@
 					this.unmount();
 			}
 
-		bg-click() {
+		this.bg-click = () => {
 			if @can-through
 				if this.opts.on-through?
 					this.opts.on-through!

@@ -21,7 +21,7 @@
 		this.images = this.opts.images
 		this.image = @images.0
 
-		click() {
+		this.click = () => {
 			window.open @image.url
 	</script>
 </mk-images-viewer>

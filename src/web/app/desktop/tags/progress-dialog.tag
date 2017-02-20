@@ -83,12 +83,12 @@
 			this.refs.window.on('closed', () => {
 				this.unmount();
 
-		update-progress(value, max) {
+		this.update-progress = (value, max) => {
 			this.value = parse-int value, 10
 			this.max = parse-int max, 10
 			this.update();
 
-		close() {
+		this.close = () => {
 			this.refs.window.close!
 	</script>
 </mk-progress-dialog>

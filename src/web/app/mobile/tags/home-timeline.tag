@@ -25,19 +25,19 @@
 			@stream.off 'follow' this.on-stream-follow
 			@stream.off 'unfollow' this.on-stream-unfollow
 
-		more() {
+		this.more = () => {
 			this.api 'posts/timeline' do
 				max_id: this.refs.timeline.tail!.id
 
-		on-stream-post(post) {
+		this.on-stream-post = (post) => {
 			this.is-empty = false
 			this.update();
 			this.refs.timeline.add-post post
 
-		on-stream-follow() {
+		this.on-stream-follow = () => {
 			@fetch!
 
-		on-stream-unfollow() {
+		this.on-stream-unfollow = () => {
 			@fetch!
 	</script>
 </mk-home-timeline>

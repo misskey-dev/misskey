@@ -58,7 +58,7 @@
 
 	</style>
 	<script>
-		draw() {
+		this.draw = () => {
 			now = new Date!
 
 			yyyy = now.get-full-year!

@@ -61,16 +61,16 @@
 		this.draghover = false
 		this.is-contextmenu-showing = false
 
-		onclick() {
+		this.onclick = () => {
 			this.browser.move this.folder
 
-		onmouseover() {
+		this.onmouseover = () => {
 			this.hover = true
 
-		onmouseout() {
+		this.onmouseout = () => {
 			this.hover = false
 
-		ondragover(e) {
+		this.ondragover = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -86,14 +86,14 @@
 				e.dataTransfer.dropEffect = 'none' 
 			return false
 
-		ondragenter() {
+		this.ondragenter = () => {
 			if !@is-dragging
 				this.draghover = true
 
-		ondragleave() {
+		this.ondragleave = () => {
 			this.draghover = false
 
-		ondrop(e) {
+		this.ondrop = (e) => {
 			e.stopPropagation();
 			this.draghover = false
 
@@ -146,7 +146,7 @@
 
 			return false
 
-		ondragstart(e) {
+		this.ondragstart = (e) => {
 			e.dataTransfer.effect-allowed = 'move' 
 			e.dataTransfer.set-data 'text' JSON.stringify do
 				type: 'folder' 
@@ -157,11 +157,11 @@
 			// (=あなたの子供が、ドラッグを開始しましたよ)
 			this.browser.is-drag-source = true
 
-		ondragend(e) {
+		this.ondragend = (e) => {
 			this.is-dragging = false
 			this.browser.is-drag-source = false
 
-		oncontextmenu(e) {
+		this.oncontextmenu = (e) => {
 			e.preventDefault();
 			e.stop-immediate-propagation!
 

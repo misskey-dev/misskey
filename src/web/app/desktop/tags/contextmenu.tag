@@ -94,19 +94,19 @@
 
 	</style>
 	<script>
-		this.root.add-event-listener 'contextmenu' (e) =>
+		this.root.addEventListener 'contextmenu' (e) =>
 			e.preventDefault();
 
-		mousedown(e) {
+		this.mousedown = (e) => {
 			e.preventDefault();
 			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 			return false
 
-		open(pos) {
+		this.open = (pos) => {
 			all = document.query-selector-all 'body *'
 			Array.prototype.for-each.call all, (el) =>
-				el.add-event-listener 'mousedown' @mousedown
+				el.addEventListener 'mousedown' @mousedown
 			this.root.style.display = 'block' 
 			this.root.style.left = pos.x + 'px' 
 			this.root.style.top = pos.y + 'px' 
@@ -121,10 +121,10 @@
 				easing: 'linear' 
 			}
 
-		close() {
+		this.close = () => {
 			all = document.query-selector-all 'body *'
 			Array.prototype.for-each.call all, (el) =>
-				el.remove-event-listener 'mousedown' @mousedown
+				el.removeEventListener 'mousedown' @mousedown
 			this.trigger('closed');
 			this.unmount();
 

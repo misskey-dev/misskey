@@ -86,12 +86,12 @@
 
 		this.user = this.opts.user
 
-		show-following() {
+		this.show-following = () => {
 			window = document.body.appendChild document.createElement 'mk-user-following-window' 
 			riot.mount window, do
 				user: @user
 
-		show-followers() {
+		this.show-followers = () => {
 			window = document.body.appendChild document.createElement 'mk-user-followers-window' 
 			riot.mount window, do
 				user: @user

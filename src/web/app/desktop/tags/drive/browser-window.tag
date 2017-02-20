@@ -40,7 +40,7 @@
 				@update do
 					usage: info.usage / info.capacity * 100
 
-		close() {
+		this.close = () => {
 			this.refs.window.close!
 	</script>
 </mk-drive-browser-window>

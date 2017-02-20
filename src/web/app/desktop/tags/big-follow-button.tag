@@ -91,17 +91,17 @@
 			@stream.off 'follow' this.on-stream-follow
 			@stream.off 'unfollow' this.on-stream-unfollow
 
-		on-stream-follow(user) {
+		this.on-stream-follow = (user) => {
 			if user.id == @user.id
 				this.user = user
 				this.update();
 
-		on-stream-unfollow(user) {
+		this.on-stream-unfollow = (user) => {
 			if user.id == @user.id
 				this.user = user
 				this.update();
 
-		onclick() {
+		this.onclick = () => {
 			this.wait = true
 			if @user.is_following
 				this.api 'following/delete' do

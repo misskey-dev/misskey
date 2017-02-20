@@ -34,10 +34,10 @@
 		this.mixin('i');
 		this.mixin('update-avatar');
 
-		set() {
+		this.set = () => {
 			@update-avatar this.I
 
-		close(e) {
+		this.close = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 			this.unmount();

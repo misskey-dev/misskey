@@ -76,11 +76,11 @@
 		this.isVoted = this.poll.choices.some(c => c.is_voted);
 		this.result = this.isVoted;
 
-		toggleResult() {
+		this.toggleResult = () => {
 			this.result = !this.result;
 		}
 
-		vote(id) {
+		this.vote = (id) => {
 			if (this.poll.choices.some(c => c.is_voted)) return;
 			this.api('posts/polls/vote', {
 				post_id: this.post.id,

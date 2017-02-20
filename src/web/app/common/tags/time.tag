@@ -22,7 +22,7 @@
 			if @mode == 'relative' or @mode == 'detail' 
 				clear-interval @tickid
 
-		tick() {
+		this.tick = () => {
 			now = new Date!
 			ago = (now - @time) / 1000ms
 			this.relative = switch

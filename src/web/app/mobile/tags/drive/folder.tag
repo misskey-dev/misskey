@@ -40,7 +40,7 @@
 		this.browser = this.parent
 		this.folder = this.opts.folder
 
-		onclick() {
+		this.onclick = () => {
 			this.browser.move this.folder
 	</script>
 </mk-drive-folder>

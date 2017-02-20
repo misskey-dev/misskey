@@ -50,7 +50,7 @@
 		this.mixin('api');
 		this.mixin('i');
 
-		close(e) {
+		this.close = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 

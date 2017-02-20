@@ -167,20 +167,20 @@
 			@stream.off 'drive_folder_created' this.on-stream-drive-folder-created
 			@stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
 
-		on-stream-drive-file-created(file) {
+		this.on-stream-drive-file-created = (file) => {
 			@add-file file, true
 
-		on-stream-drive-file-updated(file) {
+		this.on-stream-drive-file-updated = (file) => {
 			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
 				@add-file file, true
 
-		on-stream-drive-folder-created(folder) {
+		this.on-stream-drive-folder-created = (folder) => {
 			@add-folder folder, true
 
-		on-stream-drive-folder-updated(folder) {
+		this.on-stream-drive-folder-updated = (folder) => {
 			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				@remove-folder folder
@@ -190,10 +190,10 @@
 		@_move = (ev) =>
 			@move ev.item.folder
 
-		move(target-folder) {
+		this.move = (target-folder) => {
 			@cd target-folder
 
-		cd(target-folder, silent = false) {
+		this.cd = (target-folder, silent = false) => {
 			this.file = null
 
 			if target-folder? and typeof target-folder == 'object' 
@@ -226,7 +226,7 @@
 			.catch (err, text-status) ->
 				console.error err
 
-		add-folder(folder, unshift = false) {
+		this.add-folder = (folder, unshift = false) => {
 			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				return
@@ -241,7 +241,7 @@
 
 			this.update();
 
-		add-file(file, unshift = false) {
+		this.add-file = (file, unshift = false) => {
 			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				return
@@ -259,19 +259,19 @@
 
 			this.update();
 
-		remove-folder(folder) {
+		this.remove-folder = (folder) => {
 			if typeof folder == 'object' 
 				folder = folder.id
 			this.folders = this.folders.filter (f) -> f.id != folder
 			this.update();
 
-		remove-file(file) {
+		this.remove-file = (file) => {
 			if typeof file == 'object' 
 				file = file.id
 			this.files = this.files.filter (f) -> f.id != file
 			this.update();
 
-		go-root() {
+		this.go-root = () => {
 			if this.folder != null or this.file != null
 				this.file = null
 				this.folder = null
@@ -280,7 +280,7 @@
 				this.trigger('move-root');
 				@load!
 
-		load() {
+		this.load = () => {
 			this.folders = []
 			this.files = []
 			this.more-folders = false
@@ -337,11 +337,11 @@
 					flag := true
 					this.trigger('load-mid');
 
-		choose-file(file) {
+		this.choose-file = (file) => {
 			if @is-select-mode
 				exist = @selected-files.some (f) => f.id == file.id
 				if exist
-					selected-files(@selected-files.filter (f) { f.id != file.id)
+					this.selected-files = (@selected-files.filter (f) => { f.id != file.id)
 				else
 					@selected-files.push file
 				this.update();
@@ -349,7 +349,7 @@
 			else
 				@cf file
 
-		cf(file, silent = false) {
+		this.cf = (file, silent = false) => {
 			if typeof file == 'object' 
 				file = file.id
 

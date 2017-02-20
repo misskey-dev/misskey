@@ -289,27 +289,27 @@
 			@stream.off 'drive_folder_created' this.on-stream-drive-folder-created
 			@stream.off 'drive_folder_updated' this.on-stream-drive-folder-updated
 
-		on-stream-drive-file-created(file) {
+		this.on-stream-drive-file-created = (file) => {
 			@add-file file, true
 
-		on-stream-drive-file-updated(file) {
+		this.on-stream-drive-file-updated = (file) => {
 			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
 				@add-file file, true
 
-		on-stream-drive-folder-created(folder) {
+		this.on-stream-drive-folder-created = (folder) => {
 			@add-folder folder, true
 
-		on-stream-drive-folder-updated(folder) {
+		this.on-stream-drive-folder-updated = (folder) => {
 			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				@remove-folder folder
 			else
 				@add-folder folder, true
 
-		onmousedown(e) {
+		this.onmousedown = (e) => {
 			if (contains this.refs.folders-container, e.target) or (contains this.refs.files-container, e.target)
 				return true
 
@@ -341,20 +341,20 @@
 					this.refs.selection.style.top = cursor-y + 'px' 
 
 			up = (e) =>
-				document.document-element.remove-event-listener 'mousemove' move
-				document.document-element.remove-event-listener 'mouseup' up
+				document.document-element.removeEventListener 'mousemove' move
+				document.document-element.removeEventListener 'mouseup' up
 
 				this.refs.selection.style.display = 'none' 
 
-			document.document-element.add-event-listener 'mousemove' move
-			document.document-element.add-event-listener 'mouseup' up
+			document.document-element.addEventListener 'mousemove' move
+			document.document-element.addEventListener 'mouseup' up
 
-		path-oncontextmenu(e) {
+		this.path-oncontextmenu = (e) => {
 			e.preventDefault();
 			e.stop-immediate-propagation!
 			return false
 
-		ondragover(e) {
+		this.ondragover = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -371,15 +371,15 @@
 				e.dataTransfer.dropEffect = 'none' 
 			return false
 
-		ondragenter(e) {
+		this.ondragenter = (e) => {
 			e.preventDefault();
 			if !@is-drag-source
 				this.draghover = true
 
-		ondragleave(e) {
+		this.ondragleave = (e) => {
 			this.draghover = false
 
-		ondrop(e) {
+		this.ondrop = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -438,7 +438,7 @@
 
 			return false
 
-		oncontextmenu(e) {
+		this.oncontextmenu = (e) => {
 			e.preventDefault();
 			e.stop-immediate-propagation!
 
@@ -452,10 +452,10 @@
 
 			return false
 
-		select-local-file() {
+		this.select-local-file = () => {
 			this.refs.file-input.click!
 
-		url-upload() {
+		this.url-upload = () => {
 			url <~ @input-dialog do
 				'URLアップロード'
 				'アップロードしたいファイルのURL'
@@ -473,7 +473,7 @@
 						text: 'OK' 
 					]
 
-		create-folder() {
+		this.create-folder = () => {
 			name <~ @input-dialog do
 				'フォルダー作成'
 				'フォルダー名'
@@ -488,26 +488,26 @@
 			.catch (err) =>
 				console.error err
 
-		change-file-input() {
+		this.change-file-input = () => {
 			files = this.refs.file-input.files
 			for i from 0 to files.length - 1
 				file = files.item i
 				@upload file, this.folder
 
-		upload(file, folder) {
+		this.upload = (file, folder) => {
 			if folder? and typeof folder == 'object' 
 				folder = folder.id
 			this.refs.uploader.upload file, folder
 
-		get-selection() {
+		this.get-selection = () => {
 			this.files.filter (file) -> file._selected
 
-		new-window(folder-id) {
+		this.new-window = (folder-id) => {
 			browser = document.body.appendChild document.createElement 'mk-drive-browser-window' 
 			riot.mount browser, do
 				folder: folder-id
 
-		move(target-folder) {
+		this.move = (target-folder) => {
 			if target-folder? and typeof target-folder == 'object' 
 				target-folder = target-folder.id
 
@@ -537,7 +537,7 @@
 			.catch (err, text-status) ->
 				console.error err
 
-		add-folder(folder, unshift = false) {
+		this.add-folder = (folder, unshift = false) => {
 			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				return
@@ -555,7 +555,7 @@
 
 			this.update();
 
-		add-file(file, unshift = false) {
+		this.add-file = (file, unshift = false) => {
 			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				return
@@ -573,26 +573,26 @@
 
 			this.update();
 
-		remove-folder(folder) {
+		this.remove-folder = (folder) => {
 			if typeof folder == 'object' 
 				folder = folder.id
 			this.folders = this.folders.filter (f) -> f.id != folder
 			this.update();
 
-		remove-file(file) {
+		this.remove-file = (file) => {
 			if typeof file == 'object' 
 				file = file.id
 			this.files = this.files.filter (f) -> f.id != file
 			this.update();
 
-		go-root() {
+		this.go-root = () => {
 			if this.folder != null
 				this.folder = null
 				this.hierarchy-folders = []
 				this.update();
 				@load!
 
-		load() {
+		this.load = () => {
 			this.folders = []
 			this.files = []
 			this.more-folders = false

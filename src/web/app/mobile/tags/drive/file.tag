@@ -131,7 +131,7 @@
 		this.browser.on('change-selected', (selects) => {
 			this.is-selected = selects.some (f) => f.id == this.file.id
 
-		onclick() {
+		this.onclick = () => {
 			this.browser.choose-file this.file
 	</script>
 </mk-drive-file>

@@ -34,7 +34,7 @@
 	<script>
 		this.mixin('page');
 
-		onsubmit(e) {
+		this.onsubmit = (e) => {
 			e.preventDefault();
 			@page '/search:' + this.refs.q.value
 	</script>

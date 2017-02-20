@@ -124,7 +124,7 @@
 				@update do
 					user: user
 
-		introduction() {
+		this.introduction = () => {
 			this.parent.introduction!
 	</script>
 </mk-entrance-signin>

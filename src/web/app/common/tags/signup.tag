@@ -199,7 +199,7 @@
 			head.appendChild script
 		});
 
-		on-change-username() {
+		this.on-change-username = () => {
 			username = this.refs.username.value
 
 			if username == ''
@@ -232,7 +232,7 @@
 					this.username-state = 'error' 
 					this.update();
 
-		on-change-password() {
+		this.on-change-password = () => {
 			password = this.refs.password.value
 
 			if password == ''
@@ -252,7 +252,7 @@
 
 			this.refs.password-metar.style.width = (strength * 100) + '%' 
 
-		on-change-password-retype() {
+		this.on-change-password-retype = () => {
 			password = this.refs.password.value
 			retyped-password = this.refs.password-retype.value
 
@@ -265,7 +265,7 @@
 			else
 				this.password-retype-state = 'not-match' 
 
-		onsubmit(e) {
+		this.onsubmit = (e) => {
 			e.preventDefault();
 
 			username = this.refs.username.value

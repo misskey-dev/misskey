@@ -59,9 +59,9 @@
 		this.mode = 'default' 
 
 		this.on('mount', () => {
-			document.add-event-listener 'visibilitychange' @window-on-visibilitychange, false
-			document.add-event-listener 'keydown' this.on-document-keydown
-			window.add-event-listener 'scroll' this.on-scroll
+			document.addEventListener 'visibilitychange' @window-on-visibilitychange, false
+			document.addEventListener 'keydown' this.on-document-keydown
+			window.addEventListener 'scroll' this.on-scroll
 
 			@user-promise.then (user) =>
 				this.user = user
@@ -71,17 +71,17 @@
 					this.trigger('loaded');
 
 		this.on('unmount', () => {
-			document.remove-event-listener 'visibilitychange' @window-on-visibilitychange
-			document.remove-event-listener 'keydown' this.on-document-keydown
-			window.remove-event-listener 'scroll' this.on-scroll
+			document.removeEventListener 'visibilitychange' @window-on-visibilitychange
+			document.removeEventListener 'keydown' this.on-document-keydown
+			window.removeEventListener 'scroll' this.on-scroll
 
-		on-document-keydown(e) {
+		this.on-document-keydown = (e) => {
 			tag = e.target.tag-name.to-lower-case!
 			if tag != 'input' and tag != 'textarea' 
 				if e.which == 84 // t
 					this.refs.timeline.focus();
 
-		fetch(cb) {
+		this.fetch = (cb) => {
 			this.api 'users/posts' do
 				user_id: @user.id
 				with_replies: @mode == 'with-replies' 
@@ -95,7 +95,7 @@
 				console.error err
 				if cb? then cb!
 
-		more() {
+		this.more = () => {
 			if @more-loading or @is-loading or this.refs.timeline.posts.length == 0
 				return
 			this.more-loading = true
@@ -111,7 +111,7 @@
 			.catch (err) =>
 				console.error err
 
-		on-stream-post(post) {
+		this.on-stream-post = (post) => {
 			this.is-empty = false
 			this.update();
 			this.refs.timeline.add-post post
@@ -120,17 +120,17 @@
 				@unread-count++
 				document.title = '(' + @unread-count + ') ' + @get-post-summary post
 
-		window-on-visibilitychange() {
+		this.window-on-visibilitychange = () => {
 			if !document.hidden
 				this.unread-count = 0
 				document.title = 'Misskey'
 
-		on-scroll() {
+		this.on-scroll = () => {
 			current = window.scroll-y + window.inner-height
 			if current > document.body.offset-height - 16 // 遊び
 				@more!
 
-		set-mode(mode) {
+		this.set-mode = (mode) => {
 			@update do
 				mode: mode
 			@fetch!

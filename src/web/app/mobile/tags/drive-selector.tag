@@ -63,11 +63,11 @@
 				this.files = files
 				this.update();
 
-		cancel() {
+		this.cancel = () => {
 			this.trigger('canceled');
 			this.unmount();
 
-		ok() {
+		this.ok = () => {
 			this.trigger 'selected' this.files
 			this.unmount();
 	</script>

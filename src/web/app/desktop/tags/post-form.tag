@@ -335,16 +335,16 @@
 		this.on('unmount', () => {
 			@autocomplete.detach!
 
-		focus() {
+		this.focus = () => {
 			this.refs.text.focus();
 
-		clear() {
+		this.clear = () => {
 			this.refs.text.value = ''
 			this.files = []
 			this.trigger('change-files');
 			this.update();
 
-		ondragover(e) {
+		this.ondragover = (e) => {
 			e.stopPropagation();
 			this.draghover = true
 			// ドラッグされてきたものがファイルだったら
@@ -354,13 +354,13 @@
 				e.dataTransfer.dropEffect = 'move' 
 			return false
 
-		ondragenter(e) {
+		this.ondragenter = (e) => {
 			this.draghover = true
 
-		ondragleave(e) {
+		this.ondragleave = (e) => {
 			this.draghover = false
 
-		ondrop(e) {
+		this.ondrop = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 			this.draghover = false
@@ -388,11 +388,11 @@
 
 			return false
 
-		onkeydown(e) {
+		this.onkeydown = (e) => {
 			if (e.which == 10 || e.which == 13) && (e.ctrlKey || e.meta-key)
 				@post!
 
-		onpaste(e) {
+		this.onpaste = (e) => {
 			data = e.clipboardData
 			items = data.items
 			for i from 0 to items.length - 1
@@ -401,26 +401,26 @@
 					| 'file' =>
 						@upload item.getAsFile();
 
-		select-file() {
+		this.select-file = () => {
 			this.refs.file.click!
 
-		select-file-from-drive() {
+		this.select-file-from-drive = () => {
 			browser = document.body.appendChild document.createElement 'mk-select-file-from-drive-window' 
 			i = riot.mount browser, do
 				multiple: true
 			i[0].one 'selected' (files) =>
 				files.for-each @add-file
 
-		change-file() {
+		this.change-file = () => {
 			files = this.refs.file.files
 			for i from 0 to files.length - 1
 				file = files.item i
 				@upload file
 
-		upload(file) {
+		this.upload = (file) => {
 			this.refs.uploader.upload file
 
-		add-file(file) {
+		this.add-file = (file) => {
 			file._remove = =>
 				this.files = this.files.filter (x) -> x.id != file.id
 				this.trigger 'change-files' this.files
@@ -430,14 +430,14 @@
 			this.trigger 'change-files' this.files
 			this.update();
 
-		add-poll() {
+		this.add-poll = () => {
 			this.poll = true
 
-		on-poll-destroyed() {
+		this.on-poll-destroyed = () => {
 			@update do
 				poll: false
 
-		post(e) {
+		this.post = (e) => {
 			this.wait = true
 
 			files = if this.files? and this.files.length > 0
@@ -459,7 +459,7 @@
 				this.wait = false
 				this.update();
 
-		cat() {
+		this.cat = () => {
 			this.refs.text.value = this.refs.text.value + get-cat!
 	</script>
 </mk-post-form>

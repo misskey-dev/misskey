@@ -123,7 +123,7 @@
 		this.on('mount', () => {
 			this.opts.ready!
 
-		search() {
+		this.search = () => {
 			query = window.prompt '検索' 
 			if query? and query != ''
 				@page '/search:' + query

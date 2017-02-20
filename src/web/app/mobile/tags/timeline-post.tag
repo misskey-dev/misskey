@@ -319,18 +319,18 @@
 						riot.mount @preview, do
 							url: t.content
 
-		reply() {
+		this.reply = () => {
 			@open-post-form do
 				reply: @p
 
-		repost() {
+		this.repost = () => {
 			text = window.prompt '「' + @summary + '」をRepost'
 			if text?
 				this.api 'posts/create' do
 					repost_id: @p.id
 					text: if text == '' then undefined else text
 
-		like() {
+		this.like = () => {
 			if @p.is_liked
 				this.api 'posts/likes/delete' do
 					post_id: @p.id

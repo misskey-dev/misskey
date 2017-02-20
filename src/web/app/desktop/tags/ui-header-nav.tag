@@ -98,15 +98,15 @@
 				@stream.off 'read_all_messaging_messages' this.on-read-all-messaging-messages
 				@stream.off 'unread_messaging_message' this.on-unread-messaging-message
 
-			on-read-all-messaging-messages() {
+			this.on-read-all-messaging-messages = () => {
 				this.has-unread-messaging-messages = false
 				this.update();
 
-			on-unread-messaging-message() {
+			this.on-unread-messaging-message = () => {
 				this.has-unread-messaging-messages = true
 				this.update();
 
-			messaging() {
+			this.messaging = () => {
 				riot.mount document.body.appendChild document.createElement 'mk-messaging-window' 
 		</script>
 	</ul>

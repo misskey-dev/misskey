@@ -34,10 +34,10 @@
 		this.mixin('i');
 		this.mixin('update-banner');
 
-		set() {
+		this.set = () => {
 			@update-banner this.I
 
-		close(e) {
+		this.close = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 			this.unmount();

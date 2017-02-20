@@ -79,7 +79,7 @@
 		this.on('unmount', () => {
 			@stream.off 'notification' this.on-notification
 
-		on-notification(notification) {
+		this.on-notification = (notification) => {
 			@notifications.unshift notification
 			this.update();
 

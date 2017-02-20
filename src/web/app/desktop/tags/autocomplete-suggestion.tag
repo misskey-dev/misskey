@@ -89,11 +89,11 @@
 		this.select = -1
 
 		this.on('mount', () => {
-			@textarea.add-event-listener 'keydown' this.on-keydown
+			@textarea.addEventListener 'keydown' this.on-keydown
 
 			all = document.query-selector-all 'body *'
 			Array.prototype.for-each.call all, (el) =>
-				el.add-event-listener 'mousedown' @mousedown
+				el.addEventListener 'mousedown' @mousedown
 
 			this.api 'users/search_by_username' do
 				query: @q
@@ -106,20 +106,20 @@
 				console.error err
 
 		this.on('unmount', () => {
-			@textarea.remove-event-listener 'keydown' this.on-keydown
+			@textarea.removeEventListener 'keydown' this.on-keydown
 
 			all = document.query-selector-all 'body *'
 			Array.prototype.for-each.call all, (el) =>
-				el.remove-event-listener 'mousedown' @mousedown
+				el.removeEventListener 'mousedown' @mousedown
 
-		mousedown(e) {
+		this.mousedown = (e) => {
 			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 
-		on-click(e) {
+		this.on-click = (e) => {
 			@complete e.item
 
-		on-keydown(e) {
+		this.on-keydown = (e) => {
 			key = e.which
 			switch (key)
 				| 10, 13 => // Key[ENTER]
@@ -147,7 +147,7 @@
 				| _ =>
 					@close!
 
-		select-next() {
+		this.select-next = () => {
 			@select++
 
 			if @select >= @users.length
@@ -155,7 +155,7 @@
 
 			@apply-select!
 
-		select-prev() {
+		this.select-prev = () => {
 			@select--
 
 			if @select < 0
@@ -163,17 +163,17 @@
 
 			@apply-select!
 
-		apply-select() {
+		this.apply-select = () => {
 			this.refs.users.children.for-each (el) =>
 				el.remove-attribute 'data-selected' 
 
 			this.refs.users.children[@select].setAttribute 'data-selected' \true
 			this.refs.users.children[@select].focus();
 
-		complete(user) {
+		this.complete = (user) => {
 			this.opts.complete user
 
-		close() {
+		this.close = () => {
 			this.opts.close!
 
 		function contains(parent, child)

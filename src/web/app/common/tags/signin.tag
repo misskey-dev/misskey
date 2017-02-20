@@ -102,7 +102,7 @@
 		this.user = null;
 		this.signing = false;
 
-		oninput() {
+		this.oninput = () => {
 			this.api 'users/show' do
 				username: this.refs.username.value
 			.then (user) =>
@@ -110,7 +110,7 @@
 				this.trigger 'user' user
 				this.update();
 
-		onsubmit(e) {
+		this.onsubmit = (e) => {
 			e.preventDefault();
 
 			if this.refs.username.value == ''

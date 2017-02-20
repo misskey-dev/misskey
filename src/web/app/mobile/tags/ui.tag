@@ -29,21 +29,21 @@
 		this.on('unmount', () => {
 			@stream.off 'notification' this.on-stream-notification
 
-		ready() {
+		this.ready = () => {
 			@ready-count++
 
 			if @ready-count == 2
 				@init-view-position!
 
-		init-view-position() {
+		this.init-view-position = () => {
 			top = this.refs.header.root.offset-height
 			this.refs.main.style.padding-top = top + 'px' 
 
-		toggle-drawer() {
+		this.toggle-drawer = () => {
 			this.is-drawer-opening = !@is-drawer-opening
 			this.refs.nav.root.style.display = if @is-drawer-opening then 'block' else 'none' 
 
-		on-stream-notification(notification) {
+		this.on-stream-notification = (notification) => {
 			el = document.body.appendChild document.createElement 'mk-notify' 
 			riot.mount el, do
 				notification: notification

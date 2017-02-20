@@ -16,7 +16,7 @@
 		this.on('unmount', () => {
 			clear-interval @clock
 
-		draw() {
+		this.draw = () => {
 			now = new Date!
 			s = now.get-seconds!
 			m = now.get-minutes!

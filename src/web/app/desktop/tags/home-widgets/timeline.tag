@@ -46,8 +46,8 @@
 			@stream.on 'follow' this.on-stream-follow
 			@stream.on 'unfollow' this.on-stream-unfollow
 
-			document.add-event-listener 'keydown' this.on-document-keydown
-			window.add-event-listener 'scroll' this.on-scroll
+			document.addEventListener 'keydown' this.on-document-keydown
+			window.addEventListener 'scroll' this.on-scroll
 
 			@load =>
 				this.trigger('loaded');
@@ -57,16 +57,16 @@
 			@stream.off 'follow' this.on-stream-follow
 			@stream.off 'unfollow' this.on-stream-unfollow
 
-			document.remove-event-listener 'keydown' this.on-document-keydown
-			window.remove-event-listener 'scroll' this.on-scroll
+			document.removeEventListener 'keydown' this.on-document-keydown
+			window.removeEventListener 'scroll' this.on-scroll
 
-		on-document-keydown(e) {
+		this.on-document-keydown = (e) => {
 			tag = e.target.tag-name.to-lower-case!
 			if tag != 'input' and tag != 'textarea' 
 				if e.which == 84 // t
 					this.refs.timeline.focus();
 
-		load(cb) {
+		this.load = (cb) => {
 			this.api 'posts/timeline' 
 			.then (posts) =>
 				this.is-loading = false
@@ -78,7 +78,7 @@
 				console.error err
 				if cb? then cb!
 
-		more() {
+		this.more = () => {
 			if @more-loading or @is-loading or this.refs.timeline.posts.length == 0
 				return
 			this.more-loading = true
@@ -92,18 +92,18 @@
 			.catch (err) =>
 				console.error err
 
-		on-stream-post(post) {
+		this.on-stream-post = (post) => {
 			this.is-empty = false
 			this.update();
 			this.refs.timeline.add-post post
 
-		on-stream-follow() {
+		this.on-stream-follow = () => {
 			@load!
 
-		on-stream-unfollow() {
+		this.on-stream-unfollow = () => {
 			@load!
 
-		on-scroll() {
+		this.on-scroll = () => {
 			current = window.scroll-y + window.inner-height
 			if current > document.body.offset-height - 8
 				@more!

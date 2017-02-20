@@ -10,7 +10,7 @@
 
 		this.user = this.opts.user
 
-		fetch(iknow, limit, cursor, cb) {
+		this.fetch = (iknow, limit, cursor, cb) => {
 			this.api 'users/followers' do
 				user_id: @user.id
 				iknow: iknow

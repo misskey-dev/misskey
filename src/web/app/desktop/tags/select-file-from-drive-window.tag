@@ -148,13 +148,13 @@
 			this.refs.window.on('closed', () => {
 				this.unmount();
 
-		close() {
+		this.close = () => {
 			this.refs.window.close!
 
-		upload() {
+		this.upload = () => {
 			this.refs.window.refs.browser.select-local-file!
 
-		ok() {
+		this.ok = () => {
 			this.trigger 'selected' this.file
 			this.refs.window.close!
 	</script>

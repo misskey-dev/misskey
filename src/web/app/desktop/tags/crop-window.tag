@@ -172,16 +172,16 @@
 				highlight: no
 				view-mode: 1
 
-		ok() {
+		this.ok = () => {
 			@cropper.get-cropped-canvas!.to-blob (blob) =>
 				this.trigger 'cropped' blob
 				this.refs.window.close!
 
-		skip() {
+		this.skip = () => {
 			this.trigger('skiped');
 			this.refs.window.close!
 
-		cancel() {
+		this.cancel = () => {
 			this.trigger('canceled');
 			this.refs.window.close!
 	</script>

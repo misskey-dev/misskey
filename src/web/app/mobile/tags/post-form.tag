@@ -200,13 +200,13 @@
 
 			this.refs.text.focus();
 
-		onkeypress(e) {
+		this.onkeypress = (e) => {
 			if (e.char-code == 10 || e.char-code == 13) && e.ctrlKey
 				@post!
 			else
 				return true
 
-		onpaste(e) {
+		this.onpaste = (e) => {
 			data = e.clipboardData
 			items = data.items
 			for i from 0 to items.length - 1
@@ -216,10 +216,10 @@
 						@upload item.getAsFile();
 			return true
 
-		select-file() {
+		this.select-file = () => {
 			this.refs.file.click!
 
-		select-file-from-drive() {
+		this.select-file-from-drive = () => {
 			browser = document.body.appendChild document.createElement 'mk-drive-selector' 
 			browser = riot.mount browser, do
 				multiple: true
@@ -227,16 +227,16 @@
 			browser.on('selected', (files) => {
 				files.for-each @add-file
 
-		change-file() {
+		this.change-file = () => {
 			files = this.refs.file.files
 			for i from 0 to files.length - 1
 				file = files.item i
 				@upload file
 
-		upload(file) {
+		this.upload = (file) => {
 			this.refs.uploader.upload file
 
-		add-file(file) {
+		this.add-file = (file) => {
 			file._remove = =>
 				this.files = this.files.filter (x) -> x.id != file.id
 				this.trigger 'change-files' this.files
@@ -246,14 +246,14 @@
 			this.trigger 'change-files' this.files
 			this.update();
 
-		add-poll() {
+		this.add-poll = () => {
 			this.poll = true
 
-		on-poll-destroyed() {
+		this.on-poll-destroyed = () => {
 			@update do
 				poll: false
 
-		post() {
+		this.post = () => {
 			this.wait = true
 
 			files = if this.files? and this.files.length > 0
@@ -274,11 +274,11 @@
 				this.wait = false
 				this.update();
 
-		cancel() {
+		this.cancel = () => {
 			this.trigger('cancel');
 			this.unmount();
 
-		cat() {
+		this.cat = () => {
 			this.refs.text.value = this.refs.text.value + get-cat!
 	</script>
 </mk-post-form>

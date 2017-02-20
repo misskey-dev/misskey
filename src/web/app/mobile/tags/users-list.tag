@@ -82,7 +82,7 @@
 			@fetch =>
 				this.trigger('loaded');
 
-		fetch(cb) {
+		this.fetch = (cb) => {
 			this.fetching = true
 			this.update();
 			obj <~ this.opts.fetch do
@@ -95,7 +95,7 @@
 			this.update();
 			if cb? then cb!
 
-		more() {
+		this.more = () => {
 			this.more-fetching = true
 			this.update();
 			obj <~ this.opts.fetch do
@@ -107,7 +107,7 @@
 			this.more-fetching = false
 			this.update();
 
-		set-mode(mode) {
+		this.set-mode = (mode) => {
 			@update do
 				mode: mode
 

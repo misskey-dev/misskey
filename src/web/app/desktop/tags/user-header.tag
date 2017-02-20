@@ -111,16 +111,16 @@
 		this.user = this.opts.user
 
 		this.on('mount', () => {
-			window.add-event-listener 'load' @scroll
-			window.add-event-listener 'scroll' @scroll
-			window.add-event-listener 'resize' @scroll
+			window.addEventListener 'load' @scroll
+			window.addEventListener 'scroll' @scroll
+			window.addEventListener 'resize' @scroll
 
 		this.on('unmount', () => {
-			window.remove-event-listener 'load' @scroll
-			window.remove-event-listener 'scroll' @scroll
-			window.remove-event-listener 'resize' @scroll
+			window.removeEventListener 'load' @scroll
+			window.removeEventListener 'scroll' @scroll
+			window.removeEventListener 'resize' @scroll
 
-		scroll() {
+		this.scroll = () => {
 			top = window.scroll-y
 			height = 280px
 
@@ -131,7 +131,7 @@
 			if blur <= 10
 				this.refs.banner.style.filter = 'blur(' + blur + 'px)'
 
-		on-update-banner() {
+		this.on-update-banner = () => {
 			if not @SIGNIN or this.I.id != @user.id
 				return
 

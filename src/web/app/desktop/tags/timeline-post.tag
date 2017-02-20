@@ -349,17 +349,17 @@
 						riot.mount @preview, do
 							url: t.content
 
-		reply() {
+		this.reply = () => {
 			form = document.body.appendChild document.createElement 'mk-post-form-window' 
 			riot.mount form, do
 				reply: @p
 
-		repost() {
+		this.repost = () => {
 			form = document.body.appendChild document.createElement 'mk-repost-form-window' 
 			riot.mount form, do
 				post: @p
 
-		like() {
+		this.like = () => {
 			if @p.is_liked
 				this.api 'posts/likes/delete' do
 					post_id: @p.id
@@ -373,11 +373,11 @@
 					@p.is_liked = true
 					this.update();
 
-		toggle-detail() {
+		this.toggle-detail = () => {
 			this.is-detail-opened = !@is-detail-opened
 			this.update();
 
-		on-key-down(e) {
+		this.on-key-down = (e) => {
 			should-be-cancel = true
 			switch
 			| e.which == 38 or e.which == 74 or (e.which == 9 and e.shift-key) => // ↑, j or Shift+Tab

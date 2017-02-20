@@ -188,7 +188,7 @@
 		this.file = this.opts.file
 		this.kind = this.file.type.split '/' .0
 
-		rename() {
+		this.rename = () => {
 			name = window.prompt '名前を変更' this.file.name
 			if name? and name != '' and name != this.file.name
 				this.api 'drive/files/update' do

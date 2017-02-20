@@ -20,18 +20,18 @@
 				this.trigger('closed');
 				this.unmount();
 
-		open(pos) {
+		this.open = (pos) => {
 			this.refs.ctx.open pos
 
-		create-folder() {
+		this.create-folder = () => {
 			this.browser.create-folder!
 			this.refs.ctx.close!
 
-		upload() {
+		this.upload = () => {
 			this.browser.select-local-file!
 			this.refs.ctx.close!
 
-		url-upload() {
+		this.url-upload = () => {
 			this.browser.url-upload!
 			this.refs.ctx.close!
 	</script>

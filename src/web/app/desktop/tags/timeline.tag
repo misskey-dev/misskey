@@ -46,24 +46,24 @@
 	<script>
 		this.posts = []
 
-		set-posts(posts) {
+		this.set-posts = (posts) => {
 			this.posts = posts
 			this.update();
 
-		prepend-posts(posts) {
+		this.prepend-posts = (posts) => {
 			posts.for-each (post) =>
 				@posts.push post
 				this.update();
 
-		add-post(post) {
+		this.add-post = (post) => {
 			@posts.unshift post
 			this.update();
 
-		clear() {
+		this.clear = () => {
 			this.posts = []
 			this.update();
 
-		focus() {
+		this.focus = () => {
 			this.root.children.0.focus();
 
 		this.on('update', () => {
@@ -73,7 +73,7 @@
 				post._date = date
 				post._datetext = month + '月 ' + date + '日'
 
-		tail() {
+		this.tail = () => {
 			@posts[@posts.length - 1]
 	</script>
 </mk-timeline>

@@ -111,13 +111,13 @@
 		this.session = this.opts.session
 		this.app = @session.app
 
-		cancel() {
+		this.cancel = () => {
 			this.api 'auth/deny' do
 				token: @session.token
 			.then =>
 				this.trigger('denied');
 
-		accept() {
+		this.accept = () => {
 			this.api 'auth/accept' do
 				token: @session.token
 			.then =>

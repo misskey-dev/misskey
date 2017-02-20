@@ -135,7 +135,7 @@
 		this.on('mount', () => {
 			@load!
 
-		load() {
+		this.load = () => {
 			this.loading = true
 			this.users = null
 			this.update();
@@ -150,14 +150,14 @@
 			.catch (err, text-status) ->
 				console.error err
 
-		refresh() {
+		this.refresh = () => {
 			if @users.length < @limit
 				this.page = 0
 			else
 				@page++
 			@load!
 
-		close() {
+		this.close = () => {
 			this.unmount();
 	</script>
 </mk-following-setuper>

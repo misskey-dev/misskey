@@ -128,7 +128,7 @@
 		this.on('unmount', () => {
 			clear-interval @clock
 
-		fetch(quiet = false) {
+		this.fetch = (quiet = false) => {
 			this.loading = true
 			this.users = null
 			if not quiet then this.update();
@@ -142,7 +142,7 @@
 			.catch (err, text-status) ->
 				console.error err
 
-		refresh() {
+		this.refresh = () => {
 			if @users.length < @limit
 				this.page = 0
 			else

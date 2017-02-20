@@ -127,7 +127,7 @@
 				this.state = 'fetch-session-error' 
 				this.update();
 
-		accepted() {
+		this.accepted = () => {
 			this.state = 'accepted' 
 			this.update();
 

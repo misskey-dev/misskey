@@ -139,16 +139,16 @@
 			this.refs.window.on('closed', () => {
 				this.unmount();
 
-		cancel() {
+		this.cancel = () => {
 			this.done = false
 			this.refs.window.close!
 
-		ok() {
+		this.ok = () => {
 			if not @allow-empty and @text.value == '' then return
 			this.done = true
 			this.refs.window.close!
 
-		on-keydown(e) {
+		this.on-keydown = (e) => {
 			if e.which == 13 // Enter
 				e.preventDefault();
 				e.stopPropagation();

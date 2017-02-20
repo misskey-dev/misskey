@@ -38,8 +38,8 @@
 		this.page = 0
 
 		this.on('mount', () => {
-			document.add-event-listener 'keydown' this.on-document-keydown
-			window.add-event-listener 'scroll' this.on-scroll
+			document.addEventListener 'keydown' this.on-document-keydown
+			window.addEventListener 'scroll' this.on-scroll
 
 			this.api 'posts/search' do
 				query: @query
@@ -53,16 +53,16 @@
 				console.error err
 
 		this.on('unmount', () => {
-			document.remove-event-listener 'keydown' this.on-document-keydown
-			window.remove-event-listener 'scroll' this.on-scroll
+			document.removeEventListener 'keydown' this.on-document-keydown
+			window.removeEventListener 'scroll' this.on-scroll
 
-		on-document-keydown(e) {
+		this.on-document-keydown = (e) => {
 			tag = e.target.tag-name.to-lower-case!
 			if tag != 'input' and tag != 'textarea' 
 				if e.which == 84 // t
 					this.refs.timeline.focus();
 
-		more() {
+		this.more = () => {
 			if @more-loading or @is-loading or @timeline.posts.length == 0
 				return
 			this.more-loading = true
@@ -78,7 +78,7 @@
 			.catch (err) =>
 				console.error err
 
-		on-scroll() {
+		this.on-scroll = () => {
 			current = window.scroll-y + window.inner-height
 			if current > document.body.offset-height - 16 // 遊び
 				@more!

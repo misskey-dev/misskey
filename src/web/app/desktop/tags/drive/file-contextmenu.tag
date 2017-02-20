@@ -54,10 +54,10 @@
 				this.trigger('closed');
 				this.unmount();
 
-		open(pos) {
+		this.open = (pos) => {
 			this.refs.ctx.open pos
 
-		rename() {
+		this.rename = () => {
 			this.refs.ctx.close!
 
 			name <~ @input-dialog do
@@ -73,25 +73,25 @@
 			.catch (err) =>
 				console.error err
 
-		copy-url() {
+		this.copy-url = () => {
 			@NotImplementedException!
 
-		download() {
+		this.download = () => {
 			this.refs.ctx.close!
 
-		set-avatar() {
+		this.set-avatar = () => {
 			this.refs.ctx.close!
 			@update-avatar this.I, null, this.file
 
-		set-banner() {
+		this.set-banner = () => {
 			this.refs.ctx.close!
 			@update-banner this.I, null, this.file
 
-		set-wallpaper() {
+		this.set-wallpaper = () => {
 			this.refs.ctx.close!
 			@update-wallpaper this.I, null, this.file
 
-		add-app() {
+		this.add-app = () => {
 			@NotImplementedException!
 	</script>
 </mk-drive-browser-file-contextmenu>

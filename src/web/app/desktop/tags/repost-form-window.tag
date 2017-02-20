@@ -12,7 +12,7 @@
 
 	</style>
 	<script>
-		on-document-keydown(e) {
+		this.on-document-keydown = (e) => {
 			tag = e.target.tag-name.to-lower-case!
 			if tag != 'input' and tag != 'textarea' 
 				if e.which == 27 // Esc
@@ -25,12 +25,12 @@
 			this.refs.window.refs.form.on('posted', () => {
 				this.refs.window.close!
 
-			document.add-event-listener 'keydown' this.on-document-keydown
+			document.addEventListener 'keydown' this.on-document-keydown
 
 			this.refs.window.on('closed', () => {
 				this.unmount();
 
 		this.on('unmount', () => {
-			document.remove-event-listener 'keydown' this.on-document-keydown
+			document.removeEventListener 'keydown' this.on-document-keydown
 	</script>
 </mk-repost-form-window>

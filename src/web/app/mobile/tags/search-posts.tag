@@ -22,7 +22,7 @@
 				res posts
 				this.trigger('loaded');
 
-		more() {
+		this.more = () => {
 			@offset += @max
 			this.api 'posts/search' do
 				query: @query

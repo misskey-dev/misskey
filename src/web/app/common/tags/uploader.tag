@@ -145,7 +145,7 @@
 		this.uploads = []
 
 		
-		upload(file, folder) {
+		this.upload = (file, folder) => {
 			id = Math.random!
 
 			ctx =

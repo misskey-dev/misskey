@@ -128,18 +128,18 @@
 		this.mixin('api');
 		this.mixin('messaging-stream');
 
-		this.user = this.opts.user
-		this.init = true
-		this.sending = false
-		this.messages = []
+		this.user = this.opts.user;
+		this.init = true;
+		this.sending = false;
+		this.messages = [];
 
-		this.connection = new @MessagingStreamConnection this.I, @user.id
+		this.connection = new this.MessagingStreamConnection(this.I, this.user.id);
 
 		this.on('mount', () => {
-			@connection.event.on 'message' this.on-message
-			@connection.event.on 'read' this.on-read
+			this.connection.event.on('message' this.onMessage);
+			this.connection.event.on('read' this.onRead);
 
-			document.add-event-listener 'visibilitychange' this.on-visibilitychange
+			document.addEventListener 'visibilitychange' this.on-visibilitychange
 
 			this.api 'messaging/messages' do
 				user_id: @user.id
@@ -156,7 +156,7 @@
 			@connection.event.off 'read' this.on-read
 			@connection.close!
 
-			document.remove-event-listener 'visibilitychange' this.on-visibilitychange
+			document.removeEventListener 'visibilitychange' this.on-visibilitychange
 
 		this.on('update', () => {
 			@messages.for-each (message) =>
@@ -165,7 +165,7 @@
 				message._date = date
 				message._datetext = month + '月 ' + date + '日'
 
-		on-message(message) {
+		this.on-message = (message) => {
 			is-bottom = @is-bottom!
 
 			@messages.push message
@@ -182,7 +182,7 @@
 				// Notify
 				@notify '新しいメッセージがあります'
 
-		on-read(ids) {
+		this.on-read = (ids) => {
 			if not Array.isArray ids then ids = [ids]
 			ids.for-each (id) =>
 				if (@messages.some (x) => x.id == id)
@@ -190,15 +190,15 @@
 					@messages[exist].is_read = true
 					this.update();
 
-		is-bottom() {
+		this.is-bottom = () => {
 			current = this.root.scroll-top + this.root.offset-height
 			max = this.root.scroll-height
 			current > (max - 32)
 
-		scroll-to-bottom() {
+		this.scroll-to-bottom = () => {
 			this.root.scroll-top = this.root.scroll-height
 
-		notify(message) {
+		this.notify = (message) => {
 			n = document.createElement 'p' 
 			n.inner-HTML = '<i class="fa fa-arrow-circle-down"></i>' + message
 			n.onclick = =>
@@ -213,7 +213,7 @@
 				, 1000ms
 			, 4000ms
 
-		on-visibilitychange() {
+		this.on-visibilitychange = () => {
 			if document.hidden then return
 			@messages.for-each (message) =>
 				if message.user_id != this.I.id and not message.is_read

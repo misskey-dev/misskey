@@ -23,21 +23,21 @@
 			this.Progress.start();
 
 			@stream.on 'post' this.on-stream-post
-			document.add-event-listener 'visibilitychange' @window-on-visibilitychange, false
+			document.addEventListener 'visibilitychange' @window-on-visibilitychange, false
 
 			this.refs.ui.refs.home.on('loaded', () => {
 				this.Progress.done();
 
 		this.on('unmount', () => {
 			@stream.off 'post' this.on-stream-post
-			document.remove-event-listener 'visibilitychange' @window-on-visibilitychange
+			document.removeEventListener 'visibilitychange' @window-on-visibilitychange
 
-		on-stream-post(post) {
+		this.on-stream-post = (post) => {
 			if document.hidden and post.user_id !== this.I.id
 				@unread-count++
 				document.title = '(' + @unread-count + ') ' + @get-post-summary post
 
-		window-on-visibilitychange() {
+		this.window-on-visibilitychange = () => {
 			if !document.hidden
 				this.unread-count = 0
 				document.title = 'Misskey'

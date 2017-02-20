@@ -24,30 +24,30 @@
 		this.browser = this.opts.browser
 		this.folder = this.opts.folder
 
-		open(pos) {
+		this.open = (pos) => {
 			this.refs.ctx.open pos
 
 			this.refs.ctx.on('closed', () => {
 				this.trigger('closed');
 				this.unmount();
 
-		move() {
+		this.move = () => {
 			this.browser.move this.folder.id
 			this.refs.ctx.close!
 
-		new-window() {
+		this.new-window = () => {
 			this.browser.new-window this.folder.id
 			this.refs.ctx.close!
 
-		create-folder() {
+		this.create-folder = () => {
 			this.browser.create-folder!
 			this.refs.ctx.close!
 
-		upload() {
+		this.upload = () => {
 			this.browser.select-lcoal-file!
 			this.refs.ctx.close!
 
-		rename() {
+		this.rename = () => {
 			this.refs.ctx.close!
 
 			name <~ @input-dialog do

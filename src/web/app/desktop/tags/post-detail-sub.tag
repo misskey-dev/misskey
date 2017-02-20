@@ -123,7 +123,7 @@
 					if e.tag-name == 'MK-URL' 
 						riot.mount e
 
-		like() {
+		this.like = () => {
 			if @post.is_liked
 				this.api 'posts/likes/delete' do
 					post_id: @post.id

@@ -57,7 +57,7 @@
 
 	</style>
 	<script>
-		retry() {
+		this.retry = () => {
 			this.unmount();
 			this.opts.retry();
 		}

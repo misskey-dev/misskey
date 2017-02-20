@@ -68,7 +68,7 @@
 		this.on('unmount', () => {
 			@stream.off 'signin' this.on-signin
 
-		on-signin(signin) {
+		this.on-signin = (signin) => {
 			@history.unshift signin
 			this.update();
 	</script>

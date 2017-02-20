@@ -305,7 +305,7 @@
 			});
 		}
 
-		search() {
+		this.search = () => {
 			const q = this.refs.search.value;
 			if (q == '') {
 				this.searchResult = [];
@@ -323,7 +323,7 @@
 				.catch (err) =>
 					console.error err
 
-		on-search-keydown(e) {
+		this.on-search-keydown = (e) => {
 			key = e.which
 			switch (key)
 				| 9, 40 => // Key[TAB] or Key[↓]
@@ -331,7 +331,7 @@
 					e.stopPropagation();
 					this.refs.search-result.childNodes[0].focus();
 
-		on-search-result-keydown(i, e) {
+		this.on-search-result-keydown = (i, e) => {
 			key = e.which
 			switch (key)
 				| 10, 13 => // Key[ENTER]

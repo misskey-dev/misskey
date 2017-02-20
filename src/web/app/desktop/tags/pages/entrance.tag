@@ -65,15 +65,15 @@
 	<script>
 		this.mode = 'signin' 
 
-		signup() {
+		this.signup = () => {
 			this.mode = 'signup' 
 			this.update();
 
-		signin() {
+		this.signin = () => {
 			this.mode = 'signin' 
 			this.update();
 
-		introduction() {
+		this.introduction = () => {
 			this.mode = 'introduction' 
 			this.update();
 	</script>

@@ -106,7 +106,7 @@
 
 	</style>
 	<script>
-		draw() {
+		this.draw = () => {
 			now = new Date!
 			nd = now.get-date!
 			nm = now.get-month!
