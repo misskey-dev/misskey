@@ -132,10 +132,10 @@
 				this.refs.banner.style.filter = 'blur(' + blur + 'px)'
 
 		on-update-banner() {
-			if not @SIGNIN or @I.id != @user.id
+			if not @SIGNIN or this.I.id != @user.id
 				return
 
-			@update-banner @I, (i) =>
+			@update-banner this.I, (i) =>
 				@user.banner_url = i.banner_url
 				this.update();
 	</script>

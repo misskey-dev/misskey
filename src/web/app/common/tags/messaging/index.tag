@@ -289,29 +289,27 @@
 		this.mixin('i');
 		this.mixin('api');
 
-		this.search-result = []
+		this.searchResult = [];
 
 		this.on('mount', () => {
-			this.api 'messaging/history' 
-			.then (history) =>
-				this.is-loading = false
-				history.for-each (message) =>
-					message.is_me = message.user_id == @I.id
-					message._click = =>
-						if message.is_me
-							this.trigger 'navigate-user' message.recipient
-						else
-							this.trigger 'navigate-user' message.user
-				this.history = history
+			this.api('messaging/history').then(history => {
+				this.isLoading = false;
+				history.forEach(message => {
+					message.is_me = message.user_id == this.I.id
+					message._click = () => {
+						this.trigger('navigate-user', message.is_me ? message.recipient : message.user);
+					};
+				});
+				this.history = history;
 				this.update();
-			.catch (err) =>
-				console.error err
+			});
+		}
 
 		search() {
-			q = this.refs.search.value
-			if q == ''
-				this.search-result = []
-			else
+			const q = this.refs.search.value;
+			if (q == '') {
+				this.searchResult = [];
+			} else {
 				this.api 'users/search' do
 					query: q
 					max: 5

@@ -54,11 +54,11 @@
 			e.prevent-default!
 			e.stop-propagation!
 
-			@I.data.no_donation = true
-			@I.update!
+			this.I.data.no_donation = true
+			this.I.update!
 			this.api 'i/appdata/set' do
 				data: JSON.stringify do
-					no_donation: @I.data.no_donation
+					no_donation: this.I.data.no_donation
 
 			this.unmount();
 

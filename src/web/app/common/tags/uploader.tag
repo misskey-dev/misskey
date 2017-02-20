@@ -164,7 +164,7 @@
 			reader.read-as-data-URL file
 
 			data = new FormData!
-			data.append 'i' @I.token
+			data.append 'i' this.I.token
 			data.append 'file' file
 
 			if folder?

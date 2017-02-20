@@ -70,7 +70,7 @@
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 
-			@I.data.home.for-each (widget) =>
+			this.I.data.home.for-each (widget) =>
 				try
 					el = document.createElement 'mk-' + widget.name + '-home-widget' 
 					switch widget.place

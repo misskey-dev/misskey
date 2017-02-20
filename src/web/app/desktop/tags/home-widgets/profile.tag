@@ -47,9 +47,9 @@
 		this.mixin('update-banner');
 
 		set-avatar() {
-			@update-avatar @I
+			@update-avatar this.I
 
 		set-banner() {
-			@update-banner @I
+			@update-banner this.I
 	</script>
 </mk-profile-home-widget>

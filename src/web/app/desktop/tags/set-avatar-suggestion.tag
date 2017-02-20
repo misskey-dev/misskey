@@ -35,7 +35,7 @@
 		this.mixin('update-avatar');
 
 		set() {
-			@update-avatar @I
+			@update-avatar this.I
 
 		close(e) {
 			e.prevent-default!

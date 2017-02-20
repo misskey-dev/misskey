@@ -133,7 +133,7 @@
 		this.sending = false
 		this.messages = []
 
-		this.connection = new @MessagingStreamConnection @I, @user.id
+		this.connection = new @MessagingStreamConnection this.I, @user.id
 
 		this.on('mount', () => {
 			@connection.event.on 'message' this.on-message
@@ -169,7 +169,7 @@
 			is-bottom = @is-bottom!
 
 			@messages.push message
-			if message.user_id != @I.id and not document.hidden
+			if message.user_id != this.I.id and not document.hidden
 				@connection.socket.send JSON.stringify do
 					type: 'read' 
 					id: message.id
@@ -178,7 +178,7 @@
 			if is-bottom
 				// Scroll to bottom
 				@scroll-to-bottom!
-			else if message.user_id != @I.id
+			else if message.user_id != this.I.id
 				// Notify
 				@notify '新しいメッセージがあります'
 
@@ -216,7 +216,7 @@
 		on-visibilitychange() {
 			if document.hidden then return
 			@messages.for-each (message) =>
-				if message.user_id != @I.id and not message.is_read
+				if message.user_id != this.I.id and not message.is_read
 					@connection.socket.send JSON.stringify do
 						type: 'read' 
 						id: message.id

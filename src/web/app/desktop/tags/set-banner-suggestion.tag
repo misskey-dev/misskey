@@ -35,7 +35,7 @@
 		this.mixin('update-banner');
 
 		set() {
-			@update-banner @I
+			@update-banner this.I
 
 		close(e) {
 			e.prevent-default!

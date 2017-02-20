@@ -35,7 +35,7 @@
 			document.remove-event-listener 'visibilitychange' @window-on-visibilitychange
 
 		on-stream-post(post) {
-			if document.hidden and post.user_id !== @I.id
+			if document.hidden and post.user_id !== this.I.id
 				@unread-count++
 				document.title = '(' + @unread-count + ') ' + @get-post-summary post
 

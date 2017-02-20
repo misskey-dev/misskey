@@ -209,7 +209,7 @@
 			this.page = page
 
 		avatar() {
-			@update-avatar @I
+			@update-avatar this.I
 
 		update-account() {
 			this.api 'i/update' do
@@ -223,21 +223,21 @@
 				console.error err
 
 		update-cache() {
-			@I.data.cache = !@I.data.cache
+			this.I.data.cache = !this.I.data.cache
 			this.api 'i/appdata/set' do
 				data: JSON.stringify do
-					cache: @I.data.cache
+					cache: this.I.data.cache
 
 		update-debug() {
-			@I.data.debug = !@I.data.debug
+			this.I.data.debug = !this.I.data.debug
 			this.api 'i/appdata/set' do
 				data: JSON.stringify do
-					debug: @I.data.debug
+					debug: this.I.data.debug
 
 		update-nya() {
-			@I.data.nya = !@I.data.nya
+			this.I.data.nya = !this.I.data.nya
 			this.api 'i/appdata/set' do
 				data: JSON.stringify do
-					nya: @I.data.nya
+					nya: this.I.data.nya
 	</script>
 </mk-settings>

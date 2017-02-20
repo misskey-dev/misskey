@@ -39,7 +39,7 @@
 		this.is-loading = true
 		this.is-empty = false
 		this.more-loading = false
-		this.no-following = @I.following_count == 0
+		this.no-following = this.I.following_count == 0
 
 		this.on('mount', () => {
 			@stream.on 'post' this.on-stream-post

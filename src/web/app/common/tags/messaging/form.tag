@@ -150,23 +150,26 @@
 			event.one('selected', files => {
 				files.forEach(this.addFile);
 			});
+		}
 
 		send() {
-			this.sending = true
-			this.api 'messaging/messages/create' do
-				user_id: this.opts.user.id
+			this.sending = true;
+			this.api('messaging/messages/create', {
+				user_id: this.opts.user.id,
 				text: this.refs.text.value
-			.then (message) =>
-				@clear!
-			.catch (err) =>
-				console.error err
-			.then =>
-				this.sending = false
+			}).then(message => {
+				this.clear();
+			}).catch(err => {
+				console.error(err);
+			}).then(() => {
+				this.sending = false;
 				this.update();
+			});
 
 		clear() {
-			this.refs.text.value = ''
-			this.files = []
+			this.refs.text.value = '';
+			this.files = [];
 			this.update();
+		}
 	</script>
 </mk-messaging-form>

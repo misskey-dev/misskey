@@ -207,7 +207,7 @@
 		this.mixin('text');
 
 		this.message = this.opts.message
-		@message.is_me = @message.user.id == @I.id
+		@message.is_me = @message.user.id == this.I.id
 
 		this.on('mount', () => {
 			if @message.text?

@@ -81,15 +81,15 @@
 
 		set-avatar() {
 			this.refs.ctx.close!
-			@update-avatar @I, null, @file
+			@update-avatar this.I, null, @file
 
 		set-banner() {
 			this.refs.ctx.close!
-			@update-banner @I, null, @file
+			@update-banner this.I, null, @file
 
 		set-wallpaper() {
 			this.refs.ctx.close!
-			@update-wallpaper @I, null, @file
+			@update-wallpaper this.I, null, @file
 
 		add-app() {
 			@NotImplementedException!
