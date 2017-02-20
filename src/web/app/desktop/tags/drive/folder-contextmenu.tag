@@ -21,11 +21,11 @@
 		this.mixin('api');
 		this.mixin('input-dialog');
 
-		this.browser = this.opts.browser
-		this.folder = this.opts.folder
+		this.browser = this.opts.browser;
+		this.folder = this.opts.folder;
 
-		this.open = (pos) => {
-			this.refs.ctx.open pos
+		this.open = pos => {
+			this.refs.ctx.open(pos);
 
 			this.refs.ctx.on('closed', () => {
 				this.trigger('closed');
@@ -33,29 +33,25 @@
 
 		this.move = () => {
 			this.browser.move this.folder.id
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 
-		this.new-window = () => {
-			this.browser.new-window this.folder.id
-			this.refs.ctx.close!
+		this.newWindow = () => {
+			this.browser.newWindow this.folder.id
+			this.refs.ctx.close();
 
-		this.create-folder = () => {
-			this.browser.create-folder!
-			this.refs.ctx.close!
-
-		this.upload = () => {
-			this.browser.select-lcoal-file!
-			this.refs.ctx.close!
+		this.createFolder = () => {
+			this.browser.createFolder();
+			this.refs.ctx.close();
 
 		this.rename = () => {
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 
 			name <~ @input-dialog do
 				'フォルダ名の変更'
 				'新しいフォルダ名を入力してください'
 				this.folder.name
 
-			this.api 'drive/folders/update' do
+			this.api('drive/folders/update', {
 				folder_id: this.folder.id
 				name: name
 			.then =>

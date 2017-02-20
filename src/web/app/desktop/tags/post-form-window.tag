@@ -42,7 +42,7 @@
 				this.unmount();
 
 			this.refs.window.refs.form.on('post', () => {
-				this.refs.window.close!
+				this.refs.window.close();
 
 			this.refs.window.refs.form.on('change-uploading-files', (files) => {
 				this.uploading-files = files

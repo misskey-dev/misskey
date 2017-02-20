@@ -125,10 +125,10 @@
 
 		this.ok = () => {
 			this.wait = true
-			this.api 'posts/create' do
+			this.api('posts/create', {
 				repost_id: this.opts.post.id
 				text: if @quote then this.refs.text.value else undefined
-			.then (data) =>
+			}).then((data) => {
 				this.trigger('posted');
 				@notify 'Repostしました！'
 			.catch (err) =>

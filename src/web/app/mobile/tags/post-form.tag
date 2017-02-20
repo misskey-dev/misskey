@@ -220,8 +220,8 @@
 			this.refs.file.click();
 
 		this.select-file-from-drive = () => {
-			browser = document.body.appendChild document.createElement 'mk-drive-selector' 
-			browser = riot.mount browser, do
+			browser = document.body.appendChild(document.createElement('mk-drive-selector'));
+ 			browser = riot.mount browser, do
 				multiple: true
 			.0
 			browser.on('selected', (files) => {
@@ -260,12 +260,12 @@
 				then this.files.map (f) -> f.id
 				else undefined
 
-			this.api 'posts/create' do
+			this.api('posts/create', {
 				text: this.refs.text.value
 				media_ids: files
 				reply_to_id: if this.opts.reply? then this.opts.reply.id else undefined
 				poll: if this.poll then this.refs.poll.get! else undefined
-			.then (data) =>
+			}).then((data) => {
 				this.trigger('post');
 				this.unmount();
 			.catch (err) =>

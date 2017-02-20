@@ -320,7 +320,7 @@
 
 		this.bg-click = () => {
 			if @can-close
-				@close!
+				@close();
 
 		this.on-body-mousedown = (e) => {
 			@top!
@@ -506,7 +506,7 @@
 				if @can-close
 					e.preventDefault();
 					e.stopPropagation();
-					@close!
+					@close();
 
 		function contains(parent, child)
 			node = child.parentNode

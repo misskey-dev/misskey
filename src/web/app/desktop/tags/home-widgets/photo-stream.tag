@@ -66,10 +66,10 @@
 		this.on('mount', () => {
 			this.stream.on 'drive_file_created' this.on-stream-drive-file-created
 
-			this.api 'drive/stream' do
+			this.api('drive/stream', {
 				type: 'image/*'
 				limit: 9images
-			.then (images) =>
+			}).then((images) => {
 				this.initializing = false
 				this.images = images
 				this.update();

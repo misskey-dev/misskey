@@ -132,10 +132,10 @@
 			this.loading = true
 			this.users = null
 			if not quiet then this.update();
-			this.api 'users/recommendation' do
+			this.api('users/recommendation', {
 				limit: @limit
 				offset: @limit * this.page
-			.then (users) =>
+			}).then((users) => {
 				this.loading = false
 				this.users = users
 				this.update();

@@ -44,8 +44,8 @@
 			this.refs.nav.root.style.display = if @is-drawer-opening then 'block' else 'none' 
 
 		this.on-stream-notification = (notification) => {
-			el = document.body.appendChild document.createElement 'mk-notify' 
-			riot.mount el, do
+			el = document.body.appendChild(document.createElement('mk-notify'));
+ 			riot.mount el, do
 				notification: notification
 	</script>
 </mk-ui>

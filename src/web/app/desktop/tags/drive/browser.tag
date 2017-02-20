@@ -405,7 +405,7 @@
 				if (this.files.some (f) => f.id == file)
 					return false
 				@remove-file file
-				this.api 'drive/files/update' do
+				this.api('drive/files/update', {
 					file_id: file
 					folder_id: if this.folder? then this.folder.id else null
 				.then =>
@@ -422,7 +422,7 @@
 				if (this.folders.some (f) => f.id == folder)
 					return false
 				@remove-folder folder
-				this.api 'drive/folders/update' do
+				this.api('drive/folders/update', {
 					folder_id: folder
 					parent_id: if this.folder? then this.folder.id else null
 				.then =>
@@ -442,8 +442,8 @@
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
-			ctx = document.body.appendChild document.createElement 'mk-drive-browser-base-contextmenu' 
-			ctx = riot.mount ctx, do
+			ctx = document.body.appendChild(document.createElement('mk-drive-browser-base-contextmenu'));
+ 			ctx = riot.mount ctx, do
 				browser: this
 			ctx = ctx.0
 			ctx.open do
@@ -462,7 +462,7 @@
 				null
 
 			if url? and url != ''
-				this.api 'drive/files/upload_from_url' do
+				this.api('drive/files/upload_from_url', {
 					url: url
 					folder_id: if this.folder? then this.folder.id else undefined
 
@@ -473,16 +473,16 @@
 						text: 'OK' 
 					]
 
-		this.create-folder = () => {
+		this.createFolder = () => {
 			name <~ @input-dialog do
 				'フォルダー作成'
 				'フォルダー名'
 				null
 
-			this.api 'drive/folders/create' do
+			this.api('drive/folders/create', {
 				name: name
 				folder_id: if this.folder? then this.folder.id else undefined
-			.then (folder) =>
+			}).then((folder) => {
 				@add-folder folder, true
 				this.update();
 			.catch (err) =>
@@ -502,9 +502,9 @@
 		this.get-selection = () => {
 			this.files.filter (file) -> file._selected
 
-		this.new-window = (folder-id) => {
-			browser = document.body.appendChild document.createElement 'mk-drive-browser-window' 
-			riot.mount browser, do
+		this.newWindow = (folder-id) => {
+			browser = document.body.appendChild(document.createElement('mk-drive-browser-window'));
+ 			riot.mount browser, do
 				folder: folder-id
 
 		this.move = (target-folder) => {
@@ -518,9 +518,9 @@
 			this.loading = true
 			this.update();
 
-			this.api 'drive/folders/show' do
+			this.api('drive/folders/show', {
 				folder_id: target-folder
-			.then (folder) =>
+			}).then((folder) => {
 				this.folder = folder
 				this.hierarchyFolders = []
 
@@ -607,10 +607,10 @@
 			files-max = 30
 
 			// フォルダ一覧取得
-			this.api 'drive/folders' do
+			this.api('drive/folders', {
 				folder_id: if this.folder? then this.folder.id else null
 				limit: folders-max + 1
-			.then (folders) =>
+			}).then((folders) => {
 				if folders.length == folders-max + 1
 					this.more-folders = true
 					folders.pop!
@@ -620,10 +620,10 @@
 				console.error err
 
 			// ファイル一覧取得
-			this.api 'drive/files' do
+			this.api('drive/files', {
 				folder_id: if this.folder? then this.folder.id else null
 				limit: files-max + 1
-			.then (files) =>
+			}).then((files) => {
 				if files.length == files-max + 1
 					this.more-files = true
 					files.pop!

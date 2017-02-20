@@ -58,14 +58,14 @@
 			this.refs.ctx.open pos
 
 		this.rename = () => {
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 
 			name <~ @input-dialog do
 				'ファイル名の変更'
 				'新しいファイル名を入力してください'
 				this.file.name
 
-			this.api 'drive/files/update' do
+			this.api('drive/files/update', {
 				file_id: this.file.id
 				name: name
 			.then =>
@@ -77,18 +77,18 @@
 			@NotImplementedException!
 
 		this.download = () => {
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 
 		this.set-avatar = () => {
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 			@update-avatar this.I, null, this.file
 
 		this.set-banner = () => {
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 			@update-banner this.I, null, this.file
 
 		this.set-wallpaper = () => {
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 			@update-wallpaper this.I, null, this.file
 
 		this.add-app = () => {

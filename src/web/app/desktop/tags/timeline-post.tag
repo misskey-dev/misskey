@@ -55,8 +55,13 @@
 				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
 					<p class="count" if={ p.likes_count > 0 }>{ p.likes_count }</p>
 				</button>
-				<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
-				<button onclick={ toggleDetail } title="詳細"><i class="fa fa-caret-down" if={ !isDetailOpened }></i><i class="fa fa-caret-up" if={ isDetailOpened }></i></button>
+				<button onclick={ NotImplementedException }>
+					<i class="fa fa-ellipsis-h"></i>
+				</button>
+				<button onclick={ toggleDetail } title="詳細">
+					<i class="fa fa-caret-down" if={ !isDetailOpened }></i>
+					<i class="fa fa-caret-up" if={ isDetailOpened }></i>
+				</button>
 			</footer>
 		</div>
 	</article>
@@ -328,46 +333,45 @@
 		this.isDetailOpened = false;
 
 		this.on('mount', () => {
-			if this.p.text?
-				tokens = if this.p._highlight?
-					then @analyze this.p._highlight
-					else @analyze this.p.text
+			if (this.p.text) {
+				const tokens = this.analyze(this.p.text);
 
-				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if this.p._highlight?
-					then @compile tokens, true, false
-					else @compile tokens
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', this.compile(tokens));
 
-				this.refs.text.children.forEach (e) =>
-					if e.tag-name == 'MK-URL' 
-						riot.mount e
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
 
 				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == 'link' 
-					.map (t) =>
-						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
-						riot.mount this.preview, do
-							url: t.content
+				.filter(t => t.type == 'link')
+				.map(t => {
+					riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+						url: t.content
+					});
+				});
+			}
+		});
 
 		this.reply = () => {
-			form = document.body.appendChild document.createElement 'mk-post-form-window' 
-			riot.mount form, do
+			form = document.body.appendChild(document.createElement('mk-post-form-window'));
+ 			riot.mount form, do
 				reply: this.p
 
 		this.repost = () => {
-			form = document.body.appendChild document.createElement 'mk-repost-form-window' 
-			riot.mount form, do
+			form = document.body.appendChild(document.createElement('mk-repost-form-window'));
+ 			riot.mount form, do
 				post: this.p
 
 		this.like = () => {
 			if this.p.is_liked
-				this.api 'posts/likes/delete' do
+				this.api('posts/likes/delete', {
 					post_id: this.p.id
 				.then =>
 					this.p.is_liked = false
 					this.update();
 			else
-				this.api 'posts/likes/create' do
+				this.api('posts/likes/create', {
 					post_id: this.p.id
 				.then =>
 					this.p.is_liked = true

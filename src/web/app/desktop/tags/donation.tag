@@ -54,11 +54,13 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			this.I.data.no_donation = true
-			this.I.update!
-			this.api 'i/appdata/set' do
-				data: JSON.stringify do
+			this.I.data.no_donation = true;
+			this.I.update();
+			this.api('i/appdata/set', {
+				data: JSON.stringify({
 					no_donation: this.I.data.no_donation
+				})
+			});
 
 			this.unmount();
 		};

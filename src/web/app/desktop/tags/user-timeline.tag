@@ -63,7 +63,7 @@
 			document.addEventListener 'keydown' this.on-document-keydown
 			window.addEventListener 'scroll' this.on-scroll
 
-			this.user-promise.then (user) =>
+			this.user-promise}).then((user) => {
 				this.user = user
 				this.update();
 
@@ -82,10 +82,10 @@
 					this.refs.timeline.focus();
 
 		this.fetch = (cb) => {
-			this.api 'users/posts' do
+			this.api('users/posts', {
 				user_id: this.user.id
 				with_replies: this.mode == 'with-replies' 
-			.then (posts) =>
+			}).then((posts) => {
 				this.is-loading = false
 				this.is-empty = posts.length == 0
 				this.update();
@@ -100,11 +100,11 @@
 				return
 			this.more-loading = true
 			this.update();
-			this.api 'users/posts' do
+			this.api('users/posts', {
 				user_id: this.user.id
 				with_replies: this.mode == 'with-replies' 
 				max_id: this.refs.timeline.tail!.id
-			.then (posts) =>
+			}).then((posts) => {
 				this.more-loading = false
 				this.update();
 				this.refs.timeline.prepend-posts posts

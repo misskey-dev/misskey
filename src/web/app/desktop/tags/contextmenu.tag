@@ -100,7 +100,7 @@
 		this.mousedown = (e) => {
 			e.preventDefault();
 			if (!contains this.root, e.target) and (this.root != e.target)
-				@close!
+				@close();
 			return false
 
 		this.open = (pos) => {

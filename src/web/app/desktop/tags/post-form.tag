@@ -405,8 +405,8 @@
 			this.refs.file.click();
 
 		this.select-file-from-drive = () => {
-			browser = document.body.appendChild document.createElement 'mk-select-file-from-drive-window' 
-			i = riot.mount browser, do
+			browser = document.body.appendChild(document.createElement('mk-select-file-from-drive-window'));
+ 			i = riot.mount browser, do
 				multiple: true
 			i[0].one 'selected' (files) =>
 				files.forEach @add-file
@@ -444,12 +444,12 @@
 				then this.files.map (f) -> f.id
 				else undefined
 
-			this.api 'posts/create' do
+			this.api('posts/create', {
 				text: this.refs.text.value
 				media_ids: files
 				reply_to_id: if @in-reply-to-post? then @in-reply-to-post.id else undefined
 				poll: if this.poll then this.refs.poll.get! else undefined
-			.then (data) =>
+			}).then((data) => {
 				this.trigger('post');
 				@notify if @in-reply-to-post? then '返信しました！' else '投稿しました！'
 			.catch (err) =>

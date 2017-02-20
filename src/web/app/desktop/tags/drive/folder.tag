@@ -115,7 +115,7 @@
 			if obj.type == 'file' 
 				file = obj.id
 				this.browser.remove-file file
-				this.api 'drive/files/update' do
+				this.api('drive/files/update', {
 					file_id: file
 					folder_id: this.folder.id
 				.then =>
@@ -130,7 +130,7 @@
 				if folder == this.folder.id
 					return false
 				this.browser.remove-folder folder
-				this.api 'drive/folders/update' do
+				this.api('drive/folders/update', {
 					folder_id: folder
 					parent_id: this.folder.id
 				.then =>
@@ -167,8 +167,8 @@
 
 			this.is-contextmenu-showing = true
 			this.update();
-			ctx = document.body.appendChild document.createElement 'mk-drive-browser-folder-contextmenu' 
-			ctx = riot.mount ctx, do
+			ctx = document.body.appendChild(document.createElement('mk-drive-browser-folder-contextmenu'));
+ 			ctx = riot.mount ctx, do
 				browser: this.browser
 				folder: this.folder
 			ctx = ctx.0

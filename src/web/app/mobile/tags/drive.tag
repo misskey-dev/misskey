@@ -206,9 +206,9 @@
 			this.loading = true
 			this.update();
 
-			this.api 'drive/folders/show' do
+			this.api('drive/folders/show', {
 				folder_id: target-folder
-			.then (folder) =>
+			}).then((folder) => {
 				this.folder = folder
 				this.hierarchyFolders = []
 
@@ -297,10 +297,10 @@
 			files-max = 20
 
 			// フォルダ一覧取得
-			this.api 'drive/folders' do
+			this.api('drive/folders', {
 				folder_id: if this.folder? then this.folder.id else null
 				limit: folders-max + 1
-			.then (folders) =>
+			}).then((folders) => {
 				if folders.length == folders-max + 1
 					this.more-folders = true
 					folders.pop!
@@ -310,10 +310,10 @@
 				console.error err
 
 			// ファイル一覧取得
-			this.api 'drive/files' do
+			this.api('drive/files', {
 				folder_id: if this.folder? then this.folder.id else null
 				limit: files-max + 1
-			.then (files) =>
+			}).then((files) => {
 				if files.length == files-max + 1
 					this.more-files = true
 					files.pop!
@@ -356,9 +356,9 @@
 			this.loading = true
 			this.update();
 
-			this.api 'drive/files/show' do
+			this.api('drive/files/show', {
 				file_id: file
-			.then (file) =>
+			}).then((file) => {
 				this.file = file
 				this.folder = null
 				this.hierarchyFolders = []

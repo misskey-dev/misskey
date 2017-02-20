@@ -80,6 +80,5 @@
 									display none
 
 	</style>
-
 	<script>this.mixin('i');</script>
 </mk-ui-header>

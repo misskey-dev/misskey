@@ -177,8 +177,8 @@
 
 			this.is-contextmenu-showing = true
 			this.update();
-			ctx = document.body.appendChild document.createElement 'mk-drive-browser-file-contextmenu' 
-			ctx = riot.mount ctx, do
+			ctx = document.body.appendChild(document.createElement('mk-drive-browser-file-contextmenu'));
+ 			ctx = riot.mount ctx, do
 				browser: this.browser
 				file: this.file
 			ctx = ctx.0

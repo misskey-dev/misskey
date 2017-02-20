@@ -16,15 +16,15 @@
 		this.with-media = this.opts.with-media
 
 		this.init = new Promise (res, rej) =>
-			this.api 'posts/search' do
+			this.api('posts/search', {
 				query: @query
-			.then (posts) =>
+			}).then((posts) => {
 				res posts
 				this.trigger('loaded');
 
 		this.more = () => {
 			@offset += @max
-			this.api 'posts/search' do
+			this.api('posts/search', {
 				query: @query
 				max: @max
 				offset: @offset

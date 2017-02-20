@@ -87,13 +87,13 @@
 		this.user = this.opts.user
 
 		this.show-following = () => {
-			window = document.body.appendChild document.createElement 'mk-user-following-window' 
-			riot.mount window, do
+			window = document.body.appendChild(document.createElement('mk-user-following-window'));
+ 			riot.mount window, do
 				user: this.user
 
 		this.show-followers = () => {
-			window = document.body.appendChild document.createElement 'mk-user-followers-window' 
-			riot.mount window, do
+			window = document.body.appendChild(document.createElement('mk-user-followers-window'));
+ 			riot.mount window, do
 				user: this.user
 	</script>
 </mk-user-profile>

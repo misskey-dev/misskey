@@ -165,11 +165,11 @@
 		this.is-open = false
 
 		this.on('before-unmount', () => {
-			@close!
+			@close();
 
 		this.toggle = () => {
 			if @is-open
-				@close!
+				@close();
 			else
 				@open!
 
@@ -190,17 +190,17 @@
 		this.mousedown = (e) => {
 			e.preventDefault();
 			if (!contains this.root, e.target) and (this.root != e.target)
-				@close!
+				@close();
 			return false
 
 		this.drive = () => {
-			@close!
-			riot.mount document.body.appendChild document.createElement 'mk-drive-browser-window' 
-
+			@close();
+			riot.mount document.body.appendChild(document.createElement('mk-drive-browser-window'));
+ 
 		this.settings = () => {
-			@close!
-			riot.mount document.body.appendChild document.createElement 'mk-settings-window' 
-
+			@close();
+			riot.mount document.body.appendChild(document.createElement('mk-settings-window'));
+ 
 		function contains(parent, child)
 			node = child.parentNode
 			while node?

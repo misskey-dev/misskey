@@ -16,14 +16,14 @@
 			tag = e.target.tag-name.to-lower-case!
 			if tag != 'input' and tag != 'textarea' 
 				if e.which == 27 // Esc
-					this.refs.window.close!
+					this.refs.window.close();
 
 		this.on('mount', () => {
 			this.refs.window.refs.form.on('cancel', () => {
-				this.refs.window.close!
+				this.refs.window.close();
 
 			this.refs.window.refs.form.on('posted', () => {
-				this.refs.window.close!
+				this.refs.window.close();
 
 			document.addEventListener 'keydown' this.on-document-keydown
 

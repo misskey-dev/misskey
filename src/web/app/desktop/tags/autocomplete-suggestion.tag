@@ -95,10 +95,10 @@
 			Array.prototype.forEach.call all, (el) =>
 				el.addEventListener 'mousedown' @mousedown
 
-			this.api 'users/search_by_username' do
+			this.api('users/search_by_username', {
 				query: @q
 				limit: 30users
-			.then (users) =>
+			}).then((users) => {
 				this.users = users
 				this.loading = false
 				this.update();
@@ -114,7 +114,7 @@
 
 		this.mousedown = (e) => {
 			if (!contains this.root, e.target) and (this.root != e.target)
-				@close!
+				@close();
 
 		this.on-click = (e) => {
 			@complete e.item
@@ -128,24 +128,24 @@
 						e.stopPropagation();
 						@complete this.users[@select]
 					else
-						@close!
+						@close();
 				| 27 => // Key[ESC]
 					e.preventDefault();
 					e.stopPropagation();
-					@close!
+					@close();
 				| 38 => // Key[↑]
 					if @select != -1
 						e.preventDefault();
 						e.stopPropagation();
 						@select-prev!
 					else
-						@close!
+						@close();
 				| 9, 40 => // Key[TAB] or Key[↓]
 					e.preventDefault();
 					e.stopPropagation();
 					@select-next!
 				| _ =>
-					@close!
+					@close();
 
 		this.select-next = () => {
 			@select++
@@ -174,7 +174,7 @@
 			this.opts.complete user
 
 		this.close = () => {
-			this.opts.close!
+			this.opts.close();
 
 		function contains(parent, child)
 			node = child.parentNode

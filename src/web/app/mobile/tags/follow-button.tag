@@ -58,7 +58,7 @@
 		this.wait = false
 
 		this.on('mount', () => {
-			this.user-promise.then (user) =>
+			this.user-promise}).then((user) => {
 				this.user = user
 				this.init = false
 				this.update();
@@ -82,7 +82,7 @@
 		this.onclick = () => {
 			this.wait = true
 			if this.user.is_following
-				this.api 'following/delete' do
+				this.api('following/delete', {
 					user_id: this.user.id
 				.then =>
 					this.user.is_following = false
@@ -92,7 +92,7 @@
 					this.wait = false
 					this.update();
 			else
-				this.api 'following/create' do
+				this.api('following/create', {
 					user_id: this.user.id
 				.then =>
 					this.user.is_following = true

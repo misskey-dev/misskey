@@ -140,10 +140,10 @@
 			this.users = null
 			this.update();
 
-			this.api 'users/recommendation' do
+			this.api('users/recommendation', {
 				limit: @limit
 				offset: @limit * this.page
-			.then (users) =>
+			}).then((users) => {
 				this.loading = false
 				this.users = users
 				this.update();

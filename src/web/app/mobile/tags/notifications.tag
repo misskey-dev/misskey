@@ -66,7 +66,7 @@
 
 		this.on('mount', () => {
 			this.api 'i/notifications' 
-			.then (notifications) =>
+			}).then((notifications) => {
 				this.notifications = notifications
 				this.loading = false
 				this.update();

@@ -19,16 +19,16 @@
 			this.user = user
 			this.update();
 
-			this.api 'aggregation/users/followers' do
+			this.api('aggregation/users/followers', {
 				user_id: this.user.id
 				limit: 30days
-			.then (followers) =>
+			}).then((followers) => {
 				followers = followers.reverse!
 
-				this.api 'aggregation/users/following' do
+				this.api('aggregation/users/following', {
 					user_id: this.user.id
 					limit: 30days
-				.then (following) =>
+				}).then((following) => {
 					following = following.reverse!
 
 					new Chart this.refs.canv, do

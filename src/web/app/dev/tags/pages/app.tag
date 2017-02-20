@@ -20,9 +20,9 @@
 		this.fetching = true
 
 		this.on('mount', () => {
-			this.api 'app/show' do
+			this.api('app/show', {
 				app_id: this.opts.app
-			.then (app) =>
+			}).then((app) => {
 				this.app = app
 				this.fetching = false
 				this.update();

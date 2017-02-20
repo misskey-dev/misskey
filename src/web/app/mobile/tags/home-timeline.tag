@@ -11,7 +11,7 @@
 
 		this.init = new Promise (res, rej) =>
 			this.api 'posts/timeline' 
-			.then (posts) =>
+			}).then((posts) => {
 				res posts
 				this.trigger('loaded');
 
@@ -26,7 +26,7 @@
 			this.stream.off 'unfollow' this.on-stream-unfollow
 
 		this.more = () => {
-			this.api 'posts/timeline' do
+			this.api('posts/timeline', {
 				max_id: this.refs.timeline.tail!.id
 
 		this.on-stream-post = (post) => {

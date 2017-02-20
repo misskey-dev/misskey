@@ -80,7 +80,7 @@
 		this.can-fetch-more = true
 
 		this.on('mount', () => {
-			this.opts.init.then (posts) =>
+			this.opts.init}).then((posts) => {
 				this.init = false
 				@set-posts posts
 
@@ -95,7 +95,7 @@
 			if @init or @fetching or this.posts.length == 0 then return
 			this.fetching = true
 			this.update();
-			this.opts.more!.then (posts) =>
+			this.opts.more!}).then((posts) => {
 				this.fetching = false
 				this.prepend-posts posts
 

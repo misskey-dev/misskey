@@ -41,9 +41,9 @@
 			document.addEventListener 'keydown' this.on-document-keydown
 			window.addEventListener 'scroll' this.on-scroll
 
-			this.api 'posts/search' do
+			this.api('posts/search', {
 				query: @query
-			.then (posts) =>
+			}).then((posts) => {
 				this.is-loading = false
 				this.is-empty = posts.length == 0
 				this.update();
@@ -67,10 +67,10 @@
 				return
 			this.more-loading = true
 			this.update();
-			this.api 'posts/search' do
+			this.api('posts/search', {
 				query: @query
 				page: this.page + 1
-			.then (posts) =>
+			}).then((posts) => {
 				this.more-loading = false
 				this.page++
 				this.update();

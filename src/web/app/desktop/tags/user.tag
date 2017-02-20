@@ -40,9 +40,9 @@
 		this.user = null
 
 		this.on('mount', () => {
-			this.api 'users/show' do
+			this.api('users/show', {
 				username: this.username
-			.then (user) =>
+			}).then((user) => {
 				this.fetching = false
 				this.user = user
 				this.update();

@@ -103,9 +103,9 @@
 		this.signing = false;
 
 		this.oninput = () => {
-			this.api 'users/show' do
+			this.api('users/show', {
 				username: this.refs.username.value
-			.then (user) =>
+			}).then((user) => {
 				this.user = user
 				this.trigger 'user' user
 				this.update();
@@ -123,7 +123,7 @@
 			this.signing = true
 			this.update();
 
-			this.api 'signin' do
+			this.api('signin', {
 				username: this.refs.username.value
 				password: this.refs.password.value
 			.then =>

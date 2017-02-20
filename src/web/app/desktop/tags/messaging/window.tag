@@ -24,8 +24,8 @@
 				this.unmount();
 
 			this.refs.window.refs.index.on('navigate-user', user => {
-				w = document.body.appendChild document.createElement 'mk-messaging-room-window' 
-				riot.mount w, do
+				w = document.body.appendChild(document.createElement('mk-messaging-room-window'));
+ 				riot.mount w, do
 					user: user
 	</script>
 </mk-messaging-window>

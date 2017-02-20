@@ -13,9 +13,9 @@
 		this.fetching = true
 
 		this.on('mount', () => {
-			this.api 'users/show' do
+			this.api('users/show', {
 				username: this.opts.username
-			.then (user) =>
+			}).then(user => {
 				this.fetching = false
 				this.user = user
 				this.update();

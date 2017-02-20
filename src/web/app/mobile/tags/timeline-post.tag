@@ -3,10 +3,19 @@
 		<mk-timeline-post-sub post={ p.reply_to }></mk-timeline-post-sub>
 	</div>
 	<div class="repost" if={ isRepost }>
-		<p><a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }><img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a><i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>がRepost</p>
+		<p>
+			<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }>
+				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+			</a>
+			<i class="fa fa-retweet"></i>
+			<a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>がRepost
+		</p>
 		<mk-time time={ post.created_at }></mk-time>
 	</div>
-	<article><a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }><img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=96' } alt="avatar"/></a>
+	<article>
+		<a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }>
+			<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=96' } alt="avatar"/>
+		</a>
 		<div class="main">
 			<header>
 				<a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a>
@@ -289,59 +298,67 @@
 		this.mixin('api');
 		this.mixin('text');
 		this.mixin('get-post-summary');
-		this.mixin('open-post-form');
+		this.mixin('openPostForm');
 
-		this.post = this.opts.post
-		this.is-repost = this.post.repost? and !this.post.text?
-		this.p = if @is-repost then this.post.repost else this.post
-		this.summary = @get-post-summary this.p
+		this.post = this.opts.post;
+		this.isRepost = this.post.repost != null && this.post.text == null;
+		this.p = this.isRepost ? this.post.repost : this.post;
+		this.summary = this.getPostSummary(this.p);
 		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id
 
 		this.on('mount', () => {
-			if this.p.text?
-				tokens = if this.p._highlight?
-					then @analyze this.p._highlight
-					else @analyze this.p.text
+			if (this.p.text) {
+				const tokens = this.analyze(this.p.text);
 
-				this.refs.text.innerHTML = this.refs.text.innerHTML.replace '<p class="dummy"></p>' if this.p._highlight?
-					then @compile tokens, true, false
-					else @compile tokens
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', this.compile(tokens));
 
-				this.refs.text.children.forEach (e) =>
-					if e.tag-name == 'MK-URL' 
-						riot.mount e
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
 
 				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == 'link' 
-					.map (t) =>
-						this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
-						riot.mount this.preview, do
-							url: t.content
+				.filter(t => t.type == 'link')
+				.map(t => {
+					riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+						url: t.content
+					});
+				});
+			}
+		});
 
 		this.reply = () => {
-			@open-post-form do
+			this.openPostForm({
 				reply: this.p
+			});
+		};
 
 		this.repost = () => {
-			text = window.prompt '「' + @summary + '」をRepost'
-			if text?
-				this.api 'posts/create' do
-					repost_id: this.p.id
-					text: if text == '' then undefined else text
+			const text = window.prompt(`「${this.summary}」をRepost`);
+			if (text) {
+				this.api('posts/create', {
+					repost_id: this.p.id,
+					text: text == '' ? undefined : text
+				});
+			}
+		};
 
 		this.like = () => {
-			if this.p.is_liked
-				this.api 'posts/likes/delete' do
+			if (this.p.is_liked)
+				this.api('posts/likes/delete', {
 					post_id: this.p.id
-				.then =>
-					this.p.is_liked = false
+				}).then(() => {
+					this.p.is_liked = false;
 					this.update();
-			else
-				this.api 'posts/likes/create' do
+				});
+			} else {
+				this.api('posts/likes/create', {
 					post_id: this.p.id
-				.then =>
-					this.p.is_liked = true
+				}).then(() => {
+					this.p.is_liked = true;
 					this.update();
+				});
+			}
+		};
 	</script>
 </mk-timeline-post>

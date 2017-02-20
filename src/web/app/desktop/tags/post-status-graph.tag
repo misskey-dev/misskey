@@ -20,22 +20,22 @@
 			this.post = post
 			this.update();
 
-			this.api 'aggregation/posts/like' do
+			this.api('aggregation/posts/like', {
 				post_id: this.post.id
 				limit: 30days
-			.then (likes) =>
+			}).then((likes) => {
 				likes = likes.reverse!
 
-				this.api 'aggregation/posts/repost' do
+				this.api('aggregation/posts/repost', {
 					post_id: this.post.id
 					limit: 30days
-				.then (repost) =>
+				}).then((repost) => {
 					repost = repost.reverse!
 
-					this.api 'aggregation/posts/reply' do
+					this.api('aggregation/posts/reply', {
 						post_id: this.post.id
 						limit: 30days
-					.then (replies) =>
+					}).then((replies) => {
 						replies = replies.reverse!
 
 						new Chart this.refs.canv, do

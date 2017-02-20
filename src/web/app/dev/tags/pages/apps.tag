@@ -22,7 +22,7 @@
 
 		this.on('mount', () => {
 			this.api 'my/apps' 
-			.then (apps) =>
+			}).then((apps) => {
 				this.fetching = false
 				this.apps = apps
 				this.update();

@@ -105,16 +105,16 @@
 		this.user-promise = 
 			if typeof @u == 'string' 
 				new Promise (resolve, reject) =>
-					this.api 'users/show' do
+					this.api('users/show', {
 						user_id: if @u.0 == '@' then undefined else @u
 						username: if @u.0 == '@' then @u.substr 1 else undefined
-					.then (user) =>
+					}).then((user) => {
 						resolve user
 			else
 				Promise.resolve @u
 
 		this.on('mount', () => {
-			this.user-promise.then (user) =>
+			this.user-promise}).then((user) => {
 				this.user = user
 				this.update();
 

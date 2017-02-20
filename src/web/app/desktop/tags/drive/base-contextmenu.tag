@@ -23,16 +23,16 @@
 		this.open = (pos) => {
 			this.refs.ctx.open pos
 
-		this.create-folder = () => {
-			this.browser.create-folder!
-			this.refs.ctx.close!
+		this.createFolder = () => {
+			this.browser.createFolder!
+			this.refs.ctx.close();
 
 		this.upload = () => {
 			this.browser.select-local-file!
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 
 		this.url-upload = () => {
 			this.browser.url-upload!
-			this.refs.ctx.close!
+			this.refs.ctx.close();
 	</script>
 </mk-drive-browser-base-contextmenu>

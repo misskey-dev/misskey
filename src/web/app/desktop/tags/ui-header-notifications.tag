@@ -79,7 +79,7 @@
 
 		this.toggle = () => {
 			if @is-open
-				@close!
+				@close();
 			else
 				@open!
 
@@ -100,7 +100,7 @@
 		this.mousedown = (e) => {
 			e.preventDefault();
 			if (!contains this.root, e.target) and (this.root != e.target)
-				@close!
+				@close();
 			return false
 
 		function contains(parent, child)

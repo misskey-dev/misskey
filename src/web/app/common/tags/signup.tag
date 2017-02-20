@@ -220,9 +220,9 @@
 				this.username-state = 'wait' 
 				this.update();
 
-				this.api 'username/available' do
+				this.api('username/available', {
 					username: username
-				.then (result) =>
+				}).then((result) => {
 					if result.available
 						this.username-state = 'ok' 
 					else
@@ -271,14 +271,14 @@
 			const username = this.refs.username.value;
 			const password = this.refs.password.value;
 
-			locker = document.body.appendChild document.createElement 'mk-locker' 
-
-			this.api 'signup' do
+			locker = document.body.appendChild(document.createElement('mk-locker'));
+ 
+			this.api('signup', {
 				username: username,
 				password: password,
 				'g-recaptcha-response': grecaptcha.getResponse()
 			.then =>
-				this.api 'signin' do
+				this.api('signin', {
 					username: username
 					password: password
 				.then =>

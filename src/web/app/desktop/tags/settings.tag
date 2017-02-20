@@ -212,31 +212,31 @@
 			@update-avatar this.I
 
 		this.update-account = () => {
-			this.api 'i/update' do
+			this.api('i/update', {
 				name: this.refs.account-name.value
 				location: this.refs.account-location.value
 				bio: this.refs.account-bio.value
 				birthday: this.refs.account-birthday.value
-			.then (i) =>
+			}).then((i) => {
 				alert 'ok' 
 			.catch (err) =>
 				console.error err
 
 		this.update-cache = () => {
 			this.I.data.cache = !this.I.data.cache
-			this.api 'i/appdata/set' do
+			this.api('i/appdata/set', {
 				data: JSON.stringify do
 					cache: this.I.data.cache
 
 		this.update-debug = () => {
 			this.I.data.debug = !this.I.data.debug
-			this.api 'i/appdata/set' do
+			this.api('i/appdata/set', {
 				data: JSON.stringify do
 					debug: this.I.data.debug
 
 		this.update-nya = () => {
 			this.I.data.nya = !this.I.data.nya
-			this.api 'i/appdata/set' do
+			this.api('i/appdata/set', {
 				data: JSON.stringify do
 					nya: this.I.data.nya
 	</script>

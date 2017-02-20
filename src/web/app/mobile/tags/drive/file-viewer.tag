@@ -191,7 +191,7 @@
 		this.rename = () => {
 			name = window.prompt '名前を変更' this.file.name
 			if name? and name != '' and name != this.file.name
-				this.api 'drive/files/update' do
+				this.api('drive/files/update', {
 					file_id: this.file.id
 					name: name
 				.then =>

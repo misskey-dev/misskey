@@ -149,13 +149,13 @@
 				this.unmount();
 
 		this.close = () => {
-			this.refs.window.close!
+			this.refs.window.close();
 
 		this.upload = () => {
 			this.refs.window.refs.browser.select-local-file!
 
 		this.ok = () => {
 			this.trigger 'selected' this.file
-			this.refs.window.close!
+			this.refs.window.close();
 	</script>
 </mk-select-file-from-drive-window>

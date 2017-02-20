@@ -334,15 +334,15 @@
 		this.mixin('get-post-summary');
 		this.mixin('open-post-form');
 
-		this.fetching = true
-		this.loading-context = false
-		this.content = null
-		this.post = null
+		this.fetching = true;
+		this.loadingContext = false;
+		this.content = null;
+		this.post = null;
 
 		this.on('mount', () => {
-			this.api 'posts/show' do
+			this.api('posts/show', {
 				post_id: this.opts.post
-			.then (post) =>
+			}).then((post) => {
 				this.post = post
 				this.is-repost = this.post.repost?
 				this.p = if @is-repost then this.post.repost else this.post
@@ -363,54 +363,54 @@
 					tokens
 						.filter (t) -> t.type == 'link' 
 						.map (t) =>
-							this.preview = this.refs.text.appendChild document.createElement 'mk-url-preview' 
-							riot.mount this.preview, do
+							this.preview = this.refs.text.appendChild(document.createElement('mk-url-preview'));
+ 							riot.mount this.preview, do
 								url: t.content
 
 				// Get likes
-				this.api 'posts/likes' do
+				this.api('posts/likes', {
 					post_id: this.p.id
 					limit: 8
-				.then (likes) =>
+				}).then((likes) => {
 					this.likes = likes
 					this.update();
 
 				// Get reposts
-				this.api 'posts/reposts' do
+				this.api('posts/reposts', {
 					post_id: this.p.id
 					limit: 8
-				.then (reposts) =>
+				}).then((reposts) => {
 					this.reposts = reposts
 					this.update();
 
 				// Get replies
-				this.api 'posts/replies' do
+				this.api('posts/replies', {
 					post_id: this.p.id
 					limit: 8
-				.then (replies) =>
+				}).then((replies) => {
 					this.replies = replies
 					this.update();
 
 		this.reply = () => {
-			@open-post-form do
+			this.openPostForm do
 				reply: this.p
 
 		this.repost = () => {
 			text = window.prompt '「' + @summary + '」をRepost'
 			if text?
-				this.api 'posts/create' do
+				this.api('posts/create', {
 					repost_id: this.p.id
 					text: if text == '' then undefined else text
 
 		this.like = () => {
 			if this.p.is_liked
-				this.api 'posts/likes/delete' do
+				this.api('posts/likes/delete', {
 					post_id: this.p.id
 				.then =>
 					this.p.is_liked = false
 					this.update();
 			else
-				this.api 'posts/likes/create' do
+				this.api('posts/likes/create', {
 					post_id: this.p.id
 				.then =>
 					this.p.is_liked = true
@@ -420,9 +420,9 @@
 			this.loading-context = true
 
 			// Get context
-			this.api 'posts/context' do
+			this.api('posts/context', {
 				post_id: this.p.reply_to_id
-			.then (context) =>
+			}).then((context) => {
 				this.context = context.reverse!
 				this.loading-context = false
 				this.update();

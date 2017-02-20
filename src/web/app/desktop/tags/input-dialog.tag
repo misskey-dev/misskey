@@ -141,12 +141,12 @@
 
 		this.cancel = () => {
 			this.done = false
-			this.refs.window.close!
+			this.refs.window.close();
 
 		this.ok = () => {
 			if not @allow-empty and @text.value == '' then return
 			this.done = true
-			this.refs.window.close!
+			this.refs.window.close();
 
 		this.on-keydown = (e) => {
 			if e.which == 13 // Enter

@@ -89,7 +89,7 @@
 
 				// Fetch count of unread messaging messages
 				this.api 'messaging/unread' 
-				.then (count) =>
+				}).then((count) => {
 					if count.count > 0
 						this.has-unread-messaging-messages = true
 						this.update();
@@ -107,7 +107,7 @@
 				this.update();
 
 			this.messaging = () => {
-				riot.mount document.body.appendChild document.createElement 'mk-messaging-window' 
-		</script>
+				riot.mount document.body.appendChild(document.createElement('mk-messaging-window'));
+ 		</script>
 	</ul>
 </mk-ui-header-nav>

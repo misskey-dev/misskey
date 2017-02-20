@@ -18,9 +18,9 @@
 		this.on('mount', () => {
 			this.Progress.start();
 
-			this.api 'users/show' do
+			this.api('users/show', {
 				username: this.opts.user
-			.then (user) =>
+			}).then(user => {
 				this.user = user
 				this.fetching = false
 

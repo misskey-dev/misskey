@@ -56,7 +56,7 @@
 
 		this.on('mount', () => {
 			this.api 'i/signin_history' 
-			.then (history) =>
+			}).then((history) => {
 				this.history = history
 				this.fetching = false
 				this.update();

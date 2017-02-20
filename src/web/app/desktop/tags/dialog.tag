@@ -84,7 +84,7 @@
 			button._onclick = =>
 				if button.onclick?
 					button.onclick();
-				@close!
+				@close();
 
 		this.on('mount', () => {
 			this.refs.header.innerHTML = this.opts.title
@@ -142,6 +142,6 @@
 			if @can-through
 				if this.opts.on-through?
 					this.opts.on-through!
-				@close!
+				@close();
 	</script>
 </mk-dialog>

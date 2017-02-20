@@ -89,7 +89,7 @@
 	</style>
 	<script>
 		this.mixin('ui');
-		this.mixin('open-post-form');
+		this.mixin('openPostForm');
 
 		this.on('mount', () => {
 			this.opts.ready!
@@ -99,6 +99,6 @@
 				this.refs.title.innerHTML = title
 
 		this.post = () => {
-			@open-post-form!
+			this.openPostForm!
 	</script>
 </mk-ui-header>

@@ -81,7 +81,7 @@
 		this.fetch = () => {
 			this.api CONFIG.url + '/api:rss' do
 				url: @url
-			.then (feed) =>
+			}).then((feed) => {
 				this.items = feed.rss.channel.item
 				this.initializing = false
 				this.update();

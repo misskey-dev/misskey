@@ -19,10 +19,10 @@
 			this.user = user
 			this.update();
 
-			this.api 'aggregation/users/like' do
+			this.api('aggregation/users/like', {
 				user_id: this.user.id
 				limit: 30days
-			.then (likes) =>
+			}).then((likes) => {
 				likes = likes.reverse!
 
 				new Chart this.refs.canv, do

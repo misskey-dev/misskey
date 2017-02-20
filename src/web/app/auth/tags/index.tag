@@ -100,15 +100,15 @@
 			if not this.SIGNIN then return
 
 			// Fetch session
-			this.api 'auth/session/show' do
+			this.api('auth/session/show', {
 				token: @token
-			.then (session) =>
+			}).then((session) => {
 				this.session = session
 				this.fetching = false
 
 				// 既に連携していた場合
 				if @session.app.is_authorized
-					this.api 'auth/accept' do
+					this.api('auth/accept', {
 						token: @session.token
 					.then =>
 						@accepted!

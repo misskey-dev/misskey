@@ -89,6 +89,6 @@
 			this.update();
 
 		this.close = () => {
-			this.refs.window.close!
+			this.refs.window.close();
 	</script>
 </mk-progress-dialog>

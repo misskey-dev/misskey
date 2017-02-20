@@ -15,15 +15,15 @@
 		this.with-media = this.opts.with-media
 
 		this.init = new Promise (res, rej) =>
-			this.api 'users/posts' do
+			this.api('users/posts', {
 				user_id: this.user.id
 				with_media: @with-media
-			.then (posts) =>
+			}).then((posts) => {
 				res posts
 				this.trigger('loaded');
 
 		this.more = () => {
-			this.api 'users/posts' do
+			this.api('users/posts', {
 				user_id: this.user.id
 				with_media: @with-media
 				max_id: this.refs.timeline.tail!.id

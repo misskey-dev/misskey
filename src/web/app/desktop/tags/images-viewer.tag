@@ -38,8 +38,8 @@
 			this.refs.view.style.background-position = xp + '% ' + yp + '%'
 
 		this.click = () => {
-			dialog = document.body.appendChild document.createElement 'mk-image-dialog' 
-			riot.mount dialog, do
+			dialog = document.body.appendChild(document.createElement('mk-image-dialog'));
+ 			riot.mount dialog, do
 				image: @image
 	</script>
 </mk-images-viewer>

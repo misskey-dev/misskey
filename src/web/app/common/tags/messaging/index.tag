@@ -310,10 +310,10 @@
 			if (q == '') {
 				this.searchResult = [];
 			} else {
-				this.api 'users/search' do
+				this.api('users/search', {
 					query: q
 					max: 5
-				.then (users) =>
+				}).then((users) => {
 					users.forEach (user) =>
 						user._click = =>
 							this.trigger 'navigate-user' user

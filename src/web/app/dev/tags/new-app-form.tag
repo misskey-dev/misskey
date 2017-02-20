@@ -203,9 +203,9 @@
 				this.nid-state = 'wait' 
 				this.update();
 
-				this.api 'app/name_id/available' do
+				this.api('app/name_id/available', {
 					name_id: nid
-				.then (result) =>
+				}).then((result) => {
 					if result.available
 						this.nid-state = 'ok' 
 					else
@@ -225,9 +225,9 @@
 			this.refs.permission.query-selector-all 'input' .forEach (el) =>
 				if el.checked then permission.push el.value
 
-			locker = document.body.appendChild document.createElement 'mk-locker' 
-
-			this.api 'app/create' do
+			locker = document.body.appendChild(document.createElement('mk-locker'));
+ 
+			this.api('app/create', {
 				name: name
 				name_id: nid
 				description: description

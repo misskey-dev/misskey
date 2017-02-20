@@ -69,7 +69,7 @@
 			if obj.type == 'file' 
 				file = obj.id
 				this.browser.remove-file file
-				this.api 'drive/files/update' do
+				this.api('drive/files/update', {
 					file_id: file
 					folder_id: if this.folder? then this.folder.id else null
 				.then =>
@@ -84,7 +84,7 @@
 				if this.folder? and folder == this.folder.id
 					return false
 				this.browser.remove-folder folder
-				this.api 'drive/folders/update' do
+				this.api('drive/folders/update', {
 					folder_id: folder
 					parent_id: if this.folder? then this.folder.id else null
 				.then =>

@@ -175,14 +175,14 @@
 		this.ok = () => {
 			@cropper.get-cropped-canvas!.to-blob (blob) =>
 				this.trigger 'cropped' blob
-				this.refs.window.close!
+				this.refs.window.close();
 
 		this.skip = () => {
 			this.trigger('skiped');
-			this.refs.window.close!
+			this.refs.window.close();
 
 		this.cancel = () => {
 			this.trigger('canceled');
-			this.refs.window.close!
+			this.refs.window.close();
 	</script>
 </mk-crop-window>
