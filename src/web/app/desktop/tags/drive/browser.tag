@@ -293,7 +293,7 @@
 			@add-file file, true
 
 		on-stream-drive-file-updated(file) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
@@ -303,7 +303,7 @@
 			@add-folder folder, true
 
 		on-stream-drive-folder-updated(folder) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				@remove-folder folder
 			else
@@ -350,29 +350,29 @@
 			document.document-element.add-event-listener 'mouseup' up
 
 		path-oncontextmenu(e) {
-			e.prevent-default!
+			e.preventDefault();
 			e.stop-immediate-propagation!
 			return false
 
 		ondragover(e) {
-			e.prevent-default!
-			e.stop-propagation!
+			e.preventDefault();
+			e.stopPropagation();
 
 			// ドラッグ元が自分自身の所有するアイテムかどうか
 			if !@is-drag-source
 				// ドラッグされてきたものがファイルだったら
-				if e.data-transfer.effect-allowed == 'all' 
-					e.data-transfer.drop-effect = 'copy' 
+				if e.dataTransfer.effect-allowed == 'all' 
+					e.dataTransfer.dropEffect = 'copy' 
 				else
-					e.data-transfer.drop-effect = 'move' 
+					e.dataTransfer.dropEffect = 'move' 
 				this.draghover = true
 			else
 				// 自分自身にはドロップさせない
-				e.data-transfer.drop-effect = 'none' 
+				e.dataTransfer.dropEffect = 'none' 
 			return false
 
 		ondragenter(e) {
-			e.prevent-default!
+			e.preventDefault();
 			if !@is-drag-source
 				this.draghover = true
 
@@ -380,19 +380,19 @@
 			this.draghover = false
 
 		ondrop(e) {
-			e.prevent-default!
-			e.stop-propagation!
+			e.preventDefault();
+			e.stopPropagation();
 
 			this.draghover = false
 
 			// ドロップされてきたものがファイルだったら
-			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) =>
-					@upload file, @folder
+			if e.dataTransfer.files.length > 0
+				Array.prototype.for-each.call e.dataTransfer.files, (file) =>
+					@upload file, this.folder
 				return false
 
 			// データ取得
-			data = e.data-transfer.get-data 'text'
+			data = e.dataTransfer.get-data 'text'
 			if !data?
 				return false
 
@@ -402,12 +402,12 @@
 			// (ドライブの)ファイルだったら
 			if obj.type == 'file' 
 				file = obj.id
-				if (@files.some (f) => f.id == file)
+				if (this.files.some (f) => f.id == file)
 					return false
 				@remove-file file
 				this.api 'drive/files/update' do
 					file_id: file
-					folder_id: if @folder? then @folder.id else null
+					folder_id: if this.folder? then this.folder.id else null
 				.then =>
 					// something
 				.catch (err, text-status) =>
@@ -417,14 +417,14 @@
 			else if obj.type == 'folder' 
 				folder = obj.id
 				// 移動先が自分自身ならreject
-				if @folder? and folder == @folder.id
+				if this.folder? and folder == this.folder.id
 					return false
-				if (@folders.some (f) => f.id == folder)
+				if (this.folders.some (f) => f.id == folder)
 					return false
 				@remove-folder folder
 				this.api 'drive/folders/update' do
 					folder_id: folder
-					parent_id: if @folder? then @folder.id else null
+					parent_id: if this.folder? then this.folder.id else null
 				.then =>
 					// something
 				.catch (err) =>
@@ -439,7 +439,7 @@
 			return false
 
 		oncontextmenu(e) {
-			e.prevent-default!
+			e.preventDefault();
 			e.stop-immediate-propagation!
 
 			ctx = document.body.appendChild document.createElement 'mk-drive-browser-base-contextmenu' 
@@ -464,7 +464,7 @@
 			if url? and url != ''
 				this.api 'drive/files/upload_from_url' do
 					url: url
-					folder_id: if @folder? then @folder.id else undefined
+					folder_id: if this.folder? then this.folder.id else undefined
 
 				@dialog do
 					'<i class="fa fa-check"></i>アップロードをリクエストしました'
@@ -481,7 +481,7 @@
 
 			this.api 'drive/folders/create' do
 				name: name
-				folder_id: if @folder? then @folder.id else undefined
+				folder_id: if this.folder? then this.folder.id else undefined
 			.then (folder) =>
 				@add-folder folder, true
 				this.update();
@@ -492,7 +492,7 @@
 			files = this.refs.file-input.files
 			for i from 0 to files.length - 1
 				file = files.item i
-				@upload file, @folder
+				@upload file, this.folder
 
 		upload(file, folder) {
 			if folder? and typeof folder == 'object' 
@@ -500,7 +500,7 @@
 			this.refs.uploader.upload file, folder
 
 		get-selection() {
-			@files.filter (file) -> file._selected
+			this.files.filter (file) -> file._selected
 
 		new-window(folder-id) {
 			browser = document.body.appendChild document.createElement 'mk-drive-browser-window' 
@@ -538,55 +538,55 @@
 				console.error err
 
 		add-folder(folder, unshift = false) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				return
 
-			if (@folders.some (f) => f.id == folder.id)
-				exist = (@folders.map (f) -> f.id).index-of folder.id
-				@folders[exist] = folder
+			if (this.folders.some (f) => f.id == folder.id)
+				exist = (this.folders.map (f) -> f.id).index-of folder.id
+				this.folders[exist] = folder
 				this.update();
 				return
 
 			if unshift
-				@folders.unshift folder
+				this.folders.unshift folder
 			else
-				@folders.push folder
+				this.folders.push folder
 
 			this.update();
 
 		add-file(file, unshift = false) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				return
 
-			if (@files.some (f) => f.id == file.id)
-				exist = (@files.map (f) -> f.id).index-of file.id
-				@files[exist] = file
+			if (this.files.some (f) => f.id == file.id)
+				exist = (this.files.map (f) -> f.id).index-of file.id
+				this.files[exist] = file
 				this.update();
 				return
 
 			if unshift
-				@files.unshift file
+				this.files.unshift file
 			else
-				@files.push file
+				this.files.push file
 
 			this.update();
 
 		remove-folder(folder) {
 			if typeof folder == 'object' 
 				folder = folder.id
-			this.folders = @folders.filter (f) -> f.id != folder
+			this.folders = this.folders.filter (f) -> f.id != folder
 			this.update();
 
 		remove-file(file) {
 			if typeof file == 'object' 
 				file = file.id
-			this.files = @files.filter (f) -> f.id != file
+			this.files = this.files.filter (f) -> f.id != file
 			this.update();
 
 		go-root() {
-			if @folder != null
+			if this.folder != null
 				this.folder = null
 				this.hierarchy-folders = []
 				this.update();
@@ -608,7 +608,7 @@
 
 			// フォルダ一覧取得
 			this.api 'drive/folders' do
-				folder_id: if @folder? then @folder.id else null
+				folder_id: if this.folder? then this.folder.id else null
 				limit: folders-max + 1
 			.then (folders) =>
 				if folders.length == folders-max + 1
@@ -621,7 +621,7 @@
 
 			// ファイル一覧取得
 			this.api 'drive/files' do
-				folder_id: if @folder? then @folder.id else null
+				folder_id: if this.folder? then this.folder.id else null
 				limit: files-max + 1
 			.then (files) =>
 				if files.length == files-max + 1
@@ -645,11 +645,11 @@
 					flag := true
 
 		function contains(parent, child)
-			node = child.parent-node
+			node = child.parentNode
 			while node?
 				if node == parent
 					return true
-				node = node.parent-node
+				node = node.parentNode
 			return false
 	</script>
 </mk-drive-browser>

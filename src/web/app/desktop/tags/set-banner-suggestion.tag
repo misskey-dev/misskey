@@ -38,8 +38,8 @@
 			@update-banner this.I
 
 		close(e) {
-			e.prevent-default!
-			e.stop-propagation!
+			e.preventDefault();
+			e.stopPropagation();
 			this.unmount();
 	</script>
 </mk-set-banner-suggestion>

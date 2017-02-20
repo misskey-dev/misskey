@@ -6,13 +6,14 @@
 	</style>
 	<script>
 		this.on('mount', () => {
-			// バグ？ https://github.com/riot/riot/issues/2103
-			#value = this.opts.value
-			value = this.opts.riot-value
-			max = this.opts.max
+			// https://github.com/riot/riot/issues/2103
+			//value = this.opts.value
+			const value = this.opts.riotValue;
+			const max = this.opts.max;
 
-			if max? then if value > max then value = max
+			if (max != null && value > max) value = max;
 
-			this.root.innerHTML = value.to-locale-string!
+			this.root.innerHTML = value.toLocaleString();
+		});
 	</script>
 </mk-number>

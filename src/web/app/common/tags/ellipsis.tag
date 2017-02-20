@@ -20,10 +20,5 @@
 					opacity 1
 				40%
 					opacity 0
-
-			
-
-			
-
 	</style>
 </mk-ellipsis>

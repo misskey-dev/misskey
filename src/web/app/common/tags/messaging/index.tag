@@ -327,29 +327,29 @@
 			key = e.which
 			switch (key)
 				| 9, 40 => // Key[TAB] or Key[↓]
-					e.prevent-default!
-					e.stop-propagation!
-					this.refs.search-result.child-nodes[0].focus();
+					e.preventDefault();
+					e.stopPropagation();
+					this.refs.search-result.childNodes[0].focus();
 
 		on-search-result-keydown(i, e) {
 			key = e.which
 			switch (key)
 				| 10, 13 => // Key[ENTER]
-					e.prevent-default!
-					e.stop-propagation!
+					e.preventDefault();
+					e.stopPropagation();
 					@search-result[i]._click!
 				| 27 => // Key[ESC]
-					e.prevent-default!
-					e.stop-propagation!
+					e.preventDefault();
+					e.stopPropagation();
 					this.refs.search.focus();
 				| 38 => // Key[↑]
-					e.prevent-default!
-					e.stop-propagation!
-					(this.refs.search-result.child-nodes[i].previous-element-sibling || this.refs.search-result.child-nodes[@search-result.length - 1]).focus();
+					e.preventDefault();
+					e.stopPropagation();
+					(this.refs.search-result.childNodes[i].previous-element-sibling || this.refs.search-result.childNodes[@search-result.length - 1]).focus();
 				| 9, 40 => // Key[TAB] or Key[↓]
-					e.prevent-default!
-					e.stop-propagation!
-					(this.refs.search-result.child-nodes[i].next-element-sibling || this.refs.search-result.child-nodes[0]).focus();
+					e.preventDefault();
+					e.stopPropagation();
+					(this.refs.search-result.childNodes[i].next-element-sibling || this.refs.search-result.childNodes[0]).focus();
 
 	</script>
 </mk-messaging>

@@ -35,7 +35,7 @@
 		this.mixin('page');
 
 		onsubmit(e) {
-			e.prevent-default!
+			e.preventDefault();
 			@page '/search:' + this.refs.q.value
 	</script>
 </mk-ui-header-search>

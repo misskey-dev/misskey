@@ -238,12 +238,12 @@
 
 		add-file(file) {
 			file._remove = =>
-				this.files = @files.filter (x) -> x.id != file.id
-				this.trigger 'change-files' @files
+				this.files = this.files.filter (x) -> x.id != file.id
+				this.trigger 'change-files' this.files
 				this.update();
 
-			@files.push file
-			this.trigger 'change-files' @files
+			this.files.push file
+			this.trigger 'change-files' this.files
 			this.update();
 
 		add-poll() {
@@ -256,8 +256,8 @@
 		post() {
 			this.wait = true
 
-			files = if @files? and @files.length > 0
-				then @files.map (f) -> f.id
+			files = if this.files? and this.files.length > 0
+				then this.files.map (f) -> f.id
 				else undefined
 
 			this.api 'posts/create' do

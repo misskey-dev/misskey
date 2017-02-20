@@ -238,6 +238,6 @@
 			.catch =>
 				alert 'アプリの作成に失敗しました。再度お試しください。'
 
-				locker.parent-node.remove-child locker
+				locker.parentNode.removeChild locker
 	</script>
 </mk-new-app-form>

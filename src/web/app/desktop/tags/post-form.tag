@@ -345,13 +345,13 @@
 			this.update();
 
 		ondragover(e) {
-			e.stop-propagation!
+			e.stopPropagation();
 			this.draghover = true
 			// ドラッグされてきたものがファイルだったら
-			if e.data-transfer.effect-allowed == 'all' 
-				e.data-transfer.drop-effect = 'copy' 
+			if e.dataTransfer.effect-allowed == 'all' 
+				e.dataTransfer.dropEffect = 'copy' 
 			else
-				e.data-transfer.drop-effect = 'move' 
+				e.dataTransfer.dropEffect = 'move' 
 			return false
 
 		ondragenter(e) {
@@ -361,18 +361,18 @@
 			this.draghover = false
 
 		ondrop(e) {
-			e.prevent-default!
-			e.stop-propagation!
+			e.preventDefault();
+			e.stopPropagation();
 			this.draghover = false
 
 			// ファイルだったら
-			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) =>
+			if e.dataTransfer.files.length > 0
+				Array.prototype.for-each.call e.dataTransfer.files, (file) =>
 					@upload file
 				return false
 
 			// データ取得
-			data = e.data-transfer.get-data 'text'
+			data = e.dataTransfer.get-data 'text'
 			if !data?
 				return false
 
@@ -422,12 +422,12 @@
 
 		add-file(file) {
 			file._remove = =>
-				this.files = @files.filter (x) -> x.id != file.id
-				this.trigger 'change-files' @files
+				this.files = this.files.filter (x) -> x.id != file.id
+				this.trigger 'change-files' this.files
 				this.update();
 
-			@files.push file
-			this.trigger 'change-files' @files
+			this.files.push file
+			this.trigger 'change-files' this.files
 			this.update();
 
 		add-poll() {
@@ -440,8 +440,8 @@
 		post(e) {
 			this.wait = true
 
-			files = if @files? and @files.length > 0
-				then @files.map (f) -> f.id
+			files = if this.files? and this.files.length > 0
+				then this.files.map (f) -> f.id
 				else undefined
 
 			this.api 'posts/create' do

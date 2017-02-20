@@ -144,43 +144,43 @@
 
 	</style>
 	<script>
-		this.bytes-to-size = require('../../../common/scripts/bytes-to-size.js');
+		this.bytesToSize = require('../../../common/scripts/bytesToSize.js');
 
 		this.mixin('i');
 
 		this.file = this.opts.file
 		this.browser = this.parent
 
-		this.title = @file.name + '\n' + @file.type + ' ' + (@bytes-to-size @file.datasize)
+		this.title = this.file.name + '\n' + this.file.type + ' ' + (@bytesToSize this.file.datasize)
 
 		this.is-contextmenu-showing = false
 
 		onclick() {
-			if @browser.multiple
-				if @file._selected?
-					@file._selected = !@file._selected
+			if this.browser.multiple
+				if this.file._selected?
+					this.file._selected = !this.file._selected
 				else
-					@file._selected = true
-				@browser.trigger 'change-selection' @browser.get-selection!
+					this.file._selected = true
+				this.browser.trigger 'change-selection' this.browser.get-selection!
 			else
-				if @file._selected
-					@browser.trigger 'selected' @file
+				if this.file._selected
+					this.browser.trigger 'selected' this.file
 				else
-					@browser.files.for-each (file) =>
+					this.browser.files.for-each (file) =>
 						file._selected = false
-					@file._selected = true
-					@browser.trigger 'change-selection' @file
+					this.file._selected = true
+					this.browser.trigger 'change-selection' this.file
 
 		oncontextmenu(e) {
-			e.prevent-default!
+			e.preventDefault();
 			e.stop-immediate-propagation!
 
 			this.is-contextmenu-showing = true
 			this.update();
 			ctx = document.body.appendChild document.createElement 'mk-drive-browser-file-contextmenu' 
 			ctx = riot.mount ctx, do
-				browser: @browser
-				file: @file
+				browser: this.browser
+				file: this.file
 			ctx = ctx.0
 			ctx.open do
 				x: e.page-x - window.page-x-offset
@@ -191,19 +191,19 @@
 			return false
 
 		ondragstart(e) {
-			e.data-transfer.effect-allowed = 'move' 
-			e.data-transfer.set-data 'text' JSON.stringify do
+			e.dataTransfer.effect-allowed = 'move' 
+			e.dataTransfer.set-data 'text' JSON.stringify do
 				type: 'file' 
-				id: @file.id
-				file: @file
+				id: this.file.id
+				file: this.file
 			this.is-dragging = true
 
 			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
 			// (=あなたの子供が、ドラッグを開始しましたよ)
-			@browser.is-drag-source = true
+			this.browser.is-drag-source = true
 
 		ondragend(e) {
 			this.is-dragging = false
-			@browser.is-drag-source = false
+			this.browser.is-drag-source = false
 	</script>
 </mk-drive-browser-file>

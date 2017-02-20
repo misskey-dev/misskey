@@ -17,7 +17,7 @@
 		this.hover = false
 
 		onclick() {
-			@browser.move @folder
+			this.browser.move this.folder
 
 		onmouseover() {
 			this.hover = true
@@ -26,39 +26,39 @@
 			this.hover = false
 
 		ondragover(e) {
-			e.prevent-default!
-			e.stop-propagation!
+			e.preventDefault();
+			e.stopPropagation();
 
 			// このフォルダがルートかつカレントディレクトリならドロップ禁止
-			if @folder == null and @browser.folder == null
-				e.data-transfer.drop-effect = 'none' 
+			if this.folder == null and this.browser.folder == null
+				e.dataTransfer.dropEffect = 'none' 
 			// ドラッグされてきたものがファイルだったら
-			else if e.data-transfer.effect-allowed == 'all' 
-				e.data-transfer.drop-effect = 'copy' 
+			else if e.dataTransfer.effect-allowed == 'all' 
+				e.dataTransfer.dropEffect = 'copy' 
 			else
-				e.data-transfer.drop-effect = 'move' 
+				e.dataTransfer.dropEffect = 'move' 
 			return false
 
 		ondragenter() {
-			if @folder != null or @browser.folder != null
+			if this.folder != null or this.browser.folder != null
 				this.draghover = true
 
 		ondragleave() {
-			if @folder != null or @browser.folder != null
+			if this.folder != null or this.browser.folder != null
 				this.draghover = false
 
 		ondrop(e) {
-			e.stop-propagation!
+			e.stopPropagation();
 			this.draghover = false
 
 			// ファイルだったら
-			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) =>
-					@browser.upload file, @folder
+			if e.dataTransfer.files.length > 0
+				Array.prototype.for-each.call e.dataTransfer.files, (file) =>
+					this.browser.upload file, this.folder
 				return false
 
 			// データ取得
-			data = e.data-transfer.get-data 'text'
+			data = e.dataTransfer.get-data 'text'
 			if !data?
 				return false
 
@@ -68,10 +68,10 @@
 			// (ドライブの)ファイルだったら
 			if obj.type == 'file' 
 				file = obj.id
-				@browser.remove-file file
+				this.browser.remove-file file
 				this.api 'drive/files/update' do
 					file_id: file
-					folder_id: if @folder? then @folder.id else null
+					folder_id: if this.folder? then this.folder.id else null
 				.then =>
 					// something
 				.catch (err, text-status) =>
@@ -81,12 +81,12 @@
 			else if obj.type == 'folder' 
 				folder = obj.id
 				// 移動先が自分自身ならreject
-				if @folder? and folder == @folder.id
+				if this.folder? and folder == this.folder.id
 					return false
-				@browser.remove-folder folder
+				this.browser.remove-folder folder
 				this.api 'drive/folders/update' do
 					folder_id: folder
-					parent_id: if @folder? then @folder.id else null
+					parent_id: if this.folder? then this.folder.id else null
 				.then =>
 					// something
 				.catch (err, text-status) =>

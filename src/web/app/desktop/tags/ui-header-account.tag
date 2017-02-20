@@ -188,7 +188,7 @@
 				el.remove-event-listener 'mousedown' @mousedown
 
 		mousedown(e) {
-			e.prevent-default!
+			e.preventDefault();
 			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 			return false
@@ -202,11 +202,11 @@
 			riot.mount document.body.appendChild document.createElement 'mk-settings-window' 
 
 		function contains(parent, child)
-			node = child.parent-node
+			node = child.parentNode
 			while node?
 				if node == parent
 					return true
-				node = node.parent-node
+				node = node.parentNode
 			return false
 	</script>
 </mk-ui-header-account>

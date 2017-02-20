@@ -203,13 +203,13 @@
 			n.inner-HTML = '<i class="fa fa-arrow-circle-down"></i>' + message
 			n.onclick = =>
 				@scroll-to-bottom!
-				n.parent-node.remove-child n
+				n.parentNode.removeChild n
 			this.refs.notifications.appendChild n
 
 			setTimeout =>
 				n.style.opacity = 0
 				setTimeout =>
-					n.parent-node.remove-child n
+					n.parentNode.removeChild n
 				, 1000ms
 			, 4000ms
 

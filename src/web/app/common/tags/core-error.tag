@@ -59,6 +59,7 @@
 	<script>
 		retry() {
 			this.unmount();
-			this.opts.retry!
+			this.opts.retry();
+		}
 	</script>
 </mk-core-error>

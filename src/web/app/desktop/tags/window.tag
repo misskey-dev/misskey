@@ -208,7 +208,7 @@
 			this.refs.main.style.left = (window.inner-width / 2) - (this.refs.main.offset-width / 2) + 'px' 
 
 			this.refs.header.add-event-listener 'contextmenu' (e) =>
-				e.prevent-default!
+				e.preventDefault();
 
 			window.add-event-listener 'resize' this.on-browser-resize
 
@@ -315,7 +315,7 @@
 				if @is-modal then this.refs.bg.style.z-index = z + 1
 
 		repel-move(e) {
-			e.stop-propagation!
+			e.stopPropagation();
 			return true
 
 		bg-click() {
@@ -328,7 +328,7 @@
 
 		// ヘッダー掴み時
 		on-header-mousedown(e) {
-			e.prevent-default!
+			e.preventDefault();
 
 			if not contains this.refs.main, document.active-element
 				this.refs.main.focus();
@@ -370,7 +370,7 @@
 
 		// 上ハンドル掴み時
 		on-top-handle-mousedown(e) {
-			e.prevent-default!
+			e.preventDefault();
 
 			base = e.client-y
 			height = parse-int((get-computed-style this.refs.main, '').height, 10)
@@ -392,7 +392,7 @@
 
 		// 右ハンドル掴み時
 		on-right-handle-mousedown(e) {
-			e.prevent-default!
+			e.preventDefault();
 
 			base = e.client-x
 			width = parse-int((get-computed-style this.refs.main, '').width, 10)
@@ -412,7 +412,7 @@
 
 		// 下ハンドル掴み時
 		on-bottom-handle-mousedown(e) {
-			e.prevent-default!
+			e.preventDefault();
 
 			base = e.client-y
 			height = parse-int((get-computed-style this.refs.main, '').height, 10)
@@ -432,7 +432,7 @@
 
 		// 左ハンドル掴み時
 		on-left-handle-mousedown(e) {
-			e.prevent-default!
+			e.preventDefault();
 
 			base = e.client-x
 			width = parse-int((get-computed-style this.refs.main, '').width, 10)
@@ -499,21 +499,21 @@
 			window.remove-event-listener 'mouseup'    drag-clear
 
 		ondragover(e) {
-			e.data-transfer.drop-effect = 'none' 
+			e.dataTransfer.dropEffect = 'none' 
 
 		on-keydown(e) {
 			if e.which == 27 // Esc
 				if @can-close
-					e.prevent-default!
-					e.stop-propagation!
+					e.preventDefault();
+					e.stopPropagation();
 					@close!
 
 		function contains(parent, child)
-			node = child.parent-node
+			node = child.parentNode
 			while node?
 				if node == parent
 					return true
-				node = node.parent-node
+				node = node.parentNode
 			return false
 	</script>
 </mk-window>

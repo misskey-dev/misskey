@@ -24,15 +24,15 @@
 			this.refs.ctx.open pos
 
 		create-folder() {
-			@browser.create-folder!
+			this.browser.create-folder!
 			this.refs.ctx.close!
 
 		upload() {
-			@browser.select-local-file!
+			this.browser.select-local-file!
 			this.refs.ctx.close!
 
 		url-upload() {
-			@browser.url-upload!
+			this.browser.url-upload!
 			this.refs.ctx.close!
 	</script>
 </mk-drive-browser-base-contextmenu>

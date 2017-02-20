@@ -30,19 +30,20 @@
 
 	</style>
 	<script>
-		this.url = this.opts.href
+		this.url = this.opts.href;
 
 		this.on('before-mount', () => {
-			parser = document.createElement 'a' 
-			parser.href = @url
+			parser = document.createElement('a'); 
+			parser.href = this.url;
 
-			this.schema = parser.protocol
-			this.hostname = parser.hostname
-			this.port = parser.port
-			this.pathname = parser.pathname
-			this.query = parser.search
-			this.hash = parser.hash
+			this.schema = parser.protocol;
+			this.hostname = parser.hostname;
+			this.port = parser.port;
+			this.pathname = parser.pathname;
+			this.query = parser.search;
+			this.hash = parser.hash;
 
 			this.update();
+		});
 	</script>
 </mk-url>

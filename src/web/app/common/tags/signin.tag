@@ -99,8 +99,8 @@
 	<script>
 		this.mixin('api');
 
-		this.user = null
-		this.signing = false
+		this.user = null;
+		this.signing = false;
 
 		oninput() {
 			this.api 'users/show' do
@@ -111,7 +111,7 @@
 				this.update();
 
 		onsubmit(e) {
-			e.prevent-default!
+			e.preventDefault();
 
 			if this.refs.username.value == ''
 				this.refs.username.focus();

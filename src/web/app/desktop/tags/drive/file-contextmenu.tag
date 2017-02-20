@@ -63,10 +63,10 @@
 			name <~ @input-dialog do
 				'ファイル名の変更'
 				'新しいファイル名を入力してください'
-				@file.name
+				this.file.name
 
 			this.api 'drive/files/update' do
-				file_id: @file.id
+				file_id: this.file.id
 				name: name
 			.then =>
 				// something
@@ -81,15 +81,15 @@
 
 		set-avatar() {
 			this.refs.ctx.close!
-			@update-avatar this.I, null, @file
+			@update-avatar this.I, null, this.file
 
 		set-banner() {
 			this.refs.ctx.close!
-			@update-banner this.I, null, @file
+			@update-banner this.I, null, this.file
 
 		set-wallpaper() {
 			this.refs.ctx.close!
-			@update-wallpaper this.I, null, @file
+			@update-wallpaper this.I, null, this.file
 
 		add-app() {
 			@NotImplementedException!

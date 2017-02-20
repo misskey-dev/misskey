@@ -32,19 +32,19 @@
 				this.unmount();
 
 		move() {
-			@browser.move @folder.id
+			this.browser.move this.folder.id
 			this.refs.ctx.close!
 
 		new-window() {
-			@browser.new-window @folder.id
+			this.browser.new-window this.folder.id
 			this.refs.ctx.close!
 
 		create-folder() {
-			@browser.create-folder!
+			this.browser.create-folder!
 			this.refs.ctx.close!
 
 		upload() {
-			@browser.select-lcoal-file!
+			this.browser.select-lcoal-file!
 			this.refs.ctx.close!
 
 		rename() {
@@ -53,10 +53,10 @@
 			name <~ @input-dialog do
 				'フォルダ名の変更'
 				'新しいフォルダ名を入力してください'
-				@folder.name
+				this.folder.name
 
 			this.api 'drive/folders/update' do
-				folder_id: @folder.id
+				folder_id: this.folder.id
 				name: name
 			.then =>
 				// something

@@ -68,7 +68,7 @@
 			this.unmount();
 
 		ok() {
-			this.trigger 'selected' @files
+			this.trigger 'selected' this.files
 			this.unmount();
 	</script>
 </mk-drive-selector>

@@ -95,10 +95,10 @@
 	</style>
 	<script>
 		this.root.add-event-listener 'contextmenu' (e) =>
-			e.prevent-default!
+			e.preventDefault();
 
 		mousedown(e) {
-			e.prevent-default!
+			e.preventDefault();
 			if (!contains this.root, e.target) and (this.root != e.target)
 				@close!
 			return false
@@ -129,11 +129,11 @@
 			this.unmount();
 
 		function contains(parent, child)
-			node = child.parent-node
+			node = child.parentNode
 			while (node != null)
 				if (node == parent)
 					return true
-				node = node.parent-node
+				node = node.parentNode
 			return false
 	</script>
 </mk-contextmenu>

@@ -51,8 +51,8 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		this.history = []
-		this.fetching = true
+		this.history = [];
+		this.fetching = true;
 
 		this.on('mount', () => {
 			this.api 'i/signin_history' 

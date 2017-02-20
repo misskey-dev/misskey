@@ -51,8 +51,8 @@
 		this.mixin('i');
 
 		close(e) {
-			e.prevent-default!
-			e.stop-propagation!
+			e.preventDefault();
+			e.stopPropagation();
 
 			this.I.data.no_donation = true
 			this.I.update!

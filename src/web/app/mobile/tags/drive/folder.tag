@@ -41,6 +41,6 @@
 		this.folder = this.opts.folder
 
 		onclick() {
-			@browser.move @folder
+			this.browser.move this.folder
 	</script>
 </mk-drive-folder>

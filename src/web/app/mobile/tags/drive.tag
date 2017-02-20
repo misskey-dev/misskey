@@ -171,7 +171,7 @@
 			@add-file file, true
 
 		on-stream-drive-file-updated(file) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				@remove-file file
 			else
@@ -181,7 +181,7 @@
 			@add-folder folder, true
 
 		on-stream-drive-folder-updated(folder) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				@remove-folder folder
 			else
@@ -221,58 +221,58 @@
 					x folder.parent
 
 				this.update();
-				this.trigger 'open-folder' @folder, silent
+				this.trigger 'open-folder' this.folder, silent
 				@load!
 			.catch (err, text-status) ->
 				console.error err
 
 		add-folder(folder, unshift = false) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != folder.parent_id
 				return
 
-			if (@folders.some (f) => f.id == folder.id)
+			if (this.folders.some (f) => f.id == folder.id)
 				return
 
 			if unshift
-				@folders.unshift folder
+				this.folders.unshift folder
 			else
-				@folders.push folder
+				this.folders.push folder
 
 			this.update();
 
 		add-file(file, unshift = false) {
-			current = if @folder? then @folder.id else null
+			current = if this.folder? then this.folder.id else null
 			if current != file.folder_id
 				return
 
-			if (@files.some (f) => f.id == file.id)
-				exist = (@files.map (f) -> f.id).index-of file.id
-				@files[exist] = file
+			if (this.files.some (f) => f.id == file.id)
+				exist = (this.files.map (f) -> f.id).index-of file.id
+				this.files[exist] = file
 				this.update();
 				return
 
 			if unshift
-				@files.unshift file
+				this.files.unshift file
 			else
-				@files.push file
+				this.files.push file
 
 			this.update();
 
 		remove-folder(folder) {
 			if typeof folder == 'object' 
 				folder = folder.id
-			this.folders = @folders.filter (f) -> f.id != folder
+			this.folders = this.folders.filter (f) -> f.id != folder
 			this.update();
 
 		remove-file(file) {
 			if typeof file == 'object' 
 				file = file.id
-			this.files = @files.filter (f) -> f.id != file
+			this.files = this.files.filter (f) -> f.id != file
 			this.update();
 
 		go-root() {
-			if @folder != null or @file != null
+			if this.folder != null or this.file != null
 				this.file = null
 				this.folder = null
 				this.hierarchy-folders = []
@@ -298,7 +298,7 @@
 
 			// フォルダ一覧取得
 			this.api 'drive/folders' do
-				folder_id: if @folder? then @folder.id else null
+				folder_id: if this.folder? then this.folder.id else null
 				limit: folders-max + 1
 			.then (folders) =>
 				if folders.length == folders-max + 1
@@ -311,7 +311,7 @@
 
 			// ファイル一覧取得
 			this.api 'drive/files' do
-				folder_id: if @folder? then @folder.id else null
+				folder_id: if this.folder? then this.folder.id else null
 				limit: files-max + 1
 			.then (files) =>
 				if files.length == files-max + 1
@@ -372,6 +372,6 @@
 					x file.folder
 
 				this.update();
-				this.trigger 'open-file' @file, silent
+				this.trigger 'open-file' this.file, silent
 	</script>
 </mk-drive>

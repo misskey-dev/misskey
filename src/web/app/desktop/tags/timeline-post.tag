@@ -394,7 +394,7 @@
 				should-be-cancel = false
 
 			if should-be-cancel
-				e.prevent-default!
+				e.preventDefault();
 
 		function focus(el, fn)
 			target = fn el

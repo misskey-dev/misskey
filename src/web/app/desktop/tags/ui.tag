@@ -31,7 +31,7 @@
 			tag = e.target.tag-name.to-lower-case!
 			if tag != 'input' and tag != 'textarea' 
 				if e.which == 80 or e.which == 78 // p or n
-					e.prevent-default!
+					e.preventDefault();
 					@open-post-form!
 	</script>
 </mk-ui>

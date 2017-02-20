@@ -93,20 +93,22 @@
 	<script>
 		this.mixin('api');
 
-		this.url = this.opts.url
-		this.loading = true
+		this.url = this.opts.url;
+		this.loading = true;
 
 		this.on('mount', () => {
-			fetch CONFIG.url + '/api:url?url=' + @url
-			.then (res) =>
-				info <~ res.json!.then
-				this.title = info.title
-				this.description = info.description
-				this.thumbnail = info.thumbnail
-				this.icon = info.icon
-				this.sitename = info.sitename
+			fetch(CONFIG.url + '/api:url?url=' + this.url).then(res => {
+				res.json().then(info => {
+					this.title = info.title;
+					this.description = info.description;
+					this.thumbnail = info.thumbnail;
+					this.icon = info.icon;
+					this.sitename = info.sitename;
 
-				this.loading = false
-				this.update();
+					this.loading = false;
+					this.update();
+				});
+			});
+		});
 	</script>
 </mk-url-preview>

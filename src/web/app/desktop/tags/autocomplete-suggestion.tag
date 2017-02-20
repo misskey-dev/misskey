@@ -124,25 +124,25 @@
 			switch (key)
 				| 10, 13 => // Key[ENTER]
 					if @select != -1
-						e.prevent-default!
-						e.stop-propagation!
+						e.preventDefault();
+						e.stopPropagation();
 						@complete @users[@select]
 					else
 						@close!
 				| 27 => // Key[ESC]
-					e.prevent-default!
-					e.stop-propagation!
+					e.preventDefault();
+					e.stopPropagation();
 					@close!
 				| 38 => // Key[↑]
 					if @select != -1
-						e.prevent-default!
-						e.stop-propagation!
+						e.preventDefault();
+						e.stopPropagation();
 						@select-prev!
 					else
 						@close!
 				| 9, 40 => // Key[TAB] or Key[↓]
-					e.prevent-default!
-					e.stop-propagation!
+					e.preventDefault();
+					e.stopPropagation();
 					@select-next!
 				| _ =>
 					@close!
@@ -167,7 +167,7 @@
 			this.refs.users.children.for-each (el) =>
 				el.remove-attribute 'data-selected' 
 
-			this.refs.users.children[@select].set-attribute 'data-selected' \true
+			this.refs.users.children[@select].setAttribute 'data-selected' \true
 			this.refs.users.children[@select].focus();
 
 		complete(user) {
@@ -177,11 +177,11 @@
 			this.opts.close!
 
 		function contains(parent, child)
-			node = child.parent-node
+			node = child.parentNode
 			while node?
 				if node == parent
 					return true
-				node = node.parent-node
+				node = node.parentNode
 			return false
 	</script>
 </mk-autocomplete-suggestion>

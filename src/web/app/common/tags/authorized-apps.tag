@@ -19,16 +19,15 @@
 	<script>
 		this.mixin('api');
 
-		this.apps = []
-		this.fetching = true
+		this.apps = [];
+		this.fetching = true;
 
 		this.on('mount', () => {
-			this.api 'i/authorized_apps' 
-			.then (apps) =>
-				this.apps = apps
-				this.fetching = false
+			this.api('i/authorized_apps').then(apps => {
+				this.apps = apps;
+				this.fetching = false;
 				this.update();
-			.catch (err) =>
-				console.error err
+			});
+		});
 	</script>
 </mk-authorized-apps>

@@ -177,24 +177,27 @@
 		this.mixin('api');
 		this.mixin('get-password-strength');
 
-		this.username-state = null
-		this.password-strength = ''
-		this.password-retype-state = null
-		this.recaptchaed = false
+		this.usernameState = null;
+		this.passwordStrength = '';
+		this.passwordRetypeState = null;
+		this.recaptchaed = false;
 
-		window.on-recaptchaed = =>
-			this.recaptchaed = true
+		window.onEecaptchaed = () => {
+			this.recaptchaed = true;
 			this.update();
+		}
 
-		window.on-recaptcha-expired = =>
-			this.recaptchaed = false
+		window.onRecaptchaExpired = () => {
+			this.recaptchaed = false;
 			this.update();
+		}
 
 		this.on('mount', () => {
-			head = (document.get-elements-by-tag-name 'head).0' 
+			const head = (document.getElementsByTagName('head'))[0];
 			script = document.createElement 'script' 
-				..set-attribute 'src' \https://www.google.com/recaptcha/api.js
+				..setAttribute 'src' \https://www.google.com/recaptcha/api.js
 			head.appendChild script
+		});
 
 		on-change-username() {
 			username = this.refs.username.value
@@ -263,7 +266,7 @@
 				this.password-retype-state = 'not-match' 
 
 		onsubmit(e) {
-			e.prevent-default!
+			e.preventDefault();
 
 			username = this.refs.username.value
 			password = this.refs.password.value
@@ -286,7 +289,7 @@
 				grecaptcha.reset!
 				this.recaptchaed = false
 
-				locker.parent-node.remove-child locker
+				locker.parentNode.removeChild locker
 
 			false
 	</script>
