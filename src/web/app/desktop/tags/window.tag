@@ -435,12 +435,12 @@
 				const move = me.clientY - base;
 				if (top + height + move < browserHeight) {
 					if (height + move > this.minHeight) {
-						return this.applyTransformHeight(height + move);
+						this.applyTransformHeight(height + move);
 					} else { // 最小の高さより小さくなろうとした時
-						return this.applyTransformHeight(this.minHeight);
+						this.applyTransformHeight(this.minHeight);
 					}
 				} else { // 下のはみ出し時
-					return this.applyTransformHeight(browserHeight - top);
+					this.applyTransformHeight(browserHeight - top);
 				}
 			});
 		};
@@ -459,14 +459,14 @@
 				if (left + move > 0) {
 					if (width + -move > this.minWidth) {
 						this.applyTransformWidth(width + -move);
-						return this.applyTransformLeft(left + move);
+						this.applyTransformLeft(left + move);
 					} else { // 最小の幅より小さくなろうとした時
 						this.applyTransformWidth(this.minWidth);
-						return this.applyTransformLeft(left + (width - this.minWidth));
+						this.applyTransformLeft(left + (width - this.minWidth));
 					}
 				} else { // 左のはみ出し時
 					this.applyTransformWidth(left + width);
-					return this.applyTransformLeft(0);
+					this.applyTransformLeft(0);
 				}
 			});
 		};
