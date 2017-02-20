@@ -10,10 +10,6 @@ services:
   - mongodb
   - redis-server
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y graphicsmagick
-
 before_script:
   - mkdir ./.config
   - cp ./.ci-files/default.yml ./.config
@@ -29,6 +25,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+      - graphicsmagick
 
 cache:
   directories:
