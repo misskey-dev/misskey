@@ -139,70 +139,82 @@
 			this.connection.event.on('message' this.onMessage);
 			this.connection.event.on('read' this.onRead);
 
-			document.addEventListener 'visibilitychange' this.on-visibilitychange
+			document.addEventListener('visibilitychange', this.onVisibilitychange);
 
-			this.api 'messaging/messages' do
-				user_id: @user.id
-			.then (messages) =>
-				this.init = false
-				this.messages = messages.reverse!
+			this.api('messaging/messages', {
+				user_id: this.user.id
+			}).then(messages => {
+				this.init = false;
+				this.messages = messages.reverse();
 				this.update();
-				@scroll-to-bottom!
-			.catch (err) =>
-				console.error err
+				this.scrollToBottom();
+			});
+		});
 
 		this.on('unmount', () => {
-			@connection.event.off 'message' this.on-message
-			@connection.event.off 'read' this.on-read
-			@connection.close!
+			this.connection.event.off('message', this.onMessage);
+			this.connection.event.off('read', this.onRead);
+			this.connection.close();
 
-			document.removeEventListener 'visibilitychange' this.on-visibilitychange
+			document.removeEventListener('visibilitychange', this.onVisibilitychange);
+		});
 
 		this.on('update', () => {
-			@messages.forEach (message) =>
-				date = (new Date message.created_at).getDate()
-				month = (new Date message.created_at).getMonth() + 1
-				message._date = date
-				message._datetext = month + '月 ' + date + '日'
+			this.messages.forEach(message => {
+				const date = (new Date(message.created_at)).getDate();
+				const month = (new Date(message.created_at)).getMonth() + 1;
+				message._date = date;
+				message._datetext = month + '月 ' + date + '日';
+			});
+		});
 
-		this.on-message = (message) => {
-			is-bottom = @is-bottom!
+		this.onMessage = (message) => {
+			const isbottom = this.isBottom();
 
-			@messages.push message
-			if message.user_id != this.I.id and not document.hidden
-				@connection.socket.send JSON.stringify do
-					type: 'read' 
+			this.messages.push(message);
+			if (message.user_id != this.I.id && !document.hidden) {
+				this.connection.socket.send(JSON.stringify({
+					type: 'read',
 					id: message.id
+				});
+			}
 			this.update();
 
-			if is-bottom
+			if (isBottom) {
 				// Scroll to bottom
-				@scroll-to-bottom!
-			else if message.user_id != this.I.id
+				this.scrollToBottom();
+			} else if (message.user_id != this.I.id) {
 				// Notify
-				@notify '新しいメッセージがあります'
+				this.notify('新しいメッセージがあります');
+			}
+		};
 
-		this.on-read = (ids) => {
-			if not Array.isArray ids then ids = [ids]
-			ids.forEach (id) =>
-				if (@messages.some (x) => x.id == id)
-					exist = (@messages.map (x) -> x.id).index-of id
-					@messages[exist].is_read = true
+		this.onRead = ids => {
+			if (!Array.isArray(ids)) ids = [ids];
+			ids.forEach(id => {
+				if (this.messages.some(x => x.id == id)) {
+					const exist = this.messages.map(x => x.id).indexOf(id);
+					this.messages[exist].is_read = true;
 					this.update();
+				}
+			}):
+		};
 
-		this.is-bottom = () => {
-			current = this.root.scroll-top + this.root.offset-height
-			max = this.root.scroll-height
-			current > (max - 32)
+		this.isBottom = () => {
+			const current = this.root.scrollTop + this.root.offsetHeight;
+			const max = this.root.scrollHeight;
+			return current > (max - 32);
+		};
 
 		this.scroll-to-bottom = () => {
-			this.root.scroll-top = this.root.scroll-height
+			this.root.scrollTop = this.root.scrollHeight;
+		};
 
-		this.notify = (message) => {
-			n = document.createElement 'p' 
-			n.inner-HTML = '<i class="fa fa-arrow-circle-down"></i>' + message
-			n.onclick = =>
-				@scroll-to-bottom!
+		this.notify = message => {
+			const n = document.createElement('p');
+			n.innerHTML = '<i class="fa fa-arrow-circle-down"></i>' + message;
+			n.onclick = () => {
+				this.scrollToBottom();
 				n.parentNode.removeChild n
 			this.refs.notifications.appendChild n
 
@@ -212,6 +224,7 @@
 					n.parentNode.removeChild n
 				, 1000ms
 			, 4000ms
+		};
 
 		this.on-visibilitychange = () => {
 			if document.hidden then return
