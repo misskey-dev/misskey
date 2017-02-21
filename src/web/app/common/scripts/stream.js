@@ -1,5 +1,6 @@
 const ReconnectingWebSocket = require('reconnecting-websocket');
 const riot = require('riot');
+const CONFIG = require('./config');
 
 module.exports = me => {
 	let state = 'initializing';

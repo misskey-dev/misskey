@@ -30,7 +30,7 @@
 		</label>
 		<label class="recaptcha">
 			<p class="caption"><i class="fa fa-toggle-on" if={ recaptchaed }></i><i class="fa fa-toggle-off" if={ !recaptchaed }></i>認証</p>
-			<div class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" data-sitekey={ CONFIG.recaptcha.siteKey }></div>
+			<div if={ recaptcha } class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" data-sitekey={ recaptcha.siteKey }></div>
 		</label>
 		<label class="agree-tou">
 			<input name="agree-tou" type="checkbox" autocomplete="off" required="required"/>
@@ -193,10 +193,20 @@
 		};
 
 		this.on('mount', () => {
-			const head = document.getElementsByTagName('head')[0];
-			const script = document.createElement('script');
-			script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
-			head.appendChild(script);
+			fetch('/config.json').then(res => {
+				res.json().then(conf => {
+					this.update({
+						recaptcha: {
+							siteKey: conf.recaptcha.siteKey
+						}
+					});
+
+					const head = document.getElementsByTagName('head')[0];
+					const script = document.createElement('script');
+					script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
+					head.appendChild(script);
+				});
+			});
 		});
 
 		this.onChangeUsername = () => {

@@ -1,4 +1,5 @@
 const riot = require('riot');
+const CONFIG = require('../../common/scripts/config');
 const dialog = require('./dialog');
 const api = require('../../common/scripts/api');
 

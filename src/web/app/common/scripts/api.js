@@ -2,6 +2,8 @@
  * API Request
  */
 
+const CONFIG = require('./config');
+
 let spinner = null;
 let pending = 0;
 

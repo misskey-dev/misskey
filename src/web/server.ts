@@ -52,6 +52,17 @@ app.get(/\/api:url/,  require('./service/url-preview'));
 app.post(/\/api:rss/, require('./service/rss-proxy'));
 
 /**
+ * Serve config
+ */
+app.get('/config.json', (req, res) => {
+	res.send({
+		recaptcha: {
+			siteKey: config.recaptcha.siteKey
+		}
+	});
+});
+
+/**
  * Subdomain
  */
 app.use(subdomain({

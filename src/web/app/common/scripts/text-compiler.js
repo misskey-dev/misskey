@@ -1,5 +1,6 @@
 const riot = require('riot');
 const nyaize = require('nyaize').default;
+const CONFIG = require('./config');
 
 const escape = function(text) {
 	return text
