@@ -35,11 +35,13 @@
 		this.mixin('update-banner');
 
 		this.set = () => {
-			@update-banner this.I
+			this.updateBanner(this.I);
+		};
 
-		this.close = (e) => {
+		this.close = e => {
 			e.preventDefault();
 			e.stopPropagation();
 			this.unmount();
+		};
 	</script>
 </mk-set-banner-suggestion>

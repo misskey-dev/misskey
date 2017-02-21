@@ -50,89 +50,84 @@
 		this.mixin('is-promise');
 		this.mixin('get-post-summary');
 
-		this.user = null
-		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
-		this.is-loading = true
-		this.is-empty = false
-		this.more-loading = false
-		this.unread-count = 0
-		this.mode = 'default' 
+		this.user = null;
+		this.userPromise = this.isPromise(this.opts.user)
+			? this.opts.user
+			: Promise.resolve(this.opts.user);
+		this.isLoading = true;
+		this.isEmpty = false;
+		this.moreLoading = false;
+		this.unreadCount = 0;
+		this.mode = 'default';
 
 		this.on('mount', () => {
-			document.addEventListener 'visibilitychange' @window-onVisibilitychange, false
-			document.addEventListener 'keydown' this.on-document-keydown
-			window.addEventListener 'scroll' this.on-scroll
+			document.addEventListener('keydown', this.onDocumentKeydown);
+			window.addEventListener('scroll', this.onScroll);
 
-			this.user-promise}).then((user) => {
-				this.user = user
-				this.update();
+			this.userPromise.then(user => {
+				this.update({
+					user: user
+				});
 
-				@fetch =>
-					this.trigger('loaded');
+				this.fetch(() => this.trigger('loaded'));
+		});
 
 		this.on('unmount', () => {
-			document.removeEventListener 'visibilitychange' @window-onVisibilitychange
-			document.removeEventListener 'keydown' this.on-document-keydown
-			window.removeEventListener 'scroll' this.on-scroll
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+			window.removeEventListener('scroll', this.onScroll);
+		});
 
-		this.on-document-keydown = (e) => {
-			tag = e.target.tag-name.to-lower-case!
-			if tag != 'input' and tag != 'textarea' 
-				if e.which == 84 // t
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+				if (e.which == 84) { // [t]
 					this.refs.timeline.focus();
+				}
+			}
+		};
 
-		this.fetch = (cb) => {
+		this.fetch = cb => {
 			this.api('users/posts', {
-				user_id: this.user.id
-				with_replies: this.mode == 'with-replies' 
-			}).then((posts) => {
-				this.is-loading = false
-				this.is-empty = posts.length == 0
-				this.update();
-				this.refs.timeline.set-posts posts
-				if cb? then cb!
-			.catch (err) =>
-				console.error err
-				if cb? then cb!
+				user_id: this.user.id,
+				with_replies: this.mode == 'with-replies'
+			}).then(posts => {
+				this.update({
+					isLoading: false,
+					isEmpty: posts.length == 0
+				});
+				this.refs.timeline.setPosts(posts);
+				if (cb) cb();
+			});
+		};
 
 		this.more = () => {
-			if @more-loading or @is-loading or this.refs.timeline.posts.length == 0
-				return
-			this.more-loading = true
-			this.update();
+			if (this.moreLoading || this.isLoading || this.refs.timeline.posts.length == 0) return;
+			this.update({
+				moreLoading: true
+			});
 			this.api('users/posts', {
-				user_id: this.user.id
-				with_replies: this.mode == 'with-replies' 
-				max_id: this.refs.timeline.tail!.id
-			}).then((posts) => {
-				this.more-loading = false
-				this.update();
-				this.refs.timeline.prepend-posts posts
-			.catch (err) =>
-				console.error err
+				user_id: this.user.id,
+				with_replies: this.mode == 'with-replies',
+				max_id: this.refs.timeline.tail().id
+			}).then(posts => {
+				this.update({
+					moreLoading: false
+				});
+				this.refs.timeline.prependPosts(posts);
+			});
+		};
 
-		this.on-stream-post = (post) => {
-			this.is-empty = false
-			this.update();
-			this.refs.timeline.add-post post
+		this.onScroll = () => {
+			const current = window.scrollY + window.innerHeight;
+			if (current > document.body.offsetHeight - 16/*遊び*/) {
+				this.more();
+			}
+		};
 
-			if document.hidden
-				@unread-count++
-				document.title = '(' + @unread-count + ') ' + @get-post-summary post
-
-		this.window-onVisibilitychange = () => {
-			if !document.hidden
-				this.unread-count = 0
-				document.title = 'Misskey'
-
-		this.on-scroll = () => {
-			current = window.scrollY + window.inner-height
-			if current > document.body.offset-height - 16 // 遊び
-				@more!
-
-		this.set-mode = (mode) => {
-			@update do
+		this.setMode = mode => {
+			this.update({
 				mode: mode
-			@fetch!
+			});
+			this.fetch();
+		};
 	</script>
 </mk-user-timeline>

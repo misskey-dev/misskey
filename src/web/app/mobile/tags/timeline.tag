@@ -74,45 +74,58 @@
 
 	</style>
 	<script>
-		this.posts = []
-		this.init = true
-		this.fetching = false
-		this.can-fetch-more = true
+		this.posts = [];
+		this.init = true;
+		this.fetching = false;
+		this.canFetchMore = true;
 
 		this.on('mount', () => {
-			this.opts.init}).then((posts) => {
-				this.init = false
-				@set-posts posts
+			this.opts.init.then(posts => {
+				this.init = false;
+				this.setPosts(posts);
+			});
+		});
 
 		this.on('update', () => {
-			this.posts.forEach (post) =>
-				date = (new Date post.created_at).getDate()
-				month = (new Date post.created_at).getMonth() + 1
-				post._date = date
-				post._datetext = month + '月 ' + date + '日'
+			this.posts.forEach(post => {
+				const date = new Date(post.created_at).getDate();
+				const month = new Date(post.created_at).getMonth() + 1;
+				post._date = date;
+				post._datetext = `${month}月 ${date}日`;
+			});
+		});
 
 		this.more = () => {
-			if @init or @fetching or this.posts.length == 0 then return
-			this.fetching = true
-			this.update();
-			this.opts.more!}).then((posts) => {
-				this.fetching = false
-				this.prepend-posts posts
+			if (this.init || this.fetching || this.posts.length == 0) return;
+			this.update({
+				fetching: true
+			});
+			this.opts.more().then(posts => {
+				this.fetching = false;
+				this.prependPosts(posts);
+			});
+		};
 
-		this.set-posts = (posts) => {
-			this.posts = posts
-			this.update();
+		this.setPosts = posts => {
+			this.update({
+				posts: posts
+			});
+		};
 
-		this.prepend-posts = (posts) => {
-			posts.forEach (post) =>
-				this.posts.push post
+		this.prependPosts = posts => {
+			posts.forEach(post => {
+				this.posts.push(post);
 				this.update();
+			});
+		}
 
-		this.add-post = (post) => {
-			this.posts.unshift post
+		this.addPost = post => {
+			this.posts.unshift(post);
 			this.update();
+		};
 
 		this.tail = () => {
-			this.posts[this.posts.length - 1]
+			return this.posts[this.posts.length - 1];
+		};
 	</script>
 </mk-timeline>

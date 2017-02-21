@@ -35,11 +35,13 @@
 		this.mixin('update-avatar');
 
 		this.set = () => {
-			@update-avatar this.I
+			this.updateAvatar(this.I);
+		};
 
-		this.close = (e) => {
+		this.close = e => {
 			e.preventDefault();
 			e.stopPropagation();
 			this.unmount();
+		};
 	</script>
 </mk-set-avatar-suggestion>

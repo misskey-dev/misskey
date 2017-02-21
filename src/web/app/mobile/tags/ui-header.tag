@@ -89,16 +89,18 @@
 	</style>
 	<script>
 		this.mixin('ui');
-		this.mixin('openPostForm');
+		this.mixin('open-post-form');
 
 		this.on('mount', () => {
-			this.opts.ready!
+			this.opts.ready();
+		});
 
-		this.ui.on('title', (title) => {
-			if this.refs.title?
-				this.refs.title.innerHTML = title
+		this.ui.on('title', title => {
+			if (this.refs.title) this.refs.title.innerHTML = title;
+		});
 
 		this.post = () => {
-			this.openPostForm!
+			this.openPostForm();
+		};
 	</script>
 </mk-ui-header>

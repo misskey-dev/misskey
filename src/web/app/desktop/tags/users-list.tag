@@ -1,7 +1,9 @@
 <mk-users-list>
 	<nav>
-		<div><span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>すべて<span>{ opts.count }</span></span>
-			<!-- ↓ https://github.com/riot/riot/issues/2080--><span if={ SIGNIN && opts.youKnowCount != '' } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>知り合い<span>{ opts.youKnowCount }</span></span>
+		<div>
+			<span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>すべて<span>{ opts.count }</span></span>
+			<!-- ↓ https://github.com/riot/riot/issues/2080-->
+			<span if={ SIGNIN && opts.youKnowCount != '' } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>知り合い<span>{ opts.youKnowCount }</span></span>
 		</div>
 	</nav>
 	<div class="users" if={ !fetching && users.length != 0 }>
@@ -9,8 +11,10 @@
 			<mk-list-user user={ this }></mk-list-user>
 		</div>
 	</div>
-	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }><span if={ !moreFetching }>もっと</span><span if={ moreFetching }>読み込み中
-			<mk-ellipsis></mk-ellipsis></span></button>
+	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }>
+		<span if={ !moreFetching }>もっと</span>
+		<span if={ moreFetching }>読み込み中<mk-ellipsis></mk-ellipsis></span>
+	</button>
 	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>
 	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
@@ -90,45 +94,48 @@
 	<script>
 		this.mixin('i');
 
-		this.limit = 30users
-		this.mode = 'all' 
+		this.limit = 30;
+		this.mode = 'all';
 
-		this.fetching = true
-		this.more-fetching = false
+		this.fetching = true;
+		this.moreFetching = false;
 
 		this.on('mount', () => {
-			@fetch =>
-				this.trigger('loaded');
+			this.fetch(() => this.trigger('loaded'));
+		});
 
-		this.fetch = (cb) => {
-			this.fetching = true
-			this.update();
-			obj <~ this.opts.fetch do
-				this.mode == 'iknow' 
-				@limit
-				null
-			this.users = obj.users
-			this.next = obj.next
-			this.fetching = false
-			this.update();
-			if cb? then cb!
+		this.fetch = cb => {
+			this.update({
+				fetching: true
+			});
+			this.opts.fetch(this.mode == 'iknow', this.limit, null, obj => {
+				this.update({
+					fetching: false,
+					users: obj.users,
+					next: obj.next
+				});
+				if (cb) cb();
+			});
+		};
 
 		this.more = () => {
-			this.more-fetching = true
-			this.update();
-			obj <~ this.opts.fetch do
-				this.mode == 'iknow' 
-				@limit
-				@cursor
-			this.users = this.users.concat obj.users
-			this.next = obj.next
-			this.more-fetching = false
-			this.update();
+			this.update({
+				moreFetching: true
+			});
+			this.opts.fetch(this.mode == 'iknow', this.limit, this.cursor, obj => {
+				this.update({
+					moreFetching: false,
+					users: this.users.concat(obj.users),
+					next: obj.next
+				});
+			});
+		};
 
-		this.set-mode = (mode) => {
-			@update do
+		this.setMode = mode => {
+			this.update({
 				mode: mode
-
-			@fetch!
+			});
+			this.fetch();
+		};
 	</script>
 </mk-users-list>

@@ -59,32 +59,39 @@
 	</style>
 	<script>
 		this.mixin('i');
-		this.mode = this.opts.mode || 'timeline' 
 
+		this.mode = this.opts.mode || 'timeline';
 		// https://github.com/riot/riot/issues/2080
-		if this.mode == '' then this.mode = 'timeline' 
+		if (this.mode == '') this.mode = 'timeline';
 
-		this.home = []
+		this.home = [];
 
 		this.on('mount', () => {
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
+			});
 
-			this.I.data.home.forEach (widget) =>
-				try
-					el = document.createElement 'mk-' + widget.name + '-home-widget' 
-					switch widget.place
-						| 'left' => this.refs.left.appendChild el
-						| 'right' => this.refs.right.appendChild el
-					@home.push (riot.mount el, do
-						id: widget.id
+			this.I.data.home.forEach(widget => {
+				try {
+					const el = document.createElement(`mk-${widget.name}-home-widget`);
+					switch (widget.place) {
+						case 'left': this.refs.left.appendChild(el); break;
+						case 'right': this.refs.right.appendChild(el); break;
+					}
+					this.home.push(riot.mount(el, {
+						id: widget.id,
 						data: widget.data
-					.0)
-				catch e
+					})[0]);
+				} catch (e) {
 					// noop
+				}
+			});
+		});
 
 		this.on('unmount', () => {
-			@home.forEach (widget) =>
-				widget.unmount!
+			this.home.forEach(widget => {
+				widget.unmount();
+			});
+		});
 	</script>
 </mk-home>
