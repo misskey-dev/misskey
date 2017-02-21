@@ -13,6 +13,5 @@ module.exports = {
 	scheme,
 	apiUrl,
 	devUrl,
-	aboutUrl,
-	themeColor: '#f76d6c'
+	aboutUrl
 };
