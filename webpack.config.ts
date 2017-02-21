@@ -1,7 +1,7 @@
 import * as webpack from 'webpack';
 const StringReplacePlugin = require('string-replace-webpack-plugin');
 
-module.exports = (config, commit, env) => {
+module.exports = (commit, env) => {
 	const isProduction = env === 'production';
 	const isDebug = !isProduction;
 
@@ -21,7 +21,7 @@ module.exports = (config, commit, env) => {
 					loader: StringReplacePlugin.replace({
 						replacements: [
 							{ pattern: /\$theme\-color\-foreground/g, replacement: () => '#fff' },
-							{ pattern: /\$theme\-color/g, replacement: () => config.themeColor },
+							{ pattern: /\$theme\-color/g, replacement: () => '#f76d6c' },
 						]
 					})
 				},
@@ -62,15 +62,7 @@ module.exports = (config, commit, env) => {
 			new webpack.DefinePlugin({
 				VERSION: JSON.stringify(commit ? commit.hash : null),
 				CONFIG: {
-					themeColor: JSON.stringify(config.themeColor),
-					apiUrl: JSON.stringify(config.api_url),
-					aboutUrl: JSON.stringify(config.about_url),
-					devUrl: JSON.stringify(config.dev_url),
-					host: JSON.stringify(config.host),
-					url: JSON.stringify(config.url),
-					recaptcha: {
-						siteKey: JSON.stringify(config.recaptcha.siteKey),
-					}
+					themeColor: JSON.stringify('#f76d6c')
 				}
 			}),
 			new StringReplacePlugin(),
