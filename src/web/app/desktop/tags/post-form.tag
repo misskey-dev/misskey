@@ -305,161 +305,159 @@
 
 	</style>
 	<script>
-		get-cat = require('../../common/scripts/get-cat');
+		getCat = require('../../common/scripts/get-cat');
 
 		this.mixin('api');
 		this.mixin('notify');
 		this.mixin('autocomplete');
 
-		this.wait = false
-		this.uploadings = []
-		this.files = []
-		this.autocomplete = null
-		this.poll = false
+		this.wait = false;
+		this.uploadings = [];
+		this.files = [];
+		this.autocomplete = null;
+		this.poll = false;
 
-		this.in-reply-to-post = this.opts.reply
+		this.inReplyToPost = this.opts.reply;
 
 		// https://github.com/riot/riot/issues/2080
-		if @in-reply-to-post == '' then this.in-reply-to-post = null
+		if (this.inReplyToPost == '') this.inReplyToPost = null;
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', (file) => {
-				this.addFile file
+			this.refs.uploader.on('uploaded', file => {
+				this.addFile(file);
+			});
 
-			this.refs.uploader.on('change-uploads', (uploads) => {
-				this.trigger 'change-uploading-files' uploads
+			this.refs.uploader.on('change-uploads', uploads => {
+				this.trigger('change-uploading-files', uploads);
+			});
 
-			this.autocomplete = new @Autocomplete this.refs.text
-			@autocomplete.attach!
+			this.autocomplete = new this.Autocomplete(this.refs.text);
+			this.autocomplete.attach();
+		});
 
 		this.on('unmount', () => {
-			@autocomplete.detach!
+			this.autocomplete.detach();
+		});
 
 		this.focus = () => {
 			this.refs.text.focus();
+		};
 
 		this.clear = () => {
-			this.refs.text.value = ''
-			this.files = []
+			this.refs.text.value = '';
+			this.files = [];
 			this.trigger('change-files');
 			this.update();
+		};
 
-		this.ondragover = (e) => {
+		this.ondragover = e => {
 			e.stopPropagation();
-			this.draghover = true
-			// ドラッグされてきたものがファイルだったら
-			if e.dataTransfer.effectAllowed == 'all' 
-				e.dataTransfer.dropEffect = 'copy' 
-			else
-				e.dataTransfer.dropEffect = 'move' 
-			return false
+			this.draghover = true;
+			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			return false;
+		};
 
-		this.ondragenter = (e) => {
-			this.draghover = true
+		this.ondragenter = e => {
+			this.draghover = true;
+		};
 
-		this.ondragleave = (e) => {
-			this.draghover = false
+		this.ondragleave = e => {
+			this.draghover = false;
+		};
 
-		this.ondrop = (e) => {
+		this.ondrop = e => {
 			e.preventDefault();
 			e.stopPropagation();
-			this.draghover = false
+			this.draghover = false;
 
 			// ファイルだったら
-			if e.dataTransfer.files.length > 0
-				Array.prototype.forEach.call e.dataTransfer.files, (file) =>
-					@upload file
-				return false
+			if (e.dataTransfer.files.length > 0) {
+				e.dataTransfer.files.forEach(this.upload);
+			}
 
-			// データ取得
-			data = e.dataTransfer.get-data 'text'
-			if !data?
-				return false
+			return false;
+		};
 
-			try
-				// パース
-				obj = JSON.parse data
+		this.onkeydown = e => {
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.meta-key)) this.post();
+		};
 
-				// (ドライブの)ファイルだったら
-				if obj.type == 'file' 
-					this.addFile obj.file
-			catch
-				// ignore
+		this.onpaste = e => {
+			e.clipboardData.items.forEach(item => {
+				if (item.kind == 'file') {
+					this.upload(item.getAsFile());
+				}
+			});
+		};
 
-			return false
-
-		this.onkeydown = (e) => {
-			if (e.which == 10 || e.which == 13) && (e.ctrlKey || e.meta-key)
-				this.post!
-
-		this.onpaste = (e) => {
-			data = e.clipboardData
-			items = data.items
-			for i from 0 to items.length - 1
-				item = items[i]
-				switch (item.kind)
-					| 'file' =>
-						@upload item.getAsFile();
-
-		this.select-file = () => {
+		this.selectFile = () => {
 			this.refs.file.click();
+		};
 
-		this.select-file-from-drive = () => {
-			browser = document.body.appendChild(document.createElement('mk-select-file-from-drive-window'));
- 			i = riot.mount browser, do
+		this.selectFileFromDrive = () => {
+			const i = riot.mount(document.body.appendChild(document.createElement('mk-select-file-from-drive-window')), {
 				multiple: true
-			i[0].one 'selected' (files) =>
-				files.forEach this.addFile
+			})[0];
+			i.one('selected', files => {
+				files.forEach(this.addFile);
+			});
+		};
 
-		this.change-file = () => {
-			files = this.refs.file.files
-			for i from 0 to files.length - 1
-				file = files.item i
-				@upload file
+		this.changeFile = () => {
+			this.refs.file.files.forEach(this.upload);
+		};
 
-		this.upload = (file) => {
-			this.refs.uploader.upload file
+		this.upload = file => {
+			this.refs.uploader.upload(file);
+		};
 
-		this.add-file = (file) => {
-			file._remove = =>
-				this.files = this.files.filter (x) -> x.id != file.id
-				this.trigger 'change-files' this.files
+		this.addFile = file => {
+			file._remove = () => {
+				this.files = this.files.filter(x => x.id != file.id);
+				this.trigger('change-files', this.files);
 				this.update();
+			};
 
-			this.files.push file
-			this.trigger 'change-files' this.files
+			this.files.push(file);
+			this.trigger('change-files', this.files);
 			this.update();
+		};
 
-		this.add-poll = () => {
-			this.poll = true
+		this.addPoll = () => {
+			this.poll = true;
+		};
 
-		this.on-poll-destroyed = () => {
-			@update do
+		this.onPollDestroyed = () => {
+			this.update({
 				poll: false
+			});
+		};
 
-		this.post = (e) => {
-			this.wait = true
+		this.post = e => {
+			this.wait = true;
 
-			files = if this.files? and this.files.length > 0
-				then this.files.map (f) -> f.id
-				else undefined
+			const files = this.files && this.files.length > 0
+				? this.files.map(f => f.id)
+				: undefined;
 
 			this.api('posts/create', {
-				text: this.refs.text.value
-				media_ids: files
-				reply_to_id: if @in-reply-to-post? then @in-reply-to-post.id else undefined
-				poll: if this.poll then this.refs.poll.get! else undefined
-			}).then((data) => {
+				text: this.refs.text.value,
+				media_ids: files,
+				reply_to_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
+				poll: this.poll ? this.refs.poll.get() : undefined
+			}).then(data => {
 				this.trigger('post');
-				@notify if @in-reply-to-post? then '返信しました！' else '投稿しました！'
-			.catch (err) =>
-				console.error err
-				@notify '投稿できませんでした'
+				this.notify(this.inReplyToPost ? '返信しました！' : '投稿しました！');
+			}).catch(err => {
+				this.notify('投稿できませんでした');
 			}).then(() => {
-				this.wait = false
-				this.update();
+				this.update({
+					wait: false
+				});
+			});
 
 		this.cat = () => {
-			this.refs.text.value = this.refs.text.value + get-cat!
+			this.refs.text.value += getCat();
+		};
 	</script>
 </mk-post-form>

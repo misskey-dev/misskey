@@ -48,11 +48,6 @@
 				<p>API通信時に新鮮なユーザー情報をキャッシュすることでフェッチのオーバーヘッドを無くします。(実験的)</p>
 			</label>
 			<label class="checkbox">
-				<input type="checkbox" checked={ I.data.debug } onclick={ updateDebug }/>
-				<p>開発者モード</p>
-				<p>デバッグ等の開発者モードを有効にします。</p>
-			</label>
-			<label class="checkbox">
 				<input type="checkbox" checked={ I.data.nya } onclick={ updateNya }/>
 				<p><i>な</i>を<i>にゃ</i>に変換する</p>
 				<p>攻撃的な投稿が多少和らぐ可能性があります。</p>
@@ -200,44 +195,47 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
+		this.mixin('notify');
 		this.mixin('dialog');
 		this.mixin('update-avatar');
 
-		this.page = 'account' 
+		this.page = 'account';
 
-		this.set-page = (page) => {
-			this.page = page
+		this.setPage = page => {
+			this.page = page;
+		};
 
 		this.avatar = () => {
-			@update-avatar this.I
+			this.updateAvatar(this.I);
+		};
 
-		this.update-account = () => {
+		this.updateAccount = () => {
 			this.api('i/update', {
-				name: this.refs.account-name.value
-				location: this.refs.account-location.value
-				bio: this.refs.account-bio.value
-				birthday: this.refs.account-birthday.value
-			}).then((i) => {
-				alert 'ok' 
-			.catch (err) =>
-				console.error err
+				name: this.refs.accountName.value,
+				location: this.refs.accountLocation.value,
+				bio: this.refs.accountBio.value,
+				birthday: this.refs.accountBirthday.value
+			}).then(() => {
+				this.notify('プロフィールを更新しました');
+			});
+		};
 
-		this.update-cache = () => {
-			this.I.data.cache = !this.I.data.cache
+		this.updateCache = () => {
+			this.I.data.cache = !this.I.data.cache;
 			this.api('i/appdata/set', {
-				data: JSON.stringify do
+				data: JSON.stringify({
 					cache: this.I.data.cache
+				})
+			});
+		};
 
-		this.update-debug = () => {
-			this.I.data.debug = !this.I.data.debug
+		this.updateNya = () => {
+			this.I.data.nya = !this.I.data.nya;
 			this.api('i/appdata/set', {
-				data: JSON.stringify do
-					debug: this.I.data.debug
-
-		this.update-nya = () => {
-			this.I.data.nya = !this.I.data.nya
-			this.api('i/appdata/set', {
-				data: JSON.stringify do
+				data: JSON.stringify({
 					nya: this.I.data.nya
+				})
+			});
+		};
 	</script>
 </mk-settings>

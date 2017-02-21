@@ -32,23 +32,27 @@
 		this.on('before-mount', () => {
 			this.state = this.getStreamState();
 
-			if this.state == 'connected' 
-				this.root.style.opacity = 0
+			if (this.state == 'connected') {
+				this.root.style.opacity = 0;
+			}
+		});
 
-		this.stream-state-ev.on('connected', () => {
+		this.streamStateEv.on('connected', () => {
 			this.state = this.getStreamState();
 			this.update();
-			setTimeout =>
+			setTimeout(() => {
 				Velocity(this.root, {
 					opacity: 0
-				} 200ms 'linear' 
-			, 1000ms
+				}, 200, 'linear');
+			}, 1000);
+		});
 
-		this.stream-state-ev.on('closed', () => {
+		this.streamStateEv.on('closed', () => {
 			this.state = this.getStreamState();
 			this.update();
 			Velocity(this.root, {
 				opacity: 1
-			} 0ms
+			}, 0);
+		});
 	</script>
 </mk-stream-indicator>
