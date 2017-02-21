@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 app.use(favicon(`${__dirname}/resources/favicon.ico`));
 app.get('/manifest.json', (req, res) => res.sendFile(__dirname + '/resources/manifest.json'));
 app.get('/apple-touch-icon.png', (req, res) => res.sendFile(__dirname + '/resources/apple-touch-icon.png'));
-app.use('/_/resources', express.static(`${__dirname}/resources`, {
+app.use('/resources', express.static(`${__dirname}/resources`, {
 	maxAge: ms('7 days')
 }));
 

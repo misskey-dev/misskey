@@ -7,7 +7,7 @@
 
 	function mountDesktop() {
 		const script = document.createElement('script');
-		script.setAttribute('src', '/_/resources/desktop/script.js');
+		script.setAttribute('src', '/resources/desktop/script.js');
 		script.setAttribute('async', 'true');
 		script.setAttribute('defer', 'true');
 		head.appendChild(script);
@@ -20,7 +20,7 @@
 		head.appendChild(meta);
 
 		const script = document.createElement('script');
-		script.setAttribute('src', '/_/resources/mobile/script.js');
+		script.setAttribute('src', '/resources/mobile/script.js');
 		script.setAttribute('async', 'true');
 		script.setAttribute('defer', 'true');
 		head.appendChild(script);
