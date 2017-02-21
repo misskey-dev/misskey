@@ -23,6 +23,7 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'url' parameter
+	// TODO: Validate this url
 	const url = params.url;
 	if (url == null) {
 		return rej('url is required');
