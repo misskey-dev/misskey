@@ -33,15 +33,6 @@ if (isDebug) {
 	console.log(chalk.yellow.bold('！！！注意！！！　開発モードが有効です。(成果物の圧縮などはスキップされます)'));
 }
 
-if (!fs.existsSync('./.config/default.yml')) {
-	console.log('npm run configを実行して設定ファイルを作成してください');
-	process.exit();
-}
-
-(global as any).MISSKEY_CONFIG_PATH = '.config/default.yml';
-import { Config } from './src/config';
-const config = eval(require('typescript').transpile(require('fs').readFileSync('./src/config.ts').toString()))() as Config;
-
 const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('build', [
@@ -102,7 +93,9 @@ gulp.task('build:about:docs', () => {
 					path: page,
 					license: licenseHtml,
 					thirdpartyLicenses: thirdpartyLicensesHtml
-				}, config)
+				}, {
+					themeColor: '#f76d6c'
+				})
 			}))
 			.pipe(gulp.dest('./built/web/about/pages/' + Path.parse(page).dir));
 	});
@@ -154,7 +147,7 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 	// Get commit info
 	const commit = await prominence(git).getLastCommit();
 
-	let stream = webpack(require('./webpack.config.js')(config, commit, env), require('webpack'));
+	let stream = webpack(require('./webpack.config.js')(commit, env), require('webpack'));
 
 	// TODO: remove this block
 	if (isProduction) {
@@ -216,7 +209,7 @@ gulp.task('build:client:pug', [
 	gulp.src('./src/web/app/*/view.pug')
 		.pipe(pug({
 			locals: {
-				themeColor: config.themeColor
+				themeColor: '#f76d6c'
 			}
 		}))
 		.pipe(gulp.dest('./built/web/app/'))

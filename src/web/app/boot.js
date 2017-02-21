@@ -17,11 +17,13 @@ require('./common/tags');
 
 "use strict";
 
+const CONFIG = require('./common/scripts/config');
+
 document.domain = CONFIG.host;
 
 // Set global configration
 riot.mixin({
-	CONFIG: CONFIG
+	CONFIG
 });
 
 // ↓ iOS待ちPolyfill (SEE: http://caniuse.com/#feat=fetch)

@@ -31,8 +31,7 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 2. `git clone git://github.com/syuilo/misskey.git`
 3. `cd misskey`
 4. `npm install`
-5. `npm run config`
-6. `npm run build`
+5. `npm run build`
 
 GLHF!
 
@@ -92,6 +91,7 @@ If you want to run misskey in production mode, add `--env NODE_ENV=production` l
 Note that `$(pwd)` is the working directory.
 
 ## Launch
+(初回起動時はまず `npm run config` してください)
 `sudo npm start`
 
 ## Debugging :bug:

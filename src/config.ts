@@ -14,11 +14,9 @@ const dir = `${__dirname}/../.config`;
 /**
  * Path of configuration file
  */
-export const path = (global as any).MISSKEY_CONFIG_PATH
-	? (global as any).MISSKEY_CONFIG_PATH
-	: process.env.NODE_ENV == 'test'
-		? `${dir}/test.yml`
-		: `${dir}/default.yml`;
+export const path = process.env.NODE_ENV == 'test'
+	? `${dir}/test.yml`
+	: `${dir}/default.yml`;
 
 /**
  * ユーザーが設定する必要のある情報
@@ -71,8 +69,6 @@ interface Source {
  * Misskeyが自動的に(ユーザーが設定した情報から推論して)設定する情報
  */
 interface Mixin {
-	themeColor: string;
-	themeColorForeground: string;
 	host: string;
 	scheme: string;
 	secondary_host: string;
@@ -98,8 +94,6 @@ export default function load() {
 	config.url = normalizeUrl(config.url);
 	config.secondary_url = normalizeUrl(config.secondary_url);
 
-	mixin.themeColor = '#f76d6c';
-	mixin.themeColorForeground = '#fff';
 	mixin.host = config.url.substr(config.url.indexOf('://') + 3);
 	mixin.scheme = config.url.substr(0, config.url.indexOf('://'));
 	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
