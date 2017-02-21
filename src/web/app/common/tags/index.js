@@ -1,7 +1,6 @@
 require('./core-error.tag');
 require('./url.tag');
 require('./url-preview.tag');
-require('./ripple-string.tag');
 require('./time.tag');
 require('./file-type-icon.tag');
 require('./uploader.tag');
@@ -24,3 +23,4 @@ require('./messaging/room.tag');
 require('./messaging/message.tag');
 require('./messaging/index.tag');
 require('./messaging/form.tag');
+require('./stream-indicator.tag');

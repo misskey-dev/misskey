@@ -91,47 +91,57 @@
 		this.mixin('i');
 		this.mixin('api');
 
-		this.state = null
-		this.fetching = true
+		this.state = null;
+		this.fetching = true;
 
-		this.token = window.location.href.split '/' .pop!
+		this.token = window.location.href.split('/').pop();
 
 		this.on('mount', () => {
-			if not this.SIGNIN then return
+			if (!this.SIGNIN) return;
 
 			// Fetch session
 			this.api('auth/session/show', {
-				token: @token
-			}).then((session) => {
-				this.session = session
-				this.fetching = false
+				token: this.token
+			}).then(session => {
+				this.session = session;
+				this.fetching = false;
 
 				// 既に連携していた場合
-				if @session.app.is_authorized
+				if (this.session.app.is_authorized) {
 					this.api('auth/accept', {
-						token: @session.token
+						token: this.session.token
 					}).then(() => {
-						@accepted!
-				else
-					this.state = 'waiting' 
-					this.update();
+						this.accepted();
+					});
+				} else {
+					this.update({
+						state: 'waiting'
+					});
 
 					this.refs.form.on('denied', () => {
-						this.state = 'denied' 
-						this.update();
+						this.update({
+							state: 'denied'
+						});
+					});
 
-					this.refs.form.on 'accepted' @accepted
-
-			.catch (error) =>
-				this.fetching = false
-				this.state = 'fetch-session-error' 
-				this.update();
+					this.refs.form.on('accepted', this.accepted);
+				}
+			}).catch(error => {
+				this.update({
+					fetching: false,
+					state: 'fetch-session-error'
+				});
+			});
+		});
 
 		this.accepted = () => {
-			this.state = 'accepted' 
-			this.update();
+			this.update({
+				state: 'accepted'
+			});
 
-			if @session.app.callback_url
-				location.href = @session.app.callback_url + '?token=' + @session.token
+			if (this.session.app.callback_url) {
+				location.href = this.session.app.callback_url + '?token=' + this.session.token;
+			}
+		};
 	</script>
 </mk-index>

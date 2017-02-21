@@ -30,15 +30,17 @@
 	<script>
 		this.mixin('text');
 
-		this.post = this.opts.post
+		this.post = this.opts.post;
 
 		this.on('mount', () => {
-			if this.post.text?
-				tokens = @analyze this.post.text
-				this.refs.text.innerHTML = @compile tokens, false
+			if (this.post.text) {
+				const tokens = this.analyze(this.post.text);
+				this.refs.text.innerHTML = this.compile(tokens, false);
 
-				this.refs.text.children.forEach (e) =>
-					if e.tag-name == 'MK-URL' 
-						riot.mount e
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
+			}
+		});
 	</script>
 </mk-sub-post-content>

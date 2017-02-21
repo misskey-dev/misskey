@@ -8,18 +8,21 @@
 	<script>
 		this.mixin('api');
 
-		this.user = this.opts.user
+		this.user = this.opts.user;
 
 		this.fetch = (iknow, limit, cursor, cb) => {
 			this.api('users/followers', {
-				user_id: this.user.id
-				iknow: iknow
-				limit: limit
-				cursor: if cursor? then cursor else undefined
-			.then cb
+				user_id: this.user.id,
+				iknow: iknow,
+				limit: limit,
+				cursor: cursor ? cursor : undefined
+			}).then(cb);
+		};
 
 		this.on('mount', () => {
 			this.refs.list.on('loaded', () => {
 				this.trigger('loaded');
+			});
+		};
 	</script>
 </mk-user-followers>

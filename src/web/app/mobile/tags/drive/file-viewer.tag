@@ -185,17 +185,18 @@
 
 		this.mixin('api');
 
-		this.file = this.opts.file
-		this.kind = this.file.type.split '/' .0
+		this.file = this.opts.file;
+		this.kind = this.file.type.split('/')[0];
 
 		this.rename = () => {
-			name = window.prompt '名前を変更' this.file.name
-			if name? and name != '' and name != this.file.name
-				this.api('drive/files/update', {
-					file_id: this.file.id,
-					name: name
-				}).then(() => {
-					this.parent.cf this.file, true
-
+			const name = window.prompt('名前を変更', this.file.name);
+			if (name == null || name == '' || name == this.file.name) return;
+			this.api('drive/files/update', {
+				file_id: this.file.id,
+				name: name
+			}).then(() => {
+				this.parent.cf(this.file, true);
+			});
+		};
 	</script>
 </mk-drive-file-viewer>

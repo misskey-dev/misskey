@@ -168,6 +168,6 @@
 	</style>
 	<script>
 		this.mixin('get-post-summary');
-		this.notification = this.opts.notification
+		this.notification = this.opts.notification;
 	</script>
 </mk-notification>

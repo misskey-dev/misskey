@@ -72,45 +72,48 @@
 	<script>
 		this.mixin('i');
 
-		this.limit = 30users
-		this.mode = 'all' 
+		this.limit = 30;
+		this.mode = 'all';
 
-		this.fetching = true
-		this.more-fetching = false
+		this.fetching = true;
+		this.moreFetching = false;
 
 		this.on('mount', () => {
-			@fetch =>
-				this.trigger('loaded');
+			this.fetch(() => this.trigger('loaded'));
+		});
 
-		this.fetch = (cb) => {
-			this.fetching = true
-			this.update();
-			obj <~ this.opts.fetch do
-				this.mode == 'iknow' 
-				@limit
-				null
-			this.users = obj.users
-			this.next = obj.next
-			this.fetching = false
-			this.update();
-			if cb? then cb!
+		this.fetch = cb => {
+			this.update({
+				fetching: true
+			});
+			this.opts.fetch(this.mode == 'iknow', this.limit, null, obj => {
+				this.update({
+					fetching: false,
+					users: obj.users,
+					next: obj.next
+				});
+				if (cb) cb();
+			});
+		};
 
 		this.more = () => {
-			this.more-fetching = true
-			this.update();
-			obj <~ this.opts.fetch do
-				this.mode == 'iknow' 
-				@limit
-				@cursor
-			this.users = this.users.concat obj.users
-			this.next = obj.next
-			this.more-fetching = false
-			this.update();
+			this.update({
+				moreFetching: true
+			});
+			this.opts.fetch(this.mode == 'iknow', this.limit, this.cursor, obj => {
+				this.update({
+					moreFetching: false,
+					users: this.users.concat(obj.users),
+					next: obj.next
+				});
+			});
+		};
 
-		this.set-mode = (mode) => {
-			@update do
+		this.setMode = mode => {
+			this.update({
 				mode: mode
-
-			@fetch!
+			});
+			this.fetch();
+		};
 	</script>
 </mk-users-list>

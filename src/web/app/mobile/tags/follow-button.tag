@@ -52,54 +52,70 @@
 		this.mixin('is-promise');
 		this.mixin('stream');
 
-		this.user = null
-		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
-		this.init = true
-		this.wait = false
+		this.user = null;
+		this.userPromise = this.isPromise(this.opts.user)
+			? this.opts.user
+			: Promise.resolve(this.opts.user);
+		this.init = true;
+		this.wait = false;
 
 		this.on('mount', () => {
-			this.user-promise}).then((user) => {
-				this.user = user
-				this.init = false
-				this.update();
-				this.stream.on 'follow' this.on-stream-follow
-				this.stream.on 'unfollow' this.on-stream-unfollow
+			this.userPromise.then(user => {
+				this.update({
+					init: false,
+					user: user
+				});
+				this.stream.on('follow', this.onStreamFollow);
+				this.stream.on('unfollow', this.onStreamUnfollow);
+			});
+		});
 
 		this.on('unmount', () => {
-			this.stream.off 'follow' this.on-stream-follow
-			this.stream.off 'unfollow' this.on-stream-unfollow
+			this.stream.off('follow', this.onStreamFollow);
+			this.stream.off('unfollow', this.onStreamUnfollow);
+		});
 
-		this.on-stream-follow = (user) => {
-			if user.id == this.user.id
-				this.user = user
-				this.update();
+		this.onStreamFollow = user => {
+			if (user.id == this.user.id) {
+				this.update({
+					user: user
+				});
+			}
+		};
 
-		this.on-stream-unfollow = (user) => {
-			if user.id == this.user.id
-				this.user = user
-				this.update();
+		this.onStreamUnfollow = user => {
+			if (user.id == this.user.id) {
+				this.update({
+					user: user
+				});
+			}
+		};
 
 		this.onclick = () => {
-			this.wait = true
-			if this.user.is_following
+			this.wait = true;
+			if (this.user.is_following) {
 				this.api('following/delete', {
 					user_id: this.user.id
 				}).then(() => {
-					this.user.is_following = false
-				.catch (err) ->
-					console.error err
+					this.user.is_following = false;
+				}).catch(err => {
+					console.error(err);
 				}).then(() => {
-					this.wait = false
+					this.wait = false;
 					this.update();
-			else
+				});
+			} else {
 				this.api('following/create', {
 					user_id: this.user.id
 				}).then(() => {
-					this.user.is_following = true
-				.catch (err) ->
-					console.error err
+					this.user.is_following = true;
+				}).catch(err => {
+					console.error(err);
 				}).then(() => {
-					this.wait = false
+					this.wait = false;
 					this.update();
+				});
+			}
+		};
 	</script>
 </mk-follow-button>

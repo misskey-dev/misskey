@@ -1,9 +1,16 @@
 <mk-stream-indicator>
-	<p if={ state == 'initializing' }><i class="fa fa-spinner fa-spin"></i><span>接続中
-			<mk-ellipsis></mk-ellipsis></span></p>
-	<p if={ state == 'reconnecting' }><i class="fa fa-spinner fa-spin"></i><span>切断されました 接続中
-			<mk-ellipsis></mk-ellipsis></span></p>
-	<p if={ state == 'connected' }><i class="fa fa-check"></i><span>接続完了</span></p>
+	<p if={ state == 'initializing' }>
+		<i class="fa fa-spinner fa-spin"></i>
+		<span>接続中<mk-ellipsis></mk-ellipsis></span>
+	</p>
+	<p if={ state == 'reconnecting' }>
+		<i class="fa fa-spinner fa-spin"></i>
+		<span>切断されました 接続中<mk-ellipsis></mk-ellipsis></span>
+	</p>
+	<p if={ state == 'connected' }>
+		<i class="fa fa-check"></i>
+		<span>接続完了</span>
+	</p>
 	<style>
 		:scope
 			display block

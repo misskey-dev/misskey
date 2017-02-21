@@ -18,21 +18,21 @@
 	<script>
 		this.on('mount', () => {
 			Velocity(this.root, {
-				bottom: '0px' 
+				bottom: '0px'
 			}, {
-				duration: 500ms
-				easing: 'ease-out' 
-			}
+				duration: 500,
+				easing: 'ease-out'
+			});
 
-			setTimeout =>
+			setTimeout(() => {
 				Velocity(this.root, {
-					bottom: '-64px' 
+					bottom: '-64px'
 				}, {
-					duration: 500ms
-					easing: 'ease-out' 
-					complete: =>
-						this.unmount();
-				}
-			, 6000ms
+					duration: 500,
+					easing: 'ease-out',
+					complete: () => this.unmount()
+				});
+			}, 6000);
+		});
 	</script>
 </mk-notify>

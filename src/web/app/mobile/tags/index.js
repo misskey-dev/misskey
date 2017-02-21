@@ -1,7 +1,6 @@
 require('./ui.tag');
 require('./ui-header.tag');
 require('./ui-nav.tag');
-require('./stream-indicator.tag');
 require('./page/entrance.tag');
 require('./page/entrance/signin.tag');
 require('./page/entrance/signup.tag');

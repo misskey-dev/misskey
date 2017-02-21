@@ -120,12 +120,10 @@
 		this.mixin('i');
 		this.mixin('page');
 
-		this.on('mount', () => {
-			this.opts.ready!
-
 		this.search = () => {
-			query = window.prompt '検索' 
-			if query? and query != ''
-				this.page '/search:' + query
+			const query = window.prompt('検索');
+			if (query == null || query == '') return;
+			this.page('/search:' + query);
+		};
 	</script>
 </mk-ui-nav>

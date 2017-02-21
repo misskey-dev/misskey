@@ -108,19 +108,23 @@
 	<script>
 		this.mixin('api');
 
-		this.session = this.opts.session
-		this.app = @session.app
+		this.session = this.opts.session;
+		this.app = this.session.app;
 
 		this.cancel = () => {
 			this.api('auth/deny', {
-				token: @session.token
+				token: this.session.token
 			}).then(() => {
 				this.trigger('denied');
+			});
+		};
 
 		this.accept = () => {
 			this.api('auth/accept', {
-				token: @session.token
+				token: this.session.token
 			}).then(() => {
 				this.trigger('accepted');
+			});
+		};
 	</script>
 </mk-form>

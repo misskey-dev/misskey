@@ -3,7 +3,7 @@
 		<p onclick={ goRoot }><i class="fa fa-cloud"></i>ドライブ</p>
 		<virtual each={ folder in hierarchyFolders }>
 			<span><i class="fa fa-angle-right"></i></span>
-			<p onclick={ _move }>{ folder.name }</p>
+			<p onclick={ move }>{ folder.name }</p>
 		</virtual>
 		<virtual if={ folder != null }>
 			<span><i class="fa fa-angle-right"></i></span>
@@ -14,7 +14,7 @@
 			<p>{ file.name }</p>
 		</virtual>
 	</nav>
-	<div class="browser { loading: loading }" if={ file == null }>
+	<div class="browser { loading: fetching }" if={ file == null }>
 		<div class="folders" if={ folders.length > 0 }>
 			<virtual each={ folder in folders }>
 				<mk-drive-folder folder={ folder }></mk-drive-folder>
@@ -27,11 +27,11 @@
 			</virtual>
 			<p if={ moreFiles }>もっと読み込む</p>
 		</div>
-		<div class="empty" if={ files.length == 0 && folders.length == 0 && !loading }>
+		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 			<p if={ !folder == null }>ドライブには何もありません。</p>
 			<p if={ folder != null }>このフォルダーは空です</p>
 		</div>
-		<div class="loading" if={ loading }>
+		<div class="loading" if={ fetching }>
 			<div class="spinner">
 				<div class="dot1"></div>
 				<div class="dot2"></div>
@@ -131,247 +131,263 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		this.files = []
-		this.folders = []
-		this.hierarchyFolders = []
-		this.selected-files = []
+		this.files = [];
+		this.folders = [];
+		this.hierarchyFolders = [];
+		this.selectedFiles = [];
 
 		// 現在の階層(フォルダ)
 		// * null でルートを表す
-		this.folder = null
+		this.folder = null;
 
-		this.file = null
+		this.file = null;
 
-		this.is-select-mode = this.opts.select? and this.opts.select
-		this.multiple = if this.opts.multiple? then this.opts.multiple else false
+		this.isSelectMode = this.opts.select;
+		this.multiple =this.opts.multiple;
 
 		this.on('mount', () => {
-			this.stream.on 'drive_file_created' this.onStreamDriveFileCreated
-			this.stream.on 'drive_file_updated' this.onStreamDriveFileUpdated
-			this.stream.on 'drive_folder_created' this.onStreamDriveFolderCreated
-			this.stream.on 'drive_folder_updated' this.onStreamDriveFolderUpdated
+			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
+			this.stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
+			this.stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
 
 			// Riotのバグでnullを渡しても""になる
 			// https://github.com/riot/riot/issues/2080
-			#if this.opts.folder?
-			if this.opts.folder? and this.opts.folder != ''
-				@cd this.opts.folder, true
-			else if this.opts.file? and this.opts.file != ''
-				@cf this.opts.file, true
-			else
+			//if (this.opts.folder)
+			//if (this.opts.file)
+			if (this.opts.folder && this.opts.folder != '') {
+				this.cd(this.opts.folder, true);
+			} else if (this.opts.file && this.opts.file != '') {
+				this.cf(this.opts.file, true);
+			} else {
 				this.load();
+			}
+		});
 
 		this.on('unmount', () => {
-			this.stream.off 'drive_file_created' this.onStreamDriveFileCreated
-			this.stream.off 'drive_file_updated' this.onStreamDriveFileUpdated
-			this.stream.off 'drive_folder_created' this.onStreamDriveFolderCreated
-			this.stream.off 'drive_folder_updated' this.onStreamDriveFolderUpdated
+			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
+			this.stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
+			this.stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
+		});
 
-		this.onStreamDriveFileCreated = (file) => {
-			this.addFile file, true
+		this.onStreamDriveFileCreated = file => {
+			this.addFile(file, true);
+		};
 
-		this.onStreamDriveFileUpdated = (file) => {
-			current = if this.folder? then this.folder.id else null
-			if current != file.folder_id
-				@remove-file file
-			else
-				this.addFile file, true
+		this.onStreamDriveFileUpdated = file => {
+			const current = this.folder ? this.folder.id : null;
+			if (current != file.folder_id) {
+				this.removeFile(file);
+			} else {
+				this.addFile(file, true);
+			}
+		};
 
-		this.onStreamDriveFolderCreated = (folder) => {
-			this.addFolder folder, true
+		this.onStreamDriveFolderCreated = folder => {
+			this.addFolder(folder, true);
+		};
 
-		this.onStreamDriveFolderUpdated = (folder) => {
-			current = if this.folder? then this.folder.id else null
-			if current != folder.parent_id
-				this.removeFolder folder
-			else
-				this.addFolder folder, true
+		this.onStreamDriveFolderUpdated = folder => {
+			const current = this.folder ? this.folder.id : null;
+			if (current != folder.parent_id) {
+				this.removeFolder(folder);
+			} else {
+				this.addFolder(folder, true);
+			}
+		};
 
-		@_move = (ev) =>
-			this.move ev.item.folder
+		this.move = ev => {
+			this.move(ev.item.folder);
+		};
 
-		this.move = (target-folder) => {
-			@cd target-folder
+		this.cd = (target, silent = false) => {
+			this.file = null;
 
-		this.cd = (target-folder, silent = false) => {
-			this.file = null
+			if (target == null) {
+				this.goRoot();
+				return;
+			} else if (typeof target == 'object') target = target.id;
 
-			if target-folder? and typeof target-folder == 'object' 
-				target-folder = target-folder.id
-
-			if target-folder == null
-				@go-root!
-				return
-
-			this.loading = true
-			this.update();
+			this.update({
+				fetching: true
+			});
 
 			this.api('drive/folders/show', {
-				folder_id: target-folder
-			}).then((folder) => {
-				this.folder = folder
-				this.hierarchyFolders = []
+				folder_id: target
+			}).then(folder => {
+				this.folder = folder;
+				this.hierarchyFolders = [];
 
-				x = (f) =>
-					@hierarchyFolders.unshift f
-					if f.parent?
-						x f.parent
-
-				if folder.parent?
-					x folder.parent
+				if (folder.parent) dive(folder.parent);
 
 				this.update();
-				this.trigger 'open-folder' this.folder, silent
+				this.trigger('open-folder', this.folder, silent);
 				this.load();
-			.catch (err, text-status) ->
-				console.error err
+			});
+		};
 
-		this.add-folder = (folder, unshift = false) => {
-			current = if this.folder? then this.folder.id else null
-			if current != folder.parent_id
-				return
+		this.addFolder = (folder, unshift = false) => {
+			const current = this.folder ? this.folder.id : null;
+			// 追加しようとしているフォルダが、今居る階層とは違う階層のものだったら中断
+			if (current != folder.parent_id) return;
 
-			if (this.folders.some (f) => f.id == folder.id)
-				return
+			// 追加しようとしているフォルダを既に所有してたら中断
+			if (this.folders.some(f => f.id == folder.id)) return;
 
-			if unshift
-				this.folders.unshift folder
-			else
-				this.folders.push folder
+			if (unshift) {
+				this.folders.unshift(folder);
+			} else {
+				this.folders.push(folder);
+			}
 
 			this.update();
+		};
 
-		this.add-file = (file, unshift = false) => {
-			current = if this.folder? then this.folder.id else null
-			if current != file.folder_id
-				return
+		this.addFile = (file, unshift = false) => {
+			const current = this.folder ? this.folder.id : null;
+			// 追加しようとしているファイルが、今居る階層とは違う階層のものだったら中断
+			if (current != file.folder_id) return;
 
-			if (this.files.some (f) => f.id == file.id)
-				exist = (this.files.map (f) -> f.id).index-of file.id
-				this.files[exist] = file
+			if (this.files.some(f => f.id == file.id)) {
+				const exist = this.files.map(f => f.id).indexOf(file.id);
+				this.files[exist] = file;
 				this.update();
-				return
+				return;
+			}
 
-			if unshift
-				this.files.unshift file
-			else
-				this.files.push file
+			if (unshift) {
+				this.files.unshift(file);
+			} else {
+				this.files.push(file);
+			}
 
 			this.update();
+		};
 
-		this.remove-folder = (folder) => {
-			if typeof folder == 'object' 
-				folder = folder.id
-			this.folders = this.folders.filter (f) -> f.id != folder
+		this.removeFolder = folder => {
+			if (typeof folder == 'object') folder = folder.id;
+			this.folders = this.folders.filter(f => f.id != folder);
 			this.update();
+		};
 
-		this.remove-file = (file) => {
-			if typeof file == 'object' 
-				file = file.id
-			this.files = this.files.filter (f) -> f.id != file
+		this.removeFile = file => {
+			if (typeof file == 'object') file = file.id;
+			this.files = this.files.filter(f => f.id != file);
 			this.update();
+		};
 
-		this.go-root = () => {
-			if this.folder != null or this.file != null
-				this.file = null
-				this.folder = null
-				this.hierarchyFolders = []
-				this.update();
+		this.goRoot = () => {
+			if (this.folder || this.file) {
+				this.update({
+					file: null,
+					folder: null,
+					hierarchyFolders: []
+				});
 				this.trigger('move-root');
 				this.load();
+			}
+		};
 
 		this.load = () => {
-			this.folders = []
-			this.files = []
-			this.more-folders = false
-			this.more-files = false
-			this.loading = true
-			this.update();
+			this.update({
+				folders: [],
+				files: [],
+				moreFolders: false,
+				moreFiles: false,
+				fetching: true
+			});
 
 			this.trigger('begin-load');
 
-			load-folders = null
-			load-files = null
+			let fetchedFolders = null;
+			let fetchedFiles = null;
 
-			folders-max = 20
-			files-max = 20
+			const foldersMax = 20;
+			const filesMax = 20;
 
 			// フォルダ一覧取得
 			this.api('drive/folders', {
-				folder_id: if this.folder? then this.folder.id else null
-				limit: folders-max + 1
-			}).then((folders) => {
-				if folders.length == folders-max + 1
-					this.more-folders = true
-					folders.pop!
-				load-folders := folders
-				complete!
-			.catch (err, text-status) =>
-				console.error err
+				folder_id: this.folder ? this.folder.id : null,
+				limit: foldersMax + 1
+			}).then(folders => {
+				if (folders.length == foldersMax + 1) {
+					this.moreFolders = true;
+					folders.pop();
+				}
+				fetchedFolders = folders;
+				complete();
+			});
 
 			// ファイル一覧取得
 			this.api('drive/files', {
-				folder_id: if this.folder? then this.folder.id else null
-				limit: files-max + 1
-			}).then((files) => {
-				if files.length == files-max + 1
-					this.more-files = true
-					files.pop!
-				load-files := files
-				complete!
-			.catch (err, text-status) =>
-				console.error err
+				folder_id: this.folder ? this.folder.id : null,
+				limit: filesMax + 1
+			}).then(files => {
+				if (files.length == filesMax + 1) {
+					this.moreFiles = true;
+					files.pop();
+				}
+				fetchedFiles = files;
+				complete();
+			});
 
-			flag = false
-			complete = =>
-				if flag
-					load-folders.forEach (folder) =>
-						this.addFolder folder
-					load-files.forEach (file) =>
-						this.addFile file
-					this.loading = false
-					this.update();
-
+			let flag = false;
+			complete = () => {
+				if (flag) {
+					fetchedFolders.forEach(folder => this.addFolder);
+					fetchedFiles.forEach(file => this.addFile);
+					this.update({
+						fetching: false
+					});
+					// 一連の読み込みが完了したイベントを発行
 					this.trigger('loaded');
-				else
-					flag := true
+				} else {
+					flag = true;
+					// 一連の読み込みが半分完了したイベントを発行
 					this.trigger('load-mid');
+				}
+			};
+		};
 
-		this.choose-file = (file) => {
-			if @is-select-mode
-				exist = @selected-files.some (f) => f.id == file.id
-				if exist
-					this.selected-files = (@selected-files.filter (f) => { f.id != file.id)
-				else
-					@selected-files.push file
+		this.chooseFile = file => {
+			if (this.isSelectMode) {
+				if (this.selectedFiles.some(f => f.id == file.id)) {
+					this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+				} else {
+					this.selectedFiles.push(file);
+				}
 				this.update();
-				this.trigger 'change-selected' @selected-files
-			else
-				@cf file
+				this.trigger('change-selected', this.selectedFiles);
+			} else {
+				this.cf(file);
+			}
+		};
 
 		this.cf = (file, silent = false) => {
-			if typeof file == 'object' 
-				file = file.id
+			if (typeof file == 'object') file = file.id;
 
-			this.loading = true
-			this.update();
+			this.update({
+				fetching: true
+			});
 
 			this.api('drive/files/show', {
 				file_id: file
-			}).then((file) => {
-				this.file = file
-				this.folder = null
-				this.hierarchyFolders = []
+			}).then(file => {
+				this.file = file;
+				this.folder = null;
+				this.hierarchyFolders = [];
 
-				x = (f) =>
-					@hierarchyFolders.unshift f
-					if f.parent?
-						x f.parent
-
-				if file.folder?
-					x file.folder
+				if (file.folder) dive(file.folder);
 
 				this.update();
-				this.trigger 'open-file' this.file, silent
+				this.trigger('open-file', this.file, silent);
+			});
+		};
+
+		const dive = folder => {
+			this.hierarchyFolders.unshift(folder);
+			if (folder.parent) dive(folder.parent);
+		};
 	</script>
 </mk-drive>

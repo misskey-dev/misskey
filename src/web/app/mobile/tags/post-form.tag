@@ -10,7 +10,7 @@
 	</header>
 	<div class="form">
 		<mk-post-preview if={ opts.reply } post={ opts.reply }></mk-post-preview>
-		<textarea ref="text" disabled={ wait } oninput={ update } onkeypress={ onkeypress } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
+		<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
 		<div class="attaches" if={ files.length != 0 }>
 			<ul class="files" ref="attaches">
 				<li class="file" each={ files }>
@@ -182,103 +182,111 @@
 
 	</style>
 	<script>
-		get-cat = require('../../common/scripts/get-cat');
+		getCat = require('../../common/scripts/get-cat');
 
 		this.mixin('api');
 
-		this.wait = false
-		this.uploadings = []
-		this.files = []
-		this.poll = false
+		this.wait = false;
+		this.uploadings = [];
+		this.files = [];
+		this.poll = false;
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', (file) => {
-				this.addFile file
+			this.refs.uploader.on('uploaded', file => {
+				this.addFile(file);
+			});
 
-			this.refs.uploader.on('change-uploads', (uploads) => {
-				this.trigger 'change-uploading-files' uploads
+			this.refs.uploader.on('change-uploads', uploads => {
+				this.trigger('change-uploading-files', uploads);
+			});
 
 			this.refs.text.focus();
+		});
 
-		this.onkeypress = (e) => {
-			if (e.char-code == 10 || e.char-code == 13) && e.ctrlKey
-				this.post!
-			else
-				return true
+		this.onkeydown = e => {
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.meta-key)) this.post();
+		};
 
-		this.onpaste = (e) => {
-			data = e.clipboardData
-			items = data.items
-			for i from 0 to items.length - 1
-				item = items[i]
-				switch (item.kind)
-					| 'file' =>
-						@upload item.getAsFile();
-			return true
+		this.onpaste = e => {
+			e.clipboardData.items.forEach(item => {
+				if (item.kind == 'file') {
+					this.upload(item.getAsFile());
+				}
+			});
+		};
 
-		this.select-file = () => {
+		this.selectFile = () => {
 			this.refs.file.click();
+		};
 
-		this.select-file-from-drive = () => {
-			browser = document.body.appendChild(document.createElement('mk-drive-selector'));
- 			browser = riot.mount browser, do
+		this.selectFileFromDrive = () => {
+			const i = riot.mount(document.body.appendChild(document.createElement('mk-drive-selector')), {
 				multiple: true
-			.0
-			browser.on('selected', (files) => {
-				files.forEach this.addFile
+			})[0];
+			i.one('selected', files => {
+				files.forEach(this.addFile);
+			});
+		};
 
-		this.change-file = () => {
-			files = this.refs.file.files
-			for i from 0 to files.length - 1
-				file = files.item i
-				@upload file
+		this.changeFile = () => {
+			this.refs.file.files.forEach(this.upload);
+		};
 
-		this.upload = (file) => {
-			this.refs.uploader.upload file
+		this.upload = file => {
+			this.refs.uploader.upload(file);
+		};
 
-		this.add-file = (file) => {
-			file._remove = =>
-				this.files = this.files.filter (x) -> x.id != file.id
-				this.trigger 'change-files' this.files
+		this.addFile = file => {
+			file._remove = () => {
+				this.files = this.files.filter(x => x.id != file.id);
+				this.trigger('change-files', this.files);
 				this.update();
+			};
 
-			this.files.push file
-			this.trigger 'change-files' this.files
+			this.files.push(file);
+			this.trigger('change-files', this.files);
 			this.update();
+		};
 
-		this.add-poll = () => {
-			this.poll = true
+		this.addPoll = () => {
+			this.poll = true;
+		};
 
-		this.on-poll-destroyed = () => {
-			@update do
+		this.onPollDestroyed = () => {
+			this.update({
 				poll: false
+			});
+		};
 
 		this.post = () => {
-			this.wait = true
+			this.wait = true;
 
-			files = if this.files? and this.files.length > 0
-				then this.files.map (f) -> f.id
-				else undefined
+			const files = this.files && this.files.length > 0
+				? this.files.map(f => f.id)
+				: undefined;
 
 			this.api('posts/create', {
-				text: this.refs.text.value
-				media_ids: files
-				reply_to_id: if this.opts.reply? then this.opts.reply.id else undefined
-				poll: if this.poll then this.refs.poll.get! else undefined
-			}).then((data) => {
+				text: this.refs.text.value,
+				media_ids: files,
+				reply_to_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
+				poll: this.poll ? this.refs.poll.get() : undefined
+			}).then(data => {
 				this.trigger('post');
 				this.unmount();
-			.catch (err) =>
-				console.error err
-				#this.opts.ui.trigger 'notification' 'Error!'
-				this.wait = false
-				this.update();
+			}).catch(err => {
+				this.update({
+					wait: false
+				});
+			});
+		};
 
 		this.cancel = () => {
 			this.trigger('cancel');
 			this.unmount();
+		};
 
 		this.cat = () => {
-			this.refs.text.value = this.refs.text.value + get-cat!
+			this.refs.text.value += getCat();
+		};
 	</script>
 </mk-post-form>

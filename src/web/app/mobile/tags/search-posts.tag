@@ -15,18 +15,22 @@
 		this.query = this.opts.query;
 		this.withMedia = this.opts.withMedia;
 
-		this.init = new Promise (res, rej) =>
+		this.init = new Promise((res, rej) => {
 			this.api('posts/search', {
 				query: this.query
 			}).then(posts => {
-				res posts
+				res(posts);
 				this.trigger('loaded');
+			});
+		});
 
 		this.more = () => {
 			this.offset += this.max;
 			this.api('posts/search', {
-				query: this.query
-				max: this.max
+				query: this.query,
+				max: this.max,
 				offset: this.offset
+			});
+		};
 	</script>
 </mk-search-posts>

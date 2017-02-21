@@ -180,64 +180,73 @@
 	<script>
 		this.mixin('api');
 
-		this.nid-state = null
+		this.nidState = null;
 
-		this.on-change-nid = () => {
-			nid = this.refs.nid.value
+		this.onChangeNid = () => {
+			const nid = this.refs.nid.value;
 
-			if nid == ''
-				this.nid-state = null
-				this.update();
-				return
+			if (nid == '') {
+				this.update({
+					nidState: null
+				});
+				return;
+			}
 
-			err = switch
-				| not nid.match /^[a-zA-Z0-9\-]+$/ => 'invalid-format' 
-				| nid.length < 3chars              => 'min-range' 
-				| nid.length > 30chars             => 'max-range' 
-				| _                                     => null
+			const err =
+				!nid.match(/^[a-zA-Z0-9\-]+$/) ? 'invalid-format' :
+				nid.length < 3                 ? 'min-range' :
+				nid.length > 30                ? 'max-range' :
+				null;
 
-			if err?
-				this.nid-state = err
-				this.update();
-			else
-				this.nid-state = 'wait' 
-				this.update();
+			if (err) {
+				this.update({
+					nidState: err
+				});
+				return;
+			}
 
-				this.api('app/name_id/available', {
-					name_id: nid
-				}).then((result) => {
-					if result.available
-						this.nid-state = 'ok' 
-					else
-						this.nid-state = 'unavailable' 
-					this.update();
-				.catch (err) =>
-					this.nid-state = 'error' 
-					this.update();
+			this.update({
+				nidState: 'wait'
+			});
+
+			this.api('app/name_id/available', {
+				name_id: nid
+			}).then(result => {
+				this.update({
+					nidState: result.available ? 'ok' : 'unavailable'
+				});
+			}).catch(err => {
+				this.update({
+					nidState: 'error'
+				});
+			});
+		};
 
 		this.onsubmit = () => {
-			name = this.refs.name.value
-			nid = this.refs.nid.value
-			description = this.refs.description.value
-			cb = this.refs.cb.value
-			permission = []
+			const name = this.refs.name.value;
+			const nid = this.refs.nid.value;
+			const description = this.refs.description.value;
+			const cb = this.refs.cb.value;
+			const permission = [];
 
-			this.refs.permission.query-selector-all 'input' .forEach (el) =>
-				if el.checked then permission.push el.value
+			this.refs.permission.querySelectorAll('input').forEach(el => {
+				if (el.checked) permission.push(el.value);
+			});
 
-			locker = document.body.appendChild(document.createElement('mk-locker'));
- 
+			const locker = document.body.appendChild(document.createElement('mk-locker'));
+
 			this.api('app/create', {
-				name: name
-				name_id: nid
-				description: description
-				callback_url: cb
-				permission: permission.join ',' 
+				name: name,
+				name_id: nid,
+				description: description,
+				callback_url: cb,
+				permission: permission.join(',')
 			}).then(() => {
-				location.href = '/apps'
-			.catch =>
-				alert 'アプリの作成に失敗しました。再度お試しください。'
-
-				locker.parentNode.removeChild locker
+				location.href = '/apps';
+			}).catch(() => {
+				alert('アプリの作成に失敗しました。再度お試しください。');
+				locker.parentNode.removeChild(locker);
+			});
+		};
 	</script>
 </mk-new-app-form>

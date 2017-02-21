@@ -61,33 +61,36 @@
 		this.mixin('stream');
 		this.mixin('get-post-summary');
 
-		this.notifications = []
-		this.loading = true
+		this.notifications = [];
+		this.loading = true;
 
 		this.on('mount', () => {
-			this.api 'i/notifications' 
-			}).then((notifications) => {
-				this.notifications = notifications
-				this.loading = false
-				this.update();
-				this.trigger('loaded');
-			.catch (err, text-status) ->
-				console.error err
+			this.api('i/notifications').then(notifications => {
+				this.update({
+					loading: false,
+					notifications: notifications
+				});
+			});
 
-			this.stream.on 'notification' this.on-notification
+			this.stream.on('notification', this.onNotification);
+		});
 
 		this.on('unmount', () => {
-			this.stream.off 'notification' this.on-notification
+			this.stream.off('notification', this.onNotification);
+		});
 
-		this.on-notification = (notification) => {
-			@notifications.unshift notification
+		this.onNotification = notification => {
+			this.notifications.unshift(notification);
 			this.update();
+		};
 
 		this.on('update', () => {
-			@notifications.forEach (notification) =>
-				date = (new Date notification.created_at).getDate()
-				month = (new Date notification.created_at).getMonth() + 1
-				notification._date = date
-				notification._datetext = month + '月 ' + date + '日'
+			this.notifications.forEach(notification => {
+				const date = new Date(notification.created_at).getDate();
+				const month = new Date(notification.created_at).getMonth() + 1;
+				notification._date = date;
+				notification._datetext = `${month}月 ${date}日`;
+			});
+		});
 	</script>
 </mk-notifications>

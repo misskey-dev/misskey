@@ -344,7 +344,7 @@
 		};
 
 		this.like = () => {
-			if (this.p.is_liked)
+			if (this.p.is_liked) {
 				this.api('posts/likes/delete', {
 					post_id: this.p.id
 				}).then(() => {

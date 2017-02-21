@@ -455,6 +455,7 @@
 					wait: false
 				});
 			});
+		};
 
 		this.cat = () => {
 			this.refs.text.value += getCat();

@@ -2,10 +2,5 @@
 	<style>
 		:scope
 			display block
-
-			
-
-			
-
 	</style>
 </mk-index>
