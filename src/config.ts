@@ -3,6 +3,7 @@
  */
 
 import * as fs from 'fs';
+import * as URL from 'url';
 import * as yaml from 'js-yaml';
 import isUrl = require('is-url');
 
@@ -90,6 +91,14 @@ export default function load() {
 	// Validate URLs
 	if (!isUrl(config.url)) urlError(config.url);
 	if (!isUrl(config.secondary_url)) urlError(config.secondary_url);
+
+	const url = URL.parse(config.url);
+	const head = url.host.split('.')[0];
+
+	if (head != 'misskey') {
+		console.error(`プライマリドメインは、必ず「misskey」ドメインで始まっていなければなりません(現在の設定では「${head}」で始まっています)。例えば「https://misskey.xyz」「http://misskey.my.app.example.com」などが正しいプライマリURLです。`);
+		process.exit();
+	}
 
 	config.url = normalizeUrl(config.url);
 	config.secondary_url = normalizeUrl(config.secondary_url);
