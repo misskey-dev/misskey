@@ -127,7 +127,7 @@ Misskey is an open-source software licensed under [The MIT License](LICENSE).
 [mit]:                http://opensource.org/licenses/MIT
 [mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
 [travis-link]:        https://travis-ci.org/syuilo/misskey
-[travis-badge]:       http://img.shields.io/travis/syuilo/misskey.svg?style=flat-square&label=Linux
+[travis-badge]:       http://img.shields.io/travis/syuilo/misskey/master.svg?style=flat-square&label=Linux
 [appveyor-link]:      https://ci.appveyor.com/project/syuilo/misskey
 [appveyor-badge]:     https://img.shields.io/appveyor/ci/syuilo/misskey/master.svg?style=flat-square&label=Windows
 [dependencies-link]:  https://gemnasium.com/syuilo/misskey
