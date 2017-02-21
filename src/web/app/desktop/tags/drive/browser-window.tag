@@ -30,17 +30,22 @@
 	<script>
 		this.mixin('api');
 
-		this.folder = if this.opts.folder? then this.opts.folder else null
+		this.folder = this.opts.folder ? this.opts.folder : null;
 
 		this.on('mount', () => {
 			this.refs.window.on('closed', () => {
 				this.unmount();
+			});
 
-			this.api 'drive' }).then((info) => {
-				@update do
+			this.api('drive').then(info => {
+				this.update({
 					usage: info.usage / info.capacity * 100
+				});
+			});
+		});
 
 		this.close = () => {
 			this.refs.window.close();
+		};
 	</script>
 </mk-drive-browser-window>

@@ -10,88 +10,89 @@
 
 		// Riotのバグでnullを渡しても""になる
 		// https://github.com/riot/riot/issues/2080
-		#this.folder = this.opts.folder
-		this.folder = if this.opts.folder? and this.opts.folder != '' then this.opts.folder else null
-		this.browser = this.parent
+		//this.folder = this.opts.folder
+		this.folder = this.opts.folder && this.opts.folder != '' ? this.opts.folder : null;
+		this.browser = this.parent;
 
-		this.hover = false
+		this.hover = false;
 
 		this.onclick = () => {
-			this.browser.move this.folder
+			this.browser.move(this.folder);
+		};
 
 		this.onmouseover = () => {
 			this.hover = true
+		};
 
 		this.onmouseout = () => {
 			this.hover = false
+		};
 
-		this.ondragover = (e) => {
+		this.ondragover = e => {
 			e.preventDefault();
 			e.stopPropagation();
 
 			// このフォルダがルートかつカレントディレクトリならドロップ禁止
-			if this.folder == null and this.browser.folder == null
-				e.dataTransfer.dropEffect = 'none' 
+			if (this.folder == null && this.browser.folder == null) {
+				e.dataTransfer.dropEffect = 'none';
 			// ドラッグされてきたものがファイルだったら
-			else if e.dataTransfer.effectAllowed == 'all' 
-				e.dataTransfer.dropEffect = 'copy' 
-			else
-				e.dataTransfer.dropEffect = 'move' 
-			return false
+			} else if (e.dataTransfer.effectAllowed == 'all') {
+				e.dataTransfer.dropEffect = 'copy';
+			} else {
+				e.dataTransfer.dropEffect = 'move';
+			}
+			return false;
+		};
 
 		this.ondragenter = () => {
-			if this.folder != null or this.browser.folder != null
-				this.draghover = true
+			if (this.folder || this.browser.folder) this.draghover = true;
+		};
 
 		this.ondragleave = () => {
-			if this.folder != null or this.browser.folder != null
-				this.draghover = false
+			if (this.folder || this.browser.folder) this.draghover = false;
+		};
 
-		this.ondrop = (e) => {
+		this.ondrop = e => {
 			e.stopPropagation();
-			this.draghover = false
+			this.draghover = false;
 
 			// ファイルだったら
-			if e.dataTransfer.files.length > 0
-				Array.prototype.forEach.call e.dataTransfer.files, (file) =>
-					this.browser.upload file, this.folder
-				return false
+			if (e.dataTransfer.files.length > 0) {
+				e.dataTransfer.files.forEach(file => {
+					this.browser.upload(file, this.folder);
+				});
+				return false;
+			};
 
 			// データ取得
-			data = e.dataTransfer.get-data 'text'
-			if !data?
-				return false
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return false;
 
 			// パース
-			obj = JSON.parse data
+			// TODO: Validate JSON
+			const obj = JSON.parse(data);
 
 			// (ドライブの)ファイルだったら
-			if obj.type == 'file' 
-				file = obj.id
-				this.browser.remove-file file
+			if (obj.type == 'file') {
+				const file = obj.id;
+				this.browser.removeFile(file);
 				this.api('drive/files/update', {
-					file_id: file
-					folder_id: if this.folder? then this.folder.id else null
-				}).then(() => {
-					// something
-				.catch (err, text-status) =>
-					console.error err
-
+					file_id: file,
+					folder_id: this.folder ? this.folder.id : null
+				});
 			// (ドライブの)フォルダーだったら
-			else if obj.type == 'folder' 
-				folder = obj.id
+			} else if (obj.type == 'folder') {
+				const folder = obj.id;
 				// 移動先が自分自身ならreject
-				if this.folder? and folder == this.folder.id
-					return false
-				this.browser.remove-folder folder
+				if (this.folder && folder == this.folder.id) return false;
+				this.browser.removeFolder(folder);
 				this.api('drive/folders/update', {
-					folder_id: folder
-					parent_id: if this.folder? then this.folder.id else null
-				}).then(() => {
-					// something
-				.catch (err, text-status) =>
-					console.error err
+					folder_id: folder,
+					parent_id: this.folder ? this.folder.id : null
+				});
+			}
 
-			return false
+			return false;
+		};
 	</script>
 </mk-drive-browser-nav-folder>

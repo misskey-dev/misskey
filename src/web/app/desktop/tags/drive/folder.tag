@@ -53,132 +53,149 @@
 		this.mixin('api');
 		this.mixin('dialog');
 
-		this.folder = this.opts.folder
-		this.browser = this.parent
+		this.folder = this.opts.folder;
+		this.browser = this.parent;
 
-		this.title = this.folder.name
-		this.hover = false
-		this.draghover = false
-		this.is-contextmenu-showing = false
+		this.title = this.folder.name;
+		this.hover = false;
+		this.draghover = false;
+		this.isContextmenuShowing = false;
 
 		this.onclick = () => {
-			this.browser.move this.folder
+			this.browser.move(this.folder);
+		};
 
 		this.onmouseover = () => {
-			this.hover = true
+			this.hover = true;
+		};
 
 		this.onmouseout = () => {
 			this.hover = false
+		};
 
-		this.ondragover = (e) => {
+		this.ondragover = e => {
 			e.preventDefault();
 			e.stopPropagation();
 
 			// 自分自身がドラッグされていない場合
-			if !@is-dragging
+			if (!this.isDragging) {
 				// ドラッグされてきたものがファイルだったら
-				if e.dataTransfer.effectAllowed == 'all' 
-					e.dataTransfer.dropEffect = 'copy' 
-				else
-					e.dataTransfer.dropEffect = 'move' 
-			else
+				if (e.dataTransfer.effectAllowed === 'all') {
+					e.dataTransfer.dropEffect = 'copy';
+				} else {
+					e.dataTransfer.dropEffect = 'move';
+				}
+			} else {
 				// 自分自身にはドロップさせない
-				e.dataTransfer.dropEffect = 'none' 
-			return false
+				e.dataTransfer.dropEffect = 'none';
+			}
+			return false;
+		};
 
 		this.ondragenter = () => {
-			if !@is-dragging
-				this.draghover = true
+			if (!this.isDragging) this.draghover = true;
+		};
 
 		this.ondragleave = () => {
-			this.draghover = false
+			this.draghover = false;
+		};
 
-		this.ondrop = (e) => {
+		this.ondrop = e => {
 			e.stopPropagation();
-			this.draghover = false
+			this.draghover = false;
 
 			// ファイルだったら
-			if e.dataTransfer.files.length > 0
-				Array.prototype.forEach.call e.dataTransfer.files, (file) =>
-					this.browser.upload file, this.folder
-				return false
+			if (e.dataTransfer.files.length > 0) {
+				e.dataTransfer.files.forEach(file => {
+					this.browser.upload(file, this.folder);
+				});
+				return false;
+			};
 
 			// データ取得
-			data = e.dataTransfer.get-data 'text'
-			if !data?
-				return false
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return false;
 
 			// パース
-			obj = JSON.parse data
+			// TODO: Validate JSON
+			const obj = JSON.parse(data);
 
 			// (ドライブの)ファイルだったら
-			if obj.type == 'file' 
-				file = obj.id
-				this.browser.remove-file file
+			if (obj.type == 'file') {
+				const file = obj.id;
+				this.browser.removeFile(file);
 				this.api('drive/files/update', {
-					file_id: file
+					file_id: file,
 					folder_id: this.folder.id
-				}).then(() => {
-					// something
-				.catch (err, text-status) =>
-					console.error err
-
+				});
 			// (ドライブの)フォルダーだったら
-			else if obj.type == 'folder' 
-				folder = obj.id
+			} else if (obj.type == 'folder') {
+				const folder = obj.id;
 				// 移動先が自分自身ならreject
-				if folder == this.folder.id
-					return false
-				this.browser.remove-folder folder
+				if (folder == this.folder.id) return false;
+				this.browser.removeFolder(folder);
 				this.api('drive/folders/update', {
-					folder_id: folder
+					folder_id: folder,
 					parent_id: this.folder.id
 				}).then(() => {
 					// something
-				.catch (err) =>
-					if err == 'detected-circular-definition'
-						@dialog do
-							'<i class="fa fa-exclamation-triangle"></i>操作を完了できません'
-							'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。'
-							[
-								text: 'OK' 
-							]
+				}).catch(err => {
+					switch (err) {
+						case 'detected-circular-definition':
+							this.dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
+								'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。', [{
+								text: 'OK'
+							}]);
+							break;
+						default:
+							alert('不明なエラー' + err);
+					}
+				});
+			}
 
-			return false
+			return false;
+		};
 
-		this.ondragstart = (e) => {
-			e.dataTransfer.effectAllowed = 'move' 
-			e.dataTransfer.set-data 'text' JSON.stringify do
-				type: 'folder' 
+		this.ondragstart = e => {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text', JSON.stringify({
+				type: 'folder',
 				id: this.folder.id
-			this.is-dragging = true
+			}));
+			this.isDragging = true;
 
 			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
 			// (=あなたの子供が、ドラッグを開始しましたよ)
-			this.browser.isDragSource = true
+			this.browser.isDragSource = true;
+		};
 
-		this.ondragend = (e) => {
-			this.is-dragging = false
-			this.browser.isDragSource = false
+		this.ondragend = e => {
+			this.isDragging = false;
+			this.browser.isDragSource = false;
+		};
 
-		this.oncontextmenu = (e) => {
+		this.oncontextmenu = e => {
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
-			this.is-contextmenu-showing = true
-			this.update();
-			ctx = document.body.appendChild(document.createElement('mk-drive-browser-folder-contextmenu'));
- 			ctx = riot.mount ctx, do
-				browser: this.browser
+			this.update({
+				isContextmenuShowing: true
+			});
+			const ctx = riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-folder-contextmenu')), {
+				browser: this.browser,
 				folder: this.folder
-			ctx = ctx.0
-			ctx.open do
-				x: e.pageX - window.pageXOffset
+			})[0];
+			ctx.open({
+				x: e.pageX - window.pageXOffset,
 				y: e.pageY - window.pageYOffset
+			});
 			ctx.on('closed', () => {
-				this.is-contextmenu-showing = false
-				this.update();
+				this.update({
+					isContextmenuShowing: false
+				});
+			});
 
-			return false
+			return false;
+		};
 	</script>
 </mk-drive-browser-folder>

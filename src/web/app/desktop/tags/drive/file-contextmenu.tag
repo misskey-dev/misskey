@@ -22,9 +22,6 @@
 					<li onclick={ parent.setBanner }>
 						<p>バナーに設定</p>
 					</li>
-					<li onclick={ parent.setWallpaper }>
-						<p>壁紙に設定</p>
-					</li>
 				</ul>
 			</li>
 			<li class="has-child">
@@ -46,52 +43,51 @@
 		this.mixin('input-dialog');
 		this.mixin('NotImplementedException');
 
-		this.browser = this.opts.browser
-		this.file = this.opts.file
+		this.browser = this.opts.browser;
+		this.file = this.opts.file;
 
 		this.on('mount', () => {
 			this.refs.ctx.on('closed', () => {
 				this.trigger('closed');
 				this.unmount();
+			});
+		});
 
-		this.open = (pos) => {
-			this.refs.ctx.open pos
+		this.open = pos => {
+			this.refs.ctx.open(pos);
+		};
 
 		this.rename = () => {
 			this.refs.ctx.close();
 
-			name <~ @input-dialog do
-				'ファイル名の変更'
-				'新しいファイル名を入力してください'
-				this.file.name
+			this.inputDialog('ファイル名の変更', '新しいファイル名を入力してください', this.file.name, name => {
+				this.api('drive/files/update', {
+					file_id: this.file.id,
+					name: name
+				})
+			});
+		};
 
-			this.api('drive/files/update', {
-				file_id: this.file.id
-				name: name
-			}).then(() => {
-				// something
-			.catch (err) =>
-				console.error err
-
-		this.copy-url = () => {
-			@NotImplementedException!
+		this.copyUrl = () => {
+			this.NotImplementedException();
+		};
 
 		this.download = () => {
 			this.refs.ctx.close();
+		};
 
-		this.set-avatar = () => {
+		this.setAvatar = () => {
 			this.refs.ctx.close();
-			@update-avatar this.I, null, this.file
+			this.updateAvatar(this.I, null, this.file);
+		};
 
-		this.set-banner = () => {
+		this.setBanner = () => {
 			this.refs.ctx.close();
-			@update-banner this.I, null, this.file
+			this.updateBanner(this.I, null, this.file);
+		};
 
-		this.set-wallpaper = () => {
-			this.refs.ctx.close();
-			@update-wallpaper this.I, null, this.file
-
-		this.add-app = () => {
-			@NotImplementedException!
+		this.addApp = () => {
+			this.NotImplementedException();
+		};
 	</script>
 </mk-drive-browser-file-contextmenu>

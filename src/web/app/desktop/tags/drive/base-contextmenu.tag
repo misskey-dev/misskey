@@ -13,26 +13,32 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
-		this.browser = this.opts.browser
+		this.browser = this.opts.browser;
 
 		this.on('mount', () => {
 			this.refs.ctx.on('closed', () => {
 				this.trigger('closed');
 				this.unmount();
+			});
+		});
 
-		this.open = (pos) => {
-			this.refs.ctx.open pos
+		this.open = pos => {
+			this.refs.ctx.open(pos);
+		};
 
 		this.createFolder = () => {
-			this.browser.createFolder!
+			this.browser.createFolder();
 			this.refs.ctx.close();
+		};
 
 		this.upload = () => {
-			this.browser.select-local-file!
+			this.browser.selectLocalFile();
 			this.refs.ctx.close();
+		};
 
-		this.url-upload = () => {
-			this.browser.url-upload!
+		this.urlUpload = () => {
+			this.browser.urlUpload();
 			this.refs.ctx.close();
+		};
 	</script>
 </mk-drive-browser-base-contextmenu>

@@ -148,62 +148,72 @@
 
 		this.mixin('i');
 
-		this.file = this.opts.file
-		this.browser = this.parent
+		this.file = this.opts.file;
+		this.browser = this.parent;
 
-		this.title = this.file.name + '\n' + this.file.type + ' ' + (@bytesToSize this.file.datasize)
+		this.title = `${this.file.name}\n${this.file.type} ${this.bytesToSize(this.file.datasize)}`;
 
-		this.is-contextmenu-showing = false
+		this.isContextmenuShowing = false;
 
 		this.onclick = () => {
-			if this.browser.multiple
-				if this.file._selected?
-					this.file._selected = !this.file._selected
-				else
-					this.file._selected = true
-				this.browser.trigger 'change-selection' this.browser.get-selection!
-			else
-				if this.file._selected
-					this.browser.trigger 'selected' this.file
-				else
-					this.browser.files.forEach (file) =>
-						file._selected = false
-					this.file._selected = true
-					this.browser.trigger 'change-selection' this.file
+			if (this.browser.multiple) {
+				if (this.file._selected != null) {
+					this.file._selected = !this.file._selected;
+				} else {
+					this.file._selected = true;
+				}
+				this.browser.trigger('change-selection', this.browser.getSelection());
+			} else {
+				if (this.file._selected) {
+					this.browser.trigger('selected', this.file);
+				} else {
+					this.browser.files.forEach(file => file._selected = false);
+					this.file._selected = true;
+					this.browser.trigger('change-selection', this.file);
+				}
+			}
+		};
 
-		this.oncontextmenu = (e) => {
+		this.oncontextmenu = e => {
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
-			this.is-contextmenu-showing = true
-			this.update();
-			ctx = document.body.appendChild(document.createElement('mk-drive-browser-file-contextmenu'));
- 			ctx = riot.mount ctx, do
-				browser: this.browser
+			this.update({
+				isContextmenuShowing: true
+			});
+			const ctx = riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-file-contextmenu')), {
+				browser: this.browser,
 				file: this.file
-			ctx = ctx.0
-			ctx.open do
-				x: e.pageX - window.pageXOffset
+			})[0];
+			ctx.open({
+				x: e.pageX - window.pageXOffset,
 				y: e.pageY - window.pageYOffset
+			});
 			ctx.on('closed', () => {
-				this.is-contextmenu-showing = false
-				this.update();
-			return false
+				this.update({
+					isContextmenuShowing: false
+				});
+			});
+			return false;
+		};
 
-		this.ondragstart = (e) => {
-			e.dataTransfer.effectAllowed = 'move' 
-			e.dataTransfer.set-data 'text' JSON.stringify do
-				type: 'file' 
-				id: this.file.id
+		this.ondragstart = e => {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text', JSON.stringify({
+				type: 'file',
+				id: this.file.id,
 				file: this.file
-			this.is-dragging = true
+			});
+			this.isDragging = true;
 
 			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
 			// (=あなたの子供が、ドラッグを開始しましたよ)
-			this.browser.isDragSource = true
+			this.browser.isDragSource = true;
+		};
 
-		this.ondragend = (e) => {
-			this.is-dragging = false
-			this.browser.isDragSource = false
+		this.ondragend = e => {
+			this.isDragging = false;
+			this.browser.isDragSource = false;
+		};
 	</script>
 </mk-drive-browser-file>

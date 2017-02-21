@@ -30,33 +30,33 @@
 			this.refs.ctx.on('closed', () => {
 				this.trigger('closed');
 				this.unmount();
+			});
+		};
 
 		this.move = () => {
-			this.browser.move this.folder.id
+			this.browser.move(this.folder.id);
 			this.refs.ctx.close();
+		};
 
 		this.newWindow = () => {
-			this.browser.newWindow this.folder.id
+			this.browser.newWindow(this.folder.id);
 			this.refs.ctx.close();
+		};
 
 		this.createFolder = () => {
 			this.browser.createFolder();
 			this.refs.ctx.close();
+		};
 
 		this.rename = () => {
 			this.refs.ctx.close();
 
-			name <~ @input-dialog do
-				'フォルダ名の変更'
-				'新しいフォルダ名を入力してください'
-				this.folder.name
-
-			this.api('drive/folders/update', {
-				folder_id: this.folder.id
-				name: name
-			}).then(() => {
-				// something
-			.catch (err) =>
-				console.error err
+			this.inputialog('フォルダ名の変更', '新しいフォルダ名を入力してください', this.folder.name, name => {
+				this.api('drive/folders/update', {
+					folder_id: this.folder.id,
+					name: name
+				});
+			});
+		};
 	</script>
 </mk-drive-browser-folder-contextmenu>
