@@ -136,8 +136,8 @@
 		this.connection = new this.MessagingStreamConnection(this.I, this.user.id);
 
 		this.on('mount', () => {
-			this.connection.event.on('message' this.onMessage);
-			this.connection.event.on('read' this.onRead);
+			this.connection.event.on('message', this.onMessage);
+			this.connection.event.on('read', this.onRead);
 
 			document.addEventListener('visibilitychange', this.onVisibilitychange);
 

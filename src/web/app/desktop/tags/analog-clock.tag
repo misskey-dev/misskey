@@ -8,12 +8,10 @@
 				height 256px
 	</style>
 	<script>
-		class Vec2 {
-			constructor(x, y) {
-				this.x = x;
-				this.y = y;
-			}
-		}
+		const Vec2 = function(x, y) {
+			this.x = x;
+			this.y = y;
+		};
 
 		this.on('mount', () => {
 			this.draw()

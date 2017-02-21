@@ -139,6 +139,7 @@
 					wait: false
 				});
 			});
+		};
 
 		this.onquote = () => {
 			this.quote = true;

@@ -8,15 +8,6 @@
 			</div>
 		</div>
 	</article>
-	<script>
-		this.mixin('date-stringify');
-		this.mixin('user-preview');
-
-		this.post = this.opts.post
-
-		this.title = @date-stringify this.post.created_at
-
-	</script>
 	<style>
 		:scope
 			display block
@@ -97,4 +88,11 @@
 								font-size 80%
 
 	</style>
+	<script>
+		this.mixin('date-stringify');
+		this.mixin('user-preview');
+
+		this.post = this.opts.post;
+		this.title = this.dateStringify(this.post.created_at);
+	</script>
 </mk-timeline-post-sub>

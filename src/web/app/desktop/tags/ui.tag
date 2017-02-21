@@ -14,7 +14,7 @@
 		this.mixin('i');
 
 		this.openPostForm = () => {
-			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window');
+			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')));
 		};
 
 		this.on('mount', () => {

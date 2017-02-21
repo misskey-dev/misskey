@@ -23,6 +23,6 @@
 			this.refs.list.on('loaded', () => {
 				this.trigger('loaded');
 			});
-		};
+		});
 	</script>
 </mk-user-followers>

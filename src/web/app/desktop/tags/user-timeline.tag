@@ -70,6 +70,7 @@
 				});
 
 				this.fetch(() => this.trigger('loaded'));
+			});
 		});
 
 		this.on('unmount', () => {

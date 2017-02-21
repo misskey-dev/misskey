@@ -44,7 +44,7 @@
 	</style>
 	<script>
 		this.settings = () => {
-			const w = riot.mount(document.body.appendChild(document.createElement('mk-settings-window')[0];
+			const w = riot.mount(document.body.appendChild(document.createElement('mk-settings-window')))[0];
 			w.switch('notification');
 		};
 	</script>

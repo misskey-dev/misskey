@@ -115,7 +115,7 @@
 			this.year = ny;
 			this.month = nm + 1;
 			this.day = nd;
-			this.weekDay = ['日', '月', '火', '水' '木', '金', '土'][now.getDay()];
+			this.weekDay = ['日', '月', '火', '水', '木', '金', '土'][now.getDay()];
 
 			this.dayNumer   = now - new Date(ny, nm, nd);
 			this.dayDenom   = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;

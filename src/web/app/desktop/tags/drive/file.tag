@@ -144,7 +144,7 @@
 
 	</style>
 	<script>
-		this.bytesToSize = require('../../../common/scripts/bytesToSize.js');
+		this.bytesToSize = require('../../../common/scripts/bytes-to-size');
 
 		this.mixin('i');
 
@@ -203,7 +203,7 @@
 				type: 'file',
 				id: this.file.id,
 				file: this.file
-			});
+			}));
 			this.isDragging = true;
 
 			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる

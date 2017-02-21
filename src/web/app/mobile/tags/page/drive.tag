@@ -64,5 +64,6 @@
 					type: file.type
 				});
 			});
+		});
 	</script>
 </mk-drive-page>
