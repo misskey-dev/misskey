@@ -94,7 +94,7 @@ module.exports = callback => {
 
 		mixins(me);
 
-		const init = document.getElementById('init');
+		const init = document.getElementById('ini');
 		init.parentNode.removeChild(init);
 
 		const app = document.createElement('div');

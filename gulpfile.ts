@@ -174,11 +174,7 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 			.pipe(babel({
 				presets: ['es2015']
 			}))
-			.pipe(uglify({
-				mangle: {
-					toplevel: true
-				}
-			}));
+			.pipe(uglify());
 	}
 
 	es.merge(
