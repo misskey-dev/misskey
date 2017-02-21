@@ -86,8 +86,8 @@
 		this.mixin('date-stringify');
 		this.mixin('user-preview');
 
-		this.post = this.opts.post
+		this.post = this.opts.post;
 
-		this.title = @date-stringify this.post.created_at
+		this.title = this.dateStringify(this.post.created_at);
 	</script>
 </mk-post-preview>

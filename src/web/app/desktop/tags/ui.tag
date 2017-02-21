@@ -31,6 +31,7 @@
 			if (e.which == 80 || e.which == 78) { // p or n
 				e.preventDefault();
 				this.openPostForm();
+			}
 		};
 	</script>
 </mk-ui>

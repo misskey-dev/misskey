@@ -35,41 +35,26 @@
 
 	</style>
 	<script>
-		this.image = this.opts.image
+		this.image = this.opts.image;
 
 		this.on('mount', () => {
 			Velocity(this.root, {
 				opacity: 1
 			}, {
-				duration: 100ms
-				easing: 'linear' 
-			}
-
-			#Velocity(@img, {
-			// scale: 1
-			// opacity: 1
-			#}, {
-			// duration: 200ms
-			// easing: 'ease-out' 
-			#}
+				duration: 100,
+				easing: 'linear'
+			});
+		});
 
 		this.close = () => {
 			Velocity(this.root, {
 				opacity: 0
 			}, {
-				duration: 100ms
-				easing: 'linear' 
-				complete: => this.unmount();
-			}
+				duration: 100,
+				easing: 'linear',
+				complete: () => this.unmount()
+			});
+		};
 
-			#Velocity(@img, {
-			// scale: 0.9
-			// opacity: 0
-			#}, {
-			// duration: 200ms
-			// easing: 'ease-in' 
-			// complete: =>
-			// 	this.unmount();
-			#}
 	</script>
 </mk-image-dialog>

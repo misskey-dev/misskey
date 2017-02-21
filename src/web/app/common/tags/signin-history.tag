@@ -55,21 +55,23 @@
 		this.fetching = true;
 
 		this.on('mount', () => {
-			this.api 'i/signin_history' 
-			}).then((history) => {
-				this.history = history
-				this.fetching = false
-				this.update();
-			.catch (err) =>
-				console.error err
+			this.api('i/signin_history').then(history => {
+				this.update({
+					fetching: false,
+					history: history
+				});
+			});
 
-			this.stream.on 'signin' this.on-signin
+			this.stream.on('signin', this.onSignin);
+		});
 
 		this.on('unmount', () => {
-			this.stream.off 'signin' this.on-signin
+			this.stream.off('signin', this.onSignin);
+		});
 
-		this.on-signin = (signin) => {
-			@history.unshift signin
+		this.onSignin = signin => {
+			this.history.unshift(signin);
 			this.update();
+		};
 	</script>
 </mk-signin-history>

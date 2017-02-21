@@ -26,20 +26,22 @@
 
 	</style>
 	<script>
-		this.images = this.opts.images
-		this.image = @images.0
+		this.images = this.opts.images;
+		this.image = this.images[0];
 
-		this.mousemove = (e) => {
-			rect = this.refs.view.getBoundingClientRect();
-			mouse-x = e.client-x - rect.left
-			mouse-y = e.client-y - rect.top
-			xp = mouse-x / this.refs.view.offset-width * 100
-			yp = mouse-y / this.refs.view.offset-height * 100
-			this.refs.view.style.background-position = xp + '% ' + yp + '%'
+		this.mousemove = e => {
+			const rect = this.refs.view.getBoundingClientRect();
+			const mouseX = e.clientX - rect.left;
+			const mouseY = e.clientY - rect.top;
+			const xp = mouseX / this.refs.view.offsetWidth * 100;
+			const yp = mouseY / this.refs.view.offsetHeight * 100;
+			this.refs.view.style.backgroundPosition = xp + '% ' + yp + '%';
+		};
 
 		this.click = () => {
-			dialog = document.body.appendChild(document.createElement('mk-image-dialog'));
-			riot.mount dialog, do
-				image: @image
+			riot.mount(document.body.appendChild(document.createElement('mk-image-dialog')), {
+				image: this.image
+			});
+		};
 	</script>
 </mk-images-viewer>

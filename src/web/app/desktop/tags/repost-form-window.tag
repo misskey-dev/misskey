@@ -12,25 +12,32 @@
 
 	</style>
 	<script>
-		this.on-document-keydown = (e) => {
-			tag = e.target.tag-name.to-lower-case!
-			if tag != 'input' and tag != 'textarea' 
-				if e.which == 27 // Esc
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 27) { // Esc
 					this.refs.window.close();
+				}
+			}
+		};
 
 		this.on('mount', () => {
 			this.refs.window.refs.form.on('cancel', () => {
 				this.refs.window.close();
+			});
 
 			this.refs.window.refs.form.on('posted', () => {
 				this.refs.window.close();
+			});
 
-			document.addEventListener 'keydown' this.on-document-keydown
+			document.addEventListener('keydown', this.onDocumentKeydown);
 
 			this.refs.window.on('closed', () => {
 				this.unmount();
+			});
+		});
 
 		this.on('unmount', () => {
-			document.removeEventListener 'keydown' this.on-document-keydown
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+		});
 	</script>
 </mk-repost-form-window>

@@ -335,102 +335,120 @@
 		this.mixin('date-stringify');
 		this.mixin('NotImplementedException');
 
-		this.fetching = true
-		this.loading-context = false
-		this.content = null
-		this.post = null
+		this.fetching = true;
+		this.loadingContext = false;
+		this.content = null;
+		this.post = null;
 
 		this.on('mount', () => {
-
 			this.api('posts/show', {
 				post_id: this.opts.post
-			}).then((post) => {
-				this.fetching = false
-				this.post = post
+			}).then(post => {
+				const isRepost = post.repost != null;
+				const p = isRepost ? post.repost : post;
+				this.update({
+					fetching: false,
+					post: post,
+					isRepost: isRepost,
+					p: p,
+					title: this.dateStringify(p.created_at)
+				});
+
 				this.trigger('loaded');
 
-				this.is-repost = this.post.repost?
-				this.p = if @is-repost then this.post.repost else this.post
+				if (this.p.text) {
+					const tokens = this.analyze(this.p.text);
 
-				this.title = @date-stringify this.p.created_at
+					this.refs.text.innerHTML = this.compile(tokens);
 
-				this.update();
-
-				if this.p.text?
-					tokens = @analyze this.p.text
-					this.refs.text.innerHTML = @compile tokens
-
-					this.refs.text.children.forEach (e) =>
-						if e.tag-name == 'MK-URL' 
-							riot.mount e
+					this.refs.text.children.forEach(e => {
+						if (e.tagName == 'MK-URL') riot.mount(e);
+					});
 
 					// URLをプレビュー
 					tokens
-						.filter (t) -> t.type == 'link' 
-						.map (t) =>
-							this.preview = this.refs.text.appendChild(document.createElement('mk-url-preview'));
- 							riot.mount this.preview, do
-								url: t.content
+					.filter(t => t.type == 'link')
+					.map(t => {
+						riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+							url: t.content
+						});
+					});
+				}
 
 				// Get likes
 				this.api('posts/likes', {
-					post_id: this.p.id
+					post_id: this.p.id,
 					limit: 8
-				}).then((likes) => {
-					this.likes = likes
-					this.update();
+				}).then(likes => {
+					this.update({
+						likes: likes
+					});
+				});
 
 				// Get reposts
 				this.api('posts/reposts', {
-					post_id: this.p.id
+					post_id: this.p.id,
 					limit: 8
-				}).then((reposts) => {
-					this.reposts = reposts
-					this.update();
+				}).then(reposts => {
+					this.update({
+						reposts: reposts
+					});
+				});
 
 				// Get replies
 				this.api('posts/replies', {
-					post_id: this.p.id
+					post_id: this.p.id,
 					limit: 8
-				}).then((replies) => {
-					this.replies = replies
-					this.update();
-
-				this.update();
+				}).then(replies => {
+					this.update({
+						replies: replies
+					});
+				});
+			});
+		});
 
 		this.reply = () => {
-			form = document.body.appendChild(document.createElement('mk-post-form-window'));
- 			riot.mount form, do
+			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
 				reply: this.p
+			});
+		};
 
 		this.repost = () => {
-			form = document.body.appendChild(document.createElement('mk-repost-form-window'));
- 			riot.mount form, do
+			riot.mount(document.body.appendChild(document.createElement('mk-repost-form-window')), {
 				post: this.p
+			});
+		};
 
 		this.like = () => {
-			if this.p.is_liked
+			if (this.p.is_liked) {
 				this.api('posts/likes/delete', {
 					post_id: this.p.id
 				}).then(() => {
-					this.p.is_liked = false
+					this.p.is_liked = false;
 					this.update();
-			else
+				});
+			} else {
 				this.api('posts/likes/create', {
 					post_id: this.p.id
 				}).then(() => {
-					this.p.is_liked = true
+					this.p.is_liked = true;
 					this.update();
+				});
+			}
+		};
 
-		this.load-context = () => {
-			this.loading-context = true
+		this.loadContext = () => {
+			this.loadingContext = true;
 
-			// Get context
+			// Fetch context
 			this.api('posts/context', {
 				post_id: this.p.reply_to_id
-			}).then((context) => {
-				this.context = context.reverse!
-				this.loading-context = false
-				this.update();
+			}).then(context => {
+				this.update({
+					loadContext: false,
+					content: context.reverse()
+				});
+			});
+		};
 	</script>
 </mk-post-detail>

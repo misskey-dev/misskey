@@ -117,28 +117,31 @@
 		this.mixin('api');
 		this.mixin('notify');
 
-		this.wait = false
-		this.quote = false
+		this.wait = false;
+		this.quote = false;
 
 		this.cancel = () => {
 			this.trigger('cancel');
+		};
 
 		this.ok = () => {
-			this.wait = true
+			this.wait = true;
 			this.api('posts/create', {
-				repost_id: this.opts.post.id
-				text: if this.quote then this.refs.text.value else undefined
-			}).then((data) => {
+				repost_id: this.opts.post.id,
+				text: this.quote ? this.refs.text.value : undefined
+			}).then(data => {
 				this.trigger('posted');
-				@notify 'Repostしました！'
-			.catch (err) =>
-				console.error err
-				@notify 'Repostできませんでした'
+				this.notify('Repostしました！');
+			}).catch(err => {
+				this.notify('Repostできませんでした');
 			}).then(() => {
-				this.wait = false
-				this.update();
+				this.update({
+					wait: false
+				});
+			});
 
 		this.onquote = () => {
-			this.quote = true
+			this.quote = true;
+		};
 	</script>
 </mk-repost-form>

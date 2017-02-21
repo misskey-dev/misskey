@@ -108,33 +108,40 @@
 		this.mixin('date-stringify');
 		this.mixin('user-preview');
 
-		this.post = this.opts.post
+		this.post = this.opts.post;
 
-		this.url = CONFIG.url + '/' + this.post.user.username + '/' + this.post.id
+		this.url = CONFIG.url + '/' + this.post.user.username + '/' + this.post.id;
 
-		this.title = @date-stringify this.post.created_at
+		this.title = this.dateStringify(this.post.created_at);
 
 		this.on('mount', () => {
-			if this.post.text?
-				tokens = @analyze this.post.text
-				this.refs.text.innerHTML = @compile tokens
+			if (this.p.text) {
+				const tokens = this.analyze(this.p.text);
 
-				this.refs.text.children.forEach (e) =>
-					if e.tag-name == 'MK-URL' 
-						riot.mount e
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', this.compile(tokens));
+
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
+			}
+		});
 
 		this.like = () => {
-			if this.post.is_liked
+			if (this.post.is_liked) {
 				this.api('posts/likes/delete', {
 					post_id: this.post.id
 				}).then(() => {
-					this.post.is_liked = false
+					this.post.is_liked = false;
 					this.update();
-			else
+				});
+			} else {
 				this.api('posts/likes/create', {
 					post_id: this.post.id
 				}).then(() => {
-					this.post.is_liked = true
+					this.post.is_liked = true;
 					this.update();
+				});
+			}
+		};
 	</script>
 </mk-post-detail-sub>

@@ -75,20 +75,25 @@
 
 	</style>
 	<script>
-		this.title = this.opts.title
-		this.value = parse-int this.opts.value, 10
-		this.max = parse-int this.opts.max, 10
+		this.title = this.opts.title;
+		this.value = parseInt(this.opts.value, 10);
+		this.max = parseInt(this.opts.max, 10);
 
 		this.on('mount', () => {
 			this.refs.window.on('closed', () => {
 				this.unmount();
+			});
+		});
 
-		this.update-progress = (value, max) => {
-			this.value = parse-int value, 10
-			this.max = parse-int max, 10
-			this.update();
+		this.updateProgress = (value, max) => {
+			this.update({
+				value: parseInt(value, 10),
+				max: parseInt(max, 10)
+			});
+		};
 
 		this.close = () => {
 			this.refs.window.close();
+		};
 	</script>
 </mk-progress-dialog>

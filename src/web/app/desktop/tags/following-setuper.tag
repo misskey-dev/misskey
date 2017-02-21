@@ -1,6 +1,6 @@
 <mk-following-setuper>
 	<p class="title">気になるユーザーをフォロー:</p>
-	<div class="users" if={ !loading && users.length > 0 }>
+	<div class="users" if={ !fetching && users.length > 0 }>
 		<div class="user" each={ users }><a class="avatar-anchor" href={ CONFIG.url + '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ id }/></a>
 			<div class="body"><a class="name" href={ CONFIG.url + '/' + username } target="_blank" data-user-preview={ id }>{ name }</a>
 				<p class="username">@{ username }</p>
@@ -8,8 +8,8 @@
 			<mk-follow-button user={ this }></mk-follow-button>
 		</div>
 	</div>
-	<p class="empty" if={ !loading && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
+	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
+	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p><a class="refresh" onclick={ refresh }>もっと見る</a>
 	<button class="close" onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
@@ -81,7 +81,7 @@
 				text-align center
 				color #aaa
 
-			> .loading
+			> .fetching
 				margin 0
 				padding 16px
 				text-align center
@@ -126,38 +126,46 @@
 		this.mixin('api');
 		this.mixin('user-preview');
 
-		this.users = null
-		this.loading = true
+		this.users = null;
+		this.fetching = true;
 
-		this.limit = 6users
-		this.page = 0
+		this.limit = 6;
+		this.page = 0;
 
 		this.on('mount', () => {
-			this.load();
+			this.fetch();
+		});
 
-		this.load = () => {
-			this.loading = true
-			this.users = null
-			this.update();
+		this.fetch = () => {
+			this.update({
+				fetching: true,
+				users: null
+			});
 
 			this.api('users/recommendation', {
-				limit: @limit
-				offset: @limit * this.page
-			}).then((users) => {
-				this.loading = false
+				limit: this.limit,
+				offset: this.limit * this.page
+			}).then(users => {
+				this.fetching = false
 				this.users = users
-				this.update();
-			.catch (err, text-status) ->
-				console.error err
+				this.update({
+					fetching: false,
+					users: users
+				});
+			});
+		};
 
 		this.refresh = () => {
-			if this.users.length < @limit
-				this.page = 0
-			else
-				this.page++
-			this.load();
+			if (this.users.length < this.limit) {
+				this.page = 0;
+			} else {
+				this.page++;
+			}
+			this.fetch();
+		};
 
 		this.close = () => {
 			this.unmount();
+		};
 	</script>
 </mk-following-setuper>
