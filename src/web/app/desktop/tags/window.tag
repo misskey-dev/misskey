@@ -192,328 +192,354 @@
 
 	</style>
 	<script>
-		@min-height = 40px
-		@min-width = 200px
+		const contains = require('../../common/scripts/contains');
 
-		@is-modal = if @opts.is-modal? then @opts.is-modal else false
-		@can-close = if @opts.can-close? then @opts.can-close else true
-		@is-flexible = !@opts.height?
-		@can-resize = not @is-flexible
+		this.minHeight = 40;
+		this.minWidth = 200;
 
-		@on \mount ~>
-			@refs.main.style.width = @opts.width || \530px
-			@refs.main.style.height = @opts.height || \auto
+		this.isModal = this.opts.isModal != null ? this.opts.isModal : false;
+		this.canClose = this.opts.canClose != null ? this.opts.canClose : true;
+		this.isFlexible = this.opts.height == null;
+		this.canResize = !this.isFlexible;
 
-			@refs.main.style.top = \15%
-			@refs.main.style.left = (window.inner-width / 2) - (@refs.main.offset-width / 2) + \px
+		this.on('mount', () => {
+			this.refs.main.style.width = this.opts.width || '530px';
+			this.refs.main.style.height = this.opts.height || 'auto';
 
-			@refs.header.add-event-listener \contextmenu (e) ~>
-				e.prevent-default!
+			this.refs.main.style.top = '15%';
+			this.refs.main.style.left = (window.innerWidth / 2) - (this.refs.main.offsetWidth / 2) + 'px';
 
-			window.add-event-listener \resize @on-browser-resize
+			this.refs.header.addEventListener('contextmenu', e => {
+				e.preventDefault();
+			});
 
-			@open!
+			window.addEventListener('resize', this.onBrowserResize);
 
-		@on \unmount ~>
-			window.remove-event-listener \resize @on-browser-resize
+			this.open();
+		});
 
-		@on-browser-resize = ~>
-			position = @refs.main.get-bounding-client-rect!
-			browser-width = window.inner-width
-			browser-height = window.inner-height
-			window-width = @refs.main.offset-width
-			window-height = @refs.main.offset-height
+		this.on('unmount', () => {
+			window.removeEventListener('resize', this.onBrowserResize);
+		});
 
-			if position.left < 0
-				@refs.main.style.left = 0
+		this.onBrowserResize = () => {
+			const position = this.refs.main.getBoundingClientRect();
+			const browserWidth = window.innerWidth;
+			const browserHeight = window.innerHeight;
+			const windowWidth = this.refs.main.offsetWidth;
+			const windowHeight = this.refs.main.offsetHeight;
+			if (position.left < 0) this.refs.main.style.left = 0;
+			if (position.top < 0) this.refs.main.style.top = 0;
+			if (position.left + windowWidth > browserWidth) this.refs.main.style.left = browserWidth - windowWidth + 'px';
+			if (position.top + windowHeight > browserHeight) this.refs.main.style.top = browserHeight - windowHeight + 'px';
+		};
 
-			if position.top < 0
-				@refs.main.style.top = 0
+		this.open = () => {
+			this.trigger('opening');
 
-			if position.left + window-width > browser-width
-				@refs.main.style.left = browser-width - window-width + \px
+			this.top();
 
-			if position.top + window-height > browser-height
-				@refs.main.style.top = browser-height - window-height + \px
-
-		@open = ~>
-			@trigger \opening
-
-			@top!
-
-			if @is-modal
-				@refs.bg.style.pointer-events = \auto
-				Velocity @refs.bg, \finish true
-				Velocity @refs.bg, {
+			if (this.isModal) {
+				this.refs.bg.style.pointerEvents = 'auto';
+				Velocity(this.refs.bg, 'finish', true);
+				Velocity(this.refs.bg, {
 					opacity: 1
-				} {
-					queue: false
-					duration: 100ms
-					easing: \linear
-				}
+				}, {
+					queue: false,
+					duration: 100,
+					easing: 'linear'
+				});
+			}
 
-			@refs.main.style.pointer-events = \auto
-			Velocity @refs.main, \finish true
-			Velocity @refs.main, {scale: 1.1} 0ms
-			Velocity @refs.main, {
-				opacity: 1
+			this.refs.main.style.pointerEvents = 'auto';
+			Velocity(this.refs.main, 'finish', true);
+			Velocity(this.refs.main, { scale: 1.1 }, 0);
+			Velocity(this.refs.main, {
+				opacity: 1,
 				scale: 1
-			} {
-				queue: false
-				duration: 200ms
-				easing: \ease-out
-			}
+			}, {
+				queue: false,
+				duration: 200,
+				easing: 'ease-out'
+			});
 
-			#@refs.main.focus!
+			//this.refs.main.focus();
 
-			set-timeout ~>
-				@trigger \opened
-			, 300ms
+			setTimeout(() => {
+				this.trigger('opened');
+			}, 300);
+		};
 
-		@close = ~>
-			@trigger \closing
+		this.close = () => {
+			this.trigger('closing');
 
-			if @is-modal
-				@refs.bg.style.pointer-events = \none
-				Velocity @refs.bg, \finish true
-				Velocity @refs.bg, {
+			if (this.isModal) {
+				this.refs.bg.style.pointerEvents = 'none';
+				Velocity(this.refs.bg, 'finish', true);
+				Velocity(this.refs.bg, {
 					opacity: 0
-				} {
-					queue: false
-					duration: 300ms
-					easing: \linear
-				}
-
-			@refs.main.style.pointer-events = \none
-			Velocity @refs.main, \finish true
-			Velocity @refs.main, {
-				opacity: 0
-				scale: 0.8
-			} {
-				queue: false
-				duration: 300ms
-				easing: [ 0.5, -0.5, 1, 0.5 ]
+				}, {
+					queue: false,
+					duration: 300,
+					easing: 'linear'
+				});
 			}
 
-			set-timeout ~>
-				@trigger \closed
-			, 300ms
+			this.refs.main.style.pointerEvents = 'none';
+			Velocity(this.refs.main, 'finish', true);
+			Velocity(this.refs.main, {
+				opacity: 0,
+				scale: 0.8
+			}, {
+				queue: false,
+				duration: 300,
+				easing: [ 0.5, -0.5, 1, 0.5 ]
+			});
 
-		# 最前面へ移動します
-		@top = ~>
-			z = 0
+			setTimeout(() => {
+				this.trigger('closed');
+			}, 300);
+		};
 
-			ws = document.query-selector-all \mk-window
-			ws.for-each (w) !~>
-				if w == @root then return
-				m = w.query-selector ':scope > .main'
-				mz = Number(document.default-view.get-computed-style m, null .z-index)
-				if mz > z then z := mz
+		// 最前面へ移動します
+		this.top = () => {
+			let z = 0;
 
-			if z > 0
-				@refs.main.style.z-index = z + 1
-				if @is-modal then @refs.bg.style.z-index = z + 1
+			const ws = document.querySelectorAll('mk-window');
+			ws.forEach(w => {
+				if (w == this.root) return;
+				const m = w.querySelector(':scope > .main');
+				const mz = Number(document.defaultView.getComputedStyle(m, null).zIndex);
+				if (mz > z) z = mz;
+			});
 
-		@repel-move = (e) ~>
-			e.stop-propagation!
-			return true
+			if (z > 0) {
+				this.refs.main.style.zIndex = z + 1;
+				if (this.isModal) this.refs.bg.style.zIndex = z + 1;
+			}
+		};
 
-		@bg-click = ~>
-			if @can-close
-				@close!
+		this.repelMove = e => {
+			e.stopPropagation();
+			return true;
+		};
 
-		@on-body-mousedown = (e) ~>
-			@top!
-			true
+		this.bgClick = () => {
+			if (this.canClose) this.close();
+		};
 
-		# ヘッダー掴み時
-		@on-header-mousedown = (e) ~>
-			e.prevent-default!
+		this.onBodyMousedown = () => {
+			this.top();
+		};
 
-			if not contains @refs.main, document.active-element
-				@refs.main.focus!
+		// ヘッダー掴み時
+		this.onHeaderMousedown = e => {
+			e.preventDefault();
 
-			position = @refs.main.get-bounding-client-rect!
+			if (!contains(this.refs.main, document.activeElement)) this.refs.main.focus();
 
-			click-x = e.client-x
-			click-y = e.client-y
-			move-base-x = click-x - position.left
-			move-base-y = click-y - position.top
-			browser-width = window.inner-width
-			browser-height = window.inner-height
-			window-width = @refs.main.offset-width
-			window-height = @refs.main.offset-height
+			const position = this.refs.main.getBoundingClientRect();
 
-			# 動かした時
-			drag-listen (me) ~>
-				move-left = me.client-x - move-base-x
-				move-top = me.client-y - move-base-y
+			const clickX = e.clientX;
+			const clickY = e.clientY;
+			const moveBaseX = clickX - position.left;
+			const moveBaseY = clickY - position.top;
+			const browserWidth = window.innerWidth;
+			const browserHeight = window.innerHeight;
+			const windowWidth = this.refs.main.offsetWidth;
+			const windowHeight = this.refs.main.offsetHeight;
 
-				# 上はみ出し
-				if move-top < 0
-					move-top = 0
+			// 動かした時
+			dragListen(me => {
+				let moveLeft = me.clientX - moveBaseX;
+				let moveTop = me.clientY - moveBaseY;
 
-				# 左はみ出し
-				if move-left < 0
-					move-left = 0
+				// 上はみ出し
+				if (moveTop < 0) moveTop = 0;
 
-				# 下はみ出し
-				if move-top + window-height > browser-height
-					move-top = browser-height - window-height
+				// 左はみ出し
+				if (moveLeft < 0) moveLeft = 0;
 
-				# 右はみ出し
-				if move-left + window-width > browser-width
-					move-left = browser-width - window-width
+				// 下はみ出し
+				if (moveTop + windowHeight > browserHeight) moveTop = browserHeight - windowHeight;
 
-				@refs.main.style.left = move-left + \px
-				@refs.main.style.top = move-top + \px
+				// 右はみ出し
+				if (moveLeft + windowWidth > browserWidth) moveLeft = browserWidth - windowWidth;
 
-		# 上ハンドル掴み時
-		@on-top-handle-mousedown = (e) ~>
-			e.prevent-default!
+				this.refs.main.style.left = moveLeft + 'px';
+				this.refs.main.style.top = moveTop + 'px';
+			});
+		};
 
-			base = e.client-y
-			height = parse-int((get-computed-style @refs.main, '').height, 10)
-			top = parse-int((get-computed-style @refs.main, '').top, 10)
+		// 上ハンドル掴み時
+		this.onTopHandleMousedown = e => {
+			e.preventDefault();
 
-			# 動かした時
-			drag-listen (me) ~>
-				move = me.client-y - base
-				if top + move > 0
-					if height + -move > @min-height
-						@apply-transform-height height + -move
-						@apply-transform-top top + move
-					else # 最小の高さより小さくなろうとした時
-						@apply-transform-height @min-height
-						@apply-transform-top top + (height - @min-height)
-				else # 上のはみ出し時
-					@apply-transform-height top + height
-					@apply-transform-top 0
+			const base = e.clientY;
+			const height = parseInt(getComputedStyle(this.refs.main, '').height, 10);
+			const top = parseInt(getComputedStyle(this.refs.main, '').top, 10);
 
-		# 右ハンドル掴み時
-		@on-right-handle-mousedown = (e) ~>
-			e.prevent-default!
+			// 動かした時
+			dragListen(me => {
+				const move = me.clientY - base;
+				if (top + move > 0) {
+					if (height + -move > this.minHeight) {
+						this.applyTransformHeight(height + -move);
+						this.applyTransformTop(top + move);
+					} else { // 最小の高さより小さくなろうとした時
+						this.applyTransformHeight(this.minHeight);
+						this.applyTransformTop(top + (height - this.minHeight));
+					}
+				} else { // 上のはみ出し時
+					this.applyTransformHeight(top + height);
+					this.applyTransformTop(0);
+				}
+			});
+		};
 
-			base = e.client-x
-			width = parse-int((get-computed-style @refs.main, '').width, 10)
-			left = parse-int((get-computed-style @refs.main, '').left, 10)
-			browser-width = window.inner-width
+		// 右ハンドル掴み時
+		this.onRightHandleMousedown = e => {
+			e.preventDefault();
 
-			# 動かした時
-			drag-listen (me) ~>
-				move = me.client-x - base
-				if left + width + move < browser-width
-					if width + move > @min-width
-						@apply-transform-width width + move
-					else # 最小の幅より小さくなろうとした時
-						@apply-transform-width @min-width
-				else # 右のはみ出し時
-					@apply-transform-width browser-width - left
+			const base = e.clientX;
+			const width = parseInt(getComputedStyle(this.refs.main, '').width, 10);
+			const left = parseInt(getComputedStyle(this.refs.main, '').left, 10);
+			const browserWidth = window.innerWidth;
 
-		# 下ハンドル掴み時
-		@on-bottom-handle-mousedown = (e) ~>
-			e.prevent-default!
+			// 動かした時
+			dragListen(me => {
+				const move = me.clientX - base;
+				if (left + width + move < browserWidth) {
+					if (width + move > this.minWidth) {
+						this.applyTransformWidth(width + move);
+					} else { // 最小の幅より小さくなろうとした時
+						this.applyTransformWidth(this.minWidth);
+					}
+				} else { // 右のはみ出し時
+					this.applyTransformWidth(browserWidth - left);
+				}
+			});
+		};
 
-			base = e.client-y
-			height = parse-int((get-computed-style @refs.main, '').height, 10)
-			top = parse-int((get-computed-style @refs.main, '').top, 10)
-			browser-height = window.inner-height
+		// 下ハンドル掴み時
+		this.onBottomHandleMousedown = e => {
+			e.preventDefault();
 
-			# 動かした時
-			drag-listen (me) ~>
-				move = me.client-y - base
-				if top + height + move < browser-height
-					if height + move > @min-height
-						@apply-transform-height height + move
-					else # 最小の高さより小さくなろうとした時
-						@apply-transform-height @min-height
-				else # 下のはみ出し時
-					@apply-transform-height browser-height - top
+			const base = e.clientY;
+			const height = parseInt(getComputedStyle(this.refs.main, '').height, 10);
+			const top = parseInt(getComputedStyle(this.refs.main, '').top, 10);
+			const browserHeight = window.innerHeight;
 
-		# 左ハンドル掴み時
-		@on-left-handle-mousedown = (e) ~>
-			e.prevent-default!
+			// 動かした時
+			dragListen(me => {
+				const move = me.clientY - base;
+				if (top + height + move < browserHeight) {
+					if (height + move > this.minHeight) {
+						this.applyTransformHeight(height + move);
+					} else { // 最小の高さより小さくなろうとした時
+						this.applyTransformHeight(this.minHeight);
+					}
+				} else { // 下のはみ出し時
+					this.applyTransformHeight(browserHeight - top);
+				}
+			});
+		};
 
-			base = e.client-x
-			width = parse-int((get-computed-style @refs.main, '').width, 10)
-			left = parse-int((get-computed-style @refs.main, '').left, 10)
+		// 左ハンドル掴み時
+		this.onLeftHandleMousedown = e => {
+			e.preventDefault();
 
-			# 動かした時
-			drag-listen (me) ~>
-				move = me.client-x - base
-				if left + move > 0
-					if width + -move > @min-width
-						@apply-transform-width width + -move
-						@apply-transform-left left + move
-					else # 最小の幅より小さくなろうとした時
-						@apply-transform-width @min-width
-						@apply-transform-left left + (width - @min-width)
-				else # 左のはみ出し時
-					@apply-transform-width left + width
-					@apply-transform-left 0
+			const base = e.clientX;
+			const width = parseInt(getComputedStyle(this.refs.main, '').width, 10);
+			const left = parseInt(getComputedStyle(this.refs.main, '').left, 10);
 
-		# 左上ハンドル掴み時
-		@on-top-left-handle-mousedown = (e) ~>
-			@on-top-handle-mousedown e
-			@on-left-handle-mousedown e
+			// 動かした時
+			dragListen(me => {
+				const move = me.clientX - base;
+				if (left + move > 0) {
+					if (width + -move > this.minWidth) {
+						this.applyTransformWidth(width + -move);
+						this.applyTransformLeft(left + move);
+					} else { // 最小の幅より小さくなろうとした時
+						this.applyTransformWidth(this.minWidth);
+						this.applyTransformLeft(left + (width - this.minWidth));
+					}
+				} else { // 左のはみ出し時
+					this.applyTransformWidth(left + width);
+					this.applyTransformLeft(0);
+				}
+			});
+		};
 
-		# 右上ハンドル掴み時
-		@on-top-right-handle-mousedown = (e) ~>
-			@on-top-handle-mousedown e
-			@on-right-handle-mousedown e
+		// 左上ハンドル掴み時
+		this.onTopLeftHandleMousedown = e => {
+			this.onTopHandleMousedown(e);
+			this.onLeftHandleMousedown(e);
+		};
 
-		# 右下ハンドル掴み時
-		@on-bottom-right-handle-mousedown = (e) ~>
-			@on-bottom-handle-mousedown e
-			@on-right-handle-mousedown e
+		// 右上ハンドル掴み時
+		this.onTopRightHandleMousedown = e => {
+			this.onTopHandleMousedown(e);
+			this.onRightHandleMousedown(e);
+		};
 
-		# 左下ハンドル掴み時
-		@on-bottom-left-handle-mousedown = (e) ~>
-			@on-bottom-handle-mousedown e
-			@on-left-handle-mousedown e
+		// 右下ハンドル掴み時
+		this.onBottomRightHandleMousedown = e => {
+			this.onBottomHandleMousedown(e);
+			this.onRightHandleMousedown(e);
+		};
 
-		# 高さを適用
-		@apply-transform-height = (height) ~>
-			@refs.main.style.height = height + \px
+		// 左下ハンドル掴み時
+		this.onBottomLeftHandleMousedown = e => {
+			this.onBottomHandleMousedown(e);
+			this.onLeftHandleMousedown(e);
+		};
 
-		# 幅を適用
-		@apply-transform-width = (width) ~>
-			@refs.main.style.width = width + \px
+		// 高さを適用
+		this.applyTransformHeight = height => {
+			this.refs.main.style.height = height + 'px';
+		};
 
-		# Y座標を適用
-		@apply-transform-top = (top) ~>
-			@refs.main.style.top = top + \px
+		// 幅を適用
+		this.applyTransformWidth = width => {
+			this.refs.main.style.width = width + 'px';
+		};
 
-		# X座標を適用
-		@apply-transform-left = (left) ~>
-			@refs.main.style.left = left + \px
+		// Y座標を適用
+		this.applyTransformTop = top => {
+			this.refs.main.style.top = top + 'px';
+		};
 
-		function drag-listen fn
-			window.add-event-listener \mousemove  fn
-			window.add-event-listener \mouseleave drag-clear.bind null fn
-			window.add-event-listener \mouseup    drag-clear.bind null fn
+		// X座標を適用
+		this.applyTransformLeft = left => {
+			this.refs.main.style.left = left + 'px';
+		};
 
-		function drag-clear fn
-			window.remove-event-listener \mousemove  fn
-			window.remove-event-listener \mouseleave drag-clear
-			window.remove-event-listener \mouseup    drag-clear
+		function dragListen(fn) {
+			window.addEventListener('mousemove',  fn);
+			window.addEventListener('mouseleave', dragClear.bind(null, fn));
+			window.addEventListener('mouseup',    dragClear.bind(null, fn));
+		}
 
-		@ondragover = (e) ~>
-			e.data-transfer.drop-effect = \none
+		function dragClear(fn) {
+			window.removeEventListener('mousemove',  fn);
+			window.removeEventListener('mouseleave', dragClear);
+			window.removeEventListener('mouseup',    dragClear);
+		}
 
-		@on-keydown = (e) ~>
-			if e.which == 27 # Esc
-				if @can-close
-					e.prevent-default!
-					e.stop-propagation!
-					@close!
+		this.ondragover = e => {
+			e.dataTransfer.dropEffect = 'none';
+		};
 
-		function contains(parent, child)
-			node = child.parent-node
-			while node?
-				if node == parent
-					return true
-				node = node.parent-node
-			return false
+		this.onKeydown = e => {
+			if (e.which == 27) { // Esc
+				if (this.canClose) {
+					e.preventDefault();
+					e.stopPropagation();
+					this.close();
+				}
+			}
+		};
+
 	</script>
 </mk-window>

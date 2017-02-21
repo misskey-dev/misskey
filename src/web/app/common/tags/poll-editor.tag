@@ -86,26 +86,31 @@
 
 	</style>
 	<script>
-		@choices = ['', '']
+		this.choices = ['', ''];
 
-		@oninput = (i, e) ~>
-			@choices[i] = e.target.value
+		this.oninput = (i, e) => {
+			this.choices[i] = e.target.value;
+		}
 
-		@add = ~>
-			@choices.push ''
-			@update!
-			@refs.choices.child-nodes[@choices.length - 1].child-nodes[0].focus!
+		this.add = () => {
+			this.choices.push('');
+			this.update();
+			this.refs.choices.childNodes[this.choices.length - 1].childNodes[0].focus();
+		}
 
-		@remove = (i) ~>
-			@choices = @choices.filter((_, _i) -> _i != i)
-			@update!
+		this.remove = (i) => {
+			this.choices = this.choices.filter((_, _i) => _i != i);
+			this.update();
+		}
 
-		@destroy = ~>
-			@opts.ondestroy!
+		this.destroy = () => {
+			this.opts.ondestroy();
+		}
 
-		@get = ~>
+		this.get = () => {
 			return {
-				choices: @choices.filter (choice) -> choice != ''
+				choices: this.choices.filter(choice => choice != '')
 			}
+		}
 	</script>
 </mk-poll-editor>

@@ -286,72 +286,88 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@search-result = []
+		this.searchResult = [];
 
-		@on \mount ~>
-			@api \messaging/history
-			.then (history) ~>
-				@is-loading = false
-				history.for-each (message) ~>
-					message.is_me = message.user_id == @I.id
-					message._click = ~>
-						if message.is_me
-							@trigger \navigate-user message.recipient
-						else
-							@trigger \navigate-user message.user
-				@history = history
-				@update!
-			.catch (err) ~>
-				console.error err
+		this.on('mount', () => {
+			this.api('messaging/history').then(history => {
+				this.isLoading = false;
+				history.forEach(message => {
+					message.is_me = message.user_id == this.I.id
+					message._click = () => {
+						this.trigger('navigate-user', message.is_me ? message.recipient : message.user);
+					};
+				});
+				this.history = history;
+				this.update();
+			});
+		});
 
-		@search = ~>
-			q = @refs.search.value
-			if q == ''
-				@search-result = []
-			else
-				@api \users/search do
-					query: q
-					max: 5
-				.then (users) ~>
-					users.for-each (user) ~>
-						user._click = ~>
-							@trigger \navigate-user user
-							@search-result = []
-					@search-result = users
-					@update!
-				.catch (err) ~>
-					console.error err
+		this.search = () => {
+			const q = this.refs.search.value;
+			if (q == '') {
+				this.searchResult = [];
+				return;
+			}
+			this.api('users/search', {
+				query: q,
+				max: 5
+			}).then(users => {
+				users.forEach(user => {
+					user._click = () => {
+						this.trigger('navigate-user', user);
+						this.searchResult = [];
+					};
+				});
+				this.update({
+					searchResult: users
+				});
+			});
+		};
 
-		@on-search-keydown = (e) ~>
-			key = e.which
-			switch (key)
-				| 9, 40 => # Key[TAB] or Key[↓]
-					e.prevent-default!
-					e.stop-propagation!
-					@refs.search-result.child-nodes[0].focus!
+		this.onSearchKeydown = e => {
+			switch (e.which) {
+				case 9: // [TAB]
+				case 40: // [↓]
+					e.preventDefault();
+					e.stopPropagation();
+					this.refs.searchResult.childNodes[0].focus();
+					break;
+			}
+		};
 
-		@on-search-result-keydown = (i, e) ~>
-			key = e.which
-			switch (key)
-				| 10, 13 => # Key[ENTER]
-					e.prevent-default!
-					e.stop-propagation!
-					@search-result[i]._click!
-				| 27 => # Key[ESC]
-					e.prevent-default!
-					e.stop-propagation!
-					@refs.search.focus!
-				| 38 => # Key[↑]
-					e.prevent-default!
-					e.stop-propagation!
-					(@refs.search-result.child-nodes[i].previous-element-sibling || @refs.search-result.child-nodes[@search-result.length - 1]).focus!
-				| 9, 40 => # Key[TAB] or Key[↓]
-					e.prevent-default!
-					e.stop-propagation!
-					(@refs.search-result.child-nodes[i].next-element-sibling || @refs.search-result.child-nodes[0]).focus!
+		this.onSearchResultKeydown = (i, e) => {
+			const cancel = () => {
+				e.preventDefault();
+				e.stopPropagation();
+			};
+			switch (true) {
+				case e.which == 10: // [ENTER]
+				case e.which == 13: // [ENTER]
+					cancel();
+					this.searchResult[i]._click();
+					break;
+
+				case e.which == 27: // [ESC]
+					cancel();
+					this.refs.search.focus();
+					break;
+
+				case e.which == 9 && e.shiftKey: // [TAB] + [Shift]
+				case e.which == 38: // [↑]
+					cancel();
+					(this.refs.searchResult.childNodes[i].previousElementSibling || this.refs.searchResult.childNodes[this.searchResult.length - 1]).focus();
+					break;
+
+				case e.which == 9: // [TAB]
+				case e.which == 40: // [↓]
+					cancel();
+					(this.refs.searchResult.childNodes[i].nextElementSibling || this.refs.searchResult.childNodes[0]).focus();
+					break;
+			}
+		};
 
 	</script>
 </mk-messaging>

@@ -114,31 +114,35 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \notify
+		this.mixin('api');
+		this.mixin('notify');
 
-		@wait = false
-		@quote = false
+		this.wait = false;
+		this.quote = false;
 
-		@cancel = ~>
-			@trigger \cancel
+		this.cancel = () => {
+			this.trigger('cancel');
+		};
 
-		@ok = ~>
-			@wait = true
-			@api \posts/create do
-				repost_id: @opts.post.id
-				text: if @quote then @refs.text.value else undefined
-			.then (data) ~>
-				@trigger \posted
-				@notify 'Repostしました！'
-			.catch (err) ~>
-				console.error err
-				@notify 'Repostできませんでした'
-			.then ~>
-				@wait = false
-				@update!
+		this.ok = () => {
+			this.wait = true;
+			this.api('posts/create', {
+				repost_id: this.opts.post.id,
+				text: this.quote ? this.refs.text.value : undefined
+			}).then(data => {
+				this.trigger('posted');
+				this.notify('Repostしました！');
+			}).catch(err => {
+				this.notify('Repostできませんでした');
+			}).then(() => {
+				this.update({
+					wait: false
+				});
+			});
+		};
 
-		@onquote = ~>
-			@quote = true
+		this.onquote = () => {
+			this.quote = true;
+		};
 	</script>
 </mk-repost-form>

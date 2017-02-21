@@ -31,7 +31,6 @@ module.exports = (config, commit, env) => {
 					loader: 'riot-tag-loader',
 					query: {
 						hot: false,
-						type: 'livescript',
 						style: 'stylus',
 						expr: false,
 						compact: true,

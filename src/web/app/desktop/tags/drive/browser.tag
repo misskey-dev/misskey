@@ -8,7 +8,7 @@
 		</div>
 		<input class="search" type="search" placeholder="&#xf002; 検索"/>
 	</nav>
-	<div class="main { uploading: uploads.length > 0, loading: loading }" ref="main" onmousedown={ onmousedown } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu }>
+	<div class="main { uploading: uploads.length > 0, fetching: fetching }" ref="main" onmousedown={ onmousedown } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu }>
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" if={ folders.length > 0 }>
@@ -23,13 +23,13 @@
 				</virtual>
 				<button if={ moreFiles }>もっと読み込む</button>
 			</div>
-			<div class="empty" if={ files.length == 0 && folders.length == 0 && !loading }>
+			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 				<p if={ draghover }>ドロップですか？いいですよ、ボクはカワイイですからね</p>
 				<p if={ !draghover && folder == null }><strong>ドライブには何もありません。</strong><br/>右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。</p>
 				<p if={ !draghover && folder != null }>このフォルダーは空です</p>
 			</div>
 		</div>
-		<div class="loading" if={ loading }>
+		<div class="loading" if={ fetching }>
 			<div class="spinner">
 				<div class="dot1"></div>
 				<div class="dot2"></div>
@@ -133,7 +133,7 @@
 				&, *
 					user-select none
 
-				&.loading
+				&.fetching
 					cursor wait !important
 
 					*
@@ -184,7 +184,7 @@
 						> p
 							margin 0
 
-				> .loading
+				> .fetching
 					.spinner
 						margin 100px auto
 						width 40px
@@ -238,418 +238,439 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \dialog
-		@mixin \input-dialog
-		@mixin \stream
-
-		@files = []
-		@folders = []
-		@hierarchy-folders = []
-
-		@uploads = []
-
-		# 現在の階層(フォルダ)
-		# * null でルートを表す
-		@folder = null
-
-		@multiple = if @opts.multiple? then @opts.multiple else false
-
-		# ドロップされようとしているか
-		@draghover = false
-
-		# 自信の所有するアイテムがドラッグをスタートさせたか
-		# (自分自身の階層にドロップできないようにするためのフラグ)
-		@is-drag-source = false
-
-		@on \mount ~>
-			@refs.uploader.on \uploaded (file) ~>
-				@add-file file, true
-
-			@refs.uploader.on \change-uploads (uploads) ~>
-				@uploads = uploads
-				@update!
-
-			@stream.on \drive_file_created @on-stream-drive-file-created
-			@stream.on \drive_file_updated @on-stream-drive-file-updated
-			@stream.on \drive_folder_created @on-stream-drive-folder-created
-			@stream.on \drive_folder_updated @on-stream-drive-folder-updated
-
-			# Riotのバグでnullを渡しても""になる
-			# https://github.com/riot/riot/issues/2080
-			#if @opts.folder?
-			if @opts.folder? and @opts.folder != ''
-				@move @opts.folder
-			else
-				@load!
-
-		@on \unmount ~>
-			@stream.off \drive_file_created @on-stream-drive-file-created
-			@stream.off \drive_file_updated @on-stream-drive-file-updated
-			@stream.off \drive_folder_created @on-stream-drive-folder-created
-			@stream.off \drive_folder_updated @on-stream-drive-folder-updated
-
-		@on-stream-drive-file-created = (file) ~>
-			@add-file file, true
-
-		@on-stream-drive-file-updated = (file) ~>
-			current = if @folder? then @folder.id else null
-			if current != file.folder_id
-				@remove-file file
-			else
-				@add-file file, true
-
-		@on-stream-drive-folder-created = (folder) ~>
-			@add-folder folder, true
-
-		@on-stream-drive-folder-updated = (folder) ~>
-			current = if @folder? then @folder.id else null
-			if current != folder.parent_id
-				@remove-folder folder
-			else
-				@add-folder folder, true
-
-		@onmousedown = (e) ~>
-			if (contains @refs.folders-container, e.target) or (contains @refs.files-container, e.target)
-				return true
-
-			rect = @refs.main.get-bounding-client-rect!
-
-			left = e.page-x + @refs.main.scroll-left - rect.left - window.page-x-offset
-			top = e.page-y + @refs.main.scroll-top - rect.top - window.page-y-offset
-
-			move = (e) ~>
-				@refs.selection.style.display = \block
-
-				cursor-x = e.page-x + @refs.main.scroll-left - rect.left - window.page-x-offset
-				cursor-y = e.page-y + @refs.main.scroll-top - rect.top - window.page-y-offset
-				w = cursor-x - left
-				h = cursor-y - top
-
-				if w > 0
-					@refs.selection.style.width = w + \px
-					@refs.selection.style.left = left + \px
-				else
-					@refs.selection.style.width = -w + \px
-					@refs.selection.style.left = cursor-x + \px
-
-				if h > 0
-					@refs.selection.style.height = h + \px
-					@refs.selection.style.top = top + \px
-				else
-					@refs.selection.style.height = -h + \px
-					@refs.selection.style.top = cursor-y + \px
-
-			up = (e) ~>
-				document.document-element.remove-event-listener \mousemove move
-				document.document-element.remove-event-listener \mouseup up
-
-				@refs.selection.style.display = \none
-
-			document.document-element.add-event-listener \mousemove move
-			document.document-element.add-event-listener \mouseup up
-
-		@path-oncontextmenu = (e) ~>
-			e.prevent-default!
-			e.stop-immediate-propagation!
-			return false
-
-		@ondragover = (e) ~>
-			e.prevent-default!
-			e.stop-propagation!
-
-			# ドラッグ元が自分自身の所有するアイテムかどうか
-			if !@is-drag-source
-				# ドラッグされてきたものがファイルだったら
-				if e.data-transfer.effect-allowed == \all
-					e.data-transfer.drop-effect = \copy
-				else
-					e.data-transfer.drop-effect = \move
-				@draghover = true
-			else
-				# 自分自身にはドロップさせない
-				e.data-transfer.drop-effect = \none
-			return false
-
-		@ondragenter = (e) ~>
-			e.prevent-default!
-			if !@is-drag-source
-				@draghover = true
-
-		@ondragleave = (e) ~>
-			@draghover = false
-
-		@ondrop = (e) ~>
-			e.prevent-default!
-			e.stop-propagation!
-
-			@draghover = false
-
-			# ドロップされてきたものがファイルだったら
-			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) ~>
-					@upload file, @folder
-				return false
-
-			# データ取得
-			data = e.data-transfer.get-data 'text'
-			if !data?
-				return false
-
-			# パース
-			obj = JSON.parse data
-
-			# (ドライブの)ファイルだったら
-			if obj.type == \file
-				file = obj.id
-				if (@files.some (f) ~> f.id == file)
-					return false
-				@remove-file file
-				@api \drive/files/update do
-					file_id: file
-					folder_id: if @folder? then @folder.id else null
-				.then ~>
-					# something
-				.catch (err, text-status) ~>
-					console.error err
-
-			# (ドライブの)フォルダーだったら
-			else if obj.type == \folder
-				folder = obj.id
-				# 移動先が自分自身ならreject
-				if @folder? and folder == @folder.id
-					return false
-				if (@folders.some (f) ~> f.id == folder)
-					return false
-				@remove-folder folder
-				@api \drive/folders/update do
-					folder_id: folder
-					parent_id: if @folder? then @folder.id else null
-				.then ~>
-					# something
-				.catch (err) ~>
-					if err == 'detected-circular-definition'
-						@dialog do
-							'<i class="fa fa-exclamation-triangle"></i>操作を完了できません'
-							'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。'
-							[
-								text: \OK
-							]
-
-			return false
-
-		@oncontextmenu = (e) ~>
-			e.prevent-default!
-			e.stop-immediate-propagation!
-
-			ctx = document.body.append-child document.create-element \mk-drive-browser-base-contextmenu
-			ctx = riot.mount ctx, do
-				browser: @
-			ctx = ctx.0
-			ctx.open do
-				x: e.page-x - window.page-x-offset
-				y: e.page-y - window.page-y-offset
-
-			return false
-
-		@select-local-file = ~>
-			@refs.file-input.click!
-
-		@url-upload = ~>
-			url <~ @input-dialog do
-				'URLアップロード'
-				'アップロードしたいファイルのURL'
-				null
-
-			if url? and url != ''
-				@api \drive/files/upload_from_url do
-					url: url
-					folder_id: if @folder? then @folder.id else undefined
-
-				@dialog do
-					'<i class="fa fa-check"></i>アップロードをリクエストしました'
-					'アップロードが完了するまで時間がかかる場合があります。'
-					[
-						text: \OK
-					]
-
-		@create-folder = ~>
-			name <~ @input-dialog do
-				'フォルダー作成'
-				'フォルダー名'
-				null
-
-			@api \drive/folders/create do
-				name: name
-				folder_id: if @folder? then @folder.id else undefined
-			.then (folder) ~>
-				@add-folder folder, true
-				@update!
-			.catch (err) ~>
-				console.error err
-
-		@change-file-input = ~>
-			files = @refs.file-input.files
-			for i from 0 to files.length - 1
-				file = files.item i
-				@upload file, @folder
-
-		@upload = (file, folder) ~>
-			if folder? and typeof folder == \object
-				folder = folder.id
-			@refs.uploader.upload file, folder
-
-		@get-selection = ~>
-			@files.filter (file) -> file._selected
-
-		@new-window = (folder-id) ~>
-			browser = document.body.append-child document.create-element \mk-drive-browser-window
-			riot.mount browser, do
-				folder: folder-id
-
-		@move = (target-folder) ~>
-			if target-folder? and typeof target-folder == \object
-				target-folder = target-folder.id
-
-			if target-folder == null
-				@go-root!
-				return
-
-			@loading = true
-			@update!
-
-			@api \drive/folders/show do
-				folder_id: target-folder
-			.then (folder) ~>
-				@folder = folder
-				@hierarchy-folders = []
-
-				x = (f) ~>
-					@hierarchy-folders.unshift f
-					if f.parent?
-						x f.parent
-
-				if folder.parent?
-					x folder.parent
-
-				@update!
-				@load!
-			.catch (err, text-status) ->
-				console.error err
-
-		@add-folder = (folder, unshift = false) ~>
-			current = if @folder? then @folder.id else null
-			if current != folder.parent_id
-				return
-
-			if (@folders.some (f) ~> f.id == folder.id)
-				exist = (@folders.map (f) -> f.id).index-of folder.id
-				@folders[exist] = folder
-				@update!
-				return
-
-			if unshift
-				@folders.unshift folder
-			else
-				@folders.push folder
-
-			@update!
-
-		@add-file = (file, unshift = false) ~>
-			current = if @folder? then @folder.id else null
-			if current != file.folder_id
-				return
-
-			if (@files.some (f) ~> f.id == file.id)
-				exist = (@files.map (f) -> f.id).index-of file.id
-				@files[exist] = file
-				@update!
-				return
-
-			if unshift
-				@files.unshift file
-			else
-				@files.push file
-
-			@update!
-
-		@remove-folder = (folder) ~>
-			if typeof folder == \object
-				folder = folder.id
-			@folders = @folders.filter (f) -> f.id != folder
-			@update!
-
-		@remove-file = (file) ~>
-			if typeof file == \object
-				file = file.id
-			@files = @files.filter (f) -> f.id != file
-			@update!
-
-		@go-root = ~>
-			if @folder != null
-				@folder = null
-				@hierarchy-folders = []
-				@update!
-				@load!
-
-		@load = ~>
-			@folders = []
-			@files = []
-			@more-folders = false
-			@more-files = false
-			@loading = true
-			@update!
-
-			load-folders = null
-			load-files = null
-
-			folders-max = 30
-			files-max = 30
-
-			# フォルダ一覧取得
-			@api \drive/folders do
-				folder_id: if @folder? then @folder.id else null
-				limit: folders-max + 1
-			.then (folders) ~>
-				if folders.length == folders-max + 1
-					@more-folders = true
-					folders.pop!
-				load-folders := folders
-				complete!
-			.catch (err, text-status) ~>
-				console.error err
-
-			# ファイル一覧取得
-			@api \drive/files do
-				folder_id: if @folder? then @folder.id else null
-				limit: files-max + 1
-			.then (files) ~>
-				if files.length == files-max + 1
-					@more-files = true
-					files.pop!
-				load-files := files
-				complete!
-			.catch (err, text-status) ~>
-				console.error err
-
-			flag = false
-			complete = ~>
-				if flag
-					load-folders.for-each (folder) ~>
-						@add-folder folder
-					load-files.for-each (file) ~>
-						@add-file file
-					@loading = false
-					@update!
-				else
-					flag := true
-
-		function contains(parent, child)
-			node = child.parent-node
-			while node?
-				if node == parent
-					return true
-				node = node.parent-node
-			return false
+		const contains = require('../../../common/scripts/contains');
+
+		this.mixin('api');
+		this.mixin('dialog');
+		this.mixin('input-dialog');
+		this.mixin('stream');
+
+		this.files = [];
+		this.folders = [];
+		this.hierarchyFolders = [];
+
+		this.uploads = [];
+
+		// 現在の階層(フォルダ)
+		// * null でルートを表す
+		this.folder = null;
+
+		this.multiple = this.opts.multiple != null ? this.opts.multiple : false;
+
+		// ドロップされようとしているか
+		this.draghover = false;
+
+		// 自信の所有するアイテムがドラッグをスタートさせたか
+		// (自分自身の階層にドロップできないようにするためのフラグ)
+		this.isDragSource = false;
+
+		this.on('mount', () => {
+			this.refs.uploader.on('uploaded', file => {
+				this.addFile(file, true);
+			});
+
+			this.refs.uploader.on('change-uploads', uploads => {
+				this.update({
+					uploads: uploads
+				});
+			});
+
+			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
+			this.stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
+			this.stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
+
+			// Riotのバグでnullを渡しても""になる
+			// https://github.com/riot/riot/issues/2080
+			//if (this.opts.folder)
+			if (this.opts.folder && this.opts.folder != '') {
+				this.move(this.opts.folder);
+			} else {
+				this.load();
+			}
+		});
+
+		this.on('unmount', () => {
+			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
+			this.stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
+			this.stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
+		});
+
+		this.onStreamDriveFileCreated = file => {
+			this.addFile(file, true);
+		};
+
+		this.onStreamDriveFileUpdated = file => {
+			const current = this.folder ? this.folder.id : null;
+			if (current != file.folder_id) {
+				this.removeFile(file);
+			} else {
+				this.addFile(file, true);
+			}
+		};
+
+		this.onStreamDriveFolderCreated = folder => {
+			this.addFolder(folder, true);
+		};
+
+		this.onStreamDriveFolderUpdated = folder => {
+			const current = this.folder ? this.folder.id : null;
+			if (current != folder.parent_id) {
+				this.removeFolder(folder);
+			} else {
+				this.addFolder(folder, true);
+			}
+		};
+
+		this.onmousedown = e => {
+			if (contains(this.refs.foldersContainer, e.target) || contains(this.refs.filesContainer, e.target)) return true;
+
+			const rect = this.refs.main.getBoundingClientRect();
+
+			const left = e.pageX + this.refs.main.scrollLeft - rect.left - window.pageXOffset
+			const top = e.pageY + this.refs.main.scrollTop - rect.top - window.pageYOffset
+
+			const move = e => {
+				this.refs.selection.style.display = 'block';
+
+				const cursorX = e.pageX + this.refs.main.scrollLeft - rect.left - window.pageXOffset;
+				const cursorY = e.pageY + this.refs.main.scrollTop - rect.top - window.pageYOffset;
+				const w = cursorX - left;
+				const h = cursorY - top;
+
+				if (w > 0) {
+					this.refs.selection.style.width = w + 'px';
+					this.refs.selection.style.left = left + 'px';
+				} else {
+					this.refs.selection.style.width = -w + 'px';
+					this.refs.selection.style.left = cursorX + 'px';
+				}
+
+				if (h > 0) {
+					this.refs.selection.style.height = h + 'px';
+					this.refs.selection.style.top = top + 'px';
+				} else {
+					this.refs.selection.style.height = -h + 'px';
+					this.refs.selection.style.top = cursorY + 'px';
+				}
+			};
+
+			up = e => {
+				document.documentElement.removeEventListener('mousemove', move);
+				document.documentElement.removeEventListener('mouseup', up);
+
+				this.refs.selection.style.display = 'none';
+			};
+
+			document.documentElement.addEventListener('mousemove', move);
+			document.documentElement.addEventListener('mouseup', up);
+		};
+
+		this.pathOncontextmenu = e => {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			return false;
+		};
+
+		this.ondragover = e => {
+			e.preventDefault();
+			e.stopPropagation();
+
+			// ドラッグ元が自分自身の所有するアイテムかどうか
+			if (!this.isDragSource) {
+				// ドラッグされてきたものがファイルだったら
+				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+				this.draghover = true;
+			} else {
+				// 自分自身にはドロップさせない
+				e.dataTransfer.dropEffect = 'none';
+				return false;
+			}
+		};
+
+		this.ondragenter = e => {
+			e.preventDefault();
+			if (!this.isDragSource) this.draghover = true;
+		};
+
+		this.ondragleave = e => {
+			this.draghover = false;
+		};
+
+		this.ondrop = e => {
+			e.preventDefault();
+			e.stopPropagation();
+
+			this.draghover = false;
+
+			// ドロップされてきたものがファイルだったら
+			if (e.dataTransfer.files.length > 0) {
+				e.dataTransfer.files.forEach(file => {
+					this.upload(file, this.folder);
+				});
+				return false;
+			}
+
+			// データ取得
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return false;
+
+			// パース
+			// TODO: JSONじゃなかったら中断
+			const obj = JSON.parse(data);
+
+			// (ドライブの)ファイルだったら
+			if (obj.type == 'file') {
+				const file = obj.id;
+				if (this.files.some(f => f.id == file)) return false;
+				this.removeFile(file);
+				this.api('drive/files/update', {
+					file_id: file,
+					folder_id: this.folder ? this.folder.id : null
+				});
+			// (ドライブの)フォルダーだったら
+			} else if (obj.type == 'folder') {
+				const folder = obj.id;
+				// 移動先が自分自身ならreject
+				if (this.folder && folder == this.folder.id) return false;
+				if (this.folders.some(f => f.id == folder)) return false;
+				this.removeFolder(folder);
+				this.api('drive/folders/update', {
+					folder_id: folder,
+					parent_id: this.folder ? this.folder.id : null
+				}).then(() => {
+					// something
+				}).catch(err => {
+					switch (err) {
+						case 'detected-circular-definition':
+							this.dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
+								'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。', [{
+								text: 'OK'
+							}]);
+							break;
+						default:
+							alert('不明なエラー' + err);
+					}
+				});
+			}
+
+			return false;
+		};
+
+		this.oncontextmenu = e => {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+
+			const ctx = riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-base-contextmenu')), {
+				browser: this
+			})[0];
+			ctx.open({
+				x: e.pageX - window.pageXOffset,
+				y: e.pageY - window.pageYOffset
+			});
+
+			return false;
+		};
+
+		this.selectLocalFile = () => {
+			this.refs.fileInput.click();
+		};
+
+		this.urlUpload = () => {
+			this.inputDialog('URLアップロード', 'アップロードしたいファイルのURL', null, url => {
+				this.api('drive/files/upload_from_url', {
+					url: url,
+					folder_id: this.folder ? this.folder.id : undefined
+				});
+
+				this.dialog('<i class="fa fa-check"></i>アップロードをリクエストしました',
+					'アップロードが完了するまで時間がかかる場合があります。', [{
+					text: 'OK'
+				}]);
+			});
+		};
+
+		this.createFolder = () => {
+			this.inputDialog('フォルダー作成', 'フォルダー名', null, name => {
+				this.api('drive/folders/create', {
+					name: name,
+					folder_id: this.folder ? this.folder.id : undefined
+				}).then(folder => {
+					this.addFolder(folder, true);
+					this.update();
+				});
+			});
+		};
+
+		this.changeFileInput = () => {
+			this.refs.fileInput.files.forEach(file => {
+				this.upload(file, this.folder);
+			});
+		};
+
+		this.upload = (file, folder) => {
+			if (folder && typeof folder == 'object') folder = folder.id;
+			this.refs.uploader.upload(file, folder);
+		};
+
+		this.getSelection = () => {
+			this.files.filter(file => file._selected);
+		};
+
+		this.newWindow = folderId => {
+			riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-window')), {
+				folder: folderId
+			});
+		};
+
+		this.move = target => {
+			if (target == null) {
+				this.goRoot();
+				return;
+			} else if (typeof target == 'object') {
+				target = target.id;
+			}
+
+			this.update({
+				fetching: true
+			});
+
+			this.api('drive/folders/show', {
+				folder_id: target
+			}).then(folder => {
+				this.folder = folder;
+				this.hierarchyFolders = [];
+
+				const dive = folder => {
+					this.hierarchyFolders.unshift(folder);
+					if (folder.parent) dive(folder.parent);
+				};
+
+				if (folder.parent) dive(folder.parent);
+
+				this.update();
+				this.load();
+			});
+		};
+
+		this.addFolder = (folder, unshift = false) => {
+			const current = this.folder ? this.folder.id : null;
+			if (current != folder.parent_id) return;
+
+			if (this.folders.some(f => f.id == folder.id)) {
+				const exist = this.folders.map(f => f.id).indexOf(folder.id);
+				this.folders[exist] = folder;
+				this.update();
+				return;
+			}
+
+			if (unshift) {
+				this.folders.unshift(folder);
+			} else {
+				this.folders.push(folder);
+			}
+
+			this.update();
+		};
+
+		this.addFile = (file, unshift = false) => {
+			const current = this.folder ? this.folder.id : null;
+			if (current != file.folder_id) return;
+
+			if (this.files.some(f => f.id == file.id)) {
+				const exist = this.files.map(f => f.id).indexOf(file.id);
+				this.files[exist] = file;
+				this.update();
+				return;
+			}
+
+			if (unshift) {
+				this.files.unshift(file);
+			} else {
+				this.files.push(file);
+			}
+
+			this.update();
+		};
+
+		this.removeFolder = folder => {
+			if (typeof folder == 'object') folder = folder.id;
+			this.folders = this.folders.filter(f => f.id != folder);
+			this.update();
+		};
+
+		this.removeFile = file => {
+			if (typeof file == 'object') file = file.id;
+			this.files = this.files.filter(f => f.id != file);
+			this.update();
+		};
+
+		this.goRoot = () => {
+			// 既にrootにいるなら何もしない
+			if (this.folder == null) return;
+
+			this.update({
+				folder: null,
+				hierarchyFolders: []
+			});
+			this.load();
+		};
+
+		this.load = () => {
+			this.update({
+				folders: [],
+				files: [],
+				moreFolders: false,
+				moreFiles: false,
+				fetching: true
+			});
+
+			let fetchedFolders = null;
+			let fetchedFiles = null;
+
+			const foldersMax = 30;
+			const filesMax = 30;
+
+			// フォルダ一覧取得
+			this.api('drive/folders', {
+				folder_id: this.folder ? this.folder.id : null,
+				limit: foldersMax + 1
+			}).then(folders => {
+				if (folders.length == foldersMax + 1) {
+					this.moreFolders = true;
+					folders.pop();
+				}
+				fetchedFolders = folders;
+				complete();
+			});
+
+			// ファイル一覧取得
+			this.api('drive/files', {
+				folder_id: this.folder ? this.folder.id : null,
+				limit: filesMax + 1
+			}).then(files => {
+				if (files.length == filesMax + 1) {
+					this.moreFiles = true;
+					files.pop();
+				}
+				fetchedFiles = files;
+				complete();
+			});
+
+			let flag = false;
+			const complete = () => {
+				if (flag) {
+					fetchedFolders.forEach(this.addFolder);
+					fetchedFiles.forEach(this.addFile);
+					this.update({
+						fetching: false
+					});
+				} else {
+					flag = true;
+				}
+			};
+		};
+
 	</script>
 </mk-drive-browser>

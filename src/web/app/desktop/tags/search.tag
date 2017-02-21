@@ -23,10 +23,12 @@
 
 	</style>
 	<script>
-		@query = @opts.query
+		this.query = this.opts.query;
 
-		@on \mount ~>
-			@refs.posts.on \loaded ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			this.refs.posts.on('loaded', () => {
+				this.trigger('loaded');
+			});
+		});
 	</script>
 </mk-search>

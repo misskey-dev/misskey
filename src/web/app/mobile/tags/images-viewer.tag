@@ -18,10 +18,11 @@
 
 	</style>
 	<script>
-		@images = @opts.images
-		@image = @images.0
+		this.images = this.opts.images;
+		this.image = this.images[0];
 
-		@click = ~>
-			window.open @image.url
+		this.click = () => {
+			window.open(this.image.url);
+		};
 	</script>
 </mk-images-viewer>

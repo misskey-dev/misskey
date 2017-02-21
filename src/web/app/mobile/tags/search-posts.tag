@@ -7,26 +7,30 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@max = 30
-		@offset = 0
+		this.max = 30;
+		this.offset = 0;
 
-		@query = @opts.query
-		@with-media = @opts.with-media
+		this.query = this.opts.query;
+		this.withMedia = this.opts.withMedia;
 
-		@init = new Promise (res, rej) ~>
-			@api \posts/search do
-				query: @query
-			.then (posts) ~>
-				res posts
-				@trigger \loaded
+		this.init = new Promise((res, rej) => {
+			this.api('posts/search', {
+				query: this.query
+			}).then(posts => {
+				res(posts);
+				this.trigger('loaded');
+			});
+		});
 
-		@more = ~>
-			@offset += @max
-			@api \posts/search do
-				query: @query
-				max: @max
-				offset: @offset
+		this.more = () => {
+			this.offset += this.max;
+			this.api('posts/search', {
+				query: this.query,
+				max: this.max,
+				offset: this.offset
+			});
+		};
 	</script>
 </mk-search-posts>

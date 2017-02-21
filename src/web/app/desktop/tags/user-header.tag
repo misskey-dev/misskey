@@ -104,39 +104,42 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \update-banner
-		@mixin \NotImplementedException
+		this.mixin('i');
+		this.mixin('update-banner');
+		this.mixin('NotImplementedException');
 
-		@user = @opts.user
+		this.user = this.opts.user;
 
-		@on \mount ~>
-			window.add-event-listener \load @scroll
-			window.add-event-listener \scroll @scroll
-			window.add-event-listener \resize @scroll
+		this.on('mount', () => {
+			window.addEventListener('load', this.scroll);
+			window.addEventListener('scroll', this.scroll);
+			window.addEventListener('resize', this.scroll);
+		});
 
-		@on \unmount ~>
-			window.remove-event-listener \load @scroll
-			window.remove-event-listener \scroll @scroll
-			window.remove-event-listener \resize @scroll
+		this.on('unmount', () => {
+			window.removeEventListener('load', this.scroll);
+			window.removeEventListener('scroll', this.scroll);
+			window.removeEventListener('resize', this.scroll);
+		});
 
-		@scroll = ~>
-			top = window.scroll-y
-			height = 280px
+		this.scroll = () => {
+			const top = window.scrollY;
+			const height = 280/*px*/;
 
-			pos = 50 - ((top / height) * 50)
-			@refs.banner.style.background-position = 'center ' + pos + '%'
+			const pos = 50 - ((top / height) * 50);
+			this.refs.banner.style.backgroundPosition = `center ${pos}%`;
 
-			blur = top / 32
-			if blur <= 10
-				@refs.banner.style.filter = 'blur(' + blur + 'px)'
+			const blur = top / 32
+			if (blur <= 10) this.refs.banner.style.filter = `blur(${blur}px)`;
+		};
 
-		@on-update-banner = ~>
-			if not @SIGNIN or @I.id != @user.id
-				return
+		this.onUpdateBanner = () => {
+			if (!this.SIGNIN || this.I.id != this.user.id) return;
 
-			@update-banner @I, (i) ~>
-				@user.banner_url = i.banner_url
-				@update!
+			this.updateBanner(this.I, i => {
+				this.user.banner_url = i.banner_url;
+				this.update();
+			});
+		};
 	</script>
 </mk-user-header>

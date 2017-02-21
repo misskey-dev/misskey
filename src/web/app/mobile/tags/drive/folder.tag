@@ -37,10 +37,11 @@
 
 	</style>
 	<script>
-		@browser = @parent
-		@folder = @opts.folder
+		this.browser = this.parent;
+		this.folder = this.opts.folder;
 
-		@onclick = ~>
-			@browser.move @folder
+		this.onclick = () => {
+			this.browser.cd(this.folder);
+		};
 	</script>
 </mk-drive-folder>

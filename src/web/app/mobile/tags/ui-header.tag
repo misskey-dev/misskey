@@ -13,7 +13,7 @@
 			$height = 48px
 
 			display block
-			position fixed
+			position sticky
 			top 0
 			z-index 1024
 			width 100%
@@ -88,17 +88,15 @@
 
 	</style>
 	<script>
-		@mixin \ui
-		@mixin \open-post-form
+		this.mixin('ui');
+		this.mixin('open-post-form');
 
-		@on \mount ~>
-			@opts.ready!
+		this.ui.on('title', title => {
+			if (this.refs.title) this.refs.title.innerHTML = title;
+		});
 
-		@ui.on \title (title) ~>
-			if @refs.title?
-				@refs.title.innerHTML = title
-
-		@post = ~>
-			@open-post-form!
+		this.post = () => {
+			this.openPostForm();
+		};
 	</script>
 </mk-ui-header>

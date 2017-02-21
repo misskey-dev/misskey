@@ -74,45 +74,58 @@
 
 	</style>
 	<script>
-		@posts = []
-		@init = true
-		@fetching = false
-		@can-fetch-more = true
+		this.posts = [];
+		this.init = true;
+		this.fetching = false;
+		this.canFetchMore = true;
 
-		@on \mount ~>
-			@opts.init.then (posts) ~>
-				@init = false
-				@set-posts posts
+		this.on('mount', () => {
+			this.opts.init.then(posts => {
+				this.init = false;
+				this.setPosts(posts);
+			});
+		});
 
-		@on \update ~>
-			@posts.for-each (post) ~>
-				date = (new Date post.created_at).get-date!
-				month = (new Date post.created_at).get-month! + 1
-				post._date = date
-				post._datetext = month + '月 ' + date + '日'
+		this.on('update', () => {
+			this.posts.forEach(post => {
+				const date = new Date(post.created_at).getDate();
+				const month = new Date(post.created_at).getMonth() + 1;
+				post._date = date;
+				post._datetext = `${month}月 ${date}日`;
+			});
+		});
 
-		@more = ~>
-			if @init or @fetching or @posts.length == 0 then return
-			@fetching = true
-			@update!
-			@opts.more!.then (posts) ~>
-				@fetching = false
-				@prepend-posts posts
+		this.more = () => {
+			if (this.init || this.fetching || this.posts.length == 0) return;
+			this.update({
+				fetching: true
+			});
+			this.opts.more().then(posts => {
+				this.fetching = false;
+				this.prependPosts(posts);
+			});
+		};
 
-		@set-posts = (posts) ~>
-			@posts = posts
-			@update!
+		this.setPosts = posts => {
+			this.update({
+				posts: posts
+			});
+		};
 
-		@prepend-posts = (posts) ~>
-			posts.for-each (post) ~>
-				@posts.push post
-				@update!
+		this.prependPosts = posts => {
+			posts.forEach(post => {
+				this.posts.push(post);
+				this.update();
+			});
+		}
 
-		@add-post = (post) ~>
-			@posts.unshift post
-			@update!
+		this.addPost = post => {
+			this.posts.unshift(post);
+			this.update();
+		};
 
-		@tail = ~>
-			@posts[@posts.length - 1]
+		this.tail = () => {
+			return this.posts[this.posts.length - 1];
+		};
 	</script>
 </mk-timeline>

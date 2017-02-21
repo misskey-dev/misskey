@@ -46,93 +46,89 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
-		@mixin \get-post-summary
+		this.mixin('api');
+		this.mixin('is-promise');
+		this.mixin('get-post-summary');
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
-		@is-loading = true
-		@is-empty = false
-		@more-loading = false
-		@unread-count = 0
-		@mode = \default
+		this.user = null;
+		this.userPromise = this.isPromise(this.opts.user)
+			? this.opts.user
+			: Promise.resolve(this.opts.user);
+		this.isLoading = true;
+		this.isEmpty = false;
+		this.moreLoading = false;
+		this.unreadCount = 0;
+		this.mode = 'default';
 
-		@on \mount ~>
-			document.add-event-listener \visibilitychange @window-on-visibilitychange, false
-			document.add-event-listener \keydown @on-document-keydown
-			window.add-event-listener \scroll @on-scroll
+		this.on('mount', () => {
+			document.addEventListener('keydown', this.onDocumentKeydown);
+			window.addEventListener('scroll', this.onScroll);
 
-			@user-promise.then (user) ~>
-				@user = user
-				@update!
+			this.userPromise.then(user => {
+				this.update({
+					user: user
+				});
 
-				@fetch ~>
-					@trigger \loaded
+				this.fetch(() => this.trigger('loaded'));
+			});
+		});
 
-		@on \unmount ~>
-			document.remove-event-listener \visibilitychange @window-on-visibilitychange
-			document.remove-event-listener \keydown @on-document-keydown
-			window.remove-event-listener \scroll @on-scroll
+		this.on('unmount', () => {
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+			window.removeEventListener('scroll', this.onScroll);
+		});
 
-		@on-document-keydown = (e) ~>
-			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 84 # t
-					@refs.timeline.focus!
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+				if (e.which == 84) { // [t]
+					this.refs.timeline.focus();
+				}
+			}
+		};
 
-		@fetch = (cb) ~>
-			@api \users/posts do
-				user_id: @user.id
-				with_replies: @mode == \with-replies
-			.then (posts) ~>
-				@is-loading = false
-				@is-empty = posts.length == 0
-				@update!
-				@refs.timeline.set-posts posts
-				if cb? then cb!
-			.catch (err) ~>
-				console.error err
-				if cb? then cb!
+		this.fetch = cb => {
+			this.api('users/posts', {
+				user_id: this.user.id,
+				with_replies: this.mode == 'with-replies'
+			}).then(posts => {
+				this.update({
+					isLoading: false,
+					isEmpty: posts.length == 0
+				});
+				this.refs.timeline.setPosts(posts);
+				if (cb) cb();
+			});
+		};
 
-		@more = ~>
-			if @more-loading or @is-loading or @refs.timeline.posts.length == 0
-				return
-			@more-loading = true
-			@update!
-			@api \users/posts do
-				user_id: @user.id
-				with_replies: @mode == \with-replies
-				max_id: @refs.timeline.tail!.id
-			.then (posts) ~>
-				@more-loading = false
-				@update!
-				@refs.timeline.prepend-posts posts
-			.catch (err) ~>
-				console.error err
+		this.more = () => {
+			if (this.moreLoading || this.isLoading || this.refs.timeline.posts.length == 0) return;
+			this.update({
+				moreLoading: true
+			});
+			this.api('users/posts', {
+				user_id: this.user.id,
+				with_replies: this.mode == 'with-replies',
+				max_id: this.refs.timeline.tail().id
+			}).then(posts => {
+				this.update({
+					moreLoading: false
+				});
+				this.refs.timeline.prependPosts(posts);
+			});
+		};
 
-		@on-stream-post = (post) ~>
-			@is-empty = false
-			@update!
-			@refs.timeline.add-post post
+		this.onScroll = () => {
+			const current = window.scrollY + window.innerHeight;
+			if (current > document.body.offsetHeight - 16/*遊び*/) {
+				this.more();
+			}
+		};
 
-			if document.hidden
-				@unread-count++
-				document.title = '(' + @unread-count + ') ' + @get-post-summary post
-
-		@window-on-visibilitychange = ~>
-			if !document.hidden
-				@unread-count = 0
-				document.title = 'Misskey'
-
-		@on-scroll = ~>
-			current = window.scroll-y + window.inner-height
-			if current > document.body.offset-height - 16 # 遊び
-				@more!
-
-		@set-mode = (mode) ~>
-			@update do
+		this.setMode = mode => {
+			this.update({
 				mode: mode
-			@fetch!
+			});
+			this.fetch();
+		};
 	</script>
 </mk-user-timeline>

@@ -28,17 +28,19 @@
 
 	</style>
 	<script>
-		@mixin \text
+		this.mixin('text');
 
-		@post = @opts.post
+		this.post = this.opts.post;
 
-		@on \mount ~>
-			if @post.text?
-				tokens = @analyze @post.text
-				@refs.text.innerHTML = @compile tokens, false
+		this.on('mount', () => {
+			if (this.post.text) {
+				const tokens = this.analyze(this.post.text);
+				this.refs.text.innerHTML = this.compile(tokens, false);
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
-						riot.mount e
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
+			}
+		});
 	</script>
 </mk-sub-post-content>

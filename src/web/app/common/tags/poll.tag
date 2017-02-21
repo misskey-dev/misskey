@@ -68,32 +68,37 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@post = @opts.post
-		@poll = @post.poll
-		@total = @poll.choices.reduce ((a, b) -> a + b.votes), 0
-		@is-voted = @poll.choices.some (c) -> c.is_voted
-		@result = @is-voted
+		this.post = this.opts.post;
+		this.poll = this.post.poll;
+		this.total = this.poll.choices.reduce((a, b) => a + b.votes, 0);
+		this.isVoted = this.poll.choices.some(c => c.is_voted);
+		this.result = this.isVoted;
 
-		@toggle-result = ~>
-			@result = !@result
+		this.toggleResult = () => {
+			this.result = !this.result;
+		}
 
-		@vote = (id) ~>
-			if (@poll.choices.some (c) -> c.is_voted) then return
-			@api \posts/polls/vote do
-				post_id: @post.id
+		this.vote = (id) => {
+			if (this.poll.choices.some(c => c.is_voted)) return;
+			this.api('posts/polls/vote', {
+				post_id: this.post.id,
 				choice: id
-			.then ~>
-				@poll.choices.for-each (c) ->
-					if c.id == id
-						c.votes++
-						c.is_voted = true
-				@update do
-					poll: @poll
-					is-voted: true
-					result: true
-					total: @total + 1
-
+			}).then(() => {
+				this.poll.choices.forEach(c => {
+					if (c.id == id) {
+						c.votes++;
+						c.is_voted = true;
+					}
+				});
+				this.update({
+					poll: this.poll,
+					isVoted: true,
+					result: true,
+					total: this.total + 1
+				});
+			});
+		}
 	</script>
 </mk-poll>

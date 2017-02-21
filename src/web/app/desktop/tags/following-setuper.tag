@@ -1,6 +1,6 @@
 <mk-following-setuper>
 	<p class="title">気になるユーザーをフォロー:</p>
-	<div class="users" if={ !loading && users.length > 0 }>
+	<div class="users" if={ !fetching && users.length > 0 }>
 		<div class="user" each={ users }><a class="avatar-anchor" href={ CONFIG.url + '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ id }/></a>
 			<div class="body"><a class="name" href={ CONFIG.url + '/' + username } target="_blank" data-user-preview={ id }>{ name }</a>
 				<p class="username">@{ username }</p>
@@ -8,8 +8,8 @@
 			<mk-follow-button user={ this }></mk-follow-button>
 		</div>
 	</div>
-	<p class="empty" if={ !loading && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
+	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
+	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
 		<mk-ellipsis></mk-ellipsis>
 	</p><a class="refresh" onclick={ refresh }>もっと見る</a>
 	<button class="close" onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
@@ -81,7 +81,7 @@
 				text-align center
 				color #aaa
 
-			> .loading
+			> .fetching
 				margin 0
 				padding 16px
 				text-align center
@@ -123,41 +123,49 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \user-preview
+		this.mixin('api');
+		this.mixin('user-preview');
 
-		@users = null
-		@loading = true
+		this.users = null;
+		this.fetching = true;
 
-		@limit = 6users
-		@page = 0
+		this.limit = 6;
+		this.page = 0;
 
-		@on \mount ~>
-			@load!
+		this.on('mount', () => {
+			this.fetch();
+		});
 
-		@load = ~>
-			@loading = true
-			@users = null
-			@update!
+		this.fetch = () => {
+			this.update({
+				fetching: true,
+				users: null
+			});
 
-			@api \users/recommendation do
-				limit: @limit
-				offset: @limit * @page
-			.then (users) ~>
-				@loading = false
-				@users = users
-				@update!
-			.catch (err, text-status) ->
-				console.error err
+			this.api('users/recommendation', {
+				limit: this.limit,
+				offset: this.limit * this.page
+			}).then(users => {
+				this.fetching = false
+				this.users = users
+				this.update({
+					fetching: false,
+					users: users
+				});
+			});
+		};
 
-		@refresh = ~>
-			if @users.length < @limit
-				@page = 0
-			else
-				@page++
-			@load!
+		this.refresh = () => {
+			if (this.users.length < this.limit) {
+				this.page = 0;
+			} else {
+				this.page++;
+			}
+			this.fetch();
+		};
 
-		@close = ~>
-			@unmount!
+		this.close = () => {
+			this.unmount();
+		};
 	</script>
 </mk-following-setuper>

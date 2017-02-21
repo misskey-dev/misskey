@@ -12,25 +12,32 @@
 
 	</style>
 	<script>
-		@on-document-keydown = (e) ~>
-			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 27 # Esc
-					@refs.window.close!
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 27) { // Esc
+					this.refs.window.close();
+				}
+			}
+		};
 
-		@on \mount ~>
-			@refs.window.refs.form.on \cancel ~>
-				@refs.window.close!
+		this.on('mount', () => {
+			this.refs.window.refs.form.on('cancel', () => {
+				this.refs.window.close();
+			});
 
-			@refs.window.refs.form.on \posted ~>
-				@refs.window.close!
+			this.refs.window.refs.form.on('posted', () => {
+				this.refs.window.close();
+			});
 
-			document.add-event-listener \keydown @on-document-keydown
+			document.addEventListener('keydown', this.onDocumentKeydown);
 
-			@refs.window.on \closed ~>
-				@unmount!
+			this.refs.window.on('closed', () => {
+				this.unmount();
+			});
+		});
 
-		@on \unmount ~>
-			document.remove-event-listener \keydown @on-document-keydown
+		this.on('unmount', () => {
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+		});
 	</script>
 </mk-repost-form-window>

@@ -1,6 +1,10 @@
 <mk-ui-header-clock>
 	<div class="header">
-		<time ref="time"></time>
+		<time ref="time">
+			<span class="yyyymmdd">{ yyyy }/{ mm }/{ dd }</span>
+			<br>
+			<span class="hhnn">{ hh }<span style="visibility:{ now.getSeconds() % 2 == 0 ? 'visible' : 'hidden' }">:</span>{ nn }</span>
+		</time>
 	</div>
 	<div class="content">
 		<mk-analog-clock></mk-analog-clock>
@@ -13,7 +17,7 @@
 			> .header
 				padding 0 12px
 				text-align center
-				font-size 0.5em
+				font-size 10px
 
 				&, *
 					cursor: default
@@ -58,30 +62,24 @@
 
 	</style>
 	<script>
-		@draw = ~>
-			now = new Date!
+		this.now = new Date();
 
-			yyyy = now.get-full-year!
-			mm = (\0 + (now.get-month! + 1)).slice -2
-			dd = (\0 + now.get-date!).slice -2
-			yyyymmdd = "<span class='yyyymmdd'>#yyyy/#mm/#dd</span>"
+		this.draw = () => {
+			const now = this.now = new Date();
+			this.yyyy = now.getFullYear();
+			this.mm = ('0' + (now.getMonth() + 1)).slice(-2);
+			this.dd = ('0' + now.getDate()).slice(-2);
+			this.hh = ('0' + now.getHours()).slice(-2);
+			this.nn = ('0' + now.getMinutes()).slice(-2);
+		};
 
-			hh = (\0 + now.get-hours!).slice -2
-			mm = (\0 + now.get-minutes!).slice -2
-			hhmm = "<span class='hhmm'>#hh:#mm</span>"
+		this.on('mount', () => {
+			this.draw();
+			this.clock = setInterval(this.draw, 1000);
+		});
 
-			if now.get-seconds! % 2 == 0
-				hhmm .= replace \: '<span style=\'visibility:visible\'>:</span>'
-			else
-				hhmm .= replace \: '<span style=\'visibility:hidden\'>:</span>'
-
-			@refs.time.innerHTML = "#yyyymmdd<br>#hhmm"
-
-		@on \mount ~>
-			@draw!
-			@clock = set-interval @draw, 1000ms
-
-		@on \unmount ~>
-			clear-interval @clock
+		this.on('unmount', () => {
+			clearInterval(this.clock);
+		});
 	</script>
 </mk-ui-header-clock>

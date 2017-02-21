@@ -3,41 +3,49 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
-		@mixin \api
-		@mixin \stream
+		this.mixin('api');
+		this.mixin('stream');
 
-		@init = new Promise (res, rej) ~>
-			@api \posts/timeline
-			.then (posts) ~>
-				res posts
-				@trigger \loaded
+		this.init = new Promise((res, rej) => {
+			this.api('posts/timeline').then(posts => {
+				res(posts);
+				this.trigger('loaded');
+			});
+		});
 
-		@on \mount ~>
-			@stream.on \post @on-stream-post
-			@stream.on \follow @on-stream-follow
-			@stream.on \unfollow @on-stream-unfollow
+		this.on('mount', () => {
+			this.stream.on('post', this.onStreamPost);
+			this.stream.on('follow', this.onStreamFollow);
+			this.stream.on('unfollow', this.onStreamUnfollow);
+		});
 
-		@on \unmount ~>
-			@stream.off \post @on-stream-post
-			@stream.off \follow @on-stream-follow
-			@stream.off \unfollow @on-stream-unfollow
+		this.on('unmount', () => {
+			this.stream.off('post', this.onStreamPost);
+			this.stream.off('follow', this.onStreamFollow);
+			this.stream.off('unfollow', this.onStreamUnfollow);
+		});
 
-		@more = ~>
-			@api \posts/timeline do
-				max_id: @refs.timeline.tail!.id
+		this.more = () => {
+			this.api('posts/timeline', {
+				max_id: this.refs.timeline.tail().id
+			});
+		};
 
-		@on-stream-post = (post) ~>
-			@is-empty = false
-			@update!
-			@refs.timeline.add-post post
+		this.onStreamPost = post => {
+			this.update({
+				isEmpty: false
+			});
+			this.refs.timeline.addPost(post);
+		};
 
-		@on-stream-follow = ~>
-			@fetch!
+		this.onStreamFollow = () => {
+			this.fetch();
+		};
 
-		@on-stream-unfollow = ~>
-			@fetch!
+		this.onStreamUnfollow = () => {
+			this.fetch();
+		};
 	</script>
 </mk-home-timeline>

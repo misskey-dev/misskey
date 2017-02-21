@@ -180,22 +180,23 @@
 
 	</style>
 	<script>
-		@bytes-to-size = require '../../../common/scripts/bytes-to-size.js'
-		@get-gcd = require '../../../common/scripts/gcd.js'
+		this.bytesToSize = require('../../../common/scripts/bytes-to-size.js');
+		this.getGcd = require('../../../common/scripts/gcd.js');
 
-		@mixin \api
+		this.mixin('api');
 
-		@file = @opts.file
-		@kind = @file.type.split \/ .0
+		this.file = this.opts.file;
+		this.kind = this.file.type.split('/')[0];
 
-		@rename = ~>
-			name = window.prompt '名前を変更' @file.name
-			if name? and name != '' and name != @file.name
-				@api \drive/files/update do
-					file_id: @file.id
-					name: name
-				.then ~>
-					@parent.cf @file, true
-
+		this.rename = () => {
+			const name = window.prompt('名前を変更', this.file.name);
+			if (name == null || name == '' || name == this.file.name) return;
+			this.api('drive/files/update', {
+				file_id: this.file.id,
+				name: name
+			}).then(() => {
+				this.parent.cf(this.file, true);
+			});
+		};
 	</script>
 </mk-drive-file-viewer>

@@ -31,15 +31,17 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \update-banner
+		this.mixin('i');
+		this.mixin('update-banner');
 
-		@set = ~>
-			@update-banner @I
+		this.set = () => {
+			this.updateBanner(this.I);
+		};
 
-		@close = (e) ~>
-			e.prevent-default!
-			e.stop-propagation!
-			@unmount!
+		this.close = e => {
+			e.preventDefault();
+			e.stopPropagation();
+			this.unmount();
+		};
 	</script>
 </mk-set-banner-suggestion>

@@ -22,9 +22,6 @@
 					<li onclick={ parent.setBanner }>
 						<p>バナーに設定</p>
 					</li>
-					<li onclick={ parent.setWallpaper }>
-						<p>壁紙に設定</p>
-					</li>
 				</ul>
 			</li>
 			<li class="has-child">
@@ -38,60 +35,58 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
-		@mixin \api
-		@mixin \i
-		@mixin \update-avatar
-		@mixin \update-banner
-		@mixin \update-wallpaper
-		@mixin \input-dialog
-		@mixin \NotImplementedException
+		this.mixin('api');
+		this.mixin('i');
+		this.mixin('update-avatar');
+		this.mixin('update-banner');
+		this.mixin('input-dialog');
+		this.mixin('NotImplementedException');
 
-		@browser = @opts.browser
-		@file = @opts.file
+		this.browser = this.opts.browser;
+		this.file = this.opts.file;
 
-		@on \mount ~>
-			@refs.ctx.on \closed ~>
-				@trigger \closed
-				@unmount!
+		this.on('mount', () => {
+			this.refs.ctx.on('closed', () => {
+				this.trigger('closed');
+				this.unmount();
+			});
+		});
 
-		@open = (pos) ~>
-			@refs.ctx.open pos
+		this.open = pos => {
+			this.refs.ctx.open(pos);
+		};
 
-		@rename = ~>
-			@refs.ctx.close!
+		this.rename = () => {
+			this.refs.ctx.close();
 
-			name <~ @input-dialog do
-				'ファイル名の変更'
-				'新しいファイル名を入力してください'
-				@file.name
+			this.inputDialog('ファイル名の変更', '新しいファイル名を入力してください', this.file.name, name => {
+				this.api('drive/files/update', {
+					file_id: this.file.id,
+					name: name
+				})
+			});
+		};
 
-			@api \drive/files/update do
-				file_id: @file.id
-				name: name
-			.then ~>
-				# something
-			.catch (err) ~>
-				console.error err
+		this.copyUrl = () => {
+			this.NotImplementedException();
+		};
 
-		@copy-url = ~>
-			@NotImplementedException!
+		this.download = () => {
+			this.refs.ctx.close();
+		};
 
-		@download = ~>
-			@refs.ctx.close!
+		this.setAvatar = () => {
+			this.refs.ctx.close();
+			this.updateAvatar(this.I, null, this.file);
+		};
 
-		@set-avatar = ~>
-			@refs.ctx.close!
-			@update-avatar @I, null, @file
+		this.setBanner = () => {
+			this.refs.ctx.close();
+			this.updateBanner(this.I, null, this.file);
+		};
 
-		@set-banner = ~>
-			@refs.ctx.close!
-			@update-banner @I, null, @file
-
-		@set-wallpaper = ~>
-			@refs.ctx.close!
-			@update-wallpaper @I, null, @file
-
-		@add-app = ~>
-			@NotImplementedException!
+		this.addApp = () => {
+			this.NotImplementedException();
+		};
 	</script>
 </mk-drive-browser-file-contextmenu>

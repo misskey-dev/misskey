@@ -21,7 +21,7 @@
 	<style>
 		:scope
 			display block
-			position fixed
+			position sticky
 			top 0
 			z-index 1024
 			width 100%
@@ -80,6 +80,5 @@
 									display none
 
 	</style>
-
-	<script>@mixin \i</script>
+	<script>this.mixin('i');</script>
 </mk-ui-header>

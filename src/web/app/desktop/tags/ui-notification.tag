@@ -22,23 +22,23 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			Velocity @root, {
-				top: \0px
-			} {
-				duration: 500ms
-				easing: \ease-out
-			}
+		this.on('mount', () => {
+			Velocity(this.root, {
+				top: '0px' 
+			}, {
+				duration: 500,
+				easing: 'ease-out' 
+			})
 
-			set-timeout ~>
-				Velocity @root, {
-					top: \-64px
-				} {
-					duration: 500ms
-					easing: \ease-out
-					complete: ~>
-						@unmount!
-				}
-			, 6000ms
+			setTimeout(() => {
+				Velocity(this.root, {
+					top: '-64px' 
+				}, {
+					duration: 500,
+					easing: 'ease-out',
+					complete: () => this.unmount()
+				});
+			}, 6000);
+		});
 	</script>
 </mk-ui-notification>

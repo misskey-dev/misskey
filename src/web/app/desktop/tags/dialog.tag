@@ -79,69 +79,72 @@
 
 	</style>
 	<script>
-		@can-through = if opts.can-through? then opts.can-through else true
-		@opts.buttons.for-each (button) ~>
-			button._onclick = ~>
-				if button.onclick?
-					button.onclick!
-				@close!
+		this.canThrough = opts.canThrough != null ? opts.canThrough : true;
+		this.opts.buttons.forEach(button => {
+			button._onclick = () => {
+				if (button.onclick) button.onclick();
+				this.close();
+			};
+		});
 
-		@on \mount ~>
-			@refs.header.innerHTML = @opts.title
-			@refs.body.innerHTML = @opts.text
+		this.on('mount', () => {
+			this.refs.header.innerHTML = this.opts.title;
+			this.refs.body.innerHTML = this.opts.text;
 
-			@refs.bg.style.pointer-events = \auto
-			Velocity @refs.bg, \finish true
-			Velocity @refs.bg, {
+			this.refs.bg.style.pointerEvents = 'auto';
+			Velocity(this.refs.bg, 'finish', true);
+			Velocity(this.refs.bg, {
 				opacity: 1
-			} {
-				queue: false
-				duration: 100ms
-				easing: \linear
-			}
+			}, {
+				queue: false,
+				duration: 100,
+				easing: 'linear'
+			});
 
-			Velocity @refs.main, {
-				opacity: 0
+			Velocity(this.refs.main, {
+				opacity: 0,
 				scale: 1.2
-			} {
+			}, {
 				duration: 0
-			}
-			Velocity @refs.main, {
-				opacity: 1
+			});
+			Velocity(this.refs.main, {
+				opacity: 1,
 				scale: 1
-			} {
-				duration: 300ms
+			}, {
+				duration: 300,
 				easing: [ 0, 0.5, 0.5, 1 ]
-			}
+			});
+		});
 
-		@close = ~>
-			@refs.bg.style.pointer-events = \none
-			Velocity @refs.bg, \finish true
-			Velocity @refs.bg, {
+		this.close = () => {
+			this.refs.bg.style.pointerEvents = 'none';
+			Velocity(this.refs.bg, 'finish', true);
+			Velocity(this.refs.bg, {
 				opacity: 0
-			} {
-				queue: false
-				duration: 300ms
-				easing: \linear
-			}
+			}, {
+				queue: false,
+				duration: 300,
+				easing: 'linear' 
+			});
 
-			@refs.main.style.pointer-events = \none
-			Velocity @refs.main, \finish true
-			Velocity @refs.main, {
-				opacity: 0
+			this.refs.main.style.pointerEvents = 'none';
+			Velocity(this.refs.main, 'finish', true);
+			Velocity(this.refs.main, {
+				opacity: 0,
 				scale: 0.8
-			} {
-				queue: false
-				duration: 300ms
-				easing: [ 0.5, -0.5, 1, 0.5 ]
-				complete: ~>
-					@unmount!
-			}
+			}, {
+				queue: false,
+				duration: 300,
+				easing: [ 0.5, -0.5, 1, 0.5 ],
+				complete: () => this.unmount()
+			});
+		};
 
-		@bg-click = ~>
-			if @can-through
-				if @opts.on-through?
-					@opts.on-through!
-				@close!
+		this.bgClick = () => {
+			if (this.canThrough) {
+				if (this.opts.onThrough) this.opts.onThrough();
+				this.close();
+			}
+		};
 	</script>
 </mk-dialog>

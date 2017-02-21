@@ -29,43 +29,46 @@
 
 	</style>
 	<script>
-		@tips = [
-			'<kbd>t</kbd>でタイムラインにフォーカスできます'
-			'<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます'
-			'投稿フォームにはファイルをドラッグ&ドロップできます'
-			'投稿フォームにクリップボードにある画像データをペーストできます'
-			'ドライブにファイルをドラッグ&ドロップしてアップロードできます'
-			'ドライブでファイルをドラッグしてフォルダ移動できます'
-			'ドライブでフォルダをドラッグしてフォルダ移動できます'
-			'ホームをカスタマイズできます(準備中)'
+		this.tips = [
+			'<kbd>t</kbd>でタイムラインにフォーカスできます',
+			'<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます',
+			'投稿フォームにはファイルをドラッグ&ドロップできます',
+			'投稿フォームにクリップボードにある画像データをペーストできます',
+			'ドライブにファイルをドラッグ&ドロップしてアップロードできます',
+			'ドライブでファイルをドラッグしてフォルダ移動できます',
+			'ドライブでフォルダをドラッグしてフォルダ移動できます',
+			'ホームをカスタマイズできます(準備中)',
 			'MisskeyはMIT Licenseです'
 		]
 
-		@on \mount ~>
-			@set!
-			@clock = set-interval @change, 20000ms
+		this.on('mount', () => {
+			this.set();
+			this.clock = setInterval(this.change, 20000);
+		});
 
-		@on \unmount ~>
-			clear-interval @clock
+		this.on('unmount', () => {
+			clearInterval(this.clock);
+		});
 
-		@set = ~>
-			@refs.text.innerHTML = @tips[Math.floor Math.random! * @tips.length]
-			@update!
+		this.set = () => {
+			this.refs.text.innerHTML = this.tips[Math.floor(Math.random() * this.tips.length)];
+		};
 
-		@change = ~>
-			Velocity @refs.tip, {
+		this.change = () => {
+			Velocity(this.refs.tip, {
 				opacity: 0
-			} {
-				duration: 500ms
-				easing: \linear
-				complete: @set
-			}
+			}, {
+				duration: 500,
+				easing: 'linear',
+				complete: this.set
+			});
 
-			Velocity @refs.tip, {
+			Velocity(this.refs.tip, {
 				opacity: 1
-			} {
-				duration: 500ms
-				easing: \linear
-			}
+			}, {
+				duration: 500,
+				easing: 'linear'
+			});
+		};
 	</script>
 </mk-tips-home-widget>

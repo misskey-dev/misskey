@@ -32,80 +32,87 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
-		@mixin \stream
+		this.mixin('i');
+		this.mixin('api');
+		this.mixin('stream');
 
-		@is-loading = true
-		@is-empty = false
-		@more-loading = false
-		@no-following = @I.following_count == 0
+		this.isLoading = true;
+		this.isEmpty = false;
+		this.moreLoading = false;
+		this.noFollowing = this.I.following_count == 0;
 
-		@on \mount ~>
-			@stream.on \post @on-stream-post
-			@stream.on \follow @on-stream-follow
-			@stream.on \unfollow @on-stream-unfollow
+		this.on('mount', () => {
+			this.stream.on('post', this.onStreamPost);
+			this.stream.on('follow', this.onStreamFollow);
+			this.stream.on('unfollow', this.onStreamUnfollow);
 
-			document.add-event-listener \keydown @on-document-keydown
-			window.add-event-listener \scroll @on-scroll
+			document.addEventListener('keydown', this.onDocumentKeydown);
+			window.addEventListener('scroll', this.onScroll);
 
-			@load ~>
-				@trigger \loaded
+			this.load(() => this.trigger('loaded'));
+		});
 
-		@on \unmount ~>
-			@stream.off \post @on-stream-post
-			@stream.off \follow @on-stream-follow
-			@stream.off \unfollow @on-stream-unfollow
+		this.on('unmount', () => {
+			this.stream.off('post', this.onStreamPost);
+			this.stream.off('follow', this.onStreamFollow);
+			this.stream.off('unfollow', this.onStreamUnfollow);
 
-			document.remove-event-listener \keydown @on-document-keydown
-			window.remove-event-listener \scroll @on-scroll
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+			window.removeEventListener('scroll', this.onScroll);
+		});
 
-		@on-document-keydown = (e) ~>
-			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 84 # t
-					@refs.timeline.focus!
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 84) { // t
+					this.refs.timeline.focus();
+				}
+			}
+		};
 
-		@load = (cb) ~>
-			@api \posts/timeline
-			.then (posts) ~>
-				@is-loading = false
-				@is-empty = posts.length == 0
-				@update!
-				@refs.timeline.set-posts posts
-				if cb? then cb!
-			.catch (err) ~>
-				console.error err
-				if cb? then cb!
+		this.load = (cb) => {
+			this.api('posts/timeline').then(posts => {
+				this.update({
+					isLoading: false,
+					isEmpty: posts.length == 0
+				});
+				this.refs.timeline.setPosts(posts);
+				if (cb) cb();
+			});
+		};
 
-		@more = ~>
-			if @more-loading or @is-loading or @refs.timeline.posts.length == 0
-				return
-			@more-loading = true
-			@update!
-			@api \posts/timeline do
-				max_id: @refs.timeline.tail!.id
-			.then (posts) ~>
-				@more-loading = false
-				@update!
-				@refs.timeline.prepend-posts posts
-			.catch (err) ~>
-				console.error err
+		this.more = () => {
+			if (this.moreLoading || this.isLoading || this.refs.timeline.posts.length == 0) return;
+			this.update({
+				moreLoading: true
+			});
+			this.api('posts/timeline', {
+				max_id: this.refs.timeline.tail().id
+			}).then(posts => {
+				this.update({
+					moreLoading: false
+				});
+				this.refs.timeline.prependPosts(posts);
+			});
+		};
 
-		@on-stream-post = (post) ~>
-			@is-empty = false
-			@update!
-			@refs.timeline.add-post post
+		this.onStreamPost = post => {
+			this.update({
+				isEmpty: false
+			});
+			this.refs.timeline.addPost(post);
+		};
 
-		@on-stream-follow = ~>
-			@load!
+		this.onStreamFollow = () => {
+			this.load();
+		};
 
-		@on-stream-unfollow = ~>
-			@load!
+		this.onStreamUnfollow = () => {
+			this.load();
+		};
 
-		@on-scroll = ~>
-			current = window.scroll-y + window.inner-height
-			if current > document.body.offset-height - 8
-				@more!
+		this.onScroll = () => {
+			const current = window.scrollY + window.innerHeight;
+			if (current > document.body.offsetHeight - 8) this.more();
+		};
 	</script>
 </mk-timeline-home-widget>

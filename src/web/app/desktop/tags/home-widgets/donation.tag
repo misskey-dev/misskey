@@ -32,5 +32,5 @@
 					color #999
 
 	</style>
-	<script>@mixin \user-preview</script>
+	<script>this.mixin('user-preview');</script>
 </mk-donation-home-widget>

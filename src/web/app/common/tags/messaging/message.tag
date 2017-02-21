@@ -203,28 +203,32 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \text
+		this.mixin('i');
+		this.mixin('text');
 
-		@message = @opts.message
-		@message.is_me = @message.user.id == @I.id
+		this.message = this.opts.message;
+		this.message.is_me = this.message.user.id == this.I.id;
 
-		@on \mount ~>
-			if @message.text?
-				tokens = @analyze @message.text
+		this.on('mount', () => {
+			if (this.message.text) {
+				const tokens = this.analyze(this.message.text);
 
-				@refs.text.innerHTML = @compile tokens
+				this.refs.text.innerHTML = this.compile(tokens);
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
-						riot.mount e
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
 
-				# URLをプレビュー
+				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == \link
-					.map (t) ~>
-						@preview = @refs.text.append-child document.create-element \mk-url-preview
-						riot.mount @preview, do
+					.filter(t => t.type == 'link')
+					.map(t => {
+						const el = this.refs.text.appendChild(document.createElement('mk-url-preview'));
+						riot.mount(el, {
 							url: t.content
+						});
+					});
+			}
+		});
 	</script>
 </mk-messaging-message>

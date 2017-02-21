@@ -75,40 +75,36 @@
 
 	</style>
 	<script>
-		@is-open = false
+		const contains = require('../../common/scripts/contains');
 
-		@toggle = ~>
-			if @is-open
-				@close!
-			else
-				@open!
+		this.isOpen = false;
 
-		@open = ~>
-			@is-open = true
-			@update!
-			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.add-event-listener \mousedown @mousedown
+		this.toggle = () => {
+			this.isOpen ? this.close() : this.open();
+		};
 
-		@close = ~>
-			@is-open = false
-			@update!
-			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.remove-event-listener \mousedown @mousedown
+		this.open = () => {
+			this.update({
+				isOpen: true
+			});
+			document.querySelectorAll('body *').forEach(el => {
+				el.addEventListener('mousedown', this.mousedown);
+			});
+		};
 
-		@mousedown = (e) ~>
-			e.prevent-default!
-			if (!contains @root, e.target) and (@root != e.target)
-				@close!
-			return false
+		this.close = () => {
+			this.update({
+				isOpen: false
+			});
+			document.querySelectorAll('body *').forEach(el => {
+				el.removeEventListener('mousedown', this.mousedown);
+			});
+		};
 
-		function contains(parent, child)
-			node = child.parent-node
-			while node?
-				if node == parent
-					return true
-				node = node.parent-node
-			return false
+		this.mousedown = e => {
+			e.preventDefault();
+			if (!contains(this.root, e.target) && this.root != e.target) this.close();
+			return false;
+		};
 	</script>
 </mk-ui-header-notifications>

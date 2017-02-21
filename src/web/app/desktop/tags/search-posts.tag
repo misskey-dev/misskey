@@ -28,59 +28,64 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \get-post-summary
+		this.mixin('api');
+		this.mixin('get-post-summary');
 
-		@query = @opts.query
-		@is-loading = true
-		@is-empty = false
-		@more-loading = false
-		@page = 0
+		this.query = this.opts.query;
+		this.isLoading = true;
+		this.isEmpty = false;
+		this.moreLoading = false;
+		this.page = 0;
 
-		@on \mount ~>
-			document.add-event-listener \keydown @on-document-keydown
-			window.add-event-listener \scroll @on-scroll
+		this.on('mount', () => {
+			document.addEventListener('keydown', this.onDocumentKeydown);
+			window.addEventListener('scroll', this.onScroll);
 
-			@api \posts/search do
-				query: @query
-			.then (posts) ~>
-				@is-loading = false
-				@is-empty = posts.length == 0
-				@update!
-				@refs.timeline.set-posts posts
-				@trigger \loaded
-			.catch (err) ~>
-				console.error err
+			this.api('posts/search', {
+				query: this.query
+			}).then(posts => {
+				this.update({
+					isLoading: false,
+					isEmpty: posts.length == 0
+				});
+				this.refs.timeline.setPosts(posts);
+				this.trigger('loaded');
+			});
+		});
 
-		@on \unmount ~>
-			document.remove-event-listener \keydown @on-document-keydown
-			window.remove-event-listener \scroll @on-scroll
+		this.on('unmount', () => {
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+			window.removeEventListener('scroll', this.onScroll);
+		});
 
-		@on-document-keydown = (e) ~>
-			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 84 # t
-					@refs.timeline.focus!
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 84) { // t
+					this.refs.timeline.focus();
+				}
+			}
+		};
 
-		@more = ~>
-			if @more-loading or @is-loading or @timeline.posts.length == 0
-				return
-			@more-loading = true
-			@update!
-			@api \posts/search do
-				query: @query
-				page: @page + 1
-			.then (posts) ~>
-				@more-loading = false
-				@page++
-				@update!
-				@refs.timeline.prepend-posts posts
-			.catch (err) ~>
-				console.error err
+		this.more = () => {
+			if (this.moreLoading || this.isLoading || this.timeline.posts.length == 0) return;
+			this.update({
+				moreLoading: true
+			});
+			this.api('posts/search', {
+				query: this.query,
+				page: this.page + 1
+			}).then(posts => {
+				this.update({
+					moreLoading: false,
+					page: page + 1
+				});
+				this.refs.timeline.prependPosts(posts);
+			});
+		};
 
-		@on-scroll = ~>
-			current = window.scroll-y + window.inner-height
-			if current > document.body.offset-height - 16 # 遊び
-				@more!
+		this.onScroll = () => {
+			const current = window.scrollY + window.innerHeight;
+			if (current > document.body.offsetHeight - 16) this.more();
+		};
 	</script>
 </mk-search-posts>

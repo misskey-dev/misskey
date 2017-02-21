@@ -1,7 +1,7 @@
 <mk-ui>
 	<div class="global" ref="global">
-		<mk-ui-header ref="header" ready={ ready }></mk-ui-header>
-		<mk-ui-nav ref="nav" ready={ ready }></mk-ui-nav>
+		<mk-ui-header ref="header"></mk-ui-header>
+		<mk-ui-nav ref="nav"></mk-ui-nav>
 		<div class="content" ref="main"><yield /></div>
 	</div>
 	<mk-stream-indicator></mk-stream-indicator>
@@ -14,38 +14,27 @@
 					background #fff
 	</style>
 	<script>
-		@mixin \stream
+		this.mixin('stream');
 
-		@ready-count = 0
-		@is-drawer-opening = false
+		this.isDrawerOpening = false;
 
-		#@ui.on \notification (text) ~>
-		#	alert text
+		this.on('mount', () => {
+			this.stream.on('notification', this.onStreamNotification);
+		});
 
-		@on \mount ~>
-			@stream.on \notification @on-stream-notification
-			@ready!
+		this.on('unmount', () => {
+			this.stream.off('notification', this.onStreamNotification);
+		});
 
-		@on \unmount ~>
-			@stream.off \notification @on-stream-notification
+		this.toggleDrawer = () => {
+			this.isDrawerOpening = !this.isDrawerOpening;
+			this.refs.nav.root.style.display = this.isDrawerOpening ? 'block' : 'none';
+		};
 
-		@ready = ~>
-			@ready-count++
-
-			if @ready-count == 2
-				@init-view-position!
-
-		@init-view-position = ~>
-			top = @refs.header.root.offset-height
-			@refs.main.style.padding-top = top + \px
-
-		@toggle-drawer = ~>
-			@is-drawer-opening = !@is-drawer-opening
-			@refs.nav.root.style.display = if @is-drawer-opening then \block else \none
-
-		@on-stream-notification = (notification) ~>
-			el = document.body.append-child document.create-element \mk-notify
-			riot.mount el, do
+		this.onStreamNotification = notification => {
+			riot.mount(document.body.appendChild(document.createElement('mk-notify')), {
 				notification: notification
+			});
+		};
 	</script>
 </mk-ui>

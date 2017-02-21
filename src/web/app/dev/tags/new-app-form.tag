@@ -178,66 +178,75 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@nid-state = null
+		this.nidState = null;
 
-		@on-change-nid = ~>
-			nid = @refs.nid.value
+		this.onChangeNid = () => {
+			const nid = this.refs.nid.value;
 
-			if nid == ''
-				@nid-state = null
-				@update!
-				return
+			if (nid == '') {
+				this.update({
+					nidState: null
+				});
+				return;
+			}
 
-			err = switch
-				| not nid.match /^[a-zA-Z0-9\-]+$/ => \invalid-format
-				| nid.length < 3chars              => \min-range
-				| nid.length > 30chars             => \max-range
-				| _                                     => null
+			const err =
+				!nid.match(/^[a-zA-Z0-9\-]+$/) ? 'invalid-format' :
+				nid.length < 3                 ? 'min-range' :
+				nid.length > 30                ? 'max-range' :
+				null;
 
-			if err?
-				@nid-state = err
-				@update!
-			else
-				@nid-state = \wait
-				@update!
+			if (err) {
+				this.update({
+					nidState: err
+				});
+				return;
+			}
 
-				@api \app/name_id/available do
-					name_id: nid
-				.then (result) ~>
-					if result.available
-						@nid-state = \ok
-					else
-						@nid-state = \unavailable
-					@update!
-				.catch (err) ~>
-					@nid-state = \error
-					@update!
+			this.update({
+				nidState: 'wait'
+			});
 
-		@onsubmit = ~>
-			name = @refs.name.value
-			nid = @refs.nid.value
-			description = @refs.description.value
-			cb = @refs.cb.value
-			permission = []
-
-			@refs.permission.query-selector-all \input .for-each (el) ~>
-				if el.checked then permission.push el.value
-
-			locker = document.body.append-child document.create-element \mk-locker
-
-			@api \app/create do
-				name: name
+			this.api('app/name_id/available', {
 				name_id: nid
-				description: description
-				callback_url: cb
-				permission: permission.join \,
-			.then ~>
-				location.href = '/apps'
-			.catch ~>
-				alert 'アプリの作成に失敗しました。再度お試しください。'
+			}).then(result => {
+				this.update({
+					nidState: result.available ? 'ok' : 'unavailable'
+				});
+			}).catch(err => {
+				this.update({
+					nidState: 'error'
+				});
+			});
+		};
 
-				locker.parent-node.remove-child locker
+		this.onsubmit = () => {
+			const name = this.refs.name.value;
+			const nid = this.refs.nid.value;
+			const description = this.refs.description.value;
+			const cb = this.refs.cb.value;
+			const permission = [];
+
+			this.refs.permission.querySelectorAll('input').forEach(el => {
+				if (el.checked) permission.push(el.value);
+			});
+
+			const locker = document.body.appendChild(document.createElement('mk-locker'));
+
+			this.api('app/create', {
+				name: name,
+				name_id: nid,
+				description: description,
+				callback_url: cb,
+				permission: permission.join(',')
+			}).then(() => {
+				location.href = '/apps';
+			}).catch(() => {
+				alert('アプリの作成に失敗しました。再度お試しください。');
+				locker.parentNode.removeChild(locker);
+			});
+		};
 	</script>
 </mk-new-app-form>

@@ -3,20 +3,43 @@
 		<header>
 			<div class="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=1024)' : '' }></div>
 			<div class="body">
-				<div class="top"><a class="avatar"><img src={ user.avatar_url + '?thumbnail&size=160' } alt="avatar"/></a>
+				<div class="top">
+					<a class="avatar">
+						<img src={ user.avatar_url + '?thumbnail&size=160' } alt="avatar"/>
+					</a>
 					<mk-follow-button if={ SIGNIN && I.id != user.id } user={ user }></mk-follow-button>
 				</div>
 				<div class="title">
-					<h1>{ user.name }</h1><span class="username">@{ user.username }</span><span class="followed" if={ user.is_followed }>フォローされています</span>
+					<h1>{ user.name }</h1>
+					<span class="username">@{ user.username }</span>
+					<span class="followed" if={ user.is_followed }>フォローされています</span>
 				</div>
 				<div class="bio">{ user.bio }</div>
 				<div class="info">
-					<p class="location" if={ user.location }><i class="fa fa-map-marker"></i>{ user.location }</p>
-					<p class="birthday" if={ user.birthday }><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.birthday) }歳)</p>
+					<p class="location" if={ user.location }>
+						<i class="fa fa-map-marker"></i>{ user.location }
+					</p>
+					<p class="birthday" if={ user.birthday }>
+						<i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.birthday) }歳)
+					</p>
 				</div>
-				<div class="friends"><a href="{ user.username }/following"><b>{ user.following_count }</b><i>フォロー</i></a><a href="{ user.username }/followers"><b>{ user.followers_count }</b><i>フォロワー</i></a></div>
+				<div class="friends">
+					<a href="{ user.username }/following">
+						<b>{ user.following_count }</b>
+						<i>フォロー</i>
+					</a>
+					<a href="{ user.username }/followers">
+						<b>{ user.followers_count }</b>
+						<i>フォロワー</i>
+					</a>
+				</div>
 			</div>
-			<nav><a data-is-active={ page == 'posts' } onclick={ goPosts }>投稿</a><a data-is-active={ page == 'media' } onclick={ goMedia }>メディア</a><a data-is-active={ page == 'graphs' } onclick={ goGraphs }>グラフ</a><a data-is-active={ page == 'likes' } onclick={ goLikes }>いいね</a></nav>
+			<nav>
+				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>投稿</a>
+				<a data-is-active={ page == 'media' } onclick={ go.bind(null, 'media') }>メディア</a>
+				<a data-is-active={ page == 'graphs' } onclick={ go.bind(null, 'graphs') }>グラフ</a>
+				<a data-is-active={ page == 'likes' } onclick={ go.bind(null, 'likes') }>いいね</a>
+			</nav>
 		</header>
 		<div class="body">
 			<mk-user-timeline if={ page == 'posts' } user={ user }></mk-user-timeline>
@@ -154,38 +177,30 @@
 
 	</style>
 	<script>
-		@age = require \s-age
+		this.age = require('s-age');
 
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@username = @opts.user
-		@page = if @opts.page? then @opts.page else \posts
-		@fetching = true
+		this.username = this.opts.user;
+		this.page = this.opts.page ? this.opts.page : 'posts';
+		this.fetching = true;
 
-		@on \mount ~>
-			@api \users/show do
-				username: @username
-			.then (user) ~>
-				@fetching = false
-				@user = user
-				@trigger \loaded user
-				@update!
+		this.on('mount', () => {
+			this.api('users/show', {
+				username: this.username
+			}).then(user => {
+				this.fetching = false;
+				this.user = user;
+				this.trigger('loaded', user);
+				this.update();
+			});
+		});
 
-		@go-posts = ~>
-			@page = \posts
-			@update!
-
-		@go-media = ~>
-			@page = \media
-			@update!
-
-		@go-graphs = ~>
-			@page = \graphs
-			@update!
-
-		@go-likes = ~>
-			@page = \likes
-			@update!
+		this.go = page => {
+			this.update({
+				page: page
+			});
+		};
 	</script>
 </mk-user>

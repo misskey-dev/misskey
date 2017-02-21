@@ -7,10 +7,11 @@
 			display block
 	</style>
 	<script>
-		@mixin \ui
+		this.mixin('ui');
 
-		@on \mount ~>
-			document.title = 'Misskey | アプリケーション'
-			@ui.trigger \title '<i class="fa fa-puzzle-piece"></i>アプリケーション'
+		this.on('mount', () => {
+			document.title = 'Misskey | アプリケーション';
+			this.ui.trigger('title', '<i class="fa fa-puzzle-piece"></i>アプリケーション');
+		});
 	</script>
 </mk-authorized-apps-page>

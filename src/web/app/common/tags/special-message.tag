@@ -20,8 +20,8 @@
 
 	</style>
 	<script>
-		now = new Date!
-		@d = now.get-date!
-		@m = now.get-month! + 1
+		const now = new Date();
+		this.d = now.getDate();
+		this.m = now.getMonth() + 1;
 	</script>
 </mk-special-message>

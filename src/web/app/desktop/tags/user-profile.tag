@@ -80,20 +80,22 @@
 
 	</style>
 	<script>
-		@age = require \s-age
+		this.age = require('s-age'); 
 
-		@mixin \i
+		this.mixin('i');
 
-		@user = @opts.user
+		this.user = this.opts.user;
 
-		@show-following = ~>
-			window = document.body.append-child document.create-element \mk-user-following-window
-			riot.mount window, do
-				user: @user
+		this.showFollowing = () => {
+ 			riot.mount(document.body.appendChild(document.createElement('mk-user-following-window')), {
+				user: this.user
+			});
+		};
 
-		@show-followers = ~>
-			window = document.body.append-child document.create-element \mk-user-followers-window
-			riot.mount window, do
-				user: @user
+		this.showFollowers = () => {
+ 			riot.mount(document.body.appendChild(document.createElement('mk-user-followers-window')), {
+				user: this.user
+			});
+		};
 	</script>
 </mk-user-profile>

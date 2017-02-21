@@ -63,18 +63,24 @@
 
 	</style>
 	<script>
-		@mode = \signin
+		this.mode = 'signin';
 
-		@signup = ~>
-			@mode = \signup
-			@update!
+		this.signup = () => {
+			this.update({
+				mode: 'signup'
+			});
+		};
 
-		@signin = ~>
-			@mode = \signin
-			@update!
+		this.signin = () => {
+			this.update({
+				mode: 'signin'
+			});
+		};
 
-		@introduction = ~>
-			@mode = \introduction
-			@update!
+		this.introduction = () => {
+			this.update({
+				mode: 'introduction'
+			});
+		};
 	</script>
 </mk-entrance>

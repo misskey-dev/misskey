@@ -4,5 +4,5 @@
 			display inline
 
 	</style>
-	<script>@root.innerHTML = @opts.content</script>
+	<script>this.root.innerHTML = this.opts.content</script>
 </mk-raw>

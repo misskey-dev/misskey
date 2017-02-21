@@ -43,8 +43,9 @@
 
 	</style>
 	<script>
-		@settings = ~>
-			w = riot.mount document.body.append-child document.create-element \mk-settings-window .0
-			w.switch \notification
+		this.settings = () => {
+			const w = riot.mount(document.body.appendChild(document.createElement('mk-settings-window')))[0];
+			w.switch('notification');
+		};
 	</script>
 </mk-notifications-home-widget>

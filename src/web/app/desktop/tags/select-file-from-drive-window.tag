@@ -131,31 +131,38 @@
 
 	</style>
 	<script>
-		@file = []
+		this.file = [];
 
-		@multiple = if @opts.multiple? then @opts.multiple else false
-		@title = @opts.title || '<i class="fa fa-file-o"></i>ファイルを選択'
+		this.multiple = this.opts.multiple != null ? this.opts.multiple : false;
+		this.title = this.opts.title || '<i class="fa fa-file-o"></i>ファイルを選択';
 
-		@on \mount ~>
-			@refs.window.refs.browser.on \selected (file) ~>
-				@file = file
-				@ok!
+		this.on('mount', () => {
+			this.refs.window.refs.browser.on('selected', file => {
+				this.file = file;
+				this.ok();
+			});
 
-			@refs.window.refs.browser.on \change-selection (files) ~>
-				@file = files
-				@update!
+			this.refs.window.refs.browser.on('change-selection', files => {
+				this.file = files;
+				this.update();
+			});
 
-			@refs.window.on \closed ~>
-				@unmount!
+			this.refs.window.on('closed', () => {
+				this.unmount();
+			});
+		});
 
-		@close = ~>
-			@refs.window.close!
+		this.close = () => {
+			this.refs.window.close();
+		};
 
-		@upload = ~>
-			@refs.window.refs.browser.select-local-file!
+		this.upload = () => {
+			this.refs.window.refs.browser.selectLocalFile();
+		};
 
-		@ok = ~>
-			@trigger \selected @file
-			@refs.window.close!
+		this.ok = () => {
+			this.trigger('selected', this.file);
+			this.refs.window.close();
+		};
 	</script>
 </mk-select-file-from-drive-window>

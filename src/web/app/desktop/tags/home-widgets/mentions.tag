@@ -46,67 +46,73 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@is-loading = true
-		@is-empty = false
-		@more-loading = false
-		@mode = \all
+		this.isLoading = true;
+		this.isEmpty = false;
+		this.moreLoading = false;
+		this.mode = 'all';
 
-		@on \mount ~>
-			document.add-event-listener \keydown @on-document-keydown
-			window.add-event-listener \scroll @on-scroll
+		this.on('mount', () => {
+			document.addEventListener('keydown', this.onDocumentKeydown);
+			window.addEventListener('scroll', this.onScroll);
 
-			@fetch ~>
-				@trigger \loaded
+			this.fetch(() => this.trigger('loaded'));
+		});
 
-		@on \unmount ~>
-			document.remove-event-listener \keydown @on-document-keydown
-			window.remove-event-listener \scroll @on-scroll
+		this.on('unmount', () => {
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+			window.removeEventListener('scroll', this.onScroll);
+		});
 
-		@on-document-keydown = (e) ~>
-			tag = e.target.tag-name.to-lower-case!
-			if tag != \input and tag != \textarea
-				if e.which == 84 # t
-					@refs.timeline.focus!
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName != 'INPUT' && tag != 'TEXTAREA') {
+				if (e.which == 84) { // t
+					this.refs.timeline.focus();
+				}
+			}
+		};
 
-		@fetch = (cb) ~>
-			@api \posts/mentions do
-				following: @mode == \following
-			.then (posts) ~>
-				@is-loading = false
-				@is-empty = posts.length == 0
-				@update!
-				@refs.timeline.set-posts posts
-				if cb? then cb!
-			.catch (err) ~>
-				console.error err
-				if cb? then cb!
+		this.fetch = cb => {
+			this.api('posts/mentions', {
+				following: this.mode == 'following'
+			}).then(posts => {
+				this.update({
+					isLoading: false,
+					isEmpty: posts.length == 0
+				});
+				this.refs.timeline.setPosts(posts);
+				if (cb) cb();
+			});
+		};
 
-		@more = ~>
-			if @more-loading or @is-loading or @refs.timeline.posts.length == 0
-				return
-			@more-loading = true
-			@update!
-			@api \posts/mentions do
-				following: @mode == \following
-				max_id: @refs.timeline.tail!.id
-			.then (posts) ~>
-				@more-loading = false
-				@update!
-				@refs.timeline.prepend-posts posts
-			.catch (err) ~>
-				console.error err
+		this.more = () => {
+			if (this.moreLoading || this.isLoading || this.refs.timeline.posts.length == 0) return;
+			this.update({
+				moreLoading: true
+			});
+			this.api('posts/mentions', {
+				following: this.mode == 'following',
+				max_id: this.refs.timeline.tail().id
+			}).then(posts => {
+				this.update({
+					moreLoading: false
+				});
+				this.refs.timeline.prependPosts(posts);
+			});
+		};
 
-		@on-scroll = ~>
-			current = window.scroll-y + window.inner-height
-			if current > document.body.offset-height - 8
-				@more!
+		this.onScroll = () => {
+			const current = window.scrollY + window.innerHeight;
+			if (current > document.body.offsetHeight - 8) this.more();
+		};
 
-		@set-mode = (mode) ~>
-			@update do
+		this.setMode = mode => {
+			this.update({
 				mode: mode
-			@fetch!
+			});
+			this.fetch();
+		};
 	</script>
 </mk-mentions-home-widget>

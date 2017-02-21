@@ -97,47 +97,50 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@u = @opts.user
-		@user = null
-		@user-promise =
-			if typeof @u == \string
-				new Promise (resolve, reject) ~>
-					@api \users/show do
-						user_id: if @u.0 == \@ then undefined else @u
-						username: if @u.0 == \@ then @u.substr 1 else undefined
-					.then (user) ~>
-						resolve user
-			else
-				Promise.resolve @u
+		this.u = this.opts.user;
+		this.user = null;
+		this.userPromise =
+			typeof this.u == 'string' ?
+				new Promise((resolve, reject) => {
+					this.api('users/show', {
+						user_id: this.u[0] == '@' ? undefined : this.u,
+						username: this.u[0] == '@' ? this.u.substr(1) : undefined
+					}).then(resolve);
+				})
+			: Promise.resolve(this.u);
 
-		@on \mount ~>
-			@user-promise.then (user) ~>
-				@user = user
-				@update!
+		this.on('mount', () => {
+			this.userPromise.then(user => {
+				this.update({
+					user: user
+				});
+			});
 
-			Velocity @root, {
-				opacity: 0
-				'margin-top': \-8px
-			} 0ms
-			Velocity @root, {
-				opacity: 1
+			Velocity(this.root, {
+				opacity: 0,
+				'margin-top': '-8px'
+			}, 0);
+			Velocity(this.root, {
+				opacity: 1,
 				'margin-top': 0
-			} {
-				duration: 200ms
-				easing: \ease-out
-			}
+			}, {
+				duration: 200,
+				easing: 'ease-out'
+			});
+		});
 
-		@close = ~>
-			Velocity @root, {
-				opacity: 0
-				'margin-top': \-8px
-			} {
-				duration: 200ms
-				easing: \ease-out
-				complete: ~> @unmount!
-			}
+		this.close = () => {
+			Velocity(this.root, {
+				opacity: 0,
+				'margin-top': '-8px'
+			}, {
+				duration: 200,
+				easing: 'ease-out',
+				complete: () => this.unmount()
+			});
+		};
 	</script>
 </mk-user-preview>

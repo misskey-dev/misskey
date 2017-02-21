@@ -3,7 +3,9 @@
 		<mk-timeline-post post={ post }></mk-timeline-post>
 		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ post._datetext }</span><span><i class="fa fa-angle-down"></i>{ posts[i + 1]._datetext }</span></p>
 	</virtual>
-	<footer data-yield="footer"><yield from="footer"/></footer>
+	<footer data-yield="footer">
+		<yield from="footer"/>
+	</footer>
 	<style>
 		:scope
 			display block
@@ -44,36 +46,47 @@
 
 	</style>
 	<script>
-		@posts = []
+		this.posts = [];
 
-		@set-posts = (posts) ~>
-			@posts = posts
-			@update!
+		this.on('update', () => {
+			this.posts.forEach(post => {
+				const date = new Date(post.created_at).getDate();
+				const month = new Date(post.created_at).getMonth() + 1;
+				post._date = date;
+				post._datetext = `${month}月 ${date}日`;
+			});
+		});
 
-		@prepend-posts = (posts) ~>
-			posts.for-each (post) ~>
-				@posts.push post
-				@update!
+		this.setPosts = posts => {
+			this.update({
+				posts: posts
+			});
+		};
 
-		@add-post = (post) ~>
-			@posts.unshift post
-			@update!
+		this.prependPosts = posts => {
+			posts.forEach(post => {
+				this.posts.push(post);
+				this.update();
+			});
+		}
 
-		@clear = ~>
-			@posts = []
-			@update!
+		this.addPost = post => {
+			this.posts.unshift(post);
+			this.update();
+		};
 
-		@focus = ~>
-			@root.children.0.focus!
+		this.tail = () => {
+			return this.posts[this.posts.length - 1];
+		};
 
-		@on \update ~>
-			@posts.for-each (post) ~>
-				date = (new Date post.created_at).get-date!
-				month = (new Date post.created_at).get-month! + 1
-				post._date = date
-				post._datetext = month + '月 ' + date + '日'
+		this.clear = () => {
+			this.posts = [];
+			this.update();
+		};
 
-		@tail = ~>
-			@posts[@posts.length - 1]
+		this.focus = () => {
+			this.root.children[0].focus();
+		};
+
 	</script>
 </mk-timeline>

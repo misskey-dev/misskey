@@ -109,44 +109,42 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \user-preview
+		this.mixin('api');
+		this.mixin('user-preview');
 
-		@users = null
-		@loading = true
+		this.users = null;
+		this.loading = true;
 
-		@limit = 3users
-		@page = 0
+		this.limit = 3;
+		this.page = 0;
 
-		@on \mount ~>
-			@fetch!
-			@clock = set-interval ~>
-				if @users.length < @limit
-					@fetch true
-			, 60000ms
+		this.on('mount', () => {
+			this.fetch();
+		});
 
-		@on \unmount ~>
-			clear-interval @clock
+		this.fetch = () => {
+			this.update({
+				loading: true,
+				users: null
+			});
+			this.api('users/recommendation', {
+				limit: this.limit,
+				offset: this.limit * this.page
+			}).then(users => {
+				this.update({
+					loading: false,
+					users: users
+				});
+			});
+		};
 
-		@fetch = (quiet = false) ~>
-			@loading = true
-			@users = null
-			if not quiet then @update!
-			@api \users/recommendation do
-				limit: @limit
-				offset: @limit * @page
-			.then (users) ~>
-				@loading = false
-				@users = users
-				@update!
-			.catch (err, text-status) ->
-				console.error err
-
-		@refresh = ~>
-			if @users.length < @limit
-				@page = 0
-			else
-				@page++
-			@fetch!
+		this.refresh = () => {
+			if (this.users.length < this.limit) {
+				this.page = 0;
+			} else {
+				this.page++;
+			}
+			this.fetch();
+		};
 	</script>
 </mk-user-recommendation-home-widget>

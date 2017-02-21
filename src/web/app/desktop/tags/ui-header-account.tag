@@ -159,54 +159,54 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \signout
+		const contains = require('../../common/scripts/contains');
 
-		@is-open = false
+		this.mixin('i');
+		this.mixin('signout');
 
-		@on \before-unmount ~>
-			@close!
+		this.isOpen = false;
 
-		@toggle = ~>
-			if @is-open
-				@close!
-			else
-				@open!
+		this.on('before-unmount', () => {
+			this.close();
+		});
 
-		@open = ~>
-			@is-open = true
-			@update!
-			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.add-event-listener \mousedown @mousedown
+		this.toggle = () => {
+			this.isOpen ? this.close() : this.open();
+		};
 
-		@close = ~>
-			@is-open = false
-			@update!
-			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.remove-event-listener \mousedown @mousedown
+		this.open = () => {
+			this.update({
+				isOpen: true
+			});
+			document.querySelectorAll('body *').forEach(el => {
+				el.addEventListener('mousedown', this.mousedown);
+			});
+		};
 
-		@mousedown = (e) ~>
-			e.prevent-default!
-			if (!contains @root, e.target) and (@root != e.target)
-				@close!
-			return false
+		this.close = () => {
+			this.update({
+				isOpen: false
+			});
+			document.querySelectorAll('body *').forEach(el => {
+				el.removeEventListener('mousedown', this.mousedown);
+			});
+		};
 
-		@drive = ~>
-			@close!
-			riot.mount document.body.append-child document.create-element \mk-drive-browser-window
+		this.mousedown = e => {
+			e.preventDefault();
+			if (!contains(this.root, e.target) && this.root != e.target) this.close();
+			return false;
+		};
 
-		@settings = ~>
-			@close!
-			riot.mount document.body.append-child document.create-element \mk-settings-window
+		this.drive = () => {
+			this.close();
+			riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-window')));
+		};
 
-		function contains(parent, child)
-			node = child.parent-node
-			while node?
-				if node == parent
-					return true
-				node = node.parent-node
-			return false
+		this.settings = () => {
+			this.close();
+			riot.mount(document.body.appendChild(document.createElement('mk-settings-window')));
+		};
+
 	</script>
 </mk-ui-header-account>

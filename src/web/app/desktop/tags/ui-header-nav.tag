@@ -1,113 +1,139 @@
 <mk-ui-header-nav>
 	<ul if={ SIGNIN }>
-		<li class="home { active: page == 'home' }"><a href={ CONFIG.url }><i class="fa fa-home"></i>
-				<p>ホーム</p></a></li>
-		<li class="messaging"><a onclick={ messaging }><i class="fa fa-comments"></i>
-				<p>メッセージ</p><i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i></a></li>
-		<li class="info"><a href="https://twitter.com/misskey_xyz" target="_blank"><i class="fa fa-info"></i>
-				<p>お知らせ</p></a></li>
-		<li class="tv"><a href="https://misskey.tk" target="_blank"><i class="fa fa-television"></i>
-				<p>MisskeyTV™</p></a></li>
-		<style>
-			:scope
+		<li class="home { active: page == 'home' }">
+			<a href={ CONFIG.url }>
+				<i class="fa fa-home"></i>
+				<p>ホーム</p>
+			</a>
+		</li>
+		<li class="messaging">
+			<a onclick={ messaging }>
+				<i class="fa fa-comments"></i>
+				<p>メッセージ</p>
+				<i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i>
+			</a>
+		</li>
+		<li class="info">
+			<a href="https://twitter.com/misskey_xyz" target="_blank">
+				<i class="fa fa-info"></i>
+				<p>お知らせ</p>
+			</a>
+		</li>
+		<li class="tv">
+			<a href="https://misskey.tk" target="_blank">
+				<i class="fa fa-television"></i>
+				<p>MisskeyTV™</p>
+			</a>
+		</li>
+	</ul>
+	<style>
+		:scope
+			display inline-block
+			margin 0
+			padding 0
+			line-height 3rem
+			vertical-align top
+
+			> ul
 				display inline-block
 				margin 0
 				padding 0
-				line-height 3rem
 				vertical-align top
+				line-height 3rem
+				list-style none
 
-				> ul
+				> li
 					display inline-block
-					margin 0
-					padding 0
 					vertical-align top
-					line-height 3rem
-					list-style none
+					height 48px
+					line-height 48px
 
-					> li
-						display inline-block
-						vertical-align top
-						height 48px
-						line-height 48px
-
-						&.active
-							> a
-								border-bottom solid 3px $theme-color
-
+					&.active
 						> a
-							display inline-block
-							z-index 1
-							height 100%
-							padding 0 24px
-							font-size 1em
-							font-variant small-caps
-							color #9eaba8
+							border-bottom solid 3px $theme-color
+
+					> a
+						display inline-block
+						z-index 1
+						height 100%
+						padding 0 24px
+						font-size 1em
+						font-variant small-caps
+						color #9eaba8
+						text-decoration none
+						transition none
+						cursor pointer
+
+						*
+							pointer-events none
+
+						&:hover
+							color darken(#9eaba8, 20%)
 							text-decoration none
-							transition none
-							cursor pointer
 
-							*
-								pointer-events none
+						> i:first-child
+							margin-right 8px
 
-							&:hover
-								color darken(#9eaba8, 20%)
-								text-decoration none
+						> i:last-child
+							margin-left 5px
+							vertical-align super
+							font-size 10px
+							color $theme-color
 
-							> i:first-child
-								margin-right 8px
+							@media (max-width 1100px)
+								margin-left -5px
 
-							> i:last-child
-								margin-left 5px
-								vertical-align super
-								font-size 10px
-								color $theme-color
+						> p
+							display inline
+							margin 0
 
-								@media (max-width 1100px)
-									margin-left -5px
+							@media (max-width 1100px)
+								display none
 
-							> p
-								display inline
-								margin 0
+						@media (max-width 700px)
+							padding 0 12px
 
-								@media (max-width 1100px)
-									display none
+	</style>
+	<script>
+		this.mixin('i');
+		this.mixin('api');
+		this.mixin('stream');
 
-							@media (max-width 700px)
-								padding 0 12px
+		this.page = this.opts.page;
 
-		</style>
-		<script>
-			@mixin \i
-			@mixin \api
-			@mixin \stream
+		this.on('mount', () => {
+			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
-			@page = @opts.page
+			// Fetch count of unread messaging messages
+			this.api('messaging/unread').then(res => {
+				if (res.count > 0) {
+					this.update({
+						hasUnreadMessagingMessages: true
+					});
+				}
+			});
+		});
 
-			@on \mount ~>
-				@stream.on \read_all_messaging_messages @on-read-all-messaging-messages
-				@stream.on \unread_messaging_message @on-unread-messaging-message
+		this.on('unmount', () => {
+			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+		});
 
-				# Fetch count of unread messaging messages
-				@api \messaging/unread
-				.then (count) ~>
-					if count.count > 0
-						@has-unread-messaging-messages = true
-						@update!
+		this.onReadAllMessagingMessages = () => {
+			this.update({
+				hasUnreadMessagingMessages: false
+			});
+		};
 
-			@on \unmount ~>
-				@stream.off \read_all_messaging_messages @on-read-all-messaging-messages
-				@stream.off \unread_messaging_message @on-unread-messaging-message
+		this.onUnreadMessagingMessage = () => {
+			this.update({
+				hasUnreadMessagingMessages: true
+			});
+		};
 
-			@on-read-all-messaging-messages = ~>
-				@has-unread-messaging-messages = false
-				@update!
-
-			@on-unread-messaging-message = ~>
-				@has-unread-messaging-messages = true
-				@update!
-
-			@messaging = ~>
-				riot.mount document.body.append-child document.create-element \mk-messaging-window
-		</script>
-	</ul>
+		this.messaging = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-messaging-window')));
+		};
+	</script>
 </mk-ui-header-nav>

@@ -70,58 +70,74 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \is-promise
-		@mixin \stream
+		this.mixin('api');
+		this.mixin('is-promise');
+		this.mixin('stream');
 
-		@user = null
-		@user-promise = if @is-promise @opts.user then @opts.user else Promise.resolve @opts.user
-		@init = true
-		@wait = false
+		this.user = null;
+		this.userPromise = this.isPromise(this.opts.user)
+			? this.opts.user
+			: Promise.resolve(this.opts.user);
+		this.init = true;
+		this.wait = false;
 
-		@on \mount ~>
-			@user-promise.then (user) ~>
-				@user = user
-				@init = false
-				@update!
-				@stream.on \follow @on-stream-follow
-				@stream.on \unfollow @on-stream-unfollow
+		this.on('mount', () => {
+			this.userPromise.then(user => {
+				this.update({
+					init: false,
+					user: user
+				});
+				this.stream.on('follow', this.onStreamFollow);
+				this.stream.on('unfollow', this.onStreamUnfollow);
+			});
+		});
 
-		@on \unmount ~>
-			@stream.off \follow @on-stream-follow
-			@stream.off \unfollow @on-stream-unfollow
+		this.on('unmount', () => {
+			this.stream.off('follow', this.onStreamFollow);
+			this.stream.off('unfollow', this.onStreamUnfollow);
+		});
 
-		@on-stream-follow = (user) ~>
-			if user.id == @user.id
-				@user = user
-				@update!
+		this.onStreamFollow = user => {
+			if (user.id == this.user.id) {
+				this.update({
+					user: user
+				});
+			}
+		};
 
-		@on-stream-unfollow = (user) ~>
-			if user.id == @user.id
-				@user = user
-				@update!
+		this.onStreamUnfollow = user => {
+			if (user.id == this.user.id) {
+				this.update({
+					user: user
+				});
+			}
+		};
 
-		@onclick = ~>
-			@wait = true
-			if @user.is_following
-				@api \following/delete do
-					user_id: @user.id
-				.then ~>
-					@user.is_following = false
-				.catch (err) ->
-					console.error err
-				.then ~>
-					@wait = false
-					@update!
-			else
-				@api \following/create do
-					user_id: @user.id
-				.then ~>
-					@user.is_following = true
-				.catch (err) ->
-					console.error err
-				.then ~>
-					@wait = false
-					@update!
+		this.onclick = () => {
+			this.wait = true;
+			if (this.user.is_following) {
+				this.api('following/delete', {
+					user_id: this.user.id
+				}).then(() => {
+					this.user.is_following = false;
+				}).catch(err => {
+					console.error(err);
+				}).then(() => {
+					this.wait = false;
+					this.update();
+				});
+			} else {
+				this.api('following/create', {
+					user_id: this.user.id
+				}).then(() => {
+					this.user.is_following = true;
+				}).catch(err => {
+					console.error(err);
+				}).then(() => {
+					this.wait = false;
+					this.update();
+				});
+			}
+		};
 	</script>
 </mk-big-follow-button>

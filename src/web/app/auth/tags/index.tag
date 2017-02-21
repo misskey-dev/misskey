@@ -88,50 +88,60 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
+		this.mixin('i');
+		this.mixin('api');
 
-		@state = null
-		@fetching = true
+		this.state = null;
+		this.fetching = true;
 
-		@token = window.location.href.split \/ .pop!
+		this.token = window.location.href.split('/').pop();
 
-		@on \mount ~>
-			if not @SIGNIN then return
+		this.on('mount', () => {
+			if (!this.SIGNIN) return;
 
-			# Fetch session
-			@api \auth/session/show do
-				token: @token
-			.then (session) ~>
-				@session = session
-				@fetching = false
+			// Fetch session
+			this.api('auth/session/show', {
+				token: this.token
+			}).then(session => {
+				this.session = session;
+				this.fetching = false;
 
-				# 既に連携していた場合
-				if @session.app.is_authorized
-					@api \auth/accept do
-						token: @session.token
-					.then ~>
-						@accepted!
-				else
-					@state = \waiting
-					@update!
+				// 既に連携していた場合
+				if (this.session.app.is_authorized) {
+					this.api('auth/accept', {
+						token: this.session.token
+					}).then(() => {
+						this.accepted();
+					});
+				} else {
+					this.update({
+						state: 'waiting'
+					});
 
-					@refs.form.on \denied ~>
-						@state = \denied
-						@update!
+					this.refs.form.on('denied', () => {
+						this.update({
+							state: 'denied'
+						});
+					});
 
-					@refs.form.on \accepted @accepted
+					this.refs.form.on('accepted', this.accepted);
+				}
+			}).catch(error => {
+				this.update({
+					fetching: false,
+					state: 'fetch-session-error'
+				});
+			});
+		});
 
-			.catch (error) ~>
-				@fetching = false
-				@state = \fetch-session-error
-				@update!
+		this.accepted = () => {
+			this.update({
+				state: 'accepted'
+			});
 
-		@accepted = ~>
-			@state = \accepted
-			@update!
-
-			if @session.app.callback_url
-				location.href = @session.app.callback_url + '?token=' + @session.token
+			if (this.session.app.callback_url) {
+				location.href = this.session.app.callback_url + '?token=' + this.session.token;
+			}
+		};
 	</script>
 </mk-index>

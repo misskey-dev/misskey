@@ -119,12 +119,16 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			@refs.signin.on \user (user) ~>
-				@update do
+		this.on('mount', () => {
+			this.refs.signin.on('user', user => {
+				this.update({
 					user: user
+				});
+			});
+		});
 
-		@introduction = ~>
-			@parent.introduction!
+		this.introduction = () => {
+			this.parent.introduction();
+		};
 	</script>
 </mk-entrance-signin>

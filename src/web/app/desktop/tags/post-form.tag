@@ -305,161 +305,160 @@
 
 	</style>
 	<script>
-		get-cat = require '../../common/scripts/get-cat'
+		const getCat = require('../../common/scripts/get-cat');
 
-		@mixin \api
-		@mixin \notify
-		@mixin \autocomplete
+		this.mixin('api');
+		this.mixin('notify');
+		this.mixin('autocomplete');
 
-		@wait = false
-		@uploadings = []
-		@files = []
-		@autocomplete = null
-		@poll = false
+		this.wait = false;
+		this.uploadings = [];
+		this.files = [];
+		this.autocomplete = null;
+		this.poll = false;
 
-		@in-reply-to-post = @opts.reply
+		this.inReplyToPost = this.opts.reply;
 
-		# https://github.com/riot/riot/issues/2080
-		if @in-reply-to-post == '' then @in-reply-to-post = null
+		// https://github.com/riot/riot/issues/2080
+		if (this.inReplyToPost == '') this.inReplyToPost = null;
 
-		@on \mount ~>
-			@refs.uploader.on \uploaded (file) ~>
-				@add-file file
+		this.on('mount', () => {
+			this.refs.uploader.on('uploaded', file => {
+				this.addFile(file);
+			});
 
-			@refs.uploader.on \change-uploads (uploads) ~>
-				@trigger \change-uploading-files uploads
+			this.refs.uploader.on('change-uploads', uploads => {
+				this.trigger('change-uploading-files', uploads);
+			});
 
-			@autocomplete = new @Autocomplete @refs.text
-			@autocomplete.attach!
+			this.autocomplete = new this.Autocomplete(this.refs.text);
+			this.autocomplete.attach();
+		});
 
-		@on \unmount ~>
-			@autocomplete.detach!
+		this.on('unmount', () => {
+			this.autocomplete.detach();
+		});
 
-		@focus = ~>
-			@refs.text.focus!
+		this.focus = () => {
+			this.refs.text.focus();
+		};
 
-		@clear = ~>
-			@refs.text.value = ''
-			@files = []
-			@trigger \change-files
-			@update!
+		this.clear = () => {
+			this.refs.text.value = '';
+			this.files = [];
+			this.trigger('change-files');
+			this.update();
+		};
 
-		@ondragover = (e) ~>
-			e.stop-propagation!
-			@draghover = true
-			# ドラッグされてきたものがファイルだったら
-			if e.data-transfer.effect-allowed == \all
-				e.data-transfer.drop-effect = \copy
-			else
-				e.data-transfer.drop-effect = \move
-			return false
+		this.ondragover = e => {
+			e.stopPropagation();
+			this.draghover = true;
+			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			return false;
+		};
 
-		@ondragenter = (e) ~>
-			@draghover = true
+		this.ondragenter = e => {
+			this.draghover = true;
+		};
 
-		@ondragleave = (e) ~>
-			@draghover = false
+		this.ondragleave = e => {
+			this.draghover = false;
+		};
 
-		@ondrop = (e) ~>
-			e.prevent-default!
-			e.stop-propagation!
-			@draghover = false
+		this.ondrop = e => {
+			e.preventDefault();
+			e.stopPropagation();
+			this.draghover = false;
 
-			# ファイルだったら
-			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) ~>
-					@upload file
-				return false
+			// ファイルだったら
+			if (e.dataTransfer.files.length > 0) {
+				e.dataTransfer.files.forEach(this.upload);
+			}
 
-			# データ取得
-			data = e.data-transfer.get-data 'text'
-			if !data?
-				return false
+			return false;
+		};
 
-			try
-				# パース
-				obj = JSON.parse data
+		this.onkeydown = e => {
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
+		};
 
-				# (ドライブの)ファイルだったら
-				if obj.type == \file
-					@add-file obj.file
-			catch
-				# ignore
+		this.onpaste = e => {
+			e.clipboardData.items.forEach(item => {
+				if (item.kind == 'file') {
+					this.upload(item.getAsFile());
+				}
+			});
+		};
 
-			return false
+		this.selectFile = () => {
+			this.refs.file.click();
+		};
 
-		@onkeydown = (e) ~>
-			if (e.which == 10 || e.which == 13) && (e.ctrl-key || e.meta-key)
-				@post!
-
-		@onpaste = (e) ~>
-			data = e.clipboard-data
-			items = data.items
-			for i from 0 to items.length - 1
-				item = items[i]
-				switch (item.kind)
-					| \file =>
-						@upload item.get-as-file!
-
-		@select-file = ~>
-			@refs.file.click!
-
-		@select-file-from-drive = ~>
-			browser = document.body.append-child document.create-element \mk-select-file-from-drive-window
-			i = riot.mount browser, do
+		this.selectFileFromDrive = () => {
+			const i = riot.mount(document.body.appendChild(document.createElement('mk-select-file-from-drive-window')), {
 				multiple: true
-			i[0].one \selected (files) ~>
-				files.for-each @add-file
+			})[0];
+			i.one('selected', files => {
+				files.forEach(this.addFile);
+			});
+		};
 
-		@change-file = ~>
-			files = @refs.file.files
-			for i from 0 to files.length - 1
-				file = files.item i
-				@upload file
+		this.changeFile = () => {
+			this.refs.file.files.forEach(this.upload);
+		};
 
-		@upload = (file) ~>
-			@refs.uploader.upload file
+		this.upload = file => {
+			this.refs.uploader.upload(file);
+		};
 
-		@add-file = (file) ~>
-			file._remove = ~>
-				@files = @files.filter (x) -> x.id != file.id
-				@trigger \change-files @files
-				@update!
+		this.addFile = file => {
+			file._remove = () => {
+				this.files = this.files.filter(x => x.id != file.id);
+				this.trigger('change-files', this.files);
+				this.update();
+			};
 
-			@files.push file
-			@trigger \change-files @files
-			@update!
+			this.files.push(file);
+			this.trigger('change-files', this.files);
+			this.update();
+		};
 
-		@add-poll = ~>
-			@poll = true
+		this.addPoll = () => {
+			this.poll = true;
+		};
 
-		@on-poll-destroyed = ~>
-			@update do
+		this.onPollDestroyed = () => {
+			this.update({
 				poll: false
+			});
+		};
 
-		@post = (e) ~>
-			@wait = true
+		this.post = e => {
+			this.wait = true;
 
-			files = if @files? and @files.length > 0
-				then @files.map (f) -> f.id
-				else undefined
+			const files = this.files && this.files.length > 0
+				? this.files.map(f => f.id)
+				: undefined;
 
-			@api \posts/create do
-				text: @refs.text.value
-				media_ids: files
-				reply_to_id: if @in-reply-to-post? then @in-reply-to-post.id else undefined
-				poll: if @poll then @refs.poll.get! else undefined
-			.then (data) ~>
-				@trigger \post
-				@notify if @in-reply-to-post? then '返信しました！' else '投稿しました！'
-			.catch (err) ~>
-				console.error err
-				@notify '投稿できませんでした'
-			.then ~>
-				@wait = false
-				@update!
+			this.api('posts/create', {
+				text: this.refs.text.value,
+				media_ids: files,
+				reply_to_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
+				poll: this.poll ? this.refs.poll.get() : undefined
+			}).then(data => {
+				this.trigger('post');
+				this.notify(this.inReplyToPost ? '返信しました！' : '投稿しました！');
+			}).catch(err => {
+				this.notify('投稿できませんでした');
+			}).then(() => {
+				this.update({
+					wait: false
+				});
+			});
+		};
 
-		@cat = ~>
-			@refs.text.value = @refs.text.value + get-cat!
+		this.cat = () => {
+			this.refs.text.value += getCat();
+		};
 	</script>
 </mk-post-form>

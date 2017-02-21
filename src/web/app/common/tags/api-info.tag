@@ -21,6 +21,6 @@
 					text-decoration underline
 	</style>
 	<script>
-		@mixin \i
+		this.mixin('i');
 	</script>
 </mk-api-info>

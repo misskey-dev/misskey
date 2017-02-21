@@ -329,102 +329,124 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \text
-		@mixin \get-post-summary
-		@mixin \open-post-form
+		this.mixin('api');
+		this.mixin('text');
+		this.mixin('get-post-summary');
+		this.mixin('open-post-form');
 
-		@fetching = true
-		@loading-context = false
-		@content = null
-		@post = null
+		this.fetching = true;
+		this.loadingContext = false;
+		this.content = null;
+		this.post = null;
 
-		@on \mount ~>
-			@api \posts/show do
-				post_id: @opts.post
-			.then (post) ~>
-				@post = post
-				@is-repost = @post.repost?
-				@p = if @is-repost then @post.repost else @post
-				@summary = @get-post-summary @p
-				@trigger \loaded
-				@fetching = false
-				@update!
+		this.on('mount', () => {
+			this.api('posts/show', {
+				post_id: this.opts.post
+			}).then(post => {
+				const isRepost = post.repost != null;
+				const p = isRepost ? post.repost : post;
+				this.update({
+					fetching: false,
+					post: post,
+					isRepost: isRepost,
+					p: p
+				});
 
-				if @p.text?
-					tokens = @analyze @p.text
-					@refs.text.innerHTML = @compile tokens
+				this.trigger('loaded');
 
-					@refs.text.children.for-each (e) ~>
-						if e.tag-name == \MK-URL
-							riot.mount e
+				if (this.p.text) {
+					const tokens = this.analyze(this.p.text);
 
-					# URLをプレビュー
+					this.refs.text.innerHTML = this.compile(tokens);
+
+					this.refs.text.children.forEach(e => {
+						if (e.tagName == 'MK-URL') riot.mount(e);
+					});
+
+					// URLをプレビュー
 					tokens
-						.filter (t) -> t.type == \link
-						.map (t) ~>
-							@preview = @refs.text.append-child document.create-element \mk-url-preview
-							riot.mount @preview, do
-								url: t.content
+					.filter(t => t.type == 'link')
+					.map(t => {
+						riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+							url: t.content
+						});
+					});
+				}
 
-				# Get likes
-				@api \posts/likes do
-					post_id: @p.id
+				// Get likes
+				this.api('posts/likes', {
+					post_id: this.p.id,
 					limit: 8
-				.then (likes) ~>
-					@likes = likes
-					@update!
+				}).then(likes => {
+					this.update({
+						likes: likes
+					});
+				});
 
-				# Get reposts
-				@api \posts/reposts do
-					post_id: @p.id
+				// Get reposts
+				this.api('posts/reposts', {
+					post_id: this.p.id,
 					limit: 8
-				.then (reposts) ~>
-					@reposts = reposts
-					@update!
+				}).then(reposts => {
+					this.update({
+						reposts: reposts
+					});
+				});
 
-				# Get replies
-				@api \posts/replies do
-					post_id: @p.id
+				// Get replies
+				this.api('posts/replies', {
+					post_id: this.p.id,
 					limit: 8
-				.then (replies) ~>
-					@replies = replies
-					@update!
+				}).then(replies => {
+					this.update({
+						replies: replies
+					});
+				});
+			});
+		});
 
-		@reply = ~>
-			@open-post-form do
-				reply: @p
+		this.reply = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
+				reply: this.p
+			});
+		};
 
-		@repost = ~>
-			text = window.prompt '「' + @summary + '」をRepost'
-			if text?
-				@api \posts/create do
-					repost_id: @p.id
-					text: if text == '' then undefined else text
+		this.repost = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-repost-form-window')), {
+				post: this.p
+			});
+		};
 
-		@like = ~>
-			if @p.is_liked
-				@api \posts/likes/delete do
-					post_id: @p.id
-				.then ~>
-					@p.is_liked = false
-					@update!
-			else
-				@api \posts/likes/create do
-					post_id: @p.id
-				.then ~>
-					@p.is_liked = true
-					@update!
+		this.like = () => {
+			if (this.p.is_liked) {
+				this.api('posts/likes/delete', {
+					post_id: this.p.id
+				}).then(() => {
+					this.p.is_liked = false;
+					this.update();
+				});
+			} else {
+				this.api('posts/likes/create', {
+					post_id: this.p.id
+				}).then(() => {
+					this.p.is_liked = true;
+					this.update();
+				});
+			}
+		};
 
-		@load-context = ~>
-			@loading-context = true
+		this.loadContext = () => {
+			this.loadingContext = true;
 
-			# Get context
-			@api \posts/context do
-				post_id: @p.reply_to_id
-			.then (context) ~>
-				@context = context.reverse!
-				@loading-context = false
-				@update!
+			// Fetch context
+			this.api('posts/context', {
+				post_id: this.p.reply_to_id
+			}).then(context => {
+				this.update({
+					loadContext: false,
+					content: context.reverse()
+				});
+			});
+		};
 	</script>
 </mk-post-detail>

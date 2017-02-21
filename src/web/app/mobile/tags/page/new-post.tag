@@ -3,10 +3,5 @@
 	<style>
 		:scope
 			display block
-
-			
-
-			
-
 	</style>
 </mk-new-post-page>

@@ -41,15 +41,17 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \user-preview
-		@mixin \update-avatar
-		@mixin \update-banner
+		this.mixin('i');
+		this.mixin('user-preview');
+		this.mixin('update-avatar');
+		this.mixin('update-banner');
 
-		@set-avatar = ~>
-			@update-avatar @I
+		this.setAvatar = () => {
+			this.updateAvatar(this.I);
+		};
 
-		@set-banner = ~>
-			@update-banner @I
+		this.setBanner = () => {
+			this.updateBanner(this.I);
+		};
 	</script>
 </mk-profile-home-widget>

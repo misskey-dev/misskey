@@ -106,21 +106,25 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@session = @opts.session
-		@app = @session.app
+		this.session = this.opts.session;
+		this.app = this.session.app;
 
-		@cancel = ~>
-			@api \auth/deny do
-				token: @session.token
-			.then ~>
-				@trigger \denied
+		this.cancel = () => {
+			this.api('auth/deny', {
+				token: this.session.token
+			}).then(() => {
+				this.trigger('denied');
+			});
+		};
 
-		@accept = ~>
-			@api \auth/accept do
-				token: @session.token
-			.then ~>
-				@trigger \accepted
+		this.accept = () => {
+			this.api('auth/accept', {
+				token: this.session.token
+			}).then(() => {
+				this.trigger('accepted');
+			});
+		};
 	</script>
 </mk-form>

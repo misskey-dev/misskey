@@ -21,9 +21,5 @@
 					margin 0
 					text-align center
 
-			
-
-			
-
 	</style>
 </mk-introduction>

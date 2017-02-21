@@ -9,23 +9,27 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@user = @opts.user
-		@with-media = @opts.with-media
+		this.user = this.opts.user;
+		this.withMedia = this.opts.withMedia;
 
-		@init = new Promise (res, rej) ~>
-			@api \users/posts do
-				user_id: @user.id
-				with_media: @with-media
-			.then (posts) ~>
-				res posts
-				@trigger \loaded
+		this.init = new Promise((res, rej) => {
+			this.api('users/posts', {
+				user_id: this.user.id,
+				with_media: this.withMedia
+			}).then(posts => {
+				res(posts);
+				this.trigger('loaded');
+			});
+		});
 
-		@more = ~>
-			@api \users/posts do
-				user_id: @user.id
-				with_media: @with-media
-				max_id: @refs.timeline.tail!.id
+		this.more = () => {
+			this.api('users/posts', {
+				user_id: this.user.id,
+				with_media: this.withMedia,
+				max_id: this.refs.timeline.tail().id
+			});
+		};
 	</script>
 </mk-user-timeline>

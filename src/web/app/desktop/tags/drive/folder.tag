@@ -50,135 +50,152 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \dialog
+		this.mixin('api');
+		this.mixin('dialog');
 
-		@folder = @opts.folder
-		@browser = @parent
+		this.folder = this.opts.folder;
+		this.browser = this.parent;
 
-		@title = @folder.name
-		@hover = false
-		@draghover = false
-		@is-contextmenu-showing = false
+		this.title = this.folder.name;
+		this.hover = false;
+		this.draghover = false;
+		this.isContextmenuShowing = false;
 
-		@onclick = ~>
-			@browser.move @folder
+		this.onclick = () => {
+			this.browser.move(this.folder);
+		};
 
-		@onmouseover = ~>
-			@hover = true
+		this.onmouseover = () => {
+			this.hover = true;
+		};
 
-		@onmouseout = ~>
-			@hover = false
+		this.onmouseout = () => {
+			this.hover = false
+		};
 
-		@ondragover = (e) ~>
-			e.prevent-default!
-			e.stop-propagation!
+		this.ondragover = e => {
+			e.preventDefault();
+			e.stopPropagation();
 
-			# 自分自身がドラッグされていない場合
-			if !@is-dragging
-				# ドラッグされてきたものがファイルだったら
-				if e.data-transfer.effect-allowed == \all
-					e.data-transfer.drop-effect = \copy
-				else
-					e.data-transfer.drop-effect = \move
-			else
-				# 自分自身にはドロップさせない
-				e.data-transfer.drop-effect = \none
-			return false
+			// 自分自身がドラッグされていない場合
+			if (!this.isDragging) {
+				// ドラッグされてきたものがファイルだったら
+				if (e.dataTransfer.effectAllowed === 'all') {
+					e.dataTransfer.dropEffect = 'copy';
+				} else {
+					e.dataTransfer.dropEffect = 'move';
+				}
+			} else {
+				// 自分自身にはドロップさせない
+				e.dataTransfer.dropEffect = 'none';
+			}
+			return false;
+		};
 
-		@ondragenter = ~>
-			if !@is-dragging
-				@draghover = true
+		this.ondragenter = () => {
+			if (!this.isDragging) this.draghover = true;
+		};
 
-		@ondragleave = ~>
-			@draghover = false
+		this.ondragleave = () => {
+			this.draghover = false;
+		};
 
-		@ondrop = (e) ~>
-			e.stop-propagation!
-			@draghover = false
+		this.ondrop = e => {
+			e.stopPropagation();
+			this.draghover = false;
 
-			# ファイルだったら
-			if e.data-transfer.files.length > 0
-				Array.prototype.for-each.call e.data-transfer.files, (file) ~>
-					@browser.upload file, @folder
-				return false
+			// ファイルだったら
+			if (e.dataTransfer.files.length > 0) {
+				e.dataTransfer.files.forEach(file => {
+					this.browser.upload(file, this.folder);
+				});
+				return false;
+			};
 
-			# データ取得
-			data = e.data-transfer.get-data 'text'
-			if !data?
-				return false
+			// データ取得
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return false;
 
-			# パース
-			obj = JSON.parse data
+			// パース
+			// TODO: Validate JSON
+			const obj = JSON.parse(data);
 
-			# (ドライブの)ファイルだったら
-			if obj.type == \file
-				file = obj.id
-				@browser.remove-file file
-				@api \drive/files/update do
-					file_id: file
-					folder_id: @folder.id
-				.then ~>
-					# something
-				.catch (err, text-status) ~>
-					console.error err
+			// (ドライブの)ファイルだったら
+			if (obj.type == 'file') {
+				const file = obj.id;
+				this.browser.removeFile(file);
+				this.api('drive/files/update', {
+					file_id: file,
+					folder_id: this.folder.id
+				});
+			// (ドライブの)フォルダーだったら
+			} else if (obj.type == 'folder') {
+				const folder = obj.id;
+				// 移動先が自分自身ならreject
+				if (folder == this.folder.id) return false;
+				this.browser.removeFolder(folder);
+				this.api('drive/folders/update', {
+					folder_id: folder,
+					parent_id: this.folder.id
+				}).then(() => {
+					// something
+				}).catch(err => {
+					switch (err) {
+						case 'detected-circular-definition':
+							this.dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
+								'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。', [{
+								text: 'OK'
+							}]);
+							break;
+						default:
+							alert('不明なエラー' + err);
+					}
+				});
+			}
 
-			# (ドライブの)フォルダーだったら
-			else if obj.type == \folder
-				folder = obj.id
-				# 移動先が自分自身ならreject
-				if folder == @folder.id
-					return false
-				@browser.remove-folder folder
-				@api \drive/folders/update do
-					folder_id: folder
-					parent_id: @folder.id
-				.then ~>
-					# something
-				.catch (err) ~>
-					if err == 'detected-circular-definition'
-						@dialog do
-							'<i class="fa fa-exclamation-triangle"></i>操作を完了できません'
-							'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。'
-							[
-								text: \OK
-							]
+			return false;
+		};
 
-			return false
+		this.ondragstart = e => {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text', JSON.stringify({
+				type: 'folder',
+				id: this.folder.id
+			}));
+			this.isDragging = true;
 
-		@ondragstart = (e) ~>
-			e.data-transfer.effect-allowed = \move
-			e.data-transfer.set-data 'text' JSON.stringify do
-				type: \folder
-				id: @folder.id
-			@is-dragging = true
+			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
+			// (=あなたの子供が、ドラッグを開始しましたよ)
+			this.browser.isDragSource = true;
+		};
 
-			# 親ブラウザに対して、ドラッグが開始されたフラグを立てる
-			# (=あなたの子供が、ドラッグを開始しましたよ)
-			@browser.is-drag-source = true
+		this.ondragend = e => {
+			this.isDragging = false;
+			this.browser.isDragSource = false;
+		};
 
-		@ondragend = (e) ~>
-			@is-dragging = false
-			@browser.is-drag-source = false
+		this.oncontextmenu = e => {
+			e.preventDefault();
+			e.stopImmediatePropagation();
 
-		@oncontextmenu = (e) ~>
-			e.prevent-default!
-			e.stop-immediate-propagation!
+			this.update({
+				isContextmenuShowing: true
+			});
+			const ctx = riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-folder-contextmenu')), {
+				browser: this.browser,
+				folder: this.folder
+			})[0];
+			ctx.open({
+				x: e.pageX - window.pageXOffset,
+				y: e.pageY - window.pageYOffset
+			});
+			ctx.on('closed', () => {
+				this.update({
+					isContextmenuShowing: false
+				});
+			});
 
-			@is-contextmenu-showing = true
-			@update!
-			ctx = document.body.append-child document.create-element \mk-drive-browser-folder-contextmenu
-			ctx = riot.mount ctx, do
-				browser: @browser
-				folder: @folder
-			ctx = ctx.0
-			ctx.open do
-				x: e.page-x - window.page-x-offset
-				y: e.page-y - window.page-y-offset
-			ctx.on \closed ~>
-				@is-contextmenu-showing = false
-				@update!
-
-			return false
+			return false;
+		};
 	</script>
 </mk-drive-browser-folder>

@@ -12,19 +12,21 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@fetching = true
+		this.fetching = true;
 
-		@on \mount ~>
-			@api \app/show do
-				app_id: @opts.app
-			.then (app) ~>
-				@app = app
-				@fetching = false
-				@update!
+		this.on('mount', () => {
+			this.api('app/show', {
+				app_id: this.opts.app
+			}).then(app => {
+				this.update({
+					fetching: false,
+					app: app
+				});
+			});
+		});
 	</script>
 </mk-app-page>

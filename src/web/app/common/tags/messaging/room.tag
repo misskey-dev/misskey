@@ -124,101 +124,117 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
-		@mixin \messaging-stream
+		this.mixin('i');
+		this.mixin('api');
+		this.mixin('messaging-stream');
 
-		@user = @opts.user
-		@init = true
-		@sending = false
-		@messages = []
+		this.user = this.opts.user;
+		this.init = true;
+		this.sending = false;
+		this.messages = [];
 
-		@connection = new @MessagingStreamConnection @I, @user.id
+		this.connection = new this.MessagingStreamConnection(this.I, this.user.id);
 
-		@on \mount ~>
-			@connection.event.on \message @on-message
-			@connection.event.on \read @on-read
+		this.on('mount', () => {
+			this.connection.event.on('message', this.onMessage);
+			this.connection.event.on('read', this.onRead);
 
-			document.add-event-listener \visibilitychange @on-visibilitychange
+			document.addEventListener('visibilitychange', this.onVisibilitychange);
 
-			@api \messaging/messages do
-				user_id: @user.id
-			.then (messages) ~>
-				@init = false
-				@messages = messages.reverse!
-				@update!
-				@scroll-to-bottom!
-			.catch (err) ~>
-				console.error err
+			this.api('messaging/messages', {
+				user_id: this.user.id
+			}).then(messages => {
+				this.init = false;
+				this.messages = messages.reverse();
+				this.update();
+				this.scrollToBottom();
+			});
+		});
 
-		@on \unmount ~>
-			@connection.event.off \message @on-message
-			@connection.event.off \read @on-read
-			@connection.close!
+		this.on('unmount', () => {
+			this.connection.event.off('message', this.onMessage);
+			this.connection.event.off('read', this.onRead);
+			this.connection.close();
 
-			document.remove-event-listener \visibilitychange @on-visibilitychange
+			document.removeEventListener('visibilitychange', this.onVisibilitychange);
+		});
 
-		@on \update ~>
-			@messages.for-each (message) ~>
-				date = (new Date message.created_at).get-date!
-				month = (new Date message.created_at).get-month! + 1
-				message._date = date
-				message._datetext = month + '月 ' + date + '日'
+		this.on('update', () => {
+			this.messages.forEach(message => {
+				const date = (new Date(message.created_at)).getDate();
+				const month = (new Date(message.created_at)).getMonth() + 1;
+				message._date = date;
+				message._datetext = month + '月 ' + date + '日';
+			});
+		});
 
-		@on-message = (message) ~>
-			is-bottom = @is-bottom!
+		this.onMessage = (message) => {
+			const isbottom = this.isBottom();
 
-			@messages.push message
-			if message.user_id != @I.id and not document.hidden
-				@connection.socket.send JSON.stringify do
-					type: \read
+			this.messages.push(message);
+			if (message.user_id != this.I.id && !document.hidden) {
+				this.connection.socket.send(JSON.stringify({
+					type: 'read',
 					id: message.id
-			@update!
+				}));
+			}
+			this.update();
 
-			if is-bottom
-				# Scroll to bottom
-				@scroll-to-bottom!
-			else if message.user_id != @I.id
-				# Notify
-				@notify '新しいメッセージがあります'
+			if (isBottom) {
+				// Scroll to bottom
+				this.scrollToBottom();
+			} else if (message.user_id != this.I.id) {
+				// Notify
+				this.notify('新しいメッセージがあります');
+			}
+		};
 
-		@on-read = (ids) ~>
-			if not Array.isArray ids then ids = [ids]
-			ids.for-each (id) ~>
-				if (@messages.some (x) ~> x.id == id)
-					exist = (@messages.map (x) -> x.id).index-of id
-					@messages[exist].is_read = true
-					@update!
+		this.onRead = ids => {
+			if (!Array.isArray(ids)) ids = [ids];
+			ids.forEach(id => {
+				if (this.messages.some(x => x.id == id)) {
+					const exist = this.messages.map(x => x.id).indexOf(id);
+					this.messages[exist].is_read = true;
+					this.update();
+				}
+			});
+		};
 
-		@is-bottom = ~>
-			current = @root.scroll-top + @root.offset-height
-			max = @root.scroll-height
-			current > (max - 32)
+		this.isBottom = () => {
+			const current = this.root.scrollTop + this.root.offsetHeight;
+			const max = this.root.scrollHeight;
+			return current > (max - 32);
+		};
 
-		@scroll-to-bottom = ~>
-			@root.scroll-top = @root.scroll-height
+		this.scrollToBottom = () => {
+			this.root.scrollTop = this.root.scrollHeight;
+		};
 
-		@notify = (message) ~>
-			n = document.create-element \p
-			n.inner-HTML = '<i class="fa fa-arrow-circle-down"></i>' + message
-			n.onclick = ~>
-				@scroll-to-bottom!
-				n.parent-node.remove-child n
-			@refs.notifications.append-child n
+		this.notify = message => {
+			const n = document.createElement('p');
+			n.innerHTML = '<i class="fa fa-arrow-circle-down"></i>' + message;
+			n.onclick = () => {
+				this.scrollToBottom();
+				n.parentNode.removeChild(n);
+			};
+			this.refs.notifications.appendChild(n);
 
-			set-timeout ~>
-				n.style.opacity = 0
-				set-timeout ~>
-					n.parent-node.remove-child n
-				, 1000ms
-			, 4000ms
+			setTimeout(() => {
+				n.style.opacity = 0;
+				setTimeout(() => n.parentNode.removeChild(n), 1000);
+			}, 4000);
+		};
 
-		@on-visibilitychange = ~>
-			if document.hidden then return
-			@messages.for-each (message) ~>
-				if message.user_id != @I.id and not message.is_read
-					@connection.socket.send JSON.stringify do
-						type: \read
+		this.onVisibilitychange = () => {
+			if (document.hidden) return;
+			this.messages.forEach(message => {
+				if (message.user_id !== this.I.id && !message.is_read) {
+					this.connection.socket.send(JSON.stringify({
+						type: 'read',
 						id: message.id
+					}));
+				}
+			});
+		};
 	</script>
 </mk-messaging-room>

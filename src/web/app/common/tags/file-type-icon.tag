@@ -5,6 +5,6 @@
 			display inline
 	</style>
 	<script>
-		@kind = @opts.type.split \/ .0
+		this.kind = this.opts.type.split('/')[0];
 	</script>
 </mk-file-type-icon>

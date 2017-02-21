@@ -144,66 +144,76 @@
 
 	</style>
 	<script>
-		@bytes-to-size = require '../../../common/scripts/bytes-to-size.js'
+		this.bytesToSize = require('../../../common/scripts/bytes-to-size');
 
-		@mixin \i
+		this.mixin('i');
 
-		@file = @opts.file
-		@browser = @parent
+		this.file = this.opts.file;
+		this.browser = this.parent;
 
-		@title = @file.name + '\n' + @file.type + ' ' + (@bytes-to-size @file.datasize)
+		this.title = `${this.file.name}\n${this.file.type} ${this.bytesToSize(this.file.datasize)}`;
 
-		@is-contextmenu-showing = false
+		this.isContextmenuShowing = false;
 
-		@onclick = ~>
-			if @browser.multiple
-				if @file._selected?
-					@file._selected = !@file._selected
-				else
-					@file._selected = true
-				@browser.trigger \change-selection @browser.get-selection!
-			else
-				if @file._selected
-					@browser.trigger \selected @file
-				else
-					@browser.files.for-each (file) ~>
-						file._selected = false
-					@file._selected = true
-					@browser.trigger \change-selection @file
+		this.onclick = () => {
+			if (this.browser.multiple) {
+				if (this.file._selected != null) {
+					this.file._selected = !this.file._selected;
+				} else {
+					this.file._selected = true;
+				}
+				this.browser.trigger('change-selection', this.browser.getSelection());
+			} else {
+				if (this.file._selected) {
+					this.browser.trigger('selected', this.file);
+				} else {
+					this.browser.files.forEach(file => file._selected = false);
+					this.file._selected = true;
+					this.browser.trigger('change-selection', this.file);
+				}
+			}
+		};
 
-		@oncontextmenu = (e) ~>
-			e.prevent-default!
-			e.stop-immediate-propagation!
+		this.oncontextmenu = e => {
+			e.preventDefault();
+			e.stopImmediatePropagation();
 
-			@is-contextmenu-showing = true
-			@update!
-			ctx = document.body.append-child document.create-element \mk-drive-browser-file-contextmenu
-			ctx = riot.mount ctx, do
-				browser: @browser
-				file: @file
-			ctx = ctx.0
-			ctx.open do
-				x: e.page-x - window.page-x-offset
-				y: e.page-y - window.page-y-offset
-			ctx.on \closed ~>
-				@is-contextmenu-showing = false
-				@update!
-			return false
+			this.update({
+				isContextmenuShowing: true
+			});
+			const ctx = riot.mount(document.body.appendChild(document.createElement('mk-drive-browser-file-contextmenu')), {
+				browser: this.browser,
+				file: this.file
+			})[0];
+			ctx.open({
+				x: e.pageX - window.pageXOffset,
+				y: e.pageY - window.pageYOffset
+			});
+			ctx.on('closed', () => {
+				this.update({
+					isContextmenuShowing: false
+				});
+			});
+			return false;
+		};
 
-		@ondragstart = (e) ~>
-			e.data-transfer.effect-allowed = \move
-			e.data-transfer.set-data 'text' JSON.stringify do
-				type: \file
-				id: @file.id
-				file: @file
-			@is-dragging = true
+		this.ondragstart = e => {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text', JSON.stringify({
+				type: 'file',
+				id: this.file.id,
+				file: this.file
+			}));
+			this.isDragging = true;
 
-			# 親ブラウザに対して、ドラッグが開始されたフラグを立てる
-			# (=あなたの子供が、ドラッグを開始しましたよ)
-			@browser.is-drag-source = true
+			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
+			// (=あなたの子供が、ドラッグを開始しましたよ)
+			this.browser.isDragSource = true;
+		};
 
-		@ondragend = (e) ~>
-			@is-dragging = false
-			@browser.is-drag-source = false
+		this.ondragend = e => {
+			this.isDragging = false;
+			this.browser.isDragSource = false;
+		};
 	</script>
 </mk-drive-browser-file>

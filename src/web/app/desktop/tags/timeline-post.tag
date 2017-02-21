@@ -55,8 +55,13 @@
 				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
 					<p class="count" if={ p.likes_count > 0 }>{ p.likes_count }</p>
 				</button>
-				<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
-				<button onclick={ toggleDetail } title="詳細"><i class="fa fa-caret-down" if={ !isDetailOpened }></i><i class="fa fa-caret-up" if={ isDetailOpened }></i></button>
+				<button onclick={ NotImplementedException }>
+					<i class="fa fa-ellipsis-h"></i>
+				</button>
+				<button onclick={ toggleDetail } title="詳細">
+					<i class="fa fa-caret-down" if={ !isDetailOpened }></i>
+					<i class="fa fa-caret-up" if={ isDetailOpened }></i>
+				</button>
 			</footer>
 		</div>
 	</article>
@@ -312,96 +317,124 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \text
-		@mixin \date-stringify
-		@mixin \user-preview
-		@mixin \NotImplementedException
+		this.mixin('api');
+		this.mixin('text');
+		this.mixin('date-stringify');
+		this.mixin('user-preview');
+		this.mixin('NotImplementedException');
 
-		@post = @opts.post
-		@is-repost = @post.repost? and !@post.text?
-		@p = if @is-repost then @post.repost else @post
+		this.post = this.opts.post;
+		this.isRepost = this.post.repost && this.post.text == null;
+		this.p = this.isRepost ? this.post.repost : this.post;
 
-		@title = @date-stringify @p.created_at
+		this.title = this.dateStringify(this.p.created_at);
 
-		@url = CONFIG.url + '/' + @p.user.username + '/' + @p.id
-		@is-detail-opened = false
+		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id;
+		this.isDetailOpened = false;
 
-		@on \mount ~>
-			if @p.text?
-				tokens = if @p._highlight?
-					then @analyze @p._highlight
-					else @analyze @p.text
+		this.on('mount', () => {
+			if (this.p.text) {
+				const tokens = this.analyze(this.p.text);
 
-				@refs.text.innerHTML = @refs.text.innerHTML.replace '<p class="dummy"></p>' if @p._highlight?
-					then @compile tokens, true, false
-					else @compile tokens
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', this.compile(tokens));
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
-						riot.mount e
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
 
-				# URLをプレビュー
+				// URLをプレビュー
 				tokens
-					.filter (t) -> t.type == \link
-					.map (t) ~>
-						@preview = @refs.text.append-child document.create-element \mk-url-preview
-						riot.mount @preview, do
-							url: t.content
+				.filter(t => t.type == 'link')
+				.map(t => {
+					riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+						url: t.content
+					});
+				});
+			}
+		});
 
-		@reply = ~>
-			form = document.body.append-child document.create-element \mk-post-form-window
-			riot.mount form, do
-				reply: @p
+		this.reply = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
+				reply: this.p
+			});
+		};
 
-		@repost = ~>
-			form = document.body.append-child document.create-element \mk-repost-form-window
-			riot.mount form, do
-				post: @p
+		this.repost = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-repost-form-window')), {
+				post: this.p
+			});
+		};
 
-		@like = ~>
-			if @p.is_liked
-				@api \posts/likes/delete do
-					post_id: @p.id
-				.then ~>
-					@p.is_liked = false
-					@update!
-			else
-				@api \posts/likes/create do
-					post_id: @p.id
-				.then ~>
-					@p.is_liked = true
-					@update!
+		this.like = () => {
+			if (this.p.is_liked) {
+				this.api('posts/likes/delete', {
+					post_id: this.p.id
+				}).then(() => {
+					this.p.is_liked = false;
+					this.update();
+				});
+			} else {
+				this.api('posts/likes/create', {
+					post_id: this.p.id
+				}).then(() => {
+					this.p.is_liked = true;
+					this.update();
+				});
+			}
+		};
 
-		@toggle-detail = ~>
-			@is-detail-opened = !@is-detail-opened
-			@update!
+		this.toggleDetail = () => {
+			this.update({
+				isDetailOpened: !this.isDetailOpened
+			});
+		};
 
-		@on-key-down = (e) ~>
-			should-be-cancel = true
-			switch
-			| e.which == 38 or e.which == 74 or (e.which == 9 and e.shift-key) => # ↑, j or Shift+Tab
-				focus @root, (e) -> e.previous-element-sibling
-			| e.which == 40 or e.which == 75 or e.which == 9 => # ↓, k or Tab
-				focus @root, (e) -> e.next-element-sibling
-			| e.which == 81 or e.which == 69 => # q or e
-				@repost!
-			| e.which == 70 or e.which == 76 => # f or l
-				@like!
-			| e.which == 82 => # r
-				@reply!
-			| _ =>
-				should-be-cancel = false
+		this.onKeyDown = e => {
+			let shouldBeCancel = true;
 
-			if should-be-cancel
-				e.prevent-default!
+			switch (true) {
+				case e.which == 38: // [↑]
+				case e.which == 74: // [j]
+				case e.which == 9 && e.shiftKey: // [Shift] + [Tab]
+					focus(this.root, e => e.previousElementSibling);
+					break;
 
-		function focus(el, fn)
-			target = fn el
-			if target?
-				if target.has-attribute \tabindex
-					target.focus!
-				else
-					focus target, fn
+				case e.which == 40: // [↓]
+				case e.which == 75: // [k]
+				case e.which == 9: // [Tab]
+					focus(this.root, e => e.nextElementSibling);
+					break;
+
+				case e.which == 81: // [q]
+				case e.which == 69: // [e]
+					this.repost();
+					break;
+
+				case e.which == 70: // [f]
+				case e.which == 76: // [l]
+					this.like();
+					break;
+
+				case e.which == 82: // [r]
+					this.reply();
+					break;
+				
+				default:
+					shouldBeCancel = false;
+			}
+
+			if (shouldBeCancel) e.preventDefault();
+		};
+
+		function focus(el, fn) {
+			const target = fn(el);
+			if (target) {
+				if (target.hasAttribute('tabindex')) {
+					target.focus();
+				} else {
+					focus(target, fn);
+				}
+			}
+		}
 	</script>
 </mk-timeline-post>

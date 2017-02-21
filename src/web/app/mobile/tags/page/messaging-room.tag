@@ -7,21 +7,24 @@
 			display block
 	</style>
 	<script>
-		@mixin \api
-		@mixin \ui
+		this.mixin('api');
+		this.mixin('ui');
 
-		@fetching = true
+		this.fetching = true;
 
-		@on \mount ~>
-			@api \users/show do
-				username: @opts.username
-			.then (user) ~>
-				@fetching = false
-				@user = user
-				@update!
+		this.on('mount', () => {
+			this.api('users/show', {
+				username: this.opts.username
+			}).then(user => {
+				this.update({
+					fetching: false,
+					user: user
+				});
 
-				document.title = 'メッセージ: ' + user.name + ' | Misskey'
-				# TODO: ユーザー名をエスケープ
-				@ui.trigger \title '<i class="fa fa-comments-o"></i>' + user.name
+				document.title = `メッセージ: ${user.name} | Misskey`;
+				// TODO: ユーザー名をエスケープ
+				this.ui.trigger('title', '<i class="fa fa-comments-o"></i>' + user.name);
+			});
+		});
 	</script>
 </mk-messaging-room-page>

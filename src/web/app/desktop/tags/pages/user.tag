@@ -5,21 +5,23 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
-		@mixin \ui-progress
+		this.mixin('ui-progress');
 
-		@user = @opts.user
+		this.user = this.opts.user;
 
-		@on \mount ~>
-			@Progress.start!
+		this.on('mount', () => {
+			this.Progress.start();
 
-			@refs.ui.refs.user.on \user-fetched (user) ~>
-				@Progress.set 0.5
+			this.refs.ui.refs.user.on('user-fetched', user => {
+				this.Progress.set(0.5);
 				document.title = user.name + ' | Misskey'
+			});
 
-			@refs.ui.refs.user.on \loaded ~>
-				@Progress.done!
+			this.refs.ui.refs.user.on('loaded', () => {
+				this.Progress.done();
+			});
+		});
 	</script>
 </mk-user-page>

@@ -57,37 +57,40 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \stream
-		@mixin \get-post-summary
+		this.mixin('api');
+		this.mixin('stream');
+		this.mixin('get-post-summary');
 
-		@notifications = []
-		@loading = true
+		this.notifications = [];
+		this.loading = true;
 
-		@on \mount ~>
-			@api \i/notifications
-			.then (notifications) ~>
-				@notifications = notifications
-				@loading = false
-				@update!
-				@trigger \loaded
-			.catch (err, text-status) ->
-				console.error err
+		this.on('mount', () => {
+			this.api('i/notifications').then(notifications => {
+				this.update({
+					loading: false,
+					notifications: notifications
+				});
+			});
 
-			@stream.on \notification @on-notification
+			this.stream.on('notification', this.onNotification);
+		});
 
-		@on \unmount ~>
-			@stream.off \notification @on-notification
+		this.on('unmount', () => {
+			this.stream.off('notification', this.onNotification);
+		});
 
-		@on-notification = (notification) ~>
-			@notifications.unshift notification
-			@update!
+		this.onNotification = notification => {
+			this.notifications.unshift(notification);
+			this.update();
+		};
 
-		@on \update ~>
-			@notifications.for-each (notification) ~>
-				date = (new Date notification.created_at).get-date!
-				month = (new Date notification.created_at).get-month! + 1
-				notification._date = date
-				notification._datetext = month + '月 ' + date + '日'
+		this.on('update', () => {
+			this.notifications.forEach(notification => {
+				const date = new Date(notification.created_at).getDate();
+				const month = new Date(notification.created_at).getMonth() + 1;
+				notification._date = date;
+				notification._datetext = `${month}月 ${date}日`;
+			});
+		});
 	</script>
 </mk-notifications>

@@ -70,47 +70,50 @@
 
 	</style>
 	<script>
-		@mixin \i
+		this.mixin('i');
 
-		@limit = 30users
-		@mode = \all
+		this.limit = 30;
+		this.mode = 'all';
 
-		@fetching = true
-		@more-fetching = false
+		this.fetching = true;
+		this.moreFetching = false;
 
-		@on \mount ~>
-			@fetch ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			this.fetch(() => this.trigger('loaded'));
+		});
 
-		@fetch = (cb) ~>
-			@fetching = true
-			@update!
-			obj <~ @opts.fetch do
-				@mode == \iknow
-				@limit
-				null
-			@users = obj.users
-			@next = obj.next
-			@fetching = false
-			@update!
-			if cb? then cb!
+		this.fetch = cb => {
+			this.update({
+				fetching: true
+			});
+			this.opts.fetch(this.mode == 'iknow', this.limit, null, obj => {
+				this.update({
+					fetching: false,
+					users: obj.users,
+					next: obj.next
+				});
+				if (cb) cb();
+			});
+		};
 
-		@more = ~>
-			@more-fetching = true
-			@update!
-			obj <~ @opts.fetch do
-				@mode == \iknow
-				@limit
-				@cursor
-			@users = @users.concat obj.users
-			@next = obj.next
-			@more-fetching = false
-			@update!
+		this.more = () => {
+			this.update({
+				moreFetching: true
+			});
+			this.opts.fetch(this.mode == 'iknow', this.limit, this.cursor, obj => {
+				this.update({
+					moreFetching: false,
+					users: this.users.concat(obj.users),
+					next: obj.next
+				});
+			});
+		};
 
-		@set-mode = (mode) ~>
-			@update do
+		this.setMode = mode => {
+			this.update({
 				mode: mode
-
-			@fetch!
+			});
+			this.fetch();
+		};
 	</script>
 </mk-users-list>

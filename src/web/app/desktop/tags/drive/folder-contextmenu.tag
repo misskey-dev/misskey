@@ -18,49 +18,45 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
-		@mixin \api
-		@mixin \input-dialog
+		this.mixin('api');
+		this.mixin('input-dialog');
 
-		@browser = @opts.browser
-		@folder = @opts.folder
+		this.browser = this.opts.browser;
+		this.folder = this.opts.folder;
 
-		@open = (pos) ~>
-			@refs.ctx.open pos
+		this.open = pos => {
+			this.refs.ctx.open(pos);
 
-			@refs.ctx.on \closed ~>
-				@trigger \closed
-				@unmount!
+			this.refs.ctx.on('closed', () => {
+				this.trigger('closed');
+				this.unmount();
+			});
+		};
 
-		@move = ~>
-			@browser.move @folder.id
-			@refs.ctx.close!
+		this.move = () => {
+			this.browser.move(this.folder.id);
+			this.refs.ctx.close();
+		};
 
-		@new-window = ~>
-			@browser.new-window @folder.id
-			@refs.ctx.close!
+		this.newWindow = () => {
+			this.browser.newWindow(this.folder.id);
+			this.refs.ctx.close();
+		};
 
-		@create-folder = ~>
-			@browser.create-folder!
-			@refs.ctx.close!
+		this.createFolder = () => {
+			this.browser.createFolder();
+			this.refs.ctx.close();
+		};
 
-		@upload = ~>
-			@browser.select-lcoal-file!
-			@refs.ctx.close!
+		this.rename = () => {
+			this.refs.ctx.close();
 
-		@rename = ~>
-			@refs.ctx.close!
-
-			name <~ @input-dialog do
-				'フォルダ名の変更'
-				'新しいフォルダ名を入力してください'
-				@folder.name
-
-			@api \drive/folders/update do
-				folder_id: @folder.id
-				name: name
-			.then ~>
-				# something
-			.catch (err) ~>
-				console.error err
+			this.inputialog('フォルダ名の変更', '新しいフォルダ名を入力してください', this.folder.name, name => {
+				this.api('drive/folders/update', {
+					folder_id: this.folder.id,
+					name: name
+				});
+			});
+		};
 	</script>
 </mk-drive-browser-folder-contextmenu>

@@ -28,19 +28,24 @@
 
 	</style>
 	<script>
-		@mixin \api
+		this.mixin('api');
 
-		@folder = if @opts.folder? then @opts.folder else null
+		this.folder = this.opts.folder ? this.opts.folder : null;
 
-		@on \mount ~>
-			@refs.window.on \closed ~>
-				@unmount!
+		this.on('mount', () => {
+			this.refs.window.on('closed', () => {
+				this.unmount();
+			});
 
-			@api \drive .then (info) ~>
-				@update do
+			this.api('drive').then(info => {
+				this.update({
 					usage: info.usage / info.capacity * 100
+				});
+			});
+		});
 
-		@close = ~>
-			@refs.window.close!
+		this.close = () => {
+			this.refs.window.close();
+		};
 	</script>
 </mk-drive-browser-window>

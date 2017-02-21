@@ -13,9 +13,5 @@
 			i
 				color #ccc
 
-			
-
-			
-
 	</style>
 </mk-nav-home-widget>

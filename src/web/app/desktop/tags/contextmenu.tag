@@ -1,4 +1,5 @@
-<mk-contextmenu><yield />
+<mk-contextmenu>
+	<yield />
 	<style>
 		:scope
 			$width = 240px
@@ -94,46 +95,45 @@
 
 	</style>
 	<script>
-		@root.add-event-listener \contextmenu (e) ~>
-			e.prevent-default!
+		const contains = require('../../common/scripts/contains');
 
-		@mousedown = (e) ~>
-			e.prevent-default!
-			if (!contains @root, e.target) and (@root != e.target)
-				@close!
-			return false
+		this.root.addEventListener('contextmenu', e => {
+			e.preventDefault();
+		});
 
-		@open = (pos) ~>
-			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.add-event-listener \mousedown @mousedown
-			@root.style.display = \block
-			@root.style.left = pos.x + \px
-			@root.style.top = pos.y + \px
+		this.mousedown = e => {
+			e.preventDefault();
+			if (!contains(this.root, e.target) && (this.root != e.target)) this.close();
+			return false;
+		};
 
-			Velocity @root, \finish true
-			Velocity @root, { opacity: 0 } 0ms
-			Velocity @root, {
+		this.open = pos => {
+			document.querySelectorAll('body *').forEach(el => {
+				el.addEventListener('mousedown', this.mousedown);
+			});
+
+			this.root.style.display = 'block';
+			this.root.style.left = pos.x + 'px';
+			this.root.style.top = pos.y + 'px';
+
+			Velocity(this.root, 'finish', true);
+			Velocity(this.root, { opacity: 0 }, 0);
+			Velocity(this.root, {
 				opacity: 1
-			} {
-				queue: false
-				duration: 100ms
-				easing: \linear
-			}
+			}, {
+				queue: false,
+				duration: 100,
+				easing: 'linear'
+			});
+		};
 
-		@close = ~>
-			all = document.query-selector-all 'body *'
-			Array.prototype.for-each.call all, (el) ~>
-				el.remove-event-listener \mousedown @mousedown
-			@trigger \closed
-			@unmount!
+		this.close = () => {
+			document.querySelectorAll('body *').forEach(el => {
+				el.removeEventListener('mousedown', this.mousedown);
+			});
 
-		function contains(parent, child)
-			node = child.parent-node
-			while (node != null)
-				if (node == parent)
-					return true
-				node = node.parent-node
-			return false
+			this.trigger('closed');
+			this.unmount();
+		};
 	</script>
 </mk-contextmenu>

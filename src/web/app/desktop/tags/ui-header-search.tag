@@ -32,10 +32,11 @@
 
 	</style>
 	<script>
-		@mixin \page
+		this.mixin('page');
 
-		@onsubmit = (e) ~>
-			e.prevent-default!
-			@page '/search:' + @refs.q.value
+		this.onsubmit = e => {
+			e.preventDefault();
+			this.page('/search:' + this.refs.q.value);
+		};
 	</script>
 </mk-ui-header-search>

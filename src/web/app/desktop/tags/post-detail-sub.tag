@@ -103,38 +103,45 @@
 
 	</style>
 	<script>
-		@mixin \api
-		@mixin \text
-		@mixin \date-stringify
-		@mixin \user-preview
+		this.mixin('api');
+		this.mixin('text');
+		this.mixin('date-stringify');
+		this.mixin('user-preview');
 
-		@post = @opts.post
+		this.post = this.opts.post;
 
-		@url = CONFIG.url + '/' + @post.user.username + '/' + @post.id
+		this.url = CONFIG.url + '/' + this.post.user.username + '/' + this.post.id;
 
-		@title = @date-stringify @post.created_at
+		this.title = this.dateStringify(this.post.created_at);
 
-		@on \mount ~>
-			if @post.text?
-				tokens = @analyze @post.text
-				@refs.text.innerHTML = @compile tokens
+		this.on('mount', () => {
+			if (this.p.text) {
+				const tokens = this.analyze(this.p.text);
 
-				@refs.text.children.for-each (e) ~>
-					if e.tag-name == \MK-URL
-						riot.mount e
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', this.compile(tokens));
 
-		@like = ~>
-			if @post.is_liked
-				@api \posts/likes/delete do
-					post_id: @post.id
-				.then ~>
-					@post.is_liked = false
-					@update!
-			else
-				@api \posts/likes/create do
-					post_id: @post.id
-				.then ~>
-					@post.is_liked = true
-					@update!
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
+				});
+			}
+		});
+
+		this.like = () => {
+			if (this.post.is_liked) {
+				this.api('posts/likes/delete', {
+					post_id: this.post.id
+				}).then(() => {
+					this.post.is_liked = false;
+					this.update();
+				});
+			} else {
+				this.api('posts/likes/create', {
+					post_id: this.post.id
+				}).then(() => {
+					this.post.is_liked = true;
+					this.update();
+				});
+			}
+		};
 	</script>
 </mk-post-detail-sub>

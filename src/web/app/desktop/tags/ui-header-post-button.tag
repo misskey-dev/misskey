@@ -35,7 +35,8 @@
 
 	</style>
 	<script>
-		@post = (e) ~>
-			@parent.parent.open-post-form!
+		this.post = e => {
+			this.parent.parent.openPostForm();
+		};
 	</script>
 </mk-ui-header-post-button>

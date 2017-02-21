@@ -7,15 +7,16 @@
 			display block
 	</style>
 	<script>
-		@mixin \ui
-		@mixin \page
+		this.mixin('ui');
+		this.mixin('page');
 
-		@on \mount ~>
-			document.title = 'Misskey | メッセージ'
-			@ui.trigger \title '<i class="fa fa-comments-o"></i>メッセージ'
+		this.on('mount', () => {
+			document.title = 'Misskey | メッセージ';
+			this.ui.trigger('title', '<i class="fa fa-comments-o"></i>メッセージ');
 
-			@refs.ui.refs.index.on \navigate-user (user) ~>
-				@page '/i/messaging/' + user.username
-
+			this.refs.ui.refs.index.on('navigate-user', user => {
+				this.page('/i/messaging/' + user.username);
+			});
+		});
 	</script>
 </mk-messaging-page>

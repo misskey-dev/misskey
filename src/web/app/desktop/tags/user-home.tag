@@ -35,10 +35,12 @@
 
 	</style>
 	<script>
-		@user = @opts.user
+		this.user = this.opts.user;
 
-		@on \mount ~>
-			@refs.tl.on \loaded ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			this.refs.tl.on('loaded', () => {
+				this.trigger('loaded');
+			});
+		});
 	</script>
 </mk-user-home>

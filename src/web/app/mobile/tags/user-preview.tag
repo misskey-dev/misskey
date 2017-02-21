@@ -85,5 +85,5 @@
 						color #717171
 
 	</style>
-	<script>@user = @opts.user</script>
+	<script>this.user = this.opts.user</script>
 </mk-user-preview>

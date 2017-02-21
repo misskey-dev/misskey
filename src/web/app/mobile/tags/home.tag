@@ -13,8 +13,10 @@
 
 	</style>
 	<script>
-		@on \mount ~>
-			@refs.tl.on \loaded ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			this.refs.tl.on('loaded', () => {
+				this.trigger('loaded');
+			});
+		});
 	</script>
 </mk-home>

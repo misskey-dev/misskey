@@ -56,19 +56,24 @@
 
 	</style>
 	<script>
-		@files = []
+		this.files = [];
 
-		@on \mount ~>
-			@refs.browser.on \change-selected (files) ~>
-				@files = files
-				@update!
+		this.on('mount', () => {
+			this.refs.browser.on('change-selected', files => {
+				this.update({
+					files: files
+				});
+			});
+		});
 
-		@cancel = ~>
-			@trigger \canceled
-			@unmount!
+		this.cancel = () => {
+			this.trigger('canceled');
+			this.unmount();
+		};
 
-		@ok = ~>
-			@trigger \selected @files
-			@unmount!
+		this.ok = () => {
+			this.trigger('selected', this.files);
+			this.unmount();
+		};
 	</script>
 </mk-drive-selector>

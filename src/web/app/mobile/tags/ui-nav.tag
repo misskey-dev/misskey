@@ -117,15 +117,13 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mixin \page
+		this.mixin('i');
+		this.mixin('page');
 
-		@on \mount ~>
-			@opts.ready!
-
-		@search = ~>
-			query = window.prompt \検索
-			if query? and query != ''
-				@page '/search:' + query
+		this.search = () => {
+			const query = window.prompt('検索');
+			if (query == null || query == '') return;
+			this.page('/search:' + query);
+		};
 	</script>
 </mk-ui-nav>

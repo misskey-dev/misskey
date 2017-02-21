@@ -1,13 +1,17 @@
 <mk-input-dialog>
-	<mk-window ref="window" is-modal={ true } width={ '500px' }><yield to="header"><i class="fa fa-i-cursor"></i>{ parent.title }</yield>
-<yield to="content">
-		<div class="body">
-			<input ref="text" oninput={ parent.update } onkeydown={ parent.onKeydown } placeholder={ parent.placeholder }/>
-		</div>
-		<div class="action">
-			<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
-			<button class="ok" disabled={ !parent.allowEmpty && refs.text.value.length == 0 } onclick={ parent.ok }>決定</button>
-		</div></yield>
+	<mk-window ref="window" is-modal={ true } width={ '500px' }>
+		<yield to="header">
+			<i class="fa fa-i-cursor"></i>{ parent.title }
+		</yield>
+		<yield to="content">
+			<div class="body">
+				<input ref="text" oninput={ parent.update } onkeydown={ parent.onKeydown } placeholder={ parent.placeholder }/>
+			</div>
+			<div class="action">
+				<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
+				<button class="ok" disabled={ !parent.allowEmpty && refs.text.value.length == 0 } onclick={ parent.ok }>決定</button>
+			</div>
+		</yield>
 	</mk-window>
 	<style>
 		:scope
@@ -116,42 +120,48 @@
 
 	</style>
 	<script>
-		@done = false
+		this.done = false;
 
-		@title = @opts.title
-		@placeholder = @opts.placeholder
-		@default = @opts.default
-		@allow-empty = if @opts.allow-empty? then @opts.allow-empty else true
+		this.title = this.opts.title;
+		this.placeholder = this.opts.placeholder;
+		this.default = this.opts.default;
+		this.allowEmpty = this.opts.allowEmpty != null ? this.opts.allowEmpty : true;
 
-		@on \mount ~>
-			@text = @refs.window.refs.text
-			if @default?
-				@text.value = @default
-			@text.focus!
+		this.on('mount', () => {
+			this.text = this.refs.window.refs.text;
+			if (this.default) this.text.value = this.default;
+			this.text.focus();
 
-			@refs.window.on \closing ~>
-				if @done
-					@opts.on-ok @text.value
-				else
-					if @opts.on-cancel?
-						@opts.on-cancel!
+			this.refs.window.on('closing', () => {
+				if (this.done) {
+					this.opts.onOk(this.text.value);
+				} else {
+					if (this.opts.onCancel) this.opts.onCancel();
+				}
+			});
 
-			@refs.window.on \closed ~>
-				@unmount!
+			this.refs.window.on('closed', () => {
+				this.unmount();
+			});
+		});
 
-		@cancel = ~>
-			@done = false
-			@refs.window.close!
+		this.cancel = () => {
+			this.done = false;
+			this.refs.window.close();
+		};
 
-		@ok = ~>
-			if not @allow-empty and @text.value == '' then return
-			@done = true
-			@refs.window.close!
+		this.ok = () => {
+			if (!this.allowEmpty && this.text.value == '') return;
+			this.done = true;
+			this.refs.window.close();
+		};
 
-		@on-keydown = (e) ~>
-			if e.which == 13 # Enter
-				e.prevent-default!
-				e.stop-propagation!
-				@ok!
+		this.onKeydown = e => {
+			if (e.which == 13) { // Enter
+				e.preventDefault();
+				e.stopPropagation();
+				this.ok();
+			}
+		};
 	</script>
 </mk-input-dialog>

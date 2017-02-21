@@ -58,33 +58,40 @@
 
 	</style>
 	<script>
-		@mixin \i
-		@mode = @opts.mode || \timeline
+		this.mixin('i');
 
-		# https://github.com/riot/riot/issues/2080
-		if @mode == '' then @mode = \timeline
+		this.mode = this.opts.mode || 'timeline';
+		// https://github.com/riot/riot/issues/2080
+		if (this.mode == '') this.mode = 'timeline';
 
-		@home = []
+		this.home = [];
 
-		@on \mount ~>
-			@refs.tl.on \loaded ~>
-				@trigger \loaded
+		this.on('mount', () => {
+			this.refs.tl.on('loaded', () => {
+				this.trigger('loaded');
+			});
 
-			@I.data.home.for-each (widget) ~>
-				try
-					el = document.create-element \mk- + widget.name + \-home-widget
-					switch widget.place
-						| \left => @refs.left.append-child el
-						| \right => @refs.right.append-child el
-					@home.push (riot.mount el, do
-						id: widget.id
+			this.I.data.home.forEach(widget => {
+				try {
+					const el = document.createElement(`mk-${widget.name}-home-widget`);
+					switch (widget.place) {
+						case 'left': this.refs.left.appendChild(el); break;
+						case 'right': this.refs.right.appendChild(el); break;
+					}
+					this.home.push(riot.mount(el, {
+						id: widget.id,
 						data: widget.data
-					.0)
-				catch e
-					# noop
+					})[0]);
+				} catch (e) {
+					// noop
+				}
+			});
+		});
 
-		@on \unmount ~>
-			@home.for-each (widget) ~>
-				widget.unmount!
+		this.on('unmount', () => {
+			this.home.forEach(widget => {
+				widget.unmount();
+			});
+		});
 	</script>
 </mk-home>

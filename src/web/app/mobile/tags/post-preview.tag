@@ -90,5 +90,5 @@
 							color #717171
 
 	</style>
-	<script>@post = @opts.post</script>
+	<script>this.post = this.opts.post</script>
 </mk-post-preview>

@@ -2,17 +2,17 @@
 	<style>
 		:scope
 			display inline
-
 	</style>
 	<script>
-		@on \mount ~>
-			# バグ？ https://github.com/riot/riot/issues/2103
-			#value = @opts.value
-			value = @opts.riot-value
-			max = @opts.max
+		this.on('mount', () => {
+			// https://github.com/riot/riot/issues/2103
+			//value = this.opts.value
+			let value = this.opts.riotValue;
+			const max = this.opts.max;
 
-			if max? then if value > max then value = max
+			if (max != null && value > max) value = max;
 
-			@root.innerHTML = value.to-locale-string!
+			this.root.innerHTML = value.toLocaleString();
+		});
 	</script>
 </mk-number>

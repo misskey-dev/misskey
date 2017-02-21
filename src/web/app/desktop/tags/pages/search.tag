@@ -5,15 +5,16 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
-		@mixin \ui-progress
+		this.mixin('ui-progress');
 
-		@on \mount ~>
-			@Progress.start!
+		this.on('mount', () => {
+			this.Progress.start();
 
-			@refs.ui.refs.search.on \loaded ~>
-				@Progress.done!
+			this.refs.ui.refs.search.on('loaded', () => {
+				this.Progress.done();
+			});
+		});
 	</script>
 </mk-search-page>

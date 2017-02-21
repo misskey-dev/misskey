@@ -5,41 +5,47 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
-		@mixin \i
-		@mixin \ui
-		@mixin \ui-progress
-		@mixin \stream
-		@mixin \get-post-summary
+		this.mixin('i');
+		this.mixin('ui');
+		this.mixin('ui-progress');
+		this.mixin('stream');
+		this.mixin('get-post-summary');
 
-		@unread-count = 0
+		this.unreadCount = 0;
 
-		@on \mount ~>
+		this.on('mount', () => {
 			document.title = 'Misskey'
-			@ui.trigger \title '<i class="fa fa-home"></i>ホーム'
+			this.ui.trigger('title', '<i class="fa fa-home"></i>ホーム');
 
-			@Progress.start!
+			this.Progress.start();
 
-			@stream.on \post @on-stream-post
-			document.add-event-listener \visibilitychange @window-on-visibilitychange, false
+			this.stream.on('post', this.onStreamPost);
+			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
-			@refs.ui.refs.home.on \loaded ~>
-				@Progress.done!
+			this.refs.ui.refs.home.on('loaded', () => {
+				this.Progress.done();
+			});
+		});
 
-		@on \unmount ~>
-			@stream.off \post @on-stream-post
-			document.remove-event-listener \visibilitychange @window-on-visibilitychange
+		this.on('unmount', () => {
+			this.stream.off('post', this.onStreamPost);
+			document.removeEventListener('visibilitychange', this.onVisibilitychange);
+		});
 
-		@on-stream-post = (post) ~>
-			if document.hidden and post.user_id !== @I.id
-				@unread-count++
-				document.title = '(' + @unread-count + ') ' + @get-post-summary post
+		this.onStreamPost = post => {
+			if (document.hidden && post.user_id !== this.I.id) {
+				this.unreadCount++;
+				document.title = `(${this.unreadCount}) ${this.getPostSummary(post)}`;
+			}
+		};
 
-		@window-on-visibilitychange = ~>
-			if !document.hidden
-				@unread-count = 0
-				document.title = 'Misskey'
+		this.onVisibilitychange = () => {
+			if (!document.hidden) {
+				this.unreadCount = 0;
+				document.title = 'Misskey';
+			}
+		};
 	</script>
 </mk-home-page>

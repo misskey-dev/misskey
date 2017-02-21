@@ -5,43 +5,45 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
-		@mixin \i
-		@mixin \api
-		@mixin \ui-progress
-		@mixin \stream
-		@mixin \get-post-summary
+		this.mixin('i');
+		this.mixin('api');
+		this.mixin('ui-progress');
+		this.mixin('stream');
+		this.mixin('get-post-summary');
 
-		@unread-count = 0
+		this.unreadCount = 0;
 
-		@page = switch @opts.mode
-			| \timelie => \home
-			| \mentions => \mentions
-			| _ => \home
+		this.page = this.opts.mode || 'timeline';
 
-		@on \mount ~>
-			@refs.ui.refs.home.on \loaded ~>
-				@Progress.done!
+		this.on('mount', () => {
+			this.refs.ui.refs.home.on('loaded', () => {
+				this.Progress.done();
+			});
+			document.title = 'Misskey';
+			this.Progress.start();
+			this.stream.on('post', this.onStreamPost);
+			document.addEventListener('visibilitychange', this.windowOnVisibilitychange, false);
+		});
 
-			document.title = 'Misskey'
-			@Progress.start!
-			@stream.on \post @on-stream-post
-			document.add-event-listener \visibilitychange @window-on-visibilitychange, false
+		this.on('unmount', () => {
+			this.stream.off('post', this.onStreamPost);
+			document.removeEventListener('visibilitychange', this.windowOnVisibilitychange);
+		});
 
-		@on \unmount ~>
-			@stream.off \post @on-stream-post
-			document.remove-event-listener \visibilitychange @window-on-visibilitychange
+		this.onStreamPost = post => {
+			if (document.hidden && post.user_id != this.I.id) {
+				this.unreadCount++;
+				document.title = `(${this.unreadCount}) ${this.getPostSummary(post)}`;
+			}
+		};
 
-		@on-stream-post = (post) ~>
-			if document.hidden and post.user_id !== @I.id
-				@unread-count++
-				document.title = '(' + @unread-count + ') ' + @get-post-summary post
-
-		@window-on-visibilitychange = ~>
-			if !document.hidden
-				@unread-count = 0
-				document.title = 'Misskey'
+		this.windowOnVisibilitychange = () => {
+			if (!document.hidden) {
+				this.unreadCount = 0;
+				document.title = 'Misskey';
+			}
+		};
 	</script>
 </mk-home-page>
