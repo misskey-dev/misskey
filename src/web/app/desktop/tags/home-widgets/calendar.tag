@@ -108,41 +108,43 @@
 	<script>
 		this.draw = () => {
 			const now = new Date();
-			nd = now.getDate()
-			nm = now.getMonth()
-			ny = now.getFullYear()
+			const nd = now.getDate();
+			const nm = now.getMonth();
+			const ny = now.getFullYear();
 
-			this.year = ny
-			this.month = nm + 1
-			this.day = nd
-			this.week-day = [\日 '月' \火 '水' \木 '金' \土][now.get-day!]
+			this.year = ny;
+			this.month = nm + 1;
+			this.day = nd;
+			this.weekDay = ['日', '月', '火', '水' '木', '金', '土'][now.getDay()];
 
-			@day-numer   = (now - (new Date ny, nm, nd))
-			@day-denom   = 1000ms * 60s * 60m * 24h
-			this.month-numer = (now - (new Date ny, nm, 1))
-			this.month-denom = (new Date ny, nm + 1,  1) - (new Date ny, nm, 1)
-			@year-numer  = (now - (new Date ny, 0, 1))
-			@year-denom  = (new Date ny + 1, 0,  1) - (new Date ny, 0, 1)
+			this.dayNumer   = now - new Date(ny, nm, nd);
+			this.dayDenom   = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;
+			this.monthNumer = now - new Date(ny, nm, 1);
+			this.monthDenom = new Date(ny, nm + 1, 1) - new Date(ny, nm, 1);
+			this.yearNumer  = now - new Date(ny, 0, 1);
+			this.yearDenom  = new Date(ny + 1, 0, 1) - new Date(ny, 0, 1);
 
-			@day-p   = @day-numer   / @day-denom   * 100
-			this.month-p = @month-numer / @month-denom * 100
-			@year-p  = @year-numer  / @year-denom  * 100
+			this.dayP   = this.dayNumer   / this.dayDenom   * 100;
+			this.monthP = this.monthNumer / this.monthDenom * 100;
+			this.yearP  = this.yearNumer  / this.yearDenom  * 100;
 
-			this.is-holiday = 
-				(now.get-day! == 0 or now.get-day! == 6)
+			this.isHoliday = now.getDay() == 0 || now.getDay() == 6;
 
 			this.special = 
-				| nm == 0 and nd == 1 => 'on-new-years-day' 
-				| _ => false
+				nm == 0 && nd == 1 ? 'on-new-years-day' :
+				false;
 
 			this.update();
+		};
 
-		@draw!
+		this.draw();
 
 		this.on('mount', () => {
-			this.clock = setInterval @draw, 1000ms
+			this.clock = setInterval(this.draw, 1000);
+		});
 
 		this.on('unmount', () => {
-			clearInterval @clock
+			clearInterval(this.clock);
+		});
 	</script>
 </mk-calendar-home-widget>

@@ -46,10 +46,12 @@
 		this.mixin('update-avatar');
 		this.mixin('update-banner');
 
-		this.set-avatar = () => {
-			@update-avatar this.I
+		this.setAvatar = () => {
+			this.updateAvatar(this.I);
+		};
 
-		this.set-banner = () => {
-			@update-banner this.I
+		this.setBanner = () => {
+			this.updateBanner(this.I);
+		};
 	</script>
 </mk-profile-home-widget>

@@ -67,28 +67,32 @@
 		this.mixin('api');
 		this.mixin('NotImplementedException');
 
-		this.url = 'http://news.yahoo.co.jp/pickup/rss.xml'
-		this.items = []
-		this.initializing = true
+		this.url = 'http://news.yahoo.co.jp/pickup/rss.xml';
+		this.items = [];
+		this.initializing = true;
 
 		this.on('mount', () => {
-			@fetch!
-			this.clock = setInterval @fetch, 60000ms
+			this.fetch();
+			this.clock = setInterval(this.fetch, 60000);
+		});
 
 		this.on('unmount', () => {
-			clearInterval @clock
+			clearInterval(this.clock);
+		});
 
 		this.fetch = () => {
-			this.api CONFIG.url + '/api:rss' do
-				url: @url
-			}).then((feed) => {
-				this.items = feed.rss.channel.item
-				this.initializing = false
-				this.update();
-			.catch (err) ->
-				console.error err
+			this.api(CONFIG.url + '/api:rss', {
+				url: this.url
+			}).then(feed => {
+				this.update({
+					initializing: false,
+					items: feed.rss.channel.item
+				});
+			});
+		};
 
 		this.settings = () => {
-			@NotImplementedException!
+			this.NotImplementedException();
+		};
 	</script>
 </mk-rss-reader-home-widget>

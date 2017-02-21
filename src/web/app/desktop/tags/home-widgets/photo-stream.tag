@@ -60,28 +60,33 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		this.images = []
-		this.initializing = true
+		this.images = [];
+		this.initializing = true;
 
 		this.on('mount', () => {
-			this.stream.on 'drive_file_created' this.onStreamDriveFileCreated
+			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
 
 			this.api('drive/stream', {
-				type: 'image/*'
-				limit: 9images
-			}).then((images) => {
-				this.initializing = false
-				this.images = images
-				this.update();
+				type: 'image/*',
+				limit: 9
+			}).then(images => {
+				this.update({
+					initializing: false,
+					images: images
+				});
+			});
+		});
 
 		this.on('unmount', () => {
-			this.stream.off 'drive_file_created' this.onStreamDriveFileCreated
+			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
+		});
 
-		this.onStreamDriveFileCreated = (file) => {
-			if /^image\/.+$/.test file.type
-				@images.unshift file
-				if @images.length > 9
-					@images.pop!
+		this.onStreamDriveFileCreated = file => {
+			if (/^image\/.+$/.test(file.type)) {
+				this.images.unshift(file);
+				if (this.images.length > 9) this.images.pop();
 				this.update();
+			}
+		};
 	</script>
 </mk-photo-stream-home-widget>

@@ -112,41 +112,39 @@
 		this.mixin('api');
 		this.mixin('user-preview');
 
-		this.users = null
-		this.loading = true
+		this.users = null;
+		this.loading = true;
 
-		this.limit = 3users
-		this.page = 0
+		this.limit = 3;
+		this.page = 0;
 
 		this.on('mount', () => {
-			@fetch!
-			this.clock = setInterval =>
-				if this.users.length < @limit
-					@fetch true
-			, 60000ms
+			this.fetch();
+		});
 
-		this.on('unmount', () => {
-			clearInterval @clock
-
-		this.fetch = (quiet = false) => {
-			this.loading = true
-			this.users = null
-			if not quiet then this.update();
+		this.fetch = () => {
+			this.update({
+				loading: true,
+				users: null
+			});
 			this.api('users/recommendation', {
-				limit: @limit
-				offset: @limit * this.page
-			}).then((users) => {
-				this.loading = false
-				this.users = users
-				this.update();
-			.catch (err, text-status) ->
-				console.error err
+				limit: this.limit,
+				offset: this.limit * this.page
+			}).then(users => {
+				this.update({
+					loading: false,
+					users: users
+				});
+			});
+		};
 
 		this.refresh = () => {
-			if this.users.length < @limit
-				this.page = 0
-			else
-				this.page++
-			@fetch!
+			if (this.users.length < this.limit) {
+				this.page = 0;
+			} else {
+				this.page++;
+			}
+			this.fetch();
+		};
 	</script>
 </mk-user-recommendation-home-widget>
