@@ -133,29 +133,35 @@
 			this.text.focus();
 
 			this.refs.window.on('closing', () => {
-				if @done
-					this.opts.on-ok @text.value
-				else
-					if this.opts.on-cancel?
-						this.opts.on-cancel!
+				if (this.done) {
+					this.opts.onOk(this.text.value);
+				} else {
+					if (this.opts.onCancel) this.opts.onCancel();
+				}
+			});
 
 			this.refs.window.on('closed', () => {
 				this.unmount();
 			});
+		});
 
 		this.cancel = () => {
-			this.done = false
+			this.done = false;
 			this.refs.window.close();
+		};
 
 		this.ok = () => {
-			if not @allow-empty and @text.value == '' then return
-			this.done = true
+			if (!this.allowEmpty && this.text.value == '') return;
+			this.done = true;
 			this.refs.window.close();
+		};
 
-		this.onKeydown = (e) => {
-			if e.which == 13 // Enter
+		this.onKeydown = e => {
+			if (e.which == 13) { // Enter
 				e.preventDefault();
 				e.stopPropagation();
-				@ok!
+				this.ok();
+			}
+		};
 	</script>
 </mk-input-dialog>

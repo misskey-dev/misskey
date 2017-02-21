@@ -16,5 +16,7 @@
 		this.on('mount', () => {
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
+			});
+		});
 	</script>
 </mk-home>
