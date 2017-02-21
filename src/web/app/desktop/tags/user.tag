@@ -34,18 +34,21 @@
 	<script>
 		this.mixin('api');
 
-		this.username = this.opts.user
-		this.page = if this.opts.page? then this.opts.page else 'home' 
-		this.fetching = true
-		this.user = null
+		this.username = this.opts.user;
+		this.page = this.opts.page ? this.opts.page : 'home';
+		this.fetching = true;
+		this.user = null;
 
 		this.on('mount', () => {
 			this.api('users/show', {
 				username: this.username
-			}).then((user) => {
-				this.fetching = false
-				this.user = user
-				this.update();
+			}).then(user => {
+				this.update({
+					fetching: false,
+					user: user
+				});
 				this.trigger('loaded');
+			});
+		});
 	</script>
 </mk-user>
