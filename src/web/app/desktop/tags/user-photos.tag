@@ -81,7 +81,7 @@
 					this.initializing = false;
 					posts.forEach(post => {
 						post.media.forEach(media => {
-							if (this.images.length < 9) this.images.push(image);
+							if (this.images.length < 9) this.images.push(media);
 						});
 					});
 					this.update();

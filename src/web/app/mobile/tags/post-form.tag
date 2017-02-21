@@ -182,7 +182,7 @@
 
 	</style>
 	<script>
-		getCat = require('../../common/scripts/get-cat');
+		const getCat = require('../../common/scripts/get-cat');
 
 		this.mixin('api');
 
@@ -204,7 +204,7 @@
 		});
 
 		this.onkeydown = e => {
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.meta-key)) this.post();
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
 		};
 
 		this.onpaste = e => {

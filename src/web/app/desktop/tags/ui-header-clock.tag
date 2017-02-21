@@ -2,6 +2,7 @@
 	<div class="header">
 		<time ref="time">
 			<span class="yyyymmdd">{ yyyy }/{ mm }/{ dd }</span>
+			<br>
 			<span class="hhnn">{ hh }<span style="visibility:{ now.getSeconds() % 2 == 0 ? 'visible' : 'hidden' }">:</span>{ nn }</span>
 		</time>
 	</div>
@@ -61,8 +62,10 @@
 
 	</style>
 	<script>
+		this.now = new Date();
+
 		this.draw = () => {
-			this.now = new Date();
+			const now = this.now = new Date();
 			this.yyyy = now.getFullYear();
 			this.mm = ('0' + (now.getMonth() + 1)).slice(-2);
 			this.dd = ('0' + now.getDate()).slice(-2);

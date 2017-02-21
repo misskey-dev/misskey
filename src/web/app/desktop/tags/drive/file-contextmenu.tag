@@ -39,7 +39,6 @@
 		this.mixin('i');
 		this.mixin('update-avatar');
 		this.mixin('update-banner');
-		this.mixin('update-wallpaper');
 		this.mixin('input-dialog');
 		this.mixin('NotImplementedException');
 

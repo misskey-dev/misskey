@@ -62,7 +62,7 @@
 		});
 
 		this.onDocumentKeydown = e => {
-			if (e.target.tagName != 'INPUT' && tag != 'TEXTAREA') {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
 				if (e.which == 84) { // t
 					this.refs.timeline.focus();
 				}

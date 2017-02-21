@@ -169,7 +169,7 @@
 			this.img = this.refs.window.refs.img;
 			this.cropper = new this.Cropper(this.img, {
 				aspectRatio: this.aspectRatio,
-				highlight: no,
+				highlight: false,
 				viewMode: 1
 			});
 		});

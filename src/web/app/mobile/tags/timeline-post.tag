@@ -298,7 +298,7 @@
 		this.mixin('api');
 		this.mixin('text');
 		this.mixin('get-post-summary');
-		this.mixin('openPostForm');
+		this.mixin('open-post-form');
 
 		this.post = this.opts.post;
 		this.isRepost = this.post.repost != null && this.post.text == null;

@@ -249,6 +249,7 @@
 
 			const strength = this.getPasswordStrength(password);
 			this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
+			this.update();
 			this.refs.passwordMetar.style.width = `${strength * 100}%`;
 		};
 
@@ -256,7 +257,7 @@
 			const password = this.refs.password.value;
 			const retypedPassword = this.refs.passwordRetype.value;
 
-			if (retyped-password == '') {
+			if (retypedPassword == '') {
 				this.passwordRetypeState = null;
 				return;
 			}

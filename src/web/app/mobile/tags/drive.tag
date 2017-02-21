@@ -198,7 +198,7 @@
 		};
 
 		this.move = ev => {
-			this.move(ev.item.folder);
+			this.cd(ev.item.folder);
 		};
 
 		this.cd = (target, silent = false) => {
@@ -333,10 +333,10 @@
 			});
 
 			let flag = false;
-			complete = () => {
+			const complete = () => {
 				if (flag) {
-					fetchedFolders.forEach(folder => this.addFolder);
-					fetchedFiles.forEach(file => this.addFile);
+					fetchedFolders.forEach(this.addFolder);
+					fetchedFiles.forEach(this.addFile);
 					this.update({
 						fetching: false
 					});

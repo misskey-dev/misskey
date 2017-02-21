@@ -43,13 +43,13 @@
 					const uv = new Vec2(Math.sin(angle), -Math.cos(angle));
 					ctx.beginPath();
 					ctx.lineWidth = 1;
-					ctx.moveTo((canv-w / 2) + uv.x * lineStart, (canv-h / 2) + uv.y * lineStart);
+					ctx.moveTo((canvW / 2) + uv.x * lineStart, (canvH / 2) + uv.y * lineStart);
 					if (i % 5 == 0) {
 						ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-						ctx.lineTo((canv-w / 2) + uv.x * longLineEnd, (canv-h / 2) + uv.y * longLineEnd);
+						ctx.lineTo((canvW / 2) + uv.x * longLineEnd, (canvH / 2) + uv.y * longLineEnd);
 					} else {
 						ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-						ctx.lineTo((canv-w / 2) + uv.x * shortLineEnd, (canv-h / 2) + uv.y * shortLineEnd);
+						ctx.lineTo((canvW / 2) + uv.x * shortLineEnd, (canvH / 2) + uv.y * shortLineEnd);
 					}
 					ctx.stroke();
 				}
@@ -58,7 +58,7 @@
 			{ // 分
 				const angle = Math.PI * (m + s / 60) / 30;
 				const length = Math.min(canvW, canvH) / 2.6;
-				const uv = new vec2(Math.sin(angle), -Math.cos(angle));
+				const uv = new Vec2(Math.sin(angle), -Math.cos(angle));
 				ctx.beginPath();
 				ctx.strokeStyle = '#ffffff';
 				ctx.lineWidth = 2;
@@ -70,7 +70,7 @@
 			{ // 時
 				const angle = Math.PI * (h % 12 + m / 60) / 6;
 				const length = Math.min(canvW, canvH) / 4;
-				const uv = new vec2(Math.sin(angle), -Math.cos(angle));
+				const uv = new Vec2(Math.sin(angle), -Math.cos(angle));
 				ctx.beginPath();
 				ctx.strokeStyle = CONFIG.themeColor;
 				ctx.lineWidth = 2;
@@ -82,7 +82,7 @@
 			{ // 秒
 				const angle = Math.PI * s / 30;
 				const length = Math.min(canvW, canvH) / 2.6;
-				const uv = new vec2(Math.sin(angle), -Math.cos(angle));
+				const uv = new Vec2(Math.sin(angle), -Math.cos(angle));
 				ctx.beginPath();
 				ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
 				ctx.lineWidth = 1;
