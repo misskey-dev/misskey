@@ -185,112 +185,114 @@
 		window.onEecaptchaed = () => {
 			this.recaptchaed = true;
 			this.update();
-		}
+		};
 
 		window.onRecaptchaExpired = () => {
 			this.recaptchaed = false;
 			this.update();
-		}
+		};
 
 		this.on('mount', () => {
-			const head = (document.getElementsByTagName('head'))[0];
-			script = document.createElement 'script' 
-				..setAttribute 'src' \https://www.google.com/recaptcha/api.js
-			head.appendChild script
+			const head = document.getElementsByTagName('head')[0];
+			const script = document.createElement('script');
+			script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
+			head.appendChild(script);
 		});
 
-		this.on-change-username = () => {
-			username = this.refs.username.value
+		this.onChangeUsername = () => {
+			const username = this.refs.username.value;
 
-			if username == ''
-				this.username-state = null
-				this.update();
-				return
+			if (username == '') {
+				this.update({
+					usernameState: null
+				});
+				return;
+			}
 
-			err = switch
-				| not username.match /^[a-zA-Z0-9\-]+$/ => 'invalid-format' 
-				| username.length < 3chars              => 'min-range' 
-				| username.length > 20chars             => 'max-range' 
-				| _                                     => null
+			const err =
+				!username.match(/^[a-zA-Z0-9\-]+$/) ? 'invalid-format' :
+				username.length < 3 ? 'min-range' :
+				username.length > 20 ? 'max-range' :
+				null;
 
-			if err?
-				this.username-state = err
-				this.update();
-			else
-				this.username-state = 'wait' 
-				this.update();
+			if (err) {
+				this.update({
+					usernameState: err
+				});
+				return;
+			}
 
-				this.api('username/available', {
-					username: username
-				}).then((result) => {
-					if result.available
-						this.username-state = 'ok' 
-					else
-						this.username-state = 'unavailable' 
-					this.update();
-				.catch (err) =>
-					this.username-state = 'error' 
-					this.update();
+			this.update({
+				usernameState: 'wait'
+			});
 
-		this.on-change-password = () => {
-			password = this.refs.password.value
+			this.api('username/available', {
+				username: username
+			}).then(result => {
+				this.update({
+					usernameState: result.available ? 'ok' : 'unavailable'
+				});
+			}).catch(err => {
+				this.update({
+					usernameState: 'error'
+				});
+			});
+		};
 
-			if password == ''
-				this.password-strength = ''
-				return
+		this.onChangePassword = () => {
+			const password = this.refs.password.value;
 
-			strength = @get-password-strength password
+			if (password == '') {
+				this.passwordStrength = '';
+				return;
+			}
 
-			if strength > 0.3
-				this.password-strength = 'medium' 
-				if strength > 0.7
-					this.password-strength = 'high' 
-			else
-				this.password-strength = 'low' 
+			const strength = this.getPasswordStrength(password);
+			this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
+			this.refs.passwordMetar.style.width = `${strength * 100}%`;
+		};
 
-			this.update();
+		this.onChangePasswordRetype = () => {
+			const password = this.refs.password.value;
+			const retypedPassword = this.refs.passwordRetype.value;
 
-			this.refs.password-metar.style.width = (strength * 100) + '%' 
+			if (retyped-password == '') {
+				this.passwordRetypeState = null;
+				return;
+			}
 
-		this.on-change-password-retype = () => {
-			password = this.refs.password.value
-			retyped-password = this.refs.password-retype.value
+			this.passwordRetypeState = password == retypedPassword ? 'match' : 'not-match';
+		};
 
-			if retyped-password == ''
-				this.password-retype-state = null
-				return
-
-			if password == retyped-password
-				this.password-retype-state = 'match' 
-			else
-				this.password-retype-state = 'not-match' 
-
-		this.onsubmit = (e) => {
+		this.onsubmit = e => {
 			e.preventDefault();
 
 			const username = this.refs.username.value;
 			const password = this.refs.password.value;
 
-			locker = document.body.appendChild(document.createElement('mk-locker'));
- 
+			const locker = document.body.appendChild(document.createElement('mk-locker'));
+
 			this.api('signup', {
 				username: username,
 				password: password,
 				'g-recaptcha-response': grecaptcha.getResponse()
 			}).then(() => {
 				this.api('signin', {
-					username: username
+					username: username,
 					password: password
 				}).then(() => {
 					location.href = CONFIG.url
-			.catch =>
-				alert '何らかの原因によりアカウントの作成に失敗しました。再度お試しください。'
+				});
+			}).catch(() => {
+				alert('何らかの原因によりアカウントの作成に失敗しました。再度お試しください。');
 
-				grecaptcha.reset!
-				this.recaptchaed = false
+				grecaptcha.reset();
+				this.recaptchaed = false;
 
-				locker.parentNode.removeChild locker
+				locker.parentNode.removeChild(locker);
+			});
 
-			false
+			return false;
+		};
 	</script>
 </mk-signup>

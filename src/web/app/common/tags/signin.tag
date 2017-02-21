@@ -105,34 +105,42 @@
 		this.oninput = () => {
 			this.api('users/show', {
 				username: this.refs.username.value
-			}).then((user) => {
-				this.user = user
-				this.trigger 'user' user
+			}).then(user => {
+				this.user = user;
+				this.trigger('user', user);
 				this.update();
+			});
+		};
 
-		this.onsubmit = (e) => {
+		this.onsubmit = e => {
 			e.preventDefault();
 
-			if this.refs.username.value == ''
+			if (this.refs.username.value == '') {
 				this.refs.username.focus();
-				return false
-			if this.refs.password.value == ''
+				return false;
+			}
+			if (this.refs.password.value == '') {
 				this.refs.password.focus();
-				return false
+				return false;
+			}
 
-			this.signing = true
-			this.update();
+			this.update({
+				signing: true
+			});
 
 			this.api('signin', {
-				username: this.refs.username.value
+				username: this.refs.username.value,
 				password: this.refs.password.value
 			}).then(() => {
 				location.reload();
-			.catch =>
-				alert 'something happened'
-				this.signing = false
-				this.update();
+			}).catch(() => {
+				alert('something happened');
+				this.update({
+					signing: false
+				});
+			});
 
-			false
+			return false;
+		};
 	</script>
 </mk-signin>

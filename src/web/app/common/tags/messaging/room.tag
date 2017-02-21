@@ -176,7 +176,7 @@
 				this.connection.socket.send(JSON.stringify({
 					type: 'read',
 					id: message.id
-				});
+				}));
 			}
 			this.update();
 
@@ -197,7 +197,7 @@
 					this.messages[exist].is_read = true;
 					this.update();
 				}
-			}):
+			});
 		};
 
 		this.isBottom = () => {
@@ -206,7 +206,7 @@
 			return current > (max - 32);
 		};
 
-		this.scroll-to-bottom = () => {
+		this.scrollToBottom = () => {
 			this.root.scrollTop = this.root.scrollHeight;
 		};
 
@@ -215,23 +215,26 @@
 			n.innerHTML = '<i class="fa fa-arrow-circle-down"></i>' + message;
 			n.onclick = () => {
 				this.scrollToBottom();
-				n.parentNode.removeChild n
-			this.refs.notifications.appendChild n
+				n.parentNode.removeChild(n);
+			};
+			this.refs.notifications.appendChild(n);
 
-			setTimeout =>
-				n.style.opacity = 0
-				setTimeout =>
-					n.parentNode.removeChild n
-				, 1000ms
-			, 4000ms
+			setTimeout(() => {
+				n.style.opacity = 0;
+				setTimeout(() => n.parentNode.removeChild(n), 1000);
+			}, 4000);
 		};
 
 		this.onVisibilitychange = () => {
-			if document.hidden then return
-			@messages.forEach (message) =>
-				if message.user_id != this.I.id and not message.is_read
-					@connection.socket.send JSON.stringify do
-						type: 'read' 
+			if (document.hidden) return;
+			this.messages.forEach(message => {
+				if (message.user_id !== this.I.id && !message.is_read) {
+					this.connection.socket.send(JSON.stringify({
+						type: 'read',
 						id: message.id
+					}));
+				}
+			});
+		};
 	</script>
 </mk-messaging-room>
