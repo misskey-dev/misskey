@@ -309,49 +309,64 @@
 			const q = this.refs.search.value;
 			if (q == '') {
 				this.searchResult = [];
-			} else {
-				this.api('users/search', {
-					query: q
-					max: 5
-				}).then((users) => {
-					users.forEach (user) =>
-						user._click = =>
-							this.trigger 'navigate-user' user
-							this.searchResult = []
-					this.searchResult = users
-					this.update();
-				.catch (err) =>
-					console.error err
+				return;
+			}
+			this.api('users/search', {
+				query: q,
+				max: 5
+			}).then(users => {
+				users.forEach(user => {
+					user._click = () => {
+						this.trigger('navigate-user', user);
+						this.searchResult = [];
+					};
+				});
+				this.update({
+					searchResult: users
+				});
+			});
 		};
 
-		this.on-search-keydown = e => {
-			const key = e.which;
-			switch (key)
-				| 9, 40 => // Key[TAB] or Key[↓]
+		this.onSearchKeydown = e => {
+			switch (e.which) {
+				case 9: // [TAB]
+				case 40: // [↓]
 					e.preventDefault();
 					e.stopPropagation();
 					this.refs.searchResult.childNodes[0].focus();
+					break;
+			}
 		};
 
-		this.on-searchResult-keydown = (i, e) => {
-			key = e.which
-			switch (key)
-				| 10, 13 => // Key[ENTER]
-					e.preventDefault();
-					e.stopPropagation();
+		this.onSearchResultKeydown = (i, e) => {
+			const cancel = () => {
+				e.preventDefault();
+				e.stopPropagation();
+			};
+			switch (true) {
+				case e.which == 10: // [ENTER]
+				case e.which == 13: // [ENTER]
+					cancel();
 					this.searchResult[i]._click();
-				| 27 => // Key[ESC]
-					e.preventDefault();
-					e.stopPropagation();
+					break;
+
+				case e.which == 27: // [ESC]
+					cancel();
 					this.refs.search.focus();
-				| 38 => // Key[↑]
-					e.preventDefault();
-					e.stopPropagation();
+					break;
+
+				case e.which == 9 && e.shiftKey: // [TAB] + [Shift]
+				case e.which == 38: // [↑]
+					cancel();
 					(this.refs.searchResult.childNodes[i].previousElementSibling || this.refs.searchResult.childNodes[this.searchResult.length - 1]).focus();
-				| 9, 40 => // Key[TAB] or Key[↓]
-					e.preventDefault();
-					e.stopPropagation();
+					break;
+
+				case e.which == 9: // [TAB]
+				case e.which == 40: // [↓]
+					cancel();
 					(this.refs.searchResult.childNodes[i].nextElementSibling || this.refs.searchResult.childNodes[0]).focus();
+					break;
+			}
 		};
 
 	</script>

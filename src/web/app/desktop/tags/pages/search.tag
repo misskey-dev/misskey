@@ -5,7 +5,6 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
 		this.mixin('ui-progress');
@@ -15,5 +14,7 @@
 
 			this.refs.ui.refs.search.on('loaded', () => {
 				this.Progress.done();
+			});
+		});
 	</script>
 </mk-search-page>

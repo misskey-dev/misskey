@@ -23,10 +23,12 @@
 
 	</style>
 	<script>
-		this.query = this.opts.query
+		this.query = this.opts.query;
 
 		this.on('mount', () => {
 			this.refs.posts.on('loaded', () => {
 				this.trigger('loaded');
+			});
+		});
 	</script>
 </mk-search>

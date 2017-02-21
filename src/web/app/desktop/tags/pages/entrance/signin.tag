@@ -120,11 +120,15 @@
 	</style>
 	<script>
 		this.on('mount', () => {
-			this.refs.signin.on('user', (user) => {
-				@update do
+			this.refs.signin.on('user', user => {
+				this.update({
 					user: user
+				});
+			});
+		});
 
 		this.introduction = () => {
-			this.parent.introduction!
+			this.parent.introduction();
+		};
 	</script>
 </mk-entrance-signin>

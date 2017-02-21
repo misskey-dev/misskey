@@ -60,27 +60,33 @@
 		this.mixin('api');
 		this.mixin('is-promise');
 
-		this.images = []
-		this.initializing = true
-
-		this.user = null
-		this.user-promise = if @is-promise this.opts.user then this.opts.user else Promise.resolve this.opts.user
+		this.images = [];
+		this.initializing = true;
+		this.user = null;
+		this.userPromise = this.isPromise(this.opts.user)
+			? this.opts.user
+			: Promise.resolve(this.opts.user);
 
 		this.on('mount', () => {
-			this.user-promise}).then((user) => {
-				this.user = user
-				this.update();
+			this.userPromise.then(user => {
+				this.update({
+					user: user
+				});
 
 				this.api('users/posts', {
-					user_id: this.user.id
-					with_media: true
-					limit: 9posts
-				}).then((posts) => {
-					this.initializing = false
-					posts.forEach (post) =>
-						post.media.forEach (image) =>
-							if @images.length < 9
-								@images.push image
+					user_id: this.user.id,
+					with_media: true,
+					limit: 9
+				}).then(posts => {
+					this.initializing = false;
+					posts.forEach(post => {
+						post.media.forEach(media => {
+							if (this.images.length < 9) this.images.push(image);
+						});
+					});
 					this.update();
+				});
+			});
+		});
 	</script>
 </mk-user-photos>

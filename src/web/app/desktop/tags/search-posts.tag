@@ -31,56 +31,61 @@
 		this.mixin('api');
 		this.mixin('get-post-summary');
 
-		this.query = this.opts.query
-		this.is-loading = true
-		this.is-empty = false
-		this.more-loading = false
-		this.page = 0
+		this.query = this.opts.query;
+		this.isLoading = true;
+		this.isEmpty = false;
+		this.moreLoading = false;
+		this.page = 0;
 
 		this.on('mount', () => {
-			document.addEventListener 'keydown' this.on-document-keydown
-			window.addEventListener 'scroll' this.on-scroll
+			document.addEventListener('keydown', this.onDocumentKeydown);
+			window.addEventListener('scroll', this.onScroll);
 
 			this.api('posts/search', {
 				query: this.query
-			}).then((posts) => {
-				this.is-loading = false
-				this.is-empty = posts.length == 0
-				this.update();
-				this.refs.timeline.set-posts posts
+			}).then(posts => {
+				this.update({
+					isLoading: false,
+					isEmpty: posts.length == 0
+				});
+				this.refs.timeline.setPosts(posts);
 				this.trigger('loaded');
-			.catch (err) =>
-				console.error err
+			});
+		});
 
 		this.on('unmount', () => {
-			document.removeEventListener 'keydown' this.on-document-keydown
-			window.removeEventListener 'scroll' this.on-scroll
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+			window.removeEventListener('scroll', this.onScroll);
+		});
 
-		this.on-document-keydown = (e) => {
-			tag = e.target.tag-name.to-lower-case!
-			if tag != 'input' and tag != 'textarea' 
-				if e.which == 84 // t
+		this.onDocumentKeydown = e => {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 84) { // t
 					this.refs.timeline.focus();
+				}
+			}
+		};
 
 		this.more = () => {
-			if @more-loading or @is-loading or this.timeline.posts.length == 0
-				return
-			this.more-loading = true
-			this.update();
+			if (this.moreLoading || this.isLoading || this.timeline.posts.length == 0) return;
+			this.update({
+				moreLoading: true
+			});
 			this.api('posts/search', {
-				query: this.query
+				query: this.query,
 				page: this.page + 1
-			}).then((posts) => {
-				this.more-loading = false
-				this.page++
-				this.update();
-				this.refs.timeline.prepend-posts posts
-			.catch (err) =>
-				console.error err
+			}).then(posts => {
+				this.update({
+					moreLoading: false,
+					page: page + 1
+				});
+				this.refs.timeline.prependPosts(posts);
+			});
+		};
 
-		this.on-scroll = () => {
-			current = window.scrollY + window.inner-height
-			if current > document.body.offset-height - 16 // 遊び
-				@more!
+		this.onScroll = () => {
+			const current = window.scrollY + window.innerHeight;
+			if (current > document.body.offsetHeight - 16) this.more();
+		};
 	</script>
 </mk-search-posts>
