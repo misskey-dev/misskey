@@ -23,7 +23,7 @@
 		<h1>サインインしてください</h1>
 		<mk-signin></mk-signin>
 	</main>
-	<footer><img src="/_/resources/auth/logo.svg" alt="Misskey"/></footer>
+	<footer><img src="/resources/auth/logo.svg" alt="Misskey"/></footer>
 	<style>
 		:scope
 			display block

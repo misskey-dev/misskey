@@ -4,9 +4,9 @@ html {
 	font-family: sans-serif;
 }
 
-body > noscript > div {
+body > noscript {
 	position: fixed;
-	z-index: 32768;
+	z-index: 2;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -14,16 +14,16 @@ body > noscript > div {
 	text-align: center;
 	background: #fff;
 }
-	body > noscript > div > p {
+	body > noscript > p {
 		display: block;
 		margin: 32px;
 		font-size: 2em;
 		color: #555;
 	}
 
-#init {
+#ini {
 	position: fixed;
-	z-index: 16384;
+	z-index: 1;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -32,27 +32,27 @@ body > noscript > div {
 	background: #fff;
 	cursor: wait;
 }
-	#init > p {
+	#ini > p {
 		display: block;
 		user-select: none;
 		margin: 32px;
 		font-size: 4em;
 		color: #555;
 	}
-		#init > p > span {
-			animation: init 1.4s infinite ease-in-out both;
+		#ini > p > span {
+			animation: ini 1.4s infinite ease-in-out both;
 		}
-		#init > p > span:nth-child(1) {
+		#ini > p > span:nth-child(1) {
 			animation-delay: 0s;
 		}
-		#init > p > span:nth-child(2) {
+		#ini > p > span:nth-child(2) {
 			animation-delay: 0.16s;
 		}
-		#init > p > span:nth-child(3) {
+		#ini > p > span:nth-child(3) {
 			animation-delay: 0.32s;
 		}
 
-@keyframes init {
+@keyframes ini {
 	0%, 80%, 100% {
 		opacity: 1;
 	}
