@@ -335,12 +335,11 @@
 
 		this.repost = () => {
 			const text = window.prompt(`「${this.summary}」をRepost`);
-			if (text) {
-				this.api('posts/create', {
-					repost_id: this.p.id,
-					text: text == '' ? undefined : text
-				});
-			}
+			if (text == null) return;
+			this.api('posts/create', {
+				repost_id: this.p.id,
+				text: text == '' ? undefined : text
+			});
 		};
 
 		this.like = () => {
