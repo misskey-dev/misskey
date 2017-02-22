@@ -12,6 +12,16 @@ export default async (req: express.Request, res: express.Response) => {
 	const username = req.body['username'];
 	const password = req.body['password'];
 
+	if (typeof username != 'string') {
+		res.sendStatus(400);
+		return;
+	}
+
+	if (typeof password != 'string') {
+		res.sendStatus(400);
+		return;
+	}
+
 	// Fetch user
 	const user = await User.findOne({
 		username_lower: username.toLowerCase()

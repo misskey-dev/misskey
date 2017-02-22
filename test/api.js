@@ -120,6 +120,19 @@ describe('API', () => {
 			});
 		}));
 
+		it('クエリをインジェクションできない', () => new Promise(async (done) => {
+			const me = await insertSakurako();
+			request('/signin', {
+				username: me.username,
+				password: {
+					$gt: ''
+				}
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		}));
+
 		it('正しい情報でサインインできる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
 			request('/signin', {

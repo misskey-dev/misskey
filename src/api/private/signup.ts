@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import recaptcha = require('recaptcha-promise');
 import User from '../models/user';
-import { validateUsername } from '../models/user';
+import { validateUsername, validatePassword } from '../models/user';
 import serialize from '../serializers/user';
 import config from '../../conf';
 
@@ -34,7 +34,7 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Validate password
-	if (password == '') {
+	if (!validatePassword(password)) {
 		res.sendStatus(400);
 		return;
 	}
