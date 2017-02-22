@@ -1,17 +1,13 @@
 <mk-ui>
-	<div class="global" ref="global">
-		<mk-ui-header ref="header"></mk-ui-header>
-		<mk-ui-nav ref="nav"></mk-ui-nav>
-		<div class="content" ref="main"><yield /></div>
+	<mk-ui-header></mk-ui-header>
+	<mk-ui-nav ref="nav"></mk-ui-nav>
+	<div class="content">
+		<yield />
 	</div>
 	<mk-stream-indicator></mk-stream-indicator>
 	<style>
 		:scope
 			display block
-
-			> .global
-				> .content
-					background #fff
 	</style>
 	<script>
 		this.mixin('stream');
