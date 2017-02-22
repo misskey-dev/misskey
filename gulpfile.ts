@@ -14,16 +14,13 @@ import * as es from 'event-stream';
 import * as webpack from 'webpack-stream';
 import cssnano = require('gulp-cssnano');
 import * as uglify from 'gulp-uglify';
-import riotify = require('riotify');
 import pug = require('gulp-pug');
 import git = require('git-last-commit');
 import * as rimraf from 'rimraf';
-import * as escapeHtml from 'escape-html';
 import prominence = require('prominence');
 import * as chalk from 'chalk';
 import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
-import named = require('vinyl-named');
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -32,6 +29,8 @@ const isDebug = !isProduction;
 if (isDebug) {
 	console.log(chalk.yellow.bold('！！！注意！！！　開発モードが有効です。(成果物の圧縮などはスキップされます)'));
 }
+
+const constants = require('./src/const.json');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -65,37 +64,22 @@ gulp.task('build:ts', () =>
 
 gulp.task('build:about:docs', () => {
 	function getLicenseHtml(path: string) {
-		return escapeHtml(fs.readFileSync(path, 'utf-8'))
+		return fs.readFileSync(path, 'utf-8')
 			.replace(/\r\n/g, '\n')
 			.replace(/(.)\n(.)/g, '$1 $2')
 			.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
 	}
 
-	function getLicenseSectionHtml(path: string) {
-		try {
-			const pkg = JSON.parse(fs.readFileSync(Path.parse(path).dir + '/package.json', 'utf-8'));
-			const licenseHtml = getLicenseHtml(path);
-			return `<details><summary>${pkg.name} <small>v${pkg.version}</small></summary>${licenseHtml}</details>`;
-		} catch (e) {
-			return null;
-		}
-	}
-
-	const licenses = glob.sync('./node_modules/**/LICENSE*');
 	const licenseHtml = getLicenseHtml('./LICENSE');
-	const thirdpartyLicensesHtml = licenses.map(license => getLicenseSectionHtml(license)).join('');
-	const pugs = glob.sync('./docs/**/*.pug');
-	const streams = pugs.map(file => {
+	const streams = glob.sync('./docs/**/*.pug').map(file => {
 		const page = file.replace('./docs/', '').replace('.pug', '');
 		return gulp.src(file)
 			.pipe(pug({
-				locals: Object.assign({
+				locals: {
 					path: page,
 					license: licenseHtml,
-					thirdpartyLicenses: thirdpartyLicensesHtml
-				}, {
-					themeColor: '#f76d6c'
-				})
+					themeColor: constants.themeColor
+				}
 			}))
 			.pipe(gulp.dest('./built/web/about/pages/' + Path.parse(page).dir));
 	});
@@ -209,7 +193,7 @@ gulp.task('build:client:pug', [
 	gulp.src('./src/web/app/*/view.pug')
 		.pipe(pug({
 			locals: {
-				themeColor: '#f76d6c'
+				themeColor: constants.themeColor
 			}
 		}))
 		.pipe(gulp.dest('./built/web/app/'))
