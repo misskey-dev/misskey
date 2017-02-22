@@ -24,12 +24,14 @@
 			display block
 			position absolute
 			z-index 2048
+			margin-top -8px
 			width 250px
 			background #fff
 			background-clip content-box
 			border solid 1px rgba(0, 0, 0, 0.1)
 			border-radius 4px
 			overflow hidden
+			opacity 0
 
 			> .banner
 				height 84px
@@ -117,12 +119,11 @@
 				this.update({
 					user: user
 				});
+				this.open();
 			});
+		});
 
-			Velocity(this.root, {
-				opacity: 0,
-				'margin-top': '-8px'
-			}, 0);
+		this.open = () => {
 			Velocity(this.root, {
 				opacity: 1,
 				'margin-top': 0
@@ -130,7 +131,7 @@
 				duration: 200,
 				easing: 'ease-out'
 			});
-		});
+		};
 
 		this.close = () => {
 			Velocity(this.root, {
