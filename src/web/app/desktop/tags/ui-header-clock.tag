@@ -71,6 +71,7 @@
 			this.dd = ('0' + now.getDate()).slice(-2);
 			this.hh = ('0' + now.getHours()).slice(-2);
 			this.nn = ('0' + now.getMinutes()).slice(-2);
+			this.update();
 		};
 
 		this.on('mount', () => {
