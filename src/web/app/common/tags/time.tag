@@ -10,12 +10,12 @@
 		this.tickid = null;
 
 		this.absolute =
-			this.time.getFullYear()  + '年' +
-			this.time.getMonth() + 1 + '月' +
-			this.time.getDate()      + '日' +
+			this.time.getFullYear()    + '年' +
+			(this.time.getMonth() + 1) + '月' +
+			this.time.getDate()        + '日' +
 			' ' +
-			this.time.getHours()     + '時' +
-			this.time.getMinutes()   + '分';
+			this.time.getHours()       + '時' +
+			this.time.getMinutes()     + '分';
 
 		this.on('mount', () => {
 			if (this.mode == 'relative' || this.mode == 'detail') {
