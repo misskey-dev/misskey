@@ -26,7 +26,7 @@
 
 		this.more = () => {
 			this.offset += this.max;
-			this.api('posts/search', {
+			return this.api('posts/search', {
 				query: this.query,
 				max: this.max,
 				offset: this.offset

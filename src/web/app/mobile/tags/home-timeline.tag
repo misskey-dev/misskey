@@ -28,7 +28,7 @@
 		});
 
 		this.more = () => {
-			this.api('posts/timeline', {
+			return this.api('posts/timeline', {
 				max_id: this.refs.timeline.tail().id
 			});
 		};

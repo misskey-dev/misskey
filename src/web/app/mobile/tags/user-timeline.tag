@@ -25,7 +25,7 @@
 		});
 
 		this.more = () => {
-			this.api('users/posts', {
+			return this.api('users/posts', {
 				user_id: this.user.id,
 				with_media: this.withMedia,
 				max_id: this.refs.timeline.tail().id
