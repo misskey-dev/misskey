@@ -22,7 +22,7 @@ module.exports = (commit, env) => {
 					exclude: /node_modules/,
 					loader: StringReplacePlugin.replace({
 						replacements: [
-							{ pattern: /\$theme\-color\-foreground/g, replacement: () => '#fff' },
+							{ pattern: /\$theme\-color\-foreground/g, replacement: () => constants.themeColorForeground },
 							{ pattern: /\$theme\-color/g, replacement: () => constants.themeColor },
 						]
 					})
