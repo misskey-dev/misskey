@@ -329,7 +329,7 @@
 
 		this.title = this.dateStringify(this.p.created_at);
 
-		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id;
+		this.url = `/${this.p.user.username}/${this.p.id}`;
 		this.isDetailOpened = false;
 
 		this.on('mount', () => {

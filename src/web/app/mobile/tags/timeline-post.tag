@@ -304,7 +304,7 @@
 		this.isRepost = this.post.repost != null && this.post.text == null;
 		this.p = this.isRepost ? this.post.repost : this.post;
 		this.summary = this.getPostSummary(this.p);
-		this.url = CONFIG.url + '/' + this.p.user.username + '/' + this.p.id
+		this.url = `/${this.p.user.username}/${this.p.id}`;
 
 		this.on('mount', () => {
 			if (this.p.text) {
