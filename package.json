@@ -1,13 +1,13 @@
 {
-  "private": true,
   "name": "misskey",
-  "version": "1.0.0",
-  "description": "A miniblog-based SNS",
   "author": "syuilo <i@syuilo.com>",
+  "version": "1.0.0",
   "license": "MIT",
-  "repository": "https://github.com/syuilo/misskey.git",
+  "description": "A miniblog-based SNS",
   "bugs": "https://github.com/syuilo/misskey/issues",
+  "repository": "https://github.com/syuilo/misskey.git",
   "main": "./built/index.js",
+  "private": true,
   "scripts": {
     "config": "node ./tools/init.js",
     "start": "node ./built",
