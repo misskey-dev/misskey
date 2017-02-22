@@ -8,6 +8,7 @@
 	<style>
 		:scope
 			display block
+			padding-top 48px
 	</style>
 	<script>
 		this.mixin('stream');

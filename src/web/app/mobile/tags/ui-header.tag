@@ -13,8 +13,7 @@
 			$height = 48px
 
 			display block
-			position -webkit-sticky
-			position sticky
+			position fixed
 			top 0
 			z-index 1024
 			width 100%
