@@ -4,7 +4,7 @@
 language: node_js
 
 node_js:
-  - "7.3.0"
+  - "7.5.0"
 
 services:
   - mongodb
