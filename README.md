@@ -1,4 +1,6 @@
-# Misskey
+Misskey
+================================
+
 [![][travis-badge]][travis-link]
 [![][appveyor-badge]][appveyor-link]
 [![][dependencies-badge]][dependencies-link]
@@ -8,15 +10,15 @@
 [![][himawari-badge]][himasaku]
 [![][sakurako-badge]][himasaku]
 
-[![Sauce Test Status][saucelabs-image]][saucelabs-url]
-
 Welcome!
 
-Misskey is a completely open source, ultimately sophisticated new type of mini-blog based SNS.
+[Misskey](https://misskey.xyz) is a completely open source,
+ultimately sophisticated new type of mini-blog based SNS.
 
 ![ss](./resources/ss.jpg)
 
-## Features
+Key features
+--------------------------------
 * Automatically updated timeline
 * Private chatting (messaging)
 * Free 1GB storage
@@ -26,21 +28,11 @@ Misskey is a completely open source, ultimately sophisticated new type of mini-b
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
 
-## Building
-1. Install *git*, *Node.js* and *npm*
-2. `git clone git://github.com/syuilo/misskey.git`
-3. `cd misskey`
-4. `npm install`
-5. `npm run build`
-
-GLHF!
-
-## Testing
-Run `npm test` after building
-
-## Setup
+Setup
+--------------------------------
 ### Dependencies :package:
 Please install these softwares.
+* *Node.js* and *npm*
 * **[MongoDB](https://www.mongodb.com/)**
 * **[Redis](https://redis.io/)**
 * **[GraphicsMagick](http://www.graphicsmagick.org/)**
@@ -57,7 +49,7 @@ Misskey requires two domains called the primary domain and the secondary domain.
 **Ensure that the secondary domain is not a subdomain of the primary domain.**
 
 #### Subdomains
-Misskey uses following subdomains:
+Note that Misskey uses following subdomains:
 
 * **api**.*{primary domain}*
 * **auth**.*{primary domain}*
@@ -65,10 +57,11 @@ Misskey uses following subdomains:
 * **dev**.*{primary domain}*
 * **file**.*{secondary domain}*
 
-### reCAPTCHA
+### reCAPTCHA tokens
 Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
-## Setup with Docker :whale:
+Setup with Docker :whale:
+--------------------------------
 Ensure that the working directory is the repository root directory.
 
 To create misskey image:
@@ -90,15 +83,31 @@ If you want to run misskey in production mode, add `--env NODE_ENV=production` l
 
 Note that `$(pwd)` is the working directory.
 
-## Launch
+Building
+--------------------------------
+1. `git clone git://github.com/syuilo/misskey.git`
+2. `cd misskey`
+3. `npm install`
+4. `npm run build`
+
+GLHF!
+
+Launch
+--------------------------------
 (初回起動時はまず `npm run config` してください)
 `sudo npm start`
 
-## Debugging :bug:
+Testing
+--------------------------------
+Run `npm test` after building
+
+Debugging :bug:
+--------------------------------
 ### Show a debug messages
 Misskey uses [debug](https://github.com/visionmedia/debug) and namespace is `misskey:*`.
 
-## Contribute
+Contribute
+--------------------------------
 Do you have feature request or problem with Misskey?
 Please create issue to report it if it is about the Misskey implementation itself.
 
@@ -114,12 +123,14 @@ Pull requests are always welcome.
 * More [docs](./docs)!
 * More cleaning up code!
 
-## Collaborators
+Collaborators
+------------------------------
 | ![syuilo](https://avatars2.githubusercontent.com/u/4439005?v=3&s=70) | ![Morisawa Aya](https://avatars0.githubusercontent.com/u/10798641?v=3&s=70)
 |---|---|
 | [syuilo](https://syuilo.com) | [Aya Morisawa](https://github.com/ayamorisawa)|
 
-## Copyright
+Copyright
+------------------------------
 Misskey is an open-source software licensed under [The MIT License](LICENSE).
 
 🍮
@@ -132,8 +143,6 @@ Misskey is an open-source software licensed under [The MIT License](LICENSE).
 [appveyor-badge]:     https://img.shields.io/appveyor/ci/syuilo/misskey/master.svg?style=flat-square&label=Windows
 [dependencies-link]:  https://gemnasium.com/syuilo/misskey
 [dependencies-badge]: https://img.shields.io/gemnasium/syuilo/misskey.svg?style=flat-square
-[saucelabs-image]:    https://saucelabs.com/browser-matrix/syuilo.svg
-[saucelabs-url]:      https://saucelabs.com/u/syuilo
 [saythanks]:          https://saythanks.io/to/syuilo
 [saythanks-badge]:    https://img.shields.io/badge/SayThanks.io-☼-1EAEDB.svg?style=flat-square
 [himasaku]:           https://himasaku.net
