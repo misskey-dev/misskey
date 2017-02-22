@@ -39,7 +39,7 @@ export default (
 			_id: app
 		});
 	} else if (typeof app === 'string') {
-		_app = await User.findOne({
+		_app = await App.findOne({
 			_id: new mongo.ObjectID(app)
 		});
 	} else {
