@@ -15,6 +15,9 @@
   },
   "compileOnSave": false,
   "include": [
-    "./gulpfile.ts"
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "./web/app/**/*.ts"
   ]
 }

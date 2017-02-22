@@ -8,7 +8,7 @@ import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as babel from 'gulp-babel';
 import * as ts from 'gulp-typescript';
-import * as tslint from 'gulp-tslint';
+import tslint from 'gulp-tslint';
 import * as glob from 'glob';
 import * as es from 'event-stream';
 import * as webpack from 'webpack-stream';
@@ -32,7 +32,7 @@ if (isDebug) {
 
 const constants = require('./src/const.json');
 
-const tsProject = ts.createProject('tsconfig.json');
+const tsProject = ts.createProject('./src/tsconfig.json');
 
 gulp.task('build', [
 	'build:js',
@@ -92,11 +92,11 @@ gulp.task('build:copy', () =>
 		gulp.src([
 			'./src/**/resources/**/*',
 			'!./src/web/app/**/resources/**/*'
-		]).pipe(gulp.dest('./built/')),
+		]).pipe(gulp.dest('./built/')) as any,
 		gulp.src([
 			'./src/web/about/**/*',
 			'!./src/web/about/**/*.pug'
-		]).pipe(gulp.dest('./built/web/about/'))
+		]).pipe(gulp.dest('./built/web/about/')) as any
 	)
 );
 
@@ -155,8 +155,8 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 	}
 
 	es.merge(
-		stream.pipe(gulp.dest('./built/web/resources/')),
-		entryPointStream.pipe(gulp.dest('./built/web/resources/client/'))
+		stream.pipe(gulp.dest('./built/web/resources/')) as any,
+		entryPointStream.pipe(gulp.dest('./built/web/resources/client/')) as any
 	);
 
 	ok();
@@ -165,7 +165,7 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/web/app/init.css')
 		.pipe(isProduction
-			? cssnano()
+			? (cssnano as any)()
 			: gutil.noop())
 		.pipe(gulp.dest('./built/web/resources/'))
 );
@@ -173,16 +173,16 @@ gulp.task('build:client:styles', () =>
 gulp.task('copy:client', [
 	'build:client:scripts'
 ], () =>
-	gulp.src([
-		'./resources/**/*',
-		'./src/web/resources/**/*',
-		'./src/web/app/*/resources/**/*'
-	])
-	.pipe(isProduction ? imagemin() : gutil.noop())
-	.pipe(rename(path => {
-		path.dirname = path.dirname.replace('resources', '.');
-	}))
-	.pipe(gulp.dest('./built/web/resources/'))
+		gulp.src([
+			'./resources/**/*',
+			'./src/web/resources/**/*',
+			'./src/web/app/*/resources/**/*'
+		])
+			.pipe(isProduction ? (imagemin as any)() : gutil.noop())
+			.pipe(rename(path => {
+				path.dirname = path.dirname.replace('resources', '.');
+			}))
+			.pipe(gulp.dest('./built/web/resources/'))
 );
 
 gulp.task('build:client:pug', [
@@ -190,11 +190,11 @@ gulp.task('build:client:pug', [
 	'build:client:scripts',
 	'build:client:styles'
 ], () =>
-	gulp.src('./src/web/app/*/view.pug')
-		.pipe(pug({
-			locals: {
-				themeColor: constants.themeColor
-			}
-		}))
-		.pipe(gulp.dest('./built/web/app/'))
+		gulp.src('./src/web/app/*/view.pug')
+			.pipe(pug({
+				locals: {
+					themeColor: constants.themeColor
+				}
+			}))
+			.pipe(gulp.dest('./built/web/app/'))
 );
