@@ -14,13 +14,13 @@
 					<span class="username">@{ user.username }</span>
 					<span class="followed" if={ user.is_followed }>フォローされています</span>
 				</div>
-				<div class="bio">{ user.bio }</div>
+				<div class="description">{ user.description }</div>
 				<div class="info">
-					<p class="location" if={ user.location }>
-						<i class="fa fa-map-marker"></i>{ user.location }
+					<p class="location" if={ user.profile.location }>
+						<i class="fa fa-map-marker"></i>{ user.profile.location }
 					</p>
-					<p class="birthday" if={ user.birthday }>
-						<i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.birthday) }歳)
+					<p class="birthday" if={ user.profile.birthday }>
+						<i class="fa fa-birthday-cake"></i>{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)
 					</p>
 				</div>
 				<div class="friends">
@@ -119,7 +119,7 @@
 								background #f8f8f8
 								border-radius 4px
 
-						> .bio
+						> .description
 							margin 8px 0
 							color #333
 

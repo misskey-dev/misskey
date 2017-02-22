@@ -5,7 +5,7 @@
 			<p class="name">{ user.name }</p>
 			<p class="username">@{ user.username }</p>
 		</div>
-		<div class="bio">{ user.bio }</div>
+		<div class="description">{ user.description }</div>
 		<div class="status">
 			<div>
 				<p>投稿</p><a>{ user.posts_count }</a>
@@ -69,7 +69,7 @@
 					font-size 0.8em
 					color #999
 
-			> .bio
+			> .description
 				padding 0 16px
 				font-size 0.7em
 				color #555

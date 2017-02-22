@@ -3,9 +3,9 @@
 		<mk-big-follow-button user={ user }></mk-big-follow-button>
 		<p class="followed" if={ user.is_followed }>フォローされています</p>
 	</div>
-	<div class="bio" if={ user.bio != '' }>{ user.bio }</div>
-	<div class="birthday" if={ user.birthday }>
-		<p><i class="fa fa-birthday-cake"></i>{ user.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.birthday) }歳)</p>
+	<div class="description" if={ user.description }>{ user.description }</div>
+	<div class="birthday" if={ user.profile.birthday }>
+		<p><i class="fa fa-birthday-cake"></i>{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)</p>
 	</div>
 	<div class="twitter" if={ user.twitter }>
 		<p><i class="fa fa-twitter"></i><a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
@@ -39,7 +39,7 @@
 					background #eefaff
 					border-radius 4px
 
-			> .bio
+			> .description
 				padding 16px
 				color #555
 				border-top solid 1px #eee

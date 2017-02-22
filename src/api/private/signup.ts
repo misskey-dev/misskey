@@ -65,14 +65,12 @@ export default async (req: express.Request, res: express.Response) => {
 		token: secret,
 		avatar_id: null,
 		banner_id: null,
-		birthday: null,
 		created_at: new Date(),
-		bio: null,
+		description: null,
 		email: null,
 		followers_count: 0,
 		following_count: 0,
 		links: null,
-		location: null,
 		name: name,
 		password: hash,
 		posts_count: 0,
@@ -80,7 +78,17 @@ export default async (req: express.Request, res: express.Response) => {
 		liked_count: 0,
 		drive_capacity: 1073741824, // 1GB
 		username: username,
-		username_lower: username.toLowerCase()
+		username_lower: username.toLowerCase(),
+		profile: {
+			bio: null,
+			birthday: null,
+			blood: null,
+			gender: null,
+			handedness: null,
+			height: null,
+			location: null,
+			weight: null
+		}
 	});
 
 	// Response

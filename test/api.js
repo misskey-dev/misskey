@@ -134,7 +134,11 @@ describe('API', () => {
 
 	describe('i/update', () => {
 		it('アカウント設定を更新できる', () => new Promise(async (done) => {
-			const me = await insertSakurako();
+			const me = await insertSakurako({
+				profile: {
+					gender: 'female'
+				}
+			});
 
 			const myName = '大室櫻子';
 			const myLocation = '七森中';
@@ -148,8 +152,10 @@ describe('API', () => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
 				res.body.should.have.property('name').eql(myName);
-				res.body.should.have.property('location').eql(myLocation);
-				res.body.should.have.property('birthday').eql(myBirthday);
+				res.body.should.have.property('profile').a('object');
+				res.body.should.have.deep.property('profile.location').eql(myLocation);
+				res.body.should.have.deep.property('profile.birthday').eql(myBirthday);
+				res.body.should.have.deep.property('profile.gender').eql('female');
 				done();
 			});
 		}));
@@ -159,11 +165,12 @@ describe('API', () => {
 				birthday: '2000-09-07'
 			});
 			request('/i/update', {
-				birthday: ''
+				birthday: null
 			}, me).then(res => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
-				res.body.should.have.property('birthday').eql(null);
+				res.body.should.have.property('profile').a('object');
+				res.body.should.have.deep.property('profile.birthday').eql(null);
 				done();
 			});
 		}));
@@ -1214,7 +1221,8 @@ async function insertSakurako(opts) {
 		token: '!00000000000000000000000000000000',
 		username: 'sakurako',
 		username_lower: 'sakurako',
-		password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy' // HimawariDaisuki06160907
+		password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy', // HimawariDaisuki06160907
+		profile: {}
 	}, opts));
 }
 
@@ -1223,7 +1231,8 @@ async function insertHimawari(opts) {
 		token: '!00000000000000000000000000000001',
 		username: 'himawari',
 		username_lower: 'himawari',
-		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O' // ilovesakurako
+		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O', // ilovesakurako
+		profile: {}
 	}, opts));
 }
 

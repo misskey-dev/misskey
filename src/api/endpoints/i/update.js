@@ -39,7 +39,7 @@ module.exports = async (params, user, _, isSecure) =>
 			return rej('too long location');
 		}
 
-		user.location = location;
+		user.profile.location = location;
 	}
 
 	// Get 'bio' parameter
@@ -49,21 +49,19 @@ module.exports = async (params, user, _, isSecure) =>
 			return rej('too long bio');
 		}
 
-		user.bio = bio;
+		user.profile.bio = bio;
 	}
 
 	// Get 'birthday' parameter
 	const birthday = params.birthday;
 	if (birthday != null) {
-		if (birthday != '') {
-			if (!isValidBirthday(birthday)) {
-				return rej('invalid birthday');
-			}
-
-			user.birthday = birthday;
-		} else {
-			user.birthday = null;
+		if (!isValidBirthday(birthday)) {
+			return rej('invalid birthday');
 		}
+
+		user.profile.birthday = birthday;
+	} else {
+		user.profile.birthday = null;
 	}
 
 	// Get 'avatar_id' parameter
@@ -81,11 +79,9 @@ module.exports = async (params, user, _, isSecure) =>
 	await User.update(user._id, {
 		$set: {
 			name: user.name,
-			location: user.location,
-			bio: user.bio,
-			birthday: user.birthday,
 			avatar_id: user.avatar_id,
-			banner_id: user.banner_id
+			banner_id: user.banner_id,
+			profile: user.profile
 		}
 	});
 

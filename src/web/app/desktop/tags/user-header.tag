@@ -3,7 +3,7 @@
 	<div class="title">
 		<p class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</p>
 		<p class="username">@{ user.username }</p>
-		<p class="location" if={ user.location }><i class="fa fa-map-marker"></i>{ user.location }</p>
+		<p class="location" if={ user.profile.location }><i class="fa fa-map-marker"></i>{ user.profile.location }</p>
 	</div>
 	<footer><a href={ '/' + user.username }>投稿</a><a href={ '/' + user.username + '/media' }>メディア</a><a href={ '/' + user.username + '/graphs' }>グラフ</a>
 		<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>

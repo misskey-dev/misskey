@@ -1,11 +1,15 @@
-<mk-list-user><a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }><img class="avatar" src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
+<mk-list-user>
+	<a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }>
+		<img class="avatar" src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	</a>
 	<div class="main">
 		<header>
-			<div class="left"><a class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</a><span class="username">@{ user.username }</span></div>
+			<a class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</a>
+			<span class="username">@{ user.username }</span>
 		</header>
 		<div class="body">
 			<p class="followed" if={ user.is_followed }>フォローされています</p>
-			<div class="bio">{ user.bio }</div>
+			<div class="description">{ user.description }</div>
 		</div>
 	</div>
 	<mk-follow-button user={ user }></mk-follow-button>
@@ -41,31 +45,23 @@
 				> header
 					margin-bottom 2px
 
-					&:after
-						content ""
-						display block
-						clear both
+					> .name
+						display inline
+						margin 0
+						padding 0
+						color #777
+						font-size 1em
+						font-weight 700
+						text-align left
+						text-decoration none
 
-					> .left
-						float left
+						&:hover
+							text-decoration underline
 
-						> .name
-							display inline
-							margin 0
-							padding 0
-							color #777
-							font-size 1em
-							font-weight 700
-							text-align left
-							text-decoration none
-
-							&:hover
-								text-decoration underline
-
-						> .username
-							text-align left
-							margin 0 0 0 8px
-							color #ccc
+					> .username
+						text-align left
+						margin 0 0 0 8px
+						color #ccc
 
 				> .body
 					> .followed
@@ -78,7 +74,7 @@
 						background #eefaff
 						border-radius 4px
 
-					> .bio
+					> .description
 						cursor default
 						display block
 						margin 0

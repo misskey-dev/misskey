@@ -1,8 +1,14 @@
-<mk-user-preview><a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }><img class="avatar" src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
+<mk-user-preview>
+	<a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }>
+		<img class="avatar" src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	</a>
 	<div class="main">
-		<header><a class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</a><span class="username">@{ user.username }</span></header>
+		<header>
+			<a class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</a>
+			<span class="username">@{ user.username }</span>
+		</header>
 		<div class="body">
-			<div class="bio">{ user.bio }</div>
+			<div class="description">{ user.description }</div>
 		</div>
 	</div>
 	<style>
@@ -75,7 +81,7 @@
 
 				> .body
 
-					> .bio
+					> .description
 						cursor default
 						display block
 						margin 0
