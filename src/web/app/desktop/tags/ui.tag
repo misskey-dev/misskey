@@ -26,7 +26,7 @@
 		});
 
 		this.onkeydown = e => {
-			if (e.target.tagName == 'input' || e.target.tagName == 'textarea') return;
+			if (e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA') return;
 
 			if (e.which == 80 || e.which == 78) { // p or n
 				e.preventDefault();
