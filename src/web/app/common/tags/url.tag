@@ -33,15 +33,14 @@
 		this.url = this.opts.href;
 
 		this.on('before-mount', () => {
-			parser = document.createElement('a'); 
-			parser.href = this.url;
+			const url = new URL(this.url);
 
-			this.schema = parser.protocol;
-			this.hostname = parser.hostname;
-			this.port = parser.port;
-			this.pathname = parser.pathname;
-			this.query = parser.search;
-			this.hash = parser.hash;
+			this.schema = url.protocol;
+			this.hostname = url.hostname;
+			this.port = url.port;
+			this.pathname = url.pathname;
+			this.query = url.search;
+			this.hash = url.hash;
 
 			this.update();
 		});
