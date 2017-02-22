@@ -34,15 +34,22 @@ export default (
 
 	let _user: any;
 
+	const fields = opts.detail ? {
+		data: false
+	} : {
+		data: false,
+		profile: false
+	};
+
 	// Populate the user if 'user' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
 		_user = await User.findOne({
 			_id: user
-		});
+		}, { fields });
 	} else if (typeof user === 'string') {
 		_user = await User.findOne({
 			_id: new mongo.ObjectID(user)
-		});
+		}, { fields });
 	} else {
 		_user = deepcopy(user);
 	}

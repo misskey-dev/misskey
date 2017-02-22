@@ -38,10 +38,16 @@ module.exports = (params, me) =>
 		return rej('incorrect user_id');
 	}
 
+	const q = userId != null
+		? { _id: new mongo.ObjectID(userId) }
+		: { username_lower: username.toLowerCase() } ;
+
 	// Lookup user
-	const user = userId !== null
-		? await User.findOne({ _id: new mongo.ObjectID(userId) })
-		: await User.findOne({ username_lower: username.toLowerCase() });
+	const user = await User.findOne(q, {
+		fields: {
+			data: false
+		}
+	});
 
 	if (user === null) {
 		return rej('user not found');

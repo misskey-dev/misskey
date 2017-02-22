@@ -33,6 +33,10 @@ module.exports = (params, user) =>
 	if (recipient !== undefined && recipient !== null) {
 		recipient = await User.findOne({
 			_id: new mongo.ObjectID(recipient)
+		}, {
+			fields: {
+				_id: true
+			}
 		});
 
 		if (recipient === null) {

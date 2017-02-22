@@ -47,6 +47,10 @@ module.exports = (params, me) =>
 	// Lookup user
 	const user = await User.findOne({
 		_id: new mongo.ObjectID(userId)
+	}, {
+		fields: {
+			_id: true
+		}
 	});
 
 	if (user === null) {

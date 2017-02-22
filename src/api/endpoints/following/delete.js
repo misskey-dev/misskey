@@ -40,6 +40,11 @@ module.exports = (params, user) =>
 	// Get followee
 	const followee = await User.findOne({
 		_id: new mongo.ObjectID(userId)
+	}, {
+		fields: {
+			data: false,
+			profile: false
+		}
 	});
 
 	if (followee === null) {

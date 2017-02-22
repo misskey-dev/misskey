@@ -15,6 +15,11 @@ export default async (req: express.Request, res: express.Response) => {
 	// Fetch user
 	const user = await User.findOne({
 		username_lower: username.toLowerCase()
+	}, {
+		fields: {
+			data: false,
+			profile: false
+		}
 	});
 
 	if (user === null) {
