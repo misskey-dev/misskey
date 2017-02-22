@@ -18,4 +18,3 @@ export function validatePassword(password: string): boolean {
 export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }
-}
