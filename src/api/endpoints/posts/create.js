@@ -40,7 +40,7 @@ module.exports = (params, user, app) =>
 	let text = params.text;
 	if (text !== undefined && text !== null) {
 		if (typeof text != 'string') {
-			return rej('text is must be a string');
+			return rej('text must be a string');
 		}
 		text = text.trim();
 		if (text.length == 0) {
@@ -57,7 +57,7 @@ module.exports = (params, user, app) =>
 	let files = [];
 	if (medias !== undefined && medias !== null) {
 		if (!Array.isArray(medias)) {
-			return rej('media_ids is must be an array');
+			return rej('media_ids must be an array');
 		}
 
 		if (medias.length > maxMediaCount) {
@@ -74,7 +74,7 @@ module.exports = (params, user, app) =>
 			const media = medias[i];
 
 			if (typeof media != 'string') {
-				return rej('media id is must be a string');
+				return rej('media id must be a string');
 			}
 
 			// Validate id
@@ -105,7 +105,7 @@ module.exports = (params, user, app) =>
 	let repost = params.repost_id;
 	if (repost !== undefined && repost !== null) {
 		if (typeof repost != 'string') {
-			return rej('repost_id is must be a string');
+			return rej('repost_id must be a string');
 		}
 
 		// Validate id
@@ -155,7 +155,7 @@ module.exports = (params, user, app) =>
 	let replyTo = params.reply_to_id;
 	if (replyTo !== undefined && replyTo !== null) {
 		if (typeof replyTo != 'string') {
-			return rej('reply_to_id is must be a string');
+			return rej('reply_to_id must be a string');
 		}
 
 		// Validate id
