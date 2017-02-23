@@ -32,6 +32,16 @@ module.exports = async (params, user, _, isSecure) =>
 		user.name = name;
 	}
 
+	// Get 'description' parameter
+	const description = params.description;
+	if (description !== undefined && description !== null) {
+		if (description.length > 500) {
+			return rej('too long description');
+		}
+
+		user.description = description;
+	}
+
 	// Get 'location' parameter
 	const location = params.location;
 	if (location !== undefined && location !== null) {
@@ -40,16 +50,6 @@ module.exports = async (params, user, _, isSecure) =>
 		}
 
 		user.profile.location = location;
-	}
-
-	// Get 'bio' parameter
-	const bio = params.bio;
-	if (bio !== undefined && bio !== null) {
-		if (bio.length > 500) {
-			return rej('too long bio');
-		}
-
-		user.profile.bio = bio;
 	}
 
 	// Get 'birthday' parameter
@@ -79,6 +79,7 @@ module.exports = async (params, user, _, isSecure) =>
 	await User.update(user._id, {
 		$set: {
 			name: user.name,
+			description: user.description,
 			avatar_id: user.avatar_id,
 			banner_id: user.banner_id,
 			profile: user.profile

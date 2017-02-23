@@ -23,15 +23,15 @@
 			</label>
 			<label>
 				<p>場所</p>
-				<input ref="accountLocation" type="text" value={ I.location }/>
+				<input ref="accountLocation" type="text" value={ I.profile.location }/>
 			</label>
 			<label>
 				<p>自己紹介</p>
-				<textarea ref="accountBio">{ I.bio }</textarea>
+				<textarea ref="accountDescription">{ I.description }</textarea>
 			</label>
 			<label>
 				<p>誕生日</p>
-				<input ref="accountBirthday" type="date" value={ I.birthday }/>
+				<input ref="accountBirthday" type="date" value={ I.profile.birthday }/>
 			</label>
 			<button class="style-primary" onclick={ updateAccount }>保存</button>
 		</section>
@@ -212,9 +212,9 @@
 		this.updateAccount = () => {
 			this.api('i/update', {
 				name: this.refs.accountName.value,
-				location: this.refs.accountLocation.value,
-				bio: this.refs.accountBio.value,
-				birthday: this.refs.accountBirthday.value
+				location: this.refs.accountLocation.value || undefined,
+				description: this.refs.accountDescription.value || undefined,
+				birthday: this.refs.accountBirthday.value || undefined
 			}).then(() => {
 				this.notify('プロフィールを更新しました');
 			});
