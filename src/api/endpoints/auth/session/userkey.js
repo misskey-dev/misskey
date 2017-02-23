@@ -12,7 +12,7 @@ import serialize from '../../../serializers/user';
  * @swagger
  * /auth/session/userkey:
  *   post:
- *     summary: Get a access token(userkey)
+ *     summary: Get an access token(userkey)
  *     parameters:
  *       -
  *         name: app_secret
