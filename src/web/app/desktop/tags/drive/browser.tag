@@ -613,6 +613,11 @@
 			this.update();
 		};
 
+		this.appendFile = file => this.addFile(file);
+		this.appendFolder = file => this.addFolder(file);
+		this.prependFile = file => this.addFile(file, true);
+		this.prependFolder = file => this.addFolder(file, true);
+
 		this.goRoot = () => {
 			// 既にrootにいるなら何もしない
 			if (this.folder == null) return;
@@ -668,8 +673,8 @@
 			let flag = false;
 			const complete = () => {
 				if (flag) {
-					fetchedFolders.forEach(this.addFolder);
-					fetchedFiles.forEach(this.addFile);
+					fetchedFolders.forEach(this.appendFolder);
+					fetchedFiles.forEach(this.appendFile);
 					this.update({
 						fetching: false
 					});
