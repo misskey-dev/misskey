@@ -39,7 +39,7 @@ if (HTMLCollection.prototype.forEach === undefined) {
 if (FileList.prototype.forEach === undefined) {
 	FileList.prototype.forEach = Array.prototype.forEach;
 }
-if (DataTransferItemList.prototype.forEach === undefined) {
+if (DataTransferItemList && DataTransferItemList.prototype.forEach === undefined) {
 	DataTransferItemList.prototype.forEach = Array.prototype.forEach;
 }
 
