@@ -29,7 +29,7 @@ riot.mixin({
 // ↓ iOS待ちPolyfill (SEE: http://caniuse.com/#feat=fetch)
 require('whatwg-fetch');
 
-// ↓ NodeList、HTMLCollection、FileListで forEach を使えるようにする
+// ↓ NodeList、HTMLCollection、FileList、DataTransferItemListで forEach を使えるようにする
 if (NodeList.prototype.forEach === undefined) {
 	NodeList.prototype.forEach = Array.prototype.forEach;
 }
@@ -38,6 +38,9 @@ if (HTMLCollection.prototype.forEach === undefined) {
 }
 if (FileList.prototype.forEach === undefined) {
 	FileList.prototype.forEach = Array.prototype.forEach;
+}
+if (DataTransferItemList.prototype.forEach === undefined) {
+	DataTransferItemList.prototype.forEach = Array.prototype.forEach;
 }
 
 // ↓ iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
