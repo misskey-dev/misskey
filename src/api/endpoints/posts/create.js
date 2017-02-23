@@ -39,6 +39,9 @@ module.exports = (params, user, app) =>
 	// Get 'text' parameter
 	let text = params.text;
 	if (text !== undefined && text !== null) {
+		if (typeof text != 'string') {
+			return rej('text is must be a string');
+		}
 		text = text.trim();
 		if (text.length == 0) {
 			text = null;
@@ -50,31 +53,39 @@ module.exports = (params, user, app) =>
 	}
 
 	// Get 'media_ids' parameter
-	let media = params.media_ids;
+	let medias = params.media_ids;
 	let files = [];
-	if (media !== undefined && media !== null) {
-		if (media.length > maxMediaCount) {
+	if (medias !== undefined && medias !== null) {
+		if (!Array.isArray(medias)) {
+			return rej('media_ids is must be an array');
+		}
+
+		if (medias.length > maxMediaCount) {
 			return rej('too many media');
 		}
 
 		// Drop duplicates
-		media = media.filter((x, i, s) => s.indexOf(x) == i);
+		medias = medias.filter((x, i, s) => s.indexOf(x) == i);
 
 		// Fetch files
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
-		for (let i = 0; i < media.length; i++) {
-			const image = media[i];
+		for (let i = 0; i < medias.length; i++) {
+			const media = medias[i];
+
+			if (typeof media != 'string') {
+				return rej('media id is must be a string');
+			}
 
 			// Validate id
-			if (!mongo.ObjectID.isValid(image)) {
+			if (!mongo.ObjectID.isValid(media)) {
 				return rej('incorrect media id');
 			}
 
 			// Fetch file
 			// SELECT _id
 			const entity = await DriveFile.findOne({
-				_id: new mongo.ObjectID(image),
+				_id: new mongo.ObjectID(media),
 				user_id: user._id
 			}, {
 				_id: true
@@ -93,6 +104,10 @@ module.exports = (params, user, app) =>
 	// Get 'repost_id' parameter
 	let repost = params.repost_id;
 	if (repost !== undefined && repost !== null) {
+		if (typeof repost != 'string') {
+			return rej('repost_id is must be a string');
+		}
+
 		// Validate id
 		if (!mongo.ObjectID.isValid(repost)) {
 			return rej('incorrect repost_id');
@@ -139,6 +154,10 @@ module.exports = (params, user, app) =>
 	// Get 'reply_to_id' parameter
 	let replyTo = params.reply_to_id;
 	if (replyTo !== undefined && replyTo !== null) {
+		if (typeof replyTo != 'string') {
+			return rej('reply_to_id is must be a string');
+		}
+
 		// Validate id
 		if (!mongo.ObjectID.isValid(replyTo)) {
 			return rej('incorrect reply_to_id');
