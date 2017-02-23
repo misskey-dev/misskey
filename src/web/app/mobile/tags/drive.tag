@@ -358,7 +358,7 @@
 					this.selectedFiles.push(file);
 				}
 				this.update();
-				this.trigger('change-selected', this.selectedFiles);
+				this.trigger('change-selection', this.selectedFiles);
 			} else {
 				this.cf(file);
 			}

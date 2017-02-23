@@ -128,7 +128,7 @@
 		this.file = this.opts.file;
 		this.isSelected = this.browser.selectedFiles.some(f => f.id == this.file.id);
 
-		this.browser.on('change-selected', selections => {
+		this.browser.on('change-selection', selections => {
 			this.isSelected = selections.some(f => f.id == this.file.id);
 		});
 

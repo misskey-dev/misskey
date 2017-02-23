@@ -59,7 +59,7 @@
 		this.files = [];
 
 		this.on('mount', () => {
-			this.refs.browser.on('change-selected', files => {
+			this.refs.browser.on('change-selection', files => {
 				this.update({
 					files: files
 				});

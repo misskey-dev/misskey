@@ -248,6 +248,7 @@
 		this.files = [];
 		this.folders = [];
 		this.hierarchyFolders = [];
+		this.selectedFiles = [];
 
 		this.uploads = [];
 
@@ -514,8 +515,14 @@
 			this.refs.uploader.upload(file, folder);
 		};
 
-		this.getSelection = () => {
-			this.files.filter(file => file._selected);
+		this.chooseFile = file => {
+			if (this.selectedFiles.some(f => f.id == file.id)) {
+				this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+			} else {
+				this.selectedFiles.push(file);
+			}
+			this.update();
+			this.trigger('change-selection', this.selectedFiles);
 		};
 
 		this.newWindow = folderId => {

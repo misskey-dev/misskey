@@ -1,4 +1,4 @@
-<mk-drive-browser-file data-is-selected={ (file._selected || false).toString() } data-is-contextmenu-showing={ isContextmenuShowing.toString() } onclick={ onclick } oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
+<mk-drive-browser-file data-is-selected={ isSelected } data-is-contextmenu-showing={ isContextmenuShowing.toString() } onclick={ onclick } oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
 	<div class="label" if={ I.avatar_id == file.id }><img src="/resources/label.svg"/>
 		<p>アバター</p>
 	</div>
@@ -38,7 +38,7 @@
 					&:after
 						background #0b588c
 
-			&[data-is-selected='true']
+			&[data-is-selected]
 				background $theme-color
 
 				&:hover
@@ -150,28 +150,16 @@
 
 		this.file = this.opts.file;
 		this.browser = this.parent;
-
 		this.title = `${this.file.name}\n${this.file.type} ${this.bytesToSize(this.file.datasize)}`;
-
 		this.isContextmenuShowing = false;
+		this.isSelected = this.browser.selectedFiles.some(f => f.id == this.file.id);
+
+		this.browser.on('change-selection', selections => {
+			this.isSelected = selections.some(f => f.id == this.file.id);
+		});
 
 		this.onclick = () => {
-			if (this.browser.multiple) {
-				if (this.file._selected != null) {
-					this.file._selected = !this.file._selected;
-				} else {
-					this.file._selected = true;
-				}
-				this.browser.trigger('change-selection', this.browser.getSelection());
-			} else {
-				if (this.file._selected) {
-					this.browser.trigger('selected', this.file);
-				} else {
-					this.browser.files.forEach(file => file._selected = false);
-					this.file._selected = true;
-					this.browser.trigger('change-selection', this.file);
-				}
-			}
+			this.browser.chooseFile(this.file);
 		};
 
 		this.oncontextmenu = e => {
