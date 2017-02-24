@@ -122,7 +122,7 @@
     "reconnecting-websocket": "3.0.3",
     "redis": "2.6.5",
     "request": "2.79.0",
-    "rimraf": "2.6.0",
+    "rimraf": "2.6.1",
     "riot": "3.3.1",
     "riot-tag-loader": "1.0.0",
     "rndstr": "1.0.0",
