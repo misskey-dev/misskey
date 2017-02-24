@@ -5,7 +5,6 @@ const constants = require('./src/const.json');
 
 module.exports = (commit, env) => {
 	const isProduction = env === 'production';
-	const isDebug = !isProduction;
 
 	const pack: webpack.Configuration = {
 		entry: {

@@ -131,7 +131,7 @@ gulp.task('build:client:scripts', () => new Promise(async (ok) => {
 	// Get commit info
 	const commit = await prominence(git).getLastCommit();
 
-	let stream = webpack(require('./webpack.config.js')(commit, env), require('webpack'));
+	let stream = webpack(require('./webpack.config')(commit, env), require('webpack'));
 
 	// TODO: remove this block
 	if (isProduction) {
