@@ -35,16 +35,13 @@
 				</div>
 			</div>
 			<nav>
-				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>投稿</a>
+				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>タイムライン</a>
 				<a data-is-active={ page == 'media' } onclick={ go.bind(null, 'media') }>メディア</a>
-				<a data-is-active={ page == 'graphs' } onclick={ go.bind(null, 'graphs') }>グラフ</a>
-				<a data-is-active={ page == 'likes' } onclick={ go.bind(null, 'likes') }>いいね</a>
 			</nav>
 		</header>
 		<div class="body">
 			<mk-user-timeline if={ page == 'posts' } user={ user }></mk-user-timeline>
 			<mk-user-timeline if={ page == 'media' } user={ user } with-media={ true }></mk-user-timeline>
-			<mk-user-graphs if={ page == 'graphs' } user={ user }></mk-user-graphs>
 		</div>
 	</div>
 	<style>
