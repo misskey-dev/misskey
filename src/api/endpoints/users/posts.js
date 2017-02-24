@@ -37,7 +37,7 @@ module.exports = (params, me) =>
 	// Get 'with_replies' parameter
 	let withReplies = params.with_replies;
 	if (withReplies == null) {
-		withReplies = false;
+		withReplies = true;
 	}
 
 	// Get 'with_media' parameter
