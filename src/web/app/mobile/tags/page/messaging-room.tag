@@ -1,6 +1,6 @@
 <mk-messaging-room-page>
 	<mk-ui ref="ui">
-		<mk-messaging-room if={ !parent.fetching } user={ parent.user }></mk-messaging-room>
+		<mk-messaging-room if={ !parent.fetching } user={ parent.user } is-naked={ true }></mk-messaging-room>
 	</mk-ui>
 	<style>
 		:scope

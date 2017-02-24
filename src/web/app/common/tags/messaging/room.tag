@@ -1,13 +1,12 @@
 <mk-messaging-room>
 	<div class="stream">
-		<p class="initializing" if={ init }><i class="fa fa-spinner fa-spin"></i>読み込み中</p>
-		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>このユーザーとまだ会話したことがありません</p>
+		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>読み込み中</p>
+		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>このユーザーと話したことはありません</p>
 		<virtual each={ message, i in messages }>
 			<mk-messaging-message message={ message }></mk-messaging-message>
 			<p class="date" if={ i != messages.length - 1 && message._date != messages[i + 1]._date }><span>{ messages[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
-	<div class="typings"></div>
 	<footer>
 		<div ref="notifications"></div>
 		<div class="grippie" title="ドラッグしてフォームの広さを調整"></div>
@@ -132,6 +131,7 @@
 		this.init = true;
 		this.sending = false;
 		this.messages = [];
+		this.isNaked = this.opts.isNaked;
 
 		this.connection = new this.MessagingStreamConnection(this.I, this.user.id);
 
@@ -169,7 +169,7 @@
 		});
 
 		this.onMessage = (message) => {
-			const isbottom = this.isBottom();
+			const isBottom = this.isBottom();
 
 			this.messages.push(message);
 			if (message.user_id != this.I.id && !document.hidden) {
@@ -201,13 +201,22 @@
 		};
 
 		this.isBottom = () => {
-			const current = this.root.scrollTop + this.root.offsetHeight;
-			const max = this.root.scrollHeight;
-			return current > (max - 32);
+			const asobi = 32;
+			const current = this.isNaked
+				? window.scrollY + window.innerHeight
+				: this.root.scrollTop + this.root.offsetHeight;
+			const max = this.isNaked
+				? document.body.offsetHeight
+				: this.root.scrollHeight;
+			return current > (max - asobi);
 		};
 
 		this.scrollToBottom = () => {
-			this.root.scrollTop = this.root.scrollHeight;
+			if (this.isNaked) {
+				window.scroll(0, document.body.offsetHeight);
+			} else {
+				this.root.scrollTop = this.root.scrollHeight;
+			}
 		};
 
 		this.notify = message => {
