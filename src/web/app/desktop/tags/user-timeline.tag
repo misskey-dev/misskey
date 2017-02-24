@@ -1,5 +1,7 @@
 <mk-user-timeline>
-	<header><span data-is-active={ mode == 'default' } onclick={ setMode.bind(this, 'default') }>投稿</span><span data-is-active={ mode == 'with-replies' } onclick={ setMode.bind(this, 'with-replies') }>投稿と返信</span></header>
+	<header>
+		<span data-is-active={ mode == 'default' } onclick={ setMode.bind(this, 'default') }>投稿</span><span data-is-active={ mode == 'with-replies' } onclick={ setMode.bind(this, 'with-replies') }>投稿と返信</span>
+	</header>
 	<div class="loading" if={ isLoading }>
 		<mk-ellipsis-icon></mk-ellipsis-icon>
 	</div>
