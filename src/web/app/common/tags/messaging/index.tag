@@ -205,6 +205,11 @@
 						margin 0 auto
 						padding 20px 30px
 
+						&:after
+							content ""
+							display block
+							clear both
+
 						> header
 							margin-bottom 2px
 							white-space nowrap
@@ -277,6 +282,11 @@
 
 				> .history
 					> a
+						&:not([data-is-me]):not([data-is-read])
+							> div
+								background-image none
+								border-left solid 4px #3aa2dc
+
 						> div
 							padding 16px
 							font-size 14px
