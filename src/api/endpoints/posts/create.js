@@ -243,7 +243,7 @@ module.exports = (params, user, app) =>
 	// 投稿を作成
 	const post = await Post.insert({
 		created_at: new Date(),
-		media_ids: media ? files.map(file => file._id) : undefined,
+		media_ids: files.length > 0 ? files.map(file => file._id) : undefined,
 		reply_to_id: replyTo ? replyTo._id : undefined,
 		repost_id: repost ? repost._id : undefined,
 		poll: poll ? poll : undefined,
