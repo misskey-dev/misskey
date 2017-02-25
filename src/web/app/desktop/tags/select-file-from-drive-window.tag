@@ -142,7 +142,7 @@
 
 		this.on('mount', () => {
 			this.refs.window.refs.browser.on('selected', file => {
-				this.files = file;
+				this.files = [file];
 				this.ok();
 			});
 
@@ -166,7 +166,7 @@
 		};
 
 		this.ok = () => {
-			this.trigger('selected', this.files);
+			this.trigger('selected', this.multiple ? this.files : this.files[0]);
 			this.refs.window.close();
 		};
 	</script>

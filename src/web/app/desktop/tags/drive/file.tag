@@ -156,6 +156,7 @@
 
 		this.browser.on('change-selection', selections => {
 			this.isSelected = selections.some(f => f.id == this.file.id);
+			this.update();
 		});
 
 		this.onclick = () => {

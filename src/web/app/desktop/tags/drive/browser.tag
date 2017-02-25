@@ -516,13 +516,23 @@
 		};
 
 		this.chooseFile = file => {
-			if (this.selectedFiles.some(f => f.id == file.id)) {
-				this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+			const isAlreadySelected = this.selectedFiles.some(f => f.id == file.id);
+			if (this.multiple) {
+				if (isAlreadySelected) {
+					this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+				} else {
+					this.selectedFiles.push(file);
+				}
+				this.update();
+				this.trigger('change-selection', this.selectedFiles);
 			} else {
-				this.selectedFiles.push(file);
+				if (isAlreadySelected) {
+					this.trigger('selected', file);
+				} else {
+					this.selectedFiles = [file];
+					this.trigger('change-selection', [file]);
+				}
 			}
-			this.update();
-			this.trigger('change-selection', this.selectedFiles);
 		};
 
 		this.newWindow = folderId => {
