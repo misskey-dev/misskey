@@ -35,10 +35,13 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
+		const copyToClipboard = require('../../../common/scripts/copy-to-clipboard');
+
 		this.mixin('api');
 		this.mixin('i');
 		this.mixin('update-avatar');
 		this.mixin('update-banner');
+		this.mixin('dialog');
 		this.mixin('input-dialog');
 		this.mixin('NotImplementedException');
 
@@ -68,7 +71,12 @@
 		};
 
 		this.copyUrl = () => {
-			this.NotImplementedException();
+			copyToClipboard(this.file.url);
+			this.refs.ctx.close();
+			this.dialog('<i class="fa fa-check"></i>コピー完了',
+				'ファイルのURLをクリップボードにコピーしました', [{
+				text: 'わー'
+			}]);
 		};
 
 		this.download = () => {
