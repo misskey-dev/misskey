@@ -9,7 +9,7 @@
 				<span class="username">@{ post.user.username }</span>
 			</div>
 			<div class="right">
-				<a class="time" href={ url }>
+				<a class="time" href={ '/' + this.post.user.username + '/' + this.post.id }>
 					<mk-time time={ post.created_at }></mk-time>
 				</a>
 			</div>
@@ -120,9 +120,6 @@
 		this.mixin('user-preview');
 
 		this.post = this.opts.post;
-
-		this.url = CONFIG.url + '/' + this.post.user.username + '/' + this.post.id;
-
 		this.title = this.dateStringify(this.post.created_at);
 
 		this.on('mount', () => {
