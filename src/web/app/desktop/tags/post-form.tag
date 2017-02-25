@@ -92,7 +92,7 @@
 
 					&.with
 						border-bottom solid 1px rgba($theme-color, 0.1) !important
-						border-radius 4px 4px 0 0
+						border-radius 0
 
 					> .remain
 						display block
