@@ -75,7 +75,7 @@
     "chalk": "1.1.3",
     "compression": "1.6.2",
     "cors": "2.8.1",
-    "cropperjs": "1.0.0-beta.1",
+    "cropperjs": "1.0.0-beta.2",
     "crypto": "0.0.3",
     "css-loader": "0.26.2",
     "debug": "2.6.1",
