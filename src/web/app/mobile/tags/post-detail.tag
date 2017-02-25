@@ -41,8 +41,10 @@
 					<virtual each={ file in p.media }><img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/></virtual>
 				</div>
 				<mk-poll if={ p.poll } post={ p }></mk-poll>
-			</div><a class="time" href={ url }>
-				<mk-time time={ p.created_at } mode="detail"></mk-time></a>
+			</div>
+			<a class="time" href={ url }>
+				<mk-time time={ p.created_at } mode="detail"></mk-time>
+			</a>
 			<footer>
 				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
@@ -82,7 +84,7 @@
 		</article>
 		<div class="replies">
 			<virtual each={ post in replies }>
-				<mk-post-detail-sub post={ post }></mk-post-detail-sub>
+				<mk-post-preview post={ post }></mk-post-preview>
 			</virtual>
 		</div>
 	</div>
