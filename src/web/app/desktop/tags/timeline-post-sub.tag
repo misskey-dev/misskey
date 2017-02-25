@@ -5,7 +5,9 @@
 		</a>
 		<div class="main">
 			<header>
-				<a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a><span class="username">@{ post.user.username }</span><a class="created-at" href={ CONFIG.url + '/' + post.user.username + '/' + post.id }>
+				<a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>
+				<span class="username">@{ post.user.username }</span>
+				<a class="created-at" href={ CONFIG.url + '/' + post.user.username + '/' + post.id }>
 					<mk-time time={ post.created_at }></mk-time>
 				</a>
 			</header>
