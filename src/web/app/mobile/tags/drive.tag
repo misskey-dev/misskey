@@ -14,7 +14,7 @@
 			<p>{ file.name }</p>
 		</virtual>
 	</nav>
-	<div class="browser { loading: fetching }" if={ file == null }>
+	<div class="browser { fetching: fetching }" if={ file == null }>
 		<div class="folders" if={ folders.length > 0 }>
 			<virtual each={ folder in folders }>
 				<mk-drive-folder folder={ folder }></mk-drive-folder>
@@ -25,13 +25,13 @@
 			<virtual each={ file in files }>
 				<mk-drive-file file={ file }></mk-drive-file>
 			</virtual>
-			<p if={ moreFiles }>もっと読み込む</p>
+			<p if={ moreFiles } onclick={ fetchMoreFiles }>もっと読み込む</p>
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 			<p if={ !folder == null }>ドライブには何もありません。</p>
 			<p if={ folder != null }>このフォルダーは空です</p>
 		</div>
-		<div class="loading" if={ fetching }>
+		<div class="fetching" if={ fetching }>
 			<div class="spinner">
 				<div class="dot1"></div>
 				<div class="dot2"></div>
@@ -71,7 +71,7 @@
 					opacity 0.5
 
 			> .browser
-				&.loading
+				&.fetching
 					opacity 0.5
 
 				> .folders
@@ -91,7 +91,7 @@
 					> p
 						margin 0
 
-				> .loading
+				> .fetching
 					.spinner
 						margin 100px auto
 						width 40px
@@ -160,7 +160,7 @@
 			} else if (this.opts.file && this.opts.file != '') {
 				this.cf(this.opts.file, true);
 			} else {
-				this.load();
+				this.fetch();
 			}
 		});
 
@@ -223,7 +223,7 @@
 
 				this.update();
 				this.trigger('open-folder', this.folder, silent);
-				this.load();
+				this.fetch();
 			});
 		};
 
@@ -290,11 +290,11 @@
 					hierarchyFolders: []
 				});
 				this.trigger('move-root');
-				this.load();
+				this.fetch();
 			}
 		};
 
-		this.load = () => {
+		this.fetch = () => {
 			this.update({
 				folders: [],
 				files: [],
@@ -303,7 +303,7 @@
 				fetching: true
 			});
 
-			this.trigger('begin-load');
+			this.trigger('begin-fetch');
 
 			let fetchedFolders = null;
 			let fetchedFiles = null;
@@ -346,13 +346,38 @@
 						fetching: false
 					});
 					// 一連の読み込みが完了したイベントを発行
-					this.trigger('loaded');
+					this.trigger('fetched');
 				} else {
 					flag = true;
 					// 一連の読み込みが半分完了したイベントを発行
-					this.trigger('load-mid');
+					this.trigger('fetch-mid');
 				}
 			};
+		};
+
+		this.fetchMoreFiles = () => {
+			this.update({
+				fetching: true
+			});
+
+			const max = 30;
+
+			// ファイル一覧取得
+			this.api('drive/files', {
+				folder_id: this.folder ? this.folder.id : null,
+				limit: max + 1
+			}).then(files => {
+				if (files.length == max + 1) {
+					this.moreFiles = true;
+					files.pop();
+				} else {
+					this.moreFiles = false;
+				}
+				files.forEach(this.appendFile);
+				this.update({
+					fetching: false
+				});
+			});
 		};
 
 		this.chooseFile = file => {

@@ -14,15 +14,15 @@
 			document.title = 'Misskey Drive';
 			this.ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
 
-			this.refs.ui.refs.browser.on('begin-load', () => {
+			this.refs.ui.refs.browser.on('begin-fetch', () => {
 				this.Progress.start();
 			});
 
-			this.refs.ui.refs.browser.on('loaded-mid', () => {
+			this.refs.ui.refs.browser.on('fetched-mid', () => {
 				this.Progress.set(0.5);
 			});
 
-			this.refs.ui.refs.browser.on('loaded', () => {
+			this.refs.ui.refs.browser.on('fetched', () => {
 				this.Progress.done();
 			});
 

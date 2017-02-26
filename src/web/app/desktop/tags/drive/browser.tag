@@ -21,7 +21,7 @@
 				<virtual each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }></mk-drive-browser-file>
 				</virtual>
-				<button if={ moreFiles }>もっと読み込む</button>
+				<button if={ moreFiles } onclick={ fetchMoreFiles }>もっと読み込む</button>
 			</div>
 			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 				<p if={ draghover }>ドロップですか？いいですよ、ボクはカワイイですからね</p>
@@ -287,7 +287,7 @@
 			if (this.opts.folder && this.opts.folder != '') {
 				this.move(this.opts.folder);
 			} else {
-				this.load();
+				this.fetch();
 			}
 		});
 
@@ -567,7 +567,7 @@
 				if (folder.parent) dive(folder.parent);
 
 				this.update();
-				this.load();
+				this.fetch();
 			});
 		};
 
@@ -636,10 +636,10 @@
 				folder: null,
 				hierarchyFolders: []
 			});
-			this.load();
+			this.fetch();
 		};
 
-		this.load = () => {
+		this.fetch = () => {
 			this.update({
 				folders: [],
 				files: [],
@@ -692,6 +692,31 @@
 					flag = true;
 				}
 			};
+		};
+
+		this.fetchMoreFiles = () => {
+			this.update({
+				fetching: true
+			});
+
+			const max = 30;
+
+			// ファイル一覧取得
+			this.api('drive/files', {
+				folder_id: this.folder ? this.folder.id : null,
+				limit: max + 1
+			}).then(files => {
+				if (files.length == max + 1) {
+					this.moreFiles = true;
+					files.pop();
+				} else {
+					this.moreFiles = false;
+				}
+				files.forEach(this.appendFile);
+				this.update({
+					fetching: false
+				});
+			});
 		};
 
 	</script>
