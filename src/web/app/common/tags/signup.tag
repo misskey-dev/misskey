@@ -292,7 +292,7 @@
 					username: username,
 					password: password
 				}).then(() => {
-					location.href = CONFIG.url
+					location.href = '/';
 				});
 			}).catch(() => {
 				alert('何らかの原因によりアカウントの作成に失敗しました。再度お試しください。');
