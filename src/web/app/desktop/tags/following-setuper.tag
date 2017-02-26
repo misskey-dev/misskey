@@ -17,7 +17,6 @@
 		:scope
 			display block
 			padding 24px
-			background #fff
 
 			> .title
 				margin 0 0 12px 0
