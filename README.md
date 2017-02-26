@@ -2,7 +2,6 @@ Misskey
 ================================
 
 [![][travis-badge]][travis-link]
-[![][appveyor-badge]][appveyor-link]
 [![][dependencies-badge]][dependencies-link]
 [![][mit-badge]][mit]
 [![][saythanks-badge]][saythanks]
@@ -138,9 +137,7 @@ Misskey is an open-source software licensed under [The MIT License](LICENSE).
 [mit]:                http://opensource.org/licenses/MIT
 [mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
 [travis-link]:        https://travis-ci.org/syuilo/misskey
-[travis-badge]:       http://img.shields.io/travis/syuilo/misskey/master.svg?style=flat-square&label=Linux
-[appveyor-link]:      https://ci.appveyor.com/project/syuilo/misskey
-[appveyor-badge]:     https://img.shields.io/appveyor/ci/syuilo/misskey/master.svg?style=flat-square&label=Windows
+[travis-badge]:       http://img.shields.io/travis/syuilo/misskey/master.svg?style=flat-square
 [dependencies-link]:  https://gemnasium.com/syuilo/misskey
 [dependencies-badge]: https://img.shields.io/gemnasium/syuilo/misskey.svg?style=flat-square
 [saythanks]:          https://saythanks.io/to/syuilo
