@@ -70,6 +70,8 @@
 					loading: false,
 					notifications: notifications
 				});
+
+				this.trigger('fetched');
 			});
 
 			this.stream.on('notification', this.onNotification);

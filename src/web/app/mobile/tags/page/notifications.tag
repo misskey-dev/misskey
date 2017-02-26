@@ -17,7 +17,7 @@
 
 			this.Progress.start();
 
-			this.refs.ui.refs.notifications.on('loaded', () => {
+			this.refs.ui.refs.notifications.on('fetched', () => {
 				this.Progress.done();
 			});
 		});
