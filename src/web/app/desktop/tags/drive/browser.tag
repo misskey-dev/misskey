@@ -357,7 +357,7 @@
 				}
 			};
 
-			up = e => {
+			const up = e => {
 				document.documentElement.removeEventListener('mousemove', move);
 				document.documentElement.removeEventListener('mouseup', up);
 
