@@ -29,7 +29,7 @@
 				<p if={ !draghover && folder != null }>このフォルダーは空です</p>
 			</div>
 		</div>
-		<div class="loading" if={ fetching }>
+		<div class="fetching" if={ fetching }>
 			<div class="spinner">
 				<div class="dot1"></div>
 				<div class="dot2"></div>
