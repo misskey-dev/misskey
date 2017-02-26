@@ -15,9 +15,7 @@ import * as webpack from 'webpack-stream';
 import cssnano = require('gulp-cssnano');
 import * as uglify from 'gulp-uglify';
 import pug = require('gulp-pug');
-import git = require('git-last-commit');
 import * as rimraf from 'rimraf';
-import prominence = require('prominence');
 import * as chalk from 'chalk';
 import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
@@ -56,9 +54,6 @@ gulp.task('build:ts', () =>
 	tsProject
 		.src()
 		.pipe(tsProject())
-		.pipe(babel({
-			presets: ['es2015', 'stage-3']
-		}))
 		.pipe(gulp.dest('./built/'))
 );
 
@@ -127,40 +122,15 @@ gulp.task('build:client', [
 	'copy:client'
 ]);
 
-gulp.task('build:client:scripts', () => new Promise(async (ok) => {
-	// Get commit info
-	const commit = await prominence(git).getLastCommit();
-
-	let stream = webpack(require('./webpack.config')(commit, env), require('webpack'));
-
-	// TODO: remove this block
-	if (isProduction) {
-		stream = stream
-			// ↓ https://github.com/mishoo/UglifyJS2/issues/448
-			.pipe(babel({
-				presets: ['es2015']
-			}))
-			.pipe(uglify());
-	}
-
-	let entryPointStream = gulp.src('./src/web/app/client/script.js');
-
-	if (isProduction) {
-		entryPointStream = entryPointStream
-			// ↓ https://github.com/mishoo/UglifyJS2/issues/448
-			.pipe(babel({
-				presets: ['es2015']
-			}))
-			.pipe(uglify());
-	}
-
+gulp.task('build:client:scripts', () =>
 	es.merge(
-		stream.pipe(gulp.dest('./built/web/resources/')) as any,
-		entryPointStream.pipe(gulp.dest('./built/web/resources/client/')) as any
-	);
-
-	ok();
-}));
+		webpack(require('./webpack.config'), require('webpack'))
+			.pipe(gulp.dest('./built/web/resources/')) as any,
+		gulp.src('./src/web/app/client/script.js')
+			.pipe(isProduction ? uglify() : gutil.noop())
+			.pipe(gulp.dest('./built/web/resources/client/')) as any
+	)
+);
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/web/app/init.css')
