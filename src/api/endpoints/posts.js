@@ -15,6 +15,22 @@ import serialize from '../serializers/post';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
+	// Get 'include_replies' parameter
+	let includeReplies = params.include_replies;
+	if (includeReplies === true) {
+		includeReplies = true;
+	} else {
+		includeReplies = false;
+	}
+
+	// Get 'include_reposts' parameter
+	let includeReposts = params.include_reposts;
+	if (includeReposts === true) {
+		includeReposts = true;
+	} else {
+		includeReposts = false;
+	}
+
 	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
@@ -50,6 +66,14 @@ module.exports = (params) =>
 		query._id = {
 			$lt: new mongo.ObjectID(max)
 		};
+	}
+
+	if (!includeReplies) {
+		query.reply_to_id = null;
+	}
+
+	if (!includeReposts) {
+		query.repost_id = null;
 	}
 
 	// Issue query

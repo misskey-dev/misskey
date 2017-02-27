@@ -81,6 +81,7 @@ export default [
 	{ name: 'following/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'following-write' },
 	{ name: 'following/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'following-write' },
 
+	{ name: 'posts',                  shouldBeSignin: false },
 	{ name: 'posts/show',             shouldBeSignin: false },
 	{ name: 'posts/replies',          shouldBeSignin: false },
 	{ name: 'posts/context',          shouldBeSignin: false },

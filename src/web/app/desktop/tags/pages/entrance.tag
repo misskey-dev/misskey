@@ -1,5 +1,6 @@
 <mk-entrance>
-	<main><img src="/resources/title.svg" alt="Misskey"/>
+	<main>
+		<img src="/resources/title.svg" alt="Misskey"/>
 		<mk-entrance-signin if={ mode == 'signin' }></mk-entrance-signin>
 		<mk-entrance-signup if={ mode == 'signup' }></mk-entrance-signup>
 		<div class="introduction" if={ mode == 'introduction' }>
@@ -8,6 +9,10 @@
 		</div>
 	</main>
 	<mk-forkit></mk-forkit>
+	<section class="tl">
+		<h2>投稿を見てみよう</h2>
+		<mk-public-timeline></mk-public-timeline>
+	</section>
 	<footer>
 		<mk-copyright></mk-copyright>
 	</footer>
@@ -26,6 +31,7 @@
 
 			> main
 				display block
+				padding-bottom 16px
 
 				> img
 					display block
@@ -53,6 +59,21 @@
 						&:hover
 							text-decoration underline
 
+			> .tl
+				padding 32px 0
+				background #fff
+
+				> h2
+					display block
+					margin 0
+					padding 0
+					text-align center
+					font-size 20px
+					color #5b6b73
+
+				> mk-public-timeline
+					max-width 500px
+					margin 0 auto
 			> footer
 				> mk-copyright
 					margin 0

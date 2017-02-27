@@ -24,3 +24,4 @@ require('./messaging/message.tag');
 require('./messaging/index.tag');
 require('./messaging/form.tag');
 require('./stream-indicator.tag');
+require('./public-timeline.tag');
