@@ -31,7 +31,7 @@ module.exports = (I, cb, file = null) => {
 			});
 		});
 
-		cropper.on('skiped', () => {
+		cropper.on('skipped', () => {
 			set(file);
 		});
 	};

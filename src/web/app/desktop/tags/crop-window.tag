@@ -182,7 +182,7 @@
 		};
 
 		this.skip = () => {
-			this.trigger('skiped');
+			this.trigger('skipped');
 			this.refs.window.close();
 		};
 
