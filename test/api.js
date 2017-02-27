@@ -10,22 +10,26 @@ process.env.NODE_ENV = 'test';
 // Display detail of unhandled promise rejection
 process.on('unhandledRejection', console.dir);
 
-const fs = require('fs');
-const _chai = require('chai');
-const chaiHttp = require('chai-http');
-const should = _chai.should();
+// Init babel
+require('babel-core/register');
+require('babel-polyfill');
 
-_chai.use(chaiHttp);
+const fs = require('fs');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const should = chai.should();
+
+chai.use(chaiHttp);
 
 const server = require('../built/api/server');
 const db = require('../built/db/mongodb').default;
 
-const request = (endpoint, params, me?) => new Promise<any>((ok, ng) => {
+const request = (endpoint, params, me) => new Promise((ok, ng) => {
 	const auth = me ? {
 		i: me.token
 	} : {};
 
-	_chai.request(server)
+	chai.request(server)
 		.post(endpoint)
 		.send(Object.assign(auth, params))
 		.end((err, res) => {
@@ -48,7 +52,7 @@ describe('API', () => {
 	afterEach(cb => setTimeout(cb, 100));
 
 	it('greet server', done => {
-		_chai.request(server)
+		chai.request(server)
 			.get('/')
 			.end((err, res) => {
 				res.should.have.status(200);
@@ -855,7 +859,7 @@ describe('API', () => {
 	describe('drive/files/create', () => {
 		it('ファイルを作成できる', () => new Promise(async (done) => {
 			const me = await insertSakurako();
-			_chai.request(server)
+			chai.request(server)
 				.post('/drive/files/create')
 				.field('i', me.token)
 				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png')
@@ -1225,7 +1229,7 @@ describe('API', () => {
 	});
 });
 
-async function insertSakurako(opts?) {
+async function insertSakurako(opts) {
 	return await db.get('users').insert(Object.assign({
 		token: '!00000000000000000000000000000000',
 		username: 'sakurako',
@@ -1235,7 +1239,7 @@ async function insertSakurako(opts?) {
 	}, opts));
 }
 
-async function insertHimawari(opts?) {
+async function insertHimawari(opts) {
 	return await db.get('users').insert(Object.assign({
 		token: '!00000000000000000000000000000001',
 		username: 'himawari',
@@ -1245,20 +1249,20 @@ async function insertHimawari(opts?) {
 	}, opts));
 }
 
-async function insertDriveFile(opts?) {
+async function insertDriveFile(opts) {
 	return await db.get('drive_files').insert(Object.assign({
 		name: 'strawberry-pasta.png'
 	}, opts));
 }
 
-async function insertDriveFolder(opts?) {
+async function insertDriveFolder(opts) {
 	return await db.get('drive_folders').insert(Object.assign({
 		name: 'my folder',
 		parent_id: null
 	}, opts));
 }
 
-async function insertApp(opts?) {
+async function insertApp(opts) {
 	return await db.get('apps').insert(Object.assign({
 		name: 'my app',
 		secret: 'mysecret'
