@@ -116,7 +116,7 @@
     "page": "1.7.1",
     "prominence": "0.2.0",
     "pug": "2.0.0-beta11",
-    "ratelimiter": "2.2.0",
+    "ratelimiter": "3.0.2",
     "recaptcha-promise": "0.1.2",
     "reconnecting-websocket": "3.0.3",
     "redis": "2.6.5",
