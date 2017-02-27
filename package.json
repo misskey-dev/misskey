@@ -19,7 +19,7 @@
     "clean": "gulp clean",
     "cleanall": "gulp cleanall",
     "lint": "gulp lint",
-    "test": "mocha --harmony"
+    "test": "mocha --compilers ts:ts-node/register --harmony"
   },
   "dependencies": {
     "@types/bcryptjs": "2.4.0",
