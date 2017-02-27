@@ -61,7 +61,7 @@
 						> img
 							display inline-block
 							width 16px
-							heigth 16px
+							height 16px
 							margin-right 4px
 							vertical-align top
 
