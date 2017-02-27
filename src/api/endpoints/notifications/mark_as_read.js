@@ -23,7 +23,7 @@ module.exports = (params, user) =>
 			return rej('notification is required');
 		}
 
-		// Get notifcation
+		// Get notification
 		const notification = await Notification
 			.findOne({
 				_id: new mongo.ObjectID(notificationId),
