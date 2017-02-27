@@ -95,7 +95,7 @@ describe('API', () => {
 			});
 		});
 
-		it('同じユーザー名のアカウントは作成できない', () => new Promise(async (done) => {
+		it('同じユーザー名のアカウントは作成できない', () => async (done) => {
 			const user = await insertSakurako();
 			request('/signup', {
 				username: user.username,
@@ -104,11 +104,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('signin', () => {
-		it('間違ったパスワードでサインインできない', () => new Promise(async (done) => {
+		it('間違ったパスワードでサインインできない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/signin', {
 				username: me.username,
@@ -118,9 +118,9 @@ describe('API', () => {
 				res.text.should.be.equal('incorrect password');
 				done();
 			});
-		}));
+		});
 
-		it('クエリをインジェクションできない', () => new Promise(async (done) => {
+		it('クエリをインジェクションできない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/signin', {
 				username: me.username,
@@ -131,9 +131,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('正しい情報でサインインできる', () => new Promise(async (done) => {
+		it('正しい情報でサインインできる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/signin', {
 				username: me.username,
@@ -142,11 +142,11 @@ describe('API', () => {
 				res.should.have.status(204);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('i/update', () => {
-		it('アカウント設定を更新できる', () => new Promise(async (done) => {
+		it('アカウント設定を更新できる', () => async (done) => {
 			const me = await insertSakurako({
 				profile: {
 					gender: 'female'
@@ -171,9 +171,9 @@ describe('API', () => {
 				res.body.should.have.deep.property('profile.gender').eql('female');
 				done();
 			});
-		}));
+		});
 
-		it('誕生日の設定を削除できる', () => new Promise(async (done) => {
+		it('誕生日の設定を削除できる', () => async (done) => {
 			const me = await insertSakurako({
 				birthday: '2000-09-07'
 			});
@@ -186,9 +186,9 @@ describe('API', () => {
 				res.body.should.have.deep.property('profile.birthday').eql(null);
 				done();
 			});
-		}));
+		});
 
-		it('不正な誕生日の形式で怒られる', () => new Promise(async (done) => {
+		it('不正な誕生日の形式で怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/i/update', {
 				birthday: '2000/09/07'
@@ -196,11 +196,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('users/show', () => {
-		it('ユーザーが取得できる', () => new Promise(async (done) => {
+		it('ユーザーが取得できる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/users/show', {
 				user_id: me._id.toString()
@@ -210,29 +210,29 @@ describe('API', () => {
 				res.body.should.have.property('id').eql(me._id.toString());
 				done();
 			});
-		}));
+		});
 
-		it('ユーザーが存在しなかったら怒る', () => new Promise(async (done) => {
+		it('ユーザーが存在しなかったら怒る', () => async (done) => {
 			request('/users/show', {
 				user_id: '000000000000000000000000'
 			}).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+		it('間違ったIDで怒られる', () => async (done) => {
 			request('/users/show', {
 				user_id: 'kyoppie'
 			}).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('posts/create', () => {
-		it('投稿できる', () => new Promise(async (done) => {
+		it('投稿できる', () => async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'ひまわりー'
@@ -243,9 +243,9 @@ describe('API', () => {
 				res.body.should.have.property('text').eql(post.text);
 				done();
 			});
-		}));
+		});
 
-		it('ファイルを添付できる', () => new Promise(async (done) => {
+		it('ファイルを添付できる', () => async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -258,9 +258,9 @@ describe('API', () => {
 				res.body.should.have.property('media_ids').eql([file._id.toString()]);
 				done();
 			});
-		}));
+		});
 
-		it('他人のファイルは添付できない', () => new Promise(async (done) => {
+		it('他人のファイルは添付できない', () => async (done) => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const file = await insertDriveFile({
@@ -272,9 +272,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しないファイルは添付できない', () => new Promise(async (done) => {
+		it('存在しないファイルは添付できない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/create', {
 				media_ids: ['000000000000000000000000']
@@ -282,9 +282,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('不正なファイルIDで怒られる', () => new Promise(async (done) => {
+		it('不正なファイルIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/create', {
 				media_ids: ['kyoppie']
@@ -292,9 +292,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('返信できる', () => new Promise(async (done) => {
+		it('返信できる', () => async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -315,9 +315,9 @@ describe('API', () => {
 				res.body.reply_to.should.have.property('text').eql(himaPost.text);
 				done();
 			});
-		}));
+		});
 
-		it('repostできる', () => new Promise(async (done) => {
+		it('repostできる', () => async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -336,9 +336,9 @@ describe('API', () => {
 				res.body.repost.should.have.property('text').eql(himaPost.text);
 				done();
 			});
-		}));
+		});
 
-		it('引用repostできる', () => new Promise(async (done) => {
+		it('引用repostできる', () => async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -359,9 +359,9 @@ describe('API', () => {
 				res.body.repost.should.have.property('text').eql(himaPost.text);
 				done();
 			});
-		}));
+		});
 
-		it('文字数ぎりぎりで怒られない', () => new Promise(async (done) => {
+		it('文字数ぎりぎりで怒られない', () => async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				text: '!'.repeat(1000)
@@ -370,9 +370,9 @@ describe('API', () => {
 				res.should.have.status(200);
 				done();
 			});
-		}));
+		});
 
-		it('文字数オーバーで怒られる', () => new Promise(async (done) => {
+		it('文字数オーバーで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				text: '!'.repeat(1001)
@@ -381,9 +381,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しないリプライ先で怒られる', () => new Promise(async (done) => {
+		it('存在しないリプライ先で怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
@@ -393,9 +393,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しないrepost対象で怒られる', () => new Promise(async (done) => {
+		it('存在しないrepost対象で怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				repost_id: '000000000000000000000000'
@@ -404,9 +404,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('不正なリプライ先IDで怒られる', () => new Promise(async (done) => {
+		it('不正なリプライ先IDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
@@ -416,9 +416,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('不正なrepost対象IDで怒られる', () => new Promise(async (done) => {
+		it('不正なrepost対象IDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const post = {
 				repost_id: 'kyoppie'
@@ -427,9 +427,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('投票を添付できる', () => new Promise(async (done) => {
+		it('投票を添付できる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/create', {
 				text: 'インデントするなら？',
@@ -442,9 +442,9 @@ describe('API', () => {
 				res.body.should.have.property('poll');
 				done();
 			});
-		}));
+		});
 
-		it('投票の選択肢が無くて怒られる', () => new Promise(async (done) => {
+		it('投票の選択肢が無くて怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/create', {
 				poll: {}
@@ -452,9 +452,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('投票の選択肢が無くて怒られる (空の配列)', () => new Promise(async (done) => {
+		it('投票の選択肢が無くて怒られる (空の配列)', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/create', {
 				poll: {
@@ -464,9 +464,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('投票の選択肢が1つで怒られる', () => new Promise(async (done) => {
+		it('投票の選択肢が1つで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/create', {
 				poll: {
@@ -476,11 +476,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('posts/show', () => {
-		it('投稿が取得できる', () => new Promise(async (done) => {
+		it('投稿が取得できる', () => async (done) => {
 			const me = await insertSakurako();
 			const myPost = await db.get('posts').insert({
 				user_id: me._id,
@@ -494,29 +494,29 @@ describe('API', () => {
 				res.body.should.have.property('id').eql(myPost._id.toString());
 				done();
 			});
-		}));
+		});
 
-		it('投稿が存在しなかったら怒る', () => new Promise(async (done) => {
+		it('投稿が存在しなかったら怒る', () => async (done) => {
 			request('/posts/show', {
 				post_id: '000000000000000000000000'
 			}).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+		it('間違ったIDで怒られる', () => async (done) => {
 			request('/posts/show', {
 				post_id: 'kyoppie'
 			}).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('posts/likes/create', () => {
-		it('いいねできる', () => new Promise(async (done) => {
+		it('いいねできる', () => async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -530,9 +530,9 @@ describe('API', () => {
 				res.should.have.status(204);
 				done();
 			});
-		}));
+		});
 
-		it('自分の投稿にはいいねできない', () => new Promise(async (done) => {
+		it('自分の投稿にはいいねできない', () => async (done) => {
 			const me = await insertSakurako();
 			const myPost = await db.get('posts').insert({
 				user_id: me._id,
@@ -545,9 +545,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('二重にいいねできない', () => new Promise(async (done) => {
+		it('二重にいいねできない', () => async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -566,9 +566,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しない投稿にはいいねできない', () => new Promise(async (done) => {
+		it('存在しない投稿にはいいねできない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/likes/create', {
 				post_id: '000000000000000000000000'
@@ -576,17 +576,17 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+		it('空のパラメータで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/likes/create', {}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+		it('間違ったIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/likes/create', {
 				post_id: 'kyoppie'
@@ -594,11 +594,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('posts/likes/delete', () => {
-		it('いいね解除できる', () => new Promise(async (done) => {
+		it('いいね解除できる', () => async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -617,9 +617,9 @@ describe('API', () => {
 				res.should.have.status(204);
 				done();
 			});
-		}));
+		});
 
-		it('いいねしていない投稿はいいね解除できない', () => new Promise(async (done) => {
+		it('いいねしていない投稿はいいね解除できない', () => async (done) => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -633,9 +633,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しない投稿はいいね解除できない', () => new Promise(async (done) => {
+		it('存在しない投稿はいいね解除できない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/likes/delete', {
 				post_id: '000000000000000000000000'
@@ -643,17 +643,17 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+		it('空のパラメータで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/likes/delete', {}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+		it('間違ったIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/posts/likes/delete', {
 				post_id: 'kyoppie'
@@ -661,11 +661,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('following/create', () => {
-		it('フォローできる', () => new Promise(async (done) => {
+		it('フォローできる', () => async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			request('/following/create', {
@@ -674,9 +674,9 @@ describe('API', () => {
 				res.should.have.status(204);
 				done();
 			});
-		}));
+		});
 
-		it('過去にフォロー歴があった状態でフォローできる', () => new Promise(async (done) => {
+		it('過去にフォロー歴があった状態でフォローできる', () => async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
@@ -690,9 +690,9 @@ describe('API', () => {
 				res.should.have.status(204);
 				done();
 			});
-		}));
+		});
 
-		it('既にフォローしている場合は怒る', () => new Promise(async (done) => {
+		it('既にフォローしている場合は怒る', () => async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
@@ -705,9 +705,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しないユーザーはフォローできない', () => new Promise(async (done) => {
+		it('存在しないユーザーはフォローできない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/create', {
 				user_id: '000000000000000000000000'
@@ -715,9 +715,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('自分自身はフォローできない', () => new Promise(async (done) => {
+		it('自分自身はフォローできない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/create', {
 				user_id: me._id.toString()
@@ -725,17 +725,17 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+		it('空のパラメータで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/create', {}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+		it('間違ったIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/create', {
 				user_id: 'kyoppie'
@@ -743,11 +743,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('following/delete', () => {
-		it('フォロー解除できる', () => new Promise(async (done) => {
+		it('フォロー解除できる', () => async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
@@ -760,9 +760,9 @@ describe('API', () => {
 				res.should.have.status(204);
 				done();
 			});
-		}));
+		});
 
-		it('過去にフォロー歴があった状態でフォロー解除できる', () => new Promise(async (done) => {
+		it('過去にフォロー歴があった状態でフォロー解除できる', () => async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
@@ -780,9 +780,9 @@ describe('API', () => {
 				res.should.have.status(204);
 				done();
 			});
-		}));
+		});
 
-		it('フォローしていない場合は怒る', () => new Promise(async (done) => {
+		it('フォローしていない場合は怒る', () => async (done) => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			request('/following/delete', {
@@ -791,9 +791,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しないユーザーはフォロー解除できない', () => new Promise(async (done) => {
+		it('存在しないユーザーはフォロー解除できない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/delete', {
 				user_id: '000000000000000000000000'
@@ -801,9 +801,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('自分自身はフォロー解除できない', () => new Promise(async (done) => {
+		it('自分自身はフォロー解除できない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/delete', {
 				user_id: me._id.toString()
@@ -811,17 +811,17 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('空のパラメータで怒られる', () => new Promise(async (done) => {
+		it('空のパラメータで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/delete', {}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+		it('間違ったIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/following/delete', {
 				user_id: 'kyoppie'
@@ -829,11 +829,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('drive', () => {
-		it('ドライブ情報を取得できる', () => new Promise(async (done) => {
+		it('ドライブ情報を取得できる', () => async (done) => {
 			const me = await insertSakurako();
 			await insertDriveFile({
 				user_id: me._id,
@@ -853,11 +853,11 @@ describe('API', () => {
 				res.body.should.have.property('usage').eql(1792);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('drive/files/create', () => {
-		it('ファイルを作成できる', () => new Promise(async (done) => {
+		it('ファイルを作成できる', () => async (done) => {
 			const me = await insertSakurako();
 			chai.request(server)
 				.post('/drive/files/create')
@@ -870,19 +870,19 @@ describe('API', () => {
 					res.body.should.have.property('name').eql('Lenna.png');
 					done();
 				});
-		}));
+		});
 
-		it('ファイル無しで怒られる', () => new Promise(async (done) => {
+		it('ファイル無しで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/drive/files/create', {}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('drive/files/update', () => {
-		it('名前を更新できる', () => new Promise(async (done) => {
+		it('名前を更新できる', () => async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -897,9 +897,9 @@ describe('API', () => {
 				res.body.should.have.property('name').eql(newName);
 				done();
 			});
-		}));
+		});
 
-		it('他人のファイルは更新できない', () => new Promise(async (done) => {
+		it('他人のファイルは更新できない', () => async (done) => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const file = await insertDriveFile({
@@ -912,9 +912,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('親フォルダを更新できる', () => new Promise(async (done) => {
+		it('親フォルダを更新できる', () => async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -931,9 +931,9 @@ describe('API', () => {
 				res.body.should.have.property('folder_id').eql(folder._id.toString());
 				done();
 			});
-		}));
+		});
 
-		it('親フォルダを無しにできる', () => new Promise(async (done) => {
+		it('親フォルダを無しにできる', () => async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id,
@@ -948,9 +948,9 @@ describe('API', () => {
 				res.body.should.have.property('folder_id').eql(null);
 				done();
 			});
-		}));
+		});
 
-		it('他人のフォルダには入れられない', () => new Promise(async (done) => {
+		it('他人のフォルダには入れられない', () => async (done) => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const file = await insertDriveFile({
@@ -966,9 +966,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しないフォルダで怒られる', () => new Promise(async (done) => {
+		it('存在しないフォルダで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -980,9 +980,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('不正なフォルダIDで怒られる', () => new Promise(async (done) => {
+		it('不正なフォルダIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
 				user_id: me._id
@@ -994,9 +994,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('ファイルが存在しなかったら怒る', () => new Promise(async (done) => {
+		it('ファイルが存在しなかったら怒る', () => async (done) => {
 			const me = await insertSakurako();
 			request('/drive/files/update', {
 				file_id: '000000000000000000000000',
@@ -1005,9 +1005,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('間違ったIDで怒られる', () => new Promise(async (done) => {
+		it('間違ったIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/drive/files/update', {
 				file_id: 'kyoppie',
@@ -1016,11 +1016,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('drive/folders/create', () => {
-		it('フォルダを作成できる', () => new Promise(async (done) => {
+		it('フォルダを作成できる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/drive/folders/create', {
 				name: 'my folder'
@@ -1030,11 +1030,11 @@ describe('API', () => {
 				res.body.should.have.property('name').eql('my folder');
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('drive/folders/update', () => {
-		it('名前を更新できる', () => new Promise(async (done) => {
+		it('名前を更新できる', () => async (done) => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder({
 				user_id: me._id
@@ -1048,9 +1048,9 @@ describe('API', () => {
 				res.body.should.have.property('name').eql('new name');
 				done();
 			});
-		}));
+		});
 
-		it('他人のフォルダを更新できない', () => new Promise(async (done) => {
+		it('他人のフォルダを更新できない', () => async (done) => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const folder = await insertDriveFolder({
@@ -1063,9 +1063,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('親フォルダを更新できる', () => new Promise(async (done) => {
+		it('親フォルダを更新できる', () => async (done) => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder({
 				user_id: me._id
@@ -1082,9 +1082,9 @@ describe('API', () => {
 				res.body.should.have.property('parent_id').eql(parentFolder._id.toString());
 				done();
 			});
-		}));
+		});
 
-		it('親フォルダを無しに更新できる', () => new Promise(async (done) => {
+		it('親フォルダを無しに更新できる', () => async (done) => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder({
 				user_id: me._id,
@@ -1099,9 +1099,9 @@ describe('API', () => {
 				res.body.should.have.property('parent_id').eql(null);
 				done();
 			});
-		}));
+		});
 
-		it('他人のフォルダを親フォルダに設定できない', () => new Promise(async (done) => {
+		it('他人のフォルダを親フォルダに設定できない', () => async (done) => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const folder = await insertDriveFolder({
@@ -1117,9 +1117,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('フォルダが循環するような構造にできない', () => new Promise(async (done) => {
+		it('フォルダが循環するような構造にできない', () => async (done) => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder();
 			const parentFolder = await insertDriveFolder({
@@ -1132,9 +1132,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('フォルダが循環するような構造にできない(再帰的)', () => new Promise(async (done) => {
+		it('フォルダが循環するような構造にできない(再帰的)', () => async (done) => {
 			const me = await insertSakurako();
 			const folderA = await insertDriveFolder();
 			const folderB = await insertDriveFolder({
@@ -1150,9 +1150,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しない親フォルダを設定できない', () => new Promise(async (done) => {
+		it('存在しない親フォルダを設定できない', () => async (done) => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder();
 			request('/drive/folders/update', {
@@ -1162,9 +1162,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('不正な親フォルダIDで怒られる', () => new Promise(async (done) => {
+		it('不正な親フォルダIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder();
 			request('/drive/folders/update', {
@@ -1174,9 +1174,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('存在しないフォルダを更新できない', () => new Promise(async (done) => {
+		it('存在しないフォルダを更新できない', () => async (done) => {
 			const me = await insertSakurako();
 			request('/drive/folders/update', {
 				folder_id: '000000000000000000000000'
@@ -1184,9 +1184,9 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('不正なフォルダIDで怒られる', () => new Promise(async (done) => {
+		it('不正なフォルダIDで怒られる', () => async (done) => {
 			const me = await insertSakurako();
 			request('/drive/folders/update', {
 				folder_id: 'kyoppie'
@@ -1194,11 +1194,11 @@ describe('API', () => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 
 	describe('auth/session/generate', () => {
-		it('認証セッションを作成できる', () => new Promise(async (done) => {
+		it('認証セッションを作成できる', () => async (done) => {
 			const app = await insertApp();
 			request('/auth/session/generate', {
 				app_secret: app.secret
@@ -1209,23 +1209,23 @@ describe('API', () => {
 				res.body.should.have.property('url');
 				done();
 			});
-		}));
+		});
 
-		it('app_secret 無しで怒られる', () => new Promise(async (done) => {
+		it('app_secret 無しで怒られる', () => async (done) => {
 			request('/auth/session/generate', {}).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 
-		it('誤った app secret で怒られる', () => new Promise(async (done) => {
+		it('誤った app secret で怒られる', () => async (done) => {
 			request('/auth/session/generate', {
 				app_secret: 'kyoppie'
 			}).then(res => {
 				res.should.have.status(400);
 				done();
 			});
-		}));
+		});
 	});
 });
 
@@ -1268,4 +1268,3 @@ async function insertApp(opts) {
 		secret: 'mysecret'
 	}, opts));
 }
-
