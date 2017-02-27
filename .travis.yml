@@ -24,7 +24,7 @@ after_success:
   - git checkout -b release
   - cp -f .gitignore-release .gitignore
   - git add --all
-  - git rm --cached -r ./
+  - git rm --cached `git ls-files --full-name -i --exclude-standard`
   - git config --global user.email "AyaMorisawa4869@gmail.com"
   - git config --global user.name "Aya Morisawa"
   - git commit -m "Release build for $TRAVIS_COMMIT"
