@@ -32,6 +32,7 @@ after_success:
 
 env:
   - CXX=g++-4.8
+  - NODE_ENV=production
 
 addons:
   apt:
