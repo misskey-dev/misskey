@@ -7,7 +7,7 @@ First version
 
 # API
 ## 3
-application/x-www-form-urlencoded is now deperecated
+application/x-www-form-urlencoded is now deprecated
 
 ## 2
 * パラメータ: _userkey --> i
