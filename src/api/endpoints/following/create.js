@@ -52,7 +52,7 @@ module.exports = (params, user) =>
 		return rej('user not found');
 	}
 
-	// Check arleady following
+	// Check already following
 	const exist = await Following.findOne({
 		follower_id: follower._id,
 		followee_id: followee._id,
