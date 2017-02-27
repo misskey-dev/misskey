@@ -5,7 +5,7 @@
 const assert = require('assert');
 
 const analyze = require('../src/common/text');
-//const complie = require('../src/web/app/common/scripts/text-compiler');
+//const compile = require('../src/web/app/common/scripts/text-compiler');
 
 describe('Text', () => {
 	it('is correctly analyzed', () => {
