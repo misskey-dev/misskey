@@ -17,10 +17,10 @@ ultimately sophisticated new type of mini-blog based SNS.
 Key features
 --------------------------------
 * Automatically updated timeline
-* Private chatting (messaging)
+* Private messages
 * Free 1GB storage
 * Mobile device support (smartphone, tablet, etc)
-* Third-party application support
+* Web API for Third-party application
 * Twitter integration
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
