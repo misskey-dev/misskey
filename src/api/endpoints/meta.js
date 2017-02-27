@@ -23,10 +23,10 @@ import git from 'git-last-commit';
  *             commit:
  *               description: latest commit's hash
  *               type: string
- *             secure: 
+ *             secure:
  *               description: whether the server supports secure protcols
  *               type: boolean
- *               
+ *
  *       default:
  *         description: Failed
  *         schema:
@@ -40,13 +40,12 @@ import git from 'git-last-commit';
  * @return {Promise<object>}
  */
 module.exports = (params) =>
-	new Promise(async (res, rej) =>
-{
-	const commit = await prominence(git).getLastCommit();
+	new Promise(async (res, rej) => {
+		const commit = await prominence(git).getLastCommit();
 
-	res({
-		maintainer: config.maintainer,
-		commit: commit.shortHash,
-		secure: config.https.enable
+		res({
+			maintainer: config.maintainer,
+			commit: commit.shortHash,
+			secure: config.https.enable
+		});
 	});
-});
