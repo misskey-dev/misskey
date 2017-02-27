@@ -16,6 +16,19 @@ before_script:
   - cp ./.ci-files/test.yml ./.config
   - npm run build
 
+after_success:
+  - openssl aes-256-cbc -K $encrypted_ceda82069128_key -iv $encrypted_ceda82069128_iv -in travis_rsa.enc -out travis_rsa -d
+  - cp .travis_rsa ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - git checkout -b release
+  - cp -f .gitignore-release .gitignore
+  - git add --all
+  - git config --global user.email "AyaMorisawa4869@gmail.com"
+  - git config --global user.name "Aya Morisawa"
+  - git commit -m "Release build for $TRAVIS_COMMIT"
+  - if [ $TRAVIS_BRANCH = "master" ]; then git push -f git@github.com:syuilo/misskey release; fi
+
 env:
   - CXX=g++-4.8
 
