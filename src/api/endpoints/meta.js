@@ -24,7 +24,7 @@ import git from 'git-last-commit';
  *               description: latest commit's hash
  *               type: string
  *             secure:
- *               description: whether the server supports secure protcols
+ *               description: whether the server supports secure protocols
  *               type: boolean
  *
  *       default:
