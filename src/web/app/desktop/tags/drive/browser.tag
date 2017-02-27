@@ -123,7 +123,7 @@
 					&::-webkit-input-placeholder,
 					&:-ms-input-placeholder,
 					&:-moz-placeholder
-						color $ui-controll-foreground-color
+						color $ui-control-foreground-color
 
 			> .main
 				padding 8px
