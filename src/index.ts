@@ -42,7 +42,7 @@ process.title = 'Misskey';
 main();
 
 /**
- * Init proccess
+ * Init process
  */
 function main() {
 	if (cluster.isMaster) {
@@ -53,7 +53,7 @@ function main() {
 }
 
 /**
- * Init master proccess
+ * Init master process
  */
 async function masterMain() {
 	let initResult: InitResult;
@@ -85,7 +85,7 @@ async function masterMain() {
 }
 
 /**
- * Init worker proccess
+ * Init worker process
  */
 function workerMain() {
 	// start server
