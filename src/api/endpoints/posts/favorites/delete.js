@@ -31,7 +31,7 @@ module.exports = (params, user) =>
 			return rej('post not found');
 		}
 
-		// Check arleady favorited
+		// Check already favorited
 		const exist = await Favorite.findOne({
 			post_id: post._id,
 			user_id: user._id

@@ -38,7 +38,7 @@ module.exports = (params, user) =>
 			return rej('post not found');
 		}
 
-		// Check arleady liked
+		// Check already liked
 		const exist = await Like.findOne({
 			post_id: post._id,
 			user_id: user._id,
