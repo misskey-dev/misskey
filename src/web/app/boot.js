@@ -11,7 +11,7 @@ const mixins = require('./common/mixins');
 require('./common/tags');
 
 /**
- * MISSKEY ENTORY POINT!
+ * MISSKEY ENTRY POINT!
  */
 
 "use strict";
