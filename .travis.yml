@@ -14,6 +14,7 @@ before_script:
   - mkdir ./.config
   - cp ./.ci-files/default.yml ./.config
   - cp ./.ci-files/test.yml ./.config
+  - NODE_ENV=production
   - npm run build
 
 after_success:
