@@ -51,7 +51,7 @@
 		this.rename = () => {
 			this.refs.ctx.close();
 
-			this.inputialog('フォルダ名の変更', '新しいフォルダ名を入力してください', this.folder.name, name => {
+			this.inputDialog('フォルダ名の変更', '新しいフォルダ名を入力してください', this.folder.name, name => {
 				this.api('drive/folders/update', {
 					folder_id: this.folder.id,
 					name: name
