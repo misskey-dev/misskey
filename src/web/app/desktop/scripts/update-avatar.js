@@ -10,7 +10,7 @@ module.exports = (I, cb, file = null) => {
 			title: 'アバターとして表示する部分を選択',
 			aspectRatio: 1 / 1
 		})[0];
-	
+
 		cropper.on('cropped', blob => {
 			const data = new FormData();
 			data.append('i', I.token);
@@ -30,7 +30,7 @@ module.exports = (I, cb, file = null) => {
 				}
 			});
 		});
-	
+
 		cropper.on('skiped', () => {
 			set(file);
 		});
@@ -40,9 +40,9 @@ module.exports = (I, cb, file = null) => {
 		const progress = riot.mount(document.body.appendChild(document.createElement('mk-progress-dialog')), {
 			title: '新しいアバターをアップロードしています'
 		})[0];
-	
+
 		if (folder) data.append('folder_id', folder.id);
-	
+
 		const xhr = new XMLHttpRequest();
 		xhr.open('POST', CONFIG.apiUrl + '/drive/files/create', true);
 		xhr.onload = e => {
