@@ -20,7 +20,7 @@ const CONFIG = require('./common/scripts/config');
 
 document.domain = CONFIG.host;
 
-// Set global configration
+// Set global configuration
 riot.mixin({
 	CONFIG
 });
