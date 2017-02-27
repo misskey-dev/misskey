@@ -31,8 +31,7 @@ after_success:
   - if [ $TRAVIS_BRANCH = "master" ]; then git push -f git@github.com:syuilo/misskey release; fi
 
 env:
-  - CXX=g++-4.8
-  - NODE_ENV=production
+  - CXX=g++-4.8 NODE_ENV=production
 
 addons:
   apt:
