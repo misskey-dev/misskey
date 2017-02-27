@@ -52,7 +52,7 @@ module.exports = (params, user) =>
 			return rej('invalid choice');
 		}
 
-		// Check already voted
+		// already voted
 		const exist = await Vote.findOne({
 			post_id: post._id,
 			user_id: user._id

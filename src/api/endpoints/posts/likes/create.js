@@ -43,7 +43,7 @@ module.exports = (params, user) =>
 			return rej('-need-translate-');
 		}
 
-		// Check already liked
+		// already liked
 		const exist = await Like.findOne({
 			post_id: post._id,
 			user_id: user._id,
