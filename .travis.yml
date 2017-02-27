@@ -17,7 +17,7 @@ before_script:
   - npm run build
 
 after_success:
-  - openssl aes-256-cbc -K $encrypted_ceda82069128_key -iv $encrypted_ceda82069128_iv -in travis_rsa.enc -out .travis_rsa -d
+  - openssl aes-256-cbc -K $encrypted_ceda82069128_key -iv $encrypted_ceda82069128_iv -in .travis_rsa.enc -out .travis_rsa -d
   - cp .travis_rsa ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
