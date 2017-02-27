@@ -10,7 +10,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 	const reply = _reply.bind(null, res);
 	let ctx: IAuthContext;
 
-	// Authetication
+	// Authentication
 	try {
 		ctx = await authenticate(req);
 	} catch (e) {
