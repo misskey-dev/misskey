@@ -20,7 +20,7 @@ Key features
 * Private chatting (messaging)
 * Free 1GB storage
 * Mobile device support (smartphone, tablet, etc)
-* Thirdparty application support
+* Third-party application support
 * Twitter integration
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
