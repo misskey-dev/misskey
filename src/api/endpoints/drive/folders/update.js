@@ -76,7 +76,7 @@ module.exports = (params, user) =>
 				return rej('parent-folder-not-found');
 			}
 
-			// Check if the circular reference will be occured
+			// Check if the circular reference will occur
 			async function checkCircle(folderId) {
 				// Fetch folder
 				const folder2 = await DriveFolder.findOne({
