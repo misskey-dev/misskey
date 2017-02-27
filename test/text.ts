@@ -59,10 +59,4 @@ describe('Text', () => {
 		assert.equal(tokens[0].type, 'inline-code');
 		assert.equal(tokens[0].content, '`var x = "Strawberry Pasta";`');
 	});
-
-/*
-	it('正しくコンパイルされる', () => {
-		assert.equal(-1, [1,2,3].indexOf(4));
-	});
-*/
 });
