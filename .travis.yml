@@ -14,7 +14,7 @@ before_script:
   - mkdir ./.config
   - cp ./.ci-files/default.yml ./.config
   - cp ./.ci-files/test.yml ./.config
-  - NODE_ENV=production && npm run build
+  - npm run build
 
 after_success:
   - openssl aes-256-cbc -K $encrypted_ceda82069128_key -iv $encrypted_ceda82069128_iv -in .travis_rsa.enc -out .travis_rsa -d
