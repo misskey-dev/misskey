@@ -114,7 +114,7 @@ async function byElasticsearch(res, rej, me, query, offset, max) {
 
 		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
 
-		// Fetxh found posts
+		// Fetch found posts
 		const posts = await Post
 			.find({
 				_id: {
