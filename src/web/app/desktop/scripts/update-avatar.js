@@ -23,10 +23,10 @@ module.exports = (I, cb, file = null) => {
 					api(I, 'drive/folders/create', {
 						name: 'アイコン'
 					}).then(iconFolder => {
-						uplaod(data, iconFolder);
+						upload(data, iconFolder);
 					});
 				} else {
-					uplaod(data, iconFolder[0]);
+					upload(data, iconFolder[0]);
 				}
 			});
 		});
@@ -36,7 +36,7 @@ module.exports = (I, cb, file = null) => {
 		});
 	};
 
-	const uplaod = (data, folder) => {
+	const upload = (data, folder) => {
 		const progress = riot.mount(document.body.appendChild(document.createElement('mk-progress-dialog')), {
 			title: '新しいアバターをアップロードしています'
 		})[0];
