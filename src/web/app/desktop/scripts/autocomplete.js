@@ -114,11 +114,11 @@ class Autocomplete {
 		const source = this.textarea.value;
 
 		const before = source.substr(0, caret);
-		const trimedBefore = before.substring(0, before.lastIndexOf('@'));
+		const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
 		const after = source.substr(caret);
 
 		// 結果を挿入する
-		this.textarea.value = trimedBefore + '@' + value + ' ' + after;
+		this.textarea.value = trimmedBefore + '@' + value + ' ' + after;
 
 		// キャレットを戻す
 		this.textarea.focus();
