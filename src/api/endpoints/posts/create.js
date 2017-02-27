@@ -64,7 +64,7 @@ module.exports = (params, user, app) =>
 			return rej('too many media');
 		}
 
-		// Drop duplicates
+		// Drop duplications
 		medias = medias.filter((x, i, s) => s.indexOf(x) == i);
 
 		// Fetch files
@@ -212,7 +212,7 @@ module.exports = (params, user, app) =>
 		// Trim choices
 		poll.choices = poll.choices.map(choice => choice.trim());
 
-		// Drop duplicates
+		// Drop duplications
 		poll.choices = poll.choices.filter((x, i, s) => s.indexOf(x) == i);
 
 		// 選択肢がひとつならエラー
