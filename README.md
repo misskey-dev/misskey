@@ -21,7 +21,7 @@ Key features
 * Free 1GB storage
 * Mobile device support (smartphone, tablet, etc)
 * Thirdparty application support
-* Link to Twitter
+* Twitter integration
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
 
