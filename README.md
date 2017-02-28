@@ -84,7 +84,8 @@ Install
 --------------------------------
 ### Using built code
 1. `git clone -b release git://github.com/syuilo/misskey.git`
-2. `npm install`
+2. `cd misskey`
+3. `npm install`
 
 #### Update
 1. `git fetch`
@@ -93,8 +94,9 @@ Install
 
 ### Using source code
 1. `git clone -b master git://github.com/syuilo/misskey.git`
-2. `npm install`
-3. `npm run build`
+2. `cd misskey`
+3. `npm install`
+4. `npm run build`
 
 #### Update
 1. `git pull origin master`
