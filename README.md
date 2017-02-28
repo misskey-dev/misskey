@@ -82,7 +82,7 @@ Note that `$(pwd)` is the working directory.
 
 Install
 --------------------------------
-Run `wget https://github.com/syuilo/misskey/archive/release.zip && unzip release.zip && cd misskey-release && mv * ../ && cd ../ && npm install`
+Run `wget https://github.com/syuilo/misskey/archive/release.zip && unzip release.zip && rm release.zip && cd misskey-release && cp -rf * .. && rm -rf * && cd ../ && rm -rf misskey-release && npm install`
 
 ...or Build yourself
 --------------------------------
