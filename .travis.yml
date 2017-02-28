@@ -6,6 +6,21 @@ language: node_js
 node_js:
   - "7.6.0"
 
+env:
+  - CXX=g++-4.8 NODE_ENV=production
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+      - graphicsmagick
+
+cache:
+  directories:
+    - node_modules
+
 services:
   - mongodb
   - redis-server
@@ -28,19 +43,4 @@ after_success:
   - git config --global user.email "AyaMorisawa4869@gmail.com"
   - git config --global user.name "Aya Morisawa"
   - git commit -m "Release build for $TRAVIS_COMMIT"
-  - if [ $TRAVIS_BRANCH = "master" ]; then git push -f git@github.com:syuilo/misskey release; fi
-
-env:
-  - CXX=g++-4.8 NODE_ENV=production
-
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-      - graphicsmagick
-
-cache:
-  directories:
-    - node_modules
+  - if [ $TRAVIS_BRANCH = "master" ] && [ $TRAVIS_PULL_REQUEST != "false" ]; then git push -f git@github.com:syuilo/misskey release; fi
