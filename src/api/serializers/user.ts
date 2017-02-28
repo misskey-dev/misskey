@@ -22,8 +22,8 @@ export default (
 	user: any,
 	me?: any,
 	options?: {
-		detail: boolean,
-		includeSecrets: boolean
+		detail?: boolean,
+		includeSecrets?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 
