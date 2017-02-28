@@ -189,6 +189,7 @@ const elements = [
 		}
 		
 		if (thisIsNotARegexp) return null;
+		if (regexp == '') return null;
 		if (regexp[0] == ' ' && regexp[regexp.length - 1] == ' ') return null;
 
 		return {

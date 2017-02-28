@@ -5,7 +5,7 @@
 const assert = require('assert');
 
 const analyze = require('../src/common/text');
-//const compile = require('../src/web/app/common/scripts/text-compiler');
+const syntaxhighlighter = require('../src/common/text/core/syntax-highlighter');
 
 describe('Text', () => {
 	it('is correctly analyzed', () => {
@@ -58,5 +58,17 @@ describe('Text', () => {
 		const tokens = analyze('`var x = "Strawberry Pasta";`');
 		assert.equal(tokens[0].type, 'inline-code');
 		assert.equal(tokens[0].content, '`var x = "Strawberry Pasta";`');
+	});
+
+	describe('syntax highlighting', () => {
+		it('regexp', () => {
+			const html = syntaxhighlighter('/.*/');
+			assert.equal(html, '<span class="regexp">/.*/</span>');
+		});
+
+		it('slash', () => {
+			const html = syntaxhighlighter('/');
+			assert.equal(html, '<span class="symbol">/</span>');
+		});
 	});
 });
