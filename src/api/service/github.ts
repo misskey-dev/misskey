@@ -34,7 +34,7 @@ module.exports = async (app: express.Application) => {
 		if (ref != 'refs/heads/master') return;
 		const pusher = event.pusher;
 		const compare = event.compare;
-		post(`Pushed! (Pusher: ${pusher.name})\nCompare changes: ${compare}`);
+		post(`Pushed by **${pusher.name}**\nCompare changes: ${compare}`);
 	});
 
 	handler.on('issues', event => {
