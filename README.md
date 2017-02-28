@@ -130,7 +130,7 @@ Pull requests are always welcome.
 ### TODO
 * More [tests](./test)!
 * More [docs](./docs)!
-* More cleaning up code!
+* More sophisticated code!
 
 Collaborators
 ------------------------------
