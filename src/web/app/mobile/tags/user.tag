@@ -57,7 +57,7 @@
 						background-position center
 
 					> .body
-						padding 8px
+						padding 12px
 						margin 0 auto
 						max-width 600px
 
