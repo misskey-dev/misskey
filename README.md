@@ -112,7 +112,7 @@ Run `npm test` after building
 
 Debugging :bug:
 --------------------------------
-### Show a debug messages
+### Show debug messages
 Misskey uses [debug](https://github.com/visionmedia/debug) and the namespace is `misskey:*`.
 
 Contribute
