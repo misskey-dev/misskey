@@ -82,13 +82,23 @@ Note that `$(pwd)` is the working directory.
 
 Install
 --------------------------------
-Run `wget https://github.com/syuilo/misskey/archive/release.zip && unzip release.zip && rm release.zip && cd misskey-release && cp -rf * .. && rm -rf * && cd ../ && rm -rf misskey-release && npm install`
+### Using built code
+1. `git clone -b release git://github.com/syuilo/misskey.git`
+2. `npm install`
 
-...or Build yourself
---------------------------------
-1. Clone this repository
+#### Update
+1. `git fetch`
+2. `git reset --hard origin/release`
+3. `npm install`
+
+### Using source code
+1. `git clone -b master git://github.com/syuilo/misskey.git`
 2. `npm install`
 3. `npm run build`
+
+#### Update
+1. `git pull origin master`
+2. `npm install`
 
 Launch
 --------------------------------
