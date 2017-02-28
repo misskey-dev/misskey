@@ -142,8 +142,6 @@ Copyright
 ------------------------------
 Misskey is an open-source software licensed under [The MIT License](LICENSE).
 
-🍮
-
 [mit]:                http://opensource.org/licenses/MIT
 [mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
 [travis-link]:        https://travis-ci.org/syuilo/misskey
