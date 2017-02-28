@@ -80,13 +80,21 @@ If you want to run misskey in production mode, add `--env NODE_ENV=production` l
 
 Note that `$(pwd)` is the working directory.
 
-Building
+Install
 --------------------------------
-Run `npm run build` after `npm install`. GLHF!
+Run `wget https://github.com/syuilo/misskey/archive/release.zip && unzip release.zip && cd misskey-release && mv * ../ && cd ../ && npm install`
+
+...or Build yourself
+--------------------------------
+1. Clone this repository
+2. `npm install`
+3. `npm run build`
 
 Launch
 --------------------------------
 `sudo npm start`
+
+GLHF!
 
 Testing
 --------------------------------
