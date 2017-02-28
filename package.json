@@ -138,7 +138,7 @@
     "tcp-port-used": "0.1.2",
     "textarea-caret": "3.0.2",
     "ts-node": "2.1.0",
-    "tslint": "4.4.2",
+    "tslint": "4.5.1",
     "typescript": "2.2.1",
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
     "uuid": "3.0.1",
