@@ -1,5 +1,6 @@
 const riot = require('riot');
 const nyaize = require('nyaize').default;
+const emojinize = require('emojinize');
 const CONFIG = require('./config');
 
 const escape = function(text) {
@@ -35,6 +36,8 @@ module.exports = function(tokens, shouldBreak, shouldEscape) {
 				return '<pre><code>' + token.html + '</code></pre>';
 			case 'inline-code':
 				return '<code>' + token.html + '</code>';
+			case 'emoji':
+				return emojinize.encode(token.content)
 		}
 	}).join('');
 
