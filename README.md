@@ -101,6 +101,7 @@ Install
 #### Update
 1. `git pull origin master`
 2. `npm install`
+3. `npm run build`
 
 Launch
 --------------------------------
