@@ -1200,7 +1200,7 @@ describe('API', () => {
 			request('/messaging/messages/create', {
 				user_id: hima._id.toString(),
 				text: 'Hey hey ひまわり'
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(200);
 				res.body.should.be.a('object');
 				res.body.should.have.property('text').eql('Hey hey ひまわり');
@@ -1213,7 +1213,7 @@ describe('API', () => {
 			request('/messaging/messages/create', {
 				user_id: me._id.toString(),
 				text: 'Yo'
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
@@ -1224,7 +1224,7 @@ describe('API', () => {
 			request('/messaging/messages/create', {
 				user_id: '000000000000000000000000',
 				text: 'Yo'
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
@@ -1235,7 +1235,7 @@ describe('API', () => {
 			request('/messaging/messages/create', {
 				user_id: 'kyoppie',
 				text: 'Yo'
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
@@ -1246,7 +1246,7 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			request('/messaging/messages/create', {
 				user_id: hima._id.toString()
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
@@ -1258,7 +1258,7 @@ describe('API', () => {
 			request('/messaging/messages/create', {
 				user_id: hima._id.toString(),
 				text: '!'.repeat(501)
-			}).then(res => {
+			}, me).then(res => {
 				res.should.have.status(400);
 				done();
 			});
