@@ -25,6 +25,10 @@ module.exports = async (params, user, _, isSecure) =>
 	// Get 'name' parameter
 	const name = params.name;
 	if (name !== undefined && name !== null) {
+		if (typeof name != 'string') {
+			return rej('name must be a string');
+		}
+
 		if (!isValidName(name)) {
 			return rej('invalid name');
 		}

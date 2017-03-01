@@ -16,7 +16,7 @@ export function validatePassword(password: string): boolean {
 }
 
 export function isValidName(name: string): boolean {
-	return typeof name == 'string' && name.length > 50 && name.trim() != '';
+	return typeof name == 'string' && name.length < 30 && name.trim() != '';
 }
 
 export function isValidBirthday(birthday: string): boolean {
