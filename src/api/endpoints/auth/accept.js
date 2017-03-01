@@ -16,7 +16,7 @@ import AccessToken from '../../models/access-token';
  *     summary: Accept a session
  *     parameters:
  *       - $ref: "#/parameters/NativeToken"
- *       - 
+ *       -
  *         name: token
  *         description: Session Token
  *         in: formData
@@ -25,7 +25,7 @@ import AccessToken from '../../models/access-token';
  *     responses:
  *       204:
  *         description: OK
- *       
+ *
  *       default:
  *         description: Failed
  *         schema:
@@ -35,9 +35,9 @@ import AccessToken from '../../models/access-token';
 /**
  * Accept
  *
- * @param {Object} params
- * @param {Object} user
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
  */
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>

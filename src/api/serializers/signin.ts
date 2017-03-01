@@ -8,12 +8,12 @@ import deepcopy = require('deepcopy');
 /**
  * Serialize a signin record
  *
- * @param {Object} record
- * @return {Promise<Object>}
+ * @param {any} record
+ * @return {Promise<any>}
  */
 export default (
 	record: any
-) => new Promise<Object>(async (resolve, reject) => {
+) => new Promise<any>(async (resolve, reject) => {
 
 	const _record = deepcopy(record);
 

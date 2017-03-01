@@ -12,9 +12,9 @@ const escapeRegexp = require('escape-regexp');
 /**
  * Search a user
  *
- * @param {Object} params
- * @param {Object} me
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} me
+ * @return {Promise<any>}
  */
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>

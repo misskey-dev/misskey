@@ -10,9 +10,9 @@ import serialize from '../../serializers/post';
 /**
  * Show a context of a post
  *
- * @param {Object} params
- * @param {Object} user
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
  */
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>

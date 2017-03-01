@@ -10,9 +10,9 @@ import getFriends from '../../common/get-friends';
 /**
  * Get recommended users
  *
- * @param {Object} params
- * @param {Object} me
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} me
+ * @return {Promise<any>}
  */
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>

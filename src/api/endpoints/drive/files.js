@@ -10,10 +10,10 @@ import serialize from '../../serializers/drive-file';
 /**
  * Get drive files
  *
- * @param {Object} params
- * @param {Object} user
- * @param {Object} app
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @param {any} app
+ * @return {Promise<any>}
  */
 module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>

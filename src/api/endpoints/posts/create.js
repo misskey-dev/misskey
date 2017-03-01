@@ -28,10 +28,10 @@ const maxMediaCount = 4;
 /**
  * Create a post
  *
- * @param {Object} params
- * @param {Object} user
- * @param {Object} app
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @param {any} app
+ * @return {Promise<any>}
  */
 module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>

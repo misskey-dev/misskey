@@ -12,10 +12,10 @@ import deepcopy = require('deepcopy');
 /**
  * Serialize a message
  *
- * @param {Object} message
- * @param {Object} me?
- * @param {Object} options?
- * @return {Promise<Object>}
+ * @param {any} message
+ * @param {any} me?
+ * @param {any} options?
+ * @return {Promise<any>}
  */
 export default (
 	message: any,
@@ -23,7 +23,7 @@ export default (
 	options?: {
 		populateRecipient: boolean
 	}
-) => new Promise<Object>(async (resolve, reject) => {
+) => new Promise<any>(async (resolve, reject) => {
 	const opts = options || {
 		populateRecipient: true
 	};

@@ -12,10 +12,10 @@ import config from '../../conf';
 /**
  * Serialize an app
  *
- * @param {Object} app
- * @param {Object} me?
- * @param {Object} options?
- * @return {Promise<Object>}
+ * @param {any} app
+ * @param {any} me?
+ * @param {any} options?
+ * @return {Promise<any>}
  */
 export default (
 	app: any,
@@ -75,8 +75,8 @@ export default (
 			app_id: _app.id,
 			user_id: me,
 		}, {
-			limit: 1
-		});
+				limit: 1
+			});
 
 		_app.is_authorized = exist === 1;
 	}

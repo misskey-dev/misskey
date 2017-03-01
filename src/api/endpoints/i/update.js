@@ -13,11 +13,11 @@ import config from '../../../conf';
 /**
  * Update myself
  *
- * @param {Object} params
- * @param {Object} user
- * @param {Object} _
+ * @param {any} params
+ * @param {any} user
+ * @param {any} _
  * @param {boolean} isSecure
- * @return {Promise<object>}
+ * @return {Promise<any>}
  */
 module.exports = async (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>

@@ -36,8 +36,8 @@ import git from 'git-last-commit';
 /**
  * Show core info
  *
- * @param {Object} params
- * @return {Promise<object>}
+ * @param {any} params
+ * @return {Promise<any>}
  */
 module.exports = (params) =>
 	new Promise(async (res, rej) => {

@@ -10,16 +10,16 @@ import deepcopy = require('deepcopy');
 /**
  * Serialize a drive folder
  *
- * @param {Object} folder
- * @param {Object} options?
- * @return {Promise<Object>}
+ * @param {any} folder
+ * @param {any} options?
+ * @return {Promise<any>}
  */
 const self = (
 	folder: any,
 	options?: {
 		detail: boolean
 	}
-) => new Promise<Object>(async (resolve, reject) => {
+) => new Promise<any>(async (resolve, reject) => {
 	const opts = Object.assign({
 		detail: false
 	}, options);
@@ -28,9 +28,9 @@ const self = (
 
 	// Populate the folder if 'folder' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(folder)) {
-		_folder = await DriveFolder.findOne({_id: folder});
+		_folder = await DriveFolder.findOne({ _id: folder });
 	} else if (typeof folder === 'string') {
-		_folder = await DriveFolder.findOne({_id: new mongo.ObjectID(folder)});
+		_folder = await DriveFolder.findOne({ _id: new mongo.ObjectID(folder) });
 	} else {
 		_folder = deepcopy(folder);
 	}

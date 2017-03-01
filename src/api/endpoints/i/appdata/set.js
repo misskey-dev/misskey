@@ -11,11 +11,11 @@ import event from '../../../event';
 /**
  * Set app data
  *
- * @param {Object} params
- * @param {Object} user
- * @param {Object} app
+ * @param {any} params
+ * @param {any} user
+ * @param {any} app
  * @param {Boolean} isSecure
- * @return {Promise<object>}
+ * @return {Promise<any>}
  */
 module.exports = (params, user, app, isSecure) =>
 	new Promise(async (res, rej) =>

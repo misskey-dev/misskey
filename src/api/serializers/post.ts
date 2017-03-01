@@ -15,10 +15,10 @@ import deepcopy = require('deepcopy');
 /**
  * Serialize a post
  *
- * @param {Object} post
- * @param {Object} me?
- * @param {Object} options?
- * @return {Promise<Object>}
+ * @param {any} post
+ * @param {any} me?
+ * @param {any} options?
+ * @return {Promise<any>}
  */
 const self = (
 	post: any,
@@ -26,7 +26,7 @@ const self = (
 	options?: {
 		detail: boolean
 	}
-) => new Promise<Object>(async (resolve, reject) => {
+) => new Promise<any>(async (resolve, reject) => {
 	const opts = options || {
 		detail: true,
 	};

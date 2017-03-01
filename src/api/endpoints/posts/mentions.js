@@ -11,9 +11,9 @@ import serialize from '../../serializers/post';
 /**
  * Get mentions of myself
  *
- * @param {Object} params
- * @param {Object} user
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
  */
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>

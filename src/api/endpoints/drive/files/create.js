@@ -14,10 +14,10 @@ import create from '../../../common/add-file-to-drive';
 /**
  * Create a file
  *
- * @param {Object} file
- * @param {Object} params
- * @param {Object} user
- * @return {Promise<object>}
+ * @param {any} file
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
  */
 module.exports = (file, params, user) =>
 	new Promise(async (res, rej) =>

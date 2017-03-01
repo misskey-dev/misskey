@@ -13,10 +13,10 @@ import config from '../../conf';
 /**
  * Serialize a user
  *
- * @param {Object} user
- * @param {Object} me?
- * @param {Object} options?
- * @return {Promise<Object>}
+ * @param {any} user
+ * @param {any} me?
+ * @param {any} options?
+ * @return {Promise<any>}
  */
 export default (
 	user: any,

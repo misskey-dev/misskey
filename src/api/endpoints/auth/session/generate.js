@@ -20,7 +20,7 @@ import config from '../../../../conf';
  *         in: formData
  *         required: true
  *         type: string
- *         
+ *
  *     responses:
  *       200:
  *         description: OK
@@ -42,8 +42,8 @@ import config from '../../../../conf';
 /**
  * Generate a session
  *
- * @param {Object} params
- * @return {Promise<object>}
+ * @param {any} params
+ * @return {Promise<any>}
  */
 module.exports = (params) =>
 	new Promise(async (res, rej) =>

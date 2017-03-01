@@ -11,9 +11,9 @@ import notify from '../../../common/notify';
 /**
  * Vote poll of a post
  *
- * @param {Object} params
- * @param {Object} user
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
  */
 module.exports = (params, user) =>
 	new Promise(async (res, rej) => {

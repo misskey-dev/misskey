@@ -47,13 +47,13 @@ import serialize from '../../serializers/app';
  *         in: formData
  *         required: false
  *         type: string
- *       
+ *
  *     responses:
  *       200:
  *         description: Created application's information
  *         schema:
  *           $ref: "#/definitions/Application"
- *       
+ *
  *       default:
  *         description: Failed
  *         schema:
@@ -63,9 +63,9 @@ import serialize from '../../serializers/app';
 /**
  * Create an app
  *
- * @param {Object} params
- * @param {Object} user
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
  */
 module.exports = async (params, user) =>
 	new Promise(async (res, rej) =>

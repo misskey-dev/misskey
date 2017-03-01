@@ -12,10 +12,10 @@ import deepcopy = require('deepcopy');
 /**
  * Serialize a notification
  *
- * @param {Object} notification
- * @return {Promise<Object>}
+ * @param {any} notification
+ * @return {Promise<any>}
  */
-export default (notification: any) => new Promise<Object>(async (resolve, reject) => {
+export default (notification: any) => new Promise<any>(async (resolve, reject) => {
 	let _notification: any;
 
 	// Populate the notification if 'notification' is ID

@@ -9,8 +9,8 @@ import { validateUsername } from '../../models/user';
 /**
  * Check available username
  *
- * @param {Object} params
- * @return {Promise<object>}
+ * @param {any} params
+ * @return {Promise<any>}
  */
 module.exports = async (params) =>
 	new Promise(async (res, rej) =>

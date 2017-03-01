@@ -17,7 +17,7 @@ import App from '../../../models/app';
  *         in: formData
  *         required: true
  *         type: string
- *     
+ *
  *     responses:
  *       200:
  *         description: Success
@@ -27,7 +27,7 @@ import App from '../../../models/app';
  *             available:
  *               description: Whether name_id is available
  *               type: boolean
- *         
+ *
  *       default:
  *         description: Failed
  *         schema:
@@ -37,8 +37,8 @@ import App from '../../../models/app';
 /**
  * Check available name_id of app
  *
- * @param {Object} params
- * @return {Promise<object>}
+ * @param {any} params
+ * @return {Promise<any>}
  */
 module.exports = async (params) =>
 	new Promise(async (res, rej) =>

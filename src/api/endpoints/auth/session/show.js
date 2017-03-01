@@ -18,11 +18,11 @@ import serialize from '../../../serializers/auth-session';
  *         in: formData
  *         required: true
  *         type: string
- *         
+ *
  *     responses:
  *       200:
  *         description: OK
- *         schema: 
+ *         schema:
  *           type: object
  *           properties:
  *             created_at:
@@ -49,9 +49,9 @@ import serialize from '../../../serializers/auth-session';
 /**
  * Show a session
  *
- * @param {Object} params
- * @param {Object} user
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
  */
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>

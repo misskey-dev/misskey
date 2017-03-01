@@ -9,8 +9,8 @@ import Post from '../../../models/post';
 /**
  * Aggregate reply of a post
  *
- * @param {Object} params
- * @return {Promise<object>}
+ * @param {any} params
+ * @return {Promise<any>}
  */
 module.exports = (params) =>
 	new Promise(async (res, rej) =>

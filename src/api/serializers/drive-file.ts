@@ -13,16 +13,16 @@ import config from '../../conf';
 /**
  * Serialize a drive file
  *
- * @param {Object} file
- * @param {Object} options?
- * @return {Promise<Object>}
+ * @param {any} file
+ * @param {any} options?
+ * @return {Promise<any>}
  */
 export default (
 	file: any,
 	options?: {
 		detail: boolean
 	}
-) => new Promise<Object>(async (resolve, reject) => {
+) => new Promise<any>(async (resolve, reject) => {
 	const opts = Object.assign({
 		detail: false
 	}, options);
@@ -34,18 +34,18 @@ export default (
 		_file = await DriveFile.findOne({
 			_id: file
 		}, {
-			fields: {
-				data: false
-			}
-		});
+				fields: {
+					data: false
+				}
+			});
 	} else if (typeof file === 'string') {
 		_file = await DriveFile.findOne({
 			_id: new mongo.ObjectID(file)
 		}, {
-			fields: {
-				data: false
-			}
-		});
+				fields: {
+					data: false
+				}
+			});
 	} else {
 		_file = deepcopy(file);
 	}

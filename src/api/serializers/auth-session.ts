@@ -10,9 +10,9 @@ import serializeApp from './app';
 /**
  * Serialize an auth session
  *
- * @param {Object} session
- * @param {Object} me?
- * @return {Promise<Object>}
+ * @param {any} session
+ * @param {any} me?
+ * @return {Promise<any>}
  */
 export default (
 	session: any,

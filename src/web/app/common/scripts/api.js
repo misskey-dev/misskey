@@ -11,8 +11,8 @@ let pending = 0;
  * Send a request to API
  * @param  {string|Object} i  Credential
  * @param  {string} endpoint  Endpoint
- * @param  {Object} [data={}] Data
- * @return {Promise<Object>} Response
+ * @param  {any} [data={}] Data
+ * @return {Promise<any>} Response
  */
 module.exports = (i, endpoint, data = {}) => {
 	if (++pending === 1) {

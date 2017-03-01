@@ -24,13 +24,13 @@ import serialize from '../../serializers/app';
  *         description: Application unique name
  *         in: formData
  *         type: string
- *         
+ *
  *     responses:
  *       200:
  *         description: Success
  *         schema:
  *           $ref: "#/definitions/Application"
- *           
+ *
  *       default:
  *         description: Failed
  *         schema:
@@ -40,11 +40,11 @@ import serialize from '../../serializers/app';
 /**
  * Show an app
  *
- * @param {Object} params
- * @param {Object} user
- * @param {Object} _
- * @param {Object} isSecure
- * @return {Promise<object>}
+ * @param {any} params
+ * @param {any} user
+ * @param {any} _
+ * @param {any} isSecure
+ * @return {Promise<any>}
  */
 module.exports = (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>

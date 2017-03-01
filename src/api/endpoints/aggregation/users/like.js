@@ -10,8 +10,8 @@ import Like from '../../../models/like';
 /**
  * Aggregate like of a user
  *
- * @param {Object} params
- * @return {Promise<object>}
+ * @param {any} params
+ * @return {Promise<any>}
  */
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
