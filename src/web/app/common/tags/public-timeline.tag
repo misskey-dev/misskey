@@ -1,5 +1,33 @@
 <mk-public-timeline>
-	<article each={ posts }>
+	<inside-renderer each="{ posts }"></inside-renderer>
+	<style>
+		:scope
+
+			display block
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.posts = [];
+		this.isFetching = true;
+
+		this.on('mount', () => {
+			this.api('posts', {
+				limit: 5,
+				include_reposts: false,
+				include_replies: false
+			}).then(posts => {
+				this.update({
+					isFetching: false,
+					posts: posts
+				});
+			});
+		});
+	</script>
+</mk-public-timeline>
+
+<inside-renderer>
+	<article>
 		<img src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div>
 			<header>
@@ -7,7 +35,7 @@
 				<span class="username">@{ user.username }</span>
 			</header>
 			<div class="body">
-				<div class="text">{ text }</div>
+				<div class="text" ref="text"></div>
 			</div>
 		</div>
 	</article>
@@ -59,28 +87,13 @@
 
 	</style>
 	<script>
-		this.mixin('api');
-		this.mixin('text')
-
-		this.posts = [];
-		this.isFetching = true;
+		this.mixin('text');
 
 		this.on('mount', () => {
-			this.api('posts', {
-				limit: 5,
-				include_reposts: false,
-				include_replies: false
-			}).then(data => {
-				const posts = data.map(datum => {
-					const tokens = this.analyze(datum.text);
-					datum.text = this.compile(tokens);
-					return datum;
-				});
-				this.update({
-					isFetching: false,
-					posts: posts
-				});
-			});
+			this.mixin('text');
+			const tokens = this.analyze(this.text);
+			const text = this.compile(tokens);
+			this.refs.text.innerHTML = text;
 		});
 	</script>
-</mk-public-timeline>
+</inside-renderer>
