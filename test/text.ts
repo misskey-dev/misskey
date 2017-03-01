@@ -9,10 +9,12 @@ const syntaxhighlighter = require('../src/common/text/core/syntax-highlighter');
 
 describe('Text', () => {
 	it('is correctly analyzed', () => {
-		const tokens = analyze('@himawari お腹ペコい #yryr');
+		const tokens = analyze('@himawari お腹ペコい :cat: #yryr');
 		assert.deepEqual([
 			{ type: 'mention', content: '@himawari', username: 'himawari' },
 			{ type: 'text', content: ' お腹ペコい ' },
+			{ type: 'emoji', content: ':cat:', emoji: 'cat'},
+			{ type: 'text', content: ' '},
 			{ type: 'hashtag', content: '#yryr', hashtag: 'yryr' }
 		], tokens);
 	});
@@ -45,6 +47,13 @@ describe('Text', () => {
 		const tokens = analyze('https://himasaku.net');
 		assert.deepEqual([
 			{ type: 'link', content: 'https://himasaku.net' }
+		], tokens);
+	});
+
+	it('emoji', () => {
+		const tokens = analyze(':cat:');
+		assert.deepEqual([
+			{ type: 'emoji', content: ':cat:', emoji: 'cat'}
 		], tokens);
 	});
 
