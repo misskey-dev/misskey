@@ -72,8 +72,10 @@ module.exports = async (params, user) =>
 {
 	// Get 'name_id' parameter
 	const nameId = params.name_id;
-	if (nameId == null || nameId == '') {
+	if (nameId == null) {
 		return rej('name_id is required');
+	} else if (typeof nameId != 'string') {
+		return rej('name_id must be a string');
 	}
 
 	// Validate name_id
