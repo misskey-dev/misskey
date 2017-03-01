@@ -3,20 +3,19 @@ const nyaize = require('nyaize').default;
 const emojinize = require('emojinize');
 const CONFIG = require('./config');
 
-const escape = function(text) {
-	return text
+const escape = text =>
+	text
 		.replace(/>/g, '&gt;')
 		.replace(/</g, '&lt;');
-};
 
-module.exports = function(tokens, shouldBreak) {
+module.exports = (tokens, shouldBreak) => {
 	if (shouldBreak == null) {
 		shouldBreak = true;
 	}
 
 	const me = riot.mixin('i').me;
 
-	let text = tokens.map(function(token) {
+	let text = tokens.map(token => {
 		switch (token.type) {
 			case 'text':
 				return escape(token.content)
@@ -45,4 +44,4 @@ module.exports = function(tokens, shouldBreak) {
 	}
 
 	return text;
-}
+};
