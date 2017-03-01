@@ -32,4 +32,5 @@ before_script:
   - npm run build
 
 after_success:
+  - chmod u+x ./travis/release.sh
   - ./.travis/release.sh
