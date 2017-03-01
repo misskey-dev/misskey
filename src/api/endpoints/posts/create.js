@@ -3,7 +3,6 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
 import validate from '../../validator';
 import parse from '../../../common/text';
 import { Post, isValidText } from '../../models/post';
@@ -15,11 +14,6 @@ import createFile from '../../common/add-file-to-drive';
 import notify from '../../common/notify';
 import event from '../../event';
 import config from '../../../conf';
-
-/**
- * 添付できるファイルの数
- */
-const maxMediaCount = 4;
 
 function hasDuplicates(array) {
 	return (new Set(array)).size !== array.length;
@@ -41,37 +35,25 @@ module.exports = (params, user, app) =>
 	if (textErr) return rej('invalid text');
 
 	// Get 'media_ids' parameter
-	const [mediaIds, mediaIdsErr] = validate(params.media_ids, 'array', false, x => !hasDuplicates(x));
+	const [mediaIds, mediaIdsErr] = validate(params.media_ids, 'array', false, [
+		x => !hasDuplicates(x),
+		x => x.length > 4 ? 'too many media' : true
+	]);
 	if (mediaIdsErr) return rej('invalid media_ids');
 
 	let files = [];
 	if (mediaIds !== null) {
-		if (mediaIds.length > maxMediaCount) {
-			return rej('too many media');
-		}
-
-		// Drop duplications
-		medias = medias.filter((x, i, s) => s.indexOf(x) == i);
-
 		// Fetch files
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
-		for (let i = 0; i < medias.length; i++) {
-			const media = medias[i];
-
-			if (typeof media != 'string') {
-				return rej('media id must be a string');
-			}
-
-			// Validate id
-			if (!mongo.ObjectID.isValid(media)) {
-				return rej('incorrect media id');
-			}
+		for (let i = 0; i < mediaIds.length; i++) {
+			const [mediaId, mediaIdErr] = validate(mediaIds[i], 'id', true);
+			if (mediaIdErr) return rej('invalid media id');
 
 			// Fetch file
 			// SELECT _id
 			const entity = await DriveFile.findOne({
-				_id: new mongo.ObjectID(media),
+				_id: mediaId,
 				user_id: user._id
 			}, {
 				_id: true
@@ -88,20 +70,14 @@ module.exports = (params, user, app) =>
 	}
 
 	// Get 'repost_id' parameter
-	let repost = params.repost_id;
-	if (repost !== undefined && repost !== null) {
-		if (typeof repost != 'string') {
-			return rej('repost_id must be a string');
-		}
+	const [repostId, repostIdErr] = validate(params.repost_id, 'id');
+	if (repostIdErr) return rej('invalid repost_id');
 
-		// Validate id
-		if (!mongo.ObjectID.isValid(repost)) {
-			return rej('incorrect repost_id');
-		}
-
+	let repost = null;
+	if (repostId !== null) {
 		// Fetch repost to post
 		repost = await Post.findOne({
-			_id: new mongo.ObjectID(repost)
+			_id: repostId
 		});
 
 		if (repost == null) {
@@ -133,96 +109,63 @@ module.exports = (params, user, app) =>
 				text === null && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
-	} else {
-		repost = null;
 	}
 
-	// Get 'reply_to_id' parameter
-	let replyTo = params.reply_to_id;
-	if (replyTo !== undefined && replyTo !== null) {
-		if (typeof replyTo != 'string') {
-			return rej('reply_to_id must be a string');
-		}
+	// Get 'in_reply_to_post_id' parameter
+	const [inReplyToPostId, inReplyToPostIdErr] = validate(params.reply_to_id, 'id');
+	if (inReplyToPostIdErr) return rej('invalid in_reply_to_post_id');
 
-		// Validate id
-		if (!mongo.ObjectID.isValid(replyTo)) {
-			return rej('incorrect reply_to_id');
-		}
-
+	let inReplyToPost = null;
+	if (inReplyToPostId !== null) {
 		// Fetch reply
-		replyTo = await Post.findOne({
-			_id: new mongo.ObjectID(replyTo)
+		inReplyToPost = await Post.findOne({
+			_id: inReplyToPostId
 		});
 
-		if (replyTo === null) {
-			return rej('reply to post is not found');
+		if (inReplyToPost === null) {
+			return rej('in reply to post is not found');
 		}
 
 		// 返信対象が引用でないRepostだったらエラー
-		if (replyTo.repost_id && !replyTo.text && !replyTo.media_ids) {
+		if (inReplyToPost.repost_id && !inReplyToPost.text && !inReplyToPost.media_ids) {
 			return rej('cannot reply to repost');
 		}
-	} else {
-		replyTo = null;
 	}
 
 	// Get 'poll' parameter
-	let poll = params.poll;
-	if (poll !== undefined && poll !== null) {
-		// 選択肢が無かったらエラー
-		if (poll.choices == null) {
-			return rej('poll choices is required');
-		}
+	const [_poll, pollErr] = validate(params.poll, 'object');
+	if (pollErr) return rej('invalid poll');
 
-		// 選択肢が配列でなかったらエラー
-		if (!Array.isArray(poll.choices)) {
-			return rej('poll choices must be an array');
-		}
+	let poll = null;
+	if (_poll !== null) {
+		const [pollChoices, pollChoicesErr] = validate(params.poll, 'array', false, [
+			choices => !hasDuplicates(choices),
+			choices => {
+				const shouldReject = choices.some(choice => {
+					if (typeof choice != 'string') return true;
+					if (choice.trim().length == 0) return true;
+					if (choice.trim().length > 50) return true;
+				});
+				return shouldReject ? 'invalid poll choices' : true;
+			},
+			// 選択肢がひとつならエラー
+			choices => choices.length == 1 ? 'poll choices must be ひとつ以上' : true,
+			// 選択肢が多すぎてもエラー
+			choices => choices.length > 10 ? 'many poll choices' : true,
+		]);
+		if (pollChoicesErr) return rej('invalid poll choices');
 
-		// 選択肢が空の配列でエラー
-		if (poll.choices.length == 0) {
-			return rej('poll choices is required');
-		}
-
-		// Validate each choices
-		const shouldReject = poll.choices.some(choice => {
-			if (typeof choice !== 'string') return true;
-			if (choice.trim().length === 0) return true;
-			if (choice.trim().length > 100) return true;
-		});
-
-		if (shouldReject) {
-			return rej('invalid poll choices');
-		}
-
-		// Trim choices
-		poll.choices = poll.choices.map(choice => choice.trim());
-
-		// Drop duplications
-		poll.choices = poll.choices.filter((x, i, s) => s.indexOf(x) == i);
-
-		// 選択肢がひとつならエラー
-		if (poll.choices.length == 1) {
-			return rej('poll choices must be ひとつ以上');
-		}
-
-		// 選択肢が多すぎてもエラー
-		if (poll.choices.length > 10) {
-			return rej('many poll choices');
-		}
-
-		// serialize
-		poll.choices = poll.choices.map((choice, i) => ({
+		_poll.choices = pollChoices.map((choice, i) => ({
 			id: i, // IDを付与
-			text: choice,
+			text: choice.trim(),
 			votes: 0
 		}));
-	} else {
-		poll = null;
+
+		poll = _poll;
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無いかつ投票も無かったらエラー
-	if (text === null && files === null && repost === null && poll === null) {
+	if (text === null && files === null && repost === null && pollChoices === null) {
 		return rej('text, media_ids, repost_id or poll is required');
 	}
 
