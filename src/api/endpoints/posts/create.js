@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import validate from '../../validator';
+import hasDuplicates from '../../../common/has-duplicates';
 import parse from '../../../common/text';
 import { Post, isValidText } from '../../models/post';
 import User from '../../models/user';
@@ -14,10 +15,6 @@ import createFile from '../../common/add-file-to-drive';
 import notify from '../../common/notify';
 import event from '../../event';
 import config from '../../../conf';
-
-function hasDuplicates(array) {
-	return (new Set(array)).size !== array.length;
-}
 
 /**
  * Create a post
