@@ -42,7 +42,7 @@ module.exports = (params, user) =>
 
 		// Myself
 		if (new mongo.ObjectID(recipient).equals(user._id)) {
-			return rej('-need-translate-');
+			return rej('cannot send message to myself');
 		}
 
 		recipient = await User.findOne({
