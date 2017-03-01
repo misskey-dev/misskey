@@ -4,8 +4,9 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+import validate from '../../validator';
 import parse from '../../../common/text';
-import Post from '../../models/post';
+import { Post, isValidText } from '../../models/post';
 import User from '../../models/user';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
@@ -16,14 +17,13 @@ import event from '../../event';
 import config from '../../../conf';
 
 /**
- * 最大文字数
- */
-const maxTextLength = 1000;
-
-/**
  * 添付できるファイルの数
  */
 const maxMediaCount = 4;
+
+function hasDuplicates(array) {
+	return (new Set(array)).size !== array.length;
+}
 
 /**
  * Create a post
@@ -37,30 +37,16 @@ module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'text' parameter
-	let text = params.text;
-	if (text !== undefined && text !== null) {
-		if (typeof text != 'string') {
-			return rej('text must be a string');
-		}
-		text = text.trim();
-		if (text.length == 0) {
-			text = null;
-		} else if (text.length > maxTextLength) {
-			return rej('too long text');
-		}
-	} else {
-		text = null;
-	}
+	const [text, textErr] = validate(params.text, 'string', false, isValidText);
+	if (textErr) return rej('invalid text');
 
 	// Get 'media_ids' parameter
-	let medias = params.media_ids;
-	let files = [];
-	if (medias !== undefined && medias !== null) {
-		if (!Array.isArray(medias)) {
-			return rej('media_ids must be an array');
-		}
+	const [mediaIds, mediaIdsErr] = validate(params.media_ids, 'array', false, x => !hasDuplicates(x));
+	if (mediaIdsErr) return rej('invalid media_ids');
 
-		if (medias.length > maxMediaCount) {
+	let files = [];
+	if (mediaIds !== null) {
+		if (mediaIds.length > maxMediaCount) {
 			return rej('too many media');
 		}
 
