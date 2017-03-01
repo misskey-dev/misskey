@@ -60,6 +60,7 @@
 	</style>
 	<script>
 		this.mixin('api');
+		this.mixin('text')
 
 		this.posts = [];
 		this.isFetching = true;
@@ -69,7 +70,12 @@
 				limit: 5,
 				include_reposts: false,
 				include_replies: false
-			}).then(posts => {
+			}).then(data => {
+				const posts = data.map(datum => {
+					const tokens = this.analyze(datum.text);
+					datum.text = this.compile(tokens);
+					return datum;
+				});
 				this.update({
 					isFetching: false,
 					posts: posts
