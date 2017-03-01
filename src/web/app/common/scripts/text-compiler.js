@@ -37,7 +37,9 @@ module.exports = (tokens, shouldBreak) => {
 		}
 	}).join('');
 
-	text = text.replace(/<br><code><pre>/g, '<code><pre>').replace(/<\/code><\/pre><br>/g, '</code></pre>');
+	text = text
+		.replace(/ <code>/g, '<code>').replace(/<\/code> /g, '</code>')
+		.replace(/<br><code><pre>/g, '<code><pre>').replace(/<\/code><\/pre><br>/g, '</code></pre>');
 
 	if (me && me.data && me.data.nya) {
 		text = nyaize(text);
