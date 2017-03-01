@@ -8,7 +8,8 @@ const elements = [
 	require('./elements/mention'),
 	require('./elements/hashtag'),
 	require('./elements/code'),
-	require('./elements/inline-code')
+	require('./elements/inline-code'),
+	require('./elements/emoji')
 ];
 
 function analyze(source) {
