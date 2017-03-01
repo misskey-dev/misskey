@@ -19,6 +19,7 @@ import * as rimraf from 'rimraf';
 import * as chalk from 'chalk';
 import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
+import * as mocha from 'gulp-mocha';
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -95,7 +96,7 @@ gulp.task('build:copy', () =>
 	)
 );
 
-gulp.task('test', ['lint', 'build']);
+gulp.task('test', ['lint', 'mocha']);
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
@@ -103,6 +104,13 @@ gulp.task('lint', () =>
 			formatter: 'verbose'
 		}))
 		.pipe(tslint.report())
+);
+
+gulp.task('mocha', () =>
+	gulp.src([])
+		.pipe(mocha({
+			compilers: 'ts:ts-node/register'
+		} as any))
 );
 
 gulp.task('clean', cb =>
