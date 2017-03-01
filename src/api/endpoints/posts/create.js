@@ -165,7 +165,7 @@ module.exports = (params, user, app) =>
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無いかつ投票も無かったらエラー
-	if (text === null && files === null && repost === null && pollChoices === null) {
+	if (text === null && files === null && repost === null && poll === null) {
 		return rej('text, media_ids, repost_id or poll is required');
 	}
 
