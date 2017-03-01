@@ -4,7 +4,6 @@
  * Module dependencies
  */
 import validate from '../../validator';
-import hasDuplicates from '../../../common/has-duplicates';
 import parse from '../../../common/text';
 import { Post, isValidText } from '../../models/post';
 import User from '../../models/user';
@@ -32,10 +31,9 @@ module.exports = (params, user, app) =>
 	if (textErr) return rej('invalid text');
 
 	// Get 'media_ids' parameter
-	const [mediaIds, mediaIdsErr] = validate(params.media_ids, 'array', false, [
-		x => !hasDuplicates(x),
+	const [mediaIds, mediaIdsErr] = validate(params.media_ids, 'set', false,
 		x => x.length > 4 ? 'too many media' : true
-	]);
+	);
 	if (mediaIdsErr) return rej('invalid media_ids');
 
 	let files = [];
@@ -135,8 +133,7 @@ module.exports = (params, user, app) =>
 
 	let poll = null;
 	if (_poll !== null) {
-		const [pollChoices, pollChoicesErr] = validate(params.poll, 'array', false, [
-			choices => !hasDuplicates(choices),
+		const [pollChoices, pollChoicesErr] = validate(params.poll, 'set', false, [
 			choices => {
 				const shouldReject = choices.some(choice => {
 					if (typeof choice != 'string') return true;

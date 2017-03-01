@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
+import hasDuplicates from '../common/has-duplicates';
 
-type Type = 'id' | 'string' | 'number' | 'boolean' | 'array' | 'object';
+type Type = 'id' | 'string' | 'number' | 'boolean' | 'array' | 'set' | 'object';
 
 type Validator<T> = ((x: T) => boolean | string) | ((x: T) => boolean | string)[];
 
@@ -9,6 +10,7 @@ function validate(value: any, type: 'string', isRequired?: boolean, validator?: 
 function validate(value: any, type: 'number', isRequired?: boolean, validator?: Validator<number>): [number, string];
 function validate(value: any, type: 'boolean', isRequired?: boolean): [boolean, string];
 function validate(value: any, type: 'array', isRequired?: boolean, validator?: Validator<any[]>): [any[], string];
+function validate(value: any, type: 'set', isRequired?: boolean, validator?: Validator<Set<any>>): [Set<any>, string];
 function validate(value: any, type: 'object', isRequired?: boolean, validator?: Validator<Object>): [Object, string];
 function validate<T>(value: any, type: Type, isRequired?: boolean, validator?: Validator<T>): [T, string] {
 	if (value === undefined || value === null) {
@@ -47,6 +49,14 @@ function validate<T>(value: any, type: Type, isRequired?: boolean, validator?: V
 		case 'array':
 			if (!Array.isArray(value)) {
 				return [null, 'must-be-an-array'];
+			}
+			break;
+
+		case 'set':
+			if (!Array.isArray(value)) {
+				return [null, 'must-be-an-array'];
+			} else if (hasDuplicates(value)) {
+				return [null, 'duplicated-contents'];
 			}
 			break;
 
