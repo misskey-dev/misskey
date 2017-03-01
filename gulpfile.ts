@@ -26,7 +26,7 @@ const isProduction = env === 'production';
 const isDebug = !isProduction;
 
 if (isDebug) {
-	console.log(chalk.yellow.bold('！！！注意！！！　開発モードが有効です。(成果物の圧縮などはスキップされます)'));
+	console.log(chalk.yellow.bold('！！！WARNING！！！ NODE_ENV is not "production". (built script compessing will not be performed.)'));
 }
 
 const constants = require('./src/const.json');
