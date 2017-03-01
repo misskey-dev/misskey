@@ -42,7 +42,7 @@ function validate<T>(value: any, type: Type, isRequired?: boolean, validator?: V
 
 		case 'boolean':
 			if (typeof value != 'boolean') {
-				return [null, 'must-be-an-boolean'];
+				return [null, 'must-be-a-boolean'];
 			}
 			break;
 
@@ -62,7 +62,7 @@ function validate<T>(value: any, type: Type, isRequired?: boolean, validator?: V
 
 		case 'object':
 			if (typeof value != 'object') {
-				return [null, 'must-be-an-onject'];
+				return [null, 'must-be-an-object'];
 			}
 			break;
 	}
