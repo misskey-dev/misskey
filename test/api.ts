@@ -169,6 +169,16 @@ describe('API', () => {
 			});
 		});
 
+		it('名前を空白にできない', () => async (done) => {
+			const me = await insertSakurako();
+			request('/i/update', {
+				name: ' '
+			}, me).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+
 		it('誕生日の設定を削除できる', () => async (done) => {
 			const me = await insertSakurako({
 				birthday: '2000-09-07'
