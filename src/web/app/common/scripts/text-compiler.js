@@ -37,6 +37,7 @@ module.exports = (tokens, shouldBreak) => {
 		}
 	}).join('');
 
+	// Remove needless whitespaces
 	text = text
 		.replace(/ <code>/g, '<code>').replace(/<\/code> /g, '</code>')
 		.replace(/<br><code><pre>/g, '<code><pre>').replace(/<\/code><\/pre><br>/g, '</code></pre>');
