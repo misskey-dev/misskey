@@ -15,6 +15,10 @@ export function validatePassword(password: string): boolean {
 	return typeof password == 'string' && password != '';
 }
 
+export function isValidName(name: string): boolean {
+	return typeof name == 'string' && name.length > 50 && name.trim() != '';
+}
+
 export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }

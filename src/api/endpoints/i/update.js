@@ -5,7 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import User from '../../models/user';
-import { isValidBirthday } from '../../models/user';
+import { isValidName, isValidBirthday } from '../../models/user';
 import serialize from '../../serializers/user';
 import event from '../../event';
 import config from '../../../conf';
@@ -25,8 +25,8 @@ module.exports = async (params, user, _, isSecure) =>
 	// Get 'name' parameter
 	const name = params.name;
 	if (name !== undefined && name !== null) {
-		if (name.length > 50) {
-			return rej('too long name');
+		if (!isValidName(name)) {
+			return rej('invalid name');
 		}
 
 		user.name = name;
