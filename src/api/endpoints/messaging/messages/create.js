@@ -31,6 +31,10 @@ module.exports = (params, user) =>
 	// Get 'user_id' parameter
 	let recipient = params.user_id;
 	if (recipient !== undefined && recipient !== null) {
+		if (typeof recipient != 'string') {
+			return rej('user_id must be a string');
+		}
+
 		// Validate id
 		if (!mongo.ObjectID.isValid(recipient)) {
 			return rej('incorrect user_id');
