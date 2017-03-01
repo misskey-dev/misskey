@@ -47,11 +47,6 @@
 				<p>読み込みを高速化する</p>
 				<p>API通信時に新鮮なユーザー情報をキャッシュすることでフェッチのオーバーヘッドを無くします。(実験的)</p>
 			</label>
-			<label class="checkbox">
-				<input type="checkbox" checked={ I.data.nya } onclick={ updateNya }/>
-				<p><i>な</i>を<i>にゃ</i>に変換する</p>
-				<p>攻撃的な投稿が多少和らぐ可能性があります。</p>
-			</label>
 		</section>
 
 		<section class="apps" show={ page == 'apps' }>
@@ -225,15 +220,6 @@
 			this.api('i/appdata/set', {
 				data: JSON.stringify({
 					cache: this.I.data.cache
-				})
-			});
-		};
-
-		this.updateNya = () => {
-			this.I.data.nya = !this.I.data.nya;
-			this.api('i/appdata/set', {
-				data: JSON.stringify({
-					nya: this.I.data.nya
 				})
 			});
 		};

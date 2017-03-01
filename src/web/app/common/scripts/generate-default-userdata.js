@@ -38,8 +38,6 @@ module.exports = () => {
 
 	const data = {
 		cache: true,
-		debug: false,
-		nya: true,
 		home: homeData
 	};
 
