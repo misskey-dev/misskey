@@ -32,4 +32,4 @@ before_script:
   - npm run build
 
 after_success:
-  - ./.travis/after_success.sh
+  - ./.travis/release.sh
