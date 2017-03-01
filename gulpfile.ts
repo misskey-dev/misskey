@@ -31,8 +31,6 @@ if (isDebug) {
 
 const constants = require('./src/const.json');
 
-const tsProject = ts.createProject('./src/tsconfig.json');
-
 gulp.task('build', [
 	'build:js',
 	'build:ts',
@@ -51,12 +49,14 @@ gulp.task('build:js', () =>
 		.pipe(gulp.dest('./built/'))
 );
 
-gulp.task('build:ts', () =>
-	tsProject
+gulp.task('build:ts', () => {
+	const tsProject = ts.createProject('./src/tsconfig.json');
+
+	return tsProject
 		.src()
 		.pipe(tsProject())
 		.pipe(gulp.dest('./built/'))
-);
+});
 
 gulp.task('build:about:docs', () => {
 	function getLicenseHtml(path: string) {
