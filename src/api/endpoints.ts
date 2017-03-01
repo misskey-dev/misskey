@@ -1,105 +1,442 @@
-const second = 1000;
-const minute = 60 * second;
-const hour = 60 * minute;
-const day = 24 * hour;
+import * as ms from 'ms';
 
-export interface IEndpoint {
+/**
+ * エンドポイントを表します。
+ */
+export type Endpoint = {
+
+	/**
+	 * エンドポイント名
+	 */
 	name: string;
-	shouldBeSignin: boolean;
-	limitKey?: string;
-	limitDuration?: number;
-	limitMax?: number;
-	minInterval?: number;
+
+	/**
+	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
+	 * 省略した場合は false として解釈されます。
+	 */
+	withCredential?: boolean;
+
+	/**
+	 * エンドポイントのリミテーションに関するやつ
+	 * 省略した場合はリミテーションは無いものとして解釈されます。
+	 * また、withCredential が false の場合はリミテーションを行うことはできません。
+	 */
+	limit?: {
+
+		/**
+		 * 複数のエンドポイントでリミットを共有したい場合に指定するキー
+		 */
+		key?: string;
+
+		/**
+		 * リミットを適用する期間(ms)
+		 * このプロパティを設定する場合、max プロパティも設定する必要があります。
+		 */
+		duration?: number;
+
+		/**
+		 * durationで指定した期間内にいくつまでリクエストできるのか
+		 * このプロパティを設定する場合、duration プロパティも設定する必要があります。
+		 */
+		max?: number;
+
+		/**
+		 * 最低でもどれくらいの間隔を開けてリクエストしなければならないか(ms)
+		 */
+		minInterval?: number;
+	};
+
+	/**
+	 * ファイルの添付を必要とするか否か
+	 * 省略した場合は false として解釈されます。
+	 */
 	withFile?: boolean;
+
+	/**
+	 * サードパーティアプリからはリクエストすることができないか否か
+	 * 省略した場合は false として解釈されます。
+	 */
 	secure?: boolean;
+
+	/**
+	 * エンドポイントの種類
+	 * パーミッションの実現に利用されます。
+	 */
 	kind?: string;
-}
+};
 
-export default [
-	{ name: 'meta',   shouldBeSignin: false },
+const endpoints: Endpoint[] = [
+	{
+		name: 'meta'
+	},
+	{
+		name: 'username/available'
+	},
+	{
+		name: 'my/apps',
+		withCredential: true
+	},
+	{
+		name: 'app/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1day'),
+			max: 3
+		}
+	},
+	{
+		name: 'app/show'
+	},
+	{
+		name: 'app/name_id/available'
+	},
+	{
+		name: 'auth/session/generate'
+	},
+	{
+		name: 'auth/session/show'
+	},
+	{
+		name: 'auth/session/userkey'
+	},
+	{
+		name: 'auth/accept',
+		withCredential: true,
+		secure: true
+	},
+	{
+		name: 'auth/deny',
+		withCredential: true,
+		secure: true
+	},
+	{
+		name: 'aggregation/users/post',
+	},
+	{
+		name: 'aggregation/users/like'
+	},
+	{
+		name: 'aggregation/users/followers'
+	},
+	{
+		name: 'aggregation/users/following'
+	},
+	{
+		name: 'aggregation/posts/like'
+	},
+	{
+		name: 'aggregation/posts/likes'
+	},
+	{
+		name: 'aggregation/posts/repost'
+	},
+	{
+		name: 'aggregation/posts/reply'
+	},
 
-	{ name: 'username/available', shouldBeSignin: false },
+	{
+		name: 'i',
+		withCredential: true
+	},
+	{
+		name: 'i/update',
+		withCredential: true,
+		limit: {
+			duration: ms('1day'),
+			max: 50
+		},
+		kind: 'account-write'
+	},
+	{
+		name: 'i/appdata/get',
+		withCredential: true
+	},
+	{
+		name: 'i/appdata/set',
+		withCredential: true
+	},
+	{
+		name: 'i/signin_history',
+		withCredential: true,
+		kind: 'account-read'
+	},
+	{
+		name: 'i/authorized_apps',
+		withCredential: true,
+		secure: true
+	},
 
-	{ name: 'my/apps', shouldBeSignin: true },
+	{
+		name: 'i/notifications',
+		withCredential: true,
+		kind: 'notification-read'
+	},
+	{
+		name: 'notifications/delete',
+		withCredential: true,
+		kind: 'notification-write'
+	},
+	{
+		name: 'notifications/delete_all',
+		withCredential: true,
+		kind: 'notification-write'
+	},
+	{
+		name: 'notifications/mark_as_read',
+		withCredential: true,
+		kind: 'notification-write'
+	},
+	{
+		name: 'notifications/mark_as_read_all',
+		withCredential: true,
+		kind: 'notification-write'
+	},
 
-	{ name: 'app/create',            shouldBeSignin: true, limitDuration: day, limitMax: 3 },
-	{ name: 'app/show',              shouldBeSignin: false },
-	{ name: 'app/name_id/available', shouldBeSignin: false },
+	{
+		name: 'drive',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/stream',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/files',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/files/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		withFile: true,
+		kind: 'drive-write'
+	},
+	{
+		name: 'drive/files/upload_from_url',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 10
+		},
+		kind: 'drive-write'
+	},
+	{
+		name: 'drive/files/show',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/files/find',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/files/delete',
+		withCredential: true,
+		kind: 'drive-write'
+	},
+	{
+		name: 'drive/files/update',
+		withCredential: true,
+		kind: 'drive-write'
+	},
+	{
+		name: 'drive/folders',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/folders/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 50
+		},
+		kind: 'drive-write'
+	},
+	{
+		name: 'drive/folders/show',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/folders/find',
+		withCredential: true,
+		kind: 'drive-read'
+	},
+	{
+		name: 'drive/folders/update',
+		withCredential: true,
+		kind: 'drive-write'
+	},
 
-	{ name: 'auth/session/generate', shouldBeSignin: false },
-	{ name: 'auth/session/show',     shouldBeSignin: false },
-	{ name: 'auth/session/userkey',  shouldBeSignin: false },
-	{ name: 'auth/accept',           shouldBeSignin: true, secure: true },
-	{ name: 'auth/deny',             shouldBeSignin: true, secure: true },
+	{
+		name: 'users'
+	},
+	{
+		name: 'users/show'
+	},
+	{
+		name: 'users/search'
+	},
+	{
+		name: 'users/search_by_username'
+	},
+	{
+		name: 'users/posts'
+	},
+	{
+		name: 'users/following'
+	},
+	{
+		name: 'users/followers'
+	},
+	{
+		name: 'users/recommendation',
+		withCredential: true,
+		kind: 'account-read'
+	},
 
-	{ name: 'aggregation/users/post',      shouldBeSignin: false },
-	{ name: 'aggregation/users/like',      shouldBeSignin: false },
-	{ name: 'aggregation/users/followers', shouldBeSignin: false },
-	{ name: 'aggregation/users/following', shouldBeSignin: false },
-	{ name: 'aggregation/posts/like',      shouldBeSignin: false },
-	{ name: 'aggregation/posts/likes',     shouldBeSignin: false },
-	{ name: 'aggregation/posts/repost',    shouldBeSignin: false },
-	{ name: 'aggregation/posts/reply',     shouldBeSignin: false },
+	{
+		name: 'following/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'following-write'
+	},
+	{
+		name: 'following/delete',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'following-write'
+	},
 
-	{ name: 'i',                shouldBeSignin: true },
-	{ name: 'i/update',         shouldBeSignin: true, limitDuration: day, limitMax: 50, kind: 'account-write' },
-	{ name: 'i/appdata/get',    shouldBeSignin: true },
-	{ name: 'i/appdata/set',    shouldBeSignin: true },
-	{ name: 'i/signin_history', shouldBeSignin: true, kind: 'account-read' },
-	{ name: 'i/authorized_apps', shouldBeSignin: true, secure: true },
+	{
+		name: 'posts'
+	},
+	{
+		name: 'posts/show'
+	},
+	{
+		name: 'posts/replies'
+	},
+	{
+		name: 'posts/context'
+	},
+	{
+		name: 'posts/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 120,
+			minInterval: 1 * second
+		},
+		kind: 'post-write'
+	},
+	{
+		name: 'posts/reposts'
+	},
+	{
+		name: 'posts/search'
+	},
+	{
+		name: 'posts/timeline',
+		withCredential: true,
+		limit: {
+			duration: ms('10minutes'),
+			max: 100
+		}
+	},
+	{
+		name: 'posts/mentions',
+		withCredential: true,
+		limit: {
+			duration: ms('10minutes'),
+			max: 100
+		}
+	},
+	{
+		name: 'posts/likes',
+		withCredential: true
+	},
+	{
+		name: 'posts/likes/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'like-write'
+	},
+	{
+		name: 'posts/likes/delete',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'like-write'
+	},
+	{
+		name: 'posts/favorites/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'favorite-write'
+	},
+	{
+		name: 'posts/favorites/delete',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'favorite-write'
+	},
+	{
+		name: 'posts/polls/vote',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'vote-write'
+	},
 
-	{ name: 'i/notifications',                shouldBeSignin: true, kind: 'notification-read' },
-	{ name: 'notifications/delete',           shouldBeSignin: true, kind: 'notification-write' },
-	{ name: 'notifications/delete_all',       shouldBeSignin: true, kind: 'notification-write' },
-	{ name: 'notifications/mark_as_read',     shouldBeSignin: true, kind: 'notification-write' },
-	{ name: 'notifications/mark_as_read_all', shouldBeSignin: true, kind: 'notification-write' },
+	{
+		name: 'messaging/history',
+		withCredential: true,
+		kind: 'messaging-read'
+	},
+	{
+		name: 'messaging/unread',
+		withCredential: true,
+		kind: 'messaging-read'
+	},
+	{
+		name: 'messaging/messages',
+		withCredential: true,
+		kind: 'messaging-read'
+	},
+	{
+		name: 'messaging/messages/create',
+		withCredential: true,
+		kind: 'messaging-write'
+	}
 
-	{ name: 'drive',                       shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/stream',                shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/files',                 shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/files/create',          shouldBeSignin: true, limitDuration: hour, limitMax: 100, withFile: true, kind: 'drive-write' },
-	{ name: 'drive/files/upload_from_url', shouldBeSignin: true, limitDuration: hour, limitMax: 10, kind: 'drive-write' },
-	{ name: 'drive/files/show',            shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/files/find',            shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/files/delete',          shouldBeSignin: true, kind: 'drive-write' },
-	{ name: 'drive/files/update',          shouldBeSignin: true, kind: 'drive-write' },
-	{ name: 'drive/folders',               shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/folders/create',        shouldBeSignin: true, limitDuration: hour, limitMax: 50, kind: 'drive-write' },
-	{ name: 'drive/folders/show',          shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/folders/find',          shouldBeSignin: true, kind: 'drive-read' },
-	{ name: 'drive/folders/update',        shouldBeSignin: true, kind: 'drive-write' },
+];
 
-	{ name: 'users',                    shouldBeSignin: false },
-	{ name: 'users/show',               shouldBeSignin: false },
-	{ name: 'users/search',             shouldBeSignin: false },
-	{ name: 'users/search_by_username', shouldBeSignin: false },
-	{ name: 'users/posts',              shouldBeSignin: false },
-	{ name: 'users/following',          shouldBeSignin: false },
-	{ name: 'users/followers',          shouldBeSignin: false },
-	{ name: 'users/recommendation',     shouldBeSignin: true, kind: 'account-read' },
-
-	{ name: 'following/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'following-write' },
-	{ name: 'following/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'following-write' },
-
-	{ name: 'posts',                  shouldBeSignin: false },
-	{ name: 'posts/show',             shouldBeSignin: false },
-	{ name: 'posts/replies',          shouldBeSignin: false },
-	{ name: 'posts/context',          shouldBeSignin: false },
-	{ name: 'posts/create',           shouldBeSignin: true, limitDuration: hour, limitMax: 120, minInterval: 1 * second, kind: 'post-write' },
-	{ name: 'posts/reposts',          shouldBeSignin: false },
-	{ name: 'posts/search',           shouldBeSignin: false },
-	{ name: 'posts/timeline',         shouldBeSignin: true, limitDuration: 10 * minute, limitMax: 100 },
-	{ name: 'posts/mentions',         shouldBeSignin: true, limitDuration: 10 * minute, limitMax: 100 },
-	{ name: 'posts/likes',            shouldBeSignin: true },
-	{ name: 'posts/likes/create',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like-write' },
-	{ name: 'posts/likes/delete',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like-write' },
-	{ name: 'posts/favorites/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
-	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
-	{ name: 'posts/polls/vote',       shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'vote-write' },
-
-	{ name: 'messaging/history',         shouldBeSignin: true, kind: 'messaging-read' },
-	{ name: 'messaging/unread',          shouldBeSignin: true, kind: 'messaging-read' },
-	{ name: 'messaging/messages',        shouldBeSignin: true, kind: 'messaging-read' },
-	{ name: 'messaging/messages/create', shouldBeSignin: true, kind: 'messaging-write' }
-
-] as IEndpoint[];
+export default endpoints;

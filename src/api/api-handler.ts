@@ -1,12 +1,12 @@
 import * as express from 'express';
 
-import { IEndpoint } from './endpoints';
+import { Endpoint } from './endpoints';
 import authenticate from './authenticate';
 import { IAuthContext } from './authenticate';
 import _reply from './reply';
 import limitter from './limitter';
 
-export default async (endpoint: IEndpoint, req: express.Request, res: express.Response) => {
+export default async (endpoint: Endpoint, req: express.Request, res: express.Response) => {
 	const reply = _reply.bind(null, res);
 	let ctx: IAuthContext;
 
@@ -21,7 +21,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 		return reply(403, 'ACCESS_DENIED');
 	}
 
-	if (endpoint.shouldBeSignin && ctx.user == null) {
+	if (endpoint.withCredential && ctx.user == null) {
 		return reply(401, 'PLZ_SIGNIN');
 	}
 
@@ -31,7 +31,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 		}
 	}
 
-	if (endpoint.shouldBeSignin) {
+	if (endpoint.withCredential && endpoint.limit) {
 		try {
 			await limitter(endpoint, ctx); // Rate limit
 		} catch (e) {

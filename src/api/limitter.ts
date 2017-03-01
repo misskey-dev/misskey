@@ -1,26 +1,28 @@
 import * as Limiter from 'ratelimiter';
 import * as debug from 'debug';
 import limiterDB from '../db/redis';
-import { IEndpoint } from './endpoints';
+import { Endpoint } from './endpoints';
 import { IAuthContext } from './authenticate';
 
 const log = debug('misskey:limitter');
 
-export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reject) => {
-	const limitKey = endpoint.hasOwnProperty('limitKey')
-		? endpoint.limitKey
+export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, reject) => {
+	const limitation = endpoint.limit;
+
+	const key = limitation.hasOwnProperty('key')
+		? limitation.key
 		: endpoint.name;
 
-	const hasMinInterval =
-		endpoint.hasOwnProperty('minInterval');
+	const hasShortTermLimit =
+		limitation.hasOwnProperty('minInterval');
 
-	const hasRateLimit =
-		endpoint.hasOwnProperty('limitDuration') &&
-		endpoint.hasOwnProperty('limitMax');
+	const hasLongTermLimit =
+		limitation.hasOwnProperty('duration') &&
+		limitation.hasOwnProperty('max');
 
-	if (hasMinInterval) {
+	if (hasShortTermLimit) {
 		min();
-	} else if (hasRateLimit) {
+	} else if (hasLongTermLimit) {
 		max();
 	} else {
 		ok();
@@ -29,8 +31,8 @@ export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reje
 	// Short-term limit
 	function min() {
 		const minIntervalLimiter = new Limiter({
-			id: `${ctx.user._id}:${limitKey}:min`,
-			duration: endpoint.minInterval,
+			id: `${ctx.user._id}:${key}:min`,
+			duration: limitation.minInterval,
 			max: 1,
 			db: limiterDB
 		});
@@ -45,7 +47,7 @@ export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reje
 			if (info.remaining === 0) {
 				reject('BRIEF_REQUEST_INTERVAL');
 			} else {
-				if (hasRateLimit) {
+				if (hasLongTermLimit) {
 					max();
 				} else {
 					ok();
@@ -57,9 +59,9 @@ export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reje
 	// Long term limit
 	function max() {
 		const limiter = new Limiter({
-			id: `${ctx.user._id}:${limitKey}`,
-			duration: endpoint.limitDuration,
-			max: endpoint.limitMax,
+			id: `${ctx.user._id}:${key}`,
+			duration: limitation.duration,
+			max: limitation.max,
 			db: limiterDB
 		});
 
