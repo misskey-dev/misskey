@@ -88,9 +88,10 @@ Install
 3. `npm install`
 
 #### Update
-1. `git fetch`
-2. `git reset --hard origin/release`
-3. `npm install`
+1. `cd /path/to/misskey`
+2. `git fetch`
+3. `git reset --hard origin/release`
+4. `npm install`
 
 ### Using source code
 1. `git clone -b master git://github.com/syuilo/misskey.git`
@@ -99,13 +100,15 @@ Install
 4. `npm run build`
 
 #### Update
-1. `git pull origin master`
-2. `npm install`
-3. `npm run build`
+1. `cd /path/to/misskey`
+2. `git pull origin master`
+3. `npm install`
+4. `npm run build`
 
 Launch
 --------------------------------
-`sudo npm start`
+1. `cd /path/to/misskey`
+2. `sudo npm start`
 
 GLHF!
 
