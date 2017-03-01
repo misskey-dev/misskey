@@ -33,4 +33,4 @@ before_script:
 
 after_success:
   - chmod u+x ./.travis/release.sh
-  - ./.travis/release.sh
+  - if [ $TRAVIS_BRANCH = "master" ] && [ $TRAVIS_PULL_REQUEST != "false" ]; then ./.travis/release.sh; else echo "Skipping releasing task"; fi
