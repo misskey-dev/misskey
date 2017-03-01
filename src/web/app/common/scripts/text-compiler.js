@@ -9,12 +9,9 @@ const escape = function(text) {
 		.replace(/</g, '&lt;');
 };
 
-module.exports = function(tokens, shouldBreak, shouldEscape) {
+module.exports = function(tokens, shouldBreak) {
 	if (shouldBreak == null) {
 		shouldBreak = true;
-	}
-	if (shouldEscape != null) {
-		alert('do not use this option')
 	}
 
 	const me = riot.mixin('i').me;
