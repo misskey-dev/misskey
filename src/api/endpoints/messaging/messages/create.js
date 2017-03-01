@@ -31,6 +31,16 @@ module.exports = (params, user) =>
 	// Get 'user_id' parameter
 	let recipient = params.user_id;
 	if (recipient !== undefined && recipient !== null) {
+		// Validate id
+		if (!mongo.ObjectID.isValid(recipient)) {
+			return rej('incorrect user_id');
+		}
+
+		// Myself
+		if (new mongo.ObjectID(recipient).equals(user._id)) {
+			return rej('-need-translate-');
+		}
+
 		recipient = await User.findOne({
 			_id: new mongo.ObjectID(recipient)
 		}, {
