@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 
 type Type = 'id' | 'string' | 'number' | 'boolean' | 'array' | 'object';
 
-export default <T>(value: any, isRequired: boolean, type: Type): [T, string] => {
+export default <T>(value: any, isRequired: boolean, type: Type, validator?: (any) => boolean): [T, string] => {
 	if (value === undefined || value === null) {
 		if (isRequired) {
 			return [null, 'is-required']
@@ -47,6 +47,12 @@ export default <T>(value: any, isRequired: boolean, type: Type): [T, string] => 
 				return [null, 'must-be-an-onject'];
 			}
 			break;
+	}
+
+	if (validator) {
+		if (!validator(value)) {
+			return [null, 'invalid-format'];
+		}
 	}
 
 	return [value, null];
