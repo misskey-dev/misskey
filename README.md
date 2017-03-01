@@ -128,7 +128,7 @@ Pull requests are always welcome.
 
 *We love contributions from anybody.*
 
-[Contribution guide](./CONTRIBUTING.md)
+Please see also [Contribution guide](./CONTRIBUTING.md).
 
 ### TODO
 * More [tests](./test)!
