@@ -1193,6 +1193,78 @@ describe('API', () => {
 		});
 	});
 
+	describe('messaging/messages/create', () => {
+		it('メッセージを送信できる', () => async (done) => {
+			const me = await insertSakurako();
+			const hima = await insertHimawari();
+			request('/messaging/messages/create', {
+				user_id: hima._id.toString(),
+				text: 'Hey hey ひまわり'
+			}).then(res => {
+				res.should.have.status(200);
+				res.body.should.be.a('object');
+				res.body.should.have.property('text').eql('Hey hey ひまわり');
+				done();
+			});
+		});
+
+		it('自分自身にはメッセージを送信できない', () => async (done) => {
+			const me = await insertSakurako();
+			request('/messaging/messages/create', {
+				user_id: me._id.toString(),
+				text: 'Yo'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+
+		it('存在しないユーザーにはメッセージを送信できない', () => async (done) => {
+			const me = await insertSakurako();
+			request('/messaging/messages/create', {
+				user_id: '000000000000000000000000',
+				text: 'Yo'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+
+		it('不正なユーザーIDで怒られる', () => async (done) => {
+			const me = await insertSakurako();
+			request('/messaging/messages/create', {
+				user_id: 'kyoppie',
+				text: 'Yo'
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+
+		it('テキストが無くて怒られる', () => async (done) => {
+			const me = await insertSakurako();
+			const hima = await insertHimawari();
+			request('/messaging/messages/create', {
+				user_id: hima._id.toString()
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+
+		it('文字数オーバーで怒られる', () => async (done) => {
+			const me = await insertSakurako();
+			const hima = await insertHimawari();
+			request('/messaging/messages/create', {
+				user_id: hima._id.toString(),
+				text: '!'.repeat(501)
+			}).then(res => {
+				res.should.have.status(400);
+				done();
+			});
+		});
+	});
+
 	describe('auth/session/generate', () => {
 		it('認証セッションを作成できる', () => async (done) => {
 			const app = await insertApp();
