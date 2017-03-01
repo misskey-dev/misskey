@@ -337,7 +337,7 @@
 
 		this.fetching = true;
 		this.loadingContext = false;
-		this.content = null;
+		this.context = null;
 		this.post = null;
 
 		this.on('mount', () => {
@@ -446,7 +446,7 @@
 			}).then(context => {
 				this.update({
 					loadContext: false,
-					content: context.reverse()
+					context: context.reverse()
 				});
 			});
 		};
