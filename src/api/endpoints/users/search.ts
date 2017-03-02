@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+import it from '../../it';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
 import config from '../../../conf';
@@ -20,31 +21,16 @@ module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'query' parameter
-	let query = params.query;
-	if (query === undefined || query === null || query.trim() === '') {
-		return rej('query is required');
-	}
+	const [query, queryError] = it(params.query).expect.string().required().trim().validate(x => x != '').qed();
+	if (queryError) return rej('invalid query param');
 
 	// Get 'offset' parameter
-	let offset = params.offset;
-	if (offset !== undefined && offset !== null) {
-		offset = parseInt(offset, 10);
-	} else {
-		offset = 0;
-	}
+	const [offset, offsetErr] = it(params.offset).expect.number().min(0).default(0).qed();
+	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'max' parameter
-	let max = params.max;
-	if (max !== undefined && max !== null) {
-		max = parseInt(max, 10);
-
-		// From 1 to 30
-		if (!(1 <= max && max <= 30)) {
-			return rej('invalid max range');
-		}
-	} else {
-		max = 10;
-	}
+	const [max, maxErr] = it(params.max).expect.number().range(1, 30).default(10).qed();
+	if (maxErr) return rej('invalid max param');
 
 	// If Elasticsearch is available, search by it
 	// If not, search by MongoDB

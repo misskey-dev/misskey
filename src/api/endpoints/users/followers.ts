@@ -3,14 +3,14 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import User from '../../models/user';
 import Following from '../../models/following';
 import serialize from '../../serializers/user';
 import getFriends from '../../common/get-friends';
 
 /**
- * Get following users of a user
+ * Get followers of a user
  *
  * @param {any} params
  * @param {any} me
@@ -20,33 +20,24 @@ module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'user_id' parameter
-	const userId = params.user_id;
-	if (userId === undefined || userId === null) {
-		return rej('user_id is required');
-	}
+	const [userId, userIdErr] = it(params.user_id, 'id', true);
+	if (userIdErr) return rej('invalid user_id param');
 
 	// Get 'iknow' parameter
-	const iknow = params.iknow;
+	const [iknow, iknowErr] = it(params.iknow).expect.boolean().default(false).qed();
+	if (iknowErr) return rej('invalid iknow param');
 
 	// Get 'limit' parameter
-	let limit = params.limit;
-	if (limit !== undefined && limit !== null) {
-		limit = parseInt(limit, 10);
-
-		// From 1 to 100
-		if (!(1 <= limit && limit <= 100)) {
-			return rej('invalid limit range');
-		}
-	} else {
-		limit = 10;
-	}
+	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
+	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const cursor = params.cursor || null;
+	const [cursor, cursorErr] = it(params.cursor).expect.id().default(null).qed();
+	if (cursorErr) return rej('invalid cursor param');
 
 	// Lookup user
 	const user = await User.findOne({
-		_id: new mongo.ObjectID(userId)
+		_id: userId
 	}, {
 		fields: {
 			_id: true
@@ -59,16 +50,16 @@ module.exports = (params, me) =>
 
 	// Construct query
 	const query = {
-		follower_id: user._id,
+		followee_id: user._id,
 		deleted_at: { $exists: false }
-	};
+	} as any;
 
 	// ログインしていてかつ iknow フラグがあるとき
 	if (me && iknow) {
 		// Get my friends
 		const myFriends = await getFriends(me._id);
 
-		query.followee_id = {
+		query.follower_id = {
 			$in: myFriends
 		};
 	}
@@ -76,7 +67,7 @@ module.exports = (params, me) =>
 	// カーソルが指定されている場合
 	if (cursor) {
 		query._id = {
-			$lt: new mongo.ObjectID(cursor)
+			$lt: cursor
 		};
 	}
 
@@ -95,7 +86,7 @@ module.exports = (params, me) =>
 
 	// Serialize
 	const users = await Promise.all(following.map(async f =>
-		await serialize(f.followee_id, me, { detail: true })));
+		await serialize(f.follower_id, me, { detail: true })));
 
 	// Response
 	res({

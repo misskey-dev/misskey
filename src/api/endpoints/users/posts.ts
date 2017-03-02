@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import Post from '../../models/post';
 import User from '../../models/user';
 import serialize from '../../serializers/post';
@@ -19,56 +19,44 @@ module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'user_id' parameter
-	let userId = params.user_id;
-	if (userId === undefined || userId === null || userId === '') {
-		userId = null;
-	}
+	const [userId, userIdErr] = it(params.user_id, 'id');
+	if (userIdErr) return rej('invalid user_id param');
 
 	// Get 'username' parameter
-	let username = params.username;
-	if (username === undefined || username === null || username === '') {
-		username = null;
-	}
+	const [username, usernameErr] = it(params.username, 'string');
+	if (usernameErr) return rej('invalid username param');
 
 	if (userId === null && username === null) {
 		return rej('user_id or username is required');
 	}
 
-	// Get 'with_replies' parameter
-	let withReplies = params.with_replies;
-	if (withReplies == null) {
-		withReplies = true;
-	}
+	// Get 'include_replies' parameter
+	const [includeReplies, includeRepliesErr] = it(params.include_replies).expect.boolean().default(true).qed();
+	if (includeRepliesErr) return rej('invalid include_replies param');
 
 	// Get 'with_media' parameter
-	let withMedia = params.with_media;
-	if (withMedia == null) {
-		withMedia = false;
-	}
+	const [withMedia, withMediaErr] = it(params.with_media).expect.boolean().default(false).qed();
+	if (withMediaErr) return rej('invalid with_media param');
 
 	// Get 'limit' parameter
-	let limit = params.limit;
-	if (limit !== undefined && limit !== null) {
-		limit = parseInt(limit, 10);
+	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
+	if (limitErr) return rej('invalid limit param');
 
-		// From 1 to 100
-		if (!(1 <= limit && limit <= 100)) {
-			return rej('invalid limit range');
-		}
-	} else {
-		limit = 10;
-	}
+	// Get 'since_id' parameter
+	const [sinceId, sinceIdErr] = it(params.since_id).expect.id().qed();
+	if (sinceIdErr) return rej('invalid since_id param');
 
-	const since = params.since_id || null;
-	const max = params.max_id || null;
+	// Get 'max_id' parameter
+	const [maxId, maxIdErr] = it(params.max_id).expect.id().qed();
+	if (maxIdErr) return rej('invalid max_id param');
 
 	// Check if both of since_id and max_id is specified
-	if (since !== null && max !== null) {
+	if (sinceId !== null && maxId !== null) {
 		return rej('cannot set since_id and max_id');
 	}
 
 	const q = userId != null
-		? { _id: new mongo.ObjectID(userId) }
+		? { _id: userId }
 		: { username_lower: username.toLowerCase() } ;
 
 	// Lookup user
@@ -88,19 +76,19 @@ module.exports = (params, me) =>
 	};
 	const query = {
 		user_id: user._id
-	};
-	if (since !== null) {
+	} as any;
+	if (sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: new mongo.ObjectID(since)
+			$gt: sinceId
 		};
-	} else if (max !== null) {
+	} else if (maxId) {
 		query._id = {
-			$lt: new mongo.ObjectID(max)
+			$lt: maxId
 		};
 	}
 
-	if (!withReplies) {
+	if (!includeReplies) {
 		query.reply_to_id = null;
 	}
 

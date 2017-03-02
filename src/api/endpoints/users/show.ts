@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
 
@@ -18,28 +18,19 @@ module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'user_id' parameter
-	let userId = params.user_id;
-	if (userId === undefined || userId === null || userId === '') {
-		userId = null;
-	}
+	const [userId, userIdErr] = it(params.user_id, 'id');
+	if (userIdErr) return rej('invalid user_id param');
 
 	// Get 'username' parameter
-	let username = params.username;
-	if (username === undefined || username === null || username === '') {
-		username = null;
-	}
+	const [username, usernameErr] = it(params.username, 'string');
+	if (usernameErr) return rej('invalid username param');
 
 	if (userId === null && username === null) {
 		return rej('user_id or username is required');
 	}
 
-	// Validate id
-	if (userId && !mongo.ObjectID.isValid(userId)) {
-		return rej('incorrect user_id');
-	}
-
 	const q = userId != null
-		? { _id: new mongo.ObjectID(userId) }
+		? { _id: userId }
 		: { username_lower: username.toLowerCase() } ;
 
 	// Lookup user
