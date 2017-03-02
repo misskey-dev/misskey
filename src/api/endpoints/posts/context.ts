@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import validate from '../../validator';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
 
@@ -18,16 +18,14 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'post_id' parameter
-	const postId = params.post_id;
-	if (postId === undefined || postId === null) {
-		return rej('post_id is required');
-	}
+	const [postId, postIdErr] = validate(params.post_id, 'id', true);
+	if (postIdErr) return rej('invalid post_id');
 
 	// Get 'limit' parameter
-	let limit = params.limit;
-	if (limit !== undefined && limit !== null) {
-		limit = parseInt(limit, 10);
+	let [limit, limitErr] = validate(params.limit, 'number');
+	if (limitErr) return rej('invalid limit');
 
+	if (limit !== null) {
 		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
