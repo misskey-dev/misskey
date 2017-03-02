@@ -19,10 +19,10 @@
 				<p>お知らせ</p>
 			</a>
 		</li>
-		<li class="tv">
+		<li class="live">
 			<a href="https://misskey.tk" target="_blank">
 				<i class="fa fa-television"></i>
-				<p>MisskeyTV™</p>
+				<p>ライブ</p>
 			</a>
 		</li>
 	</ul>
