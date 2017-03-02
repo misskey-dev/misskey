@@ -31,7 +31,7 @@ class ValidatorCore implements Validator {
 		return [this.value, this.error];
 	}
 
-	validate(validator: any) {
+	validate(validator: CustomValidator<any>) {
 		if (this.error || this.value === null) return this;
 		const result = validator(this.value);
 		if (result === false) {
