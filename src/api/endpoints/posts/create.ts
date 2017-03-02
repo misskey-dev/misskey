@@ -139,12 +139,12 @@ module.exports = (params, user, app) =>
 					if (choice.trim().length > 50) return true;
 					return false;
 				});
-				return shouldReject ? 'invalid poll choices' : true;
+				return shouldReject ? new Error('invalid poll choices') : true;
 			},
 			// 選択肢がひとつならエラー
-			choices => choices.length == 1 ? 'poll choices must be ひとつ以上' : true,
+			choices => choices.length == 1 ? new Error('poll choices must be ひとつ以上') : true,
 			// 選択肢が多すぎてもエラー
-			choices => choices.length > 10 ? 'many poll choices' : true,
+			choices => choices.length > 10 ? new Error('many poll choices') : true,
 		]);
 		if (pollChoicesErr) return rej('invalid poll choices');
 
