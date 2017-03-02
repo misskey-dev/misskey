@@ -22,7 +22,7 @@ module.exports = (params, user) =>
 
 		// Get favoritee
 		const post = await Post.findOne({
-			_id: new mongo.ObjectID(postId)
+			_id: postId
 		});
 
 		if (post === null) {
