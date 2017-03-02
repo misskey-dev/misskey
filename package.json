@@ -150,7 +150,7 @@
     "webpack": "2.2.1",
     "webpack-stream": "3.2.0",
     "websocket": "1.0.24",
-    "whatwg-fetch": "2.0.2",
+    "whatwg-fetch": "2.0.3",
     "xml2json": "0.11.0"
   }
 }
