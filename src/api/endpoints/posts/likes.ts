@@ -31,12 +31,12 @@ module.exports = (params, user) =>
 	if (offsetErr) return rej('invalid offset');
 
 	// Get 'sort' parameter
-	const [sort] = it(params.sort).expect.string().or('desc asc').default('desc').qed();
-	let sort = params.sort || 'desc';
+	const [sort, sortError] = it(params.sort).expect.string().or('desc asc').default('desc').qed();
+	if (sortError) return rej('invalid sort');
 
 	// Lookup post
 	const post = await Post.findOne({
-		_id: new mongo.ObjectID(postId)
+		_id: postId
 	});
 
 	if (post === null) {
