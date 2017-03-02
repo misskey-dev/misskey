@@ -26,7 +26,7 @@ module.exports = (params, user) =>
 	if (limitErr) return rej('invalid limit');
 
 	// Get 'offset' parameter
-	const [offset, offsetErr] = it(params.limit).expect.number().min(0).default(0).qed();
+	const [offset, offsetErr] = it(params.offset).expect.number().min(0).default(0).qed();
 	if (offsetErr) return rej('invalid offset');
 
 	// Lookup post
