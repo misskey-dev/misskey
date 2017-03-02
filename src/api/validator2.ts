@@ -15,6 +15,11 @@ class ValidatorCore implements Validator {
 	value: any;
 	error: string;
 
+	constructor() {
+		this.value = null;
+		this.error = null;
+	}
+
 	required() {
 		if (this.error === null && this.value === null) {
 			this.error = 'required';
