@@ -3,6 +3,29 @@
  * 楽しいバリデーション
  */
 
+/**
+ * Usage Examples
+ * 
+ * const [val, err] = it(x).must.be.a.string().or('asc desc').default('desc').qed();
+ * → xは文字列でなければならず、'asc'または'desc'でなければならない。省略された場合のデフォルトは'desc'とする。
+ * 
+ * const [val, err] = it(x).must.be.a.number().required().range(0, 100).qed();
+ * → xは数値でなければならず、かつ0~100の範囲内でなければならない。この値は省略することはできない。
+ * 
+ * const [val, err] = it(x).must.be.an.array().unique().required().validate(x => x[0] != 'strawberry pasta').qed();
+ * → xは配列でなければならず、かつ中身が重複していてはならない。この値を省略することはできない。そして配列の最初の要素が'strawberry pasta'という文字列であってはならない。
+ * 
+ * ~糖衣構文~
+ * const [val, err] = it(x).must.be.a.string().required().qed();
+ * は
+ * const [val, err] = it(x, 'string', true);
+ * と書けます
+ * 
+ * ~BDD風記法~
+ * must.be.a(n) の代わりに　expect とも書けます:
+ * const [val, err] = it(x).expect.string().required().qed();
+ */
+
 import * as mongo from 'mongodb';
 import hasDuplicates from '../common/has-duplicates';
 
