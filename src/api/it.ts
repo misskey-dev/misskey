@@ -5,22 +5,22 @@
 
 /**
  * Usage Examples
- * 
+ *
  * const [val, err] = it(x).must.be.a.string().or('asc desc').default('desc').qed();
  * → xは文字列でなければならず、'asc'または'desc'でなければならない。省略された場合のデフォルトは'desc'とする。
- * 
+ *
  * const [val, err] = it(x).must.be.a.number().required().range(0, 100).qed();
  * → xは数値でなければならず、かつ0~100の範囲内でなければならない。この値は省略することはできない。
- * 
+ *
  * const [val, err] = it(x).must.be.an.array().unique().required().validate(x => x[0] != 'strawberry pasta').qed();
  * → xは配列でなければならず、かつ中身が重複していてはならない。この値を省略することはできない。そして配列の最初の要素が'strawberry pasta'という文字列であってはならない。
- * 
+ *
  * ~糖衣構文~
  * const [val, err] = it(x).must.be.a.string().required().qed();
  * は
  * const [val, err] = it(x, 'string', true);
  * と書けます
- * 
+ *
  * ~BDD風記法~
  * must.be.a(n) の代わりに　expect とも書けます:
  * const [val, err] = it(x).expect.string().required().qed();
@@ -51,6 +51,13 @@ class QueryCore implements Query {
 	constructor() {
 		this.value = null;
 		this.error = null;
+	}
+
+	/**
+	 * このインスタンスの値が null、またはエラーが存在しているなどして、処理をスキップするべきか否か
+	 */
+	get shouldSkip() {
+		return this.error !== null || this.value === null;
 	}
 
 	/**
@@ -86,7 +93,7 @@ class QueryCore implements Query {
 	 * @param validator バリデータ
 	 */
 	validate(validator: Validator<any>) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		const result = validator(this.value);
 		if (result === false) {
 			this.error = new Error('invalid-format');
@@ -164,7 +171,7 @@ class NumberQuery extends QueryCore {
 	 * @param max 上限
 	 */
 	range(min: number, max: number) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (this.value < min || this.value > max) {
 			this.error = new Error('invalid-range');
 		}
@@ -176,7 +183,7 @@ class NumberQuery extends QueryCore {
 	 * @param value 下限
 	 */
 	min(value: number) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (this.value < value) {
 			this.error = new Error('invalid-range');
 		}
@@ -188,7 +195,7 @@ class NumberQuery extends QueryCore {
 	 * @param value 上限
 	 */
 	max(value: number) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (this.value > value) {
 			this.error = new Error('invalid-range');
 		}
@@ -247,7 +254,7 @@ class StringQuery extends QueryCore {
 	 * @param max 上限
 	 */
 	range(min: number, max: number) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (this.value.length < min || this.value.length > max) {
 			this.error = new Error('invalid-range');
 		}
@@ -255,7 +262,7 @@ class StringQuery extends QueryCore {
 	}
 
 	trim() {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		this.value = this.value.trim();
 		return this;
 	}
@@ -296,7 +303,7 @@ class StringQuery extends QueryCore {
 	 * @param pattern 文字列の配列またはスペースで区切られた文字列
 	 */
 	or(pattern: string | string[]) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (typeof pattern == 'string') pattern = pattern.split(' ');
 		const match = pattern.some(x => x === this.value);
 		if (!match) this.error = new Error('not-match-pattern');
@@ -309,7 +316,7 @@ class StringQuery extends QueryCore {
 	 * @param pattern 正規表現
 	 */
 	match(pattern: RegExp) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (!pattern.test(this.value)) this.error = new Error('not-match-pattern');
 		return this;
 	}
@@ -334,7 +341,7 @@ class ArrayQuery extends QueryCore {
 	 * 配列の値がユニークでない場合(=重複した項目がある場合)エラーにします
 	 */
 	unique() {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (hasDuplicates(this.value)) {
 			this.error = new Error('must-be-unique');
 		}
@@ -347,7 +354,7 @@ class ArrayQuery extends QueryCore {
 	 * @param max 上限
 	 */
 	range(min: number, max: number) {
-		if (this.error || this.value === null) return this;
+		if (this.shouldSkip) return this;
 		if (this.value.length < min || this.value.length > max) {
 			this.error = new Error('invalid-range');
 		}
