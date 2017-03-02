@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import Vote from '../../../models/poll-vote';
 import Post from '../../../models/post';
 import notify from '../../../common/notify';
@@ -18,19 +18,12 @@ import notify from '../../../common/notify';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) => {
 		// Get 'post_id' parameter
-		const postId = params.post_id;
-		if (postId === undefined || postId === null) {
-			return rej('post_id is required');
-		}
-
-		// Validate id
-		if (!mongo.ObjectID.isValid(postId)) {
-			return rej('incorrect post_id');
-		}
+		const [postId, postIdErr] = it(params.post_id, 'id', true);
+		if (postIdErr) return rej('invalid post_id param');
 
 		// Get votee
 		const post = await Post.findOne({
-			_id: new mongo.ObjectID(postId)
+			_id: postId
 		});
 
 		if (post === null) {
@@ -42,15 +35,12 @@ module.exports = (params, user) =>
 		}
 
 		// Get 'choice' parameter
-		const choice = params.choice;
-		if (choice == null) {
-			return rej('choice is required');
-		}
-
-		// Validate choice
-		if (!post.poll.choices.some(x => x.id == choice)) {
-			return rej('invalid choice');
-		}
+		const [choice, choiceError] =
+			it(params.choice).expect.string()
+				.required()
+				.validate(c => post.poll.choices.some(x => x.id == c))
+				.qed();
+		if (choiceError) return rej('invalid choice param');
 
 		// if already voted
 		const exist = await Vote.findOne({
@@ -75,8 +65,6 @@ module.exports = (params, user) =>
 
 		const inc = {};
 		inc[`poll.choices.${findWithAttr(post.poll.choices, 'id', choice)}.votes`] = 1;
-
-		console.log(inc);
 
 		// Increment likes count
 		Post.update({ _id: post._id }, {

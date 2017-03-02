@@ -3,6 +3,7 @@
 /**
  * Module dependencies
  */
+import it from '../../it';
 import User from '../../models/user';
 import { validateUsername } from '../../models/user';
 
@@ -16,15 +17,8 @@ module.exports = async (params) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'username' parameter
-	const username = params.username;
-	if (username == null || username == '') {
-		return rej('username-is-required');
-	}
-
-	// Validate username
-	if (!validateUsername(username)) {
-		return rej('invalid-username');
-	}
+	const [username, usernameError] = it(params.username).expect.string().required().trim().validate(validateUsername).qed();
+	if (usernameError) return rej('invalid username param');
 
 	// Get exist
 	const exist = await User

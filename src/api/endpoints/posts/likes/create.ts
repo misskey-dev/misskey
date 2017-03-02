@@ -3,14 +3,14 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import Like from '../../../models/like';
 import Post from '../../../models/post';
 import User from '../../../models/user';
-// import event from '../../../event';
+import notify from '../../../common/notify';
 
 /**
- * Unlike a post
+ * Like a post
  *
  * @param {any} params
  * @param {any} user
@@ -19,23 +19,21 @@ import User from '../../../models/user';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) => {
 		// Get 'post_id' parameter
-		let postId = params.post_id;
-		if (postId === undefined || postId === null) {
-			return rej('post_id is required');
-		}
-
-		// Validate id
-		if (!mongo.ObjectID.isValid(postId)) {
-			return rej('incorrect post_id');
-		}
+		const [postId, postIdErr] = it(params.post_id, 'id', true);
+		if (postIdErr) return rej('invalid post_id param');
 
 		// Get likee
 		const post = await Post.findOne({
-			_id: new mongo.ObjectID(postId)
+			_id: postId
 		});
 
 		if (post === null) {
 			return rej('post not found');
+		}
+
+		// Myself
+		if (post.user_id.equals(user._id)) {
+			return rej('-need-translate-');
 		}
 
 		// if already liked
@@ -45,40 +43,43 @@ module.exports = (params, user) =>
 			deleted_at: { $exists: false }
 		});
 
-		if (exist === null) {
-			return rej('already not liked');
+		if (exist !== null) {
+			return rej('already liked');
 		}
 
-		// Delete like
-		await Like.update({
-			_id: exist._id
-		}, {
-				$set: {
-					deleted_at: new Date()
-				}
-			});
+		// Create like
+		await Like.insert({
+			created_at: new Date(),
+			post_id: post._id,
+			user_id: user._id
+		});
 
 		// Send response
 		res();
 
-		// Decrement likes count
+		// Increment likes count
 		Post.update({ _id: post._id }, {
 			$inc: {
-				likes_count: -1
+				likes_count: 1
 			}
 		});
 
-		// Decrement user likes count
+		// Increment user likes count
 		User.update({ _id: user._id }, {
 			$inc: {
-				likes_count: -1
+				likes_count: 1
 			}
 		});
 
-		// Decrement user liked count
+		// Increment user liked count
 		User.update({ _id: post.user_id }, {
 			$inc: {
-				liked_count: -1
+				liked_count: 1
 			}
+		});
+
+		// Notify
+		notify(post.user_id, user._id, 'like', {
+			post_id: post._id
 		});
 	});

@@ -3,9 +3,9 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
-import Favorite from '../../models/favorite';
-import Post from '../../models/post';
+import it from '../../../it';
+import Favorite from '../../../models/favorite';
+import Post from '../../../models/post';
 
 /**
  * Unfavorite a post
@@ -17,10 +17,8 @@ import Post from '../../models/post';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) => {
 		// Get 'post_id' parameter
-		let postId = params.post_id;
-		if (postId === undefined || postId === null) {
-			return rej('post_id is required');
-		}
+		const [postId, postIdErr] = it(params.post_id, 'id', true);
+		if (postIdErr) return rej('invalid post_id param');
 
 		// Get favoritee
 		const post = await Post.findOne({
