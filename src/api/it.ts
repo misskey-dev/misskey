@@ -266,6 +266,30 @@ class StringQuery extends QueryCore {
 	validate(validator: Validator<string>) {
 		return super.validate(validator);
 	}
+
+	/**
+	 * このインスタンスの文字列が、与えられたパターン内の文字列のどれかと一致するか検証します
+	 * どれとも一致しない場合エラーにします
+	 * @param pattern 文字列の配列またはスペースで区切られた文字列
+	 */
+	or(pattern: string | string[]) {
+		if (this.error || this.value === null) return this;
+		if (typeof pattern == 'string') pattern = pattern.split(' ');
+		const match = pattern.some(x => x === this.value);
+		if (!match) this.error = new Error('not-match-pattern');
+		return this;
+	}
+
+	/**
+	 * このインスタンスの文字列が、与えられた正規表現と一致するか検証します
+	 * 一致しない場合エラーにします
+	 * @param pattern 正規表現
+	 */
+	match(pattern: RegExp) {
+		if (this.error || this.value === null) return this;
+		if (!pattern.test(this.value)) this.error = new Error('not-match-pattern');
+		return this;
+	}
 }
 
 class ArrayQuery extends QueryCore {
