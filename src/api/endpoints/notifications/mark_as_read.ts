@@ -3,10 +3,10 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
-import Notification from '../../../models/notification';
-import serialize from '../../../serializers/notification';
-import event from '../../../event';
+import it from '../../it';
+import Notification from '../../models/notification';
+import serialize from '../../serializers/notification';
+import event from '../../event';
 
 /**
  * Mark as read a notification
@@ -17,16 +17,13 @@ import event from '../../../event';
  */
 module.exports = (params, user) =>
 	new Promise(async (res, rej) => {
-		const notificationId = params.notification;
-
-		if (notificationId === undefined || notificationId === null) {
-			return rej('notification is required');
-		}
+		const [notificationId, notificationIdErr] = it(params.notification_id).expect.id().required().qed();
+		if (notificationIdErr) return rej('invalid notification_id param');
 
 		// Get notification
 		const notification = await Notification
 			.findOne({
-				_id: new mongo.ObjectID(notificationId),
+				_id: notificationId,
 				i: user._id
 			});
 

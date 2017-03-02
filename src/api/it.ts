@@ -424,7 +424,7 @@ class IdQuery extends QueryCore {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	qed(): [any[], Error] {
+	qed(): [mongo.ObjectID, Error] {
 		return super.qed();
 	}
 
@@ -433,7 +433,7 @@ class IdQuery extends QueryCore {
 	 * バリデータが false またはエラーを返した場合エラーにします
 	 * @param validator バリデータ
 	 */
-	validate(validator: Validator<any[]>) {
+	validate(validator: Validator<mongo.ObjectID>) {
 		return super.validate(validator);
 	}
 }

@@ -3,8 +3,9 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import Message from '../../../models/messaging-message';
+import { isValidText } from '../../../models/messaging-message';
 import History from '../../../models/messaging-history';
 import User from '../../../models/user';
 import DriveFile from '../../../models/drive-file';
@@ -12,11 +13,6 @@ import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
 import { publishMessagingStream } from '../../../event';
 import config from '../../../../conf';
-
-/**
- * 最大文字数
- */
-const maxTextLength = 500;
 
 /**
  * Create a message
@@ -29,55 +25,39 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'user_id' parameter
-	let recipient = params.user_id;
-	if (recipient !== undefined && recipient !== null) {
-		if (typeof recipient != 'string') {
-			return rej('user_id must be a string');
-		}
+	const [recipientId, recipientIdErr] = it(params.user_id).expect.id().required().qed();
+	if (recipientIdErr) return rej('invalid user_id param');
 
-		// Validate id
-		if (!mongo.ObjectID.isValid(recipient)) {
-			return rej('incorrect user_id');
-		}
+	// Myself
+	if (recipientId.equals(user._id)) {
+		return rej('cannot send message to myself');
+	}
 
-		// Myself
-		if (new mongo.ObjectID(recipient).equals(user._id)) {
-			return rej('cannot send message to myself');
+	// Fetch recipient
+	const recipient = await User.findOne({
+		_id: recipientId
+	}, {
+		fields: {
+			_id: true
 		}
+	});
 
-		recipient = await User.findOne({
-			_id: new mongo.ObjectID(recipient)
-		}, {
-			fields: {
-				_id: true
-			}
-		});
-
-		if (recipient === null) {
-			return rej('user not found');
-		}
-	} else {
-		return rej('user_id is required');
+	if (recipient === null) {
+		return rej('user not found');
 	}
 
 	// Get 'text' parameter
-	let text = params.text;
-	if (text !== undefined && text !== null) {
-		text = text.trim();
-		if (text.length === 0) {
-			text = null;
-		} else if (text.length > maxTextLength) {
-			return rej('too long text');
-		}
-	} else {
-		text = null;
-	}
+	const [text, textErr] = it(params.text).expect.string().validate(isValidText).qed();
+	if (textErr) return rej('invalid text');
 
 	// Get 'file_id' parameter
-	let file = params.file_id;
-	if (file !== undefined && file !== null) {
+	const [fileId, fileIdErr] = it(params.file_id).expect.id().qed();
+	if (fileIdErr) return rej('invalid file_id param');
+
+	let file = null;
+	if (fileId !== null) {
 		file = await DriveFile.findOne({
-			_id: new mongo.ObjectID(file),
+			_id: fileId,
 			user_id: user._id
 		}, {
 			data: false
@@ -86,8 +66,6 @@ module.exports = (params, user) =>
 		if (file === null) {
 			return rej('file not found');
 		}
-	} else {
-		file = null;
 	}
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
