@@ -5,12 +5,12 @@
  */
 import validate from '../../validator';
 import parse from '../../../common/text';
-import { Post, isValidText } from '../../models/post';
+import Post from '../../models/post';
+import { isValidText } from '../../models/post';
 import User from '../../models/user';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
 import serialize from '../../serializers/post';
-import createFile from '../../common/add-file-to-drive';
 import notify from '../../common/notify';
 import event from '../../event';
 import config from '../../../conf';
@@ -139,6 +139,7 @@ module.exports = (params, user, app) =>
 					if (typeof choice != 'string') return true;
 					if (choice.trim().length == 0) return true;
 					if (choice.trim().length > 50) return true;
+					return false;
 				});
 				return shouldReject ? 'invalid poll choices' : true;
 			},
@@ -167,7 +168,7 @@ module.exports = (params, user, app) =>
 	const post = await Post.insert({
 		created_at: new Date(),
 		media_ids: files ? files.map(file => file._id) : undefined,
-		reply_to_id: replyTo ? replyTo._id : undefined,
+		reply_to_id: inReplyToPost ? inReplyToPost._id : undefined,
 		repost_id: repost ? repost._id : undefined,
 		poll: poll ? poll : undefined,
 		text: text,
@@ -225,21 +226,21 @@ module.exports = (params, user, app) =>
 	});
 
 	// If has in reply to post
-	if (replyTo) {
+	if (inReplyToPost) {
 		// Increment replies count
-		Post.update({ _id: replyTo._id }, {
+		Post.update({ _id: inReplyToPost._id }, {
 			$inc: {
 				replies_count: 1
 			}
 		});
 
 		// 自分自身へのリプライでない限りは通知を作成
-		notify(replyTo.user_id, user._id, 'reply', {
+		notify(inReplyToPost.user_id, user._id, 'reply', {
 			post_id: post._id
 		});
 
 		// Add mention
-		addMention(replyTo.user_id, 'reply');
+		addMention(inReplyToPost.user_id, 'reply');
 	}
 
 	// If it is repost
@@ -284,7 +285,7 @@ module.exports = (params, user, app) =>
 	if (text) {
 		// Analyze
 		const tokens = parse(text);
-
+/*
 		// Extract a hashtags
 		const hashtags = tokens
 			.filter(t => t.type == 'hashtag')
@@ -293,8 +294,8 @@ module.exports = (params, user, app) =>
 			.filter((v, i, s) => s.indexOf(v) == i);
 
 		// ハッシュタグをデータベースに登録
-		//registerHashtags(user, hashtags);
-
+		registerHashtags(user, hashtags);
+*/
 		// Extract an '@' mentions
 		const atMentions = tokens
 			.filter(t => t.type == 'mention')
@@ -315,7 +316,7 @@ module.exports = (params, user, app) =>
 			if (mentionee == null) return;
 
 			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
-			if (replyTo && replyTo.user_id.equals(mentionee._id)) return;
+			if (inReplyToPost && inReplyToPost.user_id.equals(mentionee._id)) return;
 			if (repost && repost.user_id.equals(mentionee._id)) return;
 
 			// Add mention

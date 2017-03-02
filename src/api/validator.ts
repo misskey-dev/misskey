@@ -10,8 +10,8 @@ function validate(value: any, type: 'string', isRequired?: boolean, validator?: 
 function validate(value: any, type: 'number', isRequired?: boolean, validator?: Validator<number>): [number, string];
 function validate(value: any, type: 'boolean', isRequired?: boolean): [boolean, string];
 function validate(value: any, type: 'array', isRequired?: boolean, validator?: Validator<any[]>): [any[], string];
-function validate(value: any, type: 'set', isRequired?: boolean, validator?: Validator<Set<any>>): [Set<any>, string];
-function validate(value: any, type: 'object', isRequired?: boolean, validator?: Validator<Object>): [Object, string];
+function validate(value: any, type: 'set', isRequired?: boolean, validator?: Validator<any[]>): [any[], string];
+function validate(value: any, type: 'object', isRequired?: boolean, validator?: Validator<any>): [any, string];
 function validate<T>(value: any, type: Type, isRequired?: boolean, validator?: Validator<T>): [T, string] {
 	if (value === undefined || value === null) {
 		if (isRequired) {
