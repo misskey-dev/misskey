@@ -8,20 +8,20 @@ import hasDuplicates from '../common/has-duplicates';
 
 type Validator<T> = (value: T) => boolean | Error;
 
-interface Factory {
+interface Query {
 	/**
 	 * qedはQ.E.D.でもあり'QueryEnD'の略でもある
 	 */
 	qed: () => [any, Error];
 
-	required: () => Factory;
+	required: () => Query;
 
-	default: (value: any) => Factory;
+	default: (value: any) => Query;
 
-	validate: (validator: Validator<any>) => Factory;
+	validate: (validator: Validator<any>) => Query;
 }
 
-class FactoryCore implements Factory {
+class QueryCore implements Query {
 	value: any;
 	error: Error;
 
@@ -74,7 +74,7 @@ class FactoryCore implements Factory {
 	}
 }
 
-class BooleanFactory extends FactoryCore {
+class BooleanQuery extends QueryCore {
 	value: boolean;
 	error: Error;
 
@@ -120,7 +120,7 @@ class BooleanFactory extends FactoryCore {
 	}
 }
 
-class NumberFactory extends FactoryCore {
+class NumberQuery extends QueryCore {
 	value: number;
 	error: Error;
 
@@ -203,7 +203,7 @@ class NumberFactory extends FactoryCore {
 	}
 }
 
-class StringFactory extends FactoryCore {
+class StringQuery extends QueryCore {
 	value: string;
 	error: Error;
 
@@ -268,7 +268,7 @@ class StringFactory extends FactoryCore {
 	}
 }
 
-class ArrayFactory extends FactoryCore {
+class ArrayQuery extends QueryCore {
 	value: any[];
 	error: Error;
 
@@ -338,7 +338,7 @@ class ArrayFactory extends FactoryCore {
 	}
 }
 
-class IdFactory extends FactoryCore {
+class IdQuery extends QueryCore {
 	value: mongo.ObjectID;
 	error: Error;
 
@@ -384,7 +384,7 @@ class IdFactory extends FactoryCore {
 	}
 }
 
-class ObjectFactory extends FactoryCore {
+class ObjectQuery extends QueryCore {
 	value: any;
 	error: Error;
 
@@ -434,24 +434,24 @@ type It = {
 	must: {
 		be: {
 			a: {
-				string: () => StringFactory;
-				number: () => NumberFactory;
-				boolean: () => BooleanFactory;
+				string: () => StringQuery;
+				number: () => NumberQuery;
+				boolean: () => BooleanQuery;
 			};
 			an: {
-				id: () => IdFactory;
-				array: () => ArrayFactory;
-				object: () => ObjectFactory;
+				id: () => IdQuery;
+				array: () => ArrayQuery;
+				object: () => ObjectQuery;
 			};
 		};
 	};
 	expect: {
-		string: () => StringFactory;
-		number: () => NumberFactory;
-		boolean: () => BooleanFactory;
-		id: () => IdFactory;
-		array: () => ArrayFactory;
-		object: () => ObjectFactory;
+		string: () => StringQuery;
+		number: () => NumberQuery;
+		boolean: () => BooleanQuery;
+		id: () => IdQuery;
+		array: () => ArrayQuery;
+		object: () => ObjectQuery;
 	};
 };
 
@@ -459,24 +459,24 @@ const it = (value: any) => ({
 	must: {
 		be: {
 			a: {
-				string: () => new StringFactory(value),
-				number: () => new NumberFactory(value),
-				boolean: () => new BooleanFactory(value)
+				string: () => new StringQuery(value),
+				number: () => new NumberQuery(value),
+				boolean: () => new BooleanQuery(value)
 			},
 			an: {
-				id: () => new IdFactory(value),
-				array: () => new ArrayFactory(value),
-				object: () => new ObjectFactory(value)
+				id: () => new IdQuery(value),
+				array: () => new ArrayQuery(value),
+				object: () => new ObjectQuery(value)
 			}
 		}
 	},
 	expect: {
-		string: () => new StringFactory(value),
-		number: () => new NumberFactory(value),
-		boolean: () => new BooleanFactory(value),
-		id: () => new IdFactory(value),
-		array: () => new ArrayFactory(value),
-		object: () => new ObjectFactory(value)
+		string: () => new StringQuery(value),
+		number: () => new NumberQuery(value),
+		boolean: () => new BooleanQuery(value),
+		id: () => new IdQuery(value),
+		array: () => new ArrayQuery(value),
+		object: () => new ObjectQuery(value)
 	}
 });
 
@@ -493,26 +493,26 @@ function x(value: any, type: 'object', isRequired?: boolean, validator?: Validat
 function x(value: any, type?: Type, isRequired?: boolean, validator?: Validator<any> | Validator<any>[]): any {
 	if (typeof type === 'undefined') return it(value);
 
-	let factory: Factory = null;
+	let q: Query = null;
 
 	switch (type) {
-		case 'id': factory = it(value).expect.id(); break;
-		case 'string': factory = it(value).expect.string(); break;
-		case 'number': factory = it(value).expect.number(); break;
-		case 'boolean': factory = it(value).expect.boolean(); break;
-		case 'array': factory = it(value).expect.array(); break;
-		case 'set': factory = it(value).expect.array().unique(); break;
-		case 'object': factory = it(value).expect.object(); break;
+		case 'id': q = it(value).expect.id(); break;
+		case 'string': q = it(value).expect.string(); break;
+		case 'number': q = it(value).expect.number(); break;
+		case 'boolean': q = it(value).expect.boolean(); break;
+		case 'array': q = it(value).expect.array(); break;
+		case 'set': q = it(value).expect.array().unique(); break;
+		case 'object': q = it(value).expect.object(); break;
 	}
 
-	if (isRequired) factory = factory.required();
+	if (isRequired) q = q.required();
 
 	if (validator) {
 		(Array.isArray(validator) ? validator : [validator])
-			.forEach(v => factory = factory.validate(v));
+			.forEach(v => q = q.validate(v));
 	}
 
-	return factory;
+	return q;
 }
 
 export default x;
