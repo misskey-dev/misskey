@@ -87,7 +87,7 @@
     "escape-html": "1.0.3",
     "escape-regexp": "0.0.1",
     "event-stream": "3.3.4",
-    "express": "4.14.1",
+    "express": "5.0.0-alpha.4",
     "file-type": "4.1.0",
     "fuckadblock": "3.2.1",
     "git-last-commit": "0.2.0",
