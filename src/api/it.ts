@@ -48,23 +48,27 @@ class QueryCore implements Query {
 	value: any;
 	error: Error;
 
-	constructor() {
-		this.value = null;
+	constructor(value: any) {
+		this.value = value;
 		this.error = null;
 	}
 
-	/**
-	 * このインスタンスの値が null、またはエラーが存在しているなどして、処理をスキップするべきか否か
-	 */
-	get shouldSkip() {
-		return this.error !== null || this.value === null;
+	get isEmpty() {
+		return this.value === undefined || this.value === null;
 	}
 
 	/**
-	 * このインスタンスの値が undefined または　null の場合エラーにします
+	 * このインスタンスの値が空、またはエラーが存在しているなどして、処理をスキップするべきか否か
+	 */
+	get shouldSkip() {
+		return this.error !== null || this.isEmpty;
+	}
+
+	/**
+	 * このインスタンスの値が空の場合エラーにします
 	 */
 	required() {
-		if (this.error === null && this.value === null) {
+		if (this.error === null && this.isEmpty) {
 			this.error = new Error('required');
 		}
 		return this;
@@ -74,7 +78,7 @@ class QueryCore implements Query {
 	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
 	 */
 	default(value: any) {
-		if (this.value === null) {
+		if (this.isEmpty) {
 			this.value = value;
 		}
 		return this;
@@ -109,13 +113,9 @@ class BooleanQuery extends QueryCore {
 	error: Error;
 
 	constructor(value) {
-		super();
-		if (value === undefined || value === null) {
-			this.value = null;
-		} else if (typeof value != 'boolean') {
+		super(value);
+		if (!this.isEmpty && typeof value != 'boolean') {
 			this.error = new Error('must-be-a-boolean');
-		} else {
-			this.value = value;
 		}
 	}
 
@@ -155,13 +155,9 @@ class NumberQuery extends QueryCore {
 	error: Error;
 
 	constructor(value) {
-		super();
-		if (value === undefined || value === null) {
-			this.value = null;
-		} else if (!Number.isFinite(value)) {
+		super(value);
+		if (!this.isEmpty && !Number.isFinite(value)) {
 			this.error = new Error('must-be-a-number');
-		} else {
-			this.value = value;
 		}
 	}
 
@@ -238,13 +234,9 @@ class StringQuery extends QueryCore {
 	error: Error;
 
 	constructor(value) {
-		super();
-		if (value === undefined || value === null) {
-			this.value = null;
-		} else if (typeof value != 'string') {
+		super(value);
+		if (!this.isEmpty && typeof value != 'string') {
 			this.error = new Error('must-be-a-string');
-		} else {
-			this.value = value;
 		}
 	}
 
@@ -327,13 +319,9 @@ class ArrayQuery extends QueryCore {
 	error: Error;
 
 	constructor(value) {
-		super();
-		if (value === undefined || value === null) {
-			this.value = null;
-		} else if (!Array.isArray(value)) {
+		super(value);
+		if (!this.isEmpty && !Array.isArray(value)) {
 			this.error = new Error('must-be-an-array');
-		} else {
-			this.value = value;
 		}
 	}
 
@@ -357,6 +345,18 @@ class ArrayQuery extends QueryCore {
 		if (this.shouldSkip) return this;
 		if (this.value.length < min || this.value.length > max) {
 			this.error = new Error('invalid-range');
+		}
+		return this;
+	}
+
+	/**
+	 * このインスタンスの配列内の要素すべてが文字列であるか検証します
+	 * ひとつでも文字列以外の要素が存在する場合エラーにします
+	 */
+	allString() {
+		if (this.shouldSkip) return this;
+		if (this.value.some(x => typeof x != 'string')) {
+			this.error = new Error('dirty-array');
 		}
 		return this;
 	}
@@ -397,13 +397,9 @@ class IdQuery extends QueryCore {
 	error: Error;
 
 	constructor(value) {
-		super();
-		if (value === undefined || value === null) {
-			this.value = null;
-		} else if (typeof value != 'string' || !mongo.ObjectID.isValid(value)) {
+		super(value);
+		if (!this.isEmpty && (typeof value != 'string' || !mongo.ObjectID.isValid(value))) {
 			this.error = new Error('must-be-an-id');
-		} else {
-			this.value = new mongo.ObjectID(value);
 		}
 	}
 
@@ -443,13 +439,9 @@ class ObjectQuery extends QueryCore {
 	error: Error;
 
 	constructor(value) {
-		super();
-		if (value === undefined || value === null) {
-			this.value = null;
-		} else if (typeof value != 'object') {
+		super(value);
+		if (!this.isEmpty && typeof value != 'object') {
 			this.error = new Error('must-be-an-object');
-		} else {
-			this.value = value;
 		}
 	}
 

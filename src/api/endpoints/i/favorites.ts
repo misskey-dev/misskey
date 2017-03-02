@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import Favorite from '../../models/favorite';
 import serialize from '../../serializers/post';
 
@@ -11,37 +11,26 @@ import serialize from '../../serializers/post';
  * Get followers of a user
  *
  * @param {any} params
+ * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params) =>
+module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'limit' parameter
-	let limit = params.limit;
-	if (limit !== undefined && limit !== null) {
-		limit = parseInt(limit, 10);
-
-		// From 1 to 100
-		if (!(1 <= limit && limit <= 100)) {
-			return rej('invalid limit range');
-		}
-	} else {
-		limit = 10;
-	}
+	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
+	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	let offset = params.offset;
-	if (offset !== undefined && offset !== null) {
-		offset = parseInt(offset, 10);
-	} else {
-		offset = 0;
-	}
+	const [offset, offsetErr] = it(params.offset).expect.number().min(0).default(0).qed();
+	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'sort' parameter
-	let sort = params.sort || 'desc';
+	const [sort, sortError] = it(params.sort).expect.string().or('desc asc').default('desc').qed();
+	if (sortError) return rej('invalid sort param');
 
 	// Get favorites
-	const favorites = await Favorites
+	const favorites = await Favorite
 		.find({
 			user_id: user._id
 		}, {

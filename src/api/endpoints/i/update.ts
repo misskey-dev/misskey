@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import User from '../../models/user';
 import { isValidName, isValidBirthday } from '../../models/user';
 import serialize from '../../serializers/user';
@@ -23,18 +23,9 @@ module.exports = async (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'name' parameter
-	const name = params.name;
-	if (name !== undefined && name !== null) {
-		if (typeof name != 'string') {
-			return rej('name must be a string');
-		}
-
-		if (!isValidName(name)) {
-			return rej('invalid name');
-		}
-
-		user.name = name;
-	}
+	const [name, nameErr] = it(params.name).expect.string().validate(isValidName).qed();
+	if (nameErr) return rej('invalid name param');
+	user.name = name;
 
 	// Get 'description' parameter
 	const description = params.description;

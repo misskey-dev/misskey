@@ -131,21 +131,18 @@ module.exports = (params, user, app) =>
 
 	let poll = null;
 	if (_poll !== null) {
-		const [pollChoices, pollChoicesErr] = it(params.poll, 'set', false, [
-			choices => {
-				const shouldReject = choices.some(choice => {
+		const [pollChoices, pollChoicesErr] =
+			it(params.poll).expect.array()
+				.unique()
+				.allString()
+				.range(1, 10)
+				.validate(choices => !choices.some(choice => {
 					if (typeof choice != 'string') return true;
 					if (choice.trim().length == 0) return true;
 					if (choice.trim().length > 50) return true;
 					return false;
-				});
-				return shouldReject ? new Error('invalid poll choices') : true;
-			},
-			// 選択肢がひとつならエラー
-			choices => choices.length == 1 ? new Error('poll choices must be ひとつ以上') : true,
-			// 選択肢が多すぎてもエラー
-			choices => choices.length > 10 ? new Error('many poll choices') : true,
-		]);
+				}))
+				.qed();
 		if (pollChoicesErr) return rej('invalid poll choices');
 
 		_poll.choices = pollChoices.map((choice, i) => ({
