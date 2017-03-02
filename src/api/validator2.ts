@@ -79,25 +79,23 @@ class NumberValidator extends ValidatorCore {
 	}
 }
 
-const it = (value) => {
-	return {
-		must: {
-			be: {
-				a: {
-					string: 0,
-					number: () => new NumberValidator(value),
-					boolean: 0,
-					set: 0
-				},
-				an: {
-					id: 0,
-					array: 0,
-					object: 0
-				}
+const it = (value: any) => ({
+	must: {
+		be: {
+			a: {
+				string: 0,
+				number: () => new NumberValidator(value),
+				boolean: 0,
+				set: 0
+			},
+			an: {
+				id: 0,
+				array: 0,
+				object: 0
 			}
 		}
-	};
-};
+	}
+});
 
 export default it;
 
