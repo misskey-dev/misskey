@@ -340,7 +340,7 @@ const endpoints: Endpoint[] = [
 		limit: {
 			duration: ms('1hour'),
 			max: 120,
-			minInterval: 1 * second
+			minInterval: ms('1second')
 		},
 		kind: 'post-write'
 	},
