@@ -19,15 +19,15 @@ module.exports = (params, user) =>
 {
 	// Get 'post_id' parameter
 	const [postId, postIdErr] = it(params.post_id, 'id', true);
-	if (postIdErr) return rej('invalid post_id');
+	if (postIdErr) return rej('invalid post_id param');
 
 	// Get 'limit' parameter
 	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
-	if (limitErr) return rej('invalid limit');
+	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
 	const [offset, offsetErr] = it(params.offset).expect.number().min(0).default(0).qed();
-	if (offsetErr) return rej('invalid offset');
+	if (offsetErr) return rej('invalid offset param');
 
 	// Lookup post
 	const post = await Post.findOne({

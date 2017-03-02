@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
 
@@ -18,19 +18,12 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'post_id' parameter
-	const postId = params.post_id;
-	if (postId === undefined || postId === null) {
-		return rej('post_id is required');
-	}
-
-	// Validate id
-	if (!mongo.ObjectID.isValid(postId)) {
-		return rej('incorrect post_id');
-	}
+	const [postId, postIdErr] = it(params.post_id, 'id', true);
+	if (postIdErr) return rej('invalid post_id param');
 
 	// Get post
 	const post = await Post.findOne({
-		_id: new mongo.ObjectID(postId)
+		_id: postId
 	});
 
 	if (post === null) {
