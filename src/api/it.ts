@@ -10,7 +10,7 @@ type Validator<T> = (value: T) => boolean | Error;
 
 interface Factory {
 	/**
-	 * qedはQ.E.D.でもあり'QueryENd'の略でもある
+	 * qedはQ.E.D.でもあり'QueryEnD'の略でもある
 	 */
 	qed: () => [any, Error];
 
