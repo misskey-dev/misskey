@@ -1,3 +1,8 @@
+/**
+ * it
+ * 楽しいバリデーション
+ */
+
 import * as mongo from 'mongodb';
 import hasDuplicates from '../common/has-duplicates';
 
@@ -10,6 +15,8 @@ interface Factory {
 	qed: () => [any, Error];
 
 	required: () => Factory;
+
+	default: (value: any) => Factory;
 
 	validate: (validator: Validator<any>) => Factory;
 }
@@ -29,6 +36,16 @@ class FactoryCore implements Factory {
 	required() {
 		if (this.error === null && this.value === null) {
 			this.error = new Error('required');
+		}
+		return this;
+	}
+
+	/**
+	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 */
+	default(value: any) {
+		if (this.value === null) {
+			this.value = value;
 		}
 		return this;
 	}
@@ -80,6 +97,13 @@ class BooleanFactory extends FactoryCore {
 	}
 
 	/**
+	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 */
+	default(value: boolean) {
+		return super.default(value);
+	}
+
+	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
 	qed(): [boolean, Error] {
@@ -125,10 +149,41 @@ class NumberFactory extends FactoryCore {
 	}
 
 	/**
+	 * このインスタンスの値が指定された下限より下回っている場合エラーにします
+	 * @param value 下限
+	 */
+	min(value: number) {
+		if (this.error || this.value === null) return this;
+		if (this.value < value) {
+			this.error = new Error('invalid-range');
+		}
+		return this;
+	}
+
+	/**
+	 * このインスタンスの値が指定された上限より上回っている場合エラーにします
+	 * @param value 上限
+	 */
+	max(value: number) {
+		if (this.error || this.value === null) return this;
+		if (this.value > value) {
+			this.error = new Error('invalid-range');
+		}
+		return this;
+	}
+
+	/**
 	 * このインスタンスの値が undefined または　null の場合エラーにします
 	 */
 	required() {
 		return super.required();
+	}
+
+	/**
+	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 */
+	default(value: number) {
+		return super.default(value);
 	}
 
 	/**
@@ -187,6 +242,13 @@ class StringFactory extends FactoryCore {
 	 */
 	required() {
 		return super.required();
+	}
+
+	/**
+	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 */
+	default(value: string) {
+		return super.default(value);
 	}
 
 	/**
@@ -253,6 +315,13 @@ class ArrayFactory extends FactoryCore {
 	}
 
 	/**
+	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 */
+	default(value: any[]) {
+		return super.default(value);
+	}
+
+	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
 	qed(): [any[], Error] {
@@ -292,6 +361,13 @@ class IdFactory extends FactoryCore {
 	}
 
 	/**
+	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 */
+	default(value: mongo.ObjectID) {
+		return super.default(value);
+	}
+
+	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
 	qed(): [any[], Error] {
@@ -328,6 +404,13 @@ class ObjectFactory extends FactoryCore {
 	 */
 	required() {
 		return super.required();
+	}
+
+	/**
+	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 */
+	default(value: any) {
+		return super.default(value);
 	}
 
 	/**
