@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import validate from '../../validator';
+import it from '../../it';
 import parse from '../../../common/text';
 import Post from '../../models/post';
 import { isValidText } from '../../models/post';
@@ -27,13 +27,11 @@ module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'text' parameter
-	const [text, textErr] = validate(params.text, 'string', false, isValidText);
+	const [text, textErr] = it(params.text).must.be.a.string().validate(isValidText).get();
 	if (textErr) return rej('invalid text');
 
 	// Get 'media_ids' parameter
-	const [mediaIds, mediaIdsErr] = validate(params.media_ids, 'set', false,
-		x => x.length > 4 ? 'too many media' : true
-	);
+	const [mediaIds, mediaIdsErr] = it(params.media_ids).must.be.an.array().unique().range(1, 4).get();
 	if (mediaIdsErr) return rej('invalid media_ids');
 
 	let files = [];
@@ -42,7 +40,7 @@ module.exports = (params, user, app) =>
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
 		for (let i = 0; i < mediaIds.length; i++) {
-			const [mediaId, mediaIdErr] = validate(mediaIds[i], 'id', true);
+			const [mediaId, mediaIdErr] = it(mediaIds[i]).must.be.an.id().required().get();
 			if (mediaIdErr) return rej('invalid media id');
 
 			// Fetch file
@@ -65,7 +63,7 @@ module.exports = (params, user, app) =>
 	}
 
 	// Get 'repost_id' parameter
-	const [repostId, repostIdErr] = validate(params.repost_id, 'id');
+	const [repostId, repostIdErr] = it(params.repost_id).must.be.an.id().get();
 	if (repostIdErr) return rej('invalid repost_id');
 
 	let repost = null;
@@ -107,7 +105,7 @@ module.exports = (params, user, app) =>
 	}
 
 	// Get 'in_reply_to_post_id' parameter
-	const [inReplyToPostId, inReplyToPostIdErr] = validate(params.reply_to_id, 'id');
+	const [inReplyToPostId, inReplyToPostIdErr] = it(params.reply_to_id, 'id');
 	if (inReplyToPostIdErr) return rej('invalid in_reply_to_post_id');
 
 	let inReplyToPost = null;
@@ -128,12 +126,12 @@ module.exports = (params, user, app) =>
 	}
 
 	// Get 'poll' parameter
-	const [_poll, pollErr] = validate(params.poll, 'object');
+	const [_poll, pollErr] = it(params.poll, 'object');
 	if (pollErr) return rej('invalid poll');
 
 	let poll = null;
 	if (_poll !== null) {
-		const [pollChoices, pollChoicesErr] = validate(params.poll, 'set', false, [
+		const [pollChoices, pollChoicesErr] = it(params.poll, 'set', false, [
 			choices => {
 				const shouldReject = choices.some(choice => {
 					if (typeof choice != 'string') return true;
