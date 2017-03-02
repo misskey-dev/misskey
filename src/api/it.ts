@@ -2,16 +2,16 @@ import * as mongo from 'mongodb';
 import hasDuplicates from '../common/has-duplicates';
 
 type Validator<T> = (value: T) => boolean | Error;
-type Modifier<T> = (value: T) => T;
 
 interface Factory {
-	get: () => [any, Error];
+	/**
+	 * qedはQ.E.D.でもあり'QueryENd'の略でもある
+	 */
+	qed: () => [any, Error];
 
 	required: () => Factory;
 
 	validate: (validator: Validator<any>) => Factory;
-
-	modify: (modifier: Modifier<any>) => Factory;
 }
 
 class FactoryCore implements Factory {
@@ -36,7 +36,7 @@ class FactoryCore implements Factory {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	get(): [any, Error] {
+	qed(): [any, Error] {
 		return [this.value, this.error];
 	}
 
@@ -52,16 +52,6 @@ class FactoryCore implements Factory {
 			this.error = new Error('invalid-format');
 		} else if (result instanceof Error) {
 			this.error = result;
-		}
-		return this;
-	}
-
-	modify(modifier: Modifier<any>) {
-		if (this.error || this.value === null) return this;
-		try {
-			this.value = modifier(this.value);
-		} catch (e) {
-			this.error = e;
 		}
 		return this;
 	}
@@ -92,8 +82,8 @@ class BooleanFactory extends FactoryCore {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	get(): [boolean, Error] {
-		return super.get();
+	qed(): [boolean, Error] {
+		return super.qed();
 	}
 
 	/**
@@ -103,10 +93,6 @@ class BooleanFactory extends FactoryCore {
 	 */
 	validate(validator: Validator<boolean>) {
 		return super.validate(validator);
-	}
-
-	modify(modifier: Modifier<boolean>) {
-		return super.modify(modifier);
 	}
 }
 
@@ -148,8 +134,8 @@ class NumberFactory extends FactoryCore {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	get(): [number, Error] {
-		return super.get();
+	qed(): [number, Error] {
+		return super.qed();
 	}
 
 	/**
@@ -159,10 +145,6 @@ class NumberFactory extends FactoryCore {
 	 */
 	validate(validator: Validator<number>) {
 		return super.validate(validator);
-	}
-
-	modify(modifier: Modifier<number>) {
-		return super.modify(modifier);
 	}
 }
 
@@ -210,8 +192,8 @@ class StringFactory extends FactoryCore {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	get(): [string, Error] {
-		return super.get();
+	qed(): [string, Error] {
+		return super.qed();
 	}
 
 	/**
@@ -221,10 +203,6 @@ class StringFactory extends FactoryCore {
 	 */
 	validate(validator: Validator<string>) {
 		return super.validate(validator);
-	}
-
-	modify(modifier: Modifier<string>) {
-		return super.modify(modifier);
 	}
 }
 
@@ -277,8 +255,8 @@ class ArrayFactory extends FactoryCore {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	get(): [any[], Error] {
-		return super.get();
+	qed(): [any[], Error] {
+		return super.qed();
 	}
 
 	/**
@@ -288,10 +266,6 @@ class ArrayFactory extends FactoryCore {
 	 */
 	validate(validator: Validator<any[]>) {
 		return super.validate(validator);
-	}
-
-	modify(modifier: Modifier<any[]>) {
-		return super.modify(modifier);
 	}
 }
 
@@ -320,8 +294,8 @@ class IdFactory extends FactoryCore {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	get(): [any[], Error] {
-		return super.get();
+	qed(): [any[], Error] {
+		return super.qed();
 	}
 
 	/**
@@ -331,10 +305,6 @@ class IdFactory extends FactoryCore {
 	 */
 	validate(validator: Validator<any[]>) {
 		return super.validate(validator);
-	}
-
-	modify(modifier: Modifier<any[]>) {
-		return super.modify(modifier);
 	}
 }
 
@@ -363,8 +333,8 @@ class ObjectFactory extends FactoryCore {
 	/**
 	 * このインスタンスの値およびエラーを取得します
 	 */
-	get(): [any, Error] {
-		return super.get();
+	qed(): [any, Error] {
+		return super.qed();
 	}
 
 	/**
@@ -375,13 +345,9 @@ class ObjectFactory extends FactoryCore {
 	validate(validator: Validator<any>) {
 		return super.validate(validator);
 	}
-
-	modify(modifier: Modifier<any>) {
-		return super.modify(modifier);
-	}
 }
 
-type MustBe = {
+type It = {
 	must: {
 		be: {
 			a: {
@@ -396,9 +362,17 @@ type MustBe = {
 			};
 		};
 	};
+	expect: {
+		string: () => StringFactory;
+		number: () => NumberFactory;
+		boolean: () => BooleanFactory;
+		id: () => IdFactory;
+		array: () => ArrayFactory;
+		object: () => ObjectFactory;
+	};
 };
 
-const mustBe = (value: any) => ({
+const it = (value: any) => ({
 	must: {
 		be: {
 			a: {
@@ -412,107 +386,50 @@ const mustBe = (value: any) => ({
 				object: () => new ObjectFactory(value)
 			}
 		}
+	},
+	expect: {
+		string: () => new StringFactory(value),
+		number: () => new NumberFactory(value),
+		boolean: () => new BooleanFactory(value),
+		id: () => new IdFactory(value),
+		array: () => new ArrayFactory(value),
+		object: () => new ObjectFactory(value)
 	}
 });
 
 type Type = 'id' | 'string' | 'number' | 'boolean' | 'array' | 'set' | 'object';
-type Pipe<T> = (x: T) => T | boolean | Error;
 
-function validate(value: any, type: 'id', isRequired?: boolean, pipe?: Pipe<mongo.ObjectID> | Pipe<mongo.ObjectID>[]): [mongo.ObjectID, Error];
-function validate(value: any, type: 'string', isRequired?: boolean, pipe?: Pipe<string> | Pipe<string>[]): [string, Error];
-function validate(value: any, type: 'number', isRequired?: boolean, pipe?: Pipe<number> | Pipe<number>[]): [number, Error];
-function validate(value: any, type: 'boolean', isRequired?: boolean): [boolean, Error];
-function validate(value: any, type: 'array', isRequired?: boolean, pipe?: Pipe<any[]> | Pipe<any[]>[]): [any[], Error];
-function validate(value: any, type: 'set', isRequired?: boolean, pipe?: Pipe<any[]> | Pipe<any[]>[]): [any[], Error];
-function validate(value: any, type: 'object', isRequired?: boolean, pipe?: Pipe<any> | Pipe<any>[]): [any, Error];
-function validate(value: any, type: Type, isRequired?: boolean, pipe?: Pipe<any> | Pipe<any>[]): [any, Error] {
-	if (value === undefined || value === null) {
-		if (isRequired) {
-			return [null, new Error('is-required')]
-		} else {
-			return [null, null]
-		}
-	}
+function x(value: any): It;
+function x(value: any, type: 'id', isRequired?: boolean, validator?: Validator<mongo.ObjectID> | Validator<mongo.ObjectID>[]): [mongo.ObjectID, Error];
+function x(value: any, type: 'string', isRequired?: boolean, validator?: Validator<string> | Validator<string>[]): [string, Error];
+function x(value: any, type: 'number', isRequired?: boolean, validator?: Validator<number> | Validator<number>[]): [number, Error];
+function x(value: any, type: 'boolean', isRequired?: boolean): [boolean, Error];
+function x(value: any, type: 'array', isRequired?: boolean, validator?: Validator<any[]> | Validator<any[]>[]): [any[], Error];
+function x(value: any, type: 'set', isRequired?: boolean, validator?: Validator<any[]> | Validator<any[]>[]): [any[], Error];
+function x(value: any, type: 'object', isRequired?: boolean, validator?: Validator<any> | Validator<any>[]): [any, Error];
+function x(value: any, type?: Type, isRequired?: boolean, validator?: Validator<any> | Validator<any>[]): any {
+	if (typeof type === 'undefined') return it(value);
+
+	let factory: Factory = null;
 
 	switch (type) {
-		case 'id':
-			if (typeof value != 'string' || !mongo.ObjectID.isValid(value)) {
-				return [null, new Error('incorrect-id')];
-			}
-			break;
-
-		case 'string':
-			if (typeof value != 'string') {
-				return [null, new Error('must-be-a-string')];
-			}
-			break;
-
-		case 'number':
-			if (!Number.isFinite(value)) {
-				return [null, new Error('must-be-a-number')];
-			}
-			break;
-
-		case 'boolean':
-			if (typeof value != 'boolean') {
-				return [null, new Error('must-be-a-boolean')];
-			}
-			break;
-
-		case 'array':
-			if (!Array.isArray(value)) {
-				return [null, new Error('must-be-an-array')];
-			}
-			break;
-
-		case 'set':
-			if (!Array.isArray(value)) {
-				return [null, new Error('must-be-an-array')];
-			} else if (hasDuplicates(value)) {
-				return [null, new Error('duplicated-contents')];
-			}
-			break;
-
-		case 'object':
-			if (typeof value != 'object') {
-				return [null, new Error('must-be-an-object')];
-			}
-			break;
+		case 'id': factory = it(value).expect.id(); break;
+		case 'string': factory = it(value).expect.string(); break;
+		case 'number': factory = it(value).expect.number(); break;
+		case 'boolean': factory = it(value).expect.boolean(); break;
+		case 'array': factory = it(value).expect.array(); break;
+		case 'set': factory = it(value).expect.array().unique(); break;
+		case 'object': factory = it(value).expect.object(); break;
 	}
 
-	if (type == 'id') value = new mongo.ObjectID(value);
+	if (isRequired) factory = factory.required();
 
-	if (pipe) {
-		const pipes = Array.isArray(pipe) ? pipe : [pipe];
-		for (let i = 0; i < pipes.length; i++) {
-			const result = pipes[i](value);
-			if (result === false) {
-				return [null, new Error('invalid-format')];
-			} else if (result instanceof Error) {
-				return [null, result];
-			} else if (result !== true) {
-				value = result;
-			}
-		}
+	if (validator) {
+		(Array.isArray(validator) ? validator : [validator])
+			.forEach(v => factory = factory.validate(v));
 	}
 
-	return [value, null];
+	return factory;
 }
 
-function it(value: any): MustBe;
-function it(value: any, type: 'id', isRequired?: boolean, pipe?: Pipe<mongo.ObjectID> | Pipe<mongo.ObjectID>[]): [mongo.ObjectID, Error];
-function it(value: any, type: 'string', isRequired?: boolean, pipe?: Pipe<string> | Pipe<string>[]): [string, Error];
-function it(value: any, type: 'number', isRequired?: boolean, pipe?: Pipe<number> | Pipe<number>[]): [number, Error];
-function it(value: any, type: 'boolean', isRequired?: boolean): [boolean, Error];
-function it(value: any, type: 'array', isRequired?: boolean, pipe?: Pipe<any[]> | Pipe<any[]>[]): [any[], Error];
-function it(value: any, type: 'set', isRequired?: boolean, pipe?: Pipe<any[]> | Pipe<any[]>[]): [any[], Error];
-function it(value: any, type: 'object', isRequired?: boolean, pipe?: Pipe<any> | Pipe<any>[]): [any, Error];
-function it(value: any, type?: any, isRequired?: boolean, pipe?: Pipe<any> | Pipe<any>[]): any {
-	if (typeof type === 'undefined') {
-		return mustBe(value);
-	} else {
-		return validate(value, type, isRequired, pipe);
-	}
-}
-
-export default it;
+export default x;

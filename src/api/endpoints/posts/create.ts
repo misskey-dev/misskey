@@ -27,11 +27,11 @@ module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'text' parameter
-	const [text, textErr] = it(params.text).must.be.a.string().validate(isValidText).get();
+	const [text, textErr] = it(params.text).must.be.a.string().validate(isValidText).qed();
 	if (textErr) return rej('invalid text');
 
 	// Get 'media_ids' parameter
-	const [mediaIds, mediaIdsErr] = it(params.media_ids).must.be.an.array().unique().range(1, 4).get();
+	const [mediaIds, mediaIdsErr] = it(params.media_ids).must.be.an.array().unique().range(1, 4).qed();
 	if (mediaIdsErr) return rej('invalid media_ids');
 
 	let files = [];
@@ -40,7 +40,7 @@ module.exports = (params, user, app) =>
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
 		for (let i = 0; i < mediaIds.length; i++) {
-			const [mediaId, mediaIdErr] = it(mediaIds[i]).must.be.an.id().required().get();
+			const [mediaId, mediaIdErr] = it(mediaIds[i]).must.be.an.id().required().qed();
 			if (mediaIdErr) return rej('invalid media id');
 
 			// Fetch file
@@ -63,7 +63,7 @@ module.exports = (params, user, app) =>
 	}
 
 	// Get 'repost_id' parameter
-	const [repostId, repostIdErr] = it(params.repost_id).must.be.an.id().get();
+	const [repostId, repostIdErr] = it(params.repost_id).must.be.an.id().qed();
 	if (repostIdErr) return rej('invalid repost_id');
 
 	let repost = null;
