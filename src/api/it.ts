@@ -15,6 +15,8 @@
  * const [val, err] = it(x).must.be.an.array().unique().required().validate(x => x[0] != 'strawberry pasta').qed();
  * → xは配列でなければならず、かつ中身が重複していてはならない。この値を省略することはできない。そして配列の最初の要素が'strawberry pasta'という文字列であってはならない。
  *
+ * ・意味的に矛盾するので、required と default は併用できません。
+ *
  * ~糖衣構文~
  * const [val, err] = it(x).must.be.a.string().required().qed();
  * は
