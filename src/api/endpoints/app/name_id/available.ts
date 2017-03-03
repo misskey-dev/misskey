@@ -3,7 +3,9 @@
 /**
  * Module dependencies
  */
+import it from '../../../it';
 import App from '../../../models/app';
+import { isValidNameId } from '../../../models/app';
 
 /**
  * @swagger
@@ -44,15 +46,8 @@ module.exports = async (params) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'name_id' parameter
-	const nameId = params.name_id;
-	if (nameId == null || nameId == '') {
-		return rej('name_id is required');
-	}
-
-	// Validate name_id
-	if (!/^[a-zA-Z0-9\-]{3,30}$/.test(nameId)) {
-		return rej('invalid name_id');
-	}
+	const [nameId, nameIdErr] = it(params.name_id).expect.string().required().validate(isValidNameId).qed();
+	if (nameIdErr) return rej('invalid name_id param');
 
 	// Get exist
 	const exist = await App

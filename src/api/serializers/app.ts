@@ -21,8 +21,8 @@ export default (
 	app: any,
 	me?: any,
 	options?: {
-		includeSecret: boolean,
-		includeProfileImageIds: boolean
+		includeSecret?: boolean,
+		includeProfileImageIds?: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 	const opts = options || {

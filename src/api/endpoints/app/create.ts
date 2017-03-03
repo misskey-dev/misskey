@@ -4,7 +4,9 @@
  * Module dependencies
  */
 import rndstr from 'rndstr';
+import it from '../../it';
 import App from '../../models/app';
+import { isValidNameId } from '../../models/app';
 import serialize from '../../serializers/app';
 
 /**
@@ -71,41 +73,25 @@ module.exports = async (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'name_id' parameter
-	const nameId = params.name_id;
-	if (nameId == null) {
-		return rej('name_id is required');
-	} else if (typeof nameId != 'string') {
-		return rej('name_id must be a string');
-	}
-
-	// Validate name_id
-	if (!/^[a-zA-Z0-9\-]{3,30}$/.test(nameId)) {
-		return rej('invalid name_id');
-	}
+	const [nameId, nameIdErr] = it(params.name_id).expect.string().required().validate(isValidNameId).qed();
+	if (nameIdErr) return rej('invalid name_id param');
 
 	// Get 'name' parameter
-	const name = params.name;
-	if (name == null || name == '') {
-		return rej('name is required');
-	}
+	const [name, nameErr] = it(params.name).expect.string().required().qed();
+	if (nameErr) return rej('invalid name param');
 
 	// Get 'description' parameter
-	const description = params.description;
-	if (description == null || description == '') {
-		return rej('description is required');
-	}
+	const [description, descriptionErr] = it(params.description).expect.string().required().qed();
+	if (descriptionErr) return rej('invalid description param');
 
 	// Get 'permission' parameter
-	const permission = params.permission;
-	if (permission == null || permission == '') {
-		return rej('permission is required');
-	}
+	const [permission, permissionErr] = it(params.permission).expect.array().unique().allString().required().qed();
+	if (permissionErr) return rej('invalid permission param');
 
 	// Get 'callback_url' parameter
-	let callback = params.callback_url;
-	if (callback === '') {
-		callback = null;
-	}
+	// TODO: Check it is valid url
+	const [callbackUrl, callbackUrlErr] = it(params.callback_url).expect.nullable.string().default(null).qed();
+	if (callbackUrlErr) return rej('invalid callback_url param');
 
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
@@ -118,8 +104,8 @@ module.exports = async (params, user) =>
 		name_id: nameId,
 		name_id_lower: nameId.toLowerCase(),
 		description: description,
-		permission: permission.split(','),
-		callback_url: callback,
+		permission: permission,
+		callback_url: callbackUrl,
 		secret: secret
 	});
 

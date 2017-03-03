@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import App from '../../models/app';
 import serialize from '../../serializers/app';
 
@@ -50,16 +50,12 @@ module.exports = (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'app_id' parameter
-	let appId = params.app_id;
-	if (appId == null || appId == '') {
-		appId = null;
-	}
+	const [appId, appIdErr] = it(params.app_id, 'id');
+	if (appIdErr) return rej('invalid app_id param');
 
 	// Get 'name_id' parameter
-	let nameId = params.name_id;
-	if (nameId == null || nameId == '') {
-		nameId = null;
-	}
+	const [nameId, nameIdErr] = it(params.name_id, 'string');
+	if (nameIdErr) return rej('invalid name_id param');
 
 	if (appId === null && nameId === null) {
 		return rej('app_id or name_id is required');
@@ -67,7 +63,7 @@ module.exports = (params, user, _, isSecure) =>
 
 	// Lookup app
 	const app = appId !== null
-		? await App.findOne({ _id: new mongo.ObjectID(appId) })
+		? await App.findOne({ _id: appId })
 		: await App.findOne({ name_id_lower: nameId.toLowerCase() });
 
 	if (app === null) {
