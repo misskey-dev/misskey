@@ -19,6 +19,14 @@ export function isValidName(name: string): boolean {
 	return typeof name == 'string' && name.length < 30 && name.trim() != '';
 }
 
+export function isValidDescription(description: string): boolean {
+	return typeof description == 'string' && description.length < 500 && description.trim() != '';
+}
+
+export function isValidLocation(location: string): boolean {
+	return typeof location == 'string' && location.length < 50 && location.trim() != '';
+}
+
 export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }

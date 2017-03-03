@@ -1,0 +1,37 @@
+'use strict';
+
+/**
+ * Module dependencies
+ */
+import it from '../../it';
+import Post from '../../models/post';
+import serialize from '../../serializers/post';
+
+/**
+ * Show a post
+ *
+ * @param {any} params
+ * @param {any} user
+ * @return {Promise<any>}
+ */
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
+{
+	// Get 'post_id' parameter
+	const [postId, postIdErr] = it(params.post_id, 'id', true);
+	if (postIdErr) return rej('invalid post_id param');
+
+	// Get post
+	const post = await Post.findOne({
+		_id: postId
+	});
+
+	if (post === null) {
+		return rej('post not found');
+	}
+
+	// Serialize
+	res(await serialize(post, user, {
+		detail: true
+	}));
+});

@@ -19,7 +19,7 @@ import deepcopy = require('deepcopy');
  */
 export default (
 	message: any,
-	me: any,
+	me?: any,
 	options?: {
 		populateRecipient: boolean
 	}
