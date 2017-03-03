@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import DriveFolder from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-folder';
 
@@ -18,15 +18,13 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'folder_id' parameter
-	const folderId = params.folder_id;
-	if (folderId === undefined || folderId === null) {
-		return rej('folder_id is required');
-	}
+	const [folderId, folderIdErr] = it(params.folder_id).expect.id().required().qed();
+	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Get folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: new mongo.ObjectID(folderId),
+			_id: folderId,
 			user_id: user._id
 		});
 

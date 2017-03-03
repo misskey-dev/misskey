@@ -3,15 +3,14 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import User from '../../models/user';
 import Following from '../../models/following';
-import notify from '../../common/notify';
 import event from '../../event';
 import serializeUser from '../../serializers/user';
 
 /**
- * Follow a user
+ * Unfollow a user
  *
  * @param {any} params
  * @param {any} user
@@ -23,24 +22,17 @@ module.exports = (params, user) =>
 	const follower = user;
 
 	// Get 'user_id' parameter
-	let userId = params.user_id;
-	if (userId === undefined || userId === null) {
-		return rej('user_id is required');
-	}
+	const [userId, userIdErr] = it(params.user_id, 'id', true);
+	if (userIdErr) return rej('invalid user_id param');
 
-	// Validate id
-	if (!mongo.ObjectID.isValid(userId)) {
-		return rej('incorrect user_id');
-	}
-
-	// 自分自身
+	// Check if the followee is yourself
 	if (user._id.equals(userId)) {
 		return rej('followee is yourself');
 	}
 
 	// Get followee
 	const followee = await User.findOne({
-		_id: new mongo.ObjectID(userId)
+		_id: userId
 	}, {
 		fields: {
 			data: false,
@@ -52,45 +44,43 @@ module.exports = (params, user) =>
 		return rej('user not found');
 	}
 
-	// Check if already following
+	// Check not following
 	const exist = await Following.findOne({
 		follower_id: follower._id,
 		followee_id: followee._id,
 		deleted_at: { $exists: false }
 	});
 
-	if (exist !== null) {
-		return rej('already following');
+	if (exist === null) {
+		return rej('already not following');
 	}
 
-	// Create following
-	await Following.insert({
-		created_at: new Date(),
-		follower_id: follower._id,
-		followee_id: followee._id
+	// Delete following
+	await Following.update({
+		_id: exist._id
+	}, {
+		$set: {
+			deleted_at: new Date()
+		}
 	});
 
 	// Send response
 	res();
 
-	// Increment following count
-	User.update(follower._id, {
+	// Decrement following count
+	User.update({ _id: follower._id }, {
 		$inc: {
-			following_count: 1
+			following_count: -1
 		}
 	});
 
-	// Increment followers count
+	// Decrement followers count
 	User.update({ _id: followee._id }, {
 		$inc: {
-			followers_count: 1
+			followers_count: -1
 		}
 	});
 
 	// Publish follow event
-	event(follower._id, 'follow', await serializeUser(followee, follower));
-	event(followee._id, 'followed', await serializeUser(follower, followee));
-
-	// Notify
-	notify(followee._id, follower._id, 'follow');
+	event(follower._id, 'unfollow', await serializeUser(followee, follower));
 });

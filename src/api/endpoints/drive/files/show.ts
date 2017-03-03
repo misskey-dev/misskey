@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/drive-file';
 
@@ -18,14 +18,13 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'file_id' parameter
-	const fileId = params.file_id;
-	if (fileId === undefined || fileId === null) {
-		return rej('file_id is required');
-	}
+	const [fileId, fileIdErr] = it(params.file_id).expect.id().required().qed();
+	if (fileIdErr) return rej('invalid file_id param');
 
+	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: new mongo.ObjectID(fileId),
+			_id: fileId,
 			user_id: user._id
 		}, {
 			fields: {

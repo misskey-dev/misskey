@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import DriveFolder from '../../models/drive-folder';
 import serialize from '../../serializers/drive-folder';
 
@@ -19,33 +19,25 @@ module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'limit' parameter
-	let limit = params.limit;
-	if (limit !== undefined && limit !== null) {
-		limit = parseInt(limit, 10);
+	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
+	if (limitErr) return rej('invalid limit param');
 
-		// From 1 to 100
-		if (!(1 <= limit && limit <= 100)) {
-			return rej('invalid limit range');
-		}
-	} else {
-		limit = 10;
-	}
+	// Get 'since_id' parameter
+	const [sinceId, sinceIdErr] = it(params.since_id).expect.id().qed();
+	if (sinceIdErr) return rej('invalid since_id param');
 
-	const since = params.since_id || null;
-	const max = params.max_id || null;
+	// Get 'max_id' parameter
+	const [maxId, maxIdErr] = it(params.max_id).expect.id().qed();
+	if (maxIdErr) return rej('invalid max_id param');
 
 	// Check if both of since_id and max_id is specified
-	if (since !== null && max !== null) {
+	if (sinceId !== null && maxId !== null) {
 		return rej('cannot set since_id and max_id');
 	}
 
 	// Get 'folder_id' parameter
-	let folder = params.folder_id;
-	if (folder === undefined || folder === null) {
-		folder = null;
-	} else {
-		folder = new mongo.ObjectID(folder);
-	}
+	const [folderId, folderIdErr] = it(params.folder_id).expect.nullable.id().default(null).qed();
+	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Construct query
 	const sort = {
@@ -53,16 +45,16 @@ module.exports = (params, user, app) =>
 	};
 	const query = {
 		user_id: user._id,
-		parent_id: folder
-	};
-	if (since !== null) {
+		parent_id: folderId
+	} as any;
+	if (sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: new mongo.ObjectID(since)
+			$gt: sinceId
 		};
-	} else if (max !== null) {
+	} else if (maxId) {
 		query._id = {
-			$lt: new mongo.ObjectID(max)
+			$lt: maxId
 		};
 	}
 

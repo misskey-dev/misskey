@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import DriveFolder from '../../../models/drive-folder';
 import { isValidFolderName } from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-folder';
@@ -20,33 +20,17 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'name' parameter
-	let name = params.name;
-	if (name !== undefined && name !== null) {
-		name = name.trim();
-		if (name.length === 0) {
-			name = null;
-		} else if (!isValidFolderName(name)) {
-			return rej('invalid name');
-		}
-	} else {
-		name = null;
-	}
+	const [name, nameErr] = it(params.name).expect.string().validate(isValidFolderName).default('無題のフォルダー').qed();
+	if (nameErr) return rej('invalid name param');
 
-	if (name == null) {
-		name = '無題のフォルダー';
-	}
-
-	// Get 'folder_id' parameter
-	let parentId = params.folder_id;
-	if (parentId === undefined || parentId === null) {
-		parentId = null;
-	} else {
-		parentId = new mongo.ObjectID(parentId);
-	}
+	// Get 'parent_id' parameter
+	const [parentId, parentIdErr] = it(params.parent_id).expect.nullable.id().default(null).qed();
+	if (parentIdErr) return rej('invalid parent_id param');
 
 	// If the parent folder is specified
 	let parent = null;
-	if (parentId !== null) {
+	if (parentId) {
+		// Fetch parent folder
 		parent = await DriveFolder
 			.findOne({
 				_id: parentId,
@@ -54,7 +38,7 @@ module.exports = (params, user) =>
 			});
 
 		if (parent === null) {
-			return reject('parent-not-found');
+			return rej('parent-not-found');
 		}
 	}
 

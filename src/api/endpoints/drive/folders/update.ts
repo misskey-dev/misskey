@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import DriveFolder from '../../../models/drive-folder';
 import { isValidFolderName } from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-file';
@@ -20,20 +20,13 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'folder_id' parameter
-	const folderId = params.folder_id;
-	if (folderId === undefined || folderId === null) {
-		return rej('folder_id is required');
-	}
-
-	// Validate id
-	if (!mongo.ObjectID.isValid(folderId)) {
-		return rej('incorrect folder_id');
-	}
+	const [folderId, folderIdErr] = it(params.folder_id).expect.id().required().qed();
+	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: new mongo.ObjectID(folderId),
+			_id: folderId,
 			user_id: user._id
 		});
 
@@ -42,29 +35,17 @@ module.exports = (params, user) =>
 	}
 
 	// Get 'name' parameter
-	let name = params.name;
-	if (name) {
-		name = name.trim();
-		if (isValidFolderName(name)) {
-			folder.name = name;
-		} else {
-			return rej('invalid folder name');
-		}
-	}
+	const [name, nameErr] = it(params.name).expect.string().validate(isValidFolderName).qed();
+	if (nameErr) return rej('invalid name param');
+	if (name) folder.name = name;
 
 	// Get 'parent_id' parameter
-	let parentId = params.parent_id;
+	const [parentId, parentIdErr] = it(params.parent_id).expect.nullable.id().qed();
+	if (parentIdErr) return rej('invalid parent_id param');
 	if (parentId !== undefined) {
 		if (parentId === null) {
 			folder.parent_id = null;
 		} else {
-			// Validate id
-			if (!mongo.ObjectID.isValid(parentId)) {
-				return rej('incorrect parent_id');
-			}
-
-			parentId = new mongo.ObjectID(parentId);
-
 			// Get parent folder
 			const parent = await DriveFolder
 				.findOne({

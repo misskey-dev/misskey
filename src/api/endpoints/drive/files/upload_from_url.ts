@@ -5,10 +5,8 @@
  */
 import * as URL from 'url';
 const download = require('download');
-import * as mongo from 'mongodb';
-import File from '../../../models/drive-file';
+import it from '../../../it';
 import { validateFileName } from '../../../models/drive-file';
-import User from '../../../models/user';
 import serialize from '../../../serializers/drive-file';
 import create from '../../../common/add-file-to-drive';
 
@@ -24,10 +22,8 @@ module.exports = (params, user) =>
 {
 	// Get 'url' parameter
 	// TODO: Validate this url
-	const url = params.url;
-	if (url == null) {
-		return rej('url is required');
-	}
+	const [url, urlErr] = it(params.url).expect.string().required().qed();
+	if (urlErr) return rej('invalid url param');
 
 	let name = URL.parse(url).pathname.split('/').pop();
 	if (!validateFileName(name)) {
@@ -35,18 +31,14 @@ module.exports = (params, user) =>
 	}
 
 	// Get 'folder_id' parameter
-	let folder = params.folder_id;
-	if (folder === undefined || folder === null) {
-		folder = null;
-	} else {
-		folder = new mongo.ObjectID(folder);
-	}
+	const [folderId, folderIdErr] = it(params.folder_id).expect.nullable.id().default(null).qed();
+	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Download file
 	const data = await download(url);
 
 	// Create file
-	const driveFile = await create(user, data, name, null, folder);
+	const driveFile = await create(user, data, name, null, folderId);
 
 	// Serialize
 	const fileObj = await serialize(driveFile);

@@ -4,10 +4,8 @@
  * Module dependencies
  */
 import * as fs from 'fs';
-import * as mongo from 'mongodb';
-import File from '../../../models/drive-file';
+import it from '../../../it';
 import { validateFileName } from '../../../models/drive-file';
-import User from '../../../models/user';
 import serialize from '../../../serializers/drive-file';
 import create from '../../../common/add-file-to-drive';
 
@@ -45,15 +43,11 @@ module.exports = (file, params, user) =>
 	}
 
 	// Get 'folder_id' parameter
-	let folder = params.folder_id;
-	if (folder === undefined || folder === null) {
-		folder = null;
-	} else {
-		folder = new mongo.ObjectID(folder);
-	}
+	const [folderId, folderIdErr] = it(params.folder_id).expect.nullable.id().default(null).qed();
+	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Create file
-	const driveFile = await create(user, buffer, name, null, folder);
+	const driveFile = await create(user, buffer, name, null, folderId);
 
 	// Serialize
 	const fileObj = await serialize(driveFile);

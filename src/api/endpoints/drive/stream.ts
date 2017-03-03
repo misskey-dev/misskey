@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../it';
 import DriveFile from '../../models/drive-file';
 import serialize from '../../serializers/drive-file';
 
@@ -18,35 +18,25 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'limit' parameter
-	let limit = params.limit;
-	if (limit !== undefined && limit !== null) {
-		limit = parseInt(limit, 10);
+	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
+	if (limitErr) return rej('invalid limit param');
 
-		// From 1 to 100
-		if (!(1 <= limit && limit <= 100)) {
-			return rej('invalid limit range');
-		}
-	} else {
-		limit = 10;
-	}
+	// Get 'since_id' parameter
+	const [sinceId, sinceIdErr] = it(params.since_id).expect.id().qed();
+	if (sinceIdErr) return rej('invalid since_id param');
 
-	const since = params.since_id || null;
-	const max = params.max_id || null;
+	// Get 'max_id' parameter
+	const [maxId, maxIdErr] = it(params.max_id).expect.id().qed();
+	if (maxIdErr) return rej('invalid max_id param');
 
 	// Check if both of since_id and max_id is specified
-	if (since !== null && max !== null) {
+	if (sinceId !== null && maxId !== null) {
 		return rej('cannot set since_id and max_id');
 	}
 
 	// Get 'type' parameter
-	let type = params.type;
-	if (type === undefined || type === null) {
-		type = null;
-	} else if (!/^[a-zA-Z\/\-\*]+$/.test(type)) {
-		return rej('invalid type format');
-	} else {
-		type = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
-	}
+	const [type, typeErr] = it(params.type).expect.string().match(/^[a-zA-Z\/\-\*]+$/).qed();
+	if (typeErr) return rej('invalid type param');
 
 	// Construct query
 	const sort = {
@@ -54,19 +44,19 @@ module.exports = (params, user) =>
 	};
 	const query = {
 		user_id: user._id
-	};
-	if (since !== null) {
+	} as any;
+	if (sinceId) {
 		sort._id = 1;
 		query._id = {
-			$gt: new mongo.ObjectID(since)
+			$gt: sinceId
 		};
-	} else if (max !== null) {
+	} else if (maxId) {
 		query._id = {
-			$lt: new mongo.ObjectID(max)
+			$lt: maxId
 		};
 	}
 	if (type !== null) {
-		query.type = type;
+		query.type = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
 	}
 
 	// Issue query
