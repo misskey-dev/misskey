@@ -32,7 +32,7 @@ module.exports = (params, user, app) =>
 	if (maxIdErr) return rej('invalid max_id param');
 
 	// Check if both of since_id and max_id is specified
-	if (sinceId !== null && maxId !== null) {
+	if (sinceId && maxId) {
 		return rej('cannot set since_id and max_id');
 	}
 
