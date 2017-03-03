@@ -5,7 +5,7 @@
  */
 import it from '../../it';
 import User from '../../models/user';
-import { isValidName, isValidBirthday } from '../../models/user';
+import { isValidName, isValidDescription, isValidLocation, isValidBirthday } from '../../models/user';
 import serialize from '../../serializers/user';
 import event from '../../event';
 import config from '../../../conf';
@@ -28,48 +28,29 @@ module.exports = async (params, user, _, isSecure) =>
 	if (name) user.name = name;
 
 	// Get 'description' parameter
-	const description = params.description;
-	if (description !== undefined && description !== null) {
-		if (description.length > 500) {
-			return rej('too long description');
-		}
-
-		user.description = description;
-	}
+	const [description, descriptionErr] = it(params.description).expect.string().validate(isValidDescription).qed();
+	if (descriptionErr) return rej('invalid description param');
+	if (description !== undefined) user.description = description;
 
 	// Get 'location' parameter
-	const location = params.location;
-	if (location !== undefined && location !== null) {
-		if (location.length > 50) {
-			return rej('too long location');
-		}
-
-		user.profile.location = location;
-	}
+	const [location, locationErr] = it(params.location).expect.string().validate(isValidLocation).qed();
+	if (locationErr) return rej('invalid location param');
+	if (location !== undefined) user.location = location;
 
 	// Get 'birthday' parameter
-	const birthday = params.birthday;
-	if (birthday != null) {
-		if (!isValidBirthday(birthday)) {
-			return rej('invalid birthday');
-		}
-
-		user.profile.birthday = birthday;
-	} else {
-		user.profile.birthday = null;
-	}
+	const [birthday, birthdayErr] = it(params.birthday).expect.string().validate(isValidBirthday).qed();
+	if (birthdayErr) return rej('invalid birthday param');
+	if (birthday !== undefined) user.birthday = birthday;
 
 	// Get 'avatar_id' parameter
-	const avatar = params.avatar_id;
-	if (avatar !== undefined && avatar !== null) {
-		user.avatar_id = new mongo.ObjectID(avatar);
-	}
+	const [avatarId, avatarIdErr] = it(params.avatar_id).expect.id().notNull().qed();
+	if (avatarIdErr) return rej('invalid avatar_id param');
+	if (avatarId) user.avatar_id = avatarId;
 
 	// Get 'banner_id' parameter
-	const banner = params.banner_id;
-	if (banner !== undefined && banner !== null) {
-		user.banner_id = new mongo.ObjectID(banner);
-	}
+	const [bannerId, bannerIdErr] = it(params.banner_id).expect.id().notNull().qed();
+	if (bannerIdErr) return rej('invalid banner_id param');
+	if (bannerId) user.banner_id = bannerId;
 
 	await User.update(user._id, {
 		$set: {
