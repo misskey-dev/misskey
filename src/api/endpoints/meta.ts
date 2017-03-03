@@ -5,6 +5,7 @@
  */
 import prominence from 'prominence';
 import git from 'git-last-commit';
+import config from '../../conf';
 
 /**
  * @swagger
