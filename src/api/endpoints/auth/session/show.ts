@@ -3,6 +3,7 @@
 /**
  * Module dependencies
  */
+import it from '../../../it';
 import AuthSess from '../../../models/auth-session';
 import serialize from '../../../serializers/auth-session';
 
@@ -57,10 +58,8 @@ module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'token' parameter
-	const token = params.token;
-	if (token == null) {
-		return rej('token is required');
-	}
+	const [token, tokenErr] = it(params.token).expect.string().required().qed();
+	if (tokenErr) return rej('invalid token param');
 
 	// Lookup session
 	const session = await AuthSess.findOne({

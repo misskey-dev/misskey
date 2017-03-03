@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import * as uuid from 'uuid';
+import it from '../../../it';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 import config from '../../../../conf';
@@ -49,10 +50,8 @@ module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'app_secret' parameter
-	const appSecret = params.app_secret;
-	if (appSecret == null) {
-		return rej('app_secret is required');
-	}
+	const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().qed();
+	if (appSecretErr) return rej('invalid app_secret param');
 
 	// Lookup app
 	const app = await App.findOne({

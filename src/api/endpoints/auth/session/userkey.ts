@@ -3,6 +3,7 @@
 /**
  * Module dependencies
  */
+import it from '../../../it';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 import AccessToken from '../../../models/access-token';
@@ -53,10 +54,8 @@ import serialize from '../../../serializers/user';
 module.exports = (params) =>
 	new Promise(async (res, rej) => {
 		// Get 'app_secret' parameter
-		const appSecret = params.app_secret;
-		if (appSecret == null) {
-			return rej('app_secret is required');
-		}
+		const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().qed();
+		if (appSecretErr) return rej('invalid app_secret param');
 
 		// Lookup app
 		const app = await App.findOne({
@@ -68,10 +67,8 @@ module.exports = (params) =>
 		}
 
 		// Get 'token' parameter
-		const token = params.token;
-		if (token == null) {
-			return rej('token is required');
-		}
+		const [token, tokenErr] = it(params.token).expect.string().required().qed();
+		if (tokenErr) return rej('invalid token param');
 
 		// Fetch token
 		const session = await AuthSess
