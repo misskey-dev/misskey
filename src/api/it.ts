@@ -26,6 +26,30 @@
  * const [val, err] = it(x).expect.string().required().qed();
  */
 
+/**
+ * null と undefined の扱い
+ *
+ * 「値がnullまたはundefined」な状態を「値が空である」と表現しています。
+ * 値が空である場合、バリデータやその他の処理メソッドは呼ばれません。
+ *
+ * 内部的にはnullとundefinedを次のように区別しています:
+ * null ... 値が「無い」と明示されている
+ * undefined ... 値を指定していない
+ *
+ * 例えばアカウントのプロフィールを更新するAPIに次のデータを含むリクエストが来たとします:
+ * { name: 'Alice' }
+ * アカウントには本来、他にも birthday といったフィールドがありますが、
+ * このリクエストではそれに触れず、ただ単に name フィールドを更新することを要求しています。
+ * ここで、このリクエストにおける birthday フィールドは undefined なわけですが、
+ * それはnull(=birthdayを未設定にしたい)とは違うものです。
+ * undefined も null も区別しないとしたら、触れていないフィールドまでリセットされることになってしまいます。
+ * ですので、undefined と null は区別しています。
+ *
+ * 値が空であってほしくない場合は .require() を、
+ * 値を必ず指定しなければならない場合(値を「無し」に指定することは許可)は .notUndefined() を、
+ * 値の指定をしなくてもいいけど、する場合は「無し」は許可しない場合は .notNull() を使えます。
+ */
+
 import * as mongo from 'mongodb';
 import hasDuplicates from '../common/has-duplicates';
 
