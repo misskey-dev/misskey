@@ -31,10 +31,10 @@
 /**
  * null と undefined の扱い
  *
- * 「値がnullまたはundefined」な状態を「値が空である」と表現しています。
+ * 「値が null または undefined」な状態を「値が空である」と表現しています。
  * 値が空である場合、バリデータやその他の処理メソッドは呼ばれません。
  *
- * 内部的にはnullとundefinedを次のように区別しています:
+ * 内部的には null と undefined を次のように区別しています:
  * null ... 値が「無い」と明示されている
  * undefined ... 値を指定していない
  *
@@ -47,9 +47,9 @@
  * undefined も null も区別しないとしたら、触れていないフィールドまでリセットされることになってしまいます。
  * ですので、undefined と null は区別しています。
  *
- * 値が空であってほしくない場合は .require() を、
- * 値を必ず指定しなければならない場合(値を「無し」に指定することは許可)は .notUndefined() を、
- * 値の指定をしなくてもいいけど、する場合は「無し」は許可しない場合は .notNull() を使えます。
+ * 明示的に null を許可しない限り、null はエラーになります。
+ * null を許可する場合は nullable をプリフィックスします:
+ * const [val, err] = it(x).must.be.a.nullable.string().required().qed();
  */
 
 import * as mongo from 'mongodb';
@@ -104,30 +104,10 @@ class QueryCore implements Query {
 	}
 
 	/**
-	 * このインスタンスの値が空のときにエラーにします
+	 * このインスタンスの値が指定されていない(=undefined)ときにエラーにします
 	 */
 	required() {
-		if (this.error === null && this.isEmpty) {
-			this.error = new Error('required');
-		}
-		return this;
-	}
-
-	/**
-	 * このインスタンスの値が設定されていない(=undefined)場合エラーにします
-	 */
-	notUndefined() {
 		if (this.error === null && this.isUndefined) {
-			this.error = new Error('required');
-		}
-		return this;
-	}
-
-	/**
-	 * このインスタンスの値が null のときにエラーにします
-	 */
-	notNull() {
-		if (this.error === null && this.isNull) {
 			this.error = new Error('required');
 		}
 		return this;
