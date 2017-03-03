@@ -43,12 +43,12 @@ module.exports = async (params, user, _, isSecure) =>
 	if (birthday !== undefined) user.birthday = birthday;
 
 	// Get 'avatar_id' parameter
-	const [avatarId, avatarIdErr] = it(params.avatar_id).expect.id().notNull().qed();
+	const [avatarId, avatarIdErr] = it(params.avatar_id).expect.id().qed();
 	if (avatarIdErr) return rej('invalid avatar_id param');
 	if (avatarId) user.avatar_id = avatarId;
 
 	// Get 'banner_id' parameter
-	const [bannerId, bannerIdErr] = it(params.banner_id).expect.id().notNull().qed();
+	const [bannerId, bannerIdErr] = it(params.banner_id).expect.id().qed();
 	if (bannerIdErr) return rej('invalid banner_id param');
 	if (bannerId) user.banner_id = bannerId;
 
