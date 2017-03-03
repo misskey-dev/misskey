@@ -53,8 +53,16 @@ class QueryCore implements Query {
 		this.error = null;
 	}
 
+	get isUndefined() {
+		return this.value === undefined;
+	}
+
+	get isNull() {
+		return this.value === null;
+	}
+
 	get isEmpty() {
-		return this.value === undefined || this.value === null;
+		return this.isUndefined || this.isNull;
 	}
 
 	/**
@@ -65,7 +73,7 @@ class QueryCore implements Query {
 	}
 
 	/**
-	 * このインスタンスの値が空の場合エラーにします
+	 * このインスタンスの値が空のときにエラーにします
 	 */
 	required() {
 		if (this.error === null && this.isEmpty) {
@@ -75,10 +83,30 @@ class QueryCore implements Query {
 	}
 
 	/**
-	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
+	 * このインスタンスの値が設定されていない(=undefined)場合エラーにします
+	 */
+	notUndefined() {
+		if (this.error === null && this.isUndefined) {
+			this.error = new Error('required');
+		}
+		return this;
+	}
+
+	/**
+	 * このインスタンスの値が null のときにエラーにします
+	 */
+	notNull() {
+		if (this.error === null && this.isNull) {
+			this.error = new Error('required');
+		}
+		return this;
+	}
+
+	/**
+	 * このインスタンスの値が設定されていない(=undefined)ときにデフォルトで設定する値を設定します
 	 */
 	default(value: any) {
-		if (this.isEmpty) {
+		if (this.isUndefined) {
 			this.value = value;
 		}
 		return this;
@@ -117,13 +145,6 @@ class BooleanQuery extends QueryCore {
 		if (!this.isEmpty && typeof value != 'boolean') {
 			this.error = new Error('must-be-a-boolean');
 		}
-	}
-
-	/**
-	 * このインスタンスの値が undefined または　null の場合エラーにします
-	 */
-	required() {
-		return super.required();
 	}
 
 	/**
@@ -199,13 +220,6 @@ class NumberQuery extends QueryCore {
 	}
 
 	/**
-	 * このインスタンスの値が undefined または　null の場合エラーにします
-	 */
-	required() {
-		return super.required();
-	}
-
-	/**
 	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
 	 */
 	default(value: number) {
@@ -257,13 +271,6 @@ class StringQuery extends QueryCore {
 		if (this.shouldSkip) return this;
 		this.value = this.value.trim();
 		return this;
-	}
-
-	/**
-	 * このインスタンスの値が undefined または　null の場合エラーにします
-	 */
-	required() {
-		return super.required();
 	}
 
 	/**
@@ -362,13 +369,6 @@ class ArrayQuery extends QueryCore {
 	}
 
 	/**
-	 * このインスタンスの値が undefined または　null の場合エラーにします
-	 */
-	required() {
-		return super.required();
-	}
-
-	/**
 	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
 	 */
 	default(value: any[]) {
@@ -404,13 +404,6 @@ class IdQuery extends QueryCore {
 	}
 
 	/**
-	 * このインスタンスの値が undefined または　null の場合エラーにします
-	 */
-	required() {
-		return super.required();
-	}
-
-	/**
 	 * このインスタンスの値が設定されていないときにデフォルトで設定する値を設定します
 	 */
 	default(value: mongo.ObjectID) {
@@ -443,13 +436,6 @@ class ObjectQuery extends QueryCore {
 		if (!this.isEmpty && typeof value != 'object') {
 			this.error = new Error('must-be-an-object');
 		}
-	}
-
-	/**
-	 * このインスタンスの値が undefined または　null の場合エラーにします
-	 */
-	required() {
-		return super.required();
 	}
 
 	/**

@@ -23,9 +23,9 @@ module.exports = async (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'name' parameter
-	const [name, nameErr] = it(params.name).expect.string().validate(isValidName).qed();
+	const [name, nameErr] = it(params.name).expect.string().notNull().validate(isValidName).qed();
 	if (nameErr) return rej('invalid name param');
-	user.name = name;
+	if (name) user.name = name;
 
 	// Get 'description' parameter
 	const description = params.description;
