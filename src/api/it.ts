@@ -74,9 +74,14 @@ class QueryCore implements Query {
 	value: any;
 	error: Error;
 
-	constructor(value: any) {
-		this.value = value;
-		this.error = null;
+	constructor(value: any, nullable: boolean = false) {
+		if (value === null && !nullable) {
+			this.value = undefined;
+			this.error = new Error('must-be-not-a-null');
+		} else {
+			this.value = value;
+			this.error = null;
+		}
 	}
 
 	get isUndefined() {
@@ -166,8 +171,8 @@ class BooleanQuery extends QueryCore {
 	value: boolean;
 	error: Error;
 
-	constructor(value) {
-		super(value);
+	constructor(value: any, nullable: boolean = false) {
+		super(value, nullable);
 		if (!this.isEmpty && typeof value != 'boolean') {
 			this.error = new Error('must-be-a-boolean');
 		}
@@ -201,8 +206,8 @@ class NumberQuery extends QueryCore {
 	value: number;
 	error: Error;
 
-	constructor(value) {
-		super(value);
+	constructor(value: any, nullable: boolean = false) {
+		super(value, nullable);
 		if (!this.isEmpty && !Number.isFinite(value)) {
 			this.error = new Error('must-be-a-number');
 		}
@@ -273,8 +278,8 @@ class StringQuery extends QueryCore {
 	value: string;
 	error: Error;
 
-	constructor(value) {
-		super(value);
+	constructor(value: any, nullable: boolean = false) {
+		super(value, nullable);
 		if (!this.isEmpty && typeof value != 'string') {
 			this.error = new Error('must-be-a-string');
 		}
@@ -351,8 +356,8 @@ class ArrayQuery extends QueryCore {
 	value: any[];
 	error: Error;
 
-	constructor(value) {
-		super(value);
+	constructor(value: any, nullable: boolean = false) {
+		super(value, nullable);
 		if (!this.isEmpty && !Array.isArray(value)) {
 			this.error = new Error('must-be-an-array');
 		}
@@ -422,8 +427,8 @@ class IdQuery extends QueryCore {
 	value: mongo.ObjectID;
 	error: Error;
 
-	constructor(value) {
-		super(value);
+	constructor(value: any, nullable: boolean = false) {
+		super(value, nullable);
 		if (!this.isEmpty && (typeof value != 'string' || !mongo.ObjectID.isValid(value))) {
 			this.error = new Error('must-be-an-id');
 		}
@@ -457,8 +462,8 @@ class ObjectQuery extends QueryCore {
 	value: any;
 	error: Error;
 
-	constructor(value) {
-		super(value);
+	constructor(value: any, nullable: boolean = false) {
+		super(value, nullable);
 		if (!this.isEmpty && typeof value != 'object') {
 			this.error = new Error('must-be-an-object');
 		}
@@ -495,6 +500,14 @@ type It = {
 				string: () => StringQuery;
 				number: () => NumberQuery;
 				boolean: () => BooleanQuery;
+				nullable: {
+					string: () => StringQuery;
+					number: () => NumberQuery;
+					boolean: () => BooleanQuery;
+					id: () => IdQuery;
+					array: () => ArrayQuery;
+					object: () => ObjectQuery;
+				};
 			};
 			an: {
 				id: () => IdQuery;
@@ -510,6 +523,14 @@ type It = {
 		id: () => IdQuery;
 		array: () => ArrayQuery;
 		object: () => ObjectQuery;
+		nullable: {
+			string: () => StringQuery;
+			number: () => NumberQuery;
+			boolean: () => BooleanQuery;
+			id: () => IdQuery;
+			array: () => ArrayQuery;
+			object: () => ObjectQuery;
+		};
 	};
 };
 
@@ -519,7 +540,15 @@ const it = (value: any) => ({
 			a: {
 				string: () => new StringQuery(value),
 				number: () => new NumberQuery(value),
-				boolean: () => new BooleanQuery(value)
+				boolean: () => new BooleanQuery(value),
+				nullable: {
+					string: () => new StringQuery(value, true),
+					number: () => new NumberQuery(value, true),
+					boolean: () => new BooleanQuery(value, true),
+					id: () => new IdQuery(value, true),
+					array: () => new ArrayQuery(value, true),
+					object: () => new ObjectQuery(value, true)
+				}
 			},
 			an: {
 				id: () => new IdQuery(value),
@@ -534,7 +563,15 @@ const it = (value: any) => ({
 		boolean: () => new BooleanQuery(value),
 		id: () => new IdQuery(value),
 		array: () => new ArrayQuery(value),
-		object: () => new ObjectQuery(value)
+		object: () => new ObjectQuery(value),
+		nullable: {
+			string: () => new StringQuery(value, true),
+			number: () => new NumberQuery(value, true),
+			boolean: () => new BooleanQuery(value, true),
+			id: () => new IdQuery(value, true),
+			array: () => new ArrayQuery(value, true),
+			object: () => new ObjectQuery(value, true)
+		}
 	}
 });
 

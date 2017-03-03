@@ -23,22 +23,22 @@ module.exports = async (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'name' parameter
-	const [name, nameErr] = it(params.name).expect.string().notNull().validate(isValidName).qed();
+	const [name, nameErr] = it(params.name).expect.string().validate(isValidName).qed();
 	if (nameErr) return rej('invalid name param');
 	if (name) user.name = name;
 
 	// Get 'description' parameter
-	const [description, descriptionErr] = it(params.description).expect.string().validate(isValidDescription).qed();
+	const [description, descriptionErr] = it(params.description).expect.nullable.string().validate(isValidDescription).qed();
 	if (descriptionErr) return rej('invalid description param');
 	if (description !== undefined) user.description = description;
 
 	// Get 'location' parameter
-	const [location, locationErr] = it(params.location).expect.string().validate(isValidLocation).qed();
+	const [location, locationErr] = it(params.location).expect.nullable.string().validate(isValidLocation).qed();
 	if (locationErr) return rej('invalid location param');
 	if (location !== undefined) user.location = location;
 
 	// Get 'birthday' parameter
-	const [birthday, birthdayErr] = it(params.birthday).expect.string().validate(isValidBirthday).qed();
+	const [birthday, birthdayErr] = it(params.birthday).expect.nullable.string().validate(isValidBirthday).qed();
 	if (birthdayErr) return rej('invalid birthday param');
 	if (birthday !== undefined) user.birthday = birthday;
 
