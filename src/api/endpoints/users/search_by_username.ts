@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -15,9 +13,7 @@ import serialize from '../../serializers/user';
  * @param {any} me
  * @return {Promise<any>}
  */
-module.exports = (params, me) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
 	const [query, queryError] = it(params.query).expect.string().required().trim().validate(validateUsername).qed();
 	if (queryError) return rej('invalid query param');

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -12,9 +10,7 @@ import Message from '../../models/messaging-message';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	const count = await Message
 		.count({
 			recipient_id: user._id,

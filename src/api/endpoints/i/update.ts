@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -19,9 +17,7 @@ import config from '../../../conf';
  * @param {boolean} isSecure
  * @return {Promise<any>}
  */
-module.exports = async (params, user, _, isSecure) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = async (params, user, _, isSecure) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = it(params.name).expect.string().validate(isValidName).qed();
 	if (nameErr) return rej('invalid name param');

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -40,13 +38,12 @@ import config from '../../conf';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params) =>
-	new Promise(async (res, rej) => {
-		const commit = await prominence(git).getLastCommit();
+module.exports = (params) => new Promise(async (res, rej) => {
+	const commit = await prominence(git).getLastCommit();
 
-		res({
-			maintainer: config.maintainer,
-			commit: commit.shortHash,
-			secure: config.https.enable
-		});
+	res({
+		maintainer: config.maintainer,
+		commit: commit.shortHash,
+		secure: config.https.enable
 	});
+});

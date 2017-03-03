@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -13,9 +11,7 @@ import Like from '../../../models/like';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
 	const [userId, userIdErr] = it(params.user_id).expect.id().required().qed();
 	if (userIdErr) return rej('invalid user_id param');
@@ -67,7 +63,7 @@ module.exports = (params) =>
 		)[0];
 
 		if (data) {
-			graph.push(data)
+			graph.push(data);
 		} else {
 			graph.push({
 				date: {
@@ -76,8 +72,8 @@ module.exports = (params) =>
 					day: day.getDate()
 				},
 				count: 0
-			})
-		};
+			});
+		}
 	}
 
 	res(graph);

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -46,9 +44,7 @@ import serialize from '../../serializers/app';
  * @param {any} isSecure
  * @return {Promise<any>}
  */
-module.exports = (params, user, _, isSecure) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => {
 	// Get 'app_id' parameter
 	const [appId, appIdErr] = it(params.app_id, 'id');
 	if (appIdErr) return rej('invalid app_id param');

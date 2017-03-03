@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -17,9 +15,7 @@ const escapeRegexp = require('escape-regexp');
  * @param {any} me
  * @return {Promise<any>}
  */
-module.exports = (params, me) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
 	const [query, queryError] = it(params.query).expect.string().required().trim().validate(x => x != '').qed();
 	if (queryError) return rej('invalid query param');

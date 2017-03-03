@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -17,9 +15,7 @@ import serializeUser from '../../serializers/user';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'user_id' parameter

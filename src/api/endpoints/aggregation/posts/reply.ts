@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -12,9 +10,7 @@ import Post from '../../../models/post';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
 	const [postId, postIdErr] = it(params.post_id).expect.id().required().qed();
 	if (postIdErr) return rej('invalid post_id param');
@@ -62,7 +58,7 @@ module.exports = (params) =>
 		)[0];
 
 		if (data) {
-			graph.push(data)
+			graph.push(data);
 		} else {
 			graph.push({
 				date: {
@@ -71,8 +67,8 @@ module.exports = (params) =>
 					day: day.getDate()
 				},
 				count: 0
-			})
-		};
+			});
+		}
 	}
 
 	res(graph);

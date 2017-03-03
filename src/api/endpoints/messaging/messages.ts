@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -17,9 +15,7 @@ import { publishMessagingStream } from '../../event';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
 	const [recipientId, recipientIdErr] = it(params.user_id).expect.id().required().qed();
 	if (recipientIdErr) return rej('invalid user_id param');

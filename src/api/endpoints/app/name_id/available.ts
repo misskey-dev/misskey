@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -42,9 +40,7 @@ import { isValidNameId } from '../../../models/app';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = async (params) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = async (params) => new Promise(async (res, rej) => {
 	// Get 'name_id' parameter
 	const [nameId, nameIdErr] = it(params.name_id).expect.string().required().validate(isValidNameId).qed();
 	if (nameIdErr) return rej('invalid name_id param');

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -14,9 +12,7 @@ import serialize from '../../../serializers/drive-file';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = it(params.name).expect.string().required().qed();
 	if (nameErr) return rej('invalid name param');

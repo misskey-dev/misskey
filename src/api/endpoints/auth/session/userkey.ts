@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -51,62 +49,61 @@ import serialize from '../../../serializers/user';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params) =>
-	new Promise(async (res, rej) => {
-		// Get 'app_secret' parameter
-		const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().qed();
-		if (appSecretErr) return rej('invalid app_secret param');
+module.exports = (params) => new Promise(async (res, rej) => {
+	// Get 'app_secret' parameter
+	const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().qed();
+	if (appSecretErr) return rej('invalid app_secret param');
 
-		// Lookup app
-		const app = await App.findOne({
-			secret: appSecret
-		});
-
-		if (app == null) {
-			return rej('app not found');
-		}
-
-		// Get 'token' parameter
-		const [token, tokenErr] = it(params.token).expect.string().required().qed();
-		if (tokenErr) return rej('invalid token param');
-
-		// Fetch token
-		const session = await AuthSess
-			.findOne({
-				token: token,
-				app_id: app._id
-			});
-
-		if (session === null) {
-			return rej('session not found');
-		}
-
-		if (session.user_id == null) {
-			return rej('this session is not allowed yet');
-		}
-
-		// Lookup access token
-		const accessToken = await AccessToken.findOne({
-			app_id: app._id,
-			user_id: session.user_id
-		});
-
-		// Delete session
-
-		/* https://github.com/Automattic/monk/issues/178
-		AuthSess.deleteOne({
-			_id: session._id
-		});
-		*/
-		AuthSess.remove({
-			_id: session._id
-		});
-
-		// Response
-		res({
-			access_token: accessToken.token,
-			user: await serialize(session.user_id, null, {
-				detail: true
-			})
-		});
+	// Lookup app
+	const app = await App.findOne({
+		secret: appSecret
 	});
+
+	if (app == null) {
+		return rej('app not found');
+	}
+
+	// Get 'token' parameter
+	const [token, tokenErr] = it(params.token).expect.string().required().qed();
+	if (tokenErr) return rej('invalid token param');
+
+	// Fetch token
+	const session = await AuthSess
+		.findOne({
+			token: token,
+			app_id: app._id
+		});
+
+	if (session === null) {
+		return rej('session not found');
+	}
+
+	if (session.user_id == null) {
+		return rej('this session is not allowed yet');
+	}
+
+	// Lookup access token
+	const accessToken = await AccessToken.findOne({
+		app_id: app._id,
+		user_id: session.user_id
+	});
+
+	// Delete session
+
+	/* https://github.com/Automattic/monk/issues/178
+	AuthSess.deleteOne({
+		_id: session._id
+	});
+	*/
+	AuthSess.remove({
+		_id: session._id
+	});
+
+	// Response
+	res({
+		access_token: accessToken.token,
+		user: await serialize(session.user_id, null, {
+			detail: true
+		})
+	});
+});

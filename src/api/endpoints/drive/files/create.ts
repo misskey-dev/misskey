@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -17,15 +15,13 @@ import create from '../../../common/add-file-to-drive';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (file, params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (file, params, user) => new Promise(async (res, rej) => {
 	if (file == null) {
 		return rej('file is required');
 	}
 
 	const buffer = fs.readFileSync(file.path);
-	fs.unlink(file.path, (err) => { if (err) console.log(err) });
+	fs.unlink(file.path, (err) => { if (err) console.log(err); });
 
 	// Get 'name' parameter
 	let name = file.originalname;

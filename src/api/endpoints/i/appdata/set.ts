@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -17,9 +15,7 @@ import event from '../../../event';
  * @param {Boolean} isSecure
  * @return {Promise<any>}
  */
-module.exports = (params, user, app, isSecure) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) => {
 	const data = params.data;
 	if (data == null) {
 		return rej('data is required');

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -14,9 +12,7 @@ import Appdata from '../../../models/appdata';
  * @param {Boolean} isSecure
  * @return {Promise<any>}
  */
-module.exports = (params, user, app, isSecure) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) => {
 	// Get 'key' parameter
 	let key = params.key;
 	if (key === undefined) {

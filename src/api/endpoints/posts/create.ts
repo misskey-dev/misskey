@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -23,9 +21,7 @@ import config from '../../../conf';
  * @param {any} app
  * @return {Promise<any>}
  */
-module.exports = (params, user, app) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
 	const [text, textErr] = it(params.text).must.be.a.string().validate(isValidText).qed();
 	if (textErr) return rej('invalid text');

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -46,9 +44,7 @@ import config from '../../../../conf';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'app_secret' parameter
 	const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().qed();
 	if (appSecretErr) return rej('invalid app_secret param');

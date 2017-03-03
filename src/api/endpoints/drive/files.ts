@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -15,9 +13,7 @@ import serialize from '../../serializers/drive-file';
  * @param {any} app
  * @return {Promise<any>}
  */
-module.exports = (params, user, app) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
 	if (limitErr) return rej('invalid limit param');

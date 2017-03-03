@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -13,9 +11,7 @@ import Like from '../../../models/like';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
 	const [postId, postIdErr] = it(params.post_id).expect.id().required().qed();
 	if (postIdErr) return rej('invalid post_id param');

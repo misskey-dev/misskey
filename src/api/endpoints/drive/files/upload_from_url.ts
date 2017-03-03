@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -17,9 +15,7 @@ import create from '../../../common/add-file-to-drive';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'url' parameter
 	// TODO: Validate this url
 	const [url, urlErr] = it(params.url).expect.string().required().qed();

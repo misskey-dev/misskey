@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -40,9 +38,7 @@ import AccessToken from '../../models/access-token';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
 	const [token, tokenErr] = it(params.token).expect.string().required().qed();
 	if (tokenErr) return rej('invalid token param');

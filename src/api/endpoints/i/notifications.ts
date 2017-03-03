@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -15,9 +13,7 @@ import getFriends from '../../common/get-friends';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following, followingError] =
 		it(params.following).expect.boolean().default(false).qed();

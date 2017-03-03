@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -15,9 +13,7 @@ import serialize from '../../serializers/user';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
 	const [postId, postIdErr] = it(params.post_id, 'id', true);
 	if (postIdErr) return rej('invalid post_id param');

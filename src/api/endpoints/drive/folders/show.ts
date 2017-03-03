@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Module dependencies
  */
@@ -14,9 +12,7 @@ import serialize from '../../../serializers/drive-folder';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) =>
-	new Promise(async (res, rej) =>
-{
+module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'folder_id' parameter
 	const [folderId, folderIdErr] = it(params.folder_id).expect.id().required().qed();
 	if (folderIdErr) return rej('invalid folder_id param');
