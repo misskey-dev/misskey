@@ -25,13 +25,13 @@ module.exports = (params, me) =>
 	const [username, usernameErr] = it(params.username, 'string');
 	if (usernameErr) return rej('invalid username param');
 
-	if (userId === null && username === null) {
+	if (userId === undefined && username === undefined) {
 		return rej('user_id or username is required');
 	}
 
-	const q = userId != null
+	const q = userId !== undefined
 		? { _id: userId }
-		: { username_lower: username.toLowerCase() } ;
+		: { username_lower: username.toLowerCase() };
 
 	// Lookup user
 	const user = await User.findOne(q, {

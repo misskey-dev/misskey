@@ -57,12 +57,12 @@ module.exports = (params, user, _, isSecure) =>
 	const [nameId, nameIdErr] = it(params.name_id, 'string');
 	if (nameIdErr) return rej('invalid name_id param');
 
-	if (appId === null && nameId === null) {
+	if (appId === undefined && nameId === undefined) {
 		return rej('app_id or name_id is required');
 	}
 
 	// Lookup app
-	const app = appId !== null
+	const app = appId !== undefined
 		? await App.findOne({ _id: appId })
 		: await App.findOne({ name_id_lower: nameId.toLowerCase() });
 

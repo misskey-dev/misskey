@@ -35,7 +35,7 @@ module.exports = (params, user, app) =>
 	if (mediaIdsErr) return rej('invalid media_ids');
 
 	let files = [];
-	if (mediaIds !== null) {
+	if (mediaIds !== undefined) {
 		// Fetch files
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
@@ -67,7 +67,7 @@ module.exports = (params, user, app) =>
 	if (repostIdErr) return rej('invalid repost_id');
 
 	let repost = null;
-	if (repostId !== null) {
+	if (repostId !== undefined) {
 		// Fetch repost to post
 		repost = await Post.findOne({
 			_id: repostId
@@ -109,7 +109,7 @@ module.exports = (params, user, app) =>
 	if (inReplyToPostIdErr) return rej('invalid in_reply_to_post_id');
 
 	let inReplyToPost = null;
-	if (inReplyToPostId !== null) {
+	if (inReplyToPostId !== undefined) {
 		// Fetch reply
 		inReplyToPost = await Post.findOne({
 			_id: inReplyToPostId
@@ -130,7 +130,7 @@ module.exports = (params, user, app) =>
 	if (pollErr) return rej('invalid poll');
 
 	let poll = null;
-	if (_poll !== null) {
+	if (_poll !== undefined) {
 		const [pollChoices, pollChoicesErr] =
 			it(params.poll).expect.array()
 				.unique()
