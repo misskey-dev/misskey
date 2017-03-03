@@ -3,12 +3,12 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
-import User from '../../../models/user';
-import Following from '../../../models/following';
+import it from '../../../it';
+import Post from '../../../models/post';
+import Like from '../../../models/like';
 
 /**
- * Aggregate following of a user
+ * Aggregate likes of a post
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -16,38 +16,31 @@ import Following from '../../../models/following';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'user_id' parameter
-	const userId = params.user_id;
-	if (userId === undefined || userId === null) {
-		return rej('user_id is required');
-	}
+	// Get 'post_id' parameter
+	const [postId, postIdErr] = it(params.post_id).expect.id().required().qed();
+	if (postIdErr) return rej('invalid post_id param');
 
-	// Lookup user
-	const user = await User.findOne({
-		_id: new mongo.ObjectID(userId)
-	}, {
-		fields: {
-			_id: true
-		}
+	// Lookup post
+	const post = await Post.findOne({
+		_id: postId
 	});
 
-	if (user === null) {
-		return rej('user not found');
+	if (post === null) {
+		return rej('post not found');
 	}
 
 	const startTime = new Date(new Date().setMonth(new Date().getMonth() - 1));
 
-	const following = await Following
+	const likes = await Like
 		.find({
-			follower_id: user._id,
+			post_id: post._id,
 			$or: [
 				{ deleted_at: { $exists: false } },
 				{ deleted_at: { $gt: startTime } }
 			]
 		}, {
 			_id: false,
-			follower_id: false,
-			followee_id: false
+			post_id: false
 		}, {
 			sort: { created_at: -1 }
 		});
@@ -60,9 +53,10 @@ module.exports = (params) =>
 		day = new Date(day.setSeconds(59));
 		day = new Date(day.setMinutes(59));
 		day = new Date(day.setHours(23));
+		//day = day.getTime();
 
-		const count = following.filter(f =>
-			f.created_at < day && (f.deleted_at == null || f.deleted_at > day)
+		const count = likes.filter(l =>
+			l.created_at < day && (l.deleted_at == null || l.deleted_at > day)
 		).length;
 
 		graph.push({

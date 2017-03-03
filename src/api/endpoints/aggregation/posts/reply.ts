@@ -3,11 +3,11 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import Post from '../../../models/post';
 
 /**
- * Aggregate repost of a post
+ * Aggregate reply of a post
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -16,14 +16,12 @@ module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'post_id' parameter
-	const postId = params.post_id;
-	if (postId === undefined || postId === null) {
-		return rej('post_id is required');
-	}
+	const [postId, postIdErr] = it(params.post_id).expect.id().required().qed();
+	if (postIdErr) return rej('invalid post_id param');
 
 	// Lookup post
 	const post = await Post.findOne({
-		_id: new mongo.ObjectID(postId)
+		_id: postId
 	});
 
 	if (post === null) {
@@ -32,7 +30,7 @@ module.exports = (params) =>
 
 	const datas = await Post
 		.aggregate([
-			{ $match: { repost_id: post._id } },
+			{ $match: { reply_to: post._id } },
 			{ $project: {
 				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},

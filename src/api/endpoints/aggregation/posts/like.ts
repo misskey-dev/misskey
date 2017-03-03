@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import Post from '../../../models/post';
 import Like from '../../../models/like';
 
@@ -17,14 +17,12 @@ module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'post_id' parameter
-	const postId = params.post_id;
-	if (postId === undefined || postId === null) {
-		return rej('post_id is required');
-	}
+	const [postId, postIdErr] = it(params.post_id).expect.id().required().qed();
+	if (postIdErr) return rej('invalid post_id param');
 
 	// Lookup post
 	const post = await Post.findOne({
-		_id: new mongo.ObjectID(postId)
+		_id: postId
 	});
 
 	if (post === null) {

@@ -3,12 +3,12 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
-import Post from '../../../models/post';
-import Like from '../../../models/like';
+import it from '../../../it';
+import User from '../../../models/user';
+import Following from '../../../models/following';
 
 /**
- * Aggregate likes of a post
+ * Aggregate followers of a user
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -16,33 +16,36 @@ import Like from '../../../models/like';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'post_id' parameter
-	const postId = params.post_id;
-	if (postId === undefined || postId === null) {
-		return rej('post_id is required');
-	}
+	// Get 'user_id' parameter
+	const [userId, userIdErr] = it(params.user_id).expect.id().required().qed();
+	if (userIdErr) return rej('invalid user_id param');
 
-	// Lookup post
-	const post = await Post.findOne({
-		_id: new mongo.ObjectID(postId)
+	// Lookup user
+	const user = await User.findOne({
+		_id: userId
+	}, {
+		fields: {
+			_id: true
+		}
 	});
 
-	if (post === null) {
-		return rej('post not found');
+	if (user === null) {
+		return rej('user not found');
 	}
 
 	const startTime = new Date(new Date().setMonth(new Date().getMonth() - 1));
 
-	const likes = await Like
+	const following = await Following
 		.find({
-			post_id: post._id,
+			followee_id: user._id,
 			$or: [
 				{ deleted_at: { $exists: false } },
 				{ deleted_at: { $gt: startTime } }
 			]
 		}, {
 			_id: false,
-			post_id: false
+			follower_id: false,
+			followee_id: false
 		}, {
 			sort: { created_at: -1 }
 		});
@@ -55,10 +58,10 @@ module.exports = (params) =>
 		day = new Date(day.setSeconds(59));
 		day = new Date(day.setMinutes(59));
 		day = new Date(day.setHours(23));
-		//day = day.getTime();
+		// day = day.getTime();
 
-		const count = likes.filter(l =>
-			l.created_at < day && (l.deleted_at == null || l.deleted_at > day)
+		const count = following.filter(f =>
+			f.created_at < day && (f.deleted_at == null || f.deleted_at > day)
 		).length;
 
 		graph.push({

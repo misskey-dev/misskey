@@ -3,12 +3,12 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
+import it from '../../../it';
 import User from '../../../models/user';
 import Following from '../../../models/following';
 
 /**
- * Aggregate followers of a user
+ * Aggregate following of a user
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -17,14 +17,12 @@ module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'user_id' parameter
-	const userId = params.user_id;
-	if (userId === undefined || userId === null) {
-		return rej('user_id is required');
-	}
+	const [userId, userIdErr] = it(params.user_id).expect.id().required().qed();
+	if (userIdErr) return rej('invalid user_id param');
 
 	// Lookup user
 	const user = await User.findOne({
-		_id: new mongo.ObjectID(userId)
+		_id: userId
 	}, {
 		fields: {
 			_id: true
@@ -39,7 +37,7 @@ module.exports = (params) =>
 
 	const following = await Following
 		.find({
-			followee_id: user._id,
+			follower_id: user._id,
 			$or: [
 				{ deleted_at: { $exists: false } },
 				{ deleted_at: { $gt: startTime } }
@@ -60,7 +58,6 @@ module.exports = (params) =>
 		day = new Date(day.setSeconds(59));
 		day = new Date(day.setMinutes(59));
 		day = new Date(day.setHours(23));
-		// day = day.getTime();
 
 		const count = following.filter(f =>
 			f.created_at < day && (f.deleted_at == null || f.deleted_at > day)
