@@ -57,22 +57,12 @@ import hasDuplicates from '../common/has-duplicates';
 
 type Validator<T> = (value: T) => boolean | Error;
 
-interface Query {
-	/**
-	 * qedはQ.E.D.でもあり'QueryEnD'の略でもある
-	 */
-	qed: () => [any, Error];
-
-	required: () => Query;
-
-	default: (value: any) => Query;
-
-	validate: (validator: Validator<any>) => Query;
-}
-
-class QueryCore implements Query {
-	value: any;
-	error: Error;
+/**
+ * クエリベース
+ */
+abstract class Query {
+	protected value: any;
+	protected error: Error;
 
 	constructor(value: any, nullable: boolean = false) {
 		if (value === null && !nullable) {
@@ -84,22 +74,22 @@ class QueryCore implements Query {
 		}
 	}
 
-	get isUndefined() {
+	protected get isUndefined() {
 		return this.value === undefined;
 	}
 
-	get isNull() {
+	protected get isNull() {
 		return this.value === null;
 	}
 
-	get isEmpty() {
+	protected get isEmpty() {
 		return this.isUndefined || this.isNull;
 	}
 
 	/**
 	 * このインスタンスの値が空、またはエラーが存在しているなどして、処理をスキップするべきか否か
 	 */
-	get shouldSkip() {
+	protected get shouldSkip() {
 		return this.error !== null || this.isEmpty;
 	}
 
@@ -125,6 +115,7 @@ class QueryCore implements Query {
 
 	/**
 	 * このインスタンスの値およびエラーを取得します
+	 * *qedはQ.E.D.でもあり'QueryEnD'の略でもある
 	 */
 	qed(): [any, Error] {
 		return [this.value, this.error];
@@ -147,7 +138,7 @@ class QueryCore implements Query {
 	}
 }
 
-class BooleanQuery extends QueryCore {
+class BooleanQuery extends Query {
 	value: boolean;
 	error: Error;
 
@@ -182,7 +173,7 @@ class BooleanQuery extends QueryCore {
 	}
 }
 
-class NumberQuery extends QueryCore {
+class NumberQuery extends Query {
 	value: number;
 	error: Error;
 
@@ -254,7 +245,7 @@ class NumberQuery extends QueryCore {
 	}
 }
 
-class StringQuery extends QueryCore {
+class StringQuery extends Query {
 	value: string;
 	error: Error;
 
@@ -332,7 +323,7 @@ class StringQuery extends QueryCore {
 	}
 }
 
-class ArrayQuery extends QueryCore {
+class ArrayQuery extends Query {
 	value: any[];
 	error: Error;
 
@@ -403,7 +394,7 @@ class ArrayQuery extends QueryCore {
 	}
 }
 
-class IdQuery extends QueryCore {
+class IdQuery extends Query {
 	value: mongo.ObjectID;
 	error: Error;
 
@@ -438,7 +429,7 @@ class IdQuery extends QueryCore {
 	}
 }
 
-class ObjectQuery extends QueryCore {
+class ObjectQuery extends Query {
 	value: any;
 	error: Error;
 
