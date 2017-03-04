@@ -109,7 +109,7 @@ gulp.task('lint', () =>
 gulp.task('mocha', () =>
 	gulp.src([])
 		.pipe(mocha({
-			compilers: 'ts:ts-node/register'
+			//compilers: 'ts:ts-node/register'
 		} as any))
 );
 
