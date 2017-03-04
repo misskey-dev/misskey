@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
-import * as babel from 'gulp-babel';
 import * as ts from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import * as glob from 'glob';
@@ -43,9 +42,6 @@ gulp.task('rebuild', ['clean', 'build']);
 
 gulp.task('build:js', () =>
 	gulp.src(['./src/**/*.js', '!./src/web/**/*.js'])
-		.pipe(babel({
-			presets: ['es2015', 'stage-3']
-		}))
 		.pipe(gulp.dest('./built/'))
 );
 

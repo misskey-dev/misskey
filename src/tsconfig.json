@@ -8,7 +8,7 @@
     "noFallthroughCasesInSwitch": true,
     "declaration": false,
     "sourceMap": false,
-    "target": "es6",
+    "target": "es2017",
     "module": "commonjs",
     "removeComments": false,
     "noLib": false

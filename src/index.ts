@@ -26,10 +26,6 @@ import loadConfig from './config';
 
 const clusterLog = debug('misskey:cluster');
 
-// Init babel
-require('babel-core/register');
-require('babel-polyfill');
-
 enum InitResult {
 	Success,
 	Warn,
