@@ -14,11 +14,11 @@ import serialize from '../../serializers/user';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [userId, userIdErr] = it(params.user_id, 'id');
+	const [userId, userIdErr] = it(params.user_id, 'id').get();
 	if (userIdErr) return rej('invalid user_id param');
 
 	// Get 'username' parameter
-	const [username, usernameErr] = it(params.username, 'string');
+	const [username, usernameErr] = it(params.username, 'string').get();
 	if (usernameErr) return rej('invalid username param');
 
 	if (userId === undefined && username === undefined) {

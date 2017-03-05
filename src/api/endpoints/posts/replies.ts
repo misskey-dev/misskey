@@ -14,11 +14,11 @@ import serialize from '../../serializers/post';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
-	const [postId, postIdErr] = it(params.post_id, 'id', true);
+	const [postId, postIdErr] = it(params.post_id, 'id!').get();
 	if (postIdErr) return rej('invalid post_id param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100)).get();
+	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter

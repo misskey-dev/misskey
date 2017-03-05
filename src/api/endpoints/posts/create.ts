@@ -88,20 +88,20 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		if (latestPost &&
 				latestPost.repost_id &&
 				latestPost.repost_id.equals(repost._id) &&
-				text === null && files === null) {
+				text === undefined && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
 
 		// 直近がRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
 				latestPost._id.equals(repost._id) &&
-				text === null && files === null) {
+				text === undefined && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
 	}
 
 	// Get 'in_reply_to_post_id' parameter
-	const [inReplyToPostId, inReplyToPostIdErr] = it(params.reply_to_id, 'id');
+	const [inReplyToPostId, inReplyToPostIdErr] = it(params.reply_to_id, 'id').get();
 	if (inReplyToPostIdErr) return rej('invalid in_reply_to_post_id');
 
 	let inReplyToPost = null;
@@ -122,7 +122,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'poll' parameter
-	const [_poll, pollErr] = it(params.poll, 'object');
+	const [_poll, pollErr] = it(params.poll, 'object').get();
 	if (pollErr) return rej('invalid poll');
 
 	let poll = null;
@@ -151,7 +151,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無いかつ投票も無かったらエラー
-	if (text === null && files === null && repost === null && poll === null) {
+	if (text === undefined && files === null && repost === null && poll === null) {
 		return rej('text, media_ids, repost_id or poll is required');
 	}
 

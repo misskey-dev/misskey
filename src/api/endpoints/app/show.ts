@@ -46,11 +46,11 @@ import serialize from '../../serializers/app';
  */
 module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => {
 	// Get 'app_id' parameter
-	const [appId, appIdErr] = it(params.app_id, 'id');
+	const [appId, appIdErr] = it(params.app_id, 'id').get();
 	if (appIdErr) return rej('invalid app_id param');
 
 	// Get 'name_id' parameter
-	const [nameId, nameIdErr] = it(params.name_id, 'string');
+	const [nameId, nameIdErr] = it(params.name_id, 'string').get();
 	if (nameIdErr) return rej('invalid name_id param');
 
 	if (appId === undefined && nameId === undefined) {

@@ -1,4 +1,4 @@
-import * as ms from 'ms';
+const ms = require('ms');
 
 /**
  * エンドポイントを表します。

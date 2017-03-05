@@ -16,7 +16,7 @@ import getFriends from '../../common/get-friends';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [userId, userIdErr] = it(params.user_id, 'id', true);
+	const [userId, userIdErr] = it(params.user_id, 'id!').get();
 	if (userIdErr) return rej('invalid user_id param');
 
 	// Get 'iknow' parameter

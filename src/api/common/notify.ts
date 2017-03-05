@@ -7,7 +7,7 @@ export default (
 	notifiee: mongo.ObjectID,
 	notifier: mongo.ObjectID,
 	type: string,
-	content: any
+	content?: any
 ) => new Promise<any>(async (resolve, reject) => {
 	if (notifiee.equals(notifier)) {
 		return resolve();

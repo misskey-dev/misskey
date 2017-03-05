@@ -15,7 +15,7 @@ import notify from '../../../common/notify';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
-	const [postId, postIdErr] = it(params.post_id, 'id', true);
+	const [postId, postIdErr] = it(params.post_id, 'id!').get();
 	if (postIdErr) return rej('invalid post_id param');
 
 	// Get votee
