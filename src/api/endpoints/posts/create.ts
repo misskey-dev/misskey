@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import it from 'cafy';
-import parse from '../../../common/text';
+const parse = require('../../../common/text');
 import Post from '../../models/post';
 import { isValidText } from '../../models/post';
 import User from '../../models/user';
@@ -128,10 +128,11 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	let poll = null;
 	if (_poll !== undefined) {
 		const [pollChoices, pollChoicesErr] =
-			it(params.poll).expect.array()
+			it(params.poll.choices).expect.array()
+				.required()
 				.unique()
 				.allString()
-				.range(1, 10)
+				.range(2, 10)
 				.validate(choices => !choices.some(choice => {
 					if (typeof choice != 'string') return true;
 					if (choice.trim().length == 0) return true;

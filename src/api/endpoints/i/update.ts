@@ -31,12 +31,12 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	// Get 'location' parameter
 	const [location, locationErr] = it(params.location).expect.nullable.string().validate(isValidLocation).get();
 	if (locationErr) return rej('invalid location param');
-	if (location !== undefined) user.location = location;
+	if (location !== undefined) user.profile.location = location;
 
 	// Get 'birthday' parameter
 	const [birthday, birthdayErr] = it(params.birthday).expect.nullable.string().validate(isValidBirthday).get();
 	if (birthdayErr) return rej('invalid birthday param');
-	if (birthday !== undefined) user.birthday = birthday;
+	if (birthday !== undefined) user.profile.birthday = birthday;
 
 	// Get 'avatar_id' parameter
 	const [avatarId, avatarIdErr] = it(params.avatar_id).expect.id().get();

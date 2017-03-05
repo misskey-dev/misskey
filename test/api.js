@@ -754,8 +754,7 @@ describe('API', () => {
 			const res = await _chai.request(server)
 				.post('/drive/files/create')
 				.field('i', me.token)
-				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png')
-				.end();
+				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
 			res.should.have.status(200);
 			res.body.should.be.a('object');
 			res.body.should.have.property('name').eql('Lenna.png');
@@ -1096,7 +1095,7 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			const res = await request('/messaging/messages/create', {
 				user_id: hima._id.toString(),
-				text: '!'.repeat(501)
+				text: '!'.repeat(1001)
 			}, me);
 			res.should.have.status(400);
 		}));

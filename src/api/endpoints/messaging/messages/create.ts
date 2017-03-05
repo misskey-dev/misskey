@@ -51,7 +51,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (fileIdErr) return rej('invalid file_id param');
 
 	let file = null;
-	if (fileId !== null) {
+	if (fileId !== undefined) {
 		file = await DriveFile.findOne({
 			_id: fileId,
 			user_id: user._id
@@ -65,7 +65,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
-	if (text === null && file === null) {
+	if (text === undefined && file === null) {
 		return rej('text or file is required');
 	}
 
