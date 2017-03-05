@@ -20,13 +20,12 @@ _chai.use(chaiHttp);
 const server = require('../built/api/server');
 const db = require('../built/db/mongodb').default;
 
-const async = fn => async (done) => {
-	try {
-		await fn();
+const async = fn => (done) => {
+	fn().then(() => {
 		done();
-	} catch (err) {
+	}, err => {
 		done(err);
-	}
+	});
 };
 
 const request = (endpoint, params, me) => new Promise((ok, ng) => {
