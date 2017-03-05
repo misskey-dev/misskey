@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../it';
+import it from 'cafy';
 import User from '../../models/user';
 import { validateUsername } from '../../models/user';
 
@@ -13,7 +13,7 @@ import { validateUsername } from '../../models/user';
  */
 module.exports = async (params) => new Promise(async (res, rej) => {
 	// Get 'username' parameter
-	const [username, usernameError] = it(params.username).expect.string().required().trim().validate(validateUsername).qed();
+	const [username, usernameError] = it(params.username).expect.string().required().trim().validate(validateUsername).get();
 	if (usernameError) return rej('invalid username param');
 
 	// Get exist

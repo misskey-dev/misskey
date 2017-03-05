@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import Vote from '../../../models/poll-vote';
 import Post from '../../../models/post';
 import notify from '../../../common/notify';
@@ -36,7 +36,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		it(params.choice).expect.string()
 			.required()
 			.validate(c => post.poll.choices.some(x => x.id == c))
-			.qed();
+			.get();
 	if (choiceError) return rej('invalid choice param');
 
 	// if already voted

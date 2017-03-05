@@ -3,7 +3,7 @@
  */
 import rndstr from 'rndstr';
 const crypto = require('crypto');
-import it from '../../it';
+import it from 'cafy';
 import App from '../../models/app';
 import AuthSess from '../../models/auth-session';
 import AccessToken from '../../models/access-token';
@@ -40,7 +40,7 @@ import AccessToken from '../../models/access-token';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
-	const [token, tokenErr] = it(params.token).expect.string().required().qed();
+	const [token, tokenErr] = it(params.token).expect.string().required().get();
 	if (tokenErr) return rej('invalid token param');
 
 	// Fetch token

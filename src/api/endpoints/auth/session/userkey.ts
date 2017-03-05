@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 import AccessToken from '../../../models/access-token';
@@ -51,7 +51,7 @@ import serialize from '../../../serializers/user';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'app_secret' parameter
-	const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().qed();
+	const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().get();
 	if (appSecretErr) return rej('invalid app_secret param');
 
 	// Lookup app
@@ -64,7 +64,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'token' parameter
-	const [token, tokenErr] = it(params.token).expect.string().required().qed();
+	const [token, tokenErr] = it(params.token).expect.string().required().get();
 	if (tokenErr) return rej('invalid token param');
 
 	// Fetch token

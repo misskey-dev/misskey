@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import Like from '../../../models/like';
 import Post from '../../../models/post';
 import User from '../../../models/user';

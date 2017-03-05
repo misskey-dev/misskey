@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../it';
+import it from 'cafy';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
 

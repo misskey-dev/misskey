@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-folder';
 
@@ -14,11 +14,11 @@ import serialize from '../../../serializers/drive-folder';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name, nameErr] = it(params.name).expect.string().required().qed();
+	const [name, nameErr] = it(params.name).expect.string().required().get();
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parent_id' parameter
-	const [parentId, parentIdErr] = it(params.parent_id).expect.id().qed();
+	const [parentId, parentIdErr] = it(params.parent_id).expect.id().get();
 	if (parentIdErr) return rej('invalid parent_id param');
 
 	// Issue query

@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../it';
+import it from 'cafy';
 import App from '../../models/app';
 import serialize from '../../serializers/app';
 

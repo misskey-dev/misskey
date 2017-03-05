@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import App from '../../../models/app';
 import { isValidNameId } from '../../../models/app';
 
@@ -42,7 +42,7 @@ import { isValidNameId } from '../../../models/app';
  */
 module.exports = async (params) => new Promise(async (res, rej) => {
 	// Get 'name_id' parameter
-	const [nameId, nameIdErr] = it(params.name_id).expect.string().required().validate(isValidNameId).qed();
+	const [nameId, nameIdErr] = it(params.name_id).expect.string().required().validate(isValidNameId).get();
 	if (nameIdErr) return rej('invalid name_id param');
 
 	// Get exist

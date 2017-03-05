@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/drive-file';
 
@@ -14,7 +14,7 @@ import serialize from '../../../serializers/drive-file';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'file_id' parameter
-	const [fileId, fileIdErr] = it(params.file_id).expect.id().required().qed();
+	const [fileId, fileIdErr] = it(params.file_id).expect.id().required().get();
 	if (fileIdErr) return rej('invalid file_id param');
 
 	// Fetch file

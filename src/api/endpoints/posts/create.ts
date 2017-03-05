@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../it';
+import it from 'cafy';
 import parse from '../../../common/text';
 import Post from '../../models/post';
 import { isValidText } from '../../models/post';
@@ -23,11 +23,11 @@ import config from '../../../conf';
  */
 module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
-	const [text, textErr] = it(params.text).must.be.a.string().validate(isValidText).qed();
+	const [text, textErr] = it(params.text).must.be.a.string().validate(isValidText).get();
 	if (textErr) return rej('invalid text');
 
 	// Get 'media_ids' parameter
-	const [mediaIds, mediaIdsErr] = it(params.media_ids).must.be.an.array().unique().range(1, 4).qed();
+	const [mediaIds, mediaIdsErr] = it(params.media_ids).must.be.an.array().unique().range(1, 4).get();
 	if (mediaIdsErr) return rej('invalid media_ids');
 
 	let files = [];
@@ -36,7 +36,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
 		for (let i = 0; i < mediaIds.length; i++) {
-			const [mediaId, mediaIdErr] = it(mediaIds[i]).must.be.an.id().required().qed();
+			const [mediaId, mediaIdErr] = it(mediaIds[i]).must.be.an.id().required().get();
 			if (mediaIdErr) return rej('invalid media id');
 
 			// Fetch file
@@ -59,7 +59,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'repost_id' parameter
-	const [repostId, repostIdErr] = it(params.repost_id).must.be.an.id().qed();
+	const [repostId, repostIdErr] = it(params.repost_id).must.be.an.id().get();
 	if (repostIdErr) return rej('invalid repost_id');
 
 	let repost = null;
@@ -138,7 +138,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 					if (choice.trim().length > 50) return true;
 					return false;
 				}))
-				.qed();
+				.get();
 		if (pollChoicesErr) return rej('invalid poll choices');
 
 		_poll.choices = pollChoices.map((choice, i) => ({

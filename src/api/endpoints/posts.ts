@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../it';
+import it from 'cafy';
 import Post from '../models/post';
 import serialize from '../serializers/post';
 
@@ -13,23 +13,23 @@ import serialize from '../serializers/post';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'include_replies' parameter
-	const [includeReplies, includeRepliesErr] = it(params.include_replies).expect.boolean().default(true).qed();
+	const [includeReplies = true, includeRepliesErr] = it(params.include_replies).expect.boolean().get();
 	if (includeRepliesErr) return rej('invalid include_replies param');
 
 	// Get 'include_reposts' parameter
-	const [includeReposts, includeRepostsErr] = it(params.include_reposts).expect.boolean().default(true).qed();
+	const [includeReposts = true, includeRepostsErr] = it(params.include_reposts).expect.boolean().get();
 	if (includeRepostsErr) return rej('invalid include_reposts param');
 
 	// Get 'limit' parameter
-	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
+	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = it(params.since_id).expect.id().qed();
+	const [sinceId, sinceIdErr] = it(params.since_id).expect.id().get();
 	if (sinceIdErr) return rej('invalid since_id param');
 
 	// Get 'max_id' parameter
-	const [maxId, maxIdErr] = it(params.max_id).expect.id().qed();
+	const [maxId, maxIdErr] = it(params.max_id).expect.id().get();
 	if (maxIdErr) return rej('invalid max_id param');
 
 	// Check if both of since_id and max_id is specified

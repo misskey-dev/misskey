@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../it';
+import it from 'cafy';
 import Favorite from '../../models/favorite';
 import serialize from '../../serializers/post';
 
@@ -14,15 +14,15 @@ import serialize from '../../serializers/post';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit, limitErr] = it(params.limit).expect.number().range(1, 100).default(10).qed();
+	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset, offsetErr] = it(params.offset).expect.number().min(0).default(0).qed();
+	const [offset = 0, offsetErr] = it(params.offset).expect.number().min(0).get();
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'sort' parameter
-	const [sort, sortError] = it(params.sort).expect.string().or('desc asc').default('desc').qed();
+	const [sort = 'desc', sortError] = it(params.sort).expect.string().or('desc asc').get();
 	if (sortError) return rej('invalid sort param');
 
 	// Get favorites

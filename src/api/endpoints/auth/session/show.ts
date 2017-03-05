@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import AuthSess from '../../../models/auth-session';
 import serialize from '../../../serializers/auth-session';
 
@@ -54,7 +54,7 @@ import serialize from '../../../serializers/auth-session';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
-	const [token, tokenErr] = it(params.token).expect.string().required().qed();
+	const [token, tokenErr] = it(params.token).expect.string().required().get();
 	if (tokenErr) return rej('invalid token param');
 
 	// Lookup session

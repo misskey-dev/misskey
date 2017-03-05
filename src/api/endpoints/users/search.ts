@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import it from '../../it';
+import it from 'cafy';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
 import config from '../../../conf';
@@ -17,15 +17,15 @@ const escapeRegexp = require('escape-regexp');
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
-	const [query, queryError] = it(params.query).expect.string().required().trim().validate(x => x != '').qed();
+	const [query, queryError] = it(params.query).expect.string().required().trim().validate(x => x != '').get();
 	if (queryError) return rej('invalid query param');
 
 	// Get 'offset' parameter
-	const [offset, offsetErr] = it(params.offset).expect.number().min(0).default(0).qed();
+	const [offset = 0, offsetErr] = it(params.offset).expect.number().min(0).get();
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'max' parameter
-	const [max, maxErr] = it(params.max).expect.number().range(1, 30).default(10).qed();
+	const [max = 10, maxErr] = it(params.max).expect.number().range(1, 30).get();
 	if (maxErr) return rej('invalid max param');
 
 	// If Elasticsearch is available, search by it

@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from '../../../it';
+import it from 'cafy';
 import User from '../../../models/user';
 import Following from '../../../models/following';
 
@@ -13,7 +13,7 @@ import Following from '../../../models/following';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [userId, userIdErr] = it(params.user_id).expect.id().required().qed();
+	const [userId, userIdErr] = it(params.user_id).expect.id().required().get();
 	if (userIdErr) return rej('invalid user_id param');
 
 	// Lookup user

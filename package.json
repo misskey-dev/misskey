@@ -66,6 +66,7 @@
     "autwh": "0.0.1",
     "bcryptjs": "2.4.3",
     "body-parser": "1.17.0",
+    "cafy": "1.0.0",
     "chai": "3.5.0",
     "chai-http": "3.0.0",
     "chalk": "1.1.3",
