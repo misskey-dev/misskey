@@ -121,7 +121,7 @@
     "redis": "2.6.5",
     "request": "2.80.0",
     "rimraf": "2.6.1",
-    "riot": "3.3.1",
+    "riot": "3.3.2",
     "riot-tag-loader": "1.0.0",
     "rndstr": "1.0.0",
     "s-age": "1.1.0",
