@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import Vote from '../../../models/poll-vote';
 import Post from '../../../models/post';
 import notify from '../../../common/notify';
@@ -15,7 +15,7 @@ import notify from '../../../common/notify';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
-	const [postId, postIdErr] = it(params.post_id, 'id!').get();
+	const [postId, postIdErr] = $(params.post_id).id().$;
 	if (postIdErr) return rej('invalid post_id param');
 
 	// Get votee
@@ -33,10 +33,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Get 'choice' parameter
 	const [choice, choiceError] =
-		it(params.choice).expect.string()
-			.required()
-			.validate(c => post.poll.choices.some(x => x.id == c))
-			.get();
+		$(params.choice).string()
+			.pipe(c => post.poll.choices.some(x => x.id == c))
+			.$;
 	if (choiceError) return rej('invalid choice param');
 
 	// if already voted

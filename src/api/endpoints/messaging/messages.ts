@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import Message from '../../models/messaging-message';
 import User from '../../models/user';
 import serialize from '../../serializers/messaging-message';
@@ -17,7 +17,7 @@ import { publishMessagingStream } from '../../event';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [recipientId, recipientIdErr] = it(params.user_id).expect.id().required().get();
+	const [recipientId, recipientIdErr] = $(params.user_id).id().$;
 	if (recipientIdErr) return rej('invalid user_id param');
 
 	// Fetch recipient
@@ -34,19 +34,19 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'mark_as_read' parameter
-	const [markAsRead = true, markAsReadErr] = it(params.mark_as_read).expect.boolean().get();
+	const [markAsRead = true, markAsReadErr] = $(params.mark_as_read).optional.boolean().$;
 	if (markAsReadErr) return rej('invalid mark_as_read param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = it(params.since_id).expect.id().get();
+	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
 	if (sinceIdErr) return rej('invalid since_id param');
 
 	// Get 'max_id' parameter
-	const [maxId, maxIdErr] = it(params.max_id).expect.id().get();
+	const [maxId, maxIdErr] = $(params.max_id).optional.id().$;
 	if (maxIdErr) return rej('invalid max_id param');
 
 	// Check if both of since_id and max_id is specified

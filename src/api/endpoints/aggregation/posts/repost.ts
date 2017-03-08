@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import Post from '../../../models/post';
 
 /**
@@ -12,7 +12,7 @@ import Post from '../../../models/post';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
-	const [postId, postIdErr] = it(params.post_id).expect.id().required().get();
+	const [postId, postIdErr] = $(params.post_id).id().$;
 	if (postIdErr) return rej('invalid post_id param');
 
 	// Lookup post

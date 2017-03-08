@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import User from '../../models/user';
 import Following from '../../models/following';
 import notify from '../../common/notify';
@@ -19,7 +19,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'user_id' parameter
-	const [userId, userIdErr] = it(params.user_id, 'id!').get();
+	const [userId, userIdErr] = $(params.user_id).id().$;
 	if (userIdErr) return rej('invalid user_id param');
 
 	// 自分自身

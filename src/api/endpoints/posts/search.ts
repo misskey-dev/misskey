@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import it from 'cafy';
+import $ from 'cafy';
 const escapeRegexp = require('escape-regexp');
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
@@ -17,18 +17,18 @@ import config from '../../../conf';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
-	const [query, queryError] = it(params.query).expect.string().required().trim().validate(x => x != '').get();
+	const [query, queryError] = $(params.query).string().pipe(x => x != '').$;
 	if (queryError) return rej('invalid query param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = it(params.offset).expect.number().min(0).get();
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'max' parameter
-	const [max = 10, maxErr] = it(params.max).expect.number().range(1, 30).get();
+	const [max = 10, maxErr] = $(params.max).optional.number().range(1, 30).$;
 	if (maxErr) return rej('invalid max param');
 
-	// If Elasticsearch is available, search by it
+	// If Elasticsearch is available, search by $
 	// If not, search by MongoDB
 	(config.elasticsearch.enable ? byElasticsearch : byNative)
 		(res, rej, me, query, offset, max);

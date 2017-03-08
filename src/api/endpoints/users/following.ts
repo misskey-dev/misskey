@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import User from '../../models/user';
 import Following from '../../models/following';
 import serialize from '../../serializers/user';
@@ -16,19 +16,19 @@ import getFriends from '../../common/get-friends';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [userId, userIdErr] = it(params.user_id, 'id!').get();
+	const [userId, userIdErr] = $(params.user_id).id().$;
 	if (userIdErr) return rej('invalid user_id param');
 
 	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = it(params.iknow).expect.boolean().get();
+	const [iknow = false, iknowErr] = $(params.iknow).optional.boolean().$;
 	if (iknowErr) return rej('invalid iknow param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = it(params.cursor).expect.id().get();
+	const [cursor = null, cursorErr] = $(params.cursor).optional.id().$;
 	if (cursorErr) return rej('invalid cursor param');
 
 	// Lookup user

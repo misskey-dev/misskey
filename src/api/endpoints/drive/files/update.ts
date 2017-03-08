@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import DriveFile from '../../../models/drive-file';
 import { validateFileName } from '../../../models/drive-file';
@@ -17,7 +17,7 @@ import event from '../../../event';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'file_id' parameter
-	const [fileId, fileIdErr] = it(params.file_id).expect.id().required().get();
+	const [fileId, fileIdErr] = $(params.file_id).id().$;
 	if (fileIdErr) return rej('invalid file_id param');
 
 	// Fetch file
@@ -36,12 +36,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'name' parameter
-	const [name, nameErr] = it(params.name).expect.string().validate(validateFileName).get();
+	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).$;
 	if (nameErr) return rej('invalid name param');
 	if (name) file.name = name;
 
 	// Get 'folder_id' parameter
-	const [folderId, folderIdErr] = it(params.folder_id).expect.nullable.id().get();
+	const [folderId, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
 	if (folderIdErr) return rej('invalid folder_id param');
 
 	if (folderId !== undefined) {

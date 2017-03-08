@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import Notification from '../../models/notification';
 import serialize from '../../serializers/notification';
 import event from '../../event';
@@ -14,7 +14,7 @@ import event from '../../event';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	const [notificationId, notificationIdErr] = it(params.notification_id).expect.id().required().get();
+	const [notificationId, notificationIdErr] = $(params.notification_id).id().$;
 	if (notificationIdErr) return rej('invalid notification_id param');
 
 	// Get notification

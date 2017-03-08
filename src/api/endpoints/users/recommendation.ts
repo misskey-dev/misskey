@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
 import getFriends from '../../common/get-friends';
@@ -15,14 +15,14 @@ import getFriends from '../../common/get-friends';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = it(params.offset).expect.number().min(0).get();
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
 	if (offsetErr) return rej('invalid offset param');
 
-	// ID list of the user itself and other users who the user follows
+	// ID list of the user $self and other users who the user follows
 	const followingIds = await getFriends(me._id);
 
 	const users = await User

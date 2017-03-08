@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import Message from '../../../models/messaging-message';
 import { isValidText } from '../../../models/messaging-message';
 import History from '../../../models/messaging-history';
@@ -21,7 +21,7 @@ import config from '../../../../conf';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [recipientId, recipientIdErr] = it(params.user_id).expect.id().required().get();
+	const [recipientId, recipientIdErr] = $(params.user_id).id().$;
 	if (recipientIdErr) return rej('invalid user_id param');
 
 	// Myself
@@ -43,11 +43,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'text' parameter
-	const [text, textErr] = it(params.text).expect.string().validate(isValidText).get();
+	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
 
 	// Get 'file_id' parameter
-	const [fileId, fileIdErr] = it(params.file_id).expect.id().get();
+	const [fileId, fileIdErr] = $(params.file_id).optional.id().$;
 	if (fileIdErr) return rej('invalid file_id param');
 
 	let file = null;

@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
 
@@ -14,11 +14,11 @@ import serialize from '../../serializers/user';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [userId, userIdErr] = it(params.user_id, 'id').get();
+	const [userId, userIdErr] = $(params.user_id).optional.id().$;
 	if (userIdErr) return rej('invalid user_id param');
 
 	// Get 'username' parameter
-	const [username, usernameErr] = it(params.username, 'string').get();
+	const [username, usernameErr] = $(params.username).optional.string().$;
 	if (usernameErr) return rej('invalid username param');
 
 	if (userId === undefined && username === undefined) {

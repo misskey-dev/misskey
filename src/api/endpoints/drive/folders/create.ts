@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import { isValidFolderName } from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-folder';
@@ -16,11 +16,11 @@ import event from '../../../event';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-    const [name = '無題のフォルダー', nameErr] = it(params.name).expect.string().validate(isValidFolderName).get();
+	const [name = '無題のフォルダー', nameErr] = $(params.name).optional.string().pipe(isValidFolderName).$;
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parent_id' parameter
-	const [parentId = null, parentIdErr] = it(params.parent_id).expect.nullable.id().get();
+	const [parentId = null, parentIdErr] = $(params.parent_id).optional.nullable.id().$;
 	if (parentIdErr) return rej('invalid parent_id param');
 
 	// If the parent folder is specified

@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import User from '../../../models/user';
 import Like from '../../../models/like';
 
@@ -13,7 +13,7 @@ import Like from '../../../models/like';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
-	const [userId, userIdErr] = it(params.user_id).expect.id().required().get();
+	const [userId, userIdErr] = $(params.user_id).id().$;
 	if (userIdErr) return rej('invalid user_id param');
 
 	// Lookup user

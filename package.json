@@ -65,7 +65,7 @@
     "@types/websocket": "0.0.33",
     "autwh": "0.0.1",
     "bcryptjs": "2.4.3",
-    "cafy": "1.2.0",
+    "cafy": "2.3.0",
     "body-parser": "1.17.1",
     "chai": "3.5.0",
     "chai-http": "3.0.0",

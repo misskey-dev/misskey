@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import Like from '../../../models/like';
 import Post from '../../../models/post';
 import User from '../../../models/user';
@@ -16,7 +16,7 @@ import User from '../../../models/user';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
-	const [postId, postIdErr] = it(params.post_id, 'id!').get();
+	const [postId, postIdErr] = $(params.post_id).id().$;
 	if (postIdErr) return rej('invalid post_id param');
 
 	// Get likee

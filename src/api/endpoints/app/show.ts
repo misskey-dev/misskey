@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import App from '../../models/app';
 import serialize from '../../serializers/app';
 
@@ -46,11 +46,11 @@ import serialize from '../../serializers/app';
  */
 module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => {
 	// Get 'app_id' parameter
-	const [appId, appIdErr] = it(params.app_id, 'id').get();
+	const [appId, appIdErr] = $(params.app_id).optional.id().$;
 	if (appIdErr) return rej('invalid app_id param');
 
 	// Get 'name_id' parameter
-	const [nameId, nameIdErr] = it(params.name_id, 'string').get();
+	const [nameId, nameIdErr] = $(params.name_id).optional.string().$;
 	if (nameIdErr) return rej('invalid name_id param');
 
 	if (appId === undefined && nameId === undefined) {

@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import * as uuid from 'uuid';
-import it from 'cafy';
+import $ from 'cafy';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 import config from '../../../../conf';
@@ -46,7 +46,7 @@ import config from '../../../../conf';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'app_secret' parameter
-	const [appSecret, appSecretErr] = it(params.app_secret).expect.string().required().get();
+	const [appSecret, appSecretErr] = $(params.app_secret).string().$;
 	if (appSecretErr) return rej('invalid app_secret param');
 
 	// Lookup app

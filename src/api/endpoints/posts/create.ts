@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 const parse = require('../../../common/text');
 import Post from '../../models/post';
 import { isValidText } from '../../models/post';
@@ -23,11 +23,11 @@ import config from '../../../conf';
  */
 module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
-	const [text, textErr] = it(params.text).must.be.a.string().validate(isValidText).get();
+	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
 
 	// Get 'media_ids' parameter
-	const [mediaIds, mediaIdsErr] = it(params.media_ids).must.be.an.array().unique().range(1, 4).get();
+	const [mediaIds, mediaIdsErr] = $(params.media_ids).optional.array('id').unique().range(1, 4).$;
 	if (mediaIdsErr) return rej('invalid media_ids');
 
 	let files = [];
@@ -36,8 +36,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
 		for (let i = 0; i < mediaIds.length; i++) {
-			const [mediaId, mediaIdErr] = it(mediaIds[i]).must.be.an.id().required().get();
-			if (mediaIdErr) return rej('invalid media id');
+			const mediaId = mediaIds[i];
 
 			// Fetch file
 			// SELECT _id
@@ -59,7 +58,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'repost_id' parameter
-	const [repostId, repostIdErr] = it(params.repost_id).must.be.an.id().get();
+	const [repostId, repostIdErr] = $(params.repost_id).optional.id().$;
 	if (repostIdErr) return rej('invalid repost_id');
 
 	let repost = null;
@@ -101,7 +100,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'in_reply_to_post_id' parameter
-	const [inReplyToPostId, inReplyToPostIdErr] = it(params.reply_to_id, 'id').get();
+	const [inReplyToPostId, inReplyToPostIdErr] = $(params.reply_to_id).optional.id().$;
 	if (inReplyToPostIdErr) return rej('invalid in_reply_to_post_id');
 
 	let inReplyToPost = null;
@@ -122,37 +121,24 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'poll' parameter
-	const [_poll, pollErr] = it(params.poll, 'object').get();
+	const [poll, pollErr] = $(params.poll).optional.object()
+		.have('choices', $().array('string')
+			.unique()
+			.range(2, 10)
+			.each(c => c.length > 0 && c.length < 50))
+		.$;
 	if (pollErr) return rej('invalid poll');
 
-	let poll = null;
-	if (_poll !== undefined) {
-		const [pollChoices, pollChoicesErr] =
-			it(params.poll.choices).expect.array()
-				.required()
-				.unique()
-				.allString()
-				.range(2, 10)
-				.validate(choices => !choices.some(choice => {
-					if (typeof choice != 'string') return true;
-					if (choice.trim().length == 0) return true;
-					if (choice.trim().length > 50) return true;
-					return false;
-				}))
-				.get();
-		if (pollChoicesErr) return rej('invalid poll choices');
-
-		_poll.choices = pollChoices.map((choice, i) => ({
+	if (poll) {
+		(poll as any).choices = (poll as any).choices.map((choice, i) => ({
 			id: i, // IDを付与
 			text: choice.trim(),
 			votes: 0
 		}));
-
-		poll = _poll;
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無いかつ投票も無かったらエラー
-	if (text === undefined && files === null && repost === null && poll === null) {
+	if (text === undefined && files === null && repost === null && poll === undefined) {
 		return rej('text, media_ids, repost_id or poll is required');
 	}
 
@@ -162,7 +148,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		media_ids: files ? files.map(file => file._id) : undefined,
 		reply_to_id: inReplyToPost ? inReplyToPost._id : undefined,
 		repost_id: repost ? repost._id : undefined,
-		poll: poll ? poll : undefined,
+		poll: poll,
 		text: text,
 		user_id: user._id,
 		app_id: app ? app._id : null
@@ -235,7 +221,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		addMention(inReplyToPost.user_id, 'reply');
 	}
 
-	// If it is repost
+	// If $ is repost
 	if (repost) {
 		// Notify
 		const type = text ? 'quote' : 'repost';
@@ -243,7 +229,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			post_id: post._id
 		});
 
-		// If it is quote repost
+		// If $ is quote repost
 		if (text) {
 			// Add mention
 			addMention(repost.user_id, 'quote');

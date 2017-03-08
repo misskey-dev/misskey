@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import App from '../../models/app';
 import serialize from '../../serializers/app';
 
@@ -14,11 +14,11 @@ import serialize from '../../serializers/app';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = it(params.offset).expect.number().min(0).get();
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
 	if (offsetErr) return rej('invalid offset param');
 
 	const query = {

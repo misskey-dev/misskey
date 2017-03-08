@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import User from '../../models/user';
 import { isValidName, isValidDescription, isValidLocation, isValidBirthday } from '../../models/user';
 import serialize from '../../serializers/user';
@@ -19,32 +19,32 @@ import config from '../../../conf';
  */
 module.exports = async (params, user, _, isSecure) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name, nameErr] = it(params.name).expect.string().validate(isValidName).get();
+	const [name, nameErr] = $(params.name).optional.string().pipe(isValidName).$;
 	if (nameErr) return rej('invalid name param');
 	if (name) user.name = name;
 
 	// Get 'description' parameter
-	const [description, descriptionErr] = it(params.description).expect.nullable.string().validate(isValidDescription).get();
+	const [description, descriptionErr] = $(params.description).optional.nullable.string().pipe(isValidDescription).$;
 	if (descriptionErr) return rej('invalid description param');
 	if (description !== undefined) user.description = description;
 
 	// Get 'location' parameter
-	const [location, locationErr] = it(params.location).expect.nullable.string().validate(isValidLocation).get();
+	const [location, locationErr] = $(params.location).optional.nullable.string().pipe(isValidLocation).$;
 	if (locationErr) return rej('invalid location param');
 	if (location !== undefined) user.profile.location = location;
 
 	// Get 'birthday' parameter
-	const [birthday, birthdayErr] = it(params.birthday).expect.nullable.string().validate(isValidBirthday).get();
+	const [birthday, birthdayErr] = $(params.birthday).optional.nullable.string().pipe(isValidBirthday).$;
 	if (birthdayErr) return rej('invalid birthday param');
 	if (birthday !== undefined) user.profile.birthday = birthday;
 
 	// Get 'avatar_id' parameter
-	const [avatarId, avatarIdErr] = it(params.avatar_id).expect.id().get();
+	const [avatarId, avatarIdErr] = $(params.avatar_id).optional.id().$;
 	if (avatarIdErr) return rej('invalid avatar_id param');
 	if (avatarId) user.avatar_id = avatarId;
 
 	// Get 'banner_id' parameter
-	const [bannerId, bannerIdErr] = it(params.banner_id).expect.id().get();
+	const [bannerId, bannerIdErr] = $(params.banner_id).optional.id().$;
 	if (bannerIdErr) return rej('invalid banner_id param');
 	if (bannerId) user.banner_id = bannerId;
 

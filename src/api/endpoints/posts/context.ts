@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
 
@@ -14,15 +14,15 @@ import serialize from '../../serializers/post';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'post_id' parameter
-	const [postId, postIdErr] = it(params.post_id, 'id!').get();
+	const [postId, postIdErr] = $(params.post_id).id().$;
 	if (postIdErr) return rej('invalid post_id param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = it(params.limit).expect.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = it(params.offset).expect.number().min(0).get();
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
 	if (offsetErr) return rej('invalid offset param');
 
 	// Lookup post

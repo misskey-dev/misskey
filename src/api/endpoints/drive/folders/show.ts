@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-folder';
 
@@ -14,7 +14,7 @@ import serialize from '../../../serializers/drive-folder';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'folder_id' parameter
-	const [folderId, folderIdErr] = it(params.folder_id).expect.id().required().get();
+	const [folderId, folderIdErr] = $(params.folder_id).id().$;
 	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Get folder

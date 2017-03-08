@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import it from 'cafy';
+import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import { isValidFolderName } from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-file';
@@ -16,7 +16,7 @@ import event from '../../../event';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'folder_id' parameter
-	const [folderId, folderIdErr] = it(params.folder_id).expect.id().required().get();
+	const [folderId, folderIdErr] = $(params.folder_id).id().$;
 	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Fetch folder
@@ -31,12 +31,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'name' parameter
-	const [name, nameErr] = it(params.name).expect.string().validate(isValidFolderName).get();
+	const [name, nameErr] = $(params.name).optional.string().pipe(isValidFolderName).$;
 	if (nameErr) return rej('invalid name param');
 	if (name) folder.name = name;
 
 	// Get 'parent_id' parameter
-	const [parentId, parentIdErr] = it(params.parent_id).expect.nullable.id().get();
+	const [parentId, parentIdErr] = $(params.parent_id).optional.nullable.id().$;
 	if (parentIdErr) return rej('invalid parent_id param');
 	if (parentId !== undefined) {
 		if (parentId === null) {

@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import rndstr from 'rndstr';
-import it from 'cafy';
+import $ from 'cafy';
 import App from '../../models/app';
 import { isValidNameId } from '../../models/app';
 import serialize from '../../serializers/app';
@@ -69,24 +69,24 @@ import serialize from '../../serializers/app';
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'name_id' parameter
-	const [nameId, nameIdErr] = it(params.name_id).expect.string().required().validate(isValidNameId).get();
+	const [nameId, nameIdErr] = $(params.name_id).string().pipe(isValidNameId).$;
 	if (nameIdErr) return rej('invalid name_id param');
 
 	// Get 'name' parameter
-	const [name, nameErr] = it(params.name).expect.string().required().get();
+	const [name, nameErr] = $(params.name).string().$;
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'description' parameter
-	const [description, descriptionErr] = it(params.description).expect.string().required().get();
+	const [description, descriptionErr] = $(params.description).string().$;
 	if (descriptionErr) return rej('invalid description param');
 
 	// Get 'permission' parameter
-	const [permission, permissionErr] = it(params.permission).expect.array().unique().allString().required().get();
+	const [permission, permissionErr] = $(params.permission).array('string').unique().$;
 	if (permissionErr) return rej('invalid permission param');
 
 	// Get 'callback_url' parameter
-	// TODO: Check it is valid url
-	const [callbackUrl = null, callbackUrlErr] = it(params.callback_url).expect.nullable.string().get();
+	// TODO: Check $ is valid url
+	const [callbackUrl = null, callbackUrlErr] = $(params.callback_url).optional.nullable.string().$;
 	if (callbackUrlErr) return rej('invalid callback_url param');
 
 	// Generate secret

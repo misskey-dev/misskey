@@ -3,7 +3,7 @@
  */
 import * as URL from 'url';
 const download = require('download');
-import it from 'cafy';
+import $ from 'cafy';
 import { validateFileName } from '../../../models/drive-file';
 import serialize from '../../../serializers/drive-file';
 import create from '../../../common/add-file-to-drive';
@@ -18,7 +18,7 @@ import create from '../../../common/add-file-to-drive';
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'url' parameter
 	// TODO: Validate this url
-	const [url, urlErr] = it(params.url).expect.string().required().get();
+	const [url, urlErr] = $(params.url).string().$;
 	if (urlErr) return rej('invalid url param');
 
 	let name = URL.parse(url).pathname.split('/').pop();
@@ -27,7 +27,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'folder_id' parameter
-	const [folderId = null, folderIdErr] = it(params.folder_id).expect.nullable.id().get();
+	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
 	if (folderIdErr) return rej('invalid folder_id param');
 
 	// Download file
