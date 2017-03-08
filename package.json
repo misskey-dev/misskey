@@ -128,7 +128,7 @@
     "serve-favicon": "2.4.1",
     "string-replace-webpack-plugin": "0.0.5",
     "stylus": "0.54.5",
-    "stylus-loader": "2.5.0",
+    "stylus-loader": "2.5.1",
     "subdomain": "1.2.0",
     "summaly": "2.0.0",
     "swagger-jsdoc": "1.9.2",
