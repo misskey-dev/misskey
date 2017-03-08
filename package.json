@@ -93,7 +93,7 @@
     "gulp-cssnano": "2.1.2",
     "gulp-imagemin": "3.1.1",
     "gulp-mocha": "4.1.0",
-    "gulp-pug": "3.2.0",
+    "gulp-pug": "3.3.0",
     "gulp-rename": "1.2.2",
     "gulp-tslint": "7.1.0",
     "gulp-typescript": "3.1.5",
