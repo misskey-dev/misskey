@@ -121,7 +121,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'poll' parameter
-	const [poll, pollErr] = $(params.poll).optional.object()
+	const [poll, pollErr] = $(params.poll).optional.strict.object()
 		.have('choices', $().array('string')
 			.unique()
 			.range(2, 10)
@@ -221,7 +221,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		addMention(inReplyToPost.user_id, 'reply');
 	}
 
-	// If $ is repost
+	// If it is repost
 	if (repost) {
 		// Notify
 		const type = text ? 'quote' : 'repost';
@@ -229,7 +229,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			post_id: post._id
 		});
 
-		// If $ is quote repost
+		// If it is quote repost
 		if (text) {
 			// Add mention
 			addMention(repost.user_id, 'quote');
