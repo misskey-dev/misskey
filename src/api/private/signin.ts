@@ -33,7 +33,9 @@ export default async (req: express.Request, res: express.Response) => {
 	});
 
 	if (user === null) {
-		res.status(404).send('user not found');
+		res.status(404).send({
+			error: 'user not found'
+		});
 		return;
 	}
 
@@ -53,7 +55,9 @@ export default async (req: express.Request, res: express.Response) => {
 
 		res.sendStatus(204);
 	} else {
-		res.status(400).send('incorrect password');
+		res.status(400).send({
+			error: 'incorrect password'
+		});
 	}
 
 	// Append signin history
