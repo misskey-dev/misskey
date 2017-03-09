@@ -408,14 +408,17 @@
 		});
 
 		this.reply = () => {
-			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
+			this.openPostForm({
 				reply: this.p
 			});
 		};
 
 		this.repost = () => {
-			riot.mount(document.body.appendChild(document.createElement('mk-repost-form-window')), {
-				post: this.p
+			const text = window.prompt(`「${this.summary}」をRepost`);
+			if (text == null) return;
+			this.api('posts/create', {
+				repost_id: this.p.id,
+				text: text == '' ? undefined : text
 			});
 		};
 
