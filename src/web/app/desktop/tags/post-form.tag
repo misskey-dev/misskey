@@ -333,6 +333,12 @@
 
 			this.autocomplete = new this.Autocomplete(this.refs.text);
 			this.autocomplete.attach();
+
+			let draft = localStorage.getItem('post-draft');
+			if (draft) {
+				draft = JSON.parse(draft);
+				this.refs.text.value = draft.text;
+			}
 		});
 
 		this.on('unmount', () => {
@@ -446,6 +452,7 @@
 				reply_to_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined
 			}).then(data => {
+				localStorage.removeItem('post-draft');
 				this.trigger('post');
 				this.notify(this.inReplyToPost ? '返信しました！' : '投稿しました！');
 			}).catch(err => {
@@ -459,6 +466,20 @@
 
 		this.cat = () => {
 			this.refs.text.value += getCat();
+		};
+
+		this.on('update', () => {
+			this.save();
+		});
+
+		this.save = () => {
+			const context = {
+				text: this.refs.text.value,
+				files: this.files,
+				poll: this.poll ? this.refs.poll.get() : undefined
+			};
+
+			localStorage.setItem('post-draft', JSON.stringify(context));
 		};
 	</script>
 </mk-post-form>
