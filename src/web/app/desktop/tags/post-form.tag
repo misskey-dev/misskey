@@ -359,10 +359,10 @@
 		};
 
 		this.ondragover = e => {
+			e.preventDefault();
 			e.stopPropagation();
 			this.draghover = true;
 			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
-			return false;
 		};
 
 		this.ondragenter = e => {
@@ -382,8 +382,6 @@
 			if (e.dataTransfer.files.length > 0) {
 				e.dataTransfer.files.forEach(this.upload);
 			}
-
-			return false;
 		};
 
 		this.onkeydown = e => {
