@@ -338,6 +338,7 @@
 			if (draft) {
 				draft = JSON.parse(draft);
 				this.refs.text.value = draft.text;
+				this.update();
 			}
 		});
 
@@ -352,6 +353,7 @@
 		this.clear = () => {
 			this.refs.text.value = '';
 			this.files = [];
+			this.poll = false;
 			this.trigger('change-files');
 			this.update();
 		};
@@ -452,8 +454,9 @@
 				reply_to_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined
 			}).then(data => {
-				localStorage.removeItem('post-draft');
+				this.clear();
 				this.trigger('post');
+				localStorage.removeItem('post-draft');
 				this.notify(this.inReplyToPost ? '返信しました！' : '投稿しました！');
 			}).catch(err => {
 				this.notify('投稿できませんでした');
