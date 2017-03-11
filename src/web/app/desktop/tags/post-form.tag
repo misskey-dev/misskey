@@ -485,7 +485,7 @@
 
 		this.save = () => {
 			const context = {
-				text: this.refs.text.value,
+				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
 				files: this.files,
 				poll: this.poll && this.refs.poll ? this.refs.poll.get() : undefined
 			};
