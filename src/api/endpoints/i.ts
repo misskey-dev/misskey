@@ -1,6 +1,7 @@
 /**
  * Module dependencies
  */
+import User from '../models/user';
 import serialize from '../serializers/user';
 
 /**
@@ -18,4 +19,11 @@ module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => 
 		detail: true,
 		includeSecrets: isSecure
 	}));
+
+	// Update lastUsedAt
+	User.update({ _id: user._id }, {
+		$set: {
+			last_used_at: new Date()
+		}
+	});
 });
