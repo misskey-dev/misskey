@@ -1,5 +1,5 @@
 <mk-post-form-window>
-	<mk-window ref="window" is-modal={ true } colored={ true }>
+	<mk-window ref="window" is-modal={ true }>
 		<yield to="header">
 			<span if={ !parent.opts.reply }>新規投稿</span>
 			<span if={ parent.opts.reply }>返信</span>

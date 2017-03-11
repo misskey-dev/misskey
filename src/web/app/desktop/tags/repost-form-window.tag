@@ -1,7 +1,11 @@
 <mk-repost-form-window>
-	<mk-window ref="window" is-modal={ true } colored={ true }><yield to="header"><i class="fa fa-retweet"></i>この投稿をRepostしますか？</yield>
-<yield to="content">
-		<mk-repost-form ref="form" post={ parent.opts.post }></mk-repost-form></yield>
+	<mk-window ref="window" is-modal={ true }>
+		<yield to="header">
+			<i class="fa fa-retweet"></i>この投稿をRepostしますか？
+		</yield>
+		<yield to="content">
+			<mk-repost-form ref="form" post={ parent.opts.post }></mk-repost-form>
+		</yield>
 	</mk-window>
 	<style>
 		:scope

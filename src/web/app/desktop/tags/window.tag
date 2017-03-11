@@ -1,4 +1,4 @@
-<mk-window data-flexible={ isFlexible } data-colored={ opts.colored } ondragover={ ondragover }>
+<mk-window data-flexible={ isFlexible } ondragover={ ondragover }>
 	<div class="bg" ref="bg" show={ isModal } onclick={ bgClick }></div>
 	<div class="main" ref="main" tabindex="-1" data-is-modal={ isModal } onmousedown={ onBodyMousedown } onkeydown={ onKeydown }>
 		<div class="body">
@@ -170,25 +170,6 @@
 			&:not([flexible])
 				> .main > .body > .content
 					height calc(100% - 40px)
-
-			&[data-colored]
-
-				> .main > .body
-
-					> header
-						box-shadow 0 1px 0 rgba($theme-color, 0.1)
-
-						> h1
-							color #d0b4ac
-
-						> .close
-							color rgba($theme-color, 0.4)
-
-							&:hover
-								color rgba($theme-color, 0.6)
-
-							&:active
-								color darken($theme-color, 30%)
 
 	</style>
 	<script>
