@@ -1,13 +1,19 @@
 <mk-post-form-window>
-	<mk-window ref="window" is-modal={ true } colored={ true }><yield to="header"><span if={ !parent.opts.reply }>新規投稿</span><span if={ parent.opts.reply }>返信</span><span class="files" if={ parent.files.length != 0 }>添付: { parent.files.length }ファイル</span><span class="uploading-files" if={ parent.uploadingFiles.length != 0 }>{ parent.uploadingFiles.length }個のファイルをアップロード中
-			<mk-ellipsis></mk-ellipsis></span></yield>
-<yield to="content">
-		<div class="ref" if={ parent.opts.reply }>
-			<mk-post-preview post={ parent.opts.reply }></mk-post-preview>
-		</div>
-		<div class="body">
-			<mk-post-form ref="form" reply={ parent.opts.reply }></mk-post-form>
-		</div></yield>
+	<mk-window ref="window" is-modal={ true } colored={ true }>
+		<yield to="header">
+			<span if={ !parent.opts.reply }>新規投稿</span>
+			<span if={ parent.opts.reply }>返信</span>
+			<span class="files" if={ parent.files.length != 0 }>添付: { parent.files.length }ファイル</span>
+			<span class="uploading-files" if={ parent.uploadingFiles.length != 0 }>{ parent.uploadingFiles.length }個のファイルをアップロード中<mk-ellipsis></mk-ellipsis></span>
+		</yield>
+		<yield to="content">
+			<div class="ref" if={ parent.opts.reply }>
+				<mk-post-preview post={ parent.opts.reply }></mk-post-preview>
+			</div>
+			<div class="body">
+				<mk-post-form ref="form" reply={ parent.opts.reply }></mk-post-form>
+			</div>
+		</yield>
 	</mk-window>
 	<style>
 		:scope
@@ -48,13 +54,13 @@
 
 			this.refs.window.refs.form.on('change-uploading-files', files => {
 				this.update({
-					uploadingFiles: files
+					uploadingFiles: files || []
 				});
 			});
 
 			this.refs.window.refs.form.on('change-files', files => {
 				this.update({
-					files: files
+					files: files || []
 				});
 			});
 		});

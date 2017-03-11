@@ -4,11 +4,12 @@
 		<div class="medias { with: poll }" if={ files.length != 0 }>
 			<ul>
 				<li each={ files }>
-					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div><img class="remove" onclick={ _remove } src="/resources/desktop/remove.png" title="添付取り消し" alt=""/>
+					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
+					<img class="remove" onclick={ removeFile } src="/resources/desktop/remove.png" title="添付取り消し" alt=""/>
 				</li>
 				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
-			<p class="remain">残り{ 4 - files.length }</p>
+			<p class="remain">{ 4 - files.length }/4</p>
 		</div>
 		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }></mk-poll-editor>
 	</div>
@@ -334,10 +335,18 @@
 			this.autocomplete = new this.Autocomplete(this.refs.text);
 			this.autocomplete.attach();
 
+			// 書きかけの投稿を復元
 			let draft = localStorage.getItem('post-draft');
 			if (draft) {
 				draft = JSON.parse(draft);
 				this.refs.text.value = draft.text;
+				this.files = draft.files;
+				if (draft.poll) {
+					this.poll = true;
+					this.update();
+					this.refs.poll.set(draft.poll);
+				}
+				this.trigger('change-files', this.files);
 				this.update();
 			}
 		});
@@ -418,13 +427,14 @@
 		};
 
 		this.addFile = file => {
-			file._remove = () => {
-				this.files = this.files.filter(x => x.id != file.id);
-				this.trigger('change-files', this.files);
-				this.update();
-			};
-
 			this.files.push(file);
+			this.trigger('change-files', this.files);
+			this.update();
+		};
+
+		this.removeFile = e => {
+			const file = e.item;
+			this.files = this.files.filter(x => x.id != file.id);
 			this.trigger('change-files', this.files);
 			this.update();
 		};
@@ -477,7 +487,7 @@
 			const context = {
 				text: this.refs.text.value,
 				files: this.files,
-				poll: this.poll ? this.refs.poll.get() : undefined
+				poll: this.poll && this.refs.poll ? this.refs.poll.get() : undefined
 			};
 
 			localStorage.setItem('post-draft', JSON.stringify(context));

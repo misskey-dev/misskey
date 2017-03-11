@@ -78,9 +78,9 @@
 
 		this.toggleResult = () => {
 			this.result = !this.result;
-		}
+		};
 
-		this.vote = (id) => {
+		this.vote = id => {
 			if (this.poll.choices.some(c => c.is_voted)) return;
 			this.api('posts/polls/vote', {
 				post_id: this.post.id,
@@ -99,6 +99,6 @@
 					total: this.total + 1
 				});
 			});
-		}
+		};
 	</script>
 </mk-poll>

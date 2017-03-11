@@ -90,27 +90,32 @@
 
 		this.oninput = (i, e) => {
 			this.choices[i] = e.target.value;
-		}
+		};
 
 		this.add = () => {
 			this.choices.push('');
 			this.update();
 			this.refs.choices.childNodes[this.choices.length - 1].childNodes[0].focus();
-		}
+		};
 
 		this.remove = (i) => {
 			this.choices = this.choices.filter((_, _i) => _i != i);
 			this.update();
-		}
+		};
 
 		this.destroy = () => {
 			this.opts.ondestroy();
-		}
+		};
 
 		this.get = () => {
 			return {
 				choices: this.choices.filter(choice => choice != '')
 			}
-		}
+		};
+
+		this.set = data => {
+			if (data.choices.length == 0) return;
+			this.choices = data.choices;
+		};
 	</script>
 </mk-poll-editor>
