@@ -324,7 +324,7 @@
 		this.mixin('NotImplementedException');
 
 		this.post = this.opts.post;
-		this.isRepost = this.post.repost && this.post.text == null;
+		this.isRepost = this.post.repost && this.post.text == null && this.post.media_ids == null && this.post.poll == null;
 		this.p = this.isRepost ? this.post.repost : this.post;
 
 		this.title = this.dateStringify(this.p.created_at);
@@ -418,7 +418,7 @@
 				case e.which == 82: // [r]
 					this.reply();
 					break;
-				
+
 				default:
 					shouldBeCancel = false;
 			}

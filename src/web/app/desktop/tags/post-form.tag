@@ -1,6 +1,6 @@
 <mk-post-form ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
 	<div class="content">
-		<textarea class={ with: (files.length != 0 || poll) } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
+		<textarea class={ with: (files.length != 0 || poll) } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ placeholder="" }></textarea>
 		<div class="medias { with: poll }" if={ files.length != 0 }>
 			<ul>
 				<li each={ files }>
@@ -19,8 +19,8 @@
 	<button class="cat" title="Insert The Cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
 	<button class="poll" title="投票を作成" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
 	<p class="text-count { over: refs.text.value.length > 1000 }">のこり{ 1000 - refs.text.value.length }文字</p>
-	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll) } onclick={ post }>{ wait ? '投稿中' : opts.reply ? '返信' : '投稿' }
-		<mk-ellipsis if={ wait }></mk-ellipsis>
+	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll) } onclick={ post }>
+		{ wait ? '投稿中' : submitText }<mk-ellipsis if={ wait }></mk-ellipsis>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>
 	<div class="dropzone" if={ draghover }></div>
@@ -323,6 +323,29 @@
 		// https://github.com/riot/riot/issues/2080
 		if (this.inReplyToPost == '') this.inReplyToPost = null;
 
+		this.repost = this.opts.repost;
+
+		// https://github.com/riot/riot/issues/2080
+		if (this.repost == '') this.repost = null;
+
+		this.placeholder = this.repost
+			? 'この投稿を引用...'
+			: this.inReplyToPost
+				? 'この投稿への返信...'
+				: 'いまどうしてる？';
+
+		this.submitText = this.repost
+			? 'Repost'
+			: this.inReplyToPost
+				? '返信'
+				: '投稿';
+
+		this.draftId = this.repost
+			? 'draft-repost-' + this.repost.id
+			: this.inReplyToPost
+				? 'draft-reply-' + this.inReplyToPost.id
+				: 'draft';
+
 		this.on('mount', () => {
 			this.refs.uploader.on('uploaded', file => {
 				this.addFile(file);
@@ -336,7 +359,7 @@
 			this.autocomplete.attach();
 
 			// 書きかけの投稿を復元
-			let draft = localStorage.getItem('post-draft');
+			let draft = localStorage.getItem(this.draftId);
 			if (draft) {
 				draft = JSON.parse(draft);
 				this.refs.text.value = draft.text;
@@ -457,17 +480,26 @@
 				: undefined;
 
 			this.api('posts/create', {
-				text: this.refs.text.value,
+				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
 				media_ids: files,
 				reply_to_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
+				repost_id: this.repost ? this.repost.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined
 			}).then(data => {
 				this.clear();
 				this.trigger('post');
-				localStorage.removeItem('post-draft');
-				this.notify(this.inReplyToPost ? '返信しました！' : '投稿しました！');
+				localStorage.removeItem(this.draftId);
+				this.notify(this.repost
+					? 'Repostしました！'
+					: this.inReplyToPost
+						? '返信しました！'
+						: '投稿しました！');
 			}).catch(err => {
-				this.notify('投稿できませんでした');
+				this.notify(this.repost
+					? 'Repostできませんでした'
+					: this.inReplyToPost
+						? '返信できませんでした'
+						: '投稿できませんでした');
 			}).then(() => {
 				this.update({
 					wait: false
@@ -485,12 +517,12 @@
 
 		this.save = () => {
 			const context = {
-				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
+				text: this.refs.text.value,
 				files: this.files,
 				poll: this.poll && this.refs.poll ? this.refs.poll.get() : undefined
 			};
 
-			localStorage.setItem('post-draft', JSON.stringify(context));
+			localStorage.setItem(this.draftId, JSON.stringify(context));
 		};
 	</script>
 </mk-post-form>

@@ -1,49 +1,20 @@
 <mk-repost-form>
 	<mk-post-preview post={ opts.post }></mk-post-preview>
-	<div class="form" if={ quote }>
-		<textarea ref="text" disabled={ wait } placeholder="この投稿を引用..."></textarea>
-	</div>
-	<footer><a class="quote" if={ !quote } onclick={ onquote }>引用する...</a>
-		<button class="cancel" onclick={ cancel }>キャンセル</button>
-		<button class="ok" onclick={ ok }>Repost</button>
-	</footer>
+	<virtual if={ !quote }>
+		<footer>
+			<a class="quote" if={ !quote } onclick={ onquote }>引用する...</a>
+			<button class="cancel" onclick={ cancel }>キャンセル</button>
+			<button class="ok" onclick={ ok } disabled={ wait }>{ wait ? 'しています...' : 'Repost' }</button>
+		</footer>
+	</virtual>
+	<virtual if={ quote }>
+		<mk-post-form ref="form" repost={ opts.post }></mk-post-form>
+	</virtual>
 	<style>
 		:scope
 
 			> mk-post-preview
 				margin 16px 22px
-
-			> .form
-				[ref='text']
-					display block
-					padding 12px
-					margin 0
-					width 100%
-					max-width 100%
-					min-width 100%
-					min-height calc(1em + 12px + 12px)
-					font-size 1em
-					color #333
-					background #fff
-					outline none
-					border solid 1px rgba($theme-color, 0.1)
-					border-radius 4px
-					transition border-color .3s ease
-
-					&:hover
-						border-color rgba($theme-color, 0.2)
-						transition border-color .1s ease
-
-					&:focus
-						color $theme-color
-						border-color rgba($theme-color, 0.5)
-						transition border-color 0s ease
-
-					&:disabled
-						opacity 0.5
-
-					&::-webkit-input-placeholder
-						color rgba($theme-color, 0.3)
 
 			> div
 				padding 16px
@@ -127,8 +98,7 @@
 		this.ok = () => {
 			this.wait = true;
 			this.api('posts/create', {
-				repost_id: this.opts.post.id,
-				text: this.quote ? this.refs.text.value : undefined
+				repost_id: this.opts.post.id
 			}).then(data => {
 				this.trigger('posted');
 				this.notify('Repostしました！');
@@ -142,7 +112,15 @@
 		};
 
 		this.onquote = () => {
-			this.quote = true;
+			this.update({
+				quote: true
+			});
+
+			this.refs.form.on('post', () => {
+				this.trigger('posted');
+			});
+
+			this.refs.form.focus();
 		};
 	</script>
 </mk-repost-form>
