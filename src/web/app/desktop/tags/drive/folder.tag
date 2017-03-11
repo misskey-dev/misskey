@@ -92,7 +92,8 @@
 			return false;
 		};
 
-		this.ondragenter = () => {
+		this.ondragenter = e => {
+			e.preventDefault();
 			if (!this.isDragging) this.draghover = true;
 		};
 
@@ -101,6 +102,7 @@
 		};
 
 		this.ondrop = e => {
+			e.preventDefault();
 			e.stopPropagation();
 			this.draghover = false;
 
