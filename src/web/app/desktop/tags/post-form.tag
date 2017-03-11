@@ -341,10 +341,10 @@
 				: '投稿';
 
 		this.draftId = this.repost
-			? 'draft-repost-' + this.repost.id
+			? 'repost:' + this.repost.id
 			: this.inReplyToPost
-				? 'draft-reply-' + this.inReplyToPost.id
-				: 'draft';
+				? 'reply:' + this.inReplyToPost.id
+				: 'post';
 
 		this.on('mount', () => {
 			this.refs.uploader.on('uploaded', file => {
@@ -359,15 +359,14 @@
 			this.autocomplete.attach();
 
 			// 書きかけの投稿を復元
-			let draft = localStorage.getItem(this.draftId);
+			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 			if (draft) {
-				draft = JSON.parse(draft);
-				this.refs.text.value = draft.text;
-				this.files = draft.files;
-				if (draft.poll) {
+				this.refs.text.value = draft.data.text;
+				this.files = draft.data.files;
+				if (draft.data.poll) {
 					this.poll = true;
 					this.update();
-					this.refs.poll.set(draft.poll);
+					this.refs.poll.set(draft.data.poll);
 				}
 				this.trigger('change-files', this.files);
 				this.update();
@@ -487,8 +486,8 @@
 				poll: this.poll ? this.refs.poll.get() : undefined
 			}).then(data => {
 				this.clear();
+				this.removeDraft();
 				this.trigger('post');
-				localStorage.removeItem(this.draftId);
 				this.notify(this.repost
 					? 'Repostしました！'
 					: this.inReplyToPost
@@ -512,17 +511,30 @@
 		};
 
 		this.on('update', () => {
-			this.save();
+			this.saveDraft();
 		});
 
-		this.save = () => {
-			const context = {
-				text: this.refs.text.value,
-				files: this.files,
-				poll: this.poll && this.refs.poll ? this.refs.poll.get() : undefined
-			};
+		this.saveDraft = () => {
+			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
-			localStorage.setItem(this.draftId, JSON.stringify(context));
+			data[this.draftId] = {
+				updated_at: new Date(),
+				data: {
+					text: this.refs.text.value,
+					files: this.files,
+					poll: this.poll && this.refs.poll ? this.refs.poll.get() : undefined
+				}
+			}
+
+			localStorage.setItem('drafts', JSON.stringify(data));
+		};
+
+		this.removeDraft = () => {
+			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
+
+			delete data[this.draftId];
+
+			localStorage.setItem('drafts', JSON.stringify(data));
 		};
 	</script>
 </mk-post-form>
