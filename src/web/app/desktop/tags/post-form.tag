@@ -1,6 +1,6 @@
 <mk-post-form ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
 	<div class="content">
-		<textarea class={ with: (files.length != 0 || poll) } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ placeholder="" }></textarea>
+		<textarea class={ with: (files.length != 0 || poll) } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ placeholder }></textarea>
 		<div class="medias { with: poll }" if={ files.length != 0 }>
 			<ul>
 				<li each={ files }>
