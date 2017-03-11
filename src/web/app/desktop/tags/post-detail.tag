@@ -3,9 +3,9 @@
 		<mk-ellipsis-icon></mk-ellipsis-icon>
 	</div>
 	<div class="main" if={ !fetching }>
-		<button class="read-more" if={ p.reply_to && p.reply_to.reply_to_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ loadingContext }>
-			<i class="fa fa-ellipsis-v" if={ !loadingContext }></i>
-			<i class="fa fa-spinner fa-pulse" if={ loadingContext }></i>
+		<button class="read-more" if={ p.reply_to && p.reply_to.reply_to_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
+			<i class="fa fa-ellipsis-v" if={ !contextFetching }></i>
+			<i class="fa fa-spinner fa-pulse" if={ contextFetching }></i>
 		</button>
 		<div class="context">
 			<virtual each={ post in context }>
@@ -336,7 +336,7 @@
 		this.mixin('NotImplementedException');
 
 		this.fetching = true;
-		this.loadingContext = false;
+		this.contextFetching = false;
 		this.context = null;
 		this.post = null;
 
@@ -438,14 +438,14 @@
 		};
 
 		this.loadContext = () => {
-			this.loadingContext = true;
+			this.contextFetching = true;
 
 			// Fetch context
 			this.api('posts/context', {
 				post_id: this.p.reply_to_id
 			}).then(context => {
 				this.update({
-					loadContext: false,
+					contextFetching: false,
 					context: context.reverse()
 				});
 			});
