@@ -1,6 +1,7 @@
 /**
  * Module dependencies
  */
+const ms = require('ms');
 import $ from 'cafy';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
@@ -29,6 +30,9 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		.find({
 			_id: {
 				$nin: followingIds
+			},
+			last_used_at: {
+				$gte: new Date(Date.now() - ms('7days'))
 			}
 		}, {
 			limit: limit,
