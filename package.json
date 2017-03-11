@@ -118,7 +118,7 @@
     "ratelimiter": "3.0.2",
     "recaptcha-promise": "0.1.2",
     "reconnecting-websocket": "3.0.3",
-    "redis": "2.6.5",
+    "redis": "2.7.0",
     "request": "2.81.0",
     "rimraf": "2.6.1",
     "riot": "3.3.2",
