@@ -97,7 +97,7 @@
     "gulp-rename": "1.2.2",
     "gulp-tslint": "7.1.0",
     "gulp-typescript": "3.1.5",
-    "gulp-uglify": "2.1.0",
+    "gulp-uglify": "2.0.1",
     "gulp-util": "3.0.8",
     "inquirer": "3.0.6",
     "is-root": "1.0.0",
