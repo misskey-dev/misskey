@@ -30,6 +30,7 @@ require('./sub-post-content.tag');
 require('./images-viewer.tag');
 require('./drive.tag');
 require('./drive-selector.tag');
+require('./drive-folder-selector.tag');
 require('./drive/file.tag');
 require('./drive/folder.tag');
 require('./drive/file-viewer.tag');

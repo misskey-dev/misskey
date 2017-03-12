@@ -142,7 +142,7 @@
 
 		this.file = null;
 
-		this.isSelectMode = this.opts.select;
+		this.isFileSelectMode = this.opts.selectFile;
 		this.multiple =this.opts.multiple;
 
 		this.on('mount', () => {
@@ -381,7 +381,7 @@
 		};
 
 		this.chooseFile = file => {
-			if (this.isSelectMode) {
+			if (this.isFileSelectMode) {
 				if (this.selectedFiles.some(f => f.id == file.id)) {
 					this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
 				} else {

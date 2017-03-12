@@ -34,6 +34,9 @@
 			<button onclick={ rename }>
 				<i class="fa fa-pencil"></i>名前を変更
 			</button>
+			<button onclick={ move }>
+				<i class="fa fa-folder-open"></i>移動
+			</button>
 		</div>
 	</div>
 	<div class="hash">
@@ -196,6 +199,20 @@
 				name: name
 			}).then(() => {
 				this.parent.cf(this.file, true);
+			});
+		};
+
+		this.move = () => {
+			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')), {
+				multiple: true
+			})[0];
+			dialog.one('selected', folder => {
+				this.api('drive/files/update', {
+					file_id: this.file.id,
+					folder_id: folder == null ? null : folder.id
+				}).then(() => {
+					this.parent.cf(this.file, true);
+				});
 			});
 		};
 	</script>
