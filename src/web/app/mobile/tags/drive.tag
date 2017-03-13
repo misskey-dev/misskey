@@ -455,7 +455,7 @@
 			if (name == null || name == '') return;
 			this.api('drive/folders/create', {
 				name: name,
-				folder_id: this.folder ? this.folder.id : undefined
+				parent_id: this.folder ? this.folder.id : undefined
 			}).then(folder => {
 				this.addFolder(folder, true);
 				this.update();
