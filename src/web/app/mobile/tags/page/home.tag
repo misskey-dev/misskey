@@ -12,12 +12,17 @@
 		this.mixin('ui-progress');
 		this.mixin('stream');
 		this.mixin('get-post-summary');
+		this.mixin('open-post-form');
 
 		this.unreadCount = 0;
 
 		this.on('mount', () => {
 			document.title = 'Misskey'
 			this.ui.trigger('title', '<i class="fa fa-home"></i>ホーム');
+
+			this.ui.trigger('func', () => {
+				this.openPostForm();
+			}, 'pencil');
 
 			this.Progress.start();
 

@@ -5,7 +5,7 @@
 		<div class="content">
 			<button class="nav" onclick={ parent.toggleDrawer }><i class="fa fa-bars"></i></button>
 			<h1 ref="title">Misskey</h1>
-			<button class="post" onclick={ post }><i class="fa fa-pencil"></i></button>
+			<button if={ func } onclick={ func }><i class="fa fa-{ funcIcon }"></i></button>
 		</div>
 	</div>
 	<style>
@@ -74,7 +74,7 @@
 						> i
 							transition all 0.2s ease
 
-					> .post
+					> button:last-child
 						display block
 						position absolute
 						top 0
@@ -89,14 +89,27 @@
 	</style>
 	<script>
 		this.mixin('ui');
-		this.mixin('open-post-form');
 
-		this.ui.on('title', title => {
-			if (this.refs.title) this.refs.title.innerHTML = title;
+		this.func = null;
+		this.funcIcon = null;
+
+		this.on('unmount', () => {
+			this.ui.off('title', this.setTitle);
+			this.ui.off('func', this.setFunc);
 		});
 
-		this.post = () => {
-			this.openPostForm();
+		this.setTitle = title => {
+			this.refs.title.innerHTML = title;
 		};
+
+		this.setFunc = (fn, icon) => {
+			this.update({
+				func: fn,
+				funcIcon: icon
+			});
+		};
+
+		this.ui.on('title', this.setTitle);
+		this.ui.on('func', this.setFunc);
 	</script>
 </mk-ui-header>
