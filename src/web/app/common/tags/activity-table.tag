@@ -39,7 +39,7 @@
 								: d.v > 0
 									? '#c6e48b'
 									: '#eee';
-					d.date.weekday = (new Date(d.date.year + '-' + d.date.month + '-' + d.date.day)).getDay();
+					d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
 					if (d.date.weekday == 6) x++;
 				});
 				this.update({ data });
