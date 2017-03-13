@@ -16,8 +16,8 @@
 				<p class="separator"></p>
 				<p class="data-size">{ bytesToSize(file.datasize) }</p>
 				<p class="separator"></p>
-				<p class="created-at"><i class="fa fa-clock-o"></i>
-					<mk-time time={ file.created_at }></mk-time>
+				<p class="created-at">
+					<i class="fa fa-clock-o"></i><mk-time time={ file.created_at }></mk-time>
 				</p>
 			</footer>
 		</div>

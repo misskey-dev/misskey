@@ -23,7 +23,7 @@
 			<span class="separator"></span>
 			<span class="data-size">{ bytesToSize(file.datasize) }</span>
 			<span class="separator"></span>
-			<span class="created-at"><mk-time time={ file.created_at }></mk-time></span>
+			<span class="created-at"><i class="fa fa-clock-o"></i><mk-time time={ file.created_at }></mk-time></span>
 		</div>
 	</div>
 	<div class="menu">
