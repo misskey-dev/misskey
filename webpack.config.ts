@@ -70,7 +70,7 @@ const pack: webpack.Configuration = {
 };
 
 if (isProduction) {
-	pack.plugins.push(new webpack.optimize.UglifyJsPlugin());
+	//pack.plugins.push(new webpack.optimize.UglifyJsPlugin());
 }
 
 module.exports = pack;
