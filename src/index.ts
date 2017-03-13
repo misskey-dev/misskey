@@ -120,10 +120,12 @@ async function init() {
 	}
 
 	// Check if a port is being used
+	/* https://github.com/stdarg/tcp-port-used/issues/3
 	if (await portUsed.check(config.port)) {
 		Logger.error(`Port ${config.port} is already used`);
 		return InitResult.Failure;
 	}
+	*/
 
 	// Try to connect to MongoDB
 	let mongoDBLogger = new Logger('MongoDB');
