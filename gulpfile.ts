@@ -12,7 +12,7 @@ import * as glob from 'glob';
 import * as es from 'event-stream';
 import * as webpack from 'webpack-stream';
 import cssnano = require('gulp-cssnano');
-//import * as uglify from 'gulp-uglify';
+import * as uglify from 'gulp-uglify';
 import pug = require('gulp-pug');
 import * as rimraf from 'rimraf';
 import * as chalk from 'chalk';
@@ -131,7 +131,7 @@ gulp.task('build:client:scripts', () =>
 		webpack(require('./webpack.config'), require('webpack'))
 			.pipe(gulp.dest('./built/web/resources/')) as any,
 		gulp.src('./src/web/app/client/script.js')
-			//.pipe(isProduction ? uglify() : gutil.noop())
+			.pipe(isProduction ? uglify() : gutil.noop())
 			.pipe(gulp.dest('./built/web/resources/client/')) as any
 	)
 );
