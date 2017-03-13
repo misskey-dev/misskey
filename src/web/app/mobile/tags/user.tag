@@ -33,6 +33,7 @@
 						<i>フォロワー</i>
 					</a>
 				</div>
+				<mk-activity-table user={ user }></mk-activity-table>
 			</div>
 			<nav>
 				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>タイムライン</a>
@@ -145,6 +146,9 @@
 
 								> i
 									font-size 14px
+
+						> mk-activity-table
+							margin 12px 0 0 0
 
 					> nav
 						display flex

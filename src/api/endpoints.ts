@@ -110,6 +110,9 @@ const endpoints: Endpoint[] = [
 		secure: true
 	},
 	{
+		name: 'aggregation/users/activity',
+	},
+	{
 		name: 'aggregation/users/post',
 	},
 	{
