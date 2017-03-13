@@ -111,7 +111,6 @@ describe('API', () => {
 				password: 'kyoppie'
 			});
 			res.should.have.status(400);
-			res.text.should.be.equal('incorrect password');
 		}));
 
 		it('クエリをインジェクションできない', async(async () => {
