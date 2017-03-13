@@ -145,6 +145,8 @@
 		this.uploads = [];
 
 		this.upload = (file, folder) => {
+			if (folder && typeof folder == 'object') folder = folder.id;
+
 			const id = Math.random();
 
 			const ctx = {

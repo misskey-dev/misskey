@@ -14,6 +14,7 @@
 			<p>{ file.name }</p>
 		</virtual>
 	</nav>
+	<mk-uploader ref="uploader"></mk-uploader>
 	<div class="browser { fetching: fetching }" if={ file == null }>
 		<div class="folders" if={ folders.length > 0 }>
 			<virtual each={ folder in folders }>
@@ -38,6 +39,7 @@
 			</div>
 		</div>
 	</div>
+	<input ref="file" type="file" multiple="multiple" onchange={ changeLocalFile }/>
 	<mk-drive-file-viewer if={ file != null } file={ file }></mk-drive-file-viewer>
 	<style>
 		:scope
@@ -125,6 +127,9 @@
 							transform: scale(1.0);
 						}
 					}
+
+			> [ref='file']
+				display none
 
 	</style>
 	<script>
@@ -418,6 +423,88 @@
 		const dive = folder => {
 			this.hierarchyFolders.unshift(folder);
 			if (folder.parent) dive(folder.parent);
+		};
+
+		this.openContextMenu = () => {
+			const fn = window.prompt('何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>');
+			if (fn == null || fn == '') return;
+			switch (fn) {
+				case '1':
+					this.refs.file.click();
+					break;
+				case '2':
+					this.urlUpload();
+					break;
+				case '3':
+					this.createFolder();
+					break;
+				case '4':
+					this.renameFolder();
+					break;
+				case '5':
+					this.moveFolder();
+					break;
+				case '6':
+					alert('ごめんなさい！フォルダの削除は未実装です...。');
+					break;
+			}
+		};
+
+		this.createFolder = () => {
+			const name = window.prompt('フォルダー名');
+			if (name == null || name == '') return;
+			this.api('drive/folders/create', {
+				name: name,
+				folder_id: this.folder ? this.folder.id : undefined
+			}).then(folder => {
+				this.addFolder(folder, true);
+				this.update();
+			});
+		};
+
+		this.renameFolder = () => {
+			if (this.folder == null) {
+				alert('現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。');
+				return;
+			}
+			const name = window.prompt('フォルダー名', this.folder.name);
+			if (name == null || name == '') return;
+			this.api('drive/folders/update', {
+				name: name,
+				folder_id: this.folder.id
+			}).then(folder => {
+				this.cd(folder);
+			});
+		};
+
+		this.moveFolder = () => {
+			if (this.folder == null) {
+				alert('現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。');
+				return;
+			}
+			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')))[0];
+			dialog.one('selected', folder => {
+				this.api('drive/folders/update', {
+					parent_id: folder.id,
+					folder_id: this.folder.id
+				}).then(folder => {
+					this.cd(folder);
+				});
+			});
+		};
+
+		this.urlUpload = () => {
+			const url = window.prompt('アップロードしたいファイルのURL');
+			if (url == null || url == '') return;
+			this.api('drive/files/upload_from_url', {
+				url: url,
+				folder_id: this.folder ? this.folder.id : undefined
+			});
+			alert('アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。');
+		};
+
+		this.changeLocalFile = () => {
+			this.refs.file.files.forEach(f => this.refs.uploader.upload(f, this.folder));
 		};
 	</script>
 </mk-drive>

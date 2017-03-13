@@ -203,9 +203,7 @@
 		};
 
 		this.move = () => {
-			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')), {
-				multiple: true
-			})[0];
+			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')))[0];
 			dialog.one('selected', folder => {
 				this.api('drive/files/update', {
 					file_id: this.file.id,

@@ -14,6 +14,10 @@
 			document.title = 'Misskey Drive';
 			this.ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
 
+			this.ui.trigger('func', () => {
+				this.refs.ui.refs.browser.openContextMenu();
+			}, 'ellipsis-h');
+
 			this.refs.ui.refs.browser.on('begin-fetch', () => {
 				this.Progress.start();
 			});
