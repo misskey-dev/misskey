@@ -175,6 +175,7 @@
 						width 100%
 						margin 6px 0 0 0
 						padding 8px
+						white-space nowrap
 						overflow auto
 						font-size 0.8em
 						border solid 1px #dfdfdf
