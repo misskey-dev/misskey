@@ -1,7 +1,7 @@
 <mk-activity-table>
-	<svg if={ data } ref="canvas" viewBox="0 0 53 6.85">
+	<svg if={ data } ref="canvas" viewBox="0 0 53 7" preserveAspectRatio="none">
 		<rect each={ d, i in data } width="0.8" height="0.8"
-			x={ 52 - (i / 7) } y={ d.date.weekday }
+			riot-x={ d.x } riot-y={ d.date.weekday }
 			fill={ d.color }></rect>
 	</svg>
 	<style>
@@ -26,7 +26,9 @@
 			}).then(data => {
 				data.forEach(d => d.total = d.posts + d.replies + d.reposts);
 				this.peak = Math.max.apply(null, data.map(d => d.total));
-				data.forEach(d => {
+				let x = 0;
+				data.reverse().forEach(d => {
+					d.x = x;
 					d.v = d.total / this.peak;
 					d.color = d.v > 0.75
 						? '#196127'
@@ -38,6 +40,7 @@
 									? '#c6e48b'
 									: '#eee';
 					d.date.weekday = (new Date(d.date.year + '-' + d.date.month + '-' + d.date.day)).getDay();
+					if (d.date.weekday == 6) x++;
 				});
 				this.update({ data });
 			});
