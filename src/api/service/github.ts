@@ -31,10 +31,17 @@ module.exports = async (app: express.Application) => {
 
 	handler.on('push', event => {
 		const ref = event.ref;
-		if (ref != 'refs/heads/master') return;
-		const pusher = event.pusher;
-		const compare = event.compare;
-		post(`Pushed by **${pusher.name}**\nCompare changes: ${compare}`);
+		switch (ref) {
+			case 'refs/heads/master':
+				const pusher = event.pusher;
+				const compare = event.compare;
+				post(`Pushed by **${pusher.name}**\nCompare changes: ${compare}`);
+				break;
+			case 'refs/heads/release':
+				const commit = event.commits[0];
+				post(`RELEASED: ${commit.message}`);
+				break;
+		}
 	});
 
 	handler.on('issues', event => {
@@ -47,7 +54,7 @@ module.exports = async (app: express.Application) => {
 			case 'reopened': title = 'Issue Reopened'; break;
 			default: return;
 		}
-		post(`${title}: ${issue.number}「${issue.title}」\n${issue.html_url}`);
+		post(`${title}: <${issue.number}>「${issue.title}」\n${issue.html_url}`);
 	});
 
 	handler.on('issue_comment', event => {
@@ -56,7 +63,7 @@ module.exports = async (app: express.Application) => {
 		const action = event.action;
 		let text: string;
 		switch (action) {
-			case 'created': text = `Comment to「${issue.title}」:${comment.user.login}「${comment.body}」\n${comment.html_url}`; break;
+			case 'created': text = `Commented to「${issue.title}」:${comment.user.login}「${comment.body}」\n${comment.html_url}`; break;
 			default: return;
 		}
 		post(text);
@@ -64,7 +71,7 @@ module.exports = async (app: express.Application) => {
 
 	handler.on('watch', event => {
 		const sender = event.sender;
-		post(`⭐️Starred by ${sender.login}`);
+		post(`⭐️Starred by **${sender.login}**`);
 	});
 
 	handler.on('fork', event => {
