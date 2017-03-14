@@ -23,7 +23,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
 	if (offsetErr) return rej('invalid offset param');
 
-	// ID list of the user $self and other users who the user follows
+	// ID list of the user itself and other users who the user follows
 	const followingIds = await getFriends(me._id);
 
 	const users = await User
