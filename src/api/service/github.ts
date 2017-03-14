@@ -40,7 +40,7 @@ module.exports = async (app: express.Application) => {
 				break;
 			case 'refs/heads/release':
 				const commit = event.commits[0];
-				post(`RELEASED: ${commit.message}`);
+				post(`RELEASED🎉: ${commit.message}`);
 				break;
 		}
 	});
