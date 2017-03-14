@@ -35,7 +35,8 @@ module.exports = async (app: express.Application) => {
 			case 'refs/heads/master':
 				const pusher = event.pusher;
 				const compare = event.compare;
-				post(`Pushed by **${pusher.name}**\nCompare changes: ${compare}`);
+				const commits = event.commits.map(commit => `・${commit.message}`).join('\n');
+				post(`Pushed by **${pusher.name}**\n${commits}\nCompare changes: ${compare}`);
 				break;
 			case 'refs/heads/release':
 				const commit = event.commits[0];
