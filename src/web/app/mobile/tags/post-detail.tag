@@ -351,7 +351,8 @@
 					fetching: false,
 					post: post,
 					isRepost: isRepost,
-					p: p
+					p: p,
+					summary: this.getPostSummary(p)
 				});
 
 				this.trigger('loaded');
