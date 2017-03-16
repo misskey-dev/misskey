@@ -485,7 +485,7 @@
 			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')))[0];
 			dialog.one('selected', folder => {
 				this.api('drive/folders/update', {
-					parent_id: folder.id,
+					parent_id: folder ? folder.id : null,
 					folder_id: this.folder.id
 				}).then(folder => {
 					this.cd(folder);
