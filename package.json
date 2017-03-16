@@ -41,7 +41,7 @@
     "@types/gulp-rename": "0.0.31",
     "@types/gulp-tslint": "3.6.30",
     "@types/gulp-typescript": "0.0.32",
-    "@types/gulp-uglify": "0.0.29",
+    "@types/gulp-uglify": "0.0.30",
     "@types/gulp-util": "3.0.30",
     "@types/inquirer": "0.0.32",
     "@types/is-root": "1.0.0",
