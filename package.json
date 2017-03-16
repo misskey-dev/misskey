@@ -38,7 +38,7 @@
     "@types/gm": "1.17.30",
     "@types/gulp": "4.0.1",
     "@types/gulp-mocha": "0.0.29",
-    "@types/gulp-rename": "0.0.31",
+    "@types/gulp-rename": "0.0.32",
     "@types/gulp-tslint": "3.6.30",
     "@types/gulp-typescript": "0.0.32",
     "@types/gulp-uglify": "0.0.29",
