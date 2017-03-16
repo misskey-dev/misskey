@@ -35,12 +35,16 @@ module.exports = async (app: express.Application) => {
 			case 'refs/heads/master':
 				const pusher = event.pusher;
 				const compare = event.compare;
-				const commits = event.commits.map(commit => `・${commit.message}`).join('\n');
-				post(`Pushed by **${pusher.name}**\n${commits}\nCompare changes: ${compare}`);
+				const commits = event.commits;
+				post([
+					`Pushed by **${pusher.name}** with ${commits.length} commit${commits.length > 1 ? 's' : ''}: ${compare}`,
+					'',
+					commits.map(commit => `・${commit.message.split('\n')[0]}`).join('\n'),
+				].join('\n'));
 				break;
 			case 'refs/heads/release':
 				const commit = event.commits[0];
-				post(`RELEASED🎉: ${commit.message}`);
+				post(`RELEASED: ${commit.message}`);
 				break;
 		}
 	});
