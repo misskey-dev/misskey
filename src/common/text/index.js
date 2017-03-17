@@ -5,6 +5,7 @@
 const elements = [
 	require('./elements/bold'),
 	require('./elements/url'),
+	require('./elements/link'),
 	require('./elements/mention'),
 	require('./elements/hashtag'),
 	require('./elements/code'),

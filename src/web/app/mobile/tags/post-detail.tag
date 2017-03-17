@@ -230,6 +230,16 @@
 							@media (min-width 500px)
 								font-size 24px
 
+							.link
+								&:after
+									content "\f14c"
+									display inline-block
+									padding-left 2px
+									font-family FontAwesome
+									font-size .9em
+									font-weight 400
+									font-style normal
+
 							> mk-url-preview
 								margin-top 8px
 
@@ -368,10 +378,10 @@
 
 					// URLをプレビュー
 					tokens
-					.filter(t => t.type == 'link')
+					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
 					.map(t => {
 						riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
-							url: t.content
+							url: t.url
 						});
 					});
 				}

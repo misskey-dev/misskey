@@ -49,11 +49,23 @@ describe('Text', () => {
 			], tokens);
 		});
 
-		it('link', () => {
+		it('url', () => {
 			const tokens = analyze('https://himasaku.net');
-			assert.deepEqual([
-				{ type: 'link', content: 'https://himasaku.net' }
-			], tokens);
+			assert.deepEqual([{
+				type: 'url',
+				content: 'https://himasaku.net',
+				url: 'https://himasaku.net'
+			}], tokens);
+		});
+
+		it('link', () => {
+			const tokens = analyze('[ひまさく](https://himasaku.net)');
+			assert.deepEqual([{
+				type: 'link',
+				content: '[ひまさく](https://himasaku.net)',
+				title: 'ひまさく',
+				url: 'https://himasaku.net'
+			}], tokens);
 		});
 
 		it('emoji', () => {
