@@ -37,8 +37,7 @@ module.exports = async (app: express.Application) => {
 				const compare = event.compare;
 				const commits = event.commits;
 				post([
-					`Pushed by **${pusher.name}** with ${commits.length} commit${commits.length > 1 ? 's' : ''}: ?[Compare Changes](${compare})`,
-					'',
+					`Pushed by **${pusher.name}** with ?[${commits.length} commit${commits.length > 1 ? 's' : ''}](${compare}):`,
 					commits.map(commit => `・?[${commit.message.split('\n')[0]}](${commit.url})`).join('\n'),
 				].join('\n'));
 				break;
