@@ -54,7 +54,8 @@ describe('Text', () => {
 			assert.deepEqual([{
 				type: 'url',
 				content: 'https://himasaku.net',
-				url: 'https://himasaku.net'
+				url: 'https://himasaku.net',
+				silent: false
 			}], tokens);
 		});
 
@@ -64,7 +65,8 @@ describe('Text', () => {
 				type: 'link',
 				content: '[ひまさく](https://himasaku.net)',
 				title: 'ひまさく',
-				url: 'https://himasaku.net'
+				url: 'https://himasaku.net',
+				silent: false
 			}], tokens);
 		});
 
