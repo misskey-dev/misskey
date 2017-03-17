@@ -29,6 +29,16 @@ module.exports = async (app: express.Application) => {
 		}
 	});
 
+	handler.on('status', event => {
+		const state = event.state;
+		switch (state) {
+			case 'failure':
+				const commit = event.commit.commit;
+				post(`⚠️🚨BUILD FAILED🚨⚠️: ?[${commit.message}](${commit.url})`);
+				break;
+		}
+	});
+
 	handler.on('push', event => {
 		const ref = event.ref;
 		switch (ref) {
