@@ -13,10 +13,9 @@ import * as cluster from 'cluster';
 import * as debug from 'debug';
 import Logger from './utils/logger';
 import * as chalk from 'chalk';
-import portUsed = require('tcp-port-used');
+//import portUsed = require('tcp-port-used');
 import isRoot = require('is-root');
 import ProgressBar from './utils/cli/progressbar';
-import LastCommitInfo from './utils/lastCommitInfo';
 import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
@@ -98,7 +97,6 @@ async function init() {
 	Logger.info(chalk.bold('Misskey <aoi>'));
 	Logger.info('Initializing...');
 
-	await LastCommitInfo.show();
 	EnvironmentInfo.show();
 	MachineInfo.show();
 	new DependencyInfo().showAll();
