@@ -1,10 +1,7 @@
-import prominence = require('prominence');
-import git = require('git-last-commit');
-
 const getVersion = new Promise<string>(async resolve => {
-	const commit = await prominence(git).getLastCommit();
+	const package = require('../package.json');
 
-	const version = commit.shortHash;
+	const version = package.version;
 
 	resolve(version);
 });
