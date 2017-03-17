@@ -48,7 +48,7 @@ module.exports = async (app: express.Application) => {
 				const commits = event.commits;
 				post([
 					`Pushed by **${pusher.name}** with ?[${commits.length} commit${commits.length > 1 ? 's' : ''}](${compare}):`,
-					commits.map(commit => `・?[${commit.message.split('\n')[0]}](${commit.url})`).join('\n'),
+					commits.map(commit => `・[?[${commit.id.substr(0, 7)}](${commit.url})] ${commit.message.split('\n')[0]}`).join('\n'),
 				].join('\n'));
 				break;
 			case 'refs/heads/release':
