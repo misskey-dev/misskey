@@ -51,7 +51,7 @@ gulp.task('build:ts', () => {
 	return tsProject
 		.src()
 		.pipe(tsProject())
-		.pipe(gulp.dest('./built/'))
+		.pipe(gulp.dest('./built/'));
 });
 
 gulp.task('build:about:docs', () => {
