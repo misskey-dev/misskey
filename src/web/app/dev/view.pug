@@ -1,5 +1,4 @@
 extends ../base
 
 block head
-	link(rel='stylesheet', href='/resources/dev/style.css')
-	script(src='/resources/dev/script.js', async, defer)
+	script(src=`/resources/dev/script.${version}.js` async defer)

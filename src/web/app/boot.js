@@ -49,6 +49,26 @@ try {
 	Storage.prototype.setItem = () => { }; // noop
 }
 
+// クライアントを更新すべきならする
+if (localStorage.getItem('should-refresh') == 'true') {
+	localStorage.removeItem('should-refresh');
+	location.reload(true);
+}
+
+// 更新チェック
+setTimeout(() => {
+	fetch(CONFIG.apiUrl + '/meta', {
+		method: 'POST'
+	}).then(res => {
+		res.json().then(meta => {
+			if (meta.version != VERSION) {
+				localStorage.setItem('should-refresh', 'true');
+				alert('Misskeyの新しいバージョンがあります。ページを再度読み込みすると更新が適用されます。');
+			}
+		});
+	});
+}, 3000);
+
 // ユーザーをフェッチしてコールバックする
 module.exports = callback => {
 	// Get cached account data
