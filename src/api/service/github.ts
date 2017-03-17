@@ -33,8 +33,8 @@ module.exports = async (app: express.Application) => {
 		const state = event.state;
 		switch (state) {
 			case 'failure':
-				const commit = event.commit.commit;
-				post(`⚠️🚨BUILD FAILED🚨⚠️: ?[${commit.message}](${commit.url})`);
+				const commit = event.commit;
+				post(`⚠️🚨BUILD FAILED🚨⚠️: ?[${commit.commit.message}](${commit.html_url})`);
 				break;
 		}
 	});
