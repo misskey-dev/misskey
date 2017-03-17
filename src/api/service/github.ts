@@ -1,5 +1,6 @@
 import * as EventEmitter from 'events';
 import * as express from 'express';
+import * as request from 'request';
 const crypto = require('crypto');
 import User from '../models/user';
 import config from '../../conf';
@@ -34,7 +35,28 @@ module.exports = async (app: express.Application) => {
 		switch (state) {
 			case 'failure':
 				const commit = event.commit;
-				post(`⚠️🚨BUILD FAILED🚨⚠️: ?[${commit.commit.message}](${commit.html_url})`);
+				const parent = commit.parents[0];
+
+				// Fetch parent status
+				request({
+					url: parent.url + '/statuses',
+					headers: {
+						'User-Agent': 'misskey'
+					}
+				}, (err, res, body) => {
+					if (err) {
+						console.error(err);
+						return;
+					}
+					const parentStatuses = JSON.parse(body);
+					const parentState = parentStatuses[0].state;
+					const stillFailed = parentState == 'failure';
+					if (stillFailed) {
+						post(`**⚠️BUILD STILL FAILED⚠️**: ?[${commit.commit.message}](${commit.html_url})`);
+					} else {
+						post(`**🚨BUILD FAILED🚨**: →→→?[${commit.commit.message}](${commit.html_url})←←←`);
+					}
+				});
 				break;
 		}
 	});
