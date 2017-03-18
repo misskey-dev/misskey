@@ -33,7 +33,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Get 'choice' parameter
 	const [choice, choiceError] =
-		$(params.choice).string()
+		$(params.choice).number()
 			.pipe(c => post.poll.choices.some(x => x.id == c))
 			.$;
 	if (choiceError) return rej('invalid choice param');
