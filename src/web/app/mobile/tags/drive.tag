@@ -16,6 +16,14 @@
 	</nav>
 	<mk-uploader ref="uploader"></mk-uploader>
 	<div class="browser { fetching: fetching }" if={ file == null }>
+		<div class="info" if={ info }>
+			<p if={ folder == null }>{ (info.usage / info.capacity * 100).toFixed(1) }%使用中</p>
+			<p if={ folder != null && (folder.folders_count > 0 || folder.files_count > 0) }>
+				<virtual if={ folder.folders_count > 0 }>{ folder.folders_count }フォルダ</virtual>
+				<virtual if={ folder.folders_count > 0 && folder.files_count > 0 }>、</virtual>
+				<virtual if={ folder.files_count > 0 }>{ folder.files_count }ファイル</virtual>
+			</p>
+		</div>
 		<div class="folders" if={ folders.length > 0 }>
 			<virtual each={ folder in folders }>
 				<mk-drive-folder folder={ folder }></mk-drive-folder>
@@ -32,11 +40,11 @@
 			<p if={ !folder == null }>ドライブには何もありません。</p>
 			<p if={ folder != null }>このフォルダーは空です</p>
 		</div>
-		<div class="fetching" if={ fetching }>
-			<div class="spinner">
-				<div class="dot1"></div>
-				<div class="dot2"></div>
-			</div>
+	</div>
+	<div class="fetching" if={ fetching }>
+		<div class="spinner">
+			<div class="dot1"></div>
+			<div class="dot2"></div>
 		</div>
 	</div>
 	<input ref="file" type="file" multiple="multiple" onchange={ changeLocalFile }/>
@@ -76,6 +84,20 @@
 				&.fetching
 					opacity 0.5
 
+				> .info
+					border-bottom solid 1px #eee
+
+					&:empty
+						display none
+
+					> p
+						display block
+						max-width 500px
+						margin 0 auto
+						padding 4px 16px
+						font-size 10px
+						color #777
+
 				> .folders
 					> mk-drive-folder
 						border-bottom solid 1px #eee
@@ -93,40 +115,40 @@
 					> p
 						margin 0
 
-				> .fetching
-					.spinner
-						margin 100px auto
-						width 40px
-						height 40px
-						text-align center
+			> .fetching
+				.spinner
+					margin 100px auto
+					width 40px
+					height 40px
+					text-align center
 
-						animation sk-rotate 2.0s infinite linear
+					animation sk-rotate 2.0s infinite linear
 
-					.dot1, .dot2
-						width 60%
-						height 60%
-						display inline-block
-						position absolute
-						top 0
-						background-color rgba(0, 0, 0, 0.3)
-						border-radius 100%
+				.dot1, .dot2
+					width 60%
+					height 60%
+					display inline-block
+					position absolute
+					top 0
+					background-color rgba(0, 0, 0, 0.3)
+					border-radius 100%
 
-						animation sk-bounce 2.0s infinite ease-in-out
+					animation sk-bounce 2.0s infinite ease-in-out
 
-					.dot2
-						top auto
-						bottom 0
-						animation-delay -1.0s
+				.dot2
+					top auto
+					bottom 0
+					animation-delay -1.0s
 
-					@keyframes sk-rotate { 100% { transform: rotate(360deg); }}
+				@keyframes sk-rotate { 100% { transform: rotate(360deg); }}
 
-					@keyframes sk-bounce {
-						0%, 100% {
-							transform: scale(0.0);
-						} 50% {
-							transform: scale(1.0);
-						}
+				@keyframes sk-bounce {
+					0%, 100% {
+						transform: scale(0.0);
+					} 50% {
+						transform: scale(1.0);
 					}
+				}
 
 			> [ref='file']
 				display none
@@ -361,6 +383,13 @@
 					this.trigger('fetch-mid');
 				}
 			};
+
+			if (this.folder == null) {
+				// Fetch addtional drive info
+				this.api('drive').then(info => {
+					this.update({ info });
+				});
+			}
 		};
 
 		this.fetchMoreFiles = () => {
