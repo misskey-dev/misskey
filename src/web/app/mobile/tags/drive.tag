@@ -130,7 +130,7 @@
 					display inline-block
 					position absolute
 					top 0
-					background-color rgba(0, 0, 0, 0.3)
+					background rgba(0, 0, 0, 0.2)
 					border-radius 100%
 
 					animation sk-bounce 2.0s infinite ease-in-out
