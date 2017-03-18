@@ -48,13 +48,13 @@
 
 	</style>
 	<script>
+		import isPromise from '../../common/scripts/is-promise';
+
 		this.mixin('i');
 		this.mixin('api');
 		this.mixin('stream');
 
 		const stream = this.stream.event;
-
-		const isPromise = require('../../common/scripts/is-promise');
 
 		this.user = null;
 		this.userPromise = isPromise(this.opts.user)
