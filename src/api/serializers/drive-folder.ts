@@ -3,6 +3,7 @@
  */
 import * as mongo from 'mongodb';
 import DriveFolder from '../models/drive-folder';
+import DriveFile from '../models/drive-file';
 import deepcopy = require('deepcopy');
 
 /**
@@ -36,6 +37,19 @@ const self = (
 	// Rename _id to id
 	_folder.id = _folder._id;
 	delete _folder._id;
+
+	if (opts.detail) {
+		const childFoldersCount = await DriveFolder.count({
+			parent_id: _folder.id
+		});
+
+		const childFilesCount = await DriveFile.count({
+			folder_id: _folder.id
+		});
+
+		_folder.folders_count = childFoldersCount;
+		_folder.files_count = childFilesCount;
+	}
 
 	if (opts.detail && _folder.parent_id) {
 		// Populate parent folder
