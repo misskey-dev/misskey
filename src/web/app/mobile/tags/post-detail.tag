@@ -341,12 +341,11 @@
 
 	</style>
 	<script>
-		this.mixin('api');
-
 		import compile from '../../common/scripts/text-compiler';
+		import getPostSummary from '../../common/scripts/get-post-summary';
+		import openPostForm from '../scripts/open-post-form';
 
-		this.getPostSummary = require('../../common/scripts/get-post-summary');
-		this.openPostForm = require('../scripts/open-post-form');
+		this.mixin('api');
 
 		this.fetching = true;
 		this.loadingContext = false;
@@ -364,7 +363,7 @@
 					post: post,
 					isRepost: isRepost,
 					p: p,
-					summary: this.getPostSummary(p)
+					summary: getPostSummary(p)
 				});
 
 				this.trigger('loaded');
@@ -421,7 +420,7 @@
 		});
 
 		this.reply = () => {
-			this.openPostForm({
+			openPostForm({
 				reply: this.p
 			});
 		};
