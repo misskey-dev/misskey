@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-const parse = require('../../../common/text');
+import parse from '../../common/text';
 import Post from '../../models/post';
 import { isValidText } from '../../models/post';
 import User from '../../models/user';
