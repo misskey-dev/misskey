@@ -31,11 +31,12 @@
 
 	</style>
 	<script>
+		import updateBanner from '../scripts/update-banner';
+
 		this.mixin('i');
-		this.mixin('update-banner');
 
 		this.set = () => {
-			this.updateBanner(this.I);
+			updateBanner(this.I);
 		};
 
 		this.close = e => {

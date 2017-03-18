@@ -188,11 +188,11 @@
 
 	</style>
 	<script>
+		import updateAvatar from '../scripts/update-avatar';
+		import notify from '../scripts/notify';
+
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('notify');
-		this.mixin('dialog');
-		this.mixin('update-avatar');
 
 		this.page = 'account';
 
@@ -201,7 +201,7 @@
 		};
 
 		this.avatar = () => {
-			this.updateAvatar(this.I);
+			updateAvatar(this.I);
 		};
 
 		this.updateAccount = () => {
@@ -211,7 +211,7 @@
 				description: this.refs.accountDescription.value || undefined,
 				birthday: this.refs.accountBirthday.value || undefined
 			}).then(() => {
-				this.notify('プロフィールを更新しました');
+				notify('プロフィールを更新しました');
 			});
 		};
 

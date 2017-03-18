@@ -203,17 +203,18 @@
 
 	</style>
 	<script>
+		import compile from '../../../common/scripts/text-compiler';
+
 		this.mixin('i');
-		this.mixin('text');
 
 		this.message = this.opts.message;
 		this.message.is_me = this.message.user.id == this.I.id;
 
 		this.on('mount', () => {
 			if (this.message.text) {
-				const tokens = this.analyze(this.message.text);
+				const tokens = this.message.ast;
 
-				this.refs.text.innerHTML = this.compile(tokens);
+				this.refs.text.innerHTML = compile(tokens);
 
 				this.refs.text.children.forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);

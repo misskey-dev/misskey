@@ -5,20 +5,19 @@
 	<style>
 		:scope
 			display block
-
 	</style>
 	<script>
-		this.mixin('ui');
-		this.mixin('ui-progress');
+		import ui from '../../scripts/ui-event';
+		import Progress from '../../../common/scripts/loading';
 
 		this.on('mount', () => {
 			document.title = 'Misskey | 通知';
-			this.ui.trigger('title', '<i class="fa fa-bell-o"></i>通知');
+			ui.trigger('title', '<i class="fa fa-bell-o"></i>通知');
 
-			this.Progress.start();
+			Progress.start();
 
 			this.refs.ui.refs.notifications.on('fetched', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 		});
 	</script>

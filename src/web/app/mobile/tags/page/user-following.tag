@@ -7,15 +7,16 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
-		this.mixin('ui-progress');
+		import ui from '../../scripts/ui-event';
+		import Progress from '../../../common/scripts/loading';
+
 		this.mixin('api');
 
 		this.fetching = true;
 		this.user = null;
 
 		this.on('mount', () => {
-			this.Progress.start();
+			Progress.start();
 
 			this.api('users/show', {
 				username: this.opts.user
@@ -27,10 +28,10 @@
 
 				document.title = user.name + 'のフォロー | Misskey';
 				// TODO: ユーザー名をエスケープ
-				this.ui.trigger('title', '<img src="' + user.avatar_url + '?thumbnail&size=64">' + user.name + 'のフォロー');
+				ui.trigger('title', '<img src="' + user.avatar_url + '?thumbnail&size=64">' + user.name + 'のフォロー');
 
 				this.refs.ui.refs.list.on('loaded', () => {
-					this.Progress.done();
+					Progress.done();
 				});
 			});
 		});

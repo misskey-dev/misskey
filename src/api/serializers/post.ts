@@ -1,16 +1,15 @@
-'use strict';
-
 /**
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+import deepcopy = require('deepcopy');
 import Post from '../models/post';
 import Like from '../models/like';
 import Vote from '../models/poll-vote';
 import serializeApp from './app';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
-import deepcopy = require('deepcopy');
+import parse from '../common/text';
 
 /**
  * Serialize a post
@@ -53,6 +52,11 @@ const self = (
 	delete _post._id;
 
 	delete _post.mentions;
+
+	// Parse text
+	if (_post.text) {
+		_post.ast = parse(_post.text);
+	}
 
 	// Populate user
 	_post.user = await serializeUser(_post.user_id, me);

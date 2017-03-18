@@ -1,4 +1,4 @@
-const riot = require('riot');
+import * as riot from 'riot';
 
 riot.mixin('user-preview', {
 	init: function() {

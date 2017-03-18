@@ -41,17 +41,19 @@
 
 	</style>
 	<script>
+		import inputDialog from '../../scripts/input-dialog';
+		import updateAvatar from '../../scripts/update-avatar';
+		import updateBanner from '../../scripts/update-banner';
+
 		this.mixin('i');
 		this.mixin('user-preview');
-		this.mixin('update-avatar');
-		this.mixin('update-banner');
 
 		this.setAvatar = () => {
-			this.updateAvatar(this.I);
+			updateAvatar(this.I);
 		};
 
 		this.setBanner = () => {
-			this.updateBanner(this.I);
+			updateBanner(this.I);
 		};
 	</script>
 </mk-profile-home-widget>

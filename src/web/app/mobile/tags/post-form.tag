@@ -182,7 +182,7 @@
 
 	</style>
 	<script>
-		const getCat = require('../../common/scripts/get-cat');
+		import getCat from '../../common/scripts/get-cat';
 
 		this.mixin('api');
 

@@ -123,9 +123,10 @@
 
 	</style>
 	<script>
+		import MessagingStreamConnection from '../../scripts/messaging-stream';
+
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('messaging-stream');
 
 		this.user = this.opts.user;
 		this.init = true;
@@ -133,7 +134,7 @@
 		this.messages = [];
 		this.isNaked = this.opts.isNaked;
 
-		this.connection = new this.MessagingStreamConnection(this.I, this.user.id);
+		this.connection = new MessagingStreamConnection(this.I, this.user.id);
 
 		this.on('mount', () => {
 			this.connection.event.on('message', this.onMessage);

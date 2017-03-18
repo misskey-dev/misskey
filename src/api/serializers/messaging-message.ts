@@ -1,13 +1,12 @@
-'use strict';
-
 /**
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+import deepcopy = require('deepcopy');
 import Message from '../models/messaging-message';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
-import deepcopy = require('deepcopy');
+import parse from '../common/text';
 
 /**
  * Serialize a message
@@ -46,6 +45,11 @@ export default (
 	// Rename _id to id
 	_message.id = _message._id;
 	delete _message._id;
+
+	// Parse text
+	if (_message.text) {
+		_message.ast = parse(_message.text);
+	}
 
 	// Populate user
 	_message.user = await serializeUser(_message.user_id, me);

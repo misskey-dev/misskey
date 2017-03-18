@@ -97,10 +97,11 @@
 
 	</style>
 	<script>
-		this.mixin('date-stringify');
+		import dateStringify from '../../common/scripts/date-stringify';
+
 		this.mixin('user-preview');
 
 		this.post = this.opts.post;
-		this.title = this.dateStringify(this.post.created_at);
+		this.title = dateStringify(this.post.created_at);
 	</script>
 </mk-timeline-post-sub>

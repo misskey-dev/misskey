@@ -32,4 +32,4 @@ const summarize = post => {
 	return summary.trim();
 };
 
-module.exports = summarize;
+export default summarize;

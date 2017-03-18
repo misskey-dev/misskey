@@ -9,7 +9,7 @@ const apiUrl = `${scheme}//api.${host}`;
 const devUrl = `${scheme}//dev.${host}`;
 const aboutUrl = `${scheme}//about.${host}`;
 
-module.exports = {
+export default {
 	host,
 	scheme,
 	url,

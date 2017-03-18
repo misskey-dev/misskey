@@ -167,7 +167,8 @@
 
 	</style>
 	<script>
-		this.mixin('get-post-summary');
+		import getPostSummary from '../../common/scripts/get-post-summary';
+		this.getPostSummary = getPostSummary;
 		this.notification = this.opts.notification;
 	</script>
 </mk-notification>

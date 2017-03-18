@@ -173,7 +173,7 @@
 
 	</style>
 	<script>
-		const contains = require('../../common/scripts/contains');
+		import contains from '../../common/scripts/contains';
 
 		this.minHeight = 40;
 		this.minWidth = 200;

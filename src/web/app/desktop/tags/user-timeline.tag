@@ -48,12 +48,12 @@
 
 	</style>
 	<script>
+		import isPromise from '../../common/scripts/is-promise';
+
 		this.mixin('api');
-		this.mixin('is-promise');
-		this.mixin('get-post-summary');
 
 		this.user = null;
-		this.userPromise = this.isPromise(this.opts.user)
+		this.userPromise = isPromise(this.opts.user)
 			? this.opts.user
 			: Promise.resolve(this.opts.user);
 		this.isLoading = true;

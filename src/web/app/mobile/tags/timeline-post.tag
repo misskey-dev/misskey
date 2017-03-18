@@ -306,21 +306,22 @@
 	</style>
 	<script>
 		this.mixin('api');
-		this.mixin('text');
-		this.mixin('get-post-summary');
-		this.mixin('open-post-form');
+
+		import compile from '../../common/scripts/text-compiler';
+		import getPostSummary from '../../common/scripts/get-post-summary';
+		import openPostForm from '../scripts/open-post-form';
 
 		this.post = this.opts.post;
 		this.isRepost = this.post.repost != null && this.post.text == null;
 		this.p = this.isRepost ? this.post.repost : this.post;
-		this.summary = this.getPostSummary(this.p);
+		this.summary = getPostSummary(this.p);
 		this.url = `/${this.p.user.username}/${this.p.id}`;
 
 		this.on('mount', () => {
 			if (this.p.text) {
-				const tokens = this.analyze(this.p.text);
+				const tokens = this.p.ast;
 
-				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', this.compile(tokens));
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', compile(tokens));
 
 				this.refs.text.children.forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);
@@ -338,7 +339,7 @@
 		});
 
 		this.reply = () => {
-			this.openPostForm({
+			openPostForm({
 				reply: this.p
 			});
 		};

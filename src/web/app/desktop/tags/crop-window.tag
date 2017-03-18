@@ -158,7 +158,7 @@
 
 	</style>
 	<script>
-		this.mixin('cropper');
+		const Cropper = require('cropperjs');
 
 		this.image = this.opts.file;
 		this.title = this.opts.title;
@@ -167,7 +167,7 @@
 
 		this.on('mount', () => {
 			this.img = this.refs.window.refs.img;
-			this.cropper = new this.Cropper(this.img, {
+			this.cropper = new Cropper(this.img, {
 				aspectRatio: this.aspectRatio,
 				highlight: false,
 				viewMode: 1

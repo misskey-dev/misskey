@@ -177,10 +177,15 @@
 
 	</style>
 	<script>
+		import getPostSummary from '../../common/scripts/get-post-summary';
+		this.getPostSummary = getPostSummary;
+
+		this.mixin('i');
 		this.mixin('api');
-		this.mixin('stream');
 		this.mixin('user-preview');
-		this.mixin('get-post-summary');
+		this.mixin('stream');
+
+		const stream = this.stream.event;
 
 		this.notifications = [];
 		this.loading = true;
@@ -193,11 +198,11 @@
 				});
 			});
 
-			this.stream.on('notification', this.onNotification);
+			stream.on('notification', this.onNotification);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('notification', this.onNotification);
+			stream.off('notification', this.onNotification);
 		});
 
 		this.onNotification = notification => {

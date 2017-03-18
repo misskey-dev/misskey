@@ -2,11 +2,11 @@
  * Desktop App Router
  */
 
-const riot = require('riot');
+import * as riot from 'riot';
 const route = require('page');
 let page = null;
 
-module.exports = me => {
+export default me => {
 	route('/',              index);
 	route('/i>mentions',    mentions);
 	route('/post::post',    post);

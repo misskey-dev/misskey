@@ -50,8 +50,9 @@
 
 	</style>
 	<script>
+		import dialog from '../../scripts/dialog';
+
 		this.mixin('api');
-		this.mixin('dialog');
 
 		this.folder = this.opts.folder;
 		this.browser = this.parent;
@@ -144,7 +145,7 @@
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
+							dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
 								'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。', [{
 								text: 'OK'
 							}]);

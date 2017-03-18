@@ -7,11 +7,11 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
+		const ui = require('../../../scripts/ui-event');
 
 		this.on('mount', () => {
 			document.title = 'Misskey | アプリケーション';
-			this.ui.trigger('title', '<i class="fa fa-puzzle-piece"></i>アプリケーション');
+			ui.trigger('title', '<i class="fa fa-puzzle-piece"></i>アプリケーション');
 		});
 	</script>
 </mk-authorized-apps-page>

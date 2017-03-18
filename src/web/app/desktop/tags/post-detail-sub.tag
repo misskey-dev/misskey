@@ -115,8 +115,10 @@
 	</style>
 	<script>
 		this.mixin('api');
-		this.mixin('text');
-		this.mixin('date-stringify');
+
+		import compile from '../../common/scripts/text-compiler';
+
+		this.dateStringify = require('../../common/scripts/date-stringify');
 		this.mixin('user-preview');
 
 		this.post = this.opts.post;
@@ -124,9 +126,9 @@
 
 		this.on('mount', () => {
 			if (this.post.text) {
-				const tokens = this.analyze(this.post.text);
+				const tokens = this.post.ast;
 
-				this.refs.text.innerHTML = this.compile(tokens);
+				this.refs.text.innerHTML = compile(tokens);
 
 				this.refs.text.children.forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);

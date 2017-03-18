@@ -7,13 +7,13 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui-progress');
+		import Progress from '../../../common/scripts/loading';
 
 		this.on('mount', () => {
-			this.Progress.start();
+			Progress.start();
 
 			this.refs.ui.refs.search.on('loaded', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 		});
 	</script>

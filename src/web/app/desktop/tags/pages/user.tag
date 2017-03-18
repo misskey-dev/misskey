@@ -7,20 +7,20 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui-progress');
+		import Progress from '../../../common/scripts/loading';
 
 		this.user = this.opts.user;
 
 		this.on('mount', () => {
-			this.Progress.start();
+			Progress.start();
 
 			this.refs.ui.refs.user.on('user-fetched', user => {
-				this.Progress.set(0.5);
+				Progress.set(0.5);
 				document.title = user.name + ' | Misskey'
 			});
 
 			this.refs.ui.refs.user.on('loaded', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 		});
 	</script>

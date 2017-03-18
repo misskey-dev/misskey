@@ -1,6 +1,6 @@
 const ReconnectingWebSocket = require('reconnecting-websocket');
-const riot = require('riot');
-const CONFIG = require('./config');
+import * as riot from 'riot';
+import CONFIG from './config';
 
 class Connection {
 	constructor(me, otherparty) {
@@ -40,4 +40,4 @@ class Connection {
 	}
 }
 
-module.exports = Connection;
+export default Connection;

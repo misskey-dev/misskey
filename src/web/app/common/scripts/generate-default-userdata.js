@@ -1,4 +1,4 @@
-const uuid = require('./uuid.js');
+import uuid from './uuid';
 
 const home = {
 	left: [
@@ -17,7 +17,7 @@ const home = {
 	]
 };
 
-module.exports = () => {
+export default () => {
 	const homeData = [];
 
 	home.left.forEach(widget => {

@@ -2,7 +2,7 @@
  * API Request
  */
 
-const CONFIG = require('./config');
+import CONFIG from './config';
 
 let spinner = null;
 let pending = 0;
@@ -14,7 +14,7 @@ let pending = 0;
  * @param  {any} [data={}] Data
  * @return {Promise<any>} Response
  */
-module.exports = (i, endpoint, data = {}) => {
+export default (i, endpoint, data = {}) => {
 	if (++pending === 1) {
 		spinner = document.createElement('div');
 		spinner.setAttribute('id', 'wait');

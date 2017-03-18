@@ -18,8 +18,9 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
+		import inputDialog from '../../scripts/input-dialog';
+
 		this.mixin('api');
-		this.mixin('input-dialog');
 
 		this.browser = this.opts.browser;
 		this.folder = this.opts.folder;
@@ -51,7 +52,7 @@
 		this.rename = () => {
 			this.refs.ctx.close();
 
-			this.inputDialog('フォルダ名の変更', '新しいフォルダ名を入力してください', this.folder.name, name => {
+			inputDialog('フォルダ名の変更', '新しいフォルダ名を入力してください', this.folder.name, name => {
 				this.api('drive/folders/update', {
 					folder_id: this.folder.id,
 					name: name

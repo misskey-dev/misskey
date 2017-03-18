@@ -7,11 +7,14 @@
 			display block
 	</style>
 	<script>
+		import Progress from '../../../common/scripts/loading';
+		import getPostSummary from '../../../common/scripts/get-post-summary';
+
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('ui-progress');
 		this.mixin('stream');
-		this.mixin('get-post-summary');
+
+		const stream = this.stream.event;
 
 		this.unreadCount = 0;
 
@@ -19,23 +22,23 @@
 
 		this.on('mount', () => {
 			this.refs.ui.refs.home.on('loaded', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 			document.title = 'Misskey';
-			this.Progress.start();
-			this.stream.on('post', this.onStreamPost);
+			Progress.start();
+			stream.on('post', this.onStreamPost);
 			document.addEventListener('visibilitychange', this.windowOnVisibilitychange, false);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('post', this.onStreamPost);
+			stream.off('post', this.onStreamPost);
 			document.removeEventListener('visibilitychange', this.windowOnVisibilitychange);
 		});
 
 		this.onStreamPost = post => {
 			if (document.hidden && post.user_id != this.I.id) {
 				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${this.getPostSummary(post)}`;
+				document.title = `(${this.unreadCount}) ${getPostSummary(post)}`;
 			}
 		};
 

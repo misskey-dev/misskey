@@ -16,19 +16,19 @@
 
 	</style>
 	<script>
-		this.mixin('ui-progress');
+		import Progress from '../../../common/scripts/loading';
 
 		this.post = this.opts.post;
 
 		this.on('mount', () => {
-			this.Progress.start();
+			Progress.start();
 
 			this.refs.ui.refs.detail.on('post-fetched', () => {
-				this.Progress.set(0.5);
+				Progress.set(0.5);
 			});
 
 			this.refs.ui.refs.detail.on('loaded', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 		});
 	</script>

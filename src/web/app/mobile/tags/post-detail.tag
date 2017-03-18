@@ -342,9 +342,11 @@
 	</style>
 	<script>
 		this.mixin('api');
-		this.mixin('text');
-		this.mixin('get-post-summary');
-		this.mixin('open-post-form');
+
+		import compile from '../../common/scripts/text-compiler';
+
+		this.getPostSummary = require('../../common/scripts/get-post-summary');
+		this.openPostForm = require('../scripts/open-post-form');
 
 		this.fetching = true;
 		this.loadingContext = false;
@@ -368,9 +370,9 @@
 				this.trigger('loaded');
 
 				if (this.p.text) {
-					const tokens = this.analyze(this.p.text);
+					const tokens = this.p.ast;
 
-					this.refs.text.innerHTML = this.compile(tokens);
+					this.refs.text.innerHTML = compile(tokens);
 
 					this.refs.text.children.forEach(e => {
 						if (e.tagName == 'MK-URL') riot.mount(e);

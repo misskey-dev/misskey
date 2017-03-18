@@ -1,5 +1,5 @@
 const getCaretCoordinates = require('textarea-caret');
-const riot = require('riot');
+import * as riot from 'riot';
 
 /**
  * オートコンプリートを管理するクラス。
@@ -127,4 +127,4 @@ class Autocomplete {
 	}
 }
 
-module.exports = Autocomplete;
+export default Autocomplete;

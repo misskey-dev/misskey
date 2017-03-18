@@ -31,11 +31,12 @@
 
 	</style>
 	<script>
+		import updateAvatar from '../scripts/update-avatar';
+
 		this.mixin('i');
-		this.mixin('update-avatar');
 
 		this.set = () => {
-			this.updateAvatar(this.I);
+			updateAvatar(this.I);
 		};
 
 		this.close = e => {

@@ -2,12 +2,14 @@
  * boot
  */
 
-const riot = require('riot');
+import * as riot from 'riot';
 require('velocity-animate');
-const api = require('./common/scripts/api');
-const signout = require('./common/scripts/signout');
-const generateDefaultUserdata = require('./common/scripts/generate-default-userdata');
-const mixins = require('./common/mixins');
+import api from './common/scripts/api';
+import signout from './common/scripts/signout';
+import checkForUpdate from './common/scripts/check-for-update';
+import mixin from './common/mixins';
+import generateDefaultUserdata from './common/scripts/generate-default-userdata';
+import CONFIG from './common/scripts/config';
 require('./common/tags');
 
 /**
@@ -16,7 +18,7 @@ require('./common/tags');
 
 "use strict";
 
-const CONFIG = require('./common/scripts/config');
+console.info(`Misskey v${VERSION}`);
 
 document.domain = CONFIG.host;
 
@@ -56,21 +58,10 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // 更新チェック
-setTimeout(() => {
-	fetch(CONFIG.apiUrl + '/meta', {
-		method: 'POST'
-	}).then(res => {
-		res.json().then(meta => {
-			if (meta.version != VERSION) {
-				localStorage.setItem('should-refresh', 'true');
-				alert('Misskeyの新しいバージョンがあります。ページを再度読み込みすると更新が適用されます。');
-			}
-		});
-	});
-}, 3000);
+setTimeout(checkForUpdate, 3000);
 
 // ユーザーをフェッチしてコールバックする
-module.exports = callback => {
+export default callback => {
 	// Get cached account data
 	let cachedMe = JSON.parse(localStorage.getItem('me'));
 
@@ -113,7 +104,7 @@ module.exports = callback => {
 			}
 		}
 
-		mixins(me);
+		mixin(me);
 
 		const ini = document.getElementById('ini');
 		ini.parentNode.removeChild(ini);

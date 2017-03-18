@@ -6,9 +6,8 @@
 import './style.styl';
 
 require('./tags');
-const boot = require('../boot');
-const mixins = require('./mixins');
-const route = require('./router');
+import boot from '../boot';
+import route from './router';
 
 /**
  * Boot
@@ -16,9 +15,6 @@ const route = require('./router');
 boot(me => {
 	// http://qiita.com/junya/items/3ff380878f26ca447f85
 	document.body.setAttribute('ontouchstart', '');
-
-	// Register mixins
-	mixins(me);
 
 	// Start routing
 	route(me);

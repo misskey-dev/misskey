@@ -122,7 +122,8 @@
 
 	</style>
 	<script>
-		this.bytesToSize = require('../../../common/scripts/bytes-to-size');
+		import bytesToSize from '../../../common/scripts/bytes-to-size';
+		this.bytesToSize = bytesToSize;
 
 		this.browser = this.parent;
 		this.file = this.opts.file;

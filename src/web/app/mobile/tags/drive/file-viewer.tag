@@ -11,9 +11,9 @@
 			</span>
 			<span class="separator"></span>
 			<span class="aspect-ratio">
-				<span class="width">{ file.properties.width / getGcd(file.properties.width, file.properties.height) }</span>
+				<span class="width">{ file.properties.width / gcd(file.properties.width, file.properties.height) }</span>
 				<span class="colon">:</span>
-				<span class="height">{ file.properties.height / getGcd(file.properties.width, file.properties.height) }</span>
+				<span class="height">{ file.properties.height / gcd(file.properties.width, file.properties.height) }</span>
 			</span>
 		</footer>
 	</div>
@@ -184,8 +184,11 @@
 
 	</style>
 	<script>
-		this.bytesToSize = require('../../../common/scripts/bytes-to-size.js');
-		this.getGcd = require('../../../common/scripts/gcd.js');
+		import bytesToSize from '../../../common/scripts/bytes-to-size';
+		import gcd from '../../../common/scripts/gcd';
+
+		this.bytesToSize = bytesToSize;
+		this.gcd = gcd;
 
 		this.mixin('api');
 

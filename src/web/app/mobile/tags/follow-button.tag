@@ -48,12 +48,16 @@
 
 	</style>
 	<script>
+		this.mixin('i');
 		this.mixin('api');
-		this.mixin('is-promise');
 		this.mixin('stream');
 
+		const stream = this.stream.event;
+
+		const isPromise = require('../../common/scripts/is-promise');
+
 		this.user = null;
-		this.userPromise = this.isPromise(this.opts.user)
+		this.userPromise = isPromise(this.opts.user)
 			? this.opts.user
 			: Promise.resolve(this.opts.user);
 		this.init = true;
@@ -65,14 +69,14 @@
 					init: false,
 					user: user
 				});
-				this.stream.on('follow', this.onStreamFollow);
-				this.stream.on('unfollow', this.onStreamUnfollow);
+				stream.on('follow', this.onStreamFollow);
+				stream.on('unfollow', this.onStreamUnfollow);
 			});
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('follow', this.onStreamFollow);
-			this.stream.off('unfollow', this.onStreamUnfollow);
+			stream.off('follow', this.onStreamFollow);
+			stream.off('unfollow', this.onStreamUnfollow);
 		});
 
 		this.onStreamFollow = user => {

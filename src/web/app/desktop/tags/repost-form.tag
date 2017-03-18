@@ -85,8 +85,9 @@
 
 	</style>
 	<script>
+		import notify from '../scripts/notify';
+
 		this.mixin('api');
-		this.mixin('notify');
 
 		this.wait = false;
 		this.quote = false;
@@ -101,9 +102,9 @@
 				repost_id: this.opts.post.id
 			}).then(data => {
 				this.trigger('posted');
-				this.notify('Repostしました！');
+				notify('Repostしました！');
 			}).catch(err => {
-				this.notify('Repostできませんでした');
+				notify('Repostできませんでした');
 			}).then(() => {
 				this.update({
 					wait: false

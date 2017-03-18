@@ -34,7 +34,7 @@ module.exports = me => {
 	route();
 };
 
-const riot = require('riot');
+import * as riot from 'riot';
 function mount(content) {
 	if (page) page.unmount();
 	const body = document.getElementById('app');

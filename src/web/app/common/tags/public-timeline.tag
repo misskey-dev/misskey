@@ -87,12 +87,10 @@
 
 	</style>
 	<script>
-		this.mixin('text');
+		import compile from '../../common/scripts/text-compiler';
 
 		this.on('mount', () => {
-			this.mixin('text');
-			const tokens = this.analyze(this.text);
-			const text = this.compile(tokens);
+			const text = compile(this.ast);
 			this.refs.text.innerHTML = text;
 		});
 	</script>

@@ -119,7 +119,7 @@
 	<script>
 		this.mixin('api');
 
-		this.onpaste = (e) => {
+		this.onpaste = e => {
 			const data = e.clipboardData;
 			const items = data.items;
 			for (let i = 0; i < items.length; i++) {
@@ -130,7 +130,7 @@
 			}
 		};
 
-		this.onkeypress = (e) => {
+		this.onkeypress = e => {
 			if ((e.which == 10 || e.which == 13) && e.ctrlKey) {
 				this.send();
 			}

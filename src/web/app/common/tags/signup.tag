@@ -175,7 +175,7 @@
 	</style>
 	<script>
 		this.mixin('api');
-		this.mixin('get-password-strength');
+		const getPasswordStrength = require('syuilo-password-strength');
 
 		this.usernameState = null;
 		this.passwordStrength = '';
@@ -257,7 +257,7 @@
 				return;
 			}
 
-			const strength = this.getPasswordStrength(password);
+			const strength = getPasswordStrength(password);
 			this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
 			this.update();
 			this.refs.passwordMetar.style.width = `${strength * 100}%`;

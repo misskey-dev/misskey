@@ -7,11 +7,11 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
+		const ui = require('../../../scripts/ui-event');
 
 		this.on('mount', () => {
 			document.title = 'Misskey | API';
-			this.ui.trigger('title', '<i class="fa fa-key"></i>API');
+			ui.trigger('title', '<i class="fa fa-key"></i>API');
 		});
 	</script>
 </mk-api-info-page>

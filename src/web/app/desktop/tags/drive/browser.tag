@@ -238,12 +238,15 @@
 
 	</style>
 	<script>
-		const contains = require('../../../common/scripts/contains');
+		import contains from '../../../common/scripts/contains';
+		import dialog from '../../scripts/dialog';
+		import inputDialog from '../../scripts/input-dialog';
 
+		this.mixin('i');
 		this.mixin('api');
-		this.mixin('dialog');
-		this.mixin('input-dialog');
 		this.mixin('stream');
+
+		const stream = this.stream.event;
 
 		this.files = [];
 		this.folders = [];
@@ -276,10 +279,10 @@
 				});
 			});
 
-			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
-			this.stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
-			this.stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
-			this.stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			stream.on('drive_file_created', this.onStreamDriveFileCreated);
+			stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
+			stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
+			stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
 
 			// Riotのバグでnullを渡しても""になる
 			// https://github.com/riot/riot/issues/2080
@@ -292,10 +295,10 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
-			this.stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
-			this.stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
-			this.stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			stream.off('drive_file_created', this.onStreamDriveFileCreated);
+			stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
+			stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
+			stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
 		});
 
 		this.onStreamDriveFileCreated = file => {
@@ -445,7 +448,7 @@
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
+							dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
 								'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。', [{
 								text: 'OK'
 							}]);
@@ -479,13 +482,13 @@
 		};
 
 		this.urlUpload = () => {
-			this.inputDialog('URLアップロード', 'アップロードしたいファイルのURL', null, url => {
+			inputDialog('URLアップロード', 'アップロードしたいファイルのURL', null, url => {
 				this.api('drive/files/upload_from_url', {
 					url: url,
 					folder_id: this.folder ? this.folder.id : undefined
 				});
 
-				this.dialog('<i class="fa fa-check"></i>アップロードをリクエストしました',
+				dialog('<i class="fa fa-check"></i>アップロードをリクエストしました',
 					'アップロードが完了するまで時間がかかる場合があります。', [{
 					text: 'OK'
 				}]);
@@ -493,7 +496,7 @@
 		};
 
 		this.createFolder = () => {
-			this.inputDialog('フォルダー作成', 'フォルダー名', null, name => {
+			inputDialog('フォルダー作成', 'フォルダー名', null, name => {
 				this.api('drive/folders/create', {
 					name: name,
 					folder_id: this.folder ? this.folder.id : undefined

@@ -5,10 +5,11 @@
 // Style
 import './style.styl';
 
-const riot = require('riot');
-document.title = 'Misskey | アプリの連携';
+import * as riot from 'riot';
 require('./tags');
-const boot = require('../boot.js');
+import boot from '../boot';
+
+document.title = 'Misskey | アプリの連携';
 
 /**
  * Boot

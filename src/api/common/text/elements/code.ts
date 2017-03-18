@@ -2,7 +2,7 @@
  * Code (block)
  */
 
-const genHtml = require('../core/syntax-highlighter');
+import genHtml from '../core/syntax-highlighter';
 
 module.exports = text => {
 	const match = text.match(/^```([\s\S]+?)```/);

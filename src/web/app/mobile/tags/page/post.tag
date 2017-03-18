@@ -18,23 +18,23 @@
 
 	</style>
 	<script>
-		this.mixin('ui');
-		this.mixin('ui-progress');
+		import ui from '../../scripts/ui-event';
+		import Progress from '../../../common/scripts/loading';
 
 		this.post = this.opts.post;
 
 		this.on('mount', () => {
 			document.title = 'Misskey';
-			this.ui.trigger('title', '<i class="fa fa-sticky-note-o"></i>投稿');
+			ui.trigger('title', '<i class="fa fa-sticky-note-o"></i>投稿');
 
-			this.Progress.start();
+			Progress.start();
 
 			this.refs.ui.refs.post.on('post-fetched', () => {
-				this.Progress.set(0.5);
+				Progress.set(0.5);
 			});
 
 			this.refs.ui.refs.post.on('loaded', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 		});
 	</script>

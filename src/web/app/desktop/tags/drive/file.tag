@@ -144,13 +144,13 @@
 
 	</style>
 	<script>
-		this.bytesToSize = require('../../../common/scripts/bytes-to-size');
+		import bytesToSize from '../../../common/scripts/bytes-to-size';
 
 		this.mixin('i');
 
 		this.file = this.opts.file;
 		this.browser = this.parent;
-		this.title = `${this.file.name}\n${this.file.type} ${this.bytesToSize(this.file.datasize)}`;
+		this.title = `${this.file.name}\n${this.file.type} ${bytesToSize(this.file.datasize)}`;
 		this.isContextmenuShowing = false;
 		this.isSelected = this.browser.selectedFiles.some(f => f.id == this.file.id);
 

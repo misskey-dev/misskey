@@ -7,18 +7,18 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
-		this.mixin('ui-progress');
+		import ui from '../../scripts/ui-event';
+		import Progress from '../../../common/scripts/loading';
 
 		this.on('mount', () => {
 			document.title = `検索: ${this.opts.query} | Misskey`
 			// TODO: クエリをHTMLエスケープ
-			this.ui.trigger('title', '<i class="fa fa-search"></i>' + this.opts.query);
+			ui.trigger('title', '<i class="fa fa-search"></i>' + this.opts.query);
 
-			this.Progress.start();
+			Progress.start();
 
 			this.refs.ui.refs.search.on('loaded', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 		});
 	</script>

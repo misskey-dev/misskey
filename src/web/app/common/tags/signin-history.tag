@@ -48,8 +48,11 @@
 
 	</style>
 	<script>
+		this.mixin('i');
 		this.mixin('api');
 		this.mixin('stream');
+
+		const stream = this.stream.event;
 
 		this.history = [];
 		this.fetching = true;
@@ -62,11 +65,11 @@
 				});
 			});
 
-			this.stream.on('signin', this.onSignin);
+			stream.on('signin', this.onSignin);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('signin', this.onSignin);
+			stream.off('signin', this.onSignin);
 		});
 
 		this.onSignin = signin => {

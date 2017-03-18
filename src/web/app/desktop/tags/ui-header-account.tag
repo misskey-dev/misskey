@@ -159,10 +159,10 @@
 
 	</style>
 	<script>
-		const contains = require('../../common/scripts/contains');
+		import contains from '../../common/scripts/contains';
+		import signout from '../../common/scripts/signout';
 
 		this.mixin('i');
-		this.mixin('signout');
 
 		this.isOpen = false;
 

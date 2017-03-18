@@ -1,5 +1,5 @@
 /**
- * MISSKEY ENTRY POINT
+ * MISSKEY CLIENT ENTRY POINT
  */
 (() => {
 	const head = document.getElementsByTagName('head')[0];

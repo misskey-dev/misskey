@@ -57,9 +57,13 @@
 
 	</style>
 	<script>
+		import getPostSummary from '../../common/scripts/get-post-summary';
+		this.getPostSummary = getPostSummary;
+
 		this.mixin('api');
 		this.mixin('stream');
-		this.mixin('get-post-summary');
+
+		const stream = this.stream.event;
 
 		this.notifications = [];
 		this.loading = true;
@@ -74,11 +78,11 @@
 				this.trigger('fetched');
 			});
 
-			this.stream.on('notification', this.onNotification);
+			stream.on('notification', this.onNotification);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('notification', this.onNotification);
+			stream.off('notification', this.onNotification);
 		});
 
 		this.onNotification = notification => {

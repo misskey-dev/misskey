@@ -7,42 +7,45 @@
 			display block
 	</style>
 	<script>
+		import ui from '../../scripts/ui-event';
+		import Progress from '../../../common/scripts/loading';
+		import getPostSummary from '../../../common/scripts/get-post-summary';
+		import openPostForm from '../../scripts/open-post-form';
+
 		this.mixin('i');
-		this.mixin('ui');
-		this.mixin('ui-progress');
 		this.mixin('stream');
-		this.mixin('get-post-summary');
-		this.mixin('open-post-form');
+
+		const stream = this.stream.event;
 
 		this.unreadCount = 0;
 
 		this.on('mount', () => {
 			document.title = 'Misskey'
-			this.ui.trigger('title', '<i class="fa fa-home"></i>ホーム');
+			ui.trigger('title', '<i class="fa fa-home"></i>ホーム');
 
-			this.ui.trigger('func', () => {
-				this.openPostForm();
+			ui.trigger('func', () => {
+				openPostForm();
 			}, 'pencil');
 
-			this.Progress.start();
+			Progress.start();
 
-			this.stream.on('post', this.onStreamPost);
+			stream.on('post', this.onStreamPost);
 			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 			this.refs.ui.refs.home.on('loaded', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('post', this.onStreamPost);
+			stream.off('post', this.onStreamPost);
 			document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		});
 
 		this.onStreamPost = post => {
 			if (document.hidden && post.user_id !== this.I.id) {
 				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${this.getPostSummary(post)}`;
+				document.title = `(${this.unreadCount}) ${getPostSummary(post)}`;
 			}
 		};
 

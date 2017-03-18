@@ -6,7 +6,7 @@ NProgress.configure({
 
 const root = document.getElementsByTagName('html')[0];
 
-module.exports = {
+export default {
 	start: () => {
 		root.classList.add('progress');
 		NProgress.start();

@@ -13,7 +13,7 @@ const elements = [
 	require('./elements/emoji')
 ];
 
-function analyze(source) {
+export default (source: string) => {
 
 	if (source == '') {
 		return null;
@@ -40,6 +40,8 @@ function analyze(source) {
 				}
 				tokens.forEach(push);
 				return true;
+			} else {
+				return false;
 			}
 		});
 
@@ -66,6 +68,4 @@ function analyze(source) {
 			return a.concat(b);
 		}
 	});
-}
-
-module.exports = analyze;
+};

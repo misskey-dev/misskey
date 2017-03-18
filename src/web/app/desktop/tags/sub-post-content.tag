@@ -34,15 +34,16 @@
 
 	</style>
 	<script>
-		this.mixin('text');
+		import compile from '../../common/scripts/text-compiler';
+
 		this.mixin('user-preview');
 
 		this.post = this.opts.post;
 
 		this.on('mount', () => {
 			if (this.post.text) {
-				const tokens = this.analyze(this.post.text);
-				this.refs.text.innerHTML = this.compile(tokens, false);
+				const tokens = this.post.ast;
+				this.refs.text.innerHTML = compile(tokens, false);
 
 				this.refs.text.children.forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);

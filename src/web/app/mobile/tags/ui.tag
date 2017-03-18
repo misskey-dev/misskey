@@ -11,16 +11,20 @@
 			padding-top 48px
 	</style>
 	<script>
+		this.mixin('i');
+
 		this.mixin('stream');
+
+		const stream = this.stream.event;
 
 		this.isDrawerOpening = false;
 
 		this.on('mount', () => {
-			this.stream.on('notification', this.onStreamNotification);
+			stream.on('notification', this.onStreamNotification);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('notification', this.onStreamNotification);
+			stream.off('notification', this.onStreamNotification);
 		});
 
 		this.toggleDrawer = () => {

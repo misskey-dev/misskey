@@ -80,7 +80,7 @@
 
 	</style>
 	<script>
-		const contains = require('../../common/scripts/contains');
+		import contains from '../../common/scripts/contains';
 
 		this.mixin('api');
 

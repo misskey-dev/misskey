@@ -95,7 +95,7 @@
 
 	</style>
 	<script>
-		const contains = require('../../common/scripts/contains');
+		import contains from '../../common/scripts/contains';
 
 		this.root.addEventListener('contextmenu', e => {
 			e.preventDefault();

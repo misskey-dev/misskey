@@ -7,27 +7,27 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
-		this.mixin('ui-progress');
+		import ui from '../../scripts/ui-event';
+		import Progress from '../../../common/scripts/loading';
 
 		this.on('mount', () => {
 			document.title = 'Misskey Drive';
-			this.ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
+			ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
 
-			this.ui.trigger('func', () => {
+			ui.trigger('func', () => {
 				this.refs.ui.refs.browser.openContextMenu();
 			}, 'ellipsis-h');
 
 			this.refs.ui.refs.browser.on('begin-fetch', () => {
-				this.Progress.start();
+				Progress.start();
 			});
 
 			this.refs.ui.refs.browser.on('fetched-mid', () => {
-				this.Progress.set(0.5);
+				Progress.set(0.5);
 			});
 
 			this.refs.ui.refs.browser.on('fetched', () => {
-				this.Progress.done();
+				Progress.done();
 			});
 
 			this.refs.ui.refs.browser.on('move-root', () => {
@@ -37,7 +37,7 @@
 				history.pushState(null, title, '/i/drive');
 
 				document.title = title;
-				this.ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
+				ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
 			});
 
 			this.refs.ui.refs.browser.on('open-folder', (folder, silent) => {
@@ -50,7 +50,7 @@
 
 				document.title = title;
 				// TODO: escape html characters in folder.name
-				this.ui.trigger('title', '<i class="fa fa-folder-open"></i>' + folder.name);
+				ui.trigger('title', '<i class="fa fa-folder-open"></i>' + folder.name);
 			});
 
 			this.refs.ui.refs.browser.on('open-file', (file, silent) => {
@@ -63,7 +63,7 @@
 
 				document.title = title;
 				// TODO: escape html characters in file.name
-				this.ui.trigger('title', '<mk-file-type-icon class="icon"></mk-file-type-icon>' + file.name);
+				ui.trigger('title', '<mk-file-type-icon class="icon"></mk-file-type-icon>' + file.name);
 				riot.mount('mk-file-type-icon', {
 					type: file.type
 				});

@@ -35,15 +35,14 @@
 		</ul>
 	</mk-contextmenu>
 	<script>
-		const copyToClipboard = require('../../../common/scripts/copy-to-clipboard');
+		import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
+		import dialog from '../../scripts/dialog';
+		import inputDialog from '../../scripts/input-dialog';
+		import updateAvatar from '../../scripts/update-avatar';
+		import NotImplementedException from '../../scripts/not-implemented-exception';
 
-		this.mixin('api');
 		this.mixin('i');
-		this.mixin('update-avatar');
-		this.mixin('update-banner');
-		this.mixin('dialog');
-		this.mixin('input-dialog');
-		this.mixin('NotImplementedException');
+		this.mixin('api');
 
 		this.browser = this.opts.browser;
 		this.file = this.opts.file;
@@ -85,16 +84,16 @@
 
 		this.setAvatar = () => {
 			this.refs.ctx.close();
-			this.updateAvatar(this.I, null, this.file);
+			updateAvatar(this.I, null, this.file);
 		};
 
 		this.setBanner = () => {
 			this.refs.ctx.close();
-			this.updateBanner(this.I, null, this.file);
+			updateBanner(this.I, null, this.file);
 		};
 
 		this.addApp = () => {
-			this.NotImplementedException();
+			NotImplementedException();
 		};
 	</script>
 </mk-drive-browser-file-contextmenu>

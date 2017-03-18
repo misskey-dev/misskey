@@ -65,7 +65,6 @@
 	</style>
 	<script>
 		this.mixin('api');
-		this.mixin('NotImplementedException');
 
 		this.url = 'http://news.yahoo.co.jp/pickup/rss.xml';
 		this.items = [];
@@ -81,7 +80,7 @@
 		});
 
 		this.fetch = () => {
-			this.api(CONFIG.url + '/api:rss', {
+			this.api('/api:rss', {
 				url: this.url
 			}).then(feed => {
 				this.update({
@@ -92,7 +91,6 @@
 		};
 
 		this.settings = () => {
-			this.NotImplementedException();
 		};
 	</script>
 </mk-rss-reader-home-widget>

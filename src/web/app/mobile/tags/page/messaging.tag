@@ -7,12 +7,13 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
+		import ui from '../../scripts/ui-event';
+
 		this.mixin('page');
 
 		this.on('mount', () => {
 			document.title = 'Misskey | メッセージ';
-			this.ui.trigger('title', '<i class="fa fa-comments-o"></i>メッセージ');
+			ui.trigger('title', '<i class="fa fa-comments-o"></i>メッセージ');
 
 			this.refs.ui.refs.index.on('navigate-user', user => {
 				this.page('/i/messaging/' + user.username);

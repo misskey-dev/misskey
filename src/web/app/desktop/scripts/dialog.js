@@ -1,6 +1,6 @@
-const riot = require('riot');
+import * as riot from 'riot';
 
-module.exports = (title, text, buttons, canThrough, onThrough) => {
+export default (title, text, buttons, canThrough, onThrough) => {
 	const dialog = document.body.appendChild(document.createElement('mk-dialog'));
 	const controller = riot.observable();
 	riot.mount(dialog, {

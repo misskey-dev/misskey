@@ -47,8 +47,8 @@
 
 	</style>
 	<script>
-		this.mixin('api');
 		this.mixin('i');
+		this.mixin('api');
 
 		this.close = e => {
 			e.preventDefault();

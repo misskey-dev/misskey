@@ -1,13 +1,13 @@
 <mk-stream-indicator>
-	<p if={ state == 'initializing' }>
+	<p if={ stream.state == 'initializing' }>
 		<i class="fa fa-spinner fa-spin"></i>
 		<span>接続中<mk-ellipsis></mk-ellipsis></span>
 	</p>
-	<p if={ state == 'reconnecting' }>
+	<p if={ stream.state == 'reconnecting' }>
 		<i class="fa fa-spinner fa-spin"></i>
 		<span>切断されました 接続中<mk-ellipsis></mk-ellipsis></span>
 	</p>
-	<p if={ state == 'connected' }>
+	<p if={ stream.state == 'connected' }>
 		<i class="fa fa-check"></i>
 		<span>接続完了</span>
 	</p>
@@ -34,18 +34,16 @@
 
 	</style>
 	<script>
+		this.mixin('i');
 		this.mixin('stream');
 
 		this.on('before-mount', () => {
-			this.state = this.getStreamState();
-
-			if (this.state == 'connected') {
+			if (this.stream.state == 'connected') {
 				this.root.style.opacity = 0;
 			}
 		});
 
-		this.streamStateEv.on('connected', () => {
-			this.state = this.getStreamState();
+		this.stream.stateEv.on('connected', () => {
 			this.update();
 			setTimeout(() => {
 				Velocity(this.root, {
@@ -54,8 +52,7 @@
 			}, 1000);
 		});
 
-		this.streamStateEv.on('closed', () => {
-			this.state = this.getStreamState();
+		this.stream.stateEv.on('closed', () => {
 			this.update();
 			Velocity(this.root, {
 				opacity: 1

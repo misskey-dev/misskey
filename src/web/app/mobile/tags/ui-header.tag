@@ -88,14 +88,14 @@
 
 	</style>
 	<script>
-		this.mixin('ui');
+		import ui from '../scripts/ui-event';
 
 		this.func = null;
 		this.funcIcon = null;
 
 		this.on('unmount', () => {
-			this.ui.off('title', this.setTitle);
-			this.ui.off('func', this.setFunc);
+			ui.off('title', this.setTitle);
+			ui.off('func', this.setFunc);
 		});
 
 		this.setTitle = title => {
@@ -109,7 +109,7 @@
 			});
 		};
 
-		this.ui.on('title', this.setTitle);
-		this.ui.on('func', this.setFunc);
+		ui.on('title', this.setTitle);
+		ui.on('func', this.setFunc);
 	</script>
 </mk-ui-header>

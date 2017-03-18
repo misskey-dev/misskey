@@ -1,6 +1,5 @@
 const stream = require('../../common/scripts/stream');
 const getPostSummary = require('../../common/scripts/get-post-summary');
-const riot = require('riot');
 
 module.exports = me => {
 	const s = stream(me);
@@ -37,9 +36,5 @@ module.exports = me => {
 		setTimeout(n.close.bind(n), 6000);
 	});
 
-	riot.mixin('stream', {
-		stream: s.event,
-		getStreamState: s.getState,
-		streamStateEv: s.stateEv
-	});
+	return s;
 };

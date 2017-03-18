@@ -5,8 +5,10 @@
 		<p class="username">@{ user.username }</p>
 		<p class="location" if={ user.profile.location }><i class="fa fa-map-marker"></i>{ user.profile.location }</p>
 	</div>
-	<footer><a href={ '/' + user.username }>投稿</a><a href={ '/' + user.username + '/media' }>メディア</a><a href={ '/' + user.username + '/graphs' }>グラフ</a>
-		<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
+	<footer>
+		<a href={ '/' + user.username }>投稿</a>
+		<a href={ '/' + user.username + '/media' }>メディア</a>
+		<a href={ '/' + user.username + '/graphs' }>グラフ</a>
 	</footer>
 	<style>
 		:scope
@@ -104,9 +106,9 @@
 
 	</style>
 	<script>
+		import updateBanner from '../scripts/update-banner';
+
 		this.mixin('i');
-		this.mixin('update-banner');
-		this.mixin('NotImplementedException');
 
 		this.user = this.opts.user;
 
@@ -136,7 +138,7 @@
 		this.onUpdateBanner = () => {
 			if (!this.SIGNIN || this.I.id != this.user.id) return;
 
-			this.updateBanner(this.I, i => {
+			updateBanner(this.I, i => {
 				this.user.banner_url = i.banner_url;
 				this.update();
 			});

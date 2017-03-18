@@ -7,8 +7,9 @@
 			display block
 	</style>
 	<script>
+		import ui from '../../scripts/ui-event';
+
 		this.mixin('api');
-		this.mixin('ui');
 
 		this.fetching = true;
 
@@ -23,7 +24,7 @@
 
 				document.title = `メッセージ: ${user.name} | Misskey`;
 				// TODO: ユーザー名をエスケープ
-				this.ui.trigger('title', '<i class="fa fa-comments-o"></i>' + user.name);
+				ui.trigger('title', '<i class="fa fa-comments-o"></i>' + user.name);
 			});
 		});
 	</script>

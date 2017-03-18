@@ -57,13 +57,14 @@
 
 	</style>
 	<script>
+		import isPromise from '../../common/scripts/is-promise';
+
 		this.mixin('api');
-		this.mixin('is-promise');
 
 		this.images = [];
 		this.initializing = true;
 		this.user = null;
-		this.userPromise = this.isPromise(this.opts.user)
+		this.userPromise = isPromise(this.opts.user)
 			? this.opts.user
 			: Promise.resolve(this.opts.user);
 

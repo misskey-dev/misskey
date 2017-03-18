@@ -6,7 +6,7 @@
 import './style.styl';
 
 require('./tags');
-const boot = require('../boot');
+import boot from '../boot';
 const route = require('./router');
 
 /**

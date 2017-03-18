@@ -114,7 +114,7 @@ const elements = [
 	// comment
 	code => {
 		if (code.substr(0, 2) != '//') return null;
-		const match = code.match(/^\/\/(.+?)\n/);
+		const match = code.match(/^\/\/(.+?)(\n|$)/);
 		if (!match) return null;
 		const comment = match[0];
 		return {
@@ -187,7 +187,7 @@ const elements = [
 				regexp += char;
 			}
 		}
-		
+
 		if (thisIsNotARegexp) return null;
 		if (regexp == '') return null;
 		if (regexp[0] == ' ' && regexp[regexp.length - 1] == ' ') return null;
@@ -299,7 +299,7 @@ const elements = [
 ];
 
 // specify lang is todo
-module.exports = (source, lang) => {
+export default (source: string, lang?: string) => {
 	let code = source;
 	let html = '';
 
@@ -317,6 +317,8 @@ module.exports = (source, lang) => {
 			if (e) {
 				push(e);
 				return true;
+			} else {
+				return false;
 			}
 		});
 

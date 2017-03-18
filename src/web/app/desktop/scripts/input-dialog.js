@@ -1,6 +1,6 @@
-const riot = require('riot');
+import * as riot from 'riot';
 
-module.exports = (title, placeholder, defaultValue, onOk, onCancel) => {
+export default (title, placeholder, defaultValue, onOk, onCancel) => {
 	const dialog = document.body.appendChild(document.createElement('mk-input-dialog'));
 	return riot.mount(dialog, {
 		title: title,

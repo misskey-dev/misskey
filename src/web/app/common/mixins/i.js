@@ -1,6 +1,6 @@
-const riot = require('riot');
+import * as riot from 'riot';
 
-module.exports = me => {
+export default me => {
 	riot.mixin('i', {
 		init: function() {
 			this.I = me;

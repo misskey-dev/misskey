@@ -55,7 +55,7 @@
 				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
 					<p class="count" if={ p.likes_count > 0 }>{ p.likes_count }</p>
 				</button>
-				<button onclick={ NotImplementedException }>
+				<button>
 					<i class="fa fa-ellipsis-h"></i>
 				</button>
 				<button onclick={ toggleDetail } title="詳細">
@@ -327,26 +327,26 @@
 
 	</style>
 	<script>
+		import compile from '../../common/scripts/text-compiler';
+		import dateStringify from '../../common/scripts/date-stringify';
+
 		this.mixin('api');
-		this.mixin('text');
-		this.mixin('date-stringify');
 		this.mixin('user-preview');
-		this.mixin('NotImplementedException');
 
 		this.post = this.opts.post;
 		this.isRepost = this.post.repost && this.post.text == null && this.post.media_ids == null && this.post.poll == null;
 		this.p = this.isRepost ? this.post.repost : this.post;
 
-		this.title = this.dateStringify(this.p.created_at);
+		this.title = dateStringify(this.p.created_at);
 
 		this.url = `/${this.p.user.username}/${this.p.id}`;
 		this.isDetailOpened = false;
 
 		this.on('mount', () => {
 			if (this.p.text) {
-				const tokens = this.analyze(this.p.text);
+				const tokens = this.p.ast;
 
-				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', this.compile(tokens));
+				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', compile(tokens));
 
 				this.refs.text.children.forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);

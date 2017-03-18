@@ -1,40 +1,53 @@
 const ReconnectingWebSocket = require('reconnecting-websocket');
-const riot = require('riot');
-const CONFIG = require('./config');
+import * as riot from 'riot';
+import CONFIG from './config';
 
-module.exports = me => {
-	let state = 'initializing';
-	const stateEv = riot.observable();
-	const event = riot.observable();
-	const host = CONFIG.apiUrl.replace('http', 'ws');
-	const socket = new ReconnectingWebSocket(`${host}?i=${me.token}`);
+class Connection {
+	constructor(me) {
+		// BIND -----------------------------------
+		this.onOpen =    this.onOpen.bind(this);
+		this.onClose =   this.onClose.bind(this);
+		this.onMessage = this.onMessage.bind(this);
+		this.close =     this.close.bind(this);
+		// ----------------------------------------
 
-	socket.onopen = () => {
-		state = 'connected';
-		stateEv.trigger('connected');
-	};
+		this.state = 'initializing';
+		this.stateEv = riot.observable();
+		this.event = riot.observable();
+		this.me = me;
 
-	socket.onclose = () => {
-		state = 'reconnecting';
-		stateEv.trigger('closed');
-	};
+		const host = CONFIG.apiUrl.replace('http', 'ws');
+		this.socket = new ReconnectingWebSocket(`${host}?i=${me.token}`);
+		this.socket.addEventListener('open', this.onOpen);
+		this.socket.addEventListener('close', this.onClose);
+		this.socket.addEventListener('message', this.onMessage);
 
-	socket.onmessage = message => {
+		this.event.on('i_updated', me.update);
+	}
+
+	onOpen() {
+		this.state = 'connected';
+		this.stateEv.trigger('connected');
+	}
+
+	onClose() {
+		this.state = 'reconnecting';
+		this.stateEv.trigger('closed');
+	}
+
+	onMessage(message) {
 		try {
 			const msg = JSON.parse(message.data);
-			if (msg.type) {
-				event.trigger(msg.type, msg.body);
-			}
-		} catch (e) {
+			if (msg.type) this.event.trigger(msg.type, msg.body);
+		} catch(e) {
 			// noop
 		}
-	};
+	}
 
-	event.on('i_updated', me.update);
+	close() {
+		this.socket.removeEventListener('open', this.onOpen);
+		this.socket.removeEventListener('message', this.onMessage);
+	}
+}
 
-	return {
-		stateEv: stateEv,
-		getState: () => state,
-		event: event
-	};
-};
+export default Connection;

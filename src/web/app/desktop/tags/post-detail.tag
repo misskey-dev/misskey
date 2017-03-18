@@ -340,9 +340,11 @@
 	</style>
 	<script>
 		this.mixin('api');
-		this.mixin('text');
+
+		import compile from '../../common/scripts/text-compiler';
+
 		this.mixin('user-preview');
-		this.mixin('date-stringify');
+		this.dateStringify = require('../../common/scripts/date-stringify');
 		this.mixin('NotImplementedException');
 
 		this.fetching = true;
@@ -367,9 +369,9 @@
 				this.trigger('loaded');
 
 				if (this.p.text) {
-					const tokens = this.analyze(this.p.text);
+					const tokens = this.p.ast;
 
-					this.refs.text.innerHTML = this.compile(tokens);
+					this.refs.text.innerHTML = compile(tokens);
 
 					this.refs.text.children.forEach(e => {
 						if (e.tagName == 'MK-URL') riot.mount(e);

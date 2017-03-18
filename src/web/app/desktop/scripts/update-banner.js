@@ -1,9 +1,9 @@
-const riot = require('riot');
-const CONFIG = require('../../common/scripts/config');
-const dialog = require('./dialog');
-const api = require('../../common/scripts/api');
+import * as riot from 'riot';
+import CONFIG from '../../common/scripts/config';
+import dialog from './dialog';
+import api from '../../common/scripts/api';
 
-module.exports = (I, cb, file = null) => {
+export default (I, cb, file = null) => {
 	const fileSelected = file => {
 		const cropper = riot.mount(document.body.appendChild(document.createElement('mk-crop-window')), {
 			file: file,

@@ -306,11 +306,11 @@
 
 	</style>
 	<script>
-		const getCat = require('../../common/scripts/get-cat');
+		import getCat from '../../common/scripts/get-cat';
+		import notify from '../scripts/notify';
+		import Autocomplete from '../scripts/autocomplete';
 
 		this.mixin('api');
-		this.mixin('notify');
-		this.mixin('autocomplete');
 
 		this.wait = false;
 		this.uploadings = [];
@@ -355,7 +355,7 @@
 				this.trigger('change-uploading-files', uploads);
 			});
 
-			this.autocomplete = new this.Autocomplete(this.refs.text);
+			this.autocomplete = new Autocomplete(this.refs.text);
 			this.autocomplete.attach();
 
 			// 書きかけの投稿を復元
@@ -488,13 +488,13 @@
 				this.clear();
 				this.removeDraft();
 				this.trigger('post');
-				this.notify(this.repost
+				notify(this.repost
 					? 'Repostしました！'
 					: this.inReplyToPost
 						? '返信しました！'
 						: '投稿しました！');
 			}).catch(err => {
-				this.notify(this.repost
+				notify(this.repost
 					? 'Repostできませんでした'
 					: this.inReplyToPost
 						? '返信できませんでした'

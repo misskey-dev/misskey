@@ -1,1 +1,1 @@
-module.exports = x => typeof x.then == 'function';
+export default x => typeof x.then == 'function';

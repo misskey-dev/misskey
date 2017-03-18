@@ -7,11 +7,11 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
+		const ui = require('../../../scripts/ui-event');
 
 		this.on('mount', () => {
 			document.title = 'Misskey | ログイン履歴';
-			this.ui.trigger('title', '<i class="fa fa-sign-in"></i>ログイン履歴');
+			ui.trigger('title', '<i class="fa fa-sign-in"></i>ログイン履歴');
 		});
 	</script>
 </mk-signin-history-page>

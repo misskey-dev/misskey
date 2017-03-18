@@ -97,7 +97,7 @@
 		this.loading = true;
 
 		this.on('mount', () => {
-			fetch(CONFIG.url + '/api:url?url=' + this.url).then(res => {
+			fetch('/api:url?url=' + this.url).then(res => {
 				res.json().then(info => {
 					this.title = info.title;
 					this.description = info.description;

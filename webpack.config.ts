@@ -63,9 +63,7 @@ module.exports = new Promise(async resolve => {
 		plugins: [
 			new webpack.DefinePlugin({
 				VERSION: JSON.stringify(version),
-				CONFIG: {
-					themeColor: JSON.stringify(constants.themeColor)
-				}
+				THEME_COLOR: JSON.stringify(constants.themeColor)
 			}),
 			new StringReplacePlugin()
 		],

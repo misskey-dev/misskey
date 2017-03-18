@@ -6,11 +6,11 @@
 import './style.styl';
 
 require('./tags');
-const riot = require('riot');
-const boot = require('../boot');
-const mixins = require('./mixins');
-const route = require('./router');
-const fuckAdBlock = require('./scripts/fuck-ad-block');
+require('./mixins');
+import * as riot from 'riot';
+import boot from '../boot';
+import route from './router';
+import fuckAdBlock from './scripts/fuck-ad-block';
 
 /**
  * Boot
@@ -30,9 +30,6 @@ boot(me => {
 			Notification.requestPermission();
 		}
 	}
-
-	// Register mixins
-	mixins(me);
 
 	// Start routing
 	route(me);

@@ -4,8 +4,8 @@
 
 const assert = require('assert');
 
-const analyze = require('../src/common/text');
-const syntaxhighlighter = require('../src/common/text/core/syntax-highlighter');
+const analyze = require('../built/api/common/text').default;
+const syntaxhighlighter = require('../built/api/common/text/core/syntax-highlighter').default;
 
 describe('Text', () => {
 	it('is correctly analyzed', () => {
@@ -90,6 +90,14 @@ describe('Text', () => {
 	});
 
 	describe('syntax highlighting', () => {
+		it('comment', () => {
+			const html1 = syntaxhighlighter('// Strawberry pasta');
+			assert.equal(html1, '<span class="comment">// Strawberry pasta</span>');
+
+			const html2 = syntaxhighlighter('x // x\ny // y');
+			assert.equal(html2, 'x <span class="comment">// x\n</span>y <span class="comment">// y</span>');
+		});
+
 		it('regexp', () => {
 			const html = syntaxhighlighter('/.*/');
 			assert.equal(html, '<span class="regexp">/.*/</span>');

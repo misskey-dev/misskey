@@ -13,11 +13,11 @@
 			display block
 	</style>
 	<script>
-		this.mixin('ui');
+		import ui from '../../scripts/ui-event';
 
 		this.on('mount', () => {
 			document.title = 'Misskey | 設定';
-			this.ui.trigger('title', '<i class="fa fa-cog"></i>設定');
+			ui.trigger('title', '<i class="fa fa-cog"></i>設定');
 		});
 	</script>
 </mk-settings-page>
