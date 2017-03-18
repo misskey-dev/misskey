@@ -41,7 +41,7 @@
 			<p if={ folder != null }>このフォルダーは空です</p>
 		</div>
 	</div>
-	<div class="fetching" if={ fetching }>
+	<div class="fetching" if={ fetching && files.length == 0 && folders.length == 0 }>
 		<div class="spinner">
 			<div class="dot1"></div>
 			<div class="dot2"></div>
@@ -441,6 +441,7 @@
 			this.api('drive/files/show', {
 				file_id: file
 			}).then(file => {
+				this.fetching = false;
 				this.file = file;
 				this.folder = null;
 				this.hierarchyFolders = [];
