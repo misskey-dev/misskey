@@ -5,7 +5,8 @@ const home = {
 		'profile',
 		'calendar',
 		'rss-reader',
-		'photo-stream'
+		'photo-stream',
+		'version'
 	],
 	right: [
 		'broadcast',

@@ -64,13 +64,31 @@
 		// https://github.com/riot/riot/issues/2080
 		if (this.mode == '') this.mode = 'timeline';
 
+		const _home = {
+			left: [
+				'profile',
+				'calendar',
+				'rss-reader',
+				'photo-stream',
+				'version'
+			],
+			right: [
+				'broadcast',
+				'notifications',
+				'user-recommendation',
+				'donation',
+				'nav',
+				'tips'
+			]
+		};
+
 		this.home = [];
 
 		this.on('mount', () => {
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 			});
-
+/*
 			this.I.data.home.forEach(widget => {
 				try {
 					const el = document.createElement(`mk-${widget.name}-home-widget`);
@@ -85,6 +103,18 @@
 				} catch (e) {
 					// noop
 				}
+			});
+*/
+			_home.left.forEach(widget => {
+				const el = document.createElement(`mk-${widget}-home-widget`);
+				this.refs.left.appendChild(el);
+				this.home.push(riot.mount(el)[0]);
+			});
+
+			_home.right.forEach(widget => {
+				const el = document.createElement(`mk-${widget}-home-widget`);
+				this.refs.right.appendChild(el);
+				this.home.push(riot.mount(el)[0]);
 			});
 		});
 
