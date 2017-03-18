@@ -25,7 +25,7 @@
 				user_id: this.user.id
 			}).then(data => {
 				data.forEach(d => d.total = d.posts + d.replies + d.reposts);
-				this.peak = Math.max.apply(null, data.map(d => d.total));
+				this.peak = Math.max.apply(null, data.map(d => d.total)) / 2;
 				let x = 0;
 				data.reverse().forEach(d => {
 					d.x = x;
