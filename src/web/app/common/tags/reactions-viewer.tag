@@ -26,6 +26,10 @@
 	<script>
 		this.post = this.opts.post;
 
+		this.on('mount', () => {
+			this.update();
+		});
+
 		this.on('update', () => {
 			this.reactions = this.post.reaction_counts;
 		});
