@@ -17,16 +17,14 @@ import event from '../../../event';
  * @return {Promise<any>}
  */
 module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) => {
-	// Get 'set' parameter
-	const [set, setError] = $(params.set).optional.object()
+	// Get 'data' parameter
+	const [data, dataError] = $(params.data).optional.object()
 		.pipe(obj => {
-			return Object.entries(obj).some(kv => {
-				const k = kv[0];
-				const v = kv[1];
-				return $(k).string().match(/[a-z_]+/).isNg() && $(v).string().isNg();
-			});
+			const hasInvalidData = Object.entries(obj).some(([k, v]) =>
+				$(k).string().match(/^[a-z_]+$/).isNg() && $(v).string().isNg());
+			return !hasInvalidData;
 		}).$;
-	if (setError) return rej('invalid set param');
+	if (dataError) return rej('invalid data param');
 
 	// Get 'key' parameter
 	const [key, keyError] = $(params.key).optional.string().match(/[a-z_]+/).$;
@@ -36,16 +34,18 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 	const [value, valueError] = $(params.value).optional.string().$;
 	if (valueError) return rej('invalid value param');
 
-	let data = {};
-	if (set) {
-		data = set;
+	let set = {};
+	if (data) {
+		Object.entries(data).forEach(([k, v]) => {
+			set['data.' + k] = v;
+		});
 	} else {
-		data[key] = value;
+		set['data.' + key] = value;
 	}
 
 	if (isSecure) {
 		const _user = await User.findOneAndUpdate(user._id, {
-			$set: { data }
+			$set: set
 		});
 
 		res(204);
@@ -63,7 +63,7 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 			app_id: app._id,
 			user_id: user._id
 		}, {
-			$set: { data }
+			$set: set
 		}), {
 			upsert: true
 		});

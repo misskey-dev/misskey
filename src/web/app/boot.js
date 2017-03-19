@@ -157,7 +157,7 @@ function fetchme(token, cb) {
 	function init() {
 		const data = generateDefaultUserdata();
 		api(token, 'i/appdata/set', {
-			set: data
+			data
 		}).then(() => {
 			me.data = data;
 			done();
