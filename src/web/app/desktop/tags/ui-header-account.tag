@@ -161,6 +161,7 @@
 	<script>
 		import contains from '../../common/scripts/contains';
 		import signout from '../../common/scripts/signout';
+		this.signout = signout;
 
 		this.mixin('i');
 
