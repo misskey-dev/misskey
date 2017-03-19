@@ -1,6 +1,7 @@
 /**
  * Module dependencies
  */
+import $ from 'cafy';
 import Appdata from '../../../models/appdata';
 
 /**
@@ -14,10 +15,8 @@ import Appdata from '../../../models/appdata';
  */
 module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) => {
 	// Get 'key' parameter
-	let key = params.key;
-	if (key === undefined) {
-		key = null;
-	}
+	const [key = null, keyError] = $(params.key).optional.nullable.string().match(/[a-z_]+/).$;
+	if (keyError) return rej('invalid key param');
 
 	if (isSecure) {
 		if (!user.data) {
@@ -38,7 +37,9 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 		const appdata = await Appdata.findOne({
 			app_id: app._id,
 			user_id: user._id
-		}, select);
+		}, {
+			fields: select
+		});
 
 		if (appdata) {
 			res(appdata.data);
