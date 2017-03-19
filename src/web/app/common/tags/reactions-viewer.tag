@@ -24,6 +24,10 @@
 
 	</style>
 	<script>
-		this.reactions = this.opts.post.reaction_counts;
+		this.post = this.opts.post;
+
+		this.on('update', () => {
+			this.reactions = this.post.reaction_counts;
+		});
 	</script>
 </mk-reactions-viewer>

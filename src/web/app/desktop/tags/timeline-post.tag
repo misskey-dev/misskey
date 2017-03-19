@@ -46,7 +46,7 @@
 				</div>
 			</div>
 			<footer>
-				<mk-reactions-viewer post={ p }></mk-reactions-viewer>
+				<mk-reactions-viewer post={ p } ref="reactionsViewer"></mk-reactions-viewer>
 				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
@@ -336,12 +336,28 @@
 
 		this.isDetailOpened = false;
 
-		this.post = this.opts.post;
-		this.isRepost = this.post.repost && this.post.text == null && this.post.media_ids == null && this.post.poll == null;
-		this.p = this.isRepost ? this.post.repost : this.post;
-		this.p.reactions_count = this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
-		this.title = dateStringify(this.p.created_at);
-		this.url = `/${this.p.user.username}/${this.p.id}`;
+		this.set = post => {
+			this.post = post;
+			this.isRepost = this.post.repost && this.post.text == null && this.post.media_ids == null && this.post.poll == null;
+			this.p = this.isRepost ? this.post.repost : this.post;
+			this.p.reactions_count = this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
+			this.title = dateStringify(this.p.created_at);
+			this.url = `/${this.p.user.username}/${this.p.id}`;
+		};
+
+		this.set(this.opts.post);
+
+		this.refresh = () => {
+			this.api('posts/show', {
+				post_id: this.post.id
+			}).then(post => {
+				this.set(post);
+				this.update();
+				if (this.refs.reactionsViewer) this.refs.reactionsViewer.update({
+					post
+				});
+			});
+		};
 
 		this.on('mount', () => {
 			if (this.p.text) {
@@ -379,7 +395,8 @@
 		this.react = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
 				source: this.refs.reactButton,
-				post: this.p
+				post: this.p,
+				cb: this.refresh
 			});
 		};
 
