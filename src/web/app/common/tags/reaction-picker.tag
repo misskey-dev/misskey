@@ -25,24 +25,41 @@
 			> .popover
 				position absolute
 				z-index 10001
+				padding 4px
 				background #fff
 				border 1px solid rgba(27, 31, 35, 0.15)
 				border-radius 4px
 				box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
 
 				> button
+					width 40px
+					height 40px
 					font-size 24px
+					border-radius 2px
+
+					&:hover
+						background #eee
+
+					&:active
+						background $theme-color
+						box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
 	</style>
 	<script>
 		this.mixin('api');
 
 		this.post = this.opts.post;
+		this.source = this.opts.source;
 
 		this.on('mount', () => {
+			const rect = this.source.getBoundingClientRect();
+			const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
+			const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
+
 			const width = this.refs.popover.offsetWidth;
-			this.refs.popover.style.top = this.opts.top + 'px';
-			this.refs.popover.style.left = (this.opts.left - (width / 2)) + 'px';
+			const height = this.refs.popover.offsetHeight;
+			this.refs.popover.style.left = (x - (width / 2)) + 'px';
+			this.refs.popover.style.top = (y - (height / 2)) + 'px';
 		});
 
 		this.react = reaction => {

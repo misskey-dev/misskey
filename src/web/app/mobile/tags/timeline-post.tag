@@ -356,10 +356,8 @@
 		};
 
 		this.react = () => {
-			const rect = this.refs.reactButton.getBoundingClientRect();
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
-				top: rect.top + window.pageYOffset,
-				left: rect.left + window.pageXOffset,
+				source: this.refs.reactButton,
 				post: this.p
 			});
 		};
