@@ -1,5 +1,5 @@
 <mk-ui-header>
-	<mk-donation if={ SIGNIN && !I.data.no_donation }></mk-donation>
+	<mk-donation if={ SIGNIN && I.data.no_donation != 'true' }></mk-donation>
 	<mk-special-message></mk-special-message>
 	<div class="main">
 		<div class="backdrop"></div>

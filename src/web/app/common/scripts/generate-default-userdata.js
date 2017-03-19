@@ -38,8 +38,7 @@ export default () => {
 	});
 
 	const data = {
-		cache: true,
-		home: homeData
+		home: JSON.stringify(homeData)
 	};
 
 	return data;

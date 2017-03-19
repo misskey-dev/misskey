@@ -65,7 +65,7 @@ export default callback => {
 	// Get cached account data
 	let cachedMe = JSON.parse(localStorage.getItem('me'));
 
-	if (cachedMe && cachedMe.data && cachedMe.data.cache) {
+	if (cachedMe) {
 		fetched(cachedMe);
 
 		// 後から新鮮なデータをフェッチ
@@ -74,11 +74,6 @@ export default callback => {
 			cachedMe.trigger('updated');
 		});
 	} else {
-		// キャッシュ無効なのにキャッシュが残ってたら掃除
-		if (cachedMe) {
-			localStorage.removeItem('me');
-		}
-
 		// Get token from cookie
 		const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1];
 
@@ -94,14 +89,12 @@ export default callback => {
 				me.trigger('updated');
 			};
 
-			if (me.data.cache) {
-				localStorage.setItem('me', JSON.stringify(me));
+			localStorage.setItem('me', JSON.stringify(me));
 
-				me.on('updated', () => {
-					// キャッシュ更新
-					localStorage.setItem('me', JSON.stringify(me));
-				});
-			}
+			me.on('updated', () => {
+				// キャッシュ更新
+				localStorage.setItem('me', JSON.stringify(me));
+			});
 		}
 
 		mixin(me);
@@ -164,7 +157,7 @@ function fetchme(token, cb) {
 	function init() {
 		const data = generateDefaultUserdata();
 		api(token, 'i/appdata/set', {
-			data: JSON.stringify(data)
+			set: data
 		}).then(() => {
 			me.data = data;
 			done();

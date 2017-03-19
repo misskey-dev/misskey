@@ -41,12 +41,6 @@
 		</section>
 
 		<section class="web" show={ page == 'web' }>
-			<h1>その他</h1>
-			<label class="checkbox">
-				<input type="checkbox" checked={ I.data.cache } onclick={ updateCache }/>
-				<p>読み込みを高速化する</p>
-				<p>API通信時に新鮮なユーザー情報をキャッシュすることでフェッチのオーバーヘッドを無くします。(実験的)</p>
-			</label>
 		</section>
 
 		<section class="apps" show={ page == 'apps' }>
@@ -212,15 +206,6 @@
 				birthday: this.refs.accountBirthday.value || undefined
 			}).then(() => {
 				notify('プロフィールを更新しました');
-			});
-		};
-
-		this.updateCache = () => {
-			this.I.data.cache = !this.I.data.cache;
-			this.api('i/appdata/set', {
-				data: JSON.stringify({
-					cache: this.I.data.cache
-				})
 			});
 		};
 	</script>
