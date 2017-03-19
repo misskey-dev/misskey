@@ -339,13 +339,11 @@
 
 	</style>
 	<script>
-		this.mixin('api');
-
 		import compile from '../../common/scripts/text-compiler';
+		import dateStringify from '../../common/scripts/date-stringify';
 
+		this.mixin('api');
 		this.mixin('user-preview');
-		this.dateStringify = require('../../common/scripts/date-stringify');
-		this.mixin('NotImplementedException');
 
 		this.fetching = true;
 		this.contextFetching = false;
@@ -363,7 +361,7 @@
 					post: post,
 					isRepost: isRepost,
 					p: p,
-					title: this.dateStringify(p.created_at)
+					title: dateStringify(p.created_at)
 				});
 
 				this.trigger('loaded');
