@@ -42,8 +42,8 @@
 					height 80px
 					background-position center center
 					background-size cover
-					background-clip content-box
 					border solid 2px transparent
+					border-radius 4px
 
 			> .initializing
 			> .empty
