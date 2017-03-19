@@ -1,12 +1,12 @@
 <mk-notification class={ notification.type }>
 	<mk-time time={ notification.created_at }></mk-time>
-	<virtual if={ notification.type == 'like' }>
+	<virtual if={ notification.type == 'reaction' }>
 		<a class="avatar-anchor" href={ CONFIG.url + '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
 		<div class="text">
 			<p>
-				<i class="fa fa-thumbs-o-up"></i>
+				<mk-reaction-icon reaction={ notification.reaction }></mk-reaction-icon>
 				<a href={ CONFIG.url + '/' + notification.user.username }>{ notification.user.name }</a>
 			</p>
 			<a class="post-ref" href={ CONFIG.url + '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
@@ -123,7 +123,7 @@
 				p
 					margin 0
 
-					i
+					i, mk-reaction-icon
 						margin-right 4px
 
 			.post-preview
@@ -145,10 +145,6 @@
 
 				&:after
 					content "\f10e"
-
-			&.like
-				.text p i
-					color #FFAC33
 
 			&.repost, &.quote
 				.text p i

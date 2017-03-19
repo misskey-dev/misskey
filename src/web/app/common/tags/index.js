@@ -26,3 +26,6 @@ require('./messaging/form.tag');
 require('./stream-indicator.tag');
 require('./public-timeline.tag');
 require('./activity-table.tag');
+require('./reaction-picker.tag');
+require('./reactions-viewer.tag');
+require('./reaction-icon.tag');

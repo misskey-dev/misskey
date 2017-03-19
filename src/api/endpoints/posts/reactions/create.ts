@@ -2,13 +2,12 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Like from '../../../models/like';
+import Reaction from '../../../models/post-reaction';
 import Post from '../../../models/post';
-import User from '../../../models/user';
 import notify from '../../../common/notify';
 
 /**
- * Like a post
+ * React to a post
  *
  * @param {any} params
  * @param {any} user
@@ -19,7 +18,18 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [postId, postIdErr] = $(params.post_id).id().$;
 	if (postIdErr) return rej('invalid post_id param');
 
-	// Get likee
+	// Get 'reaction' parameter
+	const [reaction, reactionErr] = $(params.reaction).string().or([
+		'like',
+		'love',
+		'laugh',
+		'hmm',
+		'surprise',
+		'congrats'
+	]).$;
+	if (reactionErr) return rej('invalid reaction param');
+
+	// Fetch reactee
 	const post = await Post.findOne({
 		_id: postId
 	});
@@ -30,53 +40,42 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Myself
 	if (post.user_id.equals(user._id)) {
-		return rej('-need-translate-');
+		return rej('cannot react to my post');
 	}
 
-	// if already liked
-	const exist = await Like.findOne({
+	// if already reacted
+	const exist = await Reaction.findOne({
 		post_id: post._id,
 		user_id: user._id,
 		deleted_at: { $exists: false }
 	});
 
 	if (exist !== null) {
-		return rej('already liked');
+		return rej('already reacted');
 	}
 
-	// Create like
-	await Like.insert({
+	// Create reaction
+	await Reaction.insert({
 		created_at: new Date(),
 		post_id: post._id,
-		user_id: user._id
+		user_id: user._id,
+		reaction: reaction
 	});
 
 	// Send response
 	res();
 
-	// Increment likes count
+	const inc = {};
+	inc['reaction_counts.' + reaction] = 1;
+
+	// Increment reactions count
 	Post.update({ _id: post._id }, {
-		$inc: {
-			likes_count: 1
-		}
-	});
-
-	// Increment user likes count
-	User.update({ _id: user._id }, {
-		$inc: {
-			likes_count: 1
-		}
-	});
-
-	// Increment user liked count
-	User.update({ _id: post.user_id }, {
-		$inc: {
-			liked_count: 1
-		}
+		$inc: inc
 	});
 
 	// Notify
-	notify(post.user_id, user._id, 'like', {
-		post_id: post._id
+	notify(post.user_id, user._id, 'reaction', {
+		post_id: post._id,
+		reaction: reaction
 	});
 });

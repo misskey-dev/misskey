@@ -46,14 +46,15 @@
 				</div>
 			</div>
 			<footer>
+				<mk-reactions-viewer post={ p }></mk-reactions-viewer>
 				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
 					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
-					<p class="count" if={ p.likes_count > 0 }>{ p.likes_count }</p>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション"><i class="fa fa-plus"></i>
+					<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
 				<button>
 					<i class="fa fa-ellipsis-h"></i>
@@ -313,7 +314,7 @@
 								margin 0 0 0 8px
 								color #999
 
-							&.liked
+							&.reacted
 								color $theme-color
 
 							&:last-child
@@ -333,14 +334,14 @@
 		this.mixin('api');
 		this.mixin('user-preview');
 
+		this.isDetailOpened = false;
+
 		this.post = this.opts.post;
 		this.isRepost = this.post.repost && this.post.text == null && this.post.media_ids == null && this.post.poll == null;
 		this.p = this.isRepost ? this.post.repost : this.post;
-
+		this.p.reactions_count = this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
 		this.title = dateStringify(this.p.created_at);
-
 		this.url = `/${this.p.user.username}/${this.p.id}`;
-		this.isDetailOpened = false;
 
 		this.on('mount', () => {
 			if (this.p.text) {
@@ -375,22 +376,13 @@
 			});
 		};
 
-		this.like = () => {
-			if (this.p.is_liked) {
-				this.api('posts/likes/delete', {
-					post_id: this.p.id
-				}).then(() => {
-					this.p.is_liked = false;
-					this.update();
-				});
-			} else {
-				this.api('posts/likes/create', {
-					post_id: this.p.id
-				}).then(() => {
-					this.p.is_liked = true;
-					this.update();
-				});
-			}
+		this.react = () => {
+			const rect = this.refs.reactButton.getBoundingClientRect();
+			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
+				top: rect.top + window.pageYOffset,
+				left: rect.left + window.pageXOffset,
+				post: this.p
+			});
 		};
 
 		this.toggleDetail = () => {

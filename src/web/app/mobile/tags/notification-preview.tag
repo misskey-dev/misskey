@@ -1,40 +1,47 @@
 <mk-notification-preview class={ notification.type }>
-	<virtual if={ notification.type == 'like' }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	<virtual if={ notification.type == 'reaction' }>
+		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
-			<p><i class="fa fa-thumbs-o-up"></i>{ notification.user.name }</p>
+			<p><mk-reaction-icon reaction={ notification.reaction }></mk-reaction-icon>{ notification.user.name }</p>
 			<p class="post-ref">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'repost' }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	<virtual if={ notification.type == 'repost' }>
+		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><i class="fa fa-retweet"></i>{ notification.post.user.name }</p>
 			<p class="post-ref">{ getPostSummary(notification.post.repost) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'quote' }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	<virtual if={ notification.type == 'quote' }>
+		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><i class="fa fa-quote-left"></i>{ notification.post.user.name }</p>
 			<p class="post-preview">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'follow' }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	<virtual if={ notification.type == 'follow' }>
+		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><i class="fa fa-user-plus"></i>{ notification.user.name }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'reply' }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	<virtual if={ notification.type == 'reply' }>
+		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><i class="fa fa-reply"></i>{ notification.post.user.name }</p>
 			<p class="post-preview">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'mention' }><img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	<virtual if={ notification.type == 'mention' }>
+		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><i class="fa fa-at"></i>{ notification.post.user.name }</p>
 			<p class="post-preview">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'poll_vote' }><img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+	<virtual if={ notification.type == 'poll_vote' }>
+		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><i class="fa fa-pie-chart"></i>{ notification.user.name }</p>
 			<p class="post-ref">{ getPostSummary(notification.post) }</p>
@@ -70,7 +77,7 @@
 				p
 					margin 0
 
-					i
+					i, mk-reaction-icon
 						margin-right 4px
 
 			.post-ref
@@ -88,10 +95,6 @@
 
 				&:after
 					content "\f10e"
-
-			&.like
-				.text p i
-					color #FFAC33
 
 			&.repost, &.quote
 				.text p i

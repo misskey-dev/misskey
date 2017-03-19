@@ -3,11 +3,11 @@
  */
 import $ from 'cafy';
 import Post from '../../models/post';
-import Like from '../../models/like';
-import serialize from '../../serializers/user';
+import Reaction from '../../models/post-reaction';
+import serialize from '../../serializers/post-reaction';
 
 /**
- * Show a likes of a post
+ * Show reactions of a post
  *
  * @param {any} params
  * @param {any} user
@@ -40,7 +40,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Issue query
-	const likes = await Like
+	const reactions = await Reaction
 		.find({
 			post_id: post._id,
 			deleted_at: { $exists: false }
@@ -53,6 +53,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(likes.map(async like =>
-		await serialize(like.user_id, user))));
+	res(await Promise.all(reactions.map(async reaction =>
+		await serialize(reaction, user))));
 });

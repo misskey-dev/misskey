@@ -2,13 +2,12 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Like from '../../../models/like';
+import Reaction from '../../../models/post-reaction';
 import Post from '../../../models/post';
-import User from '../../../models/user';
 // import event from '../../../event';
 
 /**
- * Unlike a post
+ * Unreact to a post
  *
  * @param {any} params
  * @param {any} user
@@ -19,7 +18,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [postId, postIdErr] = $(params.post_id).id().$;
 	if (postIdErr) return rej('invalid post_id param');
 
-	// Get likee
+	// Fetch unreactee
 	const post = await Post.findOne({
 		_id: postId
 	});
@@ -28,47 +27,34 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('post not found');
 	}
 
-	// if already liked
-	const exist = await Like.findOne({
+	// if already unreacted
+	const exist = await Reaction.findOne({
 		post_id: post._id,
 		user_id: user._id,
 		deleted_at: { $exists: false }
 	});
 
 	if (exist === null) {
-		return rej('already not liked');
+		return rej('never reacted');
 	}
 
-	// Delete like
-	await Like.update({
+	// Delete reaction
+	await Reaction.update({
 		_id: exist._id
 	}, {
-			$set: {
-				deleted_at: new Date()
-			}
-		});
+		$set: {
+			deleted_at: new Date()
+		}
+	});
 
 	// Send response
 	res();
 
-	// Decrement likes count
+	const dec = {};
+	dec['reaction_counts.' + exist.reaction] = -1;
+
+	// Decrement reactions count
 	Post.update({ _id: post._id }, {
-		$inc: {
-			likes_count: -1
-		}
-	});
-
-	// Decrement user likes count
-	User.update({ _id: user._id }, {
-		$inc: {
-			likes_count: -1
-		}
-	});
-
-	// Decrement user liked count
-	User.update({ _id: post.user_id }, {
-		$inc: {
-			liked_count: -1
-		}
+		$inc: dec
 	});
 });

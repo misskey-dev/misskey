@@ -4,7 +4,7 @@
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import Post from '../models/post';
-import Like from '../models/like';
+import Reaction from '../models/post-reaction';
 import Vote from '../models/poll-vote';
 import serializeApp from './app';
 import serializeUser from './user';
@@ -100,18 +100,18 @@ const self = (
 		}
 	}
 
-	// Check if it is liked
+	// Fetch my reaction
 	if (me && opts.detail) {
-		const liked = await Like
-			.count({
+		const reaction = await Reaction
+			.findOne({
 				user_id: me._id,
 				post_id: id,
 				deleted_at: { $exists: false }
-			}, {
-				limit: 1
 			});
 
-		_post.is_liked = liked === 1;
+		if (reaction) {
+			_post.my_reaction = reaction.reaction;
+		}
 	}
 
 	resolve(_post);

@@ -47,8 +47,8 @@
 					<p>投稿する。</p>
 				</label>
 				<label>
-					<input type="checkbox" value="like-write"/>
-					<p>いいねしたりいいね解除する。</p>
+					<input type="checkbox" value="reaction-write"/>
+					<p>リアクションしたりリアクションをキャンセルする。</p>
 				</label>
 				<label>
 					<input type="checkbox" value="following-write"/>

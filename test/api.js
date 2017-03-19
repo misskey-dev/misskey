@@ -458,8 +458,8 @@ describe('API', () => {
 		}));
 	});
 
-	describe('posts/likes/create', () => {
-		it('いいねできる', async(async () => {
+	describe('posts/reactions/create', () => {
+		it('リアクションできる', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -467,26 +467,28 @@ describe('API', () => {
 			});
 
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/create', {
-				post_id: himaPost._id.toString()
+			const res = await request('/posts/reactions/create', {
+				post_id: himaPost._id.toString(),
+				reaction: 'like'
 			}, me);
 			res.should.have.status(204);
 		}));
 
-		it('自分の投稿にはいいねできない', async(async () => {
+		it('自分の投稿にはリアクションできない', async(async () => {
 			const me = await insertSakurako();
 			const myPost = await db.get('posts').insert({
 				user_id: me._id,
 				text: 'お腹ペコい'
 			});
 
-			const res = await request('/posts/likes/create', {
-				post_id: myPost._id.toString()
+			const res = await request('/posts/reactions/create', {
+				post_id: myPost._id.toString(),
+				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
 		}));
 
-		it('二重にいいねできない', async(async () => {
+		it('二重にリアクションできない', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -494,42 +496,46 @@ describe('API', () => {
 			});
 
 			const me = await insertSakurako();
-			await db.get('likes').insert({
+			await db.get('post_reactions').insert({
 				user_id: me._id,
-				post_id: himaPost._id
+				post_id: himaPost._id,
+				reaction: 'like'
 			});
 
-			const res = await request('/posts/likes/create', {
-				post_id: himaPost._id.toString()
+			const res = await request('/posts/reactions/create', {
+				post_id: himaPost._id.toString(),
+				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
 		}));
 
-		it('存在しない投稿にはいいねできない', async(async () => {
+		it('存在しない投稿にはリアクションできない', async(async () => {
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/create', {
-				post_id: '000000000000000000000000'
+			const res = await request('/posts/reactions/create', {
+				post_id: '000000000000000000000000',
+				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
 		}));
 
 		it('空のパラメータで怒られる', async(async () => {
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/create', {}, me);
+			const res = await request('/posts/reactions/create', {}, me);
 			res.should.have.status(400);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/create', {
-				post_id: 'kyoppie'
+			const res = await request('/posts/reactions/create', {
+				post_id: 'kyoppie',
+				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
 		}));
 	});
 
-	describe('posts/likes/delete', () => {
-		it('いいね解除できる', async(async () => {
+	describe('posts/reactions/delete', () => {
+		it('リアクションをキャンセルできる', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -537,18 +543,19 @@ describe('API', () => {
 			});
 
 			const me = await insertSakurako();
-			await db.get('likes').insert({
+			await db.get('post_reactions').insert({
 				user_id: me._id,
-				post_id: himaPost._id
+				post_id: himaPost._id,
+				reaction: 'like'
 			});
 
-			const res = await request('/posts/likes/delete', {
+			const res = await request('/posts/reactions/delete', {
 				post_id: himaPost._id.toString()
 			}, me);
 			res.should.have.status(204);
 		}));
 
-		it('いいねしていない投稿はいいね解除できない', async(async () => {
+		it('リアクションしていない投稿はリアクションをキャンセルできない', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
 				user_id: hima._id,
@@ -556,15 +563,15 @@ describe('API', () => {
 			});
 
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/delete', {
+			const res = await request('/posts/reactions/delete', {
 				post_id: himaPost._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
 
-		it('存在しない投稿はいいね解除できない', async(async () => {
+		it('存在しない投稿はリアクションをキャンセルできない', async(async () => {
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/delete', {
+			const res = await request('/posts/reactions/delete', {
 				post_id: '000000000000000000000000'
 			}, me);
 			res.should.have.status(400);
@@ -572,13 +579,13 @@ describe('API', () => {
 
 		it('空のパラメータで怒られる', async(async () => {
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/delete', {}, me);
+			const res = await request('/posts/reactions/delete', {}, me);
 			res.should.have.status(400);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await insertSakurako();
-			const res = await request('/posts/likes/delete', {
+			const res = await request('/posts/reactions/delete', {
 				post_id: 'kyoppie'
 			}, me);
 			res.should.have.status(400);

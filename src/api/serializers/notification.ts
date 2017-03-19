@@ -51,7 +51,7 @@ export default (notification: any) => new Promise<any>(async (resolve, reject) =
 		case 'reply':
 		case 'repost':
 		case 'quote':
-		case 'like':
+		case 'reaction':
 		case 'poll_vote':
 			// Populate post
 			_notification.post = await serializePost(_notification.post_id, me);

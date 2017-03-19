@@ -45,42 +45,18 @@
 				<mk-poll if={ p.poll } post={ p }></mk-poll>
 			</div>
 			<footer>
+				<mk-reactions-viewer post={ p }></mk-reactions-viewer>
 				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
 					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ liked: p.is_liked } onclick={ like } title="善哉"><i class="fa fa-thumbs-o-up"></i>
-					<p class="count" if={ p.likes_count > 0 }>{ p.likes_count }</p>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション"><i class="fa fa-plus"></i>
+					<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
-				<button onclick={ NotImplementedException }><i class="fa fa-ellipsis-h"></i></button>
+				<button><i class="fa fa-ellipsis-h"></i></button>
 			</footer>
-			<div class="reposts-and-likes">
-				<div class="reposts" if={ reposts && reposts.length > 0 }>
-					<header>
-						<a>{ p.repost_count }</a>
-						<p>Repost</p>
-					</header>
-					<ol class="users">
-						<li class="user" each={ reposts }>
-							<a class="avatar-anchor" href={ CONFIG.url + '/' + user.username } title={ user.name } data-user-preview={ user.id }>
-							<img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/></a>
-						</li>
-					</ol>
-				</div>
-				<div class="likes" if={ likes && likes.length > 0 }>
-					<header><a>{ p.likes_count }</a>
-						<p>いいね</p>
-					</header>
-					<ol class="users">
-						<li class="user" each={ likes }>
-							<a class="avatar-anchor" href={ CONFIG.url + '/' + username } title={ name } data-user-preview={ id }>
-							<img class="avatar" src={ avatar_url + '?thumbnail&size=32' } alt=""/></a>
-						</li>
-					</ol>
-				</div>
-			</div>
 		</article>
 		<div class="replies">
 			<virtual each={ post in replies }>
@@ -271,67 +247,8 @@
 								margin 0 0 0 8px
 								color #999
 
-							&.liked
+							&.reacted
 								color $theme-color
-
-					> .reposts-and-likes
-						display flex
-						justify-content center
-						padding 0
-						margin 16px 0
-
-						&:empty
-							display none
-
-						> .reposts
-						> .likes
-							display flex
-							flex 1 1
-							padding 0
-							border-top solid 1px #F2EFEE
-
-							> header
-								flex 1 1 80px
-								max-width 80px
-								padding 8px 5px 0px 10px
-
-								> a
-									display block
-									font-size 1.5em
-									line-height 1.4em
-
-								> p
-									display block
-									margin 0
-									font-size 0.7em
-									line-height 1em
-									font-weight normal
-									color #a0a2a5
-
-							> .users
-								display block
-								flex 1 1
-								margin 0
-								padding 10px 10px 10px 5px
-								list-style none
-
-								> .user
-									display block
-									float left
-									margin 4px
-									padding 0
-
-									> .avatar-anchor
-										display:block
-
-										> .avatar
-											vertical-align bottom
-											width 24px
-											height 24px
-											border-radius 4px
-
-						> .reposts + .likes
-							margin-left 16px
 
 				> .replies
 					> *
@@ -356,6 +273,8 @@
 			}).then(post => {
 				const isRepost = post.repost != null;
 				const p = isRepost ? post.repost : post;
+				p.reactions_count = p.reaction_counts ? Object.keys(p.reaction_counts).map(key => p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
+
 				this.update({
 					fetching: false,
 					post: post,
@@ -385,26 +304,6 @@
 					});
 				}
 
-				// Get likes
-				this.api('posts/likes', {
-					post_id: this.p.id,
-					limit: 8
-				}).then(likes => {
-					this.update({
-						likes: likes
-					});
-				});
-
-				// Get reposts
-				this.api('posts/reposts', {
-					post_id: this.p.id,
-					limit: 8
-				}).then(reposts => {
-					this.update({
-						reposts: reposts
-					});
-				});
-
 				// Get replies
 				this.api('posts/replies', {
 					post_id: this.p.id,
@@ -429,22 +328,13 @@
 			});
 		};
 
-		this.like = () => {
-			if (this.p.is_liked) {
-				this.api('posts/likes/delete', {
-					post_id: this.p.id
-				}).then(() => {
-					this.p.is_liked = false;
-					this.update();
-				});
-			} else {
-				this.api('posts/likes/create', {
-					post_id: this.p.id
-				}).then(() => {
-					this.p.is_liked = true;
-					this.update();
-				});
-			}
+		this.react = () => {
+			const rect = this.refs.reactButton.getBoundingClientRect();
+			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
+				top: rect.top + window.pageYOffset,
+				left: rect.left + window.pageXOffset,
+				post: this.p
+			});
 		};
 
 		this.loadContext = () => {

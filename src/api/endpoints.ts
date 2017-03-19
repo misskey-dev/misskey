@@ -116,19 +116,10 @@ const endpoints: Endpoint[] = [
 		name: 'aggregation/users/post',
 	},
 	{
-		name: 'aggregation/users/like'
-	},
-	{
 		name: 'aggregation/users/followers'
 	},
 	{
 		name: 'aggregation/users/following'
-	},
-	{
-		name: 'aggregation/posts/like'
-	},
-	{
-		name: 'aggregation/posts/likes'
 	},
 	{
 		name: 'aggregation/posts/repost'
@@ -370,26 +361,26 @@ const endpoints: Endpoint[] = [
 		}
 	},
 	{
-		name: 'posts/likes',
+		name: 'posts/reactions',
 		withCredential: true
 	},
 	{
-		name: 'posts/likes/create',
+		name: 'posts/reactions/create',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
 			max: 100
 		},
-		kind: 'like-write'
+		kind: 'reaction-write'
 	},
 	{
-		name: 'posts/likes/delete',
+		name: 'posts/reactions/delete',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
 			max: 100
 		},
-		kind: 'like-write'
+		kind: 'reaction-write'
 	},
 	{
 		name: 'posts/favorites/create',
