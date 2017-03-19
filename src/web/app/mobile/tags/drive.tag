@@ -41,7 +41,7 @@
 			<p if={ folder != null }>このフォルダーは空です</p>
 		</div>
 	</div>
-	<div class="fetching" if={ fetching && files.length == 0 && folders.length == 0 }>
+	<div class="fetching" if={ fetching && file == null && files.length == 0 && folders.length == 0 }>
 		<div class="spinner">
 			<div class="dot1"></div>
 			<div class="dot2"></div>
