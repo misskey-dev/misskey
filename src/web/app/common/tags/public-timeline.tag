@@ -2,7 +2,6 @@
 	<inside-renderer each="{ posts }"></inside-renderer>
 	<style>
 		:scope
-
 			display block
 	</style>
 	<script>
@@ -14,8 +13,10 @@
 		this.on('mount', () => {
 			this.api('posts', {
 				limit: 5,
-				include_reposts: false,
-				include_replies: false
+				repost: false,
+				reply: false,
+				media: false,
+				poll: false
 			}).then(posts => {
 				this.update({
 					isFetching: false,
@@ -90,8 +91,21 @@
 		import compile from '../../common/scripts/text-compiler';
 
 		this.on('mount', () => {
-			const text = compile(this.ast);
-			this.refs.text.innerHTML = text;
+			const html = compile(this.ast);
+			this.refs.text.innerHTML = html;
+
+			this.refs.text.children.forEach(e => {
+				if (e.tagName == 'MK-URL') riot.mount(e);
+			});
+
+			// URLをプレビュー
+			this.ast
+			.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+			.map(t => {
+				riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+					url: t.url
+				});
+			});
 		});
 	</script>
 </inside-renderer>
