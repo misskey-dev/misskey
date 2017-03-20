@@ -29,7 +29,6 @@
 	</style>
 	<script>
 		this.mixin('api');
-		this.mixin('get-post-summary');
 
 		this.query = this.opts.query;
 		this.isLoading = true;

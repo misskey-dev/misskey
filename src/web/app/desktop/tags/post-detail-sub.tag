@@ -114,15 +114,14 @@
 
 	</style>
 	<script>
-		this.mixin('api');
-
 		import compile from '../../common/scripts/text-compiler';
+		import dateStringify from '../../common/scripts/date-stringify';
 
-		this.dateStringify = require('../../common/scripts/date-stringify');
+		this.mixin('api');
 		this.mixin('user-preview');
 
 		this.post = this.opts.post;
-		this.title = this.dateStringify(this.post.created_at);
+		this.title = dateStringify(this.post.created_at);
 
 		this.on('mount', () => {
 			if (this.post.text) {
