@@ -63,8 +63,6 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.notifications = [];
 		this.loading = true;
 
@@ -78,11 +76,11 @@
 				this.trigger('fetched');
 			});
 
-			stream.on('notification', this.onNotification);
+			this.stream.on('notification', this.onNotification);
 		});
 
 		this.on('unmount', () => {
-			stream.off('notification', this.onNotification);
+			this.stream.off('notification', this.onNotification);
 		});
 
 		this.onNotification = notification => {

@@ -159,8 +159,6 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.files = [];
 		this.folders = [];
 		this.hierarchyFolders = [];
@@ -176,10 +174,10 @@
 		this.multiple =this.opts.multiple;
 
 		this.on('mount', () => {
-			stream.on('drive_file_created', this.onStreamDriveFileCreated);
-			stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
-			stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
-			stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
+			this.stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
+			this.stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
 
 			// Riotのバグでnullを渡しても""になる
 			// https://github.com/riot/riot/issues/2080
@@ -195,10 +193,10 @@
 		});
 
 		this.on('unmount', () => {
-			stream.off('drive_file_created', this.onStreamDriveFileCreated);
-			stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
-			stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
-			stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
+			this.stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
+			this.stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
 		});
 
 		this.onStreamDriveFileCreated = file => {

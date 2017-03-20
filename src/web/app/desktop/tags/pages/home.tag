@@ -14,8 +14,6 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.unreadCount = 0;
 
 		this.page = this.opts.mode || 'timeline';
@@ -26,12 +24,12 @@
 			});
 			document.title = 'Misskey';
 			Progress.start();
-			stream.on('post', this.onStreamPost);
+			this.stream.on('post', this.onStreamPost);
 			document.addEventListener('visibilitychange', this.windowOnVisibilitychange, false);
 		});
 
 		this.on('unmount', () => {
-			stream.off('post', this.onStreamPost);
+			this.stream.off('post', this.onStreamPost);
 			document.removeEventListener('visibilitychange', this.windowOnVisibilitychange);
 		});
 

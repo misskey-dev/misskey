@@ -52,8 +52,6 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.history = [];
 		this.fetching = true;
 
@@ -65,11 +63,11 @@
 				});
 			});
 
-			stream.on('signin', this.onSignin);
+			this.stream.on('signin', this.onSignin);
 		});
 
 		this.on('unmount', () => {
-			stream.off('signin', this.onSignin);
+			this.stream.off('signin', this.onSignin);
 		});
 
 		this.onSignin = signin => {

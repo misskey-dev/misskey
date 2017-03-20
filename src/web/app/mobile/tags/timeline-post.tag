@@ -345,7 +345,7 @@
 				type: 'capture',
 				id: this.p.id
 			});
-			this.stream.event.on('post-updated', this.onStreamPostUpdated);
+			this.stream.on('post-updated', this.onStreamPostUpdated);
 		};
 
 		this.decapture = () => {
@@ -353,7 +353,7 @@
 				type: 'decapture',
 				id: this.p.id
 			});
-			this.stream.event.off('post-updated', this.onStreamPostUpdated);
+			this.stream.off('post-updated', this.onStreamPostUpdated);
 		};
 
 		this.on('mount', () => {

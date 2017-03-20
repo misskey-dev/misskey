@@ -12,19 +12,16 @@
 	</style>
 	<script>
 		this.mixin('i');
-
 		this.mixin('stream');
-
-		const stream = this.stream.event;
 
 		this.isDrawerOpening = false;
 
 		this.on('mount', () => {
-			stream.on('notification', this.onStreamNotification);
+			this.stream.on('notification', this.onStreamNotification);
 		});
 
 		this.on('unmount', () => {
-			stream.off('notification', this.onStreamNotification);
+			this.stream.off('notification', this.onStreamNotification);
 		});
 
 		this.toggleDrawer = () => {

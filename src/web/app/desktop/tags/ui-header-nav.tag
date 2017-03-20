@@ -99,13 +99,11 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.page = this.opts.page;
 
 		this.on('mount', () => {
-			stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
 			// Fetch count of unread messaging messages
 			this.api('messaging/unread').then(res => {
@@ -118,8 +116,8 @@
 		});
 
 		this.on('unmount', () => {
-			stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
 		});
 
 		this.onReadAllMessagingMessages = () => {

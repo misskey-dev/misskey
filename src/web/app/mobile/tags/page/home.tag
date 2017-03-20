@@ -15,8 +15,6 @@
 		this.mixin('i');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.unreadCount = 0;
 
 		this.on('mount', () => {
@@ -29,7 +27,7 @@
 
 			Progress.start();
 
-			stream.on('post', this.onStreamPost);
+			this.stream.on('post', this.onStreamPost);
 			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 			this.refs.ui.refs.home.on('loaded', () => {
@@ -38,7 +36,7 @@
 		});
 
 		this.on('unmount', () => {
-			stream.off('post', this.onStreamPost);
+			this.stream.off('post', this.onStreamPost);
 			document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		});
 

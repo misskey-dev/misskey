@@ -61,13 +61,11 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.images = [];
 		this.initializing = true;
 
 		this.on('mount', () => {
-			stream.on('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
 
 			this.api('drive/stream', {
 				type: 'image/*',
@@ -81,7 +79,7 @@
 		});
 
 		this.on('unmount', () => {
-			stream.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
 		});
 
 		this.onStreamDriveFileCreated = file => {

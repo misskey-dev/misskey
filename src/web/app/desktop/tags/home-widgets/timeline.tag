@@ -36,17 +36,15 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.isLoading = true;
 		this.isEmpty = false;
 		this.moreLoading = false;
 		this.noFollowing = this.I.following_count == 0;
 
 		this.on('mount', () => {
-			stream.on('post', this.onStreamPost);
-			stream.on('follow', this.onStreamFollow);
-			stream.on('unfollow', this.onStreamUnfollow);
+			this.stream.on('post', this.onStreamPost);
+			this.stream.on('follow', this.onStreamFollow);
+			this.stream.on('unfollow', this.onStreamUnfollow);
 
 			document.addEventListener('keydown', this.onDocumentKeydown);
 			window.addEventListener('scroll', this.onScroll);
@@ -55,9 +53,9 @@
 		});
 
 		this.on('unmount', () => {
-			stream.off('post', this.onStreamPost);
-			stream.off('follow', this.onStreamFollow);
-			stream.off('unfollow', this.onStreamUnfollow);
+			this.stream.off('post', this.onStreamPost);
+			this.stream.off('follow', this.onStreamFollow);
+			this.stream.off('unfollow', this.onStreamUnfollow);
 
 			document.removeEventListener('keydown', this.onDocumentKeydown);
 			window.removeEventListener('scroll', this.onScroll);

@@ -8,12 +8,13 @@ class Connection {
 		this.onOpen =    this.onOpen.bind(this);
 		this.onClose =   this.onClose.bind(this);
 		this.onMessage = this.onMessage.bind(this);
+		this.send =      this.send.bind(this);
 		this.close =     this.close.bind(this);
 		// ----------------------------------------
 
+		riot.observable(this);
+
 		this.state = 'initializing';
-		this.stateEv = riot.observable();
-		this.event = riot.observable();
 		this.me = me;
 
 		const host = CONFIG.apiUrl.replace('http', 'ws');
@@ -22,23 +23,23 @@ class Connection {
 		this.socket.addEventListener('close', this.onClose);
 		this.socket.addEventListener('message', this.onMessage);
 
-		this.event.on('i_updated', me.update);
+		this.on('i_updated', me.update);
 	}
 
 	onOpen() {
 		this.state = 'connected';
-		this.stateEv.trigger('connected');
+		this.trigger('_connected_');
 	}
 
 	onClose() {
 		this.state = 'reconnecting';
-		this.stateEv.trigger('closed');
+		this.trigger('_closed_');
 	}
 
 	onMessage(message) {
 		try {
 			const msg = JSON.parse(message.data);
-			if (msg.type) this.event.trigger(msg.type, msg.body);
+			if (msg.type) this.trigger(msg.type, msg.body);
 		} catch(e) {
 			// noop
 		}

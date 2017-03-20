@@ -9,8 +9,6 @@
 		this.mixin('api');
 		this.mixin('stream');
 
-		const stream = this.stream.event;
-
 		this.init = new Promise((res, rej) => {
 			this.api('posts/timeline').then(posts => {
 				res(posts);
@@ -19,15 +17,15 @@
 		});
 
 		this.on('mount', () => {
-			stream.on('post', this.onStreamPost);
-			stream.on('follow', this.onStreamFollow);
-			stream.on('unfollow', this.onStreamUnfollow);
+			this.stream.on('post', this.onStreamPost);
+			this.stream.on('follow', this.onStreamFollow);
+			this.stream.on('unfollow', this.onStreamUnfollow);
 		});
 
 		this.on('unmount', () => {
-			stream.off('post', this.onStreamPost);
-			stream.off('follow', this.onStreamFollow);
-			stream.off('unfollow', this.onStreamUnfollow);
+			this.stream.off('post', this.onStreamPost);
+			this.stream.off('follow', this.onStreamFollow);
+			this.stream.off('unfollow', this.onStreamUnfollow);
 		});
 
 		this.more = () => {

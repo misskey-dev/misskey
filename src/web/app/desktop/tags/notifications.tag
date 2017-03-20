@@ -192,10 +192,8 @@
 
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('user-preview');
 		this.mixin('stream');
-
-		const stream = this.stream.event;
+		this.mixin('user-preview');
 
 		this.notifications = [];
 		this.loading = true;
@@ -208,11 +206,11 @@
 				});
 			});
 
-			stream.on('notification', this.onNotification);
+			this.stream.on('notification', this.onNotification);
 		});
 
 		this.on('unmount', () => {
-			stream.off('notification', this.onNotification);
+			this.stream.off('notification', this.onNotification);
 		});
 
 		this.onNotification = notification => {

@@ -44,7 +44,7 @@
 			}
 		});
 
-		this.stream.stateEv.on('connected', () => {
+		this.stream.on('_connected_', () => {
 			this.update();
 			setTimeout(() => {
 				Velocity(this.root, {
@@ -53,7 +53,7 @@
 			}, 1000);
 		});
 
-		this.stream.stateEv.on('closed', () => {
+		this.stream.on('_closed_', () => {
 			this.update();
 			Velocity(this.root, {
 				opacity: 1
