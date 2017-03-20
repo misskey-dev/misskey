@@ -36,10 +36,10 @@ export default function homeStream(request: websocket.request, connection: webso
 
 		switch (msg.type) {
 			case 'capture':
-					if (!msg.id) return;
-					const postId = msg.id;
-					log(`CAPTURE: ${postId} by @${user.username}`);
-					subscriber.subscribe(`misskey:post-stream:${postId}`);
+				if (!msg.id) return;
+				const postId = msg.id;
+				log(`CAPTURE: ${postId} by @${user.username}`);
+				subscriber.subscribe(`misskey:post-stream:${postId}`);
 				break;
 		}
 	});

@@ -18,42 +18,42 @@ export default function messagingStream(request: websocket.request, connection: 
 
 		switch (msg.type) {
 			case 'read':
-					if (!msg.id) {
-						return;
+				if (!msg.id) {
+					return;
+				}
+
+				const id = new mongodb.ObjectID(msg.id);
+
+				// Fetch message
+				// SELECT _id, user_id, is_read
+				const message = await Message.findOne({
+					_id: id,
+					recipient_id: user._id
+				}, {
+					fields: {
+						_id: true,
+						user_id: true,
+						is_read: true
 					}
+				});
 
-					const id = new mongodb.ObjectID(msg.id);
+				if (message == null) {
+					return;
+				}
 
-					// Fetch message
-					// SELECT _id, user_id, is_read
-					const message = await Message.findOne({
-						_id: id,
-						recipient_id: user._id
-					}, {
-						fields: {
-							_id: true,
-							user_id: true,
-							is_read: true
-						}
-					});
+				if (message.is_read) {
+					return;
+				}
 
-					if (message == null) {
-						return;
-					}
+				// Update documents
+				await Message.update({
+					_id: id
+				}, {
+					$set: { is_read: true }
+				});
 
-					if (message.is_read) {
-						return;
-					}
-
-					// Update documents
-					await Message.update({
-						_id: id
-					}, {
-						$set: { is_read: true }
-					});
-
-					// Publish event
-					publishMessagingStream(message.user_id, user._id, 'read', id.toString());
+				// Publish event
+				publishMessagingStream(message.user_id, user._id, 'read', id.toString());
 				break;
 		}
 	});
