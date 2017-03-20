@@ -35,6 +35,8 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
+
 		this.mixin('i');
 		this.mixin('stream');
 
@@ -47,17 +49,23 @@
 		this.stream.on('_connected_', () => {
 			this.update();
 			setTimeout(() => {
-				Velocity(this.root, {
-					opacity: 0
-				}, 200, 'linear');
+				anime({
+					targets: this.root,
+					opacity: 0,
+					easing: 'linear',
+					duration: 200
+				});
 			}, 1000);
 		});
 
 		this.stream.on('_closed_', () => {
 			this.update();
-			Velocity(this.root, {
-				opacity: 1
-			}, 0);
+			anime({
+				targets: this.root,
+				opacity: 1,
+				easing: 'linear',
+				duration: 50
+			});
 		});
 	</script>
 </mk-stream-indicator>

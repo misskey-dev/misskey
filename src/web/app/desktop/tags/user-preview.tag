@@ -99,6 +99,8 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
+
 		this.mixin('i');
 		this.mixin('api');
 
@@ -124,23 +126,23 @@
 		});
 
 		this.open = () => {
-			Velocity(this.root, {
+			anime({
+				targets: this.root,
 				opacity: 1,
-				'margin-top': 0
-			}, {
+				'margin-top': 0,
 				duration: 200,
-				easing: 'ease-out'
+				easing: 'easeOutQuad'
 			});
 		};
 
 		this.close = () => {
-			Velocity(this.root, {
+			anime({
+				targets: this.root,
 				opacity: 0,
-				'margin-top': '-8px'
-			}, {
+				'margin-top': '-8px',
 				duration: 200,
-				easing: 'ease-out',
-				complete: () => this.unmount()
+				easing: 'easeOutQuad',
+				complete: this.unmount
 			});
 		};
 	</script>

@@ -1,5 +1,5 @@
 <mk-reaction-picker>
-	<div class="backdrop" onclick={ unmount }></div>
+	<div class="backdrop" ref="backdrop" onclick={ close }></div>
 	<div class="popover" ref="popover">
 		<button onclick={ react.bind(null, 'like') } tabindex="1" title="いいね"><mk-reaction-icon reaction='like'></mk-reaction-icon></button>
 		<button onclick={ react.bind(null, 'love') } tabindex="2" title="ハート"><mk-reaction-icon reaction='love'></mk-reaction-icon></button>
@@ -30,6 +30,8 @@
 				border 1px solid rgba(27, 31, 35, 0.15)
 				border-radius 4px
 				box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
+				transform scale(0.5)
+				opacity 0
 
 				> button
 					width 40px
@@ -46,6 +48,8 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
+
 		this.mixin('api');
 
 		this.post = this.opts.post;
@@ -60,6 +64,13 @@
 			const height = this.refs.popover.offsetHeight;
 			this.refs.popover.style.left = (x - (width / 2)) + 'px';
 			this.refs.popover.style.top = (y - (height / 2)) + 'px';
+
+			anime({
+				targets: this.refs.popover,
+				opacity: [0, 1],
+				scale: [0.5, 1],
+				duration: 500
+			});
 		});
 
 		this.react = reaction => {
@@ -69,6 +80,26 @@
 			}).then(() => {
 				if (this.opts.cb) this.opts.cb();
 				this.unmount();
+			});
+		};
+
+		this.close = () => {
+			this.refs.backdrop.style.pointerEvents = 'none';
+			anime({
+				targets: this.refs.backdrop,
+				opacity: 0,
+				duration: 200,
+				easing: 'linear'
+			});
+
+			this.refs.popover.style.pointerEvents = 'none';
+			anime({
+				targets: this.refs.popover,
+				opacity: 0,
+				scale: 0.5,
+				duration: 200,
+				easing: 'easeInBack',
+				complete: this.unmount
 			});
 		};
 	</script>

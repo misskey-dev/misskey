@@ -16,6 +16,7 @@
 			background #fff
 			border-radius 0 4px 4px 4px
 			box-shadow 2px 2px 8px rgba(0, 0, 0, 0.2)
+			opacity 0
 
 			ul
 				display block
@@ -95,6 +96,7 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
 		import contains from '../../common/scripts/contains';
 
 		this.root.addEventListener('contextmenu', e => {
@@ -116,12 +118,9 @@
 			this.root.style.left = pos.x + 'px';
 			this.root.style.top = pos.y + 'px';
 
-			Velocity(this.root, 'finish', true);
-			Velocity(this.root, { opacity: 0 }, 0);
-			Velocity(this.root, {
-				opacity: 1
-			}, {
-				queue: false,
+			anime({
+				targets: this.root,
+				opacity: [0, 1],
 				duration: 100,
 				easing: 'linear'
 			});

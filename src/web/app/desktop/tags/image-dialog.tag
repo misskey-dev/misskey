@@ -35,26 +35,27 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
+
 		this.image = this.opts.image;
 
 		this.on('mount', () => {
-			Velocity(this.root, {
-				opacity: 1
-			}, {
+			anime({
+				targets: this.root,
+				opacity: 1,
 				duration: 100,
 				easing: 'linear'
 			});
 		});
 
 		this.close = () => {
-			Velocity(this.root, {
-				opacity: 0
-			}, {
+			anime({
+				targets: this.root,
+				opacity: 0,
 				duration: 100,
 				easing: 'linear',
-				complete: () => this.unmount()
+				complete: this.unmount
 			});
 		};
-
 	</script>
 </mk-image-dialog>

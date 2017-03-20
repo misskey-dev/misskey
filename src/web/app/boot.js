@@ -3,7 +3,6 @@
  */
 
 import * as riot from 'riot';
-require('velocity-animate');
 import api from './common/scripts/api';
 import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';

@@ -36,6 +36,7 @@
 				padding 32px 42px
 				width 480px
 				background #fff
+				opacity 0
 
 				> header
 					margin 1em 0
@@ -79,6 +80,8 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
+
 		this.canThrough = opts.canThrough != null ? opts.canThrough : true;
 		this.opts.buttons.forEach(button => {
 			button._onclick = () => {
@@ -92,25 +95,17 @@
 			this.refs.body.innerHTML = this.opts.text;
 
 			this.refs.bg.style.pointerEvents = 'auto';
-			Velocity(this.refs.bg, 'finish', true);
-			Velocity(this.refs.bg, {
-				opacity: 1
-			}, {
-				queue: false,
+			anime({
+				targets: this.refs.bg,
+				opacity: 1,
 				duration: 100,
 				easing: 'linear'
 			});
 
-			Velocity(this.refs.main, {
-				opacity: 0,
-				scale: 1.2
-			}, {
-				duration: 0
-			});
-			Velocity(this.refs.main, {
+			anime({
+				targets: this.refs.main,
 				opacity: 1,
-				scale: 1
-			}, {
+				scale: [1.2, 1],
 				duration: 300,
 				easing: [ 0, 0.5, 0.5, 1 ]
 			});
@@ -118,25 +113,21 @@
 
 		this.close = () => {
 			this.refs.bg.style.pointerEvents = 'none';
-			Velocity(this.refs.bg, 'finish', true);
-			Velocity(this.refs.bg, {
-				opacity: 0
-			}, {
-				queue: false,
+			anime({
+				targets: this.refs.bg,
+				opacity: 0,
 				duration: 300,
-				easing: 'linear' 
+				easing: 'linear'
 			});
 
 			this.refs.main.style.pointerEvents = 'none';
-			Velocity(this.refs.main, 'finish', true);
-			Velocity(this.refs.main, {
+			anime({
+				targets: this.refs.main,
 				opacity: 0,
-				scale: 0.8
-			}, {
-				queue: false,
+				scale: 0.8,
 				duration: 300,
 				easing: [ 0.5, -0.5, 1, 0.5 ],
-				complete: () => this.unmount()
+				complete: this.unmount
 			});
 		};
 

@@ -29,6 +29,8 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
+
 		this.tips = [
 			'<kbd>t</kbd>でタイムラインにフォーカスできます',
 			'<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます',
@@ -55,20 +57,22 @@
 		};
 
 		this.change = () => {
-			Velocity(this.refs.tip, {
-				opacity: 0
-			}, {
+			anime({
+				targets: this.refs.tip,
+				opacity: 0,
 				duration: 500,
 				easing: 'linear',
 				complete: this.set
 			});
 
-			Velocity(this.refs.tip, {
-				opacity: 1
-			}, {
-				duration: 500,
-				easing: 'linear'
-			});
+			setTimeout(() => {
+				anime({
+					targets: this.refs.tip,
+					opacity: 1,
+					duration: 500,
+					easing: 'linear'
+				});
+			}, 500);
 		};
 	</script>
 </mk-tips-home-widget>

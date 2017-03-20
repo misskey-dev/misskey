@@ -16,20 +16,22 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
+
 		this.on('mount', () => {
-			Velocity(this.root, {
-				bottom: '0px'
-			}, {
+			anime({
+				targets: this.root,
+				bottom: '0px',
 				duration: 500,
-				easing: 'ease-out'
+				easing: 'easeOutQuad'
 			});
 
 			setTimeout(() => {
-				Velocity(this.root, {
-					bottom: '-64px'
-				}, {
+				anime({
+					targets: this.root,
+					bottom: '-64px',
 					duration: 500,
-					easing: 'ease-out',
+					easing: 'easeOutQuad',
 					complete: () => this.unmount()
 				});
 			}, 6000);

@@ -173,6 +173,7 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
 		import contains from '../../common/scripts/contains';
 
 		this.minHeight = 40;
@@ -222,26 +223,21 @@
 
 			if (this.isModal) {
 				this.refs.bg.style.pointerEvents = 'auto';
-				Velocity(this.refs.bg, 'finish', true);
-				Velocity(this.refs.bg, {
-					opacity: 1
-				}, {
-					queue: false,
+				anime({
+					targets: this.refs.bg,
+					opacity: 1,
 					duration: 100,
 					easing: 'linear'
 				});
 			}
 
 			this.refs.main.style.pointerEvents = 'auto';
-			Velocity(this.refs.main, 'finish', true);
-			Velocity(this.refs.main, { scale: 1.1 }, 0);
-			Velocity(this.refs.main, {
+			anime({
+				targets: this.refs.main,
 				opacity: 1,
-				scale: 1
-			}, {
-				queue: false,
+				scale: [1.1, 1],
 				duration: 200,
-				easing: 'ease-out'
+				easing: 'easeOutQuad'
 			});
 
 			//this.refs.main.focus();
@@ -256,25 +252,22 @@
 
 			if (this.isModal) {
 				this.refs.bg.style.pointerEvents = 'none';
-				Velocity(this.refs.bg, 'finish', true);
-				Velocity(this.refs.bg, {
-					opacity: 0
-				}, {
-					queue: false,
+				anime({
+					targets: this.refs.bg,
+					opacity: 0,
 					duration: 300,
 					easing: 'linear'
 				});
 			}
 
 			this.refs.main.style.pointerEvents = 'none';
-			Velocity(this.refs.main, 'finish', true);
-			Velocity(this.refs.main, {
+
+			anime({
+				targets: this.refs.main,
 				opacity: 0,
-				scale: 0.8
-			}, {
-				queue: false,
+				scale: 0.8,
 				duration: 300,
-				easing: [ 0.5, -0.5, 1, 0.5 ]
+				easing: [0.5, -0.5, 1, 0.5]
 			});
 
 			setTimeout(() => {
