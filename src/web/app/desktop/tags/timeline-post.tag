@@ -364,13 +364,24 @@
 			}
 		};
 
-		this.on('mount', () => {
+		this.capture = () => {
 			this.stream.send({
 				type: 'capture',
 				id: this.p.id
 			});
-
 			this.stream.event.on('post-updated', this.onStreamPostUpdated);
+		};
+
+		this.decapture = () => {
+			this.stream.send({
+				type: 'decapture',
+				id: this.p.id
+			});
+			this.stream.event.off('post-updated', this.onStreamPostUpdated);
+		};
+
+		this.on('mount', () => {
+			this.capture();
 
 			if (this.p.text) {
 				const tokens = this.p.ast;
@@ -393,12 +404,7 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.send({
-				type: 'decapture',
-				id: this.p.id
-			});
-
-			this.stream.event.off('post-updated', this.onStreamPostUpdated);
+			this.decapture();
 		});
 
 		this.reply = () => {

@@ -45,6 +45,8 @@ class Connection {
 	}
 
 	send(message) {
+		// TODO: バッファリングしてつぎ接続した時に送信する
+		if (this.state != 'connected') return;
 		this.socket.send(JSON.stringify(message));
 	}
 
