@@ -99,7 +99,7 @@
 				scale: 0.5,
 				duration: 200,
 				easing: 'easeInBack',
-				complete: this.unmount
+				complete: () => this.unmount()
 			});
 		};
 	</script>

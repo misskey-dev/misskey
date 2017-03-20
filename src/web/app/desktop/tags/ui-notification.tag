@@ -38,7 +38,7 @@
 					top: '-64px',
 					duration: 500,
 					easing: 'easeOutQuad',
-					complete: this.unmount
+					complete: () => this.unmount()
 				});
 			}, 6000);
 		});

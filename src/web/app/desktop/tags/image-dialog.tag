@@ -54,7 +54,7 @@
 				opacity: 0,
 				duration: 100,
 				easing: 'linear',
-				complete: this.unmount
+				complete: () => this.unmount()
 			});
 		};
 	</script>
