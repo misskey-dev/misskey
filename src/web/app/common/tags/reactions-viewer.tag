@@ -10,16 +10,22 @@
 	<style>
 		:scope
 			display block
+			border-top dashed 1px #eee
+			border-bottom dashed 1px #eee
+			margin 4px 0
+
+			&:empty
+				display none
 
 			> span
 				margin-right 8px
 
 				> mk-reaction-icon
-					font-size 20px
+					font-size 1.4em
 
 				> span
 					margin-left 4px
-					font-size 16px
+					font-size 1.2em
 					color #444
 
 	</style>
