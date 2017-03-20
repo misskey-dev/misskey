@@ -337,7 +337,8 @@
 		this.react = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
 				source: this.refs.reactButton,
-				post: this.p
+				post: this.p,
+				compact: true
 			});
 		};
 

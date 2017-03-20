@@ -1,14 +1,19 @@
 <mk-reaction-picker>
 	<div class="backdrop" ref="backdrop" onclick={ close }></div>
-	<div class="popover" ref="popover">
-		<button onclick={ react.bind(null, 'like') } tabindex="1" title="いいね"><mk-reaction-icon reaction='like'></mk-reaction-icon></button>
-		<button onclick={ react.bind(null, 'love') } tabindex="2" title="ハート"><mk-reaction-icon reaction='love'></mk-reaction-icon></button>
-		<button onclick={ react.bind(null, 'laugh') } tabindex="3" title="笑"><mk-reaction-icon reaction='laugh'></mk-reaction-icon></button>
-		<button onclick={ react.bind(null, 'hmm') } tabindex="4" title="ふぅ～む"><mk-reaction-icon reaction='hmm'></mk-reaction-icon></button>
-		<button onclick={ react.bind(null, 'surprise') } tabindex="5" title="驚き"><mk-reaction-icon reaction='surprise'></mk-reaction-icon></button>
-		<button onclick={ react.bind(null, 'congrats') } tabindex="6" title="おめでとう"><mk-reaction-icon reaction='congrats'></mk-reaction-icon></button>
+	<div class="popover { compact: opts.compact }" ref="popover">
+		<p if={ !opts.compact }>{ title }</p>
+		<div>
+			<button onclick={ react.bind(null, 'like') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="1" title="いいね"><mk-reaction-icon reaction='like'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'love') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="2" title="ハート"><mk-reaction-icon reaction='love'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'laugh') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="3" title="笑"><mk-reaction-icon reaction='laugh'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'hmm') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="4" title="ふぅ～む"><mk-reaction-icon reaction='hmm'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'surprise') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="5" title="驚き"><mk-reaction-icon reaction='surprise'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'congrats') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="6" title="おめでとう"><mk-reaction-icon reaction='congrats'></mk-reaction-icon></button>
+		</div>
 	</div>
 	<style>
+		$border-color = rgba(27, 31, 35, 0.15)
+
 		:scope
 			display block
 			position initial
@@ -25,26 +30,64 @@
 			> .popover
 				position absolute
 				z-index 10001
-				padding 4px
 				background #fff
-				border 1px solid rgba(27, 31, 35, 0.15)
+				border 1px solid $border-color
 				border-radius 4px
 				box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
 				transform scale(0.5)
 				opacity 0
 
-				> button
-					width 40px
-					height 40px
-					font-size 24px
-					border-radius 2px
+				$balloon-size = 16px
 
-					&:hover
-						background #eee
+				&:not(.compact)
+					margin-top $balloon-size
+					transform-origin center top
 
-					&:active
-						background $theme-color
-						box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
+					&:before
+						content ""
+						display block
+						position absolute
+						top -($balloon-size * 2)
+						left s('calc(50% - %s)', $balloon-size)
+						border-top solid $balloon-size transparent
+						border-left solid $balloon-size transparent
+						border-right solid $balloon-size transparent
+						border-bottom solid $balloon-size $border-color
+
+					&:after
+						content ""
+						display block
+						position absolute
+						top -($balloon-size * 2) + 1.5px
+						left s('calc(50% - %s)', $balloon-size)
+						border-top solid $balloon-size transparent
+						border-left solid $balloon-size transparent
+						border-right solid $balloon-size transparent
+						border-bottom solid $balloon-size #fff
+
+				> p
+					display block
+					margin 0
+					padding 8px 10px
+					font-size 14px
+					color #586069
+					border-bottom solid 1px #e1e4e8
+
+				> div
+					padding 4px
+
+					> button
+						width 40px
+						height 40px
+						font-size 24px
+						border-radius 2px
+
+						&:hover
+							background #eee
+
+						&:active
+							background $theme-color
+							box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
 	</style>
 	<script>
@@ -55,15 +98,37 @@
 		this.post = this.opts.post;
 		this.source = this.opts.source;
 
+		const placeholder = 'リアクションを選択';
+
+		this.title = placeholder;
+
+		this.onmouseover = e => {
+			this.update({
+				title: e.target.title
+			});
+		};
+
+		this.onmouseout = () => {
+			this.update({
+				title: placeholder
+			});
+		};
+
 		this.on('mount', () => {
 			const rect = this.source.getBoundingClientRect();
-			const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
-			const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
-
 			const width = this.refs.popover.offsetWidth;
 			const height = this.refs.popover.offsetHeight;
-			this.refs.popover.style.left = (x - (width / 2)) + 'px';
-			this.refs.popover.style.top = (y - (height / 2)) + 'px';
+			if (this.opts.compact) {
+				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
+				const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
+				this.refs.popover.style.left = (x - (width / 2)) + 'px';
+				this.refs.popover.style.top = (y - (height / 2)) + 'px';
+			} else {
+				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
+				const y = rect.top + window.pageYOffset + this.source.offsetHeight;
+				this.refs.popover.style.left = (x - (width / 2)) + 'px';
+				this.refs.popover.style.top = y + 'px';
+			}
 
 			anime({
 				targets: this.refs.popover,
