@@ -359,7 +359,7 @@
 
 		this.onStreamPostUpdated = data => {
 			const post = data.post;
-			if (post.id == this.p.id) {
+			if (post.id == this.post.id) {
 				this.refresh(post);
 			}
 		};
@@ -367,7 +367,7 @@
 		this.capture = () => {
 			this.stream.send({
 				type: 'capture',
-				id: this.p.id
+				id: this.post.id
 			});
 			this.stream.on('post-updated', this.onStreamPostUpdated);
 		};
@@ -375,7 +375,7 @@
 		this.decapture = () => {
 			this.stream.send({
 				type: 'decapture',
-				id: this.p.id
+				id: this.post.id
 			});
 			this.stream.off('post-updated', this.onStreamPostUpdated);
 		};
