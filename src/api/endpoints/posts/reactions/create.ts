@@ -5,6 +5,7 @@ import $ from 'cafy';
 import Reaction from '../../../models/post-reaction';
 import Post from '../../../models/post';
 import notify from '../../../common/notify';
+import { publishPostStream } from '../../../event';
 
 /**
  * React to a post
@@ -69,9 +70,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	inc['reaction_counts.' + reaction] = 1;
 
 	// Increment reactions count
-	Post.update({ _id: post._id }, {
+	await Post.update({ _id: post._id }, {
 		$inc: inc
 	});
+
+	publishPostStream(post._id, 'reacted');
 
 	// Notify
 	notify(post.user_id, user._id, 'reaction', {

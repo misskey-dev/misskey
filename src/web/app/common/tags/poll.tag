@@ -70,11 +70,16 @@
 	<script>
 		this.mixin('api');
 
-		this.post = this.opts.post;
-		this.poll = this.post.poll;
-		this.total = this.poll.choices.reduce((a, b) => a + b.votes, 0);
-		this.isVoted = this.poll.choices.some(c => c.is_voted);
-		this.result = this.isVoted;
+		this.init = post => {
+			this.post = post;
+			this.poll = this.post.poll;
+			this.total = this.poll.choices.reduce((a, b) => a + b.votes, 0);
+			this.isVoted = this.poll.choices.some(c => c.is_voted);
+			this.result = this.isVoted;
+			this.update();
+		};
+
+		this.init(this.opts.post);
 
 		this.toggleResult = () => {
 			this.result = !this.result;

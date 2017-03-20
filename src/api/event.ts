@@ -25,6 +25,10 @@ class MisskeyEvent {
 		this.publish(`user-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	public publishPostStream(postId: ID, type: string, value?: any): void {
+		this.publish(`post-stream:${postId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
 	public publishMessagingStream(userId: ID, otherpartyId: ID, type: string, value?: any): void {
 		this.publish(`messaging-stream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -33,5 +37,7 @@ class MisskeyEvent {
 const ev = new MisskeyEvent();
 
 export default ev.publishUserStream.bind(ev);
+
+export const publishPostStream = ev.publishPostStream.bind(ev);
 
 export const publishMessagingStream = ev.publishMessagingStream.bind(ev);

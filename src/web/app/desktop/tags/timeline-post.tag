@@ -40,7 +40,7 @@
 				<div class="media" if={ p.media }>
 					<mk-images-viewer images={ p.media }></mk-images-viewer>
 				</div>
-				<mk-poll if={ p.poll } post={ p }></mk-poll>
+				<mk-poll if={ p.poll } post={ p } ref="pollViewer"></mk-poll>
 				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
 					<mk-post-preview class="repost" post={ p.repost }></mk-post-preview>
 				</div>
@@ -332,6 +332,7 @@
 		import dateStringify from '../../common/scripts/date-stringify';
 
 		this.mixin('api');
+		this.mixin('stream');
 		this.mixin('user-preview');
 
 		this.isDetailOpened = false;
@@ -347,19 +348,30 @@
 
 		this.set(this.opts.post);
 
-		this.refresh = () => {
-			this.api('posts/show', {
-				post_id: this.post.id
-			}).then(post => {
-				this.set(post);
-				this.update();
-				if (this.refs.reactionsViewer) this.refs.reactionsViewer.update({
-					post
-				});
+		this.refresh = post => {
+			this.set(post);
+			this.update();
+			if (this.refs.reactionsViewer) this.refs.reactionsViewer.update({
+				post
 			});
+			if (this.refs.pollViewer) this.refs.pollViewer.init(post);
+		};
+
+		this.onStreamPostUpdated = data => {
+			const post = data.post;
+			if (post.id == this.p.id) {
+				this.refresh(post);
+			}
 		};
 
 		this.on('mount', () => {
+			this.stream.send({
+				type: 'capture',
+				id: this.p.id
+			});
+
+			this.stream.event.on('post-updated', this.onStreamPostUpdated);
+
 			if (this.p.text) {
 				const tokens = this.p.ast;
 
@@ -380,6 +392,15 @@
 			}
 		});
 
+		this.on('unmount', () => {
+			this.stream.send({
+				type: 'decapture',
+				id: this.p.id
+			});
+
+			this.stream.event.off('post-updated', this.onStreamPostUpdated);
+		});
+
 		this.reply = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
 				reply: this.p
@@ -395,8 +416,7 @@
 		this.react = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
 				source: this.refs.reactButton,
-				post: this.p,
-				cb: this.refresh
+				post: this.p
 			});
 		};
 

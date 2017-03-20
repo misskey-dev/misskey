@@ -62,10 +62,6 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 			const user = await User
 				.findOne({
 					token: token
-				}, {
-					fields: {
-						_id: true
-					}
 				});
 
 			resolve(user);

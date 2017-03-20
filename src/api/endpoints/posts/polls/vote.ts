@@ -5,6 +5,7 @@ import $ from 'cafy';
 import Vote from '../../../models/poll-vote';
 import Post from '../../../models/post';
 import notify from '../../../common/notify';
+import { publishPostStream } from '../../../event';
 
 /**
  * Vote poll of a post
@@ -62,10 +63,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const inc = {};
 	inc[`poll.choices.${findWithAttr(post.poll.choices, 'id', choice)}.votes`] = 1;
 
-	// Increment likes count
-	Post.update({ _id: post._id }, {
+	// Increment votes count
+	await Post.update({ _id: post._id }, {
 		$inc: inc
 	});
+
+	publishPostStream(post._id, 'poll_voted');
 
 	// Notify
 	notify(post.user_id, user._id, 'poll_vote', {

@@ -44,6 +44,10 @@ class Connection {
 		}
 	}
 
+	send(message) {
+		this.socket.send(JSON.stringify(message));
+	}
+
 	close() {
 		this.socket.removeEventListener('open', this.onOpen);
 		this.socket.removeEventListener('message', this.onMessage);
