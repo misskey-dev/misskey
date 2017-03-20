@@ -3,7 +3,6 @@
  */
 import $ from 'cafy';
 import User from '../../models/user';
-import { validateUsername } from '../../models/user';
 import serialize from '../../serializers/user';
 
 /**
@@ -15,7 +14,7 @@ import serialize from '../../serializers/user';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
-	const [query, queryError] = $(params.query).string().pipe(validateUsername).$;
+	const [query, queryError] = $(params.query).string().$;
 	if (queryError) return rej('invalid query param');
 
 	// Get 'offset' parameter
