@@ -5,7 +5,7 @@
 			display block
 			position fixed
 			z-index 10000
-			top -64px
+			top 0
 			left 0
 			right 0
 			margin 0 auto
@@ -14,6 +14,8 @@
 			background rgba(#fff, 0.9)
 			border-radius 0 0 8px 8px
 			box-shadow 0 2px 4px rgba(#000, 0.2)
+			transform translateY(-64px)
+			opacity 0
 
 			> p
 				margin 0
@@ -26,16 +28,18 @@
 
 		this.on('mount', () => {
 			anime({
-				tagrets: this.root,
-				top: '0px',
+				targets: this.root,
+				opacity: 1,
+				translateY: [-64, 0],
 				duration: 500,
 				easing: 'easeOutQuad'
-			})
+			});
 
 			setTimeout(() => {
 				anime({
 					targets: this.root,
-					top: '-64px',
+					opacity: 0,
+					translateY: -64,
 					duration: 500,
 					easing: 'easeOutQuad',
 					complete: () => this.unmount()
