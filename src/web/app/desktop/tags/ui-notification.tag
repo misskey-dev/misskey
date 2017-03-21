@@ -5,10 +5,11 @@
 			display block
 			position fixed
 			z-index 10000
-			top 0
+			top -128px
 			left 0
 			right 0
 			margin 0 auto
+			padding 128px 0 0 0
 			width 500px
 			color rgba(#000, 0.6)
 			background rgba(#fff, 0.9)
@@ -31,8 +32,8 @@
 				targets: this.root,
 				opacity: 1,
 				translateY: [-64, 0],
-				duration: 500,
-				easing: 'easeOutQuad'
+				easing: 'easeOutElastic',
+				duration: 500
 			});
 
 			setTimeout(() => {
@@ -41,7 +42,7 @@
 					opacity: 0,
 					translateY: -64,
 					duration: 500,
-					easing: 'easeOutQuad',
+					easing: 'easeInElastic',
 					complete: () => this.unmount()
 				});
 			}, 6000);
