@@ -16,6 +16,7 @@ class Connection {
 
 		this.state = 'initializing';
 		this.me = me;
+		this.buffer = [];
 
 		const host = CONFIG.apiUrl.replace('http', 'ws');
 		this.socket = new ReconnectingWebSocket(`${host}?i=${me.token}`);
@@ -29,6 +30,13 @@ class Connection {
 	onOpen() {
 		this.state = 'connected';
 		this.trigger('_connected_');
+
+		// バッファーを処理
+		const _buffer = [].concat(this.buffer); // Shallow copy
+		this.buffer = []; // Clear buffer
+		_buffer.forEach(message => {
+			this.send(message); // Resend each buffered messages
+		});
 	}
 
 	onClose() {
@@ -46,8 +54,12 @@ class Connection {
 	}
 
 	send(message) {
-		// TODO: バッファリングしてつぎ接続した時に送信する
-		if (this.state != 'connected') return;
+		// まだ接続が確立されていなかったらバッファリングして次に接続した時に送信する
+		if (this.state != 'connected') {
+			this.buffer.push(message);
+			return;
+		};
+
 		this.socket.send(JSON.stringify(message));
 	}
 
