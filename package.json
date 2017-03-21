@@ -61,7 +61,7 @@
     "@types/riot": "2.6.2",
     "@types/serve-favicon": "2.2.28",
     "@types/uuid": "2.0.29",
-    "@types/webpack": "2.2.11",
+    "@types/webpack": "2.2.12",
     "@types/webpack-stream": "3.2.6",
     "@types/websocket": "0.0.33",
     "animejs": "2.0.1",
