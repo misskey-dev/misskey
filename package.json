@@ -143,7 +143,7 @@
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#8f4b45f4f814c04918382949b4bcaf7a8d910281",
     "uuid": "3.0.1",
     "vhost": "3.0.2",
-    "webpack": "2.2.1",
+    "webpack": "2.3.0",
     "webpack-stream": "3.2.0",
     "websocket": "1.0.24",
     "whatwg-fetch": "2.0.3",
