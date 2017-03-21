@@ -364,24 +364,29 @@
 			}
 		};
 
-		this.capture = () => {
+		this.onStreamConnected = () => {
+			this.capture();
+		};
+
+		this.capture = withHandler => {
 			this.stream.send({
 				type: 'capture',
 				id: this.post.id
 			});
-			this.stream.on('post-updated', this.onStreamPostUpdated);
+			if (withHandler) this.stream.on('post-updated', this.onStreamPostUpdated);
 		};
 
-		this.decapture = () => {
+		this.decapture = withHandler => {
 			this.stream.send({
 				type: 'decapture',
 				id: this.post.id
 			});
-			this.stream.off('post-updated', this.onStreamPostUpdated);
+			if (withHandler) this.stream.off('post-updated', this.onStreamPostUpdated);
 		};
 
 		this.on('mount', () => {
-			this.capture();
+			this.capture(true);
+			this.stream.on('_connected_', this.onStreamConnected);
 
 			if (this.p.text) {
 				const tokens = this.p.ast;
@@ -404,7 +409,8 @@
 		});
 
 		this.on('unmount', () => {
-			this.decapture();
+			this.decapture(true);
+			this.stream.off('_connected_', this.onStreamConnected);
 		});
 
 		this.reply = () => {
