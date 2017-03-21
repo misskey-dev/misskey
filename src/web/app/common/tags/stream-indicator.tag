@@ -64,7 +64,7 @@
 				targets: this.root,
 				opacity: 1,
 				easing: 'linear',
-				duration: 50
+				duration: 100
 			});
 		});
 	</script>

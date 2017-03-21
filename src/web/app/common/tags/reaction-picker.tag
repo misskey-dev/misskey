@@ -26,6 +26,7 @@
 				width 100%
 				height 100%
 				background rgba(0, 0, 0, 0.1)
+				opacity 0
 
 			> .popover
 				position absolute
@@ -131,8 +132,15 @@
 			}
 
 			anime({
+				targets: this.refs.backdrop,
+				opacity: 1,
+				duration: 100,
+				easing: 'linear'
+			});
+
+			anime({
 				targets: this.refs.popover,
-				opacity: [0, 1],
+				opacity: 1,
 				scale: [0.5, 1],
 				duration: 500
 			});
