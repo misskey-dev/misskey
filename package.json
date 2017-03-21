@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@types/bcryptjs": "2.4.0",
-    "@types/body-parser": "1.16.0",
+    "@types/body-parser": "1.16.1",
     "@types/chai": "3.4.35",
     "@types/chai-http": "0.0.30",
     "@types/chalk": "0.4.31",
