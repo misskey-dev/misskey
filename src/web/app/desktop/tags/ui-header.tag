@@ -38,14 +38,14 @@
 					height 48px
 					backdrop-filter blur(12px)
 					//background-color rgba(255, 255, 255, 0.75)
-					background #fff
+					background #313a40
 
 					&:after
 						content ""
 						display block
 						width 100%
 						height 48px
-						background-image url(/resources/desktop/header-logo.svg)
+						background-image url(/resources/desktop/header-logo-white.svg)
 						background-size 64px
 						background-position center
 						background-repeat no-repeat

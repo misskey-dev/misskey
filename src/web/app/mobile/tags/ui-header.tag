@@ -20,7 +20,7 @@
 			box-shadow 0 1px 0 rgba(#000, 0.075)
 
 			> .main
-				color rgba(#000, 0.6)
+				color rgba(#fff, 0.9)
 
 				> .backdrop
 					position absolute
@@ -30,7 +30,7 @@
 					height $height
 					-webkit-backdrop-filter blur(12px)
 					backdrop-filter blur(12px)
-					background-color rgba(#fff, 0.75)
+					background-color rgba(#313a40, 0.75)
 
 				> .content
 					z-index 1024

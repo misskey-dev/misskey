@@ -57,9 +57,9 @@
 						z-index 1
 						height 100%
 						padding 0 24px
-						font-size 1em
+						font-size 13px
 						font-variant small-caps
-						color #9eaba8
+						color #dbe2e0
 						text-decoration none
 						transition none
 						cursor pointer
@@ -68,7 +68,7 @@
 							pointer-events none
 
 						&:hover
-							color darken(#9eaba8, 20%)
+							color #fff
 							text-decoration none
 
 						> i:first-child

@@ -28,7 +28,7 @@
 				display block
 				margin 0
 				padding 0
-				color #9eaba8
+				color #dbe2e0
 				border none
 				background transparent
 				cursor pointer
@@ -37,20 +37,11 @@
 					pointer-events none
 
 				&:hover
-					color darken(#9eaba8, 20%)
-
-				&:active
-					color darken(#9eaba8, 30%)
-
 				&[data-active='true']
-					color darken(#9eaba8, 20%)
+					color #fff
 
 					> .avatar
-						$saturate = 150%
-						filter saturate($saturate)
-						-webkit-filter saturate($saturate)
-						-moz-filter saturate($saturate)
-						-ms-filter saturate($saturate)
+						filter saturate(150%)
 
 				> .username
 					display block
