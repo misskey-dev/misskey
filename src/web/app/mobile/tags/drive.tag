@@ -34,7 +34,7 @@
 			<virtual each={ file in files }>
 				<mk-drive-file file={ file }></mk-drive-file>
 			</virtual>
-			<p if={ moreFiles } onclick={ fetchMoreFiles }>もっと読み込む</p>
+			<button class="more" if={ moreFiles } onclick={ fetchMoreFiles }>もっと読み込む</button>
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 			<p if={ !folder == null }>ドライブには何もありません。</p>
@@ -112,6 +112,9 @@
 				> .files
 					> mk-drive-file
 						border-bottom solid 1px #eee
+
+					> .more
+						color #555
 
 				> .empty
 					padding 16px
