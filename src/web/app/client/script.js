@@ -4,6 +4,10 @@
 (() => {
 	const head = document.getElementsByTagName('head')[0];
 
+	// Detect user language
+	let lang = (navigator.languages && navigator.languages[0]) || navigator.language;
+	if (!/en|en\-US|ja/.test(lang)) lang = 'en';
+
 	// Detect user agent
 	const ua = navigator.userAgent.toLowerCase();
 	const isMobile = /mobile|iphone|ipad|android/.test(ua);
@@ -15,7 +19,7 @@
 	 */
 	function mountDesktop() {
 		const script = document.createElement('script');
-		script.setAttribute('src', `/assets/desktop/script.${VERSION}.js`);
+		script.setAttribute('src', `/assets/desktop/script.${VERSION}.${lang}.js`);
 		script.setAttribute('async', 'true');
 		script.setAttribute('defer', 'true');
 		head.appendChild(script);
@@ -31,7 +35,7 @@
 		head.appendChild(meta);
 
 		const script = document.createElement('script');
-		script.setAttribute('src', `/assets/mobile/script.${VERSION}.js`);
+		script.setAttribute('src', `/assets/mobile/script.${VERSION}.${lang}.js`);
 		script.setAttribute('async', 'true');
 		script.setAttribute('defer', 'true');
 		head.appendChild(script);

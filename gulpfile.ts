@@ -2,6 +2,7 @@
  * Gulp tasks
  */
 
+import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import * as Path from 'path';
 import * as gulp from 'gulp';
@@ -10,7 +11,6 @@ import * as ts from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import * as glob from 'glob';
 import * as es from 'event-stream';
-import * as webpack from 'webpack-stream';
 import cssnano = require('gulp-cssnano');
 //import * as uglify from 'gulp-uglify';
 import pug = require('gulp-pug');
@@ -123,21 +123,25 @@ gulp.task('cleanall', ['clean'], cb =>
 gulp.task('default', ['build']);
 
 gulp.task('build:client', [
-	'build:ts', 'build:js',
-	'build:client:scripts',
+	'build:ts',
+	'build:js',
+	'webpack',
+	'build:client:script',
 	'build:client:pug',
 	'copy:client'
 ]);
 
-gulp.task('build:client:scripts', () =>
-	es.merge(
-		webpack(require('./webpack.config'), require('webpack'))
-			.pipe(gulp.dest('./built/web/assets/')) as any,
-		gulp.src('./src/web/app/client/script.js')
-			.pipe(replace('VERSION', JSON.stringify(version)))
-			//.pipe(isProduction ? uglify() : gutil.noop())
-			.pipe(gulp.dest('./built/web/assets/client/')) as any
-	)
+gulp.task('webpack', done => {
+	const output = childProcess.execSync(Path.join('.', 'node_modules', '.bin', 'webpack') + ' --config webpack.config.ts', );
+	console.log(output.toString());
+	done();
+});
+
+gulp.task('build:client:script', () =>
+	gulp.src('./src/web/app/client/script.js')
+		.pipe(replace('VERSION', JSON.stringify(version)))
+		//.pipe(isProduction ? uglify() : gutil.noop())
+		.pipe(gulp.dest('./built/web/assets/client/')) as any
 );
 
 gulp.task('build:client:styles', () =>
@@ -149,7 +153,8 @@ gulp.task('build:client:styles', () =>
 );
 
 gulp.task('copy:client', [
-	'build:client:scripts'
+	'build:client:script',
+	'webpack'
 ], () =>
 		gulp.src([
 			'./assets/**/*',
@@ -165,7 +170,7 @@ gulp.task('copy:client', [
 
 gulp.task('build:client:pug', [
 	'copy:client',
-	'build:client:scripts',
+	'build:client:script',
 	'build:client:styles'
 ], () =>
 	gulp.src('./src/web/app/*/view.pug')

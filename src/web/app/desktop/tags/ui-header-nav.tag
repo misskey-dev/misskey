@@ -3,7 +3,7 @@
 		<li class="home { active: page == 'home' }">
 			<a href={ CONFIG.url }>
 				<i class="fa fa-home"></i>
-				<p>ホーム</p>
+				<p>'i18n:home'</p>
 			</a>
 		</li>
 		<li class="messaging">
