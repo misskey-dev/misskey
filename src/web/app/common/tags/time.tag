@@ -34,16 +34,16 @@
 			const now = new Date();
 			const ago = (now - this.time) / 1000/*ms*/;
 			this.relative =
-				ago >= 31536000 ? ~~(ago / 31536000) + '年前' :
-				ago >= 2592000  ? ~~(ago / 2592000)  + 'ヶ月前' :
-				ago >= 604800   ? ~~(ago / 604800)   + '週間前' :
-				ago >= 86400    ? ~~(ago / 86400)    + '日前' :
-				ago >= 3600     ? ~~(ago / 3600)     + '時間前' :
-				ago >= 60       ? ~~(ago / 60)       + '分前' :
-				ago >= 10       ? ~~(ago % 60)       + '秒前' :
-				ago >= 0        ?                      'たった今' :
-				ago <  0        ?                      '未来' :
-				                                       'なぞのじかん';
+				ago >= 31536000 ? '%i18n:common.time.years_ago%'  .replace('{}', ~~(ago / 31536000)) :
+				ago >= 2592000  ? '%i18n:common.time.months_ago%' .replace('{}', ~~(ago / 2592000)) :
+				ago >= 604800   ? '%i18n:common.time.weeks_ago%'  .replace('{}', ~~(ago / 604800)) :
+				ago >= 86400    ? '%i18n:common.time.days_ago%'   .replace('{}', ~~(ago / 86400)) :
+				ago >= 3600     ? '%i18n:common.time.hours_ago%'  .replace('{}', ~~(ago / 3600)) :
+				ago >= 60       ? '%i18n:common.time.minutes_ago%'.replace('{}', ~~(ago / 60)) :
+				ago >= 10       ? '%i18n:common.time.seconds_ago%'.replace('{}', ~~(ago % 60)) :
+				ago >= 0        ? '%i18n:common.time.just_now%' :
+				ago <  0        ? '%i18n:common.time.future%' :
+				'%i18n:common.time.unknown%';
 			this.update();
 		};
 	</script>

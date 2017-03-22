@@ -30,11 +30,11 @@ module.exports = (Object as any).entries(languages).map(([lang, locale]) => {
 			rules: [
 				{
 					enforce: 'pre',
-					test: /\.*$/,
+					test: /\.(tag|js)$/,
 					exclude: /node_modules/,
 					loader: StringReplacePlugin.replace({
 						replacements: [
-							{ pattern: /'i18n:(.+?)'/g, replacement: (_, text) => locale[text] }
+							{ pattern: /%i18n:(.+?)%/g, replacement: (_, text) => eval('locale' + text.split('.').map(x => `['${x}']`).join('')) }
 						]
 					})
 				},

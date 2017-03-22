@@ -3,7 +3,7 @@
 		<li class="home { active: page == 'home' }">
 			<a href={ CONFIG.url }>
 				<i class="fa fa-home"></i>
-				<p>'i18n:home'</p>
+				<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
 			</a>
 		</li>
 		<li class="messaging">

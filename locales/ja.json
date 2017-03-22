@@ -1,3 +1,23 @@
 {
-	"home": "ホーム"
+	"common": {
+		"time": {
+			"unknown": "なぞのじかん",
+			"future": "未来",
+			"just_now": "たった今",
+			"seconds_ago": "{}秒前",
+			"minutes_ago": "{}分前",
+			"hours_ago": "{}時間前",
+			"days_ago": "{}日前",
+			"weeks_ago": "{}週間前",
+			"months_ago": "{}ヶ月前",
+			"years_ago": "{}年前"
+		}
+	},
+	"desktop": {
+		"tags": {
+			"mk-ui-header-nav": {
+				"home": "ホーム"
+			}
+		}
+	}
 }

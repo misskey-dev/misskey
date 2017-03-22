@@ -1,3 +1,23 @@
 {
-	"home": "Home"
+	"common": {
+		"time": {
+			"unknown": "unknown",
+			"future": "future",
+			"just_now": "just now",
+			"seconds_ago": "{}s ago",
+			"minutes_ago": "{}m ago",
+			"hours_ago": "{}h ago",
+			"days_ago": "{}d ago",
+			"weeks_ago": "{}weeks ago",
+			"months_ago": "{}months ago",
+			"years_ago": "{}years ago"
+		}
+	},
+	"desktop": {
+		"tags": {
+			"mk-ui-header-nav": {
+				"home": "Home"
+			}
+		}
+	}
 }
