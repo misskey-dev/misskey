@@ -61,6 +61,7 @@
 			> nav
 				display block
 				position sticky
+				position -webkit-sticky
 				top 0
 				z-index 1
 				width 100%
@@ -114,6 +115,10 @@
 						border-bottom solid 1px #eee
 
 					> .more
+						display block
+						width 100%
+						padding 16px
+						font-size 16px
 						color #555
 
 				> .empty

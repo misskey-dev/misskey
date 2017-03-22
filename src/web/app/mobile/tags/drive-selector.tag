@@ -56,6 +56,7 @@
 				> mk-drive
 					height calc(100% - 42px)
 					overflow scroll
+					-webkit-overflow-scrolling touch
 
 	</style>
 	<script>
