@@ -1,9 +1,7 @@
-const getVersion = new Promise<string>(async resolve => {
-	const ぱっけーじ = require('../package.json');
+/**
+ * Version
+ */
 
-	const version = ぱっけーじ.version;
+const meta = require('../package.json');
 
-	resolve(version);
-});
-
-export default getVersion;
+export default meta.version as string;

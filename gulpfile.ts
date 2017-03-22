@@ -20,7 +20,7 @@ import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
-import getVersion from './src/version';
+import version from './src/version';
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -129,21 +129,16 @@ gulp.task('build:client', [
 	'copy:client'
 ]);
 
-gulp.task('build:client:scripts', done => {
-	getVersion.then(version => {
-		require('./webpack.config').then(webpackOptions => {
-			es.merge(
-				webpack(webpackOptions, require('webpack'))
-					.pipe(gulp.dest('./built/web/assets/')) as any,
-				gulp.src('./src/web/app/client/script.js')
-					.pipe(replace('VERSION', JSON.stringify(version)))
-					//.pipe(isProduction ? uglify() : gutil.noop())
-					.pipe(gulp.dest('./built/web/assets/client/')) as any
-			);
-			done();
-		});
-	});
-});
+gulp.task('build:client:scripts', () =>
+	es.merge(
+		webpack(require('./webpack.config'), require('webpack'))
+			.pipe(gulp.dest('./built/web/assets/')) as any,
+		gulp.src('./src/web/app/client/script.js')
+			.pipe(replace('VERSION', JSON.stringify(version)))
+			//.pipe(isProduction ? uglify() : gutil.noop())
+			.pipe(gulp.dest('./built/web/assets/client/')) as any
+	)
+);
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/web/app/init.css')
@@ -172,16 +167,13 @@ gulp.task('build:client:pug', [
 	'copy:client',
 	'build:client:scripts',
 	'build:client:styles'
-], done => {
-	getVersion.then(version => {
-		gulp.src('./src/web/app/*/view.pug')
-			.pipe(pug({
-				locals: {
-					version: version,
-					themeColor: constants.themeColor
-				}
-			}))
-			.pipe(gulp.dest('./built/web/app/'));
-		done();
-	});
-});
+], () =>
+	gulp.src('./src/web/app/*/view.pug')
+		.pipe(pug({
+			locals: {
+				version: version,
+				themeColor: constants.themeColor
+			}
+		}))
+		.pipe(gulp.dest('./built/web/app/'))
+);
