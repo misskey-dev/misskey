@@ -54,8 +54,15 @@
 			display block
 			background #fff
 
+			&[data-is-naked]
+				> nav
+					top 48px
+
 			> nav
 				display block
+				position sticky
+				top 0
+				z-index 1
 				width 100%
 				padding 10px 12px
 				overflow auto
@@ -63,7 +70,7 @@
 				font-size 0.9em
 				color #555
 				background #fff
-				border-bottom solid 1px #dfdfdf
+				border-bottom solid 1px rgba(0, 0, 0, 0.13)
 
 				> p
 					display inline
