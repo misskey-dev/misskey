@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import prominence from 'prominence';
-import getVersion from '../../version';
+import version from '../../version';
 import config from '../../conf';
 
 /**
@@ -39,8 +39,6 @@ import config from '../../conf';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	const version = await getVersion.then();
-
 	res({
 		maintainer: config.maintainer,
 		version: version,
