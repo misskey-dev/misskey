@@ -191,7 +191,7 @@
 
 					&:not([data-is-me]):not([data-is-read])
 						> div
-							background-image url("/resources/unread.svg")
+							background-image url("/assets/unread.svg")
 							background-repeat no-repeat
 							background-position 0 center
 

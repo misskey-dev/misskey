@@ -1,11 +1,11 @@
 <mk-drive-browser-file data-is-selected={ isSelected } data-is-contextmenu-showing={ isContextmenuShowing.toString() } onclick={ onclick } oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
-	<div class="label" if={ I.avatar_id == file.id }><img src="/resources/label.svg"/>
+	<div class="label" if={ I.avatar_id == file.id }><img src="/assets/label.svg"/>
 		<p>アバター</p>
 	</div>
-	<div class="label" if={ I.banner_id == file.id }><img src="/resources/label.svg"/>
+	<div class="label" if={ I.banner_id == file.id }><img src="/assets/label.svg"/>
 		<p>バナー</p>
 	</div>
-	<div class="label" if={ I.data.wallpaper == file.id }><img src="/resources/label.svg"/>
+	<div class="label" if={ I.data.wallpaper == file.id }><img src="/assets/label.svg"/>
 		<p>壁紙</p>
 	</div>
 	<div class="thumbnail"><img src={ file.url + '?thumbnail&size=128' } alt=""/></div>

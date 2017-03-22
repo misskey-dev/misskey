@@ -35,12 +35,12 @@ app.use((req, res, next) => {
 });
 
 /**
- * Static resources
+ * Static assets
  */
-app.use(favicon(`${__dirname}/resources/favicon.ico`));
-app.get('/manifest.json', (req, res) => res.sendFile(__dirname + '/resources/manifest.json'));
-app.get('/apple-touch-icon.png', (req, res) => res.sendFile(__dirname + '/resources/apple-touch-icon.png'));
-app.use('/resources', express.static(`${__dirname}/resources`, {
+app.use(favicon(`${__dirname}/assets/favicon.ico`));
+app.get('/manifest.json', (req, res) => res.sendFile(__dirname + '/assets/manifest.json'));
+app.get('/apple-touch-icon.png', (req, res) => res.sendFile(__dirname + '/assets/apple-touch-icon.png'));
+app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
 

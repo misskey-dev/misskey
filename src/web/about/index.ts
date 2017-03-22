@@ -3,7 +3,7 @@ import ms = require('ms');
 
 const router = express.Router();
 
-router.use('/@/about/resources', express.static(`${__dirname}/resources`, {
+router.use('/@/about/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
 

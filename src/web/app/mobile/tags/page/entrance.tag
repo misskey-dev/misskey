@@ -1,5 +1,5 @@
 <mk-entrance>
-	<main><img src="/resources/title.svg" alt="Misskey"/>
+	<main><img src="/assets/title.svg" alt="Misskey"/>
 		<mk-entrance-signin if={ mode == 'signin' }></mk-entrance-signin>
 		<mk-entrance-signup if={ mode == 'signup' }></mk-entrance-signup>
 		<div class="introduction" if={ mode == 'introduction' }>

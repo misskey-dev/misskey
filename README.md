@@ -12,7 +12,7 @@ Welcome!
 [Misskey](https://misskey.xyz) is a completely open source,
 ultimately sophisticated new type of mini-blog based SNS.
 
-![ss](./resources/ss.jpg)
+![ss](./assets/ss.jpg)
 
 Key features
 --------------------------------

@@ -13,11 +13,11 @@ app.disable('x-powered-by');
 app.locals.cache = true;
 
 app.get('/himasaku.png', (req, res) => {
-	res.sendFile(__dirname + '/resources/himasaku.png');
+	res.sendFile(__dirname + '/assets/himasaku.png');
 });
 
 app.get('*', (req, res) => {
-	res.sendFile(__dirname + '/resources/index.html');
+	res.sendFile(__dirname + '/assets/index.html');
 });
 
 module.exports = app;

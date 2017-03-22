@@ -45,7 +45,7 @@
 						display block
 						width 100%
 						height 48px
-						background-image url(/resources/desktop/header-logo-white.svg)
+						background-image url(/assets/desktop/header-logo-white.svg)
 						background-size 64px
 						background-position center
 						background-repeat no-repeat

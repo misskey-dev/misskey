@@ -85,8 +85,8 @@ gulp.task('build:about:docs', () => {
 gulp.task('build:copy', () =>
 	es.merge(
 		gulp.src([
-			'./src/**/resources/**/*',
-			'!./src/web/app/**/resources/**/*'
+			'./src/**/assets/**/*',
+			'!./src/web/app/**/assets/**/*'
 		]).pipe(gulp.dest('./built/')) as any,
 		gulp.src([
 			'./src/web/about/**/*',
@@ -134,11 +134,11 @@ gulp.task('build:client:scripts', done => {
 		require('./webpack.config').then(webpackOptions => {
 			es.merge(
 				webpack(webpackOptions, require('webpack'))
-					.pipe(gulp.dest('./built/web/resources/')) as any,
+					.pipe(gulp.dest('./built/web/assets/')) as any,
 				gulp.src('./src/web/app/client/script.js')
 					.pipe(replace('VERSION', JSON.stringify(version)))
 					//.pipe(isProduction ? uglify() : gutil.noop())
-					.pipe(gulp.dest('./built/web/resources/client/')) as any
+					.pipe(gulp.dest('./built/web/assets/client/')) as any
 			);
 			done();
 		});
@@ -150,22 +150,22 @@ gulp.task('build:client:styles', () =>
 		.pipe(isProduction
 			? (cssnano as any)()
 			: gutil.noop())
-		.pipe(gulp.dest('./built/web/resources/'))
+		.pipe(gulp.dest('./built/web/assets/'))
 );
 
 gulp.task('copy:client', [
 	'build:client:scripts'
 ], () =>
 		gulp.src([
-			'./resources/**/*',
-			'./src/web/resources/**/*',
-			'./src/web/app/*/resources/**/*'
+			'./assets/**/*',
+			'./src/web/assets/**/*',
+			'./src/web/app/*/assets/**/*'
 		])
 			.pipe(isProduction ? (imagemin as any)() : gutil.noop())
 			.pipe(rename(path => {
-				path.dirname = path.dirname.replace('resources', '.');
+				path.dirname = path.dirname.replace('assets', '.');
 			}))
-			.pipe(gulp.dest('./built/web/resources/'))
+			.pipe(gulp.dest('./built/web/assets/'))
 );
 
 gulp.task('build:client:pug', [

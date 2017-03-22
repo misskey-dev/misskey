@@ -2,7 +2,7 @@
 	<div class="content-container">
 		<div class="balloon">
 			<p class="read" if={ message.is_me && message.is_read }>既読</p>
-			<button class="delete-button" if={ message.is_me } title="メッセージを削除"><img src="/resources/desktop/messaging/delete.png" alt="Delete"/></button>
+			<button class="delete-button" if={ message.is_me } title="メッセージを削除"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
 			<div class="content" if={ !message.is_deleted }>
 				<div ref="text"></div>
 				<div class="image" if={ message.file }><img src={ message.file.url } alt="image" title={ message.file.name }/></div>

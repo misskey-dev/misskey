@@ -5,7 +5,7 @@
 			<ul>
 				<li each={ files }>
 					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
-					<img class="remove" onclick={ removeFile } src="/resources/desktop/remove.png" title="添付取り消し" alt=""/>
+					<img class="remove" onclick={ removeFile } src="/assets/desktop/remove.png" title="添付取り消し" alt=""/>
 				</li>
 				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>

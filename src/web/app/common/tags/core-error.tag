@@ -1,6 +1,6 @@
 <mk-core-error>
 	<!--i: i.fa.fa-times-circle-->
-	<img src="/resources/error.jpg" alt=""/>
+	<img src="/assets/error.jpg" alt=""/>
 	<h1>サーバーに接続できません</h1>
 	<p class="text">インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから<a onclick={ retry }>再度お試し</a>ください。</p>
 	<p class="thanks">いつもMisskeyをご利用いただきありがとうございます。</p>
