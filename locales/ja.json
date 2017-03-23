@@ -11,6 +11,14 @@
 			"weeks_ago": "{}週間前",
 			"months_ago": "{}ヶ月前",
 			"years_ago": "{}年前"
+		},
+		"reactions": {
+			"like": "いいね",
+			"love": "ハート",
+			"laugh": "笑",
+			"hmm": "ふぅ～む",
+			"surprise": "わお",
+			"congrats": "おめでとう"
 		}
 	},
 	"desktop": {

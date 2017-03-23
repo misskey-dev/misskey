@@ -3,12 +3,12 @@
 	<div class="popover { compact: opts.compact }" ref="popover">
 		<p if={ !opts.compact }>{ title }</p>
 		<div>
-			<button onclick={ react.bind(null, 'like') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="1" title="いいね"><mk-reaction-icon reaction='like'></mk-reaction-icon></button>
-			<button onclick={ react.bind(null, 'love') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="2" title="ハート"><mk-reaction-icon reaction='love'></mk-reaction-icon></button>
-			<button onclick={ react.bind(null, 'laugh') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="3" title="笑"><mk-reaction-icon reaction='laugh'></mk-reaction-icon></button>
-			<button onclick={ react.bind(null, 'hmm') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="4" title="ふぅ～む"><mk-reaction-icon reaction='hmm'></mk-reaction-icon></button>
-			<button onclick={ react.bind(null, 'surprise') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="5" title="驚き"><mk-reaction-icon reaction='surprise'></mk-reaction-icon></button>
-			<button onclick={ react.bind(null, 'congrats') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="6" title="おめでとう"><mk-reaction-icon reaction='congrats'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'like') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="1" title="%i18n:common.reactions.like%"><mk-reaction-icon reaction='like'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'love') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="2" title="%i18n:common.reactions.love%"><mk-reaction-icon reaction='love'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'laugh') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="3" title="%i18n:common.reactions.laugh%"><mk-reaction-icon reaction='laugh'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'hmm') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="4" title="%i18n:common.reactions.hmm%"><mk-reaction-icon reaction='hmm'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'surprise') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="5" title="%i18n:common.reactions.surprise%"><mk-reaction-icon reaction='surprise'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'congrats') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="6" title="%i18n:common.reactions.congrats%"><mk-reaction-icon reaction='congrats'></mk-reaction-icon></button>
 		</div>
 	</div>
 	<style>

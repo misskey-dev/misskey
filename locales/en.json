@@ -11,6 +11,14 @@
 			"weeks_ago": "{}weeks ago",
 			"months_ago": "{}months ago",
 			"years_ago": "{}years ago"
+		},
+		"reactions": {
+			"like": "Like",
+			"love": "Love",
+			"laugh": "Laugh",
+			"hmm": "Hmm...?",
+			"surprise": "Wow",
+			"congrats": "Congrats!"
 		}
 	},
 	"desktop": {
