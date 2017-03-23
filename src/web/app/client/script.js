@@ -12,32 +12,19 @@
 	const ua = navigator.userAgent.toLowerCase();
 	const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
-	isMobile ? mountMobile() : mountDesktop();
+	const app = isMobile ? 'mobile' : 'desktop';
 
-	/**
-	 * Mount the desktop app
-	 */
-	function mountDesktop() {
-		const script = document.createElement('script');
-		script.setAttribute('src', `/assets/desktop/script.${VERSION}.${lang}.js`);
-		script.setAttribute('async', 'true');
-		script.setAttribute('defer', 'true');
-		head.appendChild(script);
-	}
+	// Load app script
+	const script = document.createElement('script');
+	script.setAttribute('src', `/assets/${app}.${VERSION}.${lang}.js`);
+	script.setAttribute('async', 'true');
+	script.setAttribute('defer', 'true');
+	head.appendChild(script);
 
-	/**
-	 * Mount the mobile app
-	 */
-	function mountMobile() {
+	if (isMobile) {
 		const meta = document.createElement('meta');
 		meta.setAttribute('name', 'viewport');
 		meta.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no');
 		head.appendChild(meta);
-
-		const script = document.createElement('script');
-		script.setAttribute('src', `/assets/mobile/script.${VERSION}.${lang}.js`);
-		script.setAttribute('async', 'true');
-		script.setAttribute('defer', 'true');
-		head.appendChild(script);
 	}
 })();

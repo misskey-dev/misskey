@@ -85,7 +85,7 @@ module.exports = (Object as any).entries(languages).map(([lang, locale]) => {
 		],
 		output: {
 			path: __dirname + '/built/web/assets',
-			filename: `[name]/script.${version}.${lang}.js`
+			filename: `[name].${version}.${lang}.js`
 		}
 	};
 
