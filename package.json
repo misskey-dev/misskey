@@ -105,7 +105,7 @@
     "is-root": "1.0.0",
     "is-url": "1.2.2",
     "js-yaml": "3.8.2",
-    "mime-types": "2.1.14",
+    "mime-types": "2.1.15",
     "mocha": "3.2.0",
     "mongodb": "2.2.25",
     "monk": "4.0.0",
