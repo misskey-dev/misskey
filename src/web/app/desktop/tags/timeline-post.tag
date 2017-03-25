@@ -8,8 +8,9 @@
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
 			</a>
 			<i class="fa fa-retweet"></i>
+			{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }
 			<a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>
-			がRepost
+			{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }
 		</p>
 		<mk-time time={ post.created_at }></mk-time>
 	</div>
@@ -47,19 +48,19 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"></mk-reactions-viewer>
-				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
+				<button onclick={ reply } title="%i18n:desktop.tags.mk-timeline-post.reply%"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
+				<button onclick={ repost } title="%i18n:desktop.tags.mk-timeline-post.repost%"><i class="fa fa-retweet"></i>
 					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション"><i class="fa fa-plus"></i>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%"><i class="fa fa-plus"></i>
 					<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
 				<button>
 					<i class="fa fa-ellipsis-h"></i>
 				</button>
-				<button onclick={ toggleDetail } title="詳細">
+				<button onclick={ toggleDetail } title="%i18n:desktop.tags.mk-timeline-post.detail">
 					<i class="fa fa-caret-down" if={ !isDetailOpened }></i>
 					<i class="fa fa-caret-up" if={ isDetailOpened }></i>
 				</button>

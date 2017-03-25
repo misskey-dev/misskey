@@ -70,6 +70,13 @@
 				"reply": "Reply",
 				"attaches": "{} media attached",
 				"uploading-media": "{} media uploading"
+			},
+			"mk-timeline-post": {
+				"reposted-by": "Reposted by {}",
+				"reply": "Reply",
+				"repost": "Repost",
+				"add-reaction": "Add your reaction",
+				"detail": "Show detail"
 			}
 		}
 	}

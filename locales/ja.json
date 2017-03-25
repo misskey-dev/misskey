@@ -70,6 +70,13 @@
 				"reply": "返信",
 				"attaches": "添付: {}メディア",
 				"uploading-media": "{}つのメディアをアップロード中"
+			},
+			"mk-timeline-post": {
+				"reposted-by": "{}がRepost",
+				"reply": "返信",
+				"repost": "Repost",
+				"add-reaction": "リアクション",
+				"detail": "詳細"
 			}
 		}
 	}
