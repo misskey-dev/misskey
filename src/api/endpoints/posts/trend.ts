@@ -66,8 +66,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			limit: limit,
 			skip: offset,
 			sort: {
-				_id: -1,
-				repost_count: -1
+				repost_count: -1,
+				_id: -1
 			}
 		});
 
