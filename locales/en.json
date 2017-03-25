@@ -63,7 +63,7 @@
 				"attach-cancel": "Cancel to attach",
 				"insert-the-cat": "Insert the cat",
 				"create-poll": "Create a poll",
-				"text-remain": "{} characters remaining"
+				"text-remain": "{} chars remaining"
 			},
 			"mk-post-form-window": {
 				"post": "New post",
