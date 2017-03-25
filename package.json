@@ -94,7 +94,7 @@
     "gm": "1.23.0",
     "gulp": "3.9.1",
     "gulp-cssnano": "2.1.2",
-    "gulp-imagemin": "3.1.1",
+    "gulp-imagemin": "3.2.0",
     "gulp-mocha": "4.1.0",
     "gulp-pug": "3.3.0",
     "gulp-rename": "1.2.2",
