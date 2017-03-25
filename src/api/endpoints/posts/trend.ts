@@ -41,6 +41,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const query = {
 		created_at: {
 			$gte: new Date(Date.now() - ms('1days'))
+		},
+		repost_count: {
+			$gt: 0
 		}
 	} as any;
 
