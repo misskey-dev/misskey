@@ -1,6 +1,6 @@
 <mk-trends-home-widget>
 	<p class="title"><i class="fa fa-fire"></i>トレンド</p>
-	<button onclick={ refresh } title="他を見る"><i class="fa fa-refresh"></i></button>
+	<button onclick={ fetch } title="他を見る"><i class="fa fa-refresh"></i></button>
 	<div class="post" if={ !loading && post != null }>
 		<p class="text">{ post.text }</p>
 		<p class="author">―<a href="/{ post.user.username }">@{ post.user.username }</a></p>
@@ -96,17 +96,16 @@
 				poll: false
 			}).then(posts => {
 				const post = posts ? posts[0] : null;
-				if (post == null) this.offset = 0;
+				if (post == null) {
+					this.offset = 0;
+				} else {
+					this.offset++;
+				}
 				this.update({
 					loading: false,
 					post: post
 				});
 			});
-		};
-
-		this.refresh = () => {
-			this.offset++;
-			this.fetch();
 		};
 	</script>
 </mk-trends-home-widget>

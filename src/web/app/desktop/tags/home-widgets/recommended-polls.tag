@@ -1,6 +1,6 @@
 <mk-recommended-polls-home-widget>
 	<p class="title"><i class="fa fa-pie-chart"></i>投票</p>
-	<button onclick={ refresh } title="他を見る"><i class="fa fa-refresh"></i></button>
+	<button onclick={ fetch } title="他を見る"><i class="fa fa-refresh"></i></button>
 	<div class="poll" if={ !loading && poll != null }>
 		<p class="text" if={ poll.text }>{ poll.text }</p>
 		<mk-poll post={ poll }></mk-poll>
@@ -87,17 +87,16 @@
 				offset: this.offset
 			}).then(posts => {
 				const poll = posts ? posts[0] : null;
-				if (poll == null) this.offset = 0;
+				if (post == null) {
+					this.offset = 0;
+				} else {
+					this.offset++;
+				}
 				this.update({
 					loading: false,
 					poll: poll
 				});
 			});
-		};
-
-		this.refresh = () => {
-			this.offset++;
-			this.fetch();
 		};
 	</script>
 </mk-recommended-polls-home-widget>
