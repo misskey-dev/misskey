@@ -5,22 +5,22 @@
 			<ul>
 				<li each={ files }>
 					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
-					<img class="remove" onclick={ removeFile } src="/assets/desktop/remove.png" title="添付取り消し" alt=""/>
+					<img class="remove" onclick={ removeFile } src="/assets/desktop/remove.png" title="%i18n:desktop.tags.mk-post-form.attach-cancel%" alt=""/>
 				</li>
-				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
+				<li class="add" if={ files.length < 4 } title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
 			<p class="remain">{ 4 - files.length }/4</p>
 		</div>
 		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }></mk-poll-editor>
 	</div>
 	<mk-uploader ref="uploader"></mk-uploader>
-	<button ref="upload" title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-upload"></i></button>
-	<button ref="drive" title="ドライブからファイルを添付" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
-	<button class="cat" title="Insert The Cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
-	<button class="poll" title="投票を作成" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
-	<p class="text-count { over: refs.text.value.length > 1000 }">のこり{ 1000 - refs.text.value.length }文字</p>
+	<button ref="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }><i class="fa fa-upload"></i></button>
+	<button ref="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
+	<button class="cat" title="%i18n:desktop.tags.mk-post-form.insert-the-cat%" onclick={ cat }><i class="fa fa-smile-o"></i></button>
+	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
+	<p class="text-count { over: refs.text.value.length > 1000 }">{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - refs.text.value.length) }</p>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll　&& !repost) } onclick={ post }>
-		{ wait ? '投稿中' : submitText }<mk-ellipsis if={ wait }></mk-ellipsis>
+		{ wait ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }<mk-ellipsis if={ wait }></mk-ellipsis>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>
 	<div class="dropzone" if={ draghover }></div>
@@ -329,16 +329,16 @@
 		if (this.repost == '') this.repost = null;
 
 		this.placeholder = this.repost
-			? 'この投稿を引用...'
+			? '%i18n:desktop.tags.mk-post-form.quote-placeholder%'
 			: this.inReplyToPost
-				? 'この投稿への返信...'
-				: 'いまどうしてる？';
+				? '%i18n:desktop.tags.mk-post-form.reply-placeholder%'
+				: '%i18n:desktop.tags.mk-post-form.post-placeholder%';
 
 		this.submitText = this.repost
-			? 'Repost'
+			? '%i18n:desktop.tags.mk-post-form.repost%'
 			: this.inReplyToPost
-				? '返信'
-				: '投稿';
+				? '%i18n:desktop.tags.mk-post-form.reply%'
+				: '%i18n:desktop.tags.mk-post-form.post%';
 
 		this.draftId = this.repost
 			? 'repost:' + this.repost.id
@@ -489,16 +489,16 @@
 				this.removeDraft();
 				this.trigger('post');
 				notify(this.repost
-					? 'Repostしました！'
+					? '%i18n:desktop.tags.mk-post-form.reposted%'
 					: this.inReplyToPost
-						? '返信しました！'
-						: '投稿しました！');
+						? '%i18n:desktop.tags.mk-post-form.replied%'
+						: '%i18n:desktop.tags.mk-post-form.posted%');
 			}).catch(err => {
 				notify(this.repost
-					? 'Repostできませんでした'
+					? '%i18n:desktop.tags.mk-post-form.repost-failed%'
 					: this.inReplyToPost
-						? '返信できませんでした'
-						: '投稿できませんでした');
+						? '%i18n:desktop.tags.mk-post-form.reply-failed%'
+						: '%i18n:desktop.tags.mk-post-form.post-failed%');
 			}).then(() => {
 				this.update({
 					wait: false

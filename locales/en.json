@@ -29,7 +29,47 @@
 	"desktop": {
 		"tags": {
 			"mk-ui-header-nav": {
-				"home": "Home"
+				"home": "Home",
+				"messaging": "Messaging",
+				"info": "Info",
+				"live": "Live"
+			},
+			"mk-ui-header-search": {
+				"placeholder": "Search"
+			},
+			"mk-ui-header-account": {
+				"profile": "Your profile",
+				"drive": "Drive",
+				"mentions": "Mentions",
+				"settings": "Settings",
+				"signout": "Sign out"
+			},
+			"mk-post-form": {
+				"post-placeholder": "What's happening?",
+				"reply-placeholder": "この投稿への返信...",
+				"quote-placeholder": "この投稿を引用...",
+				"post": "Post",
+				"reply": "Reply",
+				"repost": "Repost",
+				"posted": "Posted!",
+				"replied": "Replied!",
+				"reposted": "Reposted!",
+				"post-failed": "Failed to post",
+				"reply-failed": "Failed to reply",
+				"repost-failed": "Failed to repost",
+				"posting": "Posting",
+				"attach-media-from-local": "Attach media from your pc",
+				"attach-media-from-drive": "Attach media from the drive",
+				"attach-cancel": "Cancel to attach",
+				"insert-the-cat": "Insert the cat",
+				"create-poll": "Create a poll",
+				"text-remain": "{} characters remaining"
+			},
+			"mk-post-form-window": {
+				"post": "New post",
+				"reply": "Reply",
+				"attaches": "{} media attached",
+				"uploading-media": "{} media uploading"
 			}
 		}
 	}

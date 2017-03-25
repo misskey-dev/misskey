@@ -1,10 +1,10 @@
 <mk-post-form-window>
 	<mk-window ref="window" is-modal={ true }>
 		<yield to="header">
-			<span if={ !parent.opts.reply }>新規投稿</span>
-			<span if={ parent.opts.reply }>返信</span>
-			<span class="files" if={ parent.files.length != 0 }>添付: { parent.files.length }ファイル</span>
-			<span class="uploading-files" if={ parent.uploadingFiles.length != 0 }>{ parent.uploadingFiles.length }個のファイルをアップロード中<mk-ellipsis></mk-ellipsis></span>
+			<span if={ !parent.opts.reply }>%i18n:desktop.tags.mk-post-form-window.post%</span>
+			<span if={ parent.opts.reply }>%i18n:desktop.tags.mk-post-form-window.reply%</span>
+			<span class="files" if={ parent.files.length != 0 }>{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', parent.files.length) }</span>
+			<span class="uploading-files" if={ parent.uploadingFiles.length != 0 }>{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', parent.uploadingFiles.length) }<mk-ellipsis></mk-ellipsis></span>
 		</yield>
 		<yield to="content">
 			<div class="ref" if={ parent.opts.reply }>

@@ -29,7 +29,47 @@
 	"desktop": {
 		"tags": {
 			"mk-ui-header-nav": {
-				"home": "ホーム"
+				"home": "ホーム",
+				"messaging": "メッセージ",
+				"info": "お知らせ",
+				"live": "ライブ"
+			},
+			"mk-ui-header-search": {
+				"placeholder": "検索"
+			},
+			"mk-ui-header-account": {
+				"profile": "プロフィール",
+				"drive": "ドライブ",
+				"mentions": "あなた宛て",
+				"settings": "設定",
+				"signout": "サインアウト"
+			},
+			"mk-post-form": {
+				"post-placeholder": "いまどうしてる？",
+				"reply-placeholder": "この投稿への返信...",
+				"quote-placeholder": "この投稿を引用...",
+				"post": "投稿",
+				"reply": "返信",
+				"repost": "Repost",
+				"posted": "投稿しました！",
+				"replied": "返信しました！",
+				"reposted": "Repostしました！",
+				"post-failed": "投稿できませんでした",
+				"reply-failed": "返信できませんでした",
+				"repost-failed": "Repostできませんでした",
+				"posting": "投稿中",
+				"attach-media-from-local": "PCからメディアを添付",
+				"attach-media-from-drive": "ドライブからメディアを添付",
+				"attach-cancel": "添付取り消し",
+				"insert-the-cat": "猫挿入",
+				"create-poll": "投票を作成",
+				"text-remain": "のこり{}文字"
+			},
+			"mk-post-form-window": {
+				"post": "新規投稿",
+				"reply": "返信",
+				"attaches": "添付: {}メディア",
+				"uploading-media": "{}つのメディアをアップロード中"
 			}
 		}
 	}

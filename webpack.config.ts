@@ -33,7 +33,23 @@ module.exports = (Object as any).entries(languages).map(([lang, locale]) => {
 					exclude: /node_modules/,
 					loader: StringReplacePlugin.replace({
 						replacements: [
-							{ pattern: /%i18n:(.+?)%/g, replacement: (_, text) => eval('locale' + text.split('.').map(x => `['${x}']`).join('')) }
+							{ pattern: /%i18n:(.+?)%/g, replacement: (_, key) => {
+								let text = locale;
+								const error = key.split('.').some(k => {
+									if (text.hasOwnProperty(k)) {
+										text = text[k];
+										return false;
+									} else {
+										return true;
+									}
+								});
+								if (error) {
+									console.warn(`key '${key}' not found in '${lang}'`);
+									return '-UNTRANSLATED-';
+								} else {
+									return text.replace(/'/g, '\\\'').replace(/"/g, '\\"');
+								}
+							} }
 						]
 					})
 				},

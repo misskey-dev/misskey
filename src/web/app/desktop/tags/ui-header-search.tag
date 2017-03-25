@@ -1,6 +1,6 @@
 <mk-ui-header-search>
 	<form class="search" onsubmit={ onsubmit }>
-		<input ref="q" type="search" placeholder="&#xf002; 検索"/>
+		<input ref="q" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-ui-header-search.placeholder%"/>
 		<div class="result"></div>
 	</form>
 	<style>
