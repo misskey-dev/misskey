@@ -39,6 +39,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			_id: {
 				$nin: nin
 			},
+			user_id: {
+				$ne: user._id
+			},
 			poll: {
 				$exists: true,
 				$ne: null
