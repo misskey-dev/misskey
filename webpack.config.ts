@@ -10,7 +10,6 @@ const constants = require('./src/const.json');
 
 const languages = {
 	'en': require('./locales/en.json'),
-	'en-US': require('./locales/en.json'),
 	'ja': require('./locales/ja.json')
 };
 
