@@ -5,8 +5,8 @@
 	const head = document.getElementsByTagName('head')[0];
 
 	// Detect user language
-	let lang = (navigator.languages && navigator.languages[0]) || navigator.language;
-	if (!/en|en\-US|ja/.test(lang)) lang = 'en';
+	let lang = ((navigator.languages && navigator.languages[0]) || navigator.language).split('-')[0].toLowerCase();
+	if (!/^(en|ja)$/.test(lang)) lang = 'en';
 
 	// Detect user agent
 	const ua = navigator.userAgent.toLowerCase();
