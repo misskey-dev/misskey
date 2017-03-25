@@ -2,7 +2,7 @@
 	<p class="title"><i class="fa fa-fire"></i>トレンド</p>
 	<button onclick={ fetch } title="他を見る"><i class="fa fa-refresh"></i></button>
 	<div class="post" if={ !loading && post != null }>
-		<p class="text">{ post.text }</p>
+		<p class="text"><a href="/{ post.user.username }/{ post.id }">{ post.text }</a></p>
 		<p class="author">―<a href="/{ post.user.username }">@{ post.user.username }</a></p>
 	</div>
 	<p class="empty" if={ !loading && post == null }>ありません！</p>
@@ -50,6 +50,7 @@
 				> p
 					margin 0
 
+				> .text,
 				> .author
 					> a
 						color inherit
