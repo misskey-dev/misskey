@@ -76,6 +76,7 @@
 				'broadcast',
 				'notifications',
 				'user-recommendation',
+				'recommended-polls',
 				'donation',
 				'nav',
 				'tips'

@@ -42,6 +42,7 @@ require('./home-widgets/rss-reader.tag');
 require('./home-widgets/photo-stream.tag');
 require('./home-widgets/broadcast.tag');
 require('./home-widgets/version.tag');
+require('./home-widgets/recommended-polls.tag');
 require('./timeline.tag');
 require('./messaging/window.tag');
 require('./messaging/room-window.tag');

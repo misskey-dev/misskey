@@ -409,6 +409,10 @@ const endpoints: Endpoint[] = [
 		},
 		kind: 'vote-write'
 	},
+	{
+		name: 'posts/polls/recommendation',
+		withCredential: true
+	},
 
 	{
 		name: 'messaging/history',
