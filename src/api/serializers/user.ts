@@ -65,6 +65,9 @@ export default (
 	_user.id = _user._id;
 	delete _user._id;
 
+	// Remove needless properties
+	delete _user.lates_post;
+
 	// Remove private properties
 	delete _user.password;
 	delete _user.token;

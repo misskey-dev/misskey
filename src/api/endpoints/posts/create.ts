@@ -2,6 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
+import deepEqual = require('deep-equal');
 import parse from '../../common/text';
 import Post from '../../models/post';
 import { isValidText } from '../../models/post';
@@ -142,6 +143,20 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		return rej('text, media_ids, repost_id or poll is required');
 	}
 
+	// 直近の投稿と重複してたらエラー
+	// TODO: 直近の投稿が一日前くらいなら重複とは見なさない
+	if (user.latest_post) {
+		if (deepEqual({
+			text: user.latest_post.text,
+			media_ids: (user.latest_post.media_ids || []).map(id => id.toString())
+		}, {
+			text: text,
+			media_ids: (files || []).map(file => file._id.toString())
+		})) {
+			return rej('duplicate');
+		}
+	}
+
 	// 投稿を作成
 	const post = await Post.insert({
 		created_at: new Date(),
@@ -162,6 +177,12 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 
 	//--------------------------------
 	// Post processes
+
+	User.update({ _id: user._id }, {
+		$set: {
+			latest_post: post
+		}
+	});
 
 	let mentions = [];
 
