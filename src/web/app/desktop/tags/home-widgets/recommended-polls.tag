@@ -1,12 +1,12 @@
 <mk-recommended-polls-home-widget>
-	<p class="title"><i class="fa fa-pie-chart"></i>投票</p>
-	<button onclick={ fetch } title="他を見る"><i class="fa fa-refresh"></i></button>
+	<p class="title"><i class="fa fa-pie-chart"></i>%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
+	<button onclick={ fetch } title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
 	<div class="poll" if={ !loading && poll != null }>
 		<p class="text" if={ poll.text }>{ poll.text }</p>
 		<mk-poll post={ poll }></mk-poll>
 	</div>
-	<p class="empty" if={ !loading && poll == null }>ありません！</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis></mk-ellipsis></p>
+	<p class="empty" if={ !loading && poll == null }>%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-recommended-polls-home-widget.fetching%<mk-ellipsis></mk-ellipsis></p>
 	<style>
 		:scope
 			display block

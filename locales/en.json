@@ -21,6 +21,11 @@
 			"congrats": "Congrats!"
 		},
 		"tags": {
+			"mk-stream-indicator": {
+				"connecting": "Connecting",
+				"reconnecting": "Disconnected. reconnecting",
+				"connected": "Connected"
+			},
 			"mk-reaction-picker": {
 				"choose-reaction": "Pick your reaction"
 			}
@@ -77,6 +82,33 @@
 				"repost": "Repost",
 				"add-reaction": "Add your reaction",
 				"detail": "Show detail"
+			},
+			"mk-notifications-home-widget": {
+				"title": "Notifications",
+				"settings": "Settings of notifications"
+			},
+			"mk-user-recommendation-home-widget": {
+				"title": "Recommended users",
+				"refresh": "Show others",
+				"no-one": "No one",
+				"fetching": "Loading"
+			},
+			"mk-recommended-polls-home-widget": {
+				"title": "Polls",
+				"refresh": "Show others",
+				"nothing": "Nothing",
+				"fetching": "Loading"
+			},
+			"mk-trends-home-widget": {
+				"title": "Trend",
+				"refresh": "Show others",
+				"nothing": "Nothing",
+				"fetching": "Loading"
+			},
+			"mk-photo-stream-home-widget": {
+				"title": "Photostream",
+				"initializing": "Loading",
+				"no-photos": "No photos"
 			}
 		}
 	}

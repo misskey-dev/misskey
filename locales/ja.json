@@ -21,6 +21,11 @@
 			"congrats": "おめでとう"
 		},
 		"tags": {
+			"mk-stream-indicator": {
+				"connecting": "接続中",
+				"reconnecting": "切断されました 接続中",
+				"connected": "接続完了"
+			},
 			"mk-reaction-picker": {
 				"choose-reaction": "リアクションを選択"
 			}
@@ -77,6 +82,33 @@
 				"repost": "Repost",
 				"add-reaction": "リアクション",
 				"detail": "詳細"
+			},
+			"mk-notifications-home-widget": {
+				"title": "通知",
+				"settings": "通知の設定"
+			},
+			"mk-user-recommendation-home-widget": {
+				"title": "おすすめユーザー",
+				"refresh": "他を見る",
+				"no-one": "いません！",
+				"fetching": "読み込んでいます"
+			},
+			"mk-recommended-polls-home-widget": {
+				"title": "投票",
+				"refresh": "他を見る",
+				"nothing": "ありません！",
+				"fetching": "読み込んでいます"
+			},
+			"mk-trends-home-widget": {
+				"title": "トレンド",
+				"refresh": "他を見る",
+				"nothing": "ありません！",
+				"fetching": "読み込んでいます"
+			},
+			"mk-photo-stream-home-widget": {
+				"title": "フォトストリーム",
+				"initializing": "読み込んでいます",
+				"no-photos": "写真はありません"
 			}
 		}
 	}

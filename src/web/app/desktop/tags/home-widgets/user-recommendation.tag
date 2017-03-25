@@ -1,6 +1,6 @@
 <mk-user-recommendation-home-widget>
-	<p class="title"><i class="fa fa-users"></i>おすすめユーザー</p>
-	<button onclick={ refresh } title="他を見る"><i class="fa fa-refresh"></i></button>
+	<p class="title"><i class="fa fa-users"></i>%i18n:desktop.tags.mk-user-recommendation-home-widget.title%</p>
+	<button onclick={ refresh } title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
 	<div class="user" if={ !loading && users.length != 0 } each={ _user in users }>
 		<a class="avatar-anchor" href={ CONFIG.url + '/' + _user.username }>
 			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ _user.id }/>
@@ -11,8 +11,8 @@
 		</div>
 		<mk-follow-button user={ _user }></mk-follow-button>
 	</div>
-	<p class="empty" if={ !loading && users.length == 0 }>いません！</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis></mk-ellipsis></p>
+	<p class="empty" if={ !loading && users.length == 0 }>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user-recommendation-home-widget.fetching%<mk-ellipsis></mk-ellipsis></p>
 	<style>
 		:scope
 			display block

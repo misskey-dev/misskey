@@ -1,15 +1,15 @@
 <mk-stream-indicator>
 	<p if={ stream.state == 'initializing' }>
 		<i class="fa fa-spinner fa-spin"></i>
-		<span>接続中<mk-ellipsis></mk-ellipsis></span>
+		<span>%i18n:common.tags.mk-stream-indicator.connecting%<mk-ellipsis></mk-ellipsis></span>
 	</p>
 	<p if={ stream.state == 'reconnecting' }>
 		<i class="fa fa-spinner fa-spin"></i>
-		<span>切断されました 接続中<mk-ellipsis></mk-ellipsis></span>
+		<span>%i18n:common.tags.mk-stream-indicator.reconnecting%<mk-ellipsis></mk-ellipsis></span>
 	</p>
 	<p if={ stream.state == 'connected' }>
 		<i class="fa fa-check"></i>
-		<span>接続完了</span>
+		<span>%i18n:common.tags.mk-stream-indicator.connected%</span>
 	</p>
 	<style>
 		:scope

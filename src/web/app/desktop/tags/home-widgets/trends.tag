@@ -1,12 +1,12 @@
 <mk-trends-home-widget>
-	<p class="title"><i class="fa fa-fire"></i>トレンド</p>
-	<button onclick={ fetch } title="他を見る"><i class="fa fa-refresh"></i></button>
+	<p class="title"><i class="fa fa-fire"></i>%i18n:desktop.tags.mk-trends-home-widget.title%</p>
+	<button onclick={ fetch } title="%i18n:desktop.tags.mk-trends-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
 	<div class="post" if={ !loading && post != null }>
 		<p class="text"><a href="/{ post.user.username }/{ post.id }">{ post.text }</a></p>
 		<p class="author">―<a href="/{ post.user.username }">@{ post.user.username }</a></p>
 	</div>
-	<p class="empty" if={ !loading && post == null }>ありません！</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis></mk-ellipsis></p>
+	<p class="empty" if={ !loading && post == null }>%i18n:desktop.tags.mk-trends-home-widget.nothing%</p>
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-trends-home-widget.loading%<mk-ellipsis></mk-ellipsis></p>
 	<style>
 		:scope
 			display block
