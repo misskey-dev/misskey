@@ -71,8 +71,10 @@
 				overflow auto
 				white-space nowrap
 				font-size 0.9em
-				color #555
-				background #fff
+				color rgba(0, 0, 0, 0.67)
+				-webkit-backdrop-filter blur(12px)
+				backdrop-filter blur(12px)
+				background-color rgba(#fff, 0.75)
 				border-bottom solid 1px rgba(0, 0, 0, 0.13)
 
 				> p
