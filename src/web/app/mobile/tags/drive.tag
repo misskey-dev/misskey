@@ -34,7 +34,9 @@
 			<virtual each={ file in files }>
 				<mk-drive-file file={ file }></mk-drive-file>
 			</virtual>
-			<button class="more" if={ moreFiles } onclick={ fetchMoreFiles }>もっと読み込む</button>
+			<button class="more" if={ moreFiles } onclick={ fetchMoreFiles }>
+				{ fetchingMoreFiles ? '読み込み中' : 'もっと読み込む' }
+			</button>
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 			<p if={ !folder == null }>ドライブには何もありません。</p>
@@ -407,7 +409,8 @@
 
 		this.fetchMoreFiles = () => {
 			this.update({
-				fetching: true
+				fetching: true,
+				fetchingMoreFiles: true
 			});
 
 			const max = 30;
@@ -425,7 +428,8 @@
 				}
 				files.forEach(this.appendFile);
 				this.update({
-					fetching: false
+					fetching: false,
+					fetchingMoreFiles: false
 				});
 			});
 		};
