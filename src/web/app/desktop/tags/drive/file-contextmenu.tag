@@ -61,7 +61,7 @@
 		this.rename = () => {
 			this.refs.ctx.close();
 
-			this.inputDialog('ファイル名の変更', '新しいファイル名を入力してください', this.file.name, name => {
+			inputDialog('ファイル名の変更', '新しいファイル名を入力してください', this.file.name, name => {
 				this.api('drive/files/update', {
 					file_id: this.file.id,
 					name: name
@@ -72,7 +72,7 @@
 		this.copyUrl = () => {
 			copyToClipboard(this.file.url);
 			this.refs.ctx.close();
-			this.dialog('<i class="fa fa-check"></i>コピー完了',
+			dialog('<i class="fa fa-check"></i>コピー完了',
 				'ファイルのURLをクリップボードにコピーしました', [{
 				text: 'わー'
 			}]);
