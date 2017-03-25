@@ -87,7 +87,7 @@
 				offset: this.offset
 			}).then(posts => {
 				const poll = posts ? posts[0] : null;
-				if (post == null) {
+				if (poll == null) {
 					this.offset = 0;
 				} else {
 					this.offset++;
