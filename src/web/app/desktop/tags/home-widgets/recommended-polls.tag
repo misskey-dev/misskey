@@ -2,7 +2,7 @@
 	<p class="title"><i class="fa fa-pie-chart"></i>投票</p>
 	<button onclick={ refresh } title="他を見る"><i class="fa fa-refresh"></i></button>
 	<div class="poll" if={ !loading && poll != null }>
-		<p class="text">{ poll.text }</p>
+		<p class="text" if={ poll.text }>{ poll.text }</p>
 		<mk-poll post={ poll }></mk-poll>
 	</div>
 	<p class="empty" if={ !loading && poll == null }>ありません！</p>
