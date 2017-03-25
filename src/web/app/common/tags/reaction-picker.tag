@@ -99,7 +99,7 @@
 		this.post = this.opts.post;
 		this.source = this.opts.source;
 
-		const placeholder = 'リアクションを選択';
+		const placeholder = '%i18n:common.tags.mk-reaction-picker.choose-reaction%';
 
 		this.title = placeholder;
 

@@ -19,6 +19,11 @@
 			"hmm": "ふぅ～む",
 			"surprise": "わお",
 			"congrats": "おめでとう"
+		},
+		"tags": {
+			"mk-reaction-picker": {
+				"choose-reaction": "リアクションを選択"
+			}
 		}
 	},
 	"desktop": {
