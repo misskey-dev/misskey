@@ -43,6 +43,7 @@ require('./home-widgets/photo-stream.tag');
 require('./home-widgets/broadcast.tag');
 require('./home-widgets/version.tag');
 require('./home-widgets/recommended-polls.tag');
+require('./home-widgets/trends.tag');
 require('./timeline.tag');
 require('./messaging/window.tag');
 require('./messaging/room-window.tag');

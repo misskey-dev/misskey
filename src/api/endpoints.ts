@@ -361,6 +361,10 @@ const endpoints: Endpoint[] = [
 		}
 	},
 	{
+		name: 'posts/trend',
+		withCredential: true
+	},
+	{
 		name: 'posts/reactions',
 		withCredential: true
 	},

@@ -69,6 +69,7 @@
 				'profile',
 				'calendar',
 				'rss-reader',
+				'trends',
 				'photo-stream',
 				'version'
 			],
