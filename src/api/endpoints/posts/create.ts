@@ -148,9 +148,13 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	if (user.latest_post) {
 		if (deepEqual({
 			text: user.latest_post.text,
+			reply: user.latest_post.reply_to_id ? user.latest_post.reply_to_id.toString() : null,
+			repost: user.latest_post.repost_id ? user.latest_post.repost_id.toString() : null,
 			media_ids: (user.latest_post.media_ids || []).map(id => id.toString())
 		}, {
 			text: text,
+			reply: inReplyToPost ? inReplyToPost._id.toString() : null,
+			repost: repost ? repost._id.toString() : null,
 			media_ids: (files || []).map(file => file._id.toString())
 		})) {
 			return rej('duplicate');
