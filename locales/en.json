@@ -74,7 +74,7 @@
 				"post": "New post",
 				"reply": "Reply",
 				"attaches": "{} media attached",
-				"uploading-media": "uploading {} media"
+				"uploading-media": "Uploading {} media"
 			},
 			"mk-timeline-post": {
 				"reposted-by": "Reposted by {}",
@@ -120,7 +120,7 @@
 				"repost": "Repost",
 				"reposting": "Reposting...",
 				"success": "Reposted!",
-				"failure": "failed to Repost"
+				"failure": "Failed to repost"
 			},
 			"mk-repost-form-window": {
 				"title": "Are you sure you want to repost this post?"
