@@ -108,9 +108,7 @@ Please visit https://github.com/syuilo/misskey/tree/release to see built code.
 
 Launch
 --------------------------------
-1. `sudo npm start`
-
-GLHF!
+Just `sudo npm start`. GLHF!
 
 Testing
 --------------------------------
