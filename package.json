@@ -91,7 +91,7 @@
     "webpack": "2.3.2"
   },
   "dependencies": {
-    "animejs": "2.0.1",
+    "animejs": "2.0.2",
     "autwh": "0.0.1",
     "bcryptjs": "2.4.3",
     "body-parser": "1.17.1",
