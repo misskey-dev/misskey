@@ -8,9 +8,9 @@
       "minutes_ago": "{}m ago",
       "hours_ago": "{}h ago",
       "days_ago": "{}d ago",
-      "weeks_ago": "{}weeks ago",
-      "months_ago": "{}months ago",
-      "years_ago": "{}years ago"
+      "weeks_ago": "{}week(s) ago",
+      "months_ago": "{}month(s) ago",
+      "years_ago": "{}year(s) ago"
     },
     "reactions": {
       "like": "Like",
