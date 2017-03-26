@@ -7,10 +7,7 @@
 			<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
 			</a>
-			<i class="fa fa-retweet"></i>
-			{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }
-			<a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>
-			{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }
+			<i class="fa fa-retweet"></i>{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
 		</p>
 		<mk-time time={ post.created_at }></mk-time>
 	</div>

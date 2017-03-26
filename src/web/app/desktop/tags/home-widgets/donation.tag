@@ -1,11 +1,7 @@
 <mk-donation-home-widget>
 	<article>
-		<h1><i class="fa fa-heart"></i>寄付のお願い</h1>
-		<p>
-			Misskeyの運営にはドメイン、サーバー等のコストが掛かります。
-			Misskeyは広告を掲載したりしないため、 収入を皆様からの寄付に頼っています。
-			もしご興味があれば、<a href="/syuilo" data-user-preview="@syuilo">@syuilo</a>までご連絡ください。ご協力ありがとうございます。
-		</p>
+		<h1><i class="fa fa-heart"></i>%i18n:desktop.tags.mk-donation-home-widget.title%</h1>
+		<p>{'%i18n:desktop.tags.mk-donation-home-widget.text%'.substr(0, '%i18n:desktop.tags.mk-donation-home-widget.text%'.indexOf('{'))}<a href="/syuilo" data-user-preview="@syuilo">@syuilo</a>{'%i18n:desktop.tags.mk-donation-home-widget.text%'.substr('%i18n:desktop.tags.mk-donation-home-widget.text%'.indexOf('}') + 1)}</p>
 	</article>
 	<style>
 		:scope

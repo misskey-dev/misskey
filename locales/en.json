@@ -109,6 +109,10 @@
 				"title": "Photostream",
 				"initializing": "Loading",
 				"no-photos": "No photos"
+			},
+			"mk-donation-home-widget": {
+				"title": "Donation",
+				"text": "To manage Misskey, we spend money for our domain, server, etc.. There's no incomes for us, so we need your tip. If you're interested, contact {}. Thank you for your contribution!"
 			}
 		}
 	}
