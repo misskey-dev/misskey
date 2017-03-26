@@ -23,7 +23,7 @@
     "tags": {
       "mk-stream-indicator": {
         "connecting": "Connecting",
-        "reconnecting": "Disconnected. reconnecting",
+        "reconnecting": "Reconnecting",
         "connected": "Connected"
       },
       "mk-reaction-picker": {
@@ -35,8 +35,8 @@
     "tags": {
       "mk-ui-header-nav": {
         "home": "Home",
-        "messaging": "Messaging",
-        "info": "Info",
+        "messaging": "Messages",
+        "info": "News",
         "live": "Live"
       },
       "mk-ui-header-search": {
