@@ -26,6 +26,7 @@
 					border-radius 0
 					transition color 0.5s ease, border 0.5s ease
 					font-family FontAwesome, sans-serif
+					color #fff
 
 					&::-webkit-input-placeholder
 						color #9eaba8
