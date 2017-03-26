@@ -121,22 +121,9 @@ Debugging :bug:
 ### Show debug messages
 Misskey uses [debug](https://github.com/visionmedia/debug) and the namespace is `misskey:*`.
 
-Contribute
+Contribution
 --------------------------------
-Do you have feature request or problem with Misskey?
-Please create issue to report it if it is about the Misskey implementation itself.
-
-Currently Misskey is missing documents so writing documents would be appreciated.
-Pull requests are always welcome.
-
-*We love contributions from anybody.*
-
-Please see also [Contribution guide](./CONTRIBUTING.md).
-
-### TODO
-* More [tests](./test)!
-* More [docs](./docs)!
-* More sophisticated code!
+Please see [Contribution guide](./CONTRIBUTING.md).
 
 Collaborators
 ------------------------------
