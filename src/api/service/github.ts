@@ -85,9 +85,9 @@ module.exports = async (app: express.Application) => {
 		const action = event.action;
 		let title: string;
 		switch (action) {
-			case 'opened': title = 'New Issue'; break;
-			case 'closed': title = 'Issue Closed'; break;
-			case 'reopened': title = 'Issue Reopened'; break;
+			case 'opened': title = 'Issue opened'; break;
+			case 'closed': title = 'Issue closed'; break;
+			case 'reopened': title = 'Issue reopened'; break;
 			default: return;
 		}
 		post(`${title}: <${issue.number}>「${issue.title}」\n${issue.html_url}`);
@@ -107,12 +107,12 @@ module.exports = async (app: express.Application) => {
 
 	handler.on('watch', event => {
 		const sender = event.sender;
-		post(`⭐️Starred by **${sender.login}**`);
+		post(`Starred by **${sender.login}**`);
 	});
 
 	handler.on('fork', event => {
 		const repo = event.forkee;
-		post(`🍴Forked:\n${repo.html_url}`);
+		post(`Forked:\n${repo.html_url}`);
 	});
 
 	handler.on('pull_request', event => {
