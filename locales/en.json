@@ -65,7 +65,7 @@
 				"posting": "Posting",
 				"attach-media-from-local": "Attach media from your pc",
 				"attach-media-from-drive": "Attach media from the drive",
-				"attach-cancel": "Cancel to attach",
+				"attach-cancel": "Cancel attachment",
 				"insert-the-cat": "Insert the cat",
 				"create-poll": "Create a poll",
 				"text-remain": "{} chars remaining"
@@ -74,7 +74,7 @@
 				"post": "New post",
 				"reply": "Reply",
 				"attaches": "{} media attached",
-				"uploading-media": "{} media uploading"
+				"uploading-media": "uploading {} media"
 			},
 			"mk-timeline-post": {
 				"reposted-by": "Reposted by {}",
@@ -85,7 +85,7 @@
 			},
 			"mk-notifications-home-widget": {
 				"title": "Notifications",
-				"settings": "Settings of notifications"
+				"settings": "Notification settings"
 			},
 			"mk-user-recommendation-home-widget": {
 				"title": "Recommended users",
@@ -120,7 +120,7 @@
 				"repost": "Repost",
 				"reposting": "Reposting...",
 				"success": "Reposted!",
-				"failure": "Repost failed"
+				"failure": "failed to Repost"
 			},
 			"mk-repost-form-window": {
 				"title": "Are you sure you want to repost this post?"
