@@ -1,7 +1,7 @@
 <mk-repost-form-window>
 	<mk-window ref="window" is-modal={ true }>
 		<yield to="header">
-			<i class="fa fa-retweet"></i>この投稿をRepostしますか？
+			<i class="fa fa-retweet"></i>%i18n:desktop.tags.mk-repost-form-window.title%
 		</yield>
 		<yield to="content">
 			<mk-repost-form ref="form" post={ parent.opts.post }></mk-repost-form>
