@@ -120,7 +120,7 @@
         "repost": "Repost",
         "reposting": "しています...",
         "success": "Repostしました！",
-        "failure": "Repostできませんでした"
+        "failure": "Repostに失敗しました"
       },
       "mk-repost-form-window": {
         "title": "この投稿をRepostしますか？"
