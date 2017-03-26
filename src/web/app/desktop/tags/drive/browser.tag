@@ -282,10 +282,7 @@
 			this.stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
 			this.stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
 
-			// Riotのバグでnullを渡しても""になる
-			// https://github.com/riot/riot/issues/2080
-			//if (this.opts.folder)
-			if (this.opts.folder && this.opts.folder != '') {
+			if (this.opts.folder) {
 				this.move(this.opts.folder);
 			} else {
 				this.fetch();

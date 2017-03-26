@@ -61,8 +61,6 @@
 		this.mixin('i');
 
 		this.mode = this.opts.mode || 'timeline';
-		// https://github.com/riot/riot/issues/2080
-		if (this.mode == '') this.mode = 'timeline';
 
 		const _home = {
 			left: [

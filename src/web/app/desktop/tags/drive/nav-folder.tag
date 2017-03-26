@@ -8,10 +8,7 @@
 	<script>
 		this.mixin('api');
 
-		// Riotのバグでnullを渡しても""になる
-		// https://github.com/riot/riot/issues/2080
-		//this.folder = this.opts.folder
-		this.folder = this.opts.folder && this.opts.folder != '' ? this.opts.folder : null;
+		this.folder = this.opts.folder ? this.opts.folder : null;
 		this.browser = this.parent;
 
 		this.hover = false;

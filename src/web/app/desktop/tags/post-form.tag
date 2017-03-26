@@ -320,13 +320,7 @@
 
 		this.inReplyToPost = this.opts.reply;
 
-		// https://github.com/riot/riot/issues/2080
-		if (this.inReplyToPost == '') this.inReplyToPost = null;
-
 		this.repost = this.opts.repost;
-
-		// https://github.com/riot/riot/issues/2080
-		if (this.repost == '') this.repost = null;
 
 		this.placeholder = this.repost
 			? '%i18n:desktop.tags.mk-post-form.quote-placeholder%'

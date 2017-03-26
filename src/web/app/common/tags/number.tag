@@ -5,9 +5,7 @@
 	</style>
 	<script>
 		this.on('mount', () => {
-			// https://github.com/riot/riot/issues/2103
-			//value = this.opts.value
-			let value = this.opts.riotValue;
+			let value = this.opts.value;
 			const max = this.opts.max;
 
 			if (max != null && value > max) value = max;
