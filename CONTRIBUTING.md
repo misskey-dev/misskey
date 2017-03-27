@@ -1,5 +1,5 @@
-# :v: Contribution guide :v:
-Misskeyへの貢献ありがとうございます。
+# Contribution guide 
+:v: Misskeyへの貢献ありがとうございます。 :v:
 
 ## Issueの報告
 新機能の提案や不具合の報告は https://github.com/syuilo/misskey/issues で管理しています。
