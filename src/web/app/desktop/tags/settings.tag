@@ -73,6 +73,7 @@
 			input[type='text']
 			input[type='password']
 			input[type='email']
+			input[type='date']
 			textarea
 				padding 8px
 				width 100%
