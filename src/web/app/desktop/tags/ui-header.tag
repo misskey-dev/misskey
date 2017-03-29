@@ -46,9 +46,10 @@
 						width 100%
 						height 48px
 						background-image url(/assets/desktop/header-logo-white.svg)
-						background-size 64px
+						background-size 46px
 						background-position center
 						background-repeat no-repeat
+						opacity 0.3
 
 				> .main
 					z-index 1024
