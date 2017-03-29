@@ -1,4 +1,4 @@
-Misskey
+![Misskey](./assets/title.png)
 ================================
 
 [![][travis-badge]][travis-link]
