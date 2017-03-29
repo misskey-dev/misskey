@@ -9,10 +9,6 @@
 		</div>
 	</main>
 	<mk-forkit></mk-forkit>
-	<section class="tl">
-		<h2>投稿を見てみよう</h2>
-		<mk-public-timeline></mk-public-timeline>
-	</section>
 	<footer>
 		<mk-copyright></mk-copyright>
 	</footer>
@@ -22,7 +18,6 @@
 			right: auto;
 			left: 15px;
 		}
-
 	</style>
 	<style>
 		:scope
