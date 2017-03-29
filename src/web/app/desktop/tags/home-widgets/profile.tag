@@ -1,5 +1,5 @@
 <mk-profile-home-widget>
-	<div class="banner" style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' } onclick={ setBanner }></div><img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } onclick={ setAvatar } alt="avatar" data-user-preview={ I.id }/><a class="name" href={ CONFIG.url + '/' + I.username }>{ I.name }</a>
+	<div class="banner" style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' } title="クリックでバナー編集" onclick={ setBanner }></div><img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } onclick={ setAvatar } alt="avatar" title="クリックでアバター編集" data-user-preview={ I.id }/><a class="name" href={ CONFIG.url + '/' + I.username }>{ I.name }</a>
 	<p class="username">@{ I.username }</p>
 	<style>
 		:scope
@@ -12,6 +12,7 @@
 				background-color #f5f5f5
 				background-size cover
 				background-position center
+				cursor pointer
 
 			> .avatar
 				display block
@@ -24,6 +25,7 @@
 				border solid 3px #fff
 				border-radius 8px
 				vertical-align bottom
+				cursor pointer
 
 			> .name
 				display block
