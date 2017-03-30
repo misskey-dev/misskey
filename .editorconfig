@@ -8,3 +8,6 @@ insert_final_newline = true
 
 [*.json]
 indent_style = space
+
+[*.yml]
+indent_style = space
