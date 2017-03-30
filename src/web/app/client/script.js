@@ -1,7 +1,7 @@
 /**
  * MISSKEY CLIENT ENTRY POINT
  */
-(() => {
+{
 	const head = document.getElementsByTagName('head')[0];
 
 	// Detect user language
@@ -27,4 +27,4 @@
 		meta.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no');
 		head.appendChild(meta);
 	}
-})();
+}
