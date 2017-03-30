@@ -139,11 +139,7 @@ function fetchme(token, cb) {
 			me.data ? done() : init();
 		});
 	}, () => {
-		riot.mount(document.body.appendChild(document.createElement('mk-core-error')), {
-			retry: () => {
-				fetchme(token, cb);
-			}
-		});
+		riot.mount(document.body.appendChild(document.createElement('mk-error')));
 	});
 
 	function done() {

@@ -1,4 +1,4 @@
-require('./core-error.tag');
+require('./error.tag');
 require('./url.tag');
 require('./url-preview.tag');
 require('./time.tag');

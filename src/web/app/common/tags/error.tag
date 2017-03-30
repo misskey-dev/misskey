@@ -1,4 +1,4 @@
-<mk-core-error>
+<mk-error>
 	<!--i: i.fa.fa-times-circle-->
 	<img src="/assets/error.jpg" alt=""/>
 	<h1>サーバーに接続できません</h1>
@@ -7,7 +7,7 @@
 	<style>
 		:scope
 			position fixed
-			z-index 16385
+			z-index 100000
 			top 0
 			left 0
 			width 100%
@@ -26,9 +26,6 @@
 				height 200px
 				margin 64px auto 0 auto
 				pointer-events none
-				-ms-user-select none
-				-moz-user-select none
-				-webkit-user-select none
 				user-select none
 
 			> h1
@@ -57,8 +54,7 @@
 	</style>
 	<script>
 		this.retry = () => {
-			this.unmount();
-			this.opts.retry();
+			location.reload()
 		}
 	</script>
-</mk-core-error>
+</mk-error>
