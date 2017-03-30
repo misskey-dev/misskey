@@ -121,3 +121,81 @@ desktop:
 
     mk-repost-form-window:
       title: "Are you sure you want to repost this post?"
+
+mobile:
+  tags:
+    mk-drive-file-viewer:
+      download: "ダウンロード"
+      rename: "名前を変更"
+      move: "移動"
+      fash: "ハッシュ"
+
+    mk-entrance-signin:
+      signup: "新規登録"
+      about: "Misskeyについて"
+
+    mk-entrance-signup:
+      cancel: "キャンセル"
+
+    mk-authorized-apps-page:
+      application: "アプリケーション"
+
+    mk-signin-history-page:
+      signin-history: "ログイン履歴"
+
+    mk-twitter-setting-page:
+      twitter-integration: "Twitter連携"
+
+    mk-drive-page:
+      drive: "ドライブ"
+
+    mk-entrance:
+      ok: "わかった"
+
+    mk-home:
+      home: "ホーム"
+
+    mk-messaging-room-page:
+      message: "メッセージ"
+
+    mk-messaging-page:
+      message: "メッセージ"
+
+    mk-notifications-page:
+      notifications: "通知"
+
+    mk-post-page:
+      submit: "投稿"
+
+    mk-search-page:
+      search: "検索"
+
+    mk-settings-page:
+      profile: "プロフィール"
+      applications: "アプリケーション"
+      twitter-integration: "Twitter連携"
+      signin-history: "ログイン履歴"
+      settings: "設定"
+
+    mk-user-followers-page:
+      followers-of: "{}のフォロワー"
+
+    mk-user-following-page:
+      following-of: "{}のフォロー"
+
+    mk-drive-folder-selector:
+      select-folder: "フォルダーを選択"
+
+    mk-drive-selector:
+      select-file: "ファイルを選択"
+
+    mk-drive:
+      drive: "ドライブ"
+      used: "使用中"
+      folder-count: "フォルダ"
+      count-separator: "、"
+      file-count: "ファイル"
+      load-more: "もっと読み込む"
+      loading: "読み込み中"
+      nothing-in-drive: "ドライブには何もありません"
+      folder-is-empty: "このフォルダは空です"
