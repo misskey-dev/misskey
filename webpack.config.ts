@@ -2,15 +2,17 @@
  * webpack config
  */
 
+import * as fs from 'fs';
 import * as webpack from 'webpack';
 const StringReplacePlugin = require('string-replace-webpack-plugin');
+import * as yaml from 'js-yaml';
 
 import version from './src/version';
 const constants = require('./src/const.json');
 
 const languages = {
-	'en': require('./locales/en.json'),
-	'ja': require('./locales/ja.json')
+	'en': yaml.safeLoad(fs.readFileSync('./locales/en.yaml', 'utf-8')),
+	'ja': yaml.safeLoad(fs.readFileSync('./locales/ja.yaml', 'utf-8'))
 };
 
 const env = process.env.NODE_ENV;
