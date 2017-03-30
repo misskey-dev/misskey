@@ -191,9 +191,9 @@ mobile:
 
     mk-drive:
       drive: "Drive"
-      used: "Used"
+      used: "used"
       folder-count: "Folder(s)"
-      count-separator: ","
+      count-separator: ", "
       file-count: "File(s)"
       load-more: "Load more"
       loading: "Loading"
