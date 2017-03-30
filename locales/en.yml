@@ -125,77 +125,77 @@ desktop:
 mobile:
   tags:
     mk-drive-file-viewer:
-      download: "ダウンロード"
-      rename: "名前を変更"
-      move: "移動"
-      hash: "ハッシュ"
+      download: "Download"
+      rename: "Rename"
+      move: "Move"
+      hash: "Hash"
 
     mk-entrance-signin:
-      signup: "新規登録"
-      about: "Misskeyについて"
+      signup: "Sign up"
+      about: "About Misskey"
 
     mk-entrance-signup:
-      cancel: "キャンセル"
+      cancel: "Cancel"
 
     mk-authorized-apps-page:
-      application: "アプリケーション"
+      application: "Applications"
 
     mk-signin-history-page:
-      signin-history: "ログイン履歴"
+      signin-history: "Sign in history"
 
     mk-twitter-setting-page:
-      twitter-integration: "Twitter連携"
+      twitter-integration: "Twitter integration"
 
     mk-drive-page:
-      drive: "ドライブ"
+      drive: "Drive"
 
     mk-entrance:
-      ok: "わかった"
+      ok: "OK"
 
     mk-home:
-      home: "ホーム"
+      home: "Home"
 
     mk-messaging-room-page:
-      message: "メッセージ"
+      message: "Messaging"
 
     mk-messaging-page:
-      message: "メッセージ"
+      message: "Messaging"
 
     mk-notifications-page:
-      notifications: "通知"
+      notifications: "Notifications"
 
     mk-post-page:
-      submit: "投稿"
+      submit: "Post"
 
     mk-search-page:
-      search: "検索"
+      search: "Search"
 
     mk-settings-page:
-      profile: "プロフィール"
-      applications: "アプリケーション"
-      twitter-integration: "Twitter連携"
-      signin-history: "ログイン履歴"
-      settings: "設定"
+      profile: "Profile"
+      applications: "Applications"
+      twitter-integration: "Twitter integration"
+      signin-history: "Sign in history"
+      settings: "Settings"
 
     mk-user-followers-page:
-      followers-of: "{}のフォロワー"
+      followers-of: "Followers of {}"
 
     mk-user-following-page:
-      following-of: "{}のフォロー"
+      following-of: "Following of {}"
 
     mk-drive-folder-selector:
-      select-folder: "フォルダーを選択"
+      select-folder: "Choose a folder"
 
     mk-drive-selector:
-      select-file: "ファイルを選択"
+      select-file: "Choose a file"
 
     mk-drive:
-      drive: "ドライブ"
-      used: "使用中"
-      folder-count: "フォルダ"
-      count-separator: "、"
-      file-count: "ファイル"
-      load-more: "もっと読み込む"
-      loading: "読み込み中"
-      nothing-in-drive: "ドライブには何もありません"
-      folder-is-empty: "このフォルダは空です"
+      drive: "Drive"
+      used: "Used"
+      folder-count: "Folder(s)"
+      count-separator: ","
+      file-count: "File(s)"
+      load-more: "Load more"
+      loading: "Loading"
+      nothing-in-drive: "Nothing"
+      folder-is-empty: "This folder is empty"
