@@ -1,10 +1,14 @@
-# Contribution guide 
+# Contribution guide
 :v: Misskeyへの貢献ありがとうございます。 :v:
 
 ## Issueの報告
 新機能の提案や不具合の報告は https://github.com/syuilo/misskey/issues で管理しています。
 Issueを作成する前に、既に同じIssueが作成されていないかご確認ください。
 もし既にIssueが作成されている場合は、既存のIssueにコメントをしたりリアクションをするようお願いします。
+
+## Issueの解決
+[pr-welcomeのラベルがついているIssue](https://github.com/syuilo/misskey/labels/pr-welcome)
+の解決を目的としたPull Requestを作成してくださると非常にありがたいです。
 
 ## 翻訳の改善
 ソースコード中の `%i18n:id%` という形の文字列は、言語ファイルの対応するテキストに置換されます。
