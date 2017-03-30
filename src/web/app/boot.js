@@ -26,9 +26,6 @@ riot.mixin({
 	CONFIG
 });
 
-// ↓ iOS待ちPolyfill (SEE: http://caniuse.com/#feat=fetch)
-require('whatwg-fetch');
-
 // ↓ NodeList、HTMLCollection、FileList、DataTransferItemListで forEach を使えるようにする
 if (NodeList.prototype.forEach === undefined) {
 	NodeList.prototype.forEach = Array.prototype.forEach;
