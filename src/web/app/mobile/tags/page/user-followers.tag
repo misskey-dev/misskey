@@ -26,9 +26,9 @@
 					user: user
 				});
 
-				document.title = user.name + 'のフォロワー | Misskey';
+				document.title = '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', user.name) + ' | Misskey';
 				// TODO: ユーザー名をエスケープ
-				ui.trigger('title', '<img src="' + user.avatar_url + '?thumbnail&size=64">' + user.name + 'のフォロワー');
+				ui.trigger('title', '<img src="' + user.avatar_url + '?thumbnail&size=64">' +  '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', user.name));
 
 				this.refs.ui.refs.list.on('loaded', () => {
 					Progress.done();

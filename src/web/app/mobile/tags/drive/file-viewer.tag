@@ -29,20 +29,20 @@
 	<div class="menu">
 		<div>
 			<a href={ file.url + '?download' } download={ file.name }>
-				<i class="fa fa-download"></i>ダウンロード
+				<i class="fa fa-download"></i>%i18n:mobile.tags.mk-drive-file-viewer.download%
 			</a>
 			<button onclick={ rename }>
-				<i class="fa fa-pencil"></i>名前を変更
+				<i class="fa fa-pencil"></i>%i18n:mobile.tags.mk-drive-file-viewer.rename%
 			</button>
 			<button onclick={ move }>
-				<i class="fa fa-folder-open"></i>移動
+				<i class="fa fa-folder-open"></i>%i18n:mobile.tags.mk-drive-file-viewer.move%
 			</button>
 		</div>
 	</div>
 	<div class="hash">
 		<div>
 			<p>
-				<i class="fa fa-hashtag"></i>ファイルのハッシュ値
+				<i class="fa fa-hashtag"></i>%i18n:mobile.tags.mk-drive-file-viewer.hash%
 			</p>
 			<code>{ file.hash }</code>
 		</div>

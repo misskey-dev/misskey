@@ -11,7 +11,7 @@
 		import Progress from '../../../common/scripts/loading';
 
 		this.on('mount', () => {
-			document.title = `検索: ${this.opts.query} | Misskey`
+			document.title = `%i18n:mobile.tags.mk-search-page.search%: ${this.opts.query} | Misskey`
 			// TODO: クエリをHTMLエスケープ
 			ui.trigger('title', '<i class="fa fa-search"></i>' + this.opts.query);
 

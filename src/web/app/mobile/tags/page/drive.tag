@@ -12,7 +12,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey Drive';
-			ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
+			ui.trigger('title', '<i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-drive-page.drive%');
 
 			ui.trigger('func', () => {
 				this.refs.ui.refs.browser.openContextMenu();
@@ -37,7 +37,7 @@
 				history.pushState(null, title, '/i/drive');
 
 				document.title = title;
-				ui.trigger('title', '<i class="fa fa-cloud"></i>ドライブ');
+				ui.trigger('title', '<i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-drive-page.drive%');
 			});
 
 			this.refs.ui.refs.browser.on('open-folder', (folder, silent) => {

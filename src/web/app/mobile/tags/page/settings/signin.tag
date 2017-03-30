@@ -10,8 +10,8 @@
 		const ui = require('../../../scripts/ui-event');
 
 		this.on('mount', () => {
-			document.title = 'Misskey | ログイン履歴';
-			ui.trigger('title', '<i class="fa fa-sign-in"></i>ログイン履歴');
+			document.title = 'Misskey | %i18n:mobile.tags.mk-signin-history-page.signin-history%';
+			ui.trigger('title', '<i class="fa fa-sign-in"></i>%i18n:mobile.tags.mk-signin-history-page.signin-history%');
 		});
 	</script>
 </mk-signin-history-page>

@@ -25,7 +25,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey';
-			ui.trigger('title', '<i class="fa fa-sticky-note-o"></i>投稿');
+			ui.trigger('title', '<i class="fa fa-sticky-note-o"></i>%i18n:mobile.tags.mk-post-page.submit%');
 
 			Progress.start();
 

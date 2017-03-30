@@ -4,7 +4,7 @@
 		<mk-entrance-signup if={ mode == 'signup' }></mk-entrance-signup>
 		<div class="introduction" if={ mode == 'introduction' }>
 			<mk-introduction></mk-introduction>
-			<button onclick={ signin }>わかった</button>
+			<button onclick={ signin }>%i18n:mobile.tags.mk-entrance.ok%</button>
 		</div>
 	</main>
 	<footer>

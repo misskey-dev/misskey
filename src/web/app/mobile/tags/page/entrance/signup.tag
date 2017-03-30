@@ -1,6 +1,6 @@
 <mk-entrance-signup>
 	<mk-signup></mk-signup>
-	<button class="cancel" type="button" onclick={ parent.signin } title="キャンセル"><i class="fa fa-times"></i></button>
+	<button class="cancel" type="button" onclick={ parent.signin } title="%i18n:mobile.tags.mk-entrance-signup.cancel%"><i class="fa fa-times"></i></button>
 	<style>
 		:scope
 			display block

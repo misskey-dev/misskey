@@ -19,7 +19,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey'
-			ui.trigger('title', '<i class="fa fa-home"></i>ホーム');
+			ui.trigger('title', '<i class="fa fa-home"></i>%i18n:mobile.tags.mk-home.home%');
 
 			ui.trigger('func', () => {
 				openPostForm();

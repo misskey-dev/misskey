@@ -1,6 +1,6 @@
 <mk-drive>
 	<nav>
-		<p onclick={ goRoot }><i class="fa fa-cloud"></i>ドライブ</p>
+		<p onclick={ goRoot }><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-drive.drive%</p>
 		<virtual each={ folder in hierarchyFolders }>
 			<span><i class="fa fa-angle-right"></i></span>
 			<p onclick={ move }>{ folder.name }</p>
@@ -17,30 +17,30 @@
 	<mk-uploader ref="uploader"></mk-uploader>
 	<div class="browser { fetching: fetching }" if={ file == null }>
 		<div class="info" if={ info }>
-			<p if={ folder == null }>{ (info.usage / info.capacity * 100).toFixed(1) }%使用中</p>
+			<p if={ folder == null }>{ (info.usage / info.capacity * 100).toFixed(1) }% %i18n:mobile.tags.mk-drive.used%</p>
 			<p if={ folder != null && (folder.folders_count > 0 || folder.files_count > 0) }>
-				<virtual if={ folder.folders_count > 0 }>{ folder.folders_count }フォルダ</virtual>
-				<virtual if={ folder.folders_count > 0 && folder.files_count > 0 }>、</virtual>
-				<virtual if={ folder.files_count > 0 }>{ folder.files_count }ファイル</virtual>
+				<virtual if={ folder.folders_count > 0 }>{ folder.folders_count } %i18:mobile.tags.mk-drive.folder-count%</virtual>
+				<virtual if={ folder.folders_count > 0 && folder.files_count > 0 }>%i18n:mobile.tags.mk-drive.count-separator%</virtual>
+				<virtual if={ folder.files_count > 0 }>{ folder.files_count } %i18n:mobile.tags.mk-drive.file-count%</virtual>
 			</p>
 		</div>
 		<div class="folders" if={ folders.length > 0 }>
 			<virtual each={ folder in folders }>
 				<mk-drive-folder folder={ folder }></mk-drive-folder>
 			</virtual>
-			<p if={ moreFolders }>もっと読み込む</p>
+			<p if={ moreFolders }>%i18n:mobile.tags.mk-drive.load-more%</p>
 		</div>
 		<div class="files" if={ files.length > 0 }>
 			<virtual each={ file in files }>
 				<mk-drive-file file={ file }></mk-drive-file>
 			</virtual>
 			<button class="more" if={ moreFiles } onclick={ fetchMoreFiles }>
-				{ fetchingMoreFiles ? '読み込み中' : 'もっと読み込む' }
+				{ fetchingMoreFiles ? '%i18n:mobile.tags.mk-drive.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
 			</button>
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
-			<p if={ !folder == null }>ドライブには何もありません。</p>
-			<p if={ folder != null }>このフォルダーは空です</p>
+			<p if={ !folder == null }>%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
+			<p if={ folder != null }>%i18n:mobile.tags.mk-drive.drive-is-empty%</p>
 		</div>
 	</div>
 	<div class="fetching" if={ fetching && file == null && files.length == 0 && folders.length == 0 }>

@@ -1,7 +1,7 @@
 <mk-entrance-signin>
 	<mk-signin></mk-signin>
 	<div class="divider"><span>or</span></div>
-	<button class="signup" onclick={ parent.signup }>新規登録</button><a class="introduction" onclick={ parent.introduction }>Misskeyについて</a>
+	<button class="signup" onclick={ parent.signup }>%i18n:mobile.tags.mk-entrance.signup%</button><a class="introduction" onclick={ parent.introduction }>%i18n:mobile.tags.mk-entrance-signin.about%</a>
 	<style>
 		:scope
 			display block
@@ -43,9 +43,9 @@
 				font-size 12px
 				color #666
 
-			
 
-			
+
+
 
 	</style>
 </mk-entrance-signin>

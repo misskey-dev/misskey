@@ -11,8 +11,8 @@
 		import Progress from '../../../common/scripts/loading';
 
 		this.on('mount', () => {
-			document.title = 'Misskey | 通知';
-			ui.trigger('title', '<i class="fa fa-bell-o"></i>通知');
+			document.title = 'Misskey | %i18n:mobile.tags.mk-notifications-page.notifications%';
+			ui.trigger('title', '<i class="fa fa-bell-o"></i>%i18n:mobile.tags.mk-notifications-page.notifications%');
 
 			Progress.start();
 

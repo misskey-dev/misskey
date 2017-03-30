@@ -1,7 +1,7 @@
 <mk-drive-selector>
 	<div class="body">
 		<header>
-			<h1>ファイルを選択<span class="count" if={ files.length > 0 }>({ files.length })</span></h1>
+			<h1>%i18n:mobile.tags.mk-drive-selector.select-file%<span class="count" if={ files.length > 0 }>({ files.length })</span></h1>
 			<button class="close" onclick={ cancel }><i class="fa fa-times"></i></button>
 			<button class="ok" onclick={ ok }><i class="fa fa-check"></i></button>
 		</header>

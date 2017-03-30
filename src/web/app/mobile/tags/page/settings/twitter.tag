@@ -10,8 +10,8 @@
 		const ui = require('../../../scripts/ui-event');
 
 		this.on('mount', () => {
-			document.title = 'Misskey | Twitter連携';
-			ui.trigger('title', '<i class="fa fa-twitter"></i>Twitter連携');
+			document.title = 'Misskey | %i18n:mobile.tags.mk-twitter-setting-page.twitter-integration%';
+			ui.trigger('title', '<i class="fa fa-twitter"></i>%i18n:mobile.tags.mk-twitter-setting-page.twitter-integration%');
 		});
 	</script>
 </mk-twitter-setting-page>

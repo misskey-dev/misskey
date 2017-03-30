@@ -12,8 +12,8 @@
 		this.mixin('page');
 
 		this.on('mount', () => {
-			document.title = 'Misskey | メッセージ';
-			ui.trigger('title', '<i class="fa fa-comments-o"></i>メッセージ');
+			document.title = 'Misskey | %i18n:mobile.tags.mk-messaging-page.message%';
+			ui.trigger('title', '<i class="fa fa-comments-o"></i>%i18n:mobile.tags.mk-messaging-page.message%');
 
 			this.refs.ui.refs.index.on('navigate-user', user => {
 				this.page('/i/messaging/' + user.username);

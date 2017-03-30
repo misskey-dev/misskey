@@ -1,7 +1,7 @@
 <mk-drive-folder-selector>
 	<div class="body">
 		<header>
-			<h1>フォルダを選択</h1>
+			<h1>%i18n:mobile.tags.mk-drive-folder-selector.select-folder%</h1>
 			<button class="close" onclick={ cancel }><i class="fa fa-times"></i></button>
 			<button class="ok" onclick={ ok }><i class="fa fa-check"></i></button>
 		</header>
