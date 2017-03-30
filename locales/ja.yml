@@ -128,7 +128,7 @@ mobile:
       download: "ダウンロード"
       rename: "名前を変更"
       move: "移動"
-      fash: "ハッシュ"
+      hash: "ハッシュ"
 
     mk-entrance-signin:
       signup: "新規登録"
