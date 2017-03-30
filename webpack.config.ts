@@ -11,8 +11,8 @@ import version from './src/version';
 const constants = require('./src/const.json');
 
 const languages = {
-	'en': yaml.safeLoad(fs.readFileSync('./locales/en.yaml', 'utf-8')),
-	'ja': yaml.safeLoad(fs.readFileSync('./locales/ja.yaml', 'utf-8'))
+	'en': yaml.safeLoad(fs.readFileSync('./locales/en.yml', 'utf-8')),
+	'ja': yaml.safeLoad(fs.readFileSync('./locales/ja.yml', 'utf-8'))
 };
 
 const env = process.env.NODE_ENV;
@@ -35,23 +35,25 @@ module.exports = (Object as any).entries(languages).map(([lang, locale]) => {
 					exclude: /node_modules/,
 					loader: StringReplacePlugin.replace({
 						replacements: [
-							{ pattern: /%i18n:(.+?)%/g, replacement: (_, key) => {
-								let text = locale;
-								const error = key.split('.').some(k => {
-									if (text.hasOwnProperty(k)) {
-										text = text[k];
-										return false;
+							{
+								pattern: /%i18n:(.+?)%/g, replacement: (_, key) => {
+									let text = locale;
+									const error = key.split('.').some(k => {
+										if (text.hasOwnProperty(k)) {
+											text = text[k];
+											return false;
+										} else {
+											return true;
+										}
+									});
+									if (error) {
+										console.warn(`key '${key}' not found in '${lang}'`);
+										return '-UNTRANSLATED-';
 									} else {
-										return true;
+										return text.replace(/'/g, '\\\'').replace(/"/g, '\\"');
 									}
-								});
-								if (error) {
-									console.warn(`key '${key}' not found in '${lang}'`);
-									return '-UNTRANSLATED-';
-								} else {
-									return text.replace(/'/g, '\\\'').replace(/"/g, '\\"');
 								}
-							} }
+							}
 						]
 					})
 				},
