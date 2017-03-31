@@ -201,71 +201,70 @@ mobile:
       folder-is-empty: "This folder is empty"
 
     mk-follow-button:
-      follow: "フォロー"
-      unfollow: "フォロー解除"
+      follow: "Follow"
+      unfollow: "Unfollow"
 
     mk-home-timeline:
-      empty-timeline: "表示する投稿がありません。誰かしらをフォローするなどしましょう。"
+      empty-timeline: "There is no posts"
 
     mk-notifications:
-      empty: "ありません！"
-      loading: "読み込み中"
+      empty: "No notifications"
+      loading: "Loading"
 
     mk-post-detail:
-      reply: "返信"
-      reaction: "リアクション"
+      reply: "Reply"
+      reaction: "Reaction"
 
     mk-post-form:
-      submit: "投稿"
-      reply-placeholder: "この投稿への返信..."
-      post-placeholder: "いまどうしてる？"
-      attach-media-from-local: "モバイルからメディアを添付"
+      submit: "Post"
+      reply-placeholder: "Reply to this post..."
+      post-placeholder: "What's happening?"
+      attach-media-from-local: "Attach media from your device"
 
     mk-search-posts:
-      empty: "「{}」に関する投稿は見つかりませんでした。"
+      empty: "There is no post related to the 「{}」"
 
     mk-sub-post-content:
-      media-count: "{}個のメディア"
-      poll: "投票"
+      media-count: "{} media"
+      poll: "Poll"
 
     mk-timeline-post:
-      reposted-by: "{}がRepost"
+      reposted-by: "Reposted by {}"
 
     mk-timeline:
-      loading: "読み込み中"
-      empty: "表示するものがありません"
-      load-more: "もっとみる"
+      loading: "Loading"
+      empty: "No posts"
+      load-more: "More"
 
     mk-ui-nav:
-      home: "ホーム"
-      notifications: "通知"
-      messaging: "メッセージ"
-      live: "ライブ"
-      search: "検索"
-      drive: "ドライブ"
-      settings: "設定"
-      about: "Misskeyについて"
-      search: "検索"
+      home: "Home"
+      notifications: "Notifications"
+      messaging: "Messages"
+      live: "Live"
+      drive: "Drive"
+      settings: "Settings"
+      about: "About Misskey"
+      search: "Search"
 
     mk-user-followers:
-      no-users: "フォロワーはいないようです。"
+      no-users: "No followers."
 
     mk-user-following:
-      no-users: "フォロー中のユーザーはいないようです。"
+      no-users: "No following."
 
     mk-user-timeline:
-      no-posts: "このユーザーはまだ投稿していないようです。"
-      no-posts-with-media: "メディア付き投稿はありません。"
+      no-posts: "This user seems never post"
+      no-posts-with-media: "There is no posts with media"
 
     mk-user:
-      is-followed: "フォローされています"
-      following: "フォロー"
-      followers: "フォロワー"
-      posts: "タイムライン"
-      media: "メディア"
+      is-followed: "Followed you"
+      following: "Following"
+      followers: "Followers"
+      posts: "Timeline"
+      media: "Media"
 
     mk-users-list:
-      all: "すべて"
-      known: "知り合い"
-      load-more: "もっと"
-      loading: "読み込み中"
+      all: "All"
+      known: "You know"
+      load-more: "More"
+      loading: "Loading"
