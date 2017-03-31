@@ -10,7 +10,7 @@
 			</button>
 		</li>
 	</ul>
-	<button class="add" if={ choices.length < 10 } onclick={ add }>%i18n:common.tags.mk-poll-editor.add%/button>
+	<button class="add" if={ choices.length < 10 } onclick={ add }>%i18n:common.tags.mk-poll-editor.add%</button>
 	<button class="destroy" onclick={ destroy } title="%i18n:common.tags.mk-poll-editor.destroy%">
 		<i class="fa fa-times"></i>
 	</button>
