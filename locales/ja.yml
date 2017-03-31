@@ -245,7 +245,6 @@ mobile:
       drive: "ドライブ"
       settings: "設定"
       about: "Misskeyについて"
-      search: "検索"
 
     mk-user-followers:
       no-users: "フォロワーはいないようです。"
