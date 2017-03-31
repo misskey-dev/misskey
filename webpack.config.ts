@@ -10,7 +10,7 @@ import * as yaml from 'js-yaml';
 import version from './src/version';
 const constants = require('./src/const.json');
 
-let languages = {
+const languages = {
 	'en': yaml.safeLoad(fs.readFileSync('./locales/en.yml', 'utf-8')),
 	'ja': yaml.safeLoad(fs.readFileSync('./locales/ja.yml', 'utf-8'))
 };
