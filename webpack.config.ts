@@ -10,15 +10,19 @@ import * as yaml from 'js-yaml';
 import version from './src/version';
 const constants = require('./src/const.json');
 
-const languages = {
+let languages = {
 	'en': yaml.safeLoad(fs.readFileSync('./locales/en.yml', 'utf-8')),
 	'ja': yaml.safeLoad(fs.readFileSync('./locales/ja.yml', 'utf-8'))
 };
+
+const native = languages.ja;
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 
 module.exports = (Object as any).entries(languages).map(([lang, locale]) => {
+	locale = Object.assign(native, locale);
+
 	const pack /*: webpack.Configuration ← fuck wrong type definition!!! */ = {
 		name: lang,
 		entry: {
@@ -48,7 +52,7 @@ module.exports = (Object as any).entries(languages).map(([lang, locale]) => {
 									});
 									if (error) {
 										console.warn(`key '${key}' not found in '${lang}'`);
-										return '-UNTRANSLATED-';
+										return key;
 									} else {
 										return text.replace(/'/g, '\\\'').replace(/"/g, '\\"');
 									}
