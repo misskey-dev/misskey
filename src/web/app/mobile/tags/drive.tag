@@ -19,7 +19,7 @@
 		<div class="info" if={ info }>
 			<p if={ folder == null }>{ (info.usage / info.capacity * 100).toFixed(1) }% %i18n:mobile.tags.mk-drive.used%</p>
 			<p if={ folder != null && (folder.folders_count > 0 || folder.files_count > 0) }>
-				<virtual if={ folder.folders_count > 0 }>{ folder.folders_count } %i18:mobile.tags.mk-drive.folder-count%</virtual>
+				<virtual if={ folder.folders_count > 0 }>{ folder.folders_count } %i18n:mobile.tags.mk-drive.folder-count%</virtual>
 				<virtual if={ folder.folders_count > 0 && folder.files_count > 0 }>%i18n:mobile.tags.mk-drive.count-separator%</virtual>
 				<virtual if={ folder.files_count > 0 }>{ folder.files_count } %i18n:mobile.tags.mk-drive.file-count%</virtual>
 			</p>
@@ -40,7 +40,7 @@
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 			<p if={ !folder == null }>%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
-			<p if={ folder != null }>%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
+			<p if={ folder != null }>%i18n:mobile.tags.mk-drive.folder-empty%</p>
 		</div>
 	</div>
 	<div class="fetching" if={ fetching && file == null && files.length == 0 && folders.length == 0 }>
