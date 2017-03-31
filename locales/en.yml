@@ -110,7 +110,7 @@ common:
 
     mk-twitter-setting:
       description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-      connected-to: "You to connected this Twitter account."
+      connected-to: "You to connected this Twitter account"
       detail: "Detail..."
       reconnect: "Reconnect"
       connect: "Connect to Twitter"
