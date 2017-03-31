@@ -33,6 +33,7 @@ module.exports = async (app: express.Application) => {
 	handler.on('status', event => {
 		const state = event.state;
 		switch (state) {
+			case 'error':
 			case 'failure':
 				const commit = event.commit;
 				const parent = commit.parents[0];
