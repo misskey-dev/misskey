@@ -42,7 +42,7 @@
 
 				&:not(.compact)
 					margin-top $balloon-size
-					transform-origin center top
+					transform-origin center -($balloon-size)
 
 					&:before
 						content ""
