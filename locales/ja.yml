@@ -199,3 +199,73 @@ mobile:
       loading: "読み込み中"
       nothing-in-drive: "ドライブには何もありません"
       folder-is-empty: "このフォルダは空です"
+
+    mk-follow-button:
+      follow: "フォロー"
+      unfollow: "フォロー解除"
+
+    mk-home-timeline:
+      empty-timeline: "表示する投稿がありません。誰かしらをフォローするなどしましょう。"
+
+    mk-notifications:
+      empty: "ありません！"
+      loading: "読み込み中"
+
+    mk-post-detail:
+      reply: "返信"
+      reaction: "リアクション"
+
+    mk-post-form:
+      submit: "投稿"
+      reply-placeholder: "この投稿への返信..."
+      post-placeholder: "いまどうしてる？"
+      attach-media-from-local: "モバイルからメディアを添付"
+
+    mk-search-posts:
+      empty: "「{}」に関する投稿は見つかりませんでした。"
+
+    mk-sub-post-content:
+      media-count: "{}個のメディア"
+      poll: "投票"
+
+    mk-timeline-post:
+      reposted-by: "{}がRepost"
+
+    mk-timeline:
+      loading: "読み込み中"
+      empty: "表示するものがありません"
+      load-more: "もっとみる"
+
+    mk-ui-nav:
+      home: "ホーム"
+      notifications: "通知"
+      messaging: "メッセージ"
+      live: "ライブ"
+      search: "検索"
+      drive: "ドライブ"
+      settings: "設定"
+      about: "Misskeyについて"
+      search: "検索"
+
+    mk-user-followers:
+      no-users: "フォロワーはいないようです。"
+
+    mk-user-following:
+      no-users: "フォロー中のユーザーはいないようです。"
+
+    mk-user-timeline:
+      no-posts: "このユーザーはまだ投稿していないようです。"
+      no-posts-with-media: "メディア付き投稿はありません。"
+
+    mk-user:
+      is-followed: "フォローされています"
+      following: "フォロー"
+      followers: "フォロワー"
+      posts: "タイムライン"
+      media: "メディア"
+
+    mk-users-list:
+      all: "すべて"
+      known: "知り合い"
+      load-more: "もっと"
+      loading: "読み込み中"

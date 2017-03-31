@@ -1,11 +1,11 @@
 <mk-sub-post-content>
 	<div class="body"><a class="reply" if={ post.reply_to_id }><i class="fa fa-reply"></i></a><span ref="text"></span><a class="quote" if={ post.repost_id } href={ '/post:' + post.repost_id }>RP: ...</a></div>
 	<details if={ post.media }>
-		<summary>({ post.media.length }つのメディア)</summary>
+		<summary>({ post.media.length }個のメディア)</summary>
 		<mk-images-viewer images={ post.media }></mk-images-viewer>
 	</details>
 	<details if={ post.poll }>
-		<summary>投票</summary>
+		<summary>%i18n:mobile.tags.mk-sub-post-content.poll%</summary>
 		<mk-poll post={ post }></mk-poll>
 	</details>
 	<style>

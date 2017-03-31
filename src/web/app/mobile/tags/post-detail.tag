@@ -47,13 +47,13 @@
 			</a>
 			<footer>
 				<mk-reactions-viewer post={ p }></mk-reactions-viewer>
-				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
+				<button onclick={ reply } title="%i18n:mobile.tags.mk-post-detail.reply%"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
 					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション"><i class="fa fa-plus"></i>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%"><i class="fa fa-plus"></i>
 					<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
 				<button><i class="fa fa-ellipsis-h"></i></button>

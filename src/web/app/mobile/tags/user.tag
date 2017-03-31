@@ -12,7 +12,7 @@
 				<div class="title">
 					<h1>{ user.name }</h1>
 					<span class="username">@{ user.username }</span>
-					<span class="followed" if={ user.is_followed }>フォローされています</span>
+					<span class="followed" if={ user.is_followed }>%i18n:mobile.tags.mk-user.is-followed%</span>
 				</div>
 				<div class="description">{ user.description }</div>
 				<div class="info">
@@ -26,18 +26,18 @@
 				<div class="friends">
 					<a href="{ user.username }/following">
 						<b>{ user.following_count }</b>
-						<i>フォロー</i>
+						<i>%i18n:mobile.tags.mk-user.following%</i>
 					</a>
 					<a href="{ user.username }/followers">
 						<b>{ user.followers_count }</b>
-						<i>フォロワー</i>
+						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
 				</div>
 				<mk-activity-table user={ user }></mk-activity-table>
 			</div>
 			<nav>
-				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>タイムライン</a>
-				<a data-is-active={ page == 'media' } onclick={ go.bind(null, 'media') }>メディア</a>
+				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>%i18n:mobile.tags.mk-user.posts%</a>
+				<a data-is-active={ page == 'media' } onclick={ go.bind(null, 'media') }>%i18n:mobile.tags.mk-user.media%</a>
 			</nav>
 		</header>
 		<div class="body">

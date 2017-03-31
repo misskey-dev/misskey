@@ -1,9 +1,9 @@
 <mk-timeline>
 	<div class="init" if={ init }>
-		<i class="fa fa-spinner fa-pulse"></i>読み込んでいます
+		<i class="fa fa-spinner fa-pulse"></i>%i18n:mobile.tags.mk-timeline.loading%
 	</div>
 	<div class="empty" if={ !init && posts.length == 0 }>
-		<i class="fa fa-comments-o"></i>{ opts.empty || '表示するものがありません' }
+		<i class="fa fa-comments-o"></i>{ opts.empty || '%i18n:mobile.tags.mk-timeline.empty%' }
 	</div>
 	<virtual each={ post, i in posts }>
 		<mk-timeline-post post={ post }></mk-timeline-post>
@@ -14,8 +14,8 @@
 	</virtual>
 	<footer if={ !init }>
 		<button if={ canFetchMore } onclick={ more } disabled={ fetching }>
-			<span if={ !fetching }>もっとみる</span>
-			<span if={ fetching }>読み込み中<mk-ellipsis></mk-ellipsis></span>
+			<span if={ !fetching }>%i18n:mobile.tags.mk-timeline.load-more%</span>
+			<span if={ fetching }>%i18n:mobile.tags.mk-timeline.loading%<mk-ellipsis></mk-ellipsis></span>
 		</button>
 	</footer>
 	<style>

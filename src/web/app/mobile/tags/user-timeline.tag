@@ -1,5 +1,5 @@
 <mk-user-timeline>
-	<mk-timeline ref="timeline" init={ init } more={ more } empty={ withMedia ? 'メディア付き投稿はありません。' : 'このユーザーはまだ投稿していないようです。' }></mk-timeline>
+	<mk-timeline ref="timeline" init={ init } more={ more } empty={ withMedia ? '%i18n:mobile.tags.mk-user-timeline.no-posts-with-media%' : '%i18n:mobile.tags.mk-user-timeline.no-posts%' }></mk-timeline>
 	<style>
 		:scope
 			display block

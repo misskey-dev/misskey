@@ -1,5 +1,5 @@
 <mk-user-followers>
-	<mk-users-list ref="list" fetch={ fetch } count={ user.followers_count } you-know-count={ user.followers_you_know_count } no-users={ 'フォロワーはいないようです。' }></mk-users-list>
+	<mk-users-list ref="list" fetch={ fetch } count={ user.followers_count } you-know-count={ user.followers_you_know_count } no-users={ '%i18n:mobile.tags.mk-user-followers.no-users%' }></mk-users-list>
 	<style>
 		:scope
 			display block

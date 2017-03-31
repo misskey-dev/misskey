@@ -1,5 +1,5 @@
 <mk-home-timeline>
-	<mk-timeline ref="timeline" init={ init } more={ more } empty={ '表示する投稿がありません。誰かしらをフォローするなどしましょう。' }></mk-timeline>
+	<mk-timeline ref="timeline" init={ init } more={ more } empty={ '%i18n:mobile.tags.mk-home-timeline.empty-timeline%' }></mk-timeline>
 	<style>
 		:scope
 			display block

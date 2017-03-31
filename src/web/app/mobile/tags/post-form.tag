@@ -4,19 +4,19 @@
 			<button class="cancel" onclick={ cancel }><i class="fa fa-times"></i></button>
 			<div>
 				<span if={ refs.text } class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
-				<button class="submit" onclick={ post }>投稿</button>
+				<button class="submit" onclick={ post }>%i18n:mobile.tags.mk-post-form.submit%</button>
 			</div>
 		</div>
 	</header>
 	<div class="form">
 		<mk-post-preview if={ opts.reply } post={ opts.reply }></mk-post-preview>
-		<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? 'この投稿への返信...' : 'いまどうしてる？' }></textarea>
+		<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%' }></textarea>
 		<div class="attaches" if={ files.length != 0 }>
 			<ul class="files" ref="attaches">
 				<li class="file" each={ files }>
 					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
 				</li>
-				<li class="add" if={ files.length < 4 } title="PCからファイルを添付" onclick={ selectFile }><i class="fa fa-plus"></i></li>
+				<li class="add" if={ files.length < 4 } title="%i18n:mobile.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
 		</div>
 		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }></mk-poll-editor>

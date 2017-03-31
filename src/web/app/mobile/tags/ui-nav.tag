@@ -7,22 +7,22 @@
 		</a>
 		<div class="links">
 			<ul>
-				<li class="home"><a href="/"><i class="icon fa fa-home"></i>ホーム<i class="angle fa fa-angle-right"></i></a></li>
-				<li class="notifications"><a href="/i/notifications"><i class="icon fa fa-bell-o"></i>通知<i class="angle fa fa-angle-right"></i></a></li>
-				<li class="messaging"><a href="/i/messaging"><i class="icon fa fa-comments-o"></i>メッセージ<i class="angle fa fa-angle-right"></i></a></li>
-				<li class="live"><a href="//misskey.tk" target="_blank"><i class="icon fa fa-television"></i>ライブ<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="home"><a href="/"><i class="icon fa fa-home"></i>%i18n:mobile.tags.mk-ui-nav.home%<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="notifications"><a href="/i/notifications"><i class="icon fa fa-bell-o"></i>%i18n:mobile.tags.mk-ui-nav.notifications%<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="messaging"><a href="/i/messaging"><i class="icon fa fa-comments-o"></i>%i18n:mobile.tags.mk-ui-nav.messaging%<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="live"><a href="//misskey.tk" target="_blank"><i class="icon fa fa-television"></i>%i18n:mobile.tags.mk-ui-nav.live%<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li class="settings"><a onclick={ search }><i class="icon fa fa-search"></i>検索<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="settings"><a onclick={ search }><i class="icon fa fa-search"></i>%i18n:mobile.tags.mk-ui-nav.search%<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li class="settings"><a href="/i/drive"><i class="icon fa fa-cloud"></i>ドライブ<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="settings"><a href="/i/drive"><i class="icon fa fa-cloud"></i>%i18n:mobile.tags.mk-ui-nav.drive%<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>設定<i class="angle fa fa-angle-right"></i></a></li>
+				<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>%i18n:mobile.tags.mk-ui-nav.settings%<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 		</div>
-		<p class="about" href={ CONFIG.aboutUrl }><a>Misskeyについて</a></p>
+		<p class="about" href={ CONFIG.aboutUrl }><a>%i18n:mobile.tags.mk-ui-nav.about%</a></p>
 	</div>
 	<style>
 		:scope
@@ -36,7 +36,7 @@
 				width 100%
 				height 100%
 				background rgba(0, 0, 0, 0.2)
-			
+
 			.body
 				position fixed
 				top 0
@@ -122,7 +122,7 @@
 		this.mixin('page');
 
 		this.search = () => {
-			const query = window.prompt('検索');
+			const query = window.prompt('%i18n:mobile.tags.mk-ui-nav.search%');
 			if (query == null || query == '') return;
 			this.page('/search:' + query);
 		};
