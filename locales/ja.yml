@@ -23,8 +23,8 @@ common:
     mk-messaging-form:
       placeholder: "ここにメッセージを入力"
       send: "メッセージを送信"
-      attach-from-local: "PCから画像を添付する"
-      attach-from-drive: "アルバムから画像を添付する"
+      attach-from-local: "PCからファイルを添付する"
+      attach-from-drive: "ドライブからファイルを添付する"
 
     mk-messaging:
       search-user: "ユーザーを探す"
