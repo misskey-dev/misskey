@@ -38,7 +38,7 @@ common:
 
     mk-messaging-room:
       loading: "Loading"
-      empty: "No log"
+      empty: "No conversations"
       resize-form: "Drag to resize"
       new-message: "New message"
 
@@ -48,13 +48,13 @@ common:
     mk-error:
       title: "Cannot connect to the server"
       description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
-      thanks: "いつもMisskeyをご利用いただきありがとうございます。"
+      thanks: "Thank you for using Misskey."
 
     mk-forkit:
       open-github-link: "View source on Github"
 
     mk-poll-editor:
-      no-only-one-choice: "投票には、選択肢が最低2つ必要です"
+      no-only-one-choice: "You need to enter two or more choice."
       choice-n: "Choice {}"
       remove: "Remove this choice"
       add: "+ Add a choice"
@@ -83,21 +83,21 @@ common:
       available: "Available"
       unavailable: "Unavailable"
       error: "Network error"
-      invalid-format: "a~z、A~Z、0~9、-(ハイフン)が使えます"
-      too-short: "3文字以上でお願いします！"
-      too-long: "20文字以内でお願いします"
+      invalid-format: "Only use letters, numbers and -."
+      too-short: "Please enter at least 3 letters！"
+      too-long: "Please enter within 20 letters."
       password: "Password"
-      password-placeholder: "8文字以上を推奨します"
-      weak-password: "弱いパスワード"
-      normal-password: "まあまあのパスワード"
-      strong-password: "強いパスワード"
+      password-placeholder: "We recommend more than 8 letters."
+      weak-password: "Weak"
+      normal-password: "So so"
+      strong-password: "Strong"
       retype: "Type again"
-      retype-placeholder: "確認のため再入力してください"
+      retype-placeholder: "Confirm your password"
       password-matched: "OK"
       password-not-matched: "Not matched"
       recaptcha: "Verify"
       create: "Create an Account"
-      some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
+      some-error: "Account creation failed for some reason. Please try again."
 
     mk-special-message:
       new-year: "Happy New Year!"
@@ -110,7 +110,7 @@ common:
 
     mk-twitter-setting:
       description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-      connected-to: "次のTwitterアカウントに接続されています"
+      connected-to: "You to connected this Twitter account"
       detail: "Detail..."
       reconnect: "Reconnect"
       connect: "Connect to Twitter"
