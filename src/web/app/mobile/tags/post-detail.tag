@@ -17,9 +17,9 @@
 		</div>
 		<div class="repost" if={ isRepost }>
 			<p>
-				<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }>
+				<a class="avatar-anchor" href={ '/' + post.user.username }>
 					<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/></a>
-					<i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>
+					<i class="fa fa-retweet"></i><a class="name" href={ '/' + post.user.username }>
 					{ post.user.name }
 				</a>
 				がRepost
@@ -27,11 +27,11 @@
 		</div>
 		<article>
 			<header>
-				<a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }>
+				<a class="avatar-anchor" href={ '/' + p.user.username }>
 					<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 				</a>
 				<div>
-					<a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a>
+					<a class="name" href={ '/' + p.user.username }>{ p.user.name }</a>
 					<span class="username">@{ p.user.username }</span>
 				</div>
 			</header>

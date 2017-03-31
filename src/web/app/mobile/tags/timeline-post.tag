@@ -4,20 +4,20 @@
 	</div>
 	<div class="repost" if={ isRepost }>
 		<p>
-			<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }>
+			<a class="avatar-anchor" href={ '/' + post.user.username }>
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 			</a>
-			<i class="fa fa-retweet"></i>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
+			<i class="fa fa-retweet"></i>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
 		</p>
 		<mk-time time={ post.created_at }></mk-time>
 	</div>
 	<article>
-		<a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }>
+		<a class="avatar-anchor" href={ '/' + p.user.username }>
 			<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=96' } alt="avatar"/>
 		</a>
 		<div class="main">
 			<header>
-				<a class="name" href={ CONFIG.url + '/' + p.user.username }>{ p.user.name }</a>
+				<a class="name" href={ '/' + p.user.username }>{ p.user.name }</a>
 				<span class="is-bot" if={ p.user.is_bot }>bot</span>
 				<span class="username">@{ p.user.username }</span>
 				<a class="created-at" href={ url }>

@@ -17,21 +17,21 @@
 		</div>
 		<div class="repost" if={ isRepost }>
 			<p>
-				<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username } data-user-preview={ post.user_id }>
+				<a class="avatar-anchor" href={ '/' + post.user.username } data-user-preview={ post.user_id }>
 					<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
 				</a>
-				<i class="fa fa-retweet"></i><a class="name" href={ CONFIG.url + '/' + post.user.username }>
+				<i class="fa fa-retweet"></i><a class="name" href={ '/' + post.user.username }>
 				{ post.user.name }
 			</a>
 			がRepost
 		</p>
 		</div>
 		<article>
-			<a class="avatar-anchor" href={ CONFIG.url + '/' + p.user.username }>
+			<a class="avatar-anchor" href={ '/' + p.user.username }>
 				<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar" data-user-preview={ p.user.id }/>
 			</a>
 			<header>
-				<a class="name" href={ CONFIG.url + '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
+				<a class="name" href={ '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
 				<span class="username">@{ p.user.username }</span>
 				<a class="time" href={ url }>
 					<mk-time time={ p.created_at }></mk-time>

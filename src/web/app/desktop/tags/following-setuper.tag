@@ -1,8 +1,8 @@
 <mk-following-setuper>
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" if={ !fetching && users.length > 0 }>
-		<div class="user" each={ users }><a class="avatar-anchor" href={ CONFIG.url + '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ id }/></a>
-			<div class="body"><a class="name" href={ CONFIG.url + '/' + username } target="_blank" data-user-preview={ id }>{ name }</a>
+		<div class="user" each={ users }><a class="avatar-anchor" href={ '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ id }/></a>
+			<div class="body"><a class="name" href={ '/' + username } target="_blank" data-user-preview={ id }>{ name }</a>
 				<p class="username">@{ username }</p>
 			</div>
 			<mk-follow-button user={ this }></mk-follow-button>

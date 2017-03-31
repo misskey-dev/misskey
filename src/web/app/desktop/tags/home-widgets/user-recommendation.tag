@@ -2,11 +2,11 @@
 	<p class="title"><i class="fa fa-users"></i>%i18n:desktop.tags.mk-user-recommendation-home-widget.title%</p>
 	<button onclick={ refresh } title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
 	<div class="user" if={ !loading && users.length != 0 } each={ _user in users }>
-		<a class="avatar-anchor" href={ CONFIG.url + '/' + _user.username }>
+		<a class="avatar-anchor" href={ '/' + _user.username }>
 			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ _user.id }/>
 		</a>
 		<div class="body">
-			<a class="name" href={ CONFIG.url + '/' + _user.username } data-user-preview={ _user.id }>{ _user.name }</a>
+			<a class="name" href={ '/' + _user.username } data-user-preview={ _user.id }>{ _user.name }</a>
 			<p class="username">@{ _user.username }</p>
 		</div>
 		<mk-follow-button user={ _user }></mk-follow-button>

@@ -1,7 +1,7 @@
 <mk-user-header data-is-dark-background={ user.banner_url != null }>
 	<div class="banner" ref="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=1024)' : '' } onclick={ onUpdateBanner }></div><img class="avatar" src={ user.avatar_url + '?thumbnail&size=150' } alt="avatar"/>
 	<div class="title">
-		<p class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</p>
+		<p class="name" href={ '/' + user.username }>{ user.name }</p>
 		<p class="username">@{ user.username }</p>
 		<p class="location" if={ user.profile.location }><i class="fa fa-map-marker"></i>{ user.profile.location }</p>
 	</div>

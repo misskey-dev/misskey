@@ -1,6 +1,6 @@
 <mk-user-preview>
 	<virtual if={ user != null }>
-		<div class="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=512)' : '' }></div><a class="avatar" href={ CONFIG.url + '/' + user.username } target="_blank"><img src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
+		<div class="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=512)' : '' }></div><a class="avatar" href={ '/' + user.username } target="_blank"><img src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/></a>
 		<div class="title">
 			<p class="name">{ user.name }</p>
 			<p class="username">@{ user.username }</p>

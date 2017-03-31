@@ -1,7 +1,7 @@
 <mk-ui-nav>
 	<div class="backdrop" onclick={ parent.toggleDrawer }></div>
 	<div class="body">
-		<a class="me" if={ SIGNIN } href={ CONFIG.url + '/' + I.username }>
+		<a class="me" if={ SIGNIN } href={ '/' + I.username }>
 			<img class="avatar" src={ I.avatar_url + '?thumbnail&size=128' } alt="avatar"/>
 			<p class="name">{ I.name }</p>
 		</a>

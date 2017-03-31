@@ -1,10 +1,10 @@
 <mk-list-user>
-	<a class="avatar-anchor" href={ CONFIG.url + '/' + user.username }>
+	<a class="avatar-anchor" href={ '/' + user.username }>
 		<img class="avatar" src={ user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 	</a>
 	<div class="main">
 		<header>
-			<a class="name" href={ CONFIG.url + '/' + user.username }>{ user.name }</a>
+			<a class="name" href={ '/' + user.username }>{ user.name }</a>
 			<span class="username">@{ user.username }</span>
 		</header>
 		<div class="body">
