@@ -40,7 +40,7 @@
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 			<p if={ !folder == null }>%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
-			<p if={ folder != null }>%i18n:mobile.tags.mk-drive.folder-empty%</p>
+			<p if={ folder != null }>%i18n:mobile.tags.mk-drive.folder-is-empty%</p>
 		</div>
 	</div>
 	<div class="fetching" if={ fetching && file == null && files.length == 0 && folders.length == 0 }>
