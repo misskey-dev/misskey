@@ -7,8 +7,7 @@
 			<a class="avatar-anchor" href={ CONFIG.url + '/' + post.user.username }>
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 			</a>
-			<i class="fa fa-retweet"></i>
-			<a class="name" href={ CONFIG.url + '/' + post.user.username }>{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.replace('{}', post.user.name) }</a>
+			<i class="fa fa-retweet"></i>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ CONFIG.url + '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
 		</p>
 		<mk-time time={ post.created_at }></mk-time>
 	</div>
