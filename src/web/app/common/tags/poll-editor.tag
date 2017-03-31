@@ -1,17 +1,17 @@
 <mk-poll-editor>
 	<p class="caution" if={ choices.length < 2 }>
-		<i class="fa fa-exclamation-triangle"></i>投票には、選択肢が最低2つ必要です
+		<i class="fa fa-exclamation-triangle"></i>%i18n:common.tags.mk-poll-editor.no-only-one-choice%
 	</p>
 	<ul ref="choices">
 		<li each={ choice, i in choices }>
-			<input value={ choice } oninput={ oninput.bind(null, i) } placeholder={ '選択肢' + (i + 1) }>
-			<button onclick={ remove.bind(null, i) } title="この選択肢を削除">
+			<input value={ choice } oninput={ oninput.bind(null, i) } placeholder={ '%i18n:common.tags.mk-poll-editor.choice-n%'.replace('{}', i + 1) }>
+			<button onclick={ remove.bind(null, i) } title="%i18n:common.tags.mk-poll-editor.remove%">
 				<i class="fa fa-times"></i>
 			</button>
 		</li>
 	</ul>
-	<button class="add" if={ choices.length < 10 } onclick={ add }>+選択肢を追加</button>
-	<button class="destroy" onclick={ destroy } title="投票を破棄">
+	<button class="add" if={ choices.length < 10 } onclick={ add }>%i18n:common.tags.mk-poll-editor.add%/button>
+	<button class="destroy" onclick={ destroy } title="%i18n:common.tags.mk-poll-editor.destroy%">
 		<i class="fa fa-times"></i>
 	</button>
 	<style>

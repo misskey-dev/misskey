@@ -1,7 +1,7 @@
 <mk-messaging-room>
 	<div class="stream">
-		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>読み込み中</p>
-		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>このユーザーと話したことはありません</p>
+		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>%i18n:common.tags.mk-messaging-room.loading%</p>
+		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>%i18n:common.tags.mk-messaging-room.empty%</p>
 		<virtual each={ message, i in messages }>
 			<mk-messaging-message message={ message }></mk-messaging-message>
 			<p class="date" if={ i != messages.length - 1 && message._date != messages[i + 1]._date }><span>{ messages[i + 1]._datetext }</span></p>
@@ -9,7 +9,7 @@
 	</div>
 	<footer>
 		<div ref="notifications"></div>
-		<div class="grippie" title="ドラッグしてフォームの広さを調整"></div>
+		<div class="grippie" title="%i18n:common.tags.mk-messaging-room.resize-form%"></div>
 		<mk-messaging-form user={ user }></mk-messaging-form>
 	</footer>
 	<style>
@@ -186,7 +186,7 @@
 				this.scrollToBottom();
 			} else if (message.user_id != this.I.id) {
 				// Notify
-				this.notify('新しいメッセージがあります');
+				this.notify('%i18n:common.tags.mk-messaging-room.new-message%');
 			}
 		};
 

@@ -1,14 +1,14 @@
 <mk-messaging-form>
-	<textarea ref="text" onkeypress={ onkeypress } onpaste={ onpaste } placeholder="ここにメッセージを入力"></textarea>
+	<textarea ref="text" onkeypress={ onkeypress } onpaste={ onpaste } placeholder="%i18n:common.tags.mk-messaging-form.placeholder%"></textarea>
 	<div class="files"></div>
 	<mk-uploader ref="uploader"></mk-uploader>
-	<button class="send" onclick={ send } disabled={ sending } title="メッセージを送信">
+	<button class="send" onclick={ send } disabled={ sending } title="%i18n:common.tags.mk-messaging-form.send%">
 		<i class="fa fa-paper-plane" if={ !sending }></i><i class="fa fa-spinner fa-spin" if={ sending }></i>
 	</button>
-	<button class="attach-from-local" type="button" title="PCから画像を添付する">
+	<button class="attach-from-local" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
 		<i class="fa fa-upload"></i>
 	</button>
-	<button class="attach-from-drive" type="button" title="アルバムから画像を添付する">
+	<button class="attach-from-drive" type="button" title="%i18n:common.tags.mk-messaging-form.atach-from-drive%">
 		<i class="fa fa-folder-open"></i>
 	</button>
 	<input name="file" type="file" accept="image/*"/>

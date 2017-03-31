@@ -1,9 +1,9 @@
 <mk-error>
 	<!--i: i.fa.fa-times-circle-->
 	<img src="/assets/error.jpg" alt=""/>
-	<h1>サーバーに接続できません</h1>
-	<p class="text">インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから<a onclick={ retry }>再度お試し</a>ください。</p>
-	<p class="thanks">いつもMisskeyをご利用いただきありがとうございます。</p>
+	<h1>%i18n:common.tags.mk-error.title%</h1>
+	<p class="text">%i18n:common.tags.mk-error.description%</p>
+	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
 	<style>
 		:scope
 			position fixed
@@ -52,9 +52,4 @@
 				border-top solid 1px #eee
 
 	</style>
-	<script>
-		this.retry = () => {
-			location.reload()
-		}
-	</script>
 </mk-error>

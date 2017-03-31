@@ -20,13 +20,104 @@ common:
     congrats: "Congrats!"
 
   tags:
+    mk-messaging-form:
+      placeholder: "ここにメッセージを入力"
+      send: "メッセージを送信"
+      attach-from-local: "PCから画像を添付する"
+      attach-from-drive: "アルバムから画像を添付する"
+
+    mk-messaging:
+      search-user: "ユーザーを探す"
+      you: "あなた"
+      no-history: "履歴はありません"
+
+    mk-messaging-message:
+      is-read: "既読"
+      delete: "メッセージを削除"
+      deleted: "このメッセージは削除されました"
+
+    mk-messaging-room:
+      loading: "読み込み中"
+      empty: "このユーザーと話したことはありません"
+      resize-form: ドラッグしてフォームの広さを調整"
+      new-message: "新しいメッセージがあります"
+
+    mk-authorized-apps:
+      no-apps: "連携しているアプリケーションはありません"
+
+    mk-error:
+      title: "サーバーに接続できません"
+      description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
+      thanks: "いつもMisskeyをご利用いただきありがとうございます。"
+
+    mk-forkit:
+      open-github-link: "View source on Github"
+
+    mk-poll-editor:
+      no-only-one-choice: "投票には、選択肢が最低2つ必要です"
+      choice-n: "選択肢{}"
+      remove: "この選択肢を削除"
+      add: "+選択肢を追加"
+      destroy: "投票を破棄"
+
+    mk-poll:
+      vote-to: "「{}」に投票する"
+      vote-count: "{}票"
+      total-users: "{}人が投票"
+      vote: "投票する"
+      show-result: "結果を見る"
+      voted: "投票済み"
+
+    mk-reaction-picker:
+      choose-reaction: "Pick your reaction"
+
+    mk-signin:
+      username: "ユーザー名"
+      password: "パスワード"
+      signing-in: "やってます..."
+      signin: "サインイン"
+
+    mk-signup:
+      username: "ユーザー名"
+      checking: "確認しています..."
+      available: "利用できます"
+      unavailable: "既に利用されています"
+      error: "通信エラー"
+      invalid-format: "a~z、A~Z、0~9、-(ハイフン)が使えます"
+      too-short: "3文字以上でお願いします！"
+      too-long: "20文字以内でお願いします"
+      password: "パスワード"
+      password-placeholder: "8文字以上を推奨します"
+      weak-password: "弱いパスワード"
+      normal-password: "まあまあのパスワード"
+      strong-password: "強いパスワード"
+      retype: "再入力"
+      retype-placeholder: "確認のため再入力してください"
+      password-matched: "確認されました"
+      password-not-matched: "一致していません"
+      recaptcha: "認証"
+      create: "アカウント作成"
+      some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
+
+    mk-special-message:
+      new-year: "Happy New Year!"
+      christmas: "Merry Christmas!"
+
     mk-stream-indicator:
       connecting: "Connecting"
       reconnecting: "Reconnecting"
       connected: "Connected"
 
-    mk-reaction-picker:
-      choose-reaction: "Pick your reaction"
+    mk-twitter-setting:
+      description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
+      connected-to: "次のTwitterアカウントに接続されています"
+      detail: "詳細..."
+      reconnect: "再接続する"
+      connect: "Twitterと接続する"
+      disconnect: "切断する"
+
+    mk-uploader:
+      waiting: "待機中"
 
 desktop:
   tags:

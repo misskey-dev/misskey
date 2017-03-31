@@ -2,7 +2,7 @@
 	<div class="search">
 		<div class="form">
 			<label for="search-input"><i class="fa fa-search"></i></label>
-			<input ref="search" type="search" oninput={ search } onkeydown={ onSearchKeydown } placeholder="ユーザーを探す"/>
+			<input ref="search" type="search" oninput={ search } onkeydown={ onSearchKeydown } placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
 		</div>
 		<div class="result">
 			<ol class="users" if={ searchResult.length > 0 } ref="searchResult">
@@ -25,13 +25,13 @@
 						<mk-time time={ created_at }></mk-time>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" if={ is_me }>あなた:</span>{ text }</p>
+						<p class="text"><span class="me" if={ is_me }>%i18n:common.tags.mk-messaging.you%:</span>{ text }</p>
 					</div>
 				</div>
 			</a>
 		</virtual>
 	</div>
-	<p class="no-history" if={ history.length == 0 }>履歴はありません。<br/>ユーザーを検索して、いつでもメッセージを送受信できます。</p>
+	<p class="no-history" if={ history.length == 0 }>%i18n:common.tags.mk-messaging.no-history%</p>
 	<style>
 		:scope
 			display block

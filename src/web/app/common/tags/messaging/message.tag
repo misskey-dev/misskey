@@ -1,14 +1,14 @@
 <mk-messaging-message data-is-me={ message.is_me }><a class="avatar-anchor" href={ CONFIG.url + '/' + message.user.username } title={ message.user.username } target="_blank"><img class="avatar" src={ message.user.avatar_url + '?thumbnail&size=64' } alt=""/></a>
 	<div class="content-container">
 		<div class="balloon">
-			<p class="read" if={ message.is_me && message.is_read }>既読</p>
-			<button class="delete-button" if={ message.is_me } title="メッセージを削除"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
+			<p class="read" if={ message.is_me && message.is_read }>%i18n:common.tags.mk-messaging-message.is-read%</p>
+			<button class="delete-button" if={ message.is_me } title="%i18n:common.tags.mk-messaging-message.delete%"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
 			<div class="content" if={ !message.is_deleted }>
 				<div ref="text"></div>
 				<div class="image" if={ message.file }><img src={ message.file.url } alt="image" title={ message.file.name }/></div>
 			</div>
 			<div class="content" if={ message.is_deleted }>
-				<p class="is-deleted">このメッセージは削除されました</p>
+				<p class="is-deleted">%i18n:common.tags.mk-messaging-message.deleted%</p>
 			</div>
 		</div>
 		<footer>

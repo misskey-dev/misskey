@@ -1,19 +1,19 @@
 <mk-poll data-is-voted={ isVoted }>
 	<ul>
-		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted } title={ !parent.isVoted ? '「' + text + '」に投票する' : '' }>
+		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted } title={ !parent.isVoted ? '%i18n:common.tags.mk-poll.%'.replace('{}', '%i18n:common.tags.mk-poll.vote-to%') : '' }>
 			<div class="backdrop" style={ 'width:' + (parent.result ? (votes / parent.total * 100) : 0) + '%' }></div>
 			<span>
 				<i class="fa fa-check" if={ is_voted }></i>
 				{ text }
-				<span class="votes" if={ parent.result }>({ votes }票)</span>
+				<span class="votes" if={ parent.result }>({ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', votes) })</span>
 			</span>
 		</li>
 	</ul>
 	<p if={ total > 0 }>
-		<span>{ total }人が投票</span>
+		<span>{ '%i18n:common.tags.mk-poll.total-users%'.replace('{}', total) }</span>
 		・
-		<a if={ !isVoted } onclick={ toggleResult }>{ result ? '投票する' : '結果を見る' }</a>
-		<span if={ isVoted }>投票済み</span>
+		<a if={ !isVoted } onclick={ toggleResult }>{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }</a>
+		<span if={ isVoted }>%i18n:common.tags.mk-poll.voted%</span>
 	</p>
 	<style>
 		:scope

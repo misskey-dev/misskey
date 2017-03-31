@@ -1,6 +1,6 @@
 <mk-special-message>
-	<p if={ m == 1 && d == 1 }>Happy New Year! </p>
-	<p if={ m == 12 && d == 25 }>Merry Christmas!</p>
+	<p if={ m == 1 && d == 1 }>%i18n:common.tags.mk-special-message.new-year%</p>
+	<p if={ m == 12 && d == 25 }>%i18n:common.tags.mk-special-message.christmas%</p>
 	<style>
 		:scope
 			display block

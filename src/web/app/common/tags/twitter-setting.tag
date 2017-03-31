@@ -1,10 +1,10 @@
 <mk-twitter-setting>
-	<p>お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。<a href={ CONFIG.aboutUrl + '/link-to-twitter' } target="_blank">詳細...</a></p>
-	<p class="account" if={ I.twitter } title={ 'Twitter ID: ' + I.twitter.user_id }>次のTwitterアカウントに接続されています: <a href={ 'https://twitter.com/' + I.twitter.screen_name } target="_blank">@{ I.twitter.screen_name }</a></p>
+	<p>%i18n:common.tags.mk-twitter-setting.description%<a href={ CONFIG.aboutUrl + '/link-to-twitter' } target="_blank">%i18n:common.tags.mk-twitter-setting.detail%</a></p>
+	<p class="account" if={ I.twitter } title={ 'Twitter ID: ' + I.twitter.user_id }>%i18n:common.tags.mk-twitter-setting.connected-to%: <a href={ 'https://twitter.com/' + I.twitter.screen_name } target="_blank">@{ I.twitter.screen_name }</a></p>
 	<p>
-		<a href={ CONFIG.apiUrl + '/connect/twitter' } target="_blank">{ I.twitter ? '再接続する' : 'Twitterと接続する' }</a>
+		<a href={ CONFIG.apiUrl + '/connect/twitter' } target="_blank">{ I.twitter ? '%i18n:common.tags.mk-twitter-setting.reconnect%' : '%i18n:common.tags.mk-twitter-setting.connect%' }</a>
 		<span if={ I.twitter }> or </span>
-		<a href={ CONFIG.apiUrl + '/disconnect/twitter' } target="_blank" if={ I.twitter }>切断する</a>
+		<a href={ CONFIG.apiUrl + '/disconnect/twitter' } target="_blank" if={ I.twitter }>%i18n:common.tags.mk-twitter-setting.disconnect%</a>
 	</p>
 	<p class="id" if={ I.twitter }>Twitter ID: { I.twitter.user_id }</p>
 	<style>
