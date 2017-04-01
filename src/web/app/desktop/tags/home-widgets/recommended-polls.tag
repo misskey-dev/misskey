@@ -2,8 +2,8 @@
 	<p class="title"><i class="fa fa-pie-chart"></i>%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
 	<button onclick={ fetch } title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
 	<div class="poll" if={ !loading && poll != null }>
-		<p class="text" if={ poll.text }><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>
-		<p class="text" if={ !poll.text }><a href="/{ poll.user.username }/{ poll.id }"><i class="fa fa-link"></i></a></p>
+		<p if={ poll.text }><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>
+		<p if={ !poll.text }><a href="/{ poll.user.username }/{ poll.id }"><i class="fa fa-link"></i></a></p>
 		<mk-poll post={ poll }></mk-poll>
 	</div>
 	<p class="empty" if={ !loading && poll == null }>%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
@@ -49,6 +49,9 @@
 
 				> p
 					margin 0 0 8px 0
+
+					> a
+						color inherit
 
 			> .empty
 				margin 0
