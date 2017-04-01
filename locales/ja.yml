@@ -19,7 +19,7 @@ common:
     surprise: "わお"
     congrats: "おめでとう"
 
-  update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。\nページを再度読み込みすると更新が適用されます。"
+  update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
 
   tags:
     mk-messaging-form:
