@@ -8,7 +8,7 @@
 	<button class="attach-from-local" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
 		<i class="fa fa-upload"></i>
 	</button>
-	<button class="attach-from-drive" type="button" title="%i18n:common.tags.mk-messaging-form.atach-from-drive%">
+	<button class="attach-from-drive" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-drive%">
 		<i class="fa fa-folder-open"></i>
 	</button>
 	<input name="file" type="file" accept="image/*"/>

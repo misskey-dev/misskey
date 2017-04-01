@@ -1,6 +1,6 @@
 <mk-poll data-is-voted={ isVoted }>
 	<ul>
-		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted } title={ !parent.isVoted ? '%i18n:common.tags.mk-poll.%'.replace('{}', '%i18n:common.tags.mk-poll.vote-to%') : '' }>
+		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted } title={ !parent.isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', text) : '' }>
 			<div class="backdrop" style={ 'width:' + (parent.result ? (votes / parent.total * 100) : 0) + '%' }></div>
 			<span>
 				<i class="fa fa-check" if={ is_voted }></i>
