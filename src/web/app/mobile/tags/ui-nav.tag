@@ -22,7 +22,7 @@
 				<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>%i18n:mobile.tags.mk-ui-nav.settings%<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 		</div>
-		<p class="about"><a href={ CONFIG.aboutUrl }>%i18n:mobile.tags.mk-ui-nav.about%</a></p>
+		<a href={ CONFIG.aboutUrl }><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
 	</div>
 	<style>
 		:scope
@@ -108,7 +108,8 @@
 							color #ccc
 
 			.about
-				margin 1em 1em 2em 1em
+				margin 0
+				padding 1em 0
 				text-align center
 				font-size 0.6em
 				opacity 0.3
