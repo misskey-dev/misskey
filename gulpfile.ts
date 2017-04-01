@@ -173,12 +173,12 @@ gulp.task('build:client:pug', [
 	'build:client:script',
 	'build:client:styles'
 ], () =>
-	gulp.src('./src/web/app/*/view.pug')
-		.pipe(pug({
-			locals: {
-				version: version,
-				themeColor: constants.themeColor
-			}
-		}))
-		.pipe(gulp.dest('./built/web/app/'))
+		gulp.src('./src/web/app/*/view.pug')
+			.pipe(pug({
+				locals: {
+					version: version,
+					themeColor: constants.themeColor
+				}
+			}))
+			.pipe(gulp.dest('./built/web/app/'))
 );
