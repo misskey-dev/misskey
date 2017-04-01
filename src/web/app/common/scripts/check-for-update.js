@@ -7,7 +7,7 @@ export default function() {
 		res.json().then(meta => {
 			if (meta.version != VERSION) {
 				localStorage.setItem('should-refresh', 'true');
-				alert('%i18n:common:update-available%'.replace('{newer}', meta.version).replace('{current}', VERSION));
+				alert('%i18n:common.update-available%'.replace('{newer}', meta.version).replace('{current}', VERSION));
 			}
 		});
 	});
