@@ -21,7 +21,7 @@ const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 
 module.exports = (Object as any).entries(languages).map(([lang, locale]) => {
-	locale = Object.assign(native, locale);
+	locale = Object.assign({}, native, locale);
 
 	const pack /*: webpack.Configuration ← fuck wrong type definition!!! */ = {
 		name: lang,
