@@ -7,7 +7,7 @@ export default function() {
 		res.json().then(meta => {
 			if (meta.version != VERSION) {
 				localStorage.setItem('should-refresh', 'true');
-				alert(`Misskeyの新しいバージョンがあります(${meta.version}。現在${VERSION}を利用中)。\nページを再度読み込みすると更新が適用されます。`);
+				alert('%i18n:common:update-available%'.replace('{newer}', meta.version).replace('{current}', VERSION));
 			}
 		});
 	});
