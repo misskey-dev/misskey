@@ -22,7 +22,7 @@
 				<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>%i18n:mobile.tags.mk-ui-nav.settings%<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 		</div>
-		<p class="about" href={ CONFIG.aboutUrl }><a>%i18n:mobile.tags.mk-ui-nav.about%</a></p>
+		<p class="about"><a href={ CONFIG.aboutUrl }>%i18n:mobile.tags.mk-ui-nav.about%</a></p>
 	</div>
 	<style>
 		:scope
