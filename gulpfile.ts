@@ -28,7 +28,7 @@ const isDebug = !isProduction;
 
 if (isDebug) {
 	console.warn(chalk.yellow.bold('WARNING! NODE_ENV is not "production".'));
-	console.warn(chalk.yellow.bold('         built script compessing will not be performed.'));
+	console.warn(chalk.yellow.bold('         built script will not be compressed.'));
 }
 
 const constants = require('./src/const.json');
