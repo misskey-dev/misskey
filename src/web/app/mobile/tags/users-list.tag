@@ -1,8 +1,7 @@
 <mk-users-list>
 	<nav>
 		<span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>%i18n:mobile.tags.mk-users-list.all%<span>{ opts.count }</span></span>
-		<!-- ↓ https://github.com/riot/riot/issues/2080-->
-		<span if={ SIGNIN && opts.youKnowCount != '' } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>%i18n:mobile.tags.mk-users-list.known%<span>{ opts.youKnowCount }</span></span>
+		<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>%i18n:mobile.tags.mk-users-list.known%<span>{ opts.youKnowCount }</span></span>
 	</nav>
 	<div class="users" if={ !fetching && users.length != 0 }>
 		<mk-user-preview each={ users } user={ this }></mk-user-preview>

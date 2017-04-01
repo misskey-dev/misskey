@@ -2,8 +2,7 @@
 	<nav>
 		<div>
 			<span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>すべて<span>{ opts.count }</span></span>
-			<!-- ↓ https://github.com/riot/riot/issues/2080-->
-			<span if={ SIGNIN && opts.youKnowCount != '' } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>知り合い<span>{ opts.youKnowCount }</span></span>
+			<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>知り合い<span>{ opts.youKnowCount }</span></span>
 		</div>
 	</nav>
 	<div class="users" if={ !fetching && users.length != 0 }>
