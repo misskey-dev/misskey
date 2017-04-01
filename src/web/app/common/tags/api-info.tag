@@ -8,6 +8,7 @@
 	<style>
 		:scope
 			display block
+			color #4a535a
 
 			code
 				padding 4px

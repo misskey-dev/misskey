@@ -10,6 +10,7 @@
 	<style>
 		:scope
 			display block
+			color #4a535a
 
 			.account
 				border solid 1px #e1e8ed
