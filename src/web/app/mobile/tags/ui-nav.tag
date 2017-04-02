@@ -111,8 +111,8 @@
 				margin 0
 				padding 1em 0
 				text-align center
-				font-size 0.6em
-				opacity 0.3
+				font-size 0.8em
+				opacity 0.5
 
 				a
 					color #777
