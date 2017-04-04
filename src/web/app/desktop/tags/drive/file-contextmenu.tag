@@ -10,7 +10,7 @@
 			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }><i class="fa fa-download"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%</a></li>
 			<li class="separator"></li>
 			<li onclick={ parent.delete }>
-				<p><i class="fa fa-trash-o"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.delete%</p>
+				<p><i class="fa fa-trash-o"></i>%i18n:common.delete%</p>
 			</li>
 			<li class="separator"></li>
 			<li class="has-child">
@@ -74,7 +74,7 @@
 			this.refs.ctx.close();
 			dialog('<i class="fa fa-check"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied%',
 				'%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied-url-to-clipboard%', [{
-				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.ok%'
+				text: '%i18n:common.ok%'
 			}]);
 		};
 

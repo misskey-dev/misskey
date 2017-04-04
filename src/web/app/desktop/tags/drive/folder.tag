@@ -147,7 +147,7 @@
 						case 'detected-circular-definition':
 							dialog('<i class="fa fa-exclamation-triangle"></i>%i18n:desktop.tags.mk-drive-browser-folder.unable-to-process%',
 								'%i18n:desktop.tags.mk-drive-browser-folder.circular-reference-detected%', [{
-								text: '%i18n:desktop.tags.mk-drive-browser-folder.ok%'
+								text: '%i18n:common.ok%'
 							}]);
 							break;
 						default:

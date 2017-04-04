@@ -1,6 +1,6 @@
 <mk-messaging-room>
 	<div class="stream">
-		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>%i18n:common.tags.mk-messaging-room.loading%</p>
+		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>%i18n:common.loading%</p>
 		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>%i18n:common.tags.mk-messaging-room.empty%</p>
 		<virtual each={ message, i in messages }>
 			<mk-messaging-message message={ message }></mk-messaging-message>

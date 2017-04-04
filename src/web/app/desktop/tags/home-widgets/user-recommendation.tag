@@ -12,7 +12,7 @@
 		<mk-follow-button user={ _user }></mk-follow-button>
 	</div>
 	<p class="empty" if={ !loading && users.length == 0 }>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user-recommendation-home-widget.fetching%<mk-ellipsis></mk-ellipsis></p>
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis></mk-ellipsis></p>
 	<style>
 		:scope
 			display block

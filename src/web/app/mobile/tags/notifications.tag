@@ -6,7 +6,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ notifications.length == 0 && !loading }>%i18n:mobile.tags.mk-notifications.empty%</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-notifications.loading%
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%
 		<mk-ellipsis></mk-ellipsis>
 	</p>
 	<style>

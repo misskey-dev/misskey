@@ -445,7 +445,7 @@
 						case 'detected-circular-definition':
 							dialog('<i class="fa fa-exclamation-triangle"></i>%i18n:desktop.tags.mk-drive-browser.unable-to-process%',
 								'%i18n:desktop.tags.mk-drive-browser.circular-reference-detected%', [{
-								text: '%i18n:desktop.tags.mk-drive-browser.ok%'
+								text: '%i18n:common.ok%'
 							}]);
 							break;
 						default:
@@ -485,7 +485,7 @@
 
 				dialog('<i class="fa fa-check"></i>%i18n:desktop.tags.mk-drive-browser.url-upload-requested%',
 					'%i18n:desktop.tags.mk-drive-browser.may-take-time%', [{
-					text: '%i18n:desktop.tags.mk-drive-browser.ok%'
+					text: '%i18n:common.ok%'
 				}]);
 			});
 		};

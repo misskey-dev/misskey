@@ -1,8 +1,8 @@
 <mk-messaging-form>
-	<textarea ref="text" onkeypress={ onkeypress } onpaste={ onpaste } placeholder="%i18n:common.tags.mk-messaging-form.placeholder%"></textarea>
+	<textarea ref="text" onkeypress={ onkeypress } onpaste={ onpaste } placeholder="%i18n:common.input-message-here%"></textarea>
 	<div class="files"></div>
 	<mk-uploader ref="uploader"></mk-uploader>
-	<button class="send" onclick={ send } disabled={ sending } title="%i18n:common.tags.mk-messaging-form.send%">
+	<button class="send" onclick={ send } disabled={ sending } title="%i18n:common.send%">
 		<i class="fa fa-paper-plane" if={ !sending }></i><i class="fa fa-spinner fa-spin" if={ sending }></i>
 	</button>
 	<button class="attach-from-local" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">

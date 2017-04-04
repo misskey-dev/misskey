@@ -2,7 +2,7 @@
 	<div class="content-container">
 		<div class="balloon">
 			<p class="read" if={ message.is_me && message.is_read }>%i18n:common.tags.mk-messaging-message.is-read%</p>
-			<button class="delete-button" if={ message.is_me } title="%i18n:common.tags.mk-messaging-message.delete%"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
+			<button class="delete-button" if={ message.is_me } title="%i18n:common.delete%"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
 			<div class="content" if={ !message.is_deleted }>
 				<div ref="text"></div>
 				<div class="image" if={ message.file }><img src={ message.file.url } alt="image" title={ message.file.name }/></div>

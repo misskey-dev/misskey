@@ -35,7 +35,7 @@
 				<mk-drive-file file={ file }></mk-drive-file>
 			</virtual>
 			<button class="more" if={ moreFiles } onclick={ fetchMoreFiles }>
-				{ fetchingMoreFiles ? '%i18n:mobile.tags.mk-drive.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
+				{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
 			</button>
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>

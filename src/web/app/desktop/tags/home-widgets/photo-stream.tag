@@ -1,6 +1,6 @@
 <mk-photo-stream-home-widget>
 	<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-photo-stream-home-widget.initializing%<mk-ellipsis></mk-ellipsis></p>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis></mk-ellipsis></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>

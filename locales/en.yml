@@ -19,12 +19,15 @@ common:
     surprise: "Wow"
     congrats: "Congrats!"
 
+  input-message-here: "Enter message here"
+  send: "Send"
+  delete: "Delete"
+  loading: "Loading"
+  ok: "OK"
   update-available: "New version of Misskey is now available({newer}, current is {current}). Reload page to apply update."
 
   tags:
     mk-messaging-form:
-      placeholder: "Enter message here"
-      send: "Send"
       attach-from-local: "Attach file from your pc"
       attach-from-drive: "Attach file from the drive"
 
@@ -35,11 +38,9 @@ common:
 
     mk-messaging-message:
       is-read: "Read"
-      delete: "Delete this message"
       deleted: "This message has been deleted"
 
     mk-messaging-room:
-      loading: "Loading"
       empty: "No conversations"
       resize-form: "Drag to resize"
       new-message: "New message"
@@ -141,7 +142,6 @@ desktop:
       empty-folder: "このフォルダーは空です"
       unable-to-process: "操作を完了できません"
       circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      ok: "OK"
       unhandled-error: "不明なエラー"
       url-upload: "URLアップロード"
       url-of-file: "アップロードしたいファイルのURL"
@@ -154,7 +154,6 @@ desktop:
       rename: "名前を変更"
       copy-url: "URLをコピー"
       download: "ダウンロード"
-      delete: "削除"
       else-files: "その他..."
       set-as-avatar: "アバターに設定"
       set-as-banner: "バナーに設定"
@@ -164,7 +163,6 @@ desktop:
       input-new-file-name: "新しいファイル名を入力してください"
       copied: "コピー完了"
       copied-url-to-clipboard: "URLをクリップボードにコピーしました"
-      ok: "OK"
 
     mk-drive-browser-file:
       avatar: "アバター"
@@ -175,14 +173,12 @@ desktop:
       move-to-this-folder: "このフォルダへ移動"
       show-in-new-window: "新しいウィンドウで表示"
       rename: "名前を変更"
-      delete: "削除"
       rename-folder: "フォルダ名の変更"
       input-new-folder-name: "新しいフォルダ名を入力してください"
 
     mk-drive-browser-folder:
       unable-to-process: "操作を完了できません"
       circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      ok: "OK"
       unhandled-error: "不明なエラー"
 
     mk-drive-browser-nav-folder:
@@ -246,23 +242,19 @@ desktop:
       title: "Recommended users"
       refresh: "Show others"
       no-one: "No one"
-      fetching: "Loading"
 
     mk-recommended-polls-home-widget:
       title: "Polls"
       refresh: "Show others"
       nothing: "Nothing"
-      fetching: "Loading"
 
     mk-trends-home-widget:
       title: "Trend"
       refresh: "Show others"
       nothing: "Nothing"
-      fetching: "Loading"
 
     mk-photo-stream-home-widget:
       title: "Photostream"
-      initializing: "Loading"
       no-photos: "No photos"
 
     mk-donation-home-widget:
@@ -306,9 +298,6 @@ mobile:
 
     mk-drive-page:
       drive: "Drive"
-
-    mk-entrance:
-      ok: "OK"
 
     mk-home:
       home: "Home"
@@ -354,7 +343,6 @@ mobile:
       count-separator: ", "
       file-count: "File(s)"
       load-more: "Load more"
-      loading: "Loading"
       nothing-in-drive: "Nothing"
       folder-is-empty: "This folder is empty"
 
@@ -367,7 +355,6 @@ mobile:
 
     mk-notifications:
       empty: "No notifications"
-      loading: "Loading"
 
     mk-post-detail:
       reply: "Reply"
@@ -390,7 +377,6 @@ mobile:
       reposted-by: "Reposted by {}"
 
     mk-timeline:
-      loading: "Loading"
       empty: "No posts"
       load-more: "More"
 
@@ -425,4 +411,3 @@ mobile:
       all: "All"
       known: "You know"
       load-more: "More"
-      loading: "Loading"

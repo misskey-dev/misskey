@@ -8,10 +8,10 @@
 	</div>
 	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }>
 		<span if={ !moreFetching }>%i18n:mobile.tags.mk-users-list.load-more%</span>
-		<span if={ moreFetching }>%i18n:mobile.tags.mk-users-list.loading%<mk-ellipsis></mk-ellipsis></span></button>
+		<span if={ moreFetching }>%i18n:common.loading%<mk-ellipsis></mk-ellipsis></span></button>
 	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>
 	<p class="fetching" if={ fetching }>
-		<i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-users-list.loading%<mk-ellipsis></mk-ellipsis>
+		<i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis></mk-ellipsis>
 	</p>
 	<style>
 		:scope
