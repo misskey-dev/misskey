@@ -81,8 +81,8 @@ Note that `$(pwd)` is the working directory.
 Install
 --------------------------------
 ### Using built code
-We have official release of the latest Misskey that passed the test.
-Please visit https://github.com/syuilo/misskey/tree/release to see built code.
+We have official release of Misskey.
+The built code is automatically pushed to https://github.com/syuilo/misskey/tree/release after the CI test succeeds.
 
 1. `git clone -b release git://github.com/syuilo/misskey.git`
 2. `cd misskey`
