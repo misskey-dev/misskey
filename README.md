@@ -7,8 +7,6 @@
 [![][sakurako-badge]][himasaku]
 [![][mit-badge]][mit]
 
-Welcome!
-
 [Misskey](https://misskey.xyz) is a completely open source,
 ultimately sophisticated new type of mini-blog based SNS.
 
