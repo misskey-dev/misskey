@@ -6,7 +6,7 @@
 				<mk-drive-browser-nav-folder folder={ folder }></mk-drive-browser-nav-folder>
 			</virtual><span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span><span class="folder current" if={ folder != null }>{ folder.name }</span>
 		</div>
-		<input class="search" type="search" placeholder="&#xf002; 検索"/>
+		<input class="search" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-drive-browser.search%"/>
 	</nav>
 	<div class="main { uploading: uploads.length > 0, fetching: fetching }" ref="main" onmousedown={ onmousedown } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu }>
 		<div class="selection" ref="selection"></div>
@@ -15,18 +15,18 @@
 				<virtual each={ folder in folders }>
 					<mk-drive-browser-folder class="folder" folder={ folder }></mk-drive-browser-folder>
 				</virtual>
-				<button if={ moreFolders }>もっと読み込む</button>
+				<button if={ moreFolders }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" if={ files.length > 0 }>
 				<virtual each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }></mk-drive-browser-file>
 				</virtual>
-				<button if={ moreFiles } onclick={ fetchMoreFiles }>もっと読み込む</button>
+				<button if={ moreFiles } onclick={ fetchMoreFiles }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
-				<p if={ draghover }>ドロップですか？いいですよ、ボクはカワイイですからね</p>
-				<p if={ !draghover && folder == null }><strong>ドライブには何もありません。</strong><br/>右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。</p>
-				<p if={ !draghover && folder != null }>このフォルダーは空です</p>
+				<p if={ draghover }>%i18n:desktop.tags.mk-drive-browser.empty-draghover%</p>
+				<p if={ !draghover && folder == null }><strong>%i18n:desktop.tags.mk-drive-browser.empty-drive%</strong><br/>%i18n:desktop.tags.mk-drive-browser.empty-drive-description%</p>
+				<p if={ !draghover && folder != null }>%i18n:desktop.tags.mk-drive-browser.empty-folder%</p>
 			</div>
 		</div>
 		<div class="fetching" if={ fetching }>
@@ -443,13 +443,13 @@
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
-								'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。', [{
-								text: 'OK'
+							dialog('<i class="fa fa-exclamation-triangle"></i>%i18n:desktop.tags.mk-drive-browser.unable-to-process%',
+								'%i18n:desktop.tags.mk-drive-browser.circular-reference-detected%', [{
+								text: '%i18n:desktop.tags.mk-drive-browser.ok%'
 							}]);
 							break;
 						default:
-							alert('不明なエラー' + err);
+							alert('%i18n:desktop.tags.mk-drive-browser.unhandled-error% ' + err);
 					}
 				});
 			}
@@ -477,21 +477,21 @@
 		};
 
 		this.urlUpload = () => {
-			inputDialog('URLアップロード', 'アップロードしたいファイルのURL', null, url => {
+			inputDialog('%i18n:desktop.tags.mk-drive-browser.url-upload%', '%i18n:desktop.tags.mk-drive-browser.url-of-file%', null, url => {
 				this.api('drive/files/upload_from_url', {
 					url: url,
 					folder_id: this.folder ? this.folder.id : undefined
 				});
 
-				dialog('<i class="fa fa-check"></i>アップロードをリクエストしました',
-					'アップロードが完了するまで時間がかかる場合があります。', [{
-					text: 'OK'
+				dialog('<i class="fa fa-check"></i>%i18n:desktop.tags.mk-drive-browser.url-upload-requested%',
+					'%i18n:desktop.tags.mk-drive-browser.may-take-time%', [{
+					text: '%i18n:desktop.tags.mk-drive-browser.ok%'
 				}]);
 			});
 		};
 
 		this.createFolder = () => {
-			inputDialog('フォルダー作成', 'フォルダー名', null, name => {
+			inputDialog('%i18n:desktop.tags.mk-drive-browser.create-folder%', '%i18n:desktop.tags.mk-drive-browser.folder-name%', null, name => {
 				this.api('drive/folders/create', {
 					name: name,
 					folder_id: this.folder ? this.folder.id : undefined

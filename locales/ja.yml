@@ -123,6 +123,71 @@ common:
 
 desktop:
   tags:
+    mk-drive-browser-base-contextmenu:
+      create-folder: "フォルダーを作成"
+      upload: "ファイルをアップロード"
+      url-upload: "URLからアップロード"
+
+    mk-drive-browser-window:
+      used: "使用中"
+      drive: "ドライブ"
+
+    mk-drive-browser:
+      search: "検索"
+      load-more: "もっと読み込む"
+      empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
+      empty-drive: "ドライブには何もありません。"
+      empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
+      empty-folder: "このフォルダーは空です"
+      unable-to-process: "操作を完了できません"
+      circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+      ok: "OK"
+      unhandled-error: "不明なエラー"
+      url-upload: "URLアップロード"
+      url-of-file: "アップロードしたいファイルのURL"
+      url-upload-requested: "アップロードをリクエストしました"
+      may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
+      create-folder: "フォルダー作成"
+      folder-name: "フォルダー名"
+
+    mk-drive-browser-file-contextmenu:
+      rename: "名前を変更"
+      copy-url: "URLをコピー"
+      download: "ダウンロード"
+      delete: "削除"
+      else-files: "その他..."
+      set-as-avatar: "アバターに設定"
+      set-as-banner: "バナーに設定"
+      open-in-app: "アプリで開く"
+      add-app: "アプリを追加"
+      rename-file: "ファイル名の変更"
+      input-new-file-name: "新しいファイル名を入力してください"
+      copied: "コピー完了"
+      copied-url-to-clipboard: "URLをクリップボードにコピーしました"
+      ok: "OK"
+
+    mk-drive-browser-file:
+      avatar: "アバター"
+      banner: "バナー"
+      wallpaper: "壁紙"
+
+    mk-drive-browser-folder-contextmenu:
+      move-to-this-folder: "このフォルダへ移動"
+      show-in-new-window: "新しいウィンドウで表示"
+      rename: "名前を変更"
+      delete: "削除"
+      rename-folder: "フォルダ名の変更"
+      input-new-folder-name: "新しいフォルダ名を入力してください"
+
+    mk-drive-browser-folder:
+      unable-to-process: "操作を完了できません"
+      circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+      ok: "OK"
+      unhandled-error: "不明なエラー"
+
+    mk-drive-browser-nav-folder:
+      drive: "ドライブ"
+
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"

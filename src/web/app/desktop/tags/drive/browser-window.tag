@@ -1,8 +1,8 @@
 <mk-drive-browser-window>
 	<mk-window ref="window" is-modal={ false } width={ '800px' } height={ '500px' }>
 		<yield to="header">
-			<p class="info" if={ parent.usage }><b>{ parent.usage.toFixed(1) }%</b>使用中</p>
-			<i class="fa fa-cloud"></i>ドライブ
+			<p class="info" if={ parent.usage }><b>{ parent.usage.toFixed(1) }%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
+			<i class="fa fa-cloud"></i>%i18n:desktop.tags.mk-drive-browser-window.drive%
 		</yield>
 		<yield to="content">
 			<mk-drive-browser multiple={ true } folder={ parent.folder }></mk-drive-browser>

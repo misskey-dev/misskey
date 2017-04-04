@@ -145,13 +145,13 @@
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							dialog('<i class="fa fa-exclamation-triangle"></i>操作を完了できません',
-								'移動先のフォルダーは、移動するフォルダーのサブフォルダーです。', [{
-								text: 'OK'
+							dialog('<i class="fa fa-exclamation-triangle"></i>%i18n:desktop.tags.mk-drive-browser-folder.unable-to-process%',
+								'%i18n:desktop.tags.mk-drive-browser-folder.circular-reference-detected%', [{
+								text: '%i18n:desktop.tags.mk-drive-browser-folder.ok%'
 							}]);
 							break;
 						default:
-							alert('不明なエラー' + err);
+							alert('%i18n:desktop.tags.mk-drive-browser-folder.unhandled-error% ' + err);
 					}
 				});
 			}

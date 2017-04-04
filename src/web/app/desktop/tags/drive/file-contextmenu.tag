@@ -2,33 +2,33 @@
 	<mk-contextmenu ref="ctx">
 		<ul>
 			<li onclick={ parent.rename }>
-				<p><i class="fa fa-i-cursor"></i>名前を変更</p>
+				<p><i class="fa fa-i-cursor"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename%</p>
 			</li>
 			<li onclick={ parent.copyUrl }>
-				<p><i class="fa fa-link"></i>URLをコピー</p>
+				<p><i class="fa fa-link"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copy-url%</p>
 			</li>
-			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }><i class="fa fa-download"></i>ダウンロード</a></li>
+			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }><i class="fa fa-download"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%</a></li>
 			<li class="separator"></li>
 			<li onclick={ parent.delete }>
-				<p><i class="fa fa-trash-o"></i>削除</p>
+				<p><i class="fa fa-trash-o"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.delete%</p>
 			</li>
 			<li class="separator"></li>
 			<li class="has-child">
-				<p>その他...<i class="fa fa-caret-right"></i></p>
+				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.else-files%<i class="fa fa-caret-right"></i></p>
 				<ul>
 					<li onclick={ parent.setAvatar }>
-						<p>アバターに設定</p>
+						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.set-as-avatar%</p>
 					</li>
 					<li onclick={ parent.setBanner }>
-						<p>バナーに設定</p>
+						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.set-as-banner%</p>
 					</li>
 				</ul>
 			</li>
 			<li class="has-child">
-				<p>アプリで開く...<i class="fa fa-caret-right"></i></p>
+				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.open-in-app%...<i class="fa fa-caret-right"></i></p>
 				<ul>
 					<li onclick={ parent.addApp }>
-						<p>アプリを追加...</p>
+						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.add-app%...</p>
 					</li>
 				</ul>
 			</li>
@@ -61,7 +61,7 @@
 		this.rename = () => {
 			this.refs.ctx.close();
 
-			inputDialog('ファイル名の変更', '新しいファイル名を入力してください', this.file.name, name => {
+			inputDialog('%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename-file%', '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.input-new-file-name%', this.file.name, name => {
 				this.api('drive/files/update', {
 					file_id: this.file.id,
 					name: name
@@ -72,9 +72,9 @@
 		this.copyUrl = () => {
 			copyToClipboard(this.file.url);
 			this.refs.ctx.close();
-			dialog('<i class="fa fa-check"></i>コピー完了',
-				'ファイルのURLをクリップボードにコピーしました', [{
-				text: 'わー'
+			dialog('<i class="fa fa-check"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied%',
+				'%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied-url-to-clipboard%', [{
+				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.ok%'
 			}]);
 		};
 

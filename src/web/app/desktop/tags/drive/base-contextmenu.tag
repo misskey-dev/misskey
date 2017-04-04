@@ -2,13 +2,13 @@
 	<mk-contextmenu ref="ctx">
 		<ul>
 			<li onclick={ parent.createFolder }>
-				<p><i class="fa fa-folder-o"></i>フォルダーを作成</p>
+				<p><i class="fa fa-folder-o"></i>%i18n:desktop.tags.mk-drive-browser-base-contextmenu.create-folder%</p>
 			</li>
 			<li onclick={ parent.upload }>
-				<p><i class="fa fa-upload"></i>ファイルをアップロード</p>
+				<p><i class="fa fa-upload"></i>%i18n:desktop.tags.mk-drive-browser-base-contextmenu.upload%</p>
 			</li>
 			<li onclick={ parent.urlUpload }>
-				<p><i class="fa fa-cloud-upload"></i>URLからアップロード</p>
+				<p><i class="fa fa-cloud-upload"></i>%i18n:desktop.tags.mk-drive-browser-base-contextmenu.url-upload%</p>
 			</li>
 		</ul>
 	</mk-contextmenu>
