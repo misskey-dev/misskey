@@ -125,64 +125,64 @@ common:
 desktop:
   tags:
     mk-drive-browser-base-contextmenu:
-      create-folder: "フォルダーを作成"
-      upload: "ファイルをアップロード"
-      url-upload: "URLからアップロード"
+      create-folder: "Create a folder"
+      upload: "Upload a file"
+      url-upload: "Upload from a URL"
 
     mk-drive-browser-window:
-      used: "使用中"
-      drive: "ドライブ"
+      used: "used"
+      drive: "Drive"
 
     mk-drive-browser:
-      search: "検索"
-      load-more: "もっと読み込む"
-      empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
-      empty-drive: "ドライブには何もありません。"
+      search: "Search"
+      load-more: "Load more"
+      empty-draghover: "Drop Welcome!"
+      empty-drive: "Your drive is empty"
       empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
-      empty-folder: "このフォルダーは空です"
+      empty-folder: "This folder is empty"
       unable-to-process: "操作を完了できません"
       circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      unhandled-error: "不明なエラー"
-      url-upload: "URLアップロード"
-      url-of-file: "アップロードしたいファイルのURL"
-      url-upload-requested: "アップロードをリクエストしました"
+      unhandled-error: "Unknown error"
+      url-upload: "Upload from a URL"
+      url-of-file: "URL of file you want to upload"
+      url-upload-requested: "Upload requested"
       may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
-      create-folder: "フォルダー作成"
-      folder-name: "フォルダー名"
+      create-folder: "Create a folder"
+      folder-name: "Folder name"
 
     mk-drive-browser-file-contextmenu:
-      rename: "名前を変更"
-      copy-url: "URLをコピー"
-      download: "ダウンロード"
+      rename: "Rename"
+      copy-url: "Copy URL"
+      download: "Download"
       else-files: "その他..."
-      set-as-avatar: "アバターに設定"
-      set-as-banner: "バナーに設定"
-      open-in-app: "アプリで開く"
-      add-app: "アプリを追加"
-      rename-file: "ファイル名の変更"
-      input-new-file-name: "新しいファイル名を入力してください"
-      copied: "コピー完了"
-      copied-url-to-clipboard: "URLをクリップボードにコピーしました"
+      set-as-avatar: "Set as avatar"
+      set-as-banner: "Set as banner"
+      open-in-app: "Open in app"
+      add-app: "Add app"
+      rename-file: "Rename file"
+      input-new-file-name: "Enter new name"
+      copied: "Copied"
+      copied-url-to-clipboard: "Copied URL to clipboard"
 
     mk-drive-browser-file:
-      avatar: "アバター"
-      banner: "バナー"
-      wallpaper: "壁紙"
+      avatar: "Avatar"
+      banner: "Banner"
+      wallpaper: "Wallpaper"
 
     mk-drive-browser-folder-contextmenu:
-      move-to-this-folder: "このフォルダへ移動"
-      show-in-new-window: "新しいウィンドウで表示"
-      rename: "名前を変更"
-      rename-folder: "フォルダ名の変更"
-      input-new-folder-name: "新しいフォルダ名を入力してください"
+      move-to-this-folder: "Move to this folder"
+      show-in-new-window: "Open in new window"
+      rename: "Rename"
+      rename-folder: "Rename folder"
+      input-new-folder-name: "Enter new name"
 
     mk-drive-browser-folder:
       unable-to-process: "操作を完了できません"
       circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      unhandled-error: "不明なエラー"
+      unhandled-error: "Unknown error"
 
     mk-drive-browser-nav-folder:
-      drive: "ドライブ"
+      drive: "Drive"
 
     mk-ui-header-nav:
       home: "Home"
