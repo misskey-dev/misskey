@@ -1,7 +1,7 @@
 {
   "name": "misskey",
   "author": "syuilo <i@syuilo.com>",
-  "version": "0.0.1602",
+  "version": "0.0.1615",
   "license": "MIT",
   "description": "A miniblog-based SNS",
   "bugs": "https://github.com/syuilo/misskey/issues",
@@ -91,6 +91,7 @@
     "webpack": "2.3.3"
   },
   "dependencies": {
+    "accesses": "2.0.3",
     "animejs": "2.0.2",
     "autwh": "0.0.1",
     "bcryptjs": "2.4.3",
