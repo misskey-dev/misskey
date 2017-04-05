@@ -8,6 +8,7 @@ import * as https from 'https';
 import * as cluster from 'cluster';
 import * as express from 'express';
 import * as morgan from 'morgan';
+import Accesses from 'accesses';
 import vhost = require('vhost');
 
 import config from './conf';
@@ -20,6 +21,16 @@ app.disable('x-powered-by');
 app.set('trust proxy', 'loopback');
 
 // Log
+if (config.accesses && config.accesses.enable) {
+	const accesses = new Accesses({
+		appName: 'Misskey',
+		port: config.accesses.port,
+		hashIp: true
+	});
+
+	app.use(accesses.express);
+}
+
 app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev', {
 	// create a write stream (in append mode)
 	stream: config.accesslog ? fs.createWriteStream(config.accesslog) : null
