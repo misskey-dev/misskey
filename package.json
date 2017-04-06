@@ -91,7 +91,7 @@
     "webpack": "2.3.3"
   },
   "dependencies": {
-    "accesses": "2.1.1",
+    "accesses": "2.2.0",
     "animejs": "2.0.2",
     "autwh": "0.0.1",
     "bcryptjs": "2.4.3",
