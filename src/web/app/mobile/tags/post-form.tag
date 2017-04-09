@@ -266,7 +266,7 @@
 				: undefined;
 
 			this.api('posts/create', {
-				text: this.refs.text.value,
+				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
 				media_ids: files,
 				reply_to_id: opts.reply ? opts.reply.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined
