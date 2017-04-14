@@ -58,7 +58,7 @@ export default async (req: express.Request, res: express.Response) => {
 	const hash = bcrypt.hashSync(password, salt);
 
 	// Generate secret
-	const secret = '!' + rndstr('a-zA-Z0-9', 32);
+	const secret = `!${rndstr('a-zA-Z0-9', 32)}`;
 
 	// Create account
 	const account = await User.insert({

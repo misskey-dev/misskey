@@ -49,7 +49,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		day = new Date(day.setSeconds(59));
 		day = new Date(day.setMinutes(59));
 		day = new Date(day.setHours(23));
-		//day = day.getTime();
+		// day = day.getTime();
 
 		const count = likes.filter(l =>
 			l.created_at < day && (l.deleted_at == null || l.deleted_at > day)

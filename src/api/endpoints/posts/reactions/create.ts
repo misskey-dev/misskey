@@ -67,7 +67,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	res();
 
 	const inc = {};
-	inc['reaction_counts.' + reaction] = 1;
+	inc[`reaction_counts.${reaction}`] = 1;
 
 	// Increment reactions count
 	await Post.update({ _id: post._id }, {

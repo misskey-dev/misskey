@@ -32,14 +32,14 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 	} else {
 		const select = {};
 		if (key !== null) {
-			select['data.' + key] = true;
+			select[`data.${key}`] = true;
 		}
 		const appdata = await Appdata.findOne({
 			app_id: app._id,
 			user_id: user._id
 		}, {
-			fields: select
-		});
+				fields: select
+			});
 
 		if (appdata) {
 			res(appdata.data);

@@ -37,10 +37,10 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 	let set = {};
 	if (data) {
 		Object.entries(data).forEach(([k, v]) => {
-			set['data.' + k] = v;
+			set[`data.${k}`] = v;
 		});
 	} else {
-		set['data.' + key] = value;
+		set[`data.${key}`] = value;
 	}
 
 	if (isSecure) {
@@ -63,10 +63,10 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 			app_id: app._id,
 			user_id: user._id
 		}, {
-			$set: set
-		}), {
-			upsert: true
-		});
+				$set: set
+			}), {
+				upsert: true
+			});
 
 		res(204);
 	}

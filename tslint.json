@@ -63,6 +63,7 @@
       true,
       "check-function-in-method"
     ],
+    "no-misused-new": true,
     "no-null-keyword": false,
     "no-shadowed-variable": false,
     "no-string-literal": false,
@@ -92,7 +93,10 @@
     "no-default-export": false,
     "no-mergeable-namespace": true,
     "no-require-imports": false,
+    "no-reference-import": true,
     "no-trailing-whitespace": true,
+    "no-unnecessary-callback-wrapper": true,
+    "no-unnecessary-initializer": true,
     "object-literal-sort-keys": false,
     "trailing-comma": true,
     // Style
@@ -102,8 +106,12 @@
       "statements"
     ],
     "arrow-parens": false,
+    "arrow-return-shorthand": true,
     "class-name": true,
-    "comment-format": false,
+    "comment-format": [
+      true,
+      "check-space"
+    ],
     "interface-name": false,
     "jsdoc-format": true,
     "match-default-export-name": false,
@@ -122,6 +130,9 @@
     ],
     "one-variable-per-declaration": true,
     "ordered-imports": false,
+    "prefer-function-over-method": true,
+    "prefer-method-signature": true,
+    "prefer-template": true,
     "quotemark": [
       true,
       "single",
@@ -135,7 +146,8 @@
       "check-decl",
       "check-operator",
       "check-separator",
-      "check-type"
+      "check-type",
+      "check-preblock"
     ]
   }
 }

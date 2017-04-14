@@ -52,7 +52,7 @@ export default class extends ev.EventEmitter {
 
 	private render(): string {
 		const width = 30;
-		const t = this.text ? this.text + ' ' : '';
+		const t = this.text ? `${this.text} ` : '';
 
 		const v = Math.floor((this.value / this.max) * width);
 		const vs = new Array(v + 1).join('*');
@@ -61,7 +61,7 @@ export default class extends ev.EventEmitter {
 		const ps = new Array(p + 1).join(' ');
 
 		const percentage = Math.floor((this.value / this.max) * 100);
-		const percentages = chalk.gray(`(${percentage}%)`);
+		const percentages = chalk.gray(`(${percentage} %)`);
 
 		let i: string;
 		switch (this.indicator) {
@@ -72,7 +72,7 @@ export default class extends ev.EventEmitter {
 			case null: i = '+'; break;
 		}
 
-		return `${i} ${t}[${vs}${ps}] ${this.value}/${this.max} ${percentages}`;
+		return `${i} ${t}[${vs}${ps}] ${this.value} / ${this.max} ${percentages}`;
 	}
 }
 

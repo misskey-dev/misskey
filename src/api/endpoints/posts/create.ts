@@ -45,8 +45,8 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 				_id: mediaId,
 				user_id: user._id
 			}, {
-				_id: true
-			});
+					_id: true
+				});
 
 			if (entity === null) {
 				return rej('file not found');
@@ -79,23 +79,23 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		const latestPost = await Post.findOne({
 			user_id: user._id
 		}, {
-			sort: {
-				_id: -1
-			}
-		});
+				sort: {
+					_id: -1
+				}
+			});
 
 		// 直近と同じRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
-				latestPost.repost_id &&
-				latestPost.repost_id.equals(repost._id) &&
-				text === undefined && files === null) {
+			latestPost.repost_id &&
+			latestPost.repost_id.equals(repost._id) &&
+			text === undefined && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
 
 		// 直近がRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
-				latestPost._id.equals(repost._id) &&
-				text === undefined && files === null) {
+			latestPost._id.equals(repost._id) &&
+			text === undefined && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
 	}
@@ -152,11 +152,11 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			repost: user.latest_post.repost_id ? user.latest_post.repost_id.toString() : null,
 			media_ids: (user.latest_post.media_ids || []).map(id => id.toString())
 		}, {
-			text: text,
-			reply: inReplyToPost ? inReplyToPost._id.toString() : null,
-			repost: repost ? repost._id.toString() : null,
-			media_ids: (files || []).map(file => file._id.toString())
-		})) {
+				text: text,
+				reply: inReplyToPost ? inReplyToPost._id.toString() : null,
+				repost: repost ? repost._id.toString() : null,
+				media_ids: (files || []).map(file => file._id.toString())
+			})) {
 			return rej('duplicate');
 		}
 	}
@@ -179,7 +179,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Reponse
 	res(postObj);
 
-	//--------------------------------
+	// --------------------------------
 	// Post processes
 
 	User.update({ _id: user._id }, {
@@ -288,17 +288,17 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	if (text) {
 		// Analyze
 		const tokens = parse(text);
-/*
-		// Extract a hashtags
-		const hashtags = tokens
-			.filter(t => t.type == 'hashtag')
-			.map(t => t.hashtag)
-			// Drop dupulicates
-			.filter((v, i, s) => s.indexOf(v) == i);
+		/*
+				// Extract a hashtags
+				const hashtags = tokens
+					.filter(t => t.type == 'hashtag')
+					.map(t => t.hashtag)
+					// Drop dupulicates
+					.filter((v, i, s) => s.indexOf(v) == i);
 
-		// ハッシュタグをデータベースに登録
-		registerHashtags(user, hashtags);
-*/
+				// ハッシュタグをデータベースに登録
+				registerHashtags(user, hashtags);
+		*/
 		// Extract an '@' mentions
 		const atMentions = tokens
 			.filter(t => t.type == 'mention')

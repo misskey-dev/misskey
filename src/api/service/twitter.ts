@@ -1,6 +1,6 @@
 import * as express from 'express';
-//import * as Twitter from 'twitter';
-//const Twitter = require('twitter');
+// import * as Twitter from 'twitter';
+// const Twitter = require('twitter');
 import autwh from 'autwh';
 import redis from '../../db/redis';
 import User from '../models/user';
@@ -14,10 +14,10 @@ module.exports = (app: express.Application) => {
 		const user = await User.findOneAndUpdate({
 			token: res.locals.user
 		}, {
-			$set: {
-				twitter: null
-			}
-		});
+				$set: {
+					twitter: null
+				}
+			});
 
 		res.send(`Twitterの連携を解除しました :v:`);
 
@@ -38,7 +38,7 @@ module.exports = (app: express.Application) => {
 	const twAuth = autwh({
 		consumerKey: config.twitter.consumer_key,
 		consumerSecret: config.twitter.consumer_secret,
-		callbackUrl: config.api_url + '/tw/cb'
+		callbackUrl: `${config.api_url}/tw/cb`
 	});
 
 	app.get('/connect/twitter', async (req, res): Promise<any> => {
@@ -56,15 +56,15 @@ module.exports = (app: express.Application) => {
 			const user = await User.findOneAndUpdate({
 				token: res.locals.user
 			}, {
-				$set: {
-					twitter: {
-						access_token: result.accessToken,
-						access_token_secret: result.accessTokenSecret,
-						user_id: result.userId,
-						screen_name: result.screenName
+					$set: {
+						twitter: {
+							access_token: result.accessToken,
+							access_token_secret: result.accessTokenSecret,
+							user_id: result.userId,
+							screen_name: result.screenName
+						}
 					}
-				}
-			});
+				});
 
 			res.send(`Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`);
 

@@ -24,7 +24,7 @@ app.use(cors());
 /**
  * Statics
  */
-app.use('/assets', express.static(__dirname + '/assets', {
+app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: 1000 * 60 * 60 * 24 * 365 // 一年
 }));
 
@@ -33,12 +33,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/default-avatar.jpg', (req, res) => {
-	const file = fs.readFileSync(__dirname + '/assets/avatar.jpg');
+	const file = fs.readFileSync(`${__dirname}/assets/avatar.jpg`);
 	send(file, 'image/jpeg', req, res);
 });
 
 app.get('/app-default.jpg', (req, res) => {
-	const file = fs.readFileSync(__dirname + '/assets/dummy.png');
+	const file = fs.readFileSync(`${__dirname}/assets/dummy.png`);
 	send(file, 'image/png', req, res);
 });
 
@@ -54,7 +54,7 @@ async function raw(data: Buffer, type: string, download: boolean, res: express.R
 
 async function thumbnail(data: Buffer, type: string, resize: number, res: express.Response): Promise<any> {
 	if (!/^image\/.*$/.test(type)) {
-		data = fs.readFileSync(__dirname + '/assets/dummy.png');
+		data = fs.readFileSync(`${__dirname}/assets/dummy.png`);
 	}
 
 	let g = gm(data);
@@ -64,18 +64,18 @@ async function thumbnail(data: Buffer, type: string, resize: number, res: expres
 	}
 
 	g
-	.compress('jpeg')
-	.quality(80)
-	.toBuffer('jpeg', (err, img) => {
-		if (err !== undefined && err !== null) {
-			console.error(err);
-			res.sendStatus(500);
-			return;
-		}
+		.compress('jpeg')
+		.quality(80)
+		.toBuffer('jpeg', (err, img) => {
+			if (err !== undefined && err !== null) {
+				console.error(err);
+				res.sendStatus(500);
+				return;
+			}
 
-		res.header('Content-Type', 'image/jpeg');
-		res.send(img);
-	});
+			res.header('Content-Type', 'image/jpeg');
+			res.send(img);
+		});
 }
 
 function send(data: Buffer, type: string, req: express.Request, res: express.Response): void {
@@ -97,10 +97,10 @@ app.get('/:id', async (req, res) => {
 		return;
 	}
 
-	const file = await File.findOne({_id: new mongodb.ObjectID(req.params.id)});
+	const file = await File.findOne({ _id: new mongodb.ObjectID(req.params.id) });
 
 	if (file == null) {
-		res.status(404).sendFile(__dirname + '/assets/dummy.png');
+		res.status(404).sendFile(`${__dirname} / assets / dummy.png`);
 		return;
 	} else if (file.data == null) {
 		res.sendStatus(400);
@@ -117,10 +117,10 @@ app.get('/:id/:name', async (req, res) => {
 		return;
 	}
 
-	const file = await File.findOne({_id: new mongodb.ObjectID(req.params.id)});
+	const file = await File.findOne({ _id: new mongodb.ObjectID(req.params.id) });
 
 	if (file == null) {
-		res.status(404).sendFile(__dirname + '/assets/dummy.png');
+		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
 		return;
 	} else if (file.data == null) {
 		res.sendStatus(400);

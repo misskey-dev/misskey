@@ -38,8 +38,8 @@ app.use((req, res, next) => {
  * Static assets
  */
 app.use(favicon(`${__dirname}/assets/favicon.ico`));
-app.get('/manifest.json', (req, res) => res.sendFile(__dirname + '/assets/manifest.json'));
-app.get('/apple-touch-icon.png', (req, res) => res.sendFile(__dirname + '/assets/apple-touch-icon.png'));
+app.get('/manifest.json', (req, res) => res.sendFile(`${__dirname}/assets/manifest.json`));
+app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${__dirname}/assets/apple-touch-icon.png`));
 app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
@@ -47,7 +47,7 @@ app.use('/assets', express.static(`${__dirname}/assets`, {
 /**
  * Common API
  */
-app.get(/\/api:url/,  require('./service/url-preview'));
+app.get(/\/api:url/, require('./service/url-preview'));
 app.post(/\/api:rss/, require('./service/rss-proxy'));
 
 /**
@@ -74,7 +74,7 @@ app.use(subdomain({
  */
 app.use(require('./about')); // about docs
 app.get('/@/auth/*', serveApp('auth')); // authorize form
-app.get('/@/dev/*',  serveApp('dev')); // developer center
-app.get('*',         serveApp('client')); // client
+app.get('/@/dev/*', serveApp('dev')); // developer center
+app.get('*', serveApp('client')); // client
 
 module.exports = app;
