@@ -188,7 +188,6 @@ desktop:
       home: "Home"
       messaging: "Messages"
       info: "News"
-      live: "Live"
 
     mk-ui-header-search:
       placeholder: "Search"
@@ -384,7 +383,6 @@ mobile:
       home: "Home"
       notifications: "Notifications"
       messaging: "Messages"
-      live: "Live"
       drive: "Drive"
       settings: "Settings"
       about: "About Misskey"

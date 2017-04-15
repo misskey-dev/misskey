@@ -10,7 +10,6 @@
 				<li class="home"><a href="/"><i class="icon fa fa-home"></i>%i18n:mobile.tags.mk-ui-nav.home%<i class="angle fa fa-angle-right"></i></a></li>
 				<li class="notifications"><a href="/i/notifications"><i class="icon fa fa-bell-o"></i>%i18n:mobile.tags.mk-ui-nav.notifications%<i class="angle fa fa-angle-right"></i></a></li>
 				<li class="messaging"><a href="/i/messaging"><i class="icon fa fa-comments-o"></i>%i18n:mobile.tags.mk-ui-nav.messaging%<i class="angle fa fa-angle-right"></i></a></li>
-				<li class="live"><a href="//misskey.tk" target="_blank"><i class="icon fa fa-television"></i>%i18n:mobile.tags.mk-ui-nav.live%<i class="angle fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
 				<li class="settings"><a onclick={ search }><i class="icon fa fa-search"></i>%i18n:mobile.tags.mk-ui-nav.search%<i class="angle fa fa-angle-right"></i></a></li>

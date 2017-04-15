@@ -19,12 +19,6 @@
 				<p>%i18n:desktop.tags.mk-ui-header-nav.info%</p>
 			</a>
 		</li>
-		<li class="live">
-			<a href="https://misskey.tk" target="_blank">
-				<i class="fa fa-television"></i>
-				<p>%i18n:desktop.tags.mk-ui-header-nav.live%</p>
-			</a>
-		</li>
 	</ul>
 	<style>
 		:scope

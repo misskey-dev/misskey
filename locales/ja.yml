@@ -188,7 +188,6 @@ desktop:
       home: "ホーム"
       messaging: "メッセージ"
       info: "お知らせ"
-      live: "ライブ"
 
     mk-ui-header-search:
       placeholder: "検索"
@@ -384,7 +383,6 @@ mobile:
       home: "ホーム"
       notifications: "通知"
       messaging: "メッセージ"
-      live: "ライブ"
       search: "検索"
       drive: "ドライブ"
       settings: "設定"
