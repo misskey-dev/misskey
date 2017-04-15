@@ -43,7 +43,7 @@
 					display table-cell
 					vertical-align middle
 					height 48px
-					color #dbe2e0
+					color #9eaba8
 
 					> .yyyymmdd
 						opacity 0.7

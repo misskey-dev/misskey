@@ -13,7 +13,7 @@
 				margin 0
 				padding 0
 				width 32px
-				color #dbe2e0
+				color #9eaba8
 				border none
 				background transparent
 				cursor pointer
@@ -23,7 +23,10 @@
 
 				&:hover
 				&[data-active='true']
-					color #fff
+					color darken(#9eaba8, 20%)
+
+				&:active
+					color darken(#9eaba8, 30%)
 
 				> i
 					font-size 1.2em

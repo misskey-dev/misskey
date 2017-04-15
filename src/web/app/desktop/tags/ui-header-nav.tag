@@ -53,7 +53,7 @@
 						padding 0 24px
 						font-size 13px
 						font-variant small-caps
-						color #dbe2e0
+						color #9eaba8
 						text-decoration none
 						transition none
 						cursor pointer
@@ -62,7 +62,7 @@
 							pointer-events none
 
 						&:hover
-							color #fff
+							color darken(#9eaba8, 20%)
 							text-decoration none
 
 						> i:first-child

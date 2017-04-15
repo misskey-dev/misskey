@@ -35,7 +35,7 @@
 				display block
 				margin 0
 				padding 0
-				color #dbe2e0
+				color #9eaba8
 				border none
 				background transparent
 				cursor pointer
@@ -45,10 +45,13 @@
 
 				&:hover
 				&[data-active='true']
-					color #fff
+					color darken(#9eaba8, 20%)
 
 					> .avatar
 						filter saturate(150%)
+
+				&:active
+					color darken(#9eaba8, 30%)
 
 				> .username
 					display block
