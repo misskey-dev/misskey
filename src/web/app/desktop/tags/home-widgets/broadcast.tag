@@ -14,7 +14,7 @@
 		:scope
 			display block
 			padding 10px 10px 10px 50px
-			background transparent
+			background #fff
 			border-color #4078c0 !important
 
 			&:after
