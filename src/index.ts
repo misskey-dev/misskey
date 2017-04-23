@@ -121,7 +121,7 @@ async function init(): Promise<Config> {
 	return config;
 }
 
-function spawnWorkers(onComplete: any) {
+function spawnWorkers(onComplete: Function) {
 	// Count the machine's CPUs
 	const cpuCount = os.cpus().length;
 
