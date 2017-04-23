@@ -4,9 +4,6 @@
 
 Error.stackTraceLimit = Infinity;
 
-/**
- * Module dependencies
- */
 import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
@@ -141,9 +138,7 @@ function spawnWorkers(onComplete: any) {
 	}
 
 	// On all workers started
-	progress.on('complete', () => {
-		onComplete();
-	});
+	progress.on('complete', onComplete);
 }
 
 // Listen new workers
