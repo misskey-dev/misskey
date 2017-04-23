@@ -54,12 +54,8 @@ async function masterMain() {
 		config = await init();
 	} catch (e) {
 		console.error(e);
-		process.exit(1);
-	}
-
-	if (config == null) {
 		Logger.error(chalk.red('Fatal error occurred during initializing :('));
-		process.exit();
+		process.exit(1);
 	}
 
 	Logger.info(chalk.green('Successfully initialized :)'));
@@ -70,7 +66,7 @@ async function masterMain() {
 	}
 
 	spawnWorkers(() => {
-		Logger.info(chalk.bold.green(`Now listening on port ${loadConfig().port}`));
+		Logger.info(chalk.bold.green(`Now listening on port ${config.port}`));
 	});
 }
 
@@ -96,8 +92,7 @@ async function init(): Promise<Config> {
 
 	let configLogger = new Logger('Config');
 	if (!fs.existsSync(configPath)) {
-		configLogger.error('Configuration not found');
-		return null;
+		throw 'Configuration not found';
 	}
 
 	const config = loadConfig();
@@ -106,15 +101,13 @@ async function init(): Promise<Config> {
 	configLogger.info(`maintainer: ${config.maintainer}`);
 
 	if (process.platform === 'linux' && !isRoot() && config.port < 1024) {
-		Logger.error('You need root privileges to listen on port below 1024 on Linux');
-		return null;
+		throw 'You need root privileges to listen on port below 1024 on Linux';
 	}
 
 	// Check if a port is being used
 	/* https://github.com/stdarg/tcp-port-used/issues/3
 	if (await portUsed.check(config.port)) {
-		Logger.error(`Port ${config.port} is already used`);
-		return null;
+		throw `Port ${config.port} is already used`;
 	}
 	*/
 
@@ -125,8 +118,7 @@ async function init(): Promise<Config> {
 		mongoDBLogger.info('Successfully connected');
 		db.close();
 	} catch (e) {
-		mongoDBLogger.error(e);
-		return null;
+		throw e;
 	}
 
 	return config;
