@@ -110,13 +110,9 @@ async function init(): Promise<Config> {
 
 	// Try to connect to MongoDB
 	let mongoDBLogger = new Logger('MongoDB');
-	try {
-		const db = require('./db/mongodb').default;
-		mongoDBLogger.info('Successfully connected');
-		db.close();
-	} catch (e) {
-		throw e;
-	}
+	const db = require('./db/mongodb').default;
+	mongoDBLogger.info('Successfully connected');
+	db.close();
 
 	return config;
 }
