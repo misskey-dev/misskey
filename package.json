@@ -135,7 +135,7 @@
     "redis": "2.7.1",
     "request": "2.81.0",
     "rimraf": "2.6.1",
-    "riot": "3.4.2",
+    "riot": "3.4.3",
     "rndstr": "1.0.0",
     "s-age": "1.1.0",
     "serve-favicon": "2.4.2",
