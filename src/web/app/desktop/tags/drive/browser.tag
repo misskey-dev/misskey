@@ -4,7 +4,9 @@
 			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }></mk-drive-browser-nav-folder>
 			<virtual each={ folder in hierarchyFolders }><span class="separator"><i class="fa fa-angle-right"></i></span>
 				<mk-drive-browser-nav-folder folder={ folder }></mk-drive-browser-nav-folder>
-			</virtual><span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span><span class="folder current" if={ folder != null }>{ folder.name }</span>
+			</virtual>
+			<span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span>
+			<span class="folder current" if={ folder != null }>{ folder.name }</span>
 		</div>
 		<input class="search" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-drive-browser.search%"/>
 	</nav>
@@ -477,7 +479,9 @@
 		};
 
 		this.urlUpload = () => {
-			inputDialog('%i18n:desktop.tags.mk-drive-browser.url-upload%', '%i18n:desktop.tags.mk-drive-browser.url-of-file%', null, url => {
+			inputDialog('%i18n:desktop.tags.mk-drive-browser.url-upload%',
+				'%i18n:desktop.tags.mk-drive-browser.url-of-file%', null, url => {
+
 				this.api('drive/files/upload_from_url', {
 					url: url,
 					folder_id: this.folder ? this.folder.id : undefined
@@ -491,7 +495,9 @@
 		};
 
 		this.createFolder = () => {
-			inputDialog('%i18n:desktop.tags.mk-drive-browser.create-folder%', '%i18n:desktop.tags.mk-drive-browser.folder-name%', null, name => {
+			inputDialog('%i18n:desktop.tags.mk-drive-browser.create-folder%',
+				'%i18n:desktop.tags.mk-drive-browser.folder-name%', null, name => {
+
 				this.api('drive/folders/create', {
 					name: name,
 					folder_id: this.folder ? this.folder.id : undefined
