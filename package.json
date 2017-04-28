@@ -105,7 +105,7 @@
     "debug": "2.6.4",
     "deep-equal": "1.0.1",
     "deepcopy": "0.6.3",
-    "download": "5.0.3",
+    "download": "6.0.0",
     "elasticsearch": "13.0.0-rc1",
     "escape-html": "1.0.3",
     "escape-regexp": "0.0.1",
