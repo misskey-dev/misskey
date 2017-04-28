@@ -102,7 +102,7 @@
     "cors": "2.8.3",
     "cropperjs": "1.0.0-rc",
     "crypto": "0.0.3",
-    "debug": "2.6.4",
+    "debug": "2.6.6",
     "deep-equal": "1.0.1",
     "deepcopy": "0.6.3",
     "download": "5.0.3",
