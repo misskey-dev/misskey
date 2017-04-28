@@ -42,7 +42,7 @@
     "@types/gulp-rename": "0.0.32",
     "@types/gulp-replace": "0.0.30",
     "@types/gulp-tslint": "3.6.31",
-    "@types/gulp-typescript": "0.0.32",
+    "@types/gulp-typescript": "2.13.0",
     "@types/gulp-uglify": "0.0.30",
     "@types/gulp-util": "3.0.31",
     "@types/inquirer": "0.0.34",
