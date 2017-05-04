@@ -88,7 +88,7 @@
     "swagger-jsdoc": "1.9.3",
     "tslint": "5.2.0",
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#8f4b45f4f814c04918382949b4bcaf7a8d910281",
-    "webpack": "2.4.1"
+    "webpack": "2.5.0"
   },
   "dependencies": {
     "accesses": "2.5.0",
