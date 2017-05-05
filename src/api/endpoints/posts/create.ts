@@ -45,8 +45,8 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 				_id: mediaId,
 				user_id: user._id
 			}, {
-					_id: true
-				});
+				_id: true
+			});
 
 			if (entity === null) {
 				return rej('file not found');
@@ -79,10 +79,10 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		const latestPost = await Post.findOne({
 			user_id: user._id
 		}, {
-				sort: {
-					_id: -1
-				}
-			});
+			sort: {
+				_id: -1
+			}
+		});
 
 		// 直近と同じRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
