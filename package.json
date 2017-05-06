@@ -110,7 +110,7 @@
     "escape-html": "1.0.3",
     "escape-regexp": "0.0.1",
     "express": "4.15.2",
-    "file-type": "4.2.0",
+    "file-type": "4.3.0",
     "fuckadblock": "3.2.1",
     "glob": "7.1.1",
     "gm": "1.23.0",
