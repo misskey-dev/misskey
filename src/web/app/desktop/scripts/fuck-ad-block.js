@@ -1,5 +1,5 @@
 require('fuckadblock');
-const dialog = require('./dialog');
+import dialog from './dialog';
 
 export default () => {
 	if (fuckAdBlock === undefined) {
