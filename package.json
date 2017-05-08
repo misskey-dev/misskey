@@ -117,7 +117,7 @@
     "inquirer": "3.0.6",
     "is-root": "1.0.0",
     "is-url": "1.2.2",
-    "js-yaml": "3.8.3",
+    "js-yaml": "3.8.4",
     "mime-types": "2.1.15",
     "mongodb": "2.2.26",
     "monk": "4.0.0",
