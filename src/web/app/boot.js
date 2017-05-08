@@ -120,7 +120,7 @@ function fetchme(token, cb) {
 	}
 
 	// Fetch user
-	fetch(CONFIG.apiUrl + '/i', {
+	fetch(`${CONFIG.apiUrl}/i`, {
 		method: 'POST',
 		body: JSON.stringify({
 			i: token
@@ -159,6 +159,17 @@ function fetchme(token, cb) {
 
 function panic(e) {
 	console.error(e);
-	document.body.innerHTML = '<div id="error"><p>致命的な問題が発生しました。</p></div>';
+	document.body.innerHTML =
+		`<div id="error">
+			<h1>:( 致命的な問題が発生しました。</h1>
+			<p>お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。</p>
+			<hr>
+			<p>エラーコード: ${e.toString()}</p>
+			<p>ブラウザ バージョン: ${navigator.userAgent}</p>
+			<p>クライアント バージョン: ${VERSION}</p>
+			<hr>
+			<p>問題が解決しない場合は上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>
+			<p>Thank you for using Misskey.</p>
+		</div>`;
 	// TODO: Report the bug
 }
