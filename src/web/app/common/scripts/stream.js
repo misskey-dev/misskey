@@ -1,7 +1,12 @@
+'use strict';
+
 const ReconnectingWebSocket = require('reconnecting-websocket');
 import * as riot from 'riot';
 import CONFIG from './config';
 
+/**
+ * Home stream connection
+ */
 class Connection {
 	constructor(me) {
 		// BIND -----------------------------------
@@ -27,6 +32,10 @@ class Connection {
 		this.on('i_updated', me.update);
 	}
 
+	/**
+	 * Callback of when open connection
+	 * @private
+	 */
 	onOpen() {
 		this.state = 'connected';
 		this.trigger('_connected_');
@@ -39,11 +48,19 @@ class Connection {
 		});
 	}
 
+	/**
+	 * Callback of when close connection
+	 * @private
+	 */
 	onClose() {
 		this.state = 'reconnecting';
 		this.trigger('_closed_');
 	}
 
+	/**
+	 * Callback of when received a message from connection
+	 * @private
+	 */
 	onMessage(message) {
 		try {
 			const msg = JSON.parse(message.data);
@@ -53,6 +70,10 @@ class Connection {
 		}
 	}
 
+	/**
+	 * Send a message to connection
+	 * @public
+	 */
 	send(message) {
 		// まだ接続が確立されていなかったらバッファリングして次に接続した時に送信する
 		if (this.state != 'connected') {
@@ -63,6 +84,10 @@ class Connection {
 		this.socket.send(JSON.stringify(message));
 	}
 
+	/**
+	 * Close this connection
+	 * @public
+	 */
 	close() {
 		this.socket.removeEventListener('open', this.onOpen);
 		this.socket.removeEventListener('message', this.onMessage);
