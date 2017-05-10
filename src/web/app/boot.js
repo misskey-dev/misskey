@@ -1,6 +1,8 @@
 /**
- * boot
+ * boot loader
  */
+
+"use strict";
 
 import * as riot from 'riot';
 import api from './common/scripts/api';
@@ -15,16 +17,12 @@ require('./common/tags');
  * MISSKEY ENTRY POINT!
  */
 
-"use strict";
-
 console.info(`Misskey v${VERSION}`);
 
 document.domain = CONFIG.host;
 
 // Set global configuration
-riot.mixin({
-	CONFIG
-});
+riot.mixin({ CONFIG });
 
 // ↓ NodeList、HTMLCollection、FileList、DataTransferItemListで forEach を使えるようにする
 if (NodeList.prototype.forEach === undefined) {
@@ -40,7 +38,7 @@ if (window.DataTransferItemList && DataTransferItemList.prototype.forEach === un
 	DataTransferItemList.prototype.forEach = Array.prototype.forEach;
 }
 
-// ↓ iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
+// iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
 	localStorage.setItem('kyoppie', 'yuppie');
 } catch (e) {
@@ -76,15 +74,18 @@ export default callback => {
 		fetchme(i, fetched);
 	}
 
+	// フェッチが完了したとき
 	function fetched(me) {
 		if (me) {
 			riot.observable(me);
 
+			// この me オブジェクトを更新するメソッド
 			me.update = data => {
 				if (data) Object.assign(me, data);
 				me.trigger('updated');
 			};
 
+			// ローカルストレージにキャッシュ
 			localStorage.setItem('me', JSON.stringify(me));
 
 			me.on('updated', () => {
@@ -93,11 +94,14 @@ export default callback => {
 			});
 		}
 
+		// ミックスイン初期化
 		mixin(me);
 
+		// ローディング画面クリア
 		const ini = document.getElementById('ini');
 		ini.parentNode.removeChild(ini);
 
+		// アプリ基底要素マウント
 		const app = document.createElement('div');
 		app.setAttribute('id', 'app');
 		document.body.appendChild(app);
@@ -125,7 +129,7 @@ function fetchme(token, cb) {
 		body: JSON.stringify({
 			i: token
 		})
-	}).then(res => {
+	}).then(res => { // When success
 		// When failed to authenticate user
 		if (res.status !== 200) {
 			return signout();
@@ -138,14 +142,17 @@ function fetchme(token, cb) {
 			// initialize it if user data is empty
 			me.data ? done() : init();
 		});
-	}, () => {
-		riot.mount(document.body.appendChild(document.createElement('mk-error')));
+	}, () => { // When failure
+		// Display error screen
+		riot.mount(document.body.appendChild(
+			document.createElement('mk-error')));
 	});
 
 	function done() {
 		if (cb) cb(me);
 	}
 
+	// Initialize user data
 	function init() {
 		const data = generateDefaultUserdata();
 		api(token, 'i/appdata/set', {
@@ -157,8 +164,11 @@ function fetchme(token, cb) {
 	}
 }
 
+// BSoD
 function panic(e) {
 	console.error(e);
+
+	// Display blue screen
 	document.body.innerHTML =
 		`<div id="error">
 			<h1>:( 致命的な問題が発生しました。</h1>
@@ -168,8 +178,9 @@ function panic(e) {
 			<p>ブラウザ バージョン: ${navigator.userAgent}</p>
 			<p>クライアント バージョン: ${VERSION}</p>
 			<hr>
-			<p>問題が解決しない場合は上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>
+			<p>問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>
 			<p>Thank you for using Misskey.</p>
 		</div>`;
+
 	// TODO: Report the bug
 }
