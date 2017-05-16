@@ -16,7 +16,7 @@ const app = isMobile ? 'mobile' : 'desktop';
 
 // Load app script
 const script = document.createElement('script');
-script.setAttribute('src', `/assets/${app}.${VERSION}.${lang}.js`);
+script.setAttribute('src', `/assets/${app}.${VERSION}.${lang}.js.gz`);
 script.setAttribute('async', 'true');
 script.setAttribute('defer', 'true');
 head.appendChild(script);
