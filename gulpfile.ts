@@ -132,8 +132,11 @@ gulp.task('build:client', [
 ]);
 
 gulp.task('webpack', done => {
-	const output = childProcess.execSync(Path.join('.', 'node_modules', '.bin', 'webpack') + ' --config webpack.config.ts', );
+	const output = childProcess.execSync(
+		Path.join('.', 'node_modules', '.bin', 'webpack') + ' --config ./webpack/webpack.config.ts');
+
 	console.log(output.toString());
+
 	done();
 });
 
