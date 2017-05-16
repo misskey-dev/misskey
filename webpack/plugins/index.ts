@@ -1,3 +1,4 @@
+import * as webpack from 'webpack';
 const StringReplacePlugin = require('string-replace-webpack-plugin');
 
 import constant from './const';
@@ -12,7 +13,7 @@ export default () => {
 	];
 
 	if (isProduction) {
-		//plugins.push(new webpack.optimize.UglifyJsPlugin());
+		plugins.push(new webpack.optimize.UglifyJsPlugin());
 	}
 
 	return plugins;
