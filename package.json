@@ -67,7 +67,6 @@
     "@types/websocket": "0.0.33",
     "chai": "3.5.0",
     "chai-http": "3.0.0",
-    "compression-webpack-plugin": "0.4.0",
     "css-loader": "0.28.1",
     "event-stream": "3.3.4",
     "gulp": "3.9.1",
@@ -88,7 +87,7 @@
     "stylus-loader": "3.0.1",
     "swagger-jsdoc": "1.9.4",
     "tslint": "5.2.0",
-    "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
+    "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#8f4b45f4f814c04918382949b4bcaf7a8d910281",
     "webpack": "2.5.1"
   },
   "dependencies": {
