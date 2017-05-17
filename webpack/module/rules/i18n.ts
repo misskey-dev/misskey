@@ -13,6 +13,8 @@ export default (lang, locale) => ({
 			{
 				pattern: /%i18n:(.+?)%/g, replacement: (_, key) => {
 					let text = locale;
+					
+					// Check the key existance
 					const error = key.split('.').some(k => {
 						if (text.hasOwnProperty(k)) {
 							text = text[k];
@@ -21,9 +23,10 @@ export default (lang, locale) => ({
 							return true;
 						}
 					});
+					
 					if (error) {
 						console.warn(`key '${key}' not found in '${lang}'`);
-						return key;
+						return key; // Fallback
 					} else {
 						return text.replace(/'/g, '\\\'').replace(/"/g, '\\"');
 					}
