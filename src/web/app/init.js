@@ -170,17 +170,17 @@ function panic(e) {
 
 	// Display blue screen
 	document.body.innerHTML =
-		`<div id="error">
-			<h1>:( 致命的な問題が発生しました。</h1>
-			<p>お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。</p>
-			<hr>
-			<p>エラーコード: ${e.toString()}</p>
-			<p>ブラウザ バージョン: ${navigator.userAgent}</p>
-			<p>クライアント バージョン: ${VERSION}</p>
-			<hr>
-			<p>問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>
-			<p>Thank you for using Misskey.</p>
-		</div>`;
+		'<div id="error">'
+			+ '<h1>:( 致命的な問題が発生しました。</h1>'
+			+ '<p>お使いのブラウザ(またはOS)のバージョンを更新すると解決する可能性があります。</p>'
+			+ '<hr>'
+			+ `<p>エラーコード: ${e.toString()}</p>`
+			+ `<p>ブラウザ バージョン: ${navigator.userAgent}</p>`
+			+ `<p>クライアント バージョン: ${VERSION}</p>`
+			+ '<hr>'
+			+ '<p>問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>'
+			+ '<p>Thank you for using Misskey.</p>'
+		+ '</div>';
 
 	// TODO: Report the bug
 }
