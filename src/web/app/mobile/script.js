@@ -6,13 +6,13 @@
 import './style.styl';
 
 require('./tags');
-import boot from '../boot';
+import init from '../init';
 import route from './router';
 
 /**
- * Boot
+ * init
  */
-boot(me => {
+init(me => {
 	// http://qiita.com/junya/items/3ff380878f26ca447f85
 	document.body.setAttribute('ontouchstart', '');
 

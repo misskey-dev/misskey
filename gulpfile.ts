@@ -3,13 +3,11 @@
  */
 
 import * as childProcess from 'child_process';
-import * as fs from 'fs';
 import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
 import tslint from 'gulp-tslint';
-import * as glob from 'glob';
 import * as es from 'event-stream';
 import cssnano = require('gulp-cssnano');
 import * as uglify from 'gulp-uglify';
@@ -36,7 +34,6 @@ const constants = require('./src/const.json');
 gulp.task('build', [
 	'build:js',
 	'build:ts',
-	'build:about:docs',
 	'build:copy',
 	'build:client'
 ]);
@@ -55,31 +52,6 @@ gulp.task('build:ts', () => {
 		.src()
 		.pipe(tsProject())
 		.pipe(gulp.dest('./built/'));
-});
-
-gulp.task('build:about:docs', () => {
-	function getLicenseHtml(path: string) {
-		return fs.readFileSync(path, 'utf-8')
-			.replace(/\r\n/g, '\n')
-			.replace(/(.)\n(.)/g, '$1 $2')
-			.replace(/(^|\n)(.*?)($|\n)/g, '<p>$2</p>');
-	}
-
-	const licenseHtml = getLicenseHtml('./LICENSE');
-	const streams = glob.sync('./docs/**/*.pug').map(file => {
-		const page = file.replace('./docs/', '').replace('.pug', '');
-		return gulp.src(file)
-			.pipe(pug({
-				locals: {
-					path: page,
-					license: licenseHtml,
-					themeColor: constants.themeColor
-				}
-			}))
-			.pipe(gulp.dest('./built/web/about/pages/' + Path.parse(page).dir));
-	});
-
-	return es.merge.apply(es, streams);
 });
 
 gulp.task('build:copy', () =>
@@ -141,7 +113,7 @@ gulp.task('webpack', done => {
 });
 
 gulp.task('build:client:script', () =>
-	gulp.src('./src/web/app/client/script.js')
+	gulp.src('./src/web/app/boot.js')
 		.pipe(replace('VERSION', JSON.stringify(version)))
 		.pipe(isProduction ? uglify() : gutil.noop())
 		.pipe(gulp.dest('./built/web/assets/client/')) as any

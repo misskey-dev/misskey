@@ -2,6 +2,7 @@
  * Web Server
  */
 
+import * as path from 'path';
 import ms = require('ms');
 
 // express modules
@@ -9,8 +10,6 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
-const subdomain = require('subdomain');
-import serveApp from './serve-app';
 
 import config from '../conf';
 
@@ -62,19 +61,12 @@ app.get('/config.json', (req, res) => {
 });
 
 /**
- * Subdomain
- */
-app.use(subdomain({
-	base: config.host,
-	prefix: '@'
-}));
-
-/**
  * Routing
  */
-app.use(require('./about')); // about docs
-app.get('/@/auth/*', serveApp('auth')); // authorize form
-app.get('/@/dev/*', serveApp('dev')); // developer center
-app.get('*', serveApp('client')); // client
+app.get('*', (req, res) => {
+	res.sendFile(path.resolve(`${__dirname}/app/base.html`), {
+		maxAge: ms('7 days')
+	});
+});
 
 module.exports = app;

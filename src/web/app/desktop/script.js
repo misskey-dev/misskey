@@ -8,14 +8,14 @@ import './style.styl';
 require('./tags');
 require('./mixins');
 import * as riot from 'riot';
-import boot from '../boot';
+import init from '../init';
 import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
 
 /**
- * Boot
+ * init
  */
-boot(me => {
+init(me => {
 	/**
 	 * Fuck AD Block
 	 */

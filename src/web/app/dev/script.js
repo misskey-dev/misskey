@@ -6,13 +6,13 @@
 import './style.styl';
 
 require('./tags');
-import boot from '../boot';
+import init from '../init';
 const route = require('./router');
 
 /**
- * Boot
+ * init
  */
-boot(me => {
+init(me => {
 	// Start routing
 	route(me);
 });

@@ -7,14 +7,14 @@ import './style.styl';
 
 import * as riot from 'riot';
 require('./tags');
-import boot from '../boot';
+import init from '../init';
 
 document.title = 'Misskey | アプリの連携';
 
 /**
- * Boot
+ * init
  */
-boot(me => {
+init(me => {
 	mount(document.createElement('mk-index'));
 });
 
