@@ -116,7 +116,7 @@ gulp.task('build:client:script', () =>
 	gulp.src('./src/web/app/boot.js')
 		.pipe(replace('VERSION', JSON.stringify(version)))
 		.pipe(isProduction ? uglify() : gutil.noop())
-		.pipe(gulp.dest('./built/web/assets/client/')) as any
+		.pipe(gulp.dest('./built/web/assets/')) as any
 );
 
 gulp.task('build:client:styles', () =>
