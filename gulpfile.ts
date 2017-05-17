@@ -148,10 +148,9 @@ gulp.task('build:client:pug', [
 	'build:client:script',
 	'build:client:styles'
 ], () =>
-		gulp.src('./src/web/app/*/view.pug')
+		gulp.src('./src/web/app/base.pug')
 			.pipe(pug({
 				locals: {
-					version: version,
 					themeColor: constants.themeColor
 				}
 			}))
