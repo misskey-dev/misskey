@@ -94,6 +94,8 @@ The built code is automatically pushed to https://github.com/syuilo/misskey/tree
 3. `npm install`
 
 ### Using source code
+If you want to build Misskey manually, you can do it via build command after download source code of Misskey and install dependencies.
+
 1. `git clone -b master git://github.com/syuilo/misskey.git`
 2. `cd misskey`
 3. `npm install`
