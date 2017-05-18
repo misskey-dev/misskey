@@ -21,12 +21,12 @@ const Url = new URL(location.href);
 //   dev.misskey.alice.tachibana => dev
 let app = Url.host.split('.')[0];
 
-// Detect user language
+// Detect the user language
 // Note: The default language is English
 let lang = navigator.language.split('-')[0];
 if (!/^(en|ja)$/.test(lang)) lang = 'en';
 
-// Detect user agent
+// Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
 const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
@@ -46,8 +46,8 @@ if (app == 'misskey') {
 	app = isMobile ? 'mobile' : 'desktop';
 }
 
-// Load app script
-// Note: 'async' makes can load the script async.
+// Load an app script
+// Note: 'async' makes can load the script asyncly.
 //       'defer' makes can run script when the dom loaded.
 const script = document.createElement('script');
 script.setAttribute('src', `/assets/${app}.${VERSION}.${lang}.js`);
