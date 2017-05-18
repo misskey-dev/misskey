@@ -37,7 +37,7 @@ Collaborators
 |------------------------|-----------------------------------|---------------------------------|
 | [syuilo][syuilo-link]  | [Aya Morisawa][ayamorisawa-link]  | [Otoha Funabashi][otofune-link] |
 
-[All contributors](https://github.com/syuilo/misskey/graphs/contributors)
+[List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
 Copyright
 ----------------------------------------------------------------
