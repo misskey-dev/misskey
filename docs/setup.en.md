@@ -79,7 +79,7 @@ If you want to build Misskey manually, you can do it via the
 
 *5.* That is it.
 ----------------------------------------------------------------
-お疲れ様でした。これでMisskeyを動かす準備は整いました。
+Well done! Now, you have an environment that run to Misskey.
 
 ### Launch
 Just `sudo npm start`. GLHF!
