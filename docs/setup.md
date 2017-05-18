@@ -1,7 +1,7 @@
 Misskey Setup and Installation Guide
 ================================================================
 
-This describes how to install and setup Misskey.
+This guide describes how to install and setup Misskey.
 
 *1.* Install dependencies
 ----------------------------------------------------------------
