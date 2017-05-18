@@ -1,9 +1,19 @@
 /**
- * MISSKEY ENTRY POINT
+ * MISSKEY BOOT LOADER
+ * (ENTRY POINT)
  */
 
+/**
+ * ドメインに基づいて適切なスクリプトを読み込みます。
+ * ユーザーの言語およびモバイル端末か否かも考慮します。
+ */
+
+'use strict';
+
+// Get the current url information
 const Url = new URL(location.href);
 
+// Extarct the (sub) domain part
 let app = Url.host.split('.')[0];
 
 // Detect user language
@@ -14,8 +24,10 @@ if (!/^(en|ja)$/.test(lang)) lang = 'en';
 const ua = navigator.userAgent.toLowerCase();
 const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
-const head = document.getElementsByTagName('head')[0];
+// Get the <head> element
+const [head] = document.getElementsByTagName('head');
 
+// If mobile, insert the viewport meta tag
 if (isMobile) {
 	const meta = document.createElement('meta');
 	meta.setAttribute('name', 'viewport');
@@ -23,6 +35,7 @@ if (isMobile) {
 	head.appendChild(meta);
 }
 
+// Switch desktop or mobile version
 if (app == 'misskey') {
 	app = isMobile ? 'mobile' : 'desktop';
 }
