@@ -3,12 +3,12 @@ Misskey Setup and Installation Guide
 
 This describes how to install and setup Misskey.
 
-1. Install dependencies
+1 Install dependencies
 ----------------------------------------------------------------
 
 There is **two ways** to install and setup dependencies:
 
-### WAY 1: Setup with Docker :whale:
+### WAY 1) Setup with Docker :whale:
 
 Ensure that the working directory is the repository root directory.
 
@@ -31,7 +31,7 @@ If you want to run misskey in production mode, add `--env NODE_ENV=production` l
 
 Note that `$(pwd)` is the working directory.
 
-### WAY 2: Setup manually
+### WAY 2) Setup manually
 
 Please install and setup following dependencies:
 
@@ -45,7 +45,7 @@ Please install these softwares.
 ##### Optional
 * [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB
 
-2. Domains
+2 Domains
 ----------------------------------------------------------------
 
 Misskey requires two domains called the primary domain and the secondary domain.
@@ -64,18 +64,18 @@ Note that Misskey uses following subdomains:
 * **dev**.*{primary domain}*
 * **file**.*{secondary domain}*
 
-3. reCAPTCHA tokens
+3 reCAPTCHA tokens
 ----------------------------------------------------------------
 
 Misskey requires reCAPTCHA tokens.
 Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
-4. Install Misskey
+4 Install Misskey
 ----------------------------------------------------------------
 
 There is **two ways** to install Misskey:
 
-### WAY 1: Using built code (recommended)
+### WAY 1) Using built code (recommended)
 We have official release of Misskey.
 The built code is automatically pushed to https://github.com/syuilo/misskey/tree/release after the CI test succeeds.
 
@@ -88,7 +88,7 @@ The built code is automatically pushed to https://github.com/syuilo/misskey/tree
 2. `git reset --hard origin/release`
 3. `npm install`
 
-### WAY 2: Using source code
+### WAY 2) Using source code
 If you want to build Misskey manually, you can do it via the
 `build` command after download the source code of Misskey and install dependencies:
 
@@ -102,7 +102,7 @@ If you want to build Misskey manually, you can do it via the
 2. `npm install`
 3. `npm run build`
 
-5. That is it.
+5 That is it.
 ----------------------------------------------------------------
 
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
