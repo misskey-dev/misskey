@@ -13,10 +13,16 @@
 // Get the current url information
 const Url = new URL(location.href);
 
-// Extarct the (sub) domain part
+// Extarct the (sub) domain part of the current url
+//
+// e.g.
+//   misskey.alice               => misskey
+//   misskey.strawberry.pasta    => misskey
+//   dev.misskey.alice.tachibana => dev
 let app = Url.host.split('.')[0];
 
 // Detect user language
+// Note: The default language is English
 let lang = navigator.language.split('-')[0];
 if (!/^(en|ja)$/.test(lang)) lang = 'en';
 
@@ -41,6 +47,8 @@ if (app == 'misskey') {
 }
 
 // Load app script
+// Note: 'async' makes can load the script async.
+//       'defer' makes can run script when the dom loaded.
 const script = document.createElement('script');
 script.setAttribute('src', `/assets/${app}.${VERSION}.${lang}.js`);
 script.setAttribute('async', 'true');
