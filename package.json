@@ -78,7 +78,7 @@
     "gulp-replace": "0.5.4",
     "gulp-tslint": "8.0.0",
     "gulp-typescript": "3.1.6",
-    "gulp-uglify": "2.1.2",
+    "gulp-uglify": "3.0.0",
     "gulp-util": "3.0.8",
     "mocha": "3.4.1",
     "riot-tag-loader": "1.0.0",
