@@ -67,7 +67,7 @@
     "@types/websocket": "0.0.33",
     "chai": "3.5.0",
     "chai-http": "3.0.0",
-    "css-loader": "0.28.1",
+    "css-loader": "0.28.2",
     "event-stream": "3.3.4",
     "gulp": "3.9.1",
     "gulp-cssnano": "2.1.2",
