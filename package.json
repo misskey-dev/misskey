@@ -108,7 +108,7 @@
     "elasticsearch": "13.0.1",
     "escape-html": "1.0.3",
     "escape-regexp": "0.0.1",
-    "express": "4.15.2",
+    "express": "4.15.3",
     "file-type": "4.3.0",
     "fuckadblock": "3.2.1",
     "gm": "1.23.0",
