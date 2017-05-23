@@ -10,7 +10,7 @@ import * as ts from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import * as es from 'event-stream';
 import cssnano = require('gulp-cssnano');
-import * as uglify from 'gulp-uglify';
+import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
 import * as rimraf from 'rimraf';
 import * as chalk from 'chalk';
@@ -18,7 +18,10 @@ import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
+import * as uglifyjs from 'uglify-js';
 import version from './src/version';
+
+const uglify = uglifyComposer(uglifyjs, console);
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
