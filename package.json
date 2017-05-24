@@ -12,7 +12,6 @@
     "config": "node ./tools/init.js",
     "start": "node ./built",
     "debug": "DEBUG=misskey:* node ./built",
-    "update": "./tools/update.sh",
     "swagger": "node ./swagger.js",
     "build": "gulp build",
     "rebuild": "gulp rebuild",
