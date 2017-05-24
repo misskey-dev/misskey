@@ -122,8 +122,7 @@
 		this.onpaste = e => {
 			const data = e.clipboardData;
 			const items = data.items;
-			for (let i = 0; i < items.length; i++) {
-				const item = items[i];
+			for (item of items) {
 				if (item.kind == 'file') {
 					this.upload(item.getAsFile());
 				}
