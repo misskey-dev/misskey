@@ -89,7 +89,7 @@ async function init(): Promise<Config> {
 
 	let configLogger = new Logger('Config');
 	if (!fs.existsSync(configPath)) {
-		throw 'Configuration not found';
+		throw 'Configuration not found - Please run "npm run config" command.';
 	}
 
 	const config = loadConfig();
