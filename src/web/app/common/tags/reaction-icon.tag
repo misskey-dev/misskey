@@ -8,5 +8,10 @@
 	<style>
 		:scope
 			display inline
+
+			img
+				vertical-align bottom
+				width 36px
+				height 36px
 	</style>
 </mk-reaction-icon>
