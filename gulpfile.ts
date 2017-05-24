@@ -107,12 +107,16 @@ gulp.task('build:client', [
 ]);
 
 gulp.task('webpack', done => {
-	const output = childProcess.execSync(
-		Path.join('.', 'node_modules', '.bin', 'webpack') + ' --config ./webpack/webpack.config.ts');
+	const webpack = childProcess.spawn(
+		Path.join('.', 'node_modules', '.bin', 'webpack'),
+		['--config', './webpack/webpack.config.ts'], {
+			shell: true
+		});
 
-	console.log(output.toString());
+	webpack.stdout.pipe(process.stdout);
+	webpack.stderr.pipe(process.stderr);
 
-	done();
+	webpack.on('exit', done);
 });
 
 gulp.task('build:client:script', () =>
