@@ -10,7 +10,7 @@ import * as ts from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import * as es from 'event-stream';
 import cssnano = require('gulp-cssnano');
-const uglifyComposer = require('gulp-uglify/composer');
+import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
 import * as rimraf from 'rimraf';
 import * as chalk from 'chalk';
