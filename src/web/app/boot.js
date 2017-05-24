@@ -11,13 +11,6 @@
 
 'use strict';
 
-// Detect an old browser
-if (window.fetch == undefined) {
-	alert(
-		'お使いのブラウザが古いためMisskeyを動作させることができません。' +
-		'バージョンを最新のものに更新するか、別のブラウザをお試しください。');
-}
-
 // Get the current url information
 const Url = new URL(location.href);
 
