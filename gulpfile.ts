@@ -110,11 +110,9 @@ gulp.task('webpack', done => {
 	const webpack = childProcess.spawn(
 		Path.join('.', 'node_modules', '.bin', 'webpack'),
 		['--config', './webpack/webpack.config.ts'], {
-			shell: true
+			shell: true,
+			stdio: 'inherit'
 		});
-
-	webpack.stdout.pipe(process.stdout);
-	webpack.stderr.pipe(process.stderr);
 
 	webpack.on('exit', done);
 });
