@@ -18,7 +18,7 @@ import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
-import * as uglifyjs from 'uglify-js';
+const uglifyjs = require('uglify-js');
 import version from './src/version';
 
 const uglify = uglifyComposer(uglifyjs, console);
