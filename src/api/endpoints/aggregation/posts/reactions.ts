@@ -3,10 +3,10 @@
  */
 import $ from 'cafy';
 import Post from '../../../models/post';
-import Like from '../../../models/like';
+import Reaction from '../../../models/post-reaction';
 
 /**
- * Aggregate likes of a post
+ * Aggregate reactions of a post
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -27,7 +27,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	const startTime = new Date(new Date().setMonth(new Date().getMonth() - 1));
 
-	const likes = await Like
+	const reactions = await Reaction
 		.find({
 			post_id: post._id,
 			$or: [
@@ -51,8 +51,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		day = new Date(day.setHours(23));
 		// day = day.getTime();
 
-		const count = likes.filter(l =>
-			l.created_at < day && (l.deleted_at == null || l.deleted_at > day)
+		const count = reactions.filter(r =>
+			r.created_at < day && (r.deleted_at == null || r.deleted_at > day)
 		).length;
 
 		graph.push({

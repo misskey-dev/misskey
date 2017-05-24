@@ -122,10 +122,19 @@ const endpoints: Endpoint[] = [
 		name: 'aggregation/users/following'
 	},
 	{
+		name: 'aggregation/users/reaction'
+	},
+	{
 		name: 'aggregation/posts/repost'
 	},
 	{
 		name: 'aggregation/posts/reply'
+	},
+	{
+		name: 'aggregation/posts/reaction'
+	},
+	{
+		name: 'aggregation/posts/reactions'
 	},
 
 	{

@@ -24,8 +24,7 @@ app.set('trust proxy', 'loopback');
 if (config.accesses && config.accesses.enable) {
 	const accesses = new Accesses({
 		appName: 'Misskey',
-		port: config.accesses.port,
-		hashIp: true
+		port: config.accesses.port
 	});
 
 	app.use(accesses.express);

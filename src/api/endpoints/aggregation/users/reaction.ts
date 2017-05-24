@@ -3,10 +3,10 @@
  */
 import $ from 'cafy';
 import User from '../../../models/user';
-import Like from '../../../models/like';
+import Reaction from '../../../models/post-reaction';
 
 /**
- * Aggregate like of a user
+ * Aggregate reaction of a user
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -29,7 +29,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	const datas = await Like
+	const datas = await Reaction
 		.aggregate([
 			{ $match: { user_id: user._id } },
 			{ $project: {

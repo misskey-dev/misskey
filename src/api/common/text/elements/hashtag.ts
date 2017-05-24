@@ -6,7 +6,7 @@ module.exports = (text, i) => {
 	if (!(/^\s#[^\s]+/.test(text) || (i == 0 && /^#[^\s]+/.test(text)))) return null;
 	const isHead = text[0] == '#';
 	const hashtag = text.match(/^\s?#[^\s]+/)[0];
-	const res = !isHead ? [{
+	const res: any[] = !isHead ? [{
 		type: 'text',
 		content: text[0]
 	}] : [];

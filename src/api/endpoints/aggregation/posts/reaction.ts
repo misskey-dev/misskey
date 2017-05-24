@@ -3,10 +3,10 @@
  */
 import $ from 'cafy';
 import Post from '../../../models/post';
-import Like from '../../../models/like';
+import Reaction from '../../../models/post-reaction';
 
 /**
- * Aggregate like of a post
+ * Aggregate reaction of a post
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -25,7 +25,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		return rej('post not found');
 	}
 
-	const datas = await Like
+	const datas = await Reaction
 		.aggregate([
 			{ $match: { post_id: post._id } },
 			{ $project: {

@@ -1,7 +1,6 @@
 /**
  * Module dependencies
  */
-import prominence from 'prominence';
 import version from '../../version';
 import config from '../../conf';
 
