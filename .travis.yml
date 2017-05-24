@@ -4,7 +4,7 @@
 language: node_js
 
 node_js:
-  - 7.7.3
+  - 7.10.0
 
 env:
   - CXX=g++-4.8 NODE_ENV=production
@@ -31,11 +31,14 @@ before_script:
   # --only=dev オプションを付けてそれらもインストールされるようにする:
   - npm install --only=dev
 
+  # 設定ファイルを設定
   - mkdir ./.config
   - cp ./.travis/default.yml ./.config
   - cp ./.travis/test.yml ./.config
+
   - npm run build
 
 after_success:
+  # リリース
   - chmod u+x ./.travis/release.sh
   - if [ $TRAVIS_BRANCH = "master" ] && [ $TRAVIS_PULL_REQUEST = "false" ]; then ./.travis/release.sh; else echo "Skipping releasing task"; fi
