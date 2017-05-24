@@ -34,7 +34,7 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 	const [value, valueError] = $(params.value).optional.string().$;
 	if (valueError) return rej('invalid value param');
 
-	let set = {};
+	const set = {};
 	if (data) {
 		Object.entries(data).forEach(([k, v]) => {
 			set[`data.${k}`] = v;

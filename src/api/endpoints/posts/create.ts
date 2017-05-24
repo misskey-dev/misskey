@@ -36,9 +36,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		// Fetch files
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
-		for (let i = 0; i < mediaIds.length; i++) {
-			const mediaId = mediaIds[i];
-
+		for (const mediaId of mediaIds) {
 			// Fetch file
 			// SELECT _id
 			const entity = await DriveFile.findOne({
@@ -188,7 +186,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		}
 	});
 
-	let mentions = [];
+	const mentions = [];
 
 	function addMention(mentionee, type) {
 		// Reject if already added

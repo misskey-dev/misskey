@@ -13,14 +13,6 @@ class MisskeyEvent {
 			config.redis.port, config.redis.host);
 	}
 
-	private publish(channel: string, type: string, value?: any): void {
-		const message = value == null ?
-			{ type: type } :
-			{ type: type, body: value };
-
-		this.redisClient.publish(`misskey:${channel}`, JSON.stringify(message));
-	}
-
 	public publishUserStream(userId: ID, type: string, value?: any): void {
 		this.publish(`user-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -31,6 +23,14 @@ class MisskeyEvent {
 
 	public publishMessagingStream(userId: ID, otherpartyId: ID, type: string, value?: any): void {
 		this.publish(`messaging-stream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	private publish(channel: string, type: string, value?: any): void {
+		const message = value == null ?
+			{ type: type } :
+			{ type: type, body: value };
+
+		this.redisClient.publish(`misskey:${channel}`, JSON.stringify(message));
 	}
 }
 

@@ -1,153 +1,32 @@
 {
-  "rules": {
-    // TypeScript Specific
-    "ban-types": [
-      true,
-      [
-        "Object"
-      ]
-    ],
-    "member-access": false,
-    "member-ordering": [
-      true,
-      "static-before-instance",
-      "variables-before-functions"
-    ],
-    "no-any": false,
-    "no-import-side-effect": true,
-    "no-inferrable-types": false,
-    "no-internal-module": false,
-    "no-namespace": false,
-    "no-non-null-assertion": true,
-    "no-reference": true,
-    "no-var-requires": false,
-    "only-arrow-functions": false,
-    "typedef": [
-      true,
-      "property-declaration"
-    ],
-    "typedef-whitespace": [
-      true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      }
-    ],
-    // Functionality
-    "ban": false,
-    "curly": false,
-    "forin": true,
-    "label-position": true,
-    "no-arg": true,
-    "no-bitwise": true,
-    "no-conditional-assignment": true,
-    "no-console": [
-      true,
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"
-    ],
-    "no-construct": true,
-    "no-debugger": true,
-    "no-duplicate-super": true,
-    "no-duplicate-variable": true,
-    "no-empty": true,
-    "no-eval": false,
-    "no-for-in-array": false,
-    "no-invalid-this": [
-      true,
-      "check-function-in-method"
-    ],
-    "no-misused-new": true,
-    "no-null-keyword": false,
-    "no-shadowed-variable": false,
-    "no-string-literal": false,
-    "no-switch-case-fall-through": true,
-    "no-unsafe-finally": true,
-    "no-unused-expression": true,
-    "no-use-before-declare": false,
-    "no-var-keyword": true,
-    "radix": true,
-    "restrict-plus-operands": false,
-    "switch-default": false,
-    "triple-equals": [
-      false,
-      "allow-null-check",
-      "allow-undefined-check"
-    ],
-    "use-isnan": true,
-    // Maintainability
-    "eofline": true,
-    "indent": [
-      true,
-      "tabs"
-    ],
-    "linebreak-style": false,
-    "max-file-line-count": false,
-    "max-line-length": false,
-    "no-default-export": false,
-    "no-mergeable-namespace": true,
-    "no-require-imports": false,
-    "no-reference-import": true,
-    "no-trailing-whitespace": true,
-    "no-unnecessary-callback-wrapper": true,
-    "no-unnecessary-initializer": true,
-    "object-literal-sort-keys": false,
-    "trailing-comma": true,
-    // Style
-    "align": [
-      true,
-      "parameters",
-      "statements"
-    ],
-    "arrow-parens": false,
-    "arrow-return-shorthand": true,
-    "class-name": true,
-    "comment-format": [
-      true,
-      "check-space"
-    ],
-    "interface-name": false,
-    "jsdoc-format": true,
-    "match-default-export-name": false,
-    "newline-before-return": false,
-    "new-parens": true,
-    "no-angle-bracket-type-assertion": true,
-    "no-consecutive-blank-lines": true,
-    "object-literal-key-quotes": false,
-    "one-line": [
-      true,
-      "check-catch",
-      "check-finally",
-      "check-else",
-      "check-open-brace",
-      "check-whitespace"
-    ],
-    "one-variable-per-declaration": true,
-    "ordered-imports": false,
-    "prefer-function-over-method": true,
-    "prefer-method-signature": true,
-    "prefer-template": true,
-    "quotemark": [
-      true,
-      "single",
-      "avoid-escape"
-    ],
-    "semicolon": true,
-    "variable-name": false,
-    "whitespace": [
-      true,
-      "check-branch",
-      "check-decl",
-      "check-operator",
-      "check-separator",
-      "check-type",
-      "check-preblock"
-    ]
-  }
+	"defaultSeverity": "error",
+	"extends": [
+		"tslint:recommended"
+	],
+	"jsRules": {},
+	"rules": {
+		"indent": ["tab"],
+		"quotemark": ["single"],
+		"no-var-requires": false,
+		"no-string-throw": false,
+		"trailing-comma": [false],
+		"object-literal-sort-keys": false,
+		"curly": false,
+		"no-console": [false],
+		"ordered-imports": [false],
+		"arrow-parens": false,
+		"object-literal-shorthand": false,
+		"triple-equals": [false],
+		"no-shadowed-variable": false,
+		"no-string-literal": false,
+		"variable-name": [false],
+		"comment-format": [false],
+		"interface-over-type-literal": false,
+		"max-line-length": [false],
+		"member-ordering": [false],
+		"ban-types": [
+			"Object"
+		]
+	},
+	"rulesDirectory": []
 }

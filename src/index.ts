@@ -87,7 +87,7 @@ async function init(): Promise<Config> {
 	MachineInfo.show();
 	new DependencyInfo().showAll();
 
-	let configLogger = new Logger('Config');
+	const configLogger = new Logger('Config');
 	if (!fs.existsSync(configPath)) {
 		throw 'Configuration not found - Please run "npm run config" command.';
 	}
@@ -109,7 +109,7 @@ async function init(): Promise<Config> {
 	*/
 
 	// Try to connect to MongoDB
-	let mongoDBLogger = new Logger('MongoDB');
+	const mongoDBLogger = new Logger('MongoDB');
 	const db = require('./db/mongodb').default;
 	mongoDBLogger.info('Successfully connected');
 	db.close();

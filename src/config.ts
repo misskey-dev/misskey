@@ -22,7 +22,7 @@ export const path = process.env.NODE_ENV == 'test'
 /**
  * ユーザーが設定する必要のある情報
  */
-interface Source {
+type Source = {
 	maintainer: string;
 	url: string;
 	secondary_url: string;
@@ -68,12 +68,12 @@ interface Source {
 		hook_secret: string;
 		username: string;
 	};
-}
+};
 
 /**
  * Misskeyが自動的に(ユーザーが設定した情報から推論して)設定する情報
  */
-interface Mixin {
+type Mixin = {
 	host: string;
 	scheme: string;
 	secondary_host: string;
@@ -83,7 +83,7 @@ interface Mixin {
 	about_url: string;
 	dev_url: string;
 	drive_url: string;
-}
+};
 
 export type Config = Source & Mixin;
 

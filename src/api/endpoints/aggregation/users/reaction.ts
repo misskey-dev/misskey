@@ -56,7 +56,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const graph = [];
 
 	for (let i = 0; i < 30; i++) {
-		let day = new Date(new Date().setDate(new Date().getDate() - i));
+		const day = new Date(new Date().setDate(new Date().getDate() - i));
 
 		const data = datas.filter(d =>
 			d.date.year == day.getFullYear() && d.date.month == day.getMonth() + 1 && d.date.day == day.getDate()

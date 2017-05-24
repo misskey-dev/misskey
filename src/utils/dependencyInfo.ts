@@ -2,19 +2,19 @@ import Logger from './logger';
 import { execSync } from 'child_process';
 
 export default class {
-	logger: Logger;
+	private logger: Logger;
 
 	constructor() {
 		this.logger = new Logger('Deps');
 	}
 
-	showAll(): void {
+	public showAll(): void {
 		this.show('MongoDB', 'mongo --version', x => x.match(/^MongoDB shell version:? (.*)\r?\n/));
 		this.show('Redis', 'redis-server --version', x => x.match(/v=([0-9\.]*)/));
 		this.show('GraphicsMagick', 'gm -version', x => x.match(/^GraphicsMagick ([0-9\.]*) .*/));
 	}
 
-	show(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
+	public show(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
 		try {
 			// ステータス0以外のときにexecSyncはstderrをコンソール上に出力してしまうので
 			// プロセスからのstderrをすべて無視するように stdio オプションをセット
