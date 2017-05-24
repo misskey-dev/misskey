@@ -18,10 +18,10 @@ import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
-import * as uglifyjs from 'uglify-js';
+const uglifyes = require('uglify-es');
 import version from './src/version';
 
-const uglify = uglifyComposer(uglifyjs, console);
+const uglify = uglifyComposer(uglifyes, console);
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
