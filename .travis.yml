@@ -19,7 +19,9 @@ addons:
 
 cache:
   directories:
-    - node_modules
+    # パッケージをキャッシュすると本来は動かないはずなのに動いてしまう
+    # 場合があり危険なのでキャッシュはしない:
+    #- node_modules
 
 services:
   - mongodb
