@@ -8,7 +8,7 @@ This guide describes how to install and setup Misskey.
 
 ----------------------------------------------------------------
 
-If you can use Docker, Please see [Setup with Docker](./docker.en.md).
+If you can use Docker, please see [Setup with Docker](./docker.en.md).
 
 *1.* Domains
 ----------------------------------------------------------------
