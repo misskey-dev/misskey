@@ -4,7 +4,7 @@
  */
 
 // Detect an old browser
-if (!'fetch' in window) {
+if (!('fetch' in window)) {
 	alert(
 		'お使いのブラウザが古いためMisskeyを動作させることができません。' +
 		'バージョンを最新のものに更新するか、別のブラウザをお試しください。');
