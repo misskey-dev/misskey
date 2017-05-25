@@ -32,7 +32,7 @@ const ua = navigator.userAgent.toLowerCase();
 const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 // Get the <head> element
-const [head] = document.getElementsByTagName('head');
+const head = document.getElementsByTagName('head')[0];
 
 // If mobile, insert the viewport meta tag
 if (isMobile) {
