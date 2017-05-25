@@ -12,11 +12,11 @@ export default version => {
 		constant(),
 		new StringReplacePlugin()
 	];
-
+/*
 	if (isProduction) {
 		plugins.push(minify());
 	}
-
+*/
 	plugins.push(banner(version));
 
 	return plugins;
