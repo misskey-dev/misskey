@@ -1,6 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 const yaml = require('js-yaml');
 const inquirer = require('inquirer');
+const chalk = require('chalk');
 
 const configDirPath = `${__dirname}/../.config`;
 const configPath = `${configDirPath}/default.yml`;
@@ -170,12 +172,12 @@ inquirer.prompt(form).then(as => {
 		}
 	};
 
-	console.log(`Thanks. Writing the configuration to ${configPath}`);
+	console.log(`Thanks. Writing the configuration to ${chalk.bold(path.resolve(configPath))}`);
 
 	try {
 		fs.mkdirSync(configDirPath);
 		fs.writeFileSync(configPath, yaml.dump(conf));
-		console.log('Well done.');
+		console.log(chalk.green('Well done.'));
 	} catch (e) {
 		console.error(e);
 	}
