@@ -120,7 +120,9 @@ gulp.task('webpack', done => {
 gulp.task('build:client:script', () =>
 	gulp.src(['./src/web/app/boot.js', './src/web/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(version)))
-		.pipe(isProduction ? uglify() : gutil.noop())
+		.pipe(isProduction ? uglify({
+			toplevel: true
+		}) : gutil.noop())
 		.pipe(gulp.dest('./built/web/assets/')) as any
 );
 
