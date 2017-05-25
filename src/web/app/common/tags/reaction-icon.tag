@@ -10,8 +10,8 @@
 			display inline
 
 			img
-				vertical-align bottom
-				width 36px
-				height 36px
+				vertical-align middle
+				width 1em
+				height 1em
 	</style>
 </mk-reaction-icon>
