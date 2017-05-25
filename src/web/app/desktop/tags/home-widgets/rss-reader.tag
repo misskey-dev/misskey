@@ -64,8 +64,6 @@
 
 	</style>
 	<script>
-		this.mixin('api');
-
 		this.url = 'http://news.yahoo.co.jp/pickup/rss.xml';
 		this.items = [];
 		this.initializing = true;
@@ -80,12 +78,12 @@
 		});
 
 		this.fetch = () => {
-			this.api('/api:rss', {
-				url: this.url
-			}).then(feed => {
-				this.update({
-					initializing: false,
-					items: feed.rss.channel.item
+			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`).then(res => {
+				res.json().then(feed => {
+					this.update({
+						initializing: false,
+						items: feed.items
+					});
 				});
 			});
 		};

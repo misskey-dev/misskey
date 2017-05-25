@@ -47,7 +47,6 @@ app.use('/assets', express.static(`${__dirname}/assets`, {
  * Common API
  */
 app.get(/\/api:url/, require('./service/url-preview'));
-app.post(/\/api:rss/, require('./service/rss-proxy'));
 
 /**
  * Serve config
