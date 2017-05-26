@@ -78,14 +78,7 @@
 		});
 
 		this.fetch = () => {
-			const headers = new Headers();
-			headers.append('pragma', 'no-cache');
-			headers.append('cache-control', 'no-cache');
-
-			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`, {
-				method: 'GET',
-				headers
-			}).then(res => {
+			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`).then(res => {
 				res.json().then(feed => {
 					this.update({
 						initializing: false,
