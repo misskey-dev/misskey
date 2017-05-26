@@ -31,6 +31,11 @@ Contribution
 ----------------------------------------------------------------
 Please see [Contribution guide](./CONTRIBUTING.md).
 
+Sponsors & Backers
+----------------------------------------------------------------
+Misskey have no 100+ GitHub stars currently. However, donation are always welcome!
+If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link].
+
 Collaborators
 ----------------------------------------------------------------
 | ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon]        |
