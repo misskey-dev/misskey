@@ -33,8 +33,8 @@ Please see [Contribution guide](./CONTRIBUTING.md).
 
 Sponsors & Backers
 ----------------------------------------------------------------
-Misskey have no 100+ GitHub stars. However, donation are always welcome!
-If you want to donate Misskey, please get in touch with [@syuilo][syuilo-link].
+Misskey have no 100+ GitHub stars currently. However, donation are always welcome!
+If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link].
 
 Collaborators
 ----------------------------------------------------------------
