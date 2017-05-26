@@ -49,3 +49,4 @@ require('./user-preview.tag');
 require('./users-list.tag');
 require('./user-following.tag');
 require('./user-followers.tag');
+require('./init-following.tag');

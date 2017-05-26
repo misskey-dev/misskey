@@ -1,13 +1,20 @@
 <mk-home-timeline>
+	<mk-init-following if={ noFollowing } />
 	<mk-timeline ref="timeline" init={ init } more={ more } empty={ '%i18n:mobile.tags.mk-home-timeline.empty-timeline%' }></mk-timeline>
 	<style>
 		:scope
 			display block
+
+			> mk-init-following
+				border-bottom solid 1px #eee
+
 	</style>
 	<script>
 		this.mixin('i');
 		this.mixin('api');
 		this.mixin('stream');
+
+		this.noFollowing = this.I.following_count == 0;
 
 		this.init = new Promise((res, rej) => {
 			this.api('posts/timeline').then(posts => {
