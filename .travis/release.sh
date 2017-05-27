@@ -7,6 +7,7 @@ chmod 600 ~/.ssh/id_rsa
 echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 git checkout -b release
 cp -f ./.travis/.gitignore-release .gitignore
+node ./.travis/shapeup.js
 git add --all
 git rm --cached `git ls-files --full-name -i --exclude-standard`
 git config --global user.email "AyaMorisawa4869@gmail.com"
