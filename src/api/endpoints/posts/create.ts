@@ -87,14 +87,14 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			latestPost.repost_id &&
 			latestPost.repost_id.equals(repost._id) &&
 			text === undefined && files === null) {
-			return rej('二重Repostです(NEED TRANSLATE)');
+			return rej('cannot repost same post that already reposted in your latest post');
 		}
 
 		// 直近がRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
 			latestPost._id.equals(repost._id) &&
 			text === undefined && files === null) {
-			return rej('二重Repostです(NEED TRANSLATE)');
+			return rej('cannot repost your latest post');
 		}
 	}
 
