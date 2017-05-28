@@ -24,8 +24,10 @@
 					</p>
 				</div>
 				<div class="status">
+				  <a>
 				    <b>{ user.posts_count }</b>
 						<i>%i18n:mobile.tags.mk-user.posts-count%</i>
+					</a>
 					<a href="{ user.username }/following">
 						<b>{ user.following_count }</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
