@@ -23,7 +23,9 @@
 						<i class="fa fa-birthday-cake"></i>{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)
 					</p>
 				</div>
-				<div class="friends">
+				<div class="status">
+				    <b>{ user.posts_count }</b>
+						<i>%i18n:mobile.tags.mk-user.posts-count%</i>
 					<a href="{ user.username }/following">
 						<b>{ user.following_count }</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
@@ -132,7 +134,7 @@
 								> i
 									margin-right 4px
 
-						> .friends
+						> .status
 							> a
 								color #657786
 
