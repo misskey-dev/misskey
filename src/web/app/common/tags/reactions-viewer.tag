@@ -6,6 +6,9 @@
 		<span if={ reactions.hmm }><mk-reaction-icon reaction='hmm'></mk-reaction-icon><span>{ reactions.hmm }</span></span>
 		<span if={ reactions.surprise }><mk-reaction-icon reaction='surprise'></mk-reaction-icon><span>{ reactions.surprise }</span></span>
 		<span if={ reactions.congrats }><mk-reaction-icon reaction='congrats'></mk-reaction-icon><span>{ reactions.congrats }</span></span>
+		<span if={ reactions.angry }><mk-reaction-icon reaction='angry'></mk-reaction-icon><span>{ reactions.angry }</span></span>
+		<span if={ reactions.confused }><mk-reaction-icon reaction='confused'></mk-reaction-icon><span>{ reactions.confused }</span></span>
+		<span if={ reactions.pudding }><mk-reaction-icon reaction='pudding'></mk-reaction-icon><span>{ reactions.pudding }</span></span>
 	</virtual>
 	<style>
 		:scope
