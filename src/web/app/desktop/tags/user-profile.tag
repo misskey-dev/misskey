@@ -11,7 +11,7 @@
 		<p><i class="fa fa-twitter"></i><a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
 	</div>
 	<div class="status">
-	  <p class="posts-count"><i class="fa fa-angle-right"></i>{ user.posts_count }<b>ポスト</b></p>
+	  <p class="posts-count"><i class="fa fa-angle-right"></i><a>{ user.posts_count }</a><b>ポスト</b></p>
 		<p class="following"><i class="fa fa-angle-right"></i><a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
 		<p class="followers"><i class="fa fa-angle-right"></i><a onclick={ showFollowers }>{ user.followers_count }</a>人の<b>フォロワー</b></p>
 	</div>
