@@ -18,6 +18,9 @@ common:
     hmm: "ふぅ～む"
     surprise: "わお"
     congrats: "おめでとう"
+    angry: "おこ"
+    confused: "こまこまのこまり"
+    pudding: "Pudding"
 
   input-message-here: "ここにメッセージを入力"
   send: "送信"

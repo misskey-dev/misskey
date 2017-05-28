@@ -18,6 +18,9 @@ common:
     hmm: "Hmm...?"
     surprise: "Wow"
     congrats: "Congrats!"
+    angry: "Angry"
+    confused: "Confused"
+    pudding: "Pudding"
 
   input-message-here: "Enter message here"
   send: "Send"

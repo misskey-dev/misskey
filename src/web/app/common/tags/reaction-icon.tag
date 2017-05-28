@@ -5,6 +5,10 @@
 	<virtual if={ opts.reaction == 'hmm' }><img src="/assets/reactions/hmm.png" alt="%i18n:common.reactions.hmm%"></virtual>
 	<virtual if={ opts.reaction == 'surprise' }><img src="/assets/reactions/surprise.png" alt="%i18n:common.reactions.surprise%"></virtual>
 	<virtual if={ opts.reaction == 'congrats' }><img src="/assets/reactions/congrats.png" alt="%i18n:common.reactions.congrats%"></virtual>
+	<virtual if={ opts.reaction == 'angry' }><img src="/assets/reactions/angry.png" alt="%i18n:common.reactions.angry%"></virtual>
+	<virtual if={ opts.reaction == 'confused' }><img src="/assets/reactions/confused.png" alt="%i18n:common.reactions.confused%"></virtual>
+	<virtual if={ opts.reaction == 'pudding' }><img src="/assets/reactions/pudding.png" alt="%i18n:common.reactions.pudding%"></virtual>
+
 	<style>
 		:scope
 			display inline

@@ -26,7 +26,10 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		'laugh',
 		'hmm',
 		'surprise',
-		'congrats'
+		'congrats',
+		'angry',
+		'confused',
+		'pudding'
 	]).$;
 	if (reactionErr) return rej('invalid reaction param');
 

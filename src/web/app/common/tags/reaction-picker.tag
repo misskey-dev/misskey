@@ -9,6 +9,9 @@
 			<button onclick={ react.bind(null, 'hmm') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="4" title="%i18n:common.reactions.hmm%"><mk-reaction-icon reaction='hmm'></mk-reaction-icon></button>
 			<button onclick={ react.bind(null, 'surprise') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="5" title="%i18n:common.reactions.surprise%"><mk-reaction-icon reaction='surprise'></mk-reaction-icon></button>
 			<button onclick={ react.bind(null, 'congrats') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="6" title="%i18n:common.reactions.congrats%"><mk-reaction-icon reaction='congrats'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'angry') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="4" title="%i18n:common.reactions.angry%"><mk-reaction-icon reaction='angry'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'confused') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="5" title="%i18n:common.reactions.confused%"><mk-reaction-icon reaction='confused'></mk-reaction-icon></button>
+			<button onclick={ react.bind(null, 'pudding') } onmouseover={ onmouseover } onmouseout={ onmouseout } tabindex="6" title="%i18n:common.reactions.pudding%"><mk-reaction-icon reaction='pudding'></mk-reaction-icon></button>
 		</div>
 	</div>
 	<style>
@@ -76,6 +79,8 @@
 
 				> div
 					padding 4px
+					width 240px
+					text-align center
 
 					> button
 						width 40px
