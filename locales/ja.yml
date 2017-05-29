@@ -406,6 +406,7 @@ mobile:
       following: "フォロー"
       followers: "フォロワー"
       posts: "タイムライン"
+      posts-count: "ポスト"
       media: "メディア"
 
     mk-users-list:
