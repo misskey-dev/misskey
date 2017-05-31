@@ -1,5 +1,5 @@
 import * as riot from 'riot';
-//const emojinize = require('emojinize');
+const pictograph = require('pictograph');
 import CONFIG from './config';
 
 const escape = text =>
@@ -34,8 +34,7 @@ export default (tokens, shouldBreak) => {
 			case 'inline-code':
 				return `<code>${token.html}</code>`;
 			case 'emoji':
-				return `<i>${token.content}</i>`;
-				//return emojinize.encode(token.content)
+				return pictograph.dic[token.emoji] || token.content;
 		}
 	}).join('');
 
