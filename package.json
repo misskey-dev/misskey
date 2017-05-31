@@ -69,7 +69,7 @@
 		"event-stream": "3.3.4",
 		"gulp": "3.9.1",
 		"gulp-cssnano": "2.1.2",
-		"gulp-imagemin": "3.2.0",
+		"gulp-imagemin": "3.3.0",
 		"gulp-mocha": "4.3.1",
 		"gulp-pug": "3.3.0",
 		"gulp-rename": "1.2.2",
