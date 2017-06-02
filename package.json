@@ -51,7 +51,7 @@
 		"@types/monk": "1.0.5",
 		"@types/morgan": "1.7.32",
 		"@types/ms": "0.7.29",
-		"@types/multer": "0.0.33",
+		"@types/multer": "0.0.34",
 		"@types/node": "7.0.24",
 		"@types/ratelimiter": "2.1.28",
 		"@types/redis": "0.12.36",
