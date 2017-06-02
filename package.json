@@ -61,7 +61,7 @@
 		"@types/serve-favicon": "2.2.28",
 		"@types/uuid": "2.0.29",
 		"@types/webpack": "2.2.15",
-		"@types/webpack-stream": "3.2.6",
+		"@types/webpack-stream": "3.2.7",
 		"@types/websocket": "0.0.33",
 		"chai": "3.5.0",
 		"chai-http": "3.0.0",
