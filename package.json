@@ -52,7 +52,7 @@
 		"@types/morgan": "1.7.32",
 		"@types/ms": "0.7.29",
 		"@types/multer": "0.0.34",
-		"@types/node": "7.0.24",
+		"@types/node": "7.0.25",
 		"@types/ratelimiter": "2.1.28",
 		"@types/redis": "0.12.36",
 		"@types/request": "0.0.43",
