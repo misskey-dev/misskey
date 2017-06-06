@@ -46,6 +46,7 @@
 				width 100%
 				padding 16px
 				color #555
+				border-top solid 1px rgba(0, 0, 0, 0.05)
 
 			> .empty
 				margin 0
@@ -121,9 +122,8 @@
 			const max = 30;
 
 			this.api('i/notifications', {
-				folder_id: this.folder ? this.folder.id : null,
 				limit: max + 1,
-				max_id: this.notifications[this.notifications.length - 1]._id
+				max_id: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {
 				if (notifications.length == max + 1) {
 					this.moreNotifications = true;
