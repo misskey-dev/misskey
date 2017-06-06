@@ -155,9 +155,9 @@ describe('API', () => {
 			res.body.should.be.a('object');
 			res.body.should.have.property('name').eql(myName);
 			res.body.should.have.property('profile').a('object');
-			res.body.should.have.deep.property('profile.location').eql(myLocation);
-			res.body.should.have.deep.property('profile.birthday').eql(myBirthday);
-			res.body.should.have.deep.property('profile.gender').eql('female');
+			res.body.should.have.nested.property('profile.location').eql(myLocation);
+			res.body.should.have.nested.property('profile.birthday').eql(myBirthday);
+			res.body.should.have.nested.property('profile.gender').eql('female');
 		}));
 
 		it('名前を空白にできない', async(async () => {
@@ -178,7 +178,7 @@ describe('API', () => {
 			res.should.have.status(200);
 			res.body.should.be.a('object');
 			res.body.should.have.property('profile').a('object');
-			res.body.should.have.deep.property('profile.birthday').eql(null);
+			res.body.should.have.nested.property('profile.birthday').eql(null);
 		}));
 
 		it('不正な誕生日の形式で怒られる', async(async () => {
