@@ -13,7 +13,7 @@ module.exports = me => {
 	});
 
 	s.event.on('mention', post => {
-		const n = new Notification(post.user.name + "さんから:", {
+		const n = new Notification(`${post.user.name}さんから:`, {
 			body: getPostSummary(post),
 			icon: post.user.avatar_url + '?thumbnail&size=64'
 		});
@@ -21,7 +21,7 @@ module.exports = me => {
 	});
 
 	s.event.on('reply', post => {
-		const n = new Notification(post.user.name + "さんから返信:", {
+		const n = new Notification(`${post.user.name}さんから返信:`, {
 			body: getPostSummary(post),
 			icon: post.user.avatar_url + '?thumbnail&size=64'
 		});
@@ -29,7 +29,7 @@ module.exports = me => {
 	});
 
 	s.event.on('quote', post => {
-		const n = new Notification(post.user.name + "さんが引用:", {
+		const n = new Notification(`${post.user.name}さんが引用:`, {
 			body: getPostSummary(post),
 			icon: post.user.avatar_url + '?thumbnail&size=64'
 		});
