@@ -1,11 +1,11 @@
-import * as ev from 'events';
+import { EventEmitter } from 'events';
 import * as readline from 'readline';
 import * as chalk from 'chalk';
 
 /**
  * Progress bar
  */
-export default class extends ev.EventEmitter {
+export default class extends EventEmitter {
 	public max: number;
 	public value: number;
 	public text: string;
