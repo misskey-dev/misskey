@@ -416,7 +416,8 @@
 			// ファイル一覧取得
 			this.api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
-				limit: max + 1
+				limit: max + 1,
+				max_id: this.files[this.files.length - 1]._id
 			}).then(files => {
 				if (files.length == max + 1) {
 					this.moreFiles = true;
