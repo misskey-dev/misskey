@@ -4,7 +4,9 @@
 import $ from 'cafy';
 import Reaction from '../../../models/post-reaction';
 import Post from '../../../models/post';
+import Watching from '../../../models/post-watching';
 import notify from '../../../common/notify';
+import watch from '../../../common/watch-post';
 import { publishPostStream } from '../../../event';
 
 /**
@@ -84,4 +86,30 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		post_id: post._id,
 		reaction: reaction
 	});
+
+	// Fetch watchers
+	Watching
+		.find({
+			post_id: post._id,
+			user_id: { $ne: user._id },
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		}, {
+			fields: {
+				user_id: true
+			}
+		})
+		.then(watchers => {
+			watchers.forEach(watcher => {
+				notify(watcher.user_id, user._id, 'reaction', {
+					post_id: post._id,
+					reaction: reaction
+				});
+			});
+		});
+
+	// この投稿をWatchする
+	// TODO: ユーザーが「リアクションしたときに自動でWatchする」設定を
+	//       オフにしていた場合はしない
+	watch(user._id, post._id);
 });

@@ -4,7 +4,9 @@
 import $ from 'cafy';
 import Vote from '../../../models/poll-vote';
 import Post from '../../../models/post';
+import Watching from '../../../models/post-watching';
 import notify from '../../../common/notify';
+import watch from '../../../common/watch-post';
 import { publishPostStream } from '../../../event';
 
 /**
@@ -75,6 +77,32 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		post_id: post._id,
 		choice: choice
 	});
+
+	// Fetch watchers
+	Watching
+		.find({
+			post_id: post._id,
+			user_id: { $ne: user._id },
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		}, {
+			fields: {
+				user_id: true
+			}
+		})
+		.then(watchers => {
+			watchers.forEach(watcher => {
+				notify(watcher.user_id, user._id, 'poll_vote', {
+					post_id: post._id,
+					choice: choice
+				});
+			});
+		});
+
+	// この投稿をWatchする
+	// TODO: ユーザーが「投票したときに自動でWatchする」設定を
+	//       オフにしていた場合はしない
+	watch(user._id, post._id);
 });
 
 function findWithAttr(array, attr, value) {
