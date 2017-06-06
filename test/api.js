@@ -59,8 +59,8 @@ describe('API', () => {
 		_chai.request(server)
 			.get('/')
 			.end((err, res) => {
-			res.should.have.status(200);
-			res.text.should.be.equal('YEE HAW');
+				res.should.have.status(200);
+				res.text.should.be.equal('YEE HAW');
 				done();
 			});
 	});
