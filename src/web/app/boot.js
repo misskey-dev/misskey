@@ -12,7 +12,7 @@
 'use strict';
 
 // Get the current url information
-const Url = new URL(location.href);
+const url = new URL(location.href);
 
 // Extarct the (sub) domain part of the current url
 //
@@ -20,7 +20,7 @@ const Url = new URL(location.href);
 //   misskey.alice               => misskey
 //   misskey.strawberry.pasta    => misskey
 //   dev.misskey.alice.tachibana => dev
-let app = Url.host.split('.')[0];
+let app = url.host.split('.')[0];
 
 // Detect the user language
 // Note: The default language is English
