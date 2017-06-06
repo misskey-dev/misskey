@@ -1,16 +1,14 @@
 <mk-progress-dialog>
 	<mk-window ref="window" is-modal={ false } can-close={ false } width={ '500px' }>
-		<yield to="header">{ parent.title }
-		<mk-ellipsis></mk-ellipsis></yield>
-<yield to="content">
-		<div class="body">
-			<p class="init" if={ isNaN(parent.value) }>待機中
-				<mk-ellipsis></mk-ellipsis>
-			</p>
-			<p class="percentage" if={ !isNaN(parent.value) }>{ Math.floor((parent.value / parent.max) * 100) }</p>
-			<progress if={ !isNaN(parent.value) && parent.value < parent.max } value={ isNaN(parent.value) ? 0 : parent.value } max={ parent.max }></progress>
-			<div class="progress waiting" if={ parent.value >= parent.max }></div>
-		</div></yield>
+		<yield to="header">{ parent.title }<mk-ellipsis/></yield>
+		<yield to="content">
+			<div class="body">
+				<p class="init" if={ isNaN(parent.value) }>待機中<mk-ellipsis/></p>
+				<p class="percentage" if={ !isNaN(parent.value) }>{ Math.floor((parent.value / parent.max) * 100) }</p>
+				<progress if={ !isNaN(parent.value) && parent.value < parent.max } value={ isNaN(parent.value) ? 0 : parent.value } max={ parent.max }></progress>
+				<div class="progress waiting" if={ parent.value >= parent.max }></div>
+			</div>
+		</yield>
 	</mk-window>
 	<style>
 		:scope

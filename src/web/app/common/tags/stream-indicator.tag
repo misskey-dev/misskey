@@ -1,11 +1,11 @@
 <mk-stream-indicator>
 	<p if={ stream.state == 'initializing' }>
 		<i class="fa fa-spinner fa-spin"></i>
-		<span>%i18n:common.tags.mk-stream-indicator.connecting%<mk-ellipsis></mk-ellipsis></span>
+		<span>%i18n:common.tags.mk-stream-indicator.connecting%<mk-ellipsis/></span>
 	</p>
 	<p if={ stream.state == 'reconnecting' }>
 		<i class="fa fa-spinner fa-spin"></i>
-		<span>%i18n:common.tags.mk-stream-indicator.reconnecting%<mk-ellipsis></mk-ellipsis></span>
+		<span>%i18n:common.tags.mk-stream-indicator.reconnecting%<mk-ellipsis/></span>
 	</p>
 	<p if={ stream.state == 'connected' }>
 		<i class="fa fa-check"></i>

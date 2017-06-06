@@ -15,7 +15,7 @@
 	<footer if={ !init }>
 		<button if={ canFetchMore } onclick={ more } disabled={ fetching }>
 			<span if={ !fetching }>%i18n:mobile.tags.mk-timeline.load-more%</span>
-			<span if={ fetching }>%i18n:common.loading%<mk-ellipsis></mk-ellipsis></span>
+			<span if={ fetching }>%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
 	</footer>
 	<style>

@@ -64,9 +64,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます
-		<mk-ellipsis></mk-ellipsis>
-	</p>
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
