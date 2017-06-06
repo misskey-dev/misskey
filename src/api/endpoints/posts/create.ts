@@ -9,8 +9,10 @@ import { isValidText } from '../../models/post';
 import User from '../../models/user';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
+import Watching from '../../models/post-watching';
 import serialize from '../../serializers/post';
 import notify from '../../common/notify';
+import watch from '../../common/watch-post';
 import event from '../../event';
 import config from '../../../conf';
 
@@ -177,7 +179,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Reponse
 	res(postObj);
 
-	// --------------------------------
+	// -----------------------------------------------------------
 	// Post processes
 
 	User.update({ _id: user._id }, {
@@ -240,6 +242,31 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			post_id: post._id
 		});
 
+		// Fetch watchers
+		Watching
+			.find({
+				post_id: inReplyToPost._id,
+				user_id: { $ne: user._id },
+				// 削除されたドキュメントは除く
+				deleted_at: { $exists: false }
+			}, {
+				fields: {
+					user_id: true
+				}
+			})
+			.then(watchers => {
+				watchers.forEach(watcher => {
+					notify(watcher.user_id, user._id, 'reply', {
+						post_id: post._id
+					});
+				});
+			});
+
+		// この投稿をWatchする
+		// TODO: ユーザーが「返信したときに自動でWatchする」設定を
+		//       オフにしていた場合はしない
+		watch(user._id, inReplyToPost);
+
 		// Add mention
 		addMention(inReplyToPost.user_id, 'reply');
 	}
@@ -251,6 +278,31 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		notify(repost.user_id, user._id, type, {
 			post_id: post._id
 		});
+
+		// Fetch watchers
+		Watching
+			.find({
+				post_id: repost._id,
+				user_id: { $ne: user._id },
+				// 削除されたドキュメントは除く
+				deleted_at: { $exists: false }
+			}, {
+				fields: {
+					user_id: true
+				}
+			})
+			.then(watchers => {
+				watchers.forEach(watcher => {
+					notify(watcher.user_id, user._id, type, {
+						post_id: post._id
+					});
+				});
+			});
+
+		// この投稿をWatchする
+		// TODO: ユーザーが「Repostしたときに自動でWatchする」設定を
+		//       オフにしていた場合はしない
+		watch(user._id, repost);
 
 		// If it is quote repost
 		if (text) {

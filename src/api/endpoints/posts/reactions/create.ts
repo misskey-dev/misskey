@@ -111,5 +111,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// この投稿をWatchする
 	// TODO: ユーザーが「リアクションしたときに自動でWatchする」設定を
 	//       オフにしていた場合はしない
-	watch(user._id, post._id);
+	watch(user._id, post);
 });
