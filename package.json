@@ -81,7 +81,7 @@
 		"mocha": "3.4.2",
 		"riot-tag-loader": "1.0.0",
 		"string-replace-webpack-plugin": "0.1.3",
-		"style-loader": "0.18.1",
+		"style-loader": "0.18.2",
 		"stylus": "0.54.5",
 		"stylus-loader": "3.0.1",
 		"swagger-jsdoc": "1.9.4",
