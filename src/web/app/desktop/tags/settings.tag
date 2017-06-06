@@ -202,9 +202,9 @@
 		this.updateAccount = () => {
 			this.api('i/update', {
 				name: this.refs.accountName.value,
-				location: this.refs.accountLocation.value || undefined,
-				description: this.refs.accountDescription.value || undefined,
-				birthday: this.refs.accountBirthday.value || undefined
+				location: this.refs.accountLocation.value || null,
+				description: this.refs.accountDescription.value || null,
+				birthday: this.refs.accountBirthday.value || null
 			}).then(() => {
 				notify('プロフィールを更新しました');
 			});
