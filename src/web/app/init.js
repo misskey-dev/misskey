@@ -8,6 +8,7 @@ import * as riot from 'riot';
 import api from './common/scripts/api';
 import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';
+import Connection from './common/scripts/stream';
 import mixin from './common/mixins';
 import generateDefaultUserdata from './common/scripts/generate-default-userdata';
 import CONFIG from './common/scripts/config';
@@ -94,8 +95,11 @@ export default callback => {
 			});
 		}
 
+		// Init stream connection
+		const stream = me ? new Connection(me) : null;
+
 		// ミックスイン初期化
-		mixin(me);
+		mixin(me, stream);
 
 		// ローディング画面クリア
 		const ini = document.getElementById('ini');
@@ -107,7 +111,7 @@ export default callback => {
 		document.body.appendChild(app);
 
 		try {
-			callback(me);
+			callback(me, stream);
 		} catch (e) {
 			panic(e);
 		}
