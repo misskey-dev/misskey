@@ -63,8 +63,11 @@
 			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
+	<button class="more" if={ moreNotifications } onclick={ fetchMoreNotifications } disabled={ fetchingMoreNotifications }>
+		{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
+	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
+	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -168,6 +171,12 @@
 					i
 						margin-right 8px
 
+			> .more
+				display block
+				width 100%
+				padding 16px
+				color #555
+
 			> .empty
 				margin 0
 				padding 16px
@@ -197,7 +206,16 @@
 		this.loading = true;
 
 		this.on('mount', () => {
-			this.api('i/notifications').then(notifications => {
+			const max = 10;
+
+			this.api('i/notifications', {
+				limit: max + 1
+			}).then(notifications => {
+				if (notifications.length == max + 1) {
+					this.moreNotifications = true;
+					notifications.pop();
+				}
+
 				this.update({
 					loading: false,
 					notifications: notifications
@@ -211,11 +229,6 @@
 			this.stream.off('notification', this.onNotification);
 		});
 
-		this.onNotification = notification => {
-			this.notifications.unshift(notification);
-			this.update();
-		};
-
 		this.on('update', () => {
 			this.notifications.forEach(notification => {
 				const date = new Date(notification.created_at).getDate();
@@ -224,5 +237,35 @@
 				notification._datetext = `${month}月 ${date}日`;
 			});
 		});
+
+		this.onNotification = notification => {
+			this.notifications.unshift(notification);
+			this.update();
+		};
+
+		this.fetchMoreNotifications = () => {
+			this.update({
+				fetchingMoreNotifications: true
+			});
+
+			const max = 30;
+
+			this.api('i/notifications', {
+				folder_id: this.folder ? this.folder.id : null,
+				limit: max + 1,
+				max_id: this.notifications[this.notifications.length - 1]._id
+			}).then(notifications => {
+				if (notifications.length == max + 1) {
+					this.moreNotifications = true;
+					notifications.pop();
+				} else {
+					this.moreNotifications = false;
+				}
+				this.update({
+					notifications: this.notifications.concat(notifications),
+					fetchingMoreNotifications: false
+				});
+			});
+		};
 	</script>
 </mk-notifications>

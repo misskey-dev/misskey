@@ -236,6 +236,9 @@ desktop:
       add-reaction: "Add your reaction"
       detail: "Show detail"
 
+    mk-notifications:
+      more: "More"
+
     mk-notifications-home-widget:
       title: "Notifications"
       settings: "Notification settings"
@@ -356,6 +359,7 @@ mobile:
       empty-timeline: "There is no posts"
 
     mk-notifications:
+      more: "More"
       empty: "No notifications"
 
     mk-post-detail:

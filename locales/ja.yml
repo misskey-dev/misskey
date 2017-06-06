@@ -236,6 +236,9 @@ desktop:
       add-reaction: "リアクション"
       detail: "詳細"
 
+    mk-notifications:
+      more: "もっと見る"
+
     mk-notifications-home-widget:
       title: "通知"
       settings: "通知の設定"
@@ -356,6 +359,7 @@ mobile:
       empty-timeline: "表示する投稿がありません。誰かしらをフォローするなどしましょう。"
 
     mk-notifications:
+      more: "もっと見る"
       empty: "ありません！"
 
     mk-post-detail:
