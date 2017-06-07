@@ -245,6 +245,7 @@ desktop:
 
     mk-activity-home-widget:
       title: "Activity"
+      toggle: "Toggle views"
 
     mk-user-recommendation-home-widget:
       title: "Recommended users"

@@ -245,6 +245,7 @@ desktop:
 
     mk-activity-home-widget:
       title: "アクティビティ"
+      toggle: "表示を切り替え"
 
     mk-user-recommendation-home-widget:
       title: "おすすめユーザー"
