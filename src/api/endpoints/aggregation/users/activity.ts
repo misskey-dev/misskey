@@ -14,6 +14,10 @@ import Post from '../../../models/post';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
+	// Get 'limit' parameter
+	const [limit = 365, limitErr] = $(params.limit).optional.number().range(1, 365).$;
+	if (limitErr) return rej('invalid limit param');
+
 	// Get 'user_id' parameter
 	const [userId, userIdErr] = $(params.user_id).id().$;
 	if (userIdErr) return rej('invalid user_id param');
@@ -85,7 +89,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	const graph = [];
 
-	for (let i = 0; i < 365; i++) {
+	for (let i = 0; i < limit; i++) {
 		const day = new Date(new Date().setDate(new Date().getDate() - i));
 
 		const data = datas.filter(d =>
