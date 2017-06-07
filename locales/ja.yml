@@ -243,6 +243,9 @@ desktop:
       title: "通知"
       settings: "通知の設定"
 
+    mk-activity-home-widget:
+      title: "アクティビティ"
+
     mk-user-recommendation-home-widget:
       title: "おすすめユーザー"
       refresh: "他を見る"

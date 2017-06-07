@@ -66,6 +66,7 @@
 			left: [
 				'profile',
 				'calendar',
+				'activity',
 				'rss-reader',
 				'trends',
 				'photo-stream',

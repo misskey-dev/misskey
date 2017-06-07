@@ -243,6 +243,9 @@ desktop:
       title: "Notifications"
       settings: "Notification settings"
 
+    mk-activity-home-widget:
+      title: "Activity"
+
     mk-user-recommendation-home-widget:
       title: "Recommended users"
       refresh: "Show others"
