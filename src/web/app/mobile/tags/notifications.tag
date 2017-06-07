@@ -52,6 +52,9 @@
 				color #555
 				border-top solid 1px rgba(0, 0, 0, 0.05)
 
+				> i
+					margin-right 4px
+
 			> .empty
 				margin 0
 				padding 16px
