@@ -59,16 +59,9 @@
 				let x = 0;
 				data.reverse().forEach(d => {
 					d.x = x;
-					d.v = d.total / this.peak;
-					d.color = d.v > 0.75
-						? '#195061'
-						: d.v > 0.5
-							? '#238f9a'
-							: d.v > 0.25
-								? '#6fc5c9'
-								: d.v > 0
-									? '#8be4dc'
-									: '#eee';
+					let v = d.total / this.peak;
+					if (v > 1) v = 1;
+					d.color = `hsl(180, ${v * 100}%, ${15 + ((1 - v) * 80)}%)`;
 					d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
 					if (d.date.weekday == 6) x++;
 				});

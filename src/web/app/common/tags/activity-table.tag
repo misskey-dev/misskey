@@ -16,7 +16,7 @@
 
 				> rect
 					transform-origin center
-					transform scale(0.9)
+					transform scale(0.8)
 
 	</style>
 	<script>
@@ -33,16 +33,9 @@
 				let x = 0;
 				data.reverse().forEach(d => {
 					d.x = x;
-					d.v = d.total / this.peak;
-					d.color = d.v > 0.75
-						? '#196127'
-						: d.v > 0.5
-							? '#239a3b'
-							: d.v > 0.25
-								? '#7bc96f'
-								: d.v > 0
-									? '#c6e48b'
-									: '#eee';
+					let v = d.total / this.peak;
+					if (v > 1) v = 1;
+					d.color = `hsl(180, ${v * 100}%, ${15 + ((1 - v) * 80)}%)`;
 					d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
 					if (d.date.weekday == 6) x++;
 				});
