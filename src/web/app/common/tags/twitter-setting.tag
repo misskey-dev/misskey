@@ -25,6 +25,8 @@
 				color #8899a6
 	</style>
 	<script>
+		import CONFIG from '../scripts/config';
+
 		this.mixin('i');
 
 		this.form = null;
@@ -43,7 +45,8 @@
 			}
 		};
 
-		this.authorize = () => {
+		this.authorize = e => {
+			e.preventDefault();
 			this.form = window.open(CONFIG.apiUrl + '/connect/twitter',
 				'twitter_authorize_window',
 				'height=570,width=520');
