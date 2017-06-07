@@ -6,7 +6,7 @@
 		</a>
 		<div class="text">
 			<p>
-				<mk-reaction-icon reaction={ notification.reaction }></mk-reaction-icon>
+				<mk-reaction-icon reaction={ notification.reaction }/>
 				<a href={ '/' + notification.user.username }>{ notification.user.name }</a>
 			</p>
 			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>

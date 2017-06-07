@@ -1,14 +1,14 @@
 <mk-reactions-viewer>
 	<virtual if={ reactions }>
-		<span if={ reactions.like }><mk-reaction-icon reaction='like'></mk-reaction-icon><span>{ reactions.like }</span></span>
-		<span if={ reactions.love }><mk-reaction-icon reaction='love'></mk-reaction-icon><span>{ reactions.love }</span></span>
-		<span if={ reactions.laugh }><mk-reaction-icon reaction='laugh'></mk-reaction-icon><span>{ reactions.laugh }</span></span>
-		<span if={ reactions.hmm }><mk-reaction-icon reaction='hmm'></mk-reaction-icon><span>{ reactions.hmm }</span></span>
-		<span if={ reactions.surprise }><mk-reaction-icon reaction='surprise'></mk-reaction-icon><span>{ reactions.surprise }</span></span>
-		<span if={ reactions.congrats }><mk-reaction-icon reaction='congrats'></mk-reaction-icon><span>{ reactions.congrats }</span></span>
-		<span if={ reactions.angry }><mk-reaction-icon reaction='angry'></mk-reaction-icon><span>{ reactions.angry }</span></span>
-		<span if={ reactions.confused }><mk-reaction-icon reaction='confused'></mk-reaction-icon><span>{ reactions.confused }</span></span>
-		<span if={ reactions.pudding }><mk-reaction-icon reaction='pudding'></mk-reaction-icon><span>{ reactions.pudding }</span></span>
+		<span if={ reactions.like }><mk-reaction-icon reaction='like'/><span>{ reactions.like }</span></span>
+		<span if={ reactions.love }><mk-reaction-icon reaction='love'/><span>{ reactions.love }</span></span>
+		<span if={ reactions.laugh }><mk-reaction-icon reaction='laugh'/><span>{ reactions.laugh }</span></span>
+		<span if={ reactions.hmm }><mk-reaction-icon reaction='hmm'/><span>{ reactions.hmm }</span></span>
+		<span if={ reactions.surprise }><mk-reaction-icon reaction='surprise'/><span>{ reactions.surprise }</span></span>
+		<span if={ reactions.congrats }><mk-reaction-icon reaction='congrats'/><span>{ reactions.congrats }</span></span>
+		<span if={ reactions.angry }><mk-reaction-icon reaction='angry'/><span>{ reactions.angry }</span></span>
+		<span if={ reactions.confused }><mk-reaction-icon reaction='confused'/><span>{ reactions.confused }</span></span>
+		<span if={ reactions.pudding }><mk-reaction-icon reaction='pudding'/><span>{ reactions.pudding }</span></span>
 	</virtual>
 	<style>
 		:scope

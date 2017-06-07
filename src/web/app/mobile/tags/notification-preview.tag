@@ -2,7 +2,7 @@
 	<virtual if={ notification.type == 'reaction' }>
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
-			<p><mk-reaction-icon reaction={ notification.reaction }></mk-reaction-icon>{ notification.user.name }</p>
+			<p><mk-reaction-icon reaction={ notification.reaction }/>{ notification.user.name }</p>
 			<p class="post-ref">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
