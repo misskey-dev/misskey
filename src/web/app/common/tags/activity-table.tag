@@ -1,8 +1,8 @@
 <mk-activity-table>
 	<svg if={ data } ref="canvas" viewBox="0 0 53 7" preserveAspectRatio="none">
-		<rect each={ d, i in data } width="0.8" height="0.8"
-			riot-x={ d.x } riot-y={ d.date.weekday }
-			fill={ d.color }></rect>
+		<rect each={ data } width="1" height="1"
+			riot-x={ x } riot-y={ date.weekday }
+			fill={ color }></rect>
 	</svg>
 	<style>
 		:scope
@@ -13,6 +13,10 @@
 
 			> svg
 				display block
+
+				> rect
+					transform-origin center
+					transform scale(0.9)
 
 	</style>
 	<script>
