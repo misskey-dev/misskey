@@ -64,7 +64,7 @@
 		</virtual>
 	</div>
 	<button class="more" if={ moreNotifications } onclick={ fetchMoreNotifications } disabled={ fetchingMoreNotifications }>
-		{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
+		<i class="fa fa-spinner fa-pulse fa-fw" if={ fetchingMoreNotifications }></i>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
 	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
@@ -177,6 +177,12 @@
 				padding 16px
 				color #555
 				border-top solid 1px rgba(0, 0, 0, 0.05)
+
+				&:hover
+					background rgba(0, 0, 0, 0.025)
+
+				&:active
+					background rgba(0, 0, 0, 0.05)
 
 			> .empty
 				margin 0
