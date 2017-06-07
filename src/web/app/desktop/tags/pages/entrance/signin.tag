@@ -3,7 +3,7 @@
 		<h1><img if={ user } src={ user.avatar_url + '?thumbnail&size=32' }/>
 			<p>{ user ? user.name : 'アカウント' }</p>
 		</h1>
-		<mk-signin ref="signin"></mk-signin>
+		<mk-signin ref="signin"/>
 	</div>
 	<div class="divider"><span>or</span></div>
 	<button class="signup" onclick={ parent.signup }>新規登録</button><a class="introduction" onclick={ introduction }>Misskeyについて</a>

@@ -1,5 +1,5 @@
 <mk-notification class={ notification.type }>
-	<mk-time time={ notification.created_at }></mk-time>
+	<mk-time time={ notification.created_at }/>
 	<virtual if={ notification.type == 'reaction' }>
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>

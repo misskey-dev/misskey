@@ -1,10 +1,10 @@
 <mk-ui>
-	<mk-ui-header></mk-ui-header>
-	<mk-ui-nav ref="nav"></mk-ui-nav>
+	<mk-ui-header/>
+	<mk-ui-nav ref="nav"/>
 	<div class="content">
 		<yield />
 	</div>
-	<mk-stream-indicator></mk-stream-indicator>
+	<mk-stream-indicator/>
 	<style>
 		:scope
 			display block

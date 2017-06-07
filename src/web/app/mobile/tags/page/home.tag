@@ -1,6 +1,6 @@
 <mk-home-page>
 	<mk-ui ref="ui">
-		<mk-home ref="home"></mk-home>
+		<mk-home ref="home"/>
 	</mk-ui>
 	<style>
 		:scope

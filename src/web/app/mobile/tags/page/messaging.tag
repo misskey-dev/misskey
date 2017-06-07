@@ -1,6 +1,6 @@
 <mk-messaging-page>
 	<mk-ui ref="ui">
-		<mk-messaging ref="index"></mk-messaging>
+		<mk-messaging ref="index"/>
 	</mk-ui>
 	<style>
 		:scope

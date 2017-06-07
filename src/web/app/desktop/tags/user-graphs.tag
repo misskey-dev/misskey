@@ -1,15 +1,15 @@
 <mk-user-graphs>
 	<section>
 		<h1>投稿</h1>
-		<mk-user-posts-graph user={ opts.user }></mk-user-posts-graph>
+		<mk-user-posts-graph user={ opts.user }/>
 	</section>
 	<section>
 		<h1>フォロー/フォロワー</h1>
-		<mk-user-friends-graph user={ opts.user }></mk-user-friends-graph>
+		<mk-user-friends-graph user={ opts.user }/>
 	</section>
 	<section>
 		<h1>いいね</h1>
-		<mk-user-likes-graph user={ opts.user }></mk-user-likes-graph>
+		<mk-user-likes-graph user={ opts.user }/>
 	</section>
 	<style>
 		:scope

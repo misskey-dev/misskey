@@ -1,6 +1,6 @@
 <mk-user-profile>
 	<div class="friend-form" if={ SIGNIN && I.id != user.id }>
-		<mk-big-follow-button user={ user }></mk-big-follow-button>
+		<mk-big-follow-button user={ user }/>
 		<p class="followed" if={ user.is_followed }>フォローされています</p>
 	</div>
 	<div class="description" if={ user.description }>{ user.description }</div>
@@ -81,7 +81,7 @@
 
 	</style>
 	<script>
-		this.age = require('s-age'); 
+		this.age = require('s-age');
 
 		this.mixin('i');
 

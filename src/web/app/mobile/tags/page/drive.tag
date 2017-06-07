@@ -1,6 +1,6 @@
 <mk-drive-page>
 	<mk-ui ref="ui">
-		<mk-drive ref="browser" folder={ parent.opts.folder } file={ parent.opts.file } data-is-naked="true"></mk-drive>
+		<mk-drive ref="browser" folder={ parent.opts.folder } file={ parent.opts.file } data-is-naked="true"/>
 	</mk-ui>
 	<style>
 		:scope
@@ -63,7 +63,7 @@
 
 				document.title = title;
 				// TODO: escape html characters in file.name
-				ui.trigger('title', '<mk-file-type-icon class="icon"></mk-file-type-icon>' + file.name);
+				ui.trigger('title', '<mk-file-type-icon class="icon"/>' + file.name);
 				riot.mount('mk-file-type-icon', {
 					type: file.type
 				});

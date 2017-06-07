@@ -1,5 +1,5 @@
 <mk-home>
-	<mk-home-timeline ref="tl"></mk-home-timeline>
+	<mk-home-timeline ref="tl"/>
 	<style>
 		:scope
 			display block

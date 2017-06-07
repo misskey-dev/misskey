@@ -12,7 +12,7 @@
 			<div class="description">{ user.description }</div>
 		</div>
 	</div>
-	<mk-follow-button user={ user }></mk-follow-button>
+	<mk-follow-button user={ user }/>
 	<style>
 		:scope
 			display block

@@ -4,7 +4,7 @@
 			<h1>新しいアプリを作成</h1>
 			<p>MisskeyのAPIを利用したアプリケーションを作成できます。</p>
 		</header>
-		<mk-new-app-form></mk-new-app-form>
+		<mk-new-app-form/>
 	</main>
 	<style>
 		:scope
@@ -34,9 +34,9 @@
 						line-height 16px
 						color #9a9894
 
-			
 
-			
+
+
 
 	</style>
 </mk-new-app-page>

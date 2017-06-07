@@ -4,7 +4,7 @@
 	<div class="poll" if={ !loading && poll != null }>
 		<p if={ poll.text }><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>
 		<p if={ !poll.text }><a href="/{ poll.user.username }/{ poll.id }"><i class="fa fa-link"></i></a></p>
-		<mk-poll post={ poll }></mk-poll>
+		<mk-poll post={ poll }/>
 	</div>
 	<p class="empty" if={ !loading && poll == null }>%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
 	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>

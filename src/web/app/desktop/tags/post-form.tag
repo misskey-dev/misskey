@@ -11,16 +11,16 @@
 			</ul>
 			<p class="remain">{ 4 - files.length }/4</p>
 		</div>
-		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }></mk-poll-editor>
+		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }/>
 	</div>
-	<mk-uploader ref="uploader"></mk-uploader>
+	<mk-uploader ref="uploader"/>
 	<button ref="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 	<button ref="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
 	<button class="cat" title="%i18n:desktop.tags.mk-post-form.insert-the-cat%" onclick={ cat }><i class="fa fa-smile-o"></i></button>
 	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
 	<p class="text-count { over: refs.text.value.length > 1000 }">{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - refs.text.value.length) }</p>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll　&& !repost) } onclick={ post }>
-		{ wait ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }<mk-ellipsis if={ wait }></mk-ellipsis>
+		{ wait ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }<mk-ellipsis if={ wait }/>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>
 	<div class="dropzone" if={ draghover }></div>

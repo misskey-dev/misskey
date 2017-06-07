@@ -5,7 +5,7 @@
 			<button class="close" onclick={ cancel }><i class="fa fa-times"></i></button>
 			<button class="ok" onclick={ ok }><i class="fa fa-check"></i></button>
 		</header>
-		<mk-drive ref="browser" select-file={ true } multiple={ opts.multiple }></mk-drive>
+		<mk-drive ref="browser" select-file={ true } multiple={ opts.multiple }/>
 	</div>
 	<style>
 		:scope

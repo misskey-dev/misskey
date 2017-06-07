@@ -10,12 +10,12 @@
 						li.tag(style={background: tag.color, color: contrast(tag.color)})= tag.name
 			-->
 			<footer>
-				<p class="type"><mk-file-type-icon type={ file.type }></mk-file-type-icon>{ file.type }</p>
+				<p class="type"><mk-file-type-icon type={ file.type }/>{ file.type }</p>
 				<p class="separator"></p>
 				<p class="data-size">{ bytesToSize(file.datasize) }</p>
 				<p class="separator"></p>
 				<p class="created-at">
-					<i class="fa fa-clock-o"></i><mk-time time={ file.created_at }></mk-time>
+					<i class="fa fa-clock-o"></i><mk-time time={ file.created_at }/>
 				</p>
 			</footer>
 		</div>

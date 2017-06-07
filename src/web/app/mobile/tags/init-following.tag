@@ -5,7 +5,7 @@
 			<div class="body"><a class="name" href={ '/' + username } target="_blank">{ name }</a>
 				<p class="username">@{ username }</p>
 			</div>
-			<mk-follow-button user={ this }></mk-follow-button>
+			<mk-follow-button user={ this }/>
 		</div>
 	</div>
 	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>

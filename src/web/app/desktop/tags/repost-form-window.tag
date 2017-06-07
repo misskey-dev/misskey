@@ -4,7 +4,7 @@
 			<i class="fa fa-retweet"></i>%i18n:desktop.tags.mk-repost-form-window.title%
 		</yield>
 		<yield to="content">
-			<mk-repost-form ref="form" post={ parent.opts.post }></mk-repost-form>
+			<mk-repost-form ref="form" post={ parent.opts.post }/>
 		</yield>
 	</mk-window>
 	<style>

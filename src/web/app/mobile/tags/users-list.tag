@@ -4,7 +4,7 @@
 		<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>%i18n:mobile.tags.mk-users-list.known%<span>{ opts.youKnowCount }</span></span>
 	</nav>
 	<div class="users" if={ !fetching && users.length != 0 }>
-		<mk-user-preview each={ users } user={ this }></mk-user-preview>
+		<mk-user-preview each={ users } user={ this }/>
 	</div>
 	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }>
 		<span if={ !moreFetching }>%i18n:mobile.tags.mk-users-list.load-more%</span>

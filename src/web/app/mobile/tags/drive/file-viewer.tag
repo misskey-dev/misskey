@@ -19,11 +19,11 @@
 	</div>
 	<div class="info">
 		<div>
-			<span class="type"><mk-file-type-icon type={ file.type }></mk-file-type-icon>{ file.type }</span>
+			<span class="type"><mk-file-type-icon type={ file.type }/>{ file.type }</span>
 			<span class="separator"></span>
 			<span class="data-size">{ bytesToSize(file.datasize) }</span>
 			<span class="separator"></span>
-			<span class="created-at" onclick={ showCreatedAt }><i class="fa fa-clock-o"></i><mk-time time={ file.created_at }></mk-time></span>
+			<span class="created-at" onclick={ showCreatedAt }><i class="fa fa-clock-o"></i><mk-time time={ file.created_at }/></span>
 		</div>
 	</div>
 	<div class="menu">

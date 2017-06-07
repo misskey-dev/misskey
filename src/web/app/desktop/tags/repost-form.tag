@@ -1,5 +1,5 @@
 <mk-repost-form>
-	<mk-post-preview post={ opts.post }></mk-post-preview>
+	<mk-post-preview post={ opts.post }/>
 	<virtual if={ !quote }>
 		<footer>
 			<a class="quote" if={ !quote } onclick={ onquote }>%i18n:desktop.tags.mk-repost-form.quote%</a>
@@ -8,7 +8,7 @@
 		</footer>
 	</virtual>
 	<virtual if={ quote }>
-		<mk-post-form ref="form" repost={ opts.post }></mk-post-form>
+		<mk-post-form ref="form" repost={ opts.post }/>
 	</virtual>
 	<style>
 		:scope

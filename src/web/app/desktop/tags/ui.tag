@@ -1,11 +1,11 @@
 <mk-ui>
-	<mk-ui-header page={ opts.page }></mk-ui-header>
-	<mk-set-avatar-suggestion if={ SIGNIN && I.avatar_id == null }></mk-set-avatar-suggestion>
-	<mk-set-banner-suggestion if={ SIGNIN && I.banner_id == null }></mk-set-banner-suggestion>
+	<mk-ui-header page={ opts.page }/>
+	<mk-set-avatar-suggestion if={ SIGNIN && I.avatar_id == null }/>
+	<mk-set-banner-suggestion if={ SIGNIN && I.banner_id == null }/>
 	<div class="content">
 		<yield />
 	</div>
-	<mk-stream-indicator></mk-stream-indicator>
+	<mk-stream-indicator/>
 	<style>
 		:scope
 			display block

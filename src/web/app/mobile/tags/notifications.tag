@@ -2,7 +2,7 @@
 	<div class="notifications" if={ notifications.length != 0 }>
 		<virtual each={ notification, i in notifications }>
 			<div>
-				<mk-notification notification={ notification }></mk-notification>
+				<mk-notification notification={ notification }/>
 			</div>
 			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
 		</virtual>

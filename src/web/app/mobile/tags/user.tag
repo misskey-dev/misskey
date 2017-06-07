@@ -7,7 +7,7 @@
 					<a class="avatar">
 						<img src={ user.avatar_url + '?thumbnail&size=160' } alt="avatar"/>
 					</a>
-					<mk-follow-button if={ SIGNIN && I.id != user.id } user={ user }></mk-follow-button>
+					<mk-follow-button if={ SIGNIN && I.id != user.id } user={ user }/>
 				</div>
 				<div class="title">
 					<h1>{ user.name }</h1>
@@ -37,7 +37,7 @@
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
 				</div>
-				<mk-activity-table user={ user }></mk-activity-table>
+				<mk-activity-table user={ user }/>
 			</div>
 			<nav>
 				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>%i18n:mobile.tags.mk-user.posts%</a>
@@ -45,8 +45,8 @@
 			</nav>
 		</header>
 		<div class="body">
-			<mk-user-timeline if={ page == 'posts' } user={ user }></mk-user-timeline>
-			<mk-user-timeline if={ page == 'media' } user={ user } with-media={ true }></mk-user-timeline>
+			<mk-user-timeline if={ page == 'posts' } user={ user }/>
+			<mk-user-timeline if={ page == 'media' } user={ user } with-media={ true }/>
 		</div>
 	</div>
 	<style>

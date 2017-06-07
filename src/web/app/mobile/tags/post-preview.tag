@@ -8,11 +8,11 @@
 				<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>
 				<span class="username">@{ post.user.username }</span>
 				<a class="time" href={ '/' + post.user.username + '/' + post.id }>
-					<mk-time time={ post.created_at }></mk-time>
+					<mk-time time={ post.created_at }/>
 				</a>
 			</header>
 			<div class="body">
-				<mk-sub-post-content class="text" post={ post }></mk-sub-post-content>
+				<mk-sub-post-content class="text" post={ post }/>
 			</div>
 		</div>
 	</article>

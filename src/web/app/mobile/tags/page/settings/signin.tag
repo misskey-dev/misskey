@@ -1,6 +1,6 @@
 <mk-signin-history-page>
 	<mk-ui ref="ui">
-		<mk-signin-history></mk-signin-history>
+		<mk-signin-history/>
 	</mk-ui>
 	<style>
 		:scope

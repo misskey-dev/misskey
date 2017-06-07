@@ -1,5 +1,5 @@
 <mk-entrance-signin>
-	<mk-signin></mk-signin>
+	<mk-signin/>
 	<div class="divider"><span>or</span></div>
 	<button class="signup" onclick={ parent.signup }>%i18n:mobile.tags.mk-entrance-signin.signup%</button><a class="introduction" onclick={ parent.introduction }>%i18n:mobile.tags.mk-entrance-signin.about%</a>
 	<style>

@@ -1,6 +1,6 @@
 <mk-api-info-page>
 	<mk-ui ref="ui">
-		<mk-api-info></mk-api-info>
+		<mk-api-info/>
 	</mk-ui>
 	<style>
 		:scope

@@ -1,5 +1,5 @@
 <mk-new-post-page>
-	<mk-post-form ref="form"></mk-post-form>
+	<mk-post-form ref="form"/>
 	<style>
 		:scope
 			display block

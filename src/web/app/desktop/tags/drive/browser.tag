@@ -1,9 +1,9 @@
 <mk-drive-browser>
 	<nav>
 		<div class="path" oncontextmenu={ pathOncontextmenu }>
-			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }></mk-drive-browser-nav-folder>
+			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }/>
 			<virtual each={ folder in hierarchyFolders }><span class="separator"><i class="fa fa-angle-right"></i></span>
-				<mk-drive-browser-nav-folder folder={ folder }></mk-drive-browser-nav-folder>
+				<mk-drive-browser-nav-folder folder={ folder }/>
 			</virtual>
 			<span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span>
 			<span class="folder current" if={ folder != null }>{ folder.name }</span>
@@ -15,13 +15,13 @@
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" if={ folders.length > 0 }>
 				<virtual each={ folder in folders }>
-					<mk-drive-browser-folder class="folder" folder={ folder }></mk-drive-browser-folder>
+					<mk-drive-browser-folder class="folder" folder={ folder }/>
 				</virtual>
 				<button if={ moreFolders }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" if={ files.length > 0 }>
 				<virtual each={ file in files }>
-					<mk-drive-browser-file class="file" file={ file }></mk-drive-browser-file>
+					<mk-drive-browser-file class="file" file={ file }/>
 				</virtual>
 				<button if={ moreFiles } onclick={ fetchMoreFiles }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
@@ -39,7 +39,7 @@
 		</div>
 	</div>
 	<div class="dropzone" if={ draghover }></div>
-	<mk-uploader ref="uploader"></mk-uploader>
+	<mk-uploader ref="uploader"/>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" onchange={ changeFileInput }/>
 	<style>
 		:scope

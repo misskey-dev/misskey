@@ -1,14 +1,14 @@
 <mk-entrance>
 	<main><img src="/assets/title.svg" alt="Misskey"/>
-		<mk-entrance-signin if={ mode == 'signin' }></mk-entrance-signin>
-		<mk-entrance-signup if={ mode == 'signup' }></mk-entrance-signup>
+		<mk-entrance-signin if={ mode == 'signin' }/>
+		<mk-entrance-signup if={ mode == 'signup' }/>
 		<div class="introduction" if={ mode == 'introduction' }>
-			<mk-introduction></mk-introduction>
+			<mk-introduction/>
 			<button onclick={ signin }>%i18n:common.ok%</button>
 		</div>
 	</main>
 	<footer>
-		<mk-copyright></mk-copyright>
+		<mk-copyright/>
 	</footer>
 	<style>
 		:scope

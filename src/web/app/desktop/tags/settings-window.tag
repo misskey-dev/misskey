@@ -2,7 +2,7 @@
 	<mk-window ref="window" is-modal={ true } width={ '700px' } height={ '550px' }>
 		<yield to="header"><i class="fa fa-cog"></i>設定</yield>
 		<yield to="content">
-			<mk-settings></mk-settings>
+			<mk-settings/>
 		</yield>
 	</mk-window>
 	<style>

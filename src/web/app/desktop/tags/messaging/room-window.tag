@@ -2,7 +2,7 @@
 	<mk-window ref="window" is-modal={ false } width={ '500px' } height={ '560px' }>
 		<yield to="header"><i class="fa fa-comments"></i>メッセージ: { parent.user.name }</yield>
 		<yield to="content">
-			<mk-messaging-room user={ parent.user }></mk-messaging-room>
+			<mk-messaging-room user={ parent.user }/>
 		</yield>
 	</mk-window>
 	<style>

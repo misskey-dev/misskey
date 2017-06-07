@@ -1,16 +1,16 @@
 <mk-entrance>
 	<main>
 		<img src="/assets/title.svg" alt="Misskey"/>
-		<mk-entrance-signin if={ mode == 'signin' }></mk-entrance-signin>
-		<mk-entrance-signup if={ mode == 'signup' }></mk-entrance-signup>
+		<mk-entrance-signin if={ mode == 'signin' }/>
+		<mk-entrance-signup if={ mode == 'signup' }/>
 		<div class="introduction" if={ mode == 'introduction' }>
-			<mk-introduction></mk-introduction>
+			<mk-introduction/>
 			<button onclick={ signin }>わかった</button>
 		</div>
 	</main>
-	<mk-forkit></mk-forkit>
+	<mk-forkit/>
 	<footer>
-		<mk-copyright></mk-copyright>
+		<mk-copyright/>
 	</footer>
 	<!-- ↓ https://github.com/riot/riot/issues/2134 (将来的)-->
 	<style data-disable-scope="data-disable-scope">

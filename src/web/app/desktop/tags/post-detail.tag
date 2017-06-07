@@ -1,6 +1,6 @@
 <mk-post-detail title={ title }>
 	<div class="fetching" if={ fetching }>
-		<mk-ellipsis-icon></mk-ellipsis-icon>
+		<mk-ellipsis-icon/>
 	</div>
 	<div class="main" if={ !fetching }>
 		<button class="read-more" if={ p.reply_to && p.reply_to.reply_to_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
@@ -9,11 +9,11 @@
 		</button>
 		<div class="context">
 			<virtual each={ post in context }>
-				<mk-post-detail-sub post={ post }></mk-post-detail-sub>
+				<mk-post-detail-sub post={ post }/>
 			</virtual>
 		</div>
 		<div class="reply-to" if={ p.reply_to }>
-			<mk-post-detail-sub post={ p.reply_to }></mk-post-detail-sub>
+			<mk-post-detail-sub post={ p.reply_to }/>
 		</div>
 		<div class="repost" if={ isRepost }>
 			<p>
@@ -34,7 +34,7 @@
 				<a class="name" href={ '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
 				<span class="username">@{ p.user.username }</span>
 				<a class="time" href={ url }>
-					<mk-time time={ p.created_at }></mk-time>
+					<mk-time time={ p.created_at }/>
 				</a>
 			</header>
 			<div class="body">
@@ -42,10 +42,10 @@
 				<div class="media" if={ p.media }>
 					<virtual each={ file in p.media }><img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/></virtual>
 				</div>
-				<mk-poll if={ p.poll } post={ p }></mk-poll>
+				<mk-poll if={ p.poll } post={ p }/>
 			</div>
 			<footer>
-				<mk-reactions-viewer post={ p }></mk-reactions-viewer>
+				<mk-reactions-viewer post={ p }/>
 				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
@@ -60,7 +60,7 @@
 		</article>
 		<div class="replies">
 			<virtual each={ post in replies }>
-				<mk-post-detail-sub post={ post }></mk-post-detail-sub>
+				<mk-post-detail-sub post={ post }/>
 			</virtual>
 		</div>
 	</div>

@@ -17,7 +17,7 @@
 				<p>フォロワー</p><a>{ user.followers_count }</a>
 			</div>
 		</div>
-		<mk-follow-button if={ SIGNIN && user.id != I.id } user={ userPromise }></mk-follow-button>
+		<mk-follow-button if={ SIGNIN && user.id != I.id } user={ userPromise }/>
 	</virtual>
 	<style>
 		:scope

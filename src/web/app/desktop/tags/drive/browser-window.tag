@@ -5,7 +5,7 @@
 			<i class="fa fa-cloud"></i>%i18n:desktop.tags.mk-drive-browser-window.drive%
 		</yield>
 		<yield to="content">
-			<mk-drive-browser multiple={ true } folder={ parent.folder }></mk-drive-browser>
+			<mk-drive-browser multiple={ true } folder={ parent.folder }/>
 		</yield>
 	</mk-window>
 	<style>

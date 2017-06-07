@@ -1,6 +1,6 @@
 <mk-authorized-apps-page>
 	<mk-ui ref="ui">
-		<mk-authorized-apps></mk-authorized-apps>
+		<mk-authorized-apps/>
 	</mk-ui>
 	<style>
 		:scope

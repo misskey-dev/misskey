@@ -7,7 +7,7 @@
 		</time>
 	</div>
 	<div class="content">
-		<mk-analog-clock></mk-analog-clock>
+		<mk-analog-clock/>
 	</div>
 	<style>
 		:scope

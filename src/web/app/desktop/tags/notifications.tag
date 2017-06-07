@@ -2,7 +2,7 @@
 	<div class="notifications" if={ notifications.length != 0 }>
 		<virtual each={ notification, i in notifications }>
 			<div class="notification { notification.type }">
-				<mk-time time={ notification.created_at }></mk-time>
+				<mk-time time={ notification.created_at }/>
 				<virtual if={ notification.type == 'reaction' }>
 					<a class="avatar-anchor" href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>

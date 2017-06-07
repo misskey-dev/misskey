@@ -3,14 +3,14 @@
 		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>%i18n:common.loading%</p>
 		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>%i18n:common.tags.mk-messaging-room.empty%</p>
 		<virtual each={ message, i in messages }>
-			<mk-messaging-message message={ message }></mk-messaging-message>
+			<mk-messaging-message message={ message }/>
 			<p class="date" if={ i != messages.length - 1 && message._date != messages[i + 1]._date }><span>{ messages[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
 	<footer>
 		<div ref="notifications"></div>
 		<div class="grippie" title="%i18n:common.tags.mk-messaging-room.resize-form%"></div>
-		<mk-messaging-form user={ user }></mk-messaging-form>
+		<mk-messaging-form user={ user }/>
 	</footer>
 	<style>
 		:scope

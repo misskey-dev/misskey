@@ -9,7 +9,7 @@
 		</div>
 	</header>
 	<div class="form">
-		<mk-post-preview if={ opts.reply } post={ opts.reply }></mk-post-preview>
+		<mk-post-preview if={ opts.reply } post={ opts.reply }/>
 		<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%' }></textarea>
 		<div class="attaches" if={ files.length != 0 }>
 			<ul class="files" ref="attaches">
@@ -19,8 +19,8 @@
 				<li class="add" if={ files.length < 4 } title="%i18n:mobile.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }><i class="fa fa-plus"></i></li>
 			</ul>
 		</div>
-		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }></mk-poll-editor>
-		<mk-uploader ref="uploader"></mk-uploader>
+		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }/>
+		<mk-uploader ref="uploader"/>
 		<button ref="upload" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 		<button ref="drive" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
 		<button class="cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>

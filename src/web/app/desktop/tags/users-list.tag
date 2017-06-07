@@ -7,7 +7,7 @@
 	</nav>
 	<div class="users" if={ !fetching && users.length != 0 }>
 		<div each={ users }>
-			<mk-list-user user={ this }></mk-list-user>
+			<mk-list-user user={ this }/>
 		</div>
 	</div>
 	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }>

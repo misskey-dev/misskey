@@ -9,7 +9,7 @@
 			<a class="name" href={ '/' + _user.username } data-user-preview={ _user.id }>{ _user.name }</a>
 			<p class="username">@{ _user.username }</p>
 		</div>
-		<mk-follow-button user={ _user }></mk-follow-button>
+		<mk-follow-button user={ _user }/>
 	</div>
 	<p class="empty" if={ !loading && users.length == 0 }>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
 	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>

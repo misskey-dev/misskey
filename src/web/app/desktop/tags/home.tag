@@ -2,8 +2,8 @@
 	<div class="main">
 		<div class="left" ref="left"></div>
 		<main>
-			<mk-timeline-home-widget ref="tl" if={ mode == 'timeline' }></mk-timeline-home-widget>
-			<mk-mentions-home-widget ref="tl" if={ mode == 'mentions' }></mk-mentions-home-widget>
+			<mk-timeline-home-widget ref="tl" if={ mode == 'timeline' }/>
+			<mk-mentions-home-widget ref="tl" if={ mode == 'mentions' }/>
 		</main>
 		<div class="right" ref="right"></div>
 	</div>

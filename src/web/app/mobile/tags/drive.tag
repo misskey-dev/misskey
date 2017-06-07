@@ -14,7 +14,7 @@
 			<p>{ file.name }</p>
 		</virtual>
 	</nav>
-	<mk-uploader ref="uploader"></mk-uploader>
+	<mk-uploader ref="uploader"/>
 	<div class="browser { fetching: fetching }" if={ file == null }>
 		<div class="info" if={ info }>
 			<p if={ folder == null }>{ (info.usage / info.capacity * 100).toFixed(1) }% %i18n:mobile.tags.mk-drive.used%</p>
@@ -26,13 +26,13 @@
 		</div>
 		<div class="folders" if={ folders.length > 0 }>
 			<virtual each={ folder in folders }>
-				<mk-drive-folder folder={ folder }></mk-drive-folder>
+				<mk-drive-folder folder={ folder }/>
 			</virtual>
 			<p if={ moreFolders }>%i18n:mobile.tags.mk-drive.load-more%</p>
 		</div>
 		<div class="files" if={ files.length > 0 }>
 			<virtual each={ file in files }>
-				<mk-drive-file file={ file }></mk-drive-file>
+				<mk-drive-file file={ file }/>
 			</virtual>
 			<button class="more" if={ moreFiles } onclick={ fetchMoreFiles }>
 				{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
@@ -50,7 +50,7 @@
 		</div>
 	</div>
 	<input ref="file" type="file" multiple="multiple" onchange={ changeLocalFile }/>
-	<mk-drive-file-viewer if={ file != null } file={ file }></mk-drive-file-viewer>
+	<mk-drive-file-viewer if={ file != null } file={ file }/>
 	<style>
 		:scope
 			display block

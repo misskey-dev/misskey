@@ -8,10 +8,10 @@
 		</yield>
 		<yield to="content">
 			<div class="ref" if={ parent.opts.reply }>
-				<mk-post-preview post={ parent.opts.reply }></mk-post-preview>
+				<mk-post-preview post={ parent.opts.reply }/>
 			</div>
 			<div class="body">
-				<mk-post-form ref="form" reply={ parent.opts.reply }></mk-post-form>
+				<mk-post-form ref="form" reply={ parent.opts.reply }/>
 			</div>
 		</yield>
 	</mk-window>

@@ -1,5 +1,5 @@
 <mk-ui-header>
-	<mk-special-message></mk-special-message>
+	<mk-special-message/>
 	<div class="main">
 		<div class="backdrop"></div>
 		<div class="content">

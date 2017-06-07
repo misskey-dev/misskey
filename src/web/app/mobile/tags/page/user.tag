@@ -1,6 +1,6 @@
 <mk-user-page>
 	<mk-ui ref="ui">
-		<mk-user ref="user" user={ parent.user } page={ parent.opts.page }></mk-user>
+		<mk-user ref="user" user={ parent.user } page={ parent.opts.page }/>
 	</mk-ui>
 	<style>
 		:scope

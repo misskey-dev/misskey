@@ -1,6 +1,6 @@
 <mk-post-detail>
 	<div class="fetching" if={ fetching }>
-		<mk-ellipsis-icon></mk-ellipsis-icon>
+		<mk-ellipsis-icon/>
 	</div>
 	<div class="main" if={ !fetching }>
 		<button class="read-more" if={ p.reply_to && p.reply_to.reply_to_id && context == null } onclick={ loadContext } disabled={ loadingContext }>
@@ -9,11 +9,11 @@
 		</button>
 		<div class="context">
 			<virtual each={ post in context }>
-				<mk-post-preview post={ post }></mk-post-preview>
+				<mk-post-preview post={ post }/>
 			</virtual>
 		</div>
 		<div class="reply-to" if={ p.reply_to }>
-			<mk-post-preview post={ p.reply_to }></mk-post-preview>
+			<mk-post-preview post={ p.reply_to }/>
 		</div>
 		<div class="repost" if={ isRepost }>
 			<p>
@@ -40,13 +40,13 @@
 				<div class="media" if={ p.media }>
 					<virtual each={ file in p.media }><img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/></virtual>
 				</div>
-				<mk-poll if={ p.poll } post={ p }></mk-poll>
+				<mk-poll if={ p.poll } post={ p }/>
 			</div>
 			<a class="time" href={ url }>
-				<mk-time time={ p.created_at } mode="detail"></mk-time>
+				<mk-time time={ p.created_at } mode="detail"/>
 			</a>
 			<footer>
-				<mk-reactions-viewer post={ p }></mk-reactions-viewer>
+				<mk-reactions-viewer post={ p }/>
 				<button onclick={ reply } title="%i18n:mobile.tags.mk-post-detail.reply%"><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
@@ -61,7 +61,7 @@
 		</article>
 		<div class="replies">
 			<virtual each={ post in replies }>
-				<mk-post-preview post={ post }></mk-post-preview>
+				<mk-post-preview post={ post }/>
 			</virtual>
 		</div>
 	</div>

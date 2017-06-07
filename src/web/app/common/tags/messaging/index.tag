@@ -22,7 +22,7 @@
 					<header>
 						<span class="name">{ is_me ? recipient.name : user.name }</span>
 						<span class="username">{ '@' + (is_me ? recipient.username : user.username ) }</span>
-						<mk-time time={ created_at }></mk-time>
+						<mk-time time={ created_at }/>
 					</header>
 					<div class="body">
 						<p class="text"><span class="me" if={ is_me }>%i18n:common.tags.mk-messaging.you%:</span>{ text }</p>

@@ -1,5 +1,5 @@
 <mk-entrance-signup>
-	<mk-signup></mk-signup>
+	<mk-signup/>
 	<button class="cancel" type="button" onclick={ parent.signin } title="キャンセル"><i class="fa fa-times"></i></button>
 	<style>
 		:scope

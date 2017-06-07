@@ -1,6 +1,6 @@
 <mk-notifications-page>
 	<mk-ui ref="ui">
-		<mk-notifications ref="notifications"></mk-notifications>
+		<mk-notifications ref="notifications"/>
 	</mk-ui>
 	<style>
 		:scope

@@ -1,5 +1,5 @@
 <mk-search-posts>
-	<mk-timeline init={ init } more={ more } empty={ '%i18n:mobile.tags.mk-search-posts.empty%'.replace('{}', query) }></mk-timeline>
+	<mk-timeline init={ init } more={ more } empty={ '%i18n:mobile.tags.mk-search-posts.empty%'.replace('{}', query) }/>
 	<style>
 		:scope
 			display block

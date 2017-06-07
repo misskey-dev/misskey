@@ -1,6 +1,6 @@
 <mk-timeline-post class={ repost: isRepost }>
 	<div class="reply-to" if={ p.reply_to }>
-		<mk-timeline-post-sub post={ p.reply_to }></mk-timeline-post-sub>
+		<mk-timeline-post-sub post={ p.reply_to }/>
 	</div>
 	<div class="repost" if={ isRepost }>
 		<p>
@@ -9,7 +9,7 @@
 			</a>
 			<i class="fa fa-retweet"></i>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
 		</p>
-		<mk-time time={ post.created_at }></mk-time>
+		<mk-time time={ post.created_at }/>
 	</div>
 	<article>
 		<a class="avatar-anchor" href={ '/' + p.user.username }>
@@ -21,7 +21,7 @@
 				<span class="is-bot" if={ p.user.is_bot }>bot</span>
 				<span class="username">@{ p.user.username }</span>
 				<a class="created-at" href={ url }>
-					<mk-time time={ p.created_at }></mk-time>
+					<mk-time time={ p.created_at }/>
 				</a>
 			</header>
 			<div class="body">
@@ -33,16 +33,16 @@
 					<a class="quote" if={ p.repost != null }>RP:</a>
 				</div>
 				<div class="media" if={ p.media }>
-					<mk-images-viewer images={ p.media }></mk-images-viewer>
+					<mk-images-viewer images={ p.media }/>
 				</div>
-				<mk-poll if={ p.poll } post={ p } ref="pollViewer"></mk-poll>
+				<mk-poll if={ p.poll } post={ p } ref="pollViewer"/>
 				<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>
 				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
-					<mk-post-preview class="repost" post={ p.repost }></mk-post-preview>
+					<mk-post-preview class="repost" post={ p.repost }/>
 				</div>
 			</div>
 			<footer>
-				<mk-reactions-viewer post={ p } ref="reactionsViewer"></mk-reactions-viewer>
+				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
 				<button onclick={ reply }><i class="fa fa-reply"></i>
 					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>

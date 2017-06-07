@@ -45,22 +45,22 @@
 
 		<section class="apps" show={ page == 'apps' }>
 			<h1>アプリケーション</h1>
-			<mk-authorized-apps></mk-authorized-apps>
+			<mk-authorized-apps/>
 		</section>
 
 		<section class="twitter" show={ page == 'twitter' }>
 			<h1>Twitter</h1>
-			<mk-twitter-setting></mk-twitter-setting>
+			<mk-twitter-setting/>
 		</section>
 
 		<section class="signin" show={ page == 'signin' }>
 			<h1>ログイン履歴</h1>
-			<mk-signin-history></mk-signin-history>
+			<mk-signin-history/>
 		</section>
 
 		<section class="api" show={ page == 'api' }>
 			<h1>API</h1>
-			<mk-api-info></mk-api-info>
+			<mk-api-info/>
 		</section>
 	</div>
 	<style>

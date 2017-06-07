@@ -1,6 +1,6 @@
 <mk-home-timeline>
 	<mk-init-following if={ noFollowing } />
-	<mk-timeline ref="timeline" init={ init } more={ more } empty={ '%i18n:mobile.tags.mk-home-timeline.empty-timeline%' }></mk-timeline>
+	<mk-timeline ref="timeline" init={ init } more={ more } empty={ '%i18n:mobile.tags.mk-home-timeline.empty-timeline%' }/>
 	<style>
 		:scope
 			display block

@@ -1,5 +1,5 @@
 <mk-search>
-	<mk-search-posts ref="posts" query={ query }></mk-search-posts>
+	<mk-search-posts ref="posts" query={ query }/>
 	<style>
 		:scope
 			display block

@@ -1,7 +1,7 @@
 <mk-notifications-home-widget>
 	<p class="title"><i class="fa fa-bell-o"></i>%i18n:desktop.tags.mk-notifications-home-widget.title%</p>
 	<button onclick={ settings } title="%i18n:desktop.tags.mk-notifications-home-widget.settings%"><i class="fa fa-cog"></i></button>
-	<mk-notifications></mk-notifications>
+	<mk-notifications/>
 	<style>
 		:scope
 			display block

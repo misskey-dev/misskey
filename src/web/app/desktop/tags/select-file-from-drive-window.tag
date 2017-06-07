@@ -1,11 +1,11 @@
 <mk-select-file-from-drive-window>
 	<mk-window ref="window" is-modal={ true } width={ '800px' } height={ '500px' }>
 		<yield to="header">
-			<mk-raw content={ parent.title }></mk-raw>
+			<mk-raw content={ parent.title }/>
 			<span class="count" if={ parent.multiple && parent.files.length > 0 }>({ parent.files.length }ファイル選択中)</span>
 		</yield>
 		<yield to="content">
-			<mk-drive-browser ref="browser" multiple={ parent.multiple }></mk-drive-browser>
+			<mk-drive-browser ref="browser" multiple={ parent.multiple }/>
 			<div>
 				<button class="upload" title="PCからドライブにファイルをアップロード" onclick={ parent.upload }><i class="fa fa-upload"></i></button>
 				<button class="cancel" onclick={ parent.close }>キャンセル</button>

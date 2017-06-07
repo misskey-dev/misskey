@@ -12,7 +12,7 @@
 			</div>
 		</div>
 		<footer>
-			<mk-time time={ message.created_at }></mk-time><i class="fa fa-pencil is-edited" if={ message.is_edited }></i>
+			<mk-time time={ message.created_at }/><i class="fa fa-pencil is-edited" if={ message.is_edited }></i>
 		</footer>
 	</div>
 	<style>

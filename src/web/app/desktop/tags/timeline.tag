@@ -1,6 +1,6 @@
 <mk-timeline>
 	<virtual each={ post, i in posts }>
-		<mk-timeline-post post={ post }></mk-timeline-post>
+		<mk-timeline-post post={ post }/>
 		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ post._datetext }</span><span><i class="fa fa-angle-down"></i>{ posts[i + 1]._datetext }</span></p>
 	</virtual>
 	<footer data-yield="footer">

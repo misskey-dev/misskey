@@ -1,10 +1,10 @@
 <mk-mentions-home-widget>
 	<header><span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>すべて</span><span data-is-active={ mode == 'following' } onclick={ setMode.bind(this, 'following') }>フォロー中</span></header>
 	<div class="loading" if={ isLoading }>
-		<mk-ellipsis-icon></mk-ellipsis-icon>
+		<mk-ellipsis-icon/>
 	</div>
 	<p class="empty" if={ isEmpty }><i class="fa fa-comments-o"></i><span if={ mode == 'all' }>あなた宛ての投稿はありません。</span><span if={ mode == 'following' }>あなたがフォローしているユーザーからの言及はありません。</span></p>
-	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i></yield></mk-timeline>
+	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i></yield/>
 	<style>
 		:scope
 			display block

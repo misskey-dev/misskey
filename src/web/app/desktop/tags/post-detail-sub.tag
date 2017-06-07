@@ -10,7 +10,7 @@
 			</div>
 			<div class="right">
 				<a class="time" href={ '/' + this.post.user.username + '/' + this.post.id }>
-					<mk-time time={ post.created_at }></mk-time>
+					<mk-time time={ post.created_at }/>
 				</a>
 			</div>
 		</header>
