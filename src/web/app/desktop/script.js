@@ -41,6 +41,8 @@ init(async (me, stream) => {
 });
 
 function registerNotifications(stream) {
+	if (stream == null) return;
+
 	stream.on('drive_file_created', file => {
 		const n = new Notification('ファイルがアップロードされました', {
 			body: file.name,
