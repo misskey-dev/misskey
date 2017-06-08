@@ -114,7 +114,7 @@
 
 				> text
 					font-size 5px
-					fill #7b7b7b
+					fill rgba(0, 0, 0, 0.55)
 
 					> tspan
 						opacity 0.5
