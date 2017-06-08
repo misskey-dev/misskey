@@ -139,17 +139,18 @@
 		});
 
 		this.onStats = stats => {
+			stats.mem.used = stats.mem.total - stats.mem.free;
 			this.stats.push(stats);
 			if (this.stats.length > 50) this.stats.shift();
 
 			const cpuPolylinePoints = this.stats.map((s, i) => `${this.viewBoxX - ((this.stats.length - 1) - i)},${(1 - s.cpu_usage) * this.viewBoxY}`).join(' ');
-			const memPolylinePoints = this.stats.map((s, i) => `${this.viewBoxX - ((this.stats.length - 1) - i)},${(s.mem.free / s.mem.total) * this.viewBoxY}`).join(' ');
+			const memPolylinePoints = this.stats.map((s, i) => `${this.viewBoxX - ((this.stats.length - 1) - i)},${(1 - (s.mem.used / s.mem.total)) * this.viewBoxY}`).join(' ');
 
 			const cpuPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ cpuPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 			const memPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ memPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 
 			const cpuColor = `hsl(${180 - (stats.cpu_usage * 180)}, 80%, 70%)`;
-			const memColor = `hsl(${180 - (stats.mem.free / stats.mem.total * 180)}, 80%, 70%)`;
+			const memColor = `hsl(${180 - (stats.mem.used / stats.mem.total * 180)}, 80%, 70%)`;
 
 			this.update({
 				cpuPolylinePoints,
