@@ -2,8 +2,8 @@
 	<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-server-home-widget.title%</p>
 	<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
-	<mk-server-home-widget-stats if={ !initializing && view == 0 }/>
-	<mk-server-home-widget-info if={ !initializing && view == 1 } meta={ meta }/>
+	<mk-server-home-widget-stats if={ !initializing } show={ view == 0 }/>
+	<mk-server-home-widget-info if={ !initializing } show={ view == 1 } meta={ meta }/>
 	<style>
 		:scope
 			display block
@@ -73,7 +73,6 @@
 
 <mk-server-home-widget-stats>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
-		<text dx="1" dy="5">CPU <tspan>{ cpuP }%</tspan></text>
 		<polygon
 			riot-points={ cpuPolygonPoints }
 			riot-fill={ cpuColor }
@@ -83,9 +82,9 @@
 			fill="none"
 			stroke-width="1"
 			riot-stroke={ cpuColor }/>
+		<text dx="1" dy="5">CPU <tspan>{ cpuP }%</tspan></text>
 	</svg>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
-		<text dx="1" dy="5">MEM <tspan>{ memP }%</tspan></text>
 		<polygon
 			riot-points={ memPolygonPoints }
 			riot-fill={ memColor }
@@ -95,6 +94,7 @@
 			fill="none"
 			stroke-width="1"
 			riot-stroke={ memColor }/>
+		<text dx="1" dy="5">MEM <tspan>{ memP }%</tspan></text>
 	</svg>
 	<style>
 		:scope
