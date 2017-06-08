@@ -70,6 +70,7 @@
 				'rss-reader',
 				'trends',
 				'photo-stream',
+				'server',
 				'version'
 			],
 			right: [

@@ -137,8 +137,8 @@
 		this.connection = new MessagingStreamConnection(this.I, this.user.id);
 
 		this.on('mount', () => {
-			this.connection.event.on('message', this.onMessage);
-			this.connection.event.on('read', this.onRead);
+			this.connection.on('message', this.onMessage);
+			this.connection.on('read', this.onRead);
 
 			document.addEventListener('visibilitychange', this.onVisibilitychange);
 
@@ -153,8 +153,8 @@
 		});
 
 		this.on('unmount', () => {
-			this.connection.event.off('message', this.onMessage);
-			this.connection.event.off('read', this.onRead);
+			this.connection.off('message', this.onMessage);
+			this.connection.off('read', this.onRead);
 			this.connection.close();
 
 			document.removeEventListener('visibilitychange', this.onVisibilitychange);
@@ -174,10 +174,10 @@
 
 			this.messages.push(message);
 			if (message.user_id != this.I.id && !document.hidden) {
-				this.connection.socket.send(JSON.stringify({
+				this.connection.send({
 					type: 'read',
 					id: message.id
-				}));
+				});
 			}
 			this.update();
 
@@ -239,10 +239,10 @@
 			if (document.hidden) return;
 			this.messages.forEach(message => {
 				if (message.user_id !== this.I.id && !message.is_read) {
-					this.connection.socket.send(JSON.stringify({
+					this.connection.send({
 						type: 'read',
 						id: message.id
-					}));
+					});
 				}
 			});
 		};

@@ -100,6 +100,8 @@
 	</svg>
 	<style>
 		:scope
+			display block
+
 			> svg
 				display block
 				padding 10px
@@ -131,7 +133,7 @@
 </mk-activity-home-widget-calender>
 
 <mk-activity-home-widget-chart>
-	<svg riot-viewBox="0 0 { viewBoxX } 60" preserveAspectRatio="none" onmousedown={ onMousedown }>
+	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none" onmousedown={ onMousedown }>
 		<polyline
 			riot-points={ pointsPost }
 			fill="none"
@@ -155,6 +157,8 @@
 	</svg>
 	<style>
 		:scope
+			display block
+
 			> svg
 				display block
 				padding 10px
@@ -163,6 +167,7 @@
 	</style>
 	<script>
 		this.viewBoxX = 140;
+		this.viewBoxY = 60;
 		this.zoom = 1;
 		this.pos = 0;
 
@@ -176,10 +181,10 @@
 
 		this.render = () => {
 			this.update({
-				pointsPost: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.posts / peak)) * 60}`).join(' '),
-				pointsReply: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * 60}`).join(' '),
-				pointsRepost: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.reposts / peak)) * 60}`).join(' '),
-				pointsTotal: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * 60}`).join(' ')
+				pointsPost: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.posts / peak)) * this.viewBoxY}`).join(' '),
+				pointsReply: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' '),
+				pointsRepost: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.reposts / peak)) * this.viewBoxY}`).join(' '),
+				pointsTotal: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ')
 			});
 		};
 

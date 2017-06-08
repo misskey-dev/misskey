@@ -243,6 +243,10 @@ desktop:
       title: "通知"
       settings: "通知の設定"
 
+    mk-server-home-widget:
+      title: "サーバー情報"
+      toggle: "表示を切り替え"
+
     mk-activity-home-widget:
       title: "アクティビティ"
       toggle: "表示を切り替え"

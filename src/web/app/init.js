@@ -8,7 +8,7 @@ import * as riot from 'riot';
 import api from './common/scripts/api';
 import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';
-import Connection from './common/scripts/stream';
+import Connection from './common/scripts/home-stream';
 import mixin from './common/mixins';
 import generateDefaultUserdata from './common/scripts/generate-default-userdata';
 import CONFIG from './common/scripts/config';
@@ -95,7 +95,7 @@ export default callback => {
 			});
 		}
 
-		// Init stream connection
+		// Init home stream connection
 		const stream = me ? new Connection(me) : null;
 
 		// ミックスイン初期化

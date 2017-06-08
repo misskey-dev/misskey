@@ -8,6 +8,7 @@ import isNativeToken from './common/is-native-token';
 
 import homeStream from './stream/home';
 import messagingStream from './stream/messaging';
+import serverStream from './stream/server';
 
 module.exports = (server: http.Server) => {
 	/**
@@ -19,6 +20,11 @@ module.exports = (server: http.Server) => {
 
 	ws.on('request', async (request) => {
 		const connection = request.accept();
+
+		if (request.resourceURL.pathname === '/server') {
+			serverStream(request, connection);
+			return;
+		}
 
 		const user = await authenticate(connection, request.resourceURL.query.i);
 
