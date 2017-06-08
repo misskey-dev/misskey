@@ -2,43 +2,8 @@
 	<p class="title"><i class="fa fa-bar-chart"></i>%i18n:desktop.tags.mk-activity-home-widget.title%</p>
 	<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-home-widget.toggle%"><i class="fa fa-sort"></i></button>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
-	<svg if={ !initializing && view == 0 } class="calender" viewBox="0 0 21 7" preserveAspectRatio="none">
-		<rect each={ data }
-			width="1" height="1"
-			riot-x={ x } riot-y={ date.weekday }
-			rx="1" ry="1"
-			fill={ color }
-			style="transform: scale({ v });"/>
-		<rect class="today"
-			width="1" height="1"
-			riot-x={ data[data.length - 1].x } riot-y={ data[data.length - 1].date.weekday }
-			rx="1" ry="1"
-			fill="none"
-			stroke-width="0.1"
-			stroke="#f73520"/>
-	</svg>
-	<svg if={ !initializing && view == 1 } class="chart" viewBox="0 0 140 60" preserveAspectRatio="none">
-		<polyline
-			riot-points={ chartPointsPost }
-			fill="none"
-			stroke-width="1"
-			stroke="#41ddde"/>
-		<polyline
-			riot-points={ chartPointsReply }
-			fill="none"
-			stroke-width="1"
-			stroke="#f7796c"/>
-		<polyline
-			riot-points={ chartPointsRepost }
-			fill="none"
-			stroke-width="1"
-			stroke="#a1de41"/>
-		<polyline
-			riot-points={ chartPointsTotal }
-			fill="none"
-			stroke-width="1"
-			stroke="#555"/>
-	</svg>
+	<mk-activity-home-widget-calender if={ !initializing && view == 0 } data={ [].concat(data) }/>
+	<mk-activity-home-widget-chart if={ !initializing && view == 1 } data={ [].concat(data) }/>
 	<style>
 		:scope
 			display block
@@ -83,15 +48,6 @@
 				> i
 					margin-right 4px
 
-			> svg
-				display block
-				padding 10px
-				width 100%
-
-				&.calender
-					> rect
-						transform-origin center
-
 	</style>
 	<script>
 		this.mixin('i');
@@ -105,25 +61,9 @@
 				user_id: this.I.id,
 				limit: 20 * 7
 			}).then(data => {
-				data.forEach(d => d.total = d.posts + d.replies + d.reposts);
-				const peak = Math.max.apply(null, data.map(d => d.total));
-				let x = 0;
-				data.reverse().forEach(d => {
-					d.x = x;
-					d.v = d.total / (peak / 2);
-					if (d.v > 1) d.v = 1;
-					d.color = `hsl(170, ${d.v * 100}%, ${15 + ((1 - d.v) * 80)}%)`;
-					d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
-					if (d.date.weekday == 6) x++;
-				});
-
 				this.update({
 					initializing: false,
-					data,
-					chartPointsPost: data.map((d, i) => `${i},${(1 - (d.posts / peak)) * 60}`).join(' '),
-					chartPointsReply: data.map((d, i) => `${i},${(1 - (d.replies / peak)) * 60}`).join(' '),
-					chartPointsRepost: data.map((d, i) => `${i},${(1 - (d.reposts / peak)) * 60}`).join(' '),
-					chartPointsTotal: data.map((d, i) => `${i},${(1 - (d.total / peak)) * 60}`).join(' ')
+					data
 				});
 			});
 		});
@@ -134,3 +74,138 @@
 		};
 	</script>
 </mk-activity-home-widget>
+
+<mk-activity-home-widget-calender>
+	<svg viewBox="0 0 21 7" preserveAspectRatio="none">
+		<rect each={ data }
+			width="1" height="1"
+			riot-x={ x } riot-y={ date.weekday }
+			rx="1" ry="1"
+			fill={ color }
+			style="transform: scale({ v });"/>
+		<rect class="today"
+			width="1" height="1"
+			riot-x={ data[data.length - 1].x } riot-y={ data[data.length - 1].date.weekday }
+			rx="1" ry="1"
+			fill="none"
+			stroke-width="0.1"
+			stroke="#f73520"/>
+	</svg>
+	<style>
+		:scope
+			> svg
+				display block
+				padding 10px
+				width 100%
+
+				> rect
+					transform-origin center
+
+	</style>
+	<script>
+		this.data = this.opts.data;
+		this.data.forEach(d => d.total = d.posts + d.replies + d.reposts);
+		const peak = Math.max.apply(null, this.data.map(d => d.total));
+
+		let x = 0;
+		this.data.reverse().forEach(d => {
+			d.x = x;
+			d.v = d.total / (peak / 2);
+			if (d.v > 1) d.v = 1;
+			d.color = `hsl(170, ${d.v * 100}%, ${15 + ((1 - d.v) * 80)}%)`;
+			d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
+			if (d.date.weekday == 6) x++;
+		});
+	</script>
+</mk-activity-home-widget-calender>
+
+<mk-activity-home-widget-chart>
+	<svg riot-viewBox="0 0 { viewBoxX } 60" preserveAspectRatio="none" onmousedown={ onMousedown }>
+		<polyline
+			riot-points={ pointsPost }
+			fill="none"
+			stroke-width="1"
+			stroke="#41ddde"/>
+		<polyline
+			riot-points={ pointsReply }
+			fill="none"
+			stroke-width="1"
+			stroke="#f7796c"/>
+		<polyline
+			riot-points={ pointsRepost }
+			fill="none"
+			stroke-width="1"
+			stroke="#a1de41"/>
+		<polyline
+			riot-points={ pointsTotal }
+			fill="none"
+			stroke-width="1"
+			stroke="#555"/>
+	</svg>
+	<style>
+		:scope
+			> svg
+				display block
+				padding 10px
+				width 100%
+				cursor all-scroll
+	</style>
+	<script>
+		this.viewBoxX = 140;
+		this.zoom = 1;
+		this.pos = 0;
+
+		this.data = this.opts.data.reverse();
+		this.data.forEach(d => d.total = d.posts + d.replies + d.reposts);
+		const peak = Math.max.apply(null, this.data.map(d => d.total));
+
+		this.on('mount', () => {
+			this.render();
+		});
+
+		this.render = () => {
+			this.update({
+				pointsPost: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.posts / peak)) * 60}`).join(' '),
+				pointsReply: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * 60}`).join(' '),
+				pointsRepost: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.reposts / peak)) * 60}`).join(' '),
+				pointsTotal: this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * 60}`).join(' ')
+			});
+		};
+
+		this.onMousedown = e => {
+			e.preventDefault();
+
+			const clickX = e.clientX;
+			const clickY = e.clientY;
+			const baseZoom = this.zoom;
+			const basePos = this.pos;
+
+			// 動かした時
+			dragListen(me => {
+				let moveLeft = me.clientX - clickX;
+				let moveTop = me.clientY - clickY;
+
+				this.zoom = baseZoom + (moveTop / 20);
+				this.pos = basePos + moveLeft;
+				if (this.zoom < 1) this.zoom = 1;
+				if (this.pos > 0) this.pos = 0;
+				if (this.pos < -((this.data.length * this.zoom) - this.viewBoxX)) this.pos = -((this.data.length * this.zoom) - this.viewBoxX);
+
+				this.render();
+			});
+		};
+
+		function dragListen(fn) {
+			window.addEventListener('mousemove',  fn);
+			window.addEventListener('mouseleave', dragClear.bind(null, fn));
+			window.addEventListener('mouseup',    dragClear.bind(null, fn));
+		}
+
+		function dragClear(fn) {
+			window.removeEventListener('mousemove',  fn);
+			window.removeEventListener('mouseleave', dragClear);
+			window.removeEventListener('mouseup',    dragClear);
+		}
+	</script>
+</mk-activity-home-widget-chart>
+
