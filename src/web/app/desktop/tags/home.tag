@@ -70,7 +70,6 @@
 				'rss-reader',
 				'trends',
 				'photo-stream',
-				'server',
 				'version'
 			],
 			right: [
@@ -78,6 +77,7 @@
 				'notifications',
 				'user-recommendation',
 				'recommended-polls',
+				'server',
 				'donation',
 				'nav',
 				'tips'
