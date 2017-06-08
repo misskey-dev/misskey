@@ -73,7 +73,7 @@
 
 <mk-server-home-widget-stats>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
-		<text dx="1" dy="5">CPU</text>
+		<text dx="1" dy="5">CPU <tspan>{ cpuP }%</tspan></text>
 		<polygon
 			riot-points={ cpuPolygonPoints }
 			riot-fill={ cpuColor }
@@ -85,7 +85,7 @@
 			riot-stroke={ cpuColor }/>
 	</svg>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
-		<text dx="1" dy="5">MEM</text>
+		<text dx="1" dy="5">MEM <tspan>{ memP }%</tspan></text>
 		<polygon
 			riot-points={ memPolygonPoints }
 			riot-fill={ memColor }
@@ -115,6 +115,9 @@
 				> text
 					font-size 5px
 					fill #7b7b7b
+
+					> tspan
+						opacity 0.5
 
 			&:after
 				content ""
@@ -152,13 +155,18 @@
 			const cpuColor = `hsl(${180 - (stats.cpu_usage * 180)}, 80%, 70%)`;
 			const memColor = `hsl(${180 - (stats.mem.used / stats.mem.total * 180)}, 80%, 70%)`;
 
+			const cpuP = (stats.cpu_usage * 100).toFixed(0);
+			const memP = (stats.mem.used / stats.mem.total * 100).toFixed(0);
+
 			this.update({
 				cpuPolylinePoints,
 				memPolylinePoints,
 				cpuPolygonPoints,
 				memPolygonPoints,
 				cpuColor,
-				memColor
+				memColor,
+				cpuP,
+				memP
 			});
 		};
 	</script>
