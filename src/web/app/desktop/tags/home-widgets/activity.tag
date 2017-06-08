@@ -133,8 +133,8 @@
 </mk-activity-home-widget-calender>
 
 <mk-activity-home-widget-chart>
-	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none" onmousedown={ onMousedown }
-		title="Black ... Total\nBlue ... Posts\nRed ... Replies\nGreen ... Reposts">
+	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none" onmousedown={ onMousedown }>
+		<title>Black ... Total<br/>Blue ... Posts<br/>Red ... Replies<br/>Green ... Reposts</title>
 		<polyline
 			riot-points={ pointsPost }
 			fill="none"
