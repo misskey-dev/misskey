@@ -77,12 +77,19 @@
 
 <mk-activity-home-widget-calender>
 	<svg viewBox="0 0 21 7" preserveAspectRatio="none">
+		<rect each={ data } class="day"
+			width="1" height="1"
+			riot-x={ x } riot-y={ date.weekday }
+			rx="1" ry="1"
+			fill="transparent">
+			<title>{ date.year }/{ date.month }/{ date.day }<br/>Post: { posts }, Reply: { replies }, Repost: { reposts }</title>
+		</rect>
 		<rect each={ data }
 			width="1" height="1"
 			riot-x={ x } riot-y={ date.weekday }
 			rx="1" ry="1"
 			fill={ color }
-			style="transform: scale({ v });"/>
+			style="pointer-events: none; transform: scale({ v });"/>
 		<rect class="today"
 			width="1" height="1"
 			riot-x={ data[data.length - 1].x } riot-y={ data[data.length - 1].date.weekday }
@@ -100,6 +107,10 @@
 
 				> rect
 					transform-origin center
+
+					&.day
+						&:hover
+							fill rgba(0, 0, 0, 0.05)
 
 	</style>
 	<script>
