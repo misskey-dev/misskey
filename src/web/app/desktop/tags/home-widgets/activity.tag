@@ -185,11 +185,11 @@
 				let moveLeft = me.clientX - clickX;
 				let moveTop = me.clientY - clickY;
 
-				this.zoom = baseZoom + (moveTop / 20);
+				this.zoom = baseZoom + (-moveTop / 20);
 				this.pos = basePos + moveLeft;
 				if (this.zoom < 1) this.zoom = 1;
 				if (this.pos > 0) this.pos = 0;
-				if (this.pos < -((this.data.length * this.zoom) - this.viewBoxX)) this.pos = -((this.data.length * this.zoom) - this.viewBoxX);
+				if (this.pos < -(((this.data.length - 1) * this.zoom) - this.viewBoxX)) this.pos = -(((this.data.length - 1) * this.zoom) - this.viewBoxX);
 
 				this.render();
 			});
