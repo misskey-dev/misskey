@@ -154,7 +154,8 @@
 			riot-points={ pointsTotal }
 			fill="none"
 			stroke-width="1"
-			stroke="#555"/>
+			stroke="#555"
+			stroke-dasharray="2 2"/>
 	</svg>
 	<style>
 		:scope
