@@ -3,8 +3,10 @@
 	<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ view == 0 } connection={ connection }/>
-	<mk-server-home-widget-disk-usage if={ !initializing } show={ view == 1 } connection={ connection }/>
-	<mk-server-home-widget-info if={ !initializing } show={ view == 2 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-cpu if={ !initializing } show={ view == 1 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-memory if={ !initializing } show={ view == 2 } connection={ connection }/>
+	<mk-server-home-widget-disk if={ !initializing } show={ view == 3 } connection={ connection }/>
+	<mk-server-home-widget-info if={ !initializing } show={ view == 4 } connection={ connection } meta={ meta }/>
 	<style>
 		:scope
 			display block
@@ -74,7 +76,7 @@
 
 		this.toggle = () => {
 			this.view++;
-			if (this.view == 3) this.view = 0;
+			if (this.view == 5) this.view = 0;
 		};
 	</script>
 </mk-server-home-widget>
@@ -177,47 +179,74 @@
 	</script>
 </mk-server-home-widget-cpu-and-memory-usage>
 
-<mk-server-home-widget-disk-usage>
-	<svg viewBox="0 0 1 1" preserveAspectRatio="none">
-		<circle
-			riot-r={ r }
-			cx="50%" cy="50%"
-			fill="none"
-			stroke-width="0.1"
-			stroke="rgba(0, 0, 0, 0.05)"/>
-		<circle
-			riot-r={ r }
-			cx="50%" cy="50%"
-			riot-stroke-dasharray={ Math.PI * (r * 2) }
-			riot-stroke-dashoffset={ strokeDashoffset }
-			fill="none"
-			stroke-width="0.1"
-			riot-stroke={ color }/>
-		<text x="50%" y="50%" dy="0.05" text-anchor="middle">{ p }%</text>
-	</svg>
+<mk-server-home-widget-cpu>
+	<mk-server-home-widget-pie ref="pie"/>
 	<div>
-		<p>Storage</p>
-		<p>Total: { bytesToSize(total) }</p>
-		<p>Available: { bytesToSize(available) }</p>
-		<p>Used: { bytesToSize(used) }</p>
+		<p>CPU</p>
+		<p>{ cores } Cores</p>
 	</div>
 	<style>
 		:scope
 			display block
 
-			> svg
-				display block
+			> mk-server-home-widget-pie
 				padding 10px
 				height 100px
 				float left
 
-				> circle
-					transform-origin center
-					transform rotate(-90deg)
+			> div
+				float left
+				width calc(100% - 100px)
+				padding 10px 10px 10px 0
 
-				> text
-					font-size 0.15px
-					fill rgba(0, 0, 0, 0.6)
+				> p
+					margin 0
+					font-size 12px
+					color #505050
+
+					&:first-child
+						font-weight bold
+
+			&:after
+				content ""
+				display block
+				clear both
+
+	</style>
+	<script>
+		this.cores = this.opts.meta.cpu.cores;
+		this.connection = this.opts.connection;
+
+		this.on('mount', () => {
+			this.connection.on('stats', this.onStats);
+		});
+
+		this.on('unmount', () => {
+			this.connection.off('stats', this.onStats);
+		});
+
+		this.onStats = stats => {
+			this.refs.pie.render(stats.cpu_usage);
+		};
+	</script>
+</mk-server-home-widget-cpu>
+
+<mk-server-home-widget-memory>
+	<mk-server-home-widget-pie ref="pie"/>
+	<div>
+		<p>Memory</p>
+		<p>Total: { bytesToSize(total) }</p>
+		<p>Used: { bytesToSize(used) }</p>
+		<p>Free: { bytesToSize(free) }</p>
+	</div>
+	<style>
+		:scope
+			display block
+
+			> mk-server-home-widget-pie
+				padding 10px
+				height 100px
+				float left
 
 			> div
 				float left
@@ -241,7 +270,69 @@
 	<script>
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 
-		this.r = 0.4;
+		this.connection = this.opts.connection;
+		this.bytesToSize = bytesToSize;
+
+		this.on('mount', () => {
+			this.connection.on('stats', this.onStats);
+		});
+
+		this.on('unmount', () => {
+			this.connection.off('stats', this.onStats);
+		});
+
+		this.onStats = stats => {
+			stats.mem.used = stats.mem.total - stats.mem.free;
+			this.refs.pie.render(stats.mem.used / stats.mem.total);
+
+			this.update({
+				total: stats.mem.total,
+				used: stats.mem.used,
+				free: stats.mem.free
+			});
+		};
+	</script>
+</mk-server-home-widget-memory>
+
+<mk-server-home-widget-disk>
+	<mk-server-home-widget-pie ref="pie"/>
+	<div>
+		<p>Storage</p>
+		<p>Total: { bytesToSize(total) }</p>
+		<p>Available: { bytesToSize(available) }</p>
+		<p>Used: { bytesToSize(used) }</p>
+	</div>
+	<style>
+		:scope
+			display block
+
+			> mk-server-home-widget-pie
+				padding 10px
+				height 100px
+				float left
+
+			> div
+				float left
+				width calc(100% - 100px)
+				padding 10px 10px 10px 0
+
+				> p
+					margin 0
+					font-size 12px
+					color #505050
+
+					&:first-child
+						font-weight bold
+
+			&:after
+				content ""
+				display block
+				clear both
+
+	</style>
+	<script>
+		import bytesToSize from '../../../common/scripts/bytes-to-size';
+
 		this.connection = this.opts.connection;
 		this.bytesToSize = bytesToSize;
 
@@ -256,21 +347,16 @@
 		this.onStats = stats => {
 			stats.disk.used = stats.disk.total - stats.disk.free;
 
-			const color = `hsl(${180 - (stats.disk.used / stats.disk.total * 180)}, 80%, 70%)`;
-			const p = (stats.disk.used / stats.disk.total * 100).toFixed(0);
-			const strokeDashoffset = (1 - (stats.disk.used / stats.disk.total)) * (Math.PI * (this.r * 2));
+			this.refs.pie.render(stats.disk.used / stats.disk.total);
 
 			this.update({
-				color,
-				p,
-				strokeDashoffset,
 				total: stats.disk.total,
 				used: stats.disk.used,
 				available: stats.disk.available
 			});
 		};
 	</script>
-</mk-server-home-widget-disk-usage>
+</mk-server-home-widget-disk>
 
 <mk-server-home-widget-info>
 	<p>Maintainer: { meta.maintainer }</p>
@@ -283,3 +369,55 @@
 		this.meta = this.opts.meta;
 	</script>
 </mk-server-home-widget-info>
+
+<mk-server-home-widget-pie>
+	<svg viewBox="0 0 1 1" preserveAspectRatio="none">
+		<circle
+			riot-r={ r }
+			cx="50%" cy="50%"
+			fill="none"
+			stroke-width="0.1"
+			stroke="rgba(0, 0, 0, 0.05)"/>
+		<circle
+			riot-r={ r }
+			cx="50%" cy="50%"
+			riot-stroke-dasharray={ Math.PI * (r * 2) }
+			riot-stroke-dashoffset={ strokeDashoffset }
+			fill="none"
+			stroke-width="0.1"
+			riot-stroke={ color }/>
+		<text x="50%" y="50%" dy="0.05" text-anchor="middle">{ (p * 100).toFixed(0) }%</text>
+	</svg>
+	<style>
+		:scope
+			display block
+
+			> svg
+				display block
+				height 100%
+
+				> circle
+					transform-origin center
+					transform rotate(-90deg)
+					transition stroke-dashoffset 0.5s ease
+
+				> text
+					font-size 0.15px
+					fill rgba(0, 0, 0, 0.6)
+
+	</style>
+	<script>
+		this.r = 0.4;
+
+		this.render = p => {
+			const color = `hsl(${180 - (p * 180)}, 80%, 70%)`;
+			const strokeDashoffset = (1 - p) * (Math.PI * (this.r * 2));
+
+			this.update({
+				p,
+				color,
+				strokeDashoffset
+			});
+		};
+	</script>
+</mk-server-home-widget-pie>
