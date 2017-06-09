@@ -254,11 +254,11 @@
 		});
 
 		this.onStats = stats => {
-			stats.disk.used = stats.disk.total - stats.disk.free;
+			stats.disk.used = stats.disk.available - stats.disk.free;
 
-			const color = `hsl(${180 - (stats.disk.used / stats.disk.total * 180)}, 80%, 70%)`;
-			const p = (stats.disk.used / stats.disk.total * 100).toFixed(0);
-			const strokeDashoffset = (1 - (stats.disk.used / stats.disk.total)) * (Math.PI * (this.r * 2));
+			const color = `hsl(${180 - (stats.disk.used / stats.disk.available * 180)}, 80%, 70%)`;
+			const p = (stats.disk.used / stats.disk.available * 100).toFixed(0);
+			const strokeDashoffset = (1 - (stats.disk.used / stats.disk.available)) * (Math.PI * (this.r * 2));
 
 			this.update({
 				color,
