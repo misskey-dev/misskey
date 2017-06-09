@@ -43,6 +43,12 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		maintainer: config.maintainer,
 		version: version,
 		secure: config.https.enable,
+		machine: os.hostname(),
+		node: {
+			release: (process as any).release.name,
+			lts: (process as any).release.lts,
+			version: process.version
+		},
 		cpu: {
 			cores: os.cpus().length
 		}
