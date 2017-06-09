@@ -182,7 +182,7 @@
 <mk-server-home-widget-cpu>
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
-		<p>CPU</p>
+		<p><i class="fa fa-microchip"></i>CPU</p>
 		<p>{ cores } Cores</p>
 	</div>
 	<style>
@@ -206,6 +206,9 @@
 
 					&:first-child
 						font-weight bold
+
+						> i
+							margin-right 4px
 
 			&:after
 				content ""
@@ -234,7 +237,7 @@
 <mk-server-home-widget-memory>
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
-		<p>Memory</p>
+		<p><i class="fa fa-flask"></i>Memory</p>
 		<p>Total: { bytesToSize(total) }</p>
 		<p>Used: { bytesToSize(used) }</p>
 		<p>Free: { bytesToSize(free) }</p>
@@ -260,6 +263,9 @@
 
 					&:first-child
 						font-weight bold
+
+						> i
+							margin-right 4px
 
 			&:after
 				content ""
@@ -297,7 +303,7 @@
 <mk-server-home-widget-disk>
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
-		<p>Storage</p>
+		<p><i class="fa fa-hdd-o"></i>Storage</p>
 		<p>Total: { bytesToSize(total) }</p>
 		<p>Available: { bytesToSize(available) }</p>
 		<p>Used: { bytesToSize(used) }</p>
@@ -323,6 +329,9 @@
 
 					&:first-child
 						font-weight bold
+
+						> i
+							margin-right 4px
 
 			&:after
 				content ""
@@ -361,7 +370,7 @@
 <mk-server-home-widget-info>
 	<p>Maintainer: <b>{ meta.maintainer }</b></p>
 	<p>Machine: { meta.machine }</p>
-	<p>Node: { meta.node.version } { meta.node.release }</p>
+	<p>Node: { meta.node.version }</p>
 	<style>
 		:scope
 			display block
