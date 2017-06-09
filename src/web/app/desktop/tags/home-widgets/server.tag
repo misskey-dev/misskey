@@ -359,11 +359,19 @@
 </mk-server-home-widget-disk>
 
 <mk-server-home-widget-info>
-	<p>Maintainer: { meta.maintainer }</p>
+	<p>Maintainer: <b>{ meta.maintainer }</b></p>
+	<p>Machine: { meta.machine }</p>
+	<p>Node: { meta.node.version } { meta.node.release }</p>
 	<style>
 		:scope
 			display block
 			padding 10px
+
+			> p
+				margin 0
+				font-size 12px
+				color #505050
+
 	</style>
 	<script>
 		this.meta = this.opts.meta;
