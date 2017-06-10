@@ -102,7 +102,10 @@
 					stroke-width="1"/>
 			</mask>
 		</defs>
-		<rect x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY } style="stroke: none; fill: url(#{ cpuGradientId }); mask: url(#{ cpuMaskId })"/>
+		<rect
+			x="-1" y="-1"
+			riot-width={ viewBoxX + 2 } riot-height={ viewBoxY + 2 }
+			style="stroke: none; fill: url(#{ cpuGradientId }); mask: url(#{ cpuMaskId })"/>
 		<text x="1" y="5">CPU <tspan>{ cpuP }%</tspan></text>
 	</svg>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
@@ -125,7 +128,10 @@
 					stroke-width="1"/>
 			</mask>
 		</defs>
-		<rect x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY } style="stroke: none; fill: url(#{ memGradientId }); mask: url(#{ memMaskId })"/>
+		<rect
+			x="-1" y="-1"
+			riot-width={ viewBoxX + 2 } riot-height={ viewBoxY + 2 }
+			style="stroke: none; fill: url(#{ memGradientId }); mask: url(#{ memMaskId })"/>
 		<text x="1" y="5">MEM <tspan>{ memP }%</tspan></text>
 	</svg>
 	<style>
