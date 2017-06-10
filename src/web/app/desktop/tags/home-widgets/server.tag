@@ -83,27 +83,49 @@
 
 <mk-server-home-widget-cpu-and-memory-usage>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
-		<polygon
-			riot-points={ cpuPolygonPoints }
-			riot-fill={ cpuColor }
-			fill-opacity="0.5"/>
-		<polyline
-			riot-points={ cpuPolylinePoints }
-			fill="none"
-			stroke-width="1"
-			riot-stroke={ cpuColor }/>
+		<defs>
+			<linearGradient id={ cpuGradientId } x1="0" x2="0" y1="1" y2="0">
+				<stop offset="0%" stop-color="hsl(180, 80%, 70%)"></stop>
+				<stop offset="33%" stop-color="hsl(120, 80%, 70%)"></stop>
+				<stop offset="66%" stop-color="hsl(60, 80%, 70%)"></stop>
+				<stop offset="100%" stop-color="hsl(0, 80%, 70%)"></stop>
+			</linearGradient>
+			<mask id={ cpuMaskId } x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY }>
+				<polygon
+					riot-points={ cpuPolygonPoints }
+					fill="#fff"
+					fill-opacity="0.5"/>
+				<polyline
+					riot-points={ cpuPolylinePoints }
+					fill="none"
+					stroke="#fff"
+					stroke-width="1"/>
+			</mask>
+		</defs>
+		<rect x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY } style="stroke: none; fill: url(#{ cpuGradientId }); mask: url(#{ cpuMaskId })"/>
 		<text x="1" y="5">CPU <tspan>{ cpuP }%</tspan></text>
 	</svg>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
-		<polygon
-			riot-points={ memPolygonPoints }
-			riot-fill={ memColor }
-			fill-opacity="0.5"/>
-		<polyline
-			riot-points={ memPolylinePoints }
-			fill="none"
-			stroke-width="1"
-			riot-stroke={ memColor }/>
+		<defs>
+			<linearGradient id={ memGradientId } x1="0" x2="0" y1="1" y2="0">
+				<stop offset="0%" stop-color="hsl(180, 80%, 70%)"></stop>
+				<stop offset="33%" stop-color="hsl(120, 80%, 70%)"></stop>
+				<stop offset="66%" stop-color="hsl(60, 80%, 70%)"></stop>
+				<stop offset="100%" stop-color="hsl(0, 80%, 70%)"></stop>
+			</linearGradient>
+			<mask id={ memMaskId } x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY }>
+				<polygon
+					riot-points={ memPolygonPoints }
+					fill="#fff"
+					fill-opacity="0.5"/>
+				<polyline
+					riot-points={ memPolylinePoints }
+					fill="none"
+					stroke="#fff"
+					stroke-width="1"/>
+			</mask>
+		</defs>
+		<rect x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY } style="stroke: none; fill: url(#{ memGradientId }); mask: url(#{ memMaskId })"/>
 		<text x="1" y="5">MEM <tspan>{ memP }%</tspan></text>
 	</svg>
 	<style>
@@ -135,10 +157,16 @@
 				clear both
 	</style>
 	<script>
+		import uuid from '../../../common/scripts/uuid';
+
 		this.viewBoxX = 50;
 		this.viewBoxY = 30;
 		this.stats = [];
 		this.connection = this.opts.connection;
+		this.cpuGradientId = uuid();
+		this.cpuMaskId = uuid();
+		this.memGradientId = uuid();
+		this.memMaskId = uuid();
 
 		this.on('mount', () => {
 			this.connection.on('stats', this.onStats);
@@ -159,9 +187,6 @@
 			const cpuPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ cpuPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 			const memPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ memPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 
-			const cpuColor = `hsl(${180 - (stats.cpu_usage * 180)}, 80%, 70%)`;
-			const memColor = `hsl(${180 - (stats.mem.used / stats.mem.total * 180)}, 80%, 70%)`;
-
 			const cpuP = (stats.cpu_usage * 100).toFixed(0);
 			const memP = (stats.mem.used / stats.mem.total * 100).toFixed(0);
 
@@ -170,8 +195,6 @@
 				memPolylinePoints,
 				cpuPolygonPoints,
 				memPolygonPoints,
-				cpuColor,
-				memColor,
 				cpuP,
 				memP
 			});
