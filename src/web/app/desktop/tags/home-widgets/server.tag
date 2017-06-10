@@ -403,7 +403,7 @@
 	<style>
 		:scope
 			display block
-			padding 10px
+			padding 10px 14px
 
 			> p
 				margin 0
