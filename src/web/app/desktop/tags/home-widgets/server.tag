@@ -267,9 +267,9 @@
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
 		<p><i class="fa fa-flask"></i>Memory</p>
-		<p>Total: { bytesToSize(total) }</p>
-		<p>Used: { bytesToSize(used) }</p>
-		<p>Free: { bytesToSize(free) }</p>
+		<p>Total: { bytesToSize(total, 1) }</p>
+		<p>Used: { bytesToSize(used, 1) }</p>
+		<p>Free: { bytesToSize(free, 1) }</p>
 	</div>
 	<style>
 		:scope
@@ -333,9 +333,9 @@
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
 		<p><i class="fa fa-hdd-o"></i>Storage</p>
-		<p>Total: { bytesToSize(total) }</p>
-		<p>Available: { bytesToSize(available) }</p>
-		<p>Used: { bytesToSize(used) }</p>
+		<p>Total: { bytesToSize(total, 1) }</p>
+		<p>Available: { bytesToSize(available, 1) }</p>
+		<p>Used: { bytesToSize(used, 1) }</p>
 	</div>
 	<style>
 		:scope
