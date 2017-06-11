@@ -401,8 +401,8 @@
 
 <mk-server-home-widget-uptimes>
 	<p>Uptimes</p>
-	<p>Process: { process.toFixed(0) }s</p>
-	<p>OS: { os.toFixed(0) }s</p>
+	<p>Process: { process ? process.toFixed(0) : '---' }s</p>
+	<p>OS: { os ? os.toFixed(0) : '---' }s</p>
 	<style>
 		:scope
 			display block
