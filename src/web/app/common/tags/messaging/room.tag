@@ -2,6 +2,10 @@
 	<div class="stream">
 		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>%i18n:common.loading%</p>
 		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>%i18n:common.tags.mk-messaging-room.empty%</p>
+		<p class="no-history" if={ !init && messages.length > 0 && !moreMessagesIsInStock }><i class="fa fa-flag"></i>%i18n:common.tags.mk-messaging-room.no-history%</p>
+		<button class="more { fetching: fetchingMoreMessages }" if={ moreMessagesIsInStock } onclick={ fetchMoreMessages } disabled={ fetchingMoreMessages }>
+			<i class="fa fa-spinner fa-pulse fa-fw" if={ fetchingMoreMessages }></i>{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }
+		</button>
 		<virtual each={ message, i in messages }>
 			<mk-messaging-message message={ message }/>
 			<p class="date" if={ i != messages.length - 1 && message._date != messages[i + 1]._date }><span>{ messages[i + 1]._datetext }</span></p>
@@ -40,6 +44,27 @@
 					color rgba(0, 0, 0, 0.4)
 
 					i
+						margin-right 4px
+
+				> .more
+					display block
+					margin 16px auto
+					padding 0 12px
+					line-height 24px
+					color #fff
+					background rgba(0, 0, 0, 0.3)
+					border-radius 12px
+
+					&:hover
+						background rgba(0, 0, 0, 0.4)
+
+					&:active
+						background rgba(0, 0, 0, 0.5)
+
+					&.fetching
+						cursor wait
+
+					> i
 						margin-right 4px
 
 				> .message
@@ -142,11 +167,8 @@
 
 			document.addEventListener('visibilitychange', this.onVisibilitychange);
 
-			this.api('messaging/messages', {
-				user_id: this.user.id
-			}).then(messages => {
+			this.fetchMessages().then(() => {
 				this.init = false;
-				this.messages = messages.reverse();
 				this.update();
 				this.scrollToBottom();
 			});
@@ -200,6 +222,39 @@
 				}
 			});
 		};
+
+		this.fetchMoreMessages = () => {
+			this.update({
+				fetchingMoreMessages: true
+			});
+			this.fetchMessages().then(() => {
+				this.update({
+					fetchingMoreMessages: false
+				});
+			});
+		};
+
+		this.fetchMessages = () => new Promise((resolve, reject) => {
+			const max = this.moreMessagesIsInStock ? 20 : 10;
+
+			this.api('messaging/messages', {
+				user_id: this.user.id,
+				limit: max + 1,
+				max_id: this.moreMessagesIsInStock ? this.messages[0].id : undefined
+			}).then(messages => {
+				if (messages.length == max + 1) {
+					this.moreMessagesIsInStock = true;
+					messages.pop();
+				} else {
+					this.moreMessagesIsInStock = false;
+				}
+
+				this.messages.unshift.apply(this.messages, messages.reverse());
+				this.update();
+
+				resolve();
+			});
+		});
 
 		this.isBottom = () => {
 			const asobi = 32;

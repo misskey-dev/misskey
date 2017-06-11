@@ -45,6 +45,8 @@ common:
 
     mk-messaging-room:
       empty: "No conversations"
+      more: "More"
+      no-history: "There is no more history"
       resize-form: "Drag to resize"
       new-message: "New message"
 

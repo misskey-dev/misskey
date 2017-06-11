@@ -45,6 +45,8 @@ common:
 
     mk-messaging-room:
       empty: "このユーザーと話したことはありません"
+      more: "もっと読む"
+      no-history: "これより過去の履歴はありません"
       resize-form: "ドラッグしてフォームの広さを調整"
       new-message: "新しいメッセージがあります"
 
