@@ -50,6 +50,7 @@
 	</style>
 	<script>
 		this.on('mount', () => {
+			document.title = 'Oops!';
 			document.documentElement.style.background = '#f8f8f8';
 		});
 	</script>
