@@ -9,6 +9,7 @@ import api from './common/scripts/api';
 import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';
 import Connection from './common/scripts/home-stream';
+import Progress from './common/scripts/loading';
 import mixin from './common/mixins';
 import generateDefaultUserdata from './common/scripts/generate-default-userdata';
 import CONFIG from './common/scripts/config';
@@ -147,9 +148,10 @@ function fetchme(token, cb) {
 			me.data ? done() : init();
 		});
 	}, () => { // When failure
-		// Display error screen
-		riot.mount(document.body.appendChild(
-			document.createElement('mk-error')));
+		// Render the error screen
+		document.body.innerHTML = '<mk-error />';
+		riot.mount('*');
+		Progress.done();
 	});
 
 	function done() {

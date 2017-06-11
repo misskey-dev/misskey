@@ -52,7 +52,7 @@ common:
       no-apps: "No apps"
 
     mk-error:
-      title: "Cannot connect to the server"
+      title: "Unable to connect to the server"
       description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
       thanks: "Thank you for using Misskey."
 
