@@ -6,7 +6,8 @@
 	<mk-server-home-widget-cpu if={ !initializing } show={ view == 1 } connection={ connection } meta={ meta }/>
 	<mk-server-home-widget-memory if={ !initializing } show={ view == 2 } connection={ connection }/>
 	<mk-server-home-widget-disk if={ !initializing } show={ view == 3 } connection={ connection }/>
-	<mk-server-home-widget-info if={ !initializing } show={ view == 4 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-uptimes if={ !initializing } show={ view == 4 } connection={ connection }/>
+	<mk-server-home-widget-info if={ !initializing } show={ view == 5 } connection={ connection } meta={ meta }/>
 	<style>
 		:scope
 			display block
@@ -76,7 +77,7 @@
 
 		this.toggle = () => {
 			this.view++;
-			if (this.view == 5) this.view = 0;
+			if (this.view == 6) this.view = 0;
 		};
 	</script>
 </mk-server-home-widget>
@@ -213,6 +214,7 @@
 	<div>
 		<p><i class="fa fa-microchip"></i>CPU</p>
 		<p>{ cores } Cores</p>
+		<p>{ model }</p>
 	</div>
 	<style>
 		:scope
@@ -247,6 +249,7 @@
 	</style>
 	<script>
 		this.cores = this.opts.meta.cpu.cores;
+		this.model = this.opts.meta.cpu.model;
 		this.connection = this.opts.connection;
 
 		this.on('mount', () => {
@@ -396,10 +399,48 @@
 	</script>
 </mk-server-home-widget-disk>
 
+<mk-server-home-widget-uptimes>
+	<p>Uptimes</p>
+	<p>Process: { process.toFixed(0) }s</p>
+	<p>OS: { os.toFixed(0) }s</p>
+	<style>
+		:scope
+			display block
+			padding 10px 14px
+
+			> p
+				margin 0
+				font-size 12px
+				color #505050
+
+				&:first-child
+					font-weight bold
+
+	</style>
+	<script>
+		this.connection = this.opts.connection;
+
+		this.on('mount', () => {
+			this.connection.on('stats', this.onStats);
+		});
+
+		this.on('unmount', () => {
+			this.connection.off('stats', this.onStats);
+		});
+
+		this.onStats = stats => {
+			this.update({
+				process: stats.process_uptime,
+				os: stats.os_uptime
+			});
+		};
+	</script>
+</mk-server-home-widget-uptimes>
+
 <mk-server-home-widget-info>
 	<p>Maintainer: <b>{ meta.maintainer }</b></p>
 	<p>Machine: { meta.machine }</p>
-	<p>Node: { meta.node.version }</p>
+	<p>Node: { meta.node }</p>
 	<style>
 		:scope
 			display block

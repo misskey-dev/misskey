@@ -18,7 +18,9 @@ export default function() {
 					total: os.totalmem(),
 					free: os.freemem()
 				},
-				disk
+				disk,
+				os_uptime: os.uptime(),
+				process_uptime: process.uptime()
 			});
 		});
 	}, 1000);
