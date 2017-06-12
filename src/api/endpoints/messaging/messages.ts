@@ -5,8 +5,7 @@ import $ from 'cafy';
 import Message from '../../models/messaging-message';
 import User from '../../models/user';
 import serialize from '../../serializers/messaging-message';
-import publishUserStream from '../../event';
-import { publishMessagingStream } from '../../event';
+import read from '../../common/read-messaging-message';
 
 /**
  * Get messages
@@ -98,32 +97,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Mark as read all
 	if (markAsRead) {
-		const ids = messages
-			.filter(m => m.is_read == false)
-			.filter(m => m.recipient_id.equals(user._id))
-			.map(m => m._id);
-
-		// Update documents
-		await Message.update({
-			_id: { $in: ids }
-		}, {
-			$set: { is_read: true }
-		}, {
-			multi: true
-		});
-
-		// Publish event
-		publishMessagingStream(recipient._id, user._id, 'read', ids.map(id => id.toString()));
-
-		const count = await Message
-			.count({
-				recipient_id: user._id,
-				is_read: false
-			});
-
-		if (count == 0) {
-			// 全ての(いままで未読だった)メッセージを(これで)読みましたよというイベントを発行
-			publishUserStream(user._id, 'read_all_messaging_messages');
-		}
+		read(user._id, recipient._id, messages);
 	}
 });
