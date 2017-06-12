@@ -175,6 +175,7 @@ function panic(e) {
 	console.error(e);
 
 	// Display blue screen
+	document.documentElement.style.background = '#1269e2';
 	document.body.innerHTML =
 		'<div id="error">'
 			+ '<h1>:( 致命的な問題が発生しました。</h1>'
