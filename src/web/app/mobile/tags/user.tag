@@ -5,7 +5,7 @@
 			<div class="body">
 				<div class="top">
 					<a class="avatar">
-						<img src={ user.avatar_url + '?thumbnail&size=160' } alt="avatar"/>
+						<img src={ user.avatar_url + '?thumbnail&size=200' } alt="avatar"/>
 					</a>
 					<mk-follow-button if={ SIGNIN && I.id != user.id } user={ user }/>
 				</div>
