@@ -93,13 +93,13 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	publishMessagingStream(message.recipient_id, message.user_id, 'message', messageObj);
 	publishUserStream(message.recipient_id, 'messaging_message', messageObj);
 
-	// 5秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
+	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
 		if (!freshMessage.is_read) {
 			publishUserStream(message.recipient_id, 'unread_messaging_message', messageObj);
 		}
-	}, 5000);
+	}, 3000);
 
 	// Register to search database
 	if (message.text && config.elasticsearch.enable) {
