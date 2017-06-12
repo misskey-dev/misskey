@@ -24,6 +24,17 @@
 				max-width 600px
 				margin 0 auto
 
+				> .init
+					width 100%
+					margin 0
+					padding 16px 8px 8px 8px
+					text-align center
+					font-size 0.8em
+					color rgba(0, 0, 0, 0.4)
+
+					i
+						margin-right 4px
+
 				> .empty
 					width 100%
 					margin 0
