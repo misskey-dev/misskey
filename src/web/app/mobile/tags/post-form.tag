@@ -23,7 +23,7 @@
 		<mk-uploader ref="uploader"/>
 		<button ref="upload" onclick={ selectFile }><i class="fa fa-upload"></i></button>
 		<button ref="drive" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
-		<button class="cat" onclick={ cat }><i class="fa fa-smile-o"></i></button>
+		<button class="kao" onclick={ kao }><i class="fa fa-smile-o"></i></button>
 		<button class="poll" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
@@ -165,7 +165,7 @@
 
 				> [ref='upload']
 				> [ref='drive']
-				.cat
+				.kao
 				.poll
 					display inline-block
 					padding 0
@@ -182,7 +182,7 @@
 
 	</style>
 	<script>
-		import getCat from '../../common/scripts/get-cat';
+		import getKao from '../../common/scripts/get-kao';
 
 		this.mixin('api');
 
@@ -285,8 +285,8 @@
 			this.unmount();
 		};
 
-		this.cat = () => {
-			this.refs.text.value += getCat();
+		this.kao = () => {
+			this.refs.text.value += getKao();
 		};
 	</script>
 </mk-post-form>
