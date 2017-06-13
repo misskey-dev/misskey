@@ -1,4 +1,3 @@
-import * as mongodb from 'mongodb';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import read from '../common/read-messaging-message';
