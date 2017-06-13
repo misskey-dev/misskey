@@ -42,7 +42,7 @@ async function byNative(res, rej, me, query, offset, max) {
 	const users = await User
 		.find({
 			$or: [{
-				username_lower: new RegExp(escapedQuery.toLowerCase())
+				username_lower: new RegExp(escapedQuery.replace('@', '').toLowerCase())
 			}, {
 				name: new RegExp(escapedQuery)
 			}]
