@@ -74,4 +74,18 @@ function registerNotifications(stream) {
 		});
 		setTimeout(n.close.bind(n), 6000);
 	});
+
+	stream.on('unread_messaging_message', message => {
+		const n = new Notification(`${message.user.name}さんからメッセージ:`, {
+			body: message.text, // TODO: getMessagingMessageSummary(message),
+			icon: message.user.avatar_url + '?thumbnail&size=64'
+		});
+		n.onclick = () => {
+			n.close();
+			riot.mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+				user: message.user
+			});
+		};
+		setTimeout(n.close.bind(n), 7000);
+	});
 }
