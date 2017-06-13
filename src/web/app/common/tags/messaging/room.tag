@@ -126,6 +126,9 @@
 					padding 8px 0
 					text-align center
 
+					&:empty
+						display none
+
 					> p
 						display inline-block
 						margin 0
