@@ -108,7 +108,7 @@
     "deepcopy": "0.6.3",
     "diskusage": "^0.2.2",
     "download": "6.2.2",
-    "elasticsearch": "13.0.1",
+    "elasticsearch": "13.1.1",
     "escape-regexp": "0.0.1",
     "express": "4.15.3",
     "file-type": "5.1.1",
