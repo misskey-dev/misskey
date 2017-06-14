@@ -1,36 +1,25 @@
 <mk-error>
-	<!--i: i.fa.fa-times-circle-->
 	<img src="/assets/error.jpg" alt=""/>
 	<h1>%i18n:common.tags.mk-error.title%</h1>
 	<p class="text">%i18n:common.tags.mk-error.description%</p>
 	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
 	<style>
 		:scope
-			position fixed
-			z-index 100000
-			top 0
-			left 0
+			display block
 			width 100%
-			height 100%
+			padding 32px 18px
 			text-align center
-			background #f8f8f8
-
-			> i
-				display block
-				margin-top 64px
-				font-size 5em
-				color #6998a0
 
 			> img
 				display block
 				height 200px
-				margin 64px auto 0 auto
+				margin 0 auto
 				pointer-events none
 				user-select none
 
 			> h1
 				display block
-				margin 32px auto 16px auto
+				margin 1.25em auto 0.65em auto
 				font-size 1.5em
 				color #555
 
@@ -43,13 +32,26 @@
 
 			> .thanks
 				display block
-				margin 32px auto 0 auto
-				padding 32px 0 32px 0
+				margin 2em auto 0 auto
+				padding 2em 0 0 0
 				max-width 600px
 				font-size 0.9em
 				font-style oblique
 				color #aaa
 				border-top solid 1px #eee
 
+			@media (max-width 500px)
+				padding 24px 18px
+				font-size 80%
+
+				> img
+					height 150px
+
 	</style>
+	<script>
+		this.on('mount', () => {
+			document.title = 'Oops!';
+			document.documentElement.style.background = '#f8f8f8';
+		});
+	</script>
 </mk-error>

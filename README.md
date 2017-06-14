@@ -16,10 +16,10 @@ Key features
 ----------------------------------------------------------------
 * Automatically updated timeline
 * Private messages
-* Free 1GB storage
+* Free 1GB storage for each all users
 * Mobile device support (smartphone, tablet, etc)
 * Web API for third-party applications
-* Twitter integration
+* No ads
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
 

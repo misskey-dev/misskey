@@ -22,7 +22,7 @@ export default (tokens, shouldBreak) => {
 			case 'bold':
 				return `<strong>${escape(token.bold)}</strong>`;
 			case 'url':
-				return `<mk-url href="${escape(token.content)}" target="_blank"/>`;
+				return `<mk-url href="${escape(token.content)}" target="_blank"></mk-url>`;
 			case 'link':
 				return `<a class="link" href="${escape(token.url)}" target="_blank" title="${escape(token.url)}">${escape(token.title)}</a>`;
 			case 'mention':

@@ -45,6 +45,8 @@ common:
 
     mk-messaging-room:
       empty: "このユーザーと話したことはありません"
+      more: "もっと読む"
+      no-history: "これより過去の履歴はありません"
       resize-form: "ドラッグしてフォームの広さを調整"
       new-message: "新しいメッセージがあります"
 
@@ -219,7 +221,7 @@ desktop:
       attach-media-from-local: "PCからメディアを添付"
       attach-media-from-drive: "ドライブからメディアを添付"
       attach-cancel: "添付取り消し"
-      insert-the-cat: "猫挿入"
+      insert-a-kao: "v(‘ω’)v"
       create-poll: "投票を作成"
       text-remain: "のこり{}文字"
 
@@ -243,8 +245,13 @@ desktop:
       title: "通知"
       settings: "通知の設定"
 
+    mk-server-home-widget:
+      title: "サーバー情報"
+      toggle: "表示を切り替え"
+
     mk-activity-home-widget:
       title: "アクティビティ"
+      toggle: "表示を切り替え"
 
     mk-user-recommendation-home-widget:
       title: "おすすめユーザー"

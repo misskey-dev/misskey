@@ -1,6 +1,7 @@
 /**
  * Module dependencies
  */
+import * as os from 'os';
 import version from '../../version';
 import config from '../../conf';
 
@@ -41,6 +42,13 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	res({
 		maintainer: config.maintainer,
 		version: version,
-		secure: config.https.enable
+		secure: config.https.enable,
+		machine: os.hostname(),
+		os: os.platform(),
+		node: process.version,
+		cpu: {
+			model: os.cpus()[0].model,
+			cores: os.cpus().length
+		}
 	});
 });

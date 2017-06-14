@@ -45,6 +45,8 @@ common:
 
     mk-messaging-room:
       empty: "No conversations"
+      more: "More"
+      no-history: "There is no more history"
       resize-form: "Drag to resize"
       new-message: "New message"
 
@@ -52,7 +54,7 @@ common:
       no-apps: "No apps"
 
     mk-error:
-      title: "Cannot connect to the server"
+      title: "Unable to connect to the server"
       description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
       thanks: "Thank you for using Misskey."
 
@@ -219,7 +221,7 @@ desktop:
       attach-media-from-local: "Attach media from your pc"
       attach-media-from-drive: "Attach media from the drive"
       attach-cancel: "Cancel attachment"
-      insert-the-cat: "Insert a cat"
+      insert-a-kao: "v(‘ω’)v"
       create-poll: "Create a poll"
       text-remain: "{} chars remaining"
 
@@ -243,8 +245,13 @@ desktop:
       title: "Notifications"
       settings: "Notification settings"
 
+    mk-server-home-widget:
+      title: "Server info"
+      toggle: "Toggle views"
+
     mk-activity-home-widget:
       title: "Activity"
+      toggle: "Toggle views"
 
     mk-user-recommendation-home-widget:
       title: "Recommended users"

@@ -8,7 +8,8 @@ import * as riot from 'riot';
 import api from './common/scripts/api';
 import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';
-import Connection from './common/scripts/stream';
+import Connection from './common/scripts/home-stream';
+import Progress from './common/scripts/loading';
 import mixin from './common/mixins';
 import generateDefaultUserdata from './common/scripts/generate-default-userdata';
 import CONFIG from './common/scripts/config';
@@ -95,7 +96,7 @@ export default callback => {
 			});
 		}
 
-		// Init stream connection
+		// Init home stream connection
 		const stream = me ? new Connection(me) : null;
 
 		// ミックスイン初期化
@@ -147,9 +148,10 @@ function fetchme(token, cb) {
 			me.data ? done() : init();
 		});
 	}, () => { // When failure
-		// Display error screen
-		riot.mount(document.body.appendChild(
-			document.createElement('mk-error')));
+		// Render the error screen
+		document.body.innerHTML = '<mk-error />';
+		riot.mount('*');
+		Progress.done();
 	});
 
 	function done() {
@@ -173,6 +175,7 @@ function panic(e) {
 	console.error(e);
 
 	// Display blue screen
+	document.documentElement.style.background = '#1269e2';
 	document.body.innerHTML =
 		'<div id="error">'
 			+ '<h1>:( 致命的な問題が発生しました。</h1>'

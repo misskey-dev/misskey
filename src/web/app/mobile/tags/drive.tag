@@ -39,7 +39,7 @@
 			</button>
 		</div>
 		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
-			<p if={ !folder == null }>%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
+			<p if={ folder == null }>%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
 			<p if={ folder != null }>%i18n:mobile.tags.mk-drive.folder-is-empty%</p>
 		</div>
 	</div>

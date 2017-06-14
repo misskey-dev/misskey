@@ -1,6 +1,6 @@
-export default bytes => {
+export default (bytes, digits = 0) => {
 	var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 	if (bytes == 0) return '0Byte';
 	var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-	return Math.round(bytes / Math.pow(1024, i), 2) + sizes[i];
+	return (bytes / Math.pow(1024, i)).toFixed(digits).replace(/\.0+$/, '') + sizes[i];
 };

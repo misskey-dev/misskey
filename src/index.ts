@@ -12,17 +12,20 @@ import * as chalk from 'chalk';
 // import portUsed = require('tcp-port-used');
 import isRoot = require('is-root');
 import { master } from 'accesses';
+import Xev from 'xev';
 
 import Logger from './utils/logger';
 import ProgressBar from './utils/cli/progressbar';
 import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
+import stats from './utils/stats';
 
 import { Config, path as configPath } from './config';
 import loadConfig from './config';
 
 const clusterLog = debug('misskey:cluster');
+const ev = new Xev();
 
 process.title = 'Misskey';
 
@@ -35,6 +38,9 @@ main();
 function main() {
 	if (cluster.isMaster) {
 		masterMain();
+
+		ev.mount();
+		stats();
 	} else {
 		workerMain();
 	}

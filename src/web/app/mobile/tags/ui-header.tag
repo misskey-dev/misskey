@@ -4,6 +4,7 @@
 		<div class="backdrop"></div>
 		<div class="content">
 			<button class="nav" onclick={ parent.toggleDrawer }><i class="fa fa-bars"></i></button>
+			<i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i>
 			<h1 ref="title">Misskey</h1>
 			<button if={ func } onclick={ func }><i class="fa fa-{ funcIcon }"></i></button>
 		</div>
@@ -74,6 +75,14 @@
 						> i
 							transition all 0.2s ease
 
+					> i
+						position absolute
+						top 8px
+						left 8px
+						pointer-events none
+						font-size 10px
+						color $theme-color
+
 					> button:last-child
 						display block
 						position absolute
@@ -90,13 +99,45 @@
 	<script>
 		import ui from '../scripts/ui-event';
 
+		this.mixin('api');
+		this.mixin('stream');
+
 		this.func = null;
 		this.funcIcon = null;
 
+		this.on('mount', () => {
+			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+
+			// Fetch count of unread messaging messages
+			this.api('messaging/unread').then(res => {
+				if (res.count > 0) {
+					this.update({
+						hasUnreadMessagingMessages: true
+					});
+				}
+			});
+		});
+
 		this.on('unmount', () => {
+			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+
 			ui.off('title', this.setTitle);
 			ui.off('func', this.setFunc);
 		});
+
+		this.onReadAllMessagingMessages = () => {
+			this.update({
+				hasUnreadMessagingMessages: false
+			});
+		};
+
+		this.onUnreadMessagingMessage = () => {
+			this.update({
+				hasUnreadMessagingMessages: true
+			});
+		};
 
 		this.setTitle = title => {
 			this.refs.title.innerHTML = title;

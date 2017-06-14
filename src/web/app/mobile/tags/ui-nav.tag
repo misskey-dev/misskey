@@ -7,18 +7,18 @@
 		</a>
 		<div class="links">
 			<ul>
-				<li class="home"><a href="/"><i class="icon fa fa-home"></i>%i18n:mobile.tags.mk-ui-nav.home%<i class="angle fa fa-angle-right"></i></a></li>
-				<li class="notifications"><a href="/i/notifications"><i class="icon fa fa-bell-o"></i>%i18n:mobile.tags.mk-ui-nav.notifications%<i class="angle fa fa-angle-right"></i></a></li>
-				<li class="messaging"><a href="/i/messaging"><i class="icon fa fa-comments-o"></i>%i18n:mobile.tags.mk-ui-nav.messaging%<i class="angle fa fa-angle-right"></i></a></li>
+				<li><a href="/"><i class="fa fa-home"></i>%i18n:mobile.tags.mk-ui-nav.home%<i class="fa fa-angle-right"></i></a></li>
+				<li><a href="/i/notifications"><i class="fa fa-bell-o"></i>%i18n:mobile.tags.mk-ui-nav.notifications%<i class="fa fa-angle-right"></i></a></li>
+				<li><a href="/i/messaging"><i class="fa fa-comments-o"></i>%i18n:mobile.tags.mk-ui-nav.messaging%<i class="i fa fa-circle" if={ hasUnreadMessagingMessages }></i><i class="fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li class="settings"><a onclick={ search }><i class="icon fa fa-search"></i>%i18n:mobile.tags.mk-ui-nav.search%<i class="angle fa fa-angle-right"></i></a></li>
+				<li><a onclick={ search }><i class="fa fa-search"></i>%i18n:mobile.tags.mk-ui-nav.search%<i class="fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li class="settings"><a href="/i/drive"><i class="icon fa fa-cloud"></i>%i18n:mobile.tags.mk-ui-nav.drive%<i class="angle fa fa-angle-right"></i></a></li>
+				<li><a href="/i/drive"><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-ui-nav.drive%<i class="fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li class="settings"><a href="/i/settings"><i class="icon fa fa-cog"></i>%i18n:mobile.tags.mk-ui-nav.settings%<i class="angle fa fa-angle-right"></i></a></li>
+				<li><a href="/i/settings"><i class="fa fa-cog"></i>%i18n:mobile.tags.mk-ui-nav.settings%<i class="fa fa-angle-right"></i></a></li>
 			</ul>
 		</div>
 		<a href={ CONFIG.aboutUrl }><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
@@ -94,10 +94,16 @@
 						color #777
 						text-decoration none
 
-						> .icon
+						> i:first-child
 							margin-right 0.5em
 
-						> .angle
+						> .i
+							margin-left 6px
+							vertical-align super
+							font-size 10px
+							color $theme-color
+
+						> i:last-child
 							position absolute
 							top 0
 							right 0
@@ -120,6 +126,39 @@
 	<script>
 		this.mixin('i');
 		this.mixin('page');
+		this.mixin('api');
+		this.mixin('stream');
+
+		this.on('mount', () => {
+			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+
+			// Fetch count of unread messaging messages
+			this.api('messaging/unread').then(res => {
+				if (res.count > 0) {
+					this.update({
+						hasUnreadMessagingMessages: true
+					});
+				}
+			});
+		});
+
+		this.on('unmount', () => {
+			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+		});
+
+		this.onReadAllMessagingMessages = () => {
+			this.update({
+				hasUnreadMessagingMessages: false
+			});
+		};
+
+		this.onUnreadMessagingMessage = () => {
+			this.update({
+				hasUnreadMessagingMessages: true
+			});
+		};
 
 		this.search = () => {
 			const query = window.prompt('%i18n:mobile.tags.mk-ui-nav.search%');

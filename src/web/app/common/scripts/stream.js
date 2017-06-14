@@ -5,10 +5,10 @@ import * as riot from 'riot';
 import CONFIG from './config';
 
 /**
- * Home stream connection
+ * Misskey stream connection
  */
 class Connection {
-	constructor(me) {
+	constructor(endpoint, params) {
 		// BIND -----------------------------------
 		this.onOpen =    this.onOpen.bind(this);
 		this.onClose =   this.onClose.bind(this);
@@ -20,16 +20,19 @@ class Connection {
 		riot.observable(this);
 
 		this.state = 'initializing';
-		this.me = me;
 		this.buffer = [];
 
 		const host = CONFIG.apiUrl.replace('http', 'ws');
-		this.socket = new ReconnectingWebSocket(`${host}?i=${me.token}`);
+		const query = params
+			? Object.keys(params)
+				.map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+				.join('&')
+			: null;
+
+		this.socket = new ReconnectingWebSocket(`${host}/${endpoint}${query ? '?' + query : ''}`);
 		this.socket.addEventListener('open', this.onOpen);
 		this.socket.addEventListener('close', this.onClose);
 		this.socket.addEventListener('message', this.onMessage);
-
-		this.on('i_updated', me.update);
 	}
 
 	/**

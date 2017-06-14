@@ -77,6 +77,7 @@
 				'notifications',
 				'user-recommendation',
 				'recommended-polls',
+				'server',
 				'donation',
 				'nav',
 				'tips'

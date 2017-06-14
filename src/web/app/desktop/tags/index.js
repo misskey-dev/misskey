@@ -45,6 +45,7 @@ require('./home-widgets/version.tag');
 require('./home-widgets/recommended-polls.tag');
 require('./home-widgets/trends.tag');
 require('./home-widgets/activity.tag');
+require('./home-widgets/server.tag');
 require('./timeline.tag');
 require('./messaging/window.tag');
 require('./messaging/room-window.tag');
