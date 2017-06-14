@@ -63,7 +63,7 @@
 
 				document.title = title;
 				// TODO: escape html characters in file.name
-				ui.trigger('title', '<mk-file-type-icon class="icon"/>' + file.name);
+				ui.trigger('title', '<mk-file-type-icon class="icon"></mk-file-type-icon>' + file.name);
 				riot.mount('mk-file-type-icon', {
 					type: file.type
 				});
