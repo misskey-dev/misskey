@@ -20,7 +20,7 @@
 	// e.g.
 	//   misskey.alice               => misskey
 	//   misskey.strawberry.pasta    => misskey
-	//   dev.misskey.alice.tachibana => dev
+	//   dev.misskey.arisu.tachibana => dev
 	let app = url.host.split('.')[0];
 
 	// Detect the user language
