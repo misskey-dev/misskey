@@ -73,7 +73,7 @@
     "gulp-mocha": "4.3.1",
     "gulp-pug": "3.3.0",
     "gulp-rename": "1.2.2",
-    "gulp-replace": "0.5.4",
+    "gulp-replace": "0.6.0",
     "gulp-tslint": "8.1.1",
     "gulp-typescript": "3.1.7",
     "gulp-uglify": "3.0.0",
