@@ -1,6 +1,7 @@
 const StringReplacePlugin = require('string-replace-webpack-plugin');
 
 import constant from './const';
+import hoist from './hoist';
 //import minify from './minify';
 import banner from './banner';
 
@@ -12,7 +13,8 @@ const isProduction = env === 'production';
 export default version => {
 	const plugins = [
 		constant(),
-		new StringReplacePlugin()
+		new StringReplacePlugin(),
+		hoist()
 	];
 /*
 	if (isProduction) {
