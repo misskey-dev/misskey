@@ -55,7 +55,7 @@
     "@types/node": "8.0.3",
     "@types/ratelimiter": "2.1.28",
     "@types/redis": "2.6.0",
-    "@types/request": "0.0.44",
+    "@types/request": "0.0.45",
     "@types/rimraf": "0.0.28",
     "@types/riot": "2.6.2",
     "@types/serve-favicon": "2.2.28",
