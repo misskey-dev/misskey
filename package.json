@@ -62,7 +62,7 @@
     "@types/uuid": "3.0.0",
     "@types/webpack": "3.0.1",
     "@types/webpack-stream": "3.2.7",
-    "@types/websocket": "0.0.33",
+    "@types/websocket": "0.0.34",
     "chai": "4.0.2",
     "chai-http": "3.0.0",
     "css-loader": "0.28.4",
