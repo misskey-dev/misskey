@@ -60,7 +60,7 @@
     "@types/riot": "2.6.2",
     "@types/serve-favicon": "2.2.28",
     "@types/uuid": "3.0.0",
-    "@types/webpack": "3.0.0",
+    "@types/webpack": "3.0.1",
     "@types/webpack-stream": "3.2.7",
     "@types/websocket": "0.0.33",
     "chai": "4.0.2",
