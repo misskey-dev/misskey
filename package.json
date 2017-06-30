@@ -86,7 +86,7 @@
     "stylus-loader": "3.0.1",
     "swagger-jsdoc": "1.9.5",
     "tslint": "5.4.3",
-    "uglify-es": "3.0.21",
+    "uglify-es": "3.0.22",
     "uglify-es-webpack-plugin": "0.0.2",
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
     "webpack": "3.0.0"
