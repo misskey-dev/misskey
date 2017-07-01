@@ -131,7 +131,7 @@
     "pug": "2.0.0-rc.2",
     "ratelimiter": "3.0.3",
     "recaptcha-promise": "0.1.2",
-    "reconnecting-websocket": "3.0.6",
+    "reconnecting-websocket": "3.0.7",
     "redis": "2.7.1",
     "request": "2.81.0",
     "rimraf": "2.6.1",
