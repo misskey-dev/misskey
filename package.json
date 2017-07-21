@@ -100,7 +100,7 @@
     "cafy": "2.4.0",
     "chalk": "2.0.1",
     "compression": "1.6.2",
-    "cors": "2.8.3",
+    "cors": "2.8.4",
     "cropperjs": "1.0.0-rc.3",
     "crypto": "0.0.3",
     "debug": "2.6.8",
