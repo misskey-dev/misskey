@@ -28,7 +28,7 @@
     "@types/chalk": "0.4.31",
     "@types/compression": "0.0.33",
     "@types/cors": "2.8.1",
-    "@types/debug": "0.0.29",
+    "@types/debug": "0.0.30",
     "@types/deep-equal": "1.0.0",
     "@types/elasticsearch": "5.0.14",
     "@types/event-stream": "3.3.31",
