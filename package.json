@@ -33,7 +33,7 @@
     "@types/elasticsearch": "5.0.14",
     "@types/event-stream": "3.3.31",
     "@types/express": "4.0.36",
-    "@types/gm": "1.17.31",
+    "@types/gm": "1.17.32",
     "@types/gulp": "4.0.3",
     "@types/gulp-mocha": "0.0.30",
     "@types/gulp-rename": "0.0.32",
