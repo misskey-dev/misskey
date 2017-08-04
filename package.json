@@ -84,7 +84,7 @@
     "style-loader": "0.18.2",
     "stylus": "0.54.5",
     "stylus-loader": "3.0.1",
-    "swagger-jsdoc": "1.9.6",
+    "swagger-jsdoc": "1.9.7",
     "tslint": "5.5.0",
     "uglify-es": "3.0.24",
     "uglify-es-webpack-plugin": "0.10.0",
