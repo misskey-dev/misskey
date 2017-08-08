@@ -103,7 +103,7 @@
     "cors": "2.8.4",
     "cropperjs": "1.0.0-rc.3",
     "crypto": "0.0.3",
-    "debug": "2.6.8",
+    "debug": "3.0.0",
     "deep-equal": "1.0.1",
     "deepcopy": "0.6.3",
     "diskusage": "^0.2.2",
