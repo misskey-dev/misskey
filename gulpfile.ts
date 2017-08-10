@@ -18,6 +18,7 @@ import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
+import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 import version from './src/version';
 
@@ -160,6 +161,32 @@ gulp.task('build:client:pug', [
 				locals: {
 					themeColor: constants.themeColor
 				}
+			}))
+			.pipe(htmlmin({
+				// 真理値属性の簡略化 e.g.
+				// <input value="foo" readonly="readonly"> to
+				// <input value="foo" readonly>
+				collapseBooleanAttributes: true,
+
+				// テキストの一部かもしれない空白も削除する e.g.
+				// <div> <p>    foo </p>    </div> to
+				// <div><p>foo</p></div>
+				collapseWhitespace: true,
+
+				// (できる場合は)属性のクォーテーション削除する e.g.
+				// <p class="foo-bar" id="moo" title="blah blah">foo</p> to
+				// <p class=foo-bar id=moo title="blah blah">foo</p>
+				removeAttributeQuotes: true,
+
+				// 省略可能なタグを省略する e.g.
+				// <html><p>yo</p></html> ro
+				// <p>yo</p>
+				removeOptionalTags: true,
+
+				// 属性の値がデフォルトと同じなら省略する e.g.
+				// <input type="text"> to
+				// <input>
+				removeRedundantAttributes: true
 			}))
 			.pipe(gulp.dest('./built/web/app/'))
 );
