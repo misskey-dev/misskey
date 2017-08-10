@@ -9,7 +9,7 @@
 			<p class="info" if={ usernameState == 'unavailable' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.unavailable%</p>
 			<p class="info" if={ usernameState == 'error' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.error%</p>
 			<p class="info" if={ usernameState == 'invalid-format' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.invalid-format%</p>
-			<p class="info" if={ usernameState == 'min-range' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>3%i18n:common.tags.mk-signup.too-short%</p>
+			<p class="info" if={ usernameState == 'min-range' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.too-short%</p>
 			<p class="info" if={ usernameState == 'max-range' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.too-long%</p>
 		</label>
 		<label class="password">
