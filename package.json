@@ -24,7 +24,7 @@
     "@types/bcryptjs": "2.4.0",
     "@types/body-parser": "1.16.4",
     "@types/chai": "4.0.2",
-    "@types/chai-http": "3.0.0",
+    "@types/chai-http": "3.0.1",
     "@types/chalk": "0.4.31",
     "@types/compression": "0.0.33",
     "@types/cors": "2.8.1",
@@ -61,7 +61,7 @@
     "@types/riot": "3.6.0",
     "@types/serve-favicon": "2.2.28",
     "@types/uuid": "3.4.0",
-    "@types/webpack": "3.0.7",
+    "@types/webpack": "3.0.8",
     "@types/webpack-stream": "3.2.7",
     "@types/websocket": "0.0.34",
     "chai": "4.1.0",
@@ -91,7 +91,7 @@
     "uglify-es": "3.0.24",
     "uglify-es-webpack-plugin": "0.10.0",
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
-    "webpack": "3.5.2"
+    "webpack": "3.5.3"
   },
   "dependencies": {
     "accesses": "2.5.0",
