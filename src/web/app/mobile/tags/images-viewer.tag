@@ -3,9 +3,7 @@
 	<style>
 		:scope
 			display block
-			padding 8px
 			overflow hidden
-			box-shadow 0 0 4px rgba(0, 0, 0, 0.2)
 			border-radius 4px
 
 			> .image
