@@ -44,7 +44,7 @@
 
 					d.v = d.total / this.peak;
 					if (d.v > 1) d.v = 1;
-					const ch = d.date.weekday == 0 || d.date.weekday == 6 ? 30 : 170;
+					const ch = d.date.weekday == 0 || d.date.weekday == 6 ? 275 : 170;
 					const cs = d.v * 100;
 					const cl = 15 + ((1 - d.v) * 80);
 					d.color = `hsl(${ch}, ${cs}%, ${cl}%)`;
