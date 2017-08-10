@@ -123,10 +123,15 @@
 		let x = 0;
 		this.data.reverse().forEach(d => {
 			d.x = x;
+			d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
+
 			d.v = d.total / (peak / 2);
 			if (d.v > 1) d.v = 1;
-			d.color = `hsl(170, ${d.v * 100}%, ${15 + ((1 - d.v) * 80)}%)`;
-			d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
+			const ch = d.date.weekday == 0 || d.date.weekday == 6 ? 30 : 170;
+			const cs = d.v * 100;
+			const cl = 15 + ((1 - d.v) * 80);
+			d.color = `hsl(${ch}, ${cs}%, ${cl}%)`;
+
 			if (d.date.weekday == 6) x++;
 		});
 	</script>
