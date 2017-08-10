@@ -7,7 +7,7 @@ import './style.styl';
 
 require('./tags');
 import init from '../init';
-const route = require('./router');
+import route from './router';
 
 /**
  * init

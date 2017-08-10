@@ -1,7 +1,8 @@
+import * as riot from 'riot';
 const route = require('page');
 let page = null;
 
-module.exports = me => {
+export default me => {
 	route('/',         index);
 	route('/apps',     apps);
 	route('/app/new',  newApp);
@@ -34,7 +35,6 @@ module.exports = me => {
 	route();
 };
 
-import * as riot from 'riot';
 function mount(content) {
 	if (page) page.unmount();
 	const body = document.getElementById('app');
