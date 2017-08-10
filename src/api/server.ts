@@ -45,7 +45,9 @@ app.post('/signup', require('./private/signup').default);
 app.post('/signin', require('./private/signin').default);
 
 app.use((req, res, next) => {
-	res.locals.user = ((req.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+	// req.headers['cookie'] は常に string ですが、型定義の都合上
+	// string | string[] になっているので string を明示しています
+	res.locals.user = ((req.headers['cookie'] as string || '').match(/i=(!\w+)/) || [null, null])[1];
 	next();
 });
 

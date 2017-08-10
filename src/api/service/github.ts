@@ -22,8 +22,11 @@ module.exports = async (app: express.Application) => {
 	const handler = new EventEmitter();
 
 	app.post('/hooks/github', (req, res, next) => {
-		if ((new Buffer(req.headers['x-hub-signature'])).equals(new Buffer(`sha1=${crypto.createHmac('sha1', config.github_bot.hook_secret).update(JSON.stringify(req.body)).digest('hex')}`))) {
-			handler.emit(req.headers['x-github-event'], req.body);
+		// req.headers['x-hub-signature'] および
+		// req.headers['x-github-event'] は常に string ですが、型定義の都合上
+		// string | string[] になっているので string を明示しています
+		if ((new Buffer(req.headers['x-hub-signature'] as string)).equals(new Buffer(`sha1=${crypto.createHmac('sha1', config.github_bot.hook_secret).update(JSON.stringify(req.body)).digest('hex')}`))) {
+			handler.emit(req.headers['x-github-event'] as string, req.body);
 			res.sendStatus(200);
 		} else {
 			res.sendStatus(400);

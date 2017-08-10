@@ -140,7 +140,9 @@ function spawnWorkers(onComplete: Function) {
 	}
 
 	// On all workers started
-	progress.on('complete', onComplete);
+	progress.on('complete', () => {
+		onComplete();
+	});
 }
 
 // Listen new workers
