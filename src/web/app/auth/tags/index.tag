@@ -54,7 +54,7 @@
 						color #e65050
 
 					&.accepted > h1
-						color #50bbe6
+						color #54af7c
 
 				&.signin
 					padding 32px 32px 16px 32px
