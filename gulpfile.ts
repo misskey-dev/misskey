@@ -173,6 +173,9 @@ gulp.task('build:client:pug', [
 				// <div><p>foo</p></div>
 				collapseWhitespace: true,
 
+				// タグ間の改行を保持する
+				preserveLineBreaks: true,
+
 				// (できる場合は)属性のクォーテーション削除する e.g.
 				// <p class="foo-bar" id="moo" title="blah blah">foo</p> to
 				// <p class=foo-bar id=moo title="blah blah">foo</p>
