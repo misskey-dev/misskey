@@ -81,6 +81,7 @@ type Mixin = {
 	api_url: string;
 	auth_url: string;
 	about_url: string;
+	status_url: string;
 	dev_url: string;
 	drive_url: string;
 };
@@ -115,6 +116,7 @@ export default function load() {
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;
 	mixin.dev_url = `${mixin.scheme}://dev.${mixin.host}`;
 	mixin.about_url = `${mixin.scheme}://about.${mixin.host}`;
+	mixin.status_url = `${mixin.scheme}://status.${mixin.host}`;
 	mixin.drive_url = `${mixin.secondary_scheme}://file.${mixin.secondary_host}`;
 
 	return Object.assign(config, mixin);
