@@ -427,3 +427,7 @@ mobile:
       all: "すべて"
       known: "知り合い"
       load-more: "もっと"
+
+status:
+  all-systems-maybe-operational: "すべてのシステムがたぶん正常に作動しています"
+  what-is-this-site: ""

@@ -1,26 +1,54 @@
 <mk-index>
-	<h1>Misskey Status</h1>
+	<h1>Misskey<i>Status</i></h1>
+	<p><i class="fa fa-info-circle"></i>%i18n:status.all-systems-maybe-operational%</p>
 	<main>
 		<mk-cpu-usage connection={ connection }/>
+		<mk-mem-usage connection={ connection }/>
 	</main>
+	<footer><a href={ CONFIG.url }>{ CONFIG.host }</a></footer>
 	<style>
 		:scope
 			display block
+			margin 0 auto
+			padding 0 16px
+			max-width 700px
 
 			> h1
-				padding 16px
+				margin 0
+				padding 24px 0 16px 0
+				font-size 24px
+				font-weight normal
 
-			> *
-				margin 0 auto
-				max-width 700px
+				> i
+					font-style normal
+					color #f43b16
+
+			> p
+				display block
+				margin 0
+				padding 12px 16px
+				background #eaf4ef
+				//border solid 1px #99ccb2
+				border-radius 4px
+
+				> i
+					margin-right 5px
 
 			> main
 				> *
-					padding 16px
-					border-top solid 2px #456267
+					margin 24px 0
 
 					> h2
-						margin 0
+						margin 0 0 12px 0
+						font-size 18px
+						font-weight normal
+
+			> footer
+				margin 24px 0
+				text-align center
+
+				> a
+					color #546567
 	</style>
 	<script>
 		import Connection from '../../common/scripts/server-stream';
@@ -77,12 +105,43 @@
 	</script>
 </mk-cpu-usage>
 
+<mk-mem-usage>
+	<h2>MEM <b>{ percentage }%</b></h2>
+	<mk-line-chart ref="chart"/>
+	<style>
+		:scope
+			display block
+	</style>
+	<script>
+		this.connection = this.opts.connection;
+
+		this.on('mount', () => {
+			this.connection.on('stats', this.onStats);
+		});
+
+		this.on('unmount', () => {
+			this.connection.off('stats', this.onStats);
+		});
+
+		this.onStats = stats => {
+			stats.mem.used = stats.mem.total - stats.mem.free;
+			this.refs.chart.addData(1 - (stats.mem.used / stats.mem.total));
+
+			const percentage = (stats.mem.used / stats.mem.total * 100).toFixed(0);
+
+			this.update({
+				percentage
+			});
+		};
+	</script>
+</mk-mem-usage>
+
 <mk-line-chart>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
 		<defs>
 			<linearGradient id={ gradientId } x1="0" x2="0" y1="1" y2="0">
 				<stop offset="0%" stop-color="transparent"></stop>
-				<stop offset="100%" stop-color="#456267"></stop>
+				<stop offset="100%" stop-color="#f43b16"></stop>
 			</linearGradient>
 			<mask id={ maskId } x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY }>
 				<polygon
@@ -91,11 +150,11 @@
 					fill-opacity="0.5"/>
 			</mask>
 		</defs>
-		<line x1="0" y1="0" riot-x2={ viewBoxX } y2="0" stroke="#eee" stroke-width="0.5"/>
-		<line x1="0" y1="25%" riot-x2={ viewBoxX } y2="25%" stroke="#eee" stroke-width="0.25"/>
-		<line x1="0" y1="50%" riot-x2={ viewBoxX } y2="50%" stroke="#eee" stroke-width="0.25"/>
-		<line x1="0" y1="75%" riot-x2={ viewBoxX } y2="75%" stroke="#eee" stroke-width="0.25"/>
-		<line x1="0" y1="100%" riot-x2={ viewBoxX } y2="100%" stroke="#eee" stroke-width="0.5"/>
+		<line x1="0" y1="0" riot-x2={ viewBoxX } y2="0" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" stroke-dasharray="1"/>
+		<line x1="0" y1="25%" riot-x2={ viewBoxX } y2="25%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
+		<line x1="0" y1="50%" riot-x2={ viewBoxX } y2="50%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
+		<line x1="0" y1="75%" riot-x2={ viewBoxX } y2="75%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
+		<line x1="0" y1="100%" riot-x2={ viewBoxX } y2="100%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" stroke-dasharray="1"/>
 		<rect
 			x="-1" y="-1"
 			riot-width={ viewBoxX + 2 } riot-height={ viewBoxY + 2 }
@@ -103,12 +162,15 @@
 		<polyline
 			riot-points={ polylinePoints }
 			fill="none"
-			stroke="#456267"
+			stroke="#f43b16"
 			stroke-width="0.5"/>
 	</svg>
 	<style>
 		:scope
 			display block
+			padding 16px
+			border-radius 8px
+			background #1c2531
 
 			> svg
 				display block

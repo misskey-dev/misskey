@@ -426,3 +426,7 @@ mobile:
       all: "All"
       known: "You know"
       load-more: "More"
+
+status:
+  all-systems-maybe-operational: "All systems maybe operational"
+  what-is-this-site: ""
