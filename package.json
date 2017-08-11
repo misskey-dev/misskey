@@ -104,7 +104,7 @@
     "compression": "1.7.0",
     "cors": "2.8.4",
     "cropperjs": "1.0.0-rc.3",
-    "crypto": "0.0.3",
+    "crypto": "1.0.1",
     "debug": "3.0.0",
     "deep-equal": "1.0.1",
     "deepcopy": "0.6.3",
