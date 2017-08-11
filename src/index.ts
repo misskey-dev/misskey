@@ -69,7 +69,10 @@ async function masterMain() {
 	}
 
 	spawnWorkers(() => {
-		Logger.info(chalk.bold.green(`Now listening on port ${chalk.underline(config.port.toString())}`));
+		Logger.info(chalk.bold.green(
+			`Now listening on port ${chalk.underline(config.port.toString())}`));
+
+		Logger.info(chalk.bold.green(config.url));
 	});
 }
 
