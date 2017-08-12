@@ -139,7 +139,7 @@
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
 		<defs>
 			<linearGradient id={ gradientId } x1="0" x2="0" y1="1" y2="0">
-				<stop offset="0%" stop-color="transparent"></stop>
+				<stop offset="0%" stop-color="rgba(244, 59, 22, 0)"></stop>
 				<stop offset="100%" stop-color="#f43b16"></stop>
 			</linearGradient>
 			<mask id={ maskId } x="0" y="0" riot-width={ viewBoxX } riot-height={ viewBoxY }>
@@ -149,11 +149,11 @@
 					fill-opacity="0.5"/>
 			</mask>
 		</defs>
-		<line x1="0" y1="0" riot-x2={ viewBoxX } y2="0" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" stroke-dasharray="1"/>
+		<line x1="0" y1="0" riot-x2={ viewBoxX } y2="0" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
 		<line x1="0" y1="25%" riot-x2={ viewBoxX } y2="25%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
 		<line x1="0" y1="50%" riot-x2={ viewBoxX } y2="50%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
 		<line x1="0" y1="75%" riot-x2={ viewBoxX } y2="75%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
-		<line x1="0" y1="100%" riot-x2={ viewBoxX } y2="100%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" stroke-dasharray="1"/>
+		<line x1="0" y1="100%" riot-x2={ viewBoxX } y2="100%" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.25" stroke-dasharray="1"/>
 		<rect
 			x="-1" y="-1"
 			riot-width={ viewBoxX + 2 } riot-height={ viewBoxY + 2 }
@@ -173,6 +173,7 @@
 
 			> svg
 				display block
+				padding 1px
 				width 100%
 	</style>
 	<script>
