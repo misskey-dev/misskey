@@ -15,15 +15,8 @@ module.exports = params => new Promise(async (res, rej) => {
 	const [limit = 365, limitErr] = $(params.limit).optional.number().range(1, 365).$;
 	if (limitErr) return rej('invalid limit param');
 
-	const startTime = new Date(new Date().setMonth(new Date().getMonth() - 1));
-
 	const users = await User
-		.find({
-			$or: [
-				{ deleted_at: { $exists: false } },
-				{ deleted_at: { $gt: startTime } }
-			]
-		}, {
+		.find({}, {
 			_id: false,
 			created_at: true,
 			deleted_at: true
@@ -34,24 +27,30 @@ module.exports = params => new Promise(async (res, rej) => {
 	const graph = [];
 
 	for (let i = 0; i < limit; i++) {
-		let day = new Date(new Date().setDate(new Date().getDate() - i));
-		day = new Date(day.setMilliseconds(999));
-		day = new Date(day.setSeconds(59));
-		day = new Date(day.setMinutes(59));
-		day = new Date(day.setHours(23));
+		let dayStart = new Date(new Date().setDate(new Date().getDate() - i));
+		dayStart = new Date(dayStart.setMilliseconds(0));
+		dayStart = new Date(dayStart.setSeconds(0));
+		dayStart = new Date(dayStart.setMinutes(0));
+		dayStart = new Date(dayStart.setHours(0));
+
+		let dayEnd = new Date(new Date().setDate(new Date().getDate() - i));
+		dayEnd = new Date(dayEnd.setMilliseconds(999));
+		dayEnd = new Date(dayEnd.setSeconds(59));
+		dayEnd = new Date(dayEnd.setMinutes(59));
+		dayEnd = new Date(dayEnd.setHours(23));
 		// day = day.getTime();
 
-		const count = users.filter(f =>
-			f.created_at < day && (f.deleted_at == null || f.deleted_at > day)
+		const total = users.filter(u =>
+			u.created_at < dayEnd && (u.deleted_at == null || u.deleted_at > dayEnd)
+		).length;
+
+		const created = users.filter(u =>
+			u.created_at < dayEnd && u.created_at > dayStart
 		).length;
 
 		graph.push({
-			date: {
-				year: day.getFullYear(),
-				month: day.getMonth() + 1, // In JavaScript, month is zero-based.
-				day: day.getDate()
-			},
-			count: count
+			total: total,
+			created: created
 		});
 	}
 

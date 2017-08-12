@@ -168,7 +168,12 @@
 <mk-users-chart>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
 		<polyline
-			riot-points={ points }
+			riot-points={ createdPoints }
+			fill="none"
+			stroke-width="1"
+			stroke="#1cde84"/>
+		<polyline
+			riot-points={ totalPoints }
 			fill="none"
 			stroke-width="1"
 			stroke="#555"/>
@@ -187,7 +192,8 @@
 		this.viewBoxY = 80;
 
 		this.data = this.opts.data.reverse();
-		const peak = Math.max.apply(null, this.data.map(d => d.count));
+		const totalPeak = Math.max.apply(null, this.data.map(d => d.total));
+		const createdPeak = Math.max.apply(null, this.data.map(d => d.created));
 
 		this.on('mount', () => {
 			this.render();
@@ -195,7 +201,8 @@
 
 		this.render = () => {
 			this.update({
-				points: this.data.map((d, i) => `${i},${(1 - (d.count / peak)) * this.viewBoxY}`).join(' ')
+				totalPoints: this.data.map((d, i) => `${i},${(1 - (d.total / totalPeak)) * this.viewBoxY}`).join(' '),
+				createdPoints: this.data.map((d, i) => `${i},${(1 - (d.created / createdPeak)) * this.viewBoxY}`).join(' ')
 			});
 		};
 	</script>
