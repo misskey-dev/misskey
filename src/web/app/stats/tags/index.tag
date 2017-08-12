@@ -144,7 +144,7 @@
 	</style>
 	<script>
 		this.viewBoxX = 365;
-		this.viewBoxY = 60;
+		this.viewBoxY = 80;
 
 		this.data = this.opts.data.reverse();
 		this.data.forEach(d => d.total = d.posts + d.replies + d.reposts);
@@ -184,7 +184,7 @@
 	</style>
 	<script>
 		this.viewBoxX = 365;
-		this.viewBoxY = 60;
+		this.viewBoxY = 80;
 
 		this.data = this.opts.data.reverse();
 		const peak = Math.max.apply(null, this.data.map(d => d.count));
