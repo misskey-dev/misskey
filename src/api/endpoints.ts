@@ -70,6 +70,9 @@ const endpoints: Endpoint[] = [
 		name: 'meta'
 	},
 	{
+		name: 'stats'
+	},
+	{
 		name: 'username/available'
 	},
 	{
@@ -108,6 +111,12 @@ const endpoints: Endpoint[] = [
 		name: 'auth/deny',
 		withCredential: true,
 		secure: true
+	},
+	{
+		name: 'aggregation/posts',
+	},
+	{
+		name: 'aggregation/users',
 	},
 	{
 		name: 'aggregation/users/activity',

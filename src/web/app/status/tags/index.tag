@@ -56,7 +56,6 @@
 		this.mixin('api');
 
 		this.initializing = true;
-		this.view = 0;
 		this.connection = new Connection();
 
 		this.on('mount', () => {

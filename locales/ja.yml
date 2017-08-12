@@ -428,6 +428,10 @@ mobile:
       known: "知り合い"
       load-more: "もっと"
 
+stats:
+  posts-count: "投稿の数"
+  users-count: "アカウントの数"
+
 status:
   all-systems-maybe-operational: "すべてのシステムがたぶん正常に作動しています"
   what-is-this-site: ""

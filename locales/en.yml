@@ -427,6 +427,10 @@ mobile:
       known: "You know"
       load-more: "More"
 
+stats:
+  posts-count: "Number of all posts"
+  users-count: "Number of all users"
+
 status:
   all-systems-maybe-operational: "All systems maybe operational"
   what-is-this-site: ""
