@@ -240,7 +240,7 @@
 				name_id: nid,
 				description: description,
 				callback_url: cb,
-				permission: permission.join(',')
+				permission: permission
 			}).then(() => {
 				location.href = '/apps';
 			}).catch(() => {
