@@ -79,11 +79,6 @@ module.exports = params => new Promise(async (res, rej) => {
 			graph.push(data);
 		} else {
 			graph.push({
-				date: {
-					year: day.getFullYear(),
-					month: day.getMonth() + 1, // In JavaScript, month is zero-based.
-					day: day.getDate()
-				},
 				posts: 0,
 				reposts: 0,
 				replies: 0
