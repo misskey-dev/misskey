@@ -8,6 +8,8 @@ const url = `${scheme}//${host}`;
 const apiUrl = `${scheme}//api.${host}`;
 const devUrl = `${scheme}//dev.${host}`;
 const aboutUrl = `${scheme}//about.${host}`;
+const statsUrl = `${scheme}//stats.${host}`;
+const statusUrl = `${scheme}//status.${host}`;
 
 export default {
 	host,
@@ -15,5 +17,7 @@ export default {
 	url,
 	apiUrl,
 	devUrl,
-	aboutUrl
+	aboutUrl,
+	statsUrl,
+	statusUrl
 };

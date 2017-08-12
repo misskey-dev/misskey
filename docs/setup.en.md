@@ -25,6 +25,8 @@ Note that Misskey uses following subdomains:
 * **api**.*{primary domain}*
 * **auth**.*{primary domain}*
 * **about**.*{primary domain}*
+* **stats**.*{primary domain}*
+* **status**.*{primary domain}*
 * **dev**.*{primary domain}*
 * **file**.*{secondary domain}*
 
