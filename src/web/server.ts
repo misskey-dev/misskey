@@ -11,6 +11,8 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 
+import config from '../conf';
+
 /**
  * Init app
  */
