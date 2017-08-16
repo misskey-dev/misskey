@@ -24,7 +24,7 @@ app.set('trust proxy', 'loopback');
  * HSTS
  * 6month(15552000sec)
  */
-if(config.https.enable){
+if (config.https.enable) {
 	app.use((req, res, next) => {
 		res.header('strict-transport-security', 'max-age=15552000; preload');
 		next();
