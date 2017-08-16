@@ -10,7 +10,6 @@ import * as mongodb from 'mongodb';
 import * as gm from 'gm';
 
 import File from '../api/models/drive-file';
-import config from '../conf';
 
 /**
  * Init app
@@ -21,17 +20,6 @@ app.disable('x-powered-by');
 app.locals.cache = true;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-
-/**
- * HSTS
- * 6month(15552000sec)
- */
-if(config.https.enable){
-	app.use((req, res, next) => {
-		res.header('strict-transport-security', 'max-age=15552000; preload');
-		next();
-	});
-}
 
 /**
  * Statics

@@ -11,8 +11,6 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 
-import config from '../conf';
-
 /**
  * Init app
  */
@@ -24,17 +22,6 @@ app.use(bodyParser.json({
 	type: ['application/json', 'text/plain']
 }));
 app.use(compression());
-
-/**
- * HSTS
- * 6month(15552000sec)
- */
-if(config.https.enable){
-	app.use((req, res, next) => {
-		res.header('strict-transport-security', 'max-age=15552000; preload');
-		next();
-	});
-}
 
 /**
  * Initialize requests
