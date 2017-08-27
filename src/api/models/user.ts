@@ -2,8 +2,8 @@ import db from '../../db/mongodb';
 
 const collection = db.get('users');
 
-(collection as any).index('username'); // fuck type definition
-(collection as any).index('token'); // fuck type definition
+(collection as any).createIndex('username'); // fuck type definition
+(collection as any).createIndex('token'); // fuck type definition
 
 export default collection as any; // fuck type definition
 
