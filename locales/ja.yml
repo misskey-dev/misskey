@@ -231,6 +231,10 @@ desktop:
       attaches: "添付: {}メディア"
       uploading-media: "{}個のメディアをアップロード中"
 
+    mk-post-page:
+      prev: "前の投稿"
+      next: "次の投稿"
+
     mk-timeline-post:
       reposted-by: "{}がRepost"
       reply: "返信"

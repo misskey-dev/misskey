@@ -1,8 +1,5 @@
 <mk-post-detail title={ title }>
-	<div class="fetching" if={ fetching }>
-		<mk-ellipsis-icon/>
-	</div>
-	<div class="main" if={ !fetching }>
+	<div class="main">
 		<button class="read-more" if={ p.reply_to && p.reply_to.reply_to_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
 			<i class="fa fa-ellipsis-v" if={ !contextFetching }></i>
 			<i class="fa fa-spinner fa-pulse" if={ contextFetching }></i>
@@ -71,12 +68,10 @@
 			padding 0
 			width 640px
 			overflow hidden
+			text-align left
 			background #fff
 			border solid 1px rgba(0, 0, 0, 0.1)
 			border-radius 8px
-
-			> .fetching
-				padding 64px 0
 
 			> .main
 
@@ -262,56 +257,41 @@
 		this.mixin('api');
 		this.mixin('user-preview');
 
-		this.fetching = true;
 		this.contextFetching = false;
 		this.context = null;
-		this.post = null;
+		this.post = this.opts.post;
+		this.isRepost = this.post.repost != null;
+		this.p = this.isRepost ? this.post.repost : this.post;
+		this.p.reactions_count = this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
+		this.title = dateStringify(this.p.created_at);
 
 		this.on('mount', () => {
-			this.api('posts/show', {
-				post_id: this.opts.post
-			}).then(post => {
-				const isRepost = post.repost != null;
-				const p = isRepost ? post.repost : post;
-				p.reactions_count = p.reaction_counts ? Object.keys(p.reaction_counts).map(key => p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
+			if (this.p.text) {
+				const tokens = this.p.ast;
 
-				this.update({
-					fetching: false,
-					post: post,
-					isRepost: isRepost,
-					p: p,
-					title: dateStringify(p.created_at)
+				this.refs.text.innerHTML = compile(tokens);
+
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
 				});
 
-				this.trigger('loaded');
-
-				if (this.p.text) {
-					const tokens = this.p.ast;
-
-					this.refs.text.innerHTML = compile(tokens);
-
-					this.refs.text.children.forEach(e => {
-						if (e.tagName == 'MK-URL') riot.mount(e);
+				// URLをプレビュー
+				tokens
+				.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+				.map(t => {
+					riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+						url: t.url
 					});
+				});
+			}
 
-					// URLをプレビュー
-					tokens
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => {
-						riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
-							url: t.url
-						});
-					});
-				}
-
-				// Get replies
-				this.api('posts/replies', {
-					post_id: this.p.id,
-					limit: 8
-				}).then(replies => {
-					this.update({
-						replies: replies
-					});
+			// Get replies
+			this.api('posts/replies', {
+				post_id: this.p.id,
+				limit: 8
+			}).then(replies => {
+				this.update({
+					replies: replies
 				});
 			});
 		});

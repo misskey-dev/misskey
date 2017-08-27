@@ -73,44 +73,79 @@ const self = (
 		));
 	}
 
-	if (_post.reply_to_id && opts.detail) {
-		// Populate reply to post
-		_post.reply_to = await self(_post.reply_to_id, me, {
-			detail: false
+	// When requested a detailed post data
+	if (opts.detail) {
+		// Get previous post info
+		const prev = await Post.findOne({
+			user_id: _post.user_id,
+			_id: {
+				$lt: id
+			}
+		}, {
+			fields: {
+				_id: true
+			},
+			sort: {
+				_id: -1
+			}
 		});
-	}
+		_post.prev = prev ? prev._id : null;
 
-	if (_post.repost_id && opts.detail) {
-		// Populate repost
-		_post.repost = await self(_post.repost_id, me, {
-			detail: _post.text == null
+		// Get next post info
+		const next = await Post.findOne({
+			user_id: _post.user_id,
+			_id: {
+				$gt: id
+			}
+		}, {
+			fields: {
+				_id: true
+			},
+			sort: {
+				_id: 1
+			}
 		});
-	}
+		_post.next = next ? next._id : null;
 
-	// Poll
-	if (me && _post.poll && opts.detail) {
-		const vote = await Vote
-			.findOne({
-				user_id: me._id,
-				post_id: id
+		if (_post.reply_to_id) {
+			// Populate reply to post
+			_post.reply_to = await self(_post.reply_to_id, me, {
+				detail: false
 			});
-
-		if (vote != null) {
-			_post.poll.choices.filter(c => c.id == vote.choice)[0].is_voted = true;
 		}
-	}
 
-	// Fetch my reaction
-	if (me && opts.detail) {
-		const reaction = await Reaction
-			.findOne({
-				user_id: me._id,
-				post_id: id,
-				deleted_at: { $exists: false }
+		if (_post.repost_id) {
+			// Populate repost
+			_post.repost = await self(_post.repost_id, me, {
+				detail: _post.text == null
 			});
+		}
 
-		if (reaction) {
-			_post.my_reaction = reaction.reaction;
+		// Poll
+		if (me && _post.poll) {
+			const vote = await Vote
+				.findOne({
+					user_id: me._id,
+					post_id: id
+				});
+
+			if (vote != null) {
+				_post.poll.choices.filter(c => c.id == vote.choice)[0].is_voted = true;
+			}
+		}
+
+		// Fetch my reaction
+		if (me) {
+			const reaction = await Reaction
+				.findOne({
+					user_id: me._id,
+					post_id: id,
+					deleted_at: { $exists: false }
+				});
+
+			if (reaction) {
+				_post.my_reaction = reaction.reaction;
+			}
 		}
 	}
 

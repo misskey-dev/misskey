@@ -231,6 +231,10 @@ desktop:
       attaches: "{} media attached"
       uploading-media: "Uploading {} media"
 
+    mk-post-page:
+      prev: "Previous post"
+      next: "Next post"
+
     mk-timeline-post:
       reposted-by: "Reposted by {}"
       reply: "Reply"
