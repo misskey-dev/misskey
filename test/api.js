@@ -53,8 +53,6 @@ describe('API', () => {
 		db.get('auth_sessions').drop()
 	]));
 
-	afterEach(cb => setTimeout(cb, 100));
-
 	it('greet server', done => {
 		_chai.request(server)
 			.get('/')
