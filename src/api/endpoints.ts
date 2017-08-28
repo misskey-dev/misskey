@@ -160,6 +160,10 @@ const endpoints: Endpoint[] = [
 		kind: 'account-write'
 	},
 	{
+		name: 'i/change_password',
+		withCredential: true
+	},
+	{
 		name: 'i/regenerate_token',
 		withCredential: true
 	},

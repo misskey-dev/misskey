@@ -208,6 +208,12 @@ desktop:
       settings: "設定"
       signout: "サインアウト"
 
+    mk-password-setting:
+      reset: "パスワードを変更する"
+      enter-current-password: "現在のパスワードを入力してください"
+      enter-new-password: "新しいパスワードを入力してください"
+      changed: "パスワードを変更しました"
+
     mk-post-form:
       post-placeholder: "いまどうしてる？"
       reply-placeholder: "この投稿への返信..."
@@ -238,6 +244,9 @@ desktop:
     mk-post-page:
       prev: "前の投稿"
       next: "次の投稿"
+
+    mk-settings:
+      password: "パスワード"
 
     mk-timeline-post:
       reposted-by: "{}がRepost"

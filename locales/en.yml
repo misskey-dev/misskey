@@ -208,6 +208,12 @@ desktop:
       settings: "Settings"
       signout: "Sign out"
 
+    mk-password-setting:
+      reset: "Change your password"
+      enter-current-password: "Enter the current password"
+      enter-new-password: "Enter the new password"
+      changed: "Password updated successfully"
+
     mk-post-form:
       post-placeholder: "What's happening?"
       reply-placeholder: "Reply to this post..."
@@ -238,6 +244,9 @@ desktop:
     mk-post-page:
       prev: "Previous post"
       next: "Next post"
+
+    mk-settings:
+      password: "Password"
 
     mk-timeline-post:
       reposted-by: "Reposted by {}"
