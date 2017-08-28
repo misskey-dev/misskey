@@ -15,6 +15,7 @@ export default me => {
 	route('/i/drive/folder/:folder',     drive);
 	route('/i/drive/file/:file',         drive);
 	route('/i/settings',                 settings);
+	route('/i/settings/profile',         settingsProfile);
 	route('/i/settings/signin-history',  settingsSignin);
 	route('/i/settings/api',             settingsApi);
 	route('/i/settings/twitter',         settingsTwitter);
@@ -61,6 +62,10 @@ export default me => {
 
 	function settings() {
 		mount(document.createElement('mk-settings-page'));
+	}
+
+	function settingsProfile() {
+		mount(document.createElement('mk-profile-setting-page'));
 	}
 
 	function settingsSignin() {
@@ -130,6 +135,7 @@ export default me => {
 };
 
 function mount(content) {
+	document.documentElement.style.background = '#fff';
 	if (page) page.unmount();
 	const body = document.getElementById('app');
 	page = riot.mount(body.appendChild(content))[0];

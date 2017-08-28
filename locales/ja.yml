@@ -336,12 +336,28 @@ mobile:
     mk-search-page:
       search: "検索"
 
+    mk-settings:
+      signed-in-as: "{}としてサインイン中"
+
     mk-settings-page:
       profile: "プロフィール"
       applications: "アプリケーション"
       twitter-integration: "Twitter連携"
       signin-history: "ログイン履歴"
+      api: "API"
       settings: "設定"
+      signout: "サインアウト"
+
+    mk-profile-setting-page:
+      title: "プロフィール設定"
+
+    mk-profile-setting:
+      name: "名前"
+      location: "場所"
+      description: "自己紹介"
+      birthday: "誕生日"
+      save: "保存"
+      saved: "プロフィールを保存しました"
 
     mk-user-followers-page:
       followers-of: "{}のフォロワー"

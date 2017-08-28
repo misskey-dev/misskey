@@ -336,12 +336,28 @@ mobile:
     mk-search-page:
       search: "Search"
 
+    mk-settings:
+      signed-in-as: "Signed in as {}"
+
     mk-settings-page:
       profile: "Profile"
       applications: "Applications"
       twitter-integration: "Twitter integration"
       signin-history: "Sign in history"
+      api: "API"
       settings: "Settings"
+      signout: "Sign out"
+
+    mk-profile-setting-page:
+      title: "Profile Settings"
+
+    mk-profile-setting:
+      name: "Name"
+      location: "Location"
+      description: "Description"
+      birthday: "Birthday"
+      save: "Save"
+      saved: "Profile updated successfully"
 
     mk-user-followers-page:
       followers-of: "Followers of {}"

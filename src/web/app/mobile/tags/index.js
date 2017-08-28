@@ -14,6 +14,7 @@ require('./page/post.tag');
 require('./page/new-post.tag');
 require('./page/search.tag');
 require('./page/settings.tag');
+require('./page/settings/profile.tag');
 require('./page/settings/signin.tag');
 require('./page/settings/api.tag');
 require('./page/settings/authorized-apps.tag');
