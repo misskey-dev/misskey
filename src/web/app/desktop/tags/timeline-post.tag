@@ -1,4 +1,4 @@
-<mk-timeline-post tabindex="-1" title={ title } onkeydown={ onKeyDown }>
+<mk-timeline-post tabindex="-1" title={ title } onkeydown={ onKeyDown } dblclick={ onDblClick }>
 	<div class="reply-to" if={ p.reply_to }>
 		<mk-timeline-post-sub post={ p.reply_to }/>
 	</div>
@@ -471,6 +471,12 @@
 			}
 
 			if (shouldBeCancel) e.preventDefault();
+		};
+
+		this.onDblClick = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-detailed-post-window')), {
+				post: this.p.id
+			});
 		};
 
 		function focus(el, fn) {

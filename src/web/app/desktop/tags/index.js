@@ -91,3 +91,4 @@ require('./user-following-window.tag');
 require('./user-followers-window.tag');
 require('./list-user.tag');
 require('./ui-notification.tag');
+require('./detailed-post-window.tag');
