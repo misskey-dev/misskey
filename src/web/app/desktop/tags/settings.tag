@@ -256,6 +256,7 @@
 	</style>
 	<script>
 		import passwordDialog from '../scripts/password-dialog';
+		import dialog from '../scripts/dialog';
 		import notify from '../scripts/notify';
 
 		this.mixin('i');
@@ -264,11 +265,19 @@
 		this.reset = () => {
 			passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-current-password%', currentPassword => {
 				passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-new-password%', newPassword => {
-					this.api('i/change_password', {
-						current_password: currentPassword,
-						new_password: newPassword
-					}).then(() => {
-						notify('%i18n:desktop.tags.mk-password-setting.changed%');
+					passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-new-password-again%', newPassword2 => {
+						if (newPassword !== newPassword2) {
+							dialog(null, '%i18n:desktop.tags.mk-password-setting.not-match%', [{
+								text: 'OK'
+							}]);
+							return;
+						}
+						this.api('i/change_password', {
+							current_password: currentPassword,
+							new_password: newPassword
+						}).then(() => {
+							notify('%i18n:desktop.tags.mk-password-setting.changed%');
+						});
 					});
 				});
 			});

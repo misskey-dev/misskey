@@ -212,6 +212,8 @@ desktop:
       reset: "Change your password"
       enter-current-password: "Enter the current password"
       enter-new-password: "Enter the new password"
+      enter-new-password-again: "Enter the new password again"
+      not-match: "New password not matched"
       changed: "Password updated successfully"
 
     mk-post-form:
