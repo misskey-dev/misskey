@@ -23,6 +23,12 @@
 			});
 		});
 
+		this.fetch = () => {
+			this.api('posts/timeline').then(posts => {
+				this.refs.timeline.setPosts(posts);
+			});
+		};
+
 		this.on('mount', () => {
 			this.stream.on('post', this.onStreamPost);
 			this.stream.on('follow', this.onStreamFollow);
