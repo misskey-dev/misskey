@@ -28,6 +28,7 @@ common:
   loading: "読み込み中"
   ok: "わかった"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
+  my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
 
   tags:
     mk-messaging-form:
@@ -129,6 +130,9 @@ common:
 
 desktop:
   tags:
+    mk-api-info:
+      regenerate-token: "パスワードを入力してください"
+
     mk-drive-browser-base-contextmenu:
       create-folder: "フォルダーを作成"
       upload: "ファイルをアップロード"

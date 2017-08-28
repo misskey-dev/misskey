@@ -28,6 +28,7 @@ common:
   loading: "Loading"
   ok: "OK"
   update-available: "New version of Misskey is now available({newer}, current is {current}). Reload page to apply update."
+  my-token-regenerated: "Your token is just regenerated, so you will signout."
 
   tags:
     mk-messaging-form:
@@ -129,6 +130,9 @@ common:
 
 desktop:
   tags:
+    mk-api-info:
+      regenerate-token: "Please enter the password"
+
     mk-drive-browser-base-contextmenu:
       create-folder: "Create a folder"
       upload: "Upload a file"

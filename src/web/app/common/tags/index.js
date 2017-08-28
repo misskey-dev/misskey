@@ -14,7 +14,6 @@ require('./forkit.tag');
 require('./introduction.tag');
 require('./copyright.tag');
 require('./signin-history.tag');
-require('./api-info.tag');
 require('./twitter-setting.tag');
 require('./authorized-apps.tag');
 require('./poll.tag');
