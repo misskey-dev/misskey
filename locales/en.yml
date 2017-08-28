@@ -356,6 +356,12 @@ mobile:
       location: "Location"
       description: "Description"
       birthday: "Birthday"
+      avatar: "Avatar"
+      banner: "Banner"
+      avatar-saved: "Avatar updated successfully"
+      banner-saved: "Banner updated successfully"
+      set-avatar: "Choose an avatar"
+      set-banner: "Choose a banner"
       save: "Save"
       saved: "Profile updated successfully"
 

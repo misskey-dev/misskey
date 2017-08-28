@@ -34,6 +34,14 @@
 		<p>%i18n:mobile.tags.mk-profile-setting.birthday%</p>
 		<input ref="birthday" type="date" value={ I.profile.birthday }/>
 	</label>
+	<label>
+		<p>%i18n:mobile.tags.mk-profile-setting.avatar%</p>
+		<button onclick={ setAvatar } disabled={ avatarSaving }>%i18n:mobile.tags.mk-profile-setting.set-avatar%</button>
+	</label>
+	<label>
+		<p>%i18n:mobile.tags.mk-profile-setting.banner%</p>
+		<button onclick={ setBanner } disabled={ bannerSaving }>%i18n:mobile.tags.mk-profile-setting.set-banner%</button>
+	</label>
 	<button class="save" onclick={ save } disabled={ saving }><i class="fa fa-check"></i>%i18n:mobile.tags.mk-profile-setting.save%</button>
 	<style>
 		:scope
@@ -83,6 +91,48 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
+
+		this.setAvatar = () => {
+			const i = riot.mount(document.body.appendChild(document.createElement('mk-drive-selector')), {
+				multiple: false
+			})[0];
+			i.one('selected', file => {
+				this.update({
+					avatarSaving: true
+				});
+
+				this.api('i/update', {
+					avatar_id: file.id
+				}).then(() => {
+					this.update({
+						avatarSaving: false
+					});
+
+					alert('%i18n:mobile.tags.mk-profile-setting.avatar-saved%');
+				});
+			});
+		};
+
+		this.setBanner = () => {
+			const i = riot.mount(document.body.appendChild(document.createElement('mk-drive-selector')), {
+				multiple: false
+			})[0];
+			i.one('selected', file => {
+				this.update({
+					bannerSaving: true
+				});
+
+				this.api('i/update', {
+					banner_id: file.id
+				}).then(() => {
+					this.update({
+						bannerSaving: false
+					});
+
+					alert('%i18n:mobile.tags.mk-profile-setting.banner-saved%');
+				});
+			});
+		};
 
 		this.save = () => {
 			this.update({
