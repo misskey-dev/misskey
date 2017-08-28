@@ -66,7 +66,7 @@
 					padding 12px
 					font-size 16px
 					border none
-					border-radius none
+					border-radius 0
 
 				> textarea
 					min-height 80px
