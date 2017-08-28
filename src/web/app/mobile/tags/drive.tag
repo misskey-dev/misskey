@@ -190,7 +190,7 @@
 		this.file = null;
 
 		this.isFileSelectMode = this.opts.selectFile;
-		this.multiple =this.opts.multiple;
+		this.multiple = this.opts.multiple;
 
 		this.on('mount', () => {
 			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
@@ -435,13 +435,17 @@
 
 		this.chooseFile = file => {
 			if (this.isFileSelectMode) {
-				if (this.selectedFiles.some(f => f.id == file.id)) {
-					this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+				if (this.multiple) {
+					if (this.selectedFiles.some(f => f.id == file.id)) {
+						this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+					} else {
+						this.selectedFiles.push(file);
+					}
+					this.update();
+					this.trigger('change-selection', this.selectedFiles);
 				} else {
-					this.selectedFiles.push(file);
+					this.trigger('selected', file);
 				}
-				this.update();
-				this.trigger('change-selection', this.selectedFiles);
 			} else {
 				this.cf(file);
 			}
