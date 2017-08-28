@@ -37,6 +37,6 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	res();
 
-	// Publish i updated event
+	// Publish event
 	event(user._id, 'my_token_regenerated');
 });
