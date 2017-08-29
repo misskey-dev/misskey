@@ -64,6 +64,7 @@
 					display block
 					margin 0 0 8px 0
 					padding 12px 16px
+					font-size 14px
 					color #79d4e6
 					//color #276f86
 					//background #f8ffff
