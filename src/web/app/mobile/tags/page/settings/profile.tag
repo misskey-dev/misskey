@@ -61,10 +61,11 @@
 					display block
 					margin 0 0 8px 0
 					padding 16px
-					color #276f86
+					color #79d4e6
+					//color #276f86
+					//background #f8ffff
 					border solid 1px #a9d5de
 					border-radius 8px
-					background-color #f8ffff
 
 					> i
 						margin-right 6px
@@ -72,7 +73,7 @@
 				> .form
 					position relative
 					background #fff
-					border solid 1px rgba(0, 0, 0, 0.2)
+					box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 					border-radius 8px
 
 					&:before
