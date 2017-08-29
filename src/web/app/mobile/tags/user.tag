@@ -250,7 +250,7 @@
 				> h2
 					margin 0
 					padding 8px 10px
-					font-size 16px
+					font-size 15px
 					font-weight normal
 					color #465258
 					background #fff
@@ -362,7 +362,8 @@
 						display inline-block
 						overflow hidden
 						width calc(100% - 45px)
-						margin-left 44px
+						margin 8px 0 0 44px
+						line-height 28px
 						white-space nowrap
 						text-overflow ellipsis
 
@@ -380,7 +381,7 @@
 						left 0
 						width 100%
 						height 20px
-						background linear-gradient(to bottom, transparent 0%, #fff 100%)
+						background linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 100%)
 
 				> mk-time
 					display inline-block
