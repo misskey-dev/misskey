@@ -46,15 +46,6 @@
 					font-size 3em
 					color #ccc
 
-			> mk-timeline-post
-				border-bottom solid 1px #eaeaea
-
-				&:first-child
-					border-radius 8px 8px 0 0
-
-				&:last-of-type
-					border-bottom none
-
 			> .date
 				display block
 				margin 0
@@ -208,6 +199,16 @@
 			margin 0
 			padding 0
 			font-size 12px
+			border-bottom solid 1px #eaeaea
+
+			&:first-child
+				border-radius 8px 8px 0 0
+
+				> .repost
+					border-radius 8px 8px 0 0
+
+			&:last-of-type
+				border-bottom none
 
 			@media (min-width 350px)
 				font-size 14px

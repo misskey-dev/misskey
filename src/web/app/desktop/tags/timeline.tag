@@ -10,16 +10,6 @@
 		:scope
 			display block
 
-			> mk-timeline-post
-				border-bottom solid 1px #eaeaea
-
-				&:first-child
-					border-top-left-radius 6px
-					border-top-right-radius 6px
-
-				&:last-of-type
-					border-bottom none
-
 			> .date
 				display block
 				margin 0
@@ -166,6 +156,18 @@
 			margin 0
 			padding 0
 			background #fff
+			border-bottom solid 1px #eaeaea
+
+			&:first-child
+				border-top-left-radius 6px
+				border-top-right-radius 6px
+
+				> .repost
+					border-top-left-radius 6px
+					border-top-right-radius 6px
+
+			&:last-of-type
+				border-bottom none
 
 			&:focus
 				z-index 1

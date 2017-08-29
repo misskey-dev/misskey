@@ -4,6 +4,7 @@ ChangeLog (Release Notes)
 
 unreleased
 ----------
+* Fix: repostのborder-radiusが効いていない (#743)
 * ユーザビリティの向上
 
 2493-2 (2017/08/29)
