@@ -1,5 +1,5 @@
-ChangeLog
-=========
+ChangeLog (Release Notes)
+=========================
 主に notable な changes を書いていきます
 
 unreleased
