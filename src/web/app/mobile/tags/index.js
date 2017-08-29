@@ -24,8 +24,6 @@ require('./page/messaging-room.tag');
 require('./home.tag');
 require('./home-timeline.tag');
 require('./timeline.tag');
-require('./timeline-post.tag');
-require('./timeline-post-sub.tag');
 require('./post-preview.tag');
 require('./sub-post-content.tag');
 require('./images-viewer.tag');
