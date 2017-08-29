@@ -22,6 +22,8 @@
 		:scope
 			display block
 			background #fff
+			border-radius 8px
+			box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 
 			> .init
 				padding 64px 0
@@ -46,6 +48,9 @@
 
 			> mk-timeline-post
 				border-bottom solid 1px #eaeaea
+
+				&:first-child
+					border-radius 8px 8px 0 0
 
 				&:last-of-type
 					border-bottom none
@@ -77,6 +82,7 @@
 					padding 16px
 					width 100%
 					color $theme-color
+					border-radius 0 0 8px 8px
 
 					&:disabled
 						opacity 0.7

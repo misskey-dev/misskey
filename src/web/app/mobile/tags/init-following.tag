@@ -1,10 +1,14 @@
 <mk-init-following>
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" if={ !fetching && users.length > 0 }>
-		<div class="user" each={ users }><a class="avatar-anchor" href={ '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt=""/></a>
-			<div class="body"><a class="name" href={ '/' + username } target="_blank">{ name }</a>
-				<p class="username">@{ username }</p>
-			</div>
+		<div class="user" each={ users }>
+			<header style={ banner_url ? 'background-image: url(' + banner_url + '?thumbnail&size=1024)' : '' }>
+				<a href={ '/' + username }>
+					<img src={ avatar_url + '?thumbnail&size=200' } alt="avatar"/>
+				</a>
+			</header>
+			<a class="name" href={ '/' + username } target="_blank">{ name }</a>
+			<p class="username">@{ username }</p>
 			<mk-follow-button user={ this }/>
 		</div>
 	</div>
@@ -15,63 +19,65 @@
 	<style>
 		:scope
 			display block
-			padding 16px
+			background #fff
+			border-radius 8px
+			box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 
 			> .title
-				margin 0 0 12px 0
+				margin 0
+				padding 8px 16px
 				font-size 1em
 				font-weight bold
 				color #888
 
 			> .users
-				&:after
-					content ""
-					display block
-					clear both
+				overflow-x scroll
+				white-space nowrap
+				padding 16px
+				background #eee
 
 				> .user
-					padding 16px
-					width 238px
-					float left
+					display inline-block
+					width 200px
+					text-align center
+					border-radius 8px
+					background #fff
 
-					&:after
-						content ""
+					&:not(:last-child)
+						margin-right 16px
+
+					> header
 						display block
-						clear both
+						height 80px
+						background-color #ddd
+						background-size cover
+						background-position center
+						border-radius 8px 8px 0 0
 
-					> .avatar-anchor
+						> a
+							> img
+								position absolute
+								top 20px
+								left calc(50% - 40px)
+								width 80px
+								height 80px
+								border solid 2px #fff
+								border-radius 8px
+
+					> .name
 						display block
-						float left
-						margin 0 12px 0 0
+						margin 24px 0 2px 0
+						font-size 16px
+						color #555
 
-						> .avatar
-							display block
-							width 42px
-							height 42px
-							margin 0
-							border-radius 8px
-							vertical-align bottom
-
-					> .body
-						float left
-						width calc(100% - 54px)
-
-						> .name
-							margin 0
-							font-size 16px
-							line-height 24px
-							color #555
-
-						> .username
-							margin 0
-							font-size 15px
-							line-height 16px
-							color #ccc
+					> .username
+						margin 0
+						font-size 15px
+						color #ccc
 
 					> mk-follow-button
-						position absolute
-						top 16px
-						right 16px
+						display inline-block
+						margin 8px 0 16px 0
 
 			> .empty
 				margin 0
@@ -90,7 +96,8 @@
 
 			> .refresh
 				display block
-				margin 0 8px 0 0
+				margin 0
+				padding 8px 16px
 				text-align right
 				font-size 0.9em
 				color #999
@@ -117,7 +124,7 @@
 					color #222
 
 				> i
-					padding 14px
+					padding 10px
 
 	</style>
 	<script>

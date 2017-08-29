@@ -13,6 +13,7 @@
 		this.user = this.opts.user;
 
 		this.on('mount', () => {
+			document.documentElement.style.background = '#313a42';
 			Progress.start();
 
 			this.refs.ui.refs.user.on('loaded', user => {

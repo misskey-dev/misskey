@@ -355,7 +355,9 @@ mobile:
       notifications: "通知"
 
     mk-post-page:
-      submit: "投稿"
+      title: "投稿"
+      prev: "前の投稿"
+      next: "次の投稿"
 
     mk-search-page:
       search: "検索"

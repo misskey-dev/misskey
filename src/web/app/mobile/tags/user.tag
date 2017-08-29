@@ -57,7 +57,7 @@
 				> header
 					> .banner
 						padding-bottom 33.3%
-						background-color #f5f5f5
+						background-color #1b1b1b
 						background-size cover
 						background-position center
 
@@ -84,13 +84,13 @@
 									left -2px
 									bottom -2px
 									width 100%
-									border 2px solid #fff
+									border 2px solid #313a42
 									border-radius 6px
 
 									@media (min-width 500px)
 										left -4px
 										bottom -4px
-										border 4px solid #fff
+										border 4px solid #313a42
 										border-radius 12px
 
 							> mk-follow-button
@@ -104,7 +104,7 @@
 								margin 0
 								line-height 22px
 								font-size 20px
-								color #222
+								color #fff
 
 							> .username
 								display inline-block
@@ -131,7 +131,7 @@
 							> p
 								display inline
 								margin 0 16px 0 0
-								color #555
+								color #a9b9c1
 
 								> i
 									margin-right 4px
@@ -146,7 +146,7 @@
 								> b
 									margin-right 4px
 									font-size 16px
-									color #14171a
+									color #fff
 
 								> i
 									font-size 14px
@@ -159,7 +159,7 @@
 						justify-content center
 						margin 0 auto
 						max-width 600px
-						border-bottom solid 1px #ddd
+						border-bottom solid 1px rgba(0, 0, 0, 0.2)
 
 						> a
 							display block
@@ -177,8 +177,10 @@
 								border-color $theme-color
 
 				> .body
+					padding 8px
+
 					@media (min-width 500px)
-						padding 16px 0 0 0
+						padding 16px
 
 	</style>
 	<script>

@@ -355,7 +355,9 @@ mobile:
       notifications: "Notifications"
 
     mk-post-page:
-      submit: "Post"
+      title: "Post"
+      prev: "Previous post"
+      next: "Next post"
 
     mk-search-page:
       search: "Search"

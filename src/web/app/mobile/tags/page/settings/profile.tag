@@ -56,9 +56,13 @@
 			display block
 
 			> div
-				margin 16px auto
+				margin 8px auto
 				max-width 500px
-				width calc(100% - 32px)
+				width calc(100% - 16px)
+
+				@media (min-width 500px)
+					margin 16px auto
+					width calc(100% - 32px)
 
 				> p
 					display block
@@ -66,9 +70,10 @@
 					padding 12px 16px
 					font-size 14px
 					color #79d4e6
+					border solid 1px #71afbb
 					//color #276f86
 					//background #f8ffff
-					border solid 1px #a9d5de
+					//border solid 1px #a9d5de
 					border-radius 8px
 
 					> i

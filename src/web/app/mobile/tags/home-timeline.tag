@@ -6,7 +6,7 @@
 			display block
 
 			> mk-init-following
-				border-bottom solid 1px #eee
+				margin-bottom 8px
 
 	</style>
 	<script>
