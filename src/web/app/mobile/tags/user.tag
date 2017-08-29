@@ -123,7 +123,7 @@
 
 						> .description
 							margin 8px 0
-							color #333
+							color #fff
 
 						> .info
 							margin 8px 0
