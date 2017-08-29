@@ -193,6 +193,15 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "Drive"
 
+    mk-nav-home-widget:
+      about: "About"
+      stats: "Stats"
+      status: "Status"
+      wiki: "Wiki"
+      donors: "Donors"
+      repository: "Repository"
+      develop: "Developers"
+
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"

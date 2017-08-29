@@ -193,6 +193,15 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "ドライブ"
 
+    mk-nav-home-widget:
+      about: "Misskeyについて"
+      stats: "統計"
+      status: "ステータス"
+      wiki: "Wiki"
+      donors: "ドナー"
+      repository: "リポジトリ"
+      develop: "開発者"
+
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
