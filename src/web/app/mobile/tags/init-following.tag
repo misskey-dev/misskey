@@ -32,6 +32,7 @@
 
 			> .users
 				overflow-x scroll
+				-webkit-overflow-scrolling touch
 				white-space nowrap
 				padding 16px
 				background #eee
