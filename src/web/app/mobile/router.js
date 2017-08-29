@@ -23,7 +23,7 @@ export default me => {
 	route('/post/new',                   newPost);
 	route('/post::post',                 post);
 	route('/search::query',              search);
-	route('/:user',                      user.bind(null, 'posts'));
+	route('/:user',                      user.bind(null, 'overview'));
 	route('/:user/graphs',               user.bind(null, 'graphs'));
 	route('/:user/followers',            userFollowers);
 	route('/:user/following',            userFollowing);

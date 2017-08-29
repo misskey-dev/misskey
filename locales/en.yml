@@ -472,8 +472,22 @@ mobile:
       is-followed: "Followed you"
       following: "Following"
       followers: "Followers"
+      overview: "Overview"
       posts: "Timeline"
       media: "Media"
+
+    mk-user-overview:
+      recent-posts: "Recent posts"
+      images: "Images"
+      activity: "Activity"
+
+    mk-user-overview-posts:
+      loading: "Loading"
+      no-posts: "No posts"
+
+    mk-user-overview-photos:
+      loading: "Loading"
+      no-photos: "No photos"
 
     mk-users-list:
       all: "All"

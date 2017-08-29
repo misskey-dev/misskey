@@ -37,14 +37,15 @@
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
 				</div>
-				<mk-activity-table user={ user }/>
 			</div>
 			<nav>
+				<a data-is-active={ page == 'overview' } onclick={ go.bind(null, 'overview') }>%i18n:mobile.tags.mk-user.overview%</a>
 				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>%i18n:mobile.tags.mk-user.posts%</a>
 				<a data-is-active={ page == 'media' } onclick={ go.bind(null, 'media') }>%i18n:mobile.tags.mk-user.media%</a>
 			</nav>
 		</header>
 		<div class="body">
+			<mk-user-overview if={ page == 'overview' } user={ user }/>
 			<mk-user-timeline if={ page == 'posts' } user={ user }/>
 			<mk-user-timeline if={ page == 'media' } user={ user } with-media={ true }/>
 		</div>
@@ -55,6 +56,8 @@
 
 			> .user
 				> header
+					box-shadow 0 4px 4px rgba(0, 0, 0, 0.3)
+
 					> .banner
 						padding-bottom 33.3%
 						background-color #1b1b1b
@@ -159,7 +162,6 @@
 						justify-content center
 						margin 0 auto
 						max-width 600px
-						border-bottom solid 1px rgba(0, 0, 0, 0.2)
 
 						> a
 							display block
@@ -190,7 +192,7 @@
 		this.mixin('api');
 
 		this.username = this.opts.user;
-		this.page = this.opts.page ? this.opts.page : 'posts';
+		this.page = this.opts.page ? this.opts.page : 'overview';
 		this.fetching = true;
 
 		this.on('mount', () => {
@@ -211,3 +213,255 @@
 		};
 	</script>
 </mk-user>
+
+<mk-user-overview>
+	<section class="recent-posts">
+		<h2><i class="fa fa-comments-o"></i>%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
+		<div>
+			<mk-user-overview-posts user={ user }/>
+		</div>
+	</section>
+	<section class="images">
+		<h2><i class="fa fa-picture-o"></i>%i18n:mobile.tags.mk-user-overview.images%</h2>
+		<div>
+			<mk-user-overview-photos user={ user }/>
+		</div>
+	</section>
+	<section class="activity">
+		<h2><i class="fa fa-bar-chart"></i>%i18n:mobile.tags.mk-user-overview.activity%</h2>
+		<div>
+			<mk-activity-table user={ user }/>
+		</div>
+	</section>
+	<style>
+		:scope
+			display block
+			max-width 600px
+			margin 0 auto
+
+			> section
+				background #eee
+				border-radius 8px
+				box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+				&:not(:last-child)
+					margin-bottom 8px
+
+				> h2
+					margin 0
+					padding 8px 10px
+					font-size 16px
+					font-weight normal
+					color #465258
+					background #fff
+					border-radius 8px 8px 0 0
+
+					> i
+						margin-right 6px
+
+			> .activity
+				> div
+					padding 8px
+
+	</style>
+	<script>
+		this.user = this.opts.user;
+	</script>
+</mk-user-overview>
+
+<mk-user-overview-posts>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
+	<div if={ !initializing && posts.length > 0 }>
+		<virtual each={ posts }>
+			<mk-user-overview-posts-post-card post={ this }/>
+		</virtual>
+	</div>
+	<p class="empty" if={ !initializing && posts.length == 0 }>%i18n:mobile.tags.mk-user-overview-posts.no-posts%</p>
+	<style>
+		:scope
+			display block
+
+			> div
+				overflow-x scroll
+				-webkit-overflow-scrolling touch
+				white-space nowrap
+				padding 8px
+
+				> *
+					vertical-align top
+
+					&:not(:last-child)
+						margin-right 8px
+
+			> .initializing
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.user = this.opts.user;
+		this.initializing = true;
+
+		this.on('mount', () => {
+			this.api('users/posts', {
+				user_id: this.user.id
+			}).then(posts => {
+				this.update({
+					posts: posts,
+					initializing: false
+				});
+			});
+		});
+	</script>
+</mk-user-overview-posts>
+
+<mk-user-overview-posts-post-card>
+	<a href={ '/' + post.user.username + '/' + post.id }>
+		<header>
+			<img src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/><h3>{ post.user.name }</h3>
+		</header>
+		<div>
+			{ text }
+		</div>
+		<mk-time time={ post.created_at }/>
+	</a>
+	<style>
+		:scope
+			display inline-block
+			width 150px
+			//height 120px
+			font-size 12px
+			background #fff
+			border-radius 4px
+
+			> a
+				display block
+				color #2c3940
+
+				&:hover
+					text-decoration none
+
+				> header
+					> img
+						position absolute
+						top 8px
+						left 8px
+						width 28px
+						height 28px
+						border-radius 6px
+
+					> h3
+						display inline-block
+						overflow hidden
+						width calc(100% - 45px)
+						margin-left 44px
+						white-space nowrap
+						text-overflow ellipsis
+
+				> div
+					padding 0 8px 8px 8px
+					height 60px
+					overflow hidden
+					white-space normal
+
+					&:after
+						content ""
+						display block
+						position absolute
+						top 40px
+						left 0
+						width 100%
+						height 20px
+						background linear-gradient(to bottom, transparent 0%, #fff 100%)
+
+				> mk-time
+					display inline-block
+					padding 8px
+					color #aaa
+
+	</style>
+	<script>
+		import summary from '../../common/scripts/get-post-summary';
+
+		this.post = this.opts.post;
+		this.text = summary(this.post);
+	</script>
+</mk-user-overview-posts-post-card>
+
+<mk-user-overview-photos>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
+	<div class="stream" if={ !initializing && images.length > 0 }>
+		<virtual each={ image in images }>
+			<a class="img" style={ 'background-image: url(' + image.media.url + '?thumbnail&size=256)' } href={ '/' + image.post.user.username + '/' + image.post.id }></a>
+		</virtual>
+	</div>
+	<p class="empty" if={ !initializing && images.length == 0 }>%i18n:mobile.tags.mk-user-overview-photos.no-photos%</p>
+	<style>
+		:scope
+			display block
+
+			> .stream
+				display -webkit-flex
+				display -moz-flex
+				display -ms-flex
+				display flex
+				justify-content center
+				flex-wrap wrap
+				padding 8px
+
+				> .img
+					flex 1 1 33%
+					width 33%
+					height 80px
+					background-position center center
+					background-size cover
+					background-clip content-box
+					border solid 2px transparent
+					border-radius 4px
+
+			> .initializing
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.images = [];
+		this.initializing = true;
+		this.user = this.opts.user;
+
+		this.on('mount', () => {
+			this.api('users/posts', {
+				user_id: this.user.id,
+				with_media: true,
+				limit: 9
+			}).then(posts => {
+				this.initializing = false;
+				posts.forEach(post => {
+					post.media.forEach(media => {
+						if (this.images.length < 9) this.images.push({
+							post,
+							media
+						});
+					});
+				});
+				this.update();
+			});
+		});
+	</script>
+</mk-user-overview-photos>
