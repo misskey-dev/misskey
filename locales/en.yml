@@ -376,6 +376,7 @@ mobile:
       title: "Profile Settings"
 
     mk-profile-setting:
+      will-be-published: "These profiles will be published."
       name: "Name"
       location: "Location"
       description: "Description"

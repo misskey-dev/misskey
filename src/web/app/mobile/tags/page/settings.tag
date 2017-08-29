@@ -12,7 +12,7 @@
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-settings-page.settings%';
 			ui.trigger('title', '<i class="fa fa-cog"></i>%i18n:mobile.tags.mk-settings-page.settings%');
-			document.documentElement.style.background = '#eee';
+			document.documentElement.style.background = '#313a42';
 		});
 	</script>
 </mk-settings-page>
@@ -37,19 +37,36 @@
 				display block
 				margin 24px
 				text-align center
-				color #555
+				color #cad2da
 
 			> ul
+				$radius = 8px
+
 				display block
-				margin 16px 0
+				margin 16px auto
 				padding 0
+				max-width 500px
+				width calc(100% - 32px)
 				list-style none
-				border-top solid 1px #aaa
+				background #fff
+				border solid 1px rgba(0, 0, 0, 0.2)
+				border-radius $radius
 
 				> li
 					display block
-					background #fff
-					border-bottom solid 1px #aaa
+					border-bottom solid 1px #ddd
+
+					&:hover
+						background rgba(0, 0, 0, 0.1)
+
+					&:first-child
+						border-top-left-radius $radius
+						border-top-right-radius $radius
+
+					&:last-child
+						border-bottom-left-radius $radius
+						border-bottom-right-radius $radius
+						border-bottom none
 
 					> a
 						$height = 48px

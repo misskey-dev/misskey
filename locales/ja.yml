@@ -376,6 +376,7 @@ mobile:
       title: "プロフィール設定"
 
     mk-profile-setting:
+      will-be-published: "これらのプロフィールは公開されます。"
       name: "名前"
       location: "場所"
       description: "自己紹介"
