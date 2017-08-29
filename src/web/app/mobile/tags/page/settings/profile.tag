@@ -146,7 +146,7 @@
 							padding 12px
 							font-size 16px
 							color #192427
-							border solid 1px #ddd
+							border solid 2px #ddd
 							border-radius 4px
 
 						> textarea
