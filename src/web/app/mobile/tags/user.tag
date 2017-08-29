@@ -362,10 +362,11 @@
 						display inline-block
 						overflow hidden
 						width calc(100% - 45px)
-						margin 8px 0 0 44px
+						margin 8px 0 0 42px
 						line-height 28px
 						white-space nowrap
 						text-overflow ellipsis
+						font-size 12px
 
 				> div
 					padding 0 8px 8px 8px
