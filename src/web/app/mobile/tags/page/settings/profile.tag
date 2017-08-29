@@ -21,6 +21,9 @@
 	<div>
 		<p><i class="fa fa-info-circle"></i>%i18n:mobile.tags.mk-profile-setting.will-be-published%</p>
 		<div class="form">
+			<div style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=1024)' : '' } onclick={ clickBanner }>
+				<img src={ I.avatar_url + '?thumbnail&size=200' } alt="avatar" onclick={ clickAvatar }/>
+			</div>
 			<label>
 				<p>%i18n:mobile.tags.mk-profile-setting.name%</p>
 				<input ref="name" type="text" value={ I.name }/>
@@ -60,7 +63,7 @@
 				> p
 					display block
 					margin 0 0 8px 0
-					padding 16px
+					padding 12px 16px
 					color #79d4e6
 					//color #276f86
 					//background #f8ffff
@@ -97,6 +100,20 @@
 						border-right solid 8px transparent
 						border-bottom solid 8px transparent
 						border-left solid 8px transparent
+
+					> div
+						height 128px
+						background-color #e4e4e4
+						border-radius 8px 8px 0 0
+
+						> img
+							position absolute
+							top 25px
+							left calc(50% - 40px)
+							width 80px
+							height 80px
+							border solid 2px #fff
+							border-radius 8px
 
 					> label
 						display block
@@ -188,6 +205,16 @@
 					alert('%i18n:mobile.tags.mk-profile-setting.banner-saved%');
 				});
 			});
+		};
+
+		this.clickAvatar = e => {
+			this.setAvatar();
+			return false;
+		};
+
+		this.clickBanner = e => {
+			this.setBanner();
+			return false;
 		};
 
 		this.save = () => {
