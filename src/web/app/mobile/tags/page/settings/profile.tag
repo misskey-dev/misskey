@@ -104,6 +104,8 @@
 					> div
 						height 128px
 						background-color #e4e4e4
+						background-size cover
+						background-position center
 						border-radius 8px 8px 0 0
 
 						> img
