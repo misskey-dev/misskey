@@ -30,7 +30,7 @@
 			<header>
 				<a class="name" href={ '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
 				<span class="username">@{ p.user.username }</span>
-				<a class="time" href={ url }>
+				<a class="time" href={ '/' + p.user.username + '/' + p.id }>
 					<mk-time time={ p.created_at }/>
 				</a>
 			</header>
