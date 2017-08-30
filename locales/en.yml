@@ -484,6 +484,7 @@ mobile:
       recent-posts: "Recent posts"
       images: "Images"
       activity: "Activity"
+      followers-you-know: "Followers you know"
       last-used-at: "Latest used at"
 
     mk-user-overview-posts:
@@ -493,6 +494,10 @@ mobile:
     mk-user-overview-photos:
       loading: "Loading"
       no-photos: "No photos"
+
+    mk-user-overview-followers-you-know:
+      loading: "Loading"
+      no-users: "No users"
 
     mk-users-list:
       all: "All"

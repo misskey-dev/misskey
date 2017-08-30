@@ -234,6 +234,12 @@
 			<mk-user-overview-activity-chart user={ user }/>
 		</div>
 	</section>
+	<section class="followers-you-know" if={ SIGNIN && I.id !== user.id }>
+		<h2><i class="fa fa-users"></i>%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
+		<div>
+			<mk-user-overview-followers-you-know user={ user }/>
+		</div>
+	</section>
 	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time time={ user.last_used_at }/></b></p>
 	<style>
 		:scope
@@ -276,6 +282,8 @@
 
 	</style>
 	<script>
+		this.mixin('i');
+
 		this.user = this.opts.user;
 	</script>
 </mk-user-overview>
@@ -530,3 +538,60 @@
 		});
 	</script>
 </mk-user-overview-activity-chart>
+
+<mk-user-overview-followers-you-know>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
+	<div if={ !initializing && users.length > 0 }>
+		<virtual each={ user in users }>
+			<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>
+		</virtual>
+	</div>
+	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:mobile.tags.mk-user-overview-followers-you-know.no-users%</p>
+	<style>
+		:scope
+			display block
+
+			> div
+				padding 4px
+
+				> a
+					display inline-block
+					margin 4px
+
+					> img
+						width 48px
+						height 48px
+						vertical-align bottom
+						border-radius 100%
+
+			> .initializing
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.user = this.opts.user;
+		this.initializing = true;
+
+		this.on('mount', () => {
+			this.api('users/followers', {
+				user_id: this.user.id,
+				iknow: true,
+				limit: 30
+			}).then(x => {
+				this.update({
+					users: x.users,
+					initializing: false
+				});
+			});
+		});
+	</script>
+</mk-user-overview-followers-you-know>

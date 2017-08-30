@@ -485,6 +485,7 @@ mobile:
       recent-posts: "最近の投稿"
       images: "画像"
       activity: "アクティビティ"
+      followers-you-know: "知り合いのフォロワー"
       last-used-at: "最終ログイン"
 
     mk-user-overview-posts:
@@ -494,6 +495,10 @@ mobile:
     mk-user-overview-photos:
       loading: "読み込み中"
       no-photos: "写真はありません"
+
+    mk-user-overview-followers-you-know:
+      loading: "読み込み中"
+      no-users: "知り合いのユーザーはいません"
 
     mk-users-list:
       all: "すべて"
