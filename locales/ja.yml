@@ -473,7 +473,7 @@ mobile:
       no-posts-with-media: "メディア付き投稿はありません。"
 
     mk-user:
-      is-followed: "フォローされています"
+      follows-you: "フォローされています"
       following: "フォロー"
       followers: "フォロワー"
       overview: "概要"

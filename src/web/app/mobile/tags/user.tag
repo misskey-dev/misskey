@@ -12,7 +12,7 @@
 				<div class="title">
 					<h1>{ user.name }</h1>
 					<span class="username">@{ user.username }</span>
-					<span class="followed" if={ user.is_followed }>%i18n:mobile.tags.mk-user.is-followed%</span>
+					<span class="followed" if={ user.is_followed }>%i18n:mobile.tags.mk-user.follows-you%</span>
 				</div>
 				<div class="description">{ user.description }</div>
 				<div class="info">

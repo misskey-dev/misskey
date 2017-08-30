@@ -473,7 +473,7 @@ mobile:
       no-posts-with-media: "There is no posts with media"
 
     mk-user:
-      is-followed: "Followed you"
+      follows-you: "Follows you"
       following: "Following"
       followers: "Followers"
       overview: "Overview"
