@@ -234,7 +234,7 @@
 					font-size 1.2em
 
 					> button
-						margin 0 28px 0 0
+						margin 0
 						padding 8px
 						background transparent
 						border none
@@ -242,6 +242,9 @@
 						font-size 1em
 						color #ddd
 						cursor pointer
+
+						&:not(:last-child)
+							margin-right 28px
 
 						&:hover
 							color #666
