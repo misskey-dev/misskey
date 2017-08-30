@@ -190,7 +190,7 @@
 				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton">
 					<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
-				<button onclick={ menu } ref="menuButton">
+				<button class="menu" onclick={ menu } ref="menuButton">
 					<i class="fa fa-ellipsis-h"></i>
 				</button>
 			</footer>
@@ -453,6 +453,10 @@
 
 							&.reacted
 								color $theme-color
+
+							&.menu
+								@media (max-width 350px)
+									display none
 
 	</style>
 	<script>
