@@ -215,6 +215,7 @@
 </mk-user>
 
 <mk-user-overview>
+	<mk-post-detail if={ user.pinned_post } post={ user.pinned_post } compact={ true }/>
 	<section class="recent-posts">
 		<h2><i class="fa fa-comments-o"></i>%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
 		<div>
@@ -239,6 +240,9 @@
 			display block
 			max-width 600px
 			margin 0 auto
+
+			> mk-post-detail
+				margin 0 0 8px 0
 
 			> section
 				background #eee

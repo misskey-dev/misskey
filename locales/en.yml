@@ -77,6 +77,10 @@ common:
       show-result: "Show result"
       voted: "Voted"
 
+    mk-post-menu:
+      pin: "Pin"
+      pinned: "Pinned"
+
     mk-reaction-picker:
       choose-reaction: "Pick your reaction"
 

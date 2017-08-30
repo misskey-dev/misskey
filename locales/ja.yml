@@ -77,6 +77,10 @@ common:
       show-result: "結果を見る"
       voted: "投票済み"
 
+    mk-post-menu:
+      pin: "ピン留め"
+      pinned: "ピン留めしました"
+
     mk-reaction-picker:
       choose-reaction: "リアクションを選択"
 

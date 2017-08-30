@@ -38,24 +38,26 @@
 			</div>
 			<mk-poll if={ p.poll } post={ p }/>
 		</div>
-		<a class="time" href={ url }>
+		<a class="time" href={ '/' + p.user.username + '/' + p.id }>
 			<mk-time time={ p.created_at } mode="detail"/>
 		</a>
 		<footer>
 			<mk-reactions-viewer post={ p }/>
-			<button onclick={ reply } title="%i18n:mobile.tags.mk-post-detail.reply%"><i class="fa fa-reply"></i>
-				<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+			<button onclick={ reply } title="%i18n:mobile.tags.mk-post-detail.reply%">
+				<i class="fa fa-reply"></i><p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 			</button>
-			<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
-				<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+			<button onclick={ repost } title="Repost">
+				<i class="fa fa-retweet"></i><p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 			</button>
-			<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%"><i class="fa fa-plus"></i>
-				<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+			<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%">
+				<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 			</button>
-			<button><i class="fa fa-ellipsis-h"></i></button>
+			<button onclick={ menu } ref="menuButton">
+				<i class="fa fa-ellipsis-h"></i>
+			</button>
 		</footer>
 	</article>
-	<div class="replies">
+	<div class="replies" if={ !compact }>
 		<virtual each={ post in replies }>
 			<mk-post-detail-sub post={ post }/>
 		</virtual>
@@ -64,18 +66,13 @@
 		:scope
 			display block
 			overflow hidden
-			margin 8px auto
+			margin 0 auto
 			padding 0
-			max-width 500px
-			width calc(100% - 16px)
+			width 100%
 			text-align left
 			background #fff
 			border-radius 8px
 			box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
-
-			@media (min-width 500px)
-				margin 16px auto
-				width calc(100% - 32px)
 
 			> .fetching
 				padding 64px 0
@@ -269,6 +266,7 @@
 
 		this.mixin('api');
 
+		this.compact = this.opts.compact;
 		this.post = this.opts.post;
 		this.isRepost = this.post.repost != null;
 		this.p = this.isRepost ? this.post.repost : this.post;
@@ -299,14 +297,16 @@
 			}
 
 			// Get replies
-			this.api('posts/replies', {
-				post_id: this.p.id,
-				limit: 8
-			}).then(replies => {
-				this.update({
-					replies: replies
+			if (!this.compact) {
+				this.api('posts/replies', {
+					post_id: this.p.id,
+					limit: 8
+				}).then(replies => {
+					this.update({
+						replies: replies
+					});
 				});
-			});
+			}
 		});
 
 		this.reply = () => {
@@ -327,6 +327,14 @@
 		this.react = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
 				source: this.refs.reactButton,
+				post: this.p,
+				compact: true
+			});
+		};
+
+		this.menu = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-post-menu')), {
+				source: this.refs.menuButton,
 				post: this.p,
 				compact: true
 			});

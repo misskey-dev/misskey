@@ -168,6 +168,10 @@ const endpoints: Endpoint[] = [
 		withCredential: true
 	},
 	{
+		name: 'i/pin',
+		kind: 'account-write'
+	},
+	{
 		name: 'i/appdata/get',
 		withCredential: true
 	},

@@ -28,3 +28,4 @@ require('./reaction-picker.tag');
 require('./reactions-viewer.tag');
 require('./reaction-icon.tag');
 require('./weekly-activity-chart.tag');
+require('./post-menu.tag');

@@ -4,6 +4,7 @@
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import User from '../models/user';
+import serializePost from './post';
 import Following from '../models/following';
 import getFriends from '../common/get-friends';
 import config from '../../conf';
@@ -116,24 +117,32 @@ export default (
 		_user.is_followed = follow2 !== null;
 	}
 
-	if (me && !me.equals(_user.id) && opts.detail) {
-		const myFollowingIds = await getFriends(me);
+	if (opts.detail) {
+		if (_user.pinned_post_id) {
+			_user.pinned_post = await serializePost(_user.pinned_post_id, me, {
+				detail: true
+			});
+		}
 
-		// Get following you know count
-		const followingYouKnowCount = await Following.count({
-			followee_id: { $in: myFollowingIds },
-			follower_id: _user.id,
-			deleted_at: { $exists: false }
-		});
-		_user.following_you_know_count = followingYouKnowCount;
+		if (me && !me.equals(_user.id)) {
+			const myFollowingIds = await getFriends(me);
 
-		// Get followers you know count
-		const followersYouKnowCount = await Following.count({
-			followee_id: _user.id,
-			follower_id: { $in: myFollowingIds },
-			deleted_at: { $exists: false }
-		});
-		_user.followers_you_know_count = followersYouKnowCount;
+			// Get following you know count
+			const followingYouKnowCount = await Following.count({
+				followee_id: { $in: myFollowingIds },
+				follower_id: _user.id,
+				deleted_at: { $exists: false }
+			});
+			_user.following_you_know_count = followingYouKnowCount;
+
+			// Get followers you know count
+			const followersYouKnowCount = await Following.count({
+				followee_id: _user.id,
+				follower_id: { $in: myFollowingIds },
+				deleted_at: { $exists: false }
+			});
+			_user.followers_you_know_count = followersYouKnowCount;
+		}
 	}
 
 	resolve(_user);

@@ -2,7 +2,9 @@
 	<mk-ui ref="ui">
 		<main if={ !parent.fetching }>
 			<a if={ parent.post.next } href={ parent.post.next }><i class="fa fa-angle-up"></i>%i18n:mobile.tags.mk-post-page.next%</a>
-			<mk-post-detail ref="post" post={ parent.post }/>
+			<div>
+				<mk-post-detail ref="post" post={ parent.post }/>
+			</div>
 			<a if={ parent.post.prev } href={ parent.post.prev }><i class="fa fa-angle-down"></i>%i18n:mobile.tags.mk-post-page.prev%</a>
 		</main>
 	</mk-ui>
@@ -12,6 +14,16 @@
 
 			main
 				text-align center
+
+				> div
+					margin 8px auto
+					padding 0
+					max-width 500px
+					width calc(100% - 16px)
+
+					@media (min-width 500px)
+						margin 16px auto
+						width calc(100% - 32px)
 
 				> a
 					display inline-block

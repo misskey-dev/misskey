@@ -128,16 +128,16 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
-				<button onclick={ reply } title="%i18n:desktop.tags.mk-timeline-post.reply%"><i class="fa fa-reply"></i>
-					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+				<button onclick={ reply } title="%i18n:desktop.tags.mk-timeline-post.reply%">
+					<i class="fa fa-reply"></i><p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick={ repost } title="%i18n:desktop.tags.mk-timeline-post.repost%"><i class="fa fa-retweet"></i>
-					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+				<button onclick={ repost } title="%i18n:desktop.tags.mk-timeline-post.repost%">
+					<i class="fa fa-retweet"></i><p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%"><i class="fa fa-plus"></i>
-					<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%">
+					<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
-				<button>
+				<button onclick={ menu } ref="menuButton">
 					<i class="fa fa-ellipsis-h"></i>
 				</button>
 				<button onclick={ toggleDetail } title="%i18n:desktop.tags.mk-timeline-post.detail">
@@ -521,6 +521,13 @@
 		this.react = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
 				source: this.refs.reactButton,
+				post: this.p
+			});
+		};
+
+		this.menu = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-post-menu')), {
+				source: this.refs.menuButton,
 				post: this.p
 			});
 		};

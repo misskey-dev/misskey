@@ -181,14 +181,17 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
-				<button onclick={ reply }><i class="fa fa-reply"></i>
-					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+				<button onclick={ reply }>
+					<i class="fa fa-reply"></i><p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
-					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+				<button onclick={ repost } title="Repost">
+					<i class="fa fa-retweet"></i><p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton"><i class="fa fa-plus"></i>
-					<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton">
+					<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+				</button>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton">
+					<i class="fa fa-ellipsis-h"></i>
 				</button>
 			</footer>
 		</div>
@@ -554,6 +557,14 @@
 		this.react = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
 				source: this.refs.reactButton,
+				post: this.p,
+				compact: true
+			});
+		};
+
+		this.menu = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-post-menu')), {
+				source: this.refs.menuButton,
 				post: this.p,
 				compact: true
 			});
