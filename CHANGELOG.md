@@ -5,6 +5,7 @@ ChangeLog (Release Notes)
 unreleased
 ----------
 * New: 投稿のピン留め (#746)
+* New: ホームストリームにメッセージを流すことでlast_used_atを更新できるようにする (#745)
 * その他細かな修正
 
 2508 (2017/08/30)

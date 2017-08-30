@@ -2,6 +2,7 @@ import * as websocket from 'websocket';
 import * as redis from 'redis';
 import * as debug from 'debug';
 
+import User from '../models/user';
 import serializePost from '../serializers/post';
 
 const log = debug('misskey');
@@ -35,6 +36,15 @@ export default function homeStream(request: websocket.request, connection: webso
 		const msg = JSON.parse(data.utf8Data);
 
 		switch (msg.type) {
+			case 'alive':
+				// Update lastUsedAt
+				User.update({ _id: user._id }, {
+					$set: {
+						last_used_at: new Date()
+					}
+				});
+				break;
+
 			case 'capture':
 				if (!msg.id) return;
 				const postId = msg.id;
