@@ -230,7 +230,7 @@
 	<section class="activity">
 		<h2><i class="fa fa-bar-chart"></i>%i18n:mobile.tags.mk-user-overview.activity%</h2>
 		<div>
-			<mk-activity-table user={ user }/>
+			<mk-weekly-activity-chart user={ user }/>
 		</div>
 	</section>
 	<style>
