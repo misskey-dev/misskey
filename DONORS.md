@@ -3,6 +3,9 @@ DONORS
 
 (no particular order)
 
+* らふぁ
+* 俺様
+* なぎうり
 * スルメ https://surume.tk/
 
 :heart: Thanks for donating, guys!
