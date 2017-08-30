@@ -231,7 +231,7 @@
 	<section class="activity">
 		<h2><i class="fa fa-bar-chart"></i>%i18n:mobile.tags.mk-user-overview.activity%</h2>
 		<div>
-			<mk-weekly-activity-chart user={ user }/>
+			<mk-user-overview-activity-chart user={ user }/>
 		</div>
 	</section>
 	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time time={ user.last_used_at }/></b></p>
@@ -462,7 +462,7 @@
 			this.api('users/posts', {
 				user_id: this.user.id,
 				with_media: true,
-				limit: 9
+				limit: 6
 			}).then(posts => {
 				this.initializing = false;
 				posts.forEach(post => {
@@ -478,3 +478,55 @@
 		});
 	</script>
 </mk-user-overview-photos>
+
+<mk-user-overview-activity-chart>
+	<svg if={ data } ref="canvas" viewBox="0 0 30 1" preserveAspectRatio="none">
+		<g each={ d, i in data.reverse() }>
+			<rect width="0.8" riot-height={ d.postsH }
+				riot-x={ i + 0.1 } riot-y={ 1 - d.postsH - d.repliesH - d.repostsH }
+				fill="#41ddde"/>
+			<rect width="0.8" riot-height={ d.repliesH }
+				riot-x={ i + 0.1 } riot-y={ 1 - d.repliesH - d.repostsH }
+				fill="#f7796c"/>
+			<rect width="0.8" riot-height={ d.repostsH }
+				riot-x={ i + 0.1 } riot-y={ 1 - d.repostsH }
+				fill="#a1de41"/>
+			</g>
+	</svg>
+	<style>
+		:scope
+			display block
+			max-width 600px
+			margin 0 auto
+
+			> svg
+				display block
+				width 100%
+				height 80px
+
+				> rect
+					transform-origin center
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.user = this.opts.user;
+
+		this.on('mount', () => {
+			this.api('aggregation/users/activity', {
+				user_id: this.user.id,
+				limit: 30
+			}).then(data => {
+				data.forEach(d => d.total = d.posts + d.replies + d.reposts);
+				this.peak = Math.max.apply(null, data.map(d => d.total));
+				data.forEach(d => {
+					d.postsH = d.posts / this.peak;
+					d.repliesH = d.replies / this.peak;
+					d.repostsH = d.reposts / this.peak;
+				});
+				this.update({ data });
+			});
+		});
+	</script>
+</mk-user-overview-activity-chart>
