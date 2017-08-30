@@ -376,7 +376,7 @@
 						font-size 12px
 
 				> div
-					padding 0 8px 8px 8px
+					padding 2px 8px 8px 8px
 					height 60px
 					overflow hidden
 					white-space normal

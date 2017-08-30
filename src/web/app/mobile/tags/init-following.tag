@@ -67,7 +67,7 @@
 
 					> .name
 						display block
-						margin 24px 0 2px 0
+						margin 24px 0 0 0
 						font-size 16px
 						color #555
 
