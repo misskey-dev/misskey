@@ -481,6 +481,7 @@ mobile:
       recent-posts: "最近の投稿"
       images: "画像"
       activity: "アクティビティ"
+      last-used-at: "最終ログイン"
 
     mk-user-overview-posts:
       loading: "読み込み中"

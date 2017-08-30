@@ -233,6 +233,7 @@
 			<mk-weekly-activity-chart user={ user }/>
 		</div>
 	</section>
+	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time time={ user.last_used_at }/></b></p>
 	<style>
 		:scope
 			display block
@@ -262,6 +263,12 @@
 			> .activity
 				> div
 					padding 8px
+
+			> p
+				display block
+				margin 16px
+				text-align center
+				color #cad2da
 
 	</style>
 	<script>

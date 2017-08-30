@@ -480,6 +480,7 @@ mobile:
       recent-posts: "Recent posts"
       images: "Images"
       activity: "Activity"
+      last-used-at: "Latest used at"
 
     mk-user-overview-posts:
       loading: "Loading"
