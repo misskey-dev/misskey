@@ -5,6 +5,7 @@ ChangeLog (Release Notes)
 unreleased
 ----------
 * l10n
+* ユーザビリティの向上
 
 2520 (2017/08/30)
 -----------------

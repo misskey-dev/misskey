@@ -44,6 +44,7 @@
 				width 240px
 				height 100%
 				overflow auto
+				-webkit-overflow-scrolling touch
 				color #777
 				background #fff
 
