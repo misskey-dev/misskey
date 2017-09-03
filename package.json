@@ -103,7 +103,7 @@
     "chalk": "2.1.0",
     "compression": "1.7.0",
     "cors": "2.8.4",
-    "cropperjs": "1.0.0-rc.3",
+    "cropperjs": "1.0.0",
     "crypto": "1.0.1",
     "debug": "3.0.1",
     "deep-equal": "1.0.1",
