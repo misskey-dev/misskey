@@ -1,36 +1,42 @@
 import * as fs from 'fs';
-const bayes = require('bayes');
+
+const bayes = require('./naive-bayes.js');
 const MeCab = require('mecab-async');
+import * as msgpack from 'msgpack-lite';
+
 import Post from '../../api/models/post';
+import config from '../../conf';
 
+/**
+ * 投稿を学習したり与えられた投稿のカテゴリを予測します
+ */
 export default class Categorizer {
-	classifier: any;
-	categorizerDbFilePath: string;
-	mecab: any;
+	private classifier: any;
+	private categorizerDbFilePath: string;
+	private mecab: any;
 
-	constructor(categorizerDbFilePath: string, mecabCommand: string = 'mecab -d /usr/share/mecab/dic/mecab-ipadic-neologd') {
-		this.categorizerDbFilePath = categorizerDbFilePath;
+	constructor() {
+		this.categorizerDbFilePath = `${__dirname}/../../../data/category`;
 
 		this.mecab = new MeCab();
-		this.mecab.command = mecabCommand;
+		if (config.categorizer.mecab_command) this.mecab.command = config.categorizer.mecab_command;
 
 		// BIND -----------------------------------
 		this.tokenizer = this.tokenizer.bind(this);
 	}
 
-	tokenizer(text: string) {
+	private tokenizer(text: string) {
 		return this.mecab.wakachiSync(text);
 	}
 
-	async init() {
+	public async init() {
 		try {
-			const db = fs.readFileSync(this.categorizerDbFilePath, {
-				encoding: 'utf8'
-			});
+			const buffer = fs.readFileSync(this.categorizerDbFilePath);
+			const db = msgpack.decode(buffer);
 
-			this.classifier = bayes.fromJson(db);
+			this.classifier = bayes.import(db);
 			this.classifier.tokenizer = this.tokenizer;
-		} catch(e) {
+		} catch (e) {
 			this.classifier = bayes({
 				tokenizer: this.tokenizer
 			});
@@ -49,7 +55,7 @@ export default class Categorizer {
 		}
 	}
 
-	async learn(id, category) {
+	public async learn(id, category) {
 		const post = await Post.findOne({ _id: id });
 
 		Post.update({ _id: id }, {
@@ -64,7 +70,7 @@ export default class Categorizer {
 		this.save();
 	}
 
-	async categorize(id) {
+	public async categorize(id) {
 		const post = await Post.findOne({ _id: id });
 
 		const category = this.classifier.categorize(post.text);
@@ -76,14 +82,12 @@ export default class Categorizer {
 		});
 	}
 
-	async test(text) {
+	public async test(text) {
 		return this.classifier.categorize(text);
 	}
 
-	save() {
-		fs.writeFileSync(this.categorizerDbFilePath, this.classifier.toJson(), {
-			encoding: 'utf8'
-		});
+	private save() {
+		const buffer = msgpack.encode(this.classifier.export());
+		fs.writeFileSync(this.categorizerDbFilePath, buffer);
 	}
 }
-
