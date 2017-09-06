@@ -20,7 +20,13 @@ export default class Categorizer {
 	}
 
 	private tokenizer(text: string) {
-		return this.mecab.wakachiSync(text);
+		const tokens = this.mecab.parseSync(text)
+			// 名詞だけに制限
+			.filter(token => token[1] === '名詞')
+			// 取り出し
+			.map(token => token[0]);
+
+		return tokens;
 	}
 
 	public async init() {
