@@ -395,6 +395,10 @@ const endpoints: Endpoint[] = [
 		withCredential: true
 	},
 	{
+		name: 'posts/categorize',
+		withCredential: true
+	},
+	{
 		name: 'posts/reactions',
 		withCredential: true
 	},

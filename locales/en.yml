@@ -22,6 +22,14 @@ common:
     confused: "Confused"
     pudding: "Pudding"
 
+  post_categories:
+    music: "Music"
+    game: "Video Game"
+    anime: "Anime"
+    it: "IT"
+    gadgets: "Gadgets"
+    photography: "Photography"
+
   input-message-here: "Enter message here"
   send: "Send"
   delete: "Delete"
@@ -80,6 +88,9 @@ common:
     mk-post-menu:
       pin: "Pin"
       pinned: "Pinned"
+      select: "Select category"
+      categorize: "Accept"
+      categorized: "Category reported. Thank you!"
 
     mk-reaction-picker:
       choose-reaction: "Pick your reaction"
@@ -375,6 +386,7 @@ mobile:
       twitter-integration: "Twitter integration"
       signin-history: "Sign in history"
       api: "API"
+      link: "MisskeyLink"
       settings: "Settings"
       signout: "Sign out"
 

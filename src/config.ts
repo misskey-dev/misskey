@@ -68,6 +68,9 @@ type Source = {
 		hook_secret: string;
 		username: string;
 	};
+	categorizer?: {
+		mecab_command?: string;
+	};
 };
 
 /**
