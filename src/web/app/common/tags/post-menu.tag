@@ -2,6 +2,18 @@
 	<div class="backdrop" ref="backdrop" onclick={ close }></div>
 	<div class="popover { compact: opts.compact }" ref="popover">
 		<button if={ post.user_id === I.id } onclick={ pin }>%i18n:common.tags.mk-post-menu.pin%</button>
+		<div if={ I.is_pro && !post.is_category_verified }>
+			<select ref="categorySelect">
+				<option value="">%i18n:common.tags.mk-post-menu.select%</option>
+				<option value="music">%i18n:common.post_categories.music%</option>
+				<option value="game">%i18n:common.post_categories.game%</option>
+				<option value="anime">%i18n:common.post_categories.anime%</option>
+				<option value="it">%i18n:common.post_categories.it%</option>
+				<option value="gadgets">%i18n:common.post_categories.gadgets%</option>
+				<option value="photography">%i18n:common.post_categories.photography%</option>
+			</select>
+			<button onclick={ categorize }>%i18n:common.tags.mk-post-menu.categorize%</button>
+		</div>
 	</div>
 	<style>
 		$border-color = rgba(27, 31, 35, 0.15)
@@ -107,6 +119,17 @@
 				post_id: this.post.id
 			}).then(() => {
 				if (this.opts.cb) this.opts.cb('pinned', '%i18n:common.tags.mk-post-menu.pinned%');
+				this.unmount();
+			});
+		};
+
+		this.categorize = () => {
+			const category = this.refs.categorySelect.options[this.refs.categorySelect.selectedIndex].value;
+			this.api('posts/categorize', {
+				post_id: this.post.id,
+				category: category
+			}).then(() => {
+				if (this.opts.cb) this.opts.cb('categorized', '%i18n:common.tags.mk-post-menu.categorized%');
 				this.unmount();
 			});
 		};

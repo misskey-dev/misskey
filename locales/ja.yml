@@ -22,6 +22,14 @@ common:
     confused: "こまこまのこまり"
     pudding: "Pudding"
 
+  post_categories:
+    music: "音楽"
+    game: "ゲーム"
+    anime: "アニメ"
+    it: "IT"
+    gadgets: "ガジェット"
+    photography: "写真"
+
   input-message-here: "ここにメッセージを入力"
   send: "送信"
   delete: "削除"
@@ -80,6 +88,9 @@ common:
     mk-post-menu:
       pin: "ピン留め"
       pinned: "ピン留めしました"
+      select: "カテゴリを選択"
+      categorize: "決定"
+      categorized: "カテゴリを報告しました。これによりMisskeyが賢くなり、投稿の自動カテゴライズに役立てられます。ご協力ありがとうございました。"
 
     mk-reaction-picker:
       choose-reaction: "リアクションを選択"
@@ -375,6 +386,7 @@ mobile:
       twitter-integration: "Twitter連携"
       signin-history: "ログイン履歴"
       api: "API"
+      link: "Misskeyリンク"
       settings: "設定"
       signout: "サインアウト"
 
