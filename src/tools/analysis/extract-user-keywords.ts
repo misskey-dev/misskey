@@ -36,7 +36,7 @@ User.find({}, {
 });
 
 async function extractKeywordsOne(id, cb) {
-	console.log(`extract keywords of ${id} ...`);
+	console.log(`extracting keywords of ${id} ...`);
 
 	// Fetch recent posts
 	const recentPosts = await Post.find({
