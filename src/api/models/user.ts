@@ -1,4 +1,7 @@
+import * as mongo from 'mongodb';
+
 import db from '../../db/mongodb';
+import { IPost } from './post';
 
 const collection = db.get('users');
 
@@ -31,6 +34,39 @@ export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }
 
-export interface IUser {
+export type IUser = {
+	_id: mongo.ObjectID;
+	created_at: Date;
+	email: string;
+	followers_count: number;
+	following_count: number;
+	links: string[];
 	name: string;
-}
+	password: string;
+	posts_count: number;
+	drive_capacity: number;
+	username: string;
+	username_lower: string;
+	token: string;
+	avatar_id: mongo.ObjectID;
+	banner_id: mongo.ObjectID;
+	data: any;
+	twitter: {
+		access_token: string;
+		access_token_secret: string;
+		user_id: string;
+		screen_name: string;
+	};
+	description: string;
+	profile: {
+		location: string;
+		birthday: string; // 'YYYY-MM-DD'
+		tags: string[];
+	};
+	last_used_at: Date;
+	latest_post: IPost;
+	pinned_post_id: mongo.ObjectID;
+	is_pro: boolean;
+	is_suspended: boolean;
+	keywords: string[];
+};

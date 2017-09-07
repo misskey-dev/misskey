@@ -6,7 +6,7 @@ import deepEqual = require('deep-equal');
 import parse from '../../common/text';
 import Post from '../../models/post';
 import { isValidText } from '../../models/post';
-import User from '../../models/user';
+import { default as User, IUser } from '../../models/user';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
 import Watching from '../../models/post-watching';
@@ -24,7 +24,7 @@ import config from '../../../conf';
  * @param {any} app
  * @return {Promise<any>}
  */
-module.exports = (params, user, app) => new Promise(async (res, rej) => {
+module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
