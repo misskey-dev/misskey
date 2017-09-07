@@ -509,6 +509,9 @@ mobile:
       loading: "Loading"
       no-photos: "No photos"
 
+    mk-user-overview-keywords:
+      no-keywords: "No keywords"
+
     mk-user-overview-followers-you-know:
       loading: "Loading"
       no-users: "No users"

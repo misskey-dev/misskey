@@ -552,7 +552,7 @@
 			<a>{ keyword }</a>
 		</virtual>
 	</div>
-	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:mobile.tags.mk-user-overview-followers-you-know.no-users%</p>
+	<p class="empty" if={ user.keywords == null || user.keywords.length == 0 }>%i18n:mobile.tags.mk-user-overview-keywords.no-keywords%</p>
 	<style>
 		:scope
 			display block
