@@ -1,12 +1,14 @@
 How to backup your Misskey
 ==========================
 
+Make sure **mongodb-tools** installed.
+
+--
+
 In your shell:
 ``` shell
 $ mongodump --archive=db-backup
 ```
-
-Make sure **mongodb-tools** installed.
 
 Restore
 -------
