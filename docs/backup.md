@@ -10,9 +10,13 @@ In your shell:
 $ mongodump --archive=db-backup
 ```
 
+For details, plese see [mongodump docs](https://docs.mongodb.com/manual/reference/program/mongodump/).
+
 Restore
 -------
 
 ``` shell
 $ mongorestore --archive=db-backup
 ```
+
+For details, please see [mongorestore docs](https://docs.mongodb.com/manual/reference/program/mongorestore/).
