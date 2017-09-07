@@ -5,7 +5,7 @@ import User from '../../api/models/user';
 import config from '../../conf';
 
 const mecab = new MeCab();
-if (config.categorizer.mecab_command) mecab.command = config.categorizer.mecab_command;
+if (config.analysis.mecab_command) mecab.command = config.analysis.mecab_command;
 
 function tokenize(text: string) {
 	const tokens = this.mecab.parseSync(text)

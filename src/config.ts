@@ -68,7 +68,7 @@ type Source = {
 		hook_secret: string;
 		username: string;
 	};
-	categorizer?: {
+	analysis?: {
 		mecab_command?: string;
 	};
 };
