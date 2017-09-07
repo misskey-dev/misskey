@@ -1,0 +1,6 @@
+In your shell:
+``` shell
+$ mongodump --archive=db-backup
+```
+
+Make sure **mongodb-tools** installed.
