@@ -1,8 +1,7 @@
 const bayes = require('./naive-bayes.js');
-const MeCab = require('mecab-async');
 
+const MeCab = require('./mecab');
 import Post from '../../api/models/post';
-import config from '../../conf';
 
 /**
  * 投稿を学習したり与えられた投稿のカテゴリを予測します
@@ -13,7 +12,6 @@ export default class Categorizer {
 
 	constructor() {
 		this.mecab = new MeCab();
-		if (config.categorizer.mecab_command) this.mecab.command = config.categorizer.mecab_command;
 
 		// BIND -----------------------------------
 		this.tokenizer = this.tokenizer.bind(this);
