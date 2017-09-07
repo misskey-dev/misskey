@@ -1,7 +1,11 @@
+const moji = require('moji');
+
 const MeCab = require('./mecab');
 import Post from '../../api/models/post';
 import User from '../../api/models/user';
 import parse from '../../api/common/text';
+
+process.on('unhandledRejection', console.dir);
 
 const stopwords = [
 	'ー',
@@ -16,7 +20,8 @@ const stopwords = [
   'ら', 'たり', 'その他', 'に関する', 'たち', 'ます', 'ん', 'なら', 'に対して', '特に',
   'せる', '及び', 'これら', 'とき', 'では', 'にて', 'ほか', 'ながら', 'うち', 'そして',
   'とともに', 'ただし', 'かつて', 'それぞれ', 'または', 'お', 'ほど', 'ものの', 'に対する',
-  'ほとんど', 'と共に', 'といった', 'です', 'とも', 'ところ', 'ここ', '感じ', '気持ち',
+	'ほとんど', 'と共に', 'といった', 'です', 'とも', 'ところ', 'ここ', '感じ', '気持ち',
+	'あと', '自分',
 
 	'about', 'after', 'all', 'also', 'am', 'an', 'and', 'another', 'any', 'are', 'as', 'at', 'be',
   'because', 'been', 'before', 'being', 'between', 'both', 'but', 'by', 'came', 'can',
@@ -47,10 +52,16 @@ function tokenize(text: string) {
 	const tokens = mecab.parseSync(plain)
 		// キーワードのみ
 		.filter(token => token[1] == '名詞' && (token[2] == '固有名詞' || token[2] == '一般'))
-		// 取り出し
-		.map(token => token[0].toLowerCase())
-		// ストップワード
-		.filter(word => stopwords.indexOf(word) === -1 && word.length > 1);
+		// 取り出し(&整形(全角を半角にしたり大文字を小文字で統一したり))
+		.map(token => moji(token[0]).convert('ZE', 'HE').convert('HK', 'ZK').toString().toLowerCase())
+		// ストップワードなど
+		.filter(word =>
+			stopwords.indexOf(word) === -1 &&
+			word.length > 1 &&
+			word.indexOf('！') === -1 &&
+			word.indexOf('!') === -1 &&
+			word.indexOf('？') === -1 &&
+			word.indexOf('?') === -1);
 
 	return tokens;
 }
@@ -65,7 +76,13 @@ User.find({}, {
 
 	const x = cb => {
 		if (++i == users.length) return cb();
-		extractKeywordsOne(users[i]._id, () => x(cb));
+		extractKeywordsOne(users[i]._id).then(() => x(cb), err => {
+			console.error(err);
+			setTimeout(() => {
+				i--;
+				x(cb);
+			}, 1000);
+		});
 	};
 
 	x(() => {
@@ -73,61 +90,65 @@ User.find({}, {
 	});
 });
 
-async function extractKeywordsOne(id, cb) {
-	process.stdout.write(`extracting keywords of ${id} ...`);
+function extractKeywordsOne(id) {
+	return new Promise(async (resolve, reject) => {
+		process.stdout.write(`extracting keywords of ${id} ...`);
 
-	// Fetch recent posts
-	const recentPosts = await Post.find({
-		user_id: id,
-		text: {
-			$exists: true
-		}
-	}, {
-		sort: {
-			_id: -1
-		},
-		limit: 10000,
-		fields: {
-			_id: false,
-			text: true
-		}
-	});
-
-	// 投稿が少なかったら中断
-	if (recentPosts.length < 300) {
-		process.stdout.write(' >>> -\n');
-		return cb();
-	}
-
-	const keywords = {};
-
-	// Extract keywords from recent posts
-	recentPosts.forEach(post => {
-		const keywordsOfPost = tokenize(post.text);
-
-		keywordsOfPost.forEach(keyword => {
-			if (keywords[keyword]) {
-				keywords[keyword]++;
-			} else {
-				keywords[keyword] = 1;
+		// Fetch recent posts
+		const recentPosts = await Post.find({
+			user_id: id,
+			text: {
+				$exists: true
+			}
+		}, {
+			sort: {
+				_id: -1
+			},
+			limit: 10000,
+			fields: {
+				_id: false,
+				text: true
 			}
 		});
-	});
 
-	// Sort keywords by frequency
-	const keywordsSorted = Object.keys(keywords).sort((a, b) => keywords[b] - keywords[a]);
-
-	// Lookup top 10 keywords
-	const topKeywords = keywordsSorted.slice(0, 10);
-
-	process.stdout.write(' >>> ' + topKeywords.join(', ') + '\n');
-
-	// Save
-	User.update({ _id: id }, {
-		$set: {
-			keywords: topKeywords
+		// 投稿が少なかったら中断
+		if (recentPosts.length < 300) {
+			process.stdout.write(' >>> -\n');
+			return resolve();
 		}
-	}).then(() => {
-		cb();
+
+		const keywords = {};
+
+		// Extract keywords from recent posts
+		recentPosts.forEach(post => {
+			const keywordsOfPost = tokenize(post.text);
+
+			keywordsOfPost.forEach(keyword => {
+				if (keywords[keyword]) {
+					keywords[keyword]++;
+				} else {
+					keywords[keyword] = 1;
+				}
+			});
+		});
+
+		// Sort keywords by frequency
+		const keywordsSorted = Object.keys(keywords).sort((a, b) => keywords[b] - keywords[a]);
+
+		// Lookup top 10 keywords
+		const topKeywords = keywordsSorted.slice(0, 10);
+
+		process.stdout.write(' >>> ' + topKeywords.join(', ') + '\n');
+
+		// Save
+		User.update({ _id: id }, {
+			$set: {
+				keywords: topKeywords
+			}
+		}).then(() => {
+			resolve();
+		}, err => {
+			reject(err);
+		});
 	});
 }
