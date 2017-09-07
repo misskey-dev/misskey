@@ -8,7 +8,7 @@ const mecab = new MeCab();
 if (config.analysis.mecab_command) mecab.command = config.analysis.mecab_command;
 
 function tokenize(text: string) {
-	const tokens = this.mecab.parseSync(text)
+	const tokens = mecab.parseSync(text)
 		// キーワードのみ
 		.filter(token => token[1] == '名詞' && (token[2] == '固有名詞' || token[2] == '一般'))
 		// 取り出し
