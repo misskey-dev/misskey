@@ -26,7 +26,7 @@
 				<div class="status">
 				  <a>
 				    <b>{ user.posts_count }</b>
-						<i>%i18n:mobile.tags.mk-user.posts-count%</i>
+						<i>%i18n:mobile.tags.mk-user.posts%</i>
 					</a>
 					<a href="{ user.username }/following">
 						<b>{ user.following_count }</b>
@@ -40,7 +40,7 @@
 			</div>
 			<nav>
 				<a data-is-active={ page == 'overview' } onclick={ go.bind(null, 'overview') }>%i18n:mobile.tags.mk-user.overview%</a>
-				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>%i18n:mobile.tags.mk-user.posts%</a>
+				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>%i18n:mobile.tags.mk-user.timeline%</a>
 				<a data-is-active={ page == 'media' } onclick={ go.bind(null, 'media') }>%i18n:mobile.tags.mk-user.media%</a>
 			</nav>
 		</header>
@@ -143,7 +143,7 @@
 							> a
 								color #657786
 
-								&:first-child
+								&:not(:last-child)
 									margin-right 16px
 
 								> b
@@ -232,6 +232,12 @@
 		<h2><i class="fa fa-bar-chart"></i>%i18n:mobile.tags.mk-user-overview.activity%</h2>
 		<div>
 			<mk-user-overview-activity-chart user={ user }/>
+		</div>
+	</section>
+	<section class="keywords">
+		<h2><i class="fa fa-comment-o"></i>%i18n:mobile.tags.mk-user-overview.keywords%</h2>
+		<div>
+			<mk-user-overview-keywords user={ user }/>
 		</div>
 	</section>
 	<section class="followers-you-know" if={ SIGNIN && I.id !== user.id }>
@@ -538,6 +544,41 @@
 		});
 	</script>
 </mk-user-overview-activity-chart>
+
+
+<mk-user-overview-keywords>
+	<div if={ user.keywords != null && user.keywords.length > 1 }>
+		<virtual each={ keyword in user.keywords }>
+			<a>{ keyword }</a>
+		</virtual>
+	</div>
+	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:mobile.tags.mk-user-overview-followers-you-know.no-users%</p>
+	<style>
+		:scope
+			display block
+
+			> div
+				padding 4px
+
+				> a
+					display inline-block
+					margin 4px
+					color #555
+
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+	</style>
+	<script>
+		this.user = this.opts.user;
+	</script>
+</mk-user-overview-keywords>
 
 <mk-user-overview-followers-you-know>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>

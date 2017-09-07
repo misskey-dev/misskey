@@ -488,14 +488,16 @@ mobile:
       follows-you: "Follows you"
       following: "Following"
       followers: "Followers"
+      posts: "Posts"
       overview: "Overview"
-      posts: "Timeline"
+      timeline: "Timeline"
       media: "Media"
 
     mk-user-overview:
       recent-posts: "Recent posts"
       images: "Images"
       activity: "Activity"
+      keywords: "Keywords"
       followers-you-know: "Followers you know"
       last-used-at: "Latest used at"
 

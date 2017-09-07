@@ -488,15 +488,16 @@ mobile:
       follows-you: "フォローされています"
       following: "フォロー"
       followers: "フォロワー"
+      posts: "投稿"
       overview: "概要"
-      posts: "タイムライン"
-      posts-count: "ポスト"
+      timeline: "タイムライン"
       media: "メディア"
 
     mk-user-overview:
       recent-posts: "最近の投稿"
       images: "画像"
       activity: "アクティビティ"
+      keywords: "キーワード"
       followers-you-know: "知り合いのフォロワー"
       last-used-at: "最終ログイン"
 
