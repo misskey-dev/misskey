@@ -17,7 +17,7 @@ Key features
 * Automatically updated timeline
 * Private messages
 * Free 1GB storage for each all users
-* Mobile device support (smartphone, tablet, etc)
+* Machine learning
 * Web API for third-party applications
 * No ads
 

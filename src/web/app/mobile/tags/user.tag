@@ -545,7 +545,6 @@
 	</script>
 </mk-user-overview-activity-chart>
 
-
 <mk-user-overview-keywords>
 	<div if={ user.keywords != null && user.keywords.length > 1 }>
 		<virtual each={ keyword in user.keywords }>
