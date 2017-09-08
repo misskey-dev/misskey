@@ -24,7 +24,7 @@
     "@types/bcryptjs": "2.4.0",
     "@types/body-parser": "1.16.5",
     "@types/chai": "4.0.4",
-    "@types/chai-http": "3.0.2",
+    "@types/chai-http": "3.0.3",
     "@types/chalk": "0.4.31",
     "@types/compression": "0.0.34",
     "@types/cors": "2.8.1",
