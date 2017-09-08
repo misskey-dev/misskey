@@ -3,7 +3,7 @@
  */
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
-import User from '../models/user';
+import { default as User, IUser } from '../models/user';
 import serializePost from './post';
 import Following from '../models/following';
 import getFriends from '../common/get-friends';
@@ -12,14 +12,14 @@ import config from '../../conf';
 /**
  * Serialize a user
  *
- * @param {any} user
- * @param {any} me?
- * @param {any} options?
- * @return {Promise<any>}
+ * @param user target
+ * @param me? serializee
+ * @param options? serialize options
+ * @return response
  */
 export default (
-	user: any,
-	me?: any,
+	user: string | mongo.ObjectID | IUser,
+	me?: string | mongo.ObjectID | IUser,
 	options?: {
 		detail?: boolean,
 		includeSecrets?: boolean
@@ -54,13 +54,13 @@ export default (
 	}
 
 	// Me
-	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
-		if (typeof me === 'string') {
-			me = new mongo.ObjectID(me);
-		} else {
-			me = me._id;
-		}
-	}
+	const meId: mongo.ObjectID = me
+		? mongo.ObjectID.prototype.isPrototypeOf(me)
+			? me as mongo.ObjectID
+			: typeof me === 'string'
+				? new mongo.ObjectID(me)
+				: (me as IUser)._id
+		: null;
 
 	// Rename _id to id
 	_user.id = _user._id;
@@ -92,17 +92,17 @@ export default (
 		? `${config.drive_url}/${_user.banner_id}`
 		: null;
 
-	if (!me || !me.equals(_user.id) || !opts.detail) {
+	if (!meId || !meId.equals(_user.id) || !opts.detail) {
 		delete _user.avatar_id;
 		delete _user.banner_id;
 
 		delete _user.drive_capacity;
 	}
 
-	if (me && !me.equals(_user.id)) {
+	if (meId && !meId.equals(_user.id)) {
 		// If the user is following
 		const follow = await Following.findOne({
-			follower_id: me,
+			follower_id: meId,
 			followee_id: _user.id,
 			deleted_at: { $exists: false }
 		});
@@ -111,7 +111,7 @@ export default (
 		// If the user is followed
 		const follow2 = await Following.findOne({
 			follower_id: _user.id,
-			followee_id: me,
+			followee_id: meId,
 			deleted_at: { $exists: false }
 		});
 		_user.is_followed = follow2 !== null;
@@ -119,13 +119,13 @@ export default (
 
 	if (opts.detail) {
 		if (_user.pinned_post_id) {
-			_user.pinned_post = await serializePost(_user.pinned_post_id, me, {
+			_user.pinned_post = await serializePost(_user.pinned_post_id, meId, {
 				detail: true
 			});
 		}
 
-		if (me && !me.equals(_user.id)) {
-			const myFollowingIds = await getFriends(me);
+		if (meId && !meId.equals(_user.id)) {
+			const myFollowingIds = await getFriends(meId);
 
 			// Get following you know count
 			const followingYouKnowCount = await Following.count({

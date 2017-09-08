@@ -3,8 +3,9 @@
  */
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
-import Post from '../models/post';
+import { default as Post, IPost } from '../models/post';
 import Reaction from '../models/post-reaction';
+import { IUser } from '../models/user';
 import Vote from '../models/poll-vote';
 import serializeApp from './app';
 import serializeUser from './user';
@@ -14,14 +15,14 @@ import parse from '../common/text';
 /**
  * Serialize a post
  *
- * @param {any} post
- * @param {any} me?
- * @param {any} options?
- * @return {Promise<any>}
+ * @param post target
+ * @param me? serializee
+ * @param options? serialize options
+ * @return response
  */
 const self = (
-	post: any,
-	me?: any,
+	post: string | mongo.ObjectID | IPost,
+	me?: string | mongo.ObjectID | IUser,
 	options?: {
 		detail: boolean
 	}
@@ -29,6 +30,15 @@ const self = (
 	const opts = options || {
 		detail: true,
 	};
+
+	// Me
+	const meId: mongo.ObjectID = me
+	? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? me as mongo.ObjectID
+		: typeof me === 'string'
+			? new mongo.ObjectID(me)
+			: (me as IUser)._id
+	: null;
 
 	let _post: any;
 
@@ -59,7 +69,7 @@ const self = (
 	}
 
 	// Populate user
-	_post.user = await serializeUser(_post.user_id, me);
+	_post.user = await serializeUser(_post.user_id, meId);
 
 	// Populate app
 	if (_post.app_id) {
@@ -109,23 +119,23 @@ const self = (
 
 		if (_post.reply_to_id) {
 			// Populate reply to post
-			_post.reply_to = await self(_post.reply_to_id, me, {
+			_post.reply_to = await self(_post.reply_to_id, meId, {
 				detail: false
 			});
 		}
 
 		if (_post.repost_id) {
 			// Populate repost
-			_post.repost = await self(_post.repost_id, me, {
+			_post.repost = await self(_post.repost_id, meId, {
 				detail: _post.text == null
 			});
 		}
 
 		// Poll
-		if (me && _post.poll) {
+		if (meId && _post.poll) {
 			const vote = await Vote
 				.findOne({
-					user_id: me._id,
+					user_id: meId,
 					post_id: id
 				});
 
@@ -135,10 +145,10 @@ const self = (
 		}
 
 		// Fetch my reaction
-		if (me) {
+		if (meId) {
 			const reaction = await Reaction
 				.findOne({
-					user_id: me._id,
+					user_id: meId,
 					post_id: id,
 					deleted_at: { $exists: false }
 				});
