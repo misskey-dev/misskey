@@ -498,6 +498,7 @@ mobile:
       images: "Images"
       activity: "Activity"
       keywords: "Keywords"
+      domains: "Domains"
       followers-you-know: "Followers you know"
       last-used-at: "Latest used at"
 
@@ -511,6 +512,9 @@ mobile:
 
     mk-user-overview-keywords:
       no-keywords: "No keywords"
+
+    mk-user-overview-domains:
+      no-domains: "No domains"
 
     mk-user-overview-followers-you-know:
       loading: "Loading"

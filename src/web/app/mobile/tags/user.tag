@@ -240,6 +240,12 @@
 			<mk-user-overview-keywords user={ user }/>
 		</div>
 	</section>
+	<section class="domains">
+		<h2><i class="fa fa-globe"></i>%i18n:mobile.tags.mk-user-overview.domains%</h2>
+		<div>
+			<mk-user-overview-domains user={ user }/>
+		</div>
+	</section>
 	<section class="followers-you-know" if={ SIGNIN && I.id !== user.id }>
 		<h2><i class="fa fa-users"></i>%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
 		<div>
@@ -578,6 +584,40 @@
 		this.user = this.opts.user;
 	</script>
 </mk-user-overview-keywords>
+
+<mk-user-overview-domains>
+	<div if={ user.domains != null && user.domains.length > 1 }>
+		<virtual each={ domain in user.domains }>
+			<a style="opacity: { 0.5 + (domain.weight / 2) }">{ domain.domain }</a>
+		</virtual>
+	</div>
+	<p class="empty" if={ user.domains == null || user.domains.length == 0 }>%i18n:mobile.tags.mk-user-overview-domains.no-domains%</p>
+	<style>
+		:scope
+			display block
+
+			> div
+				padding 4px
+
+				> a
+					display inline-block
+					margin 4px
+					color #555
+
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+	</style>
+	<script>
+		this.user = this.opts.user;
+	</script>
+</mk-user-overview-domains>
 
 <mk-user-overview-followers-you-know>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
