@@ -246,6 +246,12 @@
 			<mk-user-overview-domains user={ user }/>
 		</div>
 	</section>
+	<section class="frequently-replied-users">
+		<h2><i class="fa fa-users"></i>%i18n:mobile.tags.mk-user-overview.frequently-replied-users%</h2>
+		<div>
+			<mk-user-overview-frequently-replied-users user={ user }/>
+		</div>
+	</section>
 	<section class="followers-you-know" if={ SIGNIN && I.id !== user.id }>
 		<h2><i class="fa fa-users"></i>%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
 		<div>
@@ -618,6 +624,58 @@
 		this.user = this.opts.user;
 	</script>
 </mk-user-overview-domains>
+
+<mk-user-overview-frequently-replied-users>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
+	<div if={ !initializing && users.length > 0 }>
+		<virtual each={ users }>
+			<mk-user-card user={ this.user }/>
+		</virtual>
+	</div>
+	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:mobile.tags.mk-user-overview-frequently-replied-users.no-users%</p>
+	<style>
+		:scope
+			display block
+
+			> div
+				overflow-x scroll
+				-webkit-overflow-scrolling touch
+				white-space nowrap
+				padding 8px
+
+				> mk-user-card
+					&:not(:last-child)
+						margin-right 8px
+
+			> .initializing
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.user = this.opts.user;
+		this.initializing = true;
+
+		this.on('mount', () => {
+			this.api('users/get_frequently_replied_users', {
+				user_id: this.user.id
+			}).then(x => {
+				this.update({
+					users: x,
+					initializing: false
+				});
+			});
+		});
+	</script>
+</mk-user-overview-frequently-replied-users>
 
 <mk-user-overview-followers-you-know>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>

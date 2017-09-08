@@ -1,16 +1,9 @@
 <mk-init-following>
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" if={ !fetching && users.length > 0 }>
-		<div class="user" each={ users }>
-			<header style={ banner_url ? 'background-image: url(' + banner_url + '?thumbnail&size=1024)' : '' }>
-				<a href={ '/' + username }>
-					<img src={ avatar_url + '?thumbnail&size=200' } alt="avatar"/>
-				</a>
-			</header>
-			<a class="name" href={ '/' + username } target="_blank">{ name }</a>
-			<p class="username">@{ username }</p>
-			<mk-follow-button user={ this }/>
-		</div>
+		<virtual each={ users }>
+			<mk-user-card user={ this } />
+		</virtual>
 	</div>
 	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
 	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
@@ -37,48 +30,9 @@
 				padding 16px
 				background #eee
 
-				> .user
-					display inline-block
-					width 200px
-					text-align center
-					border-radius 8px
-					background #fff
-
+				> mk-user-card
 					&:not(:last-child)
 						margin-right 16px
-
-					> header
-						display block
-						height 80px
-						background-color #ddd
-						background-size cover
-						background-position center
-						border-radius 8px 8px 0 0
-
-						> a
-							> img
-								position absolute
-								top 20px
-								left calc(50% - 40px)
-								width 80px
-								height 80px
-								border solid 2px #fff
-								border-radius 8px
-
-					> .name
-						display block
-						margin 24px 0 0 0
-						font-size 16px
-						color #555
-
-					> .username
-						margin 0
-						font-size 15px
-						color #ccc
-
-					> mk-follow-button
-						display inline-block
-						margin 8px 0 16px 0
 
 			> .empty
 				margin 0

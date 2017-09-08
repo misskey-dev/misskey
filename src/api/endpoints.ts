@@ -326,6 +326,9 @@ const endpoints: Endpoint[] = [
 		withCredential: true,
 		kind: 'account-read'
 	},
+	{
+		name: 'users/get_frequently_replied_users'
+	},
 
 	{
 		name: 'following/create',

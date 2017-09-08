@@ -499,6 +499,7 @@ mobile:
       activity: "Activity"
       keywords: "Keywords"
       domains: "Domains"
+      frequently-replied-users: "Frequently talking users"
       followers-you-know: "Followers you know"
       last-used-at: "Latest used at"
 
@@ -515,6 +516,10 @@ mobile:
 
     mk-user-overview-domains:
       no-domains: "No domains"
+
+    mk-user-overview-frequently-replied-users:
+      loading: "Loading"
+      no-users: "No users"
 
     mk-user-overview-followers-you-know:
       loading: "Loading"
