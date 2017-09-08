@@ -33,12 +33,12 @@ const self = (
 
 	// Me
 	const meId: mongo.ObjectID = me
-	? mongo.ObjectID.prototype.isPrototypeOf(me)
-		? me as mongo.ObjectID
-		: typeof me === 'string'
-			? new mongo.ObjectID(me)
-			: (me as IUser)._id
-	: null;
+		? mongo.ObjectID.prototype.isPrototypeOf(me)
+			? me as mongo.ObjectID
+			: typeof me === 'string'
+				? new mongo.ObjectID(me)
+				: (me as IUser)._id
+		: null;
 
 	let _post: any;
 
@@ -140,7 +140,10 @@ const self = (
 				});
 
 			if (vote != null) {
-				_post.poll.choices.filter(c => c.id == vote.choice)[0].is_voted = true;
+				const myChoice = _post.poll.choices
+					.filter(c => c.id == vote.choice)[0];
+
+				myChoice.is_voted = true;
 			}
 		}
 
