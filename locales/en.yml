@@ -501,7 +501,7 @@ mobile:
       domains: "Domains"
       frequently-replied-users: "Frequently talking users"
       followers-you-know: "Followers you know"
-      last-used-at: "Latest used at"
+      last-used-at: "Last used at"
 
     mk-user-overview-posts:
       loading: "Loading"
