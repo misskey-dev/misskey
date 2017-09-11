@@ -138,7 +138,7 @@
     "reconnecting-websocket": "3.2.1",
     "redis": "2.8.0",
     "request": "2.81.0",
-    "rimraf": "2.6.1",
+    "rimraf": "2.6.2",
     "riot": "3.7.0",
     "rndstr": "1.0.0",
     "s-age": "1.1.0",
