@@ -16,7 +16,7 @@ export interface IAuthContext {
 	user: IUser;
 
 	/**
-	 * Weather requested with a User-Native Token
+	 * Whether requested with a User-Native Token
 	 */
 	isSecure: boolean;
 }
