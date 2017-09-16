@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
 import recaptcha = require('recaptcha-promise');
-import User from '../models/user';
+import { default as User, IUser } from '../models/user';
 import { validateUsername, validatePassword } from '../models/user';
 import serialize from '../serializers/user';
 import generateUserToken from '../common/generate-native-user-token';
@@ -61,7 +61,7 @@ export default async (req: express.Request, res: express.Response) => {
 	const secret = generateUserToken();
 
 	// Create account
-	const account = await User.insert({
+	const account: IUser = await User.insert({
 		token: secret,
 		avatar_id: null,
 		banner_id: null,
