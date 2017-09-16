@@ -1,6 +1,6 @@
 import * as express from 'express';
 import App from './models/app';
-import{ default as User, IUser } from './models/user';
+import { default as User, IUser } from './models/user';
 import AccessToken from './models/access-token';
 import isNativeToken from './common/is-native-token';
 
