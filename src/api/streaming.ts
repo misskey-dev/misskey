@@ -2,7 +2,7 @@ import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import config from '../conf';
-import User from './models/user';
+import { default as User, IUser } from './models/user';
 import AccessToken from './models/access-token';
 import isNativeToken from './common/is-native-token';
 
@@ -26,7 +26,7 @@ module.exports = (server: http.Server) => {
 			return;
 		}
 
-		const user = await authenticate(connection, request.resourceURL.query.i);
+		const user = await authenticate(request.resourceURL.query.i);
 
 		if (user == null) {
 			connection.send('authentication-failed');
@@ -56,7 +56,11 @@ module.exports = (server: http.Server) => {
 	});
 };
 
-function authenticate(connection: websocket.connection, token: string): Promise<any> {
+/**
+ * 接続してきたユーザーを取得します
+ * @param token 送信されてきたトークン
+ */
+function authenticate(token: string): Promise<IUser> {
 	if (token == null) {
 		return Promise.resolve(null);
 	}
@@ -64,8 +68,7 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 	return new Promise(async (resolve, reject) => {
 		if (isNativeToken(token)) {
 			// Fetch user
-			// SELECT _id
-			const user = await User
+			const user: IUser = await User
 				.findOne({
 					token: token
 				});
@@ -81,13 +84,8 @@ function authenticate(connection: websocket.connection, token: string): Promise<
 			}
 
 			// Fetch user
-			// SELECT _id
-			const user = await User
-				.findOne({ _id: accessToken.user_id }, {
-					fields: {
-						_id: true
-					}
-				});
+			const user: IUser = await User
+				.findOne({ _id: accessToken.user_id });
 
 			resolve(user);
 		}

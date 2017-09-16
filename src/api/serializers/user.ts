@@ -37,7 +37,9 @@ export default (
 		data: false
 	} : {
 		data: false,
-		profile: false
+		profile: false,
+		keywords: false,
+		domains: false
 	};
 
 	// Populate the user if 'user' is ID
@@ -119,6 +121,7 @@ export default (
 
 	if (opts.detail) {
 		if (_user.pinned_post_id) {
+			// Populate pinned post
 			_user.pinned_post = await serializePost(_user.pinned_post_id, meId, {
 				detail: true
 			});
