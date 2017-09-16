@@ -1,6 +1,6 @@
 import * as express from 'express';
 import App from './models/app';
-import User from './models/user';
+import{ default as User, IUser } from './models/user';
 import AccessToken from './models/access-token';
 import isNativeToken from './common/is-native-token';
 
@@ -13,7 +13,7 @@ export interface IAuthContext {
 	/**
 	 * Authenticated user
 	 */
-	user: any;
+	user: IUser;
 
 	/**
 	 * Weather if the request is via the User-Native Token or not
@@ -25,11 +25,15 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 	const token = req.body['i'] as string;
 
 	if (token == null) {
-		return resolve({ app: null, user: null, isSecure: false });
+		return resolve({
+			app: null,
+			user: null,
+			isSecure: false
+		});
 	}
 
 	if (isNativeToken(token)) {
-		const user = await User
+		const user: IUser = await User
 			.findOne({ token: token });
 
 		if (user === null) {
@@ -56,6 +60,10 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 		const user = await User
 			.findOne({ _id: accessToken.user_id });
 
-		return resolve({ app: app, user: user, isSecure: false });
+		return resolve({
+			app: app,
+			user: user,
+			isSecure: false
+		});
 	}
 });
