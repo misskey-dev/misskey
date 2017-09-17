@@ -95,7 +95,7 @@
   },
   "dependencies": {
     "accesses": "2.5.0",
-    "animejs": "2.0.2",
+    "animejs": "2.1.0",
     "autwh": "0.0.1",
     "bcryptjs": "2.4.3",
     "body-parser": "1.18.1",
