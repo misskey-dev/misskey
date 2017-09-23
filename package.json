@@ -113,7 +113,7 @@
     "elasticsearch": "13.3.1",
     "escape-regexp": "0.0.1",
     "express": "4.15.4",
-    "file-type": "6.1.0",
+    "file-type": "6.2.0",
     "fuckadblock": "3.2.1",
     "gm": "1.23.0",
     "inquirer": "3.3.0",
