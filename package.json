@@ -48,7 +48,7 @@
     "@types/is-url": "1.2.28",
     "@types/js-yaml": "3.9.0",
     "@types/mocha": "2.2.43",
-    "@types/mongodb": "2.2.11",
+    "@types/mongodb": "2.2.12",
     "@types/monk": "1.0.6",
     "@types/morgan": "1.7.33",
     "@types/ms": "0.7.30",
