@@ -161,8 +161,7 @@ class SigninContext extends Context {
 				username_lower: query.toLowerCase()
 			}, {
 				fields: {
-					data: false,
-					profile: false
+					data: false
 				}
 			});
 
