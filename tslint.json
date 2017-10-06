@@ -16,6 +16,7 @@
 		"ordered-imports": [false],
 		"arrow-parens": false,
 		"object-literal-shorthand": false,
+		"object-literal-key-quotes": false,
 		"triple-equals": [false],
 		"no-shadowed-variable": false,
 		"no-string-literal": false,

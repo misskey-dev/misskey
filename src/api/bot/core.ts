@@ -4,11 +4,11 @@ import * as bcrypt from 'bcryptjs';
 import User, { IUser } from '../models/user';
 
 export default class BotCore extends EventEmitter {
-	public user: IUser;
+	public user: IUser = null;
 
 	private context: Context = null;
 
-	constructor(user: IUser) {
+	constructor(user?: IUser) {
 		super();
 
 		this.user = user;
