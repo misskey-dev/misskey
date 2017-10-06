@@ -5,11 +5,10 @@ import * as crypto from 'crypto';
 import User from '../../models/user';
 import config from '../../../conf';
 import BotCore from '../core';
+import _redis from '../../../db/redis';
+import prominence = require('prominence');
 
-const sessions: Array<{
-	sourceId: string;
-	core: BotCore;
-}> = [];
+const redis = prominence(_redis);
 
 module.exports = async (app: express.Application) => {
 	if (config.line_bot == null) return;
@@ -21,22 +20,23 @@ module.exports = async (app: express.Application) => {
 		if (ev.message.type !== 'text') return;
 
 		const sourceId = ev.source.userId;
-		let session = sessions.find(s => s.sourceId === sourceId);
+		const sessionId = `line-bot-sessions:${sourceId}`;
 
-		if (!session) {
+		const _session = await redis.get(sessionId);
+		let session: BotCore;
+
+		if (_session == null) {
 			const user = await User.findOne({
 				line: {
 					user_id: sourceId
 				}
 			});
 
-			let core: BotCore;
-
 			if (user) {
-				core = new BotCore(user);
+				session = new BotCore(user);
 			} else {
-				core = new BotCore();
-				core.on('set-user', user => {
+				session = new BotCore();
+				session.on('set-user', user => {
 					User.update(user._id, {
 						$set: {
 							line: {
@@ -47,16 +47,18 @@ module.exports = async (app: express.Application) => {
 				});
 			}
 
-			session = {
-				sourceId: sourceId,
-				core: core
-			};
-
-			sessions.push(session);
+			redis.set(sessionId, JSON.stringify(session.export()));
+		} else {
+			session = BotCore.import(JSON.parse(_session));
 		}
 
-		const res = await session.core.q(ev.message.text);
+		session.on('updated', () => {
+			redis.set(sessionId, JSON.stringify(session.export()));
+		});
 
+		const res = await session.q(ev.message.text);
+
+		// 返信
 		request.post({
 			url: 'https://api.line.me/v2/bot/message/reply',
 			headers: {

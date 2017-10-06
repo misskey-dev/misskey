@@ -14,6 +14,31 @@ export default class BotCore extends EventEmitter {
 		this.user = user;
 	}
 
+	private setContect(context: Context) {
+		this.context = context;
+		this.emit('updated');
+
+		if (context) {
+			context.on('updated', () => {
+				this.emit('updated');
+			});
+		}
+	}
+
+	public export() {
+		return {
+			user: this.user,
+			context: this.context ? this.context.export() : null
+		};
+	}
+
+	public static import(data) {
+		const core = new BotCore();
+		core.user = data.user;
+		core.setContect(data.context ? Context.import(core, data.context) : null);
+		return core;
+	}
+
 	public async q(query: string): Promise<string> {
 		if (this.context != null) {
 			return await this.context.q(query);
@@ -22,9 +47,11 @@ export default class BotCore extends EventEmitter {
 		switch (query) {
 			case 'ping':
 				return 'PONG';
+			case 'me':
+				return this.user ? `${this.user.name}としてサインインしています` : 'サインインしていません';
 			case 'ログイン':
 			case 'サインイン':
-				this.context = new SigninContext(this);
+				this.setContect(new SigninContext(this));
 				return await this.context.greet();
 			default:
 				return '?';
@@ -34,17 +61,25 @@ export default class BotCore extends EventEmitter {
 	public setUser(user: IUser) {
 		this.user = user;
 		this.emit('set-user', user);
+		this.emit('updated');
 	}
 }
 
-abstract class Context {
+abstract class Context extends EventEmitter {
 	protected core: BotCore;
 
 	public abstract async greet(): Promise<string>;
 	public abstract async q(query: string): Promise<string>;
+	public abstract export(): any;
 
 	constructor(core: BotCore) {
+		super();
 		this.core = core;
+	}
+
+	public static import(core: BotCore, data: any) {
+		if (data.type == 'signin') return SigninContext.import(core, data.content);
+		return null;
 	}
 }
 
@@ -71,6 +106,7 @@ class SigninContext extends Context {
 				return `${query}というユーザーは存在しませんでした... もう一度教えてください:`;
 			} else {
 				this.temporaryUser = user;
+				this.emit('updated');
 				return `パスワードを教えてください:`;
 			}
 		} else {
@@ -84,5 +120,17 @@ class SigninContext extends Context {
 				return `パスワードが違います... もう一度教えてください:`;
 			}
 		}
+	}
+
+	public export() {
+		return {
+			temporaryUser: this.temporaryUser
+		};
+	}
+
+	public static import(core: BotCore, data: any) {
+		const context = new SigninContext(core);
+		context.temporaryUser = data.temporaryUser;
+		return context;
 	}
 }
