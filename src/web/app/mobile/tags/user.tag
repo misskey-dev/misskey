@@ -428,7 +428,7 @@
 
 	</style>
 	<script>
-		import summary from '../../../../common/get-post-summary';
+		import summary from '../../../../common/get-post-summary.ts';
 
 		this.post = this.opts.post;
 		this.text = summary(this.post);

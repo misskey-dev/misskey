@@ -110,7 +110,7 @@
 
 	</style>
 	<script>
-		import getPostSummary from '../../../../common/get-post-summary';
+		import getPostSummary from '../../../../common/get-post-summary.ts';
 		this.getPostSummary = getPostSummary;
 		this.notification = this.opts.notification;
 	</script>

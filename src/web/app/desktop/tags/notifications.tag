@@ -207,7 +207,7 @@
 
 	</style>
 	<script>
-		import getPostSummary from '../../../../common/get-post-summary';
+		import getPostSummary from '../../../../common/get-post-summary.ts';
 		this.getPostSummary = getPostSummary;
 
 		this.mixin('i');

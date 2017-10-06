@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 
 import User, { IUser } from '../models/user';
 
-import getPostSummary from '../../common/get-post-summary.js';
+import getPostSummary from '../../common/get-post-summary';
 
 export default class BotCore extends EventEmitter {
 	public user: IUser = null;
@@ -109,7 +109,9 @@ export default class BotCore extends EventEmitter {
 	public async getTl() {
 		if (this.user == null) return 'まずサインインしてください。';
 
-		const tl = await require('../endpoints/posts/timeline')({}, this.user);
+		const tl = await require('../endpoints/posts/timeline')({
+			limit: 5
+		}, this.user);
 
 		const text = tl
 			.map(post => getPostSummary(post))
