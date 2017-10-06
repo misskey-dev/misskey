@@ -5,6 +5,13 @@ import User, { IUser, init as initUser } from '../models/user';
 
 import getPostSummary from '../../common/get-post-summary';
 
+function getUserSummary(user: IUser): string {
+	return `${user.name} (@${user.username})\n` +
+		`${user.posts_count}投稿、${user.following_count}フォロー、${user.followers_count}フォロワー\n` +
+		`場所: ${user.profile.location}、誕生日: ${user.profile.birthday}\n` +
+		`「${user.description}」`;
+}
+
 export default class BotCore extends EventEmitter {
 	public user: IUser = null;
 
@@ -52,7 +59,7 @@ export default class BotCore extends EventEmitter {
 
 			case 'help':
 			case 'ヘルプ':
-				return 'コマンド一覧です:\n' +
+				return '利用可能なコマンド一覧です:\n' +
 					'help: これです\n' +
 					'me: アカウント情報を見ます\n' +
 					'login, signin: サインインします\n' +
@@ -61,7 +68,7 @@ export default class BotCore extends EventEmitter {
 					'tl: タイムラインを見ます\n';
 
 			case 'me':
-				return this.user ? `${this.user.name}としてサインインしています` : 'サインインしていません';
+				return this.user ? `${this.user.name}としてサインインしています。\n\n${getUserSummary(this.user)}` : 'サインインしていません';
 
 			case 'login':
 			case 'signin':
