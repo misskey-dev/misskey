@@ -2,13 +2,13 @@ import * as EventEmitter from 'events';
 import * as express from 'express';
 import * as request from 'request';
 import * as crypto from 'crypto';
-//import User from '../../models/user';
+import User from '../../models/user';
 import config from '../../../conf';
 import BotCore from '../core';
 
 const sessions: Array<{
 	sourceId: string;
-	session: BotCore;
+	core: BotCore;
 }> = [];
 
 module.exports = async (app: express.Application) => {
@@ -21,22 +21,43 @@ module.exports = async (app: express.Application) => {
 		if (ev.message.type !== 'text') return;
 
 		const sourceId = ev.source.userId;
-		let session = sessions.find(s => {
-			return s.sourceId === sourceId;
-		});
+		let session = sessions.find(s => s.sourceId === sourceId);
 
 		if (!session) {
+			const user = await User.findOne({
+				line: {
+					user_id: sourceId
+				}
+			});
+
+			let core: BotCore;
+
+			if (user) {
+				core = new BotCore(user);
+			} else {
+				core = new BotCore();
+				core.on('set-user', user => {
+					User.update(user._id, {
+						$set: {
+							line: {
+								user_id: sourceId
+							}
+						}
+					});
+				});
+			}
+
 			session = {
 				sourceId: sourceId,
-				session: new BotCore()
+				core: core
 			};
 
 			sessions.push(session);
 		}
 
-		const res = await session.session.q(ev.message.text);
+		const res = await session.core.q(ev.message.text);
 
-		request({
+		request.post({
 			url: 'https://api.line.me/v2/bot/message/reply',
 			headers: {
 				'Authorization': `Bearer ${config.line_bot.channel_access_token}`
