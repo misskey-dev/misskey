@@ -34,7 +34,7 @@ export default class BotCore extends EventEmitter {
 
 	public static import(data) {
 		const core = new BotCore();
-		core.user = data.user;
+		core.user = data.user ? data.user : null;
 		core.setContect(data.context ? Context.import(core, data.context) : null);
 		return core;
 	}
@@ -84,7 +84,7 @@ abstract class Context extends EventEmitter {
 }
 
 class SigninContext extends Context {
-	private temporaryUser: IUser;
+	private temporaryUser: IUser = null;
 
 	public async greet(): Promise<string> {
 		return 'まずユーザー名を教えてください:';
@@ -124,6 +124,7 @@ class SigninContext extends Context {
 
 	public export() {
 		return {
+			type: 'signin',
 			temporaryUser: this.temporaryUser
 		};
 	}

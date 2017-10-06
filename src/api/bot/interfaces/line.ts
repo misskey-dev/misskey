@@ -32,20 +32,16 @@ module.exports = async (app: express.Application) => {
 				}
 			});
 
-			if (user) {
-				session = new BotCore(user);
-			} else {
-				session = new BotCore();
-				session.on('set-user', user => {
-					User.update(user._id, {
-						$set: {
-							line: {
-								user_id: sourceId
-							}
+			session = new BotCore(user);
+			session.on('set-user', user => {
+				User.update(user._id, {
+					$set: {
+						line: {
+							user_id: sourceId
 						}
-					});
+					}
 				});
-			}
+			});
 
 			redis.set(sessionId, JSON.stringify(session.export()));
 		} else {
