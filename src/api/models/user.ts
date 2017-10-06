@@ -57,6 +57,9 @@ export type IUser = {
 		user_id: string;
 		screen_name: string;
 	};
+	line: {
+		user_id: string;
+	};
 	description: string;
 	profile: {
 		location: string;

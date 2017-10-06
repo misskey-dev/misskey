@@ -9,7 +9,7 @@
 	<script>
 		import ui from '../../scripts/ui-event';
 		import Progress from '../../../common/scripts/loading';
-		import getPostSummary from '../../../common/scripts/get-post-summary';
+		import getPostSummary from '../../../../../common/get-post-summary';
 		import openPostForm from '../../scripts/open-post-form';
 
 		this.mixin('i');

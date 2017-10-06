@@ -68,6 +68,9 @@ type Source = {
 		hook_secret: string;
 		username: string;
 	};
+	line_bot?: {
+		channel_secret: string;
+	};
 	analysis?: {
 		mecab_command?: string;
 	};

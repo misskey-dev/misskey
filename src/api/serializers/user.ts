@@ -79,6 +79,7 @@ export default (
 		delete _user.twitter.access_token;
 		delete _user.twitter.access_token_secret;
 	}
+	delete _user.line;
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {

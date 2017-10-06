@@ -54,4 +54,6 @@ app.use((req, res, next) => {
 require('./service/github')(app);
 require('./service/twitter')(app);
 
+require('./bot/interfaces/line')(app);
+
 module.exports = app;

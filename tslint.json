@@ -23,6 +23,7 @@
 		"comment-format": [false],
 		"interface-over-type-literal": false,
 		"max-line-length": [false],
+		"max-classes-per-file": false,
 		"member-ordering": [false],
 		"ban-types": [
 			"Object"
