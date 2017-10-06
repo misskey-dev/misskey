@@ -3,6 +3,8 @@ import * as bcrypt from 'bcryptjs';
 
 import User, { IUser } from '../models/user';
 
+import getPostSummary from '../../common/get-post-summary.js';
+
 export default class BotCore extends EventEmitter {
 	public user: IUser = null;
 
@@ -14,7 +16,7 @@ export default class BotCore extends EventEmitter {
 		this.user = user;
 	}
 
-	private setContect(context: Context) {
+	public setContext(context: Context) {
 		this.context = context;
 		this.emit('updated');
 
@@ -35,7 +37,7 @@ export default class BotCore extends EventEmitter {
 	public static import(data) {
 		const core = new BotCore();
 		core.user = data.user ? data.user : null;
-		core.setContect(data.context ? Context.import(core, data.context) : null);
+		core.setContext(data.context ? Context.import(core, data.context) : null);
 		return core;
 	}
 
@@ -47,21 +49,73 @@ export default class BotCore extends EventEmitter {
 		switch (query) {
 			case 'ping':
 				return 'PONG';
+
+			case 'help':
+			case 'ヘルプ':
+				return 'コマンド一覧です:' +
+					'help: これです\n' +
+					'me: アカウント情報を見ます\n' +
+					'login, signin: サインインします\n' +
+					'logout, signout: サインアウトします\n' +
+					'post: 投稿します\n' +
+					'tl: タイムラインを見ます\n';
+
 			case 'me':
 				return this.user ? `${this.user.name}としてサインインしています` : 'サインインしていません';
+
+			case 'login':
+			case 'signin':
 			case 'ログイン':
 			case 'サインイン':
-				this.setContect(new SigninContext(this));
+				this.setContext(new SigninContext(this));
 				return await this.context.greet();
-			default:
+
+			case 'logout':
+			case 'signout':
+			case 'ログアウト':
+			case 'サインアウト':
+				if (this.user == null) return '今はサインインしてないですよ！';
+				this.signout();
+				return 'ご利用ありがとうございました <3';
+
+			case 'post':
+			case '投稿':
+				if (this.user == null) return 'まずサインインしてください。';
+				this.setContext(new PostContext(this));
+				return await this.context.greet();
+
+			case 'tl':
+			case 'タイムライン':
+				return await this.getTl();
+
+				default:
 				return '?';
 		}
 	}
 
-	public setUser(user: IUser) {
+	public signin(user: IUser) {
 		this.user = user;
-		this.emit('set-user', user);
+		this.emit('signin', user);
 		this.emit('updated');
+	}
+
+	public signout() {
+		const user = this.user;
+		this.user = null;
+		this.emit('signout', user);
+		this.emit('updated');
+	}
+
+	public async getTl() {
+		if (this.user == null) return 'まずサインインしてください。';
+
+		const tl = await require('../endpoints/posts/timeline')({}, this.user);
+
+		const text = tl
+			.map(post => getPostSummary(post))
+			.join('\n-----\n');
+
+		return text;
 	}
 }
 
@@ -78,6 +132,7 @@ abstract class Context extends EventEmitter {
 	}
 
 	public static import(core: BotCore, data: any) {
+		if (data.type == 'post') return PostContext.import(core, data.content);
 		if (data.type == 'signin') return SigninContext.import(core, data.content);
 		return null;
 	}
@@ -114,7 +169,8 @@ class SigninContext extends Context {
 			const same = bcrypt.compareSync(query, this.temporaryUser.password);
 
 			if (same) {
-				this.core.setUser(this.temporaryUser);
+				this.core.signin(this.temporaryUser);
+				this.core.setContext(null);
 				return `${this.temporaryUser.name}さん、おかえりなさい！`;
 			} else {
 				return `パスワードが違います... もう一度教えてください:`;
@@ -125,13 +181,40 @@ class SigninContext extends Context {
 	public export() {
 		return {
 			type: 'signin',
-			temporaryUser: this.temporaryUser
+			content: {
+				temporaryUser: this.temporaryUser
+			}
 		};
 	}
 
 	public static import(core: BotCore, data: any) {
 		const context = new SigninContext(core);
 		context.temporaryUser = data.temporaryUser;
+		return context;
+	}
+}
+
+class PostContext extends Context {
+	public async greet(): Promise<string> {
+		return '内容:';
+	}
+
+	public async q(query: string): Promise<string> {
+		await require('../endpoints/posts/create')({
+			text: query
+		}, this.core.user);
+		this.core.setContext(null);
+		return '投稿しましたよ！';
+	}
+
+	public export() {
+		return {
+			type: 'post'
+		};
+	}
+
+	public static import(core: BotCore, data: any) {
+		const context = new PostContext(core);
 		return context;
 	}
 }

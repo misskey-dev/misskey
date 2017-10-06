@@ -33,11 +33,22 @@ module.exports = async (app: express.Application) => {
 			});
 
 			session = new BotCore(user);
-			session.on('set-user', user => {
+
+			session.on('signin', user => {
 				User.update(user._id, {
 					$set: {
 						line: {
 							user_id: sourceId
+						}
+					}
+				});
+			});
+
+			session.on('signout', user => {
+				User.update(user._id, {
+					$set: {
+						line: {
+							user_id: null
 						}
 					}
 				});
