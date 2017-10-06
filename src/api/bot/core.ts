@@ -1,7 +1,7 @@
 import * as EventEmitter from 'events';
 import * as bcrypt from 'bcryptjs';
 
-import User, { IUser } from '../models/user';
+import User, { IUser, init as initUser } from '../models/user';
 
 import getPostSummary from '../../common/get-post-summary';
 
@@ -36,7 +36,7 @@ export default class BotCore extends EventEmitter {
 
 	public static import(data) {
 		const core = new BotCore();
-		core.user = data.user ? data.user : null;
+		core.user = data.user ? initUser(data.user) : null;
 		core.setContext(data.context ? Context.import(core, data.context) : null);
 		return core;
 	}
@@ -52,7 +52,7 @@ export default class BotCore extends EventEmitter {
 
 			case 'help':
 			case 'ヘルプ':
-				return 'コマンド一覧です:' +
+				return 'コマンド一覧です:\n' +
 					'help: これです\n' +
 					'me: アカウント情報を見ます\n' +
 					'login, signin: サインインします\n' +
