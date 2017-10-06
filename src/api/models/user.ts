@@ -79,4 +79,5 @@ export function init(user): IUser {
 	user.avatar_id = new mongo.ObjectID(user.avatar_id);
 	user.banner_id = new mongo.ObjectID(user.banner_id);
 	user.pinned_post_id = new mongo.ObjectID(user.pinned_post_id);
+	return user;
 }
