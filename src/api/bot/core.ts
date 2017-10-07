@@ -275,8 +275,13 @@ class PostContext extends Context {
 class OthelloContext extends Context {
 	private othello: Othello = null;
 
-	public async greet(): Promise<string> {
+	constructor(bot: BotCore) {
+		super(bot);
+
 		this.othello = new Othello();
+	}
+
+	public async greet(): Promise<string> {
 		return this.othello.toPatternString('black');
 	}
 
