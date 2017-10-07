@@ -6,6 +6,8 @@ import User, { IUser, init as initUser } from '../models/user';
 import getPostSummary from '../../common/get-post-summary';
 import getUserSummary from '../../common/get-user-summary';
 
+import Othello, { ai as othelloAi } from '../../common/othello';
+
 /**
  * Botの頭脳
  */
@@ -106,6 +108,11 @@ export default class BotCore extends EventEmitter {
 			case 'タイムライン':
 				return await this.tlCommand();
 
+			case 'othello':
+			case 'オセロ':
+				this.setContext(new OthelloContext(this));
+				return await this.context.greet();
+
 			default:
 				return '?';
 		}
@@ -121,6 +128,18 @@ export default class BotCore extends EventEmitter {
 		const user = this.user;
 		this.user = null;
 		this.emit('signout', user);
+		this.emit('updated');
+	}
+
+	public async refreshUser() {
+		this.user = await User.findOne({
+			_id: this.user._id
+		}, {
+			fields: {
+				data: false
+			}
+		});
+
 		this.emit('updated');
 	}
 
@@ -166,6 +185,7 @@ abstract class Context extends EventEmitter {
 	}
 
 	public static import(bot: BotCore, data: any) {
+		if (data.type == 'othello') return OthelloContext.import(bot, data.content);
 		if (data.type == 'post') return PostContext.import(bot, data.content);
 		if (data.type == 'signin') return SigninContext.import(bot, data.content);
 		return null;
@@ -248,6 +268,37 @@ class PostContext extends Context {
 
 	public static import(bot: BotCore, data: any) {
 		const context = new PostContext(bot);
+		return context;
+	}
+}
+
+class OthelloContext extends Context {
+	private othello: Othello = null;
+
+	public async greet(): Promise<string> {
+		this.othello = new Othello();
+		return this.othello.toPatternString('black');
+	}
+
+	public async q(query: string): Promise<string> {
+		this.othello.setByNumber('black', parseInt(query, 10));
+		othelloAi('white', this.othello);
+		return this.othello.toPatternString('black');
+	}
+
+	public export() {
+		return {
+			type: 'othello',
+			content: {
+				board: this.othello.board
+			}
+		};
+	}
+
+	public static import(bot: BotCore, data: any) {
+		const context = new OthelloContext(bot);
+		context.othello = new Othello();
+		context.othello.board = data.board;
 		return context;
 	}
 }

@@ -50,38 +50,44 @@ class LineBot extends BotCore {
 	public async react(ev: any): Promise<void> {
 		this.replyToken = ev.replyToken;
 
-		// メッセージ
-		if (ev.type == 'message') {
-			// テキスト
-			if (ev.message.type == 'text') {
-				const res = await this.q(ev.message.text);
+		switch (ev.type) {
+			// メッセージ
+			case 'message':
+				switch (ev.message.type) {
+					// テキスト
+					case 'text':
+						const res = await this.q(ev.message.text);
+						if (res == null) return;
+						// 返信
+						this.reply([{
+							type: 'text',
+							text: res
+						}]);
+						break;
 
-				if (res == null) return;
+					// スタンプ
+					case 'sticker':
+						// スタンプで返信
+						this.reply([{
+							type: 'sticker',
+							packageId: '4',
+							stickerId: stickers[Math.floor(Math.random() * stickers.length)]
+						}]);
+						break;
+				}
+				break;
 
-				// 返信
-				this.reply([{
-					type: 'text',
-					text: res
-				}]);
-			// スタンプ
-			} else if (ev.message.type == 'sticker') {
-				// スタンプで返信
-				this.reply([{
-					type: 'sticker',
-					packageId: '4',
-					stickerId: stickers[Math.floor(Math.random() * stickers.length)]
-				}]);
-			}
-		// postback
-		} else if (ev.type == 'postback') {
-			const data = ev.postback.data;
-			const cmd = data.split('|')[0];
-			const arg = data.split('|')[1];
-			switch (cmd) {
-				case 'showtl':
-					this.showUserTimelinePostback(arg);
-					break;
-			}
+			// postback
+			case 'postback':
+				const data = ev.postback.data;
+				const cmd = data.split('|')[0];
+				const arg = data.split('|')[1];
+				switch (cmd) {
+					case 'showtl':
+						this.showUserTimelinePostback(arg);
+						break;
+				}
+				break;
 		}
 	}
 
@@ -96,6 +102,28 @@ class LineBot extends BotCore {
 			username: q.substr(1)
 		}, this.user);
 
+		const actions = [];
+
+		actions.push({
+			type: 'postback',
+			label: 'タイムラインを見る',
+			data: `showtl|${user.id}`
+		});
+
+		if (user.twitter) {
+			actions.push({
+				type: 'uri',
+				label: 'Twitterアカウントを見る',
+				uri: `https://twitter.com/${user.twitter.screen_name}`
+			});
+		}
+
+		actions.push({
+			type: 'uri',
+			label: 'Webで見る',
+			uri: `${config.url}/${user.username}`
+		});
+
 		this.reply([{
 			type: 'template',
 			altText: await super.showUserCommand(q),
@@ -104,15 +132,7 @@ class LineBot extends BotCore {
 				thumbnailImageUrl: `${user.avatar_url}?thumbnail&size=1024`,
 				title: `${user.name} (@${user.username})`,
 				text: user.description || '(no description)',
-				actions: [{
-					type: 'postback',
-					label: 'タイムラインを見る',
-					data: `showtl|${user.id}`
-				}, {
-					type: 'uri',
-					label: 'Webで見る',
-					uri: `${config.url}/${user.username}`
-				}]
+				actions: actions
 			}
 		}]);
 	}
@@ -123,7 +143,7 @@ class LineBot extends BotCore {
 			limit: 5
 		}, this.user);
 
-		const text = tl
+		const text = `${tl[0].user.name}さんのタイムラインはこちらです:\n\n` + tl
 			.map(post => getPostSummary(post))
 			.join('\n-----\n');
 
@@ -144,10 +164,10 @@ module.exports = async (app: express.Application) => {
 		const sourceId = ev.source.userId;
 		const sessionId = `line-bot-sessions:${sourceId}`;
 
-		const _session = await redis.get(sessionId);
+		const session = await redis.get(sessionId);
 		let bot: LineBot;
 
-		if (_session == null) {
+		if (session == null) {
 			const user = await User.findOne({
 				line: {
 					user_id: sourceId
@@ -178,12 +198,14 @@ module.exports = async (app: express.Application) => {
 
 			redis.set(sessionId, JSON.stringify(bot.export()));
 		} else {
-			bot = LineBot.import(JSON.parse(_session));
+			bot = LineBot.import(JSON.parse(session));
 		}
 
 		bot.on('updated', () => {
 			redis.set(sessionId, JSON.stringify(bot.export()));
 		});
+
+		if (session != null) bot.refreshUser();
 
 		bot.react(ev);
 	});
