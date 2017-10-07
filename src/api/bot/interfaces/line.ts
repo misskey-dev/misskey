@@ -32,6 +32,8 @@ class LineBot extends BotCore {
 	}
 
 	public async react(ev: any): Promise<void> {
+		this.replyToken = ev.replyToken;
+
 		// テキスト以外(スタンプなど)は無視
 		if (ev.message.type !== 'text') return;
 
