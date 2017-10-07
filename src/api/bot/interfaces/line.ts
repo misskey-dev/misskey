@@ -107,7 +107,7 @@ class LineBot extends BotCore {
 				actions: [{
 					type: 'postback',
 					label: 'タイムラインを見る',
-					data: `showtl|${user._id}`
+					data: `showtl|${user.id}`
 				}, {
 					type: 'uri',
 					label: 'Webで見る',
