@@ -287,8 +287,15 @@ class OthelloContext extends Context {
 
 	public async q(query: string): Promise<string> {
 		this.othello.setByNumber('black', parseInt(query, 10));
+		const s = this.othello.toString() + '\n\n...(AI)...\n\n';
 		othelloAi('white', this.othello);
-		return this.othello.toPatternString('black');
+		if (this.othello.getPattern('black').length === 0) {
+			this.bot.clearContext();
+			return '～終了～';
+		} else {
+			this.emit('updated');
+			return s + this.othello.toPatternString('black');
+		}
 	}
 
 	public export() {

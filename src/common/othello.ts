@@ -275,4 +275,6 @@ export function ai(color: string, othello: Othello) {
 			}
 		}
 	}
+
+	think();
 }
