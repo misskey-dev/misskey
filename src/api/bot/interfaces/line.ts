@@ -7,8 +7,24 @@ import config from '../../../conf';
 import BotCore from '../core';
 import _redis from '../../../db/redis';
 import prominence = require('prominence');
+import getPostSummary from '../../../common/get-post-summary';
 
 const redis = prominence(_redis);
+
+// SEE: https://developers.line.me/media/messaging-api/messages/sticker_list.pdf
+const stickers = [
+	'297',
+	'298',
+	'299',
+	'300',
+	'301',
+	'302',
+	'303',
+	'304',
+	'305',
+	'306',
+	'307'
+];
 
 class LineBot extends BotCore {
 	private replyToken: string;
@@ -34,18 +50,36 @@ class LineBot extends BotCore {
 	public async react(ev: any): Promise<void> {
 		this.replyToken = ev.replyToken;
 
-		// テキスト以外(スタンプなど)は無視
-		if (ev.message.type !== 'text') return;
+		// テキスト
+		if (ev.message.type == 'text') {
+			const res = await this.q(ev.message.text);
 
-		const res = await this.q(ev.message.text);
+			if (res == null) return;
 
-		if (res == null) return;
-
-		// 返信
-		this.reply([{
-			type: 'text',
-			text: res
-		}]);
+			// 返信
+			this.reply([{
+				type: 'text',
+				text: res
+			}]);
+		// スタンプ
+		} else if (ev.message.type == 'sticker') {
+			// スタンプで返信
+			this.reply([{
+				type: 'sticker',
+				packageId: '4',
+				stickerId: stickers[Math.floor(Math.random() * stickers.length)]
+			}]);
+		// postback
+		} else if (ev.message.type == 'postback') {
+			const data = ev.message.postback.data;
+			const cmd = data.split('|')[0];
+			const arg = data.split('|')[1];
+			switch (cmd) {
+				case 'showtl':
+					this.showUserTimelinePostback(arg);
+					break;
+			}
+		}
 	}
 
 	public static import(data) {
@@ -68,11 +102,31 @@ class LineBot extends BotCore {
 				title: `${user.name} (@${user.username})`,
 				text: user.description || '(no description)',
 				actions: [{
+					type: 'postback',
+					label: 'タイムラインを見る',
+					data: `showtl|${user._id}`
+				}, {
 					type: 'uri',
 					label: 'Webで見る',
 					uri: `${config.url}/${user.username}`
 				}]
 			}
+		}]);
+	}
+
+	public async showUserTimelinePostback(userId: string) {
+		const tl = await require('../../endpoints/users/posts')({
+			user_id: userId,
+			limit: 5
+		}, this.user);
+
+		const text = tl
+			.map(post => getPostSummary(post))
+			.join('\n-----\n');
+
+		this.reply([{
+			type: 'text',
+			text: text
 		}]);
 	}
 }
