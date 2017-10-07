@@ -43,16 +43,24 @@ export default class BotCore extends EventEmitter {
 		};
 	}
 
-	public static import(data) {
-		const core = new BotCore();
-		core.user = data.user ? initUser(data.user) : null;
-		core.setContext(data.context ? Context.import(core, data.context) : null);
-		return core;
+	protected _import(data) {
+		this.user = data.user ? initUser(data.user) : null;
+		this.setContext(data.context ? Context.import(this, data.context) : null);
 	}
 
-	public async q(query: string): Promise<string> {
+	public static import(data) {
+		const bot = new BotCore();
+		bot._import(data);
+		return bot;
+	}
+
+	public async q(query: string): Promise<string | void> {
 		if (this.context != null) {
 			return await this.context.q(query);
+		}
+
+		if (/^@[a-zA-Z0-9-]+$/.test(query)) {
+			return await this.showUserCommand(query);
 		}
 
 		switch (query) {
@@ -67,7 +75,8 @@ export default class BotCore extends EventEmitter {
 					'login, signin: サインインします\n' +
 					'logout, signout: サインアウトします\n' +
 					'post: 投稿します\n' +
-					'tl: タイムラインを見ます\n';
+					'tl: タイムラインを見ます\n' +
+					'@<ユーザー名>: ユーザーを表示します';
 
 			case 'me':
 				return this.user ? `${this.user.name}としてサインインしています。\n\n${getUserSummary(this.user)}` : 'サインインしていません';
@@ -76,6 +85,7 @@ export default class BotCore extends EventEmitter {
 			case 'signin':
 			case 'ログイン':
 			case 'サインイン':
+				if (this.user != null) return '既にサインインしていますよ！';
 				this.setContext(new SigninContext(this));
 				return await this.context.greet();
 
@@ -95,9 +105,9 @@ export default class BotCore extends EventEmitter {
 
 			case 'tl':
 			case 'タイムライン':
-				return await this.getTl();
+				return await this.tlCommand();
 
-				default:
+			default:
 				return '?';
 		}
 	}
@@ -115,7 +125,7 @@ export default class BotCore extends EventEmitter {
 		this.emit('updated');
 	}
 
-	public async getTl() {
+	public async tlCommand(): Promise<string | void> {
 		if (this.user == null) return 'まずサインインしてください。';
 
 		const tl = await require('../endpoints/posts/timeline')({
@@ -128,23 +138,37 @@ export default class BotCore extends EventEmitter {
 
 		return text;
 	}
+
+	public async showUserCommand(q: string): Promise<string | void> {
+		try {
+			const user = await require('../endpoints/users/show')({
+				username: q.substr(1)
+			}, this.user);
+
+			const text = getUserSummary(user);
+
+			return text;
+		} catch (e) {
+			return `問題が発生したようです...: ${e}`;
+		}
+	}
 }
 
 abstract class Context extends EventEmitter {
-	protected core: BotCore;
+	protected bot: BotCore;
 
 	public abstract async greet(): Promise<string>;
 	public abstract async q(query: string): Promise<string>;
 	public abstract export(): any;
 
-	constructor(core: BotCore) {
+	constructor(bot: BotCore) {
 		super();
-		this.core = core;
+		this.bot = bot;
 	}
 
-	public static import(core: BotCore, data: any) {
-		if (data.type == 'post') return PostContext.import(core, data.content);
-		if (data.type == 'signin') return SigninContext.import(core, data.content);
+	public static import(bot: BotCore, data: any) {
+		if (data.type == 'post') return PostContext.import(bot, data.content);
+		if (data.type == 'signin') return SigninContext.import(bot, data.content);
 		return null;
 	}
 }
@@ -179,8 +203,8 @@ class SigninContext extends Context {
 			const same = bcrypt.compareSync(query, this.temporaryUser.password);
 
 			if (same) {
-				this.core.signin(this.temporaryUser);
-				this.core.clearContext();
+				this.bot.signin(this.temporaryUser);
+				this.bot.clearContext();
 				return `${this.temporaryUser.name}さん、おかえりなさい！`;
 			} else {
 				return `パスワードが違います... もう一度教えてください:`;
@@ -197,8 +221,8 @@ class SigninContext extends Context {
 		};
 	}
 
-	public static import(core: BotCore, data: any) {
-		const context = new SigninContext(core);
+	public static import(bot: BotCore, data: any) {
+		const context = new SigninContext(bot);
 		context.temporaryUser = data.temporaryUser;
 		return context;
 	}
@@ -212,8 +236,8 @@ class PostContext extends Context {
 	public async q(query: string): Promise<string> {
 		await require('../endpoints/posts/create')({
 			text: query
-		}, this.core.user);
-		this.core.clearContext();
+		}, this.bot.user);
+		this.bot.clearContext();
 		return '投稿しましたよ！';
 	}
 
@@ -223,8 +247,8 @@ class PostContext extends Context {
 		};
 	}
 
-	public static import(core: BotCore, data: any) {
-		const context = new PostContext(core);
+	public static import(bot: BotCore, data: any) {
+		const context = new PostContext(bot);
 		return context;
 	}
 }

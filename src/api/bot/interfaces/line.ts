@@ -10,20 +10,83 @@ import prominence = require('prominence');
 
 const redis = prominence(_redis);
 
+class LineBot extends BotCore {
+	private replyToken: string;
+
+	private reply(messages: any[]) {
+		request.post({
+			url: 'https://api.line.me/v2/bot/message/reply',
+			headers: {
+				'Authorization': `Bearer ${config.line_bot.channel_access_token}`
+			},
+			json: {
+				replyToken: this.replyToken,
+				messages: messages
+			}
+		}, (err, res, body) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+		});
+	}
+
+	public async react(ev: any): Promise<void> {
+		// テキスト以外(スタンプなど)は無視
+		if (ev.message.type !== 'text') return;
+
+		const res = await this.q(ev.message.text);
+
+		if (res == null) return;
+
+		// 返信
+		this.reply([{
+			type: 'text',
+			text: res
+		}]);
+	}
+
+	public static import(data) {
+		const bot = new LineBot();
+		bot._import(data);
+		return bot;
+	}
+
+	public async showUserCommand(q: string) {
+		const user = await require('../endpoints/users/show')({
+			username: q.substr(1)
+		}, this.user);
+
+		this.reply([{
+			type: 'template',
+			altText: await super.showUserCommand(q),
+			template: {
+				type: 'buttons',
+				thumbnailImageUrl: `${user.avatar_url}?thumbnail&size=1024`,
+				title: `${user.name} (@${user.username})`,
+				text: user.description || '(no description)',
+				actions: [{
+					type: 'uri',
+					label: 'Webで見る',
+					uri: `${config.url}/${user.username}`
+				}]
+			}
+		}]);
+	}
+}
+
 module.exports = async (app: express.Application) => {
 	if (config.line_bot == null) return;
 
 	const handler = new EventEmitter();
 
 	handler.on('message', async (ev) => {
-		// テキスト以外(スタンプなど)は無視
-		if (ev.message.type !== 'text') return;
 
 		const sourceId = ev.source.userId;
 		const sessionId = `line-bot-sessions:${sourceId}`;
 
 		const _session = await redis.get(sessionId);
-		let session: BotCore;
+		let bot: LineBot;
 
 		if (_session == null) {
 			const user = await User.findOne({
@@ -32,9 +95,9 @@ module.exports = async (app: express.Application) => {
 				}
 			});
 
-			session = new BotCore(user);
+			bot = new LineBot(user);
 
-			session.on('signin', user => {
+			bot.on('signin', user => {
 				User.update(user._id, {
 					$set: {
 						line: {
@@ -44,7 +107,7 @@ module.exports = async (app: express.Application) => {
 				});
 			});
 
-			session.on('signout', user => {
+			bot.on('signout', user => {
 				User.update(user._id, {
 					$set: {
 						line: {
@@ -54,36 +117,16 @@ module.exports = async (app: express.Application) => {
 				});
 			});
 
-			redis.set(sessionId, JSON.stringify(session.export()));
+			redis.set(sessionId, JSON.stringify(bot.export()));
 		} else {
-			session = BotCore.import(JSON.parse(_session));
+			bot = LineBot.import(JSON.parse(_session));
 		}
 
-		session.on('updated', () => {
-			redis.set(sessionId, JSON.stringify(session.export()));
+		bot.on('updated', () => {
+			redis.set(sessionId, JSON.stringify(bot.export()));
 		});
 
-		const res = await session.q(ev.message.text);
-
-		// 返信
-		request.post({
-			url: 'https://api.line.me/v2/bot/message/reply',
-			headers: {
-				'Authorization': `Bearer ${config.line_bot.channel_access_token}`
-			},
-			json: {
-				replyToken: ev.replyToken,
-				messages: [{
-					type: 'text',
-					text: res
-				}]
-			}
-		}, (err, res, body) => {
-			if (err) {
-				console.error(err);
-				return;
-			}
-		});
+		bot.react(ev);
 	});
 
 	app.post('/hooks/line', (req, res, next) => {
