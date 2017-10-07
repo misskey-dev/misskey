@@ -89,7 +89,7 @@ class LineBot extends BotCore {
 	}
 
 	public async showUserCommand(q: string) {
-		const user = await require('../endpoints/users/show')({
+		const user = await require('../../endpoints/users/show')({
 			username: q.substr(1)
 		}, this.user);
 
