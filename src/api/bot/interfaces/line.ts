@@ -73,8 +73,8 @@ class LineBot extends BotCore {
 				}]);
 			}
 		// postback
-		} else if (ev.message.type == 'postback') {
-			const data = ev.message.postback.data;
+		} else if (ev.type == 'postback') {
+			const data = ev.postback.data;
 			const cmd = data.split('|')[0];
 			const arg = data.split('|')[1];
 			switch (cmd) {
