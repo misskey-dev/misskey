@@ -4,14 +4,12 @@ import * as bcrypt from 'bcryptjs';
 import User, { IUser, init as initUser } from '../models/user';
 
 import getPostSummary from '../../common/get-post-summary';
+import getUserSummary from '../../common/get-user-summary';
 
-function getUserSummary(user: IUser): string {
-	return `${user.name} (@${user.username})\n` +
-		`${user.posts_count}投稿、${user.following_count}フォロー、${user.followers_count}フォロワー\n` +
-		`場所: ${user.profile.location}、誕生日: ${user.profile.birthday}\n` +
-		`「${user.description}」`;
-}
 
+/**
+ * Botの頭脳
+ */
 export default class BotCore extends EventEmitter {
 	public user: IUser = null;
 
@@ -21,6 +19,10 @@ export default class BotCore extends EventEmitter {
 		super();
 
 		this.user = user;
+	}
+
+	public clearContext() {
+		this.setContext(null);
 	}
 
 	public setContext(context: Context) {
@@ -178,7 +180,7 @@ class SigninContext extends Context {
 
 			if (same) {
 				this.core.signin(this.temporaryUser);
-				this.core.setContext(null);
+				this.core.clearContext();
 				return `${this.temporaryUser.name}さん、おかえりなさい！`;
 			} else {
 				return `パスワードが違います... もう一度教えてください:`;
@@ -211,7 +213,7 @@ class PostContext extends Context {
 		await require('../endpoints/posts/create')({
 			text: query
 		}, this.core.user);
-		this.core.setContext(null);
+		this.core.clearContext();
 		return '投稿しましたよ！';
 	}
 
