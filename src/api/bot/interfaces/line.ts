@@ -50,25 +50,28 @@ class LineBot extends BotCore {
 	public async react(ev: any): Promise<void> {
 		this.replyToken = ev.replyToken;
 
-		// テキスト
-		if (ev.message.type == 'text') {
-			const res = await this.q(ev.message.text);
+		// メッセージ
+		if (ev.type == 'message') {
+			// テキスト
+			if (ev.message.type == 'text') {
+				const res = await this.q(ev.message.text);
 
-			if (res == null) return;
+				if (res == null) return;
 
-			// 返信
-			this.reply([{
-				type: 'text',
-				text: res
-			}]);
-		// スタンプ
-		} else if (ev.message.type == 'sticker') {
-			// スタンプで返信
-			this.reply([{
-				type: 'sticker',
-				packageId: '4',
-				stickerId: stickers[Math.floor(Math.random() * stickers.length)]
-			}]);
+				// 返信
+				this.reply([{
+					type: 'text',
+					text: res
+				}]);
+			// スタンプ
+			} else if (ev.message.type == 'sticker') {
+				// スタンプで返信
+				this.reply([{
+					type: 'sticker',
+					packageId: '4',
+					stickerId: stickers[Math.floor(Math.random() * stickers.length)]
+				}]);
+			}
 		// postback
 		} else if (ev.message.type == 'postback') {
 			const data = ev.message.postback.data;
@@ -136,7 +139,7 @@ module.exports = async (app: express.Application) => {
 
 	const handler = new EventEmitter();
 
-	handler.on('message', async (ev) => {
+	handler.on('event', async (ev) => {
 
 		const sourceId = ev.source.userId;
 		const sessionId = `line-bot-sessions:${sourceId}`;
@@ -198,7 +201,7 @@ module.exports = async (app: express.Application) => {
 		// シグネチャ比較
 		if (sig1 === sig2) {
 			req.body.events.forEach(ev => {
-				handler.emit(ev.type, ev);
+				handler.emit('event', ev);
 			});
 
 			res.sendStatus(200);
