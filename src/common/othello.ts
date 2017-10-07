@@ -38,49 +38,49 @@ export default class Othello extends EventEmitter {
 			switch (r[0]) {
 				case 0: // 上
 					for (let c = 0, _y = y - 1; c < r[1]; c++, _y--) {
-						this.board[x][_y] = color;
+						this.board[_y][x] = color;
 					}
 					break;
 
 				case 1: // 右上
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[x + i][y - i] = color;
+						this.board[y - i][x + i] = color;
 					}
 					break;
 
 				case 2: // 右
 					for (let c = 0, _x = x + 1; c < r[1]; c++, _x++) {
-						this.board[_x][y] = color;
+						this.board[y][_x] = color;
 					}
 					break;
 
 				case 3: // 右下
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[x + i][y + i] = color;
+						this.board[y + i][x + i] = color;
 					}
 					break;
 
 				case 4: // 下
 					for (let c = 0, _y = y + 1; c < r[1]; c++, _y++) {
-						this.board[x][_y] = color;
+						this.board[_y][x] = color;
 					}
 					break;
 
 				case 5: // 左下
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[x - i][y + i] = color;
+						this.board[y + i][x - i] = color;
 					}
 					break;
 
 				case 6: // 左
 					for (let c = 0, _x = x - 1; c < r[1]; c++, _x--) {
-						this.board[_x][y] = color;
+						this.board[y][_x] = color;
 					}
 					break;
 
 				case 7: // 左上
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[x - i][y - i] = color;
+						this.board[y - i][x - i] = color;
 					}
 					break;
 				}
@@ -117,11 +117,11 @@ export default class Othello extends EventEmitter {
 			return (x, y): any => {
 				if (breaked) {
 					return;
-				} else if (this.board[x][y] == myColor && opponentStoneFound) {
+				} else if (this.board[y][x] == myColor && opponentStoneFound) {
 					return true;
-				} else if (this.board[x][y] == myColor && !opponentStoneFound) {
+				} else if (this.board[y][x] == myColor && !opponentStoneFound) {
 					breaked = true;
-				} else if (this.board[x][y] == opponentColor) {
+				} else if (this.board[y][x] == opponentColor) {
 					opponentStoneFound = true;
 				} else {
 					breaked = true;
@@ -209,16 +209,19 @@ export default class Othello extends EventEmitter {
 	}
 
 	public toString(): string {
+		//return this.board.map(row => row.map(state => state === 'black' ? '●' : state === 'white' ? '○' : '┼').join('')).join('\n');
 		return this.board.map(row => row.map(state => state === 'black' ? '⚫️' : state === 'white' ? '⚪️' : '🔹').join('')).join('\n');
 	}
 
 	public toPatternString(color): string {
+		//const num = ['０', '１', '２', '３', '４', '５', '６', '７', '８', '９'];
 		const num = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
 
 		const pattern = this.getPattern(color);
 
 		return this.board.map((row, y) => row.map((state, x) => {
 			const i = pattern.findIndex(p => p[0] == x && p[1] == y);
+			//return state === 'black' ? '●' : state === 'white' ? '○' : i != -1 ? num[i] : '┼';
 			return state === 'black' ? '⚫️' : state === 'white' ? '⚪️' : i != -1 ? num[i] : '🔹';
 		}).join('')).join('\n');
 	}
