@@ -6,7 +6,6 @@ import User, { IUser, init as initUser } from '../models/user';
 import getPostSummary from '../../common/get-post-summary';
 import getUserSummary from '../../common/get-user-summary';
 
-
 /**
  * Botの頭脳
  */
