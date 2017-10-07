@@ -140,7 +140,7 @@ export default class BotCore extends EventEmitter {
 
 	public async showUserCommand(q: string): Promise<string | void> {
 		try {
-			const user = await require('../endpoints/users/show')({
+			const user = await require('../../endpoints/users/show')({
 				username: q.substr(1)
 			}, this.user);
 
