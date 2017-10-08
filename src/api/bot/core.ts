@@ -295,10 +295,14 @@ class GuessingGameContext extends Context {
 			return 'やめました。';
 		}
 
+		const guess = parseInt(query, 10);
+
+		if (isNaN(guess)) {
+			return '整数で推測してください。「やめる」と言うとゲームをやめます。';
+		}
+
 		this.try++;
 		this.emit('updated');
-
-		const guess = parseInt(query, 10);
 
 		if (this.secret < guess) {
 			return `${guess}よりも小さいですね`;
