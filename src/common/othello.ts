@@ -1,14 +1,10 @@
-import * as EventEmitter from 'events';
-
-export default class Othello extends EventEmitter {
+export default class Othello {
 	public board: Array<Array<'black' | 'white'>>;
 
 	/**
 	 * ゲームを初期化します
 	 */
 	constructor() {
-		super();
-
 		this.board = [
 			[null, null, null, null, null, null, null, null],
 			[null, null, null, null, null, null, null, null],
@@ -26,11 +22,15 @@ export default class Othello extends EventEmitter {
 		this.set(color, ps[n][0], ps[n][1]);
 	}
 
+	private write(color, x, y) {
+		this.board[y][x] = color;
+	}
+
 	/**
 	 * 石を配置します
 	 */
 	public set(color, x, y) {
-		this.board[y][x] = color;
+		this.write(color, x, y);
 
 		const reverses = this.getReverse(color, x, y);
 
@@ -38,55 +38,53 @@ export default class Othello extends EventEmitter {
 			switch (r[0]) {
 				case 0: // 上
 					for (let c = 0, _y = y - 1; c < r[1]; c++, _y--) {
-						this.board[_y][x] = color;
+						this.write(color, x, _y);
 					}
 					break;
 
 				case 1: // 右上
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[y - i][x + i] = color;
+						this.write(color, x + i, y - i);
 					}
 					break;
 
 				case 2: // 右
 					for (let c = 0, _x = x + 1; c < r[1]; c++, _x++) {
-						this.board[y][_x] = color;
+						this.write(color, _x, y);
 					}
 					break;
 
 				case 3: // 右下
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[y + i][x + i] = color;
+						this.write(color, x + i, y + i);
 					}
 					break;
 
 				case 4: // 下
 					for (let c = 0, _y = y + 1; c < r[1]; c++, _y++) {
-						this.board[_y][x] = color;
+						this.write(color, x, _y);
 					}
 					break;
 
 				case 5: // 左下
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[y + i][x - i] = color;
+						this.write(color, x - i, y + i);
 					}
 					break;
 
 				case 6: // 左
 					for (let c = 0, _x = x - 1; c < r[1]; c++, _x--) {
-						this.board[y][_x] = color;
+						this.write(color, _x, y);
 					}
 					break;
 
 				case 7: // 左上
 					for (let c = 0, i = 1; c < r[1]; c++, i++) {
-						this.board[y - i][x - i] = color;
+						this.write(color, x - i, y - i);
 					}
 					break;
 				}
 		});
-
-		this.emit('set:' + color, x, y);
 	}
 
 	/**
@@ -226,40 +224,7 @@ export default class Othello extends EventEmitter {
 		}).join('')).join('\n');
 	}
 }
-/*
-export class Ai {
-	private othello: Othello;
-	private color: string;
-	private opponentColor: string;
 
-	constructor(color: string, othello: Othello) {
-		this.othello = othello;
-		this.color = color;
-		this.opponentColor = this.color == 'black' ? 'white' : 'black';
-
-		this.othello.on('set:' + this.opponentColor, () => {
-			this.turn();
-		});
-
-		if (this.color == 'black') {
-			this.turn();
-		}
-	}
-
-	public turn() {
-		const ps = this.othello.getPattern(this.color);
-		if (ps.length > 0) {
-			const p = ps[Math.floor(Math.random() * ps.length)];
-			this.othello.set(this.color, p[0], p[1]);
-
-			// 相手の打つ場所がない場合続けてAIのターン
-			if (this.othello.getPattern(this.opponentColor).length === 0) {
-				this.turn();
-			}
-		}
-	}
-}
-*/
 export function ai(color: string, othello: Othello) {
 	const opponentColor = color == 'black' ? 'white' : 'black';
 
