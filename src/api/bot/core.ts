@@ -8,6 +8,13 @@ import getUserSummary from '../../common/get-user-summary';
 
 import Othello, { ai as othelloAi } from '../../common/othello';
 
+const hmm = [
+	'？',
+	'ふぅ～む...？',
+	'ちょっと何言ってるかわからないです',
+	'「ヘルプ」と言うと利用可能な操作が確認できますよ'
+];
+
 /**
  * Botの頭脳
  */
@@ -119,7 +126,7 @@ export default class BotCore extends EventEmitter {
 				return await this.context.greet();
 
 			default:
-				return '?';
+				return hmm[Math.floor(Math.random() * hmm.length)];
 		}
 	}
 
@@ -164,7 +171,7 @@ export default class BotCore extends EventEmitter {
 
 	public async showUserCommand(q: string): Promise<string | void> {
 		try {
-			const user = await require('../../endpoints/users/show')({
+			const user = await require('../endpoints/users/show')({
 				username: q.substr(1)
 			}, this.user);
 
@@ -280,11 +287,10 @@ class PostContext extends Context {
 
 class GuessingGameContext extends Context {
 	private secret: number;
-	private try: number;
+	private history: number[] = [];
 
 	public async greet(): Promise<string> {
 		this.secret = Math.floor(Math.random() * 100);
-		this.try = 0;
 		this.emit('updated');
 		return '0~100の秘密の数を当ててみてください:';
 	}
@@ -301,16 +307,16 @@ class GuessingGameContext extends Context {
 			return '整数で推測してください。「やめる」と言うとゲームをやめます。';
 		}
 
-		this.try++;
+		this.history.push(guess);
 		this.emit('updated');
 
 		if (this.secret < guess) {
-			return `${guess}よりも小さいですね`;
+			return this.history.indexOf(guess) === -1 ? `${guess}よりも小さいですね` : `もう一度言いますが${guess}より小さいですよ`;
 		} else if (this.secret > guess) {
-			return `${guess}よりも大きいですね`;
+			return this.history.indexOf(guess) === -1 ? `${guess}よりも大きいですね` : `もう一度言いますが${guess}より大きいですよ`;
 		} else {
 			this.bot.clearContext();
-			return `正解です🎉 (${this.try}回目で当てました)`;
+			return `正解です🎉 (${this.history.length}回目で当てました)`;
 		}
 	}
 
@@ -319,7 +325,7 @@ class GuessingGameContext extends Context {
 			type: 'guessing-game',
 			content: {
 				secret: this.secret,
-				try: this.try
+				history: this.history
 			}
 		};
 	}
@@ -327,7 +333,7 @@ class GuessingGameContext extends Context {
 	public static import(bot: BotCore, data: any) {
 		const context = new GuessingGameContext(bot);
 		context.secret = data.secret;
-		context.try = data.try;
+		context.history = data.history;
 		return context;
 	}
 }
@@ -350,7 +356,14 @@ class OthelloContext extends Context {
 			this.bot.clearContext();
 			return 'オセロをやめました。';
 		}
-		this.othello.setByNumber('black', parseInt(query, 10));
+
+		const n = parseInt(query, 10);
+
+		if (isNaN(n)) {
+			return '番号で指定してください。「やめる」と言うとゲームをやめます。';
+		}
+
+		this.othello.setByNumber('black', n);
 		const s = this.othello.toString() + '\n\n...(AI)...\n\n';
 		othelloAi('white', this.othello);
 		if (this.othello.getPattern('black').length === 0) {
