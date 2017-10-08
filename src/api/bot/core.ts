@@ -108,6 +108,11 @@ export default class BotCore extends EventEmitter {
 			case 'タイムライン':
 				return await this.tlCommand();
 
+			case 'guessing-game':
+			case '数当てゲーム':
+				this.setContext(new GuessingGameContext(this));
+				return await this.context.greet();
+
 			case 'othello':
 			case 'オセロ':
 				this.setContext(new OthelloContext(this));
@@ -185,6 +190,7 @@ abstract class Context extends EventEmitter {
 	}
 
 	public static import(bot: BotCore, data: any) {
+		if (data.type == 'guessing-game') return GuessingGameContext.import(bot, data.content);
 		if (data.type == 'othello') return OthelloContext.import(bot, data.content);
 		if (data.type == 'post') return PostContext.import(bot, data.content);
 		if (data.type == 'signin') return SigninContext.import(bot, data.content);
@@ -272,6 +278,56 @@ class PostContext extends Context {
 	}
 }
 
+class GuessingGameContext extends Context {
+	private secret: number;
+	private try: number;
+
+	public async greet(): Promise<string> {
+		this.secret = Math.floor(Math.random() * 100);
+		this.try = 0;
+		this.emit('updated');
+		return '0~100の秘密の数を当ててみてください:';
+	}
+
+	public async q(query: string): Promise<string> {
+		if (query == 'やめる') {
+			this.bot.clearContext();
+			return 'やめました。';
+		}
+
+		this.try++;
+		this.emit('updated');
+
+		const guess = parseInt(query, 10);
+
+		if (this.secret < guess) {
+			return `${guess}よりも小さいですね`;
+		} else if (this.secret > guess) {
+			return `${guess}よりも大きいですね`;
+		} else {
+			this.bot.clearContext();
+			return `正解です🎉 (${this.try}回目で当てました)`;
+		}
+	}
+
+	public export() {
+		return {
+			type: 'guessing-game',
+			content: {
+				secret: this.secret,
+				try: this.try
+			}
+		};
+	}
+
+	public static import(bot: BotCore, data: any) {
+		const context = new GuessingGameContext(bot);
+		context.secret = data.secret;
+		context.try = data.try;
+		return context;
+	}
+}
+
 class OthelloContext extends Context {
 	private othello: Othello = null;
 
@@ -286,12 +342,19 @@ class OthelloContext extends Context {
 	}
 
 	public async q(query: string): Promise<string> {
+		if (query == 'やめる') {
+			this.bot.clearContext();
+			return 'オセロをやめました。';
+		}
 		this.othello.setByNumber('black', parseInt(query, 10));
 		const s = this.othello.toString() + '\n\n...(AI)...\n\n';
 		othelloAi('white', this.othello);
 		if (this.othello.getPattern('black').length === 0) {
 			this.bot.clearContext();
-			return '～終了～';
+			const blackCount = this.othello.board.map(row => row.filter(s => s == 'black').length).reduce((a, b) => a + b);
+			const whiteCount = this.othello.board.map(row => row.filter(s => s == 'white').length).reduce((a, b) => a + b);
+			const winner = blackCount == whiteCount ? '引き分け' : blackCount > whiteCount ? '黒の勝ち' : '白の勝ち';
+			return this.othello.toString() + `\n\n～終了～\n\n黒${blackCount}、白${whiteCount}で${winner}です。`;
 		} else {
 			this.emit('updated');
 			return s + this.othello.toPatternString('black');
