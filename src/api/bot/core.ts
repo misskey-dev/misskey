@@ -307,13 +307,15 @@ class GuessingGameContext extends Context {
 			return '整数で推測してください。「やめる」と言うとゲームをやめます。';
 		}
 
+		const firsttime = this.history.indexOf(guess) === -1;
+
 		this.history.push(guess);
 		this.emit('updated');
 
 		if (this.secret < guess) {
-			return this.history.indexOf(guess) === -1 ? `${guess}よりも小さいですね` : `もう一度言いますが${guess}より小さいですよ`;
+			return firsttime ? `${guess}よりも小さいですね` : `もう一度言いますが${guess}より小さいですよ`;
 		} else if (this.secret > guess) {
-			return this.history.indexOf(guess) === -1 ? `${guess}よりも大きいですね` : `もう一度言いますが${guess}より大きいですよ`;
+			return firsttime ? `${guess}よりも大きいですね` : `もう一度言いますが${guess}より大きいですよ`;
 		} else {
 			this.bot.clearContext();
 			return `正解です🎉 (${this.history.length}回目で当てました)`;
