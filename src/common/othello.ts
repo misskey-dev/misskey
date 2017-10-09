@@ -1,3 +1,5 @@
+const BOARD_SIZE = 8;
+
 export default class Othello {
 	public board: Array<Array<'black' | 'white'>>;
 
@@ -142,7 +144,7 @@ export default class Othello {
 
 		// 右上
 		iterate = createIterater();
-		for (let c = 0, i = 1; i < Math.min(8 - targetx, targety); c++, i++) {
+		for (let c = 0, i = 1; i < Math.min(BOARD_SIZE - targetx, targety); c++, i++) {
 			if (iterate(targetx + i, targety - i)) {
 				res.push([1, c]);
 				break;
@@ -151,7 +153,7 @@ export default class Othello {
 
 		// 右
 		iterate = createIterater();
-		for (let c = 0, x = targetx + 1; x < 8; c++, x++) {
+		for (let c = 0, x = targetx + 1; x < BOARD_SIZE; c++, x++) {
 			if (iterate(x, targety)) {
 				res.push([2, c]);
 				break;
@@ -160,7 +162,7 @@ export default class Othello {
 
 		// 右下
 		iterate = createIterater();
-		for (let c = 0, i = 1; i < Math.min(8 - targetx, 8 - targety); c++, i++) {
+		for (let c = 0, i = 1; i < Math.min(BOARD_SIZE - targetx, BOARD_SIZE - targety); c++, i++) {
 			if (iterate(targetx + i, targety + i)) {
 				res.push([3, c]);
 				break;
@@ -169,7 +171,7 @@ export default class Othello {
 
 		// 下
 		iterate = createIterater();
-		for (let c = 0, y = targety + 1; y < 8; c++, y++) {
+		for (let c = 0, y = targety + 1; y < BOARD_SIZE; c++, y++) {
 			if (iterate(targetx, y)) {
 				res.push([4, c]);
 				break;
@@ -178,7 +180,7 @@ export default class Othello {
 
 		// 左下
 		iterate = createIterater();
-		for (let c = 0, i = 1; i < Math.min(targetx, 8 - targety); c++, i++) {
+		for (let c = 0, i = 1; i < Math.min(targetx, BOARD_SIZE - targety); c++, i++) {
 			if (iterate(targetx - i, targety + i)) {
 				res.push([5, c]);
 				break;
@@ -238,11 +240,11 @@ export function ai(color: string, othello: Othello) {
 				// 左上
 				(p[0] == 0 && p[1] == 0) ||
 				// 右上
-				(p[0] == 7 && p[1] == 0) ||
+				(p[0] == (BOARD_SIZE - 1) && p[1] == 0) ||
 				// 右下
-				(p[0] == 7 && p[1] == 7) ||
+				(p[0] == (BOARD_SIZE - 1) && p[1] == (BOARD_SIZE - 1)) ||
 				// 左下
-				(p[0] == 0 && p[1] == 7)
+				(p[0] == 0 && p[1] == (BOARD_SIZE - 1))
 			);
 
 			if (corners.length > 0) { // どこかしらの角に打てる場合
