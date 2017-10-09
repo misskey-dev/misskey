@@ -144,7 +144,7 @@ export default class Othello {
 
 		// 右上
 		iterate = createIterater();
-		for (let c = 0, i = 1; i < Math.min(BOARD_SIZE - targetx, targety); c++, i++) {
+		for (let c = 0, i = 1; i <= Math.min(BOARD_SIZE - targetx, targety); c++, i++) {
 			if (iterate(targetx + i, targety - i)) {
 				res.push([1, c]);
 				break;
@@ -198,7 +198,7 @@ export default class Othello {
 
 		// 左上
 		iterate = createIterater();
-		for (let c = 0, i = 1; i < Math.min(targetx, targety); c++, i++) {
+		for (let c = 0, i = 1; i <= Math.min(targetx, targety); c++, i++) {
 			if (iterate(targetx - i, targety - i)) {
 				res.push([7, c]);
 				break;
