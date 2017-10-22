@@ -25,7 +25,8 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 
 Setup and Installation
 ----------------------------------------------------------------
-Please see [Setup and installation guide](./docs/setup.en.md).
+If you want to create your Misskey instance,
+please see [Setup and installation guide](./docs/setup.en.md).
 
 Contribution
 ----------------------------------------------------------------
