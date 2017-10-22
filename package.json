@@ -152,7 +152,7 @@
     "typescript": "2.5.3",
     "uuid": "3.1.0",
     "vhost": "3.0.2",
-    "websocket": "1.0.24",
+    "websocket": "1.0.25",
     "xev": "2.0.0"
   }
 }
