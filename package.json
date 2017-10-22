@@ -1,7 +1,7 @@
 {
   "name": "misskey",
   "author": "syuilo <i@syuilo.com>",
-  "version": "0.0.2584",
+  "version": "0.0.2732",
   "license": "MIT",
   "description": "A miniblog-based SNS",
   "bugs": "https://github.com/syuilo/misskey/issues",
@@ -64,7 +64,7 @@
     "@types/webpack": "3.0.13",
     "@types/webpack-stream": "3.2.7",
     "@types/websocket": "0.0.34",
-    "awesome-typescript-loader": "^3.2.3",
+    "awesome-typescript-loader": "3.2.3",
     "chai": "4.1.2",
     "chai-http": "3.0.0",
     "css-loader": "0.28.7",
@@ -90,8 +90,8 @@
     "swagger-jsdoc": "1.9.7",
     "tslint": "5.7.0",
     "uglify-es": "3.0.27",
-    "uglify-es-webpack-plugin": "0.10.0",
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
+    "uglifyjs-webpack-plugin": "1.0.0-beta.2",
     "webpack": "3.8.1"
   },
   "dependencies": {
@@ -109,7 +109,7 @@
     "debug": "3.1.0",
     "deep-equal": "1.0.1",
     "deepcopy": "0.6.3",
-    "diskusage": "^0.2.2",
+    "diskusage": "0.2.2",
     "download": "6.2.5",
     "elasticsearch": "13.3.1",
     "escape-regexp": "0.0.1",
