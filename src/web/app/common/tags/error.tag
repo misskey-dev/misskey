@@ -1,5 +1,5 @@
 <mk-error>
-	<img src="/assets/error.jpg" alt=""/>
+	<img src="data:image/jpeg;base64,%base64:/assets/error.jpg%" alt=""/>
 	<h1>%i18n:common.tags.mk-error.title%</h1>
 	<p class="text">%i18n:common.tags.mk-error.description%</p>
 	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
