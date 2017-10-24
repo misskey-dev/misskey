@@ -1,7 +1,13 @@
 <mk-error>
 	<img src="data:image/jpeg;base64,%base64:/assets/error.jpg%" alt=""/>
 	<h1>%i18n:common.tags.mk-error.title%</h1>
-	<p class="text">%i18n:common.tags.mk-error.description%</p>
+	<p class="text">{
+		'%i18n:common.tags.mk-error.description%'.substr(0, '%i18n:common.tags.mk-error.description%'.indexOf('{'))
+	}<a onclick={ reload }>{
+		'%i18n:common.tags.mk-error.description%'.match(/\{(.+?)\}/)[1]
+	}</a>{
+		'%i18n:common.tags.mk-error.description%'.substr('%i18n:common.tags.mk-error.description%'.indexOf('}') + 1)
+	}</p>
 	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
 	<style>
 		:scope
@@ -53,5 +59,9 @@
 			document.title = 'Oops!';
 			document.documentElement.style.background = '#f8f8f8';
 		});
+
+		this.reload = () => {
+			location.reload();
+		};
 	</script>
 </mk-error>
