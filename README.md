@@ -25,7 +25,8 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 
 Setup and Installation
 ----------------------------------------------------------------
-Please see [Setup and installation guide](./docs/setup.en.md).
+If you want to run your own instance of Misskey,
+please see [Setup and installation guide](./docs/setup.en.md).
 
 Contribution
 ----------------------------------------------------------------
@@ -41,14 +42,6 @@ Misskey have no 100+ GitHub stars currently. However, donation are always welcom
 If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link].
 
 **Note:** When you donate to Misskey, your name will be displayed in [donors](./DONORS.md).
-
-Collaborators
-----------------------------------------------------------------
-| ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon]        |
-|------------------------|-----------------------------------|---------------------------------|
-| [syuilo][syuilo-link]  | [Aya Morisawa][ayamorisawa-link]  | [otofune][otofune-link] |
-
-[List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
 Copyright
 ----------------------------------------------------------------
@@ -67,7 +60,3 @@ Misskey is an open-source software licensed under [The MIT License](LICENSE).
 <!-- Collaborators Info -->
 [syuilo-link]:      https://syuilo.com
 [syuilo-icon]:      https://avatars2.githubusercontent.com/u/4439005?v=3&s=70
-[ayamorisawa-link]: https://github.com/ayamorisawa
-[ayamorisawa-icon]: https://avatars0.githubusercontent.com/u/10798641?v=3&s=70
-[otofune-link]:     https://github.com/otofune
-[otofune-icon]:     https://avatars0.githubusercontent.com/u/15062473?v=3&s=70

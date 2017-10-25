@@ -1,4 +1,8 @@
-const summarize = post => {
+/**
+ * 投稿を表す文字列を取得します。
+ * @param {*} post 投稿
+ */
+const summarize = (post: any): string => {
 	let summary = post.text ? post.text : '';
 
 	// メディアが添付されているとき

@@ -57,6 +57,9 @@ export type IUser = {
 		user_id: string;
 		screen_name: string;
 	};
+	line: {
+		user_id: string;
+	};
 	description: string;
 	profile: {
 		location: string;
@@ -70,3 +73,11 @@ export type IUser = {
 	is_suspended: boolean;
 	keywords: string[];
 };
+
+export function init(user): IUser {
+	user._id = new mongo.ObjectID(user._id);
+	user.avatar_id = new mongo.ObjectID(user.avatar_id);
+	user.banner_id = new mongo.ObjectID(user.banner_id);
+	user.pinned_post_id = new mongo.ObjectID(user.pinned_post_id);
+	return user;
+}

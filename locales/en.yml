@@ -64,7 +64,7 @@ common:
 
     mk-error:
       title: "Unable to connect to the server"
-      description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
+      description: "There is a problem with Internet connection, or the server may be down or maintaining. Please {try again} later."
       thanks: "Thank you for using Misskey."
 
     mk-forkit:

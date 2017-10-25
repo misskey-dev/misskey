@@ -19,7 +19,12 @@ app.disable('x-powered-by');
 app.set('etag', false);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({
-	type: ['application/json', 'text/plain']
+	type: ['application/json', 'text/plain'],
+	verify: (req, res, buf, encoding) => {
+		if (buf && buf.length) {
+			(req as any).rawBody = buf.toString(encoding || 'utf8');
+		}
+	}
 }));
 app.use(cors({
 	origin: true
@@ -53,5 +58,7 @@ app.use((req, res, next) => {
 
 require('./service/github')(app);
 require('./service/twitter')(app);
+
+require('./bot/interfaces/line')(app);
 
 module.exports = app;
