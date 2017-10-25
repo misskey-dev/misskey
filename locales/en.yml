@@ -66,6 +66,25 @@ common:
       title: "Unable to connect to the server"
       description: "There is a problem with Internet connection, or the server may be down or maintaining. Please {try again} later."
       thanks: "Thank you for using Misskey."
+      troubleshoot: "Troubleshoot"
+
+      troubleshooter:
+        title: "TroubleShooting"
+        network: "Network connection"
+        checking-network: "Checking network connection"
+        internet: "Internet connection"
+        checking-internet: "Checking internet connection"
+        server: "Server connection"
+        checking-server: "Checking server connection"
+        finding: "Finding a problem"
+        no-network: "No network connection"
+        no-network-desc: "Please make sure you are connected to the Network."
+        no-internet: "No internet connection"
+        no-internet-desc: "Please make sure you are connected to the Internet."
+        no-server: "Unable to connect to the server"
+        no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is down or maintaining, please try to access it again after a while."
+        success: "Successfully connect to the Misskey's server"
+        success-desc: "It seems to be able to connect normally. Please reload the page."
 
     mk-forkit:
       open-github-link: "View source on Github"

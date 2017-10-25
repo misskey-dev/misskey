@@ -66,6 +66,25 @@ common:
       title: "サーバーに接続できません"
       description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
       thanks: "いつもMisskeyをご利用いただきありがとうございます。"
+      troubleshoot: "トラブルシュート"
+
+      troubleshooter:
+        title: "トラブルシューティング"
+        network: "ネットワーク接続"
+        checking-network: "ネットワーク接続を確認中"
+        internet: "インターネット接続"
+        checking-internet: "インターネット接続を確認中"
+        server: "サーバー接続"
+        checking-server: "サーバー接続を確認中"
+        finding: "問題を調べています"
+        no-network: "ネットワークに接続されていません"
+        no-network-desc: "お使いのPCのネットワーク接続が正常か確認してください。"
+        no-internet: "インターネットに接続されていません"
+        no-internet-desc: "ネットワークには接続されていますが、インターネットには接続されていないようです。お使いのPCのインターネット接続が正常か確認してください。"
+        no-server: "Misskeyのサーバーに接続できません"
+        no-server-desc: "お使いのPCのネットワーク接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
+        success: "Misskeyのサーバーに接続できました"
+        success-desc: "正常に接続できるようです。ページを再度読み込みしてください。"
 
     mk-forkit:
       open-github-link: "View source on Github"
