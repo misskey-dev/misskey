@@ -58,7 +58,7 @@
     "@types/redis": "2.6.0",
     "@types/request": "2.0.4",
     "@types/rimraf": "2.0.0",
-    "@types/riot": "3.6.0",
+    "@types/riot": "3.6.1",
     "@types/serve-favicon": "2.2.28",
     "@types/uuid": "3.4.2",
     "@types/webpack": "3.0.13",
