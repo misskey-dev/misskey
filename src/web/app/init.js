@@ -19,7 +19,7 @@ require('./common/tags');
  * APP ENTRY POINT!
  */
 
-console.info(`Misskey v${VERSION}`);
+console.info(`Misskey v${VERSION} (葵 aoi)`);
 
 document.domain = CONFIG.host;
 
