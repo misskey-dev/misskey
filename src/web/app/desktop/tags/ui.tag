@@ -5,7 +5,7 @@
 	<div class="content">
 		<yield />
 	</div>
-	<mk-stream-indicator/>
+	<mk-stream-indicator if={ SIGNIN }/>
 	<style>
 		:scope
 			display block
@@ -416,22 +416,26 @@
 		this.page = this.opts.page;
 
 		this.on('mount', () => {
-			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+			if (this.SIGNIN) {
+				this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
-			// Fetch count of unread messaging messages
-			this.api('messaging/unread').then(res => {
-				if (res.count > 0) {
-					this.update({
-						hasUnreadMessagingMessages: true
-					});
-				}
-			});
+				// Fetch count of unread messaging messages
+				this.api('messaging/unread').then(res => {
+					if (res.count > 0) {
+						this.update({
+							hasUnreadMessagingMessages: true
+						});
+					}
+				});
+			}
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			if (this.SIGNIN) {
+				this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			}
 		});
 
 		this.onReadAllMessagingMessages = () => {

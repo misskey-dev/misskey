@@ -467,6 +467,7 @@
 		import getPostSummary from '../../../../common/get-post-summary.ts';
 		import openPostForm from '../scripts/open-post-form';
 
+		this.mixin('i');
 		this.mixin('api');
 		this.mixin('stream');
 
@@ -502,24 +503,31 @@
 		};
 
 		this.capture = withHandler => {
-			this.stream.send({
-				type: 'capture',
-				id: this.post.id
-			});
-			if (withHandler) this.stream.on('post-updated', this.onStreamPostUpdated);
+			if (this.SIGNIN) {
+				this.stream.send({
+					type: 'capture',
+					id: this.post.id
+				});
+				if (withHandler) this.stream.on('post-updated', this.onStreamPostUpdated);
+			}
 		};
 
 		this.decapture = withHandler => {
-			this.stream.send({
-				type: 'decapture',
-				id: this.post.id
-			});
-			if (withHandler) this.stream.off('post-updated', this.onStreamPostUpdated);
+			if (this.SIGNIN) {
+				this.stream.send({
+					type: 'decapture',
+					id: this.post.id
+				});
+				if (withHandler) this.stream.off('post-updated', this.onStreamPostUpdated);
+			}
 		};
 
 		this.on('mount', () => {
 			this.capture(true);
-			this.stream.on('_connected_', this.onStreamConnected);
+
+			if (this.SIGNIN) {
+				this.stream.on('_connected_', this.onStreamConnected);
+			}
 
 			if (this.p.text) {
 				const tokens = this.p.ast;
