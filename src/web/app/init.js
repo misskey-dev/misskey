@@ -2,7 +2,7 @@
  * App initializer
  */
 
-"use strict";
+'use strict';
 
 import * as riot from 'riot';
 import api from './common/scripts/api';
@@ -19,7 +19,15 @@ require('./common/tags');
  * APP ENTRY POINT!
  */
 
-console.info(`Misskey v${VERSION}`);
+console.info(`Misskey v${VERSION} (葵 aoi)`);
+
+{ // Set description meta tag
+	const head = document.getElementsByTagName('head')[0];
+	const meta = document.createElement('meta');
+	meta.setAttribute('name', 'description');
+	meta.setAttribute('content', '%i18n:common.misskey%');
+	head.appendChild(meta);
+}
 
 document.domain = CONFIG.host;
 

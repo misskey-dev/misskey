@@ -4,7 +4,7 @@
 	<div class="content">
 		<yield />
 	</div>
-	<mk-stream-indicator/>
+	<mk-stream-indicator if={ SIGNIN }/>
 	<style>
 		:scope
 			display block

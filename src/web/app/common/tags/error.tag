@@ -8,6 +8,8 @@
 	}</a>{
 		'%i18n:common.tags.mk-error.description%'.substr('%i18n:common.tags.mk-error.description%'.indexOf('}') + 1)
 	}</p>
+	<button if={ !troubleshooting } onclick={ troubleshoot }>%i18n:common.tags.mk-error.troubleshoot%</button>
+	<mk-troubleshooter if={ troubleshooting }/>
 	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
 	<style>
 		:scope
@@ -36,6 +38,25 @@
 				font-size 1em
 				color #666
 
+			> button
+				display block
+				margin 1em auto 0 auto
+				padding 8px 10px
+				color $theme-color-foreground
+				background $theme-color
+
+				&:focus
+					outline solid 3px rgba($theme-color, 0.3)
+
+				&:hover
+					background lighten($theme-color, 10%)
+
+				&:active
+					background darken($theme-color, 10%)
+
+			> mk-troubleshooter
+				margin 1em auto 0 auto
+
 			> .thanks
 				display block
 				margin 2em auto 0 auto
@@ -55,6 +76,8 @@
 
 	</style>
 	<script>
+		this.troubleshooting = false;
+
 		this.on('mount', () => {
 			document.title = 'Oops!';
 			document.documentElement.style.background = '#f8f8f8';
@@ -63,5 +86,132 @@
 		this.reload = () => {
 			location.reload();
 		};
+
+		this.troubleshoot = () => {
+			this.update({
+				troubleshooting: true
+			});
+		};
 	</script>
 </mk-error>
+
+<mk-troubleshooter>
+	<h1><i class="fa fa-wrench"></i>%i18n:common.tags.mk-error.troubleshooter.title%</h1>
+	<div>
+		<p data-wip={ network == null }><i if={ network != null } class="fa fa-{ network ? 'check' : 'times' }"></i>{ network == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-network%' : '%i18n:common.tags.mk-error.troubleshooter.network%' }<mk-ellipsis if={ network == null }/></p>
+		<p if={ network == true } data-wip={ internet == null }><i if={ internet != null } class="fa fa-{ internet ? 'check' : 'times' }"></i>{ internet == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-internet%' : '%i18n:common.tags.mk-error.troubleshooter.internet%' }<mk-ellipsis if={ internet == null }/></p>
+		<p if={ internet == true } data-wip={ server == null }><i if={ server != null } class="fa fa-{ server ? 'check' : 'times' }"></i>{ server == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-server%' : '%i18n:common.tags.mk-error.troubleshooter.server%' }<mk-ellipsis if={ server == null }/></p>
+	</div>
+	<p if={ !end }>%i18n:common.tags.mk-error.troubleshooter.finding%<mk-ellipsis/></p>
+	<p if={ network === false }><b><i class="fa fa-exclamation-triangle"></i>%i18n:common.tags.mk-error.troubleshooter.no-network%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-network-desc%</p>
+	<p if={ internet === false }><b><i class="fa fa-exclamation-triangle"></i>%i18n:common.tags.mk-error.troubleshooter.no-internet%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-internet-desc%</p>
+	<p if={ server === false }><b><i class="fa fa-exclamation-triangle"></i>%i18n:common.tags.mk-error.troubleshooter.no-server%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-server-desc%</p>
+	<p if={ server === true } class="success"><b><i class="fa fa-info-circle"></i>%i18n:common.tags.mk-error.troubleshooter.success%</b><br>%i18n:common.tags.mk-error.troubleshooter.success-desc%</p>
+
+	<style>
+		:scope
+			display block
+			width 100%
+			max-width 500px
+			text-align left
+			background #fff
+			border-radius 8px
+			border solid 1px #ddd
+
+			> h1
+				margin 0
+				padding 0.6em 1.2em
+				font-size 1em
+				color #444
+				border-bottom solid 1px #eee
+
+				> i
+					margin-right 0.25em
+
+			> div
+				overflow hidden
+				padding 0.6em 1.2em
+
+				> p
+					margin 0.5em 0
+					font-size 0.9em
+					color #444
+
+					&[data-wip]
+						color #888
+
+					> i
+						margin-right 0.25em
+
+						&.fa-times
+							color #e03524
+
+						&.fa-check
+							color #84c32f
+
+			> p
+				margin 0
+				padding 0.6em 1.2em
+				font-size 1em
+				color #444
+				border-top solid 1px #eee
+
+				> b
+					> i
+						margin-right 0.25em
+
+				&.success
+					> b
+						color #39adad
+
+				&:not(.success)
+					> b
+						color #ad4339
+
+	</style>
+	<script>
+		import CONFIG from '../../common/scripts/config';
+
+		this.on('mount', () => {
+			this.update({
+				network: navigator.onLine
+			});
+
+			if (!this.network) {
+				this.update({
+					end: true
+				});
+				return;
+			}
+
+			// Check internet connection
+			fetch('https://google.com?rand=' + Math.random(), {
+				mode: 'no-cors'
+			}).then(() => {
+				this.update({
+					internet: true
+				});
+
+				// Check misskey server is available
+				fetch(`${CONFIG.apiUrl}/meta`).then(() => {
+					this.update({
+						end: true,
+						server: true
+					});
+				})
+				.catch(() => {
+					this.update({
+						end: true,
+						server: false
+					});
+				});
+			})
+			.catch(() => {
+				this.update({
+					end: true,
+					internet: false
+				});
+			});
+		});
+	</script>
+</mk-troubleshooter>
