@@ -50,7 +50,7 @@
     "@types/mocha": "2.2.43",
     "@types/mongodb": "2.2.13",
     "@types/monk": "1.0.6",
-    "@types/morgan": "1.7.33",
+    "@types/morgan": "1.7.35",
     "@types/ms": "0.7.30",
     "@types/multer": "1.3.2",
     "@types/node": "8.0.33",
