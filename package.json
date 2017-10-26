@@ -42,7 +42,7 @@
     "@types/gulp-tslint": "3.6.31",
     "@types/gulp-typescript": "2.13.0",
     "@types/gulp-uglify": "0.0.30",
-    "@types/gulp-util": "3.0.31",
+    "@types/gulp-util": "3.0.33",
     "@types/inquirer": "0.0.34",
     "@types/is-root": "1.0.0",
     "@types/is-url": "1.2.28",
