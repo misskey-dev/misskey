@@ -1,4 +1,6 @@
 common:
+  misskey: "Misskeyに何でも投稿して皆と共有しましょう。"
+
   time:
     unknown: "なぞのじかん"
     future: "未来"

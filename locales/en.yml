@@ -1,4 +1,6 @@
 common:
+  misskey: "Note everything and share it others using Misskey."
+
   time:
     unknown: "unknown"
     future: "future"
