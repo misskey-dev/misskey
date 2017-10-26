@@ -25,7 +25,7 @@
     "@types/body-parser": "1.16.5",
     "@types/chai": "4.0.4",
     "@types/chai-http": "3.0.3",
-    "@types/chalk": "0.4.31",
+    "@types/chalk": "2.2.0",
     "@types/compression": "0.0.34",
     "@types/cors": "2.8.1",
     "@types/debug": "0.0.30",
