@@ -319,18 +319,26 @@
 </mk-ui-header-notifications>
 
 <mk-ui-header-nav>
-	<ul if={ SIGNIN }>
-		<li class="home { active: page == 'home' }">
-			<a href={ CONFIG.url }>
-				<i class="fa fa-home"></i>
-				<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
-			</a>
-		</li>
-		<li class="messaging">
-			<a onclick={ messaging }>
-				<i class="fa fa-comments"></i>
-				<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
-				<i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i>
+	<ul>
+		<virtual if={ SIGNIN }>
+			<li class="home { active: page == 'home' }">
+				<a href={ CONFIG.url }>
+					<i class="fa fa-home"></i>
+					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
+				</a>
+			</li>
+			<li class="messaging">
+				<a onclick={ messaging }>
+					<i class="fa fa-comments"></i>
+					<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
+					<i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i>
+				</a>
+			</li>
+		</virtual>
+		<li class="bbs">
+			<a href={ CONFIG.url + '/bbs' }>
+				<i class="fa fa-coffee"></i>
+				<p>%i18n:desktop.tags.mk-ui-header-nav.bbs%</p>
 			</a>
 		</li>
 		<li class="info">

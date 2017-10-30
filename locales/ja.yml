@@ -241,6 +241,7 @@ desktop:
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
+      bbs: "掲示板"
       info: "お知らせ"
 
     mk-ui-header-search:
@@ -350,6 +351,11 @@ desktop:
 
     mk-repost-form-window:
       title: "この投稿をRepostしますか？"
+
+    mk-bbs-page:
+      title: "Misskey掲示板"
+      new: "スレッドを作成"
+      thread-title: "スレッドのタイトル"
 
 mobile:
   tags:

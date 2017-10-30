@@ -241,6 +241,7 @@ desktop:
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
+      bbs: "BBS"
       info: "News"
 
     mk-ui-header-search:
@@ -350,6 +351,11 @@ desktop:
 
     mk-repost-form-window:
       title: "Are you sure you want to repost this post?"
+
+    mk-bbs-page:
+      title: "Misskey BBS"
+      new: "Create new thread"
+      thread-title: "Thread title"
 
 mobile:
   tags:
