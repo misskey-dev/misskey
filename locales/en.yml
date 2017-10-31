@@ -164,6 +164,12 @@ common:
     mk-uploader:
       waiting: "Waiting"
 
+ch:
+  tags:
+    mk-index:
+      new: "Create new channel"
+      channel-title: "Channel title"
+
 desktop:
   tags:
     mk-api-info:
@@ -241,6 +247,7 @@ desktop:
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
+      ch: "Channels"
       info: "News"
 
     mk-ui-header-search:
@@ -353,6 +360,9 @@ desktop:
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "Select file(s)"
+
     mk-drive-file-viewer:
       download: "Download"
       rename: "Rename"
@@ -491,6 +501,7 @@ mobile:
       home: "Home"
       notifications: "Notifications"
       messaging: "Messages"
+      ch: "Channels"
       drive: "Drive"
       settings: "Settings"
       about: "About Misskey"

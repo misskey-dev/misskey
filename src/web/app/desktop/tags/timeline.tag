@@ -112,6 +112,7 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
+					<p class="channel" if={ p.channel != null }><a href={ CONFIG.chUrl + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
 					<a class="reply" if={ p.reply_to }>
 						<i class="fa fa-reply"></i>
 					</a>
@@ -332,6 +333,9 @@
 									font-size .9em
 									font-weight 400
 									font-style normal
+
+							> .channel
+								margin 0
 
 							> .reply
 								margin-right 8px

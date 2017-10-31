@@ -164,6 +164,12 @@ common:
     mk-uploader:
       waiting: "待機中"
 
+ch:
+  tags:
+    mk-index:
+      new: "チャンネルを作成"
+      channel-title: "チャンネルのタイトル"
+
 desktop:
   tags:
     mk-api-info:
@@ -241,6 +247,7 @@ desktop:
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
+      ch: "チャンネル"
       info: "お知らせ"
 
     mk-ui-header-search:
@@ -353,6 +360,9 @@ desktop:
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "ファイルを選択"
+
     mk-drive-file-viewer:
       download: "ダウンロード"
       rename: "名前を変更"
@@ -491,6 +501,7 @@ mobile:
       home: "ホーム"
       notifications: "通知"
       messaging: "メッセージ"
+      ch: "チャンネル"
       search: "検索"
       drive: "ドライブ"
       settings: "設定"

@@ -19,6 +19,7 @@ require('./page/settings/authorized-apps.tag');
 require('./page/settings/twitter.tag');
 require('./page/messaging.tag');
 require('./page/messaging-room.tag');
+require('./page/selectdrive.tag');
 require('./home.tag');
 require('./home-timeline.tag');
 require('./timeline.tag');

@@ -231,10 +231,11 @@
 				<li><a href="/i/messaging"><i class="fa fa-comments-o"></i>%i18n:mobile.tags.mk-ui-nav.messaging%<i class="i fa fa-circle" if={ hasUnreadMessagingMessages }></i><i class="fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li><a onclick={ search }><i class="fa fa-search"></i>%i18n:mobile.tags.mk-ui-nav.search%<i class="fa fa-angle-right"></i></a></li>
+				<li><a href={ CONFIG.chUrl } target="_blank"><i class="fa fa-television"></i>%i18n:mobile.tags.mk-ui-nav.ch%<i class="fa fa-angle-right"></i></a></li>
+				<li><a href="/i/drive"><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-ui-nav.drive%<i class="fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
-				<li><a href="/i/drive"><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-ui-nav.drive%<i class="fa fa-angle-right"></i></a></li>
+				<li><a onclick={ search }><i class="fa fa-search"></i>%i18n:mobile.tags.mk-ui-nav.search%<i class="fa fa-angle-right"></i></a></li>
 			</ul>
 			<ul>
 				<li><a href="/i/settings"><i class="fa fa-cog"></i>%i18n:mobile.tags.mk-ui-nav.settings%<i class="fa fa-angle-right"></i></a></li>

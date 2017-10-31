@@ -474,8 +474,25 @@ const endpoints: Endpoint[] = [
 		name: 'messaging/messages/create',
 		withCredential: true,
 		kind: 'messaging-write'
-	}
-
+	},
+	{
+		name: 'channels/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 3,
+			minInterval: ms('10seconds')
+		}
+	},
+	{
+		name: 'channels/show'
+	},
+	{
+		name: 'channels/posts'
+	},
+	{
+		name: 'channels'
+	},
 ];
 
 export default endpoints;
