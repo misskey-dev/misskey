@@ -13,7 +13,7 @@ import Watching from '../../models/post-watching';
 import serialize from '../../serializers/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
-import event from '../../event';
+import { default as event, publishChannelStream } from '../../event';
 import config from '../../../conf';
 
 /**
@@ -257,6 +257,11 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// Publish event to myself's stream
 	event(user._id, 'post', postObj);
+
+	// Publish event to channel
+	if (channel) {
+		publishChannelStream(channel._id, 'post', postObj);
+	}
 
 	// Fetch all followers
 	const followers = await Following

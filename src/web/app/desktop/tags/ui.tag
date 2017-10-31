@@ -335,10 +335,10 @@
 				</a>
 			</li>
 		</virtual>
-		<li class="channels">
-			<a href={ CONFIG.url + '/channel' }>
+		<li class="ch">
+			<a href={ CONFIG.chUrl } target="_blank">
 				<i class="fa fa-television"></i>
-				<p>%i18n:desktop.tags.mk-ui-header-nav.channels%</p>
+				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
 			</a>
 		</li>
 		<li class="info">

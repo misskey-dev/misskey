@@ -10,8 +10,6 @@ export default me => {
 	route('/',                 index);
 	route('/selectdrive',      selectDrive);
 	route('/i>mentions',       mentions);
-	route('/channel',          channels);
-	route('/channel/:channel', channel);
 	route('/post::post',       post);
 	route('/search::query',    search);
 	route('/:user',            user.bind(null, 'home'));
@@ -55,16 +53,6 @@ export default me => {
 		const el = document.createElement('mk-post-page');
 		el.setAttribute('post', ctx.params.post);
 		mount(el);
-	}
-
-	function channel(ctx) {
-		const el = document.createElement('mk-channel-page');
-		el.setAttribute('id', ctx.params.channel);
-		mount(el);
-	}
-
-	function channels() {
-		mount(document.createElement('mk-channels-page'));
 	}
 
 	function selectDrive() {

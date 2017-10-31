@@ -1,14 +1,19 @@
-<mk-channel-page>
-	<mk-ui ref="ui">
-		<main if={ !parent.fetching }>
-			<h1>{ parent.channel.title }</h1>
-			<virtual if={ parent.posts }>
-				<mk-channel-post each={ parent.posts.reverse() } post={ this } form={ parent.refs.form }/>
-			</virtual>
-			<hr>
-			<mk-channel-form channel={ parent.channel } ref="form"/>
-		</main>
-	</mk-ui>
+<mk-channel>
+	<main if={ !fetching }>
+		<h1>{ channel.title }</h1>
+		<virtual if={ posts }>
+			<mk-channel-post each={ posts.slice().reverse() } post={ this } form={ parent.refs.form }/>
+		</virtual>
+		<hr>
+		<mk-channel-form if={ SIGNIN } channel={ channel } ref="form"/>
+		<div if={ !SIGNIN }>
+			<p>参加するには<a href={ CONFIG.url }>ログインまたは新規登録</a>してください</p>
+		</div>
+		<hr>
+		<footer>
+			<small>Misskey ver { version } (葵 aoi)</small>
+		</footer>
+	</main>
 	<style>
 		:scope
 			display block
@@ -20,16 +25,18 @@
 					color #f00
 	</style>
 	<script>
-		import Progress from '../../../common/scripts/loading';
-		import ChannelStream from '../../../common/scripts/channel-stream';
+		import Progress from '../../common/scripts/loading';
+		import ChannelStream from '../../common/scripts/channel-stream';
 
+		this.mixin('i');
 		this.mixin('api');
 
 		this.id = this.opts.id;
 		this.fetching = true;
 		this.channel = null;
 		this.posts = null;
-		this.connection = new ChannelStream();
+		this.connection = new ChannelStream(this.id);
+		this.version = VERSION;
 
 		this.on('mount', () => {
 			document.documentElement.style.background = '#efefef';
@@ -56,9 +63,22 @@
 					posts: posts
 				});
 			});
+
+			this.connection.on('post', this.onPost);
 		});
+
+		this.on('unmount', () => {
+			this.connection.off('post', this.onPost);
+			this.connection.close();
+		});
+
+		this.onPost = post => {
+			this.posts.unshift(post);
+			this.update();
+		};
+
 	</script>
-</mk-channel-page>
+</mk-channel>
 
 <mk-channel-post>
 	<header>
@@ -127,7 +147,7 @@
 
 	</style>
 	<script>
-		import CONFIG from '../../../common/scripts/config';
+		import CONFIG from '../../common/scripts/config';
 
 		this.mixin('api');
 

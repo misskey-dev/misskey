@@ -164,6 +164,12 @@ common:
     mk-uploader:
       waiting: "待機中"
 
+ch:
+  tags:
+    mk-index:
+      new: "チャンネルを作成"
+      channel-title: "チャンネルのタイトル"
+
 desktop:
   tags:
     mk-api-info:
@@ -241,7 +247,7 @@ desktop:
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
-      channels: "チャンネル"
+      ch: "チャンネル"
       info: "お知らせ"
 
     mk-ui-header-search:
@@ -351,10 +357,6 @@ desktop:
 
     mk-repost-form-window:
       title: "この投稿をRepostしますか？"
-
-    mk-channels-page:
-      new: "チャンネルを作成"
-      channel-title: "チャンネルのタイトル"
 
 mobile:
   tags:
@@ -496,6 +498,7 @@ mobile:
       home: "ホーム"
       notifications: "通知"
       messaging: "メッセージ"
+      ch: "チャンネル"
       search: "検索"
       drive: "ドライブ"
       settings: "設定"

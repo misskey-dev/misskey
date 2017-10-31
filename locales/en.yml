@@ -164,6 +164,12 @@ common:
     mk-uploader:
       waiting: "Waiting"
 
+ch:
+  tags:
+    mk-index:
+      new: "Create new channel"
+      channel-title: "Channel title"
+
 desktop:
   tags:
     mk-api-info:
@@ -241,7 +247,7 @@ desktop:
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
-      channels: "Channels"
+      ch: "Channels"
       info: "News"
 
     mk-ui-header-search:
@@ -351,10 +357,6 @@ desktop:
 
     mk-repost-form-window:
       title: "Are you sure you want to repost this post?"
-
-    mk-channels-page:
-      new: "Create new channel"
-      channel-title: "Channel title"
 
 mobile:
   tags:
@@ -496,6 +498,7 @@ mobile:
       home: "Home"
       notifications: "Notifications"
       messaging: "Messages"
+      ch: "Channels"
       drive: "Drive"
       settings: "Settings"
       about: "About Misskey"
