@@ -395,6 +395,7 @@ mobile:
 
     mk-notifications-page:
       notifications: "通知"
+      read-all: "すべての通知を既読にしますか？"
 
     mk-post-page:
       title: "投稿"

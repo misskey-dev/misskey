@@ -196,17 +196,17 @@ const endpoints: Endpoint[] = [
 		kind: 'notification-read'
 	},
 	{
+		name: 'notifications/get_unread_count',
+		withCredential: true,
+		kind: 'notification-read'
+	},
+	{
 		name: 'notifications/delete',
 		withCredential: true,
 		kind: 'notification-write'
 	},
 	{
 		name: 'notifications/delete_all',
-		withCredential: true,
-		kind: 'notification-write'
-	},
-	{
-		name: 'notifications/mark_as_read',
 		withCredential: true,
 		kind: 'notification-write'
 	},

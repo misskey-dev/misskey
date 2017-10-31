@@ -395,6 +395,7 @@ mobile:
 
     mk-notifications-page:
       notifications: "Notifications"
+      read-all: "Are you sure you want to mark as read all your notifications?"
 
     mk-post-page:
       title: "Post"
