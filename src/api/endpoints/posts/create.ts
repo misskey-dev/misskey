@@ -228,7 +228,6 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// -----------------------------------------------------------
 	// Post processes
 
-
 	User.update({ _id: user._id }, {
 		$set: {
 			latest_post: post
