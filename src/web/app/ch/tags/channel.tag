@@ -196,7 +196,7 @@
 				: undefined;
 
 			this.api('posts/create', {
-				text: this.refs.text.value,
+				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
 				media_ids: files,
 				reply_to_id: this.reply ? this.reply.id : undefined,
 				channel_id: this.channel.id
