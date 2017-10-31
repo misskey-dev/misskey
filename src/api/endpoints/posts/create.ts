@@ -228,13 +228,6 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// -----------------------------------------------------------
 	// Post processes
 
-	if (channel) {
-		Channel.update({ _id: channel._id }, {
-			$inc: {
-				index: 1
-			}
-		});
-	}
 
 	User.update({ _id: user._id }, {
 		$set: {
@@ -260,8 +253,15 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// Publish event to myself's stream
 	event(user._id, 'post', postObj);
 
-	// Publish event to channel
 	if (channel) {
+		// Increment channel index(posts count)
+		Channel.update({ _id: channel._id }, {
+			$inc: {
+				index: 1
+			}
+		});
+
+		// Publish event to channel
 		publishChannelStream(channel._id, 'post', postObj);
 	}
 
