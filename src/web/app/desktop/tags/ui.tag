@@ -335,10 +335,10 @@
 				</a>
 			</li>
 		</virtual>
-		<li class="bbs">
-			<a href={ CONFIG.url + '/bbs' }>
-				<i class="fa fa-coffee"></i>
-				<p>%i18n:desktop.tags.mk-ui-header-nav.bbs%</p>
+		<li class="channels">
+			<a href={ CONFIG.url + '/channel' }>
+				<i class="fa fa-television"></i>
+				<p>%i18n:desktop.tags.mk-ui-header-nav.channels%</p>
 			</a>
 		</li>
 		<li class="info">

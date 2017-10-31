@@ -241,7 +241,7 @@ desktop:
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
-      bbs: "掲示板"
+      channels: "チャンネル"
       info: "お知らせ"
 
     mk-ui-header-search:

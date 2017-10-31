@@ -9,6 +9,7 @@ let page = null;
 export default me => {
 	route('/',              index);
 	route('/i>mentions',    mentions);
+	route('/channel',       channels);
 	route('/post::post',    post);
 	route('/search::query', search);
 	route('/:user',         user.bind(null, 'home'));
@@ -52,6 +53,10 @@ export default me => {
 		const el = document.createElement('mk-post-page');
 		el.setAttribute('post', ctx.params.post);
 		mount(el);
+	}
+
+	function channels() {
+		mount(document.createElement('mk-channels-page'));
 	}
 
 	function notFound() {

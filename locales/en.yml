@@ -241,7 +241,7 @@ desktop:
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
-      bbs: "BBS"
+      channels: "Channels"
       info: "News"
 
     mk-ui-header-search:

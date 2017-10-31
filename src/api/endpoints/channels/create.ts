@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Channel from '../../../models/channel';
-import serialize from '../../../serializers/channel';
+import Channel from '../../models/channel';
+import serialize from '../../serializers/channel';
 
 /**
  * Create a channel
