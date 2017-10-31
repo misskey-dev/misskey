@@ -360,6 +360,9 @@ desktop:
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "ファイルを選択"
+
     mk-drive-file-viewer:
       download: "ダウンロード"
       rename: "名前を変更"

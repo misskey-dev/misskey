@@ -1,9 +1,13 @@
 <mk-channel>
 	<main if={ !fetching }>
 		<h1>{ channel.title }</h1>
-		<virtual if={ posts }>
-			<mk-channel-post each={ posts.slice().reverse() } post={ this } form={ parent.refs.form }/>
-		</virtual>
+		<p if={ postsFetching }>読み込み中<mk-ellipsis/></p>
+		<div if={ !postsFetching }>
+			<p if={ posts == null }></p>>
+			<virtual if={ posts != null }>
+				<mk-channel-post each={ posts.slice().reverse() } post={ this } form={ parent.refs.form }/>
+			</virtual>
+		</div>
 		<hr>
 		<mk-channel-form if={ SIGNIN } channel={ channel } ref="form"/>
 		<div if={ !SIGNIN }>
@@ -33,6 +37,7 @@
 
 		this.id = this.opts.id;
 		this.fetching = true;
+		this.postsFetching = true;
 		this.channel = null;
 		this.posts = null;
 		this.connection = new ChannelStream(this.id);
@@ -60,6 +65,7 @@
 				channel_id: this.id
 			}).then(posts => {
 				this.update({
+					postsFetching: false,
 					posts: posts
 				});
 			});
@@ -84,6 +90,7 @@
 	<header>
 		<a class="index" onclick={ reply }>{ post.index }:</a>
 		<a class="name" href={ '/' + post.user.username }><b>{ post.user.name }</b></a>
+		<mk-time time={ post.created_at }/>
 		<mk-time time={ post.created_at } mode="detail"/>
 		<span>ID:<i>{ post.user.username }</i></span>
 	</header>
@@ -113,6 +120,17 @@
 
 				> mk-time
 					margin-right 0.5em
+
+					&:first-of-type
+						display none
+
+				@media (max-width 600px)
+					> mk-time
+						&:first-of-type
+							display initial
+
+						&:last-of-type
+							display none
 
 			> div
 				padding 0 0 1em 2em
