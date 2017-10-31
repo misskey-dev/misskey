@@ -2,7 +2,9 @@
 	<mk-ui ref="ui">
 		<main if={ !parent.fetching }>
 			<h1>{ parent.channel.title }</h1>
-			<mk-channel-post if={ parent.posts } each={ parent.posts.reverse() } post={ this } form={ parent.refs.form }/>
+			<virtual if={ parent.posts }>
+				<mk-channel-post each={ parent.posts.reverse() } post={ this } form={ parent.refs.form }/>
+			</virtual>
 			<hr>
 			<mk-channel-form channel={ parent.channel } ref="form"/>
 		</main>
@@ -68,6 +70,11 @@
 	<div>
 		<a if={ post.reply_to }>&gt;&gt;{ post.reply_to.index }</a>
 		{ post.text }
+		<div class="media" if={ post.media }>
+			<virtual each={ file in post.media }>
+				<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
+			</virtual>
+		</div>
 	</div>
 	<style>
 		:scope
@@ -109,13 +116,19 @@
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
 		{ wait ? 'やってます' : 'やる' }<mk-ellipsis if={ wait }/>
 	</button>
-
+	<br>
+	<button onclick={ drive }>ドライブ</button>
+	<ol if={ files }>
+		<li each={ files }>{ name }</li>
+	</ol>
 	<style>
 		:scope
 			display block
 
 	</style>
 	<script>
+		import CONFIG from '../../../common/scripts/config';
+
 		this.mixin('api');
 
 		this.channel = this.opts.channel;
@@ -128,6 +141,9 @@
 
 		this.clear = () => {
 			this.clearReply();
+			this.update({
+				files: null
+			});
 			this.refs.text.value = '';
 		};
 
@@ -136,8 +152,13 @@
 				wait: true
 			});
 
+			const files = this.files && this.files.length > 0
+				? this.files.map(f => f.id)
+				: undefined;
+
 			this.api('posts/create', {
 				text: this.refs.text.value,
+				media_ids: files,
 				reply_to_id: this.reply ? this.reply.id : undefined,
 				channel_id: this.channel.id
 			}).then(data => {
@@ -151,5 +172,13 @@
 			});
 		};
 
+		this.drive = () => {
+			window['cb'] = files => {
+				this.update({
+					files: files
+				});
+			};
+			window.open(CONFIG.url + '/selectdrive?multiple=true', '_blank');
+		};
 	</script>
 </mk-channel-form>

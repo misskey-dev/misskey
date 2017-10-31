@@ -8,6 +8,7 @@ let page = null;
 
 export default me => {
 	route('/',                 index);
+	route('/selectdrive',      selectDrive);
 	route('/i>mentions',       mentions);
 	route('/channel',          channels);
 	route('/channel/:channel', channel);
@@ -64,6 +65,10 @@ export default me => {
 
 	function channels() {
 		mount(document.createElement('mk-channels-page'));
+	}
+
+	function selectDrive() {
+		mount(document.createElement('mk-selectdrive-page'));
 	}
 
 	function notFound() {
