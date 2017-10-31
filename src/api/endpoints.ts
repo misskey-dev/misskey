@@ -490,6 +490,9 @@ const endpoints: Endpoint[] = [
 	{
 		name: 'channels/posts'
 	},
+	{
+		name: 'channels'
+	},
 ];
 
 export default endpoints;
