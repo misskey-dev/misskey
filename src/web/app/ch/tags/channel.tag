@@ -100,7 +100,9 @@
 		{ post.text }
 		<div class="media" if={ post.media }>
 			<virtual each={ file in post.media }>
-				<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
+				<a href={ file.url } target="_blank">
+					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
+				</a>
 			</virtual>
 		</div>
 	</div>
@@ -135,6 +137,14 @@
 
 			> div
 				padding 0 0 1em 2em
+
+				> .media
+					> a
+						display block
+
+						> img
+							max-width 100%
+							vertical-align bottom
 
 	</style>
 	<script>
