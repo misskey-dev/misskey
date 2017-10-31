@@ -153,6 +153,16 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		if (repost && !isQuote) {
 			return rej('チャンネル内部では引用ではないRepostをすることはできません');
 		}
+	} else {
+		// 返信対象の投稿がチャンネルへの投稿だったらダメ
+		if (inReplyToPost && inReplyToPost.channel_id != null) {
+			return rej('チャンネル外部からチャンネル内部の投稿に返信することはできません');
+		}
+
+		// Repost対象の投稿がチャンネルへの投稿だったらダメ
+		if (repost && repost.channel_id != null) {
+			return rej('チャンネル外部からチャンネル内部の投稿をRepostすることはできません');
+		}
 	}
 
 	// Get 'poll' parameter
@@ -199,6 +209,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	const post = await Post.insert({
 		created_at: new Date(),
 		channel_id: channel ? channel._id : undefined,
+		index: channel ? channel.index + 1 : undefined,
 		media_ids: files ? files.map(file => file._id) : undefined,
 		reply_to_id: inReplyToPost ? inReplyToPost._id : undefined,
 		repost_id: repost ? repost._id : undefined,
@@ -216,6 +227,12 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// -----------------------------------------------------------
 	// Post processes
+
+	Channel.update({ _id: channel._id }, {
+		$inc: {
+			index: 1
+		}
+	});
 
 	User.update({ _id: user._id }, {
 		$set: {

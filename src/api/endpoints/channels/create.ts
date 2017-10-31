@@ -21,7 +21,8 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	const channel = await Channel.insert({
 		created_at: new Date(),
 		user_id: user._id,
-		title: title
+		title: title,
+		index: 0
 	});
 
 	// Response

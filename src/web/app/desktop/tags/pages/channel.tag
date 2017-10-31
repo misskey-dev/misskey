@@ -2,8 +2,9 @@
 	<mk-ui ref="ui">
 		<main if={ !parent.fetching }>
 			<h1>{ parent.channel.title }</h1>
-			<mk-channel-post each={ parent.posts } post={ this }/>
-			<mk-channel-form channel={ parent.channel }/>
+			<mk-channel-post if={ parent.posts } each={ parent.posts.reverse() } post={ this } form={ parent.refs.form }/>
+			<hr>
+			<mk-channel-form channel={ parent.channel } ref="form"/>
 		</main>
 	</mk-ui>
 	<style>
@@ -11,6 +12,8 @@
 			display block
 
 			main
+				padding 8px
+
 				> h1
 					color #f00
 	</style>
@@ -57,9 +60,13 @@
 
 <mk-channel-post>
 	<header>
-		<b>{ post.user.name }</b>
+		<a class="index" onclick={ reply }>{ post.index }:</a>
+		<a class="name" href={ '/' + post.user.username }><b>{ post.user.name }</b></a>
+		<mk-time time={ post.created_at } mode="detail"/>
+		<span>ID:<i>{ post.user.username }</i></span>
 	</header>
 	<div>
+		<a if={ post.reply_to }>&gt;&gt;{ post.reply_to.index }</a>
 		{ post.text }
 	</div>
 	<style>
@@ -69,17 +76,35 @@
 			padding 0
 
 			> header
-				> b
+				> .index
+					margin-right 0.25em
+					color #000
+
+				> .name
+					margin-right 0.5em
 					color #008000
+
+				> mk-time
+					margin-right 0.5em
+
+			> div
+				padding 0 0 1em 2em
 
 	</style>
 	<script>
 		this.post = this.opts.post;
+		this.form = this.opts.form;
+
+		this.reply = () => {
+			this.form.update({
+				reply: this.post
+			});
+		};
 	</script>
 </mk-channel-post>
 
 <mk-channel-form>
-	<p if={ reply }>{ reply.user.name }への返信: (or <a onclick={ clearReply }>キャンセル</a>)</p>
+	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a onclick={ clearReply }>[x]</a></p>
 	<textarea ref="text" disabled={ wait }></textarea>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
 		{ wait ? 'やってます' : 'やる' }<mk-ellipsis if={ wait }/>

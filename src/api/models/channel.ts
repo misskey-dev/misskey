@@ -10,4 +10,5 @@ export type IChannel = {
 	created_at: Date;
 	title: string;
 	user_id: mongo.ObjectID;
+	index: number;
 };
