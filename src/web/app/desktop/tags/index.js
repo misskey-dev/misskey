@@ -61,7 +61,7 @@ require('./pages/user.tag');
 require('./pages/post.tag');
 require('./pages/search.tag');
 require('./pages/not-found.tag');
-require('./pages/bbs.tag');
+require('./pages/channels.tag');
 require('./autocomplete-suggestion.tag');
 require('./progress-dialog.tag');
 require('./user-preview.tag');

@@ -1,11 +1,11 @@
 import * as mongo from 'mongodb';
 import db from '../../db/mongodb';
 
-const collection = db.get('bbs_threads');
+const collection = db.get('channels');
 
 export default collection as any; // fuck type definition
 
-export type IBbsThread = {
+export type IChannel = {
 	_id: mongo.ObjectID;
 	created_at: Date;
 	title: string;

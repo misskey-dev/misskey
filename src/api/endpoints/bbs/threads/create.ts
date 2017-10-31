@@ -2,11 +2,11 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Thread from '../../../models/bbs-thread';
-import serialize from '../../../serializers/bbs-thread';
+import Channel from '../../../models/channel';
+import serialize from '../../../serializers/channel';
 
 /**
- * Create a thread
+ * Create a channel
  *
  * @param {any} params
  * @param {any} user
@@ -17,13 +17,13 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	const [title, titleErr] = $(params.title).string().range(1, 100).$;
 	if (titleErr) return rej('invalid title param');
 
-	// Create a thread
-	const thread = await Thread.insert({
+	// Create a channel
+	const channel = await Channel.insert({
 		created_at: new Date(),
 		user_id: user._id,
 		title: title
 	});
 
 	// Response
-	res(await serialize(thread));
+	res(await serialize(channel));
 });

@@ -352,10 +352,9 @@ desktop:
     mk-repost-form-window:
       title: "この投稿をRepostしますか？"
 
-    mk-bbs-page:
-      title: "Misskey掲示板"
-      new: "スレッドを作成"
-      thread-title: "スレッドのタイトル"
+    mk-channels-page:
+      new: "チャンネルを作成"
+      channel-title: "チャンネルのタイトル"
 
 mobile:
   tags:

@@ -352,10 +352,9 @@ desktop:
     mk-repost-form-window:
       title: "Are you sure you want to repost this post?"
 
-    mk-bbs-page:
-      title: "Misskey BBS"
-      new: "Create new thread"
-      thread-title: "Thread title"
+    mk-channels-page:
+      new: "Create new channel"
+      channel-title: "Channel title"
 
 mobile:
   tags:

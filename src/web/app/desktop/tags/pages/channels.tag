@@ -1,4 +1,4 @@
-<mk-bbs-page>
+<mk-channels-page>
 	<mk-ui ref="ui">
 		<main>
 			<h1>%i18n:desktop.tags.mk-bbs-page.title%</h1>
@@ -18,13 +18,13 @@
 		});
 
 		this.new = () => {
-			const title = window.prompt('%i18n:desktop.tags.mk-bbs-page.thread-title%');
+			const title = window.prompt('%i18n:desktop.tags.mk-bbs-page.channel-title%');
 
-			this.api('bbs/threads/create', {
+			this.api('bbs/channels/create', {
 				title: title
-			}).then(thread => {
-				location.href = '/bbs/' + thread.id;
+			}).then(channel => {
+				location.href = '/bbs/' + channel.id;
 			});
 		};
 	</script>
-</mk-bbs-page>
+</mk-channels-page>
