@@ -3,7 +3,7 @@
 		<h1>{ channel.title }</h1>
 		<p if={ postsFetching }>読み込み中<mk-ellipsis/></p>
 		<div if={ !postsFetching }>
-			<p if={ posts == null }></p>>
+			<p if={ posts == null }>まだ投稿がありません</p>
 			<virtual if={ posts != null }>
 				<mk-channel-post each={ posts.slice().reverse() } post={ this } form={ parent.refs.form }/>
 			</virtual>
