@@ -18,7 +18,7 @@
 		this.new = () => {
 			const title = window.prompt('%i18n:desktop.tags.mk-channels-page.channel-title%');
 
-			this.api('bbs/channels/create', {
+			this.api('channels/create', {
 				title: title
 			}).then(channel => {
 				location.href = '/channel/' + channel.id;

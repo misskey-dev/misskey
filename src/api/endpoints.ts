@@ -484,6 +484,9 @@ const endpoints: Endpoint[] = [
 			minInterval: ms('10seconds')
 		}
 	},
+	{
+		name: 'channels/show'
+	},
 ];
 
 export default endpoints;
