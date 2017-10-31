@@ -483,7 +483,7 @@
 			if (fn == null || fn == '') return;
 			switch (fn) {
 				case '1':
-					this.refs.file.click();
+					this.selectLocalFile();
 					break;
 				case '2':
 					this.urlUpload();
@@ -501,6 +501,10 @@
 					alert('ごめんなさい！フォルダの削除は未実装です...。');
 					break;
 			}
+		};
+
+		this.selectLocalFile = () => {
+			this.refs.file.click();
 		};
 
 		this.createFolder = () => {

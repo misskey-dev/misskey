@@ -11,7 +11,7 @@
 		</div>
 		<hr>
 		<footer>
-			<small>Misskey ver { version } (葵 aoi)</small>
+			<small><a href={ CONFIG.url }>Misskey</a> ver { version } (葵 aoi)</small>
 		</footer>
 	</main>
 	<style>
