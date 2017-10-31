@@ -228,11 +228,13 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// -----------------------------------------------------------
 	// Post processes
 
-	Channel.update({ _id: channel._id }, {
-		$inc: {
-			index: 1
-		}
-	});
+	if (channel) {
+		Channel.update({ _id: channel._id }, {
+			$inc: {
+				index: 1
+			}
+		});
+	}
 
 	User.update({ _id: user._id }, {
 		$set: {
