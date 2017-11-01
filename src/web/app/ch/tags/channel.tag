@@ -147,7 +147,7 @@
 
 				> .media
 					> a
-						display block
+						display inline-block
 
 						> img
 							max-width 100%
