@@ -321,7 +321,10 @@
 					files: files
 				});
 			};
-			window.open(CONFIG.url + '/selectdrive?multiple=true', '_blank');
+
+			window.open(CONFIG.url + '/selectdrive?multiple=true',
+				'drive_window',
+				'height=500,width=800');
 		};
 
 		this.onkeydown = e => {
