@@ -17,7 +17,7 @@
 		<div class="body">
 			<p if={ postsFetching }>読み込み中<mk-ellipsis/></p>
 			<div if={ !postsFetching }>
-				<p if={ posts == null }>まだ投稿がありません</p>
+				<p if={ posts == null || posts.length == 0 }>まだ投稿がありません</p>
 				<virtual if={ posts != null }>
 					<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
 				</virtual>
