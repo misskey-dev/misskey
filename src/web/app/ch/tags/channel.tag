@@ -51,10 +51,18 @@
 
 			Progress.start();
 
+			const fetched = false;
+
+			// チャンネル概要読み込み
 			this.api('channels/show', {
 				channel_id: this.id
 			}).then(channel => {
-				Progress.done();
+				if (fetched) {
+					Progress.done();
+				} else {
+					Progress.set(0.5);
+					fetched = true;
+				}
 
 				this.update({
 					fetching: false,
@@ -64,9 +72,17 @@
 				document.title = channel.title + ' | Misskey'
 			});
 
+			// 投稿読み込み
 			this.api('channels/posts', {
 				channel_id: this.id
 			}).then(posts => {
+				if (fetched) {
+					Progress.done();
+				} else {
+					Progress.set(0.5);
+					fetched = true;
+				}
+
 				this.update({
 					postsFetching: false,
 					posts: posts
