@@ -96,7 +96,7 @@
 		<span>ID:<i>{ post.user.username }</i></span>
 	</header>
 	<div>
-		<a if={ post.reply_to }>&gt;&gt;{ post.reply_to.index }</a>
+		<a if={ post.reply }>&gt;&gt;{ post.reply.index }</a>
 		{ post.text }
 		<div class="media" if={ post.media }>
 			<virtual each={ file in post.media }>
@@ -208,7 +208,7 @@
 			this.api('posts/create', {
 				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
 				media_ids: files,
-				reply_to_id: this.reply ? this.reply.id : undefined,
+				reply_id: this.reply ? this.reply.id : undefined,
 				channel_id: this.channel.id
 			}).then(data => {
 				this.clear();

@@ -13,7 +13,7 @@ export type IPost = {
 	channel_id: mongo.ObjectID;
 	created_at: Date;
 	media_ids: mongo.ObjectID[];
-	reply_to_id: mongo.ObjectID;
+	reply_id: mongo.ObjectID;
 	repost_id: mongo.ObjectID;
 	poll: {}; // todo
 	text: string;

@@ -123,9 +123,9 @@ const self = (
 		});
 		_post.next = next ? next._id : null;
 
-		if (_post.reply_to_id) {
+		if (_post.reply_id) {
 			// Populate reply to post
-			_post.reply_to = await self(_post.reply_to_id, meId, {
+			_post.reply = await self(_post.reply_id, meId, {
 				detail: false
 			});
 		}

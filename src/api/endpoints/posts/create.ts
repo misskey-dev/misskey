@@ -103,9 +103,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 	}
 
-	// Get 'in_reply_to_post_id' parameter
-	const [inReplyToPostId, inReplyToPostIdErr] = $(params.reply_to_id).optional.id().$;
-	if (inReplyToPostIdErr) return rej('invalid in_reply_to_post_id');
+	// Get 'in_reply_post_id' parameter
+	const [inReplyToPostId, inReplyToPostIdErr] = $(params.reply_id).optional.id().$;
+	if (inReplyToPostIdErr) return rej('invalid in_reply_post_id');
 
 	let inReplyToPost: IPost = null;
 	if (inReplyToPostId !== undefined) {
@@ -192,7 +192,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	if (user.latest_post) {
 		if (deepEqual({
 			text: user.latest_post.text,
-			reply: user.latest_post.reply_to_id ? user.latest_post.reply_to_id.toString() : null,
+			reply: user.latest_post.reply_id ? user.latest_post.reply_id.toString() : null,
 			repost: user.latest_post.repost_id ? user.latest_post.repost_id.toString() : null,
 			media_ids: (user.latest_post.media_ids || []).map(id => id.toString())
 		}, {
@@ -211,7 +211,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		channel_id: channel ? channel._id : undefined,
 		index: channel ? channel.index + 1 : undefined,
 		media_ids: files ? files.map(file => file._id) : undefined,
-		reply_to_id: inReplyToPost ? inReplyToPost._id : undefined,
+		reply_id: inReplyToPost ? inReplyToPost._id : undefined,
 		repost_id: repost ? repost._id : undefined,
 		poll: poll,
 		text: text,
