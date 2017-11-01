@@ -4,7 +4,7 @@
 		<button class="upload" onclick={ upload }><i class="fa fa-upload"></i></button>
 		<button if={ multiple } class="ok" onclick={ ok }><i class="fa fa-check"></i></button>
 	</header>
-	<mk-drive ref="browser" select-file={ true } multiple={ multiple }/>
+	<mk-drive ref="browser" select-file={ true } multiple={ multiple } is-naked={ true } top={ 42 }/>
 
 	<style>
 		:scope
@@ -14,7 +14,13 @@
 			background #fff
 
 			> header
-				border-bottom solid 1px #eee
+				position fixed
+				top 0
+				left 0
+				width 100%
+				z-index 1000
+				background #fff
+				box-shadow 0 1px rgba(0, 0, 0, 0.1)
 
 				> h1
 					margin 0
@@ -43,9 +49,7 @@
 					width 42px
 
 			> mk-drive
-				height calc(100% - 42px)
-				overflow scroll
-				-webkit-overflow-scrolling touch
+				top 42px
 
 	</style>
 	<script>
