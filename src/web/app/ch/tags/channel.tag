@@ -1,5 +1,5 @@
 <mk-channel>
-	<header><a href={ CONFIG.chUrl }>Misskey Channels</a></header>
+	<mk-header/>
 	<hr>
 	<main if={ !fetching }>
 		<h1>{ channel.title }</h1>
@@ -36,7 +36,6 @@
 	<style>
 		:scope
 			display block
-			padding 8px
 
 			> main
 				> h1

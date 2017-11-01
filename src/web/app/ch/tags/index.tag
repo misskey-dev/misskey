@@ -1,4 +1,6 @@
 <mk-index>
+	<mk-header/>
+	<hr>
 	<button onclick={ n }>%i18n:ch.tags.mk-index.new%</button>
 	<hr>
 	<ul if={ channels }>
