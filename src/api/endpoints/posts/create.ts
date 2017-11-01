@@ -249,8 +249,11 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 	}
 
-	// Publish event to myself's stream
-	event(user._id, 'post', postObj);
+	// TODO
+	if (!channel) {
+		// Publish event to myself's stream
+		event(user._id, 'post', postObj);
+	}
 
 	if (channel) {
 		// Increment channel index(posts count)
