@@ -118,7 +118,7 @@
 				position sticky
 				z-index 1
 				top 0
-				background rgba(239, 239, 239, 0.7)
+				background rgba(239, 239, 239, 0.9)
 
 				> .index
 					margin-right 0.25em
