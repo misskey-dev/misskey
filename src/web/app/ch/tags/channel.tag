@@ -27,6 +27,7 @@
 
 			> main
 				> h1
+					font-size 1.5em
 					color #f00
 	</style>
 	<script>
@@ -90,7 +91,7 @@
 <mk-channel-post>
 	<header>
 		<a class="index" onclick={ reply }>{ post.index }:</a>
-		<a class="name" href={ '/' + post.user.username }><b>{ post.user.name }</b></a>
+		<a class="name" href={ CONFIG.url + '/' + post.user.username }><b>{ post.user.name }</b></a>
 		<mk-time time={ post.created_at }/>
 		<mk-time time={ post.created_at } mode="detail"/>
 		<span>ID:<i>{ post.user.username }</i></span>
@@ -113,6 +114,12 @@
 			padding 0
 
 			> header
+				position -webkit-sticky
+				position sticky
+				z-index 1
+				top 0
+				background rgba(239, 239, 239, 0.7)
+
 				> .index
 					margin-right 0.25em
 					color #000
