@@ -44,6 +44,7 @@
 		this.posts = null;
 		this.connection = new ChannelStream(this.id);
 		this.version = VERSION;
+		this.unreadCount = 0;
 
 		this.on('mount', () => {
 			document.documentElement.style.background = '#efefef';
@@ -73,18 +74,31 @@
 			});
 
 			this.connection.on('post', this.onPost);
+			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 		});
 
 		this.on('unmount', () => {
 			this.connection.off('post', this.onPost);
 			this.connection.close();
+			document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		});
 
 		this.onPost = post => {
 			this.posts.unshift(post);
 			this.update();
+
+			if (document.hidden && this.SIGNIN && post.user_id !== this.I.id) {
+				this.unreadCount++;
+				document.title = `(${this.unreadCount}) ${this.channel.title} | Misskey`;
+			}
 		};
 
+		this.onVisibilitychange = () => {
+			if (!document.hidden) {
+				this.unreadCount = 0;
+				document.title = this.channel.title + ' | Misskey'
+			}
+		};
 	</script>
 </mk-channel>
 
