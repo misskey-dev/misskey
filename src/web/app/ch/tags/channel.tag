@@ -182,12 +182,13 @@
 
 <mk-channel-form>
 	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a onclick={ clearReply }>[x]</a></p>
-	<textarea ref="text" disabled={ wait }></textarea>
+	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste }></textarea>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
 		{ wait ? 'やってます' : 'やる' }<mk-ellipsis if={ wait }/>
 	</button>
 	<br>
 	<button onclick={ drive }>ドライブ</button>
+	<mk-uploader ref="uploader"/>
 	<ol if={ files }>
 		<li each={ files }>{ name }</li>
 	</ol>
@@ -202,6 +203,19 @@
 		this.mixin('api');
 
 		this.channel = this.opts.channel;
+		this.files = null;
+
+		this.on('mount', () => {
+			this.refs.uploader.on('uploaded', file => {
+				this.update({
+					files: [file]
+				});
+			});
+		});
+
+		this.upload = file => {
+			this.refs.uploader.upload(file);
+		};
 
 		this.clearReply = () => {
 			this.update({
@@ -217,7 +231,7 @@
 			this.refs.text.value = '';
 		};
 
-		this.post = e => {
+		this.post = () => {
 			this.update({
 				wait: true
 			});
@@ -249,6 +263,18 @@
 				});
 			};
 			window.open(CONFIG.url + '/selectdrive?multiple=true', '_blank');
+		};
+
+		this.onkeydown = e => {
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
+		};
+
+		this.onpaste = e => {
+			e.clipboardData.items.forEach(item => {
+				if (item.kind == 'file') {
+					this.upload(item.getAsFile());
+				}
+			});
 		};
 	</script>
 </mk-channel-form>
