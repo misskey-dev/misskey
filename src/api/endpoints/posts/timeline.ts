@@ -42,6 +42,12 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	const query = {
 		user_id: {
 			$in: followingIds
+		},
+		// TODO
+		channel_id: {
+			$or: [{
+				$exists: false
+			}, null]
 		}
 	} as any;
 	if (sinceId) {
