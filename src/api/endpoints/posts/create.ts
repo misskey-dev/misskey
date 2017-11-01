@@ -10,6 +10,7 @@ import { default as Channel, IChannel } from '../../models/channel';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
 import Watching from '../../models/post-watching';
+import ChannelWatching from '../../models/channel-watching';
 import serialize from '../../serializers/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
@@ -249,26 +250,11 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 	}
 
-	// TODO
+	// タイムラインへの投稿
 	if (!channel) {
 		// Publish event to myself's stream
 		event(user._id, 'post', postObj);
-	}
 
-	if (channel) {
-		// Increment channel index(posts count)
-		Channel.update({ _id: channel._id }, {
-			$inc: {
-				index: 1
-			}
-		});
-
-		// Publish event to channel
-		publishChannelStream(channel._id, 'post', postObj);
-	}
-
-	// TODO
-	if (!channel) {
 		// Fetch all followers
 		const followers = await Following
 			.find({
@@ -283,6 +269,31 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		// Publish event to followers stream
 		followers.forEach(following =>
 			event(following.follower_id, 'post', postObj));
+	}
+
+	// チャンネルへの投稿
+	if (channel) {
+		// Increment channel index(posts count)
+		Channel.update({ _id: channel._id }, {
+			$inc: {
+				index: 1
+			}
+		});
+
+		// Publish event to channel
+		publishChannelStream(channel._id, 'post', postObj);
+
+		// Get channel watchers
+		const watches = await ChannelWatching.find({
+			channel_id: channel._id,
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		});
+
+		// チャンネルの視聴者(のタイムライン)に配信
+		watches.forEach(w => {
+			event(w.user_id, 'post', postObj);
+		});
 	}
 
 	// Increment my posts count

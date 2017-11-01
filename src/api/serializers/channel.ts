@@ -5,6 +5,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import { IUser } from '../models/user';
 import { default as Channel, IChannel } from '../models/channel';
+import Watching from '../models/channel-watching';
 
 /**
  * Serialize a channel
@@ -39,6 +40,27 @@ export default (
 
 	// Remove needless properties
 	delete _channel.user_id;
+
+	// Me
+	const meId: mongo.ObjectID = me
+	? mongo.ObjectID.prototype.isPrototypeOf(me)
+		? me as mongo.ObjectID
+		: typeof me === 'string'
+			? new mongo.ObjectID(me)
+			: (me as IUser)._id
+	: null;
+
+	if (me) {
+		//#region Watchしているかどうか
+		const watch = await Watching.findOne({
+			user_id: meId,
+			channel_id: _channel.id,
+			deleted_at: { $exists: false }
+		});
+
+		_channel.is_watching = watch !== null;
+		//#endregion
+	}
 
 	resolve(_channel);
 });

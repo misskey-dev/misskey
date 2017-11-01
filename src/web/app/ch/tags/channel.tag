@@ -4,6 +4,11 @@
 	<main if={ !fetching }>
 		<h1>{ channel.title }</h1>
 
+		<div if={ SIGNIN }>
+			<p if={ channel.is_watching }>このチャンネルをウォッチしています <a onclick={ unwatch }>ウォッチ解除</a></p>
+			<p if={ !channel.is_watching }><a onclick={ watch }>このチャンネルをウォッチする</a></p>
+		</div>
+
 		<div class="share">
 			<mk-twitter-button/>
 			<mk-line-button/>
@@ -130,6 +135,28 @@
 				this.unreadCount = 0;
 				document.title = this.channel.title + ' | Misskey'
 			}
+		};
+
+		this.watch = () => {
+			this.api('channels/watch', {
+				channel_id: this.id
+			}).then(() => {
+				this.channel.is_watching = true;
+				this.update();
+			}, e => {
+				alert('error');
+			});
+		};
+
+		this.unwatch = () => {
+			this.api('channels/unwatch', {
+				channel_id: this.id
+			}).then(() => {
+				this.channel.is_watching = false;
+				this.update();
+			}, e => {
+				alert('error');
+			});
 		};
 	</script>
 </mk-channel>

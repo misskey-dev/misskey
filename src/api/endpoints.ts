@@ -491,6 +491,14 @@ const endpoints: Endpoint[] = [
 		name: 'channels/posts'
 	},
 	{
+		name: 'channels/watch',
+		withCredential: true
+	},
+	{
+		name: 'channels/unwatch',
+		withCredential: true
+	},
+	{
 		name: 'channels'
 	},
 ];

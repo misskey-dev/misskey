@@ -3,6 +3,7 @@
  */
 import $ from 'cafy';
 import Channel from '../../models/channel';
+import Watching from '../../models/channel-watching';
 import serialize from '../../serializers/channel';
 
 /**
@@ -22,9 +23,17 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 		created_at: new Date(),
 		user_id: user._id,
 		title: title,
-		index: 0
+		index: 0,
+		watching_count: 1
 	});
 
 	// Response
 	res(await serialize(channel));
+
+	// Create Watching
+	await Watching.insert({
+		created_at: new Date(),
+		user_id: user._id,
+		channel_id: channel._id
+	});
 });
