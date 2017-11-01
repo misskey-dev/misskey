@@ -3,12 +3,20 @@
 	<hr>
 	<main if={ !fetching }>
 		<h1>{ channel.title }</h1>
-		<p if={ postsFetching }>読み込み中<mk-ellipsis/></p>
-		<div if={ !postsFetching }>
-			<p if={ posts == null }>まだ投稿がありません</p>
-			<virtual if={ posts != null }>
-				<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
-			</virtual>
+
+		<div class="share">
+			<mk-twitter-button/>
+			<mk-line-button/>
+		</div>
+
+		<div class="body">
+			<p if={ postsFetching }>読み込み中<mk-ellipsis/></p>
+			<div if={ !postsFetching }>
+				<p if={ posts == null }>まだ投稿がありません</p>
+				<virtual if={ posts != null }>
+					<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
+				</virtual>
+			</div>
 		</div>
 		<hr>
 		<mk-channel-form if={ SIGNIN } channel={ channel } ref="form"/>
@@ -29,6 +37,14 @@
 				> h1
 					font-size 1.5em
 					color #f00
+
+				> .share
+					> *
+						margin-right 4px
+
+				> .body
+					margin 8px 0 0 0
+
 	</style>
 	<script>
 		import Progress from '../../common/scripts/loading';
@@ -294,3 +310,29 @@
 		};
 	</script>
 </mk-channel-form>
+
+<mk-twitter-button>
+	<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
+	<script>
+		this.on('mount', () => {
+			const head = document.getElementsByTagName('head')[0];
+			const script = document.createElement('script');
+			script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
+			script.setAttribute('async', 'async');
+			head.appendChild(script);
+		});
+	</script>
+</mk-twitter-button>
+
+<mk-line-button>
+	<div class="line-it-button" data-lang="ja" data-type="share-a" data-url={ CONFIG.chUrl } style="display: none;"></div>
+	<script>
+		this.on('mount', () => {
+			const head = document.getElementsByTagName('head')[0];
+			const script = document.createElement('script');
+			script.setAttribute('src', 'https://d.line-scdn.net/r/web/social-plugin/js/thirdparty/loader.min.js');
+			script.setAttribute('async', 'async');
+			head.appendChild(script);
+		});
+	</script>
+</mk-line-button>
