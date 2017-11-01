@@ -44,11 +44,13 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			$in: followingIds
 		},
 		// TODO
-		channel_id: {
-			$or: [{
+		$or: [{
+			channel_id: {
 				$exists: false
-			}, null]
-		}
+			}
+		}, {
+			channel_id: null
+		}]
 	} as any;
 	if (sinceId) {
 		sort._id = 1;
