@@ -7,7 +7,7 @@
 		<div if={ !postsFetching }>
 			<p if={ posts == null }>まだ投稿がありません</p>
 			<virtual if={ posts != null }>
-				<mk-channel-post each={ posts.slice().reverse() } post={ this } form={ parent.refs.form }/>
+				<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
 			</virtual>
 		</div>
 		<hr>
