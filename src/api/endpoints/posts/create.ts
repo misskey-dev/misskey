@@ -264,20 +264,23 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		publishChannelStream(channel._id, 'post', postObj);
 	}
 
-	// Fetch all followers
-	const followers = await Following
-		.find({
-			followee_id: user._id,
-			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
-		}, {
-			follower_id: true,
-			_id: false
-		});
+	// TODO
+	if (!channel) {
+		// Fetch all followers
+		const followers = await Following
+			.find({
+				followee_id: user._id,
+				// 削除されたドキュメントは除く
+				deleted_at: { $exists: false }
+			}, {
+				follower_id: true,
+				_id: false
+			});
 
-	// Publish event to followers stream
-	followers.forEach(following =>
-		event(following.follower_id, 'post', postObj));
+		// Publish event to followers stream
+		followers.forEach(following =>
+			event(following.follower_id, 'post', postObj));
+	}
 
 	// Increment my posts count
 	User.update({ _id: user._id }, {
