@@ -51,7 +51,7 @@
 
 			Progress.start();
 
-			const fetched = false;
+			let fetched = false;
 
 			// チャンネル概要読み込み
 			this.api('channels/show', {
