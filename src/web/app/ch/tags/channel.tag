@@ -49,6 +49,9 @@
 				> .body
 					margin 8px 0 0 0
 
+				> mk-channel-form
+					max-width 500px
+
 	</style>
 	<script>
 		import Progress from '../../common/scripts/loading';
@@ -240,19 +243,44 @@
 
 <mk-channel-form>
 	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a onclick={ clearReply }>[x]</a></p>
-	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste }></textarea>
-	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
-		{ wait ? 'やってます' : 'やる' }<mk-ellipsis if={ wait }/>
-	</button>
-	<br>
-	<button onclick={ drive }>ドライブ</button>
+	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder="%i18n:ch.tags.mk-channel-form.textarea%"></textarea>
+	<div class="actions">
+		<button onclick={ selectFile }><i class="fa fa-upload"></i>%i18n:ch.tags.mk-channel-form.upload%</button>
+		<button onclick={ drive }><i class="fa fa-cloud"></i>%i18n:ch.tags.mk-channel-form.drive%</button>
+		<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
+			<i class="fa fa-paper-plane" if={ !wait }></i>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis if={ wait }/>
+		</button>
+	</div>
 	<mk-uploader ref="uploader"/>
 	<ol if={ files }>
 		<li each={ files }>{ name }</li>
 	</ol>
+	<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	<style>
 		:scope
 			display block
+
+			> textarea
+				width 100%
+				max-width 100%
+				min-width 100%
+				min-height 5em
+
+			> .actions
+				display flex
+
+				> button
+					> i
+						margin-right 0.25em
+
+					&:last-child
+						margin-left auto
+
+					&.wait
+						cursor wait
+
+			> input[type='file']
+				display none
 
 	</style>
 	<script>
@@ -312,6 +340,14 @@
 					wait: false
 				});
 			});
+		};
+
+		this.changeFile = () => {
+			this.refs.file.files.forEach(this.upload);
+		};
+
+		this.selectFile = () => {
+			this.refs.file.click();
 		};
 
 		this.drive = () => {

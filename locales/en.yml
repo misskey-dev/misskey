@@ -170,6 +170,13 @@ ch:
       new: "Create new channel"
       channel-title: "Channel title"
 
+    mk-channel-form:
+      textarea: "Write here"
+      upload: "Upload"
+      drive: "Drive"
+      post: "Do"
+      posting: "Doing"
+
 desktop:
   tags:
     mk-api-info:

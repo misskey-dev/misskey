@@ -170,6 +170,13 @@ ch:
       new: "チャンネルを作成"
       channel-title: "チャンネルのタイトル"
 
+    mk-channel-form:
+      textarea: "書いて"
+      upload: "アップロード"
+      drive: "ドライブ"
+      post: "やる"
+      posting: "やってます"
+
 desktop:
   tags:
     mk-api-info:
