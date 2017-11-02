@@ -16,6 +16,7 @@ module.exports = langs.map(([lang, locale]) => {
 	const entry = {
 		desktop: './src/web/app/desktop/script.js',
 		mobile: './src/web/app/mobile/script.js',
+		ch: './src/web/app/ch/script.js',
 		stats: './src/web/app/stats/script.js',
 		status: './src/web/app/status/script.js',
 		dev: './src/web/app/dev/script.js',

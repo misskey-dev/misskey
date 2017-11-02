@@ -8,6 +8,7 @@ import Reaction from '../models/post-reaction';
 import { IUser } from '../models/user';
 import Vote from '../models/poll-vote';
 import serializeApp from './app';
+import serializeChannel from './channel';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
 import parse from '../common/text';
@@ -76,8 +77,13 @@ const self = (
 		_post.app = await serializeApp(_post.app_id);
 	}
 
+	// Populate channel
+	if (_post.channel_id) {
+		_post.channel = await serializeChannel(_post.channel_id);
+	}
+
+	// Populate media
 	if (_post.media_ids) {
-		// Populate media
 		_post.media = await Promise.all(_post.media_ids.map(async fileId =>
 			await serializeDriveFile(fileId)
 		));
@@ -117,9 +123,9 @@ const self = (
 		});
 		_post.next = next ? next._id : null;
 
-		if (_post.reply_to_id) {
+		if (_post.reply_id) {
 			// Populate reply to post
-			_post.reply_to = await self(_post.reply_to_id, meId, {
+			_post.reply = await self(_post.reply_id, meId, {
 				detail: false
 			});
 		}

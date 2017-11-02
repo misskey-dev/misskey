@@ -3,6 +3,7 @@
  */
 import $ from 'cafy';
 import Post from '../../models/post';
+import ChannelWatching from '../../models/channel-watching';
 import getFriends from '../../common/get-friends';
 import serialize from '../../serializers/post';
 
@@ -32,18 +33,43 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		return rej('cannot set since_id and max_id');
 	}
 
-	// ID list of the user $self and other users who the user follows
+	// ID list of the user itself and other users who the user follows
 	const followingIds = await getFriends(user._id);
 
-	// Construct query
+	// Watchしているチャンネルを取得
+	const watches = await ChannelWatching.find({
+		user_id: user._id,
+		// 削除されたドキュメントは除く
+		deleted_at: { $exists: false }
+	});
+
+	//#region Construct query
 	const sort = {
 		_id: -1
 	};
+
 	const query = {
-		user_id: {
-			$in: followingIds
-		}
+		$or: [{
+			// フォローしている人のタイムラインへの投稿
+			user_id: {
+				$in: followingIds
+			},
+			// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
+			$or: [{
+				channel_id: {
+					$exists: false
+				}
+			}, {
+				channel_id: null
+			}]
+		}, {
+			// Watchしているチャンネルへの投稿
+			channel_id: {
+				$in: watches.map(w => w.channel_id)
+			}
+		}]
 	} as any;
+
 	if (sinceId) {
 		sort._id = 1;
 		query._id = {
@@ -54,6 +80,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			$lt: maxId
 		};
 	}
+	//#endregion
 
 	// Issue query
 	const timeline = await Post

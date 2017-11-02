@@ -277,15 +277,15 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
-				reply_to_id: himaPost._id.toString()
+				reply_id: himaPost._id.toString()
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
 			res.body.should.have.property('text').eql(post.text);
-			res.body.should.have.property('reply_to_id').eql(post.reply_to_id);
-			res.body.should.have.property('reply_to');
-			res.body.reply_to.should.have.property('text').eql(himaPost.text);
+			res.body.should.have.property('reply_id').eql(post.reply_id);
+			res.body.should.have.property('reply');
+			res.body.reply.should.have.property('text').eql(himaPost.text);
 		}));
 
 		it('repostできる', async(async () => {
@@ -350,7 +350,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
-				reply_to_id: '000000000000000000000000'
+				reply_id: '000000000000000000000000'
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(400);
@@ -369,7 +369,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
-				reply_to_id: 'kyoppie'
+				reply_id: 'kyoppie'
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(400);

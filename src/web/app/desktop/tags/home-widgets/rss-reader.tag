@@ -4,7 +4,7 @@
 	<div class="feed" if={ !initializing }>
 		<virtual each={ item in items }><a href={ item.link } target="_blank">{ item.title }</a></virtual>
 	</div>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block

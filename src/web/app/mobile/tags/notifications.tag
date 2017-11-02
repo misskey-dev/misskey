@@ -123,6 +123,12 @@
 		});
 
 		this.onNotification = notification => {
+			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
+			this.stream.send({
+				type: 'read_notification',
+				id: notification.id
+			});
+
 			this.notifications.unshift(notification);
 			this.update();
 		};

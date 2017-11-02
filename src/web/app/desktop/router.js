@@ -7,14 +7,15 @@ const route = require('page');
 let page = null;
 
 export default me => {
-	route('/',              index);
-	route('/i>mentions',    mentions);
-	route('/post::post',    post);
-	route('/search::query', search);
-	route('/:user',         user.bind(null, 'home'));
-	route('/:user/graphs',  user.bind(null, 'graphs'));
-	route('/:user/:post',   post);
-	route('*',              notFound);
+	route('/',                 index);
+	route('/selectdrive',      selectDrive);
+	route('/i>mentions',       mentions);
+	route('/post::post',       post);
+	route('/search::query',    search);
+	route('/:user',            user.bind(null, 'home'));
+	route('/:user/graphs',     user.bind(null, 'graphs'));
+	route('/:user/:post',      post);
+	route('*',                 notFound);
 
 	function index() {
 		me ? home() : entrance();
@@ -54,6 +55,10 @@ export default me => {
 		mount(el);
 	}
 
+	function selectDrive() {
+		mount(document.createElement('mk-selectdrive-page'));
+	}
+
 	function notFound() {
 		mount(document.createElement('mk-not-found'));
 	}
@@ -67,6 +72,7 @@ export default me => {
 };
 
 function mount(content) {
+	document.documentElement.style.background = '#313a42';
 	document.documentElement.removeAttribute('data-page');
 	if (page) page.unmount();
 	const body = document.getElementById('app');
