@@ -9,6 +9,7 @@
 	<style>
 		:scope
 			display block
+			position fixed
 			height 100%
 			background #fff
 
