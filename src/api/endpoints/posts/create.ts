@@ -226,8 +226,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// Reponse
 	res(postObj);
 
-	// -----------------------------------------------------------
-	// Post processes
+	//#region Post processes
 
 	User.update({ _id: user._id }, {
 		$set: {
@@ -481,4 +480,6 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			}
 		});
 	}
+
+	//#endregion
 });
