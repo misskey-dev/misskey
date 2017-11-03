@@ -32,7 +32,7 @@ module.exports = langs.map(([lang, locale]) => {
 		name,
 		entry,
 		module: module_(lang, locale),
-		plugins: plugins(version),
+		plugins: plugins(version, lang),
 		output
 	};
 });
