@@ -95,7 +95,7 @@
     "webpack": "3.8.1"
   },
   "dependencies": {
-    "@prezzemolo/rap": "0.1.0",
+    "@prezzemolo/rap": "0.1.1",
     "accesses": "2.5.0",
     "animejs": "2.2.0",
     "autwh": "0.0.1",
