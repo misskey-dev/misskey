@@ -12,7 +12,7 @@ import serializeChannel from './channel';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
 import parse from '../common/text';
-import rap from '@prezzemolo/rap'
+import rap from '@prezzemolo/rap';
 
 /**
  * Serialize a post
