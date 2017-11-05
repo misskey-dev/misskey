@@ -112,7 +112,7 @@ export default (
 				deleted_at: { $exists: false }
 			});
 			return follow !== null;
-		})()
+		})();
 
 		// If the user is followed
 		_user.is_followed = (async () => {
@@ -122,7 +122,7 @@ export default (
 				deleted_at: { $exists: false }
 			});
 			return follow2 !== null;
-		})()
+		})();
 	}
 
 	if (opts.detail) {
@@ -153,7 +153,7 @@ export default (
 	}
 
 	// resolve promises in _user object
-	_user = await rap(_user)
+	_user = await rap(_user);
 
 	resolve(_user);
 });

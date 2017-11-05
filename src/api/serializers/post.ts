@@ -108,7 +108,7 @@ const self = (
 				}
 			});
 			return prev ? prev._id : null;
-		})()
+		})();
 
 		// Get next post info
 		_post.next = (async () => {
@@ -126,7 +126,7 @@ const self = (
 				}
 			});
 			return next ? next._id : null;
-		})()
+		})();
 
 		if (_post.reply_id) {
 			// Populate reply to post
@@ -158,8 +158,8 @@ const self = (
 					myChoice.is_voted = true;
 				}
 
-				return poll
-			})(_post.poll)
+				return poll;
+			})(_post.poll);
 		}
 
 		// Fetch my reaction
@@ -176,13 +176,13 @@ const self = (
 					return reaction.reaction;
 				}
 
-				return null
+				return null;
 			})();
 		}
 	}
 
 	// resolve promises in _post object
-	_post = await rap(_post)
+	_post = await rap(_post);
 
 	resolve(_post);
 });
