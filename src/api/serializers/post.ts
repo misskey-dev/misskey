@@ -84,8 +84,8 @@ const self = (
 
 	// Populate media
 	if (_post.media_ids) {
-		_post.media = await Promise.all(_post.media_ids.map(async fileId =>
-			await serializeDriveFile(fileId)
+		_post.media = await Promise.all(_post.media_ids.map(fileId =>
+			serializeDriveFile(fileId)
 		));
 	}
 
