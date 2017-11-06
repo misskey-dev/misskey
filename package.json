@@ -90,7 +90,7 @@
     "stylus": "0.54.5",
     "stylus-loader": "3.0.1",
     "swagger-jsdoc": "1.9.7",
-    "tslint": "5.7.0",
+    "tslint": "5.8.0",
     "uglify-es": "3.0.27",
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
     "uglifyjs-webpack-plugin": "1.0.1",
