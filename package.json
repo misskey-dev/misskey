@@ -46,7 +46,7 @@
     "@types/inquirer": "0.0.34",
     "@types/is-root": "1.0.0",
     "@types/is-url": "1.2.28",
-    "@types/js-yaml": "3.9.0",
+    "@types/js-yaml": "3.9.1",
     "@types/mocha": "2.2.44",
     "@types/mongodb": "2.2.13",
     "@types/monk": "1.0.6",
