@@ -1,6 +1,6 @@
 <mk-post-detail title={ title }>
 	<div class="main">
-		<button class="read-more" if={ p.reply_to && p.reply_to.reply_to_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
+		<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
 			<i class="fa fa-ellipsis-v" if={ !contextFetching }></i>
 			<i class="fa fa-spinner fa-pulse" if={ contextFetching }></i>
 		</button>
@@ -9,8 +9,8 @@
 				<mk-post-detail-sub post={ post }/>
 			</virtual>
 		</div>
-		<div class="reply-to" if={ p.reply_to }>
-			<mk-post-detail-sub post={ p.reply_to }/>
+		<div class="reply-to" if={ p.reply }>
+			<mk-post-detail-sub post={ p.reply }/>
 		</div>
 		<div class="repost" if={ isRepost }>
 			<p>
@@ -329,7 +329,7 @@
 
 			// Fetch context
 			this.api('posts/context', {
-				post_id: this.p.reply_to_id
+				post_id: this.p.reply_id
 			}).then(context => {
 				this.update({
 					contextFetching: false,

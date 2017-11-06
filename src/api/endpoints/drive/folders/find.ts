@@ -30,6 +30,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(folders.map(async folder =>
-		await serialize(folder))));
+	res(await Promise.all(folders.map(folder => serialize(folder))));
 });
