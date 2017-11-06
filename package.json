@@ -102,7 +102,7 @@
     "bcryptjs": "2.4.3",
     "body-parser": "1.18.2",
     "cafy": "3.0.0",
-    "chalk": "2.1.0",
+    "chalk": "2.3.0",
     "compression": "1.7.1",
     "cors": "2.8.4",
     "cropperjs": "1.1.3",
