@@ -40,7 +40,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Issue query
 	const replies = await Post
-		.find({ reply_to_id: post._id }, {
+		.find({ reply_id: post._id }, {
 			limit: limit,
 			skip: offset,
 			sort: {

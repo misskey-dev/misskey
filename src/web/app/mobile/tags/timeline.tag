@@ -137,8 +137,8 @@
 </mk-timeline>
 
 <mk-timeline-post class={ repost: isRepost }>
-	<div class="reply-to" if={ p.reply_to }>
-		<mk-timeline-post-sub post={ p.reply_to }/>
+	<div class="reply-to" if={ p.reply }>
+		<mk-timeline-post-sub post={ p.reply }/>
 	</div>
 	<div class="repost" if={ isRepost }>
 		<p>
@@ -164,7 +164,8 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<a class="reply" if={ p.reply_to }>
+					<p class="channel" if={ p.channel != null }><a href={ CONFIG.chUrl + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<a class="reply" if={ p.reply }>
 						<i class="fa fa-reply"></i>
 					</a>
 					<p class="dummy"></p>
@@ -372,6 +373,9 @@
 
 							mk-url-preview
 								margin-top 8px
+
+							> .channel
+								margin 0
 
 							> .reply
 								margin-right 8px

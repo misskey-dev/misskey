@@ -84,7 +84,7 @@ common:
         no-internet: "インターネットに接続されていません"
         no-internet-desc: "ネットワークには接続されていますが、インターネットには接続されていないようです。お使いのPCのインターネット接続が正常か確認してください。"
         no-server: "Misskeyのサーバーに接続できません"
-        no-server-desc: "お使いのPCのネットワーク接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
+        no-server-desc: "お使いのPCのインターネット接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
         success: "Misskeyのサーバーに接続できました"
         success-desc: "正常に接続できるようです。ページを再度読み込みしてください。"
 
@@ -164,6 +164,19 @@ common:
     mk-uploader:
       waiting: "待機中"
 
+ch:
+  tags:
+    mk-index:
+      new: "チャンネルを作成"
+      channel-title: "チャンネルのタイトル"
+
+    mk-channel-form:
+      textarea: "書いて"
+      upload: "アップロード"
+      drive: "ドライブ"
+      post: "やる"
+      posting: "やってます"
+
 desktop:
   tags:
     mk-api-info:
@@ -241,6 +254,7 @@ desktop:
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
+      ch: "チャンネル"
       info: "お知らせ"
 
     mk-ui-header-search:
@@ -353,6 +367,9 @@ desktop:
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "ファイルを選択"
+
     mk-drive-file-viewer:
       download: "ダウンロード"
       rename: "名前を変更"
@@ -389,6 +406,7 @@ mobile:
 
     mk-notifications-page:
       notifications: "通知"
+      read-all: "すべての通知を既読にしますか？"
 
     mk-post-page:
       title: "投稿"
@@ -490,6 +508,7 @@ mobile:
       home: "ホーム"
       notifications: "通知"
       messaging: "メッセージ"
+      ch: "チャンネル"
       search: "検索"
       drive: "ドライブ"
       settings: "設定"
