@@ -57,6 +57,8 @@ const self = async (
 		_post = deepcopy(post);
 	}
 
+	if (!_post) throw 'invalid post arg.';	
+
 	const id = _post._id;
 
 	// Rename _id to id

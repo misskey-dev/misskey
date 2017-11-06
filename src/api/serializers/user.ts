@@ -56,6 +56,8 @@ export default (
 		_user = deepcopy(user);
 	}
 
+	if (!_user) return reject('invalid user arg.');
+
 	// Me
 	const meId: mongo.ObjectID = me
 		? mongo.ObjectID.prototype.isPrototypeOf(me)
