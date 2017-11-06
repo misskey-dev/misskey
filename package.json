@@ -57,7 +57,7 @@
     "@types/ratelimiter": "2.1.28",
     "@types/redis": "2.8.1",
     "@types/request": "2.0.7",
-    "@types/rimraf": "2.0.0",
+    "@types/rimraf": "2.0.2",
     "@types/riot": "3.6.1",
     "@types/serve-favicon": "2.2.29",
     "@types/uuid": "3.4.3",
