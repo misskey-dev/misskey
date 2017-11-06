@@ -1152,9 +1152,12 @@ async function insertHimawari(opts) {
 }
 
 async function insertDriveFile(opts) {
-	return await db.get('drive_files').insert(Object.assign({
-		name: 'strawberry-pasta.png'
-	}, opts));
+	return await db.get('drive_files.files').insert({
+		length: opts.datasize,
+		metadata: Object.assign({
+			name: 'strawberry-pasta.png'
+		}, opts)
+	});
 }
 
 async function insertDriveFolder(opts) {
