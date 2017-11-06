@@ -94,7 +94,7 @@ const self = async (
 	if (opts.detail) {
 		// Get previous post info
 		_post.prev = (async () => {
-			const prev = Post.findOne({
+			const prev = await Post.findOne({
 				user_id: _post.user_id,
 				_id: {
 					$lt: id
