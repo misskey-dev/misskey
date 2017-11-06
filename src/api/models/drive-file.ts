@@ -3,7 +3,7 @@ import monkDb, { nativeDbConn } from '../../db/mongodb';
 
 const collection = monkDb.get('drive_files.files');
 
-(collection as any).createIndex('hash'); // fuck type definition
+(collection as any).createIndex('md5'); // fuck type definition
 
 export default collection as any; // fuck type definition
 
