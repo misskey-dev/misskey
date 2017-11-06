@@ -80,7 +80,7 @@
     "gulp-rename": "1.2.2",
     "gulp-replace": "0.6.1",
     "gulp-tslint": "8.1.2",
-    "gulp-typescript": "3.2.2",
+    "gulp-typescript": "3.2.3",
     "gulp-uglify": "3.0.0",
     "gulp-util": "3.0.8",
     "mocha": "4.0.1",
