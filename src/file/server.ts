@@ -9,7 +9,7 @@ import * as cors from 'cors';
 import * as mongodb from 'mongodb';
 import * as gm from 'gm';
 
-import File from '../api/models/drive-file';
+import DriveFile, { getGridFSBucket } from '../api/models/drive-file';
 
 /**
  * Init app
@@ -97,17 +97,28 @@ app.get('/:id', async (req, res) => {
 		return;
 	}
 
-	const file = await File.findOne({ _id: new mongodb.ObjectID(req.params.id) });
+	const fileId = new mongodb.ObjectID(req.params.id)
+	const file = await DriveFile.findOne({ _id: fileId });
 
 	if (file == null) {
 		res.status(404).sendFile(`${__dirname} / assets / dummy.png`);
 		return;
-	} else if (file.data == null) {
-		res.sendStatus(400);
-		return;
 	}
 
-	send(file.data.buffer, file.type, req, res);
+	const bucket = await getGridFSBucket()
+
+	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
+		const chunks = []
+		const readableStream = bucket.openDownloadStream(id)
+	  readableStream.on('data', chunk => {
+			chunks.push(chunk);
+		})
+		readableStream.on('end', () => {
+			resolve(Buffer.concat(chunks))
+		})
+	}))(fileId)
+
+	send(buffer, file.metadata.type, req, res);
 });
 
 app.get('/:id/:name', async (req, res) => {
