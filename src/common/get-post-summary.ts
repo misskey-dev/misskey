@@ -3,7 +3,13 @@
  * @param {*} post 投稿
  */
 const summarize = (post: any): string => {
-	let summary = post.text ? post.text : '';
+	let summary = '';
+
+	// チャンネル
+	summary += post.channel ? `${post.channel.title}:` : '';
+
+	// 本文
+	summary += post.text ? post.text : '';
 
 	// メディアが添付されているとき
 	if (post.media) {
@@ -16,9 +22,9 @@ const summarize = (post: any): string => {
 	}
 
 	// 返信のとき
-	if (post.reply_to_id) {
-		if (post.reply_to) {
-			summary += ` RE: ${summarize(post.reply_to)}`;
+	if (post.reply_id) {
+		if (post.reply) {
+			summary += ` RE: ${summarize(post.reply)}`;
 		} else {
 			summary += ' RE: ...';
 		}

@@ -27,7 +27,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Fetch recent posts
 	const recentPosts = await Post.find({
 		user_id: user._id,
-		reply_to_id: {
+		reply_id: {
 			$exists: true,
 			$ne: null
 		}
@@ -38,7 +38,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		limit: 1000,
 		fields: {
 			_id: false,
-			reply_to_id: true
+			reply_id: true
 		}
 	});
 
@@ -49,7 +49,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	const replyTargetPosts = await Post.find({
 		_id: {
-			$in: recentPosts.map(p => p.reply_to_id)
+			$in: recentPosts.map(p => p.reply_id)
 		},
 		user_id: {
 			$ne: user._id

@@ -16,7 +16,7 @@
 
 			this.refs.ui.refs.user.on('user-fetched', user => {
 				Progress.set(0.5);
-				document.title = user.name + ' | Misskey'
+				document.title = user.name + ' | Misskey';
 			});
 
 			this.refs.ui.refs.user.on('loaded', () => {

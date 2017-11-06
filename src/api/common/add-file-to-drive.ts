@@ -4,13 +4,26 @@ import * as gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
-import DriveFile from '../models/drive-file';
+import DriveFile, { getGridFSBucket } from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event from '../event';
 import config from '../../conf';
+import { Duplex } from 'stream';
 
 const log = debug('misskey:register-drive-file');
+
+const addToGridFS = (name, binary, metadata): Promise<any> => new Promise(async (resolve, reject) => {
+	const dataStream = new Duplex();
+	dataStream.push(binary);
+	dataStream.push(null);
+
+	const bucket = await getGridFSBucket();
+	const writeStream = bucket.openUploadStream(name, { metadata });
+	writeStream.once('finish', (doc) => { resolve(doc); });
+	writeStream.on('error', reject);
+	dataStream.pipe(writeStream);
+});
 
 /**
  * Add file to drive
@@ -58,7 +71,7 @@ export default (
 
 	// Generate hash
 	const hash = crypto
-		.createHash('sha256')
+		.createHash('md5')
 		.update(data)
 		.digest('hex') as string;
 
@@ -67,8 +80,8 @@ export default (
 	if (!force) {
 		// Check if there is a file with the same hash
 		const much = await DriveFile.findOne({
-			user_id: user._id,
-			hash: hash
+			md5: hash,
+			'metadata.user_id': user._id
 		});
 
 		if (much !== null) {
@@ -82,13 +95,13 @@ export default (
 	// Calculate drive usage
 	const usage = ((await DriveFile
 		.aggregate([
-			{ $match: { user_id: user._id } },
+			{ $match: { 'metadata.user_id': user._id } },
 			{ $project: {
-				datasize: true
+				length: true
 			}},
 			{ $group: {
 				_id: null,
-				usage: { $sum: '$datasize' }
+				usage: { $sum: '$length' }
 			}}
 		]))[0] || {
 			usage: 0
@@ -131,20 +144,14 @@ export default (
 	}
 
 	// Create DriveFile document
-	const file = await DriveFile.insert({
-		created_at: new Date(),
+	const file = await addToGridFS(`${user._id}/${name}`, data, {
 		user_id: user._id,
 		folder_id: folder !== null ? folder._id : null,
-		data: data,
-		datasize: size,
 		type: mime,
 		name: name,
 		comment: comment,
-		hash: hash,
 		properties: properties
 	});
-
-	delete file.data;
 
 	log(`drive file has been created ${file._id}`);
 

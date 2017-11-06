@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import { isValidFolderName } from '../../../models/drive-folder';
-import serialize from '../../../serializers/drive-file';
+import serialize from '../../../serializers/drive-folder';
 import event from '../../../event';
 
 /**

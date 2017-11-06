@@ -1,6 +1,4 @@
 require('./ui.tag');
-require('./ui-header.tag');
-require('./ui-nav.tag');
 require('./page/entrance.tag');
 require('./page/entrance/signin.tag');
 require('./page/entrance/signup.tag');
@@ -21,6 +19,7 @@ require('./page/settings/authorized-apps.tag');
 require('./page/settings/twitter.tag');
 require('./page/messaging.tag');
 require('./page/messaging-room.tag');
+require('./page/selectdrive.tag');
 require('./home.tag');
 require('./home-timeline.tag');
 require('./timeline.tag');
