@@ -81,9 +81,7 @@ export default (
 		// Check if there is a file with the same hash
 		const much = await DriveFile.findOne({
 			md5: hash,
-			metadata: {
-				user_id: user._id
-			}
+			'metadata.user_id': user._id
 		});
 
 		if (much !== null) {
@@ -97,7 +95,7 @@ export default (
 	// Calculate drive usage
 	const usage = ((await DriveFile
 		.aggregate([
-			{ $match: { metadata: { user_id: user._id } } },
+			{ $match: { 'metadata.user_id': user._id } },
 			{ $project: {
 				length: true
 			}},
