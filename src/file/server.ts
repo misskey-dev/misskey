@@ -101,7 +101,7 @@ app.get('/:id', async (req, res) => {
 	const file = await DriveFile.findOne({ _id: fileId });
 
 	if (file == null) {
-		res.status(404).sendFile(`${__dirname} / assets / dummy.png`);
+		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
 		return;
 	}
 
