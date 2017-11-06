@@ -88,7 +88,7 @@ type Mixin = {
 	api_url: string;
 	auth_url: string;
 	about_url: string;
-	ch_url: stirng;
+	ch_url: string;
 	stats_url: string;
 	status_url: string;
 	dev_url: string;

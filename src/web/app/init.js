@@ -21,6 +21,11 @@ require('./common/tags');
 
 console.info(`Misskey v${VERSION} (葵 aoi)`);
 
+{ // Set lang attr
+	const html = document.documentElement;
+	html.setAttribute('lang', LANG);
+}
+
 { // Set description meta tag
 	const head = document.getElementsByTagName('head')[0];
 	const meta = document.createElement('meta');
