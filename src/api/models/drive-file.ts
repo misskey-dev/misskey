@@ -8,14 +8,14 @@ const collection = monkDb.get('drive_files.files');
 export default collection as any; // fuck type definition
 
 const getGridFSBucket = async (): Promise<mongodb.GridFSBucket> => {
-	const db = await nativeDbConn()
+	const db = await nativeDbConn();
 	const bucket = new mongodb.GridFSBucket(db, {
 		bucketName: 'drive_files'
-	})
-	return bucket
-}
+	});
+	return bucket;
+};
 
-export { getGridFSBucket }
+export { getGridFSBucket };
 
 export function validateFileName(name: string): boolean {
 	return (

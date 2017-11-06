@@ -63,5 +63,5 @@ module.exports = async (params, user, app) => {
 
 	// Serialize
 	const _files = await Promise.all(files.map(file => serialize(file)));
-	return _files
+	return _files;
 };

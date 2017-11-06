@@ -97,7 +97,7 @@ app.get('/:id', async (req, res) => {
 		return;
 	}
 
-	const fileId = new mongodb.ObjectID(req.params.id)
+	const fileId = new mongodb.ObjectID(req.params.id);
 	const file = await DriveFile.findOne({ _id: fileId });
 
 	if (file == null) {
@@ -105,18 +105,18 @@ app.get('/:id', async (req, res) => {
 		return;
 	}
 
-	const bucket = await getGridFSBucket()
+	const bucket = await getGridFSBucket();
 
 	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
-		const chunks = []
-		const readableStream = bucket.openDownloadStream(id)
-	  readableStream.on('data', chunk => {
+		const chunks = [];
+		const readableStream = bucket.openDownloadStream(id);
+	 readableStream.on('data', chunk => {
 			chunks.push(chunk);
-		})
+		});
 		readableStream.on('end', () => {
-			resolve(Buffer.concat(chunks))
-		})
-	}))(fileId)
+			resolve(Buffer.concat(chunks));
+		});
+	}))(fileId);
 
 	send(buffer, file.metadata.type, req, res);
 });
@@ -128,7 +128,7 @@ app.get('/:id/:name', async (req, res) => {
 		return;
 	}
 
-	const fileId = new mongodb.ObjectID(req.params.id)
+	const fileId = new mongodb.ObjectID(req.params.id);
 	const file = await DriveFile.findOne({ _id: fileId });
 
 	if (file == null) {
@@ -136,18 +136,18 @@ app.get('/:id/:name', async (req, res) => {
 		return;
 	}
 
-	const bucket = await getGridFSBucket()
+	const bucket = await getGridFSBucket();
 
 	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
-		const chunks = []
-		const readableStream = bucket.openDownloadStream(id)
-	  readableStream.on('data', chunk => {
+		const chunks = [];
+		const readableStream = bucket.openDownloadStream(id);
+	 readableStream.on('data', chunk => {
 			chunks.push(chunk);
-		})
+		});
 		readableStream.on('end', () => {
-			resolve(Buffer.concat(chunks))
-		})
-	}))(fileId)
+			resolve(Buffer.concat(chunks));
+		});
+	}))(fileId);
 
 	send(buffer, file.metadata.type, req, res);
 });

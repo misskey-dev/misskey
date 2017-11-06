@@ -14,16 +14,16 @@ import { Duplex } from 'stream';
 const log = debug('misskey:register-drive-file');
 
 const addToGridFS = (name, binary, metadata): Promise<any> => new Promise(async (resolve, reject) => {
-	const dataStream = new Duplex()
-	dataStream.push(binary)
-	dataStream.push(null)
+	const dataStream = new Duplex();
+	dataStream.push(binary);
+	dataStream.push(null);
 
-	const bucket = await getGridFSBucket()
-	const writeStream = bucket.openUploadStream(name, { metadata })
-	writeStream.once('finish', (doc) => { resolve(doc) })
-	writeStream.on('error', reject)
-	dataStream.pipe(writeStream)
-})
+	const bucket = await getGridFSBucket();
+	const writeStream = bucket.openUploadStream(name, { metadata });
+	writeStream.once('finish', (doc) => { resolve(doc); });
+	writeStream.on('error', reject);
+	dataStream.pipe(writeStream);
+});
 
 /**
  * Add file to drive

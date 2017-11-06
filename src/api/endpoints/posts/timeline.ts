@@ -92,6 +92,6 @@ module.exports = async (params, user, app) => {
 		});
 
 	// Serialize
-	const _timeline = await Promise.all(timeline.map(post => serialize(post, user)))
-	return _timeline
+	const _timeline = await Promise.all(timeline.map(post => serialize(post, user)));
+	return _timeline;
 };

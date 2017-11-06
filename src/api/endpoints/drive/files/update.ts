@@ -20,7 +20,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [fileId, fileIdErr] = $(params.file_id).id().$;
 	if (fileIdErr) return rej('invalid file_id param');
 
-
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
@@ -32,7 +31,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('file-not-found');
 	}
 
-	const updateQuery: any = {}
+	const updateQuery: any = {};
 
 	// Get 'name' parameter
 	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).$;

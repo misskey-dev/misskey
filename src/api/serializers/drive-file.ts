@@ -40,13 +40,13 @@ export default (
 		_file = deepcopy(file);
 	}
 
-	if (!_file) return reject('invalid file arg.')
+	if (!_file) return reject('invalid file arg.');
 
 	// rendered target
 	let _target: any = {};
 
 	_target.id = _file._id;
-	_target.created_at = _file.uploadDate
+	_target.created_at = _file.uploadDate;
 
 	_target = Object.assign(_target, _file.metadata);
 

@@ -33,5 +33,5 @@ module.exports = async (params, user) => {
 		detail: true
 	});
 
-	return _file
+	return _file;
 };

@@ -16,7 +16,7 @@ export default db;
 /**
  * MongoDB native module (officialy)
  */
-import * as mongodb from 'mongodb'
+import * as mongodb from 'mongodb';
 
 let mdb: mongodb.Db;
 
@@ -25,14 +25,14 @@ const nativeDbConn = async (): Promise<mongodb.Db> => {
 
 	const db = await ((): Promise<mongodb.Db> => new Promise((resolve, reject) => {
 		mongodb.MongoClient.connect(uri, (e, db) => {
-			if (e) return reject(e)
-			resolve(db)
-		})
-	}))()
+			if (e) return reject(e);
+			resolve(db);
+		});
+	}))();
 
-	mdb = db
+	mdb = db;
 
-	return db
-}
+	return db;
+};
 
-export { nativeDbConn }
+export { nativeDbConn };
