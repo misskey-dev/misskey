@@ -25,6 +25,8 @@ export default (
 		detail: false
 	}, options);
 
+	if (!file) return reject('invalid file arg.')
+
 	let _file: any;
 
 	// Populate the file if 'file' is ID

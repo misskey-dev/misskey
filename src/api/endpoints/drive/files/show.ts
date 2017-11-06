@@ -12,10 +12,10 @@ import serialize from '../../../serializers/drive-file';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = async (params, user) => {
 	// Get 'file_id' parameter
 	const [fileId, fileIdErr] = $(params.file_id).id().$;
-	if (fileIdErr) return rej('invalid file_id param');
+	if (fileIdErr) throw 'invalid file_id param';
 
 	// Fetch file
 	const file = await DriveFile
@@ -27,11 +27,13 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 	if (file === null) {
-		return rej('file-not-found');
+		throw 'file-not-found';
 	}
 
 	// Serialize
-	res(await serialize(file, {
+	const _file = await serialize(file, {
 		detail: true
-	}));
-});
+	});
+
+	return _file
+};
