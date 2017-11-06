@@ -40,10 +40,8 @@ module.exports = async (params, user, app) => {
 		_id: -1
 	};
 	const query = {
-		metadata: {
-			user_id: user._id,
-			folder_id: folderId
-		}
+		'metadata.user_id': user._id,
+		'metadata.folder_id': folderId
 	} as any;
 	if (sinceId) {
 		sort._id = 1;

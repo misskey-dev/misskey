@@ -24,11 +24,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Issue query
 	const files = await DriveFile
 		.find({
-			metadata: {
-				name: name,
-				user_id: user._id,
-				folder_id: folderId
-			}
+			'metadata.name': name,
+			'metadata.user_id': user._id,
+			'metadata.folder_id': folderId
 		});
 
 	// Serialize

@@ -20,18 +20,13 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [fileId, fileIdErr] = $(params.file_id).id().$;
 	if (fileIdErr) return rej('invalid file_id param');
 
-	console.dir(user)
 
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			metadata: {
-				user_id: user._id
-			}
+			'metadata.user_id': user._id
 		});
-
-	console.dir(file)
 
 	if (file === null) {
 		return rej('file-not-found');
@@ -42,7 +37,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).$;
 	if (nameErr) return rej('invalid name param');
-	if (name) updateQuery.name = name;
+	if (name) updateQuery['metadata.name'] = name;
 
 	// Get 'folder_id' parameter
 	const [folderId, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
@@ -50,7 +45,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	if (folderId !== undefined) {
 		if (folderId === null) {
-			updateQuery.folder_id = null;
+			updateQuery['metadata.folder_id'] = null;
 		} else {
 			// Fetch folder
 			const folder = await DriveFolder
@@ -63,20 +58,16 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 				return rej('folder-not-found');
 			}
 
-			updateQuery.folder_id = folder._id;
+			updateQuery['metadata.folder_id'] = folder._id;
 		}
 	}
 
 	const updated = await DriveFile.update(file._id, {
-		$set: { metadata: updateQuery }
+		$set: { updateQuery }
 	});
-
-	console.dir(updated)
 
 	// Serialize
 	const fileObj = await serialize(updated);
-
-	console.dir(fileObj)
 
 	// Response
 	res(fileObj);

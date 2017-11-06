@@ -21,9 +21,7 @@ module.exports = async (params, user) => {
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			metadata: {
-				user_id: user._id
-			}
+			'metadata.user_id': user._id
 		});
 
 	if (file === null) {
