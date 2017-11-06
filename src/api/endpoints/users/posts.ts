@@ -85,7 +85,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	}
 
 	if (!includeReplies) {
-		query.reply_to_id = null;
+		query.reply_id = null;
 	}
 
 	if (withMedia) {

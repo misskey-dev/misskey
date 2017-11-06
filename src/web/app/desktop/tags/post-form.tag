@@ -475,7 +475,7 @@
 			this.api('posts/create', {
 				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
 				media_ids: files,
-				reply_to_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
+				reply_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
 				repost_id: this.repost ? this.repost.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined
 			}).then(data => {
