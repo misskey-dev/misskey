@@ -5,8 +5,6 @@ json('../../const.json')
 $theme-color = themeColor
 $theme-color-foreground = themeColorForeground
 
-@import './reset'
-
 /*
 	::selection
 		background $theme-color
@@ -14,6 +12,9 @@ $theme-color-foreground = themeColorForeground
 */
 
 *
+	position relative
+	box-sizing border-box
+	background-clip padding-box !important
 	tap-highlight-color rgba($theme-color, 0.7)
 	-webkit-tap-highlight-color rgba($theme-color, 0.7)
 
@@ -28,6 +29,9 @@ html
 	&.progress
 		&, *
 			cursor progress !important
+
+body
+	overflow-wrap break-word
 
 #error
 	padding 32px

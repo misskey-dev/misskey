@@ -26,6 +26,7 @@ Misskeyは以下のサブドメインを使います:
 * **api**.*{primary domain}*
 * **auth**.*{primary domain}*
 * **about**.*{primary domain}*
+* **ch**.*{primary domain}*
 * **stats**.*{primary domain}*
 * **status**.*{primary domain}*
 * **dev**.*{primary domain}*

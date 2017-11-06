@@ -8,9 +8,9 @@ import banner from './banner';
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 
-export default version => {
+export default (version, lang) => {
 	const plugins = [
-		constant(),
+		constant(lang),
 		new StringReplacePlugin(),
 		hoist()
 	];

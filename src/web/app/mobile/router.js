@@ -8,6 +8,7 @@ let page = null;
 
 export default me => {
 	route('/',                           index);
+	route('/selectdrive',                selectDrive);
 	route('/i/notifications',            notifications);
 	route('/i/messaging',                messaging);
 	route('/i/messaging/:username',      messaging);
@@ -120,6 +121,10 @@ export default me => {
 		if (ctx.params.folder) el.setAttribute('folder', ctx.params.folder);
 		if (ctx.params.file) el.setAttribute('file', ctx.params.file);
 		mount(el);
+	}
+
+	function selectDrive() {
+		mount(document.createElement('mk-selectdrive-page'));
 	}
 
 	function notFound() {

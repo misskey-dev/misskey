@@ -48,7 +48,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	} as any;
 
 	if (reply != undefined) {
-		query.reply_to_id = reply ? { $exists: true, $ne: null } : null;
+		query.reply_id = reply ? { $exists: true, $ne: null } : null;
 	}
 
 	if (repost != undefined) {
