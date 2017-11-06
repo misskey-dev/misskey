@@ -137,8 +137,8 @@
 </mk-timeline>
 
 <mk-timeline-post class={ repost: isRepost }>
-	<div class="reply-to" if={ p.reply_to }>
-		<mk-timeline-post-sub post={ p.reply_to }/>
+	<div class="reply-to" if={ p.reply }>
+		<mk-timeline-post-sub post={ p.reply }/>
 	</div>
 	<div class="repost" if={ isRepost }>
 		<p>
@@ -164,7 +164,8 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<a class="reply" if={ p.reply_to }>
+					<p class="channel" if={ p.channel != null }><a href={ CONFIG.chUrl + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<a class="reply" if={ p.reply }>
 						<i class="fa fa-reply"></i>
 					</a>
 					<p class="dummy"></p>
@@ -373,6 +374,9 @@
 							mk-url-preview
 								margin-top 8px
 
+							> .channel
+								margin 0
+
 							> .reply
 								margin-right 8px
 								color #717171
@@ -467,6 +471,7 @@
 		import getPostSummary from '../../../../common/get-post-summary.ts';
 		import openPostForm from '../scripts/open-post-form';
 
+		this.mixin('i');
 		this.mixin('api');
 		this.mixin('stream');
 
@@ -502,24 +507,31 @@
 		};
 
 		this.capture = withHandler => {
-			this.stream.send({
-				type: 'capture',
-				id: this.post.id
-			});
-			if (withHandler) this.stream.on('post-updated', this.onStreamPostUpdated);
+			if (this.SIGNIN) {
+				this.stream.send({
+					type: 'capture',
+					id: this.post.id
+				});
+				if (withHandler) this.stream.on('post-updated', this.onStreamPostUpdated);
+			}
 		};
 
 		this.decapture = withHandler => {
-			this.stream.send({
-				type: 'decapture',
-				id: this.post.id
-			});
-			if (withHandler) this.stream.off('post-updated', this.onStreamPostUpdated);
+			if (this.SIGNIN) {
+				this.stream.send({
+					type: 'decapture',
+					id: this.post.id
+				});
+				if (withHandler) this.stream.off('post-updated', this.onStreamPostUpdated);
+			}
 		};
 
 		this.on('mount', () => {
 			this.capture(true);
-			this.stream.on('_connected_', this.onStreamConnected);
+
+			if (this.SIGNIN) {
+				this.stream.on('_connected_', this.onStreamConnected);
+			}
 
 			if (this.p.text) {
 				const tokens = this.p.ast;

@@ -1,4 +1,6 @@
 common:
+  misskey: "Note everything and share it others using Misskey."
+
   time:
     unknown: "unknown"
     future: "future"
@@ -66,6 +68,25 @@ common:
       title: "Unable to connect to the server"
       description: "There is a problem with Internet connection, or the server may be down or maintaining. Please {try again} later."
       thanks: "Thank you for using Misskey."
+      troubleshoot: "Troubleshoot"
+
+      troubleshooter:
+        title: "TroubleShooting"
+        network: "Network connection"
+        checking-network: "Checking network connection"
+        internet: "Internet connection"
+        checking-internet: "Checking internet connection"
+        server: "Server connection"
+        checking-server: "Checking server connection"
+        finding: "Finding a problem"
+        no-network: "There is no Network connection"
+        no-network-desc: "Please make sure you are connected to the Network."
+        no-internet: "There is no Internet connection"
+        no-internet-desc: "Please make sure you are connected to the Internet."
+        no-server: "Unable to connect to the server"
+        no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is down or maintaining, please try to access it again after a while."
+        success: "Successfully connect to the Misskey's server"
+        success-desc: "It seems to be able to connect normally. Please reload the page."
 
     mk-forkit:
       open-github-link: "View source on Github"
@@ -142,6 +163,19 @@ common:
 
     mk-uploader:
       waiting: "Waiting"
+
+ch:
+  tags:
+    mk-index:
+      new: "Create new channel"
+      channel-title: "Channel title"
+
+    mk-channel-form:
+      textarea: "Write here"
+      upload: "Upload"
+      drive: "Drive"
+      post: "Do"
+      posting: "Doing"
 
 desktop:
   tags:
@@ -220,6 +254,7 @@ desktop:
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
+      ch: "Channels"
       info: "News"
 
     mk-ui-header-search:
@@ -332,6 +367,9 @@ desktop:
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "Select file(s)"
+
     mk-drive-file-viewer:
       download: "Download"
       rename: "Rename"
@@ -368,6 +406,7 @@ mobile:
 
     mk-notifications-page:
       notifications: "Notifications"
+      read-all: "Are you sure you want to mark all unread notifications as read?"
 
     mk-post-page:
       title: "Post"
@@ -469,6 +508,7 @@ mobile:
       home: "Home"
       notifications: "Notifications"
       messaging: "Messages"
+      ch: "Channels"
       drive: "Drive"
       settings: "Settings"
       about: "About Misskey"

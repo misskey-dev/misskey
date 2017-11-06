@@ -29,7 +29,7 @@
 	<ul>
 		<li><a onclick={ signout }><i class="fa fa-power-off"></i>%i18n:mobile.tags.mk-settings-page.signout%</a></li>
 	</ul>
-	<p><small>ver { version }</small></p>
+	<p><small>ver { version } (葵 aoi)</small></p>
 	<style>
 		:scope
 			display block

@@ -196,17 +196,17 @@ const endpoints: Endpoint[] = [
 		kind: 'notification-read'
 	},
 	{
+		name: 'notifications/get_unread_count',
+		withCredential: true,
+		kind: 'notification-read'
+	},
+	{
 		name: 'notifications/delete',
 		withCredential: true,
 		kind: 'notification-write'
 	},
 	{
 		name: 'notifications/delete_all',
-		withCredential: true,
-		kind: 'notification-write'
-	},
-	{
-		name: 'notifications/mark_as_read',
 		withCredential: true,
 		kind: 'notification-write'
 	},
@@ -474,8 +474,33 @@ const endpoints: Endpoint[] = [
 		name: 'messaging/messages/create',
 		withCredential: true,
 		kind: 'messaging-write'
-	}
-
+	},
+	{
+		name: 'channels/create',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 3,
+			minInterval: ms('10seconds')
+		}
+	},
+	{
+		name: 'channels/show'
+	},
+	{
+		name: 'channels/posts'
+	},
+	{
+		name: 'channels/watch',
+		withCredential: true
+	},
+	{
+		name: 'channels/unwatch',
+		withCredential: true
+	},
+	{
+		name: 'channels'
+	},
 ];
 
 export default endpoints;

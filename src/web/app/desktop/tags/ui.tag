@@ -5,7 +5,7 @@
 	<div class="content">
 		<yield />
 	</div>
-	<mk-stream-indicator/>
+	<mk-stream-indicator if={ SIGNIN }/>
 	<style>
 		:scope
 			display block
@@ -319,18 +319,26 @@
 </mk-ui-header-notifications>
 
 <mk-ui-header-nav>
-	<ul if={ SIGNIN }>
-		<li class="home { active: page == 'home' }">
-			<a href={ CONFIG.url }>
-				<i class="fa fa-home"></i>
-				<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
-			</a>
-		</li>
-		<li class="messaging">
-			<a onclick={ messaging }>
-				<i class="fa fa-comments"></i>
-				<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
-				<i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i>
+	<ul>
+		<virtual if={ SIGNIN }>
+			<li class="home { active: page == 'home' }">
+				<a href={ CONFIG.url }>
+					<i class="fa fa-home"></i>
+					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
+				</a>
+			</li>
+			<li class="messaging">
+				<a onclick={ messaging }>
+					<i class="fa fa-comments"></i>
+					<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
+					<i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i>
+				</a>
+			</li>
+		</virtual>
+		<li class="ch">
+			<a href={ CONFIG.chUrl } target="_blank">
+				<i class="fa fa-television"></i>
+				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
 			</a>
 		</li>
 		<li class="info">
@@ -416,22 +424,26 @@
 		this.page = this.opts.page;
 
 		this.on('mount', () => {
-			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+			if (this.SIGNIN) {
+				this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
-			// Fetch count of unread messaging messages
-			this.api('messaging/unread').then(res => {
-				if (res.count > 0) {
-					this.update({
-						hasUnreadMessagingMessages: true
-					});
-				}
-			});
+				// Fetch count of unread messaging messages
+				this.api('messaging/unread').then(res => {
+					if (res.count > 0) {
+						this.update({
+							hasUnreadMessagingMessages: true
+						});
+					}
+				});
+			}
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			if (this.SIGNIN) {
+				this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			}
 		});
 
 		this.onReadAllMessagingMessages = () => {
