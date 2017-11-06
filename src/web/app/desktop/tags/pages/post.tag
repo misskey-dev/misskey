@@ -1,7 +1,9 @@
 <mk-post-page>
 	<mk-ui ref="ui">
-		<main>
+		<main if={ !parent.fetching }>
+			<a if={ parent.post.next } href={ parent.post.next }><i class="fa fa-angle-up"></i>%i18n:desktop.tags.mk-post-page.next%</a>
 			<mk-post-detail ref="detail" post={ parent.post }/>
+			<a if={ parent.post.prev } href={ parent.post.prev }><i class="fa fa-angle-down"></i>%i18n:desktop.tags.mk-post-page.prev%</a>
 		</main>
 	</mk-ui>
 	<style>
@@ -10,6 +12,19 @@
 
 			main
 				padding 16px
+				text-align center
+
+				> a
+					display inline-block
+
+					&:first-child
+						margin-bottom 4px
+
+					&:last-child
+						margin-top 4px
+
+					> i
+						margin-right 4px
 
 				> mk-post-detail
 					margin 0 auto
@@ -18,16 +33,23 @@
 	<script>
 		import Progress from '../../../common/scripts/loading';
 
-		this.post = this.opts.post;
+		this.mixin('api');
+
+		this.fetching = true;
+		this.post = null;
 
 		this.on('mount', () => {
 			Progress.start();
 
-			this.refs.ui.refs.detail.on('post-fetched', () => {
-				Progress.set(0.5);
-			});
+			this.api('posts/show', {
+				post_id: this.opts.post
+			}).then(post => {
 
-			this.refs.ui.refs.detail.on('loaded', () => {
+				this.update({
+					fetching: false,
+					post: post
+				});
+
 				Progress.done();
 			});
 		});

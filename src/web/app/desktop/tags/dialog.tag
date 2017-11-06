@@ -44,6 +44,9 @@
 					// color #43A4EC
 					font-weight bold
 
+					&:empty
+						display none
+
 					> i
 						margin-right 0.5em
 

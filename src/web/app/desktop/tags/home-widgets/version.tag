@@ -1,5 +1,5 @@
 <mk-version-home-widget>
-	<p>ver{ version }</p>
+	<p>ver { version } (葵 aoi)</p>
 	<style>
 		:scope
 			display block

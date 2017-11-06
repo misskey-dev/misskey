@@ -1,4 +1,6 @@
 common:
+  misskey: "Misskeyに何でも投稿して皆と共有しましょう。"
+
   time:
     unknown: "なぞのじかん"
     future: "未来"
@@ -22,12 +24,21 @@ common:
     confused: "こまこまのこまり"
     pudding: "Pudding"
 
+  post_categories:
+    music: "音楽"
+    game: "ゲーム"
+    anime: "アニメ"
+    it: "IT"
+    gadgets: "ガジェット"
+    photography: "写真"
+
   input-message-here: "ここにメッセージを入力"
   send: "送信"
   delete: "削除"
   loading: "読み込み中"
   ok: "わかった"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
+  my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
 
   tags:
     mk-messaging-form:
@@ -55,8 +66,27 @@ common:
 
     mk-error:
       title: "サーバーに接続できません"
-      description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
+      description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
       thanks: "いつもMisskeyをご利用いただきありがとうございます。"
+      troubleshoot: "トラブルシュート"
+
+      troubleshooter:
+        title: "トラブルシューティング"
+        network: "ネットワーク接続"
+        checking-network: "ネットワーク接続を確認中"
+        internet: "インターネット接続"
+        checking-internet: "インターネット接続を確認中"
+        server: "サーバー接続"
+        checking-server: "サーバー接続を確認中"
+        finding: "問題を調べています"
+        no-network: "ネットワークに接続されていません"
+        no-network-desc: "お使いのPCのネットワーク接続が正常か確認してください。"
+        no-internet: "インターネットに接続されていません"
+        no-internet-desc: "ネットワークには接続されていますが、インターネットには接続されていないようです。お使いのPCのインターネット接続が正常か確認してください。"
+        no-server: "Misskeyのサーバーに接続できません"
+        no-server-desc: "お使いのPCのインターネット接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
+        success: "Misskeyのサーバーに接続できました"
+        success-desc: "正常に接続できるようです。ページを再度読み込みしてください。"
 
     mk-forkit:
       open-github-link: "View source on Github"
@@ -75,6 +105,13 @@ common:
       vote: "投票する"
       show-result: "結果を見る"
       voted: "投票済み"
+
+    mk-post-menu:
+      pin: "ピン留め"
+      pinned: "ピン留めしました"
+      select: "カテゴリを選択"
+      categorize: "決定"
+      categorized: "カテゴリを報告しました。これによりMisskeyが賢くなり、投稿の自動カテゴライズに役立てられます。ご協力ありがとうございました。"
 
     mk-reaction-picker:
       choose-reaction: "リアクションを選択"
@@ -127,8 +164,24 @@ common:
     mk-uploader:
       waiting: "待機中"
 
+ch:
+  tags:
+    mk-index:
+      new: "チャンネルを作成"
+      channel-title: "チャンネルのタイトル"
+
+    mk-channel-form:
+      textarea: "書いて"
+      upload: "アップロード"
+      drive: "ドライブ"
+      post: "やる"
+      posting: "やってます"
+
 desktop:
   tags:
+    mk-api-info:
+      regenerate-token: "パスワードを入力してください"
+
     mk-drive-browser-base-contextmenu:
       create-folder: "フォルダーを作成"
       upload: "ファイルをアップロード"
@@ -189,9 +242,19 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "ドライブ"
 
+    mk-nav-home-widget:
+      about: "Misskeyについて"
+      stats: "統計"
+      status: "ステータス"
+      wiki: "Wiki"
+      donors: "ドナー"
+      repository: "リポジトリ"
+      develop: "開発者"
+
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
+      ch: "チャンネル"
       info: "お知らせ"
 
     mk-ui-header-search:
@@ -203,6 +266,14 @@ desktop:
       mentions: "あなた宛て"
       settings: "設定"
       signout: "サインアウト"
+
+    mk-password-setting:
+      reset: "パスワードを変更する"
+      enter-current-password: "現在のパスワードを入力してください"
+      enter-new-password: "新しいパスワードを入力してください"
+      enter-new-password-again: "もう一度新しいパスワードを入力してください"
+      not-match: "新しいパスワードが一致しません"
+      changed: "パスワードを変更しました"
 
     mk-post-form:
       post-placeholder: "いまどうしてる？"
@@ -230,6 +301,13 @@ desktop:
       reply: "返信"
       attaches: "添付: {}メディア"
       uploading-media: "{}個のメディアをアップロード中"
+
+    mk-post-page:
+      prev: "前の投稿"
+      next: "次の投稿"
+
+    mk-settings:
+      password: "パスワード"
 
     mk-timeline-post:
       reposted-by: "{}がRepost"
@@ -289,6 +367,9 @@ desktop:
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "ファイルを選択"
+
     mk-drive-file-viewer:
       download: "ダウンロード"
       rename: "名前を変更"
@@ -325,19 +406,46 @@ mobile:
 
     mk-notifications-page:
       notifications: "通知"
+      read-all: "すべての通知を既読にしますか？"
 
     mk-post-page:
-      submit: "投稿"
+      title: "投稿"
+      prev: "前の投稿"
+      next: "次の投稿"
 
     mk-search-page:
       search: "検索"
+
+    mk-settings:
+      signed-in-as: "{}としてサインイン中"
 
     mk-settings-page:
       profile: "プロフィール"
       applications: "アプリケーション"
       twitter-integration: "Twitter連携"
       signin-history: "ログイン履歴"
+      api: "API"
+      link: "Misskeyリンク"
       settings: "設定"
+      signout: "サインアウト"
+
+    mk-profile-setting-page:
+      title: "プロフィール設定"
+
+    mk-profile-setting:
+      will-be-published: "これらのプロフィールは公開されます。"
+      name: "名前"
+      location: "場所"
+      description: "自己紹介"
+      birthday: "誕生日"
+      avatar: "アバター"
+      banner: "バナー"
+      avatar-saved: "アバターを保存しました"
+      banner-saved: "バナーを保存しました"
+      set-avatar: "アバターを選択する"
+      set-banner: "バナーを選択する"
+      save: "保存"
+      saved: "プロフィールを保存しました"
 
     mk-user-followers-page:
       followers-of: "{}のフォロワー"
@@ -400,6 +508,7 @@ mobile:
       home: "ホーム"
       notifications: "通知"
       messaging: "メッセージ"
+      ch: "チャンネル"
       search: "検索"
       drive: "ドライブ"
       settings: "設定"
@@ -416,12 +525,45 @@ mobile:
       no-posts-with-media: "メディア付き投稿はありません。"
 
     mk-user:
-      is-followed: "フォローされています"
+      follows-you: "フォローされています"
       following: "フォロー"
       followers: "フォロワー"
-      posts: "タイムライン"
-      posts-count: "ポスト"
+      posts: "投稿"
+      overview: "概要"
+      timeline: "タイムライン"
       media: "メディア"
+
+    mk-user-overview:
+      recent-posts: "最近の投稿"
+      images: "画像"
+      activity: "アクティビティ"
+      keywords: "キーワード"
+      domains: "頻出ドメイン"
+      frequently-replied-users: "よく会話するユーザー"
+      followers-you-know: "知り合いのフォロワー"
+      last-used-at: "最終ログイン"
+
+    mk-user-overview-posts:
+      loading: "読み込み中"
+      no-posts: "投稿はありません"
+
+    mk-user-overview-photos:
+      loading: "読み込み中"
+      no-photos: "写真はありません"
+
+    mk-user-overview-keywords:
+      no-keywords: "キーワードはありません(十分な数の投稿をしていない可能性があります)"
+
+    mk-user-overview-domains:
+      no-domains: "よく表れるドメインは検出されませんでした"
+
+    mk-user-overview-frequently-replied-users:
+      loading: "読み込み中"
+      no-users: "よく会話するユーザーはいません"
+
+    mk-user-overview-followers-you-know:
+      loading: "読み込み中"
+      no-users: "知り合いのユーザーはいません"
 
     mk-users-list:
       all: "すべて"

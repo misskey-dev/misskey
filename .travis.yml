@@ -1,10 +1,14 @@
 # travis file
 # https://docs.travis-ci.com/user/customizing-the-build
 
+branches:
+  except:
+    - release
+
 language: node_js
 
 node_js:
-  - 7.10.0
+  - 8.4.0
 
 env:
   - CXX=g++-4.8 NODE_ENV=production

@@ -1,10 +1,10 @@
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
-import rndstr from 'rndstr';
 import recaptcha = require('recaptcha-promise');
-import User from '../models/user';
+import { default as User, IUser } from '../models/user';
 import { validateUsername, validatePassword } from '../models/user';
 import serialize from '../serializers/user';
+import generateUserToken from '../common/generate-native-user-token';
 import config from '../../conf';
 
 recaptcha.init({
@@ -58,10 +58,10 @@ export default async (req: express.Request, res: express.Response) => {
 	const hash = bcrypt.hashSync(password, salt);
 
 	// Generate secret
-	const secret = `!${rndstr('a-zA-Z0-9', 32)}`;
+	const secret = generateUserToken();
 
 	// Create account
-	const account = await User.insert({
+	const account: IUser = await User.insert({
 		token: secret,
 		avatar_id: null,
 		banner_id: null,

@@ -5,8 +5,6 @@
 			display block
 			max-width 600px
 			margin 0 auto
-			background #fff
-
 	</style>
 	<script>
 		this.mixin('api');

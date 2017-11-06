@@ -6,3 +6,5 @@
 !/tools
 !/elasticsearch
 !/package.json
+!/.travis.yml
+!/appveyor.yml

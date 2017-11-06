@@ -26,7 +26,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	const datas = await Post
 		.aggregate([
-			{ $match: { reply_to: post._id } },
+			{ $match: { reply: post._id } },
 			{ $project: {
 				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},

@@ -1,9 +1,13 @@
 # appveyor file
 # http://www.appveyor.com/docs/appveyor-yml
 
+branches:
+  except:
+    - release
+
 environment:
   matrix:
-    - nodejs_version: 7.10.0
+    - nodejs_version: 8.4.0
 
 build: off
 

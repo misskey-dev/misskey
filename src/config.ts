@@ -68,6 +68,13 @@ type Source = {
 		hook_secret: string;
 		username: string;
 	};
+	line_bot?: {
+		channel_secret: string;
+		channel_access_token: string;
+	};
+	analysis?: {
+		mecab_command?: string;
+	};
 };
 
 /**
@@ -81,6 +88,7 @@ type Mixin = {
 	api_url: string;
 	auth_url: string;
 	about_url: string;
+	ch_url: string;
 	stats_url: string;
 	status_url: string;
 	dev_url: string;
@@ -115,6 +123,7 @@ export default function load() {
 	mixin.secondary_scheme = config.secondary_url.substr(0, config.secondary_url.indexOf('://'));
 	mixin.api_url = `${mixin.scheme}://api.${mixin.host}`;
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;
+	mixin.ch_url = `${mixin.scheme}://ch.${mixin.host}`;
 	mixin.dev_url = `${mixin.scheme}://dev.${mixin.host}`;
 	mixin.about_url = `${mixin.scheme}://about.${mixin.host}`;
 	mixin.stats_url = `${mixin.scheme}://stats.${mixin.host}`;
