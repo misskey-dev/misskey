@@ -31,44 +31,37 @@ export default (
 	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
 		_file = await DriveFile.findOne({
 			_id: file
-		}, {
-				fields: {
-					data: false
-				}
-			});
+		});
 	} else if (typeof file === 'string') {
 		_file = await DriveFile.findOne({
 			_id: new mongo.ObjectID(file)
-		}, {
-				fields: {
-					data: false
-				}
-			});
+		});
 	} else {
 		_file = deepcopy(file);
 	}
 
-	// Rename _id to id
-	_file.id = _file._id;
-	delete _file._id;
+	// rendered target
+	let _target: any = {};
 
-	delete _file.data;
+	_target.id = _file._id;
 
-	_file.url = `${config.drive_url}/${_file.id}/${encodeURIComponent(_file.name)}`;
+	_target = Object.assign(_target, _file.metadata);
 
-	if (opts.detail && _file.folder_id) {
+	_target.url = `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
+
+	if (opts.detail && _target.folder_id) {
 		// Populate folder
-		_file.folder = await serializeDriveFolder(_file.folder_id, {
+		_target.folder = await serializeDriveFolder(_target.folder_id, {
 			detail: true
 		});
 	}
 
-	if (opts.detail && _file.tags) {
+	if (opts.detail && _target.tags) {
 		// Populate tags
-		_file.tags = await _file.tags.map(async (tag: any) =>
+		_target.tags = await _target.tags.map(async (tag: any) =>
 			await serializeDriveTag(tag)
 		);
 	}
 
-	resolve(_file);
+	resolve(_target);
 });

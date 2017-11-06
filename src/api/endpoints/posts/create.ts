@@ -44,9 +44,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			// SELECT _id
 			const entity = await DriveFile.findOne({
 				_id: mediaId,
-				user_id: user._id
-			}, {
-				_id: true
+				metadata: {
+					user_id: user._id
+				}
 			});
 
 			if (entity === null) {

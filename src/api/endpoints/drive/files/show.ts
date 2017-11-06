@@ -21,10 +21,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			user_id: user._id
-		}, {
-			fields: {
-				data: false
+			metadata: {
+				user_id: user._id
 			}
 		});
 

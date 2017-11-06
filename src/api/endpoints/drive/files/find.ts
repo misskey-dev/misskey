@@ -24,12 +24,10 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Issue query
 	const files = await DriveFile
 		.find({
-			name: name,
-			user_id: user._id,
-			folder_id: folderId
-		}, {
-			fields: {
-				data: false
+			metadata: {
+				name: name,
+				user_id: user._id,
+				folder_id: folderId
 			}
 		});
 

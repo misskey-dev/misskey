@@ -54,9 +54,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (fileId !== undefined) {
 		file = await DriveFile.findOne({
 			_id: fileId,
-			user_id: user._id
-		}, {
-			data: false
+			metadata: {
+				user_id: user._id
+			}
 		});
 
 		if (file === null) {

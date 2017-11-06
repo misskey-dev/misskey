@@ -14,16 +14,16 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Calculate drive usage
 	const usage = ((await DriveFile
 		.aggregate([
-			{ $match: { user_id: user._id } },
+			{ $match: { metadata: { user_id: user._id } } },
 			{
 				$project: {
-					datasize: true
+					length: true
 				}
 			},
 			{
 				$group: {
 					_id: null,
-					usage: { $sum: '$datasize' }
+					usage: { $sum: '$length' }
 				}
 			}
 		]))[0] || {

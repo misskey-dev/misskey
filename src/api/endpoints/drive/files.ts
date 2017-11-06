@@ -40,8 +40,10 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		_id: -1
 	};
 	const query = {
-		user_id: user._id,
-		folder_id: folderId
+		metadata: {
+			user_id: user._id,
+			folder_id: folderId
+		}
 	} as any;
 	if (sinceId) {
 		sort._id = 1;
@@ -57,9 +59,6 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Issue query
 	const files = await DriveFile
 		.find(query, {
-			fields: {
-				data: false
-			},
 			limit: limit,
 			sort: sort
 		});

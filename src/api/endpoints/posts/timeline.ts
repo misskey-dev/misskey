@@ -2,6 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
+import rap from '@prezzemolo/rap';
 import Post from '../../models/post';
 import ChannelWatching from '../../models/channel-watching';
 import getFriends from '../../common/get-friends';
@@ -33,14 +34,15 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		return rej('cannot set since_id and max_id');
 	}
 
-	// ID list of the user itself and other users who the user follows
-	const followingIds = await getFriends(user._id);
-
-	// Watchしているチャンネルを取得
-	const watches = await ChannelWatching.find({
-		user_id: user._id,
-		// 削除されたドキュメントは除く
-		deleted_at: { $exists: false }
+	const { followingIds, watchChannelIds } = await rap({
+		// ID list of the user itself and other users who the user follows
+		followingIds: getFriends(user._id),
+		// Watchしているチャンネルを取得
+		watchChannelIds: ChannelWatching.find({
+			user_id: user._id,
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		}).then(watches => watches.map(w => w.channel_id))
 	});
 
 	//#region Construct query
@@ -65,7 +67,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		}, {
 			// Watchしているチャンネルへの投稿
 			channel_id: {
-				$in: watches.map(w => w.channel_id)
+				$in: watchChannelIds
 			}
 		}]
 	} as any;
@@ -90,7 +92,5 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(timeline.map(async post =>
-		await serialize(post, user)
-	)));
+	res(Promise.all(timeline.map(post => serialize(post, user))));
 });
