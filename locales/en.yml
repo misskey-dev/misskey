@@ -1,4 +1,6 @@
 common:
+  misskey: "Note everything and share it others using Misskey."
+
   time:
     unknown: "unknown"
     future: "future"
@@ -22,12 +24,21 @@ common:
     confused: "Confused"
     pudding: "Pudding"
 
+  post_categories:
+    music: "Music"
+    game: "Video Game"
+    anime: "Anime"
+    it: "IT"
+    gadgets: "Gadgets"
+    photography: "Photography"
+
   input-message-here: "Enter message here"
   send: "Send"
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
   update-available: "New version of Misskey is now available({newer}, current is {current}). Reload page to apply update."
+  my-token-regenerated: "Your token is just regenerated, so you will signout."
 
   tags:
     mk-messaging-form:
@@ -55,8 +66,27 @@ common:
 
     mk-error:
       title: "Unable to connect to the server"
-      description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
+      description: "There is a problem with Internet connection, or the server may be down or maintaining. Please {try again} later."
       thanks: "Thank you for using Misskey."
+      troubleshoot: "Troubleshoot"
+
+      troubleshooter:
+        title: "TroubleShooting"
+        network: "Network connection"
+        checking-network: "Checking network connection"
+        internet: "Internet connection"
+        checking-internet: "Checking internet connection"
+        server: "Server connection"
+        checking-server: "Checking server connection"
+        finding: "Finding a problem"
+        no-network: "There is no Network connection"
+        no-network-desc: "Please make sure you are connected to the Network."
+        no-internet: "There is no Internet connection"
+        no-internet-desc: "Please make sure you are connected to the Internet."
+        no-server: "Unable to connect to the server"
+        no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is down or maintaining, please try to access it again after a while."
+        success: "Successfully connect to the Misskey's server"
+        success-desc: "It seems to be able to connect normally. Please reload the page."
 
     mk-forkit:
       open-github-link: "View source on Github"
@@ -75,6 +105,13 @@ common:
       vote: "Vote"
       show-result: "Show result"
       voted: "Voted"
+
+    mk-post-menu:
+      pin: "Pin"
+      pinned: "Pinned"
+      select: "Select category"
+      categorize: "Accept"
+      categorized: "Category reported. Thank you!"
 
     mk-reaction-picker:
       choose-reaction: "Pick your reaction"
@@ -127,8 +164,24 @@ common:
     mk-uploader:
       waiting: "Waiting"
 
+ch:
+  tags:
+    mk-index:
+      new: "Create new channel"
+      channel-title: "Channel title"
+
+    mk-channel-form:
+      textarea: "Write here"
+      upload: "Upload"
+      drive: "Drive"
+      post: "Do"
+      posting: "Doing"
+
 desktop:
   tags:
+    mk-api-info:
+      regenerate-token: "Please enter the password"
+
     mk-drive-browser-base-contextmenu:
       create-folder: "Create a folder"
       upload: "Upload a file"
@@ -189,9 +242,19 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "Drive"
 
+    mk-nav-home-widget:
+      about: "About"
+      stats: "Stats"
+      status: "Status"
+      wiki: "Wiki"
+      donors: "Donors"
+      repository: "Repository"
+      develop: "Developers"
+
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
+      ch: "Channels"
       info: "News"
 
     mk-ui-header-search:
@@ -203,6 +266,14 @@ desktop:
       mentions: "Mentions"
       settings: "Settings"
       signout: "Sign out"
+
+    mk-password-setting:
+      reset: "Change your password"
+      enter-current-password: "Enter the current password"
+      enter-new-password: "Enter the new password"
+      enter-new-password-again: "Enter the new password again"
+      not-match: "New password not matched"
+      changed: "Password updated successfully"
 
     mk-post-form:
       post-placeholder: "What's happening?"
@@ -230,6 +301,13 @@ desktop:
       reply: "Reply"
       attaches: "{} media attached"
       uploading-media: "Uploading {} media"
+
+    mk-post-page:
+      prev: "Previous post"
+      next: "Next post"
+
+    mk-settings:
+      password: "Password"
 
     mk-timeline-post:
       reposted-by: "Reposted by {}"
@@ -289,6 +367,9 @@ desktop:
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "Select file(s)"
+
     mk-drive-file-viewer:
       download: "Download"
       rename: "Rename"
@@ -325,19 +406,46 @@ mobile:
 
     mk-notifications-page:
       notifications: "Notifications"
+      read-all: "Are you sure you want to mark all unread notifications as read?"
 
     mk-post-page:
-      submit: "Post"
+      title: "Post"
+      prev: "Previous post"
+      next: "Next post"
 
     mk-search-page:
       search: "Search"
+
+    mk-settings:
+      signed-in-as: "Signed in as {}"
 
     mk-settings-page:
       profile: "Profile"
       applications: "Applications"
       twitter-integration: "Twitter integration"
       signin-history: "Sign in history"
+      api: "API"
+      link: "MisskeyLink"
       settings: "Settings"
+      signout: "Sign out"
+
+    mk-profile-setting-page:
+      title: "Profile Settings"
+
+    mk-profile-setting:
+      will-be-published: "These profiles will be published."
+      name: "Name"
+      location: "Location"
+      description: "Description"
+      birthday: "Birthday"
+      avatar: "Avatar"
+      banner: "Banner"
+      avatar-saved: "Avatar updated successfully"
+      banner-saved: "Banner updated successfully"
+      set-avatar: "Choose an avatar"
+      set-banner: "Choose a banner"
+      save: "Save"
+      saved: "Profile updated successfully"
 
     mk-user-followers-page:
       followers-of: "Followers of {}"
@@ -400,6 +508,7 @@ mobile:
       home: "Home"
       notifications: "Notifications"
       messaging: "Messages"
+      ch: "Channels"
       drive: "Drive"
       settings: "Settings"
       about: "About Misskey"
@@ -416,11 +525,45 @@ mobile:
       no-posts-with-media: "There is no posts with media"
 
     mk-user:
-      is-followed: "Followed you"
+      follows-you: "Follows you"
       following: "Following"
       followers: "Followers"
-      posts: "Timeline"
+      posts: "Posts"
+      overview: "Overview"
+      timeline: "Timeline"
       media: "Media"
+
+    mk-user-overview:
+      recent-posts: "Recent posts"
+      images: "Images"
+      activity: "Activity"
+      keywords: "Keywords"
+      domains: "Domains"
+      frequently-replied-users: "Frequently talking users"
+      followers-you-know: "Followers you know"
+      last-used-at: "Last used at"
+
+    mk-user-overview-posts:
+      loading: "Loading"
+      no-posts: "No posts"
+
+    mk-user-overview-photos:
+      loading: "Loading"
+      no-photos: "No photos"
+
+    mk-user-overview-keywords:
+      no-keywords: "No keywords"
+
+    mk-user-overview-domains:
+      no-domains: "No domains"
+
+    mk-user-overview-frequently-replied-users:
+      loading: "Loading"
+      no-users: "No users"
+
+    mk-user-overview-followers-you-know:
+      loading: "Loading"
+      no-users: "No users"
 
     mk-users-list:
       all: "All"

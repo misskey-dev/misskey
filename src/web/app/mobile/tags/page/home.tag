@@ -9,7 +9,7 @@
 	<script>
 		import ui from '../../scripts/ui-event';
 		import Progress from '../../../common/scripts/loading';
-		import getPostSummary from '../../../common/scripts/get-post-summary';
+		import getPostSummary from '../../../../../common/get-post-summary.ts';
 		import openPostForm from '../../scripts/open-post-form';
 
 		this.mixin('i');
@@ -20,6 +20,7 @@
 		this.on('mount', () => {
 			document.title = 'Misskey'
 			ui.trigger('title', '<i class="fa fa-home"></i>%i18n:mobile.tags.mk-home.home%');
+			document.documentElement.style.background = '#313a42';
 
 			ui.trigger('func', () => {
 				openPostForm();

@@ -1,9 +1,7 @@
 <mk-notifications>
 	<div class="notifications" if={ notifications.length != 0 }>
 		<virtual each={ notification, i in notifications }>
-			<div>
-				<mk-notification notification={ notification }/>
-			</div>
+			<mk-notification notification={ notification }/>
 			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
@@ -15,19 +13,27 @@
 	<style>
 		:scope
 			display block
+			margin 8px auto
+			padding 0
+			max-width 500px
+			width calc(100% - 16px)
 			background #fff
+			border-radius 8px
+			box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+			@media (min-width 500px)
+				margin 16px auto
+				width calc(100% - 32px)
 
 			> .notifications
 
-				> div
+				> mk-notification
+					margin 0 auto
+					max-width 500px
 					border-bottom solid 1px rgba(0, 0, 0, 0.05)
 
 					&:last-child
 						border-bottom none
-
-					> mk-notification
-						margin 0 auto
-						max-width 500px
 
 				> .date
 					display block
@@ -72,7 +78,7 @@
 
 	</style>
 	<script>
-		import getPostSummary from '../../common/scripts/get-post-summary';
+		import getPostSummary from '../../../../common/get-post-summary.ts';
 		this.getPostSummary = getPostSummary;
 
 		this.mixin('api');
@@ -117,6 +123,12 @@
 		});
 
 		this.onNotification = notification => {
+			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
+			this.stream.send({
+				type: 'read_notification',
+				id: notification.id
+			});
+
 			this.notifications.unshift(notification);
 			this.update();
 		};

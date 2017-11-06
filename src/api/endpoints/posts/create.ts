@@ -4,16 +4,17 @@
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
 import parse from '../../common/text';
-import Post from '../../models/post';
-import { isValidText } from '../../models/post';
-import User from '../../models/user';
+import { default as Post, IPost, isValidText } from '../../models/post';
+import { default as User, IUser } from '../../models/user';
+import { default as Channel, IChannel } from '../../models/channel';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
 import Watching from '../../models/post-watching';
+import ChannelWatching from '../../models/channel-watching';
 import serialize from '../../serializers/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
-import event from '../../event';
+import { default as event, publishChannelStream } from '../../event';
 import config from '../../../conf';
 
 /**
@@ -24,7 +25,7 @@ import config from '../../../conf';
  * @param {any} app
  * @return {Promise<any>}
  */
-module.exports = (params, user, app) => new Promise(async (res, rej) => {
+module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
@@ -43,9 +44,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			// SELECT _id
 			const entity = await DriveFile.findOne({
 				_id: mediaId,
-				user_id: user._id
-			}, {
-				_id: true
+				'metadata.user_id': user._id
 			});
 
 			if (entity === null) {
@@ -62,7 +61,8 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	const [repostId, repostIdErr] = $(params.repost_id).optional.id().$;
 	if (repostIdErr) return rej('invalid repost_id');
 
-	let repost = null;
+	let repost: IPost = null;
+	let isQuote = false;
 	if (repostId !== undefined) {
 		// Fetch repost to post
 		repost = await Post.findOne({
@@ -84,40 +84,83 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			}
 		});
 
+		isQuote = text != null || files != null;
+
 		// 直近と同じRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
 			latestPost.repost_id &&
 			latestPost.repost_id.equals(repost._id) &&
-			text === undefined && files === null) {
+			!isQuote) {
 			return rej('cannot repost same post that already reposted in your latest post');
 		}
 
 		// 直近がRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
 			latestPost._id.equals(repost._id) &&
-			text === undefined && files === null) {
+			!isQuote) {
 			return rej('cannot repost your latest post');
 		}
 	}
 
-	// Get 'in_reply_to_post_id' parameter
-	const [inReplyToPostId, inReplyToPostIdErr] = $(params.reply_to_id).optional.id().$;
-	if (inReplyToPostIdErr) return rej('invalid in_reply_to_post_id');
+	// Get 'reply_id' parameter
+	const [replyId, replyIdErr] = $(params.reply_id).optional.id().$;
+	if (replyIdErr) return rej('invalid reply_id');
 
-	let inReplyToPost = null;
-	if (inReplyToPostId !== undefined) {
+	let reply: IPost = null;
+	if (replyId !== undefined) {
 		// Fetch reply
-		inReplyToPost = await Post.findOne({
-			_id: inReplyToPostId
+		reply = await Post.findOne({
+			_id: replyId
 		});
 
-		if (inReplyToPost === null) {
+		if (reply === null) {
 			return rej('in reply to post is not found');
 		}
 
 		// 返信対象が引用でないRepostだったらエラー
-		if (inReplyToPost.repost_id && !inReplyToPost.text && !inReplyToPost.media_ids) {
+		if (reply.repost_id && !reply.text && !reply.media_ids) {
 			return rej('cannot reply to repost');
+		}
+	}
+
+	// Get 'channel_id' parameter
+	const [channelId, channelIdErr] = $(params.channel_id).optional.id().$;
+	if (channelIdErr) return rej('invalid channel_id');
+
+	let channel: IChannel = null;
+	if (channelId !== undefined) {
+		// Fetch channel
+		channel = await Channel.findOne({
+			_id: channelId
+		});
+
+		if (channel === null) {
+			return rej('channel not found');
+		}
+
+		// 返信対象の投稿がこのチャンネルじゃなかったらダメ
+		if (reply && !channelId.equals(reply.channel_id)) {
+			return rej('チャンネル内部からチャンネル外部の投稿に返信することはできません');
+		}
+
+		// Repost対象の投稿がこのチャンネルじゃなかったらダメ
+		if (repost && !channelId.equals(repost.channel_id)) {
+			return rej('チャンネル内部からチャンネル外部の投稿をRepostすることはできません');
+		}
+
+		// 引用ではないRepostはダメ
+		if (repost && !isQuote) {
+			return rej('チャンネル内部では引用ではないRepostをすることはできません');
+		}
+	} else {
+		// 返信対象の投稿がチャンネルへの投稿だったらダメ
+		if (reply && reply.channel_id != null) {
+			return rej('チャンネル外部からチャンネル内部の投稿に返信することはできません');
+		}
+
+		// Repost対象の投稿がチャンネルへの投稿だったらダメ
+		if (repost && repost.channel_id != null) {
+			return rej('チャンネル外部からチャンネル内部の投稿をRepostすることはできません');
 		}
 	}
 
@@ -148,15 +191,15 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	if (user.latest_post) {
 		if (deepEqual({
 			text: user.latest_post.text,
-			reply: user.latest_post.reply_to_id ? user.latest_post.reply_to_id.toString() : null,
+			reply: user.latest_post.reply_id ? user.latest_post.reply_id.toString() : null,
 			repost: user.latest_post.repost_id ? user.latest_post.repost_id.toString() : null,
 			media_ids: (user.latest_post.media_ids || []).map(id => id.toString())
 		}, {
-				text: text,
-				reply: inReplyToPost ? inReplyToPost._id.toString() : null,
-				repost: repost ? repost._id.toString() : null,
-				media_ids: (files || []).map(file => file._id.toString())
-			})) {
+			text: text,
+			reply: reply ? reply._id.toString() : null,
+			repost: repost ? repost._id.toString() : null,
+			media_ids: (files || []).map(file => file._id.toString())
+		})) {
 			return rej('duplicate');
 		}
 	}
@@ -164,8 +207,10 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// 投稿を作成
 	const post = await Post.insert({
 		created_at: new Date(),
+		channel_id: channel ? channel._id : undefined,
+		index: channel ? channel.index + 1 : undefined,
 		media_ids: files ? files.map(file => file._id) : undefined,
-		reply_to_id: inReplyToPost ? inReplyToPost._id : undefined,
+		reply_id: reply ? reply._id : undefined,
 		repost_id: repost ? repost._id : undefined,
 		poll: poll,
 		text: text,
@@ -179,8 +224,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	// Reponse
 	res(postObj);
 
-	// -----------------------------------------------------------
-	// Post processes
+	//#region Post processes
 
 	User.update({ _id: user._id }, {
 		$set: {
@@ -203,23 +247,51 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		}
 	}
 
-	// Publish event to myself's stream
-	event(user._id, 'post', postObj);
+	// タイムラインへの投稿
+	if (!channel) {
+		// Publish event to myself's stream
+		event(user._id, 'post', postObj);
 
-	// Fetch all followers
-	const followers = await Following
-		.find({
-			followee_id: user._id,
-			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
-		}, {
-			follower_id: true,
-			_id: false
+		// Fetch all followers
+		const followers = await Following
+			.find({
+				followee_id: user._id,
+				// 削除されたドキュメントは除く
+				deleted_at: { $exists: false }
+			}, {
+				follower_id: true,
+				_id: false
+			});
+
+		// Publish event to followers stream
+		followers.forEach(following =>
+			event(following.follower_id, 'post', postObj));
+	}
+
+	// チャンネルへの投稿
+	if (channel) {
+		// Increment channel index(posts count)
+		Channel.update({ _id: channel._id }, {
+			$inc: {
+				index: 1
+			}
 		});
 
-	// Publish event to followers stream
-	followers.forEach(following =>
-		event(following.follower_id, 'post', postObj));
+		// Publish event to channel
+		publishChannelStream(channel._id, 'post', postObj);
+
+		// Get channel watchers
+		const watches = await ChannelWatching.find({
+			channel_id: channel._id,
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		});
+
+		// チャンネルの視聴者(のタイムライン)に配信
+		watches.forEach(w => {
+			event(w.user_id, 'post', postObj);
+		});
+	}
 
 	// Increment my posts count
 	User.update({ _id: user._id }, {
@@ -229,23 +301,23 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	});
 
 	// If has in reply to post
-	if (inReplyToPost) {
+	if (reply) {
 		// Increment replies count
-		Post.update({ _id: inReplyToPost._id }, {
+		Post.update({ _id: reply._id }, {
 			$inc: {
 				replies_count: 1
 			}
 		});
 
 		// 自分自身へのリプライでない限りは通知を作成
-		notify(inReplyToPost.user_id, user._id, 'reply', {
+		notify(reply.user_id, user._id, 'reply', {
 			post_id: post._id
 		});
 
 		// Fetch watchers
 		Watching
 			.find({
-				post_id: inReplyToPost._id,
+				post_id: reply._id,
 				user_id: { $ne: user._id },
 				// 削除されたドキュメントは除く
 				deleted_at: { $exists: false }
@@ -265,10 +337,10 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		// この投稿をWatchする
 		// TODO: ユーザーが「返信したときに自動でWatchする」設定を
 		//       オフにしていた場合はしない
-		watch(user._id, inReplyToPost);
+		watch(user._id, reply);
 
 		// Add mention
-		addMention(inReplyToPost.user_id, 'reply');
+		addMention(reply.user_id, 'reply');
 	}
 
 	// If it is repost
@@ -369,7 +441,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			if (mentionee == null) return;
 
 			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
-			if (inReplyToPost && inReplyToPost.user_id.equals(mentionee._id)) return;
+			if (reply && reply.user_id.equals(mentionee._id)) return;
 			if (repost && repost.user_id.equals(mentionee._id)) return;
 
 			// Add mention
@@ -406,4 +478,6 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 			}
 		});
 	}
+
+	//#endregion
 });

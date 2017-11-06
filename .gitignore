@@ -3,6 +3,7 @@
 /node_modules
 /built
 /uploads
+/data
 npm-debug.log
 *.pem
 run.bat

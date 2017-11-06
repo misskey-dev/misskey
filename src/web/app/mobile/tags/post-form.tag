@@ -1,11 +1,9 @@
 <mk-post-form>
 	<header>
+		<button class="cancel" onclick={ cancel }><i class="fa fa-times"></i></button>
 		<div>
-			<button class="cancel" onclick={ cancel }><i class="fa fa-times"></i></button>
-			<div>
-				<span if={ refs.text } class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
-				<button class="submit" onclick={ post }>%i18n:mobile.tags.mk-post-form.submit%</button>
-			</div>
+			<span if={ refs.text } class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
+			<button class="submit" onclick={ post }>%i18n:mobile.tags.mk-post-form.submit%</button>
 		</div>
 	</header>
 	<div class="form">
@@ -30,46 +28,47 @@
 	<style>
 		:scope
 			display block
-			padding-top 50px
+			max-width 500px
+			width calc(100% - 16px)
+			margin 8px auto
+			background #fff
+			border-radius 8px
+			box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+			@media (min-width 500px)
+				margin 16px auto
+				width calc(100% - 32px)
 
 			> header
-				position fixed
-				z-index 1000
-				top 0
-				left 0
-				width 100%
+				z-index 1
 				height 50px
-				background #fff
+				box-shadow 0 1px 0 0 rgba(0, 0, 0, 0.1)
+
+				> .cancel
+					width 50px
+					line-height 50px
+					font-size 24px
+					color #555
 
 				> div
-					max-width 500px
-					margin 0 auto
+					position absolute
+					top 0
+					right 0
 
-					> .cancel
-						width 50px
+					> .text-count
 						line-height 50px
-						font-size 24px
-						color #555
+						color #657786
 
-					> div
-						position absolute
-						top 0
-						right 0
+					> .submit
+						margin 8px
+						padding 0 16px
+						line-height 34px
+						color $theme-color-foreground
+						background $theme-color
+						border-radius 4px
 
-						> .text-count
-							line-height 50px
-							color #657786
-
-						> .submit
-							margin 8px
-							padding 0 16px
-							line-height 34px
-							color $theme-color-foreground
-							background $theme-color
-							border-radius 4px
-
-							&:disabled
-								opacity 0.7
+						&:disabled
+							opacity 0.7
 
 			> .form
 				max-width 500px
@@ -268,7 +267,7 @@
 			this.api('posts/create', {
 				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
 				media_ids: files,
-				reply_to_id: opts.reply ? opts.reply.id : undefined,
+				reply_id: opts.reply ? opts.reply.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined
 			}).then(data => {
 				this.trigger('post');

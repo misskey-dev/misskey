@@ -1,3 +1,3 @@
-const UglifyEsPlugin = require('uglify-es-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-export default () => new UglifyEsPlugin();
+export default () => new UglifyJsPlugin();

@@ -14,7 +14,6 @@ export default function homeStream(request: websocket.request, connection: webso
 	ev.addListener('stats', onStats);
 
 	connection.on('close', () => {
-		console.log('yooo');
 		ev.removeListener('stats', onStats);
 	});
 }

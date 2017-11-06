@@ -7,7 +7,7 @@
 		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }><i class="fa fa-fw fa-puzzle-piece"></i>アプリ</p>
 		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }><i class="fa fa-fw fa-twitter"></i>Twitter</p>
 		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }><i class="fa fa-fw fa-sign-in"></i>ログイン履歴</p>
-		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }><i class="fa fa-fw fa-unlock-alt"></i>パスワード</p>
+		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }><i class="fa fa-fw fa-unlock-alt"></i>%i18n:desktop.tags.mk-settings.password%</p>
 		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }><i class="fa fa-fw fa-key"></i>API</p>
 	</div>
 	<div class="pages">
@@ -56,6 +56,11 @@
 		<section class="signin" show={ page == 'signin' }>
 			<h1>ログイン履歴</h1>
 			<mk-signin-history/>
+		</section>
+
+		<section class="password" show={ page == 'password' }>
+			<h1>%i18n:desktop.tags.mk-settings.password%</h1>
+			<mk-password-setting/>
 		</section>
 
 		<section class="api" show={ page == 'api' }>
@@ -211,3 +216,71 @@
 		};
 	</script>
 </mk-settings>
+
+<mk-api-info>
+	<p>Token:<code>{ I.token }</code></p>
+	<p>APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。</p>
+	<p>アカウントを乗っ取られてしまう可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。</p>
+	<p>万が一このトークンが漏れたりその可能性がある場合は<a class="regenerate" onclick={ regenerateToken }>トークンを再生成</a>できます。(副作用として、ログインしているすべてのデバイスでログアウトが発生します)</p>
+	<style>
+		:scope
+			display block
+			color #4a535a
+
+			code
+				padding 4px
+				background #eee
+	</style>
+	<script>
+		import passwordDialog from '../scripts/password-dialog';
+
+		this.mixin('i');
+		this.mixin('api');
+
+		this.regenerateToken = () => {
+			passwordDialog('%i18n:desktop.tags.mk-api-info.regenerate-token%', password => {
+				this.api('i/regenerate_token', {
+					password: password
+				});
+			});
+		};
+	</script>
+</mk-api-info>
+
+<mk-password-setting>
+	<button onclick={ reset }>%i18n:desktop.tags.mk-password-setting.reset%</button>
+	<style>
+		:scope
+			display block
+			color #4a535a
+	</style>
+	<script>
+		import passwordDialog from '../scripts/password-dialog';
+		import dialog from '../scripts/dialog';
+		import notify from '../scripts/notify';
+
+		this.mixin('i');
+		this.mixin('api');
+
+		this.reset = () => {
+			passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-current-password%', currentPassword => {
+				passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-new-password%', newPassword => {
+					passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-new-password-again%', newPassword2 => {
+						if (newPassword !== newPassword2) {
+							dialog(null, '%i18n:desktop.tags.mk-password-setting.not-match%', [{
+								text: 'OK'
+							}]);
+							return;
+						}
+						this.api('i/change_password', {
+							current_password: currentPassword,
+							new_password: newPassword
+						}).then(() => {
+							notify('%i18n:desktop.tags.mk-password-setting.changed%');
+						});
+					});
+				});
+			});
+		};
+	</script>
+</mk-password-setting>
