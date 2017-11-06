@@ -25,6 +25,10 @@ class MisskeyEvent {
 		this.publish(`messaging-stream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	public publishChannelStream(channelId: ID, type: string, value?: any): void {
+		this.publish(`channel-stream:${channelId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
 	private publish(channel: string, type: string, value?: any): void {
 		const message = value == null ?
 			{ type: type } :
@@ -41,3 +45,5 @@ export default ev.publishUserStream.bind(ev);
 export const publishPostStream = ev.publishPostStream.bind(ev);
 
 export const publishMessagingStream = ev.publishMessagingStream.bind(ev);
+
+export const publishChannelStream = ev.publishChannelStream.bind(ev);

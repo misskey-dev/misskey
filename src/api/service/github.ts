@@ -111,12 +111,12 @@ module.exports = async (app: express.Application) => {
 
 	handler.on('watch', event => {
 		const sender = event.sender;
-		post(`Starred by **${sender.login}**`);
+		post(`⭐️ Starred by **${sender.login}** ⭐️`);
 	});
 
 	handler.on('fork', event => {
 		const repo = event.forkee;
-		post(`Forked:\n${repo.html_url}`);
+		post(`🍴 Forked:\n${repo.html_url} 🍴`);
 	});
 
 	handler.on('pull_request', event => {

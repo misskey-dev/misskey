@@ -44,7 +44,7 @@ const self = (
 		});
 
 		const childFilesCount = await DriveFile.count({
-			folder_id: _folder.id
+			'metadata.folder_id': _folder.id
 		});
 
 		_folder.folders_count = childFoldersCount;

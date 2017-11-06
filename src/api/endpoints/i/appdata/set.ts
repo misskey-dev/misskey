@@ -21,7 +21,7 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 	const [data, dataError] = $(params.data).optional.object()
 		.pipe(obj => {
 			const hasInvalidData = Object.entries(obj).some(([k, v]) =>
-				$(k).string().match(/^[a-z_]+$/).isNg() && $(v).string().isNg());
+				$(k).string().match(/^[a-z_]+$/).nok() && $(v).string().nok());
 			return !hasInvalidData;
 		}).$;
 	if (dataError) return rej('invalid data param');

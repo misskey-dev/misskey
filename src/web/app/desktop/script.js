@@ -11,7 +11,7 @@ import * as riot from 'riot';
 import init from '../init';
 import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
-import getPostSummary from '../common/scripts/get-post-summary';
+import getPostSummary from '../../../common/get-post-summary.ts';
 
 /**
  * init

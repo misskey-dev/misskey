@@ -1,6 +1,6 @@
 <mk-sub-post-content>
 	<div class="body">
-		<a class="reply" if={ post.reply_to_id }>
+		<a class="reply" if={ post.reply_id }>
 			<i class="fa fa-reply"></i>
 		</a>
 		<span ref="text"></span>

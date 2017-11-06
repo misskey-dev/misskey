@@ -1,5 +1,5 @@
 <mk-drive>
-	<nav>
+	<nav ref="nav">
 		<p onclick={ goRoot }><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-drive.drive%</p>
 		<virtual each={ folder in hierarchyFolders }>
 			<span><i class="fa fa-angle-right"></i></span>
@@ -55,10 +55,6 @@
 		:scope
 			display block
 			background #fff
-
-			&[data-is-naked]
-				> nav
-					top 48px
 
 			> nav
 				display block
@@ -190,7 +186,7 @@
 		this.file = null;
 
 		this.isFileSelectMode = this.opts.selectFile;
-		this.multiple =this.opts.multiple;
+		this.multiple = this.opts.multiple;
 
 		this.on('mount', () => {
 			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
@@ -204,6 +200,10 @@
 				this.cf(this.opts.file, true);
 			} else {
 				this.fetch();
+			}
+
+			if (this.opts.isNaked) {
+				this.refs.nav.style.top = `${this.opts.top}px`;
 			}
 		});
 
@@ -435,13 +435,17 @@
 
 		this.chooseFile = file => {
 			if (this.isFileSelectMode) {
-				if (this.selectedFiles.some(f => f.id == file.id)) {
-					this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+				if (this.multiple) {
+					if (this.selectedFiles.some(f => f.id == file.id)) {
+						this.selectedFiles = this.selectedFiles.filter(f => f.id != file.id);
+					} else {
+						this.selectedFiles.push(file);
+					}
+					this.update();
+					this.trigger('change-selection', this.selectedFiles);
 				} else {
-					this.selectedFiles.push(file);
+					this.trigger('selected', file);
 				}
-				this.update();
-				this.trigger('change-selection', this.selectedFiles);
 			} else {
 				this.cf(file);
 			}
@@ -479,7 +483,7 @@
 			if (fn == null || fn == '') return;
 			switch (fn) {
 				case '1':
-					this.refs.file.click();
+					this.selectLocalFile();
 					break;
 				case '2':
 					this.urlUpload();
@@ -497,6 +501,10 @@
 					alert('ごめんなさい！フォルダの削除は未実装です...。');
 					break;
 			}
+		};
+
+		this.selectLocalFile = () => {
+			this.refs.file.click();
 		};
 
 		this.createFolder = () => {

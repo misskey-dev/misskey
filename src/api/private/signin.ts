@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
-import User from '../models/user';
+import { default as User, IUser } from '../models/user';
 import Signin from '../models/signin';
 import serialize from '../serializers/signin';
 import event from '../event';
@@ -23,7 +23,7 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Fetch user
-	const user = await User.findOne({
+	const user: IUser = await User.findOne({
 		username_lower: username.toLowerCase()
 	}, {
 		fields: {

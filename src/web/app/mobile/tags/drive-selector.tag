@@ -3,7 +3,7 @@
 		<header>
 			<h1>%i18n:mobile.tags.mk-drive-selector.select-file%<span class="count" if={ files.length > 0 }>({ files.length })</span></h1>
 			<button class="close" onclick={ cancel }><i class="fa fa-times"></i></button>
-			<button class="ok" onclick={ ok }><i class="fa fa-check"></i></button>
+			<button if={ opts.multiple } class="ok" onclick={ ok }><i class="fa fa-check"></i></button>
 		</header>
 		<mk-drive ref="browser" select-file={ true } multiple={ opts.multiple }/>
 	</div>
@@ -67,6 +67,11 @@
 				this.update({
 					files: files
 				});
+			});
+
+			this.refs.browser.on('selected', file => {
+				this.trigger('selected', file);
+				this.unmount();
 			});
 		});
 

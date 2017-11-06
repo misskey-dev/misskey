@@ -7,7 +7,7 @@
 			display block
 	</style>
 	<script>
-		const ui = require('../../../scripts/ui-event');
+		import ui from '../../../scripts/ui-event';
 
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-signin-history-page.signin-history%';

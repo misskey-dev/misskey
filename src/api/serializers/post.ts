@@ -3,32 +3,44 @@
  */
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
-import Post from '../models/post';
+import { default as Post, IPost } from '../models/post';
 import Reaction from '../models/post-reaction';
+import { IUser } from '../models/user';
 import Vote from '../models/poll-vote';
 import serializeApp from './app';
+import serializeChannel from './channel';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
 import parse from '../common/text';
+import rap from '@prezzemolo/rap';
 
 /**
  * Serialize a post
  *
- * @param {any} post
- * @param {any} me?
- * @param {any} options?
- * @return {Promise<any>}
+ * @param post target
+ * @param me? serializee
+ * @param options? serialize options
+ * @return response
  */
-const self = (
-	post: any,
-	me?: any,
+const self = async (
+	post: string | mongo.ObjectID | IPost,
+	me?: string | mongo.ObjectID | IUser,
 	options?: {
 		detail: boolean
 	}
-) => new Promise<any>(async (resolve, reject) => {
+) => {
 	const opts = options || {
 		detail: true,
 	};
+
+	// Me
+	const meId: mongo.ObjectID = me
+		? mongo.ObjectID.prototype.isPrototypeOf(me)
+			? me as mongo.ObjectID
+			: typeof me === 'string'
+				? new mongo.ObjectID(me)
+				: (me as IUser)._id
+		: null;
 
 	let _post: any;
 
@@ -45,6 +57,8 @@ const self = (
 		_post = deepcopy(post);
 	}
 
+	if (!_post) throw 'invalid post arg.';
+
 	const id = _post._id;
 
 	// Rename _id to id
@@ -59,62 +73,120 @@ const self = (
 	}
 
 	// Populate user
-	_post.user = await serializeUser(_post.user_id, me);
+	_post.user = serializeUser(_post.user_id, meId);
 
 	// Populate app
 	if (_post.app_id) {
-		_post.app = await serializeApp(_post.app_id);
+		_post.app = serializeApp(_post.app_id);
 	}
 
+	// Populate channel
+	if (_post.channel_id) {
+		_post.channel = serializeChannel(_post.channel_id);
+	}
+
+	// Populate media
 	if (_post.media_ids) {
-		// Populate media
-		_post.media = await Promise.all(_post.media_ids.map(async fileId =>
-			await serializeDriveFile(fileId)
+		_post.media = Promise.all(_post.media_ids.map(fileId =>
+			serializeDriveFile(fileId)
 		));
 	}
 
-	if (_post.reply_to_id && opts.detail) {
-		// Populate reply to post
-		_post.reply_to = await self(_post.reply_to_id, me, {
-			detail: false
-		});
-	}
-
-	if (_post.repost_id && opts.detail) {
-		// Populate repost
-		_post.repost = await self(_post.repost_id, me, {
-			detail: _post.text == null
-		});
-	}
-
-	// Poll
-	if (me && _post.poll && opts.detail) {
-		const vote = await Vote
-			.findOne({
-				user_id: me._id,
-				post_id: id
+	// When requested a detailed post data
+	if (opts.detail) {
+		// Get previous post info
+		_post.prev = (async () => {
+			const prev = await Post.findOne({
+				user_id: _post.user_id,
+				_id: {
+					$lt: id
+				}
+			}, {
+				fields: {
+					_id: true
+				},
+				sort: {
+					_id: -1
+				}
 			});
+			return prev ? prev._id : null;
+		})();
 
-		if (vote != null) {
-			_post.poll.choices.filter(c => c.id == vote.choice)[0].is_voted = true;
+		// Get next post info
+		_post.next = (async () => {
+			const next = await Post.findOne({
+				user_id: _post.user_id,
+				_id: {
+					$gt: id
+				}
+			}, {
+				fields: {
+					_id: true
+				},
+				sort: {
+					_id: 1
+				}
+			});
+			return next ? next._id : null;
+		})();
+
+		if (_post.reply_id) {
+			// Populate reply to post
+			_post.reply = self(_post.reply_id, meId, {
+				detail: false
+			});
+		}
+
+		if (_post.repost_id) {
+			// Populate repost
+			_post.repost = self(_post.repost_id, meId, {
+				detail: _post.text == null
+			});
+		}
+
+		// Poll
+		if (meId && _post.poll) {
+			_post.poll = (async (poll) => {
+				const vote = await Vote
+					.findOne({
+						user_id: meId,
+						post_id: id
+					});
+
+				if (vote != null) {
+					const myChoice = poll.choices
+						.filter(c => c.id == vote.choice)[0];
+
+					myChoice.is_voted = true;
+				}
+
+				return poll;
+			})(_post.poll);
+		}
+
+		// Fetch my reaction
+		if (meId) {
+			_post.my_reaction = (async () => {
+				const reaction = await Reaction
+					.findOne({
+						user_id: meId,
+						post_id: id,
+						deleted_at: { $exists: false }
+					});
+
+				if (reaction) {
+					return reaction.reaction;
+				}
+
+				return null;
+			})();
 		}
 	}
 
-	// Fetch my reaction
-	if (me && opts.detail) {
-		const reaction = await Reaction
-			.findOne({
-				user_id: me._id,
-				post_id: id,
-				deleted_at: { $exists: false }
-			});
+	// resolve promises in _post object
+	_post = await rap(_post);
 
-		if (reaction) {
-			_post.my_reaction = reaction.reaction;
-		}
-	}
-
-	resolve(_post);
-});
+	return _post;
+};
 
 export default self;

@@ -3,22 +3,24 @@
  */
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
-import User from '../models/user';
+import { default as User, IUser } from '../models/user';
+import serializePost from './post';
 import Following from '../models/following';
 import getFriends from '../common/get-friends';
 import config from '../../conf';
+import rap from '@prezzemolo/rap';
 
 /**
  * Serialize a user
  *
- * @param {any} user
- * @param {any} me?
- * @param {any} options?
- * @return {Promise<any>}
+ * @param user target
+ * @param me? serializee
+ * @param options? serialize options
+ * @return response
  */
 export default (
-	user: any,
-	me?: any,
+	user: string | mongo.ObjectID | IUser,
+	me?: string | mongo.ObjectID | IUser,
 	options?: {
 		detail?: boolean,
 		includeSecrets?: boolean
@@ -36,7 +38,9 @@ export default (
 		data: false
 	} : {
 		data: false,
-		profile: false
+		profile: false,
+		keywords: false,
+		domains: false
 	};
 
 	// Populate the user if 'user' is ID
@@ -52,14 +56,16 @@ export default (
 		_user = deepcopy(user);
 	}
 
+	if (!_user) return reject('invalid user arg.');
+
 	// Me
-	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
-		if (typeof me === 'string') {
-			me = new mongo.ObjectID(me);
-		} else {
-			me = me._id;
-		}
-	}
+	const meId: mongo.ObjectID = me
+		? mongo.ObjectID.prototype.isPrototypeOf(me)
+			? me as mongo.ObjectID
+			: typeof me === 'string'
+				? new mongo.ObjectID(me)
+				: (me as IUser)._id
+		: null;
 
 	// Rename _id to id
 	_user.id = _user._id;
@@ -76,6 +82,7 @@ export default (
 		delete _user.twitter.access_token;
 		delete _user.twitter.access_token_secret;
 	}
+	delete _user.line;
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {
@@ -91,50 +98,64 @@ export default (
 		? `${config.drive_url}/${_user.banner_id}`
 		: null;
 
-	if (!me || !me.equals(_user.id) || !opts.detail) {
+	if (!meId || !meId.equals(_user.id) || !opts.detail) {
 		delete _user.avatar_id;
 		delete _user.banner_id;
 
 		delete _user.drive_capacity;
 	}
 
-	if (me && !me.equals(_user.id)) {
+	if (meId && !meId.equals(_user.id)) {
 		// If the user is following
-		const follow = await Following.findOne({
-			follower_id: me,
-			followee_id: _user.id,
-			deleted_at: { $exists: false }
-		});
-		_user.is_following = follow !== null;
+		_user.is_following = (async () => {
+			const follow = await Following.findOne({
+				follower_id: meId,
+				followee_id: _user.id,
+				deleted_at: { $exists: false }
+			});
+			return follow !== null;
+		})();
 
 		// If the user is followed
-		const follow2 = await Following.findOne({
-			follower_id: _user.id,
-			followee_id: me,
-			deleted_at: { $exists: false }
-		});
-		_user.is_followed = follow2 !== null;
+		_user.is_followed = (async () => {
+			const follow2 = await Following.findOne({
+				follower_id: _user.id,
+				followee_id: meId,
+				deleted_at: { $exists: false }
+			});
+			return follow2 !== null;
+		})();
 	}
 
-	if (me && !me.equals(_user.id) && opts.detail) {
-		const myFollowingIds = await getFriends(me);
+	if (opts.detail) {
+		if (_user.pinned_post_id) {
+			// Populate pinned post
+			_user.pinned_post = serializePost(_user.pinned_post_id, meId, {
+				detail: true
+			});
+		}
 
-		// Get following you know count
-		const followingYouKnowCount = await Following.count({
-			followee_id: { $in: myFollowingIds },
-			follower_id: _user.id,
-			deleted_at: { $exists: false }
-		});
-		_user.following_you_know_count = followingYouKnowCount;
+		if (meId && !meId.equals(_user.id)) {
+			const myFollowingIds = await getFriends(meId);
 
-		// Get followers you know count
-		const followersYouKnowCount = await Following.count({
-			followee_id: _user.id,
-			follower_id: { $in: myFollowingIds },
-			deleted_at: { $exists: false }
-		});
-		_user.followers_you_know_count = followersYouKnowCount;
+			// Get following you know count
+			_user.following_you_know_count = Following.count({
+				followee_id: { $in: myFollowingIds },
+				follower_id: _user.id,
+				deleted_at: { $exists: false }
+			});
+
+			// Get followers you know count
+			_user.followers_you_know_count = Following.count({
+				followee_id: _user.id,
+				follower_id: { $in: myFollowingIds },
+				deleted_at: { $exists: false }
+			});
+		}
 	}
+
+	// resolve promises in _user object
+	_user = await rap(_user);
 
 	resolve(_user);
 });
