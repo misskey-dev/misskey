@@ -207,7 +207,7 @@
 
 	</style>
 	<script>
-		import getPostSummary from '../../common/scripts/get-post-summary';
+		import getPostSummary from '../../../../common/get-post-summary.ts';
 		this.getPostSummary = getPostSummary;
 
 		this.mixin('i');
@@ -252,6 +252,12 @@
 		});
 
 		this.onNotification = notification => {
+			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
+			this.stream.send({
+				type: 'read_notification',
+				id: notification.id
+			});
+
 			this.notifications.unshift(notification);
 			this.update();
 		};

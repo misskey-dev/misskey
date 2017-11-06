@@ -7,6 +7,7 @@
 			> mk-home-timeline
 				max-width 600px
 				margin 0 auto
+				padding 8px
 
 			@media (min-width 500px)
 				padding 16px

@@ -6,7 +6,7 @@
 			display block
 
 			> mk-init-following
-				border-bottom solid 1px #eee
+				margin-bottom 8px
 
 	</style>
 	<script>
@@ -22,6 +22,12 @@
 				this.trigger('loaded');
 			});
 		});
+
+		this.fetch = () => {
+			this.api('posts/timeline').then(posts => {
+				this.refs.timeline.setPosts(posts);
+			});
+		};
 
 		this.on('mount', () => {
 			this.stream.on('post', this.onStreamPost);

@@ -1,12 +1,9 @@
 <mk-init-following>
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" if={ !fetching && users.length > 0 }>
-		<div class="user" each={ users }><a class="avatar-anchor" href={ '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt=""/></a>
-			<div class="body"><a class="name" href={ '/' + username } target="_blank">{ name }</a>
-				<p class="username">@{ username }</p>
-			</div>
-			<mk-follow-button user={ this }/>
-		</div>
+		<virtual each={ users }>
+			<mk-user-card user={ this } />
+		</virtual>
 	</div>
 	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
 	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
@@ -15,63 +12,27 @@
 	<style>
 		:scope
 			display block
-			padding 16px
+			background #fff
+			border-radius 8px
+			box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 
 			> .title
-				margin 0 0 12px 0
+				margin 0
+				padding 8px 16px
 				font-size 1em
 				font-weight bold
 				color #888
 
 			> .users
-				&:after
-					content ""
-					display block
-					clear both
+				overflow-x scroll
+				-webkit-overflow-scrolling touch
+				white-space nowrap
+				padding 16px
+				background #eee
 
-				> .user
-					padding 16px
-					width 238px
-					float left
-
-					&:after
-						content ""
-						display block
-						clear both
-
-					> .avatar-anchor
-						display block
-						float left
-						margin 0 12px 0 0
-
-						> .avatar
-							display block
-							width 42px
-							height 42px
-							margin 0
-							border-radius 8px
-							vertical-align bottom
-
-					> .body
-						float left
-						width calc(100% - 54px)
-
-						> .name
-							margin 0
-							font-size 16px
-							line-height 24px
-							color #555
-
-						> .username
-							margin 0
-							font-size 15px
-							line-height 16px
-							color #ccc
-
-					> mk-follow-button
-						position absolute
-						top 16px
-						right 16px
+				> mk-user-card
+					&:not(:last-child)
+						margin-right 16px
 
 			> .empty
 				margin 0
@@ -90,7 +51,8 @@
 
 			> .refresh
 				display block
-				margin 0 8px 0 0
+				margin 0
+				padding 8px 16px
 				text-align right
 				font-size 0.9em
 				color #999
@@ -117,7 +79,7 @@
 					color #222
 
 				> i
-					padding 14px
+					padding 10px
 
 	</style>
 	<script>

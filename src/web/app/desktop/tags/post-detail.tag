@@ -1,9 +1,6 @@
 <mk-post-detail title={ title }>
-	<div class="fetching" if={ fetching }>
-		<mk-ellipsis-icon/>
-	</div>
-	<div class="main" if={ !fetching }>
-		<button class="read-more" if={ p.reply_to && p.reply_to.reply_to_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
+	<div class="main">
+		<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
 			<i class="fa fa-ellipsis-v" if={ !contextFetching }></i>
 			<i class="fa fa-spinner fa-pulse" if={ contextFetching }></i>
 		</button>
@@ -12,8 +9,8 @@
 				<mk-post-detail-sub post={ post }/>
 			</virtual>
 		</div>
-		<div class="reply-to" if={ p.reply_to }>
-			<mk-post-detail-sub post={ p.reply_to }/>
+		<div class="reply-to" if={ p.reply }>
+			<mk-post-detail-sub post={ p.reply }/>
 		</div>
 		<div class="repost" if={ isRepost }>
 			<p>
@@ -33,7 +30,7 @@
 			<header>
 				<a class="name" href={ '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
 				<span class="username">@{ p.user.username }</span>
-				<a class="time" href={ url }>
+				<a class="time" href={ '/' + p.user.username + '/' + p.id }>
 					<mk-time time={ p.created_at }/>
 				</a>
 			</header>
@@ -46,16 +43,18 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p }/>
-				<button onclick={ reply } title="返信"><i class="fa fa-reply"></i>
-					<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+				<button onclick={ reply } title="返信">
+					<i class="fa fa-reply"></i><p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick={ repost } title="Repost"><i class="fa fa-retweet"></i>
-					<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+				<button onclick={ repost } title="Repost">
+					<i class="fa fa-retweet"></i><p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション"><i class="fa fa-plus"></i>
-					<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション">
+					<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
-				<button><i class="fa fa-ellipsis-h"></i></button>
+				<button onclick={ menu } ref="menuButton">
+					<i class="fa fa-ellipsis-h"></i>
+				</button>
 			</footer>
 		</article>
 		<div class="replies">
@@ -71,12 +70,10 @@
 			padding 0
 			width 640px
 			overflow hidden
+			text-align left
 			background #fff
 			border solid 1px rgba(0, 0, 0, 0.1)
 			border-radius 8px
-
-			> .fetching
-				padding 64px 0
 
 			> .main
 
@@ -262,56 +259,41 @@
 		this.mixin('api');
 		this.mixin('user-preview');
 
-		this.fetching = true;
 		this.contextFetching = false;
 		this.context = null;
-		this.post = null;
+		this.post = this.opts.post;
+		this.isRepost = this.post.repost != null;
+		this.p = this.isRepost ? this.post.repost : this.post;
+		this.p.reactions_count = this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
+		this.title = dateStringify(this.p.created_at);
 
 		this.on('mount', () => {
-			this.api('posts/show', {
-				post_id: this.opts.post
-			}).then(post => {
-				const isRepost = post.repost != null;
-				const p = isRepost ? post.repost : post;
-				p.reactions_count = p.reaction_counts ? Object.keys(p.reaction_counts).map(key => p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
+			if (this.p.text) {
+				const tokens = this.p.ast;
 
-				this.update({
-					fetching: false,
-					post: post,
-					isRepost: isRepost,
-					p: p,
-					title: dateStringify(p.created_at)
+				this.refs.text.innerHTML = compile(tokens);
+
+				this.refs.text.children.forEach(e => {
+					if (e.tagName == 'MK-URL') riot.mount(e);
 				});
 
-				this.trigger('loaded');
-
-				if (this.p.text) {
-					const tokens = this.p.ast;
-
-					this.refs.text.innerHTML = compile(tokens);
-
-					this.refs.text.children.forEach(e => {
-						if (e.tagName == 'MK-URL') riot.mount(e);
+				// URLをプレビュー
+				tokens
+				.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+				.map(t => {
+					riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+						url: t.url
 					});
+				});
+			}
 
-					// URLをプレビュー
-					tokens
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => {
-						riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
-							url: t.url
-						});
-					});
-				}
-
-				// Get replies
-				this.api('posts/replies', {
-					post_id: this.p.id,
-					limit: 8
-				}).then(replies => {
-					this.update({
-						replies: replies
-					});
+			// Get replies
+			this.api('posts/replies', {
+				post_id: this.p.id,
+				limit: 8
+			}).then(replies => {
+				this.update({
+					replies: replies
 				});
 			});
 		});
@@ -335,12 +317,19 @@
 			});
 		};
 
+		this.menu = () => {
+			riot.mount(document.body.appendChild(document.createElement('mk-post-menu')), {
+				source: this.refs.menuButton,
+				post: this.p
+			});
+		};
+
 		this.loadContext = () => {
 			this.contextFetching = true;
 
 			// Fetch context
 			this.api('posts/context', {
-				post_id: this.p.reply_to_id
+				post_id: this.p.reply_id
 			}).then(context => {
 				this.update({
 					contextFetching: false,

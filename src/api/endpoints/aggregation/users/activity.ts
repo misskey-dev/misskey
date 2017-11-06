@@ -40,7 +40,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 			{ $match: { user_id: user._id } },
 			{ $project: {
 				repost_id: '$repost_id',
-				reply_to_id: '$reply_to_id',
+				reply_id: '$reply_id',
 				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
 			{ $project: {
@@ -55,7 +55,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 						then: 'repost',
 						else: {
 							$cond: {
-								if: { $ne: ['$reply_to_id', null] },
+								if: { $ne: ['$reply_id', null] },
 								then: 'reply',
 								else: 'post'
 							}

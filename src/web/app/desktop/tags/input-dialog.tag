@@ -5,7 +5,7 @@
 		</yield>
 		<yield to="content">
 			<div class="body">
-				<input ref="text" oninput={ parent.update } onkeydown={ parent.onKeydown } placeholder={ parent.placeholder }/>
+				<input ref="text" type={ parent.type } oninput={ parent.onInput } onkeydown={ parent.onKeydown } placeholder={ parent.placeholder }/>
 			</div>
 			<div class="action">
 				<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
@@ -126,6 +126,7 @@
 		this.placeholder = this.opts.placeholder;
 		this.default = this.opts.default;
 		this.allowEmpty = this.opts.allowEmpty != null ? this.opts.allowEmpty : true;
+		this.type = this.opts.type ? this.opts.type : 'text';
 
 		this.on('mount', () => {
 			this.text = this.refs.window.refs.text;
@@ -154,6 +155,10 @@
 			if (!this.allowEmpty && this.text.value == '') return;
 			this.done = true;
 			this.refs.window.close();
+		};
+
+		this.onInput = () => {
+			this.update();
 		};
 
 		this.onKeydown = e => {

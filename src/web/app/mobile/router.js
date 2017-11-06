@@ -8,6 +8,7 @@ let page = null;
 
 export default me => {
 	route('/',                           index);
+	route('/selectdrive',                selectDrive);
 	route('/i/notifications',            notifications);
 	route('/i/messaging',                messaging);
 	route('/i/messaging/:username',      messaging);
@@ -15,6 +16,7 @@ export default me => {
 	route('/i/drive/folder/:folder',     drive);
 	route('/i/drive/file/:file',         drive);
 	route('/i/settings',                 settings);
+	route('/i/settings/profile',         settingsProfile);
 	route('/i/settings/signin-history',  settingsSignin);
 	route('/i/settings/api',             settingsApi);
 	route('/i/settings/twitter',         settingsTwitter);
@@ -22,7 +24,7 @@ export default me => {
 	route('/post/new',                   newPost);
 	route('/post::post',                 post);
 	route('/search::query',              search);
-	route('/:user',                      user.bind(null, 'posts'));
+	route('/:user',                      user.bind(null, 'overview'));
 	route('/:user/graphs',               user.bind(null, 'graphs'));
 	route('/:user/followers',            userFollowers);
 	route('/:user/following',            userFollowing);
@@ -61,6 +63,10 @@ export default me => {
 
 	function settings() {
 		mount(document.createElement('mk-settings-page'));
+	}
+
+	function settingsProfile() {
+		mount(document.createElement('mk-profile-setting-page'));
 	}
 
 	function settingsSignin() {
@@ -117,6 +123,10 @@ export default me => {
 		mount(el);
 	}
 
+	function selectDrive() {
+		mount(document.createElement('mk-selectdrive-page'));
+	}
+
 	function notFound() {
 		mount(document.createElement('mk-not-found'));
 	}
@@ -130,6 +140,7 @@ export default me => {
 };
 
 function mount(content) {
+	document.documentElement.style.background = '#fff';
 	if (page) page.unmount();
 	const body = document.getElementById('app');
 	page = riot.mount(body.appendChild(content))[0];
