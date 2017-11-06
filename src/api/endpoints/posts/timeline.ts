@@ -34,11 +34,11 @@ module.exports = async (params, user, app) => {
 		throw 'cannot set since_id and max_id';
 	}
 
-	const { followingIds, watchChannelIds } = await rap({
+	const { followingIds, watchingChannelIds } = await rap({
 		// ID list of the user itself and other users who the user follows
 		followingIds: getFriends(user._id),
 		// Watchしているチャンネルを取得
-		watchChannelIds: ChannelWatching.find({
+		watchingChannelIds: ChannelWatching.find({
 			user_id: user._id,
 			// 削除されたドキュメントは除く
 			deleted_at: { $exists: false }
@@ -67,7 +67,7 @@ module.exports = async (params, user, app) => {
 		}, {
 			// Watchしているチャンネルへの投稿
 			channel_id: {
-				$in: watchChannelIds
+				$in: watchingChannelIds
 			}
 		}]
 	} as any;
@@ -92,6 +92,5 @@ module.exports = async (params, user, app) => {
 		});
 
 	// Serialize
-	const _timeline = await Promise.all(timeline.map(post => serialize(post, user)));
-	return _timeline;
+	return await Promise.all(timeline.map(post => serialize(post, user)));
 };
