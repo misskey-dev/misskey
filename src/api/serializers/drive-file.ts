@@ -44,6 +44,7 @@ export default (
 	let _target: any = {};
 
 	_target.id = _file._id;
+	_target.created_at = _file.uploadDate
 
 	_target = Object.assign(_target, _file.metadata);
 
