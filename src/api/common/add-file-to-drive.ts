@@ -152,7 +152,6 @@ export default (
 		comment: comment,
 		properties: properties
 	});
-	console.dir(file)
 
 	log(`drive file has been created ${file._id}`);
 
