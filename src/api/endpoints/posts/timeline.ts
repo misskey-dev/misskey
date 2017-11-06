@@ -92,5 +92,5 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(Promise.all(timeline.map(post => serialize(post, user))));
+	res(await Promise.all(timeline.map(post => serialize(post, user))));
 });
