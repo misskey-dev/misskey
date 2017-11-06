@@ -18,7 +18,7 @@
     "clean": "gulp clean",
     "cleanall": "gulp cleanall",
     "lint": "gulp lint",
-    "test": "gulp test"
+		"test": "gulp test"
   },
   "devDependencies": {
     "@types/bcryptjs": "2.4.0",
@@ -95,6 +95,7 @@
     "webpack": "3.8.1"
   },
   "dependencies": {
+    "@prezzemolo/rap": "0.1.2",
     "accesses": "2.5.0",
     "animejs": "2.2.0",
     "autwh": "0.0.1",
