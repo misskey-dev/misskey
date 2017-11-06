@@ -25,8 +25,6 @@ export default (
 		detail: false
 	}, options);
 
-	if (!file) return reject('invalid file arg.')
-
 	let _file: any;
 
 	// Populate the file if 'file' is ID
@@ -41,6 +39,8 @@ export default (
 	} else {
 		_file = deepcopy(file);
 	}
+
+	if (!_file) return reject('invalid file arg.')
 
 	// rendered target
 	let _target: any = {};
