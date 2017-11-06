@@ -60,8 +60,6 @@
 		"@types/riot": "3.6.1",
 		"@types/serve-favicon": "2.2.29",
 		"@types/uuid": "3.4.3",
-		"@types/webpack": "3.0.14",
-		"@types/uuid": "3.4.3",
 		"@types/webpack": "3.0.13",
 		"@types/webpack-stream": "3.2.8",
 		"@types/websocket": "0.0.34",
@@ -91,7 +89,6 @@
 		"swagger-jsdoc": "1.9.7",
 		"tslint": "5.8.0",
 		"uglify-es": "3.0.27",
-		"uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
 		"uglifyjs-webpack-plugin": "1.0.1",
 		"webpack": "3.8.1"
 	},

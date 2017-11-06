@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
 import * as debug from 'debug';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 // import portUsed = require('tcp-port-used');
 import isRoot = require('is-root');
 import { master } from 'accesses';

@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import * as readline from 'readline';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
 /**
  * Progress bar
