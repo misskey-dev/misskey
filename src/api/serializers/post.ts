@@ -22,13 +22,13 @@ import rap from '@prezzemolo/rap';
  * @param options? serialize options
  * @return response
  */
-const self = (
+const self = async (
 	post: string | mongo.ObjectID | IPost,
 	me?: string | mongo.ObjectID | IUser,
 	options?: {
 		detail: boolean
 	}
-) => new Promise<any>(async (resolve, reject) => {
+) => {
 	const opts = options || {
 		detail: true,
 	};
@@ -184,7 +184,7 @@ const self = (
 	// resolve promises in _post object
 	_post = await rap(_post);
 
-	resolve(_post);
-});
+	return _post;
+};
 
 export default self;
