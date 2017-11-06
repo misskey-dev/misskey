@@ -49,13 +49,13 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			return;
 		}
 
-		if (p.reply_to_id) {
-			await get(p.reply_to_id);
+		if (p.reply_id) {
+			await get(p.reply_id);
 		}
 	}
 
-	if (post.reply_to_id) {
-		await get(post.reply_to_id);
+	if (post.reply_id) {
+		await get(post.reply_id);
 	}
 
 	// Serialize

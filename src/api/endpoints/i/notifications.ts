@@ -5,6 +5,7 @@ import $ from 'cafy';
 import Notification from '../../models/notification';
 import serialize from '../../serializers/notification';
 import getFriends from '../../common/get-friends';
+import read from '../../common/read-notification';
 
 /**
  * Get notifications
@@ -91,17 +92,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Mark as read all
 	if (notifications.length > 0 && markAsRead) {
-		const ids = notifications
-			.filter(x => x.is_read == false)
-			.map(x => x._id);
-
-		// Update documents
-		await Notification.update({
-			_id: { $in: ids }
-		}, {
-			$set: { is_read: true }
-		}, {
-			multi: true
-		});
+		read(user._id, notifications);
 	}
 });

@@ -6,6 +6,7 @@ const host = isRoot ? Url.host : Url.host.substring(Url.host.indexOf('.') + 1, U
 const scheme = Url.protocol;
 const url = `${scheme}//${host}`;
 const apiUrl = `${scheme}//api.${host}`;
+const chUrl = `${scheme}//ch.${host}`;
 const devUrl = `${scheme}//dev.${host}`;
 const aboutUrl = `${scheme}//about.${host}`;
 const statsUrl = `${scheme}//stats.${host}`;
@@ -16,6 +17,7 @@ export default {
 	scheme,
 	url,
 	apiUrl,
+	chUrl,
 	devUrl,
 	aboutUrl,
 	statsUrl,

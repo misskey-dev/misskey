@@ -24,11 +24,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			user_id: user._id
-		}, {
-			fields: {
-				data: false
-			}
+			'metadata.user_id': user._id
 		});
 
 	if (file === null) {
@@ -38,7 +34,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).$;
 	if (nameErr) return rej('invalid name param');
-	if (name) file.name = name;
+	if (name) file.metadata.name = name;
 
 	// Get 'folder_id' parameter
 	const [folderId, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
@@ -46,7 +42,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	if (folderId !== undefined) {
 		if (folderId === null) {
-			file.folder_id = null;
+			file.metadata.folder_id = null;
 		} else {
 			// Fetch folder
 			const folder = await DriveFolder
@@ -59,14 +55,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 				return rej('folder-not-found');
 			}
 
-			file.folder_id = folder._id;
+			file.metadata.folder_id = folder._id;
 		}
 	}
 
-	DriveFile.update(file._id, {
+	await DriveFile.update(file._id, {
 		$set: {
-			name: file.name,
-			folder_id: file.folder_id
+			'metadata.name': file.metadata.name,
+			'metadata.folder_id': file.metadata.folder_id
 		}
 	});
 

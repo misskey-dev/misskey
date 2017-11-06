@@ -9,6 +9,7 @@ import isNativeToken from './common/is-native-token';
 import homeStream from './stream/home';
 import messagingStream from './stream/messaging';
 import serverStream from './stream/server';
+import channelStream from './stream/channel';
 
 module.exports = (server: http.Server) => {
 	/**
@@ -26,14 +27,6 @@ module.exports = (server: http.Server) => {
 			return;
 		}
 
-		const user = await authenticate(request.resourceURL.query.i);
-
-		if (user == null) {
-			connection.send('authentication-failed');
-			connection.close();
-			return;
-		}
-
 		// Connect to Redis
 		const subscriber = redis.createClient(
 			config.redis.port, config.redis.host);
@@ -42,6 +35,19 @@ module.exports = (server: http.Server) => {
 			subscriber.unsubscribe();
 			subscriber.quit();
 		});
+
+		if (request.resourceURL.pathname === '/channel') {
+			channelStream(request, connection, subscriber);
+			return;
+		}
+
+		const user = await authenticate(request.resourceURL.query.i);
+
+		if (user == null) {
+			connection.send('authentication-failed');
+			connection.close();
+			return;
+		}
 
 		const channel =
 			request.resourceURL.pathname === '/' ? homeStream :

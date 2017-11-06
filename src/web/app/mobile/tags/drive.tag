@@ -1,5 +1,5 @@
 <mk-drive>
-	<nav>
+	<nav ref="nav">
 		<p onclick={ goRoot }><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-drive.drive%</p>
 		<virtual each={ folder in hierarchyFolders }>
 			<span><i class="fa fa-angle-right"></i></span>
@@ -55,10 +55,6 @@
 		:scope
 			display block
 			background #fff
-
-			&[data-is-naked]
-				> nav
-					top 48px
 
 			> nav
 				display block
@@ -204,6 +200,10 @@
 				this.cf(this.opts.file, true);
 			} else {
 				this.fetch();
+			}
+
+			if (this.opts.isNaked) {
+				this.refs.nav.style.top = `${this.opts.top}px`;
 			}
 		});
 
@@ -483,7 +483,7 @@
 			if (fn == null || fn == '') return;
 			switch (fn) {
 				case '1':
-					this.refs.file.click();
+					this.selectLocalFile();
 					break;
 				case '2':
 					this.urlUpload();
@@ -501,6 +501,10 @@
 					alert('ごめんなさい！フォルダの削除は未実装です...。');
 					break;
 			}
+		};
+
+		this.selectLocalFile = () => {
+			this.refs.file.click();
 		};
 
 		this.createFolder = () => {
