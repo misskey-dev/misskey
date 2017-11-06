@@ -2,6 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
+import rap from '@prezzemolo/rap';
 import Post from '../../models/post';
 import ChannelWatching from '../../models/channel-watching';
 import getFriends from '../../common/get-friends';
@@ -15,32 +16,33 @@ import serialize from '../../serializers/post';
  * @param {any} app
  * @return {Promise<any>}
  */
-module.exports = (params, user, app) => new Promise(async (res, rej) => {
+module.exports = async (params, user, app) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
-	if (limitErr) return rej('invalid limit param');
+	if (limitErr) throw 'invalid limit param';
 
 	// Get 'since_id' parameter
 	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) return rej('invalid since_id param');
+	if (sinceIdErr) throw 'invalid since_id param';
 
 	// Get 'max_id' parameter
 	const [maxId, maxIdErr] = $(params.max_id).optional.id().$;
-	if (maxIdErr) return rej('invalid max_id param');
+	if (maxIdErr) throw 'invalid max_id param';
 
 	// Check if both of since_id and max_id is specified
 	if (sinceId && maxId) {
-		return rej('cannot set since_id and max_id');
+		throw 'cannot set since_id and max_id';
 	}
 
-	// ID list of the user itself and other users who the user follows
-	const followingIds = await getFriends(user._id);
-
-	// Watchしているチャンネルを取得
-	const watches = await ChannelWatching.find({
-		user_id: user._id,
-		// 削除されたドキュメントは除く
-		deleted_at: { $exists: false }
+	const { followingIds, watchChannelIds } = await rap({
+		// ID list of the user itself and other users who the user follows
+		followingIds: getFriends(user._id),
+		// Watchしているチャンネルを取得
+		watchChannelIds: ChannelWatching.find({
+			user_id: user._id,
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		}).then(watches => watches.map(w => w.channel_id))
 	});
 
 	//#region Construct query
@@ -65,7 +67,7 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		}, {
 			// Watchしているチャンネルへの投稿
 			channel_id: {
-				$in: watches.map(w => w.channel_id)
+				$in: watchChannelIds
 			}
 		}]
 	} as any;
@@ -90,7 +92,6 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(timeline.map(async post =>
-		await serialize(post, user)
-	)));
-});
+	const _timeline = await Promise.all(timeline.map(post => serialize(post, user)));
+	return _timeline;
+};
