@@ -110,7 +110,7 @@ app.get('/:id', async (req, res) => {
 	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
 		const chunks = [];
 		const readableStream = bucket.openDownloadStream(id);
-	 readableStream.on('data', chunk => {
+		readableStream.on('data', chunk => {
 			chunks.push(chunk);
 		});
 		readableStream.on('end', () => {
@@ -141,7 +141,7 @@ app.get('/:id/:name', async (req, res) => {
 	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
 		const chunks = [];
 		const readableStream = bucket.openDownloadStream(id);
-	 readableStream.on('data', chunk => {
+		readableStream.on('data', chunk => {
 			chunks.push(chunk);
 		});
 		readableStream.on('end', () => {

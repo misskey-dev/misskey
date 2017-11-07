@@ -81,6 +81,15 @@ gulp.task('lint', () =>
 		.pipe(tslint.report())
 );
 
+gulp.task('format', () =>
+gulp.src('./src/**/*.ts')
+	.pipe(tslint({
+		formatter: 'verbose',
+		fix: true
+	}))
+	.pipe(tslint.report())
+);
+
 gulp.task('mocha', () =>
 	gulp.src([])
 		.pipe(mocha({

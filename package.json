@@ -18,7 +18,8 @@
 		"clean": "gulp clean",
 		"cleanall": "gulp cleanall",
 		"lint": "gulp lint",
-		"test": "gulp test"
+		"test": "gulp test",
+		"format": "gulp format"
 	},
 	"devDependencies": {
 		"@types/bcryptjs": "2.4.1",
