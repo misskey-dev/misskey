@@ -86,7 +86,7 @@ function send(data: Buffer, type: string, req: express.Request, res: express.Res
 	}
 }
 
-async function sendFileById (req: express.Request, res: express.Response): Promise<void> {
+async function sendFileById(req: express.Request, res: express.Response): Promise<void> {
 	// Validate id
 	if (!mongodb.ObjectID.isValid(req.params.id)) {
 		res.status(400).send('incorrect id');
@@ -95,6 +95,12 @@ async function sendFileById (req: express.Request, res: express.Response): Promi
 
 	const fileId = new mongodb.ObjectID(req.params.id);
 	const file = await DriveFile.findOne({ _id: fileId });
+
+	// validate name
+	if (req.params.name !== undefined && req.params.name !== file.metadata.name) {
+		res.status(404).send('there is no file has given name');
+		return;
+	}
 
 	if (file == null) {
 		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
