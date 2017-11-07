@@ -48,16 +48,24 @@ const migrateToGridFS = async (doc) => {
 async function main() {
 	const count = await DriveFile.count({});
 
+	console.log(`there are ${count} files.`)
+
 	const dop = Number.parseInt(process.argv[2]) || 5
+	const idop = ((count - (count % dop)) / dop) + 1
 
 	return zip(
 		1,
 		async (time) => {
-			const doc = await DriveFile.find({}, { limit: dop, skip: time * dop })
+			console.log(`${time} / ${idop}`)
+			const doc = await db.get('drive_files').find({}, { limit: dop, skip: time * dop })
 			return Promise.all(doc.map(migrateToGridFS))
 		},
-		((count - (count % dop)) / dop) + 1
-	)
+		idop
+	).then(a => {
+		const rv = []
+		a.forEach(e => rv.push(...e))
+		return rv
+	})
 }
 
 main().then(console.dir).catch(console.error)
