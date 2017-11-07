@@ -93,6 +93,7 @@ gulp.src('./src/**/*.ts')
 gulp.task('mocha', () =>
 	gulp.src([])
 		.pipe(mocha({
+			exit: true
 			//compilers: 'ts:ts-node/register'
 		} as any))
 );
