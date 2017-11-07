@@ -3,6 +3,7 @@
 const { default: db } = require('../../built/db/mongodb')
 const { default: DriveFile, getGridFSBucket } = require('../../built/api/models/drive-file')
 const { Duplex } = require('stream')
+const { default: zip } = require('@prezzemolo/zip')
 
 const writeToGridFS = (bucket, buffer, ...rest) => new Promise((resolve, reject) => {
 	const writeStream = bucket.openUploadStreamWithId(...rest)
@@ -45,30 +46,26 @@ const migrateToGridFS = async (doc) => {
 }
 
 async function main() {
-	let i = 0;
-
 	const count = await db.get('drive_files').count({});
 
-	const iterate = async () => {
-		if (i == count) return true;
-		console.log(`${i} / ${count}`);
-		const doc = (await db.get('drive_files').find({}, { limit: 1, skip: i }))[0]
-		const res = await migrateToGridFS(doc);
-		if (!res) {
-			return false;
-		} else {
-			i++
-			return await iterate();
-		}
-	}
+	console.log(`there are ${count} files.`)
 
-	const res = await iterate();
+	const dop = Number.parseInt(process.argv[2]) || 5
+	const idop = ((count - (count % dop)) / dop) + 1
 
-	if (res) {
-		return 'ok';
-	} else {
-		throw 'something happened';
-	}
+	return zip(
+		1,
+		async (time) => {
+			console.log(`${time} / ${idop}`)
+			const doc = await db.get('drive_files').find({}, { limit: dop, skip: time * dop })
+			return Promise.all(doc.map(migrateToGridFS))
+		},
+		idop
+	).then(a => {
+		const rv = []
+		a.forEach(e => rv.push(...e))
+		return rv
+	})
 }
 
 main().then(console.dir).catch(console.error)
