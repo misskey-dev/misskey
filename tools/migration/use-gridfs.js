@@ -6,7 +6,7 @@ const { Duplex } = require('stream')
 
 const writeToGridFS = (bucket, buffer, ...rest) => new Promise((resolve, reject) => {
 	const writeStream = bucket.openUploadStreamWithId(...rest)
-	
+
 	const dataStream = new Duplex()
 	dataStream.push(buffer)
 	dataStream.push(null)
@@ -42,10 +42,30 @@ const migrateToGridFS = async (doc) => {
 	return added && result.ok === 1
 }
 
-const main = async () => {
-	const docs = await db.get('drive_files').find()
-	const all = await Promise.all(docs.map(migrateToGridFS))
-	return all
+async function main() {
+	let i = 0;
+
+	const count = db.get('drive_files').count;
+
+	const iterate = async () => {
+		if (i == count) return true;
+		const doc = await db.get('drive_files').find({}, { skip: i })
+		const res = await migrateToGridFS(doc);
+		if (!res) {
+			return false;
+		} else {
+			i++
+			return await iterate();
+		}
+	}
+
+	const res = await iterate();
+
+	if (res) {
+		return 'ok';
+	} else {
+		throw 'something happened';
+	}
 }
 
 main().then(console.dir).catch(console.error)
