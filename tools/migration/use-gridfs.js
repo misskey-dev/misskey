@@ -19,7 +19,7 @@ const writeToGridFS = (bucket, buffer, ...rest) => new Promise((resolve, reject)
 
 const migrateToGridFS = async (doc) => {
 	const id = doc._id
-	const buffer = doc.data.buffer
+	const buffer = doc.data ? doc.data.buffer : Buffer.from([0x00]) // アップロードのバグなのか知らないけどなぜか data が存在しない drive_file ドキュメントがまれにあることがわかったので
 	const created_at = doc.created_at
 	const name = doc.name
 
