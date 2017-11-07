@@ -1,6 +1,7 @@
 // for Node.js interpret
 
 const { default: DriveFile } = require('../../built/api/models/drive-file')
+const { default: zip } = require('@prezzemolo/zip')
 
 const migrate = async (doc) => {
 	const result = await DriveFile.update(doc._id, {
@@ -15,30 +16,32 @@ const migrate = async (doc) => {
 }
 
 async function main() {
-	let i = 0;
-
-	const count = await DriveFile.count({});
-
-	const iterate = async () => {
-		if (i == count) return true;
-		console.log(`${i} / ${count}`);
-		const doc = (await DriveFile.find({}, { limit: 1, skip: i }))[0]
-		const res = await migrate(doc);
-		if (!res) {
-			return false;
-		} else {
-			i++
-			return await iterate();
+	const query = {
+		'metadata.type': {
+			$exists: true
 		}
 	}
 
-	const res = await iterate();
+	const count = await DriveFile.count(query);
 
-	if (res) {
-		return 'ok';
-	} else {
-		throw 'something happened';
-	}
+	const dop = Number.parseInt(process.argv[2]) || 5
+	const idop = ((count - (count % dop)) / dop) + 1
+
+	return zip(
+		1,
+		async (time) => {
+			console.log(`${time} / ${idop}`)
+			const doc = await db.get('drive_files').find(query, {
+				limit: dop, skip: time * dop
+			})
+			return Promise.all(doc.map(migrate))
+		},
+		idop
+	).then(a => {
+		const rv = []
+		a.forEach(e => rv.push(...e))
+		return rv
+	})
 }
 
 main().then(console.dir).catch(console.error)
