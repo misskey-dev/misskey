@@ -19,12 +19,32 @@ async function applyNewChange (doc) {
 }
 
 async function main () {
-	const oldTypeDocs = await DriveFile.find({
+	const query = {
 		'metadata.name': {
 			$exists: true
 		}
+	}
+
+	const count = await DriveFile.count(query)
+
+	const dop = Number.parseInt(process.argv[2]) || 5
+	const idop = ((count - (count % dop)) / dop) + 1
+
+	return zip(
+		1,
+		async (time) => {
+			console.log(`${time} / ${idop}`)
+			const doc = await db.get('drive_files').find(query, {
+				limit: dop, skip: time * dop
+			})
+			return Promise.all(doc.map(applyNewChange))
+		},
+		idop
+	).then(a => {
+		const rv = []
+		a.forEach(e => rv.push(...e))
+		return rv
 	})
-	return await Promise.all(oldTypeDocs.map(applyNewChange))
 }
 
 main().then(console.dir).catch(console.error)
