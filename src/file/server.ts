@@ -86,70 +86,42 @@ function send(data: Buffer, type: string, req: express.Request, res: express.Res
 	}
 }
 
+async function sendFileById (req: express.Request, res: express.Response): Promise<void> {
+	// Validate id
+	if (!mongodb.ObjectID.isValid(req.params.id)) {
+		res.status(400).send('incorrect id');
+		return;
+	}
+
+	const fileId = new mongodb.ObjectID(req.params.id);
+	const file = await DriveFile.findOne({ _id: fileId });
+
+	if (file == null) {
+		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
+		return;
+	}
+
+	const bucket = await getGridFSBucket();
+
+	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
+		const chunks = [];
+		const readableStream = bucket.openDownloadStream(id);
+		readableStream.on('data', chunk => {
+			chunks.push(chunk);
+		});
+		readableStream.on('end', () => {
+			resolve(Buffer.concat(chunks));
+		});
+	}))(fileId);
+
+	send(buffer, file.metadata.type, req, res);
+}
+
 /**
  * Routing
  */
 
-app.get('/:id', async (req, res) => {
-	// Validate id
-	if (!mongodb.ObjectID.isValid(req.params.id)) {
-		res.status(400).send('incorrect id');
-		return;
-	}
-
-	const fileId = new mongodb.ObjectID(req.params.id);
-	const file = await DriveFile.findOne({ _id: fileId });
-
-	if (file == null) {
-		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
-		return;
-	}
-
-	const bucket = await getGridFSBucket();
-
-	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
-		const chunks = [];
-		const readableStream = bucket.openDownloadStream(id);
-		readableStream.on('data', chunk => {
-			chunks.push(chunk);
-		});
-		readableStream.on('end', () => {
-			resolve(Buffer.concat(chunks));
-		});
-	}))(fileId);
-
-	send(buffer, file.metadata.type, req, res);
-});
-
-app.get('/:id/:name', async (req, res) => {
-	// Validate id
-	if (!mongodb.ObjectID.isValid(req.params.id)) {
-		res.status(400).send('incorrect id');
-		return;
-	}
-
-	const fileId = new mongodb.ObjectID(req.params.id);
-	const file = await DriveFile.findOne({ _id: fileId });
-
-	if (file == null) {
-		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
-		return;
-	}
-
-	const bucket = await getGridFSBucket();
-
-	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
-		const chunks = [];
-		const readableStream = bucket.openDownloadStream(id);
-		readableStream.on('data', chunk => {
-			chunks.push(chunk);
-		});
-		readableStream.on('end', () => {
-			resolve(Buffer.concat(chunks));
-		});
-	}))(fileId);
-
-	send(buffer, file.metadata.type, req, res);
-});
+app.get('/:id', sendFileById);
+app.get('/:id/:name', sendFileById);
 
 module.exports = app;
