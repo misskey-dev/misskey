@@ -120,7 +120,7 @@ async function sendFileById(req: express.Request, res: express.Response): Promis
 		});
 	}))(fileId);
 
-	send(buffer, file.metadata.type, req, res);
+	send(buffer, file.contentType, req, res);
 }
 
 /**
