@@ -34,7 +34,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).$;
 	if (nameErr) return rej('invalid name param');
-	if (name) file.metadata.name = name;
+	if (name) file.filename = name;
 
 	// Get 'folder_id' parameter
 	const [folderId, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
@@ -61,7 +61,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	await DriveFile.update(file._id, {
 		$set: {
-			'metadata.name': file.metadata.name,
+			filename: file.filename,
 			'metadata.folder_id': file.metadata.folder_id
 		}
 	});

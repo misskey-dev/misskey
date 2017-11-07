@@ -21,15 +21,17 @@ const migrateToGridFS = async (doc) => {
 	const id = doc._id
 	const buffer = doc.data.buffer
 	const created_at = doc.created_at
+	const name = doc.name
 
 	delete doc._id
 	delete doc.created_at
 	delete doc.datasize
 	delete doc.hash
 	delete doc.data
+	delete doc.name
 
 	const bucket = await getGridFSBucket()
-	const added = await writeToGridFS(bucket, buffer, id, `${id}/${doc.name}`, { metadata: doc })
+	const added = await writeToGridFS(bucket, buffer, id, name, { metadata: doc })
 
 	const result = await DriveFile.update(id, {
 		$set: {

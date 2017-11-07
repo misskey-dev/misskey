@@ -144,11 +144,10 @@ export default (
 	}
 
 	// Create DriveFile document
-	const file = await addToGridFS(`${user._id}/${name}`, data, {
+	const file = await addToGridFS(name, data, {
 		user_id: user._id,
 		folder_id: folder !== null ? folder._id : null,
 		type: mime,
-		name: name,
 		comment: comment,
 		properties: properties
 	});

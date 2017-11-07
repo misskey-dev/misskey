@@ -97,7 +97,7 @@ async function sendFileById(req: express.Request, res: express.Response): Promis
 	const file = await DriveFile.findOne({ _id: fileId });
 
 	// validate name
-	if (req.params.name !== undefined && req.params.name !== file.metadata.name) {
+	if (req.params.name !== undefined && req.params.name !== file.filename) {
 		res.status(404).send('there is no file has given name');
 		return;
 	}

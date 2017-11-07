@@ -24,7 +24,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Issue query
 	const files = await DriveFile
 		.find({
-			'metadata.name': name,
+			filename: name,
 			'metadata.user_id': user._id,
 			'metadata.folder_id': folderId
 		});
