@@ -49,7 +49,7 @@ async function main() {
 
 	const iterate = async () => {
 		if (i == count) return true;
-		const doc = await db.get('drive_files').find({}, { limit: 1, skip: i })
+		const doc = (await db.get('drive_files').find({}, { limit: 1, skip: i }))[0]
 		const res = await migrateToGridFS(doc);
 		if (!res) {
 			return false;
