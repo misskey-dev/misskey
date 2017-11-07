@@ -45,7 +45,7 @@ const migrateToGridFS = async (doc) => {
 async function main() {
 	let i = 0;
 
-	const count = db.get('drive_files').count;
+	const count = await db.get('drive_files').count({});
 
 	const iterate = async () => {
 		if (i == count) return true;
