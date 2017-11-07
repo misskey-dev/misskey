@@ -48,6 +48,7 @@ export default (
 	_target.id = _file._id;
 	_target.created_at = _file.uploadDate;
 	_target.name = _file.filename;
+	_target.type = _file.contentType;
 
 	_target = Object.assign(_target, _file.metadata);
 

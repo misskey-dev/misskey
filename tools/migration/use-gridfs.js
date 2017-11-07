@@ -22,6 +22,7 @@ const migrateToGridFS = async (doc) => {
 	const buffer = doc.data ? doc.data.buffer : Buffer.from([0x00]) // アップロードのバグなのか知らないけどなぜか data が存在しない drive_file ドキュメントがまれにあることがわかったので
 	const created_at = doc.created_at
 	const name = doc.name
+	const type = doc.type
 
 	delete doc._id
 	delete doc.created_at
@@ -29,9 +30,10 @@ const migrateToGridFS = async (doc) => {
 	delete doc.hash
 	delete doc.data
 	delete doc.name
+	delete doc.type
 
 	const bucket = await getGridFSBucket()
-	const added = await writeToGridFS(bucket, buffer, id, name, { metadata: doc })
+	const added = await writeToGridFS(bucket, buffer, id, name, { contentType: type, metadata: doc })
 
 	const result = await DriveFile.update(id, {
 		$set: {

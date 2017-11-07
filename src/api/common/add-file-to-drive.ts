@@ -13,13 +13,13 @@ import { Duplex } from 'stream';
 
 const log = debug('misskey:register-drive-file');
 
-const addToGridFS = (name, binary, metadata): Promise<any> => new Promise(async (resolve, reject) => {
+const addToGridFS = (name, binary, type, metadata): Promise<any> => new Promise(async (resolve, reject) => {
 	const dataStream = new Duplex();
 	dataStream.push(binary);
 	dataStream.push(null);
 
 	const bucket = await getGridFSBucket();
-	const writeStream = bucket.openUploadStream(name, { metadata });
+	const writeStream = bucket.openUploadStream(name, { contentType: type, metadata });
 	writeStream.once('finish', (doc) => { resolve(doc); });
 	writeStream.on('error', reject);
 	dataStream.pipe(writeStream);
@@ -144,10 +144,9 @@ export default (
 	}
 
 	// Create DriveFile document
-	const file = await addToGridFS(name, data, {
+	const file = await addToGridFS(name, data, mime, {
 		user_id: user._id,
 		folder_id: folder !== null ? folder._id : null,
-		type: mime,
 		comment: comment,
 		properties: properties
 	});
