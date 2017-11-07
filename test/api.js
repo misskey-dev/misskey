@@ -1155,9 +1155,8 @@ function insertHimawari(opts) {
 function insertDriveFile(opts) {
 	return db.get('drive_files.files').insert({
 		length: opts.datasize,
-		metadata: Object.assign({
-			name: 'strawberry-pasta.png'
-		}, opts)
+		filename: 'strawberry-pasta.png',
+		metadata: opts
 	});
 }
 
