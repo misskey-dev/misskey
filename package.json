@@ -22,7 +22,6 @@
 		"format": "gulp format"
 	},
 	"devDependencies": {
-		"@prezzemolo/zip": "0.0.3",
 		"@types/bcryptjs": "2.4.1",
 		"@types/body-parser": "1.16.7",
 		"@types/chai": "4.0.4",
@@ -93,6 +92,7 @@
 		"webpack": "3.8.1"
 	},
 	"dependencies": {
+		"@prezzemolo/zip": "0.0.3",
 		"@prezzemolo/rap": "0.1.2",
 		"accesses": "2.5.0",
 		"animejs": "2.2.0",
