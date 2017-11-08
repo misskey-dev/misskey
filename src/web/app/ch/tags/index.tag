@@ -15,7 +15,9 @@
 		this.mixin('api');
 
 		this.on('mount', () => {
-			this.api('channels').then(channels => {
+			this.api('channels', {
+				limit: 100
+			}).then(channels => {
 				this.update({
 					channels: channels
 				});
