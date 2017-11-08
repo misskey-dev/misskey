@@ -35,6 +35,10 @@ module.exports = async (params, user, app) => {
 	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
 	if (folderIdErr) throw 'invalid folder_id param';
 
+	// Get 'type' parameter
+	const [type, typeErr] = $(params.type).optional.string().match(/^[a-zA-Z\/\-\*]+$/).$;
+	if (typeErr) throw 'invalid type param';
+
 	// Construct query
 	const sort = {
 		_id: -1
@@ -52,6 +56,9 @@ module.exports = async (params, user, app) => {
 		query._id = {
 			$lt: maxId
 		};
+	}
+	if (type) {
+		query.contentType = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
 	}
 
 	// Issue query
