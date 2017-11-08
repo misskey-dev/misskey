@@ -44,7 +44,7 @@
 			<p>
 				<i class="fa fa-hashtag"></i>%i18n:mobile.tags.mk-drive-file-viewer.hash%
 			</p>
-			<code>{ file.hash }</code>
+			<code>{ file.md5 }</code>
 		</div>
 	</div>
 	<style>

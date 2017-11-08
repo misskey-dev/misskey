@@ -49,6 +49,8 @@ export default (
 	_target.created_at = _file.uploadDate;
 	_target.name = _file.filename;
 	_target.type = _file.contentType;
+	_target.datasize = _file.length;
+	_target.md5 = _file.md5;
 
 	_target = Object.assign(_target, _file.metadata);
 
