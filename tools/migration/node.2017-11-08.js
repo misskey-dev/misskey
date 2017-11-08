@@ -59,7 +59,7 @@ const migrate = async (doc) => {
 		}
 	})
 
-	return added && result.ok === 1
+	return result.ok === 1
 }
 
 async function main() {
