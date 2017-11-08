@@ -33,11 +33,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/default-avatar.jpg', (req, res) => {
+	// TODO: 非同期にしたい。Promise対応してないんだろうか...
 	const file = fs.readFileSync(`${__dirname}/assets/avatar.jpg`);
 	send(file, 'image/jpeg', req, res);
 });
 
 app.get('/app-default.jpg', (req, res) => {
+	// TODO: 非同期にしたい。Promise対応してないんだろうか...
 	const file = fs.readFileSync(`${__dirname}/assets/dummy.png`);
 	send(file, 'image/png', req, res);
 });
@@ -54,6 +56,7 @@ async function raw(data: Buffer, type: string, download: boolean, res: express.R
 
 async function thumbnail(data: Buffer, type: string, resize: number, res: express.Response): Promise<any> {
 	if (!/^image\/.*$/.test(type)) {
+		// TODO: 非同期にしたい。Promise対応してないんだろうか...
 		data = fs.readFileSync(`${__dirname}/assets/not-an-image.png`);
 	}
 

@@ -54,8 +54,8 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Generate hash of password
-	const salt = bcrypt.genSaltSync(8);
-	const hash = bcrypt.hashSync(password, salt);
+	const salt = await bcrypt.genSalt(8);
+	const hash = await bcrypt.hash(password, salt);
 
 	// Generate secret
 	const secret = generateUserToken();

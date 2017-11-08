@@ -20,6 +20,7 @@ module.exports = (file, params, user) => new Promise(async (res, rej) => {
 		return rej('file is required');
 	}
 
+	// TODO: 非同期にしたい。Promise対応してないんだろうか...
 	const buffer = fs.readFileSync(file.path);
 	fs.unlink(file.path, (err) => { if (err) console.log(err); });
 
