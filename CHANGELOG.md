@@ -2,7 +2,7 @@ ChangeLog (Release Notes)
 =========================
 主に notable な changes を書いていきます
 
-unreleased
+2974 (2017/11/08)
 -----------------
 * ホームのカスタマイズを実装するなど
 
