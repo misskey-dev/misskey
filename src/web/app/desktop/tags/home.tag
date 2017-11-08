@@ -9,6 +9,7 @@
 				<option value="rss-reader">RSSリーダー</option>
 				<option value="trends">トレンド</option>
 				<option value="photo-stream">フォトストリーム</option>
+				<option value="slideshow">スライドショー</option>
 				<option value="version">バージョン</option>
 				<option value="broadcast">ブロードキャスト</option>
 				<option value="notifications">通知</option>
