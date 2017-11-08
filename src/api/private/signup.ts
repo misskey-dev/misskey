@@ -1,3 +1,4 @@
+import * as uuid from 'uuid';
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
 import recaptcha = require('recaptcha-promise');
@@ -10,6 +11,28 @@ import config from '../../conf';
 recaptcha.init({
 	secret_key: config.recaptcha.secretKey
 });
+
+const home = {
+	left: [
+		'profile',
+		'calendar',
+		'activity',
+		'rss-reader',
+		'trends',
+		'photo-stream',
+		'version'
+	],
+	right: [
+		'broadcast',
+		'notifications',
+		'user-recommendation',
+		'recommended-polls',
+		'server',
+		'donation',
+		'nav',
+		'tips'
+	]
+};
 
 export default async (req: express.Request, res: express.Response) => {
 	// Verify recaptcha
@@ -60,6 +83,28 @@ export default async (req: express.Request, res: express.Response) => {
 	// Generate secret
 	const secret = generateUserToken();
 
+	//#region Construct home data
+	const homeData = [];
+
+	home.left.forEach(widget => {
+		homeData.push({
+			name: widget,
+			id: uuid(),
+			place: 'left',
+			data: {}
+		});
+	});
+
+	home.right.forEach(widget => {
+		homeData.push({
+			name: widget,
+			id: uuid(),
+			place: 'right',
+			data: {}
+		});
+	});
+	//#endregion
+
 	// Create account
 	const account: IUser = await User.insert({
 		token: secret,
@@ -88,6 +133,11 @@ export default async (req: express.Request, res: express.Response) => {
 			height: null,
 			location: null,
 			weight: null
+		},
+		settings: {},
+		client_settings: {
+			home: homeData,
+			show_donation: false
 		}
 	});
 

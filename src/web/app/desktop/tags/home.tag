@@ -1,4 +1,30 @@
-<mk-home>
+<mk-home data-customize={ opts.customize }>
+	<div class="customize" if={ opts.customize }>
+		<div class="adder">
+			<p>ウィジェットを追加:</p>
+			<select ref="widgetSelector">
+				<option value="profile">プロフィール</option>
+				<option value="calendar">カレンダー</option>
+				<option value="activity">アクティビティ</option>
+				<option value="rss-reader">RSSリーダー</option>
+				<option value="trends">トレンド</option>
+				<option value="photo-stream">フォトストリーム</option>
+				<option value="version">バージョン</option>
+				<option value="broadcast">ブロードキャスト</option>
+				<option value="notifications">通知</option>
+				<option value="user-recommendation">おすすめユーザー</option>
+				<option value="recommended-polls">投票</option>
+				<option value="server">サーバー情報</option>
+				<option value="donation">寄付のお願い</option>
+				<option value="nav">ナビゲーション</option>
+				<option value="tips">ヒント</option>
+			</select>
+			<button onclick={ addWidget }>追加</button>
+		</div>
+		<div class="trash" ref="trash">
+			<p class="ignore"><b>ゴミ箱</b> (ここにウィジェットをドロップすると削除できます)</p>
+		</div>
+	</div>
 	<div class="main">
 		<div class="left" ref="left"></div>
 		<main>
@@ -11,25 +37,37 @@
 		:scope
 			display block
 
+			&:not([data-customize])
+				> .main > *:empty
+					display none
+
+			> .customize
+				display flex
+				margin 0 auto
+				max-width 1200px
+				background #fff1c8
+
+				> div
+					width 50%
+
+					&.trash
+						background #ffc5c5
+
 			> .main
+				display flex
+				justify-content center
 				margin 0 auto
 				max-width 1200px
 
-				&:after
-					content ""
-					display block
-					clear both
-
 				> *
-					float left
-
-					> *
+					> *:not(.customize-container)
+					> .customize-container > *
 						display block
-						//border solid 1px #eaeaea
 						border solid 1px rgba(0, 0, 0, 0.075)
 						border-radius 6px
-						//box-shadow 0px 2px 16px rgba(0, 0, 0, 0.2)
 
+					> *:not(.customize-container)
+					> .customize-container
 						&:not(:last-child)
 							margin-bottom 16px
 
@@ -39,6 +77,12 @@
 
 				> *:not(main)
 					width 275px
+
+					> .customize-container
+						cursor move
+
+						> *
+							pointer-events none
 
 				> .left
 					padding 16px 0 16px 16px
@@ -58,31 +102,13 @@
 
 	</style>
 	<script>
+		import uuid from 'uuid';
+		import Sortable from 'sortablejs';
+
 		this.mixin('i');
+		this.mixin('api');
 
 		this.mode = this.opts.mode || 'timeline';
-
-		const _home = {
-			left: [
-				'profile',
-				'calendar',
-				'activity',
-				'rss-reader',
-				'trends',
-				'photo-stream',
-				'version'
-			],
-			right: [
-				'broadcast',
-				'notifications',
-				'user-recommendation',
-				'recommended-polls',
-				'server',
-				'donation',
-				'nav',
-				'tips'
-			]
-		};
 
 		this.home = [];
 
@@ -90,34 +116,35 @@
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 			});
-/*
-			this.I.data.home.forEach(widget => {
+
+			this.I.client_settings.home.forEach(widget => {
 				try {
-					const el = document.createElement(`mk-${widget.name}-home-widget`);
-					switch (widget.place) {
-						case 'left': this.refs.left.appendChild(el); break;
-						case 'right': this.refs.right.appendChild(el); break;
-					}
-					this.home.push(riot.mount(el, {
-						id: widget.id,
-						data: widget.data
-					})[0]);
+					this.setWidget(widget);
 				} catch (e) {
 					// noop
 				}
 			});
-*/
-			_home.left.forEach(widget => {
-				const el = document.createElement(`mk-${widget}-home-widget`);
-				this.refs.left.appendChild(el);
-				this.home.push(riot.mount(el)[0]);
-			});
 
-			_home.right.forEach(widget => {
-				const el = document.createElement(`mk-${widget}-home-widget`);
-				this.refs.right.appendChild(el);
-				this.home.push(riot.mount(el)[0]);
-			});
+			if (this.opts.customize) {
+				const sortableOption = {
+					group: 'kyoppie',
+					animation: 150,
+					filter: '.ignore',
+					onSort: this.saveHome
+				};
+
+				new Sortable(this.refs.left, sortableOption);
+				new Sortable(this.refs.right, sortableOption);
+				new Sortable(this.refs.trash, Object.assign({}, sortableOption, {
+					onAdd: evt => {
+						const el = evt.item;
+						const id = el.getAttribute('data-widget-id');
+						el.parentNode.removeChild(el);
+						this.I.client_settings.home = this.I.client_settings.home.filter(w => w.id != id);
+						this.saveHome();
+					}
+				}));
+			}
 		});
 
 		this.on('unmount', () => {
@@ -125,5 +152,83 @@
 				widget.unmount();
 			});
 		});
+
+		this.setWidget = (widget, prepend = false) => {
+			const el = document.createElement(`mk-${widget.name}-home-widget`);
+
+			let actualEl;
+
+			if (this.opts.customize) {
+				const container = document.createElement('div');
+				container.classList.add('customize-container');
+				container.setAttribute('data-widget-id', widget.id);
+				container.appendChild(el);
+				actualEl = container;
+			} else {
+				actualEl = el;
+			}
+
+			switch (widget.place) {
+				case 'left':
+					if (prepend) {
+						this.refs.left.insertBefore(actualEl, this.refs.left.firstChild);
+					} else {
+						this.refs.left.appendChild(actualEl);
+					}
+					break;
+				case 'right':
+					if (prepend) {
+						this.refs.right.insertBefore(actualEl, this.refs.right.firstChild);
+					} else {
+						this.refs.right.appendChild(actualEl);
+					}
+					break;
+			}
+
+			this.home.push(riot.mount(el, {
+				id: widget.id,
+				data: widget.data
+			})[0]);
+		};
+
+		this.addWidget = () => {
+			const widget = {
+				name: this.refs.widgetSelector.options[this.refs.widgetSelector.selectedIndex].value,
+				id: uuid(),
+				place: 'left',
+				data: {}
+			};
+
+			this.I.client_settings.home.unshift(widget);
+
+			this.setWidget(widget, true);
+
+			this.saveHome();
+		};
+
+		this.saveHome = () => {
+			const data = [];
+
+			Array.from(this.refs.left.children).forEach(el => {
+				const id = el.getAttribute('data-widget-id');
+				const widget = this.I.client_settings.home.find(w => w.id == id);
+				widget.place = 'left';
+				data.push(widget);
+			});
+
+			Array.from(this.refs.right.children).forEach(el => {
+				const id = el.getAttribute('data-widget-id');
+				const widget = this.I.client_settings.home.find(w => w.id == id);
+				widget.place = 'right';
+				data.push(widget);
+			});
+
+			this.api('i/update_home', {
+				home: data
+			}).then(() => {
+				this.I.client_settings.home = data;
+				this.I.update();
+			});
+		};
 	</script>
 </mk-home>

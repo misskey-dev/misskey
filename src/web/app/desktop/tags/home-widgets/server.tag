@@ -56,10 +56,11 @@
 	<script>
 		import Connection from '../../../common/scripts/server-stream';
 
+		this.mixin('i');
 		this.mixin('api');
 
 		this.initializing = true;
-		this.view = 0;
+		this.view = this.opts.data.hasOwnProperty('view') ? this.opts.data.view : 0;
 		this.connection = new Connection();
 
 		this.on('mount', () => {
@@ -78,6 +79,14 @@
 		this.toggle = () => {
 			this.view++;
 			if (this.view == 6) this.view = 0;
+
+			// Save view state
+			this.I.client_settings.home.filter(w => w.id == this.opts.id)[0].data.view = this.view;
+			this.api('i/update_home', {
+				home: this.I.client_settings.home
+			}).then(() => {
+				this.I.update();
+			});
 		};
 	</script>
 </mk-server-home-widget>

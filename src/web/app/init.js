@@ -11,7 +11,6 @@ import checkForUpdate from './common/scripts/check-for-update';
 import Connection from './common/scripts/home-stream';
 import Progress from './common/scripts/loading';
 import mixin from './common/mixins';
-import generateDefaultUserdata from './common/scripts/generate-default-userdata';
 import CONFIG from './common/scripts/config';
 require('./common/tags');
 
@@ -156,9 +155,7 @@ function fetchme(token, cb) {
 		res.json().then(i => {
 			me = i;
 			me.token = token;
-
-			// initialize it if user data is empty
-			me.data ? done() : init();
+			done();
 		});
 	}, () => { // When failure
 		// Render the error screen
@@ -169,17 +166,6 @@ function fetchme(token, cb) {
 
 	function done() {
 		if (cb) cb(me);
-	}
-
-	// Initialize user data
-	function init() {
-		const data = generateDefaultUserdata();
-		api(token, 'i/appdata/set', {
-			data
-		}).then(() => {
-			me.data = data;
-			done();
-		});
 	}
 }
 

@@ -9,6 +9,7 @@ let page = null;
 export default me => {
 	route('/',                       index);
 	route('/selectdrive',            selectDrive);
+	route('/i/customize-home',       customizeHome);
 	route('/i/drive',                drive);
 	route('/i/drive/folder/:folder', drive);
 	route('/i/mentions',             mentions);
@@ -25,6 +26,10 @@ export default me => {
 
 	function home() {
 		mount(document.createElement('mk-home-page'));
+	}
+
+	function customizeHome() {
+		mount(document.createElement('mk-home-customize-page'));
 	}
 
 	function entrance() {

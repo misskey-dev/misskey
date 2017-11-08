@@ -38,6 +38,7 @@
 
 		<section class="web" show={ page == 'web' }>
 			<h1>デザイン</h1>
+			<a href="/i/customize-home">ホームをカスタマイズ</a>
 		</section>
 
 		<section class="web" show={ page == 'web' }>

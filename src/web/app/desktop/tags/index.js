@@ -57,6 +57,7 @@ require('./pages/entrance.tag');
 require('./pages/entrance/signin.tag');
 require('./pages/entrance/signup.tag');
 require('./pages/home.tag');
+require('./pages/home-customize.tag');
 require('./pages/user.tag');
 require('./pages/post.tag');
 require('./pages/search.tag');

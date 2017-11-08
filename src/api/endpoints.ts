@@ -160,6 +160,11 @@ const endpoints: Endpoint[] = [
 		kind: 'account-write'
 	},
 	{
+		name: 'i/update_home',
+		withCredential: true,
+		kind: 'account-write'
+	},
+	{
 		name: 'i/change_password',
 		withCredential: true
 	},

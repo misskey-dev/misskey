@@ -35,9 +35,10 @@ export default (
 	let _user: any;
 
 	const fields = opts.detail ? {
-		data: false
+		settings: false
 	} : {
-		data: false,
+		settings: false,
+		client_settings: false,
 		profile: false,
 		keywords: false,
 		domains: false
@@ -72,7 +73,7 @@ export default (
 	delete _user._id;
 
 	// Remove needless properties
-	delete _user.lates_post;
+	delete _user.latest_post;
 
 	// Remove private properties
 	delete _user.password;
@@ -86,8 +87,8 @@ export default (
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {
-		delete _user.data;
 		delete _user.email;
+		delete _user.client_settings;
 	}
 
 	_user.avatar_url = _user.avatar_id != null

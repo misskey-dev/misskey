@@ -37,7 +37,7 @@
 </mk-ui>
 
 <mk-ui-header>
-	<mk-donation if={ SIGNIN && I.data.no_donation != 'true' }/>
+	<mk-donation if={ SIGNIN && I.client_settings.show_donation }/>
 	<mk-special-message/>
 	<div class="main">
 		<div class="backdrop"></div>
