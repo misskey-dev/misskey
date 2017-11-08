@@ -1,7 +1,7 @@
 <mk-slideshow-home-widget>
 	<div onclick={ choose }>
 		<p if={ folder === undefined }>クリックしてフォルダを指定してください</p>
-		<p if={ folder !== undefined && images.length == 0 }>このフォルダには画像がありません</p>
+		<p if={ folder !== undefined && images.length == 0 && !fetching }>このフォルダには画像がありません</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
@@ -55,7 +55,7 @@
 		this.size = this.opts.data.hasOwnProperty('size') ? this.opts.data.size : 0;
 		this.folder = this.opts.data.hasOwnProperty('folder') ? this.opts.data.folder : undefined;
 		this.images = [];
-		this.fetching = false;
+		this.fetching = true;
 
 		this.on('mount', () => {
 			this.applySize();
