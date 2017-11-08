@@ -11,7 +11,6 @@
 	<style>
 		:scope
 			display block
-			background #fff
 
 			> .user
 				> header

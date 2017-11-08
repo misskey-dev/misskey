@@ -75,8 +75,7 @@
 					width 100%
 					height 48px
 					backdrop-filter blur(12px)
-					//background-color rgba(255, 255, 255, 0.75)
-					background #1d2429
+					background #f7f7f7
 
 					&:after
 						content ""
@@ -167,7 +166,7 @@
 </mk-ui-header-search>
 
 <mk-ui-header-post-button>
-	<button onclick={ post } title="新規投稿"><i class="fa fa-pencil-square-o"></i></button>
+	<button onclick={ post } title="%i18n:desktop.tags.mk-ui-header-post-button.post%"><i class="fa fa-pencil"></i></button>
 	<style>
 		:scope
 			display inline-block
@@ -187,7 +186,7 @@
 				background $theme-color !important
 				outline none
 				border none
-				border-radius 2px
+				border-radius 4px
 				transition background 0.1s ease
 				cursor pointer
 
@@ -210,7 +209,7 @@
 </mk-ui-header-post-button>
 
 <mk-ui-header-notifications>
-	<button class="header" data-active={ isOpen } onclick={ toggle }><i class="fa fa-bell-o"></i></button>
+	<button class="header" data-active={ isOpen } onclick={ toggle } title="%i18n:desktop.tags.mk-ui-header-notifications.title%"><i class="fa fa-bell-o"></i></button>
 	<div class="notifications" if={ isOpen }>
 		<mk-notifications/>
 	</div>

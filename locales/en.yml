@@ -267,6 +267,12 @@ desktop:
       settings: "Settings"
       signout: "Sign out"
 
+    mk-ui-header-post-button:
+      post: "Compose new Post"
+
+    mk-ui-header-notifications:
+      title: "Notifications"
+
     mk-password-setting:
       reset: "Change your password"
       enter-current-password: "Enter the current password"

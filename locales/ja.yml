@@ -267,6 +267,12 @@ desktop:
       settings: "設定"
       signout: "サインアウト"
 
+    mk-ui-header-post-button:
+      post: "新規投稿"
+
+    mk-ui-header-notifications:
+      title: "通知"
+
     mk-password-setting:
       reset: "パスワードを変更する"
       enter-current-password: "現在のパスワードを入力してください"

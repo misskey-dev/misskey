@@ -95,7 +95,7 @@
 					z-index 1
 					padding 0 8px
 					color rgba(0, 0, 0, 0.5)
-					background #fdfdfd
+					background #f7f7f7
 
 			> .signup
 				width 100%

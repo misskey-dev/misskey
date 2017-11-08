@@ -72,7 +72,6 @@ export default me => {
 };
 
 function mount(content) {
-	document.documentElement.style.background = '#313a42';
 	document.documentElement.removeAttribute('data-page');
 	if (page) page.unmount();
 	const body = document.getElementById('app');
