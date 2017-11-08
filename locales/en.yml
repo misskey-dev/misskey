@@ -242,6 +242,12 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "Drive"
 
+    mk-selectdrive-page:
+      title: "Choose a file(s)"
+      ok: "OK"
+      cancel: "Cancel"
+      upload: "Upload a file(s) from you PC"
+
     mk-nav-home-widget:
       about: "About"
       stats: "Stats"

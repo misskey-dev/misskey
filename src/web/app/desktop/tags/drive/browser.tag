@@ -2,7 +2,8 @@
 	<nav>
 		<div class="path" oncontextmenu={ pathOncontextmenu }>
 			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }/>
-			<virtual each={ folder in hierarchyFolders }><span class="separator"><i class="fa fa-angle-right"></i></span>
+			<virtual each={ folder in hierarchyFolders }>
+				<span class="separator"><i class="fa fa-angle-right"></i></span>
 				<mk-drive-browser-nav-folder folder={ folder }/>
 			</virtual>
 			<span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span>
@@ -571,6 +572,7 @@
 				if (folder.parent) dive(folder.parent);
 
 				this.update();
+				this.trigger('open-folder', folder);
 				this.fetch();
 			});
 		};
@@ -640,6 +642,7 @@
 				folder: null,
 				hierarchyFolders: []
 			});
+			this.trigger('move-root');
 			this.fetch();
 		};
 

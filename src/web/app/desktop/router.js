@@ -7,15 +7,17 @@ const route = require('page');
 let page = null;
 
 export default me => {
-	route('/',                 index);
-	route('/selectdrive',      selectDrive);
-	route('/i>mentions',       mentions);
-	route('/post::post',       post);
-	route('/search::query',    search);
-	route('/:user',            user.bind(null, 'home'));
-	route('/:user/graphs',     user.bind(null, 'graphs'));
-	route('/:user/:post',      post);
-	route('*',                 notFound);
+	route('/',                       index);
+	route('/selectdrive',            selectDrive);
+	route('/i/drive',                drive);
+	route('/i/drive/folder/:folder', drive);
+	route('/i/mentions',             mentions);
+	route('/post::post',             post);
+	route('/search::query',          search);
+	route('/:user',                  user.bind(null, 'home'));
+	route('/:user/graphs',           user.bind(null, 'graphs'));
+	route('/:user/:post',            post);
+	route('*',                       notFound);
 
 	function index() {
 		me ? home() : entrance();
@@ -57,6 +59,12 @@ export default me => {
 
 	function selectDrive() {
 		mount(document.createElement('mk-selectdrive-page'));
+	}
+
+	function drive(ctx) {
+		const el = document.createElement('mk-drive-page');
+		if (ctx.params.folder) el.setAttribute('folder', ctx.params.folder);
+		mount(el);
 	}
 
 	function notFound() {

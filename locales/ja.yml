@@ -242,6 +242,12 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "ドライブ"
 
+    mk-selectdrive-page:
+      title: "ファイルを選択してください"
+      ok: "決定"
+      cancel: "キャンセル"
+      upload: "PCからドライブにファイルをアップロード"
+
     mk-nav-home-widget:
       about: "Misskeyについて"
       stats: "統計"

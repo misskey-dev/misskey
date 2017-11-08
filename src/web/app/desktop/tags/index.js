@@ -62,6 +62,7 @@ require('./pages/post.tag');
 require('./pages/search.tag');
 require('./pages/not-found.tag');
 require('./pages/selectdrive.tag');
+require('./pages/drive.tag');
 require('./autocomplete-suggestion.tag');
 require('./progress-dialog.tag');
 require('./user-preview.tag');

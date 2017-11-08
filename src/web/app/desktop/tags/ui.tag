@@ -564,7 +564,7 @@
 				<p><i class="fa fa-cloud"></i>%i18n:desktop.tags.mk-ui-header-account.drive%<i class="fa fa-angle-right"></i></p>
 			</li>
 			<li>
-				<a href="/i>mentions"><i class="fa fa-at"></i>%i18n:desktop.tags.mk-ui-header-account.mentions%<i class="fa fa-angle-right"></i></a>
+				<a href="/i/mentions"><i class="fa fa-at"></i>%i18n:desktop.tags.mk-ui-header-account.mentions%<i class="fa fa-angle-right"></i></a>
 			</li>
 		</ul>
 		<ul>
