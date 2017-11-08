@@ -225,7 +225,6 @@ desktop:
     mk-drive-browser-file:
       avatar: "Avatar"
       banner: "Banner"
-      wallpaper: "Wallpaper"
 
     mk-drive-browser-folder-contextmenu:
       move-to-this-folder: "Move to this folder"
