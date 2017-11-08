@@ -374,7 +374,7 @@ mobile:
       download: "Download"
       rename: "Rename"
       move: "Move"
-      hash: "Hash"
+      hash: "Hash (md5)"
 
     mk-entrance-signin:
       signup: "Sign up"

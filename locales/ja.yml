@@ -374,7 +374,7 @@ mobile:
       download: "ダウンロード"
       rename: "名前を変更"
       move: "移動"
-      hash: "ハッシュ"
+      hash: "ハッシュ (md5)"
 
     mk-entrance-signin:
       signup: "新規登録"
