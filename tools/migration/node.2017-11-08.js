@@ -63,7 +63,7 @@ const migrate = async (doc) => {
 }
 
 async function main() {
-	const count = await db.get('users').count();
+	const count = await User.count();
 
 	console.log(`there are ${count} users.`)
 
@@ -74,7 +74,7 @@ async function main() {
 		1,
 		async (time) => {
 			console.log(`${time} / ${idop}`)
-			const docs = await db.get('users').find({}, { limit: dop, skip: time * dop })
+			const docs = await User.find({}, { limit: dop, skip: time * dop })
 			return Promise.all(docs.map(migrate))
 		},
 		idop
