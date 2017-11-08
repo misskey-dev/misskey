@@ -31,7 +31,7 @@
 		"@types/debug": "0.0.30",
 		"@types/deep-equal": "1.0.1",
 		"@types/elasticsearch": "5.0.17",
-		"@types/event-stream": "3.3.32",
+		"@types/event-stream": "3.3.33",
 		"@types/express": "4.0.37",
 		"@types/gm": "1.17.33",
 		"@types/gulp": "4.0.3",
