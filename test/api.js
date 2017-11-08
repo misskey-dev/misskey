@@ -1138,7 +1138,9 @@ function insertSakurako(opts) {
 		username: 'sakurako',
 		username_lower: 'sakurako',
 		password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy', // HimawariDaisuki06160907
-		profile: {}
+		profile: {},
+		settings: {},
+		client_settings: {}
 	}, opts));
 }
 
@@ -1148,7 +1150,9 @@ function insertHimawari(opts) {
 		username: 'himawari',
 		username_lower: 'himawari',
 		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O', // ilovesakurako
-		profile: {}
+		profile: {},
+		settings: {},
+		client_settings: {}
 	}, opts));
 }
 
