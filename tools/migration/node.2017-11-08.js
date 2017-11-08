@@ -24,7 +24,6 @@ const home = {
 	]
 };
 
-
 const migrate = async (doc) => {
 
 	//#region Construct home data
