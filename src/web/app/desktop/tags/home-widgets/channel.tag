@@ -220,16 +220,8 @@
 					margin-right 0.5em
 					color #008000
 
-				@media (max-width 600px)
-					> mk-time
-						&:first-of-type
-							display initial
-
-						&:last-of-type
-							display none
-
 			> div
-				padding 0 0 16px 16px
+				padding 0 16px 16px 16px
 
 				> .media
 					> a
