@@ -1,6 +1,6 @@
 'use strict';
 
-const ReconnectingWebSocket = require('reconnecting-websocket');
+import * as ReconnectingWebsocket from 'reconnecting-websocket';
 import * as riot from 'riot';
 import CONFIG from './config';
 
@@ -29,7 +29,7 @@ class Connection {
 				.join('&')
 			: null;
 
-		this.socket = new ReconnectingWebSocket(`${host}/${endpoint}${query ? '?' + query : ''}`);
+		this.socket = new ReconnectingWebsocket(`${host}/${endpoint}${query ? '?' + query : ''}`);
 		this.socket.addEventListener('open', this.onOpen);
 		this.socket.addEventListener('close', this.onClose);
 		this.socket.addEventListener('message', this.onMessage);
