@@ -137,22 +137,27 @@
 				> input
 					user-select text
 					cursor auto
-					margin 0
+					margin 8px 0 0 0
 					padding 6px 18px
 					width 14em
-					height 48px
+					height 32px
 					font-size 1em
-					line-height calc(48px - 12px)
-					background transparent
+					background rgba(0, 0, 0, 0.05)
 					outline none
 					//border solid 1px #ddd
 					border none
-					border-radius 0
+					border-radius 16px
 					transition color 0.5s ease, border 0.5s ease
 					font-family FontAwesome, sans-serif
 
 					&::-webkit-input-placeholder
 						color #9eaba8
+
+					&:hover
+						background rgba(0, 0, 0, 0.08)
+
+					&:focus
+						box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important
 
 	</style>
 	<script>
