@@ -57,7 +57,7 @@
 		"@types/request": "2.0.7",
 		"@types/rimraf": "2.0.2",
 		"@types/riot": "3.6.1",
-		"@types/serve-favicon": "2.2.29",
+		"@types/serve-favicon": "2.2.30",
 		"@types/uuid": "3.4.3",
 		"@types/webpack": "3.8.0",
 		"@types/webpack-stream": "3.2.8",
