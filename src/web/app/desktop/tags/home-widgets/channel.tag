@@ -103,11 +103,20 @@
 	<style>
 		:scope
 			display block
-			background #efefef
+
+			> p
+				text-align center
 
 			> div
 				height calc(100% - 38px)
 				overflow auto
+				font-size 0.9em
+
+				> mk-channel-post
+					border-bottom solid 1px #eee
+
+					&:last-child
+						border-bottom none
 
 			> mk-channel-form
 				position absolute
@@ -194,18 +203,18 @@
 			display block
 			margin 0
 			padding 0
+			color #444
 
 			> header
 				position -webkit-sticky
 				position sticky
 				z-index 1
 				top 0
-				padding 0 0 0 8px
-				background rgba(239, 239, 239, 0.9)
+				padding 8px 4px 4px 16px
+				background rgba(255, 255, 255, 0.9)
 
 				> .index
 					margin-right 0.25em
-					color #000
 
 				> .name
 					margin-right 0.5em
@@ -220,7 +229,7 @@
 							display none
 
 			> div
-				padding 0 0 1em 2em
+				padding 0 0 16px 16px
 
 				> .media
 					> a
