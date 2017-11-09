@@ -2,7 +2,7 @@ ChangeLog (Release Notes)
 =========================
 主に notable な changes を書いていきます
 
-unlereased
+2988 (2017/11/09)
 -----------------
 * チャンネルウィジェットを追加
 
