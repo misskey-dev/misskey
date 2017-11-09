@@ -24,7 +24,7 @@
 			<button onclick={ addWidget }>追加</button>
 		</div>
 		<div class="trash" ref="trash">
-			<p class="ignore"><b>ゴミ箱</b> (ここにウィジェットをドロップすると削除できます)</p>
+			<p class="ignore"><b>ゴミ箱</b><br>(ここにウィジェットをドロップすると削除できます)</p>
 		</div>
 	</div>
 	<div class="main">
@@ -46,14 +46,31 @@
 			> .customize
 				display flex
 				margin 0 auto
-				max-width 1200px
-				background #fff1c8
+				max-width 1200px - 32px
+				background #fff
+				border-radius 0 0 16px 16px
+				border solid 1px #ddd
+				border-top none
 
 				> div
+					padding 16px
 					width 50%
 
+					&.adder
+						> p
+							display inline
+
 					&.trash
-						background #ffc5c5
+						border-left solid 1px #ddd
+
+						> p
+							position absolute
+							top 0
+							left 0
+							width 100%
+							margin 0
+							text-align center
+							pointer-events none
 
 			> .main
 				display flex
