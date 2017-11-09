@@ -105,7 +105,10 @@
 			display block
 
 			> p
+				margin 0
+				padding 16px
 				text-align center
+				color #aaa
 
 			> div
 				height calc(100% - 38px)
@@ -237,15 +240,12 @@
 		this.form = this.opts.form;
 
 		this.reply = () => {
-			this.form.update({
-				reply: this.post
-			});
+			this.form.refs.text.value = `>>${ this.post.index } `;
 		};
 	</script>
 </mk-channel-post>
 
 <mk-channel-form>
-	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a onclick={ clearReply }>[x]</a></p>
 	<input ref="text" disabled={ wait } onkeydown={ onkeydown } placeholder="書いて">
 	<style>
 		:scope
@@ -272,14 +272,7 @@
 	<script>
 		this.mixin('api');
 
-		this.clearReply = () => {
-			this.update({
-				reply: null
-			});
-		};
-
 		this.clear = () => {
-			this.clearReply();
 			this.refs.text.value = '';
 		};
 
@@ -292,9 +285,18 @@
 				wait: true
 			});
 
+			let text = this.refs.text.value;
+			let reply = null;
+
+			if (/^>>([0-9]+) /.test(text)) {
+				const index = text.match(/^>>([0-9]+) /)[1];
+				reply = this.parent.posts.find(p => p.index.toString() == index);
+				text = text.replace(/^>>([0-9]+) /, '');
+			}
+
 			this.api('posts/create', {
-				text: this.refs.text.value,
-				reply_id: this.reply ? this.reply.id : undefined,
+				text: text,
+				reply_id: reply ? reply.id : undefined,
 				channel_id: this.parent.channel.id
 			}).then(data => {
 				this.clear();
