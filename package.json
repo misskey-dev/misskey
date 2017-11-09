@@ -40,7 +40,7 @@
 		"@types/gulp-rename": "0.0.32",
 		"@types/gulp-replace": "0.0.30",
 		"@types/gulp-uglify": "3.0.3",
-		"@types/gulp-util": "3.0.33",
+		"@types/gulp-util": "3.0.34",
 		"@types/inquirer": "0.0.34",
 		"@types/is-root": "1.0.0",
 		"@types/is-url": "1.2.28",
