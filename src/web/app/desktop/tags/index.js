@@ -40,6 +40,7 @@ require('./home-widgets/trends.tag');
 require('./home-widgets/activity.tag');
 require('./home-widgets/server.tag');
 require('./home-widgets/slideshow.tag');
+require('./home-widgets/channel.tag');
 require('./timeline.tag');
 require('./messaging/window.tag');
 require('./messaging/room-window.tag');

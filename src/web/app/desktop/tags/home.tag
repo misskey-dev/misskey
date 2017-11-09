@@ -15,6 +15,7 @@
 				<option value="notifications">通知</option>
 				<option value="user-recommendation">おすすめユーザー</option>
 				<option value="recommended-polls">投票</option>
+				<option value="channel">チャンネル</option>
 				<option value="server">サーバー情報</option>
 				<option value="donation">寄付のお願い</option>
 				<option value="nav">ナビゲーション</option>

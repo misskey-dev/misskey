@@ -365,6 +365,10 @@ desktop:
       title: "寄付のお願い"
       text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
 
+    mk-channel-home-widget:
+      title: "チャンネル"
+      settings: "ウィジェットの設定"
+
     mk-repost-form:
       quote: "引用する..."
       cancel: "キャンセル"

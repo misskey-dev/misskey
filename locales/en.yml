@@ -365,6 +365,10 @@ desktop:
       title: "Donation"
       text: "To manage Misskey we spend money for our domain server etc.. There's no incomes for us so we need your tip. If you're interested contact {}. Thank you for your contribution!"
 
+    mk-channel-home-widget:
+      title: "Channel"
+      settings: "Widget settings"
+
     mk-repost-form:
       quote: "Quote..."
       cancel: "Cancel"
