@@ -100,13 +100,11 @@
 
 		this.change = () => {
 			if (this.images.length == 0) return;
-			if (this.index >= this.images.length) this.index = 0;
 
-			const img = `url(${ this.images[this.index].url }?thumbnail&size=1024)`;
+			const index = Math.floor(Math.random() * this.images.length);
+			const img = `url(${ this.images[index].url }?thumbnail&size=1024)`;
 
 			this.refs.slideB.style.backgroundImage = img;
-
-			this.index++;
 
 			anime({
 				targets: this.refs.slideB,
@@ -136,8 +134,7 @@
 			}).then(images => {
 				this.update({
 					fetching: false,
-					images: images,
-					index: 0
+					images: images
 				});
 				this.refs.slideA.style.backgroundImage = '';
 				this.refs.slideB.style.backgroundImage = '';
