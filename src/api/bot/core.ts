@@ -5,6 +5,7 @@ import User, { IUser, init as initUser } from '../models/user';
 
 import getPostSummary from '../../common/get-post-summary';
 import getUserSummary from '../../common/get-user-summary';
+import getNotificationSummary from '../../common/get-notification-summary';
 
 import Othello, { ai as othelloAi } from '../../common/othello';
 
@@ -84,6 +85,7 @@ export default class BotCore extends EventEmitter {
 					'logout, signout: サインアウトします\n' +
 					'post: 投稿します\n' +
 					'tl: タイムラインを見ます\n' +
+					'no: 通知を見ます\n' +
 					'@<ユーザー名>: ユーザーを表示します';
 
 			case 'me':
@@ -114,6 +116,11 @@ export default class BotCore extends EventEmitter {
 			case 'tl':
 			case 'タイムライン':
 				return await this.tlCommand();
+
+			case 'no':
+			case 'notifications':
+			case '通知':
+				return await this.notificationsCommand();
 
 			case 'guessing-game':
 			case '数当てゲーム':
@@ -155,6 +162,7 @@ export default class BotCore extends EventEmitter {
 		this.emit('updated');
 	}
 
+	// TODO: if (this.user == null) return 'まずサインインしてください。'; を @signinRequired みたいなデコレータでいい感じにする
 	public async tlCommand(): Promise<string | void> {
 		if (this.user == null) return 'まずサインインしてください。';
 
@@ -163,7 +171,21 @@ export default class BotCore extends EventEmitter {
 		}, this.user);
 
 		const text = tl
-			.map(post => getPostSummary(post))
+			.map(post => post.user.name + ': ' + getPostSummary(post))
+			.join('\n-----\n');
+
+		return text;
+	}
+
+	public async notificationsCommand(): Promise<string | void> {
+		if (this.user == null) return 'まずサインインしてください。';
+
+		const notifications = await require('../endpoints/i/notifications')({
+			limit: 5
+		}, this.user);
+
+		const text = notifications
+			.map(notification => getNotificationSummary(notification))
 			.join('\n-----\n');
 
 		return text;
