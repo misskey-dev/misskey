@@ -313,7 +313,7 @@ class TlContext extends Context {
 			this.emit('updated');
 
 			const text = tl
-				.map(post => post.user.name + ': ' + getPostSummary(post))
+				.map(post => `${post.user.name}\n「${getPostSummary(post)}」`)
 				.join('\n-----\n');
 
 			return text;

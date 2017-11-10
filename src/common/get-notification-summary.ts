@@ -10,17 +10,17 @@ export default function(notification: any): string {
 		case 'follow':
 			return `${notification.user.name}にフォローされました`;
 		case 'mention':
-			return `言及されました: ${notification.user.name}「${getPostSummary(notification.post)}」`;
+			return `言及されました:\n${notification.user.name}「${getPostSummary(notification.post)}」`;
 		case 'reply':
-			return `返信されました: ${notification.user.name}「${getPostSummary(notification.post)}」`;
+			return `返信されました:\n${notification.user.name}「${getPostSummary(notification.post)}」`;
 		case 'repost':
-			return `Repostされました: ${notification.user.name}「${getPostSummary(notification.post)}」`;
+			return `Repostされました:\n${notification.user.name}「${getPostSummary(notification.post)}」`;
 		case 'quote':
-			return `引用されました: ${notification.user.name}「${getPostSummary(notification.post)}」`;
+			return `引用されました:\n${notification.user.name}「${getPostSummary(notification.post)}」`;
 		case 'reaction':
-			return `リアクションされました: ${notification.user.name} <${getReactionEmoji(notification.reaction)}>「${getPostSummary(notification.post)}」`;
+			return `リアクションされました:\n${notification.user.name} <${getReactionEmoji(notification.reaction)}>「${getPostSummary(notification.post)}」`;
 		case 'poll_vote':
-			return `投票されました: ${notification.user.name}「${getPostSummary(notification.post)}」`;
+			return `投票されました:\n${notification.user.name}「${getPostSummary(notification.post)}」`;
 		default:
 			return `<不明な通知タイプ: ${notification.type}>`;
 	}
