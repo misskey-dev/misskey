@@ -23,8 +23,9 @@
 			</select>
 			<button onclick={ addWidget }>追加</button>
 		</div>
-		<div class="trash" ref="trash">
-			<p class="ignore"><b>ゴミ箱</b><br>(ここにウィジェットをドロップすると削除できます)</p>
+		<div class="trash">
+			<div ref="trash"></div>
+			<p><b>ゴミ箱</b><br>(ここにウィジェットをドロップすると削除できます)</p>
 		</div>
 	</div>
 	<div class="main">
@@ -53,15 +54,20 @@
 				border-top none
 
 				> div
-					padding 16px
 					width 50%
 
 					&.adder
+						padding 16px
+
 						> p
 							display inline
 
 					&.trash
 						border-left solid 1px #ddd
+
+						> div
+							width 100%
+							height 100%
 
 						> p
 							position absolute
@@ -148,7 +154,6 @@
 				const sortableOption = {
 					group: 'kyoppie',
 					animation: 150,
-					filter: '.ignore',
 					onSort: this.saveHome
 				};
 
