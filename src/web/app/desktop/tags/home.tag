@@ -40,6 +40,9 @@
 		:scope
 			display block
 
+			&[data-customize]
+				background-image url('/assets/desktop/grid.svg')
+
 			&:not([data-customize])
 				> .main > *:empty
 					display none
