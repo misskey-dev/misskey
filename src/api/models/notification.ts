@@ -19,12 +19,12 @@ export interface INotification {
 	notifiee_id: mongo.ObjectID;
 
 	/**
-	 * イニシエータ(initiator)。通知を行う原因となったユーザー
+	 * イニシエータ(initiator)、Origin。通知を行う原因となったユーザー
 	 */
 	notifier?: IUser;
 
 	/**
-	 * イニシエータ(initiator)。通知を行う原因となったユーザー
+	 * イニシエータ(initiator)、Origin。通知を行う原因となったユーザー
 	 */
 	notifier_id: mongo.ObjectID;
 
