@@ -63,7 +63,7 @@ export default class BotCore extends EventEmitter {
 		return bot;
 	}
 
-	public async q(query: string): Promise<string | void> {
+	public async q(query: string): Promise<string> {
 		if (this.context != null) {
 			return await this.context.q(query);
 		}
@@ -86,7 +86,9 @@ export default class BotCore extends EventEmitter {
 					'post: 投稿します\n' +
 					'tl: タイムラインを見ます\n' +
 					'no: 通知を見ます\n' +
-					'@<ユーザー名>: ユーザーを表示します';
+					'@<ユーザー名>: ユーザーを表示します\n' +
+					'\n' +
+					'タイムラインや通知を見た後、「次」というとさらに遡ることができます。';
 
 			case 'me':
 				return this.user ? `${this.user.name}としてサインインしています。\n\n${getUserSummary(this.user)}` : 'サインインしていません';
@@ -115,12 +117,16 @@ export default class BotCore extends EventEmitter {
 
 			case 'tl':
 			case 'タイムライン':
-				return await this.tlCommand();
+				if (this.user == null) return 'まずサインインしてください。';
+				this.setContext(new TlContext(this));
+				return await this.context.greet();
 
 			case 'no':
 			case 'notifications':
 			case '通知':
-				return await this.notificationsCommand();
+				if (this.user == null) return 'まずサインインしてください。';
+				this.setContext(new NotificationsContext(this));
+				return await this.context.greet();
 
 			case 'guessing-game':
 			case '数当てゲーム':
@@ -162,36 +168,7 @@ export default class BotCore extends EventEmitter {
 		this.emit('updated');
 	}
 
-	// TODO: if (this.user == null) return 'まずサインインしてください。'; を @signinRequired みたいなデコレータでいい感じにする
-	public async tlCommand(): Promise<string | void> {
-		if (this.user == null) return 'まずサインインしてください。';
-
-		const tl = await require('../endpoints/posts/timeline')({
-			limit: 5
-		}, this.user);
-
-		const text = tl
-			.map(post => post.user.name + ': ' + getPostSummary(post))
-			.join('\n-----\n');
-
-		return text;
-	}
-
-	public async notificationsCommand(): Promise<string | void> {
-		if (this.user == null) return 'まずサインインしてください。';
-
-		const notifications = await require('../endpoints/i/notifications')({
-			limit: 5
-		}, this.user);
-
-		const text = notifications
-			.map(notification => getNotificationSummary(notification))
-			.join('\n-----\n');
-
-		return text;
-	}
-
-	public async showUserCommand(q: string): Promise<string | void> {
+	public async showUserCommand(q: string): Promise<string> {
 		try {
 			const user = await require('../endpoints/users/show')({
 				username: q.substr(1)
@@ -222,6 +199,8 @@ abstract class Context extends EventEmitter {
 		if (data.type == 'guessing-game') return GuessingGameContext.import(bot, data.content);
 		if (data.type == 'othello') return OthelloContext.import(bot, data.content);
 		if (data.type == 'post') return PostContext.import(bot, data.content);
+		if (data.type == 'tl') return TlContext.import(bot, data.content);
+		if (data.type == 'notifications') return NotificationsContext.import(bot, data.content);
 		if (data.type == 'signin') return SigninContext.import(bot, data.content);
 		return null;
 	}
@@ -303,6 +282,110 @@ class PostContext extends Context {
 
 	public static import(bot: BotCore, data: any) {
 		const context = new PostContext(bot);
+		return context;
+	}
+}
+
+class TlContext extends Context {
+	private next: string = null;
+
+	public async greet(): Promise<string> {
+		return await this.getTl();
+	}
+
+	public async q(query: string): Promise<string> {
+		if (query == '次') {
+			return await this.getTl();
+		} else {
+			this.bot.clearContext();
+			return await this.bot.q(query);
+		}
+	}
+
+	private async getTl() {
+		const tl = await require('../endpoints/posts/timeline')({
+			limit: 5,
+			max_id: this.next ? this.next : undefined
+		}, this.bot.user);
+
+		if (tl.length > 0) {
+			this.next = tl[tl.length - 1].id;
+			this.emit('updated');
+
+			const text = tl
+				.map(post => post.user.name + ': ' + getPostSummary(post))
+				.join('\n-----\n');
+
+			return text;
+		} else {
+			return 'タイムラインに表示するものがありません...';
+		}
+	}
+
+	public export() {
+		return {
+			type: 'tl',
+			content: {
+				next: this.next,
+			}
+		};
+	}
+
+	public static import(bot: BotCore, data: any) {
+		const context = new TlContext(bot);
+		context.next = data.next;
+		return context;
+	}
+}
+
+class NotificationsContext extends Context {
+	private next: string = null;
+
+	public async greet(): Promise<string> {
+		return await this.getNotifications();
+	}
+
+	public async q(query: string): Promise<string> {
+		if (query == '次') {
+			return await this.getNotifications();
+		} else {
+			this.bot.clearContext();
+			return await this.bot.q(query);
+		}
+	}
+
+	private async getNotifications() {
+		const notifications = await require('../endpoints/i/notifications')({
+			limit: 5,
+			max_id: this.next ? this.next : undefined
+		}, this.bot.user);
+
+		if (notifications.length > 0) {
+			this.next = notifications[notifications.length - 1].id;
+			this.emit('updated');
+
+			const text = notifications
+				.map(notification => getNotificationSummary(notification))
+				.join('\n-----\n');
+
+			return text;
+		} else {
+			return '通知はありません';
+		}
+	}
+
+	public export() {
+		return {
+			type: 'notifications',
+			content: {
+				next: this.next,
+			}
+		};
+	}
+
+	public static import(bot: BotCore, data: any) {
+		const context = new NotificationsContext(bot);
+		context.next = data.next;
 		return context;
 	}
 }
