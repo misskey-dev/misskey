@@ -16,6 +16,7 @@ riot.mixin('widget', {
 	},
 
 	save: function() {
+		this.update();
 		this.api('i/update_home', {
 			id: this.id,
 			data: this.data
