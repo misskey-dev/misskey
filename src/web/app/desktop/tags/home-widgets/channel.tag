@@ -44,19 +44,16 @@
 
 	</style>
 	<script>
-		this.mixin('i');
-		this.mixin('api');
+		this.data = {
+			channel: null
+		};
 
-		this.channelId = this.opts.data.hasOwnProperty('channel') ? this.opts.data.channel : null;
+		this.mixin('widget');
 
 		this.on('mount', () => {
-			if (this.channelId) {
+			if (this.data.channel) {
 				this.zap();
 			}
-		});
-
-		this.on('unmount', () => {
-
 		});
 
 		this.zap = () => {
@@ -65,7 +62,7 @@
 			});
 
 			this.api('channels/show', {
-				channel_id: this.channelId
+				channel_id: this.data.channel
 			}).then(channel => {
 				this.update({
 					fetching: false,
@@ -79,19 +76,11 @@
 		this.settings = () => {
 			const id = window.prompt('チャンネルID');
 			if (!id) return;
-			this.channelId = id;
+			this.data.channel = id;
 			this.zap();
 
 			// Save state
-			this.api('i/update_home', {
-				id: this.opts.id,
-				data: {
-					channel: this.channelId
-				}
-			}).then(() => {
-				this.I.client_settings.home.find(w => w.id == this.opts.id).data.channel = this.channelId;
-				this.I.update();
-			});
+			this.save();
 		};
 	</script>
 </mk-channel-home-widget>
@@ -138,10 +127,6 @@
 		this.fetching = true;
 		this.channel = null;
 		this.posts = [];
-
-		this.on('mount', () => {
-
-		});
 
 		this.on('unmount', () => {
 			if (this.connection) {

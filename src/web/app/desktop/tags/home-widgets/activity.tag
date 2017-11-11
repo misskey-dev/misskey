@@ -2,8 +2,8 @@
 	<p class="title"><i class="fa fa-bar-chart"></i>%i18n:desktop.tags.mk-activity-home-widget.title%</p>
 	<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-home-widget.toggle%"><i class="fa fa-sort"></i></button>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
-	<mk-activity-home-widget-calender if={ !initializing && view == 0 } data={ [].concat(data) }/>
-	<mk-activity-home-widget-chart if={ !initializing && view == 1 } data={ [].concat(data) }/>
+	<mk-activity-home-widget-calender if={ !initializing && data.view == 0 } data={ [].concat(data) }/>
+	<mk-activity-home-widget-chart if={ !initializing && data.view == 1 } data={ [].concat(data) }/>
 	<style>
 		:scope
 			display block
@@ -50,11 +50,13 @@
 
 	</style>
 	<script>
-		this.mixin('i');
-		this.mixin('api');
+		this.data = {
+			view: 0
+		};
+
+		this.mixin('widget');
 
 		this.initializing = true;
-		this.view = this.opts.data.hasOwnProperty('view') ? this.opts.data.view : 0;
 
 		this.on('mount', () => {
 			this.api('aggregation/users/activity', {
@@ -69,19 +71,11 @@
 		});
 
 		this.toggle = () => {
-			this.view++;
-			if (this.view == 2) this.view = 0;
+			this.data.view++;
+			if (this.data.view == 2) this.data.view = 0;
 
 			// Save view state
-			this.api('i/update_home', {
-				id: this.opts.id,
-				data: {
-					view: this.view
-				}
-			}).then(() => {
-				this.I.client_settings.home.find(w => w.id == this.opts.id).data.view = this.view;
-				this.I.update();
-			});
+			this.save();
 		};
 	</script>
 </mk-activity-home-widget>

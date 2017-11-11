@@ -1,7 +1,7 @@
 <mk-slideshow-home-widget>
 	<div onclick={ choose }>
-		<p if={ folder === undefined }>クリックしてフォルダを指定してください</p>
-		<p if={ folder !== undefined && images.length == 0 && !fetching }>このフォルダには画像がありません</p>
+		<p if={ data.folder === undefined }>クリックしてフォルダを指定してください</p>
+		<p if={ data.folder !== undefined && images.length == 0 && !fetching }>このフォルダには画像がありません</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
@@ -49,18 +49,20 @@
 	<script>
 		import anime from 'animejs';
 
-		this.mixin('i');
-		this.mixin('api');
+		this.data = {
+			folder: undefined,
+			size: 0
+		};
 
-		this.size = this.opts.data.hasOwnProperty('size') ? this.opts.data.size : 0;
-		this.folder = this.opts.data.hasOwnProperty('folder') ? this.opts.data.folder : undefined;
+		this.mixin('widget');
+
 		this.images = [];
 		this.fetching = true;
 
 		this.on('mount', () => {
 			this.applySize();
 
-			if (this.folder !== undefined) {
+			if (this.data.folder !== undefined) {
 				this.fetch();
 			}
 
@@ -74,7 +76,7 @@
 		this.applySize = () => {
 			let h;
 
-			if (this.size == 1) {
+			if (this.data.size == 1) {
 				h = 250;
 			} else {
 				h = 170;
@@ -84,8 +86,8 @@
 		};
 
 		this.resize = () => {
-			this.size++;
-			if (this.size == 2) this.size = 0;
+			this.data.size++;
+			if (this.data.size == 2) this.data.size = 0;
 
 			this.applySize();
 			this.save();
@@ -121,7 +123,7 @@
 			});
 
 			this.api('drive/files', {
-				folder_id: this.folder,
+				folder_id: this.data.folder,
 				type: 'image/*',
 				limit: 100
 			}).then(images => {
@@ -138,25 +140,9 @@
 		this.choose = () => {
 			const i = riot.mount(document.body.appendChild(document.createElement('mk-select-folder-from-drive-window')))[0];
 			i.one('selected', folder => {
-				this.folder = folder ? folder.id : null;
+				this.data.folder = folder ? folder.id : null;
 				this.fetch();
 				this.save();
-			});
-		};
-
-		this.save = () => {
-			// Save state
-			this.api('i/update_home', {
-				id: this.opts.id,
-				data: {
-					folder: this.folder,
-					size: this.size
-				}
-			}).then(() => {
-				const w = this.I.client_settings.home.find(w => w.id == this.opts.id);
-				w.data.folder = this.folder;
-				w.data.size = this.size;
-				this.I.update();
 			});
 		};
 	</script>

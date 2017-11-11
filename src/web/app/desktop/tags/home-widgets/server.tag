@@ -2,12 +2,12 @@
 	<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-server-home-widget.title%</p>
 	<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
-	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ view == 0 } connection={ connection }/>
-	<mk-server-home-widget-cpu if={ !initializing } show={ view == 1 } connection={ connection } meta={ meta }/>
-	<mk-server-home-widget-memory if={ !initializing } show={ view == 2 } connection={ connection }/>
-	<mk-server-home-widget-disk if={ !initializing } show={ view == 3 } connection={ connection }/>
-	<mk-server-home-widget-uptimes if={ !initializing } show={ view == 4 } connection={ connection }/>
-	<mk-server-home-widget-info if={ !initializing } show={ view == 5 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ data.view == 0 } connection={ connection }/>
+	<mk-server-home-widget-cpu if={ !initializing } show={ data.view == 1 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-memory if={ !initializing } show={ data.view == 2 } connection={ connection }/>
+	<mk-server-home-widget-disk if={ !initializing } show={ data.view == 3 } connection={ connection }/>
+	<mk-server-home-widget-uptimes if={ !initializing } show={ data.view == 4 } connection={ connection }/>
+	<mk-server-home-widget-info if={ !initializing } show={ data.view == 5 } connection={ connection } meta={ meta }/>
 	<style>
 		:scope
 			display block
@@ -56,11 +56,13 @@
 	<script>
 		import Connection from '../../../common/scripts/server-stream';
 
-		this.mixin('i');
-		this.mixin('api');
+		this.data = {
+			view: 0
+		};
+
+		this.mixin('widget');
 
 		this.initializing = true;
-		this.view = this.opts.data.hasOwnProperty('view') ? this.opts.data.view : 0;
 		this.connection = new Connection();
 
 		this.on('mount', () => {
@@ -77,19 +79,11 @@
 		});
 
 		this.toggle = () => {
-			this.view++;
-			if (this.view == 6) this.view = 0;
+			this.data.view++;
+			if (this.data.view == 6) this.data.view = 0;
 
-			// Save view state
-			this.api('i/update_home', {
-				id: this.opts.id,
-				data: {
-					view: this.view
-				}
-			}).then(() => {
-				this.I.client_settings.home.find(w => w.id == this.opts.id).data.view = this.view;
-				this.I.update();
-			});
+			// Save widget state
+			this.save();
 		};
 	</script>
 </mk-server-home-widget>
