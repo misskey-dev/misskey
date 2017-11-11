@@ -1,6 +1,8 @@
 <mk-server-home-widget>
-	<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-server-home-widget.title%</p>
-	<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
+	<virtual if={ !data.compact }>
+		<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-server-home-widget.title%</p>
+		<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
+	</virtual>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ data.view == 0 } connection={ connection }/>
 	<mk-server-home-widget-cpu if={ !initializing } show={ data.view == 1 } connection={ connection } meta={ meta }/>
@@ -57,7 +59,8 @@
 		import Connection from '../../../common/scripts/server-stream';
 
 		this.data = {
-			view: 0
+			view: 0,
+			compact: false
 		};
 
 		this.mixin('widget');
@@ -83,6 +86,11 @@
 			if (this.data.view == 6) this.data.view = 0;
 
 			// Save widget state
+			this.save();
+		};
+
+		this.func = () => {
+			this.data.compact = !this.data.compact;
 			this.save();
 		};
 	</script>

@@ -1,5 +1,7 @@
 <mk-photo-stream-home-widget>
-	<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
+	<virtual if={ !data.compact }>
+		<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
+	</virtual>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
@@ -55,8 +57,11 @@
 
 	</style>
 	<script>
-		this.mixin('i');
-		this.mixin('api');
+		this.data = {
+			compact: false
+		};
+
+		this.mixin('widget');
 		this.mixin('stream');
 
 		this.images = [];
@@ -86,6 +91,11 @@
 				if (this.images.length > 9) this.images.pop();
 				this.update();
 			}
+		};
+
+		this.func = () => {
+			this.data.compact = !this.data.compact;
+			this.save();
 		};
 	</script>
 </mk-photo-stream-home-widget>

@@ -1,6 +1,8 @@
 <mk-notifications-home-widget>
-	<p class="title"><i class="fa fa-bell-o"></i>%i18n:desktop.tags.mk-notifications-home-widget.title%</p>
-	<button onclick={ settings } title="%i18n:desktop.tags.mk-notifications-home-widget.settings%"><i class="fa fa-cog"></i></button>
+	<virtual if={ !data.compact }>
+		<p class="title"><i class="fa fa-bell-o"></i>%i18n:desktop.tags.mk-notifications-home-widget.title%</p>
+		<button onclick={ settings } title="%i18n:desktop.tags.mk-notifications-home-widget.settings%"><i class="fa fa-cog"></i></button>
+	</virtual>
 	<mk-notifications/>
 	<style>
 		:scope
@@ -43,9 +45,20 @@
 
 	</style>
 	<script>
+		this.data = {
+			compact: false
+		};
+
+		this.mixin('widget');
+
 		this.settings = () => {
 			const w = riot.mount(document.body.appendChild(document.createElement('mk-settings-window')))[0];
 			w.switch('notification');
+		};
+
+		this.func = () => {
+			this.data.compact = !this.data.compact;
+			this.save();
 		};
 	</script>
 </mk-notifications-home-widget>

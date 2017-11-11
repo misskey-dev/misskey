@@ -1,6 +1,8 @@
 <mk-activity-home-widget>
-	<p class="title"><i class="fa fa-bar-chart"></i>%i18n:desktop.tags.mk-activity-home-widget.title%</p>
-	<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-home-widget.toggle%"><i class="fa fa-sort"></i></button>
+	<virtual if={ !data.compact }>
+		<p class="title"><i class="fa fa-bar-chart"></i>%i18n:desktop.tags.mk-activity-home-widget.title%</p>
+		<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-home-widget.toggle%"><i class="fa fa-sort"></i></button>
+	</virtual>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-activity-home-widget-calender if={ !initializing && data.view == 0 } data={ [].concat(activity) }/>
 	<mk-activity-home-widget-chart if={ !initializing && data.view == 1 } data={ [].concat(activity) }/>
@@ -51,7 +53,8 @@
 	</style>
 	<script>
 		this.data = {
-			view: 0
+			view: 0,
+			compact: false
 		};
 
 		this.mixin('widget');
@@ -75,6 +78,11 @@
 			if (this.data.view == 2) this.data.view = 0;
 
 			// Save view state
+			this.save();
+		};
+
+		this.func = () => {
+			this.data.compact = !this.data.compact;
 			this.save();
 		};
 	</script>

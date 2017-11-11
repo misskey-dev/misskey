@@ -23,6 +23,8 @@
 				<option value="tips">ヒント</option>
 			</select>
 			<button onclick={ addWidget }>追加</button>
+			<br>
+			<p>Tip: 一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>
 		</div>
 		<div class="trash">
 			<div ref="trash"></div>
@@ -213,11 +215,22 @@
 					break;
 			}
 
-			this.home.push(riot.mount(el, {
+			const tag = riot.mount(el, {
 				id: widget.id,
 				data: widget.data,
 				tl: this.refs.tl
-			})[0]);
+			})[0];
+
+			this.home.push(tag);
+
+			if (this.opts.customize) {
+				actualEl.oncontextmenu = e => {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					if (tag.func) tag.func();
+					return false;
+				};
+			}
 		};
 
 		this.addWidget = () => {
