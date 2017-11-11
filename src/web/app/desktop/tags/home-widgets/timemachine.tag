@@ -1,10 +1,12 @@
-<mk-timemachine-home-widget>
-	<button onclick={ prev } title="%i18n:desktop.tags.mk-timemachine-home-widget.prev%"><i class="fa fa-chevron-circle-left"></i></button>
-	<p class="title">{ '%i18n:desktop.tags.mk-timemachine-home-widget.title%'.replace('{1}', year).replace('{2}', month) }</p>
-	<button onclick={ next } title="%i18n:desktop.tags.mk-timemachine-home-widget.next%"><i class="fa fa-chevron-circle-right"></i></button>
+<mk-timemachine-home-widget data-melt={ data.design == 4 || data.design == 5 }>
+	<virtual if={ data.design == 0 || data.design == 1 }>
+		<button onclick={ prev } title="%i18n:desktop.tags.mk-timemachine-home-widget.prev%"><i class="fa fa-chevron-circle-left"></i></button>
+		<p class="title">{ '%i18n:desktop.tags.mk-timemachine-home-widget.title%'.replace('{1}', year).replace('{2}', month) }</p>
+		<button onclick={ next } title="%i18n:desktop.tags.mk-timemachine-home-widget.next%"><i class="fa fa-chevron-circle-right"></i></button>
+	</virtual>
 
 	<div class="calendar">
-		<div class="weekday" each={ day, i in Array(7).fill(0) }
+		<div class="weekday" if={ data.design == 0 || data.design == 2 || data.design == 4} each={ day, i in Array(7).fill(0) }
 			data-today={ year == today.getFullYear() && month == today.getMonth() + 1 && today.getDay() == i }
 			data-is-donichi={ i == 0 || i == 6 }>{ weekdayText[i] }</div>
 		<div each={ day, i in Array(paddingDays).fill(0) }></div>
@@ -21,6 +23,10 @@
 			display block
 			color #777
 			background #fff
+
+			&[data-melt]
+				background transparent !important
+				border none !important
 
 			> .title
 				z-index 1
@@ -130,6 +136,12 @@
 
 	</style>
 	<script>
+		this.data = {
+			design: 0
+		};
+
+		this.mixin('widget');
+
 		const eachMonthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 		function isLeapYear(year) {
@@ -224,6 +236,11 @@
 				selected: date
 			});
 			this.opts.tl.warp(date);
+		};
+
+		this.func = () => {
+			if (++this.data.design == 6) this.data.design = 0;
+			this.save();
 		};
 </script>
 </mk-timemachine-home-widget>

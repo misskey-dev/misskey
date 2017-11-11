@@ -1,4 +1,4 @@
-<mk-profile-home-widget data-compact={ data.compact }>
+<mk-profile-home-widget data-compact={ data.design == 1 || data.design == 2 } data-melt={ data.design == 2 }>
 	<div class="banner" style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' } title="クリックでバナー編集" onclick={ setBanner }></div>
 	<img class="avatar" src={ I.avatar_url + '?thumbnail&size=96' } onclick={ setAvatar } alt="avatar" title="クリックでアバター編集" data-user-preview={ I.id }/>
 	<a class="name" href={ '/' + I.username }>{ I.name }</a>
@@ -35,6 +35,20 @@
 
 				> .username
 					display none
+
+			&[data-melt]
+				background transparent !important
+				border none !important
+
+				> .banner
+					visibility hidden
+
+				> .avatar
+					box-shadow none
+
+				> .name
+					color #666
+					text-shadow none
 
 			> .banner
 				height 100px
@@ -77,7 +91,7 @@
 		import updateBanner from '../../scripts/update-banner';
 
 		this.data = {
-			compact: false
+			design: 0
 		};
 
 		this.mixin('widget');
@@ -93,7 +107,7 @@
 		};
 
 		this.func = () => {
-			this.data.compact = !this.data.compact;
+			if (++this.data.design == 3) this.data.design = 0;
 			this.save();
 		};
 	</script>

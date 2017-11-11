@@ -1,5 +1,5 @@
-<mk-activity-home-widget>
-	<virtual if={ !data.compact }>
+<mk-activity-home-widget data-melt={ data.design == 2 }>
+	<virtual if={ data.design == 0 }>
 		<p class="title"><i class="fa fa-bar-chart"></i>%i18n:desktop.tags.mk-activity-home-widget.title%</p>
 		<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-home-widget.toggle%"><i class="fa fa-sort"></i></button>
 	</virtual>
@@ -10,6 +10,10 @@
 		:scope
 			display block
 			background #fff
+
+			&[data-melt]
+				background transparent !important
+				border none !important
 
 			> .title
 				z-index 1
@@ -54,7 +58,7 @@
 	<script>
 		this.data = {
 			view: 0,
-			compact: false
+			design: 0
 		};
 
 		this.mixin('widget');
@@ -82,7 +86,7 @@
 		};
 
 		this.func = () => {
-			this.data.compact = !this.data.compact;
+			if (++this.data.design == 3) this.data.design = 0;
 			this.save();
 		};
 	</script>

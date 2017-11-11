@@ -1,5 +1,5 @@
-<mk-photo-stream-home-widget>
-	<virtual if={ !data.compact }>
+<mk-photo-stream-home-widget data-melt={ data.design == 2 }>
+	<virtual if={ data.design == 0 }>
 		<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
 	</virtual>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
@@ -13,6 +13,17 @@
 		:scope
 			display block
 			background #fff
+
+			&[data-melt]
+				background transparent !important
+				border none !important
+
+				> .stream
+					padding 0
+
+					> .img
+						border solid 4px transparent
+						border-radius 8px
 
 			> .title
 				z-index 1
@@ -58,7 +69,7 @@
 	</style>
 	<script>
 		this.data = {
-			compact: false
+			design: 0
 		};
 
 		this.mixin('widget');
@@ -94,7 +105,7 @@
 		};
 
 		this.func = () => {
-			this.data.compact = !this.data.compact;
+			if (++this.data.design == 3) this.data.design = 0;
 			this.save();
 		};
 	</script>
