@@ -1,12 +1,20 @@
 <mk-timemachine-home-widget>
-	<button onclick={ prev }><i class="fa fa-chevron-circle-left"></i></button>
-	<p class="title">{ year }/{ month }</p>
-	<button onclick={ next }><i class="fa fa-chevron-circle-right"></i></button>
+	<button onclick={ prev } title="%i18n:desktop.tags.mk-timemachine-home-widget.prev%"><i class="fa fa-chevron-circle-left"></i></button>
+	<p class="title">{ '%i18n:desktop.tags.mk-timemachine-home-widget.title%'.replace('{1}', year).replace('{2}', month) }</p>
+	<button onclick={ next } title="%i18n:desktop.tags.mk-timemachine-home-widget.next%"><i class="fa fa-chevron-circle-right"></i></button>
 
 	<div class="calendar">
-		<div class="weekday" each={ day, i in Array(7).fill(0) }>{ weekdayText[i] }</div>
+		<div class="weekday" each={ day, i in Array(7).fill(0) }
+			data-today={ year == today.getFullYear() && month == today.getMonth() + 1 && today.getDay() == i }
+			data-is-donichi={ i == 0 || i == 6 }>{ weekdayText[i] }</div>
 		<div each={ day, i in Array(paddingDays).fill(0) }></div>
-		<div class="day" each={ day, i in Array(days).fill(0) } data-today={ isToday(i + 1) } onclick={ go.bind(null, i + 1) }>{ i + 1 }</div>
+		<div class="day" each={ day, i in Array(days).fill(0) }
+				data-today={ isToday(i + 1) }
+				data-selected={ isSelected(i + 1) }
+				data-is-future={ isFuture(i + 1) }
+				data-is-donichi={ isDonichi(i + 1) }
+				onclick={ go.bind(null, i + 1) }
+				title={ isFuture(i + 1) ? null : '%i18n:desktop.tags.mk-timemachine-home-widget.go%' }><div>{ i + 1 }</div></div>
 	</div>
 	<style>
 		:scope
@@ -55,6 +63,9 @@
 				flex-wrap wrap
 				padding 16px
 
+				*
+					user-select none
+
 				> div
 					width calc(100% * (1/7))
 					text-align center
@@ -64,23 +75,57 @@
 					&.weekday
 						color #19a2a9
 
-					&.day
-						cursor pointer
-
-						&:hover
-							background rgba(0, 0, 0, 0.025)
-
-						&:active
-							background rgba(0, 0, 0, 0.05)
+						&[data-is-donichi]
+							color #ef95a0
 
 						&[data-today]
-							color $theme-color-foreground
-							background $theme-color
+							box-shadow 0 0 0 1px #19a2a9 inset
+							border-radius 6px
 
-							&:hover
+							&[data-is-donichi]
+								box-shadow 0 0 0 1px #ef95a0 inset
+
+					&.day
+						cursor pointer
+						color #777
+
+						> div
+							border-radius 6px
+
+						&:hover > div
+							background rgba(0, 0, 0, 0.025)
+
+						&:active > div
+							background rgba(0, 0, 0, 0.05)
+
+						&[data-is-donichi]
+							color #ef95a0
+
+						&[data-is-future]
+							cursor default
+							color rgba(#777, 0.5)
+
+							&[data-is-donichi]
+								color rgba(#ef95a0, 0.5)
+
+						&[data-selected]
+							font-weight bold
+
+							> div
+								background rgba(0, 0, 0, 0.025)
+
+							&:active > div
+								background rgba(0, 0, 0, 0.05)
+
+						&[data-today]
+							> div
+								color $theme-color-foreground
+								background $theme-color
+
+							&:hover > div
 								background lighten($theme-color, 10%)
 
-							&:active
+							&:active > div
 								background darken($theme-color, 10%)
 
 	</style>
@@ -97,6 +142,7 @@
 		this.today = new Date();
 		this.year = this.today.getFullYear();
 		this.month = this.today.getMonth() + 1;
+		this.selected = this.today;
 		this.weekdayText = [
 			'%i18n:common.weekday-short.sunday%',
 			'%i18n:common.weekday-short.monday%',
@@ -113,6 +159,19 @@
 
 		this.isToday = day => {
 			return this.year == this.today.getFullYear() && this.month == this.today.getMonth() + 1 && day == this.today.getDate();
+		};
+
+		this.isSelected = day => {
+			return this.year == this.selected.getFullYear() && this.month == this.selected.getMonth() + 1 && day == this.selected.getDate();
+		};
+
+		this.isFuture = day => {
+			return (new Date(this.year, this.month - 1, day)).getTime() > this.today.getTime();
+		};
+
+		this.isDonichi = day => {
+			const weekday = (new Date(this.year, this.month - 1, day)).getDay();
+			return weekday == 0 || weekday == 6;
 		};
 
 		this.calc = () => {
@@ -159,7 +218,12 @@
 		};
 
 		this.go = day => {
-			this.opts.tl.warp(new Date(this.year, this.month - 1, day, 23, 59, 59, 999));
+			if (this.isFuture(day)) return;
+			const date = new Date(this.year, this.month - 1, day, 23, 59, 59, 999);
+			this.update({
+				selected: date
+			});
+			this.opts.tl.warp(date);
 		};
 </script>
 </mk-timemachine-home-widget>

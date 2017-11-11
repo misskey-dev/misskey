@@ -378,6 +378,12 @@ desktop:
       title: "チャンネル"
       settings: "ウィジェットの設定"
 
+    mk-timemachine-home-widget:
+      title: "{1}月 {2}日"
+      prev: "先月"
+      next: "来月"
+      go: "クリックして時間遡行"
+
     mk-repost-form:
       quote: "引用する..."
       cancel: "キャンセル"

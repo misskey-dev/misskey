@@ -378,6 +378,12 @@ desktop:
       title: "Channel"
       settings: "Widget settings"
 
+    mk-timemachine-home-widget:
+      title: "{1} / {2}"
+      prev: "Previous month"
+      next: "Next month"
+      go: "Click to travel"
+
     mk-repost-form:
       quote: "Quote..."
       cancel: "Cancel"
