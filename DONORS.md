@@ -7,6 +7,7 @@ DONORS
 * 俺様
 * なぎうり
 * スルメ https://surume.tk/
+* 藍
 
 :heart: Thanks for donating, guys!
 
