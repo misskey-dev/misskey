@@ -73,10 +73,13 @@
 			if (this.view == 2) this.view = 0;
 
 			// Save view state
-			this.I.client_settings.home.filter(w => w.id == this.opts.id)[0].data.view = this.view;
 			this.api('i/update_home', {
-				home: this.I.client_settings.home
+				id: this.opts.id,
+				data: {
+					view: this.view
+				}
 			}).then(() => {
+				this.I.client_settings.home.find(w => w.id == this.opts.id).data.view = this.view;
 				this.I.update();
 			});
 		};

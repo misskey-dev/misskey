@@ -83,10 +83,13 @@
 			this.zap();
 
 			// Save state
-			this.I.client_settings.home.filter(w => w.id == this.opts.id)[0].data.channel = this.channelId;
 			this.api('i/update_home', {
-				home: this.I.client_settings.home
+				id: this.opts.id,
+				data: {
+					channel: this.channelId
+				}
 			}).then(() => {
+				this.I.client_settings.home.find(w => w.id == this.opts.id).data.channel = this.channelId;
 				this.I.update();
 			});
 		};

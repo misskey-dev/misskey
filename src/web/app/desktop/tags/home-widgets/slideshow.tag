@@ -88,14 +88,7 @@
 			if (this.size == 2) this.size = 0;
 
 			this.applySize();
-
-			// Save state
-			this.I.client_settings.home.filter(w => w.id == this.opts.id)[0].data.size = this.size;
-			this.api('i/update_home', {
-				home: this.I.client_settings.home
-			}).then(() => {
-				this.I.update();
-			});
+			this.save();
 		};
 
 		this.change = () => {
@@ -147,14 +140,23 @@
 			i.one('selected', folder => {
 				this.folder = folder ? folder.id : null;
 				this.fetch();
+				this.save();
+			});
+		};
 
-				// Save state
-				this.I.client_settings.home.filter(w => w.id == this.opts.id)[0].data.folder = this.folder;
-				this.api('i/update_home', {
-					home: this.I.client_settings.home
-				}).then(() => {
-					this.I.update();
-				});
+		this.save = () => {
+			// Save state
+			this.api('i/update_home', {
+				id: this.opts.id,
+				data: {
+					folder: this.folder,
+					size: this.size
+				}
+			}).then(() => {
+				const w = this.I.client_settings.home.find(w => w.id == this.opts.id);
+				w.data.folder = this.folder;
+				w.data.size = this.size;
+				this.I.update();
 			});
 		};
 	</script>
