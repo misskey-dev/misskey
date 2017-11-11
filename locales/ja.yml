@@ -13,6 +13,15 @@ common:
     months_ago: "{}ヶ月前"
     years_ago: "{}年前"
 
+  weekday-short:
+    sunday: "日"
+    monday: "月"
+    tuesday: "火"
+    wednesday: "水"
+    thursday: "木"
+    friday: "金"
+    satruday: "土"
+
   reactions:
     like: "いいね"
     love: "ハート"

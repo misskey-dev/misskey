@@ -5,6 +5,7 @@
 			<select ref="widgetSelector">
 				<option value="profile">プロフィール</option>
 				<option value="calendar">カレンダー</option>
+				<option value="timemachine">カレンダー(タイムマシン)</option>
 				<option value="activity">アクティビティ</option>
 				<option value="rss-reader">RSSリーダー</option>
 				<option value="trends">トレンド</option>
@@ -214,7 +215,8 @@
 
 			this.home.push(riot.mount(el, {
 				id: widget.id,
-				data: widget.data
+				data: widget.data,
+				tl: this.refs.tl
 			})[0]);
 		};
 

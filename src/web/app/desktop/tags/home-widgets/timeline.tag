@@ -70,7 +70,13 @@
 		};
 
 		this.load = (cb) => {
-			this.api('posts/timeline').then(posts => {
+			this.update({
+				isLoading: true
+			});
+
+			this.api('posts/timeline', {
+				max_date: this.date ? this.date.getTime() : undefined
+			}).then(posts => {
 				this.update({
 					isLoading: false,
 					isEmpty: posts.length == 0
@@ -113,6 +119,16 @@
 		this.onScroll = () => {
 			const current = window.scrollY + window.innerHeight;
 			if (current > document.body.offsetHeight - 8) this.more();
+		};
+
+		this.warp = date => {
+			console.log(date);
+
+			this.update({
+				date: date
+			});
+
+			this.load();
 		};
 	</script>
 </mk-timeline-home-widget>
