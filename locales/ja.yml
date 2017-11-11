@@ -379,7 +379,7 @@ desktop:
       settings: "ウィジェットの設定"
 
     mk-timemachine-home-widget:
-      title: "{1}月 {2}日"
+      title: "{1}年 {2}月"
       prev: "先月"
       next: "来月"
       go: "クリックして時間遡行"
