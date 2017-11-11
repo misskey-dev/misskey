@@ -1,6 +1,8 @@
 <mk-trends-home-widget>
-	<p class="title"><i class="fa fa-fire"></i>%i18n:desktop.tags.mk-trends-home-widget.title%</p>
-	<button onclick={ fetch } title="%i18n:desktop.tags.mk-trends-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
+	<virtual if={ !data.compact }>
+		<p class="title"><i class="fa fa-fire"></i>%i18n:desktop.tags.mk-trends-home-widget.title%</p>
+		<button onclick={ fetch } title="%i18n:desktop.tags.mk-trends-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
+	</virtual>
 	<div class="post" if={ !loading && post != null }>
 		<p class="text"><a href="/{ post.user.username }/{ post.id }">{ post.text }</a></p>
 		<p class="author">―<a href="/{ post.user.username }">@{ post.user.username }</a></p>
@@ -72,7 +74,11 @@
 
 	</style>
 	<script>
-		this.mixin('api');
+		this.data = {
+			compact: false
+		};
+
+		this.mixin('widget');
 
 		this.post = null;
 		this.loading = true;
@@ -107,6 +113,11 @@
 					post: post
 				});
 			});
+		};
+
+		this.func = () => {
+			this.data.compact = !this.data.compact;
+			this.save();
 		};
 	</script>
 </mk-trends-home-widget>

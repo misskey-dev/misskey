@@ -1,8 +1,10 @@
 <mk-channel-home-widget>
-	<p class="title"><i class="fa fa-television"></i>{
-		channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%'
-	}</p>
-	<button onclick={ settings } title="%i18n:desktop.tags.mk-channel-home-widget.settings%"><i class="fa fa-cog"></i></button>
+	<virtual if={ !data.compact }>
+		<p class="title"><i class="fa fa-television"></i>{
+			channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%'
+		}</p>
+		<button onclick={ settings } title="%i18n:desktop.tags.mk-channel-home-widget.settings%"><i class="fa fa-cog"></i></button>
+	</virtual>
 	<p class="get-started" if={ this.data.channel == null }>%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
 	<mk-channel ref="channel" show={ this.data.channel }/>
 	<style>
@@ -52,7 +54,8 @@
 	</style>
 	<script>
 		this.data = {
-			channel: null
+			channel: null,
+			compact: false
 		};
 
 		this.mixin('widget');
@@ -87,6 +90,11 @@
 			this.zap();
 
 			// Save state
+			this.save();
+		};
+
+		this.func = () => {
+			this.data.compact = !this.data.compact;
 			this.save();
 		};
 	</script>
