@@ -377,6 +377,7 @@ desktop:
     mk-channel-home-widget:
       title: "チャンネル"
       settings: "ウィジェットの設定"
+      get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
 
     mk-timemachine-home-widget:
       title: "{1}年 {2}月"

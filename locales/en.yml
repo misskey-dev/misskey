@@ -377,6 +377,7 @@ desktop:
     mk-channel-home-widget:
       title: "Channel"
       settings: "Widget settings"
+      get-started: "Please click the cog in the upper right to specify the channel to receive"
 
     mk-timemachine-home-widget:
       title: "{1} / {2}"

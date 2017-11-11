@@ -3,7 +3,8 @@
 		channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%'
 	}</p>
 	<button onclick={ settings } title="%i18n:desktop.tags.mk-channel-home-widget.settings%"><i class="fa fa-cog"></i></button>
-	<mk-channel ref="channel"/>
+	<p class="get-started" if={ this.data.channel == null }>%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
+	<mk-channel ref="channel" show={ this.data.channel }/>
 	<style>
 		:scope
 			display block
@@ -38,6 +39,12 @@
 
 				&:active
 					color #999
+
+			> .get-started
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
 
 			> mk-channel
 				height 200px
