@@ -1,6 +1,6 @@
 <mk-profile-home-widget data-compact={ data.compact }>
 	<div class="banner" style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' } title="クリックでバナー編集" onclick={ setBanner }></div>
-	<img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } onclick={ setAvatar } alt="avatar" title="クリックでアバター編集" data-user-preview={ I.id }/>
+	<img class="avatar" src={ I.avatar_url + '?thumbnail&size=96' } onclick={ setAvatar } alt="avatar" title="クリックでアバター編集" data-user-preview={ I.id }/>
 	<a class="name" href={ '/' + I.username }>{ I.name }</a>
 	<p class="username">@{ I.username }</p>
 	<style>
@@ -22,6 +22,7 @@
 					left 21px
 					border none
 					border-radius 100%
+					box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
 
 				> .name
 					position absolute
@@ -30,6 +31,7 @@
 					margin 0
 					line-height 100px
 					color #fff
+					text-shadow 0 0 8px rgba(0, 0, 0, 0.5)
 
 				> .username
 					display none

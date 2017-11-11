@@ -11,6 +11,7 @@
 		:scope
 			display block
 			background #fff
+			overflow hidden
 
 			> .title
 				z-index 2
