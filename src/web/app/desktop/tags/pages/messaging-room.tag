@@ -4,9 +4,6 @@
 	<style>
 		:scope
 			display block
-			position fixed
-			width 100%
-			height 100%
 			background #fff
 
 	</style>
@@ -20,6 +17,8 @@
 
 		this.on('mount', () => {
 			Progress.start();
+
+			document.documentElement.style.background = '#fff';
 
 			this.api('users/show', {
 				username: this.opts.user
