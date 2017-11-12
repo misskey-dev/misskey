@@ -1,7 +1,7 @@
 Misskey Setup and Installation Guide
 ================================================================
 
-We thank you for your interest in setup your Misskey server!
+We thank you for your interest in setting up your Misskey server!
 This guide describes how to install and setup Misskey.
 
 [Japanese version also available - 日本語版もあります](./setup.ja.md)
