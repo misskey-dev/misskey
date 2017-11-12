@@ -54,7 +54,7 @@ Please install and setup these softwares:
 There is **two ways** to install Misskey:
 
 ### WAY 1) Using built code (recommended)
-We have official release of Misskey.
+We have the official release of Misskey.
 The built code is automatically pushed to https://github.com/syuilo/misskey/tree/release after the CI test succeeds.
 
 1. `git clone -b release git://github.com/syuilo/misskey.git`
