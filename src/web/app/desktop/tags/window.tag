@@ -5,7 +5,7 @@
 			<header ref="header" onmousedown={ onHeaderMousedown }>
 				<h1 data-yield="header"><yield from="header"/></h1>
 				<div>
-					<button class="popout" if={ popoutOption } onmousedown={ repelMove } onclick={ popout } title="ポップアウト"><i class="fa fa-external-link"></i></button>
+					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } onclick={ popout } title="ポップアウト"><i class="fa fa-external-link"></i></button>
 					<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
 				</div>
 			</header>
@@ -194,8 +194,7 @@
 
 		this.isModal = this.opts.isModal != null ? this.opts.isModal : false;
 		this.canClose = this.opts.canClose != null ? this.opts.canClose : true;
-		this.popoutOption = this.opts.popoutOption;
-		console.log(this.popoutOption);
+		this.popoutUrl = this.opts.popout;
 		this.isFlexible = this.opts.height == null;
 		this.canResize = !this.isFlexible;
 
@@ -265,12 +264,14 @@
 		this.popout = () => {
 			const position = this.refs.main.getBoundingClientRect();
 
+			const width = parseInt(getComputedStyle(this.refs.main, '').width, 10);
+			const left = parseInt(getComputedStyle(this.refs.main, '').left, 10);
 			const x = window.screenX + position.left;
 			const y = window.screenY + position.top;
 
-			window.open(this.popoutOption.url,
-				this.popoutOption.url,
-				`height=${this.popoutOption.height},width=${this.popoutOption.width},left=${x},top=${y}`);
+			window.open(this.popoutUrl,
+				this.popoutUrl,
+				`height=${height},width=${width},left=${x},top=${y}`);
 
 			this.close();
 		};

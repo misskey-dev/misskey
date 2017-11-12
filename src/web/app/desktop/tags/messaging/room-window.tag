@@ -1,5 +1,5 @@
 <mk-messaging-room-window>
-	<mk-window ref="window" is-modal={ false } width={ '500px' } height={ '560px' } popout-option={ popout }>
+	<mk-window ref="window" is-modal={ false } width={ '500px' } height={ '560px' } popout={ popout }>
 		<yield to="header"><i class="fa fa-comments"></i>メッセージ: { parent.user.name }</yield>
 		<yield to="content">
 			<mk-messaging-room user={ parent.user }/>
@@ -23,11 +23,7 @@
 
 		this.user = this.opts.user;
 
-		this.popout = {
-			url: `${CONFIG.url}/i/messaging/${this.user.username}`,
-			width: 420,
-			height: 540
-		};
+		this.popout = `${CONFIG.url}/i/messaging/${this.user.username}`;
 
 		this.on('mount', () => {
 			this.refs.window.on('closed', () => {
