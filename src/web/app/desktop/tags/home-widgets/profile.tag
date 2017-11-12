@@ -18,8 +18,8 @@
 					background rgba(0, 0, 0, 0.5)
 
 				> .avatar
-					top 21px
-					left 21px
+					top ((100px - 58px) / 2)
+					left ((100px - 58px) / 2)
 					border none
 					border-radius 100%
 					box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
