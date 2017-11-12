@@ -4,7 +4,10 @@
 		<div class="body">
 			<header ref="header" onmousedown={ onHeaderMousedown }>
 				<h1 data-yield="header"><yield from="header"/></h1>
-				<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
+				<div>
+					<button class="popout" if={ popoutOption } onmousedown={ repelMove } onclick={ popout } title="ポップアウト"><i class="fa fa-external-link"></i></button>
+					<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
+				</div>
 			</header>
 			<div class="content" data-yield="content"><yield from="content"/></div>
 		</div>
@@ -117,8 +120,12 @@
 					box-shadow 0 2px 6px 0 rgba(0, 0, 0, 0.2)
 
 					> header
+						$header-height = 40px
+
 						z-index 128
+						height $header-height
 						overflow hidden
+						white-space nowrap
 						cursor move
 						background #fff
 						border-radius 6px 6px 0 0
@@ -130,39 +137,45 @@
 						> h1
 							pointer-events none
 							display block
-							margin 0
-							height 40px
+							margin 0 auto
+							width s('calc(100% - (%s * 2))', $header-height)
+							overflow hidden
+							text-overflow ellipsis
 							text-align center
 							font-size 1em
-							line-height 40px
+							line-height $header-height
 							font-weight normal
 							color #666
 
-						> .close
-							cursor pointer
-							display block
+						> div:last-child
 							position absolute
 							top 0
 							right 0
+							display block
 							z-index 1
-							margin 0
-							padding 0
-							font-size 1.2em
-							color rgba(#000, 0.4)
-							border none
-							outline none
-							background transparent
 
-							&:hover
-								color rgba(#000, 0.6)
-
-							&:active
-								color darken(#000, 30%)
-
-							> i
+							> *
+								display inline-block
+								margin 0
 								padding 0
-								width 40px
-								line-height 40px
+								cursor pointer
+								font-size 1.2em
+								color rgba(#000, 0.4)
+								border none
+								outline none
+								background transparent
+
+								&:hover
+									color rgba(#000, 0.6)
+
+								&:active
+									color darken(#000, 30%)
+
+								> i
+									padding 0
+									width $header-height
+									line-height $header-height
+									text-align center
 
 					> .content
 						height 100%
@@ -181,6 +194,8 @@
 
 		this.isModal = this.opts.isModal != null ? this.opts.isModal : false;
 		this.canClose = this.opts.canClose != null ? this.opts.canClose : true;
+		this.popoutOption = this.opts.popoutOption;
+		console.log(this.popoutOption);
 		this.isFlexible = this.opts.height == null;
 		this.canResize = !this.isFlexible;
 
@@ -245,6 +260,19 @@
 			setTimeout(() => {
 				this.trigger('opened');
 			}, 300);
+		};
+
+		this.popout = () => {
+			const position = this.refs.main.getBoundingClientRect();
+
+			const x = window.screenX + position.left;
+			const y = window.screenY + position.top;
+
+			window.open(this.popoutOption.url,
+				this.popoutOption.url,
+				`height=${this.popoutOption.height},width=${this.popoutOption.width},left=${x},top=${y}`);
+
+			this.close();
 		};
 
 		this.close = () => {

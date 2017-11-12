@@ -12,6 +12,7 @@ export default me => {
 	route('/i/customize-home',       customizeHome);
 	route('/i/drive',                drive);
 	route('/i/drive/folder/:folder', drive);
+	route('/i/messaging/:user',      messaging);
 	route('/i/mentions',             mentions);
 	route('/post::post',             post);
 	route('/search::query',          search);
@@ -69,6 +70,12 @@ export default me => {
 	function drive(ctx) {
 		const el = document.createElement('mk-drive-page');
 		if (ctx.params.folder) el.setAttribute('folder', ctx.params.folder);
+		mount(el);
+	}
+
+	function messaging(ctx) {
+		const el = document.createElement('mk-messaging-room-page');
+		el.setAttribute('user', ctx.params.user);
 		mount(el);
 	}
 
