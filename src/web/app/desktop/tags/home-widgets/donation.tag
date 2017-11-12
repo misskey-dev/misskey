@@ -28,5 +28,8 @@
 					color #999
 
 	</style>
-	<script>this.mixin('user-preview');</script>
+	<script>
+		this.mixin('widget');
+		this.mixin('user-preview');
+	</script>
 </mk-donation-home-widget>

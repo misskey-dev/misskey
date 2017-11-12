@@ -14,4 +14,7 @@
 				color #ccc
 
 	</style>
+	<script>
+		this.mixin('widget');
+	</script>
 </mk-nav-home-widget>

@@ -31,6 +31,8 @@
 	<script>
 		import anime from 'animejs';
 
+		this.mixin('widget');
+
 		this.tips = [
 			'<kbd>t</kbd>でタイムラインにフォーカスできます',
 			'<kbd>p</kbd>または<kbd>n</kbd>で投稿フォームを開きます',

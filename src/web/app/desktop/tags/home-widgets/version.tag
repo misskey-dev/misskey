@@ -17,6 +17,8 @@
 
 	</style>
 	<script>
+		this.mixin('widget');
+
 		this.version = VERSION;
 	</script>
 </mk-version-home-widget>

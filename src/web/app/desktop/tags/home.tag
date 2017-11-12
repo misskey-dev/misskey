@@ -16,6 +16,7 @@
 				<option value="notifications">通知</option>
 				<option value="user-recommendation">おすすめユーザー</option>
 				<option value="recommended-polls">投票</option>
+				<option value="post-form">投稿フォーム</option>
 				<option value="channel">チャンネル</option>
 				<option value="server">サーバー情報</option>
 				<option value="donation">寄付のお願い</option>
@@ -32,12 +33,13 @@
 		</div>
 	</div>
 	<div class="main">
-		<div class="left" ref="left"></div>
-		<main>
+		<div class="left" ref="left" data-place="left"></div>
+		<main ref="main">
+			<div class="maintop" ref="maintop" data-place="main" if={ opts.customize }></div>
 			<mk-timeline-home-widget ref="tl" if={ mode == 'timeline' }/>
 			<mk-mentions-home-widget ref="tl" if={ mode == 'mentions' }/>
 		</main>
-		<div class="right" ref="right"></div>
+		<div class="right" ref="right" data-place="right"></div>
 	</div>
 	<style>
 		:scope
@@ -45,6 +47,12 @@
 
 			&[data-customize]
 				background-image url('/assets/desktop/grid.svg')
+
+				> .main > main > *:not(.maintop)
+					cursor not-allowed
+
+					> *
+						pointer-events none
 
 			&:not([data-customize])
 				> .main > *:empty
@@ -91,29 +99,38 @@
 				max-width 1200px
 
 				> *
-					> *:not(.customize-container)
+					> *:not(.customize-container):not(.maintop)
+					> .maintop > .customize-container > *
 					> .customize-container > *
 						display block
 						border solid 1px rgba(0, 0, 0, 0.075)
 						border-radius 6px
 
-					> *:not(.customize-container)
+					> *:not(.customize-container):not(.maintop)
 					> .customize-container
 						&:not(:last-child)
 							margin-bottom 16px
+
+					> .maintop > .customize-container
+						margin-bottom 16px
 
 				> main
 					padding 16px
 					width calc(100% - 275px * 2)
 
-				> *:not(main)
-					width 275px
+					> .maintop
+						min-height 64px
 
+				> *
 					> .customize-container
+					> .maintop > .customize-container
 						cursor move
 
 						> *
 							pointer-events none
+
+				> *:not(main)
+					width 275px
 
 				> .left
 					padding 16px 0 16px 16px
@@ -160,11 +177,18 @@
 				const sortableOption = {
 					group: 'kyoppie',
 					animation: 150,
-					onSort: this.saveHome
+					onMove: evt => {
+						const id = evt.dragged.getAttribute('data-widget-id');
+						this.home.find(tag => tag.id == id).update({ place: evt.to.getAttribute('data-place') });
+					},
+					onSort: () => {
+						this.saveHome();
+					}
 				};
 
 				new Sortable(this.refs.left, sortableOption);
 				new Sortable(this.refs.right, sortableOption);
+				new Sortable(this.refs.maintop, sortableOption);
 				new Sortable(this.refs.trash, Object.assign({}, sortableOption, {
 					onAdd: evt => {
 						const el = evt.item;
@@ -213,11 +237,19 @@
 						this.refs.right.appendChild(actualEl);
 					}
 					break;
+				case 'main':
+					if (this.opts.customize) {
+						this.refs.maintop.appendChild(actualEl);
+					} else {
+						this.refs.main.insertBefore(actualEl, this.refs.tl.root);
+					}
+					break;
 			}
 
 			const tag = riot.mount(el, {
 				id: widget.id,
 				data: widget.data,
+				place: widget.place,
 				tl: this.refs.tl
 			})[0];
 
@@ -262,6 +294,13 @@
 				const id = el.getAttribute('data-widget-id');
 				const widget = this.I.client_settings.home.find(w => w.id == id);
 				widget.place = 'right';
+				data.push(widget);
+			});
+
+			Array.from(this.refs.maintop.children).forEach(el => {
+				const id = el.getAttribute('data-widget-id');
+				const widget = this.I.client_settings.home.find(w => w.id == id);
+				widget.place = 'main';
 				data.push(widget);
 			});
 

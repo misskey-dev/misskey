@@ -75,9 +75,8 @@
 				a
 					color #555
 
-			
-
-			
-
 	</style>
+	<script>
+		this.mixin('widget');
+	</script>
 </mk-broadcast-home-widget>

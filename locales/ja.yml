@@ -385,6 +385,11 @@ desktop:
       next: "来月"
       go: "クリックして時間遡行"
 
+    mk-post-form-home-widget:
+      title: "投稿"
+      post: "投稿"
+      placeholder: "いまどうしてる？"
+
     mk-repost-form:
       quote: "引用する..."
       cancel: "キャンセル"

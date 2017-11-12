@@ -9,10 +9,13 @@ riot.mixin('widget', {
 		this.mixin('api');
 
 		this.id = this.opts.id;
+		this.place = this.opts.place;
 
-		Object.keys(this.data).forEach(prop => {
-			this.data[prop] = this.opts.data.hasOwnProperty(prop) ? this.opts.data[prop] : this.data[prop];
-		});
+		if (this.data) {
+			Object.keys(this.data).forEach(prop => {
+				this.data[prop] = this.opts.data.hasOwnProperty(prop) ? this.opts.data[prop] : this.data[prop];
+			});
+		}
 	},
 
 	save: function() {

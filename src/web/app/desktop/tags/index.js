@@ -42,6 +42,7 @@ require('./home-widgets/server.tag');
 require('./home-widgets/slideshow.tag');
 require('./home-widgets/channel.tag');
 require('./home-widgets/timemachine.tag');
+require('./home-widgets/post-form.tag');
 require('./timeline.tag');
 require('./messaging/window.tag');
 require('./messaging/room-window.tag');

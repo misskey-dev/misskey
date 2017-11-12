@@ -385,6 +385,11 @@ desktop:
       next: "Next month"
       go: "Click to travel"
 
+    mk-post-form-home-widget:
+      title: "Post"
+      post: "Post"
+      placeholder: "What's happening?"
+
     mk-repost-form:
       quote: "Quote..."
       cancel: "Cancel"
