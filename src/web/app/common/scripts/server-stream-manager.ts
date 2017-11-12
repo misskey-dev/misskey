@@ -1,5 +1,5 @@
 import Connection from './server-stream';
-import uuid from './uuid';
+import * as uuid from 'uuid';
 
 export default class ServerStreamManager {
 	private connection = null;

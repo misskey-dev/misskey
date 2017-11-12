@@ -183,7 +183,7 @@
 				clear both
 	</style>
 	<script>
-		import uuid from '../../../common/scripts/uuid';
+		import uuid from 'uuid';
 
 		this.viewBoxX = 50;
 		this.viewBoxY = 30;

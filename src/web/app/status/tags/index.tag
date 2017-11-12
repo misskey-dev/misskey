@@ -177,7 +177,7 @@
 				width 100%
 	</style>
 	<script>
-		import uuid from '../../common/scripts/uuid';
+		import uuid from 'uuid';
 
 		this.viewBoxX = 100;
 		this.viewBoxY = 30;
