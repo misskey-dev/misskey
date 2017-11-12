@@ -41,7 +41,7 @@ Sponsors & Backers
 Misskey have no 100+ GitHub stars currently. However, donation are always welcome!
 If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link].
 
-**Note:** When you donate to Misskey, your name will be displayed in [donors](./DONORS.md).
+**Note:** When you donate to Misskey, your name will be listed in [donors](./DONORS.md).
 
 Copyright
 ----------------------------------------------------------------
