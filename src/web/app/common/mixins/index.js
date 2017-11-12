@@ -1,9 +1,13 @@
+import * as riot from 'riot';
+
 import activateMe from './i';
 import activateApi from './api';
-import activateStream from './stream';
 
-export default (me, stream) => {
+export default (me, stream, serverStreamManager) => {
 	activateMe(me);
 	activateApi(me);
-	activateStream(stream);
+
+	riot.mixin('stream', { stream });
+
+	riot.mixin('server-stream', { serverStream: serverStreamManager });
 };

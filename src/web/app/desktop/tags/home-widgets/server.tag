@@ -60,8 +60,6 @@
 
 	</style>
 	<script>
-		import Connection from '../../../common/scripts/server-stream';
-
 		this.data = {
 			view: 0,
 			design: 0
@@ -69,8 +67,11 @@
 
 		this.mixin('widget');
 
+		this.mixin('server-stream');
+		this.connection = this.serverStream.getConnection();
+		this.connectionId = this.serverStream.use();
+
 		this.initializing = true;
-		this.connection = new Connection();
 
 		this.on('mount', () => {
 			this.api('meta').then(meta => {
@@ -82,7 +83,7 @@
 		});
 
 		this.on('unmount', () => {
-			this.connection.close();
+			this.serverStream.dispose(this.connectionId);
 		});
 
 		this.toggle = () => {

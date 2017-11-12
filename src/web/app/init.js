@@ -9,6 +9,7 @@ import api from './common/scripts/api';
 import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';
 import Connection from './common/scripts/home-stream';
+import ServerStreamManager from './common/scripts/server-stream-manager.ts';
 import Progress from './common/scripts/loading';
 import mixin from './common/mixins';
 import CONFIG from './common/scripts/config';
@@ -111,8 +112,11 @@ export default callback => {
 		// Init home stream connection
 		const stream = me ? new Connection(me) : null;
 
+		// Init server stream connection manager
+		const serverStreamManager = new ServerStreamManager();
+
 		// ミックスイン初期化
-		mixin(me, stream);
+		mixin(me, stream, serverStreamManager);
 
 		// ローディング画面クリア
 		const ini = document.getElementById('ini');
