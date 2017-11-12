@@ -8,6 +8,7 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as mongodb from 'mongodb';
 import * as gm from 'gm';
+import * as stream from 'stream';
 
 import DriveFile, { getGridFSBucket } from '../api/models/drive-file';
 
@@ -33,60 +34,81 @@ app.get('/', (req, res) => {
 });
 
 app.get('/default-avatar.jpg', (req, res) => {
-	// TODO: 非同期にしたい。Promise対応してないんだろうか...
-	const file = fs.readFileSync(`${__dirname}/assets/avatar.jpg`);
+	const file = fs.createReadStream(`${__dirname}/assets/avatar.jpg`);
 	send(file, 'image/jpeg', req, res);
 });
 
 app.get('/app-default.jpg', (req, res) => {
-	// TODO: 非同期にしたい。Promise対応してないんだろうか...
-	const file = fs.readFileSync(`${__dirname}/assets/dummy.png`);
+	const file = fs.createReadStream(`${__dirname}/assets/dummy.png`);
 	send(file, 'image/png', req, res);
 });
 
-async function raw(data: Buffer, type: string, download: boolean, res: express.Response): Promise<any> {
-	res.header('Content-Type', type);
+interface ISend {
+	contentType: string;
+	stream: stream.Readable;
+}
 
-	if (download) {
+function thumbnail(data: stream.Readable, type: string, resize: number): ISend {
+		const readable: stream.Readable = (() => {
+			if (!/^image\/.*$/.test(type)) {
+				// 使わないことにしたストリームはしっかり取り壊しておく
+				data.destroy();
+				return fs.createReadStream(`${__dirname}/assets/not-an-image.png`);
+			}
+			return data;
+		})();
+
+		let g = gm(readable);
+
+		if (resize) {
+			g = g.resize(resize, resize);
+		}
+
+		const stream = g
+			.compress('jpeg')
+			.quality(80)
+			.stream();
+
+		return {
+			contentType: 'image/jpeg',
+			stream
+		};
+}
+
+const commonReadableHandlerGenerator = (req: express.Request, res: express.Response) => (e: Error): void => {
+	console.dir(e);
+	req.destroy();
+	res.destroy(e);
+};
+
+function send(readable: stream.Readable, type: string, req: express.Request, res: express.Response): void {
+	readable.on('error', commonReadableHandlerGenerator(req, res));
+
+	const data = ((): ISend => {
+		if (req.query.thumbnail !== undefined) {
+			return thumbnail(readable, type, req.query.size);
+		}
+		return {
+			contentType: type,
+			stream: readable
+		};
+	})();
+
+	if (readable !== data.stream) {
+		data.stream.on('error', commonReadableHandlerGenerator(req, res));
+	}
+
+	if (req.query.download !== undefined) {
 		res.header('Content-Disposition', 'attachment');
 	}
 
-	res.send(data);
-}
+	res.header('Content-Type', data.contentType);
 
-async function thumbnail(data: Buffer, type: string, resize: number, res: express.Response): Promise<any> {
-	if (!/^image\/.*$/.test(type)) {
-		// TODO: 非同期にしたい。Promise対応してないんだろうか...
-		data = fs.readFileSync(`${__dirname}/assets/not-an-image.png`);
-	}
+	data.stream.pipe(res);
 
-	let g = gm(data);
-
-	if (resize) {
-		g = g.resize(resize, resize);
-	}
-
-	g
-		.compress('jpeg')
-		.quality(80)
-		.toBuffer('jpeg', (err, img) => {
-			if (err !== undefined && err !== null) {
-				console.error(err);
-				res.sendStatus(500);
-				return;
-			}
-
-			res.header('Content-Type', 'image/jpeg');
-			res.send(img);
-		});
-}
-
-function send(data: Buffer, type: string, req: express.Request, res: express.Response): void {
-	if (req.query.thumbnail !== undefined) {
-		thumbnail(data, type, req.query.size, res);
-	} else {
-		raw(data, type, req.query.download !== undefined, res);
-	}
+	data.stream.on('end', () => {
+		res.end();
+	});
 }
 
 async function sendFileById(req: express.Request, res: express.Response): Promise<void> {
@@ -112,18 +134,9 @@ async function sendFileById(req: express.Request, res: express.Response): Promis
 
 	const bucket = await getGridFSBucket();
 
-	const buffer = await ((id): Promise<Buffer> => new Promise((resolve, reject) => {
-		const chunks = [];
-		const readableStream = bucket.openDownloadStream(id);
-		readableStream.on('data', chunk => {
-			chunks.push(chunk);
-		});
-		readableStream.on('end', () => {
-			resolve(Buffer.concat(chunks));
-		});
-	}))(fileId);
+	const readable = bucket.openDownloadStream(fileId);
 
-	send(buffer, file.contentType, req, res);
+	send(readable, file.contentType, req, res);
 }
 
 /**
