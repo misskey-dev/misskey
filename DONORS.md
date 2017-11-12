@@ -1,5 +1,6 @@
 DONORS
 ======
+The list of people who have sent donation for Misskey.
 
 (no particular order)
 
@@ -13,7 +14,7 @@ DONORS
 
 ---
 
-Although you donated, you are not listed here? please contact to us!
+If your name is missing,  please contact us!
 
 If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link].
 
