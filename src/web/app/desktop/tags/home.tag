@@ -1,35 +1,36 @@
 <mk-home data-customize={ opts.customize }>
 	<div class="customize" if={ opts.customize }>
-		<div class="adder">
-			<p>ウィジェットを追加:</p>
-			<select ref="widgetSelector">
-				<option value="profile">プロフィール</option>
-				<option value="calendar">カレンダー</option>
-				<option value="timemachine">カレンダー(タイムマシン)</option>
-				<option value="activity">アクティビティ</option>
-				<option value="rss-reader">RSSリーダー</option>
-				<option value="trends">トレンド</option>
-				<option value="photo-stream">フォトストリーム</option>
-				<option value="slideshow">スライドショー</option>
-				<option value="version">バージョン</option>
-				<option value="broadcast">ブロードキャスト</option>
-				<option value="notifications">通知</option>
-				<option value="user-recommendation">おすすめユーザー</option>
-				<option value="recommended-polls">投票</option>
-				<option value="post-form">投稿フォーム</option>
-				<option value="channel">チャンネル</option>
-				<option value="server">サーバー情報</option>
-				<option value="donation">寄付のお願い</option>
-				<option value="nav">ナビゲーション</option>
-				<option value="tips">ヒント</option>
-			</select>
-			<button onclick={ addWidget }>追加</button>
-			<br>
-			<p>Tip: 一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>
-		</div>
-		<div class="trash">
-			<div ref="trash"></div>
-			<p><b>ゴミ箱</b><br>(ここにウィジェットをドロップすると削除できます)</p>
+		<a href="/"><i class="fa fa-check"></i>完了</a>
+		<div>
+			<div class="adder">
+				<p>ウィジェットを追加:</p>
+				<select ref="widgetSelector">
+					<option value="profile">プロフィール</option>
+					<option value="calendar">カレンダー</option>
+					<option value="timemachine">カレンダー(タイムマシン)</option>
+					<option value="activity">アクティビティ</option>
+					<option value="rss-reader">RSSリーダー</option>
+					<option value="trends">トレンド</option>
+					<option value="photo-stream">フォトストリーム</option>
+					<option value="slideshow">スライドショー</option>
+					<option value="version">バージョン</option>
+					<option value="broadcast">ブロードキャスト</option>
+					<option value="notifications">通知</option>
+					<option value="user-recommendation">おすすめユーザー</option>
+					<option value="recommended-polls">投票</option>
+					<option value="post-form">投稿フォーム</option>
+					<option value="channel">チャンネル</option>
+					<option value="server">サーバー情報</option>
+					<option value="donation">寄付のお願い</option>
+					<option value="nav">ナビゲーション</option>
+					<option value="tips">ヒント</option>
+				</select>
+				<button onclick={ addWidget }>追加</button>
+			</div>
+			<div class="trash">
+				<div ref="trash"></div>
+				<p>ゴミ箱</p>
+			</div>
 		</div>
 	</div>
 	<div class="main">
@@ -46,6 +47,7 @@
 			display block
 
 			&[data-customize]
+				padding-top 48px
 				background-image url('/assets/desktop/grid.svg')
 
 				> .main > main > *:not(.maintop)
@@ -59,38 +61,67 @@
 					display none
 
 			> .customize
-				display flex
-				margin 0 auto
-				max-width 1200px - 32px
-				background #fff
-				border-radius 0 0 16px 16px
-				border solid 1px #ddd
-				border-top none
+				position fixed
+				z-index 1000
+				top 0
+				left 0
+				width 100%
+				height 48px
+				background #f7f7f7
+				box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
+
+				> a
+					display block
+					position absolute
+					z-index 1001
+					top 0
+					right 0
+					padding 0 16px
+					line-height 48px
+					text-decoration none
+					color $theme-color-foreground
+					background $theme-color
+					transition background 0.1s ease
+
+					&:hover
+						background lighten($theme-color, 10%)
+
+					&:active
+						background darken($theme-color, 10%)
+						transition background 0s ease
+
+					> i
+						margin-right 8px
 
 				> div
-					width 50%
+					display flex
+					margin 0 auto
+					max-width 1200px - 32px
 
-					&.adder
-						padding 16px
+					> div
+						width 50%
 
-						> p
-							display inline
+						&.adder
+							> p
+								display inline
+								line-height 48px
 
-					&.trash
-						border-left solid 1px #ddd
+						&.trash
+							border-left solid 1px #ddd
 
-						> div
-							width 100%
-							height 100%
+							> div
+								width 100%
+								height 100%
 
-						> p
-							position absolute
-							top 0
-							left 0
-							width 100%
-							margin 0
-							text-align center
-							pointer-events none
+							> p
+								position absolute
+								top 0
+								left 0
+								width 100%
+								line-height 48px
+								margin 0
+								text-align center
+								pointer-events none
 
 			> .main
 				display flex
@@ -152,6 +183,7 @@
 	<script>
 		import uuid from 'uuid';
 		import Sortable from 'sortablejs';
+		import dialog from '../scripts/dialog';
 
 		this.mixin('i');
 		this.mixin('api');
@@ -174,6 +206,15 @@
 			});
 
 			if (this.opts.customize) {
+				dialog('<i class="fa fa-info-circle"></i>カスタマイズのヒント',
+					'<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
+					'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
+					'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
+					'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
+				[{
+					text: 'Got it!'
+				}]);
+
 				const sortableOption = {
 					group: 'kyoppie',
 					animation: 150,

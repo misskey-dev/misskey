@@ -1,7 +1,5 @@
 <mk-home-customize-page>
-	<mk-ui ref="ui" page="timeline">
-		<mk-home ref="home" mode={ parent.opts.mode } customize={ true }/>
-	</mk-ui>
+	<mk-home ref="home" mode="timeline" customize={ true }/>
 	<style>
 		:scope
 			display block
