@@ -407,6 +407,20 @@
 			if (e.dataTransfer.files.length > 0) {
 				Array.from(e.dataTransfer.files).forEach(this.upload);
 			}
+
+			// データ取得
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return false;
+
+			// パース
+			// TODO: Validate JSON
+			const obj = JSON.parse(data);
+
+			// (ドライブの)ファイルだったら
+			if (obj.type == 'file') {
+				this.files.push(obj.file);
+				this.update();
+			}
 		};
 
 		this.onkeydown = e => {
