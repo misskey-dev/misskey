@@ -138,7 +138,6 @@
 							pointer-events none
 							display block
 							margin 0 auto
-							width s('calc(100% - (%s * 2))', $header-height)
 							overflow hidden
 							text-overflow ellipsis
 							text-align center
