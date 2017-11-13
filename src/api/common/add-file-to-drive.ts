@@ -36,7 +36,7 @@ const addToGridFS = (name: string, readable: stream.Readable, type: string, meta
  * Add file to drive
  *
  * @param user User who wish to add file
- * @param file File path, binary, or readableStream
+ * @param file File path or readableStream
  * @param comment Comment
  * @param type File type
  * @param folderId Folder ID
@@ -45,7 +45,7 @@ const addToGridFS = (name: string, readable: stream.Readable, type: string, meta
  */
 export default (
 	user: any,
-	file: string | Buffer | stream.Readable,
+	file: string | stream.Readable,
 	name: string = null,
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
@@ -57,17 +57,6 @@ export default (
 	new Promise((res: (v: string) => void, rej) => {
 		if (typeof file === 'string') {
 			res(file);
-			return;
-		}
-		if (file instanceof Buffer) {
-			tmpFile()
-				.then(path => {
-					fs.writeFile(path, file, (err) => {
-						if (err) rej(err);
-						res(path);
-					});
-				})
-				.catch(rej);
 			return;
 		}
 		if (typeof file === 'object' && typeof file.read === 'function') {
