@@ -152,7 +152,7 @@ export default (
 						return null;
 					}
 					// If the file is an image, calculate width and height to save in property
-					const g = gm(data, name);
+					const g = gm(fs.createReadStream(path), name);
 					const size = await prominence(g).size();
 					const properties = {
 						width: size.width,
