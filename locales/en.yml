@@ -390,6 +390,9 @@ desktop:
       post: "Post"
       placeholder: "What's happening?"
 
+    mk-access-log-home-widget:
+      title: "Access log"
+
     mk-repost-form:
       quote: "Quote..."
       cancel: "Cancel"

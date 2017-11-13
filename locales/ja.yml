@@ -390,6 +390,9 @@ desktop:
       post: "投稿"
       placeholder: "いまどうしてる？"
 
+    mk-access-log-home-widget:
+      title: "アクセスログ"
+
     mk-repost-form:
       quote: "引用する..."
       cancel: "キャンセル"

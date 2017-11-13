@@ -9,6 +9,7 @@ import isNativeToken from './common/is-native-token';
 import homeStream from './stream/home';
 import messagingStream from './stream/messaging';
 import serverStream from './stream/server';
+import requestsStream from './stream/requests';
 import channelStream from './stream/channel';
 
 module.exports = (server: http.Server) => {
@@ -24,6 +25,11 @@ module.exports = (server: http.Server) => {
 
 		if (request.resourceURL.pathname === '/server') {
 			serverStream(request, connection);
+			return;
+		}
+
+		if (request.resourceURL.pathname === '/requests') {
+			requestsStream(request, connection);
 			return;
 		}
 

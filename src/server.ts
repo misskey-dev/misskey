@@ -11,6 +11,7 @@ import * as morgan from 'morgan';
 import Accesses from 'accesses';
 import vhost = require('vhost');
 
+import log from './log-request';
 import config from './conf';
 
 /**
@@ -34,6 +35,11 @@ app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev', {
 	// create a write stream (in append mode)
 	stream: config.accesslog ? fs.createWriteStream(config.accesslog) : null
 }));
+
+app.use((req, res, next) => {
+	log(req);
+	next();
+});
 
 // Drop request when without 'Host' header
 app.use((req, res, next) => {

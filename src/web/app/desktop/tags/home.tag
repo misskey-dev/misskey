@@ -20,6 +20,7 @@
 					<option value="recommended-polls">投票</option>
 					<option value="post-form">投稿フォーム</option>
 					<option value="channel">チャンネル</option>
+					<option value="access-log">アクセスログ</option>
 					<option value="server">サーバー情報</option>
 					<option value="donation">寄付のお願い</option>
 					<option value="nav">ナビゲーション</option>
