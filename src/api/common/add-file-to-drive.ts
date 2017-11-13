@@ -213,14 +213,14 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 	}).then(([path, remove]): Promise<any> => new Promise((res, rej) => {
 		addFile(user, path, ...args)
 			.then(file => {
-				res(file)
+				res(file);
 				if (remove) {
 					fs.unlink(path, (e) => {
-						if (e) log(e.stack)
-					})
+						if (e) log(e.stack);
+					});
 				}
 			})
-			.catch(rej)
+			.catch(rej);
 	}))
 		.then(file => {
 			log(`drive file has been created ${file._id}`);
