@@ -35,7 +35,7 @@ app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev', {
 	stream: config.accesslog ? fs.createWriteStream(config.accesslog) : null
 }));
 
-// Drop request that without 'Host' header
+// Drop request when without 'Host' header
 app.use((req, res, next) => {
 	if (!req.headers['host']) {
 		res.sendStatus(400);
