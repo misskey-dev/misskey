@@ -265,7 +265,7 @@
 			const position = this.refs.main.getBoundingClientRect();
 
 			const width = parseInt(getComputedStyle(this.refs.main, '').width, 10);
-			const left = parseInt(getComputedStyle(this.refs.main, '').left, 10);
+			const height = parseInt(getComputedStyle(this.refs.main, '').height, 10);
 			const x = window.screenX + position.left;
 			const y = window.screenY + position.top;
 
