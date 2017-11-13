@@ -268,8 +268,9 @@
 			const x = window.screenX + position.left;
 			const y = window.screenY + position.top;
 
-			window.open(this.popoutUrl,
-				this.popoutUrl,
+			const url = typeof this.popoutUrl == 'function' ? this.popoutUrl() : this.popoutUrl;
+
+			window.open(url, url,
 				`height=${height},width=${width},left=${x},top=${y}`);
 
 			this.close();

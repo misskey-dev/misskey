@@ -1,11 +1,11 @@
 <mk-drive-browser-window>
-	<mk-window ref="window" is-modal={ false } width={ '800px' } height={ '500px' }>
+	<mk-window ref="window" is-modal={ false } width={ '800px' } height={ '500px' } popout={ popout }>
 		<yield to="header">
 			<p class="info" if={ parent.usage }><b>{ parent.usage.toFixed(1) }%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
 			<i class="fa fa-cloud"></i>%i18n:desktop.tags.mk-drive-browser-window.drive%
 		</yield>
 		<yield to="content">
-			<mk-drive-browser multiple={ true } folder={ parent.folder }/>
+			<mk-drive-browser multiple={ true } folder={ parent.folder } ref="browser"/>
 		</yield>
 	</mk-window>
 	<style>
@@ -28,9 +28,20 @@
 
 	</style>
 	<script>
+		import CONFIG from '../../../common/scripts/config';
+
 		this.mixin('api');
 
 		this.folder = this.opts.folder ? this.opts.folder : null;
+
+		this.popout = () => {
+			const folder = this.refs.window.refs.browser.folder;
+			if (folder) {
+				return `${CONFIG.url}/i/drive/folder/${folder.id}`;
+			} else {
+				return `${CONFIG.url}/i/drive`;
+			}
+		};
 
 		this.on('mount', () => {
 			this.refs.window.on('closed', () => {
