@@ -9,28 +9,34 @@ import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event from '../event';
 import config from '../../conf';
-import { Duplex } from 'stream';
+import { Buffer } from 'buffer';
+import * as fs from 'fs';
+import * as tmp from 'tmp';
+import * as stream from 'stream';
 
 const log = debug('misskey:register-drive-file');
 
-const addToGridFS = (name, binary, type, metadata): Promise<any> => new Promise(async (resolve, reject) => {
-	const dataStream = new Duplex();
-	dataStream.push(binary);
-	dataStream.push(null);
+const tmpFile = (): Promise<string> => new Promise((resolve, reject) => {
+	tmp.file((e, path) => {
+		if (e) return reject(e)
+		resolve(path)
+	})
+})
 
-	const bucket = await getGridFSBucket();
-	const writeStream = bucket.openUploadStream(name, { contentType: type, metadata });
-	writeStream.once('finish', (doc) => { resolve(doc); });
-	writeStream.on('error', reject);
-	dataStream.pipe(writeStream);
-});
+const addToGridFS = (name: string, readable: stream.Readable, type: string, metadata: any): Promise<any> =>
+	getGridFSBucket()
+		.then(bucket => new Promise((resolve, reject) => {
+			const writeStream = bucket.openUploadStream(name, { contentType: type, metadata });
+			writeStream.once('finish', (doc) => { resolve(doc); });
+			writeStream.on('error', reject);
+			readable.pipe(writeStream);
+		}))
 
 /**
  * Add file to drive
  *
  * @param user User who wish to add file
- * @param fileName File name
- * @param data Contents
+ * @param file File path, binary, or readableStream
  * @param comment Comment
  * @param type File type
  * @param folderId Folder ID
@@ -39,139 +45,201 @@ const addToGridFS = (name, binary, type, metadata): Promise<any> => new Promise(
  */
 export default (
 	user: any,
-	data: Buffer,
+	file: string | Buffer | stream.Readable,
 	name: string = null,
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
-) => new Promise<any>(async (resolve, reject) => {
+) => new Promise<any>((resolve, reject) => {
 	log(`registering ${name} (user: ${user.username})`);
 
-	// File size
-	const size = data.byteLength;
-
-	log(`size is ${size}`);
-
-	// File type
-	let mime = 'application/octet-stream';
-	const type = fileType(data);
-	if (type !== null) {
-		mime = type.mime;
-
-		if (name === null) {
-			name = `untitled.${type.ext}`;
+	// Get file path
+	new Promise((res: (v: string) => void, rej) => {
+		if (typeof file === 'string') {
+			res(file)
+			return
 		}
-	} else {
-		if (name === null) {
-			name = 'untitled';
+		if (file instanceof Buffer) {
+			tmpFile()
+				.then(path => {
+					fs.writeFile(path, file, (err) => {
+						if (err) rej(err)
+						res(path)
+					})
+				})
+				.catch(rej)
+			return
 		}
-	}
-
-	log(`type is ${mime}`);
-
-	// Generate hash
-	const hash = crypto
-		.createHash('md5')
-		.update(data)
-		.digest('hex') as string;
-
-	log(`hash is ${hash}`);
-
-	if (!force) {
-		// Check if there is a file with the same hash
-		const much = await DriveFile.findOne({
-			md5: hash,
-			'metadata.user_id': user._id
-		});
-
-		if (much !== null) {
-			log('file with same hash is found');
-			return resolve(much);
-		} else {
-			log('file with same hash is not found');
+		if (typeof file === 'object' && typeof file.read === 'function') {
+			tmpFile()
+				.then(path => {
+					const readable: stream.Readable = file
+					const writable = fs.createWriteStream(path)
+					readable
+						.on('error', rej)
+						.on('end', () => {
+							res(path)
+						})
+						.pipe(writable)
+						.on('error', rej)
+				})
+				.catch(rej)
 		}
-	}
+		rej(new Error('un-compatible file.'))
+	})
+		// Calculate hash, get content type and get file size
+		.then(path => Promise.all([
+			path,
+			// hash
+			((): Promise<string> => new Promise((res, rej) => {
+				const readable = fs.createReadStream(path)
+				const hash = crypto.createHash('md5')
+				readable
+					.on('error', rej)
+					.on('end', () => {
+						res(hash.digest('hex'))
+					})
+					.pipe(hash)
+					.on('error', rej)
+			}))(),
+			// mime
+			((): Promise<[string, string | null]> => new Promise((res, rej) => {
+				const readable = fs.createReadStream(path)
+				readable
+					.on('error', rej)
+					.once('data', (buffer: Buffer) => {
+						readable.destroy()
+						const type = fileType(buffer)
+						if (!type) {
+							return res(['application/octet-stream', null])
+						}
+						return res([type.mime, type.ext])
+					})
+			}))(),
+			// size
+			((): Promise<number> => new Promise((res, rej) => {
+				fs.stat(path, (err, stats) => {
+					if (err) return rej(err)
+					res(stats.size)
+				})
+			}))()
+		]))
+		.then(async ([path, hash, [mime, ext], size]) => {
+			log(`hash: ${hash}, mime: ${mime}, ext: ${ext}, size: ${size}`)
 
-	// Calculate drive usage
-	const usage = ((await DriveFile
-		.aggregate([
-			{ $match: { 'metadata.user_id': user._id } },
-			{ $project: {
-				length: true
-			}},
-			{ $group: {
-				_id: null,
-				usage: { $sum: '$length' }
-			}}
-		]))[0] || {
-			usage: 0
-		}).usage;
+			// detect name
+			const detectedName: string = name || (ext ? `untitled.${ext}` : 'untitled');
 
-	log(`drive usage is ${usage}`);
+			if (!force) {
+				// Check if there is a file with the same hash
+				const much = await DriveFile.findOne({
+					md5: hash,
+					'metadata.user_id': user._id
+				});
 
-	// If usage limit exceeded
-	if (usage + size > user.drive_capacity) {
-		return reject('no-free-space');
-	}
-
-	// If the folder is specified
-	let folder: any = null;
-	if (folderId !== null) {
-		folder = await DriveFolder
-			.findOne({
-				_id: folderId,
-				user_id: user._id
-			});
-
-		if (folder === null) {
-			return reject('folder-not-found');
-		}
-	}
-
-	let properties: any = null;
-
-	// If the file is an image
-	if (/^image\/.*$/.test(mime)) {
-		// Calculate width and height to save in property
-		const g = gm(data, name);
-		const size = await prominence(g).size();
-		properties = {
-			width: size.width,
-			height: size.height
-		};
-
-		log('image width and height is calculated');
-	}
-
-	// Create DriveFile document
-	const file = await addToGridFS(name, data, mime, {
-		user_id: user._id,
-		folder_id: folder !== null ? folder._id : null,
-		comment: comment,
-		properties: properties
-	});
-
-	log(`drive file has been created ${file._id}`);
-
-	resolve(file);
-
-	// Serialize
-	const fileObj = await serialize(file);
-
-	// Publish drive_file_created event
-	event(user._id, 'drive_file_created', fileObj);
-
-	// Register to search database
-	if (config.elasticsearch.enable) {
-		const es = require('../../db/elasticsearch');
-		es.index({
-			index: 'misskey',
-			type: 'drive_file',
-			id: file._id.toString(),
-			body: {
-				name: file.name,
-				user_id: user._id.toString()
+				if (much !== null) {
+					log('file with same hash is found');
+					return resolve(much);
+				} else {
+					log('file with same hash is not found');
+				}
 			}
-		});
-	}
+
+			const [properties, folder] = await Promise.all([
+				// properties
+				(async () => {
+					if (!/^image\/.*$/.test(mime)) {
+						return null
+					}
+					// If the file is an image, calculate width and height to save in property
+					const g = gm(data, name);
+					const size = await prominence(g).size();
+					const properties = {
+						width: size.width,
+						height: size.height
+					};
+					log('image width and height is calculated');
+					return properties
+				})(),
+				// folder
+				(async () => {
+					if (!folderId) {
+						return null
+					}
+					const driveFolder = await DriveFolder.findOne({
+						_id: folderId,
+						user_id: user._id
+					})
+					if (!driveFolder) {
+						throw 'folder-not-found'
+					}
+					return driveFolder
+				})(),
+				// usage checker
+				(async () => {
+					// Calculate drive usage
+					const usage = await DriveFile
+						.aggregate([
+							{ $match: { 'metadata.user_id': user._id } },
+							{
+								$project: {
+									length: true
+								}
+							},
+							{
+								$group: {
+									_id: null,
+									usage: { $sum: '$length' }
+								}
+							}
+						])
+						.then((aggregates: any[]) => {
+							if (aggregates.length > 0) {
+								return aggregates[0].usage
+							}
+							return 0
+						});
+
+					log(`drive usage is ${usage}`);
+
+					// If usage limit exceeded
+					if (usage + size > user.drive_capacity) {
+						throw 'no-free-space';
+					}
+				})()
+			])
+
+			const readable = fs.createReadStream(path)
+
+			return addToGridFS(name, readable, mime, {
+				user_id: user._id,
+				folder_id: folder !== null ? folder._id : null,
+				comment: comment,
+				properties: properties
+			})
+		})
+		.then(file => {
+			log(`drive file has been created ${file._id}`);
+			resolve(file)
+			return serialize(file)
+		})
+		.then(serializedFile => {
+			// Publish drive_file_created event
+			event(user._id, 'drive_file_created', fileObj);
+
+			// Register to search database
+			if (config.elasticsearch.enable) {
+				const es = require('../../db/elasticsearch');
+				es.index({
+					index: 'misskey',
+					type: 'drive_file',
+					id: file._id.toString(),
+					body: {
+						name: file.name,
+						user_id: user._id.toString()
+					}
+				});
+			}
+		})
+		.catch(reject)
 });
