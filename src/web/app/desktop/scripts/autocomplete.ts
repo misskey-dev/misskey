@@ -1,10 +1,12 @@
-const getCaretCoordinates = require('textarea-caret');
+import getCaretCoordinates = require('textarea-caret');
 import * as riot from 'riot';
 
 /**
  * オートコンプリートを管理するクラス。
  */
 class Autocomplete {
+	private suggestion: any;
+	private textarea: any;
 
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
@@ -23,22 +25,22 @@ class Autocomplete {
 	/**
 	 * このインスタンスにあるテキストエリアの入力のキャプチャを開始します。
 	 */
-	attach() {
+	public attach() {
 		this.textarea.addEventListener('input', this.onInput);
 	}
 
 	/**
 	 * このインスタンスにあるテキストエリアの入力のキャプチャを解除します。
 	 */
-	detach() {
+	public detach() {
 		this.textarea.removeEventListener('input', this.onInput);
 		this.close();
 	}
 
 	/**
-	 * [Private] テキスト入力時
+	 * テキスト入力時
 	 */
-	onInput() {
+	private onInput() {
 		this.close();
 
 		const caret = this.textarea.selectionStart;
@@ -56,9 +58,9 @@ class Autocomplete {
 	}
 
 	/**
-	 * [Private] サジェストを提示します。
+	 * サジェストを提示します。
 	 */
-	open(type, q) {
+	private open(type, q) {
 		// 既に開いているサジェストは閉じる
 		this.close();
 
@@ -81,7 +83,7 @@ class Autocomplete {
 		const el = document.body.appendChild(tag);
 
 		// マウント
-		this.suggestion = riot.mount(el, {
+		this.suggestion = (riot as any).mount(el, {
 			textarea: this.textarea,
 			complete: this.complete,
 			close: this.close,
@@ -91,9 +93,9 @@ class Autocomplete {
 	}
 
 	/**
-	 * [Private] サジェストを閉じます。
+	 * サジェストを閉じます。
 	 */
-	close() {
+	private close() {
 		if (this.suggestion == null) return;
 
 		this.suggestion.unmount();
@@ -103,9 +105,9 @@ class Autocomplete {
 	}
 
 	/**
-	 * [Private] オートコンプリートする
+	 * オートコンプリートする
 	 */
-	complete(user) {
+	private complete(user) {
 		this.close();
 
 		const value = user.username;

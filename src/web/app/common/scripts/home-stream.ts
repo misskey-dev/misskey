@@ -17,9 +17,9 @@ class Connection extends Stream {
 			this.send({ type: 'alive' });
 		}, 1000 * 60);
 
-		this.on('i_updated', me.update);
+		(this as any).on('i_updated', me.update);
 
-		this.on('my_token_regenerated', () => {
+		(this as any).on('my_token_regenerated', () => {
 			alert('%i18n:common.my-token-regenerated%');
 			signout();
 		});

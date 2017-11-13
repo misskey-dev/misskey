@@ -561,7 +561,7 @@
 		};
 
 		this.changeLocalFile = () => {
-			this.refs.file.files.forEach(f => this.refs.uploader.upload(f, this.folder));
+			Array.from(this.refs.file.files).forEach(f => this.refs.uploader.upload(f, this.folder));
 		};
 	</script>
 </mk-drive>

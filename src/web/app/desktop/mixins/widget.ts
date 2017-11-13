@@ -3,7 +3,7 @@ import * as riot from 'riot';
 // ミックスインにオプションを渡せないのアレ
 // SEE: https://github.com/riot/riot/issues/2434
 
-riot.mixin('widget', {
+(riot as any).mixin('widget', {
 	init: function() {
 		this.mixin('i');
 		this.mixin('api');

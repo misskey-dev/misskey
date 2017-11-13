@@ -109,7 +109,7 @@
 
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
-				e.dataTransfer.files.forEach(file => {
+				Array.from(e.dataTransfer.files).forEach(file => {
 					this.browser.upload(file, this.folder);
 				});
 				return false;

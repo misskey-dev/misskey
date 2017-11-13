@@ -11,7 +11,7 @@ import * as riot from 'riot';
 import init from '../init';
 import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
-import getPostSummary from '../../../common/get-post-summary.ts';
+import getPostSummary from '../../../common/get-post-summary';
 
 /**
  * init
@@ -27,11 +27,11 @@ init(async (me, stream) => {
 	 */
 	if ('Notification' in window) {
 		// 許可を得ていなかったらリクエスト
-		if (Notification.permission == 'default') {
+		if ((Notification as any).permission == 'default') {
 			await Notification.requestPermission();
 		}
 
-		if (Notification.permission == 'granted') {
+		if ((Notification as any).permission == 'granted') {
 			registerNotifications(stream);
 		}
 	}
@@ -82,7 +82,7 @@ function registerNotifications(stream) {
 		});
 		n.onclick = () => {
 			n.close();
-			riot.mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+			(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
 				user: message.user
 			});
 		};

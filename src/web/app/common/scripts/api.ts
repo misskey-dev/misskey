@@ -14,7 +14,7 @@ let pending = 0;
  * @param  {any} [data={}] Data
  * @return {Promise<any>} Response
  */
-export default (i, endpoint, data = {}) => {
+export default (i, endpoint, data = {}): Promise<any> => {
 	if (++pending === 1) {
 		spinner = document.createElement('div');
 		spinner.setAttribute('id', 'wait');
@@ -22,7 +22,7 @@ export default (i, endpoint, data = {}) => {
 	}
 
 	// Append the credential
-	if (i != null) data.i = typeof i === 'object' ? i.token : i;
+	if (i != null) (data as any).i = typeof i === 'object' ? i.token : i;
 
 	return new Promise((resolve, reject) => {
 		// Send request

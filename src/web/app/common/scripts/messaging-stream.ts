@@ -12,7 +12,7 @@ class Connection extends Stream {
 			otherparty
 		});
 
-		this.on('_connected_', () => {
+		(this as any).on('_connected_', () => {
 			this.send({
 				i: me.token
 			});

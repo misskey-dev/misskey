@@ -1,9 +1,9 @@
 import * as riot from 'riot';
 
-export default (title, text, buttons, canThrough, onThrough) => {
+export default (title, text, buttons, canThrough?, onThrough?) => {
 	const dialog = document.body.appendChild(document.createElement('mk-dialog'));
 	const controller = riot.observable();
-	riot.mount(dialog, {
+	(riot as any).mount(dialog, {
 		controller: controller,
 		title: title,
 		text: text,

@@ -538,7 +538,7 @@
 
 				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', compile(tokens));
 
-				this.refs.text.children.forEach(e => {
+				Array.from(this.refs.text.children).forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);
 				});
 

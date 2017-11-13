@@ -1,7 +1,7 @@
 import * as riot from 'riot';
 
 export default me => {
-	riot.mixin('i', {
+	(riot as any).mixin('i', {
 		init: function() {
 			this.I = me;
 			this.SIGNIN = me != null;

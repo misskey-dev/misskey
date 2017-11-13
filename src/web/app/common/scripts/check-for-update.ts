@@ -1,5 +1,7 @@
 import CONFIG from './config';
 
+declare var VERSION: string;
+
 export default function() {
 	fetch(CONFIG.apiUrl + '/meta', {
 		method: 'POST'
@@ -11,4 +13,4 @@ export default function() {
 			}
 		});
 	});
-};
+}

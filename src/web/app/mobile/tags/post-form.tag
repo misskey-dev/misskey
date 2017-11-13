@@ -207,7 +207,7 @@
 		};
 
 		this.onpaste = e => {
-			e.clipboardData.items.forEach(item => {
+			Array.from(e.clipboardData.items).forEach(item => {
 				if (item.kind == 'file') {
 					this.upload(item.getAsFile());
 				}
@@ -228,7 +228,7 @@
 		};
 
 		this.changeFile = () => {
-			this.refs.file.files.forEach(this.upload);
+			Array.from(this.refs.file.files).forEach(this.upload);
 		};
 
 		this.upload = file => {

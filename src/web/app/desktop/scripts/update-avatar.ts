@@ -5,10 +5,10 @@ import api from '../../common/scripts/api';
 
 export default (I, cb, file = null) => {
 	const fileSelected = file => {
-		const cropper = riot.mount(document.body.appendChild(document.createElement('mk-crop-window')), {
+		const cropper = (riot as any).mount(document.body.appendChild(document.createElement('mk-crop-window')), {
 			file: file,
-			title: 'バナーとして表示する部分を選択',
-			aspectRatio: 16 / 9
+			title: 'アバターとして表示する部分を選択',
+			aspectRatio: 1 / 1
 		})[0];
 
 		cropper.on('cropped', blob => {
@@ -17,11 +17,11 @@ export default (I, cb, file = null) => {
 			data.append('file', blob, file.name + '.cropped.png');
 
 			api(I, 'drive/folders/find', {
-				name: 'バナー'
+				name: 'アイコン'
 			}).then(iconFolder => {
 				if (iconFolder.length === 0) {
 					api(I, 'drive/folders/create', {
-						name: 'バナー'
+						name: 'アイコン'
 					}).then(iconFolder => {
 						upload(data, iconFolder);
 					});
@@ -37,8 +37,8 @@ export default (I, cb, file = null) => {
 	};
 
 	const upload = (data, folder) => {
-		const progress = riot.mount(document.body.appendChild(document.createElement('mk-progress-dialog')), {
-			title: '新しいバナーをアップロードしています'
+		const progress = (riot as any).mount(document.body.appendChild(document.createElement('mk-progress-dialog')), {
+			title: '新しいアバターをアップロードしています'
 		})[0];
 
 		if (folder) data.append('folder_id', folder.id);
@@ -46,7 +46,7 @@ export default (I, cb, file = null) => {
 		const xhr = new XMLHttpRequest();
 		xhr.open('POST', CONFIG.apiUrl + '/drive/files/create', true);
 		xhr.onload = e => {
-			const file = JSON.parse(e.target.response);
+			const file = JSON.parse((e.target as any).response);
 			progress.close();
 			set(file);
 		};
@@ -60,12 +60,12 @@ export default (I, cb, file = null) => {
 
 	const set = file => {
 		api(I, 'i/update', {
-			banner_id: file.id
+			avatar_id: file.id
 		}).then(i => {
-			dialog('<i class="fa fa-info-circle"></i>バナーを更新しました',
-				'新しいバナーが反映されるまで時間がかかる場合があります。',
+			dialog('<i class="fa fa-info-circle"></i>アバターを更新しました',
+				'新しいアバターが反映されるまで時間がかかる場合があります。',
 			[{
-				text: 'わかりました。'
+				text: 'わかった'
 			}]);
 
 			if (cb) cb(i);
@@ -75,9 +75,9 @@ export default (I, cb, file = null) => {
 	if (file) {
 		fileSelected(file);
 	} else {
-		const browser = riot.mount(document.body.appendChild(document.createElement('mk-select-file-from-drive-window')), {
+		const browser = (riot as any).mount(document.body.appendChild(document.createElement('mk-select-file-from-drive-window')), {
 			multiple: false,
-			title: '<i class="fa fa-picture-o"></i>バナーにする画像を選択'
+			title: '<i class="fa fa-picture-o"></i>アバターにする画像を選択'
 		})[0];
 
 		browser.one('selected', file => {

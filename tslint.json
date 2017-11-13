@@ -13,6 +13,7 @@
 		"object-literal-sort-keys": false,
 		"curly": false,
 		"no-console": [false],
+		"no-empty":false,
 		"ordered-imports": [false],
 		"arrow-parens": false,
 		"object-literal-shorthand": false,

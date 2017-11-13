@@ -177,7 +177,7 @@
 		};
 
 		this.applySelect = () => {
-			this.refs.users.children.forEach(el => {
+			Array.from(this.refs.users.children).forEach(el => {
 				el.removeAttribute('data-selected');
 			});
 

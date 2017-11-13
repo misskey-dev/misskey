@@ -3,7 +3,7 @@
  */
 
 import * as riot from 'riot';
-const route = require('page');
+import * as route from 'page';
 let page = null;
 
 export default me => {
@@ -83,12 +83,12 @@ export default me => {
 		mount(document.createElement('mk-not-found'));
 	}
 
-	riot.mixin('page', {
+	(riot as any).mixin('page', {
 		page: route
 	});
 
 	// EXEC
-	route();
+	(route as any)();
 };
 
 function mount(content) {

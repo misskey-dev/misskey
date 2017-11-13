@@ -1,5 +1,5 @@
 import * as riot from 'riot';
-const pictograph = require('pictograph');
+import * as pictograph from 'pictograph';
 import CONFIG from './config';
 
 const escape = text =>
@@ -12,7 +12,7 @@ export default (tokens, shouldBreak) => {
 		shouldBreak = true;
 	}
 
-	const me = riot.mixin('i').me;
+	const me = (riot as any).mixin('i').me;
 
 	let text = tokens.map(token => {
 		switch (token.type) {

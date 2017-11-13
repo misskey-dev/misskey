@@ -408,7 +408,7 @@
 
 			// ドロップされてきたものがファイルだったら
 			if (e.dataTransfer.files.length > 0) {
-				e.dataTransfer.files.forEach(file => {
+				Array.from(e.dataTransfer.files).forEach(file => {
 					this.upload(file, this.folder);
 				});
 				return false;
@@ -510,7 +510,7 @@
 		};
 
 		this.changeFileInput = () => {
-			this.refs.fileInput.files.forEach(file => {
+			Array.from(this.refs.fileInput.files).forEach(file => {
 				this.upload(file, this.folder);
 			});
 		};

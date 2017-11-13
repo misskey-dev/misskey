@@ -52,7 +52,7 @@ function attach(el) {
 			clearTimeout(showTimer);
 			hideTimer = setTimeout(close, 500);
 		});
-		tag = riot.mount(document.body.appendChild(preview), {
+		tag = (riot as any).mount(document.body.appendChild(preview), {
 			user: user
 		})[0];
 	};

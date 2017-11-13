@@ -1,29 +1,19 @@
 import * as riot from 'riot';
-const route = require('page');
+import * as route from 'page';
 let page = null;
 
 export default me => {
 	route('/',         index);
-	route('/apps',     apps);
-	route('/app/new',  newApp);
-	route('/app/:app', app);
+	route('/:channel', channel);
 	route('*',         notFound);
 
 	function index() {
 		mount(document.createElement('mk-index'));
 	}
 
-	function apps() {
-		mount(document.createElement('mk-apps-page'));
-	}
-
-	function newApp() {
-		mount(document.createElement('mk-new-app-page'));
-	}
-
-	function app(ctx) {
-		const el = document.createElement('mk-app-page');
-		el.setAttribute('app', ctx.params.app);
+	function channel(ctx) {
+		const el = document.createElement('mk-channel');
+		el.setAttribute('id', ctx.params.channel);
 		mount(el);
 	}
 
@@ -32,7 +22,7 @@ export default me => {
 	}
 
 	// EXEC
-	route();
+	(route as any)();
 };
 
 function mount(content) {

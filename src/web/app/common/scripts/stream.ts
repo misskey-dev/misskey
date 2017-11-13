@@ -8,7 +8,11 @@ import CONFIG from './config';
  * Misskey stream connection
  */
 class Connection {
-	constructor(endpoint, params) {
+	private state: string;
+	private buffer: any[];
+	private socket: ReconnectingWebsocket;
+
+	constructor(endpoint, params?) {
 		// BIND -----------------------------------
 		this.onOpen =    this.onOpen.bind(this);
 		this.onClose =   this.onClose.bind(this);
@@ -37,11 +41,10 @@ class Connection {
 
 	/**
 	 * Callback of when open connection
-	 * @private
 	 */
-	onOpen() {
+	private onOpen() {
 		this.state = 'connected';
-		this.trigger('_connected_');
+		(this as any).trigger('_connected_');
 
 		// バッファーを処理
 		const _buffer = [].concat(this.buffer); // Shallow copy
@@ -53,45 +56,41 @@ class Connection {
 
 	/**
 	 * Callback of when close connection
-	 * @private
 	 */
-	onClose() {
+	private onClose() {
 		this.state = 'reconnecting';
-		this.trigger('_closed_');
+		(this as any).trigger('_closed_');
 	}
 
 	/**
 	 * Callback of when received a message from connection
-	 * @private
 	 */
-	onMessage(message) {
+	private onMessage(message) {
 		try {
 			const msg = JSON.parse(message.data);
-			if (msg.type) this.trigger(msg.type, msg.body);
-		} catch(e) {
+			if (msg.type) (this as any).trigger(msg.type, msg.body);
+		} catch (e) {
 			// noop
 		}
 	}
 
 	/**
 	 * Send a message to connection
-	 * @public
 	 */
-	send(message) {
+	public send(message) {
 		// まだ接続が確立されていなかったらバッファリングして次に接続した時に送信する
 		if (this.state != 'connected') {
 			this.buffer.push(message);
 			return;
-		};
+		}
 
 		this.socket.send(JSON.stringify(message));
 	}
 
 	/**
 	 * Close this connection
-	 * @public
 	 */
-	close() {
+	public close() {
 		this.socket.removeEventListener('open', this.onOpen);
 		this.socket.removeEventListener('message', this.onMessage);
 	}

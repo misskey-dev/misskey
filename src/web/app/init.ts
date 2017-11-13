@@ -2,14 +2,13 @@
  * App initializer
  */
 
-'use strict';
+declare var VERSION: string;
+declare var LANG: string;
 
 import * as riot from 'riot';
-import api from './common/scripts/api';
 import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';
 import Connection from './common/scripts/home-stream';
-import ServerStreamManager from './common/scripts/server-stream-manager.ts';
 import Progress from './common/scripts/loading';
 import mixin from './common/mixins';
 import CONFIG from './common/scripts/config';
@@ -37,21 +36,7 @@ console.info(`Misskey v${VERSION} (葵 aoi)`);
 document.domain = CONFIG.host;
 
 // Set global configuration
-riot.mixin({ CONFIG });
-
-// ↓ NodeList、HTMLCollection、FileList、DataTransferItemListで forEach を使えるようにする
-if (NodeList.prototype.forEach === undefined) {
-	NodeList.prototype.forEach = Array.prototype.forEach;
-}
-if (HTMLCollection.prototype.forEach === undefined) {
-	HTMLCollection.prototype.forEach = Array.prototype.forEach;
-}
-if (FileList.prototype.forEach === undefined) {
-	FileList.prototype.forEach = Array.prototype.forEach;
-}
-if (window.DataTransferItemList && DataTransferItemList.prototype.forEach === undefined) {
-	DataTransferItemList.prototype.forEach = Array.prototype.forEach;
-}
+(riot as any).mixin({ CONFIG });
 
 // iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
@@ -72,7 +57,7 @@ setTimeout(checkForUpdate, 3000);
 // ユーザーをフェッチしてコールバックする
 export default callback => {
 	// Get cached account data
-	let cachedMe = JSON.parse(localStorage.getItem('me'));
+	const cachedMe = JSON.parse(localStorage.getItem('me'));
 
 	if (cachedMe) {
 		fetched(cachedMe);
@@ -112,11 +97,8 @@ export default callback => {
 		// Init home stream connection
 		const stream = me ? new Connection(me) : null;
 
-		// Init server stream connection manager
-		const serverStreamManager = new ServerStreamManager();
-
 		// ミックスイン初期化
-		mixin(me, stream, serverStreamManager);
+		mixin(me, stream);
 
 		// ローディング画面クリア
 		const ini = document.getElementById('ini');

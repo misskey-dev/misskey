@@ -1,6 +1,8 @@
 require('fuckadblock');
 import dialog from './dialog';
 
+declare var fuckAdBlock: any;
+
 export default () => {
 	if (fuckAdBlock === undefined) {
 		adBlockDetected();
