@@ -19,6 +19,7 @@
 					<option value="user-recommendation">おすすめユーザー</option>
 					<option value="recommended-polls">投票</option>
 					<option value="post-form">投稿フォーム</option>
+					<option value="messaging">メッセージ</option>
 					<option value="channel">チャンネル</option>
 					<option value="access-log">アクセスログ</option>
 					<option value="server">サーバー情報</option>

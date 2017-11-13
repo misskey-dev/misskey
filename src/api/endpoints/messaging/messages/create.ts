@@ -10,6 +10,7 @@ import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
 import { publishMessagingStream } from '../../../event';
+import { publishMessagingIndexStream } from '../../../event';
 import config from '../../../../conf';
 
 /**
@@ -85,10 +86,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// 自分のストリーム
 	publishMessagingStream(message.user_id, message.recipient_id, 'message', messageObj);
+	publishMessagingIndexStream(message.user_id, 'message', messageObj);
 	publishUserStream(message.user_id, 'messaging_message', messageObj);
 
 	// 相手のストリーム
 	publishMessagingStream(message.recipient_id, message.user_id, 'message', messageObj);
+	publishMessagingIndexStream(message.recipient_id, 'message', messageObj);
 	publishUserStream(message.recipient_id, 'messaging_message', messageObj);
 
 	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する

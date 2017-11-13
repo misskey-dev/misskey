@@ -1,5 +1,5 @@
-<mk-messaging>
-	<div class="search">
+<mk-messaging data-compact={ opts.compact }>
+	<div class="search" if={ !opts.compact }>
 		<div class="form">
 			<label for="search-input"><i class="fa fa-search"></i></label>
 			<input ref="search" type="search" oninput={ search } onkeydown={ onSearchKeydown } placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
@@ -35,6 +35,31 @@
 	<style>
 		:scope
 			display block
+
+			&[data-compact]
+				font-size 0.8em
+
+				> .history
+					> a
+						&:last-child
+							border-bottom none
+
+						&:not([data-is-me]):not([data-is-read])
+							> div
+								background-image none
+								border-left solid 4px #3aa2dc
+
+						> div
+							padding 16px
+
+							> header
+								> mk-time
+									font-size 1em
+
+							> .avatar
+								width 42px
+								height 42px
+								margin 0 12px 0 0
 
 			> .search
 				display block
@@ -75,7 +100,7 @@
 
 					> input
 						margin 0
-						padding 0 12px 0 38px
+						padding 0 0 0 38px
 						width 100%
 						font-size 1em
 						line-height 38px
@@ -299,21 +324,58 @@
 		this.mixin('i');
 		this.mixin('api');
 
+		this.mixin('messaging-index-stream');
+		this.connection = this.messagingIndexStream.getConnection();
+		this.connectionId = this.messagingIndexStream.use();
+
 		this.searchResult = [];
 
+		this.registerMessage = message => {
+			message.is_me = message.user_id == this.I.id;
+			message._click = () => {
+				this.trigger('navigate-user', message.is_me ? message.recipient : message.user);
+			};
+		};
+
 		this.on('mount', () => {
+			this.connection.on('message', this.onMessage);
+			this.connection.on('read', this.onRead);
+
 			this.api('messaging/history').then(history => {
 				this.isLoading = false;
 				history.forEach(message => {
-					message.is_me = message.user_id == this.I.id
-					message._click = () => {
-						this.trigger('navigate-user', message.is_me ? message.recipient : message.user);
-					};
+					this.registerMessage(message);
 				});
 				this.history = history;
 				this.update();
 			});
 		});
+
+		this.on('unmount', () => {
+			this.connection.off('message', this.onMessage);
+			this.connection.off('read', this.onRead);
+			this.messagingIndexStream.dispose(this.connectionId);
+		});
+
+		this.onMessage = message => {
+			this.history = this.history.filter(m => !(
+				(m.recipient_id == message.recipient_id && m.user_id == message.user_id) ||
+				(m.recipient_id == message.user_id && m.user_id == message.recipient_id)));
+
+			this.registerMessage(message);
+
+			this.history.unshift(message);
+			this.update();
+		};
+
+		this.onRead = ids => {
+			ids.forEach(id => {
+				const found = this.history.find(m => m.id == id);
+				if (found) found.is_read = true;
+			});
+
+			this.update();
+		};
 
 		this.search = () => {
 			const q = this.refs.search.value;

@@ -8,6 +8,7 @@ import isNativeToken from './common/is-native-token';
 
 import homeStream from './stream/home';
 import messagingStream from './stream/messaging';
+import messagingIndexStream from './stream/messaging-index';
 import serverStream from './stream/server';
 import requestsStream from './stream/requests';
 import channelStream from './stream/channel';
@@ -58,6 +59,7 @@ module.exports = (server: http.Server) => {
 		const channel =
 			request.resourceURL.pathname === '/' ? homeStream :
 			request.resourceURL.pathname === '/messaging' ? messagingStream :
+			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
 			null;
 
 		if (channel !== null) {

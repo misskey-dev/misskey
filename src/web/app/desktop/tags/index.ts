@@ -44,6 +44,7 @@ require('./home-widgets/channel.tag');
 require('./home-widgets/timemachine.tag');
 require('./home-widgets/post-form.tag');
 require('./home-widgets/access-log.tag');
+require('./home-widgets/messaging.tag');
 require('./timeline.tag');
 require('./messaging/window.tag');
 require('./messaging/room-window.tag');

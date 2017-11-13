@@ -393,6 +393,9 @@ desktop:
     mk-access-log-home-widget:
       title: "アクセスログ"
 
+    mk-messaging-home-widget:
+      title: "メッセージ"
+
     mk-repost-form:
       quote: "引用する..."
       cancel: "キャンセル"

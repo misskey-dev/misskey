@@ -393,6 +393,9 @@ desktop:
     mk-access-log-home-widget:
       title: "Access log"
 
+    mk-messaging-home-widget:
+      title: "Messaging"
+
     mk-repost-form:
       quote: "Quote..."
       cancel: "Cancel"

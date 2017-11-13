@@ -3,6 +3,7 @@ import Message from '../models/messaging-message';
 import { IMessagingMessage as IMessage } from '../models/messaging-message';
 import publishUserStream from '../event';
 import { publishMessagingStream } from '../event';
+import { publishMessagingIndexStream } from '../event';
 
 /**
  * Mark as read message(s)
@@ -49,6 +50,7 @@ export default (
 
 	// Publish event
 	publishMessagingStream(otherpartyId, userId, 'read', ids.map(id => id.toString()));
+	publishMessagingIndexStream(userId, 'read', ids.map(id => id.toString()));
 
 	// Calc count of my unread messages
 	const count = await Message
