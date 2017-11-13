@@ -32,29 +32,18 @@ const addToGridFS = (name: string, readable: stream.Readable, type: string, meta
 			readable.pipe(writeStream);
 		}));
 
-/**
- * Add file to drive
- *
- * @param user User who wish to add file
- * @param file File path or readableStream
- * @param comment Comment
- * @param type File type
- * @param folderId Folder ID
- * @param force If set to true, forcibly upload the file even if there is a file with the same hash.
- * @return Object that represents added file
- */
-export default (
+const addFile = async (
 	user: any,
 	file: string | stream.Readable,
 	name: string = null,
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
-) => new Promise<any>((resolve, reject) => {
+) => {
 	log(`registering ${name} (user: ${user.username})`);
 
 	// Get file path
-	new Promise((res: (v: string) => void, rej) => {
+	const path = await new Promise((res: (v: string) => void, rej) => {
 		if (typeof file === 'string') {
 			res(file);
 			return;
@@ -75,141 +64,155 @@ export default (
 				.catch(rej);
 		}
 		rej(new Error('un-compatible file.'));
-	})
-		// Calculate hash, get content type and get file size
-		.then(path => Promise.all([
-			path,
-			// hash
-			((): Promise<string> => new Promise((res, rej) => {
-				const readable = fs.createReadStream(path);
-				const hash = crypto.createHash('md5');
-				const chunks = [];
-				readable
-					.on('error', rej)
-					.pipe(hash)
-					.on('error', rej)
-					.on('data', (chunk) => chunks.push(chunk))
-					.on('end', () => {
-						const buffer = Buffer.concat(chunks);
-						res(buffer.toString('hex'));
-					});
-			}))(),
-			// mime
-			((): Promise<[string, string | null]> => new Promise((res, rej) => {
-				const readable = fs.createReadStream(path);
-				readable
-					.on('error', rej)
-					.once('data', (buffer: Buffer) => {
-						readable.destroy();
-						const type = fileType(buffer);
-						if (!type) {
-							return res(['application/octet-stream', null]);
-						}
-						return res([type.mime, type.ext]);
-					});
-			}))(),
-			// size
-			((): Promise<number> => new Promise((res, rej) => {
-				fs.stat(path, (err, stats) => {
-					if (err) return rej(err);
-					res(stats.size);
-				});
-			}))()
-		]))
-		.then(async ([path, hash, [mime, ext], size]) => {
-			log(`hash: ${hash}, mime: ${mime}, ext: ${ext}, size: ${size}`);
+	});
 
-			// detect name
-			const detectedName: string = name || (ext ? `untitled.${ext}` : 'untitled');
-
-			if (!force) {
-				// Check if there is a file with the same hash
-				const much = await DriveFile.findOne({
-					md5: hash,
-					'metadata.user_id': user._id
-				});
-
-				if (much !== null) {
-					log('file with same hash is found');
-					return resolve(much);
-				} else {
-					log('file with same hash is not found');
-				}
-			}
-
-			const [properties, folder] = await Promise.all([
-				// properties
-				(async () => {
-					if (!/^image\/.*$/.test(mime)) {
-						return null;
-					}
-					// If the file is an image, calculate width and height to save in property
-					const g = gm(fs.createReadStream(path), name);
-					const size = await prominence(g).size();
-					const properties = {
-						width: size.width,
-						height: size.height
-					};
-					log('image width and height is calculated');
-					return properties;
-				})(),
-				// folder
-				(async () => {
-					if (!folderId) {
-						return null;
-					}
-					const driveFolder = await DriveFolder.findOne({
-						_id: folderId,
-						user_id: user._id
-					});
-					if (!driveFolder) {
-						throw 'folder-not-found';
-					}
-					return driveFolder;
-				})(),
-				// usage checker
-				(async () => {
-					// Calculate drive usage
-					const usage = await DriveFile
-						.aggregate([
-							{ $match: { 'metadata.user_id': user._id } },
-							{
-								$project: {
-									length: true
-								}
-							},
-							{
-								$group: {
-									_id: null,
-									usage: { $sum: '$length' }
-								}
-							}
-						])
-						.then((aggregates: any[]) => {
-							if (aggregates.length > 0) {
-								return aggregates[0].usage;
-							}
-							return 0;
-						});
-
-					log(`drive usage is ${usage}`);
-
-					// If usage limit exceeded
-					if (usage + size > user.drive_capacity) {
-						throw 'no-free-space';
-					}
-				})()
-			]);
-
+	// Calculate hash, get content type and get file size
+	const [hash, [mime, ext], size] = await Promise.all([
+		// hash
+		((): Promise<string> => new Promise((res, rej) => {
 			const readable = fs.createReadStream(path);
-
-			return addToGridFS(detectedName, readable, mime, {
-				user_id: user._id,
-				folder_id: folder !== null ? folder._id : null,
-				comment: comment,
-				properties: properties
+			const hash = crypto.createHash('md5');
+			const chunks = [];
+			readable
+				.on('error', rej)
+				.pipe(hash)
+				.on('error', rej)
+				.on('data', (chunk) => chunks.push(chunk))
+				.on('end', () => {
+					const buffer = Buffer.concat(chunks);
+					res(buffer.toString('hex'));
+				});
+		}))(),
+		// mime
+		((): Promise<[string, string | null]> => new Promise((res, rej) => {
+			const readable = fs.createReadStream(path);
+			readable
+				.on('error', rej)
+				.once('data', (buffer: Buffer) => {
+					readable.destroy();
+					const type = fileType(buffer);
+					if (!type) {
+						return res(['application/octet-stream', null]);
+					}
+					return res([type.mime, type.ext]);
+				});
+		}))(),
+		// size
+		((): Promise<number> => new Promise((res, rej) => {
+			fs.stat(path, (err, stats) => {
+				if (err) return rej(err);
+				res(stats.size);
 			});
-		})
+		}))()
+	]);
+
+	log(`hash: ${hash}, mime: ${mime}, ext: ${ext}, size: ${size}`);
+
+	// detect name
+	const detectedName: string = name || (ext ? `untitled.${ext}` : 'untitled');
+
+	if (!force) {
+		// Check if there is a file with the same hash
+		const much = await DriveFile.findOne({
+			md5: hash,
+			'metadata.user_id': user._id
+		});
+
+		if (much !== null) {
+			log('file with same hash is found');
+			return much;
+		} else {
+			log('file with same hash is not found');
+		}
+	}
+
+	const [properties, folder] = await Promise.all([
+		// properties
+		(async () => {
+			if (!/^image\/.*$/.test(mime)) {
+				return null;
+			}
+			// If the file is an image, calculate width and height to save in property
+			const g = gm(fs.createReadStream(path), name);
+			const size = await prominence(g).size();
+			const properties = {
+				width: size.width,
+				height: size.height
+			};
+			log('image width and height is calculated');
+			return properties;
+		})(),
+		// folder
+		(async () => {
+			if (!folderId) {
+				return null;
+			}
+			const driveFolder = await DriveFolder.findOne({
+				_id: folderId,
+				user_id: user._id
+			});
+			if (!driveFolder) {
+				throw 'folder-not-found';
+			}
+			return driveFolder;
+		})(),
+		// usage checker
+		(async () => {
+			// Calculate drive usage
+			const usage = await DriveFile
+				.aggregate([
+					{ $match: { 'metadata.user_id': user._id } },
+					{
+						$project: {
+							length: true
+						}
+					},
+					{
+						$group: {
+							_id: null,
+							usage: { $sum: '$length' }
+						}
+					}
+				])
+				.then((aggregates: any[]) => {
+					if (aggregates.length > 0) {
+						return aggregates[0].usage;
+					}
+					return 0;
+				});
+
+			log(`drive usage is ${usage}`);
+
+			// If usage limit exceeded
+			if (usage + size > user.drive_capacity) {
+				throw 'no-free-space';
+			}
+		})()
+	]);
+
+	const readable = fs.createReadStream(path);
+
+	return addToGridFS(detectedName, readable, mime, {
+		user_id: user._id,
+		folder_id: folder !== null ? folder._id : null,
+		comment: comment,
+		properties: properties
+	});
+};
+
+/**
+ * Add file to drive
+ *
+ * @param user User who wish to add file
+ * @param file File path or readableStream
+ * @param comment Comment
+ * @param type File type
+ * @param folderId Folder ID
+ * @param force If set to true, forcibly upload the file even if there is a file with the same hash.
+ * @return Object that represents added file
+ */
+export default (user: any, file: string | stream.Readable, ...args) => new Promise<any>((resolve, reject) => {
+	addFile(user, file, ...args)
 		.then(file => {
 			log(`drive file has been created ${file._id}`);
 			resolve(file);
