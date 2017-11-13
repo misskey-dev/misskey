@@ -40,7 +40,7 @@ const addFile = async (
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
 ) => {
-	log(`registering ${name} (user: ${user.username})`);
+	log(`registering ${name} (user: ${user.username}, path: ${path})`);
 
 	// Calculate hash, get content type and get file size
 	const [hash, [mime, ext], size] = await Promise.all([
@@ -210,18 +210,19 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 				.catch(rej);
 		}
 		rej(new Error('un-compatible file.'));
-	}).then(([path, remove]): Promise<any> => new Promise((res, rej) => {
-		addFile(user, path, ...args)
-			.then(file => {
-				res(file);
-				if (remove) {
-					fs.unlink(path, (e) => {
-						if (e) log(e.stack);
-					});
-				}
-			})
-			.catch(rej);
-	}))
+	})
+		.then(([path, remove]): Promise<any> => new Promise((res, rej) => {
+			addFile(user, path, ...args)
+				.then(file => {
+					res(file);
+					if (remove) {
+						fs.unlink(path, (e) => {
+							if (e) log(e.stack);
+						});
+					}
+				})
+				.catch(rej);
+		}))
 		.then(file => {
 			log(`drive file has been created ${file._id}`);
 			resolve(file);
