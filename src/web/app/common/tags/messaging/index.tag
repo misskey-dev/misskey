@@ -31,7 +31,8 @@
 			</a>
 		</virtual>
 	</div>
-	<p class="no-history" if={ history.length == 0 }>%i18n:common.tags.mk-messaging.no-history%</p>
+	<p class="no-history" if={ !fetching && history.length == 0 }>%i18n:common.tags.mk-messaging.no-history%</p>
+	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -297,6 +298,15 @@
 				color #999
 				font-weight 500
 
+			> .fetching
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
 			// TODO: element base media query
 			@media (max-width 400px)
 				> .search
@@ -329,6 +339,8 @@
 		this.connectionId = this.messagingIndexStream.use();
 
 		this.searchResult = [];
+		this.history = [];
+		this.fetching = true;
 
 		this.registerMessage = message => {
 			message.is_me = message.user_id == this.I.id;
@@ -342,7 +354,7 @@
 			this.connection.on('read', this.onRead);
 
 			this.api('messaging/history').then(history => {
-				this.isLoading = false;
+				this.fetching = false;
 				history.forEach(message => {
 					this.registerMessage(message);
 				});
