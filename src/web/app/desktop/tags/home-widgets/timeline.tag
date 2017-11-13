@@ -126,8 +126,6 @@
 		};
 
 		this.warp = date => {
-			console.log(date);
-
 			this.update({
 				date: date
 			});
