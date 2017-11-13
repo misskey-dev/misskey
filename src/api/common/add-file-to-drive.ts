@@ -214,7 +214,7 @@ export default (
 
 			const readable = fs.createReadStream(path);
 
-			return addToGridFS(name, readable, mime, {
+			return addToGridFS(detectedName, readable, mime, {
 				user_id: user._id,
 				folder_id: folder !== null ? folder._id : null,
 				comment: comment,
@@ -224,25 +224,26 @@ export default (
 		.then(file => {
 			log(`drive file has been created ${file._id}`);
 			resolve(file);
-			return serialize(file);
-		})
-		.then(serializedFile => {
-			// Publish drive_file_created event
-			event(user._id, 'drive_file_created', fileObj);
 
-			// Register to search database
-			if (config.elasticsearch.enable) {
-				const es = require('../../db/elasticsearch');
-				es.index({
-					index: 'misskey',
-					type: 'drive_file',
-					id: file._id.toString(),
-					body: {
-						name: file.name,
-						user_id: user._id.toString()
+			serialize(file)
+				.then(serializedFile => {
+					// Publish drive_file_created event
+					event(user._id, 'drive_file_created', serializedFile);
+
+					// Register to search database
+					if (config.elasticsearch.enable) {
+						const es = require('../../db/elasticsearch');
+						es.index({
+							index: 'misskey',
+							type: 'drive_file',
+							id: file._id.toString(),
+							body: {
+								name: file.name,
+								user_id: user._id.toString()
+							}
+						});
 					}
 				});
-			}
 		})
 		.catch(reject);
 });
