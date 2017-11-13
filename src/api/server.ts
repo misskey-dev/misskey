@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 endpoints.forEach(endpoint =>
 	endpoint.withFile ?
 		app.post(`/${endpoint.name}`,
-			endpoint.withFile ? multer({ dest: 'uploads/' }).single('file') : null,
+			endpoint.withFile ? multer({ storage: multer.diskStorage({}) }).single('file') : null,
 			require('./api-handler').default.bind(null, endpoint)) :
 		app.post(`/${endpoint.name}`,
 			require('./api-handler').default.bind(null, endpoint))
