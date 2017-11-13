@@ -347,7 +347,7 @@ desktop:
       title: "Server info"
       toggle: "Toggle views"
 
-    mk-activity-home-widget:
+    mk-activity-widget:
       title: "Activity"
       toggle: "Toggle views"
 
@@ -379,7 +379,7 @@ desktop:
       settings: "Widget settings"
       get-started: "Please click the cog in the upper right to specify the channel to receive"
 
-    mk-timemachine-home-widget:
+    mk-calendar-widget:
       title: "{1} / {2}"
       prev: "Previous month"
       next: "Next month"

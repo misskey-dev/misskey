@@ -347,7 +347,7 @@ desktop:
       title: "サーバー情報"
       toggle: "表示を切り替え"
 
-    mk-activity-home-widget:
+    mk-activity-widget:
       title: "アクティビティ"
       toggle: "表示を切り替え"
 
@@ -379,7 +379,7 @@ desktop:
       settings: "ウィジェットの設定"
       get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
 
-    mk-timemachine-home-widget:
+    mk-calendar-widget:
       title: "{1}年 {2}月"
       prev: "先月"
       next: "来月"

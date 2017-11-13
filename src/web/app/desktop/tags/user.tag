@@ -398,7 +398,8 @@
 		<mk-user-timeline ref="tl" user={ user }/>
 	</main>
 	<div>
-		<mk-calendar warp={ warp } start={ new Date(user.created_at) }/>
+		<mk-calendar-widget warp={ warp } start={ new Date(user.created_at) }/>
+		<mk-activity-widget user={ user }/>
 	</div>
 	<style>
 		:scope

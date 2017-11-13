@@ -1,8 +1,8 @@
-<mk-calendar data-melt={ opts.design == 4 || opts.design == 5 }>
+<mk-calendar-widget data-melt={ opts.design == 4 || opts.design == 5 }>
 	<virtual if={ opts.design == 0 || opts.design == 1 }>
-		<button onclick={ prev } title="%i18n:desktop.tags.mk-calendar.prev%"><i class="fa fa-chevron-circle-left"></i></button>
-		<p class="title">{ '%i18n:desktop.tags.mk-calendar.title%'.replace('{1}', year).replace('{2}', month) }</p>
-		<button onclick={ next } title="%i18n:desktop.tags.mk-calendar.next%"><i class="fa fa-chevron-circle-right"></i></button>
+		<button onclick={ prev } title="%i18n:desktop.tags.mk-calendar-widget.prev%"><i class="fa fa-chevron-circle-left"></i></button>
+		<p class="title">{ '%i18n:desktop.tags.mk-calendar-widget.title%'.replace('{1}', year).replace('{2}', month) }</p>
+		<button onclick={ next } title="%i18n:desktop.tags.mk-calendar-widget.next%"><i class="fa fa-chevron-circle-right"></i></button>
 	</virtual>
 
 	<div class="calendar">
@@ -16,7 +16,7 @@
 				data-is-out-of-range={ isOutOfRange(i + 1) }
 				data-is-donichi={ isDonichi(i + 1) }
 				onclick={ go.bind(null, i + 1) }
-				title={ isOutOfRange(i + 1) ? null : '%i18n:desktop.tags.mk-calendar.go%' }><div>{ i + 1 }</div></div>
+				title={ isOutOfRange(i + 1) ? null : '%i18n:desktop.tags.mk-calendar-widget.go%' }><div>{ i + 1 }</div></div>
 	</div>
 	<style>
 		:scope
@@ -238,4 +238,4 @@
 			this.opts.warp(date);
 		};
 </script>
-</mk-calendar>
+</mk-calendar-widget>

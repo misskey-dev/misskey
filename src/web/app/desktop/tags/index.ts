@@ -88,4 +88,5 @@ require('./user-following-window.tag');
 require('./user-followers-window.tag');
 require('./list-user.tag');
 require('./detailed-post-window.tag');
-require('./calendar.tag');
+require('./widgets/calendar.tag');
+require('./widgets/activity.tag');

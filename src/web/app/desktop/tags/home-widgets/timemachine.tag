@@ -1,5 +1,5 @@
 <mk-timemachine-home-widget>
-	<mk-calendar design={ data.design } warp={ warp }/>
+	<mk-calendar-widget design={ data.design } warp={ warp }/>
 	<style>
 		:scope
 			display block
@@ -21,5 +21,5 @@
 			if (++this.data.design == 6) this.data.design = 0;
 			this.save();
 		};
-</script>
+	</script>
 </mk-timemachine-home-widget>
