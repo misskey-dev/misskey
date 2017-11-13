@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import * as request from 'request';
 import * as crypto from 'crypto';
 
-const log = debug('misskey:endpoint:upload_from_url')
+const log = debug('misskey:endpoint:upload_from_url');
 
 /**
  * Create a file from a URL
@@ -39,54 +39,54 @@ module.exports = (params, user) => new Promise((res, rej) => {
 	// Create temp file
 	new Promise((res, rej) => {
 		tmp.file((e, path) => {
-			if (e) return rej(e)
-			res(path)
-		})
+			if (e) return rej(e);
+			res(path);
+		});
 	})
 		// Download file
 		.then((path: string) => new Promise((res, rej) => {
-			const writable = fs.createWriteStream(path)
+			const writable = fs.createWriteStream(path);
 			request(url)
 				.on('error', rej)
 				.on('end', () => {
-					writable.close()
-					res(path)
+					writable.close();
+					res(path);
 				})
 				.pipe(writable)
-				.on('error', rej)
+				.on('error', rej);
 		}))
 		// Calculate hash & content-type
 		.then((path: string) => new Promise((res, rej) => {
-			const readable = fs.createReadStream(path)
-			const hash = crypto.createHash('md5')
+			const readable = fs.createReadStream(path);
+			const hash = crypto.createHash('md5');
 			readable
 				.on('error', rej)
 				.on('end', () => {
-					hash.end()
-					res([path, hash.digest('hex')])
+					hash.end();
+					res([path, hash.digest('hex')]);
 				})
 				.pipe(hash)
-				.on('error', rej)
+				.on('error', rej);
 		}))
 		// Create file
 		.then((rv: string[]) => new Promise((res, rej) => {
-			const [path, hash] = rv
+			const [path, hash] = rv;
 			create(user, {
 				stream: fs.createReadStream(path),
 				name,
 				hash
 			}, null, folderId)
 				.then(driveFile => {
-					res(driveFile)
+					res(driveFile);
 					// crean-up
 					fs.unlink(path, (e) => {
-						if (e) log(e.stack)
-					})
+						if (e) log(e.stack);
+					});
 				})
-				.catch(rej)
+				.catch(rej);
 		}))
 		// Serialize
 		.then(serialize)
 		.then(res)
-		.catch(rej)
+		.catch(rej);
 });

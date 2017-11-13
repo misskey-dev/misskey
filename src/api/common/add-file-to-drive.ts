@@ -18,10 +18,10 @@ const log = debug('misskey:register-drive-file');
 
 const tmpFile = (): Promise<string> => new Promise((resolve, reject) => {
 	tmp.file((e, path) => {
-		if (e) return reject(e)
-		resolve(path)
-	})
-})
+		if (e) return reject(e);
+		resolve(path);
+	});
+});
 
 const addToGridFS = (name: string, readable: stream.Readable, type: string, metadata: any): Promise<any> =>
 	getGridFSBucket()
@@ -30,7 +30,7 @@ const addToGridFS = (name: string, readable: stream.Readable, type: string, meta
 			writeStream.once('finish', (doc) => { resolve(doc); });
 			writeStream.on('error', reject);
 			readable.pipe(writeStream);
-		}))
+		}));
 
 /**
  * Add file to drive
@@ -56,76 +56,76 @@ export default (
 	// Get file path
 	new Promise((res: (v: string) => void, rej) => {
 		if (typeof file === 'string') {
-			res(file)
-			return
+			res(file);
+			return;
 		}
 		if (file instanceof Buffer) {
 			tmpFile()
 				.then(path => {
 					fs.writeFile(path, file, (err) => {
-						if (err) rej(err)
-						res(path)
-					})
+						if (err) rej(err);
+						res(path);
+					});
 				})
-				.catch(rej)
-			return
+				.catch(rej);
+			return;
 		}
 		if (typeof file === 'object' && typeof file.read === 'function') {
 			tmpFile()
 				.then(path => {
-					const readable: stream.Readable = file
-					const writable = fs.createWriteStream(path)
+					const readable: stream.Readable = file;
+					const writable = fs.createWriteStream(path);
 					readable
 						.on('error', rej)
 						.on('end', () => {
-							res(path)
+							res(path);
 						})
 						.pipe(writable)
-						.on('error', rej)
+						.on('error', rej);
 				})
-				.catch(rej)
+				.catch(rej);
 		}
-		rej(new Error('un-compatible file.'))
+		rej(new Error('un-compatible file.'));
 	})
 		// Calculate hash, get content type and get file size
 		.then(path => Promise.all([
 			path,
 			// hash
 			((): Promise<string> => new Promise((res, rej) => {
-				const readable = fs.createReadStream(path)
-				const hash = crypto.createHash('md5')
+				const readable = fs.createReadStream(path);
+				const hash = crypto.createHash('md5');
 				readable
 					.on('error', rej)
 					.on('end', () => {
-						res(hash.digest('hex'))
+						res(hash.digest('hex'));
 					})
 					.pipe(hash)
-					.on('error', rej)
+					.on('error', rej);
 			}))(),
 			// mime
 			((): Promise<[string, string | null]> => new Promise((res, rej) => {
-				const readable = fs.createReadStream(path)
+				const readable = fs.createReadStream(path);
 				readable
 					.on('error', rej)
 					.once('data', (buffer: Buffer) => {
-						readable.destroy()
-						const type = fileType(buffer)
+						readable.destroy();
+						const type = fileType(buffer);
 						if (!type) {
-							return res(['application/octet-stream', null])
+							return res(['application/octet-stream', null]);
 						}
-						return res([type.mime, type.ext])
-					})
+						return res([type.mime, type.ext]);
+					});
 			}))(),
 			// size
 			((): Promise<number> => new Promise((res, rej) => {
 				fs.stat(path, (err, stats) => {
-					if (err) return rej(err)
-					res(stats.size)
-				})
+					if (err) return rej(err);
+					res(stats.size);
+				});
 			}))()
 		]))
 		.then(async ([path, hash, [mime, ext], size]) => {
-			log(`hash: ${hash}, mime: ${mime}, ext: ${ext}, size: ${size}`)
+			log(`hash: ${hash}, mime: ${mime}, ext: ${ext}, size: ${size}`);
 
 			// detect name
 			const detectedName: string = name || (ext ? `untitled.${ext}` : 'untitled');
@@ -149,7 +149,7 @@ export default (
 				// properties
 				(async () => {
 					if (!/^image\/.*$/.test(mime)) {
-						return null
+						return null;
 					}
 					// If the file is an image, calculate width and height to save in property
 					const g = gm(data, name);
@@ -159,21 +159,21 @@ export default (
 						height: size.height
 					};
 					log('image width and height is calculated');
-					return properties
+					return properties;
 				})(),
 				// folder
 				(async () => {
 					if (!folderId) {
-						return null
+						return null;
 					}
 					const driveFolder = await DriveFolder.findOne({
 						_id: folderId,
 						user_id: user._id
-					})
+					});
 					if (!driveFolder) {
-						throw 'folder-not-found'
+						throw 'folder-not-found';
 					}
-					return driveFolder
+					return driveFolder;
 				})(),
 				// usage checker
 				(async () => {
@@ -195,9 +195,9 @@ export default (
 						])
 						.then((aggregates: any[]) => {
 							if (aggregates.length > 0) {
-								return aggregates[0].usage
+								return aggregates[0].usage;
 							}
-							return 0
+							return 0;
 						});
 
 					log(`drive usage is ${usage}`);
@@ -207,21 +207,21 @@ export default (
 						throw 'no-free-space';
 					}
 				})()
-			])
+			]);
 
-			const readable = fs.createReadStream(path)
+			const readable = fs.createReadStream(path);
 
 			return addToGridFS(name, readable, mime, {
 				user_id: user._id,
 				folder_id: folder !== null ? folder._id : null,
 				comment: comment,
 				properties: properties
-			})
+			});
 		})
 		.then(file => {
 			log(`drive file has been created ${file._id}`);
-			resolve(file)
-			return serialize(file)
+			resolve(file);
+			return serialize(file);
 		})
 		.then(serializedFile => {
 			// Publish drive_file_created event
@@ -241,5 +241,5 @@ export default (
 				});
 			}
 		})
-		.catch(reject)
+		.catch(reject);
 });
