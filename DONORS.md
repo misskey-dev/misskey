@@ -9,6 +9,7 @@ The list of people who have sent donation for Misskey.
 * なぎうり
 * スルメ https://surume.tk/
 * 藍
+* 音船 https://otofune.me/
 
 :heart: Thanks for donating, guys!
 
