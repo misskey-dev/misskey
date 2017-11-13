@@ -1,5 +1,3 @@
-'use strict';
-
 import * as ReconnectingWebsocket from 'reconnecting-websocket';
 import * as riot from 'riot';
 import CONFIG from './config';

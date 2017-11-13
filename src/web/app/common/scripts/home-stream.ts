@@ -1,5 +1,3 @@
-'use strict';
-
 import Stream from './stream';
 import signout from './signout';
 
