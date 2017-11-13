@@ -34,37 +34,13 @@ const addToGridFS = (name: string, readable: stream.Readable, type: string, meta
 
 const addFile = async (
 	user: any,
-	file: string | stream.Readable,
+	path: string,
 	name: string = null,
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
 ) => {
 	log(`registering ${name} (user: ${user.username})`);
-
-	// Get file path
-	const path = await new Promise((res: (v: string) => void, rej) => {
-		if (typeof file === 'string') {
-			res(file);
-			return;
-		}
-		if (typeof file === 'object' && typeof file.read === 'function') {
-			tmpFile()
-				.then(path => {
-					const readable: stream.Readable = file;
-					const writable = fs.createWriteStream(path);
-					readable
-						.on('error', rej)
-						.on('end', () => {
-							res(path);
-						})
-						.pipe(writable)
-						.on('error', rej);
-				})
-				.catch(rej);
-		}
-		rej(new Error('un-compatible file.'));
-	});
 
 	// Calculate hash, get content type and get file size
 	const [hash, [mime, ext], size] = await Promise.all([
@@ -212,7 +188,40 @@ const addFile = async (
  * @return Object that represents added file
  */
 export default (user: any, file: string | stream.Readable, ...args) => new Promise<any>((resolve, reject) => {
-	addFile(user, file, ...args)
+	// Get file path
+	new Promise((res: (v: [string, boolean]) => void, rej) => {
+		if (typeof file === 'string') {
+			res([file, false]);
+			return;
+		}
+		if (typeof file === 'object' && typeof file.read === 'function') {
+			tmpFile()
+				.then(path => {
+					const readable: stream.Readable = file;
+					const writable = fs.createWriteStream(path);
+					readable
+						.on('error', rej)
+						.on('end', () => {
+							res([path, true]);
+						})
+						.pipe(writable)
+						.on('error', rej);
+				})
+				.catch(rej);
+		}
+		rej(new Error('un-compatible file.'));
+	}).then(([path, remove]): Promise<any> => new Promise((res, rej) => {
+		addFile(user, path, ...args)
+			.then(file => {
+				res(file)
+				if (remove) {
+					fs.unlink(path, (e) => {
+						if (e) log(e.stack)
+					})
+				}
+			})
+			.catch(rej)
+	}))
 		.then(file => {
 			log(`drive file has been created ${file._id}`);
 			resolve(file);
