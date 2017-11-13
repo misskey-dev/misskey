@@ -94,13 +94,16 @@ export default (
 			((): Promise<string> => new Promise((res, rej) => {
 				const readable = fs.createReadStream(path);
 				const hash = crypto.createHash('md5');
+				const chunks = [];
 				readable
 					.on('error', rej)
-					.on('end', () => {
-						res(hash.digest('hex'));
-					})
 					.pipe(hash)
-					.on('error', rej);
+					.on('error', rej)
+					.on('data', (chunk) => chunks.push(chunk))
+					.on('end', () => {
+						const buffer = Buffer.concat(chunks);
+						res(buffer.toString('hex'));
+					});
 			}))(),
 			// mime
 			((): Promise<[string, string | null]> => new Promise((res, rej) => {
