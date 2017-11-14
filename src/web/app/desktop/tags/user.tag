@@ -420,6 +420,10 @@
 				padding 16px
 				width calc(100% - 275px * 2)
 
+				> mk-user-timeline
+					border solid 1px rgba(0, 0, 0, 0.075)
+					border-radius 6px
+
 			> div
 				width 275px
 				margin 0
