@@ -568,7 +568,7 @@
 			this.api('users/followers', {
 				user_id: this.user.id,
 				iknow: true,
-				limit: 30
+				limit: 16
 			}).then(x => {
 				this.update({
 					users: x.users,
