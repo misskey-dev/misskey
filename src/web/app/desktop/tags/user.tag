@@ -493,7 +493,8 @@
 
 		this.on('mount', () => {
 			this.api('users/get_frequently_replied_users', {
-				user_id: this.user.id
+				user_id: this.user.id,
+				limit: 4
 			}).then(docs => {
 				this.update({
 					users: docs.map(doc => doc.user),
