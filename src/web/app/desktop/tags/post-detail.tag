@@ -57,7 +57,7 @@
 				</button>
 			</footer>
 		</article>
-		<div class="replies">
+		<div class="replies" if={ !compact }>
 			<virtual each={ post in replies }>
 				<mk-post-detail-sub post={ post }/>
 			</virtual>
@@ -68,7 +68,6 @@
 			display block
 			margin 0
 			padding 0
-			width 640px
 			overflow hidden
 			text-align left
 			background #fff
@@ -259,6 +258,7 @@
 		this.mixin('api');
 		this.mixin('user-preview');
 
+		this.compact = this.opts.compact;
 		this.contextFetching = false;
 		this.context = null;
 		this.post = this.opts.post;
@@ -288,14 +288,16 @@
 			}
 
 			// Get replies
-			this.api('posts/replies', {
-				post_id: this.p.id,
-				limit: 8
-			}).then(replies => {
-				this.update({
-					replies: replies
+			if (!this.compact) {
+				this.api('posts/replies', {
+					post_id: this.p.id,
+					limit: 8
+				}).then(replies => {
+					this.update({
+						replies: replies
+					});
 				});
-			});
+			}
 		});
 
 		this.reply = () => {

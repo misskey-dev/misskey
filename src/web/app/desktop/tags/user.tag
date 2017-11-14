@@ -399,6 +399,7 @@
 		<mk-user-photos user={ user }/>
 	</div>
 	<main>
+		<mk-post-detail if={ user.pinned_post } post={ user.pinned_post } compact={ true }/>
 		<mk-user-timeline ref="tl" user={ user }/>
 	</main>
 	<div>

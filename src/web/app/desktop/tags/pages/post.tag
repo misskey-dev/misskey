@@ -28,6 +28,7 @@
 
 				> mk-post-detail
 					margin 0 auto
+					width 640px
 
 	</style>
 	<script>
