@@ -561,7 +561,7 @@
 					margin-right 4px
 
 			> div
-				padding 4px
+				padding 8px
 
 				> a
 					display inline-block
