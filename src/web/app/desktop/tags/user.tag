@@ -610,6 +610,7 @@
 		<mk-user-profile user={ user }/>
 		<mk-user-photos user={ user }/>
 		<mk-user-followers-you-know if={ SIGNIN && I.id !== user.id } user={ user }/>
+		<p>%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time time={ user.last_used_at }/></b></p>
 	</div>
 	<main>
 		<mk-post-detail if={ user.pinned_post } post={ user.pinned_post } compact={ true }/>
@@ -619,6 +620,7 @@
 		<mk-calendar-widget warp={ warp } start={ new Date(user.created_at) }/>
 		<mk-activity-widget user={ user }/>
 		<mk-user-frequently-replied-users user={ user }/>
+		<div class="nav"><mk-nav-links/></div>
 	</div>
 	<style>
 		:scope
@@ -646,8 +648,30 @@
 				&:first-child
 					padding 16px 0 16px 16px
 
+					> p
+						display block
+						margin 0
+						padding 0 12px
+						text-align center
+						font-size 0.8em
+						color #aaa
+
 				&:last-child
 					padding 16px 16px 16px 0
+
+					> .nav
+						padding 16px
+						font-size 12px
+						color #aaa
+						background #fff
+						border solid 1px rgba(0, 0, 0, 0.075)
+						border-radius 6px
+
+						a
+							color #999
+
+						i
+							color #ccc
 
 	</style>
 	<script>

@@ -50,6 +50,15 @@ common:
   my-token-regenerated: "Your token is just regenerated, so you will signout."
 
   tags:
+    mk-nav-links:
+      about: "About"
+      stats: "Stats"
+      status: "Status"
+      wiki: "Wiki"
+      donors: "Donors"
+      repository: "Repository"
+      develop: "Developers"
+
     mk-messaging-form:
       attach-from-local: "Attach file from your pc"
       attach-from-drive: "Attach file from the drive"
@@ -256,15 +265,6 @@ desktop:
       cancel: "Cancel"
       upload: "Upload a file(s) from you PC"
 
-    mk-nav-home-widget:
-      about: "About"
-      stats: "Stats"
-      status: "Status"
-      wiki: "Wiki"
-      donors: "Donors"
-      repository: "Repository"
-      develop: "Developers"
-
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
@@ -408,6 +408,8 @@ desktop:
       title: "Are you sure you want to repost this post?"
 
     mk-user:
+      last-used-at: "Last used at"
+
       photos:
         title: "Photos"
         loading: "Loading"

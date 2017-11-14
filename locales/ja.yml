@@ -50,6 +50,15 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
 
   tags:
+    mk-nav-links:
+      about: "Misskeyについて"
+      stats: "統計"
+      status: "ステータス"
+      wiki: "Wiki"
+      donors: "ドナー"
+      repository: "リポジトリ"
+      develop: "開発者"
+
     mk-messaging-form:
       attach-from-local: "PCからファイルを添付する"
       attach-from-drive: "ドライブからファイルを添付する"
@@ -256,15 +265,6 @@ desktop:
       cancel: "キャンセル"
       upload: "PCからドライブにファイルをアップロード"
 
-    mk-nav-home-widget:
-      about: "Misskeyについて"
-      stats: "統計"
-      status: "ステータス"
-      wiki: "Wiki"
-      donors: "ドナー"
-      repository: "リポジトリ"
-      develop: "開発者"
-
     mk-ui-header-nav:
       home: "ホーム"
       messaging: "メッセージ"
@@ -408,6 +408,8 @@ desktop:
       title: "この投稿をRepostしますか？"
 
     mk-user:
+      last-used-at: "最終アクセス"
+
       photos:
         title: "フォト"
         loading: "読み込み中"

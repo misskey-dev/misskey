@@ -56,8 +56,6 @@ require('./user-timeline.tag');
 require('./user.tag');
 require('./big-follow-button.tag');
 require('./pages/entrance.tag');
-require('./pages/entrance/signin.tag');
-require('./pages/entrance/signup.tag');
 require('./pages/home.tag');
 require('./pages/home-customize.tag');
 require('./pages/user.tag');
