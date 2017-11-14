@@ -215,6 +215,8 @@
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			> *:first-child
 				border-top none !important
@@ -310,6 +312,8 @@
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			> .title
 				z-index 1
@@ -409,14 +413,8 @@
 			max-width 1200px
 
 			> *
-				> *
-					display block
-					//border solid 1px #eaeaea
-					border solid 1px rgba(0, 0, 0, 0.075)
-					border-radius 6px
-
-					&:not(:last-child)
-						margin-bottom 16px
+				> *:not(:last-child)
+					margin-bottom 16px
 
 			> main
 				padding 16px

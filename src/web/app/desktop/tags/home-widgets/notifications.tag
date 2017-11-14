@@ -8,6 +8,8 @@
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			> .title
 				z-index 1

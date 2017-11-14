@@ -133,13 +133,6 @@
 
 				> *
 					> *:not(.customize-container):not(.maintop)
-					> .maintop > .customize-container > *
-					> .customize-container > *
-						display block
-						border solid 1px rgba(0, 0, 0, 0.075)
-						border-radius 6px
-
-					> *:not(.customize-container):not(.maintop)
 					> .customize-container
 						&:not(:last-child)
 							margin-bottom 16px

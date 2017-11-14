@@ -15,7 +15,7 @@
 			display block
 			padding 10px 10px 10px 50px
 			background transparent
-			border-color #4078c0 !important
+			border-color #4078c0
 
 			&:after
 				content ""

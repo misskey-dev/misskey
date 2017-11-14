@@ -3,8 +3,6 @@
 	<style>
 		:scope
 			display block
-			background transparent !important
-			border none !important
 	</style>
 	<script>
 		this.data = {

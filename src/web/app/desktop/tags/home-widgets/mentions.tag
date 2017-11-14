@@ -9,6 +9,8 @@
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			> header
 				padding 8px 16px

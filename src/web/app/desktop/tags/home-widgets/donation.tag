@@ -7,7 +7,8 @@
 		:scope
 			display block
 			background #fff
-			border-color #ead8bb !important
+			border solid 1px #ead8bb
+			border-radius 6px
 
 			> article
 				padding 20px

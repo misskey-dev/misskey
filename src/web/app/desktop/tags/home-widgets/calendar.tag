@@ -30,13 +30,15 @@
 			padding 16px 0
 			color #777
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			&[data-special='on-new-years-day']
-				border-color #ef95a0 !important
+				border-color #ef95a0
 
 			&[data-melt]
-				background transparent !important
-				border none !important
+				background transparent
+				border none
 
 			&:after
 				content ""
