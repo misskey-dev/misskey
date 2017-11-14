@@ -23,6 +23,9 @@
 
 		this.func = () => {
 			if (++this.data.design == 3) this.data.design = 0;
+			this.refs.activity.update({
+				design: this.data.design
+			});
 			this.save();
 		};
 	</script>
