@@ -12,14 +12,7 @@
 
 			> .user
 				> header
-					max-width 1200px
-					margin 0 auto
-					padding 0 16px
-
 					> mk-user-header
-						border solid 1px rgba(0, 0, 0, 0.075)
-						border-top none
-						border-radius 0 0 6px 6px
 						overflow hidden
 
 	</style>
@@ -46,111 +39,144 @@
 </mk-user>
 
 <mk-user-header data-is-dark-background={ user.banner_url != null }>
-	<div class="banner" ref="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=1024)' : '' } onclick={ onUpdateBanner }></div>
-	<img class="avatar" src={ user.avatar_url + '?thumbnail&size=150' } alt="avatar"/>
-	<div class="title">
-		<p class="name" href={ '/' + user.username }>{ user.name }</p>
-		<p class="username">@{ user.username }</p>
-		<p class="location" if={ user.profile.location }><i class="fa fa-map-marker"></i>{ user.profile.location }</p>
+	<div class="banner-container" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=2048)' : '' }>
+		<div class="banner" ref="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=2048)' : '' } onclick={ onUpdateBanner }></div>
 	</div>
-	<footer>
-		<a href={ '/' + user.username }>投稿</a>
-		<a href={ '/' + user.username + '/media' }>メディア</a>
-		<a href={ '/' + user.username + '/graphs' }>グラフ</a>
-	</footer>
+	<div class="fade"></div>
+	<div class="container">
+		<img class="avatar" src={ user.avatar_url + '?thumbnail&size=150' } alt="avatar"/>
+		<div class="title">
+			<p class="name" href={ '/' + user.username }>{ user.name }</p>
+			<p class="username">@{ user.username }</p>
+			<p class="location" if={ user.profile.location }><i class="fa fa-map-marker"></i>{ user.profile.location }</p>
+		</div>
+		<footer>
+			<a href={ '/' + user.username } data-active>概要</a>
+			<a href={ '/' + user.username + '/media' }>メディア</a>
+			<a href={ '/' + user.username + '/graphs' }>グラフ</a>
+		</footer>
+	</div>
 	<style>
 		:scope
+			$banner-height = 320px
 			$footer-height = 58px
 
 			display block
-			background #fff
+			background #f7f7f7
+			box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
 
 			&[data-is-dark-background]
-				> .banner
-					background-color #383838
+				> .banner-container
+					> .banner
+						background-color #383838
 
-				> .title
-					color #fff
+				> .fade
 					background linear-gradient(transparent, rgba(0, 0, 0, 0.7))
 
-					> .name
-						text-shadow 0 0 8px #000
+				> .container
+					> .title
+						color #fff
 
-			> .banner
-				height 280px
-				background-color #f5f5f5
+						> .name
+							text-shadow 0 0 8px #000
+
+			> .banner-container
+				height $banner-height
+				overflow hidden
 				background-size cover
 				background-position center
 
-			> .avatar
-				display block
-				position absolute
-				bottom 16px
-				left 16px
-				z-index 2
-				width 150px
-				height 150px
-				margin 0
-				border solid 3px #fff
-				border-radius 8px
-				box-shadow 1px 1px 3px rgba(0, 0, 0, 0.2)
+				> .banner
+					height 100%
+					background-color #f5f5f5
+					background-size cover
+					background-position center
 
-			> .title
+			> .fade
+				$fade-hight = 78px
+
 				position absolute
-				bottom $footer-height
+				top ($banner-height - $fade-hight)
 				left 0
 				width 100%
-				padding 0 0 8px 195px
-				color #656565
-				font-family '游ゴシック', 'YuGothic', 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'Meiryo', 'メイリオ', sans-serif
+				height $fade-hight
 
-				> .name
-					display block
-					margin 0
-					line-height 40px
-					font-weight bold
-					font-size 2em
+			> .container
+				max-width 1200px
+				margin 0 auto
 
-				> .username
-				> .location
-					display inline-block
-					margin 0 16px 0 0
-					line-height 20px
-					opacity 0.8
-
-					> i
-						margin-right 4px
-
-			> footer
-				z-index 1
-				height $footer-height
-				padding-left 195px
-				background #fff
-
-				> a
-					display inline-block
-					margin 0
-					width 100px
-					line-height $footer-height
-					color #555
-
-				> button
+				> .avatar
 					display block
 					position absolute
-					top 0
-					right 0
-					margin 8px
-					padding 0
-					width $footer-height - 16px
-					line-height $footer-height - 16px - 2px
-					font-size 1.2em
-					color #777
-					border solid 1px #eee
-					border-radius 4px
+					bottom 16px
+					left 16px
+					z-index 2
+					width 160px
+					height 160px
+					margin 0
+					border solid 3px #fff
+					border-radius 8px
+					box-shadow 1px 1px 3px rgba(0, 0, 0, 0.2)
 
-					&:hover
+				> .title
+					position absolute
+					bottom $footer-height
+					left 0
+					width 100%
+					padding 0 0 8px 195px
+					color #656565
+					font-family '游ゴシック', 'YuGothic', 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'Meiryo', 'メイリオ', sans-serif
+
+					> .name
+						display block
+						margin 0
+						line-height 40px
+						font-weight bold
+						font-size 2em
+
+					> .username
+					> .location
+						display inline-block
+						margin 0 16px 0 0
+						line-height 20px
+						opacity 0.8
+
+						> i
+							margin-right 4px
+
+				> footer
+					z-index 1
+					height $footer-height
+					padding-left 195px
+
+					> a
+						display inline-block
+						margin 0
+						padding 0 16px
+						height $footer-height
+						line-height $footer-height
 						color #555
-						border solid 1px #ddd
+
+						&[data-active]
+							border-bottom solid 4px $theme-color
+
+					> button
+						display block
+						position absolute
+						top 0
+						right 0
+						margin 8px
+						padding 0
+						width $footer-height - 16px
+						line-height $footer-height - 16px - 2px
+						font-size 1.2em
+						color #777
+						border solid 1px #eee
+						border-radius 4px
+
+						&:hover
+							color #555
+							border solid 1px #ddd
 
 	</style>
 	<script>
@@ -174,10 +200,10 @@
 
 		this.scroll = () => {
 			const top = window.scrollY;
-			const height = 280/*px*/;
 
-			const pos = 50 - ((top / height) * 50);
-			this.refs.banner.style.backgroundPosition = `center ${pos}%`;
+			const z = 1.25; // 奥行き(小さいほど奥)
+			const pos = -(top / z);
+			this.refs.banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 
 			const blur = top / 32
 			if (blur <= 10) this.refs.banner.style.filter = `blur(${blur}px)`;
