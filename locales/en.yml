@@ -407,6 +407,22 @@ desktop:
     mk-repost-form-window:
       title: "Are you sure you want to repost this post?"
 
+    mk-user:
+      photos:
+        title: "Photos"
+        loading: "Loading"
+        no-photos: "No photos"
+
+      frequently-replied-users:
+        title: "Frequently replied"
+        loading: "Loading"
+        no-users: "No users"
+
+      followers-you-know:
+        title: "Followers you know"
+        loading: "Loading"
+        no-users: "No users"
+
 mobile:
   tags:
     mk-selectdrive-page:

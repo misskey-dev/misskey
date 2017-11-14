@@ -407,6 +407,22 @@ desktop:
     mk-repost-form-window:
       title: "この投稿をRepostしますか？"
 
+    mk-user:
+      photos:
+        title: "フォト"
+        loading: "読み込み中"
+        no-photos: "写真はありません"
+
+      frequently-replied-users:
+        title: "よく話すユーザー"
+        loading: "読み込み中"
+        no-users: "よく話すユーザーはいません"
+
+      followers-you-know:
+        title: "知り合いのフォロワー"
+        loading: "読み込み中"
+        no-users: "知り合いのフォロワーはいません"
+
 mobile:
   tags:
     mk-selectdrive-page:

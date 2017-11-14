@@ -300,14 +300,14 @@
 </mk-user-profile>
 
 <mk-user-photos>
-	<p class="title"><i class="fa fa-camera"></i>フォト</p>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
+	<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-user.photos.title%</p>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>
 		</virtual>
 	</div>
-	<p class="empty" if={ !initializing && images.length == 0 }>写真はありません</p>
+	<p class="empty" if={ !initializing && images.length == 0 }>%i18n:desktop.tags.mk-user.photos.no-photos%</p>
 	<style>
 		:scope
 			display block
@@ -393,10 +393,196 @@
 	</script>
 </mk-user-photos>
 
+<mk-user-frequently-replied-users>
+	<p class="title"><i class="fa fa-users"></i>%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
+	<div class="user" if={ !initializing && users.length != 0 } each={ _user in users }>
+		<a class="avatar-anchor" href={ '/' + _user.username }>
+			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ _user.id }/>
+		</a>
+		<div class="body">
+			<a class="name" href={ '/' + _user.username } data-user-preview={ _user.id }>{ _user.name }</a>
+			<p class="username">@{ _user.username }</p>
+		</div>
+		<mk-follow-button user={ _user }/>
+	</div>
+	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:desktop.tags.mk-user.frequently-replied-users.no-users%</p>
+	<style>
+		:scope
+			display block
+			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
+
+			> .title
+				z-index 1
+				margin 0
+				padding 0 16px
+				line-height 42px
+				font-size 0.9em
+				font-weight bold
+				color #888
+				box-shadow 0 1px rgba(0, 0, 0, 0.07)
+
+				> i
+					margin-right 4px
+
+			> .initializing
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+			> .user
+				padding 16px
+				border-bottom solid 1px #eee
+
+				&:last-child
+					border-bottom none
+
+				&:after
+					content ""
+					display block
+					clear both
+
+				> .avatar-anchor
+					display block
+					float left
+					margin 0 12px 0 0
+
+					> .avatar
+						display block
+						width 42px
+						height 42px
+						margin 0
+						border-radius 8px
+						vertical-align bottom
+
+				> .body
+					float left
+					width calc(100% - 54px)
+
+					> .name
+						margin 0
+						font-size 16px
+						line-height 24px
+						color #555
+
+					> .username
+						display block
+						margin 0
+						font-size 15px
+						line-height 16px
+						color #ccc
+
+				> mk-follow-button
+					position absolute
+					top 16px
+					right 16px
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.user = this.opts.user;
+		this.initializing = true;
+
+		this.on('mount', () => {
+			this.api('users/get_frequently_replied_users', {
+				user_id: this.user.id
+			}).then(docs => {
+				this.update({
+					users: docs.map(doc => doc.user),
+					initializing: false
+				});
+			});
+		});
+	</script>
+</mk-user-frequently-replied-users>
+
+<mk-user-followers-you-know>
+	<p class="title"><i class="fa fa-users"></i>%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
+	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
+	<div if={ !initializing && users.length > 0 }>
+	<virtual each={ user in users }>
+		<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>
+	</virtual>
+	</div>
+	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
+	<style>
+		:scope
+			display block
+			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
+
+			> .title
+				z-index 1
+				margin 0
+				padding 0 16px
+				line-height 42px
+				font-size 0.9em
+				font-weight bold
+				color #888
+				box-shadow 0 1px rgba(0, 0, 0, 0.07)
+
+				> i
+					margin-right 4px
+
+			> div
+				padding 4px
+
+				> a
+					display inline-block
+					margin 4px
+
+					> img
+						width 48px
+						height 48px
+						vertical-align bottom
+						border-radius 100%
+
+			> .initializing
+			> .empty
+				margin 0
+				padding 16px
+				text-align center
+				color #aaa
+
+				> i
+					margin-right 4px
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.user = this.opts.user;
+		this.initializing = true;
+
+		this.on('mount', () => {
+			this.api('users/followers', {
+				user_id: this.user.id,
+				iknow: true,
+				limit: 30
+			}).then(x => {
+				this.update({
+					users: x.users,
+					initializing: false
+				});
+			});
+		});
+	</script>
+</mk-user-followers-you-know>
+
 <mk-user-home>
 	<div>
 		<mk-user-profile user={ user }/>
 		<mk-user-photos user={ user }/>
+		<mk-user-followers-you-know if={ SIGNIN && I.id !== user.id } user={ user }/>
 	</div>
 	<main>
 		<mk-post-detail if={ user.pinned_post } post={ user.pinned_post } compact={ true }/>
@@ -405,6 +591,7 @@
 	<div>
 		<mk-calendar-widget warp={ warp } start={ new Date(user.created_at) }/>
 		<mk-activity-widget user={ user }/>
+		<mk-user-frequently-replied-users user={ user }/>
 	</div>
 	<style>
 		:scope
@@ -437,6 +624,8 @@
 
 	</style>
 	<script>
+		this.mixin('i');
+
 		this.user = this.opts.user;
 
 		this.on('mount', () => {
