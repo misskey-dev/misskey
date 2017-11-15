@@ -139,6 +139,7 @@
 							display block
 							margin 0 auto
 							overflow hidden
+							height $header-height
 							text-overflow ellipsis
 							text-align center
 							font-size 1em
