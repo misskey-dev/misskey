@@ -2,7 +2,7 @@ import * as riot from 'riot';
 import * as route from 'page';
 let page = null;
 
-export default me => {
+export default () => {
 	route('/',         index);
 	route('/:channel', channel);
 	route('*',         notFound);

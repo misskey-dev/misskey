@@ -14,7 +14,7 @@ let pending = 0;
  * @param  {any} [data={}] Data
  * @return {Promise<any>} Response
  */
-export default (i, endpoint, data = {}): Promise<any> => {
+export default (i, endpoint, data = {}): Promise<{ [x: string]: any }> => {
 	if (++pending === 1) {
 		spinner = document.createElement('div');
 		spinner.setAttribute('id', 'wait');

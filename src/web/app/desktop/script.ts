@@ -12,11 +12,12 @@ import init from '../init';
 import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
 import getPostSummary from '../../../common/get-post-summary';
+import MiOS from '../common/mios';
 
 /**
  * init
  */
-init(async (me, stream) => {
+init(async (mios: MiOS) => {
 	/**
 	 * Fuck AD Block
 	 */
@@ -32,12 +33,12 @@ init(async (me, stream) => {
 		}
 
 		if ((Notification as any).permission == 'granted') {
-			registerNotifications(stream);
+			registerNotifications(mios.stream);
 		}
 	}
 
 	// Start routing
-	route(me);
+	route(mios);
 });
 
 function registerNotifications(stream) {

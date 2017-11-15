@@ -14,7 +14,7 @@ document.title = 'Misskey System Status';
 /**
  * init
  */
-init(me => {
+init(() => {
 	mount(document.createElement('mk-index'));
 });
 

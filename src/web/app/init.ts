@@ -6,12 +6,10 @@ declare var VERSION: string;
 declare var LANG: string;
 
 import * as riot from 'riot';
-import signout from './common/scripts/signout';
 import checkForUpdate from './common/scripts/check-for-update';
-import Connection from './common/scripts/home-stream';
-import Progress from './common/scripts/loading';
 import mixin from './common/mixins';
 import CONFIG from './common/scripts/config';
+import MiOS from './common/mios';
 require('./common/tags');
 
 /**
@@ -51,54 +49,13 @@ if (localStorage.getItem('should-refresh') == 'true') {
 	location.reload(true);
 }
 
-// 更新チェック
-setTimeout(checkForUpdate, 3000);
-
-// ユーザーをフェッチしてコールバックする
+// MiOSを初期化してコールバックする
 export default callback => {
-	// Get cached account data
-	const cachedMe = JSON.parse(localStorage.getItem('me'));
+	const mios = new MiOS();
 
-	if (cachedMe) {
-		fetched(cachedMe);
-
-		// 後から新鮮なデータをフェッチ
-		fetchme(cachedMe.token, freshData => {
-			Object.assign(cachedMe, freshData);
-			cachedMe.trigger('updated');
-		});
-	} else {
-		// Get token from cookie
-		const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1];
-
-		fetchme(i, fetched);
-	}
-
-	// フェッチが完了したとき
-	function fetched(me) {
-		if (me) {
-			riot.observable(me);
-
-			// この me オブジェクトを更新するメソッド
-			me.update = data => {
-				if (data) Object.assign(me, data);
-				me.trigger('updated');
-			};
-
-			// ローカルストレージにキャッシュ
-			localStorage.setItem('me', JSON.stringify(me));
-
-			me.on('updated', () => {
-				// キャッシュ更新
-				localStorage.setItem('me', JSON.stringify(me));
-			});
-		}
-
-		// Init home stream connection
-		const stream = me ? new Connection(me) : null;
-
+	mios.init(() => {
 		// ミックスイン初期化
-		mixin(me, stream);
+		mixin(mios);
 
 		// ローディング画面クリア
 		const ini = document.getElementById('ini');
@@ -110,50 +67,17 @@ export default callback => {
 		document.body.appendChild(app);
 
 		try {
-			callback(me, stream);
+			callback(mios);
 		} catch (e) {
 			panic(e);
 		}
-	}
-};
 
-// ユーザーをフェッチしてコールバックする
-function fetchme(token, cb) {
-	let me = null;
-
-	// Return when not signed in
-	if (token == null) {
-		return done();
-	}
-
-	// Fetch user
-	fetch(`${CONFIG.apiUrl}/i`, {
-		method: 'POST',
-		body: JSON.stringify({
-			i: token
-		})
-	}).then(res => { // When success
-		// When failed to authenticate user
-		if (res.status !== 200) {
-			return signout();
-		}
-
-		res.json().then(i => {
-			me = i;
-			me.token = token;
-			done();
-		});
-	}, () => { // When failure
-		// Render the error screen
-		document.body.innerHTML = '<mk-error />';
-		riot.mount('*');
-		Progress.done();
+		// 更新チェック
+		setTimeout(() => {
+			checkForUpdate(mios);
+		}, 3000);
 	});
-
-	function done() {
-		if (cb) cb(me);
-	}
-}
+};
 
 // BSoD
 function panic(e) {

@@ -14,7 +14,7 @@ document.title = 'Misskey | アプリの連携';
 /**
  * init
  */
-init(me => {
+init(() => {
 	mount(document.createElement('mk-index'));
 });
 

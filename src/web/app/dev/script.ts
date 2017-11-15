@@ -12,7 +12,7 @@ import route from './router';
 /**
  * init
  */
-init(me => {
+init(() => {
 	// Start routing
-	route(me);
+	route();
 });

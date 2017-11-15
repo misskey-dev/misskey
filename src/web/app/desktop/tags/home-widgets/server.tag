@@ -62,6 +62,8 @@
 
 	</style>
 	<script>
+		this.mixin('os');
+
 		this.data = {
 			view: 0,
 			design: 0
@@ -76,7 +78,7 @@
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.api('meta').then(meta => {
+			this.mios.getMeta().then(meta => {
 				this.update({
 					initializing: false,
 					meta

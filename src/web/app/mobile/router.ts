@@ -4,9 +4,10 @@
 
 import * as riot from 'riot';
 import * as route from 'page';
+import MiOS from '../common/mios';
 let page = null;
 
-export default me => {
+export default (mios: MiOS) => {
 	route('/',                           index);
 	route('/selectdrive',                selectDrive);
 	route('/i/notifications',            notifications);
@@ -32,7 +33,7 @@ export default me => {
 	route('*',                           notFound);
 
 	function index() {
-		me ? home() : entrance();
+		mios.isSignedin ? home() : entrance();
 	}
 
 	function home() {
