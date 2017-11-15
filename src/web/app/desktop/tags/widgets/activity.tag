@@ -97,11 +97,11 @@
 			<title>{ date.year }/{ date.month }/{ date.day }<br/>Post: { posts }, Reply: { replies }, Repost: { reposts }</title>
 		</rect>
 		<rect each={ data }
-			width="1" height="1"
-			riot-x={ x } riot-y={ date.weekday }
+			riot-width={ v } riot-height={ v }
+			riot-x={ x + ((1 - v) / 2) } riot-y={ date.weekday + ((1 - v) / 2) }
 			rx="1" ry="1"
 			fill={ color }
-			style="pointer-events: none; transform: scale({ v });"/>
+			style="pointer-events: none;"/>
 		<rect class="today"
 			width="1" height="1"
 			riot-x={ data[data.length - 1].x } riot-y={ data[data.length - 1].date.weekday }
