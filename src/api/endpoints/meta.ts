@@ -4,6 +4,7 @@
 import * as os from 'os';
 import version from '../../version';
 import config from '../../conf';
+import Meta from '../models/meta';
 
 /**
  * @swagger
@@ -39,6 +40,8 @@ import config from '../../conf';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
+	const meta = (await Meta.findOne()) || {};
+
 	res({
 		maintainer: config.maintainer,
 		version: version,
@@ -49,6 +52,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		cpu: {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
-		}
+		},
+		top_image: meta.top_image
 	});
 });

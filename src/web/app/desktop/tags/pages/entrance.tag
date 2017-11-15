@@ -113,9 +113,14 @@
 		this.mode = 'signin';
 
 		this.on('mount', () => {
-			document.documentElement.style.backgroundImage = 'url("/assets/desktop/index.jpg")';
-			document.documentElement.style.backgroundSize = 'cover';
-			document.documentElement.style.backgroundPosition = 'center';
+			document.documentElement.style.backgroundColor = '#444';
+
+			this.api('meta').then(meta => {
+				const img = meta.top_image ? meta.top_image : '/assets/desktop/index.jpg';
+				document.documentElement.style.backgroundImage = `url("${ img }")`;
+				document.documentElement.style.backgroundSize = 'cover';
+				document.documentElement.style.backgroundPosition = 'center';
+			});
 
 			this.api('stats').then(stats => {
 				this.update({
