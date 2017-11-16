@@ -13,7 +13,7 @@ import prominence = require('prominence');
 import DriveFile, { getGridFSBucket } from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
-import event from '../event';
+import event, { publishDriveStream } from '../event';
 import config from '../../conf';
 
 const log = debug('misskey:register-drive-file');
@@ -243,6 +243,7 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 		serialize(file).then(serializedFile => {
 			// Publish drive_file_created event
 			event(user._id, 'drive_file_created', serializedFile);
+			publishDriveStream(user._id, 'file_created', serializedFile);
 
 			// Register to search database
 			if (config.elasticsearch.enable) {

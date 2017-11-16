@@ -172,7 +172,10 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('stream');
+
+		this.mixin('drive-stream');
+		this.connection = this.driveStream.getConnection();
+		this.connectionId = this.driveStream.use();
 
 		this.files = [];
 		this.folders = [];
@@ -189,10 +192,10 @@
 		this.multiple = this.opts.multiple;
 
 		this.on('mount', () => {
-			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
-			this.stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
-			this.stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
-			this.stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			this.connection.on('file_created', this.onStreamDriveFileCreated);
+			this.connection.on('file_updated', this.onStreamDriveFileUpdated);
+			this.connection.on('folder_created', this.onStreamDriveFolderCreated);
+			this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
 
 			if (this.opts.folder) {
 				this.cd(this.opts.folder, true);
@@ -208,10 +211,11 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
-			this.stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
-			this.stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
-			this.stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			this.connection.off('file_created', this.onStreamDriveFileCreated);
+			this.connection.off('file_updated', this.onStreamDriveFileUpdated);
+			this.connection.off('folder_created', this.onStreamDriveFolderCreated);
+			this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
+			this.driveStream.dispose(this.connectionId);
 		});
 
 		this.onStreamDriveFileCreated = file => {

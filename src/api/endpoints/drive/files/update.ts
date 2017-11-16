@@ -6,7 +6,7 @@ import DriveFolder from '../../../models/drive-folder';
 import DriveFile from '../../../models/drive-file';
 import { validateFileName } from '../../../models/drive-file';
 import serialize from '../../../serializers/drive-file';
-import event from '../../../event';
+import { publishDriveStream } from '../../../event';
 
 /**
  * Update a file
@@ -72,6 +72,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Response
 	res(fileObj);
 
-	// Publish drive_file_updated event
-	event(user._id, 'drive_file_updated', fileObj);
+	// Publish file_updated event
+	publishDriveStream(user._id, 'file_updated', fileObj);
 });
