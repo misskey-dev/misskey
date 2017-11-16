@@ -1,18 +1,20 @@
+import { Buffer } from 'buffer';
+import * as fs from 'fs';
+import * as tmp from 'tmp';
+import * as stream from 'stream';
+
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
 import * as gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
+
 import DriveFile, { getGridFSBucket } from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event from '../event';
 import config from '../../conf';
-import { Buffer } from 'buffer';
-import * as fs from 'fs';
-import * as tmp from 'tmp';
-import * as stream from 'stream';
 
 const log = debug('misskey:register-drive-file');
 
@@ -67,10 +69,12 @@ const addFile = async (
 				.once('data', (buffer: Buffer) => {
 					readable.destroy();
 					const type = fileType(buffer);
-					if (!type) {
+					if (type) {
+						return res([type.mime, type.ext]);
+					} else {
+						// 種類が同定できなかったら application/octet-stream にする
 						return res(['application/octet-stream', null]);
 					}
-					return res([type.mime, type.ext]);
 				});
 		}))(),
 		// size
@@ -105,9 +109,18 @@ const addFile = async (
 	const [properties, folder] = await Promise.all([
 		// properties
 		(async () => {
+			// 画像かどうか
 			if (!/^image\/.*$/.test(mime)) {
 				return null;
 			}
+
+			const imageType = mime.split('/')[1];
+
+			// 画像でもPNGかJPEGでないならスキップ
+			if (imageType != 'png' && imageType != 'jpeg') {
+				return null;
+			}
+
 			// If the file is an image, calculate width and height to save in property
 			const g = gm(fs.createReadStream(path), name);
 			const size = await prominence(g).size();
@@ -115,7 +128,9 @@ const addFile = async (
 				width: size.width,
 				height: size.height
 			};
+
 			log('image width and height is calculated');
+
 			return properties;
 		})(),
 		// folder
@@ -136,20 +151,18 @@ const addFile = async (
 		(async () => {
 			// Calculate drive usage
 			const usage = await DriveFile
-				.aggregate([
-					{ $match: { 'metadata.user_id': user._id } },
-					{
-						$project: {
-							length: true
-						}
-					},
-					{
-						$group: {
-							_id: null,
-							usage: { $sum: '$length' }
-						}
+				.aggregate([{
+					$match: { 'metadata.user_id': user._id }
+				}, {
+					$project: {
+						length: true
 					}
-				])
+				}, {
+					$group: {
+						_id: null,
+						usage: { $sum: '$length' }
+					}
+				}])
 				.then((aggregates: any[]) => {
 					if (aggregates.length > 0) {
 						return aggregates[0].usage;
@@ -211,41 +224,40 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 		}
 		rej(new Error('un-compatible file.'));
 	})
-		.then(([path, remove]): Promise<any> => new Promise((res, rej) => {
-			addFile(user, path, ...args)
-				.then(file => {
-					res(file);
-					if (remove) {
-						fs.unlink(path, (e) => {
-							if (e) log(e.stack);
-						});
-					}
-				})
-				.catch(rej);
-		}))
-		.then(file => {
-			log(`drive file has been created ${file._id}`);
-			resolve(file);
+	.then(([path, remove]): Promise<any> => new Promise((res, rej) => {
+		addFile(user, path, ...args)
+			.then(file => {
+				res(file);
+				if (remove) {
+					fs.unlink(path, (e) => {
+						if (e) log(e.stack);
+					});
+				}
+			})
+			.catch(rej);
+	}))
+	.then(file => {
+		log(`drive file has been created ${file._id}`);
+		resolve(file);
 
-			serialize(file)
-				.then(serializedFile => {
-					// Publish drive_file_created event
-					event(user._id, 'drive_file_created', serializedFile);
+		serialize(file).then(serializedFile => {
+			// Publish drive_file_created event
+			event(user._id, 'drive_file_created', serializedFile);
 
-					// Register to search database
-					if (config.elasticsearch.enable) {
-						const es = require('../../db/elasticsearch');
-						es.index({
-							index: 'misskey',
-							type: 'drive_file',
-							id: file._id.toString(),
-							body: {
-								name: file.name,
-								user_id: user._id.toString()
-							}
-						});
+			// Register to search database
+			if (config.elasticsearch.enable) {
+				const es = require('../../db/elasticsearch');
+				es.index({
+					index: 'misskey',
+					type: 'drive_file',
+					id: file._id.toString(),
+					body: {
+						name: file.name,
+						user_id: user._id.toString()
 					}
 				});
-		})
-		.catch(reject);
+			}
+		});
+	})
+	.catch(reject);
 });
