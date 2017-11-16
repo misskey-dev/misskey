@@ -16,11 +16,11 @@ export default class Connection extends Stream {
 		}, 1000 * 60);
 
 		// 自分の情報が更新されたとき
-		(this as any).on('i_updated', me.update);
+		this.on('i_updated', me.update);
 
 		// トークンが再生成されたとき
 		// このままではAPIが利用できないので強制的にサインアウトさせる
-		(this as any).on('my_token_regenerated', () => {
+		this.on('my_token_regenerated', () => {
 			alert('%i18n:common.my-token-regenerated%');
 			signout();
 		});
