@@ -7,7 +7,7 @@ import Connection from './stream';
  * 複数の場所から同じストリームを利用する際、接続をまとめたりする
  */
 export default abstract class StreamManager<T extends Connection> extends EventEmitter {
-	protected _connection: T = null;
+	private _connection: T = null;
 
 	/**
 	 * コネクションを必要としているユーザー
