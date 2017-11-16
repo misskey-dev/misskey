@@ -396,6 +396,12 @@ desktop:
     mk-messaging-home-widget:
       title: "Messaging"
 
+    mk-broadcast-home-widget:
+      fetching: "Fetching"
+      no-broadcasts: "No broadcasts"
+      have-a-nice-day: "Have a nice day!"
+      next: "Next"
+
     mk-repost-form:
       quote: "Quote..."
       cancel: "Cancel"

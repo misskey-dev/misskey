@@ -396,6 +396,12 @@ desktop:
     mk-messaging-home-widget:
       title: "メッセージ"
 
+    mk-broadcast-home-widget:
+      fetching: "確認中"
+      no-broadcasts: "お知らせはありません"
+      have-a-nice-day: "良い一日を！"
+      next: "次"
+
     mk-repost-form:
       quote: "引用する..."
       cancel: "キャンセル"
