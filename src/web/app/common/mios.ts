@@ -23,7 +23,7 @@ export default class MiOS extends EventEmitter {
 	/**
 	 * A signing user
 	 */
-	public i: any;
+	public i: { [x: string]: any };
 
 	/**
 	 * Whether signed in
