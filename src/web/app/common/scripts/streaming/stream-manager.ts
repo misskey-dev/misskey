@@ -40,6 +40,9 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 	 */
 	public abstract getConnection(): T;
 
+	/**
+	 * 現在接続しているコネクションを取得します
+	 */
 	public borrow() {
 		return this._connection;
 	}
