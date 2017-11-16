@@ -1,7 +1,7 @@
 import StreamManager from './stream-manager';
 import Connection from './messaging-index-stream';
 
-export default class ServerStreamManager extends StreamManager<Connection> {
+export default class MessagingIndexStreamManager extends StreamManager<Connection> {
 	private me;
 
 	constructor(me) {
