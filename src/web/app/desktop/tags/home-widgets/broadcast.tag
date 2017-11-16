@@ -14,8 +14,8 @@
 		:scope
 			display block
 			padding 10px 10px 10px 50px
-			background transparent
-			border-color #4078c0
+			border solid 1px #4078c0
+			border-radius 6px
 
 			&:after
 				content ""
