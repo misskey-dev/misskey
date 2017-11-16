@@ -13,6 +13,7 @@ import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
 import getPostSummary from '../../../common/get-post-summary';
 import MiOS from '../common/mios';
+import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
 
 /**
  * init
@@ -41,52 +42,62 @@ init(async (mios: MiOS) => {
 	route(mios);
 });
 
-function registerNotifications(stream) {
+function registerNotifications(stream: HomeStreamManager) {
 	if (stream == null) return;
 
-	stream.on('drive_file_created', file => {
-		const n = new Notification('ファイルがアップロードされました', {
-			body: file.name,
-			icon: file.url + '?thumbnail&size=64'
-		});
-		setTimeout(n.close.bind(n), 5000);
+	if (stream.hasConnection) {
+		attach(stream.borrow());
+	}
+
+	stream.on('connected', connection => {
+		attach(connection);
 	});
 
-	stream.on('mention', post => {
-		const n = new Notification(`${post.user.name}さんから:`, {
-			body: getPostSummary(post),
-			icon: post.user.avatar_url + '?thumbnail&size=64'
-		});
-		setTimeout(n.close.bind(n), 6000);
-	});
-
-	stream.on('reply', post => {
-		const n = new Notification(`${post.user.name}さんから返信:`, {
-			body: getPostSummary(post),
-			icon: post.user.avatar_url + '?thumbnail&size=64'
-		});
-		setTimeout(n.close.bind(n), 6000);
-	});
-
-	stream.on('quote', post => {
-		const n = new Notification(`${post.user.name}さんが引用:`, {
-			body: getPostSummary(post),
-			icon: post.user.avatar_url + '?thumbnail&size=64'
-		});
-		setTimeout(n.close.bind(n), 6000);
-	});
-
-	stream.on('unread_messaging_message', message => {
-		const n = new Notification(`${message.user.name}さんからメッセージ:`, {
-			body: message.text, // TODO: getMessagingMessageSummary(message),
-			icon: message.user.avatar_url + '?thumbnail&size=64'
-		});
-		n.onclick = () => {
-			n.close();
-			(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
-				user: message.user
+	function attach(connection) {
+		connection.on('drive_file_created', file => {
+			const n = new Notification('ファイルがアップロードされました', {
+				body: file.name,
+				icon: file.url + '?thumbnail&size=64'
 			});
-		};
-		setTimeout(n.close.bind(n), 7000);
-	});
+			setTimeout(n.close.bind(n), 5000);
+		});
+
+		connection.on('mention', post => {
+			const n = new Notification(`${post.user.name}さんから:`, {
+				body: getPostSummary(post),
+				icon: post.user.avatar_url + '?thumbnail&size=64'
+			});
+			setTimeout(n.close.bind(n), 6000);
+		});
+
+		connection.on('reply', post => {
+			const n = new Notification(`${post.user.name}さんから返信:`, {
+				body: getPostSummary(post),
+				icon: post.user.avatar_url + '?thumbnail&size=64'
+			});
+			setTimeout(n.close.bind(n), 6000);
+		});
+
+		connection.on('quote', post => {
+			const n = new Notification(`${post.user.name}さんが引用:`, {
+				body: getPostSummary(post),
+				icon: post.user.avatar_url + '?thumbnail&size=64'
+			});
+			setTimeout(n.close.bind(n), 6000);
+		});
+
+		connection.on('unread_messaging_message', message => {
+			const n = new Notification(`${message.user.name}さんからメッセージ:`, {
+				body: message.text, // TODO: getMessagingMessageSummary(message),
+				icon: message.user.avatar_url + '?thumbnail&size=64'
+			});
+			n.onclick = () => {
+				n.close();
+				(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+					user: message.user
+				});
+			};
+			setTimeout(n.close.bind(n), 7000);
+		});
+	}
 }

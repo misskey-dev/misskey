@@ -55,7 +55,7 @@
 	</style>
 	<script>
 		import Progress from '../../common/scripts/loading';
-		import ChannelStream from '../../common/scripts/channel-stream';
+		import ChannelStream from '../../common/scripts/streaming/channel-stream';
 
 		this.mixin('i');
 		this.mixin('api');

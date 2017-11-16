@@ -12,10 +12,12 @@
 
 		this.mixin('i');
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.unreadCount = 0;
-
 		this.page = this.opts.mode || 'timeline';
 
 		this.on('mount', () => {
@@ -24,12 +26,14 @@
 			});
 			document.title = 'Misskey';
 			Progress.start();
-			this.stream.on('post', this.onStreamPost);
+
+			this.connection.on('post', this.onStreamPost);
 			document.addEventListener('visibilitychange', this.windowOnVisibilitychange, false);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('post', this.onStreamPost);
+			this.connection.off('post', this.onStreamPost);
+			this.stream.dispose(this.connectionId);
 			document.removeEventListener('visibilitychange', this.windowOnVisibilitychange);
 		});
 

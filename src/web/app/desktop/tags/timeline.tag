@@ -430,8 +430,11 @@
 
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('stream');
 		this.mixin('user-preview');
+
+		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.isDetailOpened = false;
 
@@ -468,21 +471,21 @@
 
 		this.capture = withHandler => {
 			if (this.SIGNIN) {
-				this.stream.send({
+				this.connection.send({
 					type: 'capture',
 					id: this.post.id
 				});
-				if (withHandler) this.stream.on('post-updated', this.onStreamPostUpdated);
+				if (withHandler) this.connection.on('post-updated', this.onStreamPostUpdated);
 			}
 		};
 
 		this.decapture = withHandler => {
 			if (this.SIGNIN) {
-				this.stream.send({
+				this.connection.send({
 					type: 'decapture',
 					id: this.post.id
 				});
-				if (withHandler) this.stream.off('post-updated', this.onStreamPostUpdated);
+				if (withHandler) this.connection.off('post-updated', this.onStreamPostUpdated);
 			}
 		};
 
@@ -490,7 +493,7 @@
 			this.capture(true);
 
 			if (this.SIGNIN) {
-				this.stream.on('_connected_', this.onStreamConnected);
+				this.connection.on('_connected_', this.onStreamConnected);
 			}
 
 			if (this.p.text) {
@@ -515,7 +518,8 @@
 
 		this.on('unmount', () => {
 			this.decapture(true);
-			this.stream.off('_connected_', this.onStreamConnected);
+			this.connection.off('_connected_', this.onStreamConnected);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.reply = () => {

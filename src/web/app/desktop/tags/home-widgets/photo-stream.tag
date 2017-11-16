@@ -75,13 +75,16 @@
 		};
 
 		this.mixin('widget');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.images = [];
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
+			this.connection.on('drive_file_created', this.onStreamDriveFileCreated);
 
 			this.api('drive/stream', {
 				type: 'image/*',
@@ -95,7 +98,8 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.connection.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.onStreamDriveFileCreated = file => {

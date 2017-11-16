@@ -3,7 +3,7 @@ import Stream from './stream';
 /**
  * Messaging stream connection
  */
-class Connection extends Stream {
+export default class Connection extends Stream {
 	constructor(me, otherparty) {
 		super('messaging', {
 			i: me.token,
@@ -17,5 +17,3 @@ class Connection extends Stream {
 		});
 	}
 }
-
-export default Connection;

@@ -82,7 +82,10 @@
 		this.getPostSummary = getPostSummary;
 
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.notifications = [];
 		this.loading = true;
@@ -106,11 +109,12 @@
 				this.trigger('fetched');
 			});
 
-			this.stream.on('notification', this.onNotification);
+			this.connection.on('notification', this.onNotification);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('notification', this.onNotification);
+			this.connection.off('notification', this.onNotification);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.on('update', () => {
@@ -124,7 +128,7 @@
 
 		this.onNotification = notification => {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.stream.send({
+			this.connection.send({
 				type: 'read_notification',
 				id: notification.id
 			});

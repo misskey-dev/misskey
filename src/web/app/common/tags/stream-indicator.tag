@@ -1,13 +1,13 @@
 <mk-stream-indicator>
-	<p if={ stream.state == 'initializing' }>
+	<p if={ connection.state == 'initializing' }>
 		<i class="fa fa-spinner fa-spin"></i>
 		<span>%i18n:common.tags.mk-stream-indicator.connecting%<mk-ellipsis/></span>
 	</p>
-	<p if={ stream.state == 'reconnecting' }>
+	<p if={ connection.state == 'reconnecting' }>
 		<i class="fa fa-spinner fa-spin"></i>
 		<span>%i18n:common.tags.mk-stream-indicator.reconnecting%<mk-ellipsis/></span>
 	</p>
-	<p if={ stream.state == 'connected' }>
+	<p if={ connection.state == 'connected' }>
 		<i class="fa fa-check"></i>
 		<span>%i18n:common.tags.mk-stream-indicator.connected%</span>
 	</p>
@@ -38,34 +38,41 @@
 		import anime from 'animejs';
 
 		this.mixin('i');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.on('before-mount', () => {
-			if (this.stream.state == 'connected') {
+			if (this.connection.state == 'connected') {
 				this.root.style.opacity = 0;
 			}
-		});
 
-		this.stream.on('_connected_', () => {
-			this.update();
-			setTimeout(() => {
+			this.connection.on('_connected_', () => {
+				this.update();
+				setTimeout(() => {
+					anime({
+						targets: this.root,
+						opacity: 0,
+						easing: 'linear',
+						duration: 200
+					});
+				}, 1000);
+			});
+
+			this.connection.on('_closed_', () => {
+				this.update();
 				anime({
 					targets: this.root,
-					opacity: 0,
+					opacity: 1,
 					easing: 'linear',
-					duration: 200
+					duration: 100
 				});
-			}, 1000);
+			});
 		});
 
-		this.stream.on('_closed_', () => {
-			this.update();
-			anime({
-				targets: this.root,
-				opacity: 1,
-				easing: 'linear',
-				duration: 100
-			});
+		this.on('unmount', () => {
+			this.stream.dispose(this.connectionId);
 		});
 	</script>
 </mk-stream-indicator>

@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as riot from 'riot';
 import signout from './scripts/signout';
 import Progress from './scripts/loading';
-import Connection from './scripts/home-stream';
+import HomeStreamManager from './scripts/streaming/home-stream-manager';
 import CONFIG from './scripts/config';
 import api from './scripts/api';
 
@@ -33,9 +33,9 @@ export default class MiOS extends EventEmitter {
 	}
 
 	/**
-	 * A connection of home stream
+	 * A connection manager of home stream
 	 */
-	public stream: Connection;
+	public stream: HomeStreamManager;
 
 	constructor() {
 		super();
@@ -67,21 +67,27 @@ export default class MiOS extends EventEmitter {
 				body: JSON.stringify({
 					i: token
 				})
-			}).then(res => { // When success
+			})
+			// When success
+			.then(res => {
 				// When failed to authenticate user
 				if (res.status !== 200) {
 					return signout();
 				}
 
+				// Parse response
 				res.json().then(i => {
 					me = i;
 					me.token = token;
 					done();
 				});
-			}, () => { // When failure
+			})
+			// When failure
+			.catch(() => {
 				// Render the error screen
 				document.body.innerHTML = '<mk-error />';
 				riot.mount('*');
+
 				Progress.done();
 			});
 
@@ -104,6 +110,7 @@ export default class MiOS extends EventEmitter {
 				// ローカルストレージにキャッシュ
 				localStorage.setItem('me', JSON.stringify(me));
 
+				// 自分の情報が更新されたとき
 				me.on('updated', () => {
 					// キャッシュ更新
 					localStorage.setItem('me', JSON.stringify(me));
@@ -112,8 +119,10 @@ export default class MiOS extends EventEmitter {
 
 			this.i = me;
 
-			// Init home stream connection
-			this.stream = this.i ? new Connection(this.i) : null;
+			// Init home stream manager
+			this.stream = this.isSignedin
+				? new HomeStreamManager(this.i)
+				: null;
 
 			// Finish init
 			callback();

@@ -1,10 +1,10 @@
 import Stream from './stream';
-import signout from './signout';
+import signout from '../signout';
 
 /**
  * Home stream connection
  */
-class Connection extends Stream {
+export default class Connection extends Stream {
 	constructor(me) {
 		super('', {
 			i: me.token
@@ -15,13 +15,14 @@ class Connection extends Stream {
 			this.send({ type: 'alive' });
 		}, 1000 * 60);
 
+		// 自分の情報が更新されたとき
 		(this as any).on('i_updated', me.update);
 
+		// トークンが再生成されたとき
+		// このままではAPIが利用できないので強制的にサインアウトさせる
 		(this as any).on('my_token_regenerated', () => {
 			alert('%i18n:common.my-token-regenerated%');
 			signout();
 		});
 	}
 }
-
-export default Connection;

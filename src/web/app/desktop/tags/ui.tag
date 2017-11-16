@@ -423,14 +423,17 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.page = this.opts.page;
 
 		this.on('mount', () => {
 			if (this.SIGNIN) {
-				this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-				this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+				this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
 				// Fetch count of unread messaging messages
 				this.api('messaging/unread').then(res => {
@@ -445,8 +448,9 @@
 
 		this.on('unmount', () => {
 			if (this.SIGNIN) {
-				this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-				this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+				this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
+				this.stream.dispose(this.connectionId);
 			}
 		});
 

@@ -12,16 +12,20 @@
 	</style>
 	<script>
 		this.mixin('i');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.isDrawerOpening = false;
 
 		this.on('mount', () => {
-			this.stream.on('notification', this.onStreamNotification);
+			this.connection.on('notification', this.onStreamNotification);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('notification', this.onStreamNotification);
+			this.connection.off('notification', this.onStreamNotification);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.toggleDrawer = () => {
@@ -31,7 +35,7 @@
 
 		this.onStreamNotification = notification => {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.stream.send({
+			this.connection.send({
 				type: 'read_notification',
 				id: notification.id
 			});
@@ -145,15 +149,18 @@
 		import ui from '../scripts/ui-event';
 
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.func = null;
 		this.funcIcon = null;
 
 		this.on('mount', () => {
-			this.stream.on('read_all_notifications', this.onReadAllNotifications);
-			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.on('read_all_notifications', this.onReadAllNotifications);
+			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
 			// Fetch count of unread notifications
 			this.api('notifications/get_unread_count').then(res => {
@@ -175,9 +182,10 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('read_all_notifications', this.onReadAllNotifications);
-			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.off('read_all_notifications', this.onReadAllNotifications);
+			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.stream.dispose(this.connectionId);
 
 			ui.off('title', this.setTitle);
 			ui.off('func', this.setFunc);
@@ -348,12 +356,15 @@
 		this.mixin('i');
 		this.mixin('page');
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.on('mount', () => {
-			this.stream.on('read_all_notifications', this.onReadAllNotifications);
-			this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.on('read_all_notifications', this.onReadAllNotifications);
+			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
 			// Fetch count of unread notifications
 			this.api('notifications/get_unread_count').then(res => {
@@ -375,9 +386,10 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('read_all_notifications', this.onReadAllNotifications);
-			this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.off('read_all_notifications', this.onReadAllNotifications);
+			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.onReadAllNotifications = () => {

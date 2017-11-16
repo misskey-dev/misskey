@@ -138,7 +138,7 @@
 
 	</style>
 	<script>
-		import ChannelStream from '../../../common/scripts/channel-stream';
+		import ChannelStream from '../../../common/scripts/streaming/channel-stream';
 
 		this.mixin('api');
 

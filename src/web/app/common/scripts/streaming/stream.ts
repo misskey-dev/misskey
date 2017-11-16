@@ -1,25 +1,25 @@
+import { EventEmitter } from 'eventemitter3';
 import * as ReconnectingWebsocket from 'reconnecting-websocket';
-import * as riot from 'riot';
-import CONFIG from './config';
+import CONFIG from '../config';
 
 /**
  * Misskey stream connection
  */
-class Connection {
+export default class Connection extends EventEmitter {
 	private state: string;
 	private buffer: any[];
 	private socket: ReconnectingWebsocket;
 
 	constructor(endpoint, params?) {
-		// BIND -----------------------------------
+		super();
+
+		//#region BIND
 		this.onOpen =    this.onOpen.bind(this);
 		this.onClose =   this.onClose.bind(this);
 		this.onMessage = this.onMessage.bind(this);
 		this.send =      this.send.bind(this);
 		this.close =     this.close.bind(this);
-		// ----------------------------------------
-
-		riot.observable(this);
+		//#endregion
 
 		this.state = 'initializing';
 		this.buffer = [];
@@ -42,7 +42,7 @@ class Connection {
 	 */
 	private onOpen() {
 		this.state = 'connected';
-		(this as any).trigger('_connected_');
+		this.emit('_connected_');
 
 		// バッファーを処理
 		const _buffer = [].concat(this.buffer); // Shallow copy
@@ -57,7 +57,7 @@ class Connection {
 	 */
 	private onClose() {
 		this.state = 'reconnecting';
-		(this as any).trigger('_closed_');
+		this.emit('_closed_');
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Connection {
 	private onMessage(message) {
 		try {
 			const msg = JSON.parse(message.data);
-			if (msg.type) (this as any).trigger(msg.type, msg.body);
+			if (msg.type) this.emit(msg.type, msg.body);
 		} catch (e) {
 			// noop
 		}
@@ -93,5 +93,3 @@ class Connection {
 		this.socket.removeEventListener('message', this.onMessage);
 	}
 }
-
-export default Connection;

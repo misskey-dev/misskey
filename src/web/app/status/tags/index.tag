@@ -51,7 +51,7 @@
 					color #546567
 	</style>
 	<script>
-		import Connection from '../../common/scripts/server-stream';
+		import Connection from '../../common/scripts/streaming/server-stream';
 
 		this.mixin('api');
 

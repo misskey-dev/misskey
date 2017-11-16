@@ -13,7 +13,10 @@
 		import openPostForm from '../../scripts/open-post-form';
 
 		this.mixin('i');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.unreadCount = 0;
 
@@ -28,7 +31,7 @@
 
 			Progress.start();
 
-			this.stream.on('post', this.onStreamPost);
+			this.connection.on('post', this.onStreamPost);
 			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 			this.refs.ui.refs.home.on('loaded', () => {
@@ -37,7 +40,8 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('post', this.onStreamPost);
+			this.connection.off('post', this.onStreamPost);
+			this.stream.dispose(this.connectionId);
 			document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		});
 

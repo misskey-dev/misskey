@@ -1,10 +1,10 @@
 import * as riot from 'riot';
 
 import MiOS from './mios';
-import ServerStreamManager from './scripts/server-stream-manager';
-import RequestsStreamManager from './scripts/requests-stream-manager';
-import MessagingIndexStreamManager from './scripts/messaging-index-stream-manager';
-import DriveStreamManager from './scripts/drive-stream-manager';
+import ServerStreamManager from './scripts/streaming/server-stream-manager';
+import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
+import MessagingIndexStreamManager from './scripts/streaming/messaging-index-stream-manager';
+import DriveStreamManager from './scripts/streaming/drive-stream-manager';
 
 export default (mios: MiOS) => {
 	(riot as any).mixin('os', {
