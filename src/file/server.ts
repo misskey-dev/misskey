@@ -49,41 +49,41 @@ interface ISend {
 }
 
 function thumbnail(data: stream.Readable, type: string, resize: number): ISend {
-		const readable: stream.Readable = (() => {
-			// 画像ではない場合
-			if (!/^image\/.*$/.test(type)) {
-				// 使わないことにしたストリームはしっかり取り壊しておく
-				data.destroy();
-				return fs.createReadStream(`${__dirname}/assets/not-an-image.png`);
-			}
-
-			const imageType = type.split('/')[1];
-
-			// 画像でもPNGかJPEGでないならダメ
-			if (imageType != 'png' && imageType != 'jpeg') {
-				// 使わないことにしたストリームはしっかり取り壊しておく
-				data.destroy();
-				return fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
-			}
-
-			return data;
-		})();
-
-		let g = gm(readable);
-
-		if (resize) {
-			g = g.resize(resize, resize);
+	const readable: stream.Readable = (() => {
+		// 画像ではない場合
+		if (!/^image\/.*$/.test(type)) {
+			// 使わないことにしたストリームはしっかり取り壊しておく
+			data.destroy();
+			return fs.createReadStream(`${__dirname}/assets/not-an-image.png`);
 		}
 
-		const stream = g
-			.compress('jpeg')
-			.quality(80)
-			.stream();
+		const imageType = type.split('/')[1];
 
-		return {
-			contentType: 'image/jpeg',
-			stream
-		};
+		// 画像でもPNGかJPEGでないならダメ
+		if (imageType != 'png' && imageType != 'jpeg') {
+			// 使わないことにしたストリームはしっかり取り壊しておく
+			data.destroy();
+			return fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
+		}
+
+		return data;
+	})();
+
+	let g = gm(readable);
+
+	if (resize) {
+		g = g.resize(resize, resize);
+	}
+
+	const stream = g
+		.compress('jpeg')
+		.quality(80)
+		.stream();
+
+	return {
+		contentType: 'image/jpeg',
+		stream
+	};
 }
 
 const commonReadableHandlerGenerator = (req: express.Request, res: express.Response) => (e: Error): void => {
