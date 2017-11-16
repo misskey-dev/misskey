@@ -406,6 +406,7 @@
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
 				Array.from(e.dataTransfer.files).forEach(this.upload);
+				return;
 			}
 
 			// データ取得
