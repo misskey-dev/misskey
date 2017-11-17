@@ -241,11 +241,13 @@
 				}));
 			}
 
-			this.containerTop = this.refs.main.getBoundingClientRect().top;
-			this.headerHight = this.root.getBoundingClientRect().top;
+			if (!this.opts.customize) {
+				this.containerTop = this.refs.main.getBoundingClientRect().top;
+				this.headerHight = this.root.getBoundingClientRect().top;
 
-			window.addEventListener('scroll', this.followWidgets);
-			window.addEventListener('resize', this.followWidgets);
+				window.addEventListener('scroll', this.followWidgets);
+				window.addEventListener('resize', this.followWidgets);
+			}
 		});
 
 		this.on('unmount', () => {
@@ -253,8 +255,10 @@
 				widget.unmount();
 			});
 
-			window.removeEventListener('scroll', this.followWidgets);
-			window.removeEventListener('resize', this.followWidgets);
+			if (!this.opts.customize) {
+				window.removeEventListener('scroll', this.followWidgets);
+				window.removeEventListener('resize', this.followWidgets);
+			}
 		});
 
 		this.followWidgets = () => {
