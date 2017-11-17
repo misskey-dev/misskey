@@ -9,6 +9,8 @@ import Connection from './stream';
 export default abstract class StreamManager<T extends Connection> extends EventEmitter {
 	private _connection: T = null;
 
+	private disposeTimerId: any;
+
 	/**
 	 * コネクションを必要としているユーザー
 	 */
@@ -51,6 +53,12 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 	 * コネクションを要求するためのユーザーIDを発行します
 	 */
 	public use() {
+		// タイマー解除
+		if (this.disposeTimerId) {
+			clearTimeout(this.disposeTimerId);
+			this.disposeTimerId = null;
+		}
+
 		// ユーザーID生成
 		const userId = uuid();
 
@@ -68,9 +76,12 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 
 		// 誰もコネクションの利用者がいなくなったら
 		if (this.users.length == 0) {
-			// コネクションを切断する
-			this.connection.close();
-			this.connection = null;
+			// また直ぐに再利用される可能性があるので、一定時間待ち、
+			// 新たな利用者が現れなければコネクションを切断する
+			this.disposeTimerId = setTimeout(() => {
+				this.connection.close();
+				this.connection = null;
+			}, 3000);
 		}
 	}
 }
