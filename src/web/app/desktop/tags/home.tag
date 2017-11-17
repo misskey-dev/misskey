@@ -36,13 +36,17 @@
 		</div>
 	</div>
 	<div class="main">
-		<div class="left" ref="left" data-place="left"></div>
+		<div class="left">
+			<div ref="left" data-place="left"></div>
+		</div>
 		<main ref="main">
 			<div class="maintop" ref="maintop" data-place="main" if={ opts.customize }></div>
 			<mk-timeline-home-widget ref="tl" if={ mode == 'timeline' }/>
 			<mk-mentions-home-widget ref="tl" if={ mode == 'mentions' }/>
 		</main>
-		<div class="right" ref="right" data-place="right"></div>
+		<div class="right">
+			<div ref="right" data-place="right"></div>
+		</div>
 	</div>
 	<style>
 		:scope
@@ -132,37 +136,38 @@
 				max-width 1200px
 
 				> *
-					> *:not(.customize-container):not(.maintop)
-					> .customize-container
-						&:not(:last-child)
-							margin-bottom 16px
-
-					> .maintop > .customize-container
-						margin-bottom 16px
-
-				> main
-					padding 16px
-					width calc(100% - 275px * 2)
-
-					> .maintop
-						min-height 64px
-
-				> *
-					> .customize-container
-					> .maintop > .customize-container
+					.customize-container
 						cursor move
 
 						> *
 							pointer-events none
 
+				> main
+					padding 16px
+					width calc(100% - 275px * 2)
+
+					> *:not(.maintop):not(:last-child)
+					> .maintop > *:not(:last-child)
+						margin-bottom 16px
+
+					> .maintop
+						min-height 64px
+						margin-bottom 16px
+
 				> *:not(main)
 					width 275px
 
+					> *
+						padding 16px 0 16px 0
+
+						> *:not(:last-child)
+							margin-bottom 16px
+
 				> .left
-					padding 16px 0 16px 16px
+					padding-left 16px
 
 				> .right
-					padding 16px 16px 16px 0
+					padding-right 16px
 
 				@media (max-width 1100px)
 					> *:not(main)
@@ -235,13 +240,42 @@
 					}
 				}));
 			}
+
+			this.containerTop = this.refs.main.getBoundingClientRect().top;
+			this.headerHight = 48;
+
+			window.addEventListener('scroll', this.followWidgets);
+			window.addEventListener('resize', this.followWidgets);
 		});
 
 		this.on('unmount', () => {
 			this.home.forEach(widget => {
 				widget.unmount();
 			});
+
+			window.removeEventListener('scroll', this.followWidgets);
+			window.removeEventListener('resize', this.followWidgets);
 		});
+
+		this.followWidgets = () => {
+			const windowBottom = window.scrollY + window.innerHeight;
+			const windowTop = window.scrollY + this.headerHight;
+
+			const calc = widgets => {
+				const rect = widgets.getBoundingClientRect();
+				const widgetsHeight = rect.height + this.containerTop;
+				const widgetsBottom = (rect.top + window.scrollY) + rect.height;
+
+				if (windowBottom > widgetsBottom && widgetsHeight > window.innerHeight) {
+					widgets.parentNode.style.marginTop = `${(windowBottom - rect.height) - this.containerTop}px`;
+				} else if (windowTop < rect.top + window.scrollY || widgetsHeight < window.innerHeight) {
+					widgets.parentNode.style.marginTop = `${(windowTop - this.containerTop)}px`;
+				}
+			};
+
+			calc(this.refs.left);
+			calc(this.refs.right);
+		};
 
 		this.setWidget = (widget, prepend = false) => {
 			const el = document.createElement(`mk-${widget.name}-home-widget`);
