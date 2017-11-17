@@ -242,7 +242,7 @@
 			}
 
 			this.containerTop = this.refs.main.getBoundingClientRect().top;
-			this.headerHight = 48;
+			this.headerHight = this.root.getBoundingClientRect().top;
 
 			window.addEventListener('scroll', this.followWidgets);
 			window.addEventListener('resize', this.followWidgets);
