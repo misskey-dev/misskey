@@ -79,6 +79,8 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 			// また直ぐに再利用される可能性があるので、一定時間待ち、
 			// 新たな利用者が現れなければコネクションを切断する
 			this.disposeTimerId = setTimeout(() => {
+				this.disposeTimerId = null;
+
 				this.connection.close();
 				this.connection = null;
 			}, 3000);
