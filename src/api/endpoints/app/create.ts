@@ -85,7 +85,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (permissionErr) return rej('invalid permission param');
 
 	// Get 'callback_url' parameter
-	// TODO: Check $ is valid url
+	// TODO: Check it is valid url
 	const [callbackUrl = null, callbackUrlErr] = $(params.callback_url).optional.nullable.string().$;
 	if (callbackUrlErr) return rej('invalid callback_url param');
 
