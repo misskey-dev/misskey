@@ -1,1 +1,7 @@
-{}
+{
+	"short_name": "Misskey",
+	"name": "Misskey",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#313a42"
+}
