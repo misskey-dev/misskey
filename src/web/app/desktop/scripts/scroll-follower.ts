@@ -32,8 +32,8 @@ export default class ScrollFollower {
 		const windowTop = window.scrollY + this.topPadding;
 
 		const rect = this.follower.getBoundingClientRect();
-		//const followerHeight = rect.height + this.containerTop;
 		const followerBottom = (rect.top + window.scrollY) + rect.height;
+		const screenHeight = window.innerHeight - this.topPadding;
 
 		// スクロールの上部(+余白)がフォロワーコンテナの上部よりも上方にある
 		if (window.scrollY + this.topPadding < this.containerTop) {
@@ -43,15 +43,19 @@ export default class ScrollFollower {
 		}
 
 		// スクロールの下部がフォロワーの下部よりも下方にある かつ 表示領域の縦幅がフォロワーの縦幅よりも狭い
-		if (windowBottom > followerBottom && rect.height > (window.innerHeight - this.topPadding)) {
+		if (windowBottom > followerBottom && rect.height > screenHeight) {
 			// フォロワーの下部をスクロール下部に合わせる
 			const top = (windowBottom - rect.height) - this.containerTop;
 			(this.follower.parentNode as any).style.marginTop = `${top}px`;
+			return;
+		}
+
 		// スクロールの上部(+余白)がフォロワーの上部よりも上方にある または 表示領域の縦幅がフォロワーの縦幅よりも広い
-		} else if ((windowTop < rect.top + window.scrollY || rect.height < (window.innerHeight - this.topPadding))) {
+		if (windowTop < rect.top + window.scrollY || rect.height < screenHeight) {
 			// フォロワーの上部をスクロール上部(+余白)に合わせる
 			const top = windowTop - this.containerTop;
 			(this.follower.parentNode as any).style.marginTop = `${top}px`;
+			return;
 		}
 	}
 }
