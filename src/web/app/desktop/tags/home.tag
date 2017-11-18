@@ -184,6 +184,7 @@
 		import uuid from 'uuid';
 		import Sortable from 'sortablejs';
 		import dialog from '../scripts/dialog';
+		import ScrollFollower from '../scripts/scroll-follower';
 
 		this.mixin('i');
 		this.mixin('api');
@@ -242,11 +243,8 @@
 			}
 
 			if (!this.opts.customize) {
-				this.containerTop = this.refs.main.getBoundingClientRect().top;
-				this.headerHight = this.root.getBoundingClientRect().top;
-
-				window.addEventListener('scroll', this.followWidgets);
-				window.addEventListener('resize', this.followWidgets);
+				this.scrollFollowerLeft = new ScrollFollower(this.refs.left, this.root.getBoundingClientRect().top);
+				this.scrollFollowerRight = new ScrollFollower(this.refs.right, this.root.getBoundingClientRect().top);
 			}
 		});
 
@@ -256,8 +254,8 @@
 			});
 
 			if (!this.opts.customize) {
-				window.removeEventListener('scroll', this.followWidgets);
-				window.removeEventListener('resize', this.followWidgets);
+				this.scrollFollowerLeft.dispose();
+				this.scrollFollowerRight.dispose();
 			}
 		});
 
