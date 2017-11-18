@@ -271,9 +271,11 @@
 				const widgetsBottom = (rect.top + window.scrollY) + rect.height;
 
 				if (windowBottom > widgetsBottom && widgetsHeight > window.innerHeight) {
-					widgets.parentNode.style.marginTop = `${(windowBottom - rect.height) - this.containerTop}px`;
+					const top = (windowBottom - rect.height) - this.containerTop;
+					widgets.parentNode.style.marginTop = `${top}px`;
 				} else if (windowTop < rect.top + window.scrollY || widgetsHeight < window.innerHeight) {
-					widgets.parentNode.style.marginTop = `${(windowTop - this.containerTop)}px`;
+					const top = windowTop - this.containerTop;
+					widgets.parentNode.style.marginTop = `${top}px`;
 				}
 			};
 
