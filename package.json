@@ -67,7 +67,7 @@
 		"@types/webpack": "3.8.0",
 		"@types/webpack-stream": "3.2.8",
 		"@types/websocket": "0.0.34",
-		"awesome-typescript-loader": "3.3.0",
+		"awesome-typescript-loader": "3.4.0",
 		"chai": "4.1.2",
 		"chai-http": "3.0.0",
 		"css-loader": "0.28.7",
