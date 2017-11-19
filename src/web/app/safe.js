@@ -13,7 +13,7 @@ if (!('fetch' in window)) {
 }
 
 // Detect Edge
-if (navigator.userAgent.indexOf('Edge')) {
+if (navigator.userAgent.indexOf('Edge') != -1) {
 	alert(
 		'現在、お使いのブラウザ(Microsoft Edge)ではMisskeyは正しく動作しません。' +
 		'サポートしているブラウザ: Google Chrome, Mozilla Firefox, Apple Safari など' +
