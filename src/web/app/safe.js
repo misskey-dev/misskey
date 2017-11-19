@@ -18,6 +18,6 @@ if (navigator.userAgent.indexOf('Edge')) {
 		'現在、お使いのブラウザ(Microsoft Edge)ではMisskeyは正しく動作しません。' +
 		'サポートしているブラウザ: Google Chrome, Mozilla Firefox, Apple Safari など' +
 		'\n\n' +
-		'Currently, Misskey cannot run correctly on your browser (Microsoft Edge).' +
+		'Currently, Misskey cannot run correctly on your browser (Microsoft Edge). ' +
 		'Supported browsers: Google Chrome, Mozilla Firefox, Apple Safari, etc');
 }
