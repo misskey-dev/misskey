@@ -51,9 +51,9 @@
 			<p class="location" if={ user.profile.location }><i class="fa fa-map-marker"></i>{ user.profile.location }</p>
 		</div>
 		<footer>
-			<a href={ '/' + user.username } data-active>概要</a>
-			<a href={ '/' + user.username + '/media' }>メディア</a>
-			<a href={ '/' + user.username + '/graphs' }>グラフ</a>
+			<a href={ '/' + user.username } data-active={ parent.page == 'home' }><i class="fa fa-home"></i>概要</a>
+			<a href={ '/' + user.username + '/media' } data-active={ parent.page == 'media' }><i class="fa fa-picture-o"></i>メディア</a>
+			<a href={ '/' + user.username + '/graphs' } data-active={ parent.page == 'graphs' }><i class="fa fa-bar-chart"></i>グラフ</a>
 		</footer>
 	</div>
 	<style>
@@ -159,6 +159,9 @@
 
 						&[data-active]
 							border-bottom solid 4px $theme-color
+
+						> i
+							margin-right 6px
 
 					> button
 						display block
@@ -708,16 +711,22 @@
 
 <mk-user-graphs>
 	<section>
-		<h1>投稿</h1>
-		<mk-user-posts-graph user={ opts.user }/>
+		<div>
+			<h1><i class="fa fa-pencil"></i>投稿</h1>
+			<mk-user-graphs-activity-chart user={ opts.user }/>
+		</div>
 	</section>
 	<section>
-		<h1>フォロー/フォロワー</h1>
-		<mk-user-friends-graph user={ opts.user }/>
+		<div>
+			<h1>フォロー/フォロワー</h1>
+			<mk-user-friends-graph user={ opts.user }/>
+		</div>
 	</section>
 	<section>
-		<h1>いいね</h1>
-		<mk-user-likes-graph user={ opts.user }/>
+		<div>
+			<h1>いいね</h1>
+			<mk-user-likes-graph user={ opts.user }/>
+		</div>
 	</section>
 	<style>
 		:scope
@@ -725,20 +734,21 @@
 
 			> section
 				margin 16px 0
-				background #fff
-				border solid 1px rgba(0, 0, 0, 0.1)
-				border-radius 4px
+				color #666
+				border-bottom solid 1px rgba(0, 0, 0, 0.1)
 
-				> h1
-					margin 0 0 8px 0
+				> div
+					max-width 1200px
+					margin 0 auto
 					padding 0 16px
-					line-height 40px
-					font-size 1em
-					color #666
-					border-bottom solid 1px #eee
 
-				> *:not(h1)
-					margin 0 auto 16px auto
+					> h1
+						margin 0 0 16px 0
+						padding 0
+						font-size 1.3em
+
+						> i
+							margin-right 8px
 
 	</style>
 	<script>
@@ -747,3 +757,71 @@
 		});
 	</script>
 </mk-user-graphs>
+
+<mk-user-graphs-activity-chart>
+	<svg if={ data } ref="canvas" viewBox="0 0 365 1" preserveAspectRatio="none">
+		<g each={ d, i in data.reverse() }>
+			<rect width="0.8" riot-height={ d.postsH }
+				riot-x={ i + 0.1 } riot-y={ 1 - d.postsH - d.repliesH - d.repostsH }
+				fill="#41ddde"/>
+			<rect width="0.8" riot-height={ d.repliesH }
+				riot-x={ i + 0.1 } riot-y={ 1 - d.repliesH - d.repostsH }
+				fill="#f7796c"/>
+			<rect width="0.8" riot-height={ d.repostsH }
+				riot-x={ i + 0.1 } riot-y={ 1 - d.repostsH }
+				fill="#a1de41"/>
+			</g>
+	</svg>
+	<p>直近1年間分の統計です。一番右が現在で、一番左が1年前です。青は通常の投稿、赤は返信、緑はRepostをそれぞれ表しています。</p>
+	<p>
+		<span>だいたい*1日に<b>{ averageOfAllTypePostsEachDays }回</b>投稿(返信、Repost含む)しています。</span><br>
+		<span>だいたい*1日に<b>{ averageOfPostsEachDays }回</b>投稿(通常の)しています。</span><br>
+		<span>だいたい*1日に<b>{ averageOfRepliesEachDays }回</b>返信しています。</span><br>
+		<span>だいたい*1日に<b>{ averageOfRepostsEachDays }回</b>Repostしています。</span><br>
+	</p>
+	<p>* 中央値</p>
+
+	<style>
+		:scope
+			display block
+
+			> svg
+				display block
+				width 100%
+				height 180px
+
+				> rect
+					transform-origin center
+
+	</style>
+	<script>
+		import getMedian from '../../common/scripts/get-median';
+
+		this.mixin('api');
+
+		this.user = this.opts.user;
+
+		this.on('mount', () => {
+			this.api('aggregation/users/activity', {
+				user_id: this.user.id,
+				limit: 365
+			}).then(data => {
+				data.forEach(d => d.total = d.posts + d.replies + d.reposts);
+				this.peak = Math.max.apply(null, data.map(d => d.total));
+				data.forEach(d => {
+					d.postsH = d.posts / this.peak;
+					d.repliesH = d.replies / this.peak;
+					d.repostsH = d.reposts / this.peak;
+				});
+
+				this.update({
+					data,
+					averageOfAllTypePostsEachDays: getMedian(data.map(d => d.total)),
+					averageOfPostsEachDays: getMedian(data.map(d => d.posts)),
+					averageOfRepliesEachDays: getMedian(data.map(d => d.replies)),
+					averageOfRepostsEachDays: getMedian(data.map(d => d.reposts))
+				});
+			});
+		});
+	</script>
+</mk-user-graphs-activity-chart>
