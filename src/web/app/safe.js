@@ -21,3 +21,11 @@ if (navigator.userAgent.indexOf('Edge') != -1) {
 		'Currently, Misskey cannot run correctly on your browser (Microsoft Edge). ' +
 		'Supported browsers: Google Chrome, Mozilla Firefox, Apple Safari, etc');
 }
+
+// Check whether cookie enabled
+if (!navigator.cookieEnabled) {
+	alert(
+		'Misskeyを利用するにはCookieを有効にしてください。' +
+		'\n\n' +
+		'To use Misskey, please enable Cookie.');
+}
