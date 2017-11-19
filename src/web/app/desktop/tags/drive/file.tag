@@ -10,9 +10,7 @@
 	<style>
 		:scope
 			display block
-			margin 4px
 			padding 8px 0 0 0
-			width 144px
 			height 180px
 			border-radius 4px
 
@@ -113,7 +111,7 @@
 			> .thumbnail
 				width 128px
 				height 128px
-				left 8px
+				margin auto
 
 				> img
 					display block

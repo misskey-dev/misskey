@@ -3,9 +3,7 @@
 	<style>
 		:scope
 			display block
-			margin 4px
 			padding 8px
-			width 144px
 			height 64px
 			background lighten($theme-color, 95%)
 			border-radius 4px

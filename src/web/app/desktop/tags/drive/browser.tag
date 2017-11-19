@@ -18,12 +18,14 @@
 				<virtual each={ folder in folders }>
 					<mk-drive-browser-folder class="folder" folder={ folder }/>
 				</virtual>
+				<div class="padding" each={ folders }></div>
 				<button if={ moreFolders }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" if={ files.length > 0 }>
 				<virtual each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }/>
 				</virtual>
+				<div class="padding" each={ files }></div>
 				<button if={ moreFiles } onclick={ fetchMoreFiles }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
@@ -161,22 +163,20 @@
 				> .contents
 
 					> .folders
-						&:after
-							content ""
-							display block
-							clear both
+					> .files
+						display flex
+						flex-wrap wrap
 
 						> .folder
-							float left
-
-					> .files
-						&:after
-							content ""
-							display block
-							clear both
-
 						> .file
-							float left
+							flex-grow 1
+							width 144px
+							margin 4px
+
+						> .padding
+							flex-grow 1
+							pointer-events none
+							width 144px + 8px // 8px is margin
 
 					> .empty
 						padding 16px
