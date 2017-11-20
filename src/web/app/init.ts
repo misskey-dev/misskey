@@ -18,7 +18,9 @@ require('./common/tags');
 
 console.info(`Misskey v${VERSION} (葵 aoi)`);
 
-document.domain = CONFIG.host;
+if (CONFIG.host != 'localhost') {
+	document.domain = CONFIG.host;
+}
 
 { // Set lang attr
 	const html = document.documentElement;
