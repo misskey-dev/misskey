@@ -259,28 +259,6 @@
 			}
 		});
 
-		this.followWidgets = () => {
-			const windowBottom = window.scrollY + window.innerHeight;
-			const windowTop = window.scrollY + this.headerHight;
-
-			const calc = widgets => {
-				const rect = widgets.getBoundingClientRect();
-				const widgetsHeight = rect.height + this.containerTop;
-				const widgetsBottom = (rect.top + window.scrollY) + rect.height;
-
-				if (windowBottom > widgetsBottom && widgetsHeight > window.innerHeight) {
-					const top = (windowBottom - rect.height) - this.containerTop;
-					widgets.parentNode.style.marginTop = `${top}px`;
-				} else if (windowTop < rect.top + window.scrollY || widgetsHeight < window.innerHeight) {
-					const top = windowTop - this.containerTop;
-					widgets.parentNode.style.marginTop = `${top}px`;
-				}
-			};
-
-			calc(this.refs.left);
-			calc(this.refs.right);
-		};
-
 		this.setWidget = (widget, prepend = false) => {
 			const el = document.createElement(`mk-${widget.name}-home-widget`);
 
