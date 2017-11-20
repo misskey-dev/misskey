@@ -75,6 +75,14 @@ type Source = {
 	analysis?: {
 		mecab_command?: string;
 	};
+
+	/**
+	 * Service Worker
+	 */
+	sw?: {
+		gcm_sender_id: string;
+		gcm_api_key: string;
+	};
 };
 
 /**
@@ -109,7 +117,7 @@ export default function load() {
 	const url = URL.parse(config.url);
 	const head = url.host.split('.')[0];
 
-	if (head != 'misskey') {
+	if (head != 'misskey' && head != 'localhost') {
 		console.error(`プライマリドメインは、必ず「misskey」ドメインで始まっていなければなりません(現在の設定では「${head}」で始まっています)。例えば「https://misskey.xyz」「http://misskey.my.app.example.com」などが正しいプライマリURLです。`);
 		process.exit();
 	}

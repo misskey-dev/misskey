@@ -37,27 +37,44 @@ app.use((req, res, next) => {
  * Static assets
  */
 app.use(favicon(`${__dirname}/assets/favicon.ico`));
-app.get('/manifest.json', (req, res) => res.sendFile(`${__dirname}/assets/manifest.json`));
 app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${__dirname}/assets/apple-touch-icon.png`));
 app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
 
+app.get('/sw.js', (req, res) => res.sendFile(`${__dirname}/assets/sw.js`));
+
 /**
- * Common API
+ * Manifest
  */
-app.get(/\/api:url/, require('./service/url-preview'));
+app.get('/manifest.json', (req, res) => {
+	const manifest = require((`${__dirname}/assets/manifest.json`));
+
+	// Service Worker
+	if (config.sw) {
+		manifest['gcm_sender_id'] = config.sw.gcm_sender_id;
+	}
+
+	res.send(manifest);
+});
 
 /**
  * Serve config
  */
 app.get('/config.json', (req, res) => {
-	res.send({
+	const conf = {
 		recaptcha: {
 			siteKey: config.recaptcha.siteKey
 		}
-	});
+	};
+
+	res.send(conf);
 });
+
+/**
+ * Common API
+ */
+app.get(/\/api:url/, require('./service/url-preview'));
 
 /**
  * Routing

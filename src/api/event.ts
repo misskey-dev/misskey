@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import * as redis from 'redis';
+import swPush from './common/push-sw';
 import config from '../conf';
 
 type ID = string | mongo.ObjectID;
@@ -15,6 +16,10 @@ class MisskeyEvent {
 
 	public publishUserStream(userId: ID, type: string, value?: any): void {
 		this.publish(`user-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishSw(userId: ID, type: string, value?: any): void {
+		swPush(userId, type, value);
 	}
 
 	public publishDriveStream(userId: ID, type: string, value?: any): void {
@@ -49,6 +54,8 @@ class MisskeyEvent {
 const ev = new MisskeyEvent();
 
 export default ev.publishUserStream.bind(ev);
+
+export const pushSw = ev.publishSw.bind(ev);
 
 export const publishDriveStream = ev.publishDriveStream.bind(ev);
 

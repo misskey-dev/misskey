@@ -37,6 +37,11 @@ export default class MiOS extends EventEmitter {
 	 */
 	public stream: HomeStreamManager;
 
+	/**
+	 * A registration of service worker
+	 */
+	private swRegistration: ServiceWorkerRegistration = null;
+
 	constructor() {
 		super();
 
@@ -44,6 +49,7 @@ export default class MiOS extends EventEmitter {
 		this.init = this.init.bind(this);
 		this.api = this.api.bind(this);
 		this.getMeta = this.getMeta.bind(this);
+		this.swSubscribe = this.swSubscribe.bind(this);
 		//#endregion
 	}
 
@@ -126,6 +132,25 @@ export default class MiOS extends EventEmitter {
 
 			// Finish init
 			callback();
+
+			//#region Service worker
+			const isSwSupported =
+				('serviceWorker' in navigator) && ('PushManager' in window);
+
+			if (isSwSupported && this.isSignedin) {
+				// When service worker activated
+				navigator.serviceWorker.ready.then(this.swSubscribe);
+
+				// Register service worker
+				navigator.serviceWorker.register('/sw.js').then(registration => {
+					// 登録成功
+					console.info('ServiceWorker registration successful with scope: ', registration.scope);
+				}).catch(err => {
+					// 登録失敗 :(
+					console.error('ServiceWorker registration failed: ', err);
+				});
+			}
+			//#endregion
 		};
 
 		// Get cached account data
@@ -145,6 +170,30 @@ export default class MiOS extends EventEmitter {
 
 			fetchme(i, fetched);
 		}
+	}
+
+	private async swSubscribe(swRegistration: ServiceWorkerRegistration) {
+		this.swRegistration = swRegistration;
+
+		// Subscribe
+		this.swRegistration.pushManager.subscribe({
+			// A boolean indicating that the returned push subscription
+			// will only be used for messages whose effect is made visible to the user.
+			userVisibleOnly: true
+		}).then(subscription => {
+			console.log('Subscribe OK:', subscription);
+
+			// Register
+			this.api('sw/register', {
+				endpoint: subscription.endpoint,
+				auth: subscription.getKey('auth') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))) : '',
+				publickey: subscription.getKey('p256dh') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh')))) : ''
+			});
+		}).then(() => {
+			console.log('Server Stored Subscription.');
+		}).catch(err => {
+			console.error('Subscribe Error:', err);
+		});
 	}
 
 	/**

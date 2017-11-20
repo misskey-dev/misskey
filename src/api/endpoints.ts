@@ -147,6 +147,11 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'sw/register',
+		withCredential: true
+	},
+
+	{
 		name: 'i',
 		withCredential: true
 	},
