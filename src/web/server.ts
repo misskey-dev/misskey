@@ -42,7 +42,7 @@ app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
 
-app.get('/sw.js', (req, res) => res.sendFile(`${__dirname}/assets/sw.js`));
+app.get(/^\/sw\.(.+?)\.js$/, (req, res) => res.sendFile(`${__dirname}/assets/sw.${req.params[0]}.js`));
 
 /**
  * Manifest

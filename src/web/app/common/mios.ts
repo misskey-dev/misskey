@@ -6,6 +6,9 @@ import HomeStreamManager from './scripts/streaming/home-stream-manager';
 import CONFIG from './scripts/config';
 import api from './scripts/api';
 
+declare var VERSION: string;
+declare var LANG: string;
+
 /**
  * Misskey Operating System
  */
@@ -142,7 +145,7 @@ export default class MiOS extends EventEmitter {
 				navigator.serviceWorker.ready.then(this.swSubscribe);
 
 				// Register service worker
-				navigator.serviceWorker.register('/sw.js').then(registration => {
+				navigator.serviceWorker.register(`/sw.${VERSION}.${LANG}.js`).then(registration => {
 					// 登録成功
 					console.info('ServiceWorker registration successful with scope: ', registration.scope);
 				}).catch(err => {

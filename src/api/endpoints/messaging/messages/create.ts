@@ -9,8 +9,7 @@ import User from '../../../models/user';
 import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
-import { publishMessagingStream } from '../../../event';
-import { publishMessagingIndexStream } from '../../../event';
+import { publishMessagingStream, publishMessagingIndexStream, pushSw } from '../../../event';
 import config from '../../../../conf';
 
 /**
@@ -99,6 +98,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
 		if (!freshMessage.is_read) {
 			publishUserStream(message.recipient_id, 'unread_messaging_message', messageObj);
+			pushSw(message.recipient_id, 'unread_messaging_message', messageObj);
 		}
 	}, 3000);
 

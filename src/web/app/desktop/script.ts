@@ -11,9 +11,9 @@ import * as riot from 'riot';
 import init from '../init';
 import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
-import getPostSummary from '../../../common/get-post-summary';
 import MiOS from '../common/mios';
 import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
+import composeNotification from '../common/scripts/compose-notification';
 
 /**
  * init
@@ -55,41 +55,46 @@ function registerNotifications(stream: HomeStreamManager) {
 
 	function attach(connection) {
 		connection.on('drive_file_created', file => {
-			const n = new Notification('ファイルがアップロードされました', {
-				body: file.name,
-				icon: file.url + '?thumbnail&size=64'
+			const _n = composeNotification('drive_file_created', file);
+			const n = new Notification(_n.title, {
+				body: _n.body,
+				icon: _n.icon
 			});
 			setTimeout(n.close.bind(n), 5000);
 		});
 
 		connection.on('mention', post => {
-			const n = new Notification(`${post.user.name}さんから:`, {
-				body: getPostSummary(post),
-				icon: post.user.avatar_url + '?thumbnail&size=64'
+			const _n = composeNotification('mention', post);
+			const n = new Notification(_n.title, {
+				body: _n.body,
+				icon: _n.icon
 			});
 			setTimeout(n.close.bind(n), 6000);
 		});
 
 		connection.on('reply', post => {
-			const n = new Notification(`${post.user.name}さんから返信:`, {
-				body: getPostSummary(post),
-				icon: post.user.avatar_url + '?thumbnail&size=64'
+			const _n = composeNotification('reply', post);
+			const n = new Notification(_n.title, {
+				body: _n.body,
+				icon: _n.icon
 			});
 			setTimeout(n.close.bind(n), 6000);
 		});
 
 		connection.on('quote', post => {
-			const n = new Notification(`${post.user.name}さんが引用:`, {
-				body: getPostSummary(post),
-				icon: post.user.avatar_url + '?thumbnail&size=64'
+			const _n = composeNotification('quote', post);
+			const n = new Notification(_n.title, {
+				body: _n.body,
+				icon: _n.icon
 			});
 			setTimeout(n.close.bind(n), 6000);
 		});
 
 		connection.on('unread_messaging_message', message => {
-			const n = new Notification(`${message.user.name}さんからメッセージ:`, {
-				body: message.text, // TODO: getMessagingMessageSummary(message),
-				icon: message.user.avatar_url + '?thumbnail&size=64'
+			const _n = composeNotification('unread_messaging_message', message);
+			const n = new Notification(_n.title, {
+				body: _n.body,
+				icon: _n.icon
 			});
 			n.onclick = () => {
 				n.close();

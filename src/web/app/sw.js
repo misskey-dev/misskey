@@ -2,6 +2,8 @@
  * Service Worker
  */
 
+import composeNotification from './common/scripts/compose-notification';
+
 // インストールされたとき
 self.addEventListener('install', () => {
 	console.log('[sw]', 'Your ServiceWorker is installed');
@@ -17,15 +19,12 @@ self.addEventListener('push', ev => {
 		if (clients.length != 0) return;
 
 		const { type, body } = ev.data.json();
-		handlers[type](body);
+		const n = composeNotification(type, body);
+		if (n) {
+			self.registration.showNotification(n.title, {
+				body: n.body,
+				icon: n.icon,
+			});
+		}
 	});
 });
-
-const handlers = {
-	mention: body => {
-		self.registration.showNotification('mentioned', {
-			body: body.text,
-			icon: body.user.avatar_url + '?thumbnail&size=64',
-		});
-	}
-};
