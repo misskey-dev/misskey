@@ -36,6 +36,13 @@ export default class MiOS extends EventEmitter {
 	}
 
 	/**
+	 * Whether is debug mode
+	 */
+	public get debug() {
+		return localStorage.getItem('debug') == 'true';
+	}
+
+	/**
 	 * A connection manager of home stream
 	 */
 	public stream: HomeStreamManager;
@@ -49,11 +56,35 @@ export default class MiOS extends EventEmitter {
 		super();
 
 		//#region BIND
+		this.log = this.log.bind(this);
+		this.logInfo = this.logInfo.bind(this);
+		this.logWarn = this.logWarn.bind(this);
+		this.logError = this.logError.bind(this);
 		this.init = this.init.bind(this);
 		this.api = this.api.bind(this);
 		this.getMeta = this.getMeta.bind(this);
-		this.swSubscribe = this.swSubscribe.bind(this);
+		this.registerSw = this.registerSw.bind(this);
 		//#endregion
+	}
+
+	public log(...args) {
+		if (!this.debug) return;
+		console.log.apply(null, args);
+	}
+
+	public logInfo(...args) {
+		if (!this.debug) return;
+		console.info.apply(null, args);
+	}
+
+	public logWarn(...args) {
+		if (!this.debug) return;
+		console.warn.apply(null, args);
+	}
+
+	public logError(...args) {
+		if (!this.debug) return;
+		console.error.apply(null, args);
 	}
 
 	/**
@@ -136,30 +167,20 @@ export default class MiOS extends EventEmitter {
 			// Finish init
 			callback();
 
-			//#region Service worker
-			const isSwSupported =
-				('serviceWorker' in navigator) && ('PushManager' in window);
+			//#region Post
 
-			if (isSwSupported && this.isSignedin) {
-				// When service worker activated
-				navigator.serviceWorker.ready.then(this.swSubscribe);
+			// Init service worker
+			this.registerSw();
 
-				// Register service worker
-				navigator.serviceWorker.register(`/sw.${VERSION}.${LANG}.js`).then(registration => {
-					// 登録成功
-					console.info('ServiceWorker registration successful with scope: ', registration.scope);
-				}).catch(err => {
-					// 登録失敗 :(
-					console.error('ServiceWorker registration failed: ', err);
-				});
-			}
 			//#endregion
 		};
 
 		// Get cached account data
 		const cachedMe = JSON.parse(localStorage.getItem('me'));
 
+		// キャッシュがあったとき
 		if (cachedMe) {
+			// とりあえずキャッシュされたデータでお茶を濁して(?)おいて、
 			fetched(cachedMe);
 
 			// 後から新鮮なデータをフェッチ
@@ -175,27 +196,64 @@ export default class MiOS extends EventEmitter {
 		}
 	}
 
-	private async swSubscribe(swRegistration: ServiceWorkerRegistration) {
-		this.swRegistration = swRegistration;
+	/**
+	 * Register service worker
+	 */
+	private registerSw() {
+		// Check whether service worker and push manager supported
+		const isSwSupported =
+			('serviceWorker' in navigator) && ('PushManager' in window);
 
-		// Subscribe
-		this.swRegistration.pushManager.subscribe({
-			// A boolean indicating that the returned push subscription
-			// will only be used for messages whose effect is made visible to the user.
-			userVisibleOnly: true
-		}).then(subscription => {
-			console.log('Subscribe OK:', subscription);
+		// Reject when browser not service worker supported
+		if (!isSwSupported) return;
 
-			// Register
-			this.api('sw/register', {
-				endpoint: subscription.endpoint,
-				auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))),
-				publickey: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh'))))
+		// Reject when not signed in to Misskey
+		if (!this.isSignedin) return;
+
+		// When service worker activated
+		navigator.serviceWorker.ready.then(registration => {
+			this.log('[sw] ready: ', registration);
+
+			this.swRegistration = registration;
+
+			// Options of pushManager.subscribe
+			const opts = {
+				// A boolean indicating that the returned push subscription
+				// will only be used for messages whose effect is made visible to the user.
+				userVisibleOnly: true
+			};
+
+			// Subscribe push notification
+			this.swRegistration.pushManager.subscribe(opts).then(subscription => {
+				this.log('[sw] Subscribe OK:', subscription);
+
+				function encode(buffer: ArrayBuffer) {
+					return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+				}
+
+				// Register
+				this.api('sw/register', {
+					endpoint: subscription.endpoint,
+					auth: encode(subscription.getKey('auth')),
+					publickey: encode(subscription.getKey('p256dh'))
+				});
+			}).then(() => {
+				this.logInfo('[sw] Server Stored Subscription.');
+			}).catch(err => {
+				this.logError('[sw] Subscribe Error:', err);
 			});
-		}).then(() => {
-			console.log('Server Stored Subscription.');
+		});
+
+		// The path of service worker script
+		const sw = `/sw.${VERSION}.${LANG}.js`;
+
+		// Register service worker
+		navigator.serviceWorker.register(sw).then(registration => {
+			// 登録成功
+			this.logInfo('[sw] Registration successful with scope: ', registration.scope);
 		}).catch(err => {
-			console.error('Subscribe Error:', err);
+			// 登録失敗 :(
+			this.logError('[sw] Registration failed: ', err);
 		});
 	}
 
