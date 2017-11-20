@@ -189,8 +189,8 @@ export default class MiOS extends EventEmitter {
 			// Register
 			this.api('sw/register', {
 				endpoint: subscription.endpoint,
-				auth: subscription.getKey('auth') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))) : '',
-				publickey: subscription.getKey('p256dh') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh')))) : ''
+				auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))),
+				publickey: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh'))))
 			});
 		}).then(() => {
 			console.log('Server Stored Subscription.');
