@@ -18,6 +18,8 @@ require('./common/tags');
 
 console.info(`Misskey v${VERSION} (葵 aoi)`);
 
+document.domain = CONFIG.host;
+
 { // Set lang attr
 	const html = document.documentElement;
 	html.setAttribute('lang', LANG);
@@ -30,8 +32,6 @@ console.info(`Misskey v${VERSION} (葵 aoi)`);
 	meta.setAttribute('content', '%i18n:common.misskey%');
 	head.appendChild(meta);
 }
-
-document.domain = CONFIG.host;
 
 // Set global configuration
 (riot as any).mixin({ CONFIG });
