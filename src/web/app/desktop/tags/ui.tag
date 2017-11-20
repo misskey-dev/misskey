@@ -214,7 +214,9 @@
 </mk-ui-header-post-button>
 
 <mk-ui-header-notifications>
-	<button class="header" data-active={ isOpen } onclick={ toggle } title="%i18n:desktop.tags.mk-ui-header-notifications.title%"><i class="fa fa-bell-o"></i></button>
+	<button data-active={ isOpen } onclick={ toggle } title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
+		<i class="fa fa-bell-o icon"></i><i class="fa fa-circle badge" if={ hasUnreadNotifications }></i>
+	</button>
 	<div class="notifications" if={ isOpen }>
 		<mk-notifications/>
 	</div>
@@ -223,7 +225,7 @@
 			display block
 			float left
 
-			> .header
+			> button
 				display block
 				margin 0
 				padding 0
@@ -243,9 +245,15 @@
 				&:active
 					color darken(#9eaba8, 30%)
 
-				> i
+				> .icon
 					font-size 1.2em
 					line-height 48px
+
+				> .badge
+					margin-left -5px
+					vertical-align super
+					font-size 10px
+					color $theme-color
 
 			> .notifications
 				display block
@@ -290,7 +298,52 @@
 	<script>
 		import contains from '../../common/scripts/contains';
 
+		this.mixin('i');
+		this.mixin('api');
+
+		if (this.SIGNIN) {
+			this.mixin('stream');
+			this.connection = this.stream.getConnection();
+			this.connectionId = this.stream.use();
+		}
+
 		this.isOpen = false;
+
+		this.on('mount', () => {
+			if (this.SIGNIN) {
+				this.connection.on('read_all_notifications', this.onReadAllNotifications);
+				this.connection.on('unread_notification', this.onUnreadNotification);
+
+				// Fetch count of unread notifications
+				this.api('notifications/get_unread_count').then(res => {
+					if (res.count > 0) {
+						this.update({
+							hasUnreadNotifications: true
+						});
+					}
+				});
+			}
+		});
+
+		this.on('unmount', () => {
+			if (this.SIGNIN) {
+				this.connection.off('read_all_notifications', this.onReadAllNotifications);
+				this.connection.off('unread_notification', this.onUnreadNotification);
+				this.stream.dispose(this.connectionId);
+			}
+		});
+
+		this.onReadAllNotifications = () => {
+			this.update({
+				hasUnreadNotifications: false
+			});
+		};
+
+		this.onUnreadNotification = () => {
+			this.update({
+				hasUnreadNotifications: true
+			});
+		};
 
 		this.toggle = () => {
 			this.isOpen ? this.close() : this.open();
@@ -424,9 +477,11 @@
 		this.mixin('i');
 		this.mixin('api');
 
-		this.mixin('stream');
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
+		if (this.SIGNIN) {
+			this.mixin('stream');
+			this.connection = this.stream.getConnection();
+			this.connectionId = this.stream.use();
+		}
 
 		this.page = this.opts.page;
 
