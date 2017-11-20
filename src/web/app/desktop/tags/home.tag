@@ -206,6 +206,13 @@
 				}
 			});
 
+			if (this.refs.left.children.length == 0) {
+				this.refs.left.parentNode.removeChild(this.refs.left);
+			}
+			if (this.refs.right.children.length == 0) {
+				this.refs.right.parentNode.removeChild(this.refs.right);
+			}
+
 			if (this.opts.customize) {
 				dialog('<i class="fa fa-info-circle"></i>カスタマイズのヒント',
 					'<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
@@ -243,8 +250,8 @@
 			}
 
 			if (!this.opts.customize) {
-				this.scrollFollowerLeft = new ScrollFollower(this.refs.left, this.root.getBoundingClientRect().top);
-				this.scrollFollowerRight = new ScrollFollower(this.refs.right, this.root.getBoundingClientRect().top);
+				this.scrollFollowerLeft = this.refs.left.parentNode ? new ScrollFollower(this.refs.left, this.root.getBoundingClientRect().top) : null;
+				this.scrollFollowerRight = this.refs.right.parentNode ? new ScrollFollower(this.refs.right, this.root.getBoundingClientRect().top) : null;
 			}
 		});
 
@@ -254,8 +261,8 @@
 			});
 
 			if (!this.opts.customize) {
-				this.scrollFollowerLeft.dispose();
-				this.scrollFollowerRight.dispose();
+				if (this.scrollFollowerLeft) this.scrollFollowerLeft.dispose();
+				if (this.scrollFollowerRight) this.scrollFollowerRight.dispose();
 			}
 		});
 
