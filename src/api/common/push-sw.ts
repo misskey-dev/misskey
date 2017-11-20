@@ -3,9 +3,13 @@ import * as mongo from 'mongodb';
 import Subscription from '../models/sw-subscription';
 import config from '../../conf';
 
-push.setGCMAPIKey(config.sw.gcm_api_key);
+if (config.sw) {
+	push.setGCMAPIKey(config.sw.gcm_api_key);
+}
 
 export default async function(userId: mongo.ObjectID | string, type, body?) {
+	if (!config.sw) return;
+
 	if (typeof userId === 'string') {
 		userId = new mongo.ObjectID(userId);
 	}
