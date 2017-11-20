@@ -1,9 +1,11 @@
-const Url = new URL(location.href);
+const _url = new URL(location.href);
 
-const isRoot = Url.host.split('.')[0] == 'misskey';
+const isRoot = _url.host == 'localhost'
+	? true
+	: _url.host.split('.')[0] == 'misskey';
 
-const host = isRoot ? Url.host : Url.host.substring(Url.host.indexOf('.') + 1, Url.host.length);
-const scheme = Url.protocol;
+const host = isRoot ? _url.host : _url.host.substring(_url.host.indexOf('.') + 1, _url.host.length);
+const scheme = _url.protocol;
 const url = `${scheme}//${host}`;
 const apiUrl = `${scheme}//api.${host}`;
 const chUrl = `${scheme}//ch.${host}`;

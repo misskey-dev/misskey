@@ -27,7 +27,9 @@
 	//   misskey.alice               => misskey
 	//   misskey.strawberry.pasta    => misskey
 	//   dev.misskey.arisu.tachibana => dev
-	let app = url.host.split('.')[0];
+	let app = url.host == 'localhost'
+		? 'misskey'
+		: url.host.split('.')[0];
 
 	// Detect the user language
 	// Note: The default language is English
