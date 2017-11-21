@@ -40,7 +40,7 @@ init(async (mios: MiOS) => {
 
 	// Start routing
 	route(mios);
-});
+}, true);
 
 function registerNotifications(stream: HomeStreamManager) {
 	if (stream == null) return;

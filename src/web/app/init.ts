@@ -52,8 +52,8 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default callback => {
-	const mios = new MiOS();
+export default (callback, sw = false) => {
+	const mios = new MiOS(sw);
 
 	mios.init(() => {
 		// ミックスイン初期化

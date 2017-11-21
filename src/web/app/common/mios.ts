@@ -52,8 +52,19 @@ export default class MiOS extends EventEmitter {
 	 */
 	private swRegistration: ServiceWorkerRegistration = null;
 
-	constructor() {
+	/**
+	 * Whether should register ServiceWorker
+	 */
+	private shouldRegisterSw: boolean;
+
+	/**
+	 * MiOSインスタンスを作成します
+	 * @param shouldRegisterSw ServiceWorkerを登録するかどうか
+	 */
+	constructor(shouldRegisterSw = false) {
 		super();
+
+		this.shouldRegisterSw = shouldRegisterSw;
 
 		//#region BIND
 		this.log = this.log.bind(this);
@@ -170,7 +181,7 @@ export default class MiOS extends EventEmitter {
 			//#region Post
 
 			// Init service worker
-			this.registerSw();
+			if (this.shouldRegisterSw) this.registerSw();
 
 			//#endregion
 		};

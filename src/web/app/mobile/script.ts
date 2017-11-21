@@ -19,4 +19,4 @@ init((mios: MiOS) => {
 
 	// Start routing
 	route(mios);
-});
+}, true);
