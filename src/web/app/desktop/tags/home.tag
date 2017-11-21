@@ -211,11 +211,13 @@
 				}
 			});
 
-			if (this.refs.left.children.length == 0) {
-				this.refs.left.parentNode.removeChild(this.refs.left);
-			}
-			if (this.refs.right.children.length == 0) {
-				this.refs.right.parentNode.removeChild(this.refs.right);
+			if (!this.opts.customize) {
+				if (this.refs.left.children.length == 0) {
+					this.refs.left.parentNode.removeChild(this.refs.left);
+				}
+				if (this.refs.right.children.length == 0) {
+					this.refs.right.parentNode.removeChild(this.refs.right);
+				}
 			}
 
 			if (this.opts.customize) {
