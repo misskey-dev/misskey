@@ -2,6 +2,10 @@ ChangeLog (Release Notes)
 =========================
 主に notable な changes を書いていきます
 
+3180 (2017/11/21)
+-----------------
+* バグ修正
+
 3177 (2017/11/21)
 -----------------
 * ServiceWorker support
