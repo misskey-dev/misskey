@@ -17,7 +17,7 @@ Key features
 * Automatically updated timeline
 * Private messages
 * Free 1GB storage for each all users
-* Machine learning
+* ServiceWorker support
 * Web API for third-party applications
 * No ads
 
