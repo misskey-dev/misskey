@@ -193,10 +193,15 @@
 
 		this.home = [];
 
+		this.bakeHomeData = () => JSON.stringify(this.I.client_settings.home);
+		this.bakedHomeData = this.bakeHomeData();
+
 		this.on('mount', () => {
 			this.refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 			});
+
+			this.I.on('refreshed', this.onMeRefreshed);
 
 			this.I.client_settings.home.forEach(widget => {
 				try {
@@ -256,6 +261,8 @@
 		});
 
 		this.on('unmount', () => {
+			this.I.off('refreshed', this.onMeRefreshed);
+
 			this.home.forEach(widget => {
 				widget.unmount();
 			});
@@ -265,6 +272,12 @@
 				if (this.scrollFollowerRight) this.scrollFollowerRight.dispose();
 			}
 		});
+
+		this.onMeRefreshed = () => {
+			if (this.bakedHomeData != this.bakeHomeData()) {
+				alert('別の場所でホームが編集されました。ページを再度読み込みすると編集が反映されます。');
+			}
+		};
 
 		this.setWidget = (widget, prepend = false) => {
 			const el = document.createElement(`mk-${widget.name}-home-widget`);
@@ -366,7 +379,6 @@
 			this.api('i/update_home', {
 				home: data
 			}).then(() => {
-				this.I.client_settings.home = data;
 				this.I.update();
 			});
 		};

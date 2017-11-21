@@ -198,6 +198,7 @@ export default class MiOS extends EventEmitter {
 			fetchme(cachedMe.token, freshData => {
 				Object.assign(cachedMe, freshData);
 				cachedMe.trigger('updated');
+				cachedMe.trigger('refreshed');
 			});
 		} else {
 			// Get token from cookie
