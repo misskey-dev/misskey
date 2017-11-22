@@ -1,4 +1,5 @@
 import getPostSummary from '../../../../common/get-post-summary';
+import getReactionEmoji from '../../../../common/get-reaction-emoji';
 
 type Notification = {
 	title: string;
@@ -36,6 +37,13 @@ export default function(type, data): Notification {
 			return {
 				title: `${data.user.name}さんが引用:`,
 				body: getPostSummary(data),
+				icon: data.user.avatar_url + '?thumbnail&size=64'
+			};
+
+		case 'reaction':
+			return {
+				title: `${data.user.name}: ${getReactionEmoji(data.reaction)}:`,
+				body: getPostSummary(data.post),
 				icon: data.user.avatar_url + '?thumbnail&size=64'
 			};
 
