@@ -1,5 +1,5 @@
 <mk-version-home-widget>
-	<p>ver { version } (葵 aoi)</p>
+	<p>ver { _VERSION_ } (葵 aoi)</p>
 	<style>
 		:scope
 			display block
@@ -16,7 +16,5 @@
 	</style>
 	<script>
 		this.mixin('widget');
-
-		this.version = VERSION;
 	</script>
 </mk-version-home-widget>

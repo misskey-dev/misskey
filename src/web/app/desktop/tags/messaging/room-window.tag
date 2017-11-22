@@ -19,11 +19,9 @@
 
 	</style>
 	<script>
-		import CONFIG from '../../../common/scripts/config';
-
 		this.user = this.opts.user;
 
-		this.popout = `${CONFIG.url}/i/messaging/${this.user.username}`;
+		this.popout = `${_URL_}/i/messaging/${this.user.username}`;
 
 		this.on('mount', () => {
 			this.refs.window.on('closed', () => {

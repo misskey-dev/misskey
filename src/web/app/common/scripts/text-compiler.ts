@@ -1,6 +1,7 @@
+declare const _URL_: string;
+
 import * as riot from 'riot';
 import * as pictograph from 'pictograph';
-import CONFIG from './config';
 
 const escape = text =>
 	text
@@ -26,7 +27,7 @@ export default (tokens, shouldBreak) => {
 			case 'link':
 				return `<a class="link" href="${escape(token.url)}" target="_blank" title="${escape(token.url)}">${escape(token.title)}</a>`;
 			case 'mention':
-				return `<a href="${CONFIG.url + '/' + escape(token.username)}" target="_blank" data-user-preview="${token.content}" ${me && me.username == token.username ? 'data-is-me' : ''}>${token.content}</a>`;
+				return `<a href="${_URL_ + '/' + escape(token.username)}" target="_blank" data-user-preview="${token.content}" ${me && me.username == token.username ? 'data-is-me' : ''}>${token.content}</a>`;
 			case 'hashtag': // TODO
 				return `<a>${escape(token.content)}</a>`;
 			case 'code':

@@ -11,8 +11,6 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 
-import config from '../conf';
-
 /**
  * Init app
  */
@@ -50,29 +48,7 @@ app.get(/^\/sw\.(.+?)\.js$/, (req, res) => res.sendFile(`${__dirname}/assets/sw.
 /**
  * Manifest
  */
-app.get('/manifest.json', (req, res) => {
-	const manifest = require((`${__dirname}/assets/manifest.json`));
-
-	// Service Worker
-	if (config.sw) {
-		manifest['gcm_sender_id'] = config.sw.gcm_sender_id;
-	}
-
-	res.send(manifest);
-});
-
-/**
- * Serve config
- */
-app.get('/config.json', (req, res) => {
-	const conf = {
-		recaptcha: {
-			siteKey: config.recaptcha.siteKey
-		}
-	};
-
-	res.send(conf);
-});
+app.get('/manifest.json', (req, res) => res.sendFile(`${__dirname}/assets/manifest.json`));
 
 /**
  * Common API

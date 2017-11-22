@@ -112,7 +112,7 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<p class="channel" if={ p.channel != null }><a href={ CONFIG.chUrl + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<p class="channel" if={ p.channel != null }><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
 					<a class="reply" if={ p.reply }>
 						<i class="fa fa-reply"></i>
 					</a>

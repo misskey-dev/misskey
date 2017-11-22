@@ -193,7 +193,7 @@
 <mk-channel-post>
 	<header>
 		<a class="index" onclick={ reply }>{ post.index }:</a>
-		<a class="name" href={ CONFIG.url + '/' + post.user.username }><b>{ post.user.name }</b></a>
+		<a class="name" href={ _URL_ + '/' + post.user.username }><b>{ post.user.name }</b></a>
 		<span>ID:<i>{ post.user.username }</i></span>
 	</header>
 	<div>

@@ -1,5 +1,6 @@
+declare const _API_URL_: string;
+
 import * as riot from 'riot';
-import CONFIG from '../../common/scripts/config';
 import dialog from './dialog';
 import api from '../../common/scripts/api';
 
@@ -44,7 +45,7 @@ export default (I, cb, file = null) => {
 		if (folder) data.append('folder_id', folder.id);
 
 		const xhr = new XMLHttpRequest();
-		xhr.open('POST', CONFIG.apiUrl + '/drive/files/create', true);
+		xhr.open('POST', _API_URL_ + '/drive/files/create', true);
 		xhr.onload = e => {
 			const file = JSON.parse((e.target as any).response);
 			progress.close();

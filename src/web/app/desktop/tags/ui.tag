@@ -379,7 +379,7 @@
 	<ul>
 		<virtual if={ SIGNIN }>
 			<li class="home { active: page == 'home' }">
-				<a href={ CONFIG.url }>
+				<a href={ _URL_ }>
 					<i class="fa fa-home"></i>
 					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
 				</a>
@@ -393,7 +393,7 @@
 			</li>
 		</virtual>
 		<li class="ch">
-			<a href={ CONFIG.chUrl } target="_blank">
+			<a href={ _CH_URL_ } target="_blank">
 				<i class="fa fa-television"></i>
 				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
 			</a>

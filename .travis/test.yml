@@ -22,5 +22,5 @@ elasticsearch:
   port: 9200
   pass: ''
 recaptcha:
-  siteKey: hima
-  secretKey: saku
+  site_key: hima
+  secret_key: saku

@@ -3,11 +3,12 @@ import * as riot from 'riot';
 import signout from './scripts/signout';
 import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
-import CONFIG from './scripts/config';
 import api from './scripts/api';
 
-declare var VERSION: string;
-declare var LANG: string;
+declare const _VERSION_: string;
+declare const _LANG_: string;
+declare const _API_URL_: string;
+declare const _SW_PUBLICKEY_: string;
 
 /**
  * Misskey Operating System
@@ -113,7 +114,7 @@ export default class MiOS extends EventEmitter {
 			}
 
 			// Fetch user
-			fetch(`${CONFIG.apiUrl}/i`, {
+			fetch(`${_API_URL_}/i`, {
 				method: 'POST',
 				body: JSON.stringify({
 					i: token
@@ -229,10 +230,15 @@ export default class MiOS extends EventEmitter {
 			this.swRegistration = registration;
 
 			// Options of pushManager.subscribe
+			// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 			const opts = {
 				// A boolean indicating that the returned push subscription
 				// will only be used for messages whose effect is made visible to the user.
-				userVisibleOnly: true
+				userVisibleOnly: true,
+
+				// A public key your push server will use to send
+				// messages to client apps via a push server.
+				applicationServerKey: urlBase64ToUint8Array(_SW_PUBLICKEY_)
 			};
 
 			// Subscribe push notification
@@ -257,7 +263,7 @@ export default class MiOS extends EventEmitter {
 		});
 
 		// The path of service worker script
-		const sw = `/sw.${VERSION}.${LANG}.js`;
+		const sw = `/sw.${_VERSION_}.${_LANG_}.js`;
 
 		// Register service worker
 		navigator.serviceWorker.register(sw).then(registration => {
@@ -309,4 +315,23 @@ export default class MiOS extends EventEmitter {
 			}
 		});
 	}
+}
+
+/**
+ * Convert the URL safe base64 string to a Uint8Array
+ * @param base64String base64 string
+ */
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+	const padding = '='.repeat((4 - base64String.length % 4) % 4);
+	const base64 = (base64String + padding)
+		.replace(/\-/g, '+')
+		.replace(/_/g, '/');
+
+	const rawData = window.atob(base64);
+	const outputArray = new Uint8Array(rawData.length);
+
+	for (let i = 0; i < rawData.length; ++i) {
+		outputArray[i] = rawData.charCodeAt(i);
+	}
+	return outputArray;
 }

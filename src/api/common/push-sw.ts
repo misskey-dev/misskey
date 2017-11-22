@@ -4,7 +4,11 @@ import Subscription from '../models/sw-subscription';
 import config from '../../conf';
 
 if (config.sw) {
-	push.setGCMAPIKey(config.sw.gcm_api_key);
+	// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
+	push.setVapidDetails(
+		config.maintainer.url,
+		config.sw.public_key,
+		config.sw.private_key);
 }
 
 export default async function(userId: mongo.ObjectID | string, type, body?) {

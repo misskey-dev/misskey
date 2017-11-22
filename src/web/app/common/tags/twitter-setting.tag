@@ -1,10 +1,10 @@
 <mk-twitter-setting>
-	<p>%i18n:common.tags.mk-twitter-setting.description%<a href={ CONFIG.aboutUrl + '/link-to-twitter' } target="_blank">%i18n:common.tags.mk-twitter-setting.detail%</a></p>
+	<p>%i18n:common.tags.mk-twitter-setting.description%<a href={ _ABOUT_URL_ + '/link-to-twitter' } target="_blank">%i18n:common.tags.mk-twitter-setting.detail%</a></p>
 	<p class="account" if={ I.twitter } title={ 'Twitter ID: ' + I.twitter.user_id }>%i18n:common.tags.mk-twitter-setting.connected-to%: <a href={ 'https://twitter.com/' + I.twitter.screen_name } target="_blank">@{ I.twitter.screen_name }</a></p>
 	<p>
-		<a href={ CONFIG.apiUrl + '/connect/twitter' } target="_blank" onclick={ connect }>{ I.twitter ? '%i18n:common.tags.mk-twitter-setting.reconnect%' : '%i18n:common.tags.mk-twitter-setting.connect%' }</a>
+		<a href={ _API_URL_ + '/connect/twitter' } target="_blank" onclick={ connect }>{ I.twitter ? '%i18n:common.tags.mk-twitter-setting.reconnect%' : '%i18n:common.tags.mk-twitter-setting.connect%' }</a>
 		<span if={ I.twitter }> or </span>
-		<a href={ CONFIG.apiUrl + '/disconnect/twitter' } target="_blank" if={ I.twitter } onclick={ disconnect }>%i18n:common.tags.mk-twitter-setting.disconnect%</a>
+		<a href={ _API_URL_ + '/disconnect/twitter' } target="_blank" if={ I.twitter } onclick={ disconnect }>%i18n:common.tags.mk-twitter-setting.disconnect%</a>
 	</p>
 	<p class="id" if={ I.twitter }>Twitter ID: { I.twitter.user_id }</p>
 	<style>
@@ -25,8 +25,6 @@
 				color #8899a6
 	</style>
 	<script>
-		import CONFIG from '../scripts/config';
-
 		this.mixin('i');
 
 		this.form = null;
@@ -47,7 +45,7 @@
 
 		this.connect = e => {
 			e.preventDefault();
-			this.form = window.open(CONFIG.apiUrl + '/connect/twitter',
+			this.form = window.open(_API_URL_ + '/connect/twitter',
 				'twitter_connect_window',
 				'height=570,width=520');
 			return false;
@@ -55,7 +53,7 @@
 
 		this.disconnect = e => {
 			e.preventDefault();
-			window.open(CONFIG.apiUrl + '/disconnect/twitter',
+			window.open(_API_URL_ + '/disconnect/twitter',
 				'twitter_disconnect_window',
 				'height=570,width=520');
 			return false;

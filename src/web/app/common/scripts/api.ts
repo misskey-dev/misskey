@@ -2,7 +2,7 @@
  * API Request
  */
 
-import CONFIG from './config';
+declare const _API_URL_: string;
 
 let spinner = null;
 let pending = 0;
@@ -26,7 +26,7 @@ export default (i, endpoint, data = {}): Promise<{ [x: string]: any }> => {
 
 	return new Promise((resolve, reject) => {
 		// Send request
-		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${CONFIG.apiUrl}/${endpoint}`, {
+		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${_API_URL_}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: endpoint === 'signin' ? 'include' : 'omit'

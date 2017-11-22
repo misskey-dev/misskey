@@ -3,7 +3,7 @@
 		<label class="username">
 			<p class="caption"><i class="fa fa-at"></i>%i18n:common.tags.mk-signup.username%</p>
 			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required="required" onkeyup={ onChangeUsername }/>
-			<p class="profile-page-url-preview" if={ refs.username.value != '' && username-state != 'invalidFormat' && username-state != 'minRange' && username-state != 'maxRange' }>{ CONFIG.url + '/' + refs.username.value }</p>
+			<p class="profile-page-url-preview" if={ refs.username.value != '' && username-state != 'invalidFormat' && username-state != 'minRange' && username-state != 'maxRange' }>{ _URL_ + '/' + refs.username.value }</p>
 			<p class="info" if={ usernameState == 'wait' } style="color:#999"><i class="fa fa-fw fa-spinner fa-pulse"></i>%i18n:common.tags.mk-signup.checking%</p>
 			<p class="info" if={ usernameState == 'ok' } style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>%i18n:common.tags.mk-signup.available%</p>
 			<p class="info" if={ usernameState == 'unavailable' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.unavailable%</p>
@@ -30,7 +30,7 @@
 		</label>
 		<label class="recaptcha">
 			<p class="caption"><i class="fa fa-toggle-on" if={ recaptchaed }></i><i class="fa fa-toggle-off" if={ !recaptchaed }></i>%i18n:common.tags.mk-signup.recaptcha%</p>
-			<div if={ recaptcha } class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" data-sitekey={ recaptcha.siteKey }></div>
+			<div if={ recaptcha } class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" data-sitekey={ recaptcha.site_key }></div>
 		</label>
 		<label class="agree-tou">
 			<input name="agree-tou" type="checkbox" autocomplete="off" required="required"/>
@@ -193,20 +193,16 @@
 		};
 
 		this.on('mount', () => {
-			fetch('/config.json').then(res => {
-				res.json().then(conf => {
-					this.update({
-						recaptcha: {
-							siteKey: conf.recaptcha.siteKey
-						}
-					});
-
-					const head = document.getElementsByTagName('head')[0];
-					const script = document.createElement('script');
-					script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
-					head.appendChild(script);
-				});
+			this.update({
+				recaptcha: {
+					site_key: _RECAPTCHA_SITEKEY_
+				}
 			});
+
+			const head = document.getElementsByTagName('head')[0];
+			const script = document.createElement('script');
+			script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
+			head.appendChild(script);
 		});
 
 		this.onChangeUsername = () => {

@@ -3,7 +3,6 @@
  */
 
 import * as fs from 'fs';
-import * as URL from 'url';
 import * as yaml from 'js-yaml';
 import isUrl = require('is-url');
 
@@ -23,7 +22,19 @@ export const path = process.env.NODE_ENV == 'test'
  * ユーザーが設定する必要のある情報
  */
 type Source = {
-	maintainer: string;
+	/**
+	 * メンテナ情報
+	 */
+	maintainer: {
+		/**
+		 * メンテナの名前
+		 */
+		name: string;
+		/**
+		 * メンテナの連絡先(URLかmailto形式のURL)
+		 */
+		url: string;
+	};
 	url: string;
 	secondary_url: string;
 	port: number;
@@ -52,8 +63,8 @@ type Source = {
 		pass: string;
 	};
 	recaptcha: {
-		siteKey: string;
-		secretKey: string;
+		site_key: string;
+		secret_key: string;
 	};
 	accesslog?: string;
 	accesses?: {
@@ -80,8 +91,8 @@ type Source = {
 	 * Service Worker
 	 */
 	sw?: {
-		gcm_sender_id: string;
-		gcm_api_key: string;
+		public_key: string;
+		private_key: string;
 	};
 };
 
@@ -113,14 +124,6 @@ export default function load() {
 	// Validate URLs
 	if (!isUrl(config.url)) urlError(config.url);
 	if (!isUrl(config.secondary_url)) urlError(config.secondary_url);
-
-	const url = URL.parse(config.url);
-	const head = url.host.split('.')[0];
-
-	if (head != 'misskey' && head != 'localhost') {
-		console.error(`プライマリドメインは、必ず「misskey」ドメインで始まっていなければなりません(現在の設定では「${head}」で始まっています)。例えば「https://misskey.xyz」「http://misskey.my.app.example.com」などが正しいプライマリURLです。`);
-		process.exit();
-	}
 
 	config.url = normalizeUrl(config.url);
 	config.secondary_url = normalizeUrl(config.secondary_url);

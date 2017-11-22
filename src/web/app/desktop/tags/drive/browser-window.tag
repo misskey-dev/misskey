@@ -28,8 +28,6 @@
 
 	</style>
 	<script>
-		import CONFIG from '../../../common/scripts/config';
-
 		this.mixin('api');
 
 		this.folder = this.opts.folder ? this.opts.folder : null;
@@ -37,9 +35,9 @@
 		this.popout = () => {
 			const folder = this.refs.window.refs.browser.folder;
 			if (folder) {
-				return `${CONFIG.url}/i/drive/folder/${folder.id}`;
+				return `${_URL_}/i/drive/folder/${folder.id}`;
 			} else {
-				return `${CONFIG.url}/i/drive`;
+				return `${_URL_}/i/drive`;
 			}
 		};
 

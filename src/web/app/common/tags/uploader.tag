@@ -172,7 +172,7 @@
 			if (folder) data.append('folder_id', folder);
 
 			const xhr = new XMLHttpRequest();
-			xhr.open('POST', this.CONFIG.apiUrl + '/drive/files/create', true);
+			xhr.open('POST', _API_URL_ + '/drive/files/create', true);
 			xhr.onload = e => {
 				const driveFile = JSON.parse(e.target.response);
 

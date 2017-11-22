@@ -37,6 +37,15 @@ Misskeyは以下のサブドメインを使います:
 MisskeyはreCAPTCHAトークンを必要とします。
 https://www.google.com/recaptcha/intro/ にアクセスしてトークンを生成してください。
 
+*(オプション)* VAPIDキーペアの生成
+----------------------------------------------------------------
+ServiceWorkerを有効にする場合、VAPIDキーペアを生成する必要があります:
+
+``` shell
+npm install web-push -g
+web-push generate-vapid-keys
+```
+
 *3.* 依存関係をインストールする
 ----------------------------------------------------------------
 これらのソフトウェアをインストール・設定してください:
@@ -52,26 +61,6 @@ https://www.google.com/recaptcha/intro/ にアクセスしてトークンを生�
 
 *4.* Misskeyのインストール
 ----------------------------------------------------------------
-Misskeyをインストールするには**2つの方法**があります:
-
-### 方法 1) ビルドされたコードを利用する (推奨)
-Misskeyには公式のリリースがあります。
-ビルドされたコードはCIテストに合格した後、自動で https://github.com/syuilo/misskey/tree/release にpushされています。
-
-1. `git clone -b release git://github.com/syuilo/misskey.git`
-2. `cd misskey`
-3. `npm install`
-
-#### アップデートするには:
-1. `git fetch`
-2. `git reset --hard origin/release`
-3. `npm install`
-
-### 方法 2) ソースコードを利用する
-> 注: この方法では正しくビルド・動作できることは保証されません。
-
-Misskeyを手動でビルドしたい場合は、Misskeyのソースコードと依存関係をインストールした後、
-`build`コマンドを用いることができます:
 
 1. `git clone -b master git://github.com/syuilo/misskey.git`
 2. `cd misskey`

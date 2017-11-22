@@ -72,7 +72,7 @@
 				const length = Math.min(canvW, canvH) / 4;
 				const uv = new Vec2(Math.sin(angle), -Math.cos(angle));
 				ctx.beginPath();
-				ctx.strokeStyle = THEME_COLOR;
+				ctx.strokeStyle = _THEME_COLOR_;
 				ctx.lineWidth = 2;
 				ctx.moveTo(canvW / 2 - uv.x * length / 5, canvH / 2 - uv.y * length / 5);
 				ctx.lineTo(canvW / 2 + uv.x * length,     canvH / 2 + uv.y * length);

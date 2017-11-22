@@ -4,7 +4,7 @@
 		<mk-users stats={ stats }/>
 		<mk-posts stats={ stats }/>
 	</main>
-	<footer><a href={ CONFIG.url }>{ CONFIG.host }</a></footer>
+	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
 	<style>
 		:scope
 			display block

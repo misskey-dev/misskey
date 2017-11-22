@@ -2,13 +2,12 @@
  * App initializer
  */
 
-declare var VERSION: string;
-declare var LANG: string;
+declare const _VERSION_: string;
+declare const _LANG_: string;
+declare const _HOST_: string;
 
-import * as riot from 'riot';
 import checkForUpdate from './common/scripts/check-for-update';
 import mixin from './common/mixins';
-import CONFIG from './common/scripts/config';
 import MiOS from './common/mios';
 require('./common/tags');
 
@@ -16,15 +15,15 @@ require('./common/tags');
  * APP ENTRY POINT!
  */
 
-console.info(`Misskey v${VERSION} (葵 aoi)`);
+console.info(`Misskey v${_VERSION_} (葵 aoi)`);
 
-if (CONFIG.host != 'localhost') {
-	document.domain = CONFIG.host;
+if (_HOST_ != 'localhost') {
+	document.domain = _HOST_;
 }
 
 { // Set lang attr
 	const html = document.documentElement;
-	html.setAttribute('lang', LANG);
+	html.setAttribute('lang', _LANG_);
 }
 
 { // Set description meta tag
@@ -34,9 +33,6 @@ if (CONFIG.host != 'localhost') {
 	meta.setAttribute('content', '%i18n:common.misskey%');
 	head.appendChild(meta);
 }
-
-// Set global configuration
-(riot as any).mixin({ CONFIG });
 
 // iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
@@ -94,7 +90,7 @@ function panic(e) {
 			+ '<hr>'
 			+ `<p>エラーコード: ${e.toString()}</p>`
 			+ `<p>ブラウザ バージョン: ${navigator.userAgent}</p>`
-			+ `<p>クライアント バージョン: ${VERSION}</p>`
+			+ `<p>クライアント バージョン: ${_VERSION_}</p>`
 			+ '<hr>'
 			+ '<p>問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>'
 			+ '<p>Thank you for using Misskey.</p>'

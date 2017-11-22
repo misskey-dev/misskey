@@ -9,7 +9,7 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../conf';
 
 recaptcha.init({
-	secret_key: config.recaptcha.secretKey
+	secret_key: config.recaptcha.secret_key
 });
 
 const home = {

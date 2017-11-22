@@ -114,8 +114,8 @@
 				let broadcasts = [];
 				if (meta.broadcasts) {
 					meta.broadcasts.forEach(broadcast => {
-						if (broadcast[LANG]) {
-							broadcasts.push(broadcast[LANG]);
+						if (broadcast[_LANG_]) {
+							broadcasts.push(broadcast[_LANG_]);
 						}
 					});
 				}

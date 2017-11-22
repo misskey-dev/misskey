@@ -5,7 +5,7 @@
 		<mk-cpu-usage connection={ connection }/>
 		<mk-mem-usage connection={ connection }/>
 	</main>
-	<footer><a href={ CONFIG.url }>{ CONFIG.host }</a></footer>
+	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
 	<style>
 		:scope
 			display block
