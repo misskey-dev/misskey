@@ -5,10 +5,12 @@ import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
 import api from './scripts/api';
 
+//#region environment variables
 declare const _VERSION_: string;
 declare const _LANG_: string;
 declare const _API_URL_: string;
 declare const _SW_PUBLICKEY_: string;
+//#endregion
 
 /**
  * Misskey Operating System
