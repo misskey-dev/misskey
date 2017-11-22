@@ -42,6 +42,9 @@ app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
 
+/**
+ * ServiceWroker
+ */
 app.get(/^\/sw\.(.+?)\.js$/, (req, res) => res.sendFile(`${__dirname}/assets/sw.${req.params[0]}.js`));
 
 /**
