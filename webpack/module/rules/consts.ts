@@ -12,7 +12,7 @@ export default lang => {
 	// 置換の誤爆を防ぐため文字数の多い順に並べてください
 	const consts = {
 		_RECAPTCHA_SITEKEY_: JSON.stringify(config.recaptcha.site_key),
-		_SW_PUBLICKEY_: JSON.stringify(config.sw.public_key),
+		_SW_PUBLICKEY_: config.sw ? JSON.stringify(config.sw.public_key) : JSON.stringify(null),
 		_THEME_COLOR_: JSON.stringify(constants.themeColor),
 		_VERSION_: JSON.stringify(version),
 		_STATUS_URL_: JSON.stringify(config.status_url),
