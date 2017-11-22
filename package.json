@@ -117,7 +117,7 @@
 		"escape-regexp": "0.0.1",
 		"eventemitter3": "^2.0.3",
 		"express": "4.15.4",
-		"file-type": "7.2.0",
+		"file-type": "7.3.0",
 		"fuckadblock": "3.2.1",
 		"gm": "1.23.0",
 		"inquirer": "3.3.0",
