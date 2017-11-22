@@ -21,7 +21,7 @@
 		"test": "gulp test",
 		"format": "gulp format"
 	},
-	"devDependencies": {
+	"dependencies": {
 		"@types/bcryptjs": "2.4.1",
 		"@types/body-parser": "1.16.7",
 		"@types/chai": "4.0.4",
@@ -94,9 +94,7 @@
 		"tslint": "5.8.0",
 		"uglify-es": "3.1.8",
 		"uglifyjs-webpack-plugin": "1.1.0",
-		"webpack": "3.8.1"
-	},
-	"dependencies": {
+		"webpack": "3.8.1",
 		"@prezzemolo/rap": "0.1.2",
 		"@prezzemolo/zip": "0.0.3",
 		"accesses": "2.5.0",
