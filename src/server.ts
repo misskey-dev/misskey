@@ -3,8 +3,7 @@
  */
 
 import * as fs from 'fs';
-import * as http from 'http';
-import * as https from 'https';
+import * as http2 from 'http2';
 import * as cluster from 'cluster';
 import * as express from 'express';
 import * as morgan from 'morgan';
@@ -62,12 +61,12 @@ app.use(require('./web/server'));
  * Create server
  */
 const server = config.https.enable ?
-	https.createServer({
+	http2.createSecureServer({
 		key:  fs.readFileSync(config.https.key),
 		cert: fs.readFileSync(config.https.cert),
 		ca:   fs.readFileSync(config.https.ca)
 	}, app) :
-	http.createServer(app);
+	http2.createServer(app);
 
 /**
  * Steaming
