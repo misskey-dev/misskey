@@ -257,8 +257,14 @@ export default class MiOS extends EventEmitter {
 				});
 			}).then(() => {
 				this.logInfo('[sw] Server Stored Subscription.');
-			}).catch(err => {
+			}).catch(async (err) => {
 				this.logError('[sw] Subscribe Error:', err);
+
+				// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
+				// 既に存在していることが原因でエラーになった可能性があるので、
+				// そのサブスクリプションを解除しておく
+				const subscription = await this.swRegistration.pushManager.getSubscription();
+				if (subscription) subscription.unsubscribe();
 			});
 		});
 
