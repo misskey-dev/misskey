@@ -1,5 +1,4 @@
 import i18n from './i18n';
-import consts from './consts';
 import base64 from './base64';
 import themeColor from './theme-color';
 import tag from './tag';
@@ -8,7 +7,6 @@ import typescript from './typescript';
 
 export default (lang, locale) => [
 	i18n(lang, locale),
-	consts(lang),
 	base64(),
 	themeColor(),
 	tag(),

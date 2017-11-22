@@ -5,7 +5,9 @@
 declare const _VERSION_: string;
 declare const _LANG_: string;
 declare const _HOST_: string;
+declare const __CONSTS__: any;
 
+import * as riot from 'riot';
 import checkForUpdate from './common/scripts/check-for-update';
 import mixin from './common/mixins';
 import MiOS from './common/mios';
@@ -33,6 +35,9 @@ if (_HOST_ != 'localhost') {
 	meta.setAttribute('content', '%i18n:common.misskey%');
 	head.appendChild(meta);
 }
+
+// Set global configuration
+(riot as any).mixin(__CONSTS__);
 
 // iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
