@@ -157,6 +157,7 @@
 		</h1>
 		<mk-signin ref="signin"/>
 	</div>
+	<a href={ _API_URL_ + '/signin/twitter' }>Twitterでサインイン</a>
 	<div class="divider"><span>or</span></div>
 	<button class="signup" onclick={ parent.signup }>新規登録</button><a class="introduction" onclick={ introduction }>Misskeyについて</a>
 	<style>

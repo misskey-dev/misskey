@@ -4,7 +4,7 @@ import { default as User, IUser } from '../models/user';
 import Signin from '../models/signin';
 import serialize from '../serializers/signin';
 import event from '../event';
-import config from '../../conf';
+import signin from '../common/signin';
 
 export default async (req: express.Request, res: express.Response) => {
 	res.header('Access-Control-Allow-Credentials', 'true');
@@ -43,17 +43,7 @@ export default async (req: express.Request, res: express.Response) => {
 	const same = await bcrypt.compare(password, user.password);
 
 	if (same) {
-		const expires = 1000 * 60 * 60 * 24 * 365; // One Year
-		res.cookie('i', user.token, {
-			path: '/',
-			domain: `.${config.host}`,
-			secure: config.url.substr(0, 5) === 'https',
-			httpOnly: false,
-			expires: new Date(Date.now() + expires),
-			maxAge: expires
-		});
-
-		res.sendStatus(204);
+		signin(res, user, false);
 	} else {
 		res.status(400).send({
 			error: 'incorrect password'
