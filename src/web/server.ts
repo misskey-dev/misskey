@@ -43,12 +43,14 @@ app.use('/assets', express.static(`${__dirname}/assets`, {
 /**
  * ServiceWroker
  */
-app.get(/^\/sw\.(.+?)\.js$/, (req, res) => res.sendFile(`${__dirname}/assets/sw.${req.params[0]}.js`));
+app.get(/^\/sw\.(.+?)\.js$/, (req, res) =>
+	res.sendFile(`${__dirname}/assets/sw.${req.params[0]}.js`));
 
 /**
  * Manifest
  */
-app.get('/manifest.json', (req, res) => res.sendFile(`${__dirname}/assets/manifest.json`));
+app.get('/manifest.json', (req, res) =>
+	res.sendFile(`${__dirname}/assets/manifest.json`));
 
 /**
  * Common API
