@@ -257,10 +257,16 @@ export default class MiOS extends EventEmitter {
 					auth: encode(subscription.getKey('auth')),
 					publickey: encode(subscription.getKey('p256dh'))
 				});
-			}).then(() => {
-				this.logInfo('[sw] Server Stored Subscription.');
-			}).catch(async (err) => {
+			})
+			// When subscribe failed
+			.catch(async (err: Error) => {
 				this.logError('[sw] Subscribe Error:', err);
+
+				// 通知が許可されていなかったとき
+				if (err.name == 'NotAllowedError') {
+					this.logError('[sw] Subscribe failed due to notification not allowed');
+					return;
+				}
 
 				// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
 				// 既に存在していることが原因でエラーになった可能性があるので、
