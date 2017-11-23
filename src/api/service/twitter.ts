@@ -49,12 +49,6 @@ module.exports = (app: express.Application) => {
 		callbackUrl: `${config.api_url}/tw/cb`
 	});
 
-	const twAuthSignin = autwh({
-		consumerKey: config.twitter.consumer_key,
-		consumerSecret: config.twitter.consumer_secret,
-		callbackUrl: `${config.api_url}/signin/twitter/cb`
-	});
-
 	app.get('/connect/twitter', async (req, res): Promise<any> => {
 		if (res.locals.user == null) return res.send('plz signin');
 		const ctx = await twAuth.begin();
@@ -62,36 +56,8 @@ module.exports = (app: express.Application) => {
 		res.redirect(ctx.url);
 	});
 
-	app.get('/tw/cb', (req, res): any => {
-		if (res.locals.user == null) return res.send('plz signin');
-		redis.get(res.locals.user, async (_, ctx) => {
-			const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
-
-			const user = await User.findOneAndUpdate({
-				token: res.locals.user
-			}, {
-				$set: {
-					twitter: {
-						access_token: result.accessToken,
-						access_token_secret: result.accessTokenSecret,
-						user_id: result.userId,
-						screen_name: result.screenName
-					}
-				}
-			});
-
-			res.send(`Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`);
-
-			// Publish i updated event
-			event(user._id, 'i_updated', await serialize(user, user, {
-				detail: true,
-				includeSecrets: true
-			}));
-		});
-	});
-
 	app.get('/signin/twitter', async (req, res): Promise<any> => {
-		const ctx = await twAuthSignin.begin();
+		const ctx = await twAuth.begin();
 
 		const sessid = uuid();
 
@@ -110,29 +76,56 @@ module.exports = (app: express.Application) => {
 		res.redirect(ctx.url);
 	});
 
-	app.get('/signin/twitter/cb', (req, res): any => {
-		// req.headers['cookie'] は常に string ですが、型定義の都合上
-		// string | string[] になっているので string を明示しています
-		const cookies = cookie.parse((req.headers['cookie'] as string || ''));
+	app.get('/tw/cb', (req, res): any => {
+		if (res.locals.user == null) {
+			// req.headers['cookie'] は常に string ですが、型定義の都合上
+			// string | string[] になっているので string を明示しています
+			const cookies = cookie.parse((req.headers['cookie'] as string || ''));
 
-		const sessid = cookies['signin_with_twitter_session_id'];
+			const sessid = cookies['signin_with_twitter_session_id'];
 
-		if (sessid == undefined) {
-			res.status(400).send('invalid session');
-		}
-
-		redis.get(sessid, async (_, ctx) => {
-			const result = await twAuthSignin.done(JSON.parse(ctx), req.query.oauth_verifier);
-
-			const user = await User.findOne({
-				'twitter.user_id': result.userId
-			});
-
-			if (user == null) {
-				res.status(404).send(`@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
+			if (sessid == undefined) {
+				res.status(400).send('invalid session');
 			}
 
-			signin(res, user, true);
-		});
+			redis.get(sessid, async (_, ctx) => {
+				const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
+
+				const user = await User.findOne({
+					'twitter.user_id': result.userId
+				});
+
+				if (user == null) {
+					res.status(404).send(`@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
+				}
+
+				signin(res, user, true);
+			});
+		} else {
+			redis.get(res.locals.user, async (_, ctx) => {
+				const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
+
+				const user = await User.findOneAndUpdate({
+					token: res.locals.user
+				}, {
+					$set: {
+						twitter: {
+							access_token: result.accessToken,
+							access_token_secret: result.accessTokenSecret,
+							user_id: result.userId,
+							screen_name: result.screenName
+						}
+					}
+				});
+
+				res.send(`Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`);
+
+				// Publish i updated event
+				event(user._id, 'i_updated', await serialize(user, user, {
+					detail: true,
+					includeSecrets: true
+				}));
+			});
+		}
 	});
 };
