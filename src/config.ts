@@ -38,12 +38,7 @@ type Source = {
 	url: string;
 	secondary_url: string;
 	port: number;
-	https: {
-		enable: boolean;
-		key: string;
-		cert: string;
-		ca: string;
-	};
+	https?: { [x: string]: string };
 	mongodb: {
 		host: string;
 		port: number;

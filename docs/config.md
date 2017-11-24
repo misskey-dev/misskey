@@ -16,14 +16,11 @@ secondary_url:
 # 待受ポート
 port:
 
-# TLSの設定
+# TLSの設定(利用しない場合は省略可能)
 https:
-  # TLSを有効にするか否か
-  enable: false
-
-  key: null
-  cert: null
-  ca: null
+  # 証明書のパス...
+  key:
+  cert:
 
 # MongoDBの設定
 mongodb:

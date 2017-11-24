@@ -61,13 +61,17 @@ app.use(require('./web/server'));
 /**
  * Create server
  */
-const server = config.https.enable ?
-	https.createServer({
-		key:  fs.readFileSync(config.https.key),
-		cert: fs.readFileSync(config.https.cert),
-		ca:   fs.readFileSync(config.https.ca)
-	}, app) :
-	http.createServer(app);
+const server = (() => {
+	if (config.https) {
+		const certs = {};
+		Object.keys(config.https).forEach(k => {
+			certs[k] = fs.readFileSync(config.https[k]);
+		});
+		return https.createServer(certs, app);
+	} else {
+		return http.createServer(app);
+	}
+})();
 
 /**
  * Steaming
