@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import { default as Channel, IChannel } from '../../models/channel';
-import { default as Post, IPost } from '../../models/post';
+import Post from '../../models/post';
 import serialize from '../../serializers/post';
 
 /**
