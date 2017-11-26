@@ -11,6 +11,7 @@ import * as morgan from 'morgan';
 import Accesses from 'accesses';
 import vhost = require('vhost');
 
+import log from './log-request';
 import config from './conf';
 
 /**
@@ -35,7 +36,12 @@ app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev', {
 	stream: config.accesslog ? fs.createWriteStream(config.accesslog) : null
 }));
 
-// Drop request that without 'Host' header
+app.use((req, res, next) => {
+	log(req);
+	next();
+});
+
+// Drop request when without 'Host' header
 app.use((req, res, next) => {
 	if (!req.headers['host']) {
 		res.sendStatus(400);
@@ -55,13 +61,17 @@ app.use(require('./web/server'));
 /**
  * Create server
  */
-const server = config.https.enable ?
-	https.createServer({
-		key:  fs.readFileSync(config.https.key),
-		cert: fs.readFileSync(config.https.cert),
-		ca:   fs.readFileSync(config.https.ca)
-	}, app) :
-	http.createServer(app);
+const server = (() => {
+	if (config.https) {
+		const certs = {};
+		Object.keys(config.https).forEach(k => {
+			certs[k] = fs.readFileSync(config.https[k]);
+		});
+		return https.createServer(certs, app);
+	} else {
+		return http.createServer(app);
+	}
+})();
 
 /**
  * Steaming

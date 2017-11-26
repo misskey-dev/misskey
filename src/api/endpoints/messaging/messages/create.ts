@@ -9,7 +9,7 @@ import User from '../../../models/user';
 import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
-import { publishMessagingStream } from '../../../event';
+import { publishMessagingStream, publishMessagingIndexStream, pushSw } from '../../../event';
 import config from '../../../../conf';
 
 /**
@@ -54,9 +54,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (fileId !== undefined) {
 		file = await DriveFile.findOne({
 			_id: fileId,
-			user_id: user._id
-		}, {
-			data: false
+			'metadata.user_id': user._id
 		});
 
 		if (file === null) {
@@ -87,10 +85,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// 自分のストリーム
 	publishMessagingStream(message.user_id, message.recipient_id, 'message', messageObj);
+	publishMessagingIndexStream(message.user_id, 'message', messageObj);
 	publishUserStream(message.user_id, 'messaging_message', messageObj);
 
 	// 相手のストリーム
 	publishMessagingStream(message.recipient_id, message.user_id, 'message', messageObj);
+	publishMessagingIndexStream(message.recipient_id, 'message', messageObj);
 	publishUserStream(message.recipient_id, 'messaging_message', messageObj);
 
 	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
@@ -98,6 +98,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
 		if (!freshMessage.is_read) {
 			publishUserStream(message.recipient_id, 'unread_messaging_message', messageObj);
+			pushSw(message.recipient_id, 'unread_messaging_message', messageObj);
 		}
 	}, 3000);
 

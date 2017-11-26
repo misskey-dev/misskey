@@ -46,7 +46,8 @@ describe('API', () => {
 	beforeEach(() => Promise.all([
 		db.get('users').drop(),
 		db.get('posts').drop(),
-		db.get('drive_files').drop(),
+		db.get('drive_files.files').drop(),
+		db.get('drive_files.chunks').drop(),
 		db.get('drive_folders').drop(),
 		db.get('apps').drop(),
 		db.get('access_tokens').drop(),
@@ -1131,41 +1132,47 @@ describe('API', () => {
 	});
 });
 
-async function insertSakurako(opts) {
-	return await db.get('users').insert(Object.assign({
+function insertSakurako(opts) {
+	return db.get('users').insert(Object.assign({
 		token: '!00000000000000000000000000000000',
 		username: 'sakurako',
 		username_lower: 'sakurako',
 		password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy', // HimawariDaisuki06160907
-		profile: {}
+		profile: {},
+		settings: {},
+		client_settings: {}
 	}, opts));
 }
 
-async function insertHimawari(opts) {
-	return await db.get('users').insert(Object.assign({
+function insertHimawari(opts) {
+	return db.get('users').insert(Object.assign({
 		token: '!00000000000000000000000000000001',
 		username: 'himawari',
 		username_lower: 'himawari',
 		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O', // ilovesakurako
-		profile: {}
+		profile: {},
+		settings: {},
+		client_settings: {}
 	}, opts));
 }
 
-async function insertDriveFile(opts) {
-	return await db.get('drive_files').insert(Object.assign({
-		name: 'strawberry-pasta.png'
-	}, opts));
+function insertDriveFile(opts) {
+	return db.get('drive_files.files').insert({
+		length: opts.datasize,
+		filename: 'strawberry-pasta.png',
+		metadata: opts
+	});
 }
 
-async function insertDriveFolder(opts) {
-	return await db.get('drive_folders').insert(Object.assign({
+function insertDriveFolder(opts) {
+	return db.get('drive_folders').insert(Object.assign({
 		name: 'my folder',
 		parent_id: null
 	}, opts));
 }
 
-async function insertApp(opts) {
-	return await db.get('apps').insert(Object.assign({
+function insertApp(opts) {
+	return db.get('apps').insert(Object.assign({
 		name: 'my app',
 		secret: 'mysecret'
 	}, opts));

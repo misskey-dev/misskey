@@ -3,12 +3,18 @@
 	<div class="loading" if={ isLoading }>
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" if={ isEmpty }><i class="fa fa-comments-o"></i>自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
-	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i></yield/>
+	<p class="empty" if={ isEmpty && !isLoading }><i class="fa fa-comments-o"></i>自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
+	<mk-timeline ref="timeline" hide={ isLoading }>
+		<yield to="footer">
+			<i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i>
+		</yield/>
+	</mk-timeline>
 	<style>
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			> mk-following-setuper
 				border-bottom solid 1px #eee
@@ -34,7 +40,10 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.isLoading = true;
 		this.isEmpty = false;
@@ -42,9 +51,9 @@
 		this.noFollowing = this.I.following_count == 0;
 
 		this.on('mount', () => {
-			this.stream.on('post', this.onStreamPost);
-			this.stream.on('follow', this.onStreamFollow);
-			this.stream.on('unfollow', this.onStreamUnfollow);
+			this.connection.on('post', this.onStreamPost);
+			this.connection.on('follow', this.onStreamFollow);
+			this.connection.on('unfollow', this.onStreamUnfollow);
 
 			document.addEventListener('keydown', this.onDocumentKeydown);
 			window.addEventListener('scroll', this.onScroll);
@@ -53,9 +62,10 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('post', this.onStreamPost);
-			this.stream.off('follow', this.onStreamFollow);
-			this.stream.off('unfollow', this.onStreamUnfollow);
+			this.connection.off('post', this.onStreamPost);
+			this.connection.off('follow', this.onStreamFollow);
+			this.connection.off('unfollow', this.onStreamUnfollow);
+			this.stream.dispose(this.connectionId);
 
 			document.removeEventListener('keydown', this.onDocumentKeydown);
 			window.removeEventListener('scroll', this.onScroll);
@@ -70,7 +80,13 @@
 		};
 
 		this.load = (cb) => {
-			this.api('posts/timeline').then(posts => {
+			this.update({
+				isLoading: true
+			});
+
+			this.api('posts/timeline', {
+				max_date: this.date ? this.date.getTime() : undefined
+			}).then(posts => {
 				this.update({
 					isLoading: false,
 					isEmpty: posts.length == 0
@@ -113,6 +129,14 @@
 		this.onScroll = () => {
 			const current = window.scrollY + window.innerHeight;
 			if (current > document.body.offsetHeight - 8) this.more();
+		};
+
+		this.warp = date => {
+			this.update({
+				date: date
+			});
+
+			this.load();
 		};
 	</script>
 </mk-timeline-home-widget>

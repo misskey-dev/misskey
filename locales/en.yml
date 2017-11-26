@@ -13,6 +13,15 @@ common:
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
 
+  weekday-short:
+    sunday: "S"
+    monday: "M"
+    tuesday: "T"
+    wednesday: "W"
+    thursday: "T"
+    friday: "F"
+    satruday: "S"
+
   reactions:
     like: "Like"
     love: "Love"
@@ -41,6 +50,15 @@ common:
   my-token-regenerated: "Your token is just regenerated, so you will signout."
 
   tags:
+    mk-nav-links:
+      about: "About"
+      stats: "Stats"
+      status: "Status"
+      wiki: "Wiki"
+      donors: "Donors"
+      repository: "Repository"
+      develop: "Developers"
+
     mk-messaging-form:
       attach-from-local: "Attach file from your pc"
       attach-from-drive: "Attach file from the drive"
@@ -225,7 +243,6 @@ desktop:
     mk-drive-browser-file:
       avatar: "Avatar"
       banner: "Banner"
-      wallpaper: "Wallpaper"
 
     mk-drive-browser-folder-contextmenu:
       move-to-this-folder: "Move to this folder"
@@ -242,14 +259,11 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "Drive"
 
-    mk-nav-home-widget:
-      about: "About"
-      stats: "Stats"
-      status: "Status"
-      wiki: "Wiki"
-      donors: "Donors"
-      repository: "Repository"
-      develop: "Developers"
+    mk-selectdrive-page:
+      title: "Choose a file(s)"
+      ok: "OK"
+      cancel: "Cancel"
+      upload: "Upload a file(s) from you PC"
 
     mk-ui-header-nav:
       home: "Home"
@@ -266,6 +280,12 @@ desktop:
       mentions: "Mentions"
       settings: "Settings"
       signout: "Sign out"
+
+    mk-ui-header-post-button:
+      post: "Compose new Post"
+
+    mk-ui-header-notifications:
+      title: "Notifications"
 
     mk-password-setting:
       reset: "Change your password"
@@ -327,7 +347,7 @@ desktop:
       title: "Server info"
       toggle: "Toggle views"
 
-    mk-activity-home-widget:
+    mk-activity-widget:
       title: "Activity"
       toggle: "Toggle views"
 
@@ -354,6 +374,34 @@ desktop:
       title: "Donation"
       text: "To manage Misskey we spend money for our domain server etc.. There's no incomes for us so we need your tip. If you're interested contact {}. Thank you for your contribution!"
 
+    mk-channel-home-widget:
+      title: "Channel"
+      settings: "Widget settings"
+      get-started: "Please click the cog in the upper right to specify the channel to receive"
+
+    mk-calendar-widget:
+      title: "{1} / {2}"
+      prev: "Previous month"
+      next: "Next month"
+      go: "Click to travel"
+
+    mk-post-form-home-widget:
+      title: "Post"
+      post: "Post"
+      placeholder: "What's happening?"
+
+    mk-access-log-home-widget:
+      title: "Access log"
+
+    mk-messaging-home-widget:
+      title: "Messaging"
+
+    mk-broadcast-home-widget:
+      fetching: "Fetching"
+      no-broadcasts: "No broadcasts"
+      have-a-nice-day: "Have a nice day!"
+      next: "Next"
+
     mk-repost-form:
       quote: "Quote..."
       cancel: "Cancel"
@@ -365,6 +413,24 @@ desktop:
     mk-repost-form-window:
       title: "Are you sure you want to repost this post?"
 
+    mk-user:
+      last-used-at: "Last used at"
+
+      photos:
+        title: "Photos"
+        loading: "Loading"
+        no-photos: "No photos"
+
+      frequently-replied-users:
+        title: "Frequently replied"
+        loading: "Loading"
+        no-users: "No users"
+
+      followers-you-know:
+        title: "Followers you know"
+        loading: "Loading"
+        no-users: "No users"
+
 mobile:
   tags:
     mk-selectdrive-page:
@@ -374,7 +440,7 @@ mobile:
       download: "Download"
       rename: "Rename"
       move: "Move"
-      hash: "Hash"
+      hash: "Hash (md5)"
 
     mk-entrance-signin:
       signup: "Sign up"

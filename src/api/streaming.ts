@@ -7,8 +7,11 @@ import AccessToken from './models/access-token';
 import isNativeToken from './common/is-native-token';
 
 import homeStream from './stream/home';
+import driveStream from './stream/drive';
 import messagingStream from './stream/messaging';
+import messagingIndexStream from './stream/messaging-index';
 import serverStream from './stream/server';
+import requestsStream from './stream/requests';
 import channelStream from './stream/channel';
 
 module.exports = (server: http.Server) => {
@@ -24,6 +27,11 @@ module.exports = (server: http.Server) => {
 
 		if (request.resourceURL.pathname === '/server') {
 			serverStream(request, connection);
+			return;
+		}
+
+		if (request.resourceURL.pathname === '/requests') {
+			requestsStream(request, connection);
 			return;
 		}
 
@@ -51,7 +59,9 @@ module.exports = (server: http.Server) => {
 
 		const channel =
 			request.resourceURL.pathname === '/' ? homeStream :
+			request.resourceURL.pathname === '/drive' ? driveStream :
 			request.resourceURL.pathname === '/messaging' ? messagingStream :
+			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
 			null;
 
 		if (channel !== null) {

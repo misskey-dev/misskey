@@ -1,4 +1,4 @@
-<mk-calendar-home-widget data-special={ special }>
+<mk-calendar-home-widget data-melt={ data.design == 1 } data-special={ special }>
 	<div class="calendar" data-is-holiday={ isHoliday }>
 		<p class="month-and-year"><span class="year">{ year }年</span><span class="month">{ month }月</span></p>
 		<p class="day">{ day }日</p>
@@ -30,9 +30,15 @@
 			padding 16px 0
 			color #777
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			&[data-special='on-new-years-day']
-				border-color #ef95a0 !important
+				border-color #ef95a0
+
+			&[data-melt]
+				background transparent
+				border none
 
 			&:after
 				content ""
@@ -106,6 +112,12 @@
 
 	</style>
 	<script>
+		this.data = {
+			design: 0
+		};
+
+		this.mixin('widget');
+
 		this.draw = () => {
 			const now = new Date();
 			const nd = now.getDate();
@@ -130,7 +142,7 @@
 
 			this.isHoliday = now.getDay() == 0 || now.getDay() == 6;
 
-			this.special = 
+			this.special =
 				nm == 0 && nd == 1 ? 'on-new-years-day' :
 				false;
 
@@ -146,5 +158,10 @@
 		this.on('unmount', () => {
 			clearInterval(this.clock);
 		});
+
+		this.func = () => {
+			if (++this.data.design == 2) this.data.design = 0;
+			this.save();
+		};
 	</script>
 </mk-calendar-home-widget>

@@ -162,7 +162,7 @@
 
 	</style>
 	<script>
-		import MessagingStreamConnection from '../../scripts/messaging-stream';
+		import MessagingStreamConnection from '../../scripts/streaming/messaging-stream';
 
 		this.mixin('i');
 		this.mixin('api');

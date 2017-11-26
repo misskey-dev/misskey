@@ -74,7 +74,10 @@
 
 		this.mixin('i');
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.user = null;
 		this.userPromise = isPromise(this.opts.user)
@@ -89,14 +92,15 @@
 					init: false,
 					user: user
 				});
-				this.stream.on('follow', this.onStreamFollow);
-				this.stream.on('unfollow', this.onStreamUnfollow);
+				this.connection.on('follow', this.onStreamFollow);
+				this.connection.on('unfollow', this.onStreamUnfollow);
 			});
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('follow', this.onStreamFollow);
-			this.stream.off('unfollow', this.onStreamUnfollow);
+			this.connection.off('follow', this.onStreamFollow);
+			this.connection.off('unfollow', this.onStreamUnfollow);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.onStreamFollow = user => {

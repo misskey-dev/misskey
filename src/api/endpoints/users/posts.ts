@@ -46,9 +46,17 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [maxId, maxIdErr] = $(params.max_id).optional.id().$;
 	if (maxIdErr) return rej('invalid max_id param');
 
-	// Check if both of since_id and max_id is specified
-	if (sinceId && maxId) {
-		return rej('cannot set since_id and max_id');
+	// Get 'since_date' parameter
+	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
+	if (sinceDateErr) throw 'invalid since_date param';
+
+	// Get 'max_date' parameter
+	const [maxDate, maxDateErr] = $(params.max_date).optional.number().$;
+	if (maxDateErr) throw 'invalid max_date param';
+
+	// Check if only one of since_id, max_id, since_date, max_date specified
+	if ([sinceId, maxId, sinceDate, maxDate].filter(x => x != null).length > 1) {
+		throw 'only one of since_id, max_id, since_date, max_date can be specified';
 	}
 
 	const q = userId !== undefined
@@ -66,13 +74,15 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	// Construct query
+	//#region Construct query
 	const sort = {
 		_id: -1
 	};
+
 	const query = {
 		user_id: user._id
 	} as any;
+
 	if (sinceId) {
 		sort._id = 1;
 		query._id = {
@@ -81,6 +91,15 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	} else if (maxId) {
 		query._id = {
 			$lt: maxId
+		};
+	} else if (sinceDate) {
+		sort._id = 1;
+		query.created_at = {
+			$gt: new Date(sinceDate)
+		};
+	} else if (maxDate) {
+		query.created_at = {
+			$lt: new Date(maxDate)
 		};
 	}
 
@@ -94,6 +113,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			$ne: null
 		};
 	}
+	//#endregion
 
 	// Issue query
 	const posts = await Post

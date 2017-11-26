@@ -1,5 +1,7 @@
-<mk-photo-stream-home-widget>
-	<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
+<mk-photo-stream-home-widget data-melt={ data.design == 2 }>
+	<virtual if={ data.design == 0 }>
+		<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
+	</virtual>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
@@ -11,6 +13,19 @@
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
+
+			&[data-melt]
+				background transparent !important
+				border none !important
+
+				> .stream
+					padding 0
+
+					> .img
+						border solid 4px transparent
+						border-radius 8px
 
 			> .title
 				z-index 1
@@ -55,15 +70,21 @@
 
 	</style>
 	<script>
-		this.mixin('i');
-		this.mixin('api');
+		this.data = {
+			design: 0
+		};
+
+		this.mixin('widget');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.images = [];
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
+			this.connection.on('drive_file_created', this.onStreamDriveFileCreated);
 
 			this.api('drive/stream', {
 				type: 'image/*',
@@ -77,7 +98,8 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.connection.off('drive_file_created', this.onStreamDriveFileCreated);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.onStreamDriveFileCreated = file => {
@@ -86,6 +108,11 @@
 				if (this.images.length > 9) this.images.pop();
 				this.update();
 			}
+		};
+
+		this.func = () => {
+			if (++this.data.design == 3) this.data.design = 0;
+			this.save();
 		};
 	</script>
 </mk-photo-stream-home-widget>

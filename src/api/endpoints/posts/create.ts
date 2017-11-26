@@ -14,7 +14,7 @@ import ChannelWatching from '../../models/channel-watching';
 import serialize from '../../serializers/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
-import { default as event, publishChannelStream } from '../../event';
+import event, { pushSw, publishChannelStream } from '../../event';
 import config from '../../../conf';
 
 /**
@@ -44,9 +44,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			// SELECT _id
 			const entity = await DriveFile.findOne({
 				_id: mediaId,
-				user_id: user._id
-			}, {
-				_id: true
+				'metadata.user_id': user._id
 			});
 
 			if (entity === null) {
@@ -236,7 +234,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	const mentions = [];
 
-	function addMention(mentionee, type) {
+	function addMention(mentionee, reason) {
 		// Reject if already added
 		if (mentions.some(x => x.equals(mentionee))) return;
 
@@ -245,7 +243,8 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 		// Publish event
 		if (!user._id.equals(mentionee)) {
-			event(mentionee, type, postObj);
+			event(mentionee, reason, postObj);
+			pushSw(mentionee, reason, postObj);
 		}
 	}
 

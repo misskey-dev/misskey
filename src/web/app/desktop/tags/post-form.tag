@@ -405,7 +405,22 @@
 
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
-				e.dataTransfer.files.forEach(this.upload);
+				Array.from(e.dataTransfer.files).forEach(this.upload);
+				return;
+			}
+
+			// データ取得
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return false;
+
+			// パース
+			// TODO: Validate JSON
+			const obj = JSON.parse(data);
+
+			// (ドライブの)ファイルだったら
+			if (obj.type == 'file') {
+				this.files.push(obj.file);
+				this.update();
 			}
 		};
 
@@ -414,7 +429,7 @@
 		};
 
 		this.onpaste = e => {
-			e.clipboardData.items.forEach(item => {
+			Array.from(e.clipboardData.items).forEach(item => {
 				if (item.kind == 'file') {
 					this.upload(item.getAsFile());
 				}
@@ -435,7 +450,7 @@
 		};
 
 		this.changeFile = () => {
-			this.refs.file.files.forEach(this.upload);
+			Array.from(this.refs.file.files).forEach(this.upload);
 		};
 
 		this.upload = file => {

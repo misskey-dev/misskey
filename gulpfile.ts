@@ -13,7 +13,7 @@ import cssnano = require('gulp-cssnano');
 import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
 import * as rimraf from 'rimraf';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
@@ -81,9 +81,19 @@ gulp.task('lint', () =>
 		.pipe(tslint.report())
 );
 
+gulp.task('format', () =>
+gulp.src('./src/**/*.ts')
+	.pipe(tslint({
+		formatter: 'verbose',
+		fix: true
+	}))
+	.pipe(tslint.report())
+);
+
 gulp.task('mocha', () =>
 	gulp.src([])
 		.pipe(mocha({
+			exit: true
 			//compilers: 'ts:ts-node/register'
 		} as any))
 );
@@ -123,7 +133,7 @@ gulp.task('build:client:script', () =>
 		.pipe(replace('VERSION', JSON.stringify(version)))
 		.pipe(isProduction ? uglify({
 			toplevel: true
-		}) : gutil.noop())
+		} as any) : gutil.noop())
 		.pipe(gulp.dest('./built/web/assets/')) as any
 );
 

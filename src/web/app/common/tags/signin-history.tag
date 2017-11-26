@@ -50,7 +50,10 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.history = [];
 		this.fetching = true;
@@ -63,11 +66,12 @@
 				});
 			});
 
-			this.stream.on('signin', this.onSignin);
+			this.connection.on('signin', this.onSignin);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('signin', this.onSignin);
+			this.connection.off('signin', this.onSignin);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.onSignin = signin => {

@@ -27,4 +27,12 @@ export default (
 	// Publish notification event
 	event(notifiee, 'notification',
 		await serialize(notification));
+
+	// 3秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
+	setTimeout(async () => {
+		const fresh = await Notification.findOne({ _id: notification._id }, { is_read: true });
+		if (!fresh.is_read) {
+			event(notifiee, 'unread_notification', await serialize(notification));
+		}
+	}, 3000);
 });

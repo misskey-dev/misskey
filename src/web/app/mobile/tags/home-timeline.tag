@@ -12,7 +12,10 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
+
 		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.noFollowing = this.I.following_count == 0;
 
@@ -30,15 +33,16 @@
 		};
 
 		this.on('mount', () => {
-			this.stream.on('post', this.onStreamPost);
-			this.stream.on('follow', this.onStreamFollow);
-			this.stream.on('unfollow', this.onStreamUnfollow);
+			this.connection.on('post', this.onStreamPost);
+			this.connection.on('follow', this.onStreamFollow);
+			this.connection.on('unfollow', this.onStreamUnfollow);
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('post', this.onStreamPost);
-			this.stream.off('follow', this.onStreamFollow);
-			this.stream.off('unfollow', this.onStreamUnfollow);
+			this.connection.off('post', this.onStreamPost);
+			this.connection.off('follow', this.onStreamFollow);
+			this.connection.off('unfollow', this.onStreamUnfollow);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.more = () => {

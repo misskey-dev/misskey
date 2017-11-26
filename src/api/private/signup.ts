@@ -1,3 +1,4 @@
+import * as uuid from 'uuid';
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
 import recaptcha = require('recaptcha-promise');
@@ -8,8 +9,30 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../conf';
 
 recaptcha.init({
-	secret_key: config.recaptcha.secretKey
+	secret_key: config.recaptcha.secret_key
 });
+
+const home = {
+	left: [
+		'profile',
+		'calendar',
+		'activity',
+		'rss-reader',
+		'trends',
+		'photo-stream',
+		'version'
+	],
+	right: [
+		'broadcast',
+		'notifications',
+		'user-recommendation',
+		'recommended-polls',
+		'server',
+		'donation',
+		'nav',
+		'tips'
+	]
+};
 
 export default async (req: express.Request, res: express.Response) => {
 	// Verify recaptcha
@@ -54,11 +77,33 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Generate hash of password
-	const salt = bcrypt.genSaltSync(8);
-	const hash = bcrypt.hashSync(password, salt);
+	const salt = await bcrypt.genSalt(8);
+	const hash = await bcrypt.hash(password, salt);
 
 	// Generate secret
 	const secret = generateUserToken();
+
+	//#region Construct home data
+	const homeData = [];
+
+	home.left.forEach(widget => {
+		homeData.push({
+			name: widget,
+			id: uuid(),
+			place: 'left',
+			data: {}
+		});
+	});
+
+	home.right.forEach(widget => {
+		homeData.push({
+			name: widget,
+			id: uuid(),
+			place: 'right',
+			data: {}
+		});
+	});
+	//#endregion
 
 	// Create account
 	const account: IUser = await User.insert({
@@ -88,6 +133,11 @@ export default async (req: express.Request, res: express.Response) => {
 			height: null,
 			location: null,
 			weight: null
+		},
+		settings: {},
+		client_settings: {
+			home: homeData,
+			show_donation: false
 		}
 	});
 

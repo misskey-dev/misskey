@@ -26,11 +26,11 @@
 		<hr>
 		<mk-channel-form if={ SIGNIN } channel={ channel } ref="form"/>
 		<div if={ !SIGNIN }>
-			<p>参加するには<a href={ CONFIG.url }>ログインまたは新規登録</a>してください</p>
+			<p>参加するには<a href={ _URL_ }>ログインまたは新規登録</a>してください</p>
 		</div>
 		<hr>
 		<footer>
-			<small><a href={ CONFIG.url }>Misskey</a> ver { version } (葵 aoi)</small>
+			<small><a href={ _URL_ }>Misskey</a> ver { _VERSION_ } (葵 aoi)</small>
 		</footer>
 	</main>
 	<style>
@@ -55,7 +55,7 @@
 	</style>
 	<script>
 		import Progress from '../../common/scripts/loading';
-		import ChannelStream from '../../common/scripts/channel-stream';
+		import ChannelStream from '../../common/scripts/streaming/channel-stream';
 
 		this.mixin('i');
 		this.mixin('api');
@@ -66,7 +66,6 @@
 		this.channel = null;
 		this.posts = null;
 		this.connection = new ChannelStream(this.id);
-		this.version = VERSION;
 		this.unreadCount = 0;
 
 		this.on('mount', () => {
@@ -166,7 +165,7 @@
 <mk-channel-post>
 	<header>
 		<a class="index" onclick={ reply }>{ post.index }:</a>
-		<a class="name" href={ CONFIG.url + '/' + post.user.username }><b>{ post.user.name }</b></a>
+		<a class="name" href={ _URL_ + '/' + post.user.username }><b>{ post.user.name }</b></a>
 		<mk-time time={ post.created_at }/>
 		<mk-time time={ post.created_at } mode="detail"/>
 		<span>ID:<i>{ post.user.username }</i></span>
@@ -284,8 +283,6 @@
 
 	</style>
 	<script>
-		import CONFIG from '../../common/scripts/config';
-
 		this.mixin('api');
 
 		this.channel = this.opts.channel;
@@ -343,7 +340,7 @@
 		};
 
 		this.changeFile = () => {
-			this.refs.file.files.forEach(this.upload);
+			Array.from(this.refs.file.files).forEach(this.upload);
 		};
 
 		this.selectFile = () => {
@@ -357,7 +354,7 @@
 				});
 			};
 
-			window.open(CONFIG.url + '/selectdrive?multiple=true',
+			window.open(_URL_ + '/selectdrive?multiple=true',
 				'drive_window',
 				'height=500,width=800');
 		};
@@ -367,7 +364,7 @@
 		};
 
 		this.onpaste = e => {
-			e.clipboardData.items.forEach(item => {
+			Array.from(e.clipboardData.items).forEach(item => {
 				if (item.kind == 'file') {
 					this.upload(item.getAsFile());
 				}
@@ -390,7 +387,7 @@
 </mk-twitter-button>
 
 <mk-line-button>
-	<div class="line-it-button" data-lang="ja" data-type="share-a" data-url={ CONFIG.chUrl } style="display: none;"></div>
+	<div class="line-it-button" data-lang="ja" data-type="share-a" data-url={ _CH_URL_ } style="display: none;"></div>
 	<script>
 		this.on('mount', () => {
 			const head = document.getElementsByTagName('head')[0];

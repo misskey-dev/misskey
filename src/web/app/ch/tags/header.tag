@@ -1,10 +1,10 @@
 <mk-header>
 	<div>
-		<a href={ CONFIG.chUrl }>Index</a> | <a href={ CONFIG.url }>Misskey</a>
+		<a href={ _CH_URL_ }>Index</a> | <a href={ _URL_ }>Misskey</a>
 	</div>
 	<div>
-		<a if={ !SIGNIN } href={ CONFIG.url }>ログイン(新規登録)</a>
-		<a if={ SIGNIN } href={ CONFIG.url + '/' + I.username }>{ I.username }</a>
+		<a if={ !SIGNIN } href={ _URL_ }>ログイン(新規登録)</a>
+		<a if={ SIGNIN } href={ _URL_ + '/' + I.username }>{ I.username }</a>
 	</div>
 	<style>
 		:scope

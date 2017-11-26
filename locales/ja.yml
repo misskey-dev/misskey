@@ -13,6 +13,15 @@ common:
     months_ago: "{}ヶ月前"
     years_ago: "{}年前"
 
+  weekday-short:
+    sunday: "日"
+    monday: "月"
+    tuesday: "火"
+    wednesday: "水"
+    thursday: "木"
+    friday: "金"
+    satruday: "土"
+
   reactions:
     like: "いいね"
     love: "ハート"
@@ -41,6 +50,15 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
 
   tags:
+    mk-nav-links:
+      about: "Misskeyについて"
+      stats: "統計"
+      status: "ステータス"
+      wiki: "Wiki"
+      donors: "ドナー"
+      repository: "リポジトリ"
+      develop: "開発者"
+
     mk-messaging-form:
       attach-from-local: "PCからファイルを添付する"
       attach-from-drive: "ドライブからファイルを添付する"
@@ -225,7 +243,6 @@ desktop:
     mk-drive-browser-file:
       avatar: "アバター"
       banner: "バナー"
-      wallpaper: "壁紙"
 
     mk-drive-browser-folder-contextmenu:
       move-to-this-folder: "このフォルダへ移動"
@@ -242,14 +259,11 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "ドライブ"
 
-    mk-nav-home-widget:
-      about: "Misskeyについて"
-      stats: "統計"
-      status: "ステータス"
-      wiki: "Wiki"
-      donors: "ドナー"
-      repository: "リポジトリ"
-      develop: "開発者"
+    mk-selectdrive-page:
+      title: "ファイルを選択してください"
+      ok: "決定"
+      cancel: "キャンセル"
+      upload: "PCからドライブにファイルをアップロード"
 
     mk-ui-header-nav:
       home: "ホーム"
@@ -266,6 +280,12 @@ desktop:
       mentions: "あなた宛て"
       settings: "設定"
       signout: "サインアウト"
+
+    mk-ui-header-post-button:
+      post: "新規投稿"
+
+    mk-ui-header-notifications:
+      title: "通知"
 
     mk-password-setting:
       reset: "パスワードを変更する"
@@ -327,7 +347,7 @@ desktop:
       title: "サーバー情報"
       toggle: "表示を切り替え"
 
-    mk-activity-home-widget:
+    mk-activity-widget:
       title: "アクティビティ"
       toggle: "表示を切り替え"
 
@@ -354,6 +374,34 @@ desktop:
       title: "寄付のお願い"
       text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
 
+    mk-channel-home-widget:
+      title: "チャンネル"
+      settings: "ウィジェットの設定"
+      get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
+
+    mk-calendar-widget:
+      title: "{1}年 {2}月"
+      prev: "先月"
+      next: "来月"
+      go: "クリックして時間遡行"
+
+    mk-post-form-home-widget:
+      title: "投稿"
+      post: "投稿"
+      placeholder: "いまどうしてる？"
+
+    mk-access-log-home-widget:
+      title: "アクセスログ"
+
+    mk-messaging-home-widget:
+      title: "メッセージ"
+
+    mk-broadcast-home-widget:
+      fetching: "確認中"
+      no-broadcasts: "お知らせはありません"
+      have-a-nice-day: "良い一日を！"
+      next: "次"
+
     mk-repost-form:
       quote: "引用する..."
       cancel: "キャンセル"
@@ -365,6 +413,24 @@ desktop:
     mk-repost-form-window:
       title: "この投稿をRepostしますか？"
 
+    mk-user:
+      last-used-at: "最終アクセス"
+
+      photos:
+        title: "フォト"
+        loading: "読み込み中"
+        no-photos: "写真はありません"
+
+      frequently-replied-users:
+        title: "よく話すユーザー"
+        loading: "読み込み中"
+        no-users: "よく話すユーザーはいません"
+
+      followers-you-know:
+        title: "知り合いのフォロワー"
+        loading: "読み込み中"
+        no-users: "知り合いのフォロワーはいません"
+
 mobile:
   tags:
     mk-selectdrive-page:
@@ -374,7 +440,7 @@ mobile:
       download: "ダウンロード"
       rename: "名前を変更"
       move: "移動"
-      hash: "ハッシュ"
+      hash: "ハッシュ (md5)"
 
     mk-entrance-signin:
       signup: "新規登録"

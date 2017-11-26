@@ -1,7 +1,6 @@
 /**
  * Module dependencies
  */
-import * as fs from 'fs';
 import $ from 'cafy';
 import { validateFileName } from '../../../models/drive-file';
 import serialize from '../../../serializers/drive-file';
@@ -15,13 +14,10 @@ import create from '../../../common/add-file-to-drive';
  * @param {any} user
  * @return {Promise<any>}
  */
-module.exports = (file, params, user) => new Promise(async (res, rej) => {
+module.exports = async (file, params, user): Promise<any> => {
 	if (file == null) {
-		return rej('file is required');
+		throw 'file is required';
 	}
-
-	const buffer = fs.readFileSync(file.path);
-	fs.unlink(file.path, (err) => { if (err) console.log(err); });
 
 	// Get 'name' parameter
 	let name = file.originalname;
@@ -32,7 +28,7 @@ module.exports = (file, params, user) => new Promise(async (res, rej) => {
 		} else if (name === 'blob') {
 			name = null;
 		} else if (!validateFileName(name)) {
-			return rej('invalid name');
+			throw 'invalid name';
 		}
 	} else {
 		name = null;
@@ -40,14 +36,11 @@ module.exports = (file, params, user) => new Promise(async (res, rej) => {
 
 	// Get 'folder_id' parameter
 	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) return rej('invalid folder_id param');
+	if (folderIdErr) throw 'invalid folder_id param';
 
 	// Create file
-	const driveFile = await create(user, buffer, name, null, folderId);
+	const driveFile = await create(user, file.path, name, null, folderId);
 
 	// Serialize
-	const fileObj = await serialize(driveFile);
-
-	// Response
-	res(fileObj);
-});
+	return serialize(driveFile);
+};

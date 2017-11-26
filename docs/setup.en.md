@@ -1,7 +1,7 @@
 Misskey Setup and Installation Guide
 ================================================================
 
-We thank you for your interest in setup your Misskey server!
+We thank you for your interest in setting up your Misskey server!
 This guide describes how to install and setup Misskey.
 
 [Japanese version also available - 日本語版もあります](./setup.ja.md)
@@ -36,6 +36,15 @@ Note that Misskey uses following subdomains:
 Misskey requires reCAPTCHA tokens.
 Please visit https://www.google.com/recaptcha/intro/ and generate keys.
 
+*(optional)* Generating VAPID keys
+----------------------------------------------------------------
+If you want to enable ServiceWroker, you need to generate VAPID keys:
+
+``` shell
+npm install web-push -g
+web-push generate-vapid-keys
+```
+
 *3.* Install dependencies
 ----------------------------------------------------------------
 Please install and setup these softwares:
@@ -51,24 +60,6 @@ Please install and setup these softwares:
 
 *4.* Install Misskey
 ----------------------------------------------------------------
-There is **two ways** to install Misskey:
-
-### WAY 1) Using built code (recommended)
-We have official release of Misskey.
-The built code is automatically pushed to https://github.com/syuilo/misskey/tree/release after the CI test succeeds.
-
-1. `git clone -b release git://github.com/syuilo/misskey.git`
-2. `cd misskey`
-3. `npm install`
-
-#### Update
-1. `git fetch`
-2. `git reset --hard origin/release`
-3. `npm install`
-
-### WAY 2) Using source code
-If you want to build Misskey manually, you can do it via the
-`build` command after download the source code of Misskey and install dependencies:
 
 1. `git clone -b master git://github.com/syuilo/misskey.git`
 2. `cd misskey`

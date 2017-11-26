@@ -1,15 +1,16 @@
 <mk-selectdrive-page>
 	<mk-drive-browser ref="browser" multiple={ multiple }/>
 	<div>
-		<button class="upload" title="PCからドライブにファイルをアップロード" onclick={ upload }><i class="fa fa-upload"></i></button>
-		<button class="cancel" onclick={ close }>キャンセル</button>
-		<button class="ok" onclick={ ok }>決定</button>
+		<button class="upload" title="%i18n:desktop.tags.mk-selectdrive-page.upload%" onclick={ upload }><i class="fa fa-upload"></i></button>
+		<button class="cancel" onclick={ close }>%i18n:desktop.tags.mk-selectdrive-page.cancel%</button>
+		<button class="ok" onclick={ ok }>%i18n:desktop.tags.mk-selectdrive-page.ok%</button>
 	</div>
 
 	<style>
 		:scope
 			display block
 			position fixed
+			width 100%
 			height 100%
 			background #fff
 
@@ -130,7 +131,7 @@
 		this.multiple = q.get('multiple') == 'true' ? true : false;
 
 		this.on('mount', () => {
-			document.documentElement.style.background = '#fff';
+			document.title = '%i18n:desktop.tags.mk-selectdrive-page.title%';
 
 			this.refs.browser.on('selected', file => {
 				this.files = [file];

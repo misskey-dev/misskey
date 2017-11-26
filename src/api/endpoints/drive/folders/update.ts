@@ -4,8 +4,8 @@
 import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import { isValidFolderName } from '../../../models/drive-folder';
-import serialize from '../../../serializers/drive-file';
-import event from '../../../event';
+import serialize from '../../../serializers/drive-folder';
+import { publishDriveStream } from '../../../event';
 
 /**
  * Update a folder
@@ -96,6 +96,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Response
 	res(folderObj);
 
-	// Publish drive_folder_updated event
-	event(user._id, 'drive_folder_updated', folderObj);
+	// Publish folder_updated event
+	publishDriveStream(user._id, 'folder_updated', folderObj);
 });

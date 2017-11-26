@@ -147,6 +147,11 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'sw/register',
+		withCredential: true
+	},
+
+	{
 		name: 'i',
 		withCredential: true
 	},
@@ -157,6 +162,11 @@ const endpoints: Endpoint[] = [
 			duration: ms('1day'),
 			max: 50
 		},
+		kind: 'account-write'
+	},
+	{
+		name: 'i/update_home',
+		withCredential: true,
 		kind: 'account-write'
 	},
 	{

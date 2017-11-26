@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="thumbnail" style={ 'background-image: url(' + file.url + '?thumbnail&size=128)' }></div>
 		<div class="body">
-			<p class="name">{ file.name }</p>
+			<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
 			<!--
 			if file.tags.length > 0
 				ul.tags
@@ -63,6 +63,9 @@
 						color #555
 						text-overflow ellipsis
 						overflow-wrap break-word
+
+						> .ext
+							opacity 0.5
 
 					> .tags
 						display block

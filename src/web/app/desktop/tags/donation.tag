@@ -54,11 +54,10 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			this.I.data.no_donation = 'true';
+			this.I.client_settings.show_donation = false;
 			this.I.update();
-			this.api('i/appdata/set', {
-				key: 'no_donation',
-				value: 'true'
+			this.api('i/update', {
+				show_donation: false
 			});
 
 			this.unmount();

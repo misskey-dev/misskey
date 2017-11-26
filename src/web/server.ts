@@ -11,8 +11,6 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 
-import config from '../conf';
-
 /**
  * Init app
  */
@@ -37,27 +35,27 @@ app.use((req, res, next) => {
  * Static assets
  */
 app.use(favicon(`${__dirname}/assets/favicon.ico`));
-app.get('/manifest.json', (req, res) => res.sendFile(`${__dirname}/assets/manifest.json`));
 app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${__dirname}/assets/apple-touch-icon.png`));
 app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
 
 /**
+ * ServiceWroker
+ */
+app.get(/^\/sw\.(.+?)\.js$/, (req, res) =>
+	res.sendFile(`${__dirname}/assets/sw.${req.params[0]}.js`));
+
+/**
+ * Manifest
+ */
+app.get('/manifest.json', (req, res) =>
+	res.sendFile(`${__dirname}/assets/manifest.json`));
+
+/**
  * Common API
  */
 app.get(/\/api:url/, require('./service/url-preview'));
-
-/**
- * Serve config
- */
-app.get('/config.json', (req, res) => {
-	res.send({
-		recaptcha: {
-			siteKey: config.recaptcha.siteKey
-		}
-	});
-});
 
 /**
  * Routing

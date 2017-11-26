@@ -8,6 +8,7 @@ import serializePost from './post';
 import Following from '../models/following';
 import getFriends from '../common/get-friends';
 import config from '../../conf';
+import rap from '@prezzemolo/rap';
 
 /**
  * Serialize a user
@@ -34,9 +35,10 @@ export default (
 	let _user: any;
 
 	const fields = opts.detail ? {
-		data: false
+		settings: false
 	} : {
-		data: false,
+		settings: false,
+		client_settings: false,
 		profile: false,
 		keywords: false,
 		domains: false
@@ -55,6 +57,8 @@ export default (
 		_user = deepcopy(user);
 	}
 
+	if (!_user) return reject('invalid user arg.');
+
 	// Me
 	const meId: mongo.ObjectID = me
 		? mongo.ObjectID.prototype.isPrototypeOf(me)
@@ -69,7 +73,7 @@ export default (
 	delete _user._id;
 
 	// Remove needless properties
-	delete _user.lates_post;
+	delete _user.latest_post;
 
 	// Remove private properties
 	delete _user.password;
@@ -83,8 +87,8 @@ export default (
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {
-		delete _user.data;
 		delete _user.email;
+		delete _user.client_settings;
 	}
 
 	_user.avatar_url = _user.avatar_id != null
@@ -104,26 +108,30 @@ export default (
 
 	if (meId && !meId.equals(_user.id)) {
 		// If the user is following
-		const follow = await Following.findOne({
-			follower_id: meId,
-			followee_id: _user.id,
-			deleted_at: { $exists: false }
-		});
-		_user.is_following = follow !== null;
+		_user.is_following = (async () => {
+			const follow = await Following.findOne({
+				follower_id: meId,
+				followee_id: _user.id,
+				deleted_at: { $exists: false }
+			});
+			return follow !== null;
+		})();
 
 		// If the user is followed
-		const follow2 = await Following.findOne({
-			follower_id: _user.id,
-			followee_id: meId,
-			deleted_at: { $exists: false }
-		});
-		_user.is_followed = follow2 !== null;
+		_user.is_followed = (async () => {
+			const follow2 = await Following.findOne({
+				follower_id: _user.id,
+				followee_id: meId,
+				deleted_at: { $exists: false }
+			});
+			return follow2 !== null;
+		})();
 	}
 
 	if (opts.detail) {
 		if (_user.pinned_post_id) {
 			// Populate pinned post
-			_user.pinned_post = await serializePost(_user.pinned_post_id, meId, {
+			_user.pinned_post = serializePost(_user.pinned_post_id, meId, {
 				detail: true
 			});
 		}
@@ -132,22 +140,23 @@ export default (
 			const myFollowingIds = await getFriends(meId);
 
 			// Get following you know count
-			const followingYouKnowCount = await Following.count({
+			_user.following_you_know_count = Following.count({
 				followee_id: { $in: myFollowingIds },
 				follower_id: _user.id,
 				deleted_at: { $exists: false }
 			});
-			_user.following_you_know_count = followingYouKnowCount;
 
 			// Get followers you know count
-			const followersYouKnowCount = await Following.count({
+			_user.followers_you_know_count = Following.count({
 				followee_id: _user.id,
 				follower_id: { $in: myFollowingIds },
 				deleted_at: { $exists: false }
 			});
-			_user.followers_you_know_count = followersYouKnowCount;
 		}
 	}
+
+	// resolve promises in _user object
+	_user = await rap(_user);
 
 	resolve(_user);
 });

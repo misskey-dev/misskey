@@ -1,17 +1,25 @@
-<mk-server-home-widget>
-	<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-server-home-widget.title%</p>
-	<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
+<mk-server-home-widget data-melt={ data.design == 2 }>
+	<virtual if={ data.design == 0 }>
+		<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-server-home-widget.title%</p>
+		<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
+	</virtual>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
-	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ view == 0 } connection={ connection }/>
-	<mk-server-home-widget-cpu if={ !initializing } show={ view == 1 } connection={ connection } meta={ meta }/>
-	<mk-server-home-widget-memory if={ !initializing } show={ view == 2 } connection={ connection }/>
-	<mk-server-home-widget-disk if={ !initializing } show={ view == 3 } connection={ connection }/>
-	<mk-server-home-widget-uptimes if={ !initializing } show={ view == 4 } connection={ connection }/>
-	<mk-server-home-widget-info if={ !initializing } show={ view == 5 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ data.view == 0 } connection={ connection }/>
+	<mk-server-home-widget-cpu if={ !initializing } show={ data.view == 1 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-memory if={ !initializing } show={ data.view == 2 } connection={ connection }/>
+	<mk-server-home-widget-disk if={ !initializing } show={ data.view == 3 } connection={ connection }/>
+	<mk-server-home-widget-uptimes if={ !initializing } show={ data.view == 4 } connection={ connection }/>
+	<mk-server-home-widget-info if={ !initializing } show={ data.view == 5 } connection={ connection } meta={ meta }/>
 	<style>
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
+
+			&[data-melt]
+				background transparent !important
+				border none !important
 
 			> .title
 				z-index 1
@@ -54,16 +62,23 @@
 
 	</style>
 	<script>
-		import Connection from '../../../common/scripts/server-stream';
+		this.mixin('os');
 
-		this.mixin('api');
+		this.data = {
+			view: 0,
+			design: 0
+		};
+
+		this.mixin('widget');
+
+		this.mixin('server-stream');
+		this.connection = this.serverStream.getConnection();
+		this.connectionId = this.serverStream.use();
 
 		this.initializing = true;
-		this.view = 0;
-		this.connection = new Connection();
 
 		this.on('mount', () => {
-			this.api('meta').then(meta => {
+			this.mios.getMeta().then(meta => {
 				this.update({
 					initializing: false,
 					meta
@@ -72,12 +87,20 @@
 		});
 
 		this.on('unmount', () => {
-			this.connection.close();
+			this.serverStream.dispose(this.connectionId);
 		});
 
 		this.toggle = () => {
-			this.view++;
-			if (this.view == 6) this.view = 0;
+			this.data.view++;
+			if (this.data.view == 6) this.data.view = 0;
+
+			// Save widget state
+			this.save();
+		};
+
+		this.func = () => {
+			if (++this.data.design == 3) this.data.design = 0;
+			this.save();
 		};
 	</script>
 </mk-server-home-widget>
@@ -164,7 +187,7 @@
 				clear both
 	</style>
 	<script>
-		import uuid from '../../../common/scripts/uuid';
+		import uuid from 'uuid';
 
 		this.viewBoxX = 50;
 		this.viewBoxY = 30;

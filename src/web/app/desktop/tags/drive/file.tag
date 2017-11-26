@@ -5,17 +5,12 @@
 	<div class="label" if={ I.banner_id == file.id }><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.banner%</p>
 	</div>
-	<div class="label" if={ I.data.wallpaper == file.id }><img src="/assets/label.svg"/>
-		<p>%i18n:desktop.tags.mk-drive-browser-file.wallpaper%</p>
-	</div>
 	<div class="thumbnail"><img src={ file.url + '?thumbnail&size=128' } alt=""/></div>
 	<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
 	<style>
 		:scope
 			display block
-			margin 4px
 			padding 8px 0 0 0
-			width 144px
 			height 180px
 			border-radius 4px
 
@@ -116,7 +111,7 @@
 			> .thumbnail
 				width 128px
 				height 128px
-				left 8px
+				margin auto
 
 				> img
 					display block

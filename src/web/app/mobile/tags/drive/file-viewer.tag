@@ -2,7 +2,7 @@
 	<div class="preview">
 		<img if={ kind == 'image' } src={ file.url } alt={ file.name } title={ file.name }>
 		<i if={ kind != 'image' } class="fa fa-file"></i>
-		<footer if={ kind == 'image' }>
+		<footer if={ kind == 'image' && file.properties && file.properties.width && file.properties.height }>
 			<span class="size">
 				<span class="width">{ file.properties.width }</span>
 				<span class="time">×</span>
@@ -44,7 +44,7 @@
 			<p>
 				<i class="fa fa-hashtag"></i>%i18n:mobile.tags.mk-drive-file-viewer.hash%
 			</p>
-			<code>{ file.hash }</code>
+			<code>{ file.md5 }</code>
 		</div>
 	</div>
 	<style>

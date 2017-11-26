@@ -39,7 +39,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		_id: -1
 	};
 	const query = {
-		user_id: user._id
+		'metadata.user_id': user._id
 	} as any;
 	if (sinceId) {
 		sort._id = 1;
@@ -52,15 +52,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		};
 	}
 	if (type) {
-		query.type = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
+		query.contentType = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
 	}
 
 	// Issue query
 	const files = await DriveFile
 		.find(query, {
-			fields: {
-				data: false
-			},
 			limit: limit,
 			sort: sort
 		});

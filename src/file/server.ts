@@ -8,8 +8,9 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as mongodb from 'mongodb';
 import * as gm from 'gm';
+import * as stream from 'stream';
 
-import File from '../api/models/drive-file';
+import DriveFile, { getGridFSBucket } from '../api/models/drive-file';
 
 /**
  * Init app
@@ -33,101 +34,127 @@ app.get('/', (req, res) => {
 });
 
 app.get('/default-avatar.jpg', (req, res) => {
-	const file = fs.readFileSync(`${__dirname}/assets/avatar.jpg`);
+	const file = fs.createReadStream(`${__dirname}/assets/avatar.jpg`);
 	send(file, 'image/jpeg', req, res);
 });
 
 app.get('/app-default.jpg', (req, res) => {
-	const file = fs.readFileSync(`${__dirname}/assets/dummy.png`);
+	const file = fs.createReadStream(`${__dirname}/assets/dummy.png`);
 	send(file, 'image/png', req, res);
 });
 
-async function raw(data: Buffer, type: string, download: boolean, res: express.Response): Promise<any> {
-	res.header('Content-Type', type);
-
-	if (download) {
-		res.header('Content-Disposition', 'attachment');
-	}
-
-	res.send(data);
+interface ISend {
+	contentType: string;
+	stream: stream.Readable;
 }
 
-async function thumbnail(data: Buffer, type: string, resize: number, res: express.Response): Promise<any> {
-	if (!/^image\/.*$/.test(type)) {
-		data = fs.readFileSync(`${__dirname}/assets/dummy.png`);
-	}
+function thumbnail(data: stream.Readable, type: string, resize: number): ISend {
+	const readable: stream.Readable = (() => {
+		// 画像ではない場合
+		if (!/^image\/.*$/.test(type)) {
+			// 使わないことにしたストリームはしっかり取り壊しておく
+			data.destroy();
+			return fs.createReadStream(`${__dirname}/assets/not-an-image.png`);
+		}
 
-	let g = gm(data);
+		const imageType = type.split('/')[1];
+
+		// 画像でもPNGかJPEGでないならダメ
+		if (imageType != 'png' && imageType != 'jpeg') {
+			// 使わないことにしたストリームはしっかり取り壊しておく
+			data.destroy();
+			return fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
+		}
+
+		return data;
+	})();
+
+	let g = gm(readable);
 
 	if (resize) {
 		g = g.resize(resize, resize);
 	}
 
-	g
+	const stream = g
 		.compress('jpeg')
 		.quality(80)
-		.toBuffer('jpeg', (err, img) => {
-			if (err !== undefined && err !== null) {
-				console.error(err);
-				res.sendStatus(500);
-				return;
-			}
+		.stream();
 
-			res.header('Content-Type', 'image/jpeg');
-			res.send(img);
-		});
+	return {
+		contentType: 'image/jpeg',
+		stream
+	};
 }
 
-function send(data: Buffer, type: string, req: express.Request, res: express.Response): void {
-	if (req.query.thumbnail !== undefined) {
-		thumbnail(data, type, req.query.size, res);
-	} else {
-		raw(data, type, req.query.download !== undefined, res);
+const commonReadableHandlerGenerator = (req: express.Request, res: express.Response) => (e: Error): void => {
+	console.dir(e);
+	req.destroy();
+	res.destroy(e);
+};
+
+function send(readable: stream.Readable, type: string, req: express.Request, res: express.Response): void {
+	readable.on('error', commonReadableHandlerGenerator(req, res));
+
+	const data = ((): ISend => {
+		if (req.query.thumbnail !== undefined) {
+			return thumbnail(readable, type, req.query.size);
+		}
+		return {
+			contentType: type,
+			stream: readable
+		};
+	})();
+
+	if (readable !== data.stream) {
+		data.stream.on('error', commonReadableHandlerGenerator(req, res));
 	}
+
+	if (req.query.download !== undefined) {
+		res.header('Content-Disposition', 'attachment');
+	}
+
+	res.header('Content-Type', data.contentType);
+
+	data.stream.pipe(res);
+
+	data.stream.on('end', () => {
+		res.end();
+	});
+}
+
+async function sendFileById(req: express.Request, res: express.Response): Promise<void> {
+	// Validate id
+	if (!mongodb.ObjectID.isValid(req.params.id)) {
+		res.status(400).send('incorrect id');
+		return;
+	}
+
+	const fileId = new mongodb.ObjectID(req.params.id);
+	const file = await DriveFile.findOne({ _id: fileId });
+
+	// validate name
+	if (req.params.name !== undefined && req.params.name !== file.filename) {
+		res.status(404).send('there is no file has given name');
+		return;
+	}
+
+	if (file == null) {
+		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
+		return;
+	}
+
+	const bucket = await getGridFSBucket();
+
+	const readable = bucket.openDownloadStream(fileId);
+
+	send(readable, file.contentType, req, res);
 }
 
 /**
  * Routing
  */
 
-app.get('/:id', async (req, res) => {
-	// Validate id
-	if (!mongodb.ObjectID.isValid(req.params.id)) {
-		res.status(400).send('incorrect id');
-		return;
-	}
-
-	const file = await File.findOne({ _id: new mongodb.ObjectID(req.params.id) });
-
-	if (file == null) {
-		res.status(404).sendFile(`${__dirname} / assets / dummy.png`);
-		return;
-	} else if (file.data == null) {
-		res.sendStatus(400);
-		return;
-	}
-
-	send(file.data.buffer, file.type, req, res);
-});
-
-app.get('/:id/:name', async (req, res) => {
-	// Validate id
-	if (!mongodb.ObjectID.isValid(req.params.id)) {
-		res.status(400).send('incorrect id');
-		return;
-	}
-
-	const file = await File.findOne({ _id: new mongodb.ObjectID(req.params.id) });
-
-	if (file == null) {
-		res.status(404).sendFile(`${__dirname}/assets/dummy.png`);
-		return;
-	} else if (file.data == null) {
-		res.sendStatus(400);
-		return;
-	}
-
-	send(file.data.buffer, file.type, req, res);
-});
+app.get('/:id', sendFileById);
+app.get('/:id/:name', sendFileById);
 
 module.exports = app;

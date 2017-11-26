@@ -135,6 +135,8 @@ class LineBot extends BotCore {
 				actions: actions
 			}
 		}]);
+
+		return null;
 	}
 
 	public async showUserTimelinePostback(userId: string) {

@@ -112,7 +112,7 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<p class="channel" if={ p.channel != null }><a href={ CONFIG.chUrl + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<p class="channel" if={ p.channel != null }><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
 					<a class="reply" if={ p.reply }>
 						<i class="fa fa-reply"></i>
 					</a>
@@ -430,8 +430,11 @@
 
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('stream');
 		this.mixin('user-preview');
+
+		this.mixin('stream');
+		this.connection = this.stream.getConnection();
+		this.connectionId = this.stream.use();
 
 		this.isDetailOpened = false;
 
@@ -468,21 +471,21 @@
 
 		this.capture = withHandler => {
 			if (this.SIGNIN) {
-				this.stream.send({
+				this.connection.send({
 					type: 'capture',
 					id: this.post.id
 				});
-				if (withHandler) this.stream.on('post-updated', this.onStreamPostUpdated);
+				if (withHandler) this.connection.on('post-updated', this.onStreamPostUpdated);
 			}
 		};
 
 		this.decapture = withHandler => {
 			if (this.SIGNIN) {
-				this.stream.send({
+				this.connection.send({
 					type: 'decapture',
 					id: this.post.id
 				});
-				if (withHandler) this.stream.off('post-updated', this.onStreamPostUpdated);
+				if (withHandler) this.connection.off('post-updated', this.onStreamPostUpdated);
 			}
 		};
 
@@ -490,7 +493,7 @@
 			this.capture(true);
 
 			if (this.SIGNIN) {
-				this.stream.on('_connected_', this.onStreamConnected);
+				this.connection.on('_connected_', this.onStreamConnected);
 			}
 
 			if (this.p.text) {
@@ -498,7 +501,7 @@
 
 				this.refs.text.innerHTML = this.refs.text.innerHTML.replace('<p class="dummy"></p>', compile(tokens));
 
-				this.refs.text.children.forEach(e => {
+				Array.from(this.refs.text.children).forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);
 				});
 
@@ -515,7 +518,8 @@
 
 		this.on('unmount', () => {
 			this.decapture(true);
-			this.stream.off('_connected_', this.onStreamConnected);
+			this.connection.off('_connected_', this.onStreamConnected);
+			this.stream.dispose(this.connectionId);
 		});
 
 		this.reply = () => {

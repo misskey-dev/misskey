@@ -37,7 +37,7 @@
 </mk-ui>
 
 <mk-ui-header>
-	<mk-donation if={ SIGNIN && I.data.no_donation != 'true' }/>
+	<mk-donation if={ SIGNIN && I.client_settings.show_donation }/>
 	<mk-special-message/>
 	<div class="main">
 		<div class="backdrop"></div>
@@ -75,8 +75,7 @@
 					width 100%
 					height 48px
 					backdrop-filter blur(12px)
-					//background-color rgba(255, 255, 255, 0.75)
-					background #1d2429
+					background #f7f7f7
 
 					&:after
 						content ""
@@ -138,22 +137,27 @@
 				> input
 					user-select text
 					cursor auto
-					margin 0
+					margin 8px 0 0 0
 					padding 6px 18px
 					width 14em
-					height 48px
+					height 32px
 					font-size 1em
-					line-height calc(48px - 12px)
-					background transparent
+					background rgba(0, 0, 0, 0.05)
 					outline none
 					//border solid 1px #ddd
 					border none
-					border-radius 0
+					border-radius 16px
 					transition color 0.5s ease, border 0.5s ease
 					font-family FontAwesome, sans-serif
 
 					&::-webkit-input-placeholder
 						color #9eaba8
+
+					&:hover
+						background rgba(0, 0, 0, 0.08)
+
+					&:focus
+						box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important
 
 	</style>
 	<script>
@@ -167,7 +171,7 @@
 </mk-ui-header-search>
 
 <mk-ui-header-post-button>
-	<button onclick={ post } title="新規投稿"><i class="fa fa-pencil-square-o"></i></button>
+	<button onclick={ post } title="%i18n:desktop.tags.mk-ui-header-post-button.post%"><i class="fa fa-pencil"></i></button>
 	<style>
 		:scope
 			display inline-block
@@ -187,7 +191,7 @@
 				background $theme-color !important
 				outline none
 				border none
-				border-radius 2px
+				border-radius 4px
 				transition background 0.1s ease
 				cursor pointer
 
@@ -210,7 +214,9 @@
 </mk-ui-header-post-button>
 
 <mk-ui-header-notifications>
-	<button class="header" data-active={ isOpen } onclick={ toggle }><i class="fa fa-bell-o"></i></button>
+	<button data-active={ isOpen } onclick={ toggle } title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
+		<i class="fa fa-bell-o icon"></i><i class="fa fa-circle badge" if={ hasUnreadNotifications }></i>
+	</button>
 	<div class="notifications" if={ isOpen }>
 		<mk-notifications/>
 	</div>
@@ -219,7 +225,7 @@
 			display block
 			float left
 
-			> .header
+			> button
 				display block
 				margin 0
 				padding 0
@@ -239,9 +245,15 @@
 				&:active
 					color darken(#9eaba8, 30%)
 
-				> i
+				> .icon
 					font-size 1.2em
 					line-height 48px
+
+				> .badge
+					margin-left -5px
+					vertical-align super
+					font-size 10px
+					color $theme-color
 
 			> .notifications
 				display block
@@ -286,7 +298,52 @@
 	<script>
 		import contains from '../../common/scripts/contains';
 
+		this.mixin('i');
+		this.mixin('api');
+
+		if (this.SIGNIN) {
+			this.mixin('stream');
+			this.connection = this.stream.getConnection();
+			this.connectionId = this.stream.use();
+		}
+
 		this.isOpen = false;
+
+		this.on('mount', () => {
+			if (this.SIGNIN) {
+				this.connection.on('read_all_notifications', this.onReadAllNotifications);
+				this.connection.on('unread_notification', this.onUnreadNotification);
+
+				// Fetch count of unread notifications
+				this.api('notifications/get_unread_count').then(res => {
+					if (res.count > 0) {
+						this.update({
+							hasUnreadNotifications: true
+						});
+					}
+				});
+			}
+		});
+
+		this.on('unmount', () => {
+			if (this.SIGNIN) {
+				this.connection.off('read_all_notifications', this.onReadAllNotifications);
+				this.connection.off('unread_notification', this.onUnreadNotification);
+				this.stream.dispose(this.connectionId);
+			}
+		});
+
+		this.onReadAllNotifications = () => {
+			this.update({
+				hasUnreadNotifications: false
+			});
+		};
+
+		this.onUnreadNotification = () => {
+			this.update({
+				hasUnreadNotifications: true
+			});
+		};
 
 		this.toggle = () => {
 			this.isOpen ? this.close() : this.open();
@@ -322,7 +379,7 @@
 	<ul>
 		<virtual if={ SIGNIN }>
 			<li class="home { active: page == 'home' }">
-				<a href={ CONFIG.url }>
+				<a href={ _URL_ }>
 					<i class="fa fa-home"></i>
 					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
 				</a>
@@ -336,7 +393,7 @@
 			</li>
 		</virtual>
 		<li class="ch">
-			<a href={ CONFIG.chUrl } target="_blank">
+			<a href={ _CH_URL_ } target="_blank">
 				<i class="fa fa-television"></i>
 				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
 			</a>
@@ -419,14 +476,19 @@
 	<script>
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('stream');
+
+		if (this.SIGNIN) {
+			this.mixin('stream');
+			this.connection = this.stream.getConnection();
+			this.connectionId = this.stream.use();
+		}
 
 		this.page = this.opts.page;
 
 		this.on('mount', () => {
 			if (this.SIGNIN) {
-				this.stream.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-				this.stream.on('unread_messaging_message', this.onUnreadMessagingMessage);
+				this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
 				// Fetch count of unread messaging messages
 				this.api('messaging/unread').then(res => {
@@ -441,8 +503,9 @@
 
 		this.on('unmount', () => {
 			if (this.SIGNIN) {
-				this.stream.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-				this.stream.off('unread_messaging_message', this.onUnreadMessagingMessage);
+				this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
+				this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
+				this.stream.dispose(this.connectionId);
 			}
 		});
 
@@ -565,7 +628,7 @@
 				<p><i class="fa fa-cloud"></i>%i18n:desktop.tags.mk-ui-header-account.drive%<i class="fa fa-angle-right"></i></p>
 			</li>
 			<li>
-				<a href="/i>mentions"><i class="fa fa-at"></i>%i18n:desktop.tags.mk-ui-header-account.mentions%<i class="fa fa-angle-right"></i></a>
+				<a href="/i/mentions"><i class="fa fa-at"></i>%i18n:desktop.tags.mk-ui-header-account.mentions%<i class="fa fa-angle-right"></i></a>
 			</li>
 		</ul>
 		<ul>

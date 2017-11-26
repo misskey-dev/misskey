@@ -7,7 +7,9 @@ import Post from '../../../models/post';
 import Watching from '../../../models/post-watching';
 import notify from '../../../common/notify';
 import watch from '../../../common/watch-post';
-import { publishPostStream } from '../../../event';
+import { publishPostStream, pushSw } from '../../../event';
+import serializePost from '../../../serializers/post';
+import serializeUser from '../../../serializers/user';
 
 /**
  * React to a post
@@ -84,6 +86,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Notify
 	notify(post.user_id, user._id, 'reaction', {
 		post_id: post._id,
+		reaction: reaction
+	});
+
+	pushSw(post.user_id, 'reaction', {
+		user: await serializeUser(user, post.user_id),
+		post: await serializePost(post, post.user_id),
 		reaction: reaction
 	});
 

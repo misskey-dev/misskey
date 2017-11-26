@@ -1,10 +1,19 @@
-import db from '../../db/mongodb';
+import * as mongodb from 'mongodb';
+import monkDb, { nativeDbConn } from '../../db/mongodb';
 
-const collection = db.get('drive_files');
-
-(collection as any).createIndex('hash'); // fuck type definition
+const collection = monkDb.get('drive_files.files');
 
 export default collection as any; // fuck type definition
+
+const getGridFSBucket = async (): Promise<mongodb.GridFSBucket> => {
+	const db = await nativeDbConn();
+	const bucket = new mongodb.GridFSBucket(db, {
+		bucketName: 'drive_files'
+	});
+	return bucket;
+};
+
+export { getGridFSBucket };
 
 export function validateFileName(name: string): boolean {
 	return (

@@ -6,7 +6,7 @@ import DriveFolder from '../../../models/drive-folder';
 import DriveFile from '../../../models/drive-file';
 import { validateFileName } from '../../../models/drive-file';
 import serialize from '../../../serializers/drive-file';
-import event from '../../../event';
+import { publishDriveStream } from '../../../event';
 
 /**
  * Update a file
@@ -24,11 +24,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			user_id: user._id
-		}, {
-			fields: {
-				data: false
-			}
+			'metadata.user_id': user._id
 		});
 
 	if (file === null) {
@@ -38,7 +34,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).$;
 	if (nameErr) return rej('invalid name param');
-	if (name) file.name = name;
+	if (name) file.filename = name;
 
 	// Get 'folder_id' parameter
 	const [folderId, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
@@ -46,7 +42,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	if (folderId !== undefined) {
 		if (folderId === null) {
-			file.folder_id = null;
+			file.metadata.folder_id = null;
 		} else {
 			// Fetch folder
 			const folder = await DriveFolder
@@ -59,14 +55,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 				return rej('folder-not-found');
 			}
 
-			file.folder_id = folder._id;
+			file.metadata.folder_id = folder._id;
 		}
 	}
 
-	DriveFile.update(file._id, {
+	await DriveFile.update(file._id, {
 		$set: {
-			name: file.name,
-			folder_id: file.folder_id
+			filename: file.filename,
+			'metadata.folder_id': file.metadata.folder_id
 		}
 	});
 
@@ -76,6 +72,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Response
 	res(fileObj);
 
-	// Publish drive_file_updated event
-	event(user._id, 'drive_file_updated', fileObj);
+	// Publish file_updated event
+	publishDriveStream(user._id, 'file_updated', fileObj);
 });

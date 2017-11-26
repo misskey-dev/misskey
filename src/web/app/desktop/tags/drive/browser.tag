@@ -2,7 +2,8 @@
 	<nav>
 		<div class="path" oncontextmenu={ pathOncontextmenu }>
 			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }/>
-			<virtual each={ folder in hierarchyFolders }><span class="separator"><i class="fa fa-angle-right"></i></span>
+			<virtual each={ folder in hierarchyFolders }>
+				<span class="separator"><i class="fa fa-angle-right"></i></span>
 				<mk-drive-browser-nav-folder folder={ folder }/>
 			</virtual>
 			<span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span>
@@ -17,12 +18,14 @@
 				<virtual each={ folder in folders }>
 					<mk-drive-browser-folder class="folder" folder={ folder }/>
 				</virtual>
+				<div class="padding" each={ folders }></div>
 				<button if={ moreFolders }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" if={ files.length > 0 }>
 				<virtual each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }/>
 				</virtual>
+				<div class="padding" each={ files }></div>
 				<button if={ moreFiles } onclick={ fetchMoreFiles }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
@@ -160,22 +163,20 @@
 				> .contents
 
 					> .folders
-						&:after
-							content ""
-							display block
-							clear both
+					> .files
+						display flex
+						flex-wrap wrap
 
 						> .folder
-							float left
-
-					> .files
-						&:after
-							content ""
-							display block
-							clear both
-
 						> .file
-							float left
+							flex-grow 1
+							width 144px
+							margin 4px
+
+						> .padding
+							flex-grow 1
+							pointer-events none
+							width 144px + 8px // 8px is margin
 
 					> .empty
 						padding 16px
@@ -246,7 +247,10 @@
 
 		this.mixin('i');
 		this.mixin('api');
-		this.mixin('stream');
+
+		this.mixin('drive-stream');
+		this.connection = this.driveStream.getConnection();
+		this.connectionId = this.driveStream.use();
 
 		this.files = [];
 		this.folders = [];
@@ -279,10 +283,10 @@
 				});
 			});
 
-			this.stream.on('drive_file_created', this.onStreamDriveFileCreated);
-			this.stream.on('drive_file_updated', this.onStreamDriveFileUpdated);
-			this.stream.on('drive_folder_created', this.onStreamDriveFolderCreated);
-			this.stream.on('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			this.connection.on('file_created', this.onStreamDriveFileCreated);
+			this.connection.on('file_updated', this.onStreamDriveFileUpdated);
+			this.connection.on('folder_created', this.onStreamDriveFolderCreated);
+			this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
 
 			if (this.opts.folder) {
 				this.move(this.opts.folder);
@@ -292,10 +296,11 @@
 		});
 
 		this.on('unmount', () => {
-			this.stream.off('drive_file_created', this.onStreamDriveFileCreated);
-			this.stream.off('drive_file_updated', this.onStreamDriveFileUpdated);
-			this.stream.off('drive_folder_created', this.onStreamDriveFolderCreated);
-			this.stream.off('drive_folder_updated', this.onStreamDriveFolderUpdated);
+			this.connection.off('file_created', this.onStreamDriveFileCreated);
+			this.connection.off('file_updated', this.onStreamDriveFileUpdated);
+			this.connection.off('folder_created', this.onStreamDriveFolderCreated);
+			this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
+			this.driveStream.dispose(this.connectionId);
 		});
 
 		this.onStreamDriveFileCreated = file => {
@@ -407,7 +412,7 @@
 
 			// ドロップされてきたものがファイルだったら
 			if (e.dataTransfer.files.length > 0) {
-				e.dataTransfer.files.forEach(file => {
+				Array.from(e.dataTransfer.files).forEach(file => {
 					this.upload(file, this.folder);
 				});
 				return false;
@@ -509,7 +514,7 @@
 		};
 
 		this.changeFileInput = () => {
-			this.refs.fileInput.files.forEach(file => {
+			Array.from(this.refs.fileInput.files).forEach(file => {
 				this.upload(file, this.folder);
 			});
 		};
@@ -571,6 +576,7 @@
 				if (folder.parent) dive(folder.parent);
 
 				this.update();
+				this.trigger('open-folder', folder);
 				this.fetch();
 			});
 		};
@@ -640,6 +646,7 @@
 				folder: null,
 				hierarchyFolders: []
 			});
+			this.trigger('move-root');
 			this.fetch();
 		};
 

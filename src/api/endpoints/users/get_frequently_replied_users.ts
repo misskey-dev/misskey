@@ -11,6 +11,10 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [userId, userIdErr] = $(params.user_id).id().$;
 	if (userIdErr) return rej('invalid user_id param');
 
+	// Get 'limit' parameter
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	if (limitErr) return rej('invalid limit param');
+
 	// Lookup user
 	const user = await User.findOne({
 		_id: userId
@@ -82,8 +86,8 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Sort replies by frequency
 	const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);
 
-	// Lookup top 10 replies
-	const topRepliedUsers = repliedUsersSorted.slice(0, 10);
+	// Extract top replied users
+	const topRepliedUsers = repliedUsersSorted.slice(0, limit);
 
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({

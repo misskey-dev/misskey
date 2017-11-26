@@ -1,6 +1,8 @@
 <mk-recommended-polls-home-widget>
-	<p class="title"><i class="fa fa-pie-chart"></i>%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
-	<button onclick={ fetch } title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
+	<virtual if={ !data.compact }>
+		<p class="title"><i class="fa fa-pie-chart"></i>%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
+		<button onclick={ fetch } title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
+	</virtual>
 	<div class="poll" if={ !loading && poll != null }>
 		<p if={ poll.text }><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>
 		<p if={ !poll.text }><a href="/{ poll.user.username }/{ poll.id }"><i class="fa fa-link"></i></a></p>
@@ -12,6 +14,8 @@
 		:scope
 			display block
 			background #fff
+			border solid 1px rgba(0, 0, 0, 0.075)
+			border-radius 6px
 
 			> .title
 				margin 0
@@ -70,7 +74,11 @@
 
 	</style>
 	<script>
-		this.mixin('api');
+		this.data = {
+			compact: false
+		};
+
+		this.mixin('widget');
 
 		this.poll = null;
 		this.loading = true;
@@ -101,6 +109,11 @@
 					poll: poll
 				});
 			});
+		};
+
+		this.func = () => {
+			this.data.compact = !this.data.compact;
+			this.save();
 		};
 	</script>
 </mk-recommended-polls-home-widget>

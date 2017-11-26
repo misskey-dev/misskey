@@ -22,15 +22,15 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (newPasswordErr) return rej('invalid new_password param');
 
 	// Compare password
-	const same = bcrypt.compareSync(currentPassword, user.password);
+	const same = await bcrypt.compare(currentPassword, user.password);
 
 	if (!same) {
 		return rej('incorrect password');
 	}
 
 	// Generate hash of password
-	const salt = bcrypt.genSaltSync(8);
-	const hash = bcrypt.hashSync(newPassword, salt);
+	const salt = await bcrypt.genSalt(8);
+	const hash = await bcrypt.hash(newPassword, salt);
 
 	await User.update(user._id, {
 		$set: {

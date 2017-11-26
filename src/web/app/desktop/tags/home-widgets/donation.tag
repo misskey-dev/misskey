@@ -7,7 +7,8 @@
 		:scope
 			display block
 			background #fff
-			border-color #ead8bb !important
+			border solid 1px #ead8bb
+			border-radius 6px
 
 			> article
 				padding 20px
@@ -28,5 +29,8 @@
 					color #999
 
 	</style>
-	<script>this.mixin('user-preview');</script>
+	<script>
+		this.mixin('widget');
+		this.mixin('user-preview');
+	</script>
 </mk-donation-home-widget>

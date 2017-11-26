@@ -5,7 +5,7 @@
 		<mk-cpu-usage connection={ connection }/>
 		<mk-mem-usage connection={ connection }/>
 	</main>
-	<footer><a href={ CONFIG.url }>{ CONFIG.host }</a></footer>
+	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
 	<style>
 		:scope
 			display block
@@ -51,7 +51,7 @@
 					color #546567
 	</style>
 	<script>
-		import Connection from '../../common/scripts/server-stream';
+		import Connection from '../../common/scripts/streaming/server-stream';
 
 		this.mixin('api');
 
@@ -177,7 +177,7 @@
 				width 100%
 	</style>
 	<script>
-		import uuid from '../../common/scripts/uuid';
+		import uuid from 'uuid';
 
 		this.viewBoxX = 100;
 		this.viewBoxY = 30;

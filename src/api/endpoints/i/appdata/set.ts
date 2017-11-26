@@ -3,9 +3,6 @@
  */
 import $ from 'cafy';
 import Appdata from '../../../models/appdata';
-import User from '../../../models/user';
-import serialize from '../../../serializers/user';
-import event from '../../../event';
 
 /**
  * Set app data
@@ -16,7 +13,9 @@ import event from '../../../event';
  * @param {Boolean} isSecure
  * @return {Promise<any>}
  */
-module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) => {
+module.exports = (params, user, app) => new Promise(async (res, rej) => {
+	if (app == null) return rej('このAPIはサードパーティAppからのみ利用できます');
+
 	// Get 'data' parameter
 	const [data, dataError] = $(params.data).optional.object()
 		.pipe(obj => {
@@ -43,31 +42,17 @@ module.exports = (params, user, app, isSecure) => new Promise(async (res, rej) =
 		set[`data.${key}`] = value;
 	}
 
-	if (isSecure) {
-		const _user = await User.findOneAndUpdate(user._id, {
+	await Appdata.update({
+		app_id: app._id,
+		user_id: user._id
+	}, Object.assign({
+		app_id: app._id,
+		user_id: user._id
+	}, {
 			$set: set
+		}), {
+			upsert: true
 		});
 
-		res(204);
-
-		// Publish i updated event
-		event(user._id, 'i_updated', await serialize(_user, user, {
-			detail: true,
-			includeSecrets: true
-		}));
-	} else {
-		await Appdata.update({
-			app_id: app._id,
-			user_id: user._id
-		}, Object.assign({
-			app_id: app._id,
-			user_id: user._id
-		}, {
-				$set: set
-			}), {
-				upsert: true
-			});
-
-		res(204);
-	}
+	res(204);
 });

@@ -14,13 +14,14 @@ module.exports = langs.map(([lang, locale]) => {
 
 	// Entries
 	const entry = {
-		desktop: './src/web/app/desktop/script.js',
-		mobile: './src/web/app/mobile/script.js',
-		ch: './src/web/app/ch/script.js',
-		stats: './src/web/app/stats/script.js',
-		status: './src/web/app/status/script.js',
-		dev: './src/web/app/dev/script.js',
-		auth: './src/web/app/auth/script.js'
+		desktop: './src/web/app/desktop/script.ts',
+		mobile: './src/web/app/mobile/script.ts',
+		ch: './src/web/app/ch/script.ts',
+		stats: './src/web/app/stats/script.ts',
+		status: './src/web/app/status/script.ts',
+		dev: './src/web/app/dev/script.ts',
+		auth: './src/web/app/auth/script.ts',
+		sw: './src/web/app/sw.js'
 	};
 
 	const output = {
@@ -33,6 +34,11 @@ module.exports = langs.map(([lang, locale]) => {
 		entry,
 		module: module_(lang, locale),
 		plugins: plugins(version, lang),
-		output
+		output,
+		resolve: {
+			extensions: [
+				'.js', '.ts'
+			]
+		}
 	};
 });

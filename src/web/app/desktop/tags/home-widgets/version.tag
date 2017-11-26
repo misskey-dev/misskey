@@ -1,10 +1,8 @@
 <mk-version-home-widget>
-	<p>ver { version } (葵 aoi)</p>
+	<p>ver { _VERSION_ } (葵 aoi)</p>
 	<style>
 		:scope
 			display block
-			background transparent !important
-			border none !important
 			overflow visible !important
 
 			> p
@@ -17,6 +15,6 @@
 
 	</style>
 	<script>
-		this.version = VERSION;
+		this.mixin('widget');
 	</script>
 </mk-version-home-widget>

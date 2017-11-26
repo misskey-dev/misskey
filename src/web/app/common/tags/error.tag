@@ -170,8 +170,6 @@
 
 	</style>
 	<script>
-		import CONFIG from '../../common/scripts/config';
-
 		this.on('mount', () => {
 			this.update({
 				network: navigator.onLine
@@ -193,7 +191,7 @@
 				});
 
 				// Check misskey server is available
-				fetch(`${CONFIG.apiUrl}/meta`).then(() => {
+				fetch(`${_API_URL_}/meta`).then(() => {
 					this.update({
 						end: true,
 						server: true

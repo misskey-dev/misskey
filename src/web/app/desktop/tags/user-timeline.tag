@@ -91,6 +91,7 @@
 		this.fetch = cb => {
 			this.api('users/posts', {
 				user_id: this.user.id,
+				max_date: this.date ? this.date.getTime() : undefined,
 				with_replies: this.mode == 'with-replies'
 			}).then(posts => {
 				this.update({
@@ -130,6 +131,14 @@
 			this.update({
 				mode: mode
 			});
+			this.fetch();
+		};
+
+		this.warp = date => {
+			this.update({
+				date: date
+			});
+
 			this.fetch();
 		};
 	</script>

@@ -28,7 +28,7 @@ export default (lang, locale) => {
 
 	return {
 		enforce: 'pre',
-		test: /\.(tag|js)$/,
+		test: /\.(tag|js|ts)$/,
 		exclude: /node_modules/,
 		loader: StringReplacePlugin.replace({
 			replacements: [{
