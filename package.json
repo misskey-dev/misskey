@@ -153,7 +153,7 @@
 		"tmp": "0.0.33",
 		"ts-node": "3.3.0",
 		"tslint": "5.8.0",
-		"typescript": "2.6.1",
+		"typescript": "2.6.2",
 		"uglify-es": "3.2.0",
 		"uglifyjs-webpack-plugin": "1.1.1",
 		"uuid": "3.1.0",
