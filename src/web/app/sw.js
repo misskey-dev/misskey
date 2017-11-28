@@ -13,8 +13,10 @@ const cachee = [
 self.addEventListener('install', ev => {
 	console.info('installed');
 
-	// Cache
-	ev.waitUntil(caches.open(_VERSION_).then(cache => cache.addAll(cachee)));
+	ev.waitUntil(Promise.all([
+		self.skipWaiting(), // Force activate
+		caches.open(_VERSION_).then(cache => cache.addAll(cachee)) // Cache
+	]));
 });
 
 // アクティベートされたとき
