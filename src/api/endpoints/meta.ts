@@ -45,7 +45,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	res({
 		maintainer: config.maintainer,
 		version: version,
-		secure: config.https.enable,
+		secure: config.https != null,
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,
