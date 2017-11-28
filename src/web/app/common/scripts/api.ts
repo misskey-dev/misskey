@@ -29,7 +29,8 @@ export default (i, endpoint, data = {}): Promise<{ [x: string]: any }> => {
 		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${_API_URL_}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
-			credentials: endpoint === 'signin' ? 'include' : 'omit'
+			credentials: endpoint === 'signin' ? 'include' : 'omit',
+			cache: 'no-cache'
 		}).then(res => {
 			if (--pending === 0) spinner.parentNode.removeChild(spinner);
 			if (res.status === 200) {

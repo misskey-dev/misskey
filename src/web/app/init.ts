@@ -19,6 +19,10 @@ require('./common/tags');
 
 console.info(`Misskey v${_VERSION_} (葵 aoi)`);
 
+// BootTimer解除
+window.clearTimeout((window as any).mkBootTimer);
+delete (window as any).mkBootTimer;
+
 if (_HOST_ != 'localhost') {
 	document.domain = _HOST_;
 }
