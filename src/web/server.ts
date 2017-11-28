@@ -39,6 +39,7 @@ app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${__dirname}/assets
 app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
+app.use('/assets/*.js', (req, res) => res.sendFile(`${__dirname}/assets/help.js`));
 app.use('/assets', (req, res) => {
 	res.sendStatus(404);
 });

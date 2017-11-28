@@ -92,6 +92,13 @@
 				'\n\n' +
 				'New version of Misskey available. The page will be reloaded.');
 
+			// Clear cache (serive worker)
+			try {
+				navigator.serviceWorker.controller.postMessage('clear');
+			} catch (e) {
+				console.error(e);
+			}
+
 			// Force reload
 			location.reload(true);
 		}

@@ -63,3 +63,9 @@ self.addEventListener('push', ev => {
 		});
 	}));
 });
+
+self.addEventListener('message', ev => {
+	if (ev.data == 'clear') {
+		caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+	}
+});
