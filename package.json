@@ -92,7 +92,7 @@
 		"elasticsearch": "14.0.0",
 		"escape-regexp": "0.0.1",
 		"event-stream": "3.3.4",
-		"eventemitter3": "2.0.3",
+		"eventemitter3": "3.0.0",
 		"express": "4.16.2",
 		"file-type": "7.3.0",
 		"fuckadblock": "3.2.1",
