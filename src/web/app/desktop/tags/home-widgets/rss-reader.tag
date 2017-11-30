@@ -86,7 +86,9 @@
 		});
 
 		this.fetch = () => {
-			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`).then(res => {
+			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`, {
+				cache: 'no-cache'
+			}).then(res => {
 				res.json().then(feed => {
 					this.update({
 						initializing: false,

@@ -39,6 +39,12 @@ app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${__dirname}/assets
 app.use('/assets', express.static(`${__dirname}/assets`, {
 	maxAge: ms('7 days')
 }));
+app.use('/assets/*.js', (req, res) => res.sendFile(`${__dirname}/assets/404.js`));
+app.use('/assets', (req, res) => {
+	res.sendStatus(404);
+});
+
+app.use('/recover', (req, res) => res.sendFile(`${__dirname}/assets/recover.html`));
 
 /**
  * ServiceWroker

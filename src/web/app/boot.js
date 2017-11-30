@@ -69,4 +69,38 @@
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);
+
+	// 1秒経ってもスクリプトがロードされない場合はバージョンが古くて
+	// 404になっているせいかもしれないので、バージョンを確認して古ければ更新する
+	//
+	// 読み込まれたスクリプトからこのタイマーを解除できるように、
+	// グローバルにタイマーIDを代入しておく
+	window.mkBootTimer = window.setTimeout(async () => {
+		// Fetch meta
+		const res = await fetch(API + '/meta', {
+			method: 'POST',
+			cache: 'no-cache'
+		});
+
+		// Parse
+		const meta = await res.json();
+
+		// Compare versions
+		if (meta.version != VERSION) {
+			alert(
+				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
+				'\n\n' +
+				'New version of Misskey available. The page will be reloaded.');
+
+			// Clear cache (serive worker)
+			try {
+				navigator.serviceWorker.controller.postMessage('clear');
+			} catch (e) {
+				console.error(e);
+			}
+
+			// Force reload
+			location.reload(true);
+		}
+	}, 1000);
 }

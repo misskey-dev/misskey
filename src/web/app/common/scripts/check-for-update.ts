@@ -7,6 +7,14 @@ export default async function(mios: MiOS) {
 
 	if (meta.version != _VERSION_) {
 		localStorage.setItem('should-refresh', 'true');
+
+		// Clear cache (serive worker)
+		try {
+			navigator.serviceWorker.controller.postMessage('clear');
+		} catch (e) {
+			console.error(e);
+		}
+
 		alert('%i18n:common.update-available%'.replace('{newer}', meta.version).replace('{current}', _VERSION_));
 	}
 }
