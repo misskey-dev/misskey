@@ -109,7 +109,7 @@
 		"gulp-typescript": "3.2.3",
 		"gulp-uglify": "3.0.0",
 		"gulp-util": "3.0.8",
-		"inquirer": "4.0.0",
+		"inquirer": "4.0.1",
 		"is-root": "1.0.0",
 		"is-url": "1.2.2",
 		"js-yaml": "3.10.0",
