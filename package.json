@@ -158,7 +158,7 @@
 		"uglifyjs-webpack-plugin": "1.1.2",
 		"uuid": "3.1.0",
 		"vhost": "3.0.2",
-		"web-push": "3.2.4",
+		"web-push": "3.2.5",
 		"webpack": "3.9.1",
 		"websocket": "1.0.25",
 		"xev": "2.0.0"
