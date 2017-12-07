@@ -20,14 +20,14 @@
 <mk-settings>
 	<p><mk-raw content={ '%i18n:mobile.tags.mk-settings.signed-in-as%'.replace('{}', '<b>' + I.name + '</b>') }/></p>
 	<ul>
-		<li><a href="./settings/profile"><i class="fa fa-user"></i>%i18n:mobile.tags.mk-settings-page.profile%<i class="fa fa-angle-right"></i></a></li>
-		<li><a href="./settings/authorized-apps"><i class="fa fa-puzzle-piece"></i>%i18n:mobile.tags.mk-settings-page.applications%<i class="fa fa-angle-right"></i></a></li>
-		<li><a href="./settings/twitter"><i class="fa fa-twitter"></i>%i18n:mobile.tags.mk-settings-page.twitter-integration%<i class="fa fa-angle-right"></i></a></li>
-		<li><a href="./settings/signin-history"><i class="fa fa-sign-in"></i>%i18n:mobile.tags.mk-settings-page.signin-history%<i class="fa fa-angle-right"></i></a></li>
-		<li><a href="./settings/api"><i class="fa fa-key"></i>%i18n:mobile.tags.mk-settings-page.api%<i class="fa fa-angle-right"></i></a></li>
+		<li><a href="./settings/profile">%fa:user%%i18n:mobile.tags.mk-settings-page.profile%%fa:angle-right%</a></li>
+		<li><a href="./settings/authorized-apps">%fa:puzzle-piece%%i18n:mobile.tags.mk-settings-page.applications%%fa:angle-right%</a></li>
+		<li><a href="./settings/twitter">%fa:twitter%%i18n:mobile.tags.mk-settings-page.twitter-integration%%fa:angle-right%</a></li>
+		<li><a href="./settings/signin-history">%fa:sign-in%%i18n:mobile.tags.mk-settings-page.signin-history%%fa:angle-right%</a></li>
+		<li><a href="./settings/api">%fa:key%%i18n:mobile.tags.mk-settings-page.api%%fa:angle-right%</a></li>
 	</ul>
 	<ul>
-		<li><a onclick={ signout }><i class="fa fa-power-off"></i>%i18n:mobile.tags.mk-settings-page.signout%</a></li>
+		<li><a onclick={ signout }>%fa:power-off%%i18n:mobile.tags.mk-settings-page.signout%</a></li>
 	</ul>
 	<p><small>ver { _VERSION_ } (葵 aoi)</small></p>
 	<style>
