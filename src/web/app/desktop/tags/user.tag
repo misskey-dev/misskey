@@ -329,8 +329,6 @@
 </mk-user-profile>
 
 <mk-user-photos>
-	<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-user.photos.title%</p>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
 	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
