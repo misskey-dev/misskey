@@ -1,7 +1,7 @@
 <mk-drive-file-viewer>
 	<div class="preview">
 		<img if={ kind == 'image' } src={ file.url } alt={ file.name } title={ file.name }>
-		<i if={ kind != 'image' } class="fa fa-file"></i>
+		<virtual if={ kind != 'image' }>%fa:file%</virtual>
 		<footer if={ kind == 'image' && file.properties && file.properties.width && file.properties.height }>
 			<span class="size">
 				<span class="width">{ file.properties.width }</span>
@@ -23,26 +23,26 @@
 			<span class="separator"></span>
 			<span class="data-size">{ bytesToSize(file.datasize) }</span>
 			<span class="separator"></span>
-			<span class="created-at" onclick={ showCreatedAt }><i class="fa fa-clock-o"></i><mk-time time={ file.created_at }/></span>
+			<span class="created-at" onclick={ showCreatedAt }>%fa:R clock%<mk-time time={ file.created_at }/></span>
 		</div>
 	</div>
 	<div class="menu">
 		<div>
 			<a href={ file.url + '?download' } download={ file.name }>
-				<i class="fa fa-download"></i>%i18n:mobile.tags.mk-drive-file-viewer.download%
+				%fa:download%%i18n:mobile.tags.mk-drive-file-viewer.download%
 			</a>
 			<button onclick={ rename }>
-				<i class="fa fa-pencil"></i>%i18n:mobile.tags.mk-drive-file-viewer.rename%
+				%fa:pencil-alt%%i18n:mobile.tags.mk-drive-file-viewer.rename%
 			</button>
 			<button onclick={ move }>
-				<i class="fa fa-folder-open"></i>%i18n:mobile.tags.mk-drive-file-viewer.move%
+				%fa:folder-open%%i18n:mobile.tags.mk-drive-file-viewer.move%
 			</button>
 		</div>
 	</div>
 	<div class="hash">
 		<div>
 			<p>
-				<i class="fa fa-hashtag"></i>%i18n:mobile.tags.mk-drive-file-viewer.hash%
+				%fa:hashtag%%i18n:mobile.tags.mk-drive-file-viewer.hash%
 			</p>
 			<code>{ file.md5 }</code>
 		</div>
@@ -114,7 +114,7 @@
 					> .created-at
 						color #bdbdbd
 
-						> i
+						> [data-fa]
 							margin-right 2px
 
 			> .menu
@@ -149,7 +149,7 @@
 							border-color #444
 							box-shadow 0 1px 3px rgba(0, 0, 0, 0.075), inset 0 0 5px rgba(0, 0, 0, 0.2)
 
-						> i
+						> [data-fa]
 							margin-right 4px
 
 			> .hash
@@ -167,7 +167,7 @@
 						color #555
 						font-size 0.9em
 
-						> i
+						> [data-fa]
 							margin-right 4px
 
 					> code

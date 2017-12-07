@@ -1,9 +1,9 @@
 <mk-channel-home-widget>
 	<virtual if={ !data.compact }>
-		<p class="title"><i class="fa fa-television"></i>{
+		<p class="title">%fa:tv%{
 			channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%'
 		}</p>
-		<button onclick={ settings } title="%i18n:desktop.tags.mk-channel-home-widget.settings%"><i class="fa fa-cog"></i></button>
+		<button onclick={ settings } title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
 	</virtual>
 	<p class="get-started" if={ this.data.channel == null }>%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
 	<mk-channel ref="channel" show={ this.data.channel }/>
@@ -25,7 +25,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button

@@ -1,6 +1,6 @@
 <mk-post-form>
 	<header>
-		<button class="cancel" onclick={ cancel }><i class="fa fa-times"></i></button>
+		<button class="cancel" onclick={ cancel }>%fa:times%</button>
 		<div>
 			<span if={ refs.text } class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
 			<button class="submit" onclick={ post }>%i18n:mobile.tags.mk-post-form.submit%</button>
@@ -14,15 +14,15 @@
 				<li class="file" each={ files }>
 					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
 				</li>
-				<li class="add" if={ files.length < 4 } title="%i18n:mobile.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }><i class="fa fa-plus"></i></li>
+				<li class="add" if={ files.length < 4 } title="%i18n:mobile.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }>%fa:plus%</li>
 			</ul>
 		</div>
 		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }/>
 		<mk-uploader ref="uploader"/>
-		<button ref="upload" onclick={ selectFile }><i class="fa fa-upload"></i></button>
-		<button ref="drive" onclick={ selectFileFromDrive }><i class="fa fa-cloud"></i></button>
-		<button class="kao" onclick={ kao }><i class="fa fa-smile-o"></i></button>
-		<button class="poll" onclick={ addPoll }><i class="fa fa-pie-chart"></i></button>
+		<button ref="upload" onclick={ selectFile }>%fa:upload%</button>
+		<button ref="drive" onclick={ selectFileFromDrive }>%fa:cloud%</button>
+		<button class="kao" onclick={ kao }>%fa:R smile%</button>
+		<button class="poll" onclick={ addPoll }>%fa:pie-chart%</button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
 	<style>
@@ -126,10 +126,10 @@
 							&:hover
 								border-color rgba($theme-color, 0.3)
 
-								> i
+								> [data-fa]
 									color rgba($theme-color, 0.4)
 
-							> i
+							> [data-fa]
 								display block
 								width 60px
 								height 60px

@@ -1,12 +1,12 @@
 <mk-rss-reader-home-widget>
 	<virtual if={ !data.compact }>
-		<p class="title"><i class="fa fa-rss-square"></i>RSS</p>
-		<button onclick={ settings } title="設定"><i class="fa fa-cog"></i></button>
+		<p class="title">%fa:rss-square%RSS</p>
+		<button onclick={ settings } title="設定">%fa:cog%</button>
 	</virtual>
 	<div class="feed" if={ !initializing }>
 		<virtual each={ item in items }><a href={ item.link } target="_blank">{ item.title }</a></virtual>
 	</div>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -23,7 +23,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button
@@ -61,7 +61,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

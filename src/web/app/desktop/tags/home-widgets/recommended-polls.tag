@@ -1,15 +1,15 @@
 <mk-recommended-polls-home-widget>
 	<virtual if={ !data.compact }>
-		<p class="title"><i class="fa fa-pie-chart"></i>%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
-		<button onclick={ fetch } title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
+		<p class="title">%fa:pie-chart%%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
+		<button onclick={ fetch } title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%">%fa:refresh%</button>
 	</virtual>
 	<div class="poll" if={ !loading && poll != null }>
 		<p if={ poll.text }><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>
-		<p if={ !poll.text }><a href="/{ poll.user.username }/{ poll.id }"><i class="fa fa-link"></i></a></p>
+		<p if={ !poll.text }><a href="/{ poll.user.username }/{ poll.id }">%fa:link%</a></p>
 		<mk-poll post={ poll }/>
 	</div>
 	<p class="empty" if={ !loading && poll == null }>%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="loading" if={ loading }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -26,7 +26,7 @@
 				color #888
 				border-bottom solid 1px #eee
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button
@@ -69,7 +69,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

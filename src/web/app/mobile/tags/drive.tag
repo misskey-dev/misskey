@@ -1,16 +1,16 @@
 <mk-drive>
 	<nav ref="nav">
-		<p onclick={ goRoot }><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-drive.drive%</p>
+		<p onclick={ goRoot }>%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</p>
 		<virtual each={ folder in hierarchyFolders }>
-			<span><i class="fa fa-angle-right"></i></span>
+			<span>%fa:angle-right%</span>
 			<p onclick={ move }>{ folder.name }</p>
 		</virtual>
 		<virtual if={ folder != null }>
-			<span><i class="fa fa-angle-right"></i></span>
+			<span>%fa:angle-right%</span>
 			<p>{ folder.name }</p>
 		</virtual>
 		<virtual if={ file != null }>
-			<span><i class="fa fa-angle-right"></i></span>
+			<span>%fa:angle-right%</span>
 			<p>{ file.name }</p>
 		</virtual>
 	</nav>
@@ -81,7 +81,7 @@
 					&:last-child
 						font-weight bold
 
-					> i
+					> [data-fa]
 						margin-right 4px
 
 				> span

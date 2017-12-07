@@ -1,6 +1,6 @@
 <mk-home data-customize={ opts.customize }>
 	<div class="customize" if={ opts.customize }>
-		<a href="/"><i class="fa fa-check"></i>完了</a>
+		<a href="/">%fa:check%完了</a>
 		<div>
 			<div class="adder">
 				<p>ウィジェットを追加:</p>
@@ -96,7 +96,7 @@
 						background darken($theme-color, 10%)
 						transition background 0s ease
 
-					> i
+					> [data-fa]
 						margin-right 8px
 
 				> div
@@ -221,7 +221,7 @@
 			}
 
 			if (this.opts.customize) {
-				dialog('<i class="fa fa-info-circle"></i>カスタマイズのヒント',
+				dialog('%fa:info-circle%カスタマイズのヒント',
 					'<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
 					'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
 					'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +

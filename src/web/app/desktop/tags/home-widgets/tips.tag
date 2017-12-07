@@ -1,5 +1,5 @@
 <mk-tips-home-widget>
-	<p ref="tip"><i class="fa fa-lightbulb-o"></i><span ref="text"></span></p>
+	<p ref="tip">%fa:R lightbulb%<span ref="text"></span></p>
 	<style>
 		:scope
 			display block
@@ -13,7 +13,7 @@
 				font-size 0.7em
 				color #999
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 				kbd

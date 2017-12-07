@@ -13,7 +13,7 @@
 		this.on('mount', () => {
 			document.title = `%i18n:mobile.tags.mk-search-page.search%: ${this.opts.query} | Misskey`
 			// TODO: クエリをHTMLエスケープ
-			ui.trigger('title', '<i class="fa fa-search"></i>' + this.opts.query);
+			ui.trigger('title', '%fa:search%' + this.opts.query);
 			document.documentElement.style.background = '#313a42';
 
 			Progress.start();

@@ -3,7 +3,7 @@
 		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted } title={ !parent.isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', text) : '' }>
 			<div class="backdrop" style={ 'width:' + (parent.result ? (votes / parent.total * 100) : 0) + '%' }></div>
 			<span>
-				<i class="fa fa-check" if={ is_voted }></i>
+				<virtual if={ is_voted }>%fa:check%</virtual>
 				{ text }
 				<span class="votes" if={ parent.result }>({ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', votes) })</span>
 			</span>

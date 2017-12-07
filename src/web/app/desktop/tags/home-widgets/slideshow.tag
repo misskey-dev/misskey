@@ -5,7 +5,7 @@
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
-	<button onclick={ resize }><i class="fa fa-expand"></i></button>
+	<button onclick={ resize }>%fa:expand%</button>
 	<style>
 		:scope
 			display block

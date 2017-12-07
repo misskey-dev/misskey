@@ -1,15 +1,15 @@
 <mk-timeline>
 	<div class="init" if={ init }>
-		<i class="fa fa-spinner fa-pulse"></i>%i18n:common.loading%
+		%fa:spinner .pluse%%i18n:common.loading%
 	</div>
 	<div class="empty" if={ !init && posts.length == 0 }>
-		<i class="fa fa-comments-o"></i>{ opts.empty || '%i18n:mobile.tags.mk-timeline.empty%' }
+		%fa:R comments%{ opts.empty || '%i18n:mobile.tags.mk-timeline.empty%' }
 	</div>
 	<virtual each={ post, i in posts }>
 		<mk-timeline-post post={ post }/>
 		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }>
-			<span><i class="fa fa-angle-up"></i>{ post._datetext }</span>
-			<span><i class="fa fa-angle-down"></i>{ posts[i + 1]._datetext }</span>
+			<span>%fa:angle-up%{ post._datetext }</span>
+			<span>%fa:angle-down%{ posts[i + 1]._datetext }</span>
 		</p>
 	</virtual>
 	<footer if={ !init }>
@@ -30,7 +30,7 @@
 				text-align center
 				color #999
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> .empty
@@ -40,7 +40,7 @@
 				text-align center
 				color #999
 
-				> i
+				> [data-fa]
 					display block
 					margin-bottom 16px
 					font-size 3em
@@ -145,7 +145,7 @@
 			<a class="avatar-anchor" href={ '/' + post.user.username }>
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 			</a>
-			<i class="fa fa-retweet"></i>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
+			%fa:retweet%{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
 		</p>
 		<mk-time time={ post.created_at }/>
 	</div>
@@ -166,7 +166,7 @@
 				<div class="text" ref="text">
 					<p class="channel" if={ p.channel != null }><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
 					<a class="reply" if={ p.reply }>
-						<i class="fa fa-reply"></i>
+						%fa:reply%
 					</a>
 					<p class="dummy"></p>
 					<a class="quote" if={ p.repost != null }>RP:</a>
@@ -176,23 +176,23 @@
 				</div>
 				<mk-poll if={ p.poll } post={ p } ref="pollViewer"/>
 				<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>
-				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
+				<div class="repost" if={ p.repost }>%fa:quote-right -flip-h%
 					<mk-post-preview class="repost" post={ p.repost }/>
 				</div>
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
 				<button onclick={ reply }>
-					<i class="fa fa-reply"></i><p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="Repost">
-					<i class="fa fa-retweet"></i><p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
 				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton">
-					<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
 				<button class="menu" onclick={ menu } ref="menuButton">
-					<i class="fa fa-ellipsis-h"></i>
+					%fa:ellipsis-h%
 				</button>
 			</footer>
 		</div>
@@ -422,7 +422,7 @@
 						> .repost
 							margin 8px 0
 
-							> i:first-child
+							> [data-fa]:first-child
 								position absolute
 								top -8px
 								left -8px

@@ -20,6 +20,12 @@ import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
+const fontawesome = require('@fortawesome/fontawesome');
+const solid = require('@fortawesome/fontawesome-free-solid');
+
+// Adds all the icons from the Solid style into our library for easy lookup
+fontawesome.library.add(solid);
+
 import version from './src/version';
 
 const uglify = uglifyComposer(uglifyes, console);
@@ -169,7 +175,8 @@ gulp.task('build:client:pug', [
 		gulp.src('./src/web/app/base.pug')
 			.pipe(pug({
 				locals: {
-					themeColor: constants.themeColor
+					themeColor: constants.themeColor,
+					facss: fontawesome.dom.css()
 				}
 			}))
 			.pipe(htmlmin({

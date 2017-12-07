@@ -11,7 +11,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-settings-page.settings%';
-			ui.trigger('title', '<i class="fa fa-cog"></i>%i18n:mobile.tags.mk-settings-page.settings%');
+			ui.trigger('title', '%fa:cog%%i18n:mobile.tags.mk-settings-page.settings%');
 			document.documentElement.style.background = '#313a42';
 		});
 	</script>

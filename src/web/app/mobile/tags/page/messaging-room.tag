@@ -24,7 +24,7 @@
 
 				document.title = `%i18n:mobile.tags.mk-messaging-room-page.message%: ${user.name} | Misskey`;
 				// TODO: ユーザー名をエスケープ
-				ui.trigger('title', '<i class="fa fa-comments-o"></i>' + user.name);
+				ui.trigger('title', '%fa:R comments%' + user.name);
 			});
 		});
 	</script>

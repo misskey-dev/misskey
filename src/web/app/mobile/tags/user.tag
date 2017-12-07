@@ -17,10 +17,10 @@
 				<div class="description">{ user.description }</div>
 				<div class="info">
 					<p class="location" if={ user.profile.location }>
-						<i class="fa fa-map-marker"></i>{ user.profile.location }
+						%fa:map-marker%{ user.profile.location }
 					</p>
 					<p class="birthday" if={ user.profile.birthday }>
-						<i class="fa fa-birthday-cake"></i>{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)
+						%fa:birthday-cake%{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)
 					</p>
 				</div>
 				<div class="status">
@@ -217,43 +217,43 @@
 <mk-user-overview>
 	<mk-post-detail if={ user.pinned_post } post={ user.pinned_post } compact={ true }/>
 	<section class="recent-posts">
-		<h2><i class="fa fa-comments-o"></i>%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
+		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
 		<div>
 			<mk-user-overview-posts user={ user }/>
 		</div>
 	</section>
 	<section class="images">
-		<h2><i class="fa fa-picture-o"></i>%i18n:mobile.tags.mk-user-overview.images%</h2>
+		<h2>%fa:image%%i18n:mobile.tags.mk-user-overview.images%</h2>
 		<div>
 			<mk-user-overview-photos user={ user }/>
 		</div>
 	</section>
 	<section class="activity">
-		<h2><i class="fa fa-bar-chart"></i>%i18n:mobile.tags.mk-user-overview.activity%</h2>
+		<h2>%fa:bar-chart%%i18n:mobile.tags.mk-user-overview.activity%</h2>
 		<div>
 			<mk-user-overview-activity-chart user={ user }/>
 		</div>
 	</section>
 	<section class="keywords">
-		<h2><i class="fa fa-comment-o"></i>%i18n:mobile.tags.mk-user-overview.keywords%</h2>
+		<h2>%fa:R comment%%i18n:mobile.tags.mk-user-overview.keywords%</h2>
 		<div>
 			<mk-user-overview-keywords user={ user }/>
 		</div>
 	</section>
 	<section class="domains">
-		<h2><i class="fa fa-globe"></i>%i18n:mobile.tags.mk-user-overview.domains%</h2>
+		<h2>%fa:globe%%i18n:mobile.tags.mk-user-overview.domains%</h2>
 		<div>
 			<mk-user-overview-domains user={ user }/>
 		</div>
 	</section>
 	<section class="frequently-replied-users">
-		<h2><i class="fa fa-users"></i>%i18n:mobile.tags.mk-user-overview.frequently-replied-users%</h2>
+		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.frequently-replied-users%</h2>
 		<div>
 			<mk-user-overview-frequently-replied-users user={ user }/>
 		</div>
 	</section>
 	<section class="followers-you-know" if={ SIGNIN && I.id !== user.id }>
-		<h2><i class="fa fa-users"></i>%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
+		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
 		<div>
 			<mk-user-overview-followers-you-know user={ user }/>
 		</div>
@@ -307,7 +307,7 @@
 </mk-user-overview>
 
 <mk-user-overview-posts>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && posts.length > 0 }>
 		<virtual each={ posts }>
 			<mk-user-overview-posts-post-card post={ this }/>
@@ -436,7 +436,7 @@
 </mk-user-overview-posts-post-card>
 
 <mk-user-overview-photos>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
 			<a class="img" style={ 'background-image: url(' + image.media.url + '?thumbnail&size=256)' } href={ '/' + image.post.user.username + '/' + image.post.id }></a>
@@ -626,7 +626,7 @@
 </mk-user-overview-domains>
 
 <mk-user-overview-frequently-replied-users>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && users.length > 0 }>
 		<virtual each={ users }>
 			<mk-user-card user={ this.user }/>
@@ -678,7 +678,7 @@
 </mk-user-overview-frequently-replied-users>
 
 <mk-user-overview-followers-you-know>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && users.length > 0 }>
 		<virtual each={ user in users }>
 			<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>

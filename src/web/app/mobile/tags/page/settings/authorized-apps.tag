@@ -11,7 +11,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-authorized-apps-page.application%';
-			ui.trigger('title', '<i class="fa fa-puzzle-piece"></i>%i18n:mobile.tags.mk-authorized-apps-page.application%');
+			ui.trigger('title', '%fa:puzzle-piece%%i18n:mobile.tags.mk-authorized-apps-page.application%');
 		});
 	</script>
 </mk-authorized-apps-page>

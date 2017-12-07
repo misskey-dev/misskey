@@ -1,7 +1,7 @@
 <mk-notifications-home-widget>
 	<virtual if={ !data.compact }>
-		<p class="title"><i class="fa fa-bell-o"></i>%i18n:desktop.tags.mk-notifications-home-widget.title%</p>
-		<button onclick={ settings } title="%i18n:desktop.tags.mk-notifications-home-widget.settings%"><i class="fa fa-cog"></i></button>
+		<p class="title">%fa:R bell%%i18n:desktop.tags.mk-notifications-home-widget.title%</p>
+		<button onclick={ settings } title="%i18n:desktop.tags.mk-notifications-home-widget.settings%">%fa:cog%</button>
 	</virtual>
 	<mk-notifications/>
 	<style>
@@ -21,7 +21,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button

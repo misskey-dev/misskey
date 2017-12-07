@@ -1,35 +1,35 @@
 <mk-signup>
 	<form onsubmit={ onsubmit } autocomplete="off">
 		<label class="username">
-			<p class="caption"><i class="fa fa-at"></i>%i18n:common.tags.mk-signup.username%</p>
+			<p class="caption">%fa:at%%i18n:common.tags.mk-signup.username%</p>
 			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required="required" onkeyup={ onChangeUsername }/>
 			<p class="profile-page-url-preview" if={ refs.username.value != '' && username-state != 'invalidFormat' && username-state != 'minRange' && username-state != 'maxRange' }>{ _URL_ + '/' + refs.username.value }</p>
-			<p class="info" if={ usernameState == 'wait' } style="color:#999"><i class="fa fa-fw fa-spinner fa-pulse"></i>%i18n:common.tags.mk-signup.checking%</p>
-			<p class="info" if={ usernameState == 'ok' } style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>%i18n:common.tags.mk-signup.available%</p>
-			<p class="info" if={ usernameState == 'unavailable' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.unavailable%</p>
-			<p class="info" if={ usernameState == 'error' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.error%</p>
-			<p class="info" if={ usernameState == 'invalid-format' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.invalid-format%</p>
-			<p class="info" if={ usernameState == 'min-range' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.too-short%</p>
-			<p class="info" if={ usernameState == 'max-range' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.too-long%</p>
+			<p class="info" if={ usernameState == 'wait' } style="color:#999">%fa:spinner .pluse .fw%%i18n:common.tags.mk-signup.checking%</p>
+			<p class="info" if={ usernameState == 'ok' } style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.available%</p>
+			<p class="info" if={ usernameState == 'unavailable' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.unavailable%</p>
+			<p class="info" if={ usernameState == 'error' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.error%</p>
+			<p class="info" if={ usernameState == 'invalid-format' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.invalid-format%</p>
+			<p class="info" if={ usernameState == 'min-range' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.too-short%</p>
+			<p class="info" if={ usernameState == 'max-range' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.too-long%</p>
 		</label>
 		<label class="password">
-			<p class="caption"><i class="fa fa-lock"></i>%i18n:common.tags.mk-signup.password%</p>
+			<p class="caption">%fa:lock%%i18n:common.tags.mk-signup.password%</p>
 			<input ref="password" type="password" placeholder="%i18n:common.tags.mk-signup.password-placeholder%" autocomplete="off" required="required" onkeyup={ onChangePassword }/>
 			<div class="meter" if={ passwordStrength != '' } data-strength={ passwordStrength }>
 				<div class="value" ref="passwordMetar"></div>
 			</div>
-			<p class="info" if={ passwordStrength == 'low' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.weak-password%</p>
-			<p class="info" if={ passwordStrength == 'medium' } style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>%i18n:common.tags.mk-signup.normal-password%</p>
-			<p class="info" if={ passwordStrength == 'high' } style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>%i18n:common.tags.mk-signup.strong-password%</p>
+			<p class="info" if={ passwordStrength == 'low' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.weak-password%</p>
+			<p class="info" if={ passwordStrength == 'medium' } style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.normal-password%</p>
+			<p class="info" if={ passwordStrength == 'high' } style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.strong-password%</p>
 		</label>
 		<label class="retype-password">
-			<p class="caption"><i class="fa fa-lock"></i>%i18n:common.tags.mk-signup.password%(%i18n:common.tags.mk-signup.retype%)</p>
+			<p class="caption">%fa:lock%%i18n:common.tags.mk-signup.password%(%i18n:common.tags.mk-signup.retype%)</p>
 			<input ref="passwordRetype" type="password" placeholder="%i18n:common.tags.mk-signup.retype-placeholder%" autocomplete="off" required="required" onkeyup={ onChangePasswordRetype }/>
-			<p class="info" if={ passwordRetypeState == 'match' } style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>%i18n:common.tags.mk-signup.password-matched%</p>
-			<p class="info" if={ passwordRetypeState == 'not-match' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>%i18n:common.tags.mk-signup.password-not-matched%</p>
+			<p class="info" if={ passwordRetypeState == 'match' } style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.password-matched%</p>
+			<p class="info" if={ passwordRetypeState == 'not-match' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.password-not-matched%</p>
 		</label>
 		<label class="recaptcha">
-			<p class="caption"><i class="fa fa-toggle-on" if={ recaptchaed }></i><i class="fa fa-toggle-off" if={ !recaptchaed }></i>%i18n:common.tags.mk-signup.recaptcha%</p>
+			<p class="caption"><virtual if={ recaptchaed }>%fa:toggle-on%</virtual><virtual if={ !recaptchaed }>%fa:toggle-off%</virtual>%i18n:common.tags.mk-signup.recaptcha%</p>
 			<div if={ recaptcha } class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" data-sitekey={ recaptcha.site_key }></div>
 		</label>
 		<label class="agree-tou">
@@ -55,7 +55,7 @@
 						color #828888
 						font-size 0.95em
 
-						> i
+						> [data-fa]
 							margin-right 0.25em
 							color #96adac
 
@@ -64,7 +64,7 @@
 						margin 4px 0
 						font-size 0.8em
 
-						> i
+						> [data-fa]
 							margin-right 0.3em
 
 					&.username

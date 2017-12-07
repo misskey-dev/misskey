@@ -1,18 +1,18 @@
 <mk-poll-editor>
 	<p class="caution" if={ choices.length < 2 }>
-		<i class="fa fa-exclamation-triangle"></i>%i18n:common.tags.mk-poll-editor.no-only-one-choice%
+		%fa:exclamation-triangle%%i18n:common.tags.mk-poll-editor.no-only-one-choice%
 	</p>
 	<ul ref="choices">
 		<li each={ choice, i in choices }>
 			<input value={ choice } oninput={ oninput.bind(null, i) } placeholder={ '%i18n:common.tags.mk-poll-editor.choice-n%'.replace('{}', i + 1) }>
 			<button onclick={ remove.bind(null, i) } title="%i18n:common.tags.mk-poll-editor.remove%">
-				<i class="fa fa-times"></i>
+				%fa:times%
 			</button>
 		</li>
 	</ul>
 	<button class="add" if={ choices.length < 10 } onclick={ add }>%i18n:common.tags.mk-poll-editor.add%</button>
 	<button class="destroy" onclick={ destroy } title="%i18n:common.tags.mk-poll-editor.destroy%">
-		<i class="fa fa-times"></i>
+		%fa:times%
 	</button>
 	<style>
 		:scope
@@ -24,7 +24,7 @@
 				font-size 0.8em
 				color #f00
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> ul

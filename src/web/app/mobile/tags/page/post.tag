@@ -1,11 +1,11 @@
 <mk-post-page>
 	<mk-ui ref="ui">
 		<main if={ !parent.fetching }>
-			<a if={ parent.post.next } href={ parent.post.next }><i class="fa fa-angle-up"></i>%i18n:mobile.tags.mk-post-page.next%</a>
+			<a if={ parent.post.next } href={ parent.post.next }>%fa:angle-up%%i18n:mobile.tags.mk-post-page.next%</a>
 			<div>
 				<mk-post-detail ref="post" post={ parent.post }/>
 			</div>
-			<a if={ parent.post.prev } href={ parent.post.prev }><i class="fa fa-angle-down"></i>%i18n:mobile.tags.mk-post-page.prev%</a>
+			<a if={ parent.post.prev } href={ parent.post.prev }>%fa:angle-down%%i18n:mobile.tags.mk-post-page.prev%</a>
 		</main>
 	</mk-ui>
 	<style>
@@ -40,8 +40,9 @@
 						@media (min-width 500px)
 							margin-bottom 16px
 
-					> i
+					> [data-fa]
 						margin-right 4px
+
 	</style>
 	<script>
 		import ui from '../../scripts/ui-event';
@@ -54,7 +55,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey';
-			ui.trigger('title', '<i class="fa fa-sticky-note-o"></i>%i18n:mobile.tags.mk-post-page.title%');
+			ui.trigger('title', '%fa:sticky-note-o%%i18n:mobile.tags.mk-post-page.title%');
 			document.documentElement.style.background = '#313a42';
 
 			Progress.start();

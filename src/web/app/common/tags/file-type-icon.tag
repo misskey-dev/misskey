@@ -1,5 +1,5 @@
 <mk-file-type-icon>
-	<i class="fa fa-file-image-o" if={ kind == 'image' }></i>
+	<virtual if={ kind == 'image' }>%fa:file-image%</virtual>
 	<style>
 		:scope
 			display inline

@@ -3,10 +3,10 @@
 		<div class="path" oncontextmenu={ pathOncontextmenu }>
 			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }/>
 			<virtual each={ folder in hierarchyFolders }>
-				<span class="separator"><i class="fa fa-angle-right"></i></span>
+				<span class="separator">%fa:angle-right%</span>
 				<mk-drive-browser-nav-folder folder={ folder }/>
 			</virtual>
-			<span class="separator" if={ folder != null }><i class="fa fa-angle-right"></i></span>
+			<span class="separator" if={ folder != null }>%fa:angle-right%</span>
 			<span class="folder current" if={ folder != null }>{ folder.name }</span>
 		</div>
 		<input class="search" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-drive-browser.search%"/>
@@ -100,7 +100,7 @@
 							opacity 0.5
 							cursor default
 
-							> i
+							> [data-fa]
 								margin 0
 
 				> .search
@@ -450,7 +450,7 @@
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							dialog('<i class="fa fa-exclamation-triangle"></i>%i18n:desktop.tags.mk-drive-browser.unable-to-process%',
+							dialog('%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser.unable-to-process%',
 								'%i18n:desktop.tags.mk-drive-browser.circular-reference-detected%', [{
 								text: '%i18n:common.ok%'
 							}]);
@@ -492,7 +492,7 @@
 					folder_id: this.folder ? this.folder.id : undefined
 				});
 
-				dialog('<i class="fa fa-check"></i>%i18n:desktop.tags.mk-drive-browser.url-upload-requested%',
+				dialog('%fa:check%%i18n:desktop.tags.mk-drive-browser.url-upload-requested%',
 					'%i18n:desktop.tags.mk-drive-browser.may-take-time%', [{
 					text: '%i18n:common.ok%'
 				}]);

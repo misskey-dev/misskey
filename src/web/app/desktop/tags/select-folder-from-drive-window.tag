@@ -16,7 +16,7 @@
 			> mk-window
 				[data-yield='header']
 					> mk-raw
-						> i
+						> [data-fa]
 							margin-right 4px
 
 				[data-yield='content']
@@ -92,7 +92,7 @@
 	<script>
 		this.files = [];
 
-		this.title = this.opts.title || '<i class="fa fa-folder-o"></i>フォルダを選択';
+		this.title = this.opts.title || '%fa:folder-o%フォルダを選択';
 
 		this.on('mount', () => {
 			this.refs.window.on('closed', () => {

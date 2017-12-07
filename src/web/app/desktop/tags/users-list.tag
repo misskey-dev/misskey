@@ -15,7 +15,7 @@
 		<span if={ moreFetching }>読み込み中<mk-ellipsis/></span>
 	</button>
 	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>
-	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
+	<p class="fetching" if={ fetching }>%fa:spinner .pluse .fw%読み込んでいます<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -84,7 +84,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

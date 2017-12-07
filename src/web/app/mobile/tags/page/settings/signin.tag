@@ -11,7 +11,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-signin-history-page.signin-history%';
-			ui.trigger('title', '<i class="fa fa-sign-in"></i>%i18n:mobile.tags.mk-signin-history-page.signin-history%');
+			ui.trigger('title', '%fa:sign-in%%i18n:mobile.tags.mk-signin-history-page.signin-history%');
 		});
 	</script>
 </mk-signin-history-page>

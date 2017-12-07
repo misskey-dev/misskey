@@ -1,6 +1,6 @@
 <mk-access-log-home-widget>
 	<virtual if={ data.design == 0 }>
-		<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-access-log-home-widget.title%</p>
+		<p class="title">%fa:server%%i18n:desktop.tags.mk-access-log-home-widget.title%</p>
 	</virtual>
 	<div ref="log">
 		<p each={ requests }>
@@ -27,7 +27,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> div

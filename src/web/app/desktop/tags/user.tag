@@ -48,12 +48,12 @@
 		<div class="title">
 			<p class="name" href={ '/' + user.username }>{ user.name }</p>
 			<p class="username">@{ user.username }</p>
-			<p class="location" if={ user.profile.location }><i class="fa fa-map-marker"></i>{ user.profile.location }</p>
+			<p class="location" if={ user.profile.location }>%fa:map-marker%{ user.profile.location }</p>
 		</div>
 		<footer>
-			<a href={ '/' + user.username } data-active={ parent.page == 'home' }><i class="fa fa-home"></i>概要</a>
-			<a href={ '/' + user.username + '/media' } data-active={ parent.page == 'media' }><i class="fa fa-picture-o"></i>メディア</a>
-			<a href={ '/' + user.username + '/graphs' } data-active={ parent.page == 'graphs' }><i class="fa fa-bar-chart"></i>グラフ</a>
+			<a href={ '/' + user.username } data-active={ parent.page == 'home' }>%fa:home%概要</a>
+			<a href={ '/' + user.username + '/media' } data-active={ parent.page == 'media' }>%fa:image%メディア</a>
+			<a href={ '/' + user.username + '/graphs' } data-active={ parent.page == 'graphs' }>%fa:bar-chart%グラフ</a>
 		</footer>
 	</div>
 	<style>
@@ -230,15 +230,15 @@
 	</div>
 	<div class="description" if={ user.description }>{ user.description }</div>
 	<div class="birthday" if={ user.profile.birthday }>
-		<p><i class="fa fa-birthday-cake"></i>{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)</p>
+		<p>%fa:birthday-cake%{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)</p>
 	</div>
 	<div class="twitter" if={ user.twitter }>
-		<p><i class="fa fa-twitter"></i><a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
+		<p>%fa:twitter%<a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
 	</div>
 	<div class="status">
-	  <p class="posts-count"><i class="fa fa-angle-right"></i><a>{ user.posts_count }</a><b>ポスト</b></p>
-		<p class="following"><i class="fa fa-angle-right"></i><a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
-		<p class="followers"><i class="fa fa-angle-right"></i><a onclick={ showFollowers }>{ user.followers_count }</a>人の<b>フォロワー</b></p>
+	  <p class="posts-count">%fa:angle-right%<a>{ user.posts_count }</a><b>ポスト</b></p>
+		<p class="following">%fa:angle-right%<a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
+		<p class="followers">%fa:angle-right%<a onclick={ showFollowers }>{ user.followers_count }</a>人の<b>フォロワー</b></p>
 	</div>
 	<style>
 		:scope
@@ -331,6 +331,8 @@
 <mk-user-photos>
 	<p class="title"><i class="fa fa-camera"></i>%i18n:desktop.tags.mk-user.photos.title%</p>
 	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
+	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>
@@ -423,8 +425,8 @@
 </mk-user-photos>
 
 <mk-user-frequently-replied-users>
-	<p class="title"><i class="fa fa-users"></i>%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
+	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
 	<div class="user" if={ !initializing && users.length != 0 } each={ _user in users }>
 		<a class="avatar-anchor" href={ '/' + _user.username }>
 			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ _user.id }/>
@@ -535,8 +537,8 @@
 </mk-user-frequently-replied-users>
 
 <mk-user-followers-you-know>
-	<p class="title"><i class="fa fa-users"></i>%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
+	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && users.length > 0 }>
 	<virtual each={ user in users }>
 		<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>
@@ -712,7 +714,7 @@
 <mk-user-graphs>
 	<section>
 		<div>
-			<h1><i class="fa fa-pencil"></i>投稿</h1>
+			<h1>%fa:pencil-alt%投稿</h1>
 			<mk-user-graphs-activity-chart user={ opts.user }/>
 		</div>
 	</section>

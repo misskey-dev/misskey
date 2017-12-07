@@ -1,6 +1,6 @@
 <mk-index>
 	<h1>Misskey<i>Status</i></h1>
-	<p><i class="fa fa-info-circle"></i>%i18n:status.all-systems-maybe-operational%</p>
+	<p>%fa:info-circle%%i18n:status.all-systems-maybe-operational%</p>
 	<main>
 		<mk-cpu-usage connection={ connection }/>
 		<mk-mem-usage connection={ connection }/>
@@ -19,7 +19,7 @@
 				font-size 24px
 				font-weight normal
 
-				> i
+				> [data-fa]
 					font-style normal
 					color #f43b16
 
@@ -31,7 +31,7 @@
 				//border solid 1px #99ccb2
 				border-radius 4px
 
-				> i
+				> [data-fa]
 					margin-right 5px
 
 			> main

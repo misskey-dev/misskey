@@ -1,4 +1,5 @@
-<mk-drive-browser-nav-folder data-draghover={ draghover } onclick={ onclick } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }><i class="fa fa-cloud" if={ folder == null }></i><span>{ folder == null ? '%i18n:desktop.tags.mk-drive-browser-nav-folder.drive%' : folder.name }</span>
+<mk-drive-browser-nav-folder data-draghover={ draghover } onclick={ onclick } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
+	<virtual if={ folder == null }>%fa:cloud%</virtual><span>{ folder == null ? '%i18n:desktop.tags.mk-drive-browser-nav-folder.drive%' : folder.name }</span>
 	<style>
 		:scope
 			&[data-draghover]

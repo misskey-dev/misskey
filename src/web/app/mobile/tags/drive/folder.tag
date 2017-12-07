@@ -1,6 +1,6 @@
 <mk-drive-folder onclick={ onclick }>
 	<div class="container">
-		<p class="name"><i class="fa fa-folder"></i>{ folder.name }</p><i class="fa fa-angle-right"></i>
+		<p class="name">%fa:folder%{ folder.name }</p>%fa:angle-right%
 	</div>
 	<style>
 		:scope
@@ -23,10 +23,10 @@
 					margin 0
 					padding 0
 
-					> i
+					> [data-fa]
 						margin-right 6px
 
-				> i
+				> [data-fa]
 					position absolute
 					top 0
 					bottom 0

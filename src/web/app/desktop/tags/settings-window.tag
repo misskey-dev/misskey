@@ -1,6 +1,6 @@
 <mk-settings-window>
 	<mk-window ref="window" is-modal={ true } width={ '700px' } height={ '550px' }>
-		<yield to="header"><i class="fa fa-cog"></i>設定</yield>
+		<yield to="header">%fa:cog%設定</yield>
 		<yield to="content">
 			<mk-settings/>
 		</yield>
@@ -9,7 +9,7 @@
 		:scope
 			> mk-window
 				[data-yield='header']
-					> i
+					> [data-fa]
 						margin-right 4px
 
 				[data-yield='content']

@@ -1,7 +1,7 @@
 <mk-sub-post-content>
 	<div class="body">
 		<a class="reply" if={ post.reply_id }>
-			<i class="fa fa-reply"></i>
+			%fa:reply%
 		</a>
 		<span ref="text"></span>
 		<a class="quote" if={ post.repost_id } href={ '/post:' + post.repost_id }>RP: ...</a>

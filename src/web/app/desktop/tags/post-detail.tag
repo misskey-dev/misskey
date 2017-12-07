@@ -1,8 +1,8 @@
 <mk-post-detail title={ title }>
 	<div class="main">
 		<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
-			<i class="fa fa-ellipsis-v" if={ !contextFetching }></i>
-			<i class="fa fa-spinner fa-pulse" if={ contextFetching }></i>
+			<virtual if={ !contextFetching }>%fa:ellipsis-v%</virtual>
+			<virtual if={ contextFetching }>%fa:spinner .pluse%</virtual>
 		</button>
 		<div class="context">
 			<virtual each={ post in context }>
@@ -17,7 +17,7 @@
 				<a class="avatar-anchor" href={ '/' + post.user.username } data-user-preview={ post.user_id }>
 					<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
 				</a>
-				<i class="fa fa-retweet"></i><a class="name" href={ '/' + post.user.username }>
+				%fa:retweet%<a class="name" href={ '/' + post.user.username }>
 				{ post.user.name }
 			</a>
 			がRepost
@@ -44,16 +44,16 @@
 			<footer>
 				<mk-reactions-viewer post={ p }/>
 				<button onclick={ reply } title="返信">
-					<i class="fa fa-reply"></i><p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="Repost">
-					<i class="fa fa-retweet"></i><p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
 				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション">
-					<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
 				<button onclick={ menu } ref="menuButton">
-					<i class="fa fa-ellipsis-h"></i>
+					%fa:ellipsis-h%
 				</button>
 			</footer>
 		</article>

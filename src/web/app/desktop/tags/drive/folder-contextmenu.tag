@@ -2,18 +2,18 @@
 	<mk-contextmenu ref="ctx">
 		<ul>
 			<li onclick={ parent.move }>
-				<p><i class="fa fa-arrow-right"></i>%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.move-to-this-folder%</p>
+				<p>%fa:arrow-right%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.move-to-this-folder%</p>
 			</li>
 			<li onclick={ parent.newWindow }>
-				<p><i class="fa fa-share-square-o"></i>%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.show-in-new-window%</p>
+				<p>%fa:share-square-o%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.show-in-new-window%</p>
 			</li>
 			<li class="separator"></li>
 			<li onclick={ parent.rename }>
-				<p><i class="fa fa-i-cursor"></i>%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename%</p>
+				<p>%fa:i-cursor%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename%</p>
 			</li>
 			<li class="separator"></li>
 			<li onclick={ parent.delete }>
-				<p><i class="fa fa-trash-o"></i>%i18n:common.delete%</p>
+				<p>%fa:trash-o%%i18n:common.delete%</p>
 			</li>
 		</ul>
 	</mk-contextmenu>

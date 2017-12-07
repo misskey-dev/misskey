@@ -10,7 +10,7 @@
 		<span if={ !moreFetching }>%i18n:mobile.tags.mk-users-list.load-more%</span>
 		<span if={ moreFetching }>%i18n:common.loading%<mk-ellipsis/></span></button>
 	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>
-	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="fetching" if={ fetching }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -73,7 +73,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

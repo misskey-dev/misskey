@@ -2,8 +2,13 @@
 	<div class="loading" if={ isLoading }>
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" if={ isEmpty }><i class="fa fa-search"></i>「{ query }」に関する投稿は見つかりませんでした。</p>
-	<mk-timeline ref="timeline"><yield to="footer"><i class="fa fa-moon-o" if={ !parent.moreLoading }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ parent.moreLoading }></i></yield/>
+	<p class="empty" if={ isEmpty }>%fa:search%「{ query }」に関する投稿は見つかりませんでした。</p>
+	<mk-timeline ref="timeline">
+		<yield to="footer">
+			<virtual if={ !parent.moreLoading }>%fa:moon%</virtual>
+			<virtual if={ parent.moreLoading }>%fa:spinner .pluse .fw%</virtual>
+		</yield/>
+	</mk-timeline>
 	<style>
 		:scope
 			display block
@@ -20,7 +25,7 @@
 				text-align center
 				color #999
 
-				> i
+				> [data-fa]
 					display block
 					margin-bottom 16px
 					font-size 3em

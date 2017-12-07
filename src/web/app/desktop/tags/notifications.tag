@@ -16,7 +16,7 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p><i class="fa fa-retweet"></i><a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post.repost) }</a>
+						<p>%fa:retweet%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post.repost) }</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'quote' }>
@@ -24,7 +24,7 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p><i class="fa fa-quote-left"></i><a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:quote-left%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'follow' }>
@@ -32,7 +32,7 @@
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p><i class="fa fa-user-plus"></i><a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p>
+						<p>%fa:user-plus%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'reply' }>
@@ -40,7 +40,7 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p><i class="fa fa-reply"></i><a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:reply%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'mention' }>
@@ -48,7 +48,7 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p><i class="fa fa-at"></i><a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:at%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'poll_vote' }>
@@ -56,18 +56,18 @@
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p><i class="fa fa-pie-chart"></i><a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:pie-chart%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 			</div>
-			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
+			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span>%fa:angle-up%{ notification._datetext }</span><span>%fa:angle-down%{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
 	<button class="more { fetching: fetchingMoreNotifications }" if={ moreNotifications } onclick={ fetchMoreNotifications } disabled={ fetchingMoreNotifications }>
-		<i class="fa fa-spinner fa-pulse fa-fw" if={ fetchingMoreNotifications }></i>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
+		<virtual if={ fetchingMoreNotifications }>%fa:spinner .pluse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="loading" if={ loading }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -187,7 +187,7 @@
 				&.fetching
 					cursor wait
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> .empty
@@ -202,7 +202,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

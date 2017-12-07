@@ -1,5 +1,5 @@
 <mk-drive-browser-folder data-is-contextmenu-showing={ isContextmenuShowing.toString() } data-draghover={ draghover.toString() } onclick={ onclick } onmouseover={ onmouseover } onmouseout={ onmouseout } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
-	<p class="name"><i class="fa fa-fw { fa-folder-o: !hover, fa-folder-open-o: hover }"></i>{ folder.name }</p>
+	<p class="name"><virtual if={ hover }>%fa:folder-open .fw%</virtual><virtual if={ !hover }>%fa:folder .fw%</virtual>{ folder.name }</p>
 	<style>
 		:scope
 			display block
@@ -41,7 +41,7 @@
 				font-size 0.9em
 				color darken($theme-color, 30%)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 				  margin-left 2px
 					text-align left
@@ -143,7 +143,7 @@
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							dialog('<i class="fa fa-exclamation-triangle"></i>%i18n:desktop.tags.mk-drive-browser-folder.unable-to-process%',
+							dialog('%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser-folder.unable-to-process%',
 								'%i18n:desktop.tags.mk-drive-browser-folder.circular-reference-detected%', [{
 								text: '%i18n:common.ok%'
 							}]);

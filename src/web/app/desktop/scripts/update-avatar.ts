@@ -63,7 +63,7 @@ export default (I, cb, file = null) => {
 		api(I, 'i/update', {
 			avatar_id: file.id
 		}).then(i => {
-			dialog('<i class="fa fa-info-circle"></i>アバターを更新しました',
+			dialog('%fa:info-circle%アバターを更新しました',
 				'新しいアバターが反映されるまで時間がかかる場合があります。',
 			[{
 				text: 'わかった'
@@ -78,7 +78,7 @@ export default (I, cb, file = null) => {
 	} else {
 		const browser = (riot as any).mount(document.body.appendChild(document.createElement('mk-select-file-from-drive-window')), {
 			multiple: false,
-			title: '<i class="fa fa-picture-o"></i>アバターにする画像を選択'
+			title: '%fa:image%アバターにする画像を選択'
 		})[0];
 
 		browser.one('selected', file => {

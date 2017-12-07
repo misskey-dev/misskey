@@ -1,5 +1,5 @@
 <mk-sub-post-content>
-	<div class="body"><a class="reply" if={ post.reply_id }><i class="fa fa-reply"></i></a><span ref="text"></span><a class="quote" if={ post.repost_id } href={ '/post:' + post.repost_id }>RP: ...</a></div>
+	<div class="body"><a class="reply" if={ post.reply_id }>%fa:reply%</a><span ref="text"></span><a class="quote" if={ post.repost_id } href={ '/post:' + post.repost_id }>RP: ...</a></div>
 	<details if={ post.media }>
 		<summary>({ post.media.length }個のメディア)</summary>
 		<mk-images-viewer images={ post.media }/>
