@@ -32,17 +32,14 @@ export default (lang, locale) => {
 		exclude: /node_modules/,
 		loader: StringReplacePlugin.replace({
 			replacements: [{
-				pattern: /"%i18n:(.+?)%"/g, replacement: (_, key) => {
-					return '"' + get(key).replace(/"/g, '\\"') + '"';
-				}
+				pattern: /"%i18n:(.+?)%"/g, replacement: (_, key) =>
+					'"' + get(key).replace(/"/g, '\\"') + '"'
 			}, {
-				pattern: /'%i18n:(.+?)%'/g, replacement: (_, key) => {
-					return '\'' + get(key).replace(/'/g, '\\\'') + '\'';
-				}
+				pattern: /'%i18n:(.+?)%'/g, replacement: (_, key) =>
+					'\'' + get(key).replace(/'/g, '\\\'') + '\''
 			}, {
-				pattern: /%i18n:(.+?)%/g, replacement: (_, key) => {
-					return get(key);
-				}
+				pattern: /%i18n:(.+?)%/g, replacement: (_, key) =>
+					get(key)
 			}]
 		})
 	};
