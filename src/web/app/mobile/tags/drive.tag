@@ -1,9 +1,9 @@
 <mk-drive>
 	<nav ref="nav">
-		<p onclick={ goRoot }>%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</p>
+		<a onclick={ goRoot } href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
 		<virtual each={ folder in hierarchyFolders }>
 			<span>%fa:angle-right%</span>
-			<p onclick={ move }>{ folder.name }</p>
+			<a onclick={ move } href="/i/drive/folder/{ folder.id }">{ folder.name }</a>
 		</virtual>
 		<virtual if={ folder != null }>
 			<span>%fa:angle-right%</span>
@@ -74,9 +74,12 @@
 				border-bottom solid 1px rgba(0, 0, 0, 0.13)
 
 				> p
+				> a
 					display inline
 					margin 0
 					padding 0
+					text-decoration none !important
+					color inherit
 
 					&:last-child
 						font-weight bold
@@ -246,6 +249,7 @@
 
 		this.move = ev => {
 			this.cd(ev.item.folder);
+			return false;
 		};
 
 		this.cd = (target, silent = false) => {
@@ -339,6 +343,8 @@
 				this.trigger('move-root');
 				this.fetch();
 			}
+
+			return false;
 		};
 
 		this.fetch = () => {
