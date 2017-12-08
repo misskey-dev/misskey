@@ -138,7 +138,8 @@
 			this.isSelected = selections.some(f => f.id == this.file.id);
 		});
 
-		this.onclick = () => {
+		this.onclick = ev => {
+			ev.preventDefault();
 			this.browser.chooseFile(this.file);
 			return false;
 		};

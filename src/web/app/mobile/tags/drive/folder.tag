@@ -1,4 +1,4 @@
-<mk-drive-folder onclick={ onclick }>
+<mk-drive-folder>
 	<a onclick={ onclick } href="/i/drive/folder/{ folder.id }">
 		<div class="container">
 			<p class="name">%fa:folder%{ folder.name }</p>%fa:angle-right%
@@ -44,7 +44,8 @@
 		this.browser = this.parent;
 		this.folder = this.opts.folder;
 
-		this.onclick = () => {
+		this.onclick = ev => {
+			ev.preventDefault();
 			this.browser.cd(this.folder);
 			return false;
 		};

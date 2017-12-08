@@ -248,6 +248,7 @@
 		};
 
 		this.move = ev => {
+			ev.preventDefault();
 			this.cd(ev.item.folder);
 			return false;
 		};
@@ -333,7 +334,9 @@
 		this.prependFile = file => this.addFile(file, true);
 		this.prependFolder = file => this.addFolder(file, true);
 
-		this.goRoot = () => {
+		this.goRoot = ev => {
+			ev.preventDefault();
+
 			if (this.folder || this.file) {
 				this.update({
 					file: null,
