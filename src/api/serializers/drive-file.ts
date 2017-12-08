@@ -56,18 +56,20 @@ export default (
 
 	_target.url = `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
 
-	if (opts.detail && _target.folder_id) {
-		// Populate folder
-		_target.folder = await serializeDriveFolder(_target.folder_id, {
-			detail: true
-		});
-	}
+	if (opts.detail) {
+		if (_target.folder_id) {
+			// Populate folder
+			_target.folder = await serializeDriveFolder(_target.folder_id, {
+				detail: true
+			});
+		}
 
-	if (opts.detail && _target.tags) {
-		// Populate tags
-		_target.tags = await _target.tags.map(async (tag: any) =>
-			await serializeDriveTag(tag)
-		);
+		if (_target.tags) {
+			// Populate tags
+			_target.tags = await _target.tags.map(async (tag: any) =>
+				await serializeDriveTag(tag)
+			);
+		}
 	}
 
 	resolve(_target);
