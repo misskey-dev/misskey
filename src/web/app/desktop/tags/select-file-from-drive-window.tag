@@ -138,7 +138,7 @@
 		this.files = [];
 
 		this.multiple = this.opts.multiple != null ? this.opts.multiple : false;
-		this.title = this.opts.title || '%fa:file-o%ファイルを選択';
+		this.title = this.opts.title || '%fa:R file%ファイルを選択';
 
 		this.on('mount', () => {
 			this.refs.window.refs.browser.on('selected', file => {

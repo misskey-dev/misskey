@@ -35,7 +35,7 @@
 				%fa:pencil-alt%%i18n:mobile.tags.mk-drive-file-viewer.rename%
 			</button>
 			<button onclick={ move }>
-				%fa:folder-open%%i18n:mobile.tags.mk-drive-file-viewer.move%
+				%fa:R folder-open%%i18n:mobile.tags.mk-drive-file-viewer.move%
 			</button>
 		</div>
 	</div>

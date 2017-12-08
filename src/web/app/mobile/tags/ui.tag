@@ -99,8 +99,7 @@
 						overflow hidden
 						text-overflow ellipsis
 
-					> [data-fa]
-						> .icon
+						[data-fa]
 							margin-right 8px
 
 						> img
@@ -124,7 +123,7 @@
 						> [data-fa]
 							transition all 0.2s ease
 
-					> [data-fa]
+					> [data-fa].circle
 						position absolute
 						top 8px
 						left 8px
@@ -326,9 +325,8 @@
 						> [data-fa]:first-child
 							margin-right 0.5em
 
-						> .i
+						> [data-fa].circle
 							margin-left 6px
-							vertical-align super
 							font-size 10px
 							color $theme-color
 

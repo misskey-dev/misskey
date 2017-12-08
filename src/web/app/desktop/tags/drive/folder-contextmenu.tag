@@ -5,7 +5,7 @@
 				<p>%fa:arrow-right%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.move-to-this-folder%</p>
 			</li>
 			<li onclick={ parent.newWindow }>
-				<p>%fa:share-square-o%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.show-in-new-window%</p>
+				<p>%fa:R window-restore%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.show-in-new-window%</p>
 			</li>
 			<li class="separator"></li>
 			<li onclick={ parent.rename }>
@@ -13,7 +13,7 @@
 			</li>
 			<li class="separator"></li>
 			<li onclick={ parent.delete }>
-				<p>%fa:trash-o%%i18n:common.delete%</p>
+				<p>%fa:R trash-alt%%i18n:common.delete%</p>
 			</li>
 		</ul>
 	</mk-contextmenu>

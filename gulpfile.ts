@@ -20,11 +20,15 @@ import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
-const fontawesome = require('@fortawesome/fontawesome');
-const solid = require('@fortawesome/fontawesome-free-solid');
+import * as fontawesome from '@fortawesome/fontawesome';
+import * as regular from '@fortawesome/fontawesome-free-regular';
+import * as solid from '@fortawesome/fontawesome-free-solid';
+import * as brands from '@fortawesome/fontawesome-free-brands';
 
-// Adds all the icons from the Solid style into our library for easy lookup
+// Add icons
+fontawesome.library.add(regular);
 fontawesome.library.add(solid);
+fontawesome.library.add(brands);
 
 import version from './src/version';
 

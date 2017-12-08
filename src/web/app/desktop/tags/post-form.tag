@@ -17,7 +17,7 @@
 	<button ref="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }>%fa:upload%</button>
 	<button ref="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" onclick={ selectFileFromDrive }>%fa:cloud%</button>
 	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" onclick={ kao }>%fa:R smile%</button>
-	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" onclick={ addPoll }>%fa:pie-chart%</button>
+	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" onclick={ addPoll }>%fa:chart-pie%</button>
 	<p class="text-count { over: refs.text.value.length > 1000 }">{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - refs.text.value.length) }</p>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll　&& !repost) } onclick={ post }>
 		{ wait ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }<mk-ellipsis if={ wait }/>

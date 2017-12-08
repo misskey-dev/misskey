@@ -22,7 +22,7 @@
 		<button ref="upload" onclick={ selectFile }>%fa:upload%</button>
 		<button ref="drive" onclick={ selectFileFromDrive }>%fa:cloud%</button>
 		<button class="kao" onclick={ kao }>%fa:R smile%</button>
-		<button class="poll" onclick={ addPoll }>%fa:pie-chart%</button>
+		<button class="poll" onclick={ addPoll }>%fa:chart-pie%</button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
 	<style>

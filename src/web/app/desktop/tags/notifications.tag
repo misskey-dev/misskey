@@ -56,7 +56,7 @@
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p>%fa:pie-chart%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:chart-pie%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 			</div>

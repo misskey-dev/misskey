@@ -245,7 +245,7 @@
 				&:active
 					color darken(#9eaba8, 30%)
 
-				> [data-fa].icon
+				> [data-fa].bell
 					font-size 1.2em
 					line-height 48px
 
@@ -455,7 +455,6 @@
 
 						> [data-fa]:last-child
 							margin-left 5px
-							vertical-align super
 							font-size 10px
 							color $theme-color
 
@@ -756,10 +755,10 @@
 							*
 								pointer-events none
 
-							> i:first-of-type
+							> [data-fa]:first-of-type
 								margin-right 6px
 
-							> i:last-of-type
+							> [data-fa]:last-of-type
 								display block
 								position absolute
 								top 0

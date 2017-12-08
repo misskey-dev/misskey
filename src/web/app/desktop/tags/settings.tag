@@ -5,8 +5,8 @@
 		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }>%fa:R bell .fw%通知</p>
 		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }>%fa:cloud .fw%ドライブ</p>
 		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }>%fa:puzzle-piece .fw%アプリ</p>
-		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:twitter .fw%Twitter</p>
-		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }>%fa:sign-in .fw%ログイン履歴</p>
+		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
+		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }>%fa:sign-in-alt .fw%ログイン履歴</p>
 		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.password%</p>
 		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }>%fa:key .fw%API</p>
 	</div>

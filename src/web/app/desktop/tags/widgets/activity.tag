@@ -1,6 +1,6 @@
 <mk-activity-widget data-melt={ design == 2 }>
 	<virtual if={ design == 0 }>
-		<p class="title">%fa:bar-chart%%i18n:desktop.tags.mk-activity-widget.title%</p>
+		<p class="title">%fa:chart-bar%%i18n:desktop.tags.mk-activity-widget.title%</p>
 		<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-widget.toggle%">%fa:sort%</button>
 	</virtual>
 	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>

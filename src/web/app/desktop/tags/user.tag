@@ -53,7 +53,7 @@
 		<footer>
 			<a href={ '/' + user.username } data-active={ parent.page == 'home' }>%fa:home%概要</a>
 			<a href={ '/' + user.username + '/media' } data-active={ parent.page == 'media' }>%fa:image%メディア</a>
-			<a href={ '/' + user.username + '/graphs' } data-active={ parent.page == 'graphs' }>%fa:bar-chart%グラフ</a>
+			<a href={ '/' + user.username + '/graphs' } data-active={ parent.page == 'graphs' }>%fa:chart-bar%グラフ</a>
 		</footer>
 	</div>
 	<style>
@@ -233,7 +233,7 @@
 		<p>%fa:birthday-cake%{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)</p>
 	</div>
 	<div class="twitter" if={ user.twitter }>
-		<p>%fa:twitter%<a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
+		<p>%fa:B twitter%<a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
 	</div>
 	<div class="status">
 	  <p class="posts-count">%fa:angle-right%<a>{ user.posts_count }</a><b>ポスト</b></p>

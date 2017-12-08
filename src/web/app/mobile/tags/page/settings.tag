@@ -22,8 +22,8 @@
 	<ul>
 		<li><a href="./settings/profile">%fa:user%%i18n:mobile.tags.mk-settings-page.profile%%fa:angle-right%</a></li>
 		<li><a href="./settings/authorized-apps">%fa:puzzle-piece%%i18n:mobile.tags.mk-settings-page.applications%%fa:angle-right%</a></li>
-		<li><a href="./settings/twitter">%fa:twitter%%i18n:mobile.tags.mk-settings-page.twitter-integration%%fa:angle-right%</a></li>
-		<li><a href="./settings/signin-history">%fa:sign-in%%i18n:mobile.tags.mk-settings-page.signin-history%%fa:angle-right%</a></li>
+		<li><a href="./settings/twitter">%fa:B twitter%%i18n:mobile.tags.mk-settings-page.twitter-integration%%fa:angle-right%</a></li>
+		<li><a href="./settings/signin-history">%fa:sign-in-alt%%i18n:mobile.tags.mk-settings-page.signin-history%%fa:angle-right%</a></li>
 		<li><a href="./settings/api">%fa:key%%i18n:mobile.tags.mk-settings-page.api%%fa:angle-right%</a></li>
 	</ul>
 	<ul>
@@ -78,10 +78,10 @@
 						line-height $height
 						color #4d635e
 
-						> i:nth-of-type(1)
+						> [data-fa]:nth-of-type(1)
 							margin-right 4px
 
-						> i:nth-of-type(2)
+						> [data-fa]:nth-of-type(2)
 							display block
 							position absolute
 							top 0

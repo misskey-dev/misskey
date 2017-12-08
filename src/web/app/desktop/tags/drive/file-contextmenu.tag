@@ -10,7 +10,7 @@
 			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }>%fa:download%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%</a></li>
 			<li class="separator"></li>
 			<li onclick={ parent.delete }>
-				<p>%fa:trash-o%%i18n:common.delete%</p>
+				<p>%fa:R trash-alt%%i18n:common.delete%</p>
 			</li>
 			<li class="separator"></li>
 			<li class="has-child">

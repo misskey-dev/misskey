@@ -229,7 +229,7 @@
 		</div>
 	</section>
 	<section class="activity">
-		<h2>%fa:bar-chart%%i18n:mobile.tags.mk-user-overview.activity%</h2>
+		<h2>%fa:chart-bar%%i18n:mobile.tags.mk-user-overview.activity%</h2>
 		<div>
 			<mk-user-overview-activity-chart user={ user }/>
 		</div>

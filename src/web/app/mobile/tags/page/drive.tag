@@ -50,7 +50,7 @@
 
 				document.title = title;
 				// TODO: escape html characters in folder.name
-				ui.trigger('title', '%fa:folder-open%' + folder.name);
+				ui.trigger('title', '%fa:R folder-open%' + folder.name);
 			});
 
 			this.refs.ui.refs.browser.on('open-file', (file, silent) => {

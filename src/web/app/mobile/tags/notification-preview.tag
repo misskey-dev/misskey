@@ -43,7 +43,7 @@
 	<virtual if={ notification.type == 'poll_vote' }>
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
-			<p>%fa:pie-chart%{ notification.user.name }</p>
+			<p>%fa:chart-pie%{ notification.user.name }</p>
 			<p class="post-ref">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>

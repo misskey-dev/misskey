@@ -9,7 +9,7 @@
 		%fa:upload%
 	</button>
 	<button class="attach-from-drive" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-drive%">
-		%fa:folder-open%
+		%fa:R folder-open%
 	</button>
 	<input name="file" type="file" accept="image/*"/>
 	<style>

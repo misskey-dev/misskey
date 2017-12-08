@@ -142,8 +142,8 @@
 					%fa:ellipsis-h%
 				</button>
 				<button onclick={ toggleDetail } title="%i18n:desktop.tags.mk-timeline-post.detail">
-					<i class="fa fa-caret-down" if={ !isDetailOpened }></i>
-					<i class="fa fa-caret-up" if={ isDetailOpened }></i>
+					<virtual if={ !isDetailOpened }>%fa:caret-down%</virtual>
+					<virtual if={ isDetailOpened }>%fa:caret-up%</virtual>
 				</button>
 			</footer>
 		</div>

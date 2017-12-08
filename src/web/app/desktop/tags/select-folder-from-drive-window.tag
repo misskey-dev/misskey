@@ -92,7 +92,7 @@
 	<script>
 		this.files = [];
 
-		this.title = this.opts.title || '%fa:folder-o%フォルダを選択';
+		this.title = this.opts.title || '%fa:R folder%フォルダを選択';
 
 		this.on('mount', () => {
 			this.refs.window.on('closed', () => {

@@ -5,7 +5,7 @@
 			<header ref="header" onmousedown={ onHeaderMousedown }>
 				<h1 data-yield="header"><yield from="header"/></h1>
 				<div>
-					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } onclick={ popout } title="ポップアウト">%fa:window-restore%</button>
+					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } onclick={ popout } title="ポップアウト">%fa:R window-restore%</button>
 					<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる">%fa:times%</button>
 				</div>
 			</header>

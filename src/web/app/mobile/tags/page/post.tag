@@ -55,7 +55,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey';
-			ui.trigger('title', '%fa:sticky-note-o%%i18n:mobile.tags.mk-post-page.title%');
+			ui.trigger('title', '%fa:R sticky-note%%i18n:mobile.tags.mk-post-page.title%');
 			document.documentElement.style.background = '#313a42';
 
 			Progress.start();

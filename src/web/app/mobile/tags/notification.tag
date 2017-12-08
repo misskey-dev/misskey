@@ -77,7 +77,7 @@
 		</a>
 		<div class="text">
 			<p>
-				%fa:pie-chart%
+				%fa:chart-pie%
 				<a href={ '/' + notification.user.username }>{ notification.user.name }</a>
 			</p>
 			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
