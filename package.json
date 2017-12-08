@@ -25,7 +25,7 @@
 		"@fortawesome/fontawesome": "1.0.0",
 		"@fortawesome/fontawesome-free-brands": "5.0.0",
 		"@fortawesome/fontawesome-free-regular": "5.0.0",
-		"@fortawesome/fontawesome-free-solid": "5.0.0",
+		"@fortawesome/fontawesome-free-solid": "5.0.1",
 		"@prezzemolo/rap": "0.1.2",
 		"@prezzemolo/zip": "0.0.3",
 		"@types/bcryptjs": "2.4.1",
