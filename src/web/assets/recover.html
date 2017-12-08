@@ -20,13 +20,15 @@
 					console.error(e);
 				}
 
-				localStorage.setItem('should-refresh', 'true');
-
 				alert('キャッシュをクリアしました。');
 
-				location.href = '/';
+				alert('まもなくページを再度読み込みします。再度読み込みが終わると、再度キャッシュをクリアするか尋ねられるので、「キャンセル」を選択して抜けてください。');
+
+				setTimeout(() => {
+					location.reload(true);
+				}, 100);
 			} else {
-				alert('問題が解決しない場合はサーバー管理者までお問い合せください。');
+				location.href = '/';
 			}
 
 		</script>
