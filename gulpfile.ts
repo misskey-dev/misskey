@@ -210,7 +210,10 @@ gulp.task('build:client:pug', [
 				// 属性の値がデフォルトと同じなら省略する e.g.
 				// <input type="text"> to
 				// <input>
-				removeRedundantAttributes: true
+				removeRedundantAttributes: true,
+
+				// CSSも圧縮する
+				minifyCSS: true
 			}))
 			.pipe(gulp.dest('./built/web/app/'))
 );
