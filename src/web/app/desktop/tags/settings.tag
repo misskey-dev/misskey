@@ -292,6 +292,8 @@
 </mk-password-setting>
 
 <mk-2fa-setting>
+	<p>%i18n:desktop.tags.mk-2fa-setting.intro%</p>
+	<p>%i18n:desktop.tags.mk-2fa-setting.caution%</p>
 	<p><button onclick={ register }>%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
 	<div if={ data }>
 		<ol>
@@ -300,6 +302,7 @@
 			<li>%i18n:desktop.tags.mk-2fa-setting.done%<br>
 				<input type="number" ref="token"><button onclick={ submit }>%i18n:desktop.tags.mk-2fa-setting.submit%</button>
 			</li>
+			<li>%i18n:desktop.tags.mk-2fa-setting.info%</li>
 		</ol>
 	</div>
 	<style>

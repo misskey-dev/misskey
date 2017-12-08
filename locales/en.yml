@@ -297,6 +297,8 @@ desktop:
       changed: "Password updated successfully"
 
     mk-2fa-setting:
+      intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security."
+      caution: "As a caveat, security improves, but you can not sign in to Misskey if you lose a registered device, etc."
       register: "Register a device"
       enter-password: "Enter the password"
       authenticator: "First, you need install Google Authenticator to your device:"
@@ -306,6 +308,7 @@ desktop:
       submit: "Submit"
       success: "Setup completed successfully!"
       failed: "Failed to setup. please ensure that the token is correct."
+      info: "From the next sign in, enter the token that is displayed on the device in addition to the password."
 
     mk-post-form:
       post-placeholder: "What's happening?"
