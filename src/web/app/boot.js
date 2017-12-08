@@ -95,10 +95,6 @@
 			// Clear cache (serive worker)
 			try {
 				navigator.serviceWorker.controller.postMessage('clear');
-
-				navigator.serviceWorker.getRegistrations().then(registrations => {
-					registrations.forEach(registration => registration.unregister());
-				});
 			} catch (e) {
 				console.error(e);
 			}
