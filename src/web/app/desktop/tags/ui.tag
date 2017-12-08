@@ -124,7 +124,8 @@
 
 <mk-ui-header-search>
 	<form class="search" onsubmit={ onsubmit }>
-		<input ref="q" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-ui-header-search.placeholder%"/>
+		%fa:search%
+		<input ref="q" type="search" placeholder="%i18n:desktop.tags.mk-ui-header-search.placeholder%"/>
 		<div class="result"></div>
 	</form>
 	<style>
@@ -134,11 +135,22 @@
 				display block
 				float left
 
+				> [data-fa]
+					display block
+					position absolute
+					top 0
+					left 0
+					width 48px
+					text-align center
+					line-height 48px
+					color #9eaba8
+					pointer-events none
+
 				> input
 					user-select text
 					cursor auto
 					margin 8px 0 0 0
-					padding 6px 18px
+					padding 6px 18px 6px 36px
 					width 14em
 					height 32px
 					font-size 1em
@@ -150,7 +162,7 @@
 					transition color 0.5s ease, border 0.5s ease
 					font-family FontAwesome, sans-serif
 
-					&::-webkit-input-placeholder
+					&:placeholder-shown
 						color #9eaba8
 
 					&:hover

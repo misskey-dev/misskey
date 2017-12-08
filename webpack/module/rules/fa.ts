@@ -49,7 +49,7 @@ export default () => ({
 
 				if (icon) {
 					icon.transform = fontawesome.parse.transform(transform);
-					return `<i data-fa style="display:inline-block" class="${name}">${icon.html[0]}</i>`;
+					return `<i data-fa class="${name}">${icon.html[0]}</i>`;
 				} else {
 					console.warn(`'${name}' not found in fa`);
 					return '';
