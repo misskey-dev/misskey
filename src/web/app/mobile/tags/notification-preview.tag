@@ -3,14 +3,14 @@
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><mk-reaction-icon reaction={ notification.reaction }/>{ notification.user.name }</p>
-			<p class="post-ref">{ getPostSummary(notification.post) }</p>
+			<p class="post-ref">%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%</p>
 		</div>
 	</virtual>
 	<virtual if={ notification.type == 'repost' }>
 		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:retweet%{ notification.post.user.name }</p>
-			<p class="post-ref">{ getPostSummary(notification.post.repost) }</p>
+			<p class="post-ref">%fa:quote-left%{ getPostSummary(notification.post.repost) }%fa:quote-right%</p>
 		</div>
 	</virtual>
 	<virtual if={ notification.type == 'quote' }>
@@ -44,7 +44,7 @@
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:chart-pie%{ notification.user.name }</p>
-			<p class="post-ref">{ getPostSummary(notification.post) }</p>
+			<p class="post-ref">%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%</p>
 		</div>
 	</virtual>
 	<style>
@@ -82,19 +82,12 @@
 
 			.post-ref
 
-				&:before, &:after
-					font-family FontAwesome
+				[data-fa]
 					font-size 1em
 					font-weight normal
 					font-style normal
 					display inline-block
 					margin-right 3px
-
-				&:before
-					content "\f10d"
-
-				&:after
-					content "\f10e"
 
 			&.repost, &.quote
 				.text p i

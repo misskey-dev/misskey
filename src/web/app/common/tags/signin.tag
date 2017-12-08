@@ -24,7 +24,7 @@
 					display block
 					margin 12px 0
 
-					i
+					[data-fa]
 						display block
 						pointer-events none
 						position absolute

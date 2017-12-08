@@ -182,7 +182,7 @@
 		this.passwordRetypeState = null;
 		this.recaptchaed = false;
 
-		window.onEecaptchaed = () => {
+		window.onRecaptchaed = () => {
 			this.recaptchaed = true;
 			this.update();
 		};

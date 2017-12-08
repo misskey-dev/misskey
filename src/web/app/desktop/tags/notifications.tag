@@ -8,7 +8,10 @@
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p><mk-reaction-icon reaction={ notification.reaction }/><a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p><mk-reaction-icon reaction={ notification.reaction }/><a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p>
+						<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>
+							%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
+						</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'repost' }>
@@ -16,7 +19,10 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p>%fa:retweet%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post.repost) }</a>
+						<p>%fa:retweet%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p>
+						<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>
+							%fa:quote-left%{ getPostSummary(notification.post.repost) }%fa:quote-right%
+						</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'quote' }>
@@ -24,7 +30,8 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p>%fa:quote-left%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:quote-left%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p>
+						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'follow' }>
@@ -40,7 +47,8 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p>%fa:reply%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:reply%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p>
+						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'mention' }>
@@ -48,7 +56,8 @@
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p>%fa:at%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p><a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:at%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p>
+						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
 				<virtual if={ notification.type == 'poll_vote' }>
@@ -56,11 +65,17 @@
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
-						<p>%fa:chart-pie%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p><a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+						<p>%fa:chart-pie%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p>
+						<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>
+							%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
+						</a>
 					</div>
 				</virtual>
 			</div>
-			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span>%fa:angle-up%{ notification._datetext }</span><span>%fa:angle-down%{ notifications[i + 1]._datetext }</span></p>
+			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }>
+				<span>%fa:angle-up%{ notification._datetext }</span>
+				<span>%fa:angle-down%{ notifications[i + 1]._datetext }</span>
+			</p>
 		</virtual>
 	</div>
 	<button class="more { fetching: fetchingMoreNotifications }" if={ moreNotifications } onclick={ fetchMoreNotifications } disabled={ fetchingMoreNotifications }>
@@ -129,19 +144,12 @@
 					.post-ref
 						color rgba(0, 0, 0, 0.7)
 
-						&:before, &:after
-							font-family FontAwesome
+						[data-fa]
 							font-size 1em
 							font-weight normal
 							font-style normal
 							display inline-block
 							margin-right 3px
-
-						&:before
-							content "\f10d"
-
-						&:after
-							content "\f10e"
 
 					&.repost, &.quote
 						.text p i
@@ -168,7 +176,7 @@
 					span
 						margin 0 16px
 
-					i
+					[data-fa]
 						margin-right 8px
 
 			> .more

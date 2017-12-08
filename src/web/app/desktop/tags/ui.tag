@@ -678,7 +678,7 @@
 					font-family Meiryo, sans-serif
 					text-decoration none
 
-					i
+					[data-fa]
 						margin-left 8px
 
 				> .avatar

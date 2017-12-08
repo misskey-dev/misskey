@@ -23,7 +23,7 @@
 				span
 					margin 0 16px
 
-				i
+				[data-fa]
 					margin-right 8px
 
 			> footer
@@ -203,7 +203,7 @@
 							margin 0 8px 0 0
 							border-radius 6px
 
-					i
+					[data-fa]
 						margin-right 4px
 
 					.name
@@ -323,16 +323,6 @@
 
 							mk-url-preview
 								margin-top 8px
-
-							.link
-								&:after
-									content "\f14c"
-									display inline-block
-									padding-left 2px
-									font-family FontAwesome
-									font-size .9em
-									font-weight 400
-									font-style normal
 
 							> .channel
 								margin 0
