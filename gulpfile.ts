@@ -3,6 +3,7 @@
  */
 
 import * as childProcess from 'child_process';
+import * as fs from 'fs';
 import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
@@ -180,7 +181,9 @@ gulp.task('build:client:pug', [
 			.pipe(pug({
 				locals: {
 					themeColor: constants.themeColor,
-					facss: fontawesome.dom.css()
+					facss: fontawesome.dom.css(),
+					//hljscss: fs.readFileSync('./node_modules/highlight.js/styles/default.css', 'utf8')
+					hljscss: fs.readFileSync('./src/web/assets/code-highlight.css', 'utf8')
 				}
 			}))
 			.pipe(htmlmin({

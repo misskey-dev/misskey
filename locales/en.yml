@@ -441,6 +441,7 @@ mobile:
       rename: "Rename"
       move: "Move"
       hash: "Hash (md5)"
+      exif: "EXIF"
 
     mk-entrance-signin:
       signup: "Sign up"

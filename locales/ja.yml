@@ -441,6 +441,7 @@ mobile:
       rename: "名前を変更"
       move: "移動"
       hash: "ハッシュ (md5)"
+      exif: "EXIF"
 
     mk-entrance-signin:
       signup: "新規登録"
