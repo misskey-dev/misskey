@@ -106,8 +106,8 @@ const addFile = async (
 		}
 	}
 
-	const [properties, folder] = await Promise.all([
-		// properties
+	const [wh, folder] = await Promise.all([
+		// Width and height (when image)
 		(async () => {
 			// 画像かどうか
 			if (!/^image\/.*$/.test(mime)) {
@@ -116,22 +116,18 @@ const addFile = async (
 
 			const imageType = mime.split('/')[1];
 
-			// 画像でもPNGかJPEGでないならスキップ
-			if (imageType != 'png' && imageType != 'jpeg') {
+			// 画像でもPNGかJPEGかGIFでないならスキップ
+			if (imageType != 'png' && imageType != 'jpeg' && imageType != 'gif') {
 				return null;
 			}
 
-			// If the file is an image, calculate width and height to save in property
+			// Calculate width and height
 			const g = gm(fs.createReadStream(path), name);
 			const size = await prominence(g).size();
-			const properties = {
-				width: size.width,
-				height: size.height
-			};
 
 			log('image width and height is calculated');
 
-			return properties;
+			return [size.width, size.height];
 		})(),
 		// folder
 		(async () => {
@@ -180,6 +176,13 @@ const addFile = async (
 	]);
 
 	const readable = fs.createReadStream(path);
+
+	const properties = {};
+
+	if (wh) {
+		properties['width'] = wh[0];
+		properties['height'] = wh[1];
+	}
 
 	return addToGridFS(detectedName, readable, mime, {
 		user_id: user._id,
