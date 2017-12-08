@@ -137,6 +137,7 @@ common:
     mk-signin:
       username: "Username"
       password: "Password"
+      token: "Token"
       signing-in: "Signing in..."
       signin: "Sign in"
 
@@ -295,6 +296,17 @@ desktop:
       not-match: "New password not matched"
       changed: "Password updated successfully"
 
+    mk-2fa-setting:
+      register: "Register a device"
+      enter-password: "Enter the password"
+      authenticator: "First, you need install Google Authenticator to your device:"
+      howtoinstall: "How to install"
+      scan: "Next, please scan displayed QR code:"
+      done: "Please enter the token displaying in your device:"
+      submit: "Submit"
+      success: "Setup completed successfully!"
+      failed: "Failed to setup. please ensure that the token is correct."
+
     mk-post-form:
       post-placeholder: "What's happening?"
       reply-placeholder: "Reply to this post..."
@@ -327,7 +339,9 @@ desktop:
       next: "Next post"
 
     mk-settings:
+      security: "Security"
       password: "Password"
+      2fa: "Two-factor authentication"
 
     mk-timeline-post:
       reposted-by: "Reposted by {}"

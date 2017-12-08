@@ -137,6 +137,7 @@ common:
     mk-signin:
       username: "ユーザー名"
       password: "パスワード"
+      token: "トークン"
       signing-in: "やってます..."
       signin: "サインイン"
 
@@ -295,6 +296,17 @@ desktop:
       not-match: "新しいパスワードが一致しません"
       changed: "パスワードを変更しました"
 
+    mk-2fa-setting:
+      register: "デバイスを登録する"
+      enter-password: "パスワードを入力してください"
+      authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
+      howtoinstall: "インストール方法はこちら"
+      scan: "次に、表示されているQRコードをスキャンします:"
+      done: "お使いのデバイスに表示されているトークンを入力して完了します:"
+      submit: "完了"
+      success: "設定が完了しました！"
+      failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
+
     mk-post-form:
       post-placeholder: "いまどうしてる？"
       reply-placeholder: "この投稿への返信..."
@@ -327,7 +339,9 @@ desktop:
       next: "次の投稿"
 
     mk-settings:
+      security: "セキュリティ"
       password: "パスワード"
+      2fa: "二段階認証"
 
     mk-timeline-post:
       reposted-by: "{}がRepost"

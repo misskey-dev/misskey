@@ -72,6 +72,8 @@ export type IUser = {
 	is_pro: boolean;
 	is_suspended: boolean;
 	keywords: string[];
+	two_factor_secret: string;
+	two_factor_enabled: boolean;
 };
 
 export function init(user): IUser {

@@ -78,6 +78,8 @@ export default (
 	// Remove private properties
 	delete _user.password;
 	delete _user.token;
+	delete _user.two_factor_temp_secret;
+	delete _user.two_factor_secret;
 	delete _user.username_lower;
 	if (_user.twitter) {
 		delete _user.twitter.access_token;
@@ -89,6 +91,10 @@ export default (
 	if (!opts.includeSecrets) {
 		delete _user.email;
 		delete _user.client_settings;
+	}
+
+	if (!opts.detail) {
+		delete _user.two_factor_enabled;
 	}
 
 	_user.avatar_url = _user.avatar_id != null

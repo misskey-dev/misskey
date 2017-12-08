@@ -7,7 +7,7 @@
 		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }>%fa:puzzle-piece .fw%アプリ</p>
 		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
 		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }>%fa:sign-in-alt .fw%ログイン履歴</p>
-		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.password%</p>
+		<p class={ active: page == 'security' } onmousedown={ setPage.bind(null, 'security') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.security%</p>
 		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }>%fa:key .fw%API</p>
 	</div>
 	<div class="pages">
@@ -59,9 +59,14 @@
 			<mk-signin-history/>
 		</section>
 
-		<section class="password" show={ page == 'password' }>
+		<section class="password" show={ page == 'security' }>
 			<h1>%i18n:desktop.tags.mk-settings.password%</h1>
 			<mk-password-setting/>
+		</section>
+
+		<section class="2fa" show={ page == 'security' }>
+			<h1>%i18n:desktop.tags.mk-settings.2fa%</h1>
+			<mk-2fa-setting/>
 		</section>
 
 		<section class="api" show={ page == 'api' }>
@@ -285,3 +290,50 @@
 		};
 	</script>
 </mk-password-setting>
+
+<mk-2fa-setting>
+	<p><button onclick={ register }>%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
+	<div if={ data }>
+		<ol>
+			<li>%i18n:desktop.tags.mk-2fa-setting.authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:desktop.tags.mk-2fa-setting.howtoinstall%</a></li>
+			<li>%i18n:desktop.tags.mk-2fa-setting.scan%<br><img src={ data.qr }></li>
+			<li>%i18n:desktop.tags.mk-2fa-setting.done%<br>
+				<input type="number" ref="token"><button onclick={ submit }>%i18n:desktop.tags.mk-2fa-setting.submit%</button>
+			</li>
+		</ol>
+	</div>
+	<style>
+		:scope
+			display block
+			color #4a535a
+
+	</style>
+	<script>
+		import passwordDialog from '../scripts/password-dialog';
+		import notify from '../scripts/notify';
+
+		this.mixin('api');
+
+		this.register = () => {
+			passwordDialog('%i18n:desktop.tags.mk-2fa-setting.enter-password%', password => {
+				this.api('i/2fa/register', {
+					password: password
+				}).then(data => {
+					this.update({
+						data: data
+					});
+				});
+			});
+		};
+
+		this.submit = () => {
+			this.api('i/2fa/done', {
+				token: this.refs.token.value
+			}).then(() => {
+				notify('%i18n:desktop.tags.mk-2fa-setting.success%');
+			}).catch(() => {
+				notify('%i18n:desktop.tags.mk-2fa-setting.failed%');
+			});
+		};
+	</script>
+</mk-2fa-setting>

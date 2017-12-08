@@ -156,6 +156,14 @@ const endpoints: Endpoint[] = [
 		withCredential: true
 	},
 	{
+		name: 'i/2fa/register',
+		withCredential: true
+	},
+	{
+		name: 'i/2fa/done',
+		withCredential: true
+	},
+	{
 		name: 'i/update',
 		withCredential: true,
 		limit: {
