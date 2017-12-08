@@ -79,10 +79,10 @@
 		</virtual>
 	</div>
 	<button class="more { fetching: fetchingMoreNotifications }" if={ moreNotifications } onclick={ fetchMoreNotifications } disabled={ fetchingMoreNotifications }>
-		<virtual if={ fetchingMoreNotifications }>%fa:spinner .pluse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
+		<virtual if={ fetchingMoreNotifications }>%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
-	<p class="loading" if={ loading }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block

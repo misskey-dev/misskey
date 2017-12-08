@@ -2,7 +2,7 @@
 	<virtual if={ data.design == 0 }>
 		<p class="title">%fa:camera%%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
 	</virtual>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>

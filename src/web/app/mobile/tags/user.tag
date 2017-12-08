@@ -307,7 +307,7 @@
 </mk-user-overview>
 
 <mk-user-overview-posts>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && posts.length > 0 }>
 		<virtual each={ posts }>
 			<mk-user-overview-posts-post-card post={ this }/>
@@ -436,7 +436,7 @@
 </mk-user-overview-posts-post-card>
 
 <mk-user-overview-photos>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
 			<a class="img" style={ 'background-image: url(' + image.media.url + '?thumbnail&size=256)' } href={ '/' + image.post.user.username + '/' + image.post.id }></a>
@@ -626,7 +626,7 @@
 </mk-user-overview-domains>
 
 <mk-user-overview-frequently-replied-users>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && users.length > 0 }>
 		<virtual each={ users }>
 			<mk-user-card user={ this.user }/>
@@ -678,7 +678,7 @@
 </mk-user-overview-frequently-replied-users>
 
 <mk-user-overview-followers-you-know>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && users.length > 0 }>
 		<virtual each={ user in users }>
 			<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>

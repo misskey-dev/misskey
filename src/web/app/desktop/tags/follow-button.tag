@@ -2,9 +2,9 @@
 	<button class={ wait: wait, follow: !user.is_following, unfollow: user.is_following } if={ !init } onclick={ onclick } disabled={ wait } title={ user.is_following ? 'フォロー解除' : 'フォローする' }>
 		<virtual if={ !wait && user.is_following }>%fa:minus%</virtual>
 		<virtual if={ !wait && !user.is_following }>%fa:plus%</virtual>
-		<virtual if={ wait }>%fa:spinner .pluse .fw%</virtual>
+		<virtual if={ wait }>%fa:spinner .pulse .fw%</virtual>
 	</button>
-	<div class="init" if={ init }>%fa:spinner .pluse .fw%</div>
+	<div class="init" if={ init }>%fa:spinner .pulse .fw%</div>
 	<style>
 		:scope
 			display block

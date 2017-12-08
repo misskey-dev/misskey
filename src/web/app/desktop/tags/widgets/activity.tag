@@ -3,7 +3,7 @@
 		<p class="title">%fa:chart-bar%%i18n:desktop.tags.mk-activity-widget.title%</p>
 		<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-widget.toggle%">%fa:sort%</button>
 	</virtual>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-activity-widget-calender if={ !initializing && view == 0 } data={ [].concat(activity) }/>
 	<mk-activity-widget-chart if={ !initializing && view == 1 } data={ [].concat(activity) }/>
 	<style>

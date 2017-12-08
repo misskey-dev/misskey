@@ -1,7 +1,7 @@
 <mk-post-detail>
 	<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } onclick={ loadContext } disabled={ loadingContext }>
 		<virtual if={ !contextFetching }>%fa:ellipsis-v%</virtual>
-		<virtual if={ contextFetching }>%fa:spinner .pluse%</virtual>
+		<virtual if={ contextFetching }>%fa:spinner .pulse%</virtual>
 	</button>
 	<div class="context">
 		<virtual each={ post in context }>

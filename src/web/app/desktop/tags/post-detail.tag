@@ -2,7 +2,7 @@
 	<div class="main">
 		<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
 			<virtual if={ !contextFetching }>%fa:ellipsis-v%</virtual>
-			<virtual if={ contextFetching }>%fa:spinner .pluse%</virtual>
+			<virtual if={ contextFetching }>%fa:spinner .pulse%</virtual>
 		</button>
 		<div class="context">
 			<virtual each={ post in context }>

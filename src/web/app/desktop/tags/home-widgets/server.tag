@@ -3,7 +3,7 @@
 		<p class="title">%fa:server%%i18n:desktop.tags.mk-server-home-widget.title%</p>
 		<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%">%fa:sort%</button>
 	</virtual>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ data.view == 0 } connection={ connection }/>
 	<mk-server-home-widget-cpu if={ !initializing } show={ data.view == 1 } connection={ connection } meta={ meta }/>
 	<mk-server-home-widget-memory if={ !initializing } show={ data.view == 2 } connection={ connection }/>

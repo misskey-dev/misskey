@@ -6,7 +6,7 @@
 	<div class="feed" if={ !initializing }>
 		<virtual each={ item in items }><a href={ item.link } target="_blank">{ item.title }</a></virtual>
 	</div>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block

@@ -2,7 +2,7 @@
 	<ol if={ uploads.length > 0 }>
 		<li each={ uploads }>
 			<div class="img" style="background-image: url({ img })"></div>
-			<p class="name">%fa:spinner .pluse%{ name }</p>
+			<p class="name">%fa:spinner .pulse%{ name }</p>
 			<p class="status"><span class="initing" if={ progress == undefined }>%i18n:common.tags.mk-uploader.waiting%<mk-ellipsis/></span><span class="kb" if={ progress != undefined }>{ String(Math.floor(progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i> / { String(Math.floor(progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }<i>KB</i></span><span class="percentage" if={ progress != undefined }>{ Math.floor((progress.value / progress.max) * 100) }</span></p>
 			<progress if={ progress != undefined && progress.value != progress.max } value={ progress.value } max={ progress.max }></progress>
 			<div class="progress initing" if={ progress == undefined }></div>

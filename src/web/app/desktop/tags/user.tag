@@ -330,7 +330,7 @@
 
 <mk-user-photos>
 	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<div class="stream" if={ !initializing && images.length > 0 }>
 		<virtual each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>
@@ -424,7 +424,7 @@
 
 <mk-user-frequently-replied-users>
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
 	<div class="user" if={ !initializing && users.length != 0 } each={ _user in users }>
 		<a class="avatar-anchor" href={ '/' + _user.username }>
 			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ _user.id }/>
@@ -536,7 +536,7 @@
 
 <mk-user-followers-you-know>
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
-	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
 	<div if={ !initializing && users.length > 0 }>
 	<virtual each={ user in users }>
 		<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>

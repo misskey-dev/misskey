@@ -10,7 +10,7 @@
 			<label>
 				<p class="caption">Named ID</p>
 				<input ref="nid" type="text" pattern="^[a-zA-Z0-9-]{3,30}$" placeholder="ex) misskey-for-ios" autocomplete="off" required="required" onkeyup={ onChangeNid }/>
-				<p class="info" if={ nidState == 'wait' } style="color:#999">%fa:spinner .pluse .fw%確認しています...</p>
+				<p class="info" if={ nidState == 'wait' } style="color:#999">%fa:spinner .pulse .fw%確認しています...</p>
 				<p class="info" if={ nidState == 'ok' } style="color:#3CB7B5">%fa:fw check%利用できます</p>
 				<p class="info" if={ nidState == 'unavailable' } style="color:#FF1161">%fa:fw exclamation-triangle%既に利用されています</p>
 				<p class="info" if={ nidState == 'error' } style="color:#FF1161">%fa:fw exclamation-triangle%通信エラー</p>

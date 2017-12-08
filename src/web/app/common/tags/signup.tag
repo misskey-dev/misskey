@@ -4,7 +4,7 @@
 			<p class="caption">%fa:at%%i18n:common.tags.mk-signup.username%</p>
 			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required="required" onkeyup={ onChangeUsername }/>
 			<p class="profile-page-url-preview" if={ refs.username.value != '' && username-state != 'invalidFormat' && username-state != 'minRange' && username-state != 'maxRange' }>{ _URL_ + '/' + refs.username.value }</p>
-			<p class="info" if={ usernameState == 'wait' } style="color:#999">%fa:spinner .pluse .fw%%i18n:common.tags.mk-signup.checking%</p>
+			<p class="info" if={ usernameState == 'wait' } style="color:#999">%fa:spinner .pulse .fw%%i18n:common.tags.mk-signup.checking%</p>
 			<p class="info" if={ usernameState == 'ok' } style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.available%</p>
 			<p class="info" if={ usernameState == 'unavailable' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.unavailable%</p>
 			<p class="info" if={ usernameState == 'error' } style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.error%</p>

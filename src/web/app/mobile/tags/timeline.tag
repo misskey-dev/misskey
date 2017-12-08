@@ -1,6 +1,6 @@
 <mk-timeline>
 	<div class="init" if={ init }>
-		%fa:spinner .pluse%%i18n:common.loading%
+		%fa:spinner .pulse%%i18n:common.loading%
 	</div>
 	<div class="empty" if={ !init && posts.length == 0 }>
 		%fa:R comments%{ opts.empty || '%i18n:mobile.tags.mk-timeline.empty%' }

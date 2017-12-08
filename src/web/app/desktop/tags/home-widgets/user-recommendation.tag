@@ -14,7 +14,7 @@
 		<mk-follow-button user={ _user }/>
 	</div>
 	<p class="empty" if={ !loading && users.length == 0 }>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
-	<p class="loading" if={ loading }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block

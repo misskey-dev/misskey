@@ -7,7 +7,7 @@
 	<mk-timeline ref="timeline" hide={ isLoading }>
 		<yield to="footer">
 			<virtual if={ !parent.moreLoading }>%fa:moon%</virtual>
-			<virtual if={ parent.moreLoading }>%fa:spinner .pluse .fw%</virtual>
+			<virtual if={ parent.moreLoading }>%fa:spinner .pulse .fw%</virtual>
 		</yield/>
 	</mk-timeline>
 	<style>

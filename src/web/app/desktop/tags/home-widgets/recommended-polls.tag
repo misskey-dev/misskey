@@ -9,7 +9,7 @@
 		<mk-poll post={ poll }/>
 	</div>
 	<p class="empty" if={ !loading && poll == null }>%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
-	<p class="loading" if={ loading }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
