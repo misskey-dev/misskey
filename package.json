@@ -22,7 +22,7 @@
 		"format": "gulp format"
 	},
 	"dependencies": {
-		"@fortawesome/fontawesome": "1.0.0",
+		"@fortawesome/fontawesome": "1.0.1",
 		"@fortawesome/fontawesome-free-brands": "5.0.0",
 		"@fortawesome/fontawesome-free-regular": "5.0.0",
 		"@fortawesome/fontawesome-free-solid": "5.0.0",
