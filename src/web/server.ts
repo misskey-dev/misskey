@@ -44,8 +44,6 @@ app.use('/assets', (req, res) => {
 	res.sendStatus(404);
 });
 
-app.use('/recover', (req, res) => res.sendFile(`${__dirname}/assets/recover.html`));
-
 /**
  * ServiceWroker
  */
