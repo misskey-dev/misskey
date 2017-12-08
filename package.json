@@ -64,7 +64,7 @@
 		"@types/proxy-addr": "2.0.0",
 		"@types/qrcode": "0.8.0",
 		"@types/ratelimiter": "2.1.28",
-		"@types/redis": "2.8.1",
+		"@types/redis": "2.8.2",
 		"@types/request": "2.0.8",
 		"@types/rimraf": "2.0.2",
 		"@types/riot": "3.6.1",
