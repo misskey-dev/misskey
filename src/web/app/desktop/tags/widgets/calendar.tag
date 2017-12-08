@@ -1,8 +1,8 @@
 <mk-calendar-widget data-melt={ opts.design == 4 || opts.design == 5 }>
 	<virtual if={ opts.design == 0 || opts.design == 1 }>
-		<button onclick={ prev } title="%i18n:desktop.tags.mk-calendar-widget.prev%"><i class="fa fa-chevron-circle-left"></i></button>
+		<button onclick={ prev } title="%i18n:desktop.tags.mk-calendar-widget.prev%">%fa:chevron-circle-left%</button>
 		<p class="title">{ '%i18n:desktop.tags.mk-calendar-widget.title%'.replace('{1}', year).replace('{2}', month) }</p>
-		<button onclick={ next } title="%i18n:desktop.tags.mk-calendar-widget.next%"><i class="fa fa-chevron-circle-right"></i></button>
+		<button onclick={ next } title="%i18n:desktop.tags.mk-calendar-widget.next%">%fa:chevron-circle-right%</button>
 	</virtual>
 
 	<div class="calendar">
@@ -41,7 +41,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button

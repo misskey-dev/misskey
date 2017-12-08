@@ -2,7 +2,11 @@
 	<div class="records" if={ history.length != 0 }>
 		<div each={ history }>
 			<mk-time time={ created_at }/>
-			<header><i class="fa fa-check" if={ success }></i><i class="fa fa-times" if={ !success }></i><span class="ip">{ ip }</span></header>
+			<header>
+				<virtual if={ success }>%fa:check%</virtual>
+				<virtual if={ !success }>%fa:times%</virtual>
+				<span class="ip">{ ip }</span>
+			</header>
 			<pre><code>{ JSON.stringify(headers, null, '    ') }</code></pre>
 		</div>
 	</div>
@@ -17,13 +21,13 @@
 
 					> header
 
-						> i
+						> [data-fa]
 							margin-right 8px
 
-							&.fa-check
+							&.check
 								color #0fda82
 
-							&.fa-times
+							&.times
 								color #ff3100
 
 						> .ip

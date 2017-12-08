@@ -1,9 +1,9 @@
 <mk-server-home-widget data-melt={ data.design == 2 }>
 	<virtual if={ data.design == 0 }>
-		<p class="title"><i class="fa fa-server"></i>%i18n:desktop.tags.mk-server-home-widget.title%</p>
-		<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%"><i class="fa fa-sort"></i></button>
+		<p class="title">%fa:server%%i18n:desktop.tags.mk-server-home-widget.title%</p>
+		<button onclick={ toggle } title="%i18n:desktop.tags.mk-server-home-widget.toggle%">%fa:sort%</button>
 	</virtual>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ data.view == 0 } connection={ connection }/>
 	<mk-server-home-widget-cpu if={ !initializing } show={ data.view == 1 } connection={ connection } meta={ meta }/>
 	<mk-server-home-widget-memory if={ !initializing } show={ data.view == 2 } connection={ connection }/>
@@ -31,7 +31,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button
@@ -57,7 +57,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>
@@ -235,7 +235,7 @@
 <mk-server-home-widget-cpu>
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
-		<p><i class="fa fa-microchip"></i>CPU</p>
+		<p>%fa:microchip%CPU</p>
 		<p>{ cores } Cores</p>
 		<p>{ model }</p>
 	</div>
@@ -261,7 +261,7 @@
 					&:first-child
 						font-weight bold
 
-						> i
+						> [data-fa]
 							margin-right 4px
 
 			&:after
@@ -292,7 +292,7 @@
 <mk-server-home-widget-memory>
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
-		<p><i class="fa fa-flask"></i>Memory</p>
+		<p>%fa:flask%Memory</p>
 		<p>Total: { bytesToSize(total, 1) }</p>
 		<p>Used: { bytesToSize(used, 1) }</p>
 		<p>Free: { bytesToSize(free, 1) }</p>
@@ -319,7 +319,7 @@
 					&:first-child
 						font-weight bold
 
-						> i
+						> [data-fa]
 							margin-right 4px
 
 			&:after
@@ -358,7 +358,7 @@
 <mk-server-home-widget-disk>
 	<mk-server-home-widget-pie ref="pie"/>
 	<div>
-		<p><i class="fa fa-hdd-o"></i>Storage</p>
+		<p>%fa:R hdd%Storage</p>
 		<p>Total: { bytesToSize(total, 1) }</p>
 		<p>Available: { bytesToSize(available, 1) }</p>
 		<p>Used: { bytesToSize(used, 1) }</p>
@@ -385,7 +385,7 @@
 					&:first-child
 						font-weight bold
 
-						> i
+						> [data-fa]
 							margin-right 4px
 
 			&:after

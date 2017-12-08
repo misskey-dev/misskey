@@ -1,6 +1,6 @@
 <mk-entrance-signup>
 	<mk-signup/>
-	<button class="cancel" type="button" onclick={ parent.signin } title="%i18n:mobile.tags.mk-entrance-signup.cancel%"><i class="fa fa-times"></i></button>
+	<button class="cancel" type="button" onclick={ parent.signin } title="%i18n:mobile.tags.mk-entrance-signup.cancel%">%fa:times%</button>
 	<style>
 		:scope
 			display block
@@ -31,7 +31,7 @@
 				&:active
 					color #222
 
-				> i
+				> [data-fa]
 					padding 14px
 
 	</style>

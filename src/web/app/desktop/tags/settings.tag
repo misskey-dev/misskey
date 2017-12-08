@@ -1,14 +1,14 @@
 <mk-settings>
 	<div class="nav">
-		<p class={ active: page == 'account' } onmousedown={ setPage.bind(null, 'account') }><i class="fa fa-fw fa-user"></i>アカウント</p>
-		<p class={ active: page == 'web' } onmousedown={ setPage.bind(null, 'web') }><i class="fa fa-fw fa-desktop"></i>Web</p>
-		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }><i class="fa fa-fw fa-bell-o"></i>通知</p>
-		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }><i class="fa fa-fw fa-cloud"></i>ドライブ</p>
-		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }><i class="fa fa-fw fa-puzzle-piece"></i>アプリ</p>
-		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }><i class="fa fa-fw fa-twitter"></i>Twitter</p>
-		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }><i class="fa fa-fw fa-sign-in"></i>ログイン履歴</p>
-		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }><i class="fa fa-fw fa-unlock-alt"></i>%i18n:desktop.tags.mk-settings.password%</p>
-		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }><i class="fa fa-fw fa-key"></i>API</p>
+		<p class={ active: page == 'account' } onmousedown={ setPage.bind(null, 'account') }>%fa:user .fw%アカウント</p>
+		<p class={ active: page == 'web' } onmousedown={ setPage.bind(null, 'web') }>%fa:desktop .fw%Web</p>
+		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }>%fa:R bell .fw%通知</p>
+		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }>%fa:cloud .fw%ドライブ</p>
+		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }>%fa:puzzle-piece .fw%アプリ</p>
+		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
+		<p class={ active: page == 'signin' } onmousedown={ setPage.bind(null, 'signin') }>%fa:sign-in-alt .fw%ログイン履歴</p>
+		<p class={ active: page == 'password' } onmousedown={ setPage.bind(null, 'password') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.password%</p>
+		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }>%fa:key .fw%API</p>
 	</div>
 	<div class="pages">
 		<section class="account" show={ page == 'account' }>
@@ -111,7 +111,7 @@
 					user-select none
 					transition margin-left 0.2s ease
 
-					> i
+					> [data-fa]
 						margin-right 4px
 
 					&:hover

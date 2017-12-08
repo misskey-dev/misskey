@@ -2,7 +2,7 @@
 	<mk-post-form if={ place == 'main' }/>
 	<virtual if={ place != 'main' }>
 		<virtual if={ data.design == 0 }>
-			<p class="title"><i class="fa fa-pencil"></i>%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
+			<p class="title">%fa:pencil-alt%%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
 		</virtual>
 		<textarea disabled={ posting } ref="text" onkeydown={ onkeydown } placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>
 		<button onclick={ post } disabled={ posting }>%i18n:desktop.tags.mk-post-form-home-widget.post%</button>
@@ -25,7 +25,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> textarea

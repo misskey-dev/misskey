@@ -7,7 +7,7 @@
 		<yield to="content">
 			<mk-drive-browser ref="browser" multiple={ parent.multiple }/>
 			<div>
-				<button class="upload" title="PCからドライブにファイルをアップロード" onclick={ parent.upload }><i class="fa fa-upload"></i></button>
+				<button class="upload" title="PCからドライブにファイルをアップロード" onclick={ parent.upload }>%fa:upload%</button>
 				<button class="cancel" onclick={ parent.close }>キャンセル</button>
 				<button class="ok" disabled={ parent.multiple && parent.files.length == 0 } onclick={ parent.ok }>決定</button>
 			</div>
@@ -18,7 +18,7 @@
 			> mk-window
 				[data-yield='header']
 					> mk-raw
-						> i
+						> [data-fa]
 							margin-right 4px
 
 					.count
@@ -138,7 +138,7 @@
 		this.files = [];
 
 		this.multiple = this.opts.multiple != null ? this.opts.multiple : false;
-		this.title = this.opts.title || '<i class="fa fa-file-o"></i>ファイルを選択';
+		this.title = this.opts.title || '%fa:R file%ファイルを選択';
 
 		this.on('mount', () => {
 			this.refs.window.refs.browser.on('selected', file => {

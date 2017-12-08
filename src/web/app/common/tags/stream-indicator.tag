@@ -1,14 +1,14 @@
 <mk-stream-indicator>
 	<p if={ connection.state == 'initializing' }>
-		<i class="fa fa-spinner fa-spin"></i>
+		%fa:spinner .spin .pulse%
 		<span>%i18n:common.tags.mk-stream-indicator.connecting%<mk-ellipsis/></span>
 	</p>
 	<p if={ connection.state == 'reconnecting' }>
-		<i class="fa fa-spinner fa-spin"></i>
+		%fa:spinner .spin .pulse%
 		<span>%i18n:common.tags.mk-stream-indicator.reconnecting%<mk-ellipsis/></span>
 	</p>
 	<p if={ connection.state == 'connected' }>
-		<i class="fa fa-check"></i>
+		%fa:check%
 		<span>%i18n:common.tags.mk-stream-indicator.connected%</span>
 	</p>
 	<style>
@@ -30,7 +30,7 @@
 				display block
 				margin 0
 
-				> i
+				> [data-fa]
 					margin-right 0.25em
 
 	</style>

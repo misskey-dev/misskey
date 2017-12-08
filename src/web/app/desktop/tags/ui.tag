@@ -171,7 +171,7 @@
 </mk-ui-header-search>
 
 <mk-ui-header-post-button>
-	<button onclick={ post } title="%i18n:desktop.tags.mk-ui-header-post-button.post%"><i class="fa fa-pencil"></i></button>
+	<button onclick={ post } title="%i18n:desktop.tags.mk-ui-header-post-button.post%">%fa:pencil-alt%</button>
 	<style>
 		:scope
 			display inline-block
@@ -215,7 +215,7 @@
 
 <mk-ui-header-notifications>
 	<button data-active={ isOpen } onclick={ toggle } title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
-		<i class="fa fa-bell-o icon"></i><i class="fa fa-circle badge" if={ hasUnreadNotifications }></i>
+		%fa:R bell%<virtual if={ hasUnreadNotifications }>%fa:circle%</virtual>
 	</button>
 	<div class="notifications" if={ isOpen }>
 		<mk-notifications/>
@@ -245,11 +245,11 @@
 				&:active
 					color darken(#9eaba8, 30%)
 
-				> .icon
+				> [data-fa].bell
 					font-size 1.2em
 					line-height 48px
 
-				> .badge
+				> [data-fa].circle
 					margin-left -5px
 					vertical-align super
 					font-size 10px
@@ -380,27 +380,27 @@
 		<virtual if={ SIGNIN }>
 			<li class="home { active: page == 'home' }">
 				<a href={ _URL_ }>
-					<i class="fa fa-home"></i>
+					%fa:home%
 					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
 				</a>
 			</li>
 			<li class="messaging">
 				<a onclick={ messaging }>
-					<i class="fa fa-comments"></i>
+					%fa:comments%
 					<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
-					<i class="fa fa-circle" if={ hasUnreadMessagingMessages }></i>
+					<virtual if={ hasUnreadMessagingMessages }>%fa:circle%</virtual>
 				</a>
 			</li>
 		</virtual>
 		<li class="ch">
 			<a href={ _CH_URL_ } target="_blank">
-				<i class="fa fa-television"></i>
+				%fa:tv%
 				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
 			</a>
 		</li>
 		<li class="info">
 			<a href="https://twitter.com/misskey_xyz" target="_blank">
-				<i class="fa fa-info"></i>
+				%fa:info%
 				<p>%i18n:desktop.tags.mk-ui-header-nav.info%</p>
 			</a>
 		</li>
@@ -450,12 +450,11 @@
 							color darken(#9eaba8, 20%)
 							text-decoration none
 
-						> i:first-child
+						> [data-fa]:first-child
 							margin-right 8px
 
-						> i:last-child
+						> [data-fa]:last-child
 							margin-left 5px
-							vertical-align super
 							font-size 10px
 							color $theme-color
 
@@ -616,29 +615,29 @@
 
 <mk-ui-header-account>
 	<button class="header" data-active={ isOpen.toString() } onclick={ toggle }>
-		<span class="username">{ I.username }<i class="fa fa-angle-down" if={ !isOpen }></i><i class="fa fa-angle-up" if={ isOpen }></i></span>
+		<span class="username">{ I.username }<virtual if={ !isOpen }>%fa:angle-down%</virtual><virtual if={ isOpen }>%fa:angle-up%</virtual></span>
 		<img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 	</button>
 	<div class="menu" if={ isOpen }>
 		<ul>
 			<li>
-				<a href={ '/' + I.username }><i class="fa fa-user"></i>%i18n:desktop.tags.mk-ui-header-account.profile%<i class="fa fa-angle-right"></i></a>
+				<a href={ '/' + I.username }>%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</a>
 			</li>
 			<li onclick={ drive }>
-				<p><i class="fa fa-cloud"></i>%i18n:desktop.tags.mk-ui-header-account.drive%<i class="fa fa-angle-right"></i></p>
+				<p>%fa:cloud%%i18n:desktop.tags.mk-ui-header-account.drive%%fa:angle-right%</p>
 			</li>
 			<li>
-				<a href="/i/mentions"><i class="fa fa-at"></i>%i18n:desktop.tags.mk-ui-header-account.mentions%<i class="fa fa-angle-right"></i></a>
+				<a href="/i/mentions">%fa:at%%i18n:desktop.tags.mk-ui-header-account.mentions%%fa:angle-right%</a>
 			</li>
 		</ul>
 		<ul>
 			<li onclick={ settings }>
-				<p><i class="fa fa-cog"></i>%i18n:desktop.tags.mk-ui-header-account.settings%<i class="fa fa-angle-right"></i></p>
+				<p>%fa:cog%%i18n:desktop.tags.mk-ui-header-account.settings%%fa:angle-right%</p>
 			</li>
 		</ul>
 		<ul>
 			<li onclick={ signout }>
-				<p><i class="fa fa-power-off"></i>%i18n:desktop.tags.mk-ui-header-account.signout%<i class="fa fa-angle-right"></i></p>
+				<p>%fa:power-off%%i18n:desktop.tags.mk-ui-header-account.signout%%fa:angle-right%</p>
 			</li>
 		</ul>
 	</div>
@@ -679,7 +678,7 @@
 					font-family Meiryo, sans-serif
 					text-decoration none
 
-					i
+					[data-fa]
 						margin-left 8px
 
 				> .avatar
@@ -756,10 +755,10 @@
 							*
 								pointer-events none
 
-							> i:first-of-type
+							> [data-fa]:first-of-type
 								margin-right 6px
 
-							> i:last-of-type
+							> [data-fa]:last-of-type
 								display block
 								position absolute
 								top 0

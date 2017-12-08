@@ -11,7 +11,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-twitter-setting-page.twitter-integration%';
-			ui.trigger('title', '<i class="fa fa-twitter"></i>%i18n:mobile.tags.mk-twitter-setting-page.twitter-integration%');
+			ui.trigger('title', '%fa:B twitter%%i18n:mobile.tags.mk-twitter-setting-page.twitter-integration%');
 		});
 	</script>
 </mk-twitter-setting-page>

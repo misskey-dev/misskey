@@ -1,7 +1,7 @@
 <mk-input-dialog>
 	<mk-window ref="window" is-modal={ true } width={ '500px' }>
 		<yield to="header">
-			<i class="fa fa-i-cursor"></i>{ parent.title }
+			%fa:i-cursor%{ parent.title }
 		</yield>
 		<yield to="content">
 			<div class="body">
@@ -19,7 +19,7 @@
 
 			> mk-window
 				[data-yield='header']
-					> i
+					> [data-fa]
 						margin-right 4px
 
 				[data-yield='content']

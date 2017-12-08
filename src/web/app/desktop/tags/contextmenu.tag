@@ -36,7 +36,7 @@
 					> p
 						cursor default
 
-						> i:last-child
+						> [data-fa]:last-child
 							position absolute
 							top 0
 							right 8px

@@ -1,10 +1,10 @@
 <mk-signin>
 	<form class={ signing: signing } onsubmit={ onsubmit }>
 		<label class="user-name">
-			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="%i18n:common.tags.mk-signin.username%" autofocus="autofocus" required="required" oninput={ oninput }/><i class="fa fa-at"></i>
+			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="%i18n:common.tags.mk-signin.username%" autofocus="autofocus" required="required" oninput={ oninput }/>%fa:at%
 		</label>
 		<label class="password">
-			<input ref="password" type="password" placeholder="%i18n:common.tags.mk-signin.password%" required="required"/><i class="fa fa-lock"></i>
+			<input ref="password" type="password" placeholder="%i18n:common.tags.mk-signin.password%" required="required"/>%fa:lock%
 		</label>
 		<button type="submit" disabled={ signing }>{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }</button>
 	</form>
@@ -24,7 +24,7 @@
 					display block
 					margin 12px 0
 
-					i
+					[data-fa]
 						display block
 						pointer-events none
 						position absolute

@@ -2,19 +2,19 @@
 	<mk-contextmenu ref="ctx">
 		<ul>
 			<li onclick={ parent.rename }>
-				<p><i class="fa fa-i-cursor"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename%</p>
+				<p>%fa:i-cursor%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename%</p>
 			</li>
 			<li onclick={ parent.copyUrl }>
-				<p><i class="fa fa-link"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copy-url%</p>
+				<p>%fa:link%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copy-url%</p>
 			</li>
-			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }><i class="fa fa-download"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%</a></li>
+			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }>%fa:download%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%</a></li>
 			<li class="separator"></li>
 			<li onclick={ parent.delete }>
-				<p><i class="fa fa-trash-o"></i>%i18n:common.delete%</p>
+				<p>%fa:R trash-alt%%i18n:common.delete%</p>
 			</li>
 			<li class="separator"></li>
 			<li class="has-child">
-				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.else-files%<i class="fa fa-caret-right"></i></p>
+				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.else-files%%fa:caret-right%</p>
 				<ul>
 					<li onclick={ parent.setAvatar }>
 						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.set-as-avatar%</p>
@@ -25,7 +25,7 @@
 				</ul>
 			</li>
 			<li class="has-child">
-				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.open-in-app%...<i class="fa fa-caret-right"></i></p>
+				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.open-in-app%...%fa:caret-right%</p>
 				<ul>
 					<li onclick={ parent.addApp }>
 						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.add-app%...</p>
@@ -72,7 +72,7 @@
 		this.copyUrl = () => {
 			copyToClipboard(this.file.url);
 			this.refs.ctx.close();
-			dialog('<i class="fa fa-check"></i>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied%',
+			dialog('%fa:check%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied%',
 				'%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied-url-to-clipboard%', [{
 				text: '%i18n:common.ok%'
 			}]);

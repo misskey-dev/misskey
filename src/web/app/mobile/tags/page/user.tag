@@ -20,7 +20,7 @@
 				Progress.done();
 				document.title = user.name + ' | Misskey';
 				// TODO: ユーザー名をエスケープ
-				ui.trigger('title', '<i class="fa fa-user"></i>' + user.name);
+				ui.trigger('title', '%fa:user%' + user.name);
 			});
 		});
 	</script>

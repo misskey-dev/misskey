@@ -244,10 +244,10 @@
 	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a onclick={ clearReply }>[x]</a></p>
 	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder="%i18n:ch.tags.mk-channel-form.textarea%"></textarea>
 	<div class="actions">
-		<button onclick={ selectFile }><i class="fa fa-upload"></i>%i18n:ch.tags.mk-channel-form.upload%</button>
-		<button onclick={ drive }><i class="fa fa-cloud"></i>%i18n:ch.tags.mk-channel-form.drive%</button>
+		<button onclick={ selectFile }>%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
+		<button onclick={ drive }>%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
 		<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
-			<i class="fa fa-paper-plane" if={ !wait }></i>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis if={ wait }/>
+			<virtual if={ !wait }>%fa:paper-plane%</virtual>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis if={ wait }/>
 		</button>
 	</div>
 	<mk-uploader ref="uploader"/>
@@ -269,7 +269,7 @@
 				display flex
 
 				> button
-					> i
+					> [data-fa]
 						margin-right 0.25em
 
 					&:last-child

@@ -2,14 +2,14 @@
 	<div class="notifications" if={ notifications.length != 0 }>
 		<virtual each={ notification, i in notifications }>
 			<mk-notification notification={ notification }/>
-			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ notification._datetext }</span><span><i class="fa fa-angle-down"></i>{ notifications[i + 1]._datetext }</span></p>
+			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span>%fa:angle-up%{ notification._datetext }</span><span>%fa:angle-down%{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
 	<button class="more" if={ moreNotifications } onclick={ fetchMoreNotifications } disabled={ fetchingMoreNotifications }>
-		<i class="fa fa-spinner fa-pulse fa-fw" if={ fetchingMoreNotifications }></i>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
+		<virtual if={ fetchingMoreNotifications }>%fa:spinner .pluse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>%i18n:mobile.tags.mk-notifications.empty%</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="loading" if={ loading }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -58,7 +58,7 @@
 				color #555
 				border-top solid 1px rgba(0, 0, 0, 0.05)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> .empty
@@ -73,7 +73,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

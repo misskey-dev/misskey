@@ -1,9 +1,9 @@
 <mk-activity-widget data-melt={ design == 2 }>
 	<virtual if={ design == 0 }>
-		<p class="title"><i class="fa fa-bar-chart"></i>%i18n:desktop.tags.mk-activity-widget.title%</p>
-		<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-widget.toggle%"><i class="fa fa-sort"></i></button>
+		<p class="title">%fa:chart-bar%%i18n:desktop.tags.mk-activity-widget.title%</p>
+		<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-widget.toggle%">%fa:sort%</button>
 	</virtual>
-	<p class="initializing" if={ initializing }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" if={ initializing }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-activity-widget-calender if={ !initializing && view == 0 } data={ [].concat(activity) }/>
 	<mk-activity-widget-chart if={ !initializing && view == 1 } data={ [].concat(activity) }/>
 	<style>
@@ -27,7 +27,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button
@@ -53,7 +53,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

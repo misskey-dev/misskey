@@ -52,10 +52,10 @@
 	<div class="main">
 		<div class="backdrop"></div>
 		<div class="content">
-			<button class="nav" onclick={ parent.toggleDrawer }><i class="fa fa-bars"></i></button>
-			<i class="fa fa-circle" if={ hasUnreadNotifications || hasUnreadMessagingMessages }></i>
+			<button class="nav" onclick={ parent.toggleDrawer }>%fa:bars%</button>
+			<virtual if={ hasUnreadNotifications || hasUnreadMessagingMessages }>%fa:circle%</virtual>
 			<h1 ref="title">Misskey</h1>
-			<button if={ func } onclick={ func }><i class="fa fa-{ funcIcon }"></i></button>
+			<button if={ func } onclick={ func }><mk-raw content={ funcIcon }/></button>
 		</div>
 	</div>
 	<style>
@@ -99,8 +99,7 @@
 						overflow hidden
 						text-overflow ellipsis
 
-						> i
-						> .icon
+						[data-fa]
 							margin-right 8px
 
 						> img
@@ -121,10 +120,10 @@
 						line-height $height
 						border-right solid 1px rgba(#000, 0.1)
 
-						> i
+						> [data-fa]
 							transition all 0.2s ease
 
-					> i
+					> [data-fa].circle
 						position absolute
 						top 8px
 						left 8px
@@ -234,19 +233,19 @@
 		</a>
 		<div class="links">
 			<ul>
-				<li><a href="/"><i class="fa fa-home"></i>%i18n:mobile.tags.mk-ui-nav.home%<i class="fa fa-angle-right"></i></a></li>
-				<li><a href="/i/notifications"><i class="fa fa-bell-o"></i>%i18n:mobile.tags.mk-ui-nav.notifications%<i class="i fa fa-circle" if={ hasUnreadNotifications }></i><i class="fa fa-angle-right"></i></a></li>
-				<li><a href="/i/messaging"><i class="fa fa-comments-o"></i>%i18n:mobile.tags.mk-ui-nav.messaging%<i class="i fa fa-circle" if={ hasUnreadMessagingMessages }></i><i class="fa fa-angle-right"></i></a></li>
+				<li><a href="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</a></li>
+				<li><a href="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<virtual if={ hasUnreadNotifications }>%fa:circle%</virtual>%fa:angle-right%</a></li>
+				<li><a href="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<virtual if={ hasUnreadMessagingMessages }>%fa:circle%</virtual>%fa:angle-right%</a></li>
 			</ul>
 			<ul>
-				<li><a href={ _CH_URL_ } target="_blank"><i class="fa fa-television"></i>%i18n:mobile.tags.mk-ui-nav.ch%<i class="fa fa-angle-right"></i></a></li>
-				<li><a href="/i/drive"><i class="fa fa-cloud"></i>%i18n:mobile.tags.mk-ui-nav.drive%<i class="fa fa-angle-right"></i></a></li>
+				<li><a href={ _CH_URL_ } target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>
+				<li><a href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</a></li>
 			</ul>
 			<ul>
-				<li><a onclick={ search }><i class="fa fa-search"></i>%i18n:mobile.tags.mk-ui-nav.search%<i class="fa fa-angle-right"></i></a></li>
+				<li><a onclick={ search }>%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
 			</ul>
 			<ul>
-				<li><a href="/i/settings"><i class="fa fa-cog"></i>%i18n:mobile.tags.mk-ui-nav.settings%<i class="fa fa-angle-right"></i></a></li>
+				<li><a href="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</a></li>
 			</ul>
 		</div>
 		<a href={ _ABOUT_URL_ }><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
@@ -323,16 +322,15 @@
 						color #777
 						text-decoration none
 
-						> i:first-child
+						> [data-fa]:first-child
 							margin-right 0.5em
 
-						> .i
+						> [data-fa].circle
 							margin-left 6px
-							vertical-align super
 							font-size 10px
 							color $theme-color
 
-						> i:last-child
+						> [data-fa]:last-child
 							position absolute
 							top 0
 							right 0

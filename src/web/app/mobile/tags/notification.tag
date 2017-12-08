@@ -9,7 +9,9 @@
 				<mk-reaction-icon reaction={ notification.reaction }/>
 				<a href={ '/' + notification.user.username }>{ notification.user.name }</a>
 			</p>
-			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>
+				%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
+			</a>
 		</div>
 	</virtual>
 	<virtual if={ notification.type == 'repost' }>
@@ -18,10 +20,12 @@
 		</a>
 		<div class="text">
 			<p>
-				<i class="fa fa-retweet"></i>
+				%fa:retweet%
 				<a href={ '/' + notification.post.user.username }>{ notification.post.user.name }</a>
 			</p>
-			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post.repost) }</a>
+			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>
+				%fa:quote-left%{ getPostSummary(notification.post.repost) }%fa:quote-right%
+			</a>
 		</div>
 	</virtual>
 	<virtual if={ notification.type == 'quote' }>
@@ -30,7 +34,7 @@
 		</a>
 		<div class="text">
 			<p>
-				<i class="fa fa-quote-left"></i>
+				%fa:quote-left%
 				<a href={ '/' + notification.post.user.username }>{ notification.post.user.name }</a>
 			</p>
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
@@ -42,7 +46,7 @@
 		</a>
 		<div class="text">
 			<p>
-				<i class="fa fa-user-plus"></i>
+				%fa:user-plus%
 				<a href={ '/' + notification.user.username }>{ notification.user.name }</a>
 			</p>
 		</div>
@@ -53,7 +57,7 @@
 		</a>
 		<div class="text">
 			<p>
-				<i class="fa fa-reply"></i>
+				%fa:reply%
 				<a href={ '/' + notification.post.user.username }>{ notification.post.user.name }</a>
 			</p>
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
@@ -65,7 +69,7 @@
 		</a>
 		<div class="text">
 			<p>
-				<i class="fa fa-at"></i>
+				%fa:at%
 				<a href={ '/' + notification.post.user.username }>{ notification.post.user.name }</a>
 			</p>
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
@@ -77,10 +81,12 @@
 		</a>
 		<div class="text">
 			<p>
-				<i class="fa fa-pie-chart"></i>
+				%fa:chart-pie%
 				<a href={ '/' + notification.user.username }>{ notification.user.name }</a>
 			</p>
-			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
+			<a class="post-ref" href={ '/' + notification.post.user.username + '/' + notification.post.id }>
+				%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
+			</a>
 		</div>
 	</virtual>
 	<style>
@@ -132,19 +138,12 @@
 			.post-ref
 				color rgba(0, 0, 0, 0.7)
 
-				&:before, &:after
-					font-family FontAwesome
+				[data-fa]
 					font-size 1em
 					font-weight normal
 					font-style normal
 					display inline-block
 					margin-right 3px
-
-				&:before
-					content "\f10d"
-
-				&:after
-					content "\f10e"
 
 			&.repost, &.quote
 				.text p i

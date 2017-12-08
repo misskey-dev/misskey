@@ -11,7 +11,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-profile-setting-page.title%';
-			ui.trigger('title', '<i class="fa fa-user"></i>%i18n:mobile.tags.mk-profile-setting-page.title%');
+			ui.trigger('title', '%fa:user%%i18n:mobile.tags.mk-profile-setting-page.title%');
 			document.documentElement.style.background = '#313a42';
 		});
 	</script>
@@ -19,7 +19,7 @@
 
 <mk-profile-setting>
 	<div>
-		<p><i class="fa fa-info-circle"></i>%i18n:mobile.tags.mk-profile-setting.will-be-published%</p>
+		<p>%fa:info-circle%%i18n:mobile.tags.mk-profile-setting.will-be-published%</p>
 		<div class="form">
 			<div style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=1024)' : '' } onclick={ clickBanner }>
 				<img src={ I.avatar_url + '?thumbnail&size=200' } alt="avatar" onclick={ clickAvatar }/>
@@ -49,7 +49,7 @@
 				<button onclick={ setBanner } disabled={ bannerSaving }>%i18n:mobile.tags.mk-profile-setting.set-banner%</button>
 			</label>
 		</div>
-		<button class="save" onclick={ save } disabled={ saving }><i class="fa fa-check"></i>%i18n:mobile.tags.mk-profile-setting.save%</button>
+		<button class="save" onclick={ save } disabled={ saving }>%fa:check%%i18n:mobile.tags.mk-profile-setting.save%</button>
 	</div>
 	<style>
 		:scope
@@ -76,7 +76,7 @@
 					//border solid 1px #a9d5de
 					border-radius 8px
 
-					> i
+					> [data-fa]
 						margin-right 6px
 
 				> .form
@@ -165,7 +165,7 @@
 					&:disabled
 						opacity 0.7
 
-					> i
+					> [data-fa]
 						margin-right 4px
 
 	</style>

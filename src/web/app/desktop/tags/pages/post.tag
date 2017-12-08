@@ -1,9 +1,9 @@
 <mk-post-page>
 	<mk-ui ref="ui">
 		<main if={ !parent.fetching }>
-			<a if={ parent.post.next } href={ parent.post.next }><i class="fa fa-angle-up"></i>%i18n:desktop.tags.mk-post-page.next%</a>
+			<a if={ parent.post.next } href={ parent.post.next }>%fa:angle-up%%i18n:desktop.tags.mk-post-page.next%</a>
 			<mk-post-detail ref="detail" post={ parent.post }/>
-			<a if={ parent.post.prev } href={ parent.post.prev }><i class="fa fa-angle-down"></i>%i18n:desktop.tags.mk-post-page.prev%</a>
+			<a if={ parent.post.prev } href={ parent.post.prev }>%fa:angle-down%%i18n:desktop.tags.mk-post-page.prev%</a>
 		</main>
 	</mk-ui>
 	<style>
@@ -23,7 +23,7 @@
 					&:last-child
 						margin-top 4px
 
-					> i
+					> [data-fa]
 						margin-right 4px
 
 				> mk-post-detail

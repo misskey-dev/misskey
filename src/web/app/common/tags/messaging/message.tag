@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<footer>
-			<mk-time time={ message.created_at }/><i class="fa fa-pencil is-edited" if={ message.is_edited }></i>
+			<mk-time time={ message.created_at }/><virtual if={ message.is_edited }>%fa:pencil-alt%</virtual>
 		</footer>
 	</div>
 	<style>
@@ -147,7 +147,7 @@
 					font-size 10px
 					color rgba(0, 0, 0, 0.4)
 
-					> .is-edited
+					> [data-fa]
 						margin-left 4px
 
 			&:not([data-is-me='true'])

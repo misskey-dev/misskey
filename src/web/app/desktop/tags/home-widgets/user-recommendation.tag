@@ -1,7 +1,7 @@
 <mk-user-recommendation-home-widget>
 	<virtual if={ !data.compact }>
-		<p class="title"><i class="fa fa-users"></i>%i18n:desktop.tags.mk-user-recommendation-home-widget.title%</p>
-		<button onclick={ refresh } title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%"><i class="fa fa-refresh"></i></button>
+		<p class="title">%fa:users%%i18n:desktop.tags.mk-user-recommendation-home-widget.title%</p>
+		<button onclick={ refresh } title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%">%fa:sync%</button>
 	</virtual>
 	<div class="user" if={ !loading && users.length != 0 } each={ _user in users }>
 		<a class="avatar-anchor" href={ '/' + _user.username }>
@@ -14,7 +14,7 @@
 		<mk-follow-button user={ _user }/>
 	</div>
 	<p class="empty" if={ !loading && users.length == 0 }>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
-	<p class="loading" if={ loading }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="loading" if={ loading }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -31,7 +31,7 @@
 				color #888
 				border-bottom solid 1px #eee
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> button
@@ -110,7 +110,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 	</style>

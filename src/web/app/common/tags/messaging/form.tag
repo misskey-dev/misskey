@@ -3,13 +3,13 @@
 	<div class="files"></div>
 	<mk-uploader ref="uploader"/>
 	<button class="send" onclick={ send } disabled={ sending } title="%i18n:common.send%">
-		<i class="fa fa-paper-plane" if={ !sending }></i><i class="fa fa-spinner fa-spin" if={ sending }></i>
+		<virtual if={ !sending }>%fa:paper-plane%</virtual><virtual if={ sending }>%fa:spinner .spin%</virtual>
 	</button>
 	<button class="attach-from-local" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
-		<i class="fa fa-upload"></i>
+		%fa:upload%
 	</button>
 	<button class="attach-from-drive" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-drive%">
-		<i class="fa fa-folder-open"></i>
+		%fa:R folder-open%
 	</button>
 	<input name="file" type="file" accept="image/*"/>
 	<style>

@@ -14,12 +14,12 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey | %i18n:mobile.tags.mk-notifications-page.notifications%';
-			ui.trigger('title', '<i class="fa fa-bell-o"></i>%i18n:mobile.tags.mk-notifications-page.notifications%');
+			ui.trigger('title', '%fa:R bell%%i18n:mobile.tags.mk-notifications-page.notifications%');
 			document.documentElement.style.background = '#313a42';
 
 			ui.trigger('func', () => {
 				this.readAll();
-			}, 'check');
+			}, '%fa:check%');
 
 			Progress.start();
 

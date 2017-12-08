@@ -1,6 +1,10 @@
 <mk-follow-button>
-	<button class={ wait: wait, follow: !user.is_following, unfollow: user.is_following } if={ !init } onclick={ onclick } disabled={ wait } title={ user.is_following ? 'フォロー解除' : 'フォローする' }><i class="fa fa-minus" if={ !wait && user.is_following }></i><i class="fa fa-plus" if={ !wait && !user.is_following }></i><i class="fa fa-spinner fa-pulse fa-fw" if={ wait }></i></button>
-	<div class="init" if={ init }><i class="fa fa-spinner fa-pulse fa-fw"></i></div>
+	<button class={ wait: wait, follow: !user.is_following, unfollow: user.is_following } if={ !init } onclick={ onclick } disabled={ wait } title={ user.is_following ? 'フォロー解除' : 'フォローする' }>
+		<virtual if={ !wait && user.is_following }>%fa:minus%</virtual>
+		<virtual if={ !wait && !user.is_following }>%fa:plus%</virtual>
+		<virtual if={ wait }>%fa:spinner .pluse .fw%</virtual>
+	</button>
+	<div class="init" if={ init }>%fa:spinner .pluse .fw%</div>
 	<style>
 		:scope
 			display block

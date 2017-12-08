@@ -1,7 +1,7 @@
 <mk-timeline>
 	<virtual each={ post, i in posts }>
 		<mk-timeline-post post={ post }/>
-		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }><span><i class="fa fa-angle-up"></i>{ post._datetext }</span><span><i class="fa fa-angle-down"></i>{ posts[i + 1]._datetext }</span></p>
+		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }><span>%fa:angle-up%{ post._datetext }</span><span>%fa:angle-down%{ posts[i + 1]._datetext }</span></p>
 	</virtual>
 	<footer data-yield="footer">
 		<yield from="footer"/>
@@ -23,7 +23,7 @@
 				span
 					margin 0 16px
 
-				i
+				[data-fa]
 					margin-right 8px
 
 			> footer
@@ -90,7 +90,7 @@
 			<a class="avatar-anchor" href={ '/' + post.user.username } data-user-preview={ post.user_id }>
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
 			</a>
-			<i class="fa fa-retweet"></i>{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
+			%fa:retweet%{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username } data-user-preview={ post.user_id }>{ post.user.name }</a>{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
 		</p>
 		<mk-time time={ post.created_at }/>
 	</div>
@@ -114,7 +114,7 @@
 				<div class="text" ref="text">
 					<p class="channel" if={ p.channel != null }><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
 					<a class="reply" if={ p.reply }>
-						<i class="fa fa-reply"></i>
+						%fa:reply%
 					</a>
 					<p class="dummy"></p>
 					<a class="quote" if={ p.repost != null }>RP:</a>
@@ -123,27 +123,27 @@
 					<mk-images-viewer images={ p.media }/>
 				</div>
 				<mk-poll if={ p.poll } post={ p } ref="pollViewer"/>
-				<div class="repost" if={ p.repost }><i class="fa fa-quote-right fa-flip-horizontal"></i>
+				<div class="repost" if={ p.repost }>%fa:quote-right -flip-h%
 					<mk-post-preview class="repost" post={ p.repost }/>
 				</div>
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
 				<button onclick={ reply } title="%i18n:desktop.tags.mk-timeline-post.reply%">
-					<i class="fa fa-reply"></i><p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
 				<button onclick={ repost } title="%i18n:desktop.tags.mk-timeline-post.repost%">
-					<i class="fa fa-retweet"></i><p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
 				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%">
-					<i class="fa fa-plus"></i><p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
 				<button onclick={ menu } ref="menuButton">
-					<i class="fa fa-ellipsis-h"></i>
+					%fa:ellipsis-h%
 				</button>
 				<button onclick={ toggleDetail } title="%i18n:desktop.tags.mk-timeline-post.detail">
-					<i class="fa fa-caret-down" if={ !isDetailOpened }></i>
-					<i class="fa fa-caret-up" if={ isDetailOpened }></i>
+					<virtual if={ !isDetailOpened }>%fa:caret-down%</virtual>
+					<virtual if={ isDetailOpened }>%fa:caret-up%</virtual>
 				</button>
 			</footer>
 		</div>
@@ -203,7 +203,7 @@
 							margin 0 8px 0 0
 							border-radius 6px
 
-					i
+					[data-fa]
 						margin-right 4px
 
 					.name
@@ -324,16 +324,6 @@
 							mk-url-preview
 								margin-top 8px
 
-							.link
-								&:after
-									content "\f14c"
-									display inline-block
-									padding-left 2px
-									font-family FontAwesome
-									font-size .9em
-									font-weight 400
-									font-style normal
-
 							> .channel
 								margin 0
 
@@ -378,7 +368,7 @@
 						> .repost
 							margin 8px 0
 
-							> i:first-child
+							> [data-fa]:first-child
 								position absolute
 								top -8px
 								left -8px

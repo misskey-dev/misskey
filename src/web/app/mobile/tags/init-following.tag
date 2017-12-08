@@ -6,9 +6,9 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
-	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>読み込んでいます<mk-ellipsis/></p>
+	<p class="fetching" if={ fetching }>%fa:spinner .pluse .fw%読み込んでいます<mk-ellipsis/></p>
 	<a class="refresh" onclick={ refresh }>もっと見る</a>
-	<button class="close" onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
+	<button class="close" onclick={ close } title="閉じる">%fa:times%</button>
 	<style>
 		:scope
 			display block
@@ -46,7 +46,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> .refresh
@@ -78,7 +78,7 @@
 				&:active
 					color #222
 
-				> i
+				> [data-fa]
 					padding 10px
 
 	</style>

@@ -1,6 +1,6 @@
 <mk-messaging-home-widget>
 	<virtual if={ data.design == 0 }>
-		<p class="title"><i class="fa fa-comments"></i>%i18n:desktop.tags.mk-messaging-home-widget.title%</p>
+		<p class="title">%fa:comments%%i18n:desktop.tags.mk-messaging-home-widget.title%</p>
 	</virtual>
 	<mk-messaging ref="index" compact={ true }/>
 	<style>
@@ -21,7 +21,7 @@
 				color #888
 				box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			> mk-messaging

@@ -11,7 +11,7 @@
 
 		this.on('mount', () => {
 			document.title = 'Misskey | API';
-			ui.trigger('title', '<i class="fa fa-key"></i>API');
+			ui.trigger('title', '%fa:key%API');
 		});
 	</script>
 </mk-api-info-page>

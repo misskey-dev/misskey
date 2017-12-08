@@ -1,7 +1,7 @@
 <mk-messaging data-compact={ opts.compact }>
 	<div class="search" if={ !opts.compact }>
 		<div class="form">
-			<label for="search-input"><i class="fa fa-search"></i></label>
+			<label for="search-input">%fa:search%</label>
 			<input ref="search" type="search" oninput={ search } onkeydown={ onSearchKeydown } placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
 		</div>
 		<div class="result">
@@ -32,7 +32,7 @@
 		</virtual>
 	</div>
 	<p class="no-history" if={ !fetching && history.length == 0 }>%i18n:common.tags.mk-messaging.no-history%</p>
-	<p class="fetching" if={ fetching }><i class="fa fa-spinner fa-pulse fa-fw"></i>%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="fetching" if={ fetching }>%fa:spinner .pluse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style>
 		:scope
 			display block
@@ -87,7 +87,7 @@
 						width 38px
 						pointer-events none
 
-						> i
+						> [data-fa]
 							display block
 							position absolute
 							top 0
@@ -188,7 +188,6 @@
 							.username
 								font-weight normal
 								color rgba(0, 0, 0, 0.3)
-
 
 			> .history
 
@@ -304,7 +303,7 @@
 				text-align center
 				color #aaa
 
-				> i
+				> [data-fa]
 					margin-right 4px
 
 			// TODO: element base media query

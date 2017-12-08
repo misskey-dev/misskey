@@ -1,6 +1,6 @@
 <mk-set-avatar-suggestion onclick={ set }>
 	<p><b>アバターを設定</b>してみませんか？
-		<button onclick={ close }><i class="fa fa-times"></i></button>
+		<button onclick={ close }>%fa:times%</button>
 	</p>
 	<style>
 		:scope

@@ -5,8 +5,8 @@
 			<header ref="header" onmousedown={ onHeaderMousedown }>
 				<h1 data-yield="header"><yield from="header"/></h1>
 				<div>
-					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } onclick={ popout } title="ポップアウト"><i class="fa fa-window-restore"></i></button>
-					<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる"><i class="fa fa-times"></i></button>
+					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } onclick={ popout } title="ポップアウト">%fa:R window-restore%</button>
+					<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる">%fa:times%</button>
 				</div>
 			</header>
 			<div class="content" data-yield="content"><yield from="content"/></div>
@@ -171,7 +171,7 @@
 								&:active
 									color darken(#000, 30%)
 
-								> i
+								> [data-fa]
 									padding 0
 									width $header-height
 									line-height $header-height

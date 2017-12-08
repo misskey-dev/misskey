@@ -1,10 +1,10 @@
 <mk-messaging-room>
 	<div class="stream">
-		<p class="init" if={ init }><i class="fa fa-spinner fa-spin"></i>%i18n:common.loading%</p>
-		<p class="empty" if={ !init && messages.length == 0 }><i class="fa fa-info-circle"></i>%i18n:common.tags.mk-messaging-room.empty%</p>
-		<p class="no-history" if={ !init && messages.length > 0 && !moreMessagesIsInStock }><i class="fa fa-flag"></i>%i18n:common.tags.mk-messaging-room.no-history%</p>
+		<p class="init" if={ init }>%fa:spinner .spin%%i18n:common.loading%</p>
+		<p class="empty" if={ !init && messages.length == 0 }>%fa:info-circle%%i18n:common.tags.mk-messaging-room.empty%</p>
+		<p class="no-history" if={ !init && messages.length > 0 && !moreMessagesIsInStock }>%fa:flag%%i18n:common.tags.mk-messaging-room.no-history%</p>
 		<button class="more { fetching: fetchingMoreMessages }" if={ moreMessagesIsInStock } onclick={ fetchMoreMessages } disabled={ fetchingMoreMessages }>
-			<i class="fa fa-spinner fa-pulse fa-fw" if={ fetchingMoreMessages }></i>{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }
+			<virtual if={ fetchingMoreMessages }>%fa:spinner .pluse .fw%</virtual>{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }
 		</button>
 		<virtual each={ message, i in messages }>
 			<mk-messaging-message message={ message }/>
@@ -32,7 +32,7 @@
 					font-size 0.8em
 					color rgba(0, 0, 0, 0.4)
 
-					i
+					[data-fa]
 						margin-right 4px
 
 				> .empty
@@ -43,7 +43,7 @@
 					font-size 0.8em
 					color rgba(0, 0, 0, 0.4)
 
-					i
+					[data-fa]
 						margin-right 4px
 
 				> .no-history
@@ -54,7 +54,7 @@
 					font-size 0.8em
 					color rgba(0, 0, 0, 0.4)
 
-					i
+					[data-fa]
 						margin-right 4px
 
 				> .more
@@ -75,7 +75,7 @@
 					&.fetching
 						cursor wait
 
-					> i
+					> [data-fa]
 						margin-right 4px
 
 				> .message
@@ -141,7 +141,7 @@
 						border-radius 16px
 						transition opacity 1s ease
 
-						> i
+						> [data-fa]
 							position absolute
 							top 0
 							left 10px
@@ -291,7 +291,7 @@
 
 		this.notify = message => {
 			const n = document.createElement('p');
-			n.innerHTML = '<i class="fa fa-arrow-circle-down"></i>' + message;
+			n.innerHTML = '%fa:arrow-circle-down%' + message;
 			n.onclick = () => {
 				this.scrollToBottom();
 				n.parentNode.removeChild(n);

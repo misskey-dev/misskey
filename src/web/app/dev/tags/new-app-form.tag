@@ -10,13 +10,13 @@
 			<label>
 				<p class="caption">Named ID</p>
 				<input ref="nid" type="text" pattern="^[a-zA-Z0-9-]{3,30}$" placeholder="ex) misskey-for-ios" autocomplete="off" required="required" onkeyup={ onChangeNid }/>
-				<p class="info" if={ nidState == 'wait' } style="color:#999"><i class="fa fa-fw fa-spinner fa-pulse"></i>確認しています...</p>
-				<p class="info" if={ nidState == 'ok' } style="color:#3CB7B5"><i class="fa fa-fw fa-check"></i>利用できます</p>
-				<p class="info" if={ nidState == 'unavailable' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>既に利用されています</p>
-				<p class="info" if={ nidState == 'error' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>通信エラー</p>
-				<p class="info" if={ nidState == 'invalid-format' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>a~z、A~Z、0~9、-(ハイフン)が使えます</p>
-				<p class="info" if={ nidState == 'min-range' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>3文字以上でお願いします！</p>
-				<p class="info" if={ nidState == 'max-range' } style="color:#FF1161"><i class="fa fa-fw fa-exclamation-triangle"></i>30文字以内でお願いします</p>
+				<p class="info" if={ nidState == 'wait' } style="color:#999">%fa:spinner .pluse .fw%確認しています...</p>
+				<p class="info" if={ nidState == 'ok' } style="color:#3CB7B5">%fa:fw check%利用できます</p>
+				<p class="info" if={ nidState == 'unavailable' } style="color:#FF1161">%fa:fw exclamation-triangle%既に利用されています</p>
+				<p class="info" if={ nidState == 'error' } style="color:#FF1161">%fa:fw exclamation-triangle%通信エラー</p>
+				<p class="info" if={ nidState == 'invalid-format' } style="color:#FF1161">%fa:fw exclamation-triangle%a~z、A~Z、0~9、-(ハイフン)が使えます</p>
+				<p class="info" if={ nidState == 'min-range' } style="color:#FF1161">%fa:fw exclamation-triangle%3文字以上でお願いします！</p>
+				<p class="info" if={ nidState == 'max-range' } style="color:#FF1161">%fa:fw exclamation-triangle%30文字以内でお願いします</p>
 			</label>
 		</section>
 		<section class="description">
@@ -71,7 +71,7 @@
 					<p>通知を操作する。</p>
 				</label>
 			</div>
-			<p><i class="fa fa-exclamation-triangle"></i>アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。</p>
+			<p>%fa:exclamation-triangle%アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。</p>
 		</section>
 		<button onclick={ onsubmit }>アプリ作成</button>
 	</form>
@@ -91,7 +91,7 @@
 						color #616161
 						font-size 0.95em
 
-						> i
+						> [data-fa]
 							margin-right 0.25em
 							color #96adac
 
@@ -100,7 +100,7 @@
 						margin 4px 0
 						font-size 0.8em
 
-						> i
+						> [data-fa]
 							margin-right 0.3em
 
 				section.permission
@@ -141,7 +141,7 @@
 						font-size 0.8em
 						color #999
 
-						> i
+						> [data-fa]
 							margin-right 4px
 
 				[type=text]
