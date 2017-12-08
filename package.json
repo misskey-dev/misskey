@@ -37,7 +37,7 @@
 		"@types/cors": "2.8.3",
 		"@types/debug": "0.0.30",
 		"@types/deep-equal": "1.0.1",
-		"@types/elasticsearch": "5.0.18",
+		"@types/elasticsearch": "5.0.19",
 		"@types/event-stream": "3.3.33",
 		"@types/eventemitter3": "2.0.2",
 		"@types/express": "4.0.39",
