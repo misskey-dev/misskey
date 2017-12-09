@@ -33,7 +33,7 @@
 						height 72px
 						background lighten($theme-color, 95%)
 
-						.upload
+						> .upload
 							display inline-block
 							position absolute
 							top 8px
@@ -72,8 +72,8 @@
 									border 2px solid rgba($theme-color, 0.3)
 									border-radius 8px
 
-						.ok
-						.cancel
+						> .ok
+						> .cancel
 							display block
 							position absolute
 							bottom 16px
@@ -102,7 +102,7 @@
 								opacity 0.7
 								cursor default
 
-						.ok
+						> .ok
 							right 16px
 							color $theme-color-foreground
 							background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
@@ -119,7 +119,7 @@
 								background $theme-color
 								border-color $theme-color
 
-						.cancel
+						> .cancel
 							right 148px
 							color #888
 							background linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%)
