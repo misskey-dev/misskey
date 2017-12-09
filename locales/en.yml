@@ -288,6 +288,15 @@ desktop:
     mk-ui-header-notifications:
       title: "Notifications"
 
+    mk-profile-setting:
+      avatar: "Avatar"
+      choice-avatar: "Choice an image"
+      name: "Name"
+      location: "Location"
+      description: "Description"
+      birthday: "Birthday"
+      save: "Update profile"
+
     mk-password-setting:
       reset: "Change your password"
       enter-current-password: "Enter the current password"
@@ -297,7 +306,9 @@ desktop:
       changed: "Password updated successfully"
 
     mk-2fa-setting:
-      intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security."
+      intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security. "
+      detail: "See details..."
+      url: "https://www.google.com/landing/2step/"
       caution: "As a caveat, security improves, but you can not sign in to Misskey if you lose a registered device, etc."
       register: "Register a device"
       enter-password: "Enter the password"

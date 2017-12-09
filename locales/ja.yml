@@ -288,6 +288,15 @@ desktop:
     mk-ui-header-notifications:
       title: "通知"
 
+    mk-profile-setting:
+      avatar: "アバター"
+      choice-avatar: "画像を選択"
+      name: "名前"
+      location: "場所"
+      description: "自己紹介"
+      birthday: "誕生日"
+      save: "保存"
+
     mk-password-setting:
       reset: "パスワードを変更する"
       enter-current-password: "現在のパスワードを入力してください"
@@ -298,6 +307,8 @@ desktop:
 
     mk-2fa-setting:
       intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
+      detail: "詳細..."
+      url: "https://www.google.co.jp/intl/ja/landing/2step/"
       caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
       register: "デバイスを登録する"
       enter-password: "パスワードを入力してください"

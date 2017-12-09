@@ -130,26 +130,26 @@
 
 <mk-profile-setting>
 	<label class="avatar ui from group">
-		<p>アバター</p><img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
-		<button class="ui" onclick={ avatar }>画像を選択</button>
+		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p><img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+		<button class="ui" onclick={ avatar }>%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
 	</label>
 	<label class="ui from group">
-		<p>名前</p>
+		<p>%i18n:desktop.tags.mk-profile-setting.name%</p>
 		<input ref="accountName" type="text" value={ I.name } class="ui"/>
 	</label>
 	<label class="ui from group">
-		<p>場所</p>
+		<p>%i18n:desktop.tags.mk-profile-setting.location%</p>
 		<input ref="accountLocation" type="text" value={ I.profile.location } class="ui"/>
 	</label>
 	<label class="ui from group">
-		<p>自己紹介</p>
+		<p>%i18n:desktop.tags.mk-profile-setting.description%</p>
 		<textarea ref="accountDescription" class="ui">{ I.description }</textarea>
 	</label>
 	<label class="ui from group">
-		<p>誕生日</p>
+		<p>%i18n:desktop.tags.mk-profile-setting.birthday%</p>
 		<input ref="accountBirthday" type="date" value={ I.profile.birthday } class="ui"/>
 	</label>
-	<button class="ui primary" onclick={ updateAccount }>保存</button>
+	<button class="ui primary" onclick={ updateAccount }>%i18n:desktop.tags.mk-profile-setting.save%</button>
 	<style>
 		:scope
 			display block
@@ -259,7 +259,7 @@
 </mk-password-setting>
 
 <mk-2fa-setting>
-	<p>%i18n:desktop.tags.mk-2fa-setting.intro%</p>
+	<p>%i18n:desktop.tags.mk-2fa-setting.intro%<a href="%i18n:desktop.tags.mk-2fa-setting.url%" target="_blank">%i18n:desktop.tags.mk-2fa-setting.detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
 	<p if={ !data }><button onclick={ register } class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
 	<div if={ data }>
