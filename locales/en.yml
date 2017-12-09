@@ -342,6 +342,7 @@ desktop:
       next: "Next post"
 
     mk-settings:
+      profile: "Profile"
       security: "Security"
       password: "Password"
       2fa: "Two-factor authentication"

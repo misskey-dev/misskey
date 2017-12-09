@@ -342,6 +342,7 @@ desktop:
       next: "次の投稿"
 
     mk-settings:
+      profile: "プロフィール"
       security: "セキュリティ"
       password: "パスワード"
       2fa: "二段階認証"
