@@ -260,7 +260,7 @@
 
 <mk-2fa-setting>
 	<p>%i18n:desktop.tags.mk-2fa-setting.intro%</p>
-	<div class="ui info warn"><p>%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
+	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
 	<p if={ !data }><button onclick={ register } class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
 	<div if={ data }>
 		<ol>
@@ -271,7 +271,7 @@
 				<button onclick={ submit } class="ui primary">%i18n:desktop.tags.mk-2fa-setting.submit%</button>
 			</li>
 		</ol>
-		<div class="ui info"><p>%i18n:desktop.tags.mk-2fa-setting.info%</p></div>
+		<div class="ui info"><p>%fa:info-circle%%i18n:desktop.tags.mk-2fa-setting.info%</p></div>
 	</div>
 	<style>
 		:scope
