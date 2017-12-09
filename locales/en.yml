@@ -354,6 +354,7 @@ desktop:
 
     mk-settings:
       profile: "Profile"
+      drive: "Drive"
       security: "Security"
       password: "Password"
       2fa: "Two-factor authentication"

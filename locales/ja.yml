@@ -354,6 +354,7 @@ desktop:
 
     mk-settings:
       profile: "プロフィール"
+      drive: "ドライブ"
       security: "セキュリティ"
       password: "パスワード"
       2fa: "二段階認証"

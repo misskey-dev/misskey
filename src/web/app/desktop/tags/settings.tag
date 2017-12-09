@@ -3,7 +3,7 @@
 		<p class={ active: page == 'profile' } onmousedown={ setPage.bind(null, 'profile') }>%fa:user .fw%%i18n:desktop.tags.mk-settings.profile%</p>
 		<p class={ active: page == 'web' } onmousedown={ setPage.bind(null, 'web') }>%fa:desktop .fw%Web</p>
 		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }>%fa:R bell .fw%通知</p>
-		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }>%fa:cloud .fw%ドライブ</p>
+		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }>%fa:cloud .fw%%i18n:desktop.tags.mk-settings.drive%</p>
 		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }>%fa:puzzle-piece .fw%アプリ</p>
 		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
 		<p class={ active: page == 'security' } onmousedown={ setPage.bind(null, 'security') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.security%</p>
@@ -18,6 +18,11 @@
 		<section class="web" show={ page == 'web' }>
 			<h1>デザイン</h1>
 			<a href="/i/customize-home" class="ui button">ホームをカスタマイズ</a>
+		</section>
+
+		<section class="drive" show={ page == 'drive' }>
+			<h1>%i18n:desktop.tags.mk-settings.drive%</h1>
+			<mk-drive-setting/>
 		</section>
 
 		<section class="apps" show={ page == 'apps' }>
@@ -308,3 +313,64 @@
 		};
 	</script>
 </mk-2fa-setting>
+
+<mk-drive-setting>
+	<svg viewBox="0 0 1 1" preserveAspectRatio="none">
+		<circle
+			riot-r={ r }
+			cx="50%" cy="50%"
+			fill="none"
+			stroke-width="0.1"
+			stroke="rgba(0, 0, 0, 0.05)"/>
+		<circle
+			riot-r={ r }
+			cx="50%" cy="50%"
+			riot-stroke-dasharray={ Math.PI * (r * 2) }
+			riot-stroke-dashoffset={ strokeDashoffset }
+			fill="none"
+			stroke-width="0.1"
+			riot-stroke={ color }/>
+		<text x="50%" y="50%" dy="0.05" text-anchor="middle">{ (usageP * 100).toFixed(0) }%</text>
+	</svg>
+
+	<style>
+		:scope
+			display block
+			color #4a535a
+
+			> svg
+				display block
+				height 128px
+
+				> circle
+					transform-origin center
+					transform rotate(-90deg)
+					transition stroke-dashoffset 0.5s ease
+
+				> text
+					font-size 0.15px
+					fill rgba(0, 0, 0, 0.6)
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.r = 0.4;
+
+		this.on('mount', () => {
+			this.api('drive').then(info => {
+				const usageP = info.usage / info.capacity * 100;
+				const color = `hsl(${180 - (usageP * 180)}, 80%, 70%)`;
+				const strokeDashoffset = (1 - usageP) * (Math.PI * (this.r * 2));
+
+				this.update({
+					color,
+					strokeDashoffset,
+					usageP,
+					usage: info.usage,
+					capacity: info.capacity
+				});
+			});
+		});
+	</script>
+</mk-drive-setting>
