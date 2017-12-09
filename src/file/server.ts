@@ -135,6 +135,8 @@ async function sendFileById(req: express.Request, res: express.Response): Promis
 	}
 
 	const fileId = new mongodb.ObjectID(req.params.id);
+
+	// Fetch (drive) file
 	const file = await DriveFile.findOne({ _id: fileId });
 
 	// validate name
