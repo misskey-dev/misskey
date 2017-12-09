@@ -378,7 +378,7 @@
 
 		this.on('mount', () => {
 			this.api('drive').then(info => {
-				const usageP = info.usage / info.capacity * 100;
+				const usageP = info.usage / info.capacity;
 				const color = `hsl(${180 - (usageP * 180)}, 80%, 70%)`;
 				const strokeDashoffset = (1 - usageP) * (Math.PI * (this.r * 2));
 
