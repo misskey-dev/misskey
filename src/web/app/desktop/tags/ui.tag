@@ -146,6 +146,9 @@
 					color #9eaba8
 					pointer-events none
 
+					> *
+						vertical-align middle
+
 				> input
 					user-select text
 					cursor auto

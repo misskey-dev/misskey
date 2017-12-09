@@ -39,6 +39,9 @@
 						width 1em
 						height 1em
 
+						> *
+							vertical-align initial
+
 	</style>
 	<script>
 		this.browser = this.parent;
