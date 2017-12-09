@@ -34,13 +34,10 @@
 						position absolute
 						top 0
 						bottom 0
-						right 8px
-						margin auto 0 auto 0
-						width 1em
-						height 1em
+						right 20px
 
 						> *
-							vertical-align initial
+							height 100%
 
 	</style>
 	<script>
