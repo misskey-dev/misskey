@@ -157,11 +157,18 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'i/2fa/register',
-		withCredential: true
+		withCredential: true,
+		secure: true
+	},
+	{
+		name: 'i/2fa/unregister',
+		withCredential: true,
+		secure: true
 	},
 	{
 		name: 'i/2fa/done',
-		withCredential: true
+		withCredential: true,
+		secure: true
 	},
 	{
 		name: 'i/update',
@@ -179,11 +186,13 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'i/change_password',
-		withCredential: true
+		withCredential: true,
+		secure: true
 	},
 	{
 		name: 'i/regenerate_token',
-		withCredential: true
+		withCredential: true,
+		secure: true
 	},
 	{
 		name: 'i/pin',

@@ -266,7 +266,11 @@
 <mk-2fa-setting>
 	<p>%i18n:desktop.tags.mk-2fa-setting.intro%<a href="%i18n:desktop.tags.mk-2fa-setting.url%" target="_blank">%i18n:desktop.tags.mk-2fa-setting.detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
-	<p if={ !data }><button onclick={ register } class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
+	<p if={ !data && !I.two_factor_enabled }><button onclick={ register } class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
+	<virtual if={ I.two_factor_enabled }>
+		<p>%i18n:desktop.tags.mk-2fa-setting.already-registered%</p>
+		<button onclick={ unregister } class="ui">%i18n:desktop.tags.mk-2fa-setting.unregister%</button>
+	</virtual>
 	<div if={ data }>
 		<ol>
 			<li>%i18n:desktop.tags.mk-2fa-setting.authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:desktop.tags.mk-2fa-setting.howtoinstall%</a></li>
@@ -288,6 +292,7 @@
 		import passwordDialog from '../scripts/password-dialog';
 		import notify from '../scripts/notify';
 
+		this.mixin('i');
 		this.mixin('api');
 
 		this.register = () => {
@@ -302,11 +307,25 @@
 			});
 		};
 
+		this.unregister = () => {
+			passwordDialog('%i18n:desktop.tags.mk-2fa-setting.enter-password%', password => {
+				this.api('i/2fa/unregister', {
+					password: password
+				}).then(data => {
+					notify('%i18n:desktop.tags.mk-2fa-setting.unregistered%');
+					this.I.two_factor_enabled = false;
+					this.I.update();
+				});
+			});
+		};
+
 		this.submit = () => {
 			this.api('i/2fa/done', {
 				token: this.refs.token.value
 			}).then(() => {
 				notify('%i18n:desktop.tags.mk-2fa-setting.success%');
+				this.I.two_factor_enabled = true;
+				this.I.update();
 			}).catch(() => {
 				notify('%i18n:desktop.tags.mk-2fa-setting.failed%');
 			});
