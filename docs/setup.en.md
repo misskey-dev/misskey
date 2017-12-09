@@ -53,7 +53,7 @@ Please install and setup these softwares:
 * *Node.js* and *npm*
 * **[MongoDB](https://www.mongodb.com/)**
 * **[Redis](https://redis.io/)**
-* **[GraphicsMagick](http://www.graphicsmagick.org/)**
+* **[ImageMagick](http://www.imagemagick.org/script/index.php)**
 
 ##### Optional
 * [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB

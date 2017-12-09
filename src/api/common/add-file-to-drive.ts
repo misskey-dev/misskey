@@ -5,7 +5,7 @@ import * as stream from 'stream';
 
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
-import * as gm from 'gm';
+import * as _gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
@@ -15,6 +15,10 @@ import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event, { publishDriveStream } from '../event';
 import config from '../../conf';
+
+const gm = _gm.subClass({
+	imageMagick: true
+});
 
 const log = debug('misskey:register-drive-file');
 
