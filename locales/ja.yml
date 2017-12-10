@@ -591,7 +591,6 @@ mobile:
       submit: "投稿"
       reply-placeholder: "この投稿への返信..."
       post-placeholder: "いまどうしてる？"
-      attach-media-from-local: "デバイスからメディアを添付"
 
     mk-search-posts:
       empty: "「{}」に関する投稿は見つかりませんでした。"

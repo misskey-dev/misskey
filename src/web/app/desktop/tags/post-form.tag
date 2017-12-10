@@ -1,13 +1,12 @@
 <mk-post-form ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
 	<div class="content">
 		<textarea class={ with: (files.length != 0 || poll) } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ placeholder }></textarea>
-		<div class="medias { with: poll }" if={ files.length != 0 }>
-			<ul>
-				<li each={ files }>
+		<div class="medias { with: poll }" show={ files.length != 0 }>
+			<ul ref="media">
+				<li each={ files } data-id={ id }>
 					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
 					<img class="remove" onclick={ removeFile } src="/assets/desktop/remove.png" title="%i18n:desktop.tags.mk-post-form.attach-cancel%" alt=""/>
 				</li>
-				<li class="add" if={ files.length < 4 } title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }>%fa:plus%</li>
 			</ul>
 			<p class="remain">{ 4 - files.length }/4</p>
 		</div>
@@ -118,8 +117,9 @@
 						> li
 							display block
 							float left
-							margin 4px
+							margin 0
 							padding 0
+							border solid 4px transparent
 							cursor move
 
 							&:hover > .remove
@@ -139,29 +139,6 @@
 								width 16px
 								height 16px
 								cursor pointer
-
-						> .add
-							display block
-							float left
-							margin 4px
-							padding 0
-							border dashed 2px rgba($theme-color, 0.2)
-							cursor pointer
-
-							&:hover
-								border-color rgba($theme-color, 0.3)
-
-								> i
-									color rgba($theme-color, 0.4)
-
-							> i
-								display block
-								width 60px
-								height 60px
-								line-height 60px
-								text-align center
-								font-size 1.2em
-								color rgba($theme-color, 0.2)
 
 				> mk-poll-editor
 					background lighten($theme-color, 98%)
@@ -306,6 +283,7 @@
 
 	</style>
 	<script>
+		import Sortable from 'sortablejs';
 		import getKao from '../../common/scripts/get-kao';
 		import notify from '../scripts/notify';
 		import Autocomplete from '../scripts/autocomplete';
@@ -365,6 +343,10 @@
 				this.trigger('change-files', this.files);
 				this.update();
 			}
+
+			new Sortable(this.refs.media, {
+				animation: 150
+			});
 		});
 
 		this.on('unmount', () => {
@@ -413,14 +395,17 @@
 			const data = e.dataTransfer.getData('text');
 			if (data == null) return false;
 
-			// パース
-			// TODO: Validate JSON
-			const obj = JSON.parse(data);
+			try {
+				// パース
+				const obj = JSON.parse(data);
 
-			// (ドライブの)ファイルだったら
-			if (obj.type == 'file') {
-				this.files.push(obj.file);
-				this.update();
+				// (ドライブの)ファイルだったら
+				if (obj.type == 'file') {
+					this.files.push(obj.file);
+					this.update();
+				}
+			} catch (e) {
+
 			}
 		};
 
@@ -483,13 +468,19 @@
 		this.post = e => {
 			this.wait = true;
 
-			const files = this.files && this.files.length > 0
-				? this.files.map(f => f.id)
-				: undefined;
+			const files = [];
+
+			if (this.files.length > 0) {
+				Array.from(this.refs.media.children).forEach(el => {
+					const id = el.getAttribute('data-id');
+					const file = this.files.find(f => f.id == id);
+					files.push(file);
+				});
+			}
 
 			this.api('posts/create', {
 				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
-				media_ids: files,
+				media_ids: this.files.length > 0 ? files.map(f => f.id) : undefined,
 				reply_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
 				repost_id: this.repost ? this.repost.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined

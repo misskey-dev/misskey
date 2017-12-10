@@ -591,7 +591,6 @@ mobile:
       submit: "Post"
       reply-placeholder: "Reply to this post..."
       post-placeholder: "What's happening?"
-      attach-media-from-local: "Attach media from your device"
 
     mk-search-posts:
       empty: "There is no post related to the 「{}」"
