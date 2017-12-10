@@ -37,7 +37,7 @@
 			<div class="body">
 				<div class="text" ref="text"></div>
 				<div class="media" if={ p.media }>
-					<mk-images-viewer images={ p.media }/>
+					<mk-images images={ p.media }/>
 				</div>
 				<mk-poll if={ p.poll } post={ p }/>
 			</div>

@@ -25,7 +25,7 @@ require('./home-timeline.tag');
 require('./timeline.tag');
 require('./post-preview.tag');
 require('./sub-post-content.tag');
-require('./images-viewer.tag');
+require('./images.tag');
 require('./drive.tag');
 require('./drive-selector.tag');
 require('./drive-folder-selector.tag');

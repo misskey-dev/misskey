@@ -17,7 +17,7 @@
 		<div class="body">
 			<div class="text" ref="text"></div>
 			<div class="media" if={ post.media }>
-				<mk-images-viewer images={ post.media }/>
+				<mk-images images={ post.media }/>
 			</div>
 		</div>
 	</div>
