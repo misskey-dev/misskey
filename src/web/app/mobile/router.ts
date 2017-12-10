@@ -19,7 +19,6 @@ export default (mios: MiOS) => {
 	route('/i/settings',                 settings);
 	route('/i/settings/profile',         settingsProfile);
 	route('/i/settings/signin-history',  settingsSignin);
-	route('/i/settings/api',             settingsApi);
 	route('/i/settings/twitter',         settingsTwitter);
 	route('/i/settings/authorized-apps', settingsAuthorizedApps);
 	route('/post/new',                   newPost);
@@ -72,10 +71,6 @@ export default (mios: MiOS) => {
 
 	function settingsSignin() {
 		mount(document.createElement('mk-signin-history-page'));
-	}
-
-	function settingsApi() {
-		mount(document.createElement('mk-api-info-page'));
 	}
 
 	function settingsTwitter() {

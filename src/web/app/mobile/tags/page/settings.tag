@@ -24,7 +24,6 @@
 		<li><a href="./settings/authorized-apps">%fa:puzzle-piece%%i18n:mobile.tags.mk-settings-page.applications%%fa:angle-right%</a></li>
 		<li><a href="./settings/twitter">%fa:B twitter%%i18n:mobile.tags.mk-settings-page.twitter-integration%%fa:angle-right%</a></li>
 		<li><a href="./settings/signin-history">%fa:sign-in-alt%%i18n:mobile.tags.mk-settings-page.signin-history%%fa:angle-right%</a></li>
-		<li><a href="./settings/api">%fa:key%%i18n:mobile.tags.mk-settings-page.api%%fa:angle-right%</a></li>
 	</ul>
 	<ul>
 		<li><a onclick={ signout }>%fa:power-off%%i18n:mobile.tags.mk-settings-page.signout%</a></li>

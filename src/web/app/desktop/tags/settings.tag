@@ -196,18 +196,22 @@
 </mk-profile-setting>
 
 <mk-api-info>
-	<p>Token:<code>{ I.token }</code></p>
-	<p>APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。</p>
-	<p>アカウントを乗っ取られてしまう可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。</p>
-	<p>万が一このトークンが漏れたりその可能性がある場合は<a class="regenerate" onclick={ regenerateToken }>トークンを再生成</a>できます。(副作用として、ログインしているすべてのデバイスでログアウトが発生します)</p>
+	<p>Token: <code>{ I.token }</code></p>
+	<p>%i18n:desktop.tags.mk-api-info.intro%</p>
+	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-api-info.caution%</p></div>
+	<p>%i18n:desktop.tags.mk-api-info.regeneration-of-token%</p>
+	<button class="ui" onclick={ regenerateToken }>%i18n:desktop.tags.mk-api-info.regenerate-token%</button>
 	<style>
 		:scope
 			display block
 			color #4a535a
 
 			code
-				padding 4px
+				display inline-block
+				padding 4px 6px
+				color #555
 				background #eee
+				border-radius 2px
 	</style>
 	<script>
 		import passwordDialog from '../scripts/password-dialog';
@@ -216,7 +220,7 @@
 		this.mixin('api');
 
 		this.regenerateToken = () => {
-			passwordDialog('%i18n:desktop.tags.mk-api-info.regenerate-token%', password => {
+			passwordDialog('%i18n:desktop.tags.mk-api-info.enter-password%', password => {
 				this.api('i/regenerate_token', {
 					password: password
 				});

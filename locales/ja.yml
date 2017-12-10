@@ -199,7 +199,11 @@ ch:
 desktop:
   tags:
     mk-api-info:
-      regenerate-token: "パスワードを入力してください"
+      intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+      caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+      regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+      regenerate-token: "トークンを再生成"
+      enter-password: "パスワードを入力してください"
 
     mk-drive-browser-base-contextmenu:
       create-folder: "フォルダーを作成"
@@ -523,8 +527,7 @@ mobile:
       profile: "プロフィール"
       applications: "アプリケーション"
       twitter-integration: "Twitter連携"
-      signin-history: "ログイン履歴"
-      api: "API"
+      signin-history: "サインイン履歴"
       link: "Misskeyリンク"
       settings: "設定"
       signout: "サインアウト"
