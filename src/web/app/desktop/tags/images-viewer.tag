@@ -1,17 +1,71 @@
 <mk-images-viewer>
 	<virtual each={ image in images }>
-		<mk-images-viewer-image ref="wrap" image={ image } images={ images }/>
+		<mk-images-viewer-image image={ image } images={ images }/>
 	</virtual>
 	<style>
 		:scope
 			display grid
+			grid-gap .25em
+	</style>
+	<script>
+		this.images = this.opts.images;
+
+		this.on('mount', () => {
+			if (this.images.length == 1) {
+				this.root.style.gridTemplateRows = '256px';
+
+				this.tags['mk-images-viewer-image'].root.style.gridColumn = '1 / 2';
+				this.tags['mk-images-viewer-image'].root.style.gridRow = '1 / 2';
+			} else if (this.images.length == 2) {
+				this.root.style.gridTemplateColumns = '50% 50%';
+				this.root.style.gridTemplateRows = '256px';
+
+				this.tags['mk-images-viewer-image'][0].root.style.gridColumn = '1 / 2';
+				this.tags['mk-images-viewer-image'][0].root.style.gridRow = '1 / 2';
+				this.tags['mk-images-viewer-image'][1].root.style.gridColumn = '2 / 3';
+				this.tags['mk-images-viewer-image'][1].root.style.gridRow = '1 / 2';
+			} else if (this.images.length == 3) {
+				this.root.style.gridTemplateColumns = '70% 30%';
+				this.root.style.gridTemplateRows = '128px 128px';
+
+				this.tags['mk-images-viewer-image'][0].root.style.gridColumn = '1 / 2';
+				this.tags['mk-images-viewer-image'][0].root.style.gridRow = '1 / 3';
+				this.tags['mk-images-viewer-image'][1].root.style.gridColumn = '2 / 3';
+				this.tags['mk-images-viewer-image'][1].root.style.gridRow = '1 / 2';
+				this.tags['mk-images-viewer-image'][2].root.style.gridColumn = '2 / 3';
+				this.tags['mk-images-viewer-image'][2].root.style.gridRow = '2 / 3';
+			} else if (this.images.length == 4) {
+				this.root.style.gridTemplateColumns = '50% 50%';
+				this.root.style.gridTemplateRows = '128px 128px';
+
+				this.tags['mk-images-viewer-image'][0].root.style.gridColumn = '1 / 2';
+				this.tags['mk-images-viewer-image'][0].root.style.gridRow = '1 / 2';
+				this.tags['mk-images-viewer-image'][1].root.style.gridColumn = '2 / 3';
+				this.tags['mk-images-viewer-image'][1].root.style.gridRow = '1 / 2';
+				this.tags['mk-images-viewer-image'][2].root.style.gridColumn = '1 / 2';
+				this.tags['mk-images-viewer-image'][2].root.style.gridRow = '2 / 3';
+				this.tags['mk-images-viewer-image'][3].root.style.gridColumn = '2 / 3';
+				this.tags['mk-images-viewer-image'][3].root.style.gridRow = '2 / 3';
+			}
+		});
+	</script>
+</mk-images-viewer>
+
+<mk-images-viewer-image>
+	<div ref="view" onmousemove={ mousemove } onmouseleave={ mouseleave } style={ 'background-image: url(' + image.url + '?thumbnail&size=512' } onclick={ click }>
+		<img ref="image" src={ image.url + '?thumbnail&size=512' } alt={ image.name } title={ image.name }/>
+	</div>
+	<style>
+		:scope
+			display block
 			overflow hidden
 			border-radius 4px
-			grid-gap .25em
 
 			> div
 				cursor zoom-in
 				overflow hidden
+				width 100%
+				height 100%
 				background-position center
 
 				> img
@@ -23,24 +77,7 @@
 				&:not(:hover)
 					background-size cover
 
-				&:nth-child(1):nth-last-child(3)
-					grid-row 1 / 3
 	</style>
-	<script>
-		this.images = this.opts.images;
-
-		this.on('mount', () => {
-			if(this.images.length >= 3) this.refs.wrap.style.gridAutoRows = "9em";
-			if(this.images.length == 2) this.refs.wrap.style.gridAutoRows = "12em";
-			if(this.images.length == 1) this.refs.wrap.style.gridAutoRows = "256px";
-			if(this.images.length == 4 || this.images.length == 2) this.refs.wrap.style.gridTemplateColumns = "repeat(2, 1fr)";
-			if(this.images.length == 3) this.refs.wrap.style.gridTemplateColumns = "65% 1fr";
-		})
-	</script>
-</mk-images-viewer>
-
-<mk-images-viewer-image>
-	<div ref="view" onmousemove={ mousemove } onmouseleave={ mouseleave } style={ 'background-image: url(' + image.url + '?thumbnail&size=512' } onclick={ click }><img ref="image" src={ image.url + '?thumbnail&size=512' } alt={ image.name } title={ image.name }/></div>
 	<script>
 		this.mousemove = e => {
 			const rect = this.refs.view.getBoundingClientRect();
@@ -54,7 +91,7 @@
 
 		this.mouseleave = () => {
 			this.refs.view.style.backgroundPosition = "";
-		}
+		};
 
 		this.click = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-image-dialog')), {
