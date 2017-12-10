@@ -105,11 +105,6 @@
 						> mk-url-preview
 							margin-top 8px
 
-					> .media
-						> img
-							display block
-							max-width 100%
-
 	</style>
 	<script>
 		import compile from '../../common/scripts/text-compiler';

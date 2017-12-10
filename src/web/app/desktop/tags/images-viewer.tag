@@ -15,6 +15,7 @@
 				background-position center
 
 				> img
+					display block
 					visibility hidden
 					max-width: 100%
 					max-height: 256px
