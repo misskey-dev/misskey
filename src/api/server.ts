@@ -26,9 +26,7 @@ app.use(bodyParser.json({
 		}
 	}
 }));
-app.use(cors({
-	origin: true
-}));
+app.use(cors());
 
 app.get('/', (req, res) => {
 	res.send('YEE HAW');

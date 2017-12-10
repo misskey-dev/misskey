@@ -12,15 +12,31 @@ import config from '../../conf';
 import signin from '../common/signin';
 
 module.exports = (app: express.Application) => {
-	function getUserToken(req) {
+	function getUserToken(req: express.Request) {
 		// req.headers['cookie'] は常に string ですが、型定義の都合上
 		// string | string[] になっているので string を明示しています
 		return ((req.headers['cookie'] as string || '').match(/i=(!\w+)/) || [null, null])[1];
 	}
 
-	app.get('/disconnect/twitter', async (req, res): Promise<any> => {
-		const userToken = getUserToken(req);
+	function compareOrigin(req: express.Request) {
+		function normalizeUrl(url: string) {
+			return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
+		}
 
+		// req.headers['cookie'] は常に string ですが、型定義の都合上
+		// string | string[] になっているので string を明示しています
+		const referer = req.headers['referer'] as string;
+
+		return (normalizeUrl(referer) == normalizeUrl(config.url));
+	}
+
+	app.get('/disconnect/twitter', async (req, res): Promise<any> => {
+		if (!compareOrigin(req)) {
+			res.status(400).send('invalid origin');
+			return;
+		}
+
+		const userToken = getUserToken(req);
 		if (userToken == null) return res.send('plz signin');
 
 		const user = await User.findOneAndUpdate({
@@ -59,8 +75,14 @@ module.exports = (app: express.Application) => {
 	});
 
 	app.get('/connect/twitter', async (req, res): Promise<any> => {
+		if (!compareOrigin(req)) {
+			res.status(400).send('invalid origin');
+			return;
+		}
+
 		const userToken = getUserToken(req);
 		if (userToken == null) return res.send('plz signin');
+
 		const ctx = await twAuth.begin();
 		redis.set(userToken, JSON.stringify(ctx));
 		res.redirect(ctx.url);
@@ -98,6 +120,7 @@ module.exports = (app: express.Application) => {
 
 			if (sessid == undefined) {
 				res.status(400).send('invalid session');
+				return;
 			}
 
 			redis.get(sessid, async (_, ctx) => {
@@ -109,13 +132,21 @@ module.exports = (app: express.Application) => {
 
 				if (user == null) {
 					res.status(404).send(`@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
+					return;
 				}
 
 				signin(res, user, true);
 			});
 		} else {
+			const verifier = req.query.oauth_verifier;
+
+			if (verifier == null) {
+				res.status(400).send('invalid session');
+				return;
+			}
+
 			redis.get(userToken, async (_, ctx) => {
-				const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
+				const result = await twAuth.done(JSON.parse(ctx), verifier);
 
 				const user = await User.findOneAndUpdate({
 					token: userToken
