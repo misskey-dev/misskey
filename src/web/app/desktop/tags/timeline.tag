@@ -357,11 +357,6 @@
 								background $theme-color
 								border-radius 4px
 
-						> .media
-							> img
-								display block
-								max-width 100%
-
 						> mk-poll
 							font-size 80%
 
