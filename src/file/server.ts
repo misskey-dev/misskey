@@ -82,6 +82,7 @@ function thumbnail(data: stream.Readable, type: string, resize: number): ISend {
 	const stream = g
 		.compress('jpeg')
 		.quality(80)
+		.interlace('line')
 		.noProfile() // Remove EXIF
 		.stream();
 
