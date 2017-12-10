@@ -23,7 +23,7 @@ module.exports = (app: express.Application) => {
 			return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
 		}
 
-		// req.headers['cookie'] は常に string ですが、型定義の都合上
+		// req.headers['referer'] は常に string ですが、型定義の都合上
 		// string | string[] になっているので string を明示しています
 		const referer = req.headers['referer'] as string;
 
