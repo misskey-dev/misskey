@@ -8,6 +8,7 @@
 		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
 		<p class={ active: page == 'security' } onmousedown={ setPage.bind(null, 'security') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.security%</p>
 		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }>%fa:key .fw%API</p>
+		<p class={ active: page == 'other' } onmousedown={ setPage.bind(null, 'other') }>%fa:cogs .fw%%i18n:desktop.tags.mk-settings.other%</p>
 	</div>
 	<div class="pages">
 		<section class="profile" show={ page == 'profile' }>
@@ -54,6 +55,11 @@
 			<h1>API</h1>
 			<mk-api-info/>
 		</section>
+
+		<section class="other" show={ page == 'other' }>
+			<h1>%i18n:desktop.tags.mk-settings.license%</h1>
+			%license%
+		</section>
 	</div>
 	<style>
 		:scope
@@ -96,32 +102,15 @@
 
 				> section
 					margin 32px
+					color #4a535a
 
-					h1
+					> h1
 						display block
 						margin 0 0 1em 0
 						padding 0 0 8px 0
 						font-size 1em
 						color #555
 						border-bottom solid 1px #eee
-
-					label.checkbox
-						> input
-							position absolute
-							top 0
-							left 0
-
-							&:checked + p
-								color $theme-color
-
-						> p
-							width calc(100% - 32px)
-							margin 0 0 0 32px
-							font-weight bold
-
-							&:last-child
-								font-weight normal
-								color #999
 
 	</style>
 	<script>

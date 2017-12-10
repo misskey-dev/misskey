@@ -365,6 +365,8 @@ desktop:
       security: "Security"
       password: "Password"
       2fa: "Two-factor authentication"
+      other: "Other"
+      license: "License"
 
     mk-timeline-post:
       reposted-by: "Reposted by {}"

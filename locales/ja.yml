@@ -365,6 +365,8 @@ desktop:
       security: "セキュリティ"
       password: "パスワード"
       2fa: "二段階認証"
+      other: "その他"
+      license: "ライセンス"
 
     mk-timeline-post:
       reposted-by: "{}がRepost"
