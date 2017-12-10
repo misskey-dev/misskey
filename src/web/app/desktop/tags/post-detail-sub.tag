@@ -9,7 +9,7 @@
 				<span class="username">@{ post.user.username }</span>
 			</div>
 			<div class="right">
-				<a class="time" href={ '/' + this.post.user.username + '/' + this.post.id }>
+				<a class="time" href={ '/' + post.user.username + '/' + post.id }>
 					<mk-time time={ post.created_at }/>
 				</a>
 			</div>
@@ -17,9 +17,7 @@
 		<div class="body">
 			<div class="text" ref="text"></div>
 			<div class="media" if={ post.media }>
-				<virtual each={ file in post.media }>
-					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
-				</virtual>
+				<mk-images-viewer images={ post.media }/>
 			</div>
 		</div>
 	</div>
