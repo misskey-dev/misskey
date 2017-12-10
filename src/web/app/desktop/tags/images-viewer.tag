@@ -39,7 +39,7 @@
 </mk-images-viewer>
 
 <mk-images-viewer-image>
-	<div ref="view" onmousemove={ mousemove } onmouseleave={ mouseleave } style={ 'background-image: url(' + image.url + '?thumbnail?size=512' } onclick={ click }><img ref="image" src={ image.url + '?thumbnail&size=512' } alt={ image.name } title={ image.name }/></div>
+	<div ref="view" onmousemove={ mousemove } onmouseleave={ mouseleave } style={ 'background-image: url(' + image.url + '?thumbnail&size=512' } onclick={ click }><img ref="image" src={ image.url + '?thumbnail&size=512' } alt={ image.name } title={ image.name }/></div>
 	<script>
 		this.mousemove = e => {
 			const rect = this.refs.view.getBoundingClientRect();
