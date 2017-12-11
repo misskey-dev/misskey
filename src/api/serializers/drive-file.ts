@@ -56,6 +56,8 @@ export default (
 
 	_target.url = `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
 
+	if (_target.properties == null) _target.properties = {};
+
 	if (opts.detail) {
 		if (_target.folder_id) {
 			// Populate folder
