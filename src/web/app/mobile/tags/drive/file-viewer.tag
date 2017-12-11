@@ -1,6 +1,11 @@
 <mk-drive-file-viewer>
 	<div class="preview">
-		<img if={ kind == 'image' } src={ file.url } alt={ file.name } title={ file.name } onload={ onImageLoaded } ref="img">
+		<img if={ kind == 'image' } ref="img"
+			src={ file.url }
+			alt={ file.name }
+			title={ file.name }
+			onload={ onImageLoaded }
+			style="background-color:rgb({ file.properties.average_color.join(',') })">
 		<virtual if={ kind != 'image' }>%fa:file%</virtual>
 		<footer if={ kind == 'image' && file.properties && file.properties.width && file.properties.height }>
 			<span class="size">

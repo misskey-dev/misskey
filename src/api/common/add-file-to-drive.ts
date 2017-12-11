@@ -110,7 +110,7 @@ const addFile = async (
 		}
 	}
 
-	const [wh, folder] = await Promise.all([
+	const [wh, averageColor, folder] = await Promise.all([
 		// Width and height (when image)
 		(async () => {
 			// 画像かどうか
@@ -125,13 +125,44 @@ const addFile = async (
 				return null;
 			}
 
+			log('calculate image width and height...');
+
 			// Calculate width and height
 			const g = gm(fs.createReadStream(path), name);
 			const size = await prominence(g).size();
 
-			log('image width and height is calculated');
+			log(`image width and height is calculated: ${size.width}, ${size.height}`);
 
 			return [size.width, size.height];
+		})(),
+		// average color (when image)
+		(async () => {
+			// 画像かどうか
+			if (!/^image\/.*$/.test(mime)) {
+				return null;
+			}
+
+			const imageType = mime.split('/')[1];
+
+			// 画像でもPNGかJPEGでないならスキップ
+			if (imageType != 'png' && imageType != 'jpeg') {
+				return null;
+			}
+
+			log('calculate average color...');
+
+			const buffer = await prominence(gm(fs.createReadStream(path), name)
+				.setFormat('ppm')
+				.resize(1, 1)) // 1pxのサイズに縮小して平均色を取得するというハック
+				.toBuffer();
+
+			const r = buffer.readUInt8(buffer.length - 3);
+			const g = buffer.readUInt8(buffer.length - 2);
+			const b = buffer.readUInt8(buffer.length - 1);
+
+			log(`average color is calculated: ${r}, ${g}, ${b}`);
+
+			return [r, g, b];
 		})(),
 		// folder
 		(async () => {
@@ -186,6 +217,10 @@ const addFile = async (
 	if (wh) {
 		properties['width'] = wh[0];
 		properties['height'] = wh[1];
+	}
+
+	if (averageColor) {
+		properties['average_color'] = averageColor;
 	}
 
 	return addToGridFS(detectedName, readable, mime, {

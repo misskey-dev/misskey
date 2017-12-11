@@ -5,7 +5,9 @@
 	<div class="label" if={ I.banner_id == file.id }><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.banner%</p>
 	</div>
-	<div class="thumbnail"><img src={ file.url + '?thumbnail&size=128' } alt=""/></div>
+	<div class="thumbnail" ref="thumbnail" style="background-color:{ file.properties.average_color ? 'rgb(' + file.properties.average_color.join(',') + ')' : 'transparent' }">
+		<img src={ file.url + '?thumbnail&size=128' } alt="" onload={ onload }/>
+	</div>
 	<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
 	<style>
 		:scope
@@ -139,6 +141,7 @@
 
 	</style>
 	<script>
+		import anime from 'animejs';
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 
 		this.mixin('i');
@@ -198,6 +201,17 @@
 		this.ondragend = e => {
 			this.isDragging = false;
 			this.browser.isDragSource = false;
+		};
+
+		this.onload = () => {
+			if (this.file.properties.average_color) {
+				anime({
+					targets: this.refs.thumbnail,
+					backgroundColor: `rgba(${this.file.properties.average_color.join(',')}, 0)`,
+					duration: 100,
+					easing: 'linear'
+				});
+			}
 		};
 	</script>
 </mk-drive-browser-file>

@@ -1,7 +1,7 @@
 <mk-drive-file data-is-selected={ isSelected }>
 	<a onclick={ onclick } href="/i/drive/file/{ file.id }">
 		<div class="container">
-			<div class="thumbnail" style={ 'background-image: url(' + file.url + '?thumbnail&size=128)' }></div>
+			<div class="thumbnail" style={ thumbnail }></div>
 			<div class="body">
 				<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
 				<!--
@@ -132,6 +132,10 @@
 
 		this.browser = this.parent;
 		this.file = this.opts.file;
+		this.thumbnail = {
+			'background-color': this.file.properties.average_color ? `rgb(${this.file.properties.average_color.join(',')})` : 'transparent',
+			'background-image': `url(${this.file.url}?thumbnail&size=128)`
+		};
 		this.isSelected = this.browser.selectedFiles.some(f => f.id == this.file.id);
 
 		this.browser.on('change-selection', selections => {

@@ -56,7 +56,7 @@
 </mk-images>
 
 <mk-images-image>
-	<a ref="view" href={ image.url } target="_blank" style={ 'background-image: url(' + image.url + '?thumbnail&size=512' } title={ image.name }></a>
+	<a ref="view" href={ image.url } target="_blank" style={ styles } title={ image.name }></a>
 	<style>
 		:scope
 			display block
@@ -74,5 +74,9 @@
 	</style>
 	<script>
 		this.image = this.opts.image;
+		this.styles = {
+			'background-color': `rgb(${this.image.properties.average_color.join(',')})`,
+			'background-image': `url(${this.image.url}?thumbnail&size=512)`
+		};
 	</script>
 </mk-images-image>

@@ -38,9 +38,15 @@ module.exports = async (file, params, user): Promise<any> => {
 	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
 	if (folderIdErr) throw 'invalid folder_id param';
 
-	// Create file
-	const driveFile = await create(user, file.path, name, null, folderId);
+	try {
+		// Create file
+		const driveFile = await create(user, file.path, name, null, folderId);
 
-	// Serialize
-	return serialize(driveFile);
+		// Serialize
+		return serialize(driveFile);
+	} catch (e) {
+		console.error(e);
+
+		throw e;
+	}
 };

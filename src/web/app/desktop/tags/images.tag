@@ -53,7 +53,13 @@
 </mk-images>
 
 <mk-images-image>
-	<a ref="view" href={ image.url } onmousemove={ mousemove } onmouseleave={ mouseleave } style={ 'background-image: url(' + image.url + '?thumbnail&size=512' } onclick={ click } title={ image.name }></a>
+	<a ref="view"
+		href={ image.url }
+		onmousemove={ mousemove }
+		onmouseleave={ mouseleave }
+		style={ styles }
+		onclick={ click }
+		title={ image.name }></a>
 	<style>
 		:scope
 			display block
@@ -74,6 +80,11 @@
 	</style>
 	<script>
 		this.image = this.opts.image;
+		this.styles = {
+			'background-color': `rgb(${this.image.properties.average_color.join(',')})`,
+			'background-image': `url(${this.image.url}?thumbnail&size=512)`
+		};
+		console.log(this.styles);
 
 		this.mousemove = e => {
 			const rect = this.refs.view.getBoundingClientRect();
