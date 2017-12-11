@@ -32,6 +32,7 @@ fontawesome.library.add(solid);
 fontawesome.library.add(brands);
 
 import version from './src/version';
+import config from './src/conf';
 
 const uglify = uglifyComposer(uglifyes, console);
 
@@ -142,6 +143,7 @@ gulp.task('webpack', done => {
 gulp.task('build:client:script', () =>
 	gulp.src(['./src/web/app/boot.js', './src/web/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(version)))
+		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
