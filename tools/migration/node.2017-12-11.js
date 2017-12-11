@@ -17,7 +17,11 @@ const migrate = doc => new Promise(async (res, rej) => {
 		.setFormat('ppm')
 		.resize(1, 1)
 		.toBuffer(async (err, buffer) => {
-			if (err) rej(err);
+			if (err) {
+				console.error(err);
+				res(false);
+				return;
+			}
 			const r = buffer.readUInt8(buffer.length - 3);
 			const g = buffer.readUInt8(buffer.length - 2);
 			const b = buffer.readUInt8(buffer.length - 1);
