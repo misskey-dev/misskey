@@ -6,8 +6,10 @@ import Signin from '../models/signin';
 import serialize from '../serializers/signin';
 import event from '../event';
 import signin from '../common/signin';
+import config from '../../conf';
 
 export default async (req: express.Request, res: express.Response) => {
+	res.header('Access-Control-Allow-Origin', config.url);
 	res.header('Access-Control-Allow-Credentials', 'true');
 
 	const username = req.body['username'];
