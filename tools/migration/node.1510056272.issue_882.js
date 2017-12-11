@@ -31,7 +31,7 @@ async function main() {
 		1,
 		async (time) => {
 			console.log(`${time} / ${idop}`)
-			const doc = await db.get('drive_files').find(query, {
+			const doc = await DriveFile.find(query, {
 				limit: dop, skip: time * dop
 			})
 			return Promise.all(doc.map(migrate))
