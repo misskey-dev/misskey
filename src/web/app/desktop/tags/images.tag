@@ -84,7 +84,6 @@
 			'background-color': this.image.properties.average_color ? `rgb(${this.image.properties.average_color.join(',')})` : 'transparent',
 			'background-image': `url(${this.image.url}?thumbnail&size=512)`
 		};
-		console.log(this.styles);
 
 		this.mousemove = e => {
 			const rect = this.refs.view.getBoundingClientRect();
