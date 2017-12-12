@@ -30,7 +30,7 @@
 		"@prezzemolo/zip": "0.0.3",
 		"@types/bcryptjs": "2.4.1",
 		"@types/body-parser": "1.16.8",
-		"@types/chai": "4.0.8",
+		"@types/chai": "4.0.10",
 		"@types/chai-http": "3.0.3",
 		"@types/compression": "0.0.35",
 		"@types/cookie": "0.3.1",
