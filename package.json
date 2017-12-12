@@ -59,7 +59,7 @@
 		"@types/morgan": "1.7.35",
 		"@types/ms": "0.7.30",
 		"@types/multer": "1.3.6",
-		"@types/node": "8.0.57",
+		"@types/node": "8.0.58",
 		"@types/page": "1.5.32",
 		"@types/proxy-addr": "2.0.0",
 		"@types/qrcode": "0.8.0",
