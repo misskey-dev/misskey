@@ -165,7 +165,7 @@
 					transition color 0.5s ease, border 0.5s ease
 					font-family FontAwesome, sans-serif
 
-					&:placeholder-shown
+					&::placeholder
 						color #9eaba8
 
 					&:hover
