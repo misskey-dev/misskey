@@ -12,7 +12,7 @@
 		<div class="attaches" show={ files.length != 0 }>
 			<ul class="files" ref="attaches">
 				<li class="file" each={ files } data-id={ id }>
-					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name } onclick={ removeFile }></div>
+					<div class="img" style="background-image: url({ url + '?thumbnail&size=128' })" onclick={ removeFile }></div>
 				</li>
 			</ul>
 		</div>
