@@ -77,7 +77,6 @@ require('./set-banner-suggestion.tag');
 require('./repost-form.tag');
 require('./sub-post-content.tag');
 require('./images.tag');
-require('./image-dialog.tag');
 require('./donation.tag');
 require('./users-list.tag');
 require('./user-following.tag');
