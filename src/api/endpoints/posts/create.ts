@@ -222,7 +222,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	const postObj = await serialize(post);
 
 	// Reponse
-	res(postObj);
+	res({
+		created_post: postObj
+	});
 
 	//#region Post processes
 
