@@ -14,7 +14,8 @@ import config from './../../../../conf';
 
 const parseParam = param => {
 	const id = param.type.match(/^id\((.+?)\)/);
-	const object = param.type.match(/^object\((.+?)\)/);
+	const entity = param.type.match(/^entity\((.+?)\)/);
+	const isObject = /^object/.test(param.type);
 	const isArray = /\[\]$/.test(param.type);
 	if (id) {
 		param.kind = 'id';
@@ -24,16 +25,38 @@ const parseParam = param => {
 			param.type += '[]';
 		}
 	}
-	if (object) {
-		param.kind = 'object';
+	if (entity) {
+		param.kind = 'entity';
 		param.type = 'object';
-		param.def = object[1];
+		param.entity = entity[1];
 		if (isArray) {
 			param.type += '[]';
 		}
 	}
+	if (isObject) {
+		param.kind = 'object';
+	}
 
 	return param;
+};
+
+const extractDefs = params => {
+	const defs = [];
+
+	params.forEach(param => {
+		if (param.def) {
+			defs.push({
+				name: param.defName,
+				params: param.def.map(p => parseParam(p))
+			});
+
+			const childDefs = extractDefs(param.def);
+
+			defs.concat(childDefs);
+		}
+	});
+
+	return defs;
 };
 
 gulp.task('doc:endpoints', () => {
@@ -50,11 +73,9 @@ gulp.task('doc:endpoints', () => {
 				url: `${config.api_url}/${ep.endpoint}`,
 				desc: ep.desc,
 				params: ep.params.map(p => parseParam(p)),
-				paramDefs: Object.keys(ep.paramDefs).map(key => ({
-					name: key,
-					params: ep.paramDefs[key].map(p => parseParam(p))
-				})),
-				res: ep.res.map(p => parseParam(p))
+				paramDefs: extractDefs(ep.params),
+				res: ep.res.map(p => parseParam(p)),
+				resDefs: extractDefs(ep.res)
 			};
 			pug.renderFile('./src/web/docs/api/endpoints/view.pug', vars, (renderErr, html) => {
 				if (renderErr) {

@@ -21,9 +21,13 @@ mixin table(params)
 							= ' '
 							a(href=`/docs/api/entities/${param.entity}`)= param.entity
 							| )
+						else if param.kind == 'entity'
+							| #{param.type} (
+							a(href=`/docs/api/entities/${param.entity}`)= param.entity
+							| )
 						else if param.kind == 'object'
 							| #{param.type} (
-							a(href=`#${param.def}`)= param.def
+							a(href=`#${param.defName}`)= param.defName
 							| )
 						else
 							= param.type
