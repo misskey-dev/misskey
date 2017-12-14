@@ -15,8 +15,8 @@ params:
     type: "id(DriveFile)[]"
     optional: true
     desc:
-      ja: "添付するメディア"
-      en: "Media you want to attach"
+      ja: "添付するメディア(1~4つ)"
+      en: "Media you want to attach (1~4)"
   - name: "reply_id"
     type: "id(Post)"
     optional: true

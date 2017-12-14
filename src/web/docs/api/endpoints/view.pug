@@ -17,10 +17,9 @@ mixin table(params)
 					td.name= param.name
 					td.type
 						if param.kind == 'id'
-							| #{param.type} (ID of
-							= ' '
+							| #{param.type} (
 							a(href=`/docs/api/entities/${param.entity}`)= param.entity
-							| )
+							|  ID)
 						else if param.kind == 'entity'
 							| #{param.type} (
 							a(href=`/docs/api/entities/${param.entity}`)= param.entity
