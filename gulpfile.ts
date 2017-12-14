@@ -48,7 +48,7 @@ if (isDebug) {
 
 const constants = require('./src/const.json');
 
-require('./src/web/docs/api/endpoints/gulpfile.ts');
+require('./src/web/docs/api/gulpfile.ts');
 
 gulp.task('build', [
 	'build:js',
@@ -61,7 +61,7 @@ gulp.task('build', [
 gulp.task('rebuild', ['clean', 'build']);
 
 gulp.task('build:doc', [
-	'doc:endpoints',
+	'doc:api',
 	'doc:styles'
 ]);
 

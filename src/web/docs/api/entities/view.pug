@@ -1,0 +1,23 @@
+extends ../../layout.pug
+include ../mixins
+
+block title
+	| #{name} | Misskey API
+
+block meta
+	link(rel="stylesheet" href="/assets/docs/api/entities/style.css")
+
+block main
+	h1= name
+
+	p#desc: +i18n(desc)
+
+	section
+		h2 Properties
+		+propTable(props)
+
+		if propDefs
+			each propDef in propDefs
+				section(id= propDef.name)
+					h3= propDef.name
+					+propTable(propDef.params)

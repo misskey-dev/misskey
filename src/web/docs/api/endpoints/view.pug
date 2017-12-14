@@ -1,63 +1,30 @@
-doctype html
+extends ../../layout.pug
+include ../mixins
 
-mixin i18n(xs)
-	each text, lang in xs
-		span(class=`i18n ${lang}`)= text
+block title
+	| #{endpoint} | Misskey API
 
-mixin table(params)
-	table
-		thead: tr
-			th Name
-			th Type
-			th Optional
-			th Description
-		tbody
-			each param in params
-				tr
-					td.name= param.name
-					td.type
-						if param.kind == 'id'
-							| #{param.type} (
-							a(href=`/docs/api/entities/${param.entity}`)= param.entity
-							|  ID)
-						else if param.kind == 'entity'
-							| #{param.type} (
-							a(href=`/docs/api/entities/${param.entity}`)= param.entity
-							| )
-						else if param.kind == 'object'
-							| #{param.type} (
-							a(href=`#${param.defName}`)= param.defName
-							| )
-						else
-							= param.type
-					td.optional= param.optional.toString()
-					td.desc: +i18n(param.desc)
+block meta
+	link(rel="stylesheet" href="/assets/docs/api/endpoints/style.css")
 
-html
-	head
-		meta(charset="UTF-8")
-		title #{endpoint} | Misskey API
-		link(rel="stylesheet" href="/assets/docs/api/endpoints/style.css")
+block main
+	h1= endpoint
 
-	body
-		main
-			h1= endpoint
+	p#url= url
 
-			p#url= url
+	p#desc: +i18n(desc)
 
-			p#desc: +i18n(desc)
+	section
+		h2 Params
+		+propTable(params)
 
-			section
-				h2 Params
-				+table(params)
+		if paramDefs
+			each paramDef in paramDefs
+				section(id= paramDef.name)
+					h3= paramDef.name
+					+propTable(paramDef.params)
 
-				if paramDefs
-					each paramDef in paramDefs
-						section(id= paramDef.name)
-							h3= paramDef.name
-							+table(paramDef.params)
-
-			section
-				h2 Response
-				+table(res)
+	section
+		h2 Response
+		+propTable(res)
 

@@ -1,0 +1,16 @@
+doctype html
+
+mixin i18n(xs)
+	each text, lang in xs
+		span(class=`i18n ${lang}`)!= text
+
+html
+	head
+		meta(charset="UTF-8")
+		title
+			block title
+		block meta
+
+	body
+		main
+			block main

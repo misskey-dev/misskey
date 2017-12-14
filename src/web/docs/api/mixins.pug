@@ -1,0 +1,33 @@
+mixin propTable(props)
+	table.props
+		thead: tr
+			th Name
+			th Type
+			th Optional
+			th Description
+		tbody
+			each prop in props
+				tr
+					td.name= prop.name
+					td.type
+						i= prop.type
+						if prop.kind == 'id'
+							if prop.entity
+								|  (
+								a(href=`/docs/api/entities/${kebab(prop.entity)}`)= prop.entity
+								|  ID)
+							else
+								|  (ID)
+						else if prop.kind == 'entity'
+							|   (
+							a(href=`/docs/api/entities/${kebab(prop.entity)}`)= prop.entity
+							| )
+						else if prop.kind == 'object'
+							if prop.def
+								|  (
+								a(href=`#${prop.defName}`)= prop.defName
+								| )
+						else if prop.kind == 'date'
+							|  (Date)
+					td.optional= prop.optional.toString()
+					td.desc: +i18n(prop.desc)
