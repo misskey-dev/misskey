@@ -77,7 +77,7 @@ const extractDefs = params => {
 		}
 	});
 
-	return defs;
+	return sortParams(defs);
 };
 
 gulp.task('doc:api', [
