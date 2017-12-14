@@ -10,7 +10,7 @@ block meta
 block main
 	h1= name
 
-	p#desc: +i18n(desc)
+	p#desc= desc[lang] || desc['ja']
 
 	section
 		h2 Properties

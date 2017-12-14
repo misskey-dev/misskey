@@ -14,13 +14,13 @@ mixin propTable(props)
 						if prop.kind == 'id'
 							if prop.entity
 								|  (
-								a(href=`/docs/api/entities/${kebab(prop.entity)}`)= prop.entity
+								a(href=`/docs/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
 								|  ID)
 							else
 								|  (ID)
 						else if prop.kind == 'entity'
 							|   (
-							a(href=`/docs/api/entities/${kebab(prop.entity)}`)= prop.entity
+							a(href=`/docs/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
 							| )
 						else if prop.kind == 'object'
 							if prop.def
@@ -30,4 +30,4 @@ mixin propTable(props)
 						else if prop.kind == 'date'
 							|  (Date)
 					td.optional= prop.optional.toString()
-					td.desc: +i18n(prop.desc)
+					td.desc!= prop.desc[lang] || prop.desc['ja']

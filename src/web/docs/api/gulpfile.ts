@@ -12,6 +12,12 @@ import * as mkdirp from 'mkdirp';
 
 import config from './../../../conf';
 
+import generateVars from '../vars';
+
+const commonVars = generateVars();
+
+const langs = ['ja', 'en'];
+
 const kebab = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 
 const parseParam = param => {
@@ -102,20 +108,25 @@ gulp.task('doc:api:endpoints', () => {
 				paramDefs: extractDefs(ep.params),
 				res: sortParams(ep.res.map(p => parseParam(p))),
 				resDefs: extractDefs(ep.res),
-				kebab
+				kebab,
+				common: commonVars
 			};
-			pug.renderFile('./src/web/docs/api/endpoints/view.pug', vars, (renderErr, html) => {
-				if (renderErr) {
-					console.error(renderErr);
-					return;
-				}
-				const htmlPath = `./built/web/docs/api/endpoints/${ep.endpoint}.html`;
-				mkdirp(path.dirname(htmlPath), (mkdirErr) => {
-					if (mkdirErr) {
-						console.error(mkdirErr);
+			langs.forEach(lang => {
+				pug.renderFile('./src/web/docs/api/endpoints/view.pug', Object.assign({}, vars, {
+					lang
+				}), (renderErr, html) => {
+					if (renderErr) {
+						console.error(renderErr);
 						return;
 					}
-					fs.writeFileSync(htmlPath, html, 'utf-8');
+					const htmlPath = `./built/web/docs/${lang}/api/endpoints/${ep.endpoint}.html`;
+					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
+						if (mkdirErr) {
+							console.error(mkdirErr);
+							return;
+						}
+						fs.writeFileSync(htmlPath, html, 'utf-8');
+					});
 				});
 			});
 		});
@@ -135,20 +146,25 @@ gulp.task('doc:api:entities', () => {
 				desc: entity.desc,
 				props: sortParams(entity.props.map(p => parseParam(p))),
 				propDefs: extractDefs(entity.props),
-				kebab
+				kebab,
+				common: commonVars
 			};
-			pug.renderFile('./src/web/docs/api/entities/view.pug', vars, (renderErr, html) => {
-				if (renderErr) {
-					console.error(renderErr);
-					return;
-				}
-				const htmlPath = `./built/web/docs/api/entities/${kebab(entity.name)}.html`;
-				mkdirp(path.dirname(htmlPath), (mkdirErr) => {
-					if (mkdirErr) {
-						console.error(mkdirErr);
+			langs.forEach(lang => {
+				pug.renderFile('./src/web/docs/api/entities/view.pug', Object.assign({}, vars, {
+					lang
+				}), (renderErr, html) => {
+					if (renderErr) {
+						console.error(renderErr);
 						return;
 					}
-					fs.writeFileSync(htmlPath, html, 'utf-8');
+					const htmlPath = `./built/web/docs/${lang}/api/entities/${kebab(entity.name)}.html`;
+					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
+						if (mkdirErr) {
+							console.error(mkdirErr);
+							return;
+						}
+						fs.writeFileSync(htmlPath, html, 'utf-8');
+					});
 				});
 			});
 		});

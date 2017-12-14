@@ -12,7 +12,7 @@ block main
 
 	p#url= url
 
-	p#desc: +i18n(desc)
+	p#desc= desc[lang] || desc['ja']
 
 	section
 		h2 Params
@@ -27,4 +27,3 @@ block main
 	section
 		h2 Response
 		+propTable(res)
-
