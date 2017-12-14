@@ -7,31 +7,31 @@ desc:
 params:
   - name: "text"
     type: "string"
-    required: true
+    optional: false
     desc:
       ja: "投稿の本文"
       en: "Text of a post"
   - name: "media_ids"
     type: "id(DriveFile)[]"
-    required: false
+    optional: true
     desc:
       ja: "添付するメディア"
       en: "Media you want to attach"
   - name: "reply_id"
     type: "id(Post)"
-    required: false
+    optional: true
     desc:
       ja: "返信する投稿"
       en: "A post you want to reply"
   - name: "repost_id"
     type: "id(Post)"
-    required: false
+    optional: true
     desc:
       ja: "引用する投稿"
       en: "A post you want to quote"
   - name: "poll"
     type: "object(poll)"
-    required: false
+    optional: true
     desc:
       ja: "投票"
       en: "A poll"
@@ -40,7 +40,7 @@ paramDefs:
   poll:
     - name: "choices"
       type: "string[]"
-      required: true
+      optional: false
       desc:
         ja: "投票の選択肢"
         en: "Choices of a poll"
@@ -48,6 +48,7 @@ paramDefs:
 res:
   - name: "created_post"
     type: "entity(Post)"
+    optional: false
     desc:
       ja: "作成した投稿"
       en: "A post that created"

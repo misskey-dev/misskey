@@ -13,6 +13,7 @@ import * as es from 'event-stream';
 import cssnano = require('gulp-cssnano');
 import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
+import stylus = require('gulp-stylus');
 import * as rimraf from 'rimraf';
 import chalk from 'chalk';
 import imagemin = require('gulp-imagemin');
@@ -47,14 +48,31 @@ if (isDebug) {
 
 const constants = require('./src/const.json');
 
+require('./src/web/docs/api/endpoints/gulpfile.ts');
+
 gulp.task('build', [
 	'build:js',
 	'build:ts',
 	'build:copy',
-	'build:client'
+	'build:client',
+	'build:doc'
 ]);
 
 gulp.task('rebuild', ['clean', 'build']);
+
+gulp.task('build:doc', [
+	'doc:endpoints',
+	'doc:styles'
+]);
+
+gulp.task('doc:styles', () =>
+	gulp.src('./src/web/docs/**/*.styl')
+		.pipe(stylus())
+		.pipe(isProduction
+			? (cssnano as any)()
+			: gutil.noop())
+		.pipe(gulp.dest('./built/web/assets/docs/'))
+);
 
 gulp.task('build:js', () =>
 	gulp.src(['./src/**/*.js', '!./src/web/**/*.js'])

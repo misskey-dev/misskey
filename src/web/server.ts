@@ -64,6 +64,12 @@ app.get('/manifest.json', (req, res) =>
 app.get(/\/api:url/, require('./service/url-preview'));
 
 /**
+ * Docs
+ */
+app.get(/^\/docs\/([a-z_\-\/]+?)$/, (req, res) =>
+	res.sendFile(`${__dirname}/docs/${req.params[0]}.html`));
+
+/**
  * Routing
  */
 app.get('*', (req, res) => {

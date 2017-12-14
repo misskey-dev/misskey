@@ -1,0 +1,60 @@
+doctype html
+
+mixin i18n(xs)
+	each text, lang in xs
+		span(class=`i18n ${lang}`)= text
+
+mixin table(params)
+	table
+		thead: tr
+			th Name
+			th Type
+			th Optional
+			th Description
+		tbody
+			each param in params
+				tr
+					td.name= param.name
+					td.type
+						if param.kind == 'id'
+							| #{param.type} (ID of
+							= ' '
+							a(href=`/docs/api/entities/${param.entity}`)= param.entity
+							| )
+						else if param.kind == 'object'
+							| #{param.type} (
+							a(href=`#${param.def}`)= param.def
+							| )
+						else
+							= param.type
+					td.optional= param.optional.toString()
+					td.desc: +i18n(param.desc)
+
+html
+	head
+		meta(charset="UTF-8")
+		title #{endpoint} | Misskey API
+		link(rel="stylesheet" href="/assets/docs/api/endpoints/style.css")
+
+	body
+		main
+			h1= endpoint
+
+			p#url= url
+
+			p#desc: +i18n(desc)
+
+			section
+				h2 Params
+				+table(params)
+
+				if paramDefs
+					each paramDef in paramDefs
+						section(id= paramDef.name)
+							h3= paramDef.name
+							+table(paramDef.params)
+
+			section
+				h2 Response
+				+table(res)
+
