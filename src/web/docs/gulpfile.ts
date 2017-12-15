@@ -36,20 +36,30 @@ gulp.task('doc:docs', () => {
 			const [, name, lang] = file.match(/docs\/(.+?)\.(.+?)\.pug$/);
 			const vars = {
 				common: commonVars,
-				lang: lang
+				lang: lang,
+				title: fs.readFileSync(file, 'utf-8').match(/^h1 (.+?)\r?\n/)[1]
 			};
-			pug.renderFile(file, vars, (renderErr, html) => {
+			pug.renderFile(file, vars, (renderErr, content) => {
 				if (renderErr) {
 					console.error(renderErr);
 					return;
 				}
-				const htmlPath = `./built/web/docs/${lang}/${name}.html`;
-				mkdirp(path.dirname(htmlPath), (mkdirErr) => {
-					if (mkdirErr) {
-						console.error(mkdirErr);
+
+				pug.renderFile('./src/web/docs/layout.pug', Object.assign({}, vars, {
+					content
+				}), (renderErr2, html) => {
+					if (renderErr2) {
+						console.error(renderErr2);
 						return;
 					}
-					fs.writeFileSync(htmlPath, html, 'utf-8');
+					const htmlPath = `./built/web/docs/${lang}/${name}.html`;
+					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
+						if (mkdirErr) {
+							console.error(mkdirErr);
+							return;
+						}
+						fs.writeFileSync(htmlPath, html, 'utf-8');
+					});
 				});
 			});
 		});

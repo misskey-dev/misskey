@@ -108,12 +108,13 @@ gulp.task('doc:api:endpoints', () => {
 				paramDefs: extractDefs(ep.params),
 				res: sortParams(ep.res.map(p => parseParam(p))),
 				resDefs: extractDefs(ep.res),
-				kebab,
-				common: commonVars
 			};
 			langs.forEach(lang => {
 				pug.renderFile('./src/web/docs/api/endpoints/view.pug', Object.assign({}, vars, {
-					lang
+					lang,
+					title: ep.endpoint,
+					kebab,
+					common: commonVars
 				}), (renderErr, html) => {
 					if (renderErr) {
 						console.error(renderErr);
@@ -146,12 +147,13 @@ gulp.task('doc:api:entities', () => {
 				desc: entity.desc,
 				props: sortParams(entity.props.map(p => parseParam(p))),
 				propDefs: extractDefs(entity.props),
-				kebab,
-				common: commonVars
 			};
 			langs.forEach(lang => {
 				pug.renderFile('./src/web/docs/api/entities/view.pug', Object.assign({}, vars, {
-					lang
+					lang,
+					title: entity.name,
+					kebab,
+					common: commonVars
 				}), (renderErr, html) => {
 					if (renderErr) {
 						console.error(renderErr);

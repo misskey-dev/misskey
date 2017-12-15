@@ -5,7 +5,7 @@ html(lang= lang)
 		meta(charset="UTF-8")
 		meta(name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no")
 		title
-			block title
+			| #{title} | Misskey Docs
 		link(rel="stylesheet" href="/assets/docs/style.css")
 		block meta
 
@@ -27,3 +27,5 @@ html(lang= lang)
 								li: a(href=`/docs/${lang}/api/endpoints/${common.kebab(endpoint)}`)= endpoint
 		main
 			block main
+			if content
+				| !{content}

@@ -27,7 +27,7 @@ export default function() {
 				title: {}
 			};
 		}
-		vars['docs'][name]['title'][lang] = fs.readFileSync(x, 'utf-8').match(/\r?\n\th1 (.+?)\r?\n/)[1];
+		vars['docs'][name]['title'][lang] = fs.readFileSync(x, 'utf-8').match(/^h1 (.+?)\r?\n/)[1];
 	});
 
 	vars['kebab'] = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
