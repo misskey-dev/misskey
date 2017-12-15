@@ -106,8 +106,8 @@ gulp.task('doc:api:endpoints', () => {
 				desc: ep.desc,
 				params: sortParams(ep.params.map(p => parseParam(p))),
 				paramDefs: extractDefs(ep.params),
-				res: sortParams(ep.res.map(p => parseParam(p))),
-				resDefs: extractDefs(ep.res),
+				res: ep.res ? sortParams(ep.res.map(p => parseParam(p))) : null,
+				resDefs: ep.res ? extractDefs(ep.res) : null,
 			};
 			langs.forEach(lang => {
 				pug.renderFile('./src/web/docs/api/endpoints/view.pug', Object.assign({}, vars, {

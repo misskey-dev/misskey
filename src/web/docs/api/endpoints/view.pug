@@ -21,6 +21,7 @@ block main
 					h3= paramDef.name
 					+propTable(paramDef.params)
 
-	section
-		h2 Response
-		+propTable(res)
+	if res
+		section
+			h2 Response
+			+propTable(res)
