@@ -9,7 +9,6 @@ import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
 import tslint from 'gulp-tslint';
-import * as es from 'event-stream';
 import cssnano = require('gulp-cssnano');
 import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
@@ -74,16 +73,10 @@ gulp.task('build:ts', () => {
 });
 
 gulp.task('build:copy', () =>
-	es.merge(
-		gulp.src([
-			'./src/**/assets/**/*',
-			'!./src/web/app/**/assets/**/*'
-		]).pipe(gulp.dest('./built/')) as any,
-		gulp.src([
-			'./src/web/about/**/*',
-			'!./src/web/about/**/*.pug'
-		]).pipe(gulp.dest('./built/web/about/')) as any
-	)
+	gulp.src([
+		'./src/**/assets/**/*',
+		'!./src/web/app/**/assets/**/*'
+	]).pipe(gulp.dest('./built/'))
 );
 
 gulp.task('test', ['lint', 'mocha']);

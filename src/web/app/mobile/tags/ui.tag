@@ -248,7 +248,7 @@
 				<li><a href="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</a></li>
 			</ul>
 		</div>
-		<a href={ _ABOUT_URL_ }><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
+		<a href={ aboutUrl }><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
 	</div>
 	<style>
 		:scope
@@ -358,6 +358,8 @@
 		this.mixin('stream');
 		this.connection = this.stream.getConnection();
 		this.connectionId = this.stream.use();
+
+		this.aboutUrl = `${_DOCS_URL_}/${_LANG_}/about`;
 
 		this.on('mount', () => {
 			this.connection.on('read_all_notifications', this.onReadAllNotifications);

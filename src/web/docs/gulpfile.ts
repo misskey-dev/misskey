@@ -70,5 +70,5 @@ gulp.task('doc:styles', () =>
 	gulp.src('./src/web/docs/**/*.styl')
 		.pipe(stylus())
 		.pipe((cssnano as any)())
-		.pipe(gulp.dest('./built/web/assets/docs/'))
+		.pipe(gulp.dest('./built/web/docs/assets/'))
 );

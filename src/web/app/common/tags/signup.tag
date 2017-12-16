@@ -34,7 +34,7 @@
 		</label>
 		<label class="agree-tou">
 			<input name="agree-tou" type="checkbox" autocomplete="off" required="required"/>
-			<p><a href="https://github.com/syuilo/misskey/blob/master/src/docs/tou.md" target="_blank">利用規約</a>に同意する</p>
+			<p><a href={ touUrl } target="_blank">利用規約</a>に同意する</p>
 		</label>
 		<button onclick={ onsubmit }>%i18n:common.tags.mk-signup.create%</button>
 	</form>
@@ -181,6 +181,8 @@
 		this.passwordStrength = '';
 		this.passwordRetypeState = null;
 		this.recaptchaed = false;
+
+		this.aboutUrl = `${_DOCS_URL_}/${_LANG_}/tou`;
 
 		window.onRecaptchaed = () => {
 			this.recaptchaed = true;

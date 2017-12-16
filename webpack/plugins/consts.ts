@@ -16,7 +16,7 @@ export default lang => {
 		_VERSION_: version,
 		_STATUS_URL_: config.status_url,
 		_STATS_URL_: config.stats_url,
-		_ABOUT_URL_: config.about_url,
+		_DOCS_URL_: config.docs_url,
 		_API_URL_: config.api_url,
 		_DEV_URL_: config.dev_url,
 		_CH_URL_: config.ch_url,

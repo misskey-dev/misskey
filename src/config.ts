@@ -101,7 +101,7 @@ type Mixin = {
 	secondary_scheme: string;
 	api_url: string;
 	auth_url: string;
-	about_url: string;
+	docs_url: string;
 	ch_url: string;
 	stats_url: string;
 	status_url: string;
@@ -131,7 +131,7 @@ export default function load() {
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;
 	mixin.ch_url = `${mixin.scheme}://ch.${mixin.host}`;
 	mixin.dev_url = `${mixin.scheme}://dev.${mixin.host}`;
-	mixin.about_url = `${mixin.scheme}://about.${mixin.host}`;
+	mixin.docs_url = `${mixin.scheme}://docs.${mixin.host}`;
 	mixin.stats_url = `${mixin.scheme}://stats.${mixin.host}`;
 	mixin.status_url = `${mixin.scheme}://status.${mixin.host}`;
 	mixin.drive_url = `${mixin.secondary_scheme}://file.${mixin.secondary_host}`;

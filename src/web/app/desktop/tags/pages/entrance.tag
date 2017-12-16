@@ -150,7 +150,7 @@
 </mk-entrance>
 
 <mk-entrance-signin>
-	<a class="help" href={ _ABOUT_URL_ + '/help' } title="お困りですか？">%fa:question%</a>
+	<a class="help" href={ _DOCS_URL_ + '/help' } title="お困りですか？">%fa:question%</a>
 	<div class="form">
 		<h1><img if={ user } src={ user.avatar_url + '?thumbnail&size=32' }/>
 			<p>{ user ? user.name : 'アカウント' }</p>
