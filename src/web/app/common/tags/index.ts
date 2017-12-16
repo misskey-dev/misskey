@@ -12,7 +12,6 @@ require('./signin.tag');
 require('./signup.tag');
 require('./forkit.tag');
 require('./introduction.tag');
-require('./copyright.tag');
 require('./signin-history.tag');
 require('./twitter-setting.tag');
 require('./authorized-apps.tag');

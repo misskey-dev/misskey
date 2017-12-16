@@ -8,7 +8,7 @@
 		</div>
 	</main>
 	<footer>
-		<mk-copyright/>
+		<p class="c">{ _COPYRIGHT_ }</p>
 	</footer>
 	<style>
 		:scope
@@ -34,7 +34,7 @@
 						margin 16px auto 0 auto
 
 			> footer
-				> mk-copyright
+				> .c
 					margin 0
 					text-align center
 					line-height 64px

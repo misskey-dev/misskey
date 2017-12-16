@@ -3,6 +3,7 @@ import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import langs from '../../../locales';
 import config from '../../conf';
+const constants = require('../../const.json');
 
 export default function(): { [key: string]: any } {
 	const vars = {} as { [key: string]: any };
@@ -37,6 +38,8 @@ export default function(): { [key: string]: any } {
 	vars['config'] = config;
 
 	vars['i18n'] = langs;
+
+	vars['copyright'] = constants.copyright;
 
 	return vars;
 }

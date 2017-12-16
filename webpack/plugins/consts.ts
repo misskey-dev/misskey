@@ -13,6 +13,7 @@ export default lang => {
 		_RECAPTCHA_SITEKEY_: config.recaptcha.site_key,
 		_SW_PUBLICKEY_: config.sw ? config.sw.public_key : null,
 		_THEME_COLOR_: constants.themeColor,
+		_COPYRIGHT_: constants.copyright,
 		_VERSION_: version,
 		_STATUS_URL_: config.status_url,
 		_STATS_URL_: config.stats_url,

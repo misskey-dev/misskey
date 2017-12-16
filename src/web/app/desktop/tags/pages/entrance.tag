@@ -18,7 +18,7 @@
 	<footer>
 		<div>
 			<mk-nav-links/>
-			<mk-copyright/>
+			<p class="c">{ _COPYRIGHT_ }</p>
 		</div>
 	</footer>
 	<!-- ↓ https://github.com/riot/riot/issues/2134 (将来的)-->
@@ -101,7 +101,7 @@
 					text-align center
 					border-top solid 1px #fff
 
-					> mk-copyright
+					> .c
 						margin 0
 						line-height 64px
 						font-size 10px
