@@ -183,6 +183,24 @@ common:
     mk-uploader:
       waiting: "待機中"
 
+docs:
+  edit-this-page-on-github: "間違いや改善点を見つけましたか？"
+  edit-this-page-on-github-link: "このページをGitHubで編集"
+
+  api:
+    entities:
+      properties: "プロパティ"
+    endpoints:
+      params: "パラメータ"
+      res: "レスポンス"
+    props:
+      name: "名前"
+      type: "型"
+      optional: "オプション"
+      description: "説明"
+      yes: "はい"
+      no: "いいえ"
+
 ch:
   tags:
     mk-index:

@@ -1,10 +1,11 @@
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as yaml from 'js-yaml';
+import langs from '../../../locales';
 import config from '../../conf';
 
-export default function() {
-	const vars = {};
+export default function(): { [key: string]: any } {
+	const vars = {} as { [key: string]: any };
 
 	const endpoints = glob.sync('./src/web/docs/api/endpoints/**/*.yaml');
 	vars['endpoints'] = endpoints.map(ep => {
@@ -34,6 +35,8 @@ export default function() {
 	vars['kebab'] = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 
 	vars['config'] = config;
+
+	vars['i18n'] = langs;
 
 	return vars;
 }

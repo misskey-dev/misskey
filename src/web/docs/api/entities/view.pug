@@ -10,7 +10,7 @@ block main
 	p#desc= desc[lang] || desc['ja']
 
 	section
-		h2 Properties
+		h2= common.i18n[lang]['docs']['api']['entities']['properties']
 		+propTable(props)
 
 		if propDefs

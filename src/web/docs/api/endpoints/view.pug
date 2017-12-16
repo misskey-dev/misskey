@@ -7,12 +7,17 @@ block meta
 block main
 	h1= endpoint
 
-	p#url= url
+	p#url
+		span.method POST
+		span.host
+			= url.host
+			| /
+		span.path= url.path
 
 	p#desc= desc[lang] || desc['ja']
 
 	section
-		h2 Params
+		h2= common.i18n[lang]['docs']['api']['endpoints']['params']
 		+propTable(params)
 
 		if paramDefs
@@ -23,5 +28,5 @@ block main
 
 	if res
 		section
-			h2 Response
+			h2= common.i18n[lang]['docs']['api']['endpoints']['res']
 			+propTable(res)

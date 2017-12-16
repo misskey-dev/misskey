@@ -37,7 +37,8 @@ gulp.task('doc:docs', () => {
 			const vars = {
 				common: commonVars,
 				lang: lang,
-				title: fs.readFileSync(file, 'utf-8').match(/^h1 (.+?)\r?\n/)[1]
+				title: fs.readFileSync(file, 'utf-8').match(/^h1 (.+?)\r?\n/)[1],
+				src: `https://github.com/syuilo/misskey/tree/master/src/web/docs/${name}.${lang}.pug`,
 			};
 			pug.renderFile(file, vars, (renderErr, content) => {
 				if (renderErr) {

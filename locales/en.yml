@@ -183,6 +183,24 @@ common:
     mk-uploader:
       waiting: "Waiting"
 
+docs:
+  edit-this-page-on-github: "Caught a mistake or want to contribute to the documentation? "
+  edit-this-page-on-github-link: "Edit this page on Github!"
+
+  api:
+    entities:
+      properties: "Properties"
+    endpoints:
+      params: "Parameters"
+      res: "Response"
+    props:
+      name: "Name"
+      type: "Type"
+      optional: "Optional"
+      description: "Description"
+      yes: "Yes"
+      no: "No"
+
 ch:
   tags:
     mk-index:

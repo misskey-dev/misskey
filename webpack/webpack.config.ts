@@ -5,10 +5,10 @@
 import module_ from './module';
 import plugins from './plugins';
 
-import langs from './langs';
+import langs from '../locales';
 import version from '../src/version';
 
-module.exports = langs.map(([lang, locale]) => {
+module.exports = Object.entries(langs).map(([lang, locale]) => {
 	// Chunk name
 	const name = lang;
 

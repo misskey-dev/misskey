@@ -27,6 +27,12 @@ html(lang= lang)
 							each endpoint in common.endpoints
 								li: a(href=`./api/endpoints/${common.kebab(endpoint)}`)= endpoint
 		main
-			block main
-			if content
-				| !{content}
+			article
+				block main
+				if content
+					| !{content}
+
+			footer
+				p
+					= common.i18n[lang]['docs']['edit-this-page-on-github']
+					a(href=src target="_blank")= common.i18n[lang]['docs']['edit-this-page-on-github-link']

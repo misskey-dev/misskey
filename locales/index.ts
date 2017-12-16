@@ -10,12 +10,12 @@ const loadLang = lang => yaml.safeLoad(
 
 const native = loadLang('ja');
 
-const langs = Object.entries({
+const langs = {
 	'en': loadLang('en'),
 	'ja': native
-});
+};
 
-langs.map(([, locale]) => {
+Object.entries(langs).map(([, locale]) => {
 	// Extend native language (Japanese)
 	locale = Object.assign({}, native, locale);
 });

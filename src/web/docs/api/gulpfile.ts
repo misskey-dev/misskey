@@ -16,7 +16,7 @@ import generateVars from '../vars';
 
 const commonVars = generateVars();
 
-const langs = ['ja', 'en'];
+const langs = Object.keys(commonVars.i18n);
 
 const kebab = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 
@@ -102,7 +102,10 @@ gulp.task('doc:api:endpoints', () => {
 			const ep = yaml.safeLoad(fs.readFileSync(file, 'utf-8'));
 			const vars = {
 				endpoint: ep.endpoint,
-				url: `${config.api_url}/${ep.endpoint}`,
+				url: {
+					host: config.api_url,
+					path: ep.endpoint
+				},
 				desc: ep.desc,
 				params: sortParams(ep.params.map(p => parseParam(p))),
 				paramDefs: extractDefs(ep.params),
@@ -113,6 +116,7 @@ gulp.task('doc:api:endpoints', () => {
 				pug.renderFile('./src/web/docs/api/endpoints/view.pug', Object.assign({}, vars, {
 					lang,
 					title: ep.endpoint,
+					src: `https://github.com/syuilo/misskey/tree/master/src/web/docs/api/endpoints/${ep.endpoint}.yaml`,
 					kebab,
 					common: commonVars
 				}), (renderErr, html) => {
@@ -152,6 +156,7 @@ gulp.task('doc:api:entities', () => {
 				pug.renderFile('./src/web/docs/api/entities/view.pug', Object.assign({}, vars, {
 					lang,
 					title: entity.name,
+					src: `https://github.com/syuilo/misskey/tree/master/src/web/docs/api/entities/${kebab(entity.name)}.yaml`,
 					kebab,
 					common: commonVars
 				}), (renderErr, html) => {
