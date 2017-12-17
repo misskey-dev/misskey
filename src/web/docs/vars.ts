@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as yaml from 'js-yaml';
-import langs from '../../../locales';
+
+import { fa } from '../../common/build/fa';
 import config from '../../conf';
 const constants = require('../../const.json');
 
@@ -37,9 +38,9 @@ export default function(): { [key: string]: any } {
 
 	vars['config'] = config;
 
-	vars['i18n'] = langs;
-
 	vars['copyright'] = constants.copyright;
+
+	vars['facss'] = fa.dom.css();
 
 	return vars;
 }

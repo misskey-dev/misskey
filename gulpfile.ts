@@ -20,16 +20,8 @@ import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
-import * as fontawesome from '@fortawesome/fontawesome';
-import * as regular from '@fortawesome/fontawesome-free-regular';
-import * as solid from '@fortawesome/fontawesome-free-solid';
-import * as brands from '@fortawesome/fontawesome-free-brands';
 
-// Add icons
-fontawesome.library.add(regular);
-fontawesome.library.add(solid);
-fontawesome.library.add(brands);
-
+import { fa } from './src/common/build/fa';
 import version from './src/version';
 import config from './src/conf';
 
@@ -179,7 +171,7 @@ gulp.task('build:client:pug', [
 			.pipe(pug({
 				locals: {
 					themeColor: constants.themeColor,
-					facss: fontawesome.dom.css(),
+					facss: fa.dom.css(),
 					//hljscss: fs.readFileSync('./node_modules/highlight.js/styles/default.css', 'utf8')
 					hljscss: fs.readFileSync('./src/web/assets/code-highlight.css', 'utf8')
 				}

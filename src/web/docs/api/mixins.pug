@@ -1,10 +1,10 @@
 mixin propTable(props)
 	table.props
 		thead: tr
-			th= common.i18n[lang]['docs']['api']['props']['name']
-			th= common.i18n[lang]['docs']['api']['props']['type']
-			th= common.i18n[lang]['docs']['api']['props']['optional']
-			th= common.i18n[lang]['docs']['api']['props']['description']
+			th %i18n:docs.api.props.name%
+			th %i18n:docs.api.props.type%
+			th %i18n:docs.api.props.optional%
+			th %i18n:docs.api.props.description%
 		tbody
 			each prop in props
 				tr
@@ -31,7 +31,7 @@ mixin propTable(props)
 							|  (Date)
 					td.optional
 						if prop.optional
-							= common.i18n[lang]['docs']['api']['props']['yes']
+							| %i18n:docs.api.props.yes%
 						else
-							= common.i18n[lang]['docs']['api']['props']['no']
+							| %i18n:docs.api.props.no%
 					td.desc!= prop.desc[lang] || prop.desc['ja']

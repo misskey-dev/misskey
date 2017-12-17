@@ -9,6 +9,9 @@ html(lang= lang)
 		link(rel="stylesheet" href="/assets/style.css")
 		block meta
 
+		//- FontAwesome style
+		style #{common.facss}
+
 	body
 		nav
 			ul
@@ -33,6 +36,6 @@ html(lang= lang)
 
 			footer
 				p
-					= common.i18n[lang]['docs']['edit-this-page-on-github']
-					a(href=src target="_blank")= common.i18n[lang]['docs']['edit-this-page-on-github-link']
+					| %i18n:docs.edit-this-page-on-github%
+					a(href=src target="_blank") %i18n:docs.edit-this-page-on-github-link%
 				small= common.copyright

@@ -7,8 +7,8 @@ import tag from './tag';
 import stylus from './stylus';
 import typescript from './typescript';
 
-export default (lang, locale) => [
-	i18n(lang, locale),
+export default lang => [
+	i18n(lang),
 	license(),
 	fa(),
 	base64(),

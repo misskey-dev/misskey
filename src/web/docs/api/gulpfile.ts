@@ -10,13 +10,16 @@ import * as pug from 'pug';
 import * as yaml from 'js-yaml';
 import * as mkdirp from 'mkdirp';
 
+import locales from '../../../../locales';
+import I18nReplacer from '../../../common/build/i18n';
+import fa from '../../../common/build/fa';
 import config from './../../../conf';
 
 import generateVars from '../vars';
 
 const commonVars = generateVars();
 
-const langs = Object.keys(commonVars.i18n);
+const langs = Object.keys(locales);
 
 const kebab = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 
@@ -124,6 +127,9 @@ gulp.task('doc:api:endpoints', () => {
 						console.error(renderErr);
 						return;
 					}
+					const i18n = new I18nReplacer(lang);
+					html = html.replace(i18n.pattern, i18n.replacement);
+					html = fa(html);
 					const htmlPath = `./built/web/docs/${lang}/api/endpoints/${ep.endpoint}.html`;
 					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
 						if (mkdirErr) {
@@ -164,6 +170,9 @@ gulp.task('doc:api:entities', () => {
 						console.error(renderErr);
 						return;
 					}
+					const i18n = new I18nReplacer(lang);
+					html = html.replace(i18n.pattern, i18n.replacement);
+					html = fa(html);
 					const htmlPath = `./built/web/docs/${lang}/api/entities/${kebab(entity.name)}.html`;
 					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
 						if (mkdirErr) {
