@@ -4,6 +4,7 @@
 body
 	margin 0
 	color #34495e
+	word-break break-word
 
 main
 	margin 0 0 0 256px
@@ -49,16 +50,37 @@ main
 nav
 	display block
 	position fixed
+	z-index 10000
 	top 0
 	left 0
 	width 256px
 	height 100%
 	overflow auto
 	padding 32px
+	background #fff
 	border-right solid 2px #eee
 
+@media (max-width 1025px)
+	main
+		margin 0
+		max-width 100%
+
+	nav
+		position relative
+		width 100%
+		max-height 128px
+		background #f9f9f9
+		border-right none
+
+@media (max-width 512px)
+	main
+		padding 16px
+
 table
+	display block
 	width 100%
+	max-width 100%
+	overflow auto
 	border-spacing 0
 	border-collapse collapse
 
@@ -68,12 +90,7 @@ table
 
 		tr
 			th
-				position sticky
-				top 0
-				z-index 1
 				text-align left
-				box-shadow 0 1px 0 0 #eee
-				background #fff
 
 	tbody
 		tr
@@ -82,3 +99,4 @@ table
 
 	th, td
 		padding 8px 16px
+		min-width 128px
