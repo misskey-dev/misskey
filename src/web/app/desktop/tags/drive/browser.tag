@@ -18,14 +18,16 @@
 				<virtual each={ folder in folders }>
 					<mk-drive-browser-folder class="folder" folder={ folder }/>
 				</virtual>
-				<div class="padding" each={ folders }></div>
+				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
+				<div class="padding" each={ Array(10).fill(16) }></div>
 				<button if={ moreFolders }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" if={ files.length > 0 }>
 				<virtual each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }/>
 				</virtual>
-				<div class="padding" each={ files }></div>
+				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
+				<div class="padding" each={ Array(10).fill(16) }></div>
 				<button if={ moreFiles } onclick={ fetchMoreFiles }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
