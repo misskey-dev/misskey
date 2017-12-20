@@ -6,6 +6,7 @@ import $ from 'cafy';
 const escapeRegexp = require('escape-regexp');
 import Post from '../../models/post';
 import User from '../../models/user';
+import getFriends from '../../common/get-friends';
 import serialize from '../../serializers/post';
 import config from '../../../conf';
 
@@ -28,6 +29,10 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'username' parameter
 	const [username, usernameErr] = $(params.username).optional.string().$;
 	if (usernameErr) return rej('invalid username param');
+
+	// Get 'following' parameter
+	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().$;
+	if (followingErr) return rej('invalid following param');
 
 	// Get 'include_replies' parameter
 	const [includeReplies = true, includeRepliesErr] = $(params.include_replies).optional.boolean().$;
@@ -67,11 +72,11 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// If Elasticsearch is available, search by it
 	// If not, search by MongoDB
 	(config.elasticsearch.enable ? byElasticsearch : byNative)
-		(res, rej, me, text, user, includeReplies, withMedia, sinceDate, untilDate, offset, limit);
+		(res, rej, me, text, user, following, includeReplies, withMedia, sinceDate, untilDate, offset, limit);
 });
 
 // Search by MongoDB
-async function byNative(res, rej, me, text, userId, includeReplies, withMedia, sinceDate, untilDate, offset, max) {
+async function byNative(res, rej, me, text, userId, following, includeReplies, withMedia, sinceDate, untilDate, offset, max) {
 	const q: any = {};
 
 	if (text) {
@@ -82,6 +87,16 @@ async function byNative(res, rej, me, text, userId, includeReplies, withMedia, s
 
 	if (userId) {
 		q.user_id = userId;
+	}
+
+	if (following != null) {
+		const ids = await getFriends(me._id, false);
+		q.user_id = {};
+		if (following) {
+			q.user_id.$in = ids;
+		} else {
+			q.user_id.$nin = ids;
+		}
 	}
 
 	if (!includeReplies) {
@@ -122,7 +137,7 @@ async function byNative(res, rej, me, text, userId, includeReplies, withMedia, s
 }
 
 // Search by Elasticsearch
-async function byElasticsearch(res, rej, me, text, userId, includeReplies, withMedia, sinceDate, untilDate, offset, max) {
+async function byElasticsearch(res, rej, me, text, userId, following, includeReplies, withMedia, sinceDate, untilDate, offset, max) {
 	const es = require('../../db/elasticsearch');
 
 	es.search({

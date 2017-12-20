@@ -10,6 +10,9 @@ export default function(qs: string) {
 				case 'user':
 					q['username'] = value;
 					break;
+				case 'follow':
+					q['following'] = value == 'null' ? null : value == 'true';
+					break;
 				case 'reply':
 					q['include_replies'] = value == 'true';
 					break;
