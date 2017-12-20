@@ -86,7 +86,7 @@
 			});
 
 			this.api('posts/timeline', {
-				max_date: this.date ? this.date.getTime() : undefined
+				until_date: this.date ? this.date.getTime() : undefined
 			}).then(posts => {
 				this.update({
 					isLoading: false,
@@ -103,7 +103,7 @@
 				moreLoading: true
 			});
 			this.api('posts/timeline', {
-				max_id: this.refs.timeline.tail().id
+				until_id: this.refs.timeline.tail().id
 			}).then(posts => {
 				this.update({
 					moreLoading: false

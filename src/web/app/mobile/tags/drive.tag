@@ -430,7 +430,7 @@
 			this.api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: max + 1,
-				max_id: this.files[this.files.length - 1].id
+				until_id: this.files[this.files.length - 1].id
 			}).then(files => {
 				if (files.length == max + 1) {
 					this.moreFiles = true;

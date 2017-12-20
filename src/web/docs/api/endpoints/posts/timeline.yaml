@@ -15,7 +15,7 @@ params:
     optional: true
     desc:
       ja: "指定すると、この投稿を基点としてより新しい投稿を取得します"
-  - name: "max_id"
+  - name: "until_id"
     type: "id(Post)"
     optional: true
     desc:
@@ -25,7 +25,7 @@ params:
     optional: true
     desc:
       ja: "指定した時間を基点としてより新しい投稿を取得します。数値は、1970 年 1 月 1 日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。"
-  - name: "max_date"
+  - name: "until_date"
     type: "number"
     optional: true
     desc:

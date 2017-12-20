@@ -22,13 +22,13 @@ module.exports = async (params, user, app) => {
 	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
 	if (sinceIdErr) throw 'invalid since_id param';
 
-	// Get 'max_id' parameter
-	const [maxId, maxIdErr] = $(params.max_id).optional.id().$;
-	if (maxIdErr) throw 'invalid max_id param';
+	// Get 'until_id' parameter
+	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
+	if (untilIdErr) throw 'invalid until_id param';
 
-	// Check if both of since_id and max_id is specified
-	if (sinceId && maxId) {
-		throw 'cannot set since_id and max_id';
+	// Check if both of since_id and until_id is specified
+	if (sinceId && untilId) {
+		throw 'cannot set since_id and until_id';
 	}
 
 	// Get 'folder_id' parameter
@@ -52,9 +52,9 @@ module.exports = async (params, user, app) => {
 		query._id = {
 			$gt: sinceId
 		};
-	} else if (maxId) {
+	} else if (untilId) {
 		query._id = {
-			$lt: maxId
+			$lt: untilId
 		};
 	}
 	if (type) {

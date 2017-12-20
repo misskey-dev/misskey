@@ -283,7 +283,7 @@
 
 			this.api('i/notifications', {
 				limit: max + 1,
-				max_id: this.notifications[this.notifications.length - 1].id
+				until_id: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {
 				if (notifications.length == max + 1) {
 					this.moreNotifications = true;

@@ -42,21 +42,21 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
 	if (sinceIdErr) return rej('invalid since_id param');
 
-	// Get 'max_id' parameter
-	const [maxId, maxIdErr] = $(params.max_id).optional.id().$;
-	if (maxIdErr) return rej('invalid max_id param');
+	// Get 'until_id' parameter
+	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
+	if (untilIdErr) return rej('invalid until_id param');
 
 	// Get 'since_date' parameter
 	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
 	if (sinceDateErr) throw 'invalid since_date param';
 
-	// Get 'max_date' parameter
-	const [maxDate, maxDateErr] = $(params.max_date).optional.number().$;
-	if (maxDateErr) throw 'invalid max_date param';
+	// Get 'until_date' parameter
+	const [untilDate, untilDateErr] = $(params.until_date).optional.number().$;
+	if (untilDateErr) throw 'invalid until_date param';
 
-	// Check if only one of since_id, max_id, since_date, max_date specified
-	if ([sinceId, maxId, sinceDate, maxDate].filter(x => x != null).length > 1) {
-		throw 'only one of since_id, max_id, since_date, max_date can be specified';
+	// Check if only one of since_id, until_id, since_date, until_date specified
+	if ([sinceId, untilId, sinceDate, untilDate].filter(x => x != null).length > 1) {
+		throw 'only one of since_id, until_id, since_date, until_date can be specified';
 	}
 
 	const q = userId !== undefined
@@ -88,18 +88,18 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		query._id = {
 			$gt: sinceId
 		};
-	} else if (maxId) {
+	} else if (untilId) {
 		query._id = {
-			$lt: maxId
+			$lt: untilId
 		};
 	} else if (sinceDate) {
 		sort._id = 1;
 		query.created_at = {
 			$gt: new Date(sinceDate)
 		};
-	} else if (maxDate) {
+	} else if (untilDate) {
 		query.created_at = {
-			$lt: new Date(maxDate)
+			$lt: new Date(untilDate)
 		};
 	}
 
