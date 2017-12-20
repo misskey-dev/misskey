@@ -33,6 +33,8 @@
 
 	</style>
 	<script>
+		import parse from '../../common/scripts/parse-search-query';
+
 		this.mixin('api');
 
 		this.query = this.opts.query;
@@ -45,9 +47,7 @@
 			document.addEventListener('keydown', this.onDocumentKeydown);
 			window.addEventListener('scroll', this.onScroll);
 
-			this.api('posts/search', {
-				query: this.query
-			}).then(posts => {
+			this.api('posts/search', parse(this.query)).then(posts => {
 				this.update({
 					isLoading: false,
 					isEmpty: posts.length == 0

@@ -413,7 +413,7 @@
 		this.search = () => {
 			const query = window.prompt('%i18n:mobile.tags.mk-ui-nav.search%');
 			if (query == null || query == '') return;
-			this.page('/search:' + query);
+			this.page('/search?q=' + encodeURIComponent(query));
 		};
 	</script>
 </mk-ui-nav>

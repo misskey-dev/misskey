@@ -23,7 +23,7 @@ export default (mios: MiOS) => {
 	route('/i/settings/authorized-apps', settingsAuthorizedApps);
 	route('/post/new',                   newPost);
 	route('/post::post',                 post);
-	route('/search::query',              search);
+	route('/search',                     search);
 	route('/:user',                      user.bind(null, 'overview'));
 	route('/:user/graphs',               user.bind(null, 'graphs'));
 	route('/:user/followers',            userFollowers);
@@ -83,7 +83,7 @@ export default (mios: MiOS) => {
 
 	function search(ctx) {
 		const el = document.createElement('mk-search-page');
-		el.setAttribute('query', ctx.params.query);
+		el.setAttribute('query', ctx.querystring.substr(2));
 		mount(el);
 	}
 

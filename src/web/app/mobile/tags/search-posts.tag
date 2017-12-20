@@ -15,6 +15,8 @@
 				width calc(100% - 32px)
 	</style>
 	<script>
+		import parse from '../../common/scripts/parse-search-query';
+
 		this.mixin('api');
 
 		this.max = 30;
@@ -24,9 +26,7 @@
 		this.withMedia = this.opts.withMedia;
 
 		this.init = new Promise((res, rej) => {
-			this.api('posts/search', {
-				query: this.query
-			}).then(posts => {
+			this.api('posts/search', parse(this.query)).then(posts => {
 				res(posts);
 				this.trigger('loaded');
 			});

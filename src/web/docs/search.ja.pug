@@ -1,0 +1,38 @@
+h1 検索
+
+p 投稿を検索することができます。
+p
+	| キーワードを半角スペースで区切ると、and検索になります。
+	| 例えば、「git コミット」と検索すると、「gitで編集したファイルの特定の行だけコミットする方法がわからない」などがマッチします。
+
+section
+	h2 オプション
+	p
+		| オプションを使用して、より高度な検索をすることもできます。
+		| オプションを指定するには、「オプション名:値」という形式でクエリに含めます。
+	p 利用可能なオプション一覧です:
+
+	table
+		thead
+			tr
+				th 名前
+				th 説明
+		tbody
+			tr
+				td user
+				td ユーザー名。投稿者を限定します。
+			tr
+				td reply
+				td 返信を含めるか否か。(trueかfalse)
+			tr
+				td media
+				td メディアが添付されているか。(trueかfalse)
+			tr
+				td until
+				td 上限の日時。(YYYY-MM-DD)
+			tr
+				td since
+				td 下限の日時。(YYYY-MM-DD)
+
+	p 例えば、「@syuiloの2017年11月1日から2017年12月31日までの『Misskey』というテキストを含む返信ではない投稿」を検索したい場合、クエリは以下のようになります:
+	code user:syuilo since:2017-11-01 until:2017-12-31 reply:false Misskey
