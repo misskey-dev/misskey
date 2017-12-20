@@ -85,7 +85,7 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 		$and: []
 	};
 
-	const push = q.$and.push;
+	const push = x => q.$and.push(x);
 
 	if (text) {
 		push({
