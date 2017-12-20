@@ -22,6 +22,9 @@ export default function(qs: string) {
 				case 'media':
 					q['media'] = value == 'null' ? null : value == 'true';
 					break;
+				case 'poll':
+					q['poll'] = value == 'null' ? null : value == 'true';
+					break;
 				case 'until':
 				case 'since':
 					// YYYY-MM-DD

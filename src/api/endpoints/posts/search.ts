@@ -46,6 +46,10 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [media = null, mediaErr] = $(params.media).optional.nullable.boolean().$;
 	if (mediaErr) return rej('invalid media param');
 
+	// Get 'poll' parameter
+	const [poll = null, pollErr] = $(params.poll).optional.nullable.boolean().$;
+	if (pollErr) return rej('invalid poll param');
+
 	// Get 'since_date' parameter
 	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
 	if (sinceDateErr) throw 'invalid since_date param';
@@ -76,11 +80,11 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// If Elasticsearch is available, search by it
 	// If not, search by MongoDB
 	(config.elasticsearch.enable ? byElasticsearch : byNative)
-		(res, rej, me, text, user, following, reply, repost, media, sinceDate, untilDate, offset, limit);
+		(res, rej, me, text, user, following, reply, repost, media, poll, sinceDate, untilDate, offset, limit);
 });
 
 // Search by MongoDB
-async function byNative(res, rej, me, text, userId, following, reply, repost, media, sinceDate, untilDate, offset, max) {
+async function byNative(res, rej, me, text, userId, following, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
 	const q: any = {
 		$and: []
 	};
@@ -175,6 +179,27 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 		}
 	}
 
+	if (poll != null) {
+		if (poll) {
+			push({
+				poll: {
+					$exists: true,
+					$ne: null
+				}
+			});
+		} else {
+			push({
+				$or: [{
+					poll: {
+						$exists: false
+					}
+				}, {
+					poll: null
+				}]
+			});
+		}
+	}
+
 	if (sinceDate) {
 		push({
 			created_at: {
@@ -207,7 +232,7 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 }
 
 // Search by Elasticsearch
-async function byElasticsearch(res, rej, me, text, userId, following, reply, repost, media, sinceDate, untilDate, offset, max) {
+async function byElasticsearch(res, rej, me, text, userId, following, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
 	const es = require('../../db/elasticsearch');
 
 	es.search({
