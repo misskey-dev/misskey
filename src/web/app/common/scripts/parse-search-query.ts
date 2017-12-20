@@ -14,10 +14,13 @@ export default function(qs: string) {
 					q['following'] = value == 'null' ? null : value == 'true';
 					break;
 				case 'reply':
-					q['include_replies'] = value == 'true';
+					q['reply'] = value == 'null' ? null : value == 'true';
+					break;
+				case 'repost':
+					q['repost'] = value == 'null' ? null : value == 'true';
 					break;
 				case 'media':
-					q['with_media'] = value == 'true';
+					q['media'] = value == 'null' ? null : value == 'true';
 					break;
 				case 'until':
 				case 'since':

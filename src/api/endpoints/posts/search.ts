@@ -34,13 +34,17 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().$;
 	if (followingErr) return rej('invalid following param');
 
-	// Get 'include_replies' parameter
-	const [includeReplies = true, includeRepliesErr] = $(params.include_replies).optional.boolean().$;
-	if (includeRepliesErr) return rej('invalid include_replies param');
+	// Get 'reply' parameter
+	const [reply = null, replyErr] = $(params.reply).optional.nullable.boolean().$;
+	if (replyErr) return rej('invalid reply param');
 
-	// Get 'with_media' parameter
-	const [withMedia = false, withMediaErr] = $(params.with_media).optional.boolean().$;
-	if (withMediaErr) return rej('invalid with_media param');
+	// Get 'repost' parameter
+	const [repost = null, repostErr] = $(params.repost).optional.nullable.boolean().$;
+	if (repostErr) return rej('invalid repost param');
+
+	// Get 'media' parameter
+	const [media = null, mediaErr] = $(params.media).optional.nullable.boolean().$;
+	if (mediaErr) return rej('invalid media param');
 
 	// Get 'since_date' parameter
 	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
@@ -72,53 +76,119 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// If Elasticsearch is available, search by it
 	// If not, search by MongoDB
 	(config.elasticsearch.enable ? byElasticsearch : byNative)
-		(res, rej, me, text, user, following, includeReplies, withMedia, sinceDate, untilDate, offset, limit);
+		(res, rej, me, text, user, following, reply, repost, media, sinceDate, untilDate, offset, limit);
 });
 
 // Search by MongoDB
-async function byNative(res, rej, me, text, userId, following, includeReplies, withMedia, sinceDate, untilDate, offset, max) {
-	const q: any = {};
+async function byNative(res, rej, me, text, userId, following, reply, repost, media, sinceDate, untilDate, offset, max) {
+	const q: any = {
+		$and: []
+	};
+
+	const push = q.$and.push;
 
 	if (text) {
-		q.$and = text.split(' ').map(x => ({
-			text: new RegExp(escapeRegexp(x))
-		}));
+		push({
+			$and: text.split(' ').map(x => ({
+				text: new RegExp(escapeRegexp(x))
+			}))
+		});
 	}
 
 	if (userId) {
-		q.user_id = userId;
+		push({
+			user_id: userId
+		});
 	}
 
 	if (following != null) {
 		const ids = await getFriends(me._id, false);
-		q.user_id = {};
-		if (following) {
-			q.user_id.$in = ids;
+		push({
+			user_id: following ? {
+				$in: ids
+			} : {
+				$nin: ids
+			}
+		});
+	}
+
+	if (reply != null) {
+		if (reply) {
+			push({
+				reply_id: {
+					$exists: true,
+					$ne: null
+				}
+			});
 		} else {
-			q.user_id.$nin = ids;
+			push({
+				$or: [{
+					reply_id: {
+						$exists: false
+					}
+				}, {
+					reply_id: null
+				}]
+			});
 		}
 	}
 
-	if (!includeReplies) {
-		q.reply_id = null;
+	if (repost != null) {
+		if (repost) {
+			push({
+				repost_id: {
+					$exists: true,
+					$ne: null
+				}
+			});
+		} else {
+			push({
+				$or: [{
+					repost_id: {
+						$exists: false
+					}
+				}, {
+					repost_id: null
+				}]
+			});
+		}
 	}
 
-	if (withMedia) {
-		q.media_ids = {
-			$exists: true,
-			$ne: null
-		};
+	if (media != null) {
+		if (media) {
+			push({
+				media_ids: {
+					$exists: true,
+					$ne: null
+				}
+			});
+		} else {
+			push({
+				$or: [{
+					media_ids: {
+						$exists: false
+					}
+				}, {
+					media_ids: null
+				}]
+			});
+		}
 	}
 
 	if (sinceDate) {
-		q.created_at = {
-			$gt: new Date(sinceDate)
-		};
+		push({
+			created_at: {
+				$gt: new Date(sinceDate)
+			}
+		});
 	}
 
 	if (untilDate) {
-		if (q.created_at == undefined) q.created_at = {};
-		q.created_at.$lt = new Date(untilDate);
+		push({
+			created_at: {
+				$lt: new Date(untilDate)
+			}
+		});
 	}
 
 	// Search posts
@@ -137,7 +207,7 @@ async function byNative(res, rej, me, text, userId, following, includeReplies, w
 }
 
 // Search by Elasticsearch
-async function byElasticsearch(res, rej, me, text, userId, following, includeReplies, withMedia, sinceDate, untilDate, offset, max) {
+async function byElasticsearch(res, rej, me, text, userId, following, reply, repost, media, sinceDate, untilDate, offset, max) {
 	const es = require('../../db/elasticsearch');
 
 	es.search({

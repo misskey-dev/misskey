@@ -23,13 +23,36 @@ section
 				td ユーザー名。投稿者を限定します。
 			tr
 				td follow
-				td フォローしているユーザーのみに限定。(trueかfalse)
+				td
+					| true ... フォローしているユーザーに限定。
+					br
+					| false ... フォローしていないユーザーに限定。
+					br
+					| null ... 特に限定しない(デフォルト)
 			tr
 				td reply
-				td 返信を含めるか否か。(trueかfalse)
+				td
+					| true ... 返信に限定。
+					br
+					| false ... 返信でない投稿に限定。
+					br
+					| null ... 特に限定しない(デフォルト)
+			tr
+				td repost
+				td
+					| true ... Repostに限定。
+					br
+					| false ... Repostでない投稿に限定。
+					br
+					| null ... 特に限定しない(デフォルト)
 			tr
 				td media
-				td メディアが添付されているか。(trueかfalse)
+				td
+					| true ... メディアが添付されている投稿に限定。
+					br
+					| false ... メディアが添付されていない投稿に限定。
+					br
+					| null ... 特に限定しない(デフォルト)
 			tr
 				td until
 				td 上限の日時。(YYYY-MM-DD)
