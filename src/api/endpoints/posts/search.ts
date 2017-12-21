@@ -85,7 +85,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 // Search by MongoDB
 async function byNative(res, rej, me, text, userId, following, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
-	const q: any = {
+	let q: any = {
 		$and: []
 	};
 
@@ -214,6 +214,10 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 				$lt: new Date(untilDate)
 			}
 		});
+	}
+
+	if (q.$and.length == 0) {
+		q = {};
 	}
 
 	// Search posts
