@@ -77,7 +77,17 @@ module.exports = async (params, user, app) => {
 			channel_id: {
 				$in: watchingChannelIds
 			}
-		}]
+		}],
+		// mute
+		user_id: {
+			$nin: mutes
+		},
+		'_reply.user_id': {
+			$nin: mutes
+		},
+		'_repost.user_id': {
+			$nin: mutes
+		},
 	} as any;
 
 	if (sinceId) {
