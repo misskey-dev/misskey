@@ -215,7 +215,11 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		poll: poll,
 		text: text,
 		user_id: user._id,
-		app_id: app ? app._id : null
+		app_id: app ? app._id : null,
+
+		// 以下非正規化データ
+		_reply: reply ? { user_id: reply.user_id } : undefined,
+		_repost: repost ? { user_id: repost.user_id } : undefined,
 	});
 
 	// Serialize
