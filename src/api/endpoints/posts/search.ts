@@ -111,7 +111,7 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 			user_id: following ? {
 				$in: ids
 			} : {
-				$nin: ids
+				$nin: ids.concat(me._id)
 			}
 		});
 	}
