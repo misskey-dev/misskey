@@ -473,6 +473,11 @@ desktop:
     mk-user:
       last-used-at: "最終アクセス"
 
+      follows-you: "フォローされています"
+      mute: "ミュートする"
+      muted: "ミュートしています"
+      unmute: "ミュート解除"
+
       photos:
         title: "フォト"
         loading: "読み込み中"

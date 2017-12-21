@@ -6,6 +6,7 @@ import deepcopy = require('deepcopy');
 import { default as User, IUser } from '../models/user';
 import serializePost from './post';
 import Following from '../models/following';
+import Mute from '../models/mute';
 import getFriends from '../common/get-friends';
 import config from '../../conf';
 import rap from '@prezzemolo/rap';
@@ -113,7 +114,7 @@ export default (
 	}
 
 	if (meId && !meId.equals(_user.id)) {
-		// If the user is following
+		// Whether the user is following
 		_user.is_following = (async () => {
 			const follow = await Following.findOne({
 				follower_id: meId,
@@ -123,7 +124,7 @@ export default (
 			return follow !== null;
 		})();
 
-		// If the user is followed
+		// Whether the user is followed
 		_user.is_followed = (async () => {
 			const follow2 = await Following.findOne({
 				follower_id: _user.id,
@@ -131,6 +132,16 @@ export default (
 				deleted_at: { $exists: false }
 			});
 			return follow2 !== null;
+		})();
+
+		// Whether the user is muted
+		_user.is_muted = (async () => {
+			const mute = await Mute.findOne({
+				muter_id: meId,
+				mutee_id: _user.id,
+				deleted_at: { $exists: false }
+			});
+			return mute !== null;
 		})();
 	}
 

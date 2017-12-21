@@ -473,6 +473,11 @@ desktop:
     mk-user:
       last-used-at: "Last used at"
 
+      follows-you: "Follows you"
+      mute: "Mute"
+      muted: "Muting"
+      unmute: "Unmute"
+
       photos:
         title: "Photos"
         loading: "Loading"
