@@ -30,6 +30,22 @@ section
 					br
 					| null ... 特に限定しない(デフォルト)
 			tr
+				td mute
+				td
+					| mute_all ... ミュートしているユーザーの投稿とその投稿に対する返信やRepostを除外する(デフォルト)
+					br
+					| mute_related ... ミュートしているユーザーの投稿に対する返信やRepostだけ除外する
+					br
+					| mute_direct ... ミュートしているユーザーの投稿だけ除外する
+					br
+					| disabled ... ミュートしているユーザーの投稿とその投稿に対する返信やRepostも含める
+					br
+					| direct_only ... ミュートしているユーザーの投稿だけに限定
+					br
+					| related_only ... ミュートしているユーザーの投稿に対する返信やRepostだけに限定
+					br
+					| all_only ... ミュートしているユーザーの投稿とその投稿に対する返信やRepostに限定
+			tr
 				td reply
 				td
 					| true ... 返信に限定。
