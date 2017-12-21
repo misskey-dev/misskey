@@ -39,7 +39,7 @@ export default (
 				deleted_at: { $exists: false }
 			});
 			const mutedUserIds = mute.map(m => m.mutee_id.toString());
-			if (mutedUserIds.indexOf(notifier.toHexString()) != -1) {
+			if (mutedUserIds.indexOf(notifier.toString()) != -1) {
 				return;
 			}
 			//#endregion

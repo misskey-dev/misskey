@@ -8,6 +8,7 @@ import { default as Post, IPost, isValidText } from '../../models/post';
 import { default as User, IUser } from '../../models/user';
 import { default as Channel, IChannel } from '../../models/channel';
 import Following from '../../models/following';
+import Mute from '../../models/mute';
 import DriveFile from '../../models/drive-file';
 import Watching from '../../models/post-watching';
 import ChannelWatching from '../../models/channel-watching';
@@ -240,7 +241,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	const mentions = [];
 
-	function addMention(mentionee, reason) {
+	async function addMention(mentionee, reason) {
 		// Reject if already added
 		if (mentions.some(x => x.equals(mentionee))) return;
 
@@ -249,8 +250,15 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 		// Publish event
 		if (!user._id.equals(mentionee)) {
-			event(mentionee, reason, postObj);
-			pushSw(mentionee, reason, postObj);
+			const mentioneeMutes = await Mute.find({
+				muter_id: mentionee,
+				deleted_at: { $exists: false }
+			});
+			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.mutee_id.toString());
+			if (mentioneesMutedUserIds.indexOf(user._id.toString()) == -1) {
+				event(mentionee, reason, postObj);
+				pushSw(mentionee, reason, postObj);
+			}
 		}
 	}
 
