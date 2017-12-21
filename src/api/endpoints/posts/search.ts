@@ -105,7 +105,7 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 		});
 	}
 
-	if (following != null) {
+	if (following != null && me != null) {
 		const ids = await getFriends(me._id, false);
 		push({
 			user_id: following ? {
