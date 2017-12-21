@@ -41,7 +41,8 @@
 		this.isLoading = true;
 		this.isEmpty = false;
 		this.moreLoading = false;
-		this.page = 0;
+		this.limit = 30;
+		this.offset = 0;
 
 		this.on('mount', () => {
 			document.addEventListener('keydown', this.onDocumentKeydown);
@@ -72,16 +73,16 @@
 
 		this.more = () => {
 			if (this.moreLoading || this.isLoading || this.timeline.posts.length == 0) return;
+			this.offset += this.limit;
 			this.update({
 				moreLoading: true
 			});
-			this.api('posts/search', {
-				query: this.query,
-				page: this.page + 1
+			return this.api('posts/search', Object.assign({}, parse(this.query), {
+				limit: this.limit,
+				offset: this.offset
 			}).then(posts => {
 				this.update({
-					moreLoading: false,
-					page: page + 1
+					moreLoading: false
 				});
 				this.refs.timeline.prependPosts(posts);
 			});
