@@ -80,7 +80,7 @@
 			return this.api('posts/search', Object.assign({}, parse(this.query), {
 				limit: this.limit,
 				offset: this.offset
-			}).then(posts => {
+			})).then(posts => {
 				this.update({
 					moreLoading: false
 				});

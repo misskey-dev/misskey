@@ -36,7 +36,7 @@
 			return this.api('posts/search', Object.assign({}, parse(this.query), {
 				limit: this.limit,
 				offset: this.offset
-			});
+			}));
 		};
 	</script>
 </mk-search-posts>
