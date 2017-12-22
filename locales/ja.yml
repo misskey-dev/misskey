@@ -346,6 +346,9 @@ desktop:
       failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
       info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
 
+    mk-mute-setting:
+      no-users: "ミュートしているユーザーはいません"
+
     mk-post-form:
       post-placeholder: "いまどうしてる？"
       reply-placeholder: "この投稿への返信..."
@@ -379,6 +382,7 @@ desktop:
 
     mk-settings:
       profile: "プロフィール"
+      mute: "ミュート"
       drive: "ドライブ"
       security: "セキュリティ"
       password: "パスワード"
@@ -472,6 +476,11 @@ desktop:
 
     mk-user:
       last-used-at: "最終アクセス"
+
+      follows-you: "フォローされています"
+      mute: "ミュートする"
+      muted: "ミュートしています"
+      unmute: "ミュート解除"
 
       photos:
         title: "フォト"

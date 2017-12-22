@@ -4,6 +4,7 @@
 		<p class={ active: page == 'web' } onmousedown={ setPage.bind(null, 'web') }>%fa:desktop .fw%Web</p>
 		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }>%fa:R bell .fw%通知</p>
 		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }>%fa:cloud .fw%%i18n:desktop.tags.mk-settings.drive%</p>
+		<p class={ active: page == 'mute' } onmousedown={ setPage.bind(null, 'mute') }>%fa:ban .fw%%i18n:desktop.tags.mk-settings.mute%</p>
 		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }>%fa:puzzle-piece .fw%アプリ</p>
 		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
 		<p class={ active: page == 'security' } onmousedown={ setPage.bind(null, 'security') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.security%</p>
@@ -24,6 +25,11 @@
 		<section class="drive" show={ page == 'drive' }>
 			<h1>%i18n:desktop.tags.mk-settings.drive%</h1>
 			<mk-drive-setting/>
+		</section>
+
+		<section class="mute" show={ page == 'mute' }>
+			<h1>%i18n:desktop.tags.mk-settings.mute%</h1>
+			<mk-mute-setting/>
 		</section>
 
 		<section class="apps" show={ page == 'apps' }>
@@ -386,3 +392,35 @@
 		});
 	</script>
 </mk-drive-setting>
+
+<mk-mute-setting>
+	<div class="none ui info" if={ !fetching && users.length == 0 }>
+		<p>%fa:info-circle%%i18n:desktop.tags.mk-mute-setting.no-users%</p>
+	</div>
+	<div class="users" if={ users.length != 0 }>
+		<div each={ user in users }>
+			<p><b>{ user.name }</b> @{ user.username }</p>
+		</div>
+	</div>
+
+	<style>
+		:scope
+			display block
+
+	</style>
+	<script>
+		this.mixin('api');
+
+		this.apps = [];
+		this.fetching = true;
+
+		this.on('mount', () => {
+			this.api('mute/list').then(x => {
+				this.update({
+					fetching: false,
+					users: x.users
+				});
+			});
+		});
+	</script>
+</mk-mute-setting>

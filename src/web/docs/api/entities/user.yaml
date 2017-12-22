@@ -75,6 +75,12 @@ props:
     optional: true
     desc:
       ja: "自分がこのユーザーにフォローされているか"
+  - name: "is_muted"
+    type: "boolean"
+    optional: true
+    desc:
+      ja: "自分がこのユーザーをミュートしているか"
+      en: "Whether you muted this user"
   - name: "last_used_at"
     type: "date"
     optional: false

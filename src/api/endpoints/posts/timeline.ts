@@ -4,6 +4,7 @@
 import $ from 'cafy';
 import rap from '@prezzemolo/rap';
 import Post from '../../models/post';
+import Mute from '../../models/mute';
 import ChannelWatching from '../../models/channel-watching';
 import getFriends from '../../common/get-friends';
 import serialize from '../../serializers/post';
@@ -42,15 +43,23 @@ module.exports = async (params, user, app) => {
 		throw 'only one of since_id, until_id, since_date, until_date can be specified';
 	}
 
-	const { followingIds, watchingChannelIds } = await rap({
+	const { followingIds, watchingChannelIds, mutedUserIds } = await rap({
 		// ID list of the user itself and other users who the user follows
 		followingIds: getFriends(user._id),
+
 		// Watchしているチャンネルを取得
 		watchingChannelIds: ChannelWatching.find({
 			user_id: user._id,
 			// 削除されたドキュメントは除く
 			deleted_at: { $exists: false }
-		}).then(watches => watches.map(w => w.channel_id))
+		}).then(watches => watches.map(w => w.channel_id)),
+
+		// ミュートしているユーザーを取得
+		mutedUserIds: Mute.find({
+			muter_id: user._id,
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		}).then(ms => ms.map(m => m.mutee_id))
 	});
 
 	//#region Construct query
@@ -77,7 +86,17 @@ module.exports = async (params, user, app) => {
 			channel_id: {
 				$in: watchingChannelIds
 			}
-		}]
+		}],
+		// mute
+		user_id: {
+			$nin: mutedUserIds
+		},
+		'_reply.user_id': {
+			$nin: mutedUserIds
+		},
+		'_repost.user_id': {
+			$nin: mutedUserIds
+		},
 	} as any;
 
 	if (sinceId) {

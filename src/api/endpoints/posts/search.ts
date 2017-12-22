@@ -6,6 +6,7 @@ import $ from 'cafy';
 const escapeRegexp = require('escape-regexp');
 import Post from '../../models/post';
 import User from '../../models/user';
+import Mute from '../../models/mute';
 import getFriends from '../../common/get-friends';
 import serialize from '../../serializers/post';
 import config from '../../../conf';
@@ -33,6 +34,10 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().$;
 	if (followingErr) return rej('invalid following param');
+
+	// Get 'mute' parameter
+	const [mute = 'mute_all', muteErr] = $(params.mute).optional.string().$;
+	if (muteErr) return rej('invalid mute param');
 
 	// Get 'reply' parameter
 	const [reply = null, replyErr] = $(params.reply).optional.nullable.boolean().$;
@@ -80,11 +85,11 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// If Elasticsearch is available, search by it
 	// If not, search by MongoDB
 	(config.elasticsearch.enable ? byElasticsearch : byNative)
-		(res, rej, me, text, user, following, reply, repost, media, poll, sinceDate, untilDate, offset, limit);
+		(res, rej, me, text, user, following, mute, reply, repost, media, poll, sinceDate, untilDate, offset, limit);
 });
 
 // Search by MongoDB
-async function byNative(res, rej, me, text, userId, following, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
+async function byNative(res, rej, me, text, userId, following, mute, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
 	let q: any = {
 		$and: []
 	};
@@ -114,6 +119,84 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 				$nin: ids.concat(me._id)
 			}
 		});
+	}
+
+	if (me != null) {
+		const mutes = await Mute.find({
+			muter_id: me._id,
+			deleted_at: { $exists: false }
+		});
+		const mutedUserIds = mutes.map(m => m.mutee_id);
+
+		switch (mute) {
+			case 'mute_all':
+				push({
+					user_id: {
+						$nin: mutedUserIds
+					},
+					'_reply.user_id': {
+						$nin: mutedUserIds
+					},
+					'_repost.user_id': {
+						$nin: mutedUserIds
+					}
+				});
+				break;
+			case 'mute_related':
+				push({
+					'_reply.user_id': {
+						$nin: mutedUserIds
+					},
+					'_repost.user_id': {
+						$nin: mutedUserIds
+					}
+				});
+				break;
+			case 'mute_direct':
+				push({
+					user_id: {
+						$nin: mutedUserIds
+					}
+				});
+				break;
+			case 'direct_only':
+				push({
+					user_id: {
+						$in: mutedUserIds
+					}
+				});
+				break;
+			case 'related_only':
+				push({
+					$or: [{
+						'_reply.user_id': {
+							$in: mutedUserIds
+						}
+					}, {
+						'_repost.user_id': {
+							$in: mutedUserIds
+						}
+					}]
+				});
+				break;
+			case 'all_only':
+				push({
+					$or: [{
+						user_id: {
+							$in: mutedUserIds
+						}
+					}, {
+						'_reply.user_id': {
+							$in: mutedUserIds
+						}
+					}, {
+						'_repost.user_id': {
+							$in: mutedUserIds
+						}
+					}]
+				});
+				break;
+		}
 	}
 
 	if (reply != null) {
@@ -236,7 +319,7 @@ async function byNative(res, rej, me, text, userId, following, reply, repost, me
 }
 
 // Search by Elasticsearch
-async function byElasticsearch(res, rej, me, text, userId, following, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
+async function byElasticsearch(res, rej, me, text, userId, following, mute, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
 	const es = require('../../db/elasticsearch');
 
 	es.search({

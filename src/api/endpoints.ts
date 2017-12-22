@@ -222,6 +222,23 @@ const endpoints: Endpoint[] = [
 		withCredential: true,
 		kind: 'notification-read'
 	},
+
+	{
+		name: 'mute/create',
+		withCredential: true,
+		kind: 'account/write'
+	},
+	{
+		name: 'mute/delete',
+		withCredential: true,
+		kind: 'account/write'
+	},
+	{
+		name: 'mute/list',
+		withCredential: true,
+		kind: 'account/read'
+	},
+
 	{
 		name: 'notifications/get_unread_count',
 		withCredential: true,

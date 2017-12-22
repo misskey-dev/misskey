@@ -346,6 +346,9 @@ desktop:
       failed: "Failed to setup. please ensure that the token is correct."
       info: "From the next sign in, enter the token that is displayed on the device in addition to the password."
 
+    mk-mute-setting:
+      no-users: "No muted users"
+
     mk-post-form:
       post-placeholder: "What's happening?"
       reply-placeholder: "Reply to this post..."
@@ -379,6 +382,7 @@ desktop:
 
     mk-settings:
       profile: "Profile"
+      mute: "Mute"
       drive: "Drive"
       security: "Security"
       password: "Password"
@@ -472,6 +476,11 @@ desktop:
 
     mk-user:
       last-used-at: "Last used at"
+
+      follows-you: "Follows you"
+      mute: "Mute"
+      muted: "Muting"
+      unmute: "Unmute"
 
       photos:
         title: "Photos"

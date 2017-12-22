@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import Notification from '../models/notification';
+import Mute from '../models/mute';
 import event from '../event';
 import serialize from '../serializers/notification';
 
@@ -32,6 +33,17 @@ export default (
 	setTimeout(async () => {
 		const fresh = await Notification.findOne({ _id: notification._id }, { is_read: true });
 		if (!fresh.is_read) {
+			//#region ただしミュートしているユーザーからの通知なら無視
+			const mute = await Mute.find({
+				muter_id: notifiee,
+				deleted_at: { $exists: false }
+			});
+			const mutedUserIds = mute.map(m => m.mutee_id.toString());
+			if (mutedUserIds.indexOf(notifier.toString()) != -1) {
+				return;
+			}
+			//#endregion
+
 			event(notifiee, 'unread_notification', await serialize(notification));
 		}
 	}, 3000);

@@ -3,6 +3,7 @@
  */
 import $ from 'cafy';
 import Notification from '../../models/notification';
+import Mute from '../../models/mute';
 import serialize from '../../serializers/notification';
 import getFriends from '../../common/get-friends';
 import read from '../../common/read-notification';
@@ -45,8 +46,18 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('cannot set since_id and until_id');
 	}
 
+	const mute = await Mute.find({
+		muter_id: user._id,
+		deleted_at: { $exists: false }
+	});
+
 	const query = {
-		notifiee_id: user._id
+		notifiee_id: user._id,
+		$and: [{
+			notifier_id: {
+				$nin: mute.map(m => m.mutee_id)
+			}
+		}]
 	} as any;
 
 	const sort = {
@@ -54,12 +65,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	};
 
 	if (following) {
-		// ID list of the user $self and other users who the user follows
+		// ID list of the user itself and other users who the user follows
 		const followingIds = await getFriends(user._id);
 
-		query.notifier_id = {
-			$in: followingIds
-		};
+		query.$and.push({
+			notifier_id: {
+				$in: followingIds
+			}
+		});
 	}
 
 	if (type) {
