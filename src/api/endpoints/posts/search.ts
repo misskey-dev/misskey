@@ -1,7 +1,6 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
 import $ from 'cafy';
 const escapeRegexp = require('escape-regexp');
 import Post from '../../models/post';
@@ -9,7 +8,6 @@ import User from '../../models/user';
 import Mute from '../../models/mute';
 import getFriends from '../../common/get-friends';
 import serialize from '../../serializers/post';
-import config from '../../../conf';
 
 /**
  * Search a post
@@ -23,13 +21,21 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [text, textError] = $(params.text).optional.string().$;
 	if (textError) return rej('invalid text param');
 
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).optional.id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'include_user_ids' parameter
+	const [includeUserIds = [], includeUserIdsErr] = $(params.include_user_ids).optional.array('id').$;
+	if (includeUserIdsErr) return rej('invalid include_user_ids param');
 
-	// Get 'username' parameter
-	const [username, usernameErr] = $(params.username).optional.string().$;
-	if (usernameErr) return rej('invalid username param');
+	// Get 'exclude_user_ids' parameter
+	const [excludeUserIds = [], excludeUserIdsErr] = $(params.exclude_user_ids).optional.array('id').$;
+	if (excludeUserIdsErr) return rej('invalid exclude_user_ids param');
+
+	// Get 'include_user_usernames' parameter
+	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.include_user_usernames).optional.array('string').$;
+	if (includeUserUsernamesErr) return rej('invalid include_user_usernames param');
+
+	// Get 'exclude_user_usernames' parameter
+	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.exclude_user_usernames).optional.array('string').$;
+	if (excludeUserUsernamesErr) return rej('invalid exclude_user_usernames param');
 
 	// Get 'following' parameter
 	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().$;
@@ -71,25 +77,36 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 30).$;
 	if (limitErr) return rej('invalid limit param');
 
-	let user = userId;
-
-	if (user == null && username != null) {
-		const _user = await User.findOne({
-			username_lower: username.toLowerCase()
-		});
-		if (_user) {
-			user = _user._id;
-		}
+	let includeUsers = includeUserIds;
+	if (includeUserUsernames != null) {
+		const ids = (await Promise.all(includeUserUsernames.map(async (username) => {
+			const _user = await User.findOne({
+				username_lower: username.toLowerCase()
+			});
+			return _user ? _user._id : null;
+		}))).filter(id => id != null);
+		includeUsers = includeUsers.concat(ids);
 	}
 
-	// If Elasticsearch is available, search by it
-	// If not, search by MongoDB
-	(config.elasticsearch.enable ? byElasticsearch : byNative)
-		(res, rej, me, text, user, following, mute, reply, repost, media, poll, sinceDate, untilDate, offset, limit);
+	let excludeUsers = excludeUserIds;
+	if (excludeUserUsernames != null) {
+		const ids = (await Promise.all(excludeUserUsernames.map(async (username) => {
+			const _user = await User.findOne({
+				username_lower: username.toLowerCase()
+			});
+			return _user ? _user._id : null;
+		}))).filter(id => id != null);
+		excludeUsers = excludeUsers.concat(ids);
+	}
+
+	search(res, rej, me, text, includeUsers, excludeUsers, following,
+			mute, reply, repost, media, poll, sinceDate, untilDate, offset, limit);
 });
 
-// Search by MongoDB
-async function byNative(res, rej, me, text, userId, following, mute, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
+async function search(
+	res, rej, me, text, includeUserIds, excludeUserIds, following,
+	mute, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
+
 	let q: any = {
 		$and: []
 	};
@@ -115,9 +132,17 @@ async function byNative(res, rej, me, text, userId, following, mute, reply, repo
 		}
 	}
 
-	if (userId) {
+	if (includeUserIds && includeUserIds.length != 0) {
 		push({
-			user_id: userId
+			user_id: {
+				$in: includeUserIds
+			}
+		});
+	} else if (excludeUserIds && excludeUserIds.length != 0) {
+		push({
+			user_id: {
+				$nin: excludeUserIds
+			}
 		});
 	}
 
@@ -327,67 +352,4 @@ async function byNative(res, rej, me, text, userId, following, mute, reply, repo
 	// Serialize
 	res(await Promise.all(posts.map(async post =>
 		await serialize(post, me))));
-}
-
-// Search by Elasticsearch
-async function byElasticsearch(res, rej, me, text, userId, following, mute, reply, repost, media, poll, sinceDate, untilDate, offset, max) {
-	const es = require('../../db/elasticsearch');
-
-	es.search({
-		index: 'misskey',
-		type: 'post',
-		body: {
-			size: max,
-			from: offset,
-			query: {
-				simple_query_string: {
-					fields: ['text'],
-					query: text,
-					default_operator: 'and'
-				}
-			},
-			sort: [
-				{ _doc: 'desc' }
-			],
-			highlight: {
-				pre_tags: ['<mark>'],
-				post_tags: ['</mark>'],
-				encoder: 'html',
-				fields: {
-					text: {}
-				}
-			}
-		}
-	}, async (error, response) => {
-		if (error) {
-			console.error(error);
-			return res(500);
-		}
-
-		if (response.hits.total === 0) {
-			return res([]);
-		}
-
-		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
-
-		// Fetch found posts
-		const posts = await Post
-			.find({
-				_id: {
-					$in: hits
-				}
-			}, {
-				sort: {
-					_id: -1
-				}
-			});
-
-		posts.map(post => {
-			post._highlight = response.hits.hits.filter(hit => post._id.equals(hit._id))[0].highlight.text[0];
-		});
-
-		// Serialize
-		res(await Promise.all(posts.map(async post =>
-			await serialize(post, me))));
-	});
 }

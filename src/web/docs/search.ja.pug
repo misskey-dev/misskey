@@ -31,7 +31,24 @@ section
 		tbody
 			tr
 				td user
-				td ユーザー名。投稿者を限定します。
+				td
+					| 指定されたユーザー名のユーザーの投稿に限定します。
+					| 「,」(カンマ)で区切って、複数ユーザーを指定することもできます。
+					br
+					| 例えば、
+					code user:himawari,sakurako
+					| と検索すると「@himawariまたは@sakurakoの投稿」だけに限定します。
+					| (つまりユーザーのホワイトリストです)
+			tr
+				td exclude_user
+				td
+					| 指定されたユーザー名のユーザーの投稿を除外します。
+					| 「,」(カンマ)で区切って、複数ユーザーを指定することもできます。
+					br
+					| 例えば、
+					code exclude_user:akari,chinatsu
+					| と検索すると「@akariまたは@chinatsu以外の投稿」に限定します。
+					| (つまりユーザーのブラックリストです)
 			tr
 				td follow
 				td

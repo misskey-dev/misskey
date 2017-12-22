@@ -8,7 +8,10 @@ export default function(qs: string) {
 			const [key, value] = x.split(':');
 			switch (key) {
 				case 'user':
-					q['username'] = value;
+					q['include_user_usernames'] = value.split(',');
+					break;
+				case 'exclude_user':
+					q['exclude_user_usernames'] = value.split(',');
 					break;
 				case 'follow':
 					q['following'] = value == 'null' ? null : value == 'true';
