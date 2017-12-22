@@ -99,8 +99,9 @@ async function byNative(res, rej, me, text, userId, following, mute, reply, repo
 	if (text) {
 		push({
 			$and: text.split(' ').map(x => ({
+				// キーワードが-で始まる場合そのキーワードを除外する
 				text: x[0] == '-' ? {
-					$ne: new RegExp(escapeRegexp(x.substr(1)))
+					$not: new RegExp(escapeRegexp(x.substr(1)))
 				} : new RegExp(escapeRegexp(x))
 			}))
 		});
