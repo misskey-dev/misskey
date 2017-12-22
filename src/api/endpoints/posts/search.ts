@@ -99,7 +99,9 @@ async function byNative(res, rej, me, text, userId, following, mute, reply, repo
 	if (text) {
 		push({
 			$and: text.split(' ').map(x => ({
-				text: new RegExp(escapeRegexp(x))
+				text: x[0] == '-' ? {
+					$ne: new RegExp(escapeRegexp(x))
+				} : new RegExp(escapeRegexp(x))
 			}))
 		});
 	}
