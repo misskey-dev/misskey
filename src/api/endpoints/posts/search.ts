@@ -100,7 +100,7 @@ async function byNative(res, rej, me, text, userId, following, mute, reply, repo
 		push({
 			$and: text.split(' ').map(x => ({
 				text: x[0] == '-' ? {
-					$ne: new RegExp(escapeRegexp(x))
+					$ne: new RegExp(escapeRegexp(x.substr(1)))
 				} : new RegExp(escapeRegexp(x))
 			}))
 		});
