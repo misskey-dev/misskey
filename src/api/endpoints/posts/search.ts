@@ -97,14 +97,22 @@ async function byNative(res, rej, me, text, userId, following, mute, reply, repo
 	const push = x => q.$and.push(x);
 
 	if (text) {
-		push({
-			$and: text.split(' ').map(x => ({
-				// キーワードが-で始まる場合そのキーワードを除外する
-				text: x[0] == '-' ? {
-					$not: new RegExp(escapeRegexp(x.substr(1)))
-				} : new RegExp(escapeRegexp(x))
-			}))
-		});
+		// 完全一致検索
+		if (/"""(.+?)"""/.test(text)) {
+			const x = text.match(/"""(.+?)"""/)[1];
+			push({
+				text: x
+			});
+		} else {
+			push({
+				$and: text.split(' ').map(x => ({
+					// キーワードが-で始まる場合そのキーワードを除外する
+					text: x[0] == '-' ? {
+						$not: new RegExp(escapeRegexp(x.substr(1)))
+					} : new RegExp(escapeRegexp(x))
+				}))
+			});
+		}
 	}
 
 	if (userId) {
