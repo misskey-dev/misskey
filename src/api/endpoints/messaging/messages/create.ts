@@ -98,7 +98,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
 		if (!freshMessage.is_read) {
-			//#region ただしミュートしているユーザーからの通知なら無視
+			//#region ただしミュートされているなら発行しない
 			const mute = await Mute.find({
 				muter_id: recipient._id,
 				deleted_at: { $exists: false }
