@@ -163,7 +163,7 @@
 		"tcp-port-used": "0.1.2",
 		"textarea-caret": "3.0.2",
 		"tmp": "0.0.33",
-		"ts-node": "3.3.0",
+		"ts-node": "4.1.0",
 		"tslint": "5.8.0",
 		"typescript": "2.6.2",
 		"uglify-es": "3.2.0",
