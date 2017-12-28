@@ -103,7 +103,7 @@
 		"express": "4.16.2",
 		"file-type": "7.4.0",
 		"fuckadblock": "3.2.1",
-		"gm": "1.23.0",
+		"gm": "1.23.1",
 		"gulp": "3.9.1",
 		"gulp-cssnano": "2.1.2",
 		"gulp-htmlmin": "4.0.0",
