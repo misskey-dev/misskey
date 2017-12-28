@@ -145,7 +145,7 @@
 		"redis": "2.8.0",
 		"request": "2.83.0",
 		"rimraf": "2.6.2",
-		"riot": "3.8.0",
+		"riot": "3.8.1",
 		"riot-tag-loader": "2.0.1",
 		"rndstr": "1.0.0",
 		"s-age": "1.1.0",
