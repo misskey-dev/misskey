@@ -146,7 +146,7 @@
 		"request": "2.83.0",
 		"rimraf": "2.6.2",
 		"riot": "3.8.1",
-		"riot-tag-loader": "2.0.1",
+		"riot-tag-loader": "2.0.2",
 		"rndstr": "1.0.0",
 		"s-age": "1.1.0",
 		"seedrandom": "2.4.3",
