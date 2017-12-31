@@ -1,7 +1,10 @@
 import config from '../conf';
 
-const uri = config.mongodb.user && config.mongodb.pass
-	? `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`
+const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
+const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
+
+const uri = u && p
+	? `mongodb://${u}:${p}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`
 	: `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
 
 /**
