@@ -4,6 +4,7 @@ import * as yaml from 'js-yaml';
 
 import { fa } from '../../common/build/fa';
 import config from '../../conf';
+import { licenseHtml } from '../../common/build/license';
 const constants = require('../../const.json');
 
 export default function(): { [key: string]: any } {
@@ -41,6 +42,8 @@ export default function(): { [key: string]: any } {
 	vars['copyright'] = constants.copyright;
 
 	vars['facss'] = fa.dom.css();
+
+	vars['license'] = licenseHtml;
 
 	return vars;
 }
