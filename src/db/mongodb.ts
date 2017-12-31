@@ -24,9 +24,9 @@ const nativeDbConn = async (): Promise<mongodb.Db> => {
 	if (mdb) return mdb;
 
 	const db = await ((): Promise<mongodb.Db> => new Promise((resolve, reject) => {
-		mongodb.MongoClient.connect(uri, (e, db) => {
+		(mongodb as any).MongoClient.connect(uri, (e, client) => {
 			if (e) return reject(e);
-			resolve(db);
+			resolve(client.db(config.mongodb.db));
 		});
 	}))();
 
