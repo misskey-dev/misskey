@@ -1,13 +1,16 @@
 import * as fs from 'fs';
+import * as util from 'util';
 import * as glob from 'glob';
 import * as yaml from 'js-yaml';
+import * as licenseChecker from 'license-checker';
+import * as tmp from 'tmp';
 
 import { fa } from '../../common/build/fa';
 import config from '../../conf';
 import { licenseHtml } from '../../common/build/license';
 const constants = require('../../const.json');
 
-export default function(): { [key: string]: any } {
+export default async function(): Promise<{ [key: string]: any }> {
 	const vars = {} as { [key: string]: any };
 
 	const endpoints = glob.sync('./src/web/docs/api/endpoints/**/*.yaml');
@@ -44,6 +47,18 @@ export default function(): { [key: string]: any } {
 	vars['facss'] = fa.dom.css();
 
 	vars['license'] = licenseHtml;
+
+	const tmpObj = tmp.fileSync();
+	fs.writeFileSync(tmpObj.name, JSON.stringify({
+		licenseText: ''
+	}), 'utf-8');
+	const dependencies = await util.promisify(licenseChecker.init).bind(licenseChecker)({
+		start: __dirname + '/../../../',
+		customPath: tmpObj.name
+	});
+	tmpObj.removeCallback();
+
+	vars['dependencies'] = dependencies;
 
 	return vars;
 }

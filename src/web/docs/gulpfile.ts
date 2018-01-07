@@ -23,9 +23,9 @@ gulp.task('doc', [
 	'doc:styles'
 ]);
 
-const commonVars = generateVars();
+gulp.task('doc:docs', async () => {
+	const commonVars = await generateVars();
 
-gulp.task('doc:docs', () => {
 	glob('./src/web/docs/**/*.*.pug', (globErr, files) => {
 		if (globErr) {
 			console.error(globErr);

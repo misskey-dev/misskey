@@ -17,8 +17,6 @@ import config from './../../../conf';
 
 import generateVars from '../vars';
 
-const commonVars = generateVars();
-
 const langs = Object.keys(locales);
 
 const kebab = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
@@ -94,7 +92,8 @@ gulp.task('doc:api', [
 	'doc:api:entities'
 ]);
 
-gulp.task('doc:api:endpoints', () => {
+gulp.task('doc:api:endpoints', async () => {
+	const commonVars = await generateVars();
 	glob('./src/web/docs/api/endpoints/**/*.yaml', (globErr, files) => {
 		if (globErr) {
 			console.error(globErr);
@@ -144,7 +143,8 @@ gulp.task('doc:api:endpoints', () => {
 	});
 });
 
-gulp.task('doc:api:entities', () => {
+gulp.task('doc:api:entities', async () => {
+	const commonVars = await generateVars();
 	glob('./src/web/docs/api/entities/**/*.yaml', (globErr, files) => {
 		if (globErr) {
 			console.error(globErr);
