@@ -166,7 +166,7 @@
 		"textarea-caret": "3.0.2",
 		"tmp": "0.0.33",
 		"ts-node": "4.1.0",
-		"tslint": "5.8.0",
+		"tslint": "5.9.0",
 		"typescript": "2.6.2",
 		"uglify-es": "3.3.4",
 		"uglifyjs-webpack-plugin": "1.1.5",
