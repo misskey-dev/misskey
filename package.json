@@ -115,7 +115,7 @@
 		"gulp-replace": "0.6.1",
 		"gulp-stylus": "2.6.0",
 		"gulp-tslint": "8.1.2",
-		"gulp-typescript": "3.2.3",
+		"gulp-typescript": "4.0.0-alpha.1",
 		"gulp-uglify": "3.0.0",
 		"gulp-util": "3.0.8",
 		"highlight.js": "9.12.0",
