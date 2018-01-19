@@ -266,11 +266,11 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 		}
 		rej(new Error('un-compatible file.'));
 	})
-	.then(([path, remove]): Promise<any> => new Promise((res, rej) => {
+	.then(([path, shouldCleanup]): Promise<any> => new Promise((res, rej) => {
 		addFile(user, path, ...args)
 			.then(file => {
 				res(file);
-				if (remove) {
+				if (shouldCleanup) {
 					fs.unlink(path, (e) => {
 						if (e) log(e.stack);
 					});
