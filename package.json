@@ -84,7 +84,7 @@
 		"awesome-typescript-loader": "3.4.1",
 		"bcryptjs": "2.4.3",
 		"body-parser": "1.18.2",
-		"cafy": "3.2.0",
+		"cafy": "3.2.1",
 		"chai": "4.1.2",
 		"chai-http": "3.0.0",
 		"chalk": "2.3.0",
