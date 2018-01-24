@@ -1,19 +1,19 @@
 # Use latest LTS
 FROM node:8.9.4-alpine
 
-ARG node_env=production
+RUN apk add --no-cache graphicsmagick
 
 WORKDIR /app
 COPY . /app
 
-RUN apk add --no-cache graphicsmagick
+ARG node_env=production
+ENV NODE_ENV $node_env
 
 RUN apk add --no-cache --virtual build-requirements \
 python2 autoconf automake build-base file nasm libpng-dev && \
-npm install && \
+env NODE_ENV= npm install && \
 apk del --purge build-requirements && \
-env NODE_ENV=$node_env npm run build && \
-env NODE_ENV=$node_env npm prune
+npm run build && \
+npm prune
 
-ENV NODE_ENV $node_env
 CMD ["npm", "start"]
