@@ -7,7 +7,7 @@ const chalk = require('chalk');
 const configDirPath = `${__dirname}/../.config`;
 const configPath = `${configDirPath}/default.yml`;
 
-const form = [
+const common_prefix_form = [
 	{
 		type: 'input',
 		name: 'maintainer',
@@ -22,7 +22,23 @@ const form = [
 		type: 'input',
 		name: 'secondary_url',
 		message: 'SECONDARY URL:'
+	}
+];
+
+const common_suffix_form = [
+	{
+		type: 'input',
+		name: 'recaptcha_site',
+		message: 'reCAPTCHA\'s site key:'
 	},
+	{
+		type: 'input',
+		name: 'recaptcha_secret',
+		message: 'reCAPTCHA\'s secret key:'
+	}
+];
+
+const server_configuration_form = [
 	{
 		type: 'input',
 		name: 'port',
@@ -122,20 +138,30 @@ const form = [
 		name: 'es_pass',
 		message: 'Elasticsearch\'s password:',
 		when: ctx => ctx.elasticsearch
-	},
-	{
-		type: 'input',
-		name: 'recaptcha_site',
-		message: 'reCAPTCHA\'s site key:'
-	},
-	{
-		type: 'input',
-		name: 'recaptcha_secret',
-		message: 'reCAPTCHA\'s secret key:'
 	}
-];
+]
+
+const isDCMode = process.argv[2] === '--docker-compose'
+const dcAnswerMixin = {
+	port: '8080',
+	https: false,
+	mongo_host: 'mongo',
+	mongo_port: '27017',
+	mongo_db: 'misskey',
+	mongo_user: '',
+	mongo_pass: '',
+	redis_host: 'redis',
+	redis_port: '6379',
+	redis_pass: '',
+	elasticsearch: false
+}
+
+const form = isDCMode ?
+	common_prefix_form.concat(common_suffix_form) :
+	common_prefix_form.concat(server_configuration_form, common_suffix_form)
 
 inquirer.prompt(form).then(as => {
+	if (isDCMode) Object.assign(as, dcAnswerMixin)
 	// Mapping answers
 	const conf = {
 		maintainer: as['maintainer'],
@@ -176,6 +202,9 @@ inquirer.prompt(form).then(as => {
 
 	try {
 		fs.mkdirSync(configDirPath);
+	} catch (e) {}
+
+	try {
 		fs.writeFileSync(configPath, yaml.dump(conf));
 		console.log(chalk.green('Well done.'));
 	} catch (e) {
