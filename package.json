@@ -64,7 +64,7 @@
 		"@types/page": "1.5.32",
 		"@types/proxy-addr": "2.0.0",
 		"@types/pug": "2.0.4",
-		"@types/qrcode": "0.8.0",
+		"@types/qrcode": "0.8.1",
 		"@types/ratelimiter": "2.1.28",
 		"@types/redis": "2.8.3",
 		"@types/request": "2.0.9",
