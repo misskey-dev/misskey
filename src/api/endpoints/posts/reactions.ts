@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Post from '../../models/post';
 import Reaction from '../../models/post-reaction';
-import serialize from '../../serializers/post-reaction';
+import { pack } from '../../models/post-reaction';
 
 /**
  * Show reactions of a post
@@ -54,5 +54,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(reactions.map(async reaction =>
-		await serialize(reaction, user))));
+		await pack(reaction, user))));
 });

@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import User from '../models/user';
-import serialize from '../serializers/user';
+import { pack } from '../models/user';
 
 /**
  * Lists all users
@@ -55,5 +55,5 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>
-		await serialize(user, me))));
+		await pack(user, me))));
 });

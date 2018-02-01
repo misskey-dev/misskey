@@ -4,7 +4,7 @@
 import * as URL from 'url';
 import $ from 'cafy';
 import { validateFileName } from '../../../models/drive-file';
-import serialize from '../../../serializers/drive-file';
+import { pack } from '../../../models/drive-file';
 import create from '../../../common/add-file-to-drive';
 import * as debug from 'debug';
 import * as tmp from 'tmp';
@@ -63,5 +63,5 @@ module.exports = async (params, user): Promise<any> => {
 		if (e) log(e.stack);
 	});
 
-	return serialize(driveFile);
+	return pack(driveFile);
 };

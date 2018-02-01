@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Channel from '../../models/channel';
 import Watching from '../../models/channel-watching';
-import serialize from '../../serializers/channel';
+import { pack } from '../../models/channel';
 
 /**
  * Create a channel
@@ -28,7 +28,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	});
 
 	// Response
-	res(await serialize(channel));
+	res(await pack(channel));
 
 	// Create Watching
 	await Watching.insert({

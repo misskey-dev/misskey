@@ -7,7 +7,7 @@ import Post from '../../models/post';
 import Mute from '../../models/mute';
 import ChannelWatching from '../../models/channel-watching';
 import getFriends from '../../common/get-friends';
-import serialize from '../../serializers/post';
+import { pack } from '../../models/post';
 
 /**
  * Get timeline of myself
@@ -128,5 +128,5 @@ module.exports = async (params, user, app) => {
 		});
 
 	// Serialize
-	return await Promise.all(timeline.map(post => serialize(post, user)));
+	return await Promise.all(timeline.map(post => pack(post, user)));
 };

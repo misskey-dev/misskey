@@ -4,7 +4,7 @@
 const ms = require('ms');
 import $ from 'cafy';
 import User from '../../models/user';
-import serialize from '../../serializers/user';
+import { pack } from '../../models/user';
 import getFriends from '../../common/get-friends';
 
 /**
@@ -44,5 +44,5 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>
-		await serialize(user, me, { detail: true }))));
+		await pack(user, me, { detail: true }))));
 });

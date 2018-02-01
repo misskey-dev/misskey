@@ -10,6 +10,11 @@ export default MessagingMessage;
 
 export interface IMessagingMessage {
 	_id: mongo.ObjectID;
+	created_at: Date;
+	text: string;
+	user_id: mongo.ObjectID;
+	recipient_id: mongo.ObjectID;
+	is_read: boolean;
 }
 
 export function isValidText(text: string): boolean {

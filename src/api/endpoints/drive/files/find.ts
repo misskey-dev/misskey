@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import DriveFile from '../../../models/drive-file';
-import serialize from '../../../serializers/drive-file';
+import { pack } from '../../../models/drive-file';
 
 /**
  * Find a file(s)
@@ -31,5 +31,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(files.map(async file =>
-		await serialize(file))));
+		await pack(file))));
 });

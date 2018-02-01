@@ -12,7 +12,7 @@ import Mute from '../../models/mute';
 import DriveFile from '../../models/drive-file';
 import Watching from '../../models/post-watching';
 import ChannelWatching from '../../models/channel-watching';
-import serialize from '../../serializers/post';
+import { pack } from '../../models/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
 import event, { pushSw, publishChannelStream } from '../../event';
@@ -224,7 +224,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	});
 
 	// Serialize
-	const postObj = await serialize(post);
+	const postObj = await pack(post);
 
 	// Reponse
 	res({

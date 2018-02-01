@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import History from '../../models/messaging-history';
 import Mute from '../../models/mute';
-import serialize from '../../serializers/messaging-message';
+import { pack } from '../../models/messaging-message';
 
 /**
  * Show messaging history
@@ -39,5 +39,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(history.map(async h =>
-		await serialize(h.message, user))));
+		await pack(h.message, user))));
 });

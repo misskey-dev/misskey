@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import User from '../models/user';
-import serialize from '../serializers/user';
+import { pack } from '../models/user';
 
 /**
  * Show myself
@@ -15,7 +15,7 @@ import serialize from '../serializers/user';
  */
 module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => {
 	// Serialize
-	res(await serialize(user, user, {
+	res(await pack(user, user, {
 		detail: true,
 		includeSecrets: isSecure
 	}));

@@ -9,7 +9,9 @@ export default DriveFolder;
 export type IDriveFolder = {
 	_id: mongo.ObjectID;
 	created_at: Date;
+	name: string;
 	user_id: mongo.ObjectID;
+	parent_id: mongo.ObjectID;
 };
 
 export function isValidFolderName(name: string): boolean {

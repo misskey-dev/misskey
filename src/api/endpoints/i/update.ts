@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User from '../../models/user';
 import { isValidName, isValidDescription, isValidLocation, isValidBirthday } from '../../models/user';
-import serialize from '../../serializers/user';
+import { pack } from '../../models/user';
 import event from '../../event';
 import config from '../../../conf';
 
@@ -65,7 +65,7 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	});
 
 	// Serialize
-	const iObj = await serialize(user, user, {
+	const iObj = await pack(user, user, {
 		detail: true,
 		includeSecrets: isSecure
 	});

@@ -6,7 +6,7 @@ import * as uuid from 'uuid';
 import autwh from 'autwh';
 import redis from '../../db/redis';
 import User from '../models/user';
-import serialize from '../serializers/user';
+import { pack } from '../models/user';
 import event from '../event';
 import config from '../../conf';
 import signin from '../common/signin';
@@ -50,7 +50,7 @@ module.exports = (app: express.Application) => {
 		res.send(`Twitterの連携を解除しました :v:`);
 
 		// Publish i updated event
-		event(user._id, 'i_updated', await serialize(user, user, {
+		event(user._id, 'i_updated', await pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import Post from '../models/post';
-import serialize from '../serializers/post';
+import { pack } from '../models/post';
 
 /**
  * Lists all posts
@@ -85,5 +85,5 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(posts.map(async post => await serialize(post))));
+	res(await Promise.all(posts.map(async post => await pack(post))));
 });

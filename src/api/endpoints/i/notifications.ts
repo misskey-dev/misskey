@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Notification from '../../models/notification';
 import Mute from '../../models/mute';
-import serialize from '../../serializers/notification';
+import { pack } from '../../models/notification';
 import getFriends from '../../common/get-friends';
 import read from '../../common/read-notification';
 
@@ -101,7 +101,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(notifications.map(async notification =>
-		await serialize(notification))));
+		await pack(notification))));
 
 	// Mark as read all
 	if (notifications.length > 0 && markAsRead) {

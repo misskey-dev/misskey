@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
-import serialize from '../../../serializers/drive-folder';
+import { pack } from '../../../models/drive-folder';
 
 /**
  * Show a folder
@@ -29,7 +29,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Serialize
-	res(await serialize(folder, {
+	res(await pack(folder, {
 		detail: true
 	}));
 });

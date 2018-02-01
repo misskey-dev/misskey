@@ -20,8 +20,14 @@ export { getGridFSBucket };
 
 export type IDriveFile = {
 	_id: mongodb.ObjectID;
-	created_at: Date;
-	user_id: mongodb.ObjectID;
+	uploadDate: Date;
+	md5: string;
+	filename: string;
+	metadata: {
+		properties: any;
+		user_id: mongodb.ObjectID;
+		folder_id: mongodb.ObjectID;
+	}
 };
 
 export function validateFileName(name: string): boolean {

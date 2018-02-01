@@ -4,7 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import recaptcha = require('recaptcha-promise');
 import { default as User, IUser } from '../models/user';
 import { validateUsername, validatePassword } from '../models/user';
-import serialize from '../serializers/user';
+import { pack } from '../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../conf';
 
@@ -142,7 +142,7 @@ export default async (req: express.Request, res: express.Response) => {
 	});
 
 	// Response
-	res.send(await serialize(account));
+	res.send(await pack(account));
 
 	// Create search index
 	if (config.elasticsearch.enable) {

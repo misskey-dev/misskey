@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { default as User, IUser } from '../models/user';
 import Signin from '../models/signin';
-import serialize from '../serializers/signin';
+import { pack } from '../models/signin';
 import event from '../event';
 import signin from '../common/signin';
 import config from '../../conf';
@@ -85,5 +85,5 @@ export default async (req: express.Request, res: express.Response) => {
 	});
 
 	// Publish signin event
-	event(user._id, 'signin', await serialize(record));
+	event(user._id, 'signin', await pack(record));
 };

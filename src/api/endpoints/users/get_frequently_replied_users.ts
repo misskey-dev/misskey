@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Post from '../../models/post';
 import User from '../../models/user';
-import serialize from '../../serializers/user';
+import { pack } from '../../models/user';
 
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
@@ -91,7 +91,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
-		user: await serialize(user, me, { detail: true }),
+		user: await pack(user, me, { detail: true }),
 		weight: repliedUsers[user] / peak
 	})));
 

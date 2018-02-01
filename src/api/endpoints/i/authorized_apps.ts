@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import AccessToken from '../../models/access-token';
-import serialize from '../../serializers/app';
+import { pack } from '../../models/app';
 
 /**
  * Get authorized apps of my account
@@ -39,5 +39,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(tokens.map(async token =>
-		await serialize(token.app_id))));
+		await pack(token.app_id))));
 });

@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import { default as Channel, IChannel } from '../../models/channel';
-import serialize from '../../serializers/channel';
+import { pack } from '../../models/channel';
 
 /**
  * Show a channel
@@ -27,5 +27,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Serialize
-	res(await serialize(channel, user));
+	res(await pack(channel, user));
 });

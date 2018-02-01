@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import App from '../../models/app';
-import serialize from '../../serializers/app';
+import { pack } from '../../models/app';
 
 /**
  * Get my apps
@@ -37,5 +37,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Reply
 	res(await Promise.all(apps.map(async app =>
-		await serialize(app))));
+		await pack(app))));
 });

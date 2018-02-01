@@ -5,7 +5,7 @@ import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
 import DriveFile from '../../../models/drive-file';
 import { validateFileName } from '../../../models/drive-file';
-import serialize from '../../../serializers/drive-file';
+import { pack } from '../../../models/drive-file';
 import { publishDriveStream } from '../../../event';
 
 /**
@@ -67,7 +67,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	});
 
 	// Serialize
-	const fileObj = await serialize(file);
+	const fileObj = await pack(file);
 
 	// Response
 	res(fileObj);

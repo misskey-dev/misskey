@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import Channel from '../models/channel';
-import serialize from '../serializers/channel';
+import { pack } from '../models/channel';
 
 /**
  * Get all channels
@@ -55,5 +55,5 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(channels.map(async channel =>
-		await serialize(channel, me))));
+		await pack(channel, me))));
 });

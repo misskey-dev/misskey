@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User from '../../models/user';
 import Post from '../../models/post';
-import serialize from '../../serializers/user';
+import { pack } from '../../models/user';
 
 /**
  * Pin post
@@ -35,7 +35,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	});
 
 	// Serialize
-	const iObj = await serialize(user, user, {
+	const iObj = await pack(user, user, {
 		detail: true
 	});
 
