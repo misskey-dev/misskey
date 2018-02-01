@@ -10,7 +10,7 @@ const uri = u && p
 /**
  * monk
  */
-import * as mongo from 'monk';
+import mongo from 'monk';
 
 const db = mongo(uri);
 
