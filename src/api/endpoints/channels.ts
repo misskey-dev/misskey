@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Channel from '../models/channel';
-import { pack } from '../models/channel';
+import Channel, { pack } from '../models/channel';
 
 /**
  * Get all channels

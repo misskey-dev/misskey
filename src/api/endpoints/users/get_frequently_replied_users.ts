@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import Post from '../../models/post';
-import User from '../../models/user';
-import { pack } from '../../models/user';
+import User, { pack } from '../../models/user';
 
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter

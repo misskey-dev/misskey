@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import User from '../../models/user';
-import { isValidName, isValidDescription, isValidLocation, isValidBirthday } from '../../models/user';
-import { pack } from '../../models/user';
+import { isValidName, isValidDescription, isValidLocation, isValidBirthday }, { pack } from '../../models/user';
 import event from '../../event';
 import config from '../../../conf';
 

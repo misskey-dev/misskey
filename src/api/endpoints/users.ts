@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../models/user';
-import { pack } from '../models/user';
+import User, { pack } from '../models/user';
 
 /**
  * Lists all users

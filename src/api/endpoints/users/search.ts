@@ -3,8 +3,7 @@
  */
 import * as mongo from 'mongodb';
 import $ from 'cafy';
-import User from '../../models/user';
-import { pack } from '../../models/user';
+import User, { pack } from '../../models/user';
 import config from '../../../conf';
 const escapeRegexp = require('escape-regexp');
 

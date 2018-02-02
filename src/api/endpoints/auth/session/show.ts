@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import AuthSess from '../../../models/auth-session';
-import { pack } from '../../../models/auth-session';
+import AuthSess, { pack } from '../../../models/auth-session';
 
 /**
  * @swagger

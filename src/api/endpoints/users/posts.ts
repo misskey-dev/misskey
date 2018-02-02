@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import Post from '../../models/post';
-import User from '../../models/user';
-import { pack } from '../../models/post';
+import User, { pack } from '../../models/user';
 
 /**
  * Get posts of a user

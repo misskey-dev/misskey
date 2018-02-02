@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import { default as Channel, IChannel } from '../../models/channel';
-import Post from '../../models/post';
-import { pack } from '../../models/post';
+import Post, { pack } from '../../models/post';
 
 /**
  * Show a posts of a channel

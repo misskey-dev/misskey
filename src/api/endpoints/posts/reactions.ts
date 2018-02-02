@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import Post from '../../models/post';
-import Reaction from '../../models/post-reaction';
-import { pack } from '../../models/post-reaction';
+import Reaction, { pack } from '../../models/post-reaction';
 
 /**
  * Show reactions of a post

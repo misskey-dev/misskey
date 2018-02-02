@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import App from '../../models/app';
-import { pack } from '../../models/app';
+import App, { pack } from '../../models/app';
 
 /**
  * Get my apps

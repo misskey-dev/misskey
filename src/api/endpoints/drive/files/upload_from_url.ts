@@ -3,8 +3,7 @@
  */
 import * as URL from 'url';
 import $ from 'cafy';
-import { validateFileName } from '../../../models/drive-file';
-import { pack } from '../../../models/drive-file';
+import { validateFileName }, { pack } from '../../../models/drive-file';
 import create from '../../../common/add-file-to-drive';
 import * as debug from 'debug';
 import * as tmp from 'tmp';

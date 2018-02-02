@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import Vote from '../../../models/poll-vote';
-import Post from '../../../models/post';
-import { pack } from '../../../models/post';
+import Post, { pack } from '../../../models/post';
 
 /**
  * Get recommended polls
