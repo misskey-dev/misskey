@@ -4,7 +4,7 @@ import * as debug from 'debug';
 
 import User from '../models/user';
 import Mute from '../models/mute';
-import serializePost from '../serializers/post';
+import { pack as packPost } from '../models/post';
 import readNotification from '../common/read-notification';
 
 const log = debug('misskey');
@@ -49,7 +49,7 @@ export default async function(request: websocket.request, connection: websocket.
 			case 'post-stream':
 				const postId = channel.split(':')[2];
 				log(`RECEIVED: ${postId} ${data} by @${user.username}`);
-				const post = await serializePost(postId, user, {
+				const post = await packPost(postId, user, {
 					detail: true
 				});
 				connection.send(JSON.stringify({

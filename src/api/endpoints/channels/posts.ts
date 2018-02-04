@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import { default as Channel, IChannel } from '../../models/channel';
-import Post from '../../models/post';
-import serialize from '../../serializers/post';
+import Post, { pack } from '../../models/post';
 
 /**
  * Show a posts of a channel
@@ -74,6 +73,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(posts.map(async (post) =>
-		await serialize(post, user)
+		await pack(post, user)
 	)));
 });

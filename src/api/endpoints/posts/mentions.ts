@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Post from '../../models/post';
 import getFriends from '../../common/get-friends';
-import serialize from '../../serializers/post';
+import { pack } from '../../models/post';
 
 /**
  * Get mentions of myself
@@ -73,6 +73,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(mentions.map(async mention =>
-		await serialize(mention, user)
+		await pack(mention, user)
 	)));
 });

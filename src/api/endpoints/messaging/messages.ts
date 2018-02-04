@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Message from '../../models/messaging-message';
 import User from '../../models/user';
-import serialize from '../../serializers/messaging-message';
+import { pack } from '../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 
 /**
@@ -87,7 +87,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(messages.map(async message =>
-		await serialize(message, user, {
+		await pack(message, user, {
 			populateRecipient: false
 		}))));
 

@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import DriveFolder from '../../models/drive-folder';
-import serialize from '../../serializers/drive-folder';
+import DriveFolder, { pack } from '../../models/drive-folder';
 
 /**
  * Get drive folders
@@ -63,5 +62,5 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(folders.map(async folder =>
-		await serialize(folder))));
+		await pack(folder))));
 });

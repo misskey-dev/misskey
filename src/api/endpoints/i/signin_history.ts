@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Signin from '../../models/signin';
-import serialize from '../../serializers/signin';
+import Signin, { pack } from '../../models/signin';
 
 /**
  * Get signin history of my account
@@ -58,5 +57,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(history.map(async record =>
-		await serialize(record))));
+		await pack(record))));
 });

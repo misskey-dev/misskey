@@ -17,11 +17,14 @@ module.exports = params => new Promise(async (res, rej) => {
 
 	const users = await User
 		.find({}, {
-			_id: false,
-			created_at: true,
-			deleted_at: true
-		}, {
-			sort: { created_at: -1 }
+			sort: {
+				_id: -1
+			},
+			fields: {
+				_id: false,
+				created_at: true,
+				deleted_at: true
+			}
 		});
 
 	const graph = [];

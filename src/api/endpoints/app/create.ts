@@ -3,9 +3,7 @@
  */
 import rndstr from 'rndstr';
 import $ from 'cafy';
-import App from '../../models/app';
-import { isValidNameId } from '../../models/app';
-import serialize from '../../serializers/app';
+import App, { isValidNameId, pack } from '../../models/app';
 
 /**
  * @swagger
@@ -106,5 +104,5 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	});
 
 	// Response
-	res(await serialize(app));
+	res(await pack(app));
 });

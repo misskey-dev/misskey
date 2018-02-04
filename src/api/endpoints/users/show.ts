@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../models/user';
-import serialize from '../../serializers/user';
+import User, { pack } from '../../models/user';
 
 /**
  * Show a user
@@ -41,7 +40,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	}
 
 	// Send response
-	res(await serialize(user, me, {
+	res(await pack(user, me, {
 		detail: true
 	}));
 });

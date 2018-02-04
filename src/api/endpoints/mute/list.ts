@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import Mute from '../../models/mute';
-import serialize from '../../serializers/user';
+import { pack } from '../../models/user';
 import getFriends from '../../common/get-friends';
 
 /**
@@ -63,7 +63,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Serialize
 	const users = await Promise.all(mutes.map(async m =>
-		await serialize(m.mutee_id, me, { detail: true })));
+		await pack(m.mutee_id, me, { detail: true })));
 
 	// Response
 	res({

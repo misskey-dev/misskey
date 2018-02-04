@@ -2,10 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../models/user';
+import User, { pack as packUser } from '../../models/user';
 import Following from '../../models/following';
 import event from '../../event';
-import serializeUser from '../../serializers/user';
 
 /**
  * Unfollow a user
@@ -78,5 +77,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	});
 
 	// Publish follow event
-	event(follower._id, 'unfollow', await serializeUser(followee, follower));
+	event(follower._id, 'unfollow', await packUser(followee, follower));
 });

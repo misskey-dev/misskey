@@ -3,13 +3,12 @@
  */
 import $ from 'cafy';
 import Reaction from '../../../models/post-reaction';
-import Post from '../../../models/post';
+import Post, { pack as packPost } from '../../../models/post';
+import { pack as packUser } from '../../../models/user';
 import Watching from '../../../models/post-watching';
 import notify from '../../../common/notify';
 import watch from '../../../common/watch-post';
 import { publishPostStream, pushSw } from '../../../event';
-import serializePost from '../../../serializers/post';
-import serializeUser from '../../../serializers/user';
 
 /**
  * React to a post
@@ -90,8 +89,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	});
 
 	pushSw(post.user_id, 'reaction', {
-		user: await serializeUser(user, post.user_id),
-		post: await serializePost(post, post.user_id),
+		user: await packUser(user, post.user_id),
+		post: await packPost(post, post.user_id),
 		reaction: reaction
 	});
 

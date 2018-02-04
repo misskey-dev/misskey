@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import Notification from '../models/notification';
 import Mute from '../models/mute';
 import event from '../event';
-import serialize from '../serializers/notification';
+import { pack } from '../models/notification';
 
 export default (
 	notifiee: mongo.ObjectID,
@@ -27,7 +27,7 @@ export default (
 
 	// Publish notification event
 	event(notifiee, 'notification',
-		await serialize(notification));
+		await pack(notification));
 
 	// 3秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 	setTimeout(async () => {
@@ -44,7 +44,7 @@ export default (
 			}
 			//#endregion
 
-			event(notifiee, 'unread_notification', await serialize(notification));
+			event(notifiee, 'unread_notification', await pack(notification));
 		}
 	}, 3000);
 });

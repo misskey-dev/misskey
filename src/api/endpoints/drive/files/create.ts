@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import { validateFileName } from '../../../models/drive-file';
-import serialize from '../../../serializers/drive-file';
+import { validateFileName, pack } from '../../../models/drive-file';
 import create from '../../../common/add-file-to-drive';
 
 /**
@@ -43,7 +42,7 @@ module.exports = async (file, params, user): Promise<any> => {
 		const driveFile = await create(user, file.path, name, null, folderId);
 
 		// Serialize
-		return serialize(driveFile);
+		return pack(driveFile);
 	} catch (e) {
 		console.error(e);
 

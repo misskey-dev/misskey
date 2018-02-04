@@ -3,8 +3,7 @@
  */
 const ms = require('ms');
 import $ from 'cafy';
-import Post from '../../models/post';
-import serialize from '../../serializers/post';
+import Post, { pack } from '../../models/post';
 
 /**
  * Get trend posts
@@ -76,5 +75,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(posts.map(async post =>
-		await serialize(post, user, { detail: true }))));
+		await pack(post, user, { detail: true }))));
 });

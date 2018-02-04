@@ -7,7 +7,7 @@ import Post from '../../models/post';
 import User from '../../models/user';
 import Mute from '../../models/mute';
 import getFriends from '../../common/get-friends';
-import serialize from '../../serializers/post';
+import { pack } from '../../models/post';
 
 /**
  * Search a post
@@ -351,5 +351,5 @@ async function search(
 
 	// Serialize
 	res(await Promise.all(posts.map(async post =>
-		await serialize(post, me))));
+		await pack(post, me))));
 }

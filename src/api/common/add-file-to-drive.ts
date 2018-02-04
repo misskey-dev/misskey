@@ -12,7 +12,7 @@ import prominence = require('prominence');
 
 import DriveFile, { getGridFSBucket } from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
-import serialize from '../serializers/drive-file';
+import { pack } from '../models/drive-file';
 import event, { publishDriveStream } from '../event';
 import config from '../../conf';
 
@@ -282,7 +282,7 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 		log(`drive file has been created ${file._id}`);
 		resolve(file);
 
-		serialize(file).then(serializedFile => {
+		pack(file).then(serializedFile => {
 			// Publish drive_file_created event
 			event(user._id, 'drive_file_created', serializedFile);
 			publishDriveStream(user._id, 'file_created', serializedFile);
