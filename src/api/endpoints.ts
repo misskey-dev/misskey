@@ -156,6 +156,21 @@ const endpoints: Endpoint[] = [
 		withCredential: true
 	},
 	{
+		name: 'i/2fa/register',
+		withCredential: true,
+		secure: true
+	},
+	{
+		name: 'i/2fa/unregister',
+		withCredential: true,
+		secure: true
+	},
+	{
+		name: 'i/2fa/done',
+		withCredential: true,
+		secure: true
+	},
+	{
 		name: 'i/update',
 		withCredential: true,
 		limit: {
@@ -171,11 +186,13 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'i/change_password',
-		withCredential: true
+		withCredential: true,
+		secure: true
 	},
 	{
 		name: 'i/regenerate_token',
-		withCredential: true
+		withCredential: true,
+		secure: true
 	},
 	{
 		name: 'i/pin',
@@ -205,6 +222,23 @@ const endpoints: Endpoint[] = [
 		withCredential: true,
 		kind: 'notification-read'
 	},
+
+	{
+		name: 'mute/create',
+		withCredential: true,
+		kind: 'account/write'
+	},
+	{
+		name: 'mute/delete',
+		withCredential: true,
+		kind: 'account/write'
+	},
+	{
+		name: 'mute/list',
+		withCredential: true,
+		kind: 'account/read'
+	},
+
 	{
 		name: 'notifications/get_unread_count',
 		withCredential: true,

@@ -254,7 +254,7 @@
 			this.api('messaging/messages', {
 				user_id: this.user.id,
 				limit: max + 1,
-				max_id: this.moreMessagesIsInStock ? this.messages[0].id : undefined
+				until_id: this.moreMessagesIsInStock ? this.messages[0].id : undefined
 			}).then(messages => {
 				if (messages.length == max + 1) {
 					this.moreMessagesIsInStock = true;

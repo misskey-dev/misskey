@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import AuthSess from '../../../models/auth-session';
-import serialize from '../../../serializers/auth-session';
+import AuthSess, { pack } from '../../../models/auth-session';
 
 /**
  * @swagger
@@ -67,5 +66,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Response
-	res(await serialize(session, user));
+	res(await pack(session, user));
 });

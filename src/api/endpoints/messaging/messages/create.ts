@@ -6,8 +6,9 @@ import Message from '../../../models/messaging-message';
 import { isValidText } from '../../../models/messaging-message';
 import History from '../../../models/messaging-history';
 import User from '../../../models/user';
+import Mute from '../../../models/mute';
 import DriveFile from '../../../models/drive-file';
-import serialize from '../../../serializers/messaging-message';
+import { pack } from '../../../models/messaging-message';
 import publishUserStream from '../../../event';
 import { publishMessagingStream, publishMessagingIndexStream, pushSw } from '../../../event';
 import config from '../../../../conf';
@@ -78,7 +79,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	});
 
 	// Serialize
-	const messageObj = await serialize(message);
+	const messageObj = await pack(message);
 
 	// Reponse
 	res(messageObj);
@@ -97,6 +98,17 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
 		if (!freshMessage.is_read) {
+			//#region ただしミュートされているなら発行しない
+			const mute = await Mute.find({
+				muter_id: recipient._id,
+				deleted_at: { $exists: false }
+			});
+			const mutedUserIds = mute.map(m => m.mutee_id.toString());
+			if (mutedUserIds.indexOf(user._id.toString()) != -1) {
+				return;
+			}
+			//#endregion
+
 			publishUserStream(message.recipient_id, 'unread_messaging_message', messageObj);
 			pushSw(message.recipient_id, 'unread_messaging_message', messageObj);
 		}

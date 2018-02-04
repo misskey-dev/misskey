@@ -1,0 +1,17 @@
+h1 License
+
+div!= common.license
+
+details
+	summary Libraries
+
+	section
+		h2 Libraries
+
+		each dependency, name in common.dependencies
+			details
+				summary= name
+
+				section
+					h3= name
+					pre= dependency.licenseText

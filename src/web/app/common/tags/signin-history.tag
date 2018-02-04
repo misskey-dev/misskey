@@ -1,54 +1,10 @@
 <mk-signin-history>
 	<div class="records" if={ history.length != 0 }>
-		<div each={ history }>
-			<mk-time time={ created_at }/>
-			<header>
-				<virtual if={ success }>%fa:check%</virtual>
-				<virtual if={ !success }>%fa:times%</virtual>
-				<span class="ip">{ ip }</span>
-			</header>
-			<pre><code>{ JSON.stringify(headers, null, '    ') }</code></pre>
-		</div>
+		<mk-signin-record each={ rec in history } rec={ rec }/>
 	</div>
 	<style>
 		:scope
 			display block
-
-			> .records
-				> div
-					padding 16px 0 0 0
-					border-bottom solid 1px #eee
-
-					> header
-
-						> [data-fa]
-							margin-right 8px
-
-							&.check
-								color #0fda82
-
-							&.times
-								color #ff3100
-
-						> .ip
-							display inline-block
-							color #444
-							background #f8f8f8
-
-					> mk-time
-						position absolute
-						top 16px
-						right 0
-						color #777
-
-					> pre
-						overflow auto
-						max-height 100px
-
-						> code
-							white-space pre-wrap
-							word-break break-all
-							color #4a535a
 
 	</style>
 	<script>
@@ -84,3 +40,77 @@
 		};
 	</script>
 </mk-signin-history>
+
+<mk-signin-record>
+	<header onclick={ toggle }>
+		<virtual if={ rec.success }>%fa:check%</virtual>
+		<virtual if={ !rec.success }>%fa:times%</virtual>
+		<span class="ip">{ rec.ip }</span>
+		<mk-time time={ rec.created_at }/>
+	</header>
+	<pre ref="headers" class="json" show={ show }>{ JSON.stringify(rec.headers, null, 2) }</pre>
+
+	<style>
+		:scope
+			display block
+			border-bottom solid 1px #eee
+
+			> header
+				display flex
+				padding 8px 0
+				line-height 32px
+				cursor pointer
+
+				> [data-fa]
+					margin-right 8px
+					text-align left
+
+					&.check
+						color #0fda82
+
+					&.times
+						color #ff3100
+
+				> .ip
+					display inline-block
+					text-align left
+					padding 8px
+					line-height 16px
+					font-family monospace
+					font-size 14px
+					color #444
+					background #f8f8f8
+					border-radius 4px
+
+				> mk-time
+					margin-left auto
+					text-align right
+					color #777
+
+			> pre
+				overflow auto
+				margin 0 0 16px 0
+				max-height 100px
+				white-space pre-wrap
+				word-break break-all
+				color #4a535a
+
+	</style>
+
+	<script>
+		import hljs from 'highlight.js';
+
+		this.rec = this.opts.rec;
+		this.show = false;
+
+		this.on('mount', () => {
+			hljs.highlightBlock(this.refs.headers);
+		});
+
+		this.toggle = () => {
+			this.update({
+				show: !this.show
+			});
+		};
+	</script>
+</mk-signin-record>

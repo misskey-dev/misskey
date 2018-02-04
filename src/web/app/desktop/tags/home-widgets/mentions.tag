@@ -101,7 +101,7 @@
 			});
 			this.api('posts/mentions', {
 				following: this.mode == 'following',
-				max_id: this.refs.timeline.tail().id
+				until_id: this.refs.timeline.tail().id
 			}).then(posts => {
 				this.update({
 					moreLoading: false

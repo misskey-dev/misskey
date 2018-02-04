@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User from '../../models/user';
 import Following from '../../models/following';
-import serialize from '../../serializers/user';
+import { pack } from '../../models/user';
 import getFriends from '../../common/get-friends';
 
 /**
@@ -82,7 +82,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Serialize
 	const users = await Promise.all(following.map(async f =>
-		await serialize(f.followee_id, me, { detail: true })));
+		await pack(f.followee_id, me, { detail: true })));
 
 	// Response
 	res({

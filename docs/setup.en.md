@@ -24,7 +24,7 @@ Note that Misskey uses following subdomains:
 
 * **api**.*{primary domain}*
 * **auth**.*{primary domain}*
-* **about**.*{primary domain}*
+* **docs**.*{primary domain}*
 * **ch**.*{primary domain}*
 * **stats**.*{primary domain}*
 * **status**.*{primary domain}*
@@ -53,7 +53,7 @@ Please install and setup these softwares:
 * *Node.js* and *npm*
 * **[MongoDB](https://www.mongodb.com/)**
 * **[Redis](https://redis.io/)**
-* **[GraphicsMagick](http://www.graphicsmagick.org/)**
+* **[ImageMagick](http://www.imagemagick.org/script/index.php)**
 
 ##### Optional
 * [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB

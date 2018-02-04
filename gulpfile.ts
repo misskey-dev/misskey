@@ -3,12 +3,12 @@
  */
 
 import * as childProcess from 'child_process';
+import * as fs from 'fs';
 import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
 import tslint from 'gulp-tslint';
-import * as es from 'event-stream';
 import cssnano = require('gulp-cssnano');
 import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
@@ -20,17 +20,10 @@ import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
-import * as fontawesome from '@fortawesome/fontawesome';
-import * as regular from '@fortawesome/fontawesome-free-regular';
-import * as solid from '@fortawesome/fontawesome-free-solid';
-import * as brands from '@fortawesome/fontawesome-free-brands';
 
-// Add icons
-fontawesome.library.add(regular);
-fontawesome.library.add(solid);
-fontawesome.library.add(brands);
-
+import { fa } from './src/common/build/fa';
 import version from './src/version';
+import config from './src/conf';
 
 const uglify = uglifyComposer(uglifyes, console);
 
@@ -45,11 +38,14 @@ if (isDebug) {
 
 const constants = require('./src/const.json');
 
+require('./src/web/docs/gulpfile.ts');
+
 gulp.task('build', [
 	'build:js',
 	'build:ts',
 	'build:copy',
-	'build:client'
+	'build:client',
+	'doc'
 ]);
 
 gulp.task('rebuild', ['clean', 'build']);
@@ -69,16 +65,10 @@ gulp.task('build:ts', () => {
 });
 
 gulp.task('build:copy', () =>
-	es.merge(
-		gulp.src([
-			'./src/**/assets/**/*',
-			'!./src/web/app/**/assets/**/*'
-		]).pipe(gulp.dest('./built/')) as any,
-		gulp.src([
-			'./src/web/about/**/*',
-			'!./src/web/about/**/*.pug'
-		]).pipe(gulp.dest('./built/web/about/')) as any
-	)
+	gulp.src([
+		'./src/**/assets/**/*',
+		'!./src/web/app/**/assets/**/*'
+	]).pipe(gulp.dest('./built/'))
 );
 
 gulp.task('test', ['lint', 'mocha']);
@@ -141,6 +131,7 @@ gulp.task('webpack', done => {
 gulp.task('build:client:script', () =>
 	gulp.src(['./src/web/app/boot.js', './src/web/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(version)))
+		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
@@ -180,7 +171,9 @@ gulp.task('build:client:pug', [
 			.pipe(pug({
 				locals: {
 					themeColor: constants.themeColor,
-					facss: fontawesome.dom.css()
+					facss: fa.dom.css(),
+					//hljscss: fs.readFileSync('./node_modules/highlight.js/styles/default.css', 'utf8')
+					hljscss: fs.readFileSync('./src/web/assets/code-highlight.css', 'utf8')
 				}
 			}))
 			.pipe(htmlmin({

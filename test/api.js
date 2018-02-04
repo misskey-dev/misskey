@@ -224,7 +224,8 @@ describe('API', () => {
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('text').eql(post.text);
+			res.body.should.have.property('created_post');
+			res.body.created_post.should.have.property('text').eql(post.text);
 		}));
 
 		it('ファイルを添付できる', async(async () => {
@@ -237,7 +238,8 @@ describe('API', () => {
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('media_ids').eql([file._id.toString()]);
+			res.body.should.have.property('created_post');
+			res.body.created_post.should.have.property('media_ids').eql([file._id.toString()]);
 		}));
 
 		it('他人のファイルは添付できない', async(async () => {
@@ -283,10 +285,11 @@ describe('API', () => {
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('text').eql(post.text);
-			res.body.should.have.property('reply_id').eql(post.reply_id);
-			res.body.should.have.property('reply');
-			res.body.reply.should.have.property('text').eql(himaPost.text);
+			res.body.should.have.property('created_post');
+			res.body.created_post.should.have.property('text').eql(post.text);
+			res.body.created_post.should.have.property('reply_id').eql(post.reply_id);
+			res.body.created_post.should.have.property('reply');
+			res.body.created_post.reply.should.have.property('text').eql(himaPost.text);
 		}));
 
 		it('repostできる', async(async () => {
@@ -303,9 +306,10 @@ describe('API', () => {
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('repost_id').eql(post.repost_id);
-			res.body.should.have.property('repost');
-			res.body.repost.should.have.property('text').eql(himaPost.text);
+			res.body.should.have.property('created_post');
+			res.body.created_post.should.have.property('repost_id').eql(post.repost_id);
+			res.body.created_post.should.have.property('repost');
+			res.body.created_post.repost.should.have.property('text').eql(himaPost.text);
 		}));
 
 		it('引用repostできる', async(async () => {
@@ -323,10 +327,11 @@ describe('API', () => {
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('text').eql(post.text);
-			res.body.should.have.property('repost_id').eql(post.repost_id);
-			res.body.should.have.property('repost');
-			res.body.repost.should.have.property('text').eql(himaPost.text);
+			res.body.should.have.property('created_post');
+			res.body.created_post.should.have.property('text').eql(post.text);
+			res.body.created_post.should.have.property('repost_id').eql(post.repost_id);
+			res.body.created_post.should.have.property('repost');
+			res.body.created_post.repost.should.have.property('text').eql(himaPost.text);
 		}));
 
 		it('文字数ぎりぎりで怒られない', async(async () => {
@@ -395,7 +400,8 @@ describe('API', () => {
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('poll');
+			res.body.should.have.property('created_post');
+			res.body.created_post.should.have.property('poll');
 		}));
 
 		it('投票の選択肢が無くて怒られる', async(async () => {

@@ -2,7 +2,7 @@
 	<div class="body"><a class="reply" if={ post.reply_id }>%fa:reply%</a><span ref="text"></span><a class="quote" if={ post.repost_id } href={ '/post:' + post.repost_id }>RP: ...</a></div>
 	<details if={ post.media }>
 		<summary>({ post.media.length }個のメディア)</summary>
-		<mk-images-viewer images={ post.media }/>
+		<mk-images images={ post.media }/>
 	</details>
 	<details if={ post.poll }>
 		<summary>%i18n:mobile.tags.mk-sub-post-content.poll%</summary>

@@ -5,27 +5,51 @@ import * as uuid from 'uuid';
 // const Twitter = require('twitter');
 import autwh from 'autwh';
 import redis from '../../db/redis';
-import User from '../models/user';
-import serialize from '../serializers/user';
+import User, { pack } from '../models/user';
 import event from '../event';
 import config from '../../conf';
 import signin from '../common/signin';
 
 module.exports = (app: express.Application) => {
+	function getUserToken(req: express.Request) {
+		// req.headers['cookie'] は常に string ですが、型定義の都合上
+		// string | string[] になっているので string を明示しています
+		return ((req.headers['cookie'] as string || '').match(/i=(!\w+)/) || [null, null])[1];
+	}
+
+	function compareOrigin(req: express.Request) {
+		function normalizeUrl(url: string) {
+			return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
+		}
+
+		// req.headers['referer'] は常に string ですが、型定義の都合上
+		// string | string[] になっているので string を明示しています
+		const referer = req.headers['referer'] as string;
+
+		return (normalizeUrl(referer) == normalizeUrl(config.url));
+	}
+
 	app.get('/disconnect/twitter', async (req, res): Promise<any> => {
-		if (res.locals.user == null) return res.send('plz signin');
+		if (!compareOrigin(req)) {
+			res.status(400).send('invalid origin');
+			return;
+		}
+
+		const userToken = getUserToken(req);
+		if (userToken == null) return res.send('plz signin');
+
 		const user = await User.findOneAndUpdate({
-			token: res.locals.user
+			token: userToken
 		}, {
-				$set: {
-					twitter: null
-				}
-			});
+			$set: {
+				twitter: null
+			}
+		});
 
 		res.send(`Twitterの連携を解除しました :v:`);
 
 		// Publish i updated event
-		event(user._id, 'i_updated', await serialize(user, user, {
+		event(user._id, 'i_updated', await pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));
@@ -50,9 +74,16 @@ module.exports = (app: express.Application) => {
 	});
 
 	app.get('/connect/twitter', async (req, res): Promise<any> => {
-		if (res.locals.user == null) return res.send('plz signin');
+		if (!compareOrigin(req)) {
+			res.status(400).send('invalid origin');
+			return;
+		}
+
+		const userToken = getUserToken(req);
+		if (userToken == null) return res.send('plz signin');
+
 		const ctx = await twAuth.begin();
-		redis.set(res.locals.user, JSON.stringify(ctx));
+		redis.set(userToken, JSON.stringify(ctx));
 		res.redirect(ctx.url);
 	});
 
@@ -77,7 +108,9 @@ module.exports = (app: express.Application) => {
 	});
 
 	app.get('/tw/cb', (req, res): any => {
-		if (res.locals.user == null) {
+		const userToken = getUserToken(req);
+
+		if (userToken == null) {
 			// req.headers['cookie'] は常に string ですが、型定義の都合上
 			// string | string[] になっているので string を明示しています
 			const cookies = cookie.parse((req.headers['cookie'] as string || ''));
@@ -86,6 +119,7 @@ module.exports = (app: express.Application) => {
 
 			if (sessid == undefined) {
 				res.status(400).send('invalid session');
+				return;
 			}
 
 			redis.get(sessid, async (_, ctx) => {
@@ -97,16 +131,24 @@ module.exports = (app: express.Application) => {
 
 				if (user == null) {
 					res.status(404).send(`@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
+					return;
 				}
 
 				signin(res, user, true);
 			});
 		} else {
-			redis.get(res.locals.user, async (_, ctx) => {
-				const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
+			const verifier = req.query.oauth_verifier;
+
+			if (verifier == null) {
+				res.status(400).send('invalid session');
+				return;
+			}
+
+			redis.get(userToken, async (_, ctx) => {
+				const result = await twAuth.done(JSON.parse(ctx), verifier);
 
 				const user = await User.findOneAndUpdate({
-					token: res.locals.user
+					token: userToken
 				}, {
 					$set: {
 						twitter: {
@@ -121,7 +163,7 @@ module.exports = (app: express.Application) => {
 				res.send(`Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`);
 
 				// Publish i updated event
-				event(user._id, 'i_updated', await serialize(user, user, {
+				event(user._id, 'i_updated', await pack(user, user, {
 					detail: true,
 					includeSecrets: true
 				}));

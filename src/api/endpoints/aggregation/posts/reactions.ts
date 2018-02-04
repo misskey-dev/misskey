@@ -35,10 +35,13 @@ module.exports = (params) => new Promise(async (res, rej) => {
 				{ deleted_at: { $gt: startTime } }
 			]
 		}, {
-			_id: false,
-			post_id: false
-		}, {
-			sort: { created_at: -1 }
+			sort: {
+				_id: -1
+			},
+			fields: {
+				_id: false,
+				post_id: false
+			}
 		});
 
 	const graph = [];

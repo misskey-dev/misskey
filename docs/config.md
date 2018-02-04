@@ -49,4 +49,12 @@ sw:
   # VAPIDの秘密鍵
   private_key:
 
+# Twitterインテグレーションの設定(利用しない場合は省略可能)
+twitter:
+  # インテグレーション用アプリのコンシューマーキー
+  consumer_key: 
+
+  # インテグレーション用アプリのコンシューマーシークレット
+  consumer_secret: 
+
 ```

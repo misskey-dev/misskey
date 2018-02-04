@@ -3,7 +3,8 @@
  */
 import $ from 'cafy';
 import History from '../../models/messaging-history';
-import serialize from '../../serializers/messaging-message';
+import Mute from '../../models/mute';
+import { pack } from '../../models/messaging-message';
 
 /**
  * Show messaging history
@@ -17,10 +18,18 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
+	const mute = await Mute.find({
+		muter_id: user._id,
+		deleted_at: { $exists: false }
+	});
+
 	// Get history
 	const history = await History
 		.find({
-			user_id: user._id
+			user_id: user._id,
+			partner: {
+				$nin: mute.map(m => m.mutee_id)
+			}
 		}, {
 			limit: limit,
 			sort: {
@@ -30,5 +39,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(history.map(async h =>
-		await serialize(h.message, user))));
+		await pack(h.message, user))));
 });

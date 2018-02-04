@@ -33,21 +33,22 @@
 
 	</style>
 	<script>
+		import parse from '../../common/scripts/parse-search-query';
+
 		this.mixin('api');
 
 		this.query = this.opts.query;
 		this.isLoading = true;
 		this.isEmpty = false;
 		this.moreLoading = false;
-		this.page = 0;
+		this.limit = 30;
+		this.offset = 0;
 
 		this.on('mount', () => {
 			document.addEventListener('keydown', this.onDocumentKeydown);
 			window.addEventListener('scroll', this.onScroll);
 
-			this.api('posts/search', {
-				query: this.query
-			}).then(posts => {
+			this.api('posts/search', parse(this.query)).then(posts => {
 				this.update({
 					isLoading: false,
 					isEmpty: posts.length == 0
@@ -72,16 +73,16 @@
 
 		this.more = () => {
 			if (this.moreLoading || this.isLoading || this.timeline.posts.length == 0) return;
+			this.offset += this.limit;
 			this.update({
 				moreLoading: true
 			});
-			this.api('posts/search', {
-				query: this.query,
-				page: this.page + 1
-			}).then(posts => {
+			return this.api('posts/search', Object.assign({}, parse(this.query), {
+				limit: this.limit,
+				offset: this.offset
+			})).then(posts => {
 				this.update({
-					moreLoading: false,
-					page: page + 1
+					moreLoading: false
 				});
 				this.refs.timeline.prependPosts(posts);
 			});

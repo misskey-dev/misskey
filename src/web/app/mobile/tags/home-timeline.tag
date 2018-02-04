@@ -47,7 +47,7 @@
 
 		this.more = () => {
 			return this.api('posts/timeline', {
-				max_id: this.refs.timeline.tail().id
+				until_id: this.refs.timeline.tail().id
 			});
 		};
 

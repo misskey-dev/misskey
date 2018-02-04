@@ -137,6 +137,7 @@ common:
     mk-signin:
       username: "ユーザー名"
       password: "パスワード"
+      token: "トークン"
       signing-in: "やってます..."
       signin: "サインイン"
 
@@ -182,6 +183,24 @@ common:
     mk-uploader:
       waiting: "待機中"
 
+docs:
+  edit-this-page-on-github: "間違いや改善点を見つけましたか？"
+  edit-this-page-on-github-link: "このページをGitHubで編集"
+
+  api:
+    entities:
+      properties: "プロパティ"
+    endpoints:
+      params: "パラメータ"
+      res: "レスポンス"
+    props:
+      name: "名前"
+      type: "型"
+      optional: "オプション"
+      description: "説明"
+      yes: "はい"
+      no: "いいえ"
+
 ch:
   tags:
     mk-index:
@@ -198,7 +217,11 @@ ch:
 desktop:
   tags:
     mk-api-info:
-      regenerate-token: "パスワードを入力してください"
+      intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+      caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+      regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+      regenerate-token: "トークンを再生成"
+      enter-password: "パスワードを入力してください"
 
     mk-drive-browser-base-contextmenu:
       create-folder: "フォルダーを作成"
@@ -287,6 +310,15 @@ desktop:
     mk-ui-header-notifications:
       title: "通知"
 
+    mk-profile-setting:
+      avatar: "アバター"
+      choice-avatar: "画像を選択"
+      name: "名前"
+      location: "場所"
+      description: "自己紹介"
+      birthday: "誕生日"
+      save: "保存"
+
     mk-password-setting:
       reset: "パスワードを変更する"
       enter-current-password: "現在のパスワードを入力してください"
@@ -294,6 +326,28 @@ desktop:
       enter-new-password-again: "もう一度新しいパスワードを入力してください"
       not-match: "新しいパスワードが一致しません"
       changed: "パスワードを変更しました"
+
+    mk-2fa-setting:
+      intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
+      detail: "詳細..."
+      url: "https://www.google.co.jp/intl/ja/landing/2step/"
+      caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
+      register: "デバイスを登録する"
+      already-registered: "既に設定は完了しています。"
+      unregister: "設定を解除"
+      unregistered: "二段階認証が無効になりました。"
+      enter-password: "パスワードを入力してください"
+      authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
+      howtoinstall: "インストール方法はこちら"
+      scan: "次に、表示されているQRコードをスキャンします:"
+      done: "お使いのデバイスに表示されているトークンを入力して完了します:"
+      submit: "完了"
+      success: "設定が完了しました！"
+      failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
+      info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+
+    mk-mute-setting:
+      no-users: "ミュートしているユーザーはいません"
 
     mk-post-form:
       post-placeholder: "いまどうしてる？"
@@ -327,7 +381,14 @@ desktop:
       next: "次の投稿"
 
     mk-settings:
+      profile: "プロフィール"
+      mute: "ミュート"
+      drive: "ドライブ"
+      security: "セキュリティ"
       password: "パスワード"
+      2fa: "二段階認証"
+      other: "その他"
+      license: "ライセンス"
 
     mk-timeline-post:
       reposted-by: "{}がRepost"
@@ -416,6 +477,11 @@ desktop:
     mk-user:
       last-used-at: "最終アクセス"
 
+      follows-you: "フォローされています"
+      mute: "ミュートする"
+      muted: "ミュートしています"
+      unmute: "ミュート解除"
+
       photos:
         title: "フォト"
         loading: "読み込み中"
@@ -441,6 +507,7 @@ mobile:
       rename: "名前を変更"
       move: "移動"
       hash: "ハッシュ (md5)"
+      exif: "EXIF"
 
     mk-entrance-signin:
       signup: "新規登録"
@@ -489,8 +556,7 @@ mobile:
       profile: "プロフィール"
       applications: "アプリケーション"
       twitter-integration: "Twitter連携"
-      signin-history: "ログイン履歴"
-      api: "API"
+      signin-history: "サインイン履歴"
       link: "Misskeyリンク"
       settings: "設定"
       signout: "サインアウト"
@@ -554,7 +620,6 @@ mobile:
       submit: "投稿"
       reply-placeholder: "この投稿への返信..."
       post-placeholder: "いまどうしてる？"
-      attach-media-from-local: "デバイスからメディアを添付"
 
     mk-search-posts:
       empty: "「{}」に関する投稿は見つかりませんでした。"

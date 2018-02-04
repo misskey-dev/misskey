@@ -18,7 +18,7 @@
 	<footer>
 		<div>
 			<mk-nav-links/>
-			<mk-copyright/>
+			<p class="c">{ _COPYRIGHT_ }</p>
 		</div>
 	</footer>
 	<!-- ↓ https://github.com/riot/riot/issues/2134 (将来的)-->
@@ -101,7 +101,7 @@
 					text-align center
 					border-top solid 1px #fff
 
-					> mk-copyright
+					> .c
 						margin 0
 						line-height 64px
 						font-size 10px
@@ -150,7 +150,7 @@
 </mk-entrance>
 
 <mk-entrance-signin>
-	<a class="help" href={ _ABOUT_URL_ + '/help' } title="お困りですか？">%fa:question%</a>
+	<a class="help" href={ _DOCS_URL_ + '/help' } title="お困りですか？">%fa:question%</a>
 	<div class="form">
 		<h1><img if={ user } src={ user.avatar_url + '?thumbnail&size=32' }/>
 			<p>{ user ? user.name : 'アカウント' }</p>

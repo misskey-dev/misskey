@@ -1,5 +1,7 @@
 <mk-authorized-apps>
-	<p class="none" if={ !fetching && apps.length == 0 }>%i18n:common.tags.mk-authorized-apps.no-apps%</p>
+	<div class="none ui info" if={ !fetching && apps.length == 0 }>
+		<p>%fa:info-circle%%i18n:common.tags.mk-authorized-apps.no-apps%</p>
+	</div>
 	<div class="apps" if={ apps.length != 0 }>
 		<div each={ app in apps }>
 			<p><b>{ app.name }</b></p>

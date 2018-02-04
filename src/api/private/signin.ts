@@ -1,16 +1,19 @@
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
+import * as speakeasy from 'speakeasy';
 import { default as User, IUser } from '../models/user';
-import Signin from '../models/signin';
-import serialize from '../serializers/signin';
+import Signin, { pack } from '../models/signin';
 import event from '../event';
 import signin from '../common/signin';
+import config from '../../conf';
 
 export default async (req: express.Request, res: express.Response) => {
+	res.header('Access-Control-Allow-Origin', config.url);
 	res.header('Access-Control-Allow-Credentials', 'true');
 
 	const username = req.body['username'];
 	const password = req.body['password'];
+	const token = req.body['token'];
 
 	if (typeof username != 'string') {
 		res.sendStatus(400);
@@ -18,6 +21,11 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	if (typeof password != 'string') {
+		res.sendStatus(400);
+		return;
+	}
+
+	if (token != null && typeof token != 'string') {
 		res.sendStatus(400);
 		return;
 	}
@@ -43,7 +51,23 @@ export default async (req: express.Request, res: express.Response) => {
 	const same = await bcrypt.compare(password, user.password);
 
 	if (same) {
-		signin(res, user, false);
+		if (user.two_factor_enabled) {
+			const verified = (speakeasy as any).totp.verify({
+				secret: user.two_factor_secret,
+				encoding: 'base32',
+				token: token
+			});
+
+			if (verified) {
+				signin(res, user, false);
+			} else {
+				res.status(400).send({
+					error: 'invalid token'
+				});
+			}
+		} else {
+			signin(res, user, false);
+		}
 	} else {
 		res.status(400).send({
 			error: 'incorrect password'
@@ -60,5 +84,5 @@ export default async (req: express.Request, res: express.Response) => {
 	});
 
 	// Publish signin event
-	event(user._id, 'signin', await serialize(record));
+	event(user._id, 'signin', await pack(record));
 };

@@ -8,7 +8,7 @@
 	</div>
 	<details if={ post.media }>
 		<summary>({ post.media.length }つのメディア)</summary>
-		<mk-images-viewer images={ post.media }/>
+		<mk-images images={ post.media }/>
 	</details>
 	<details if={ post.poll }>
 		<summary>投票</summary>

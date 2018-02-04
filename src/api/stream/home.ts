@@ -3,24 +3,53 @@ import * as redis from 'redis';
 import * as debug from 'debug';
 
 import User from '../models/user';
-import serializePost from '../serializers/post';
+import Mute from '../models/mute';
+import { pack as packPost } from '../models/post';
 import readNotification from '../common/read-notification';
 
 const log = debug('misskey');
 
-export default function homeStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+export default async function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any) {
 	// Subscribe Home stream channel
 	subscriber.subscribe(`misskey:user-stream:${user._id}`);
+
+	const mute = await Mute.find({
+		muter_id: user._id,
+		deleted_at: { $exists: false }
+	});
+	const mutedUserIds = mute.map(m => m.mutee_id.toString());
 
 	subscriber.on('message', async (channel, data) => {
 		switch (channel.split(':')[1]) {
 			case 'user-stream':
-				connection.send(data);
+				try {
+					const x = JSON.parse(data);
+
+					if (x.type == 'post') {
+						if (mutedUserIds.indexOf(x.body.user_id) != -1) {
+							return;
+						}
+						if (x.body.reply != null && mutedUserIds.indexOf(x.body.reply.user_id) != -1) {
+							return;
+						}
+						if (x.body.repost != null && mutedUserIds.indexOf(x.body.repost.user_id) != -1) {
+							return;
+						}
+					} else if (x.type == 'notification') {
+						if (mutedUserIds.indexOf(x.body.user_id) != -1) {
+							return;
+						}
+					}
+
+					connection.send(data);
+				} catch (e) {
+					connection.send(data);
+				}
 				break;
 			case 'post-stream':
 				const postId = channel.split(':')[2];
 				log(`RECEIVED: ${postId} ${data} by @${user.username}`);
-				const post = await serializePost(postId, user, {
+				const post = await packPost(postId, user, {
 					detail: true
 				});
 				connection.send(JSON.stringify({

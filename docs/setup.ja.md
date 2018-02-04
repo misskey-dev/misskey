@@ -25,7 +25,7 @@ Misskeyは以下のサブドメインを使います:
 
 * **api**.*{primary domain}*
 * **auth**.*{primary domain}*
-* **about**.*{primary domain}*
+* **docs**.*{primary domain}*
 * **ch**.*{primary domain}*
 * **stats**.*{primary domain}*
 * **status**.*{primary domain}*
@@ -54,7 +54,7 @@ web-push generate-vapid-keys
 * *Node.js* と *npm*
 * **[MongoDB](https://www.mongodb.com/)**
 * **[Redis](https://redis.io/)**
-* **[GraphicsMagick](http://www.graphicsmagick.org/)**
+* **[ImageMagick](http://www.imagemagick.org/script/index.php)**
 
 ##### オプション
 * [Elasticsearch](https://www.elastic.co/) - 検索機能を向上させるために用います。

@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../models/post';
-import serialize from '../../serializers/post';
+import Post, { pack } from '../../models/post';
 
 /**
  * Show a reposts of a post
@@ -25,13 +24,13 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
 	if (sinceIdErr) return rej('invalid since_id param');
 
-	// Get 'max_id' parameter
-	const [maxId, maxIdErr] = $(params.max_id).optional.id().$;
-	if (maxIdErr) return rej('invalid max_id param');
+	// Get 'until_id' parameter
+	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
+	if (untilIdErr) return rej('invalid until_id param');
 
-	// Check if both of since_id and max_id is specified
-	if (sinceId && maxId) {
-		return rej('cannot set since_id and max_id');
+	// Check if both of since_id and until_id is specified
+	if (sinceId && untilId) {
+		return rej('cannot set since_id and until_id');
 	}
 
 	// Lookup post
@@ -55,9 +54,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		query._id = {
 			$gt: sinceId
 		};
-	} else if (maxId) {
+	} else if (untilId) {
 		query._id = {
-			$lt: maxId
+			$lt: untilId
 		};
 	}
 
@@ -70,5 +69,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(reposts.map(async post =>
-		await serialize(post, user))));
+		await pack(post, user))));
 });

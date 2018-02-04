@@ -1,9 +1,9 @@
 <mk-drive>
 	<nav ref="nav">
-		<p onclick={ goRoot }>%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</p>
+		<a onclick={ goRoot } href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
 		<virtual each={ folder in hierarchyFolders }>
 			<span>%fa:angle-right%</span>
-			<p onclick={ move }>{ folder.name }</p>
+			<a onclick={ move } href="/i/drive/folder/{ folder.id }">{ folder.name }</a>
 		</virtual>
 		<virtual if={ folder != null }>
 			<span>%fa:angle-right%</span>
@@ -74,9 +74,12 @@
 				border-bottom solid 1px rgba(0, 0, 0, 0.13)
 
 				> p
+				> a
 					display inline
 					margin 0
 					padding 0
+					text-decoration none !important
+					color inherit
 
 					&:last-child
 						font-weight bold
@@ -245,7 +248,9 @@
 		};
 
 		this.move = ev => {
+			ev.preventDefault();
 			this.cd(ev.item.folder);
+			return false;
 		};
 
 		this.cd = (target, silent = false) => {
@@ -329,7 +334,9 @@
 		this.prependFile = file => this.addFile(file, true);
 		this.prependFolder = file => this.addFolder(file, true);
 
-		this.goRoot = () => {
+		this.goRoot = ev => {
+			ev.preventDefault();
+
 			if (this.folder || this.file) {
 				this.update({
 					file: null,
@@ -339,6 +346,8 @@
 				this.trigger('move-root');
 				this.fetch();
 			}
+
+			return false;
 		};
 
 		this.fetch = () => {
@@ -421,7 +430,7 @@
 			this.api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: max + 1,
-				max_id: this.files[this.files.length - 1].id
+				until_id: this.files[this.files.length - 1].id
 			}).then(files => {
 				if (files.length == max + 1) {
 					this.moreFiles = true;

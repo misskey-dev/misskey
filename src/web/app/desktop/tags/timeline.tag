@@ -120,7 +120,7 @@
 					<a class="quote" if={ p.repost != null }>RP:</a>
 				</div>
 				<div class="media" if={ p.media }>
-					<mk-images-viewer images={ p.media }/>
+					<mk-images images={ p.media }/>
 				</div>
 				<mk-poll if={ p.poll } post={ p } ref="pollViewer"/>
 				<div class="repost" if={ p.repost }>%fa:quote-right -flip-h%
@@ -356,11 +356,6 @@
 								color $theme-color-foreground
 								background $theme-color
 								border-radius 4px
-
-						> .media
-							> img
-								display block
-								max-width 100%
 
 						> mk-poll
 							font-size 80%

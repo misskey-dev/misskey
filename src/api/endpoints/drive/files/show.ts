@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import DriveFile from '../../../models/drive-file';
-import serialize from '../../../serializers/drive-file';
+import DriveFile, { pack } from '../../../models/drive-file';
 
 /**
  * Show a file
@@ -29,7 +28,7 @@ module.exports = async (params, user) => {
 	}
 
 	// Serialize
-	const _file = await serialize(file, {
+	const _file = await pack(file, {
 		detail: true
 	});
 

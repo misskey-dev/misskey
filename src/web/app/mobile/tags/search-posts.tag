@@ -15,30 +15,28 @@
 				width calc(100% - 32px)
 	</style>
 	<script>
+		import parse from '../../common/scripts/parse-search-query';
+
 		this.mixin('api');
 
-		this.max = 30;
+		this.limit = 30;
 		this.offset = 0;
 
 		this.query = this.opts.query;
-		this.withMedia = this.opts.withMedia;
 
 		this.init = new Promise((res, rej) => {
-			this.api('posts/search', {
-				query: this.query
-			}).then(posts => {
+			this.api('posts/search', parse(this.query)).then(posts => {
 				res(posts);
 				this.trigger('loaded');
 			});
 		});
 
 		this.more = () => {
-			this.offset += this.max;
-			return this.api('posts/search', {
-				query: this.query,
-				max: this.max,
+			this.offset += this.limit;
+			return this.api('posts/search', Object.assign({}, parse(this.query), {
+				limit: this.limit,
 				offset: this.offset
-			});
+			}));
 		};
 	</script>
 </mk-search-posts>

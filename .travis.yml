@@ -1,6 +1,9 @@
 # travis file
 # https://docs.travis-ci.com/user/customizing-the-build
 
+notifications:
+  email: false
+
 branches:
   except:
     - release

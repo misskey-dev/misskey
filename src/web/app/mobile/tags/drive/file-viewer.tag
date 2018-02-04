@@ -1,6 +1,11 @@
 <mk-drive-file-viewer>
 	<div class="preview">
-		<img if={ kind == 'image' } src={ file.url } alt={ file.name } title={ file.name }>
+		<img if={ kind == 'image' } ref="img"
+			src={ file.url }
+			alt={ file.name }
+			title={ file.name }
+			onload={ onImageLoaded }
+			style="background-color:rgb({ file.properties.average_color.join(',') })">
 		<virtual if={ kind != 'image' }>%fa:file%</virtual>
 		<footer if={ kind == 'image' && file.properties && file.properties.width && file.properties.height }>
 			<span class="size">
@@ -37,6 +42,14 @@
 			<button onclick={ move }>
 				%fa:R folder-open%%i18n:mobile.tags.mk-drive-file-viewer.move%
 			</button>
+		</div>
+	</div>
+	<div class="exif" show={ exif }>
+		<div>
+			<p>
+				%fa:camera%%i18n:mobile.tags.mk-drive-file-viewer.exif%
+			</p>
+			<pre ref="exif" class="json">{ exif ? JSON.stringify(exif, null, 2) : '' }</pre>
 		</div>
 	</div>
 	<div class="hash">
@@ -178,12 +191,45 @@
 						white-space nowrap
 						overflow auto
 						font-size 0.8em
+						color #222
+						border solid 1px #dfdfdf
+						border-radius 2px
+						background #f5f5f5
+
+			> .exif
+				padding 14px
+				border-top solid 1px #dfdfdf
+
+				> div
+					max-width 500px
+					margin 0 auto
+
+					> p
+						display block
+						margin 0
+						padding 0
+						color #555
+						font-size 0.9em
+
+						> [data-fa]
+							margin-right 4px
+
+					> pre
+						display block
+						width 100%
+						margin 6px 0 0 0
+						padding 8px
+						height 128px
+						overflow auto
+						font-size 0.9em
 						border solid 1px #dfdfdf
 						border-radius 2px
 						background #f5f5f5
 
 	</style>
 	<script>
+		import EXIF from 'exif-js';
+		import hljs from 'highlight.js';
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 		import gcd from '../../../common/scripts/gcd';
 
@@ -194,6 +240,17 @@
 
 		this.file = this.opts.file;
 		this.kind = this.file.type.split('/')[0];
+
+		this.onImageLoaded = () => {
+			const self = this;
+			EXIF.getData(this.refs.img, function() {
+				const allMetaData = EXIF.getAllTags(this);
+				self.update({
+					exif: allMetaData
+				});
+				hljs.highlightBlock(self.refs.exif);
+			});
+		};
 
 		this.rename = () => {
 			const name = window.prompt('名前を変更', this.file.name);

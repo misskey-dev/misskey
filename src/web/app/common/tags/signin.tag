@@ -6,6 +6,9 @@
 		<label class="password">
 			<input ref="password" type="password" placeholder="%i18n:common.tags.mk-signin.password%" required="required"/>%fa:lock%
 		</label>
+		<label class="token" if={ user && user.two_factor_enabled }>
+			<input ref="token" type="number" placeholder="%i18n:common.tags.mk-signin.token%" required="required"/>%fa:lock%
+		</label>
 		<button type="submit" disabled={ signing }>{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }</button>
 	</form>
 	<style>
@@ -39,6 +42,7 @@
 
 					input[type=text]
 					input[type=password]
+					input[type=number]
 						user-select text
 						display inline-block
 						cursor auto
@@ -123,6 +127,10 @@
 				this.refs.password.focus();
 				return false;
 			}
+			if (this.user && this.user.two_factor_enabled && this.refs.token.value == '') {
+				this.refs.token.focus();
+				return false;
+			}
 
 			this.update({
 				signing: true
@@ -130,7 +138,8 @@
 
 			this.api('signin', {
 				username: this.refs.username.value,
-				password: this.refs.password.value
+				password: this.refs.password.value,
+				token: this.user && this.user.two_factor_enabled ? this.refs.token.value : undefined
 			}).then(() => {
 				location.reload();
 			}).catch(() => {

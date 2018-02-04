@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import App from '../../models/app';
-import serialize from '../../serializers/app';
+import App, { pack } from '../../models/app';
 
 /**
  * @swagger
@@ -67,7 +66,7 @@ module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => 
 	}
 
 	// Send response
-	res(await serialize(app, user, {
+	res(await pack(app, user, {
 		includeSecret: isSecure && app.user_id.equals(user._id)
 	}));
 });

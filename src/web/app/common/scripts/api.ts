@@ -40,7 +40,7 @@ export default (i, endpoint, data = {}): Promise<{ [x: string]: any }> => {
 			} else {
 				res.json().then(err => {
 					reject(err.error);
-				});
+				}, reject);
 			}
 		}).catch(reject);
 	});

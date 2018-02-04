@@ -226,7 +226,9 @@
 <mk-user-profile>
 	<div class="friend-form" if={ SIGNIN && I.id != user.id }>
 		<mk-big-follow-button user={ user }/>
-		<p class="followed" if={ user.is_followed }>フォローされています</p>
+		<p class="followed" if={ user.is_followed }>%i18n:desktop.tags.mk-user.follows-you%</p>
+		<p if={ user.is_muted }>%i18n:desktop.tags.mk-user.muted% <a onclick={ unmute }>%i18n:desktop.tags.mk-user.unmute%</a></p>
+		<p if={ !user.is_muted }><a onclick={ mute }>%i18n:desktop.tags.mk-user.mute%</a></p>
 	</div>
 	<div class="description" if={ user.description }>{ user.description }</div>
 	<div class="birthday" if={ user.profile.birthday }>
@@ -311,6 +313,7 @@
 		this.age = require('s-age');
 
 		this.mixin('i');
+		this.mixin('api');
 
 		this.user = this.opts.user;
 
@@ -323,6 +326,28 @@
 		this.showFollowers = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-user-followers-window')), {
 				user: this.user
+			});
+		};
+
+		this.mute = () => {
+			this.api('mute/create', {
+				user_id: this.user.id
+			}).then(() => {
+				this.user.is_muted = true;
+				this.update();
+			}, e => {
+				alert('error');
+			});
+		};
+
+		this.unmute = () => {
+			this.api('mute/delete', {
+				user_id: this.user.id
+			}).then(() => {
+				this.user.is_muted = false;
+				this.update();
+			}, e => {
+				alert('error');
 			});
 		};
 	</script>

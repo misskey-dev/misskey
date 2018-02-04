@@ -8,7 +8,7 @@ const analyze = require('../built/api/common/text').default;
 const syntaxhighlighter = require('../built/api/common/text/core/syntax-highlighter').default;
 
 describe('Text', () => {
-	it('is correctly analyzed', () => {
+	it('can be analyzed', () => {
 		const tokens = analyze('@himawari お腹ペコい :cat: #yryr');
 		assert.deepEqual([
 			{ type: 'mention', content: '@himawari', username: 'himawari' },
@@ -19,7 +19,7 @@ describe('Text', () => {
 		], tokens);
 	});
 
-	it('逆関数で正しく復元できる', () => {
+	it('can be inverted', () => {
 		const text = '@himawari お腹ペコい :cat: #yryr';
 		assert.equal(analyze(text).map(x => x.content).join(''), text);
 	});

@@ -3,7 +3,8 @@
  */
 import $ from 'cafy';
 import Notification from '../../models/notification';
-import serialize from '../../serializers/notification';
+import Mute from '../../models/mute';
+import { pack } from '../../models/notification';
 import getFriends from '../../common/get-friends';
 import read from '../../common/read-notification';
 
@@ -36,17 +37,27 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
 	if (sinceIdErr) return rej('invalid since_id param');
 
-	// Get 'max_id' parameter
-	const [maxId, maxIdErr] = $(params.max_id).optional.id().$;
-	if (maxIdErr) return rej('invalid max_id param');
+	// Get 'until_id' parameter
+	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
+	if (untilIdErr) return rej('invalid until_id param');
 
-	// Check if both of since_id and max_id is specified
-	if (sinceId && maxId) {
-		return rej('cannot set since_id and max_id');
+	// Check if both of since_id and until_id is specified
+	if (sinceId && untilId) {
+		return rej('cannot set since_id and until_id');
 	}
 
+	const mute = await Mute.find({
+		muter_id: user._id,
+		deleted_at: { $exists: false }
+	});
+
 	const query = {
-		notifiee_id: user._id
+		notifiee_id: user._id,
+		$and: [{
+			notifier_id: {
+				$nin: mute.map(m => m.mutee_id)
+			}
+		}]
 	} as any;
 
 	const sort = {
@@ -54,12 +65,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	};
 
 	if (following) {
-		// ID list of the user $self and other users who the user follows
+		// ID list of the user itself and other users who the user follows
 		const followingIds = await getFriends(user._id);
 
-		query.notifier_id = {
-			$in: followingIds
-		};
+		query.$and.push({
+			notifier_id: {
+				$in: followingIds
+			}
+		});
 	}
 
 	if (type) {
@@ -73,9 +86,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		query._id = {
 			$gt: sinceId
 		};
-	} else if (maxId) {
+	} else if (untilId) {
 		query._id = {
-			$lt: maxId
+			$lt: untilId
 		};
 	}
 
@@ -88,7 +101,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(notifications.map(async notification =>
-		await serialize(notification))));
+		await pack(notification))));
 
 	// Mark as read all
 	if (notifications.length > 0 && markAsRead) {

@@ -7,10 +7,14 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as mongodb from 'mongodb';
-import * as gm from 'gm';
+import * as _gm from 'gm';
 import * as stream from 'stream';
 
 import DriveFile, { getGridFSBucket } from '../api/models/drive-file';
+
+const gm = _gm.subClass({
+	imageMagick: true
+});
 
 /**
  * Init app
@@ -78,6 +82,8 @@ function thumbnail(data: stream.Readable, type: string, resize: number): ISend {
 	const stream = g
 		.compress('jpeg')
 		.quality(80)
+		.interlace('line')
+		.noProfile() // Remove EXIF
 		.stream();
 
 	return {
@@ -130,6 +136,8 @@ async function sendFileById(req: express.Request, res: express.Response): Promis
 	}
 
 	const fileId = new mongodb.ObjectID(req.params.id);
+
+	// Fetch (drive) file
 	const file = await DriveFile.findOne({ _id: fileId });
 
 	// validate name

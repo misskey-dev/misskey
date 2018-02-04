@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../models/post';
-import serialize from '../../serializers/post';
+import Post, { pack } from '../../models/post';
 
 /**
  * Show a post
@@ -27,7 +26,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Serialize
-	res(await serialize(post, user, {
+	res(await pack(post, user, {
 		detail: true
 	}));
 });

@@ -96,7 +96,7 @@
 		this.fetch = cb => {
 			this.api('users/posts', {
 				user_id: this.user.id,
-				max_date: this.date ? this.date.getTime() : undefined,
+				until_date: this.date ? this.date.getTime() : undefined,
 				with_replies: this.mode == 'with-replies'
 			}).then(posts => {
 				this.update({
@@ -116,7 +116,7 @@
 			this.api('users/posts', {
 				user_id: this.user.id,
 				with_replies: this.mode == 'with-replies',
-				max_id: this.refs.timeline.tail().id
+				until_id: this.refs.timeline.tail().id
 			}).then(posts => {
 				this.update({
 					moreLoading: false

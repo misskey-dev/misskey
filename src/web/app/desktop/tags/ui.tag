@@ -146,6 +146,9 @@
 					color #9eaba8
 					pointer-events none
 
+					> *
+						vertical-align middle
+
 				> input
 					user-select text
 					cursor auto
@@ -162,7 +165,7 @@
 					transition color 0.5s ease, border 0.5s ease
 					font-family FontAwesome, sans-serif
 
-					&:placeholder-shown
+					&::placeholder
 						color #9eaba8
 
 					&:hover
@@ -177,7 +180,7 @@
 
 		this.onsubmit = e => {
 			e.preventDefault();
-			this.page('/search:' + this.refs.q.value);
+			this.page('/search?q=' + encodeURIComponent(this.refs.q.value));
 		};
 	</script>
 </mk-ui-header-search>

@@ -37,7 +37,7 @@
 			<div class="body">
 				<div class="text" ref="text"></div>
 				<div class="media" if={ p.media }>
-					<virtual each={ file in p.media }><img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/></virtual>
+					<mk-images images={ p.media }/>
 				</div>
 				<mk-poll if={ p.poll } post={ p }/>
 			</div>
@@ -207,11 +207,6 @@
 
 							> mk-url-preview
 								margin-top 8px
-
-						> .media
-							> img
-								display block
-								max-width 100%
 
 					> footer
 						font-size 1.2em

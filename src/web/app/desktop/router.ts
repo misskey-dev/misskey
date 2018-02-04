@@ -16,7 +16,7 @@ export default (mios: MiOS) => {
 	route('/i/messaging/:user',      messaging);
 	route('/i/mentions',             mentions);
 	route('/post::post',             post);
-	route('/search::query',          search);
+	route('/search',                 search);
 	route('/:user',                  user.bind(null, 'home'));
 	route('/:user/graphs',           user.bind(null, 'graphs'));
 	route('/:user/:post',            post);
@@ -47,7 +47,7 @@ export default (mios: MiOS) => {
 
 	function search(ctx) {
 		const el = document.createElement('mk-search-page');
-		el.setAttribute('query', ctx.params.query);
+		el.setAttribute('query', ctx.querystring.substr(2));
 		mount(el);
 	}
 

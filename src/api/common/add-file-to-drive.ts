@@ -5,16 +5,20 @@ import * as stream from 'stream';
 
 import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
-import * as gm from 'gm';
+import * as _gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
 import DriveFile, { getGridFSBucket } from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
-import serialize from '../serializers/drive-file';
+import { pack } from '../models/drive-file';
 import event, { publishDriveStream } from '../event';
 import config from '../../conf';
+
+const gm = _gm.subClass({
+	imageMagick: true
+});
 
 const log = debug('misskey:register-drive-file');
 
@@ -106,8 +110,32 @@ const addFile = async (
 		}
 	}
 
-	const [properties, folder] = await Promise.all([
-		// properties
+	const [wh, averageColor, folder] = await Promise.all([
+		// Width and height (when image)
+		(async () => {
+			// 画像かどうか
+			if (!/^image\/.*$/.test(mime)) {
+				return null;
+			}
+
+			const imageType = mime.split('/')[1];
+
+			// 画像でもPNGかJPEGかGIFでないならスキップ
+			if (imageType != 'png' && imageType != 'jpeg' && imageType != 'gif') {
+				return null;
+			}
+
+			log('calculate image width and height...');
+
+			// Calculate width and height
+			const g = gm(fs.createReadStream(path), name);
+			const size = await prominence(g).size();
+
+			log(`image width and height is calculated: ${size.width}, ${size.height}`);
+
+			return [size.width, size.height];
+		})(),
+		// average color (when image)
 		(async () => {
 			// 画像かどうか
 			if (!/^image\/.*$/.test(mime)) {
@@ -121,17 +149,20 @@ const addFile = async (
 				return null;
 			}
 
-			// If the file is an image, calculate width and height to save in property
-			const g = gm(fs.createReadStream(path), name);
-			const size = await prominence(g).size();
-			const properties = {
-				width: size.width,
-				height: size.height
-			};
+			log('calculate average color...');
 
-			log('image width and height is calculated');
+			const buffer = await prominence(gm(fs.createReadStream(path), name)
+				.setFormat('ppm')
+				.resize(1, 1)) // 1pxのサイズに縮小して平均色を取得するというハック
+				.toBuffer();
 
-			return properties;
+			const r = buffer.readUInt8(buffer.length - 3);
+			const g = buffer.readUInt8(buffer.length - 2);
+			const b = buffer.readUInt8(buffer.length - 1);
+
+			log(`average color is calculated: ${r}, ${g}, ${b}`);
+
+			return [r, g, b];
 		})(),
 		// folder
 		(async () => {
@@ -181,6 +212,17 @@ const addFile = async (
 
 	const readable = fs.createReadStream(path);
 
+	const properties = {};
+
+	if (wh) {
+		properties['width'] = wh[0];
+		properties['height'] = wh[1];
+	}
+
+	if (averageColor) {
+		properties['average_color'] = averageColor;
+	}
+
 	return addToGridFS(detectedName, readable, mime, {
 		user_id: user._id,
 		folder_id: folder !== null ? folder._id : null,
@@ -224,11 +266,11 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 		}
 		rej(new Error('un-compatible file.'));
 	})
-	.then(([path, remove]): Promise<any> => new Promise((res, rej) => {
+	.then(([path, shouldCleanup]): Promise<any> => new Promise((res, rej) => {
 		addFile(user, path, ...args)
 			.then(file => {
 				res(file);
-				if (remove) {
+				if (shouldCleanup) {
 					fs.unlink(path, (e) => {
 						if (e) log(e.stack);
 					});
@@ -240,7 +282,7 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 		log(`drive file has been created ${file._id}`);
 		resolve(file);
 
-		serialize(file).then(serializedFile => {
+		pack(file).then(serializedFile => {
 			// Publish drive_file_created event
 			event(user._id, 'drive_file_created', serializedFile);
 			publishDriveStream(user._id, 'file_created', serializedFile);

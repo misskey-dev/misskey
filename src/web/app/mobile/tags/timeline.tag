@@ -172,7 +172,7 @@
 					<a class="quote" if={ p.repost != null }>RP:</a>
 				</div>
 				<div class="media" if={ p.media }>
-					<mk-images-viewer images={ p.media }/>
+					<mk-images images={ p.media }/>
 				</div>
 				<mk-poll if={ p.poll } post={ p } ref="pollViewer"/>
 				<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>

@@ -2,8 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import { validateFileName } from '../../../models/drive-file';
-import serialize from '../../../serializers/drive-file';
+import { validateFileName, pack } from '../../../models/drive-file';
 import create from '../../../common/add-file-to-drive';
 
 /**
@@ -38,9 +37,15 @@ module.exports = async (file, params, user): Promise<any> => {
 	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
 	if (folderIdErr) throw 'invalid folder_id param';
 
-	// Create file
-	const driveFile = await create(user, file.path, name, null, folderId);
+	try {
+		// Create file
+		const driveFile = await create(user, file.path, name, null, folderId);
 
-	// Serialize
-	return serialize(driveFile);
+		// Serialize
+		return pack(driveFile);
+	} catch (e) {
+		console.error(e);
+
+		throw e;
+	}
 };

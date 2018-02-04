@@ -3,8 +3,7 @@
  */
 import * as mongo from 'mongodb';
 import $ from 'cafy';
-import User from '../../models/user';
-import serialize from '../../serializers/user';
+import User, { pack } from '../../models/user';
 import config from '../../../conf';
 const escapeRegexp = require('escape-regexp');
 
@@ -52,7 +51,7 @@ async function byNative(res, rej, me, query, offset, max) {
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>
-		await serialize(user, me, { detail: true }))));
+		await pack(user, me, { detail: true }))));
 }
 
 // Search by Elasticsearch
@@ -94,6 +93,6 @@ async function byElasticsearch(res, rej, me, query, offset, max) {
 
 		// Serialize
 		res(await Promise.all(users.map(async user =>
-			await serialize(user, me, { detail: true }))));
+			await pack(user, me, { detail: true }))));
 	});
 }

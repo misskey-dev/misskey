@@ -5,7 +5,7 @@ import $ from 'cafy';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 import AccessToken from '../../../models/access-token';
-import serialize from '../../../serializers/user';
+import { pack } from '../../../models/user';
 
 /**
  * @swagger
@@ -102,7 +102,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	// Response
 	res({
 		access_token: accessToken.token,
-		user: await serialize(session.user_id, null, {
+		user: await pack(session.user_id, null, {
 			detail: true
 		})
 	});

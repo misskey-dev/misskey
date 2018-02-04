@@ -9,12 +9,11 @@
 	<div class="form">
 		<mk-post-preview if={ opts.reply } post={ opts.reply }/>
 		<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%' }></textarea>
-		<div class="attaches" if={ files.length != 0 }>
+		<div class="attaches" show={ files.length != 0 }>
 			<ul class="files" ref="attaches">
-				<li class="file" each={ files }>
-					<div class="img" style="background-image: url({ url + '?thumbnail&size=64' })" title={ name }></div>
+				<li class="file" each={ files } data-id={ id }>
+					<div class="img" style="background-image: url({ url + '?thumbnail&size=128' })" onclick={ removeFile }></div>
 				</li>
-				<li class="add" if={ files.length < 4 } title="%i18n:mobile.tags.mk-post-form.attach-media-from-local%" onclick={ selectFile }>%fa:plus%</li>
 			</ul>
 		</div>
 		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }/>
@@ -93,50 +92,15 @@
 						> .file
 							display block
 							float left
-							margin 4px
+							margin 0
 							padding 0
-							cursor move
-
-							&:hover > .remove
-								display block
+							border solid 4px transparent
 
 							> .img
 								width 64px
 								height 64px
 								background-size cover
 								background-position center center
-
-							> .remove
-								display none
-								position absolute
-								top -6px
-								right -6px
-								width 16px
-								height 16px
-								cursor pointer
-
-						> .add
-							display block
-							float left
-							margin 4px
-							padding 0
-							border dashed 2px rgba($theme-color, 0.2)
-							cursor pointer
-
-							&:hover
-								border-color rgba($theme-color, 0.3)
-
-								> [data-fa]
-									color rgba($theme-color, 0.4)
-
-							> [data-fa]
-								display block
-								width 60px
-								height 60px
-								line-height 60px
-								text-align center
-								font-size 1.2em
-								color rgba($theme-color, 0.2)
 
 				> mk-uploader
 					margin 8px 0 0 0
@@ -181,6 +145,7 @@
 
 	</style>
 	<script>
+		import Sortable from 'sortablejs';
 		import getKao from '../../common/scripts/get-kao';
 
 		this.mixin('api');
@@ -200,6 +165,10 @@
 			});
 
 			this.refs.text.focus();
+
+			new Sortable(this.refs.attaches, {
+				animation: 150
+			});
 		});
 
 		this.onkeydown = e => {
@@ -247,6 +216,13 @@
 			this.update();
 		};
 
+		this.removeFile = e => {
+			const file = e.item;
+			this.files = this.files.filter(x => x.id != file.id);
+			this.trigger('change-files', this.files);
+			this.update();
+		};
+
 		this.addPoll = () => {
 			this.poll = true;
 		};
@@ -258,15 +234,23 @@
 		};
 
 		this.post = () => {
-			this.wait = true;
+			this.update({
+				wait: true
+			});
 
-			const files = this.files && this.files.length > 0
-				? this.files.map(f => f.id)
-				: undefined;
+			const files = [];
+
+			if (this.files.length > 0) {
+				Array.from(this.refs.attaches.children).forEach(el => {
+					const id = el.getAttribute('data-id');
+					const file = this.files.find(f => f.id == id);
+					files.push(file);
+				});
+			}
 
 			this.api('posts/create', {
 				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
-				media_ids: files,
+				media_ids: this.files.length > 0 ? files.map(f => f.id) : undefined,
 				reply_id: opts.reply ? opts.reply.id : undefined,
 				poll: this.poll ? this.refs.poll.get() : undefined
 			}).then(data => {
