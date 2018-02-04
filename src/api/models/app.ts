@@ -14,6 +14,7 @@ export type IApp = {
 	_id: mongo.ObjectID;
 	created_at: Date;
 	user_id: mongo.ObjectID;
+	secret: string;
 };
 
 export function isValidNameId(nameId: string): boolean {

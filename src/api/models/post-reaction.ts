@@ -9,6 +9,9 @@ export default PostReaction;
 
 export interface IPostReaction {
 	_id: mongo.ObjectID;
+	created_at: Date;
+	deleted_at: Date;
+	reaction: string;
 }
 
 /**

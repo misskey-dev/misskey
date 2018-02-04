@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../models/post';
-import User, { pack } from '../../models/user';
+import Post, { pack } from '../../models/post';
+import User from '../../models/user';
 
 /**
  * Get posts of a user

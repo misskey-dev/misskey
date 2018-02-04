@@ -3,8 +3,7 @@
  */
 import $ from 'cafy';
 import DriveFolder from '../../../models/drive-folder';
-import DriveFile from '../../../models/drive-file';
-import { validateFileName }, { pack } from '../../../models/drive-file';
+import DriveFile, { validateFileName, pack } from '../../../models/drive-file';
 import { publishDriveStream } from '../../../event';
 
 /**

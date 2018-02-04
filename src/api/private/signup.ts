@@ -2,8 +2,7 @@ import * as uuid from 'uuid';
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
 import recaptcha = require('recaptcha-promise');
-import { default as User, IUser } from '../models/user';
-import { validateUsername, validatePassword }, { pack } from '../models/user';
+import User, { IUser, validateUsername, validatePassword, pack } from '../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../conf';
 

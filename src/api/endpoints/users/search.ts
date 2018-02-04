@@ -51,7 +51,7 @@ async function byNative(res, rej, me, query, offset, max) {
 
 	// Serialize
 	res(await Promise.all(users.map(async user =>
-		await serialize(user, me, { detail: true }))));
+		await pack(user, me, { detail: true }))));
 }
 
 // Search by Elasticsearch

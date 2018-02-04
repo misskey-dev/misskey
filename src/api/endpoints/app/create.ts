@@ -3,8 +3,7 @@
  */
 import rndstr from 'rndstr';
 import $ from 'cafy';
-import App from '../../models/app';
-import { isValidNameId }, { pack } from '../../models/app';
+import App, { isValidNameId, pack } from '../../models/app';
 
 /**
  * @swagger

@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import { default as Channel, IChannel }, { pack } from '../../models/channel';
+import Channel, { IChannel, pack } from '../../models/channel';
 
 /**
  * Show a channel

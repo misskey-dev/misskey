@@ -23,6 +23,7 @@ export type IDriveFile = {
 	uploadDate: Date;
 	md5: string;
 	filename: string;
+	contentType: string;
 	metadata: {
 		properties: any;
 		user_id: mongodb.ObjectID;

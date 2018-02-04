@@ -25,10 +25,12 @@ export type IPost = {
 	media_ids: mongo.ObjectID[];
 	reply_id: mongo.ObjectID;
 	repost_id: mongo.ObjectID;
-	poll: {}; // todo
+	poll: any; // todo
 	text: string;
 	user_id: mongo.ObjectID;
 	app_id: mongo.ObjectID;
+	category: string;
+	is_category_verified: boolean;
 };
 
 /**

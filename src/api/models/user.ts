@@ -42,6 +42,7 @@ export function isValidBirthday(birthday: string): boolean {
 export type IUser = {
 	_id: mongo.ObjectID;
 	created_at: Date;
+	deleted_at: Date;
 	email: string;
 	followers_count: number;
 	following_count: number;

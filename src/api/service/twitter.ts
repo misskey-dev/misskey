@@ -163,7 +163,7 @@ module.exports = (app: express.Application) => {
 				res.send(`Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`);
 
 				// Publish i updated event
-				event(user._id, 'i_updated', await serialize(user, user, {
+				event(user._id, 'i_updated', await pack(user, user, {
 					detail: true,
 					includeSecrets: true
 				}));
