@@ -46,7 +46,7 @@
 		"@types/gulp-mocha": "0.0.31",
 		"@types/gulp-rename": "0.0.33",
 		"@types/gulp-replace": "0.0.31",
-		"@types/gulp-uglify": "3.0.3",
+		"@types/gulp-uglify": "3.0.4",
 		"@types/gulp-util": "3.0.34",
 		"@types/inquirer": "0.0.36",
 		"@types/is-root": "1.0.0",
