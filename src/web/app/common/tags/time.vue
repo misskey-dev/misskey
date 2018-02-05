@@ -1,36 +1,38 @@
-<mk-time>
-	<time datetime={ opts.time }>
-		<span if={ mode == 'relative' }>{ relative }</span>
-		<span if={ mode == 'absolute' }>{ absolute }</span>
-		<span if={ mode == 'detail' }>{ absolute } ({ relative })</span>
+<template>
+	<time>
+		<span v-if=" mode == 'relative' ">{{ relative }}</span>
+		<span v-if=" mode == 'absolute' ">{{ absolute }}</span>
+		<span v-if=" mode == 'detail' ">{{ absolute }} ({{ relative }})</span>
 	</time>
-	<script>
-		this.time = new Date(this.opts.time);
-		this.mode = this.opts.mode || 'relative';
-		this.tickid = null;
+</template>
 
-		this.absolute =
-			this.time.getFullYear()    + '年' +
-			(this.time.getMonth() + 1) + '月' +
-			this.time.getDate()        + '日' +
-			' ' +
-			this.time.getHours()       + '時' +
-			this.time.getMinutes()     + '分';
+<script>
+	export default {
+		props: ['time', 'mode'],
+		data: {
+			mode: 'relative',
+			tickId: null,
+		},
+		created: function() {
+			this.absolute =
+				this.time.getFullYear()    + '年' +
+				(this.time.getMonth() + 1) + '月' +
+				this.time.getDate()        + '日' +
+				' ' +
+				this.time.getHours()       + '時' +
+				this.time.getMinutes()     + '分';
 
-		this.on('mount', () => {
 			if (this.mode == 'relative' || this.mode == 'detail') {
 				this.tick();
-				this.tickid = setInterval(this.tick, 1000);
+				this.tickId = setInterval(this.tick, 1000);
 			}
-		});
-
-		this.on('unmount', () => {
+		},
+		destroyed: function() {
 			if (this.mode === 'relative' || this.mode === 'detail') {
-				clearInterval(this.tickid);
+				clearInterval(this.tickId);
 			}
-		});
-
-		this.tick = () => {
+		},
+		tick: function() {
 			const now = new Date();
 			const ago = (now - this.time) / 1000/*ms*/;
 			this.relative =
@@ -44,7 +46,6 @@
 				ago >= 0        ? '%i18n:common.time.just_now%' :
 				ago <  0        ? '%i18n:common.time.future%' :
 				'%i18n:common.time.unknown%';
-			this.update();
-		};
-	</script>
-</mk-time>
+		}
+	};
+</script>
