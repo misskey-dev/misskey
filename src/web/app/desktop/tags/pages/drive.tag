@@ -15,7 +15,7 @@
 		this.on('mount', () => {
 			document.title = 'Misskey Drive';
 
-			this.refs.browser.on('move-root', () => {
+			this.$refs.browser.on('move-root', () => {
 				const title = 'Misskey Drive';
 
 				// Rewrite URL
@@ -24,7 +24,7 @@
 				document.title = title;
 			});
 
-			this.refs.browser.on('open-folder', folder => {
+			this.$refs.browser.on('open-folder', folder => {
 				const title = folder.name + ' | Misskey Drive';
 
 				// Rewrite URL

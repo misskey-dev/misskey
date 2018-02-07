@@ -199,13 +199,13 @@
 		this.canResize = !this.isFlexible;
 
 		this.on('mount', () => {
-			this.refs.main.style.width = this.opts.width || '530px';
-			this.refs.main.style.height = this.opts.height || 'auto';
+			this.$refs.main.style.width = this.opts.width || '530px';
+			this.$refs.main.style.height = this.opts.height || 'auto';
 
-			this.refs.main.style.top = '15%';
-			this.refs.main.style.left = (window.innerWidth / 2) - (this.refs.main.offsetWidth / 2) + 'px';
+			this.$refs.main.style.top = '15%';
+			this.$refs.main.style.left = (window.innerWidth / 2) - (this.$refs.main.offsetWidth / 2) + 'px';
 
-			this.refs.header.addEventListener('contextmenu', e => {
+			this.$refs.header.addEventListener('contextmenu', e => {
 				e.preventDefault();
 			});
 
@@ -219,15 +219,15 @@
 		});
 
 		this.onBrowserResize = () => {
-			const position = this.refs.main.getBoundingClientRect();
+			const position = this.$refs.main.getBoundingClientRect();
 			const browserWidth = window.innerWidth;
 			const browserHeight = window.innerHeight;
-			const windowWidth = this.refs.main.offsetWidth;
-			const windowHeight = this.refs.main.offsetHeight;
-			if (position.left < 0) this.refs.main.style.left = 0;
-			if (position.top < 0) this.refs.main.style.top = 0;
-			if (position.left + windowWidth > browserWidth) this.refs.main.style.left = browserWidth - windowWidth + 'px';
-			if (position.top + windowHeight > browserHeight) this.refs.main.style.top = browserHeight - windowHeight + 'px';
+			const windowWidth = this.$refs.main.offsetWidth;
+			const windowHeight = this.$refs.main.offsetHeight;
+			if (position.left < 0) this.$refs.main.style.left = 0;
+			if (position.top < 0) this.$refs.main.style.top = 0;
+			if (position.left + windowWidth > browserWidth) this.$refs.main.style.left = browserWidth - windowWidth + 'px';
+			if (position.top + windowHeight > browserHeight) this.$refs.main.style.top = browserHeight - windowHeight + 'px';
 		};
 
 		this.open = () => {
@@ -236,25 +236,25 @@
 			this.top();
 
 			if (this.isModal) {
-				this.refs.bg.style.pointerEvents = 'auto';
+				this.$refs.bg.style.pointerEvents = 'auto';
 				anime({
-					targets: this.refs.bg,
+					targets: this.$refs.bg,
 					opacity: 1,
 					duration: 100,
 					easing: 'linear'
 				});
 			}
 
-			this.refs.main.style.pointerEvents = 'auto';
+			this.$refs.main.style.pointerEvents = 'auto';
 			anime({
-				targets: this.refs.main,
+				targets: this.$refs.main,
 				opacity: 1,
 				scale: [1.1, 1],
 				duration: 200,
 				easing: 'easeOutQuad'
 			});
 
-			//this.refs.main.focus();
+			//this.$refs.main.focus();
 
 			setTimeout(() => {
 				this.trigger('opened');
@@ -262,10 +262,10 @@
 		};
 
 		this.popout = () => {
-			const position = this.refs.main.getBoundingClientRect();
+			const position = this.$refs.main.getBoundingClientRect();
 
-			const width = parseInt(getComputedStyle(this.refs.main, '').width, 10);
-			const height = parseInt(getComputedStyle(this.refs.main, '').height, 10);
+			const width = parseInt(getComputedStyle(this.$refs.main, '').width, 10);
+			const height = parseInt(getComputedStyle(this.$refs.main, '').height, 10);
 			const x = window.screenX + position.left;
 			const y = window.screenY + position.top;
 
@@ -281,19 +281,19 @@
 			this.trigger('closing');
 
 			if (this.isModal) {
-				this.refs.bg.style.pointerEvents = 'none';
+				this.$refs.bg.style.pointerEvents = 'none';
 				anime({
-					targets: this.refs.bg,
+					targets: this.$refs.bg,
 					opacity: 0,
 					duration: 300,
 					easing: 'linear'
 				});
 			}
 
-			this.refs.main.style.pointerEvents = 'none';
+			this.$refs.main.style.pointerEvents = 'none';
 
 			anime({
-				targets: this.refs.main,
+				targets: this.$refs.main,
 				opacity: 0,
 				scale: 0.8,
 				duration: 300,
@@ -318,8 +318,8 @@
 			});
 
 			if (z > 0) {
-				this.refs.main.style.zIndex = z + 1;
-				if (this.isModal) this.refs.bg.style.zIndex = z + 1;
+				this.$refs.main.style.zIndex = z + 1;
+				if (this.isModal) this.$refs.bg.style.zIndex = z + 1;
 			}
 		};
 
@@ -340,9 +340,9 @@
 		this.onHeaderMousedown = e => {
 			e.preventDefault();
 
-			if (!contains(this.refs.main, document.activeElement)) this.refs.main.focus();
+			if (!contains(this.$refs.main, document.activeElement)) this.$refs.main.focus();
 
-			const position = this.refs.main.getBoundingClientRect();
+			const position = this.$refs.main.getBoundingClientRect();
 
 			const clickX = e.clientX;
 			const clickY = e.clientY;
@@ -350,8 +350,8 @@
 			const moveBaseY = clickY - position.top;
 			const browserWidth = window.innerWidth;
 			const browserHeight = window.innerHeight;
-			const windowWidth = this.refs.main.offsetWidth;
-			const windowHeight = this.refs.main.offsetHeight;
+			const windowWidth = this.$refs.main.offsetWidth;
+			const windowHeight = this.$refs.main.offsetHeight;
 
 			// 動かした時
 			dragListen(me => {
@@ -370,8 +370,8 @@
 				// 右はみ出し
 				if (moveLeft + windowWidth > browserWidth) moveLeft = browserWidth - windowWidth;
 
-				this.refs.main.style.left = moveLeft + 'px';
-				this.refs.main.style.top = moveTop + 'px';
+				this.$refs.main.style.left = moveLeft + 'px';
+				this.$refs.main.style.top = moveTop + 'px';
 			});
 		};
 
@@ -380,8 +380,8 @@
 			e.preventDefault();
 
 			const base = e.clientY;
-			const height = parseInt(getComputedStyle(this.refs.main, '').height, 10);
-			const top = parseInt(getComputedStyle(this.refs.main, '').top, 10);
+			const height = parseInt(getComputedStyle(this.$refs.main, '').height, 10);
+			const top = parseInt(getComputedStyle(this.$refs.main, '').top, 10);
 
 			// 動かした時
 			dragListen(me => {
@@ -406,8 +406,8 @@
 			e.preventDefault();
 
 			const base = e.clientX;
-			const width = parseInt(getComputedStyle(this.refs.main, '').width, 10);
-			const left = parseInt(getComputedStyle(this.refs.main, '').left, 10);
+			const width = parseInt(getComputedStyle(this.$refs.main, '').width, 10);
+			const left = parseInt(getComputedStyle(this.$refs.main, '').left, 10);
 			const browserWidth = window.innerWidth;
 
 			// 動かした時
@@ -430,8 +430,8 @@
 			e.preventDefault();
 
 			const base = e.clientY;
-			const height = parseInt(getComputedStyle(this.refs.main, '').height, 10);
-			const top = parseInt(getComputedStyle(this.refs.main, '').top, 10);
+			const height = parseInt(getComputedStyle(this.$refs.main, '').height, 10);
+			const top = parseInt(getComputedStyle(this.$refs.main, '').top, 10);
 			const browserHeight = window.innerHeight;
 
 			// 動かした時
@@ -454,8 +454,8 @@
 			e.preventDefault();
 
 			const base = e.clientX;
-			const width = parseInt(getComputedStyle(this.refs.main, '').width, 10);
-			const left = parseInt(getComputedStyle(this.refs.main, '').left, 10);
+			const width = parseInt(getComputedStyle(this.$refs.main, '').width, 10);
+			const left = parseInt(getComputedStyle(this.$refs.main, '').left, 10);
 
 			// 動かした時
 			dragListen(me => {
@@ -501,22 +501,22 @@
 
 		// 高さを適用
 		this.applyTransformHeight = height => {
-			this.refs.main.style.height = height + 'px';
+			this.$refs.main.style.height = height + 'px';
 		};
 
 		// 幅を適用
 		this.applyTransformWidth = width => {
-			this.refs.main.style.width = width + 'px';
+			this.$refs.main.style.width = width + 'px';
 		};
 
 		// Y座標を適用
 		this.applyTransformTop = top => {
-			this.refs.main.style.top = top + 'px';
+			this.$refs.main.style.top = top + 'px';
 		};
 
 		// X座標を適用
 		this.applyTransformLeft = left => {
-			this.refs.main.style.left = left + 'px';
+			this.$refs.main.style.left = left + 'px';
 		};
 
 		function dragListen(fn) {

@@ -95,7 +95,7 @@
 		this.add = () => {
 			this.choices.push('');
 			this.update();
-			this.refs.choices.childNodes[this.choices.length - 1].childNodes[0].focus();
+			this.$refs.choices.childNodes[this.choices.length - 1].childNodes[0].focus();
 		};
 
 		this.remove = (i) => {

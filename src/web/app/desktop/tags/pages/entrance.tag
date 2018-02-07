@@ -280,7 +280,7 @@
 	</style>
 	<script>
 		this.on('mount', () => {
-			this.refs.signin.on('user', user => {
+			this.$refs.signin.on('user', user => {
 				this.update({
 					user: user
 				});

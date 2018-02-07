@@ -117,11 +117,11 @@
 				quote: true
 			});
 
-			this.refs.form.on('post', () => {
+			this.$refs.form.on('post', () => {
 				this.trigger('posted');
 			});
 
-			this.refs.form.focus();
+			this.$refs.form.focus();
 		};
 	</script>
 </mk-repost-form>

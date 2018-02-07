@@ -209,7 +209,7 @@
 			}
 
 			if (this.opts.isNaked) {
-				this.refs.nav.style.top = `${this.opts.top}px`;
+				this.$refs.nav.style.top = `${this.opts.top}px`;
 			}
 		});
 
@@ -517,7 +517,7 @@
 		};
 
 		this.selectLocalFile = () => {
-			this.refs.file.click();
+			this.$refs.file.click();
 		};
 
 		this.createFolder = () => {
@@ -574,7 +574,7 @@
 		};
 
 		this.changeLocalFile = () => {
-			Array.from(this.refs.file.files).forEach(f => this.refs.uploader.upload(f, this.folder));
+			Array.from(this.$refs.file.files).forEach(f => this.$refs.uploader.upload(f, this.folder));
 		};
 	</script>
 </mk-drive>

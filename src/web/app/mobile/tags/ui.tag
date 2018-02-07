@@ -30,7 +30,7 @@
 
 		this.toggleDrawer = () => {
 			this.isDrawerOpening = !this.isDrawerOpening;
-			this.refs.nav.root.style.display = this.isDrawerOpening ? 'block' : 'none';
+			this.$refs.nav.root.style.display = this.isDrawerOpening ? 'block' : 'none';
 		};
 
 		this.onStreamNotification = notification => {
@@ -209,7 +209,7 @@
 		};
 
 		this.setTitle = title => {
-			this.refs.title.innerHTML = title;
+			this.$refs.title.innerHTML = title;
 		};
 
 		this.setFunc = (fn, icon) => {

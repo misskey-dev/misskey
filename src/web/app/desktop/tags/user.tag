@@ -206,10 +206,10 @@
 
 			const z = 1.25; // 奥行き(小さいほど奥)
 			const pos = -(top / z);
-			this.refs.banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
+			this.$refs.banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 
 			const blur = top / 32
-			if (blur <= 10) this.refs.banner.style.filter = `blur(${blur}px)`;
+			if (blur <= 10) this.$refs.banner.style.filter = `blur(${blur}px)`;
 		};
 
 		this.onUpdateBanner = () => {
@@ -715,12 +715,12 @@
 		this.user = this.opts.user;
 
 		this.on('mount', () => {
-			this.refs.tl.on('loaded', () => {
+			this.$refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 			});
 
-			this.scrollFollowerLeft = new ScrollFollower(this.refs.left, this.parent.root.getBoundingClientRect().top);
-			this.scrollFollowerRight = new ScrollFollower(this.refs.right, this.parent.root.getBoundingClientRect().top);
+			this.scrollFollowerLeft = new ScrollFollower(this.$refs.left, this.parent.root.getBoundingClientRect().top);
+			this.scrollFollowerRight = new ScrollFollower(this.$refs.right, this.parent.root.getBoundingClientRect().top);
 		});
 
 		this.on('unmount', () => {
@@ -729,7 +729,7 @@
 		});
 
 		this.warp = date => {
-			this.refs.tl.warp(date);
+			this.$refs.tl.warp(date);
 		};
 	</script>
 </mk-user-home>

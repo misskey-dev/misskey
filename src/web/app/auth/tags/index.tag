@@ -114,13 +114,13 @@
 						state: 'waiting'
 					});
 
-					this.refs.form.on('denied', () => {
+					this.$refs.form.on('denied', () => {
 						this.update({
 							state: 'denied'
 						});
 					});
 
-					this.refs.form.on('accepted', this.accepted);
+					this.$refs.form.on('accepted', this.accepted);
 				}
 			}).catch(error => {
 				this.update({

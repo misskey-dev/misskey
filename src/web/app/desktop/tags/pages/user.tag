@@ -14,12 +14,12 @@
 		this.on('mount', () => {
 			Progress.start();
 
-			this.refs.ui.refs.user.on('user-fetched', user => {
+			this.$refs.ui.refs.user.on('user-fetched', user => {
 				Progress.set(0.5);
 				document.title = user.name + ' | Misskey';
 			});
 
-			this.refs.ui.refs.user.on('loaded', () => {
+			this.$refs.ui.refs.user.on('loaded', () => {
 				Progress.done();
 			});
 		});

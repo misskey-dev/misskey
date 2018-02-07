@@ -34,7 +34,7 @@
 			this.connection.on('post', this.onStreamPost);
 			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
-			this.refs.ui.refs.home.on('loaded', () => {
+			this.$refs.ui.refs.home.on('loaded', () => {
 				Progress.done();
 			});
 		});

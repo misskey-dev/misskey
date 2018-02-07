@@ -15,7 +15,7 @@
 			document.title = 'Misskey | %i18n:mobile.tags.mk-messaging-page.message%';
 			ui.trigger('title', '%fa:R comments%%i18n:mobile.tags.mk-messaging-page.message%');
 
-			this.refs.ui.refs.index.on('navigate-user', user => {
+			this.$refs.ui.refs.index.on('navigate-user', user => {
 				this.page('/i/messaging/' + user.username);
 			});
 		});

@@ -33,7 +33,7 @@
 		this.folder = this.opts.folder ? this.opts.folder : null;
 
 		this.popout = () => {
-			const folder = this.refs.window.refs.browser.folder;
+			const folder = this.$refs.window.refs.browser.folder;
 			if (folder) {
 				return `${_URL_}/i/drive/folder/${folder.id}`;
 			} else {
@@ -42,7 +42,7 @@
 		};
 
 		this.on('mount', () => {
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 
@@ -54,7 +54,7 @@
 		});
 
 		this.close = () => {
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 	</script>
 </mk-drive-browser-window>

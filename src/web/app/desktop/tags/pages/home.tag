@@ -21,7 +21,7 @@
 		this.page = this.opts.mode || 'timeline';
 
 		this.on('mount', () => {
-			this.refs.ui.refs.home.on('loaded', () => {
+			this.$refs.ui.refs.home.on('loaded', () => {
 				Progress.done();
 			});
 			document.title = 'Misskey';

@@ -94,19 +94,19 @@
 		});
 
 		this.on('mount', () => {
-			this.refs.header.innerHTML = this.opts.title;
-			this.refs.body.innerHTML = this.opts.text;
+			this.$refs.header.innerHTML = this.opts.title;
+			this.$refs.body.innerHTML = this.opts.text;
 
-			this.refs.bg.style.pointerEvents = 'auto';
+			this.$refs.bg.style.pointerEvents = 'auto';
 			anime({
-				targets: this.refs.bg,
+				targets: this.$refs.bg,
 				opacity: 1,
 				duration: 100,
 				easing: 'linear'
 			});
 
 			anime({
-				targets: this.refs.main,
+				targets: this.$refs.main,
 				opacity: 1,
 				scale: [1.2, 1],
 				duration: 300,
@@ -115,17 +115,17 @@
 		});
 
 		this.close = () => {
-			this.refs.bg.style.pointerEvents = 'none';
+			this.$refs.bg.style.pointerEvents = 'none';
 			anime({
-				targets: this.refs.bg,
+				targets: this.$refs.bg,
 				opacity: 0,
 				duration: 300,
 				easing: 'linear'
 			});
 
-			this.refs.main.style.pointerEvents = 'none';
+			this.$refs.main.style.pointerEvents = 'none';
 			anime({
-				targets: this.refs.main,
+				targets: this.$refs.main,
 				opacity: 0,
 				scale: 0.8,
 				duration: 300,

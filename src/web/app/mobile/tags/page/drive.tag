@@ -15,22 +15,22 @@
 			ui.trigger('title', '%fa:cloud%%i18n:mobile.tags.mk-drive-page.drive%');
 
 			ui.trigger('func', () => {
-				this.refs.ui.refs.browser.openContextMenu();
+				this.$refs.ui.refs.browser.openContextMenu();
 			}, '%fa:ellipsis-h%');
 
-			this.refs.ui.refs.browser.on('begin-fetch', () => {
+			this.$refs.ui.refs.browser.on('begin-fetch', () => {
 				Progress.start();
 			});
 
-			this.refs.ui.refs.browser.on('fetched-mid', () => {
+			this.$refs.ui.refs.browser.on('fetched-mid', () => {
 				Progress.set(0.5);
 			});
 
-			this.refs.ui.refs.browser.on('fetched', () => {
+			this.$refs.ui.refs.browser.on('fetched', () => {
 				Progress.done();
 			});
 
-			this.refs.ui.refs.browser.on('move-root', () => {
+			this.$refs.ui.refs.browser.on('move-root', () => {
 				const title = 'Misskey Drive';
 
 				// Rewrite URL
@@ -40,7 +40,7 @@
 				ui.trigger('title', '%fa:cloud%%i18n:mobile.tags.mk-drive-page.drive%');
 			});
 
-			this.refs.ui.refs.browser.on('open-folder', (folder, silent) => {
+			this.$refs.ui.refs.browser.on('open-folder', (folder, silent) => {
 				const title = folder.name + ' | Misskey Drive';
 
 				if (!silent) {
@@ -53,7 +53,7 @@
 				ui.trigger('title', '%fa:R folder-open%' + folder.name);
 			});
 
-			this.refs.ui.refs.browser.on('open-file', (file, silent) => {
+			this.$refs.ui.refs.browser.on('open-file', (file, silent) => {
 				const title = file.name + ' | Misskey Drive';
 
 				if (!silent) {

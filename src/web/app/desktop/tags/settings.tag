@@ -179,10 +179,10 @@
 
 		this.updateAccount = () => {
 			this.api('i/update', {
-				name: this.refs.accountName.value,
-				location: this.refs.accountLocation.value || null,
-				description: this.refs.accountDescription.value || null,
-				birthday: this.refs.accountBirthday.value || null
+				name: this.$refs.accountName.value,
+				location: this.$refs.accountLocation.value || null,
+				description: this.$refs.accountDescription.value || null,
+				birthday: this.$refs.accountBirthday.value || null
 			}).then(() => {
 				notify('プロフィールを更新しました');
 			});
@@ -320,7 +320,7 @@
 
 		this.submit = () => {
 			this.api('i/2fa/done', {
-				token: this.refs.token.value
+				token: this.$refs.token.value
 			}).then(() => {
 				notify('%i18n:desktop.tags.mk-2fa-setting.success%');
 				this.I.two_factor_enabled = true;

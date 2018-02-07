@@ -156,17 +156,17 @@
 		this.poll = false;
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', file => {
+			this.$refs.uploader.on('uploaded', file => {
 				this.addFile(file);
 			});
 
-			this.refs.uploader.on('change-uploads', uploads => {
+			this.$refs.uploader.on('change-uploads', uploads => {
 				this.trigger('change-uploading-files', uploads);
 			});
 
-			this.refs.text.focus();
+			this.$refs.text.focus();
 
-			new Sortable(this.refs.attaches, {
+			new Sortable(this.$refs.attaches, {
 				animation: 150
 			});
 		});
@@ -184,7 +184,7 @@
 		};
 
 		this.selectFile = () => {
-			this.refs.file.click();
+			this.$refs.file.click();
 		};
 
 		this.selectFileFromDrive = () => {
@@ -197,11 +197,11 @@
 		};
 
 		this.changeFile = () => {
-			Array.from(this.refs.file.files).forEach(this.upload);
+			Array.from(this.$refs.file.files).forEach(this.upload);
 		};
 
 		this.upload = file => {
-			this.refs.uploader.upload(file);
+			this.$refs.uploader.upload(file);
 		};
 
 		this.addFile = file => {
@@ -241,7 +241,7 @@
 			const files = [];
 
 			if (this.files.length > 0) {
-				Array.from(this.refs.attaches.children).forEach(el => {
+				Array.from(this.$refs.attaches.children).forEach(el => {
 					const id = el.getAttribute('data-id');
 					const file = this.files.find(f => f.id == id);
 					files.push(file);
@@ -249,10 +249,10 @@
 			}
 
 			this.api('posts/create', {
-				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
+				text: this.$refs.text.value == '' ? undefined : this.$refs.text.value,
 				media_ids: this.files.length > 0 ? files.map(f => f.id) : undefined,
 				reply_id: opts.reply ? opts.reply.id : undefined,
-				poll: this.poll ? this.refs.poll.get() : undefined
+				poll: this.poll ? this.$refs.poll.get() : undefined
 			}).then(data => {
 				this.trigger('post');
 				this.unmount();
@@ -269,7 +269,7 @@
 		};
 
 		this.kao = () => {
-			this.refs.text.value += getKao();
+			this.$refs.text.value += getKao();
 		};
 	</script>
 </mk-post-form>

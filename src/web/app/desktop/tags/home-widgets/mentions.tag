@@ -76,7 +76,7 @@
 		this.onDocumentKeydown = e => {
 			if (e.target.tagName != 'INPUT' && tag != 'TEXTAREA') {
 				if (e.which == 84) { // t
-					this.refs.timeline.focus();
+					this.$refs.timeline.focus();
 				}
 			}
 		};
@@ -89,24 +89,24 @@
 					isLoading: false,
 					isEmpty: posts.length == 0
 				});
-				this.refs.timeline.setPosts(posts);
+				this.$refs.timeline.setPosts(posts);
 				if (cb) cb();
 			});
 		};
 
 		this.more = () => {
-			if (this.moreLoading || this.isLoading || this.refs.timeline.posts.length == 0) return;
+			if (this.moreLoading || this.isLoading || this.$refs.timeline.posts.length == 0) return;
 			this.update({
 				moreLoading: true
 			});
 			this.api('posts/mentions', {
 				following: this.mode == 'following',
-				until_id: this.refs.timeline.tail().id
+				until_id: this.$refs.timeline.tail().id
 			}).then(posts => {
 				this.update({
 					moreLoading: false
 				});
-				this.refs.timeline.prependPosts(posts);
+				this.$refs.timeline.prependPosts(posts);
 			});
 		};
 

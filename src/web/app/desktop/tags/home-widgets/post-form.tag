@@ -84,7 +84,7 @@
 			});
 
 			this.api('posts/create', {
-				text: this.refs.text.value
+				text: this.$refs.text.value
 			}).then(data => {
 				this.clear();
 			}).catch(err => {
@@ -97,7 +97,7 @@
 		};
 
 		this.clear = () => {
-			this.refs.text.value = '';
+			this.$refs.text.value = '';
 		};
 	</script>
 </mk-post-form-home-widget>

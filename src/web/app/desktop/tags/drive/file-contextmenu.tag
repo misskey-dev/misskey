@@ -48,18 +48,18 @@
 		this.file = this.opts.file;
 
 		this.on('mount', () => {
-			this.refs.ctx.on('closed', () => {
+			this.$refs.ctx.on('closed', () => {
 				this.trigger('closed');
 				this.unmount();
 			});
 		});
 
 		this.open = pos => {
-			this.refs.ctx.open(pos);
+			this.$refs.ctx.open(pos);
 		};
 
 		this.rename = () => {
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 
 			inputDialog('%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename-file%', '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.input-new-file-name%', this.file.name, name => {
 				this.api('drive/files/update', {
@@ -71,7 +71,7 @@
 
 		this.copyUrl = () => {
 			copyToClipboard(this.file.url);
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 			dialog('%fa:check%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied%',
 				'%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied-url-to-clipboard%', [{
 				text: '%i18n:common.ok%'
@@ -79,16 +79,16 @@
 		};
 
 		this.download = () => {
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 		};
 
 		this.setAvatar = () => {
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 			updateAvatar(this.I, null, this.file);
 		};
 
 		this.setBanner = () => {
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 			updateBanner(this.I, null, this.file);
 		};
 

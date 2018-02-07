@@ -93,7 +93,7 @@
 		});
 
 		this.onStats = stats => {
-			this.refs.chart.addData(1 - stats.cpu_usage);
+			this.$refs.chart.addData(1 - stats.cpu_usage);
 
 			const percentage = (stats.cpu_usage * 100).toFixed(0);
 
@@ -124,7 +124,7 @@
 
 		this.onStats = stats => {
 			stats.mem.used = stats.mem.total - stats.mem.free;
-			this.refs.chart.addData(1 - (stats.mem.used / stats.mem.total));
+			this.$refs.chart.addData(1 - (stats.mem.used / stats.mem.total));
 
 			const percentage = (stats.mem.used / stats.mem.total * 100).toFixed(0);
 

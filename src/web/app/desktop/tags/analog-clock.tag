@@ -28,9 +28,9 @@
 			const m = now.getMinutes();
 			const h = now.getHours();
 
-			const ctx = this.refs.canvas.getContext('2d');
-			const canvW = this.refs.canvas.width;
-			const canvH = this.refs.canvas.height;
+			const ctx = this.$refs.canvas.getContext('2d');
+			const canvW = this.$refs.canvas.width;
+			const canvH = this.$refs.canvas.height;
 			ctx.clearRect(0, 0, canvW, canvH);
 
 			{ // 背景

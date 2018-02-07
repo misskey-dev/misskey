@@ -62,7 +62,7 @@
 		};
 
 		this.ok = () => {
-			this.trigger('selected', this.refs.browser.folder);
+			this.trigger('selected', this.$refs.browser.folder);
 			this.unmount();
 		};
 	</script>

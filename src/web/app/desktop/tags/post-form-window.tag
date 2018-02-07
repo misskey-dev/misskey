@@ -42,23 +42,23 @@
 		this.files = [];
 
 		this.on('mount', () => {
-			this.refs.window.refs.form.focus();
+			this.$refs.window.refs.form.focus();
 
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 
-			this.refs.window.refs.form.on('post', () => {
-				this.refs.window.close();
+			this.$refs.window.refs.form.on('post', () => {
+				this.$refs.window.close();
 			});
 
-			this.refs.window.refs.form.on('change-uploading-files', files => {
+			this.$refs.window.refs.form.on('change-uploading-files', files => {
 				this.update({
 					uploadingFiles: files || []
 				});
 			});
 
-			this.refs.window.refs.form.on('change-files', files => {
+			this.$refs.window.refs.form.on('change-files', files => {
 				this.update({
 					files: files || []
 				});

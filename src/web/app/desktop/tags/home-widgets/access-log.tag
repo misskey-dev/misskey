@@ -84,7 +84,7 @@
 			if (this.requests.length > 30) this.requests.shift();
 			this.update();
 
-			this.refs.log.scrollTop = this.refs.log.scrollHeight;
+			this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
 		};
 
 		this.func = () => {

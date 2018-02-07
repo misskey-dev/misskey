@@ -108,7 +108,7 @@
 
 		this.oninput = () => {
 			this.api('users/show', {
-				username: this.refs.username.value
+				username: this.$refs.username.value
 			}).then(user => {
 				this.user = user;
 				this.trigger('user', user);
@@ -119,16 +119,16 @@
 		this.onsubmit = e => {
 			e.preventDefault();
 
-			if (this.refs.username.value == '') {
-				this.refs.username.focus();
+			if (this.$refs.username.value == '') {
+				this.$refs.username.focus();
 				return false;
 			}
-			if (this.refs.password.value == '') {
-				this.refs.password.focus();
+			if (this.$refs.password.value == '') {
+				this.$refs.password.focus();
 				return false;
 			}
-			if (this.user && this.user.two_factor_enabled && this.refs.token.value == '') {
-				this.refs.token.focus();
+			if (this.user && this.user.two_factor_enabled && this.$refs.token.value == '') {
+				this.$refs.token.focus();
 				return false;
 			}
 
@@ -137,9 +137,9 @@
 			});
 
 			this.api('signin', {
-				username: this.refs.username.value,
-				password: this.refs.password.value,
-				token: this.user && this.user.two_factor_enabled ? this.refs.token.value : undefined
+				username: this.$refs.username.value,
+				password: this.$refs.password.value,
+				token: this.user && this.user.two_factor_enabled ? this.$refs.token.value : undefined
 			}).then(() => {
 				location.reload();
 			}).catch(() => {

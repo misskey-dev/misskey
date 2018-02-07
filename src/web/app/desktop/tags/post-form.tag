@@ -319,32 +319,32 @@
 				: 'post';
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', file => {
+			this.$refs.uploader.on('uploaded', file => {
 				this.addFile(file);
 			});
 
-			this.refs.uploader.on('change-uploads', uploads => {
+			this.$refs.uploader.on('change-uploads', uploads => {
 				this.trigger('change-uploading-files', uploads);
 			});
 
-			this.autocomplete = new Autocomplete(this.refs.text);
+			this.autocomplete = new Autocomplete(this.$refs.text);
 			this.autocomplete.attach();
 
 			// 書きかけの投稿を復元
 			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 			if (draft) {
-				this.refs.text.value = draft.data.text;
+				this.$refs.text.value = draft.data.text;
 				this.files = draft.data.files;
 				if (draft.data.poll) {
 					this.poll = true;
 					this.update();
-					this.refs.poll.set(draft.data.poll);
+					this.$refs.poll.set(draft.data.poll);
 				}
 				this.trigger('change-files', this.files);
 				this.update();
 			}
 
-			new Sortable(this.refs.media, {
+			new Sortable(this.$refs.media, {
 				animation: 150
 			});
 		});
@@ -354,11 +354,11 @@
 		});
 
 		this.focus = () => {
-			this.refs.text.focus();
+			this.$refs.text.focus();
 		};
 
 		this.clear = () => {
-			this.refs.text.value = '';
+			this.$refs.text.value = '';
 			this.files = [];
 			this.poll = false;
 			this.trigger('change-files');
@@ -422,7 +422,7 @@
 		};
 
 		this.selectFile = () => {
-			this.refs.file.click();
+			this.$refs.file.click();
 		};
 
 		this.selectFileFromDrive = () => {
@@ -435,11 +435,11 @@
 		};
 
 		this.changeFile = () => {
-			Array.from(this.refs.file.files).forEach(this.upload);
+			Array.from(this.$refs.file.files).forEach(this.upload);
 		};
 
 		this.upload = file => {
-			this.refs.uploader.upload(file);
+			this.$refs.uploader.upload(file);
 		};
 
 		this.addFile = file => {
@@ -471,7 +471,7 @@
 			const files = [];
 
 			if (this.files.length > 0) {
-				Array.from(this.refs.media.children).forEach(el => {
+				Array.from(this.$refs.media.children).forEach(el => {
 					const id = el.getAttribute('data-id');
 					const file = this.files.find(f => f.id == id);
 					files.push(file);
@@ -479,11 +479,11 @@
 			}
 
 			this.api('posts/create', {
-				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
+				text: this.$refs.text.value == '' ? undefined : this.$refs.text.value,
 				media_ids: this.files.length > 0 ? files.map(f => f.id) : undefined,
 				reply_id: this.inReplyToPost ? this.inReplyToPost.id : undefined,
 				repost_id: this.repost ? this.repost.id : undefined,
-				poll: this.poll ? this.refs.poll.get() : undefined
+				poll: this.poll ? this.$refs.poll.get() : undefined
 			}).then(data => {
 				this.clear();
 				this.removeDraft();
@@ -507,7 +507,7 @@
 		};
 
 		this.kao = () => {
-			this.refs.text.value += getKao();
+			this.$refs.text.value += getKao();
 		};
 
 		this.on('update', () => {
@@ -520,9 +520,9 @@
 			data[this.draftId] = {
 				updated_at: new Date(),
 				data: {
-					text: this.refs.text.value,
+					text: this.$refs.text.value,
 					files: this.files,
-					poll: this.poll && this.refs.poll ? this.refs.poll.get() : undefined
+					poll: this.poll && this.$refs.poll ? this.$refs.poll.get() : undefined
 				}
 			}
 

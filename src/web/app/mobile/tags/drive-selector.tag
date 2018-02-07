@@ -63,13 +63,13 @@
 		this.files = [];
 
 		this.on('mount', () => {
-			this.refs.browser.on('change-selection', files => {
+			this.$refs.browser.on('change-selection', files => {
 				this.update({
 					files: files
 				});
 			});
 
-			this.refs.browser.on('selected', file => {
+			this.$refs.browser.on('selected', file => {
 				this.trigger('selected', file);
 				this.unmount();
 			});

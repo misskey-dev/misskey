@@ -78,7 +78,7 @@
 		this.max = parseInt(this.opts.max, 10);
 
 		this.on('mount', () => {
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 		});
@@ -91,7 +91,7 @@
 		};
 
 		this.close = () => {
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 	</script>
 </mk-progress-dialog>

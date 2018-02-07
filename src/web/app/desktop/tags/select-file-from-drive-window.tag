@@ -141,33 +141,33 @@
 		this.title = this.opts.title || '%fa:R file%ファイルを選択';
 
 		this.on('mount', () => {
-			this.refs.window.refs.browser.on('selected', file => {
+			this.$refs.window.refs.browser.on('selected', file => {
 				this.files = [file];
 				this.ok();
 			});
 
-			this.refs.window.refs.browser.on('change-selection', files => {
+			this.$refs.window.refs.browser.on('change-selection', files => {
 				this.update({
 					files: files
 				});
 			});
 
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 		});
 
 		this.close = () => {
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 
 		this.upload = () => {
-			this.refs.window.refs.browser.selectLocalFile();
+			this.$refs.window.refs.browser.selectLocalFile();
 		};
 
 		this.ok = () => {
 			this.trigger('selected', this.multiple ? this.files : this.files[0]);
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 	</script>
 </mk-select-file-from-drive-window>

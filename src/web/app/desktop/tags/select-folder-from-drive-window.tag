@@ -95,18 +95,18 @@
 		this.title = this.opts.title || '%fa:R folder%フォルダを選択';
 
 		this.on('mount', () => {
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 		});
 
 		this.close = () => {
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 
 		this.ok = () => {
-			this.trigger('selected', this.refs.window.refs.browser.folder);
-			this.refs.window.close();
+			this.trigger('selected', this.$refs.window.refs.browser.folder);
+			this.$refs.window.close();
 		};
 	</script>
 </mk-select-folder-from-drive-window>

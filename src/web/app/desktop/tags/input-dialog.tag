@@ -129,11 +129,11 @@
 		this.type = this.opts.type ? this.opts.type : 'text';
 
 		this.on('mount', () => {
-			this.text = this.refs.window.refs.text;
+			this.text = this.$refs.window.refs.text;
 			if (this.default) this.text.value = this.default;
 			this.text.focus();
 
-			this.refs.window.on('closing', () => {
+			this.$refs.window.on('closing', () => {
 				if (this.done) {
 					this.opts.onOk(this.text.value);
 				} else {
@@ -141,20 +141,20 @@
 				}
 			});
 
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 		});
 
 		this.cancel = () => {
 			this.done = false;
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 
 		this.ok = () => {
 			if (!this.allowEmpty && this.text.value == '') return;
 			this.done = true;
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 
 		this.onInput = () => {

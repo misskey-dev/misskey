@@ -243,7 +243,7 @@
 
 		this.onImageLoaded = () => {
 			const self = this;
-			EXIF.getData(this.refs.img, function() {
+			EXIF.getData(this.$refs.img, function() {
 				const allMetaData = EXIF.getAllTags(this);
 				self.update({
 					exif: allMetaData

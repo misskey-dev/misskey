@@ -217,9 +217,9 @@
 			if (this.message.text) {
 				const tokens = this.message.ast;
 
-				this.refs.text.innerHTML = compile(tokens);
+				this.$refs.text.innerHTML = compile(tokens);
 
-				Array.from(this.refs.text.children).forEach(e => {
+				Array.from(this.$refs.text.children).forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);
 				});
 
@@ -227,7 +227,7 @@
 				tokens
 					.filter(t => t.type == 'link')
 					.map(t => {
-						const el = this.refs.text.appendChild(document.createElement('mk-url-preview'));
+						const el = this.$refs.text.appendChild(document.createElement('mk-url-preview'));
 						riot.mount(el, {
 							url: t.content
 						});

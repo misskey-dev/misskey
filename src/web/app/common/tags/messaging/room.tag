@@ -296,7 +296,7 @@
 				this.scrollToBottom();
 				n.parentNode.removeChild(n);
 			};
-			this.refs.notifications.appendChild(n);
+			this.$refs.notifications.appendChild(n);
 
 			setTimeout(() => {
 				n.style.opacity = 0;

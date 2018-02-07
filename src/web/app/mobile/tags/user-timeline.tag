@@ -26,7 +26,7 @@
 			return this.api('users/posts', {
 				user_id: this.user.id,
 				with_media: this.withMedia,
-				until_id: this.refs.timeline.tail().id
+				until_id: this.$refs.timeline.tail().id
 			});
 		};
 	</script>

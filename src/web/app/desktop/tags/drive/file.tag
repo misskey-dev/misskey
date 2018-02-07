@@ -206,7 +206,7 @@
 		this.onload = () => {
 			if (this.file.properties.average_color) {
 				anime({
-					targets: this.refs.thumbnail,
+					targets: this.$refs.thumbnail,
 					backgroundColor: `rgba(${this.file.properties.average_color.join(',')}, 0)`,
 					duration: 100,
 					easing: 'linear'

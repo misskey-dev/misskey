@@ -35,9 +35,9 @@
 		this.on('mount', () => {
 			if (this.post.text) {
 				const tokens = this.post.ast;
-				this.refs.text.innerHTML = compile(tokens, false);
+				this.$refs.text.innerHTML = compile(tokens, false);
 
-				Array.from(this.refs.text.children).forEach(e => {
+				Array.from(this.$refs.text.children).forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);
 				});
 			}

@@ -28,7 +28,7 @@
 
 		this.fetch = () => {
 			this.api('posts/timeline').then(posts => {
-				this.refs.timeline.setPosts(posts);
+				this.$refs.timeline.setPosts(posts);
 			});
 		};
 
@@ -47,7 +47,7 @@
 
 		this.more = () => {
 			return this.api('posts/timeline', {
-				until_id: this.refs.timeline.tail().id
+				until_id: this.$refs.timeline.tail().id
 			});
 		};
 
@@ -55,7 +55,7 @@
 			this.update({
 				isEmpty: false
 			});
-			this.refs.timeline.addPost(post);
+			this.$refs.timeline.addPost(post);
 		};
 
 		this.onStreamFollow = () => {

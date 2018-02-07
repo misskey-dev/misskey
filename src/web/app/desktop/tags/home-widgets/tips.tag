@@ -69,12 +69,12 @@
 		});
 
 		this.set = () => {
-			this.refs.text.innerHTML = this.tips[Math.floor(Math.random() * this.tips.length)];
+			this.$refs.text.innerHTML = this.tips[Math.floor(Math.random() * this.tips.length)];
 		};
 
 		this.change = () => {
 			anime({
-				targets: this.refs.tip,
+				targets: this.$refs.tip,
 				opacity: 0,
 				duration: 500,
 				easing: 'linear',
@@ -83,7 +83,7 @@
 
 			setTimeout(() => {
 				anime({
-					targets: this.refs.tip,
+					targets: this.$refs.tip,
 					opacity: 1,
 					duration: 500,
 					easing: 'linear'

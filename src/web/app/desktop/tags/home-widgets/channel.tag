@@ -82,7 +82,7 @@
 					channel: channel
 				});
 
-				this.refs.channel.zap(channel);
+				this.$refs.channel.zap(channel);
 			});
 		};
 
@@ -185,7 +185,7 @@
 		};
 
 		this.scrollToBottom = () => {
-			this.refs.posts.scrollTop = this.refs.posts.scrollHeight;
+			this.$refs.posts.scrollTop = this.$refs.posts.scrollHeight;
 		};
 	</script>
 </mk-channel>
@@ -279,7 +279,7 @@
 		this.mixin('api');
 
 		this.clear = () => {
-			this.refs.text.value = '';
+			this.$refs.text.value = '';
 		};
 
 		this.onkeydown = e => {
@@ -291,7 +291,7 @@
 				wait: true
 			});
 
-			let text = this.refs.text.value;
+			let text = this.$refs.text.value;
 			let reply = null;
 
 			if (/^>>([0-9]+) /.test(text)) {

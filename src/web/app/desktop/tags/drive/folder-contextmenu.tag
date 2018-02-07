@@ -26,9 +26,9 @@
 		this.folder = this.opts.folder;
 
 		this.open = pos => {
-			this.refs.ctx.open(pos);
+			this.$refs.ctx.open(pos);
 
-			this.refs.ctx.on('closed', () => {
+			this.$refs.ctx.on('closed', () => {
 				this.trigger('closed');
 				this.unmount();
 			});
@@ -36,21 +36,21 @@
 
 		this.move = () => {
 			this.browser.move(this.folder.id);
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 		};
 
 		this.newWindow = () => {
 			this.browser.newWindow(this.folder.id);
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 		};
 
 		this.createFolder = () => {
 			this.browser.createFolder();
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 		};
 
 		this.rename = () => {
-			this.refs.ctx.close();
+			this.$refs.ctx.close();
 
 			inputDialog('%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename-folder%', '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.input-new-folder-name%', this.folder.name, name => {
 				this.api('drive/folders/update', {

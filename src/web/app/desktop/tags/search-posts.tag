@@ -53,7 +53,7 @@
 					isLoading: false,
 					isEmpty: posts.length == 0
 				});
-				this.refs.timeline.setPosts(posts);
+				this.$refs.timeline.setPosts(posts);
 				this.trigger('loaded');
 			});
 		});
@@ -66,7 +66,7 @@
 		this.onDocumentKeydown = e => {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
 				if (e.which == 84) { // t
-					this.refs.timeline.focus();
+					this.$refs.timeline.focus();
 				}
 			}
 		};
@@ -84,7 +84,7 @@
 				this.update({
 					moreLoading: false
 				});
-				this.refs.timeline.prependPosts(posts);
+				this.$refs.timeline.prependPosts(posts);
 			});
 		};
 

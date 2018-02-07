@@ -389,7 +389,7 @@
 		};
 
 		this.search = () => {
-			const q = this.refs.search.value;
+			const q = this.$refs.search.value;
 			if (q == '') {
 				this.searchResult = [];
 				return;
@@ -416,7 +416,7 @@
 				case 40: // [↓]
 					e.preventDefault();
 					e.stopPropagation();
-					this.refs.searchResult.childNodes[0].focus();
+					this.$refs.searchResult.childNodes[0].focus();
 					break;
 			}
 		};
@@ -435,19 +435,19 @@
 
 				case e.which == 27: // [ESC]
 					cancel();
-					this.refs.search.focus();
+					this.$refs.search.focus();
 					break;
 
 				case e.which == 9 && e.shiftKey: // [TAB] + [Shift]
 				case e.which == 38: // [↑]
 					cancel();
-					(this.refs.searchResult.childNodes[i].previousElementSibling || this.refs.searchResult.childNodes[this.searchResult.length - 1]).focus();
+					(this.$refs.searchResult.childNodes[i].previousElementSibling || this.$refs.searchResult.childNodes[this.searchResult.length - 1]).focus();
 					break;
 
 				case e.which == 9: // [TAB]
 				case e.which == 40: // [↓]
 					cancel();
-					(this.refs.searchResult.childNodes[i].nextElementSibling || this.refs.searchResult.childNodes[0]).focus();
+					(this.$refs.searchResult.childNodes[i].nextElementSibling || this.$refs.searchResult.childNodes[0]).focus();
 					break;
 			}
 		};

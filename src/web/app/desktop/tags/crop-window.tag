@@ -168,7 +168,7 @@
 		this.cropper = null;
 
 		this.on('mount', () => {
-			this.img = this.refs.window.refs.img;
+			this.img = this.$refs.window.refs.img;
 			this.cropper = new Cropper(this.img, {
 				aspectRatio: this.aspectRatio,
 				highlight: false,
@@ -179,18 +179,18 @@
 		this.ok = () => {
 			this.cropper.getCroppedCanvas().toBlob(blob => {
 				this.trigger('cropped', blob);
-				this.refs.window.close();
+				this.$refs.window.close();
 			});
 		};
 
 		this.skip = () => {
 			this.trigger('skipped');
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 
 		this.cancel = () => {
 			this.trigger('canceled');
-			this.refs.window.close();
+			this.$refs.window.close();
 		};
 	</script>
 </mk-crop-window>

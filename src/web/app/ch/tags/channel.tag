@@ -289,7 +289,7 @@
 		this.files = null;
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', file => {
+			this.$refs.uploader.on('uploaded', file => {
 				this.update({
 					files: [file]
 				});
@@ -297,7 +297,7 @@
 		});
 
 		this.upload = file => {
-			this.refs.uploader.upload(file);
+			this.$refs.uploader.upload(file);
 		};
 
 		this.clearReply = () => {
@@ -311,7 +311,7 @@
 			this.update({
 				files: null
 			});
-			this.refs.text.value = '';
+			this.$refs.text.value = '';
 		};
 
 		this.post = () => {
@@ -324,7 +324,7 @@
 				: undefined;
 
 			this.api('posts/create', {
-				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
+				text: this.$refs.text.value == '' ? undefined : this.$refs.text.value,
 				media_ids: files,
 				reply_id: this.reply ? this.reply.id : undefined,
 				channel_id: this.channel.id
@@ -340,11 +340,11 @@
 		};
 
 		this.changeFile = () => {
-			Array.from(this.refs.file.files).forEach(this.upload);
+			Array.from(this.$refs.file.files).forEach(this.upload);
 		};
 
 		this.selectFile = () => {
-			this.refs.file.click();
+			this.$refs.file.click();
 		};
 
 		this.drive = () => {

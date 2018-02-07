@@ -183,7 +183,7 @@
 		this.nidState = null;
 
 		this.onChangeNid = () => {
-			const nid = this.refs.nid.value;
+			const nid = this.$refs.nid.value;
 
 			if (nid == '') {
 				this.update({
@@ -223,13 +223,13 @@
 		};
 
 		this.onsubmit = () => {
-			const name = this.refs.name.value;
-			const nid = this.refs.nid.value;
-			const description = this.refs.description.value;
-			const cb = this.refs.cb.value;
+			const name = this.$refs.name.value;
+			const nid = this.$refs.nid.value;
+			const description = this.$refs.description.value;
+			const cb = this.$refs.cb.value;
 			const permission = [];
 
-			this.refs.permission.querySelectorAll('input').forEach(el => {
+			this.$refs.permission.querySelectorAll('input').forEach(el => {
 				if (el.checked) permission.push(el.value);
 			});
 

@@ -197,7 +197,7 @@
 		this.bakedHomeData = this.bakeHomeData();
 
 		this.on('mount', () => {
-			this.refs.tl.on('loaded', () => {
+			this.$refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 			});
 
@@ -212,11 +212,11 @@
 			});
 
 			if (!this.opts.customize) {
-				if (this.refs.left.children.length == 0) {
-					this.refs.left.parentNode.removeChild(this.refs.left);
+				if (this.$refs.left.children.length == 0) {
+					this.$refs.left.parentNode.removeChild(this.$refs.left);
 				}
-				if (this.refs.right.children.length == 0) {
-					this.refs.right.parentNode.removeChild(this.refs.right);
+				if (this.$refs.right.children.length == 0) {
+					this.$refs.right.parentNode.removeChild(this.$refs.right);
 				}
 			}
 
@@ -242,10 +242,10 @@
 					}
 				};
 
-				new Sortable(this.refs.left, sortableOption);
-				new Sortable(this.refs.right, sortableOption);
-				new Sortable(this.refs.maintop, sortableOption);
-				new Sortable(this.refs.trash, Object.assign({}, sortableOption, {
+				new Sortable(this.$refs.left, sortableOption);
+				new Sortable(this.$refs.right, sortableOption);
+				new Sortable(this.$refs.maintop, sortableOption);
+				new Sortable(this.$refs.trash, Object.assign({}, sortableOption, {
 					onAdd: evt => {
 						const el = evt.item;
 						const id = el.getAttribute('data-widget-id');
@@ -257,8 +257,8 @@
 			}
 
 			if (!this.opts.customize) {
-				this.scrollFollowerLeft = this.refs.left.parentNode ? new ScrollFollower(this.refs.left, this.root.getBoundingClientRect().top) : null;
-				this.scrollFollowerRight = this.refs.right.parentNode ? new ScrollFollower(this.refs.right, this.root.getBoundingClientRect().top) : null;
+				this.scrollFollowerLeft = this.$refs.left.parentNode ? new ScrollFollower(this.$refs.left, this.root.getBoundingClientRect().top) : null;
+				this.scrollFollowerRight = this.$refs.right.parentNode ? new ScrollFollower(this.$refs.right, this.root.getBoundingClientRect().top) : null;
 			}
 		});
 
@@ -299,23 +299,23 @@
 			switch (widget.place) {
 				case 'left':
 					if (prepend) {
-						this.refs.left.insertBefore(actualEl, this.refs.left.firstChild);
+						this.$refs.left.insertBefore(actualEl, this.$refs.left.firstChild);
 					} else {
-						this.refs.left.appendChild(actualEl);
+						this.$refs.left.appendChild(actualEl);
 					}
 					break;
 				case 'right':
 					if (prepend) {
-						this.refs.right.insertBefore(actualEl, this.refs.right.firstChild);
+						this.$refs.right.insertBefore(actualEl, this.$refs.right.firstChild);
 					} else {
-						this.refs.right.appendChild(actualEl);
+						this.$refs.right.appendChild(actualEl);
 					}
 					break;
 				case 'main':
 					if (this.opts.customize) {
-						this.refs.maintop.appendChild(actualEl);
+						this.$refs.maintop.appendChild(actualEl);
 					} else {
-						this.refs.main.insertBefore(actualEl, this.refs.tl.root);
+						this.$refs.main.insertBefore(actualEl, this.$refs.tl.root);
 					}
 					break;
 			}
@@ -324,7 +324,7 @@
 				id: widget.id,
 				data: widget.data,
 				place: widget.place,
-				tl: this.refs.tl
+				tl: this.$refs.tl
 			})[0];
 
 			this.home.push(tag);
@@ -341,7 +341,7 @@
 
 		this.addWidget = () => {
 			const widget = {
-				name: this.refs.widgetSelector.options[this.refs.widgetSelector.selectedIndex].value,
+				name: this.$refs.widgetSelector.options[this.$refs.widgetSelector.selectedIndex].value,
 				id: uuid(),
 				place: 'left',
 				data: {}
@@ -357,21 +357,21 @@
 		this.saveHome = () => {
 			const data = [];
 
-			Array.from(this.refs.left.children).forEach(el => {
+			Array.from(this.$refs.left.children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
 				const widget = this.I.client_settings.home.find(w => w.id == id);
 				widget.place = 'left';
 				data.push(widget);
 			});
 
-			Array.from(this.refs.right.children).forEach(el => {
+			Array.from(this.$refs.right.children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
 				const widget = this.I.client_settings.home.find(w => w.id == id);
 				widget.place = 'right';
 				data.push(widget);
 			});
 
-			Array.from(this.refs.maintop.children).forEach(el => {
+			Array.from(this.$refs.maintop.children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
 				const widget = this.I.client_settings.home.find(w => w.id == id);
 				widget.place = 'main';

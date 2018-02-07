@@ -180,7 +180,7 @@
 
 		this.onsubmit = e => {
 			e.preventDefault();
-			this.page('/search?q=' + encodeURIComponent(this.refs.q.value));
+			this.page('/search?q=' + encodeURIComponent(this.$refs.q.value));
 		};
 	</script>
 </mk-ui-header-search>

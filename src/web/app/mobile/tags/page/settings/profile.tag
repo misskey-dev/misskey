@@ -231,10 +231,10 @@
 			});
 
 			this.api('i/update', {
-				name: this.refs.name.value,
-				location: this.refs.location.value || null,
-				description: this.refs.description.value || null,
-				birthday: this.refs.birthday.value || null
+				name: this.$refs.name.value,
+				location: this.$refs.location.value || null,
+				description: this.$refs.description.value || null,
+				birthday: this.$refs.birthday.value || null
 			}).then(() => {
 				this.update({
 					saving: false

@@ -18,7 +18,7 @@
 
 			Progress.start();
 
-			this.refs.ui.refs.search.on('loaded', () => {
+			this.$refs.ui.refs.search.on('loaded', () => {
 				Progress.done();
 			});
 		});

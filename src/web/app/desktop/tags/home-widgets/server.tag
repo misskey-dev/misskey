@@ -284,7 +284,7 @@
 		});
 
 		this.onStats = stats => {
-			this.refs.pie.render(stats.cpu_usage);
+			this.$refs.pie.render(stats.cpu_usage);
 		};
 	</script>
 </mk-server-home-widget-cpu>
@@ -344,7 +344,7 @@
 
 		this.onStats = stats => {
 			stats.mem.used = stats.mem.total - stats.mem.free;
-			this.refs.pie.render(stats.mem.used / stats.mem.total);
+			this.$refs.pie.render(stats.mem.used / stats.mem.total);
 
 			this.update({
 				total: stats.mem.total,
@@ -411,7 +411,7 @@
 		this.onStats = stats => {
 			stats.disk.used = stats.disk.total - stats.disk.free;
 
-			this.refs.pie.render(stats.disk.used / stats.disk.total);
+			this.$refs.pie.render(stats.disk.used / stats.disk.total);
 
 			this.update({
 				total: stats.disk.total,

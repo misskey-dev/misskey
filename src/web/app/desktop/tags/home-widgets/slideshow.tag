@@ -101,17 +101,17 @@
 			const index = Math.floor(Math.random() * this.images.length);
 			const img = `url(${ this.images[index].url }?thumbnail&size=1024)`;
 
-			this.refs.slideB.style.backgroundImage = img;
+			this.$refs.slideB.style.backgroundImage = img;
 
 			anime({
-				targets: this.refs.slideB,
+				targets: this.$refs.slideB,
 				opacity: 1,
 				duration: 1000,
 				easing: 'linear',
 				complete: () => {
-					this.refs.slideA.style.backgroundImage = img;
+					this.$refs.slideA.style.backgroundImage = img;
 					anime({
-						targets: this.refs.slideB,
+						targets: this.$refs.slideB,
 						opacity: 0,
 						duration: 0
 					});
@@ -133,8 +133,8 @@
 					fetching: false,
 					images: images
 				});
-				this.refs.slideA.style.backgroundImage = '';
-				this.refs.slideB.style.backgroundImage = '';
+				this.$refs.slideA.style.backgroundImage = '';
+				this.$refs.slideB.style.backgroundImage = '';
 				this.change();
 			});
 		};

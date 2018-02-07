@@ -31,7 +31,7 @@
 				ui.trigger('title', '<img src="' + user.avatar_url + '?thumbnail&size=64">' + '%i18n:mobile.tags.mk-user-following-page.following-of%'.replace('{}', user.name));
 				document.documentElement.style.background = '#313a42';
 
-				this.refs.ui.refs.list.on('loaded', () => {
+				this.$refs.ui.refs.list.on('loaded', () => {
 					Progress.done();
 				});
 			});

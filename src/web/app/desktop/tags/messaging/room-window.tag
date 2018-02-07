@@ -24,7 +24,7 @@
 		this.popout = `${_URL_}/i/messaging/${this.user.username}`;
 
 		this.on('mount', () => {
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 		});

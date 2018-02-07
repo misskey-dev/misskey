@@ -85,29 +85,29 @@
 
 		this.on('mount', () => {
 			const rect = this.source.getBoundingClientRect();
-			const width = this.refs.popover.offsetWidth;
-			const height = this.refs.popover.offsetHeight;
+			const width = this.$refs.popover.offsetWidth;
+			const height = this.$refs.popover.offsetHeight;
 			if (this.opts.compact) {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
-				this.refs.popover.style.left = (x - (width / 2)) + 'px';
-				this.refs.popover.style.top = (y - (height / 2)) + 'px';
+				this.$refs.popover.style.left = (x - (width / 2)) + 'px';
+				this.$refs.popover.style.top = (y - (height / 2)) + 'px';
 			} else {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + this.source.offsetHeight;
-				this.refs.popover.style.left = (x - (width / 2)) + 'px';
-				this.refs.popover.style.top = y + 'px';
+				this.$refs.popover.style.left = (x - (width / 2)) + 'px';
+				this.$refs.popover.style.top = y + 'px';
 			}
 
 			anime({
-				targets: this.refs.backdrop,
+				targets: this.$refs.backdrop,
 				opacity: 1,
 				duration: 100,
 				easing: 'linear'
 			});
 
 			anime({
-				targets: this.refs.popover,
+				targets: this.$refs.popover,
 				opacity: 1,
 				scale: [0.5, 1],
 				duration: 500
@@ -124,7 +124,7 @@
 		};
 
 		this.categorize = () => {
-			const category = this.refs.categorySelect.options[this.refs.categorySelect.selectedIndex].value;
+			const category = this.$refs.categorySelect.options[this.$refs.categorySelect.selectedIndex].value;
 			this.api('posts/categorize', {
 				post_id: this.post.id,
 				category: category
@@ -135,17 +135,17 @@
 		};
 
 		this.close = () => {
-			this.refs.backdrop.style.pointerEvents = 'none';
+			this.$refs.backdrop.style.pointerEvents = 'none';
 			anime({
-				targets: this.refs.backdrop,
+				targets: this.$refs.backdrop,
 				opacity: 0,
 				duration: 200,
 				easing: 'linear'
 			});
 
-			this.refs.popover.style.pointerEvents = 'none';
+			this.$refs.popover.style.pointerEvents = 'none';
 			anime({
-				targets: this.refs.popover,
+				targets: this.$refs.popover,
 				opacity: 0,
 				scale: 0.5,
 				duration: 200,

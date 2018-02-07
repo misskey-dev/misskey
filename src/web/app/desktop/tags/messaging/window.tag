@@ -20,11 +20,11 @@
 	</style>
 	<script>
 		this.on('mount', () => {
-			this.refs.window.on('closed', () => {
+			this.$refs.window.on('closed', () => {
 				this.unmount();
 			});
 
-			this.refs.window.refs.index.on('navigate-user', user => {
+			this.$refs.window.refs.index.on('navigate-user', user => {
 				riot.mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
 					user: user
 				});

@@ -37,7 +37,7 @@
 		this.mixin('widget');
 
 		this.on('mount', () => {
-			this.refs.index.on('navigate-user', user => {
+			this.$refs.index.on('navigate-user', user => {
 				riot.mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
 					user: user
 				});

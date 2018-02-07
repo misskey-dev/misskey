@@ -26,7 +26,7 @@
 		this.query = this.opts.query;
 
 		this.on('mount', () => {
-			this.refs.posts.on('loaded', () => {
+			this.$refs.posts.on('loaded', () => {
 				this.trigger('loaded');
 			});
 		});

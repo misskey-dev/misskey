@@ -275,11 +275,11 @@
 		this.isDragSource = false;
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', file => {
+			this.$refs.uploader.on('uploaded', file => {
 				this.addFile(file, true);
 			});
 
-			this.refs.uploader.on('change-uploads', uploads => {
+			this.$refs.uploader.on('change-uploads', uploads => {
 				this.update({
 					uploads: uploads
 				});
@@ -332,35 +332,35 @@
 		};
 
 		this.onmousedown = e => {
-			if (contains(this.refs.foldersContainer, e.target) || contains(this.refs.filesContainer, e.target)) return true;
+			if (contains(this.$refs.foldersContainer, e.target) || contains(this.$refs.filesContainer, e.target)) return true;
 
-			const rect = this.refs.main.getBoundingClientRect();
+			const rect = this.$refs.main.getBoundingClientRect();
 
-			const left = e.pageX + this.refs.main.scrollLeft - rect.left - window.pageXOffset
-			const top = e.pageY + this.refs.main.scrollTop - rect.top - window.pageYOffset
+			const left = e.pageX + this.$refs.main.scrollLeft - rect.left - window.pageXOffset
+			const top = e.pageY + this.$refs.main.scrollTop - rect.top - window.pageYOffset
 
 			const move = e => {
-				this.refs.selection.style.display = 'block';
+				this.$refs.selection.style.display = 'block';
 
-				const cursorX = e.pageX + this.refs.main.scrollLeft - rect.left - window.pageXOffset;
-				const cursorY = e.pageY + this.refs.main.scrollTop - rect.top - window.pageYOffset;
+				const cursorX = e.pageX + this.$refs.main.scrollLeft - rect.left - window.pageXOffset;
+				const cursorY = e.pageY + this.$refs.main.scrollTop - rect.top - window.pageYOffset;
 				const w = cursorX - left;
 				const h = cursorY - top;
 
 				if (w > 0) {
-					this.refs.selection.style.width = w + 'px';
-					this.refs.selection.style.left = left + 'px';
+					this.$refs.selection.style.width = w + 'px';
+					this.$refs.selection.style.left = left + 'px';
 				} else {
-					this.refs.selection.style.width = -w + 'px';
-					this.refs.selection.style.left = cursorX + 'px';
+					this.$refs.selection.style.width = -w + 'px';
+					this.$refs.selection.style.left = cursorX + 'px';
 				}
 
 				if (h > 0) {
-					this.refs.selection.style.height = h + 'px';
-					this.refs.selection.style.top = top + 'px';
+					this.$refs.selection.style.height = h + 'px';
+					this.$refs.selection.style.top = top + 'px';
 				} else {
-					this.refs.selection.style.height = -h + 'px';
-					this.refs.selection.style.top = cursorY + 'px';
+					this.$refs.selection.style.height = -h + 'px';
+					this.$refs.selection.style.top = cursorY + 'px';
 				}
 			};
 
@@ -368,7 +368,7 @@
 				document.documentElement.removeEventListener('mousemove', move);
 				document.documentElement.removeEventListener('mouseup', up);
 
-				this.refs.selection.style.display = 'none';
+				this.$refs.selection.style.display = 'none';
 			};
 
 			document.documentElement.addEventListener('mousemove', move);
@@ -482,7 +482,7 @@
 		};
 
 		this.selectLocalFile = () => {
-			this.refs.fileInput.click();
+			this.$refs.fileInput.click();
 		};
 
 		this.urlUpload = () => {
@@ -516,14 +516,14 @@
 		};
 
 		this.changeFileInput = () => {
-			Array.from(this.refs.fileInput.files).forEach(file => {
+			Array.from(this.$refs.fileInput.files).forEach(file => {
 				this.upload(file, this.folder);
 			});
 		};
 
 		this.upload = (file, folder) => {
 			if (folder && typeof folder == 'object') folder = folder.id;
-			this.refs.uploader.upload(file, folder);
+			this.$refs.uploader.upload(file, folder);
 		};
 
 		this.chooseFile = file => {

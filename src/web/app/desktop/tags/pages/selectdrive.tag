@@ -133,12 +133,12 @@
 		this.on('mount', () => {
 			document.title = '%i18n:desktop.tags.mk-selectdrive-page.title%';
 
-			this.refs.browser.on('selected', file => {
+			this.$refs.browser.on('selected', file => {
 				this.files = [file];
 				this.ok();
 			});
 
-			this.refs.browser.on('change-selection', files => {
+			this.$refs.browser.on('change-selection', files => {
 				this.update({
 					files: files
 				});
@@ -146,7 +146,7 @@
 		});
 
 		this.upload = () => {
-			this.refs.browser.selectLocalFile();
+			this.$refs.browser.selectLocalFile();
 		};
 
 		this.close = () => {

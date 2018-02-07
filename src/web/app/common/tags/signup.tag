@@ -208,7 +208,7 @@
 		});
 
 		this.onChangeUsername = () => {
-			const username = this.refs.username.value;
+			const username = this.$refs.username.value;
 
 			if (username == '') {
 				this.update({
@@ -248,7 +248,7 @@
 		};
 
 		this.onChangePassword = () => {
-			const password = this.refs.password.value;
+			const password = this.$refs.password.value;
 
 			if (password == '') {
 				this.passwordStrength = '';
@@ -258,12 +258,12 @@
 			const strength = getPasswordStrength(password);
 			this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
 			this.update();
-			this.refs.passwordMetar.style.width = `${strength * 100}%`;
+			this.$refs.passwordMetar.style.width = `${strength * 100}%`;
 		};
 
 		this.onChangePasswordRetype = () => {
-			const password = this.refs.password.value;
-			const retypedPassword = this.refs.passwordRetype.value;
+			const password = this.$refs.password.value;
+			const retypedPassword = this.$refs.passwordRetype.value;
 
 			if (retypedPassword == '') {
 				this.passwordRetypeState = null;
@@ -276,8 +276,8 @@
 		this.onsubmit = e => {
 			e.preventDefault();
 
-			const username = this.refs.username.value;
-			const password = this.refs.password.value;
+			const username = this.$refs.username.value;
+			const password = this.$refs.password.value;
 
 			const locker = document.body.appendChild(document.createElement('mk-locker'));
 

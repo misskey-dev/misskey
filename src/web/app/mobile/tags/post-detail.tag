@@ -273,9 +273,9 @@
 			if (this.p.text) {
 				const tokens = this.p.ast;
 
-				this.refs.text.innerHTML = compile(tokens);
+				this.$refs.text.innerHTML = compile(tokens);
 
-				Array.from(this.refs.text.children).forEach(e => {
+				Array.from(this.$refs.text.children).forEach(e => {
 					if (e.tagName == 'MK-URL') riot.mount(e);
 				});
 
@@ -283,7 +283,7 @@
 				tokens
 				.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
 				.map(t => {
-					riot.mount(this.refs.text.appendChild(document.createElement('mk-url-preview')), {
+					riot.mount(this.$refs.text.appendChild(document.createElement('mk-url-preview')), {
 						url: t.url
 					});
 				});
@@ -319,7 +319,7 @@
 
 		this.react = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
-				source: this.refs.reactButton,
+				source: this.$refs.reactButton,
 				post: this.p,
 				compact: true
 			});
@@ -327,7 +327,7 @@
 
 		this.menu = () => {
 			riot.mount(document.body.appendChild(document.createElement('mk-post-menu')), {
-				source: this.refs.menuButton,
+				source: this.$refs.menuButton,
 				post: this.p,
 				compact: true
 			});

@@ -104,7 +104,7 @@
 		this.show = false;
 
 		this.on('mount', () => {
-			hljs.highlightBlock(this.refs.headers);
+			hljs.highlightBlock(this.$refs.headers);
 		});
 
 		this.toggle = () => {

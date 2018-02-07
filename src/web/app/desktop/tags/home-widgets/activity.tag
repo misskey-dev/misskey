@@ -15,7 +15,7 @@
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.refs.activity.on('view-changed', view => {
+			this.$refs.activity.on('view-changed', view => {
 				this.data.view = view;
 				this.save();
 			});
@@ -23,7 +23,7 @@
 
 		this.func = () => {
 			if (++this.data.design == 3) this.data.design = 0;
-			this.refs.activity.update({
+			this.$refs.activity.update({
 				design: this.data.design
 			});
 			this.save();

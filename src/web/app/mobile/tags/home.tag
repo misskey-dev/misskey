@@ -15,7 +15,7 @@
 	</style>
 	<script>
 		this.on('mount', () => {
-			this.refs.tl.on('loaded', () => {
+			this.$refs.tl.on('loaded', () => {
 				this.trigger('loaded');
 			});
 		});

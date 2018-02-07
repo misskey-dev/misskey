@@ -59,12 +59,12 @@
 		this.on('mount', () => {
 			document.documentElement.style.background = '#fff';
 
-			this.refs.browser.on('selected', file => {
+			this.$refs.browser.on('selected', file => {
 				this.files = [file];
 				this.ok();
 			});
 
-			this.refs.browser.on('change-selection', files => {
+			this.$refs.browser.on('change-selection', files => {
 				this.update({
 					files: files
 				});
@@ -72,7 +72,7 @@
 		});
 
 		this.upload = () => {
-			this.refs.browser.selectLocalFile();
+			this.$refs.browser.selectLocalFile();
 		};
 
 		this.close = () => {

@@ -136,7 +136,7 @@
 		};
 
 		this.selectFile = () => {
-			this.refs.file.click();
+			this.$refs.file.click();
 		};
 
 		this.selectFileFromDrive = () => {
@@ -155,7 +155,7 @@
 			this.sending = true;
 			this.api('messaging/messages/create', {
 				user_id: this.opts.user.id,
-				text: this.refs.text.value
+				text: this.$refs.text.value
 			}).then(message => {
 				this.clear();
 			}).catch(err => {
@@ -167,7 +167,7 @@
 		};
 
 		this.clear = () => {
-			this.refs.text.value = '';
+			this.$refs.text.value = '';
 			this.files = [];
 			this.update();
 		};

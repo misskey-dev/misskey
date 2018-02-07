@@ -177,12 +177,12 @@
 		};
 
 		this.applySelect = () => {
-			Array.from(this.refs.users.children).forEach(el => {
+			Array.from(this.$refs.users.children).forEach(el => {
 				el.removeAttribute('data-selected');
 			});
 
-			this.refs.users.children[this.select].setAttribute('data-selected', 'true');
-			this.refs.users.children[this.select].focus();
+			this.$refs.users.children[this.select].setAttribute('data-selected', 'true');
+			this.$refs.users.children[this.select].focus();
 		};
 
 		this.complete = user => {

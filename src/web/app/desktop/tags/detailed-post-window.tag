@@ -62,8 +62,8 @@
 		});
 
 		this.close = () => {
-			this.refs.bg.style.pointerEvents = 'none';
-			this.refs.main.style.pointerEvents = 'none';
+			this.$refs.bg.style.pointerEvents = 'none';
+			this.$refs.main.style.pointerEvents = 'none';
 			anime({
 				targets: this.root,
 				opacity: 0,
