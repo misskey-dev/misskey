@@ -2,7 +2,7 @@
 <div>
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :data-compact="compact" ref="popover">
-		<p if={ !opts.compact }>{ title }</p>
+		<p v-if="!compact">{{ title }}</p>
 		<div>
 			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" title="%i18n:common.reactions.like%"><mk-reaction-icon reaction='like'/></button>
 			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" title="%i18n:common.reactions.love%"><mk-reaction-icon reaction='love'/></button>
@@ -22,10 +22,15 @@
 	import anime from 'animejs';
 	import api from '../scripts/api';
 
+	const placeholder = '%i18n:common.tags.mk-reaction-picker.choose-reaction%';
+
 	export default {
 		props: ['post', 'cb'],
+		data: {
+			title: placeholder
+		},
 		methods: {
-			react: function (reaction) {
+			react: function(reaction) {
 				api('posts/reactions/create', {
 					post_id: this.post.id,
 					reaction: reaction
@@ -33,6 +38,12 @@
 					if (this.cb) this.cb();
 					this.$destroy();
 				});
+			},
+			onMouseover: function(e) {
+				this.title = e.target.title;
+			},
+			onMouseout: function(e) {
+				this.title = placeholder;
 			}
 		}
 	};
@@ -41,22 +52,6 @@
 
 	this.post = this.opts.post;
 	this.source = this.opts.source;
-
-	const placeholder = '%i18n:common.tags.mk-reaction-picker.choose-reaction%';
-
-	this.title = placeholder;
-
-	this.onmouseover = e => {
-		this.update({
-			title: e.target.title
-		});
-	};
-
-	this.onmouseout = () => {
-		this.update({
-			title: placeholder
-		});
-	};
 
 	this.on('mount', () => {
 		const rect = this.source.getBoundingClientRect();
