@@ -99,7 +99,7 @@
 		"diskusage": "0.2.4",
 		"elasticsearch": "14.1.0",
 		"escape-regexp": "0.0.1",
-		"eventemitter3": "3.0.0",
+		"eventemitter3": "3.0.1",
 		"exif-js": "2.3.0",
 		"express": "4.16.2",
 		"file-type": "7.5.0",
