@@ -1,5 +1,5 @@
 <mk-access-log-home-widget>
-	<virtual if={ data.design == 0 }>
+	<virtual v-if="data.design == 0">
 		<p class="title">%fa:server%%i18n:desktop.tags.mk-access-log-home-widget.title%</p>
 	</virtual>
 	<div ref="log">

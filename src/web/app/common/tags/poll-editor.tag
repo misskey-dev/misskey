@@ -1,5 +1,5 @@
 <mk-poll-editor>
-	<p class="caution" if={ choices.length < 2 }>
+	<p class="caution" v-if="choices.length < 2">
 		%fa:exclamation-triangle%%i18n:common.tags.mk-poll-editor.no-only-one-choice%
 	</p>
 	<ul ref="choices">
@@ -10,7 +10,7 @@
 			</button>
 		</li>
 	</ul>
-	<button class="add" if={ choices.length < 10 } @click="add">%i18n:common.tags.mk-poll-editor.add%</button>
+	<button class="add" v-if="choices.length < 10" @click="add">%i18n:common.tags.mk-poll-editor.add%</button>
 	<button class="destroy" @click="destroy" title="%i18n:common.tags.mk-poll-editor.destroy%">
 		%fa:times%
 	</button>

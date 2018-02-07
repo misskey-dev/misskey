@@ -1,7 +1,7 @@
 <mk-drive-browser-window>
 	<mk-window ref="window" is-modal={ false } width={ '800px' } height={ '500px' } popout={ popout }>
 		<yield to="header">
-			<p class="info" if={ parent.usage }><b>{ parent.usage.toFixed(1) }%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
+			<p class="info" v-if="parent.usage"><b>{ parent.usage.toFixed(1) }%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
 			%fa:cloud%%i18n:desktop.tags.mk-drive-browser-window.drive%
 		</yield>
 		<yield to="content">

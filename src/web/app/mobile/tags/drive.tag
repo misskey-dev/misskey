@@ -5,52 +5,52 @@
 			<span>%fa:angle-right%</span>
 			<a @click="move" href="/i/drive/folder/{ folder.id }">{ folder.name }</a>
 		</virtual>
-		<virtual if={ folder != null }>
+		<virtual v-if="folder != null">
 			<span>%fa:angle-right%</span>
 			<p>{ folder.name }</p>
 		</virtual>
-		<virtual if={ file != null }>
+		<virtual v-if="file != null">
 			<span>%fa:angle-right%</span>
 			<p>{ file.name }</p>
 		</virtual>
 	</nav>
 	<mk-uploader ref="uploader"/>
-	<div class="browser { fetching: fetching }" if={ file == null }>
-		<div class="info" if={ info }>
-			<p if={ folder == null }>{ (info.usage / info.capacity * 100).toFixed(1) }% %i18n:mobile.tags.mk-drive.used%</p>
-			<p if={ folder != null && (folder.folders_count > 0 || folder.files_count > 0) }>
-				<virtual if={ folder.folders_count > 0 }>{ folder.folders_count } %i18n:mobile.tags.mk-drive.folder-count%</virtual>
-				<virtual if={ folder.folders_count > 0 && folder.files_count > 0 }>%i18n:mobile.tags.mk-drive.count-separator%</virtual>
-				<virtual if={ folder.files_count > 0 }>{ folder.files_count } %i18n:mobile.tags.mk-drive.file-count%</virtual>
+	<div class="browser { fetching: fetching }" v-if="file == null">
+		<div class="info" v-if="info">
+			<p v-if="folder == null">{ (info.usage / info.capacity * 100).toFixed(1) }% %i18n:mobile.tags.mk-drive.used%</p>
+			<p v-if="folder != null && (folder.folders_count > 0 || folder.files_count > 0)">
+				<virtual v-if="folder.folders_count > 0">{ folder.folders_count } %i18n:mobile.tags.mk-drive.folder-count%</virtual>
+				<virtual v-if="folder.folders_count > 0 && folder.files_count > 0">%i18n:mobile.tags.mk-drive.count-separator%</virtual>
+				<virtual v-if="folder.files_count > 0">{ folder.files_count } %i18n:mobile.tags.mk-drive.file-count%</virtual>
 			</p>
 		</div>
-		<div class="folders" if={ folders.length > 0 }>
+		<div class="folders" v-if="folders.length > 0">
 			<virtual each={ folder in folders }>
 				<mk-drive-folder folder={ folder }/>
 			</virtual>
-			<p if={ moreFolders }>%i18n:mobile.tags.mk-drive.load-more%</p>
+			<p v-if="moreFolders">%i18n:mobile.tags.mk-drive.load-more%</p>
 		</div>
-		<div class="files" if={ files.length > 0 }>
+		<div class="files" v-if="files.length > 0">
 			<virtual each={ file in files }>
 				<mk-drive-file file={ file }/>
 			</virtual>
-			<button class="more" if={ moreFiles } @click="fetchMoreFiles">
+			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
 				{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
 			</button>
 		</div>
-		<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
-			<p if={ folder == null }>%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
-			<p if={ folder != null }>%i18n:mobile.tags.mk-drive.folder-is-empty%</p>
+		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
+			<p v-if="folder == null">%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
+			<p v-if="folder != null">%i18n:mobile.tags.mk-drive.folder-is-empty%</p>
 		</div>
 	</div>
-	<div class="fetching" if={ fetching && file == null && files.length == 0 && folders.length == 0 }>
+	<div class="fetching" v-if="fetching && file == null && files.length == 0 && folders.length == 0">
 		<div class="spinner">
 			<div class="dot1"></div>
 			<div class="dot2"></div>
 		</div>
 	</div>
 	<input ref="file" type="file" multiple="multiple" onchange={ changeLocalFile }/>
-	<mk-drive-file-viewer if={ file != null } file={ file }/>
+	<mk-drive-file-viewer v-if="file != null" file={ file }/>
 	<style lang="stylus" scoped>
 		:scope
 			display block

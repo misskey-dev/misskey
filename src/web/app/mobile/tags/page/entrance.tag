@@ -1,8 +1,8 @@
 <mk-entrance>
 	<main><img src="/assets/title.svg" alt="Misskey"/>
-		<mk-entrance-signin if={ mode == 'signin' }/>
-		<mk-entrance-signup if={ mode == 'signup' }/>
-		<div class="introduction" if={ mode == 'introduction' }>
+		<mk-entrance-signin v-if="mode == 'signin'"/>
+		<mk-entrance-signup v-if="mode == 'signup'"/>
+		<div class="introduction" v-if="mode == 'introduction'">
 			<mk-introduction/>
 			<button @click="signin">%i18n:common.ok%</button>
 		</div>

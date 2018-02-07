@@ -1,14 +1,14 @@
 <mk-drive-browser-file data-is-selected={ isSelected } data-is-contextmenu-showing={ isContextmenuShowing.toString() } @click="onclick" oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
-	<div class="label" if={ I.avatar_id == file.id }><img src="/assets/label.svg"/>
+	<div class="label" v-if="I.avatar_id == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.avatar%</p>
 	</div>
-	<div class="label" if={ I.banner_id == file.id }><img src="/assets/label.svg"/>
+	<div class="label" v-if="I.banner_id == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.banner%</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" style="background-color:{ file.properties.average_color ? 'rgb(' + file.properties.average_color.join(',') + ')' : 'transparent' }">
 		<img src={ file.url + '?thumbnail&size=128' } alt="" onload={ onload }/>
 	</div>
-	<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
+	<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" v-if="file.name.lastIndexOf('.') != -1">{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

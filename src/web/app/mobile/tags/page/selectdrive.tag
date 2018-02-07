@@ -1,8 +1,8 @@
 <mk-selectdrive-page>
 	<header>
-		<h1>%i18n:mobile.tags.mk-selectdrive-page.select-file%<span class="count" if={ files.length > 0 }>({ files.length })</span></h1>
+		<h1>%i18n:mobile.tags.mk-selectdrive-page.select-file%<span class="count" v-if="files.length > 0">({ files.length })</span></h1>
 		<button class="upload" @click="upload">%fa:upload%</button>
-		<button if={ multiple } class="ok" @click="ok">%fa:check%</button>
+		<button v-if="multiple" class="ok" @click="ok">%fa:check%</button>
 	</header>
 	<mk-drive ref="browser" select-file={ true } multiple={ multiple } is-naked={ true } top={ 42 }/>
 

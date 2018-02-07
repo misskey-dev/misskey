@@ -3,7 +3,7 @@
 	<hr>
 	<button @click="n">%i18n:ch.tags.mk-index.new%</button>
 	<hr>
-	<ul if={ channels }>
+	<ul v-if="channels">
 		<li each={ channels }><a href={ '/' + this.id }>{ this.title }</a></li>
 	</ul>
 	<style lang="stylus" scoped>

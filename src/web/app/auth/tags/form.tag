@@ -12,15 +12,15 @@
 			<h2>このアプリは次の権限を要求しています:</h2>
 			<ul>
 				<virtual each={ p in app.permission }>
-					<li if={ p == 'account-read' }>アカウントの情報を見る。</li>
-					<li if={ p == 'account-write' }>アカウントの情報を操作する。</li>
-					<li if={ p == 'post-write' }>投稿する。</li>
-					<li if={ p == 'like-write' }>いいねしたりいいね解除する。</li>
-					<li if={ p == 'following-write' }>フォローしたりフォロー解除する。</li>
-					<li if={ p == 'drive-read' }>ドライブを見る。</li>
-					<li if={ p == 'drive-write' }>ドライブを操作する。</li>
-					<li if={ p == 'notification-read' }>通知を見る。</li>
-					<li if={ p == 'notification-write' }>通知を操作する。</li>
+					<li v-if="p == 'account-read'">アカウントの情報を見る。</li>
+					<li v-if="p == 'account-write'">アカウントの情報を操作する。</li>
+					<li v-if="p == 'post-write'">投稿する。</li>
+					<li v-if="p == 'like-write'">いいねしたりいいね解除する。</li>
+					<li v-if="p == 'following-write'">フォローしたりフォロー解除する。</li>
+					<li v-if="p == 'drive-read'">ドライブを見る。</li>
+					<li v-if="p == 'drive-write'">ドライブを操作する。</li>
+					<li v-if="p == 'notification-read'">通知を見る。</li>
+					<li v-if="p == 'notification-write'">通知を操作する。</li>
 				</virtual>
 			</ul>
 		</section>

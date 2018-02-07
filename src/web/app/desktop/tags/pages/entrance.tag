@@ -3,12 +3,12 @@
 		<div>
 			<h1>どこにいても、ここにあります</h1>
 			<p>ようこそ！ MisskeyはTwitter風ミニブログSNSです――思ったこと、共有したいことをシンプルに書き残せます。タイムラインを見れば、皆の反応や皆がどう思っているのかもすぐにわかります。</p>
-			<p if={ stats }>これまでに{ stats.posts_count }投稿されました</p>
+			<p v-if="stats">これまでに{ stats.posts_count }投稿されました</p>
 		</div>
 		<div>
-			<mk-entrance-signin if={ mode == 'signin' }/>
-			<mk-entrance-signup if={ mode == 'signup' }/>
-			<div class="introduction" if={ mode == 'introduction' }>
+			<mk-entrance-signin v-if="mode == 'signin'"/>
+			<mk-entrance-signup v-if="mode == 'signup'"/>
+			<div class="introduction" v-if="mode == 'introduction'">
 				<mk-introduction/>
 				<button @click="signin">わかった</button>
 			</div>
@@ -152,7 +152,7 @@
 <mk-entrance-signin>
 	<a class="help" href={ _DOCS_URL_ + '/help' } title="お困りですか？">%fa:question%</a>
 	<div class="form">
-		<h1><img if={ user } src={ user.avatar_url + '?thumbnail&size=32' }/>
+		<h1><img v-if="user" src={ user.avatar_url + '?thumbnail&size=32' }/>
 			<p>{ user ? user.name : 'アカウント' }</p>
 		</h1>
 		<mk-signin ref="signin"/>

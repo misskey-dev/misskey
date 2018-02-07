@@ -1,6 +1,6 @@
 <mk-detailed-post-window>
 	<div class="bg" ref="bg" @click="bgClick"></div>
-	<div class="main" ref="main" if={ !fetching }>
+	<div class="main" ref="main" v-if="!fetching">
 		<mk-post-detail ref="detail" post={ post }/>
 	</div>
 	<style lang="stylus" scoped>

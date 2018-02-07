@@ -3,17 +3,17 @@
 		<li each={ poll.choices } @click="vote.bind(null, id)" class={ voted: voted } title={ !parent.isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', text) : '' }>
 			<div class="backdrop" style={ 'width:' + (parent.result ? (votes / parent.total * 100) : 0) + '%' }></div>
 			<span>
-				<virtual if={ is_voted }>%fa:check%</virtual>
+				<virtual v-if="is_voted">%fa:check%</virtual>
 				{ text }
-				<span class="votes" if={ parent.result }>({ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', votes) })</span>
+				<span class="votes" v-if="parent.result">({ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', votes) })</span>
 			</span>
 		</li>
 	</ul>
-	<p if={ total > 0 }>
+	<p v-if="total > 0">
 		<span>{ '%i18n:common.tags.mk-poll.total-users%'.replace('{}', total) }</span>
 		・
-		<a if={ !isVoted } @click="toggleResult">{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }</a>
-		<span if={ isVoted }>%i18n:common.tags.mk-poll.voted%</span>
+		<a v-if="!isVoted" @click="toggleResult">{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }</a>
+		<span v-if="isVoted">%i18n:common.tags.mk-poll.voted%</span>
 	</p>
 	<style lang="stylus" scoped>
 		:scope

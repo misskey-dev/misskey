@@ -1,6 +1,6 @@
 <mk-following-setuper>
 	<p class="title">気になるユーザーをフォロー:</p>
-	<div class="users" if={ !fetching && users.length > 0 }>
+	<div class="users" v-if="!fetching && users.length > 0">
 		<div class="user" each={ users }><a class="avatar-anchor" href={ '/' + username }><img class="avatar" src={ avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ id }/></a>
 			<div class="body"><a class="name" href={ '/' + username } target="_blank" data-user-preview={ id }>{ name }</a>
 				<p class="username">@{ username }</p>
@@ -8,8 +8,8 @@
 			<mk-follow-button user={ this }/>
 		</div>
 	</div>
-	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
-	<p class="fetching" if={ fetching }>%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
+	<p class="empty" v-if="!fetching && users.length == 0">おすすめのユーザーは見つかりませんでした。</p>
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
 	<a class="refresh" @click="refresh">もっと見る</a>
 	<button class="close" @click="close" title="閉じる">%fa:times%</button>
 	<style lang="stylus" scoped>

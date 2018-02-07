@@ -1,6 +1,6 @@
 <mk-app-page>
-	<p if={ fetching }>読み込み中</p>
-	<main if={ !fetching }>
+	<p v-if="fetching">読み込み中</p>
+	<main v-if="!fetching">
 		<header>
 			<h1>{ app.name }</h1>
 		</header>

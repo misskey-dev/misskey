@@ -8,7 +8,7 @@
 			<span class="username">@{ user.username }</span>
 		</header>
 		<div class="body">
-			<p class="followed" if={ user.is_followed }>フォローされています</p>
+			<p class="followed" v-if="user.is_followed">フォローされています</p>
 			<div class="description">{ user.description }</div>
 		</div>
 	</div>

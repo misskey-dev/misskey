@@ -1,5 +1,5 @@
 <mk-activity-table>
-	<svg if={ data } ref="canvas" viewBox="0 0 53 7" preserveAspectRatio="none">
+	<svg v-if="data" ref="canvas" viewBox="0 0 53 7" preserveAspectRatio="none">
 		<rect each={ data } width="1" height="1"
 			riot-x={ x } riot-y={ date.weekday }
 			rx="1" ry="1"

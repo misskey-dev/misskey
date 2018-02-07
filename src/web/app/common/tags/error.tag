@@ -8,8 +8,8 @@
 	}</a>{
 		'%i18n:common.tags.mk-error.description%'.substr('%i18n:common.tags.mk-error.description%'.indexOf('}') + 1)
 	}</p>
-	<button if={ !troubleshooting } @click="troubleshoot">%i18n:common.tags.mk-error.troubleshoot%</button>
-	<mk-troubleshooter if={ troubleshooting }/>
+	<button v-if="!troubleshooting" @click="troubleshoot">%i18n:common.tags.mk-error.troubleshoot%</button>
+	<mk-troubleshooter v-if="troubleshooting"/>
 	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
 	<style lang="stylus" scoped>
 		:scope
@@ -98,15 +98,15 @@
 <mk-troubleshooter>
 	<h1>%fa:wrench%%i18n:common.tags.mk-error.troubleshooter.title%</h1>
 	<div>
-		<p data-wip={ network == null }><virtual if={ network != null }><virtual if={ network }>%fa:check%</virtual><virtual if={ !network }>%fa:times%</virtual></virtual>{ network == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-network%' : '%i18n:common.tags.mk-error.troubleshooter.network%' }<mk-ellipsis if={ network == null }/></p>
-		<p if={ network == true } data-wip={ internet == null }><virtual if={ internet != null }><virtual if={ internet }>%fa:check%</virtual><virtual if={ !internet }>%fa:times%</virtual></virtual>{ internet == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-internet%' : '%i18n:common.tags.mk-error.troubleshooter.internet%' }<mk-ellipsis if={ internet == null }/></p>
-		<p if={ internet == true } data-wip={ server == null }><virtual if={ server != null }><virtual if={ server }>%fa:check%</virtual><virtual if={ !server }>%fa:times%</virtual></virtual>{ server == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-server%' : '%i18n:common.tags.mk-error.troubleshooter.server%' }<mk-ellipsis if={ server == null }/></p>
+		<p data-wip={ network == null }><virtual v-if="network != null"><virtual v-if="network">%fa:check%</virtual><virtual v-if="!network">%fa:times%</virtual></virtual>{ network == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-network%' : '%i18n:common.tags.mk-error.troubleshooter.network%' }<mk-ellipsis v-if="network == null"/></p>
+		<p v-if="network == true" data-wip={ internet == null }><virtual v-if="internet != null"><virtual v-if="internet">%fa:check%</virtual><virtual v-if="!internet">%fa:times%</virtual></virtual>{ internet == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-internet%' : '%i18n:common.tags.mk-error.troubleshooter.internet%' }<mk-ellipsis v-if="internet == null"/></p>
+		<p v-if="internet == true" data-wip={ server == null }><virtual v-if="server != null"><virtual v-if="server">%fa:check%</virtual><virtual v-if="!server">%fa:times%</virtual></virtual>{ server == null ? '%i18n:common.tags.mk-error.troubleshooter.checking-server%' : '%i18n:common.tags.mk-error.troubleshooter.server%' }<mk-ellipsis v-if="server == null"/></p>
 	</div>
-	<p if={ !end }>%i18n:common.tags.mk-error.troubleshooter.finding%<mk-ellipsis/></p>
-	<p if={ network === false }><b>%fa:exclamation-triangle%%i18n:common.tags.mk-error.troubleshooter.no-network%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-network-desc%</p>
-	<p if={ internet === false }><b>%fa:exclamation-triangle%%i18n:common.tags.mk-error.troubleshooter.no-internet%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-internet-desc%</p>
-	<p if={ server === false }><b>%fa:exclamation-triangle%%i18n:common.tags.mk-error.troubleshooter.no-server%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-server-desc%</p>
-	<p if={ server === true } class="success"><b>%fa:info-circle%%i18n:common.tags.mk-error.troubleshooter.success%</b><br>%i18n:common.tags.mk-error.troubleshooter.success-desc%</p>
+	<p v-if="!end">%i18n:common.tags.mk-error.troubleshooter.finding%<mk-ellipsis/></p>
+	<p v-if="network === false"><b>%fa:exclamation-triangle%%i18n:common.tags.mk-error.troubleshooter.no-network%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-network-desc%</p>
+	<p v-if="internet === false"><b>%fa:exclamation-triangle%%i18n:common.tags.mk-error.troubleshooter.no-internet%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-internet-desc%</p>
+	<p v-if="server === false"><b>%fa:exclamation-triangle%%i18n:common.tags.mk-error.troubleshooter.no-server%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-server-desc%</p>
+	<p v-if="server === true" class="success"><b>%fa:info-circle%%i18n:common.tags.mk-error.troubleshooter.success%</b><br>%i18n:common.tags.mk-error.troubleshooter.success-desc%</p>
 
 	<style lang="stylus" scoped>
 		:scope

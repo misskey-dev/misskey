@@ -2,7 +2,7 @@
 	<mk-window ref="window" is-modal={ true } width={ '800px' } height={ '500px' }>
 		<yield to="header">
 			<mk-raw content={ parent.title }/>
-			<span class="count" if={ parent.multiple && parent.files.length > 0 }>({ parent.files.length }ファイル選択中)</span>
+			<span class="count" v-if="parent.multiple && parent.files.length > 0">({ parent.files.length }ファイル選択中)</span>
 		</yield>
 		<yield to="content">
 			<mk-drive-browser ref="browser" multiple={ parent.multiple }/>

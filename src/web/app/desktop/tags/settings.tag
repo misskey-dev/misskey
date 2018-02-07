@@ -265,12 +265,12 @@
 <mk-2fa-setting>
 	<p>%i18n:desktop.tags.mk-2fa-setting.intro%<a href="%i18n:desktop.tags.mk-2fa-setting.url%" target="_blank">%i18n:desktop.tags.mk-2fa-setting.detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
-	<p if={ !data && !I.two_factor_enabled }><button @click="register" class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
-	<virtual if={ I.two_factor_enabled }>
+	<p v-if="!data && !I.two_factor_enabled"><button @click="register" class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
+	<virtual v-if="I.two_factor_enabled">
 		<p>%i18n:desktop.tags.mk-2fa-setting.already-registered%</p>
 		<button @click="unregister" class="ui">%i18n:desktop.tags.mk-2fa-setting.unregister%</button>
 	</virtual>
-	<div if={ data }>
+	<div v-if="data">
 		<ol>
 			<li>%i18n:desktop.tags.mk-2fa-setting.authenticator% <a href="https://support.google.com/accounts/answer/1066447" target="_blank">%i18n:desktop.tags.mk-2fa-setting.howtoinstall%</a></li>
 			<li>%i18n:desktop.tags.mk-2fa-setting.scan%<br><img src={ data.qr }></li>
@@ -394,10 +394,10 @@
 </mk-drive-setting>
 
 <mk-mute-setting>
-	<div class="none ui info" if={ !fetching && users.length == 0 }>
+	<div class="none ui info" v-if="!fetching && users.length == 0">
 		<p>%fa:info-circle%%i18n:desktop.tags.mk-mute-setting.no-users%</p>
 	</div>
-	<div class="users" if={ users.length != 0 }>
+	<div class="users" v-if="users.length != 0">
 		<div each={ user in users }>
 			<p><b>{ user.name }</b> @{ user.username }</p>
 		</div>

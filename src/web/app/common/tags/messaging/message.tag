@@ -4,18 +4,18 @@
 	</a>
 	<div class="content-container">
 		<div class="balloon">
-			<p class="read" if={ message.is_me && message.is_read }>%i18n:common.tags.mk-messaging-message.is-read%</p>
-			<button class="delete-button" if={ message.is_me } title="%i18n:common.delete%"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
-			<div class="content" if={ !message.is_deleted }>
+			<p class="read" v-if="message.is_me && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>
+			<button class="delete-button" v-if="message.is_me" title="%i18n:common.delete%"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
+			<div class="content" v-if="!message.is_deleted">
 				<div ref="text"></div>
-				<div class="image" if={ message.file }><img src={ message.file.url } alt="image" title={ message.file.name }/></div>
+				<div class="image" v-if="message.file"><img src={ message.file.url } alt="image" title={ message.file.name }/></div>
 			</div>
-			<div class="content" if={ message.is_deleted }>
+			<div class="content" v-if="message.is_deleted">
 				<p class="is-deleted">%i18n:common.tags.mk-messaging-message.deleted%</p>
 			</div>
 		</div>
 		<footer>
-			<mk-time time={ message.created_at }/><virtual if={ message.is_edited }>%fa:pencil-alt%</virtual>
+			<mk-time time={ message.created_at }/><virtual v-if="message.is_edited">%fa:pencil-alt%</virtual>
 		</footer>
 	</div>
 	<style lang="stylus" scoped>

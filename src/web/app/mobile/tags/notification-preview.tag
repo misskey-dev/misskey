@@ -1,46 +1,46 @@
 <mk-notification-preview class={ notification.type }>
-	<virtual if={ notification.type == 'reaction' }>
+	<virtual v-if="notification.type == 'reaction'">
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p><mk-reaction-icon reaction={ notification.reaction }/>{ notification.user.name }</p>
 			<p class="post-ref">%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'repost' }>
+	<virtual v-if="notification.type == 'repost'">
 		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:retweet%{ notification.post.user.name }</p>
 			<p class="post-ref">%fa:quote-left%{ getPostSummary(notification.post.repost) }%fa:quote-right%</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'quote' }>
+	<virtual v-if="notification.type == 'quote'">
 		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:quote-left%{ notification.post.user.name }</p>
 			<p class="post-preview">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'follow' }>
+	<virtual v-if="notification.type == 'follow'">
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:user-plus%{ notification.user.name }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'reply' }>
+	<virtual v-if="notification.type == 'reply'">
 		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:reply%{ notification.post.user.name }</p>
 			<p class="post-preview">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'mention' }>
+	<virtual v-if="notification.type == 'mention'">
 		<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:at%{ notification.post.user.name }</p>
 			<p class="post-preview">{ getPostSummary(notification.post) }</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'poll_vote' }>
+	<virtual v-if="notification.type == 'poll_vote'">
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">
 			<p>%fa:chart-pie%{ notification.user.name }</p>

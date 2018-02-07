@@ -1,8 +1,8 @@
 <mk-post-menu>
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover { compact: opts.compact }" ref="popover">
-		<button if={ post.user_id === I.id } @click="pin">%i18n:common.tags.mk-post-menu.pin%</button>
-		<div if={ I.is_pro && !post.is_category_verified }>
+		<button v-if="post.user_id === I.id" @click="pin">%i18n:common.tags.mk-post-menu.pin%</button>
+		<div v-if="I.is_pro && !post.is_category_verified">
 			<select ref="categorySelect">
 				<option value="">%i18n:common.tags.mk-post-menu.select%</option>
 				<option value="music">%i18n:common.post_categories.music%</option>

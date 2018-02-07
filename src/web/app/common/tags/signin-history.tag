@@ -1,5 +1,5 @@
 <mk-signin-history>
-	<div class="records" if={ history.length != 0 }>
+	<div class="records" v-if="history.length != 0">
 		<mk-signin-record each={ rec in history } rec={ rec }/>
 	</div>
 	<style lang="stylus" scoped>
@@ -43,8 +43,8 @@
 
 <mk-signin-record>
 	<header @click="toggle">
-		<virtual if={ rec.success }>%fa:check%</virtual>
-		<virtual if={ !rec.success }>%fa:times%</virtual>
+		<virtual v-if="rec.success">%fa:check%</virtual>
+		<virtual v-if="!rec.success">%fa:times%</virtual>
 		<span class="ip">{ rec.ip }</span>
 		<mk-time time={ rec.created_at }/>
 	</header>

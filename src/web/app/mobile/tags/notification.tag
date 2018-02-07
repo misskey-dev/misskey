@@ -1,6 +1,6 @@
 <mk-notification class={ notification.type }>
 	<mk-time time={ notification.created_at }/>
-	<virtual if={ notification.type == 'reaction' }>
+	<virtual v-if="notification.type == 'reaction'">
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -14,7 +14,7 @@
 			</a>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'repost' }>
+	<virtual v-if="notification.type == 'repost'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -28,7 +28,7 @@
 			</a>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'quote' }>
+	<virtual v-if="notification.type == 'quote'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -40,7 +40,7 @@
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'follow' }>
+	<virtual v-if="notification.type == 'follow'">
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -51,7 +51,7 @@
 			</p>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'reply' }>
+	<virtual v-if="notification.type == 'reply'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -63,7 +63,7 @@
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'mention' }>
+	<virtual v-if="notification.type == 'mention'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -75,7 +75,7 @@
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
 	</virtual>
-	<virtual if={ notification.type == 'poll_vote' }>
+	<virtual v-if="notification.type == 'poll_vote'">
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>

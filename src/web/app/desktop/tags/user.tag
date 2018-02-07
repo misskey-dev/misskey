@@ -1,10 +1,10 @@
 <mk-user>
-	<div class="user" if={ !fetching }>
+	<div class="user" v-if="!fetching">
 		<header>
 			<mk-user-header user={ user }/>
 		</header>
-		<mk-user-home if={ page == 'home' } user={ user }/>
-		<mk-user-graphs if={ page == 'graphs' } user={ user }/>
+		<mk-user-home v-if="page == 'home'" user={ user }/>
+		<mk-user-graphs v-if="page == 'graphs'" user={ user }/>
 	</div>
 	<style lang="stylus" scoped>
 		:scope
@@ -48,7 +48,7 @@
 		<div class="title">
 			<p class="name" href={ '/' + user.username }>{ user.name }</p>
 			<p class="username">@{ user.username }</p>
-			<p class="location" if={ user.profile.location }>%fa:map-marker%{ user.profile.location }</p>
+			<p class="location" v-if="user.profile.location">%fa:map-marker%{ user.profile.location }</p>
 		</div>
 		<footer>
 			<a href={ '/' + user.username } data-active={ parent.page == 'home' }>%fa:home%概要</a>
@@ -224,17 +224,17 @@
 </mk-user-header>
 
 <mk-user-profile>
-	<div class="friend-form" if={ SIGNIN && I.id != user.id }>
+	<div class="friend-form" v-if="SIGNIN && I.id != user.id">
 		<mk-big-follow-button user={ user }/>
-		<p class="followed" if={ user.is_followed }>%i18n:desktop.tags.mk-user.follows-you%</p>
-		<p if={ user.is_muted }>%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
-		<p if={ !user.is_muted }><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
+		<p class="followed" v-if="user.is_followed">%i18n:desktop.tags.mk-user.follows-you%</p>
+		<p v-if="user.is_muted">%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
+		<p v-if="!user.is_muted"><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
 	</div>
-	<div class="description" if={ user.description }>{ user.description }</div>
-	<div class="birthday" if={ user.profile.birthday }>
+	<div class="description" v-if="user.description">{ user.description }</div>
+	<div class="birthday" v-if="user.profile.birthday">
 		<p>%fa:birthday-cake%{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' } ({ age(user.profile.birthday) }歳)</p>
 	</div>
-	<div class="twitter" if={ user.twitter }>
+	<div class="twitter" v-if="user.twitter">
 		<p>%fa:B twitter%<a href={ 'https://twitter.com/' + user.twitter.screen_name } target="_blank">@{ user.twitter.screen_name }</a></p>
 	</div>
 	<div class="status">
@@ -355,13 +355,13 @@
 
 <mk-user-photos>
 	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
-	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
-	<div class="stream" if={ !initializing && images.length > 0 }>
+	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
+	<div class="stream" v-if="!initializing && images.length > 0">
 		<virtual each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>
 		</virtual>
 	</div>
-	<p class="empty" if={ !initializing && images.length == 0 }>%i18n:desktop.tags.mk-user.photos.no-photos%</p>
+	<p class="empty" v-if="!initializing && images.length == 0">%i18n:desktop.tags.mk-user.photos.no-photos%</p>
 	<style lang="stylus" scoped>
 		:scope
 			display block
@@ -449,8 +449,8 @@
 
 <mk-user-frequently-replied-users>
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
-	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
-	<div class="user" if={ !initializing && users.length != 0 } each={ _user in users }>
+	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
+	<div class="user" v-if="!initializing && users.length != 0" each={ _user in users }>
 		<a class="avatar-anchor" href={ '/' + _user.username }>
 			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ _user.id }/>
 		</a>
@@ -460,7 +460,7 @@
 		</div>
 		<mk-follow-button user={ _user }/>
 	</div>
-	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:desktop.tags.mk-user.frequently-replied-users.no-users%</p>
+	<p class="empty" v-if="!initializing && users.length == 0">%i18n:desktop.tags.mk-user.frequently-replied-users.no-users%</p>
 	<style lang="stylus" scoped>
 		:scope
 			display block
@@ -561,13 +561,13 @@
 
 <mk-user-followers-you-know>
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
-	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
-	<div if={ !initializing && users.length > 0 }>
+	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
+	<div v-if="!initializing && users.length > 0">
 	<virtual each={ user in users }>
 		<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>
 	</virtual>
 	</div>
-	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
+	<p class="empty" v-if="!initializing && users.length == 0">%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
 	<style lang="stylus" scoped>
 		:scope
 			display block
@@ -638,12 +638,12 @@
 		<div ref="left">
 			<mk-user-profile user={ user }/>
 			<mk-user-photos user={ user }/>
-			<mk-user-followers-you-know if={ SIGNIN && I.id !== user.id } user={ user }/>
+			<mk-user-followers-you-know v-if="SIGNIN && I.id !== user.id" user={ user }/>
 			<p>%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time time={ user.last_used_at }/></b></p>
 		</div>
 	</div>
 	<main>
-		<mk-post-detail if={ user.pinned_post } post={ user.pinned_post } compact={ true }/>
+		<mk-post-detail v-if="user.pinned_post" post={ user.pinned_post } compact={ true }/>
 		<mk-user-timeline ref="tl" user={ user }/>
 	</main>
 	<div>
@@ -784,7 +784,7 @@
 </mk-user-graphs>
 
 <mk-user-graphs-activity-chart>
-	<svg if={ data } ref="canvas" viewBox="0 0 365 1" preserveAspectRatio="none">
+	<svg v-if="data" ref="canvas" viewBox="0 0 365 1" preserveAspectRatio="none">
 		<g each={ d, i in data.reverse() }>
 			<rect width="0.8" riot-height={ d.postsH }
 				riot-x={ i + 0.1 } riot-y={ 1 - d.postsH - d.repliesH - d.repostsH }

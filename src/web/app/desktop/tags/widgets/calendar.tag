@@ -1,12 +1,12 @@
 <mk-calendar-widget data-melt={ opts.design == 4 || opts.design == 5 }>
-	<virtual if={ opts.design == 0 || opts.design == 1 }>
+	<virtual v-if="opts.design == 0 || opts.design == 1">
 		<button @click="prev" title="%i18n:desktop.tags.mk-calendar-widget.prev%">%fa:chevron-circle-left%</button>
 		<p class="title">{ '%i18n:desktop.tags.mk-calendar-widget.title%'.replace('{1}', year).replace('{2}', month) }</p>
 		<button @click="next" title="%i18n:desktop.tags.mk-calendar-widget.next%">%fa:chevron-circle-right%</button>
 	</virtual>
 
 	<div class="calendar">
-		<div class="weekday" if={ opts.design == 0 || opts.design == 2 || opts.design == 4} each={ day, i in Array(7).fill(0) }
+		<div class="weekday" v-if="opts.design == 0 || opts.design == 2 || opts.design == 4} each={ day, i in Array(7).fill(0)"
 			data-today={ year == today.getFullYear() && month == today.getMonth() + 1 && today.getDay() == i }
 			data-is-donichi={ i == 0 || i == 6 }>{ weekdayText[i] }</div>
 		<div each={ day, i in Array(paddingDays).fill(0) }></div>

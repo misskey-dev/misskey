@@ -16,7 +16,7 @@
 		</header>
 		<div class="body">
 			<div class="text" ref="text"></div>
-			<div class="media" if={ post.media }>
+			<div class="media" v-if="post.media">
 				<mk-images images={ post.media }/>
 			</div>
 		</div>

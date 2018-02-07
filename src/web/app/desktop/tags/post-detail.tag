@@ -1,18 +1,18 @@
 <mk-post-detail title={ title }>
 	<div class="main">
-		<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } title="会話をもっと読み込む" @click="loadContext" disabled={ contextFetching }>
-			<virtual if={ !contextFetching }>%fa:ellipsis-v%</virtual>
-			<virtual if={ contextFetching }>%fa:spinner .pulse%</virtual>
+		<button class="read-more" v-if="p.reply && p.reply.reply_id && context == null" title="会話をもっと読み込む" @click="loadContext" disabled={ contextFetching }>
+			<virtual v-if="!contextFetching">%fa:ellipsis-v%</virtual>
+			<virtual v-if="contextFetching">%fa:spinner .pulse%</virtual>
 		</button>
 		<div class="context">
 			<virtual each={ post in context }>
 				<mk-post-detail-sub post={ post }/>
 			</virtual>
 		</div>
-		<div class="reply-to" if={ p.reply }>
+		<div class="reply-to" v-if="p.reply">
 			<mk-post-detail-sub post={ p.reply }/>
 		</div>
-		<div class="repost" if={ isRepost }>
+		<div class="repost" v-if="isRepost">
 			<p>
 				<a class="avatar-anchor" href={ '/' + post.user.username } data-user-preview={ post.user_id }>
 					<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
@@ -36,28 +36,28 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text"></div>
-				<div class="media" if={ p.media }>
+				<div class="media" v-if="p.media">
 					<mk-images images={ p.media }/>
 				</div>
-				<mk-poll if={ p.poll } post={ p }/>
+				<mk-poll v-if="p.poll" post={ p }/>
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p }/>
 				<button @click="reply" title="返信">
-					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+					%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
 				</button>
 				<button @click="repost" title="Repost">
-					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
 				</button>
 				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton" title="リアクション">
-					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
 				</button>
 				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
 			</footer>
 		</article>
-		<div class="replies" if={ !compact }>
+		<div class="replies" v-if="!compact">
 			<virtual each={ post in replies }>
 				<mk-post-detail-sub post={ post }/>
 			</virtual>

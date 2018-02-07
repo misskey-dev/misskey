@@ -1,10 +1,10 @@
 <mk-big-follow-button>
-	<button class={ wait: wait, follow: !user.is_following, unfollow: user.is_following } if={ !init } @click="onclick" disabled={ wait } title={ user.is_following ? 'フォロー解除' : 'フォローする' }>
-		<span if={ !wait && user.is_following }>%fa:minus%フォロー解除</span>
-		<span if={ !wait && !user.is_following }>%fa:plus%フォロー</span>
-		<virtual if={ wait }>%fa:spinner .pulse .fw%</virtual>
+	<button class={ wait: wait, follow: !user.is_following, unfollow: user.is_following } v-if="!init" @click="onclick" disabled={ wait } title={ user.is_following ? 'フォロー解除' : 'フォローする' }>
+		<span v-if="!wait && user.is_following">%fa:minus%フォロー解除</span>
+		<span v-if="!wait && !user.is_following">%fa:plus%フォロー</span>
+		<virtual v-if="wait">%fa:spinner .pulse .fw%</virtual>
 	</button>
-	<div class="init" if={ init }>%fa:spinner .pulse .fw%</div>
+	<div class="init" v-if="init">%fa:spinner .pulse .fw%</div>
 	<style lang="stylus" scoped>
 		:scope
 			display block

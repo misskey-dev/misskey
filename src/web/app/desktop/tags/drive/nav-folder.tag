@@ -1,5 +1,5 @@
 <mk-drive-browser-nav-folder data-draghover={ draghover } @click="onclick" ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
-	<virtual if={ folder == null }>%fa:cloud%</virtual><span>{ folder == null ? '%i18n:desktop.tags.mk-drive-browser-nav-folder.drive%' : folder.name }</span>
+	<virtual v-if="folder == null">%fa:cloud%</virtual><span>{ folder == null ? '%i18n:desktop.tags.mk-drive-browser-nav-folder.drive%' : folder.name }</span>
 	<style lang="stylus" scoped>
 		:scope
 			&[data-draghover]

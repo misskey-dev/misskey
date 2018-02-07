@@ -1,12 +1,12 @@
 <mk-channel>
 	<mk-header/>
 	<hr>
-	<main if={ !fetching }>
+	<main v-if="!fetching">
 		<h1>{ channel.title }</h1>
 
-		<div if={ SIGNIN }>
-			<p if={ channel.is_watching }>このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
-			<p if={ !channel.is_watching }><a @click="watch">このチャンネルをウォッチする</a></p>
+		<div v-if="SIGNIN">
+			<p v-if="channel.is_watching">このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
+			<p v-if="!channel.is_watching"><a @click="watch">このチャンネルをウォッチする</a></p>
 		</div>
 
 		<div class="share">
@@ -15,17 +15,17 @@
 		</div>
 
 		<div class="body">
-			<p if={ postsFetching }>読み込み中<mk-ellipsis/></p>
-			<div if={ !postsFetching }>
-				<p if={ posts == null || posts.length == 0 }>まだ投稿がありません</p>
-				<virtual if={ posts != null }>
+			<p v-if="postsFetching">読み込み中<mk-ellipsis/></p>
+			<div v-if="!postsFetching">
+				<p v-if="posts == null || posts.length == 0">まだ投稿がありません</p>
+				<virtual v-if="posts != null">
 					<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
 				</virtual>
 			</div>
 		</div>
 		<hr>
-		<mk-channel-form if={ SIGNIN } channel={ channel } ref="form"/>
-		<div if={ !SIGNIN }>
+		<mk-channel-form v-if="SIGNIN" channel={ channel } ref="form"/>
+		<div v-if="!SIGNIN">
 			<p>参加するには<a href={ _URL_ }>ログインまたは新規登録</a>してください</p>
 		</div>
 		<hr>
@@ -171,9 +171,9 @@
 		<span>ID:<i>{ post.user.username }</i></span>
 	</header>
 	<div>
-		<a if={ post.reply }>&gt;&gt;{ post.reply.index }</a>
+		<a v-if="post.reply">&gt;&gt;{ post.reply.index }</a>
 		{ post.text }
-		<div class="media" if={ post.media }>
+		<div class="media" v-if="post.media">
 			<virtual each={ file in post.media }>
 				<a href={ file.url } target="_blank">
 					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
@@ -241,17 +241,17 @@
 </mk-channel-post>
 
 <mk-channel-form>
-	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a @click="clearReply">[x]</a></p>
+	<p v-if="reply"><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a @click="clearReply">[x]</a></p>
 	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder="%i18n:ch.tags.mk-channel-form.textarea%"></textarea>
 	<div class="actions">
 		<button @click="selectFile">%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
 		<button @click="drive">%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
 		<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="post">
-			<virtual if={ !wait }>%fa:paper-plane%</virtual>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis if={ wait }/>
+			<virtual v-if="!wait">%fa:paper-plane%</virtual>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis v-if="wait"/>
 		</button>
 	</div>
 	<mk-uploader ref="uploader"/>
-	<ol if={ files }>
+	<ol v-if="files">
 		<li each={ files }>{ name }</li>
 	</ol>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>

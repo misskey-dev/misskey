@@ -6,7 +6,7 @@
 		<label class="password">
 			<input ref="password" type="password" placeholder="%i18n:common.tags.mk-signin.password%" required="required"/>%fa:lock%
 		</label>
-		<label class="token" if={ user && user.two_factor_enabled }>
+		<label class="token" v-if="user && user.two_factor_enabled">
 			<input ref="token" type="number" placeholder="%i18n:common.tags.mk-signin.token%" required="required"/>%fa:lock%
 		</label>
 		<button type="submit" disabled={ signing }>{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }</button>

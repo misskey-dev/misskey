@@ -1,7 +1,7 @@
 <mk-timeline>
 	<virtual each={ post, i in posts }>
 		<mk-timeline-post post={ post }/>
-		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }><span>%fa:angle-up%{ post._datetext }</span><span>%fa:angle-down%{ posts[i + 1]._datetext }</span></p>
+		<p class="date" v-if="i != posts.length - 1 && post._date != posts[i + 1]._date"><span>%fa:angle-up%{ post._datetext }</span><span>%fa:angle-down%{ posts[i + 1]._datetext }</span></p>
 	</virtual>
 	<footer data-yield="footer">
 		<yield from="footer"/>
@@ -82,10 +82,10 @@
 </mk-timeline>
 
 <mk-timeline-post tabindex="-1" title={ title } onkeydown={ onKeyDown } dblclick={ onDblClick }>
-	<div class="reply-to" if={ p.reply }>
+	<div class="reply-to" v-if="p.reply">
 		<mk-timeline-post-sub post={ p.reply }/>
 	</div>
-	<div class="repost" if={ isRepost }>
+	<div class="repost" v-if="isRepost">
 		<p>
 			<a class="avatar-anchor" href={ '/' + post.user.username } data-user-preview={ post.user_id }>
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
@@ -101,10 +101,10 @@
 		<div class="main">
 			<header>
 				<a class="name" href={ '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
-				<span class="is-bot" if={ p.user.is_bot }>bot</span>
+				<span class="is-bot" v-if="p.user.is_bot">bot</span>
 				<span class="username">@{ p.user.username }</span>
 				<div class="info">
-					<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>
+					<span class="app" v-if="p.app">via <b>{ p.app.name }</b></span>
 					<a class="created-at" href={ url }>
 						<mk-time time={ p.created_at }/>
 					</a>
@@ -112,43 +112,43 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<p class="channel" if={ p.channel != null }><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
-					<a class="reply" if={ p.reply }>
+					<p class="channel" v-if="p.channel != null"><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<a class="reply" v-if="p.reply">
 						%fa:reply%
 					</a>
 					<p class="dummy"></p>
-					<a class="quote" if={ p.repost != null }>RP:</a>
+					<a class="quote" v-if="p.repost != null">RP:</a>
 				</div>
-				<div class="media" if={ p.media }>
+				<div class="media" v-if="p.media">
 					<mk-images images={ p.media }/>
 				</div>
-				<mk-poll if={ p.poll } post={ p } ref="pollViewer"/>
-				<div class="repost" if={ p.repost }>%fa:quote-right -flip-h%
+				<mk-poll v-if="p.poll" post={ p } ref="pollViewer"/>
+				<div class="repost" v-if="p.repost">%fa:quote-right -flip-h%
 					<mk-post-preview class="repost" post={ p.repost }/>
 				</div>
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
 				<button @click="reply" title="%i18n:desktop.tags.mk-timeline-post.reply%">
-					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+					%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
 				</button>
 				<button @click="repost" title="%i18n:desktop.tags.mk-timeline-post.repost%">
-					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
 				</button>
 				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%">
-					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
 				</button>
 				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
 				<button @click="toggleDetail" title="%i18n:desktop.tags.mk-timeline-post.detail">
-					<virtual if={ !isDetailOpened }>%fa:caret-down%</virtual>
-					<virtual if={ isDetailOpened }>%fa:caret-up%</virtual>
+					<virtual v-if="!isDetailOpened">%fa:caret-down%</virtual>
+					<virtual v-if="isDetailOpened">%fa:caret-up%</virtual>
 				</button>
 			</footer>
 		</div>
 	</article>
-	<div class="detail" if={ isDetailOpened }>
+	<div class="detail" v-if="isDetailOpened">
 		<mk-post-status-graph width="462" height="130" post={ p }/>
 	</div>
 	<style lang="stylus" scoped>

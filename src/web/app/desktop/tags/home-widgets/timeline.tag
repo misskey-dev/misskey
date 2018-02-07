@@ -1,13 +1,13 @@
 <mk-timeline-home-widget>
-	<mk-following-setuper if={ noFollowing }/>
-	<div class="loading" if={ isLoading }>
+	<mk-following-setuper v-if="noFollowing"/>
+	<div class="loading" v-if="isLoading">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" if={ isEmpty && !isLoading }>%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
+	<p class="empty" v-if="isEmpty && !isLoading">%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
 	<mk-timeline ref="timeline" hide={ isLoading }>
 		<yield to="footer">
-			<virtual if={ !parent.moreLoading }>%fa:moon%</virtual>
-			<virtual if={ parent.moreLoading }>%fa:spinner .pulse .fw%</virtual>
+			<virtual v-if="!parent.moreLoading">%fa:moon%</virtual>
+			<virtual v-if="parent.moreLoading">%fa:spinner .pulse .fw%</virtual>
 		</yield/>
 	</mk-timeline>
 	<style lang="stylus" scoped>

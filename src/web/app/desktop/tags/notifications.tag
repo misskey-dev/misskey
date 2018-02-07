@@ -1,9 +1,9 @@
 <mk-notifications>
-	<div class="notifications" if={ notifications.length != 0 }>
+	<div class="notifications" v-if="notifications.length != 0">
 		<virtual each={ notification, i in notifications }>
 			<div class="notification { notification.type }">
 				<mk-time time={ notification.created_at }/>
-				<virtual if={ notification.type == 'reaction' }>
+				<virtual v-if="notification.type == 'reaction'">
 					<a class="avatar-anchor" href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -14,7 +14,7 @@
 						</a>
 					</div>
 				</virtual>
-				<virtual if={ notification.type == 'repost' }>
+				<virtual v-if="notification.type == 'repost'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -25,7 +25,7 @@
 						</a>
 					</div>
 				</virtual>
-				<virtual if={ notification.type == 'quote' }>
+				<virtual v-if="notification.type == 'quote'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -34,7 +34,7 @@
 						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
-				<virtual if={ notification.type == 'follow' }>
+				<virtual v-if="notification.type == 'follow'">
 					<a class="avatar-anchor" href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -42,7 +42,7 @@
 						<p>%fa:user-plus%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p>
 					</div>
 				</virtual>
-				<virtual if={ notification.type == 'reply' }>
+				<virtual v-if="notification.type == 'reply'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -51,7 +51,7 @@
 						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
-				<virtual if={ notification.type == 'mention' }>
+				<virtual v-if="notification.type == 'mention'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -60,7 +60,7 @@
 						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
 				</virtual>
-				<virtual if={ notification.type == 'poll_vote' }>
+				<virtual v-if="notification.type == 'poll_vote'">
 					<a class="avatar-anchor" href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -72,17 +72,17 @@
 					</div>
 				</virtual>
 			</div>
-			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }>
+			<p class="date" v-if="i != notifications.length - 1 && notification._date != notifications[i + 1]._date">
 				<span>%fa:angle-up%{ notification._datetext }</span>
 				<span>%fa:angle-down%{ notifications[i + 1]._datetext }</span>
 			</p>
 		</virtual>
 	</div>
-	<button class="more { fetching: fetchingMoreNotifications }" if={ moreNotifications } @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
-		<virtual if={ fetchingMoreNotifications }>%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
+	<button class="more { fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
+		<virtual v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
 	</button>
-	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
-	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-if="notifications.length == 0 && !loading">ありません！</p>
+	<p class="loading" v-if="loading">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

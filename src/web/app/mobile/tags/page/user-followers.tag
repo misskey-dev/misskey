@@ -1,6 +1,6 @@
 <mk-user-followers-page>
 	<mk-ui ref="ui">
-		<mk-user-followers ref="list" if={ !parent.fetching } user={ parent.user }/>
+		<mk-user-followers ref="list" v-if="!parent.fetching" user={ parent.user }/>
 	</mk-ui>
 	<style lang="stylus" scoped>
 		:scope

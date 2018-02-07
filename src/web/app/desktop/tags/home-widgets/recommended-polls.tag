@@ -1,15 +1,15 @@
 <mk-recommended-polls-home-widget>
-	<virtual if={ !data.compact }>
+	<virtual v-if="!data.compact">
 		<p class="title">%fa:chart-pie%%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
 		<button @click="fetch" title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%">%fa:sync%</button>
 	</virtual>
-	<div class="poll" if={ !loading && poll != null }>
-		<p if={ poll.text }><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>
-		<p if={ !poll.text }><a href="/{ poll.user.username }/{ poll.id }">%fa:link%</a></p>
+	<div class="poll" v-if="!loading && poll != null">
+		<p v-if="poll.text"><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>
+		<p v-if="!poll.text"><a href="/{ poll.user.username }/{ poll.id }">%fa:link%</a></p>
 		<mk-poll post={ poll }/>
 	</div>
-	<p class="empty" if={ !loading && poll == null }>%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
-	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-if="!loading && poll == null">%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
+	<p class="loading" v-if="loading">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

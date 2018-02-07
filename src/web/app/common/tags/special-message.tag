@@ -1,6 +1,6 @@
 <mk-special-message>
-	<p if={ m == 1 && d == 1 }>%i18n:common.tags.mk-special-message.new-year%</p>
-	<p if={ m == 12 && d == 25 }>%i18n:common.tags.mk-special-message.christmas%</p>
+	<p v-if="m == 1 && d == 1">%i18n:common.tags.mk-special-message.new-year%</p>
+	<p v-if="m == 12 && d == 25">%i18n:common.tags.mk-special-message.christmas%</p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

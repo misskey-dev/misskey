@@ -1,16 +1,16 @@
 <mk-sub-post-content>
 	<div class="body">
-		<a class="reply" if={ post.reply_id }>
+		<a class="reply" v-if="post.reply_id">
 			%fa:reply%
 		</a>
 		<span ref="text"></span>
-		<a class="quote" if={ post.repost_id } href={ '/post:' + post.repost_id }>RP: ...</a>
+		<a class="quote" v-if="post.repost_id" href={ '/post:' + post.repost_id }>RP: ...</a>
 	</div>
-	<details if={ post.media }>
+	<details v-if="post.media">
 		<summary>({ post.media.length }つのメディア)</summary>
 		<mk-images images={ post.media }/>
 	</details>
-	<details if={ post.poll }>
+	<details v-if="post.poll">
 		<summary>投票</summary>
 		<mk-poll post={ post }/>
 	</details>

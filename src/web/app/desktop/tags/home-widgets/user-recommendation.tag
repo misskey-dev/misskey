@@ -1,9 +1,9 @@
 <mk-user-recommendation-home-widget>
-	<virtual if={ !data.compact }>
+	<virtual v-if="!data.compact">
 		<p class="title">%fa:users%%i18n:desktop.tags.mk-user-recommendation-home-widget.title%</p>
 		<button @click="refresh" title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%">%fa:sync%</button>
 	</virtual>
-	<div class="user" if={ !loading && users.length != 0 } each={ _user in users }>
+	<div class="user" v-if="!loading && users.length != 0" each={ _user in users }>
 		<a class="avatar-anchor" href={ '/' + _user.username }>
 			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" data-user-preview={ _user.id }/>
 		</a>
@@ -13,8 +13,8 @@
 		</div>
 		<mk-follow-button user={ _user }/>
 	</div>
-	<p class="empty" if={ !loading && users.length == 0 }>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
-	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-if="!loading && users.length == 0">%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
+	<p class="loading" v-if="loading">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

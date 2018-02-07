@@ -1,11 +1,11 @@
 <mk-post-page>
 	<mk-ui ref="ui">
-		<main if={ !parent.fetching }>
-			<a if={ parent.post.next } href={ parent.post.next }>%fa:angle-up%%i18n:mobile.tags.mk-post-page.next%</a>
+		<main v-if="!parent.fetching">
+			<a v-if="parent.post.next" href={ parent.post.next }>%fa:angle-up%%i18n:mobile.tags.mk-post-page.next%</a>
 			<div>
 				<mk-post-detail ref="post" post={ parent.post }/>
 			</div>
-			<a if={ parent.post.prev } href={ parent.post.prev }>%fa:angle-down%%i18n:mobile.tags.mk-post-page.prev%</a>
+			<a v-if="parent.post.prev" href={ parent.post.prev }>%fa:angle-down%%i18n:mobile.tags.mk-post-page.prev%</a>
 		</main>
 	</mk-ui>
 	<style lang="stylus" scoped>

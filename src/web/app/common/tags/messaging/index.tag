@@ -1,11 +1,11 @@
 <mk-messaging data-compact={ opts.compact }>
-	<div class="search" if={ !opts.compact }>
+	<div class="search" v-if="!opts.compact">
 		<div class="form">
 			<label for="search-input">%fa:search%</label>
 			<input ref="search" type="search" oninput={ search } onkeydown={ onSearchKeydown } placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
 		</div>
 		<div class="result">
-			<ol class="users" if={ searchResult.length > 0 } ref="searchResult">
+			<ol class="users" v-if="searchResult.length > 0" ref="searchResult">
 				<li each={ user, i in searchResult } onkeydown={ parent.onSearchResultKeydown.bind(null, i) } @click="user._click" tabindex="-1">
 					<img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/>
 					<span class="name">{ user.name }</span>
@@ -14,7 +14,7 @@
 			</ol>
 		</div>
 	</div>
-	<div class="history" if={ history.length > 0 }>
+	<div class="history" v-if="history.length > 0">
 		<virtual each={ history }>
 			<a class="user" data-is-me={ is_me } data-is-read={ is_read } @click="_click">
 				<div>
@@ -25,14 +25,14 @@
 						<mk-time time={ created_at }/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" if={ is_me }>%i18n:common.tags.mk-messaging.you%:</span>{ text }</p>
+						<p class="text"><span class="me" v-if="is_me">%i18n:common.tags.mk-messaging.you%:</span>{ text }</p>
 					</div>
 				</div>
 			</a>
 		</virtual>
 	</div>
-	<p class="no-history" if={ !fetching && history.length == 0 }>%i18n:common.tags.mk-messaging.no-history%</p>
-	<p class="fetching" if={ fetching }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="no-history" v-if="!fetching && history.length == 0">%i18n:common.tags.mk-messaging.no-history%</p>
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

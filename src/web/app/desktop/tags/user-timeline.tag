@@ -2,14 +2,14 @@
 	<header>
 		<span data-is-active={ mode == 'default' } @click="setMode.bind(this, 'default')">投稿</span><span data-is-active={ mode == 'with-replies' } @click="setMode.bind(this, 'with-replies')">投稿と返信</span>
 	</header>
-	<div class="loading" if={ isLoading }>
+	<div class="loading" v-if="isLoading">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" if={ isEmpty }>%fa:R comments%このユーザーはまだ何も投稿していないようです。</p>
+	<p class="empty" v-if="isEmpty">%fa:R comments%このユーザーはまだ何も投稿していないようです。</p>
 	<mk-timeline ref="timeline">
 		<yield to="footer">
-			<virtual if={ !parent.moreLoading }>%fa:moon%</virtual>
-			<virtual if={ parent.moreLoading }>%fa:spinner .pulse .fw%</virtual>
+			<virtual v-if="!parent.moreLoading">%fa:moon%</virtual>
+			<virtual v-if="parent.moreLoading">%fa:spinner .pulse .fw%</virtual>
 		</yield/>
 	</mk-timeline>
 	<style lang="stylus" scoped>

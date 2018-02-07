@@ -1,13 +1,13 @@
 <mk-drive-file-viewer>
 	<div class="preview">
-		<img if={ kind == 'image' } ref="img"
+		<img v-if="kind == 'image'" ref="img"
 			src={ file.url }
 			alt={ file.name }
 			title={ file.name }
 			onload={ onImageLoaded }
 			style="background-color:rgb({ file.properties.average_color.join(',') })">
-		<virtual if={ kind != 'image' }>%fa:file%</virtual>
-		<footer if={ kind == 'image' && file.properties && file.properties.width && file.properties.height }>
+		<virtual v-if="kind != 'image'">%fa:file%</virtual>
+		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
 			<span class="size">
 				<span class="width">{ file.properties.width }</span>
 				<span class="time">×</span>

@@ -1,5 +1,5 @@
 <mk-file-type-icon>
-	<virtual if={ kind == 'image' }>%fa:file-image%</virtual>
+	<virtual v-if="kind == 'image'">%fa:file-image%</virtual>
 	<style lang="stylus" scoped>
 		:scope
 			display inline

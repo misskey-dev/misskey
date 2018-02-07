@@ -3,7 +3,7 @@
 	<div class="files"></div>
 	<mk-uploader ref="uploader"/>
 	<button class="send" @click="send" disabled={ sending } title="%i18n:common.send%">
-		<virtual if={ !sending }>%fa:paper-plane%</virtual><virtual if={ sending }>%fa:spinner .spin%</virtual>
+		<virtual v-if="!sending">%fa:paper-plane%</virtual><virtual v-if="sending">%fa:spinner .spin%</virtual>
 	</button>
 	<button class="attach-from-local" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
 		%fa:upload%

@@ -1,14 +1,14 @@
 <mk-photo-stream-home-widget data-melt={ data.design == 2 }>
-	<virtual if={ data.design == 0 }>
+	<virtual v-if="data.design == 0">
 		<p class="title">%fa:camera%%i18n:desktop.tags.mk-photo-stream-home-widget.title%</p>
 	</virtual>
-	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<div class="stream" if={ !initializing && images.length > 0 }>
+	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<div class="stream" v-if="!initializing && images.length > 0">
 		<virtual each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>
 		</virtual>
 	</div>
-	<p class="empty" if={ !initializing && images.length == 0 }>%i18n:desktop.tags.mk-photo-stream-home-widget.no-photos%</p>
+	<p class="empty" v-if="!initializing && images.length == 0">%i18n:desktop.tags.mk-photo-stream-home-widget.no-photos%</p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

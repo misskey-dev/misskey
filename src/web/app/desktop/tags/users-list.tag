@@ -2,20 +2,20 @@
 	<nav>
 		<div>
 			<span data-is-active={ mode == 'all' } @click="setMode.bind(this, 'all')">すべて<span>{ opts.count }</span></span>
-			<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">知り合い<span>{ opts.youKnowCount }</span></span>
+			<span v-if="SIGNIN && opts.youKnowCount" data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">知り合い<span>{ opts.youKnowCount }</span></span>
 		</div>
 	</nav>
-	<div class="users" if={ !fetching && users.length != 0 }>
+	<div class="users" v-if="!fetching && users.length != 0">
 		<div each={ users }>
 			<mk-list-user user={ this }/>
 		</div>
 	</div>
-	<button class="more" if={ !fetching && next != null } @click="more" disabled={ moreFetching }>
-		<span if={ !moreFetching }>もっと</span>
-		<span if={ moreFetching }>読み込み中<mk-ellipsis/></span>
+	<button class="more" v-if="!fetching && next != null" @click="more" disabled={ moreFetching }>
+		<span v-if="!moreFetching">もっと</span>
+		<span v-if="moreFetching">読み込み中<mk-ellipsis/></span>
 	</button>
-	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>
-	<p class="fetching" if={ fetching }>%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
+	<p class="no" v-if="!fetching && users.length == 0">{ opts.noUsers }</p>
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

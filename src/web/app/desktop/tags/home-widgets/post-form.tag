@@ -1,7 +1,7 @@
 <mk-post-form-home-widget>
-	<mk-post-form if={ place == 'main' }/>
-	<virtual if={ place != 'main' }>
-		<virtual if={ data.design == 0 }>
+	<mk-post-form v-if="place == 'main'"/>
+	<virtual v-if="place != 'main'">
+		<virtual v-if="data.design == 0">
 			<p class="title">%fa:pencil-alt%%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
 		</virtual>
 		<textarea disabled={ posting } ref="text" onkeydown={ onkeydown } placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>

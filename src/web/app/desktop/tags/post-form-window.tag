@@ -1,13 +1,13 @@
 <mk-post-form-window>
 	<mk-window ref="window" is-modal={ true }>
 		<yield to="header">
-			<span if={ !parent.opts.reply }>%i18n:desktop.tags.mk-post-form-window.post%</span>
-			<span if={ parent.opts.reply }>%i18n:desktop.tags.mk-post-form-window.reply%</span>
-			<span class="files" if={ parent.files.length != 0 }>{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', parent.files.length) }</span>
-			<span class="uploading-files" if={ parent.uploadingFiles.length != 0 }>{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', parent.uploadingFiles.length) }<mk-ellipsis/></span>
+			<span v-if="!parent.opts.reply">%i18n:desktop.tags.mk-post-form-window.post%</span>
+			<span v-if="parent.opts.reply">%i18n:desktop.tags.mk-post-form-window.reply%</span>
+			<span class="files" v-if="parent.files.length != 0">{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', parent.files.length) }</span>
+			<span class="uploading-files" v-if="parent.uploadingFiles.length != 0">{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', parent.uploadingFiles.length) }<mk-ellipsis/></span>
 		</yield>
 		<yield to="content">
-			<div class="ref" if={ parent.opts.reply }>
+			<div class="ref" v-if="parent.opts.reply">
 				<mk-post-preview post={ parent.opts.reply }/>
 			</div>
 			<div class="body">

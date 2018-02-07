@@ -1,7 +1,7 @@
 <mk-slideshow-home-widget>
 	<div @click="choose">
-		<p if={ data.folder === undefined }>クリックしてフォルダを指定してください</p>
-		<p if={ data.folder !== undefined && images.length == 0 && !fetching }>このフォルダには画像がありません</p>
+		<p v-if="data.folder === undefined">クリックしてフォルダを指定してください</p>
+		<p v-if="data.folder !== undefined && images.length == 0 && !fetching">このフォルダには画像がありません</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>

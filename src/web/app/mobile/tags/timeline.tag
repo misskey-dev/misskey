@@ -1,21 +1,21 @@
 <mk-timeline>
-	<div class="init" if={ init }>
+	<div class="init" v-if="init">
 		%fa:spinner .pulse%%i18n:common.loading%
 	</div>
-	<div class="empty" if={ !init && posts.length == 0 }>
+	<div class="empty" v-if="!init && posts.length == 0">
 		%fa:R comments%{ opts.empty || '%i18n:mobile.tags.mk-timeline.empty%' }
 	</div>
 	<virtual each={ post, i in posts }>
 		<mk-timeline-post post={ post }/>
-		<p class="date" if={ i != posts.length - 1 && post._date != posts[i + 1]._date }>
+		<p class="date" v-if="i != posts.length - 1 && post._date != posts[i + 1]._date">
 			<span>%fa:angle-up%{ post._datetext }</span>
 			<span>%fa:angle-down%{ posts[i + 1]._datetext }</span>
 		</p>
 	</virtual>
-	<footer if={ !init }>
-		<button if={ canFetchMore } @click="more" disabled={ fetching }>
-			<span if={ !fetching }>%i18n:mobile.tags.mk-timeline.load-more%</span>
-			<span if={ fetching }>%i18n:common.loading%<mk-ellipsis/></span>
+	<footer v-if="!init">
+		<button v-if="canFetchMore" @click="more" disabled={ fetching }>
+			<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
+			<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
 	</footer>
 	<style lang="stylus" scoped>
@@ -137,10 +137,10 @@
 </mk-timeline>
 
 <mk-timeline-post class={ repost: isRepost }>
-	<div class="reply-to" if={ p.reply }>
+	<div class="reply-to" v-if="p.reply">
 		<mk-timeline-post-sub post={ p.reply }/>
 	</div>
-	<div class="repost" if={ isRepost }>
+	<div class="repost" v-if="isRepost">
 		<p>
 			<a class="avatar-anchor" href={ '/' + post.user.username }>
 				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
@@ -156,7 +156,7 @@
 		<div class="main">
 			<header>
 				<a class="name" href={ '/' + p.user.username }>{ p.user.name }</a>
-				<span class="is-bot" if={ p.user.is_bot }>bot</span>
+				<span class="is-bot" v-if="p.user.is_bot">bot</span>
 				<span class="username">@{ p.user.username }</span>
 				<a class="created-at" href={ url }>
 					<mk-time time={ p.created_at }/>
@@ -164,32 +164,32 @@
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<p class="channel" if={ p.channel != null }><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
-					<a class="reply" if={ p.reply }>
+					<p class="channel" v-if="p.channel != null"><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<a class="reply" v-if="p.reply">
 						%fa:reply%
 					</a>
 					<p class="dummy"></p>
-					<a class="quote" if={ p.repost != null }>RP:</a>
+					<a class="quote" v-if="p.repost != null">RP:</a>
 				</div>
-				<div class="media" if={ p.media }>
+				<div class="media" v-if="p.media">
 					<mk-images images={ p.media }/>
 				</div>
-				<mk-poll if={ p.poll } post={ p } ref="pollViewer"/>
-				<span class="app" if={ p.app }>via <b>{ p.app.name }</b></span>
-				<div class="repost" if={ p.repost }>%fa:quote-right -flip-h%
+				<mk-poll v-if="p.poll" post={ p } ref="pollViewer"/>
+				<span class="app" v-if="p.app">via <b>{ p.app.name }</b></span>
+				<div class="repost" v-if="p.repost">%fa:quote-right -flip-h%
 					<mk-post-preview class="repost" post={ p.repost }/>
 				</div>
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
 				<button @click="reply">
-					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
+					%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
 				</button>
 				<button @click="repost" title="Repost">
-					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
+					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
 				</button>
 				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton">
-					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
+					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
 				</button>
 				<button class="menu" @click="menu" ref="menuButton">
 					%fa:ellipsis-h%

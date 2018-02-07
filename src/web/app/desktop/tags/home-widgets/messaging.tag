@@ -1,5 +1,5 @@
 <mk-messaging-home-widget>
-	<virtual if={ data.design == 0 }>
+	<virtual v-if="data.design == 0">
 		<p class="title">%fa:comments%%i18n:desktop.tags.mk-messaging-home-widget.title%</p>
 	</virtual>
 	<mk-messaging ref="index" compact={ true }/>

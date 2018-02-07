@@ -1,12 +1,12 @@
 <mk-rss-reader-home-widget>
-	<virtual if={ !data.compact }>
+	<virtual v-if="!data.compact">
 		<p class="title">%fa:rss-square%RSS</p>
 		<button @click="settings" title="設定">%fa:cog%</button>
 	</virtual>
-	<div class="feed" if={ !initializing }>
+	<div class="feed" v-if="!initializing">
 		<virtual each={ item in items }><a href={ item.link } target="_blank">{ item.title }</a></virtual>
 	</div>
-	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

@@ -2,12 +2,12 @@
 	<header>
 		<button class="cancel" @click="cancel">%fa:times%</button>
 		<div>
-			<span if={ refs.text } class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
+			<span v-if="refs.text" class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
 			<button class="submit" @click="post">%i18n:mobile.tags.mk-post-form.submit%</button>
 		</div>
 	</header>
 	<div class="form">
-		<mk-post-preview if={ opts.reply } post={ opts.reply }/>
+		<mk-post-preview v-if="opts.reply" post={ opts.reply }/>
 		<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%' }></textarea>
 		<div class="attaches" show={ files.length != 0 }>
 			<ul class="files" ref="attaches">
@@ -16,7 +16,7 @@
 				</li>
 			</ul>
 		</div>
-		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }/>
+		<mk-poll-editor v-if="poll" ref="poll" ondestroy={ onPollDestroyed }/>
 		<mk-uploader ref="uploader"/>
 		<button ref="upload" @click="selectFile">%fa:upload%</button>
 		<button ref="drive" @click="selectFileFromDrive">%fa:cloud%</button>

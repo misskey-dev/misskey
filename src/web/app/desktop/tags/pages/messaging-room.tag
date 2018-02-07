@@ -1,5 +1,5 @@
 <mk-messaging-room-page>
-	<mk-messaging-room if={ user } user={ user } is-naked={ true }/>
+	<mk-messaging-room v-if="user" user={ user } is-naked={ true }/>
 
 	<style lang="stylus" scoped>
 		:scope

@@ -1,14 +1,14 @@
 <mk-trends-home-widget>
-	<virtual if={ !data.compact }>
+	<virtual v-if="!data.compact">
 		<p class="title">%fa:fire%%i18n:desktop.tags.mk-trends-home-widget.title%</p>
 		<button @click="fetch" title="%i18n:desktop.tags.mk-trends-home-widget.refresh%">%fa:sync%</button>
 	</virtual>
-	<div class="post" if={ !loading && post != null }>
+	<div class="post" v-if="!loading && post != null">
 		<p class="text"><a href="/{ post.user.username }/{ post.id }">{ post.text }</a></p>
 		<p class="author">―<a href="/{ post.user.username }">@{ post.user.username }</a></p>
 	</div>
-	<p class="empty" if={ !loading && post == null }>%i18n:desktop.tags.mk-trends-home-widget.nothing%</p>
-	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-if="!loading && post == null">%i18n:desktop.tags.mk-trends-home-widget.nothing%</p>
+	<p class="loading" v-if="loading">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

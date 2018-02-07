@@ -1,15 +1,15 @@
 <mk-notifications>
-	<div class="notifications" if={ notifications.length != 0 }>
+	<div class="notifications" v-if="notifications.length != 0">
 		<virtual each={ notification, i in notifications }>
 			<mk-notification notification={ notification }/>
-			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span>%fa:angle-up%{ notification._datetext }</span><span>%fa:angle-down%{ notifications[i + 1]._datetext }</span></p>
+			<p class="date" v-if="i != notifications.length - 1 && notification._date != notifications[i + 1]._date"><span>%fa:angle-up%{ notification._datetext }</span><span>%fa:angle-down%{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
-	<button class="more" if={ moreNotifications } @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
-		<virtual if={ fetchingMoreNotifications }>%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
+	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
+		<virtual v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
 	</button>
-	<p class="empty" if={ notifications.length == 0 && !loading }>%i18n:mobile.tags.mk-notifications.empty%</p>
-	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<p class="empty" v-if="notifications.length == 0 && !loading">%i18n:mobile.tags.mk-notifications.empty%</p>
+	<p class="loading" v-if="loading">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<style lang="stylus" scoped>
 		:scope
 			display block

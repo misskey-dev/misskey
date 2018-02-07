@@ -1,15 +1,15 @@
 <mk-server-home-widget data-melt={ data.design == 2 }>
-	<virtual if={ data.design == 0 }>
+	<virtual v-if="data.design == 0">
 		<p class="title">%fa:server%%i18n:desktop.tags.mk-server-home-widget.title%</p>
 		<button @click="toggle" title="%i18n:desktop.tags.mk-server-home-widget.toggle%">%fa:sort%</button>
 	</virtual>
-	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<mk-server-home-widget-cpu-and-memory-usage if={ !initializing } show={ data.view == 0 } connection={ connection }/>
-	<mk-server-home-widget-cpu if={ !initializing } show={ data.view == 1 } connection={ connection } meta={ meta }/>
-	<mk-server-home-widget-memory if={ !initializing } show={ data.view == 2 } connection={ connection }/>
-	<mk-server-home-widget-disk if={ !initializing } show={ data.view == 3 } connection={ connection }/>
-	<mk-server-home-widget-uptimes if={ !initializing } show={ data.view == 4 } connection={ connection }/>
-	<mk-server-home-widget-info if={ !initializing } show={ data.view == 5 } connection={ connection } meta={ meta }/>
+	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<mk-server-home-widget-cpu-and-memory-usage v-if="!initializing" show={ data.view == 0 } connection={ connection }/>
+	<mk-server-home-widget-cpu v-if="!initializing" show={ data.view == 1 } connection={ connection } meta={ meta }/>
+	<mk-server-home-widget-memory v-if="!initializing" show={ data.view == 2 } connection={ connection }/>
+	<mk-server-home-widget-disk v-if="!initializing" show={ data.view == 3 } connection={ connection }/>
+	<mk-server-home-widget-uptimes v-if="!initializing" show={ data.view == 4 } connection={ connection }/>
+	<mk-server-home-widget-info v-if="!initializing" show={ data.view == 5 } connection={ connection } meta={ meta }/>
 	<style lang="stylus" scoped>
 		:scope
 			display block

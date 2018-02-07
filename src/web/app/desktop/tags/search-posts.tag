@@ -1,12 +1,12 @@
 <mk-search-posts>
-	<div class="loading" if={ isLoading }>
+	<div class="loading" v-if="isLoading">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" if={ isEmpty }>%fa:search%「{ query }」に関する投稿は見つかりませんでした。</p>
+	<p class="empty" v-if="isEmpty">%fa:search%「{ query }」に関する投稿は見つかりませんでした。</p>
 	<mk-timeline ref="timeline">
 		<yield to="footer">
-			<virtual if={ !parent.moreLoading }>%fa:moon%</virtual>
-			<virtual if={ parent.moreLoading }>%fa:spinner .pulse .fw%</virtual>
+			<virtual v-if="!parent.moreLoading">%fa:moon%</virtual>
+			<virtual v-if="parent.moreLoading">%fa:spinner .pulse .fw%</virtual>
 		</yield/>
 	</mk-timeline>
 	<style lang="stylus" scoped>

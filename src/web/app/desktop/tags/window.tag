@@ -5,20 +5,20 @@
 			<header ref="header" onmousedown={ onHeaderMousedown }>
 				<h1 data-yield="header"><yield from="header"/></h1>
 				<div>
-					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } @click="popout" title="ポップアウト">%fa:R window-restore%</button>
-					<button class="close" if={ canClose } onmousedown={ repelMove } @click="close" title="閉じる">%fa:times%</button>
+					<button class="popout" v-if="popoutUrl" onmousedown={ repelMove } @click="popout" title="ポップアウト">%fa:R window-restore%</button>
+					<button class="close" v-if="canClose" onmousedown={ repelMove } @click="close" title="閉じる">%fa:times%</button>
 				</div>
 			</header>
 			<div class="content" data-yield="content"><yield from="content"/></div>
 		</div>
-		<div class="handle top" if={ canResize } onmousedown={ onTopHandleMousedown }></div>
-		<div class="handle right" if={ canResize } onmousedown={ onRightHandleMousedown }></div>
-		<div class="handle bottom" if={ canResize } onmousedown={ onBottomHandleMousedown }></div>
-		<div class="handle left" if={ canResize } onmousedown={ onLeftHandleMousedown }></div>
-		<div class="handle top-left" if={ canResize } onmousedown={ onTopLeftHandleMousedown }></div>
-		<div class="handle top-right" if={ canResize } onmousedown={ onTopRightHandleMousedown }></div>
-		<div class="handle bottom-right" if={ canResize } onmousedown={ onBottomRightHandleMousedown }></div>
-		<div class="handle bottom-left" if={ canResize } onmousedown={ onBottomLeftHandleMousedown }></div>
+		<div class="handle top" v-if="canResize" onmousedown={ onTopHandleMousedown }></div>
+		<div class="handle right" v-if="canResize" onmousedown={ onRightHandleMousedown }></div>
+		<div class="handle bottom" v-if="canResize" onmousedown={ onBottomHandleMousedown }></div>
+		<div class="handle left" v-if="canResize" onmousedown={ onLeftHandleMousedown }></div>
+		<div class="handle top-left" v-if="canResize" onmousedown={ onTopLeftHandleMousedown }></div>
+		<div class="handle top-right" v-if="canResize" onmousedown={ onTopRightHandleMousedown }></div>
+		<div class="handle bottom-right" v-if="canResize" onmousedown={ onBottomRightHandleMousedown }></div>
+		<div class="handle bottom-left" v-if="canResize" onmousedown={ onBottomLeftHandleMousedown }></div>
 	</div>
 	<style lang="stylus" scoped>
 		:scope

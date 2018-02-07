@@ -10,7 +10,7 @@
 			</ul>
 			<p class="remain">{ 4 - files.length }/4</p>
 		</div>
-		<mk-poll-editor if={ poll } ref="poll" ondestroy={ onPollDestroyed }/>
+		<mk-poll-editor v-if="poll" ref="poll" ondestroy={ onPollDestroyed }/>
 	</div>
 	<mk-uploader ref="uploader"/>
 	<button ref="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" @click="selectFile">%fa:upload%</button>
@@ -19,10 +19,10 @@
 	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" @click="addPoll">%fa:chart-pie%</button>
 	<p class="text-count { over: refs.text.value.length > 1000 }">{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - refs.text.value.length) }</p>
 	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll　&& !repost) } @click="post">
-		{ wait ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }<mk-ellipsis if={ wait }/>
+		{ wait ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }<mk-ellipsis v-if="wait"/>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>
-	<div class="dropzone" if={ draghover }></div>
+	<div class="dropzone" v-if="draghover"></div>
 	<style lang="stylus" scoped>
 		:scope
 			display block

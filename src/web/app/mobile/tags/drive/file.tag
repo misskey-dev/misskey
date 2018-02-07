@@ -3,7 +3,7 @@
 		<div class="container">
 			<div class="thumbnail" style={ thumbnail }></div>
 			<div class="body">
-				<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" if={ file.name.lastIndexOf('.') != -1 }>{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
+				<p class="name"><span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span><span class="ext" v-if="file.name.lastIndexOf('.') != -1">{ file.name.substr(file.name.lastIndexOf('.')) }</span></p>
 				<!--
 				if file.tags.length > 0
 					ul.tags

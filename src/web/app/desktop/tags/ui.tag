@@ -1,11 +1,11 @@
 <mk-ui>
 	<mk-ui-header page={ opts.page }/>
-	<mk-set-avatar-suggestion if={ SIGNIN && I.avatar_id == null }/>
-	<mk-set-banner-suggestion if={ SIGNIN && I.banner_id == null }/>
+	<mk-set-avatar-suggestion v-if="SIGNIN && I.avatar_id == null"/>
+	<mk-set-banner-suggestion v-if="SIGNIN && I.banner_id == null"/>
 	<div class="content">
 		<yield />
 	</div>
-	<mk-stream-indicator if={ SIGNIN }/>
+	<mk-stream-indicator v-if="SIGNIN"/>
 	<style lang="stylus" scoped>
 		:scope
 			display block
@@ -37,7 +37,7 @@
 </mk-ui>
 
 <mk-ui-header>
-	<mk-donation if={ SIGNIN && I.client_settings.show_donation }/>
+	<mk-donation v-if="SIGNIN && I.client_settings.show_donation"/>
 	<mk-special-message/>
 	<div class="main">
 		<div class="backdrop"></div>
@@ -48,9 +48,9 @@
 				</div>
 				<div class="right">
 					<mk-ui-header-search/>
-					<mk-ui-header-account if={ SIGNIN }/>
-					<mk-ui-header-notifications if={ SIGNIN }/>
-					<mk-ui-header-post-button if={ SIGNIN }/>
+					<mk-ui-header-account v-if="SIGNIN"/>
+					<mk-ui-header-notifications v-if="SIGNIN"/>
+					<mk-ui-header-post-button v-if="SIGNIN"/>
 					<mk-ui-header-clock/>
 				</div>
 			</div>
@@ -230,9 +230,9 @@
 
 <mk-ui-header-notifications>
 	<button data-active={ isOpen } @click="toggle" title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
-		%fa:R bell%<virtual if={ hasUnreadNotifications }>%fa:circle%</virtual>
+		%fa:R bell%<virtual v-if="hasUnreadNotifications">%fa:circle%</virtual>
 	</button>
-	<div class="notifications" if={ isOpen }>
+	<div class="notifications" v-if="isOpen">
 		<mk-notifications/>
 	</div>
 	<style lang="stylus" scoped>
@@ -392,7 +392,7 @@
 
 <mk-ui-header-nav>
 	<ul>
-		<virtual if={ SIGNIN }>
+		<virtual v-if="SIGNIN">
 			<li class="home { active: page == 'home' }">
 				<a href={ _URL_ }>
 					%fa:home%
@@ -403,7 +403,7 @@
 				<a @click="messaging">
 					%fa:comments%
 					<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
-					<virtual if={ hasUnreadMessagingMessages }>%fa:circle%</virtual>
+					<virtual v-if="hasUnreadMessagingMessages">%fa:circle%</virtual>
 				</a>
 			</li>
 		</virtual>
@@ -630,10 +630,10 @@
 
 <mk-ui-header-account>
 	<button class="header" data-active={ isOpen.toString() } @click="toggle">
-		<span class="username">{ I.username }<virtual if={ !isOpen }>%fa:angle-down%</virtual><virtual if={ isOpen }>%fa:angle-up%</virtual></span>
+		<span class="username">{ I.username }<virtual v-if="!isOpen">%fa:angle-down%</virtual><virtual v-if="isOpen">%fa:angle-up%</virtual></span>
 		<img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 	</button>
-	<div class="menu" if={ isOpen }>
+	<div class="menu" v-if="isOpen">
 		<ul>
 			<li>
 				<a href={ '/' + I.username }>%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</a>

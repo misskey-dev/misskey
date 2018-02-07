@@ -1,13 +1,13 @@
 <mk-repost-form>
 	<mk-post-preview post={ opts.post }/>
-	<virtual if={ !quote }>
+	<virtual v-if="!quote">
 		<footer>
-			<a class="quote" if={ !quote } @click="onquote">%i18n:desktop.tags.mk-repost-form.quote%</a>
+			<a class="quote" v-if="!quote" @click="onquote">%i18n:desktop.tags.mk-repost-form.quote%</a>
 			<button class="cancel" @click="cancel">%i18n:desktop.tags.mk-repost-form.cancel%</button>
 			<button class="ok" @click="ok" disabled={ wait }>{ wait ? '%i18n:desktop.tags.mk-repost-form.reposting%' : '%i18n:desktop.tags.mk-repost-form.repost%' }</button>
 		</footer>
 	</virtual>
-	<virtual if={ quote }>
+	<virtual v-if="quote">
 		<mk-post-form ref="form" repost={ opts.post }/>
 	</virtual>
 	<style lang="stylus" scoped>

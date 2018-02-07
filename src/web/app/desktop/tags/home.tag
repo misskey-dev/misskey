@@ -1,5 +1,5 @@
 <mk-home data-customize={ opts.customize }>
-	<div class="customize" if={ opts.customize }>
+	<div class="customize" v-if="opts.customize">
 		<a href="/">%fa:check%完了</a>
 		<div>
 			<div class="adder">
@@ -40,9 +40,9 @@
 			<div ref="left" data-place="left"></div>
 		</div>
 		<main ref="main">
-			<div class="maintop" ref="maintop" data-place="main" if={ opts.customize }></div>
-			<mk-timeline-home-widget ref="tl" if={ mode == 'timeline' }/>
-			<mk-mentions-home-widget ref="tl" if={ mode == 'mentions' }/>
+			<div class="maintop" ref="maintop" data-place="main" v-if="opts.customize"></div>
+			<mk-timeline-home-widget ref="tl" v-if="mode == 'timeline'"/>
+			<mk-mentions-home-widget ref="tl" v-if="mode == 'mentions'"/>
 		</main>
 		<div class="right">
 			<div ref="right" data-place="right"></div>

@@ -1,6 +1,6 @@
 <mk-index>
 	<h1>Misskey<i>Statistics</i></h1>
-	<main if={ !initializing }>
+	<main v-if="!initializing">
 		<mk-users stats={ stats }/>
 		<mk-posts stats={ stats }/>
 	</main>
@@ -58,7 +58,7 @@
 
 <mk-posts>
 	<h2>%i18n:stats.posts-count% <b>{ stats.posts_count }</b></h2>
-	<mk-posts-chart if={ !initializing } data={ data }/>
+	<mk-posts-chart v-if="!initializing" data={ data }/>
 	<style lang="stylus" scoped>
 		:scope
 			display block
@@ -84,7 +84,7 @@
 
 <mk-users>
 	<h2>%i18n:stats.users-count% <b>{ stats.users_count }</b></h2>
-	<mk-users-chart if={ !initializing } data={ data }/>
+	<mk-users-chart v-if="!initializing" data={ data }/>
 	<style lang="stylus" scoped>
 		:scope
 			display block

@@ -1,11 +1,11 @@
 <mk-channel-home-widget>
-	<virtual if={ !data.compact }>
+	<virtual v-if="!data.compact">
 		<p class="title">%fa:tv%{
 			channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%'
 		}</p>
 		<button @click="settings" title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
 	</virtual>
-	<p class="get-started" if={ this.data.channel == null }>%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
+	<p class="get-started" v-if="this.data.channel == null">%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
 	<mk-channel ref="channel" show={ this.data.channel }/>
 	<style lang="stylus" scoped>
 		:scope
@@ -104,9 +104,9 @@
 </mk-channel-home-widget>
 
 <mk-channel>
-	<p if={ fetching }>読み込み中<mk-ellipsis/></p>
-	<div if={ !fetching } ref="posts">
-		<p if={ posts.length == 0 }>まだ投稿がありません</p>
+	<p v-if="fetching">読み込み中<mk-ellipsis/></p>
+	<div v-if="!fetching" ref="posts">
+		<p v-if="posts.length == 0">まだ投稿がありません</p>
 		<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
 	</div>
 	<mk-channel-form ref="form"/>
@@ -197,9 +197,9 @@
 		<span>ID:<i>{ post.user.username }</i></span>
 	</header>
 	<div>
-		<a if={ post.reply }>&gt;&gt;{ post.reply.index }</a>
+		<a v-if="post.reply">&gt;&gt;{ post.reply.index }</a>
 		{ post.text }
-		<div class="media" if={ post.media }>
+		<div class="media" v-if="post.media">
 			<virtual each={ file in post.media }>
 				<a href={ file.url } target="_blank">
 					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>

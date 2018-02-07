@@ -6,44 +6,44 @@
 				<span class="separator">%fa:angle-right%</span>
 				<mk-drive-browser-nav-folder folder={ folder }/>
 			</virtual>
-			<span class="separator" if={ folder != null }>%fa:angle-right%</span>
-			<span class="folder current" if={ folder != null }>{ folder.name }</span>
+			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
+			<span class="folder current" v-if="folder != null">{ folder.name }</span>
 		</div>
 		<input class="search" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-drive-browser.search%"/>
 	</nav>
 	<div class="main { uploading: uploads.length > 0, fetching: fetching }" ref="main" onmousedown={ onmousedown } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu }>
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
-			<div class="folders" ref="foldersContainer" if={ folders.length > 0 }>
+			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
 				<virtual each={ folder in folders }>
 					<mk-drive-browser-folder class="folder" folder={ folder }/>
 				</virtual>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" each={ Array(10).fill(16) }></div>
-				<button if={ moreFolders }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
+				<button v-if="moreFolders">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
-			<div class="files" ref="filesContainer" if={ files.length > 0 }>
+			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<virtual each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }/>
 				</virtual>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" each={ Array(10).fill(16) }></div>
-				<button if={ moreFiles } @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
+				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
-			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
-				<p if={ draghover }>%i18n:desktop.tags.mk-drive-browser.empty-draghover%</p>
-				<p if={ !draghover && folder == null }><strong>%i18n:desktop.tags.mk-drive-browser.empty-drive%</strong><br/>%i18n:desktop.tags.mk-drive-browser.empty-drive-description%</p>
-				<p if={ !draghover && folder != null }>%i18n:desktop.tags.mk-drive-browser.empty-folder%</p>
+			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
+				<p v-if="draghover">%i18n:desktop.tags.mk-drive-browser.empty-draghover%</p>
+				<p v-if="!draghover && folder == null"><strong>%i18n:desktop.tags.mk-drive-browser.empty-drive%</strong><br/>%i18n:desktop.tags.mk-drive-browser.empty-drive-description%</p>
+				<p v-if="!draghover && folder != null">%i18n:desktop.tags.mk-drive-browser.empty-folder%</p>
 			</div>
 		</div>
-		<div class="fetching" if={ fetching }>
+		<div class="fetching" v-if="fetching">
 			<div class="spinner">
 				<div class="dot1"></div>
 				<div class="dot2"></div>
 			</div>
 		</div>
 	</div>
-	<div class="dropzone" if={ draghover }></div>
+	<div class="dropzone" v-if="draghover"></div>
 	<mk-uploader ref="uploader"/>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" onchange={ changeFileInput }/>
 	<style lang="stylus" scoped>
