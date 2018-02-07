@@ -6,7 +6,7 @@
 	</header>
 	<mk-drive ref="browser" select-file={ true } multiple={ multiple } is-naked={ true } top={ 42 }/>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			width 100%

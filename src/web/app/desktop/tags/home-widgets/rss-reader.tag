@@ -7,7 +7,7 @@
 		<virtual each={ item in items }><a href={ item.link } target="_blank">{ item.title }</a></virtual>
 	</div>
 	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

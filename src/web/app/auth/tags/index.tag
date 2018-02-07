@@ -20,7 +20,7 @@
 		<mk-signin/>
 	</main>
 	<footer><img src="/assets/auth/logo.svg" alt="Misskey"/></footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

@@ -28,7 +28,7 @@
 			left: 15px;
 		}
 	</style>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			$width = 1000px
 
@@ -160,7 +160,7 @@
 	<a href={ _API_URL_ + '/signin/twitter' }>Twitterでサインイン</a>
 	<div class="divider"><span>or</span></div>
 	<button class="signup" @click="parent.signup">新規登録</button><a class="introduction" @click="introduction">Misskeyについて</a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			width 290px
@@ -296,7 +296,7 @@
 <mk-entrance-signup>
 	<mk-signup/>
 	<button class="cancel" type="button" @click="parent.signin" title="キャンセル">%fa:times%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			width 368px

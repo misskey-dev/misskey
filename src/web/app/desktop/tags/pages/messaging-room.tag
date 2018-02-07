@@ -1,7 +1,7 @@
 <mk-messaging-room-page>
 	<mk-messaging-room if={ user } user={ user } is-naked={ true }/>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

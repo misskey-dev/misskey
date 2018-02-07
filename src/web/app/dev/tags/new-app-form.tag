@@ -75,7 +75,7 @@
 		</section>
 		<button @click="onsubmit">アプリ作成</button>
 	</form>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden

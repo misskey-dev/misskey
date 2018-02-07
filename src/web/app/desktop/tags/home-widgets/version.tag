@@ -1,6 +1,6 @@
 <mk-version-home-widget>
 	<p>ver { _VERSION_ } (葵 aoi)</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow visible !important

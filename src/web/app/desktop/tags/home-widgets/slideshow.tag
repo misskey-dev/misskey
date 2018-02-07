@@ -6,7 +6,7 @@
 		<div ref="slideB" class="slide b"></div>
 	</div>
 	<button @click="resize">%fa:expand%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden

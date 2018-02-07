@@ -5,7 +5,7 @@
 		<p>無料で誰でも利用でき、広告も掲載していません。</p>
 		<p><a href={ _DOCS_URL_ } target="_blank">もっと知りたい方はこちら</a></p>
 	</article>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

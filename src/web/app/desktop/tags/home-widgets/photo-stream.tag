@@ -9,7 +9,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !initializing && images.length == 0 }>%i18n:desktop.tags.mk-photo-stream-home-widget.no-photos%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

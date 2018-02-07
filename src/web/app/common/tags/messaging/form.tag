@@ -12,7 +12,7 @@
 		%fa:R folder-open%
 	</button>
 	<input name="file" type="file" accept="image/*"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

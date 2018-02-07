@@ -18,7 +18,7 @@
 			<mk-time time={ message.created_at }/><virtual if={ message.is_edited }>%fa:pencil-alt%</virtual>
 		</footer>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			$me-balloon-color = #23A7B6
 

@@ -6,7 +6,7 @@
 		<mk-user-home if={ page == 'home' } user={ user }/>
 		<mk-user-graphs if={ page == 'graphs' } user={ user }/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -56,7 +56,7 @@
 			<a href={ '/' + user.username + '/graphs' } data-active={ parent.page == 'graphs' }>%fa:chart-bar%グラフ</a>
 		</footer>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			$banner-height = 320px
 			$footer-height = 58px
@@ -242,7 +242,7 @@
 		<p class="following">%fa:angle-right%<a @click="showFollowing">{ user.following_count }</a>人を<b>フォロー</b></p>
 		<p class="followers">%fa:angle-right%<a @click="showFollowers">{ user.followers_count }</a>人の<b>フォロワー</b></p>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -362,7 +362,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !initializing && images.length == 0 }>%i18n:desktop.tags.mk-user.photos.no-photos%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -461,7 +461,7 @@
 		<mk-follow-button user={ _user }/>
 	</div>
 	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:desktop.tags.mk-user.frequently-replied-users.no-users%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -568,7 +568,7 @@
 	</virtual>
 	</div>
 	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -654,7 +654,7 @@
 			<div class="nav"><mk-nav-links/></div>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display flex
 			justify-content center
@@ -753,7 +753,7 @@
 			<mk-user-likes-graph user={ opts.user }/>
 		</div>
 	</section>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -806,7 +806,7 @@
 	</p>
 	<p>* 中央値</p>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

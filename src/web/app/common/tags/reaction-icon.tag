@@ -9,7 +9,7 @@
 	<virtual if={ opts.reaction == 'confused' }><img src="/assets/reactions/confused.png" alt="%i18n:common.reactions.confused%"></virtual>
 	<virtual if={ opts.reaction == 'pudding' }><img src="/assets/reactions/pudding.png" alt="%i18n:common.reactions.pudding%"></virtual>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display inline
 

@@ -10,7 +10,7 @@
 			</ul>
 		</virtual>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

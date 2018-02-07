@@ -6,7 +6,7 @@
 		<mk-mem-usage connection={ connection }/>
 	</main>
 	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0 auto
@@ -77,7 +77,7 @@
 <mk-cpu-usage>
 	<h2>CPU <b>{ percentage }%</b></h2>
 	<mk-line-chart ref="chart"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
@@ -107,7 +107,7 @@
 <mk-mem-usage>
 	<h2>MEM <b>{ percentage }%</b></h2>
 	<mk-line-chart ref="chart"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
@@ -164,7 +164,7 @@
 			stroke="#f43b16"
 			stroke-width="0.5"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 16px

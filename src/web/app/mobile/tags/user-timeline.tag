@@ -1,6 +1,6 @@
 <mk-user-timeline>
 	<mk-timeline ref="timeline" init={ init } more={ more } empty={ withMedia ? '%i18n:mobile.tags.mk-user-timeline.no-posts-with-media%' : '%i18n:mobile.tags.mk-user-timeline.no-posts%' }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			max-width 600px

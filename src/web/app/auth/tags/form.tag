@@ -29,7 +29,7 @@
 		<button @click="cancel">キャンセル</button>
 		<button @click="accept">アクセスを許可</button>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

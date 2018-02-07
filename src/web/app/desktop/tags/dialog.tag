@@ -9,7 +9,7 @@
 			</virtual>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

@@ -8,7 +8,7 @@
 		<summary>%i18n:mobile.tags.mk-sub-post-content.poll%</summary>
 		<mk-poll post={ post }/>
 	</details>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow-wrap break-word

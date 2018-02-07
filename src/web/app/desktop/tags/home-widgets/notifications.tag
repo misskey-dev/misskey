@@ -4,7 +4,7 @@
 		<button @click="settings" title="%i18n:desktop.tags.mk-notifications-home-widget.settings%">%fa:cog%</button>
 	</virtual>
 	<mk-notifications/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

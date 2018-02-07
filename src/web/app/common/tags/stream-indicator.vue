@@ -49,7 +49,7 @@
 	};
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 	> div
 		display block
 		pointer-events none

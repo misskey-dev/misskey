@@ -1,6 +1,6 @@
 <mk-drive-browser-folder data-is-contextmenu-showing={ isContextmenuShowing.toString() } data-draghover={ draghover.toString() } @click="onclick" onmouseover={ onmouseover } onmouseout={ onmouseout } ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop } oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
 	<p class="name"><virtual if={ hover }>%fa:R folder-open .fw%</virtual><virtual if={ !hover }>%fa:R folder .fw%</virtual>{ folder.name }</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 8px

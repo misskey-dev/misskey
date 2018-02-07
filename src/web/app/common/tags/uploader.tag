@@ -9,7 +9,7 @@
 			<div class="progress waiting" if={ progress != undefined && progress.value == progress.max }></div>
 		</li>
 	</ol>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow auto

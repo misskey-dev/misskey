@@ -15,7 +15,7 @@
 	</div>
 	<p class="empty" if={ !loading && users.length == 0 }>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
 	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

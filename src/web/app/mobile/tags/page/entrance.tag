@@ -10,7 +10,7 @@
 	<footer>
 		<p class="c">{ _COPYRIGHT_ }</p>
 	</footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			height 100%

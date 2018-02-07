@@ -6,7 +6,7 @@
 		<button class="ok" @click="ok">%i18n:desktop.tags.mk-selectdrive-page.ok%</button>
 	</div>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			position fixed

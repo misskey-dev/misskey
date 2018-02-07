@@ -48,7 +48,7 @@
 			<div ref="right" data-place="right"></div>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

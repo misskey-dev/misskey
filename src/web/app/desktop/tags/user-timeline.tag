@@ -12,7 +12,7 @@
 			<virtual if={ parent.moreLoading }>%fa:spinner .pulse .fw%</virtual>
 		</yield/>
 	</mk-timeline>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

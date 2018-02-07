@@ -7,7 +7,7 @@
 		<a href={ _API_URL_ + '/disconnect/twitter' } target="_blank" if={ I.twitter } @click="disconnect">%i18n:common.tags.mk-twitter-setting.disconnect%</a>
 	</p>
 	<p class="id" if={ I.twitter }>Twitter ID: { I.twitter.user_id }</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			color #4a535a

@@ -38,7 +38,7 @@
 		</label>
 		<button @click="onsubmit">%i18n:common.tags.mk-signup.create%</button>
 	</form>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			min-width 302px

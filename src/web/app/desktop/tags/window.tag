@@ -20,7 +20,7 @@
 		<div class="handle bottom-right" if={ canResize } onmousedown={ onBottomRightHandleMousedown }></div>
 		<div class="handle bottom-left" if={ canResize } onmousedown={ onBottomLeftHandleMousedown }></div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

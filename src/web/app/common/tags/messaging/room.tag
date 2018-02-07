@@ -16,7 +16,7 @@
 		<div class="grippie" title="%i18n:common.tags.mk-messaging-room.resize-form%"></div>
 		<mk-messaging-form user={ user }/>
 	</footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

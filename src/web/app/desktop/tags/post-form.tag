@@ -23,7 +23,7 @@
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>
 	<div class="dropzone" if={ draghover }></div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 16px

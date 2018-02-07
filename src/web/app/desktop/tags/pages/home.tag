@@ -2,7 +2,7 @@
 	<mk-ui ref="ui" page={ page }>
 		<mk-home ref="home" mode={ parent.opts.mode }/>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

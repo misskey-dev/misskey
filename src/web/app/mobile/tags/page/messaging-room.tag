@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-messaging-room if={ !parent.fetching } user={ parent.user } is-naked={ true }/>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

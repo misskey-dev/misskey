@@ -10,7 +10,7 @@
 		<span if={ reactions.confused }><mk-reaction-icon reaction='confused'/><span>{ reactions.confused }</span></span>
 		<span if={ reactions.pudding }><mk-reaction-icon reaction='pudding'/><span>{ reactions.pudding }</span></span>
 	</virtual>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			border-top dashed 1px #eee

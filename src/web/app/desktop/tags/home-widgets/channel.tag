@@ -7,7 +7,7 @@
 	</virtual>
 	<p class="get-started" if={ this.data.channel == null }>%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
 	<mk-channel ref="channel" show={ this.data.channel }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -110,7 +110,7 @@
 		<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
 	</div>
 	<mk-channel-form ref="form"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -207,7 +207,7 @@
 			</virtual>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0
@@ -253,7 +253,7 @@
 
 <mk-channel-form>
 	<input ref="text" disabled={ wait } onkeydown={ onkeydown } placeholder="書いて">
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			width 100%

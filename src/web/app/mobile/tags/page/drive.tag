@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-drive ref="browser" folder={ parent.opts.folder } file={ parent.opts.file } is-naked={ true } top={ 48 }/>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

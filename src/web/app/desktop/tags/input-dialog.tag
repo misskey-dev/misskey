@@ -13,7 +13,7 @@
 			</div>
 		</yield>
 	</mk-window>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

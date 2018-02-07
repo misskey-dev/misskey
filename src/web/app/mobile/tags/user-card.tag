@@ -7,7 +7,7 @@
 	<a class="name" href={ '/' + user.username } target="_blank">{ user.name }</a>
 	<p class="username">@{ user.username }</p>
 	<mk-follow-button user={ user }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display inline-block
 			width 200px

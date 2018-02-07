@@ -5,7 +5,7 @@
 		<virtual if={ wait }>%fa:spinner .pulse .fw%</virtual>{ user.is_following ? '%i18n:mobile.tags.mk-follow-button.unfollow%' : '%i18n:mobile.tags.mk-follow-button.follow%' }
 	</button>
 	<div class="init" if={ init }>%fa:spinner .pulse .fw%</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

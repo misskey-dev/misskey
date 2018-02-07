@@ -2,7 +2,7 @@
 	<virtual each={ image in images }>
 		<mk-images-image image={ image }/>
 	</virtual>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display grid
 			grid-gap 4px
@@ -60,7 +60,7 @@
 		style={ styles }
 		@click="click"
 		title={ image.name }></a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden
@@ -111,7 +111,7 @@
 
 <mk-image-dialog>
 	<div class="bg" ref="bg" @click="close"></div><img ref="img" src={ image.url } alt={ image.name } title={ image.name } @click="close"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			position fixed

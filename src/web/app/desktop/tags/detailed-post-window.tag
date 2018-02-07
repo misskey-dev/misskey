@@ -3,7 +3,7 @@
 	<div class="main" ref="main" if={ !fetching }>
 		<mk-post-detail ref="detail" post={ post }/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			opacity 0

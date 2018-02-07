@@ -6,7 +6,7 @@
 		<yield />
 	</div>
 	<mk-stream-indicator if={ SIGNIN }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			position -webkit-sticky
@@ -128,7 +128,7 @@
 		<input ref="q" type="search" placeholder="%i18n:desktop.tags.mk-ui-header-search.placeholder%"/>
 		<div class="result"></div>
 	</form>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 
 			> form
@@ -187,7 +187,7 @@
 
 <mk-ui-header-post-button>
 	<button @click="post" title="%i18n:desktop.tags.mk-ui-header-post-button.post%">%fa:pencil-alt%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display inline-block
 			padding 8px
@@ -235,7 +235,7 @@
 	<div class="notifications" if={ isOpen }>
 		<mk-notifications/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			float left
@@ -420,7 +420,7 @@
 			</a>
 		</li>
 	</ul>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display inline-block
 			margin 0
@@ -552,7 +552,7 @@
 	<div class="content">
 		<mk-analog-clock/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display inline-block
 			overflow visible
@@ -656,7 +656,7 @@
 			</li>
 		</ul>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			float left
@@ -845,7 +845,7 @@
 
 <mk-ui-notification>
 	<p>{ opts.message }</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			position fixed

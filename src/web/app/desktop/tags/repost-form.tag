@@ -10,7 +10,7 @@
 	<virtual if={ quote }>
 		<mk-post-form ref="form" repost={ opts.post }/>
 	</virtual>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 
 			> mk-post-preview

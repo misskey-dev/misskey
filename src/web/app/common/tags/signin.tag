@@ -11,7 +11,7 @@
 		</label>
 		<button type="submit" disabled={ signing }>{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }</button>
 	</form>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

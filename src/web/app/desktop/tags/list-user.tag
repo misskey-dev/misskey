@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	<mk-follow-button user={ user }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0

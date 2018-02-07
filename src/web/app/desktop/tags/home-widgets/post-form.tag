@@ -7,7 +7,7 @@
 		<textarea disabled={ posting } ref="text" onkeydown={ onkeydown } placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>
 		<button @click="post" disabled={ posting }>%i18n:desktop.tags.mk-post-form-home-widget.post%</button>
 	</virtual>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

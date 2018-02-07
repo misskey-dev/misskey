@@ -24,7 +24,7 @@
 		<button class="poll" @click="addPoll">%fa:chart-pie%</button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			max-width 500px

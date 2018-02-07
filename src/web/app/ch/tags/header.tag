@@ -6,7 +6,7 @@
 		<a if={ !SIGNIN } href={ _URL_ }>ログイン(新規登録)</a>
 		<a if={ SIGNIN } href={ _URL_ + '/' + I.username }>{ I.username }</a>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display flex
 

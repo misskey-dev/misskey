@@ -9,7 +9,7 @@
 	<p class="fetching" if={ fetching }>%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
 	<a class="refresh" @click="refresh">もっと見る</a>
 	<button class="close" @click="close" title="閉じる">%fa:times%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

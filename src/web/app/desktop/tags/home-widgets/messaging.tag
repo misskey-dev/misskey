@@ -3,7 +3,7 @@
 		<p class="title">%fa:comments%%i18n:desktop.tags.mk-messaging-home-widget.title%</p>
 	</virtual>
 	<mk-messaging ref="index" compact={ true }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden

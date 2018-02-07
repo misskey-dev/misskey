@@ -6,7 +6,7 @@
 	<footer data-yield="footer">
 		<yield from="footer"/>
 	</footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -151,7 +151,7 @@
 	<div class="detail" if={ isDetailOpened }>
 		<mk-post-status-graph width="462" height="130" post={ p }/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0
@@ -613,7 +613,7 @@
 			</div>
 		</div>
 	</article>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0

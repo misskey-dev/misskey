@@ -1,5 +1,5 @@
 <mk-ellipsis><span>.</span><span>.</span><span>.</span>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display inline
 

@@ -1,6 +1,6 @@
 <mk-home-customize-page>
 	<mk-home ref="home" mode="timeline" customize={ true }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

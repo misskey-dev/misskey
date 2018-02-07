@@ -18,7 +18,7 @@
 			<span if={ fetching }>%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
 	</footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -197,7 +197,7 @@
 			</footer>
 		</div>
 	</article>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0
@@ -595,7 +595,7 @@
 			</div>
 		</div>
 	</article>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0

@@ -7,7 +7,7 @@
 		</header>
 		<mk-drive ref="browser" select-file={ true } multiple={ opts.multiple }/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			position fixed

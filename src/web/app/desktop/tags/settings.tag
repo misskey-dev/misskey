@@ -67,7 +67,7 @@
 			%license%
 		</section>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display flex
 			width 100%
@@ -150,7 +150,7 @@
 		<input ref="accountBirthday" type="date" value={ I.profile.birthday } class="ui"/>
 	</label>
 	<button class="ui primary" @click="updateAccount">%i18n:desktop.tags.mk-profile-setting.save%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -196,7 +196,7 @@
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-api-info.caution%</p></div>
 	<p>%i18n:desktop.tags.mk-api-info.regeneration-of-token%</p>
 	<button class="ui" @click="regenerateToken">%i18n:desktop.tags.mk-api-info.regenerate-token%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			color #4a535a
@@ -226,7 +226,7 @@
 
 <mk-password-setting>
 	<button @click="reset" class="ui primary">%i18n:desktop.tags.mk-password-setting.reset%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			color #4a535a
@@ -281,7 +281,7 @@
 		</ol>
 		<div class="ui info"><p>%fa:info-circle%%i18n:desktop.tags.mk-2fa-setting.info%</p></div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			color #4a535a
@@ -351,7 +351,7 @@
 		<text x="50%" y="50%" dy="0.05" text-anchor="middle">{ (usageP * 100).toFixed(0) }%</text>
 	</svg>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			color #4a535a
@@ -403,7 +403,7 @@
 		</div>
 	</div>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

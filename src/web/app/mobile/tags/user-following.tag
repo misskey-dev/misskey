@@ -1,6 +1,6 @@
 <mk-user-following>
 	<mk-users-list ref="list" fetch={ fetch } count={ user.following_count } you-know-count={ user.following_you_know_count } no-users={ '%i18n:mobile.tags.mk-user-following.no-users%' }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

@@ -1,6 +1,6 @@
 <mk-drive-page>
 	<mk-drive-browser ref="browser" folder={ opts.folder }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			position fixed

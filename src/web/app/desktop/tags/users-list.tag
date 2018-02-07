@@ -16,7 +16,7 @@
 	</button>
 	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>
 	<p class="fetching" if={ fetching }>%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			height 100%

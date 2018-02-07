@@ -62,7 +62,7 @@
 			<mk-post-detail-sub post={ post }/>
 		</virtual>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden
@@ -367,7 +367,7 @@
 			</div>
 		</div>
 	</article>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0

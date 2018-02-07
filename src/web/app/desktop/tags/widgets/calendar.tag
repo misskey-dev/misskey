@@ -18,7 +18,7 @@
 				@click="go.bind(null, i + 1)"
 				title={ isOutOfRange(i + 1) ? null : '%i18n:desktop.tags.mk-calendar-widget.go%' }><div>{ i + 1 }</div></div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			color #777

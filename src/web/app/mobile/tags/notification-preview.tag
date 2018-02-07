@@ -47,7 +47,7 @@
 			<p class="post-ref">%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%</p>
 		</div>
 	</virtual>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0

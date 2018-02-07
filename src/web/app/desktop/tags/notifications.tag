@@ -83,7 +83,7 @@
 	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>ありません！</p>
 	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

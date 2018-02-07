@@ -1,6 +1,6 @@
 <mk-contextmenu>
 	<yield />
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			$width = 240px
 			$item-height = 38px

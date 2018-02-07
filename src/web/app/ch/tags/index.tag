@@ -6,7 +6,7 @@
 	<ul if={ channels }>
 		<li each={ channels }><a href={ '/' + this.id }>{ this.title }</a></li>
 	</ul>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

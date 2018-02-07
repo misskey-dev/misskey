@@ -33,7 +33,7 @@
 	</div>
 	<p class="no-history" if={ !fetching && history.length == 0 }>%i18n:common.tags.mk-messaging.no-history%</p>
 	<p class="fetching" if={ fetching }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

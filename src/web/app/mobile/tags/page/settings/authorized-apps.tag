@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-authorized-apps/>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

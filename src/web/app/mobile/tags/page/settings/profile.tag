@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-profile-setting/>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
@@ -51,7 +51,7 @@
 		</div>
 		<button class="save" @click="save" disabled={ saving }>%fa:check%%i18n:mobile.tags.mk-profile-setting.save%</button>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

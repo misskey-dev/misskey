@@ -5,7 +5,7 @@
 		<yield />
 	</div>
 	<mk-stream-indicator if={ SIGNIN }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding-top 48px
@@ -58,7 +58,7 @@
 			<button if={ func } @click="func"><mk-raw content={ funcIcon }/></button>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			$height = 48px
 
@@ -250,7 +250,7 @@
 		</div>
 		<a href={ aboutUrl }><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display none
 

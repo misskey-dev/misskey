@@ -3,7 +3,7 @@
 	<a href={ _API_URL_ + '/signin/twitter' }>Twitterでサインイン</a>
 	<div class="divider"><span>or</span></div>
 	<button class="signup" @click="parent.signup">%i18n:mobile.tags.mk-entrance-signin.signup%</button><a class="introduction" @click="parent.introduction">%i18n:mobile.tags.mk-entrance-signin.about%</a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0 auto

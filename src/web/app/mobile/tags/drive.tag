@@ -51,7 +51,7 @@
 	</div>
 	<input ref="file" type="file" multiple="multiple" onchange={ changeLocalFile }/>
 	<mk-drive-file-viewer if={ file != null } file={ file }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

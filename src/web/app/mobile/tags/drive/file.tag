@@ -22,7 +22,7 @@
 			</div>
 		</div>
 	</a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

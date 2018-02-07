@@ -8,7 +8,7 @@
 			<a if={ parent.post.prev } href={ parent.post.prev }>%fa:angle-down%%i18n:mobile.tags.mk-post-page.prev%</a>
 		</main>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

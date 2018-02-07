@@ -12,7 +12,7 @@
 			stroke-width="0.1"
 			stroke="#f73520"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			max-width 600px

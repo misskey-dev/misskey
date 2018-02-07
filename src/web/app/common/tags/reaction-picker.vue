@@ -75,7 +75,7 @@
 			onMouseout: function(e) {
 				this.title = placeholder;
 			},
-			close: function() {
+			clo1se: function() {
 				this.$refs.backdrop.style.pointerEvents = 'none';
 				anime({
 					targets: this.$refs.backdrop,
@@ -98,89 +98,85 @@
 	};
 </script>
 
-<mk-reaction-picker>
+<style lang="stylus" scoped>
+	$border-color = rgba(27, 31, 35, 0.15)
 
-	<style>
-		$border-color = rgba(27, 31, 35, 0.15)
+	:scope
+		display block
+		position initial
 
-		:scope
-			display block
-			position initial
+		> .backdrop
+			position fixed
+			top 0
+			left 0
+			z-index 10000
+			width 100%
+			height 100%
+			background rgba(0, 0, 0, 0.1)
+			opacity 0
 
-			> .backdrop
-				position fixed
-				top 0
-				left 0
-				z-index 10000
-				width 100%
-				height 100%
-				background rgba(0, 0, 0, 0.1)
-				opacity 0
+		> .popover
+			position absolute
+			z-index 10001
+			background #fff
+			border 1px solid $border-color
+			border-radius 4px
+			box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
+			transform scale(0.5)
+			opacity 0
 
-			> .popover
-				position absolute
-				z-index 10001
-				background #fff
-				border 1px solid $border-color
-				border-radius 4px
-				box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
-				transform scale(0.5)
-				opacity 0
+			$balloon-size = 16px
 
-				$balloon-size = 16px
+			&:not(.compact)
+				margin-top $balloon-size
+				transform-origin center -($balloon-size)
 
-				&:not(.compact)
-					margin-top $balloon-size
-					transform-origin center -($balloon-size)
-
-					&:before
-						content ""
-						display block
-						position absolute
-						top -($balloon-size * 2)
-						left s('calc(50% - %s)', $balloon-size)
-						border-top solid $balloon-size transparent
-						border-left solid $balloon-size transparent
-						border-right solid $balloon-size transparent
-						border-bottom solid $balloon-size $border-color
-
-					&:after
-						content ""
-						display block
-						position absolute
-						top -($balloon-size * 2) + 1.5px
-						left s('calc(50% - %s)', $balloon-size)
-						border-top solid $balloon-size transparent
-						border-left solid $balloon-size transparent
-						border-right solid $balloon-size transparent
-						border-bottom solid $balloon-size #fff
-
-				> p
+				&:before
+					content ""
 					display block
-					margin 0
-					padding 8px 10px
-					font-size 14px
-					color #586069
-					border-bottom solid 1px #e1e4e8
+					position absolute
+					top -($balloon-size * 2)
+					left s('calc(50% - %s)', $balloon-size)
+					border-top solid $balloon-size transparent
+					border-left solid $balloon-size transparent
+					border-right solid $balloon-size transparent
+					border-bottom solid $balloon-size $border-color
 
-				> div
-					padding 4px
-					width 240px
-					text-align center
+				&:after
+					content ""
+					display block
+					position absolute
+					top -($balloon-size * 2) + 1.5px
+					left s('calc(50% - %s)', $balloon-size)
+					border-top solid $balloon-size transparent
+					border-left solid $balloon-size transparent
+					border-right solid $balloon-size transparent
+					border-bottom solid $balloon-size #fff
 
-					> button
-						width 40px
-						height 40px
-						font-size 24px
-						border-radius 2px
+			> p
+				display block
+				margin 0
+				padding 8px 10px
+				font-size 14px
+				color #586069
+				border-bottom solid 1px #e1e4e8
 
-						&:hover
-							background #eee
+			> div
+				padding 4px
+				width 240px
+				text-align center
 
-						&:active
-							background $theme-color
-							box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
+				> button
+					width 40px
+					height 40px
+					font-size 24px
+					border-radius 2px
 
-	</style>
+					&:hover
+						background #eee
 
-</mk-reaction-picker>
+					&:active
+						background $theme-color
+						box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
+
+</style>

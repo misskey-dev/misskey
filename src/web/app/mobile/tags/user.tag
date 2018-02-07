@@ -50,7 +50,7 @@
 			<mk-user-timeline if={ page == 'media' } user={ user } with-media={ true }/>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -259,7 +259,7 @@
 		</div>
 	</section>
 	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time time={ user.last_used_at }/></b></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			max-width 600px
@@ -314,7 +314,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !initializing && posts.length == 0 }>%i18n:mobile.tags.mk-user-overview-posts.no-posts%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -370,7 +370,7 @@
 		</div>
 		<mk-time time={ post.created_at }/>
 	</a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display inline-block
 			width 150px
@@ -443,7 +443,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !initializing && images.length == 0 }>%i18n:mobile.tags.mk-user-overview-photos.no-photos%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -519,7 +519,7 @@
 				fill="#a1de41"/>
 			</g>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			max-width 600px
@@ -564,7 +564,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ user.keywords == null || user.keywords.length == 0 }>%i18n:mobile.tags.mk-user-overview-keywords.no-keywords%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -598,7 +598,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ user.domains == null || user.domains.length == 0 }>%i18n:mobile.tags.mk-user-overview-domains.no-domains%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -633,7 +633,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:mobile.tags.mk-user-overview-frequently-replied-users.no-users%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -685,7 +685,7 @@
 		</virtual>
 	</div>
 	<p class="empty" if={ !initializing && users.length == 0 }>%i18n:mobile.tags.mk-user-overview-followers-you-know.no-users%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

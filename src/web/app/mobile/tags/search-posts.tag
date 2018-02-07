@@ -1,6 +1,6 @@
 <mk-search-posts>
 	<mk-timeline init={ init } more={ more } empty={ '%i18n:mobile.tags.mk-search-posts.empty%'.replace('{}', query) }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 8px auto

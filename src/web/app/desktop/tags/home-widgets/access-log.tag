@@ -9,7 +9,7 @@
 			<span>{ path }</span>
 		</p>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden

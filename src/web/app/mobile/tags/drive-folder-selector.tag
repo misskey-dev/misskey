@@ -7,7 +7,7 @@
 		</header>
 		<mk-drive ref="browser" select-folder={ true }/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			position fixed

@@ -15,7 +15,7 @@
 			<button @click="categorize">%i18n:common.tags.mk-post-menu.categorize%</button>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		$border-color = rgba(27, 31, 35, 0.15)
 
 		:scope

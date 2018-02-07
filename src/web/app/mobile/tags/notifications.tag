@@ -10,7 +10,7 @@
 	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>%i18n:mobile.tags.mk-notifications.empty%</p>
 	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 8px auto

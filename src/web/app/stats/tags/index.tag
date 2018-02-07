@@ -5,7 +5,7 @@
 		<mk-posts stats={ stats }/>
 	</main>
 	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0 auto
@@ -59,7 +59,7 @@
 <mk-posts>
 	<h2>%i18n:stats.posts-count% <b>{ stats.posts_count }</b></h2>
 	<mk-posts-chart if={ !initializing } data={ data }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
@@ -85,7 +85,7 @@
 <mk-users>
 	<h2>%i18n:stats.users-count% <b>{ stats.users_count }</b></h2>
 	<mk-users-chart if={ !initializing } data={ data }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
@@ -133,7 +133,7 @@
 			stroke="#555"
 			stroke-dasharray="2 2"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -178,7 +178,7 @@
 			stroke-width="1"
 			stroke="#555"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

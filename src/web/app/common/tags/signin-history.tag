@@ -2,7 +2,7 @@
 	<div class="records" if={ history.length != 0 }>
 		<mk-signin-record each={ rec in history } rec={ rec }/>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -50,7 +50,7 @@
 	</header>
 	<pre ref="headers" class="json" show={ show }>{ JSON.stringify(rec.headers, null, 2) }</pre>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			border-bottom solid 1px #eee

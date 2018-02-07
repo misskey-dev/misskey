@@ -6,7 +6,7 @@
 		</header>
 		<mk-new-app-form/>
 	</main>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 64px 0

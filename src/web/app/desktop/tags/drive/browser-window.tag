@@ -8,7 +8,7 @@
 			<mk-drive-browser multiple={ true } folder={ parent.folder } ref="browser"/>
 		</yield>
 	</mk-window>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			> mk-window
 				[data-yield='header']

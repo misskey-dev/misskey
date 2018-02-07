@@ -33,7 +33,7 @@
 			<small><a href={ _URL_ }>Misskey</a> ver { _VERSION_ } (葵 aoi)</small>
 		</footer>
 	</main>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -181,7 +181,7 @@
 			</virtual>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0
@@ -255,7 +255,7 @@
 		<li each={ files }>{ name }</li>
 	</ol>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

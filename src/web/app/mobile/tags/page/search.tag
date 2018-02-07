@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-search ref="search" query={ parent.opts.query }/>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

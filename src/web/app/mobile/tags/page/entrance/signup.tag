@@ -1,7 +1,7 @@
 <mk-entrance-signup>
 	<mk-signup/>
 	<button class="cancel" type="button" @click="parent.signin" title="%i18n:mobile.tags.mk-entrance-signup.cancel%">%fa:times%</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0 auto

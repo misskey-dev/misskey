@@ -1,6 +1,6 @@
 <mk-activity-home-widget>
 	<mk-activity-widget design={ data.design } view={ data.view } user={ I } ref="activity"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

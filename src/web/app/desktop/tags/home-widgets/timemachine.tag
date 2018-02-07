@@ -1,6 +1,6 @@
 <mk-timemachine-home-widget>
 	<mk-calendar-widget design={ data.design } warp={ warp }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

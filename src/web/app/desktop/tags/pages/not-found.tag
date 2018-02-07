@@ -4,7 +4,7 @@
 			<h1>Not Found</h1>
 		</main>
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

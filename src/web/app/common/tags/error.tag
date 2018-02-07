@@ -11,7 +11,7 @@
 	<button if={ !troubleshooting } @click="troubleshoot">%i18n:common.tags.mk-error.troubleshoot%</button>
 	<mk-troubleshooter if={ troubleshooting }/>
 	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			width 100%
@@ -108,7 +108,7 @@
 	<p if={ server === false }><b>%fa:exclamation-triangle%%i18n:common.tags.mk-error.troubleshooter.no-server%</b><br>%i18n:common.tags.mk-error.troubleshooter.no-server-desc%</p>
 	<p if={ server === true } class="success"><b>%fa:info-circle%%i18n:common.tags.mk-error.troubleshooter.success%</b><br>%i18n:common.tags.mk-error.troubleshooter.success-desc%</p>
 
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			width 100%

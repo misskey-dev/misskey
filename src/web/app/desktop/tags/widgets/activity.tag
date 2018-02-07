@@ -6,7 +6,7 @@
 	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-activity-widget-calender if={ !initializing && view == 0 } data={ [].concat(activity) }/>
 	<mk-activity-widget-chart if={ !initializing && view == 1 } data={ [].concat(activity) }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -110,7 +110,7 @@
 			stroke-width="0.1"
 			stroke="#f73520"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -174,7 +174,7 @@
 			stroke="#555"
 			stroke-dasharray="2 2"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

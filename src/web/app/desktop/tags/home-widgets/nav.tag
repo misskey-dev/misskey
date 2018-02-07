@@ -1,6 +1,6 @@
 <mk-nav-home-widget>
 	<mk-nav-links/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 16px

@@ -9,7 +9,7 @@
 	</div>
 	<p class="empty" if={ !loading && post == null }>%i18n:desktop.tags.mk-trends-home-widget.nothing%</p>
 	<p class="loading" if={ loading }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff

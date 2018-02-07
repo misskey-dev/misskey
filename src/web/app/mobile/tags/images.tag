@@ -2,7 +2,7 @@
 	<virtual each={ image in images }>
 		<mk-images-image image={ image }/>
 	</virtual>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display grid
 			grid-gap 4px
@@ -57,7 +57,7 @@
 
 <mk-images-image>
 	<a ref="view" href={ image.url } target="_blank" style={ styles } title={ image.name }></a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden

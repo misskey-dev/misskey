@@ -14,7 +14,7 @@
 	<button class="destroy" @click="destroy" title="%i18n:common.tags.mk-poll-editor.destroy%">
 		%fa:times%
 	</button>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 8px

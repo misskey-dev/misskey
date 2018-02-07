@@ -14,7 +14,7 @@
 		<summary>投票</summary>
 		<mk-poll post={ post }/>
 	</details>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow-wrap break-word

@@ -1,6 +1,6 @@
 <mk-tips-home-widget>
 	<p ref="tip">%fa:R lightbulb%<span ref="text"></span></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow visible !important

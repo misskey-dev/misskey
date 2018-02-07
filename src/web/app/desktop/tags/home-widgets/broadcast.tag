@@ -14,7 +14,7 @@
 	}</h1>
 	<p if={ !fetching }><mk-raw if={ broadcasts.length != 0 } content={ broadcasts[i].text }/><virtual if={ broadcasts.length == 0 }>%i18n:desktop.tags.mk-broadcast-home-widget.have-a-nice-day%</virtual></p>
 	<a if={ broadcasts.length > 1 } @click="next">%i18n:desktop.tags.mk-broadcast-home-widget.next% &gt;&gt;</a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 10px

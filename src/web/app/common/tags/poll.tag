@@ -15,7 +15,7 @@
 		<a if={ !isVoted } @click="toggleResult">{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }</a>
 		<span if={ isVoted }>%i18n:common.tags.mk-poll.voted%</span>
 	</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

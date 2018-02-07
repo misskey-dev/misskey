@@ -8,7 +8,7 @@
 			<p>{ app.description }</p>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

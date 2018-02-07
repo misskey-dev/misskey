@@ -10,7 +10,7 @@
 	<mk-server-home-widget-disk if={ !initializing } show={ data.view == 3 } connection={ connection }/>
 	<mk-server-home-widget-uptimes if={ !initializing } show={ data.view == 4 } connection={ connection }/>
 	<mk-server-home-widget-info if={ !initializing } show={ data.view == 5 } connection={ connection } meta={ meta }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			background #fff
@@ -158,7 +158,7 @@
 			style="stroke: none; fill: url(#{ memGradientId }); mask: url(#{ memMaskId })"/>
 		<text x="1" y="5">MEM <tspan>{ memP }%</tspan></text>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -239,7 +239,7 @@
 		<p>{ cores } Cores</p>
 		<p>{ model }</p>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -297,7 +297,7 @@
 		<p>Used: { bytesToSize(used, 1) }</p>
 		<p>Free: { bytesToSize(free, 1) }</p>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -363,7 +363,7 @@
 		<p>Available: { bytesToSize(available, 1) }</p>
 		<p>Used: { bytesToSize(used, 1) }</p>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -426,7 +426,7 @@
 	<p>Uptimes</p>
 	<p>Process: { process ? process.toFixed(0) : '---' }s</p>
 	<p>OS: { os ? os.toFixed(0) : '---' }s</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 10px 14px
@@ -464,7 +464,7 @@
 	<p>Maintainer: <b>{ meta.maintainer }</b></p>
 	<p>Machine: { meta.machine }</p>
 	<p>Node: { meta.node }</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 10px 14px
@@ -498,7 +498,7 @@
 			riot-stroke={ color }/>
 		<text x="50%" y="50%" dy="0.05" text-anchor="middle">{ (p * 100).toFixed(0) }%</text>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

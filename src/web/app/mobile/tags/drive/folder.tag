@@ -4,7 +4,7 @@
 			<p class="name">%fa:folder%{ folder.name }</p>%fa:angle-right%
 		</div>
 	</a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 

@@ -3,7 +3,7 @@
 	<img class="avatar" src={ I.avatar_url + '?thumbnail&size=96' } @click="setAvatar" alt="avatar" title="クリックでアバター編集" data-user-preview={ I.id }/>
 	<a class="name" href={ '/' + I.username }>{ I.name }</a>
 	<p class="username">@{ I.username }</p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden

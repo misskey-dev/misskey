@@ -2,7 +2,7 @@
 	<mk-ui ref="ui">
 		<mk-settings />
 	</mk-ui>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
@@ -29,7 +29,7 @@
 		<li><a @click="signout">%fa:power-off%%i18n:mobile.tags.mk-settings-page.signout%</a></li>
 	</ul>
 	<p><small>ver { _VERSION_ } (葵 aoi)</small></p>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
