@@ -4,9 +4,9 @@
 		<yield to="content">
 			<div class="body"><img ref="img" src={ parent.image.url + '?thumbnail&quality=80' } alt=""/></div>
 			<div class="action">
-				<button class="skip" onclick={ parent.skip }>クロップをスキップ</button>
-				<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
-				<button class="ok" onclick={ parent.ok }>決定</button>
+				<button class="skip" @click="parent.skip">クロップをスキップ</button>
+				<button class="cancel" @click="parent.cancel">キャンセル</button>
+				<button class="ok" @click="parent.ok">決定</button>
 			</div>
 		</yield>
 	</mk-window>

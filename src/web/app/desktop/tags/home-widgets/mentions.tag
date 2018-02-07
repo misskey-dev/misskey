@@ -1,5 +1,5 @@
 <mk-mentions-home-widget>
-	<header><span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>すべて</span><span data-is-active={ mode == 'following' } onclick={ setMode.bind(this, 'following') }>フォロー中</span></header>
+	<header><span data-is-active={ mode == 'all' } @click="setMode.bind(this, 'all')">すべて</span><span data-is-active={ mode == 'following' } @click="setMode.bind(this, 'following')">フォロー中</span></header>
 	<div class="loading" if={ isLoading }>
 		<mk-ellipsis-icon/>
 	</div>

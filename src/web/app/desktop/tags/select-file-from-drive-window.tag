@@ -7,9 +7,9 @@
 		<yield to="content">
 			<mk-drive-browser ref="browser" multiple={ parent.multiple }/>
 			<div>
-				<button class="upload" title="PCからドライブにファイルをアップロード" onclick={ parent.upload }>%fa:upload%</button>
-				<button class="cancel" onclick={ parent.close }>キャンセル</button>
-				<button class="ok" disabled={ parent.multiple && parent.files.length == 0 } onclick={ parent.ok }>決定</button>
+				<button class="upload" title="PCからドライブにファイルをアップロード" @click="parent.upload">%fa:upload%</button>
+				<button class="cancel" @click="parent.close">キャンセル</button>
+				<button class="ok" disabled={ parent.multiple && parent.files.length == 0 } @click="parent.ok">決定</button>
 			</div>
 		</yield>
 	</mk-window>

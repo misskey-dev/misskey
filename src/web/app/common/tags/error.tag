@@ -3,12 +3,12 @@
 	<h1>%i18n:common.tags.mk-error.title%</h1>
 	<p class="text">{
 		'%i18n:common.tags.mk-error.description%'.substr(0, '%i18n:common.tags.mk-error.description%'.indexOf('{'))
-	}<a onclick={ reload }>{
+	}<a @click="reload">{
 		'%i18n:common.tags.mk-error.description%'.match(/\{(.+?)\}/)[1]
 	}</a>{
 		'%i18n:common.tags.mk-error.description%'.substr('%i18n:common.tags.mk-error.description%'.indexOf('}') + 1)
 	}</p>
-	<button if={ !troubleshooting } onclick={ troubleshoot }>%i18n:common.tags.mk-error.troubleshoot%</button>
+	<button if={ !troubleshooting } @click="troubleshoot">%i18n:common.tags.mk-error.troubleshoot%</button>
 	<mk-troubleshooter if={ troubleshooting }/>
 	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
 	<style>

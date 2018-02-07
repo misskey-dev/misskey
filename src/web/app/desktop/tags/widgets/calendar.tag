@@ -1,8 +1,8 @@
 <mk-calendar-widget data-melt={ opts.design == 4 || opts.design == 5 }>
 	<virtual if={ opts.design == 0 || opts.design == 1 }>
-		<button onclick={ prev } title="%i18n:desktop.tags.mk-calendar-widget.prev%">%fa:chevron-circle-left%</button>
+		<button @click="prev" title="%i18n:desktop.tags.mk-calendar-widget.prev%">%fa:chevron-circle-left%</button>
 		<p class="title">{ '%i18n:desktop.tags.mk-calendar-widget.title%'.replace('{1}', year).replace('{2}', month) }</p>
-		<button onclick={ next } title="%i18n:desktop.tags.mk-calendar-widget.next%">%fa:chevron-circle-right%</button>
+		<button @click="next" title="%i18n:desktop.tags.mk-calendar-widget.next%">%fa:chevron-circle-right%</button>
 	</virtual>
 
 	<div class="calendar">
@@ -15,7 +15,7 @@
 				data-selected={ isSelected(i + 1) }
 				data-is-out-of-range={ isOutOfRange(i + 1) }
 				data-is-donichi={ isDonichi(i + 1) }
-				onclick={ go.bind(null, i + 1) }
+				@click="go.bind(null, i + 1)"
 				title={ isOutOfRange(i + 1) ? null : '%i18n:desktop.tags.mk-calendar-widget.go%' }><div>{ i + 1 }</div></div>
 	</div>
 	<style>

@@ -1,7 +1,7 @@
 <mk-post-menu>
-	<div class="backdrop" ref="backdrop" onclick={ close }></div>
+	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover { compact: opts.compact }" ref="popover">
-		<button if={ post.user_id === I.id } onclick={ pin }>%i18n:common.tags.mk-post-menu.pin%</button>
+		<button if={ post.user_id === I.id } @click="pin">%i18n:common.tags.mk-post-menu.pin%</button>
 		<div if={ I.is_pro && !post.is_category_verified }>
 			<select ref="categorySelect">
 				<option value="">%i18n:common.tags.mk-post-menu.select%</option>
@@ -12,7 +12,7 @@
 				<option value="gadgets">%i18n:common.post_categories.gadgets%</option>
 				<option value="photography">%i18n:common.post_categories.photography%</option>
 			</select>
-			<button onclick={ categorize }>%i18n:common.tags.mk-post-menu.categorize%</button>
+			<button @click="categorize">%i18n:common.tags.mk-post-menu.categorize%</button>
 		</div>
 	</div>
 	<style>

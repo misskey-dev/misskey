@@ -1,6 +1,6 @@
-<mk-set-banner-suggestion onclick={ set }>
+<mk-set-banner-suggestion @click="set">
 	<p><b>バナーを設定</b>してみませんか？
-		<button onclick={ close }>%fa:times%</button>
+		<button @click="close">%fa:times%</button>
 	</p>
 	<style>
 		:scope

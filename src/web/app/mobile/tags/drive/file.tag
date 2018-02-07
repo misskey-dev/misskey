@@ -1,5 +1,5 @@
 <mk-drive-file data-is-selected={ isSelected }>
-	<a onclick={ onclick } href="/i/drive/file/{ file.id }">
+	<a @click="onclick" href="/i/drive/file/{ file.id }">
 		<div class="container">
 			<div class="thumbnail" style={ thumbnail }></div>
 			<div class="body">

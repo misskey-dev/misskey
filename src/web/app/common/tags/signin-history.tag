@@ -42,7 +42,7 @@
 </mk-signin-history>
 
 <mk-signin-record>
-	<header onclick={ toggle }>
+	<header @click="toggle">
 		<virtual if={ rec.success }>%fa:check%</virtual>
 		<virtual if={ !rec.success }>%fa:times%</virtual>
 		<span class="ip">{ rec.ip }</span>

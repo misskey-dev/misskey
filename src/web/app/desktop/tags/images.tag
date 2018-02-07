@@ -58,7 +58,7 @@
 		onmousemove={ mousemove }
 		onmouseleave={ mouseleave }
 		style={ styles }
-		onclick={ click }
+		@click="click"
 		title={ image.name }></a>
 	<style>
 		:scope
@@ -110,7 +110,7 @@
 </mk-images-image>
 
 <mk-image-dialog>
-	<div class="bg" ref="bg" onclick={ close }></div><img ref="img" src={ image.url } alt={ image.name } title={ image.name } onclick={ close }/>
+	<div class="bg" ref="bg" @click="close"></div><img ref="img" src={ image.url } alt={ image.name } title={ image.name } @click="close"/>
 	<style>
 		:scope
 			display block

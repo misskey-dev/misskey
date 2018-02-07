@@ -13,7 +13,7 @@
 		</p>
 	</virtual>
 	<footer if={ !init }>
-		<button if={ canFetchMore } onclick={ more } disabled={ fetching }>
+		<button if={ canFetchMore } @click="more" disabled={ fetching }>
 			<span if={ !fetching }>%i18n:mobile.tags.mk-timeline.load-more%</span>
 			<span if={ fetching }>%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
@@ -182,16 +182,16 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
-				<button onclick={ reply }>
+				<button @click="reply">
 					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick={ repost } title="Repost">
+				<button @click="repost" title="Repost">
 					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton">
+				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton">
 					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
-				<button class="menu" onclick={ menu } ref="menuButton">
+				<button class="menu" @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
 			</footer>

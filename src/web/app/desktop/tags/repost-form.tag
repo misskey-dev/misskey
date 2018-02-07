@@ -2,9 +2,9 @@
 	<mk-post-preview post={ opts.post }/>
 	<virtual if={ !quote }>
 		<footer>
-			<a class="quote" if={ !quote } onclick={ onquote }>%i18n:desktop.tags.mk-repost-form.quote%</a>
-			<button class="cancel" onclick={ cancel }>%i18n:desktop.tags.mk-repost-form.cancel%</button>
-			<button class="ok" onclick={ ok } disabled={ wait }>{ wait ? '%i18n:desktop.tags.mk-repost-form.reposting%' : '%i18n:desktop.tags.mk-repost-form.repost%' }</button>
+			<a class="quote" if={ !quote } @click="onquote">%i18n:desktop.tags.mk-repost-form.quote%</a>
+			<button class="cancel" @click="cancel">%i18n:desktop.tags.mk-repost-form.cancel%</button>
+			<button class="ok" @click="ok" disabled={ wait }>{ wait ? '%i18n:desktop.tags.mk-repost-form.reposting%' : '%i18n:desktop.tags.mk-repost-form.repost%' }</button>
 		</footer>
 	</virtual>
 	<virtual if={ quote }>

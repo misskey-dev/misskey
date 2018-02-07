@@ -186,7 +186,7 @@
 </mk-ui-header-search>
 
 <mk-ui-header-post-button>
-	<button onclick={ post } title="%i18n:desktop.tags.mk-ui-header-post-button.post%">%fa:pencil-alt%</button>
+	<button @click="post" title="%i18n:desktop.tags.mk-ui-header-post-button.post%">%fa:pencil-alt%</button>
 	<style>
 		:scope
 			display inline-block
@@ -229,7 +229,7 @@
 </mk-ui-header-post-button>
 
 <mk-ui-header-notifications>
-	<button data-active={ isOpen } onclick={ toggle } title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
+	<button data-active={ isOpen } @click="toggle" title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
 		%fa:R bell%<virtual if={ hasUnreadNotifications }>%fa:circle%</virtual>
 	</button>
 	<div class="notifications" if={ isOpen }>
@@ -400,7 +400,7 @@
 				</a>
 			</li>
 			<li class="messaging">
-				<a onclick={ messaging }>
+				<a @click="messaging">
 					%fa:comments%
 					<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
 					<virtual if={ hasUnreadMessagingMessages }>%fa:circle%</virtual>
@@ -629,7 +629,7 @@
 </mk-ui-header-clock>
 
 <mk-ui-header-account>
-	<button class="header" data-active={ isOpen.toString() } onclick={ toggle }>
+	<button class="header" data-active={ isOpen.toString() } @click="toggle">
 		<span class="username">{ I.username }<virtual if={ !isOpen }>%fa:angle-down%</virtual><virtual if={ isOpen }>%fa:angle-up%</virtual></span>
 		<img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 	</button>
@@ -638,7 +638,7 @@
 			<li>
 				<a href={ '/' + I.username }>%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</a>
 			</li>
-			<li onclick={ drive }>
+			<li @click="drive">
 				<p>%fa:cloud%%i18n:desktop.tags.mk-ui-header-account.drive%%fa:angle-right%</p>
 			</li>
 			<li>
@@ -646,12 +646,12 @@
 			</li>
 		</ul>
 		<ul>
-			<li onclick={ settings }>
+			<li @click="settings">
 				<p>%fa:cog%%i18n:desktop.tags.mk-ui-header-account.settings%%fa:angle-right%</p>
 			</li>
 		</ul>
 		<ul>
-			<li onclick={ signout }>
+			<li @click="signout">
 				<p>%fa:power-off%%i18n:desktop.tags.mk-ui-header-account.signout%%fa:angle-right%</p>
 			</li>
 		</ul>

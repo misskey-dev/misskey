@@ -129,19 +129,19 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
-				<button onclick={ reply } title="%i18n:desktop.tags.mk-timeline-post.reply%">
+				<button @click="reply" title="%i18n:desktop.tags.mk-timeline-post.reply%">
 					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick={ repost } title="%i18n:desktop.tags.mk-timeline-post.repost%">
+				<button @click="repost" title="%i18n:desktop.tags.mk-timeline-post.repost%">
 					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%">
+				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%">
 					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
-				<button onclick={ menu } ref="menuButton">
+				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
-				<button onclick={ toggleDetail } title="%i18n:desktop.tags.mk-timeline-post.detail">
+				<button @click="toggleDetail" title="%i18n:desktop.tags.mk-timeline-post.detail">
 					<virtual if={ !isDetailOpened }>%fa:caret-down%</virtual>
 					<virtual if={ isDetailOpened }>%fa:caret-up%</virtual>
 				</button>

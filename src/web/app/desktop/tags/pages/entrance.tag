@@ -10,7 +10,7 @@
 			<mk-entrance-signup if={ mode == 'signup' }/>
 			<div class="introduction" if={ mode == 'introduction' }>
 				<mk-introduction/>
-				<button onclick={ signin }>わかった</button>
+				<button @click="signin">わかった</button>
 			</div>
 		</div>
 	</main>
@@ -159,7 +159,7 @@
 	</div>
 	<a href={ _API_URL_ + '/signin/twitter' }>Twitterでサインイン</a>
 	<div class="divider"><span>or</span></div>
-	<button class="signup" onclick={ parent.signup }>新規登録</button><a class="introduction" onclick={ introduction }>Misskeyについて</a>
+	<button class="signup" @click="parent.signup">新規登録</button><a class="introduction" @click="introduction">Misskeyについて</a>
 	<style>
 		:scope
 			display block
@@ -295,7 +295,7 @@
 
 <mk-entrance-signup>
 	<mk-signup/>
-	<button class="cancel" type="button" onclick={ parent.signin } title="キャンセル">%fa:times%</button>
+	<button class="cancel" type="button" @click="parent.signin" title="キャンセル">%fa:times%</button>
 	<style>
 		:scope
 			display block

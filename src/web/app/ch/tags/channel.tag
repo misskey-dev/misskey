@@ -5,8 +5,8 @@
 		<h1>{ channel.title }</h1>
 
 		<div if={ SIGNIN }>
-			<p if={ channel.is_watching }>このチャンネルをウォッチしています <a onclick={ unwatch }>ウォッチ解除</a></p>
-			<p if={ !channel.is_watching }><a onclick={ watch }>このチャンネルをウォッチする</a></p>
+			<p if={ channel.is_watching }>このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
+			<p if={ !channel.is_watching }><a @click="watch">このチャンネルをウォッチする</a></p>
 		</div>
 
 		<div class="share">
@@ -164,7 +164,7 @@
 
 <mk-channel-post>
 	<header>
-		<a class="index" onclick={ reply }>{ post.index }:</a>
+		<a class="index" @click="reply">{ post.index }:</a>
 		<a class="name" href={ _URL_ + '/' + post.user.username }><b>{ post.user.name }</b></a>
 		<mk-time time={ post.created_at }/>
 		<mk-time time={ post.created_at } mode="detail"/>
@@ -241,12 +241,12 @@
 </mk-channel-post>
 
 <mk-channel-form>
-	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a onclick={ clearReply }>[x]</a></p>
+	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a @click="clearReply">[x]</a></p>
 	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder="%i18n:ch.tags.mk-channel-form.textarea%"></textarea>
 	<div class="actions">
-		<button onclick={ selectFile }>%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
-		<button onclick={ drive }>%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
-		<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
+		<button @click="selectFile">%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
+		<button @click="drive">%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
+		<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="post">
 			<virtual if={ !wait }>%fa:paper-plane%</virtual>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis if={ wait }/>
 		</button>
 	</div>

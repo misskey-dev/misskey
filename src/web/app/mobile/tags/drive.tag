@@ -1,9 +1,9 @@
 <mk-drive>
 	<nav ref="nav">
-		<a onclick={ goRoot } href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
+		<a @click="goRoot" href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
 		<virtual each={ folder in hierarchyFolders }>
 			<span>%fa:angle-right%</span>
-			<a onclick={ move } href="/i/drive/folder/{ folder.id }">{ folder.name }</a>
+			<a @click="move" href="/i/drive/folder/{ folder.id }">{ folder.name }</a>
 		</virtual>
 		<virtual if={ folder != null }>
 			<span>%fa:angle-right%</span>
@@ -34,7 +34,7 @@
 			<virtual each={ file in files }>
 				<mk-drive-file file={ file }/>
 			</virtual>
-			<button class="more" if={ moreFiles } onclick={ fetchMoreFiles }>
+			<button class="more" if={ moreFiles } @click="fetchMoreFiles">
 				{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
 			</button>
 		</div>

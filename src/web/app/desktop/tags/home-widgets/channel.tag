@@ -3,7 +3,7 @@
 		<p class="title">%fa:tv%{
 			channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%'
 		}</p>
-		<button onclick={ settings } title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
+		<button @click="settings" title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
 	</virtual>
 	<p class="get-started" if={ this.data.channel == null }>%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
 	<mk-channel ref="channel" show={ this.data.channel }/>
@@ -192,7 +192,7 @@
 
 <mk-channel-post>
 	<header>
-		<a class="index" onclick={ reply }>{ post.index }:</a>
+		<a class="index" @click="reply">{ post.index }:</a>
 		<a class="name" href={ _URL_ + '/' + post.user.username }><b>{ post.user.name }</b></a>
 		<span>ID:<i>{ post.user.username }</i></span>
 	</header>

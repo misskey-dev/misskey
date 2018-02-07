@@ -21,8 +21,8 @@
 	<div>
 		<p>%fa:info-circle%%i18n:mobile.tags.mk-profile-setting.will-be-published%</p>
 		<div class="form">
-			<div style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=1024)' : '' } onclick={ clickBanner }>
-				<img src={ I.avatar_url + '?thumbnail&size=200' } alt="avatar" onclick={ clickAvatar }/>
+			<div style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=1024)' : '' } @click="clickBanner">
+				<img src={ I.avatar_url + '?thumbnail&size=200' } alt="avatar" @click="clickAvatar"/>
 			</div>
 			<label>
 				<p>%i18n:mobile.tags.mk-profile-setting.name%</p>
@@ -42,14 +42,14 @@
 			</label>
 			<label>
 				<p>%i18n:mobile.tags.mk-profile-setting.avatar%</p>
-				<button onclick={ setAvatar } disabled={ avatarSaving }>%i18n:mobile.tags.mk-profile-setting.set-avatar%</button>
+				<button @click="setAvatar" disabled={ avatarSaving }>%i18n:mobile.tags.mk-profile-setting.set-avatar%</button>
 			</label>
 			<label>
 				<p>%i18n:mobile.tags.mk-profile-setting.banner%</p>
-				<button onclick={ setBanner } disabled={ bannerSaving }>%i18n:mobile.tags.mk-profile-setting.set-banner%</button>
+				<button @click="setBanner" disabled={ bannerSaving }>%i18n:mobile.tags.mk-profile-setting.set-banner%</button>
 			</label>
 		</div>
-		<button class="save" onclick={ save } disabled={ saving }>%fa:check%%i18n:mobile.tags.mk-profile-setting.save%</button>
+		<button class="save" @click="save" disabled={ saving }>%fa:check%%i18n:mobile.tags.mk-profile-setting.save%</button>
 	</div>
 	<style>
 		:scope

@@ -1,7 +1,7 @@
 <mk-notifications-home-widget>
 	<virtual if={ !data.compact }>
 		<p class="title">%fa:R bell%%i18n:desktop.tags.mk-notifications-home-widget.title%</p>
-		<button onclick={ settings } title="%i18n:desktop.tags.mk-notifications-home-widget.settings%">%fa:cog%</button>
+		<button @click="settings" title="%i18n:desktop.tags.mk-notifications-home-widget.settings%">%fa:cog%</button>
 	</virtual>
 	<mk-notifications/>
 	<style>

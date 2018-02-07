@@ -1,11 +1,11 @@
 <mk-slideshow-home-widget>
-	<div onclick={ choose }>
+	<div @click="choose">
 		<p if={ data.folder === undefined }>クリックしてフォルダを指定してください</p>
 		<p if={ data.folder !== undefined && images.length == 0 && !fetching }>このフォルダには画像がありません</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
-	<button onclick={ resize }>%fa:expand%</button>
+	<button @click="resize">%fa:expand%</button>
 	<style>
 		:scope
 			display block

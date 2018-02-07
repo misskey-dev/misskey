@@ -8,8 +8,8 @@
 				<input ref="text" type={ parent.type } oninput={ parent.onInput } onkeydown={ parent.onKeydown } placeholder={ parent.placeholder }/>
 			</div>
 			<div class="action">
-				<button class="cancel" onclick={ parent.cancel }>キャンセル</button>
-				<button class="ok" disabled={ !parent.allowEmpty && refs.text.value.length == 0 } onclick={ parent.ok }>決定</button>
+				<button class="cancel" @click="parent.cancel">キャンセル</button>
+				<button class="ok" disabled={ !parent.allowEmpty && refs.text.value.length == 0 } @click="parent.ok">決定</button>
 			</div>
 		</yield>
 	</mk-window>

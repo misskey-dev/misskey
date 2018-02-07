@@ -2,7 +2,7 @@
 	<textarea ref="text" onkeypress={ onkeypress } onpaste={ onpaste } placeholder="%i18n:common.input-message-here%"></textarea>
 	<div class="files"></div>
 	<mk-uploader ref="uploader"/>
-	<button class="send" onclick={ send } disabled={ sending } title="%i18n:common.send%">
+	<button class="send" @click="send" disabled={ sending } title="%i18n:common.send%">
 		<virtual if={ !sending }>%fa:paper-plane%</virtual><virtual if={ sending }>%fa:spinner .spin%</virtual>
 	</button>
 	<button class="attach-from-local" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">

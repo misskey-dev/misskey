@@ -28,7 +28,7 @@
 			<span class="separator"></span>
 			<span class="data-size">{ bytesToSize(file.datasize) }</span>
 			<span class="separator"></span>
-			<span class="created-at" onclick={ showCreatedAt }>%fa:R clock%<mk-time time={ file.created_at }/></span>
+			<span class="created-at" @click="showCreatedAt">%fa:R clock%<mk-time time={ file.created_at }/></span>
 		</div>
 	</div>
 	<div class="menu">
@@ -36,10 +36,10 @@
 			<a href={ file.url + '?download' } download={ file.name }>
 				%fa:download%%i18n:mobile.tags.mk-drive-file-viewer.download%
 			</a>
-			<button onclick={ rename }>
+			<button @click="rename">
 				%fa:pencil-alt%%i18n:mobile.tags.mk-drive-file-viewer.rename%
 			</button>
-			<button onclick={ move }>
+			<button @click="move">
 				%fa:R folder-open%%i18n:mobile.tags.mk-drive-file-viewer.move%
 			</button>
 		</div>

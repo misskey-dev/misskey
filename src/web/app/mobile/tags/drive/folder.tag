@@ -1,5 +1,5 @@
 <mk-drive-folder>
-	<a onclick={ onclick } href="/i/drive/folder/{ folder.id }">
+	<a @click="onclick" href="/i/drive/folder/{ folder.id }">
 		<div class="container">
 			<p class="name">%fa:folder%{ folder.name }</p>%fa:angle-right%
 		</div>

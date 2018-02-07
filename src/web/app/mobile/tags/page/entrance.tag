@@ -4,7 +4,7 @@
 		<mk-entrance-signup if={ mode == 'signup' }/>
 		<div class="introduction" if={ mode == 'introduction' }>
 			<mk-introduction/>
-			<button onclick={ signin }>%i18n:common.ok%</button>
+			<button @click="signin">%i18n:common.ok%</button>
 		</div>
 	</main>
 	<footer>

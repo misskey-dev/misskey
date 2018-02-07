@@ -1,7 +1,7 @@
 <mk-rss-reader-home-widget>
 	<virtual if={ !data.compact }>
 		<p class="title">%fa:rss-square%RSS</p>
-		<button onclick={ settings } title="設定">%fa:cog%</button>
+		<button @click="settings" title="設定">%fa:cog%</button>
 	</virtual>
 	<div class="feed" if={ !initializing }>
 		<virtual each={ item in items }><a href={ item.link } target="_blank">{ item.title }</a></virtual>

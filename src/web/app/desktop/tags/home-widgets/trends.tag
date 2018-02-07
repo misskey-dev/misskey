@@ -1,7 +1,7 @@
 <mk-trends-home-widget>
 	<virtual if={ !data.compact }>
 		<p class="title">%fa:fire%%i18n:desktop.tags.mk-trends-home-widget.title%</p>
-		<button onclick={ fetch } title="%i18n:desktop.tags.mk-trends-home-widget.refresh%">%fa:sync%</button>
+		<button @click="fetch" title="%i18n:desktop.tags.mk-trends-home-widget.refresh%">%fa:sync%</button>
 	</virtual>
 	<div class="post" if={ !loading && post != null }>
 		<p class="text"><a href="/{ post.user.username }/{ post.id }">{ post.text }</a></p>

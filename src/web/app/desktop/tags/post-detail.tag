@@ -1,6 +1,6 @@
 <mk-post-detail title={ title }>
 	<div class="main">
-		<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } title="会話をもっと読み込む" onclick={ loadContext } disabled={ contextFetching }>
+		<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } title="会話をもっと読み込む" @click="loadContext" disabled={ contextFetching }>
 			<virtual if={ !contextFetching }>%fa:ellipsis-v%</virtual>
 			<virtual if={ contextFetching }>%fa:spinner .pulse%</virtual>
 		</button>
@@ -43,16 +43,16 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer post={ p }/>
-				<button onclick={ reply } title="返信">
+				<button @click="reply" title="返信">
 					%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 				</button>
-				<button onclick={ repost } title="Repost">
+				<button @click="repost" title="Repost">
 					%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="リアクション">
+				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton" title="リアクション">
 					%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 				</button>
-				<button onclick={ menu } ref="menuButton">
+				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
 			</footer>

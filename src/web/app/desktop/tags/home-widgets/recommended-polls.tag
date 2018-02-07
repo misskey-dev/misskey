@@ -1,7 +1,7 @@
 <mk-recommended-polls-home-widget>
 	<virtual if={ !data.compact }>
 		<p class="title">%fa:chart-pie%%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
-		<button onclick={ fetch } title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%">%fa:sync%</button>
+		<button @click="fetch" title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%">%fa:sync%</button>
 	</virtual>
 	<div class="poll" if={ !loading && poll != null }>
 		<p if={ poll.text }><a href="/{ poll.user.username }/{ poll.id }">{ poll.text }</a></p>

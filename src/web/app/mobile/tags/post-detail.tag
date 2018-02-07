@@ -1,5 +1,5 @@
 <mk-post-detail>
-	<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } onclick={ loadContext } disabled={ loadingContext }>
+	<button class="read-more" if={ p.reply && p.reply.reply_id && context == null } @click="loadContext" disabled={ loadingContext }>
 		<virtual if={ !contextFetching }>%fa:ellipsis-v%</virtual>
 		<virtual if={ contextFetching }>%fa:spinner .pulse%</virtual>
 	</button>
@@ -43,16 +43,16 @@
 		</a>
 		<footer>
 			<mk-reactions-viewer post={ p }/>
-			<button onclick={ reply } title="%i18n:mobile.tags.mk-post-detail.reply%">
+			<button @click="reply" title="%i18n:mobile.tags.mk-post-detail.reply%">
 				%fa:reply%<p class="count" if={ p.replies_count > 0 }>{ p.replies_count }</p>
 			</button>
-			<button onclick={ repost } title="Repost">
+			<button @click="repost" title="Repost">
 				%fa:retweet%<p class="count" if={ p.repost_count > 0 }>{ p.repost_count }</p>
 			</button>
-			<button class={ reacted: p.my_reaction != null } onclick={ react } ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%">
+			<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%">
 				%fa:plus%<p class="count" if={ p.reactions_count > 0 }>{ p.reactions_count }</p>
 			</button>
-			<button onclick={ menu } ref="menuButton">
+			<button @click="menu" ref="menuButton">
 				%fa:ellipsis-h%
 			</button>
 		</footer>

@@ -1,18 +1,18 @@
 <mk-drive-browser-folder-contextmenu>
 	<mk-contextmenu ref="ctx">
 		<ul>
-			<li onclick={ parent.move }>
+			<li @click="parent.move">
 				<p>%fa:arrow-right%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.move-to-this-folder%</p>
 			</li>
-			<li onclick={ parent.newWindow }>
+			<li @click="parent.newWindow">
 				<p>%fa:R window-restore%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.show-in-new-window%</p>
 			</li>
 			<li class="separator"></li>
-			<li onclick={ parent.rename }>
+			<li @click="parent.rename">
 				<p>%fa:i-cursor%%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename%</p>
 			</li>
 			<li class="separator"></li>
-			<li onclick={ parent.delete }>
+			<li @click="parent.delete">
 				<p>%fa:R trash-alt%%i18n:common.delete%</p>
 			</li>
 		</ul>

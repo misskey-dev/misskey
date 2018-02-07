@@ -39,9 +39,9 @@
 				</div>
 			</div>
 			<nav>
-				<a data-is-active={ page == 'overview' } onclick={ go.bind(null, 'overview') }>%i18n:mobile.tags.mk-user.overview%</a>
-				<a data-is-active={ page == 'posts' } onclick={ go.bind(null, 'posts') }>%i18n:mobile.tags.mk-user.timeline%</a>
-				<a data-is-active={ page == 'media' } onclick={ go.bind(null, 'media') }>%i18n:mobile.tags.mk-user.media%</a>
+				<a data-is-active={ page == 'overview' } @click="go.bind(null, 'overview')">%i18n:mobile.tags.mk-user.overview%</a>
+				<a data-is-active={ page == 'posts' } @click="go.bind(null, 'posts')">%i18n:mobile.tags.mk-user.timeline%</a>
+				<a data-is-active={ page == 'media' } @click="go.bind(null, 'media')">%i18n:mobile.tags.mk-user.media%</a>
 			</nav>
 		</header>
 		<div class="body">

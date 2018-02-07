@@ -1,8 +1,8 @@
 <mk-users-list>
 	<nav>
 		<div>
-			<span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>すべて<span>{ opts.count }</span></span>
-			<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>知り合い<span>{ opts.youKnowCount }</span></span>
+			<span data-is-active={ mode == 'all' } @click="setMode.bind(this, 'all')">すべて<span>{ opts.count }</span></span>
+			<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">知り合い<span>{ opts.youKnowCount }</span></span>
 		</div>
 	</nav>
 	<div class="users" if={ !fetching && users.length != 0 }>
@@ -10,7 +10,7 @@
 			<mk-list-user user={ this }/>
 		</div>
 	</div>
-	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }>
+	<button class="more" if={ !fetching && next != null } @click="more" disabled={ moreFetching }>
 		<span if={ !moreFetching }>もっと</span>
 		<span if={ moreFetching }>読み込み中<mk-ellipsis/></span>
 	</button>

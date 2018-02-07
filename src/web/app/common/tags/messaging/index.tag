@@ -6,7 +6,7 @@
 		</div>
 		<div class="result">
 			<ol class="users" if={ searchResult.length > 0 } ref="searchResult">
-				<li each={ user, i in searchResult } onkeydown={ parent.onSearchResultKeydown.bind(null, i) } onclick={ user._click } tabindex="-1">
+				<li each={ user, i in searchResult } onkeydown={ parent.onSearchResultKeydown.bind(null, i) } @click="user._click" tabindex="-1">
 					<img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/>
 					<span class="name">{ user.name }</span>
 					<span class="username">@{ user.username }</span>
@@ -16,7 +16,7 @@
 	</div>
 	<div class="history" if={ history.length > 0 }>
 		<virtual each={ history }>
-			<a class="user" data-is-me={ is_me } data-is-read={ is_read } onclick={ _click }>
+			<a class="user" data-is-me={ is_me } data-is-read={ is_read } @click="_click">
 				<div>
 					<img class="avatar" src={ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&size=64' } alt=""/>
 					<header>

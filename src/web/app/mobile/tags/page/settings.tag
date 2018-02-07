@@ -26,7 +26,7 @@
 		<li><a href="./settings/signin-history">%fa:sign-in-alt%%i18n:mobile.tags.mk-settings-page.signin-history%%fa:angle-right%</a></li>
 	</ul>
 	<ul>
-		<li><a onclick={ signout }>%fa:power-off%%i18n:mobile.tags.mk-settings-page.signout%</a></li>
+		<li><a @click="signout">%fa:power-off%%i18n:mobile.tags.mk-settings-page.signout%</a></li>
 	</ul>
 	<p><small>ver { _VERSION_ } (葵 aoi)</small></p>
 	<style>

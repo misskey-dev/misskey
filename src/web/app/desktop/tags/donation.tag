@@ -1,5 +1,5 @@
 <mk-donation>
-	<button class="close" onclick={ close }>閉じる x</button>
+	<button class="close" @click="close">閉じる x</button>
 	<div class="message">
 		<p>利用者の皆さま、</p>
 		<p>

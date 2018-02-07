@@ -1,12 +1,12 @@
 <mk-users-list>
 	<nav>
-		<span data-is-active={ mode == 'all' } onclick={ setMode.bind(this, 'all') }>%i18n:mobile.tags.mk-users-list.all%<span>{ opts.count }</span></span>
-		<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } onclick={ setMode.bind(this, 'iknow') }>%i18n:mobile.tags.mk-users-list.known%<span>{ opts.youKnowCount }</span></span>
+		<span data-is-active={ mode == 'all' } @click="setMode.bind(this, 'all')">%i18n:mobile.tags.mk-users-list.all%<span>{ opts.count }</span></span>
+		<span if={ SIGNIN && opts.youKnowCount } data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">%i18n:mobile.tags.mk-users-list.known%<span>{ opts.youKnowCount }</span></span>
 	</nav>
 	<div class="users" if={ !fetching && users.length != 0 }>
 		<mk-user-preview each={ users } user={ this }/>
 	</div>
-	<button class="more" if={ !fetching && next != null } onclick={ more } disabled={ moreFetching }>
+	<button class="more" if={ !fetching && next != null } @click="more" disabled={ moreFetching }>
 		<span if={ !moreFetching }>%i18n:mobile.tags.mk-users-list.load-more%</span>
 		<span if={ moreFetching }>%i18n:common.loading%<mk-ellipsis/></span></button>
 	<p class="no" if={ !fetching && users.length == 0 }>{ opts.noUsers }</p>

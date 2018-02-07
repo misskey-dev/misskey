@@ -52,10 +52,10 @@
 	<div class="main">
 		<div class="backdrop"></div>
 		<div class="content">
-			<button class="nav" onclick={ parent.toggleDrawer }>%fa:bars%</button>
+			<button class="nav" @click="parent.toggleDrawer">%fa:bars%</button>
 			<virtual if={ hasUnreadNotifications || hasUnreadMessagingMessages }>%fa:circle%</virtual>
 			<h1 ref="title">Misskey</h1>
-			<button if={ func } onclick={ func }><mk-raw content={ funcIcon }/></button>
+			<button if={ func } @click="func"><mk-raw content={ funcIcon }/></button>
 		</div>
 	</div>
 	<style>
@@ -225,7 +225,7 @@
 </mk-ui-header>
 
 <mk-ui-nav>
-	<div class="backdrop" onclick={ parent.toggleDrawer }></div>
+	<div class="backdrop" @click="parent.toggleDrawer"></div>
 	<div class="body">
 		<a class="me" if={ SIGNIN } href={ '/' + I.username }>
 			<img class="avatar" src={ I.avatar_url + '?thumbnail&size=128' } alt="avatar"/>
@@ -242,7 +242,7 @@
 				<li><a href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</a></li>
 			</ul>
 			<ul>
-				<li><a onclick={ search }>%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
+				<li><a @click="search">%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
 			</ul>
 			<ul>
 				<li><a href="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</a></li>

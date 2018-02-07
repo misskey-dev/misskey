@@ -1,25 +1,25 @@
 <mk-drive-browser-file-contextmenu>
 	<mk-contextmenu ref="ctx">
 		<ul>
-			<li onclick={ parent.rename }>
+			<li @click="parent.rename">
 				<p>%fa:i-cursor%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename%</p>
 			</li>
-			<li onclick={ parent.copyUrl }>
+			<li @click="parent.copyUrl">
 				<p>%fa:link%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copy-url%</p>
 			</li>
-			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } onclick={ parent.download }>%fa:download%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%</a></li>
+			<li><a href={ parent.file.url + '?download' } download={ parent.file.name } @click="parent.download">%fa:download%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%</a></li>
 			<li class="separator"></li>
-			<li onclick={ parent.delete }>
+			<li @click="parent.delete">
 				<p>%fa:R trash-alt%%i18n:common.delete%</p>
 			</li>
 			<li class="separator"></li>
 			<li class="has-child">
 				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.else-files%%fa:caret-right%</p>
 				<ul>
-					<li onclick={ parent.setAvatar }>
+					<li @click="parent.setAvatar">
 						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.set-as-avatar%</p>
 					</li>
-					<li onclick={ parent.setBanner }>
+					<li @click="parent.setBanner">
 						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.set-as-banner%</p>
 					</li>
 				</ul>
@@ -27,7 +27,7 @@
 			<li class="has-child">
 				<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.open-in-app%...%fa:caret-right%</p>
 				<ul>
-					<li onclick={ parent.addApp }>
+					<li @click="parent.addApp">
 						<p>%i18n:desktop.tags.mk-drive-browser-file-contextmenu.add-app%...</p>
 					</li>
 				</ul>

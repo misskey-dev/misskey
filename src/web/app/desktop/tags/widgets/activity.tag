@@ -1,7 +1,7 @@
 <mk-activity-widget data-melt={ design == 2 }>
 	<virtual if={ design == 0 }>
 		<p class="title">%fa:chart-bar%%i18n:desktop.tags.mk-activity-widget.title%</p>
-		<button onclick={ toggle } title="%i18n:desktop.tags.mk-activity-widget.toggle%">%fa:sort%</button>
+		<button @click="toggle" title="%i18n:desktop.tags.mk-activity-widget.toggle%">%fa:sort%</button>
 	</virtual>
 	<p class="initializing" if={ initializing }>%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-activity-widget-calender if={ !initializing && view == 0 } data={ [].concat(activity) }/>

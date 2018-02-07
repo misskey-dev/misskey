@@ -1,6 +1,6 @@
 <mk-poll data-is-voted={ isVoted }>
 	<ul>
-		<li each={ poll.choices } onclick={ vote.bind(null, id) } class={ voted: voted } title={ !parent.isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', text) : '' }>
+		<li each={ poll.choices } @click="vote.bind(null, id)" class={ voted: voted } title={ !parent.isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', text) : '' }>
 			<div class="backdrop" style={ 'width:' + (parent.result ? (votes / parent.total * 100) : 0) + '%' }></div>
 			<span>
 				<virtual if={ is_voted }>%fa:check%</virtual>
@@ -12,7 +12,7 @@
 	<p if={ total > 0 }>
 		<span>{ '%i18n:common.tags.mk-poll.total-users%'.replace('{}', total) }</span>
 		・
-		<a if={ !isVoted } onclick={ toggleResult }>{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }</a>
+		<a if={ !isVoted } @click="toggleResult">{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }</a>
 		<span if={ isVoted }>%i18n:common.tags.mk-poll.voted%</span>
 	</p>
 	<style>

@@ -28,7 +28,7 @@
 				</virtual>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" each={ Array(10).fill(16) }></div>
-				<button if={ moreFiles } onclick={ fetchMoreFiles }>%i18n:desktop.tags.mk-drive-browser.load-more%</button>
+				<button if={ moreFiles } @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="empty" if={ files.length == 0 && folders.length == 0 && !fetching }>
 				<p if={ draghover }>%i18n:desktop.tags.mk-drive-browser.empty-draghover%</p>

@@ -1,6 +1,6 @@
 <mk-profile-home-widget data-compact={ data.design == 1 || data.design == 2 } data-melt={ data.design == 2 }>
-	<div class="banner" style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' } title="クリックでバナー編集" onclick={ setBanner }></div>
-	<img class="avatar" src={ I.avatar_url + '?thumbnail&size=96' } onclick={ setAvatar } alt="avatar" title="クリックでアバター編集" data-user-preview={ I.id }/>
+	<div class="banner" style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' } title="クリックでバナー編集" @click="setBanner"></div>
+	<img class="avatar" src={ I.avatar_url + '?thumbnail&size=96' } @click="setAvatar" alt="avatar" title="クリックでアバター編集" data-user-preview={ I.id }/>
 	<a class="name" href={ '/' + I.username }>{ I.name }</a>
 	<p class="username">@{ I.username }</p>
 	<style>

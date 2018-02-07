@@ -1,5 +1,5 @@
 <mk-detailed-post-window>
-	<div class="bg" ref="bg" onclick={ bgClick }></div>
+	<div class="bg" ref="bg" @click="bgClick"></div>
 	<div class="main" ref="main" if={ !fetching }>
 		<mk-post-detail ref="detail" post={ post }/>
 	</div>

@@ -1,11 +1,11 @@
 <mk-dialog>
-	<div class="bg" ref="bg" onclick={ bgClick }></div>
+	<div class="bg" ref="bg" @click="bgClick"></div>
 	<div class="main" ref="main">
 		<header ref="header"></header>
 		<div class="body" ref="body"></div>
 		<div class="buttons">
 			<virtual each={ opts.buttons }>
-				<button onclick={ _onclick }>{ text }</button>
+				<button @click="_onclick">{ text }</button>
 			</virtual>
 		</div>
 	</div>

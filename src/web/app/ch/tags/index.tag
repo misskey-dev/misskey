@@ -1,7 +1,7 @@
 <mk-index>
 	<mk-header/>
 	<hr>
-	<button onclick={ n }>%i18n:ch.tags.mk-index.new%</button>
+	<button @click="n">%i18n:ch.tags.mk-index.new%</button>
 	<hr>
 	<ul if={ channels }>
 		<li each={ channels }><a href={ '/' + this.id }>{ this.title }</a></li>

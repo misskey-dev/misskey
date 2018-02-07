@@ -5,7 +5,7 @@
 			<p class="title">%fa:pencil-alt%%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
 		</virtual>
 		<textarea disabled={ posting } ref="text" onkeydown={ onkeydown } placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>
-		<button onclick={ post } disabled={ posting }>%i18n:desktop.tags.mk-post-form-home-widget.post%</button>
+		<button @click="post" disabled={ posting }>%i18n:desktop.tags.mk-post-form-home-widget.post%</button>
 	</virtual>
 	<style>
 		:scope

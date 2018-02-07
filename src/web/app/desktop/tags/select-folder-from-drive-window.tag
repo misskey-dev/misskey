@@ -6,8 +6,8 @@
 		<yield to="content">
 			<mk-drive-browser ref="browser"/>
 			<div>
-				<button class="cancel" onclick={ parent.close }>キャンセル</button>
-				<button class="ok" onclick={ parent.ok }>決定</button>
+				<button class="cancel" @click="parent.close">キャンセル</button>
+				<button class="ok" @click="parent.ok">決定</button>
 			</div>
 		</yield>
 	</mk-window>

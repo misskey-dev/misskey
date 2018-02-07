@@ -1,9 +1,9 @@
 <mk-selectdrive-page>
 	<mk-drive-browser ref="browser" multiple={ multiple }/>
 	<div>
-		<button class="upload" title="%i18n:desktop.tags.mk-selectdrive-page.upload%" onclick={ upload }>%fa:upload%</button>
-		<button class="cancel" onclick={ close }>%i18n:desktop.tags.mk-selectdrive-page.cancel%</button>
-		<button class="ok" onclick={ ok }>%i18n:desktop.tags.mk-selectdrive-page.ok%</button>
+		<button class="upload" title="%i18n:desktop.tags.mk-selectdrive-page.upload%" @click="upload">%fa:upload%</button>
+		<button class="cancel" @click="close">%i18n:desktop.tags.mk-selectdrive-page.cancel%</button>
+		<button class="ok" @click="ok">%i18n:desktop.tags.mk-selectdrive-page.ok%</button>
 	</div>
 
 	<style>

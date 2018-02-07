@@ -5,13 +5,13 @@
 	<ul ref="choices">
 		<li each={ choice, i in choices }>
 			<input value={ choice } oninput={ oninput.bind(null, i) } placeholder={ '%i18n:common.tags.mk-poll-editor.choice-n%'.replace('{}', i + 1) }>
-			<button onclick={ remove.bind(null, i) } title="%i18n:common.tags.mk-poll-editor.remove%">
+			<button @click="remove.bind(null, i)" title="%i18n:common.tags.mk-poll-editor.remove%">
 				%fa:times%
 			</button>
 		</li>
 	</ul>
-	<button class="add" if={ choices.length < 10 } onclick={ add }>%i18n:common.tags.mk-poll-editor.add%</button>
-	<button class="destroy" onclick={ destroy } title="%i18n:common.tags.mk-poll-editor.destroy%">
+	<button class="add" if={ choices.length < 10 } @click="add">%i18n:common.tags.mk-poll-editor.add%</button>
+	<button class="destroy" @click="destroy" title="%i18n:common.tags.mk-poll-editor.destroy%">
 		%fa:times%
 	</button>
 	<style>

@@ -40,7 +40,7 @@
 
 <mk-user-header data-is-dark-background={ user.banner_url != null }>
 	<div class="banner-container" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=2048)' : '' }>
-		<div class="banner" ref="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=2048)' : '' } onclick={ onUpdateBanner }></div>
+		<div class="banner" ref="banner" style={ user.banner_url ? 'background-image: url(' + user.banner_url + '?thumbnail&size=2048)' : '' } @click="onUpdateBanner"></div>
 	</div>
 	<div class="fade"></div>
 	<div class="container">
@@ -227,8 +227,8 @@
 	<div class="friend-form" if={ SIGNIN && I.id != user.id }>
 		<mk-big-follow-button user={ user }/>
 		<p class="followed" if={ user.is_followed }>%i18n:desktop.tags.mk-user.follows-you%</p>
-		<p if={ user.is_muted }>%i18n:desktop.tags.mk-user.muted% <a onclick={ unmute }>%i18n:desktop.tags.mk-user.unmute%</a></p>
-		<p if={ !user.is_muted }><a onclick={ mute }>%i18n:desktop.tags.mk-user.mute%</a></p>
+		<p if={ user.is_muted }>%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
+		<p if={ !user.is_muted }><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
 	</div>
 	<div class="description" if={ user.description }>{ user.description }</div>
 	<div class="birthday" if={ user.profile.birthday }>
@@ -239,8 +239,8 @@
 	</div>
 	<div class="status">
 	  <p class="posts-count">%fa:angle-right%<a>{ user.posts_count }</a><b>ポスト</b></p>
-		<p class="following">%fa:angle-right%<a onclick={ showFollowing }>{ user.following_count }</a>人を<b>フォロー</b></p>
-		<p class="followers">%fa:angle-right%<a onclick={ showFollowers }>{ user.followers_count }</a>人の<b>フォロワー</b></p>
+		<p class="following">%fa:angle-right%<a @click="showFollowing">{ user.following_count }</a>人を<b>フォロー</b></p>
+		<p class="followers">%fa:angle-right%<a @click="showFollowers">{ user.followers_count }</a>人の<b>フォロワー</b></p>
 	</div>
 	<style>
 		:scope

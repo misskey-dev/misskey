@@ -7,8 +7,8 @@
 	</div>
 	<p class="empty" if={ !fetching && users.length == 0 }>おすすめのユーザーは見つかりませんでした。</p>
 	<p class="fetching" if={ fetching }>%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
-	<a class="refresh" onclick={ refresh }>もっと見る</a>
-	<button class="close" onclick={ close } title="閉じる">%fa:times%</button>
+	<a class="refresh" @click="refresh">もっと見る</a>
+	<button class="close" @click="close" title="閉じる">%fa:times%</button>
 	<style>
 		:scope
 			display block

@@ -5,7 +5,7 @@
 			<p class="date" if={ i != notifications.length - 1 && notification._date != notifications[i + 1]._date }><span>%fa:angle-up%{ notification._datetext }</span><span>%fa:angle-down%{ notifications[i + 1]._datetext }</span></p>
 		</virtual>
 	</div>
-	<button class="more" if={ moreNotifications } onclick={ fetchMoreNotifications } disabled={ fetchingMoreNotifications }>
+	<button class="more" if={ moreNotifications } @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
 		<virtual if={ fetchingMoreNotifications }>%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" if={ notifications.length == 0 && !loading }>%i18n:mobile.tags.mk-notifications.empty%</p>

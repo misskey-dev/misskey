@@ -27,7 +27,7 @@
 					<option value="nav">ナビゲーション</option>
 					<option value="tips">ヒント</option>
 				</select>
-				<button onclick={ addWidget }>追加</button>
+				<button @click="addWidget">追加</button>
 			</div>
 			<div class="trash">
 				<div ref="trash"></div>

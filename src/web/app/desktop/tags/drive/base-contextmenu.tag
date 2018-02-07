@@ -1,13 +1,13 @@
 <mk-drive-browser-base-contextmenu>
 	<mk-contextmenu ref="ctx">
 		<ul>
-			<li onclick={ parent.createFolder }>
+			<li @click="parent.createFolder">
 				<p>%fa:R folder%%i18n:desktop.tags.mk-drive-browser-base-contextmenu.create-folder%</p>
 			</li>
-			<li onclick={ parent.upload }>
+			<li @click="parent.upload">
 				<p>%fa:upload%%i18n:desktop.tags.mk-drive-browser-base-contextmenu.upload%</p>
 			</li>
-			<li onclick={ parent.urlUpload }>
+			<li @click="parent.urlUpload">
 				<p>%fa:cloud-upload-alt%%i18n:desktop.tags.mk-drive-browser-base-contextmenu.url-upload%</p>
 			</li>
 		</ul>

@@ -26,8 +26,8 @@
 		</section>
 	</div>
 	<div class="action">
-		<button onclick={ cancel }>キャンセル</button>
-		<button onclick={ accept }>アクセスを許可</button>
+		<button @click="cancel">キャンセル</button>
+		<button @click="accept">アクセスを許可</button>
 	</div>
 	<style>
 		:scope

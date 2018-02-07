@@ -131,7 +131,7 @@
 <mk-profile-setting>
 	<label class="avatar ui from group">
 		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p><img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
-		<button class="ui" onclick={ avatar }>%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
+		<button class="ui" @click="avatar">%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
 	</label>
 	<label class="ui from group">
 		<p>%i18n:desktop.tags.mk-profile-setting.name%</p>
@@ -149,7 +149,7 @@
 		<p>%i18n:desktop.tags.mk-profile-setting.birthday%</p>
 		<input ref="accountBirthday" type="date" value={ I.profile.birthday } class="ui"/>
 	</label>
-	<button class="ui primary" onclick={ updateAccount }>%i18n:desktop.tags.mk-profile-setting.save%</button>
+	<button class="ui primary" @click="updateAccount">%i18n:desktop.tags.mk-profile-setting.save%</button>
 	<style>
 		:scope
 			display block
@@ -195,7 +195,7 @@
 	<p>%i18n:desktop.tags.mk-api-info.intro%</p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-api-info.caution%</p></div>
 	<p>%i18n:desktop.tags.mk-api-info.regeneration-of-token%</p>
-	<button class="ui" onclick={ regenerateToken }>%i18n:desktop.tags.mk-api-info.regenerate-token%</button>
+	<button class="ui" @click="regenerateToken">%i18n:desktop.tags.mk-api-info.regenerate-token%</button>
 	<style>
 		:scope
 			display block
@@ -225,7 +225,7 @@
 </mk-api-info>
 
 <mk-password-setting>
-	<button onclick={ reset } class="ui primary">%i18n:desktop.tags.mk-password-setting.reset%</button>
+	<button @click="reset" class="ui primary">%i18n:desktop.tags.mk-password-setting.reset%</button>
 	<style>
 		:scope
 			display block
@@ -265,10 +265,10 @@
 <mk-2fa-setting>
 	<p>%i18n:desktop.tags.mk-2fa-setting.intro%<a href="%i18n:desktop.tags.mk-2fa-setting.url%" target="_blank">%i18n:desktop.tags.mk-2fa-setting.detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
-	<p if={ !data && !I.two_factor_enabled }><button onclick={ register } class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
+	<p if={ !data && !I.two_factor_enabled }><button @click="register" class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
 	<virtual if={ I.two_factor_enabled }>
 		<p>%i18n:desktop.tags.mk-2fa-setting.already-registered%</p>
-		<button onclick={ unregister } class="ui">%i18n:desktop.tags.mk-2fa-setting.unregister%</button>
+		<button @click="unregister" class="ui">%i18n:desktop.tags.mk-2fa-setting.unregister%</button>
 	</virtual>
 	<div if={ data }>
 		<ol>
@@ -276,7 +276,7 @@
 			<li>%i18n:desktop.tags.mk-2fa-setting.scan%<br><img src={ data.qr }></li>
 			<li>%i18n:desktop.tags.mk-2fa-setting.done%<br>
 				<input type="number" ref="token" class="ui">
-				<button onclick={ submit } class="ui primary">%i18n:desktop.tags.mk-2fa-setting.submit%</button>
+				<button @click="submit" class="ui primary">%i18n:desktop.tags.mk-2fa-setting.submit%</button>
 			</li>
 		</ol>
 		<div class="ui info"><p>%fa:info-circle%%i18n:desktop.tags.mk-2fa-setting.info%</p></div>

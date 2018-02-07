@@ -1,12 +1,12 @@
 <mk-window data-flexible={ isFlexible } ondragover={ ondragover }>
-	<div class="bg" ref="bg" show={ isModal } onclick={ bgClick }></div>
+	<div class="bg" ref="bg" show={ isModal } @click="bgClick"></div>
 	<div class="main" ref="main" tabindex="-1" data-is-modal={ isModal } onmousedown={ onBodyMousedown } onkeydown={ onKeydown }>
 		<div class="body">
 			<header ref="header" onmousedown={ onHeaderMousedown }>
 				<h1 data-yield="header"><yield from="header"/></h1>
 				<div>
-					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } onclick={ popout } title="ポップアウト">%fa:R window-restore%</button>
-					<button class="close" if={ canClose } onmousedown={ repelMove } onclick={ close } title="閉じる">%fa:times%</button>
+					<button class="popout" if={ popoutUrl } onmousedown={ repelMove } @click="popout" title="ポップアウト">%fa:R window-restore%</button>
+					<button class="close" if={ canClose } onmousedown={ repelMove } @click="close" title="閉じる">%fa:times%</button>
 				</div>
 			</header>
 			<div class="content" data-yield="content"><yield from="content"/></div>

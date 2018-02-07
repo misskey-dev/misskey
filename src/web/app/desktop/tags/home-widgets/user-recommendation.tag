@@ -1,7 +1,7 @@
 <mk-user-recommendation-home-widget>
 	<virtual if={ !data.compact }>
 		<p class="title">%fa:users%%i18n:desktop.tags.mk-user-recommendation-home-widget.title%</p>
-		<button onclick={ refresh } title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%">%fa:sync%</button>
+		<button @click="refresh" title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%">%fa:sync%</button>
 	</virtual>
 	<div class="user" if={ !loading && users.length != 0 } each={ _user in users }>
 		<a class="avatar-anchor" href={ '/' + _user.username }>

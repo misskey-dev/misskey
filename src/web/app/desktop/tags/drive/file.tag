@@ -1,4 +1,4 @@
-<mk-drive-browser-file data-is-selected={ isSelected } data-is-contextmenu-showing={ isContextmenuShowing.toString() } onclick={ onclick } oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
+<mk-drive-browser-file data-is-selected={ isSelected } data-is-contextmenu-showing={ isContextmenuShowing.toString() } @click="onclick" oncontextmenu={ oncontextmenu } draggable="true" ondragstart={ ondragstart } ondragend={ ondragend } title={ title }>
 	<div class="label" if={ I.avatar_id == file.id }><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.avatar%</p>
 	</div>

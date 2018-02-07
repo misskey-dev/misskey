@@ -73,7 +73,7 @@
 			</div>
 			<p>%fa:exclamation-triangle%アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。</p>
 		</section>
-		<button onclick={ onsubmit }>アプリ作成</button>
+		<button @click="onsubmit">アプリ作成</button>
 	</form>
 	<style>
 		:scope
