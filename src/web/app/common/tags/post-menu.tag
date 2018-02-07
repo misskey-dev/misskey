@@ -119,7 +119,7 @@
 				post_id: this.post.id
 			}).then(() => {
 				if (this.opts.cb) this.opts.cb('pinned', '%i18n:common.tags.mk-post-menu.pinned%');
-				this.unmount();
+				this.$destroy();
 			});
 		};
 
@@ -130,7 +130,7 @@
 				category: category
 			}).then(() => {
 				if (this.opts.cb) this.opts.cb('categorized', '%i18n:common.tags.mk-post-menu.categorized%');
-				this.unmount();
+				this.$destroy();
 			});
 		};
 
@@ -150,7 +150,7 @@
 				scale: 0.5,
 				duration: 200,
 				easing: 'easeInBack',
-				complete: () => this.unmount()
+				complete: () => this.$destroy()
 			});
 		};
 	</script>

@@ -42,7 +42,7 @@
 		this.close = e => {
 			e.preventDefault();
 			e.stopPropagation();
-			this.unmount();
+			this.$destroy();
 		};
 	</script>
 </mk-set-avatar-suggestion>

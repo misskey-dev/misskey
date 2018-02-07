@@ -888,7 +888,7 @@
 					translateY: -64,
 					duration: 500,
 					easing: 'easeInElastic',
-					complete: () => this.unmount()
+					complete: () => this.$destroy()
 				});
 			}, 6000);
 		});

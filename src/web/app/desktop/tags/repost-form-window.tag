@@ -36,7 +36,7 @@
 			document.addEventListener('keydown', this.onDocumentKeydown);
 
 			this.$refs.window.on('closed', () => {
-				this.unmount();
+				this.$destroy();
 			});
 		});
 

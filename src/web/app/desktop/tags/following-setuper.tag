@@ -163,7 +163,7 @@
 		};
 
 		this.close = () => {
-			this.unmount();
+			this.$destroy();
 		};
 	</script>
 </mk-following-setuper>

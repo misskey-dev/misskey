@@ -74,40 +74,27 @@
 			},
 			onMouseout: function(e) {
 				this.title = placeholder;
+			},
+			close: function() {
+				this.$refs.backdrop.style.pointerEvents = 'none';
+				anime({
+					targets: this.$refs.backdrop,
+					opacity: 0,
+					duration: 200,
+					easing: 'linear'
+				});
+
+				this.$refs.popover.style.pointerEvents = 'none';
+				anime({
+					targets: this.$refs.popover,
+					opacity: 0,
+					scale: 0.5,
+					duration: 200,
+					easing: 'easeInBack',
+					complete: () => this.$destroy()
+				});
 			}
 		}
-	};
-
-	this.mixin('api');
-
-	this.post = this.opts.post;
-	this.source = this.opts.source;
-
-	this.on('mount', () => {
-	});
-
-	this.react = reaction => {
-
-	};
-
-	this.close = () => {
-		this.$refs.backdrop.style.pointerEvents = 'none';
-		anime({
-			targets: this.$refs.backdrop,
-			opacity: 0,
-			duration: 200,
-			easing: 'linear'
-		});
-
-		this.$refs.popover.style.pointerEvents = 'none';
-		anime({
-			targets: this.$refs.popover,
-			opacity: 0,
-			scale: 0.5,
-			duration: 200,
-			easing: 'easeInBack',
-			complete: () => this.unmount()
-		});
 	};
 </script>
 

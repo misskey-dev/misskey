@@ -130,7 +130,7 @@
 				scale: 0.8,
 				duration: 300,
 				easing: [ 0.5, -0.5, 1, 0.5 ],
-				complete: () => this.unmount()
+				complete: () => this.$destroy()
 			});
 		};
 

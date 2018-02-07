@@ -60,7 +60,7 @@
 				show_donation: false
 			});
 
-			this.unmount();
+			this.$destroy();
 		};
 	</script>
 </mk-donation>

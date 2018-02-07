@@ -58,12 +58,12 @@
 	<script>
 		this.cancel = () => {
 			this.trigger('canceled');
-			this.unmount();
+			this.$destroy();
 		};
 
 		this.ok = () => {
 			this.trigger('selected', this.$refs.browser.folder);
-			this.unmount();
+			this.$destroy();
 		};
 	</script>
 </mk-drive-folder-selector>

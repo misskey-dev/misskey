@@ -142,7 +142,7 @@
 				'margin-top': '-8px',
 				duration: 200,
 				easing: 'easeOutQuad',
-				complete: () => this.unmount()
+				complete: () => this.$destroy()
 			});
 		};
 	</script>

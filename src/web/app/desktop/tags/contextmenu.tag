@@ -132,7 +132,7 @@
 			});
 
 			this.trigger('closed');
-			this.unmount();
+			this.$destroy();
 		};
 	</script>
 </mk-contextmenu>

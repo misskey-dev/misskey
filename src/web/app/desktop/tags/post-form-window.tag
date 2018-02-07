@@ -45,7 +45,7 @@
 			this.$refs.window.refs.form.focus();
 
 			this.$refs.window.on('closed', () => {
-				this.unmount();
+				this.$destroy();
 			});
 
 			this.$refs.window.refs.form.on('post', () => {

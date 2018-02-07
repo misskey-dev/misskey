@@ -19,7 +19,7 @@
 	<script>
 		this.on('mount', () => {
 			this.$refs.window.on('closed', () => {
-				this.unmount();
+				this.$destroy();
 			});
 		});
 

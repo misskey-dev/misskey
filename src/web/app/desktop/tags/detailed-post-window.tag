@@ -69,7 +69,7 @@
 				opacity: 0,
 				duration: 300,
 				easing: 'linear',
-				complete: () => this.unmount()
+				complete: () => this.$destroy()
 			});
 		};
 

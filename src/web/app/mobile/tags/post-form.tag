@@ -255,7 +255,7 @@
 				poll: this.poll ? this.$refs.poll.get() : undefined
 			}).then(data => {
 				this.trigger('post');
-				this.unmount();
+				this.$destroy();
 			}).catch(err => {
 				this.update({
 					wait: false
@@ -265,7 +265,7 @@
 
 		this.cancel = () => {
 			this.trigger('cancel');
-			this.unmount();
+			this.$destroy();
 		};
 
 		this.kao = () => {

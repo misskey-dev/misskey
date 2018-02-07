@@ -71,18 +71,18 @@
 
 			this.$refs.browser.on('selected', file => {
 				this.trigger('selected', file);
-				this.unmount();
+				this.$destroy();
 			});
 		});
 
 		this.cancel = () => {
 			this.trigger('canceled');
-			this.unmount();
+			this.$destroy();
 		};
 
 		this.ok = () => {
 			this.trigger('selected', this.files);
-			this.unmount();
+			this.$destroy();
 		};
 	</script>
 </mk-drive-selector>

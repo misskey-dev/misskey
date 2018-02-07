@@ -124,7 +124,7 @@
 		};
 
 		this.close = () => {
-			this.unmount();
+			this.$destroy();
 		};
 	</script>
 </mk-init-following>
