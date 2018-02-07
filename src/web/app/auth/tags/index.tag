@@ -83,7 +83,7 @@
 					margin 0 auto
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('api');
 

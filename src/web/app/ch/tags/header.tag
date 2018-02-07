@@ -14,7 +14,7 @@
 				margin-left auto
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 	</script>
 </mk-header>

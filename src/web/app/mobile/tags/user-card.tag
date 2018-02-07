@@ -49,7 +49,7 @@
 				margin 8px 0 16px 0
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.user = this.opts.user;
 	</script>
 </mk-user-card>

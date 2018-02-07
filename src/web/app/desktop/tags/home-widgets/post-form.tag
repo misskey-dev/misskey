@@ -62,7 +62,7 @@
 					transition background 0s ease
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.data = {
 			design: 0
 		};

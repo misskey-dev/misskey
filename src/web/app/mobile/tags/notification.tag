@@ -161,7 +161,7 @@
 					color rgba(0, 0, 0, 0.7)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import getPostSummary from '../../../../common/get-post-summary.ts';
 		this.getPostSummary = getPostSummary;
 		this.notification = this.opts.notification;

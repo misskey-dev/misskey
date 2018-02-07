@@ -140,7 +140,7 @@
 					opacity 0.5
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 

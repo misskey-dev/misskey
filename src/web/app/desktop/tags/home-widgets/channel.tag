@@ -55,7 +55,7 @@
 				height 200px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.data = {
 			channel: null,
 			compact: false
@@ -137,7 +137,7 @@
 				bottom 0
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import ChannelStream from '../../../common/scripts/streaming/channel-stream';
 
 		this.mixin('api');
@@ -241,7 +241,7 @@
 							vertical-align bottom
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.post = this.opts.post;
 		this.form = this.opts.form;
 
@@ -275,7 +275,7 @@
 					border-color #aeaeae
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.clear = () => {

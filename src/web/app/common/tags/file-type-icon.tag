@@ -4,7 +4,7 @@
 		:scope
 			display inline
 	</style>
-	<script>
+	<script lang="typescript">
 		this.kind = this.opts.type.split('/')[0];
 	</script>
 </mk-file-type-icon>

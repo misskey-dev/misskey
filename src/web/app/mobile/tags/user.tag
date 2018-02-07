@@ -185,7 +185,7 @@
 						padding 16px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.age = require('s-age');
 
 		this.mixin('i');
@@ -299,7 +299,7 @@
 				color #cad2da
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 
 		this.user = this.opts.user;
@@ -341,7 +341,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;
@@ -427,7 +427,7 @@
 					color #aaa
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import summary from '../../../../common/get-post-summary.ts';
 
 		this.post = this.opts.post;
@@ -477,7 +477,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.images = [];
@@ -534,7 +534,7 @@
 					transform-origin center
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;
@@ -586,7 +586,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.user = this.opts.user;
 	</script>
 </mk-user-overview-keywords>
@@ -620,7 +620,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.user = this.opts.user;
 	</script>
 </mk-user-overview-domains>
@@ -658,7 +658,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;
@@ -713,7 +713,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;

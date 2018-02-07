@@ -53,7 +53,7 @@
 					max-width 500px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import Progress from '../../common/scripts/loading';
 		import ChannelStream from '../../common/scripts/streaming/channel-stream';
 
@@ -228,7 +228,7 @@
 							vertical-align bottom
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.post = this.opts.post;
 		this.form = this.opts.form;
 
@@ -282,7 +282,7 @@
 				display none
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.channel = this.opts.channel;
@@ -375,7 +375,7 @@
 
 <mk-twitter-button>
 	<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			const head = document.getElementsByTagName('head')[0];
 			const script = document.createElement('script');
@@ -388,7 +388,7 @@
 
 <mk-line-button>
 	<div class="line-it-button" data-lang="ja" data-type="share-a" data-url={ _CH_URL_ } style="display: none;"></div>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			const head = document.getElementsByTagName('head')[0];
 			const script = document.createElement('script');

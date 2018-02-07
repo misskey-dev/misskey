@@ -24,7 +24,7 @@
 			.id
 				color #8899a6
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 
 		this.form = null;

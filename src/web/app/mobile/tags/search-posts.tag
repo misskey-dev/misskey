@@ -14,7 +14,7 @@
 				margin 16px auto
 				width calc(100% - 32px)
 	</style>
-	<script>
+	<script lang="typescript">
 		import parse from '../../common/scripts/parse-search-query';
 
 		this.mixin('api');

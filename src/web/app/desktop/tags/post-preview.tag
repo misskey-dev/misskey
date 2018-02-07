@@ -82,7 +82,7 @@
 							color #717171
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import dateStringify from '../../common/scripts/date-stringify';
 
 		this.mixin('user-preview');

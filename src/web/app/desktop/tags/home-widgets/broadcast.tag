@@ -97,7 +97,7 @@
 				font-size 0.7em
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.data = {
 			design: 0
 		};

@@ -9,7 +9,7 @@
 				margin-bottom 8px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('api');
 

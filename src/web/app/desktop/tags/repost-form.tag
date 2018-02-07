@@ -84,7 +84,7 @@
 						border-color $theme-color
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import notify from '../scripts/notify';
 
 		this.mixin('api');

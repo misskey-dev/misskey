@@ -29,7 +29,7 @@
 					color #999
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('widget');
 		this.mixin('user-preview');
 	</script>

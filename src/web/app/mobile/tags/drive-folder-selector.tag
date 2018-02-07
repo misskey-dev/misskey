@@ -55,7 +55,7 @@
 					-webkit-overflow-scrolling touch
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.cancel = () => {
 			this.trigger('canceled');
 			this.$destroy();

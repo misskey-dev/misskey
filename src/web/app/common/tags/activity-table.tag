@@ -25,7 +25,7 @@
 					transform-origin center
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;

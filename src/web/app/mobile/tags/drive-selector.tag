@@ -59,7 +59,7 @@
 					-webkit-overflow-scrolling touch
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.files = [];
 
 		this.on('mount', () => {

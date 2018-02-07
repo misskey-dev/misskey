@@ -50,7 +50,7 @@
 				> a
 					color #546567
 	</style>
-	<script>
+	<script lang="typescript">
 		import Connection from '../../common/scripts/streaming/server-stream';
 
 		this.mixin('api');
@@ -81,7 +81,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.connection = this.opts.connection;
 
 		this.on('mount', () => {
@@ -111,7 +111,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.connection = this.opts.connection;
 
 		this.on('mount', () => {
@@ -176,7 +176,7 @@
 				padding 1px
 				width 100%
 	</style>
-	<script>
+	<script lang="typescript">
 		import uuid from 'uuid';
 
 		this.viewBoxX = 100;

@@ -6,7 +6,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		import ui from '../../scripts/ui-event';
 		import Progress from '../../../common/scripts/loading';
 

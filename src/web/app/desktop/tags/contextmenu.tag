@@ -95,7 +95,7 @@
 				transition visibility 0s linear 0.2s
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 		import contains from '../../common/scripts/contains';
 

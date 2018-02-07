@@ -22,7 +22,7 @@
 				overflow hidden
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.query = this.opts.query;
 
 		this.on('mount', () => {

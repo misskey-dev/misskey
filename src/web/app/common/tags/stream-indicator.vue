@@ -15,7 +15,7 @@
 	</div>
 </template>
 
-<script>
+<script lang="typescript">
 	import anime from 'animejs';
 	import Ellipsis from './ellipsis.vue';
 

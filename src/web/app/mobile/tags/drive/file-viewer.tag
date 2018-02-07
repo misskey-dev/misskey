@@ -227,7 +227,7 @@
 						background #f5f5f5
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import EXIF from 'exif-js';
 		import hljs from 'highlight.js';
 		import bytesToSize from '../../../common/scripts/bytes-to-size';

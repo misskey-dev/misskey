@@ -17,7 +17,7 @@
 				color #ccc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('widget');
 	</script>
 </mk-nav-home-widget>

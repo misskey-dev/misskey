@@ -87,7 +87,7 @@
 				color #999
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import inputDialog from '../../scripts/input-dialog';
 		import updateAvatar from '../../scripts/update-avatar';
 		import updateBanner from '../../scripts/update-banner';

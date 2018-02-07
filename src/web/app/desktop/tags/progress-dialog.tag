@@ -72,7 +72,7 @@
 								to   {background-position: -64px 32px;}
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.title = this.opts.title;
 		this.value = parseInt(this.opts.value, 10);
 		this.max = parseInt(this.opts.max, 10);

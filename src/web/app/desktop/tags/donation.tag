@@ -46,7 +46,7 @@
 					margin-bottom 16px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('api');
 

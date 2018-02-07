@@ -4,7 +4,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.data = {
 			design: 0
 		};

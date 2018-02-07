@@ -120,7 +120,7 @@
 					padding 14px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 		this.mixin('user-preview');
 

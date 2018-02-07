@@ -79,7 +79,7 @@
 						color rgba(0, 0, 0, 0.3)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import contains from '../../common/scripts/contains';
 
 		this.mixin('api');

@@ -15,7 +15,7 @@
 			background-color rgba(#000, 0.5)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.on('mount', () => {

@@ -18,7 +18,7 @@
 					border-bottom solid 1px #eee
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.apps = [];

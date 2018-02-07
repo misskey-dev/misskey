@@ -4,7 +4,7 @@
 		:scope
 			display inline
 	</style>
-	<script>
+	<script lang="typescript">
 		this.aboutUrl = `${_DOCS_URL_}/${_LANG_}/about`;
 	</script>
 </mk-nav-links>

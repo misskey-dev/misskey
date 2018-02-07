@@ -37,7 +37,7 @@
 							margin 16px 22px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.uploadingFiles = [];
 		this.files = [];
 

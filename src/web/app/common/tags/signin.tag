@@ -100,7 +100,7 @@
 						opacity 0.7
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = null;

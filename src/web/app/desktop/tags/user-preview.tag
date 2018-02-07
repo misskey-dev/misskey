@@ -98,7 +98,7 @@
 				right 8px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.mixin('i');

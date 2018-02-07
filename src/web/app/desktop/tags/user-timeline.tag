@@ -52,7 +52,7 @@
 					color #ccc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import isPromise from '../../common/scripts/is-promise';
 
 		this.mixin('api');

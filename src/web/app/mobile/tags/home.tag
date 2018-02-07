@@ -13,7 +13,7 @@
 				padding 16px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			this.$refs.tl.on('loaded', () => {
 				this.trigger('loaded');

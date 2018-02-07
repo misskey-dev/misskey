@@ -85,7 +85,7 @@
 					color darken($theme-color, 30%)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.choices = ['', ''];
 
 		this.oninput = (i, e) => {

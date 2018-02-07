@@ -144,7 +144,7 @@
 					box-shadow none
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import Sortable from 'sortablejs';
 		import getKao from '../../common/scripts/get-kao';
 

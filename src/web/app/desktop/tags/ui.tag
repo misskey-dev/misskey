@@ -10,7 +10,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 
 		this.openPostForm = () => {
@@ -119,7 +119,7 @@
 									display none
 
 	</style>
-	<script>this.mixin('i');</script>
+	<script lang="typescript">this.mixin('i');</script>
 </mk-ui-header>
 
 <mk-ui-header-search>
@@ -175,7 +175,7 @@
 						box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('page');
 
 		this.onsubmit = e => {
@@ -221,7 +221,7 @@
 					transition background 0s ease
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.post = e => {
 			this.parent.parent.openPostForm();
 		};
@@ -310,7 +310,7 @@
 					overflow auto
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import contains from '../../common/scripts/contains';
 
 		this.mixin('i');
@@ -487,7 +487,7 @@
 							padding 0 12px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('api');
 
@@ -604,7 +604,7 @@
 				background #899492
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.now = new Date();
 
 		this.draw = () => {
@@ -789,7 +789,7 @@
 								color $theme-color-foreground
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import contains from '../../common/scripts/contains';
 		import signout from '../../common/scripts/signout';
 		this.signout = signout;
@@ -869,7 +869,7 @@
 				text-align center
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.on('mount', () => {

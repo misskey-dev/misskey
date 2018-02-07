@@ -16,7 +16,7 @@
 					overflow hidden
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			this.$refs.window.on('closed', () => {
 				this.$destroy();

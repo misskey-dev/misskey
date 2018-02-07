@@ -119,7 +119,7 @@
 								border-color #dcdcdc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.done = false;
 
 		this.title = this.opts.title;

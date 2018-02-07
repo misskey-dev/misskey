@@ -38,7 +38,7 @@
 					color #ccc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('api');
 

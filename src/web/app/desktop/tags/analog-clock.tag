@@ -7,7 +7,7 @@
 				width 256px
 				height 256px
 	</style>
-	<script>
+	<script lang="typescript">
 		const Vec2 = function(x, y) {
 			this.x = x;
 			this.y = y;

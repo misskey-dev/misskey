@@ -18,7 +18,7 @@
 						overflow auto
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.user = this.opts.user;
 
 		this.popout = `${_URL_}/i/messaging/${this.user.username}`;

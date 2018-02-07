@@ -3,7 +3,7 @@
 		:scope
 			display inline
 	</style>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			let value = this.opts.value;
 			const max = this.opts.max;

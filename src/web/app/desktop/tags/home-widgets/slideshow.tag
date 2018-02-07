@@ -48,7 +48,7 @@
 						opacity 0
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.data = {

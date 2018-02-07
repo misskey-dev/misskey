@@ -47,7 +47,7 @@
 						margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import seedrandom from 'seedrandom';
 
 		this.data = {

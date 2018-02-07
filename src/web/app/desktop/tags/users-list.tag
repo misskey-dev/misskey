@@ -88,7 +88,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 
 		this.limit = 30;

@@ -14,7 +14,7 @@
 				color #aaa
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('widget');
 	</script>
 </mk-version-home-widget>

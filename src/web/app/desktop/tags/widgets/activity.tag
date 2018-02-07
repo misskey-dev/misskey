@@ -57,7 +57,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.design = this.opts.design || 0;
@@ -127,7 +127,7 @@
 							fill rgba(0, 0, 0, 0.05)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.data = this.opts.data;
 		this.data.forEach(d => d.total = d.posts + d.replies + d.reposts);
 		const peak = Math.max.apply(null, this.data.map(d => d.total));
@@ -184,7 +184,7 @@
 				width 100%
 				cursor all-scroll
 	</style>
-	<script>
+	<script lang="typescript">
 		this.viewBoxX = 140;
 		this.viewBoxY = 60;
 		this.zoom = 1;

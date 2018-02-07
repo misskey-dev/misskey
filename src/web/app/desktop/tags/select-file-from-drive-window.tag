@@ -134,7 +134,7 @@
 								border-color #dcdcdc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.files = [];
 
 		this.multiple = this.opts.multiple != null ? this.opts.multiple : false;

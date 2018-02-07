@@ -6,7 +6,7 @@
 			max-width 600px
 			margin 0 auto
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;

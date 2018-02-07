@@ -6,7 +6,7 @@
 	</time>
 </template>
 
-<script>
+<script lang="typescript">
 	export default {
 		props: ['time', 'mode'],
 		data: {

@@ -16,7 +16,7 @@
 						overflow hidden
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.username = this.opts.user;
@@ -182,7 +182,7 @@
 							border solid 1px #ddd
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import updateBanner from '../scripts/update-banner';
 
 		this.mixin('i');
@@ -309,7 +309,7 @@
 						margin-right 8px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.age = require('s-age');
 
 		this.mixin('i');
@@ -411,7 +411,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import isPromise from '../../common/scripts/is-promise';
 
 		this.mixin('api');
@@ -539,7 +539,7 @@
 					right 16px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;
@@ -612,7 +612,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;
@@ -707,7 +707,7 @@
 							color #ccc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import ScrollFollower from '../scripts/scroll-follower';
 
 		this.mixin('i');
@@ -776,7 +776,7 @@
 							margin-right 8px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			this.trigger('loaded');
 		});
@@ -819,7 +819,7 @@
 					transform-origin center
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import getMedian from '../../common/scripts/get-median';
 
 		this.mixin('api');

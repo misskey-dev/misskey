@@ -3,7 +3,7 @@
 		:scope
 			display inline
 	</style>
-	<script>
+	<script lang="typescript">
 		this.root.innerHTML = this.opts.content;
 
 		this.on('updated', () => {

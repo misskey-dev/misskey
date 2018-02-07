@@ -47,7 +47,7 @@
 					text-align left
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import dialog from '../../scripts/dialog';
 
 		this.mixin('api');

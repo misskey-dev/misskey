@@ -27,7 +27,7 @@
 				font-size 80%
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../common/scripts/text-compiler';
 
 		this.post = this.opts.post;

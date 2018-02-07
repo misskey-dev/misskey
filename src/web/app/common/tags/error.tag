@@ -75,7 +75,7 @@
 					height 150px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.troubleshooting = false;
 
 		this.on('mount', () => {
@@ -169,7 +169,7 @@
 						color #ad4339
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			this.update({
 				network: navigator.onLine

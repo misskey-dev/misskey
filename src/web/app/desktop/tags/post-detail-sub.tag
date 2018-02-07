@@ -106,7 +106,7 @@
 							margin-top 8px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../common/scripts/text-compiler';
 		import dateStringify from '../../common/scripts/date-stringify';
 

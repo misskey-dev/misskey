@@ -12,7 +12,7 @@
 			</li>
 		</ul>
 	</mk-contextmenu>
-	<script>
+	<script lang="typescript">
 		this.browser = this.opts.browser;
 
 		this.on('mount', () => {

@@ -114,7 +114,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.data = {
 			compact: false
 		};

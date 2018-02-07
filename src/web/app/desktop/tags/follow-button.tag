@@ -70,7 +70,7 @@
 					opacity 0.7
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import isPromise from '../../common/scripts/is-promise';
 
 		this.mixin('i');

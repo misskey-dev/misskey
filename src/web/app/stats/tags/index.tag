@@ -40,7 +40,7 @@
 				> a
 					color #546567
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.initializing = true;
@@ -63,7 +63,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.initializing = true;
@@ -89,7 +89,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.initializing = true;
@@ -142,7 +142,7 @@
 				padding 1px
 				width 100%
 	</style>
-	<script>
+	<script lang="typescript">
 		this.viewBoxX = 365;
 		this.viewBoxY = 80;
 
@@ -187,7 +187,7 @@
 				padding 1px
 				width 100%
 	</style>
-	<script>
+	<script lang="typescript">
 		this.viewBoxX = 365;
 		this.viewBoxY = 80;
 

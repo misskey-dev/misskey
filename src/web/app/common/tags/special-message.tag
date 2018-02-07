@@ -19,7 +19,7 @@
 				background #ff1036
 
 	</style>
-	<script>
+	<script lang="typescript">
 		const now = new Date();
 		this.d = now.getDate();
 		this.m = now.getMonth() + 1;

@@ -116,7 +116,7 @@
 				display none
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.onpaste = e => {

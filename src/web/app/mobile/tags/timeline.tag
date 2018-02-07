@@ -79,7 +79,7 @@
 						opacity 0.7
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.posts = [];
 		this.init = true;
 		this.fetching = false;
@@ -456,7 +456,7 @@
 									display none
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../common/scripts/text-compiler';
 		import getPostSummary from '../../../../common/get-post-summary.ts';
 		import openPostForm from '../scripts/open-post-form';
@@ -684,5 +684,5 @@
 								font-size 80%
 
 	</style>
-	<script>this.post = this.opts.post</script>
+	<script lang="typescript">this.post = this.opts.post</script>
 </mk-timeline-post-sub>

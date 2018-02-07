@@ -214,7 +214,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import getPostSummary from '../../../../common/get-post-summary.ts';
 		this.getPostSummary = getPostSummary;
 

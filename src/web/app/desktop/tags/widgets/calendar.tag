@@ -137,7 +137,7 @@
 								background darken($theme-color, 10%)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		if (this.opts.design == null) this.opts.design = 0;
 
 		const eachMonthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];

@@ -11,7 +11,7 @@
 			display block
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.on('mount', () => {

@@ -6,7 +6,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		import ui from '../../scripts/ui-event';
 
 		this.on('mount', () => {
@@ -91,7 +91,7 @@
 							line-height $height
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import signout from '../../../common/scripts/signout';
 		this.signout = signout;
 

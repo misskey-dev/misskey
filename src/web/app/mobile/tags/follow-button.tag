@@ -51,7 +51,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import isPromise from '../../common/scripts/is-promise';
 
 		this.mixin('i');

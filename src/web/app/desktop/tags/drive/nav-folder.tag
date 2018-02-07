@@ -6,7 +6,7 @@
 				background #eee
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.folder = this.opts.folder ? this.opts.folder : null;

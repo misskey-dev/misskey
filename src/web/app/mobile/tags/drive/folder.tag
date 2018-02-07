@@ -40,7 +40,7 @@
 							height 100%
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.browser = this.parent;
 		this.folder = this.opts.folder;
 

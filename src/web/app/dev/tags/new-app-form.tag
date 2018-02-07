@@ -177,7 +177,7 @@
 					border-radius 3px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.nidState = null;

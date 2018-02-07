@@ -7,7 +7,7 @@
 			background #fff
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import Progress from '../../../common/scripts/loading';
 
 		this.mixin('api');

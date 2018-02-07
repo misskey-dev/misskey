@@ -67,7 +67,7 @@
 						background transparent
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.init = post => {

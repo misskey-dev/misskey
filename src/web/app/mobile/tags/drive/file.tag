@@ -126,7 +126,7 @@
 					color #fff !important
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 		this.bytesToSize = bytesToSize;
 

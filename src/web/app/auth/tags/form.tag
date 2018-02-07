@@ -105,7 +105,7 @@
 						font-size 16px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.session = this.opts.session;

@@ -82,7 +82,7 @@
 					padding 10px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.users = null;

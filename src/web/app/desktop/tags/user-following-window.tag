@@ -15,5 +15,5 @@
 						border-radius 4px
 
 	</style>
-	<script>this.user = this.opts.user</script>
+	<script lang="typescript">this.user = this.opts.user</script>
 </mk-user-following-window>

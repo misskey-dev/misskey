@@ -32,7 +32,7 @@
 					color #ccc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import parse from '../../common/scripts/parse-search-query';
 
 		this.mixin('api');

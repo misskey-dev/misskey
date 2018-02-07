@@ -7,7 +7,7 @@
 			display block
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('api');
 
@@ -97,7 +97,7 @@
 
 	</style>
 
-	<script>
+	<script lang="typescript">
 		import hljs from 'highlight.js';
 
 		this.rec = this.opts.rec;

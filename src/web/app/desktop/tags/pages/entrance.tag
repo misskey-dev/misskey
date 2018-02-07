@@ -107,7 +107,7 @@
 						font-size 10px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.mode = 'signin';
@@ -278,7 +278,7 @@
 				color #666
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			this.$refs.signin.on('user', user => {
 				this.update({

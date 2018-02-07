@@ -126,7 +126,7 @@
 						border-color #dcdcdc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		const q = (new URL(location)).searchParams;
 		this.multiple = q.get('multiple') == 'true' ? true : false;
 

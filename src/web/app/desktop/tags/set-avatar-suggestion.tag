@@ -30,7 +30,7 @@
 					color #fff
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import updateAvatar from '../scripts/update-avatar';
 
 		this.mixin('i');

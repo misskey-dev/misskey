@@ -30,7 +30,7 @@
 					color #fff
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import updateBanner from '../scripts/update-banner';
 
 		this.mixin('i');

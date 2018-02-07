@@ -11,7 +11,7 @@
 			@media (max-width 500px)
 				height 192px
 	</style>
-	<script>
+	<script lang="typescript">
 		this.images = this.opts.images;
 
 		this.on('mount', () => {
@@ -72,7 +72,7 @@
 				background-size cover
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.image = this.opts.image;
 		this.styles = {
 			'background-color': this.image.properties.average_color ? `rgb(${this.image.properties.average_color.join(',')})` : 'transparent',

@@ -34,7 +34,7 @@
 			</li>
 		</ul>
 	</mk-contextmenu>
-	<script>
+	<script lang="typescript">
 		import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 		import dialog from '../../scripts/dialog';
 		import inputDialog from '../../scripts/input-dialog';

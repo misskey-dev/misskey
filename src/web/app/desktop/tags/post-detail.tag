@@ -236,7 +236,7 @@
 						border-top 1px solid #eef0f2
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../common/scripts/text-compiler';
 		import dateStringify from '../../common/scripts/date-stringify';
 

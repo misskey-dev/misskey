@@ -6,7 +6,7 @@
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		import Progress from '../../../common/scripts/loading';
 
 		this.user = this.opts.user;

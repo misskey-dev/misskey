@@ -18,7 +18,7 @@
 </div>
 </template>
 
-<script>
+<script lang="typescript">
 	import anime from 'animejs';
 	import api from '../scripts/api';
 

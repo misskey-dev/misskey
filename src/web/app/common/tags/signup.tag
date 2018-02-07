@@ -173,7 +173,7 @@
 						background darken($theme-color, 5%)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 		const getPasswordStrength = require('syuilo-password-strength');
 

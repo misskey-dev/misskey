@@ -242,7 +242,7 @@
 				display none
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import contains from '../../../common/scripts/contains';
 		import dialog from '../../scripts/dialog';
 		import inputDialog from '../../scripts/input-dialog';

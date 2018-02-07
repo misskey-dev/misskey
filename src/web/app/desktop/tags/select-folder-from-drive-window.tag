@@ -89,7 +89,7 @@
 								border-color #dcdcdc
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.files = [];
 
 		this.title = this.opts.title || '%fa:R folder%フォルダを選択';

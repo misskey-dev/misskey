@@ -11,7 +11,7 @@
 			> mk-drive-browser
 				height 100%
 	</style>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			document.title = 'Misskey Drive';
 

@@ -61,7 +61,7 @@
 					margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('os');
 
 		this.data = {
@@ -186,7 +186,7 @@
 				display block
 				clear both
 	</style>
-	<script>
+	<script lang="typescript">
 		import uuid from 'uuid';
 
 		this.viewBoxX = 50;
@@ -270,7 +270,7 @@
 				clear both
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.cores = this.opts.meta.cpu.cores;
 		this.model = this.opts.meta.cpu.model;
 		this.connection = this.opts.connection;
@@ -328,7 +328,7 @@
 				clear both
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 
 		this.connection = this.opts.connection;
@@ -394,7 +394,7 @@
 				clear both
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 
 		this.connection = this.opts.connection;
@@ -440,7 +440,7 @@
 					font-weight bold
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.connection = this.opts.connection;
 
 		this.on('mount', () => {
@@ -475,7 +475,7 @@
 				color #505050
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.meta = this.opts.meta;
 	</script>
 </mk-server-home-widget-info>
@@ -516,7 +516,7 @@
 					fill rgba(0, 0, 0, 0.6)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.r = 0.4;
 
 		this.render = p => {

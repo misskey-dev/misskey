@@ -6,7 +6,7 @@
 			height 100%
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.user = this.opts.user;

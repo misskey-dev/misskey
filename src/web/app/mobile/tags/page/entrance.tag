@@ -42,7 +42,7 @@
 					color rgba(#000, 0.5)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mode = 'signin';
 
 		this.signup = () => {

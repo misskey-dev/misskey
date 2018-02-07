@@ -8,7 +8,7 @@
 			grid-gap 4px
 			height 256px
 	</style>
-	<script>
+	<script lang="typescript">
 		this.images = this.opts.images;
 
 		this.on('mount', () => {
@@ -78,7 +78,7 @@
 					background-size cover
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.image = this.opts.image;
 		this.styles = {
 			'background-color': this.image.properties.average_color ? `rgb(${this.image.properties.average_color.join(',')})` : 'transparent',
@@ -145,7 +145,7 @@
 				cursor zoom-out
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.image = this.opts.image;

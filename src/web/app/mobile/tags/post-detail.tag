@@ -252,7 +252,7 @@
 					border-top 1px solid #eef0f2
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../common/scripts/text-compiler';
 		import getPostSummary from '../../../../common/get-post-summary.ts';
 		import openPostForm from '../scripts/open-post-form';
@@ -444,5 +444,5 @@
 							color #717171
 
 	</style>
-	<script>this.post = this.opts.post</script>
+	<script lang="typescript">this.post = this.opts.post</script>
 </mk-post-detail-sub>

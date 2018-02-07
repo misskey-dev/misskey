@@ -180,7 +180,7 @@
 						margin 0 auto
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import uuid from 'uuid';
 		import Sortable from 'sortablejs';
 		import dialog from '../scripts/dialog';

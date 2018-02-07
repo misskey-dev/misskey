@@ -15,7 +15,7 @@
 						margin-right 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.onDocumentKeydown = e => {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
 				if (e.which == 27) { // Esc

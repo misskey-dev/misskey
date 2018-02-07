@@ -138,7 +138,7 @@
 							to   {background-position: -64px 32px;}
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 
 		this.uploads = [];

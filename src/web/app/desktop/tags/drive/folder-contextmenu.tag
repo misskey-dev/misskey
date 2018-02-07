@@ -17,7 +17,7 @@
 			</li>
 		</ul>
 	</mk-contextmenu>
-	<script>
+	<script lang="typescript">
 		import inputDialog from '../../scripts/input-dialog';
 
 		this.mixin('api');

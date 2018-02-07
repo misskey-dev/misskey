@@ -10,7 +10,7 @@
 			display block
 			padding-top 48px
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 
 		this.mixin('stream');
@@ -144,7 +144,7 @@
 						border-left solid 1px rgba(#000, 0.1)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import ui from '../scripts/ui-event';
 
 		this.mixin('api');
@@ -350,7 +350,7 @@
 					color #777
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('page');
 		this.mixin('api');

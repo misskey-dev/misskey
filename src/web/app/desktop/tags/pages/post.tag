@@ -31,7 +31,7 @@
 					width 640px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import Progress from '../../../common/scripts/loading';
 
 		this.mixin('api');

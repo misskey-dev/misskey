@@ -119,7 +119,7 @@
 						border-bottom solid 1px #eee
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.page = 'profile';
 
 		this.setPage = page => {
@@ -166,7 +166,7 @@
 					margin-left 8px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import updateAvatar from '../scripts/update-avatar';
 		import notify from '../scripts/notify';
 
@@ -208,7 +208,7 @@
 				background #eee
 				border-radius 2px
 	</style>
-	<script>
+	<script lang="typescript">
 		import passwordDialog from '../scripts/password-dialog';
 
 		this.mixin('i');
@@ -231,7 +231,7 @@
 			display block
 			color #4a535a
 	</style>
-	<script>
+	<script lang="typescript">
 		import passwordDialog from '../scripts/password-dialog';
 		import dialog from '../scripts/dialog';
 		import notify from '../scripts/notify';
@@ -287,7 +287,7 @@
 			color #4a535a
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import passwordDialog from '../scripts/password-dialog';
 		import notify from '../scripts/notify';
 
@@ -370,7 +370,7 @@
 					fill rgba(0, 0, 0, 0.6)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.r = 0.4;
@@ -408,7 +408,7 @@
 			display block
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.apps = [];

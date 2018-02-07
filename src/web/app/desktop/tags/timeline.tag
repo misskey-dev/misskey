@@ -35,7 +35,7 @@
 				border-bottom-right-radius 4px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.posts = [];
 
 		this.on('update', () => {
@@ -409,7 +409,7 @@
 				background rgba(0, 0, 0, 0.0125)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../common/scripts/text-compiler';
 		import dateStringify from '../../common/scripts/date-stringify';
 
@@ -693,7 +693,7 @@
 								font-size 80%
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import dateStringify from '../../common/scripts/date-stringify';
 
 		this.mixin('user-preview');

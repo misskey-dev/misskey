@@ -159,7 +159,7 @@
 							width 150px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		const Cropper = require('cropperjs');
 
 		this.image = this.opts.file;

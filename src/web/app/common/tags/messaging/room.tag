@@ -161,7 +161,7 @@
 						//background rgba(0, 0, 0, 0.2)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import MessagingStreamConnection from '../../scripts/streaming/messaging-stream';
 
 		this.mixin('i');

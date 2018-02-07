@@ -185,7 +185,7 @@
 					height calc(100% - 40px)
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 		import contains from '../../common/scripts/contains';
 

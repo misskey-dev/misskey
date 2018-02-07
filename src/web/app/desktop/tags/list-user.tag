@@ -89,5 +89,5 @@
 				right 16px
 
 	</style>
-	<script>this.user = this.opts.user</script>
+	<script lang="typescript">this.user = this.opts.user</script>
 </mk-list-user>

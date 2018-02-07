@@ -329,7 +329,7 @@
 								margin 0 12px 0 0
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('i');
 		this.mixin('api');
 

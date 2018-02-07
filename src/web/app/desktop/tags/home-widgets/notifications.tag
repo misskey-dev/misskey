@@ -46,7 +46,7 @@
 				overflow auto
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.data = {
 			compact: false
 		};

@@ -82,7 +82,7 @@
 							transition color 0s ease
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.canThrough = opts.canThrough != null ? opts.canThrough : true;

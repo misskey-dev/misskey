@@ -26,7 +26,7 @@
 					border-radius 2px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.mixin('widget');

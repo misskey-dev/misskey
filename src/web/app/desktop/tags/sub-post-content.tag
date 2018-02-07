@@ -33,7 +33,7 @@
 				font-size 80%
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../common/scripts/text-compiler';
 
 		this.mixin('user-preview');

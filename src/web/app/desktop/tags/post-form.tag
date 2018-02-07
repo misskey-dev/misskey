@@ -282,7 +282,7 @@
 				pointer-events none
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import Sortable from 'sortablejs';
 		import getKao from '../../common/scripts/get-kao';
 		import notify from '../scripts/notify';

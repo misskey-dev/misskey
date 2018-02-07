@@ -34,7 +34,7 @@
 					margin 0 auto
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import anime from 'animejs';
 
 		this.mixin('api');

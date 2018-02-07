@@ -205,7 +205,7 @@
 						opacity 0.5
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import compile from '../../../common/scripts/text-compiler';
 
 		this.mixin('i');
