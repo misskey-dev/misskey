@@ -1,19 +1,19 @@
 <template>
 <div :data-is-voted="isVoted">
 	<ul>
-		<li v-for="choice in poll.choices" :key="choice.id" @click="vote.bind(choice.id)" :class="{ voted: choice.voted }" :title="!choice.isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', choice.text) : ''">
+		<li v-for="choice in poll.choices" :key="choice.id" @click="vote.bind(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', choice.text) : ''">
 			<div class="backdrop" :style="{ 'width:' + (result ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
-				<template v-if="is_voted">%fa:check%</template>
+				<template v-if="choice.is_voted">%fa:check%</template>
 				{{ text }}
-				<span class="votes" v-if="parent.result">({{ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', votes) }})</span>
+				<span class="votes" v-if="result">({{ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', choice.votes) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="total > 0">
-		<span>{ '%i18n:common.tags.mk-poll.total-users%'.replace('{}', total) }</span>
+		<span>{{ '%i18n:common.tags.mk-poll.total-users%'.replace('{}', total) }}</span>
 		・
-		<a v-if="!isVoted" @click="toggleResult">{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }</a>
+		<a v-if="!isVoted" @click="toggleResult">{{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }}</a>
 		<span v-if="isVoted">%i18n:common.tags.mk-poll.voted%</span>
 	</p>
 </div>
@@ -59,59 +59,55 @@
 	};
 </script>
 
-<mk-poll data-is-voted={ isVoted }>
+<style lang="stylus" scoped>
+	:scope
+		display block
 
-	<style lang="stylus" scoped>
-		:scope
+		> ul
 			display block
+			margin 0
+			padding 0
+			list-style none
 
-			> ul
+			> li
 				display block
-				margin 0
-				padding 0
-				list-style none
+				margin 4px 0
+				padding 4px 8px
+				width 100%
+				border solid 1px #eee
+				border-radius 4px
+				overflow hidden
+				cursor pointer
 
-				> li
-					display block
-					margin 4px 0
-					padding 4px 8px
-					width 100%
-					border solid 1px #eee
-					border-radius 4px
-					overflow hidden
-					cursor pointer
+				&:hover
+					background rgba(0, 0, 0, 0.05)
 
-					&:hover
-						background rgba(0, 0, 0, 0.05)
+				&:active
+					background rgba(0, 0, 0, 0.1)
 
-					&:active
-						background rgba(0, 0, 0, 0.1)
+				> .backdrop
+					position absolute
+					top 0
+					left 0
+					height 100%
+					background $theme-color
+					transition width 1s ease
 
-					> .backdrop
-						position absolute
-						top 0
-						left 0
-						height 100%
-						background $theme-color
-						transition width 1s ease
+				> .votes
+					margin-left 4px
 
-					> .votes
-						margin-left 4px
+		> p
+			a
+				color inherit
 
-			> p
-				a
-					color inherit
+		&[data-is-voted]
+			> ul > li
+				cursor default
 
-			&[data-is-voted]
-				> ul > li
-					cursor default
+				&:hover
+					background transparent
 
-					&:hover
-						background transparent
+				&:active
+					background transparent
 
-					&:active
-						background transparent
-
-	</style>
-
-</mk-poll>
+</style>
