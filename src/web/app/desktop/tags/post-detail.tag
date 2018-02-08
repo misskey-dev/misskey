@@ -49,7 +49,7 @@
 				<button @click="repost" title="Repost">
 					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton" title="リアクション">
+				<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="リアクション">
 					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
 				</button>
 				<button @click="menu" ref="menuButton">

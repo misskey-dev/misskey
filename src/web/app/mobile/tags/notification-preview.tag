@@ -1,4 +1,4 @@
-<mk-notification-preview class={ notification.type }>
+<mk-notification-preview :class="{ notification.type }">
 	<virtual v-if="notification.type == 'reaction'">
 		<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		<div class="text">

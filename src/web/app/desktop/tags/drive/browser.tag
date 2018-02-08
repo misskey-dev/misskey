@@ -1,7 +1,7 @@
 <mk-drive-browser>
 	<nav>
 		<div class="path" oncontextmenu={ pathOncontextmenu }>
-			<mk-drive-browser-nav-folder class={ current: folder == null } folder={ null }/>
+			<mk-drive-browser-nav-folder :class="{ current: folder == null }" folder={ null }/>
 			<virtual each={ folder in hierarchyFolders }>
 				<span class="separator">%fa:angle-right%</span>
 				<mk-drive-browser-nav-folder folder={ folder }/>

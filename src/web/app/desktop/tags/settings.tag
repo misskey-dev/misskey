@@ -1,15 +1,15 @@
 <mk-settings>
 	<div class="nav">
-		<p class={ active: page == 'profile' } onmousedown={ setPage.bind(null, 'profile') }>%fa:user .fw%%i18n:desktop.tags.mk-settings.profile%</p>
-		<p class={ active: page == 'web' } onmousedown={ setPage.bind(null, 'web') }>%fa:desktop .fw%Web</p>
-		<p class={ active: page == 'notification' } onmousedown={ setPage.bind(null, 'notification') }>%fa:R bell .fw%通知</p>
-		<p class={ active: page == 'drive' } onmousedown={ setPage.bind(null, 'drive') }>%fa:cloud .fw%%i18n:desktop.tags.mk-settings.drive%</p>
-		<p class={ active: page == 'mute' } onmousedown={ setPage.bind(null, 'mute') }>%fa:ban .fw%%i18n:desktop.tags.mk-settings.mute%</p>
-		<p class={ active: page == 'apps' } onmousedown={ setPage.bind(null, 'apps') }>%fa:puzzle-piece .fw%アプリ</p>
-		<p class={ active: page == 'twitter' } onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
-		<p class={ active: page == 'security' } onmousedown={ setPage.bind(null, 'security') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.security%</p>
-		<p class={ active: page == 'api' } onmousedown={ setPage.bind(null, 'api') }>%fa:key .fw%API</p>
-		<p class={ active: page == 'other' } onmousedown={ setPage.bind(null, 'other') }>%fa:cogs .fw%%i18n:desktop.tags.mk-settings.other%</p>
+		<p :class="{ active: page == 'profile' }" onmousedown={ setPage.bind(null, 'profile') }>%fa:user .fw%%i18n:desktop.tags.mk-settings.profile%</p>
+		<p :class="{ active: page == 'web' }" onmousedown={ setPage.bind(null, 'web') }>%fa:desktop .fw%Web</p>
+		<p :class="{ active: page == 'notification' }" onmousedown={ setPage.bind(null, 'notification') }>%fa:R bell .fw%通知</p>
+		<p :class="{ active: page == 'drive' }" onmousedown={ setPage.bind(null, 'drive') }>%fa:cloud .fw%%i18n:desktop.tags.mk-settings.drive%</p>
+		<p :class="{ active: page == 'mute' }" onmousedown={ setPage.bind(null, 'mute') }>%fa:ban .fw%%i18n:desktop.tags.mk-settings.mute%</p>
+		<p :class="{ active: page == 'apps' }" onmousedown={ setPage.bind(null, 'apps') }>%fa:puzzle-piece .fw%アプリ</p>
+		<p :class="{ active: page == 'twitter' }" onmousedown={ setPage.bind(null, 'twitter') }>%fa:B twitter .fw%Twitter</p>
+		<p :class="{ active: page == 'security' }" onmousedown={ setPage.bind(null, 'security') }>%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.security%</p>
+		<p :class="{ active: page == 'api' }" onmousedown={ setPage.bind(null, 'api') }>%fa:key .fw%API</p>
+		<p :class="{ active: page == 'other' }" onmousedown={ setPage.bind(null, 'other') }>%fa:cogs .fw%%i18n:desktop.tags.mk-settings.other%</p>
 	</div>
 	<div class="pages">
 		<section class="profile" show={ page == 'profile' }>

@@ -136,7 +136,7 @@
 	</script>
 </mk-timeline>
 
-<mk-timeline-post class={ repost: isRepost }>
+<mk-timeline-post :class="{ repost: isRepost }">
 	<div class="reply-to" v-if="p.reply">
 		<mk-timeline-post-sub post={ p.reply }/>
 	</div>
@@ -188,7 +188,7 @@
 				<button @click="repost" title="Repost">
 					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
 				</button>
-				<button class={ reacted: p.my_reaction != null } @click="react" ref="reactButton">
+				<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton">
 					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
 				</button>
 				<button class="menu" @click="menu" ref="menuButton">

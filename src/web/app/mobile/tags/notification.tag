@@ -1,4 +1,4 @@
-<mk-notification class={ notification.type }>
+<mk-notification :class="{ notification.type }">
 	<mk-time time={ notification.created_at }/>
 	<virtual v-if="notification.type == 'reaction'">
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>

@@ -1,6 +1,6 @@
 <mk-post-form ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
 	<div class="content">
-		<textarea class={ with: (files.length != 0 || poll) } ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ placeholder }></textarea>
+		<textarea :class="{ with: (files.length != 0 || poll) }" ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ placeholder }></textarea>
 		<div class="medias { with: poll }" show={ files.length != 0 }>
 			<ul ref="media">
 				<li each={ files } data-id={ id }>
@@ -18,7 +18,7 @@
 	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" @click="addPoll">%fa:chart-pie%</button>
 	<p class="text-count { over: refs.text.value.length > 1000 }">{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - refs.text.value.length) }</p>
-	<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll　&& !repost) } @click="post">
+	<button :class="{ wait: wait }" ref="submit" disabled={ wait || (refs.text.value.length == 0 && files.length == 0 && !poll　&& !repost) } @click="post">
 		{ wait ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }<mk-ellipsis v-if="wait"/>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" onchange={ changeFile }/>

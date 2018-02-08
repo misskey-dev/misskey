@@ -246,7 +246,7 @@
 	<div class="actions">
 		<button @click="selectFile">%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
 		<button @click="drive">%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
-		<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="post">
+		<button :class="{ wait: wait }" ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="post">
 			<virtual v-if="!wait">%fa:paper-plane%</virtual>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis v-if="wait"/>
 		</button>
 	</div>

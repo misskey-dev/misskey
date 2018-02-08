@@ -1,5 +1,5 @@
 <mk-signin>
-	<form class={ signing: signing } onsubmit={ onsubmit }>
+	<form :class="{ signing: signing }" onsubmit={ onsubmit }>
 		<label class="user-name">
 			<input ref="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="%i18n:common.tags.mk-signin.username%" autofocus="autofocus" required="required" oninput={ oninput }/>%fa:at%
 		</label>
