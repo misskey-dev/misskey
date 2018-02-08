@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="backdrop" ref="backdrop" @click="close"></div>
-	<div class="popover" :data-compact="compact" ref="popover">
+	<div class="popover" :class="{ compact }" ref="popover">
 		<p v-if="!compact">{{ title }}</p>
 		<div>
 			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" title="%i18n:common.reactions.like%"><mk-reaction-icon reaction='like'/></button>
