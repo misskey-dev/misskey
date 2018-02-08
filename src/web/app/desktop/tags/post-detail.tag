@@ -1,13 +1,13 @@
 <mk-post-detail title={ title }>
 	<div class="main">
 		<button class="read-more" v-if="p.reply && p.reply.reply_id && context == null" title="会話をもっと読み込む" @click="loadContext" disabled={ contextFetching }>
-			<virtual v-if="!contextFetching">%fa:ellipsis-v%</virtual>
-			<virtual v-if="contextFetching">%fa:spinner .pulse%</virtual>
+			<template v-if="!contextFetching">%fa:ellipsis-v%</template>
+			<template v-if="contextFetching">%fa:spinner .pulse%</template>
 		</button>
 		<div class="context">
-			<virtual each={ post in context }>
+			<template each={ post in context }>
 				<mk-post-detail-sub post={ post }/>
-			</virtual>
+			</template>
 		</div>
 		<div class="reply-to" v-if="p.reply">
 			<mk-post-detail-sub post={ p.reply }/>
@@ -58,9 +58,9 @@
 			</footer>
 		</article>
 		<div class="replies" v-if="!compact">
-			<virtual each={ post in replies }>
+			<template each={ post in replies }>
 				<mk-post-detail-sub post={ post }/>
-			</virtual>
+			</template>
 		</div>
 	</div>
 	<style lang="stylus" scoped>

@@ -2,7 +2,7 @@
 	<button :class="{ wait: wait, follow: !user.is_following, unfollow: user.is_following }" v-if="!init" @click="onclick" disabled={ wait } title={ user.is_following ? 'フォロー解除' : 'フォローする' }>
 		<span v-if="!wait && user.is_following">%fa:minus%フォロー解除</span>
 		<span v-if="!wait && !user.is_following">%fa:plus%フォロー</span>
-		<virtual v-if="wait">%fa:spinner .pulse .fw%</virtual>
+		<template v-if="wait">%fa:spinner .pulse .fw%</template>
 	</button>
 	<div class="init" v-if="init">%fa:spinner .pulse .fw%</div>
 	<style lang="stylus" scoped>

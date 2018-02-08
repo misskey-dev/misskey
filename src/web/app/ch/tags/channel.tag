@@ -18,9 +18,9 @@
 			<p v-if="postsFetching">読み込み中<mk-ellipsis/></p>
 			<div v-if="!postsFetching">
 				<p v-if="posts == null || posts.length == 0">まだ投稿がありません</p>
-				<virtual v-if="posts != null">
+				<template v-if="posts != null">
 					<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
-				</virtual>
+				</template>
 			</div>
 		</div>
 		<hr>
@@ -174,11 +174,11 @@
 		<a v-if="post.reply">&gt;&gt;{ post.reply.index }</a>
 		{ post.text }
 		<div class="media" v-if="post.media">
-			<virtual each={ file in post.media }>
+			<template each={ file in post.media }>
 				<a href={ file.url } target="_blank">
 					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
 				</a>
-			</virtual>
+			</template>
 		</div>
 	</div>
 	<style lang="stylus" scoped>
@@ -247,7 +247,7 @@
 		<button @click="selectFile">%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
 		<button @click="drive">%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
 		<button :class="{ wait: wait }" ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="post">
-			<virtual v-if="!wait">%fa:paper-plane%</virtual>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis v-if="wait"/>
+			<template v-if="!wait">%fa:paper-plane%</template>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis v-if="wait"/>
 		</button>
 	</div>
 	<mk-uploader ref="uploader"/>

@@ -15,7 +15,7 @@
 		</div>
 	</div>
 	<div class="history" v-if="history.length > 0">
-		<virtual each={ history }>
+		<template each={ history }>
 			<a class="user" data-is-me={ is_me } data-is-read={ is_read } @click="_click">
 				<div>
 					<img class="avatar" src={ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&size=64' } alt=""/>
@@ -29,7 +29,7 @@
 					</div>
 				</div>
 			</a>
-		</virtual>
+		</template>
 	</div>
 	<p class="no-history" v-if="!fetching && history.length == 0">%i18n:common.tags.mk-messaging.no-history%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>

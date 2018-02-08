@@ -4,12 +4,12 @@
 		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:common.tags.mk-messaging-room.empty%</p>
 		<p class="no-history" v-if="!init && messages.length > 0 && !moreMessagesIsInStock">%fa:flag%%i18n:common.tags.mk-messaging-room.no-history%</p>
 		<button class="more { fetching: fetchingMoreMessages }" v-if="moreMessagesIsInStock" @click="fetchMoreMessages" disabled={ fetchingMoreMessages }>
-			<virtual v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</virtual>{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }
+			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }
 		</button>
-		<virtual each={ message, i in messages }>
+		<template each={ message, i in messages }>
 			<mk-messaging-message message={ message }/>
 			<p class="date" v-if="i != messages.length - 1 && message._date != messages[i + 1]._date"><span>{ messages[i + 1]._datetext }</span></p>
-		</virtual>
+		</template>
 	</div>
 	<footer>
 		<div ref="notifications"></div>

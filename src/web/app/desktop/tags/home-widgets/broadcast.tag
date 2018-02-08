@@ -12,7 +12,7 @@
 	<h1 v-if="!fetching">{
 		broadcasts.length == 0 ? '%i18n:desktop.tags.mk-broadcast-home-widget.no-broadcasts%' : broadcasts[i].title
 	}</h1>
-	<p v-if="!fetching"><mk-raw v-if="broadcasts.length != 0" content={ broadcasts[i].text }/><virtual v-if="broadcasts.length == 0">%i18n:desktop.tags.mk-broadcast-home-widget.have-a-nice-day%</virtual></p>
+	<p v-if="!fetching"><mk-raw v-if="broadcasts.length != 0" content={ broadcasts[i].text }/><template v-if="broadcasts.length == 0">%i18n:desktop.tags.mk-broadcast-home-widget.have-a-nice-day%</template></p>
 	<a v-if="broadcasts.length > 1" @click="next">%i18n:desktop.tags.mk-broadcast-home-widget.next% &gt;&gt;</a>
 	<style lang="stylus" scoped>
 		:scope

@@ -309,9 +309,9 @@
 <mk-user-overview-posts>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
 	<div v-if="!initializing && posts.length > 0">
-		<virtual each={ posts }>
+		<template each={ posts }>
 			<mk-user-overview-posts-post-card post={ this }/>
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="!initializing && posts.length == 0">%i18n:mobile.tags.mk-user-overview-posts.no-posts%</p>
 	<style lang="stylus" scoped>
@@ -438,9 +438,9 @@
 <mk-user-overview-photos>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!initializing && images.length > 0">
-		<virtual each={ image in images }>
+		<template each={ image in images }>
 			<a class="img" style={ 'background-image: url(' + image.media.url + '?thumbnail&size=256)' } href={ '/' + image.post.user.username + '/' + image.post.id }></a>
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="!initializing && images.length == 0">%i18n:mobile.tags.mk-user-overview-photos.no-photos%</p>
 	<style lang="stylus" scoped>
@@ -559,9 +559,9 @@
 
 <mk-user-overview-keywords>
 	<div v-if="user.keywords != null && user.keywords.length > 1">
-		<virtual each={ keyword in user.keywords }>
+		<template each={ keyword in user.keywords }>
 			<a>{ keyword }</a>
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="user.keywords == null || user.keywords.length == 0">%i18n:mobile.tags.mk-user-overview-keywords.no-keywords%</p>
 	<style lang="stylus" scoped>
@@ -593,9 +593,9 @@
 
 <mk-user-overview-domains>
 	<div v-if="user.domains != null && user.domains.length > 1">
-		<virtual each={ domain in user.domains }>
+		<template each={ domain in user.domains }>
 			<a style="opacity: { 0.5 + (domain.weight / 2) }">{ domain.domain }</a>
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="user.domains == null || user.domains.length == 0">%i18n:mobile.tags.mk-user-overview-domains.no-domains%</p>
 	<style lang="stylus" scoped>
@@ -628,9 +628,9 @@
 <mk-user-overview-frequently-replied-users>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
 	<div v-if="!initializing && users.length > 0">
-		<virtual each={ users }>
+		<template each={ users }>
 			<mk-user-card user={ this.user }/>
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="!initializing && users.length == 0">%i18n:mobile.tags.mk-user-overview-frequently-replied-users.no-users%</p>
 	<style lang="stylus" scoped>
@@ -680,9 +680,9 @@
 <mk-user-overview-followers-you-know>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!initializing && users.length > 0">
-		<virtual each={ user in users }>
+		<template each={ user in users }>
 			<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="!initializing && users.length == 0">%i18n:mobile.tags.mk-user-overview-followers-you-know.no-users%</p>
 	<style lang="stylus" scoped>

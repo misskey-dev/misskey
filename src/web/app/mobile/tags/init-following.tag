@@ -1,9 +1,9 @@
 <mk-init-following>
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" v-if="!fetching && users.length > 0">
-		<virtual each={ users }>
+		<template each={ users }>
 			<mk-user-card user={ this } />
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">おすすめのユーザーは見つかりませんでした。</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>

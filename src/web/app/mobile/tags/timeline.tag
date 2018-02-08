@@ -5,13 +5,13 @@
 	<div class="empty" v-if="!init && posts.length == 0">
 		%fa:R comments%{ opts.empty || '%i18n:mobile.tags.mk-timeline.empty%' }
 	</div>
-	<virtual each={ post, i in posts }>
+	<template each={ post, i in posts }>
 		<mk-timeline-post post={ post }/>
 		<p class="date" v-if="i != posts.length - 1 && post._date != posts[i + 1]._date">
 			<span>%fa:angle-up%{ post._datetext }</span>
 			<span>%fa:angle-down%{ posts[i + 1]._datetext }</span>
 		</p>
-	</virtual>
+	</template>
 	<footer v-if="!init">
 		<button v-if="canFetchMore" @click="more" disabled={ fetching }>
 			<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>

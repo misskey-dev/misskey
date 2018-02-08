@@ -1,8 +1,8 @@
 <mk-activity-widget data-melt={ design == 2 }>
-	<virtual v-if="design == 0">
+	<template v-if="design == 0">
 		<p class="title">%fa:chart-bar%%i18n:desktop.tags.mk-activity-widget.title%</p>
 		<button @click="toggle" title="%i18n:desktop.tags.mk-activity-widget.toggle%">%fa:sort%</button>
-	</virtual>
+	</template>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-activity-widget-calender v-if="!initializing && view == 0" data={ [].concat(activity) }/>
 	<mk-activity-widget-chart v-if="!initializing && view == 1" data={ [].concat(activity) }/>

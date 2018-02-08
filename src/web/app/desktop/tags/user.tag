@@ -357,9 +357,9 @@
 	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!initializing && images.length > 0">
-		<virtual each={ image in images }>
+		<template each={ image in images }>
 			<div class="img" style={ 'background-image: url(' + image.url + '?thumbnail&size=256)' }></div>
-		</virtual>
+		</template>
 	</div>
 	<p class="empty" v-if="!initializing && images.length == 0">%i18n:desktop.tags.mk-user.photos.no-photos%</p>
 	<style lang="stylus" scoped>
@@ -563,9 +563,9 @@
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!initializing && users.length > 0">
-	<virtual each={ user in users }>
+	<template each={ user in users }>
 		<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>
-	</virtual>
+	</template>
 	</div>
 	<p class="empty" v-if="!initializing && users.length == 0">%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
 	<style lang="stylus" scoped>

@@ -1,7 +1,7 @@
 <mk-images>
-	<virtual each={ image in images }>
+	<template each={ image in images }>
 		<mk-images-image image={ image }/>
-	</virtual>
+	</template>
 	<style lang="stylus" scoped>
 		:scope
 			display grid

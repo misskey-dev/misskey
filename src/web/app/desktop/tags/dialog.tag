@@ -4,9 +4,9 @@
 		<header ref="header"></header>
 		<div class="body" ref="body"></div>
 		<div class="buttons">
-			<virtual each={ opts.buttons }>
+			<template each={ opts.buttons }>
 				<button @click="_onclick">{ text }</button>
-			</virtual>
+			</template>
 		</div>
 	</div>
 	<style lang="stylus" scoped>

@@ -230,7 +230,7 @@
 
 <mk-ui-header-notifications>
 	<button data-active={ isOpen } @click="toggle" title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
-		%fa:R bell%<virtual v-if="hasUnreadNotifications">%fa:circle%</virtual>
+		%fa:R bell%<template v-if="hasUnreadNotifications">%fa:circle%</template>
 	</button>
 	<div class="notifications" v-if="isOpen">
 		<mk-notifications/>
@@ -392,7 +392,7 @@
 
 <mk-ui-header-nav>
 	<ul>
-		<virtual v-if="SIGNIN">
+		<template v-if="SIGNIN">
 			<li class="home { active: page == 'home' }">
 				<a href={ _URL_ }>
 					%fa:home%
@@ -403,10 +403,10 @@
 				<a @click="messaging">
 					%fa:comments%
 					<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
-					<virtual v-if="hasUnreadMessagingMessages">%fa:circle%</virtual>
+					<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>
 				</a>
 			</li>
-		</virtual>
+		</template>
 		<li class="ch">
 			<a href={ _CH_URL_ } target="_blank">
 				%fa:tv%
@@ -630,7 +630,7 @@
 
 <mk-ui-header-account>
 	<button class="header" data-active={ isOpen.toString() } @click="toggle">
-		<span class="username">{ I.username }<virtual v-if="!isOpen">%fa:angle-down%</virtual><virtual v-if="isOpen">%fa:angle-up%</virtual></span>
+		<span class="username">{ I.username }<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
 		<img class="avatar" src={ I.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 	</button>
 	<div class="menu" v-if="isOpen">

@@ -1,10 +1,10 @@
 <mk-channel-home-widget>
-	<virtual v-if="!data.compact">
+	<template v-if="!data.compact">
 		<p class="title">%fa:tv%{
 			channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%'
 		}</p>
 		<button @click="settings" title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
-	</virtual>
+	</template>
 	<p class="get-started" v-if="this.data.channel == null">%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
 	<mk-channel ref="channel" show={ this.data.channel }/>
 	<style lang="stylus" scoped>
@@ -200,11 +200,11 @@
 		<a v-if="post.reply">&gt;&gt;{ post.reply.index }</a>
 		{ post.text }
 		<div class="media" v-if="post.media">
-			<virtual each={ file in post.media }>
+			<template each={ file in post.media }>
 				<a href={ file.url } target="_blank">
 					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
 				</a>
-			</virtual>
+			</template>
 		</div>
 	</div>
 	<style lang="stylus" scoped>

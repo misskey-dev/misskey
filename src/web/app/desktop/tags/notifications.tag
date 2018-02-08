@@ -1,9 +1,9 @@
 <mk-notifications>
 	<div class="notifications" v-if="notifications.length != 0">
-		<virtual each={ notification, i in notifications }>
+		<template each={ notification, i in notifications }>
 			<div class="notification { notification.type }">
 				<mk-time time={ notification.created_at }/>
-				<virtual v-if="notification.type == 'reaction'">
+				<template v-if="notification.type == 'reaction'">
 					<a class="avatar-anchor" href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -13,8 +13,8 @@
 							%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
 						</a>
 					</div>
-				</virtual>
-				<virtual v-if="notification.type == 'repost'">
+				</template>
+				<template v-if="notification.type == 'repost'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -24,8 +24,8 @@
 							%fa:quote-left%{ getPostSummary(notification.post.repost) }%fa:quote-right%
 						</a>
 					</div>
-				</virtual>
-				<virtual v-if="notification.type == 'quote'">
+				</template>
+				<template v-if="notification.type == 'quote'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -33,16 +33,16 @@
 						<p>%fa:quote-left%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p>
 						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
-				</virtual>
-				<virtual v-if="notification.type == 'follow'">
+				</template>
+				<template v-if="notification.type == 'follow'">
 					<a class="avatar-anchor" href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
 					<div class="text">
 						<p>%fa:user-plus%<a href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>{ notification.user.name }</a></p>
 					</div>
-				</virtual>
-				<virtual v-if="notification.type == 'reply'">
+				</template>
+				<template v-if="notification.type == 'reply'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -50,8 +50,8 @@
 						<p>%fa:reply%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p>
 						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
-				</virtual>
-				<virtual v-if="notification.type == 'mention'">
+				</template>
+				<template v-if="notification.type == 'mention'">
 					<a class="avatar-anchor" href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>
 						<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -59,8 +59,8 @@
 						<p>%fa:at%<a href={ '/' + notification.post.user.username } data-user-preview={ notification.post.user_id }>{ notification.post.user.name }</a></p>
 						<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 					</div>
-				</virtual>
-				<virtual v-if="notification.type == 'poll_vote'">
+				</template>
+				<template v-if="notification.type == 'poll_vote'">
 					<a class="avatar-anchor" href={ '/' + notification.user.username } data-user-preview={ notification.user.id }>
 						<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=48' } alt="avatar"/>
 					</a>
@@ -70,16 +70,16 @@
 							%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
 						</a>
 					</div>
-				</virtual>
+				</template>
 			</div>
 			<p class="date" v-if="i != notifications.length - 1 && notification._date != notifications[i + 1]._date">
 				<span>%fa:angle-up%{ notification._datetext }</span>
 				<span>%fa:angle-down%{ notifications[i + 1]._datetext }</span>
 			</p>
-		</virtual>
+		</template>
 	</div>
 	<button class="more { fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
-		<virtual v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
+		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" v-if="notifications.length == 0 && !loading">ありません！</p>
 	<p class="loading" v-if="loading">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>

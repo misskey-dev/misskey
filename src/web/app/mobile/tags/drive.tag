@@ -1,39 +1,39 @@
 <mk-drive>
 	<nav ref="nav">
 		<a @click="goRoot" href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
-		<virtual each={ folder in hierarchyFolders }>
+		<template each={ folder in hierarchyFolders }>
 			<span>%fa:angle-right%</span>
 			<a @click="move" href="/i/drive/folder/{ folder.id }">{ folder.name }</a>
-		</virtual>
-		<virtual v-if="folder != null">
+		</template>
+		<template v-if="folder != null">
 			<span>%fa:angle-right%</span>
 			<p>{ folder.name }</p>
-		</virtual>
-		<virtual v-if="file != null">
+		</template>
+		<template v-if="file != null">
 			<span>%fa:angle-right%</span>
 			<p>{ file.name }</p>
-		</virtual>
+		</template>
 	</nav>
 	<mk-uploader ref="uploader"/>
 	<div class="browser { fetching: fetching }" v-if="file == null">
 		<div class="info" v-if="info">
 			<p v-if="folder == null">{ (info.usage / info.capacity * 100).toFixed(1) }% %i18n:mobile.tags.mk-drive.used%</p>
 			<p v-if="folder != null && (folder.folders_count > 0 || folder.files_count > 0)">
-				<virtual v-if="folder.folders_count > 0">{ folder.folders_count } %i18n:mobile.tags.mk-drive.folder-count%</virtual>
-				<virtual v-if="folder.folders_count > 0 && folder.files_count > 0">%i18n:mobile.tags.mk-drive.count-separator%</virtual>
-				<virtual v-if="folder.files_count > 0">{ folder.files_count } %i18n:mobile.tags.mk-drive.file-count%</virtual>
+				<template v-if="folder.folders_count > 0">{ folder.folders_count } %i18n:mobile.tags.mk-drive.folder-count%</template>
+				<template v-if="folder.folders_count > 0 && folder.files_count > 0">%i18n:mobile.tags.mk-drive.count-separator%</template>
+				<template v-if="folder.files_count > 0">{ folder.files_count } %i18n:mobile.tags.mk-drive.file-count%</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
-			<virtual each={ folder in folders }>
+			<template each={ folder in folders }>
 				<mk-drive-folder folder={ folder }/>
-			</virtual>
+			</template>
 			<p v-if="moreFolders">%i18n:mobile.tags.mk-drive.load-more%</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
-			<virtual each={ file in files }>
+			<template each={ file in files }>
 				<mk-drive-file file={ file }/>
-			</virtual>
+			</template>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
 				{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
 			</button>

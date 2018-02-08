@@ -1,8 +1,8 @@
 <mk-trends-home-widget>
-	<virtual v-if="!data.compact">
+	<template v-if="!data.compact">
 		<p class="title">%fa:fire%%i18n:desktop.tags.mk-trends-home-widget.title%</p>
 		<button @click="fetch" title="%i18n:desktop.tags.mk-trends-home-widget.refresh%">%fa:sync%</button>
-	</virtual>
+	</template>
 	<div class="post" v-if="!loading && post != null">
 		<p class="text"><a href="/{ post.user.username }/{ post.id }">{ post.text }</a></p>
 		<p class="author">―<a href="/{ post.user.username }">@{ post.user.username }</a></p>

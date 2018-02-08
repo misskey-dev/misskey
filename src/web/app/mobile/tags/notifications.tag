@@ -1,12 +1,12 @@
 <mk-notifications>
 	<div class="notifications" v-if="notifications.length != 0">
-		<virtual each={ notification, i in notifications }>
+		<template each={ notification, i in notifications }>
 			<mk-notification notification={ notification }/>
 			<p class="date" v-if="i != notifications.length - 1 && notification._date != notifications[i + 1]._date"><span>%fa:angle-up%{ notification._datetext }</span><span>%fa:angle-down%{ notifications[i + 1]._datetext }</span></p>
-		</virtual>
+		</template>
 	</div>
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
-		<virtual v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</virtual>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
+		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" v-if="notifications.length == 0 && !loading">%i18n:mobile.tags.mk-notifications.empty%</p>
 	<p class="loading" v-if="loading">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>

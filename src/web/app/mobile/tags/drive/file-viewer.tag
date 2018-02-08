@@ -6,7 +6,7 @@
 			title={ file.name }
 			onload={ onImageLoaded }
 			style="background-color:rgb({ file.properties.average_color.join(',') })">
-		<virtual v-if="kind != 'image'">%fa:file%</virtual>
+		<template v-if="kind != 'image'">%fa:file%</template>
 		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
 			<span class="size">
 				<span class="width">{ file.properties.width }</span>

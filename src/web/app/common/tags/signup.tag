@@ -29,7 +29,7 @@
 			<p class="info" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.password-not-matched%</p>
 		</label>
 		<label class="recaptcha">
-			<p class="caption"><virtual v-if="recaptchaed">%fa:toggle-on%</virtual><virtual v-if="!recaptchaed">%fa:toggle-off%</virtual>%i18n:common.tags.mk-signup.recaptcha%</p>
+			<p class="caption"><template v-if="recaptchaed">%fa:toggle-on%</template><template v-if="!recaptchaed">%fa:toggle-off%</template>%i18n:common.tags.mk-signup.recaptcha%</p>
 			<div v-if="recaptcha" class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" data-sitekey={ recaptcha.site_key }></div>
 		</label>
 		<label class="agree-tou">

@@ -1,12 +1,12 @@
 <mk-post-form-home-widget>
 	<mk-post-form v-if="place == 'main'"/>
-	<virtual v-if="place != 'main'">
-		<virtual v-if="data.design == 0">
+	<template v-if="place != 'main'">
+		<template v-if="data.design == 0">
 			<p class="title">%fa:pencil-alt%%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
-		</virtual>
+		</template>
 		<textarea disabled={ posting } ref="text" onkeydown={ onkeydown } placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>
 		<button @click="post" disabled={ posting }>%i18n:desktop.tags.mk-post-form-home-widget.post%</button>
-	</virtual>
+	</template>
 	<style lang="stylus" scoped>
 		:scope
 			display block

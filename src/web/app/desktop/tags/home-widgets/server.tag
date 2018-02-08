@@ -1,8 +1,8 @@
 <mk-server-home-widget data-melt={ data.design == 2 }>
-	<virtual v-if="data.design == 0">
+	<template v-if="data.design == 0">
 		<p class="title">%fa:server%%i18n:desktop.tags.mk-server-home-widget.title%</p>
 		<button @click="toggle" title="%i18n:desktop.tags.mk-server-home-widget.toggle%">%fa:sort%</button>
-	</virtual>
+	</template>
 	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<mk-server-home-widget-cpu-and-memory-usage v-if="!initializing" show={ data.view == 0 } connection={ connection }/>
 	<mk-server-home-widget-cpu v-if="!initializing" show={ data.view == 1 } connection={ connection } meta={ meta }/>

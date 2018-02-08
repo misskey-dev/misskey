@@ -1,8 +1,8 @@
 <mk-follow-button>
 	<button :class="{ wait: wait, follow: !user.is_following, unfollow: user.is_following }" v-if="!init" @click="onclick" disabled={ wait }>
-		<virtual v-if="!wait && user.is_following">%fa:minus%</virtual>
-		<virtual v-if="!wait && !user.is_following">%fa:plus%</virtual>
-		<virtual v-if="wait">%fa:spinner .pulse .fw%</virtual>{ user.is_following ? '%i18n:mobile.tags.mk-follow-button.unfollow%' : '%i18n:mobile.tags.mk-follow-button.follow%' }
+		<template v-if="!wait && user.is_following">%fa:minus%</template>
+		<template v-if="!wait && !user.is_following">%fa:plus%</template>
+		<template v-if="wait">%fa:spinner .pulse .fw%</template>{ user.is_following ? '%i18n:mobile.tags.mk-follow-button.unfollow%' : '%i18n:mobile.tags.mk-follow-button.follow%' }
 	</button>
 	<div class="init" v-if="init">%fa:spinner .pulse .fw%</div>
 	<style lang="stylus" scoped>

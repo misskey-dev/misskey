@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<footer>
-			<mk-time time={ message.created_at }/><virtual v-if="message.is_edited">%fa:pencil-alt%</virtual>
+			<mk-time time={ message.created_at }/><template v-if="message.is_edited">%fa:pencil-alt%</template>
 		</footer>
 	</div>
 	<style lang="stylus" scoped>

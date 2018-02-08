@@ -43,8 +43,8 @@
 
 <mk-signin-record>
 	<header @click="toggle">
-		<virtual v-if="rec.success">%fa:check%</virtual>
-		<virtual v-if="!rec.success">%fa:times%</virtual>
+		<template v-if="rec.success">%fa:check%</template>
+		<template v-if="!rec.success">%fa:times%</template>
 		<span class="ip">{ rec.ip }</span>
 		<mk-time time={ rec.created_at }/>
 	</header>

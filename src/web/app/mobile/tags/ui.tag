@@ -53,7 +53,7 @@
 		<div class="backdrop"></div>
 		<div class="content">
 			<button class="nav" @click="parent.toggleDrawer">%fa:bars%</button>
-			<virtual v-if="hasUnreadNotifications || hasUnreadMessagingMessages">%fa:circle%</virtual>
+			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages">%fa:circle%</template>
 			<h1 ref="title">Misskey</h1>
 			<button v-if="func" @click="func"><mk-raw content={ funcIcon }/></button>
 		</div>
@@ -234,8 +234,8 @@
 		<div class="links">
 			<ul>
 				<li><a href="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</a></li>
-				<li><a href="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<virtual v-if="hasUnreadNotifications">%fa:circle%</virtual>%fa:angle-right%</a></li>
-				<li><a href="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<virtual v-if="hasUnreadMessagingMessages">%fa:circle%</virtual>%fa:angle-right%</a></li>
+				<li><a href="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</a></li>
+				<li><a href="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</a></li>
 			</ul>
 			<ul>
 				<li><a href={ _CH_URL_ } target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>

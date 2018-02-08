@@ -1,8 +1,8 @@
 <mk-timeline>
-	<virtual each={ post, i in posts }>
+	<template each={ post, i in posts }>
 		<mk-timeline-post post={ post }/>
 		<p class="date" v-if="i != posts.length - 1 && post._date != posts[i + 1]._date"><span>%fa:angle-up%{ post._datetext }</span><span>%fa:angle-down%{ posts[i + 1]._datetext }</span></p>
-	</virtual>
+	</template>
 	<footer data-yield="footer">
 		<yield from="footer"/>
 	</footer>
@@ -142,8 +142,8 @@
 					%fa:ellipsis-h%
 				</button>
 				<button @click="toggleDetail" title="%i18n:desktop.tags.mk-timeline-post.detail">
-					<virtual v-if="!isDetailOpened">%fa:caret-down%</virtual>
-					<virtual v-if="isDetailOpened">%fa:caret-up%</virtual>
+					<template v-if="!isDetailOpened">%fa:caret-down%</template>
+					<template v-if="isDetailOpened">%fa:caret-up%</template>
 				</button>
 			</footer>
 		</div>

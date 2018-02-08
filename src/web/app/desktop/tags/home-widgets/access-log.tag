@@ -1,7 +1,7 @@
 <mk-access-log-home-widget>
-	<virtual v-if="data.design == 0">
+	<template v-if="data.design == 0">
 		<p class="title">%fa:server%%i18n:desktop.tags.mk-access-log-home-widget.title%</p>
-	</virtual>
+	</template>
 	<div ref="log">
 		<p each={ requests }>
 			<span class="ip" style="color:{ fg }; background:{ bg }">{ ip }</span>

@@ -1,6 +1,6 @@
 <mk-notification :class="{ notification.type }">
 	<mk-time time={ notification.created_at }/>
-	<virtual v-if="notification.type == 'reaction'">
+	<template v-if="notification.type == 'reaction'">
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -13,8 +13,8 @@
 				%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
 			</a>
 		</div>
-	</virtual>
-	<virtual v-if="notification.type == 'repost'">
+	</template>
+	<template v-if="notification.type == 'repost'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -27,8 +27,8 @@
 				%fa:quote-left%{ getPostSummary(notification.post.repost) }%fa:quote-right%
 			</a>
 		</div>
-	</virtual>
-	<virtual v-if="notification.type == 'quote'">
+	</template>
+	<template v-if="notification.type == 'quote'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -39,8 +39,8 @@
 			</p>
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
-	</virtual>
-	<virtual v-if="notification.type == 'follow'">
+	</template>
+	<template v-if="notification.type == 'follow'">
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -50,8 +50,8 @@
 				<a href={ '/' + notification.user.username }>{ notification.user.name }</a>
 			</p>
 		</div>
-	</virtual>
-	<virtual v-if="notification.type == 'reply'">
+	</template>
+	<template v-if="notification.type == 'reply'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -62,8 +62,8 @@
 			</p>
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
-	</virtual>
-	<virtual v-if="notification.type == 'mention'">
+	</template>
+	<template v-if="notification.type == 'mention'">
 		<a class="avatar-anchor" href={ '/' + notification.post.user.username }>
 			<img class="avatar" src={ notification.post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -74,8 +74,8 @@
 			</p>
 			<a class="post-preview" href={ '/' + notification.post.user.username + '/' + notification.post.id }>{ getPostSummary(notification.post) }</a>
 		</div>
-	</virtual>
-	<virtual v-if="notification.type == 'poll_vote'">
+	</template>
+	<template v-if="notification.type == 'poll_vote'">
 		<a class="avatar-anchor" href={ '/' + notification.user.username }>
 			<img class="avatar" src={ notification.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 		</a>
@@ -88,7 +88,7 @@
 				%fa:quote-left%{ getPostSummary(notification.post) }%fa:quote-right%
 			</a>
 		</div>
-	</virtual>
+	</template>
 	<style lang="stylus" scoped>
 		:scope
 			display block

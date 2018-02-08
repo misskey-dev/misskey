@@ -2,10 +2,10 @@
 	<nav>
 		<div class="path" oncontextmenu={ pathOncontextmenu }>
 			<mk-drive-browser-nav-folder :class="{ current: folder == null }" folder={ null }/>
-			<virtual each={ folder in hierarchyFolders }>
+			<template each={ folder in hierarchyFolders }>
 				<span class="separator">%fa:angle-right%</span>
 				<mk-drive-browser-nav-folder folder={ folder }/>
-			</virtual>
+			</template>
 			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
 			<span class="folder current" v-if="folder != null">{ folder.name }</span>
 		</div>
@@ -15,17 +15,17 @@
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
-				<virtual each={ folder in folders }>
+				<template each={ folder in folders }>
 					<mk-drive-browser-folder class="folder" folder={ folder }/>
-				</virtual>
+				</template>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" each={ Array(10).fill(16) }></div>
 				<button v-if="moreFolders">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
-				<virtual each={ file in files }>
+				<template each={ file in files }>
 					<mk-drive-browser-file class="file" file={ file }/>
-				</virtual>
+				</template>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" each={ Array(10).fill(16) }></div>
 				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>

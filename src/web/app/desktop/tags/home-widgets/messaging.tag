@@ -1,7 +1,7 @@
 <mk-messaging-home-widget>
-	<virtual v-if="data.design == 0">
+	<template v-if="data.design == 0">
 		<p class="title">%fa:comments%%i18n:desktop.tags.mk-messaging-home-widget.title%</p>
-	</virtual>
+	</template>
 	<mk-messaging ref="index" compact={ true }/>
 	<style lang="stylus" scoped>
 		:scope

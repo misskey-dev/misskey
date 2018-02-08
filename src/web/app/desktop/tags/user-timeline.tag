@@ -8,8 +8,8 @@
 	<p class="empty" v-if="isEmpty">%fa:R comments%このユーザーはまだ何も投稿していないようです。</p>
 	<mk-timeline ref="timeline">
 		<yield to="footer">
-			<virtual v-if="!parent.moreLoading">%fa:moon%</virtual>
-			<virtual v-if="parent.moreLoading">%fa:spinner .pulse .fw%</virtual>
+			<template v-if="!parent.moreLoading">%fa:moon%</template>
+			<template v-if="parent.moreLoading">%fa:spinner .pulse .fw%</template>
 		</yield/>
 	</mk-timeline>
 	<style lang="stylus" scoped>
