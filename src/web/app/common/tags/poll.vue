@@ -2,60 +2,65 @@
 <div :data-is-voted="isVoted">
 	<ul>
 		<li v-for="choice in poll.choices" :key="choice.id" @click="vote.bind(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', choice.text) : ''">
-			<div class="backdrop" :style="{ 'width:' + (result ? (choice.votes / total * 100) : 0) + '%' }"></div>
+			<div class="backdrop" :style="{ 'width:' + (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
 				<template v-if="choice.is_voted">%fa:check%</template>
 				{{ text }}
-				<span class="votes" v-if="result">({{ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', choice.votes) }})</span>
+				<span class="votes" v-if="showResult">({{ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', choice.votes) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="total > 0">
 		<span>{{ '%i18n:common.tags.mk-poll.total-users%'.replace('{}', total) }}</span>
 		・
-		<a v-if="!isVoted" @click="toggleResult">{{ result ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }}</a>
+		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }}</a>
 		<span v-if="isVoted">%i18n:common.tags.mk-poll.voted%</span>
 	</p>
 </div>
 </template>
 
 <script lang="typescript">
-	this.mixin('api');
-
-	this.init = post => {
-		this.post = post;
-		this.poll = this.post.poll;
-		this.total = this.poll.choices.reduce((a, b) => a + b.votes, 0);
-		this.isVoted = this.poll.choices.some(c => c.is_voted);
-		this.result = this.isVoted;
-		this.update();
-	};
-
-	this.init(this.opts.post);
-
-	this.toggleResult = () => {
-		this.result = !this.result;
-	};
-
-	this.vote = id => {
-		if (this.poll.choices.some(c => c.is_voted)) return;
-		this.api('posts/polls/vote', {
-			post_id: this.post.id,
-			choice: id
-		}).then(() => {
-			this.poll.choices.forEach(c => {
-				if (c.id == id) {
-					c.votes++;
-					c.is_voted = true;
-				}
-			});
-			this.update({
-				poll: this.poll,
-				isVoted: true,
-				result: true,
-				total: this.total + 1
-			});
-		});
+	export default {
+		props: ['post'],
+		data() {
+			return {
+				showResult: false
+			};
+		},
+		computed: {
+			poll() {
+				return this.post.poll;
+			},
+			total() {
+				return this.poll.choices.reduce((a, b) => a + b.votes, 0);
+			},
+			isVoted() {
+				return this.poll.choices.some(c => c.is_voted);
+			}
+		},
+		created() {
+			this.showResult = this.isVoted;
+		},
+		methods: {
+			toggleShowResult() {
+				this.showResult = !this.showResult;
+			},
+			vote(id) {
+				if (this.poll.choices.some(c => c.is_voted)) return;
+				this.api('posts/polls/vote', {
+					post_id: this.post.id,
+					choice: id
+				}).then(() => {
+					this.poll.choices.forEach(c => {
+						if (c.id == id) {
+							c.votes++;
+							c.is_voted = true;
+						}
+					});
+					this.showResult = true;
+				});
+			}
+		}
 	};
 </script>
 
