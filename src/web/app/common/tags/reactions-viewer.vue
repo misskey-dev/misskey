@@ -18,7 +18,7 @@
 	export default {
 		props: ['post'],
 		computed: {
-			reactions: function() {
+			reactions() {
 				return this.post.reaction_counts;
 			}
 		}

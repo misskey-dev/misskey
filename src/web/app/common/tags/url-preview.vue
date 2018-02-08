@@ -17,7 +17,17 @@
 <script lang="typescript">
 	export default {
 		props: ['url'],
-		created: function() {
+		data() {
+			return {
+				fetching: true,
+				title: null,
+				description: null,
+				thumbnail: null,
+				icon: null,
+				sitename: null
+			};
+		},
+		created() {
 			fetch('/api:url?url=' + this.url).then(res => {
 				res.json().then(info => {
 					this.title = info.title;
@@ -29,14 +39,6 @@
 					this.fetching = false;
 				});
 			});
-		},
-		data: {
-			fetching: true,
-			title: null,
-			description: null,
-			thumbnail: null,
-			icon: null,
-			sitename: null
 		}
 	};
 </script>

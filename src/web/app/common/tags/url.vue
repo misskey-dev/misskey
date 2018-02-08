@@ -13,7 +13,17 @@
 <script lang="typescript">
 	export default {
 		props: ['url', 'target'],
-		created: function() {
+		data() {
+			return {
+				schema: null,
+				hostname: null,
+				port: null,
+				pathname: null,
+				query: null,
+				hash: null
+			};
+		},
+		created() {
 			const url = new URL(this.url);
 
 			this.schema = url.protocol;
@@ -22,14 +32,6 @@
 			this.pathname = url.pathname;
 			this.query = url.search;
 			this.hash = url.hash;
-		},
-		data: {
-			schema: null,
-			hostname: null,
-			port: null,
-			pathname: null,
-			query: null,
-			hash: null
 		}
 	};
 </script>

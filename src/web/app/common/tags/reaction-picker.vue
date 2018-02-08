@@ -21,15 +21,21 @@
 <script lang="typescript">
 	import anime from 'animejs';
 	import api from '../scripts/api';
+	import MkReactionIcon from './reaction-icon.vue';
 
 	const placeholder = '%i18n:common.tags.mk-reaction-picker.choose-reaction%';
 
 	export default {
-		props: ['post', 'source', 'compact', 'cb'],
-		data: {
-			title: placeholder
+		components: {
+			MkReactionIcon
 		},
-		created: function() {
+		props: ['post', 'source', 'compact', 'cb'],
+		data() {
+			return {
+				title: placeholder
+			};
+		},
+		created() {
 			const rect = this.source.getBoundingClientRect();
 			const width = this.$refs.popover.offsetWidth;
 			const height = this.$refs.popover.offsetHeight;
@@ -60,7 +66,7 @@
 			});
 		},
 		methods: {
-			react: function(reaction) {
+			react(reaction) {
 				api('posts/reactions/create', {
 					post_id: this.post.id,
 					reaction: reaction
@@ -69,13 +75,13 @@
 					this.$destroy();
 				});
 			},
-			onMouseover: function(e) {
+			onMouseover(e) {
 				this.title = e.target.title;
 			},
-			onMouseout: function(e) {
+			onMouseout(e) {
 				this.title = placeholder;
 			},
-			clo1se: function() {
+			close() {
 				this.$refs.backdrop.style.pointerEvents = 'none';
 				anime({
 					targets: this.$refs.backdrop,

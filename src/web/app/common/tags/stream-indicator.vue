@@ -21,7 +21,7 @@
 
 	export default {
 		props: ['stream'],
-		created: function() {
+		created() {
 			if (this.stream.state == 'connected') {
 				this.root.style.opacity = 0;
 			}
