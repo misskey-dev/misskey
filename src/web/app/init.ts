@@ -7,11 +7,14 @@ declare const _LANG_: string;
 declare const _HOST_: string;
 declare const __CONSTS__: any;
 
-import * as riot from 'riot';
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+
+Vue.use(VueRouter);
+
 import checkForUpdate from './common/scripts/check-for-update';
 import mixin from './common/mixins';
 import MiOS from './common/mios';
-require('./common/tags');
 
 /**
  * APP ENTRY POINT!

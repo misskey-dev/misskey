@@ -172,6 +172,8 @@
 		"uglifyjs-webpack-plugin": "1.1.8",
 		"uuid": "3.2.1",
 		"vhost": "3.0.2",
+		"vue": "^2.5.13",
+		"vue-router": "^3.0.1",
 		"web-push": "3.2.5",
 		"webpack": "3.10.0",
 		"websocket": "1.0.25",
