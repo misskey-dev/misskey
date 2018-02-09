@@ -5,9 +5,7 @@
 // Style
 import './style.styl';
 
-require('./tags');
-require('./mixins');
-import * as riot from 'riot';
+import Vue from 'vue';
 import init from '../init';
 import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
@@ -18,7 +16,7 @@ import composeNotification from '../common/scripts/compose-notification';
 /**
  * init
  */
-init(async (mios: MiOS) => {
+init(async (mios: MiOS, app: Vue) => {
 	/**
 	 * Fuck AD Block
 	 */

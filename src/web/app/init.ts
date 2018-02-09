@@ -13,7 +13,6 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
 import checkForUpdate from './common/scripts/check-for-update';
-import mixin from './common/mixins';
 import MiOS from './common/mios';
 
 /**
@@ -64,20 +63,15 @@ export default (callback, sw = false) => {
 	const mios = new MiOS(sw);
 
 	mios.init(() => {
-		// ミックスイン初期化
-		mixin(mios);
-
-		// ローディング画面クリア
-		const ini = document.getElementById('ini');
-		ini.parentNode.removeChild(ini);
-
 		// アプリ基底要素マウント
-		const app = document.createElement('div');
-		app.setAttribute('id', 'app');
-		document.body.appendChild(app);
+		document.body.innerHTML = '<div id="app"><router-view></router-view></div>';
+
+		const app = new Vue({
+			router: new VueRouter()
+		}).$mount('#app');
 
 		try {
-			callback(mios);
+			callback(mios, app);
 		} catch (e) {
 			panic(e);
 		}
