@@ -4,6 +4,10 @@ import signout from './scripts/signout';
 import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
 import api from './scripts/api';
+import DriveStreamManager from './scripts/streaming/drive-stream-manager';
+import ServerStreamManager from './scripts/streaming/server-stream-manager';
+import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
+import MessagingIndexStreamManager from './scripts/streaming/messaging-index-stream-manager';
 
 //#region environment variables
 declare const _VERSION_: string;
@@ -51,6 +55,16 @@ export default class MiOS extends EventEmitter {
 	public stream: HomeStreamManager;
 
 	/**
+	 * Connection managers
+	 */
+	public streams: {
+		driveStream: DriveStreamManager;
+		serverStream: ServerStreamManager;
+		requestsStream: RequestsStreamManager;
+		messagingIndexStream: MessagingIndexStreamManager;
+	};
+
+	/**
 	 * A registration of service worker
 	 */
 	private swRegistration: ServiceWorkerRegistration = null;
@@ -69,6 +83,9 @@ export default class MiOS extends EventEmitter {
 
 		this.shouldRegisterSw = shouldRegisterSw;
 
+		this.streams.serverStream = new ServerStreamManager();
+		this.streams.requestsStream = new RequestsStreamManager();
+
 		//#region BIND
 		this.log = this.log.bind(this);
 		this.logInfo = this.logInfo.bind(this);
@@ -79,6 +96,15 @@ export default class MiOS extends EventEmitter {
 		this.getMeta = this.getMeta.bind(this);
 		this.registerSw = this.registerSw.bind(this);
 		//#endregion
+
+		this.once('signedin', () => {
+			// Init home stream manager
+			this.stream = new HomeStreamManager(this.i);
+
+			// Init other stream manager
+			this.streams.driveStream = new DriveStreamManager(this.i);
+			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this.i);
+		});
 	}
 
 	public log(...args) {
@@ -139,8 +165,8 @@ export default class MiOS extends EventEmitter {
 			// When failure
 			.catch(() => {
 				// Render the error screen
-				document.body.innerHTML = '<mk-error />';
-				riot.mount('*');
+				//document.body.innerHTML = '<mk-error />';
+				//riot.mount('*');
 
 				Progress.done();
 			});
@@ -173,10 +199,7 @@ export default class MiOS extends EventEmitter {
 
 			this.i = me;
 
-			// Init home stream manager
-			this.stream = this.isSignedin
-				? new HomeStreamManager(this.i)
-				: null;
+			this.emit('signedin');
 
 			// Finish init
 			callback();

@@ -30,21 +30,21 @@ if (_HOST_ != 'localhost') {
 	document.domain = _HOST_;
 }
 
-{ // Set lang attr
-	const html = document.documentElement;
-	html.setAttribute('lang', _LANG_);
-}
+//#region Set lang attr
+const html = document.documentElement;
+html.setAttribute('lang', _LANG_);
+//#endregion
 
-{ // Set description meta tag
-	const head = document.getElementsByTagName('head')[0];
-	const meta = document.createElement('meta');
-	meta.setAttribute('name', 'description');
-	meta.setAttribute('content', '%i18n:common.misskey%');
-	head.appendChild(meta);
-}
+//#region Set description meta tag
+const head = document.getElementsByTagName('head')[0];
+const meta = document.createElement('meta');
+meta.setAttribute('name', 'description');
+meta.setAttribute('content', '%i18n:common.misskey%');
+head.appendChild(meta);
+//#endregion
 
 // Set global configuration
-(riot as any).mixin(__CONSTS__);
+//(riot as any).mixin(__CONSTS__);
 
 // iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
