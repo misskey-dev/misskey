@@ -59,7 +59,7 @@
 			document.addEventListener('keydown', this.onDocumentKeydown);
 			window.addEventListener('scroll', this.onScroll);
 
-			this.load(() => this.trigger('loaded'));
+			this.load(() => this.$emit('loaded'));
 		});
 
 		this.on('unmount', () => {

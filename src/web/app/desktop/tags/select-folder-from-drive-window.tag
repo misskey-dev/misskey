@@ -105,7 +105,7 @@
 		};
 
 		this.ok = () => {
-			this.trigger('selected', this.$refs.window.refs.browser.folder);
+			this.$emit('selected', this.$refs.window.refs.browser.folder);
 			this.$refs.window.close();
 		};
 	</script>

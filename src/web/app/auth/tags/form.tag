@@ -115,7 +115,7 @@
 			this.api('auth/deny', {
 				token: this.session.token
 			}).then(() => {
-				this.trigger('denied');
+				this.$emit('denied');
 			});
 		};
 
@@ -123,7 +123,7 @@
 			this.api('auth/accept', {
 				token: this.session.token
 			}).then(() => {
-				this.trigger('accepted');
+				this.$emit('accepted');
 			});
 		};
 	</script>

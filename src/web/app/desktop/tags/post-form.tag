@@ -324,7 +324,7 @@
 			});
 
 			this.$refs.uploader.on('change-uploads', uploads => {
-				this.trigger('change-uploading-files', uploads);
+				this.$emit('change-uploading-files', uploads);
 			});
 
 			this.autocomplete = new Autocomplete(this.$refs.text);
@@ -340,7 +340,7 @@
 					this.update();
 					this.$refs.poll.set(draft.data.poll);
 				}
-				this.trigger('change-files', this.files);
+				this.$emit('change-files', this.files);
 				this.update();
 			}
 
@@ -361,7 +361,7 @@
 			this.$refs.text.value = '';
 			this.files = [];
 			this.poll = false;
-			this.trigger('change-files');
+			this.$emit('change-files');
 			this.update();
 		};
 
@@ -444,14 +444,14 @@
 
 		this.addFile = file => {
 			this.files.push(file);
-			this.trigger('change-files', this.files);
+			this.$emit('change-files', this.files);
 			this.update();
 		};
 
 		this.removeFile = e => {
 			const file = e.item;
 			this.files = this.files.filter(x => x.id != file.id);
-			this.trigger('change-files', this.files);
+			this.$emit('change-files', this.files);
 			this.update();
 		};
 
@@ -487,7 +487,7 @@
 			}).then(data => {
 				this.clear();
 				this.removeDraft();
-				this.trigger('post');
+				this.$emit('post');
 				notify(this.repost
 					? '%i18n:desktop.tags.mk-post-form.reposted%'
 					: this.inReplyToPost

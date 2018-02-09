@@ -274,7 +274,7 @@
 				if (folder.parent) dive(folder.parent);
 
 				this.update();
-				this.trigger('open-folder', this.folder, silent);
+				this.$emit('open-folder', this.folder, silent);
 				this.fetch();
 			});
 		};
@@ -343,7 +343,7 @@
 					folder: null,
 					hierarchyFolders: []
 				});
-				this.trigger('move-root');
+				this.$emit('move-root');
 				this.fetch();
 			}
 
@@ -359,7 +359,7 @@
 				fetching: true
 			});
 
-			this.trigger('begin-fetch');
+			this.$emit('begin-fetch');
 
 			let fetchedFolders = null;
 			let fetchedFiles = null;
@@ -402,11 +402,11 @@
 						fetching: false
 					});
 					// 一連の読み込みが完了したイベントを発行
-					this.trigger('fetched');
+					this.$emit('fetched');
 				} else {
 					flag = true;
 					// 一連の読み込みが半分完了したイベントを発行
-					this.trigger('fetch-mid');
+					this.$emit('fetch-mid');
 				}
 			};
 
@@ -455,9 +455,9 @@
 						this.selectedFiles.push(file);
 					}
 					this.update();
-					this.trigger('change-selection', this.selectedFiles);
+					this.$emit('change-selection', this.selectedFiles);
 				} else {
-					this.trigger('selected', file);
+					this.$emit('selected', file);
 				}
 			} else {
 				this.cf(file);
@@ -482,7 +482,7 @@
 				if (file.folder) dive(file.folder);
 
 				this.update();
-				this.trigger('open-file', this.file, silent);
+				this.$emit('open-file', this.file, silent);
 			});
 		};
 

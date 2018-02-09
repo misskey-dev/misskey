@@ -178,18 +178,18 @@
 
 		this.ok = () => {
 			this.cropper.getCroppedCanvas().toBlob(blob => {
-				this.trigger('cropped', blob);
+				this.$emit('cropped', blob);
 				this.$refs.window.close();
 			});
 		};
 
 		this.skip = () => {
-			this.trigger('skipped');
+			this.$emit('skipped');
 			this.$refs.window.close();
 		};
 
 		this.cancel = () => {
-			this.trigger('canceled');
+			this.$emit('canceled');
 			this.$refs.window.close();
 		};
 	</script>

@@ -18,7 +18,7 @@
 				with_media: this.withMedia
 			}).then(posts => {
 				res(posts);
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 		});
 

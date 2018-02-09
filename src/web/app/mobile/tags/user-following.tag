@@ -21,7 +21,7 @@
 
 		this.on('mount', () => {
 			this.$refs.list.on('loaded', () => {
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 		});
 	</script>

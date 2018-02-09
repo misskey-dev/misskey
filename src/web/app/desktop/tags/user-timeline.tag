@@ -76,7 +76,7 @@
 					user: user
 				});
 
-				this.fetch(() => this.trigger('loaded'));
+				this.fetch(() => this.$emit('loaded'));
 			});
 		});
 

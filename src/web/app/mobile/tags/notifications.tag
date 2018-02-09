@@ -106,7 +106,7 @@
 					notifications: notifications
 				});
 
-				this.trigger('fetched');
+				this.$emit('fetched');
 			});
 
 			this.connection.on('notification', this.onNotification);

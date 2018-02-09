@@ -131,7 +131,7 @@
 				el.removeEventListener('mousedown', this.mousedown);
 			});
 
-			this.trigger('closed');
+			this.$emit('closed');
 			this.$destroy();
 		};
 	</script>

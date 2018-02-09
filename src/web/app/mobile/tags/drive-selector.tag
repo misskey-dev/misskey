@@ -70,18 +70,18 @@
 			});
 
 			this.$refs.browser.on('selected', file => {
-				this.trigger('selected', file);
+				this.$emit('selected', file);
 				this.$destroy();
 			});
 		});
 
 		this.cancel = () => {
-			this.trigger('canceled');
+			this.$emit('canceled');
 			this.$destroy();
 		};
 
 		this.ok = () => {
-			this.trigger('selected', this.files);
+			this.$emit('selected', this.files);
 			this.$destroy();
 		};
 	</script>

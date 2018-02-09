@@ -9,7 +9,7 @@
 
 		this.on('mount', () => {
 			this.$refs.posts.on('loaded', () => {
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 		});
 	</script>

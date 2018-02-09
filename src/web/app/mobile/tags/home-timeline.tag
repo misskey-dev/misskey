@@ -22,7 +22,7 @@
 		this.init = new Promise((res, rej) => {
 			this.api('posts/timeline').then(posts => {
 				res(posts);
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 		});
 

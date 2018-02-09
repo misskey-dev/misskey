@@ -17,7 +17,7 @@
 
 		this.on('mount', () => {
 			this.$refs.ctx.on('closed', () => {
-				this.trigger('closed');
+				this.$emit('closed');
 				this.$destroy();
 			});
 		});

@@ -201,7 +201,7 @@
 			}).then(user => {
 				this.fetching = false;
 				this.user = user;
-				this.trigger('loaded', user);
+				this.$emit('loaded', user);
 				this.update();
 			});
 		});

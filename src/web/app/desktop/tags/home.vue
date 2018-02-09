@@ -1,56 +1,242 @@
 <template>
-	<div :data-customize="customize">
-		<div class="customize" v-if="customize">
-			<a href="/">%fa:check%完了</a>
-			<div>
-				<div class="adder">
-					<p>ウィジェットを追加:</p>
-					<select ref="widgetSelector">
-						<option value="profile">プロフィール</option>
-						<option value="calendar">カレンダー</option>
-						<option value="timemachine">カレンダー(タイムマシン)</option>
-						<option value="activity">アクティビティ</option>
-						<option value="rss-reader">RSSリーダー</option>
-						<option value="trends">トレンド</option>
-						<option value="photo-stream">フォトストリーム</option>
-						<option value="slideshow">スライドショー</option>
-						<option value="version">バージョン</option>
-						<option value="broadcast">ブロードキャスト</option>
-						<option value="notifications">通知</option>
-						<option value="user-recommendation">おすすめユーザー</option>
-						<option value="recommended-polls">投票</option>
-						<option value="post-form">投稿フォーム</option>
-						<option value="messaging">メッセージ</option>
-						<option value="channel">チャンネル</option>
-						<option value="access-log">アクセスログ</option>
-						<option value="server">サーバー情報</option>
-						<option value="donation">寄付のお願い</option>
-						<option value="nav">ナビゲーション</option>
-						<option value="tips">ヒント</option>
-					</select>
-					<button @click="addWidget">追加</button>
-				</div>
-				<div class="trash">
-					<div ref="trash"></div>
-					<p>ゴミ箱</p>
-				</div>
+<div :data-customize="customize">
+	<div class="customize" v-if="customize">
+		<a href="/">%fa:check%完了</a>
+		<div>
+			<div class="adder">
+				<p>ウィジェットを追加:</p>
+				<select ref="widgetSelector">
+					<option value="profile">プロフィール</option>
+					<option value="calendar">カレンダー</option>
+					<option value="timemachine">カレンダー(タイムマシン)</option>
+					<option value="activity">アクティビティ</option>
+					<option value="rss-reader">RSSリーダー</option>
+					<option value="trends">トレンド</option>
+					<option value="photo-stream">フォトストリーム</option>
+					<option value="slideshow">スライドショー</option>
+					<option value="version">バージョン</option>
+					<option value="broadcast">ブロードキャスト</option>
+					<option value="notifications">通知</option>
+					<option value="user-recommendation">おすすめユーザー</option>
+					<option value="recommended-polls">投票</option>
+					<option value="post-form">投稿フォーム</option>
+					<option value="messaging">メッセージ</option>
+					<option value="channel">チャンネル</option>
+					<option value="access-log">アクセスログ</option>
+					<option value="server">サーバー情報</option>
+					<option value="donation">寄付のお願い</option>
+					<option value="nav">ナビゲーション</option>
+					<option value="tips">ヒント</option>
+				</select>
+				<button @click="addWidget">追加</button>
+			</div>
+			<div class="trash">
+				<div ref="trash"></div>
+				<p>ゴミ箱</p>
 			</div>
 		</div>
-		<div class="main">
-			<div class="left">
-				<div ref="left" data-place="left"></div>
-			</div>
-			<main ref="main">
-				<div class="maintop" ref="maintop" data-place="main" v-if="customize"></div>
-				<mk-timeline-home-widget ref="tl" v-if="mode == 'timeline'"/>
-				<mk-mentions-home-widget ref="tl" v-if="mode == 'mentions'"/>
-			</main>
-			<div class="right">
-				<div ref="right" data-place="right"></div>
-			</div>
-		</div>	
 	</div>
+	<div class="main">
+		<div class="left">
+			<div ref="left" data-place="left">
+				<template v-for="widget in leftWidgets">
+					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu="onWidgetContextmenu.stop.prevent(widget.id)">
+						<component :is="widget.name" :widget="widget" :ref="widget.id"></component>
+					</div>
+					<template v-else>
+						<component :is="widget.name" :key="widget.id" :widget="widget" :ref="widget.id"></component>
+					</template>
+				</template>
+			</div>
+		</div>
+		<main ref="main">
+			<div class="maintop" ref="maintop" data-place="main" v-if="customize">
+				<template v-for="widget in centerWidgets">
+					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu="onWidgetContextmenu.stop.prevent(widget.id)">
+						<component :is="widget.name" :widget="widget" :ref="widget.id"></component>
+					</div>
+					<template v-else>
+						<component :is="widget.name" :key="widget.id" :widget="widget" :ref="widget.id"></component>
+					</template>
+				</template>
+			</div>
+			<mk-timeline-home-widget ref="tl" v-on:loaded="onTlLoaded" v-if="mode == 'timeline'"/>
+			<mk-mentions-home-widget ref="tl" v-on:loaded="onTlLoaded" v-if="mode == 'mentions'"/>
+		</main>
+		<div class="right">
+			<div ref="right" data-place="right">
+				<template v-for="widget in rightWidgets">
+					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu="onWidgetContextmenu.stop.prevent(widget.id)">
+						<component :is="widget.name" :widget="widget" :ref="widget.id"></component>
+					</div>
+					<template v-else>
+						<component :is="widget.name" :key="widget.id" :widget="widget" :ref="widget.id"></component>
+					</template>
+				</template>
+			</div>
+		</div>
+	</div>
+</div>
 </template>
+
+<script lang="typescript">
+import uuid from 'uuid';
+import Sortable from 'sortablejs';
+import I from '../../common/i';
+import { resolveSrv } from 'dns';
+
+export default {
+	props: {
+		customize: Boolean,
+		mode: {
+			type: String,
+			default: 'timeline'
+		}
+	},
+	data() {
+		return {
+			home: [],
+			bakedHomeData: null
+		};
+	},
+	methods: {
+		bakeHomeData() {
+			return JSON.stringify(this.I.client_settings.home);
+		},
+		onTlLoaded() {
+			this.$emit('loaded');
+		},
+		onMeRefreshed() {
+			if (this.bakedHomeData != this.bakeHomeData()) {
+				// TODO: i18n
+				alert('別の場所でホームが編集されました。ページを再度読み込みすると編集が反映されます。');
+			}
+		},
+		onWidgetContextmenu(widgetId) {
+			this.$refs[widgetId].func();
+		},
+		addWidget() {
+			const widget = {
+				name: this.$refs.widgetSelector.options[this.$refs.widgetSelector.selectedIndex].value,
+				id: uuid(),
+				place: 'left',
+				data: {}
+			};
+
+			this.I.client_settings.home.unshift(widget);
+
+			this.saveHome();
+		},
+		saveHome() {
+			/*const data = [];
+
+			Array.from(this.$refs.left.children).forEach(el => {
+				const id = el.getAttribute('data-widget-id');
+				const widget = this.I.client_settings.home.find(w => w.id == id);
+				widget.place = 'left';
+				data.push(widget);
+			});
+
+			Array.from(this.$refs.right.children).forEach(el => {
+				const id = el.getAttribute('data-widget-id');
+				const widget = this.I.client_settings.home.find(w => w.id == id);
+				widget.place = 'right';
+				data.push(widget);
+			});
+
+			Array.from(this.$refs.maintop.children).forEach(el => {
+				const id = el.getAttribute('data-widget-id');
+				const widget = this.I.client_settings.home.find(w => w.id == id);
+				widget.place = 'main';
+				data.push(widget);
+			});
+
+			this.api('i/update_home', {
+				home: data
+			}).then(() => {
+				this.I.update();
+			});*/
+		}
+	},
+	computed: {
+		leftWidgets() {
+			return this.I.client_settings.home.filter(w => w.place == 'left');
+		},
+		centerWidgets() {
+			return this.I.client_settings.home.filter(w => w.place == 'center');
+		},
+		rightWidgets() {
+			return this.I.client_settings.home.filter(w => w.place == 'right');
+		}
+	},
+	created() {
+		this.bakedHomeData = this.bakeHomeData();
+	},
+	mounted() {
+		this.I.on('refreshed', this.onMeRefreshed);
+
+		this.I.client_settings.home.forEach(widget => {
+			try {
+				this.setWidget(widget);
+			} catch (e) {
+				// noop
+			}
+		});
+
+		if (!this.opts.customize) {
+			if (this.$refs.left.children.length == 0) {
+				this.$refs.left.parentNode.removeChild(this.$refs.left);
+			}
+			if (this.$refs.right.children.length == 0) {
+				this.$refs.right.parentNode.removeChild(this.$refs.right);
+			}
+		}
+
+		if (this.opts.customize) {
+			dialog('%fa:info-circle%カスタマイズのヒント',
+				'<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
+				'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
+				'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
+				'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
+			[{
+				text: 'Got it!'
+			}]);
+
+			const sortableOption = {
+				group: 'kyoppie',
+				animation: 150,
+				onMove: evt => {
+					const id = evt.dragged.getAttribute('data-widget-id');
+					this.home.find(tag => tag.id == id).update({ place: evt.to.getAttribute('data-place') });
+				},
+				onSort: () => {
+					this.saveHome();
+				}
+			};
+
+			new Sortable(this.$refs.left, sortableOption);
+			new Sortable(this.$refs.right, sortableOption);
+			new Sortable(this.$refs.maintop, sortableOption);
+			new Sortable(this.$refs.trash, Object.assign({}, sortableOption, {
+				onAdd: evt => {
+					const el = evt.item;
+					const id = el.getAttribute('data-widget-id');
+					el.parentNode.removeChild(el);
+					this.I.client_settings.home = this.I.client_settings.home.filter(w => w.id != id);
+					this.saveHome();
+				}
+			}));
+		}
+	},
+	beforeDestroy() {
+		this.I.off('refreshed', this.onMeRefreshed);
+
+		this.home.forEach(widget => {
+			widget.unmount();
+		});
+	}
+};
+</script>
 
 <style lang="stylus" scoped>
 	:scope
@@ -184,209 +370,3 @@
 					margin 0 auto
 
 </style>
-
-<script lang="typescript">
-	import uuid from 'uuid';
-	import Sortable from 'sortablejs';
-	import dialog from '../scripts/dialog';
-	import ScrollFollower from '../scripts/scroll-follower';
-
-	this.mixin('i');
-	this.mixin('api');
-
-	this.mode = this.opts.mode || 'timeline';
-
-	this.home = [];
-
-	this.bakeHomeData = () => JSON.stringify(this.I.client_settings.home);
-	this.bakedHomeData = this.bakeHomeData();
-
-	this.on('mount', () => {
-		this.$refs.tl.on('loaded', () => {
-			this.trigger('loaded');
-		});
-
-		this.I.on('refreshed', this.onMeRefreshed);
-
-		this.I.client_settings.home.forEach(widget => {
-			try {
-				this.setWidget(widget);
-			} catch (e) {
-				// noop
-			}
-		});
-
-		if (!this.opts.customize) {
-			if (this.$refs.left.children.length == 0) {
-				this.$refs.left.parentNode.removeChild(this.$refs.left);
-			}
-			if (this.$refs.right.children.length == 0) {
-				this.$refs.right.parentNode.removeChild(this.$refs.right);
-			}
-		}
-
-		if (this.opts.customize) {
-			dialog('%fa:info-circle%カスタマイズのヒント',
-				'<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
-				'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
-				'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
-				'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
-			[{
-				text: 'Got it!'
-			}]);
-
-			const sortableOption = {
-				group: 'kyoppie',
-				animation: 150,
-				onMove: evt => {
-					const id = evt.dragged.getAttribute('data-widget-id');
-					this.home.find(tag => tag.id == id).update({ place: evt.to.getAttribute('data-place') });
-				},
-				onSort: () => {
-					this.saveHome();
-				}
-			};
-
-			new Sortable(this.$refs.left, sortableOption);
-			new Sortable(this.$refs.right, sortableOption);
-			new Sortable(this.$refs.maintop, sortableOption);
-			new Sortable(this.$refs.trash, Object.assign({}, sortableOption, {
-				onAdd: evt => {
-					const el = evt.item;
-					const id = el.getAttribute('data-widget-id');
-					el.parentNode.removeChild(el);
-					this.I.client_settings.home = this.I.client_settings.home.filter(w => w.id != id);
-					this.saveHome();
-				}
-			}));
-		}
-
-		if (!this.opts.customize) {
-			this.scrollFollowerLeft = this.$refs.left.parentNode ? new ScrollFollower(this.$refs.left, this.root.getBoundingClientRect().top) : null;
-			this.scrollFollowerRight = this.$refs.right.parentNode ? new ScrollFollower(this.$refs.right, this.root.getBoundingClientRect().top) : null;
-		}
-	});
-
-	this.on('unmount', () => {
-		this.I.off('refreshed', this.onMeRefreshed);
-
-		this.home.forEach(widget => {
-			widget.unmount();
-		});
-
-		if (!this.opts.customize) {
-			if (this.scrollFollowerLeft) this.scrollFollowerLeft.dispose();
-			if (this.scrollFollowerRight) this.scrollFollowerRight.dispose();
-		}
-	});
-
-	this.onMeRefreshed = () => {
-		if (this.bakedHomeData != this.bakeHomeData()) {
-			alert('別の場所でホームが編集されました。ページを再度読み込みすると編集が反映されます。');
-		}
-	};
-
-	this.setWidget = (widget, prepend = false) => {
-		const el = document.createElement(`mk-${widget.name}-home-widget`);
-
-		let actualEl;
-
-		if (this.opts.customize) {
-			const container = document.createElement('div');
-			container.classList.add('customize-container');
-			container.setAttribute('data-widget-id', widget.id);
-			container.appendChild(el);
-			actualEl = container;
-		} else {
-			actualEl = el;
-		}
-
-		switch (widget.place) {
-			case 'left':
-				if (prepend) {
-					this.$refs.left.insertBefore(actualEl, this.$refs.left.firstChild);
-				} else {
-					this.$refs.left.appendChild(actualEl);
-				}
-				break;
-			case 'right':
-				if (prepend) {
-					this.$refs.right.insertBefore(actualEl, this.$refs.right.firstChild);
-				} else {
-					this.$refs.right.appendChild(actualEl);
-				}
-				break;
-			case 'main':
-				if (this.opts.customize) {
-					this.$refs.maintop.appendChild(actualEl);
-				} else {
-					this.$refs.main.insertBefore(actualEl, this.$refs.tl.root);
-				}
-				break;
-		}
-
-		const tag = riot.mount(el, {
-			id: widget.id,
-			data: widget.data,
-			place: widget.place,
-			tl: this.$refs.tl
-		})[0];
-
-		this.home.push(tag);
-
-		if (this.opts.customize) {
-			actualEl.oncontextmenu = e => {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-				if (tag.func) tag.func();
-				return false;
-			};
-		}
-	};
-
-	this.addWidget = () => {
-		const widget = {
-			name: this.$refs.widgetSelector.options[this.$refs.widgetSelector.selectedIndex].value,
-			id: uuid(),
-			place: 'left',
-			data: {}
-		};
-
-		this.I.client_settings.home.unshift(widget);
-
-		this.setWidget(widget, true);
-
-		this.saveHome();
-	};
-
-	this.saveHome = () => {
-		const data = [];
-
-		Array.from(this.$refs.left.children).forEach(el => {
-			const id = el.getAttribute('data-widget-id');
-			const widget = this.I.client_settings.home.find(w => w.id == id);
-			widget.place = 'left';
-			data.push(widget);
-		});
-
-		Array.from(this.$refs.right.children).forEach(el => {
-			const id = el.getAttribute('data-widget-id');
-			const widget = this.I.client_settings.home.find(w => w.id == id);
-			widget.place = 'right';
-			data.push(widget);
-		});
-
-		Array.from(this.$refs.maintop.children).forEach(el => {
-			const id = el.getAttribute('data-widget-id');
-			const widget = this.I.client_settings.home.find(w => w.id == id);
-			widget.place = 'main';
-			data.push(widget);
-		});
-
-		this.api('i/update_home', {
-			home: data
-		}).then(() => {
-			this.I.update();
-		});
-	};
-</script>

@@ -111,7 +111,7 @@
 				username: this.$refs.username.value
 			}).then(user => {
 				this.user = user;
-				this.trigger('user', user);
+				this.$emit('user', user);
 				this.update();
 			});
 		};

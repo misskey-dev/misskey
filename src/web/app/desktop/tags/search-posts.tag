@@ -54,7 +54,7 @@
 					isEmpty: posts.length == 0
 				});
 				this.$refs.timeline.setPosts(posts);
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 		});
 

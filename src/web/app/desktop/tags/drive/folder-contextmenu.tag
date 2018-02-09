@@ -29,7 +29,7 @@
 			this.$refs.ctx.open(pos);
 
 			this.$refs.ctx.on('closed', () => {
-				this.trigger('closed');
+				this.$emit('closed');
 				this.$destroy();
 			});
 		};

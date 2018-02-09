@@ -93,7 +93,7 @@
 		this.quote = false;
 
 		this.cancel = () => {
-			this.trigger('cancel');
+			this.$emit('cancel');
 		};
 
 		this.ok = () => {
@@ -101,7 +101,7 @@
 			this.api('posts/create', {
 				repost_id: this.opts.post.id
 			}).then(data => {
-				this.trigger('posted');
+				this.$emit('posted');
 				notify('%i18n:desktop.tags.mk-repost-form.success%');
 			}).catch(err => {
 				notify('%i18n:desktop.tags.mk-repost-form.failure%');
@@ -118,7 +118,7 @@
 			});
 
 			this.$refs.form.on('post', () => {
-				this.trigger('posted');
+				this.$emit('posted');
 			});
 
 			this.$refs.form.focus();

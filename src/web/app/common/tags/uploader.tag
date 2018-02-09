@@ -155,7 +155,7 @@
 			};
 
 			this.uploads.push(ctx);
-			this.trigger('change-uploads', this.uploads);
+			this.$emit('change-uploads', this.uploads);
 			this.update();
 
 			const reader = new FileReader();
@@ -176,10 +176,10 @@
 			xhr.onload = e => {
 				const driveFile = JSON.parse(e.target.response);
 
-				this.trigger('uploaded', driveFile);
+				this.$emit('uploaded', driveFile);
 
 				this.uploads = this.uploads.filter(x => x.id != id);
-				this.trigger('change-uploads', this.uploads);
+				this.$emit('change-uploads', this.uploads);
 
 				this.update();
 			};

@@ -166,7 +166,7 @@
 		};
 
 		this.ok = () => {
-			this.trigger('selected', this.multiple ? this.files : this.files[0]);
+			this.$emit('selected', this.multiple ? this.files : this.files[0]);
 			this.$refs.window.close();
 		};
 	</script>

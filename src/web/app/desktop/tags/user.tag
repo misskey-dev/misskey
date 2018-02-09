@@ -32,7 +32,7 @@
 					fetching: false,
 					user: user
 				});
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 		});
 	</script>
@@ -716,7 +716,7 @@
 
 		this.on('mount', () => {
 			this.$refs.tl.on('loaded', () => {
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 
 			this.scrollFollowerLeft = new ScrollFollower(this.$refs.left, this.parent.root.getBoundingClientRect().top);
@@ -778,7 +778,7 @@
 	</style>
 	<script lang="typescript">
 		this.on('mount', () => {
-			this.trigger('loaded');
+			this.$emit('loaded');
 		});
 	</script>
 </mk-user-graphs>

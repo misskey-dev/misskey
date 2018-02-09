@@ -57,12 +57,12 @@
 	</style>
 	<script lang="typescript">
 		this.cancel = () => {
-			this.trigger('canceled');
+			this.$emit('canceled');
 			this.$destroy();
 		};
 
 		this.ok = () => {
-			this.trigger('selected', this.$refs.browser.folder);
+			this.$emit('selected', this.$refs.browser.folder);
 			this.$destroy();
 		};
 	</script>

@@ -161,7 +161,7 @@
 			});
 
 			this.$refs.uploader.on('change-uploads', uploads => {
-				this.trigger('change-uploading-files', uploads);
+				this.$emit('change-uploading-files', uploads);
 			});
 
 			this.$refs.text.focus();
@@ -207,19 +207,19 @@
 		this.addFile = file => {
 			file._remove = () => {
 				this.files = this.files.filter(x => x.id != file.id);
-				this.trigger('change-files', this.files);
+				this.$emit('change-files', this.files);
 				this.update();
 			};
 
 			this.files.push(file);
-			this.trigger('change-files', this.files);
+			this.$emit('change-files', this.files);
 			this.update();
 		};
 
 		this.removeFile = e => {
 			const file = e.item;
 			this.files = this.files.filter(x => x.id != file.id);
-			this.trigger('change-files', this.files);
+			this.$emit('change-files', this.files);
 			this.update();
 		};
 
@@ -254,7 +254,7 @@
 				reply_id: opts.reply ? opts.reply.id : undefined,
 				poll: this.poll ? this.$refs.poll.get() : undefined
 			}).then(data => {
-				this.trigger('post');
+				this.$emit('post');
 				this.$destroy();
 			}).catch(err => {
 				this.update({
@@ -264,7 +264,7 @@
 		};
 
 		this.cancel = () => {
-			this.trigger('cancel');
+			this.$emit('cancel');
 			this.$destroy();
 		};
 

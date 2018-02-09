@@ -344,7 +344,7 @@
 		this.registerMessage = message => {
 			message.is_me = message.user_id == this.I.id;
 			message._click = () => {
-				this.trigger('navigate-user', message.is_me ? message.recipient : message.user);
+				this.$emit('navigate-user', message.is_me ? message.recipient : message.user);
 			};
 		};
 
@@ -400,7 +400,7 @@
 			}).then(users => {
 				users.forEach(user => {
 					user._click = () => {
-						this.trigger('navigate-user', user);
+						this.$emit('navigate-user', user);
 						this.searchResult = [];
 					};
 				});

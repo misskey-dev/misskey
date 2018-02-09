@@ -98,7 +98,7 @@
 		this.moreFetching = false;
 
 		this.on('mount', () => {
-			this.fetch(() => this.trigger('loaded'));
+			this.fetch(() => this.$emit('loaded'));
 		});
 
 		this.fetch = cb => {

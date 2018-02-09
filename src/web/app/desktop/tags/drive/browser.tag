@@ -535,13 +535,13 @@
 					this.selectedFiles.push(file);
 				}
 				this.update();
-				this.trigger('change-selection', this.selectedFiles);
+				this.$emit('change-selection', this.selectedFiles);
 			} else {
 				if (isAlreadySelected) {
-					this.trigger('selected', file);
+					this.$emit('selected', file);
 				} else {
 					this.selectedFiles = [file];
-					this.trigger('change-selection', [file]);
+					this.$emit('change-selection', [file]);
 				}
 			}
 		};
@@ -578,7 +578,7 @@
 				if (folder.parent) dive(folder.parent);
 
 				this.update();
-				this.trigger('open-folder', folder);
+				this.$emit('open-folder', folder);
 				this.fetch();
 			});
 		};
@@ -648,7 +648,7 @@
 				folder: null,
 				hierarchyFolders: []
 			});
-			this.trigger('move-root');
+			this.$emit('move-root');
 			this.fetch();
 		};
 

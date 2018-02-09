@@ -27,7 +27,7 @@
 		this.init = new Promise((res, rej) => {
 			this.api('posts/search', parse(this.query)).then(posts => {
 				res(posts);
-				this.trigger('loaded');
+				this.$emit('loaded');
 			});
 		});
 

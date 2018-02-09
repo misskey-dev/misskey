@@ -231,7 +231,7 @@
 		};
 
 		this.open = () => {
-			this.trigger('opening');
+			this.$emit('opening');
 
 			this.top();
 
@@ -257,7 +257,7 @@
 			//this.$refs.main.focus();
 
 			setTimeout(() => {
-				this.trigger('opened');
+				this.$emit('opened');
 			}, 300);
 		};
 
@@ -278,7 +278,7 @@
 		};
 
 		this.close = () => {
-			this.trigger('closing');
+			this.$emit('closing');
 
 			if (this.isModal) {
 				this.$refs.bg.style.pointerEvents = 'none';
@@ -301,7 +301,7 @@
 			});
 
 			setTimeout(() => {
-				this.trigger('closed');
+				this.$emit('closed');
 			}, 300);
 		};
 

@@ -82,7 +82,7 @@
 			this.view++;
 			if (this.view == 2) this.view = 0;
 			this.update();
-			this.trigger('view-changed', this.view);
+			this.$emit('view-changed', this.view);
 		};
 	</script>
 </mk-activity-widget>
