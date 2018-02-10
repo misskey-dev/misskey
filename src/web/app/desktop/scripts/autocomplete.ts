@@ -1,4 +1,4 @@
-import getCaretCoordinates = require('textarea-caret');
+import getCaretCoordinates from 'textarea-caret';
 import * as riot from 'riot';
 
 /**

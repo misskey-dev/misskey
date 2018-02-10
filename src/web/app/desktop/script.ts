@@ -7,11 +7,12 @@ import './style.styl';
 
 import Vue from 'vue';
 import init from '../init';
-import route from './router';
 import fuckAdBlock from './scripts/fuck-ad-block';
 import MiOS from '../common/mios';
 import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
 import composeNotification from '../common/scripts/compose-notification';
+
+import MkIndex from './tags/pages/index.vue';
 
 /**
  * init
@@ -36,8 +37,9 @@ init(async (mios: MiOS, app: Vue) => {
 		}
 	}
 
-	// Start routing
-	route(mios);
+	app.$router.addRoutes([{
+		path: '/', component: MkIndex, props: { os: mios }
+	}]);
 }, true);
 
 function registerNotifications(stream: HomeStreamManager) {
@@ -96,9 +98,9 @@ function registerNotifications(stream: HomeStreamManager) {
 			});
 			n.onclick = () => {
 				n.close();
-				(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+				/*(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
 					user: message.user
-				});
+				});*/
 			};
 			setTimeout(n.close.bind(n), 7000);
 		});

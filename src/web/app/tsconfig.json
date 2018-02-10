@@ -19,8 +19,5 @@
   "compileOnSave": false,
   "include": [
     "./**/*.ts"
-  ],
-  "exclude": [
-    "./web/app/**/*.ts"
   ]
 }

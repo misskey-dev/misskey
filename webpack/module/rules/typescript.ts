@@ -4,5 +4,9 @@
 
 export default () => ({
 	test: /\.ts$/,
-	use: 'awesome-typescript-loader'
+	loader: 'ts-loader',
+	options: {
+		configFile: __dirname + '/../../../src/web/app/tsconfig.json',
+		appendTsSuffixTo: [/\.vue$/]
+	}
 });

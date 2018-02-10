@@ -5,7 +5,7 @@
 declare const _VERSION_: string;
 declare const _LANG_: string;
 declare const _HOST_: string;
-declare const __CONSTS__: any;
+//declare const __CONSTS__: any;
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
