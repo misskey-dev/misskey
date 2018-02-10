@@ -8,7 +8,7 @@ const constants = require('../../../src/const.json');
 
 export default () => ({
 	enforce: 'pre',
-	test: /\.tag$/,
+	test: /\.vue$/,
 	exclude: /node_modules/,
 	loader: StringReplacePlugin.replace({
 		replacements: [

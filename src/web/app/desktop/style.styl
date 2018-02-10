@@ -42,10 +42,10 @@
 		background rgba(0, 0, 0, 0.2)
 
 html
+	height 100%
 	background #f7f7f7
 
-	// ↓ workaround of https://github.com/riot/riot/issues/2134
-	&[data-page='entrance']
-		#wait
-			right auto
-			left 15px
+body
+	display flex
+	flex-direction column
+	min-height 100%

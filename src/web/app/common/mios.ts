@@ -38,7 +38,7 @@ export default class MiOS extends EventEmitter {
 	/**
 	 * Whether signed in
 	 */
-	public get isSignedin() {
+	public get isSignedIn() {
 		return this.i != null;
 	}
 
@@ -251,7 +251,7 @@ export default class MiOS extends EventEmitter {
 		if (!isSwSupported) return;
 
 		// Reject when not signed in to Misskey
-		if (!this.isSignedin) return;
+		if (!this.isSignedIn) return;
 
 		// When service worker activated
 		navigator.serviceWorker.ready.then(registration => {

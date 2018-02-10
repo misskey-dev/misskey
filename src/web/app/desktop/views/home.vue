@@ -82,8 +82,6 @@
 <script lang="typescript">
 import uuid from 'uuid';
 import Sortable from 'sortablejs';
-import I from '../../common/i';
-import { resolveSrv } from 'dns';
 
 export default {
 	props: {

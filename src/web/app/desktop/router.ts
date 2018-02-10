@@ -23,7 +23,7 @@ export default (mios: MiOS) => {
 	route('*',                       notFound);
 
 	function index() {
-		mios.isSignedin ? home() : entrance();
+		mios.isSignedIn ? home() : entrance();
 	}
 
 	function home() {

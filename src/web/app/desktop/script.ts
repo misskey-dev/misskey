@@ -5,19 +5,17 @@
 // Style
 import './style.styl';
 
-import Vue from 'vue';
 import init from '../init';
 import fuckAdBlock from './scripts/fuck-ad-block';
-import MiOS from '../common/mios';
 import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
 import composeNotification from '../common/scripts/compose-notification';
 
-import MkIndex from './tags/pages/index.vue';
+import MkIndex from './views/pages/index.vue';
 
 /**
  * init
  */
-init(async (mios: MiOS, app: Vue) => {
+init(async (os, launch) => {
 	/**
 	 * Fuck AD Block
 	 */
@@ -33,12 +31,17 @@ init(async (mios: MiOS, app: Vue) => {
 		}
 
 		if ((Notification as any).permission == 'granted') {
-			registerNotifications(mios.stream);
+			registerNotifications(os.stream);
 		}
 	}
 
+	// Register components
+	require('./views/components');
+
+	const app = launch();
+
 	app.$router.addRoutes([{
-		path: '/', component: MkIndex, props: { os: mios }
+		path: '/', component: MkIndex, props: { os }
 	}]);
 }, true);
 
