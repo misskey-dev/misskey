@@ -9,8 +9,10 @@ declare const _HOST_: string;
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VModal from 'vue-js-modal';
 
 Vue.use(VueRouter);
+Vue.use(VModal);
 
 import App from './app.vue';
 
