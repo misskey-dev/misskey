@@ -2,7 +2,7 @@
 <div class="root">
 	<main>
 		<div>
-			<h1>繋がるNotes</h1>
+			<h1>Share<br>Everything!</h1>
 			<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです――思ったこと、共有したいことをシンプルに書き残せます。タイムラインを見れば、皆の反応や皆がどう思っているのかもすぐにわかります。<a>詳しく...</a></p>
 			<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
 		</div>
@@ -50,6 +50,8 @@
 				> h1
 					margin 0
 					font-weight normal
+					font-variant small-caps
+					letter-spacing 12px
 
 				> p
 					margin 0.5em 0
