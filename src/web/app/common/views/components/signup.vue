@@ -1,5 +1,5 @@
 <template>
-<form class="form" @submit.prevent="onSubmit" autocomplete="off">
+<form class="mk-signup" @submit.prevent="onSubmit" autocomplete="off">
 	<label class="username">
 		<p class="caption">%fa:at%%i18n:common.tags.mk-signup.username%</p>
 		<input v-model="username" type="text" pattern="^[a-zA-Z0-9-]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required @keyup="onChangeUsername"/>
@@ -24,7 +24,7 @@
 	</label>
 	<label class="retype-password">
 		<p class="caption">%fa:lock%%i18n:common.tags.mk-signup.password%(%i18n:common.tags.mk-signup.retype%)</p>
-		<input v-model="passwordRetype" type="password" placeholder="%i18n:common.tags.mk-signup.retype-placeholder%" autocomplete="off" required @keyup="onChangePasswordRetype"/>
+		<input v-model="retypedPassword" type="password" placeholder="%i18n:common.tags.mk-signup.retype-placeholder%" autocomplete="off" required @keyup="onChangePasswordRetype"/>
 		<p class="info" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.password-matched%</p>
 		<p class="info" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.password-not-matched%</p>
 	</label>
@@ -145,12 +145,12 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.form
+.mk-signup
 	min-width 302px
 
 	label
 		display block
-		margin 16px 0
+		margin 0 0 16px 0
 
 		> .caption
 			margin 0 0 4px 0
@@ -260,7 +260,7 @@ export default Vue.extend({
 			color #555
 
 	button
-		margin 0 0 32px 0
+		margin 0
 		padding 16px
 		width 100%
 		font-size 1em

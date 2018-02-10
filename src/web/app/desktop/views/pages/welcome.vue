@@ -1,5 +1,5 @@
 <template>
-<div class="root">
+<div class="mk-welcome">
 	<main>
 		<div>
 			<h1>Share<br>Everything!</h1>
@@ -17,8 +17,9 @@
 			<p class="c">{ _COPYRIGHT_ }</p>
 		</div>
 	</footer>
-	<modal name="signup">
-		<mk-signup></mk-signup>
+	<modal name="signup" width="500px" height="auto" scrollable>
+		<header :class="$style.signupFormHeader">新規登録</header>
+		<mk-signup :class="$style.signupForm"></mk-signup>
 	</modal>
 </div>
 </template>
@@ -43,7 +44,7 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
-.root
+.mk-welcome
 	display flex
 	flex-direction column
 	flex 1
@@ -126,4 +127,16 @@ export default Vue.extend({
 				line-height 64px
 				font-size 10px
 
+</style>
+
+<style lang="stylus" module>
+.signupForm
+	padding 24px 48px 48px 48px
+
+.signupFormHeader
+	padding 48px 0 12px 0
+	margin: 0 48px
+	font-size 1.5em
+	color #777
+	border-bottom solid 1px #eee
 </style>
