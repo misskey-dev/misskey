@@ -10,7 +10,7 @@ export default lang => {
 
 	return {
 		enforce: 'pre',
-		test: /\.(tag|js|ts)$/,
+		test: /\.(vue|js|ts)$/,
 		exclude: /node_modules/,
 		loader: StringReplacePlugin.replace({
 			replacements: [{

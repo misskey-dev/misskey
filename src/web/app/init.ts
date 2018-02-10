@@ -70,6 +70,9 @@ export default (callback: (os: MiOS, launch: () => Vue) => void, sw = false) => 
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
+		// Register global components
+		require('./common/views/components');
+
 		const launch = () => {
 			return new Vue({
 				router: new VueRouter({

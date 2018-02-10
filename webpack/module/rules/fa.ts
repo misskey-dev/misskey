@@ -7,7 +7,7 @@ import { pattern, replacement } from '../../../src/common/build/fa';
 
 export default () => ({
 	enforce: 'pre',
-	test: /\.(tag|js|ts)$/,
+	test: /\.(vue|js|ts)$/,
 	exclude: /node_modules/,
 	loader: StringReplacePlugin.replace({
 		replacements: [{

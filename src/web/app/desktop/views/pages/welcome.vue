@@ -18,7 +18,7 @@
 		</div>
 	</footer>
 	<modal name="signup">
-		<mk-signup/>
+		<mk-signup></mk-signup>
 	</modal>
 </div>
 </template>
