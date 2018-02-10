@@ -24,12 +24,12 @@ export default class Replacer {
 			return key; // Fallback
 		}
 
-		let text;
+		let text = texts;
 
 		// Check the key existance
 		const error = key.split('.').some(k => {
-			if (texts.hasOwnProperty(k)) {
-				text = texts[k];
+			if (text.hasOwnProperty(k)) {
+				text = text[k];
 				return false;
 			} else {
 				return true;
