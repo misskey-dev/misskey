@@ -62,6 +62,11 @@ export default class MiOS extends EventEmitter {
 		serverStream: ServerStreamManager;
 		requestsStream: RequestsStreamManager;
 		messagingIndexStream: MessagingIndexStreamManager;
+	} = {
+		driveStream: null,
+		serverStream: null,
+		requestsStream: null,
+		messagingIndexStream: null
 	};
 
 	/**

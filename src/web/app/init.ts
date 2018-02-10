@@ -12,6 +12,8 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
+import App from './app.vue';
+
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './common/mios';
 
@@ -64,10 +66,13 @@ export default (callback, sw = false) => {
 
 	mios.init(() => {
 		// アプリ基底要素マウント
-		document.body.innerHTML = '<div id="app"><router-view></router-view></div>';
+		document.body.innerHTML = '<div id="app"></div>';
 
 		const app = new Vue({
-			router: new VueRouter()
+			router: new VueRouter({
+				mode: 'history'
+			}),
+			render: createEl => createEl(App)
 		}).$mount('#app');
 
 		try {
