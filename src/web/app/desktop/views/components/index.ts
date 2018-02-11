@@ -8,6 +8,7 @@ import timelinePostSub from './timeline-post-sub.vue';
 import subPostContent from './sub-post-content.vue';
 import window from './window.vue';
 import postFormWindow from './post-form-window.vue';
+import repostFormWindow from './repost-form-window.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-home', home);
@@ -17,3 +18,4 @@ Vue.component('mk-timeline-post-sub', timelinePostSub);
 Vue.component('mk-sub-post-content', subPostContent);
 Vue.component('mk-window', window);
 Vue.component('post-form-window', postFormWindow);
+Vue.component('repost-form-window', repostFormWindow);

@@ -1,5 +1,5 @@
 <template>
-<mk-window is-modal @closed="$destroy">
+<mk-window ref="window" is-modal @closed="$destroy">
 	<span slot="header">
 		<span v-if="!parent.opts.reply">%i18n:desktop.tags.mk-post-form-window.post%</span>
 		<span v-if="parent.opts.reply">%i18n:desktop.tags.mk-post-form-window.reply%</span>
@@ -10,7 +10,7 @@
 		<mk-post-preview v-if="parent.opts.reply" :class="$style.postPreview" :post="reply"/>
 		<mk-post-form ref="form"
 			:reply="reply"
-			@post="$refs.window.close"
+			@posted="$refs.window.close"
 			@change-uploadings="onChangeUploadings"
 			@change-attached-media="onChangeMedia"/>
 	</div>
