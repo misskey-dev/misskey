@@ -7,7 +7,7 @@
 	<footer data-yield="footer">
 		<yield from="footer"/>
 	</footer>
-</div>	
+</div>
 </template>
 
 <script lang="ts">
@@ -31,7 +31,7 @@ export default Vue.extend({
 	},
 	methods: {
 		focus() {
-			this.$refs.root.children[0].focus();
+			(this.$refs.root as any).children[0].focus();
 		}
 	}
 });

@@ -27,7 +27,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import anime from 'animejs';
-import contains from '../../common/scripts/contains';
+import contains from '../../../common/scripts/contains';
 
 const minHeight = 40;
 const minWidth = 200;

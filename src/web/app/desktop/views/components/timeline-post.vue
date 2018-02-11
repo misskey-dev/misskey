@@ -32,7 +32,7 @@
 				<div class="text" ref="text">
 					<p class="channel" v-if="p.channel"><a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:</p>
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<p class="dummy"></p>
+					<mk-post-html :ast="p.ast" :i="$root.$data.os.i"/>
 					<a class="quote" v-if="p.repost">RP:</a>
 				</div>
 				<div class="media" v-if="p.media">
@@ -94,7 +94,7 @@ export default Vue.extend({
 			return this.isRepost ? this.post.repost : this.post;
 		},
 		reactionsCount(): number {
-			return this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;			
+			return this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
 		},
 		title(): string {
 			return dateStringify(this.p.created_at);
@@ -116,12 +116,6 @@ export default Vue.extend({
 
 		if (this.p.text) {
 			const tokens = this.p.ast;
-
-			this.$refs.text.innerHTML = this.$refs.text.innerHTML.replace('<p class="dummy"></p>', compile(tokens));
-
-			Array.from(this.$refs.text.children).forEach(e => {
-				if (e.tagName == 'MK-URL') riot.mount(e);
-			});
 
 			// URLをプレビュー
 			tokens
