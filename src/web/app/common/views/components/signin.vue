@@ -1,5 +1,5 @@
 <template>
-<form class="form" :class="{ signing: signing }" @submit.prevent="onSubmit">
+<form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
 	<label class="user-name">
 		<input v-model="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="%i18n:common.tags.mk-signin.username%" autofocus required @change="onUsernameChange"/>%fa:at%
 	</label>
@@ -9,7 +9,7 @@
 	<label class="token" v-if="user && user.two_factor_enabled">
 		<input v-model="token" type="number" placeholder="%i18n:common.tags.mk-signin.token%" required/>%fa:lock%
 	</label>
-	<button type="submit" disabled={ signing }>{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }</button>
+	<button type="submit" :disabled="signing">{{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }}</button>
 </form>
 </template>
 
@@ -53,10 +53,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.form
-	display block
-	z-index 2
-
+.mk-signin
 	&.signing
 		&, *
 			cursor wait !important

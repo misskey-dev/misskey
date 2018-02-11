@@ -13,8 +13,8 @@
 	<mk-forkit/>
 	<footer>
 		<div>
-			<mk-nav-links/>
-			<p class="c">{ _COPYRIGHT_ }</p>
+			<mk-nav :class="$style.nav"/>
+			<p class="c">{{ copyright }}</p>
 		</div>
 	</footer>
 	<modal name="signup" width="500px" height="auto" scrollable>
@@ -30,8 +30,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { copyright } from '../../../config';
 
 export default Vue.extend({
+	data() {
+		return {
+			copyright
+		};
+	},
 	methods: {
 		signup() {
 			this.$modal.show('signup');
@@ -115,23 +121,17 @@ export default Vue.extend({
 			margin 0 0 0 auto
 
 	> footer
+		color #666
 		background #fff
-
-		*
-			color #fff !important
-			text-shadow 0 0 8px #000
-			font-weight bold
 
 		> div
 			max-width $width
 			margin 0 auto
-			padding 16px 0
+			padding 42px 0
 			text-align center
-			border-top solid 1px #fff
 
 			> .c
-				margin 0
-				line-height 64px
+				margin 16px 0 0 0
 				font-size 10px
 
 </style>
@@ -156,4 +156,8 @@ export default Vue.extend({
 	font-size 1.5em
 	color #777
 	border-bottom solid 1px #eee
+
+.nav
+	a
+		color #666
 </style>
