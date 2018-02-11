@@ -1,5 +1,5 @@
 <template>
-<div class="mk-timeline">
+<div class="mk-timeline" ref="root">
 	<template each={ post, i in posts }>
 		<mk-timeline-post post={ post }/>
 		<p class="date" v-if="i != posts.length - 1 && post._date != posts[i + 1]._date"><span>%fa:angle-up%{ post._datetext }</span><span>%fa:angle-down%{ posts[i + 1]._datetext }</span></p>
@@ -10,49 +10,31 @@
 </div>	
 </template>
 
-<script lang="typescript">
-this.posts = [];
+<script lang="ts">
+import Vue from 'vue';
 
-this.on('update', () => {
-	this.posts.forEach(post => {
-		const date = new Date(post.created_at).getDate();
-		const month = new Date(post.created_at).getMonth() + 1;
-		post._date = date;
-		post._datetext = `${month}月 ${date}日`;
-	});
+export default Vue.extend({
+	props: ['posts'],
+	computed: {
+		_posts(): any {
+			return this.posts.map(post => {
+				const date = new Date(post.created_at).getDate();
+				const month = new Date(post.created_at).getMonth() + 1;
+				post._date = date;
+				post._datetext = `${month}月 ${date}日`;
+				return post;
+			});
+		},
+		tail(): any {
+			return this.posts[this.posts.length - 1];
+		}
+	},
+	methods: {
+		focus() {
+			this.$refs.root.children[0].focus();
+		}
+	}
 });
-
-this.setPosts = posts => {
-	this.update({
-		posts: posts
-	});
-};
-
-this.prependPosts = posts => {
-	posts.forEach(post => {
-		this.posts.push(post);
-		this.update();
-	});
-}
-
-this.addPost = post => {
-	this.posts.unshift(post);
-	this.update();
-};
-
-this.tail = () => {
-	return this.posts[this.posts.length - 1];
-};
-
-this.clear = () => {
-	this.posts = [];
-	this.update();
-};
-
-this.focus = () => {
-	this.root.children[0].focus();
-};
-
 </script>
 
 <style lang="stylus" scoped>
