@@ -1,22 +1,18 @@
 <template>
-<mk-window ref="window" is-modal @closed="$destroy">
+<mk-window is-modal @closed="$destroy">
 	<span slot="header">
 		<span v-if="!parent.opts.reply">%i18n:desktop.tags.mk-post-form-window.post%</span>
 		<span v-if="parent.opts.reply">%i18n:desktop.tags.mk-post-form-window.reply%</span>
-		<span :class="$style.files" v-if="parent.files.length != 0">{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', parent.files.length) }</span>
-		<span :class="$style.files" v-if="parent.uploadingFiles.length != 0">{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', parent.uploadingFiles.length) }<mk-ellipsis/></span>
+		<span :class="$style.count" v-if="media.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', media.length) }}</span>
+		<span :class="$style.count" v-if="uploadings.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
 	</span>
 	<div slot="content">
-		<div class="ref" v-if="parent.opts.reply">
-			<mk-post-preview :class="$style.postPreview" :post="reply"/>
-		</div>
-		<div class="body">
-			<mk-post-form ref="form"
-				:reply="reply"
-				@post="$refs.window.close"
-				@change-uploadings="onChangeUploadings"
-				@change-attached-media="onChangeMedia"/>
-		</div>
+		<mk-post-preview v-if="parent.opts.reply" :class="$style.postPreview" :post="reply"/>
+		<mk-post-form ref="form"
+			:reply="reply"
+			@post="$refs.window.close"
+			@change-uploadings="onChangeUploadings"
+			@change-attached-media="onChangeMedia"/>
 	</div>
 </mk-window>
 </template>
@@ -47,7 +43,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-.files
+.count
 	margin-left 8px
 	opacity 0.8
 
