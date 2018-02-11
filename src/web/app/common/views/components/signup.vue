@@ -2,8 +2,8 @@
 <form class="mk-signup" @submit.prevent="onSubmit" autocomplete="off">
 	<label class="username">
 		<p class="caption">%fa:at%%i18n:common.tags.mk-signup.username%</p>
-		<input v-model="username" type="text" pattern="^[a-zA-Z0-9-]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required @keyup="onChangeUsername"/>
-		<p class="profile-page-url-preview" v-if="username != '' && username-state != 'invalidFormat' && username-state != 'minRange' && username-state != 'maxRange'">{ _URL_ + '/' + refs.username.value }</p>
+		<input v-model="username" type="text" pattern="^[a-zA-Z0-9-]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required @input="onChangeUsername"/>
+		<p class="profile-page-url-preview" v-if="shouldShowProfileUrl">{{ `${url}/${username}` }}</p>
 		<p class="info" v-if="usernameState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%%i18n:common.tags.mk-signup.checking%</p>
 		<p class="info" v-if="usernameState == 'ok'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.available%</p>
 		<p class="info" v-if="usernameState == 'unavailable'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.unavailable%</p>
@@ -14,8 +14,8 @@
 	</label>
 	<label class="password">
 		<p class="caption">%fa:lock%%i18n:common.tags.mk-signup.password%</p>
-		<input v-model="password" type="password" placeholder="%i18n:common.tags.mk-signup.password-placeholder%" autocomplete="off" required @keyup="onChangePassword"/>
-		<div class="meter" v-if="passwordStrength != ''" :data-strength="passwordStrength">
+		<input v-model="password" type="password" placeholder="%i18n:common.tags.mk-signup.password-placeholder%" autocomplete="off" required @input="onChangePassword"/>
+		<div class="meter" v-show="passwordStrength != ''" :data-strength="passwordStrength">
 			<div class="value" ref="passwordMetar"></div>
 		</div>
 		<p class="info" v-if="passwordStrength == 'low'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.weak-password%</p>
@@ -24,13 +24,13 @@
 	</label>
 	<label class="retype-password">
 		<p class="caption">%fa:lock%%i18n:common.tags.mk-signup.password%(%i18n:common.tags.mk-signup.retype%)</p>
-		<input v-model="retypedPassword" type="password" placeholder="%i18n:common.tags.mk-signup.retype-placeholder%" autocomplete="off" required @keyup="onChangePasswordRetype"/>
+		<input v-model="retypedPassword" type="password" placeholder="%i18n:common.tags.mk-signup.retype-placeholder%" autocomplete="off" required @input="onChangePasswordRetype"/>
 		<p class="info" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.password-matched%</p>
 		<p class="info" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.password-not-matched%</p>
 	</label>
 	<label class="recaptcha">
 		<p class="caption"><template v-if="recaptchaed">%fa:toggle-on%</template><template v-if="!recaptchaed">%fa:toggle-off%</template>%i18n:common.tags.mk-signup.recaptcha%</p>
-		<div v-if="recaptcha" class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" :data-sitekey="recaptchaSitekey"></div>
+		<div class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" :data-sitekey="recaptchaSitekey"></div>
 	</label>
 	<label class="agree-tou">
 		<input name="agree-tou" type="checkbox" autocomplete="off" required/>
@@ -43,21 +43,29 @@
 <script lang="ts">
 import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
-import { docsUrl, lang, recaptchaSitekey } from '../../../config';
+import { url, docsUrl, lang, recaptchaSitekey } from '../../../config';
 
 export default Vue.extend({
-	props: ['os'],
 	data() {
 		return {
 			username: '',
 			password: '',
 			retypedPassword: '',
+			url,
 			touUrl: `${docsUrl}/${lang}/tou`,
 			recaptchaSitekey,
 			recaptchaed: false,
 			usernameState: null,
 			passwordStrength: '',
 			passwordRetypeState: null
+		}
+	},
+	computed: {
+		shouldShowProfileUrl(): boolean {
+			return (this.username != '' &&
+				this.usernameState != 'invalid-format' &&
+				this.usernameState != 'min-range' &&
+				this.usernameState != 'max-range');
 		}
 	},
 	methods: {
@@ -80,7 +88,7 @@ export default Vue.extend({
 
 			this.usernameState = 'wait';
 
-			this.os.api('username/available', {
+			this.$root.$data.os.api('username/available', {
 				username: this.username
 			}).then(result => {
 				this.usernameState = result.available ? 'ok' : 'unavailable';
@@ -107,12 +115,12 @@ export default Vue.extend({
 			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
 		},
 		onSubmit() {
-			this.os.api('signup', {
+			this.$root.$data.os.api('signup', {
 				username: this.username,
 				password: this.password,
 				'g-recaptcha-response': (window as any).grecaptcha.getResponse()
 			}).then(() => {
-				this.os.api('signin', {
+				this.$root.$data.os.api('signin', {
 					username: this.username,
 					password: this.password
 				}).then(() => {

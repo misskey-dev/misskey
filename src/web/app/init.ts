@@ -63,7 +63,7 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (os: MiOS, launch: () => Vue) => void, sw = false) => {
+export default (callback: (launch: () => Vue) => void, sw = false) => {
 	const mios = new MiOS(sw);
 
 	mios.init(() => {
@@ -75,6 +75,9 @@ export default (callback: (os: MiOS, launch: () => Vue) => void, sw = false) => 
 
 		const launch = () => {
 			return new Vue({
+				data: {
+					os: mios
+				},
 				router: new VueRouter({
 					mode: 'history'
 				}),
@@ -83,7 +86,7 @@ export default (callback: (os: MiOS, launch: () => Vue) => void, sw = false) => 
 		};
 
 		try {
-			callback(mios, launch);
+			callback(launch);
 		} catch (e) {
 			panic(e);
 		}

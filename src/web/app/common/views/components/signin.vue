@@ -13,20 +13,22 @@
 </form>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['os'],
 	data() {
 		return {
 			signing: false,
-			user: null
+			user: null,
+			username: '',
+			password: '',
+			token: ''
 		};
 	},
 	methods: {
 		onUsernameChange() {
-			this.os.api('users/show', {
+			this.$root.$data.os.api('users/show', {
 				username: this.username
 			}).then(user => {
 				this.user = user;
@@ -35,7 +37,7 @@ export default Vue.extend({
 		onSubmit() {
 			this.signing = true;
 
-			this.os.api('signin', {
+			this.$root.$data.os.api('signin', {
 				username: this.username,
 				password: this.password,
 				token: this.user && this.user.two_factor_enabled ? this.token : undefined

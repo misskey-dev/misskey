@@ -1,5 +1,5 @@
 <template>
-	<component v-bind:is="os.isSignedIn ? 'home' : 'welcome'"></component>
+	<component v-bind:is="$root.$data.os.isSignedIn ? 'home' : 'welcome'"></component>
 </template>
 
 <script lang="ts">
@@ -8,7 +8,6 @@ import HomeView from './home.vue';
 import WelcomeView from './welcome.vue';
 
 export default Vue.extend({
-	props: ['os'],
 	components: {
 		home: HomeView,
 		welcome: WelcomeView

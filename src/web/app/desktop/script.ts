@@ -15,11 +15,16 @@ import MkIndex from './views/pages/index.vue';
 /**
  * init
  */
-init(async (os, launch) => {
+init(async (launch) => {
 	/**
 	 * Fuck AD Block
 	 */
 	fuckAdBlock();
+
+	// Register components
+	require('./views/components');
+
+	const app = launch();
 
 	/**
 	 * Init Notification
@@ -31,17 +36,12 @@ init(async (os, launch) => {
 		}
 
 		if ((Notification as any).permission == 'granted') {
-			registerNotifications(os.stream);
+			registerNotifications(app.$data.os.stream);
 		}
 	}
 
-	// Register components
-	require('./views/components');
-
-	const app = launch();
-
 	app.$router.addRoutes([{
-		path: '/', component: MkIndex, props: { os }
+		path: '/', component: MkIndex
 	}]);
 }, true);
 

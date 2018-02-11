@@ -1,11 +1,21 @@
 declare const _HOST_: string;
 declare const _URL_: string;
+declare const _API_URL_: string;
 declare const _DOCS_URL_: string;
 declare const _LANG_: string;
 declare const _RECAPTCHA_SITEKEY_: string;
+declare const _SW_PUBLICKEY_: string;
+declare const _THEME_COLOR_: string;
+declare const _COPYRIGHT_: string;
+declare const _VERSION_: string;
 
 export const host = _HOST_;
 export const url = _URL_;
+export const apiUrl = _API_URL_;
 export const docsUrl = _DOCS_URL_;
 export const lang = _LANG_;
 export const recaptchaSitekey = _RECAPTCHA_SITEKEY_;
+export const swPublickey = _SW_PUBLICKEY_;
+export const themeColor = _THEME_COLOR_;
+export const copyright = _COPYRIGHT_;
+export const version = _VERSION_;

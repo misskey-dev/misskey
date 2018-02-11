@@ -19,7 +19,11 @@
 	</footer>
 	<modal name="signup" width="500px" height="auto" scrollable>
 		<header :class="$style.signupFormHeader">新規登録</header>
-		<mk-signup :class="$style.signupForm"></mk-signup>
+		<mk-signup :class="$style.signupForm"/>
+	</modal>
+	<modal name="signin" width="500px" height="auto" scrollable>
+		<header :class="$style.signinFormHeader">ログイン</header>
+		<mk-signin :class="$style.signinForm"/>
 	</modal>
 </div>
 </template>
@@ -31,6 +35,9 @@ export default Vue.extend({
 	methods: {
 		signup() {
 			this.$modal.show('signup');
+		},
+		signin() {
+			this.$modal.show('signin');
 		}
 	}
 });
@@ -134,6 +141,16 @@ export default Vue.extend({
 	padding 24px 48px 48px 48px
 
 .signupFormHeader
+	padding 48px 0 12px 0
+	margin: 0 48px
+	font-size 1.5em
+	color #777
+	border-bottom solid 1px #eee
+
+.signinForm
+	padding 24px 48px 48px 48px
+
+.signinFormHeader
 	padding 48px 0 12px 0
 	margin: 0 48px
 	font-size 1.5em
