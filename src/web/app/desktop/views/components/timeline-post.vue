@@ -34,6 +34,7 @@
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
 					<mk-post-html :ast="p.ast" :i="$root.$data.os.i"/>
 					<a class="quote" v-if="p.repost">RP:</a>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
 				<div class="media" v-if="p.media">
 					<mk-images :images="p.media"/>
@@ -101,6 +102,15 @@ export default Vue.extend({
 		},
 		url(): string {
 			return `/${this.p.user.username}/${this.p.id}`;
+		},
+		urls(): string[] {
+			if (this.p.ast) {
+				return this.p.ast
+					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+					.map(t => t.url);
+			} else {
+				return null;
+			}
 		}
 	},
 	created() {
@@ -112,19 +122,6 @@ export default Vue.extend({
 
 		if (this.$root.$data.os.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
-		}
-
-		if (this.p.text) {
-			const tokens = this.p.ast;
-
-			// URLをプレビュー
-			tokens
-			.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-			.map(t => {
-				riot.mount(this.$refs.text.appendChild(document.createElement('mk-url-preview')), {
-					url: t.url
-				});
-			});
 		}
 	},
 	beforeDestroy() {
