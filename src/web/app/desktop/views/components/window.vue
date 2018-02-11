@@ -1,7 +1,7 @@
 <template>
 <div class="mk-window" :data-flexible="isFlexible" @dragover="onDragover">
 	<div class="bg" ref="bg" v-show="isModal" @click="onBgClick"></div>
-	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown">
+	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown" :style="{ width, height }">
 		<div class="body">
 			<header ref="header" @mousedown="onHeaderMousedown">
 				<h1 data-yield="header"><yield from="header"/></h1>
@@ -42,8 +42,13 @@ export default Vue.extend({
 			type: Boolean,
 			default: true
 		},
+		width: {
+			type: String,
+			default: '530px'
+		},
 		height: {
-			type: Number
+			type: String,
+			default: 'auto'
 		},
 		popoutUrl: {
 			type: String
@@ -56,6 +61,9 @@ export default Vue.extend({
 		canResize(): boolean {
 			return !this.isFlexible;
 		}
+	},
+	mounted() {
+
 	}
 });
 </script>
@@ -64,8 +72,6 @@ export default Vue.extend({
 <script lang="typescript">
 
 this.on('mount', () => {
-	this.$refs.main.style.width = this.opts.width || '530px';
-	this.$refs.main.style.height = this.opts.height || 'auto';
 
 	this.$refs.main.style.top = '15%';
 	this.$refs.main.style.left = (window.innerWidth / 2) - (this.$refs.main.offsetWidth / 2) + 'px';
