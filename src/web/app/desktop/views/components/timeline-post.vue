@@ -74,6 +74,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
+import MkPostFormWindow from './post-form-window.vue';
+import MkRepostFormWindow from './repost-form-window.vue';
 
 export default Vue.extend({
 	props: ['post'],
@@ -162,6 +164,13 @@ export default Vue.extend({
 					reply: this.p
 				}
 			}).$mount().$el);
+		},
+		repost() {
+			document.body.appendChild(new MkRepostFormWindow({
+				propsData: {
+					post: this.p
+				}
+			}).$mount().$el);
 		}
 	}
 });
@@ -169,11 +178,6 @@ export default Vue.extend({
 
 <script lang="typescript">
 
-this.repost = () => {
-	riot.mount(document.body.appendChild(document.createElement('mk-repost-form-window')), {
-		post: this.p
-	});
-};
 
 this.react = () => {
 	riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {

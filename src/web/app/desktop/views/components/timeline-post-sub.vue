@@ -18,13 +18,18 @@
 </div>
 </template>
 
-<script lang="typescript">
-	import dateStringify from '../../common/scripts/date-stringify';
+<script lang="ts">
+import Vue from 'vue';
+import dateStringify from '../../../common/scripts/date-stringify';
 
-	this.mixin('user-preview');
-
-	this.post = this.opts.post;
-	this.title = dateStringify(this.post.created_at);
+export default Vue.extend({
+	props: ['post'],
+	computed: {
+		title(): string {
+			return dateStringify(this.post.created_at);
+		}
+	}
+});
 </script>
 
 <style lang="stylus" scoped>
