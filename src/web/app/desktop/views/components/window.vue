@@ -4,13 +4,13 @@
 	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown" :style="{ width, height }">
 		<div class="body">
 			<header ref="header" @contextmenu.prevent="() => {}" @mousedown.prevent="onHeaderMousedown">
-				<h1 data-yield="header"><yield from="header"/></h1>
+				<h1><slot name="header"></slot></h1>
 				<div>
 					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="ポップアウト">%fa:R window-restore%</button>
 					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="閉じる">%fa:times%</button>
 				</div>
 			</header>
-			<div class="content" data-yield="content"><yield from="content"/></div>
+			<div class="content"><slot name="content"></slot></div>
 		</div>
 		<div class="handle top" v-if="canResize" @mousedown.prevent="onTopHandleMousedown"></div>
 		<div class="handle right" v-if="canResize" @mousedown.prevent="onRightHandleMousedown"></div>

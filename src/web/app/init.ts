@@ -14,6 +14,12 @@ import VModal from 'vue-js-modal';
 Vue.use(VueRouter);
 Vue.use(VModal);
 
+// Register global directives
+require('./common/views/directives');
+
+// Register global components
+require('./common/views/components');
+
 import App from './app.vue';
 
 import checkForUpdate from './common/scripts/check-for-update';
@@ -69,9 +75,6 @@ export default (callback: (launch: () => Vue) => void, sw = false) => {
 	mios.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
-
-		// Register global components
-		require('./common/views/components');
 
 		const launch = () => {
 			return new Vue({

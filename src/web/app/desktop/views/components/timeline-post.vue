@@ -73,8 +73,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import compile from '../../common/scripts/text-compiler';
-import dateStringify from '../../common/scripts/date-stringify';
+import dateStringify from '../../../common/scripts/date-stringify';
 
 export default Vue.extend({
 	props: ['post'],
@@ -156,18 +155,19 @@ export default Vue.extend({
 			if (post.id == this.post.id) {
 				this.$emit('update:post', post);
 			}
+		},
+		reply() {
+			document.body.appendChild(new MkPostFormWindow({
+				propsData: {
+					reply: this.p
+				}
+			}).$mount().$el);
 		}
 	}
 });
 </script>
 
 <script lang="typescript">
-
-this.reply = () => {
-	riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
-		reply: this.p
-	});
-};
 
 this.repost = () => {
 	riot.mount(document.body.appendChild(document.createElement('mk-repost-form-window')), {
