@@ -1,8 +1,8 @@
 <template>
 <div class="mk-timeline" ref="root">
-	<template each={ post, i in posts }>
-		<mk-timeline-post post={ post }/>
-		<p class="date" v-if="i != posts.length - 1 && post._date != posts[i + 1]._date"><span>%fa:angle-up%{ post._datetext }</span><span>%fa:angle-down%{ posts[i + 1]._datetext }</span></p>
+	<template v-for="(post, i) in _posts">
+		<mk-timeline-post :post="post" :key="post.id"/>
+		<p class="date" :key="post.id + '-time'" v-if="i != _posts.length - 1 && _post._date != _posts[i + 1]._date"><span>%fa:angle-up%{{ post._datetext }}</span><span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span></p>
 	</template>
 	<footer data-yield="footer">
 		<yield from="footer"/>
