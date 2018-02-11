@@ -172,9 +172,6 @@ export default Vue.extend({
 
 <script lang="typescript">
 
-
-this.isDetailOpened = false;
-
 this.reply = () => {
 	riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
 		reply: this.p
@@ -198,12 +195,6 @@ this.menu = () => {
 	riot.mount(document.body.appendChild(document.createElement('mk-post-menu')), {
 		source: this.$refs.menuButton,
 		post: this.p
-	});
-};
-
-this.toggleDetail = () => {
-	this.update({
-		isDetailOpened: !this.isDetailOpened
 	});
 };
 
