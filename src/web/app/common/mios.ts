@@ -80,6 +80,11 @@ export default class MiOS extends EventEmitter {
 	private shouldRegisterSw: boolean;
 
 	/**
+	 * ウィンドウシステム
+	 */
+	public windows = new WindowSystem();
+
+	/**
 	 * MiOSインスタンスを作成します
 	 * @param shouldRegisterSw ServiceWorkerを登録するかどうか
 	 */
@@ -356,6 +361,22 @@ export default class MiOS extends EventEmitter {
 				res(this.meta.data);
 			}
 		});
+	}
+}
+
+class WindowSystem {
+	private windows = new Set();
+
+	public add(window) {
+		this.windows.add(window);
+	}
+
+	public remove(window) {
+		this.windows.delete(window);
+	}
+
+	public getAll() {
+		return this.windows;
 	}
 }
 
