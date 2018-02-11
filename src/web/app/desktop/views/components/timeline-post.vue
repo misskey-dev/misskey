@@ -70,103 +70,110 @@
 </div>
 </template>
 
-<script lang="typescript">
+<script lang="ts">
+import Vue from 'vue';
 import compile from '../../common/scripts/text-compiler';
 import dateStringify from '../../common/scripts/date-stringify';
 
-this.mixin('i');
-this.mixin('api');
-this.mixin('user-preview');
+export default Vue.extend({
+	props: ['post'],
+	data() {
+		return {
+			connection: null,
+			connectionId: null
+		};
+	},
+	computed: {
+		isRepost(): boolean {
+			return (this.post.repost &&
+				this.post.text == null &&
+				this.post.media_ids == null &&
+				this.post.poll == null);
+		},
+		p(): any {
+			return this.isRepost ? this.post.repost : this.post;
+		},
+		reactionsCount(): number {
+			return this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;			
+		},
+		title(): string {
+			return dateStringify(this.p.created_at);
+		},
+		url(): string {
+			return `/${this.p.user.username}/${this.p.id}`;
+		}
+	},
+	created() {
+		this.connection = this.$root.$data.os.stream.getConnection();
+		this.connectionId = this.$root.$data.os.stream.use();
+	},
+	mounted() {
+		this.capture(true);
 
-this.mixin('stream');
-this.connection = this.stream.getConnection();
-this.connectionId = this.stream.use();
+		if (this.$root.$data.os.isSignedIn) {
+			this.connection.on('_connected_', this.onStreamConnected);
+		}
+
+		if (this.p.text) {
+			const tokens = this.p.ast;
+
+			this.$refs.text.innerHTML = this.$refs.text.innerHTML.replace('<p class="dummy"></p>', compile(tokens));
+
+			Array.from(this.$refs.text.children).forEach(e => {
+				if (e.tagName == 'MK-URL') riot.mount(e);
+			});
+
+			// URLをプレビュー
+			tokens
+			.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+			.map(t => {
+				riot.mount(this.$refs.text.appendChild(document.createElement('mk-url-preview')), {
+					url: t.url
+				});
+			});
+		}
+	},
+	beforeDestroy() {
+		this.decapture(true);
+		this.connection.off('_connected_', this.onStreamConnected);
+		this.$root.$data.os.stream.dispose(this.connectionId);
+	},
+	methods: {
+		capture(withHandler = false) {
+			if (this.$root.$data.os.isSignedIn) {
+				this.connection.send({
+					type: 'capture',
+					id: this.post.id
+				});
+				if (withHandler) this.connection.on('post-updated', this.onStreamPostUpdated);
+			}
+		},
+		decapture(withHandler = false) {
+			if (this.$root.$data.os.isSignedIn) {
+				this.connection.send({
+					type: 'decapture',
+					id: this.post.id
+				});
+				if (withHandler) this.connection.off('post-updated', this.onStreamPostUpdated);
+			}
+		},
+		onStreamConnected() {
+			this.capture();
+		},
+		onStreamPostUpdated(data) {
+			const post = data.post;
+			if (post.id == this.post.id) {
+				this.$emit('update:post', post);
+			}
+		}
+	}
+});
+</script>
+
+<script lang="typescript">
+
 
 this.isDetailOpened = false;
-
-this.set = post => {
-	this.post = post;
-	this.isRepost = this.post.repost && this.post.text == null && this.post.media_ids == null && this.post.poll == null;
-	this.p = this.isRepost ? this.post.repost : this.post;
-	this.p.reactions_count = this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
-	this.title = dateStringify(this.p.created_at);
-	this.url = `/${this.p.user.username}/${this.p.id}`;
-};
-
-this.set(this.opts.post);
-
-this.refresh = post => {
-	this.set(post);
-	this.update();
-	if (this.$refs.reactionsViewer) this.$refs.reactionsViewer.update({
-		post
-	});
-	if (this.$refs.pollViewer) this.$refs.pollViewer.init(post);
-};
-
-this.onStreamPostUpdated = data => {
-	const post = data.post;
-	if (post.id == this.post.id) {
-		this.refresh(post);
-	}
-};
-
-this.onStreamConnected = () => {
-	this.capture();
-};
-
-this.capture = withHandler => {
-	if (this.SIGNIN) {
-		this.connection.send({
-			type: 'capture',
-			id: this.post.id
-		});
-		if (withHandler) this.connection.on('post-updated', this.onStreamPostUpdated);
-	}
-};
-
-this.decapture = withHandler => {
-	if (this.SIGNIN) {
-		this.connection.send({
-			type: 'decapture',
-			id: this.post.id
-		});
-		if (withHandler) this.connection.off('post-updated', this.onStreamPostUpdated);
-	}
-};
-
-this.on('mount', () => {
-	this.capture(true);
-
-	if (this.SIGNIN) {
-		this.connection.on('_connected_', this.onStreamConnected);
-	}
-
-	if (this.p.text) {
-		const tokens = this.p.ast;
-
-		this.$refs.text.innerHTML = this.$refs.text.innerHTML.replace('<p class="dummy"></p>', compile(tokens));
-
-		Array.from(this.$refs.text.children).forEach(e => {
-			if (e.tagName == 'MK-URL') riot.mount(e);
-		});
-
-		// URLをプレビュー
-		tokens
-		.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-		.map(t => {
-			riot.mount(this.$refs.text.appendChild(document.createElement('mk-url-preview')), {
-				url: t.url
-			});
-		});
-	}
-});
-
-this.on('unmount', () => {
-	this.decapture(true);
-	this.connection.off('_connected_', this.onStreamConnected);
-	this.stream.dispose(this.connectionId);
-});
 
 this.reply = () => {
 	riot.mount(document.body.appendChild(document.createElement('mk-post-form-window')), {
