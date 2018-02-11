@@ -1,6 +1,6 @@
 <template>
 	<mk-ui>
-		<home ref="home" :mode="mode"/>
+		<mk-home ref="home" :mode="mode"/>
 	</mk-ui>
 </template>
 

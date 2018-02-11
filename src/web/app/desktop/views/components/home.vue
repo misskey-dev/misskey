@@ -41,10 +41,10 @@
 			<div ref="left" data-place="left">
 				<template v-for="widget in leftWidgets">
 					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="widget.name" :widget="widget" :ref="widget.id"/>
+						<component :is="'mk-hw-' + widget.name" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
-						<component :is="widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
+						<component :is="'mk-hw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
 					</template>
 				</template>
 			</div>
@@ -53,24 +53,24 @@
 			<div class="maintop" ref="maintop" data-place="main" v-if="customize">
 				<template v-for="widget in centerWidgets">
 					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="widget.name" :widget="widget" :ref="widget.id"/>
+						<component :is="'mk-hw-' + widget.name" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
-						<component :is="widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
+						<component :is="'mk-hw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
 					</template>
 				</template>
 			</div>
-			<mk-timeline-home-widget ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
-			<mk-mentions-home-widget ref="tl" @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
+			<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
+			<mk-mentions ref="tl" @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
 		</main>
 		<div class="right">
 			<div ref="right" data-place="right">
 				<template v-for="widget in rightWidgets">
 					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="widget.name" :widget="widget" :ref="widget.id"/>
+						<component :is="'mk-hw-' + widget.name" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
-						<component :is="widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
+						<component :is="'mk-hw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
 					</template>
 				</template>
 			</div>
@@ -79,9 +79,9 @@
 </div>
 </template>
 
-<script lang="typescript">
+<script lang="ts">
 import Vue from 'vue';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 import Sortable from 'sortablejs';
 
 export default Vue.extend({
