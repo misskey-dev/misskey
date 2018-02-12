@@ -6,7 +6,7 @@
 import Vue from 'vue';
 import { themeColor } from '../../../config';
 
-const Vec2 = function(x, y) {
+const Vec2 = function(this: any, x, y) {
 	this.x = x;
 	this.y = y;
 };
