@@ -1,19 +1,8 @@
 <template>
-<div class="mk-reaction-picker">
+<div class="mk-post-menu">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
-	<div class="popover" :class="{ compact }" ref="popover">
-		<p v-if="!compact">{{ title }}</p>
-		<div>
-			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" title="%i18n:common.reactions.like%"><mk-reaction-icon reaction='like'/></button>
-			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" title="%i18n:common.reactions.love%"><mk-reaction-icon reaction='love'/></button>
-			<button @click="react('laugh')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="3" title="%i18n:common.reactions.laugh%"><mk-reaction-icon reaction='laugh'/></button>
-			<button @click="react('hmm')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="4" title="%i18n:common.reactions.hmm%"><mk-reaction-icon reaction='hmm'/></button>
-			<button @click="react('surprise')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="5" title="%i18n:common.reactions.surprise%"><mk-reaction-icon reaction='surprise'/></button>
-			<button @click="react('congrats')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" title="%i18n:common.reactions.congrats%"><mk-reaction-icon reaction='congrats'/></button>
-			<button @click="react('angry')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="4" title="%i18n:common.reactions.angry%"><mk-reaction-icon reaction='angry'/></button>
-			<button @click="react('confused')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="5" title="%i18n:common.reactions.confused%"><mk-reaction-icon reaction='confused'/></button>
-			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" title="%i18n:common.reactions.pudding%"><mk-reaction-icon reaction='pudding'/></button>
-		</div>
+	<div class="popover { compact: opts.compact }" ref="popover">
+		<button v-if="post.user_id === I.id" @click="pin">%i18n:common.tags.mk-post-menu.pin%</button>
 	</div>
 </div>
 </template>
@@ -22,15 +11,8 @@
 import Vue from 'vue';
 import anime from 'animejs';
 
-const placeholder = '%i18n:common.tags.mk-reaction-picker.choose-reaction%';
-
 export default Vue.extend({
-	props: ['post', 'source', 'compact', 'cb'],
-	data() {
-		return {
-			title: placeholder
-		};
-	},
+	props: ['post', 'source', 'compact'],
 	mounted() {
 		const popover = this.$refs.popover as any;
 
@@ -65,21 +47,14 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		react(reaction) {
-			this.$root.$data.os.api('posts/reactions/create', {
-				post_id: this.post.id,
-				reaction: reaction
+		pin() {
+			this.$root.$data.os.api('i/pin', {
+				post_id: this.post.id
 			}).then(() => {
-				if (this.cb) this.cb();
 				this.$destroy();
 			});
 		},
-		onMouseover(e) {
-			this.title = e.target.title;
-		},
-		onMouseout(e) {
-			this.title = placeholder;
-		},
+
 		close() {
 			(this.$refs.backdrop as any).style.pointerEvents = 'none';
 			anime({
@@ -104,9 +79,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-	$border-color = rgba(27, 31, 35, 0.15)
+$border-color = rgba(27, 31, 35, 0.15)
 
-.mk-reaction-picker
+.mk-post-menu
 	position initial
 
 	> .backdrop
@@ -157,30 +132,7 @@ export default Vue.extend({
 				border-right solid $balloon-size transparent
 				border-bottom solid $balloon-size #fff
 
-		> p
+		> button
 			display block
-			margin 0
-			padding 8px 10px
-			font-size 14px
-			color #586069
-			border-bottom solid 1px #e1e4e8
-
-		> div
-			padding 4px
-			width 240px
-			text-align center
-
-			> button
-				width 40px
-				height 40px
-				font-size 24px
-				border-radius 2px
-
-				&:hover
-					background #eee
-
-				&:active
-					background $theme-color
-					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
 </style>

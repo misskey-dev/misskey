@@ -76,6 +76,19 @@ import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 import MkPostFormWindow from './post-form-window.vue';
 import MkRepostFormWindow from './repost-form-window.vue';
+import MkPostMenu from '../../../common/views/components/post-menu.vue';
+import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
+
+function focus(el, fn) {
+	const target = fn(el);
+	if (target) {
+		if (target.hasAttribute('tabindex')) {
+			target.focus();
+		} else {
+			focus(target, fn);
+		}
+	}
+}
 
 export default Vue.extend({
 	props: ['post'],
@@ -171,81 +184,61 @@ export default Vue.extend({
 					post: this.p
 				}
 			}).$mount().$el);
+		},
+		react() {
+			document.body.appendChild(new MkReactionPicker({
+				propsData: {
+					source: this.$refs.menuButton,
+					post: this.p
+				}
+			}).$mount().$el);
+		},
+		menu() {
+			document.body.appendChild(new MkPostMenu({
+				propsData: {
+					source: this.$refs.menuButton,
+					post: this.p
+				}
+			}).$mount().$el);
+		},
+		onKeydown(e) {
+			let shouldBeCancel = true;
+
+			switch (true) {
+				case e.which == 38: // [↑]
+				case e.which == 74: // [j]
+				case e.which == 9 && e.shiftKey: // [Shift] + [Tab]
+					focus(this.$el, e => e.previousElementSibling);
+					break;
+
+				case e.which == 40: // [↓]
+				case e.which == 75: // [k]
+				case e.which == 9: // [Tab]
+					focus(this.$el, e => e.nextElementSibling);
+					break;
+
+				case e.which == 81: // [q]
+				case e.which == 69: // [e]
+					this.repost();
+					break;
+
+				case e.which == 70: // [f]
+				case e.which == 76: // [l]
+					//this.like();
+					break;
+
+				case e.which == 82: // [r]
+					this.reply();
+					break;
+
+				default:
+					shouldBeCancel = false;
+			}
+
+			if (shouldBeCancel) e.preventDefault();
 		}
 	}
 });
-</script>
-
-<script lang="typescript">
-
-
-this.react = () => {
-	riot.mount(document.body.appendChild(document.createElement('mk-reaction-picker')), {
-		source: this.$refs.reactButton,
-		post: this.p
-	});
-};
-
-this.menu = () => {
-	riot.mount(document.body.appendChild(document.createElement('mk-post-menu')), {
-		source: this.$refs.menuButton,
-		post: this.p
-	});
-};
-
-this.onKeyDown = e => {
-	let shouldBeCancel = true;
-
-	switch (true) {
-		case e.which == 38: // [↑]
-		case e.which == 74: // [j]
-		case e.which == 9 && e.shiftKey: // [Shift] + [Tab]
-			focus(this.root, e => e.previousElementSibling);
-			break;
-
-		case e.which == 40: // [↓]
-		case e.which == 75: // [k]
-		case e.which == 9: // [Tab]
-			focus(this.root, e => e.nextElementSibling);
-			break;
-
-		case e.which == 81: // [q]
-		case e.which == 69: // [e]
-			this.repost();
-			break;
-
-		case e.which == 70: // [f]
-		case e.which == 76: // [l]
-			this.like();
-			break;
-
-		case e.which == 82: // [r]
-			this.reply();
-			break;
-
-		default:
-			shouldBeCancel = false;
-	}
-
-	if (shouldBeCancel) e.preventDefault();
-};
-
-this.onDblClick = () => {
-	riot.mount(document.body.appendChild(document.createElement('mk-detailed-post-window')), {
-		post: this.p.id
-	});
-};
-
-function focus(el, fn) {
-	const target = fn(el);
-	if (target) {
-		if (target.hasAttribute('tabindex')) {
-			target.focus();
-		} else {
-			focus(target, fn);
-		}
-	}
-}
 </script>
 
 <style lang="stylus" scoped>

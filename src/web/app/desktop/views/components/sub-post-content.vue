@@ -2,8 +2,9 @@
 <div class="mk-sub-post-content">
 	<div class="body">
 		<a class="reply" v-if="post.reply_id">%fa:reply%</a>
-		<span ref="text"></span>
+		<mk-post-html :ast="post.ast" :i="$root.$data.os.i"/>
 		<a class="quote" v-if="post.repost_id" :href="`/post:${post.repost_id}`">RP: ...</a>
+		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 	</div>
 	<details v-if="post.media">
 		<summary>({{ post.media.length }}つのメディア)</summary>
@@ -16,23 +17,23 @@
 </div>
 </template>
 
-<script lang="typescript">
-	import compile from '../../common/scripts/text-compiler';
+<script lang="ts">
+import Vue from 'vue';
 
-	this.mixin('user-preview');
-
-	this.post = this.opts.post;
-
-	this.on('mount', () => {
-		if (this.post.text) {
-			const tokens = this.post.ast;
-			this.$refs.text.innerHTML = compile(tokens, false);
-
-			Array.from(this.$refs.text.children).forEach(e => {
-				if (e.tagName == 'MK-URL') riot.mount(e);
-			});
+export default Vue.extend({
+	props: ['post'],
+	computed: {
+		urls(): string[] {
+			if (this.post.ast) {
+				return this.post.ast
+					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+					.map(t => t.url);
+			} else {
+				return null;
+			}
 		}
-	});
+	}
+});
 </script>
 
 <style lang="stylus" scoped>
