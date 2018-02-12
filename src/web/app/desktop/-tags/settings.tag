@@ -1,42 +1,4 @@
 
-<mk-password-setting>
-	<button @click="reset" class="ui primary">%i18n:desktop.tags.mk-password-setting.reset%</button>
-	<style lang="stylus" scoped>
-		:scope
-			display block
-			color #4a535a
-	</style>
-	<script lang="typescript">
-		import passwordDialog from '../scripts/password-dialog';
-		import dialog from '../scripts/dialog';
-		import notify from '../scripts/notify';
-
-		this.mixin('i');
-		this.mixin('api');
-
-		this.reset = () => {
-			passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-current-password%', currentPassword => {
-				passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-new-password%', newPassword => {
-					passwordDialog('%i18n:desktop.tags.mk-password-setting.enter-new-password-again%', newPassword2 => {
-						if (newPassword !== newPassword2) {
-							dialog(null, '%i18n:desktop.tags.mk-password-setting.not-match%', [{
-								text: 'OK'
-							}]);
-							return;
-						}
-						this.api('i/change_password', {
-							current_password: currentPassword,
-							new_password: newPassword
-						}).then(() => {
-							notify('%i18n:desktop.tags.mk-password-setting.changed%');
-						});
-					});
-				});
-			});
-		};
-	</script>
-</mk-password-setting>
-
 <mk-2fa-setting>
 	<p>%i18n:desktop.tags.mk-2fa-setting.intro%<a href="%i18n:desktop.tags.mk-2fa-setting.url%" target="_blank">%i18n:desktop.tags.mk-2fa-setting.detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
