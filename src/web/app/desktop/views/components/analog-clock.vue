@@ -1,36 +1,41 @@
-<mk-analog-clock>
-	<canvas ref="canvas" width="256" height="256"></canvas>
-	<style lang="stylus" scoped>
-		:scope
-			> canvas
-				display block
-				width 256px
-				height 256px
-	</style>
-	<script lang="typescript">
-		const Vec2 = function(x, y) {
-			this.x = x;
-			this.y = y;
+<template>
+<canvas class="mk-analog-clock" ref="canvas" width="256" height="256"></canvas>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import { themeColor } from '../../../config';
+
+const Vec2 = function(x, y) {
+	this.x = x;
+	this.y = y;
+};
+
+export default Vue.extend({
+	data() {
+		return {
+			clock: null
 		};
+	},
+	mounted() {
+		this.tick();
+		this.clock = setInterval(this.tick, 1000);
+	},
+	beforeDestroy() {
+		clearInterval(this.clock);
+	},
+	methods: {
+		tick() {
+			const canv = this.$refs.canvas as any;
 
-		this.on('mount', () => {
-			this.draw()
-			this.clock = setInterval(this.draw, 1000);
-		});
-
-		this.on('unmount', () => {
-			clearInterval(this.clock);
-		});
-
-		this.draw = () => {
 			const now = new Date();
 			const s = now.getSeconds();
 			const m = now.getMinutes();
 			const h = now.getHours();
 
-			const ctx = this.$refs.canvas.getContext('2d');
-			const canvW = this.$refs.canvas.width;
-			const canvH = this.$refs.canvas.height;
+			const ctx = canv.getContext('2d');
+			const canvW = canv.width;
+			const canvH = canv.height;
 			ctx.clearRect(0, 0, canvW, canvH);
 
 			{ // 背景
@@ -72,7 +77,7 @@
 				const length = Math.min(canvW, canvH) / 4;
 				const uv = new Vec2(Math.sin(angle), -Math.cos(angle));
 				ctx.beginPath();
-				ctx.strokeStyle = _THEME_COLOR_;
+				ctx.strokeStyle = themeColor;
 				ctx.lineWidth = 2;
 				ctx.moveTo(canvW / 2 - uv.x * length / 5, canvH / 2 - uv.y * length / 5);
 				ctx.lineTo(canvW / 2 + uv.x * length,     canvH / 2 + uv.y * length);
@@ -90,6 +95,14 @@
 				ctx.lineTo(canvW / 2 + uv.x * length,     canvH / 2 + uv.y * length);
 				ctx.stroke();
 			}
-		};
-	</script>
-</mk-analog-clock>
+		}
+	}
+});
+</script>
+
+<style lang="stylus" scoped>
+.mk-analog-clock
+	display block
+	width 256px
+	height 256px
+</style>
