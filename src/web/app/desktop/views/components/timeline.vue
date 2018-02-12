@@ -1,11 +1,11 @@
 <template>
-<div class="mk-timeline" ref="root">
+<div class="mk-timeline">
 	<template v-for="(post, i) in _posts">
 		<mk-timeline-post :post.sync="post" :key="post.id"/>
 		<p class="date" :key="post.id + '-time'" v-if="i != _posts.length - 1 && _post._date != _posts[i + 1]._date"><span>%fa:angle-up%{{ post._datetext }}</span><span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span></p>
 	</template>
-	<footer data-yield="footer">
-		<yield from="footer"/>
+	<footer>
+		<slot name="footer"></slot>
 	</footer>
 </div>
 </template>
@@ -21,7 +21,7 @@ export default Vue.extend({
 		}
 	},
 	computed: {
-		_posts(): any {
+		_posts(): any[] {
 			return this.posts.map(post => {
 				const date = new Date(post.created_at).getDate();
 				const month = new Date(post.created_at).getMonth() + 1;
@@ -36,7 +36,7 @@ export default Vue.extend({
 	},
 	methods: {
 		focus() {
-			(this.$refs.root as any).children[0].focus();
+			(this.$el as any).children[0].focus();
 		}
 	}
 });
