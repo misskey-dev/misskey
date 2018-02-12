@@ -1,38 +1,4 @@
 
-<mk-api-info>
-	<p>Token: <code>{ I.token }</code></p>
-	<p>%i18n:desktop.tags.mk-api-info.intro%</p>
-	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-api-info.caution%</p></div>
-	<p>%i18n:desktop.tags.mk-api-info.regeneration-of-token%</p>
-	<button class="ui" @click="regenerateToken">%i18n:desktop.tags.mk-api-info.regenerate-token%</button>
-	<style lang="stylus" scoped>
-		:scope
-			display block
-			color #4a535a
-
-			code
-				display inline-block
-				padding 4px 6px
-				color #555
-				background #eee
-				border-radius 2px
-	</style>
-	<script lang="typescript">
-		import passwordDialog from '../scripts/password-dialog';
-
-		this.mixin('i');
-		this.mixin('api');
-
-		this.regenerateToken = () => {
-			passwordDialog('%i18n:desktop.tags.mk-api-info.enter-password%', password => {
-				this.api('i/regenerate_token', {
-					password: password
-				});
-			});
-		};
-	</script>
-</mk-api-info>
-
 <mk-password-setting>
 	<button @click="reset" class="ui primary">%i18n:desktop.tags.mk-password-setting.reset%</button>
 	<style lang="stylus" scoped>
