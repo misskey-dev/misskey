@@ -1,7 +1,7 @@
 <template>
 <div class="mk-ui-notification">
 	<p>{{ message }}</p>
-<div>
+</div>
 </template>
 
 <script lang="ts">

@@ -32,6 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkSettingsWindow from './settings-window.vue';
 import contains from '../../../common/scripts/contains';
 import signout from '../../../common/scripts/signout';
 
@@ -68,7 +69,8 @@ export default Vue.extend({
 		},
 		drive() {
 			this.close();
-			document.body.appendChild(new MkDriveWindow().$mount().$el);
+			// TODO
+			//document.body.appendChild(new MkDriveWindow().$mount().$el);
 		},
 		settings() {
 			this.close();

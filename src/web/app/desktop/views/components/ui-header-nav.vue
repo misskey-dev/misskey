@@ -76,7 +76,8 @@ export default Vue.extend({
 		},
 
 		messaging() {
-			document.body.appendChild(new MkMessagingWindow().$mount().$el);
+			// TODO
+			//document.body.appendChild(new MkMessagingWindow().$mount().$el);
 		}
 	}
 });

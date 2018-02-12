@@ -14,7 +14,12 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['posts'],
+	props: {
+		posts: {
+			type: Array,
+			default: []
+		}
+	},
 	computed: {
 		_posts(): any {
 			return this.posts.map(post => {

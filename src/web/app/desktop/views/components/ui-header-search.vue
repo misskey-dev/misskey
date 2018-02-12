@@ -1,5 +1,5 @@
 <template>
-<form class="ui-header-search" @submit.prevent="onSubmit">
+<form class="mk-ui-header-search" @submit.prevent="onSubmit">
 	%fa:search%
 	<input v-model="q" type="search" placeholder="%i18n:desktop.tags.mk-ui-header-search.placeholder%"/>
 	<div class="result"></div>
