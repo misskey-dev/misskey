@@ -7,7 +7,7 @@ const StringReplacePlugin = require('string-replace-webpack-plugin');
 
 export default () => ({
 	enforce: 'pre',
-	test: /\.(tag|js)$/,
+	test: /\.(vue|js)$/,
 	exclude: /node_modules/,
 	loader: StringReplacePlugin.replace({
 		replacements: [{

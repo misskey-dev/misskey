@@ -118,6 +118,7 @@
 		"gulp-uglify": "3.0.0",
 		"gulp-util": "3.0.8",
 		"highlight.js": "9.12.0",
+		"html-minifier": "^3.5.9",
 		"inquirer": "5.0.1",
 		"is-root": "1.0.0",
 		"is-url": "1.2.2",
