@@ -2,7 +2,7 @@
 <div class="mk-posts">
 	<template v-for="(post, i) in _posts">
 		<mk-posts-post :post.sync="post" :key="post.id"/>
-		<p class="date" :key="post.id + '-time'" v-if="i != _posts.length - 1 && post._date != _posts[i + 1]._date"><span>%fa:angle-up%{{ post._datetext }}</span><span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span></p>
+		<p class="date" :key="post.id + '-time'" v-if="i != posts.length - 1 && post._date != _posts[i + 1]._date"><span>%fa:angle-up%{{ post._datetext }}</span><span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span></p>
 	</template>
 	<footer>
 		<slot name="footer"></slot>
