@@ -6,38 +6,45 @@
 			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
 		</div>
 		<div class="result">
-			<ol class="users" v-if="searchResult.length > 0" ref="searchResult">
-				<li each={ user, i in searchResult }
+			<ol class="users" v-if="result.length > 0" ref="searchResult">
+				<li v-for="(user, i) in result"
 					@keydown.enter="navigate(user)"
-					onkeydown={ parent.onSearchResultKeydown.bind(null, i) }
-					@click="user._click"
+					@keydown="onSearchResultKeydown(i)"
+					@click="navigate(user)"
 					tabindex="-1"
+					:key="user.id"
 				>
-					<img class="avatar" src={ user.avatar_url + '?thumbnail&size=32' } alt=""/>
-					<span class="name">{ user.name }</span>
-					<span class="username">@{ user.username }</span>
+					<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=32`" alt=""/>
+					<span class="name">{{ user.name }}</span>
+					<span class="username">@{{ user.username }}</span>
 				</li>
 			</ol>
 		</div>
 	</div>
-	<div class="history" v-if="history.length > 0">
-		<template each={ history }>
-			<a class="user" data-is-me={ is_me } data-is-read={ is_read } @click="navigate(isMe(message) ? message.recipient : message.user)">
+	<div class="history" v-if="messages.length > 0">
+		<template >
+			<a v-for="message in messages"
+				class="user"
+				:data-is-me="isMe(message)"
+				:data-is-read="message.is_read"
+				@click="navigate(isMe(message) ? message.recipient : message.user)"
+				:key="message.id"
+			>
 				<div>
-					<img class="avatar" src={ (is_me ? recipient.avatar_url : user.avatar_url) + '?thumbnail&size=64' } alt=""/>
+					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatar_url : message.user.avatar_url}?thumbnail&size=64`" alt=""/>
 					<header>
-						<span class="name">{ is_me ? recipient.name : user.name }</span>
-						<span class="username">{ '@' + (is_me ? recipient.username : user.username ) }</span>
-						<mk-time time={ created_at }/>
+						<span class="name">{{ isMe(message) ? message.recipient.name : message.user.name }}</span>
+						<span class="username">@{{ isMe(message) ? message.recipient.username : message.user.username }}</span>
+						<mk-time :time="message.created_at"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="is_me">%i18n:common.tags.mk-messaging.you%:</span>{ text }</p>
+						<p class="text"><span class="me" v-if="isMe(message)">%i18n:common.tags.mk-messaging.you%:</span>{{ text }}</p>
 					</div>
 				</div>
 			</a>
 		</template>
 	</div>
-	<p class="no-history" v-if="!fetching && history.length == 0">%i18n:common.tags.mk-messaging.no-history%</p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:common.tags.mk-messaging.no-history%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>
@@ -123,33 +130,35 @@ export default Vue.extend({
 			}
 		},
 		onSearchResultKeydown(i, e) {
+			const list = this.$refs.searchResult as any;
+
 			const cancel = () => {
 				e.preventDefault();
 				e.stopPropagation();
 			};
+
 			switch (true) {
 				case e.which == 27: // [ESC]
 					cancel();
-					this.$refs.search.focus();
+					(this.$refs.search as any).focus();
 					break;
 
 				case e.which == 9 && e.shiftKey: // [TAB] + [Shift]
 				case e.which == 38: // [↑]
 					cancel();
-					(this.$refs.searchResult.childNodes[i].previousElementSibling || this.$refs.searchResult.childNodes[this.searchResult.length - 1]).focus();
+					(list.childNodes[i].previousElementSibling || list.childNodes[this.result.length - 1]).focus();
 					break;
 
 				case e.which == 9: // [TAB]
 				case e.which == 40: // [↓]
 					cancel();
-					(this.$refs.searchResult.childNodes[i].nextElementSibling || this.$refs.searchResult.childNodes[0]).focus();
+					(list.childNodes[i].nextElementSibling || list.childNodes[0]).focus();
 					break;
 			}
 		}
 	}
 });
 </script>
-
 
 <style lang="stylus" scoped>
 .mk-messaging
