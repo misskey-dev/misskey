@@ -16,7 +16,7 @@
 </template>
 
 <script lang="typescript">
-	import anime from 'animejs';
+	import * as anime from 'animejs';
 	import Ellipsis from './ellipsis.vue';
 
 	export default {

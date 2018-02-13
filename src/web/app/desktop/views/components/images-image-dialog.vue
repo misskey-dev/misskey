@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import anime from 'animejs';
+import * as anime from 'animejs';
 
 export default Vue.extend({
 	props: ['image'],

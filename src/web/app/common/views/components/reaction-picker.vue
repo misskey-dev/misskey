@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import anime from 'animejs';
+import * as anime from 'animejs';
 
 const placeholder = '%i18n:common.tags.mk-reaction-picker.choose-reaction%';
 

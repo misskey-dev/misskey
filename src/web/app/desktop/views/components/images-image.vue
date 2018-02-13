@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkImagesImageDialog from './images-image-dialog.vue';
 
 export default Vue.extend({
 	props: ['image'],
@@ -23,7 +24,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onMousemove(e) {
-			const rect = this.$refs.view.getBoundingClientRect();
+			const rect = this.$el.getBoundingClientRect();
 			const mouseX = e.clientX - rect.left;
 			const mouseY = e.clientY - rect.top;
 			const xp = mouseX / this.$el.offsetWidth * 100;
@@ -36,11 +37,12 @@ export default Vue.extend({
 			this.$el.style.backgroundPosition = '';
 		},
 
-		onClick(ev) {
-			riot.mount(document.body.appendChild(document.createElement('mk-image-dialog')), {
-				image: this.image
-			});
-			return false;
+		onClick() {
+			document.body.appendChild(new MkImagesImageDialog({
+				propsData: {
+					image: this.image
+				}
+			}).$mount().$el);
 		}
 	}
 });

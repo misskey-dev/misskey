@@ -16,7 +16,7 @@
 
 	</style>
 	<script lang="typescript">
-		import anime from 'animejs';
+		import * as anime from 'animejs';
 
 		this.on('mount', () => {
 			anime({

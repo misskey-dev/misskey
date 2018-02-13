@@ -96,7 +96,7 @@
 
 	</style>
 	<script lang="typescript">
-		import anime from 'animejs';
+		import * as anime from 'animejs';
 		import contains from '../../common/scripts/contains';
 
 		this.root.addEventListener('contextmenu', e => {

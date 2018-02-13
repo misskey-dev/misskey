@@ -83,7 +83,7 @@
 
 	</style>
 	<script lang="typescript">
-		import anime from 'animejs';
+		import * as anime from 'animejs';
 
 		this.canThrough = opts.canThrough != null ? opts.canThrough : true;
 		this.opts.buttons.forEach(button => {

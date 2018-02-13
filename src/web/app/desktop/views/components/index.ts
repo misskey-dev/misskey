@@ -20,6 +20,9 @@ import postFormWindow from './post-form-window.vue';
 import repostFormWindow from './repost-form-window.vue';
 import analogClock from './analog-clock.vue';
 import ellipsisIcon from './ellipsis-icon.vue';
+import images from './images.vue';
+import imagesImage from './images-image.vue';
+import imagesImageDialog from './images-image-dialog.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-header', uiHeader);
@@ -41,3 +44,6 @@ Vue.component('mk-post-form-window', postFormWindow);
 Vue.component('mk-repost-form-window', repostFormWindow);
 Vue.component('mk-analog-clock', analogClock);
 Vue.component('mk-ellipsis-icon', ellipsisIcon);
+Vue.component('mk-images', images);
+Vue.component('mk-images-image', imagesImage);
+Vue.component('mk-images-image-dialog', imagesImageDialog);

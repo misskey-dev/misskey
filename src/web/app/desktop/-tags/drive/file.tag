@@ -141,7 +141,7 @@
 
 	</style>
 	<script lang="typescript">
-		import anime from 'animejs';
+		import * as anime from 'animejs';
 		import bytesToSize from '../../../common/scripts/bytes-to-size';
 
 		this.mixin('i');
