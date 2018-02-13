@@ -62,25 +62,25 @@
 			user-select none
 
 			> .container
+				display flex
 				width 100%
 				max-width 1300px
 				margin 0 auto
 
-				&:after
-					content ""
-					display block
-					clear both
-
 				> .left
-					float left
-					height 3rem
-
-				> .right
-					float right
+					margin 0 auto 0 0
 					height 48px
 
+				> .right
+					margin 0 0 0 auto
+					height 48px
+
+					> *
+						display inline-block
+						vertical-align top
+
 					@media (max-width 1100px)
-						> mk-ui-header-search
+						> .mk-ui-header-search
 							display none
 
 </style>
