@@ -7,9 +7,9 @@
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="moreMessagesIsInStock" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
 			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }}
 		</button>
-		<template v-for="(message, i) in messages">
+		<template v-for="(message, i) in _messages">
 			<mk-messaging-message :message="message" :key="message.id"/>
-			<p class="date" :key="message.id + '-time'" v-if="i != messages.length - 1 && _message._date != _messages[i + 1]._date"><span>{{ _messages[i + 1]._datetext }}</span></p>
+			<p class="date" :key="message.id + '-time'" v-if="i != messages.length - 1 && message._date != _messages[i + 1]._date"><span>{{ _messages[i + 1]._datetext }}</span></p>
 		</template>
 	</div>
 	<footer>
