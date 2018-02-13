@@ -9,7 +9,7 @@
 		</div>
 		<div :class="$style.actions">
 			<button :class="$style.cancel" @click="cancel">キャンセル</button>
-			<button :class="$style.ok" disabled="!parent.allowEmpty && text.length == 0" @click="ok">決定</button>
+			<button :class="$style.ok" disabled="!allowEmpty && text.length == 0" @click="ok">決定</button>
 		</div>
 	</div>
 </mk-window>
