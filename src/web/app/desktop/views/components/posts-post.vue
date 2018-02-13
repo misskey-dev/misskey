@@ -1,5 +1,5 @@
 <template>
-<div class="mk-posts-post" tabindex="-1" :title="title" @keydown="onKeyDown" @dblclick="onDblClick">
+<div class="mk-posts-post" tabindex="-1" :title="title" @keydown="onKeydown" @dblclick="onDblClick">
 	<div class="reply-to" v-if="p.reply">
 		<mk-posts-post-sub post="p.reply"/>
 	</div>
@@ -32,7 +32,7 @@
 				<div class="text" ref="text">
 					<p class="channel" v-if="p.channel"><a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:</p>
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-post-html :ast="p.ast" :i="$root.$data.os.i"/>
+					<mk-post-html v-if="p.ast" :ast="p.ast" :i="$root.$data.os.i"/>
 					<a class="quote" v-if="p.repost">RP:</a>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>

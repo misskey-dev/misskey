@@ -32,36 +32,38 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		const popover = this.$refs.popover as any;
+		this.$nextTick(() => {
+			const popover = this.$refs.popover as any;
 
-		const rect = this.source.getBoundingClientRect();
-		const width = popover.offsetWidth;
-		const height = popover.offsetHeight;
+			const rect = this.source.getBoundingClientRect();
+			const width = popover.offsetWidth;
+			const height = popover.offsetHeight;
 
-		if (this.compact) {
-			const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
-			const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
-			popover.style.left = (x - (width / 2)) + 'px';
-			popover.style.top = (y - (height / 2)) + 'px';
-		} else {
-			const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
-			const y = rect.top + window.pageYOffset + this.source.offsetHeight;
-			popover.style.left = (x - (width / 2)) + 'px';
-			popover.style.top = y + 'px';
-		}
+			if (this.compact) {
+				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
+				const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
+				popover.style.left = (x - (width / 2)) + 'px';
+				popover.style.top = (y - (height / 2)) + 'px';
+			} else {
+				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
+				const y = rect.top + window.pageYOffset + this.source.offsetHeight;
+				popover.style.left = (x - (width / 2)) + 'px';
+				popover.style.top = y + 'px';
+			}
 
-		anime({
-			targets: this.$refs.backdrop,
-			opacity: 1,
-			duration: 100,
-			easing: 'linear'
-		});
+			anime({
+				targets: this.$refs.backdrop,
+				opacity: 1,
+				duration: 100,
+				easing: 'linear'
+			});
 
-		anime({
-			targets: this.$refs.popover,
-			opacity: 1,
-			scale: [0.5, 1],
-			duration: 500
+			anime({
+				targets: this.$refs.popover,
+				opacity: 1,
+				scale: [0.5, 1],
+				duration: 500
+			});
 		});
 	},
 	methods: {
@@ -104,7 +106,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-	$border-color = rgba(27, 31, 35, 0.15)
+$border-color = rgba(27, 31, 35, 0.15)
 
 .mk-reaction-picker
 	position initial
