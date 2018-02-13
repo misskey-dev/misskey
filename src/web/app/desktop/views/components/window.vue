@@ -134,7 +134,7 @@ export default Vue.extend({
 		},
 
 		close() {
-			this.$emit('closing');
+			this.$emit('before-close');
 
 			const bg = this.$refs.bg as any;
 			const main = this.$refs.main as any;
