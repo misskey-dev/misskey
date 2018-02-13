@@ -1,7 +1,7 @@
 <template>
-<div class="mk-timeline-post" tabindex="-1" :title="title" @keydown="onKeyDown" @dblclick="onDblClick">
+<div class="mk-posts-post" tabindex="-1" :title="title" @keydown="onKeyDown" @dblclick="onDblClick">
 	<div class="reply-to" v-if="p.reply">
-		<mk-timeline-post-sub post="p.reply"/>
+		<mk-posts-post-sub post="p.reply"/>
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
@@ -242,7 +242,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-timeline-post
+.mk-posts-post
 	margin 0
 	padding 0
 	background #fff

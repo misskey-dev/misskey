@@ -1,5 +1,5 @@
 <template>
-<div class="mk-timeline-post-sub" :title="title">
+<div class="mk-posts-post-sub" :title="title">
 	<a class="avatar-anchor" :href="`/${post.user.username}`">
 		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" :v-user-preview="post.user_id"/>
 	</a>
@@ -33,7 +33,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-timeline-post-sub
+.mk-posts-post-sub
 	margin 0
 	padding 0
 	font-size 0.9em

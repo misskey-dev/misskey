@@ -1,12 +1,11 @@
 <template>
 <div class="mk-timeline">
-	<template v-for="(post, i) in _posts">
-		<mk-timeline-post :post.sync="post" :key="post.id"/>
-		<p class="date" :key="post.id + '-time'" v-if="i != _posts.length - 1 && _post._date != _posts[i + 1]._date"><span>%fa:angle-up%{{ post._datetext }}</span><span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span></p>
-	</template>
-	<footer>
-		<slot name="footer"></slot>
-	</footer>
+	<mk-following-setuper v-if="alone"/>
+	<div class="loading" v-if="fetching">
+		<mk-ellipsis-icon/>
+	</div>
+	<p class="empty" v-if="posts.length == 0 && !fetching">%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
+	<mk-posts :posts="posts" ref="timeline"/>
 </div>
 </template>
 
@@ -15,28 +14,85 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: {
-		posts: {
-			type: Array,
-			default: []
+		date: {
+			type: Date,
+			required: false
 		}
+	},
+	data() {
+		return {
+			fetching: true,
+			moreFetching: false,
+			posts: [],
+			connection: null,
+			connectionId: null
+		};
 	},
 	computed: {
-		_posts(): any[] {
-			return this.posts.map(post => {
-				const date = new Date(post.created_at).getDate();
-				const month = new Date(post.created_at).getMonth() + 1;
-				post._date = date;
-				post._datetext = `${month}月 ${date}日`;
-				return post;
-			});
-		},
-		tail(): any {
-			return this.posts[this.posts.length - 1];
+		alone(): boolean {
+			return this.$root.$data.os.i.following_count == 0;
 		}
 	},
+	mounted() {
+		this.connection = this.$root.$data.os.stream.getConnection();
+		this.connectionId = this.$root.$data.os.stream.use();
+
+		this.connection.on('post', this.onPost);
+		this.connection.on('follow', this.onChangeFollowing);
+		this.connection.on('unfollow', this.onChangeFollowing);
+
+		document.addEventListener('keydown', this.onKeydown);
+		window.addEventListener('scroll', this.onScroll);
+
+		this.fetch();
+	},
+	beforeDestroy() {
+		this.connection.off('post', this.onPost);
+		this.connection.off('follow', this.onChangeFollowing);
+		this.connection.off('unfollow', this.onChangeFollowing);
+		this.$root.$data.os.stream.dispose(this.connectionId);
+
+		document.removeEventListener('keydown', this.onKeydown);
+		window.removeEventListener('scroll', this.onScroll);
+	},
 	methods: {
-		focus() {
-			(this.$el as any).children[0].focus();
+		fetch(cb?) {
+			this.fetching = true;
+
+			this.$root.$data.os.api('posts/timeline', {
+				until_date: this.date ? (this.date as any).getTime() : undefined
+			}).then(posts => {
+				this.fetching = false;
+				this.posts = posts;
+				if (cb) cb();
+			});
+		},
+		more() {
+			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
+			this.moreFetching = true;
+			this.$root.$data.os.api('posts/timeline', {
+				until_id: this.posts[this.posts.length - 1].id
+			}).then(posts => {
+				this.moreFetching = false;
+				this.posts.unshift(posts);
+			});
+		},
+		onPost(post) {
+			this.posts.unshift(post);
+		},
+		onChangeFollowing() {
+			this.fetch();
+		},
+		onScroll() {
+			const current = window.scrollY + window.innerHeight;
+			if (current > document.body.offsetHeight - 8) this.more();
+		},
+		onKeydown(e) {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 84) { // t
+					(this.$refs.timeline as any).focus();
+				}
+			}
 		}
 	}
 });
@@ -44,29 +100,28 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-timeline
+	background #fff
+	border solid 1px rgba(0, 0, 0, 0.075)
+	border-radius 6px
 
-	> .date
+	> mk-following-setuper
+		border-bottom solid 1px #eee
+
+	> .loading
+		padding 64px 0
+
+	> .empty
 		display block
-		margin 0
-		line-height 32px
-		font-size 14px
+		margin 0 auto
+		padding 32px
+		max-width 400px
 		text-align center
-		color #aaa
-		background #fdfdfd
-		border-bottom solid 1px #eaeaea
+		color #999
 
-		span
-			margin 0 16px
-
-		[data-fa]
-			margin-right 8px
-
-	> footer
-		padding 16px
-		text-align center
-		color #ccc
-		border-top solid 1px #eaeaea
-		border-bottom-left-radius 4px
-		border-bottom-right-radius 4px
+		> [data-fa]
+			display block
+			margin-bottom 16px
+			font-size 3em
+			color #ccc
 
 </style>
