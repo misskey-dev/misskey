@@ -77,7 +77,7 @@
 		"@types/uuid": "3.4.3",
 		"@types/webpack": "3.8.4",
 		"@types/webpack-stream": "3.2.8",
-		"@types/websocket": "0.0.36",
+		"@types/websocket": "0.0.37",
 		"accesses": "2.5.0",
 		"animejs": "2.2.0",
 		"autwh": "0.0.1",
