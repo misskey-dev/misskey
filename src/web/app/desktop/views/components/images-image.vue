@@ -4,7 +4,7 @@
 	@mousemove="onMousemove"
 	@mouseleave="onMouseleave"
 	@click.prevent="onClick"
-	:style="styles"
+	:style="style"
 	:title="image.name"></a>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-posts-post" tabindex="-1" :title="title" @keydown="onKeydown" @dblclick="onDblClick">
+<div class="mk-posts-post" tabindex="-1" :title="title" @keydown="onKeydown">
 	<div class="reply-to" v-if="p.reply">
 		<mk-posts-post-sub post="p.reply"/>
 	</div>
@@ -58,7 +58,7 @@
 				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
-				<button @click="toggleDetail" title="%i18n:desktop.tags.mk-timeline-post.detail">
+				<button title="%i18n:desktop.tags.mk-timeline-post.detail">
 					<template v-if="!isDetailOpened">%fa:caret-down%</template>
 					<template v-if="isDetailOpened">%fa:caret-up%</template>
 				</button>
@@ -94,6 +94,7 @@ export default Vue.extend({
 	props: ['post'],
 	data() {
 		return {
+			isDetailOpened: false,
 			connection: null,
 			connectionId: null
 		};
@@ -109,7 +110,11 @@ export default Vue.extend({
 			return this.isRepost ? this.post.repost : this.post;
 		},
 		reactionsCount(): number {
-			return this.p.reaction_counts ? Object.keys(this.p.reaction_counts).map(key => this.p.reaction_counts[key]).reduce((a, b) => a + b) : 0;
+			return this.p.reaction_counts
+				? Object.keys(this.p.reaction_counts)
+					.map(key => this.p.reaction_counts[key])
+					.reduce((a, b) => a + b)
+				: 0;
 		},
 		title(): string {
 			return dateStringify(this.p.created_at);
