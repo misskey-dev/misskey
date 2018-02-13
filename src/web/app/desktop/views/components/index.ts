@@ -23,6 +23,9 @@ import ellipsisIcon from './ellipsis-icon.vue';
 import images from './images.vue';
 import imagesImage from './images-image.vue';
 import imagesImageDialog from './images-image-dialog.vue';
+import notifications from './notifications.vue';
+import postForm from './post-form.vue';
+import repostForm from './repost-form.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-header', uiHeader);
@@ -47,3 +50,6 @@ Vue.component('mk-ellipsis-icon', ellipsisIcon);
 Vue.component('mk-images', images);
 Vue.component('mk-images-image', imagesImage);
 Vue.component('mk-images-image-dialog', imagesImageDialog);
+Vue.component('mk-notifications', notifications);
+Vue.component('mk-post-form', postForm);
+Vue.component('mk-repost-form', repostForm);
