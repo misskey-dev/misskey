@@ -24,7 +24,7 @@
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 					<a class="created-at" :href="url">
-						<mk-time time="p.created_at"/>
+						<mk-time :time="p.created_at"/>
 					</a>
 				</div>
 			</header>
@@ -188,7 +188,7 @@ export default Vue.extend({
 		react() {
 			document.body.appendChild(new MkReactionPicker({
 				propsData: {
-					source: this.$refs.menuButton,
+					source: this.$refs.reactButton,
 					post: this.p
 				}
 			}).$mount().$el);

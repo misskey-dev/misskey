@@ -1,5 +1,5 @@
 <template>
-<span>
+<span class="mk-reaction-icon">
 	<img v-if="reaction == 'like'" src="/assets/reactions/like.png" alt="%i18n:common.reactions.like%">
 	<img v-if="reaction == 'love'" src="/assets/reactions/love.png" alt="%i18n:common.reactions.love%">
 	<img v-if="reaction == 'laugh'" src="/assets/reactions/laugh.png" alt="%i18n:common.reactions.laugh%">
@@ -12,7 +12,15 @@
 </span>
 </template>
 
+<script lang="ts">
+import Vue from 'vue';
+export default Vue.extend({
+	props: ['reaction']
+});
+</script>
+
 <style lang="stylus" scoped>
+.mk-reaction-icon
 	img
 		vertical-align middle
 		width 1em
