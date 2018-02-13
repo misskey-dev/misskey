@@ -115,6 +115,9 @@ export default class MiOS extends EventEmitter {
 			this.streams.driveStream = new DriveStreamManager(this.i);
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this.i);
 		});
+
+		// TODO: this global export is for debugging. so disable this if production build
+		(window as any).os = this;
 	}
 
 	public log(...args) {
