@@ -1,7 +1,7 @@
 <template>
 <div class="mk-timeline">
+	<mk-friends-maker v-if="alone"/>
 	<mk-posts ref="timeline" :posts="posts">
-		<mk-friends-maker v-if="alone" slot="head"/>
 		<div class="init" v-if="fetching">
 			%fa:spinner .pulse%%i18n:common.loading%
 		</div>
