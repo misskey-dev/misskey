@@ -30,7 +30,7 @@ export default define({
 }).extend({
 	methods: {
 		func() {
-			if (this.props.design == 3) {
+			if (this.props.design == 2) {
 				this.props.design = 0;
 			} else {
 				this.props.design++;
