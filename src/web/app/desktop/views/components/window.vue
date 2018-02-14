@@ -82,13 +82,15 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		const main = this.$refs.main as any;
-		main.style.top = '15%';
-		main.style.left = (window.innerWidth / 2) - (main.offsetWidth / 2) + 'px';
+		Vue.nextTick(() => {
+			const main = this.$refs.main as any;
+			main.style.top = '15%';
+			main.style.left = (window.innerWidth / 2) - (main.offsetWidth / 2) + 'px';
 
-		window.addEventListener('resize', this.onBrowserResize);
+			window.addEventListener('resize', this.onBrowserResize);
 
-		this.open();
+			this.open();
+		});
 	},
 
 	destroyed() {
