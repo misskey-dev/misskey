@@ -1,8 +1,8 @@
 import Vue from 'vue';
 
-export default function(data: {
+export default function<T extends object>(data: {
 	name: string;
-	props: any;
+	props: T;
 }) {
 	return Vue.extend({
 		props: {
@@ -10,7 +10,7 @@ export default function(data: {
 				type: String,
 				required: true
 			},
-			place: {
+			wplace: {
 				type: String,
 				required: true
 			},
@@ -42,8 +42,10 @@ export default function(data: {
 		},
 		created() {
 			if (this.props) {
-				Object.keys(this.wprops).forEach(prop => {
-					this.props[prop] = this.props.data.hasOwnProperty(prop) ? this.props.data[prop] : this.props[prop];
+				Object.keys(this.props).forEach(prop => {
+					if (this.wprops.hasOwnProperty(prop)) {
+						this.props[prop] = this.wprops[prop];
+					}
 				});
 			}
 		}
