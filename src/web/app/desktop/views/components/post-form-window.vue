@@ -10,7 +10,7 @@
 		<mk-post-preview v-if="reply" :class="$style.postPreview" :post="reply"/>
 		<mk-post-form ref="form"
 			:reply="reply"
-			@posted="$refs.window.close"
+			@posted="onPosted"
 			@change-uploadings="onChangeUploadings"
 			@change-attached-media="onChangeMedia"/>
 	</div>
@@ -39,6 +39,9 @@ export default Vue.extend({
 		},
 		onChangeMedia(media) {
 			this.media = media;
+		},
+		onPosted() {
+			(this.$refs.window as any).close();
 		}
 	}
 });

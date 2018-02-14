@@ -21,7 +21,9 @@ export default Vue.extend({
 	},
 	methods: {
 		openPostForm() {
-			document.body.appendChild(new MkPostFormWindow().$mount().$el);
+			document.body.appendChild(new MkPostFormWindow({
+				parent: this
+			}).$mount().$el);
 		},
 		onKeydown(e) {
 			if (e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA') return;
