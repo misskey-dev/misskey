@@ -1,35 +1,38 @@
-<mk-drive-browser-nav-folder data-draghover={ draghover } @click="onclick" ondragover={ ondragover } ondragenter={ ondragenter } ondragleave={ ondragleave } ondrop={ ondrop }>
-	<template v-if="folder == null">%fa:cloud%</template><span>{ folder == null ? '%i18n:desktop.tags.mk-drive-browser-nav-folder.drive%' : folder.name }</span>
-	<style lang="stylus" scoped>
-		:scope
-			&[data-draghover]
-				background #eee
+<template>
+<div class="mk-drive-nav-folder"
+	:data-draghover="draghover"
+	@click="onClick"
+	@dragover.prevent.stop="onDragover"
+	@dragenter="onDragenter"
+	@dragleave="onDragleave"
+	@drop.stop="onDrop"
+>
+	<template v-if="folder == null">%fa:cloud%</template>
+	<span>{{ folder == null ? '%i18n:desktop.tags.mk-drive-browser-nav-folder.drive%' : folder.name }}</span>
+</div>
+</template>
 
-	</style>
-	<script lang="typescript">
-		this.mixin('api');
-
-		this.folder = this.opts.folder ? this.opts.folder : null;
-		this.browser = this.parent;
-
-		this.hover = false;
-
-		this.onclick = () => {
+<script lang="ts">
+import Vue from 'vue';
+export default Vue.extend({
+	props: ['folder', 'browser'],
+	data() {
+		return {
+			hover: false,
+			draghover: false
+		};
+	},
+	methods: {
+		onClick() {
 			this.browser.move(this.folder);
-		};
-
-		this.onmouseover = () => {
-			this.hover = true
-		};
-
-		this.onmouseout = () => {
-			this.hover = false
-		};
-
-		this.ondragover = e => {
-			e.preventDefault();
-			e.stopPropagation();
-
+		},
+		onMouseover() {
+			this.hover = true;
+		},
+		onMouseout() {
+			this.hover = false;
+		},
+		onDragover(e) {
 			// このフォルダがルートかつカレントディレクトリならドロップ禁止
 			if (this.folder == null && this.browser.folder == null) {
 				e.dataTransfer.dropEffect = 'none';
@@ -40,18 +43,14 @@
 				e.dataTransfer.dropEffect = 'move';
 			}
 			return false;
-		};
-
-		this.ondragenter = () => {
+		},
+		onDragenter() {
 			if (this.folder || this.browser.folder) this.draghover = true;
-		};
-
-		this.ondragleave = () => {
+		},
+		onDragleave() {
 			if (this.folder || this.browser.folder) this.draghover = false;
-		};
-
-		this.ondrop = e => {
-			e.stopPropagation();
+		},
+		onDrop(e) {
 			this.draghover = false;
 
 			// ファイルだったら
@@ -74,7 +73,7 @@
 			if (obj.type == 'file') {
 				const file = obj.id;
 				this.browser.removeFile(file);
-				this.api('drive/files/update', {
+				this.$root.$data.os.api('drive/files/update', {
 					file_id: file,
 					folder_id: this.folder ? this.folder.id : null
 				});
@@ -84,13 +83,21 @@
 				// 移動先が自分自身ならreject
 				if (this.folder && folder == this.folder.id) return false;
 				this.browser.removeFolder(folder);
-				this.api('drive/folders/update', {
+				this.$root.$data.os.api('drive/folders/update', {
 					folder_id: folder,
 					parent_id: this.folder ? this.folder.id : null
 				});
 			}
 
 			return false;
-		};
-	</script>
-</mk-drive-browser-nav-folder>
+		}
+	}
+});
+</script>
+
+<style lang="stylus" scoped>
+.mk-drive-nav-folder
+	&[data-draghover]
+		background #eee
+
+</style>

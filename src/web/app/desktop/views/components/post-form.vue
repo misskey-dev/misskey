@@ -26,7 +26,7 @@
 	<button ref="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" @click="selectFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" @click="poll = true">%fa:chart-pie%</button>
-	<p class="text-count { over: refs.text.value.length > 1000 }">{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - refs.text.value.length) }</p>
+	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - text.length) }}</p>
 	<button :class="{ posting }" ref="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
