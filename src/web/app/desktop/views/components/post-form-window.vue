@@ -29,7 +29,9 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this.$refs.form as any).focus();
+		Vue.nextTick(() => {
+			(this.$refs.form as any).focus();
+		});
 	},
 	methods: {
 		onChangeUploadings(media) {

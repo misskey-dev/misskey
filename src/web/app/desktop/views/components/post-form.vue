@@ -111,7 +111,7 @@ export default Vue.extend({
 		chooseFile() {
 			(this.$refs.file as any).click();
 		},
-		chooseFileFromDrive() {
+		chooseFileFromDrive() {/*
 			const w = new MkDriveFileSelectorWindow({
 				propsData: {
 					multiple: true
@@ -122,7 +122,7 @@ export default Vue.extend({
 
 			w.$once('selected', files => {
 				files.forEach(this.attachMedia);
-			});
+			});*/
 		},
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
