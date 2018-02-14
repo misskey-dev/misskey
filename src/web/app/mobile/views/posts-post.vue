@@ -1,0 +1,412 @@
+<template>
+<div class="mk-posts-post" :class="{ repost: isRepost }">
+	<div class="reply-to" v-if="p.reply">
+		<mk-timeline-post-sub post={ p.reply }/>
+	</div>
+	<div class="repost" v-if="isRepost">
+		<p>
+			<a class="avatar-anchor" href={ '/' + post.user.username }>
+				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
+			</a>
+			%fa:retweet%{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
+		</p>
+		<mk-time time={ post.created_at }/>
+	</div>
+	<article>
+		<a class="avatar-anchor" href={ '/' + p.user.username }>
+			<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=96' } alt="avatar"/>
+		</a>
+		<div class="main">
+			<header>
+				<a class="name" href={ '/' + p.user.username }>{ p.user.name }</a>
+				<span class="is-bot" v-if="p.user.is_bot">bot</span>
+				<span class="username">@{ p.user.username }</span>
+				<a class="created-at" href={ url }>
+					<mk-time time={ p.created_at }/>
+				</a>
+			</header>
+			<div class="body">
+				<div class="text" ref="text">
+					<p class="channel" v-if="p.channel != null"><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<a class="reply" v-if="p.reply">
+						%fa:reply%
+					</a>
+					<p class="dummy"></p>
+					<a class="quote" v-if="p.repost != null">RP:</a>
+				</div>
+				<div class="media" v-if="p.media">
+					<mk-images images={ p.media }/>
+				</div>
+				<mk-poll v-if="p.poll" post={ p } ref="pollViewer"/>
+				<span class="app" v-if="p.app">via <b>{ p.app.name }</b></span>
+				<div class="repost" v-if="p.repost">%fa:quote-right -flip-h%
+					<mk-post-preview class="repost" post={ p.repost }/>
+				</div>
+			</div>
+			<footer>
+				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
+				<button @click="reply">
+					%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
+				</button>
+				<button @click="repost" title="Repost">
+					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
+				</button>
+				<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton">
+					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
+				</button>
+				<button class="menu" @click="menu" ref="menuButton">
+					%fa:ellipsis-h%
+				</button>
+			</footer>
+		</div>
+	</article>
+</div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import openPostForm from '../scripts/open-post-form';
+
+export default Vue.extend({
+	props: ['post'],
+	data() {
+		return {
+			connection: null,
+			connectionId: null
+		};
+	},
+	computed: {
+		isRepost(): boolean {
+			return (this.post.repost &&
+				this.post.text == null &&
+				this.post.media_ids == null &&
+				this.post.poll == null);
+		},
+		p(): any {
+			return this.isRepost ? this.post.repost : this.post;
+		},
+		reactionsCount(): number {
+			return this.p.reaction_counts
+				? Object.keys(this.p.reaction_counts)
+					.map(key => this.p.reaction_counts[key])
+					.reduce((a, b) => a + b)
+				: 0;
+		},
+		url(): string {
+			return `/${this.p.user.username}/${this.p.id}`;
+		},
+		urls(): string[] {
+			if (this.p.ast) {
+				return this.p.ast
+					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+					.map(t => t.url);
+			} else {
+				return null;
+			}
+		}
+	},
+	created() {
+		this.connection = this.$root.$data.os.stream.getConnection();
+		this.connectionId = this.$root.$data.os.stream.use();
+	},
+	mounted() {
+		this.capture(true);
+
+		if (this.$root.$data.os.isSignedIn) {
+			this.connection.on('_connected_', this.onStreamConnected);
+		}
+	},
+	beforeDestroy() {
+		this.decapture(true);
+		this.connection.off('_connected_', this.onStreamConnected);
+		this.$root.$data.os.stream.dispose(this.connectionId);
+	},
+	methods: {
+		capture(withHandler = false) {
+			if (this.$root.$data.os.isSignedIn) {
+				this.connection.send({
+					type: 'capture',
+					id: this.post.id
+				});
+				if (withHandler) this.connection.on('post-updated', this.onStreamPostUpdated);
+			}
+		},
+		decapture(withHandler = false) {
+			if (this.$root.$data.os.isSignedIn) {
+				this.connection.send({
+					type: 'decapture',
+					id: this.post.id
+				});
+				if (withHandler) this.connection.off('post-updated', this.onStreamPostUpdated);
+			}
+		},
+		onStreamConnected() {
+			this.capture();
+		},
+		onStreamPostUpdated(data) {
+			const post = data.post;
+			if (post.id == this.post.id) {
+				this.$emit('update:post', post);
+			}
+		},
+	}
+});
+</script>
+
+<style lang="stylus" scoped>
+.mk-posts-post
+	font-size 12px
+	border-bottom solid 1px #eaeaea
+
+	&:first-child
+		border-radius 8px 8px 0 0
+
+		> .repost
+			border-radius 8px 8px 0 0
+
+	&:last-of-type
+		border-bottom none
+
+	@media (min-width 350px)
+		font-size 14px
+
+	@media (min-width 500px)
+		font-size 16px
+
+	> .repost
+		color #9dbb00
+		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+
+		> p
+			margin 0
+			padding 8px 16px
+			line-height 28px
+
+			@media (min-width 500px)
+				padding 16px
+
+			.avatar-anchor
+				display inline-block
+
+				.avatar
+					vertical-align bottom
+					width 28px
+					height 28px
+					margin 0 8px 0 0
+					border-radius 6px
+
+			[data-fa]
+				margin-right 4px
+
+			.name
+				font-weight bold
+
+		> mk-time
+			position absolute
+			top 8px
+			right 16px
+			font-size 0.9em
+			line-height 28px
+
+			@media (min-width 500px)
+				top 16px
+
+		& + article
+			padding-top 8px
+
+	> .reply-to
+		background rgba(0, 0, 0, 0.0125)
+
+		> mk-post-preview
+			background transparent
+
+	> article
+		padding 14px 16px 9px 16px
+
+		&:after
+			content ""
+			display block
+			clear both
+
+		> .avatar-anchor
+			display block
+			float left
+			margin 0 10px 8px 0
+			position -webkit-sticky
+			position sticky
+			top 62px
+
+			@media (min-width 500px)
+				margin-right 16px
+
+			> .avatar
+				display block
+				width 48px
+				height 48px
+				margin 0
+				border-radius 6px
+				vertical-align bottom
+
+				@media (min-width 500px)
+					width 58px
+					height 58px
+					border-radius 8px
+
+		> .main
+			float left
+			width calc(100% - 58px)
+
+			@media (min-width 500px)
+				width calc(100% - 74px)
+
+			> header
+				display flex
+				white-space nowrap
+
+				@media (min-width 500px)
+					margin-bottom 2px
+
+				> .name
+					display block
+					margin 0 0.5em 0 0
+					padding 0
+					overflow hidden
+					color #777
+					font-size 1em
+					font-weight 700
+					text-align left
+					text-decoration none
+					text-overflow ellipsis
+
+					&:hover
+						text-decoration underline
+
+				> .is-bot
+					text-align left
+					margin 0 0.5em 0 0
+					padding 1px 6px
+					font-size 12px
+					color #aaa
+					border solid 1px #ddd
+					border-radius 3px
+
+				> .username
+					text-align left
+					margin 0 0.5em 0 0
+					color #ccc
+
+				> .created-at
+					margin-left auto
+					font-size 0.9em
+					color #c0c0c0
+
+			> .body
+
+				> .text
+					cursor default
+					display block
+					margin 0
+					padding 0
+					overflow-wrap break-word
+					font-size 1.1em
+					color #717171
+
+					> .dummy
+						display none
+
+					mk-url-preview
+						margin-top 8px
+
+					> .channel
+						margin 0
+
+					> .reply
+						margin-right 8px
+						color #717171
+
+					> .quote
+						margin-left 4px
+						font-style oblique
+						color #a0bf46
+
+					code
+						padding 4px 8px
+						margin 0 0.5em
+						font-size 80%
+						color #525252
+						background #f8f8f8
+						border-radius 2px
+
+					pre > code
+						padding 16px
+						margin 0
+
+					[data-is-me]:after
+						content "you"
+						padding 0 4px
+						margin-left 4px
+						font-size 80%
+						color $theme-color-foreground
+						background $theme-color
+						border-radius 4px
+
+				> .media
+					> img
+						display block
+						max-width 100%
+
+				> .app
+					font-size 12px
+					color #ccc
+
+				> mk-poll
+					font-size 80%
+
+				> .repost
+					margin 8px 0
+
+					> [data-fa]:first-child
+						position absolute
+						top -8px
+						left -8px
+						z-index 1
+						color #c0dac6
+						font-size 28px
+						background #fff
+
+					> mk-post-preview
+						padding 16px
+						border dashed 1px #c0dac6
+						border-radius 8px
+
+			> footer
+				> button
+					margin 0
+					padding 8px
+					background transparent
+					border none
+					box-shadow none
+					font-size 1em
+					color #ddd
+					cursor pointer
+
+					&:not(:last-child)
+						margin-right 28px
+
+					&:hover
+						color #666
+
+					> .count
+						display inline
+						margin 0 0 0 8px
+						color #999
+
+					&.reacted
+						color $theme-color
+
+					&.menu
+						@media (max-width 350px)
+							display none
+
+</style>
+
