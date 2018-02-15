@@ -39,6 +39,7 @@ module.exports = Object.keys(langs).map(lang => {
 			extensions: [
 				'.js', '.ts'
 			]
-		}
+		},
+		cache: true
 	};
 });
