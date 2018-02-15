@@ -1,6 +1,8 @@
 <template>
 <div class="mk-ui">
-	<mk-ui-header/>
+	<mk-ui-header :func="func" :func-icon="funcIcon">
+		<slot name="header"></slot>
+	</mk-ui-header>
 	<mk-ui-nav :is-open="isDrawerOpening"/>
 	<div class="content">
 		<slot></slot>
@@ -12,6 +14,7 @@
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
+	props: ['title', 'func', 'funcIcon'],
 	data() {
 		return {
 			isDrawerOpening: false,

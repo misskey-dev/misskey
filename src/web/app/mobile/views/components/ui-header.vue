@@ -6,8 +6,10 @@
 		<div class="content">
 			<button class="nav" @click="parent.toggleDrawer">%fa:bars%</button>
 			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages">%fa:circle%</template>
-			<h1 ref="title">Misskey</h1>
-			<button v-if="func" @click="func"><mk-raw content={ funcIcon }/></button>
+			<h1>
+				<slot>Misskey</slot>
+			</h1>
+			<button v-if="func" @click="func" v-html="funcIcon"></button>
 		</div>
 	</div>
 </div>
@@ -17,6 +19,7 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+	props: ['func', 'funcIcon'],
 	data() {
 		return {
 			func: null,
@@ -62,10 +65,6 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		setFunc(fn, icon) {
-			this.func = fn;
-			this.funcIcon = icon;
-		},
 		onReadAllNotifications() {
 			this.hasUnreadNotifications = false;
 		},

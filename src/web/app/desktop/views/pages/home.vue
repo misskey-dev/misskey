@@ -1,7 +1,7 @@
 <template>
-	<mk-ui>
-		<mk-home ref="home" :mode="mode"/>
-	</mk-ui>
+<mk-ui>
+	<mk-home :mode="mode"/>
+</mk-ui>
 </template>
 
 <script lang="ts">
