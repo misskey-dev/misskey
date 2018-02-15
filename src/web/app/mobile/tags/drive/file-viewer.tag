@@ -255,7 +255,7 @@
 		this.rename = () => {
 			const name = window.prompt('名前を変更', this.file.name);
 			if (name == null || name == '' || name == this.file.name) return;
-			this.api('drive/files/update', {
+			this.$root.$data.os.api('drive/files/update', {
 				file_id: this.file.id,
 				name: name
 			}).then(() => {
@@ -266,7 +266,7 @@
 		this.move = () => {
 			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')))[0];
 			dialog.one('selected', folder => {
-				this.api('drive/files/update', {
+				this.$root.$data.os.api('drive/files/update', {
 					file_id: this.file.id,
 					folder_id: folder == null ? null : folder.id
 				}).then(() => {

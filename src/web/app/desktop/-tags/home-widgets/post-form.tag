@@ -83,7 +83,7 @@
 				posting: true
 			});
 
-			this.api('posts/create', {
+			this.$root.$data.os.api('posts/create', {
 				text: this.$refs.text.value
 			}).then(data => {
 				this.clear();

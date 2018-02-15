@@ -94,7 +94,7 @@
 				loading: true,
 				poll: null
 			});
-			this.api('posts/polls/recommendation', {
+			this.$root.$data.os.api('posts/polls/recommendation', {
 				limit: 1,
 				offset: this.offset
 			}).then(posts => {

@@ -53,7 +53,7 @@
 			this.$refs.ctx.close();
 
 			inputDialog('%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename-folder%', '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.input-new-folder-name%', this.folder.name, name => {
-				this.api('drive/folders/update', {
+				this.$root.$data.os.api('drive/folders/update', {
 					folder_id: this.folder.id,
 					name: name
 				});

@@ -42,7 +42,7 @@
 		this.on('mount', () => {
 			Progress.start();
 
-			this.api('posts/show', {
+			this.$root.$data.os.api('posts/show', {
 				post_id: this.opts.post
 			}).then(post => {
 

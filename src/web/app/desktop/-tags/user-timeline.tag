@@ -94,7 +94,7 @@
 		};
 
 		this.fetch = cb => {
-			this.api('users/posts', {
+			this.$root.$data.os.api('users/posts', {
 				user_id: this.user.id,
 				until_date: this.date ? this.date.getTime() : undefined,
 				with_replies: this.mode == 'with-replies'
@@ -113,7 +113,7 @@
 			this.update({
 				moreLoading: true
 			});
-			this.api('users/posts', {
+			this.$root.$data.os.api('users/posts', {
 				user_id: this.user.id,
 				with_replies: this.mode == 'with-replies',
 				until_id: this.$refs.timeline.tail().id

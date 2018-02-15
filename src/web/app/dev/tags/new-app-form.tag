@@ -209,7 +209,7 @@
 				nidState: 'wait'
 			});
 
-			this.api('app/name_id/available', {
+			this.$root.$data.os.api('app/name_id/available', {
 				name_id: nid
 			}).then(result => {
 				this.update({
@@ -235,7 +235,7 @@
 
 			const locker = document.body.appendChild(document.createElement('mk-locker'));
 
-			this.api('app/create', {
+			this.$root.$data.os.api('app/create', {
 				name: name,
 				name_id: nid,
 				description: description,

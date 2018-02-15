@@ -74,7 +74,7 @@
 				fetching: true
 			});
 
-			this.api('channels/show', {
+			this.$root.$data.os.api('channels/show', {
 				channel_id: this.data.channel
 			}).then(channel => {
 				this.update({
@@ -159,7 +159,7 @@
 				channel: channel
 			});
 
-			this.api('channels/posts', {
+			this.$root.$data.os.api('channels/posts', {
 				channel_id: channel.id
 			}).then(posts => {
 				this.update({
@@ -300,7 +300,7 @@
 				text = text.replace(/^>>([0-9]+) /, '');
 			}
 
-			this.api('posts/create', {
+			this.$root.$data.os.api('posts/create', {
 				text: text,
 				reply_id: reply ? reply.id : undefined,
 				channel_id: this.parent.channel.id

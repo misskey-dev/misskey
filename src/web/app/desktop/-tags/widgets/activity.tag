@@ -67,7 +67,7 @@
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.api('aggregation/users/activity', {
+			this.$root.$data.os.api('aggregation/users/activity', {
 				user_id: this.user.id,
 				limit: 20 * 7
 			}).then(activity => {

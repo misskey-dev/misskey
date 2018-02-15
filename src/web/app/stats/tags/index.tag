@@ -46,7 +46,7 @@
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.api('stats').then(stats => {
+			this.$root.$data.os.api('stats').then(stats => {
 				this.update({
 					initializing: false,
 					stats
@@ -70,7 +70,7 @@
 		this.stats = this.opts.stats;
 
 		this.on('mount', () => {
-			this.api('aggregation/posts', {
+			this.$root.$data.os.api('aggregation/posts', {
 				limit: 365
 			}).then(data => {
 				this.update({
@@ -96,7 +96,7 @@
 		this.stats = this.opts.stats;
 
 		this.on('mount', () => {
-			this.api('aggregation/users', {
+			this.$root.$data.os.api('aggregation/users', {
 				limit: 365
 			}).then(data => {
 				this.update({

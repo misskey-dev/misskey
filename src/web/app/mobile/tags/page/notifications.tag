@@ -33,7 +33,7 @@
 
 			if (!ok) return;
 
-			this.api('notifications/mark_as_read_all');
+			this.$root.$data.os.api('notifications/mark_as_read_all');
 		};
 	</script>
 </mk-notifications-page>

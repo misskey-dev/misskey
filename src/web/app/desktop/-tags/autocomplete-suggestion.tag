@@ -97,7 +97,7 @@
 				el.addEventListener('mousedown', this.mousedown);
 			});
 
-			this.api('users/search_by_username', {
+			this.$root.$data.os.api('users/search_by_username', {
 				query: this.q,
 				limit: 30
 			}).then(users => {

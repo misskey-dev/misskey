@@ -15,7 +15,7 @@
 		this.mixin('api');
 
 		this.on('mount', () => {
-			this.api('channels', {
+			this.$root.$data.os.api('channels', {
 				limit: 100
 			}).then(channels => {
 				this.update({
@@ -27,7 +27,7 @@
 		this.n = () => {
 			const title = window.prompt('%i18n:ch.tags.mk-index.channel-title%');
 
-			this.api('channels/create', {
+			this.$root.$data.os.api('channels/create', {
 				title: title
 			}).then(channel => {
 				location.href = '/' + channel.id;

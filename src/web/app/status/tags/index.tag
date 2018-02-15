@@ -59,7 +59,7 @@
 		this.connection = new Connection();
 
 		this.on('mount', () => {
-			this.api('meta').then(meta => {
+			this.$root.$data.os.api('meta').then(meta => {
 				this.update({
 					initializing: false,
 					meta

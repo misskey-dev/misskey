@@ -291,7 +291,7 @@
 
 			// Get replies
 			if (!this.compact) {
-				this.api('posts/replies', {
+				this.$root.$data.os.api('posts/replies', {
 					post_id: this.p.id,
 					limit: 8
 				}).then(replies => {
@@ -311,7 +311,7 @@
 		this.repost = () => {
 			const text = window.prompt(`「${this.summary}」をRepost`);
 			if (text == null) return;
-			this.api('posts/create', {
+			this.$root.$data.os.api('posts/create', {
 				repost_id: this.p.id,
 				text: text == '' ? undefined : text
 			});
@@ -337,7 +337,7 @@
 			this.contextFetching = true;
 
 			// Fetch context
-			this.api('posts/context', {
+			this.$root.$data.os.api('posts/context', {
 				post_id: this.p.reply_id
 			}).then(context => {
 				this.update({

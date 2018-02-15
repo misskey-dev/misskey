@@ -96,7 +96,7 @@
 				loading: true,
 				post: null
 			});
-			this.api('posts/trend', {
+			this.$root.$data.os.api('posts/trend', {
 				limit: 1,
 				offset: this.offset,
 				repost: false,

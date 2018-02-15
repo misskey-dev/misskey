@@ -265,7 +265,7 @@
 				fetching: true
 			});
 
-			this.api('drive/folders/show', {
+			this.$root.$data.os.api('drive/folders/show', {
 				folder_id: target
 			}).then(folder => {
 				this.folder = folder;
@@ -368,7 +368,7 @@
 			const filesMax = 20;
 
 			// フォルダ一覧取得
-			this.api('drive/folders', {
+			this.$root.$data.os.api('drive/folders', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: foldersMax + 1
 			}).then(folders => {
@@ -381,7 +381,7 @@
 			});
 
 			// ファイル一覧取得
-			this.api('drive/files', {
+			this.$root.$data.os.api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: filesMax + 1
 			}).then(files => {
@@ -412,7 +412,7 @@
 
 			if (this.folder == null) {
 				// Fetch addtional drive info
-				this.api('drive').then(info => {
+				this.$root.$data.os.api('drive').then(info => {
 					this.update({ info });
 				});
 			}
@@ -427,7 +427,7 @@
 			const max = 30;
 
 			// ファイル一覧取得
-			this.api('drive/files', {
+			this.$root.$data.os.api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: max + 1,
 				until_id: this.files[this.files.length - 1].id
@@ -471,7 +471,7 @@
 				fetching: true
 			});
 
-			this.api('drive/files/show', {
+			this.$root.$data.os.api('drive/files/show', {
 				file_id: file
 			}).then(file => {
 				this.fetching = false;
@@ -523,7 +523,7 @@
 		this.createFolder = () => {
 			const name = window.prompt('フォルダー名');
 			if (name == null || name == '') return;
-			this.api('drive/folders/create', {
+			this.$root.$data.os.api('drive/folders/create', {
 				name: name,
 				parent_id: this.folder ? this.folder.id : undefined
 			}).then(folder => {
@@ -539,7 +539,7 @@
 			}
 			const name = window.prompt('フォルダー名', this.folder.name);
 			if (name == null || name == '') return;
-			this.api('drive/folders/update', {
+			this.$root.$data.os.api('drive/folders/update', {
 				name: name,
 				folder_id: this.folder.id
 			}).then(folder => {
@@ -554,7 +554,7 @@
 			}
 			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')))[0];
 			dialog.one('selected', folder => {
-				this.api('drive/folders/update', {
+				this.$root.$data.os.api('drive/folders/update', {
 					parent_id: folder ? folder.id : null,
 					folder_id: this.folder.id
 				}).then(folder => {
@@ -566,7 +566,7 @@
 		this.urlUpload = () => {
 			const url = window.prompt('アップロードしたいファイルのURL');
 			if (url == null || url == '') return;
-			this.api('drive/files/upload_from_url', {
+			this.$root.$data.os.api('drive/files/upload_from_url', {
 				url: url,
 				folder_id: this.folder ? this.folder.id : undefined
 			});

@@ -112,7 +112,7 @@
 		this.app = this.session.app;
 
 		this.cancel = () => {
-			this.api('auth/deny', {
+			this.$root.$data.os.api('auth/deny', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('denied');
@@ -120,7 +120,7 @@
 		};
 
 		this.accept = () => {
-			this.api('auth/accept', {
+			this.$root.$data.os.api('auth/accept', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('accepted');

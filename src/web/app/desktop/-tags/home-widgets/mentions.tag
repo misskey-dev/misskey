@@ -82,7 +82,7 @@
 		};
 
 		this.fetch = cb => {
-			this.api('posts/mentions', {
+			this.$root.$data.os.api('posts/mentions', {
 				following: this.mode == 'following'
 			}).then(posts => {
 				this.update({
@@ -99,7 +99,7 @@
 			this.update({
 				moreLoading: true
 			});
-			this.api('posts/mentions', {
+			this.$root.$data.os.api('posts/mentions', {
 				following: this.mode == 'following',
 				until_id: this.$refs.timeline.tail().id
 			}).then(posts => {

@@ -46,7 +46,7 @@
 				this.$destroy();
 			});
 
-			this.api('drive').then(info => {
+			this.$root.$data.os.api('drive').then(info => {
 				this.update({
 					usage: info.usage / info.capacity * 100
 				});

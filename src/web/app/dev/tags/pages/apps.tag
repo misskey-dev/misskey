@@ -20,7 +20,7 @@
 		this.fetching = true;
 
 		this.on('mount', () => {
-			this.api('my/apps').then(apps => {
+			this.$root.$data.os.api('my/apps').then(apps => {
 				this.fetching = false
 				this.apps = apps
 				this.update({

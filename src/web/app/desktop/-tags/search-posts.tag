@@ -48,7 +48,7 @@
 			document.addEventListener('keydown', this.onDocumentKeydown);
 			window.addEventListener('scroll', this.onScroll);
 
-			this.api('posts/search', parse(this.query)).then(posts => {
+			this.$root.$data.os.api('posts/search', parse(this.query)).then(posts => {
 				this.update({
 					isLoading: false,
 					isEmpty: posts.length == 0
@@ -77,7 +77,7 @@
 			this.update({
 				moreLoading: true
 			});
-			return this.api('posts/search', Object.assign({}, parse(this.query), {
+			return this.$root.$data.os.api('posts/search', Object.assign({}, parse(this.query), {
 				limit: this.limit,
 				offset: this.offset
 			})).then(posts => {

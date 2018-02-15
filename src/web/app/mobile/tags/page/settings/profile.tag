@@ -182,7 +182,7 @@
 					avatarSaving: true
 				});
 
-				this.api('i/update', {
+				this.$root.$data.os.api('i/update', {
 					avatar_id: file.id
 				}).then(() => {
 					this.update({
@@ -203,7 +203,7 @@
 					bannerSaving: true
 				});
 
-				this.api('i/update', {
+				this.$root.$data.os.api('i/update', {
 					banner_id: file.id
 				}).then(() => {
 					this.update({
@@ -230,7 +230,7 @@
 				saving: true
 			});
 
-			this.api('i/update', {
+			this.$root.$data.os.api('i/update', {
 				name: this.$refs.name.value,
 				location: this.$refs.location.value || null,
 				description: this.$refs.description.value || null,

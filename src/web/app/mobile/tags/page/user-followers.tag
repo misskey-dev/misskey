@@ -18,7 +18,7 @@
 		this.on('mount', () => {
 			Progress.start();
 
-			this.api('users/show', {
+			this.$root.$data.os.api('users/show', {
 				username: this.opts.user
 			}).then(user => {
 				this.update({

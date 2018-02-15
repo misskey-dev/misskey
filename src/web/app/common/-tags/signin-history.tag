@@ -19,7 +19,7 @@
 		this.fetching = true;
 
 		this.on('mount', () => {
-			this.api('i/signin_history').then(history => {
+			this.$root.$data.os.api('i/signin_history').then(history => {
 				this.update({
 					fetching: false,
 					history: history

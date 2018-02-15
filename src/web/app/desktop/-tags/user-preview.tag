@@ -109,7 +109,7 @@
 		this.userPromise =
 			typeof this.u == 'string' ?
 				new Promise((resolve, reject) => {
-					this.api('users/show', {
+					this.$root.$data.os.api('users/show', {
 						user_id: this.u[0] == '@' ? undefined : this.u,
 						username: this.u[0] == '@' ? this.u.substr(1) : undefined
 					}).then(resolve);

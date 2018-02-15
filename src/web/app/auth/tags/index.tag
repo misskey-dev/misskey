@@ -96,7 +96,7 @@
 			if (!this.SIGNIN) return;
 
 			// Fetch session
-			this.api('auth/session/show', {
+			this.$root.$data.os.api('auth/session/show', {
 				token: this.token
 			}).then(session => {
 				this.session = session;
@@ -104,7 +104,7 @@
 
 				// 既に連携していた場合
 				if (this.session.app.is_authorized) {
-					this.api('auth/accept', {
+					this.$root.$data.os.api('auth/accept', {
 						token: this.session.token
 					}).then(() => {
 						this.accepted();

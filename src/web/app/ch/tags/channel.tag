@@ -76,7 +76,7 @@
 			let fetched = false;
 
 			// チャンネル概要読み込み
-			this.api('channels/show', {
+			this.$root.$data.os.api('channels/show', {
 				channel_id: this.id
 			}).then(channel => {
 				if (fetched) {
@@ -95,7 +95,7 @@
 			});
 
 			// 投稿読み込み
-			this.api('channels/posts', {
+			this.$root.$data.os.api('channels/posts', {
 				channel_id: this.id
 			}).then(posts => {
 				if (fetched) {
@@ -125,7 +125,7 @@
 			this.posts.unshift(post);
 			this.update();
 
-			if (document.hidden && this.SIGNIN && post.user_id !== this.I.id) {
+			if (document.hidden && this.SIGNIN && post.user_id !== this.$root.$data.os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${this.channel.title} | Misskey`;
 			}
@@ -139,7 +139,7 @@
 		};
 
 		this.watch = () => {
-			this.api('channels/watch', {
+			this.$root.$data.os.api('channels/watch', {
 				channel_id: this.id
 			}).then(() => {
 				this.channel.is_watching = true;
@@ -150,7 +150,7 @@
 		};
 
 		this.unwatch = () => {
-			this.api('channels/unwatch', {
+			this.$root.$data.os.api('channels/unwatch', {
 				channel_id: this.id
 			}).then(() => {
 				this.channel.is_watching = false;
@@ -323,7 +323,7 @@
 				? this.files.map(f => f.id)
 				: undefined;
 
-			this.api('posts/create', {
+			this.$root.$data.os.api('posts/create', {
 				text: this.$refs.text.value == '' ? undefined : this.$refs.text.value,
 				media_ids: files,
 				reply_id: this.reply ? this.reply.id : undefined,

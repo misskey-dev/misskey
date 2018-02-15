@@ -62,7 +62,7 @@
 			this.$refs.ctx.close();
 
 			inputDialog('%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename-file%', '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.input-new-file-name%', this.file.name, name => {
-				this.api('drive/files/update', {
+				this.$root.$data.os.api('drive/files/update', {
 					file_id: this.file.id,
 					name: name
 				})

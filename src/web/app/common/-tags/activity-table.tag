@@ -31,7 +31,7 @@
 		this.user = this.opts.user;
 
 		this.on('mount', () => {
-			this.api('aggregation/users/activity', {
+			this.$root.$data.os.api('aggregation/users/activity', {
 				user_id: this.user.id
 			}).then(data => {
 				data.forEach(d => d.total = d.posts + d.replies + d.reposts);

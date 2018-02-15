@@ -30,15 +30,15 @@
 		this.form = null;
 
 		this.on('mount', () => {
-			this.I.on('updated', this.onMeUpdated);
+			this.$root.$data.os.i.on('updated', this.onMeUpdated);
 		});
 
 		this.on('unmount', () => {
-			this.I.off('updated', this.onMeUpdated);
+			this.$root.$data.os.i.off('updated', this.onMeUpdated);
 		});
 
 		this.onMeUpdated = () => {
-			if (this.I.twitter) {
+			if (this.$root.$data.os.i.twitter) {
 				if (this.form) this.form.close();
 			}
 		};

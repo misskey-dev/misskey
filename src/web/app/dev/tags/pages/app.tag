@@ -19,7 +19,7 @@
 		this.fetching = true;
 
 		this.on('mount', () => {
-			this.api('app/show', {
+			this.$root.$data.os.api('app/show', {
 				app_id: this.opts.app
 			}).then(app => {
 				this.update({

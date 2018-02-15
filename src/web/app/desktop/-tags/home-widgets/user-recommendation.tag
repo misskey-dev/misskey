@@ -137,7 +137,7 @@
 				loading: true,
 				users: null
 			});
-			this.api('users/recommendation', {
+			this.$root.$data.os.api('users/recommendation', {
 				limit: this.limit,
 				offset: this.limit * this.page
 			}).then(users => {

@@ -196,7 +196,7 @@
 		this.fetching = true;
 
 		this.on('mount', () => {
-			this.api('users/show', {
+			this.$root.$data.os.api('users/show', {
 				username: this.username
 			}).then(user => {
 				this.fetching = false;
@@ -348,7 +348,7 @@
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.api('users/posts', {
+			this.$root.$data.os.api('users/posts', {
 				user_id: this.user.id
 			}).then(posts => {
 				this.update({
@@ -485,7 +485,7 @@
 		this.user = this.opts.user;
 
 		this.on('mount', () => {
-			this.api('users/posts', {
+			this.$root.$data.os.api('users/posts', {
 				user_id: this.user.id,
 				with_media: true,
 				limit: 6
@@ -540,7 +540,7 @@
 		this.user = this.opts.user;
 
 		this.on('mount', () => {
-			this.api('aggregation/users/activity', {
+			this.$root.$data.os.api('aggregation/users/activity', {
 				user_id: this.user.id,
 				limit: 30
 			}).then(data => {
@@ -665,7 +665,7 @@
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.api('users/get_frequently_replied_users', {
+			this.$root.$data.os.api('users/get_frequently_replied_users', {
 				user_id: this.user.id
 			}).then(x => {
 				this.update({
@@ -720,7 +720,7 @@
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.api('users/followers', {
+			this.$root.$data.os.api('users/followers', {
 				user_id: this.user.id,
 				iknow: true,
 				limit: 30

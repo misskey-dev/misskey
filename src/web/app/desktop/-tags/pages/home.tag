@@ -38,7 +38,7 @@
 		});
 
 		this.onStreamPost = post => {
-			if (document.hidden && post.user_id != this.I.id) {
+			if (document.hidden && post.user_id != this.$root.$data.os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${getPostSummary(post)}`;
 			}

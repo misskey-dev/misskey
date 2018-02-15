@@ -126,7 +126,7 @@
 		this.onclick = () => {
 			this.wait = true;
 			if (this.user.is_following) {
-				this.api('following/delete', {
+				this.$root.$data.os.api('following/delete', {
 					user_id: this.user.id
 				}).then(() => {
 					this.user.is_following = false;
@@ -137,7 +137,7 @@
 					this.update();
 				});
 			} else {
-				this.api('following/create', {
+				this.$root.$data.os.api('following/create', {
 					user_id: this.user.id
 				}).then(() => {
 					this.user.is_following = true;

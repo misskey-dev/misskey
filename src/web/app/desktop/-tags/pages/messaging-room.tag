@@ -20,7 +20,7 @@
 
 			document.documentElement.style.background = '#fff';
 
-			this.api('users/show', {
+			this.$root.$data.os.api('users/show', {
 				username: this.opts.user
 			}).then(user => {
 				this.update({

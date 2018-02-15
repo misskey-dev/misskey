@@ -14,7 +14,7 @@
 		this.fetching = true;
 
 		this.on('mount', () => {
-			this.api('users/show', {
+			this.$root.$data.os.api('users/show', {
 				username: this.opts.username
 			}).then(user => {
 				this.update({

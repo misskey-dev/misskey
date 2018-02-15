@@ -13,7 +13,7 @@
 		this.withMedia = this.opts.withMedia;
 
 		this.init = new Promise((res, rej) => {
-			this.api('users/posts', {
+			this.$root.$data.os.api('users/posts', {
 				user_id: this.user.id,
 				with_media: this.withMedia
 			}).then(posts => {
@@ -23,7 +23,7 @@
 		});
 
 		this.more = () => {
-			return this.api('users/posts', {
+			return this.$root.$data.os.api('users/posts', {
 				user_id: this.user.id,
 				with_media: this.withMedia,
 				until_id: this.$refs.timeline.tail().id

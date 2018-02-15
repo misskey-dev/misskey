@@ -25,7 +25,7 @@
 		this.query = this.opts.query;
 
 		this.init = new Promise((res, rej) => {
-			this.api('posts/search', parse(this.query)).then(posts => {
+			this.$root.$data.os.api('posts/search', parse(this.query)).then(posts => {
 				res(posts);
 				this.$emit('loaded');
 			});
@@ -33,7 +33,7 @@
 
 		this.more = () => {
 			this.offset += this.limit;
-			return this.api('posts/search', Object.assign({}, parse(this.query), {
+			return this.$root.$data.os.api('posts/search', Object.assign({}, parse(this.query), {
 				limit: this.limit,
 				offset: this.offset
 			}));

@@ -12,7 +12,7 @@
 		this.user = this.opts.user;
 
 		this.fetch = (iknow, limit, cursor, cb) => {
-			this.api('users/followers', {
+			this.$root.$data.os.api('users/followers', {
 				user_id: this.user.id,
 				iknow: iknow,
 				limit: limit,
