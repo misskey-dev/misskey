@@ -2,7 +2,7 @@
 <div class="mk-ui-nav" :style="{ display: isOpen ? 'block' : 'none' }">
 	<div class="backdrop" @click="parent.toggleDrawer"></div>
 	<div class="body">
-		<a class="me" v-if="SIGNIN" href={ '/' + I.username }>
+		<a class="me" v-if="$root.$data.os.isSignedIn" href={ '/' + I.username }>
 			<img class="avatar" src={ I.avatar_url + '?thumbnail&size=128' } alt="avatar"/>
 			<p class="name">{ I.name }</p>
 		</a>

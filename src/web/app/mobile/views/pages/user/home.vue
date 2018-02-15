@@ -1,0 +1,95 @@
+<template>
+<div class="mk-user-home">
+	<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" compact/>
+	<section class="recent-posts">
+		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
+		<div>
+			<mk-user-home-posts :user="user"/>
+		</div>
+	</section>
+	<section class="images">
+		<h2>%fa:image%%i18n:mobile.tags.mk-user-overview.images%</h2>
+		<div>
+			<mk-user-home-photos :user="user"/>
+		</div>
+	</section>
+	<section class="activity">
+		<h2>%fa:chart-bar%%i18n:mobile.tags.mk-user-overview.activity%</h2>
+		<div>
+			<mk-user-home-activity-chart :user="user"/>
+		</div>
+	</section>
+	<section class="keywords">
+		<h2>%fa:R comment%%i18n:mobile.tags.mk-user-overview.keywords%</h2>
+		<div>
+			<mk-user-home-keywords :user="user"/>
+		</div>
+	</section>
+	<section class="domains">
+		<h2>%fa:globe%%i18n:mobile.tags.mk-user-overview.domains%</h2>
+		<div>
+			<mk-user-home-domains :user="user"/>
+		</div>
+	</section>
+	<section class="frequently-replied-users">
+		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.frequently-replied-users%</h2>
+		<div>
+			<mk-user-home-frequently-replied-users :user="user"/>
+		</div>
+	</section>
+	<section class="followers-you-know" v-if="$root.$data.os.isSignedIn && $root.$data.os.i.id !== user.id">
+		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
+		<div>
+			<mk-user-home-followers-you-know :user="user"/>
+		</div>
+	</section>
+	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.last_used_at"/></b></p>
+</div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+export default Vue.extend({
+	props: ['user']
+});
+</script>
+
+<style lang="stylus" scoped>
+.mk-user-home
+	max-width 600px
+	margin 0 auto
+
+	> mk-post-detail
+		margin 0 0 8px 0
+
+	> section
+		background #eee
+		border-radius 8px
+		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+		&:not(:last-child)
+			margin-bottom 8px
+
+		> h2
+			margin 0
+			padding 8px 10px
+			font-size 15px
+			font-weight normal
+			color #465258
+			background #fff
+			border-radius 8px 8px 0 0
+
+			> i
+				margin-right 6px
+
+	> .activity
+		> div
+			padding 8px
+
+	> p
+		display block
+		margin 16px
+		text-align center
+		color #cad2da
+
+</style>

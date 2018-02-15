@@ -17,7 +17,7 @@
 				<p>フォロワー</p><a>{ user.followers_count }</a>
 			</div>
 		</div>
-		<mk-follow-button v-if="SIGNIN && user.id != I.id" user={ userPromise }/>
+		<mk-follow-button v-if="$root.$data.os.isSignedIn && user.id != I.id" user={ userPromise }/>
 	</template>
 	<style lang="stylus" scoped>
 		:scope

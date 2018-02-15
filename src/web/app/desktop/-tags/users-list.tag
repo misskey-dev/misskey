@@ -2,7 +2,7 @@
 	<nav>
 		<div>
 			<span data-is-active={ mode == 'all' } @click="setMode.bind(this, 'all')">すべて<span>{ opts.count }</span></span>
-			<span v-if="SIGNIN && opts.youKnowCount" data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">知り合い<span>{ opts.youKnowCount }</span></span>
+			<span v-if="$root.$data.os.isSignedIn && opts.youKnowCount" data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">知り合い<span>{ opts.youKnowCount }</span></span>
 		</div>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">

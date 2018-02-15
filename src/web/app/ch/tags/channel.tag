@@ -4,7 +4,7 @@
 	<main v-if="!fetching">
 		<h1>{ channel.title }</h1>
 
-		<div v-if="SIGNIN">
+		<div v-if="$root.$data.os.isSignedIn">
 			<p v-if="channel.is_watching">このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
 			<p v-if="!channel.is_watching"><a @click="watch">このチャンネルをウォッチする</a></p>
 		</div>
@@ -24,8 +24,8 @@
 			</div>
 		</div>
 		<hr>
-		<mk-channel-form v-if="SIGNIN" channel={ channel } ref="form"/>
-		<div v-if="!SIGNIN">
+		<mk-channel-form v-if="$root.$data.os.isSignedIn" channel={ channel } ref="form"/>
+		<div v-if="!$root.$data.os.isSignedIn">
 			<p>参加するには<a href={ _URL_ }>ログインまたは新規登録</a>してください</p>
 		</div>
 		<hr>
@@ -125,7 +125,7 @@
 			this.posts.unshift(post);
 			this.update();
 
-			if (document.hidden && this.SIGNIN && post.user_id !== this.$root.$data.os.i.id) {
+			if (document.hidden && this.$root.$data.os.isSignedIn && post.user_id !== this.$root.$data.os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${this.channel.title} | Misskey`;
 			}

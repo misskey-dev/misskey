@@ -1,5 +1,5 @@
 <mk-index>
-	<main v-if="SIGNIN">
+	<main v-if="$root.$data.os.isSignedIn">
 		<p class="fetching" v-if="fetching">読み込み中<mk-ellipsis/></p>
 		<mk-form ref="form" v-if="state == 'waiting'" session={ session }/>
 		<div class="denied" v-if="state == 'denied'">
@@ -15,7 +15,7 @@
 			<p>セッションが存在しません。</p>
 		</div>
 	</main>
-	<main class="signin" v-if="!SIGNIN">
+	<main class="signin" v-if="!$root.$data.os.isSignedIn">
 		<h1>サインインしてください</h1>
 		<mk-signin/>
 	</main>
@@ -93,7 +93,7 @@
 		this.token = window.location.href.split('/').pop();
 
 		this.on('mount', () => {
-			if (!this.SIGNIN) return;
+			if (!this.$root.$data.os.isSignedIn) return;
 
 			// Fetch session
 			this.$root.$data.os.api('auth/session/show', {

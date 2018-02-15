@@ -1,7 +1,7 @@
 <mk-users-list>
 	<nav>
 		<span data-is-active={ mode == 'all' } @click="setMode.bind(this, 'all')">%i18n:mobile.tags.mk-users-list.all%<span>{ opts.count }</span></span>
-		<span v-if="SIGNIN && opts.youKnowCount" data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">%i18n:mobile.tags.mk-users-list.known%<span>{ opts.youKnowCount }</span></span>
+		<span v-if="$root.$data.os.isSignedIn && opts.youKnowCount" data-is-active={ mode == 'iknow' } @click="setMode.bind(this, 'iknow')">%i18n:mobile.tags.mk-users-list.known%<span>{ opts.youKnowCount }</span></span>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
 		<mk-user-preview each={ users } user={ this }/>
