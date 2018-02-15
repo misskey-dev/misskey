@@ -7,6 +7,7 @@ import * as webpack from 'webpack';
 import version from '../../src/version';
 const constants = require('../../src/const.json');
 import config from '../../src/conf';
+import { licenseHtml } from '../../src/common/build/license';
 
 export default lang => {
 	const consts = {
@@ -24,6 +25,7 @@ export default lang => {
 		_LANG_: lang,
 		_HOST_: config.host,
 		_URL_: config.url,
+		_LICENSE_: licenseHtml
 	};
 
 	const _consts = {};
@@ -32,7 +34,5 @@ export default lang => {
 		_consts[key] = JSON.stringify(consts[key]);
 	});
 
-	return new webpack.DefinePlugin(Object.assign({}, _consts, {
-		__CONSTS__: JSON.stringify(consts)
-	}));
+	return new webpack.DefinePlugin(_consts);
 };

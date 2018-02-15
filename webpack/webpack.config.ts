@@ -40,6 +40,9 @@ module.exports = Object.keys(langs).map(lang => {
 				'.js', '.ts'
 			]
 		},
-		cache: true
+		cache: true,
+		devtool: 'eval',
+		stats: true,
+		profile: true
 	};
 });

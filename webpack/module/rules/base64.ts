@@ -3,17 +3,18 @@
  */
 
 import * as fs from 'fs';
-const StringReplacePlugin = require('string-replace-webpack-plugin');
 
 export default () => ({
 	enforce: 'pre',
 	test: /\.(vue|js)$/,
 	exclude: /node_modules/,
-	loader: StringReplacePlugin.replace({
-		replacements: [{
-			pattern: /%base64:(.+?)%/g, replacement: (_, key) => {
+	use: [{
+		loader: 'replace-string-loader',
+		options: {
+			search: /%base64:(.+?)%/g,
+			replace: (_, key) => {
 				return fs.readFileSync(__dirname + '/../../../src/web/' + key, 'base64');
 			}
-		}]
-	})
+		}
+	}]
 });

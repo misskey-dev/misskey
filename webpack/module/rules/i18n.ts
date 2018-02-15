@@ -2,7 +2,6 @@
  * Replace i18n texts
  */
 
-const StringReplacePlugin = require('string-replace-webpack-plugin');
 import Replacer from '../../../src/common/build/i18n';
 
 export default lang => {
@@ -12,10 +11,12 @@ export default lang => {
 		enforce: 'pre',
 		test: /\.(vue|js|ts)$/,
 		exclude: /node_modules/,
-		loader: StringReplacePlugin.replace({
-			replacements: [{
-				pattern: replacer.pattern, replacement: replacer.replacement
-			}]
-		})
+		use: [{
+			loader: 'replace-string-loader',
+			options: {
+				search: replacer.pattern,
+				replace: replacer.replacement
+			}
+		}]
 	};
 };
