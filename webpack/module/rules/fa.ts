@@ -8,11 +8,9 @@ export default () => ({
 	enforce: 'pre',
 	test: /\.(vue|js|ts)$/,
 	exclude: /node_modules/,
-	use: [{
-		loader: 'replace-string-loader',
-		options: {
-			search: pattern,
-			replace: replacement
-		}
-	}]
+	loader: 'string-replace-loader',
+	query: {
+		search: pattern,
+		replace: replacement
+	}
 });

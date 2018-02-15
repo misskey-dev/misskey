@@ -11,12 +11,10 @@ export default lang => {
 		enforce: 'pre',
 		test: /\.(vue|js|ts)$/,
 		exclude: /node_modules/,
-		use: [{
-			loader: 'replace-string-loader',
-			options: {
-				search: replacer.pattern,
-				replace: replacer.replacement
-			}
-		}]
+		loader: 'string-replace-loader',
+		query: {
+			search: replacer.pattern,
+			replace: replacer.replacement
+		}
 	};
 };
