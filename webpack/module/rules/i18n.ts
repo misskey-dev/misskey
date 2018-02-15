@@ -8,12 +8,12 @@ export default lang => {
 	const replacer = new Replacer(lang);
 
 	return {
-		enforce: 'pre',
+		//enforce: 'post',
 		test: /\.(vue|js|ts)$/,
 		exclude: /node_modules/,
-		loader: 'string-replace-loader',
+		loader: 'replace',
 		query: {
-			search: replacer.pattern,
+			search: replacer.pattern.toString(),
 			replace: replacer.replacement
 		}
 	};

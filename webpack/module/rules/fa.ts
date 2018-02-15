@@ -5,12 +5,12 @@
 import { pattern, replacement } from '../../../src/common/build/fa';
 
 export default () => ({
-	enforce: 'pre',
+	//enforce: 'pre',
 	test: /\.(vue|js|ts)$/,
 	exclude: /node_modules/,
-	loader: 'string-replace-loader',
+	loader: 'replace',
 	query: {
-		search: pattern,
+		search: pattern.toString(),
 		replace: replacement
 	}
 });

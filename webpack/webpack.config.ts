@@ -40,6 +40,9 @@ module.exports = Object.keys(langs).map(lang => {
 				'.js', '.ts'
 			]
 		},
+		resolveLoader: {
+			modules: ['node_modules', './webpack/loaders']
+		},
 		cache: true,
 		devtool: 'eval',
 		stats: true,

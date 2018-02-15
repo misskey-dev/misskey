@@ -8,10 +8,11 @@ import collapseSpaces from './collapse-spaces';
 
 export default lang => [
 	//collapseSpaces(),
-	//i18n(lang),
-	//fa(),
+
 	//base64(),
 	vue(),
+	i18n(lang),
+	fa(),
 	stylus(),
 	typescript()
 ];

@@ -125,6 +125,7 @@
 		"is-url": "1.2.2",
 		"js-yaml": "3.10.0",
 		"license-checker": "16.0.0",
+		"loader-utils": "^1.1.0",
 		"mecab-async": "0.1.2",
 		"mkdirp": "0.5.1",
 		"mocha": "5.0.0",
