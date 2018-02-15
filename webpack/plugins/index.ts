@@ -11,11 +11,11 @@ const isProduction = env === 'production';
 export default (version, lang) => {
 	const plugins = [
 		consts(lang),
-		new StringReplacePlugin(),
-		hoist()
+		new StringReplacePlugin()
 	];
 
 	if (isProduction) {
+		plugins.push(hoist());
 		plugins.push(minify());
 	}
 

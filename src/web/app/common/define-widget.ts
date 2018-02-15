@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 export default function<T extends object>(data: {
 	name: string;
-	props: T;
+	props?: T;
 }) {
 	return Vue.extend({
 		props: {
@@ -26,7 +26,7 @@ export default function<T extends object>(data: {
 		},
 		data() {
 			return {
-				props: data.props
+				props: data.props || {}
 			};
 		},
 		watch: {

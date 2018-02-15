@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-profile"
-	data-compact={ data.design == 1 || data.design == 2 }
-	data-melt={ data.design == 2 }
+	:data-compact="props.design == 1 || props.design == 2"
+	:data-melt="props.design == 2"
 >
 	<div class="banner"
 		style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' }
