@@ -114,7 +114,6 @@ export default Vue.extend({
 });
 </script>
 
-
 <style lang="stylus" scoped>
 .mk-notification
 	margin 0
