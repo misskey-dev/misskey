@@ -8,13 +8,14 @@ export default () => ({
 	enforce: 'pre',
 	test: /\.vue$/,
 	exclude: /node_modules/,
-	use: [/*{
+	use: [{
 		loader: 'replace-string-loader',
 		options: {
-			search: /\$theme\-color\-foreground/g,
-			replace: constants.themeColorForeground
+			search: '$theme-color-foreground',
+			replace: constants.themeColorForeground,
+			flags: 'g'
 		}
-	}, */{
+	}, {
 		loader: 'replace-string-loader',
 		options: {
 			search: '$theme-color',
