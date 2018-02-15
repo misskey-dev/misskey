@@ -3,11 +3,11 @@
 	<div class="body">
 		<a class="reply" v-if="post.reply_id">%fa:reply%</a>
 		<mk-post-html v-if="post.ast" :ast="post.ast" :i="$root.$data.os.i"/>
-		<a class="quote" v-if="post.repost_id" href={ '/post:' + post.repost_id }>RP: ...</a>
+		<a class="quote" v-if="post.repost_id">RP: ...</a>
 	</div>
 	<details v-if="post.media">
-		<summary>({ post.media.length }個のメディア)</summary>
-		<mk-images images={ post.media }/>
+		<summary>({{ post.media.length }}個のメディア)</summary>
+		<mk-images :images="post.media"/>
 	</details>
 	<details v-if="post.poll">
 		<summary>%i18n:mobile.tags.mk-sub-post-content.poll%</summary>
