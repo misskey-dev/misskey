@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Sortable from 'sortablejs';
+import * as Sortable from 'sortablejs';
 import Autocomplete from '../../scripts/autocomplete';
 import getKao from '../../../common/scripts/get-kao';
 import notify from '../../scripts/notify';
