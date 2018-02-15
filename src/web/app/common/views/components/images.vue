@@ -4,13 +4,6 @@
 </div>
 </template>
 
-<style lang="stylus" scoped>
-.mk-images
-	display grid
-	grid-gap 4px
-	height 256px
-</style>
-
 <script lang="ts">
 import Vue from 'vue';
 
@@ -58,3 +51,13 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.mk-images
+	display grid
+	grid-gap 4px
+	height 256px
+
+	@media (max-width 500px)
+		height 192px
+</style>

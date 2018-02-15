@@ -1,11 +1,14 @@
 <template>
-<a class="mk-images-image"
-	:href="image.url"
-	@mousemove="onMousemove"
-	@mouseleave="onMouseleave"
-	@click.prevent="onClick"
-	:style="style"
-	:title="image.name"></a>
+<div>
+	<a class="mk-images-image"
+		:href="image.url"
+		@mousemove="onMousemove"
+		@mouseleave="onMouseleave"
+		@click.prevent="onClick"
+		:style="style"
+		:title="image.name"
+	></a>
+</div>
 </template>
 
 <script lang="ts">
@@ -50,7 +53,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-images-image
-	display block
 	overflow hidden
 	border-radius 4px
 
