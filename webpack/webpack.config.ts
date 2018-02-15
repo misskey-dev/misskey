@@ -88,11 +88,25 @@ module.exports = Object.keys(langs).map(lang => {
 			}, {
 				test: /\.ts$/,
 				exclude: /node_modules/,
-				loader: 'ts-loader',
-				options: {
-					configFile: __dirname + '/../src/web/app/tsconfig.json',
-					appendTsSuffixTo: [/\.vue$/]
-				}
+				use: [{
+					loader: 'ts-loader',
+					options: {
+						configFile: __dirname + '/../src/web/app/tsconfig.json',
+						appendTsSuffixTo: [/\.vue$/]
+					}
+				}, {
+					loader: 'replace',
+					query: {
+						search: i18nReplacer.pattern.toString(),
+						replace: 'i18nReplacement'
+					}
+				}, {
+					loader: 'replace',
+					query: {
+						search: faPattern.toString(),
+						replace: 'faReplacement'
+					}
+				}]
 			}]
 		},
 		plugins: plugins(version, lang),
