@@ -120,8 +120,6 @@ module.exports = Object.keys(langs).map(lang => {
 			modules: ['node_modules', './webpack/loaders']
 		},
 		cache: true,
-		devtool: 'eval',
-		stats: true,
-		profile: true
+		devtool: 'eval'
 	};
 });
