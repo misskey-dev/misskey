@@ -15,10 +15,10 @@ export default Vue.extend({
 	},
 	computed: {
 		d(): number {
-			return now.getDate();
+			return this.now.getDate();
 		},
 		m(): number {
-			return now.getMonth() + 1;
+			return this.now.getMonth() + 1;
 		}
 	}
 });

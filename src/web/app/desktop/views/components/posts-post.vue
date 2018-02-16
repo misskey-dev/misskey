@@ -5,20 +5,20 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<a class="avatar-anchor" :href="`/${post.user.username}`" :v-user-preview="post.user_id">
+			<a class="avatar-anchor" :href="`/${post.user.username}`" v-user-preview="post.user_id">
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
 			</a>
-			%fa:retweet%{{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}}<a class="name" :href="`/${post.user.username}`" :v-user-preview="post.user_id">{{ post.user.name }}</a>{{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}}
+			%fa:retweet%{{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}}<a class="name" :href="`/${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</a>{{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}}
 		</p>
 		<mk-time :time="post.created_at"/>
 	</div>
 	<article>
 		<a class="avatar-anchor" :href="`/${p.user.username}`">
-			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" :v-user-preview="p.user.id"/>
+			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</a>
 		<div class="main">
 			<header>
-				<a class="name" :href="`/${p.user.username}`" :v-user-preview="p.user.id">{{ p.user.name }}</a>
+				<a class="name" :href="`/${p.user.username}`" v-user-preview="p.user.id">{{ p.user.name }}</a>
 				<span class="is-bot" v-if="p.user.is_bot">bot</span>
 				<span class="username">@{{ p.user.username }}</span>
 				<div class="info">

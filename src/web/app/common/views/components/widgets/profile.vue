@@ -13,7 +13,7 @@
 		@click="wapi_setAvatar"
 		alt="avatar"
 		title="クリックでアバター編集"
-		:v-user-preview={ I.id }
+		v-user-preview={ I.id }
 	/>
 	<a class="name" href={ '/' + I.username }>{ I.name }</a>
 	<p class="username">@{ I.username }</p>

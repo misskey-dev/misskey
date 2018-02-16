@@ -10,6 +10,7 @@ import reactionsViewer from './reactions-viewer.vue';
 import time from './time.vue';
 import images from './images.vue';
 import uploader from './uploader.vue';
+import specialMessage from './special-message.vue';
 
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
@@ -21,3 +22,4 @@ Vue.component('mk-reactions-viewer', reactionsViewer);
 Vue.component('mk-time', time);
 Vue.component('mk-images', images);
 Vue.component('mk-uploader', uploader);
+Vue.component('mk-special-message', specialMessage);

@@ -45,7 +45,9 @@ export default Vue.extend({
 	mounted() {
 		if (typeof this.user == 'object') {
 			this.u = this.user;
-			this.open();
+			this.$nextTick(() => {
+				this.open();
+			});
 		} else {
 			this.$root.$data.os.api('users/show', {
 				user_id: this.user[0] == '@' ? undefined : this.user,

@@ -21,6 +21,9 @@ init(async (launch) => {
 	 */
 	fuckAdBlock();
 
+	// Register directives
+	require('./views/directives');
+
 	// Register components
 	require('./views/components');
 

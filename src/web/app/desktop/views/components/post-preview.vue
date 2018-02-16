@@ -1,11 +1,11 @@
 <template>
 <div class="mk-post-preview" :title="title">
 	<a class="avatar-anchor" :href="`/${post.user.username}`">
-		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" :v-user-preview="post.user_id"/>
+		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="post.user_id"/>
 	</a>
 	<div class="main">
 		<header>
-			<a class="name" :href="`/${post.user.username}`" :v-user-preview="post.user_id">{{ post.user.name }}</a>
+			<a class="name" :href="`/${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</a>
 			<span class="username">@{ post.user.username }</span>
 			<a class="time" :href="`/${post.user.username}/${post.id}`">
 			<mk-time :time="post.created_at"/></a>

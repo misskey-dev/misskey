@@ -25,6 +25,7 @@ import imagesImageDialog from './images-image-dialog.vue';
 import notifications from './notifications.vue';
 import postForm from './post-form.vue';
 import repostForm from './repost-form.vue';
+import followButton from './follow-button.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-header', uiHeader);
@@ -51,3 +52,4 @@ Vue.component('mk-images-image-dialog', imagesImageDialog);
 Vue.component('mk-notifications', notifications);
 Vue.component('mk-post-form', postForm);
 Vue.component('mk-repost-form', repostForm);
+Vue.component('mk-follow-button', followButton);
