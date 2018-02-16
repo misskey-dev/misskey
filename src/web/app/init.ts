@@ -20,6 +20,12 @@ require('./common/views/directives');
 // Register global components
 require('./common/views/components');
 
+Vue.mixin({
+	destroyed(this: any) {
+		this.$el.parentNode.removeChild(this.$el);
+	}
+});
+
 import App from './app.vue';
 
 import checkForUpdate from './common/scripts/check-for-update';
