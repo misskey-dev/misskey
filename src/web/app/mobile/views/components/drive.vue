@@ -1,41 +1,38 @@
-<mk-drive>
+<template>
+<div class="mk-drive">
 	<nav ref="nav">
-		<a @click="goRoot" href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
-		<template each={ folder in hierarchyFolders }>
-			<span>%fa:angle-right%</span>
-			<a @click="move" href="/i/drive/folder/{ folder.id }">{ folder.name }</a>
+		<a @click.prevent="goRoot" href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
+		<template v-for="folder in hierarchyFolders">
+			<span :key="folder.id + '>'">%fa:angle-right%</span>
+			<a :key="folder.id" @click.prevent="cd(folder)" :href="`/i/drive/folder/${folder.id}`">{{ folder.name }}</a>
 		</template>
 		<template v-if="folder != null">
 			<span>%fa:angle-right%</span>
-			<p>{ folder.name }</p>
+			<p>{{ folder.name }}</p>
 		</template>
 		<template v-if="file != null">
 			<span>%fa:angle-right%</span>
-			<p>{ file.name }</p>
+			<p>{{ file.name }}</p>
 		</template>
 	</nav>
 	<mk-uploader ref="uploader"/>
-	<div class="browser { fetching: fetching }" v-if="file == null">
+	<div class="browser" :class="{ fetching }" v-if="file == null">
 		<div class="info" v-if="info">
-			<p v-if="folder == null">{ (info.usage / info.capacity * 100).toFixed(1) }% %i18n:mobile.tags.mk-drive.used%</p>
+			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:mobile.tags.mk-drive.used%</p>
 			<p v-if="folder != null && (folder.folders_count > 0 || folder.files_count > 0)">
-				<template v-if="folder.folders_count > 0">{ folder.folders_count } %i18n:mobile.tags.mk-drive.folder-count%</template>
+				<template v-if="folder.folders_count > 0">{{ folder.folders_count }} %i18n:mobile.tags.mk-drive.folder-count%</template>
 				<template v-if="folder.folders_count > 0 && folder.files_count > 0">%i18n:mobile.tags.mk-drive.count-separator%</template>
-				<template v-if="folder.files_count > 0">{ folder.files_count } %i18n:mobile.tags.mk-drive.file-count%</template>
+				<template v-if="folder.files_count > 0">{{ folder.files_count }} %i18n:mobile.tags.mk-drive.file-count%</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
-			<template each={ folder in folders }>
-				<mk-drive-folder folder={ folder }/>
-			</template>
+			<mk-drive-folder v-for="folder in folders" :key="folder.id" :folder="folder"/>
 			<p v-if="moreFolders">%i18n:mobile.tags.mk-drive.load-more%</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
-			<template each={ file in files }>
-				<mk-drive-file file={ file }/>
-			</template>
+			<mk-drive-file v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
-				{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }
+				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }}
 			</button>
 		</div>
 		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
@@ -49,221 +46,117 @@
 			<div class="dot2"></div>
 		</div>
 	</div>
-	<input ref="file" type="file" multiple="multiple" onchange={ changeLocalFile }/>
-	<mk-drive-file-viewer v-if="file != null" file={ file }/>
-	<style lang="stylus" scoped>
-		:scope
-			display block
-			background #fff
+	<input ref="file" type="file" multiple="multiple" @change="onChangeLocalFile"/>
+	<mk-drive-file-viewer v-if="file != null" :file="file"/>
+</div>
+</template>
 
-			> nav
-				display block
-				position sticky
-				position -webkit-sticky
-				top 0
-				z-index 1
-				width 100%
-				padding 10px 12px
-				overflow auto
-				white-space nowrap
-				font-size 0.9em
-				color rgba(0, 0, 0, 0.67)
-				-webkit-backdrop-filter blur(12px)
-				backdrop-filter blur(12px)
-				background-color rgba(#fff, 0.75)
-				border-bottom solid 1px rgba(0, 0, 0, 0.13)
+<script lang="ts">
+import Vue from 'vue';
 
-				> p
-				> a
-					display inline
-					margin 0
-					padding 0
-					text-decoration none !important
-					color inherit
+export default Vue.extend({
+	props: ['initFolder', 'initFile', 'selectFile', 'multiple', 'isNaked', 'top'],
+	data() {
+		return {
+			/**
+			 * 現在の階層(フォルダ)
+			 * * null でルートを表す
+			 */
+			folder: null,
 
-					&:last-child
-						font-weight bold
+			file: null,
 
-					> [data-fa]
-						margin-right 4px
+			files: [],
+			folders: [],
+			moreFiles: false,
+			moreFolders: false,
+			hierarchyFolders: [],
+			selectedFiles: [],
+			info: null,
+			connection: null,
+			connectionId: null,
 
-				> span
-					margin 0 8px
-					opacity 0.5
-
-			> .browser
-				&.fetching
-					opacity 0.5
-
-				> .info
-					border-bottom solid 1px #eee
-
-					&:empty
-						display none
-
-					> p
-						display block
-						max-width 500px
-						margin 0 auto
-						padding 4px 16px
-						font-size 10px
-						color #777
-
-				> .folders
-					> mk-drive-folder
-						border-bottom solid 1px #eee
-
-				> .files
-					> mk-drive-file
-						border-bottom solid 1px #eee
-
-					> .more
-						display block
-						width 100%
-						padding 16px
-						font-size 16px
-						color #555
-
-				> .empty
-					padding 16px
-					text-align center
-					color #999
-					pointer-events none
-
-					> p
-						margin 0
-
-			> .fetching
-				.spinner
-					margin 100px auto
-					width 40px
-					height 40px
-					text-align center
-
-					animation sk-rotate 2.0s infinite linear
-
-				.dot1, .dot2
-					width 60%
-					height 60%
-					display inline-block
-					position absolute
-					top 0
-					background rgba(0, 0, 0, 0.2)
-					border-radius 100%
-
-					animation sk-bounce 2.0s infinite ease-in-out
-
-				.dot2
-					top auto
-					bottom 0
-					animation-delay -1.0s
-
-				@keyframes sk-rotate { 100% { transform: rotate(360deg); }}
-
-				@keyframes sk-bounce {
-					0%, 100% {
-						transform: scale(0.0);
-					} 50% {
-						transform: scale(1.0);
-					}
-				}
-
-			> [ref='file']
-				display none
-
-	</style>
-	<script lang="typescript">
-		this.mixin('i');
-		this.mixin('api');
-
-		this.mixin('drive-stream');
-		this.connection = this.driveStream.getConnection();
-		this.connectionId = this.driveStream.use();
-
-		this.files = [];
-		this.folders = [];
-		this.hierarchyFolders = [];
-		this.selectedFiles = [];
-
-		// 現在の階層(フォルダ)
-		// * null でルートを表す
-		this.folder = null;
-
-		this.file = null;
-
-		this.isFileSelectMode = this.opts.selectFile;
-		this.multiple = this.opts.multiple;
-
-		this.on('mount', () => {
-			this.connection.on('file_created', this.onStreamDriveFileCreated);
-			this.connection.on('file_updated', this.onStreamDriveFileUpdated);
-			this.connection.on('folder_created', this.onStreamDriveFolderCreated);
-			this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
-
-			if (this.opts.folder) {
-				this.cd(this.opts.folder, true);
-			} else if (this.opts.file) {
-				this.cf(this.opts.file, true);
-			} else {
-				this.fetch();
-			}
-
-			if (this.opts.isNaked) {
-				this.$refs.nav.style.top = `${this.opts.top}px`;
-			}
-		});
-
-		this.on('unmount', () => {
-			this.connection.off('file_created', this.onStreamDriveFileCreated);
-			this.connection.off('file_updated', this.onStreamDriveFileUpdated);
-			this.connection.off('folder_created', this.onStreamDriveFolderCreated);
-			this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
-			this.driveStream.dispose(this.connectionId);
-		});
-
-		this.onStreamDriveFileCreated = file => {
-			this.addFile(file, true);
+			fetching: true,
+			fetchingMoreFiles: false,
+			fetchingMoreFolders: false
 		};
+	},
+	computed: {
+		isFileSelectMode(): boolean {
+			return this.selectFile;
+		}
+	},
+	mounted() {
+		this.connection = this.$root.$data.os.streams.driveStream.getConnection();
+		this.connectionId = this.$root.$data.os.streams.driveStream.use();
 
-		this.onStreamDriveFileUpdated = file => {
+		this.connection.on('file_created', this.onStreamDriveFileCreated);
+		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.on('folder_created', this.onStreamDriveFolderCreated);
+		this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
+
+		if (this.initFolder) {
+			this.cd(this.initFolder, true);
+		} else if (this.initFile) {
+			this.cf(this.initFile, true);
+		} else {
+			this.fetch();
+		}
+
+		if (this.isNaked) {
+			(this.$refs.nav as any).style.top = `${this.top}px`;
+		}
+	},
+	beforeDestroy() {
+		this.connection.off('file_created', this.onStreamDriveFileCreated);
+		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
+		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
+		this.$root.$data.os.streams.driveStream.dispose(this.connectionId);
+	},
+	methods: {
+		onStreamDriveFileCreated(file) {
+			this.addFile(file, true);
+		},
+
+		onStreamDriveFileUpdated(file) {
 			const current = this.folder ? this.folder.id : null;
 			if (current != file.folder_id) {
 				this.removeFile(file);
 			} else {
 				this.addFile(file, true);
 			}
-		};
+		},
 
-		this.onStreamDriveFolderCreated = folder => {
+		onStreamDriveFolderCreated(folder) {
 			this.addFolder(folder, true);
-		};
+		},
 
-		this.onStreamDriveFolderUpdated = folder => {
+		onStreamDriveFolderUpdated(folder) {
 			const current = this.folder ? this.folder.id : null;
 			if (current != folder.parent_id) {
 				this.removeFolder(folder);
 			} else {
 				this.addFolder(folder, true);
 			}
-		};
+		},
 
-		this.move = ev => {
-			ev.preventDefault();
-			this.cd(ev.item.folder);
-			return false;
-		};
+		dive(folder) {
+			this.hierarchyFolders.unshift(folder);
+			if (folder.parent) this.dive(folder.parent);
+		},
 
-		this.cd = (target, silent = false) => {
+		cd(target, silent = false) {
 			this.file = null;
 
 			if (target == null) {
 				this.goRoot();
 				return;
-			} else if (typeof target == 'object') target = target.id;
+			} else if (typeof target == 'object') {
+				target = target.id;
+			}
 
-			this.update({
-				fetching: true
-			});
+			this.fetching = true;
 
 			this.$root.$data.os.api('drive/folders/show', {
 				folder_id: target
@@ -271,15 +164,14 @@
 				this.folder = folder;
 				this.hierarchyFolders = [];
 
-				if (folder.parent) dive(folder.parent);
+				if (folder.parent) this.dive(folder.parent);
 
-				this.update();
 				this.$emit('open-folder', this.folder, silent);
 				this.fetch();
 			});
-		};
+		},
 
-		this.addFolder = (folder, unshift = false) => {
+		addFolder(folder, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
 			// 追加しようとしているフォルダが、今居る階層とは違う階層のものだったら中断
 			if (current != folder.parent_id) return;
@@ -292,19 +184,16 @@
 			} else {
 				this.folders.push(folder);
 			}
+		},
 
-			this.update();
-		};
-
-		this.addFile = (file, unshift = false) => {
+		addFile(file, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
 			// 追加しようとしているファイルが、今居る階層とは違う階層のものだったら中断
 			if (current != file.folder_id) return;
 
 			if (this.files.some(f => f.id == file.id)) {
 				const exist = this.files.map(f => f.id).indexOf(file.id);
-				this.files[exist] = file;
-				this.update();
+				this.files[exist] = file; // TODO
 				return;
 			}
 
@@ -313,51 +202,47 @@
 			} else {
 				this.files.push(file);
 			}
+		},
 
-			this.update();
-		};
-
-		this.removeFolder = folder => {
+		removeFolder(folder) {
 			if (typeof folder == 'object') folder = folder.id;
 			this.folders = this.folders.filter(f => f.id != folder);
-			this.update();
-		};
+		},
 
-		this.removeFile = file => {
+		removeFile(file) {
 			if (typeof file == 'object') file = file.id;
 			this.files = this.files.filter(f => f.id != file);
-			this.update();
-		};
+		},
 
-		this.appendFile = file => this.addFile(file);
-		this.appendFolder = file => this.addFolder(file);
-		this.prependFile = file => this.addFile(file, true);
-		this.prependFolder = file => this.addFolder(file, true);
+		appendFile(file) {
+			this.addFile(file);
+		},
+		appendFolder(folder) {
+			this.addFolder(folder);
+		},
+		prependFile(file) {
+			this.addFile(file, true);
+		},
+		prependFolder(folder) {
+			this.addFolder(folder, true);
+		},
 
-		this.goRoot = ev => {
-			ev.preventDefault();
-
+		goRoot() {
 			if (this.folder || this.file) {
-				this.update({
-					file: null,
-					folder: null,
-					hierarchyFolders: []
-				});
+				this.file = null;
+				this.folder = null;
+				this.hierarchyFolders = [];
 				this.$emit('move-root');
 				this.fetch();
 			}
+		},
 
-			return false;
-		};
-
-		this.fetch = () => {
-			this.update({
-				folders: [],
-				files: [],
-				moreFolders: false,
-				moreFiles: false,
-				fetching: true
-			});
+		fetch() {
+			this.folders = [];
+			this.files = [];
+			this.moreFolders = false;
+			this.moreFiles = false;
+			this.fetching = true;
 
 			this.$emit('begin-fetch');
 
@@ -398,9 +283,8 @@
 				if (flag) {
 					fetchedFolders.forEach(this.appendFolder);
 					fetchedFiles.forEach(this.appendFile);
-					this.update({
-						fetching: false
-					});
+					this.fetching = false;
+
 					// 一連の読み込みが完了したイベントを発行
 					this.$emit('fetched');
 				} else {
@@ -413,16 +297,14 @@
 			if (this.folder == null) {
 				// Fetch addtional drive info
 				this.$root.$data.os.api('drive').then(info => {
-					this.update({ info });
+					this.info = info;
 				});
 			}
-		};
+		},
 
-		this.fetchMoreFiles = () => {
-			this.update({
-				fetching: true,
-				fetchingMoreFiles: true
-			});
+		fetchMoreFiles() {
+			this.fetching = true;
+			this.fetchingMoreFiles = true;
 
 			const max = 30;
 
@@ -439,14 +321,12 @@
 					this.moreFiles = false;
 				}
 				files.forEach(this.appendFile);
-				this.update({
-					fetching: false,
-					fetchingMoreFiles: false
-				});
+				this.fetching = false;
+				this.fetchingMoreFiles = false;
 			});
-		};
+		},
 
-		this.chooseFile = file => {
+		chooseFile(file) {
 			if (this.isFileSelectMode) {
 				if (this.multiple) {
 					if (this.selectedFiles.some(f => f.id == file.id)) {
@@ -454,7 +334,6 @@
 					} else {
 						this.selectedFiles.push(file);
 					}
-					this.update();
 					this.$emit('change-selection', this.selectedFiles);
 				} else {
 					this.$emit('selected', file);
@@ -462,14 +341,12 @@
 			} else {
 				this.cf(file);
 			}
-		};
+		},
 
-		this.cf = (file, silent = false) => {
+		cf(file, silent = false) {
 			if (typeof file == 'object') file = file.id;
 
-			this.update({
-				fetching: true
-			});
+			this.fetching = true;
 
 			this.$root.$data.os.api('drive/files/show', {
 				file_id: file
@@ -479,19 +356,13 @@
 				this.folder = null;
 				this.hierarchyFolders = [];
 
-				if (file.folder) dive(file.folder);
+				if (file.folder) this.dive(file.folder);
 
-				this.update();
 				this.$emit('open-file', this.file, silent);
 			});
-		};
+		},
 
-		const dive = folder => {
-			this.hierarchyFolders.unshift(folder);
-			if (folder.parent) dive(folder.parent);
-		};
-
-		this.openContextMenu = () => {
+		openContextMenu() {
 			const fn = window.prompt('何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>');
 			if (fn == null || fn == '') return;
 			switch (fn) {
@@ -514,13 +385,13 @@
 					alert('ごめんなさい！フォルダの削除は未実装です...。');
 					break;
 			}
-		};
+		},
 
-		this.selectLocalFile = () => {
-			this.$refs.file.click();
-		};
+		selectLocalFile() {
+			(this.$refs.file as any).click();
+		},
 
-		this.createFolder = () => {
+		createFolder() {
 			const name = window.prompt('フォルダー名');
 			if (name == null || name == '') return;
 			this.$root.$data.os.api('drive/folders/create', {
@@ -528,11 +399,10 @@
 				parent_id: this.folder ? this.folder.id : undefined
 			}).then(folder => {
 				this.addFolder(folder, true);
-				this.update();
 			});
-		};
+		},
 
-		this.renameFolder = () => {
+		renameFolder() {
 			if (this.folder == null) {
 				alert('現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。');
 				return;
@@ -545,9 +415,9 @@
 			}).then(folder => {
 				this.cd(folder);
 			});
-		};
+		},
 
-		this.moveFolder = () => {
+		moveFolder() {
 			if (this.folder == null) {
 				alert('現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。');
 				return;
@@ -561,9 +431,9 @@
 					this.cd(folder);
 				});
 			});
-		};
+		},
 
-		this.urlUpload = () => {
+		urlUpload() {
 			const url = window.prompt('アップロードしたいファイルのURL');
 			if (url == null || url == '') return;
 			this.$root.$data.os.api('drive/files/upload_from_url', {
@@ -571,10 +441,133 @@
 				folder_id: this.folder ? this.folder.id : undefined
 			});
 			alert('アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。');
-		};
+		},
 
-		this.changeLocalFile = () => {
-			Array.from(this.$refs.file.files).forEach(f => this.$refs.uploader.upload(f, this.folder));
-		};
-	</script>
-</mk-drive>
+		onChangeLocalFile() {
+			Array.from((this.$refs.file as any).files)
+				.forEach(f => (this.$refs.uploader as any).upload(f, this.folder));
+		}
+	}
+});
+</script>
+
+<style lang="stylus" scoped>
+.mk-drive
+	background #fff
+
+	> nav
+		display block
+		position sticky
+		position -webkit-sticky
+		top 0
+		z-index 1
+		width 100%
+		padding 10px 12px
+		overflow auto
+		white-space nowrap
+		font-size 0.9em
+		color rgba(0, 0, 0, 0.67)
+		-webkit-backdrop-filter blur(12px)
+		backdrop-filter blur(12px)
+		background-color rgba(#fff, 0.75)
+		border-bottom solid 1px rgba(0, 0, 0, 0.13)
+
+		> p
+		> a
+			display inline
+			margin 0
+			padding 0
+			text-decoration none !important
+			color inherit
+
+			&:last-child
+				font-weight bold
+
+			> [data-fa]
+				margin-right 4px
+
+		> span
+			margin 0 8px
+			opacity 0.5
+
+	> .browser
+		&.fetching
+			opacity 0.5
+
+		> .info
+			border-bottom solid 1px #eee
+
+			&:empty
+				display none
+
+			> p
+				display block
+				max-width 500px
+				margin 0 auto
+				padding 4px 16px
+				font-size 10px
+				color #777
+
+		> .folders
+			> mk-drive-folder
+				border-bottom solid 1px #eee
+
+		> .files
+			> mk-drive-file
+				border-bottom solid 1px #eee
+
+			> .more
+				display block
+				width 100%
+				padding 16px
+				font-size 16px
+				color #555
+
+		> .empty
+			padding 16px
+			text-align center
+			color #999
+			pointer-events none
+
+			> p
+				margin 0
+
+	> .fetching
+		.spinner
+			margin 100px auto
+			width 40px
+			height 40px
+			text-align center
+
+			animation sk-rotate 2.0s infinite linear
+
+		.dot1, .dot2
+			width 60%
+			height 60%
+			display inline-block
+			position absolute
+			top 0
+			background rgba(0, 0, 0, 0.2)
+			border-radius 100%
+
+			animation sk-bounce 2.0s infinite ease-in-out
+
+		.dot2
+			top auto
+			bottom 0
+			animation-delay -1.0s
+
+		@keyframes sk-rotate { 100% { transform: rotate(360deg); }}
+
+		@keyframes sk-bounce {
+			0%, 100% {
+				transform: scale(0.0);
+			} 50% {
+				transform: scale(1.0);
+			}
+		}
+
+	> [ref='file']
+		display none
+
+</style>
