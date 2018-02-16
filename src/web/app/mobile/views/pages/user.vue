@@ -1,6 +1,6 @@
 <template>
 <mk-ui :func="fn" func-icon="%fa:pencil-alt%">
-	<span slot="header">%fa:user% {{user.name}}</span>
+	<span slot="header" v-if="!fetching">%fa:user% {{user.name}}</span>
 	<div v-if="!fetching" :class="$style.user">
 		<header>
 			<div class="banner" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''"></div>
@@ -58,6 +58,7 @@
 <script lang="ts">
 import Vue from 'vue';
 const age = require('s-age');
+import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
 	props: {
@@ -81,12 +82,17 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
+		document.documentElement.style.background = '#313a42';
+		Progress.start();
+
 		this.$root.$data.os.api('users/show', {
 			username: this.username
 		}).then(user => {
 			this.fetching = false;
 			this.user = user;
-			this.$emit('loaded', user);
+
+			Progress.done();
+			document.title = user.name + ' | Misskey';
 		});
 	}
 });
