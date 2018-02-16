@@ -47,7 +47,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-drive-file-chooser
-	display block
 	position fixed
 	z-index 2048
 	top 0
