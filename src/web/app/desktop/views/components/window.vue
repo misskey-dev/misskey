@@ -162,6 +162,7 @@ export default Vue.extend({
 			});
 
 			setTimeout(() => {
+				this.$destroy();
 				this.$emit('closed');
 			}, 300);
 		},

@@ -19,6 +19,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { apiUrl } from '../../../config';
+
 export default Vue.extend({
 	data() {
 		return {
@@ -34,14 +36,15 @@ export default Vue.extend({
 			const ctx = {
 				id: id,
 				name: file.name || 'untitled',
-				progress: undefined
+				progress: undefined,
+				img: undefined
 			};
 
 			this.uploads.push(ctx);
 			this.$emit('change', this.uploads);
 
 			const reader = new FileReader();
-			reader.onload = e => {
+			reader.onload = (e: any) => {
 				ctx.img = e.target.result;
 			};
 			reader.readAsDataURL(file);
@@ -53,8 +56,8 @@ export default Vue.extend({
 			if (folder) data.append('folder_id', folder);
 
 			const xhr = new XMLHttpRequest();
-			xhr.open('POST', _API_URL_ + '/drive/files/create', true);
-			xhr.onload = e => {
+			xhr.open('POST', apiUrl + '/drive/files/create', true);
+			xhr.onload = (e: any) => {
 				const driveFile = JSON.parse(e.target.response);
 
 				this.$emit('uploaded', driveFile);

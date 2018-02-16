@@ -34,8 +34,8 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		onChangeUploadings(media) {
-			this.uploadings = media;
+		onChangeUploadings(files) {
+			this.uploadings = files;
 		},
 		onChangeMedia(media) {
 			this.media = media;
