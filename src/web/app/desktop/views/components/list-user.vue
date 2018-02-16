@@ -93,7 +93,7 @@ export default Vue.extend({
 				font-size 1.1em
 				color #717171
 
-	> mk-follow-button
+	> .mk-follow-button
 		position absolute
 		top 16px
 		right 16px

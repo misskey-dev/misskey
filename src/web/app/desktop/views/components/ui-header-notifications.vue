@@ -148,7 +148,7 @@ export default Vue.extend({
 			border-bottom solid 14px #fff
 			border-left solid 14px transparent
 
-		> mk-notifications
+		> .mk-notifications
 			max-height 350px
 			font-size 1rem
 			overflow auto

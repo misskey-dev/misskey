@@ -178,6 +178,7 @@ export default Vue.extend({
 		},
 		reply() {
 			document.body.appendChild(new MkPostFormWindow({
+				parent: this,
 				propsData: {
 					reply: this.p
 				}
@@ -185,6 +186,7 @@ export default Vue.extend({
 		},
 		repost() {
 			document.body.appendChild(new MkRepostFormWindow({
+				parent: this,
 				propsData: {
 					post: this.p
 				}
@@ -192,6 +194,7 @@ export default Vue.extend({
 		},
 		react() {
 			document.body.appendChild(new MkReactionPicker({
+				parent: this,
 				propsData: {
 					source: this.$refs.reactButton,
 					post: this.p
@@ -200,6 +203,7 @@ export default Vue.extend({
 		},
 		menu() {
 			document.body.appendChild(new MkPostMenu({
+				parent: this,
 				propsData: {
 					source: this.$refs.menuButton,
 					post: this.p
@@ -303,7 +307,7 @@ export default Vue.extend({
 			.name
 				font-weight bold
 
-		> mk-time
+		> .mk-time
 			position absolute
 			top 16px
 			right 32px
@@ -317,7 +321,7 @@ export default Vue.extend({
 		padding 0 16px
 		background rgba(0, 0, 0, 0.0125)
 
-		> mk-post-preview
+		> .mk-post-preview
 			background transparent
 
 	> article
@@ -415,7 +419,7 @@ export default Vue.extend({
 					> .dummy
 						display none
 
-					mk-url-preview
+					.mk-url-preview
 						margin-top 8px
 
 					> .channel
@@ -451,7 +455,7 @@ export default Vue.extend({
 						background $theme-color
 						border-radius 4px
 
-				> mk-poll
+				> .mk-poll
 					font-size 80%
 
 				> .repost
@@ -466,7 +470,7 @@ export default Vue.extend({
 						font-size 28px
 						background #fff
 
-					> mk-post-preview
+					> .mk-post-preview
 						padding 16px
 						border dashed 1px #c0dac6
 						border-radius 8px

@@ -104,7 +104,7 @@ export default Vue.extend({
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
 
-	> mk-following-setuper
+	> .mk-following-setuper
 		border-bottom solid 1px #eee
 
 	> .loading

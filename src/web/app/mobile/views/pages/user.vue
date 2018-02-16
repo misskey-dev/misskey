@@ -141,7 +141,7 @@ export default Vue.extend({
 							border 4px solid #313a42
 							border-radius 12px
 
-				> mk-follow-button
+				> .mk-follow-button
 					float right
 					height 40px
 
@@ -199,7 +199,7 @@ export default Vue.extend({
 					> i
 						font-size 14px
 
-			> mk-activity-table
+			> .mk-activity-table
 				margin 12px 0 0 0
 
 		> nav

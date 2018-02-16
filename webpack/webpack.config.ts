@@ -119,7 +119,6 @@ module.exports = Object.keys(langs).map(lang => {
 		resolveLoader: {
 			modules: ['node_modules', './webpack/loaders']
 		},
-		cache: true,
-		devtool: 'eval'
+		cache: true
 	};
 });

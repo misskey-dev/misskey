@@ -59,7 +59,7 @@ export default Vue.extend({
 	max-width 600px
 	margin 0 auto
 
-	> mk-post-detail
+	> .mk-post-detail
 		margin 0 0 8px 0
 
 	> section

@@ -130,7 +130,7 @@ export default Vue.extend({
 		max-width 500px
 		margin 0 auto
 
-		> mk-post-preview
+		> .mk-post-preview
 			padding 16px
 
 		> .attaches
@@ -159,7 +159,7 @@ export default Vue.extend({
 						background-size cover
 						background-position center center
 
-		> mk-uploader
+		> .mk-uploader
 			margin 8px 0 0 0
 			padding 8px
 

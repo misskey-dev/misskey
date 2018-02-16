@@ -52,7 +52,7 @@ export default define({
 		> [data-fa]
 			margin-right 4px
 
-	> mk-messaging
+	> .mk-messaging
 		max-height 250px
 		overflow auto
 

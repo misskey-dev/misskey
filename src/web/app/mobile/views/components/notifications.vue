@@ -114,7 +114,7 @@ export default Vue.extend({
 
 	> .notifications
 
-		> mk-notification
+		> .mk-notification
 			margin 0 auto
 			max-width 500px
 			border-bottom solid 1px rgba(0, 0, 0, 0.05)

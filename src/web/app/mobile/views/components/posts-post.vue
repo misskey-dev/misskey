@@ -201,7 +201,7 @@ export default Vue.extend({
 			.name
 				font-weight bold
 
-		> mk-time
+		> .mk-time
 			position absolute
 			top 8px
 			right 16px
@@ -217,7 +217,7 @@ export default Vue.extend({
 	> .reply-to
 		background rgba(0, 0, 0, 0.0125)
 
-		> mk-post-preview
+		> .mk-post-preview
 			background transparent
 
 	> article
@@ -359,7 +359,7 @@ export default Vue.extend({
 					font-size 12px
 					color #ccc
 
-				> mk-poll
+				> .mk-poll
 					font-size 80%
 
 				> .repost
@@ -374,7 +374,7 @@ export default Vue.extend({
 						font-size 28px
 						background #fff
 
-					> mk-post-preview
+					> .mk-post-preview
 						padding 16px
 						border dashed 1px #c0dac6
 						border-radius 8px

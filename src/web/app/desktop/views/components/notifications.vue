@@ -197,7 +197,7 @@ export default Vue.extend({
 			&:last-child
 				border-bottom none
 
-			> mk-time
+			> .mk-time
 				display inline
 				position absolute
 				top 16px

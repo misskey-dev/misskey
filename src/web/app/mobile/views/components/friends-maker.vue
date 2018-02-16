@@ -72,7 +72,7 @@ export default Vue.extend({
 		padding 16px
 		background #eee
 
-		> mk-user-card
+		> .mk-user-card
 			&:not(:last-child)
 				margin-right 16px
 

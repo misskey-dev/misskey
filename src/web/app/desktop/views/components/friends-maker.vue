@@ -114,7 +114,7 @@ export default Vue.extend({
 					line-height 16px
 					color #ccc
 
-			> mk-follow-button
+			> .mk-follow-button
 				position absolute
 				top 16px
 				right 16px

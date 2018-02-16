@@ -87,7 +87,7 @@ export default Vue.extend({
 		padding 16px
 		border-top solid 1px #eee
 
-		> mk-big-follow-button
+		> .mk-big-follow-button
 			width 100%
 
 		> .followed

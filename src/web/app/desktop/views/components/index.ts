@@ -26,6 +26,7 @@ import notifications from './notifications.vue';
 import postForm from './post-form.vue';
 import repostForm from './repost-form.vue';
 import followButton from './follow-button.vue';
+import postPreview from './post-preview.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-header', uiHeader);
@@ -53,3 +54,4 @@ Vue.component('mk-notifications', notifications);
 Vue.component('mk-post-form', postForm);
 Vue.component('mk-repost-form', repostForm);
 Vue.component('mk-follow-button', followButton);
+Vue.component('mk-post-preview', postPreview);

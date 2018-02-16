@@ -37,7 +37,7 @@ export default Vue.extend({
 		white-space nowrap
 		padding 8px
 
-		> mk-user-card
+		> .mk-user-card
 			&:not(:last-child)
 				margin-right 8px
 

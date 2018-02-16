@@ -180,7 +180,7 @@ export default Vue.extend({
 					padding 16px
 
 					> header
-						> mk-time
+						> .mk-time
 							font-size 1em
 
 					> .avatar
@@ -381,7 +381,7 @@ export default Vue.extend({
 						margin 0 0 0 8px
 						color rgba(0, 0, 0, 0.5)
 
-					> mk-time
+					> .mk-time
 						position absolute
 						top 0
 						right 0

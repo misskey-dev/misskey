@@ -55,7 +55,7 @@ export default Vue.extend({
 		font-size 15px
 		color #ccc
 
-	> mk-follow-button
+	> .mk-follow-button
 		display inline-block
 		margin 8px 0 16px 0
 

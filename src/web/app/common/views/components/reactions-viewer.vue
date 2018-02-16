@@ -38,7 +38,7 @@ export default Vue.extend({
 	> span
 		margin-right 8px
 
-		> mk-reaction-icon
+		> .mk-reaction-icon
 			font-size 1.4em
 
 		> span

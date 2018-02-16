@@ -120,7 +120,7 @@ export default Vue.extend({
 	padding 16px
 	overflow-wrap break-word
 
-	> mk-time
+	> .mk-time
 		display inline
 		position absolute
 		top 16px

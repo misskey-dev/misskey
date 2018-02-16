@@ -77,7 +77,7 @@ export default Vue.extend({
 				height 20px
 				background linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 100%)
 
-		> mk-time
+		> .mk-time
 			display inline-block
 			padding 8px
 			color #aaa

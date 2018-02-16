@@ -285,7 +285,7 @@ export default Vue.extend({
 				@media (min-width 500px)
 					font-size 24px
 
-				> mk-url-preview
+				> .mk-url-preview
 					margin-top 8px
 
 			> .media

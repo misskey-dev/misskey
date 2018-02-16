@@ -58,7 +58,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-repost-form
 
-	> mk-post-preview
+	> .mk-post-preview
 		margin 16px 22px
 
 	> div

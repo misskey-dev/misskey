@@ -280,7 +280,7 @@ export default Vue.extend({
 				font-size 1.5em
 				color #717171
 
-				> mk-url-preview
+				> .mk-url-preview
 					margin-top 8px
 
 		> footer

@@ -509,11 +509,11 @@ export default Vue.extend({
 				color #777
 
 		> .folders
-			> mk-drive-folder
+			> .mk-drive-folder
 				border-bottom solid 1px #eee
 
 		> .files
-			> mk-drive-file
+			> .mk-drive-file
 				border-bottom solid 1px #eee
 
 			> .more
