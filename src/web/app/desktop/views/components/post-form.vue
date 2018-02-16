@@ -22,12 +22,12 @@
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false"/>
 	</div>
 	<mk-uploader @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button ref="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" @click="selectFile">%fa:upload%</button>
-	<button ref="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" @click="selectFileFromDrive">%fa:cloud%</button>
+	<button class="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
+	<button class="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" @click="poll = true">%fa:chart-pie%</button>
 	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - text.length) }}</p>
-	<button :class="{ posting }" ref="submit" :disabled="!canPost" @click="post">
+	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
@@ -82,23 +82,25 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.autocomplete = new Autocomplete(this.$refs.text);
-		this.autocomplete.attach();
+		Vue.nextTick(() => {
+			this.autocomplete = new Autocomplete(this.$refs.text);
+			this.autocomplete.attach();
 
-		// 書きかけの投稿を復元
-		const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
-		if (draft) {
-			this.text = draft.data.text;
-			this.files = draft.data.files;
-			if (draft.data.poll) {
-				this.poll = true;
-				(this.$refs.poll as any).set(draft.data.poll);
+			// 書きかけの投稿を復元
+			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
+			if (draft) {
+				this.text = draft.data.text;
+				this.files = draft.data.files;
+				if (draft.data.poll) {
+					this.poll = true;
+					(this.$refs.poll as any).set(draft.data.poll);
+				}
+				this.$emit('change-attached-media', this.files);
 			}
-			this.$emit('change-attached-media', this.files);
-		}
 
-		new Sortable(this.$refs.media, {
-			animation: 150
+			new Sortable(this.$refs.media, {
+				animation: 150
+			});
 		});
 	},
 	beforeDestroy() {
@@ -145,7 +147,7 @@ export default Vue.extend({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
-			this.$emit('change-attached-media');
+			this.$emit('change-attached-media', this.files);
 		},
 		onKeydown(e) {
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
@@ -187,7 +189,7 @@ export default Vue.extend({
 				// (ドライブの)ファイルだったら
 				if (obj.type == 'file') {
 					this.files.push(obj.file);
-					this.$emit('change-attached-media');
+					this.$emit('change-attached-media', this.files);
 				}
 			} catch (e) { }
 		},
@@ -260,7 +262,7 @@ export default Vue.extend({
 
 	> .content
 
-		[ref='text']
+		textarea
 			display block
 			padding 12px
 			margin 0
@@ -364,20 +366,20 @@ export default Vue.extend({
 						height 16px
 						cursor pointer
 
-		> mk-poll-editor
+		> .mk-poll-editor
 			background lighten($theme-color, 98%)
 			border solid 1px rgba($theme-color, 0.1)
 			border-top none
 			border-radius 0 0 4px 4px
 			transition border-color .3s ease
 
-	> mk-uploader
+	> .mk-uploader
 		margin 8px 0 0 0
 		padding 8px
 		border solid 1px rgba($theme-color, 0.2)
 		border-radius 4px
 
-	[ref='file']
+	input[type='file']
 		display none
 
 	.text-count
@@ -393,7 +395,7 @@ export default Vue.extend({
 		&.over
 			color #ec3828
 
-	[ref='submit']
+	.submit
 		display block
 		position absolute
 		bottom 16px
@@ -457,8 +459,8 @@ export default Vue.extend({
 				from {background-position: 0 0;}
 				to   {background-position: -64px 32px;}
 
-	[ref='upload']
-	[ref='drive']
+	.upload
+	.drive
 	.kao
 	.poll
 		display inline-block

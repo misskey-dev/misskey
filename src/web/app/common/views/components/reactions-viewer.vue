@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="mk-reactions-viewer">
 	<template v-if="reactions">
 		<span v-if="reactions.like"><mk-reaction-icon reaction='like'/><span>{{ reactions.like }}</span></span>
 		<span v-if="reactions.love"><mk-reaction-icon reaction='love'/><span>{{ reactions.love }}</span></span>
@@ -14,36 +14,36 @@
 </div>
 </template>
 
-<script lang="typescript">
-	export default {
-		props: ['post'],
-		computed: {
-			reactions() {
-				return this.post.reaction_counts;
-			}
+<script lang="ts">
+import Vue from 'vue';
+export default Vue.extend({
+	props: ['post'],
+	computed: {
+		reactions(): number {
+			return this.post.reaction_counts;
 		}
-	};
+	}
+});
 </script>
 
 <style lang="stylus" scoped>
-	:scope
-		display block
-		border-top dashed 1px #eee
-		border-bottom dashed 1px #eee
-		margin 4px 0
+.mk-reactions-viewer
+	border-top dashed 1px #eee
+	border-bottom dashed 1px #eee
+	margin 4px 0
 
-		&:empty
-			display none
+	&:empty
+		display none
+
+	> span
+		margin-right 8px
+
+		> mk-reaction-icon
+			font-size 1.4em
 
 		> span
-			margin-right 8px
-
-			> mk-reaction-icon
-				font-size 1.4em
-
-			> span
-				margin-left 4px
-				font-size 1.2em
-				color #444
+			margin-left 4px
+			font-size 1.2em
+			color #444
 
 </style>
