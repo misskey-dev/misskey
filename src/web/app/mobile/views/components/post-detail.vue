@@ -1,6 +1,6 @@
 <template>
-<div class="mk-post-detail" :title="title">
-	<button class="read-more" v-if="p.reply && p.reply.reply_id && context == null" title="会話をもっと読み込む" @click="loadContext" disabled={ contextFetching }>
+<div class="mk-post-detail">
+	<button class="read-more" v-if="p.reply && p.reply.reply_id && context == null" @click="loadContext" disabled={ loadingContext }>
 		<template v-if="!contextFetching">%fa:ellipsis-v%</template>
 		<template v-if="contextFetching">%fa:spinner .pulse%</template>
 	</button>
@@ -14,25 +14,23 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<a class="avatar-anchor" href={ '/' + post.user.username } data-user-preview={ post.user_id }>
-				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
+			<a class="avatar-anchor" href={ '/' + post.user.username }>
+				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/></a>
+				%fa:retweet%<a class="name" href={ '/' + post.user.username }>
+				{ post.user.name }
 			</a>
-			%fa:retweet%<a class="name" href={ '/' + post.user.username }>
-			{ post.user.name }
-		</a>
-		がRepost
-	</p>
+			がRepost
+		</p>
 	</div>
 	<article>
-		<a class="avatar-anchor" href={ '/' + p.user.username }>
-			<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar" data-user-preview={ p.user.id }/>
-		</a>
 		<header>
-			<a class="name" href={ '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
-			<span class="username">@{ p.user.username }</span>
-			<a class="time" href={ '/' + p.user.username + '/' + p.id }>
-				<mk-time time={ p.created_at }/>
+			<a class="avatar-anchor" href={ '/' + p.user.username }>
+				<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
 			</a>
+			<div>
+				<a class="name" href={ '/' + p.user.username }>{ p.user.name }</a>
+				<span class="username">@{ p.user.username }</span>
+			</div>
 		</header>
 		<div class="body">
 			<mk-post-html v-if="p.ast" :ast="p.ast" :i="$root.$data.os.i"/>
@@ -42,15 +40,18 @@
 			</div>
 			<mk-poll v-if="p.poll" post={ p }/>
 		</div>
+		<a class="time" href={ '/' + p.user.username + '/' + p.id }>
+			<mk-time time={ p.created_at } mode="detail"/>
+		</a>
 		<footer>
 			<mk-reactions-viewer post={ p }/>
-			<button @click="reply" title="返信">
+			<button @click="reply" title="%i18n:mobile.tags.mk-post-detail.reply%">
 				%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
 			</button>
 			<button @click="repost" title="Repost">
 				%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
 			</button>
-			<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="リアクション">
+			<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%">
 				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
 			</button>
 			<button @click="menu" ref="menuButton">
@@ -68,7 +69,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import dateStringify from '../../../common/scripts/date-stringify';
+import getPostSummary from '../../../../common/get-post-summary.ts';
+import openPostForm from '../scripts/open-post-form';
 
 export default Vue.extend({
 	props: {
@@ -100,9 +102,6 @@ export default Vue.extend({
 					.map(key => this.p.reaction_counts[key])
 					.reduce((a, b) => a + b)
 				: 0;
-		},
-		title(): string {
-			return dateStringify(this.p.created_at);
 		},
 		urls(): string[] {
 			if (this.p.ast) {
@@ -143,13 +142,17 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-post-detail
-	margin 0
-	padding 0
 	overflow hidden
+	margin 0 auto
+	padding 0
+	width 100%
 	text-align left
 	background #fff
-	border solid 1px rgba(0, 0, 0, 0.1)
 	border-radius 8px
+	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+	> .fetching
+		padding 64px 0
 
 	> .read-more
 		display block
@@ -165,6 +168,7 @@ export default Vue.extend({
 		border none
 		border-bottom solid 1px #eef0f2
 		border-radius 6px 6px 0 0
+		box-shadow none
 
 		&:hover
 			background #f6f6f6
@@ -212,7 +216,10 @@ export default Vue.extend({
 		border-bottom 1px solid #eef0f2
 
 	> article
-		padding 28px 32px 18px 32px
+		padding 14px 16px 9px 16px
+
+		@media (min-width 500px)
+			padding 28px 32px 18px 32px
 
 		&:after
 			content ""
@@ -223,50 +230,45 @@ export default Vue.extend({
 			> .main > footer > button
 				color #888
 
-		> .avatar-anchor
-			display block
-			width 60px
-			height 60px
-
-			> .avatar
-				display block
-				width 60px
-				height 60px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
-
 		> header
-			position absolute
-			top 28px
-			left 108px
-			width calc(100% - 108px)
+			display flex
+			line-height 1.1
 
-			> .name
-				display inline-block
-				margin 0
-				line-height 24px
-				color #777
-				font-size 18px
-				font-weight 700
-				text-align left
-				text-decoration none
-
-				&:hover
-					text-decoration underline
-
-			> .username
+			> .avatar-anchor
 				display block
-				text-align left
-				margin 0
-				color #ccc
+				padding 0 .5em 0 0
 
-			> .time
-				position absolute
-				top 0
-				right 32px
-				font-size 1em
-				color #c0c0c0
+				> .avatar
+					display block
+					width 54px
+					height 54px
+					margin 0
+					border-radius 8px
+					vertical-align bottom
+
+					@media (min-width 500px)
+						width 60px
+						height 60px
+
+			> div
+
+				> .name
+					display inline-block
+					margin .4em 0
+					color #777
+					font-size 16px
+					font-weight bold
+					text-align left
+					text-decoration none
+
+					&:hover
+						text-decoration underline
+
+				> .username
+					display block
+					text-align left
+					margin 0
+					color #ccc
 
 		> .body
 			padding 8px 0
@@ -277,23 +279,39 @@ export default Vue.extend({
 				margin 0
 				padding 0
 				overflow-wrap break-word
-				font-size 1.5em
+				font-size 16px
 				color #717171
+
+				@media (min-width 500px)
+					font-size 24px
 
 				> mk-url-preview
 					margin-top 8px
+
+			> .media
+				> img
+					display block
+					max-width 100%
+
+		> .time
+			font-size 16px
+			color #c0c0c0
 
 		> footer
 			font-size 1.2em
 
 			> button
-				margin 0 28px 0 0
+				margin 0
 				padding 8px
 				background transparent
 				border none
+				box-shadow none
 				font-size 1em
 				color #ddd
 				cursor pointer
+
+				&:not(:last-child)
+					margin-right 28px
 
 				&:hover
 					color #666
