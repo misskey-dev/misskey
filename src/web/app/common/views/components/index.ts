@@ -12,6 +12,7 @@ import images from './images.vue';
 import uploader from './uploader.vue';
 import specialMessage from './special-message.vue';
 import streamIndicator from './stream-indicator.vue';
+import ellipsis from './ellipsis.vue';
 
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
@@ -25,3 +26,4 @@ Vue.component('mk-images', images);
 Vue.component('mk-uploader', uploader);
 Vue.component('mk-special-message', specialMessage);
 Vue.component('mk-stream-indicator', streamIndicator);
+Vue.component('mk-ellipsis', ellipsis);

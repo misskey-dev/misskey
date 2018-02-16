@@ -1,9 +1,7 @@
 <template>
 <mk-window ref="window" is-modal @closed="$destroy">
 	<span slot="header" :class="$style.header">%fa:retweet%%i18n:desktop.tags.mk-repost-form-window.title%</span>
-	<div slot="content">
-		<mk-repost-form ref="form" :post="post" @posted="$refs.window.close" @canceled="$refs.window.close"/>
-	</div>
+	<mk-repost-form ref="form" :post="post" @posted="onPosted" @canceled="onCanceled"/>
 </mk-window>
 </template>
 
@@ -25,6 +23,12 @@ export default Vue.extend({
 					(this.$refs.window as any).close();
 				}
 			}
+		},
+		onPosted() {
+			(this.$refs.window as any).close();
+		},
+		onCanceled() {
+			(this.$refs.window as any).close();
 		}
 	}
 });

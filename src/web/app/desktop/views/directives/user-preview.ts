@@ -55,7 +55,6 @@ export default {
 	},
 	unbind(el, binding, vn) {
 		const self = vn.context._userPreviewDirective_;
-		console.log('unbound:', self.user);
 		clearTimeout(self.showTimer);
 		clearTimeout(self.hideTimer);
 		self.close();

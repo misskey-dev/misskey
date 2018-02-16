@@ -1,5 +1,5 @@
 <template>
-<time>
+<time class="mk-time">
 	<span v-if=" mode == 'relative' ">{{ relative }}</span>
 	<span v-if=" mode == 'absolute' ">{{ absolute }}</span>
 	<span v-if=" mode == 'detail' ">{{ absolute }} ({{ relative }})</span>

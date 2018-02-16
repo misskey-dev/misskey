@@ -3,7 +3,7 @@
 	<mk-post-preview :post="post"/>
 	<template v-if="!quote">
 		<footer>
-			<a class="quote" v-if="!quote" @click="onquote">%i18n:desktop.tags.mk-repost-form.quote%</a>
+			<a class="quote" v-if="!quote" @click="onQuote">%i18n:desktop.tags.mk-repost-form.quote%</a>
 			<button class="cancel" @click="cancel">%i18n:desktop.tags.mk-repost-form.cancel%</button>
 			<button class="ok" @click="ok" :disabled="wait">{{ wait ? '%i18n:desktop.tags.mk-repost-form.reposting%' : '%i18n:desktop.tags.mk-repost-form.repost%' }}</button>
 		</footer>
@@ -46,7 +46,9 @@ export default Vue.extend({
 		onQuote() {
 			this.quote = true;
 
-			(this.$refs.form as any).focus();
+			this.$nextTick(() => {
+				(this.$refs.form as any).focus();
+			});
 		},
 		onChildFormPosted() {
 			this.$emit('posted');
@@ -60,9 +62,6 @@ export default Vue.extend({
 
 	> .mk-post-preview
 		margin 16px 22px
-
-	> div
-		padding 16px
 
 	> footer
 		height 72px
