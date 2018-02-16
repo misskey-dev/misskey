@@ -6,14 +6,13 @@
 		<span :class="$style.count" v-if="media.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', media.length) }}</span>
 		<span :class="$style.count" v-if="uploadings.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
 	</span>
-	<div slot="content">
-		<mk-post-preview v-if="reply" :class="$style.postPreview" :post="reply"/>
-		<mk-post-form ref="form"
-			:reply="reply"
-			@posted="onPosted"
-			@change-uploadings="onChangeUploadings"
-			@change-attached-media="onChangeMedia"/>
-	</div>
+
+	<mk-post-preview v-if="reply" :class="$style.postPreview" :post="reply"/>
+	<mk-post-form ref="form"
+		:reply="reply"
+		@posted="onPosted"
+		@change-uploadings="onChangeUploadings"
+		@change-attached-media="onChangeMedia"/>
 </mk-window>
 </template>
 

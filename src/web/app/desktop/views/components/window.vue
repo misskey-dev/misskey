@@ -10,7 +10,9 @@
 					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="閉じる">%fa:times%</button>
 				</div>
 			</header>
-			<div class="content"><slot name="content"></slot></div>
+			<div class="content">
+				<slot></slot>
+			</div>
 		</div>
 		<div class="handle top" v-if="canResize" @mousedown.prevent="onTopHandleMousedown"></div>
 		<div class="handle right" v-if="canResize" @mousedown.prevent="onRightHandleMousedown"></div>
