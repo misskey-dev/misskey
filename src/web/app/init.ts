@@ -22,7 +22,9 @@ require('./common/views/components');
 
 Vue.mixin({
 	destroyed(this: any) {
-		this.$el.parentNode.removeChild(this.$el);
+		if (this.$el.parentNode) {
+			this.$el.parentNode.removeChild(this.$el);
+		}
 	}
 });
 
@@ -74,18 +76,38 @@ if (localStorage.getItem('should-refresh') == 'true') {
 	location.reload(true);
 }
 
+type API = {
+	chooseDriveFile: (opts: {
+		title: string;
+		currentFolder: any;
+		multiple: boolean;
+	}) => Promise<any>;
+
+	chooseDriveFolder: (opts: {
+		title: string;
+		currentFolder: any;
+	}) => Promise<any>;
+};
+
 // MiOSを初期化してコールバックする
-export default (callback: (launch: () => Vue) => void, sw = false) => {
+export default (callback: (launch: (api: API) => Vue) => void, sw = false) => {
 	const mios = new MiOS(sw);
+
+	Vue.mixin({
+		data: {
+			$os: mios
+		}
+	});
 
 	mios.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const launch = () => {
+		const launch = (api: API) => {
 			return new Vue({
 				data: {
-					os: mios
+					os: mios,
+					api: api
 				},
 				router: new VueRouter({
 					mode: 'history'

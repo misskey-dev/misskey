@@ -2,20 +2,16 @@
 <mk-window ref="window" is-modal width='800px' height='500px' @closed="$destroy">
 	<span slot="header">
 		<span v-html="title" :class="$style.title"></span>
-		<span :class="$style.count" v-if="multiple && files.length > 0">({{ files.length }}ファイル選択中)</span>
 	</span>
 
 	<mk-drive
 		ref="browser"
 		:class="$style.browser"
-		:multiple="multiple"
-		@selected="onSelected"
-		@change-selection="onChangeSelection"
+		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.upload" title="PCからドライブにファイルをアップロード" @click="upload">%fa:upload%</button>
-		<button :class="$style.cancel" @click="cancel">キャンセル</button>
-		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">決定</button>
+		<button :class="$style.cancel" @click="close">キャンセル</button>
+		<button :class="$style.ok" @click="ok">決定</button>
 	</div>
 </mk-window>
 </template>
@@ -24,31 +20,13 @@
 import Vue from 'vue';
 export default Vue.extend({
 	props: {
-		multiple: {
-			default: false
-		},
 		title: {
-			default: '%fa:R file%ファイルを選択'
+			default: '%fa:R folder%フォルダを選択'
 		}
 	},
-	data() {
-		return {
-			files: []
-		};
-	},
 	methods: {
-		onSelected(file) {
-			this.files = [file];
-			this.ok();
-		},
-		onChangeselection(files) {
-			this.files = files;
-		},
-		upload() {
-			(this.$refs.browser as any).selectLocalFile();
-		},
 		ok() {
-			this.$emit('selected', this.multiple ? this.files : this.files[0]);
+			this.$emit('selected', (this.$refs.browser as any).folder);
 			(this.$refs.window as any).close();
 		},
 		cancel() {
@@ -63,55 +41,12 @@ export default Vue.extend({
 	> [data-fa]
 		margin-right 4px
 
-.count
-	margin-left 8px
-	opacity 0.7
-
 .browser
 	height calc(100% - 72px)
 
 .footer
 	height 72px
 	background lighten($theme-color, 95%)
-
-.upload
-	display inline-block
-	position absolute
-	top 8px
-	left 16px
-	cursor pointer
-	padding 0
-	margin 8px 4px 0 0
-	width 40px
-	height 40px
-	font-size 1em
-	color rgba($theme-color, 0.5)
-	background transparent
-	outline none
-	border solid 1px transparent
-	border-radius 4px
-
-	&:hover
-		background transparent
-		border-color rgba($theme-color, 0.3)
-
-	&:active
-		color rgba($theme-color, 0.6)
-		background transparent
-		border-color rgba($theme-color, 0.5)
-		box-shadow 0 2px 4px rgba(darken($theme-color, 50%), 0.15) inset
-
-	&:focus
-		&:after
-			content ""
-			pointer-events none
-			position absolute
-			top -5px
-			right -5px
-			bottom -5px
-			left -5px
-			border 2px solid rgba($theme-color, 0.3)
-			border-radius 8px
 
 .ok
 .cancel
@@ -175,4 +110,3 @@ export default Vue.extend({
 		border-color #dcdcdc
 
 </style>
-

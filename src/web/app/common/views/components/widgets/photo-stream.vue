@@ -44,7 +44,7 @@ export default define({
 		this.$root.$data.os.stream.dispose(this.connectionId);
 	},
 	methods: {
-		onStreamDriveFileCreated(file) {
+		onDriveFileCreated(file) {
 			if (/^image\/.+$/.test(file.type)) {
 				this.images.unshift(file);
 				if (this.images.length > 9) this.images.pop();

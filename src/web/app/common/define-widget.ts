@@ -26,7 +26,7 @@ export default function<T extends object>(data: {
 		},
 		data() {
 			return {
-				props: data.props || {}
+				props: data.props || {} as T
 			};
 		},
 		watch: {

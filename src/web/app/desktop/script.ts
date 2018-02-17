@@ -10,6 +10,8 @@ import fuckAdBlock from './scripts/fuck-ad-block';
 import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
 import composeNotification from '../common/scripts/compose-notification';
 
+import chooseDriveFolder from './api/choose-drive-folder';
+
 import MkIndex from './views/pages/index.vue';
 
 /**
@@ -27,7 +29,9 @@ init(async (launch) => {
 	// Register components
 	require('./views/components');
 
-	const app = launch();
+	const app = launch({
+		chooseDriveFolder
+	});
 
 	/**
 	 * Init Notification

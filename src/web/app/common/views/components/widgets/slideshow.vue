@@ -102,7 +102,7 @@ export default define({
 			});
 		},
 		choose() {
-			this.wapi_selectDriveFolder().then(folder => {
+			this.$root.$data.api.chooseDriveFolder().then(folder => {
 				this.props.folder = folder ? folder.id : null;
 				this.fetch();
 			});
