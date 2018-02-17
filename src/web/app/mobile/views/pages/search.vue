@@ -2,7 +2,7 @@
 <mk-ui>
 	<span slot="header">%fa:search% {{ query }}</span>
 	<main v-if="!fetching">
-		<mk-posts :class="$style.posts">
+		<mk-posts :class="$style.posts" :posts="posts">
 			<span v-if="posts.length == 0">{{ '%i18n:mobile.tags.mk-search-posts.empty%'.replace('{}', query) }}</span>
 			<button v-if="canFetchMore" @click="more" :disabled="fetching" slot="tail">
 				<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
