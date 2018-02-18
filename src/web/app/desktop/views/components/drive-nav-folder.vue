@@ -15,12 +15,17 @@
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
-	props: ['folder', 'browser'],
+	props: ['folder'],
 	data() {
 		return {
 			hover: false,
 			draghover: false
 		};
+	},
+	computed: {
+		browser(): any {
+			return this.$parent;
+		}
 	},
 	methods: {
 		onClick() {

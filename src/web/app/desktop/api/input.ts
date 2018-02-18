@@ -8,7 +8,8 @@ export default function(opts) {
 				title: o.title,
 				placeholder: o.placeholder,
 				default: o.default,
-				type: o.type || 'text'
+				type: o.type || 'text',
+				allowEmpty: o.allowEmpty
 			}
 		}).$mount();
 		d.$once('done', text => {

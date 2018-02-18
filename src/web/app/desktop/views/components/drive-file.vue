@@ -148,7 +148,8 @@ export default Vue.extend({
 			(this as any).apis.input({
 				title: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename-file%',
 				placeholder: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.input-new-file-name%',
-				default: this.file.name
+				default: this.file.name,
+				allowEmpty: false
 			}).then(name => {
 				(this as any).api('drive/files/update', {
 					file_id: this.file.id,

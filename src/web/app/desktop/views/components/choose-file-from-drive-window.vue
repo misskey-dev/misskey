@@ -41,7 +41,7 @@ export default Vue.extend({
 			this.files = [file];
 			this.ok();
 		},
-		onChangeselection(files) {
+		onChangeSelection(files) {
 			this.files = files;
 		},
 		upload() {

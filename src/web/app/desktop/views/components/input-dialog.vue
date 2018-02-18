@@ -3,14 +3,13 @@
 	<span slot="header" :class="$style.header">
 		%fa:i-cursor%{{ title }}
 	</span>
-	<div slot="content">
-		<div :class="$style.body">
-			<input ref="text" v-model="text" :type="type" @keydown="onKeydown" :placeholder="placeholder"/>
-		</div>
-		<div :class="$style.actions">
-			<button :class="$style.cancel" @click="cancel">キャンセル</button>
-			<button :class="$style.ok" disabled="!allowEmpty && text.length == 0" @click="ok">決定</button>
-		</div>
+
+	<div :class="$style.body">
+		<input ref="text" v-model="text" :type="type" @keydown="onKeydown" :placeholder="placeholder"/>
+	</div>
+	<div :class="$style.actions">
+		<button :class="$style.cancel" @click="cancel">キャンセル</button>
+		<button :class="$style.ok" :disabled="!allowEmpty && text.length == 0" @click="ok">決定</button>
 	</div>
 </mk-window>
 </template>
@@ -44,6 +43,7 @@ export default Vue.extend({
 	mounted() {
 		if (this.default) this.text = this.default;
 		this.$nextTick(() => {
+			console.log(this);
 			(this.$refs.text as any).focus();
 		});
 	},
