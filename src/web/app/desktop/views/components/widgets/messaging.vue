@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import define from '../../../define-widget';
+import define from '../../../../common/define-widget';
 export default define({
 	name: 'messaging',
 	props: {

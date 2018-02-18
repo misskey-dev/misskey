@@ -1,5 +1,5 @@
 <template>
-<mk-window ref="window" width='500px' height='560px' @closed="$destroy">
+<mk-window ref="window" width="500px" height="560px" @closed="$destroy">
 	<span slot="header" :class="$style.header">%fa:comments%メッセージ</span>
 	<mk-messaging :class="$style.content" @navigate="navigate"/>
 </mk-window>
@@ -7,6 +7,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkMessagingRoomWindow from './messaging-room-window.vue';
+
 export default Vue.extend({
 	methods: {
 		navigate(user) {

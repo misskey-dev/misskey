@@ -6,22 +6,13 @@ export default function<T extends object>(data: {
 }) {
 	return Vue.extend({
 		props: {
-			wid: {
-				type: String,
-				required: true
-			},
-			wplace: {
-				type: String,
-				required: true
-			},
-			wprops: {
-				type: Object,
-				required: false
+			widget: {
+				type: Object
 			}
 		},
 		computed: {
 			id(): string {
-				return this.wid;
+				return this.widget.id;
 			}
 		},
 		data() {
@@ -32,19 +23,19 @@ export default function<T extends object>(data: {
 		watch: {
 			props(newProps, oldProps) {
 				if (JSON.stringify(newProps) == JSON.stringify(oldProps)) return;
-				this.$root.$data.os.api('i/update_home', {
+				(this as any).api('i/update_home', {
 					id: this.id,
 					data: newProps
 				}).then(() => {
-					this.$root.$data.os.i.client_settings.home.find(w => w.id == this.id).data = newProps;
+					(this as any).os.i.client_settings.home.find(w => w.id == this.id).data = newProps;
 				});
 			}
 		},
 		created() {
 			if (this.props) {
 				Object.keys(this.props).forEach(prop => {
-					if (this.wprops.hasOwnProperty(prop)) {
-						this.props[prop] = this.wprops[prop];
+					if (this.widget.data.hasOwnProperty(prop)) {
+						this.props[prop] = this.widget.data[prop];
 					}
 				});
 			}

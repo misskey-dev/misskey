@@ -41,10 +41,10 @@
 			<div ref="left" data-place="left">
 				<template v-for="widget in leftWidgets">
 					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="'mk-hw-' + widget.name" :widget="widget" :ref="widget.id"/>
+						<component :is="'mkw-' + widget.name" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
-						<component :is="'mk-hw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
+						<component :is="'mkw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
 					</template>
 				</template>
 			</div>
@@ -53,10 +53,10 @@
 			<div class="maintop" ref="maintop" data-place="main" v-if="customize">
 				<template v-for="widget in centerWidgets">
 					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="'mk-hw-' + widget.name" :widget="widget" :ref="widget.id"/>
+						<component :is="'mkw-' + widget.name" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
-						<component :is="'mk-hw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
+						<component :is="'mkw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
 					</template>
 				</template>
 			</div>
@@ -67,10 +67,10 @@
 			<div ref="right" data-place="right">
 				<template v-for="widget in rightWidgets">
 					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="'mk-hw-' + widget.name" :widget="widget" :ref="widget.id"/>
+						<component :is="'mkw-' + widget.name" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
-						<component :is="'mk-hw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
+						<component :is="'mkw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
 					</template>
 				</template>
 			</div>

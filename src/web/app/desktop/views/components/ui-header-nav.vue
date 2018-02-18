@@ -34,6 +34,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkMessagingWindow from './messaging-window.vue';
 
 export default Vue.extend({
 	data() {
@@ -76,8 +77,7 @@ export default Vue.extend({
 		},
 
 		messaging() {
-			// TODO
-			//document.body.appendChild(new MkMessagingWindow().$mount().$el);
+			document.body.appendChild(new MkMessagingWindow().$mount().$el);
 		}
 	}
 });

@@ -23,7 +23,7 @@ export default Vue.extend({
 	data() {
 		return {
 			text: null,
-			files: [],
+			file: null,
 			sending: false
 		};
 	},
@@ -49,16 +49,16 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			const w = new MkDriveChooserWindow({
-				propsData: {
-					multiple: true
-				}
-			}).$mount();
-			w.$once('selected', files => {
-				files.forEach(this.addFile);
+			(this as any).apis.chooseDriveFile({
+				multiple: false
+			}).then(file => {
+				this.file = file;
 			});
-			document.body.appendChild(w.$el);
 		},
+
+		upload() {
+			// TODO
+		}
 
 		send() {
 			this.sending = true;

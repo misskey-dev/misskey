@@ -1,9 +1,9 @@
 <template>
 <mk-window ref="window" @closed="$destroy" width="800px" height="500px" :popout="popout">
-	<span slot="header" :class="$style.header">
-		<p class="info" v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
-		%fa:cloud%%i18n:desktop.tags.mk-drive-browser-window.drive%
-	</span>
+	<template slot="header">
+		<p v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
+		<span: class="$style.title">%fa:cloud%%i18n:desktop.tags.mk-drive-browser-window.drive%</span>
+	</template>
 	<mk-drive-browser multiple :folder="folder" ref="browser"/>
 </mk-window>
 </template>
@@ -38,7 +38,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-.header
+.title
 	> [data-fa]
 		margin-right 4px
 

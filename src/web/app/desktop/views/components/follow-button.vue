@@ -1,7 +1,6 @@
 <template>
 <button class="mk-follow-button"
 	:class="{ wait, follow: !user.is_following, unfollow: user.is_following }"
-	v-if="!init"
 	@click="onClick"
 	:disabled="wait"
 	:title="user.is_following ? 'フォロー解除' : 'フォローする'"

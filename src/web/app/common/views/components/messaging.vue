@@ -1,6 +1,6 @@
 <template>
 <div class="mk-messaging" :data-compact="compact">
-	<div class="search" v-if="!opts.compact">
+	<div class="search" v-if="!compact">
 		<div class="form">
 			<label for="search-input">%fa:search%</label>
 			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
