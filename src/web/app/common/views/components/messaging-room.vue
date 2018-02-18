@@ -48,7 +48,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = new MessagingStreamConnection(this.$root.$data.os.i, this.user.id);
+		this.connection = new MessagingStreamConnection((this as any).os.i, this.user.id);
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
@@ -72,7 +72,7 @@ export default Vue.extend({
 			return new Promise((resolve, reject) => {
 				const max = this.existMoreMessages ? 20 : 10;
 
-				this.$root.$data.os.api('messaging/messages', {
+				(this as any).api('messaging/messages', {
 					user_id: this.user.id,
 					limit: max + 1,
 					until_id: this.existMoreMessages ? this.messages[0].id : undefined
@@ -99,7 +99,7 @@ export default Vue.extend({
 			const isBottom = this.isBottom();
 
 			this.messages.push(message);
-			if (message.user_id != this.$root.$data.os.i.id && !document.hidden) {
+			if (message.user_id != (this as any).os.i.id && !document.hidden) {
 				this.connection.send({
 					type: 'read',
 					id: message.id
@@ -109,7 +109,7 @@ export default Vue.extend({
 			if (isBottom) {
 				// Scroll to bottom
 				this.scrollToBottom();
-			} else if (message.user_id != this.$root.$data.os.i.id) {
+			} else if (message.user_id != (this as any).os.i.id) {
 				// Notify
 				this.notify('%i18n:common.tags.mk-messaging-room.new-message%');
 			}
@@ -157,7 +157,7 @@ export default Vue.extend({
 		onVisibilitychange() {
 			if (document.hidden) return;
 			this.messages.forEach(message => {
-				if (message.user_id !== this.$root.$data.os.i.id && !message.is_read) {
+				if (message.user_id !== (this as any).os.i.id && !message.is_read) {
 					this.connection.send({
 						type: 'read',
 						id: message.id

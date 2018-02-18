@@ -4,7 +4,7 @@
 		<div ref="left">
 			<mk-user-profile :user="user"/>
 			<mk-user-photos :user="user"/>
-			<mk-user-followers-you-know v-if="$root.$data.os.isSignedIn && $root.$data.os.i.id != user.id" :user="user"/>
+			<mk-user-followers-you-know v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 			<p>%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time :time="user.last_used_at"/></b></p>
 		</div>
 	</div>

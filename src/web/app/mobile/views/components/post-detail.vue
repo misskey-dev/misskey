@@ -33,7 +33,7 @@
 			</div>
 		</header>
 		<div class="body">
-			<mk-post-html v-if="p.ast" :ast="p.ast" :i="$root.$data.os.i"/>
+			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="media" v-if="p.media">
 				<mk-images images={ p.media }/>
@@ -116,7 +116,7 @@ export default Vue.extend({
 	mounted() {
 		// Get replies
 		if (!this.compact) {
-			this.$root.$data.os.api('posts/replies', {
+			(this as any).api('posts/replies', {
 				post_id: this.p.id,
 				limit: 8
 			}).then(replies => {
@@ -129,7 +129,7 @@ export default Vue.extend({
 			this.contextFetching = true;
 
 			// Fetch context
-			this.$root.$data.os.api('posts/context', {
+			(this as any).api('posts/context', {
 				post_id: this.p.reply_id
 			}).then(context => {
 				this.contextFetching = false;

@@ -21,7 +21,7 @@
 				<p>フォロワー</p><a>{{ u.followers_count }}</a>
 			</div>
 		</div>
-		<mk-follow-button v-if="$root.$data.os.isSignedIn && user.id != $root.$data.os.i.id" :user="u"/>
+		<mk-follow-button v-if="os.isSignedIn && user.id != os.i.id" :user="u"/>
 	</template>
 </div>
 </template>
@@ -49,7 +49,7 @@ export default Vue.extend({
 				this.open();
 			});
 		} else {
-			this.$root.$data.os.api('users/show', {
+			(this as any).api('users/show', {
 				user_id: this.user[0] == '@' ? undefined : this.user,
 				username: this.user[0] == '@' ? this.user.substr(1) : undefined
 			}).then(user => {

@@ -106,24 +106,24 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		this.connection = this.$root.$data.os.stream.getConnection();
-		this.connectionId = this.$root.$data.os.stream.use();
+		this.connection = (this as any).os.stream.getConnection();
+		this.connectionId = (this as any).os.stream.use();
 	},
 	mounted() {
 		this.capture(true);
 
-		if (this.$root.$data.os.isSignedIn) {
+		if ((this as any).os.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
 	},
 	beforeDestroy() {
 		this.decapture(true);
 		this.connection.off('_connected_', this.onStreamConnected);
-		this.$root.$data.os.stream.dispose(this.connectionId);
+		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 		capture(withHandler = false) {
-			if (this.$root.$data.os.isSignedIn) {
+			if ((this as any).os.isSignedIn) {
 				this.connection.send({
 					type: 'capture',
 					id: this.post.id
@@ -132,7 +132,7 @@ export default Vue.extend({
 			}
 		},
 		decapture(withHandler = false) {
-			if (this.$root.$data.os.isSignedIn) {
+			if ((this as any).os.isSignedIn) {
 				this.connection.send({
 					type: 'decapture',
 					id: this.post.id

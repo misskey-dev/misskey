@@ -44,7 +44,7 @@ export default Vue.extend({
 		document.addEventListener('keydown', this.onDocumentKeydown);
 		window.addEventListener('scroll', this.onScroll);
 
-		this.$root.$data.os.api('posts/search', parse(this.query)).then(posts => {
+		(this as any).api('posts/search', parse(this.query)).then(posts => {
 			this.fetching = false;
 			this.posts = posts;
 		});
@@ -65,7 +65,7 @@ export default Vue.extend({
 			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
 			this.offset += limit;
 			this.moreFetching = true;
-			return this.$root.$data.os.api('posts/search', Object.assign({}, parse(this.query), {
+			return (this as any).api('posts/search', Object.assign({}, parse(this.query), {
 				limit: limit,
 				offset: this.offset
 			})).then(posts => {

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-profile-setting">
 	<label class="avatar ui from group">
-		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p><img class="avatar" :src="`${$root.$data.os.i.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p><img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		<button class="ui" @click="updateAvatar">%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
 	</label>
 	<label class="ui from group">
@@ -32,18 +32,18 @@ import notify from '../../scripts/notify';
 export default Vue.extend({
 	data() {
 		return {
-			name: this.$root.$data.os.i.name,
-			location: this.$root.$data.os.i.location,
-			description: this.$root.$data.os.i.description,
-			birthday: this.$root.$data.os.i.birthday,
+			name: (this as any).os.i.name,
+			location: (this as any).os.i.location,
+			description: (this as any).os.i.description,
+			birthday: (this as any).os.i.birthday,
 		};
 	},
 	methods: {
 		updateAvatar() {
-			updateAvatar(this.$root.$data.os.i);
+			updateAvatar((this as any).os.i);
 		},
 		save() {
-			this.$root.$data.os.api('i/update', {
+			(this as any).api('i/update', {
 				name: this.name,
 				location: this.location || null,
 				description: this.description || null,

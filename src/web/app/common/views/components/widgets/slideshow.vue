@@ -89,7 +89,7 @@ export default define({
 		fetch() {
 			this.fetching = true;
 
-			this.$root.$data.os.api('drive/files', {
+			(this as any).api('drive/files', {
 				folder_id: this.props.folder,
 				type: 'image/*',
 				limit: 100
@@ -102,7 +102,7 @@ export default define({
 			});
 		},
 		choose() {
-			this.$root.$data.api.chooseDriveFolder().then(folder => {
+			(this as any).apis.chooseDriveFolder().then(folder => {
 				this.props.folder = folder ? folder.id : null;
 				this.fetch();
 			});

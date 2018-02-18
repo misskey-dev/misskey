@@ -2,7 +2,7 @@
 <div class="mk-sub-post-content">
 	<div class="body">
 		<a class="reply" v-if="post.reply_id">%fa:reply%</a>
-		<mk-post-html :ast="post.ast" :i="$root.$data.os.i"/>
+		<mk-post-html :ast="post.ast" :i="os.i"/>
 		<a class="quote" v-if="post.repost_id" :href="`/post:${post.repost_id}`">RP: ...</a>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 	</div>

@@ -88,7 +88,7 @@ export default Vue.extend({
 
 			this.usernameState = 'wait';
 
-			this.$root.$data.os.api('username/available', {
+			(this as any).api('username/available', {
 				username: this.username
 			}).then(result => {
 				this.usernameState = result.available ? 'ok' : 'unavailable';
@@ -115,12 +115,12 @@ export default Vue.extend({
 			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
 		},
 		onSubmit() {
-			this.$root.$data.os.api('signup', {
+			(this as any).api('signup', {
 				username: this.username,
 				password: this.password,
 				'g-recaptcha-response': (window as any).grecaptcha.getResponse()
 			}).then(() => {
-				this.$root.$data.os.api('signin', {
+				(this as any).api('signin', {
 					username: this.username,
 					password: this.password
 				}).then(() => {

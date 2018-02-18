@@ -11,6 +11,9 @@ import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
 import composeNotification from '../common/scripts/compose-notification';
 
 import chooseDriveFolder from './api/choose-drive-folder';
+import chooseDriveFile from './api/choose-drive-file';
+import dialog from './api/dialog';
+import input from './api/input';
 
 import MkIndex from './views/pages/index.vue';
 
@@ -30,7 +33,10 @@ init(async (launch) => {
 	require('./views/components');
 
 	const app = launch({
-		chooseDriveFolder
+		chooseDriveFolder,
+		chooseDriveFile,
+		dialog,
+		input
 	});
 
 	/**

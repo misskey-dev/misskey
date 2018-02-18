@@ -80,7 +80,7 @@ export default Vue.extend({
 
 	created() {
 		// ウィンドウをウィンドウシステムに登録
-		this.$root.$data.os.windows.add(this);
+		(this as any).os.windows.add(this);
 	},
 
 	mounted() {
@@ -97,7 +97,7 @@ export default Vue.extend({
 
 	destroyed() {
 		// ウィンドウをウィンドウシステムから削除
-		this.$root.$data.os.windows.remove(this);
+		(this as any).os.windows.remove(this);
 
 		window.removeEventListener('resize', this.onBrowserResize);
 	},
@@ -191,7 +191,7 @@ export default Vue.extend({
 		top() {
 			let z = 0;
 
-			this.$root.$data.os.windows.getAll().forEach(w => {
+			(this as any).os.windows.getAll().forEach(w => {
 				if (w == this) return;
 				const m = w.$refs.main;
 				const mz = Number(document.defaultView.getComputedStyle(m, null).zIndex);

@@ -73,7 +73,7 @@ export default Vue.extend({
 			if (obj.type == 'file') {
 				const file = obj.id;
 				this.browser.removeFile(file);
-				this.$root.$data.os.api('drive/files/update', {
+				(this as any).api('drive/files/update', {
 					file_id: file,
 					folder_id: this.folder ? this.folder.id : null
 				});
@@ -83,7 +83,7 @@ export default Vue.extend({
 				// 移動先が自分自身ならreject
 				if (this.folder && folder == this.folder.id) return false;
 				this.browser.removeFolder(folder);
-				this.$root.$data.os.api('drive/folders/update', {
+				(this as any).api('drive/folders/update', {
 					folder_id: folder,
 					parent_id: this.folder ? this.folder.id : null
 				});

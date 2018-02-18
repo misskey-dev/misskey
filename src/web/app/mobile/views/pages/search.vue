@@ -35,7 +35,7 @@ export default Vue.extend({
 
 		Progress.start();
 
-		this.$root.$data.os.api('posts/search', Object.assign({}, parse(this.query), {
+		(this as any).api('posts/search', Object.assign({}, parse(this.query), {
 			limit: limit
 		})).then(posts => {
 			this.posts = posts;
@@ -46,7 +46,7 @@ export default Vue.extend({
 	methods: {
 		more() {
 			this.offset += limit;
-			return this.$root.$data.os.api('posts/search', Object.assign({}, parse(this.query), {
+			return (this as any).api('posts/search', Object.assign({}, parse(this.query), {
 				limit: limit,
 				offset: this.offset
 			}));

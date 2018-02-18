@@ -87,8 +87,8 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.connection = this.$root.$data.os.streams.driveStream.getConnection();
-		this.connectionId = this.$root.$data.os.streams.driveStream.use();
+		this.connection = (this as any).os.streams.driveStream.getConnection();
+		this.connectionId = (this as any).os.streams.driveStream.use();
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
@@ -112,7 +112,7 @@ export default Vue.extend({
 		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
 		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
-		this.$root.$data.os.streams.driveStream.dispose(this.connectionId);
+		(this as any).os.streams.driveStream.dispose(this.connectionId);
 	},
 	methods: {
 		onStreamDriveFileCreated(file) {
@@ -158,7 +158,7 @@ export default Vue.extend({
 
 			this.fetching = true;
 
-			this.$root.$data.os.api('drive/folders/show', {
+			(this as any).api('drive/folders/show', {
 				folder_id: target
 			}).then(folder => {
 				this.folder = folder;
@@ -253,7 +253,7 @@ export default Vue.extend({
 			const filesMax = 20;
 
 			// フォルダ一覧取得
-			this.$root.$data.os.api('drive/folders', {
+			(this as any).api('drive/folders', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: foldersMax + 1
 			}).then(folders => {
@@ -266,7 +266,7 @@ export default Vue.extend({
 			});
 
 			// ファイル一覧取得
-			this.$root.$data.os.api('drive/files', {
+			(this as any).api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: filesMax + 1
 			}).then(files => {
@@ -296,7 +296,7 @@ export default Vue.extend({
 
 			if (this.folder == null) {
 				// Fetch addtional drive info
-				this.$root.$data.os.api('drive').then(info => {
+				(this as any).api('drive').then(info => {
 					this.info = info;
 				});
 			}
@@ -309,7 +309,7 @@ export default Vue.extend({
 			const max = 30;
 
 			// ファイル一覧取得
-			this.$root.$data.os.api('drive/files', {
+			(this as any).api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: max + 1,
 				until_id: this.files[this.files.length - 1].id
@@ -348,7 +348,7 @@ export default Vue.extend({
 
 			this.fetching = true;
 
-			this.$root.$data.os.api('drive/files/show', {
+			(this as any).api('drive/files/show', {
 				file_id: file
 			}).then(file => {
 				this.fetching = false;
@@ -394,7 +394,7 @@ export default Vue.extend({
 		createFolder() {
 			const name = window.prompt('フォルダー名');
 			if (name == null || name == '') return;
-			this.$root.$data.os.api('drive/folders/create', {
+			(this as any).api('drive/folders/create', {
 				name: name,
 				parent_id: this.folder ? this.folder.id : undefined
 			}).then(folder => {
@@ -409,7 +409,7 @@ export default Vue.extend({
 			}
 			const name = window.prompt('フォルダー名', this.folder.name);
 			if (name == null || name == '') return;
-			this.$root.$data.os.api('drive/folders/update', {
+			(this as any).api('drive/folders/update', {
 				name: name,
 				folder_id: this.folder.id
 			}).then(folder => {
@@ -424,7 +424,7 @@ export default Vue.extend({
 			}
 			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')))[0];
 			dialog.one('selected', folder => {
-				this.$root.$data.os.api('drive/folders/update', {
+				(this as any).api('drive/folders/update', {
 					parent_id: folder ? folder.id : null,
 					folder_id: this.folder.id
 				}).then(folder => {
@@ -436,7 +436,7 @@ export default Vue.extend({
 		urlUpload() {
 			const url = window.prompt('アップロードしたいファイルのURL');
 			if (url == null || url == '') return;
-			this.$root.$data.os.api('drive/files/upload_from_url', {
+			(this as any).api('drive/files/upload_from_url', {
 				url: url,
 				folder_id: this.folder ? this.folder.id : undefined
 			});

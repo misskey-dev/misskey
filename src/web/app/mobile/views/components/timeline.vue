@@ -37,12 +37,12 @@ export default Vue.extend({
 	},
 	computed: {
 		alone(): boolean {
-			return this.$root.$data.os.i.following_count == 0;
+			return (this as any).os.i.following_count == 0;
 		}
 	},
 	mounted() {
-		this.connection = this.$root.$data.os.stream.getConnection();
-		this.connectionId = this.$root.$data.os.stream.use();
+		this.connection = (this as any).os.stream.getConnection();
+		this.connectionId = (this as any).os.stream.use();
 
 		this.connection.on('post', this.onPost);
 		this.connection.on('follow', this.onChangeFollowing);
@@ -54,13 +54,13 @@ export default Vue.extend({
 		this.connection.off('post', this.onPost);
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
-		this.$root.$data.os.stream.dispose(this.connectionId);
+		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
 
-			this.$root.$data.os.api('posts/timeline', {
+			(this as any).api('posts/timeline', {
 				until_date: this.date ? (this.date as any).getTime() : undefined
 			}).then(posts => {
 				this.fetching = false;
@@ -71,7 +71,7 @@ export default Vue.extend({
 		more() {
 			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
 			this.moreFetching = true;
-			this.$root.$data.os.api('posts/timeline', {
+			(this as any).api('posts/timeline', {
 				until_id: this.posts[this.posts.length - 1].id
 			}).then(posts => {
 				this.moreFetching = false;

@@ -16,7 +16,7 @@
 			</div>
 		</header>
 		<div class="body">
-			<mk-post-html v-if="post.ast" :ast="post.ast" :i="$root.$data.os.i"/>
+			<mk-post-html v-if="post.ast" :ast="post.ast" :i="os.i"/>
 			<div class="media" v-if="post.media">
 				<mk-images images={ post.media }/>
 			</div>

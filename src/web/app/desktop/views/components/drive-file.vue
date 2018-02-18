@@ -3,24 +3,24 @@
 	:data-is-selected="isSelected"
 	:data-is-contextmenu-showing="isContextmenuShowing"
 	@click="onClick"
-	@contextmenu.prevent.stop="onContextmenu"
 	draggable="true"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
+	@contextmenu.prevent.stop="onContextmenu"
 	:title="title"
 >
-	<div class="label" v-if="I.avatar_id == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="os.i.avatar_id == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.avatar%</p>
 	</div>
-	<div class="label" v-if="I.banner_id == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="os.i.banner_id == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.banner%</p>
 	</div>
-	<div class="thumbnail" ref="thumbnail" style="background-color:{ file.properties.average_color ? 'rgb(' + file.properties.average_color.join(',') + ')' : 'transparent' }">
-		<img src={ file.url + '?thumbnail&size=128' } alt="" @load="onThumbnailLoaded"/>
+	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
+		<img :src="`${file.url}?thumbnail&size=128`" alt="" @load="onThumbnailLoaded"/>
 	</div>
 	<p class="name">
-		<span>{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }</span>
-		<span class="ext" v-if="file.name.lastIndexOf('.') != -1">{ file.name.substr(file.name.lastIndexOf('.')) }</span>
+		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
+		<span class="ext" v-if="file.name.lastIndexOf('.') != -1">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
 	</p>
 </div>
 </template>
@@ -28,10 +28,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
+import contextmenu from '../../api/contextmenu';
+import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import bytesToSize from '../../../common/scripts/bytes-to-size';
 
 export default Vue.extend({
-	props: ['file', 'browser'],
+	props: ['file'],
 	data() {
 		return {
 			isContextmenuShowing: false,
@@ -39,11 +41,19 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		browser(): any {
+			return this.$parent;
+		},
 		isSelected(): boolean {
 			return this.browser.selectedFiles.some(f => f.id == this.file.id);
 		},
 		title(): string {
 			return `${this.file.name}\n${this.file.type} ${bytesToSize(this.file.datasize)}`;
+		},
+		background(): string {
+			return this.file.properties.average_color
+				? `rgb(${this.file.properties.average_color.join(',')})'`
+				: 'transparent';
 		}
 	},
 	methods: {
@@ -53,18 +63,55 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			this.isContextmenuShowing = true;
-			const ctx = new MkDriveFileContextmenu({
-				parent: this,
-				propsData: {
-					browser: this.browser,
-					x: e.pageX - window.pageXOffset,
-					y: e.pageY - window.pageYOffset
+			contextmenu(e, [{
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename%',
+				icon: '%fa:i-cursor%',
+				onClick: this.rename
+			}, {
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copy-url%',
+				icon: '%fa:link%',
+				onClick: this.copyUrl
+			}, {
+				type: 'link',
+				href: `${this.file.url}?download`,
+				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.download%',
+				icon: '%fa:download%',
+			}, {
+				type: 'divider',
+			}, {
+				type: 'item',
+				text: '%i18n:common.delete%',
+				icon: '%fa:R trash-alt%',
+				onClick: this.deleteFile
+			}, {
+				type: 'divider',
+			}, {
+				type: 'nest',
+				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.else-files%',
+				menu: [{
+					type: 'item',
+					text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.set-as-avatar%',
+					onClick: this.setAsAvatar
+				}, {
+					type: 'item',
+					text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.set-as-banner%',
+					onClick: this.setAsBanner
+				}]
+			}, {
+				type: 'nest',
+				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.open-in-app%',
+				menu: [{
+					type: 'item',
+					text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.add-app%...',
+					onClick: this.addApp
+				}]
+			}], {
+				closed: () => {
+					this.isContextmenuShowing = false;
 				}
-			}).$mount();
-			ctx.$once('closed', () => {
-				this.isContextmenuShowing = false;
 			});
-			document.body.appendChild(ctx.$el);
 		},
 
 		onDragstart(e) {
@@ -95,6 +142,46 @@ export default Vue.extend({
 					easing: 'linear'
 				});
 			}
+		},
+
+		rename() {
+			(this as any).apis.input({
+				title: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.rename-file%',
+				placeholder: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.input-new-file-name%',
+				default: this.file.name
+			}).then(name => {
+				(this as any).api('drive/files/update', {
+					file_id: this.file.id,
+					name: name
+				})
+			});
+		},
+
+		copyUrl() {
+			copyToClipboard(this.file.url);
+			(this as any).apis.dialog({
+				title: '%fa:check%%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied%',
+				text: '%i18n:desktop.tags.mk-drive-browser-file-contextmenu.copied-url-to-clipboard%',
+				actions: [{
+					text: '%i18n:common.ok%'
+				}]
+			});
+		},
+
+		setAsAvatar() {
+			(this as any).apis.updateAvatar(this.file);
+		},
+
+		setAsBanner() {
+			(this as any).apis.updateBanner(this.file);
+		},
+
+		addApp() {
+			alert('not implemented yet');
+		},
+
+		deleteFile() {
+			alert('not implemented yet');
 		}
 	}
 });

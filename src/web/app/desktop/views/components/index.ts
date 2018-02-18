@@ -27,6 +27,10 @@ import postForm from './post-form.vue';
 import repostForm from './repost-form.vue';
 import followButton from './follow-button.vue';
 import postPreview from './post-preview.vue';
+import drive from './drive.vue';
+import driveFile from './drive-file.vue';
+import driveFolder from './drive-folder.vue';
+import driveNavFolder from './drive-nav-folder.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-header', uiHeader);
@@ -55,3 +59,7 @@ Vue.component('mk-post-form', postForm);
 Vue.component('mk-repost-form', repostForm);
 Vue.component('mk-follow-button', followButton);
 Vue.component('mk-post-preview', postPreview);
+Vue.component('mk-drive', drive);
+Vue.component('mk-drive-file', driveFile);
+Vue.component('mk-drive-folder', driveFolder);
+Vue.component('mk-drive-nav-folder', driveNavFolder);

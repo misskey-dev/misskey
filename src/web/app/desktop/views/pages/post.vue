@@ -23,7 +23,7 @@ export default Vue.extend({
 	mounted() {
 		Progress.start();
 
-		this.$root.$data.os.api('posts/show', {
+		(this as any).api('posts/show', {
 			post_id: this.postId
 		}).then(post => {
 			this.fetching = false;

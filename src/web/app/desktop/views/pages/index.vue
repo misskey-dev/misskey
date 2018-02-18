@@ -1,5 +1,5 @@
 <template>
-	<component v-bind:is="$root.$data.os.isSignedIn ? 'home' : 'welcome'"></component>
+	<component v-bind:is="os.isSignedIn ? 'home' : 'welcome'"></component>
 </template>
 
 <script lang="ts">

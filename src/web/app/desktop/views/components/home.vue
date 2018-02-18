@@ -101,7 +101,7 @@ export default Vue.extend({
 	},
 	methods: {
 		bakeHomeData() {
-			return JSON.stringify(this.$root.$data.os.i.client_settings.home);
+			return JSON.stringify((this as any).os.i.client_settings.home);
 		},
 		onTlLoaded() {
 			this.$emit('loaded');
@@ -123,7 +123,7 @@ export default Vue.extend({
 				data: {}
 			};
 
-			this.$root.$data.os.i.client_settings.home.unshift(widget);
+			(this as any).os.i.client_settings.home.unshift(widget);
 
 			this.saveHome();
 		},
@@ -132,48 +132,48 @@ export default Vue.extend({
 
 			Array.from((this.$refs.left as Element).children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
-				const widget = this.$root.$data.os.i.client_settings.home.find(w => w.id == id);
+				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
 				widget.place = 'left';
 				data.push(widget);
 			});
 
 			Array.from((this.$refs.right as Element).children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
-				const widget = this.$root.$data.os.i.client_settings.home.find(w => w.id == id);
+				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
 				widget.place = 'right';
 				data.push(widget);
 			});
 
 			Array.from((this.$refs.maintop as Element).children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
-				const widget = this.$root.$data.os.i.client_settings.home.find(w => w.id == id);
+				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
 				widget.place = 'main';
 				data.push(widget);
 			});
 
-			this.$root.$data.os.api('i/update_home', {
+			(this as any).api('i/update_home', {
 				home: data
 			});
 		}
 	},
 	computed: {
 		leftWidgets(): any {
-			return this.$root.$data.os.i.client_settings.home.filter(w => w.place == 'left');
+			return (this as any).os.i.client_settings.home.filter(w => w.place == 'left');
 		},
 		centerWidgets(): any {
-			return this.$root.$data.os.i.client_settings.home.filter(w => w.place == 'center');
+			return (this as any).os.i.client_settings.home.filter(w => w.place == 'center');
 		},
 		rightWidgets(): any {
-			return this.$root.$data.os.i.client_settings.home.filter(w => w.place == 'right');
+			return (this as any).os.i.client_settings.home.filter(w => w.place == 'right');
 		}
 	},
 	created() {
 		this.bakedHomeData = this.bakeHomeData();
 	},
 	mounted() {
-		this.$root.$data.os.i.on('refreshed', this.onMeRefreshed);
+		(this as any).os.i.on('refreshed', this.onMeRefreshed);
 
-		this.home = this.$root.$data.os.i.client_settings.home;
+		this.home = (this as any).os.i.client_settings.home;
 
 		if (!this.customize) {
 			if ((this.$refs.left as Element).children.length == 0) {
@@ -214,14 +214,14 @@ export default Vue.extend({
 					const el = evt.item;
 					const id = el.getAttribute('data-widget-id');
 					el.parentNode.removeChild(el);
-					this.$root.$data.os.i.client_settings.home = this.$root.$data.os.i.client_settings.home.filter(w => w.id != id);
+					(this as any).os.i.client_settings.home = (this as any).os.i.client_settings.home.filter(w => w.id != id);
 					this.saveHome();
 				}
 			}));
 		}
 	},
 	beforeDestroy() {
-		this.$root.$data.os.i.off('refreshed', this.onMeRefreshed);
+		(this as any).os.i.off('refreshed', this.onMeRefreshed);
 
 		this.home.forEach(widget => {
 			widget.unmount();

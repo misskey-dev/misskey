@@ -33,12 +33,6 @@ export default Vue.extend({
 		},
 		type: {
 			default: 'text'
-		},
-		onOk: {
-			type: Function
-		},
-		onCancel: {
-			type: Function
 		}
 	},
 	data() {
@@ -63,9 +57,9 @@ export default Vue.extend({
 		},
 		beforeClose() {
 			if (this.done) {
-				this.onOk(this.text);
+				this.$emit('done', this.text);
 			} else {
-				if (this.onCancel) this.onCancel();
+				this.$emit('canceled');
 			}
 		},
 		onKeydown(e) {

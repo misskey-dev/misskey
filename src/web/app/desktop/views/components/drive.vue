@@ -2,17 +2,17 @@
 <div class="mk-drive">
 	<nav>
 		<div class="path" @contextmenu.prevent.stop="() => {}">
-			<mk-drive-browser-nav-folder :class="{ current: folder == null }" folder={ null }/>
-			<template each={ folder in hierarchyFolders }>
-				<span class="separator">%fa:angle-right%</span>
-				<mk-drive-browser-nav-folder folder={ folder }/>
+			<mk-drive-nav-folder :class="{ current: folder == null }"/>
+			<template v-for="folder in hierarchyFolders">
+				<span class="separator" :key="folder.id + '>'">%fa:angle-right%</span>
+				<mk-drive-nav-folder :folder="folder" :key="folder.id"/>
 			</template>
 			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
-			<span class="folder current" v-if="folder != null">{ folder.name }</span>
+			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 		<input class="search" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-drive-browser.search%"/>
 	</nav>
-	<div class="main { uploading: uploads.length > 0, fetching: fetching }"
+	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
 		@mousedown="onMousedown"
 		@dragover.prevent.stop="onDragover"
@@ -24,19 +24,15 @@
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
-				<template each={ folder in folders }>
-					<mk-drive-browser-folder class="folder" folder={ folder }/>
-				</template>
+				<mk-drive-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div class="padding" each={ Array(10).fill(16) }></div>
+				<div class="padding" v-for="n in 16" :key="n"></div>
 				<button v-if="moreFolders">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
-				<template each={ file in files }>
-					<mk-drive-browser-file class="file" file={ file }/>
-				</template>
+				<mk-drive-file v-for="file in files" :key="file.id" class="file" :file="file"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div class="padding" each={ Array(10).fill(16) }></div>
+				<div class="padding" v-for="n in 16" :key="n"></div>
 				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
@@ -60,16 +56,18 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
-import dialog from '../../scripts/dialog';
-import inputDialog from '../../scripts/input-dialog';
+import contextmenu from '../../api/contextmenu';
 
 export default Vue.extend({
 	props: {
 		initFolder: {
+			type: Object,
 			required: false
 		},
 		multiple: {
+			type: Boolean,
 			default: false
 		}
 	},
@@ -106,8 +104,8 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = this.$root.$data.os.streams.driveStream.getConnection();
-		this.connectionId = this.$root.$data.os.streams.driveStream.use();
+		this.connection = (this as any).os.streams.driveStream.getConnection();
+		this.connectionId = (this as any).os.streams.driveStream.use();
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
@@ -125,12 +123,32 @@ export default Vue.extend({
 		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
 		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
-		this.$root.$data.os.streams.driveStream.dispose(this.connectionId);
+		(this as any).os.streams.driveStream.dispose(this.connectionId);
 	},
 	methods: {
+		onContextmenu(e) {
+			contextmenu(e, [{
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-base-contextmenu.create-folder%',
+				icon: '%fa:R folder%',
+				onClick: this.createFolder
+			}, {
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-base-contextmenu.upload%',
+				icon: '%fa:upload%',
+				onClick: this.selectLocalFile
+			}, {
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-base-contextmenu.url-upload%',
+				icon: '%fa:cloud-upload-alt%',
+				onClick: this.urlUpload
+			}]);
+		},
+
 		onStreamDriveFileCreated(file) {
 			this.addFile(file, true);
 		},
+
 		onStreamDriveFileUpdated(file) {
 			const current = this.folder ? this.folder.id : null;
 			if (current != file.folder_id) {
@@ -139,9 +157,11 @@ export default Vue.extend({
 				this.addFile(file, true);
 			}
 		},
+
 		onStreamDriveFolderCreated(folder) {
 			this.addFolder(folder, true);
 		},
+
 		onStreamDriveFolderUpdated(folder) {
 			const current = this.folder ? this.folder.id : null;
 			if (current != folder.parent_id) {
@@ -150,12 +170,15 @@ export default Vue.extend({
 				this.addFolder(folder, true);
 			}
 		},
+
 		onChangeUploaderUploads(uploads) {
 			this.uploadings = uploads;
 		},
+
 		onUploaderUploaded(file) {
 			this.addFile(file, true);
 		},
+
 		onMousedown(e): any {
 			if (contains(this.$refs.foldersContainer, e.target) || contains(this.$refs.filesContainer, e.target)) return true;
 
@@ -202,6 +225,7 @@ export default Vue.extend({
 			document.documentElement.addEventListener('mousemove', move);
 			document.documentElement.addEventListener('mouseup', up);
 		},
+
 		onDragover(e): any {
 			// ドラッグ元が自分自身の所有するアイテムかどうか
 			if (!this.isDragSource) {
@@ -214,12 +238,15 @@ export default Vue.extend({
 				return false;
 			}
 		},
+
 		onDragenter(e) {
 			if (!this.isDragSource) this.draghover = true;
 		},
+
 		onDragleave(e) {
 			this.draghover = false;
 		},
+
 		onDrop(e): any {
 			this.draghover = false;
 
@@ -244,7 +271,7 @@ export default Vue.extend({
 				const file = obj.id;
 				if (this.files.some(f => f.id == file)) return false;
 				this.removeFile(file);
-				this.$root.$data.os.api('drive/files/update', {
+				(this as any).api('drive/files/update', {
 					file_id: file,
 					folder_id: this.folder ? this.folder.id : null
 				});
@@ -255,7 +282,7 @@ export default Vue.extend({
 				if (this.folder && folder == this.folder.id) return false;
 				if (this.folders.some(f => f.id == folder)) return false;
 				this.removeFolder(folder);
-				this.$root.$data.os.api('drive/folders/update', {
+				(this as any).api('drive/folders/update', {
 					folder_id: folder,
 					parent_id: this.folder ? this.folder.id : null
 				}).then(() => {
@@ -263,10 +290,13 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							dialog('%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser.unable-to-process%',
-								'%i18n:desktop.tags.mk-drive-browser.circular-reference-detected%', [{
-								text: '%i18n:common.ok%'
-							}]);
+							(this as any).apis.dialog({
+								title: '%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser.unable-to-process%',
+								text: '%i18n:desktop.tags.mk-drive-browser.circular-reference-detected%',
+								actions: [{
+									text: '%i18n:common.ok%'
+								}]
+							});
 							break;
 						default:
 							alert('%i18n:desktop.tags.mk-drive-browser.unhandled-error% ' + err);
@@ -276,40 +306,37 @@ export default Vue.extend({
 
 			return false;
 		},
-		onContextmenu(e) {
-			document.body.appendChild(new MkDriveContextmenu({
-				propsData: {
-					browser: this,
-					x: e.pageX - window.pageXOffset,
-					y: e.pageY - window.pageYOffset
-				}
-			}).$mount().$el);
 
-			return false;
-		},
 		selectLocalFile() {
 			(this.$refs.fileInput as any).click();
 		},
-		urlUpload() {
-			inputDialog('%i18n:desktop.tags.mk-drive-browser.url-upload%',
-				'%i18n:desktop.tags.mk-drive-browser.url-of-file%', null, url => {
 
-				this.$root.$data.os.api('drive/files/upload_from_url', {
+		urlUpload() {
+			(this as any).apis.input({
+				title: '%i18n:desktop.tags.mk-drive-browser.url-upload%',
+				placeholder: '%i18n:desktop.tags.mk-drive-browser.url-of-file%'
+			}).then(url => {
+				(this as any).api('drive/files/upload_from_url', {
 					url: url,
 					folder_id: this.folder ? this.folder.id : undefined
 				});
 
-				dialog('%fa:check%%i18n:desktop.tags.mk-drive-browser.url-upload-requested%',
-					'%i18n:desktop.tags.mk-drive-browser.may-take-time%', [{
-					text: '%i18n:common.ok%'
-				}]);
+				(this as any).apis.dialog({
+					title: '%fa:check%%i18n:desktop.tags.mk-drive-browser.url-upload-requested%',
+					text: '%i18n:desktop.tags.mk-drive-browser.may-take-time%',
+					actions: [{
+						text: '%i18n:common.ok%'
+					}]
+				});
 			});
 		},
-		createFolder() {
-			inputDialog('%i18n:desktop.tags.mk-drive-browser.create-folder%',
-				'%i18n:desktop.tags.mk-drive-browser.folder-name%', null, name => {
 
-				this.$root.$data.os.api('drive/folders/create', {
+		createFolder() {
+			(this as any).apis.input({
+				title: '%i18n:desktop.tags.mk-drive-browser.create-folder%',
+				placeholder: '%i18n:desktop.tags.mk-drive-browser.folder-name%'
+			}).then(name => {
+				(this as any).api('drive/folders/create', {
 					name: name,
 					folder_id: this.folder ? this.folder.id : undefined
 				}).then(folder => {
@@ -317,15 +344,18 @@ export default Vue.extend({
 				});
 			});
 		},
+
 		onChangeFileInput() {
 			Array.from((this.$refs.fileInput as any).files).forEach(file => {
 				this.upload(file, this.folder);
 			});
 		},
+
 		upload(file, folder) {
 			if (folder && typeof folder == 'object') folder = folder.id;
 			(this.$refs.uploader as any).upload(file, folder);
 		},
+
 		chooseFile(file) {
 			const isAlreadySelected = this.selectedFiles.some(f => f.id == file.id);
 			if (this.multiple) {
@@ -344,6 +374,7 @@ export default Vue.extend({
 				}
 			}
 		},
+
 		newWindow(folderId) {
 			document.body.appendChild(new MkDriveWindow({
 				propsData: {
@@ -351,6 +382,7 @@ export default Vue.extend({
 				}
 			}).$mount().$el);
 		},
+
 		move(target) {
 			if (target == null) {
 				this.goRoot();
@@ -361,7 +393,7 @@ export default Vue.extend({
 
 			this.fetching = true;
 
-			this.$root.$data.os.api('drive/folders/show', {
+			(this as any).api('drive/folders/show', {
 				folder_id: target
 			}).then(folder => {
 				this.folder = folder;
@@ -378,6 +410,7 @@ export default Vue.extend({
 				this.fetch();
 			});
 		},
+
 		addFolder(folder, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
 			if (current != folder.parent_id) return;
@@ -394,6 +427,7 @@ export default Vue.extend({
 				this.folders.push(folder);
 			}
 		},
+
 		addFile(file, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
 			if (current != file.folder_id) return;
@@ -410,26 +444,33 @@ export default Vue.extend({
 				this.files.push(file);
 			}
 		},
+
 		removeFolder(folder) {
 			if (typeof folder == 'object') folder = folder.id;
 			this.folders = this.folders.filter(f => f.id != folder);
 		},
+
 		removeFile(file) {
 			if (typeof file == 'object') file = file.id;
 			this.files = this.files.filter(f => f.id != file);
 		},
+
 		appendFile(file) {
 			this.addFile(file);
 		},
+
 		appendFolder(folder) {
 			this.addFolder(folder);
 		},
+
 		prependFile(file) {
 			this.addFile(file, true);
 		},
+
 		prependFolder(folder) {
 			this.addFolder(folder, true);
 		},
+
 		goRoot() {
 			// 既にrootにいるなら何もしない
 			if (this.folder == null) return;
@@ -439,6 +480,7 @@ export default Vue.extend({
 			this.$emit('move-root');
 			this.fetch();
 		},
+
 		fetch() {
 			this.folders = [];
 			this.files = [];
@@ -453,7 +495,7 @@ export default Vue.extend({
 			const filesMax = 30;
 
 			// フォルダ一覧取得
-			this.$root.$data.os.api('drive/folders', {
+			(this as any).api('drive/folders', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: foldersMax + 1
 			}).then(folders => {
@@ -466,7 +508,7 @@ export default Vue.extend({
 			});
 
 			// ファイル一覧取得
-			this.$root.$data.os.api('drive/files', {
+			(this as any).api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: filesMax + 1
 			}).then(files => {
@@ -489,13 +531,14 @@ export default Vue.extend({
 				}
 			};
 		},
+
 		fetchMoreFiles() {
 			this.fetching = true;
 
 			const max = 30;
 
 			// ファイル一覧取得
-			this.$root.$data.os.api('drive/files', {
+			(this as any).api('drive/files', {
 				folder_id: this.folder ? this.folder.id : null,
 				limit: max + 1
 			}).then(files => {

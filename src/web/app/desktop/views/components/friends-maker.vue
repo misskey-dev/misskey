@@ -39,7 +39,7 @@ export default Vue.extend({
 			this.fetching = true;
 			this.users = [];
 
-			this.$root.$data.os.api('users/recommendation', {
+			(this as any).api('users/recommendation', {
 				limit: this.limit,
 				offset: this.limit * this.page
 			}).then(users => {

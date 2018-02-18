@@ -23,15 +23,15 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		if (this.$root.$data.os.isSignedIn) {
-			this.connection = this.$root.$data.os.stream.getConnection();
-			this.connectionId = this.$root.$data.os.stream.use();
+		if ((this as any).os.isSignedIn) {
+			this.connection = (this as any).os.stream.getConnection();
+			this.connectionId = (this as any).os.stream.use();
 
 			this.connection.on('read_all_notifications', this.onReadAllNotifications);
 			this.connection.on('unread_notification', this.onUnreadNotification);
 
 			// Fetch count of unread notifications
-			this.$root.$data.os.api('notifications/get_unread_count').then(res => {
+			(this as any).api('notifications/get_unread_count').then(res => {
 				if (res.count > 0) {
 					this.hasUnreadNotifications = true;
 				}
@@ -39,10 +39,10 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		if (this.$root.$data.os.isSignedIn) {
+		if ((this as any).os.isSignedIn) {
 			this.connection.off('read_all_notifications', this.onReadAllNotifications);
 			this.connection.off('unread_notification', this.onUnreadNotification);
-			this.$root.$data.os.stream.dispose(this.connectionId);
+			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 	methods: {

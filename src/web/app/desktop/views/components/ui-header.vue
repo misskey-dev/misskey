@@ -10,9 +10,9 @@
 				</div>
 				<div class="right">
 					<mk-ui-header-search/>
-					<mk-ui-header-account v-if="$root.$data.os.isSignedIn"/>
-					<mk-ui-header-notifications v-if="$root.$data.os.isSignedIn"/>
-					<mk-ui-header-post-button v-if="$root.$data.os.isSignedIn"/>
+					<mk-ui-header-account v-if="os.isSignedIn"/>
+					<mk-ui-header-notifications v-if="os.isSignedIn"/>
+					<mk-ui-header-post-button v-if="os.isSignedIn"/>
 					<mk-ui-header-clock/>
 				</div>
 			</div>

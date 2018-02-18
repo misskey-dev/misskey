@@ -26,10 +26,10 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.stream = this.$root.$data.os.stream.borrow();
+		this.stream = (this as any).os.stream.borrow();
 
-		this.$root.$data.os.stream.on('connected', this.onConnected);
-		this.$root.$data.os.stream.on('disconnected', this.onDisconnected);
+		(this as any).os.stream.on('connected', this.onConnected);
+		(this as any).os.stream.on('disconnected', this.onDisconnected);
 
 		this.$nextTick(() => {
 			if (this.stream.state == 'connected') {
@@ -38,12 +38,12 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		this.$root.$data.os.stream.off('connected', this.onConnected);
-		this.$root.$data.os.stream.off('disconnected', this.onDisconnected);
+		(this as any).os.stream.off('connected', this.onConnected);
+		(this as any).os.stream.off('disconnected', this.onDisconnected);
 	},
 	methods: {
 		onConnected() {
-			this.stream = this.$root.$data.os.stream.borrow();
+			this.stream = (this as any).os.stream.borrow();
 
 			setTimeout(() => {
 				anime({

@@ -23,7 +23,7 @@ export default Vue.extend({
 	mounted() {
 		Progress.start();
 
-		this.$root.$data.os.api('users/show', {
+		(this as any).api('users/show', {
 			username: this.username
 		}).then(user => {
 			this.fetching = false;

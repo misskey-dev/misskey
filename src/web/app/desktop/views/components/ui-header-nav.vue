@@ -1,7 +1,7 @@
 <template>
 <div class="mk-ui-header-nav">
 	<ul>
-		<template v-if="$root.$data.os.isSignedIn">
+		<template v-if="os.isSignedIn">
 			<li class="home" :class="{ active: page == 'home' }">
 				<a href="/">
 					%fa:home%
@@ -44,15 +44,15 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		if (this.$root.$data.os.isSignedIn) {
-			this.connection = this.$root.$data.os.stream.getConnection();
-			this.connectionId = this.$root.$data.os.stream.use();
+		if ((this as any).os.isSignedIn) {
+			this.connection = (this as any).os.stream.getConnection();
+			this.connectionId = (this as any).os.stream.use();
 
 			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
 			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
 
 			// Fetch count of unread messaging messages
-			this.$root.$data.os.api('messaging/unread').then(res => {
+			(this as any).api('messaging/unread').then(res => {
 				if (res.count > 0) {
 					this.hasUnreadMessagingMessages = true;
 				}
@@ -60,10 +60,10 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		if (this.$root.$data.os.isSignedIn) {
+		if ((this as any).os.isSignedIn) {
 			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
 			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
-			this.$root.$data.os.stream.dispose(this.connectionId);
+			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 	methods: {

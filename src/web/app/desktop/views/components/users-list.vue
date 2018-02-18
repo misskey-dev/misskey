@@ -3,7 +3,7 @@
 	<nav>
 		<div>
 			<span :data-is-active="mode == 'all'" @click="mode = 'all'">すべて<span>{{ count }}</span></span>
-			<span v-if="$root.$data.os.isSignedIn && youKnowCount" :data-is-active="mode == 'iknow'" @click="mode = 'iknow'">知り合い<span>{{ youKnowCount }}</span></span>
+			<span v-if="os.isSignedIn && youKnowCount" :data-is-active="mode == 'iknow'" @click="mode = 'iknow'">知り合い<span>{{ youKnowCount }}</span></span>
 		</div>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">

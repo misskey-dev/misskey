@@ -22,7 +22,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.$root.$data.os.api('mute/list').then(x => {
+		(this as any).api('mute/list').then(x => {
 			this.fetching = false;
 			this.users = x.users;
 		});

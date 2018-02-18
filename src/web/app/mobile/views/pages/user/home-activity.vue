@@ -28,7 +28,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.$root.$data.os.api('aggregation/users/activity', {
+		(this as any).api('aggregation/users/activity', {
 			user_id: this.user.id,
 			limit: 30
 		}).then(data => {

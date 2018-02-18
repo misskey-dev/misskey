@@ -4,7 +4,7 @@
 	<div class="content">
 		<slot></slot>
 	</div>
-	<mk-stream-indicator v-if="$root.$data.os.isSignedIn"/>
+	<mk-stream-indicator v-if="os.isSignedIn"/>
 </div>
 </template>
 

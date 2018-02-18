@@ -1,6 +1,6 @@
 <template>
 <div class="mk-user-profile">
-	<div class="friend-form" v-if="$root.$data.os.isSignedIn && $root.$data.os.i.id != user.id">
+	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
 		<p class="followed" v-if="user.is_followed">%i18n:desktop.tags.mk-user.follows-you%</p>
 		<p v-if="user.is_muted">%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
@@ -35,7 +35,7 @@ export default Vue.extend({
 	methods: {
 		showFollowing() {
 			document.body.appendChild(new MkUserFollowingWindow({
-				parent: this,
+
 				propsData: {
 					user: this.user
 				}
@@ -44,7 +44,7 @@ export default Vue.extend({
 
 		showFollowers() {
 			document.body.appendChild(new MkUserFollowersWindow({
-				parent: this,
+
 				propsData: {
 					user: this.user
 				}
@@ -52,7 +52,7 @@ export default Vue.extend({
 		},
 
 		mute() {
-			this.$root.$data.os.api('mute/create', {
+			(this as any).api('mute/create', {
 				user_id: this.user.id
 			}).then(() => {
 				this.user.is_muted = true;
@@ -62,7 +62,7 @@ export default Vue.extend({
 		},
 
 		unmute() {
-			this.$root.$data.os.api('mute/delete', {
+			(this as any).api('mute/delete', {
 				user_id: this.user.id
 			}).then(() => {
 				this.user.is_muted = false;

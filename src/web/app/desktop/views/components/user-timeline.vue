@@ -60,7 +60,7 @@ export default Vue.extend({
 			}
 		},
 		fetch(cb?) {
-			this.$root.$data.os.api('users/posts', {
+			(this as any).api('users/posts', {
 				user_id: this.user.id,
 				until_date: this.date ? this.date.getTime() : undefined,
 				with_replies: this.mode == 'with-replies'
@@ -73,7 +73,7 @@ export default Vue.extend({
 		more() {
 			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
 			this.moreFetching = true;
-			this.$root.$data.os.api('users/posts', {
+			(this as any).api('users/posts', {
 				user_id: this.user.id,
 				with_replies: this.mode == 'with-replies',
 				until_id: this.posts[this.posts.length - 1].id

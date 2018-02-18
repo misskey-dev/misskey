@@ -37,7 +37,7 @@
 			<mk-user-home-frequently-replied-users :user="user"/>
 		</div>
 	</section>
-	<section class="followers-you-know" v-if="$root.$data.os.isSignedIn && $root.$data.os.i.id !== user.id">
+	<section class="followers-you-know" v-if="os.isSignedIn && os.i.id !== user.id">
 		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
 		<div>
 			<mk-user-home-followers-you-know :user="user"/>

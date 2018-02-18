@@ -19,7 +19,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.$root.$data.os.api('users/get_frequently_replied_users', {
+		(this as any).api('users/get_frequently_replied_users', {
 			user_id: this.user.id
 		}).then(res => {
 			this.fetching = false;

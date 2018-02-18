@@ -68,7 +68,7 @@ export default Vue.extend({
 	},
 	methods: {
 		react(reaction) {
-			this.$root.$data.os.api('posts/reactions/create', {
+			(this as any).api('posts/reactions/create', {
 				post_id: this.post.id,
 				reaction: reaction
 			}).then(() => {

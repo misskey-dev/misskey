@@ -9,7 +9,7 @@
 					<a class="avatar">
 						<img :src="`${user.avatar_url}?thumbnail&size=200`" alt="avatar"/>
 					</a>
-					<mk-follow-button v-if="$root.$data.os.isSignedIn && $root.$data.os.i.id != user.id" :user="user"/>
+					<mk-follow-button v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
 					<h1>{{ user.name }}</h1>
@@ -85,7 +85,7 @@ export default Vue.extend({
 		document.documentElement.style.background = '#313a42';
 		Progress.start();
 
-		this.$root.$data.os.api('users/show', {
+		(this as any).api('users/show', {
 			username: this.username
 		}).then(user => {
 			this.fetching = false;

@@ -22,7 +22,7 @@ export default Vue.extend({
 							}]);
 							return;
 						}
-						this.$root.$data.os.api('i/change_password', {
+						(this as any).api('i/change_password', {
 							current_password: currentPassword,
 							new_password: newPassword
 						}).then(() => {

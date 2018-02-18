@@ -113,18 +113,12 @@ export default Vue.extend({
 		chooseFile() {
 			(this.$refs.file as any).click();
 		},
-		chooseFileFromDrive() {/*
-			const w = new MkDriveFileSelectorWindow({
-				propsData: {
-					multiple: true
-				}
-			}).$mount();
-
-			document.body.appendChild(w.$el);
-
-			w.$once('selected', files => {
+		chooseFileFromDrive() {
+			(this as any).apis.chooseDriveFile({
+				multiple: true
+			}).then(files => {
 				files.forEach(this.attachMedia);
-			});*/
+			});
 		},
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
@@ -196,7 +190,7 @@ export default Vue.extend({
 		post() {
 			this.posting = true;
 
-			this.$root.$data.os.api('posts/create', {
+			(this as any).api('posts/create', {
 				text: this.text == '' ? undefined : this.text,
 				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				reply_id: this.reply ? this.reply.id : undefined,

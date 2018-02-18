@@ -78,37 +78,50 @@ if (localStorage.getItem('should-refresh') == 'true') {
 
 type API = {
 	chooseDriveFile: (opts: {
-		title: string;
-		currentFolder: any;
-		multiple: boolean;
+		title?: string;
+		currentFolder?: any;
+		multiple?: boolean;
 	}) => Promise<any>;
 
 	chooseDriveFolder: (opts: {
-		title: string;
-		currentFolder: any;
+		title?: string;
+		currentFolder?: any;
 	}) => Promise<any>;
+
+	dialog: (opts: {
+		title: string;
+		text: string;
+		actions: Array<{
+			text: string;
+			id: string;
+		}>;
+	}) => Promise<string>;
+
+	input: (opts: {
+		title: string;
+		placeholder?: string;
+		default?: string;
+	}) => Promise<string>;
 };
 
 // MiOSを初期化してコールバックする
 export default (callback: (launch: (api: API) => Vue) => void, sw = false) => {
-	const mios = new MiOS(sw);
+	const os = new MiOS(sw);
 
-	Vue.mixin({
-		data: {
-			$os: mios
-		}
-	});
-
-	mios.init(() => {
+	os.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
 		const launch = (api: API) => {
+			Vue.mixin({
+				created() {
+					(this as any).os = os;
+					(this as any).api = os.api;
+					(this as any).apis = api;
+				}
+			});
+
 			return new Vue({
-				data: {
-					os: mios,
-					api: api
-				},
 				router: new VueRouter({
 					mode: 'history'
 				}),
@@ -124,7 +137,7 @@ export default (callback: (launch: (api: API) => Vue) => void, sw = false) => {
 
 		// 更新チェック
 		setTimeout(() => {
-			checkForUpdate(mios);
+			checkForUpdate(os);
 		}, 3000);
 	});
 };

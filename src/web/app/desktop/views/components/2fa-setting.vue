@@ -36,7 +36,7 @@ export default Vue.extend({
 	methods: {
 		register() {
 			passwordDialog('%i18n:desktop.tags.mk-2fa-setting.enter-password%', password => {
-				this.$root.$data.os.api('i/2fa/register', {
+				(this as any).api('i/2fa/register', {
 					password: password
 				}).then(data => {
 					this.data = data;
@@ -46,21 +46,21 @@ export default Vue.extend({
 
 		unregister() {
 			passwordDialog('%i18n:desktop.tags.mk-2fa-setting.enter-password%', password => {
-				this.$root.$data.os.api('i/2fa/unregister', {
+				(this as any).api('i/2fa/unregister', {
 					password: password
 				}).then(() => {
 					notify('%i18n:desktop.tags.mk-2fa-setting.unregistered%');
-					this.$root.$data.os.i.two_factor_enabled = false;
+					(this as any).os.i.two_factor_enabled = false;
 				});
 			});
 		},
 
 		submit() {
-			this.$root.$data.os.api('i/2fa/done', {
+			(this as any).api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
 				notify('%i18n:desktop.tags.mk-2fa-setting.success%');
-				this.$root.$data.os.i.two_factor_enabled = true;
+				(this as any).os.i.two_factor_enabled = true;
 			}).catch(() => {
 				notify('%i18n:desktop.tags.mk-2fa-setting.failed%');
 			});

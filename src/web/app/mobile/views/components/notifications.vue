@@ -42,14 +42,14 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.connection = this.$root.$data.os.stream.getConnection();
-		this.connectionId = this.$root.$data.os.stream.use();
+		this.connection = (this as any).os.stream.getConnection();
+		this.connectionId = (this as any).os.stream.use();
 
 		this.connection.on('notification', this.onNotification);
 
 		const max = 10;
 
-		this.$root.$data.os.api('i/notifications', {
+		(this as any).api('i/notifications', {
 			limit: max + 1
 		}).then(notifications => {
 			if (notifications.length == max + 1) {
@@ -63,7 +63,7 @@ export default Vue.extend({
 	},
 	beforeDestroy() {
 		this.connection.off('notification', this.onNotification);
-		this.$root.$data.os.stream.dispose(this.connectionId);
+		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 		fetchMoreNotifications() {
@@ -71,7 +71,7 @@ export default Vue.extend({
 
 			const max = 30;
 
-			this.$root.$data.os.api('i/notifications', {
+			(this as any).api('i/notifications', {
 				limit: max + 1,
 				until_id: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {

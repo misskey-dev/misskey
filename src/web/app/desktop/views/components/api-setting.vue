@@ -1,6 +1,6 @@
 <template>
 <div class="mk-api-setting">
-	<p>Token: <code>{{ $root.$data.os.i.token }}</code></p>
+	<p>Token: <code>{{ os.i.token }}</code></p>
 	<p>%i18n:desktop.tags.mk-api-info.intro%</p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-api-info.caution%</p></div>
 	<p>%i18n:desktop.tags.mk-api-info.regeneration-of-token%</p>
@@ -16,7 +16,7 @@ export default Vue.extend({
 	methods: {
 		regenerateToken() {
 			passwordDialog('%i18n:desktop.tags.mk-api-info.enter-password%', password => {
-				this.$root.$data.os.api('i/regenerate_token', {
+				(this as any).api('i/regenerate_token', {
 					password: password
 				});
 			});

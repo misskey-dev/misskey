@@ -5,7 +5,7 @@
 		<header v-html="title"></header>
 		<div class="body" v-html="text"></div>
 		<div class="buttons">
-			<button v-for="(button, i) in buttons" @click="click(button)" :key="i">{{ button.text }}</button>
+			<button v-for="button in buttons" @click="click(button)" :key="button.id">{{ button.text }}</button>
 		</div>
 	</div>
 </div>
@@ -26,13 +26,9 @@ export default Vue.extend({
 		buttons: {
 			type: Array
 		},
-		canThrough: {
+		modal: {
 			type: Boolean,
-			default: true
-		},
-		onThrough: {
-			type: Function,
-			required: false
+			default: false
 		}
 	},
 	mounted() {
@@ -54,7 +50,7 @@ export default Vue.extend({
 	},
 	methods: {
 		click(button) {
-			if (button.onClick) button.onClick();
+			this.$emit('clicked', button.id);
 			this.close();
 		},
 		close() {
@@ -77,8 +73,7 @@ export default Vue.extend({
 			});
 		},
 		onBgClick() {
-			if (this.canThrough) {
-				if (this.onThrough) this.onThrough();
+			if (!this.modal) {
 				this.close();
 			}
 		}

@@ -1,13 +1,13 @@
 <template>
 <div class="mk-ui-header-account">
 	<button class="header" :data-active="isOpen" @click="toggle">
-		<span class="username">{{ $root.$data.os.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
-		<img class="avatar" :src="`${ $root.$data.os.i.avatar_url }?thumbnail&size=64`" alt="avatar"/>
+		<span class="username">{{ os.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
+		<img class="avatar" :src="`${ os.i.avatar_url }?thumbnail&size=64`" alt="avatar"/>
 	</button>
 	<div class="menu" v-if="isOpen">
 		<ul>
 			<li>
-				<a :href="`/${ $root.$data.os.i.username }`">%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</a>
+				<a :href="`/${ os.i.username }`">%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</a>
 			</li>
 			<li @click="drive">
 				<p>%fa:cloud%%i18n:desktop.tags.mk-ui-header-account.drive%%fa:angle-right%</p>

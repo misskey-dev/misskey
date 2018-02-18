@@ -48,7 +48,7 @@ export default Vue.extend({
 	},
 	methods: {
 		pin() {
-			this.$root.$data.os.api('i/pin', {
+			(this as any).api('i/pin', {
 				post_id: this.post.id
 			}).then(() => {
 				this.$destroy();

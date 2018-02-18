@@ -14,7 +14,7 @@ export default Vue.extend({
 	props: ['user'],
 	methods: {
 		fetch(iknow, limit, cursor, cb) {
-			this.$root.$data.os.api('users/following', {
+			(this as any).api('users/following', {
 				user_id: this.user.id,
 				iknow: iknow,
 				limit: limit,

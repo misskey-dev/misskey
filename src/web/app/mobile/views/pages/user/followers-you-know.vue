@@ -21,7 +21,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.$root.$data.os.api('users/followers', {
+		(this as any).api('users/followers', {
 			user_id: this.user.id,
 			iknow: true,
 			limit: 30

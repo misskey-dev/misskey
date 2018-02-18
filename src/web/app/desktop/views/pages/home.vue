@@ -26,8 +26,8 @@ export default Vue.extend({
 	mounted() {
 		document.title = 'Misskey';
 
-		this.connection = this.$root.$data.os.stream.getConnection();
-		this.connectionId = this.$root.$data.os.stream.use();
+		this.connection = (this as any).os.stream.getConnection();
+		this.connectionId = (this as any).os.stream.use();
 
 		this.connection.on('post', this.onStreamPost);
 		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
@@ -36,12 +36,12 @@ export default Vue.extend({
 	},
 	beforeDestroy() {
 		this.connection.off('post', this.onStreamPost);
-		this.$root.$data.os.stream.dispose(this.connectionId);
+		(this as any).os.stream.dispose(this.connectionId);
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
 	methods: {
 		onStreamPost(post) {
-			if (document.hidden && post.user_id != this.$root.$data.os.i.id) {
+			if (document.hidden && post.user_id != (this as any).os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${getPostSummary(post)}`;
 			}

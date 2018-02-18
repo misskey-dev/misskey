@@ -71,13 +71,13 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = this.$root.$data.os.streams.messagingIndexStream.getConnection();
-		this.connectionId = this.$root.$data.os.streams.messagingIndexStream.use();
+		this.connection = (this as any).os.streams.messagingIndexStream.getConnection();
+		this.connectionId = (this as any).os.streams.messagingIndexStream.use();
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		this.$root.$data.os.api('messaging/history').then(messages => {
+		(this as any).api('messaging/history').then(messages => {
 			this.fetching = false;
 			this.messages = messages;
 		});
@@ -85,11 +85,11 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('message', this.onMessage);
 		this.connection.off('read', this.onRead);
-		this.$root.$data.os.stream.dispose(this.connectionId);
+		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 		isMe(message) {
-			return message.user_id == this.$root.$data.os.i.id;
+			return message.user_id == (this as any).os.i.id;
 		},
 		onMessage(message) {
 			this.messages = this.messages.filter(m => !(
@@ -109,7 +109,7 @@ export default Vue.extend({
 				this.result = [];
 				return;
 			}
-			this.$root.$data.os.api('users/search', {
+			(this as any).api('users/search', {
 				query: this.q,
 				max: 5
 			}).then(users => {

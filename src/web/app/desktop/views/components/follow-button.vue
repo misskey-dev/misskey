@@ -29,8 +29,8 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.connection = this.$root.$data.os.stream.getConnection();
-		this.connectionId = this.$root.$data.os.stream.use();
+		this.connection = (this as any).os.stream.getConnection();
+		this.connectionId = (this as any).os.stream.use();
 
 		this.connection.on('follow', this.onFollow);
 		this.connection.on('unfollow', this.onUnfollow);
@@ -38,7 +38,7 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('follow', this.onFollow);
 		this.connection.off('unfollow', this.onUnfollow);
-		this.$root.$data.os.stream.dispose(this.connectionId);
+		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 
@@ -57,7 +57,7 @@ export default Vue.extend({
 		onClick() {
 			this.wait = true;
 			if (this.user.is_following) {
-				this.$root.$data.os.api('following/delete', {
+				(this as any).api('following/delete', {
 					user_id: this.user.id
 				}).then(() => {
 					this.user.is_following = false;
@@ -67,7 +67,7 @@ export default Vue.extend({
 					this.wait = false;
 				});
 			} else {
-				this.$root.$data.os.api('following/create', {
+				(this as any).api('following/create', {
 					user_id: this.user.id
 				}).then(() => {
 					this.user.is_following = true;

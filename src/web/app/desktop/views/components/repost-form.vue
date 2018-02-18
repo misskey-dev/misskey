@@ -29,7 +29,7 @@ export default Vue.extend({
 	methods: {
 		ok() {
 			this.wait = true;
-			this.$root.$data.os.api('posts/create', {
+			(this as any).api('posts/create', {
 				repost_id: this.post.id
 			}).then(data => {
 				this.$emit('posted');

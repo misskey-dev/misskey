@@ -9,10 +9,10 @@
 	@dragenter.prevent="onDragenter"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
-	@contextmenu.prevent.stop="onContextmenu"
 	draggable="true"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
+	@contextmenu.prevent.stop="onContextmenu"
 	:title="title"
 >
 	<p class="name">
@@ -25,10 +25,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import dialog from '../../scripts/dialog';
+import contextmenu from '../../api/contextmenu';
 
 export default Vue.extend({
-	props: ['folder', 'browser'],
+	props: ['folder'],
 	data() {
 		return {
 			hover: false,
@@ -38,6 +38,9 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		browser(): any {
+			return this.$parent;
+		},
 		title(): string {
 			return this.folder.name;
 		}
@@ -45,6 +48,39 @@ export default Vue.extend({
 	methods: {
 		onClick() {
 			this.browser.move(this.folder);
+		},
+
+		onContextmenu(e) {
+			this.isContextmenuShowing = true;
+			contextmenu(e, [{
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.move-to-this-folder%',
+				icon: '%fa:arrow-right%',
+				onClick: this.go
+			}, {
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.show-in-new-window%',
+				icon: '%fa:R window-restore%',
+				onClick: this.newWindow
+			}, {
+				type: 'divider',
+			}, {
+				type: 'item',
+				text: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename%',
+				icon: '%fa:i-cursor%',
+				onClick: this.rename
+			}, {
+				type: 'divider',
+			}, {
+				type: 'item',
+				text: '%i18n:common.delete%',
+				icon: '%fa:R trash-alt%',
+				onClick: this.deleteFolder
+			}], {
+				closed: () => {
+					this.isContextmenuShowing = false;
+				}
+			});
 		},
 
 		onMouseover() {
@@ -102,7 +138,7 @@ export default Vue.extend({
 			if (obj.type == 'file') {
 				const file = obj.id;
 				this.browser.removeFile(file);
-				this.$root.$data.os.api('drive/files/update', {
+				(this as any).api('drive/files/update', {
 					file_id: file,
 					folder_id: this.folder.id
 				});
@@ -112,7 +148,7 @@ export default Vue.extend({
 				// 移動先が自分自身ならreject
 				if (folder == this.folder.id) return false;
 				this.browser.removeFolder(folder);
-				this.$root.$data.os.api('drive/folders/update', {
+				(this as any).api('drive/folders/update', {
 					folder_id: folder,
 					parent_id: this.folder.id
 				}).then(() => {
@@ -120,10 +156,13 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							dialog('%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser-folder.unable-to-process%',
-								'%i18n:desktop.tags.mk-drive-browser-folder.circular-reference-detected%', [{
-								text: '%i18n:common.ok%'
-							}]);
+							(this as any).apis.dialog({
+								title: '%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser-folder.unable-to-process%',
+								text: '%i18n:desktop.tags.mk-drive-browser-folder.circular-reference-detected%',
+								actions: [{
+									text: '%i18n:common.ok%'
+								}]
+							});
 							break;
 						default:
 							alert('%i18n:desktop.tags.mk-drive-browser-folder.unhandled-error% ' + err);
@@ -152,21 +191,29 @@ export default Vue.extend({
 			this.browser.isDragSource = false;
 		},
 
-		onContextmenu(e) {
-			this.isContextmenuShowing = true;
-			const ctx = new MkDriveFolderContextmenu({
-				parent: this,
-				propsData: {
-					browser: this.browser,
-					x: e.pageX - window.pageXOffset,
-					y: e.pageY - window.pageYOffset
-				}
-			}).$mount();
-			ctx.$once('closed', () => {
-				this.isContextmenuShowing = false;
+		go() {
+			this.browser.move(this.folder.id);
+		},
+
+		newWindow() {
+			this.browser.newWindow(this.folder.id);
+		},
+
+		rename() {
+			(this as any).apis.input({
+				title: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename-folder%',
+				placeholder: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.input-new-folder-name%',
+				default: this.folder.name
+			}).then(name => {
+				(this as any).api('drive/folders/update', {
+					folder_id: this.folder.id,
+					name: name
+				});
 			});
-			document.body.appendChild(ctx.$el);
-			return false;
+		},
+
+		deleteFolder() {
+			alert('not implemented yet');
 		}
 	}
 });

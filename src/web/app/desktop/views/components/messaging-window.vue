@@ -11,7 +11,6 @@ export default Vue.extend({
 	methods: {
 		navigate(user) {
 			document.body.appendChild(new MkMessagingRoomWindow({
-				parent: this,
 				propsData: {
 					user: user
 				}

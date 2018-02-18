@@ -32,7 +32,7 @@
 				<div class="text" ref="text">
 					<p class="channel" v-if="p.channel"><a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:</p>
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-post-html v-if="p.ast" :ast="p.ast" :i="$root.$data.os.i"/>
+					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
 					<a class="quote" v-if="p.repost">RP:</a>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
@@ -133,24 +133,24 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		this.connection = this.$root.$data.os.stream.getConnection();
-		this.connectionId = this.$root.$data.os.stream.use();
+		this.connection = (this as any).os.stream.getConnection();
+		this.connectionId = (this as any).os.stream.use();
 	},
 	mounted() {
 		this.capture(true);
 
-		if (this.$root.$data.os.isSignedIn) {
+		if ((this as any).os.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
 	},
 	beforeDestroy() {
 		this.decapture(true);
 		this.connection.off('_connected_', this.onStreamConnected);
-		this.$root.$data.os.stream.dispose(this.connectionId);
+		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 		capture(withHandler = false) {
-			if (this.$root.$data.os.isSignedIn) {
+			if ((this as any).os.isSignedIn) {
 				this.connection.send({
 					type: 'capture',
 					id: this.post.id
@@ -159,7 +159,7 @@ export default Vue.extend({
 			}
 		},
 		decapture(withHandler = false) {
-			if (this.$root.$data.os.isSignedIn) {
+			if ((this as any).os.isSignedIn) {
 				this.connection.send({
 					type: 'decapture',
 					id: this.post.id
@@ -178,7 +178,7 @@ export default Vue.extend({
 		},
 		reply() {
 			document.body.appendChild(new MkPostFormWindow({
-				parent: this,
+
 				propsData: {
 					reply: this.p
 				}
@@ -186,7 +186,7 @@ export default Vue.extend({
 		},
 		repost() {
 			document.body.appendChild(new MkRepostFormWindow({
-				parent: this,
+
 				propsData: {
 					post: this.p
 				}
@@ -194,7 +194,7 @@ export default Vue.extend({
 		},
 		react() {
 			document.body.appendChild(new MkReactionPicker({
-				parent: this,
+
 				propsData: {
 					source: this.$refs.reactButton,
 					post: this.p
@@ -203,7 +203,7 @@ export default Vue.extend({
 		},
 		menu() {
 			document.body.appendChild(new MkPostMenu({
-				parent: this,
+
 				propsData: {
 					source: this.$refs.menuButton,
 					post: this.p

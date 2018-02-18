@@ -8,7 +8,7 @@
 			<p class="read" v-if="message.is_me && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>
 			<button class="delete-button" v-if="message.is_me" title="%i18n:common.delete%"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
 			<div class="content" v-if="!message.is_deleted">
-				<mk-post-html v-if="message.ast" :ast="message.ast" :i="$root.$data.os.i"/>
+				<mk-post-html v-if="message.ast" :ast="message.ast" :i="os.i"/>
 				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				<div class="image" v-if="message.file"><img src={ message.file.url } alt="image" title={ message.file.name }/></div>
 			</div>
@@ -30,7 +30,7 @@ export default Vue.extend({
 	props: ['message'],
 	computed: {
 		isMe(): boolean {
-			return this.message.user_id == this.$root.$data.os.i.id;
+			return this.message.user_id == (this as any).os.i.id;
 		},
 		urls(): string[] {
 			if (this.message.ast) {

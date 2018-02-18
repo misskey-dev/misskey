@@ -27,7 +27,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.$root.$data.os.api('users/posts', {
+		(this as any).api('users/posts', {
 			user_id: this.user.id,
 			with_media: this.withMedia
 		}).then(posts => {
