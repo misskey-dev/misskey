@@ -32,20 +32,22 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		(this.$refs.bg as any).style.pointerEvents = 'auto';
-		anime({
-			targets: this.$refs.bg,
-			opacity: 1,
-			duration: 100,
-			easing: 'linear'
-		});
+		this.$nextTick(() => {
+			(this.$refs.bg as any).style.pointerEvents = 'auto';
+			anime({
+				targets: this.$refs.bg,
+				opacity: 1,
+				duration: 100,
+				easing: 'linear'
+			});
 
-		anime({
-			targets: this.$refs.main,
-			opacity: 1,
-			scale: [1.2, 1],
-			duration: 300,
-			easing: [0, 0.5, 0.5, 1]
+			anime({
+				targets: this.$refs.main,
+				opacity: 1,
+				scale: [1.2, 1],
+				duration: 300,
+				easing: [0, 0.5, 0.5, 1]
+			});
 		});
 	},
 	methods: {
