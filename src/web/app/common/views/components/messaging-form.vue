@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="mk-messaging-form">
 	<textarea v-model="text" @keypress="onKeypress" @paste="onPaste" placeholder="%i18n:common.input-message-here%"></textarea>
 	<div class="files"></div>
 	<mk-uploader ref="uploader"/>

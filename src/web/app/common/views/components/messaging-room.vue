@@ -3,8 +3,8 @@
 	<div class="stream">
 		<p class="init" v-if="init">%fa:spinner .spin%%i18n:common.loading%</p>
 		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:common.tags.mk-messaging-room.empty%</p>
-		<p class="no-history" v-if="!init && messages.length > 0 && !moreMessagesIsInStock">%fa:flag%%i18n:common.tags.mk-messaging-room.no-history%</p>
-		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="moreMessagesIsInStock" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
+		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:common.tags.mk-messaging-room.no-history%</p>
+		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
 			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }}
 		</button>
 		<template v-for="(message, i) in _messages">

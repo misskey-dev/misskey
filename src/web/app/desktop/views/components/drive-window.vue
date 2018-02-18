@@ -2,9 +2,9 @@
 <mk-window ref="window" @closed="$destroy" width="800px" height="500px" :popout="popout">
 	<template slot="header">
 		<p v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
-		<span: class="$style.title">%fa:cloud%%i18n:desktop.tags.mk-drive-browser-window.drive%</span>
+		<span :class="$style.title">%fa:cloud%%i18n:desktop.tags.mk-drive-browser-window.drive%</span>
 	</template>
-	<mk-drive-browser multiple :folder="folder" ref="browser"/>
+	<mk-drive multiple :folder="folder" ref="browser"/>
 </mk-window>
 </template>
 

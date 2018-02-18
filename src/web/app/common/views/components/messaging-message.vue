@@ -1,23 +1,28 @@
 <template>
 <div class="mk-messaging-message" :data-is-me="isMe">
-	<a class="avatar-anchor" href={ '/' + message.user.username } title={ message.user.username } target="_blank">
-		<img class="avatar" src={ message.user.avatar_url + '?thumbnail&size=80' } alt=""/>
+	<a class="avatar-anchor" :href="`/${message.user.username}`" :title="message.user.username" target="_blank">
+		<img class="avatar" :src="`${message.user.avatar_url}?thumbnail&size=80`" alt=""/>
 	</a>
 	<div class="content-container">
 		<div class="balloon">
 			<p class="read" v-if="message.is_me && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>
-			<button class="delete-button" v-if="message.is_me" title="%i18n:common.delete%"><img src="/assets/desktop/messaging/delete.png" alt="Delete"/></button>
+			<button class="delete-button" v-if="message.is_me" title="%i18n:common.delete%">
+				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
+			</button>
 			<div class="content" v-if="!message.is_deleted">
-				<mk-post-html v-if="message.ast" :ast="message.ast" :i="os.i"/>
+				<mk-post-html class="text" v-if="message.ast" :ast="message.ast" :i="os.i"/>
 				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-				<div class="image" v-if="message.file"><img src={ message.file.url } alt="image" title={ message.file.name }/></div>
+				<div class="image" v-if="message.file">
+					<img :src="message.file.url" alt="image" :title="message.file.name"/>
+				</div>
 			</div>
 			<div class="content" v-if="message.is_deleted">
 				<p class="is-deleted">%i18n:common.tags.mk-messaging-message.deleted%</p>
 			</div>
 		</div>
 		<footer>
-			<mk-time time={ message.created_at }/><template v-if="message.is_edited">%fa:pencil-alt%</template>
+			<mk-time :time="message.created_at"/>
+			<template v-if="message.is_edited">%fa:pencil-alt%</template>
 		</footer>
 	</div>
 </div>
@@ -139,7 +144,7 @@ export default Vue.extend({
 					font-size 1em
 					color rgba(0, 0, 0, 0.5)
 
-				> [ref='text']
+				> .text
 					display block
 					margin 0
 					padding 8px 16px
