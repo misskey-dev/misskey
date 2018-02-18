@@ -1,3 +1,7 @@
+/**
+ * マウスオーバーするとユーザーがプレビューされる要素を設定します
+ */
+
 import MkUserPreview from '../components/user-preview.vue';
 
 export default {
@@ -19,25 +23,31 @@ export default {
 
 		const show = () => {
 			if (tag) return;
+
 			tag = new MkUserPreview({
 				parent: vn.context,
 				propsData: {
 					user: self.user
 				}
 			}).$mount();
+
 			const preview = tag.$el;
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + el.offsetWidth + window.pageXOffset;
 			const y = rect.top + window.pageYOffset;
+
 			preview.style.top = y + 'px';
 			preview.style.left = x + 'px';
+
 			preview.addEventListener('mouseover', () => {
 				clearTimeout(self.hideTimer);
 			});
+
 			preview.addEventListener('mouseleave', () => {
 				clearTimeout(self.showTimer);
 				self.hideTimer = setTimeout(self.close, 500);
 			});
+
 			document.body.appendChild(preview);
 		};
 
@@ -53,6 +63,7 @@ export default {
 			self.hideTimer = setTimeout(self.close, 500);
 		});
 	},
+
 	unbind(el, binding, vn) {
 		const self = vn.context._userPreviewDirective_;
 		clearTimeout(self.showTimer);
