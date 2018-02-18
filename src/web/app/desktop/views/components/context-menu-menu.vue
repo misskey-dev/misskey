@@ -4,6 +4,9 @@
 		<template v-if="item.type == 'item'">
 			<p @click="click(item)"><span class="icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</p>
 		</template>
+		<template v-if="item.type == 'link'">
+			<a :href="item.href" :target="item.target" @click="click(item)"><span class="icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</a>
+		</template>
 		<template v-else-if="item.type == 'nest'">
 			<p><span class="icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}...<span class="caret">%fa:caret-right%</span></p>
 			<me-nu :menu="item.menu" @x="click"/>
@@ -31,11 +34,9 @@ export default Vue.extend({
 	$item-height = 38px
 	$padding = 10px
 
-	ul
-		display block
-		margin 0
-		padding $padding 0
-		list-style none
+	margin 0
+	padding $padding 0
+	list-style none
 
 	li
 		display block

@@ -1,5 +1,5 @@
 <template>
-<div class="context-menu" :style="{ x: `${x}px`, y: `${y}px` }" @contextmenu.prevent="() => {}">
+<div class="context-menu" :style="{ left: `${x}px`, top: `${y}px` }" @contextmenu.prevent="() => {}">
 	<me-nu :menu="menu" @x="click"/>
 </div>
 </template>

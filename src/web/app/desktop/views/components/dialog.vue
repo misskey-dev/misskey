@@ -16,7 +16,7 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	props: {
+	props: ['title', 'text', 'buttons', 'modal']/*{
 		title: {
 			type: String
 		},
@@ -30,7 +30,7 @@ export default Vue.extend({
 			type: Boolean,
 			default: false
 		}
-	},
+	}*/,
 	mounted() {
 		this.$nextTick(() => {
 			(this.$refs.bg as any).style.pointerEvents = 'auto';
