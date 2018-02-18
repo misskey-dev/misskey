@@ -84,7 +84,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		Vue.nextTick(() => {
+		this.$nextTick(() => {
 			const main = this.$refs.main as any;
 			main.style.top = '15%';
 			main.style.left = (window.innerWidth / 2) - (main.offsetWidth / 2) + 'px';

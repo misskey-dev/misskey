@@ -47,7 +47,7 @@ export default define({
 		};
 	},
 	mounted() {
-		Vue.nextTick(() => {
+		this.$nextTick(() => {
 			this.set();
 		});
 

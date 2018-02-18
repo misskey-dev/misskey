@@ -82,7 +82,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		Vue.nextTick(() => {
+		this.$nextTick(() => {
 			this.autocomplete = new Autocomplete(this.$refs.text);
 			this.autocomplete.attach();
 

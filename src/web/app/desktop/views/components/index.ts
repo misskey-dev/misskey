@@ -31,6 +31,7 @@ import drive from './drive.vue';
 import driveFile from './drive-file.vue';
 import driveFolder from './drive-folder.vue';
 import driveNavFolder from './drive-nav-folder.vue';
+import contextMenuMenu from './context-menu-menu.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-header', uiHeader);
@@ -63,3 +64,4 @@ Vue.component('mk-drive', drive);
 Vue.component('mk-drive-file', driveFile);
 Vue.component('mk-drive-folder', driveFolder);
 Vue.component('mk-drive-nav-folder', driveNavFolder);
+Vue.component('context-menu-menu', contextMenuMenu);

@@ -43,7 +43,9 @@ export default Vue.extend({
 	},
 	mounted() {
 		if (this.default) this.text = this.default;
-		(this.$refs.text as any).focus();
+		this.$nextTick(() => {
+			(this.$refs.text as any).focus();
+		});
 	},
 	methods: {
 		ok() {

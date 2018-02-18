@@ -11,7 +11,7 @@ import * as anime from 'animejs';
 export default Vue.extend({
 	props: ['notification'],
 	mounted() {
-		Vue.nextTick(() => {
+		this.$nextTick(() => {
 			anime({
 				targets: this.$el,
 				bottom: '0px',

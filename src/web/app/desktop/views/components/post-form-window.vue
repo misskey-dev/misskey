@@ -28,7 +28,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		Vue.nextTick(() => {
+		this.$nextTick(() => {
 			(this.$refs.form as any).focus();
 		});
 	},
