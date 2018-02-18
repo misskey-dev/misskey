@@ -2,13 +2,13 @@
 <ul class="me-nu">
 	<li v-for="(item, i) in menu" :key="i" :class="item.type">
 		<template v-if="item.type == 'item'">
-			<p @click="click(item)"><span class="icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</p>
+			<p @click="click(item)"><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</p>
 		</template>
 		<template v-if="item.type == 'link'">
-			<a :href="item.href" :target="item.target" @click="click(item)"><span class="icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</a>
+			<a :href="item.href" :target="item.target" @click="click(item)"><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</a>
 		</template>
 		<template v-else-if="item.type == 'nest'">
-			<p><span class="icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}...<span class="caret">%fa:caret-right%</span></p>
+			<p><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}...<span class="caret">%fa:caret-right%</span></p>
 			<me-nu :menu="item.menu" @x="click"/>
 		</template>
 	</li>
@@ -41,7 +41,7 @@ export default Vue.extend({
 	li
 		display block
 
-		&:empty
+		&.divider
 			margin-top $padding
 			padding-top $padding
 			border-top solid 1px #eee
@@ -51,11 +51,14 @@ export default Vue.extend({
 				cursor default
 
 				> .caret
+					position absolute
+					top 0
+					right 8px
+
 					> *
-						position absolute
-						top 0
-						right 8px
 						line-height $item-height
+						width 28px
+						text-align center
 
 			&:hover > ul
 				visibility visible
@@ -79,12 +82,6 @@ export default Vue.extend({
 
 			*
 				pointer-events none
-
-			> .icon
-				> *
-					width 28px
-					margin-left -28px
-					text-align center
 
 		&:hover
 			> p, a
@@ -110,5 +107,13 @@ export default Vue.extend({
 		box-shadow 2px 2px 8px rgba(0, 0, 0, 0.2)
 		transition visibility 0s linear 0.2s
 
+</style>
+
+<style lang="stylus" module>
+.icon
+	> *
+		width 28px
+		margin-left -28px
+		text-align center
 </style>
 

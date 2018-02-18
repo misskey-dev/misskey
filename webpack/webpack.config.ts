@@ -2,6 +2,7 @@
  * webpack configuration
  */
 
+const minify = require('html-minifier').minify;
 import I18nReplacer from '../src/common/build/i18n';
 import { pattern as faPattern, replacement as faReplacement } from '../src/common/build/fa';
 const constants = require('../src/const.json');
@@ -12,6 +13,14 @@ import langs from '../locales';
 import version from '../src/version';
 
 global['faReplacement'] = faReplacement;
+
+global['collapseSpacesReplacement'] = html => {
+	return minify(html, {
+		collapseWhitespace: true,
+		collapseInlineTagWhitespace: true,
+		keepClosingSlash: true
+	});
+};
 
 module.exports = Object.keys(langs).map(lang => {
 	// Chunk name
@@ -44,7 +53,7 @@ module.exports = Object.keys(langs).map(lang => {
 			rules: [{
 				test: /\.vue$/,
 				exclude: /node_modules/,
-				use: [{
+				use: [/*'cache-loader', */{
 					loader: 'vue-loader',
 					options: {
 						cssSourceMap: false,
@@ -75,6 +84,12 @@ module.exports = Object.keys(langs).map(lang => {
 					query: {
 						search: faPattern.toString(),
 						replace: 'faReplacement'
+					}
+				}, {
+					loader: 'replace',
+					query: {
+						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
+						replace: 'collapseSpacesReplacement'
 					}
 				}]
 			}, {
