@@ -33,7 +33,7 @@ export default Vue.extend({
 			const items = data.items;
 			for (const item of items) {
 				if (item.kind == 'file') {
-					this.upload(item.getAsFile());
+					//this.upload(item.getAsFile());
 				}
 			}
 		},
@@ -58,7 +58,7 @@ export default Vue.extend({
 
 		upload() {
 			// TODO
-		}
+		},
 
 		send() {
 			this.sending = true;
@@ -76,7 +76,7 @@ export default Vue.extend({
 
 		clear() {
 			this.text = '';
-			this.files = [];
+			this.file = null;
 		}
 	}
 });
