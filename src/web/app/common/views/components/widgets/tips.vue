@@ -5,7 +5,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import * as anime from 'animejs';
 import define from '../../../define-widget';
 
