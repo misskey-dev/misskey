@@ -73,7 +73,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkProfileSetting from './profile-setting.vue';
+
 export default Vue.extend({
+	components: {
+		'mk-profie-setting': MkProfileSetting
+	},
 	data() {
 		return {
 			page: 'profile'

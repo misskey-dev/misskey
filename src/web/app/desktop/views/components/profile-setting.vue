@@ -1,7 +1,8 @@
 <template>
 <div class="mk-profile-setting">
 	<label class="avatar ui from group">
-		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p><img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p>
+		<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		<button class="ui" @click="updateAvatar">%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
 	</label>
 	<label class="ui from group">
@@ -26,7 +27,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import updateAvatar from '../../scripts/update-avatar';
 import notify from '../../scripts/notify';
 
 export default Vue.extend({
@@ -40,7 +40,11 @@ export default Vue.extend({
 	},
 	methods: {
 		updateAvatar() {
-			updateAvatar((this as any).os.i);
+			(this as any).apis.chooseDriveFile({
+				multiple: false
+			}).then(file => {
+				(this as any).apis.updateAvatar(file);
+			});
 		},
 		save() {
 			(this as any).api('i/update', {
