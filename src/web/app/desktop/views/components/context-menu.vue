@@ -1,6 +1,6 @@
 <template>
 <div class="context-menu" :style="{ left: `${x}px`, top: `${y}px` }" @contextmenu.prevent="() => {}">
-	<context-menu-menu :menu="menu" @x="click"/>
+	<me-nu :menu="menu" @x="click"/>
 </div>
 </template>
 
@@ -8,8 +8,12 @@
 import Vue from 'vue';
 import * as anime from 'animejs';
 import contains from '../../../common/scripts/contains';
+import meNu from './context-menu-menu.vue';
 
 export default Vue.extend({
+	components: {
+		'me-nu': meNu
+	},
 	props: ['x', 'y', 'menu'],
 	mounted() {
 		this.$nextTick(() => {
