@@ -4,7 +4,7 @@
 		<h1>%fa:heart%%i18n:desktop.tags.mk-donation-home-widget.title%</h1>
 		<p>
 			{{ '%i18n:desktop.tags.mk-donation-home-widget.text%'.substr(0, '%i18n:desktop.tags.mk-donation-home-widget.text%'.indexOf('{')) }}
-			<a href="/syuilo" data-user-preview="@syuilo">@syuilo</a>
+			<a href="/syuilo" v-user-preview="@syuilo">@syuilo</a>
 			{{ '%i18n:desktop.tags.mk-donation-home-widget.text%'.substr('%i18n:desktop.tags.mk-donation-home-widget.text%'.indexOf('}') + 1) }}
 		</p>
 	</article>

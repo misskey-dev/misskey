@@ -1,57 +1,60 @@
 <template>
 <div class="mk-post-detail" :title="title">
-	<button class="read-more" v-if="p.reply && p.reply.reply_id && context == null" title="会話をもっと読み込む" @click="loadContext" disabled={ contextFetching }>
+	<button
+		class="read-more"
+		v-if="p.reply && p.reply.reply_id && context == null"
+		title="会話をもっと読み込む"
+		@click="loadContext"
+		:disabled="contextFetching"
+	>
 		<template v-if="!contextFetching">%fa:ellipsis-v%</template>
 		<template v-if="contextFetching">%fa:spinner .pulse%</template>
 	</button>
 	<div class="context">
-		<template each={ post in context }>
-			<mk-post-detail-sub post={ post }/>
-		</template>
+		<mk-post-detail-sub v-for="post in context" :key="post.id" :post="post"/>
 	</div>
 	<div class="reply-to" v-if="p.reply">
-		<mk-post-detail-sub post={ p.reply }/>
+		<mk-post-detail-sub :post="p.reply"/>
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<a class="avatar-anchor" href={ '/' + post.user.username } data-user-preview={ post.user_id }>
-				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/>
-			</a>
-			%fa:retweet%<a class="name" href={ '/' + post.user.username }>
-			{ post.user.name }
-		</a>
-		がRepost
-	</p>
+			<router-link class="avatar-anchor" :to="`/${post.user.username}`" v-user-preview="post.user_id">
+				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
+			</router-link>
+			%fa:retweet%
+			<router-link class="name" :href="`/${post.user.username}`">{{ post.user.name }}</router-link>
+			がRepost
+		</p>
 	</div>
 	<article>
-		<a class="avatar-anchor" href={ '/' + p.user.username }>
-			<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar" data-user-preview={ p.user.id }/>
-		</a>
+		<router-link class="avatar-anchor" :to="`/${p.user.username}`">
+			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
+		</router-link>
 		<header>
-			<a class="name" href={ '/' + p.user.username } data-user-preview={ p.user.id }>{ p.user.name }</a>
-			<span class="username">@{ p.user.username }</span>
-			<a class="time" href={ '/' + p.user.username + '/' + p.id }>
-				<mk-time time={ p.created_at }/>
-			</a>
+			<router-link class="name" :to="`/${p.user.username}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
+			<span class="username">@{{ p.user.username }}</span>
+			<router-link class="time" :to="`/${p.user.username}/${p.id}`">
+				<mk-time :time="p.created_at"/>
+			</router-link>
 		</header>
 		<div class="body">
 			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="media" v-if="p.media">
-				<mk-images images={ p.media }/>
+				<mk-images :images="p.media"/>
 			</div>
-			<mk-poll v-if="p.poll" post={ p }/>
+			<mk-poll v-if="p.poll" :post="p"/>
 		</div>
 		<footer>
-			<mk-reactions-viewer post={ p }/>
+			<mk-reactions-viewer :post="p"/>
 			<button @click="reply" title="返信">
-				%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
+				%fa:reply%<p class="count" v-if="p.replies_count > 0">{{ p.replies_count }}</p>
 			</button>
 			<button @click="repost" title="Repost">
-				%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
+				%fa:retweet%<p class="count" v-if="p.repost_count > 0">{{ p.repost_count }}</p>
 			</button>
 			<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="リアクション">
-				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
+				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">
 				%fa:ellipsis-h%
@@ -59,9 +62,7 @@
 		</footer>
 	</article>
 	<div class="replies" v-if="!compact">
-		<template each={ post in replies }>
-			<mk-post-detail-sub post={ post }/>
-		</template>
+		<mk-post-detail-sub v-for="post in nreplies" :key="post.id" :post="post"/>
 	</div>
 </div>
 </template>
