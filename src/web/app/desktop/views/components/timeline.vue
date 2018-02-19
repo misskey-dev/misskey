@@ -13,19 +13,14 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: {
-		date: {
-			type: Date,
-			required: false
-		}
-	},
 	data() {
 		return {
 			fetching: true,
 			moreFetching: false,
 			posts: [],
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			date: null
 		};
 	},
 	computed: {
@@ -60,7 +55,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('posts/timeline', {
-				until_date: this.date ? (this.date as any).getTime() : undefined
+				until_date: this.date ? this.date.getTime() : undefined
 			}).then(posts => {
 				this.fetching = false;
 				this.posts = posts;
@@ -93,6 +88,10 @@ export default Vue.extend({
 					(this.$refs.timeline as any).focus();
 				}
 			}
+		},
+		warp(date) {
+			this.date = date;
+			this.fetch();
 		}
 	}
 });

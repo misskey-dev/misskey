@@ -1,0 +1,17 @@
+{
+	"parserOptions": {
+		"parser": "typescript-eslint-parser"
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:vue/recommended"
+	],
+	"rules": {
+		"vue/require-v-for-key": false,
+		"vue/max-attributes-per-line": false,
+		"vue/html-indent": false,
+		"vue/html-self-closing": false,
+		"vue/no-unused-vars": false,
+		"no-console": 0
+	}
+}

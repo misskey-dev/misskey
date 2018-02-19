@@ -37,43 +37,21 @@
 		</div>
 	</div>
 	<div class="main">
-		<div class="left">
-			<div ref="left" data-place="left">
-				<template v-for="widget in leftWidgets">
+		<div v-for="place in ['left', 'main', 'right']" :class="place" :ref="place" :data-place="place">
+			<template v-if="place != 'main'">
+				<template v-for="widget in widgets[place]">
 					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="'mkw-' + widget.name" :widget="widget" :ref="widget.id"/>
+						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
-						<component :is="'mkw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
+						<component :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :ref="widget.id" @chosen="warp"/>
 					</template>
 				</template>
-			</div>
-		</div>
-		<main ref="main">
-			<div class="maintop" ref="maintop" data-place="main" v-if="customize">
-				<template v-for="widget in centerWidgets">
-					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="'mkw-' + widget.name" :widget="widget" :ref="widget.id"/>
-					</div>
-					<template v-else>
-						<component :is="'mkw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
-					</template>
-				</template>
-			</div>
-			<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
-			<mk-mentions ref="tl" @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
-		</main>
-		<div class="right">
-			<div ref="right" data-place="right">
-				<template v-for="widget in rightWidgets">
-					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-						<component :is="'mkw-' + widget.name" :widget="widget" :ref="widget.id"/>
-					</div>
-					<template v-else>
-						<component :is="'mkw-' + widget.name" :key="widget.id" :widget="widget" :ref="widget.id"/>
-					</template>
-				</template>
-			</div>
+			</template>
+			<template v-else>
+				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="place == 'main' && mode == 'timeline'"/>
+				<mk-mentions @loaded="onTlLoaded" v-if="place == 'main' && mode == 'mentions'"/>
+			</template>
 		</div>
 	</div>
 </div>
@@ -98,6 +76,85 @@ export default Vue.extend({
 			bakedHomeData: null,
 			widgetAdderSelected: null
 		};
+	},
+	computed: {
+		leftWidgets(): any {
+			return (this as any).os.i.client_settings.home.filter(w => w.place == 'left');
+		},
+		rightWidgets(): any {
+			return (this as any).os.i.client_settings.home.filter(w => w.place == 'right');
+		},
+		widgets(): any {
+			return {
+				left: this.leftWidgets,
+				right: this.rightWidgets,
+			};
+		},
+		leftEl(): Element {
+			return (this.$refs.left as Element[])[0];
+		},
+		rightEl(): Element {
+			return (this.$refs.right as Element[])[0];
+		}
+	},
+	created() {
+		this.bakedHomeData = this.bakeHomeData();
+	},
+	mounted() {
+		(this as any).os.i.on('refreshed', this.onMeRefreshed);
+
+		this.home = (this as any).os.i.client_settings.home;
+
+		this.$nextTick(() => {
+			if (!this.customize) {
+				if (this.leftEl.children.length == 0) {
+					this.leftEl.parentNode.removeChild(this.leftEl);
+				}
+				if (this.rightEl.children.length == 0) {
+					this.rightEl.parentNode.removeChild(this.rightEl);
+				}
+			}
+
+			if (this.customize) {
+				(this as any).apis.dialog({
+					title: '%fa:info-circle%カスタマイズのヒント',
+					text: '<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
+						'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
+						'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
+						'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
+					actions: [{
+						text: 'Got it!'
+					}]
+				});
+
+				const sortableOption = {
+					group: 'kyoppie',
+					animation: 150,
+					onMove: evt => {
+						const id = evt.dragged.getAttribute('data-widget-id');
+						this.home.find(tag => tag.id == id).widget.place = evt.to.getAttribute('data-place');
+					},
+					onSort: () => {
+						this.saveHome();
+					}
+				};
+
+				new Sortable(this.leftEl, sortableOption);
+				new Sortable(this.rightEl, sortableOption);
+				new Sortable(this.$refs.trash, Object.assign({}, sortableOption, {
+					onAdd: evt => {
+						const el = evt.item;
+						const id = el.getAttribute('data-widget-id');
+						el.parentNode.removeChild(el);
+						(this as any).os.i.client_settings.home = (this as any).os.i.client_settings.home.filter(w => w.id != id);
+						this.saveHome();
+					}
+				}));
+			}
+		});
+	},
+	beforeDestroy() {
+		(this as any).os.i.off('refreshed', this.onMeRefreshed);
 	},
 	methods: {
 		bakeHomeData() {
@@ -130,102 +187,27 @@ export default Vue.extend({
 		saveHome() {
 			const data = [];
 
-			Array.from((this.$refs.left as Element).children).forEach(el => {
+			Array.from(this.leftEl.children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
 				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
 				widget.place = 'left';
 				data.push(widget);
 			});
 
-			Array.from((this.$refs.right as Element).children).forEach(el => {
+			Array.from(this.rightEl.children).forEach(el => {
 				const id = el.getAttribute('data-widget-id');
 				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
 				widget.place = 'right';
 				data.push(widget);
 			});
 
-			Array.from((this.$refs.maintop as Element).children).forEach(el => {
-				const id = el.getAttribute('data-widget-id');
-				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
-				widget.place = 'main';
-				data.push(widget);
-			});
-
 			(this as any).api('i/update_home', {
 				home: data
 			});
-		}
-	},
-	computed: {
-		leftWidgets(): any {
-			return (this as any).os.i.client_settings.home.filter(w => w.place == 'left');
 		},
-		centerWidgets(): any {
-			return (this as any).os.i.client_settings.home.filter(w => w.place == 'center');
-		},
-		rightWidgets(): any {
-			return (this as any).os.i.client_settings.home.filter(w => w.place == 'right');
+		warp(date) {
+			(this.$refs.tl as any)[0].warp(date);
 		}
-	},
-	created() {
-		this.bakedHomeData = this.bakeHomeData();
-	},
-	mounted() {
-		(this as any).os.i.on('refreshed', this.onMeRefreshed);
-
-		this.home = (this as any).os.i.client_settings.home;
-
-		if (!this.customize) {
-			if ((this.$refs.left as Element).children.length == 0) {
-				(this.$refs.left as Element).parentNode.removeChild((this.$refs.left as Element));
-			}
-			if ((this.$refs.right as Element).children.length == 0) {
-				(this.$refs.right as Element).parentNode.removeChild((this.$refs.right as Element));
-			}
-		}
-
-		if (this.customize) {
-			/*dialog('%fa:info-circle%カスタマイズのヒント',
-				'<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
-				'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
-				'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
-				'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
-			[{
-				text: 'Got it!'
-			}]);*/
-
-			const sortableOption = {
-				group: 'kyoppie',
-				animation: 150,
-				onMove: evt => {
-					const id = evt.dragged.getAttribute('data-widget-id');
-					this.home.find(tag => tag.id == id).update({ place: evt.to.getAttribute('data-place') });
-				},
-				onSort: () => {
-					this.saveHome();
-				}
-			};
-
-			new Sortable(this.$refs.left, sortableOption);
-			new Sortable(this.$refs.right, sortableOption);
-			new Sortable(this.$refs.maintop, sortableOption);
-			new Sortable(this.$refs.trash, Object.assign({}, sortableOption, {
-				onAdd: evt => {
-					const el = evt.item;
-					const id = el.getAttribute('data-widget-id');
-					el.parentNode.removeChild(el);
-					(this as any).os.i.client_settings.home = (this as any).os.i.client_settings.home.filter(w => w.id != id);
-					this.saveHome();
-				}
-			}));
-		}
-	},
-	beforeDestroy() {
-		(this as any).os.i.off('refreshed', this.onMeRefreshed);
-
-		this.home.forEach(widget => {
-			widget.unmount();
-		});
 	}
 });
 </script>
@@ -324,26 +306,16 @@ export default Vue.extend({
 				> *
 					pointer-events none
 
-		> main
+		> .main
 			padding 16px
 			width calc(100% - 275px * 2)
 
-			> *:not(.maintop):not(:last-child)
-			> .maintop > *:not(:last-child)
-				margin-bottom 16px
-
-			> .maintop
-				min-height 64px
-				margin-bottom 16px
-
 		> *:not(main)
 			width 275px
+			padding 16px 0 16px 0
 
-			> *
-				padding 16px 0 16px 0
-
-				> *:not(:last-child)
-					margin-bottom 16px
+			> *:not(:last-child)
+				margin-bottom 16px
 
 		> .left
 			padding-left 16px
@@ -355,7 +327,7 @@ export default Vue.extend({
 			> *:not(main)
 				display none
 
-			> main
+			> .main
 				float none
 				width 100%
 				max-width 700px

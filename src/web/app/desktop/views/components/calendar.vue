@@ -7,16 +7,15 @@
 	</template>
 
 	<div class="calendar">
+		<template v-if="design == 0 || design == 2 || design == 4">
 		<div class="weekday"
-			v-if="design == 0 || design == 2 || design == 4"
 			v-for="(day, i) in Array(7).fill(0)"
-			:key="i"
 			:data-today="year == today.getFullYear() && month == today.getMonth() + 1 && today.getDay() == i"
 			:data-is-donichi="i == 0 || i == 6"
 		>{{ weekdayText[i] }}</div>
-		<div each={ day, i in Array(paddingDays).fill(0) }></div>
-		<div class="day" v-for="(day, i) in Array(days).fill(0)"
-			:key="i"
+		</template>
+		<div v-for="n in paddingDays"></div>
+		<div class="day" v-for="(day, i) in days"
 			:data-today="isToday(i + 1)"
 			:data-selected="isSelected(i + 1)"
 			:data-is-out-of-range="isOutOfRange(i + 1)"
