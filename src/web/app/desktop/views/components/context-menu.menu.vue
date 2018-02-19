@@ -1,5 +1,5 @@
 <template>
-<ul class="me-nu">
+<ul class="menu">
 	<li v-for="(item, i) in menu" :key="i" :class="item.type">
 		<template v-if="item.type == 'item'">
 			<p @click="click(item)"><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</p>
@@ -29,7 +29,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.me-nu
+.menu
 	$width = 240px
 	$item-height = 38px
 	$padding = 10px

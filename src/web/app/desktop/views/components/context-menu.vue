@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import * as anime from 'animejs';
 import contains from '../../../common/scripts/contains';
-import meNu from './context-menu-menu.vue';
+import meNu from './context-menu.menu.vue';
 
 export default Vue.extend({
 	components: {
