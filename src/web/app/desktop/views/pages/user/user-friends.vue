@@ -2,16 +2,18 @@
 <div class="mk-user-friends">
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
-	<div class="user" v-if="!fetching && users.length != 0" each={ _user in users }>
-		<a class="avatar-anchor" href={ '/' + _user.username }>
-			<img class="avatar" src={ _user.avatar_url + '?thumbnail&size=42' } alt="" v-user-preview={ _user.id }/>
-		</a>
-		<div class="body">
-			<a class="name" href={ '/' + _user.username } v-user-preview={ _user.id }>{ _user.name }</a>
-			<p class="username">@{ _user.username }</p>
+	<template v-if="!fetching && users.length != 0">
+		<div class="user" v-for="friend in users">
+			<router-link class="avatar-anchor" to="`/${friend.username}`">
+				<img class="avatar" :src="`${friend.avatar_url}?thumbnail&size=42`" alt="" v-user-preview="friend.id"/>
+			</router-link>
+			<div class="body">
+				<router-link class="name" to="`/${friend.username}`" v-user-preview="friend.id">{{ friend.name }}</router-link>
+				<p class="username">@{{ friend.username }}</p>
+			</div>
+			<mk-follow-button :user="friend"/>
 		</div>
-		<mk-follow-button user={ _user }/>
-	</div>
+	</template>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:desktop.tags.mk-user.frequently-replied-users.no-users%</p>
 </div>
 </template>
@@ -31,8 +33,8 @@ export default Vue.extend({
 			user_id: this.user.id,
 			limit: 4
 		}).then(docs => {
-			this.fetching = false;
 			this.users = docs.map(doc => doc.user);
+			this.fetching = false;
 		});
 	}
 });

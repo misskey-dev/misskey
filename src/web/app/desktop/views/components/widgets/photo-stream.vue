@@ -35,8 +35,8 @@ export default define({
 			type: 'image/*',
 			limit: 9
 		}).then(images => {
-			this.fetching = false;
 			this.images = images;
+			this.fetching = false;
 		});
 	},
 	beforeDestroy() {

@@ -3,8 +3,7 @@
 	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
-		<div v-for="image in images" :key="image.id"
-			class="img"
+		<div v-for="image in images" class="img"
 			:style="`background-image: url(${image.url}?thumbnail&size=256)`"
 		></div>
 	</div>
@@ -28,12 +27,12 @@ export default Vue.extend({
 			with_media: true,
 			limit: 9
 		}).then(posts => {
-			this.fetching = false;
 			posts.forEach(post => {
 				post.media.forEach(media => {
 					if (this.images.length < 9) this.images.push(media);
 				});
 			});
+			this.fetching = false;
 		});
 	}
 });

@@ -351,12 +351,13 @@ export default Vue.extend({
 			(this as any).api('drive/files/show', {
 				file_id: file
 			}).then(file => {
-				this.fetching = false;
 				this.file = file;
 				this.folder = null;
 				this.hierarchyFolders = [];
 
 				if (file.folder) this.dive(file.folder);
+
+				this.fetching = false;
 
 				this.$emit('open-file', this.file, silent);
 			});

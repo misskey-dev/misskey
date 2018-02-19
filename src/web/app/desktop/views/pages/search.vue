@@ -45,8 +45,8 @@ export default Vue.extend({
 		window.addEventListener('scroll', this.onScroll);
 
 		(this as any).api('posts/search', parse(this.query)).then(posts => {
-			this.fetching = false;
 			this.posts = posts;
+			this.fetching = false;
 		});
 	},
 	beforeDestroy() {

@@ -14,7 +14,7 @@
 		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.twitter.screen_name}`" target="_blank">@{{ user.twitter.screen_name }}</a></p>
 	</div>
 	<div class="status">
-	  <p class="posts-count">%fa:angle-right%<a>{{ user.posts_count }}</a><b>投稿</b></p>
+		<p class="posts-count">%fa:angle-right%<a>{{ user.posts_count }}</a><b>投稿</b></p>
 		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.following_count }}</a>人を<b>フォロー</b></p>
 		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followers_count }}</a>人の<b>フォロワー</b></p>
 	</div>
@@ -23,7 +23,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-const age = require('s-age');
+import age from 's-age';
+import MkFollowingWindow from '../../components/following-window.vue';
+import MkFollowersWindow from '../../components/followers-window.vue';
 
 export default Vue.extend({
 	props: ['user'],
@@ -34,8 +36,7 @@ export default Vue.extend({
 	},
 	methods: {
 		showFollowing() {
-			document.body.appendChild(new MkUserFollowingWindow({
-
+			document.body.appendChild(new MkFollowingWindow({
 				propsData: {
 					user: this.user
 				}
@@ -43,8 +44,7 @@ export default Vue.extend({
 		},
 
 		showFollowers() {
-			document.body.appendChild(new MkUserFollowersWindow({
-
+			document.body.appendChild(new MkFollowersWindow({
 				propsData: {
 					user: this.user
 				}
@@ -56,7 +56,7 @@ export default Vue.extend({
 				user_id: this.user.id
 			}).then(() => {
 				this.user.is_muted = true;
-			}, e => {
+			}, () => {
 				alert('error');
 			});
 		},
@@ -66,7 +66,7 @@ export default Vue.extend({
 				user_id: this.user.id
 			}).then(() => {
 				this.user.is_muted = false;
-			}, e => {
+			}, () => {
 				alert('error');
 			});
 		}

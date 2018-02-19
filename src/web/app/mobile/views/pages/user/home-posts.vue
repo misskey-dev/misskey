@@ -22,8 +22,8 @@ export default Vue.extend({
 		(this as any).api('users/posts', {
 			user_id: this.user.id
 		}).then(posts => {
-			this.fetching = false;
 			this.posts = posts;
+			this.fetching = false;
 		});
 	}
 });

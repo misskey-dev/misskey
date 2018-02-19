@@ -31,8 +31,8 @@ export default Vue.extend({
 			user_id: this.user.id,
 			with_media: this.withMedia
 		}).then(posts => {
-			this.fetching = false;
 			this.posts = posts;
+			this.fetching = false;
 			this.$emit('loaded');
 		});
 	}

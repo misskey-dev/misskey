@@ -88,8 +88,8 @@ export default Vue.extend({
 		(this as any).api('users/show', {
 			username: this.username
 		}).then(user => {
-			this.fetching = false;
 			this.user = user;
+			this.fetching = false;
 
 			Progress.done();
 			document.title = user.name + ' | Misskey';

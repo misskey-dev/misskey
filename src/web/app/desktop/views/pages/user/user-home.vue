@@ -14,8 +14,8 @@
 	</main>
 	<div>
 		<div ref="right">
-			<mk-calendar-widget @warp="warp" :start="new Date(user.created_at)"/>
-			<mk-activity-widget :user="user"/>
+			<mk-calendar @chosen="warp" :start="new Date(user.created_at)"/>
+			<mk-activity :user="user"/>
 			<mk-user-friends :user="user"/>
 			<div class="nav"><mk-nav/></div>
 		</div>
@@ -25,7 +25,20 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkUserTimeline from './user-timeline.vue';
+import MkUserProfile from './user-profile.vue';
+import MkUserPhotos from './user-photos.vue';
+import MkUserFollowersYouKnow from './user-followers-you-know.vue';
+import MkUserFriends from './user-friends.vue';
+
 export default Vue.extend({
+	components: {
+		'mk-user-timeline': MkUserTimeline,
+		'mk-user-profile': MkUserProfile,
+		'mk-user-photos': MkUserPhotos,
+		'mk-user-followers-you-know': MkUserFollowersYouKnow,
+		'mk-user-friends': MkUserFriends
+	},
 	props: ['user'],
 	methods: {
 		warp(date) {

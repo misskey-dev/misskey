@@ -28,7 +28,6 @@ export default Vue.extend({
 			with_media: true,
 			limit: 6
 		}).then(posts => {
-			this.fetching = false;
 			posts.forEach(post => {
 				post.media.forEach(media => {
 					if (this.images.length < 9) this.images.push({
@@ -37,6 +36,7 @@ export default Vue.extend({
 					});
 				});
 			});
+			this.fetching = false;
 		});
 	}
 });

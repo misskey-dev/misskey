@@ -78,8 +78,8 @@ export default Vue.extend({
 		this.connection.on('read', this.onRead);
 
 		(this as any).api('messaging/history').then(messages => {
-			this.fetching = false;
 			this.messages = messages;
+			this.fetching = false;
 		});
 	},
 	beforeDestroy() {

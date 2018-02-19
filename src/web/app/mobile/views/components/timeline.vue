@@ -63,8 +63,8 @@ export default Vue.extend({
 			(this as any).api('posts/timeline', {
 				until_date: this.date ? (this.date as any).getTime() : undefined
 			}).then(posts => {
-				this.fetching = false;
 				this.posts = posts;
+				this.fetching = false;
 				if (cb) cb();
 			});
 		},

@@ -93,8 +93,8 @@ export default define({
 				type: 'image/*',
 				limit: 100
 			}).then(images => {
-				this.fetching = false;
 				this.images = images;
+				this.fetching = false;
 				(this.$refs.slideA as any).style.backgroundImage = '';
 				(this.$refs.slideB as any).style.backgroundImage = '';
 				this.change();

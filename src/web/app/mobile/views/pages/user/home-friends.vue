@@ -22,8 +22,8 @@ export default Vue.extend({
 		(this as any).api('users/get_frequently_replied_users', {
 			user_id: this.user.id
 		}).then(res => {
-			this.fetching = false;
 			this.users = res.map(x => x.user);
+			this.fetching = false;
 		});
 	}
 });

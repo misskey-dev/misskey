@@ -46,8 +46,8 @@ export default define({
 					}
 				});
 			}
-			this.fetching = false;
 			this.broadcasts = broadcasts;
+			this.fetching = false;
 		});
 	},
 	methods: {

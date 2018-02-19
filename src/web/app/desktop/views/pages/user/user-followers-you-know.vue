@@ -27,8 +27,8 @@ export default Vue.extend({
 			iknow: true,
 			limit: 16
 		}).then(x => {
-			this.fetching = false;
 			this.users = x.users;
+			this.fetching = false;
 		});
 	}
 });

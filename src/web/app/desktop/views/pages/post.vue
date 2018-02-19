@@ -26,8 +26,8 @@ export default Vue.extend({
 		(this as any).api('posts/show', {
 			post_id: this.postId
 		}).then(post => {
-			this.fetching = false;
 			this.post = post;
+			this.fetching = false;
 
 			Progress.done();
 		});

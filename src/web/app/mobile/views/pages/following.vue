@@ -26,8 +26,8 @@ export default Vue.extend({
 		(this as any).api('users/show', {
 			username: this.username
 		}).then(user => {
-			this.fetching = false;
 			this.user = user;
+			this.fetching = false;
 
 			document.title = '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', user.name) + ' | Misskey';
 			document.documentElement.style.background = '#313a42';

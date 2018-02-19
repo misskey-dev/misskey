@@ -47,7 +47,7 @@ export default Vue.extend({
 			default: 0
 		},
 		start: {
-			type: Object,
+			type: Date,
 			required: false
 		}
 	},
@@ -94,7 +94,7 @@ export default Vue.extend({
 		isOutOfRange(day) {
 			const test = (new Date(this.year, this.month - 1, day)).getTime();
 			return test > this.today.getTime() ||
-				(this.start ? test < this.start.getTime() : false);
+				(this.start ? test < (this.start as any).getTime() : false);
 		},
 
 		isDonichi(day) {

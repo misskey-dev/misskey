@@ -65,8 +65,8 @@ export default Vue.extend({
 				until_date: this.date ? this.date.getTime() : undefined,
 				with_replies: this.mode == 'with-replies'
 			}).then(posts => {
-				this.fetching = false;
 				this.posts = posts;
+				this.fetching = false;
 				if (cb) cb();
 			});
 		},

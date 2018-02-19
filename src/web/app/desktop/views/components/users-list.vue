@@ -45,9 +45,9 @@ export default Vue.extend({
 		_fetch(cb) {
 			this.fetching = true;
 			this.fetch(this.mode == 'iknow', this.limit, null, obj => {
-				this.fetching = false;
 				this.users = obj.users;
 				this.next = obj.next;
+				this.fetching = false;
 				if (cb) cb();
 			});
 		},

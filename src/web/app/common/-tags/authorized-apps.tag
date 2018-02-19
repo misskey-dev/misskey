@@ -28,7 +28,6 @@
 			this.$root.$data.os.api('i/authorized_apps').then(apps => {
 				this.apps = apps;
 				this.fetching = false;
-				this.update();
 			});
 		});
 	</script>

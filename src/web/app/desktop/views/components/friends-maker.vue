@@ -43,8 +43,8 @@ export default Vue.extend({
 				limit: this.limit,
 				offset: this.limit * this.page
 			}).then(users => {
-				this.fetching = false;
 				this.users = users;
+				this.fetching = false;
 			});
 		},
 		refresh() {

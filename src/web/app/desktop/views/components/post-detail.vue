@@ -4,7 +4,7 @@
 		class="read-more"
 		v-if="p.reply && p.reply.reply_id && context == null"
 		title="会話をもっと読み込む"
-		@click="loadContext"
+		@click="fetchContext"
 		:disabled="contextFetching"
 	>
 		<template v-if="!contextFetching">%fa:ellipsis-v%</template>
