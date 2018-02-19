@@ -20,6 +20,9 @@ require('./common/views/directives');
 // Register global components
 require('./common/views/components');
 
+// Register global filters
+require('./filters');
+
 Vue.mixin({
 	destroyed(this: any) {
 		if (this.$el.parentNode) {
