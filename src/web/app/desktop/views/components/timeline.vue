@@ -1,6 +1,6 @@
 <template>
 <div class="mk-timeline">
-	<mk-following-setuper v-if="alone"/>
+	<mk-friends-maker v-if="alone"/>
 	<div class="loading" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
