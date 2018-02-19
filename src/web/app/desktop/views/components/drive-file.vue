@@ -30,7 +30,6 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 import contextmenu from '../../api/contextmenu';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
-import bytesToSize from '../../../common/scripts/bytes-to-size';
 
 export default Vue.extend({
 	props: ['file'],
@@ -48,7 +47,7 @@ export default Vue.extend({
 			return this.browser.selectedFiles.some(f => f.id == this.file.id);
 		},
 		title(): string {
-			return `${this.file.name}\n${this.file.type} ${bytesToSize(this.file.datasize)}`;
+			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.datasize)}`;
 		},
 		background(): string {
 			return this.file.properties.average_color
