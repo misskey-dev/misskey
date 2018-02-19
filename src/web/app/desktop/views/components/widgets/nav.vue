@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-nav">
-	<mk-nav-links/>
+	<mk-nav/>
 </div>
 </template>
 

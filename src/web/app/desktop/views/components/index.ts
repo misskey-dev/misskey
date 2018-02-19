@@ -40,6 +40,7 @@ import wSlideshow from './widgets/slideshow.vue';
 import wTips from './widgets/tips.vue';
 import wDonation from './widgets/donation.vue';
 import wNotifications from './widgets/notifications.vue';
+import wBroadcast from './widgets/broadcast.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-header', uiHeader);
@@ -81,3 +82,4 @@ Vue.component('mkw-slideshoe', wSlideshow);
 Vue.component('mkw-tips', wTips);
 Vue.component('mkw-donation', wDonation);
 Vue.component('mkw-notifications', wNotifications);
+Vue.component('mkw-broadcast', wBroadcast);
