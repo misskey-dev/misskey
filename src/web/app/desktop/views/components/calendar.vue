@@ -125,7 +125,7 @@ export default Vue.extend({
 			if (this.isOutOfRange(day)) return;
 			const date = new Date(this.year, this.month - 1, day, 23, 59, 59, 999);
 			this.selected = date;
-			this.$emit('choosed', this.selected);
+			this.$emit('chosen', this.selected);
 		}
 	}
 });
