@@ -6,32 +6,31 @@ import MkUserPreview from '../components/user-preview.vue';
 
 export default {
 	bind(el, binding, vn) {
-		const self = vn.context._userPreviewDirective_ = {} as any;
+		const self = el._userPreviewDirective_ = {} as any;
 
 		self.user = binding.value;
-
-		let tag = null;
+		self.tag = null;
 		self.showTimer = null;
 		self.hideTimer = null;
 
 		self.close = () => {
-			if (tag) {
-				tag.close();
-				tag = null;
+			if (self.tag) {
+				self.tag.close();
+				self.tag = null;
 			}
 		};
 
 		const show = () => {
-			if (tag) return;
+			if (self.tag) return;
 
-			tag = new MkUserPreview({
+			self.tag = new MkUserPreview({
 				parent: vn.context,
 				propsData: {
 					user: self.user
 				}
 			}).$mount();
 
-			const preview = tag.$el;
+			const preview = self.tag.$el;
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + el.offsetWidth + window.pageXOffset;
 			const y = rect.top + window.pageYOffset;
@@ -65,7 +64,7 @@ export default {
 	},
 
 	unbind(el, binding, vn) {
-		const self = vn.context._userPreviewDirective_;
+		const self = el._userPreviewDirective_;
 		clearTimeout(self.showTimer);
 		clearTimeout(self.hideTimer);
 		self.close();

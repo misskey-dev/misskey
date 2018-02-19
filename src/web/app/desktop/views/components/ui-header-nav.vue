@@ -3,10 +3,10 @@
 	<ul>
 		<template v-if="os.isSignedIn">
 			<li class="home" :class="{ active: page == 'home' }">
-				<a href="/">
+				<router-link to="/">
 					%fa:home%
 					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
-				</a>
+				</router-link>
 			</li>
 			<li class="messaging">
 				<a @click="messaging">

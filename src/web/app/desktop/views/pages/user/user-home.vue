@@ -17,7 +17,7 @@
 			<mk-calendar-widget @warp="warp" :start="new Date(user.created_at)"/>
 			<mk-activity-widget :user="user"/>
 			<mk-user-friends :user="user"/>
-			<div class="nav"><mk-nav-links/></div>
+			<div class="nav"><mk-nav/></div>
 		</div>
 	</div>
 </div>

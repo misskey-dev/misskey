@@ -5,32 +5,34 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<a class="avatar-anchor" :href="`/${post.user.username}`" v-user-preview="post.user_id">
+			<router-link class="avatar-anchor" :to="`/${post.user.username}`" v-user-preview="post.user_id">
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
-			</a>
+			</router-link>
 			%fa:retweet%{{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}}<a class="name" :href="`/${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</a>{{'%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}}
 		</p>
 		<mk-time :time="post.created_at"/>
 	</div>
 	<article>
-		<a class="avatar-anchor" :href="`/${p.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${p.user.username}`">
 			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
-		</a>
+		</router-link>
 		<div class="main">
 			<header>
-				<a class="name" :href="`/${p.user.username}`" v-user-preview="p.user.id">{{ p.user.name }}</a>
+				<router-link class="name" :to="`/${p.user.username}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
 				<span class="is-bot" v-if="p.user.is_bot">bot</span>
 				<span class="username">@{{ p.user.username }}</span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
-					<a class="created-at" :href="url">
+					<router-link class="created-at" :to="url">
 						<mk-time :time="p.created_at"/>
-					</a>
+					</router-link>
 				</div>
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<p class="channel" v-if="p.channel"><a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:</p>
+					<p class="channel" v-if="p.channel">
+						<a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:
+					</p>
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
 					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
 					<a class="quote" v-if="p.repost">RP:</a>

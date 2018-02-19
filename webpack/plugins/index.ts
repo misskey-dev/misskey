@@ -9,7 +9,7 @@ const isProduction = env === 'production';
 
 export default (version, lang) => {
 	const plugins = [
-		new HardSourceWebpackPlugin(),
+		//new HardSourceWebpackPlugin(),
 		consts(lang)
 	];
 

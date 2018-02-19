@@ -16,6 +16,7 @@ import dialog from './api/dialog';
 import input from './api/input';
 
 import MkIndex from './views/pages/index.vue';
+import MkUser from './views/pages/user/user.vue';
 
 /**
  * init
@@ -55,6 +56,8 @@ init(async (launch) => {
 
 	app.$router.addRoutes([{
 		path: '/', component: MkIndex
+	}, {
+		path: '/:user', component: MkUser
 	}]);
 }, true);
 

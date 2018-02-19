@@ -1,5 +1,5 @@
 <template>
-<span>
+<span class="mk-nav">
 	<a :href="aboutUrl">%i18n:common.tags.mk-nav-links.about%</a>
 	<i>・</i>
 	<a :href="statsUrl">%i18n:common.tags.mk-nav-links.stats%</a>
@@ -33,3 +33,9 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.mk-nav
+	a
+		color inherit
+</style>

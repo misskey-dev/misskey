@@ -10,13 +10,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Progress from '../../../common/scripts/loading';
+import Progress from '../../../../common/scripts/loading';
+import MkUserHeader from './user-header.vue';
+import MkUserHome from './user-home.vue';
 
 export default Vue.extend({
+	components: {
+		'mk-user-header': MkUserHeader,
+		'mk-user-home': MkUserHome
+	},
 	props: {
-		username: {
-			type: String
-		},
 		page: {
 			default: 'home'
 		}
@@ -30,7 +33,7 @@ export default Vue.extend({
 	mounted() {
 		Progress.start();
 		(this as any).api('users/show', {
-			username: this.username
+			username: this.$route.params.user
 		}).then(user => {
 			this.fetching = false;
 			this.user = user;
