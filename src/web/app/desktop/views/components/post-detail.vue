@@ -11,10 +11,10 @@
 		<template v-if="contextFetching">%fa:spinner .pulse%</template>
 	</button>
 	<div class="context">
-		<mk-post-detail-sub v-for="post in context" :key="post.id" :post="post"/>
+		<x-sub v-for="post in context" :key="post.id" :post="post"/>
 	</div>
 	<div class="reply-to" v-if="p.reply">
-		<mk-post-detail-sub :post="p.reply"/>
+		<x-sub :post="p.reply"/>
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
@@ -62,7 +62,7 @@
 		</footer>
 	</article>
 	<div class="replies" v-if="!compact">
-		<mk-post-detail-sub v-for="post in nreplies" :key="post.id" :post="post"/>
+		<x-sub v-for="post in replies" :key="post.id" :post="post"/>
 	</div>
 </div>
 </template>
@@ -71,7 +71,16 @@
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 
+import MkPostFormWindow from './post-form-window.vue';
+import MkRepostFormWindow from './repost-form-window.vue';
+import MkPostMenu from '../../../common/views/components/post-menu.vue';
+import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
+import XSub from './post-detail.sub.vue';
+
 export default Vue.extend({
+	components: {
+		'x-sub': XSub
+	},
 	props: {
 		post: {
 			type: Object,
@@ -137,6 +146,36 @@ export default Vue.extend({
 				this.contextFetching = false;
 				this.context = context.reverse();
 			});
+		},
+		reply() {
+			document.body.appendChild(new MkPostFormWindow({
+				propsData: {
+					reply: this.p
+				}
+			}).$mount().$el);
+		},
+		repost() {
+			document.body.appendChild(new MkRepostFormWindow({
+				propsData: {
+					post: this.p
+				}
+			}).$mount().$el);
+		},
+		react() {
+			document.body.appendChild(new MkReactionPicker({
+				propsData: {
+					source: this.$refs.reactButton,
+					post: this.p
+				}
+			}).$mount().$el);
+		},
+		menu() {
+			document.body.appendChild(new MkPostMenu({
+				propsData: {
+					source: this.$refs.menuButton,
+					post: this.p
+				}
+			}).$mount().$el);
 		}
 	}
 });

@@ -1,7 +1,7 @@
 <template>
-<div class="mk-posts-post" tabindex="-1" :title="title" @keydown="onKeydown">
+<div class="post" tabindex="-1" :title="title" @keydown="onKeydown">
 	<div class="reply-to" v-if="p.reply">
-		<mk-posts-post-sub post="p.reply"/>
+		<x-sub post="p.reply"/>
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
@@ -80,6 +80,7 @@ import MkPostFormWindow from './post-form-window.vue';
 import MkRepostFormWindow from './repost-form-window.vue';
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
+import XSub from './posts.post.sub.vue';
 
 function focus(el, fn) {
 	const target = fn(el);
@@ -93,6 +94,9 @@ function focus(el, fn) {
 }
 
 export default Vue.extend({
+	components: {
+		'x-sub': XSub
+	},
 	props: ['post'],
 	data() {
 		return {
@@ -180,7 +184,6 @@ export default Vue.extend({
 		},
 		reply() {
 			document.body.appendChild(new MkPostFormWindow({
-
 				propsData: {
 					reply: this.p
 				}
@@ -188,7 +191,6 @@ export default Vue.extend({
 		},
 		repost() {
 			document.body.appendChild(new MkRepostFormWindow({
-
 				propsData: {
 					post: this.p
 				}
@@ -196,7 +198,6 @@ export default Vue.extend({
 		},
 		react() {
 			document.body.appendChild(new MkReactionPicker({
-
 				propsData: {
 					source: this.$refs.reactButton,
 					post: this.p
@@ -205,7 +206,6 @@ export default Vue.extend({
 		},
 		menu() {
 			document.body.appendChild(new MkPostMenu({
-
 				propsData: {
 					source: this.$refs.menuButton,
 					post: this.p
@@ -253,7 +253,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-posts-post
+.post
 	margin 0
 	padding 0
 	background #fff
