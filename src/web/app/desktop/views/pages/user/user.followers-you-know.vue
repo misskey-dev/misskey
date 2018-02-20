@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-followers-you-know">
+<div class="followers-you-know">
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
@@ -35,7 +35,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-followers-you-know
+.followers-you-know
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px

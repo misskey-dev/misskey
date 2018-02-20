@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-profile">
+<div class="profile">
 	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
 		<p class="followed" v-if="user.is_followed">%i18n:desktop.tags.mk-user.follows-you%</p>
@@ -75,7 +75,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-profile
+.profile
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px

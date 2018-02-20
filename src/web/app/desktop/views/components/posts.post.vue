@@ -95,7 +95,7 @@ function focus(el, fn) {
 
 export default Vue.extend({
 	components: {
-		'x-sub': XSub
+		XSub
 	},
 	props: ['post'],
 	data() {

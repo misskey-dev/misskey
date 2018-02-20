@@ -1,22 +1,22 @@
 <template>
-<div class="mk-user-home">
+<div class="home">
 	<div>
 		<div ref="left">
-			<mk-user-profile :user="user"/>
-			<mk-user-photos :user="user"/>
-			<mk-user-followers-you-know v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
+			<x-profile :user="user"/>
+			<x-photos :user="user"/>
+			<x-followers-you-know v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 			<p>%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time :time="user.last_used_at"/></b></p>
 		</div>
 	</div>
 	<main>
 		<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" compact/>
-		<mk-user-timeline ref="tl" :user="user"/>
+		<x-timeline ref="tl" :user="user"/>
 	</main>
 	<div>
 		<div ref="right">
 			<mk-calendar @chosen="warp" :start="new Date(user.created_at)"/>
 			<mk-activity :user="user"/>
-			<mk-user-friends :user="user"/>
+			<x-friends :user="user"/>
 			<div class="nav"><mk-nav/></div>
 		</div>
 	</div>
@@ -25,19 +25,19 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkUserTimeline from './user-timeline.vue';
-import MkUserProfile from './user-profile.vue';
-import MkUserPhotos from './user-photos.vue';
-import MkUserFollowersYouKnow from './user-followers-you-know.vue';
-import MkUserFriends from './user-friends.vue';
+import XUserTimeline from './user.timeline.vue';
+import XUserProfile from './user.profile.vue';
+import XUserPhotos from './user.photos.vue';
+import XUserFollowersYouKnow from './user.followers-you-know.vue';
+import XUserFriends from './user.friends.vue';
 
 export default Vue.extend({
 	components: {
-		'mk-user-timeline': MkUserTimeline,
-		'mk-user-profile': MkUserProfile,
-		'mk-user-photos': MkUserPhotos,
-		'mk-user-followers-you-know': MkUserFollowersYouKnow,
-		'mk-user-friends': MkUserFriends
+		XUserTimeline,
+		XUserProfile,
+		XUserPhotos,
+		XUserFollowersYouKnow,
+		XUserFriends
 	},
 	props: ['user'],
 	methods: {
@@ -49,7 +49,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-home
+.home
 	display flex
 	justify-content center
 	margin 0 auto

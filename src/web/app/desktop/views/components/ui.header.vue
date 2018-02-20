@@ -33,12 +33,12 @@ import XClock from './ui.header.clock.vue';
 
 export default Vue.extend({
 	components: {
-		'x-nav': XNav,
-		'x-search': XSearch,
-		'x-account': XAccount,
-		'x-notifications': XNotifications,
-		'x-post': XPost,
-		'x-clock': XClock,
+		XNav,
+		XSearch,
+		XAccount,
+		XNotifications,
+		XPost,
+		XClock,
 	}
 });
 </script>

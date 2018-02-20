@@ -77,7 +77,7 @@ import XProfile from './settings.profile.vue';
 
 export default Vue.extend({
 	components: {
-		'x-profile': XProfile
+		XProfile
 	},
 	data() {
 		return {

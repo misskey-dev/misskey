@@ -8,14 +8,16 @@
 			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }}
 		</button>
 		<template v-for="(message, i) in _messages">
-			<mk-messaging-message :message="message" :key="message.id"/>
-			<p class="date" :key="message.id + '-time'" v-if="i != messages.length - 1 && message._date != _messages[i + 1]._date"><span>{{ _messages[i + 1]._datetext }}</span></p>
+			<x-message :message="message" :key="message.id"/>
+			<p class="date" v-if="i != messages.length - 1 && message._date != _messages[i + 1]._date">
+				<span>{{ _messages[i + 1]._datetext }}</span>
+			</p>
 		</template>
 	</div>
 	<footer>
 		<div ref="notifications"></div>
 		<div class="grippie" title="%i18n:common.tags.mk-messaging-room.resize-form%"></div>
-		<mk-messaging-form :user="user"/>
+		<x-form :user="user"/>
 	</footer>
 </div>
 </template>
@@ -23,8 +25,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import MessagingStreamConnection from '../../scripts/streaming/messaging-stream';
+import XMessage from './messaging-room.message.vue';
+import XForm from './messaging-room.form.vue';
 
 export default Vue.extend({
+	components: {
+		XMessage,
+		XForm
+	},
 	props: ['user', 'isNaked'],
 	data() {
 		return {

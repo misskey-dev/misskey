@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-photos">
+<div class="photos">
 	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
@@ -39,7 +39,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-photos
+.photos
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px

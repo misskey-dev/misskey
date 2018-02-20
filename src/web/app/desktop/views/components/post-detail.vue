@@ -79,7 +79,7 @@ import XSub from './post-detail.sub.vue';
 
 export default Vue.extend({
 	components: {
-		'x-sub': XSub
+		XSub
 	},
 	props: {
 		post: {

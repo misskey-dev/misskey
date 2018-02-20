@@ -2,7 +2,7 @@
 <div class="index">
 	<main v-if="os.isSignedIn">
 		<p class="fetching" v-if="fetching">読み込み中<mk-ellipsis/></p>
-		<fo-rm
+		<x-form
 			ref="form"
 			v-if="state == 'waiting'"
 			:session="session"
@@ -32,11 +32,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Form from './form.vue';
+import XForm from './form.vue';
 
 export default Vue.extend({
 	components: {
-		'fo-rm': Form
+		XForm
 	},
 	data() {
 		return {

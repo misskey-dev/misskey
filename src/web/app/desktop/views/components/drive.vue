@@ -4,7 +4,7 @@
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<mk-drive-nav-folder :class="{ current: folder == null }"/>
 			<template v-for="folder in hierarchyFolders">
-				<span class="separator" :key="folder.id + '>'">%fa:angle-right%</span>
+				<span class="separator">%fa:angle-right%</span>
 				<mk-drive-nav-folder :folder="folder" :key="folder.id"/>
 			</template>
 			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
@@ -26,13 +26,13 @@
 			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
 				<mk-drive-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div class="padding" v-for="n in 16" :key="n"></div>
+				<div class="padding" v-for="n in 16"></div>
 				<button v-if="moreFolders">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<mk-drive-file v-for="file in files" :key="file.id" class="file" :file="file"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div class="padding" v-for="n in 16" :key="n"></div>
+				<div class="padding" v-for="n in 16"></div>
 				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">

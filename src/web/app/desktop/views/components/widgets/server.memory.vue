@@ -16,7 +16,7 @@ import XPie from './server.pie.vue';
 
 export default Vue.extend({
 	components: {
-		'x-pie': XPie
+		XPie
 	},
 	props: ['connection'],
 	data() {

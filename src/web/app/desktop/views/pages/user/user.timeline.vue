@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-timeline">
+<div class="timeline">
 	<header>
 		<span :data-is-active="mode == 'default'" @click="mode = 'default'">投稿</span>
 		<span :data-is-active="mode == 'with-replies'" @click="mode = 'with-replies'">投稿と返信</span>
@@ -93,7 +93,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-timeline
+.timeline
 	background #fff
 
 	> header

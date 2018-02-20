@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-header" :data-is-dark-background="user.banner_url != null">
+<div class="header" :data-is-dark-background="user.banner_url != null">
 	<div class="banner-container" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=2048)` : ''">
 		<div class="banner" ref="banner" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=2048)` : ''" @click="onBannerClick"></div>
 	</div>
@@ -62,7 +62,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-header
+.header
 	$banner-height = 320px
 	$footer-height = 58px
 

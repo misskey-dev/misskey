@@ -3,7 +3,7 @@
 	<div class="notifications" v-if="notifications.length != 0">
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
-			<p class="date" :key="notification.id + '-time'" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
+			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
 				<span>%fa:angle-up%{ notification._datetext }</span>
 				<span>%fa:angle-down%{ _notifications[i + 1]._datetext }</span>
 			</p>

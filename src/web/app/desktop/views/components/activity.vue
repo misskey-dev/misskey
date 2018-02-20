@@ -6,21 +6,21 @@
 	</template>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<template v-else>
-		<mk-activity-widget-calender v-show="view == 0" :data="[].concat(activity)"/>
-		<mk-activity-widget-chart v-show="view == 1" :data="[].concat(activity)"/>
+		<x-calender v-show="view == 0" :data="[].concat(activity)"/>
+		<x-chart v-show="view == 1" :data="[].concat(activity)"/>
 	</template>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import Calendar from './activity.calendar.vue';
-import Chart from './activity.chart.vue';
+import XCalendar from './activity.calendar.vue';
+import XChart from './activity.chart.vue';
 
 export default Vue.extend({
 	components: {
-		'mk-activity-widget-calender': Calendar,
-		'mk-activity-widget-chart': Chart
+		XCalendar,
+		XChart
 	},
 	props: {
 		design: {

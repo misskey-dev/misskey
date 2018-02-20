@@ -14,7 +14,7 @@ import XHeader from './ui.header.vue';
 
 export default Vue.extend({
 	components: {
-		'x-header': XHeader
+		XHeader
 	},
 	mounted() {
 		document.addEventListener('keydown', this.onKeydown);

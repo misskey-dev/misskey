@@ -1,9 +1,8 @@
 <template>
 <mk-ui>
 	<div class="user" v-if="!fetching">
-		<mk-user-header :user="user"/>
-		<mk-user-home v-if="page == 'home'" :user="user"/>
-		<mk-user-graphs v-if="page == 'graphs'" :user="user"/>
+		<x-header :user="user"/>
+		<x-home v-if="page == 'home'" :user="user"/>
 	</div>
 </mk-ui>
 </template>
@@ -11,13 +10,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../../common/scripts/loading';
-import MkUserHeader from './user-header.vue';
-import MkUserHome from './user-home.vue';
+import XHeader from './user.header.vue';
+import XHome from './user.home.vue';
 
 export default Vue.extend({
 	components: {
-		'mk-user-header': MkUserHeader,
-		'mk-user-home': MkUserHome
+		XHeader,
+		XHome
 	},
 	props: {
 		page: {

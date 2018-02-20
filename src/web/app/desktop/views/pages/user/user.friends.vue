@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-friends">
+<div class="friends">
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
@@ -41,7 +41,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-friends
+.friends
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px

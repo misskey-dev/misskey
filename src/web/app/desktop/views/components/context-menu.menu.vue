@@ -1,6 +1,6 @@
 <template>
 <ul class="menu">
-	<li v-for="(item, i) in menu" :key="i" :class="item.type">
+	<li v-for="(item, i) in menu" :class="item.type">
 		<template v-if="item.type == 'item'">
 			<p @click="click(item)"><span :class="$style.icon" v-if="item.icon" v-html="item.icon"></span>{{ item.text }}</p>
 		</template>

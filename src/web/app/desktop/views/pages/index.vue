@@ -1,16 +1,16 @@
 <template>
-	<component v-bind:is="os.isSignedIn ? 'home' : 'welcome'"></component>
+	<component :is="os.isSignedIn ? 'home' : 'welcome'"></component>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import HomeView from './home.vue';
-import WelcomeView from './welcome.vue';
+import Home from './home.vue';
+import Welcome from './welcome.vue';
 
 export default Vue.extend({
 	components: {
-		home: HomeView,
-		welcome: WelcomeView
+		Home,
+		Welcome
 	}
 });
 </script>

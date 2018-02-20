@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging-message" :data-is-me="isMe">
+<div class="message" :data-is-me="isMe">
 	<a class="avatar-anchor" :href="`/${message.user.username}`" :title="message.user.username" target="_blank">
 		<img class="avatar" :src="`${message.user.avatar_url}?thumbnail&size=80`" alt=""/>
 	</a>
@@ -51,7 +51,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-messaging-message
+.message
 	$me-balloon-color = #23A7B6
 
 	padding 10px 12px 10px 12px
@@ -181,7 +181,7 @@ export default Vue.extend({
 			> [data-fa]
 				margin-left 4px
 
-	&:not([data-is-me='true'])
+	&:not([data-is-me])
 		> .avatar-anchor
 			float left
 
@@ -201,7 +201,7 @@ export default Vue.extend({
 			> footer
 				text-align left
 
-	&[data-is-me='true']
+	&[data-is-me]
 		> .avatar-anchor
 			float right
 
@@ -224,14 +224,14 @@ export default Vue.extend({
 					> p.is-deleted
 						color rgba(255, 255, 255, 0.5)
 
-					> [ref='text']
+					> .text
 						&, *
 							color #fff !important
 
 			> footer
 				text-align right
 
-	&[data-is-deleted='true']
+	&[data-is-deleted]
 			> .content-container
 				opacity 0.5
 

@@ -15,9 +15,7 @@ import specialMessage from './special-message.vue';
 import streamIndicator from './stream-indicator.vue';
 import ellipsis from './ellipsis.vue';
 import messaging from './messaging.vue';
-import messagingForm from './messaging-form.vue';
 import messagingRoom from './messaging-room.vue';
-import messagingMessage from './messaging-message.vue';
 import urlPreview from './url-preview.vue';
 
 Vue.component('mk-signin', signin);
@@ -35,7 +33,5 @@ Vue.component('mk-special-message', specialMessage);
 Vue.component('mk-stream-indicator', streamIndicator);
 Vue.component('mk-ellipsis', ellipsis);
 Vue.component('mk-messaging', messaging);
-Vue.component('mk-messaging-form', messagingForm);
 Vue.component('mk-messaging-room', messagingRoom);
-Vue.component('mk-messaging-message', messagingMessage);
 Vue.component('mk-url-preview', urlPreview);

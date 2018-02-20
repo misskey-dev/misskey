@@ -33,12 +33,12 @@ export default define({
 	}
 }).extend({
 	components: {
-		'x-cpu-and-memory': XCpuMemory,
-		'x-cpu': XCpu,
-		'x-memory': XMemory,
-		'x-disk': XDisk,
-		'x-uptimes': XUptimes,
-		'x-info': XInfo
+		XCpuMemory,
+		XCpu,
+		XMemory,
+		XDisk,
+		XUptimes,
+		XInfo
 	},
 	data() {
 		return {
