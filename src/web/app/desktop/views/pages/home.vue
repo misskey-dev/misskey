@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<mk-home :mode="mode"/>
+	<mk-home :mode="mode" @loaded="loaded"/>
 </mk-ui>
 </template>
 
@@ -40,6 +40,10 @@ export default Vue.extend({
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
 	methods: {
+		loaded() {
+			Progress.done();
+		},
+
 		onStreamPost(post) {
 			if (document.hidden && post.user_id != (this as any).os.i.id) {
 				this.unreadCount++;
