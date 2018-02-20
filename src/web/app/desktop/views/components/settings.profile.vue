@@ -1,5 +1,5 @@
 <template>
-<div class="mk-profile-setting">
+<div class="profile">
 	<label class="avatar ui from group">
 		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p>
 		<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=64`" alt="avatar"/>
@@ -32,11 +32,17 @@ import notify from '../../scripts/notify';
 export default Vue.extend({
 	data() {
 		return {
-			name: (this as any).os.i.name,
-			location: (this as any).os.i.location,
-			description: (this as any).os.i.description,
-			birthday: (this as any).os.i.birthday,
+			name: null,
+			location: null,
+			description: null,
+			birthday: null,
 		};
+	},
+	created() {
+		this.name = (this as any).os.i.name;
+		this.location = (this as any).os.i.profile.location;
+		this.description = (this as any).os.i.description;
+		this.birthday = (this as any).os.i.profile.birthday;
 	},
 	methods: {
 		updateAvatar() {
@@ -61,7 +67,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-profile-setting
+.profile
 	> .avatar
 		> img
 			display inline-block

@@ -15,7 +15,7 @@
 	<div class="pages">
 		<section class="profile" v-show="page == 'profile'">
 			<h1>%i18n:desktop.tags.mk-settings.profile%</h1>
-			<mk-profile-setting/>
+			<x-profile/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -73,11 +73,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkProfileSetting from './profile-setting.vue';
+import XProfile from './settings.profile.vue';
 
 export default Vue.extend({
 	components: {
-		'mk-profie-setting': MkProfileSetting
+		'x-profile': XProfile
 	},
 	data() {
 		return {
