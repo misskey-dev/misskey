@@ -4,7 +4,7 @@
 		<p v-if="usage" :class="$style.info"><b>{{ usage.toFixed(1) }}%</b> %i18n:desktop.tags.mk-drive-browser-window.used%</p>
 		<span :class="$style.title">%fa:cloud%%i18n:desktop.tags.mk-drive-browser-window.drive%</span>
 	</template>
-	<mk-drive multiple :init-folder="folder" ref="browser"/>
+	<mk-drive :class="$style.browser" multiple :init-folder="folder" ref="browser"/>
 </mk-window>
 </template>
 
@@ -48,6 +48,9 @@ export default Vue.extend({
 	left 16px
 	margin 0
 	font-size 80%
+
+.browser
+	height 100%
 
 </style>
 
