@@ -1,7 +1,7 @@
 <template>
 <div class="mk-timeline">
 	<mk-friends-maker v-if="alone"/>
-	<div class="loading" v-if="fetching">
+	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
 	<p class="empty" v-if="posts.length == 0 && !fetching">%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
@@ -106,7 +106,7 @@ export default Vue.extend({
 	> .mk-following-setuper
 		border-bottom solid 1px #eee
 
-	> .loading
+	> .fetching
 		padding 64px 0
 
 	> .empty
