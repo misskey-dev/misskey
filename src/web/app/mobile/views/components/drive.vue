@@ -47,7 +47,7 @@
 		</div>
 	</div>
 	<input ref="file" type="file" multiple="multiple" @change="onChangeLocalFile"/>
-	<mk-drive-file-viewer v-if="file != null" :file="file"/>
+	<mk-drive-file-detail v-if="file != null" :file="file"/>
 </div>
 </template>
 

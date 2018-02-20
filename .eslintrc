@@ -12,6 +12,7 @@
 		"vue/html-indent": false,
 		"vue/html-self-closing": false,
 		"vue/no-unused-vars": false,
-		"no-console": 0
+		"no-console": 0,
+		"no-unused-vars": 0
 	}
 }
