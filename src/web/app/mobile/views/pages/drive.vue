@@ -12,7 +12,7 @@
 		is-naked
 		:top="48"
 		@begin-fetch="Progress.start()"
-		@fetched-mid="Progress.set(0.5);"
+		@fetched-mid="Progress.set(0.5)"
 		@fetched="Progress.done()"
 		@move-root="onMoveRoot"
 		@open-folder="onOpenFolder"
