@@ -371,8 +371,7 @@ export default Vue.extend({
 					overflow hidden
 					color #777
 					font-size 1em
-					font-weight 700
-					text-align left
+					font-weight bold
 					text-decoration none
 					text-overflow ellipsis
 
@@ -380,7 +379,6 @@ export default Vue.extend({
 						text-decoration underline
 
 				> .is-bot
-					text-align left
 					margin 0 .5em 0 0
 					padding 1px 6px
 					font-size 12px
@@ -389,7 +387,6 @@ export default Vue.extend({
 					border-radius 3px
 
 				> .username
-					text-align left
 					margin 0 .5em 0 0
 					color #ccc
 

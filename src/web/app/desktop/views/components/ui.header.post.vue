@@ -10,7 +10,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	methods: {
 		post() {
-			(this.$parent.$parent as any).openPostForm();
+			(this as any).apis.post();
 		}
 	}
 });

@@ -80,8 +80,7 @@ export default Vue.extend({
 					overflow hidden
 					color #607073
 					font-size 1em
-					font-weight 700
-					text-align left
+					font-weight bold
 					text-decoration none
 					text-overflow ellipsis
 
@@ -89,7 +88,6 @@ export default Vue.extend({
 						text-decoration underline
 
 				> .username
-					text-align left
 					margin 0 .5em 0 0
 					color #d1d8da
 
