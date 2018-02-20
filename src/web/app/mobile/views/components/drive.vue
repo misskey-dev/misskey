@@ -193,7 +193,7 @@ export default Vue.extend({
 
 			if (this.files.some(f => f.id == file.id)) {
 				const exist = this.files.map(f => f.id).indexOf(file.id);
-				this.files[exist] = file; // TODO
+				Vue.set(this.files, exist, file);
 				return;
 			}
 

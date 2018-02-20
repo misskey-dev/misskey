@@ -417,7 +417,7 @@ export default Vue.extend({
 
 			if (this.folders.some(f => f.id == folder.id)) {
 				const exist = this.folders.map(f => f.id).indexOf(folder.id);
-				this.folders[exist] = folder; // TODO
+				Vue.set(this.folders, exist, folder);
 				return;
 			}
 
@@ -434,7 +434,7 @@ export default Vue.extend({
 
 			if (this.files.some(f => f.id == file.id)) {
 				const exist = this.files.map(f => f.id).indexOf(file.id);
-				this.files[exist] = file; // TODO
+				Vue.set(this.files, exist, file);
 				return;
 			}
 

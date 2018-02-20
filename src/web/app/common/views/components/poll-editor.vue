@@ -28,7 +28,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onInput(i, e) {
-			this.choices[i] = e.target.value; // TODO
+			Vue.set(this.choices, i, e.target.value);
 		},
 
 		add() {
