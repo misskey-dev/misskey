@@ -34,7 +34,7 @@ Vue.mixin({
 import App from './app.vue';
 
 import checkForUpdate from './common/scripts/check-for-update';
-import MiOS from './common/mios';
+import MiOS, { API } from './common/mios';
 
 /**
  * APP ENTRY POINT!
@@ -79,59 +79,32 @@ if (localStorage.getItem('should-refresh') == 'true') {
 	location.reload(true);
 }
 
-type API = {
-	chooseDriveFile: (opts: {
-		title?: string;
-		currentFolder?: any;
-		multiple?: boolean;
-	}) => Promise<any>;
-
-	chooseDriveFolder: (opts: {
-		title?: string;
-		currentFolder?: any;
-	}) => Promise<any>;
-
-	dialog: (opts: {
-		title: string;
-		text: string;
-		actions: Array<{
-			text: string;
-			id: string;
-		}>;
-	}) => Promise<string>;
-
-	input: (opts: {
-		title: string;
-		placeholder?: string;
-		default?: string;
-	}) => Promise<string>;
-
-	post: () => void;
-};
-
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (api: API) => Vue) => void, sw = false) => {
+export default (callback: (launch: (api: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const launch = (api: API) => {
+		const launch = (api: (os: MiOS) => API) => {
+			os.apis = api(os);
 			Vue.mixin({
 				created() {
 					(this as any).os = os;
 					(this as any).api = os.api;
-					(this as any).apis = api;
+					(this as any).apis = os.apis;
 				}
 			});
 
-			return new Vue({
+			const app = new Vue({
 				router: new VueRouter({
 					mode: 'history'
 				}),
 				render: createEl => createEl(App)
 			}).$mount('#app');
+
+			return [app, os] as [Vue, MiOS];
 		};
 
 		try {

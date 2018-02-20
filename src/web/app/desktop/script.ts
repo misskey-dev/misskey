@@ -6,7 +6,7 @@
 import './style.styl';
 
 import init from '../init';
-import fuckAdBlock from './scripts/fuck-ad-block';
+import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
 import composeNotification from '../common/scripts/compose-notification';
 
@@ -15,6 +15,9 @@ import chooseDriveFile from './api/choose-drive-file';
 import dialog from './api/dialog';
 import input from './api/input';
 import post from './api/post';
+import notify from './api/notify';
+import updateAvatar from './api/update-avatar';
+import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
 import MkUser from './views/pages/user/user.vue';
@@ -25,24 +28,27 @@ import MkDrive from './views/pages/drive.vue';
  * init
  */
 init(async (launch) => {
-	/**
-	 * Fuck AD Block
-	 */
-	fuckAdBlock();
-
 	// Register directives
 	require('./views/directives');
 
 	// Register components
 	require('./views/components');
 
-	const app = launch({
+	const [app, os] = launch(os => ({
 		chooseDriveFolder,
 		chooseDriveFile,
 		dialog,
 		input,
-		post
-	});
+		post,
+		notify,
+		updateAvatar: updateAvatar(os),
+		updateBanner: updateBanner(os)
+	}));
+
+	/**
+	 * Fuck AD Block
+	 */
+	fuckAdBlock(os);
 
 	/**
 	 * Init Notification

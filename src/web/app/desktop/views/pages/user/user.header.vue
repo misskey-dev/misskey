@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import updateBanner from '../../../scripts/update-banner';
 
 export default Vue.extend({
 	props: ['user'],
@@ -53,7 +52,7 @@ export default Vue.extend({
 		onBannerClick() {
 			if (!(this as any).os.isSignedIn || (this as any).os.i.id != this.user.id) return;
 
-			updateBanner((this as any).os.i, i => {
+			(this as any).apis.updateBanner((this as any).os.i, i => {
 				this.user.banner_url = i.banner_url;
 			});
 		}

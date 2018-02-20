@@ -5,7 +5,7 @@
 		<header v-html="title"></header>
 		<div class="body" v-html="text"></div>
 		<div class="buttons">
-			<button v-for="button in buttons" @click="click(button)" :key="button.id">{{ button.text }}</button>
+			<button v-for="button in buttons" @click="click(button)">{{ button.text }}</button>
 		</div>
 	</div>
 </div>

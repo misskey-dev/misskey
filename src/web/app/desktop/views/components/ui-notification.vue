@@ -11,24 +11,26 @@ import * as anime from 'animejs';
 export default Vue.extend({
 	props: ['message'],
 	mounted() {
-		anime({
-			targets: this.$el,
-			opacity: 1,
-			translateY: [-64, 0],
-			easing: 'easeOutElastic',
-			duration: 500
-		});
-
-		setTimeout(() => {
+		this.$nextTick(() => {
 			anime({
 				targets: this.$el,
-				opacity: 0,
-				translateY: -64,
-				duration: 500,
-				easing: 'easeInElastic',
-				complete: () => this.$destroy()
+				opacity: 1,
+				translateY: [-64, 0],
+				easing: 'easeOutElastic',
+				duration: 500
 			});
-		}, 6000);
+
+			setTimeout(() => {
+				anime({
+					targets: this.$el,
+					opacity: 0,
+					translateY: -64,
+					duration: 500,
+					easing: 'easeInElastic',
+					complete: () => this.$destroy()
+				});
+			}, 6000);
+		});
 	}
 });
 </script>

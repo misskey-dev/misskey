@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import notify from '../../scripts/notify';
 
 export default Vue.extend({
 	props: ['post'],
@@ -33,9 +32,9 @@ export default Vue.extend({
 				repost_id: this.post.id
 			}).then(data => {
 				this.$emit('posted');
-				notify('%i18n:desktop.tags.mk-repost-form.success%');
+				(this as any).apis.notify('%i18n:desktop.tags.mk-repost-form.success%');
 			}).catch(err => {
-				notify('%i18n:desktop.tags.mk-repost-form.failure%');
+				(this as any).apis.notify('%i18n:desktop.tags.mk-repost-form.failure%');
 			}).then(() => {
 				this.wait = false;
 			});

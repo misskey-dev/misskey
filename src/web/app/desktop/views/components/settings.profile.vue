@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import notify from '../../scripts/notify';
 
 export default Vue.extend({
 	data() {
@@ -59,7 +58,7 @@ export default Vue.extend({
 				description: this.description || null,
 				birthday: this.birthday || null
 			}).then(() => {
-				notify('プロフィールを更新しました');
+				(this as any).apis.notify('プロフィールを更新しました');
 			});
 		}
 	}

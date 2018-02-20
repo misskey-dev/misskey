@@ -16,6 +16,38 @@ declare const _API_URL_: string;
 declare const _SW_PUBLICKEY_: string;
 //#endregion
 
+export type API = {
+	chooseDriveFile: (opts: {
+		title?: string;
+		currentFolder?: any;
+		multiple?: boolean;
+	}) => Promise<any>;
+
+	chooseDriveFolder: (opts: {
+		title?: string;
+		currentFolder?: any;
+	}) => Promise<any>;
+
+	dialog: (opts: {
+		title: string;
+		text: string;
+		actions: Array<{
+			text: string;
+			id?: string;
+		}>;
+	}) => Promise<string>;
+
+	input: (opts: {
+		title: string;
+		placeholder?: string;
+		default?: string;
+	}) => Promise<string>;
+
+	post: () => void;
+
+	notify: (message: string) => void;
+};
+
 /**
  * Misskey Operating System
  */
@@ -48,6 +80,8 @@ export default class MiOS extends EventEmitter {
 	public get debug() {
 		return localStorage.getItem('debug') == 'true';
 	}
+
+	public apis: API;
 
 	/**
 	 * A connection manager of home stream

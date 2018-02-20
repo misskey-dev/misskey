@@ -40,7 +40,6 @@ import Vue from 'vue';
 import * as Sortable from 'sortablejs';
 import Autocomplete from '../../scripts/autocomplete';
 import getKao from '../../../common/scripts/get-kao';
-import notify from '../../scripts/notify';
 
 export default Vue.extend({
 	props: ['reply', 'repost'],
@@ -200,13 +199,13 @@ export default Vue.extend({
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
-				notify(this.repost
+				(this as any).apis.notify(this.repost
 					? '%i18n:desktop.tags.mk-post-form.reposted%'
 					: this.reply
 						? '%i18n:desktop.tags.mk-post-form.replied%'
 						: '%i18n:desktop.tags.mk-post-form.posted%');
 			}).catch(err => {
-				notify(this.repost
+				(this as any).apis.notify(this.repost
 					? '%i18n:desktop.tags.mk-post-form.repost-failed%'
 					: this.reply
 						? '%i18n:desktop.tags.mk-post-form.reply-failed%'
