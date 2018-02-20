@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui-header-nav">
+<div class="nav">
 	<ul>
 		<template v-if="os.isSignedIn">
 			<li class="home" :class="{ active: page == 'home' }">
@@ -17,7 +17,7 @@
 			</li>
 		</template>
 		<li class="ch">
-			<a :href="_CH_URL_" target="_blank">
+			<a :href="chUrl" target="_blank">
 				%fa:tv%
 				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
 			</a>
@@ -34,6 +34,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { chUrl } from '../../../config';
 import MkMessagingWindow from './messaging-window.vue';
 
 export default Vue.extend({
@@ -41,7 +42,8 @@ export default Vue.extend({
 		return {
 			hasUnreadMessagingMessages: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			chUrl
 		};
 	},
 	mounted() {
@@ -84,7 +86,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-header-nav
+.nav
 	display inline-block
 	margin 0
 	padding 0

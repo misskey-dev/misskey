@@ -1,5 +1,5 @@
 <template>
-<form class="mk-ui-header-search" @submit.prevent="onSubmit">
+<form class="search" @submit.prevent="onSubmit">
 	%fa:search%
 	<input v-model="q" type="search" placeholder="%i18n:desktop.tags.mk-ui-header-search.placeholder%"/>
 	<div class="result"></div>
@@ -24,7 +24,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-header-search
+.search
 
 	> [data-fa]
 		display block

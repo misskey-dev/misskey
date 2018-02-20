@@ -1,19 +1,19 @@
 <template>
-<div class="mk-ui-header">
+<div class="header">
 	<mk-special-message/>
 	<div class="main">
 		<div class="backdrop"></div>
 		<div class="main">
 			<div class="container">
 				<div class="left">
-					<mk-ui-header-nav/>
+					<x-nav/>
 				</div>
 				<div class="right">
-					<mk-ui-header-search/>
-					<mk-ui-header-account v-if="os.isSignedIn"/>
-					<mk-ui-header-notifications v-if="os.isSignedIn"/>
-					<mk-ui-header-post-button v-if="os.isSignedIn"/>
-					<mk-ui-header-clock/>
+					<x-search/>
+					<x-account v-if="os.isSignedIn"/>
+					<x-notifications v-if="os.isSignedIn"/>
+					<x-post v-if="os.isSignedIn"/>
+					<x-clock/>
 				</div>
 			</div>
 		</div>
@@ -21,9 +21,30 @@
 </div>
 </template>
 
+<script lang="ts">
+import Vue from 'vue';
+
+import XNav from './ui.header.nav.vue';
+import XSearch from './ui.header.search.vue';
+import XAccount from './ui.header.account.vue';
+import XNotifications from './ui.header.notifications.vue';
+import XPost from './ui.header.post.vue';
+import XClock from './ui.header.clock.vue';
+
+export default Vue.extend({
+	components: {
+		'x-nav': XNav,
+		'x-search': XSearch,
+		'x-account': XAccount,
+		'x-notifications': XNotifications,
+		'x-post': XPost,
+		'x-clock': XClock,
+	}
+});
+</script>
+
 <style lang="stylus" scoped>
-.mk-ui-header
-	display block
+.header
 	position -webkit-sticky
 	position sticky
 	top 0

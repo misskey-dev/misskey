@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui-header-account">
+<div class="account">
 	<button class="header" :data-active="isOpen" @click="toggle">
 		<span class="username">{{ os.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
 		<img class="avatar" :src="`${ os.i.avatar_url }?thumbnail&size=64`" alt="avatar"/>
@@ -81,7 +81,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-header-account
+.account
 	> .header
 		display block
 		margin 0

@@ -1,9 +1,9 @@
 <template>
-<div class="mk-ui-header-notifications">
+<div class="notifications">
 	<button :data-active="isOpen" @click="toggle" title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
 		%fa:R bell%<template v-if="hasUnreadNotifications">%fa:circle%</template>
 	</button>
-	<div class="notifications" v-if="isOpen">
+	<div class="pop" v-if="isOpen">
 		<mk-notifications/>
 	</div>
 </div>
@@ -82,7 +82,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-header-notifications
+.notifications
 
 	> button
 		display block
@@ -114,7 +114,7 @@ export default Vue.extend({
 			font-size 10px
 			color $theme-color
 
-	> .notifications
+	> .pop
 		display block
 		position absolute
 		top 56px

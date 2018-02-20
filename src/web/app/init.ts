@@ -105,6 +105,8 @@ type API = {
 		placeholder?: string;
 		default?: string;
 	}) => Promise<string>;
+
+	post: () => void;
 };
 
 // MiOSを初期化してコールバックする

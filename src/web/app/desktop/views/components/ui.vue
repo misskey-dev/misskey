@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-ui-header/>
+	<x-header/>
 	<div class="content">
 		<slot></slot>
 	</div>
@@ -10,9 +10,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkPostFormWindow from './post-form-window.vue';
+import XHeader from './ui.header.vue';
 
 export default Vue.extend({
+	components: {
+		'x-header': XHeader
+	},
 	mounted() {
 		document.addEventListener('keydown', this.onKeydown);
 	},
@@ -20,17 +23,12 @@ export default Vue.extend({
 		document.removeEventListener('keydown', this.onKeydown);
 	},
 	methods: {
-		openPostForm() {
-			document.body.appendChild(new MkPostFormWindow({
-				parent: this
-			}).$mount().$el);
-		},
 		onKeydown(e) {
 			if (e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA') return;
 
 			if (e.which == 80 || e.which == 78) { // p or n
 				e.preventDefault();
-				this.openPostForm();
+				(this as any).apis.post();
 			}
 		}
 	}

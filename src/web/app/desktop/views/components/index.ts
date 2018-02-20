@@ -1,13 +1,6 @@
 import Vue from 'vue';
 
 import ui from './ui.vue';
-import uiHeader from './ui-header.vue';
-import uiHeaderAccount from './ui-header-account.vue';
-import uiHeaderClock from './ui-header-clock.vue';
-import uiHeaderNav from './ui-header-nav.vue';
-import uiHeaderNotifications from './ui-header-notifications.vue';
-import uiHeaderPostButton from './ui-header-post-button.vue';
-import uiHeaderSearch from './ui-header-search.vue';
 import uiNotification from './ui-notification.vue';
 import home from './home.vue';
 import timeline from './timeline.vue';
@@ -46,13 +39,6 @@ import wBroadcast from './widgets/broadcast.vue';
 import wTimemachine from './widgets/timemachine.vue';
 
 Vue.component('mk-ui', ui);
-Vue.component('mk-ui-header', uiHeader);
-Vue.component('mk-ui-header-account', uiHeaderAccount);
-Vue.component('mk-ui-header-clock', uiHeaderClock);
-Vue.component('mk-ui-header-nav', uiHeaderNav);
-Vue.component('mk-ui-header-notifications', uiHeaderNotifications);
-Vue.component('mk-ui-header-post-button', uiHeaderPostButton);
-Vue.component('mk-ui-header-search', uiHeaderSearch);
 Vue.component('mk-ui-notification', uiNotification);
 Vue.component('mk-home', home);
 Vue.component('mk-timeline', timeline);

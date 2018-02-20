@@ -30,16 +30,25 @@ export default Vue.extend({
 			user: null
 		};
 	},
-	mounted() {
-		Progress.start();
-		(this as any).api('users/show', {
-			username: this.$route.params.user
-		}).then(user => {
-			this.user = user;
-			this.fetching = false;
-			Progress.done();
-			document.title = user.name + ' | Misskey';
-		});
+	created() {
+		this.fetch();
+	},
+	watch: {
+		$route: 'fetch'
+	},
+	methods: {
+		fetch() {
+			this.fetching = true;
+			Progress.start();
+			(this as any).api('users/show', {
+				username: this.$route.params.user
+			}).then(user => {
+				this.user = user;
+				this.fetching = false;
+				Progress.done();
+				document.title = user.name + ' | Misskey';
+			});
+		}
 	}
 });
 </script>

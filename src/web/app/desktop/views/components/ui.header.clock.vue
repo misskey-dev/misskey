@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui-header-clock">
+<div class="clock">
 	<div class="header">
 		<time ref="time">
 			<span class="yyyymmdd">{{ yyyy }}/{{ mm }}/{{ dd }}</span>
@@ -56,7 +56,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-header-clock
+.clock
 	display inline-block
 	overflow visible
 

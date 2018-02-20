@@ -14,6 +14,7 @@ import chooseDriveFolder from './api/choose-drive-folder';
 import chooseDriveFile from './api/choose-drive-file';
 import dialog from './api/dialog';
 import input from './api/input';
+import post from './api/post';
 
 import MkIndex from './views/pages/index.vue';
 import MkUser from './views/pages/user/user.vue';
@@ -37,7 +38,8 @@ init(async (launch) => {
 		chooseDriveFolder,
 		chooseDriveFile,
 		dialog,
-		input
+		input,
+		post
 	});
 
 	/**

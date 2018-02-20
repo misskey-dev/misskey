@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui-header-post-button">
+<div class="post">
 	<button @click="post" title="%i18n:desktop.tags.mk-ui-header-post-button.post%">%fa:pencil-alt%</button>
 </div>
 </template>
@@ -17,7 +17,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-header-post-button
+.post
 	display inline-block
 	padding 8px
 	height 100%
