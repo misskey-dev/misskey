@@ -44,7 +44,7 @@ export default Vue.component('mk-post-html', {
 				case 'url':
 					return createElement(MkUrl, {
 						props: {
-							href: escape(token.content),
+							url: escape(token.content),
 							target: '_blank'
 						}
 					});

@@ -18,6 +18,7 @@ import messaging from './messaging.vue';
 import messagingForm from './messaging-form.vue';
 import messagingRoom from './messaging-room.vue';
 import messagingMessage from './messaging-message.vue';
+import urlPreview from './url-preview.vue';
 
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
@@ -37,3 +38,4 @@ Vue.component('mk-messaging', messaging);
 Vue.component('mk-messaging-form', messagingForm);
 Vue.component('mk-messaging-room', messagingRoom);
 Vue.component('mk-messaging-message', messagingMessage);
+Vue.component('mk-url-preview', urlPreview);
