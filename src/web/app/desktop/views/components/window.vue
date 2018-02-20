@@ -563,7 +563,7 @@ export default Vue.extend({
 						margin 0
 						padding 0
 						cursor pointer
-						font-size 1.2em
+						font-size 1em
 						color rgba(#000, 0.4)
 						border none
 						outline none

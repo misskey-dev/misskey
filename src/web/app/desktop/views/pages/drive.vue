@@ -1,13 +1,20 @@
 <template>
 <div class="mk-drive-page">
-	<mk-drive :folder="folder" @move-root="onMoveRoot" @open-folder="onOpenFolder"/>
+	<mk-drive :init-folder="folder" @move-root="onMoveRoot" @open-folder="onOpenFolder"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
-	props: ['folder'],
+	data() {
+		return {
+			folder: null
+		};
+	},
+	created() {
+		this.folder = this.$route.params.folder;
+	},
 	mounted() {
 		document.title = 'Misskey Drive';
 	},

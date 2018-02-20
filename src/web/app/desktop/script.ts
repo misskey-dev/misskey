@@ -18,6 +18,8 @@ import post from './api/post';
 
 import MkIndex from './views/pages/index.vue';
 import MkUser from './views/pages/user/user.vue';
+import MkSelectDrive from './views/pages/selectdrive.vue';
+import MkDrive from './views/pages/drive.vue';
 
 /**
  * init
@@ -58,6 +60,12 @@ init(async (launch) => {
 
 	app.$router.addRoutes([{
 		path: '/', component: MkIndex
+	}, {
+		path: '/i/drive', component: MkDrive
+	}, {
+		path: '/i/drive/folder/:folder', component: MkDrive
+	}, {
+		path: '/selectdrive', component: MkSelectDrive
 	}, {
 		path: '/:user', component: MkUser
 	}]);
