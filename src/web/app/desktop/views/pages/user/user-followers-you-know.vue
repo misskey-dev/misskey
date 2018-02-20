@@ -1,13 +1,13 @@
 <template>
 <div class="mk-user-followers-you-know">
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
-	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
-	<div v-if="!initializing && users.length > 0">
-	<template each={ user in users }>
-		<a href={ '/' + user.username }><img src={ user.avatar_url + '?thumbnail&size=64' } alt={ user.name }/></a>
-	</template>
+	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
+	<div v-if="!fetching && users.length > 0">
+	<router-link v-for="user in users" to="`/${user.username}`" :key="user.id">
+		<img :src="`${user.avatar_url}?thumbnail&size=64`" :alt="user.name" v-user-preview="user.id"/>
+	</router-link>
 	</div>
-	<p class="empty" v-if="!initializing && users.length == 0">%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
 </div>
 </template>
 
