@@ -59,7 +59,7 @@ init(async (launch) => {
 	}
 
 	app.$router.addRoutes([{
-		path: '/', component: MkIndex
+		path: '/', name: 'index', component: MkIndex
 	}, {
 		path: '/i/drive', component: MkDrive
 	}, {

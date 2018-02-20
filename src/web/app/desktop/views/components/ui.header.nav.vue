@@ -2,7 +2,7 @@
 <div class="nav">
 	<ul>
 		<template v-if="os.isSignedIn">
-			<li class="home" :class="{ active: page == 'home' }">
+			<li class="home" :class="{ active: $route.name == 'index' }">
 				<router-link to="/">
 					%fa:home%
 					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
