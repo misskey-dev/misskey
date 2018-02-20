@@ -1,10 +1,12 @@
 <template>
-	<mk-window ref="window" is-modal width="800px">
+	<mk-window ref="window" is-modal width="800px" :can-close="false">
 		<span slot="header">%fa:crop%{{ title }}</span>
 		<div class="body">
-			<vue-cropper
+			<vue-cropper ref="cropper"
 				:src="image.url"
 				:view-mode="1"
+				:aspect-ratio="aspectRatio"
+				:container-style="{ width: '100%', 'max-height': '400px' }"
 			/>
 		</div>
 		<div :class="$style.actions">
@@ -17,7 +19,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import VueCropper from 'vue-cropperjs';
+
 export default Vue.extend({
+	components: {
+		VueCropper
+	},
 	props: {
 		image: {
 			type: Object,

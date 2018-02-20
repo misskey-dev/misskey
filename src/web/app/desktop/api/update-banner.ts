@@ -8,7 +8,7 @@ export default (os: OS) => (cb, file = null) => {
 
 		const w = new CropWindow({
 			propsData: {
-				file: file,
+				image: file,
 				title: 'バナーとして表示する部分を選択',
 				aspectRatio: 16 / 9
 			}
@@ -60,7 +60,7 @@ export default (os: OS) => (cb, file = null) => {
 		};
 
 		xhr.upload.onprogress = e => {
-			if (e.lengthComputable) (dialog as any).updateProgress(e.loaded, e.total);
+			if (e.lengthComputable) (dialog as any).update(e.loaded, e.total);
 		};
 
 		xhr.send(data);
@@ -68,8 +68,11 @@ export default (os: OS) => (cb, file = null) => {
 
 	const set = file => {
 		os.api('i/update', {
-			avatar_id: file.id
+			banner_id: file.id
 		}).then(i => {
+			os.i.banner_id = i.banner_id;
+			os.i.banner_url = i.banner_url;
+
 			os.apis.dialog({
 				title: '%fa:info-circle%バナーを更新しました',
 				text: '新しいバナーが反映されるまで時間がかかる場合があります。',

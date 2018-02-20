@@ -49,7 +49,7 @@
 		</div>
 	</div>
 	<div class="dropzone" v-if="draghover"></div>
-	<mk-uploader @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>
+	<mk-uploader ref="uploader" @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" @change="onChangeFileInput"/>
 </div>
 </template>

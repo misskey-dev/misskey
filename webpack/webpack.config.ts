@@ -101,6 +101,12 @@ module.exports = Object.keys(langs).map(lang => {
 					{ loader: 'stylus-loader' }
 				]
 			}, {
+				test: /\.css$/,
+				use: [
+					{ loader: 'style-loader' },
+					{ loader: 'css-loader' }
+				]
+			}, {
 				test: /\.ts$/,
 				exclude: /node_modules/,
 				use: [{

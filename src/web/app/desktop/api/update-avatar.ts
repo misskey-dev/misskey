@@ -8,7 +8,7 @@ export default (os: OS) => (cb, file = null) => {
 
 		const w = new CropWindow({
 			propsData: {
-				file: file,
+				image: file,
 				title: 'アバターとして表示する部分を選択',
 				aspectRatio: 1 / 1
 			}
@@ -60,7 +60,7 @@ export default (os: OS) => (cb, file = null) => {
 		};
 
 		xhr.upload.onprogress = e => {
-			if (e.lengthComputable) (dialog as any).updateProgress(e.loaded, e.total);
+			if (e.lengthComputable) (dialog as any).update(e.loaded, e.total);
 		};
 
 		xhr.send(data);
@@ -70,6 +70,9 @@ export default (os: OS) => (cb, file = null) => {
 		os.api('i/update', {
 			avatar_id: file.id
 		}).then(i => {
+			os.i.avatar_id = i.avatar_id;
+			os.i.avatar_url = i.avatar_url;
+
 			os.apis.dialog({
 				title: '%fa:info-circle%アバターを更新しました',
 				text: '新しいアバターが反映されるまで時間がかかる場合があります。',

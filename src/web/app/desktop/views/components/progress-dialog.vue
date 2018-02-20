@@ -1,17 +1,15 @@
 <template>
 <mk-window ref="window" :is-modal="false" :can-close="false" width="500px" @closed="$destroy">
-	<span to="header">{{ title }}<mk-ellipsis/></span>
-	<div to="content">
-		<div :class="$style.body">
-			<p :class="$style.init" v-if="isNaN(value)">待機中<mk-ellipsis/></p>
-			<p :class="$style.percentage" v-if="!isNaN(value)">{{ Math.floor((value / max) * 100) }}</p>
-			<progress :class="$style.progress"
-				v-if="!isNaN(value) && value < max"
-				:value="isNaN(value) ? 0 : value"
-				:max="max"
-			></progress>
-			<div :class="[$style.progress, $style.waiting]" v-if="value >= max"></div>
-		</div>
+	<span slot="header">{{ title }}<mk-ellipsis/></span>
+	<div :class="$style.body">
+		<p :class="$style.init" v-if="isNaN(value)">待機中<mk-ellipsis/></p>
+		<p :class="$style.percentage" v-if="!isNaN(value)">{{ Math.floor((value / max) * 100) }}</p>
+		<progress :class="$style.progress"
+			v-if="!isNaN(value) && value < max"
+			:value="isNaN(value) ? 0 : value"
+			:max="max"
+		></progress>
+		<div :class="[$style.progress, $style.waiting]" v-if="value >= max"></div>
 	</div>
 </mk-window>
 </template>
@@ -30,6 +28,9 @@ export default Vue.extend({
 		update(value, max) {
 			this.value = parseInt(value, 10);
 			this.max = parseInt(max, 10);
+		},
+		close() {
+			(this.$refs.window as any).close();
 		}
 	}
 });

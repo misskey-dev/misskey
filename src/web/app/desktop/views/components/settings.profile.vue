@@ -45,11 +45,7 @@ export default Vue.extend({
 	},
 	methods: {
 		updateAvatar() {
-			(this as any).apis.chooseDriveFile({
-				multiple: false
-			}).then(file => {
-				(this as any).apis.updateAvatar(file);
-			});
+			(this as any).apis.updateAvatar();
 		},
 		save() {
 			(this as any).api('i/update', {

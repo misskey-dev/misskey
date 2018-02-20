@@ -90,10 +90,12 @@ export default (callback: (launch: (api: (os: MiOS) => API) => [Vue, MiOS]) => v
 		const launch = (api: (os: MiOS) => API) => {
 			os.apis = api(os);
 			Vue.mixin({
-				created() {
-					(this as any).os = os;
-					(this as any).api = os.api;
-					(this as any).apis = os.apis;
+				data() {
+					return {
+						os,
+						api: os.api,
+						apis: os.apis
+					};
 				}
 			});
 
