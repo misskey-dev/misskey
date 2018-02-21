@@ -196,7 +196,7 @@ export default Vue.extend({
 		},
 
 		newWindow() {
-			this.browser.newWindow(this.folder.id);
+			this.browser.newWindow(this.folder);
 		},
 
 		rename() {

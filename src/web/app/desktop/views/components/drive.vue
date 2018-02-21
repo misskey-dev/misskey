@@ -375,10 +375,10 @@ export default Vue.extend({
 			}
 		},
 
-		newWindow(folderId) {
+		newWindow(folder) {
 			document.body.appendChild(new MkDriveWindow({
 				propsData: {
-					folder: folderId
+					folder: folder
 				}
 			}).$mount().$el);
 		},
