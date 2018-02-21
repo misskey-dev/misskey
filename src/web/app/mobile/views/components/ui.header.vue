@@ -1,10 +1,10 @@
 <template>
-<div class="mk-ui-header">
+<div class="header">
 	<mk-special-message/>
 	<div class="main">
 		<div class="backdrop"></div>
 		<div class="content">
-			<button class="nav" @click="parent.toggleDrawer">%fa:bars%</button>
+			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages">%fa:circle%</template>
 			<h1>
 				<slot>Misskey</slot>
@@ -83,7 +83,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-header
+.header
 	$height = 48px
 
 	position fixed

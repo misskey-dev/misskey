@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui-nav" :style="{ display: isOpen ? 'block' : 'none' }">
+<div class="nav" :style="{ display: isOpen ? 'block' : 'none' }">
 	<div class="backdrop" @click="parent.toggleDrawer"></div>
 	<div class="body">
 		<router-link class="me" v-if="os.isSignedIn" :to="`/${os.i.username}`">
@@ -97,7 +97,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-nav
+.nav
 	.backdrop
 		position fixed
 		top 0

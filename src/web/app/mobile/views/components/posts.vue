@@ -2,7 +2,7 @@
 <div class="mk-posts">
 	<slot name="head"></slot>
 	<template v-for="(post, i) in _posts">
-		<mk-posts-post :post="post" :key="post.id"/>
+		<x-post :post="post" :key="post.id"/>
 		<p class="date" v-if="i != posts.length - 1 && post._date != _posts[i + 1]._date">
 			<span>%fa:angle-up%{{ post._datetext }}</span>
 			<span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span>
@@ -14,7 +14,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import XPost from './posts.post.vue';
+
 export default Vue.extend({
+	components: {
+		XPost
+	},
 	props: {
 		posts: {
 			type: Array,

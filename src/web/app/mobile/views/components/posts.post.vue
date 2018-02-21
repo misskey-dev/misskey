@@ -1,58 +1,62 @@
 <template>
-<div class="mk-posts-post" :class="{ repost: isRepost }">
+<div class="post" :class="{ repost: isRepost }">
 	<div class="reply-to" v-if="p.reply">
-		<mk-timeline-post-sub post={ p.reply }/>
+		<x-sub :post="p.reply"/>
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<a class="avatar-anchor" href={ '/' + post.user.username }>
-				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
-			</a>
-			%fa:retweet%{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{'))}<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>{'%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1)}
+			<router-link class="avatar-anchor" :to="`/${post.user.username}`">
+				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			</router-link>
+			%fa:retweet%
+			{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}
+			<router-link class="name" :to="`/${post.user.username}`">{{ post.user.name }}</router-link>
+			{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}
 		</p>
-		<mk-time time={ post.created_at }/>
+		<mk-time :time="post.created_at"/>
 	</div>
 	<article>
-		<a class="avatar-anchor" href={ '/' + p.user.username }>
-			<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=96' } alt="avatar"/>
-		</a>
+		<router-link class="avatar-anchor" :to="`/${p.user.username}`">
+			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
+		</router-link>
 		<div class="main">
 			<header>
-				<a class="name" href={ '/' + p.user.username }>{ p.user.name }</a>
+				<router-link class="name" :to="`/${p.user.username}`">{{ p.user.name }}</router-link>
 				<span class="is-bot" v-if="p.user.is_bot">bot</span>
-				<span class="username">@{ p.user.username }</span>
-				<a class="created-at" href={ url }>
-					<mk-time time={ p.created_at }/>
-				</a>
+				<span class="username">@{{ p.user.username }}</span>
+				<router-link class="created-at" :to="url">
+					<mk-time :time="p.created_at"/>
+				</router-link>
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
-					<p class="channel" v-if="p.channel != null"><a href={ _CH_URL_ + '/' + p.channel.id } target="_blank">{ p.channel.title }</a>:</p>
+					<p class="channel" v-if="p.channel != null"><a target="_blank">{{ p.channel.title }}</a>:</p>
 					<a class="reply" v-if="p.reply">
 						%fa:reply%
 					</a>
-					<p class="dummy"></p>
+					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 					<a class="quote" v-if="p.repost != null">RP:</a>
 				</div>
 				<div class="media" v-if="p.media">
-					<mk-images images={ p.media }/>
+					<mk-images :images="p.media"/>
 				</div>
-				<mk-poll v-if="p.poll" post={ p } ref="pollViewer"/>
-				<span class="app" v-if="p.app">via <b>{ p.app.name }</b></span>
+				<mk-poll v-if="p.poll" :post="p" ref="pollViewer"/>
+				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 				<div class="repost" v-if="p.repost">%fa:quote-right -flip-h%
-					<mk-post-preview class="repost" post={ p.repost }/>
+					<mk-post-preview class="repost" :post="p.repost"/>
 				</div>
 			</div>
 			<footer>
-				<mk-reactions-viewer post={ p } ref="reactionsViewer"/>
+				<mk-reactions-viewer :post="p" ref="reactionsViewer"/>
 				<button @click="reply">
-					%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
+					%fa:reply%<p class="count" v-if="p.replies_count > 0">{{ p.replies_count }}</p>
 				</button>
 				<button @click="repost" title="Repost">
-					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
+					%fa:retweet%<p class="count" v-if="p.repost_count > 0">{{ p.repost_count }}</p>
 				</button>
 				<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton">
-					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
+					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 				</button>
 				<button class="menu" @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
@@ -65,7 +69,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import openPostForm from '../scripts/open-post-form';
 
 export default Vue.extend({
 	props: ['post'],
@@ -154,7 +157,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-posts-post
+.post
 	font-size 12px
 	border-bottom solid 1px #eaeaea
 
