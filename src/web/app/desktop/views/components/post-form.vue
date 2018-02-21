@@ -9,6 +9,7 @@
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
+			v-autocomplete
 		></textarea>
 		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">
@@ -38,7 +39,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
-import Autocomplete from '../../scripts/autocomplete';
 import getKao from '../../../common/scripts/get-kao';
 
 export default Vue.extend({
@@ -96,9 +96,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.$nextTick(() => {
-			this.autocomplete = new Autocomplete(this.$refs.text);
-			this.autocomplete.attach();
-
 			// 書きかけの投稿を復元
 			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 			if (draft) {

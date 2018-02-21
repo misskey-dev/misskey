@@ -1,5 +1,18 @@
-import getCaretCoordinates from 'textarea-caret';
-import * as riot from 'riot';
+import * as getCaretCoordinates from 'textarea-caret';
+import MkAutocomplete from '../components/autocomplete.vue';
+
+export default {
+	bind(el, binding, vn) {
+		const self = el._userPreviewDirective_ = {} as any;
+		self.x = new Autocomplete(el);
+		self.x.attach();
+	},
+
+	unbind(el, binding, vn) {
+		const self = el._userPreviewDirective_;
+		self.x.close();
+	}
+};
 
 /**
  * オートコンプリートを管理するクラス。
@@ -65,7 +78,15 @@ class Autocomplete {
 		this.close();
 
 		// サジェスト要素作成
-		const tag = document.createElement('mk-autocomplete-suggestion');
+		this.suggestion = new MkAutocomplete({
+			propsData: {
+				textarea: this.textarea,
+				complete: this.complete,
+				close: this.close,
+				type: type,
+				q: q
+			}
+		}).$mount();
 
 		// ~ サジェストを表示すべき位置を計算 ~
 
@@ -76,20 +97,11 @@ class Autocomplete {
 		const x = rect.left + window.pageXOffset + caretPosition.left;
 		const y = rect.top + window.pageYOffset + caretPosition.top;
 
-		tag.style.left = x + 'px';
-		tag.style.top = y + 'px';
+		this.suggestion.$el.style.left = x + 'px';
+		this.suggestion.$el.style.top = y + 'px';
 
 		// 要素追加
-		const el = document.body.appendChild(tag);
-
-		// マウント
-		this.suggestion = (riot as any).mount(el, {
-			textarea: this.textarea,
-			complete: this.complete,
-			close: this.close,
-			type: type,
-			q: q
-		})[0];
+		document.body.appendChild(this.suggestion.$el);
 	}
 
 	/**
@@ -98,7 +110,7 @@ class Autocomplete {
 	private close() {
 		if (this.suggestion == null) return;
 
-		this.suggestion.unmount();
+		this.suggestion.$destroy();
 		this.suggestion = null;
 
 		this.textarea.focus();
@@ -128,5 +140,3 @@ class Autocomplete {
 		this.textarea.setSelectionRange(pos, pos);
 	}
 }
-
-export default Autocomplete;
