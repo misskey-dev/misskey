@@ -1,14 +1,12 @@
 <template>
-<div>
-	<a class="mk-images-image"
-		:href="image.url"
-		@mousemove="onMousemove"
-		@mouseleave="onMouseleave"
-		@click.prevent="onClick"
-		:style="style"
-		:title="image.name"
-	></a>
-</div>
+<a class="mk-images-image"
+	:href="image.url"
+	@mousemove="onMousemove"
+	@mouseleave="onMouseleave"
+	@click.prevent="onClick"
+	:style="style"
+	:title="image.name"
+></a>
 </template>
 
 <script lang="ts">
@@ -53,18 +51,15 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-images-image
+	display block
+	cursor zoom-in
 	overflow hidden
+	width 100%
+	height 100%
+	background-position center
 	border-radius 4px
 
-	> a
-		display block
-		cursor zoom-in
-		overflow hidden
-		width 100%
-		height 100%
-		background-position center
-
-		&:not(:hover)
-			background-size cover
+	&:not(:hover)
+		background-size cover
 
 </style>

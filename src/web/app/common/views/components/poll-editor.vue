@@ -4,7 +4,7 @@
 		%fa:exclamation-triangle%%i18n:common.tags.mk-poll-editor.no-only-one-choice%
 	</p>
 	<ul ref="choices">
-		<li v-for="(choice, i) in choices" :key="choice">
+		<li v-for="(choice, i) in choices">
 			<input :value="choice" @input="onInput(i, $event)" :placeholder="'%i18n:common.tags.mk-poll-editor.choice-n%'.replace('{}', i + 1)">
 			<button @click="remove(i)" title="%i18n:common.tags.mk-poll-editor.remove%">
 				%fa:times%
@@ -26,6 +26,11 @@ export default Vue.extend({
 			choices: ['', '']
 		};
 	},
+	watch: {
+		choices() {
+			this.$emit('updated');
+		}
+	},
 	methods: {
 		onInput(i, e) {
 			Vue.set(this.choices, i, e.target.value);
@@ -33,7 +38,9 @@ export default Vue.extend({
 
 		add() {
 			this.choices.push('');
-			(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+			this.$nextTick(() => {
+				(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+			});
 		},
 
 		remove(i) {
@@ -53,6 +60,7 @@ export default Vue.extend({
 		set(data) {
 			if (data.choices.length == 0) return;
 			this.choices = data.choices;
+			if (data.choices.length == 1) this.choices = this.choices.concat('');
 		}
 	}
 });

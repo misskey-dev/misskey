@@ -11,15 +11,15 @@
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
 		></textarea>
 		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
-			<ul ref="media">
-				<li v-for="file in files" :key="file.id">
+			<x-draggable :list="files" :options="{ animation: 150 }">
+				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.url}?thumbnail&size=64)` }" :title="file.name"></div>
 					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:desktop.tags.mk-post-form.attach-cancel%" alt=""/>
-				</li>
-			</ul>
+				</div>
+			</x-draggable>
 			<p class="remain">{{ 4 - files.length }}/4</p>
 		</div>
-		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false"/>
+		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader @uploaded="attachMedia" @change="onChangeUploadings"/>
 	<button class="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
@@ -37,11 +37,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as Sortable from 'sortablejs';
+import * as XDraggable from 'vuedraggable';
 import Autocomplete from '../../scripts/autocomplete';
 import getKao from '../../../common/scripts/get-kao';
 
 export default Vue.extend({
+	components: {
+		XDraggable
+	},
 	props: ['reply', 'repost'],
 	data() {
 		return {
@@ -80,6 +83,17 @@ export default Vue.extend({
 			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.repost);
 		}
 	},
+	watch: {
+		text() {
+			this.saveDraft();
+		},
+		poll() {
+			this.saveDraft();
+		},
+		files() {
+			this.saveDraft();
+		}
+	},
 	mounted() {
 		this.$nextTick(() => {
 			this.autocomplete = new Autocomplete(this.$refs.text);
@@ -92,14 +106,12 @@ export default Vue.extend({
 				this.files = draft.data.files;
 				if (draft.data.poll) {
 					this.poll = true;
-					(this.$refs.poll as any).set(draft.data.poll);
+					this.$nextTick(() => {
+						(this.$refs.poll as any).set(draft.data.poll);
+					});
 				}
 				this.$emit('change-attached-media', this.files);
 			}
-
-			new Sortable(this.$refs.media, {
-				animation: 150
-			});
 		});
 	},
 	beforeDestroy() {
@@ -322,22 +334,16 @@ export default Vue.extend({
 				padding 0
 				color rgba($theme-color, 0.4)
 
-			> ul
-				display block
-				margin 0
+			> div
 				padding 4px
-				list-style none
 
 				&:after
 					content ""
 					display block
 					clear both
 
-				> li
-					display block
+				> div
 					float left
-					margin 0
-					padding 0
 					border solid 4px transparent
 					cursor move
 
