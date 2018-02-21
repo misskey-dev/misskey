@@ -147,7 +147,7 @@ export default Vue.extend({
 						const el = evt.item;
 						const id = el.getAttribute('data-widget-id');
 						el.parentNode.removeChild(el);
-						(this as any).os.i.client_settings.home = this.home.filter(w => w.id != id);
+						this.home = this.home.filter(w => w.id != id);
 						this.saveHome();
 					}
 				}));
