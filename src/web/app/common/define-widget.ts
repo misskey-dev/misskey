@@ -30,7 +30,6 @@ export default function<T extends object>(data: {
 			}
 
 			this.$watch('props', newProps => {
-				console.log(this.id, newProps);
 				(this as any).api('i/update_home', {
 					id: this.id,
 					data: newProps

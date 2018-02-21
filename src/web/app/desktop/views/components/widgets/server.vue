@@ -62,14 +62,18 @@ export default define({
 	},
 	methods: {
 		toggle() {
-			if (this.props.design == 5) {
+			if (this.props.view == 5) {
+				this.props.view = 0;
+			} else {
+				this.props.view++;
+			}
+		},
+		func() {
+			if (this.props.design == 2) {
 				this.props.design = 0;
 			} else {
 				this.props.design++;
 			}
-		},
-		func() {
-			this.toggle();
 		}
 	}
 });
