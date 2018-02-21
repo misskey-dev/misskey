@@ -41,8 +41,8 @@ export default Vue.extend({
 		return {
 			network: navigator.onLine,
 			end: false,
-			internet: false,
-			server: false
+			internet: null,
+			server: null
 		};
 	},
 	mounted() {

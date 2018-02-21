@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import api from './scripts/api';
 import signout from './scripts/signout';
@@ -7,6 +8,8 @@ import DriveStreamManager from './scripts/streaming/drive-stream-manager';
 import ServerStreamManager from './scripts/streaming/server-stream-manager';
 import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
 import MessagingIndexStreamManager from './scripts/streaming/messaging-index-stream-manager';
+
+import Err from '../common/views/components/connect-failed.vue';
 
 //#region environment variables
 declare const _VERSION_: string;
@@ -214,8 +217,10 @@ export default class MiOS extends EventEmitter {
 			// When failure
 			.catch(() => {
 				// Render the error screen
-				//document.body.innerHTML = '<mk-error />';
-				//riot.mount('*');
+				document.body.innerHTML = '<div id="err"></div>';
+				new Vue({
+					render: createEl => createEl(Err)
+				}).$mount('#err');
 
 				Progress.done();
 			});

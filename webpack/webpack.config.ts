@@ -2,6 +2,7 @@
  * webpack configuration
  */
 
+import * as fs from 'fs';
 const minify = require('html-minifier').minify;
 import I18nReplacer from '../src/common/build/i18n';
 import { pattern as faPattern, replacement as faReplacement } from '../src/common/build/fa';
@@ -19,7 +20,11 @@ global['collapseSpacesReplacement'] = html => {
 		collapseWhitespace: true,
 		collapseInlineTagWhitespace: true,
 		keepClosingSlash: true
-	});
+	}).replace(/\t/g, '');
+};
+
+global['base64replacement'] = (_, key) => {
+	return fs.readFileSync(__dirname + '/../src/web/' + key, 'base64');
 };
 
 module.exports = Object.keys(langs).map(lang => {
@@ -58,6 +63,12 @@ module.exports = Object.keys(langs).map(lang => {
 					options: {
 						cssSourceMap: false,
 						preserveWhitespace: false
+					}
+				}, {
+					loader: 'replace',
+					query: {
+						search: /%base64:(.+?)%/g.toString(),
+						replace: 'base64replacement'
 					}
 				}, {
 					loader: 'webpack-replace-loader',
