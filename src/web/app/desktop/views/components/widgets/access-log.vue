@@ -100,6 +100,7 @@ export default define({
 
 			> .ip
 				margin-right 4px
+				padding 0 4px
 
 			> b
 				margin-right 4px

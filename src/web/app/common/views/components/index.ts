@@ -17,6 +17,7 @@ import ellipsis from './ellipsis.vue';
 import messaging from './messaging.vue';
 import messagingRoom from './messaging-room.vue';
 import urlPreview from './url-preview.vue';
+import twitterSetting from './twitter-setting.vue';
 
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
@@ -35,3 +36,4 @@ Vue.component('mk-ellipsis', ellipsis);
 Vue.component('mk-messaging', messaging);
 Vue.component('mk-messaging-room', messagingRoom);
 Vue.component('mk-url-preview', urlPreview);
+Vue.component('mk-twitter-setting', twitterSetting);

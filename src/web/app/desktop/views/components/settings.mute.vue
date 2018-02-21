@@ -1,5 +1,5 @@
 <template>
-<div class="mk-mute-setting">
+<div>
 	<div class="none ui info" v-if="!fetching && users.length == 0">
 		<p>%fa:info-circle%%i18n:desktop.tags.mk-mute-setting.no-users%</p>
 	</div>
@@ -18,7 +18,7 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			users: null
+			users: []
 		};
 	},
 	mounted() {

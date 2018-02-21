@@ -30,7 +30,7 @@
 
 		<section class="mute" v-show="page == 'mute'">
 			<h1>%i18n:desktop.tags.mk-settings.mute%</h1>
-			<mk-mute-setting/>
+			<x-mute/>
 		</section>
 
 		<section class="apps" v-show="page == 'apps'">
@@ -45,12 +45,12 @@
 
 		<section class="password" v-show="page == 'security'">
 			<h1>%i18n:desktop.tags.mk-settings.password%</h1>
-			<mk-password-setting/>
+			<x-password/>
 		</section>
 
 		<section class="2fa" v-show="page == 'security'">
 			<h1>%i18n:desktop.tags.mk-settings.2fa%</h1>
-			<mk-2fa-setting/>
+			<x-2fa/>
 		</section>
 
 		<section class="signin" v-show="page == 'security'">
@@ -74,10 +74,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import XProfile from './settings.profile.vue';
+import XMute from './settings.mute.vue';
+import XPassword from './settings.password.vue';
+import X2fa from './settings.2fa.vue';
 
 export default Vue.extend({
 	components: {
-		XProfile
+		XProfile,
+		XMute,
+		XPassword,
+		X2fa
 	},
 	data() {
 		return {
