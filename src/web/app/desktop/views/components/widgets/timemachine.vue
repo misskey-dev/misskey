@@ -8,9 +8,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'timemachine',
-	props: {
+	props: () => ({
 		design: 0
-	}
+	})
 }).extend({
 	methods: {
 		chosen(date) {

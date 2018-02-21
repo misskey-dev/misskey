@@ -18,9 +18,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'polls',
-	props: {
+	props: () => ({
 		compact: false
-	}
+	})
 }).extend({
 	data() {
 		return {

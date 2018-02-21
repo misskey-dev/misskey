@@ -23,6 +23,7 @@ import MkIndex from './views/pages/index.vue';
 import MkUser from './views/pages/user/user.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
+import MkHomeCustomize from './views/pages/home-customize.vue';
 
 /**
  * init
@@ -66,6 +67,8 @@ init(async (launch) => {
 
 	app.$router.addRoutes([{
 		path: '/', name: 'index', component: MkIndex
+	}, {
+		path: '/i/customize-home', component: MkHomeCustomize
 	}, {
 		path: '/i/drive', component: MkDrive
 	}, {

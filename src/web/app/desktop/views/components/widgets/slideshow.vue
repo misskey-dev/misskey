@@ -15,10 +15,10 @@ import * as anime from 'animejs';
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'slideshow',
-	props: {
+	props: () => ({
 		folder: undefined,
 		size: 0
-	}
+	})
 }).extend({
 	data() {
 		return {

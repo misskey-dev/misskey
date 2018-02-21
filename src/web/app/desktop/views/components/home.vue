@@ -40,7 +40,7 @@
 		<div v-for="place in ['left', 'main', 'right']" :class="place" :ref="place" :data-place="place">
 			<template v-if="place != 'main'">
 				<template v-for="widget in widgets[place]">
-					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
+					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)" :data-widget-id="widget.id">
 						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id"/>
 					</div>
 					<template v-else>
@@ -60,7 +60,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as uuid from 'uuid';
-import Sortable from 'sortablejs';
+import * as Sortable from 'sortablejs';
 
 export default Vue.extend({
 	props: {
@@ -72,7 +72,6 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			home: [],
 			bakedHomeData: null,
 			widgetAdderSelected: null
 		};
@@ -95,16 +94,15 @@ export default Vue.extend({
 		},
 		rightEl(): Element {
 			return (this.$refs.right as Element[])[0];
+		},
+		home(): any {
+			return (this as any).os.i.client_settings.home;
 		}
 	},
 	created() {
 		this.bakedHomeData = this.bakeHomeData();
 	},
 	mounted() {
-		(this as any).os.i.on('refreshed', this.onMeRefreshed);
-
-		this.home = (this as any).os.i.client_settings.home;
-
 		this.$nextTick(() => {
 			if (!this.customize) {
 				if (this.leftEl.children.length == 0) {
@@ -132,7 +130,7 @@ export default Vue.extend({
 					animation: 150,
 					onMove: evt => {
 						const id = evt.dragged.getAttribute('data-widget-id');
-						this.home.find(tag => tag.id == id).widget.place = evt.to.getAttribute('data-place');
+						this.home.find(w => w.id == id).place = evt.to.getAttribute('data-place');
 					},
 					onSort: () => {
 						this.saveHome();
@@ -153,24 +151,15 @@ export default Vue.extend({
 			}
 		});
 	},
-	beforeDestroy() {
-		(this as any).os.i.off('refreshed', this.onMeRefreshed);
-	},
 	methods: {
 		bakeHomeData() {
-			return JSON.stringify((this as any).os.i.client_settings.home);
+			return JSON.stringify(this.home);
 		},
 		onTlLoaded() {
 			this.$emit('loaded');
 		},
-		onMeRefreshed() {
-			if (this.bakedHomeData != this.bakeHomeData()) {
-				// TODO: i18n
-				alert('別の場所でホームが編集されました。ページを再度読み込みすると編集が反映されます。');
-			}
-		},
 		onWidgetContextmenu(widgetId) {
-			(this.$refs[widgetId] as any).func();
+			(this.$refs[widgetId] as any)[0].func();
 		},
 		addWidget() {
 			const widget = {
@@ -180,29 +169,13 @@ export default Vue.extend({
 				data: {}
 			};
 
-			(this as any).os.i.client_settings.home.unshift(widget);
+			this.home.unshift(widget);
 
 			this.saveHome();
 		},
 		saveHome() {
-			const data = [];
-
-			Array.from(this.leftEl.children).forEach(el => {
-				const id = el.getAttribute('data-widget-id');
-				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
-				widget.place = 'left';
-				data.push(widget);
-			});
-
-			Array.from(this.rightEl.children).forEach(el => {
-				const id = el.getAttribute('data-widget-id');
-				const widget = (this as any).os.i.client_settings.home.find(w => w.id == id);
-				widget.place = 'right';
-				data.push(widget);
-			});
-
 			(this as any).api('i/update_home', {
-				home: data
+				home: this.home
 			});
 		},
 		warp(date) {

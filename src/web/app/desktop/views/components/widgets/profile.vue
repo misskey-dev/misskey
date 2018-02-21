@@ -4,19 +4,19 @@
 	:data-melt="props.design == 2"
 >
 	<div class="banner"
-		style={ I.banner_url ? 'background-image: url(' + I.banner_url + '?thumbnail&size=256)' : '' }
+		:style="os.i.banner_url ? `background-image: url(${os.i.banner_url}?thumbnail&size=256)` : ''"
 		title="クリックでバナー編集"
-		@click="wapi_setBanner"
+		@click="os.apis.updateBanner"
 	></div>
 	<img class="avatar"
-		src={ I.avatar_url + '?thumbnail&size=96' }
-		@click="wapi_setAvatar"
+		:src="`${os.i.avatar_url}?thumbnail&size=96`"
+		@click="os.apis.updateAvatar"
 		alt="avatar"
 		title="クリックでアバター編集"
-		v-user-preview={ I.id }
+		v-user-preview="os.i.id"
 	/>
-	<a class="name" href={ '/' + I.username }>{ I.name }</a>
-	<p class="username">@{ I.username }</p>
+	<router-link class="name" :to="`/${os.i.username}`">{{ os.i.name }}</router-link>
+	<p class="username">@{{ os.i.username }}</p>
 </div>
 </template>
 
@@ -24,9 +24,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'profile',
-	props: {
+	props: () => ({
 		design: 0
-	}
+	})
 }).extend({
 	methods: {
 		func() {

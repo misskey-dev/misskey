@@ -28,9 +28,9 @@ const limit = 3;
 
 export default define({
 	name: 'users',
-	props: {
+	props: () => ({
 		compact: false
-	}
+	})
 }).extend({
 	data() {
 		return {

@@ -1,9 +1,8 @@
 import { EventEmitter } from 'eventemitter3';
-import * as riot from 'riot';
+import api from './scripts/api';
 import signout from './scripts/signout';
 import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
-import api from './scripts/api';
 import DriveStreamManager from './scripts/streaming/drive-stream-manager';
 import ServerStreamManager from './scripts/streaming/server-stream-manager';
 import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
@@ -226,22 +225,8 @@ export default class MiOS extends EventEmitter {
 		// フェッチが完了したとき
 		const fetched = me => {
 			if (me) {
-				riot.observable(me);
-
-				// この me オブジェクトを更新するメソッド
-				me.update = data => {
-					if (data) Object.assign(me, data);
-					me.trigger('updated');
-				};
-
 				// ローカルストレージにキャッシュ
 				localStorage.setItem('me', JSON.stringify(me));
-
-				// 自分の情報が更新されたとき
-				me.on('updated', () => {
-					// キャッシュ更新
-					localStorage.setItem('me', JSON.stringify(me));
-				});
 			}
 
 			this.i = me;
@@ -270,8 +255,6 @@ export default class MiOS extends EventEmitter {
 			// 後から新鮮なデータをフェッチ
 			fetchme(cachedMe.token, freshData => {
 				Object.assign(cachedMe, freshData);
-				cachedMe.trigger('updated');
-				cachedMe.trigger('refreshed');
 			});
 		} else {
 			// Get token from cookie

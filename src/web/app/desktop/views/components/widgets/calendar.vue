@@ -38,9 +38,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'calendar',
-	props: {
+	props: () => ({
 		design: 0
-	}
+	})
 }).extend({
 	data() {
 		return {

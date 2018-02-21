@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 export default function<T extends object>(data: {
 	name: string;
-	props?: T;
+	props?: () => T;
 }) {
 	return Vue.extend({
 		props: {
@@ -17,19 +17,8 @@ export default function<T extends object>(data: {
 		},
 		data() {
 			return {
-				props: data.props || {} as T
+				props: data.props ? data.props() : {} as T
 			};
-		},
-		watch: {
-			props(newProps, oldProps) {
-				if (JSON.stringify(newProps) == JSON.stringify(oldProps)) return;
-				(this as any).api('i/update_home', {
-					id: this.id,
-					data: newProps
-				}).then(() => {
-					(this as any).os.i.client_settings.home.find(w => w.id == this.id).data = newProps;
-				});
-			}
 		},
 		created() {
 			if (this.props) {
@@ -39,6 +28,18 @@ export default function<T extends object>(data: {
 					}
 				});
 			}
+
+			this.$watch('props', newProps => {
+				console.log(this.id, newProps);
+				(this as any).api('i/update_home', {
+					id: this.id,
+					data: newProps
+				}).then(() => {
+					(this as any).os.i.client_settings.home.find(w => w.id == this.id).data = newProps;
+				});
+			}, {
+				deep: true
+			});
 		}
 	});
 }

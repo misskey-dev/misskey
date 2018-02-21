@@ -16,7 +16,9 @@ export default class Connection extends Stream {
 		}, 1000 * 60);
 
 		// 自分の情報が更新されたとき
-		this.on('i_updated', me.update);
+		this.on('i_updated', i => {
+			Object.assign(me, i);
+		});
 
 		// トークンが再生成されたとき
 		// このままではAPIが利用できないので強制的にサインアウトさせる

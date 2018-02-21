@@ -1,5 +1,5 @@
 <template>
-<div class="mk-calendar">
+<div class="mk-calendar" :data-melt="design == 4 || design == 5">
 	<template v-if="design == 0 || design == 1">
 		<button @click="prev" title="%i18n:desktop.tags.mk-calendar-widget.prev%">%fa:chevron-circle-left%</button>
 		<p class="title">{{ '%i18n:desktop.tags.mk-calendar-widget.title%'.replace('{1}', year).replace('{2}', month) }}</p>

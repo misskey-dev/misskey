@@ -103,6 +103,14 @@ export default (callback: (launch: (api: (os: MiOS) => API) => [Vue, MiOS]) => v
 				router: new VueRouter({
 					mode: 'history'
 				}),
+				created() {
+					this.$watch('os.i', i => {
+						// キャッシュ更新
+						localStorage.setItem('me', JSON.stringify(i));
+					}, {
+						deep: true
+					});
+				},
 				render: createEl => createEl(App)
 			}).$mount('#app');
 

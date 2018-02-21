@@ -1,5 +1,5 @@
 <template>
-	<mk-home customize/>
+<mk-home customize/>
 </template>
 
 <script lang="ts">

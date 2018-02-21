@@ -17,9 +17,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'trends',
-	props: {
+	props: () => ({
 		compact: false
-	}
+	})
 }).extend({
 	data() {
 		return {

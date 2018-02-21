@@ -27,10 +27,10 @@ import XInfo from './server.info.vue';
 
 export default define({
 	name: 'server',
-	props: {
+	props: () => ({
 		design: 0,
 		view: 0
-	}
+	})
 }).extend({
 	components: {
 		XCpuMemory,

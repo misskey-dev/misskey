@@ -12,9 +12,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'post-form',
-	props: {
+	props: () => ({
 		design: 0
-	}
+	})
 }).extend({
 	data() {
 		return {

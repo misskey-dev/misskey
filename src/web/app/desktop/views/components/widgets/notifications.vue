@@ -12,9 +12,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'notifications',
-	props: {
+	props: () => ({
 		compact: false
-	}
+	})
 }).extend({
 	methods: {
 		settings() {

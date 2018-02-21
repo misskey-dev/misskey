@@ -35,6 +35,7 @@ import wDonation from './widgets/donation.vue';
 import wNotifications from './widgets/notifications.vue';
 import wBroadcast from './widgets/broadcast.vue';
 import wTimemachine from './widgets/timemachine.vue';
+import wProfile from './widgets/profile.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-notification', uiNotification);
@@ -71,3 +72,4 @@ Vue.component('mkw-donation', wDonation);
 Vue.component('mkw-notifications', wNotifications);
 Vue.component('mkw-broadcast', wBroadcast);
 Vue.component('mkw-timemachine', wTimemachine);
+Vue.component('mkw-profile', wProfile);

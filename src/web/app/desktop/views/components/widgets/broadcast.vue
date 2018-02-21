@@ -25,9 +25,9 @@ import { lang } from '../../../../config';
 
 export default define({
 	name: 'broadcast',
-	props: {
+	props: () => ({
 		design: 0
-	}
+	})
 }).extend({
 	data() {
 		return {

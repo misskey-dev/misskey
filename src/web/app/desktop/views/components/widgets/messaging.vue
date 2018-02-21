@@ -9,9 +9,9 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'messaging',
-	props: {
+	props: () => ({
 		design: 0
-	}
+	})
 }).extend({
 	methods: {
 		navigate(user) {

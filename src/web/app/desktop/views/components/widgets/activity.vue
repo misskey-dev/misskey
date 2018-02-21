@@ -10,10 +10,10 @@
 import define from '../../../../common/define-widget';
 export default define({
 	name: 'activity',
-	props: {
+	props: () => ({
 		design: 0,
 		view: 0
-	}
+	})
 }).extend({
 	methods: {
 		func() {
