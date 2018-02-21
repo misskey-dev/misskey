@@ -1,7 +1,5 @@
 <template>
-<div>
-	<a class="mk-images-image" :href="image.url" target="_blank" :style="style" :title="image.name"></a>
-</div>
+<a class="mk-images-image" :href="image.url" target="_blank" :style="style" :title="image.name"></a>
 </template>
 
 <script lang="ts">
@@ -24,14 +22,10 @@ export default Vue.extend({
 .mk-images-image
 	display block
 	overflow hidden
+	width 100%
+	height 100%
+	background-position center
+	background-size cover
 	border-radius 4px
-
-	> a
-		display block
-		overflow hidden
-		width 100%
-		height 100%
-		background-position center
-		background-size cover
 
 </style>
