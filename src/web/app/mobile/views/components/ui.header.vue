@@ -24,7 +24,6 @@ export default Vue.extend({
 	props: ['func'],
 	data() {
 		return {
-			func: null,
 			hasUnreadNotifications: false,
 			hasUnreadMessagingMessages: false,
 			connection: null,

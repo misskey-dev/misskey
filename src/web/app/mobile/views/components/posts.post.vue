@@ -69,8 +69,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkPostMenu from '../../../common/views/components/post-menu.vue';
+import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
+import XSub from './posts.post.sub.vue';
 
 export default Vue.extend({
+	components: {
+		XSub
+	},
 	props: ['post'],
 	data() {
 		return {
@@ -152,6 +158,34 @@ export default Vue.extend({
 				this.$emit('update:post', post);
 			}
 		},
+		reply() {
+			(this as any).apis.post({
+				reply: this.p
+			});
+		},
+		repost() {
+			(this as any).apis.post({
+				repost: this.p
+			});
+		},
+		react() {
+			document.body.appendChild(new MkReactionPicker({
+				propsData: {
+					source: this.$refs.reactButton,
+					post: this.p,
+					compact: true
+				}
+			}).$mount().$el);
+		},
+		menu() {
+			document.body.appendChild(new MkPostMenu({
+				propsData: {
+					source: this.$refs.menuButton,
+					post: this.p,
+					compact: true
+				}
+			}).$mount().$el);
+		}
 	}
 });
 </script>

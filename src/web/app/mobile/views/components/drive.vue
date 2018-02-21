@@ -26,11 +26,11 @@
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
-			<mk-drive-folder v-for="folder in folders" :key="folder.id" :folder="folder"/>
+			<x-folder v-for="folder in folders" :key="folder.id" :folder="folder"/>
 			<p v-if="moreFolders">%i18n:mobile.tags.mk-drive.load-more%</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
-			<mk-drive-file v-for="file in files" :key="file.id" :file="file"/>
+			<x-file v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
 				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }}
 			</button>
@@ -46,15 +46,23 @@
 			<div class="dot2"></div>
 		</div>
 	</div>
-	<input ref="file" type="file" multiple="multiple" @change="onChangeLocalFile"/>
-	<mk-drive-file-detail v-if="file != null" :file="file"/>
+	<input ref="file" class="file" type="file" multiple="multiple" @change="onChangeLocalFile"/>
+	<x-file-detail v-if="file != null" :file="file"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import XFolder from './drive.folder.vue';
+import XFile from './drive.file.vue';
+import XFileDetail from './drive.file-detail.vue';
 
 export default Vue.extend({
+	components: {
+		XFolder,
+		XFile,
+		XFileDetail
+	},
 	props: ['initFolder', 'initFile', 'selectFile', 'multiple', 'isNaked', 'top'],
 	data() {
 		return {
@@ -423,8 +431,7 @@ export default Vue.extend({
 				alert('現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。');
 				return;
 			}
-			const dialog = riot.mount(document.body.appendChild(document.createElement('mk-drive-folder-selector')))[0];
-			dialog.one('selected', folder => {
+			(this as any).apis.chooseDriveFolder().then(folder => {
 				(this as any).api('drive/folders/update', {
 					parent_id: folder ? folder.id : null,
 					folder_id: this.folder.id
@@ -510,11 +517,11 @@ export default Vue.extend({
 				color #777
 
 		> .folders
-			> .mk-drive-folder
+			> .folder
 				border-bottom solid 1px #eee
 
 		> .files
-			> .mk-drive-file
+			> .file
 				border-bottom solid 1px #eee
 
 			> .more
@@ -568,7 +575,7 @@ export default Vue.extend({
 			}
 		}
 
-	> [ref='file']
+	> .file
 		display none
 
 </style>

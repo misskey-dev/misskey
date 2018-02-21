@@ -1,6 +1,6 @@
 <template>
 <div class="nav" :style="{ display: isOpen ? 'block' : 'none' }">
-	<div class="backdrop" @click="parent.toggleDrawer"></div>
+	<div class="backdrop" @click="$parent.isDrawerOpening = false"></div>
 	<div class="body">
 		<router-link class="me" v-if="os.isSignedIn" :to="`/${os.i.username}`">
 			<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=128`" alt="avatar"/>
@@ -8,36 +8,40 @@
 		</router-link>
 		<div class="links">
 			<ul>
-				<li><router-link href="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</router-link></li>
-				<li><router-link href="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
-				<li><router-link href="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
+				<li><router-link to="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</router-link></li>
+				<li><router-link to="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
+				<li><router-link to="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
 			</ul>
 			<ul>
 				<li><a :href="chUrl" target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>
-				<li><router-link href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</router-link></li>
+				<li><router-link to="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</router-link></li>
 			</ul>
 			<ul>
 				<li><a @click="search">%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
 			</ul>
 			<ul>
-				<li><router-link href="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</router-link></li>
+				<li><router-link to="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</router-link></li>
 			</ul>
 		</div>
-		<a :href="aboutUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
+		<a :href="docsUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { docsUrl, chUrl } from '../../../config';
 
 export default Vue.extend({
+	props: ['isOpen'],
 	data() {
 		return {
 			hasUnreadNotifications: false,
 			hasUnreadMessagingMessages: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			docsUrl,
+			chUrl
 		};
 	},
 	mounted() {

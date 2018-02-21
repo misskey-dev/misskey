@@ -15,7 +15,7 @@
 		</template>
 	</div>
 	<footer>
-		<div ref="notifications"></div>
+		<div ref="notifications" class="notifications"></div>
 		<div class="grippie" title="%i18n:common.tags.mk-messaging-room.resize-form%"></div>
 		<x-form :user="user"/>
 	</footer>
@@ -278,7 +278,7 @@ export default Vue.extend({
 		background rgba(255, 255, 255, 0.95)
 		background-clip content-box
 
-		> [ref='notifications']
+		> .notifications
 			position absolute
 			top -48px
 			width 100%

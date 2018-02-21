@@ -9,7 +9,7 @@
 			%fa:R comments%
 			%i18n:mobile.tags.mk-home-timeline.empty-timeline%
 		</div>
-		<button v-if="canFetchMore" @click="more" :disabled="fetching" slot="tail">
+		<button @click="more" :disabled="fetching" slot="tail">
 			<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
 			<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
 		</button>

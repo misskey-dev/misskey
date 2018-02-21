@@ -3,37 +3,40 @@
 	<header>
 		<button class="cancel" @click="cancel">%fa:times%</button>
 		<div>
-			<span v-if="refs.text" class="text-count" :class="{ over: refs.text.value.length > 1000 }">{{ 1000 - refs.text.value.length }}</span>
-			<button class="submit" @click="post">%i18n:mobile.tags.mk-post-form.submit%</button>
+			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
+			<button class="submit" :disabled="posting" @click="post">%i18n:mobile.tags.mk-post-form.submit%</button>
 		</div>
 	</header>
 	<div class="form">
 		<mk-post-preview v-if="reply" :post="reply"/>
-		<textarea v-model="text" :disabled="wait" :placeholder="reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%'"></textarea>
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
-			<ul class="files" ref="attaches">
-				<li class="file" v-for="file in files">
-					<div class="img" :style="`background-image: url(${file.url}?thumbnail&size=128)`" @click="removeFile(file)"></div>
-				</li>
-			</ul>
+			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
+				<div class="file" v-for="file in files" :key="file.id">
+					<div class="img" :style="`background-image: url(${file.url}?thumbnail&size=128)`" @click="detachMedia(file)"></div>
+				</div>
+			</x-draggable>
 		</div>
 		<mk-poll-editor v-if="poll" ref="poll"/>
-		<mk-uploader @uploaded="attachMedia" @change="onChangeUploadings"/>
-		<button ref="upload" @click="selectFile">%fa:upload%</button>
-		<button ref="drive" @click="selectFileFromDrive">%fa:cloud%</button>
+		<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
+		<button class="upload" @click="chooseFile">%fa:upload%</button>
+		<button class="drive" @click="chooseFileFromDrive">%fa:cloud%</button>
 		<button class="kao" @click="kao">%fa:R smile%</button>
-		<button class="poll" @click="addPoll">%fa:chart-pie%</button>
-		<input ref="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
+		<button class="poll" @click="poll = true">%fa:chart-pie%</button>
+		<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import Sortable from 'sortablejs';
+import * as XDraggable from 'vuedraggable';
 import getKao from '../../../common/scripts/get-kao';
 
 export default Vue.extend({
+	components: {
+		XDraggable
+	},
 	props: ['reply'],
 	data() {
 		return {
@@ -45,19 +48,27 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this.$refs.text as any).focus();
-
-		new Sortable(this.$refs.attaches, {
-			animation: 150
+		this.$nextTick(() => {
+			(this.$refs.text as any).focus();
 		});
 	},
 	methods: {
+		chooseFile() {
+			(this.$refs.file as any).click();
+		},
+		chooseFileFromDrive() {
+			(this as any).apis.chooseDriveFile({
+				multiple: true
+			}).then(files => {
+				files.forEach(this.attachMedia);
+			});
+		},
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
 			this.$emit('change-attached-media', this.files);
 		},
-		detachMedia(id) {
-			this.files = this.files.filter(x => x.id != id);
+		detachMedia(file) {
+			this.files = this.files.filter(x => x.id != file.id);
 			this.$emit('change-attached-media', this.files);
 		},
 		onChangeFile() {
@@ -74,6 +85,20 @@ export default Vue.extend({
 			this.files = [];
 			this.poll = false;
 			this.$emit('change-attached-media');
+		},
+		post() {
+			this.posting = true;
+			(this as any).api('posts/create', {
+				text: this.text == '' ? undefined : this.text,
+				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				reply_id: this.reply ? this.reply.id : undefined,
+				poll: this.poll ? (this.$refs.poll as any).get() : undefined
+			}).then(data => {
+				this.$emit('post');
+				this.$destroy();
+			}).catch(err => {
+				this.posting = false;
+			});
 		},
 		cancel() {
 			this.$emit('cancel');
@@ -167,10 +192,10 @@ export default Vue.extend({
 			margin 8px 0 0 0
 			padding 8px
 
-		> [ref='file']
+		> .file
 			display none
 
-		> [ref='text']
+		> textarea
 			display block
 			padding 12px
 			margin 0
@@ -187,8 +212,8 @@ export default Vue.extend({
 			&:disabled
 				opacity 0.5
 
-		> [ref='upload']
-		> [ref='drive']
+		> .upload
+		> .drive
 		.kao
 		.poll
 			display inline-block

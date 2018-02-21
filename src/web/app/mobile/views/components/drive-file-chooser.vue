@@ -4,10 +4,10 @@
 		<header>
 			<h1>%i18n:mobile.tags.mk-drive-selector.select-file%<span class="count" v-if="files.length > 0">({{ files.length }})</span></h1>
 			<button class="close" @click="cancel">%fa:times%</button>
-			<button v-if="opts.multiple" class="ok" @click="ok">%fa:check%</button>
+			<button v-if="multiple" class="ok" @click="ok">%fa:check%</button>
 		</header>
 		<mk-drive ref="browser"
-			select-file
+			:select-file="true"
 			:multiple="multiple"
 			@change-selection="onChangeSelection"
 			@selected="onSelected"
