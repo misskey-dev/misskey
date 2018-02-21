@@ -23,6 +23,8 @@ export default Vue.extend({
 	mounted() {
 		Progress.start();
 
+		// TODO: extract the fetch step for vue-router's caching
+
 		(this as any).api('posts/show', {
 			post_id: this.postId
 		}).then(post => {
