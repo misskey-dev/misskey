@@ -72,7 +72,6 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			bakedHomeData: null,
 			widgetAdderSelected: null
 		};
 	},
@@ -98,9 +97,6 @@ export default Vue.extend({
 		home(): any {
 			return (this as any).os.i.client_settings.home;
 		}
-	},
-	created() {
-		this.bakedHomeData = this.bakeHomeData();
 	},
 	mounted() {
 		this.$nextTick(() => {
@@ -152,9 +148,6 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		bakeHomeData() {
-			return JSON.stringify(this.home);
-		},
 		onTlLoaded() {
 			this.$emit('loaded');
 		},
