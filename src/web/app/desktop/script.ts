@@ -35,6 +35,7 @@ init(async (launch) => {
 	// Register components
 	require('./views/components');
 
+	// Launch the app
 	const [app, os] = launch(os => ({
 		chooseDriveFolder,
 		chooseDriveFile,
@@ -65,19 +66,15 @@ init(async (launch) => {
 		}
 	}
 
-	app.$router.addRoutes([{
-		path: '/', name: 'index', component: MkIndex
-	}, {
-		path: '/i/customize-home', component: MkHomeCustomize
-	}, {
-		path: '/i/drive', component: MkDrive
-	}, {
-		path: '/i/drive/folder/:folder', component: MkDrive
-	}, {
-		path: '/selectdrive', component: MkSelectDrive
-	}, {
-		path: '/:user', component: MkUser
-	}]);
+	// Routing
+	app.$router.addRoutes([
+		{ path: '/', name: 'index', component: MkIndex },
+		{ path: '/i/customize-home', component: MkHomeCustomize },
+		{ path: '/i/drive', component: MkDrive },
+		{ path: '/i/drive/folder/:folder', component: MkDrive },
+		{ path: '/selectdrive', component: MkSelectDrive },
+		{ path: '/:user', component: MkUser }
+	]);
 }, true);
 
 function registerNotifications(stream: HomeStreamManager) {

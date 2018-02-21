@@ -29,7 +29,7 @@ module.exports = Object.keys(langs).map(lang => {
 	// Entries
 	const entry = {
 		desktop: './src/web/app/desktop/script.ts',
-		//mobile: './src/web/app/mobile/script.ts',
+		mobile: './src/web/app/mobile/script.ts',
 		//ch: './src/web/app/ch/script.ts',
 		//stats: './src/web/app/stats/script.ts',
 		//status: './src/web/app/status/script.ts',

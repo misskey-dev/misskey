@@ -4,7 +4,7 @@
 		<header>
 			<h1>%i18n:mobile.tags.mk-drive-folder-selector.select-folder%</h1>
 			<button class="close" @click="cancel">%fa:times%</button>
-			<button v-if="opts.multiple" class="ok" @click="ok">%fa:check%</button>
+			<button class="ok" @click="ok">%fa:check%</button>
 		</header>
 		<mk-drive ref="browser"
 			select-folder
