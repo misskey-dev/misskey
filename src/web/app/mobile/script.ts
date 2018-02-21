@@ -38,7 +38,7 @@ init((launch) => {
 		chooseDriveFile,
 		dialog,
 		input,
-		post,
+		post: post(os),
 		notify
 	}));
 
