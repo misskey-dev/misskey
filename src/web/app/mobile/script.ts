@@ -13,8 +13,6 @@ import dialog from './api/dialog';
 import input from './api/input';
 import post from './api/post';
 import notify from './api/notify';
-import updateAvatar from './api/update-avatar';
-import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
 import MkUser from './views/pages/user/user.vue';
@@ -35,15 +33,13 @@ init((launch) => {
 	document.body.setAttribute('ontouchstart', '');
 
 	// Launch the app
-	const [app, os] = launch(os => ({
+	const [app] = launch(os => ({
 		chooseDriveFolder,
 		chooseDriveFile,
 		dialog,
 		input,
 		post,
-		notify,
-		updateAvatar: updateAvatar(os),
-		updateBanner: updateBanner(os)
+		notify
 	}));
 
 	// Routing

@@ -1,5 +1,9 @@
+import PostForm from '../views/components/post-form.vue';
+import RepostForm from '../views/components/repost-form.vue';
 
-export default opts => {
+export default function(opts) {
+	const o = opts || {};
+
 	const app = document.getElementById('app');
 	app.style.display = 'none';
 
@@ -7,8 +11,23 @@ export default opts => {
 		app.style.display = 'block';
 	}
 
-	const form = riot.mount(document.body.appendChild(document.createElement('mk-post-form')), opts)[0];
-	form
-		.on('cancel', recover)
-		.on('post', recover);
-};
+	if (o.repost) {
+		const vm = new RepostForm({
+			propsData: {
+				repost: o.repost
+			}
+		}).$mount();
+		vm.$once('cancel', recover);
+		vm.$once('post', recover);
+		document.body.appendChild(vm.$el);
+	} else {
+		const vm = new PostForm({
+			propsData: {
+				reply: o.reply
+			}
+		}).$mount();
+		vm.$once('cancel', recover);
+		vm.$once('post', recover);
+		document.body.appendChild(vm.$el);
+	}
+}

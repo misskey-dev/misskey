@@ -42,7 +42,10 @@ export type API = {
 		default?: string;
 	}) => Promise<string>;
 
-	post: () => void;
+	post: (opts?: {
+		reply?: any;
+		repost?: any;
+	}) => void;
 
 	notify: (message: string) => void;
 };

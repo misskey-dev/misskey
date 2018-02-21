@@ -25,7 +25,7 @@
 		<button class="poll" @click="addPoll">%fa:chart-pie%</button>
 		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
 	</div>
-</div
+</div>
 </template>
 
 <script lang="ts">
