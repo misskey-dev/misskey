@@ -76,11 +76,21 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		home(): any {
+			//#region 互換性のため
+			(this as any).os.i.client_settings.home.forEach(w => {
+				if (w.name == 'rss-reader') w.name = 'rss';
+				if (w.name == 'user-recommendation') w.name = 'users';
+				if (w.name == 'recommended-polls') w.name = 'polls';
+			});
+			//#endregion
+			return (this as any).os.i.client_settings.home;
+		},
 		leftWidgets(): any {
-			return (this as any).os.i.client_settings.home.filter(w => w.place == 'left');
+			return this.home.filter(w => w.place == 'left');
 		},
 		rightWidgets(): any {
-			return (this as any).os.i.client_settings.home.filter(w => w.place == 'right');
+			return this.home.filter(w => w.place == 'right');
 		},
 		widgets(): any {
 			return {
@@ -93,9 +103,6 @@ export default Vue.extend({
 		},
 		rightEl(): Element {
 			return (this.$refs.right as Element[])[0];
-		},
-		home(): any {
-			return (this as any).os.i.client_settings.home;
 		}
 	},
 	mounted() {
@@ -140,7 +147,7 @@ export default Vue.extend({
 						const el = evt.item;
 						const id = el.getAttribute('data-widget-id');
 						el.parentNode.removeChild(el);
-						(this as any).os.i.client_settings.home = (this as any).os.i.client_settings.home.filter(w => w.id != id);
+						(this as any).os.i.client_settings.home = this.home.filter(w => w.id != id);
 						this.saveHome();
 					}
 				}));
