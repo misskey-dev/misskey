@@ -3,27 +3,27 @@
 	<header>
 		<button class="cancel" @click="cancel">%fa:times%</button>
 		<div>
-			<span v-if="refs.text" class="text-count { over: refs.text.value.length > 1000 }">{ 1000 - refs.text.value.length }</span>
+			<span v-if="refs.text" class="text-count" :class="{ over: refs.text.value.length > 1000 }">{{ 1000 - refs.text.value.length }}</span>
 			<button class="submit" @click="post">%i18n:mobile.tags.mk-post-form.submit%</button>
 		</div>
 	</header>
 	<div class="form">
-		<mk-post-preview v-if="opts.reply" post={ opts.reply }/>
-		<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder={ opts.reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%' }></textarea>
-		<div class="attaches" show={ files.length != 0 }>
+		<mk-post-preview v-if="reply" :post="reply"/>
+		<textarea v-model="text" :disabled="wait" :placeholder="reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%'"></textarea>
+		<div class="attaches" v-show="files.length != 0">
 			<ul class="files" ref="attaches">
-				<li class="file" each={ files } data-id={ id }>
-					<div class="img" style="background-image: url({ url + '?thumbnail&size=128' })" @click="removeFile"></div>
+				<li class="file" v-for="file in files">
+					<div class="img" :style="`background-image: url(${file.url}?thumbnail&size=128)`" @click="removeFile(file)"></div>
 				</li>
 			</ul>
 		</div>
-		<mk-poll-editor v-if="poll" ref="poll" ondestroy={ onPollDestroyed }/>
+		<mk-poll-editor v-if="poll" ref="poll"/>
 		<mk-uploader @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<button ref="upload" @click="selectFile">%fa:upload%</button>
 		<button ref="drive" @click="selectFileFromDrive">%fa:cloud%</button>
 		<button class="kao" @click="kao">%fa:R smile%</button>
 		<button class="poll" @click="addPoll">%fa:chart-pie%</button>
-		<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
+		<input ref="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>
 </template>
@@ -31,9 +31,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import Sortable from 'sortablejs';
-import getKao from '../../common/scripts/get-kao';
+import getKao from '../../../common/scripts/get-kao';
 
 export default Vue.extend({
+	props: ['reply'],
 	data() {
 		return {
 			posting: false,
@@ -77,6 +78,9 @@ export default Vue.extend({
 		cancel() {
 			this.$emit('cancel');
 			this.$destroy();
+		},
+		kao() {
+			this.text += getKao();
 		}
 	}
 });

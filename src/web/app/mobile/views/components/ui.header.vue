@@ -9,7 +9,9 @@
 			<h1>
 				<slot>Misskey</slot>
 			</h1>
-			<button v-if="func" @click="func" v-html="funcIcon"></button>
+			<button v-if="func" @click="func">
+				<slot name="funcIcon"></slot>
+			</button>
 		</div>
 	</div>
 </div>
@@ -19,11 +21,10 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['func', 'funcIcon'],
+	props: ['func'],
 	data() {
 		return {
 			func: null,
-			funcIcon: null,
 			hasUnreadNotifications: false,
 			hasUnreadMessagingMessages: false,
 			connection: null,

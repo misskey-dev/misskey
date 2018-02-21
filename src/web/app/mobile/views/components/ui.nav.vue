@@ -2,28 +2,28 @@
 <div class="mk-ui-nav" :style="{ display: isOpen ? 'block' : 'none' }">
 	<div class="backdrop" @click="parent.toggleDrawer"></div>
 	<div class="body">
-		<a class="me" v-if="os.isSignedIn" href={ '/' + I.username }>
-			<img class="avatar" src={ I.avatar_url + '?thumbnail&size=128' } alt="avatar"/>
-			<p class="name">{ I.name }</p>
-		</a>
+		<router-link class="me" v-if="os.isSignedIn" :to="`/${os.i.username}`">
+			<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=128`" alt="avatar"/>
+			<p class="name">{{ os.i.name }}</p>
+		</router-link>
 		<div class="links">
 			<ul>
-				<li><a href="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</a></li>
-				<li><a href="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</a></li>
-				<li><a href="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</a></li>
+				<li><router-link href="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</router-link></li>
+				<li><router-link href="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
+				<li><router-link href="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
 			</ul>
 			<ul>
-				<li><a href={ _CH_URL_ } target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>
-				<li><a href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</a></li>
+				<li><a :href="chUrl" target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>
+				<li><router-link href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</router-link></li>
 			</ul>
 			<ul>
 				<li><a @click="search">%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
 			</ul>
 			<ul>
-				<li><a href="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</a></li>
+				<li><router-link href="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</router-link></li>
 			</ul>
 		</div>
-		<a href={ aboutUrl }><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
+		<a :href="aboutUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
 	</div>
 </div>
 </template>

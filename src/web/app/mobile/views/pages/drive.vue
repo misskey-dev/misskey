@@ -1,10 +1,11 @@
 <template>
-<mk-ui :func="fn" func-icon="%fa:ellipsis-h%">
+<mk-ui :func="fn">
 	<span slot="header">
 		<template v-if="folder">%fa:R folder-open%{{ folder.name }}</template>
 		<template v-if="file"><mk-file-type-icon class="icon"/>{{ file.name }}</template>
 		<template v-else>%fa:cloud%%i18n:mobile.tags.mk-drive-page.drive%</template>
 	</span>
+	<template slot="funcIcon">%fa:ellipsis-h%</template>
 	<mk-drive
 		ref="browser"
 		:init-folder="folder"
