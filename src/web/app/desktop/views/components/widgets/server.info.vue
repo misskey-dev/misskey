@@ -14,8 +14,8 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="info" scoped>
-.uptimes
+<style lang="stylus" scoped>
+.info
 	padding 10px 14px
 
 	> p

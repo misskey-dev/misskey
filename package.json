@@ -187,6 +187,7 @@
 		"vue-loader": "^14.1.1",
 		"vue-router": "^3.0.1",
 		"vue-template-compiler": "^2.5.13",
+		"vuedraggable": "^2.16.0",
 		"web-push": "3.2.5",
 		"webpack": "3.10.0",
 		"webpack-replace-loader": "^1.3.0",

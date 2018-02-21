@@ -31,38 +31,51 @@
 				<button @click="addWidget">追加</button>
 			</div>
 			<div class="trash">
-				<div ref="trash"></div>
+				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
 				<p>ゴミ箱</p>
 			</div>
 		</div>
 	</div>
 	<div class="main">
-		<div v-for="place in ['left', 'main', 'right']" :class="place" :ref="place" :data-place="place">
-			<template v-if="place != 'main'">
-				<template v-for="widget in widgets[place]">
-					<div class="customize-container" v-if="customize" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)" :data-widget-id="widget.id">
-						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id"/>
-					</div>
-					<template v-else>
-						<component :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :ref="widget.id" @chosen="warp"/>
-					</template>
-				</template>
-			</template>
-			<template v-else>
-				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="place == 'main' && mode == 'timeline'"/>
-				<mk-mentions @loaded="onTlLoaded" v-if="place == 'main' && mode == 'mentions'"/>
-			</template>
-		</div>
+		<template v-if="customize">
+			<x-draggable v-for="place in ['left', 'right']"
+				:list="widgets[place]"
+				:class="place"
+				:data-place="place"
+				:options="{ group: 'x', animation: 150 }"
+				@sort="onWidgetSort"
+				:key="place"
+			>
+				<div v-for="widget in widgets[place]" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
+					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id"/>
+				</div>
+			</x-draggable>
+			<div class="main">
+				<mk-timeline ref="tl" @loaded="onTlLoaded"/>
+			</div>
+		</template>
+		<template v-else>
+			<div v-for="place in ['left', 'right']" :class="place">
+				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" @chosen="warp"/>
+			</div>
+			<div class="main">
+				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
+				<mk-mentions @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
+			</div>
+		</template>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
-import * as Sortable from 'sortablejs';
 
 export default Vue.extend({
+	components: {
+		XDraggable
+	},
 	props: {
 		customize: Boolean,
 		mode: {
@@ -72,50 +85,49 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			widgetAdderSelected: null
+			widgetAdderSelected: null,
+			trash: [],
+			widgets: {
+				left: [],
+				right: []
+			}
 		};
 	},
 	computed: {
-		home(): any {
-			//#region 互換性のため
-			(this as any).os.i.client_settings.home.forEach(w => {
-				if (w.name == 'rss-reader') w.name = 'rss';
-				if (w.name == 'user-recommendation') w.name = 'users';
-				if (w.name == 'recommended-polls') w.name = 'polls';
-			});
-			//#endregion
-			return (this as any).os.i.client_settings.home;
+		home: {
+			get(): any[] {
+				//#region 互換性のため
+				(this as any).os.i.client_settings.home.forEach(w => {
+					if (w.name == 'rss-reader') w.name = 'rss';
+					if (w.name == 'user-recommendation') w.name = 'users';
+					if (w.name == 'recommended-polls') w.name = 'polls';
+				});
+				//#endregion
+				return (this as any).os.i.client_settings.home;
+			},
+			set(value) {
+				(this as any).os.i.client_settings.home = value;
+			}
 		},
-		leftWidgets(): any {
+		left(): any[] {
 			return this.home.filter(w => w.place == 'left');
 		},
-		rightWidgets(): any {
+		right(): any[] {
 			return this.home.filter(w => w.place == 'right');
-		},
-		widgets(): any {
-			return {
-				left: this.leftWidgets,
-				right: this.rightWidgets,
-			};
-		},
-		leftEl(): Element {
-			return (this.$refs.left as Element[])[0];
-		},
-		rightEl(): Element {
-			return (this.$refs.right as Element[])[0];
 		}
+	},
+	created() {
+		this.widgets.left = this.left;
+		this.widgets.right = this.right;
+		this.$watch('os.i', i => {
+			this.widgets.left = this.left;
+			this.widgets.right = this.right;
+		}, {
+			deep: true
+		});
 	},
 	mounted() {
 		this.$nextTick(() => {
-			if (!this.customize) {
-				if (this.leftEl.children.length == 0) {
-					this.leftEl.parentNode.removeChild(this.leftEl);
-				}
-				if (this.rightEl.children.length == 0) {
-					this.rightEl.parentNode.removeChild(this.rightEl);
-				}
-			}
-
 			if (this.customize) {
 				(this as any).apis.dialog({
 					title: '%fa:info-circle%カスタマイズのヒント',
@@ -127,30 +139,6 @@ export default Vue.extend({
 						text: 'Got it!'
 					}]
 				});
-
-				const sortableOption = {
-					group: 'kyoppie',
-					animation: 150,
-					onMove: evt => {
-						const id = evt.dragged.getAttribute('data-widget-id');
-						this.home.find(w => w.id == id).place = evt.to.getAttribute('data-place');
-					},
-					onSort: () => {
-						this.saveHome();
-					}
-				};
-
-				new Sortable(this.leftEl, sortableOption);
-				new Sortable(this.rightEl, sortableOption);
-				new Sortable(this.$refs.trash, Object.assign({}, sortableOption, {
-					onAdd: evt => {
-						const el = evt.item;
-						const id = el.getAttribute('data-widget-id');
-						el.parentNode.removeChild(el);
-						this.home = this.home.filter(w => w.id != id);
-						this.saveHome();
-					}
-				}));
 			}
 		});
 	},
@@ -161,6 +149,12 @@ export default Vue.extend({
 		onWidgetContextmenu(widgetId) {
 			(this.$refs[widgetId] as any)[0].func();
 		},
+		onWidgetSort() {
+			this.saveHome();
+		},
+		onTrash(evt) {
+			this.saveHome();
+		},
 		addWidget() {
 			const widget = {
 				name: this.widgetAdderSelected,
@@ -169,11 +163,15 @@ export default Vue.extend({
 				data: {}
 			};
 
-			this.home.unshift(widget);
-
+			this.widgets.left.unshift(widget);
 			this.saveHome();
 		},
 		saveHome() {
+			const left = this.widgets.left;
+			const right = this.widgets.right;
+			this.home = left.concat(right);
+			left.forEach(w => w.place = 'left');
+			right.forEach(w => w.place = 'right');
 			(this as any).api('i/update_home', {
 				home: this.home
 			});
@@ -282,6 +280,7 @@ export default Vue.extend({
 		> .main
 			padding 16px
 			width calc(100% - 275px * 2)
+			order 2
 
 		> *:not(main)
 			width 275px
@@ -292,9 +291,11 @@ export default Vue.extend({
 
 		> .left
 			padding-left 16px
+			order 1
 
 		> .right
 			padding-right 16px
+			order 3
 
 		@media (max-width 1100px)
 			> *:not(main)

@@ -36,6 +36,7 @@ import wNotifications from './widgets/notifications.vue';
 import wBroadcast from './widgets/broadcast.vue';
 import wTimemachine from './widgets/timemachine.vue';
 import wProfile from './widgets/profile.vue';
+import wServer from './widgets/server.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-notification', uiNotification);
@@ -73,3 +74,4 @@ Vue.component('mkw-notifications', wNotifications);
 Vue.component('mkw-broadcast', wBroadcast);
 Vue.component('mkw-timemachine', wTimemachine);
 Vue.component('mkw-profile', wProfile);
+Vue.component('mkw-server', wServer);

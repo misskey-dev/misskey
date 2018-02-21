@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 
 export default Vue.extend({
 	props: ['connection'],

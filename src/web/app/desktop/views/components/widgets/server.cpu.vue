@@ -3,8 +3,8 @@
 	<x-pie class="pie" :value="usage"/>
 	<div>
 		<p>%fa:microchip%CPU</p>
-		<p>{{ cores }} Cores</p>
-		<p>{{ model }}</p>
+		<p>{{ meta.cpu.cores }} Cores</p>
+		<p>{{ meta.cpu.model }}</p>
 	</div>
 </div>
 </template>

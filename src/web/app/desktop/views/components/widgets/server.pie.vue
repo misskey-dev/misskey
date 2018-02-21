@@ -14,7 +14,7 @@
 		fill="none"
 		stroke-width="0.1"
 		:stroke="color"/>
-	<text x="50%" y="50%" dy="0.05" text-anchor="middle">{{ (p * 100).toFixed(0) }}%</text>
+	<text x="50%" y="50%" dy="0.05" text-anchor="middle">{{ (value * 100).toFixed(0) }}%</text>
 </svg>
 </template>
 
