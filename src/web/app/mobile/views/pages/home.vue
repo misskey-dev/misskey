@@ -1,6 +1,7 @@
 <template>
-<mk-ui :func="fn" func-icon="%fa:pencil-alt%">
+<mk-ui :func="fn">
 	<span slot="header">%fa:home%%i18n:mobile.tags.mk-home.home%</span>
+	<template slot="funcIcon">%fa:pencil-alt%</template>
 	<mk-home @loaded="onHomeLoaded"/>
 </mk-ui>
 </template>
@@ -9,7 +10,6 @@
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import getPostSummary from '../../../../../common/get-post-summary';
-import openPostForm from '../../scripts/open-post-form';
 
 export default Vue.extend({
 	data() {
@@ -38,7 +38,7 @@ export default Vue.extend({
 	},
 	methods: {
 		fn() {
-			openPostForm();
+			(this as any).apis.post();
 		},
 		onHomeLoaded() {
 			Progress.done();

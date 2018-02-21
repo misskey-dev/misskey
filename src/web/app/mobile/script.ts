@@ -15,7 +15,7 @@ import post from './api/post';
 import notify from './api/notify';
 
 import MkIndex from './views/pages/index.vue';
-import MkUser from './views/pages/user/user.vue';
+import MkUser from './views/pages/user.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 

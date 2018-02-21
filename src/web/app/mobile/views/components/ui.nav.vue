@@ -78,7 +78,7 @@ export default Vue.extend({
 		search() {
 			const query = window.prompt('%i18n:mobile.tags.mk-ui-nav.search%');
 			if (query == null || query == '') return;
-			this.page('/search?q=' + encodeURIComponent(query));
+			this.$router.push('/search?q=' + encodeURIComponent(query));
 		},
 		onReadAllNotifications() {
 			this.hasUnreadNotifications = false;

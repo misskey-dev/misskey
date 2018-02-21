@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkNotify from './notify.vue';
 import XHeader from './ui.header.vue';
 import XNav from './ui.nav.vue';
 
