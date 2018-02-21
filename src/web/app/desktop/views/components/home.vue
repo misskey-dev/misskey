@@ -191,8 +191,8 @@ export default Vue.extend({
 		padding-top 48px
 		background-image url('/assets/desktop/grid.svg')
 
-		> .main > main > *:not(.maintop)
-			cursor not-allowed
+		> .main > .main
+			cursor not-allowed !important
 
 			> *
 				pointer-events none
