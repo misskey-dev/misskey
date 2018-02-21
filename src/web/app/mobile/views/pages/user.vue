@@ -26,8 +26,8 @@
 					</p>
 				</div>
 				<div class="status">
-				  <a>
-				    <b>{{ user.posts_count }}</b>
+					<a>
+						<b>{{ user.posts_count }}</b>
 						<i>%i18n:mobile.tags.mk-user.posts%</i>
 					</a>
 					<a :href="`${user.username}/following`">
@@ -198,9 +198,6 @@ export default Vue.extend({
 
 					> i
 						font-size 14px
-
-			> .mk-activity-table
-				margin 12px 0 0 0
 
 		> nav
 			display flex
