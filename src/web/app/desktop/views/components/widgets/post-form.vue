@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-post-form">
-	<template v-if="data.design == 0">
+	<template v-if="props.design == 0">
 		<p class="title">%fa:pencil-alt%%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
 	</template>
 	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>

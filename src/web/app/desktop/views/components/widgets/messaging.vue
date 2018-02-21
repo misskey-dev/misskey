@@ -7,6 +7,8 @@
 
 <script lang="ts">
 import define from '../../../../common/define-widget';
+import MkMessagingRoomWindow from '../messaging-room-window.vue';
+
 export default define({
 	name: 'messaging',
 	props: () => ({
@@ -15,11 +17,11 @@ export default define({
 }).extend({
 	methods: {
 		navigate(user) {
-			if (this.platform == 'desktop') {
-				this.wapi_openMessagingRoomWindow(user);
-			} else {
-				// TODO: open room page in new tab
-			}
+			document.body.appendChild(new MkMessagingRoomWindow({
+				propsData: {
+					user: user
+				}
+			}).$mount().$el);
 		},
 		func() {
 			if (this.props.design == 1) {

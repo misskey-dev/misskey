@@ -1,5 +1,5 @@
 <template>
-<mk-window ref="window" is-modal width='800px' height='500px' @closed="$destroy">
+<mk-window ref="window" is-modal width="800px" height="500px" @closed="$destroy">
 	<span slot="header">
 		<span v-html="title" :class="$style.title"></span>
 	</span>
@@ -10,7 +10,7 @@
 		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.cancel" @click="close">キャンセル</button>
+		<button :class="$style.cancel" @click="cancel">キャンセル</button>
 		<button :class="$style.ok" @click="ok">決定</button>
 	</div>
 </mk-window>

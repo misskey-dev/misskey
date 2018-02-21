@@ -147,7 +147,8 @@ export default Vue.extend({
 			this.$emit('loaded');
 		},
 		onWidgetContextmenu(widgetId) {
-			(this.$refs[widgetId] as any)[0].func();
+			const w = (this.$refs[widgetId] as any)[0];
+			if (w.func) w.func();
 		},
 		onWidgetSort() {
 			this.saveHome();

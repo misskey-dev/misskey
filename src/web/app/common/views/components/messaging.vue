@@ -12,7 +12,6 @@
 					@keydown="onSearchResultKeydown(i)"
 					@click="navigate(user)"
 					tabindex="-1"
-					:key="user.id"
 				>
 					<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=32`" alt=""/>
 					<span class="name">{{ user.name }}</span>
@@ -38,7 +37,7 @@
 						<mk-time :time="message.created_at"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">%i18n:common.tags.mk-messaging.you%:</span>{{ text }}</p>
+						<p class="text"><span class="me" v-if="isMe(message)">%i18n:common.tags.mk-messaging.you%:</span>{{ message.text }}</p>
 					</div>
 				</div>
 			</a>

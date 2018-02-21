@@ -6,7 +6,7 @@
 	<div ref="log">
 		<p v-for="req in requests">
 			<span class="ip" :style="`color:${ req.fg }; background:${ req.bg }`">{{ req.ip }}</span>
-			<span>{{ req.method }}</span>
+			<b>{{ req.method }}</b>
 			<span>{{ req.path }}</span>
 		</p>
 	</div>
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import define from '../../../../common/define-widget';
-import seedrandom from 'seedrandom';
+import * as seedrandom from 'seedrandom';
 
 export default define({
 	name: 'broadcast',
@@ -99,6 +99,9 @@ export default define({
 				background rgba(0, 0, 0, 0.025)
 
 			> .ip
+				margin-right 4px
+
+			> b
 				margin-right 4px
 
 </style>

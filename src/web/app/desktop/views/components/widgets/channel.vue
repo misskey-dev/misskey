@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-channel">
-	<template v-if="!data.compact">
+	<template v-if="!props.compact">
 		<p class="title">%fa:tv%{{ channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%' }}</p>
 		<button @click="settings" title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
 	</template>
