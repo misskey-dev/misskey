@@ -34,7 +34,9 @@ export default Vue.component('mk-post-html', {
 
 					if ((this as any).shouldBreak) {
 						if (text.indexOf('\n') != -1) {
-							return text.split('\n').map(t => [createElement('span', t), createElement('br')]);
+							const x = text.split('\n').map(t => [createElement('span', t), createElement('br')]);
+							x[x.length - 1].pop();
+							return x;
 						} else {
 							return createElement('span', text);
 						}
