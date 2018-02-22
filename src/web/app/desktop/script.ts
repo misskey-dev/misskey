@@ -65,7 +65,7 @@ init(async (launch) => {
 		}
 
 		if ((Notification as any).permission == 'granted') {
-			registerNotifications(app.$data.os.stream);
+			registerNotifications(os.stream);
 		}
 	}
 
