@@ -34,9 +34,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.$nextTick(() => {
-			this.zap();
-		});
+		this.zap();
 	},
 	beforeDestroy() {
 		this.disconnect();
@@ -51,7 +49,9 @@ export default Vue.extend({
 				this.posts = posts;
 				this.fetching = false;
 
-				this.scrollToBottom();
+				this.$nextTick(() => {
+					this.scrollToBottom();
+				});
 
 				this.disconnect();
 				this.connection = new ChannelStream(this.channel.id);
