@@ -10,13 +10,13 @@
 			<label>
 				<p class="caption">Named ID</p>
 				<input ref="nid" type="text" pattern="^[a-zA-Z0-9-]{3,30}$" placeholder="ex) misskey-for-ios" autocomplete="off" required="required" onkeyup={ onChangeNid }/>
-				<p class="info" if={ nidState == 'wait' } style="color:#999">%fa:spinner .pulse .fw%確認しています...</p>
-				<p class="info" if={ nidState == 'ok' } style="color:#3CB7B5">%fa:fw check%利用できます</p>
-				<p class="info" if={ nidState == 'unavailable' } style="color:#FF1161">%fa:fw exclamation-triangle%既に利用されています</p>
-				<p class="info" if={ nidState == 'error' } style="color:#FF1161">%fa:fw exclamation-triangle%通信エラー</p>
-				<p class="info" if={ nidState == 'invalid-format' } style="color:#FF1161">%fa:fw exclamation-triangle%a~z、A~Z、0~9、-(ハイフン)が使えます</p>
-				<p class="info" if={ nidState == 'min-range' } style="color:#FF1161">%fa:fw exclamation-triangle%3文字以上でお願いします！</p>
-				<p class="info" if={ nidState == 'max-range' } style="color:#FF1161">%fa:fw exclamation-triangle%30文字以内でお願いします</p>
+				<p class="info" v-if="nidState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%確認しています...</p>
+				<p class="info" v-if="nidState == 'ok'" style="color:#3CB7B5">%fa:fw check%利用できます</p>
+				<p class="info" v-if="nidState == 'unavailable'" style="color:#FF1161">%fa:fw exclamation-triangle%既に利用されています</p>
+				<p class="info" v-if="nidState == 'error'" style="color:#FF1161">%fa:fw exclamation-triangle%通信エラー</p>
+				<p class="info" v-if="nidState == 'invalid-format'" style="color:#FF1161">%fa:fw exclamation-triangle%a~z、A~Z、0~9、-(ハイフン)が使えます</p>
+				<p class="info" v-if="nidState == 'min-range'" style="color:#FF1161">%fa:fw exclamation-triangle%3文字以上でお願いします！</p>
+				<p class="info" v-if="nidState == 'max-range'" style="color:#FF1161">%fa:fw exclamation-triangle%30文字以内でお願いします</p>
 			</label>
 		</section>
 		<section class="description">
@@ -73,9 +73,9 @@
 			</div>
 			<p>%fa:exclamation-triangle%アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。</p>
 		</section>
-		<button onclick={ onsubmit }>アプリ作成</button>
+		<button @click="onsubmit">アプリ作成</button>
 	</form>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			overflow hidden
@@ -177,13 +177,13 @@
 					border-radius 3px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.nidState = null;
 
 		this.onChangeNid = () => {
-			const nid = this.refs.nid.value;
+			const nid = this.$refs.nid.value;
 
 			if (nid == '') {
 				this.update({
@@ -209,7 +209,7 @@
 				nidState: 'wait'
 			});
 
-			this.api('app/name_id/available', {
+			this.$root.$data.os.api('app/name_id/available', {
 				name_id: nid
 			}).then(result => {
 				this.update({
@@ -223,19 +223,19 @@
 		};
 
 		this.onsubmit = () => {
-			const name = this.refs.name.value;
-			const nid = this.refs.nid.value;
-			const description = this.refs.description.value;
-			const cb = this.refs.cb.value;
+			const name = this.$refs.name.value;
+			const nid = this.$refs.nid.value;
+			const description = this.$refs.description.value;
+			const cb = this.$refs.cb.value;
 			const permission = [];
 
-			this.refs.permission.querySelectorAll('input').forEach(el => {
+			this.$refs.permission.querySelectorAll('input').forEach(el => {
 				if (el.checked) permission.push(el.value);
 			});
 
 			const locker = document.body.appendChild(document.createElement('mk-locker'));
 
-			this.api('app/create', {
+			this.$root.$data.os.api('app/create', {
 				name: name,
 				name_id: nid,
 				description: description,

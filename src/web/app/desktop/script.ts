@@ -5,24 +5,55 @@
 // Style
 import './style.styl';
 
-require('./tags');
-require('./mixins');
-import * as riot from 'riot';
 import init from '../init';
-import route from './router';
-import fuckAdBlock from './scripts/fuck-ad-block';
-import MiOS from '../common/mios';
+import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
 import composeNotification from '../common/scripts/compose-notification';
+
+import chooseDriveFolder from './api/choose-drive-folder';
+import chooseDriveFile from './api/choose-drive-file';
+import dialog from './api/dialog';
+import input from './api/input';
+import post from './api/post';
+import notify from './api/notify';
+import updateAvatar from './api/update-avatar';
+import updateBanner from './api/update-banner';
+
+import MkIndex from './views/pages/index.vue';
+import MkUser from './views/pages/user/user.vue';
+import MkSelectDrive from './views/pages/selectdrive.vue';
+import MkDrive from './views/pages/drive.vue';
+import MkHomeCustomize from './views/pages/home-customize.vue';
+import MkMessagingRoom from './views/pages/messaging-room.vue';
+import MkPost from './views/pages/post.vue';
+import MkSearch from './views/pages/search.vue';
 
 /**
  * init
  */
-init(async (mios: MiOS) => {
+init(async (launch) => {
+	// Register directives
+	require('./views/directives');
+
+	// Register components
+	require('./views/components');
+
+	// Launch the app
+	const [app, os] = launch(os => ({
+		chooseDriveFolder,
+		chooseDriveFile,
+		dialog,
+		input,
+		post,
+		notify,
+		updateAvatar: updateAvatar(os),
+		updateBanner: updateBanner(os)
+	}));
+
 	/**
 	 * Fuck AD Block
 	 */
-	fuckAdBlock();
+	fuckAdBlock(os);
 
 	/**
 	 * Init Notification
@@ -34,12 +65,22 @@ init(async (mios: MiOS) => {
 		}
 
 		if ((Notification as any).permission == 'granted') {
-			registerNotifications(mios.stream);
+			registerNotifications(app.$data.os.stream);
 		}
 	}
 
-	// Start routing
-	route(mios);
+	// Routing
+	app.$router.addRoutes([
+		{ path: '/', name: 'index', component: MkIndex },
+		{ path: '/i/customize-home', component: MkHomeCustomize },
+		{ path: '/i/messaging/:username', component: MkMessagingRoom },
+		{ path: '/i/drive', component: MkDrive },
+		{ path: '/i/drive/folder/:folder', component: MkDrive },
+		{ path: '/selectdrive', component: MkSelectDrive },
+		{ path: '/search', component: MkSearch },
+		{ path: '/:user', component: MkUser },
+		{ path: '/:user/:post', component: MkPost }
+	]);
 }, true);
 
 function registerNotifications(stream: HomeStreamManager) {
@@ -98,9 +139,9 @@ function registerNotifications(stream: HomeStreamManager) {
 			});
 			n.onclick = () => {
 				n.close();
-				(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+				/*(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
 					user: message.user
-				});
+				});*/
 			};
 			setTimeout(n.close.bind(n), 7000);
 		});

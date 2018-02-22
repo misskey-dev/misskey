@@ -195,6 +195,11 @@ const endpoints: Endpoint[] = [
 		secure: true
 	},
 	{
+		name: 'i/update_client_setting',
+		withCredential: true,
+		secure: true
+	},
+	{
 		name: 'i/pin',
 		kind: 'account-write'
 	},

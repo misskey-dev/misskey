@@ -305,7 +305,7 @@ class TlContext extends Context {
 	private async getTl() {
 		const tl = await require('../endpoints/posts/timeline')({
 			limit: 5,
-			max_id: this.next ? this.next : undefined
+			until_id: this.next ? this.next : undefined
 		}, this.bot.user);
 
 		if (tl.length > 0) {
@@ -357,7 +357,7 @@ class NotificationsContext extends Context {
 	private async getNotifications() {
 		const notifications = await require('../endpoints/i/notifications')({
 			limit: 5,
-			max_id: this.next ? this.next : undefined
+			until_id: this.next ? this.next : undefined
 		}, this.bot.user);
 
 		if (notifications.length > 0) {

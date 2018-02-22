@@ -1,9 +1,15 @@
+import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import * as riot from 'riot';
+import api from './scripts/api';
 import signout from './scripts/signout';
 import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
-import api from './scripts/api';
+import DriveStreamManager from './scripts/streaming/drive-stream-manager';
+import ServerStreamManager from './scripts/streaming/server-stream-manager';
+import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
+import MessagingIndexStreamManager from './scripts/streaming/messaging-index-stream-manager';
+
+import Err from '../common/views/components/connect-failed.vue';
 
 //#region environment variables
 declare const _VERSION_: string;
@@ -11,6 +17,41 @@ declare const _LANG_: string;
 declare const _API_URL_: string;
 declare const _SW_PUBLICKEY_: string;
 //#endregion
+
+export type API = {
+	chooseDriveFile: (opts: {
+		title?: string;
+		currentFolder?: any;
+		multiple?: boolean;
+	}) => Promise<any>;
+
+	chooseDriveFolder: (opts: {
+		title?: string;
+		currentFolder?: any;
+	}) => Promise<any>;
+
+	dialog: (opts: {
+		title: string;
+		text: string;
+		actions: Array<{
+			text: string;
+			id?: string;
+		}>;
+	}) => Promise<string>;
+
+	input: (opts: {
+		title: string;
+		placeholder?: string;
+		default?: string;
+	}) => Promise<string>;
+
+	post: (opts?: {
+		reply?: any;
+		repost?: any;
+	}) => void;
+
+	notify: (message: string) => void;
+};
 
 /**
  * Misskey Operating System
@@ -26,6 +67,16 @@ export default class MiOS extends EventEmitter {
 
 	private isMetaFetching = false;
 
+	public app: Vue;
+
+	public new(vm, props) {
+		const w = new vm({
+			parent: this.app,
+			propsData: props
+		}).$mount();
+		document.body.appendChild(w.$el);
+	}
+
 	/**
 	 * A signing user
 	 */
@@ -34,7 +85,7 @@ export default class MiOS extends EventEmitter {
 	/**
 	 * Whether signed in
 	 */
-	public get isSignedin() {
+	public get isSignedIn() {
 		return this.i != null;
 	}
 
@@ -45,10 +96,27 @@ export default class MiOS extends EventEmitter {
 		return localStorage.getItem('debug') == 'true';
 	}
 
+	public apis: API;
+
 	/**
 	 * A connection manager of home stream
 	 */
 	public stream: HomeStreamManager;
+
+	/**
+	 * Connection managers
+	 */
+	public streams: {
+		driveStream: DriveStreamManager;
+		serverStream: ServerStreamManager;
+		requestsStream: RequestsStreamManager;
+		messagingIndexStream: MessagingIndexStreamManager;
+	} = {
+		driveStream: null,
+		serverStream: null,
+		requestsStream: null,
+		messagingIndexStream: null
+	};
 
 	/**
 	 * A registration of service worker
@@ -61,6 +129,11 @@ export default class MiOS extends EventEmitter {
 	private shouldRegisterSw: boolean;
 
 	/**
+	 * ウィンドウシステム
+	 */
+	public windows = new WindowSystem();
+
+	/**
 	 * MiOSインスタンスを作成します
 	 * @param shouldRegisterSw ServiceWorkerを登録するかどうか
 	 */
@@ -68,6 +141,9 @@ export default class MiOS extends EventEmitter {
 		super();
 
 		this.shouldRegisterSw = shouldRegisterSw;
+
+		this.streams.serverStream = new ServerStreamManager();
+		this.streams.requestsStream = new RequestsStreamManager();
 
 		//#region BIND
 		this.log = this.log.bind(this);
@@ -79,6 +155,18 @@ export default class MiOS extends EventEmitter {
 		this.getMeta = this.getMeta.bind(this);
 		this.registerSw = this.registerSw.bind(this);
 		//#endregion
+
+		this.once('signedin', () => {
+			// Init home stream manager
+			this.stream = new HomeStreamManager(this.i);
+
+			// Init other stream manager
+			this.streams.driveStream = new DriveStreamManager(this.i);
+			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this.i);
+		});
+
+		// TODO: this global export is for debugging. so disable this if production build
+		(window as any).os = this;
 	}
 
 	public log(...args) {
@@ -139,8 +227,10 @@ export default class MiOS extends EventEmitter {
 			// When failure
 			.catch(() => {
 				// Render the error screen
-				document.body.innerHTML = '<mk-error />';
-				riot.mount('*');
+				document.body.innerHTML = '<div id="err"></div>';
+				new Vue({
+					render: createEl => createEl(Err)
+				}).$mount('#err');
 
 				Progress.done();
 			});
@@ -153,30 +243,13 @@ export default class MiOS extends EventEmitter {
 		// フェッチが完了したとき
 		const fetched = me => {
 			if (me) {
-				riot.observable(me);
-
-				// この me オブジェクトを更新するメソッド
-				me.update = data => {
-					if (data) Object.assign(me, data);
-					me.trigger('updated');
-				};
-
 				// ローカルストレージにキャッシュ
 				localStorage.setItem('me', JSON.stringify(me));
-
-				// 自分の情報が更新されたとき
-				me.on('updated', () => {
-					// キャッシュ更新
-					localStorage.setItem('me', JSON.stringify(me));
-				});
 			}
 
 			this.i = me;
 
-			// Init home stream manager
-			this.stream = this.isSignedin
-				? new HomeStreamManager(this.i)
-				: null;
+			this.emit('signedin');
 
 			// Finish init
 			callback();
@@ -200,8 +273,6 @@ export default class MiOS extends EventEmitter {
 			// 後から新鮮なデータをフェッチ
 			fetchme(cachedMe.token, freshData => {
 				Object.assign(cachedMe, freshData);
-				cachedMe.trigger('updated');
-				cachedMe.trigger('refreshed');
 			});
 		} else {
 			// Get token from cookie
@@ -223,7 +294,7 @@ export default class MiOS extends EventEmitter {
 		if (!isSwSupported) return;
 
 		// Reject when not signed in to Misskey
-		if (!this.isSignedin) return;
+		if (!this.isSignedIn) return;
 
 		// When service worker activated
 		navigator.serviceWorker.ready.then(registration => {
@@ -328,6 +399,22 @@ export default class MiOS extends EventEmitter {
 				res(this.meta.data);
 			}
 		});
+	}
+}
+
+class WindowSystem {
+	private windows = new Set();
+
+	public add(window) {
+		this.windows.add(window);
+	}
+
+	public remove(window) {
+		this.windows.delete(window);
+	}
+
+	public getAll() {
+		return this.windows;
 	}
 }
 

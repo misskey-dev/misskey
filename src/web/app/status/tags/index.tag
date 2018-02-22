@@ -6,7 +6,7 @@
 		<mk-mem-usage connection={ connection }/>
 	</main>
 	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0 auto
@@ -50,7 +50,7 @@
 				> a
 					color #546567
 	</style>
-	<script>
+	<script lang="typescript">
 		import Connection from '../../common/scripts/streaming/server-stream';
 
 		this.mixin('api');
@@ -59,7 +59,7 @@
 		this.connection = new Connection();
 
 		this.on('mount', () => {
-			this.api('meta').then(meta => {
+			this.$root.$data.os.api('meta').then(meta => {
 				this.update({
 					initializing: false,
 					meta
@@ -77,11 +77,11 @@
 <mk-cpu-usage>
 	<h2>CPU <b>{ percentage }%</b></h2>
 	<mk-line-chart ref="chart"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.connection = this.opts.connection;
 
 		this.on('mount', () => {
@@ -93,7 +93,7 @@
 		});
 
 		this.onStats = stats => {
-			this.refs.chart.addData(1 - stats.cpu_usage);
+			this.$refs.chart.addData(1 - stats.cpu_usage);
 
 			const percentage = (stats.cpu_usage * 100).toFixed(0);
 
@@ -107,11 +107,11 @@
 <mk-mem-usage>
 	<h2>MEM <b>{ percentage }%</b></h2>
 	<mk-line-chart ref="chart"/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.connection = this.opts.connection;
 
 		this.on('mount', () => {
@@ -124,7 +124,7 @@
 
 		this.onStats = stats => {
 			stats.mem.used = stats.mem.total - stats.mem.free;
-			this.refs.chart.addData(1 - (stats.mem.used / stats.mem.total));
+			this.$refs.chart.addData(1 - (stats.mem.used / stats.mem.total));
 
 			const percentage = (stats.mem.used / stats.mem.total * 100).toFixed(0);
 
@@ -164,7 +164,7 @@
 			stroke="#f43b16"
 			stroke-width="0.5"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			padding 16px
@@ -176,7 +176,7 @@
 				padding 1px
 				width 100%
 	</style>
-	<script>
+	<script lang="typescript">
 		import uuid from 'uuid';
 
 		this.viewBoxX = 100;

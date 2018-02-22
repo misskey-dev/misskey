@@ -1,5 +1,5 @@
 <mk-index><a href="/apps">アプリ</a>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>

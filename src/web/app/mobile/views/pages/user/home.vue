@@ -1,0 +1,96 @@
+<template>
+<div class="root home">
+	<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" compact/>
+	<section class="recent-posts">
+		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
+		<div>
+			<x-posts :user="user"/>
+		</div>
+	</section>
+	<section class="images">
+		<h2>%fa:image%%i18n:mobile.tags.mk-user-overview.images%</h2>
+		<div>
+			<x-photos :user="user"/>
+		</div>
+	</section>
+	<section class="activity">
+		<h2>%fa:chart-bar%%i18n:mobile.tags.mk-user-overview.activity%</h2>
+		<div>
+			<x-activity :user="user"/>
+		</div>
+	</section>
+	<section class="frequently-replied-users">
+		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.frequently-replied-users%</h2>
+		<div>
+			<x-friends :user="user"/>
+		</div>
+	</section>
+	<section class="followers-you-know" v-if="os.isSignedIn && os.i.id !== user.id">
+		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
+		<div>
+			<x-followers-you-know :user="user"/>
+		</div>
+	</section>
+	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.last_used_at"/></b></p>
+</div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import XPosts from './home.posts.vue';
+import XPhotos from './home.photos.vue';
+import XFriends from './home.friends.vue';
+import XFollowersYouKnow from './home.followers-you-know.vue';
+import XActivity from './home.activity.vue';
+
+export default Vue.extend({
+	components: {
+		XPosts,
+		XPhotos,
+		XFriends,
+		XFollowersYouKnow,
+		XActivity
+	},
+	props: ['user']
+});
+</script>
+
+<style lang="stylus" scoped>
+.root.home
+	max-width 600px
+	margin 0 auto
+
+	> .mk-post-detail
+		margin 0 0 8px 0
+
+	> section
+		background #eee
+		border-radius 8px
+		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+		&:not(:last-child)
+			margin-bottom 8px
+
+		> h2
+			margin 0
+			padding 8px 10px
+			font-size 15px
+			font-weight normal
+			color #465258
+			background #fff
+			border-radius 8px 8px 0 0
+
+			> i
+				margin-right 6px
+
+	> .activity
+		> div
+			padding 8px
+
+	> p
+		display block
+		margin 16px
+		text-align center
+		color #cad2da
+
+</style>

@@ -1,11 +1,11 @@
 <mk-index>
 	<h1>Misskey<i>Statistics</i></h1>
-	<main if={ !initializing }>
+	<main v-if="!initializing">
 		<mk-users stats={ stats }/>
 		<mk-posts stats={ stats }/>
 	</main>
 	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0 auto
@@ -40,13 +40,13 @@
 				> a
 					color #546567
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.initializing = true;
 
 		this.on('mount', () => {
-			this.api('stats').then(stats => {
+			this.$root.$data.os.api('stats').then(stats => {
 				this.update({
 					initializing: false,
 					stats
@@ -58,19 +58,19 @@
 
 <mk-posts>
 	<h2>%i18n:stats.posts-count% <b>{ stats.posts_count }</b></h2>
-	<mk-posts-chart if={ !initializing } data={ data }/>
-	<style>
+	<mk-posts-chart v-if="!initializing" data={ data }/>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.initializing = true;
 		this.stats = this.opts.stats;
 
 		this.on('mount', () => {
-			this.api('aggregation/posts', {
+			this.$root.$data.os.api('aggregation/posts', {
 				limit: 365
 			}).then(data => {
 				this.update({
@@ -84,19 +84,19 @@
 
 <mk-users>
 	<h2>%i18n:stats.users-count% <b>{ stats.users_count }</b></h2>
-	<mk-users-chart if={ !initializing } data={ data }/>
-	<style>
+	<mk-users-chart v-if="!initializing" data={ data }/>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.initializing = true;
 		this.stats = this.opts.stats;
 
 		this.on('mount', () => {
-			this.api('aggregation/users', {
+			this.$root.$data.os.api('aggregation/users', {
 				limit: 365
 			}).then(data => {
 				this.update({
@@ -133,7 +133,7 @@
 			stroke="#555"
 			stroke-dasharray="2 2"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -142,7 +142,7 @@
 				padding 1px
 				width 100%
 	</style>
-	<script>
+	<script lang="typescript">
 		this.viewBoxX = 365;
 		this.viewBoxY = 80;
 
@@ -178,7 +178,7 @@
 			stroke-width="1"
 			stroke="#555"/>
 	</svg>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -187,7 +187,7 @@
 				padding 1px
 				width 100%
 	</style>
-	<script>
+	<script lang="typescript">
 		this.viewBoxX = 365;
 		this.viewBoxY = 80;
 

@@ -17,7 +17,14 @@ export default class Replacer {
 	}
 
 	private get(key: string) {
-		let text = locale[this.lang];
+		const texts = locale[this.lang];
+
+		if (texts == null) {
+			console.warn(`lang '${this.lang}' is not supported`);
+			return key; // Fallback
+		}
+
+		let text = texts;
 
 		// Check the key existance
 		const error = key.split('.').some(k => {

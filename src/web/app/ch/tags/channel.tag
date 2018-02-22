@@ -1,12 +1,12 @@
 <mk-channel>
 	<mk-header/>
 	<hr>
-	<main if={ !fetching }>
+	<main v-if="!fetching">
 		<h1>{ channel.title }</h1>
 
-		<div if={ SIGNIN }>
-			<p if={ channel.is_watching }>このチャンネルをウォッチしています <a onclick={ unwatch }>ウォッチ解除</a></p>
-			<p if={ !channel.is_watching }><a onclick={ watch }>このチャンネルをウォッチする</a></p>
+		<div v-if="$root.$data.os.isSignedIn">
+			<p v-if="channel.is_watching">このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
+			<p v-if="!channel.is_watching"><a @click="watch">このチャンネルをウォッチする</a></p>
 		</div>
 
 		<div class="share">
@@ -15,17 +15,17 @@
 		</div>
 
 		<div class="body">
-			<p if={ postsFetching }>読み込み中<mk-ellipsis/></p>
-			<div if={ !postsFetching }>
-				<p if={ posts == null || posts.length == 0 }>まだ投稿がありません</p>
-				<virtual if={ posts != null }>
+			<p v-if="postsFetching">読み込み中<mk-ellipsis/></p>
+			<div v-if="!postsFetching">
+				<p v-if="posts == null || posts.length == 0">まだ投稿がありません</p>
+				<template v-if="posts != null">
 					<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
-				</virtual>
+				</template>
 			</div>
 		</div>
 		<hr>
-		<mk-channel-form if={ SIGNIN } channel={ channel } ref="form"/>
-		<div if={ !SIGNIN }>
+		<mk-channel-form v-if="$root.$data.os.isSignedIn" channel={ channel } ref="form"/>
+		<div v-if="!$root.$data.os.isSignedIn">
 			<p>参加するには<a href={ _URL_ }>ログインまたは新規登録</a>してください</p>
 		</div>
 		<hr>
@@ -33,7 +33,7 @@
 			<small><a href={ _URL_ }>Misskey</a> ver { _VERSION_ } (葵 aoi)</small>
 		</footer>
 	</main>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -53,7 +53,7 @@
 					max-width 500px
 
 	</style>
-	<script>
+	<script lang="typescript">
 		import Progress from '../../common/scripts/loading';
 		import ChannelStream from '../../common/scripts/streaming/channel-stream';
 
@@ -76,7 +76,7 @@
 			let fetched = false;
 
 			// チャンネル概要読み込み
-			this.api('channels/show', {
+			this.$root.$data.os.api('channels/show', {
 				channel_id: this.id
 			}).then(channel => {
 				if (fetched) {
@@ -95,7 +95,7 @@
 			});
 
 			// 投稿読み込み
-			this.api('channels/posts', {
+			this.$root.$data.os.api('channels/posts', {
 				channel_id: this.id
 			}).then(posts => {
 				if (fetched) {
@@ -125,7 +125,7 @@
 			this.posts.unshift(post);
 			this.update();
 
-			if (document.hidden && this.SIGNIN && post.user_id !== this.I.id) {
+			if (document.hidden && this.$root.$data.os.isSignedIn && post.user_id !== this.$root.$data.os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${this.channel.title} | Misskey`;
 			}
@@ -139,7 +139,7 @@
 		};
 
 		this.watch = () => {
-			this.api('channels/watch', {
+			this.$root.$data.os.api('channels/watch', {
 				channel_id: this.id
 			}).then(() => {
 				this.channel.is_watching = true;
@@ -150,7 +150,7 @@
 		};
 
 		this.unwatch = () => {
-			this.api('channels/unwatch', {
+			this.$root.$data.os.api('channels/unwatch', {
 				channel_id: this.id
 			}).then(() => {
 				this.channel.is_watching = false;
@@ -164,24 +164,24 @@
 
 <mk-channel-post>
 	<header>
-		<a class="index" onclick={ reply }>{ post.index }:</a>
+		<a class="index" @click="reply">{ post.index }:</a>
 		<a class="name" href={ _URL_ + '/' + post.user.username }><b>{ post.user.name }</b></a>
 		<mk-time time={ post.created_at }/>
 		<mk-time time={ post.created_at } mode="detail"/>
 		<span>ID:<i>{ post.user.username }</i></span>
 	</header>
 	<div>
-		<a if={ post.reply }>&gt;&gt;{ post.reply.index }</a>
+		<a v-if="post.reply">&gt;&gt;{ post.reply.index }</a>
 		{ post.text }
-		<div class="media" if={ post.media }>
-			<virtual each={ file in post.media }>
+		<div class="media" v-if="post.media">
+			<template each={ file in post.media }>
 				<a href={ file.url } target="_blank">
 					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
 				</a>
-			</virtual>
+			</template>
 		</div>
 	</div>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 			margin 0
@@ -228,7 +228,7 @@
 							vertical-align bottom
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.post = this.opts.post;
 		this.form = this.opts.form;
 
@@ -241,21 +241,21 @@
 </mk-channel-post>
 
 <mk-channel-form>
-	<p if={ reply }><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a onclick={ clearReply }>[x]</a></p>
+	<p v-if="reply"><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a @click="clearReply">[x]</a></p>
 	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder="%i18n:ch.tags.mk-channel-form.textarea%"></textarea>
 	<div class="actions">
-		<button onclick={ selectFile }>%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
-		<button onclick={ drive }>%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
-		<button class={ wait: wait } ref="submit" disabled={ wait || (refs.text.value.length == 0) } onclick={ post }>
-			<virtual if={ !wait }>%fa:paper-plane%</virtual>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis if={ wait }/>
+		<button @click="selectFile">%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
+		<button @click="drive">%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
+		<button :class="{ wait: wait }" ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="post">
+			<template v-if="!wait">%fa:paper-plane%</template>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis v-if="wait"/>
 		</button>
 	</div>
 	<mk-uploader ref="uploader"/>
-	<ol if={ files }>
+	<ol v-if="files">
 		<li each={ files }>{ name }</li>
 	</ol>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" onchange={ changeFile }/>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
@@ -282,14 +282,14 @@
 				display none
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.channel = this.opts.channel;
 		this.files = null;
 
 		this.on('mount', () => {
-			this.refs.uploader.on('uploaded', file => {
+			this.$refs.uploader.on('uploaded', file => {
 				this.update({
 					files: [file]
 				});
@@ -297,7 +297,7 @@
 		});
 
 		this.upload = file => {
-			this.refs.uploader.upload(file);
+			this.$refs.uploader.upload(file);
 		};
 
 		this.clearReply = () => {
@@ -311,7 +311,7 @@
 			this.update({
 				files: null
 			});
-			this.refs.text.value = '';
+			this.$refs.text.value = '';
 		};
 
 		this.post = () => {
@@ -323,8 +323,8 @@
 				? this.files.map(f => f.id)
 				: undefined;
 
-			this.api('posts/create', {
-				text: this.refs.text.value == '' ? undefined : this.refs.text.value,
+			this.$root.$data.os.api('posts/create', {
+				text: this.$refs.text.value == '' ? undefined : this.$refs.text.value,
 				media_ids: files,
 				reply_id: this.reply ? this.reply.id : undefined,
 				channel_id: this.channel.id
@@ -340,11 +340,11 @@
 		};
 
 		this.changeFile = () => {
-			Array.from(this.refs.file.files).forEach(this.upload);
+			Array.from(this.$refs.file.files).forEach(this.upload);
 		};
 
 		this.selectFile = () => {
-			this.refs.file.click();
+			this.$refs.file.click();
 		};
 
 		this.drive = () => {
@@ -375,7 +375,7 @@
 
 <mk-twitter-button>
 	<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			const head = document.getElementsByTagName('head')[0];
 			const script = document.createElement('script');
@@ -388,7 +388,7 @@
 
 <mk-line-button>
 	<div class="line-it-button" data-lang="ja" data-type="share-a" data-url={ _CH_URL_ } style="display: none;"></div>
-	<script>
+	<script lang="typescript">
 		this.on('mount', () => {
 			const head = document.getElementsByTagName('head')[0];
 			const script = document.createElement('script');

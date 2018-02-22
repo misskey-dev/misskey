@@ -1,21 +1,21 @@
 <mk-index>
 	<mk-header/>
 	<hr>
-	<button onclick={ n }>%i18n:ch.tags.mk-index.new%</button>
+	<button @click="n">%i18n:ch.tags.mk-index.new%</button>
 	<hr>
-	<ul if={ channels }>
+	<ul v-if="channels">
 		<li each={ channels }><a href={ '/' + this.id }>{ this.title }</a></li>
 	</ul>
-	<style>
+	<style lang="stylus" scoped>
 		:scope
 			display block
 
 	</style>
-	<script>
+	<script lang="typescript">
 		this.mixin('api');
 
 		this.on('mount', () => {
-			this.api('channels', {
+			this.$root.$data.os.api('channels', {
 				limit: 100
 			}).then(channels => {
 				this.update({
@@ -27,7 +27,7 @@
 		this.n = () => {
 			const title = window.prompt('%i18n:ch.tags.mk-index.channel-title%');
 
-			this.api('channels/create', {
+			this.$root.$data.os.api('channels/create', {
 				title: title
 			}).then(channel => {
 				location.href = '/' + channel.id;
