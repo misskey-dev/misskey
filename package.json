@@ -90,7 +90,7 @@
 		"compression": "1.7.2",
 		"cookie": "0.3.1",
 		"cors": "2.8.4",
-		"css-loader": "0.28.9",
+		"css-loader": "0.28.10",
 		"debug": "3.1.0",
 		"deep-equal": "1.0.1",
 		"deepcopy": "0.6.3",
