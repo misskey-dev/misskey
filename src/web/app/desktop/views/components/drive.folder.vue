@@ -1,5 +1,5 @@
 <template>
-<div class="mk-drive-folder"
+<div class="root folder"
 	:data-is-contextmenu-showing="isContextmenuShowing"
 	:data-draghover="draghover"
 	@click="onClick"
@@ -124,7 +124,7 @@ export default Vue.extend({
 					this.browser.upload(file, this.folder);
 				});
 				return false;
-			};
+			}
 
 			// データ取得
 			const data = e.dataTransfer.getData('text');
@@ -220,7 +220,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-drive-folder
+.root.folder
 	padding 8px
 	height 64px
 	background lighten($theme-color, 95%)

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-drive-file"
+<div class="root file"
 	:data-is-selected="isSelected"
 	:data-is-contextmenu-showing="isContextmenuShowing"
 	@click="onClick"
@@ -51,7 +51,7 @@ export default Vue.extend({
 		},
 		background(): string {
 			return this.file.properties.average_color
-				? `rgb(${this.file.properties.average_color.join(',')})'`
+				? `rgb(${this.file.properties.average_color.join(',')})`
 				: 'transparent';
 		}
 	},
@@ -188,7 +188,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-drive-file
+.root.file
 	padding 8px 0 0 0
 	height 180px
 	border-radius 4px

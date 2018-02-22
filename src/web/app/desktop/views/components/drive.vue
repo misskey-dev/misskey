@@ -2,10 +2,10 @@
 <div class="mk-drive">
 	<nav>
 		<div class="path" @contextmenu.prevent.stop="() => {}">
-			<mk-drive-nav-folder :class="{ current: folder == null }"/>
+			<x-nav-folder :class="{ current: folder == null }"/>
 			<template v-for="folder in hierarchyFolders">
 				<span class="separator">%fa:angle-right%</span>
-				<mk-drive-nav-folder :folder="folder" :key="folder.id"/>
+				<x-nav-folder :folder="folder" :key="folder.id"/>
 			</template>
 			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
@@ -24,13 +24,13 @@
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
-				<mk-drive-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
+				<x-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
 				<button v-if="moreFolders">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
-				<mk-drive-file v-for="file in files" :key="file.id" class="file" :file="file"/>
+				<x-file v-for="file in files" :key="file.id" class="file" :file="file"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
 				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
@@ -57,10 +57,18 @@
 <script lang="ts">
 import Vue from 'vue';
 import MkDriveWindow from './drive-window.vue';
+import XNavFolder from './drive.nav-folder.vue';
+import XFolder from './drive.folder.vue';
+import XFile from './drive.file.vue';
 import contains from '../../../common/scripts/contains';
 import contextmenu from '../../api/contextmenu';
 
 export default Vue.extend({
+	components: {
+		XNavFolder,
+		XFolder,
+		XFile
+	},
 	props: {
 		initFolder: {
 			type: Object,

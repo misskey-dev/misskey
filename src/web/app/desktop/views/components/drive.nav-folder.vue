@@ -1,5 +1,5 @@
 <template>
-<div class="mk-drive-nav-folder"
+<div class="root nav-folder"
 	:data-draghover="draghover"
 	@click="onClick"
 	@dragover.prevent.stop="onDragover"
@@ -101,7 +101,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-drive-nav-folder
+.root.nav-folder
 	&[data-draghover]
 		background #eee
 
