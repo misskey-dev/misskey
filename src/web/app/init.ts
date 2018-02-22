@@ -87,23 +87,6 @@ export default (callback: (launch: (api: (os: MiOS) => API) => [Vue, MiOS]) => v
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const app = new Vue({
-			router: new VueRouter({
-				mode: 'history'
-			}),
-			created() {
-				this.$watch('os.i', i => {
-					// キャッシュ更新
-					localStorage.setItem('me', JSON.stringify(i));
-				}, {
-					deep: true
-				});
-			},
-			render: createEl => createEl(App)
-		});
-
-		os.app = app;
-
 		const launch = (api: (os: MiOS) => API) => {
 			os.apis = api(os);
 
@@ -116,6 +99,23 @@ export default (callback: (launch: (api: (os: MiOS) => API) => [Vue, MiOS]) => v
 					};
 				}
 			});
+
+			const app = new Vue({
+				router: new VueRouter({
+					mode: 'history'
+				}),
+				created() {
+					this.$watch('os.i', i => {
+						// キャッシュ更新
+						localStorage.setItem('me', JSON.stringify(i));
+					}, {
+						deep: true
+					});
+				},
+				render: createEl => createEl(App)
+			});
+
+			os.app = app;
 
 			// マウント
 			app.$mount('#app');
