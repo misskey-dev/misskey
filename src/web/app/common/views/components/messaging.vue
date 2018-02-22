@@ -21,12 +21,13 @@
 		</div>
 	</div>
 	<div class="history" v-if="messages.length > 0">
-		<template >
+		<template>
 			<a v-for="message in messages"
 				class="user"
+				:href="`/i/messaging/${isMe(message) ? message.recipient.username : message.user.username}`"
 				:data-is-me="isMe(message)"
 				:data-is-read="message.is_read"
-				@click="navigate(isMe(message) ? message.recipient : message.user)"
+				@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"
 				:key="message.id"
 			>
 				<div>
@@ -220,13 +221,13 @@ export default Vue.extend({
 					bottom 0
 					left 0
 					width 1em
-					height 1em
+					line-height 56px
 					margin auto
 					color #555
 
 			> input
 				margin 0
-				padding 0 0 0 38px
+				padding 0 0 0 32px
 				width 100%
 				font-size 1em
 				line-height 38px
