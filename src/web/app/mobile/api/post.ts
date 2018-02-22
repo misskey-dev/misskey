@@ -37,5 +37,6 @@ export default (os) => (opts) => {
 		vm.$once('cancel', recover);
 		vm.$once('post', recover);
 		document.body.appendChild(vm.$el);
+		(vm as any).focus();
 	}
 };

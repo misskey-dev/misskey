@@ -224,7 +224,7 @@ export default Vue.extend({
 					> p.is-deleted
 						color rgba(255, 255, 255, 0.5)
 
-					> .text
+					> .text >>>
 						&, *
 							color #fff !important
 

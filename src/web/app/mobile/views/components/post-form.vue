@@ -49,10 +49,13 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.$nextTick(() => {
-			(this.$refs.text as any).focus();
+			this.focus();
 		});
 	},
 	methods: {
+		focus() {
+			(this.$refs.text as any).focus();
+		},
 		chooseFile() {
 			(this.$refs.file as any).click();
 		},
