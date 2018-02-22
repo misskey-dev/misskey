@@ -44,6 +44,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = 'Misskey Drive';
+		document.documentElement.style.background = '#fff';
 	},
 	beforeDestroy() {
 		window.removeEventListener('popstate', this.onPopState);
