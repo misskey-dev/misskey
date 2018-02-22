@@ -1,7 +1,7 @@
 <template>
 <div class="mk-home" :data-customize="customize">
 	<div class="customize" v-if="customize">
-		<a href="/">%fa:check%完了</a>
+		<router-link to="/">%fa:check%完了</router-link>
 		<div>
 			<div class="adder">
 				<p>ウィジェットを追加:</p>
@@ -51,7 +51,11 @@
 				</div>
 			</x-draggable>
 			<div class="main">
-				<mk-timeline ref="tl" @loaded="onTlLoaded"/>
+				<a @click="hint">カスタマイズのヒント</a>
+				<div>
+					<mk-post-form v-if="os.i.client_settings.showPostFormOnTopOfTl"/>
+					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
+				</div>
 			</div>
 		</template>
 		<template v-else>
@@ -59,6 +63,7 @@
 				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" @chosen="warp"/>
 			</div>
 			<div class="main">
+				<mk-post-form v-if="os.i.client_settings.showPostFormOnTopOfTl"/>
 				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 				<mk-mentions @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
 			</div>
@@ -126,23 +131,19 @@ export default Vue.extend({
 			deep: true
 		});
 	},
-	mounted() {
-		this.$nextTick(() => {
-			if (this.customize) {
-				(this as any).apis.dialog({
-					title: '%fa:info-circle%カスタマイズのヒント',
-					text: '<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
-						'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
-						'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
-						'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
-					actions: [{
-						text: 'Got it!'
-					}]
-				});
-			}
-		});
-	},
 	methods: {
+		hint() {
+			(this as any).apis.dialog({
+				title: '%fa:info-circle%カスタマイズのヒント',
+				text: '<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p>' +
+					'<p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p>' +
+					'<p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p>' +
+					'<p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>',
+				actions: [{
+					text: 'Got it!'
+				}]
+			});
+		},
 		onTlLoaded() {
 			this.$emit('loaded');
 		},
@@ -193,10 +194,16 @@ export default Vue.extend({
 		background-image url('/assets/desktop/grid.svg')
 
 		> .main > .main
-			cursor not-allowed !important
+			> a
+				display block
+				margin-bottom 8px
+				text-align center
 
-			> *
-				pointer-events none
+			> div
+				cursor not-allowed !important
+
+				> *
+					pointer-events none
 
 	&:not([data-customize])
 		> .main > *:empty
@@ -286,6 +293,11 @@ export default Vue.extend({
 			padding 16px
 			width calc(100% - 275px * 2)
 			order 2
+
+			.mk-post-form
+				margin-bottom 16px
+				border solid 1px #e5e5e5
+				border-radius 4px
 
 		> *:not(.main)
 			width 275px

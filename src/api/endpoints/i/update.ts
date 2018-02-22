@@ -46,19 +46,13 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	if (bannerIdErr) return rej('invalid banner_id param');
 	if (bannerId) user.banner_id = bannerId;
 
-	// Get 'show_donation' parameter
-	const [showDonation, showDonationErr] = $(params.show_donation).optional.boolean().$;
-	if (showDonationErr) return rej('invalid show_donation param');
-	if (showDonation) user.client_settings.show_donation = showDonation;
-
 	await User.update(user._id, {
 		$set: {
 			name: user.name,
 			description: user.description,
 			avatar_id: user.avatar_id,
 			banner_id: user.banner_id,
-			profile: user.profile,
-			'client_settings.show_donation': user.client_settings.show_donation
+			profile: user.profile
 		}
 	});
 

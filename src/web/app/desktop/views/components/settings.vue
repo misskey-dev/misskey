@@ -20,7 +20,13 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>デザイン</h1>
-			<a href="/i/customize-home" class="ui button">ホームをカスタマイズ</a>
+			<div>
+				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
+			</div>
+			<label>
+				<input type="checkbox" v-model="showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl">
+				<span>タイムライン上部に投稿フォームを表示する</span>
+			</label>
 		</section>
 
 		<section class="drive" v-show="page == 'drive'">
@@ -89,8 +95,25 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			page: 'profile'
+			page: 'profile',
+
+			showPostFormOnTopOfTl: false
 		};
+	},
+	created() {
+		this.showPostFormOnTopOfTl = (this as any).os.i.client_settings.showPostFormOnTopOfTl;
+	},
+	methods: {
+		customizeHome() {
+			this.$router.push('/i/customize-home');
+			this.$emit('done');
+		},
+		onChangeShowPostFormOnTopOfTl() {
+			(this as any).api('i/update_client_setting', {
+				name: 'showPostFormOnTopOfTl',
+				value: this.showPostFormOnTopOfTl
+			});
+		}
 	}
 });
 </script>
@@ -145,5 +168,11 @@ export default Vue.extend({
 				font-size 1em
 				color #555
 				border-bottom solid 1px #eee
+
+		> .web
+			> div
+				border-bottom solid 1px #eee
+				padding 0 0 16px 0
+				margin 0 0 16px 0
 
 </style>

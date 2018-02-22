@@ -33,7 +33,11 @@ export default Vue.component('mk-post-html', {
 						.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if ((this as any).shouldBreak) {
-						return text.split('\n').map(t => [createElement('span', t), createElement('br')]);
+						if (text.indexOf('\n') != -1) {
+							return text.split('\n').map(t => [createElement('span', t), createElement('br')]);
+						} else {
+							return createElement('span', text);
+						}
 					} else {
 						return createElement('span', text.replace(/\n/g, ' '));
 					}
