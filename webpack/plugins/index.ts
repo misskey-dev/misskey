@@ -1,5 +1,3 @@
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-
 import consts from './consts';
 import hoist from './hoist';
 import minify from './minify';
@@ -9,7 +7,6 @@ const isProduction = env === 'production';
 
 export default (version, lang) => {
 	const plugins = [
-		//new HardSourceWebpackPlugin(),
 		consts(lang)
 	];
 
