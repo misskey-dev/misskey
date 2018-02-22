@@ -2,7 +2,7 @@
 <div class="mk-dialog">
 	<div class="bg" ref="bg" @click="onBgClick"></div>
 	<div class="main" ref="main">
-		<header v-html="title"></header>
+		<header v-html="title" :class="$style.header"></header>
 		<div class="body" v-html="text"></div>
 		<div class="buttons">
 			<button v-for="button in buttons" @click="click(button)">{{ button.text }}</button>
@@ -110,18 +110,6 @@ export default Vue.extend({
 		background #fff
 		opacity 0
 
-		> header
-			margin 1em 0
-			color $theme-color
-			// color #43A4EC
-			font-weight bold
-
-			&:empty
-				display none
-
-			> i
-				margin-right 0.5em
-
 		> .body
 			margin 1em 0
 			color #888
@@ -152,5 +140,20 @@ export default Vue.extend({
 				&:active
 					color darken($theme-color, 10%)
 					transition color 0s ease
+
+</style>
+
+<style lang="stylus" module>
+.header
+	margin 1em 0
+	color $theme-color
+	// color #43A4EC
+	font-weight bold
+
+	&:empty
+		display none
+
+	> i
+		margin-right 0.5em
 
 </style>

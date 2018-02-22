@@ -64,7 +64,6 @@ export default Vue.extend({
 
 		> header
 			display flex
-			margin 4px 0
 			white-space nowrap
 
 			> .name

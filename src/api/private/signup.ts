@@ -15,7 +15,7 @@ const home = {
 		'profile',
 		'calendar',
 		'activity',
-		'rss-reader',
+		'rss',
 		'trends',
 		'photo-stream',
 		'version'
@@ -23,8 +23,8 @@ const home = {
 	right: [
 		'broadcast',
 		'notifications',
-		'user-recommendation',
-		'recommended-polls',
+		'users',
+		'polls',
 		'server',
 		'donation',
 		'nav',
