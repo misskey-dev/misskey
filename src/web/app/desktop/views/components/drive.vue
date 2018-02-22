@@ -376,11 +376,9 @@ export default Vue.extend({
 		},
 
 		newWindow(folder) {
-			document.body.appendChild(new MkDriveWindow({
-				propsData: {
-					folder: folder
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkDriveWindow, {
+				folder: folder
+			});
 		},
 
 		move(target) {

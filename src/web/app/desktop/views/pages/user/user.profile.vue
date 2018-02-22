@@ -36,21 +36,15 @@ export default Vue.extend({
 	},
 	methods: {
 		showFollowing() {
-			document.body.appendChild(new MkFollowingWindow({
-				parent: this,
-				propsData: {
-					user: this.user
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkFollowingWindow, {
+				user: this.user
+			});
 		},
 
 		showFollowers() {
-			document.body.appendChild(new MkFollowersWindow({
-				parent: this,
-				propsData: {
-					user: this.user
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkFollowersWindow, {
+				user: this.user
+			});
 		},
 
 		mute() {

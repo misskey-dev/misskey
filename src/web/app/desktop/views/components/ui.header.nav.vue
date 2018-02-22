@@ -79,7 +79,7 @@ export default Vue.extend({
 		},
 
 		messaging() {
-			document.body.appendChild(new MkMessagingWindow().$mount().$el);
+			(this as any).os.new(MkMessagingWindow);
 		}
 	}
 });

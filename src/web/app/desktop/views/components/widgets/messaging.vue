@@ -17,11 +17,9 @@ export default define({
 }).extend({
 	methods: {
 		navigate(user) {
-			document.body.appendChild(new MkMessagingRoomWindow({
-				propsData: {
-					user: user
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkMessagingRoomWindow, {
+				user: user
+			});
 		},
 		func() {
 			if (this.props.design == 1) {

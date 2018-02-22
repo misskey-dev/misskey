@@ -154,22 +154,18 @@ export default Vue.extend({
 			});
 		},
 		react() {
-			document.body.appendChild(new MkReactionPicker({
-				propsData: {
-					source: this.$refs.reactButton,
-					post: this.p,
-					compact: true
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkReactionPicker, {
+				source: this.$refs.reactButton,
+				post: this.p,
+				compact: true
+			});
 		},
 		menu() {
-			document.body.appendChild(new MkPostMenu({
-				propsData: {
-					source: this.$refs.menuButton,
-					post: this.p,
-					compact: true
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkPostMenu, {
+				source: this.$refs.menuButton,
+				post: this.p,
+				compact: true
+			});
 		}
 	}
 });

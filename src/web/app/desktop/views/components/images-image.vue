@@ -39,11 +39,9 @@ export default Vue.extend({
 		},
 
 		onClick() {
-			document.body.appendChild(new MkImagesImageDialog({
-				propsData: {
-					image: this.image
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkImagesImageDialog, {
+				image: this.image
+			});
 		}
 	}
 });

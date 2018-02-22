@@ -53,11 +53,9 @@ export default Vue.extend({
 				id: notification.id
 			});
 
-			document.body.appendChild(new MkNotify({
-				propsData: {
-					notification
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkNotify, {
+				notification
+			});
 		}
 	}
 });

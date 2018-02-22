@@ -67,6 +67,16 @@ export default class MiOS extends EventEmitter {
 
 	private isMetaFetching = false;
 
+	public app: Vue;
+
+	public new(vm, props) {
+		const w = new vm({
+			parent: this.app,
+			propsData: props
+		}).$mount();
+		document.body.appendChild(w.$el);
+	}
+
 	/**
 	 * A signing user
 	 */

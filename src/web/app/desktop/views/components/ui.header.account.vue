@@ -70,11 +70,11 @@ export default Vue.extend({
 		},
 		drive() {
 			this.close();
-			document.body.appendChild(new MkDriveWindow().$mount().$el);
+			(this as any).os.new(MkDriveWindow);
 		},
 		settings() {
 			this.close();
-			document.body.appendChild(new MkSettingsWindow().$mount().$el);
+			(this as any).os.new(MkSettingsWindow);
 		}
 	}
 });

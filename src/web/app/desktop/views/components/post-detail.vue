@@ -148,34 +148,26 @@ export default Vue.extend({
 			});
 		},
 		reply() {
-			document.body.appendChild(new MkPostFormWindow({
-				propsData: {
-					reply: this.p
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkPostFormWindow, {
+				reply: this.p
+			});
 		},
 		repost() {
-			document.body.appendChild(new MkRepostFormWindow({
-				propsData: {
-					post: this.p
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkRepostFormWindow, {
+				post: this.p
+			});
 		},
 		react() {
-			document.body.appendChild(new MkReactionPicker({
-				propsData: {
-					source: this.$refs.reactButton,
-					post: this.p
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkReactionPicker, {
+				source: this.$refs.reactButton,
+				post: this.p
+			});
 		},
 		menu() {
-			document.body.appendChild(new MkPostMenu({
-				propsData: {
-					source: this.$refs.menuButton,
-					post: this.p
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkPostMenu, {
+				source: this.$refs.menuButton,
+				post: this.p
+			});
 		}
 	}
 });

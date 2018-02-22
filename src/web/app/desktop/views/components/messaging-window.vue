@@ -12,11 +12,9 @@ import MkMessagingRoomWindow from './messaging-room-window.vue';
 export default Vue.extend({
 	methods: {
 		navigate(user) {
-			document.body.appendChild(new MkMessagingRoomWindow({
-				propsData: {
-					user: user
-				}
-			}).$mount().$el);
+			(this as any).os.new(MkMessagingRoomWindow, {
+				user: user
+			});
 		}
 	}
 });
