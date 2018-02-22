@@ -362,7 +362,6 @@ export default Vue.extend({
 				display flex
 				margin-bottom 4px
 				white-space nowrap
-				line-height 1.4
 
 				> .name
 					display block
@@ -392,7 +391,6 @@ export default Vue.extend({
 
 				> .info
 					margin-left auto
-					text-align right
 					font-size 0.9em
 
 					> .app
