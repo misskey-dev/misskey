@@ -20,6 +20,8 @@ import MkUser from './views/pages/user.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkNotifications from './views/pages/notifications.vue';
+import MkMessaging from './views/pages/messaging.vue';
+import MkMessagingRoom from './views/pages/messaging-room.vue';
 
 /**
  * init
@@ -49,6 +51,8 @@ init((launch) => {
 		{ path: '/', name: 'index', component: MkIndex },
 		{ path: '/signup', name: 'signup', component: MkSignup },
 		{ path: '/i/notifications', component: MkNotifications },
+		{ path: '/i/messaging', component: MkMessaging },
+		{ path: '/i/messaging/:username', component: MkMessagingRoom },
 		{ path: '/i/drive', component: MkDrive },
 		{ path: '/i/drive/folder/:folder', component: MkDrive },
 		{ path: '/selectdrive', component: MkSelectDrive },

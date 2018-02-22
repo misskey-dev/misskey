@@ -9,7 +9,8 @@
 import Vue from 'vue';
 export default Vue.extend({
 	mounted() {
-		document.title = 'Misskey | %i18n:mobile.tags.mk-messaging-page.message%';
+		document.title = 'Misskey %i18n:mobile.tags.mk-messaging-page.message%';
+		document.documentElement.style.background = '#fff';
 	},
 	methods: {
 		navigate(user) {
@@ -18,4 +19,3 @@ export default Vue.extend({
 	}
 });
 </script>
-

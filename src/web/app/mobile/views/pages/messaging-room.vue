@@ -17,15 +17,25 @@ export default Vue.extend({
 			user: null
 		};
 	},
-	mounted() {
-		(this as any).api('users/show', {
-			username: (this as any).$route.params.user
-		}).then(user => {
-			this.user = user;
-			this.fetching = false;
+	watch: {
+		$route: 'fetch'
+	},
+	created() {
+		document.documentElement.style.background = '#fff';
+		this.fetch();
+	},
+	methods: {
+		fetch() {
+			this.fetching = true;
+			(this as any).api('users/show', {
+				username: (this as any).$route.params.username
+			}).then(user => {
+				this.user = user;
+				this.fetching = false;
 
-			document.title = `%i18n:mobile.tags.mk-messaging-room-page.message%: ${user.name} | Misskey`;
-		});
+				document.title = `%i18n:mobile.tags.mk-messaging-room-page.message%: ${user.name} | Misskey`;
+			});
+		}
 	}
 });
 </script>

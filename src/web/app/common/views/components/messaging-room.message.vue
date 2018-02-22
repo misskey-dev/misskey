@@ -5,8 +5,8 @@
 	</a>
 	<div class="content-container">
 		<div class="balloon">
-			<p class="read" v-if="message.is_me && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>
-			<button class="delete-button" v-if="message.is_me" title="%i18n:common.delete%">
+			<p class="read" v-if="isMe && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>
+			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.is_deleted">
