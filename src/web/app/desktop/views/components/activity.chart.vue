@@ -62,10 +62,12 @@ export default Vue.extend({
 	methods: {
 		render() {
 			const peak = Math.max.apply(null, this.data.map(d => d.total));
-			this.pointsPost = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.posts / peak)) * this.viewBoxY}`).join(' ');
-			this.pointsReply = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
-			this.pointsRepost = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.reposts / peak)) * this.viewBoxY}`).join(' ');
-			this.pointsTotal = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
+			if (peak != 0) {
+				this.pointsPost = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.posts / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsReply = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsRepost = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.reposts / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsTotal = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
+			}
 		},
 		onMousedown(e) {
 			const clickX = e.clientX;

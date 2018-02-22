@@ -37,7 +37,7 @@ export default Vue.extend({
 			d.x = x;
 			d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
 
-			d.v = d.total / (peak / 2);
+			d.v = peak == 0 ? 0 : d.total / (peak / 2);
 			if (d.v > 1) d.v = 1;
 			const ch = d.date.weekday == 0 || d.date.weekday == 6 ? 275 : 170;
 			const cs = d.v * 100;

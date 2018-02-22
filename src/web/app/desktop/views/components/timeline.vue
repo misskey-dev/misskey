@@ -4,8 +4,15 @@
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" v-if="posts.length == 0 && !fetching">%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。</p>
-	<mk-posts :posts="posts" ref="timeline"/>
+	<p class="empty" v-if="posts.length == 0 && !fetching">
+		%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。
+	</p>
+	<mk-posts :posts="posts" ref="timeline">
+		<div slot="footer">
+			<template v-if="!moreFetching">%fa:comments%</template>
+			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
+		</div>
+	</mk-posts>
 </div>
 </template>
 
@@ -69,8 +76,8 @@ export default Vue.extend({
 			(this as any).api('posts/timeline', {
 				until_id: this.posts[this.posts.length - 1].id
 			}).then(posts => {
+				this.posts = this.posts.concat(posts);
 				this.moreFetching = false;
-				this.posts.unshift(posts);
 			});
 		},
 		onPost(post) {
@@ -104,7 +111,7 @@ export default Vue.extend({
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
 
-	> .mk-following-setuper
+	> .mk-friends-maker
 		border-bottom solid 1px #eee
 
 	> .fetching
