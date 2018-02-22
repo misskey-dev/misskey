@@ -274,6 +274,10 @@ export default Vue.extend({
 		> *
 			.customize-container
 				cursor move
+				border-radius 6px
+
+				&:hover
+					box-shadow 0 0 8px rgba(64, 120, 200, 0.3)
 
 				> *
 					pointer-events none
