@@ -22,6 +22,7 @@ import MkDrive from './views/pages/drive.vue';
 import MkNotifications from './views/pages/notifications.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
+import MkPost from './views/pages/post.vue';
 
 /**
  * init
@@ -57,6 +58,7 @@ init((launch) => {
 		{ path: '/i/drive/folder/:folder', component: MkDrive },
 		{ path: '/i/drive/file/:file', component: MkDrive },
 		{ path: '/selectdrive', component: MkSelectDrive },
-		{ path: '/:user', component: MkUser }
+		{ path: '/:user', component: MkUser },
+		{ path: '/:user/:post', component: MkPost }
 	]);
 }, true);

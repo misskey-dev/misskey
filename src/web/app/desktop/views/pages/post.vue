@@ -13,26 +13,32 @@ import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
-	props: ['postId'],
 	data() {
 		return {
 			fetching: true,
 			post: null
 		};
 	},
-	mounted() {
-		Progress.start();
+	watch: {
+		$route: 'fetch'
+	},
+	created() {
+		this.fetch();
+	},
+	methods: {
+		fetch() {
+			Progress.start();
+			this.fetching = true;
 
-		// TODO: extract the fetch step for vue-router's caching
+			(this as any).api('posts/show', {
+				post_id: this.$route.params.post
+			}).then(post => {
+				this.post = post;
+				this.fetching = false;
 
-		(this as any).api('posts/show', {
-			post_id: this.postId
-		}).then(post => {
-			this.post = post;
-			this.fetching = false;
-
-			Progress.done();
-		});
+				Progress.done();
+			});
+		}
 	}
 });
 </script>

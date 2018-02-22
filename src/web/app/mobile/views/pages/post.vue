@@ -16,27 +16,36 @@ import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
-	props: ['postId'],
 	data() {
 		return {
 			fetching: true,
 			post: null
 		};
 	},
+	watch: {
+		$route: 'fetch'
+	},
+	created() {
+		this.fetch();
+	},
 	mounted() {
 		document.title = 'Misskey';
 		document.documentElement.style.background = '#313a42';
+	},
+	methods: {
+		fetch() {
+			Progress.start();
+			this.fetching = true;
 
-		Progress.start();
+			(this as any).api('posts/show', {
+				post_id: this.$route.params.post
+			}).then(post => {
+				this.post = post;
+				this.fetching = false;
 
-		(this as any).api('posts/show', {
-			post_id: this.postId
-		}).then(post => {
-			this.post = post;
-			this.fetching = false;
-
-			Progress.done();
-		});
+				Progress.done();
+			});
+		}
 	}
 });
 </script>

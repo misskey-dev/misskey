@@ -82,11 +82,11 @@ export default Vue.extend({
 			return age(this.user.profile.birthday);
 		}
 	},
-	created() {
-		this.fetch();
-	},
 	watch: {
 		$route: 'fetch'
+	},
+	created() {
+		this.fetch();
 	},
 	mounted() {
 		document.documentElement.style.background = '#313a42';

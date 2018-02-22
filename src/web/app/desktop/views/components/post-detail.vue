@@ -38,7 +38,7 @@
 			</router-link>
 		</header>
 		<div class="body">
-			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
+			<mk-post-html :class="$style.text" v-if="p.ast" :ast="p.ast" :i="os.i"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="media" v-if="p.media">
 				<mk-images :images="p.media"/>
@@ -311,17 +311,8 @@ export default Vue.extend({
 		> .body
 			padding 8px 0
 
-			> .text
-				cursor default
-				display block
-				margin 0
-				padding 0
-				overflow-wrap break-word
-				font-size 1.5em
-				color #717171
-
-				> .mk-url-preview
-					margin-top 8px
+			> .mk-url-preview
+				margin-top 8px
 
 		> footer
 			font-size 1.2em
@@ -350,4 +341,15 @@ export default Vue.extend({
 		> *
 			border-top 1px solid #eef0f2
 
+</style>
+
+<style lang="stylus" module>
+.text
+	cursor default
+	display block
+	margin 0
+	padding 0
+	overflow-wrap break-word
+	font-size 1.5em
+	color #717171
 </style>
