@@ -63,5 +63,12 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-ui
+	display flex
+	flex 1
 	padding-top 48px
+
+	> .content
+		display flex
+		flex 1
+		flex-direction column
 </style>

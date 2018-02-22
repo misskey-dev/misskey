@@ -46,6 +46,10 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-messaging-room-page
+	display flex
+	flex 1
+	flex-direction column
+	min-height 100%
 	background #fff
 
 </style>

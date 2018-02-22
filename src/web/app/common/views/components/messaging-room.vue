@@ -116,7 +116,9 @@ export default Vue.extend({
 
 			if (isBottom) {
 				// Scroll to bottom
-				this.scrollToBottom();
+				this.$nextTick(() => {
+					this.scrollToBottom();
+				});
 			} else if (message.user_id != (this as any).os.i.id) {
 				// Notify
 				this.notify('%i18n:common.tags.mk-messaging-room.new-message%');
@@ -132,7 +134,7 @@ export default Vue.extend({
 			});
 		},
 		isBottom() {
-			const asobi = 32;
+			const asobi = 64;
 			const current = this.isNaked
 				? window.scrollY + window.innerHeight
 				: this.$el.scrollTop + this.$el.offsetHeight;
@@ -179,9 +181,16 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-messaging-room
+	display flex
+	flex 1
+	flex-direction column
+	height 100%
+
 	> .stream
+		width 100%
 		max-width 600px
 		margin 0 auto
+		flex 1
 
 		> .init
 			width 100%

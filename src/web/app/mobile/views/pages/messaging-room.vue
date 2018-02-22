@@ -4,7 +4,7 @@
 		<template v-if="user">%fa:R comments%{{ user.name }}</template>
 		<template v-else><mk-ellipsis/></template>
 	</span>
-	<mk-messaging-room v-if="!fetching" :user="user" is-naked/>
+	<mk-messaging-room v-if="!fetching" :user="user" :is-naked="true"/>
 </mk-ui>
 </template>
 
