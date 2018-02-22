@@ -9,9 +9,9 @@
 			%fa:R comments%
 			%i18n:mobile.tags.mk-home-timeline.empty-timeline%
 		</div>
-		<button v-if="!fetching && posts.length != 0" @click="more" :disabled="fetching" slot="tail">
-			<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
-			<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
+		<button v-if="!fetching && existMore" @click="more" :disabled="moreFetching" slot="tail">
+			<span v-if="!moreFetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
+			<span v-if="moreFetching">%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
 	</mk-posts>
 </div>
@@ -19,6 +19,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
+const limit = 10;
+
 export default Vue.extend({
 	props: {
 		date: {
@@ -31,6 +34,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			posts: [],
+			existMore: false,
 			connection: null,
 			connectionId: null
 		};
@@ -59,10 +63,14 @@ export default Vue.extend({
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
-
 			(this as any).api('posts/timeline', {
+				limit: limit + 1,
 				until_date: this.date ? (this.date as any).getTime() : undefined
 			}).then(posts => {
+				if (posts.length == limit + 1) {
+					posts.pop();
+					this.existMore = true;
+				}
 				this.posts = posts;
 				this.fetching = false;
 				this.$emit('loaded');
@@ -70,11 +78,17 @@ export default Vue.extend({
 			});
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
 			this.moreFetching = true;
 			(this as any).api('posts/timeline', {
+				limit: limit + 1,
 				until_id: this.posts[this.posts.length - 1].id
 			}).then(posts => {
+				if (posts.length == limit + 1) {
+					posts.pop();
+					this.existMore = true;
+				} else {
+					this.existMore = false;
+				}
 				this.posts = this.posts.concat(posts);
 				this.moreFetching = false;
 			});

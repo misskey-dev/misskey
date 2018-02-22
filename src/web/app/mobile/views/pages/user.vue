@@ -66,15 +66,11 @@ export default Vue.extend({
 	components: {
 		XHome
 	},
-	props: {
-		page: {
-			default: 'home'
-		}
-	},
 	data() {
 		return {
 			fetching: true,
-			user: null
+			user: null,
+			page: 'home'
 		};
 	},
 	computed: {

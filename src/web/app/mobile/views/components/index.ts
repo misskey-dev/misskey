@@ -18,6 +18,7 @@ import notifications from './notifications.vue';
 import notificationPreview from './notification-preview.vue';
 import usersList from './users-list.vue';
 import userPreview from './user-preview.vue';
+import userTimeline from './user-timeline.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-home', home);
@@ -37,3 +38,4 @@ Vue.component('mk-notifications', notifications);
 Vue.component('mk-notification-preview', notificationPreview);
 Vue.component('mk-users-list', usersList);
 Vue.component('mk-user-preview', userPreview);
+Vue.component('mk-user-timeline', userTimeline);
