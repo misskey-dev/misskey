@@ -22,7 +22,7 @@
 		</div>
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
-	<mk-uploader @uploaded="attachMedia" @change="onChangeUploadings"/>
+	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 	<button class="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
 	<button class="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" @click="kao">%fa:R smile%</button>
