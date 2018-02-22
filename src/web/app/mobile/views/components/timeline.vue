@@ -74,8 +74,8 @@ export default Vue.extend({
 			(this as any).api('posts/timeline', {
 				until_id: this.posts[this.posts.length - 1].id
 			}).then(posts => {
+				this.posts = this.posts.concat(posts);
 				this.moreFetching = false;
-				this.posts.unshift(posts);
 			});
 		},
 		onPost(post) {

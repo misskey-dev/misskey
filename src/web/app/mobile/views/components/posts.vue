@@ -8,7 +8,9 @@
 			<span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span>
 		</p>
 	</template>
-	<slot name="tail"></slot>
+	<footer>
+		<slot name="tail"></slot>
+	</footer>
 </div>
 </template>
 
