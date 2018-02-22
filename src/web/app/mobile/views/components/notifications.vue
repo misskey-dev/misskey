@@ -4,16 +4,16 @@
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
 			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
-				<span>%fa:angle-up%{ notification._datetext }</span>
-				<span>%fa:angle-down%{ _notifications[i + 1]._datetext }</span>
+				<span>%fa:angle-up%{{ notification._datetext }}</span>
+				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
 	</div>
-	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" disabled={ fetchingMoreNotifications }>
-		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{ fetchingMoreNotifications ? '%i18n:common.fetching%' : '%i18n:mobile.tags.mk-notifications.more%' }
+	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
+		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }
 	</button>
 	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:mobile.tags.mk-notifications.empty%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.fetching%<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>
 
@@ -59,6 +59,7 @@ export default Vue.extend({
 
 			this.notifications = notifications;
 			this.fetching = false;
+			this.$emit('fetched');
 		});
 	},
 	beforeDestroy() {

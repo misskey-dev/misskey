@@ -1,6 +1,7 @@
 <template>
-<mk-ui :func="fn" func-icon="%fa:check%">
+<mk-ui :func="fn">
 	<span slot="header">%fa:R bell%%i18n:mobile.tags.mk-notifications-page.notifications%</span>
+	<span slot="funcIcon">%fa:check%</span>
 	<mk-notifications @fetched="onFetched"/>
 </mk-ui>
 </template>

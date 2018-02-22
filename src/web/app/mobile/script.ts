@@ -19,6 +19,7 @@ import MkSignup from './views/pages/signup.vue';
 import MkUser from './views/pages/user.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
+import MkNotifications from './views/pages/notifications.vue';
 
 /**
  * init
@@ -47,6 +48,7 @@ init((launch) => {
 	app.$router.addRoutes([
 		{ path: '/', name: 'index', component: MkIndex },
 		{ path: '/signup', name: 'signup', component: MkSignup },
+		{ path: '/i/notifications', component: MkNotifications },
 		{ path: '/i/drive', component: MkDrive },
 		{ path: '/i/drive/folder/:folder', component: MkDrive },
 		{ path: '/selectdrive', component: MkSelectDrive },
