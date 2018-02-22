@@ -2,11 +2,11 @@
 <div class="mk-user-preview">
 	<template v-if="u != null">
 		<div class="banner" :style="u.banner_url ? `background-image: url(${u.banner_url}?thumbnail&size=512)` : ''"></div>
-		<a class="avatar" :href="`/${u.username}`" target="_blank">
+		<router-link class="avatar" :to="`/${u.username}`">
 			<img :src="`${u.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="title">
-			<p class="name">{{ u.name }}</p>
+			<router-link class="name" :to="`/${u.username}`">{{ u.name }}</router-link>
 			<p class="username">@{{ u.username }}</p>
 		</div>
 		<div class="description">{{ u.description }}</div>
@@ -106,6 +106,7 @@ export default Vue.extend({
 		position absolute
 		top 62px
 		left 13px
+		z-index 2
 
 		> img
 			display block
@@ -120,7 +121,7 @@ export default Vue.extend({
 		padding 8px 0 8px 82px
 
 		> .name
-			display block
+			display inline-block
 			margin 0
 			font-weight bold
 			line-height 16px
