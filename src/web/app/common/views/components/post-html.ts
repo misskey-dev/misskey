@@ -93,6 +93,6 @@ export default Vue.component('mk-post-html', {
 			}
 		}));
 
-		return createElement('div', els);
+		return createElement('span', els);
 	}
 });

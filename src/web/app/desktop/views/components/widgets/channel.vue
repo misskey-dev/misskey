@@ -5,7 +5,7 @@
 		<button @click="settings" title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
 	</template>
 	<p class="get-started" v-if="props.channel == null">%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
-	<x-channel class="channel" :channel="channel" v-else/>
+	<x-channel class="channel" :channel="channel" v-if="channel != null"/>
 </div>
 </template>
 

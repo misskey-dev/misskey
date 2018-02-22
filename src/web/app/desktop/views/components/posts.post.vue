@@ -1,7 +1,7 @@
 <template>
 <div class="post" tabindex="-1" :title="title" @keydown="onKeydown">
 	<div class="reply-to" v-if="p.reply">
-		<x-sub post="p.reply"/>
+		<x-sub :post="p.reply"/>
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>

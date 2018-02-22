@@ -1,7 +1,7 @@
 <template>
 <div class="channel">
 	<p v-if="fetching">読み込み中<mk-ellipsis/></p>
-	<div v-if="!fetching" ref="posts">
+	<div v-if="!fetching" ref="posts" class="posts">
 		<p v-if="posts.length == 0">まだ投稿がありません</p>
 		<x-post class="post" v-for="post in posts.slice().reverse()" :post="post" :key="post.id" @reply="reply"/>
 	</div>
@@ -34,7 +34,9 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.zap();
+		this.$nextTick(() => {
+			this.zap();
+		});
 	},
 	beforeDestroy() {
 		this.disconnect();
@@ -85,7 +87,7 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-	> div
+	> .posts
 		height calc(100% - 38px)
 		overflow auto
 		font-size 0.9em

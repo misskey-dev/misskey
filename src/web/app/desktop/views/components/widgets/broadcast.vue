@@ -12,7 +12,7 @@
 	<p class="fetching" v-if="fetching">%i18n:desktop.tags.mk-broadcast-home-widget.fetching%<mk-ellipsis/></p>
 	<h1 v-if="!fetching">{{ broadcasts.length == 0 ? '%i18n:desktop.tags.mk-broadcast-home-widget.no-broadcasts%' : broadcasts[i].title }}</h1>
 	<p v-if="!fetching">
-		<span v-if="broadcasts.length != 0" :v-html="broadcasts[i].text"></span>
+		<span v-if="broadcasts.length != 0" v-html="broadcasts[i].text"></span>
 		<template v-if="broadcasts.length == 0">%i18n:desktop.tags.mk-broadcast-home-widget.have-a-nice-day%</template>
 	</p>
 	<a v-if="broadcasts.length > 1" @click="next">%i18n:desktop.tags.mk-broadcast-home-widget.next% &gt;&gt;</a>

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-twitter-setting">
 	<p>%i18n:common.tags.mk-twitter-setting.description%<a :href="`${docsUrl}/link-to-twitter`" target="_blank">%i18n:common.tags.mk-twitter-setting.detail%</a></p>
-	<p class="account" v-if="os.i.twitter" :title="`Twitter ID: ${os.i.twitter.user_id}`">%i18n:common.tags.mk-twitter-setting.connected-to%: <a :href="`https://twitter.com/${os.i.twitter.screen_name}`" target="_blank">@{{ I.twitter.screen_name }}</a></p>
+	<p class="account" v-if="os.i.twitter" :title="`Twitter ID: ${os.i.twitter.user_id}`">%i18n:common.tags.mk-twitter-setting.connected-to%: <a :href="`https://twitter.com/${os.i.twitter.screen_name}`" target="_blank">@{{ os.i.twitter.screen_name }}</a></p>
 	<p>
 		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ os.i.twitter ? '%i18n:common.tags.mk-twitter-setting.reconnect%' : '%i18n:common.tags.mk-twitter-setting.connect%' }}</a>
 		<span v-if="os.i.twitter"> or </span>

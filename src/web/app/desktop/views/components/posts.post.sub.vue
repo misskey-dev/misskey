@@ -35,77 +35,74 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .sub
 	margin 0
-	padding 0
+	padding 16px
 	font-size 0.9em
 
-	> article
-		padding 16px
+	&:after
+		content ""
+		display block
+		clear both
 
-		&:after
-			content ""
+	&:hover
+		> .main > footer > button
+			color #888
+
+	> .avatar-anchor
+		display block
+		float left
+		margin 0 14px 0 0
+
+		> .avatar
 			display block
-			clear both
+			width 52px
+			height 52px
+			margin 0
+			border-radius 8px
+			vertical-align bottom
 
-		&:hover
-			> .main > footer > button
-				color #888
+	> .main
+		float left
+		width calc(100% - 66px)
 
-		> .avatar-anchor
-			display block
-			float left
-			margin 0 14px 0 0
+		> header
+			display flex
+			margin-bottom 2px
+			white-space nowrap
+			line-height 21px
 
-			> .avatar
+			> .name
 				display block
-				width 52px
-				height 52px
+				margin 0 .5em 0 0
+				padding 0
+				overflow hidden
+				color #607073
+				font-size 1em
+				font-weight bold
+				text-decoration none
+				text-overflow ellipsis
+
+				&:hover
+					text-decoration underline
+
+			> .username
+				margin 0 .5em 0 0
+				color #d1d8da
+
+			> .created-at
+				margin-left auto
+				color #b2b8bb
+
+		> .body
+
+			> .text
+				cursor default
 				margin 0
-				border-radius 8px
-				vertical-align bottom
+				padding 0
+				font-size 1.1em
+				color #717171
 
-		> .main
-			float left
-			width calc(100% - 66px)
-
-			> header
-				display flex
-				margin-bottom 2px
-				white-space nowrap
-				line-height 21px
-
-				> .name
-					display block
-					margin 0 .5em 0 0
-					padding 0
-					overflow hidden
-					color #607073
-					font-size 1em
-					font-weight bold
-					text-decoration none
-					text-overflow ellipsis
-
-					&:hover
-						text-decoration underline
-
-				> .username
-					margin 0 .5em 0 0
-					color #d1d8da
-
-				> .created-at
-					margin-left auto
-					color #b2b8bb
-
-			> .body
-
-				> .text
-					cursor default
-					margin 0
-					padding 0
-					font-size 1.1em
-					color #717171
-
-					pre
-						max-height 120px
-						font-size 80%
+				pre
+					max-height 120px
+					font-size 80%
 
 </style>
