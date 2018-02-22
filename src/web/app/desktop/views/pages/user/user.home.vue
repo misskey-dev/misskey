@@ -10,7 +10,7 @@
 	</div>
 	<main>
 		<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" compact/>
-		<x-timeline ref="tl" :user="user"/>
+		<x-timeline class="timeline" ref="tl" :user="user"/>
 	</main>
 	<div>
 		<div ref="right">
@@ -25,19 +25,19 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XUserTimeline from './user.timeline.vue';
-import XUserProfile from './user.profile.vue';
-import XUserPhotos from './user.photos.vue';
-import XUserFollowersYouKnow from './user.followers-you-know.vue';
-import XUserFriends from './user.friends.vue';
+import XTimeline from './user.timeline.vue';
+import XProfile from './user.profile.vue';
+import XPhotos from './user.photos.vue';
+import XFollowersYouKnow from './user.followers-you-know.vue';
+import XFriends from './user.friends.vue';
 
 export default Vue.extend({
 	components: {
-		XUserTimeline,
-		XUserProfile,
-		XUserPhotos,
-		XUserFollowersYouKnow,
-		XUserFriends
+		XTimeline,
+		XProfile,
+		XPhotos,
+		XFollowersYouKnow,
+		XFriends
 	},
 	props: ['user'],
 	methods: {
@@ -64,7 +64,7 @@ export default Vue.extend({
 		padding 16px
 		width calc(100% - 275px * 2)
 
-		> .mk-user-timeline
+		> .timeline
 			border solid 1px rgba(0, 0, 0, 0.075)
 			border-radius 6px
 

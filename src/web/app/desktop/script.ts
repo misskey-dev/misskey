@@ -26,6 +26,7 @@ import MkDrive from './views/pages/drive.vue';
 import MkHomeCustomize from './views/pages/home-customize.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkPost from './views/pages/post.vue';
+import MkSearch from './views/pages/search.vue';
 
 /**
  * init
@@ -76,6 +77,7 @@ init(async (launch) => {
 		{ path: '/i/drive', component: MkDrive },
 		{ path: '/i/drive/folder/:folder', component: MkDrive },
 		{ path: '/selectdrive', component: MkSelectDrive },
+		{ path: '/search', component: MkSearch },
 		{ path: '/:user', component: MkUser },
 		{ path: '/:user/:post', component: MkPost }
 	]);

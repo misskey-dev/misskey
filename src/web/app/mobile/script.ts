@@ -23,6 +23,9 @@ import MkNotifications from './views/pages/notifications.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkPost from './views/pages/post.vue';
+import MkSearch from './views/pages/search.vue';
+import MkFollowers from './views/pages/followers.vue';
+import MkFollowing from './views/pages/following.vue';
 
 /**
  * init
@@ -58,7 +61,10 @@ init((launch) => {
 		{ path: '/i/drive/folder/:folder', component: MkDrive },
 		{ path: '/i/drive/file/:file', component: MkDrive },
 		{ path: '/selectdrive', component: MkSelectDrive },
+		{ path: '/search', component: MkSearch },
 		{ path: '/:user', component: MkUser },
+		{ path: '/:user/followers', component: MkFollowers },
+		{ path: '/:user/following', component: MkFollowing },
 		{ path: '/:user/:post', component: MkPost }
 	]);
 }, true);

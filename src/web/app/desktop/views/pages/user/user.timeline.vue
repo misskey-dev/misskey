@@ -87,6 +87,10 @@ export default Vue.extend({
 			if (current > document.body.offsetHeight - 16/*遊び*/) {
 				this.more();
 			}
+		},
+		warp(date) {
+			this.date = date;
+			this.fetch();
 		}
 	}
 });
