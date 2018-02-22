@@ -1,7 +1,7 @@
 <template>
 <div class="mk-timeline">
 	<mk-friends-maker v-if="alone"/>
-	<mk-posts ref="timeline" :posts="posts">
+	<mk-posts :posts="posts">
 		<div class="init" v-if="fetching">
 			%fa:spinner .pulse%%i18n:common.loading%
 		</div>
@@ -9,7 +9,7 @@
 			%fa:R comments%
 			%i18n:mobile.tags.mk-home-timeline.empty-timeline%
 		</div>
-		<button @click="more" :disabled="fetching" slot="tail">
+		<button v-if="!fetching && posts.length != 0" @click="more" :disabled="fetching" slot="tail">
 			<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
 			<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
@@ -88,3 +88,8 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.mk-friends-maker
+	margin-bottom 8px
+</style>

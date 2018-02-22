@@ -1,6 +1,7 @@
 <template>
 <div class="mk-posts">
 	<slot name="head"></slot>
+	<slot></slot>
 	<template v-for="(post, i) in _posts">
 		<x-post :post="post" :key="post.id"/>
 		<p class="date" v-if="i != posts.length - 1 && post._date != _posts[i + 1]._date">
@@ -90,6 +91,9 @@ export default Vue.extend({
 		border-top solid 1px #eaeaea
 		border-bottom-left-radius 4px
 		border-bottom-right-radius 4px
+
+		&:empty
+			display none
 
 		> button
 			margin 0
