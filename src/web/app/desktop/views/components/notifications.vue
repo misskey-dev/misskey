@@ -10,7 +10,7 @@
 					</a>
 					<div class="text">
 						<p>
-							<mk-reaction-icon reaction={ notification.reaction }/>
+							<mk-reaction-icon :reaction="notification.reaction"/>
 							<a :href="`/${notification.user.username}`" v-user-preview="notification.user.id">{{ notification.user.name }}</a>
 						</p>
 						<a class="post-ref" :href="`/${notification.post.user.username}/${notification.post.id}`">

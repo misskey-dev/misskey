@@ -287,7 +287,7 @@ export default Vue.extend({
 			width calc(100% - 275px * 2)
 			order 2
 
-		> *:not(main)
+		> *:not(.main)
 			width 275px
 			padding 16px 0 16px 0
 
@@ -303,7 +303,7 @@ export default Vue.extend({
 			order 3
 
 		@media (max-width 1100px)
-			> *:not(main)
+			> *:not(.main)
 				display none
 
 			> .main

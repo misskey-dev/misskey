@@ -106,6 +106,7 @@ import Vue from 'vue';
 import getPostSummary from '../../../../../common/get-post-summary';
 
 export default Vue.extend({
+	props: ['notification'],
 	data() {
 		return {
 			getPostSummary

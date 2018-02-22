@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import age from 's-age';
+import * as age from 's-age';
 import Progress from '../../../common/scripts/loading';
 import XHome from './user/home.vue';
 

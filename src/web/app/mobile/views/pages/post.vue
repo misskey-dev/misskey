@@ -4,7 +4,7 @@
 	<main v-if="!fetching">
 		<a v-if="post.next" :href="post.next">%fa:angle-up%%i18n:mobile.tags.mk-post-page.next%</a>
 		<div>
-			<mk-post-detail :post="parent.post"/>
+			<mk-post-detail :post="post"/>
 		</div>
 		<a v-if="post.prev" :href="post.prev">%fa:angle-down%%i18n:mobile.tags.mk-post-page.prev%</a>
 	</main>

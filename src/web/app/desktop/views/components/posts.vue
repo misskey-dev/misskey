@@ -1,7 +1,7 @@
 <template>
 <div class="mk-posts">
 	<template v-for="(post, i) in _posts">
-		<x-post :post.sync="post" :key="post.id"/>
+		<x-post :post="post" :key="post.id" @update:post="onPostUpdated(i, $event)"/>
 		<p class="date" v-if="i != posts.length - 1 && post._date != _posts[i + 1]._date">
 			<span>%fa:angle-up%{{ post._datetext }}</span>
 			<span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span>
@@ -41,6 +41,9 @@ export default Vue.extend({
 	methods: {
 		focus() {
 			(this.$el as any).children[0].focus();
+		},
+		onPostUpdated(i, post) {
+			Vue.set((this as any).posts, i, post);
 		}
 	}
 });

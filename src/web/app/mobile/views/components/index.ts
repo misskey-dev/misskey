@@ -13,6 +13,7 @@ import userCard from './user-card.vue';
 import postDetail from './post-detail.vue';
 import followButton from './follow-button.vue';
 import friendsMaker from './friends-maker.vue';
+import notification from './notification.vue';
 import notifications from './notifications.vue';
 import notificationPreview from './notification-preview.vue';
 
@@ -29,5 +30,6 @@ Vue.component('mk-user-card', userCard);
 Vue.component('mk-post-detail', postDetail);
 Vue.component('mk-follow-button', followButton);
 Vue.component('mk-friends-maker', friendsMaker);
+Vue.component('mk-notification', notification);
 Vue.component('mk-notifications', notifications);
 Vue.component('mk-notification-preview', notificationPreview);

@@ -3,7 +3,7 @@
 	<slot name="head"></slot>
 	<slot></slot>
 	<template v-for="(post, i) in _posts">
-		<x-post :post="post" :key="post.id"/>
+		<x-post :post="post" :key="post.id" @update:post="onPostUpdated(i, $event)"/>
 		<p class="date" v-if="i != posts.length - 1 && post._date != _posts[i + 1]._date">
 			<span>%fa:angle-up%{{ post._datetext }}</span>
 			<span>%fa:angle-down%{{ _posts[i + 1]._datetext }}</span>
@@ -38,6 +38,11 @@ export default Vue.extend({
 				post._datetext = `${month}月 ${date}日`;
 				return post;
 			});
+		}
+	},
+	methods: {
+		onPostUpdated(i, post) {
+			Vue.set((this as any).posts, i, post);
 		}
 	}
 });
