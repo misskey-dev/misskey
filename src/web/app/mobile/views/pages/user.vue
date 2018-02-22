@@ -1,6 +1,6 @@
 <template>
 <mk-ui :func="fn">
-	<span slot="header" v-if="!fetching">%fa:user% {{user.name}}</span>
+	<span slot="header" v-if="!fetching">%fa:user% {{ user.name }}</span>
 	<template slot="funcIcon">%fa:pencil-alt%</template>
 	<div v-if="!fetching" :class="$style.user">
 		<header>
@@ -58,15 +58,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-const age = require('s-age');
+import age from 's-age';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
 	props: {
-		username: {
-			type: String,
-			required: true
-		},
 		page: {
 			default: 'home'
 		}
@@ -82,19 +78,30 @@ export default Vue.extend({
 			return age(this.user.profile.birthday);
 		}
 	},
+	created() {
+		this.fetch();
+	},
+	watch: {
+		$route: 'fetch'
+	},
 	mounted() {
 		document.documentElement.style.background = '#313a42';
-		Progress.start();
-
 		(this as any).api('users/show', {
-			username: this.username
-		}).then(user => {
-			this.user = user;
-			this.fetching = false;
+	},
+	methods: {
+		fetch() {
+			Progress.start();
 
-			Progress.done();
-			document.title = user.name + ' | Misskey';
-		});
+			(this as any).api('users/show', {
+				username: this.$route.params.user
+			}).then(user => {
+				this.user = user;
+				this.fetching = false;
+
+				Progress.done();
+				document.title = user.name + ' | Misskey';
+			});
+		}
 	}
 });
 </script>
