@@ -4,29 +4,31 @@
 		<span class="username">{{ os.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
 		<img class="avatar" :src="`${ os.i.avatar_url }?thumbnail&size=64`" alt="avatar"/>
 	</button>
-	<div class="menu" v-if="isOpen">
-		<ul>
-			<li>
-				<a :href="`/${ os.i.username }`">%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</a>
-			</li>
-			<li @click="drive">
-				<p>%fa:cloud%%i18n:desktop.tags.mk-ui-header-account.drive%%fa:angle-right%</p>
-			</li>
-			<li>
-				<a href="/i/mentions">%fa:at%%i18n:desktop.tags.mk-ui-header-account.mentions%%fa:angle-right%</a>
-			</li>
-		</ul>
-		<ul>
-			<li @click="settings">
-				<p>%fa:cog%%i18n:desktop.tags.mk-ui-header-account.settings%%fa:angle-right%</p>
-			</li>
-		</ul>
-		<ul>
-			<li @click="signout">
-				<p>%fa:power-off%%i18n:desktop.tags.mk-ui-header-account.signout%%fa:angle-right%</p>
-			</li>
-		</ul>
-	</div>
+	<transition name="zoom-in-top">
+		<div class="menu" v-if="isOpen">
+			<ul>
+				<li>
+					<a :href="`/${ os.i.username }`">%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</a>
+				</li>
+				<li @click="drive">
+					<p>%fa:cloud%%i18n:desktop.tags.mk-ui-header-account.drive%%fa:angle-right%</p>
+				</li>
+				<li>
+					<a href="/i/mentions">%fa:at%%i18n:desktop.tags.mk-ui-header-account.mentions%%fa:angle-right%</a>
+				</li>
+			</ul>
+			<ul>
+				<li @click="settings">
+					<p>%fa:cog%%i18n:desktop.tags.mk-ui-header-account.settings%%fa:angle-right%</p>
+				</li>
+			</ul>
+			<ul>
+				<li @click="signout">
+					<p>%fa:power-off%%i18n:desktop.tags.mk-ui-header-account.signout%%fa:angle-right%</p>
+				</li>
+			</ul>
+		</div>
+	</transition>
 </div>
 </template>
 
@@ -208,5 +210,13 @@ export default Vue.extend({
 						text-decoration none
 						background $theme-color
 						color $theme-color-foreground
+
+					&:active
+						background darken($theme-color, 10%)
+
+.zoom-in-top-enter-active,
+.zoom-in-top-leave-active {
+	transform-origin: center -16px;
+}
 
 </style>
