@@ -38,7 +38,7 @@
 			</div>
 		</header>
 		<div class="body">
-			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
+			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="media" v-if="p.media">
 				<mk-images :images="p.media"/>
@@ -304,20 +304,8 @@ export default Vue.extend({
 		> .body
 			padding 8px 0
 
-			> .text
-				cursor default
-				display block
-				margin 0
-				padding 0
-				overflow-wrap break-word
-				font-size 16px
-				color #717171
-
-				@media (min-width 500px)
-					font-size 24px
-
-				> .mk-url-preview
-					margin-top 8px
+			> .mk-url-preview
+				margin-top 8px
 
 			> .media
 				> img
@@ -358,5 +346,19 @@ export default Vue.extend({
 	> .replies
 		> *
 			border-top 1px solid #eef0f2
+
+</style>
+
+<style lang="stylus" module>
+.text
+	display block
+	margin 0
+	padding 0
+	overflow-wrap break-word
+	font-size 16px
+	color #717171
+
+	@media (min-width 500px)
+		font-size 24px
 
 </style>
