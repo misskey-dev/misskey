@@ -65,6 +65,7 @@ export default Vue.extend({
 .mk-ui
 	display flex
 	flex 1
+	flex-direction column
 	padding-top 48px
 
 	> .content

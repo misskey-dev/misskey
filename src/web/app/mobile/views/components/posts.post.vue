@@ -115,8 +115,10 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
+		if ((this as any).os.isSignedIn) {
+			this.connection = (this as any).os.stream.getConnection();
+			this.connectionId = (this as any).os.stream.use();
+		}
 	},
 	mounted() {
 		this.capture(true);
@@ -127,8 +129,11 @@ export default Vue.extend({
 	},
 	beforeDestroy() {
 		this.decapture(true);
-		this.connection.off('_connected_', this.onStreamConnected);
-		(this as any).os.stream.dispose(this.connectionId);
+
+		if ((this as any).os.isSignedIn) {
+			this.connection.off('_connected_', this.onStreamConnected);
+			(this as any).os.stream.dispose(this.connectionId);
+		}
 	},
 	methods: {
 		capture(withHandler = false) {
