@@ -32,13 +32,18 @@ export default Vue.extend({
 			next: null
 		};
 	},
+	watch: {
+		mode() {
+			this._fetch();
+		}
+	},
 	mounted() {
 		this._fetch(() => {
 			this.$emit('loaded');
 		});
 	},
 	methods: {
-		_fetch(cb) {
+		_fetch(cb?) {
 			this.fetching = true;
 			this.fetch(this.mode == 'iknow', this.limit, null, obj => {
 				this.users = obj.users;

@@ -16,6 +16,8 @@ import friendsMaker from './friends-maker.vue';
 import notification from './notification.vue';
 import notifications from './notifications.vue';
 import notificationPreview from './notification-preview.vue';
+import usersList from './users-list.vue';
+import userPreview from './user-preview.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-home', home);
@@ -33,3 +35,5 @@ Vue.component('mk-friends-maker', friendsMaker);
 Vue.component('mk-notification', notification);
 Vue.component('mk-notifications', notifications);
 Vue.component('mk-notification-preview', notificationPreview);
+Vue.component('mk-users-list', usersList);
+Vue.component('mk-user-preview', userPreview);
