@@ -1,6 +1,6 @@
 <template>
 <div class="root home">
-	<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" compact/>
+	<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" :compact= "true "/>
 	<section class="recent-posts">
 		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
 		<div>
