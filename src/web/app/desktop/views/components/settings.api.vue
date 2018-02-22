@@ -1,5 +1,5 @@
 <template>
-<div class="mk-api-setting">
+<div class="root api">
 	<p>Token: <code>{{ os.i.token }}</code></p>
 	<p>%i18n:desktop.tags.mk-api-info.intro%</p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-api-info.caution%</p></div>
@@ -10,12 +10,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import passwordDialog from '../../scripts/password-dialog';
 
 export default Vue.extend({
 	methods: {
 		regenerateToken() {
-			passwordDialog('%i18n:desktop.tags.mk-api-info.enter-password%', password => {
+			(this as any).apis.input({
+				title: '%i18n:desktop.tags.mk-api-info.enter-password%',
+				type: 'password'
+			}).then(password => {
 				(this as any).api('i/regenerate_token', {
 					password: password
 				});
@@ -26,7 +28,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-api-setting
+.root.api
 	color #4a535a
 
 	code

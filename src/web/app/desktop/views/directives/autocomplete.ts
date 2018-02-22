@@ -3,14 +3,14 @@ import MkAutocomplete from '../components/autocomplete.vue';
 
 export default {
 	bind(el, binding, vn) {
-		const self = el._userPreviewDirective_ = {} as any;
+		const self = el._autoCompleteDirective_ = {} as any;
 		self.x = new Autocomplete(el);
 		self.x.attach();
 	},
 
 	unbind(el, binding, vn) {
-		const self = el._userPreviewDirective_;
-		self.x.close();
+		const self = el._autoCompleteDirective_;
+		self.x.detach();
 	}
 };
 

@@ -60,7 +60,7 @@
 
 		<section class="api" v-show="page == 'api'">
 			<h1>API</h1>
-			<mk-api-info/>
+			<x-api/>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
@@ -77,13 +77,15 @@ import XProfile from './settings.profile.vue';
 import XMute from './settings.mute.vue';
 import XPassword from './settings.password.vue';
 import X2fa from './settings.2fa.vue';
+import XApi from './settings.api.vue';
 
 export default Vue.extend({
 	components: {
 		XProfile,
 		XMute,
 		XPassword,
-		X2fa
+		X2fa,
+		XApi
 	},
 	data() {
 		return {

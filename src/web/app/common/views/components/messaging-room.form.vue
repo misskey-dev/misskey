@@ -1,15 +1,15 @@
 <template>
 <div class="mk-messaging-form">
 	<textarea v-model="text" @keypress="onKeypress" @paste="onPaste" placeholder="%i18n:common.input-message-here%"></textarea>
-	<div class="files"></div>
+	<div class="file" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader"/>
 	<button class="send" @click="send" :disabled="sending" title="%i18n:common.send%">
 		<template v-if="!sending">%fa:paper-plane%</template><template v-if="sending">%fa:spinner .spin%</template>
 	</button>
-	<button class="attach-from-local" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
+	<button class="attach-from-local" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
 		%fa:upload%
 	</button>
-	<button class="attach-from-drive" type="button" title="%i18n:common.tags.mk-messaging-form.attach-from-drive%">
+	<button class="attach-from-drive" @click="chooseFileFromDrive" title="%i18n:common.tags.mk-messaging-form.attach-from-drive%">
 		%fa:R folder-open%
 	</button>
 	<input name="file" type="file" accept="image/*"/>

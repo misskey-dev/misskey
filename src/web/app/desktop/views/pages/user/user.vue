@@ -29,11 +29,11 @@ export default Vue.extend({
 			user: null
 		};
 	},
-	created() {
-		this.fetch();
-	},
 	watch: {
 		$route: 'fetch'
+	},
+	created() {
+		this.fetch();
 	},
 	methods: {
 		fetch() {

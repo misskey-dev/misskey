@@ -1,6 +1,6 @@
 <template>
 <div class="mk-messaging-room-page">
-	<mk-messaging-room v-if="user" :user="user" is-naked/>
+	<mk-messaging-room v-if="user" :user="user" :is-naked="true"/>
 </div>
 </template>
 
@@ -9,28 +9,37 @@ import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
-	props: ['username'],
 	data() {
 		return {
 			fetching: true,
 			user: null
 		};
 	},
+	watch: {
+		$route: 'fetch'
+	},
+	created() {
+		this.fetch();
+	},
 	mounted() {
-		Progress.start();
-
 		document.documentElement.style.background = '#fff';
+	},
+	methods: {
+		fetch() {
+			Progress.start();
+			this.fetching = true;
 
-		(this as any).api('users/show', {
-			username: this.username
-		}).then(user => {
-			this.user = user;
-			this.fetching = false;
+			(this as any).api('users/show', {
+				username: this.$route.params.username
+			}).then(user => {
+				this.user = user;
+				this.fetching = false;
 
-			document.title = 'メッセージ: ' + this.user.name;
+				document.title = 'メッセージ: ' + this.user.name;
 
-			Progress.done();
-		});
+				Progress.done();
+			});
+		}
 	}
 });
 </script>

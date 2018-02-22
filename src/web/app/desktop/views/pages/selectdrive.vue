@@ -1,15 +1,15 @@
 <template>
-<div class="mk-selectdrive">
+<div class="mkp-selectdrive">
 	<mk-drive ref="browser"
 		:multiple="multiple"
 		@selected="onSelected"
 		@change-selection="onChangeSelection"
 	/>
-	<div>
+	<footer>
 		<button class="upload" title="%i18n:desktop.tags.mk-selectdrive-page.upload%" @click="upload">%fa:upload%</button>
 		<button class="cancel" @click="close">%i18n:desktop.tags.mk-selectdrive-page.cancel%</button>
 		<button class="ok" @click="ok">%i18n:desktop.tags.mk-selectdrive-page.ok%</button>
-	</div>
+	</footer>
 </div>
 </template>
 
@@ -54,7 +54,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-selectdrive
+.mkp-selectdrive
 	display block
 	position fixed
 	width 100%
@@ -64,7 +64,7 @@ export default Vue.extend({
 	> .mk-drive
 		height calc(100% - 72px)
 
-	> div
+	> footer
 		position fixed
 		bottom 0
 		left 0

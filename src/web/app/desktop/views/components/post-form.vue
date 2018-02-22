@@ -111,9 +111,6 @@ export default Vue.extend({
 			}
 		});
 	},
-	beforeDestroy() {
-		this.autocomplete.detach();
-	},
 	methods: {
 		focus() {
 			(this.$refs.text as any).focus();
