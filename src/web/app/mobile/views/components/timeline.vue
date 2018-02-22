@@ -65,6 +65,7 @@ export default Vue.extend({
 			}).then(posts => {
 				this.posts = posts;
 				this.fetching = false;
+				this.$emit('loaded');
 				if (cb) cb();
 			});
 		},
