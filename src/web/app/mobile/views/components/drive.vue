@@ -1,7 +1,7 @@
 <template>
 <div class="mk-drive">
 	<nav ref="nav">
-		<a @click.prevent="goRoot" href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
+		<a @click.prevent="goRoot()" href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
 		<template v-for="folder in hierarchyFolders">
 			<span :key="folder.id + '>'">%fa:angle-right%</span>
 			<a :key="folder.id" @click.prevent="cd(folder)" :href="`/i/drive/folder/${folder.id}`">{{ folder.name }}</a>
@@ -158,7 +158,7 @@ export default Vue.extend({
 			this.file = null;
 
 			if (target == null) {
-				this.goRoot();
+				this.goRoot(silent);
 				return;
 			} else if (typeof target == 'object') {
 				target = target.id;
@@ -235,12 +235,12 @@ export default Vue.extend({
 			this.addFolder(folder, true);
 		},
 
-		goRoot() {
+		goRoot(silent = false) {
 			if (this.folder || this.file) {
 				this.file = null;
 				this.folder = null;
 				this.hierarchyFolders = [];
-				this.$emit('move-root');
+				this.$emit('move-root', silent);
 				this.fetch();
 			}
 		},

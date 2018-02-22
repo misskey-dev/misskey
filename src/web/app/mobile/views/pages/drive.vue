@@ -2,15 +2,15 @@
 <mk-ui :func="fn">
 	<span slot="header">
 		<template v-if="folder">%fa:R folder-open%{{ folder.name }}</template>
-		<template v-if="file"><mk-file-type-icon class="icon"/>{{ file.name }}</template>
-		<template v-else>%fa:cloud%%i18n:mobile.tags.mk-drive-page.drive%</template>
+		<template v-if="file"><mk-file-type-icon class="icon" :type="file.type"/>{{ file.name }}</template>
+		<template v-if="!folder && !file">%fa:cloud%%i18n:mobile.tags.mk-drive-page.drive%</template>
 	</span>
 	<template slot="funcIcon">%fa:ellipsis-h%</template>
 	<mk-drive
 		ref="browser"
-		:init-folder="folder"
-		:init-file="file"
-		is-naked
+		:init-folder="initFolder"
+		:init-file="initFile"
+		:is-naked="true"
 		:top="48"
 		@begin-fetch="Progress.start()"
 		@fetched-mid="Progress.set(0.5)"
@@ -31,21 +31,43 @@ export default Vue.extend({
 		return {
 			Progress,
 			folder: null,
-			file: null
+			file: null,
+			initFolder: null,
+			initFile: null
 		};
+	},
+	created() {
+		this.initFolder = this.$route.params.folder;
+		this.initFile = this.$route.params.file;
+
+		window.addEventListener('popstate', this.onPopState);
 	},
 	mounted() {
 		document.title = 'Misskey Drive';
 	},
+	beforeDestroy() {
+		window.removeEventListener('popstate', this.onPopState);
+	},
 	methods: {
+		onPopState() {
+			if (this.$route.params.folder) {
+				(this.$refs as any).browser.cd(this.$route.params.folder, true);
+			} else if (this.$route.params.file) {
+				(this.$refs as any).browser.cf(this.$route.params.file, true);
+			} else {
+				(this.$refs as any).browser.goRoot(true);
+			}
+		},
 		fn() {
 			(this.$refs as any).browser.openContextMenu();
 		},
-		onMoveRoot() {
+		onMoveRoot(silent) {
 			const title = 'Misskey Drive';
 
-			// Rewrite URL
-			history.pushState(null, title, '/i/drive');
+			if (!silent) {
+				// Rewrite URL
+				history.pushState(null, title, '/i/drive');
+			}
 
 			document.title = title;
 

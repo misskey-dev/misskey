@@ -55,6 +55,7 @@ init((launch) => {
 		{ path: '/i/messaging/:username', component: MkMessagingRoom },
 		{ path: '/i/drive', component: MkDrive },
 		{ path: '/i/drive/folder/:folder', component: MkDrive },
+		{ path: '/i/drive/file/:file', component: MkDrive },
 		{ path: '/selectdrive', component: MkSelectDrive },
 		{ path: '/:user', component: MkUser }
 	]);

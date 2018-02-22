@@ -66,8 +66,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import EXIF from 'exif-js';
-import hljs from 'highlight.js';
+import * as EXIF from 'exif-js';
+import * as hljs from 'highlight.js';
 import gcd from '../../../common/scripts/gcd';
 
 export default Vue.extend({
