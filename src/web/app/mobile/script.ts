@@ -26,6 +26,8 @@ import MkPost from './views/pages/post.vue';
 import MkSearch from './views/pages/search.vue';
 import MkFollowers from './views/pages/followers.vue';
 import MkFollowing from './views/pages/following.vue';
+import MkSettings from './views/pages/settings.vue';
+import MkProfileSetting from './views/pages/profile-setting.vue';
 
 /**
  * init
@@ -54,6 +56,8 @@ init((launch) => {
 	app.$router.addRoutes([
 		{ path: '/', name: 'index', component: MkIndex },
 		{ path: '/signup', name: 'signup', component: MkSignup },
+		{ path: '/i/settings', component: MkSettings },
+		{ path: '/i/settings/profile', component: MkProfileSetting },
 		{ path: '/i/notifications', component: MkNotifications },
 		{ path: '/i/messaging', component: MkMessaging },
 		{ path: '/i/messaging/:username', component: MkMessagingRoom },

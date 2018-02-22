@@ -1,9 +1,9 @@
 <template>
 <mk-ui>
 	<span slot="header">%fa:user%%i18n:mobile.tags.mk-profile-setting-page.title%</span>
-	<div class="$style.content">
+	<div :class="$style.content">
 		<p>%fa:info-circle%%i18n:mobile.tags.mk-profile-setting.will-be-published%</p>
-		<div class="$style.form">
+		<div :class="$style.form">
 			<div :style="os.i.banner_url ? `background-image: url(${os.i.banner_url}?thumbnail&size=1024)` : ''" @click="setBanner">
 				<img :src="`${os.i.avatar_url}?thumbnail&size=200`" alt="avatar" @click="setAvatar"/>
 			</div>
@@ -32,7 +32,7 @@
 				<button @click="setBanner" :disabled="bannerSaving">%i18n:mobile.tags.mk-profile-setting.set-banner%</button>
 			</label>
 		</div>
-		<button class="$style.save" @click="save" :disabled="saving">%fa:check%%i18n:mobile.tags.mk-profile-setting.save%</button>
+		<button :class="$style.save" @click="save" :disabled="saving">%fa:check%%i18n:mobile.tags.mk-profile-setting.save%</button>
 	</div>
 </mk-ui>
 </template>
@@ -42,14 +42,20 @@ import Vue from 'vue';
 export default Vue.extend({
 	data() {
 		return {
-			name: (this as any).os.i.name,
-			location: (this as any).os.i.profile.location,
-			description: (this as any).os.i.description,
-			birthday: (this as any).os.i.profile.birthday,
+			name: null,
+			location: null,
+			description: null,
+			birthday: null,
 			avatarSaving: false,
 			bannerSaving: false,
 			saving: false
 		};
+	},
+	created() {
+		this.name = (this as any).os.i.name;
+		this.location = (this as any).os.i.profile.location;
+		this.description = (this as any).os.i.description;
+		this.birthday = (this as any).os.i.profile.birthday;
 	},
 	mounted() {
 		document.title = 'Misskey | %i18n:mobile.tags.mk-profile-setting-page.title%';
@@ -101,7 +107,7 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus" module>
 .content
 	margin 8px auto
 	max-width 500px
