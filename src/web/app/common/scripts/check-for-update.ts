@@ -1,11 +1,10 @@
 import MiOS from '../mios';
-
-declare const _VERSION_: string;
+import { version } from '../../config';
 
 export default async function(mios: MiOS) {
 	const meta = await mios.getMeta();
 
-	if (meta.version != _VERSION_) {
+	if (meta.version != version) {
 		localStorage.setItem('should-refresh', 'true');
 
 		// Clear cache (serive worker)
@@ -19,6 +18,6 @@ export default async function(mios: MiOS) {
 			console.error(e);
 		}
 
-		alert('%i18n:common.update-available%'.replace('{newer}', meta.version).replace('{current}', _VERSION_));
+		alert('%i18n:common.update-available%'.replace('{newer}', meta.version).replace('{current}', version));
 	}
 }
