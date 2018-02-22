@@ -8,7 +8,7 @@
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
 		<div v-for="u in users" :key="u.id">
-			<mk-list-user :user="u"/>
+			<x-item :user="u"/>
 		</div>
 	</div>
 	<button class="more" v-if="!fetching && next != null" @click="more" :disabled="moreFetching">
@@ -24,7 +24,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import XItem from './users-list.item.vue';
+
 export default Vue.extend({
+	components: {
+		XItem
+	},
 	props: ['fetch', 'count', 'youKnowCount'],
 	data() {
 		return {

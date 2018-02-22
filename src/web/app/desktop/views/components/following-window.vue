@@ -3,7 +3,7 @@
 	<span slot="header" :class="$style.header">
 		<img :src="`${user.avatar_url}?thumbnail&size=64`" alt=""/>{{ user.name }}のフォロー
 	</span>
-	<mk-following-list :user="user"/>
+	<mk-following :user="user"/>
 </mk-window>
 </template>
 

@@ -3,7 +3,7 @@
 	<span slot="header" :class="$style.header">
 		<img :src="`${user.avatar_url}?thumbnail&size=64`" alt=""/>{{ user.name }}のフォロワー
 	</span>
-	<mk-followers-list :user="user"/>
+	<mk-followers :user="user"/>
 </mk-window>
 </template>
 

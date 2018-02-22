@@ -1,11 +1,11 @@
 <template>
-<div class="mk-list-user">
-	<a class="avatar-anchor" :href="`/${user.username}`">
+<div class="root item">
+	<router-link class="avatar-anchor" :to="`/${user.username}`" v-user-preview="user.id">
 		<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-	</a>
+	</router-link>
 	<div class="main">
 		<header>
-			<a class="name" :href="`/${user.username}`">{{ user.name }}</a>
+			<router-link class="name" :to="`/${user.username}`" v-user-preview="user.id">{{ user.name }}</router-link>
 			<span class="username">@{{ user.username }}</span>
 		</header>
 		<div class="body">
@@ -25,8 +25,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-list-user
-	margin 0
+.root.item
 	padding 16px
 	font-size 16px
 

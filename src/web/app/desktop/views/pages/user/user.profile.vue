@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import age from 's-age';
+import * as age from 's-age';
 import MkFollowingWindow from '../../components/following-window.vue';
 import MkFollowersWindow from '../../components/followers-window.vue';
 
@@ -37,6 +37,7 @@ export default Vue.extend({
 	methods: {
 		showFollowing() {
 			document.body.appendChild(new MkFollowingWindow({
+				parent: this,
 				propsData: {
 					user: this.user
 				}
@@ -45,6 +46,7 @@ export default Vue.extend({
 
 		showFollowers() {
 			document.body.appendChild(new MkFollowersWindow({
+				parent: this,
 				propsData: {
 					user: this.user
 				}
