@@ -1,8 +1,8 @@
 <template>
-<mk-ui :func="fn">
+<mk-ui>
 	<span slot="header" v-if="!fetching">%fa:user% {{ user.name }}</span>
 	<template slot="funcIcon">%fa:pencil-alt%</template>
-	<div v-if="!fetching" :class="$style.user">
+	<main v-if="!fetching">
 		<header>
 			<div class="banner" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''"></div>
 			<div class="body">
@@ -48,11 +48,11 @@
 			</nav>
 		</header>
 		<div class="body">
-			<mk-user-home v-if="page == 'home'" :user="user"/>
+			<x-home v-if="page == 'home'" :user="user"/>
 			<mk-user-timeline v-if="page == 'posts'" :user="user"/>
 			<mk-user-timeline v-if="page == 'media'" :user="user" with-media/>
 		</div>
-	</div>
+	</main>
 </mk-ui>
 </template>
 
@@ -60,8 +60,12 @@
 import Vue from 'vue';
 import age from 's-age';
 import Progress from '../../../common/scripts/loading';
+import XHome from './user/home.vue';
 
 export default Vue.extend({
+	components: {
+		XHome
+	},
 	props: {
 		page: {
 			default: 'home'
@@ -86,7 +90,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.documentElement.style.background = '#313a42';
-		(this as any).api('users/show', {
 	},
 	methods: {
 		fetch() {
@@ -106,8 +109,8 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" module>
-.user
+<style lang="stylus" scoped>
+main
 	> header
 		box-shadow 0 4px 4px rgba(0, 0, 0, 0.3)
 
@@ -140,7 +143,7 @@ export default Vue.extend({
 						left -2px
 						bottom -2px
 						width 100%
-						border 2px solid #313a42
+						border 3px solid #313a42
 						border-radius 6px
 
 						@media (min-width 500px)

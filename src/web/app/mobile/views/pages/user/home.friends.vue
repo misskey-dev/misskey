@@ -1,6 +1,6 @@
 <template>
-<div class="mk-user-home-friends">
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
+<div class="root friends">
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-frequently-replied-users.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<mk-user-card v-for="user in users" :key="user.id" :user="user"/>
 	</div>
@@ -30,7 +30,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-home-friends
+.root.friends
 	> div
 		overflow-x scroll
 		-webkit-overflow-scrolling touch
@@ -41,7 +41,7 @@ export default Vue.extend({
 			&:not(:last-child)
 				margin-right 8px
 
-	> .initializing
+	> .fetching
 	> .empty
 		margin 0
 		padding 16px

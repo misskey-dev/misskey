@@ -1,7 +1,7 @@
 <template>
-<div class="mk-user-home-activity">
+<div class="root activity">
 	<svg v-if="data" ref="canvas" viewBox="0 0 30 1" preserveAspectRatio="none">
-		<g v-for="(d, i) in data.reverse()">
+		<g v-for="(d, i) in data">
 			<rect width="0.8" :height="d.postsH"
 				:x="i + 0.1" :y="1 - d.postsH - d.repliesH - d.repostsH"
 				fill="#41ddde"/>
@@ -39,6 +39,7 @@ export default Vue.extend({
 				d.repliesH = d.replies / this.peak;
 				d.repostsH = d.reposts / this.peak;
 			});
+			data.reverse();
 			this.data = data;
 		});
 	}
@@ -46,8 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-home-activity
-	display block
+.root.activity
 	max-width 600px
 	margin 0 auto
 

@@ -1,46 +1,34 @@
 <template>
-<div class="mk-user-home">
+<div class="root home">
 	<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" compact/>
 	<section class="recent-posts">
 		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
 		<div>
-			<mk-user-home-posts :user="user"/>
+			<x-posts :user="user"/>
 		</div>
 	</section>
 	<section class="images">
 		<h2>%fa:image%%i18n:mobile.tags.mk-user-overview.images%</h2>
 		<div>
-			<mk-user-home-photos :user="user"/>
+			<x-photos :user="user"/>
 		</div>
 	</section>
 	<section class="activity">
 		<h2>%fa:chart-bar%%i18n:mobile.tags.mk-user-overview.activity%</h2>
 		<div>
-			<mk-user-home-activity-chart :user="user"/>
-		</div>
-	</section>
-	<section class="keywords">
-		<h2>%fa:R comment%%i18n:mobile.tags.mk-user-overview.keywords%</h2>
-		<div>
-			<mk-user-home-keywords :user="user"/>
-		</div>
-	</section>
-	<section class="domains">
-		<h2>%fa:globe%%i18n:mobile.tags.mk-user-overview.domains%</h2>
-		<div>
-			<mk-user-home-domains :user="user"/>
+			<x-activity :user="user"/>
 		</div>
 	</section>
 	<section class="frequently-replied-users">
 		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.frequently-replied-users%</h2>
 		<div>
-			<mk-user-home-frequently-replied-users :user="user"/>
+			<x-friends :user="user"/>
 		</div>
 	</section>
 	<section class="followers-you-know" v-if="os.isSignedIn && os.i.id !== user.id">
 		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
 		<div>
-			<mk-user-home-followers-you-know :user="user"/>
+			<x-followers-you-know :user="user"/>
 		</div>
 	</section>
 	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.last_used_at"/></b></p>
@@ -49,13 +37,26 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import XPosts from './home.posts.vue';
+import XPhotos from './home.photos.vue';
+import XFriends from './home.friends.vue';
+import XFollowersYouKnow from './home.followers-you-know.vue';
+import XActivity from './home.activity.vue';
+
 export default Vue.extend({
+	components: {
+		XPosts,
+		XPhotos,
+		XFriends,
+		XFollowersYouKnow,
+		XActivity
+	},
 	props: ['user']
 });
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-home
+.root.home
 	max-width 600px
 	margin 0 auto
 

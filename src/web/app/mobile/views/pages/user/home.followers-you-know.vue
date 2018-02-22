@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-home-followers-you-know">
+<div class="root followers-you-know">
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<a v-for="user in users" :key="user.id" :href="`/${user.username}`">
@@ -34,7 +34,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-home-followers-you-know
+.root.followers-you-know
 
 	> div
 		padding 4px

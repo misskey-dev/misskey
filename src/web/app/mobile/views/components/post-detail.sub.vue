@@ -1,18 +1,18 @@
 <template>
-<div class="mk-post-detail-sub">
-	<a class="avatar-anchor" href={ '/' + post.user.username }>
-		<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
-	</a>
+<div class="root sub">
+	<router-link class="avatar-anchor" :to="`/${post.user.username}`">
+		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+	</router-link>
 	<div class="main">
 		<header>
-			<a class="name" href={ '/' + post.user.username }>{ post.user.name }</a>
-			<span class="username">@{ post.user.username }</span>
-			<a class="time" href={ '/' + post.user.username + '/' + post.id }>
-				<mk-time time={ post.created_at }/>
-			</a>
+			<router-link class="name" :to="`/${post.user.username}`">{{ post.user.name }}</router-link>
+			<span class="username">@{{ post.user.username }}</span>
+			<router-link class="time" :to="`/${post.user.username}/${post.id}`">
+				<mk-time :time="post.created_at"/>
+			</router-link>
 		</header>
 		<div class="body">
-			<mk-sub-post-content class="text" post={ post }/>
+			<mk-sub-post-content class="text" :post="post"/>
 		</div>
 	</div>
 </div>
@@ -26,8 +26,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-post-detail-sub
-	margin 0
+.root.sub
 	padding 8px
 	font-size 0.9em
 	background #fdfdfd

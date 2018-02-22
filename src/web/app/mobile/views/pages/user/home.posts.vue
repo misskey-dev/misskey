@@ -1,10 +1,10 @@
 <template>
-<div class="mk-user-home-posts">
-	<p class="initializing" v-if="initializing">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
-	<div v-if="!initializing && posts.length > 0">
+<div class="root posts">
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-posts.loading%<mk-ellipsis/></p>
+	<div v-if="!fetching && posts.length > 0">
 		<mk-post-card v-for="post in posts" :key="post.id" :post="post"/>
 	</div>
-	<p class="empty" v-if="!initializing && posts.length == 0">%i18n:mobile.tags.mk-user-overview-posts.no-posts%</p>
+	<p class="empty" v-if="!fetching && posts.length == 0">%i18n:mobile.tags.mk-user-overview-posts.no-posts%</p>
 </div>
 </template>
 
@@ -30,7 +30,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-home-posts
+.root.posts
 
 	> div
 		overflow-x scroll
@@ -44,7 +44,7 @@ export default Vue.extend({
 			&:not(:last-child)
 				margin-right 8px
 
-	> .initializing
+	> .fetching
 	> .empty
 		margin 0
 		padding 16px

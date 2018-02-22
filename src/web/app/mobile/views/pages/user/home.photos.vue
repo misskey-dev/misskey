@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-home-photos">
+<div class="root photos">
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="image in images" :key="image.id"
@@ -43,7 +43,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-user-home-photos
+.root.photos
 
 	> .stream
 		display -webkit-flex

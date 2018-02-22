@@ -1,58 +1,63 @@
 <template>
 <div class="mk-post-detail">
-	<button class="read-more" v-if="p.reply && p.reply.reply_id && context == null" @click="loadContext" disabled={ loadingContext }>
+	<button
+		class="more"
+		v-if="p.reply && p.reply.reply_id && context == null"
+		@click="fetchContext"
+		:disabled="fetchingContext"
+	>
 		<template v-if="!contextFetching">%fa:ellipsis-v%</template>
 		<template v-if="contextFetching">%fa:spinner .pulse%</template>
 	</button>
 	<div class="context">
-		<template each={ post in context }>
-			<mk-post-detail-sub post={ post }/>
-		</template>
+		<x-sub v-for="post in context" :key="post.id" :post="post"/>
 	</div>
 	<div class="reply-to" v-if="p.reply">
-		<mk-post-detail-sub post={ p.reply }/>
+		<x-sub :post="p.reply"/>
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<a class="avatar-anchor" href={ '/' + post.user.username }>
-				<img class="avatar" src={ post.user.avatar_url + '?thumbnail&size=32' } alt="avatar"/></a>
-				%fa:retweet%<a class="name" href={ '/' + post.user.username }>
-				{ post.user.name }
-			</a>
+			<router-link class="avatar-anchor" :to="`/${post.user.username}`">
+				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
+			</router-link>
+			%fa:retweet%
+			<router-link class="name" :to="`/${post.user.username}`">
+				{{ post.user.name }}
+			</router-link>
 			がRepost
 		</p>
 	</div>
 	<article>
 		<header>
-			<a class="avatar-anchor" href={ '/' + p.user.username }>
-				<img class="avatar" src={ p.user.avatar_url + '?thumbnail&size=64' } alt="avatar"/>
-			</a>
+			<router-link class="avatar-anchor" :to="`/${p.user.username}`">
+				<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			</router-link>
 			<div>
-				<a class="name" href={ '/' + p.user.username }>{ p.user.name }</a>
-				<span class="username">@{ p.user.username }</span>
+				<router-link class="name" :to="`/${p.user.username}`">{{ p.user.name }}</router-link>
+				<span class="username">@{{ p.user.username }}</span>
 			</div>
 		</header>
 		<div class="body">
 			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="media" v-if="p.media">
-				<mk-images images={ p.media }/>
+				<mk-images :images="p.media"/>
 			</div>
-			<mk-poll v-if="p.poll" post={ p }/>
+			<mk-poll v-if="p.poll" :post="p"/>
 		</div>
-		<a class="time" href={ '/' + p.user.username + '/' + p.id }>
-			<mk-time time={ p.created_at } mode="detail"/>
-		</a>
+		<router-link class="time" :to="`/${p.user.username}/${p.id}`">
+			<mk-time :time="p.created_at" mode="detail"/>
+		</router-link>
 		<footer>
-			<mk-reactions-viewer post={ p }/>
+			<mk-reactions-viewer :post="p"/>
 			<button @click="reply" title="%i18n:mobile.tags.mk-post-detail.reply%">
-				%fa:reply%<p class="count" v-if="p.replies_count > 0">{ p.replies_count }</p>
+				%fa:reply%<p class="count" v-if="p.replies_count > 0">{{ p.replies_count }}</p>
 			</button>
 			<button @click="repost" title="Repost">
-				%fa:retweet%<p class="count" v-if="p.repost_count > 0">{ p.repost_count }</p>
+				%fa:retweet%<p class="count" v-if="p.repost_count > 0">{{ p.repost_count }}</p>
 			</button>
 			<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%">
-				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{ p.reactions_count }</p>
+				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">
 				%fa:ellipsis-h%
@@ -60,19 +65,21 @@
 		</footer>
 	</article>
 	<div class="replies" v-if="!compact">
-		<template each={ post in replies }>
-			<mk-post-detail-sub post={ post }/>
-		</template>
+		<x-sub v-for="post in replies" :key="post.id" :post="post"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import getPostSummary from '../../../../common/get-post-summary.ts';
-import openPostForm from '../scripts/open-post-form';
+import MkPostMenu from '../../../common/views/components/post-menu.vue';
+import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
+import XSub from './post-detail.sub.vue';
 
 export default Vue.extend({
+	components: {
+		XSub
+	},
 	props: {
 		post: {
 			type: Object,
@@ -135,6 +142,34 @@ export default Vue.extend({
 				this.contextFetching = false;
 				this.context = context.reverse();
 			});
+		},
+		reply() {
+			(this as any).apis.post({
+				reply: this.p
+			});
+		},
+		repost() {
+			(this as any).apis.post({
+				repost: this.p
+			});
+		},
+		react() {
+			document.body.appendChild(new MkReactionPicker({
+				propsData: {
+					source: this.$refs.reactButton,
+					post: this.p,
+					compact: true
+				}
+			}).$mount().$el);
+		},
+		menu() {
+			document.body.appendChild(new MkPostMenu({
+				propsData: {
+					source: this.$refs.menuButton,
+					post: this.p,
+					compact: true
+				}
+			}).$mount().$el);
 		}
 	}
 });
@@ -154,7 +189,7 @@ export default Vue.extend({
 	> .fetching
 		padding 64px 0
 
-	> .read-more
+	> .more
 		display block
 		margin 0
 		padding 10px 0
