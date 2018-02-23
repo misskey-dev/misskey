@@ -16,7 +16,7 @@
 		<div class="tl">
 			<mk-timeline @loaded="onLoaded" v-show="showTl"/>
 		</div>
-		<div class="widgets" v-if="!showTl">
+		<div class="widgets" v-show="!showTl">
 			<template v-if="customizing">
 				<header>
 					<select v-model="widgetAdderSelected">
@@ -203,6 +203,9 @@ main
 	> .widgets
 		margin 0 auto
 		max-width 500px
+
+		@media (min-width 500px)
+			padding 8px
 
 		> header
 			padding 8px
