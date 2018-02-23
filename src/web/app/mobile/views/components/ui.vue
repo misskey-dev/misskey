@@ -1,7 +1,7 @@
 <template>
 <div class="mk-ui">
-	<x-header :func="func">
-		<template slot="funcIcon"><slot name="funcIcon"></slot></template>
+	<x-header>
+		<template slot="func"><slot name="func"></slot></template>
 		<slot name="header"></slot>
 	</x-header>
 	<x-nav :is-open="isDrawerOpening"/>
@@ -23,7 +23,7 @@ export default Vue.extend({
 		XHeader,
 		XNav
 	},
-	props: ['title', 'func'],
+	props: ['title'],
 	data() {
 		return {
 			isDrawerOpening: false,

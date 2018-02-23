@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-donation">
+<div class="mkw-donation" :data-mobile="isMobile">
 	<article>
 		<h1>%fa:heart%%i18n:desktop.tags.mk-donation-home-widget.title%</h1>
 		<p>
@@ -41,5 +41,18 @@ export default define({
 			margin 0
 			font-size 0.8em
 			color #999
+
+	&[data-mobile]
+		border none
+		background #ead8bb
+		border-radius 8px
+		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+		> article
+			> h1
+				color #7b8871
+
+			> p
+				color #777d71
 
 </style>

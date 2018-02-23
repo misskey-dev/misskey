@@ -16,7 +16,7 @@
 	<section class="activity">
 		<h2>%fa:chart-bar%%i18n:mobile.tags.mk-user-overview.activity%</h2>
 		<div>
-			<x-activity :user="user"/>
+			<mk-activity :user="user"/>
 		</div>
 	</section>
 	<section class="frequently-replied-users">
@@ -41,15 +41,13 @@ import XPosts from './home.posts.vue';
 import XPhotos from './home.photos.vue';
 import XFriends from './home.friends.vue';
 import XFollowersYouKnow from './home.followers-you-know.vue';
-import XActivity from './home.activity.vue';
 
 export default Vue.extend({
 	components: {
 		XPosts,
 		XPhotos,
 		XFriends,
-		XFollowersYouKnow,
-		XActivity
+		XFollowersYouKnow
 	},
 	props: ['user']
 });

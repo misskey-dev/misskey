@@ -2,6 +2,7 @@
 <div class="mkw-calendar"
 	:data-melt="props.design == 1"
 	:data-special="special"
+	:data-mobile="isMobile"
 >
 	<div class="calendar" :data-is-holiday="isHoliday">
 		<p class="month-and-year">
@@ -66,6 +67,7 @@ export default define({
 	},
 	methods: {
 		func() {
+			if (this.isMobile) return;
 			if (this.props.design == 2) {
 				this.props.design = 0;
 			} else {
@@ -118,6 +120,11 @@ export default define({
 	&[data-melt]
 		background transparent
 		border none
+
+	&[data-mobile]
+		border none
+		border-radius 8px
+		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 
 	&:after
 		content ""

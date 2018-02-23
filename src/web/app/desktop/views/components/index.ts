@@ -27,27 +27,19 @@ import friendsMaker from './friends-maker.vue';
 import followers from './followers.vue';
 import following from './following.vue';
 import usersList from './users-list.vue';
-import wNav from './widgets/nav.vue';
-import wCalendar from './widgets/calendar.vue';
-import wPhotoStream from './widgets/photo-stream.vue';
-import wSlideshow from './widgets/slideshow.vue';
-import wTips from './widgets/tips.vue';
-import wDonation from './widgets/donation.vue';
+import widgetContainer from './widget-container.vue';
+
+//#region widgets
 import wNotifications from './widgets/notifications.vue';
-import wBroadcast from './widgets/broadcast.vue';
 import wTimemachine from './widgets/timemachine.vue';
-import wProfile from './widgets/profile.vue';
-import wServer from './widgets/server.vue';
 import wActivity from './widgets/activity.vue';
-import wRss from './widgets/rss.vue';
 import wTrends from './widgets/trends.vue';
-import wVersion from './widgets/version.vue';
 import wUsers from './widgets/users.vue';
 import wPolls from './widgets/polls.vue';
 import wPostForm from './widgets/post-form.vue';
 import wMessaging from './widgets/messaging.vue';
 import wChannel from './widgets/channel.vue';
-import wAccessLog from './widgets/access-log.vue';
+//#endregion
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-notification', uiNotification);
@@ -76,24 +68,16 @@ Vue.component('mk-friends-maker', friendsMaker);
 Vue.component('mk-followers', followers);
 Vue.component('mk-following', following);
 Vue.component('mk-users-list', usersList);
-Vue.component('mkw-nav', wNav);
-Vue.component('mkw-calendar', wCalendar);
-Vue.component('mkw-photo-stream', wPhotoStream);
-Vue.component('mkw-slideshow', wSlideshow);
-Vue.component('mkw-tips', wTips);
-Vue.component('mkw-donation', wDonation);
+Vue.component('mk-widget-container', widgetContainer);
+
+//#region widgets
 Vue.component('mkw-notifications', wNotifications);
-Vue.component('mkw-broadcast', wBroadcast);
 Vue.component('mkw-timemachine', wTimemachine);
-Vue.component('mkw-profile', wProfile);
-Vue.component('mkw-server', wServer);
 Vue.component('mkw-activity', wActivity);
-Vue.component('mkw-rss', wRss);
 Vue.component('mkw-trends', wTrends);
-Vue.component('mkw-version', wVersion);
 Vue.component('mkw-users', wUsers);
 Vue.component('mkw-polls', wPolls);
 Vue.component('mkw-post-form', wPostForm);
 Vue.component('mkw-messaging', wMessaging);
 Vue.component('mkw-channel', wChannel);
-Vue.component('mkw-access-log', wAccessLog);
+//#endregion

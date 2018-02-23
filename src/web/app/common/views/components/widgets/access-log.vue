@@ -1,15 +1,16 @@
 <template>
 <div class="mkw-access-log">
-	<template v-if="props.design == 0">
-		<p class="title">%fa:server%%i18n:desktop.tags.mk-access-log-home-widget.title%</p>
-	</template>
-	<div ref="log">
-		<p v-for="req in requests">
-			<span class="ip" :style="`color:${ req.fg }; background:${ req.bg }`">{{ req.ip }}</span>
-			<b>{{ req.method }}</b>
-			<span>{{ req.path }}</span>
-		</p>
-	</div>
+	<mk-widget-container :show-header="props.design == 0">
+		<template slot="header">%fa:server%%i18n:desktop.tags.mk-access-log-home-widget.title%</template>
+
+		<div :class="$style.logs" ref="log">
+			<p v-for="req in requests">
+				<span :class="$style.ip" :style="`color:${ req.fg }; background:${ req.bg }`">{{ req.ip }}</span>
+				<b>{{ req.method }}</b>
+				<span>{{ req.path }}</span>
+			</p>
+		</div>
+	</mk-widget-container>
 </div>
 </template>
 
@@ -65,44 +66,25 @@ export default define({
 });
 </script>
 
-<style lang="stylus" scoped>
-.mkw-access-log
-	overflow hidden
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
-	border-radius 6px
+<style lang="stylus" module>
+.logs
+	max-height 250px
+	overflow auto
 
-	> .title
-		z-index 1
+	> p
 		margin 0
-		padding 0 16px
-		line-height 42px
-		font-size 0.9em
-		font-weight bold
-		color #888
-		box-shadow 0 1px rgba(0, 0, 0, 0.07)
+		padding 8px
+		font-size 0.8em
+		color #555
 
-		> [data-fa]
+		&:nth-child(odd)
+			background rgba(0, 0, 0, 0.025)
+
+		> b
 			margin-right 4px
 
-	> div
-		max-height 250px
-		overflow auto
-
-		> p
-			margin 0
-			padding 8px
-			font-size 0.8em
-			color #555
-
-			&:nth-child(odd)
-				background rgba(0, 0, 0, 0.025)
-
-			> .ip
-				margin-right 4px
-				padding 0 4px
-
-			> b
-				margin-right 4px
+.ip
+	margin-right 4px
+	padding 0 4px
 
 </style>

@@ -182,7 +182,12 @@ const endpoints: Endpoint[] = [
 	{
 		name: 'i/update_home',
 		withCredential: true,
-		kind: 'account-write'
+		secure: true
+	},
+	{
+		name: 'i/update_mobile_home',
+		withCredential: true,
+		secure: true
 	},
 	{
 		name: 'i/change_password',

@@ -1,5 +1,5 @@
 <template>
-<div class="root activity">
+<div class="mk-activity">
 	<svg v-if="data" ref="canvas" viewBox="0 0 30 1" preserveAspectRatio="none">
 		<g v-for="(d, i) in data">
 			<rect width="0.8" :height="d.postsH"
@@ -47,7 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.root.activity
+.mk-activity
 	max-width 600px
 	margin 0 auto
 

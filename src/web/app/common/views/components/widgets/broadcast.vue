@@ -1,5 +1,9 @@
 <template>
-<div class="mkw-broadcast" :data-found="broadcasts.length != 0" :data-melt="props.design == 1">
+<div class="mkw-broadcast"
+	:data-found="broadcasts.length != 0"
+	:data-melt="props.design == 1"
+	:data-mobile="isMobile"
+>
 	<div class="icon">
 		<svg height="32" version="1.1" viewBox="0 0 32 32" width="32">
 			<path class="tower" d="M16.04,11.24c1.79,0,3.239-1.45,3.239-3.24S17.83,4.76,16.04,4.76c-1.79,0-3.24,1.45-3.24,3.24 C12.78,9.78,14.24,11.24,16.04,11.24z M16.04,13.84c-0.82,0-1.66-0.2-2.4-0.6L7.34,29.98h2.98l1.72-2h8l1.681,2H24.7L18.42,13.24 C17.66,13.64,16.859,13.84,16.04,13.84z M16.02,14.8l2.02,7.2h-4L16.02,14.8z M12.04,25.98l2-2h4l2,2H12.04z"></path>
@@ -149,5 +153,9 @@ export default define({
 	> a
 		display block
 		font-size 0.7em
+
+	&[data-mobile]
+		> p
+			color #fff
 
 </style>

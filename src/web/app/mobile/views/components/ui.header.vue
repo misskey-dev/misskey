@@ -9,9 +9,7 @@
 			<h1>
 				<slot>Misskey</slot>
 			</h1>
-			<button v-if="func" @click="func">
-				<slot name="funcIcon"></slot>
-			</button>
+			<slot name="func"></slot>
 		</div>
 	</div>
 </div>

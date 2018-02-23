@@ -10,7 +10,6 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 		$().strict.object()
 			.have('name', $().string())
 			.have('id', $().string())
-			.have('place', $().string())
 			.have('data', $().object())).$;
 	if (homeErr) return rej('invalid home param');
 
@@ -25,7 +24,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (home) {
 		await User.update(user._id, {
 			$set: {
-				'client_settings.home': home
+				'client_settings.mobile_home': home
 			}
 		});
 
@@ -33,7 +32,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	} else {
 		if (id == null && data == null) return rej('you need to set id and data params if home param unset');
 
-		const _home = user.client_settings.home;
+		const _home = user.client_settings.mobile_home || [];
 		const widget = _home.find(w => w.id == id);
 
 		if (widget == null) return rej('widget not found');
@@ -42,7 +41,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 		await User.update(user._id, {
 			$set: {
-				'client_settings.home': _home
+				'client_settings.mobile_home': _home
 			}
 		});
 

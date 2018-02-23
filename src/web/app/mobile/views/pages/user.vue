@@ -1,7 +1,6 @@
 <template>
 <mk-ui>
 	<span slot="header" v-if="!fetching">%fa:user% {{ user.name }}</span>
-	<template slot="funcIcon">%fa:pencil-alt%</template>
 	<main v-if="!fetching">
 		<header>
 			<div class="banner" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''"></div>
