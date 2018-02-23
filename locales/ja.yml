@@ -442,8 +442,8 @@ desktop:
 
     mk-calendar-widget:
       title: "{1}年 {2}月"
-      prev: "先月"
-      next: "来月"
+      prev: "前の月"
+      next: "次の月"
       go: "クリックして時間遡行"
 
     mk-post-form-home-widget:
