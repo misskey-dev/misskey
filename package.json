@@ -170,7 +170,7 @@
 		"typescript": "2.7.2",
 		"typescript-eslint-parser": "13.0.0",
 		"uglify-es": "3.3.9",
-		"uglifyjs-webpack-plugin": "1.2.0",
+		"uglifyjs-webpack-plugin": "1.2.1",
 		"uuid": "3.2.1",
 		"vhost": "3.0.2",
 		"vue": "2.5.13",
