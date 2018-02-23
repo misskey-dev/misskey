@@ -23,14 +23,14 @@
 				<li><router-link to="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</router-link></li>
 			</ul>
 		</div>
-		<a :href="docsUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
+		<a :href="aboutUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { docsUrl, chUrl } from '../../../config';
+import { docsUrl, chUrl, lang } from '../../../config';
 
 export default Vue.extend({
 	props: ['isOpen'],
@@ -40,7 +40,7 @@ export default Vue.extend({
 			hasUnreadMessagingMessages: false,
 			connection: null,
 			connectionId: null,
-			docsUrl,
+			aboutUrl: `${docsUrl}/${lang}/about`,
 			chUrl
 		};
 	},
