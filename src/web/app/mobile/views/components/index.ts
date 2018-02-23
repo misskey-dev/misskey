@@ -23,6 +23,7 @@ import widgetContainer from './widget-container.vue';
 
 //#region widgets
 import wActivity from './widgets/activity.vue';
+import wProfile from './widgets/profile.vue';
 //#endregion
 
 Vue.component('mk-ui', ui);
@@ -48,4 +49,5 @@ Vue.component('mk-widget-container', widgetContainer);
 
 //#region widgets
 Vue.component('mkw-activity', wActivity);
+Vue.component('mkw-profile', wProfile);
 //#endregion

@@ -34,19 +34,20 @@ export default function<T extends object>(data: {
 			}
 
 			this.$watch('props', newProps => {
+				const w = (this as any).os.i.client_settings.mobile_home.find(w => w.id == this.id);
 				if (this.isMobile) {
 					(this as any).api('i/update_mobile_home', {
 						id: this.id,
 						data: newProps
 					}).then(() => {
-						(this as any).os.i.client_settings.mobile_home.find(w => w.id == this.id).data = newProps;
+						w.data = newProps;
 					});
 				} else {
 					(this as any).api('i/update_home', {
 						id: this.id,
 						data: newProps
 					}).then(() => {
-						(this as any).os.i.client_settings.home.find(w => w.id == this.id).data = newProps;
+						w.data = newProps;
 					});
 				}
 			}, {
