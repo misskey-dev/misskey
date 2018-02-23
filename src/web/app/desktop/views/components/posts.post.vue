@@ -37,7 +37,7 @@
 						<a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:
 					</p>
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i"/>
+					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
 					<a class="quote" v-if="p.repost">RP:</a>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
@@ -413,9 +413,6 @@ export default Vue.extend({
 					font-size 1.1em
 					color #717171
 
-					> .dummy
-						display none
-
 					.mk-url-preview
 						margin-top 8px
 
@@ -430,27 +427,6 @@ export default Vue.extend({
 						margin-left 4px
 						font-style oblique
 						color #a0bf46
-
-					code
-						padding 4px 8px
-						margin 0 0.5em
-						font-size 80%
-						color #525252
-						background #f8f8f8
-						border-radius 2px
-
-					pre > code
-						padding 16px
-						margin 0
-
-					[data-is-me]:after
-						content "you"
-						padding 0 4px
-						margin-left 4px
-						font-size 80%
-						color $theme-color-foreground
-						background $theme-color
-						border-radius 4px
 
 				> .mk-poll
 					font-size 80%
@@ -505,3 +481,26 @@ export default Vue.extend({
 
 </style>
 
+<style lang="stylus" module>
+.text
+	code
+		padding 4px 8px
+		margin 0 0.5em
+		font-size 80%
+		color #525252
+		background #f8f8f8
+		border-radius 2px
+
+	pre > code
+		padding 16px
+		margin 0
+
+	[data-is-me]:after
+		content "you"
+		padding 0 4px
+		margin-left 4px
+		font-size 80%
+		color $theme-color-foreground
+		background $theme-color
+		border-radius 4px
+</style>

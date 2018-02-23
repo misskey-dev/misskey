@@ -81,7 +81,11 @@ export default Vue.component('mk-post-html', {
 
 				case 'code':
 					return createElement('pre', [
-						createElement('code', token.html)
+						createElement('code', {
+							domProps: {
+								innerHTML: token.html
+							}
+						})
 					]);
 
 				case 'inline-code':
