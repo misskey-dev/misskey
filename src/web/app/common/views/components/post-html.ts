@@ -1,14 +1,7 @@
-declare const _URL_: string;
-
 import Vue from 'vue';
 import * as pictograph from 'pictograph';
-
+import { url } from '../../../config';
 import MkUrl from './url.vue';
-
-const escape = text =>
-	text
-		.replace(/>/g, '&gt;')
-		.replace(/</g, '&lt;');
 
 export default Vue.component('mk-post-html', {
 	props: {
@@ -29,12 +22,12 @@ export default Vue.component('mk-post-html', {
 		const els = [].concat.apply([], (this as any).ast.map(token => {
 			switch (token.type) {
 				case 'text':
-					const text = escape(token.content)
-						.replace(/(\r\n|\n|\r)/g, '\n');
+					const text = token.content.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if ((this as any).shouldBreak) {
 						if (text.indexOf('\n') != -1) {
-							const x = text.split('\n').map(t => [createElement('span', t), createElement('br')]);
+							const x = text.split('\n')
+								.map(t => [createElement('span', t), createElement('br')]);
 							x[x.length - 1].pop();
 							return x;
 						} else {
@@ -45,12 +38,12 @@ export default Vue.component('mk-post-html', {
 					}
 
 				case 'bold':
-					return createElement('strong', escape(token.bold));
+					return createElement('strong', token.bold);
 
 				case 'url':
 					return createElement(MkUrl, {
 						props: {
-							url: escape(token.content),
+							url: token.content,
 							target: '_blank'
 						}
 					});
@@ -59,16 +52,16 @@ export default Vue.component('mk-post-html', {
 					return createElement('a', {
 						attrs: {
 							class: 'link',
-							href: escape(token.url),
+							href: token.url,
 							target: '_blank',
-							title: escape(token.url)
+							title: token.url
 						}
-					}, escape(token.title));
+					}, token.title);
 
 				case 'mention':
 					return (createElement as any)('a', {
 						attrs: {
-							href: `${_URL_}/${escape(token.username)}`,
+							href: `${url}/${token.username}`,
 							target: '_blank',
 							dataIsMe: (this as any).i && (this as any).i.username == token.username
 						},
@@ -81,10 +74,10 @@ export default Vue.component('mk-post-html', {
 				case 'hashtag':
 					return createElement('a', {
 						attrs: {
-							href: `${_URL_}/search?q=${escape(token.content)}`,
+							href: `${url}/search?q=${token.content}`,
 							target: '_blank'
 						}
-					}, escape(token.content));
+					}, token.content);
 
 				case 'code':
 					return createElement('pre', [
