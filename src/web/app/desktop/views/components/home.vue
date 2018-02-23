@@ -60,7 +60,7 @@
 		</template>
 		<template v-else>
 			<div v-for="place in ['left', 'right']" :class="place">
-				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" @chosen="warp"/>
+				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp"/>
 			</div>
 			<div class="main">
 				<mk-post-form v-if="os.i.client_settings.showPostFormOnTopOfTl"/>
@@ -90,6 +90,8 @@ export default Vue.extend({
 	},
 	data() {
 		return {
+			connection: null,
+			connectionId: null,
 			widgetAdderSelected: null,
 			trash: [],
 			widgets: {
@@ -131,6 +133,16 @@ export default Vue.extend({
 			deep: true
 		});
 	},
+	mounted() {
+		this.connection = (this as any).os.stream.getConnection();
+		this.connectionId = (this as any).os.stream.use();
+
+		this.connection.on('home_updated', this.onHomeUpdated);
+	},
+	beforeDestroy() {
+		this.connection.off('home_updated', this.onHomeUpdated);
+		(this as any).os.stream.dispose(this.connectionId);
+	},
 	methods: {
 		hint() {
 			(this as any).apis.dialog({
@@ -146,6 +158,22 @@ export default Vue.extend({
 		},
 		onTlLoaded() {
 			this.$emit('loaded');
+		},
+		onHomeUpdated(data) {
+			if (data.home) {
+				(this as any).os.i.client_settings.home = data.home;
+				this.widgets.left = data.home.filter(w => w.place == 'left');
+				this.widgets.right = data.home.filter(w => w.place == 'right');
+			} else {
+				const w = (this as any).os.i.client_settings.home.find(w => w.id == data.id);
+				if (w != null) {
+					w.data = data.data;
+					this.$refs[w.id][0].preventSave = true;
+					this.$refs[w.id][0].props = w.data;
+					this.widgets.left = (this as any).os.i.client_settings.home.filter(w => w.place == 'left');
+					this.widgets.right = (this as any).os.i.client_settings.home.filter(w => w.place == 'right');
+				}
+			}
 		},
 		onWidgetContextmenu(widgetId) {
 			const w = (this.$refs[widgetId] as any)[0];

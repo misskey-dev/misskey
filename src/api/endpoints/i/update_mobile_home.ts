@@ -3,6 +3,7 @@
  */
 import $ from 'cafy';
 import User from '../../models/user';
+import event from '../../event';
 
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'home' parameter
@@ -29,6 +30,10 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 		});
 
 		res();
+
+		event(user._id, 'mobile_home_updated', {
+			home
+		});
 	} else {
 		if (id == null && data == null) return rej('you need to set id and data params if home param unset');
 
@@ -46,5 +51,9 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 		});
 
 		res();
+
+		event(user._id, 'mobile_home_updated', {
+			id, data
+		});
 	}
 });

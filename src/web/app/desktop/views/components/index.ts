@@ -39,6 +39,7 @@ import wPolls from './widgets/polls.vue';
 import wPostForm from './widgets/post-form.vue';
 import wMessaging from './widgets/messaging.vue';
 import wChannel from './widgets/channel.vue';
+import wProfile from './widgets/profile.vue';
 //#endregion
 
 Vue.component('mk-ui', ui);
@@ -80,4 +81,5 @@ Vue.component('mkw-polls', wPolls);
 Vue.component('mkw-post-form', wPostForm);
 Vue.component('mkw-messaging', wMessaging);
 Vue.component('mkw-channel', wChannel);
+Vue.component('mkw-profile', wProfile);
 //#endregion

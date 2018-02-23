@@ -51,7 +51,7 @@
 				</x-draggable>
 			</template>
 			<template v-else>
-				<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :is-mobile="true" @chosen="warp"/>
+				<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :is-mobile="true" @chosen="warp"/>
 			</template>
 		</div>
 	</main>
@@ -124,12 +124,14 @@ export default Vue.extend({
 		this.connectionId = (this as any).os.stream.use();
 
 		this.connection.on('post', this.onStreamPost);
+		this.connection.on('mobile_home_updated', this.onHomeUpdated);
 		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 		Progress.start();
 	},
 	beforeDestroy() {
 		this.connection.off('post', this.onStreamPost);
+		this.connection.off('mobile_home_updated', this.onHomeUpdated);
 		(this as any).os.stream.dispose(this.connectionId);
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
@@ -150,6 +152,20 @@ export default Vue.extend({
 			if (!document.hidden) {
 				this.unreadCount = 0;
 				document.title = 'Misskey';
+			}
+		},
+		onHomeUpdated(data) {
+			if (data.home) {
+				(this as any).os.i.client_settings.mobile_home = data.home;
+				this.widgets = data.home;
+			} else {
+				const w = (this as any).os.i.client_settings.mobile_home.find(w => w.id == data.id);
+				if (w != null) {
+					w.data = data.data;
+					this.$refs[w.id][0].preventSave = true;
+					this.$refs[w.id][0].props = w.data;
+					this.widgets = (this as any).os.i.client_settings.mobile_home;
+				}
 			}
 		},
 		hint() {

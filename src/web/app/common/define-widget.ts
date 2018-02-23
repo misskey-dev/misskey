@@ -21,7 +21,9 @@ export default function<T extends object>(data: {
 		},
 		data() {
 			return {
-				props: data.props ? data.props() : {} as T
+				props: data.props ? data.props() : {} as T,
+				bakedOldProps: null,
+				preventSave: false
 			};
 		},
 		created() {
@@ -33,26 +35,40 @@ export default function<T extends object>(data: {
 				});
 			}
 
+			this.bakeProps();
+
 			this.$watch('props', newProps => {
-				const w = (this as any).os.i.client_settings.mobile_home.find(w => w.id == this.id);
+				if (this.preventSave) {
+					this.preventSave = false;
+					return;
+				}
+				if (this.bakedOldProps == JSON.stringify(newProps)) return;
+
+				this.bakeProps();
+
 				if (this.isMobile) {
 					(this as any).api('i/update_mobile_home', {
 						id: this.id,
 						data: newProps
 					}).then(() => {
-						w.data = newProps;
+						(this as any).os.i.client_settings.mobile_home.find(w => w.id == this.id).data = newProps;
 					});
 				} else {
 					(this as any).api('i/update_home', {
 						id: this.id,
 						data: newProps
 					}).then(() => {
-						w.data = newProps;
+						(this as any).os.i.client_settings.home.find(w => w.id == this.id).data = newProps;
 					});
 				}
 			}, {
 				deep: true
 			});
+		},
+		methods: {
+			bakeProps() {
+				this.bakedOldProps = JSON.stringify(this.props);
+			}
 		}
 	});
 }
