@@ -33,7 +33,7 @@
 						<option value="tips">ヒント</option>
 					</select>
 					<button @click="addWidget">追加</button>
-					<p>移動するには「三」をドラッグします。削除するには「x」をタップします。</p>
+					<p><a @click="hint">カスタマイズのヒント</a></p>
 				</header>
 				<x-draggable
 					:list="widgets"
@@ -151,6 +151,9 @@ export default Vue.extend({
 				this.unreadCount = 0;
 				document.title = 'Misskey';
 			}
+		},
+		hint() {
+			alert('ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。');
 		},
 		widgetFunc(id) {
 			const w = this.$refs[id][0];
