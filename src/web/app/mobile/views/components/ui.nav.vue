@@ -1,30 +1,38 @@
 <template>
-<div class="nav" :style="{ display: isOpen ? 'block' : 'none' }">
-	<div class="backdrop" @click="$parent.isDrawerOpening = false"></div>
-	<div class="body">
-		<router-link class="me" v-if="os.isSignedIn" :to="`/${os.i.username}`">
-			<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=128`" alt="avatar"/>
-			<p class="name">{{ os.i.name }}</p>
-		</router-link>
-		<div class="links">
-			<ul>
-				<li><router-link to="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</router-link></li>
-				<li><router-link to="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
-				<li><router-link to="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
-			</ul>
-			<ul>
-				<li><a :href="chUrl" target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>
-				<li><router-link to="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</router-link></li>
-			</ul>
-			<ul>
-				<li><a @click="search">%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
-			</ul>
-			<ul>
-				<li><router-link to="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</router-link></li>
-			</ul>
+<div class="nav">
+	<transition name="back">
+		<div class="backdrop"
+			v-if="isOpen"
+			@click="$parent.isDrawerOpening = false"
+			@touchstart="$parent.isDrawerOpening = false"
+		></div>
+	</transition>
+	<transition name="nav">
+		<div class="body" v-if="isOpen">
+			<router-link class="me" v-if="os.isSignedIn" :to="`/${os.i.username}`">
+				<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=128`" alt="avatar"/>
+				<p class="name">{{ os.i.name }}</p>
+			</router-link>
+			<div class="links">
+				<ul>
+					<li><router-link to="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
+				</ul>
+				<ul>
+					<li><a :href="chUrl" target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>
+					<li><router-link to="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</router-link></li>
+				</ul>
+				<ul>
+					<li><a @click="search">%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
+				</ul>
+				<ul>
+					<li><router-link to="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</router-link></li>
+				</ul>
+			</div>
+			<a :href="aboutUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
 		</div>
-		<a :href="aboutUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
-	</div>
+	</transition>
 </div>
 </template>
 
@@ -196,5 +204,27 @@ export default Vue.extend({
 
 		a
 			color #777
+
+.nav-enter-active,
+.nav-leave-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.nav-enter,
+.nav-leave-active {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
+.back-enter-active,
+.back-leave-active {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.back-enter,
+.back-leave-active {
+	opacity: 0;
+}
 
 </style>
