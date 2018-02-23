@@ -33,7 +33,7 @@ export default Vue.extend({
 
 	&.naked
 		background transparent !important
-		border none !important
+		box-shadow none !important
 
 	> header
 		> .title

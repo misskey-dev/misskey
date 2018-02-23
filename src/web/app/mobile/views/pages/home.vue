@@ -44,7 +44,7 @@
 						<header>
 							<span class="handle">%fa:bars%</span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
 						</header>
-						<div>
+						<div @click="widgetFunc(widget.id)">
 							<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-mobile="true"/>
 						</div>
 					</div>
@@ -82,30 +82,39 @@ export default Vue.extend({
 	},
 	created() {
 		if ((this as any).os.i.client_settings.mobile_home == null) {
-			Vue.set((this as any).os.i.client_settings, 'mobile_home',  [{
+			Vue.set((this as any).os.i.client_settings, 'mobile_home', [{
 				name: 'calendar',
-				id: 'a'
+				id: 'a', data: {}
 			}, {
 				name: 'activity',
-				id: 'b'
+				id: 'b', data: {}
 			}, {
 				name: 'rss',
-				id: 'c'
+				id: 'c', data: {}
 			}, {
 				name: 'photo-stream',
-				id: 'd'
+				id: 'd', data: {}
 			}, {
 				name: 'donation',
-				id: 'e'
+				id: 'e', data: {}
 			}, {
 				name: 'nav',
-				id: 'f'
+				id: 'f', data: {}
 			}, {
 				name: 'version',
-				id: 'g'
+				id: 'g', data: {}
 			}]);
+			this.widgets = (this as any).os.i.client_settings.mobile_home;
+			this.saveHome();
+		} else {
+			this.widgets = (this as any).os.i.client_settings.mobile_home;
 		}
-		this.widgets = (this as any).os.i.client_settings.mobile_home;
+
+		this.$watch('os.i', i => {
+			this.widgets = (this as any).os.i.client_settings.mobile_home;
+		}, {
+			deep: true
+		});
 	},
 	mounted() {
 		document.title = 'Misskey';
@@ -142,6 +151,10 @@ export default Vue.extend({
 				this.unreadCount = 0;
 				document.title = 'Misskey';
 			}
+		},
+		widgetFunc(id) {
+			const w = this.$refs[id][0];
+			if (w.func) w.func();
 		},
 		onWidgetSort() {
 			this.saveHome();

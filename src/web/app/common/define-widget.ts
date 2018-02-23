@@ -25,7 +25,6 @@ export default function<T extends object>(data: {
 			};
 		},
 		created() {
-			if (this.widget.data == null) this.widget.data = {};
 			if (this.props) {
 				Object.keys(this.props).forEach(prop => {
 					if (this.widget.data.hasOwnProperty(prop)) {
