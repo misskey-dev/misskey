@@ -1,14 +1,15 @@
 <template>
 <div class="mk-post-preview" :title="title">
-	<a class="avatar-anchor" :href="`/${post.user.username}`">
+	<router-link class="avatar-anchor" :to="`/${post.user.username}`">
 		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="post.user_id"/>
-	</a>
+	</router-link>
 	<div class="main">
 		<header>
-			<a class="name" :href="`/${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</a>
+			<router-link class="name" :to="`/${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</router-link>
 			<span class="username">@{{ post.user.username }}</span>
-			<a class="time" :href="`/${post.user.username}/${post.id}`">
-			<mk-time :time="post.created_at"/></a>
+			<router-link class="time" :to="`/${post.user.username}/${post.id}`">
+				<mk-time :time="post.created_at"/>
+			</router-link>
 		</header>
 		<div class="body">
 			<mk-sub-post-content class="text" :post="post"/>

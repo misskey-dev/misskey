@@ -1,8 +1,8 @@
 <template>
 <div class="message" :data-is-me="isMe">
-	<a class="avatar-anchor" :href="`/${message.user.username}`" :title="message.user.username" target="_blank">
+	<router-link class="avatar-anchor" :to="`/${message.user.username}`" :title="message.user.username" target="_blank">
 		<img class="avatar" :src="`${message.user.avatar_url}?thumbnail&size=80`" alt=""/>
-	</a>
+	</router-link>
 	<div class="content-container">
 		<div class="balloon">
 			<p class="read" v-if="isMe && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>

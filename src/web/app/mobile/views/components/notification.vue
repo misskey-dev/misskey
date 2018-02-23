@@ -3,99 +3,99 @@
 	<mk-time :time="notification.created_at"/>
 
 	<template v-if="notification.type == 'reaction'">
-		<a class="avatar-anchor" :href="`/${notification.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${notification.user.username}`">
 			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="text">
 			<p>
 				<mk-reaction-icon :reaction="notification.reaction"/>
-				<a :href="`/${notification.user.username}`">{{ notification.user.name }}</a>
+				<router-link :to="`/${notification.user.username}`">{{ notification.user.name }}</router-link>
 			</p>
-			<a class="post-ref" :href="`/${notification.post.user.username}/${notification.post.id}`">
+			<router-link class="post-ref" :to="`/${notification.post.user.username}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post) }}
 				%fa:quote-right%
-			</a>
+			</router-link>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'repost'">
-		<a class="avatar-anchor" :href="`/${notification.post.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${notification.post.user.username}`">
 			<img class="avatar" :src="`${notification.post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="text">
 			<p>
 				%fa:retweet%
-				<a :href="`/${notification.post.user.username}`">{{ notification.post.user.name }}</a>
+				<router-link :to="`/${notification.post.user.username}`">{{ notification.post.user.name }}</router-link>
 			</p>
-			<a class="post-ref" :href="`/${notification.post.user.username}/${notification.post.id}`">
+			<router-link class="post-ref" :to="`/${notification.post.user.username}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%
-			</a>
+			</router-link>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'quote'">
-		<a class="avatar-anchor" :href="`/${notification.post.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${notification.post.user.username}`">
 			<img class="avatar" :src="`${notification.post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="text">
 			<p>
 				%fa:quote-left%
-				<a :href="`/${notification.post.user.username}`">{{ notification.post.user.name }}</a>
+				<router-link :to="`/${notification.post.user.username}`">{{ notification.post.user.name }}</router-link>
 			</p>
-			<a class="post-preview" :href="`/${notification.post.user.username}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</a>
+			<router-link class="post-preview" :to="`/${notification.post.user.username}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</router-link>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'follow'">
-		<a class="avatar-anchor" :href="`/${notification.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${notification.user.username}`">
 			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="text">
 			<p>
 				%fa:user-plus%
-				<a :href="`/${notification.user.username}`">{{ notification.user.name }}</a>
+				<router-link :to="`/${notification.user.username}`">{{ notification.user.name }}</router-link>
 			</p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
-		<a class="avatar-anchor" :href="`/${notification.post.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${notification.post.user.username}`">
 			<img class="avatar" :src="`${notification.post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="text">
 			<p>
 				%fa:reply%
-				<a :href="`/${notification.post.user.username}`">{{ notification.post.user.name }}</a>
+				<router-link :to="`/${notification.post.user.username}`">{{ notification.post.user.name }}</router-link>
 			</p>
-			<a class="post-preview" :href="`/${notification.post.user.username}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</a>
+			<router-link class="post-preview" :to="`/${notification.post.user.username}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</router-link>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'mention'">
-		<a class="avatar-anchor" :href="`/${notification.post.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${notification.post.user.username}`">
 			<img class="avatar" :src="`${notification.post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="text">
 			<p>
 				%fa:at%
-				<a :href="`/${notification.post.user.username}`">{{ notification.post.user.name }}</a>
+				<router-link :to="`/${notification.post.user.username}`">{{ notification.post.user.name }}</router-link>
 			</p>
-			<a class="post-preview" :href="`/${notification.post.user.username}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</a>
+			<router-link class="post-preview" :to="`/${notification.post.user.username}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</router-link>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'poll_vote'">
-		<a class="avatar-anchor" :href="`/${notification.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${notification.user.username}`">
 			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
-		</a>
+		</router-link>
 		<div class="text">
 			<p>
 				%fa:chart-pie%
-				<a :href="`/${notification.user.username}`">{{ notification.user.name }}</a>
+				<router-link :to="`/${notification.user.username}`">{{ notification.user.name }}</router-link>
 			</p>
-			<a class="post-ref" :href="`/${notification.post.user.username}/${notification.post.id}`">
+			<router-link class="post-ref" :to="`/${notification.post.user.username}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
-			</a>
+			</router-link>
 		</div>
 	</template>
 </div>
