@@ -1,5 +1,5 @@
 <template>
-<div class="mk-widget-container" :class="{ naked }">
+<div class="mk-widget-container" :class="{ naked, hideHeader: !showHeader }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -30,6 +30,9 @@ export default Vue.extend({
 	border-radius 8px
 	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 	overflow hidden
+
+	&.hideHeader
+		background #fff
 
 	&.naked
 		background transparent !important

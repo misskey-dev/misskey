@@ -88,6 +88,6 @@ export default define({
 			padding 8px 16px
 
 			&:nth-child(even)
-				background #e2e2e2
+				background rgba(0, 0, 0, 0.05)
 
 </style>
