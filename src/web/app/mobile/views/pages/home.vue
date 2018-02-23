@@ -177,6 +177,7 @@ export default Vue.extend({
 			this.saveHome();
 		},
 		saveHome() {
+			(this as any).os.i.client_settings.mobile_home = this.widgets;
 			(this as any).api('i/update_mobile_home', {
 				home: this.widgets
 			});
