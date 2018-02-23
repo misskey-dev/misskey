@@ -9,9 +9,9 @@
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}
+			<span>{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}</span>
 			<router-link class="name" :to="`/${post.user.username}`">{{ post.user.name }}</router-link>
-			{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}
+			<span>{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="post.created_at"/>
 	</div>
