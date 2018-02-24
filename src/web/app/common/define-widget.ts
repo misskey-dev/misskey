@@ -40,6 +40,7 @@ export default function<T extends object>(data: {
 			this.$watch('props', newProps => {
 				if (this.preventSave) {
 					this.preventSave = false;
+					this.bakeProps();
 					return;
 				}
 				if (this.bakedOldProps == JSON.stringify(newProps)) return;
