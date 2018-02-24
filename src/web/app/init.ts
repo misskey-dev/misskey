@@ -41,6 +41,9 @@ import MiOS, { API } from './common/mios';
  */
 
 console.info(`Misskey v${_VERSION_} (葵 aoi)`);
+console.info(
+	'%cここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。',
+	'color: red; background: yellow; font-size: 16px;');
 
 // BootTimer解除
 window.clearTimeout((window as any).mkBootTimer);
