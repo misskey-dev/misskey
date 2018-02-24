@@ -1,6 +1,6 @@
 <template>
 <div class="mk-messaging" :data-compact="compact">
-	<div class="search" v-if="!compact">
+	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
 			<label for="search-input">%fa:search%</label>
 			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
@@ -57,6 +57,10 @@ export default Vue.extend({
 		compact: {
 			type: Boolean,
 			default: false
+		},
+		headerTop: {
+			type: Number,
+			default: 0
 		}
 	},
 	data() {
