@@ -97,7 +97,9 @@ export default Vue.extend({
 				margin-bottom 0
 
 			> input
-				padding 6px
+				padding 6px 8px
+				width 300px
+				font-size 14px
 				border solid 1px rgba($theme-color, 0.1)
 				border-radius 4px
 
