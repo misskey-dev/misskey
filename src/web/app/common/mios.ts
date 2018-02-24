@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
+
+import { apiUrl, swPublickey, version, lang } from '../config';
 import api from './scripts/api';
 import signout from './scripts/signout';
 import Progress from './scripts/loading';
@@ -10,13 +12,6 @@ import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
 import MessagingIndexStreamManager from './scripts/streaming/messaging-index-stream-manager';
 
 import Err from '../common/views/components/connect-failed.vue';
-
-//#region environment variables
-declare const _VERSION_: string;
-declare const _LANG_: string;
-declare const _API_URL_: string;
-declare const _SW_PUBLICKEY_: string;
-//#endregion
 
 export type API = {
 	chooseDriveFile: (opts: {
@@ -204,7 +199,7 @@ export default class MiOS extends EventEmitter {
 			}
 
 			// Fetch user
-			fetch(`${_API_URL_}/i`, {
+			fetch(`${apiUrl}/i`, {
 				method: 'POST',
 				body: JSON.stringify({
 					i: token
@@ -311,7 +306,7 @@ export default class MiOS extends EventEmitter {
 
 				// A public key your push server will use to send
 				// messages to client apps via a push server.
-				applicationServerKey: urlBase64ToUint8Array(_SW_PUBLICKEY_)
+				applicationServerKey: urlBase64ToUint8Array(swPublickey)
 			};
 
 			// Subscribe push notification
@@ -348,7 +343,7 @@ export default class MiOS extends EventEmitter {
 		});
 
 		// The path of service worker script
-		const sw = `/sw.${_VERSION_}.${_LANG_}.js`;
+		const sw = `/sw.${version}.${lang}.js`;
 
 		// Register service worker
 		navigator.serviceWorker.register(sw).then(registration => {

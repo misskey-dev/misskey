@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import define from '../../../../common/define-widget';
+import define from '../../../common/define-widget';
 import XCpuMemory from './server.cpu-memory.vue';
 import XCpu from './server.cpu.vue';
 import XMemory from './server.memory.vue';

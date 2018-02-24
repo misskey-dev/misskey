@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import define from '../../../../common/define-widget';
+import define from '../../../common/define-widget';
 export default define({
 	name: 'polls',
 	props: () => ({

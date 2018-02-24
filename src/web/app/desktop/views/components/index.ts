@@ -29,19 +29,6 @@ import following from './following.vue';
 import usersList from './users-list.vue';
 import widgetContainer from './widget-container.vue';
 
-//#region widgets
-import wNotifications from './widgets/notifications.vue';
-import wTimemachine from './widgets/timemachine.vue';
-import wActivity from './widgets/activity.vue';
-import wTrends from './widgets/trends.vue';
-import wUsers from './widgets/users.vue';
-import wPolls from './widgets/polls.vue';
-import wPostForm from './widgets/post-form.vue';
-import wMessaging from './widgets/messaging.vue';
-import wChannel from './widgets/channel.vue';
-import wProfile from './widgets/profile.vue';
-//#endregion
-
 Vue.component('mk-ui', ui);
 Vue.component('mk-ui-notification', uiNotification);
 Vue.component('mk-home', home);
@@ -70,16 +57,3 @@ Vue.component('mk-followers', followers);
 Vue.component('mk-following', following);
 Vue.component('mk-users-list', usersList);
 Vue.component('mk-widget-container', widgetContainer);
-
-//#region widgets
-Vue.component('mkw-notifications', wNotifications);
-Vue.component('mkw-timemachine', wTimemachine);
-Vue.component('mkw-activity', wActivity);
-Vue.component('mkw-trends', wTrends);
-Vue.component('mkw-users', wUsers);
-Vue.component('mkw-polls', wPolls);
-Vue.component('mkw-post-form', wPostForm);
-Vue.component('mkw-messaging', wMessaging);
-Vue.component('mkw-channel', wChannel);
-Vue.component('mkw-profile', wProfile);
-//#endregion

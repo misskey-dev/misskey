@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import define from '../../../../common/define-widget';
+import define from '../../../common/define-widget';
 import XChannel from './channel.channel.vue';
 
 export default define({

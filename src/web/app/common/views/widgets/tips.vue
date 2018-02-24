@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import * as anime from 'animejs';
-import define from '../../../../common/define-widget';
+import define from '../../../common/define-widget';
 
 const tips = [
 	'<kbd>t</kbd>でタイムラインにフォーカスできます',

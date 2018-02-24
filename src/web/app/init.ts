@@ -2,11 +2,6 @@
  * App initializer
  */
 
-declare const _VERSION_: string;
-declare const _LANG_: string;
-declare const _HOST_: string;
-//declare const __CONSTS__: any;
-
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VModal from 'vue-js-modal';
@@ -19,6 +14,7 @@ require('./common/views/directives');
 
 // Register global components
 require('./common/views/components');
+require('./common/views/widgets');
 
 // Register global filters
 require('./common/filters');
@@ -35,12 +31,13 @@ import App from './app.vue';
 
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './common/mios';
+import { version, host, lang } from './config';
 
 /**
  * APP ENTRY POINT!
  */
 
-console.info(`Misskey v${_VERSION_} (葵 aoi)`);
+console.info(`Misskey v${version} (葵 aoi)`);
 console.info(
 	'%cここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。',
 	'color: red; background: yellow; font-size: 16px;');
@@ -49,13 +46,13 @@ console.info(
 window.clearTimeout((window as any).mkBootTimer);
 delete (window as any).mkBootTimer;
 
-if (_HOST_ != 'localhost') {
-	document.domain = _HOST_;
+if (host != 'localhost') {
+	document.domain = host;
 }
 
 //#region Set lang attr
 const html = document.documentElement;
-html.setAttribute('lang', _LANG_);
+html.setAttribute('lang', lang);
 //#endregion
 
 //#region Set description meta tag
@@ -65,9 +62,6 @@ meta.setAttribute('name', 'description');
 meta.setAttribute('content', '%i18n:common.misskey%');
 head.appendChild(meta);
 //#endregion
-
-// Set global configuration
-//(riot as any).mixin(__CONSTS__);
 
 // iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
@@ -132,10 +126,14 @@ export default (callback: (launch: (api: (os: MiOS) => API) => [Vue, MiOS]) => v
 			panic(e);
 		}
 
-		// 更新チェック
-		setTimeout(() => {
-			checkForUpdate(os);
-		}, 3000);
+		//#region 更新チェック
+		const preventUpdate = localStorage.getItem('preventUpdate') == 'true';
+		if (!preventUpdate) {
+			setTimeout(() => {
+				checkForUpdate(os);
+			}, 3000);
+		}
+		//#endregion
 	});
 };
 
@@ -152,7 +150,7 @@ function panic(e) {
 			+ '<hr>'
 			+ `<p>エラーコード: ${e.toString()}</p>`
 			+ `<p>ブラウザ バージョン: ${navigator.userAgent}</p>`
-			+ `<p>クライアント バージョン: ${_VERSION_}</p>`
+			+ `<p>クライアント バージョン: ${version}</p>`
 			+ '<hr>'
 			+ '<p>問題が解決しない場合は、上記の情報をお書き添えの上 syuilotan@yahoo.co.jp までご連絡ください。</p>'
 			+ '<p>Thank you for using Misskey.</p>'

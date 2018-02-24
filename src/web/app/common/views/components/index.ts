@@ -21,20 +21,6 @@ import urlPreview from './url-preview.vue';
 import twitterSetting from './twitter-setting.vue';
 import fileTypeIcon from './file-type-icon.vue';
 
-//#region widgets
-import wAccessLog from './widgets/access-log.vue';
-import wVersion from './widgets/version.vue';
-import wRss from './widgets/rss.vue';
-import wServer from './widgets/server.vue';
-import wBroadcast from './widgets/broadcast.vue';
-import wCalendar from './widgets/calendar.vue';
-import wPhotoStream from './widgets/photo-stream.vue';
-import wSlideshow from './widgets/slideshow.vue';
-import wTips from './widgets/tips.vue';
-import wDonation from './widgets/donation.vue';
-import wNav from './widgets/nav.vue';
-//#endregion
-
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
 Vue.component('mk-forkit', forkit);
@@ -55,17 +41,3 @@ Vue.component('mk-messaging-room', messagingRoom);
 Vue.component('mk-url-preview', urlPreview);
 Vue.component('mk-twitter-setting', twitterSetting);
 Vue.component('mk-file-type-icon', fileTypeIcon);
-
-//#region widgets
-Vue.component('mkw-nav', wNav);
-Vue.component('mkw-calendar', wCalendar);
-Vue.component('mkw-photo-stream', wPhotoStream);
-Vue.component('mkw-slideshow', wSlideshow);
-Vue.component('mkw-tips', wTips);
-Vue.component('mkw-donation', wDonation);
-Vue.component('mkw-broadcast', wBroadcast);
-Vue.component('mkw-server', wServer);
-Vue.component('mkw-rss', wRss);
-Vue.component('mkw-version', wVersion);
-Vue.component('mkw-access-log', wAccessLog);
-//#endregion

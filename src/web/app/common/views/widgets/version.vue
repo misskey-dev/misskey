@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-import { version } from '../../../../config';
-import define from '../../../../common/define-widget';
+import { version } from '../../../config';
+import define from '../../../common/define-widget';
 export default define({
 	name: 'version'
 }).extend({

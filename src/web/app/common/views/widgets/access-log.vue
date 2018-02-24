@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import define from '../../../../common/define-widget';
+import define from '../../../common/define-widget';
 import * as seedrandom from 'seedrandom';
 
 export default define({

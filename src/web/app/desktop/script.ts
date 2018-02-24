@@ -37,6 +37,7 @@ init(async (launch) => {
 
 	// Register components
 	require('./views/components');
+	require('./views/widgets');
 
 	// Launch the app
 	const [app, os] = launch(os => ({

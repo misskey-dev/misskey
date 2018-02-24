@@ -6,8 +6,8 @@
 </template>
 
 <script lang="ts">
-import define from '../../../../common/define-widget';
-import MkMessagingRoomWindow from '../messaging-room-window.vue';
+import define from '../../../common/define-widget';
+import MkMessagingRoomWindow from '../components/messaging-room-window.vue';
 
 export default define({
 	name: 'messaging',

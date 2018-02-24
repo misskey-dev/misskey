@@ -38,6 +38,7 @@ init((launch) => {
 
 	// Register components
 	require('./views/components');
+	require('./views/widgets');
 
 	// http://qiita.com/junya/items/3ff380878f26ca447f85
 	document.body.setAttribute('ontouchstart', '');

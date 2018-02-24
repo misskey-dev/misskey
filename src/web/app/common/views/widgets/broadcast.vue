@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
-import define from '../../../../common/define-widget';
-import { lang } from '../../../../config';
+import define from '../../../common/define-widget';
+import { lang } from '../../../config';
 
 export default define({
 	name: 'broadcast',

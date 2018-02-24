@@ -21,11 +21,6 @@ import userTimeline from './user-timeline.vue';
 import activity from './activity.vue';
 import widgetContainer from './widget-container.vue';
 
-//#region widgets
-import wActivity from './widgets/activity.vue';
-import wProfile from './widgets/profile.vue';
-//#endregion
-
 Vue.component('mk-ui', ui);
 Vue.component('mk-timeline', timeline);
 Vue.component('mk-posts', posts);
@@ -46,8 +41,3 @@ Vue.component('mk-user-preview', userPreview);
 Vue.component('mk-user-timeline', userTimeline);
 Vue.component('mk-activity', activity);
 Vue.component('mk-widget-container', widgetContainer);
-
-//#region widgets
-Vue.component('mkw-activity', wActivity);
-Vue.component('mkw-profile', wProfile);
-//#endregion
