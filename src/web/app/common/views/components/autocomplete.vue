@@ -22,7 +22,7 @@ import * as pictograph from 'pictograph';
 import contains from '../../../common/scripts/contains';
 
 export default Vue.extend({
-	props: ['type', 'q', 'textarea', 'complete', 'close'],
+	props: ['type', 'q', 'textarea', 'complete', 'close', 'x', 'y'],
 	data() {
 		return {
 			fetching: true,
@@ -36,6 +36,27 @@ export default Vue.extend({
 		items(): HTMLCollection {
 			return (this.$refs.suggests as Element).children;
 		}
+	},
+	updated() {
+		//#region 位置調整
+		const margin = 32;
+
+		if (this.x + this.$el.offsetWidth > window.innerWidth - margin) {
+			this.$el.style.left = (this.x - this.$el.offsetWidth) + 'px';
+			this.$el.style.marginLeft = '-16px';
+		} else {
+			this.$el.style.left = this.x + 'px';
+			this.$el.style.marginLeft = '0';
+		}
+
+		if (this.y + this.$el.offsetHeight > window.innerHeight - margin) {
+			this.$el.style.top = (this.y - this.$el.offsetHeight) + 'px';
+			this.$el.style.marginTop = '0';
+		} else {
+			this.$el.style.top = this.y + 'px';
+			this.$el.style.marginTop = 'calc(1em + 8px)';
+		}
+		//#endregion
 	},
 	mounted() {
 		this.textarea.addEventListener('keydown', this.onKeydown);
@@ -136,7 +157,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-autocomplete
-	position absolute
+	position fixed
 	z-index 65535
 	margin-top calc(1em + 8px)
 	overflow hidden

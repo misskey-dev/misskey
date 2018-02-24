@@ -82,6 +82,15 @@ class Autocomplete {
 		// 既に開いているサジェストは閉じる
 		this.close();
 
+		//#region サジェストを表示すべき位置を計算
+		const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart);
+
+		const rect = this.textarea.getBoundingClientRect();
+
+		const x = rect.left + caretPosition.left - this.textarea.scrollLeft;
+		const y = rect.top + caretPosition.top - this.textarea.scrollTop;
+		//#endregion
+
 		// サジェスト要素作成
 		this.suggestion = new MkAutocomplete({
 			propsData: {
@@ -89,21 +98,11 @@ class Autocomplete {
 				complete: this.complete,
 				close: this.close,
 				type: type,
-				q: q
+				q: q,
+				x,
+				y
 			}
 		}).$mount();
-
-		//#region サジェストを表示すべき位置を計算
-		const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart);
-
-		const rect = this.textarea.getBoundingClientRect();
-
-		const x = rect.left + window.pageXOffset + caretPosition.left - this.textarea.scrollLeft;
-		const y = rect.top + window.pageYOffset + caretPosition.top - this.textarea.scrollTop;
-		//#endregion
-
-		this.suggestion.$el.style.left = x + 'px';
-		this.suggestion.$el.style.top = y + 'px';
 
 		// 要素追加
 		document.body.appendChild(this.suggestion.$el);

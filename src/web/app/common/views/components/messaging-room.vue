@@ -16,7 +16,6 @@
 	</div>
 	<footer>
 		<div ref="notifications" class="notifications"></div>
-		<div class="grippie" title="%i18n:common.tags.mk-messaging-room.resize-form%"></div>
 		<x-form :user="user"/>
 	</footer>
 </div>
@@ -315,17 +314,5 @@ export default Vue.extend({
 					left 10px
 					line-height 32px
 					font-size 16px
-
-		> .grippie
-			height 10px
-			margin-top -10px
-			background transparent
-			cursor ns-resize
-
-			&:hover
-				//background rgba(0, 0, 0, 0.1)
-
-			&:active
-				//background rgba(0, 0, 0, 0.2)
 
 </style>

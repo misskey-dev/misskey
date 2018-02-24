@@ -1,6 +1,6 @@
 <template>
 <div class="mk-messaging-form">
-	<textarea v-model="text" @keypress="onKeypress" @paste="onPaste" placeholder="%i18n:common.input-message-here%" v-autocomplete></textarea>
+	<textarea v-model="text" ref="textarea" @keypress="onKeypress" @paste="onPaste" placeholder="%i18n:common.input-message-here%" v-autocomplete></textarea>
 	<div class="file" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader"/>
 	<button class="send" @click="send" :disabled="sending" title="%i18n:common.send%">
@@ -18,6 +18,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as autosize from 'autosize';
+
 export default Vue.extend({
 	props: ['user'],
 	data() {
@@ -26,6 +28,9 @@ export default Vue.extend({
 			file: null,
 			sending: false
 		};
+	},
+	mounted() {
+		autosize(this.$refs.textarea);
 	},
 	methods: {
 		onPaste(e) {
@@ -93,6 +98,7 @@ export default Vue.extend({
 		height 64px
 		margin 0
 		padding 8px
+		resize none
 		font-size 1em
 		color #000
 		outline none

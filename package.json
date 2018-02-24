@@ -78,6 +78,7 @@
 		"@types/websocket": "0.0.37",
 		"accesses": "2.5.0",
 		"animejs": "2.2.0",
+		"autosize": "4.0.0",
 		"autwh": "0.0.1",
 		"bcryptjs": "2.4.3",
 		"body-parser": "1.18.2",
