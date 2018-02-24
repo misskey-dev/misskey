@@ -1,6 +1,6 @@
 <template>
 <div class="mk-messaging-form">
-	<textarea v-model="text" @keypress="onKeypress" @paste="onPaste" placeholder="%i18n:common.input-message-here%"></textarea>
+	<textarea v-model="text" @keypress="onKeypress" @paste="onPaste" placeholder="%i18n:common.input-message-here%" v-autocomplete></textarea>
 	<div class="file" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader"/>
 	<button class="send" @click="send" :disabled="sending" title="%i18n:common.send%">

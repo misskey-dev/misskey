@@ -1,5 +1,5 @@
 import Vue from 'vue';
 
-import focus from './focus';
+import autocomplete from './autocomplete';
 
-Vue.directive('focus', focus);
+Vue.directive('autocomplete', autocomplete);

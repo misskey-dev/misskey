@@ -25,11 +25,11 @@ class Autocomplete {
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
 	constructor(textarea) {
-		// BIND ---------------------------------
-		this.onInput =  this.onInput.bind(this);
+		//#region BIND
+		this.onInput = this.onInput.bind(this);
 		this.complete = this.complete.bind(this);
-		this.close =    this.close.bind(this);
-		// --------------------------------------
+		this.close = this.close.bind(this);
+		//#endregion
 
 		this.suggestion = null;
 		this.textarea = textarea;
@@ -60,14 +60,19 @@ class Autocomplete {
 		const text = this.textarea.value.substr(0, caret);
 
 		const mentionIndex = text.lastIndexOf('@');
+		const emojiIndex = text.lastIndexOf(':');
 
-		if (mentionIndex == -1) return;
+		if (mentionIndex != -1 && mentionIndex > emojiIndex) {
+			const username = text.substr(mentionIndex + 1);
+			if (!username.match(/^[a-zA-Z0-9-]+$/)) return;
+			this.open('user', username);
+		}
 
-		const username = text.substr(mentionIndex + 1);
-
-		if (!username.match(/^[a-zA-Z0-9-]+$/)) return;
-
-		this.open('user', username);
+		if (emojiIndex != -1 && emojiIndex > mentionIndex) {
+			const emoji = text.substr(emojiIndex + 1);
+			if (!emoji.match(/^[\+\-a-z_]+$/)) return;
+			this.open('emoji', emoji);
+		}
 	}
 
 	/**
@@ -88,14 +93,14 @@ class Autocomplete {
 			}
 		}).$mount();
 
-		// ~ サジェストを表示すべき位置を計算 ~
-
+		//#region サジェストを表示すべき位置を計算
 		const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart);
 
 		const rect = this.textarea.getBoundingClientRect();
 
-		const x = rect.left + window.pageXOffset + caretPosition.left;
-		const y = rect.top + window.pageYOffset + caretPosition.top;
+		const x = rect.left + window.pageXOffset + caretPosition.left - this.textarea.scrollLeft;
+		const y = rect.top + window.pageYOffset + caretPosition.top - this.textarea.scrollTop;
+		//#endregion
 
 		this.suggestion.$el.style.left = x + 'px';
 		this.suggestion.$el.style.top = y + 'px';
@@ -119,24 +124,39 @@ class Autocomplete {
 	/**
 	 * オートコンプリートする
 	 */
-	private complete(user) {
+	private complete(type, value) {
 		this.close();
 
-		const value = user.username;
-
 		const caret = this.textarea.selectionStart;
-		const source = this.textarea.value;
 
-		const before = source.substr(0, caret);
-		const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
-		const after = source.substr(caret);
+		if (type == 'user') {
+			const source = this.textarea.value;
 
-		// 結果を挿入する
-		this.textarea.value = trimmedBefore + '@' + value + ' ' + after;
+			const before = source.substr(0, caret);
+			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
+			const after = source.substr(caret);
 
-		// キャレットを戻す
-		this.textarea.focus();
-		const pos = caret + value.length;
-		this.textarea.setSelectionRange(pos, pos);
+			// 挿入
+			this.textarea.value = trimmedBefore + '@' + value.username + ' ' + after;
+
+			// キャレットを戻す
+			this.textarea.focus();
+			const pos = caret + value.username.length;
+			this.textarea.setSelectionRange(pos, pos);
+		} else if (type == 'emoji') {
+			const source = this.textarea.value;
+
+			const before = source.substr(0, caret);
+			const trimmedBefore = before.substring(0, before.lastIndexOf(':'));
+			const after = source.substr(caret);
+
+			// 挿入
+			this.textarea.value = trimmedBefore + value + after;
+
+			// キャレットを戻す
+			this.textarea.focus();
+			const pos = caret + value.length;
+			this.textarea.setSelectionRange(pos, pos);
+		}
 	}
 }
