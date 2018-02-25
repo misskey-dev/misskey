@@ -87,22 +87,9 @@ export default Vue.extend({
 			el.addEventListener('mousedown', this.onMousedown);
 		});
 
-		if (this.type == 'user') {
-			(this as any).api('users/search_by_username', {
-				query: this.q,
-				limit: 30
-			}).then(users => {
-				this.users = users;
-				this.fetching = false;
-			});
-		} else if (this.type == 'emoji') {
-			const matched = [];
-			emjdb.some(x => {
-				if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-				return matched.length == 30;
-			});
-			this.emojis = matched;
-		}
+		this.exec();
+
+		this.$watch('q', this.exec);
 	},
 	beforeDestroy() {
 		this.textarea.removeEventListener('keydown', this.onKeydown);
@@ -112,6 +99,35 @@ export default Vue.extend({
 		});
 	},
 	methods: {
+		exec() {
+			if (this.type == 'user') {
+				const cache = sessionStorage.getItem(this.q);
+				if (cache) {
+					const users = JSON.parse(cache);
+					this.users = users;
+					this.fetching = false;
+				} else {
+					(this as any).api('users/search_by_username', {
+						query: this.q,
+						limit: 30
+					}).then(users => {
+						this.users = users;
+						this.fetching = false;
+
+						// キャッシュ
+						sessionStorage.setItem(this.q, JSON.stringify(users));
+					});
+				}
+			} else if (this.type == 'emoji') {
+				const matched = [];
+				emjdb.some(x => {
+					if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+					return matched.length == 30;
+				});
+				this.emojis = matched;
+			}
+		},
+
 		onMousedown(e) {
 			if (!contains(this.$el, e.target) && (this.$el != e.target)) this.close();
 		},
@@ -152,9 +168,6 @@ export default Vue.extend({
 					cancel();
 					this.selectNext();
 					break;
-
-				default:
-					this.close();
 			}
 		},
 
@@ -189,6 +202,7 @@ export default Vue.extend({
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.1)
 	border-radius 4px
+	transition top 0.1s ease, left 0.1s ease
 
 	> ol
 		display block

@@ -6,7 +6,6 @@ export default {
 		const self = el._autoCompleteDirective_ = {} as any;
 		self.x = new Autocomplete(el, vn.context, binding.value);
 		self.x.attach();
-		console.log(vn.context);
 	},
 
 	unbind(el, binding, vn) {
@@ -23,6 +22,7 @@ class Autocomplete {
 	private textarea: any;
 	private vm: any;
 	private model: any;
+	private currentType: string;
 
 	private get text(): string {
 		return this.vm[this.model];
@@ -67,24 +67,32 @@ class Autocomplete {
 	 * テキスト入力時
 	 */
 	private onInput() {
-		this.close();
-
 		const caret = this.textarea.selectionStart;
 		const text = this.text.substr(0, caret);
 
 		const mentionIndex = text.lastIndexOf('@');
 		const emojiIndex = text.lastIndexOf(':');
 
+		let opened = false;
+
 		if (mentionIndex != -1 && mentionIndex > emojiIndex) {
 			const username = text.substr(mentionIndex + 1);
-			if (!username.match(/^[a-zA-Z0-9-]+$/)) return;
-			this.open('user', username);
+			if (username != '' && username.match(/^[a-zA-Z0-9-]+$/)) {
+				this.open('user', username);
+				opened = true;
+			}
 		}
 
 		if (emojiIndex != -1 && emojiIndex > mentionIndex) {
 			const emoji = text.substr(emojiIndex + 1);
-			if (!emoji.match(/^[\+\-a-z0-9_]+$/)) return;
-			this.open('emoji', emoji);
+			if (emoji != '' && emoji.match(/^[\+\-a-z0-9_]+$/)) {
+				this.open('emoji', emoji);
+				opened = true;
+			}
+		}
+
+		if (!opened) {
+			this.close();
 		}
 	}
 
@@ -92,8 +100,10 @@ class Autocomplete {
 	 * サジェストを提示します。
 	 */
 	private open(type, q) {
-		// 既に開いているサジェストは閉じる
-		this.close();
+		if (type != this.currentType) {
+			this.close();
+		}
+		this.currentType = type;
 
 		//#region サジェストを表示すべき位置を計算
 		const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart);
@@ -104,21 +114,27 @@ class Autocomplete {
 		const y = rect.top + caretPosition.top - this.textarea.scrollTop;
 		//#endregion
 
-		// サジェスト要素作成
-		this.suggestion = new MkAutocomplete({
-			propsData: {
-				textarea: this.textarea,
-				complete: this.complete,
-				close: this.close,
-				type: type,
-				q: q,
-				x,
-				y
-			}
-		}).$mount();
+		if (this.suggestion) {
+			this.suggestion.x = x;
+			this.suggestion.y = y;
+			this.suggestion.q = q;
+		} else {
+			// サジェスト要素作成
+			this.suggestion = new MkAutocomplete({
+				propsData: {
+					textarea: this.textarea,
+					complete: this.complete,
+					close: this.close,
+					type: type,
+					q: q,
+					x,
+					y
+				}
+			}).$mount();
 
-		// 要素追加
-		document.body.appendChild(this.suggestion.$el);
+			// 要素追加
+			document.body.appendChild(this.suggestion.$el);
+		}
 	}
 
 	/**
