@@ -12,6 +12,10 @@ export default function<T extends object>(data: {
 			isMobile: {
 				type: Boolean,
 				default: false
+			},
+			isCustomizeMode: {
+				type: Boolean,
+				default: false
 			}
 		},
 		computed: {

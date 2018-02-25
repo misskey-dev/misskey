@@ -25,6 +25,7 @@
 						<option value="activity">アクティビティ</option>
 						<option value="rss">RSSリーダー</option>
 						<option value="photo-stream">フォトストリーム</option>
+						<option value="slideshow">スライドショー</option>
 						<option value="version">バージョン</option>
 						<option value="access-log">アクセスログ</option>
 						<option value="server">サーバー情報</option>
@@ -45,7 +46,7 @@
 							<span class="handle">%fa:bars%</span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
 						</header>
 						<div @click="widgetFunc(widget.id)">
-							<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-mobile="true"/>
+							<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :is-mobile="true"/>
 						</div>
 					</div>
 				</x-draggable>

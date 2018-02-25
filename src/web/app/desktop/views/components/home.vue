@@ -47,7 +47,7 @@
 				:key="place"
 			>
 				<div v-for="widget in widgets[place]" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id"/>
+					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
 				</div>
 			</x-draggable>
 			<div class="main">

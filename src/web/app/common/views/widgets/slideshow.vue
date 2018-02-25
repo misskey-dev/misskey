@@ -1,12 +1,14 @@
 <template>
 <div class="mkw-slideshow">
 	<div @click="choose">
-		<p v-if="props.folder === undefined">クリックしてフォルダを指定してください</p>
+		<p v-if="props.folder === undefined">
+			<template v-if="isCustomizeMode">フォルダを指定するには、カスタマイズモードを終了してください</template>
+			<template v-else>クリックしてフォルダを指定してください</template>
+		</p>
 		<p v-if="props.folder !== undefined && images.length == 0 && !fetching">このフォルダには画像がありません</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
-	<button @click="resize">%fa:expand%</button>
 </div>
 </template>
 
@@ -42,6 +44,9 @@ export default define({
 		clearInterval(this.clock);
 	},
 	methods: {
+		func() {
+			this.resize();
+		},
 		applySize() {
 			let h;
 
@@ -117,23 +122,16 @@ export default define({
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
 
-	&:hover > button
-		display block
-
-	> button
-		position absolute
-		left 0
-		bottom 0
-		display none
-		padding 4px
-		font-size 24px
-		color #fff
-		text-shadow 0 0 8px #000
-
 	> div
 		width 100%
 		height 100%
 		cursor pointer
+
+		> p
+			display block
+			margin 1em
+			text-align center
+			color #888
 
 		> *
 			pointer-events none
