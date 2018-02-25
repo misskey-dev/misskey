@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import * as pictograph from 'pictograph';
+import * as emojilib from 'emojilib';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
 
@@ -92,7 +92,7 @@ export default Vue.component('mk-post-html', {
 					return createElement('code', token.html);
 
 				case 'emoji':
-					return createElement('span', pictograph.dic[token.emoji] || token.content);
+					return createElement('span', emojilib.lib[token.emoji] || token.content);
 			}
 		}));
 

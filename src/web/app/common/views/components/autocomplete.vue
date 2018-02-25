@@ -8,9 +8,10 @@
 		</li>
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
-		<li v-for="emoji in emojis" @click="complete(type, pictograph.dic[emoji])" @keydown="onKeydown" tabindex="-1">
-			<span class="emoji">{{ pictograph.dic[emoji] }}</span>
-			<span class="name" v-html="emoji.replace(q, `<b>${q}</b>`)"></span>
+		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
+			<span class="emoji">{{ emoji.emoji }}</span>
+			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
+			<span class="alias" v-if="emoji.alias">({{ emoji.alias }})</span>
 		</li>
 	</ol>
 </div>
@@ -18,8 +19,29 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as pictograph from 'pictograph';
+import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
+
+const lib = Object.entries(emojilib.lib).filter((x: any) => {
+	return x[1].category != 'flags';
+});
+const emjdb = lib.map((x: any) => ({
+	emoji: x[1].char,
+	name: x[0],
+	alias: null
+}));
+lib.forEach((x: any) => {
+	if (x[1].keywords) {
+		x[1].keywords.forEach(k => {
+			emjdb.push({
+				emoji: x[1].char,
+				name: k,
+				alias: x[0]
+			});
+		});
+	}
+});
+emjdb.sort((a, b) => a.name.length - b.name.length);
 
 export default Vue.extend({
 	props: ['type', 'q', 'textarea', 'complete', 'close', 'x', 'y'],
@@ -29,7 +51,7 @@ export default Vue.extend({
 			users: [],
 			emojis: [],
 			select: -1,
-			pictograph
+			emojilib
 		}
 	},
 	computed: {
@@ -74,9 +96,12 @@ export default Vue.extend({
 				this.fetching = false;
 			});
 		} else if (this.type == 'emoji') {
-			const emojis = Object.keys(pictograph.dic).sort((a, b) => a.length - b.length);
-			const matched = emojis.filter(e => e.indexOf(this.q) > -1);
-			this.emojis = matched.filter((x, i) => i <= 30);
+			const matched = [];
+			emjdb.some(x => {
+				if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+				return matched.length == 30;
+			});
+			this.emojis = matched;
 		}
 	},
 	beforeDestroy() {
@@ -212,12 +237,9 @@ export default Vue.extend({
 
 		.name
 			margin 0 8px 0 0
-			/*font-weight bold*/
-			font-weight normal
 			color rgba(0, 0, 0, 0.8)
 
 		.username
-			font-weight normal
 			color rgba(0, 0, 0, 0.3)
 
 	> .emojis > li
@@ -228,7 +250,10 @@ export default Vue.extend({
 			width 24px
 
 		.name
-			font-weight normal
 			color rgba(0, 0, 0, 0.8)
+
+		.alias
+			margin 0 0 0 8px
+			color rgba(0, 0, 0, 0.3)
 
 </style>

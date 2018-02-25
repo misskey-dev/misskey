@@ -83,7 +83,7 @@ class Autocomplete {
 
 		if (emojiIndex != -1 && emojiIndex > mentionIndex) {
 			const emoji = text.substr(emojiIndex + 1);
-			if (!emoji.match(/^[\+\-a-z_]+$/)) return;
+			if (!emoji.match(/^[\+\-a-z0-9_]+$/)) return;
 			this.open('emoji', emoji);
 		}
 	}

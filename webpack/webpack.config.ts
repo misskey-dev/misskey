@@ -145,7 +145,7 @@ module.exports = Object.keys(langs).map(lang => {
 		output,
 		resolve: {
 			extensions: [
-				'.js', '.ts'
+				'.js', '.ts', '.json'
 			]
 		},
 		resolveLoader: {
