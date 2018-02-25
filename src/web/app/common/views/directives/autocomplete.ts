@@ -152,9 +152,11 @@ class Autocomplete {
 			this.text = trimmedBefore + '@' + value.username + ' ' + after;
 
 			// キャレットを戻す
-			this.textarea.focus();
-			const pos = caret + value.username.length;
-			this.textarea.setSelectionRange(pos, pos);
+			this.vm.$nextTick(() => {
+				this.textarea.focus();
+				const pos = trimmedBefore.length + (value.username.length + 2);
+				this.textarea.setSelectionRange(pos, pos);
+			});
 		} else if (type == 'emoji') {
 			const source = this.text;
 
@@ -166,9 +168,11 @@ class Autocomplete {
 			this.text = trimmedBefore + value + after;
 
 			// キャレットを戻す
-			this.textarea.focus();
-			const pos = caret + value.length;
-			this.textarea.setSelectionRange(pos, pos);
+			this.vm.$nextTick(() => {
+				this.textarea.focus();
+				const pos = trimmedBefore.length + 1;
+				this.textarea.setSelectionRange(pos, pos);
+			});
 		}
 	}
 }
