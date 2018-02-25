@@ -138,6 +138,7 @@
 		"nprogress": "0.2.0",
 		"os-utils": "0.0.14",
 		"pictograph": "2.2.0",
+		"progress-bar-webpack-plugin": "^1.11.0",
 		"prominence": "0.2.0",
 		"proxy-addr": "2.0.3",
 		"pug": "2.0.0-rc.4",
