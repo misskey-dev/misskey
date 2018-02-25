@@ -1,10 +1,11 @@
 <template>
 <div class="header">
 	<mk-special-message/>
-	<div class="main">
+	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="main">
-			<div class="container">
+			<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ os.i.name }}</b>さん</p>
+			<div class="container" ref="mainContainer">
 				<div class="left">
 					<x-nav/>
 				</div>
@@ -23,6 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as anime from 'animejs';
 
 import XNav from './ui.header.nav.vue';
 import XSearch from './ui.header.search.vue';
@@ -39,6 +41,53 @@ export default Vue.extend({
 		XNotifications,
 		XPost,
 		XClock,
+	},
+	mounted() {
+		if ((this as any).os.isSignedIn) {
+			const ago = (new Date().getTime() - new Date((this as any).os.i.last_used_at).getTime()) / 1000
+			const isHisasiburi = ago >= 3600;
+			if (isHisasiburi) {
+				(this.$refs.main as any).style.overflow = 'hidden';
+
+				anime({
+					targets: this.$refs.welcomeback,
+					top: '0',
+					opacity: 1,
+					delay: 1000,
+					duration: 500,
+					easing: 'easeOutQuad'
+				});
+
+				anime({
+					targets: this.$refs.mainContainer,
+					opacity: 0,
+					delay: 1000,
+					duration: 500,
+					easing: 'easeOutQuad'
+				});
+
+				setTimeout(() => {
+					anime({
+						targets: this.$refs.welcomeback,
+						top: '-48px',
+						opacity: 0,
+						duration: 500,
+						complete: () => {
+							(this.$refs.welcomeback as any).style.display = 'none';
+							(this.$refs.main as any).style.overflow = 'initial';
+						},
+						easing: 'easeInQuad'
+					});
+
+					anime({
+						targets: this.$refs.mainContainer,
+						opacity: 1,
+						duration: 500,
+						easing: 'easeInQuad'
+					});
+				}, 2000);
+			}
+		}
 	}
 });
 </script>
@@ -53,6 +102,7 @@ export default Vue.extend({
 	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
 
 	> .main
+		height 48px
 
 		> .backdrop
 			position absolute
@@ -63,17 +113,6 @@ export default Vue.extend({
 			backdrop-filter blur(12px)
 			background #f7f7f7
 
-			&:after
-				content ""
-				display block
-				width 100%
-				height 48px
-				background-image url(/assets/desktop/header-logo.svg)
-				background-size 46px
-				background-position center
-				background-repeat no-repeat
-				opacity 0.3
-
 		> .main
 			z-index 1024
 			margin 0
@@ -82,11 +121,36 @@ export default Vue.extend({
 			font-size 0.9rem
 			user-select none
 
+			> p
+				display block
+				position absolute
+				top 48px
+				width 100%
+				line-height 48px
+				margin 0
+				text-align center
+				color #888
+				opacity 0
+
 			> .container
 				display flex
 				width 100%
 				max-width 1300px
 				margin 0 auto
+
+				&:before
+					content ""
+					position absolute
+					top 0
+					left 0
+					display block
+					width 100%
+					height 48px
+					background-image url(/assets/desktop/header-logo.svg)
+					background-size 46px
+					background-position center
+					background-repeat no-repeat
+					opacity 0.3
 
 				> .left
 					margin 0 auto 0 0

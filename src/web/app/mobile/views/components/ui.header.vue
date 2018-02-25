@@ -1,9 +1,10 @@
 <template>
 <div class="header">
 	<mk-special-message/>
-	<div class="main">
+	<div class="main" ref="main">
 		<div class="backdrop"></div>
-		<div class="content">
+		<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ os.i.name }}</b>さん</p>
+		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages">%fa:circle%</template>
 			<h1>
@@ -17,6 +18,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as anime from 'animejs';
 
 export default Vue.extend({
 	props: ['func'],
@@ -51,6 +53,50 @@ export default Vue.extend({
 					this.hasUnreadMessagingMessages = true;
 				}
 			});
+
+			const ago = (new Date().getTime() - new Date((this as any).os.i.last_used_at).getTime()) / 1000
+			const isHisasiburi = ago >= 3600;
+			if (isHisasiburi) {
+				(this.$refs.main as any).style.overflow = 'hidden';
+
+				anime({
+					targets: this.$refs.welcomeback,
+					top: '0',
+					opacity: 1,
+					delay: 1000,
+					duration: 500,
+					easing: 'easeOutQuad'
+				});
+
+				anime({
+					targets: this.$refs.mainContainer,
+					opacity: 0,
+					delay: 1000,
+					duration: 500,
+					easing: 'easeOutQuad'
+				});
+
+				setTimeout(() => {
+					anime({
+						targets: this.$refs.welcomeback,
+						top: '-48px',
+						opacity: 0,
+						duration: 500,
+						complete: () => {
+							(this.$refs.welcomeback as any).style.display = 'none';
+							(this.$refs.main as any).style.overflow = 'initial';
+						},
+						easing: 'easeInQuad'
+					});
+
+					anime({
+						targets: this.$refs.mainContainer,
+						opacity: 1,
+						duration: 500,
+						easing: 'easeInQuad'
+					});
+				}, 2000);
+			}
 		}
 	},
 	beforeDestroy() {
@@ -95,15 +141,27 @@ export default Vue.extend({
 		> .backdrop
 			position absolute
 			top 0
-			z-index 1023
+			z-index 1000
 			width 100%
 			height $height
 			-webkit-backdrop-filter blur(12px)
 			backdrop-filter blur(12px)
 			background-color rgba(#1b2023, 0.75)
 
+		> p
+			display block
+			position absolute
+			z-index 1002
+			top $height
+			width 100%
+			line-height $height
+			margin 0
+			text-align center
+			color #fff
+			opacity 0
+
 		> .content
-			z-index 1024
+			z-index 1001
 
 			> h1
 				display block
