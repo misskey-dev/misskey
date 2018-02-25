@@ -36,7 +36,7 @@
 					</a>
 					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
 					<div class="tags" v-if="p.tags && p.tags.length > 0">
-						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=${tag}`">{{ tag }}</router-link>
+						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 					</div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 					<a class="quote" v-if="p.repost != null">RP:</a>

@@ -121,6 +121,15 @@ async function search(
 				text: x
 			});
 		} else {
+			const tags = text.split(' ').filter(x => x[0] == '#');
+			if (tags) {
+				push({
+					$and: tags.map(x => ({
+						tags: x
+					}))
+				});
+			}
+
 			push({
 				$and: text.split(' ').map(x => ({
 					// キーワードが-で始まる場合そのキーワードを除外する

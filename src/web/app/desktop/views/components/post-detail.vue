@@ -45,7 +45,7 @@
 			</div>
 			<mk-poll v-if="p.poll" :post="p"/>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
-				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=${tag}`">{{ tag }}</router-link>
+				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
 		</div>
 		<footer>
