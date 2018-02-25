@@ -31,6 +31,10 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
 
+	// Get 'tags' parameter
+	const [tags = [], tagsErr] = $(params.tags).optional.array('string').unique().eachQ(t => t.range(1, 32)).$;
+	if (tagsErr) return rej('invalid tags');
+
 	// Get 'media_ids' parameter
 	const [mediaIds, mediaIdsErr] = $(params.media_ids).optional.array('id').unique().range(1, 4).$;
 	if (mediaIdsErr) return rej('invalid media_ids');
@@ -205,6 +209,23 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 	}
 
+	let tokens = null;
+	if (text) {
+		// Analyze
+		tokens = parse(text);
+
+		// Extract hashtags
+		const hashtags = tokens
+			.filter(t => t.type == 'hashtag')
+			.map(t => t.hashtag);
+
+		hashtags.forEach(tag => {
+			if (tags.indexOf(tag) == -1) {
+				tags.push(tag);
+			}
+		});
+	}
+
 	// 投稿を作成
 	const post = await Post.insert({
 		created_at: new Date(),
@@ -215,6 +236,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		repost_id: repost ? repost._id : undefined,
 		poll: poll,
 		text: text,
+		tags: tags,
 		user_id: user._id,
 		app_id: app ? app._id : null,
 
@@ -423,8 +445,6 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// If has text content
 	if (text) {
-		// Analyze
-		const tokens = parse(text);
 		/*
 				// Extract a hashtags
 				const hashtags = tokens

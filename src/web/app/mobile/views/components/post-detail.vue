@@ -39,6 +39,9 @@
 		</header>
 		<div class="body">
 			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
+			<div class="tags" v-if="p.tags && p.tags.length > 0">
+				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=${tag}`">{{ tag }}</router-link>
+			</div>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="media" v-if="p.media">
 				<mk-images :images="p.media"/>
@@ -311,6 +314,28 @@ export default Vue.extend({
 				> img
 					display block
 					max-width 100%
+
+			> .tags
+				> *
+					margin 0 8px 0 0
+					padding 0 8px 0 16px
+					font-size 90%
+					color #8d969e
+					background #edf0f3
+					border-radius 4px
+
+					&:before
+						content ""
+						display block
+						position absolute
+						top 0
+						bottom 0
+						left 4px
+						width 8px
+						height 8px
+						margin auto 0
+						background #fff
+						border-radius 100%
 
 		> .time
 			font-size 16px

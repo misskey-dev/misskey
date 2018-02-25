@@ -1,13 +1,13 @@
 <template>
 <mk-ui>
 	<header :class="$style.header">
-		<h1>{{ query }}</h1>
+		<h1>{{ q }}</h1>
 	</header>
 	<div :class="$style.loading" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p :class="$style.empty" v-if="empty">%fa:search%「{{ query }}」に関する投稿は見つかりませんでした。</p>
-	<mk-posts ref="timeline" :class="$style.posts">
+	<p :class="$style.empty" v-if="!fetching && empty">%fa:search%「{{ q }}」に関する投稿は見つかりませんでした。</p>
+	<mk-posts ref="timeline" :class="$style.posts" :posts="posts">
 		<div slot="footer">
 			<template v-if="!moreFetching">%fa:search%</template>
 			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
@@ -21,33 +21,34 @@ import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import parse from '../../../common/scripts/parse-search-query';
 
-const limit = 30;
+const limit = 20;
 
 export default Vue.extend({
-	props: ['query'],
 	data() {
 		return {
 			fetching: true,
 			moreFetching: false,
+			existMore: false,
 			offset: 0,
 			posts: []
 		};
 	},
+	watch: {
+		$route: 'fetch'
+	},
 	computed: {
 		empty(): boolean {
 			return this.posts.length == 0;
+		},
+		q(): string {
+			return this.$route.query.q;
 		}
 	},
 	mounted() {
-		Progress.start();
-
 		document.addEventListener('keydown', this.onDocumentKeydown);
 		window.addEventListener('scroll', this.onScroll);
 
-		(this as any).api('posts/search', parse(this.query)).then(posts => {
-			this.posts = posts;
-			this.fetching = false;
-		});
+		this.fetch();
 	},
 	beforeDestroy() {
 		document.removeEventListener('keydown', this.onDocumentKeydown);
@@ -61,16 +62,38 @@ export default Vue.extend({
 				}
 			}
 		},
+		fetch() {
+			this.fetching = true;
+			Progress.start();
+
+			(this as any).api('posts/search', Object.assign({
+				limit: limit + 1,
+				offset: this.offset
+			}, parse(this.q))).then(posts => {
+				if (posts.length == limit + 1) {
+					posts.pop();
+					this.existMore = true;
+				}
+				this.posts = posts;
+				this.fetching = false;
+				Progress.done();
+			});
+		},
 		more() {
-			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
+			if (this.moreFetching || this.fetching || this.posts.length == 0 || !this.existMore) return;
 			this.offset += limit;
 			this.moreFetching = true;
-			return (this as any).api('posts/search', Object.assign({}, parse(this.query), {
-				limit: limit,
+			return (this as any).api('posts/search', Object.assign({
+				limit: limit + 1,
 				offset: this.offset
-			})).then(posts => {
-				this.moreFetching = false;
+			}, parse(this.q))).then(posts => {
+				if (posts.length == limit + 1) {
+					posts.pop();
+				} else {
+					this.existMore = false;
+				}
 				this.posts = this.posts.concat(posts);
+				this.moreFetching = false;
 			});
 		},
 		onScroll() {

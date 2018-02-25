@@ -24,6 +24,7 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			moreFetching: false,
+			existMore: false,
 			posts: [],
 			connection: null,
 			connectionId: null,
@@ -62,8 +63,13 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('posts/timeline', {
+				limit: 11,
 				until_date: this.date ? this.date.getTime() : undefined
 			}).then(posts => {
+				if (posts.length == 11) {
+					posts.pop();
+					this.existMore = true;
+				}
 				this.posts = posts;
 				this.fetching = false;
 				this.$emit('loaded');
@@ -71,11 +77,17 @@ export default Vue.extend({
 			});
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
+			if (this.moreFetching || this.fetching || this.posts.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
 			(this as any).api('posts/timeline', {
+				limit: 11,
 				until_id: this.posts[this.posts.length - 1].id
 			}).then(posts => {
+				if (posts.length == 11) {
+					posts.pop();
+				} else {
+					this.existMore = false;
+				}
 				this.posts = this.posts.concat(posts);
 				this.moreFetching = false;
 			});

@@ -1,10 +1,10 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:search% {{ query }}</span>
+	<span slot="header">%fa:search% {{ q }}</span>
 	<main v-if="!fetching">
 		<mk-posts :class="$style.posts" :posts="posts">
-			<span v-if="posts.length == 0">{{ '%i18n:mobile.tags.mk-search-posts.empty%'.replace('{}', query) }}</span>
-			<button v-if="canFetchMore" @click="more" :disabled="fetching" slot="tail">
+			<span v-if="posts.length == 0">{{ '%i18n:mobile.tags.mk-search-posts.empty%'.replace('{}', q) }}</span>
+			<button v-if="existMore" @click="more" :disabled="fetching" slot="tail">
 				<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
 				<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
 			</button>
@@ -18,38 +18,61 @@ import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import parse from '../../../common/scripts/parse-search-query';
 
-const limit = 30;
+const limit = 20;
 
 export default Vue.extend({
-	props: ['query'],
 	data() {
 		return {
 			fetching: true,
+			existMore: false,
 			posts: [],
 			offset: 0
 		};
 	},
+	watch: {
+		$route: 'fetch'
+	},
+	computed: {
+		q(): string {
+			return this.$route.query.q;
+		}
+	},
 	mounted() {
-		document.title = `%i18n:mobile.tags.mk-search-page.search%: ${this.query} | Misskey`;
+		document.title = `%i18n:mobile.tags.mk-search-page.search%: ${this.q} | Misskey`;
 		document.documentElement.style.background = '#313a42';
 
-		Progress.start();
-
-		(this as any).api('posts/search', Object.assign({}, parse(this.query), {
-			limit: limit
-		})).then(posts => {
-			this.posts = posts;
-			this.fetching = false;
-			Progress.done();
-		});
+		this.fetch();
 	},
 	methods: {
+		fetch() {
+			this.fetching = true;
+			Progress.start();
+
+			(this as any).api('posts/search', Object.assign({
+				limit: limit + 1
+			}, parse(this.q))).then(posts => {
+				if (posts.length == limit + 1) {
+					posts.pop();
+					this.existMore = true;
+				}
+				this.posts = posts;
+				this.fetching = false;
+				Progress.done();
+			});
+		},
 		more() {
 			this.offset += limit;
-			return (this as any).api('posts/search', Object.assign({}, parse(this.query), {
-				limit: limit,
+			(this as any).api('posts/search', Object.assign({
+				limit: limit + 1,
 				offset: this.offset
-			}));
+			}, parse(this.q))).then(posts => {
+				if (posts.length == limit + 1) {
+					posts.pop();
+				} else {
+					this.existMore = false;
+				}
+				this.posts = this.posts.concat(posts);
+			});
 		}
 	}
 });

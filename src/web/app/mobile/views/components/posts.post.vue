@@ -35,6 +35,9 @@
 						%fa:reply%
 					</a>
 					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
+					<div class="tags" v-if="p.tags && p.tags.length > 0">
+						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=${tag}`">{{ tag }}</router-link>
+					</div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 					<a class="quote" v-if="p.repost != null">RP:</a>
 				</div>
@@ -346,10 +349,7 @@ export default Vue.extend({
 					font-size 1.1em
 					color #717171
 
-					> .dummy
-						display none
-
-					mk-url-preview
+					.mk-url-preview
 						margin-top 8px
 
 					> .channel
@@ -363,6 +363,28 @@ export default Vue.extend({
 						margin-left 4px
 						font-style oblique
 						color #a0bf46
+
+					> .tags
+						> *
+							margin 0 8px 0 0
+							padding 0 8px 0 16px
+							font-size 90%
+							color #8d969e
+							background #edf0f3
+							border-radius 4px
+
+							&:before
+								content ""
+								display block
+								position absolute
+								top 0
+								bottom 0
+								left 4px
+								width 8px
+								height 8px
+								margin auto 0
+								background #fff
+								border-radius 100%
 
 					[data-is-me]:after
 						content "you"
