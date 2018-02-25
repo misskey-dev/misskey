@@ -36,8 +36,28 @@ export default Vue.extend({
 			sending: false
 		};
 	},
+	computed: {
+		draftId(): string {
+			return this.user.id;
+		}
+	},
+	watch: {
+		text() {
+			this.saveDraft();
+		},
+		file() {
+			this.saveDraft();
+		}
+	},
 	mounted() {
 		autosize(this.$refs.textarea);
+
+		// 書きかけの投稿を復元
+		const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[this.draftId];
+		if (draft) {
+			this.text = draft.data.text;
+			this.file = draft.data.file;
+		}
 	},
 	methods: {
 		onPaste(e) {
@@ -89,7 +109,30 @@ export default Vue.extend({
 		clear() {
 			this.text = '';
 			this.file = null;
-		}
+			this.deleteDraft();
+		},
+
+		saveDraft() {
+			const data = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+
+			data[this.draftId] = {
+				updated_at: new Date(),
+				data: {
+					text: this.text,
+					file: this.file
+				}
+			}
+
+			localStorage.setItem('message_drafts', JSON.stringify(data));
+		},
+
+		deleteDraft() {
+			const data = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+
+			delete data[this.draftId];
+
+			localStorage.setItem('message_drafts', JSON.stringify(data));
+		},
 	}
 });
 </script>
