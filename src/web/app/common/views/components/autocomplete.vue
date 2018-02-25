@@ -87,9 +87,15 @@ export default Vue.extend({
 			el.addEventListener('mousedown', this.onMousedown);
 		});
 
-		this.exec();
+		this.$nextTick(() => {
+			this.exec();
 
-		this.$watch('q', this.exec);
+			this.$watch('q', () => {
+				this.$nextTick(() => {
+					this.exec();
+				});
+			});
+		});
 	},
 	beforeDestroy() {
 		this.textarea.removeEventListener('keydown', this.onKeydown);
@@ -100,6 +106,13 @@ export default Vue.extend({
 	},
 	methods: {
 		exec() {
+			this.select = -1;
+			if (this.$refs.suggests) {
+				Array.from(this.items).forEach(el => {
+					el.removeAttribute('data-selected');
+				});
+			}
+
 			if (this.type == 'user') {
 				const cache = sessionStorage.getItem(this.q);
 				if (cache) {
@@ -168,6 +181,10 @@ export default Vue.extend({
 					cancel();
 					this.selectNext();
 					break;
+
+				default:
+					e.stopPropagation();
+					this.textarea.focus();
 			}
 		},
 
