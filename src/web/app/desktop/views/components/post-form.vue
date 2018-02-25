@@ -9,7 +9,7 @@
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
-			v-autocomplete
+			v-autocomplete="'text'"
 		></textarea>
 		<div class="medias" :class="{ with: poll }" v-show="files.length != 0">
 			<x-draggable :list="files" :options="{ animation: 150 }">

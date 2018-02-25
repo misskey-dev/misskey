@@ -4,8 +4,9 @@ import MkAutocomplete from '../components/autocomplete.vue';
 export default {
 	bind(el, binding, vn) {
 		const self = el._autoCompleteDirective_ = {} as any;
-		self.x = new Autocomplete(el);
+		self.x = new Autocomplete(el, vn.context, binding.value);
 		self.x.attach();
+		console.log(vn.context);
 	},
 
 	unbind(el, binding, vn) {
@@ -20,11 +21,21 @@ export default {
 class Autocomplete {
 	private suggestion: any;
 	private textarea: any;
+	private vm: any;
+	private model: any;
+
+	private get text(): string {
+		return this.vm[this.model];
+	}
+
+	private set text(text: string) {
+		this.vm[this.model] = text;
+	}
 
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
-	constructor(textarea) {
+	constructor(textarea, vm, model) {
 		//#region BIND
 		this.onInput = this.onInput.bind(this);
 		this.complete = this.complete.bind(this);
@@ -33,6 +44,8 @@ class Autocomplete {
 
 		this.suggestion = null;
 		this.textarea = textarea;
+		this.vm = vm;
+		this.model = model;
 	}
 
 	/**
@@ -57,7 +70,7 @@ class Autocomplete {
 		this.close();
 
 		const caret = this.textarea.selectionStart;
-		const text = this.textarea.value.substr(0, caret);
+		const text = this.text.substr(0, caret);
 
 		const mentionIndex = text.lastIndexOf('@');
 		const emojiIndex = text.lastIndexOf(':');
@@ -129,28 +142,28 @@ class Autocomplete {
 		const caret = this.textarea.selectionStart;
 
 		if (type == 'user') {
-			const source = this.textarea.value;
+			const source = this.text;
 
 			const before = source.substr(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
 			const after = source.substr(caret);
 
 			// 挿入
-			this.textarea.value = trimmedBefore + '@' + value.username + ' ' + after;
+			this.text = trimmedBefore + '@' + value.username + ' ' + after;
 
 			// キャレットを戻す
 			this.textarea.focus();
 			const pos = caret + value.username.length;
 			this.textarea.setSelectionRange(pos, pos);
 		} else if (type == 'emoji') {
-			const source = this.textarea.value;
+			const source = this.text;
 
 			const before = source.substr(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf(':'));
 			const after = source.substr(caret);
 
 			// 挿入
-			this.textarea.value = trimmedBefore + value + after;
+			this.text = trimmedBefore + value + after;
 
 			// キャレットを戻す
 			this.textarea.focus();
