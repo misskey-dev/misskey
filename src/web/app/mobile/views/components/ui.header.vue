@@ -57,6 +57,7 @@ export default Vue.extend({
 			const ago = (new Date().getTime() - new Date((this as any).os.i.last_used_at).getTime()) / 1000
 			const isHisasiburi = ago >= 3600;
 			if (isHisasiburi) {
+				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';
 
 				anime({
@@ -149,7 +150,7 @@ export default Vue.extend({
 			background-color rgba(#1b2023, 0.75)
 
 		> p
-			display block
+			display none
 			position absolute
 			z-index 1002
 			top $height
