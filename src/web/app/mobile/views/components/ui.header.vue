@@ -97,7 +97,7 @@ export default Vue.extend({
 						duration: 500,
 						easing: 'easeInQuad'
 					});
-				}, 2000);
+				}, 2500);
 			}
 		}
 	},
