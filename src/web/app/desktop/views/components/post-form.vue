@@ -1,9 +1,9 @@
 <template>
 <div class="mk-post-form"
-	@dragover.prevent.stop="onDragover"
+	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
-	@drop.prevent.stop="onDrop"
+	@drop.stop="onDrop"
 >
 	<div class="content">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -159,8 +159,13 @@ export default Vue.extend({
 			});
 		},
 		onDragover(e) {
-			this.draghover = true;
-			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			const isFile = e.dataTransfer.items[0].kind == 'file';
+			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
+			if (isFile || isDriveFile) {
+				e.preventDefault();
+				this.draghover = true;
+				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			}
 		},
 		onDragenter(e) {
 			this.draghover = true;
@@ -173,26 +178,20 @@ export default Vue.extend({
 
 			// ファイルだったら
 			if (e.dataTransfer.files.length > 0) {
+				e.preventDefault();
 				Array.from(e.dataTransfer.files).forEach(this.upload);
 				return;
 			}
 
-			// データ取得
-			const data = e.dataTransfer.getData('text');
-			if (data == null) return;
-
-			try {
-				// パース
-				const obj = JSON.parse(data);
-
-				// (ドライブの)ファイルだったら
-				if (obj.type == 'file') {
-					this.files.push(obj.file);
-					this.$emit('change-attached-media', this.files);
-				}
-			} catch (e) {
-				// not a json, so noop
+			//#region ドライブのファイル
+			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			if (driveFile != null && driveFile != '') {
+				const file = JSON.parse(driveFile);
+				this.files.push(file);
+				this.$emit('change-attached-media', this.files);
+				e.preventDefault();
 			}
+			//#endregion
 		},
 		post() {
 			this.posting = true;

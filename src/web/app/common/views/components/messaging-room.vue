@@ -88,7 +88,14 @@ export default Vue.extend({
 
 	methods: {
 		onDragover(e) {
-			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			const isFile = e.dataTransfer.items[0].kind == 'file';
+			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
+
+			if (isFile || isDriveFile) {
+				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			} else {
+				e.dataTransfer.dropEffect = 'none';
+			}
 		},
 
 		onDrop(e): void {
@@ -101,21 +108,13 @@ export default Vue.extend({
 				return;
 			}
 
-			// データ取得
-			const data = e.dataTransfer.getData('text');
-			if (data == null) return;
-
-			try {
-				// パース
-				const obj = JSON.parse(data);
-
-				// (ドライブの)ファイルだったら
-				if (obj.type == 'file') {
-					this.form.file = obj.file;
-				}
-			} catch (e) {
-				// not a json, so noop
+			//#region ドライブのファイル
+			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			if (driveFile != null && driveFile != '') {
+				const file = JSON.parse(driveFile);
+				this.form.file = file;
 			}
+			//#endregion
 		},
 
 		fetchMessages() {

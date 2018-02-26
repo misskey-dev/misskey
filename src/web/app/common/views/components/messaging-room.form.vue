@@ -1,7 +1,7 @@
 <template>
 <div class="mk-messaging-form"
-	@dragover.prevent.stop="onDragover"
-	@drop.prevent.stop="onDrop"
+	@dragover.stop="onDragover"
+	@drop.stop="onDrop"
 >
 	<textarea
 		v-model="text"
@@ -89,34 +89,33 @@ export default Vue.extend({
 		},
 
 		onDragover(e) {
-			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			const isFile = e.dataTransfer.items[0].kind == 'file';
+			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
+			if (isFile || isDriveFile) {
+				e.preventDefault();
+				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			}
 		},
 
 		onDrop(e): void {
 			// ファイルだったら
 			if (e.dataTransfer.files.length == 1) {
+				e.preventDefault();
 				this.upload(e.dataTransfer.files[0]);
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
+				e.preventDefault();
 				alert('メッセージに添付できるのはひとつのファイルのみです');
 				return;
 			}
 
-			// データ取得
-			const data = e.dataTransfer.getData('text');
-			if (data == null) return;
-
-			try {
-				// パース
-				const obj = JSON.parse(data);
-
-				// (ドライブの)ファイルだったら
-				if (obj.type == 'file') {
-					this.file = obj.file;
-				}
-			} catch (e) {
-				// not a json, so noop
+			//#region ドライブのファイル
+			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			if (driveFile != null && driveFile != '') {
+				this.file = JSON.parse(driveFile);
+				e.preventDefault();
 			}
+			//#endregion
 		},
 
 		onKeypress(e) {

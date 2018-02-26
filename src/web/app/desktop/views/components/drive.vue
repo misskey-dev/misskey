@@ -235,15 +235,21 @@ export default Vue.extend({
 		},
 
 		onDragover(e): any {
-			// ドラッグ元が自分自身の所有するアイテムかどうか
-			if (!this.isDragSource) {
-				// ドラッグされてきたものがファイルだったら
-				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
-				this.draghover = true;
-			} else {
+			// ドラッグ元が自分自身の所有するアイテムだったら
+			if (this.isDragSource) {
 				// 自分自身にはドロップさせない
 				e.dataTransfer.dropEffect = 'none';
-				return false;
+				return;
+			}
+
+			const isFile = e.dataTransfer.items[0].kind == 'file';
+			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
+			const isDriveFolder = e.dataTransfer.types[0] == 'mk_drive_folder';
+
+			if (isFile || isDriveFile || isDriveFolder) {
+				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+			} else {
+				e.dataTransfer.dropEffect = 'none';
 			}
 		},
 
@@ -263,38 +269,36 @@ export default Vue.extend({
 				Array.from(e.dataTransfer.files).forEach(file => {
 					this.upload(file, this.folder);
 				});
-				return false;
+				return;
 			}
 
-			// データ取得
-			const data = e.dataTransfer.getData('text');
-			if (data == null) return false;
-
-			// パース
-			// TODO: JSONじゃなかったら中断
-			const obj = JSON.parse(data);
-
-			// (ドライブの)ファイルだったら
-			if (obj.type == 'file') {
-				const file = obj.id;
-				if (this.files.some(f => f.id == file)) return false;
-				this.removeFile(file);
+			//#region ドライブのファイル
+			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			if (driveFile != null && driveFile != '') {
+				const file = JSON.parse(driveFile);
+				if (this.files.some(f => f.id == file.id)) return;
+				this.removeFile(file.id);
 				(this as any).api('drive/files/update', {
-					file_id: file,
+					file_id: file.id,
 					folder_id: this.folder ? this.folder.id : null
 				});
-			// (ドライブの)フォルダーだったら
-			} else if (obj.type == 'folder') {
-				const folder = obj.id;
+			}
+			//#endregion
+
+			//#region ドライブのフォルダ
+			const driveFolder = e.dataTransfer.getData('mk_drive_folder');
+			if (driveFolder != null && driveFolder != '') {
+				const folder = JSON.parse(driveFolder);
+
 				// 移動先が自分自身ならreject
-				if (this.folder && folder == this.folder.id) return false;
-				if (this.folders.some(f => f.id == folder)) return false;
-				this.removeFolder(folder);
+				if (this.folder && folder.id == this.folder.id) return false;
+				if (this.folders.some(f => f.id == folder.id)) return false;
+				this.removeFolder(folder.id);
 				(this as any).api('drive/folders/update', {
-					folder_id: folder,
+					folder_id: folder.id,
 					parent_id: this.folder ? this.folder.id : null
 				}).then(() => {
-					// something
+					// noop
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
@@ -311,8 +315,7 @@ export default Vue.extend({
 					}
 				});
 			}
-
-			return false;
+			//#endregion
 		},
 
 		selectLocalFile() {

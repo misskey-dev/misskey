@@ -115,11 +115,7 @@ export default Vue.extend({
 
 		onDragstart(e) {
 			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData('text', JSON.stringify({
-				type: 'file',
-				id: this.file.id,
-				file: this.file
-			}));
+			e.dataTransfer.setData('mk_drive_file', JSON.stringify(this.file));
 			this.isDragging = true;
 
 			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
