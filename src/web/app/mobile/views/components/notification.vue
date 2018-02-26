@@ -154,7 +154,7 @@ export default Vue.extend({
 		p
 			margin 0
 
-			i, mk-reaction-icon
+			i, .mk-reaction-icon
 				margin-right 4px
 
 	.post-preview
