@@ -126,7 +126,7 @@ export default Vue.extend({
 	created() {
 		this.widgets.left = this.left;
 		this.widgets.right = this.right;
-		this.$watch('os.i', i => {
+		this.$watch('os.i.client_settings', i => {
 			this.widgets.left = this.left;
 			this.widgets.right = this.right;
 		}, {

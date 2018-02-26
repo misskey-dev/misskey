@@ -23,12 +23,14 @@ export default Vue.extend({
 			docsUrl
 		};
 	},
-	watch: {
-		'os.i'() {
+	mounted() {
+		this.$watch('os.i', () => {
 			if ((this as any).os.i.twitter) {
 				if (this.form) this.form.close();
 			}
-		}
+		}, {
+			deep: true
+		});
 	},
 	methods: {
 		connect() {

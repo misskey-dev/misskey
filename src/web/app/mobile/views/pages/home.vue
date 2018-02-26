@@ -111,7 +111,7 @@ export default Vue.extend({
 			this.widgets = (this as any).os.i.client_settings.mobile_home;
 		}
 
-		this.$watch('os.i', i => {
+		this.$watch('os.i.client_settings', i => {
 			this.widgets = (this as any).os.i.client_settings.mobile_home;
 		}, {
 			deep: true
