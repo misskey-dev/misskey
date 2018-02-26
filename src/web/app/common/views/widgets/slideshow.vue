@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-slideshow">
+<div class="mkw-slideshow" :data-mobile="isMobile">
 	<div @click="choose">
 		<p v-if="props.folder === undefined">
 			<template v-if="isCustomizeMode">フォルダを指定するには、カスタマイズモードを終了してください</template>
@@ -121,6 +121,11 @@ export default define({
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
+
+	&[data-mobile]
+		border none
+		border-radius 8px
+		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 
 	> div
 		width 100%
