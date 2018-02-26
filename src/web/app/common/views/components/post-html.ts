@@ -92,7 +92,8 @@ export default Vue.component('mk-post-html', {
 					return createElement('code', token.html);
 
 				case 'emoji':
-					return createElement('span', emojilib.lib[token.emoji] || token.content);
+					const emoji = emojilib.lib[token.emoji];
+					return createElement('span', emoji ? emoji.char : token.content);
 			}
 		}));
 
