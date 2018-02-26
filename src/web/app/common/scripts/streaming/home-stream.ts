@@ -1,11 +1,11 @@
 import Stream from './stream';
-import signout from '../signout';
+import MiOS from '../../mios';
 
 /**
  * Home stream connection
  */
 export default class Connection extends Stream {
-	constructor(me) {
+	constructor(os: MiOS, me) {
 		super('', {
 			i: me.token
 		});
@@ -25,7 +25,7 @@ export default class Connection extends Stream {
 		// このままではAPIが利用できないので強制的にサインアウトさせる
 		this.on('my_token_regenerated', () => {
 			alert('%i18n:common.my-token-regenerated%');
-			signout();
+			os.signout();
 		});
 	}
 }

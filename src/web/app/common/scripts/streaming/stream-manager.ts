@@ -23,6 +23,14 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 			this.emit('disconnected');
 		} else {
 			this.emit('connected', this._connection);
+
+			this._connection.on('_connected_', () => {
+				this.emit('_connected_');
+			});
+
+			this._connection.on('_disconnected_', () => {
+				this.emit('_disconnected_');
+			});
 		}
 	}
 
@@ -35,6 +43,11 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 	 */
 	public get hasConnection() {
 		return this._connection != null;
+	}
+
+	public get state(): string {
+		if (!this.hasConnection) return 'no-connection';
+		return this._connection.state;
 	}
 
 	/**

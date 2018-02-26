@@ -1,9 +1,8 @@
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 
-import { apiUrl, swPublickey, version, lang } from '../config';
+import { host, apiUrl, swPublickey, version, lang } from '../config';
 import api from './scripts/api';
-import signout from './scripts/signout';
 import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
 import DriveStreamManager from './scripts/streaming/drive-stream-manager';
@@ -153,7 +152,7 @@ export default class MiOS extends EventEmitter {
 
 		this.once('signedin', () => {
 			// Init home stream manager
-			this.stream = new HomeStreamManager(this.i);
+			this.stream = new HomeStreamManager(this, this.i);
 
 			// Init other stream manager
 			this.streams.driveStream = new DriveStreamManager(this.i);
@@ -184,6 +183,12 @@ export default class MiOS extends EventEmitter {
 		console.error.apply(null, args);
 	}
 
+	public signout() {
+		localStorage.removeItem('me');
+		document.cookie = `i=; domain=.${host}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+		location.href = '/';
+	}
+
 	/**
 	 * Initialize MiOS (boot)
 	 * @param callback A function that call when initialized
@@ -209,7 +214,7 @@ export default class MiOS extends EventEmitter {
 			.then(res => {
 				// When failed to authenticate user
 				if (res.status !== 200) {
-					return signout();
+					return this.signout();
 				}
 
 				// Parse response

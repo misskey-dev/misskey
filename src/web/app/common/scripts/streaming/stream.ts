@@ -1,13 +1,12 @@
-declare const _API_URL_: string;
-
 import { EventEmitter } from 'eventemitter3';
 import * as ReconnectingWebsocket from 'reconnecting-websocket';
+import { apiUrl } from '../../../config';
 
 /**
  * Misskey stream connection
  */
 export default class Connection extends EventEmitter {
-	private state: string;
+	public state: string;
 	private buffer: any[];
 	private socket: ReconnectingWebsocket;
 
@@ -25,7 +24,7 @@ export default class Connection extends EventEmitter {
 		this.state = 'initializing';
 		this.buffer = [];
 
-		const host = _API_URL_.replace('http', 'ws');
+		const host = apiUrl.replace('http', 'ws');
 		const query = params
 			? Object.keys(params)
 				.map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
@@ -58,7 +57,7 @@ export default class Connection extends EventEmitter {
 	 */
 	private onClose() {
 		this.state = 'reconnecting';
-		this.emit('_closed_');
+		this.emit('_disconnected_');
 	}
 
 	/**

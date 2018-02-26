@@ -37,13 +37,11 @@ import Vue from 'vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
-import signout from '../../../common/scripts/signout';
 
 export default Vue.extend({
 	data() {
 		return {
-			isOpen: false,
-			signout
+			isOpen: false
 		};
 	},
 	beforeDestroy() {
@@ -77,6 +75,9 @@ export default Vue.extend({
 		settings() {
 			this.close();
 			(this as any).os.new(MkSettingsWindow);
+		},
+		signout() {
+			(this as any).os.signout();
 		}
 	}
 });

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-stream-indicator" v-if="stream">
+<div class="mk-stream-indicator">
 	<p v-if=" stream.state == 'initializing' ">
 		%fa:spinner .pulse%
 		<span>%i18n:common.tags.mk-stream-indicator.connecting%<mk-ellipsis/></span>
@@ -20,16 +20,14 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	data() {
-		return {
-			stream: null
-		};
+	computed: {
+		stream() {
+			return (this as any).os.stream;
+		}
 	},
 	created() {
-		this.stream = (this as any).os.stream.borrow();
-
-		(this as any).os.stream.on('connected', this.onConnected);
-		(this as any).os.stream.on('disconnected', this.onDisconnected);
+		(this as any).os.stream.on('_connected_', this.onConnected);
+		(this as any).os.stream.on('_disconnected_', this.onDisconnected);
 
 		this.$nextTick(() => {
 			if (this.stream.state == 'connected') {
@@ -38,13 +36,11 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		(this as any).os.stream.off('connected', this.onConnected);
-		(this as any).os.stream.off('disconnected', this.onDisconnected);
+		(this as any).os.stream.off('_connected_', this.onConnected);
+		(this as any).os.stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {
 		onConnected() {
-			this.stream = (this as any).os.stream.borrow();
-
 			setTimeout(() => {
 				anime({
 					targets: this.$el,
@@ -55,8 +51,6 @@ export default Vue.extend({
 			}, 1000);
 		},
 		onDisconnected() {
-			this.stream = null;
-
 			anime({
 				targets: this.$el,
 				opacity: 1,
