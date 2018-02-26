@@ -17,7 +17,7 @@ require('./common/views/components');
 require('./common/views/widgets');
 
 // Register global filters
-require('./common/filters');
+require('./common/views/filters');
 
 Vue.mixin({
 	destroyed(this: any) {
