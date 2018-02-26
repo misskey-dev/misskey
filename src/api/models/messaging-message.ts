@@ -67,7 +67,7 @@ export const pack = (
 	// Populate user
 	_message.user = await packUser(_message.user_id, me);
 
-	if (_message.file) {
+	if (_message.file_id) {
 		// Populate file
 		_message.file = await packFile(_message.file_id);
 	}

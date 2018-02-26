@@ -8,18 +8,18 @@
 		placeholder="%i18n:common.input-message-here%"
 		v-autocomplete="'text'"
 	></textarea>
-	<div class="file" v-if="file">{{ file.name }}</div>
-	<mk-uploader ref="uploader"/>
-	<button class="send" @click="send" :disabled="sending" title="%i18n:common.send%">
+	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
+	<mk-uploader ref="uploader" @uploaded="onUploaded"/>
+	<button class="send" @click="send" :disabled="!canSend || sending" title="%i18n:common.send%">
 		<template v-if="!sending">%fa:paper-plane%</template><template v-if="sending">%fa:spinner .spin%</template>
 	</button>
-	<button class="attach-from-local" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
+	<button class="attach-from-local" @click="chooseFile" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
 		%fa:upload%
 	</button>
 	<button class="attach-from-drive" @click="chooseFileFromDrive" title="%i18n:common.tags.mk-messaging-form.attach-from-drive%">
 		%fa:R folder-open%
 	</button>
-	<input name="file" type="file" accept="image/*"/>
+	<input ref="file" type="file" @change="onChangeFile"/>
 </div>
 </template>
 
@@ -39,6 +39,9 @@ export default Vue.extend({
 	computed: {
 		draftId(): string {
 			return this.user.id;
+		},
+		canSend(): boolean {
+			return (this.text != null && this.text != '') || this.file != null;
 		}
 	},
 	watch: {
@@ -88,15 +91,24 @@ export default Vue.extend({
 			});
 		},
 
-		upload() {
-			// TODO
+		onChangeFile() {
+			this.upload((this.$refs.file as any).files[0]);
+		},
+
+		upload(file) {
+			(this.$refs.uploader as any).upload(file);
+		},
+
+		onUploaded(file) {
+			this.file = file;
 		},
 
 		send() {
 			this.sending = true;
 			(this as any).api('messaging/messages/create', {
 				user_id: this.user.id,
-				text: this.text
+				text: this.text ? this.text : undefined,
+				file_id: this.file ? this.file.id : undefined
 			}).then(message => {
 				this.clear();
 			}).catch(err => {
@@ -158,13 +170,18 @@ export default Vue.extend({
 		box-shadow none
 		background transparent
 
+	> .file
+		padding 8px
+		color #444
+		background #eee
+		cursor pointer
+
 	> .send
 		position absolute
 		bottom 0
 		right 0
 		margin 0
 		padding 10px 14px
-		line-height 1em
 		font-size 1em
 		color #aaa
 		transition color 0.1s ease
@@ -222,7 +239,6 @@ export default Vue.extend({
 	.attach-from-drive
 		margin 0
 		padding 10px 14px
-		line-height 1em
 		font-size 1em
 		font-weight normal
 		text-decoration none

@@ -3,23 +3,27 @@
 	<router-link class="avatar-anchor" :to="`/${message.user.username}`" :title="message.user.username" target="_blank">
 		<img class="avatar" :src="`${message.user.avatar_url}?thumbnail&size=80`" alt=""/>
 	</router-link>
-	<div class="content-container">
-		<div class="balloon">
+	<div class="content">
+		<div class="balloon" :data-no-text="message.text == null">
 			<p class="read" v-if="isMe && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>
 			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.is_deleted">
 				<mk-post-html class="text" v-if="message.ast" :ast="message.ast" :i="os.i"/>
-				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-				<div class="image" v-if="message.file">
-					<img :src="message.file.url" alt="image" :title="message.file.name"/>
+				<div class="file" v-if="message.file">
+					<a :href="message.file.url" target="_blank" :title="message.file.name">
+						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
+						<p v-else>{{ message.file.name }}</p>
+					</a>
 				</div>
 			</div>
 			<div class="content" v-if="message.is_deleted">
 				<p class="is-deleted">%i18n:common.tags.mk-messaging-message.deleted%</p>
 			</div>
 		</div>
+		<div></div>
+		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
 			<mk-time :time="message.created_at"/>
 			<template v-if="message.is_edited">%fa:pencil-alt%</template>
@@ -57,13 +61,10 @@ export default Vue.extend({
 	padding 10px 12px 10px 12px
 	background-color transparent
 
-	&:after
-		content ""
-		display block
-		clear both
-
 	> .avatar-anchor
 		display block
+		position absolute
+		top 10px
 
 		> .avatar
 			display block
@@ -75,18 +76,12 @@ export default Vue.extend({
 			border-radius 8px
 			transition all 0.1s ease
 
-	> .content-container
-		display block
-		margin 0 12px
-		padding 0
-		max-width calc(100% - 78px)
+	> .content
 
 		> .balloon
 			display block
-			float inherit
-			margin 0
 			padding 0
-			max-width 100%
+			max-width calc(100% - 16px)
 			min-height 38px
 			border-radius 16px
 
@@ -96,6 +91,9 @@ export default Vue.extend({
 				display block
 				position absolute
 				top 12px
+
+			& + *
+				clear both
 
 			&:hover
 				> .delete-button
@@ -153,28 +151,43 @@ export default Vue.extend({
 					font-size 1em
 					color rgba(0, 0, 0, 0.8)
 
-					&, *
-						user-select text
-						cursor auto
-
 					& + .file
-						&.image
-							> img
-								border-radius 0 0 16px 16px
+						> a
+							border-radius 0 0 16px 16px
 
 				> .file
-					&.image
-						> img
+					> a
+						display block
+						max-width 100%
+						max-height 512px
+						border-radius 16px
+						overflow hidden
+						text-decoration none
+
+						&:hover
+							text-decoration none
+
+							> p
+								background #ccc
+
+						> *
 							display block
-							max-width 100%
-							max-height 512px
-							border-radius 16px
+							margin 0
+							width 100%
+							height 100%
+
+						> p
+							padding 30px
+							text-align center
+							color #555
+							background #ddd
+
+		> .mk-url-preview
+			margin 8px 0
 
 		> footer
 			display block
-			clear both
-			margin 0
-			padding 2px
+			margin 2px 0 0 0
 			font-size 10px
 			color rgba(0, 0, 0, 0.4)
 
@@ -183,15 +196,19 @@ export default Vue.extend({
 
 	&:not([data-is-me])
 		> .avatar-anchor
-			float left
+			left 12px
 
-		> .content-container
-			float left
+		> .content
+			padding-left 66px
 
 			> .balloon
+				float left
 				background #eee
 
-				&:before
+				&[data-no-text]
+					background transparent
+
+				&:not([data-no-text]):before
 					left -14px
 					border-top solid 8px transparent
 					border-right solid 8px #eee
@@ -203,15 +220,19 @@ export default Vue.extend({
 
 	&[data-is-me]
 		> .avatar-anchor
-			float right
+			right 12px
 
-		> .content-container
-			float right
+		> .content
+			padding-right 66px
 
 			> .balloon
+				float right
 				background $me-balloon-color
 
-				&:before
+				&[data-no-text]
+					background transparent
+
+				&:not([data-no-text]):before
 					right -14px
 					left auto
 					border-top solid 8px transparent
@@ -232,7 +253,7 @@ export default Vue.extend({
 				text-align right
 
 	&[data-is-deleted]
-			> .content-container
-				opacity 0.5
+		> .baloon
+			opacity 0.5
 
 </style>
