@@ -16,7 +16,7 @@
 		ref="main"
 		@mousedown="onMousedown"
 		@dragover.prevent.stop="onDragover"
-		@dragenter.prevent="onDragenter"
+		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
 		@contextmenu.prevent.stop="onContextmenu"
@@ -251,6 +251,8 @@ export default Vue.extend({
 			} else {
 				e.dataTransfer.dropEffect = 'none';
 			}
+
+			return false;
 		},
 
 		onDragenter(e) {

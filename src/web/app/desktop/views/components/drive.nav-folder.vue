@@ -52,6 +52,8 @@ export default Vue.extend({
 			} else {
 				e.dataTransfer.dropEffect = 'none';
 			}
+
+			return false;
 		},
 		onDragenter() {
 			if (this.folder || this.browser.folder) this.draghover = true;
@@ -102,6 +104,9 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .root.nav-folder
+	> *
+		pointer-events none
+
 	&[data-draghover]
 		background #eee
 
