@@ -5,7 +5,7 @@
 
 		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 		<div :class="$style.stream" v-if="!fetching && images.length > 0">
-			<div v-for="image in images" :key="image.id" :class="$style.img" :style="`background-image: url(${image.url}?thumbnail&size=256)`"></div>
+			<div v-for="image in images" :class="$style.img" :style="`background-image: url(${image.url}?thumbnail&size=256)`"></div>
 		</div>
 		<p :class="$style.empty" v-if="!fetching && images.length == 0">%i18n:desktop.tags.mk-photo-stream-home-widget.no-photos%</p>
 	</mk-widget-container>

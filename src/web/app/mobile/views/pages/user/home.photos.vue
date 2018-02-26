@@ -2,7 +2,7 @@
 <div class="root photos">
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-photos.loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
-		<a v-for="image in images" :key="image.id"
+		<a v-for="image in images"
 			class="img"
 			:style="`background-image: url(${image.media.url}?thumbnail&size=256)`"
 			:href="`/${image.post.user.username}/${image.post.id}`"
