@@ -1,5 +1,8 @@
 <template>
-<div class="mk-messaging-form">
+<div class="mk-messaging-form"
+	@dragover.prevent.stop="onDragover"
+	@drop.prevent.stop="onDrop"
+>
 	<textarea
 		v-model="text"
 		ref="textarea"
@@ -42,6 +45,9 @@ export default Vue.extend({
 		},
 		canSend(): boolean {
 			return (this.text != null && this.text != '') || this.file != null;
+		},
+		room(): any {
+			return this.$parent;
 		}
 	},
 	watch: {
@@ -50,6 +56,10 @@ export default Vue.extend({
 		},
 		file() {
 			this.saveDraft();
+
+			if (this.room.isBottom()) {
+				this.room.scrollToBottom();
+			}
 		}
 	},
 	mounted() {
@@ -66,10 +76,46 @@ export default Vue.extend({
 		onPaste(e) {
 			const data = e.clipboardData;
 			const items = data.items;
-			for (const item of items) {
-				if (item.kind == 'file') {
-					//this.upload(item.getAsFile());
+
+			if (items.length == 1) {
+				if (items[0].kind == 'file') {
+					this.upload(items[0].getAsFile());
 				}
+			} else {
+				if (items[0].kind == 'file') {
+					alert('メッセージに添付できるのはひとつのファイルのみです');
+				}
+			}
+		},
+
+		onDragover(e) {
+			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+		},
+
+		onDrop(e): void {
+			// ファイルだったら
+			if (e.dataTransfer.files.length == 1) {
+				this.upload(e.dataTransfer.files[0]);
+				return;
+			} else if (e.dataTransfer.files.length > 1) {
+				alert('メッセージに添付できるのはひとつのファイルのみです');
+				return;
+			}
+
+			// データ取得
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return;
+
+			try {
+				// パース
+				const obj = JSON.parse(data);
+
+				// (ドライブの)ファイルだったら
+				if (obj.type == 'file') {
+					this.file = obj.file;
+				}
+			} catch (e) {
+				// not a json, so noop
 			}
 		},
 

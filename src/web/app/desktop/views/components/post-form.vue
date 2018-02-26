@@ -190,7 +190,9 @@ export default Vue.extend({
 					this.files.push(obj.file);
 					this.$emit('change-attached-media', this.files);
 				}
-			} catch (e) { }
+			} catch (e) {
+				// not a json, so noop
+			}
 		},
 		post() {
 			this.posting = true;

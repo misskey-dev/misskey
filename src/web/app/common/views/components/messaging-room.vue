@@ -1,5 +1,8 @@
 <template>
-<div class="mk-messaging-room">
+<div class="mk-messaging-room"
+	@dragover.prevent.stop="onDragover"
+	@drop.prevent.stop="onDrop"
+>
 	<div class="stream">
 		<p class="init" v-if="init">%fa:spinner .spin%%i18n:common.loading%</p>
 		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:common.tags.mk-messaging-room.empty%</p>
@@ -16,7 +19,7 @@
 	</div>
 	<footer>
 		<div ref="notifications" class="notifications"></div>
-		<x-form :user="user"/>
+		<x-form :user="user" ref="form"/>
 	</footer>
 </div>
 </template>
@@ -32,7 +35,9 @@ export default Vue.extend({
 		XMessage,
 		XForm
 	},
+
 	props: ['user', 'isNaked'],
+
 	data() {
 		return {
 			init: true,
@@ -42,6 +47,7 @@ export default Vue.extend({
 			connection: null
 		};
 	},
+
 	computed: {
 		_messages(): any[] {
 			return (this.messages as any).map(message => {
@@ -51,6 +57,10 @@ export default Vue.extend({
 				message._datetext = `${month}月 ${date}日`;
 				return message;
 			});
+		},
+
+		form(): any {
+			return this.$refs.form;
 		}
 	},
 
@@ -67,6 +77,7 @@ export default Vue.extend({
 			this.scrollToBottom();
 		});
 	},
+
 	beforeDestroy() {
 		this.connection.off('message', this.onMessage);
 		this.connection.off('read', this.onRead);
@@ -74,7 +85,39 @@ export default Vue.extend({
 
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
+
 	methods: {
+		onDragover(e) {
+			e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+		},
+
+		onDrop(e): void {
+			// ファイルだったら
+			if (e.dataTransfer.files.length == 1) {
+				this.form.upload(e.dataTransfer.files[0]);
+				return;
+			} else if (e.dataTransfer.files.length > 1) {
+				alert('メッセージに添付できるのはひとつのファイルのみです');
+				return;
+			}
+
+			// データ取得
+			const data = e.dataTransfer.getData('text');
+			if (data == null) return;
+
+			try {
+				// パース
+				const obj = JSON.parse(data);
+
+				// (ドライブの)ファイルだったら
+				if (obj.type == 'file') {
+					this.form.file = obj.file;
+				}
+			} catch (e) {
+				// not a json, so noop
+			}
+		},
+
 		fetchMessages() {
 			return new Promise((resolve, reject) => {
 				const max = this.existMoreMessages ? 20 : 10;
@@ -96,12 +139,14 @@ export default Vue.extend({
 				});
 			});
 		},
+
 		fetchMoreMessages() {
 			this.fetchingMoreMessages = true;
 			this.fetchMessages().then(() => {
 				this.fetchingMoreMessages = false;
 			});
 		},
+
 		onMessage(message) {
 			const isBottom = this.isBottom();
 
@@ -123,6 +168,7 @@ export default Vue.extend({
 				this.notify('%i18n:common.tags.mk-messaging-room.new-message%');
 			}
 		},
+
 		onRead(ids) {
 			if (!Array.isArray(ids)) ids = [ids];
 			ids.forEach(id => {
@@ -132,6 +178,7 @@ export default Vue.extend({
 				}
 			});
 		},
+
 		isBottom() {
 			const asobi = 64;
 			const current = this.isNaked
@@ -142,6 +189,7 @@ export default Vue.extend({
 				: this.$el.scrollHeight;
 			return current > (max - asobi);
 		},
+
 		scrollToBottom() {
 			if (this.isNaked) {
 				window.scroll(0, document.body.offsetHeight);
@@ -149,6 +197,7 @@ export default Vue.extend({
 				this.$el.scrollTop = this.$el.scrollHeight;
 			}
 		},
+
 		notify(message) {
 			const n = document.createElement('p') as any;
 			n.innerHTML = '%fa:arrow-circle-down%' + message;
@@ -163,6 +212,7 @@ export default Vue.extend({
 				setTimeout(() => n.parentNode.removeChild(n), 1000);
 			}, 4000);
 		},
+
 		onVisibilitychange() {
 			if (document.hidden) return;
 			this.messages.forEach(message => {
