@@ -316,9 +316,12 @@ export default Vue.extend({
 					max-width 100%
 
 			> .tags
+				margin 4px 0 0 0
+
 				> *
+					display inline-block
 					margin 0 8px 0 0
-					padding 0 8px 0 16px
+					padding 2px 8px 2px 16px
 					font-size 90%
 					color #8d969e
 					background #edf0f3
