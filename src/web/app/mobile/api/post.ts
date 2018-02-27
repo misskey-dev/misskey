@@ -30,6 +30,7 @@ export default (os) => (opts) => {
 		}
 
 		const vm = new PostForm({
+			parent: os.app,
 			propsData: {
 				reply: o.reply
 			}
