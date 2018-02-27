@@ -1,16 +1,12 @@
 <template>
-<div>
+<mk-ui>
 	<p v-if="fetching">読み込み中</p>
-	<main v-if="!fetching">
-		<header>
-			<h1>{{ app.name }}</h1>
-		</header>
-		<div class="body">
-			<p>App Secret</p>
-			<input :value="app.secret" readonly/>
-		</div>
-	</main>
-</div>
+	<b-card v-if="!fetching" :header="app.name">
+		<b-form-group label="App Secret">
+			<b-input :value="app.secret" readonly/>
+		</b-form-group>
+	</b-card>
+</mk-ui>
 </template>
 
 <script lang="ts">

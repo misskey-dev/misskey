@@ -1,7 +1,7 @@
 <template>
-<div>
-	<router-link to="/app">アプリ</router-link>
-</div>
+<mk-ui>
+	<b-button to="/apps" variant="primary">アプリの管理</b-button>
+</mk-ui>
 </template>
 
 <script lang="ts">
