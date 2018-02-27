@@ -134,9 +134,21 @@ export default Vue.extend({
 			} else if (this.type == 'emoji') {
 				const matched = [];
 				emjdb.some(x => {
-					if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+					if (x.name.indexOf(this.q) == 0 && !x.alias && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 					return matched.length == 30;
 				});
+				if (matched.length < 30) {
+					emjdb.some(x => {
+						if (x.name.indexOf(this.q) == 0 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+						return matched.length == 30;
+					});
+				}
+				if (matched.length < 30) {
+					emjdb.some(x => {
+						if (x.name.indexOf(this.q) > -1 && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+						return matched.length == 30;
+					});
+				}
 				this.emojis = matched;
 			}
 		},
