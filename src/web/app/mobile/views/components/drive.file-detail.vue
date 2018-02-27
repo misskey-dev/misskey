@@ -6,7 +6,7 @@
 			:alt="file.name"
 			:title="file.name"
 			@load="onImageLoaded"
-			:style="`background-color:rgb(${ file.properties.average_color.join(',') })`">
+			:style="style">
 		<template v-if="kind != 'image'">%fa:file%</template>
 		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
 			<span class="size">
@@ -84,6 +84,11 @@ export default Vue.extend({
 		},
 		kind(): string {
 			return this.file.type.split('/')[0];
+		},
+		style(): any {
+			return this.file.properties.average_color ? {
+				'background-color': `rgb(${ this.file.properties.average_color.join(',') })`
+			} : {};
 		}
 	},
 	methods: {
