@@ -117,7 +117,7 @@ export default Vue.extend({
 
 	> p
 		margin 0
-		padding 0.6em 1.2em
+		padding 0.7em 1.2em
 		font-size 1em
 		color #444
 		border-top solid 1px #eee
