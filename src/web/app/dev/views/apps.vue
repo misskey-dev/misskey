@@ -20,5 +20,18 @@
 
 <script lang="ts">
 import Vue from 'vue';
-export default Vue.extend();
+export default Vue.extend({
+	data() {
+		return {
+			fetching: true,
+			apps: []
+		};
+	},
+	mounted() {
+		(this as any).api('my/apps').then(apps => {
+			this.apps = apps;
+			this.fetching = false;
+		});
+	}
+});
 </script>

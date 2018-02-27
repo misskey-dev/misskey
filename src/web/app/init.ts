@@ -84,8 +84,8 @@ export default (callback: (launch: (api?: (os: MiOS) => API) => [Vue, MiOS]) => 
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const launch = (api: (os: MiOS) => API) => {
-			os.apis = api(os);
+		const launch = (api?: (os: MiOS) => API) => {
+			os.apis = api ? api(os) : null;
 
 			Vue.mixin({
 				data() {
