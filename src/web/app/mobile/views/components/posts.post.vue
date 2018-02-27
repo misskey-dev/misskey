@@ -39,7 +39,7 @@
 						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 					</div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-					<a class="quote" v-if="p.repost != null">RP:</a>
+					<a class="rp" v-if="p.repost != null">RP:</a>
 				</div>
 				<div class="media" v-if="p.media">
 					<mk-images :images="p.media"/>
@@ -365,7 +365,7 @@ export default Vue.extend({
 						margin-right 8px
 						color #717171
 
-					> .quote
+					> .rp
 						margin-left 4px
 						font-style oblique
 						color #a0bf46

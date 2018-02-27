@@ -3,7 +3,7 @@
 	<div class="body">
 		<a class="reply" v-if="post.reply_id">%fa:reply%</a>
 		<mk-post-html v-if="post.ast" :ast="post.ast" :i="os.i"/>
-		<a class="quote" v-if="post.repost_id">RP: ...</a>
+		<a class="rp" v-if="post.repost_id">RP: ...</a>
 	</div>
 	<details v-if="post.media">
 		<summary>({{ post.media.length }}個のメディア)</summary>
@@ -32,7 +32,7 @@ export default Vue.extend({
 			margin-right 6px
 			color #717171
 
-		> .quote
+		> .rp
 			margin-left 4px
 			font-style oblique
 			color #a0bf46

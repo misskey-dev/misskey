@@ -41,7 +41,7 @@
 					<div class="tags" v-if="p.tags && p.tags.length > 0">
 						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 					</div>
-					<a class="quote" v-if="p.repost">RP:</a>
+					<a class="rp" v-if="p.repost">RP:</a>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
 				<div class="media" v-if="p.media">
@@ -432,7 +432,7 @@ export default Vue.extend({
 						margin-right 8px
 						color #717171
 
-					> .quote
+					> .rp
 						margin-left 4px
 						font-style oblique
 						color #a0bf46
