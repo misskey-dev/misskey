@@ -77,7 +77,7 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (api: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
+export default (callback: (launch: (api?: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {

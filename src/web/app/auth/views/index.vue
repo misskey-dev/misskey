@@ -42,9 +42,13 @@ export default Vue.extend({
 		return {
 			state: null,
 			session: null,
-			fetching: true,
-			token: window.location.href.split('/').pop()
+			fetching: true
 		};
+	},
+	computed: {
+		token(): string {
+			return this.$route.params.token;
+		}
 	},
 	mounted() {
 		if (!this.$root.$data.os.isSignedIn) return;

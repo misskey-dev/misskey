@@ -38,8 +38,8 @@ module.exports = Object.keys(langs).map(lang => {
 		//ch: './src/web/app/ch/script.ts',
 		//stats: './src/web/app/stats/script.ts',
 		//status: './src/web/app/status/script.ts',
-		//dev: './src/web/app/dev/script.ts',
-		//auth: './src/web/app/auth/script.ts',
+		dev: './src/web/app/dev/script.ts',
+		auth: './src/web/app/auth/script.ts',
 		sw: './src/web/app/sw.js'
 	};
 
