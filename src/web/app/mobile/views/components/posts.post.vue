@@ -349,6 +349,12 @@ export default Vue.extend({
 					font-size 1.1em
 					color #717171
 
+					>>> .quote
+						margin 8px
+						padding 6px 12px
+						color #aaa
+						border-left solid 3px #eee
+
 					.mk-url-preview
 						margin-top 8px
 

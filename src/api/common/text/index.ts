@@ -10,6 +10,7 @@ const elements = [
 	require('./elements/hashtag'),
 	require('./elements/code'),
 	require('./elements/inline-code'),
+	require('./elements/quote'),
 	require('./elements/emoji')
 ];
 
@@ -33,12 +34,12 @@ export default (source: string) => {
 	// パース
 	while (source != '') {
 		const parsed = elements.some(el => {
-			let tokens = el(source, i);
-			if (tokens) {
-				if (!Array.isArray(tokens)) {
-					tokens = [tokens];
+			let _tokens = el(source, i);
+			if (_tokens) {
+				if (!Array.isArray(_tokens)) {
+					_tokens = [_tokens];
 				}
-				tokens.forEach(push);
+				_tokens.forEach(push);
 				return true;
 			} else {
 				return false;

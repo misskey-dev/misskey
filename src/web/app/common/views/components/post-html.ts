@@ -3,6 +3,10 @@ import * as emojilib from 'emojilib';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
 
+const flatten = list => list.reduce(
+	(a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
+);
+
 export default Vue.component('mk-post-html', {
 	props: {
 		ast: {
@@ -19,20 +23,16 @@ export default Vue.component('mk-post-html', {
 		}
 	},
 	render(createElement) {
-		const els = [].concat.apply([], (this as any).ast.map(token => {
+		const els = flatten((this as any).ast.map(token => {
 			switch (token.type) {
 				case 'text':
 					const text = token.content.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if ((this as any).shouldBreak) {
-						if (text.indexOf('\n') != -1) {
-							const x = text.split('\n')
-								.map(t => [createElement('span', t), createElement('br')]);
-							x[x.length - 1].pop();
-							return x;
-						} else {
-							return createElement('span', text);
-						}
+						const x = text.split('\n')
+							.map(t => t == '' ? [createElement('br')] : [createElement('span', t), createElement('br')]);
+						x[x.length - 1].pop();
+						return x;
 					} else {
 						return createElement('span', text.replace(/\n/g, ' '));
 					}
@@ -91,12 +91,46 @@ export default Vue.component('mk-post-html', {
 				case 'inline-code':
 					return createElement('code', token.html);
 
+				case 'quote':
+					const text2 = token.quote.replace(/(\r\n|\n|\r)/g, '\n');
+
+					if ((this as any).shouldBreak) {
+						const x = text2.split('\n')
+							.map(t => [createElement('span', t), createElement('br')]);
+						x[x.length - 1].pop();
+						return createElement('div', {
+							attrs: {
+								class: 'quote'
+							}
+						}, x);
+					} else {
+						return createElement('span', {
+							attrs: {
+								class: 'quote'
+							}
+						}, text2.replace(/\n/g, ' '));
+					}
+
 				case 'emoji':
 					const emoji = emojilib.lib[token.emoji];
 					return createElement('span', emoji ? emoji.char : token.content);
+
+				default:
+					console.log('unknown ast type:', token.type);
 			}
 		}));
 
-		return createElement('span', els);
+		const _els = [];
+		els.forEach((el, i) => {
+			if (el.tag == 'br') {
+				if (els[i - 1].tag != 'div') {
+					_els.push(el);
+				}
+			} else {
+				_els.push(el);
+			}
+		});
+
+		return createElement('span', _els);
 	}
 });
