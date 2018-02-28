@@ -65,7 +65,7 @@
 		"@types/pug": "2.0.4",
 		"@types/qrcode": "0.8.1",
 		"@types/ratelimiter": "2.1.28",
-		"@types/redis": "2.8.5",
+		"@types/redis": "2.8.6",
 		"@types/request": "2.47.0",
 		"@types/rimraf": "2.0.2",
 		"@types/seedrandom": "2.4.27",
