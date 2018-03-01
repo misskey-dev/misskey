@@ -12,6 +12,7 @@ declare const _SW_PUBLICKEY_: string;
 declare const _THEME_COLOR_: string;
 declare const _COPYRIGHT_: string;
 declare const _VERSION_: string;
+declare const _LICENSE_: string;
 
 export const host = _HOST_;
 export const url = _URL_;
@@ -27,3 +28,4 @@ export const swPublickey = _SW_PUBLICKEY_;
 export const themeColor = _THEME_COLOR_;
 export const copyright = _COPYRIGHT_;
 export const version = _VERSION_;
+export const license = _LICENSE_;

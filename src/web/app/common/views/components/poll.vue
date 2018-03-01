@@ -5,14 +5,14 @@
 			<div class="backdrop" :style="{ 'width': (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
 				<template v-if="choice.is_voted">%fa:check%</template>
-				{{ choice.text }}
+				<span>{{ choice.text }}</span>
 				<span class="votes" v-if="showResult">({{ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', choice.votes) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="total > 0">
 		<span>{{ '%i18n:common.tags.mk-poll.total-users%'.replace('{}', total) }}</span>
-		・
+		<span>・</span>
 		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? '%i18n:common.tags.mk-poll.vote%' : '%i18n:common.tags.mk-poll.show-result%' }}</a>
 		<span v-if="isVoted">%i18n:common.tags.mk-poll.voted%</span>
 	</p>
@@ -98,8 +98,12 @@ export default Vue.extend({
 				background $theme-color
 				transition width 1s ease
 
-			> .votes
-				margin-left 4px
+			> span
+				> [data-fa]
+					margin-right 4px
+
+				> .votes
+					margin-left 4px
 
 	> p
 		a

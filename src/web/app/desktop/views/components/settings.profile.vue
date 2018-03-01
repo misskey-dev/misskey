@@ -22,6 +22,10 @@
 		<input v-model="birthday" type="date" class="ui"/>
 	</label>
 	<button class="ui primary" @click="save">%i18n:desktop.tags.mk-profile-setting.save%</button>
+	<section>
+		<h2>その他</h2>
+		<el-switch v-model="os.i.is_bot" @change="onChangeIsBot" active-text="このアカウントはbotです"/>
+	</section>
 </div>
 </template>
 
@@ -55,6 +59,11 @@ export default Vue.extend({
 				birthday: this.birthday || null
 			}).then(() => {
 				(this as any).apis.notify('プロフィールを更新しました');
+			});
+		},
+		onChangeIsBot() {
+			(this as any).api('i/update', {
+				is_bot: (this as any).os.i.is_bot
 			});
 		}
 	}

@@ -23,10 +23,7 @@
 			<div>
 				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
 			</div>
-			<label>
-				<input type="checkbox" v-model="showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl">
-				<span>タイムライン上部に投稿フォームを表示する</span>
-			</label>
+			<el-switch v-model="showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" active-text="タイムライン上部に投稿フォームを表示する"/>
 		</section>
 
 		<section class="drive" v-show="page == 'drive'">
@@ -71,7 +68,8 @@
 
 		<section class="other" v-show="page == 'other'">
 			<h1>%i18n:desktop.tags.mk-settings.license%</h1>
-			%license%
+			<div v-html="license"></div>
+			<a :href="licenseUrl" target="_blank">サードパーティ</a>
 		</section>
 	</div>
 </div>
@@ -84,6 +82,7 @@ import XMute from './settings.mute.vue';
 import XPassword from './settings.password.vue';
 import X2fa from './settings.2fa.vue';
 import XApi from './settings.api.vue';
+import { docsUrl, license, lang } from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -96,9 +95,14 @@ export default Vue.extend({
 	data() {
 		return {
 			page: 'profile',
-
+			license,
 			showPostFormOnTopOfTl: false
 		};
+	},
+	computed: {
+		licenseUrl(): string {
+			return `${docsUrl}/${lang}/license`;
+		}
 	},
 	created() {
 		this.showPostFormOnTopOfTl = (this as any).os.i.client_settings.showPostFormOnTopOfTl;
@@ -162,12 +166,22 @@ export default Vue.extend({
 			color #4a535a
 
 			> h1
-				display block
 				margin 0 0 1em 0
 				padding 0 0 8px 0
 				font-size 1em
 				color #555
 				border-bottom solid 1px #eee
+
+			&, >>> *
+				> section
+					margin 32px 0
+
+					> h2
+						margin 0 0 1em 0
+						padding 0 0 8px 0
+						font-size 1em
+						color #555
+						border-bottom solid 1px #eee
 
 		> .web
 			> div

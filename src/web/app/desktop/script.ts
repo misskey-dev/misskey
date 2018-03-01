@@ -4,6 +4,7 @@
 
 // Style
 import './style.styl';
+import '../../element.scss';
 
 import init from '../init';
 import fuckAdBlock from '../common/scripts/fuck-ad-block';

@@ -111,6 +111,12 @@ props:
     desc:
       ja: "ドライブの容量(bytes)"
       en: "The capacity of drive of this user (bytes)"
+  - name: "is_bot"
+    type: "boolean"
+    optional: true
+    desc:
+      ja: "botか否か(自己申告であることに留意)"
+      en: "Whether is bot or not"
   - name: "twitter"
     type: "object"
     optional: true

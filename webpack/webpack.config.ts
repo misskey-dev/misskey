@@ -3,6 +3,7 @@
  */
 
 import * as fs from 'fs';
+import jsonImporter from 'node-sass-json-importer';
 const minify = require('html-minifier').minify;
 import I18nReplacer from '../src/common/build/i18n';
 import { pattern as faPattern, replacement as faReplacement } from '../src/common/build/fa';
@@ -112,11 +113,27 @@ module.exports = Object.keys(langs).map(lang => {
 					{ loader: 'stylus-loader' }
 				]
 			}, {
+				test: /\.scss$/,
+				exclude: /node_modules/,
+				use: [{
+					loader: 'style-loader'
+				}, {
+					loader: 'css-loader'
+				}, {
+					loader: 'sass-loader',
+					options: {
+						importer: jsonImporter,
+					}
+				}]
+			}, {
 				test: /\.css$/,
 				use: [
 					{ loader: 'style-loader' },
 					{ loader: 'css-loader' }
 				]
+			}, {
+				test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
+				loader: 'file-loader'
 			}, {
 				test: /\.ts$/,
 				exclude: /node_modules/,

@@ -75,6 +75,7 @@ export type IUser = {
 	last_used_at: Date;
 	latest_post: IPost;
 	pinned_post_id: mongo.ObjectID;
+	is_bot: boolean;
 	is_pro: boolean;
 	is_suspended: boolean;
 	keywords: string[];

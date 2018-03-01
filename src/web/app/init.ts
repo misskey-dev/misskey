@@ -5,9 +5,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VModal from 'vue-js-modal';
+import Element from 'element-ui';
 
 Vue.use(VueRouter);
 Vue.use(VModal);
+Vue.use(Element);
 
 // Register global directives
 require('./common/views/directives');
