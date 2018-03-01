@@ -49,7 +49,7 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	// Get 'is_bot' parameter
 	const [isBot, isBotErr] = $(params.is_bot).optional.boolean().$;
 	if (isBotErr) return rej('invalid is_bot param');
-	if (isBot) user.is_bot = isBot;
+	if (isBot != null) user.is_bot = isBot;
 
 	await User.update(user._id, {
 		$set: {
