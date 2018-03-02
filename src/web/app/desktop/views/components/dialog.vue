@@ -16,21 +16,28 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	props: ['title', 'text', 'buttons', 'modal']/*{
+	props: {
 		title: {
-			type: String
+			type: String,
+			required: false
 		},
 		text: {
-			type: String
+			type: String,
+			required: true
 		},
 		buttons: {
-			type: Array
+			type: Array,
+			default: () => {
+				return [{
+					text: 'OK'
+				}];
+			}
 		},
 		modal: {
 			type: Boolean,
 			default: false
 		}
-	}*/,
+	},
 	mounted() {
 		this.$nextTick(() => {
 			(this.$refs.bg as any).style.pointerEvents = 'auto';

@@ -20,10 +20,18 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>デザイン</h1>
-			<div>
+			<div class="div">
 				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
 			</div>
-			<el-switch v-model="showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" active-text="タイムライン上部に投稿フォームを表示する"/>
+			<mk-switch v-model="showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
+		</section>
+
+		<section class="web" v-show="page == 'web'">
+			<h1>キャッシュ</h1>
+			<button class="ui button" @click="clean">クリーンアップ</button>
+			<div class="none ui info">
+				<p>%fa:info-circle%クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。</p>
+			</div>
 		</section>
 
 		<section class="drive" v-show="page == 'drive'">
@@ -67,6 +75,28 @@
 		</section>
 
 		<section class="other" v-show="page == 'other'">
+			<h1>Misskey Update</h1>
+			<p>
+				<span>バージョン: <i>{{ version }}</i></span>
+				<template v-if="latestVersion !== undefined">
+					<br>
+					<span>最新のバージョン: <i>{{ latestVersion ? latestVersion : version }}</i></span>
+				</template>
+			</p>
+			<button class="ui button" @click="checkForUpdate" :disabled="checkingForUpdate">
+				<template v-if="checkingForUpdate">アップデートを確認中<mk-ellipsis/></template>
+				<template v-else>アップデートを確認</template>
+			</button>
+		</section>
+
+		<section class="other" v-show="page == 'other'">
+			<h1>高度な設定</h1>
+			<mk-switch v-model="debug" text="デバッグモードを有効にする">
+				<span>この設定はアカウントに保存されません。</span>
+			</mk-switch>
+		</section>
+
+		<section class="other" v-show="page == 'other'">
 			<h1>%i18n:desktop.tags.mk-settings.license%</h1>
 			<div v-html="license"></div>
 			<a :href="licenseUrl" target="_blank">サードパーティ</a>
@@ -82,7 +112,8 @@ import XMute from './settings.mute.vue';
 import XPassword from './settings.password.vue';
 import X2fa from './settings.2fa.vue';
 import XApi from './settings.api.vue';
-import { docsUrl, license, lang } from '../../../config';
+import { docsUrl, license, lang, version } from '../../../config';
+import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
 	components: {
@@ -96,8 +127,17 @@ export default Vue.extend({
 		return {
 			page: 'profile',
 			license,
-			showPostFormOnTopOfTl: false
+			version,
+			latestVersion: undefined,
+			checkingForUpdate: false,
+			showPostFormOnTopOfTl: false,
+			debug: localStorage.getItem('debug') == 'true'
 		};
+	},
+	watch: {
+		debug() {
+			localStorage.setItem('debug', this.debug ? 'true' : 'false');
+		}
 	},
 	computed: {
 		licenseUrl(): string {
@@ -116,6 +156,31 @@ export default Vue.extend({
 			(this as any).api('i/update_client_setting', {
 				name: 'showPostFormOnTopOfTl',
 				value: this.showPostFormOnTopOfTl
+			});
+		},
+		checkForUpdate() {
+			this.checkingForUpdate = true;
+			checkForUpdate((this as any).os, true, true).then(newer => {
+				this.checkingForUpdate = false;
+				this.latestVersion = newer;
+				if (newer == null) {
+					(this as any).apis.dialog({
+						title: '利用可能な更新はありません',
+						text: 'お使いのMisskeyは最新です。'
+					});
+				} else {
+					(this as any).apis.dialog({
+						title: '新しいバージョンが利用可能です',
+						text: 'ページを再度読み込みすると更新が適用されます。'
+					});
+				}
+			});
+		},
+		clean() {
+			localStorage.clear();
+			(this as any).apis.dialog({
+				title: 'キャッシュを削除しました',
+				text: 'ページを再度読み込みしてください。'
 			});
 		}
 	}
@@ -184,7 +249,7 @@ export default Vue.extend({
 						border-bottom solid 1px #eee
 
 		> .web
-			> div
+			> .div
 				border-bottom solid 1px #eee
 				padding 0 0 16px 0
 				margin 0 0 16px 0

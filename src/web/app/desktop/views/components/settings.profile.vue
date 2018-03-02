@@ -24,7 +24,7 @@
 	<button class="ui primary" @click="save">%i18n:desktop.tags.mk-profile-setting.save%</button>
 	<section>
 		<h2>その他</h2>
-		<el-switch v-model="os.i.is_bot" @change="onChangeIsBot" active-text="このアカウントはbotです"/>
+		<mk-switch v-model="os.i.is_bot" @change="onChangeIsBot" text="このアカウントはbotです"/>
 	</section>
 </div>
 </template>

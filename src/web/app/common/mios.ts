@@ -27,7 +27,7 @@ export type API = {
 	dialog: (opts: {
 		title: string;
 		text: string;
-		actions: Array<{
+		actions?: Array<{
 			text: string;
 			id?: string;
 		}>;
