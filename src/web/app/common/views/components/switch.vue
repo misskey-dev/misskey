@@ -86,6 +86,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-switch
 	display flex
+	margin 8px 0
 	cursor pointer
 	transition all 0.3s
 
@@ -134,7 +135,9 @@ export default Vue.extend({
 		display inline-block
 		margin 0
 		width 40px
+		min-width 40px
 		height 20px
+		min-height 20px
 		background #dcdfe6
 		border 1px solid #dcdfe6
 		outline none
@@ -154,17 +157,18 @@ export default Vue.extend({
 	> .label
 		margin-left 8px
 		display block
-		font-size 14px
 		cursor pointer
 		transition inherit
 
 		> span
+			display block
 			line-height 20px
 			color #4a535a
 			transition inherit
 
 		> p
 			margin 0
+			font-size 90%
 			color #9daab3
 
 </style>

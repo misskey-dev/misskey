@@ -1,11 +1,13 @@
 import MiOS from '../mios';
-import { version } from '../../config';
+import { version as current } from '../../config';
 
 export default async function(mios: MiOS, force = false, silent = false) {
 	const meta = await mios.getMeta(force);
+	const newer = meta.version;
 
-	if (meta.version != version) {
+	if (newer != current) {
 		localStorage.setItem('should-refresh', 'true');
+		localStorage.setItem('v', newer);
 
 		// Clear cache (serive worker)
 		try {
@@ -21,10 +23,10 @@ export default async function(mios: MiOS, force = false, silent = false) {
 		}
 
 		if (!silent) {
-			alert('%i18n:common.update-available%'.replace('{newer}', meta.version).replace('{current}', version));
+			alert('%i18n:common.update-available%'.replace('{newer}', newer).replace('{current}', current));
 		}
 
-		return meta.version;
+		return newer;
 	} else {
 		return null;
 	}

@@ -4,7 +4,9 @@
 
 import * as webpack from 'webpack';
 
-import version from '../../src/version';
+const meta = require('../../package.json');
+const version = meta.version;
+
 const constants = require('../../src/const.json');
 import config from '../../src/conf';
 import { licenseHtml } from '../../src/common/build/license';

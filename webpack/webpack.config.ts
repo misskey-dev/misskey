@@ -12,7 +12,8 @@ const constants = require('../src/const.json');
 import plugins from './plugins';
 
 import langs from '../locales';
-import version from '../src/version';
+const meta = require('../package.json');
+const version = meta.version;
 
 global['faReplacement'] = faReplacement;
 
@@ -59,7 +60,7 @@ module.exports = Object.keys(langs).map(lang => {
 			rules: [{
 				test: /\.vue$/,
 				exclude: /node_modules/,
-				use: [/*'cache-loader', */{
+				use: ['cache-loader', {
 					loader: 'vue-loader',
 					options: {
 						cssSourceMap: false,
@@ -140,6 +141,7 @@ module.exports = Object.keys(langs).map(lang => {
 				use: [{
 					loader: 'ts-loader',
 					options: {
+						happyPackMode: true,
 						configFile: __dirname + '/../src/web/app/tsconfig.json',
 						appendTsSuffixTo: [/\.vue$/]
 					}

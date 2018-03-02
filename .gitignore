@@ -8,3 +8,5 @@ npm-debug.log
 run.bat
 api-docs.json
 package-lock.json
+version.json
+/.cache-loader

@@ -94,6 +94,9 @@
 			<mk-switch v-model="debug" text="デバッグモードを有効にする">
 				<span>この設定はアカウントに保存されません。</span>
 			</mk-switch>
+			<mk-switch v-model="enableExperimental" text="実験的機能を有効にする">
+				<span>この設定はアカウントに保存されません。実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。</span>
+			</mk-switch>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
@@ -126,17 +129,22 @@ export default Vue.extend({
 	data() {
 		return {
 			page: 'profile',
+			meta: null,
 			license,
 			version,
 			latestVersion: undefined,
 			checkingForUpdate: false,
 			showPostFormOnTopOfTl: false,
-			debug: localStorage.getItem('debug') == 'true'
+			debug: localStorage.getItem('debug') == 'true',
+			enableExperimental: localStorage.getItem('enableExperimental') == 'true'
 		};
 	},
 	watch: {
 		debug() {
 			localStorage.setItem('debug', this.debug ? 'true' : 'false');
+		},
+		enableExperimental() {
+			localStorage.setItem('enableExperimental', this.enableExperimental ? 'true' : 'false');
 		}
 	},
 	computed: {
@@ -145,6 +153,7 @@ export default Vue.extend({
 		}
 	},
 	created() {
+		this.meta = (this as any).os.getMeta();
 		this.showPostFormOnTopOfTl = (this as any).os.i.client_settings.showPostFormOnTopOfTl;
 	},
 	methods: {
