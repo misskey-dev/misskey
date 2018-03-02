@@ -111,22 +111,10 @@ gulp.task('default', ['build']);
 gulp.task('build:client', [
 	'build:ts',
 	'build:js',
-	'webpack',
 	'build:client:script',
 	'build:client:pug',
 	'copy:client'
 ]);
-
-gulp.task('webpack', done => {
-	const webpack = childProcess.spawn(
-		Path.join('.', 'node_modules', '.bin', 'webpack'),
-		['--config', './webpack/webpack.config.ts'], {
-			shell: true,
-			stdio: 'inherit'
-		});
-
-	webpack.on('exit', done);
-});
 
 gulp.task('build:client:script', () =>
 	gulp.src(['./src/web/app/boot.js', './src/web/app/safe.js'])
@@ -147,8 +135,7 @@ gulp.task('build:client:styles', () =>
 );
 
 gulp.task('copy:client', [
-	'build:client:script',
-	'webpack'
+	'build:client:script'
 ], () =>
 		gulp.src([
 			'./assets/**/*',
