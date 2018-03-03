@@ -66,6 +66,10 @@ export default async function(request: websocket.request, connection: websocket.
 		const msg = JSON.parse(data.utf8Data);
 
 		switch (msg.type) {
+			case 'api':
+				// TODO
+				break;
+
 			case 'alive':
 				// Update lastUsedAt
 				User.update({ _id: user._id }, {

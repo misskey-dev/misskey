@@ -2,7 +2,6 @@ import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 
 import { host, apiUrl, swPublickey, version, lang } from '../config';
-import api from './scripts/api';
 import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
 import DriveStreamManager from './scripts/streaming/drive-stream-manager';
@@ -11,6 +10,11 @@ import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
 import MessagingIndexStreamManager from './scripts/streaming/messaging-index-stream-manager';
 
 import Err from '../common/views/components/connect-failed.vue';
+
+//#region api requests
+let spinner = null;
+let pending = 0;
+//#endregion
 
 export type API = {
 	chooseDriveFile: (opts: {
@@ -365,8 +369,53 @@ export default class MiOS extends EventEmitter {
 	 * @param endpoint エンドポイント名
 	 * @param data パラメータ
 	 */
-	public api(endpoint: string, data?: { [x: string]: any }) {
-		return api(this.i, endpoint, data);
+	public api(endpoint: string, data: { [x: string]: any } = {}): Promise<{ [x: string]: any }> {
+		if (++pending === 1) {
+			spinner = document.createElement('div');
+			spinner.setAttribute('id', 'wait');
+			document.body.appendChild(spinner);
+		}
+
+		// Append a credential
+		if (this.isSignedIn) (data as any).i = this.i.token;
+
+		// TODO
+		//const viaStream = localStorage.getItem('enableExperimental') == 'true';
+
+		return new Promise((resolve, reject) => {
+			/*if (viaStream) {
+				const stream = this.stream.borrow();
+				const id = Math.random().toString();
+				stream.once(`api-res:${id}`, res => {
+					resolve(res);
+				});
+				stream.send({
+					type: 'api',
+					id,
+					endpoint,
+					data
+				});
+			} else {*/
+				// Send request
+				fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
+					method: 'POST',
+					body: JSON.stringify(data),
+					credentials: endpoint === 'signin' ? 'include' : 'omit',
+					cache: 'no-cache'
+				}).then(res => {
+					if (--pending === 0) spinner.parentNode.removeChild(spinner);
+					if (res.status === 200) {
+						res.json().then(resolve);
+					} else if (res.status === 204) {
+						resolve();
+					} else {
+						res.json().then(err => {
+							reject(err.error);
+						}, reject);
+					}
+				}).catch(reject);
+			/*}*/
+		});
 	}
 
 	/**
