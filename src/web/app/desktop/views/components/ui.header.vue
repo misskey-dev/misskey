@@ -99,7 +99,7 @@ export default Vue.extend({
 	position -webkit-sticky
 	position sticky
 	top 0
-	z-index 1024
+	z-index 1000
 	width 100%
 	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
 
@@ -109,14 +109,13 @@ export default Vue.extend({
 		> .backdrop
 			position absolute
 			top 0
-			z-index 1023
+			z-index 1000
 			width 100%
 			height 48px
-			backdrop-filter blur(12px)
 			background #f7f7f7
 
 		> .main
-			z-index 1024
+			z-index 1001
 			margin 0
 			padding 0
 			background-clip content-box

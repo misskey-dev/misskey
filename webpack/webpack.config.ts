@@ -60,7 +60,7 @@ module.exports = Object.keys(langs).map(lang => {
 			rules: [{
 				test: /\.vue$/,
 				exclude: /node_modules/,
-				use: ['cache-loader', {
+				use: [{
 					loader: 'vue-loader',
 					options: {
 						cssSourceMap: false,
@@ -134,7 +134,7 @@ module.exports = Object.keys(langs).map(lang => {
 				]
 			}, {
 				test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
-				loader: 'file-loader'
+				loader: 'url-loader'
 			}, {
 				test: /\.ts$/,
 				exclude: /node_modules/,

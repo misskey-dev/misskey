@@ -431,7 +431,7 @@ export default Vue.extend({
 	> .bg
 		display block
 		position fixed
-		z-index 2048
+		z-index 2000
 		top 0
 		left 0
 		width 100%
@@ -443,7 +443,7 @@ export default Vue.extend({
 	> .main
 		display block
 		position fixed
-		z-index 2048
+		z-index 2000
 		top 15%
 		left 0
 		margin 0
@@ -526,7 +526,7 @@ export default Vue.extend({
 			> header
 				$header-height = 40px
 
-				z-index 128
+				z-index 1001
 				height $header-height
 				overflow hidden
 				white-space nowrap

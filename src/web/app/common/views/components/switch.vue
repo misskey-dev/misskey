@@ -157,6 +157,7 @@ export default Vue.extend({
 	> .label
 		margin-left 8px
 		display block
+		font-size 15px
 		cursor pointer
 		transition inherit
 
@@ -168,7 +169,7 @@ export default Vue.extend({
 
 		> p
 			margin 0
-			font-size 90%
+			//font-size 90%
 			color #9daab3
 
 </style>

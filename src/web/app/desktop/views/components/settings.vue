@@ -23,7 +23,20 @@
 			<div class="div">
 				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
 			</div>
-			<mk-switch v-model="showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
+			<mk-switch v-model="os.i.client_settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
+		</section>
+
+		<section class="web" v-show="page == 'web'">
+			<h1>言語</h1>
+			<el-select v-model="lang" placeholder="言語を選択">
+				<el-option-group label="推奨">
+					<el-option label="自動" value=""/>
+				</el-option-group>
+				<el-option-group label="言語を指定">
+					<el-option label="ja-JP" value="ja"/>
+					<el-option label="en-US" value="en"/>
+				</el-option-group>
+			</el-select>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -72,6 +85,11 @@
 		<section class="api" v-show="page == 'api'">
 			<h1>API</h1>
 			<x-api/>
+		</section>
+
+		<section class="other" v-show="page == 'other'">
+			<h1>Misskeyについて</h1>
+			<p v-if="meta">このサーバーの運営者: <i><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></i></p>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
@@ -134,12 +152,15 @@ export default Vue.extend({
 			version,
 			latestVersion: undefined,
 			checkingForUpdate: false,
-			showPostFormOnTopOfTl: false,
+			lang: localStorage.getItem('lang') || '',
 			debug: localStorage.getItem('debug') == 'true',
 			enableExperimental: localStorage.getItem('enableExperimental') == 'true'
 		};
 	},
 	watch: {
+		lang() {
+			localStorage.setItem('lang', this.lang);
+		},
 		debug() {
 			localStorage.setItem('debug', this.debug ? 'true' : 'false');
 		},
@@ -153,18 +174,19 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		this.meta = (this as any).os.getMeta();
-		this.showPostFormOnTopOfTl = (this as any).os.i.client_settings.showPostFormOnTopOfTl;
+		(this as any).os.getMeta().then(meta => {
+			this.meta = meta;
+		});
 	},
 	methods: {
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
 		},
-		onChangeShowPostFormOnTopOfTl() {
+		onChangeShowPostFormOnTopOfTl(v) {
 			(this as any).api('i/update_client_setting', {
 				name: 'showPostFormOnTopOfTl',
-				value: this.showPostFormOnTopOfTl
+				value: v
 			});
 		},
 		checkForUpdate() {

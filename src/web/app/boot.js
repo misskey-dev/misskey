@@ -35,6 +35,7 @@
 	// Note: The default language is English
 	let lang = navigator.language.split('-')[0];
 	if (!/^(en|ja)$/.test(lang)) lang = 'en';
+	if (localStorage.getItem('lang')) lang = localStorage.getItem('lang');
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
