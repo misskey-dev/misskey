@@ -150,7 +150,8 @@ export default Vue.extend({
 			height $height
 			-webkit-backdrop-filter blur(12px)
 			backdrop-filter blur(12px)
-			background-color rgba(#1b2023, 0.75)
+			//background-color rgba(#1b2023, 0.75)
+			background-color #1b2023
 
 		> p
 			display none
