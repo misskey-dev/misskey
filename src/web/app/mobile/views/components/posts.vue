@@ -49,6 +49,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-posts
 	background #fff
 	border-radius 8px

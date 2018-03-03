@@ -61,6 +61,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
+@import '~const.styl'
+
 .header
 	> [data-fa]
 		margin-right 4px

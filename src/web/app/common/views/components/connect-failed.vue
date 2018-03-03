@@ -39,6 +39,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-connect-failed
 	width 100%
 	padding 32px 18px

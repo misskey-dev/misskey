@@ -73,20 +73,6 @@ module.exports = Object.keys(langs).map(lang => {
 						replace: 'base64replacement'
 					}
 				}, {
-					loader: 'webpack-replace-loader',
-					options: {
-						search: '$theme-color',
-						replace: constants.themeColor,
-						attr: 'g'
-					}
-				}, {
-					loader: 'webpack-replace-loader',
-					query: {
-						search: '$theme-color-foreground',
-						replace: constants.themeColorForeground,
-						attr: 'g'
-					}
-				}, {
 					loader: 'replace',
 					query: {
 						search: i18nReplacer.pattern.toString(),
@@ -108,10 +94,16 @@ module.exports = Object.keys(langs).map(lang => {
 			}, {
 				test: /\.styl$/,
 				exclude: /node_modules/,
-				use: [
-					{ loader: 'style-loader' },
-					{ loader: 'css-loader' },
-					{ loader: 'stylus-loader' }
+				use: [{
+					loader: 'style-loader'
+				}, {
+					loader: 'css-loader',
+					options: {
+						minimize: true
+					}
+				}, {
+					loader: 'stylus-loader'
+				}
 				]
 			}, {
 				test: /\.scss$/,
@@ -119,7 +111,10 @@ module.exports = Object.keys(langs).map(lang => {
 				use: [{
 					loader: 'style-loader'
 				}, {
-					loader: 'css-loader'
+					loader: 'css-loader',
+					options: {
+						minimize: true
+					}
 				}, {
 					loader: 'sass-loader',
 					options: {
@@ -128,10 +123,14 @@ module.exports = Object.keys(langs).map(lang => {
 				}]
 			}, {
 				test: /\.css$/,
-				use: [
-					{ loader: 'style-loader' },
-					{ loader: 'css-loader' }
-				]
+				use: [{
+					loader: 'style-loader'
+				}, {
+					loader: 'css-loader',
+					options: {
+						minimize: true
+					}
+				}]
 			}, {
 				test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
 				loader: 'url-loader'
@@ -165,7 +164,10 @@ module.exports = Object.keys(langs).map(lang => {
 		resolve: {
 			extensions: [
 				'.js', '.ts', '.json'
-			]
+			],
+			alias: {
+				'const.styl': __dirname + '/../src/web/const.styl'
+			}
 		},
 		resolveLoader: {
 			modules: ['node_modules', './webpack/loaders']

@@ -84,6 +84,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-switch
 	display flex
 	margin 8px 0

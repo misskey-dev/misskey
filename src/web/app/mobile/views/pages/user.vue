@@ -105,6 +105,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 main
 	> header
 		box-shadow 0 4px 4px rgba(0, 0, 0, 0.3)

@@ -83,6 +83,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-user-preview
 	position absolute
 	z-index 2048

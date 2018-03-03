@@ -175,6 +175,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-post-detail
 	overflow hidden
 	margin 0 auto

@@ -195,6 +195,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .post
 	font-size 12px
 	border-bottom solid 1px #eaeaea

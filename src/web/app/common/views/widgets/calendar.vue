@@ -107,6 +107,8 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mkw-calendar
 	padding 16px 0
 	color #777

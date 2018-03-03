@@ -106,6 +106,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 $border-color = rgba(27, 31, 35, 0.15)
 
 .mk-reaction-picker

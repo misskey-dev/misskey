@@ -67,6 +67,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .file
 	display block
 	text-decoration none !important

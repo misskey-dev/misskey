@@ -86,6 +86,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .nav
 	display inline-block
 	margin 0

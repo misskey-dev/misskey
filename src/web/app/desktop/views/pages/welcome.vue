@@ -57,6 +57,8 @@ export default Vue.extend({
 </style>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-welcome
 	display flex
 	flex-direction column

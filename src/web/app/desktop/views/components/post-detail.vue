@@ -177,6 +177,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-post-detail
 	margin 0
 	padding 0

@@ -17,6 +17,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .post
 	display inline-block
 	padding 8px

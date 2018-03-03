@@ -54,6 +54,8 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mkw-post-form
 	background #fff
 	overflow hidden

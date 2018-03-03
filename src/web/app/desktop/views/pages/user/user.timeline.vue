@@ -97,6 +97,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .timeline
 	background #fff
 

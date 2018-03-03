@@ -128,6 +128,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .header
 	$height = 48px
 

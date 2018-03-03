@@ -165,6 +165,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-messaging
 
 	&[data-compact]

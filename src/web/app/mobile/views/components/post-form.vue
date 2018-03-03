@@ -115,6 +115,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-post-form
 	max-width 500px
 	width calc(100% - 16px)

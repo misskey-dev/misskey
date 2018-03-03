@@ -81,6 +81,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-mentions
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.075)

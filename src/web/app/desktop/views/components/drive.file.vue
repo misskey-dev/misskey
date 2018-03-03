@@ -184,6 +184,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .root.file
 	padding 8px 0 0 0
 	height 180px

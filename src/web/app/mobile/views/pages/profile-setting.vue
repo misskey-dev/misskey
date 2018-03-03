@@ -108,6 +108,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
+@import '~const.styl'
+
 .content
 	margin 8px auto
 	max-width 500px

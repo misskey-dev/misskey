@@ -222,6 +222,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-settings
 	display flex
 	width 100%

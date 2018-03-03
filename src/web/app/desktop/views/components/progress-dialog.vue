@@ -37,6 +37,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
+@import '~const.styl'
+
 .body
 	padding 18px 24px 24px 24px
 

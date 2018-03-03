@@ -61,6 +61,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .header
 	$banner-height = 320px
 	$footer-height = 58px

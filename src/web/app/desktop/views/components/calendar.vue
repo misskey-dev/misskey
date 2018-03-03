@@ -131,6 +131,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-calendar
 	color #777
 	background #fff
