@@ -88,7 +88,7 @@ export default Vue.extend({
 
 .mk-switch
 	display flex
-	margin 8px 0
+	margin 12px 0
 	cursor pointer
 	transition all 0.3s
 

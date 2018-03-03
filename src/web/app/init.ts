@@ -6,10 +6,24 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VModal from 'vue-js-modal';
 import Element from 'element-ui';
+import ElementLocaleEn from 'element-ui/lib/locale/lang/en';
+import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
+
+import App from './app.vue';
+import checkForUpdate from './common/scripts/check-for-update';
+import MiOS, { API } from './common/mios';
+import { version, host, lang } from './config';
+
+let elementLocale;
+switch (lang) {
+	case 'ja': elementLocale = ElementLocaleJa; break;
+	case 'en': elementLocale = ElementLocaleEn; break;
+	default: elementLocale = ElementLocaleEn; break;
+}
 
 Vue.use(VueRouter);
 Vue.use(VModal);
-Vue.use(Element);
+Vue.use(Element, { locale: elementLocale });
 
 // Register global directives
 require('./common/views/directives');
@@ -28,12 +42,6 @@ Vue.mixin({
 		}
 	}
 });
-
-import App from './app.vue';
-
-import checkForUpdate from './common/scripts/check-for-update';
-import MiOS, { API } from './common/mios';
-import { version, host, lang } from './config';
 
 /**
  * APP ENTRY POINT!

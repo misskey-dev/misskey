@@ -123,6 +123,7 @@ export default Vue.extend({
 
 		> button
 			margin 0 8px
+			padding 0
 
 	@media (max-width 600px)
 		> header

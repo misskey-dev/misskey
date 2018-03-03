@@ -38,7 +38,7 @@
 				</el-option-group>
 			</el-select>
 			<div class="none ui info">
-				<p>%fa:inffo-circle%変更はページの再度読み込み後に反映されます。</p>
+				<p>%fa:info-circle%変更はページの再度読み込み後に反映されます。</p>
 			</div>
 		</section>
 

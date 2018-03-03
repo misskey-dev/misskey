@@ -19,7 +19,7 @@
 	</label>
 	<label class="ui from group">
 		<p>%i18n:desktop.tags.mk-profile-setting.birthday%</p>
-		<input v-model="birthday" type="date" class="ui"/>
+		<el-date-picker v-model="birthday" type="date" value-format="yyyy-MM-dd"/>
 	</label>
 	<button class="ui primary" @click="save">%i18n:desktop.tags.mk-profile-setting.save%</button>
 	<section>
