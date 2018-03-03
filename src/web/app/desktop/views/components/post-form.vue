@@ -455,10 +455,10 @@ export default Vue.extend({
 				from {background-position: 0 0;}
 				to   {background-position: -64px 32px;}
 
-	.upload
-	.drive
-	.kao
-	.poll
+	> .upload
+	> .drive
+	> .kao
+	> .poll
 		display inline-block
 		cursor pointer
 		padding 0
