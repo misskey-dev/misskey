@@ -368,30 +368,27 @@ export default Vue.extend({
 					clear both
 
 				> header
+					display flex
+					align-items center
 					margin-bottom 2px
 					white-space nowrap
-					overflow hidden
 
 					> .name
-						text-align left
-						display inline
 						margin 0
 						padding 0
+						overflow hidden
+						text-overflow ellipsis
 						font-size 1em
 						color rgba(0, 0, 0, 0.9)
 						font-weight bold
 						transition all 0.1s ease
 
 					> .username
-						text-align left
 						margin 0 0 0 8px
 						color rgba(0, 0, 0, 0.5)
 
 					> .mk-time
-						position absolute
-						top 0
-						right 0
-						display inline
+						margin 0 0 0 auto
 						color rgba(0, 0, 0, 0.5)
 						font-size 80%
 
