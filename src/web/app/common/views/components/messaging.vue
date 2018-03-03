@@ -384,7 +384,7 @@ export default Vue.extend({
 						transition all 0.1s ease
 
 					> .username
-						margin 0 0 0 8px
+						margin 0 8px
 						color rgba(0, 0, 0, 0.5)
 
 					> .mk-time
