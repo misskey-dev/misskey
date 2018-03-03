@@ -304,6 +304,7 @@ export default Vue.extend({
 
 			> header
 				display flex
+				align-items center
 				white-space nowrap
 
 				@media (min-width 500px)

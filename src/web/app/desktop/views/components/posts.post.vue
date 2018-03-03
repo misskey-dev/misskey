@@ -365,6 +365,7 @@ export default Vue.extend({
 
 			> header
 				display flex
+				align-items center
 				margin-bottom 4px
 				white-space nowrap
 
