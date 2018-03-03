@@ -37,13 +37,16 @@
 					<el-option label="en-US" value="en"/>
 				</el-option-group>
 			</el-select>
+			<div class="none ui info">
+				<p>%fa:inffo-circle%変更はページの再度読み込み後に反映されます。</p>
+			</div>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
 			<h1>キャッシュ</h1>
 			<button class="ui button" @click="clean">クリーンアップ</button>
-			<div class="none ui info">
-				<p>%fa:info-circle%クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。</p>
+			<div class="none ui info warn">
+				<p>%fa:exclamation-triangle%クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。</p>
 			</div>
 		</section>
 
