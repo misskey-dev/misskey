@@ -175,6 +175,7 @@ $border-color = rgba(27, 31, 35, 0.15)
 			text-align center
 
 			> button
+				padding 0
 				width 40px
 				height 40px
 				font-size 24px

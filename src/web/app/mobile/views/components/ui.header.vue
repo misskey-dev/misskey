@@ -183,7 +183,7 @@ export default Vue.extend({
 				text-overflow ellipsis
 
 				[data-fa], [data-icon]
-					margin-right 8px
+					margin-right 4px
 
 				> img
 					display inline-block
@@ -198,6 +198,7 @@ export default Vue.extend({
 				position absolute
 				top 0
 				left 0
+				padding 0
 				width $height
 				font-size 1.4em
 				line-height $height
@@ -219,6 +220,7 @@ export default Vue.extend({
 				position absolute
 				top 0
 				right 0
+				padding 0
 				width $height
 				text-align center
 				font-size 1.4em
