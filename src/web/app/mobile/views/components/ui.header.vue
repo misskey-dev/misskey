@@ -179,7 +179,7 @@ export default Vue.extend({
 				overflow hidden
 				text-overflow ellipsis
 
-				[data-fa]
+				[data-fa], [data-icon]
 					margin-right 8px
 
 				> img
