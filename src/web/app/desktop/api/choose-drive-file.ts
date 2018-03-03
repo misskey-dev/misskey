@@ -23,7 +23,7 @@ export default function(opts) {
 			};
 
 			window.open(url + '/selectdrive',
-				'drive_window',
+				'choose_drive_window',
 				'height=500, width=800');
 		}
 	});

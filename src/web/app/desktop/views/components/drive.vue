@@ -62,6 +62,7 @@ import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import contains from '../../../common/scripts/contains';
 import contextmenu from '../../api/contextmenu';
+import { url } from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -389,9 +390,15 @@ export default Vue.extend({
 		},
 
 		newWindow(folder) {
-			(this as any).os.new(MkDriveWindow, {
-				folder: folder
-			});
+			if (document.body.clientWidth > 800) {
+				(this as any).os.new(MkDriveWindow, {
+					folder: folder
+				});
+			} else {
+				window.open(url + '/i/drive/folder/' + folder.id,
+					'drive_window',
+					'height=500, width=800');
+			}
 		},
 
 		move(target) {
