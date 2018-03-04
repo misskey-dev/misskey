@@ -89,7 +89,7 @@
 		const meta = await res.json();
 
 		// Compare versions
-		if (meta.version != VERSION) {
+		if (meta.version != ver) {
 			alert(
 				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
 				'\n\n' +
