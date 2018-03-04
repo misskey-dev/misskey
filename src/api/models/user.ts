@@ -81,6 +81,8 @@ export type IUser = {
 	keywords: string[];
 	two_factor_secret: string;
 	two_factor_enabled: boolean;
+	client_settings: any;
+	settings: any;
 };
 
 export function init(user): IUser {

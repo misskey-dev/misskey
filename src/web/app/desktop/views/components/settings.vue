@@ -62,6 +62,13 @@
 			</div>
 		</section>
 
+		<section class="notification" v-show="page == 'notification'">
+			<h1>通知</h1>
+			<mk-switch v-model="autoWatch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
+				<span>リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。</span>
+			</mk-switch>
+		</section>
+
 		<section class="drive" v-show="page == 'drive'">
 			<h1>%i18n:desktop.tags.mk-settings.drive%</h1>
 			<mk-drive-setting/>
@@ -173,6 +180,7 @@ export default Vue.extend({
 			version,
 			latestVersion: undefined,
 			checkingForUpdate: false,
+			autoWatch: true,
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
@@ -206,11 +214,20 @@ export default Vue.extend({
 		(this as any).os.getMeta().then(meta => {
 			this.meta = meta;
 		});
+
+		if ((this as any).os.i.settings.auto_watch != null) {
+			this.autoWatch = (this as any).os.i.settings.auto_watch;
+		}
 	},
 	methods: {
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
+		},
+		onChangeAutoWatch(v) {
+			(this as any).api('i/update', {
+				auto_watch: v
+			});
 		},
 		onChangeShowPostFormOnTopOfTl(v) {
 			(this as any).api('i/update_client_setting', {

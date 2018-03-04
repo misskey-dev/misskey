@@ -100,9 +100,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 	// この投稿をWatchする
-	// TODO: ユーザーが「投票したときに自動でWatchする」設定を
-	//       オフにしていた場合はしない
-	watch(user._id, post);
+	if (user.settings.auto_watch !== false) {
+		watch(user._id, post);
+	}
 });
 
 function findWithAttr(array, attr, value) {

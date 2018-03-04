@@ -377,9 +377,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			});
 
 		// この投稿をWatchする
-		// TODO: ユーザーが「返信したときに自動でWatchする」設定を
-		//       オフにしていた場合はしない
-		watch(user._id, reply);
+		if (user.settings.auto_watch !== false) {
+			watch(user._id, reply);
+		}
 
 		// Add mention
 		addMention(reply.user_id, 'reply');

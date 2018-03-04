@@ -132,7 +132,9 @@ export default async (req: express.Request, res: express.Response) => {
 			location: null,
 			weight: null
 		},
-		settings: {},
+		settings: {
+			auto_watch: true
+		},
 		client_settings: {
 			home: homeData,
 			show_donation: false
