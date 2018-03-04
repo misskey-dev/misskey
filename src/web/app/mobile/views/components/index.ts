@@ -2,6 +2,7 @@ import Vue from 'vue';
 
 import ui from './ui.vue';
 import timeline from './timeline.vue';
+import post from './post.vue';
 import posts from './posts.vue';
 import imagesImage from './images-image.vue';
 import drive from './drive.vue';
@@ -23,6 +24,7 @@ import widgetContainer from './widget-container.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-timeline', timeline);
+Vue.component('mk-post', post);
 Vue.component('mk-posts', posts);
 Vue.component('mk-images-image', imagesImage);
 Vue.component('mk-drive', drive);

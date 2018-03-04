@@ -77,7 +77,7 @@
 import Vue from 'vue';
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
-import XSub from './posts.post.sub.vue';
+import XSub from './post.sub.vue';
 
 export default Vue.extend({
 	components: {
