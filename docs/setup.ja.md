@@ -68,7 +68,7 @@ web-push generate-vapid-keys
 4. `npm run build`
 
 #### アップデートするには:
-1. `git pull origin master`
+1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`
 
