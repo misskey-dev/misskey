@@ -31,6 +31,10 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
 
+	// Get 'via_mobile' parameter
+	const [viaMobile = false, viaMobileErr] = $(params.via_mobile).optional.boolean().$;
+	if (viaMobileErr) return rej('invalid via_mobile');
+
 	// Get 'tags' parameter
 	const [tags = [], tagsErr] = $(params.tags).optional.array('string').unique().eachQ(t => t.range(1, 32)).$;
 	if (tagsErr) return rej('invalid tags');
@@ -239,6 +243,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		tags: tags,
 		user_id: user._id,
 		app_id: app ? app._id : null,
+		via_mobile: viaMobile,
 
 		// 以下非正規化データ
 		_reply: reply ? { user_id: reply.user_id } : undefined,

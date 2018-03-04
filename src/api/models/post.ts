@@ -31,6 +31,7 @@ export type IPost = {
 	app_id: mongo.ObjectID;
 	category: string;
 	is_category_verified: boolean;
+	via_mobile: boolean;
 };
 
 /**

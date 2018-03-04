@@ -17,6 +17,12 @@ props:
     desc:
       ja: "投稿日時"
       en: "The posted date of this post"
+  - name: "via_mobile"
+    type: "boolean"
+    optional: true
+    desc:
+      ja: "モバイル端末から投稿したか否か(自己申告であることに留意)"
+      en: "Whether this post sent via a mobile device"
   - name: "text"
     type: "string"
     optional: true

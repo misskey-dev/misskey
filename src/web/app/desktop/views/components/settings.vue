@@ -27,6 +27,11 @@
 		</section>
 
 		<section class="web" v-show="page == 'web'">
+			<h1>モバイル</h1>
+			<mk-switch v-model="os.i.client_settings.disableViaMobile" @change="onChangeDisableViaMobile" text="モバイルからの投稿とフラグを付けない"/>
+		</section>
+
+		<section class="web" v-show="page == 'web'">
 			<h1>言語</h1>
 			<el-select v-model="lang" placeholder="言語を選択">
 				<el-option-group label="推奨">
@@ -189,6 +194,12 @@ export default Vue.extend({
 		onChangeShowPostFormOnTopOfTl(v) {
 			(this as any).api('i/update_client_setting', {
 				name: 'showPostFormOnTopOfTl',
+				value: v
+			});
+		},
+		onChangeDisableViaMobile(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'disableViaMobile',
 				value: v
 			});
 		},

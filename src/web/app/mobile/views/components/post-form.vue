@@ -91,11 +91,13 @@ export default Vue.extend({
 		},
 		post() {
 			this.posting = true;
+			const viaMobile = (this as any).os.i.client_settings.disableViaMobile !== true;
 			(this as any).api('posts/create', {
 				text: this.text == '' ? undefined : this.text,
 				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				reply_id: this.reply ? this.reply.id : undefined,
-				poll: this.poll ? (this.$refs.poll as any).get() : undefined
+				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
+				via_mobile: viaMobile
 			}).then(data => {
 				this.$emit('post');
 				this.$destroy();

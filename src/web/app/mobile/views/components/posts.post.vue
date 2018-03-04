@@ -24,9 +24,12 @@
 				<router-link class="name" :to="`/${p.user.username}`">{{ p.user.name }}</router-link>
 				<span class="is-bot" v-if="p.user.is_bot">bot</span>
 				<span class="username">@{{ p.user.username }}</span>
-				<router-link class="created-at" :to="url">
-					<mk-time :time="p.created_at"/>
-				</router-link>
+				<div class="info">
+					<span class="mobile" v-if="p.via_mobile">%fa:mobile-alt%</span>
+					<router-link class="created-at" :to="url">
+						<mk-time :time="p.created_at"/>
+					</router-link>
+				</div>
 			</header>
 			<div class="body">
 				<div class="text" ref="text">
@@ -336,10 +339,16 @@ export default Vue.extend({
 					margin 0 0.5em 0 0
 					color #ccc
 
-				> .created-at
+				> .info
 					margin-left auto
 					font-size 0.9em
-					color #c0c0c0
+
+					> .mobile
+						margin-right 6px
+						color #c0c0c0
+
+					> .created-at
+						color #c0c0c0
 
 			> .body
 

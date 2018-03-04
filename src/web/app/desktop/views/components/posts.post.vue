@@ -26,6 +26,7 @@
 				<span class="username">@{{ p.user.username }}</span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
+					<span class="mobile" v-if="p.via_mobile">%fa:mobile-alt%</span>
 					<router-link class="created-at" :to="url">
 						<mk-time :time="p.created_at"/>
 					</router-link>
@@ -398,6 +399,10 @@ export default Vue.extend({
 				> .info
 					margin-left auto
 					font-size 0.9em
+
+					> .mobile
+						margin-right 8px
+						color #ccc
 
 					> .app
 						margin-right 8px
