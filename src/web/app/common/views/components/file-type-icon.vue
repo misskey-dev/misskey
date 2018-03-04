@@ -1,5 +1,5 @@
 <template>
-<span>
+<span class="mk-file-type-icon">
 	<template v-if="kind == 'image'">%fa:file-image%</template>
 </span>
 </template>

@@ -4,7 +4,7 @@
 		<button class="cancel" @click="cancel">%fa:times%</button>
 		<div>
 			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
-			<button class="submit" :disabled="posting" @click="post">%i18n:mobile.tags.mk-post-form.submit%</button>
+			<button class="submit" :disabled="posting" @click="post">{{ reply ? '返信' : '%i18n:mobile.tags.mk-post-form.submit%' }}</button>
 		</div>
 	</header>
 	<div class="form">
@@ -137,6 +137,7 @@ export default Vue.extend({
 		box-shadow 0 1px 0 0 rgba(0, 0, 0, 0.1)
 
 		> .cancel
+			padding 0
 			width 50px
 			line-height 50px
 			font-size 24px
@@ -155,6 +156,7 @@ export default Vue.extend({
 				margin 8px
 				padding 0 16px
 				line-height 34px
+				vertical-align bottom
 				color $theme-color-foreground
 				background $theme-color
 				border-radius 4px

@@ -144,7 +144,7 @@ export default Vue.extend({
 					padding 0
 					color #9D9D9D
 
-					> mk-file-type-icon
+					> .mk-file-type-icon
 						margin-right 4px
 
 				> .data-size
