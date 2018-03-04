@@ -133,6 +133,18 @@ export default Vue.extend({
 		opacity 0
 		margin 0
 
+		&:focus + .button
+			&:after
+				content ""
+				pointer-events none
+				position absolute
+				top -5px
+				right -5px
+				bottom -5px
+				left -5px
+				border 2px solid rgba($theme-color, 0.3)
+				border-radius 14px
+
 	> .button
 		display inline-block
 		margin 0
