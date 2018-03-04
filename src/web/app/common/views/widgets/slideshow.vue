@@ -81,6 +81,9 @@ export default define({
 				duration: 1000,
 				easing: 'linear',
 				complete: () => {
+					// 既にこのウィジェットがunmountされていたら要素がない
+					if ((this.$refs.slideA as any) == null) return;
+
 					(this.$refs.slideA as any).style.backgroundImage = img;
 					anime({
 						targets: this.$refs.slideB,
