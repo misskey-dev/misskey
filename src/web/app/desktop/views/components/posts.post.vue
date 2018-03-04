@@ -171,7 +171,7 @@ export default Vue.extend({
 			if ((this as any).os.isSignedIn) {
 				this.connection.send({
 					type: 'capture',
-					id: this.post.id
+					id: this.p.id
 				});
 				if (withHandler) this.connection.on('post-updated', this.onStreamPostUpdated);
 			}
@@ -180,7 +180,7 @@ export default Vue.extend({
 			if ((this as any).os.isSignedIn) {
 				this.connection.send({
 					type: 'decapture',
-					id: this.post.id
+					id: this.p.id
 				});
 				if (withHandler) this.connection.off('post-updated', this.onStreamPostUpdated);
 			}
@@ -192,6 +192,8 @@ export default Vue.extend({
 			const post = data.post;
 			if (post.id == this.post.id) {
 				this.$emit('update:post', post);
+			} else if (post.id == this.post.repost_id) {
+				this.post.repost = post;
 			}
 		},
 		reply() {
