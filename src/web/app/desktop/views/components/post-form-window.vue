@@ -1,6 +1,7 @@
 <template>
 <mk-window ref="window" is-modal @closed="$destroy">
 	<span slot="header">
+		<span :class="$style.icon" v-if="geo">%fa:map-marker-alt%</span>
 		<span v-if="!reply">%i18n:desktop.tags.mk-post-form-window.post%</span>
 		<span v-if="reply">%i18n:desktop.tags.mk-post-form-window.reply%</span>
 		<span :class="$style.count" v-if="media.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', media.length) }}</span>
@@ -12,7 +13,8 @@
 		:reply="reply"
 		@posted="onPosted"
 		@change-uploadings="onChangeUploadings"
-		@change-attached-media="onChangeMedia"/>
+		@change-attached-media="onChangeMedia"
+		@geo-attached="onGeoAttached"/>
 </mk-window>
 </template>
 
@@ -24,7 +26,8 @@ export default Vue.extend({
 	data() {
 		return {
 			uploadings: [],
-			media: []
+			media: [],
+			geo: null
 		};
 	},
 	mounted() {
@@ -39,6 +42,9 @@ export default Vue.extend({
 		onChangeMedia(media) {
 			this.media = media;
 		},
+		onGeoAttached(geo) {
+			this.geo = geo;
+		},
 		onPosted() {
 			(this.$refs.window as any).close();
 		}
@@ -47,6 +53,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
+.icon
+	margin-right 8px
+
 .count
 	margin-left 8px
 	opacity 0.8

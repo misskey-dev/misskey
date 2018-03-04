@@ -39,6 +39,18 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	const [tags = [], tagsErr] = $(params.tags).optional.array('string').unique().eachQ(t => t.range(1, 32)).$;
 	if (tagsErr) return rej('invalid tags');
 
+	// Get 'geo' parameter
+	const [geo, geoErr] = $(params.geo).optional.nullable.strict.object()
+		.have('latitude', $().number().range(-180, 180))
+		.have('longitude', $().number().range(-90, 90))
+		.have('altitude', $().nullable.number())
+		.have('accuracy', $().nullable.number())
+		.have('altitudeAccuracy', $().nullable.number())
+		.have('heading', $().nullable.number().range(0, 360))
+		.have('speed', $().nullable.number())
+		.$;
+	if (geoErr) return rej('invalid geo');
+
 	// Get 'media_ids' parameter
 	const [mediaIds, mediaIdsErr] = $(params.media_ids).optional.array('id').unique().range(1, 4).$;
 	if (mediaIdsErr) return rej('invalid media_ids');
@@ -244,6 +256,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		user_id: user._id,
 		app_id: app ? app._id : null,
 		via_mobile: viaMobile,
+		geo,
 
 		// 以下非正規化データ
 		_reply: reply ? { user_id: reply.user_id } : undefined,

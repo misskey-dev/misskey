@@ -27,6 +27,7 @@
 	<button class="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" @click="poll = true">%fa:chart-pie%</button>
+	<button class="geo" title="位置情報を添付する" @click="setGeo">%fa:map-marker-alt%</button>
 	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - text.length) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }}<mk-ellipsis v-if="posting"/>
@@ -53,6 +54,7 @@ export default Vue.extend({
 			files: [],
 			uploadings: [],
 			poll: false,
+			geo: null,
 			autocomplete: null,
 			draghover: false
 		};
@@ -193,6 +195,21 @@ export default Vue.extend({
 			}
 			//#endregion
 		},
+		setGeo() {
+			if (navigator.geolocation == null) {
+				alert('お使いの端末は位置情報に対応していません');
+				return;
+			}
+
+			navigator.geolocation.getCurrentPosition(pos => {
+				this.geo = pos.coords;
+				this.$emit('geo-attached', this.geo);
+			}, err => {
+				alert('エラー: ' + err.message);
+			}, {
+				enableHighAccuracy: true
+			});
+		},
 		post() {
 			this.posting = true;
 
@@ -201,7 +218,8 @@ export default Vue.extend({
 				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				reply_id: this.reply ? this.reply.id : undefined,
 				repost_id: this.repost ? this.repost.id : undefined,
-				poll: this.poll ? (this.$refs.poll as any).get() : undefined
+				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
+				geo: this.geo,
 			}).then(data => {
 				this.clear();
 				this.deleteDraft();
@@ -459,6 +477,7 @@ export default Vue.extend({
 	> .drive
 	> .kao
 	> .poll
+	> .geo
 		display inline-block
 		cursor pointer
 		padding 0

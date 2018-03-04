@@ -23,6 +23,7 @@
 		<button class="drive" @click="chooseFileFromDrive">%fa:cloud%</button>
 		<button class="kao" @click="kao">%fa:R smile%</button>
 		<button class="poll" @click="poll = true">%fa:chart-pie%</button>
+		<button class="geo" @click="setGeo">%fa:map-marker-alt%</button>
 		<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>
@@ -44,7 +45,8 @@ export default Vue.extend({
 			text: '',
 			uploadings: [],
 			files: [],
-			poll: false
+			poll: false,
+			geo: null
 		};
 	},
 	mounted() {
@@ -83,6 +85,20 @@ export default Vue.extend({
 		onChangeUploadings(uploads) {
 			this.$emit('change-uploadings', uploads);
 		},
+		setGeo() {
+			if (navigator.geolocation == null) {
+				alert('お使いの端末は位置情報に対応していません');
+				return;
+			}
+
+			navigator.geolocation.getCurrentPosition(pos => {
+				this.geo = pos.coords;
+			}, err => {
+				alert('エラー: ' + err.message);
+			}, {
+				enableHighAccuracy: true
+			});
+		},
 		clear() {
 			this.text = '';
 			this.files = [];
@@ -97,6 +113,7 @@ export default Vue.extend({
 				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				reply_id: this.reply ? this.reply.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
+				geo: this.geo,
 				via_mobile: viaMobile
 			}).then(data => {
 				this.$emit('post');
@@ -223,8 +240,9 @@ export default Vue.extend({
 
 		> .upload
 		> .drive
-		.kao
-		.poll
+		> .kao
+		> .poll
+		> .geo
 			display inline-block
 			padding 0
 			margin 0

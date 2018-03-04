@@ -32,6 +32,15 @@ export type IPost = {
 	category: string;
 	is_category_verified: boolean;
 	via_mobile: boolean;
+	geo: {
+		latitude: number;
+		longitude: number;
+		altitude: number;
+		accuracy: number;
+		altitudeAccuracy: number;
+		heading: number;
+		speed: number;
+	};
 };
 
 /**
