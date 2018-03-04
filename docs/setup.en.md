@@ -67,7 +67,7 @@ Please install and setup these softwares:
 4. `npm run build`
 
 #### Update
-1. `git pull origin master`
+1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`
 
