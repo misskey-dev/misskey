@@ -27,6 +27,13 @@
 		</section>
 
 		<section class="web" v-show="page == 'web'">
+			<h1>サウンド</h1>
+			<mk-switch v-model="enableSounds" text="サウンドを有効にする">
+				<span>投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。</span>
+			</mk-switch>
+		</section>
+
+		<section class="web" v-show="page == 'web'">
 			<h1>モバイル</h1>
 			<mk-switch v-model="os.i.client_settings.disableViaMobile" @change="onChangeDisableViaMobile" text="「モバイルからの投稿」フラグを付けない"/>
 		</section>
@@ -166,6 +173,7 @@ export default Vue.extend({
 			version,
 			latestVersion: undefined,
 			checkingForUpdate: false,
+			enableSounds: localStorage.getItem('enableSounds') == 'true',
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
 			debug: localStorage.getItem('debug') == 'true',
@@ -173,6 +181,9 @@ export default Vue.extend({
 		};
 	},
 	watch: {
+		enableSounds() {
+			localStorage.setItem('enableSounds', this.enableSounds ? 'true' : 'false');
+		},
 		lang() {
 			localStorage.setItem('lang', this.lang);
 		},

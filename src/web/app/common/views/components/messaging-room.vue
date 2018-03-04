@@ -29,6 +29,7 @@ import Vue from 'vue';
 import MessagingStreamConnection from '../../scripts/streaming/messaging-stream';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
+import { url } from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -147,6 +148,11 @@ export default Vue.extend({
 		},
 
 		onMessage(message) {
+			// サウンドを再生する
+			if ((this as any).os.isEnableSounds) {
+				new Audio(`${url}/assets/message.mp3`).play();
+			}
+
 			const isBottom = this.isBottom();
 
 			this.messages.push(message);

@@ -94,6 +94,13 @@ export default class MiOS extends EventEmitter {
 		return localStorage.getItem('debug') == 'true';
 	}
 
+	/**
+	 * Whether enable sounds
+	 */
+	public get isEnableSounds() {
+		return localStorage.getItem('enableSounds') == 'true';
+	}
+
 	public apis: API;
 
 	/**

@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { url } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -93,6 +94,11 @@ export default Vue.extend({
 			});
 		},
 		onPost(post) {
+			// サウンドを再生する
+			if ((this as any).os.isEnableSounds) {
+				new Audio(`${url}/assets/post.mp3`).play();
+			}
+
 			this.posts.unshift(post);
 		},
 		onChangeFollowing() {
