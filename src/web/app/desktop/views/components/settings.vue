@@ -28,7 +28,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>モバイル</h1>
-			<mk-switch v-model="os.i.client_settings.disableViaMobile" @change="onChangeDisableViaMobile" text="モバイルからの投稿とフラグを付けない"/>
+			<mk-switch v-model="os.i.client_settings.disableViaMobile" @change="onChangeDisableViaMobile" text="「モバイルからの投稿」フラグを付けない"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -109,10 +109,16 @@
 					<span>最新のバージョン: <i>{{ latestVersion ? latestVersion : version }}</i></span>
 				</template>
 			</p>
-			<button class="ui button" @click="checkForUpdate" :disabled="checkingForUpdate">
+			<button class="ui button block" @click="checkForUpdate" :disabled="checkingForUpdate">
 				<template v-if="checkingForUpdate">アップデートを確認中<mk-ellipsis/></template>
 				<template v-else>アップデートを確認</template>
 			</button>
+			<details>
+				<summary>詳細設定</summary>
+				<mk-switch v-model="preventUpdate" text="アップデートを延期する(非推奨)">
+					<span>この設定をオンにしてもアップデートが反映される場合があります。この設定はこのデバイスのみ有効です。</span>
+				</mk-switch>
+			</details>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
@@ -161,6 +167,7 @@ export default Vue.extend({
 			latestVersion: undefined,
 			checkingForUpdate: false,
 			lang: localStorage.getItem('lang') || '',
+			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
 			debug: localStorage.getItem('debug') == 'true',
 			enableExperimental: localStorage.getItem('enableExperimental') == 'true'
 		};
@@ -168,6 +175,9 @@ export default Vue.extend({
 	watch: {
 		lang() {
 			localStorage.setItem('lang', this.lang);
+		},
+		preventUpdate() {
+			localStorage.setItem('preventUpdate', this.preventUpdate ? 'true' : 'false');
 		},
 		debug() {
 			localStorage.setItem('debug', this.debug ? 'true' : 'false');
@@ -285,6 +295,9 @@ export default Vue.extend({
 				border-bottom solid 1px #eee
 
 			&, >>> *
+				.ui.button.block
+					margin 16px 0
+
 				> section
 					margin 32px 0
 
