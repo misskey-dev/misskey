@@ -71,7 +71,7 @@
 
 		<section class="drive" v-show="page == 'drive'">
 			<h1>%i18n:desktop.tags.mk-settings.drive%</h1>
-			<mk-drive-setting/>
+			<x-drive/>
 		</section>
 
 		<section class="mute" v-show="page == 'mute'">
@@ -163,6 +163,7 @@ import X2fa from './settings.2fa.vue';
 import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
+import XDrive from './settings.drive.vue';
 import { docsUrl, license, lang, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
@@ -174,7 +175,8 @@ export default Vue.extend({
 		X2fa,
 		XApi,
 		XApps,
-		XSignins
+		XSignins,
+		XDrive
 	},
 	data() {
 		return {
