@@ -14,7 +14,8 @@
 		@posted="onPosted"
 		@change-uploadings="onChangeUploadings"
 		@change-attached-media="onChangeMedia"
-		@geo-attached="onGeoAttached"/>
+		@geo-attached="onGeoAttached"
+		@geo-dettached="onGeoDettached"/>
 </mk-window>
 </template>
 
@@ -44,6 +45,9 @@ export default Vue.extend({
 		},
 		onGeoAttached(geo) {
 			this.geo = geo;
+		},
+		onGeoDettached() {
+			this.geo = null;
 		},
 		onPosted() {
 			(this.$refs.window as any).close();

@@ -4,6 +4,7 @@
 		<button class="cancel" @click="cancel">%fa:times%</button>
 		<div>
 			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
+			<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
 			<button class="submit" :disabled="posting" @click="post">{{ reply ? '返信' : '%i18n:mobile.tags.mk-post-form.submit%' }}</button>
 		</div>
 	</header>
@@ -23,7 +24,7 @@
 		<button class="drive" @click="chooseFileFromDrive">%fa:cloud%</button>
 		<button class="kao" @click="kao">%fa:R smile%</button>
 		<button class="poll" @click="poll = true">%fa:chart-pie%</button>
-		<button class="geo" @click="setGeo">%fa:map-marker-alt%</button>
+		<button class="geo" @click="geo ? removeGeo : setGeo">%fa:map-marker-alt%</button>
 		<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>
@@ -99,6 +100,9 @@ export default Vue.extend({
 				enableHighAccuracy: true
 			});
 		},
+		removeGeo() {
+			this.geo = null;
+		},
 		clear() {
 			this.text = '';
 			this.files = [];
@@ -172,10 +176,14 @@ export default Vue.extend({
 			position absolute
 			top 0
 			right 0
+			color #657786
 
 			> .text-count
 				line-height 50px
-				color #657786
+
+			> .geo
+				margin 0 8px
+				line-height 50px
 
 			> .submit
 				margin 8px
