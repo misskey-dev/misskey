@@ -50,7 +50,7 @@
 				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.latitude},${p.geo.longitude}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
-				<div class="repost" v-if="p.repost">%fa:quote-right -flip-h%
+				<div class="repost" v-if="p.repost">
 					<mk-post-preview class="repost" :post="p.repost"/>
 				</div>
 			</div>
@@ -437,15 +437,6 @@ export default Vue.extend({
 
 				> .repost
 					margin 8px 0
-
-					> [data-fa]:first-child
-						position absolute
-						top -8px
-						left -8px
-						z-index 1
-						color #c0dac6
-						font-size 28px
-						background #fff
 
 					> .mk-post-preview
 						padding 16px
