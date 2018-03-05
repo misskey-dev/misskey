@@ -41,8 +41,8 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// Get 'geo' parameter
 	const [geo, geoErr] = $(params.geo).optional.nullable.strict.object()
-		.have('latitude', $().number().range(-180, 180))
-		.have('longitude', $().number().range(-90, 90))
+		.have('latitude', $().number().range(-90, 90))
+		.have('longitude', $().number().range(-180, 180))
 		.have('altitude', $().nullable.number())
 		.have('accuracy', $().nullable.number())
 		.have('altitudeAccuracy', $().nullable.number())

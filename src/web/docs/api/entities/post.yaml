@@ -140,12 +140,12 @@ props:
         type: "number"
         optional: false
         desc:
-          ja: "緯度。-180〜180で表す。"
+          ja: "緯度。-90〜90で表す。"
       - name: "longitude"
         type: "number"
         optional: false
         desc:
-          ja: "経度。-90〜90で表す。"
+          ja: "経度。-180〜180で表す。"
       - name: "altitude"
         type: "number"
         optional: false
