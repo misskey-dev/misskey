@@ -49,12 +49,15 @@ sw:
   # VAPIDの秘密鍵
   private_key:
 
+# Google Maps API
+google_maps_api_key:
+
 # Twitterインテグレーションの設定(利用しない場合は省略可能)
 twitter:
   # インテグレーション用アプリのコンシューマーキー
-  consumer_key: 
+  consumer_key:
 
   # インテグレーション用アプリのコンシューマーシークレット
-  consumer_secret: 
+  consumer_secret:
 
 ```
