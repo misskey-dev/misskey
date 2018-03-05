@@ -81,7 +81,7 @@
 
 		<section class="apps" v-show="page == 'apps'">
 			<h1>アプリケーション</h1>
-			<mk-authorized-apps/>
+			<x-apps/>
 		</section>
 
 		<section class="twitter" v-show="page == 'twitter'">
@@ -101,7 +101,7 @@
 
 		<section class="signin" v-show="page == 'security'">
 			<h1>サインイン履歴</h1>
-			<mk-signin-history/>
+			<x-signins/>
 		</section>
 
 		<section class="api" v-show="page == 'api'">
@@ -161,6 +161,8 @@ import XMute from './settings.mute.vue';
 import XPassword from './settings.password.vue';
 import X2fa from './settings.2fa.vue';
 import XApi from './settings.api.vue';
+import XApps from './settings.apps.vue';
+import XSignins from './settings.signins.vue';
 import { docsUrl, license, lang, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
@@ -170,7 +172,9 @@ export default Vue.extend({
 		XMute,
 		XPassword,
 		X2fa,
-		XApi
+		XApi,
+		XApps,
+		XSignins
 	},
 	data() {
 		return {
