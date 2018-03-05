@@ -32,23 +32,23 @@
 				</div>
 			</header>
 			<div class="body">
-				<div class="text" ref="text">
-					<p class="channel" v-if="p.channel != null"><a target="_blank">{{ p.channel.title }}</a>:</p>
+				<p class="channel" v-if="p.channel != null"><a target="_blank">{{ p.channel.title }}</a>:</p>
+				<div class="text">
 					<a class="reply" v-if="p.reply">
 						%fa:reply%
 					</a>
 					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
-					<div class="tags" v-if="p.tags && p.tags.length > 0">
-						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
-					</div>
-					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 					<a class="rp" v-if="p.repost != null">RP:</a>
 				</div>
 				<div class="media" v-if="p.media">
 					<mk-images :images="p.media"/>
 				</div>
 				<mk-poll v-if="p.poll" :post="p" ref="pollViewer"/>
-				<p class="location" v-if="p.geo">%fa:map-marker-alt% 位置情報</p>
+				<div class="tags" v-if="p.tags && p.tags.length > 0">
+					<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
+				</div>
+				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
+				<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.latitude},${p.geo.longitude}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 				<div class="repost" v-if="p.repost">%fa:quote-right -flip-h%
 					<mk-post-preview class="repost" :post="p.repost"/>
@@ -356,7 +356,6 @@ export default Vue.extend({
 			> .body
 
 				> .text
-					cursor default
 					display block
 					margin 0
 					padding 0
@@ -370,12 +369,6 @@ export default Vue.extend({
 						color #aaa
 						border-left solid 3px #eee
 
-					.mk-url-preview
-						margin-top 8px
-
-					> .channel
-						margin 0
-
 					> .reply
 						margin-right 8px
 						color #717171
@@ -385,31 +378,6 @@ export default Vue.extend({
 						font-style oblique
 						color #a0bf46
 
-					> .tags
-						margin 4px 0 0 0
-
-						> *
-							display inline-block
-							margin 0 8px 0 0
-							padding 2px 8px 2px 16px
-							font-size 90%
-							color #8d969e
-							background #edf0f3
-							border-radius 4px
-
-							&:before
-								content ""
-								display block
-								position absolute
-								top 0
-								bottom 0
-								left 4px
-								width 8px
-								height 8px
-								margin auto 0
-								background #fff
-								border-radius 100%
-
 					[data-is-me]:after
 						content "you"
 						padding 0 4px
@@ -418,6 +386,37 @@ export default Vue.extend({
 						color $theme-color-foreground
 						background $theme-color
 						border-radius 4px
+
+				.mk-url-preview
+					margin-top 8px
+
+				> .channel
+					margin 0
+
+				> .tags
+					margin 4px 0 0 0
+
+					> *
+						display inline-block
+						margin 0 8px 0 0
+						padding 2px 8px 2px 16px
+						font-size 90%
+						color #8d969e
+						background #edf0f3
+						border-radius 4px
+
+						&:before
+							content ""
+							display block
+							position absolute
+							top 0
+							bottom 0
+							left 4px
+							width 8px
+							height 8px
+							margin auto 0
+							background #fff
+							border-radius 100%
 
 				> .media
 					> img
