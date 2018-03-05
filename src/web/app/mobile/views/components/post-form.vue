@@ -24,7 +24,7 @@
 		<button class="drive" @click="chooseFileFromDrive">%fa:cloud%</button>
 		<button class="kao" @click="kao">%fa:R smile%</button>
 		<button class="poll" @click="poll = true">%fa:chart-pie%</button>
-		<button class="geo" @click="geo ? removeGeo : setGeo">%fa:map-marker-alt%</button>
+		<button class="geo" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
 		<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>

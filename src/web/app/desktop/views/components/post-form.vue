@@ -27,7 +27,7 @@
 	<button class="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" @click="poll = true">%fa:chart-pie%</button>
-	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo : setGeo">%fa:map-marker-alt%</button>
+	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
 	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - text.length) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }}<mk-ellipsis v-if="posting"/>
