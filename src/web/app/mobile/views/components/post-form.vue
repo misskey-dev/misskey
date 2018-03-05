@@ -113,7 +113,15 @@ export default Vue.extend({
 				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				reply_id: this.reply ? this.reply.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
-				geo: this.geo,
+				geo: this.geo ? {
+					latitude: this.geo.latitude,
+					longitude: this.geo.longitude,
+					altitude: this.geo.altitude,
+					accuracy: this.geo.accuracy,
+					altitudeAccuracy: this.geo.altitudeAccuracy,
+					heading: isNaN(this.geo.heading) ? null : this.geo.heading,
+					speed: this.geo.speed,
+				} : null,
 				via_mobile: viaMobile
 			}).then(data => {
 				this.$emit('post');

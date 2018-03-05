@@ -219,7 +219,15 @@ export default Vue.extend({
 				reply_id: this.reply ? this.reply.id : undefined,
 				repost_id: this.repost ? this.repost.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
-				geo: this.geo,
+				geo: this.geo ? {
+					latitude: this.geo.latitude,
+					longitude: this.geo.longitude,
+					altitude: this.geo.altitude,
+					accuracy: this.geo.accuracy,
+					altitudeAccuracy: this.geo.altitudeAccuracy,
+					heading: isNaN(this.geo.heading) ? null : this.geo.heading,
+					speed: this.geo.speed,
+				} : null
 			}).then(data => {
 				this.clear();
 				this.deleteDraft();
