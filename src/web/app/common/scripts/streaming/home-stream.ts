@@ -1,3 +1,5 @@
+import * as merge from 'object-assign-deep';
+
 import Stream from './stream';
 import MiOS from '../../mios';
 
@@ -18,7 +20,10 @@ export default class Connection extends Stream {
 
 		// 自分の情報が更新されたとき
 		this.on('i_updated', i => {
-			Object.assign(me, i);
+			if (os.debug) {
+				console.log('I updated:', i);
+			}
+			merge(me, i);
 		});
 
 		// トークンが再生成されたとき

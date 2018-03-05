@@ -136,8 +136,7 @@ export default async (req: express.Request, res: express.Response) => {
 			auto_watch: true
 		},
 		client_settings: {
-			home: homeData,
-			show_donation: false
+			home: homeData
 		}
 	});
 

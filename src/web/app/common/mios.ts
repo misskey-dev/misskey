@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
+import * as merge from 'object-assign-deep';
 
 import { host, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
 import Progress from './scripts/loading';
@@ -284,6 +285,13 @@ export default class MiOS extends EventEmitter {
 		// フェッチが完了したとき
 		const fetched = me => {
 			if (me) {
+				// デフォルトの設定をマージ
+				me.client_settings = Object.assign({
+					fetchOnScroll: true,
+					showMaps: true,
+					showPostFormOnTopOfTl: false
+				}, me.client_settings);
+
 				// ローカルストレージにキャッシュ
 				localStorage.setItem('me', JSON.stringify(me));
 			}
@@ -313,7 +321,7 @@ export default class MiOS extends EventEmitter {
 
 			// 後から新鮮なデータをフェッチ
 			fetchme(cachedMe.token, freshData => {
-				Object.assign(cachedMe, freshData);
+				merge(cachedMe, freshData);
 			});
 		} else {
 			// Get token from cookie

@@ -20,7 +20,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>動作</h1>
-			<mk-switch v-model="fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
+			<mk-switch v-model="os.i.client_settings.fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
 				<span>ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。</span>
 			</mk-switch>
 		</section>
@@ -31,6 +31,9 @@
 				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
 			</div>
 			<mk-switch v-model="os.i.client_settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
+			<mk-switch v-model="os.i.client_settings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
+				<span>位置情報が添付された投稿のマップを自動的に展開します。</span>
+			</mk-switch>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -71,7 +74,7 @@
 
 		<section class="notification" v-show="page == 'notification'">
 			<h1>通知</h1>
-			<mk-switch v-model="autoWatch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
+			<mk-switch v-model="os.i.settings.auto_watch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
 				<span>リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。</span>
 			</mk-switch>
 		</section>
@@ -193,8 +196,6 @@ export default Vue.extend({
 			version,
 			latestVersion: undefined,
 			checkingForUpdate: false,
-			fetchOnScroll: true,
-			autoWatch: true,
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
@@ -228,20 +229,6 @@ export default Vue.extend({
 		(this as any).os.getMeta().then(meta => {
 			this.meta = meta;
 		});
-
-		if ((this as any).os.i.settings.auto_watch != null) {
-			this.autoWatch = (this as any).os.i.settings.auto_watch;
-			this.$watch('os.i.settings.auto_watch', v => {
-				this.autoWatch = v;
-			});
-		}
-
-		if ((this as any).os.i.client_settings.fetchOnScroll != null) {
-			this.fetchOnScroll = (this as any).os.i.client_settings.fetchOnScroll;
-			this.$watch('os.i.client_settings.fetchOnScroll', v => {
-				this.fetchOnScroll = v;
-			});
-		}
 	},
 	methods: {
 		customizeHome() {
@@ -262,6 +249,12 @@ export default Vue.extend({
 		onChangeShowPostFormOnTopOfTl(v) {
 			(this as any).api('i/update_client_setting', {
 				name: 'showPostFormOnTopOfTl',
+				value: v
+			});
+		},
+		onChangeShowMaps(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'showMaps',
 				value: v
 			});
 		},

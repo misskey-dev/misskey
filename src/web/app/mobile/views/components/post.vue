@@ -137,17 +137,20 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			(this as any).os.getGoogleMaps().then(maps => {
-				const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
-				const map = new maps.Map(this.$refs.map, {
-					center: uluru,
-					zoom: 15
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.client_settings.showMaps : true;
+			if (shouldShowMap) {
+				(this as any).os.getGoogleMaps().then(maps => {
+					const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
+					const map = new maps.Map(this.$refs.map, {
+						center: uluru,
+						zoom: 15
+					});
+					new maps.Marker({
+						position: uluru,
+						map: map
+					});
 				});
-				new maps.Marker({
-					position: uluru,
-					map: map
-				});
-			});
+			}
 		}
 	},
 	beforeDestroy() {
@@ -447,6 +450,9 @@ export default Vue.extend({
 				> .map
 					width 100%
 					height 200px
+
+					&:empty
+						display none
 
 				> .app
 					font-size 12px

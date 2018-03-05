@@ -118,7 +118,6 @@ export const pack = (
 	let _user: any;
 
 	const fields = opts.detail ? {
-		settings: false
 	} : {
 		settings: false,
 		client_settings: false,
@@ -173,6 +172,7 @@ export const pack = (
 	// Visible via only the official client
 	if (!opts.includeSecrets) {
 		delete _user.email;
+		delete _user.settings;
 		delete _user.client_settings;
 	}
 
