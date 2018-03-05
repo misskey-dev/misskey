@@ -372,6 +372,7 @@ export default Vue.extend({
 					align-items center
 					margin-bottom 2px
 					white-space nowrap
+					overflow hidden
 
 					> .name
 						margin 0
