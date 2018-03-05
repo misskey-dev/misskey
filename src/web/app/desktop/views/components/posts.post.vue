@@ -43,6 +43,7 @@
 						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 					</div>
 					<a class="rp" v-if="p.repost">RP:</a>
+					<p class="location" v-if="p.geo">%fa:map-marker-alt% 位置情報</p>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
 				<div class="media" v-if="p.media">
@@ -446,6 +447,11 @@ export default Vue.extend({
 						margin-left 4px
 						font-style oblique
 						color #a0bf46
+
+					> .location
+						margin 4px 0
+						font-size 12px
+						color #ccc
 
 					> .tags
 						margin 4px 0 0 0

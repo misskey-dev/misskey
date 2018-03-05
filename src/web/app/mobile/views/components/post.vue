@@ -48,6 +48,7 @@
 					<mk-images :images="p.media"/>
 				</div>
 				<mk-poll v-if="p.poll" :post="p" ref="pollViewer"/>
+				<p class="location" v-if="p.geo">%fa:map-marker-alt% 位置情報</p>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 				<div class="repost" v-if="p.repost">%fa:quote-right -flip-h%
 					<mk-post-preview class="repost" :post="p.repost"/>
@@ -422,6 +423,11 @@ export default Vue.extend({
 					> img
 						display block
 						max-width 100%
+
+				> .location
+					margin 4px 0
+					font-size 12px
+					color #ccc
 
 				> .app
 					font-size 12px
