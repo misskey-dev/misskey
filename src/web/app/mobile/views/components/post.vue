@@ -52,7 +52,7 @@
 				<div class="map" v-if="p.geo" ref="map"></div>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 				<div class="repost" v-if="p.repost">
-					<mk-post-preview class="repost" :post="p.repost"/>
+					<mk-post-preview :post="p.repost"/>
 				</div>
 			</div>
 			<footer>

@@ -49,6 +49,9 @@
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.latitude},${p.geo.longitude}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 			<div class="map" v-if="p.geo" ref="map"></div>
+			<div class="repost" v-if="p.repost">
+				<mk-post-preview :post="p.repost"/>
+			</div>
 		</div>
 		<router-link class="time" :to="`/${p.user.username}/${p.id}`">
 			<mk-time :time="p.created_at" mode="detail"/>
@@ -103,7 +106,10 @@ export default Vue.extend({
 	},
 	computed: {
 		isRepost(): boolean {
-			return this.post.repost != null;
+			return (this.post.repost &&
+				this.post.text == null &&
+				this.post.media_ids == null &&
+				this.post.poll == null);
 		},
 		p(): any {
 			return this.isRepost ? this.post.repost : this.post;
@@ -325,6 +331,14 @@ export default Vue.extend({
 
 		> .body
 			padding 8px 0
+
+			> .repost
+				margin 8px 0
+
+				> .mk-post-preview
+					padding 16px
+					border dashed 1px #c0dac6
+					border-radius 8px
 
 			> .location
 				margin 4px 0
