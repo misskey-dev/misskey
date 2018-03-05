@@ -170,22 +170,12 @@ export default class MiOS extends EventEmitter {
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this.i);
 		});
 
-		//#region load google maps api
-		(window as any).initGoogleMaps = () => {
-			this.emit('init-google-maps');
-		};
-		const head = document.getElementsByTagName('head')[0];
-		const script = document.createElement('script');
-		script.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initGoogleMaps`);
-		script.setAttribute('async', 'true');
-		script.setAttribute('defer', 'true');
-		head.appendChild(script);
-		//#endregion
-
 		if (this.debug) {
 			(window as any).os = this;
 		}
 	}
+
+	private googleMapsIniting = false;
 
 	public getGoogleMaps() {
 		return new Promise((res, rej) => {
@@ -195,6 +185,21 @@ export default class MiOS extends EventEmitter {
 				this.once('init-google-maps', () => {
 					res((window as any).google.maps);
 				});
+
+				//#region load google maps api
+				if (!this.googleMapsIniting) {
+					this.googleMapsIniting = true;
+					(window as any).initGoogleMaps = () => {
+						this.emit('init-google-maps');
+					};
+					const head = document.getElementsByTagName('head')[0];
+					const script = document.createElement('script');
+					script.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initGoogleMaps`);
+					script.setAttribute('async', 'true');
+					script.setAttribute('defer', 'true');
+					head.appendChild(script);
+				}
+				//#endregion
 			}
 		});
 	}
