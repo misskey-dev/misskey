@@ -69,11 +69,21 @@ export default Vue.extend({
 			margin-right 8px
 
 	> footer
-		padding 16px
-		text-align center
-		color #ccc
-		border-top solid 1px #eaeaea
-		border-bottom-left-radius 4px
-		border-bottom-right-radius 4px
+		> *
+			display block
+			margin 0
+			padding 16px
+			width 100%
+			text-align center
+			color #ccc
+			border-top solid 1px #eaeaea
+			border-bottom-left-radius 4px
+			border-bottom-right-radius 4px
 
+		> button
+			&:hover
+				background #f5f5f5
+
+			&:active
+				background #eee
 </style>

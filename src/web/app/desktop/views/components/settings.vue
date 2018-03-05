@@ -19,6 +19,13 @@
 		</section>
 
 		<section class="web" v-show="page == 'web'">
+			<h1>動作</h1>
+			<mk-switch v-model="fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
+				<span>ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。</span>
+			</mk-switch>
+		</section>
+
+		<section class="web" v-show="page == 'web'">
 			<h1>デザイン</h1>
 			<div class="div">
 				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
@@ -186,6 +193,7 @@ export default Vue.extend({
 			version,
 			latestVersion: undefined,
 			checkingForUpdate: false,
+			fetchOnScroll: true,
 			autoWatch: true,
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
 			lang: localStorage.getItem('lang') || '',
@@ -223,12 +231,28 @@ export default Vue.extend({
 
 		if ((this as any).os.i.settings.auto_watch != null) {
 			this.autoWatch = (this as any).os.i.settings.auto_watch;
+			this.$watch('os.i.settings.auto_watch', v => {
+				this.autoWatch = v;
+			});
+		}
+
+		if ((this as any).os.i.client_settings.fetchOnScroll != null) {
+			this.fetchOnScroll = (this as any).os.i.client_settings.fetchOnScroll;
+			this.$watch('os.i.client_settings.fetchOnScroll', v => {
+				this.fetchOnScroll = v;
+			});
 		}
 	},
 	methods: {
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');
+		},
+		onChangeFetchOnScroll(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'fetchOnScroll',
+				value: v
+			});
 		},
 		onChangeAutoWatch(v) {
 			(this as any).api('i/update', {

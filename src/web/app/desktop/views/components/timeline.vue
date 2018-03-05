@@ -8,10 +8,10 @@
 		%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。
 	</p>
 	<mk-posts :posts="posts" ref="timeline">
-		<div slot="footer">
-			<template v-if="!moreFetching">%fa:comments%</template>
+		<button slot="footer" @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<template v-if="!moreFetching">もっと見る</template>
 			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
-		</div>
+		</button>
 	</mk-posts>
 </div>
 </template>
@@ -105,8 +105,10 @@ export default Vue.extend({
 			this.fetch();
 		},
 		onScroll() {
-			const current = window.scrollY + window.innerHeight;
-			if (current > document.body.offsetHeight - 8) this.more();
+			if ((this as any).os.i.client_settings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.more();
+			}
 		},
 		onKeydown(e) {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {

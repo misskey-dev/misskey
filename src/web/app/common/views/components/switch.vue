@@ -56,6 +56,7 @@ export default Vue.extend({
 	},
 	watch: {
 		value() {
+			(this.$el).style.transition = 'all 0.3s';
 			(this.$refs.input as any).checked = this.checked;
 		}
 	},
