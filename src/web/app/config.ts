@@ -13,6 +13,7 @@ declare const _THEME_COLOR_: string;
 declare const _COPYRIGHT_: string;
 declare const _VERSION_: string;
 declare const _LICENSE_: string;
+declare const _GOOGLE_MAPS_API_KEY_: string;
 
 export const host = _HOST_;
 export const url = _URL_;
@@ -29,3 +30,4 @@ export const themeColor = _THEME_COLOR_;
 export const copyright = _COPYRIGHT_;
 export const version = _VERSION_;
 export const license = _LICENSE_;
+export const googleMapsApiKey = _GOOGLE_MAPS_API_KEY_;

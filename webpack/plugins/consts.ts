@@ -27,7 +27,8 @@ export default lang => {
 		_LANG_: lang,
 		_HOST_: config.host,
 		_URL_: config.url,
-		_LICENSE_: licenseHtml
+		_LICENSE_: licenseHtml,
+		_GOOGLE_MAPS_API_KEY_: config.google_maps_api_key
 	};
 
 	const _consts = {};

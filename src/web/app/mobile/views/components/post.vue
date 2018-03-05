@@ -49,6 +49,7 @@
 				</div>
 				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.latitude},${p.geo.longitude}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+				<div class="map" v-if="p.geo" ref="map"></div>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 				<div class="repost" v-if="p.repost">
 					<mk-post-preview class="repost" :post="p.repost"/>
@@ -132,6 +133,21 @@ export default Vue.extend({
 
 		if ((this as any).os.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
+		}
+
+		// Draw map
+		if (this.p.geo) {
+			(this as any).os.getGoogleMaps().then(maps => {
+				const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
+				const map = new maps.Map(this.$refs.map, {
+					center: uluru,
+					zoom: 15
+				});
+				new maps.Marker({
+					position: uluru,
+					map: map
+				});
+			});
 		}
 	},
 	beforeDestroy() {
@@ -427,6 +443,10 @@ export default Vue.extend({
 					margin 4px 0
 					font-size 12px
 					color #ccc
+
+				> .map
+					width 100%
+					height 200px
 
 				> .app
 					font-size 12px

@@ -39,14 +39,16 @@
 		</header>
 		<div class="body">
 			<mk-post-html :class="$style.text" v-if="p.ast" :ast="p.ast" :i="os.i"/>
-			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="media" v-if="p.media">
 				<mk-images :images="p.media"/>
 			</div>
 			<mk-poll v-if="p.poll" :post="p"/>
+			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
+			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.latitude},${p.geo.longitude}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+			<div class="map" v-if="p.geo" ref="map"></div>
 		</div>
 		<footer>
 			<mk-reactions-viewer :post="p"/>
@@ -135,6 +137,21 @@ export default Vue.extend({
 				limit: 8
 			}).then(replies => {
 				this.replies = replies;
+			});
+		}
+
+		// Draw map
+		if (this.p.geo) {
+			(this as any).os.getGoogleMaps().then(maps => {
+				const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
+				const map = new maps.Map(this.$refs.map, {
+					center: uluru,
+					zoom: 15
+				});
+				new maps.Marker({
+					position: uluru,
+					map: map
+				});
 			});
 		}
 	},
@@ -307,6 +324,15 @@ export default Vue.extend({
 
 		> .body
 			padding 8px 0
+
+			> .location
+				margin 4px 0
+				font-size 12px
+				color #ccc
+
+			> .map
+				width 100%
+				height 300px
 
 			> .mk-url-preview
 				margin-top 8px

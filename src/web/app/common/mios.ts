@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 
-import { host, apiUrl, swPublickey, version, lang } from '../config';
+import { host, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
 import Progress from './scripts/loading';
 import HomeStreamManager from './scripts/streaming/home-stream-manager';
 import DriveStreamManager from './scripts/streaming/drive-stream-manager';
@@ -170,8 +170,33 @@ export default class MiOS extends EventEmitter {
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this.i);
 		});
 
-		// TODO: this global export is for debugging. so disable this if production build
-		(window as any).os = this;
+		//#region load google maps api
+		(window as any).initGoogleMaps = () => {
+			this.emit('init-google-maps');
+		};
+		const head = document.getElementsByTagName('head')[0];
+		const script = document.createElement('script');
+		script.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initGoogleMaps`);
+		script.setAttribute('async', 'true');
+		script.setAttribute('defer', 'true');
+		head.appendChild(script);
+		//#endregion
+
+		if (this.debug) {
+			(window as any).os = this;
+		}
+	}
+
+	public getGoogleMaps() {
+		return new Promise((res, rej) => {
+			if ((window as any).google && (window as any).google.maps) {
+				res((window as any).google.maps);
+			} else {
+				this.once('init-google-maps', () => {
+					res((window as any).google.maps);
+				});
+			}
+		});
 	}
 
 	public log(...args) {
