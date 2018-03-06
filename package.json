@@ -75,7 +75,7 @@
 		"@types/speakeasy": "2.0.2",
 		"@types/tmp": "0.0.33",
 		"@types/uuid": "3.4.3",
-		"@types/webpack": "3.8.8",
+		"@types/webpack": "4.0.0",
 		"@types/webpack-stream": "3.2.9",
 		"@types/websocket": "0.0.37",
 		"accesses": "2.5.0",
