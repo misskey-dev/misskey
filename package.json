@@ -150,7 +150,7 @@
 		"progress-bar-webpack-plugin": "^1.11.0",
 		"prominence": "0.2.0",
 		"proxy-addr": "2.0.3",
-		"pug": "2.0.0-rc.4",
+		"pug": "2.0.0",
 		"qrcode": "1.2.0",
 		"ratelimiter": "3.0.3",
 		"recaptcha-promise": "0.1.3",
