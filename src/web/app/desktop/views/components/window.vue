@@ -3,7 +3,10 @@
 	<div class="bg" ref="bg" v-show="isModal" @click="onBgClick"></div>
 	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown" :style="{ width, height }">
 		<div class="body">
-			<header ref="header" @contextmenu.prevent="() => {}" @mousedown.prevent="onHeaderMousedown">
+			<header ref="header"
+				:class="{ withGradient }"
+				@contextmenu.prevent="() => {}" @mousedown.prevent="onHeaderMousedown"
+			>
 				<h1><slot name="header"></slot></h1>
 				<div>
 					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="ポップアウト">%fa:R window-restore%</button>
@@ -75,6 +78,13 @@ export default Vue.extend({
 		},
 		canResize(): boolean {
 			return !this.isFlexible;
+		},
+		withGradient(): boolean {
+			return (this as any).os.isSignedIn
+				? (this as any).os.i.client_settings.gradientWindowHeader != null
+					? (this as any).os.i.client_settings.gradientWindowHeader
+					: false
+				: false;
 		}
 	},
 
@@ -536,6 +546,10 @@ export default Vue.extend({
 				background #fff
 				border-radius 6px 6px 0 0
 				box-shadow 0 1px 0 rgba(#000, 0.1)
+
+				&.withGradient
+					background linear-gradient(to bottom, #fff, #ececec)
+					box-shadow 0 1px 0 rgba(#000, 0.15)
 
 				&, *
 					user-select none

@@ -289,7 +289,8 @@ export default class MiOS extends EventEmitter {
 				me.client_settings = Object.assign({
 					fetchOnScroll: true,
 					showMaps: true,
-					showPostFormOnTopOfTl: false
+					showPostFormOnTopOfTl: false,
+					gradientWindowHeader: false
 				}, me.client_settings);
 
 				// ローカルストレージにキャッシュ

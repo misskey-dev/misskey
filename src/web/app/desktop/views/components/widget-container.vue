@@ -1,6 +1,6 @@
 <template>
 <div class="mk-widget-container" :class="{ naked }">
-	<header v-if="showHeader">
+	<header :class="{ withGradient }" v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
 	</header>
@@ -19,6 +19,15 @@ export default Vue.extend({
 		naked: {
 			type: Boolean,
 			default: false
+		}
+	},
+	computed: {
+		withGradient(): boolean {
+			return (this as any).os.isSignedIn
+				? (this as any).os.i.client_settings.gradientWindowHeader != null
+					? (this as any).os.i.client_settings.gradientWindowHeader
+					: false
+				: false;
 		}
 	}
 });
@@ -69,4 +78,8 @@ export default Vue.extend({
 			&:active
 				color #999
 
+		&.withGradient
+			> .title
+				background linear-gradient(to bottom, #fff, #ececec)
+				box-shadow 0 1px rgba(#000, 0.11)
 </style>

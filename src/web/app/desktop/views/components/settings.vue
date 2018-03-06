@@ -34,6 +34,7 @@
 			<mk-switch v-model="os.i.client_settings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
 				<span>位置情報が添付された投稿のマップを自動的に展開します。</span>
 			</mk-switch>
+			<mk-switch v-model="os.i.client_settings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -255,6 +256,12 @@ export default Vue.extend({
 		onChangeShowMaps(v) {
 			(this as any).api('i/update_client_setting', {
 				name: 'showMaps',
+				value: v
+			});
+		},
+		onChangeGradientWindowHeader(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'gradientWindowHeader',
 				value: v
 			});
 		},
