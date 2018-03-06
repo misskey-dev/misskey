@@ -96,7 +96,9 @@ export default Vue.extend({
 		onPost(post) {
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds) {
-				new Audio(`${url}/assets/post.mp3`).play();
+				const sound = new Audio(`${url}/assets/post.mp3`);
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+				sound.play();
 			}
 
 			this.posts.unshift(post);

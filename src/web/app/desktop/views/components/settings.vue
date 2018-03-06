@@ -42,6 +42,14 @@
 			<mk-switch v-model="enableSounds" text="サウンドを有効にする">
 				<span>投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。</span>
 			</mk-switch>
+			<label>ボリューム</label>
+			<el-slider
+				v-model="soundVolume"
+				:show-input="true"
+				:format-tooltip="v => `${v}%`"
+				:disabled="!enableSounds"
+			/>
+			<button class="ui button" @click="soundTest">%fa:volume-up% テスト</button>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -175,7 +183,7 @@ import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XDrive from './settings.drive.vue';
-import { docsUrl, license, lang, version } from '../../../config';
+import { url, docsUrl, license, lang, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 export default Vue.extend({
@@ -198,6 +206,7 @@ export default Vue.extend({
 			latestVersion: undefined,
 			checkingForUpdate: false,
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
+			soundVolume: localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) : 100,
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
 			debug: localStorage.getItem('debug') == 'true',
@@ -207,6 +216,9 @@ export default Vue.extend({
 	watch: {
 		enableSounds() {
 			localStorage.setItem('enableSounds', this.enableSounds ? 'true' : 'false');
+		},
+		soundVolume() {
+			localStorage.setItem('soundVolume', this.soundVolume.toString());
 		},
 		lang() {
 			localStorage.setItem('lang', this.lang);
@@ -295,6 +307,11 @@ export default Vue.extend({
 				title: 'キャッシュを削除しました',
 				text: 'ページを再度読み込みしてください。'
 			});
+		},
+		soundTest() {
+			const sound = new Audio(`${url}/assets/message.mp3`);
+			sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+			sound.play();
 		}
 	}
 });

@@ -150,7 +150,9 @@ export default Vue.extend({
 		onMessage(message) {
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds) {
-				new Audio(`${url}/assets/message.mp3`).play();
+				const sound = new Audio(`${url}/assets/message.mp3`);
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+				sound.play();
 			}
 
 			const isBottom = this.isBottom();
