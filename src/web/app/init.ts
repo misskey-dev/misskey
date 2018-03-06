@@ -52,7 +52,7 @@ Vue.mixin({
 console.info(`Misskey v${version} (葵 aoi)`);
 console.info(
 	'%cここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。',
-	'color: red; background: yellow; font-size: 16px;');
+	'color: red; background: yellow; font-size: 16px; font-weight: bold;');
 
 // BootTimer解除
 window.clearTimeout((window as any).mkBootTimer);
