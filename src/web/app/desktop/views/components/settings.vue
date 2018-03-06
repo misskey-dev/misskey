@@ -26,7 +26,7 @@
 		</section>
 
 		<section class="web" v-show="page == 'web'">
-			<h1>デザイン</h1>
+			<h1>デザインと表示</h1>
 			<div class="div">
 				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
 			</div>
