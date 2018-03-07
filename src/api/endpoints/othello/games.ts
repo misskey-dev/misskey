@@ -15,7 +15,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	} : {};
 
 	// Fetch games
-	const games = await Game.find(q);
+	const games = await Game.find(q, {
+		sort: {
+			_id: -1
+		}
+	});
 
 	// Reponse
 	res(Promise.all(games.map(async (g) => await pack(g, user))));
