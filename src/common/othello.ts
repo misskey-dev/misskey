@@ -3,6 +3,11 @@ const BOARD_SIZE = 8;
 export default class Othello {
 	public board: Array<'black' | 'white'>;
 
+	public stats: Array<{
+		b: number;
+		w: number;
+	}> = [];
+
 	/**
 	 * ゲームを初期化します
 	 */
@@ -17,6 +22,27 @@ export default class Othello {
 			null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null
 		];
+
+		this.stats.push({
+			b: 0.5,
+			w: 0.5
+		});
+	}
+
+	public get blackCount() {
+		return this.board.filter(s => s == 'black').length;
+	}
+
+	public get whiteCount() {
+		return this.board.filter(s => s == 'white').length;
+	}
+
+	public get blackP() {
+		return this.blackCount / (this.blackCount + this.whiteCount);
+	}
+
+	public get whiteP() {
+		return this.whiteCount / (this.blackCount + this.whiteCount);
 	}
 
 	public setByNumber(color, n) {
@@ -88,6 +114,11 @@ export default class Othello {
 					break;
 				}
 		});
+
+		this.stats.push({
+			b: this.blackP,
+			w: this.whiteP
+		});
 	}
 
 	public set(color, pos) {
@@ -118,10 +149,11 @@ export default class Othello {
 	/**
 	 * 指定の位置に石を打つことができるかどうか(相手の石を1つでも反転させられるか)を取得します
 	 */
-	public canReverse2(myColor, targetx, targety): boolean {
-		return this.getReverse(myColor, targetx, targety) !== null;
+	public canReverse2(myColor, x, y): boolean {
+		return this.canReverse(myColor, x + (y * 8));
 	}
 	public canReverse(myColor, pos): boolean {
+		if (this.board[pos] != null) return false;
 		const x = pos % BOARD_SIZE;
 		const y = Math.floor(pos / BOARD_SIZE);
 		return this.getReverse(myColor, x, y) !== null;
@@ -181,7 +213,7 @@ export default class Othello {
 
 		// 右下
 		iterate = createIterater();
-		for (let c = 0, i = 1; i < Math.min(BOARD_SIZE - targetx, BOARD_SIZE - targety); c++, i++) {
+		for (let c = 0, i = 1; i <= Math.min(BOARD_SIZE - targetx, BOARD_SIZE - targety); c++, i++) {
 			if (iterate(targetx + i, targety + i)) {
 				res.push([3, c]);
 				break;
@@ -199,7 +231,7 @@ export default class Othello {
 
 		// 左下
 		iterate = createIterater();
-		for (let c = 0, i = 1; i < Math.min(targetx, BOARD_SIZE - targety); c++, i++) {
+		for (let c = 0, i = 1; i <= Math.min(targetx, BOARD_SIZE - targety); c++, i++) {
 			if (iterate(targetx - i, targety + i)) {
 				res.push([5, c]);
 				break;

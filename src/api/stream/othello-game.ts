@@ -55,9 +55,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		let winner;
 		if (isEnded) {
-			const blackCount = o.board.filter(s => s == 'black').length;
-			const whiteCount = o.board.filter(s => s == 'white').length;
-			winner = blackCount == whiteCount ? null : blackCount > whiteCount ? game.black_user_id : game.white_user_id;
+			winner = o.blackCount == o.whiteCount ? null : o.blackCount > o.whiteCount ? game.black_user_id : game.white_user_id;
 		}
 
 		const log = {
@@ -79,9 +77,6 @@ export default function(request: websocket.request, connection: websocket.connec
 			}
 		});
 
-		publishOthelloGameStream(gameId, 'set', {
-			color: myColor,
-			pos
-		});
+		publishOthelloGameStream(gameId, 'set', log);
 	}
 }
