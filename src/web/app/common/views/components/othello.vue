@@ -43,11 +43,17 @@
 				<img :src="`${g.black_user.avatar_url}?thumbnail&size=32`" alt="">
 				<img :src="`${g.white_user.avatar_url}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.black_user.name }}</b> vs <b>{{ g.white_user.name }}</b></span>
-				<span class="state">{{ g.winner ? '終了' : '進行中' }}</span>
+				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
 			</div>
 		</section>
-		<section>
+		<section v-if="games.length > 0">
 			<h2>みんなの対局</h2>
+			<div class="game" v-for="g in games" tabindex="-1" @click="game = g">
+				<img :src="`${g.black_user.avatar_url}?thumbnail&size=32`" alt="">
+				<img :src="`${g.white_user.avatar_url}?thumbnail&size=32`" alt="">
+				<span><b>{{ g.black_user.name }}</b> vs <b>{{ g.white_user.name }}</b></span>
+				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
+			</div>
 		</section>
 	</div>
 </div>

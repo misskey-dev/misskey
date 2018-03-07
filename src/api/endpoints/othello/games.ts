@@ -3,7 +3,7 @@ import Game, { pack } from '../../models/othello-game';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'my' parameter
-	const [my = false, myErr] = $(params.my).boolean().$;
+	const [my = false, myErr] = $(params.my).optional.boolean().$;
 	if (myErr) return rej('invalid my param');
 
 	const q = my ? {

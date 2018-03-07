@@ -34,6 +34,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			black_user_id: parentIsBlack ? exist.parent_id : user._id,
 			white_user_id: parentIsBlack ? user._id : exist.parent_id,
 			turn_user_id: parentIsBlack ? exist.parent_id : user._id,
+			is_ended: false,
 			logs: []
 		});
 

@@ -1,10 +1,15 @@
 <template>
 <div class="root">
 	<header><b>{{ game.black_user.name }}</b>(黒) vs <b>{{ game.white_user.name }}</b>(白)</header>
-	<p class="turn">{{ turn ? 'あなたのターンです' : '相手のターンです' }}<mk-ellipsis v-if="!turn"/></p>
+	<p class="turn" v-if="!iAmPlayer && !isEnded">{{ turn.name }}のターンです<mk-ellipsis/></p>
+	<p class="turn" v-if="iAmPlayer && !isEnded">{{ isMyTurn ? 'あなたのターンです' : '相手のターンです' }}<mk-ellipsis v-if="!isMyTurn"/></p>
+	<p class="result" v-if="isEnded">
+		<template v-if="winner"><b>{{ winner.name }}</b>の勝ち</template>
+		<template v-else>引き分け</template>
+	</p>
 	<div>
 		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, myTurn: turn, can: o.canReverse(turn ? myColor : opColor, i) }"
+			:class="{ empty: stone == null, myTurn: isMyTurn, can: o.canReverse(turn.id == game.black_user.id ? 'black' : 'white', i) }"
 			@click="set(i)"
 		>
 			<img v-if="stone == 'black'" :src="`${game.black_user.avatar_url}?thumbnail&size=64`" alt="">
@@ -25,10 +30,16 @@ export default Vue.extend({
 		return {
 			o: new Othello(),
 			turn: null,
+			isMyTurn: null,
+			isEnded: false,
+			winner: null,
 			connection: null
 		};
 	},
 	computed: {
+		iAmPlayer(): boolean {
+			return this.game.black_user_id == (this as any).os.i.id || this.game.white_user_id == (this as any).os.i.id;
+		},
 		myColor(): string {
 			return this.game.black_user_id == (this as any).os.i.id ? 'black' : 'white';
 		},
@@ -41,7 +52,10 @@ export default Vue.extend({
 			this.o.set(log.color, log.pos);
 		});
 
-		this.turn = this.game.turn_user_id == (this as any).os.i.id;
+		this.turn = this.game.turn_user_id == this.game.black_user_id ? this.game.black_user : this.game.white_user;
+		this.isMyTurn = this.game.turn_user_id == (this as any).os.i.id;
+		this.isEnded = this.game.is_ended;
+		this.winner = this.game.winner;
 	},
 	mounted() {
 		this.connection = new OthelloGameStream((this as any).os.i, this.game);
@@ -53,11 +67,17 @@ export default Vue.extend({
 	},
 	methods: {
 		set(pos) {
-			if (!this.turn) return;
+			if (!this.isMyTurn) return;
 			if (!this.o.canReverse(this.myColor, pos)) return;
 			this.o.set(this.myColor, pos);
 			if (this.o.getPattern(this.opColor).length > 0) {
-				this.turn = !this.turn;
+				this.isMyTurn = !this.isMyTurn;
+				this.turn = this.myColor == 'black' ? this.game.white_user : this.game.black_user;
+			} else if (this.o.getPattern(this.myColor).length == 0) {
+				this.isEnded = true;
+				const blackCount = this.o.board.filter(s => s == 'black').length;
+				const whiteCount = this.o.board.filter(s => s == 'white').length;
+				this.winner = blackCount == whiteCount ? null : blackCount > whiteCount ? this.game.black_user : this.game.white_user;
 			}
 			this.connection.send({
 				type: 'set',
@@ -67,8 +87,28 @@ export default Vue.extend({
 		},
 		onSet(x) {
 			this.o.set(x.color, x.pos);
-			if (this.o.getPattern(this.myColor).length > 0) {
-				this.turn = true;
+			if (this.o.getPattern('black').length == 0 && this.o.getPattern('white').length == 0) {
+				this.isEnded = true;
+				const blackCount = this.o.board.filter(s => s == 'black').length;
+				const whiteCount = this.o.board.filter(s => s == 'white').length;
+				this.winner = blackCount == whiteCount ? null : blackCount > whiteCount ? this.game.black_user : this.game.white_user;
+			} else {
+				if (this.iAmPlayer && this.o.getPattern(this.myColor).length > 0) {
+					this.isMyTurn = true;
+				}
+
+				if (x.color == 'black' && this.o.getPattern('white').length > 0) {
+					this.turn = this.game.white_user;
+				}
+				if (x.color == 'black' && this.o.getPattern('white').length == 0) {
+					this.turn = this.game.black_user;
+				}
+				if (x.color == 'white' && this.o.getPattern('black').length > 0) {
+					this.turn = this.game.black_user;
+				}
+				if (x.color == 'white' && this.o.getPattern('black').length == 0) {
+					this.turn = this.game.white_user;
+				}
 			}
 			this.$forceUpdate();
 		}

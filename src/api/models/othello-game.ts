@@ -11,6 +11,9 @@ export interface IGame {
 	created_at: Date;
 	black_user_id: mongo.ObjectID;
 	white_user_id: mongo.ObjectID;
+	turn_user_id: mongo.ObjectID;
+	is_ended: boolean;
+	winner_id: mongo.ObjectID;
 	logs: any[];
 }
 
@@ -40,6 +43,7 @@ export const pack = (
 	// Populate user
 	_game.black_user = await packUser(_game.black_user_id, meId);
 	_game.white_user = await packUser(_game.white_user_id, meId);
+	_game.winner = await packUser(_game.winner_id, meId);
 
 	resolve(_game);
 });
