@@ -21,6 +21,7 @@ import urlPreview from './url-preview.vue';
 import twitterSetting from './twitter-setting.vue';
 import fileTypeIcon from './file-type-icon.vue';
 import Switch from './switch.vue';
+import Othello from './othello.vue';
 
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
@@ -43,3 +44,4 @@ Vue.component('mk-url-preview', urlPreview);
 Vue.component('mk-twitter-setting', twitterSetting);
 Vue.component('mk-file-type-icon', fileTypeIcon);
 Vue.component('mk-switch', Switch);
+Vue.component('mk-othello', Othello);

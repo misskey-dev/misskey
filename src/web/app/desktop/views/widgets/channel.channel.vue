@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ChannelStream from '../../../common/scripts/streaming/channel-stream';
+import ChannelStream from '../../../common/scripts/streaming/channel';
 import XForm from './channel.channel.form.vue';
 import XPost from './channel.channel.post.vue';
 

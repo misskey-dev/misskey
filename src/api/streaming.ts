@@ -10,6 +10,8 @@ import homeStream from './stream/home';
 import driveStream from './stream/drive';
 import messagingStream from './stream/messaging';
 import messagingIndexStream from './stream/messaging-index';
+import othelloGameStream from './stream/othello-game';
+import othelloStream from './stream/othello';
 import serverStream from './stream/server';
 import requestsStream from './stream/requests';
 import channelStream from './stream/channel';
@@ -62,6 +64,8 @@ module.exports = (server: http.Server) => {
 			request.resourceURL.pathname === '/drive' ? driveStream :
 			request.resourceURL.pathname === '/messaging' ? messagingStream :
 			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
+			request.resourceURL.pathname === '/othello-game' ? othelloGameStream :
+			request.resourceURL.pathname === '/othello' ? othelloStream :
 			null;
 
 		if (channel !== null) {

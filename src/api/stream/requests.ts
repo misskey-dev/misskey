@@ -3,7 +3,7 @@ import Xev from 'xev';
 
 const ev = new Xev();
 
-export default function homeStream(request: websocket.request, connection: websocket.connection): void {
+export default function(request: websocket.request, connection: websocket.connection): void {
 	const onRequest = request => {
 		connection.send(JSON.stringify({
 			type: 'request',

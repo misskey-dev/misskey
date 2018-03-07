@@ -89,7 +89,7 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('message', this.onMessage);
 		this.connection.off('read', this.onRead);
-		(this as any).os.stream.dispose(this.connectionId);
+		(this as any).os.streams.messagingIndexStream.dispose(this.connectionId);
 	},
 	methods: {
 		isMe(message) {

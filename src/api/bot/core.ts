@@ -475,8 +475,8 @@ class OthelloContext extends Context {
 		othelloAi('white', this.othello);
 		if (this.othello.getPattern('black').length === 0) {
 			this.bot.clearContext();
-			const blackCount = this.othello.board.map(row => row.filter(s => s == 'black').length).reduce((a, b) => a + b);
-			const whiteCount = this.othello.board.map(row => row.filter(s => s == 'white').length).reduce((a, b) => a + b);
+			const blackCount = this.othello.board.filter(s => s == 'black').length;
+			const whiteCount = this.othello.board.filter(s => s == 'white').length;
 			const winner = blackCount == whiteCount ? '引き分け' : blackCount > whiteCount ? '黒の勝ち' : '白の勝ち';
 			return this.othello.toString() + `\n\n～終了～\n\n黒${blackCount}、白${whiteCount}で${winner}です。`;
 		} else {

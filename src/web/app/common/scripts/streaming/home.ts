@@ -1,12 +1,13 @@
 import * as merge from 'object-assign-deep';
 
 import Stream from './stream';
+import StreamManager from './stream-manager';
 import MiOS from '../../mios';
 
 /**
  * Home stream connection
  */
-export default class Connection extends Stream {
+export class HomeStream extends Stream {
 	constructor(os: MiOS, me) {
 		super('', {
 			i: me.token
@@ -32,5 +33,25 @@ export default class Connection extends Stream {
 			alert('%i18n:common.my-token-regenerated%');
 			os.signout();
 		});
+	}
+}
+
+export class HomeStreamManager extends StreamManager<HomeStream> {
+	private me;
+	private os: MiOS;
+
+	constructor(os: MiOS, me) {
+		super();
+
+		this.me = me;
+		this.os = os;
+	}
+
+	public getConnection() {
+		if (this.connection == null) {
+			this.connection = new HomeStream(this.os, this.me);
+		}
+
+		return this.connection;
 	}
 }

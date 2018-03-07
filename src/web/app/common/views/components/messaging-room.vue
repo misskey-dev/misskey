@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MessagingStreamConnection from '../../scripts/streaming/messaging-stream';
+import { MessagingStream } from '../../scripts/streaming/messaging';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { url } from '../../../config';
@@ -66,7 +66,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = new MessagingStreamConnection((this as any).os.i, this.user.id);
+		this.connection = new MessagingStream((this as any).os.i, this.user.id);
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
