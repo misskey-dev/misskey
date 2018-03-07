@@ -10,7 +10,7 @@
 	</p>
 	<div class="board">
 		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, myTurn: isMyTurn, can: o.canReverse(turn.id == game.black_user.id ? 'black' : 'white', i) }"
+			:class="{ empty: stone == null, myTurn: isMyTurn, can: o.canReverse(turn.id == game.black_user.id ? 'black' : 'white', i), prev: o.prevPos == i }"
 			@click="set(i)"
 		>
 			<img v-if="stone == 'black'" :src="`${game.black_user.avatar_url}?thumbnail&size=64`" alt="">
@@ -217,6 +217,9 @@ export default Vue.extend({
 
 					&:active
 						background darken($theme-color, 10%)
+
+			&.prev
+				box-shadow 0 0 0 4px rgba($theme-color, 0.7)
 
 			> img
 				display block

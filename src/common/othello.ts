@@ -29,6 +29,8 @@ export default class Othello {
 		});
 	}
 
+	public prevPos = -1;
+
 	public get blackCount() {
 		return this.board.filter(s => s == 'black').length;
 	}
@@ -59,6 +61,7 @@ export default class Othello {
 	 * 石を配置します
 	 */
 	public set2(color, x, y) {
+		this.prevPos = x + (y * 8);
 		this.write(color, x, y);
 
 		const reverses = this.getReverse(color, x, y);
