@@ -28,6 +28,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		const game = await Game.findOne({ _id: gameId });
 
 		if (game.is_ended) return;
+		if (!game.black_user_id.equals(user._id) && !game.white_user_id.equals(user._id)) return;
 
 		const o = new Othello();
 
