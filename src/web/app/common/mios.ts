@@ -4,11 +4,12 @@ import * as merge from 'object-assign-deep';
 
 import { host, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
 import Progress from './scripts/loading';
-import HomeStreamManager from './scripts/streaming/home-stream-manager';
-import DriveStreamManager from './scripts/streaming/drive-stream-manager';
-import ServerStreamManager from './scripts/streaming/server-stream-manager';
-import RequestsStreamManager from './scripts/streaming/requests-stream-manager';
-import MessagingIndexStreamManager from './scripts/streaming/messaging-index-stream-manager';
+import { HomeStreamManager } from './scripts/streaming/home';
+import { DriveStreamManager } from './scripts/streaming/drive';
+import { ServerStreamManager } from './scripts/streaming/server';
+import { RequestsStreamManager } from './scripts/streaming/requests';
+import { MessagingIndexStreamManager } from './scripts/streaming/messaging-index';
+import { OthelloStreamManager } from './scripts/streaming/othello';
 
 import Err from '../common/views/components/connect-failed.vue';
 
@@ -117,11 +118,13 @@ export default class MiOS extends EventEmitter {
 		serverStream: ServerStreamManager;
 		requestsStream: RequestsStreamManager;
 		messagingIndexStream: MessagingIndexStreamManager;
+		othelloStream: OthelloStreamManager;
 	} = {
 		driveStream: null,
 		serverStream: null,
 		requestsStream: null,
-		messagingIndexStream: null
+		messagingIndexStream: null,
+		othelloStream: null
 	};
 
 	/**
@@ -169,6 +172,7 @@ export default class MiOS extends EventEmitter {
 			// Init other stream manager
 			this.streams.driveStream = new DriveStreamManager(this.i);
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this.i);
+			this.streams.othelloStream = new OthelloStreamManager(this.i);
 		});
 
 		if (this.debug) {

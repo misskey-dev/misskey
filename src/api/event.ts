@@ -42,6 +42,10 @@ class MisskeyEvent {
 		this.publish(`othello-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	public publishOthelloGameStream(gameId: ID, type: string, value?: any): void {
+		this.publish(`othello-game-stream:${gameId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
 	public publishChannelStream(channelId: ID, type: string, value?: any): void {
 		this.publish(`channel-stream:${channelId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -70,5 +74,7 @@ export const publishMessagingStream = ev.publishMessagingStream.bind(ev);
 export const publishMessagingIndexStream = ev.publishMessagingIndexStream.bind(ev);
 
 export const publishOthelloStream = ev.publishOthelloStream.bind(ev);
+
+export const publishOthelloGameStream = ev.publishOthelloGameStream.bind(ev);
 
 export const publishChannelStream = ev.publishChannelStream.bind(ev);

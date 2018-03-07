@@ -1,37 +1,38 @@
 const BOARD_SIZE = 8;
 
 export default class Othello {
-	public board: Array<Array<'black' | 'white'>>;
+	public board: Array<'black' | 'white'>;
 
 	/**
 	 * ゲームを初期化します
 	 */
 	constructor() {
 		this.board = [
-			[null, null, null, null, null, null, null, null],
-			[null, null, null, null, null, null, null, null],
-			[null, null, null, null, null, null, null, null],
-			[null, null, null, 'black', 'white', null, null, null],
-			[null, null, null, 'white', 'black', null, null, null],
-			[null, null, null, null, null, null, null, null],
-			[null, null, null, null, null, null, null, null],
-			[null, null, null, null, null, null, null, null]
+			null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null,
+			null, null, null, 'white', 'black', null, null, null,
+			null, null, null, 'black', 'white', null, null, null,
+			null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null
 		];
 	}
 
 	public setByNumber(color, n) {
 		const ps = this.getPattern(color);
-		this.set(color, ps[n][0], ps[n][1]);
+		this.set2(color, ps[n][0], ps[n][1]);
 	}
 
 	private write(color, x, y) {
-		this.board[y][x] = color;
+		const pos = x + (y * 8);
+		this.board[pos] = color;
 	}
 
 	/**
 	 * 石を配置します
 	 */
-	public set(color, x, y) {
+	public set2(color, x, y) {
 		this.write(color, x, y);
 
 		const reverses = this.getReverse(color, x, y);
@@ -89,23 +90,41 @@ export default class Othello {
 		});
 	}
 
+	public set(color, pos) {
+		const x = pos % BOARD_SIZE;
+		const y = Math.floor(pos / BOARD_SIZE);
+		this.set2(color, x, y);
+	}
+
+	public get(x, y) {
+		const pos = x + (y * 8);
+		return this.board[pos];
+	}
+
 	/**
 	 * 打つことができる場所を取得します
 	 */
 	public getPattern(myColor): number[][] {
 		const result = [];
-		this.board.forEach((stones, y) => stones.forEach((stone, x) => {
+		this.board.forEach((stone, i) => {
 			if (stone != null) return;
-			if (this.canReverse(myColor, x, y)) result.push([x, y]);
-		}));
+			const x = i % BOARD_SIZE;
+			const y = Math.floor(i / BOARD_SIZE);
+			if (this.canReverse2(myColor, x, y)) result.push([x, y]);
+		});
 		return result;
 	}
 
 	/**
 	 * 指定の位置に石を打つことができるかどうか(相手の石を1つでも反転させられるか)を取得します
 	 */
-	public canReverse(myColor, targetx, targety): boolean {
+	public canReverse2(myColor, targetx, targety): boolean {
 		return this.getReverse(myColor, targetx, targety) !== null;
+	}
+	public canReverse(myColor, pos): boolean {
+		const x = pos % BOARD_SIZE;
+		const y = Math.floor(pos / BOARD_SIZE);
+		return this.getReverse(myColor, x, y) !== null;
 	}
 
 	private getReverse(myColor, targetx, targety): number[] {
@@ -117,11 +136,11 @@ export default class Othello {
 			return (x, y): any => {
 				if (breaked) {
 					return;
-				} else if (this.board[y][x] == myColor && opponentStoneFound) {
+				} else if (this.get(x, y) == myColor && opponentStoneFound) {
 					return true;
-				} else if (this.board[y][x] == myColor && !opponentStoneFound) {
+				} else if (this.get(x, y) == myColor && !opponentStoneFound) {
 					breaked = true;
-				} else if (this.board[y][x] == opponentColor) {
+				} else if (this.get(x, y) == opponentColor) {
 					opponentStoneFound = true;
 				} else {
 					breaked = true;
@@ -210,12 +229,13 @@ export default class Othello {
 
 	public toString(): string {
 		//return this.board.map(row => row.map(state => state === 'black' ? '●' : state === 'white' ? '○' : '┼').join('')).join('\n');
-		return this.board.map(row => row.map(state => state === 'black' ? '⚫️' : state === 'white' ? '⚪️' : '🔹').join('')).join('\n');
+		//return this.board.map(row => row.map(state => state === 'black' ? '⚫️' : state === 'white' ? '⚪️' : '🔹').join('')).join('\n');
+		return 'wip';
 	}
 
 	public toPatternString(color): string {
 		//const num = ['０', '１', '２', '３', '４', '５', '６', '７', '８', '９'];
-		const num = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', '🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🍍'];
+		/*const num = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', '🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🍍'];
 
 		const pattern = this.getPattern(color);
 
@@ -223,7 +243,9 @@ export default class Othello {
 			const i = pattern.findIndex(p => p[0] == x && p[1] == y);
 			//return state === 'black' ? '●' : state === 'white' ? '○' : i != -1 ? num[i] : '┼';
 			return state === 'black' ? '⚫️' : state === 'white' ? '⚪️' : i != -1 ? num[i] : '🔹';
-		}).join('')).join('\n');
+		}).join('')).join('\n');*/
+
+		return 'wip';
 	}
 }
 

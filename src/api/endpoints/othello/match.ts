@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import Matching from '../../models/othello-matchig';
-import Game, { pack } from '../../models/othello-game';
+import Matching, { pack as packMatching } from '../../models/othello-matching';
+import Game, { pack as packGame } from '../../models/othello-game';
 import User from '../../models/user';
 import { publishOthelloStream } from '../../event';
 
@@ -33,17 +33,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			created_at: new Date(),
 			black_user_id: parentIsBlack ? exist.parent_id : user._id,
 			white_user_id: parentIsBlack ? user._id : exist.parent_id,
+			turn_user_id: parentIsBlack ? exist.parent_id : user._id,
 			logs: []
 		});
 
-		const packedGame = await pack(game);
-
 		// Reponse
-		res(packedGame);
+		res(await packGame(game, user));
 
-		publishOthelloStream(exist.parent_id, 'matched', {
-			game
-		});
+		publishOthelloStream(exist.parent_id, 'matched', await packGame(game, exist.parent_id));
 	} else {
 		// Fetch child
 		const child = await User.findOne({
@@ -64,17 +61,16 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 		// セッションを作成
-		await Matching.insert({
+		const matching = await Matching.insert({
+			created_at: new Date(),
 			parent_id: user._id,
 			child_id: child._id
 		});
 
 		// Reponse
-		res(204);
+		res();
 
 		// 招待
-		publishOthelloStream(child._id, 'invited', {
-			user_id: user._id
-		});
+		publishOthelloStream(child._id, 'invited', await packMatching(matching, child));
 	}
 });

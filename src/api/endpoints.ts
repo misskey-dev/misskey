@@ -234,6 +234,26 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'othello/match',
+		withCredential: true
+	},
+
+	{
+		name: 'othello/match/cancel',
+		withCredential: true
+	},
+
+	{
+		name: 'othello/invitations',
+		withCredential: true
+	},
+
+	{
+		name: 'othello/games',
+		withCredential: true
+	},
+
+	{
 		name: 'mute/create',
 		withCredential: true,
 		kind: 'account/write'

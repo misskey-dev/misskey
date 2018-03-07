@@ -15,17 +15,18 @@
 					<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>
 				</a>
 			</li>
+			<li class="game">
+				<a @click="game">
+					%fa:gamepad%
+					<p>ゲーム</p>
+					<template v-if="hasGameInvitations">%fa:circle%</template>
+				</a>
+			</li>
 		</template>
 		<li class="ch">
 			<a :href="chUrl" target="_blank">
 				%fa:tv%
 				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
-			</a>
-		</li>
-		<li class="info">
-			<a href="https://twitter.com/misskey_xyz" target="_blank">
-				%fa:info%
-				<p>%i18n:desktop.tags.mk-ui-header-nav.info%</p>
 			</a>
 		</li>
 	</ul>
@@ -36,11 +37,13 @@
 import Vue from 'vue';
 import { chUrl } from '../../../config';
 import MkMessagingWindow from './messaging-window.vue';
+import MkGameWindow from './game-window.vue';
 
 export default Vue.extend({
 	data() {
 		return {
 			hasUnreadMessagingMessages: false,
+			hasGameInvitations: false,
 			connection: null,
 			connectionId: null,
 			chUrl
@@ -80,6 +83,10 @@ export default Vue.extend({
 
 		messaging() {
 			(this as any).os.new(MkMessagingWindow);
+		},
+
+		game() {
+			(this as any).os.new(MkGameWindow);
 		}
 	}
 });
