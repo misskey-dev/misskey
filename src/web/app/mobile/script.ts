@@ -4,6 +4,7 @@
 
 // Style
 import './style.styl';
+import '../../element.scss';
 
 import init from '../init';
 
@@ -28,6 +29,7 @@ import MkFollowers from './views/pages/followers.vue';
 import MkFollowing from './views/pages/following.vue';
 import MkSettings from './views/pages/settings.vue';
 import MkProfileSetting from './views/pages/profile-setting.vue';
+import MkOthello from './views/pages/othello.vue';
 
 /**
  * init
@@ -67,6 +69,7 @@ init((launch) => {
 		{ path: '/i/drive/file/:file', component: MkDrive },
 		{ path: '/selectdrive', component: MkSelectDrive },
 		{ path: '/search', component: MkSearch },
+		{ path: '/game/othello', component: MkOthello },
 		{ path: '/:user', component: MkUser },
 		{ path: '/:user/followers', component: MkFollowers },
 		{ path: '/:user/following', component: MkFollowing },

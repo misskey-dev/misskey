@@ -43,7 +43,11 @@ export const pack = (
 	// Populate user
 	_game.black_user = await packUser(_game.black_user_id, meId);
 	_game.white_user = await packUser(_game.white_user_id, meId);
-	_game.winner = await packUser(_game.winner_id, meId);
+	if (_game.winner_id) {
+		_game.winner = await packUser(_game.winner_id, meId);
+	} else {
+		_game.winner = null;
+	}
 
 	resolve(_game);
 });
