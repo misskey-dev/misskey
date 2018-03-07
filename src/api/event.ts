@@ -38,6 +38,10 @@ class MisskeyEvent {
 		this.publish(`messaging-index-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	public publishOthelloStream(userId: ID, type: string, value?: any): void {
+		this.publish(`othello-stream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
 	public publishChannelStream(channelId: ID, type: string, value?: any): void {
 		this.publish(`channel-stream:${channelId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -64,5 +68,7 @@ export const publishPostStream = ev.publishPostStream.bind(ev);
 export const publishMessagingStream = ev.publishMessagingStream.bind(ev);
 
 export const publishMessagingIndexStream = ev.publishMessagingIndexStream.bind(ev);
+
+export const publishOthelloStream = ev.publishOthelloStream.bind(ev);
 
 export const publishChannelStream = ev.publishChannelStream.bind(ev);

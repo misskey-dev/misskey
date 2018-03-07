@@ -2,7 +2,7 @@ import * as websocket from 'websocket';
 import * as redis from 'redis';
 import read from '../common/read-messaging-message';
 
-export default function messagingStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
 	const otherparty = request.resourceURL.query.otherparty;
 
 	// Subscribe messaging stream
