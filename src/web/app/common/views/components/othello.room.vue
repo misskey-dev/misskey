@@ -21,6 +21,13 @@
 		<mk-switch v-model="game.settings.is_llotheo" @change="onIsLlotheoChange" text="石の少ない方が勝ち(ロセオ)"/>
 	</div>
 
+	<p class="status">
+		<template v-if="isAccepted && isOpAccepted">ゲームは数秒後に開始されます<mk-ellipsis/></template>
+		<template v-if="isAccepted && !isOpAccepted">相手の準備が完了するのを待っています<mk-ellipsis/></template>
+		<template v-if="!isAccepted && isOpAccepted">あなたの準備が完了するのを待っています</template>
+		<template v-if="!isAccepted && !isOpAccepted">準備中<mk-ellipsis/></template>
+	</p>
+
 	<div class="actions">
 		<el-button @click="exit">キャンセル</el-button>
 		<el-button type="primary" @click="accept" v-if="!isAccepted">準備完了</el-button>
@@ -49,6 +56,11 @@ export default Vue.extend({
 		isAccepted(): boolean {
 			if (this.game.user1_id == (this as any).os.i.id && this.game.user1_accepted) return true;
 			if (this.game.user2_id == (this as any).os.i.id && this.game.user2_accepted) return true;
+			return false;
+		},
+		isOpAccepted(): boolean {
+			if (this.game.user1_id != (this as any).os.i.id && this.game.user1_accepted) return true;
+			if (this.game.user2_id != (this as any).os.i.id && this.game.user2_accepted) return true;
 			return false;
 		}
 	},

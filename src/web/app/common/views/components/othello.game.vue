@@ -12,7 +12,7 @@
 
 	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.size }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map.size }, 1fr)` }">
 		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, none: o.map.data[i] == ' ', myTurn: isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id ? 'black' : 'white', i) : null, prev: o.prevPos == i }"
+			:class="{ empty: stone == null, none: o.map.data[i] == ' ', myTurn: !game.is_ended && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id ? 'black' : 'white', i) : null, prev: o.prevPos == i }"
 			@click="set(i)"
 		>
 			<img v-if="stone == 'black'" :src="`${blackUser.avatar_url}?thumbnail&size=128`" alt="">
@@ -129,6 +129,8 @@ export default Vue.extend({
 
 	methods: {
 		set(pos) {
+			if (this.game.is_ended) return;
+			if (!this.iAmPlayer) return;
 			if (!this.isMyTurn) return;
 			if (!this.o.canPut(this.myColor, pos)) return;
 

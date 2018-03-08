@@ -96,6 +96,7 @@ export default function(request: websocket.request, connection: websocket.connec
 			setTimeout(async () => {
 				const freshGame = await Game.findOne({ _id: gameId });
 				if (freshGame == null || freshGame.is_started || freshGame.is_ended) return;
+				if (!freshGame.user1_accepted || !freshGame.user2_accepted) return;
 
 				let bw: number;
 				if (freshGame.settings.bw == 'random') {
