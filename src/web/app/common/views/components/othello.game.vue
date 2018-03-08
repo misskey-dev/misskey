@@ -12,7 +12,7 @@
 
 	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.size }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map.size }, 1fr)` }">
 		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, none: o.map.data[i] == ' ', myTurn: !game.is_ended && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id ? 'black' : 'white', i) : null, prev: o.prevPos == i }"
+			:class="{ empty: stone == null, none: o.map.data[i] == ' ', isEnded: game.is_ended, myTurn: !game.is_ended && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id ? 'black' : 'white', i) : null, prev: o.prevPos == i }"
 			@click="set(i)"
 		>
 			<img v-if="stone == 'black'" :src="`${blackUser.avatar_url}?thumbnail&size=128`" alt="">
@@ -200,13 +200,13 @@ export default Vue.extend({
 				user-select none
 
 			&.empty
-				border solid 2px #f5f5f5
+				border solid 2px #eee
 
 			&.empty.can
-				background #f5f5f5
+				background #eee
 
 			&.empty.myTurn
-				border-color #eee
+				border-color #ddd
 
 				&.can
 					background #eee
@@ -221,6 +221,9 @@ export default Vue.extend({
 
 			&.prev
 				box-shadow 0 0 0 4px rgba($theme-color, 0.7)
+
+			&.isEnded
+				border-color #ddd
 
 			&.none
 				border-color transparent !important

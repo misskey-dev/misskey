@@ -5,7 +5,9 @@
 	<p>ゲームの設定</p>
 
 	<el-select v-model="mapName" placeholder="マップを選択" @change="onMapChange">
-		<el-option v-for="m in maps" :key="m.name" :label="m.name" :value="m.name"/>
+		<el-option-group v-for="c in mapCategories" :key="c" :label="c">
+			<el-option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name"/>
+		</el-option-group>
 	</el-select>
 
 	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.size }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map.size }, 1fr)` }">
@@ -21,18 +23,20 @@
 		<mk-switch v-model="game.settings.is_llotheo" @change="onIsLlotheoChange" text="石の少ない方が勝ち(ロセオ)"/>
 	</div>
 
-	<p class="status">
-		<template v-if="isAccepted && isOpAccepted">ゲームは数秒後に開始されます<mk-ellipsis/></template>
-		<template v-if="isAccepted && !isOpAccepted">相手の準備が完了するのを待っています<mk-ellipsis/></template>
-		<template v-if="!isAccepted && isOpAccepted">あなたの準備が完了するのを待っています</template>
-		<template v-if="!isAccepted && !isOpAccepted">準備中<mk-ellipsis/></template>
-	</p>
+	<footer>
+		<p class="status">
+			<template v-if="isAccepted && isOpAccepted">ゲームは数秒後に開始されます<mk-ellipsis/></template>
+			<template v-if="isAccepted && !isOpAccepted">相手の準備が完了するのを待っています<mk-ellipsis/></template>
+			<template v-if="!isAccepted && isOpAccepted">あなたの準備が完了するのを待っています</template>
+			<template v-if="!isAccepted && !isOpAccepted">準備中<mk-ellipsis/></template>
+		</p>
 
-	<div class="actions">
-		<el-button @click="exit">キャンセル</el-button>
-		<el-button type="primary" @click="accept" v-if="!isAccepted">準備完了</el-button>
-		<el-button type="primary" @click="cancel" v-if="isAccepted">準備続行</el-button>
-	</div>
+		<div class="actions">
+			<el-button @click="exit">キャンセル</el-button>
+			<el-button type="primary" @click="accept" v-if="!isAccepted">準備完了</el-button>
+			<el-button type="primary" @click="cancel" v-if="isAccepted">準備続行</el-button>
+		</div>
+	</footer>
 </div>
 </template>
 
@@ -53,6 +57,10 @@ export default Vue.extend({
 	},
 
 	computed: {
+		mapCategories(): string[] {
+			const categories = Object.entries(maps).map(x => x[1].category);
+			return categories.filter((item, pos) => categories.indexOf(item) == pos);
+		},
 		isAccepted(): boolean {
 			if (this.game.user1_id == (this as any).os.i.id && this.game.user1_accepted) return true;
 			if (this.game.user2_id == (this as any).os.i.id && this.game.user2_accepted) return true;
@@ -142,7 +150,7 @@ export default Vue.extend({
 
 		> div
 			background transparent
-			border solid 2px #eee
+			border solid 2px #ddd
 			border-radius 6px
 			overflow hidden
 
@@ -157,8 +165,15 @@ export default Vue.extend({
 
 	> .rules
 		max-width 300px
-		margin 0 auto
+		margin 0 auto 32px auto
 
-	> .actions
-		margin-bottom 16px
+	> footer
+		position sticky
+		bottom 0
+		padding 16px
+		background rgba(255, 255, 255, 0.9)
+		border-top solid 1px #c4cdd4
+
+		> .status
+			margin 0 0 16px 0
 </style>

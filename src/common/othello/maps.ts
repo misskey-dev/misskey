@@ -10,12 +10,14 @@
 
 export type Map = {
 	name?: string;
+	category?: string;
 	size: number;
 	data: string;
 };
 
 export const fourfour: Map = {
 	name: '4x4',
+	category: '4x4',
 	size: 4,
 	data:
 		'----' +
@@ -26,6 +28,7 @@ export const fourfour: Map = {
 
 export const sixsix: Map = {
 	name: '6x6',
+	category: '6x6',
 	size: 6,
 	data:
 		'------' +
@@ -36,8 +39,35 @@ export const sixsix: Map = {
 		'------'
 };
 
+export const roundedSixsix: Map = {
+	name: '6x6 rounded',
+	category: '6x6',
+	size: 6,
+	data:
+		' ---- ' +
+		'------' +
+		'--wb--' +
+		'--bw--' +
+		'------' +
+		' ---- '
+};
+
+export const roundedSixsix2: Map = {
+	name: '6x6 rounded 2',
+	category: '6x6',
+	size: 6,
+	data:
+		'  --  ' +
+		' ---- ' +
+		'--wb--' +
+		'--bw--' +
+		' -----' +
+		'  --  '
+};
+
 export const eighteight: Map = {
 	name: '8x8',
+	category: '8x8',
 	size: 8,
 	data:
 		'--------' +
@@ -52,6 +82,7 @@ export const eighteight: Map = {
 
 export const roundedEighteight: Map = {
 	name: '8x8 rounded',
+	category: '8x8',
 	size: 8,
 	data:
 		' ------ ' +
@@ -66,6 +97,7 @@ export const roundedEighteight: Map = {
 
 export const roundedEighteight2: Map = {
 	name: '8x8 rounded 2',
+	category: '8x8',
 	size: 8,
 	data:
 		'  ----  ' +
@@ -78,8 +110,24 @@ export const roundedEighteight2: Map = {
 		'  ----  '
 };
 
+export const roundedEighteight3: Map = {
+	name: '8x8 rounded 3',
+	category: '8x8',
+	size: 8,
+	data:
+		'   --   ' +
+		'  ----  ' +
+		' ------ ' +
+		'---wb---' +
+		'---bw---' +
+		' ------ ' +
+		'  ----  ' +
+		'   --   '
+};
+
 export const eighteightWithNotch: Map = {
 	name: '8x8 with notch',
+	category: '8x8',
 	size: 8,
 	data:
 		'---  ---' +
@@ -94,6 +142,7 @@ export const eighteightWithNotch: Map = {
 
 export const eighteightWithSomeHoles: Map = {
 	name: '8x8 with some holes',
+	category: '8x8',
 	size: 8,
 	data:
 		'--- ----' +
@@ -106,22 +155,69 @@ export const eighteightWithSomeHoles: Map = {
 		'--------'
 };
 
-export const sixeight: Map = {
-	name: '6x8',
+export const circle: Map = {
+	name: 'Circle',
+	category: '8x8',
+	size: 8,
+	data:
+		'   --   ' +
+		' ------ ' +
+		' ------ ' +
+		'---wb---' +
+		'---bw---' +
+		' ------ ' +
+		' ------ ' +
+		'   --   '
+};
+
+export const dice: Map = {
+	name: 'Dice',
+	category: '8x8',
+	size: 8,
+	data:
+		'--------' +
+		'-  --  -' +
+		'-  --  -' +
+		'---wb---' +
+		'---bw---' +
+		'-  --  -' +
+		'-  --  -' +
+		'--------'
+};
+
+export const face: Map = {
+	name: 'Face',
+	category: '8x8',
 	size: 8,
 	data:
 		' ------ ' +
-		' ------ ' +
-		' ------ ' +
-		' --wb-- ' +
-		' --bw-- ' +
-		' ------ ' +
-		' ------ ' +
+		'--------' +
+		'-- -- --' +
+		'---wb---' +
+		'-- bw --' +
+		'---  ---' +
+		'--------' +
 		' ------ '
+};
+
+export const window: Map = {
+	name: 'Window',
+	category: '8x8',
+	size: 8,
+	data:
+		'--------' +
+		'-  --  -' +
+		'-  --  -' +
+		'---wb---' +
+		'---bw---' +
+		'-  --  -' +
+		'-  --  -' +
+		'--------'
 };
 
 export const tenthtenth: Map = {
 	name: '10x10',
+	category: '10x10',
 	size: 10,
 	data:
 		'----------' +
@@ -137,7 +233,8 @@ export const tenthtenth: Map = {
 };
 
 export const hole: Map = {
-	name: 'hole',
+	name: 'The Hole',
+	category: '10x10',
 	size: 10,
 	data:
 		'----------' +
@@ -152,8 +249,41 @@ export const hole: Map = {
 		'----------'
 };
 
+export const grid: Map = {
+	name: 'Grid',
+	category: '10x10',
+	size: 10,
+	data:
+		'----------' +
+		'- - -- - -' +
+		'----------' +
+		'- - -- - -' +
+		'----wb----' +
+		'----bw----' +
+		'- - -- - -' +
+		'----------' +
+		'- - -- - -' +
+		'----------'
+};
+
+export const sixeight: Map = {
+	name: '6x8',
+	category: 'special',
+	size: 8,
+	data:
+		' ------ ' +
+		' ------ ' +
+		' ------ ' +
+		' --wb-- ' +
+		' --bw-- ' +
+		' ------ ' +
+		' ------ ' +
+		' ------ '
+};
+
 export const spark: Map = {
-	name: 'spark',
+	name: 'Spark',
+	category: 'special',
 	size: 10,
 	data:
 		' -      - ' +
@@ -169,7 +299,8 @@ export const spark: Map = {
 };
 
 export const islands: Map = {
-	name: 'islands',
+	name: 'Islands',
+	category: 'special',
 	size: 10,
 	data:
 		'--------  ' +
@@ -184,34 +315,21 @@ export const islands: Map = {
 		'  --------'
 };
 
-export const grid: Map = {
-	name: 'grid',
-	size: 10,
-	data:
-		'----------' +
-		'- - -- - -' +
-		'----------' +
-		'- - -- - -' +
-		'----wb----' +
-		'----bw----' +
-		'- - -- - -' +
-		'----------' +
-		'- - -- - -' +
-		'----------'
-};
-
 export const iphonex: Map = {
 	name: 'iPhone X',
-	size: 10,
+	category: 'special',
+	size: 12,
 	data:
-		'  --  --  ' +
-		' -------- ' +
-		' -------- ' +
-		' -------- ' +
-		' ---wb--- ' +
-		' ---bw--- ' +
-		' -------- ' +
-		' -------- ' +
-		' -------- ' +
-		'  ------  '
+		'   --  --   ' +
+		'  --------  ' +
+		'  --------  ' +
+		'  --------  ' +
+		'  --------  ' +
+		'  ---wb---  ' +
+		'  ---bw---  ' +
+		'  --------  ' +
+		'  --------  ' +
+		'  --------  ' +
+		'  --------  ' +
+		'   ------   '
 };
