@@ -251,6 +251,23 @@ export const grid: Map = {
 		'----------'
 };
 
+export const cross: Map = {
+	name: 'Cross',
+	category: '10x10',
+	size: 10,
+	data:
+		'   ----   ' +
+		'   ----   ' +
+		'   ----   ' +
+		'----------' +
+		'----wb----' +
+		'----bw----' +
+		'----------' +
+		'   ----   ' +
+		'   ----   ' +
+		'   ----   '
+};
+
 export const sixeight: Map = {
 	name: '6x8',
 	category: 'special',
