@@ -200,6 +200,21 @@ export const window: Map = {
 		'--------'
 };
 
+export const reserved: Map = {
+	name: 'Reserved',
+	category: '8x8',
+	size: 8,
+	data:
+		'w------b' +
+		'--------' +
+		'--------' +
+		'---wb---' +
+		'---bw---' +
+		'--------' +
+		'--------' +
+		'b------w'
+};
+
 export const tenthtenth: Map = {
 	name: '10x10',
 	category: '10x10',
