@@ -22,15 +22,6 @@
 
 	<p>黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
 
-	<div class="graph">
-		<div v-for="n in 61 - o.stats.length">
-		</div>
-		<div v-for="data in o.stats">
-			<div :style="{ height: `${ Math.floor(data.b * 100) }%` }"></div>
-			<div :style="{ height: `${ Math.floor(data.w * 100) }%` }"></div>
-		</div>
-	</div>
-
 	<div class="player" v-if="game.is_ended">
 		<el-button type="primary" @click="logPos = 0" :disabled="logPos == 0">%fa:fast-backward%</el-button>
 		<el-button type="primary" @click="logPos--" :disabled="logPos == 0">%fa:backward%</el-button>
