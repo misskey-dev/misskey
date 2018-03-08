@@ -170,21 +170,6 @@ export const circle: Map = {
 		'   --   '
 };
 
-export const dice: Map = {
-	name: 'Dice',
-	category: '8x8',
-	size: 8,
-	data:
-		'--------' +
-		'-  --  -' +
-		'-  --  -' +
-		'---wb---' +
-		'---bw---' +
-		'-  --  -' +
-		'-  --  -' +
-		'--------'
-};
-
 export const face: Map = {
 	name: 'Face',
 	category: '8x8',
