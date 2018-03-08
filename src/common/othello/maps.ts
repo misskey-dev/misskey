@@ -315,6 +315,23 @@ export const walls: Map = {
 		' bbbbbbbb '
 };
 
+export const checker: Map = {
+	name: 'Checker',
+	category: '10x10',
+	size: 10,
+	data:
+		'----------' +
+		'----------' +
+		'----------' +
+		'---wbwb---' +
+		'---bwbw---' +
+		'---wbwb---' +
+		'---bwbw---' +
+		'----------' +
+		'----------' +
+		'----------'
+};
+
 export const sixeight: Map = {
 	name: '6x8',
 	category: 'special',
