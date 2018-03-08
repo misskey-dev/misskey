@@ -61,7 +61,7 @@ export const roundedSixsix2: Map = {
 		' ---- ' +
 		'--wb--' +
 		'--bw--' +
-		' -----' +
+		' ---- ' +
 		'  --  '
 };
 
