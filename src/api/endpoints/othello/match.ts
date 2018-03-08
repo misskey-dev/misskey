@@ -3,6 +3,7 @@ import Matching, { pack as packMatching } from '../../models/othello-matching';
 import Game, { pack as packGame } from '../../models/othello-game';
 import User from '../../models/user';
 import { publishOthelloStream } from '../../event';
+import { eighteight } from '../../../common/othello/maps';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'user_id' parameter
@@ -26,16 +27,21 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			_id: exist._id
 		});
 
-		const parentIsBlack = Math.random() > 0.5;
-
-		// Start game
+		// Create game
 		const game = await Game.insert({
 			created_at: new Date(),
-			black_user_id: parentIsBlack ? exist.parent_id : user._id,
-			white_user_id: parentIsBlack ? user._id : exist.parent_id,
-			turn_user_id: parentIsBlack ? exist.parent_id : user._id,
+			user1_id: exist.parent_id,
+			user2_id: user._id,
+			user1_accepted: false,
+			user2_accepted: false,
+			is_started: false,
 			is_ended: false,
-			logs: []
+			logs: [],
+			settings: {
+				map: eighteight,
+				bw: 'random',
+				is_llotheo: false
+			}
 		});
 
 		// Reponse

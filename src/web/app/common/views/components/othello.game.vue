@@ -1,23 +1,27 @@
 <template>
 <div class="root">
-	<header><b>{{ game.black_user.name }}</b>(黒) vs <b>{{ game.white_user.name }}</b>(白)</header>
-	<p class="turn" v-if="!iAmPlayer && !isEnded">{{ turn.name }}のターンです<mk-ellipsis/></p>
-	<p class="turn" v-if="logPos != logs.length">{{ turn.name }}のターン</p>
-	<p class="turn" v-if="iAmPlayer && !isEnded">{{ isMyTurn ? 'あなたのターンです' : '相手のターンです' }}<mk-ellipsis v-if="!isMyTurn"/></p>
-	<p class="result" v-if="isEnded && logPos == logs.length">
-		<template v-if="winner"><b>{{ winner.name }}</b>の勝ち</template>
+	<header><b>{{ blackUser.name }}</b>(黒) vs <b>{{ whiteUser.name }}</b>(白)</header>
+
+	<p class="turn" v-if="!iAmPlayer && !game.is_ended">{{ turnUser.name }}のターンです<mk-ellipsis/></p>
+	<p class="turn" v-if="logPos != logs.length">{{ turnUser.name }}のターン</p>
+	<p class="turn" v-if="iAmPlayer && !game.is_ended">{{ isMyTurn ? 'あなたのターンです' : '相手のターンです' }}<mk-ellipsis v-if="!isMyTurn"/></p>
+	<p class="result" v-if="game.is_ended && logPos == logs.length">
+		<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.is_llotheo ? ' (ロセオ)' : '' }}</template>
 		<template v-else>引き分け</template>
 	</p>
-	<div class="board">
+
+	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.size }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map.size }, 1fr)` }">
 		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, myTurn: isMyTurn, can: o.canReverse(turn.id == game.black_user.id ? 'black' : 'white', i), prev: o.prevPos == i }"
+			:class="{ empty: stone == null, none: o.map.data[i] == ' ', myTurn: isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id ? 'black' : 'white', i) : null, prev: o.prevPos == i }"
 			@click="set(i)"
 		>
-			<img v-if="stone == 'black'" :src="`${game.black_user.avatar_url}?thumbnail&size=64`" alt="">
-			<img v-if="stone == 'white'" :src="`${game.white_user.avatar_url}?thumbnail&size=64`" alt="">
+			<img v-if="stone == 'black'" :src="`${blackUser.avatar_url}?thumbnail&size=128`" alt="">
+			<img v-if="stone == 'white'" :src="`${whiteUser.avatar_url}?thumbnail&size=128`" alt="">
 		</div>
 	</div>
+
 	<p>黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
+
 	<div class="graph">
 		<div v-for="n in 61 - o.stats.length">
 		</div>
@@ -26,7 +30,8 @@
 			<div :style="{ height: `${ Math.floor(data.w * 100) }%` }"></div>
 		</div>
 	</div>
-	<div class="player" v-if="isEnded">
+
+	<div class="player" v-if="game.is_ended">
 		<el-button type="primary" @click="logPos = 0" :disabled="logPos == 0">%fa:fast-backward%</el-button>
 		<el-button type="primary" @click="logPos--" :disabled="logPos == 0">%fa:backward%</el-button>
 		<span>{{ logPos }} / {{ logs.length }}</span>
@@ -38,58 +43,63 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { OthelloGameStream } from '../../scripts/streaming/othello-game';
-import Othello from '../../../../../common/othello';
+import Othello, { Color } from '../../../../../common/othello/core';
 
 export default Vue.extend({
-	props: ['game'],
+	props: ['game', 'connection'],
 
 	data() {
 		return {
-			o: new Othello(),
+			o: null as Othello,
 			logs: [],
-			logPos: 0,
-			turn: null,
-			isMyTurn: null,
-			isEnded: false,
-			winner: null,
-			connection: null
+			logPos: 0
 		};
 	},
 
 	computed: {
 		iAmPlayer(): boolean {
-			return this.game.black_user_id == (this as any).os.i.id || this.game.white_user_id == (this as any).os.i.id;
+			return this.game.user1_id == (this as any).os.i.id || this.game.user2_id == (this as any).os.i.id;
 		},
-		myColor(): string {
-			return this.game.black_user_id == (this as any).os.i.id ? 'black' : 'white';
+		myColor(): Color {
+			if (!this.iAmPlayer) return null;
+			if (this.game.user1_id == (this as any).os.i.id && this.game.black == 1) return 'black';
+			if (this.game.user2_id == (this as any).os.i.id && this.game.black == 2) return 'black';
+			return 'white';
 		},
-		opColor(): string {
+		opColor(): Color {
+			if (!this.iAmPlayer) return null;
 			return this.myColor == 'black' ? 'white' : 'black';
+		},
+		blackUser(): any {
+			return this.game.black == 1 ? this.game.user1 : this.game.user2;
+		},
+		whiteUser(): any {
+			return this.game.black == 1 ? this.game.user2 : this.game.user1;
+		},
+		turnUser(): any {
+			if (this.o.turn == 'black') {
+				return this.game.black == 1 ? this.game.user1 : this.game.user2;
+			} else if (this.o.turn == 'white') {
+				return this.game.black == 1 ? this.game.user2 : this.game.user1;
+			} else {
+				return null;
+			}
+		},
+		isMyTurn(): boolean {
+			if (this.turnUser == null) return null;
+			return this.turnUser.id == (this as any).os.i.id;
 		}
 	},
 
 	watch: {
 		logPos(v) {
-			if (!this.isEnded) return;
-			this.o = new Othello();
-			this.turn = this.game.black_user;
+			if (!this.game.is_ended) return;
+			this.o = new Othello(this.game.settings.map, {
+				isLlotheo: this.game.settings.is_llotheo
+			});
 			this.logs.forEach((log, i) => {
 				if (i < v) {
-					this.o.set(log.color, log.pos);
-
-					if (log.color == 'black' && this.o.getPattern('white').length > 0) {
-						this.turn = this.game.white_user;
-					}
-					if (log.color == 'black' && this.o.getPattern('white').length == 0) {
-						this.turn = this.game.black_user;
-					}
-					if (log.color == 'white' && this.o.getPattern('black').length > 0) {
-						this.turn = this.game.black_user;
-					}
-					if (log.color == 'white' && this.o.getPattern('black').length == 0) {
-						this.turn = this.game.white_user;
-					}
+					this.o.put(log.color, log.pos);
 				}
 			});
 			this.$forceUpdate();
@@ -97,74 +107,65 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.o = new Othello(this.game.settings.map, {
+			isLlotheo: this.game.settings.is_llotheo
+		});
+
 		this.game.logs.forEach(log => {
-			this.o.set(log.color, log.pos);
+			this.o.put(log.color, log.pos);
 		});
 
 		this.logs = this.game.logs;
 		this.logPos = this.logs.length;
-		this.turn = this.game.turn_user_id == this.game.black_user_id ? this.game.black_user : this.game.white_user;
-		this.isMyTurn = this.game.turn_user_id == (this as any).os.i.id;
-		this.isEnded = this.game.is_ended;
-		this.winner = this.game.winner;
 	},
 
 	mounted() {
-		this.connection = new OthelloGameStream((this as any).os.i, this.game);
 		this.connection.on('set', this.onSet);
 	},
 
 	beforeDestroy() {
 		this.connection.off('set', this.onSet);
-		this.connection.close();
 	},
 
 	methods: {
 		set(pos) {
 			if (!this.isMyTurn) return;
-			if (!this.o.canReverse(this.myColor, pos)) return;
-			this.o.set(this.myColor, pos);
-			if (this.o.getPattern(this.opColor).length > 0) {
-				this.isMyTurn = !this.isMyTurn;
-				this.turn = this.myColor == 'black' ? this.game.white_user : this.game.black_user;
-			} else if (this.o.getPattern(this.myColor).length == 0) {
-				this.isEnded = true;
-				this.winner = this.o.blackCount == this.o.whiteCount ? null : this.o.blackCount > this.o.whiteCount ? this.game.black_user : this.game.white_user;
-			}
+			if (!this.o.canPut(this.myColor, pos)) return;
+
+			this.o.put(this.myColor, pos);
+
 			this.connection.send({
 				type: 'set',
 				pos
 			});
+
+			this.checkEnd();
+
 			this.$forceUpdate();
 		},
 
 		onSet(x) {
 			this.logs.push(x);
 			this.logPos++;
-			this.o.set(x.color, x.pos);
+			this.o.put(x.color, x.pos);
+			this.checkEnd();
+			this.$forceUpdate();
+		},
 
-			if (this.o.getPattern('black').length == 0 && this.o.getPattern('white').length == 0) {
-				this.isEnded = true;
-				this.winner = this.o.blackCount == this.o.whiteCount ? null : this.o.blackCount > this.o.whiteCount ? this.game.black_user : this.game.white_user;
-			} else {
-				if (this.iAmPlayer && this.o.getPattern(this.myColor).length > 0) {
-					this.isMyTurn = true;
-				}
-
-				if (x.color == 'black' && this.o.getPattern('white').length > 0) {
-					this.turn = this.game.white_user;
-				}
-				if (x.color == 'black' && this.o.getPattern('white').length == 0) {
-					this.turn = this.game.black_user;
-				}
-				if (x.color == 'white' && this.o.getPattern('black').length > 0) {
-					this.turn = this.game.black_user;
-				}
-				if (x.color == 'white' && this.o.getPattern('black').length == 0) {
-					this.turn = this.game.white_user;
+		checkEnd() {
+			this.game.is_ended = this.o.isEnded;
+			if (this.game.is_ended) {
+				if (this.o.winner == 'black') {
+					this.game.winner_id = this.game.black == 1 ? this.game.user1_id : this.game.user2_id;
+					this.game.winner = this.game.black == 1 ? this.game.user1 : this.game.user2;
+				} else if (this.o.winner == 'white') {
+					this.game.winner_id = this.game.black == 1 ? this.game.user2_id : this.game.user1_id;
+					this.game.winner = this.game.black == 1 ? this.game.user2 : this.game.user1;
+				} else {
+					this.game.winner_id = null;
+					this.game.winner = null;
 				}
 			}
-			this.$forceUpdate();
 		}
 	}
 });
@@ -182,8 +183,6 @@ export default Vue.extend({
 
 	> .board
 		display grid
-		grid-template-rows repeat(8, 1fr)
-		grid-template-columns repeat(8, 1fr)
 		grid-gap 4px
 		width 300px
 		height 300px
@@ -220,6 +219,9 @@ export default Vue.extend({
 
 			&.prev
 				box-shadow 0 0 0 4px rgba($theme-color, 0.7)
+
+			&.none
+				border-color transparent !important
 
 			> img
 				display block

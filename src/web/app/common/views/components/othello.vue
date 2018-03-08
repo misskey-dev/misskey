@@ -1,7 +1,7 @@
 <template>
 <div class="mk-othello">
 	<div v-if="game">
-		<x-game :game="game"/>
+		<x-gameroom :game="game"/>
 	</div>
 	<div class="matching" v-else-if="matching">
 		<h1><b>{{ matching.name }}</b>を待っています<mk-ellipsis/></h1>
@@ -40,18 +40,18 @@
 		<section v-if="myGames.length > 0">
 			<h2>自分の対局</h2>
 			<div class="game" v-for="g in myGames" tabindex="-1" @click="game = g">
-				<img :src="`${g.black_user.avatar_url}?thumbnail&size=32`" alt="">
-				<img :src="`${g.white_user.avatar_url}?thumbnail&size=32`" alt="">
-				<span><b>{{ g.black_user.name }}</b> vs <b>{{ g.white_user.name }}</b></span>
+				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
+				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
+				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
 			</div>
 		</section>
 		<section v-if="games.length > 0">
 			<h2>みんなの対局</h2>
 			<div class="game" v-for="g in games" tabindex="-1" @click="game = g">
-				<img :src="`${g.black_user.avatar_url}?thumbnail&size=32`" alt="">
-				<img :src="`${g.white_user.avatar_url}?thumbnail&size=32`" alt="">
-				<span><b>{{ g.black_user.name }}</b> vs <b>{{ g.white_user.name }}</b></span>
+				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
+				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
+				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
 			</div>
 		</section>
@@ -61,11 +61,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XGame from './othello.game.vue';
+import XGameroom from './othello.gameroom.vue';
 
 export default Vue.extend({
 	components: {
-		XGame
+		XGameroom
 	},
 	data() {
 		return {

@@ -7,12 +7,15 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (myErr) return rej('invalid my param');
 
 	const q = my ? {
+		is_started: true,
 		$or: [{
-			black_user_id: user._id
+			user1_id: user._id
 		}, {
-			white_user_id: user._id
+			user2_id: user._id
 		}]
-	} : {};
+	} : {
+		is_started: true
+	};
 
 	// Fetch games
 	const games = await Game.find(q, {
