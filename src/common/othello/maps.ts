@@ -268,6 +268,23 @@ export const cross: Map = {
 		'   ----   '
 };
 
+export const walls: Map = {
+	name: 'Walls',
+	category: '10x10',
+	size: 10,
+	data:
+		' bbbbbbbb ' +
+		'w--------w' +
+		'w--------w' +
+		'w--------w' +
+		'w---wb---w' +
+		'w---bw---w' +
+		'w--------w' +
+		'w--------w' +
+		'w--------w' +
+		' bbbbbbbb '
+};
+
 export const sixeight: Map = {
 	name: '6x8',
 	category: 'special',
