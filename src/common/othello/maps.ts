@@ -215,6 +215,21 @@ export const reserved: Map = {
 		'b------w'
 };
 
+export const x: Map = {
+	name: 'X',
+	category: '8x8',
+	size: 8,
+	data:
+		'w------b' +
+		'-w----b-' +
+		'--w--b--' +
+		'---wb---' +
+		'---bw---' +
+		'--b--w--' +
+		'-b----w-' +
+		'b------w'
+};
+
 export const tenthtenth: Map = {
 	name: '10x10',
 	category: '10x10',
