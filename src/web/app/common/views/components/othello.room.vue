@@ -26,8 +26,8 @@
 		<mk-switch v-model="game.settings.is_llotheo" @change="onIsLlotheoChange" text="石の少ない方が勝ち(ロセオ)"/>
 		<div>
 			<el-radio v-model="game.settings.bw" label="random" @change="onBwChange">ランダム</el-radio>
-			<el-radio v-model="game.settings.bw" :label="1" @change="onBwChange">{{ game.user1.name }}が先行</el-radio>
-			<el-radio v-model="game.settings.bw" :label="2" @change="onBwChange">{{ game.user2.name }}が先行</el-radio>
+			<el-radio v-model="game.settings.bw" :label="1" @change="onBwChange">{{ game.user1.name }}が黒</el-radio>
+			<el-radio v-model="game.settings.bw" :label="2" @change="onBwChange">{{ game.user2.name }}が黒</el-radio>
 		</div>
 	</div>
 
