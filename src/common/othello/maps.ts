@@ -488,6 +488,24 @@ export const galaxy: Map = {
 	]
 };
 
+export const triangle: Map = {
+	name: 'Triangle',
+	category: 'special',
+	author: 'syuilo',
+	data: [
+		'    --    ',
+		'    --    ',
+		'   ----   ',
+		'   ----   ',
+		'  --wb--  ',
+		'  --bw--  ',
+		' -------- ',
+		' -------- ',
+		'----------',
+		'----------'
+	]
+};
+
 export const iphonex: Map = {
 	name: 'iPhone X',
 	category: 'special',
