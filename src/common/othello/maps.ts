@@ -455,7 +455,7 @@ export const reactor: Map = {
 
 export const sixeight: Map = {
 	name: '6x8',
-	category: 'special',
+	category: 'Special',
 	data: [
 		'------',
 		'------',
@@ -470,7 +470,7 @@ export const sixeight: Map = {
 
 export const spark: Map = {
 	name: 'Spark',
-	category: 'special',
+	category: 'Special',
 	author: 'syuilo',
 	data: [
 		' -      - ',
@@ -488,7 +488,7 @@ export const spark: Map = {
 
 export const islands: Map = {
 	name: 'Islands',
-	category: 'special',
+	category: 'Special',
 	author: 'syuilo',
 	data: [
 		'--------  ',
@@ -506,7 +506,7 @@ export const islands: Map = {
 
 export const galaxy: Map = {
 	name: 'Galaxy',
-	category: 'special',
+	category: 'Special',
 	author: 'syuilo',
 	data: [
 		'   ------   ',
@@ -526,7 +526,7 @@ export const galaxy: Map = {
 
 export const triangle: Map = {
 	name: 'Triangle',
-	category: 'special',
+	category: 'Special',
 	author: 'syuilo',
 	data: [
 		'    --    ',
@@ -544,7 +544,7 @@ export const triangle: Map = {
 
 export const iphonex: Map = {
 	name: 'iPhone X',
-	category: 'special',
+	category: 'Special',
 	author: 'syuilo',
 	data: [
 		' --  -- ',
@@ -564,7 +564,7 @@ export const iphonex: Map = {
 
 export const bigBoard: Map = {
 	name: 'Big board',
-	category: 'special',
+	category: 'Special',
 	data: [
 		'----------------',
 		'----------------',
@@ -587,7 +587,7 @@ export const bigBoard: Map = {
 
 export const twoBoard: Map = {
 	name: 'Two board',
-	category: 'special',
+	category: 'Special',
 	author: 'Aya',
 	data: [
 		'-------- --------',
@@ -598,5 +598,16 @@ export const twoBoard: Map = {
 		'-------- --------',
 		'-------- --------',
 		'-------- --------'
+	]
+};
+
+export const test: Map = {
+	name: 'Test1',
+	category: 'Test',
+	data: [
+		'--------',
+		'---wb---',
+		'---bw---',
+		'--------'
 	]
 };
