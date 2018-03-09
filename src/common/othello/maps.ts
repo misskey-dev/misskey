@@ -417,6 +417,24 @@ export const checker: Map = {
 	]
 };
 
+export const reactor: Map = {
+	name: 'Reactor',
+	category: '10x10',
+	author: 'syuilo',
+	data: [
+		'-w------b-',
+		'b- -  - -w',
+		'- --wb-- -',
+		'---b  w---',
+		'- b wb w -',
+		'- w bw b -',
+		'---w  b---',
+		'- --bw-- -',
+		'w- -  - -b',
+		'-b------w-'
+	]
+};
+
 export const sixeight: Map = {
 	name: '6x8',
 	category: 'special',
