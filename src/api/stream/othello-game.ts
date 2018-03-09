@@ -170,7 +170,9 @@ export default function(request: websocket.request, connection: websocket.connec
 			}
 		});
 
-		publishOthelloGameStream(gameId, 'set', log);
+		publishOthelloGameStream(gameId, 'set', Object.assign(log, {
+			next: o.turn
+		}));
 
 		if (o.isEnded) {
 			publishOthelloGameStream(gameId, 'ended', {
