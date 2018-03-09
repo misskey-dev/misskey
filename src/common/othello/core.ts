@@ -81,12 +81,12 @@ export default class Othello {
 
 	public transformPosToXy(pos: number): number[] {
 		const x = pos % this.mapWidth;
-		const y = Math.floor(pos / this.mapHeight);
+		const y = Math.floor(pos / this.mapWidth);
 		return [x, y];
 	}
 
 	public transformXyToPos(x: number, y: number): number {
-		return x + (y * this.mapHeight);
+		return x + (y * this.mapWidth);
 	}
 
 	/**
