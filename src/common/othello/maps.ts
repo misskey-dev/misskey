@@ -417,6 +417,24 @@ export const checker: Map = {
 	]
 };
 
+export const arena: Map = {
+	name: 'Arena',
+	category: '10x10',
+	author: 'syuilo',
+	data: [
+		'- - -- - -',
+		' - -  - - ',
+		'- ------ -',
+		' -------- ',
+		'- --wb-- -',
+		'- --bw-- -',
+		' -------- ',
+		'- ------ -',
+		' - -  - - ',
+		'- - -- - -'
+	]
+};
+
 export const reactor: Map = {
 	name: 'Reactor',
 	category: '10x10',
