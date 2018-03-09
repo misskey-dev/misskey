@@ -111,7 +111,7 @@ export default Vue.extend({
 
 		onUpdateSettings(settings) {
 			this.game.settings = settings;
-			this.mapName = this.game.settings.map.name;
+			this.mapName = Object.entries(maps).find(x => x[1].data.join('') == this.game.settings.map.join(''))[1].name;
 		},
 
 		onMapChange(v) {
