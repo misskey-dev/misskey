@@ -242,6 +242,22 @@ export const x: Map = {
 	]
 };
 
+export const squareParty: Map = {
+	name: 'Square Party',
+	category: '8x8',
+	author: 'syuilo',
+	data: [
+		'--------',
+		'-wwwbbb-',
+		'-w-wb-b-',
+		'-wwwbbb-',
+		'-bbbwww-',
+		'-b-bw-w-',
+		'-bbbwww-',
+		'--------'
+	]
+};
+
 export const minesweeper: Map = {
 	name: 'Minesweeper',
 	category: '8x8',
