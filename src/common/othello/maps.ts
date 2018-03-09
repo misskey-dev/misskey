@@ -468,6 +468,26 @@ export const islands: Map = {
 	]
 };
 
+export const galaxy: Map = {
+	name: 'Galaxy',
+	category: 'special',
+	author: 'syuilo',
+	data: [
+		'   ------   ',
+		'  --www---  ',
+		' ------w--- ',
+		'---bbb--w---',
+		'--b---b-w-b-',
+		'-b--wwb-w-b-',
+		'-b-w-bww--b-',
+		'-b-w-b---b--',
+		'---w--bbb---',
+		' ---w------ ',
+		'  ---www--  ',
+		'   ------   '
+	]
+};
+
 export const iphonex: Map = {
 	name: 'iPhone X',
 	category: 'special',
