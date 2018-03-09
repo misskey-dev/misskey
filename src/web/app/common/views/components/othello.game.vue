@@ -177,8 +177,8 @@ export default Vue.extend({
 	> .board
 		display grid
 		grid-gap 4px
-		width 300px
-		height 300px
+		width 350px
+		height 350px
 		margin 0 auto
 
 		> div
