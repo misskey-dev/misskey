@@ -82,6 +82,66 @@ export const eighteight: Map = {
 	]
 };
 
+export const eighteightH1: Map = {
+	name: '8x8 handicap 1',
+	category: '8x8',
+	data: [
+		'b-------',
+		'--------',
+		'--------',
+		'---wb---',
+		'---bw---',
+		'--------',
+		'--------',
+		'--------'
+	]
+};
+
+export const eighteightH2: Map = {
+	name: '8x8 handicap 2',
+	category: '8x8',
+	data: [
+		'b-------',
+		'--------',
+		'--------',
+		'---wb---',
+		'---bw---',
+		'--------',
+		'--------',
+		'-------b'
+	]
+};
+
+export const eighteightH3: Map = {
+	name: '8x8 handicap 3',
+	category: '8x8',
+	data: [
+		'b------b',
+		'--------',
+		'--------',
+		'---wb---',
+		'---bw---',
+		'--------',
+		'--------',
+		'-------b'
+	]
+};
+
+export const eighteightH4: Map = {
+	name: '8x8 handicap 4',
+	category: '8x8',
+	data: [
+		'b------b',
+		'--------',
+		'--------',
+		'---wb---',
+		'---bw---',
+		'--------',
+		'--------',
+		'b------b'
+	]
+};
+
 export const roundedEighteight: Map = {
 	name: '8x8 rounded',
 	category: '8x8',
