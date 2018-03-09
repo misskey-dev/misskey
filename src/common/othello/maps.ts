@@ -492,6 +492,24 @@ export const checker: Map = {
 	]
 };
 
+export const japaneseCurry: Map = {
+	name: 'Japanese curry',
+	category: '10x10',
+	author: 'syuilo',
+	data: [
+		'w-b-b-b-b-',
+		'-w-b-b-b-b',
+		'w-w-b-b-b-',
+		'-w-w-b-b-b',
+		'w-w-wwb-b-',
+		'-w-wbb-b-b',
+		'w-w-w-b-b-',
+		'-w-w-w-b-b',
+		'w-w-w-w-b-',
+		'-w-w-w-w-b'
+	]
+};
+
 export const arena: Map = {
 	name: 'Arena',
 	category: '10x10',
