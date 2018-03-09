@@ -28,7 +28,7 @@ export interface IGame {
 	winner_id: mongo.ObjectID;
 	logs: any[];
 	settings: {
-		map: Map;
+		map: string[];
 		bw: string | number;
 		is_llotheo: boolean;
 	};
@@ -39,8 +39,15 @@ export interface IGame {
  */
 export const pack = (
 	game: any,
-	me?: string | mongo.ObjectID | IUser
+	me?: string | mongo.ObjectID | IUser,
+	options?: {
+		detail?: boolean
+	}
 ) => new Promise<any>(async (resolve, reject) => {
+	const opts = Object.assign({
+		detail: true
+	}, options);
+
 	let _game: any;
 
 	// Populate the game if 'game' is ID
@@ -68,6 +75,11 @@ export const pack = (
 	// Rename _id to id
 	_game.id = _game._id;
 	delete _game._id;
+
+	if (opts.detail === false) {
+		delete _game.logs;
+		delete _game.settings.map;
+	}
 
 	// Populate user
 	_game.user1 = await packUser(_game.user1_id, meId);

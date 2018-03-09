@@ -10,9 +10,9 @@
 		<template v-else>引き分け</template>
 	</p>
 
-	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.size }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map.size }, 1fr)` }">
+	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, none: o.map.data[i] == ' ', isEnded: game.is_ended, myTurn: !game.is_ended && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id ? 'black' : 'white', i) : null, prev: o.prevPos == i }"
+			:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.is_ended, myTurn: !game.is_ended && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id ? 'black' : 'white', i) : null, prev: o.prevPos == i }"
 			@click="set(i)"
 		>
 			<img v-if="stone == 'black'" :src="`${blackUser.avatar_url}?thumbnail&size=128`" alt="">
@@ -105,6 +105,8 @@ export default Vue.extend({
 		this.game.logs.forEach(log => {
 			this.o.put(log.color, log.pos);
 		});
+
+		console.log(this.o);
 
 		this.logs = this.game.logs;
 		this.logPos = this.logs.length;

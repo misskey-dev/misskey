@@ -4,14 +4,17 @@
 
 	<p>ゲームの設定</p>
 
-	<el-select v-model="mapName" placeholder="マップを選択" @change="onMapChange">
+	<el-select class="map" v-model="mapName" placeholder="マップを選択" @change="onMapChange">
 		<el-option-group v-for="c in mapCategories" :key="c" :label="c">
-			<el-option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name"/>
+			<el-option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">
+				<span style="float: left">{{ m.name }}</span>
+				<span style="float: right; color: #8492a6; font-size: 13px" v-if="m.author">(by <i>{{ m.author }}</i>)</span>
+			</el-option>
 		</el-option-group>
 	</el-select>
 
-	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.size }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map.size }, 1fr)` }">
-		<div v-for="(x, i) in game.settings.map.data"
+	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
+		<div v-for="(x, i) in game.settings.map.join('')"
 			:class="{ none: x == ' ' }"
 		>
 			<template v-if="x == 'b'">%fa:circle%</template>
@@ -112,7 +115,7 @@ export default Vue.extend({
 		},
 
 		onMapChange(v) {
-			this.game.settings.map = Object.entries(maps).find(x => x[1].name == v)[1];
+			this.game.settings.map = Object.entries(maps).find(x => x[1].name == v)[1].data;
 			this.connection.send({
 				type: 'update-settings',
 				settings: this.game.settings
@@ -140,6 +143,9 @@ export default Vue.extend({
 	> header
 		padding 8px
 		border-bottom dashed 1px #c4cdd4
+
+	> .map
+		width 300px
 
 	> .board
 		display grid

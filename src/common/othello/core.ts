@@ -1,5 +1,3 @@
-import { Map } from './maps';
-
 export type Color = 'black' | 'white';
 export type MapPixel = 'null' | 'empty';
 
@@ -11,12 +9,14 @@ export type Options = {
  * オセロエンジン
  */
 export default class Othello {
-	public map: Map;
-	public mapData: MapPixel[];
+	public map: MapPixel[];
+	public mapWidth: number;
+	public mapHeight: number;
 	public board: Color[];
 	public turn: Color = 'black';
 	public opts: Options;
 
+	public prevPos = -1;
 	public stats: Array<{
 		b: number;
 		w: number;
@@ -25,18 +25,21 @@ export default class Othello {
 	/**
 	 * ゲームを初期化します
 	 */
-	constructor(map: Map, opts: Options) {
-		this.map = map;
+	constructor(map: string[], opts: Options) {
 		this.opts = opts;
 
+		this.mapWidth = map[0].length;
+		this.mapHeight = map.length;
+		const mapData = map.join('');
+
 		// Parse map data
-		this.board = this.map.data.split('').map(d => {
+		this.board = mapData.split('').map(d => {
 			if (d == '-') return null;
 			if (d == 'b') return 'black';
 			if (d == 'w') return 'white';
 			return undefined;
 		});
-		this.mapData = this.map.data.split('').map(d => {
+		this.map = mapData.split('').map(d => {
 			if (d == '-' || d == 'b' || d == 'w') return 'empty';
 			return 'null';
 		});
@@ -47,8 +50,6 @@ export default class Othello {
 			w: this.whiteP
 		}];
 	}
-
-	public prevPos = -1;
 
 	/**
 	 * 黒石の数
@@ -79,13 +80,13 @@ export default class Othello {
 	}
 
 	public transformPosToXy(pos: number): number[] {
-		const x = pos % this.map.size;
-		const y = Math.floor(pos / this.map.size);
+		const x = pos % this.mapWidth;
+		const y = Math.floor(pos / this.mapHeight);
 		return [x, y];
 	}
 
 	public transformXyToPos(x: number, y: number): number {
-		return x + (y * this.map.size);
+		return x + (y * this.mapHeight);
 	}
 
 	/**
@@ -145,8 +146,8 @@ export default class Othello {
 	 * @param pos 位置
 	 */
 	public mapDataGet(pos: number): MapPixel {
-		if (pos < 0 || pos >= this.mapData.length) return 'null';
-		return this.mapData[pos];
+		if (pos < 0 || pos >= this.map.length) return 'null';
+		return this.map[pos];
 	}
 
 	/**
@@ -188,7 +189,7 @@ export default class Othello {
 			const found = [];
 			while (true) {
 				const [x, y] = fn(i);
-				if (x < 0 || y < 0 || x >= this.map.size || y >= this.map.size) break;
+				if (x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight) break;
 				const pos = this.transformXyToPos(x, y);
 				const pixel = this.mapDataGet(pos);
 				if (pixel == 'null') break;

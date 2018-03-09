@@ -38,7 +38,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			is_ended: false,
 			logs: [],
 			settings: {
-				map: eighteight,
+				map: eighteight.data,
 				bw: 'random',
 				is_llotheo: false
 			}
