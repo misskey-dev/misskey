@@ -1,8 +1,7 @@
 <template>
-<mk-ui>
-	<span slot="header">%fa:gamepad%オセロ</span>
+<component :is="ui ? 'mk-ui' : 'div'">
 	<mk-othello v-if="!fetching" :init-game="game" @gamed="onGamed"/>
-</mk-ui>
+</component>
 </template>
 
 <script lang="ts">
@@ -10,6 +9,11 @@ import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
+	props: {
+		ui: {
+			default: false
+		}
+	},
 	data() {
 		return {
 			fetching: false,
@@ -21,10 +25,6 @@ export default Vue.extend({
 	},
 	created() {
 		this.fetch();
-	},
-	mounted() {
-		document.title = 'Misskey オセロ';
-		document.documentElement.style.background = '#fff';
 	},
 	methods: {
 		fetch() {

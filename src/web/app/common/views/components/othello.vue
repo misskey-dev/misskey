@@ -67,6 +67,7 @@ export default Vue.extend({
 	components: {
 		XGameroom
 	},
+	props: ['initGame'],
 	data() {
 		return {
 			game: null,
@@ -79,6 +80,16 @@ export default Vue.extend({
 			connection: null,
 			connectionId: null
 		};
+	},
+	watch: {
+		game(g) {
+			this.$emit('gamed', g);
+		}
+	},
+	created() {
+		if (this.initGame) {
+			this.game = this.initGame;
+		}
 	},
 	mounted() {
 		this.connection = (this as any).os.streams.othelloStream.getConnection();
@@ -162,6 +173,7 @@ export default Vue.extend({
 
 .mk-othello
 	color #677f84
+	background #fff
 
 	> .matching
 		> h1
