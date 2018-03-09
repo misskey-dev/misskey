@@ -171,5 +171,11 @@ export default function(request: websocket.request, connection: websocket.connec
 		});
 
 		publishOthelloGameStream(gameId, 'set', log);
+
+		if (o.isEnded) {
+			publishOthelloGameStream(gameId, 'ended', {
+				winner_id: winner
+			});
+		}
 	}
 }
