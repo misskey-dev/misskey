@@ -2,7 +2,6 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import db from '../../db/mongodb';
 import { IUser, pack as packUser } from './user';
-import { Map } from '../../common/othello/maps';
 
 const Game = db.get<IGame>('othello_games');
 export default Game;
@@ -79,6 +78,11 @@ export const pack = (
 	if (opts.detail === false) {
 		delete _game.logs;
 		delete _game.settings.map;
+	} else {
+		// 互換性のため
+		if (_game.settings.map.hasOwnProperty('size')) {
+			_game.settings.map = _game.settings.map.data.match(new RegExp(`.{1,${_game.settings.map.size}}`, 'g'));
+		}
 	}
 
 	// Populate user

@@ -254,6 +254,11 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'othello/games/show',
+		withCredential: true
+	},
+
+	{
 		name: 'mute/create',
 		withCredential: true,
 		kind: 'account/write'

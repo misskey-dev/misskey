@@ -106,8 +106,6 @@ export default Vue.extend({
 			this.o.put(log.color, log.pos);
 		});
 
-		console.log(this.o);
-
 		this.logs = this.game.logs;
 		this.logPos = this.logs.length;
 	},

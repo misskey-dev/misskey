@@ -43,7 +43,6 @@ export default Vue.extend({
 	mounted() {
 		if (this.default) this.text = this.default;
 		this.$nextTick(() => {
-			console.log(this);
 			(this.$refs.text as any).focus();
 		});
 	},

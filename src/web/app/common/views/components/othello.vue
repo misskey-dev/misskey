@@ -39,7 +39,7 @@
 		</section>
 		<section v-if="myGames.length > 0">
 			<h2>自分の対局</h2>
-			<div class="game" v-for="g in myGames" tabindex="-1" @click="game = g">
+			<div class="game" v-for="g in myGames" tabindex="-1" @click="go(g)">
 				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
 				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
@@ -48,7 +48,7 @@
 		</section>
 		<section v-if="games.length > 0">
 			<h2>みんなの対局</h2>
-			<div class="game" v-for="g in games" tabindex="-1" @click="game = g">
+			<div class="game" v-for="g in games" tabindex="-1" @click="go(g)">
 				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
 				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
@@ -108,6 +108,13 @@ export default Vue.extend({
 		(this as any).os.streams.othelloStream.dispose(this.connectionId);
 	},
 	methods: {
+		go(game) {
+			(this as any).api('othello/games/show', {
+				game_id: game.id
+			}).then(game => {
+				this.game = game;
+			});
+		},
 		match() {
 			(this as any).apis.input({
 				title: 'ユーザー名を入力してください'

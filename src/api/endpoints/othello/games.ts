@@ -23,7 +23,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('cannot set since_id and until_id');
 	}
 
-	const q = my ? {
+	const q: any = my ? {
 		is_started: true,
 		$or: [{
 			user1_id: user._id
@@ -33,7 +33,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	} : {
 		is_started: true
 	};
-
 
 	const sort = {
 		_id: -1
@@ -52,7 +51,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Fetch games
 	const games = await Game.find(q, {
-		sort
+		sort,
+		limit
 	});
 
 	// Reponse
