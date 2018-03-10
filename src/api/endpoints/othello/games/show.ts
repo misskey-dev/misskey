@@ -1,5 +1,6 @@
 import $ from 'cafy';
 import Game, { pack } from '../../../models/othello-game';
+import Othello from '../../../../common/othello/core';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'game_id' parameter
@@ -12,5 +13,20 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('game not found');
 	}
 
-	res(await pack(game, user));
+	const o = new Othello(game.settings.map, {
+		isLlotheo: game.settings.is_llotheo,
+		canPutEverywhere: game.settings.can_put_everywhere,
+		loopedBoard: game.settings.looped_board
+	});
+
+	game.logs.forEach(log => {
+		o.put(log.color, log.pos);
+	});
+
+	const packed = await pack(game, user);
+
+	res(Object.assign({
+		board: o.board,
+		turn: o.turn
+	}, packed));
 });
