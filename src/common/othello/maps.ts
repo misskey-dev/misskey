@@ -378,6 +378,21 @@ export const parallel: Map = {
 	]
 };
 
+export const lackOfBlack: Map = {
+	name: 'Lack of Black',
+	category: '8x8',
+	data: [
+		'--------',
+		'--------',
+		'--------',
+		'---w----',
+		'---bw---',
+		'--------',
+		'--------',
+		'--------'
+	]
+};
+
 export const squareParty: Map = {
 	name: 'Square Party',
 	category: '8x8',
