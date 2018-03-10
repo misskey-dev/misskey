@@ -157,6 +157,21 @@ export const eighteightH12: Map = {
 	]
 };
 
+export const eighteightH20: Map = {
+	name: '8x8 handicap 20',
+	category: '8x8',
+	data: [
+		'bbb--bbb',
+		'b------b',
+		'b------b',
+		'---wb---',
+		'---bw---',
+		'b------b',
+		'b------b',
+		'bbb---bb'
+	]
+};
+
 export const eighteightH28: Map = {
 	name: '8x8 handicap 28',
 	category: '8x8',
