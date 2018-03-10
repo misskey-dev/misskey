@@ -240,7 +240,7 @@ export default class Othello {
 						// そこに置いたとするとループして最終的に挟んだことになる」というケースを有効化します。(Test4のマップで違いが分かります)
 						// このケースを有効にした方が良いのか無効にした方が良いのか判断がつかなかったためとりあえず無効としておきます
 						// (あと無効な方がゲームとしておもしろそうだった)
-						//stones = stones.concat(found);
+						stones = stones.concat(found);
 						break;
 					}
 				} else {
