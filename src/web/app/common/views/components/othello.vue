@@ -39,21 +39,21 @@
 		</section>
 		<section v-if="myGames.length > 0">
 			<h2>自分の対局</h2>
-			<div class="game" v-for="g in myGames" tabindex="-1" @click="go(g)">
+			<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
 				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
 				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
-			</div>
+			</a>
 		</section>
 		<section v-if="games.length > 0">
 			<h2>みんなの対局</h2>
-			<div class="game" v-for="g in games" tabindex="-1" @click="go(g)">
+			<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
 				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
 				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
-			</div>
+			</a>
 		</section>
 	</div>
 </div>
@@ -265,8 +265,10 @@ export default Vue.extend({
 			line-height 32px
 
 	.game
+		display block
 		margin 8px 0
 		padding 8px
+		color #677f84
 		border solid 1px #e1e5e8
 		border-radius 6px
 		cursor pointer

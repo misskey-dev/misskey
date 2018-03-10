@@ -182,6 +182,7 @@
 		"uglifyjs-webpack-plugin": "1.2.0",
 		"url-loader": "^0.6.2",
 		"uuid": "3.2.1",
+		"v-animate-css": "0.0.2",
 		"vhost": "3.0.2",
 		"vue": "2.5.13",
 		"vue-cropperjs": "2.2.0",

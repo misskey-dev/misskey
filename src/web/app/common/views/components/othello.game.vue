@@ -2,13 +2,16 @@
 <div class="root">
 	<header><b>{{ blackUser.name }}</b>(黒) vs <b>{{ whiteUser.name }}</b>(白)</header>
 
-	<p class="turn" v-if="!iAmPlayer && !game.is_ended">{{ turnUser.name }}のターンです<mk-ellipsis/></p>
-	<p class="turn" v-if="logPos != logs.length">{{ turnUser.name }}のターン</p>
-	<p class="turn" v-if="iAmPlayer && !game.is_ended">{{ isMyTurn ? 'あなたのターンです' : '相手のターンです' }}<mk-ellipsis v-if="!isMyTurn"/></p>
-	<p class="result" v-if="game.is_ended && logPos == logs.length">
-		<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.is_llotheo ? ' (ロセオ)' : '' }}</template>
-		<template v-else>引き分け</template>
-	</p>
+	<div style="overflow: hidden">
+		<p class="turn" v-if="!iAmPlayer && !game.is_ended">{{ turnUser.name }}のターンです<mk-ellipsis/></p>
+		<p class="turn" v-if="logPos != logs.length">{{ turnUser.name }}のターン</p>
+		<p class="turn1" v-if="iAmPlayer && !game.is_ended && !isMyTurn">相手のターンです<mk-ellipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.is_ended && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">あなたのターンです</p>
+		<p class="result" v-if="game.is_ended && logPos == logs.length">
+			<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.is_llotheo ? ' (ロセオ)' : '' }}</template>
+			<template v-else>引き分け</template>
+		</p>
+	</div>
 
 	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 		<div v-for="(stone, i) in o.board"

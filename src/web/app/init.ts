@@ -6,6 +6,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VModal from 'vue-js-modal';
 import * as TreeView from 'vue-json-tree-view';
+import VAnimateCss from 'v-animate-css';
 import Element from 'element-ui';
 import ElementLocaleEn from 'element-ui/lib/locale/lang/en';
 import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
@@ -25,6 +26,7 @@ switch (lang) {
 Vue.use(VueRouter);
 Vue.use(VModal);
 Vue.use(TreeView);
+Vue.use(VAnimateCss);
 Vue.use(Element, { locale: elementLocale });
 
 // Register global directives
