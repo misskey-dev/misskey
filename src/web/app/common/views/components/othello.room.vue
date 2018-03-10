@@ -5,6 +5,7 @@
 	<p>ゲームの設定</p>
 
 	<el-select class="map" v-model="mapName" placeholder="マップを選択" @change="onMapChange">
+		<el-option label="ランダム" :value="null"/>
 		<el-option-group v-for="c in mapCategories" :key="c" :label="c">
 			<el-option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">
 				<span style="float: left">{{ m.name }}</span>
@@ -13,7 +14,7 @@
 		</el-option-group>
 	</el-select>
 
-	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
+	<div class="board" v-if="game.settings.map != null" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 		<div v-for="(x, i) in game.settings.map.join('')"
 			:class="{ none: x == ' ' }"
 			@click="onPixelClick(i, x)"
@@ -124,12 +125,20 @@ export default Vue.extend({
 
 		onUpdateSettings(settings) {
 			this.game.settings = settings;
-			const foundMap = Object.entries(maps).find(x => x[1].data.join('') == this.game.settings.map.join(''));
-			this.mapName = foundMap ? foundMap[1].name : '-Custom-';
+			if (this.game.settings.map == null) {
+				this.mapName = null;
+			} else {
+				const foundMap = Object.entries(maps).find(x => x[1].data.join('') == this.game.settings.map.join(''));
+				this.mapName = foundMap ? foundMap[1].name : '-Custom-';
+			}
 		},
 
 		onMapChange(v) {
-			this.game.settings.map = Object.entries(maps).find(x => x[1].name == v)[1].data;
+			if (v == null) {
+				this.game.settings.map = null;
+			} else {
+				this.game.settings.map = Object.entries(maps).find(x => x[1].name == v)[1].data;
+			}
 			this.$forceUpdate();
 			this.updateSettings();
 		},

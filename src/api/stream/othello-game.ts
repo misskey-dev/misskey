@@ -3,6 +3,7 @@ import * as redis from 'redis';
 import Game, { pack } from '../models/othello-game';
 import { publishOthelloGameStream } from '../event';
 import Othello from '../../common/othello/core';
+import * as maps from '../../common/othello/maps';
 
 export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
 	const gameId = request.resourceURL.query.game;
@@ -105,16 +106,25 @@ export default function(request: websocket.request, connection: websocket.connec
 					bw = freshGame.settings.bw as number;
 				}
 
+				function getRandomMap() {
+					const mapCount = Object.entries(maps).length;
+					const rnd = Math.floor(Math.random() * mapCount);
+					return Object.entries(maps).find((x, i) => i == rnd)[1].data;
+				}
+
+				const map = freshGame.settings.map != null ? freshGame.settings.map : getRandomMap();
+
 				await Game.update({ _id: gameId }, {
 					$set: {
 						started_at: new Date(),
 						is_started: true,
-						black: bw
+						black: bw,
+						'settings.map': map
 					}
 				});
 
 				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
-				const o = new Othello(freshGame.settings.map, {
+				const o = new Othello(map, {
 					isLlotheo: freshGame.settings.is_llotheo
 				});
 
