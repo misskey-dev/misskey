@@ -3,6 +3,7 @@ export type MapPixel = 'null' | 'empty';
 
 export type Options = {
 	isLlotheo: boolean;
+	canPutEverywhere: boolean;
 };
 
 /**
@@ -26,23 +27,29 @@ export default class Othello {
 	 * ゲームを初期化します
 	 */
 	constructor(map: string[], opts: Options) {
+		//#region Options
 		this.opts = opts;
+		if (this.opts.isLlotheo == null) this.opts.isLlotheo = false;
+		if (this.opts.canPutEverywhere == null) this.opts.canPutEverywhere = false;
+		//#endregion
 
+		//#region Parse map data
 		this.mapWidth = map[0].length;
 		this.mapHeight = map.length;
 		const mapData = map.join('');
 
-		// Parse map data
 		this.board = mapData.split('').map(d => {
 			if (d == '-') return null;
 			if (d == 'b') return 'black';
 			if (d == 'w') return 'white';
 			return undefined;
 		});
+
 		this.map = mapData.split('').map(d => {
 			if (d == '-' || d == 'b' || d == 'w') return 'empty';
 			return 'null';
 		});
+		//#endregion
 
 		// Init stats
 		this.stats = [{
@@ -175,14 +182,21 @@ export default class Othello {
 	}
 
 	/**
-	 * 指定のマスに石を打つことができるかどうか(相手の石を1つでも反転させられるか)を取得します
+	 * 指定のマスに石を打つことができるかどうかを取得します
 	 * @param color 自分の色
 	 * @param pos 位置
 	 */
 	public canPut(color: Color, pos: number): boolean {
 		// 既に石が置いてある場所には打てない
 		if (this.get(pos) !== null) return false;
-		return this.effects(color, pos).length !== 0;
+
+		if (this.opts.canPutEverywhere) {
+			// 挟んでなくても置けるモード
+			return this.mapDataGet(pos) == 'empty';
+		} else {
+			// 相手の石を1つでも反転させられるか
+			return this.effects(color, pos).length !== 0;
+		}
 	}
 
 	/**

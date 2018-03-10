@@ -26,6 +26,7 @@
 
 	<div class="rules">
 		<mk-switch v-model="game.settings.is_llotheo" @change="updateSettings" text="石の少ない方が勝ち(ロセオ)"/>
+		<mk-switch v-model="game.settings.can_put_everywhere" @change="updateSettings" text="どこでも置けるモード"/>
 		<div>
 			<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">ランダム</el-radio>
 			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ game.user1.name }}が黒</el-radio>

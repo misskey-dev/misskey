@@ -89,7 +89,8 @@ export default Vue.extend({
 		logPos(v) {
 			if (!this.game.is_ended) return;
 			this.o = new Othello(this.game.settings.map, {
-				isLlotheo: this.game.settings.is_llotheo
+				isLlotheo: this.game.settings.is_llotheo,
+				canPutEverywhere: this.game.settings.can_put_everywhere
 			});
 			this.logs.forEach((log, i) => {
 				if (i < v) {
@@ -102,7 +103,8 @@ export default Vue.extend({
 
 	created() {
 		this.o = new Othello(this.game.settings.map, {
-			isLlotheo: this.game.settings.is_llotheo
+			isLlotheo: this.game.settings.is_llotheo,
+			canPutEverywhere: this.game.settings.can_put_everywhere
 		});
 
 		this.game.logs.forEach(log => {

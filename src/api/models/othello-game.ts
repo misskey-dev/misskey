@@ -30,6 +30,7 @@ export interface IGame {
 		map: string[];
 		bw: string | number;
 		is_llotheo: boolean;
+		can_put_everywhere: boolean;
 	};
 }
 

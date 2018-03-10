@@ -125,7 +125,8 @@ export default function(request: websocket.request, connection: websocket.connec
 
 				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
 				const o = new Othello(map, {
-					isLlotheo: freshGame.settings.is_llotheo
+					isLlotheo: freshGame.settings.is_llotheo,
+					canPutEverywhere: freshGame.settings.can_put_everywhere
 				});
 
 				if (o.isEnded) {
@@ -166,7 +167,8 @@ export default function(request: websocket.request, connection: websocket.connec
 		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
 
 		const o = new Othello(game.settings.map, {
-			isLlotheo: game.settings.is_llotheo
+			isLlotheo: game.settings.is_llotheo,
+			canPutEverywhere: game.settings.can_put_everywhere
 		});
 
 		game.logs.forEach(log => {
