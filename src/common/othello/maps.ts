@@ -332,6 +332,22 @@ export const x: Map = {
 	]
 };
 
+export const parallel: Map = {
+	name: 'Parallel',
+	category: '8x8',
+	author: 'Aya',
+	data: [
+		'--------',
+		'--------',
+		'--------',
+		'---bb---',
+		'---ww---',
+		'--------',
+		'--------',
+		'--------'
+	]
+};
+
 export const squareParty: Map = {
 	name: 'Square Party',
 	category: '8x8',
