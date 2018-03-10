@@ -505,6 +505,24 @@ export const walls: Map = {
 	]
 };
 
+export const cpu: Map = {
+	name: 'CPU',
+	category: '10x10',
+	author: 'syuilo',
+	data: [
+		' b b  b b ',
+		'w--------w',
+		' -------- ',
+		'w--------w',
+		' ---wb--- ',
+		' ---bw--- ',
+		'w--------w',
+		' -------- ',
+		'w--------w',
+		' b b  b b '
+	]
+};
+
 export const checker: Map = {
 	name: 'Checker',
 	category: '10x10',
@@ -538,6 +556,24 @@ export const japaneseCurry: Map = {
 		'-w-w-w-b-b',
 		'w-w-w-w-b-',
 		'-w-w-w-w-b'
+	]
+};
+
+export const mosaic: Map = {
+	name: 'Mosaic',
+	category: '10x10',
+	author: 'syuilo',
+	data: [
+		'- - - - - ',
+		' - - - - -',
+		'- - - - - ',
+		' - w w - -',
+		'- - b b - ',
+		' - w w - -',
+		'- - b b - ',
+		' - - - - -',
+		'- - - - - ',
+		' - - - - -',
 	]
 };
 
@@ -683,6 +719,38 @@ export const iphonex: Map = {
 		'--------',
 		'--------',
 		' ------ '
+	]
+};
+
+export const dealWithIt: Map = {
+	name: 'Deal with it!',
+	category: 'Special',
+	author: 'syuilo',
+	data: [
+		'------------',
+		'--w-b-------',
+		' --b-w------',
+		'  --w-b---- ',
+		'   -------  '
+	]
+};
+
+export const experiment: Map = {
+	name: 'Let\'s experiment',
+	category: 'Special',
+	author: 'syuilo',
+	data: [
+		' ------------ ',
+		'------wb------',
+		'------bw------',
+		'--------------',
+		'    -    -    ',
+		'------  ------',
+		'bbbbbb  wwwwww',
+		'bbbbbb  wwwwww',
+		'bbbbbb  wwwwww',
+		'bbbbbb  wwwwww',
+		'wwwwww  bbbbbb'
 	]
 };
 
