@@ -113,6 +113,36 @@ export default function(request: websocket.request, connection: websocket.connec
 					}
 				});
 
+				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
+				const o = new Othello(freshGame.settings.map, {
+					isLlotheo: freshGame.settings.is_llotheo
+				});
+
+				if (o.isEnded) {
+					let winner;
+					if (o.winner == 'black') {
+						winner = freshGame.black == 1 ? freshGame.user1_id : freshGame.user2_id;
+					} else if (o.winner == 'white') {
+						winner = freshGame.black == 1 ? freshGame.user2_id : freshGame.user1_id;
+					} else {
+						winner = null;
+					}
+
+					await Game.update({
+						_id: gameId
+					}, {
+						$set: {
+							is_ended: true,
+							winner_id: winner
+						}
+					});
+
+					publishOthelloGameStream(gameId, 'ended', {
+						winner_id: winner
+					});
+				}
+				//#endregion
+
 				publishOthelloGameStream(gameId, 'started', await pack(gameId));
 			}, 3000);
 		}

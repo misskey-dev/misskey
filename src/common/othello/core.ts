@@ -49,6 +49,15 @@ export default class Othello {
 			b: this.blackP,
 			w: this.whiteP
 		}];
+
+		// ゲームが始まった時点で片方の色の石しかないか、始まった時点で勝敗が決定するようなマップの場合がある
+		if (this.canPutSomewhere('black').length == 0) {
+			if (this.canPutSomewhere('white').length == 0) {
+				this.turn = null;
+			} else {
+				this.turn = 'white';
+			}
+		}
 	}
 
 	/**
