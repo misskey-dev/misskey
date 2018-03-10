@@ -31,6 +31,21 @@ export default function(request: websocket.request, connection: websocket.connec
 				updateSettings(msg.settings);
 				break;
 
+			case 'init-form':
+				if (msg.body == null) return;
+				initForm(msg.body);
+				break;
+
+			case 'update-form':
+				if (msg.id == null || msg.value === undefined) return;
+				updateForm(msg.id, msg.value);
+				break;
+
+			case 'message':
+				if (msg.body == null) return;
+				message(msg.body);
+				break;
+
 			case 'set':
 				if (msg.pos == null) return;
 				set(msg.pos);
@@ -53,6 +68,67 @@ export default function(request: websocket.request, connection: websocket.connec
 		});
 
 		publishOthelloGameStream(gameId, 'update-settings', settings);
+	}
+
+	async function initForm(form) {
+		const game = await Game.findOne({ _id: gameId });
+
+		if (game.is_started) return;
+		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
+
+		const set = game.user1_id.equals(user._id) ? {
+			form1: form
+		} : {
+			form2: form
+		};
+
+		await Game.update({ _id: gameId }, {
+			$set: set
+		});
+
+		publishOthelloGameStream(gameId, 'init-form', {
+			user_id: user._id,
+			form
+		});
+	}
+
+	async function updateForm(id, value) {
+		const game = await Game.findOne({ _id: gameId });
+
+		if (game.is_started) return;
+		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
+
+		const form = game.user1_id.equals(user._id) ? game.form2 : game.form1;
+
+		const item = form.find(i => i.id == id);
+
+		if (item == null) return;
+
+		item.value = value;
+
+		const set = game.user1_id.equals(user._id) ? {
+			form2: form
+		} : {
+			form1: form
+		};
+
+		await Game.update({ _id: gameId }, {
+			$set: set
+		});
+
+		publishOthelloGameStream(gameId, 'update-form', {
+			user_id: user._id,
+			id,
+			value
+		});
+	}
+
+	async function message(message) {
+		message.id = Math.random();
+		publishOthelloGameStream(gameId, 'message', {
+			user_id: user._id,
+			message
+		});
 	}
 
 	async function accept(accept: boolean) {

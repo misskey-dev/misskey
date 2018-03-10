@@ -33,6 +33,8 @@ export interface IGame {
 		can_put_everywhere: boolean;
 		looped_board: boolean;
 	};
+	form1: any;
+	form2: any;
 }
 
 /**
