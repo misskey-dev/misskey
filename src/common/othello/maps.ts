@@ -815,3 +815,22 @@ export const test2: Map = {
 		'-w--b-'
 	]
 };
+
+export const test3: Map = {
+	name: 'Test3',
+	category: 'Test',
+	data: [
+		'-w-',
+		'--w',
+		'w--',
+		'-w-',
+		'--w',
+		'w--',
+		'-w-',
+		'--w',
+		'w--',
+		'-w-',
+		'---',
+		'b--',
+	]
+};
