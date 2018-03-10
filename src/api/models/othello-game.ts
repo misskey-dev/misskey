@@ -31,6 +31,7 @@ export interface IGame {
 		bw: string | number;
 		is_llotheo: boolean;
 		can_put_everywhere: boolean;
+		looped_board: boolean;
 	};
 }
 

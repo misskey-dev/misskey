@@ -4,6 +4,7 @@ export type MapPixel = 'null' | 'empty';
 export type Options = {
 	isLlotheo: boolean;
 	canPutEverywhere: boolean;
+	loopedBoard: boolean;
 };
 
 /**
@@ -31,6 +32,7 @@ export default class Othello {
 		this.opts = opts;
 		if (this.opts.isLlotheo == null) this.opts.isLlotheo = false;
 		if (this.opts.canPutEverywhere == null) this.opts.canPutEverywhere = false;
+		if (this.opts.loopedBoard == null) this.opts.loopedBoard = false;
 		//#endregion
 
 		//#region Parse map data
@@ -206,21 +208,50 @@ export default class Othello {
 	 */
 	private effects(color: Color, pos: number): number[] {
 		const enemyColor = color == 'black' ? 'white' : 'black';
-		const [x, y] = this.transformPosToXy(pos);
+
+		// ひっくり返せる石(の位置)リスト
 		let stones = [];
 
+		const initPos = pos;
+
+		// 走査
 		const iterate = (fn: (i: number) => number[]) => {
 			let i = 1;
 			const found = [];
+
 			while (true) {
-				const [x, y] = fn(i);
-				if (x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight) break;
+				let [x, y] = fn(i);
+
+				// 座標が指し示す位置がボード外に出たとき
+				if (this.opts.loopedBoard) {
+					if (x < 0            ) x = this.mapWidth - (-x);
+					if (y < 0            ) y = this.mapHeight - (-y);
+					if (x >= this.mapWidth ) x = x - this.mapWidth;
+					if (y >= this.mapHeight) y = y - this.mapHeight;
+
+					// 一周して自分に帰ってきたら
+					if (this.transformXyToPos(x, y) == initPos) break;
+				} else {
+					if (x == -1 || y == -1 || x == this.mapWidth || y == this.mapHeight) break;
+				}
+
 				const pos = this.transformXyToPos(x, y);
+
+				//#region 「配置不能」マスに当たった場合走査終了
 				const pixel = this.mapDataGet(pos);
 				if (pixel == 'null') break;
+				//#endregion
+
+				// 石取得
 				const stone = this.get(pos);
+
+				// 石が置かれていないマスなら走査終了
 				if (stone == null) break;
+
+				// 相手の石なら「ひっくり返せるかもリスト」に入れておく
 				if (stone == enemyColor) found.push(pos);
+
+				// 自分の石なら「ひっくり返せるかもリスト」を「ひっくり返せるリスト」に入れ、走査終了
 				if (stone == color) {
 					stones = stones.concat(found);
 					break;
@@ -228,6 +259,8 @@ export default class Othello {
 				i++;
 			}
 		};
+
+		const [x, y] = this.transformPosToXy(pos);
 
 		iterate(i => [x    , y - i]); // 上
 		iterate(i => [x + i, y - i]); // 右上

@@ -793,7 +793,7 @@ export const twoBoard: Map = {
 	]
 };
 
-export const test: Map = {
+export const test1: Map = {
 	name: 'Test1',
 	category: 'Test',
 	data: [
@@ -801,5 +801,17 @@ export const test: Map = {
 		'---wb---',
 		'---bw---',
 		'--------'
+	]
+};
+
+export const test2: Map = {
+	name: 'Test2',
+	category: 'Test',
+	data: [
+		'------',
+		'------',
+		'-b--w-',
+		'-w--b-',
+		'-w--b-'
 	]
 };
