@@ -16,6 +16,7 @@
 	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 		<div v-for="(x, i) in game.settings.map.join('')"
 			:class="{ none: x == ' ' }"
+			@click="onPixelClick(i, x)"
 		>
 			<template v-if="x == 'b'">%fa:circle%</template>
 			<template v-if="x == 'w'">%fa:circle R%</template>
@@ -23,11 +24,11 @@
 	</div>
 
 	<div class="rules">
-		<mk-switch v-model="game.settings.is_llotheo" @change="onIsLlotheoChange" text="石の少ない方が勝ち(ロセオ)"/>
+		<mk-switch v-model="game.settings.is_llotheo" @change="updateSettings" text="石の少ない方が勝ち(ロセオ)"/>
 		<div>
-			<el-radio v-model="game.settings.bw" label="random" @change="onBwChange">ランダム</el-radio>
-			<el-radio v-model="game.settings.bw" :label="1" @change="onBwChange">{{ game.user1.name }}が黒</el-radio>
-			<el-radio v-model="game.settings.bw" :label="2" @change="onBwChange">{{ game.user2.name }}が黒</el-radio>
+			<el-radio v-model="game.settings.bw" label="random" @change="updateSettings">ランダム</el-radio>
+			<el-radio v-model="game.settings.bw" :label="1" @change="updateSettings">{{ game.user1.name }}が黒</el-radio>
+			<el-radio v-model="game.settings.bw" :label="2" @change="updateSettings">{{ game.user2.name }}が黒</el-radio>
 		</div>
 	</div>
 
@@ -114,34 +115,38 @@ export default Vue.extend({
 			this.$forceUpdate();
 		},
 
+		updateSettings() {
+			this.connection.send({
+				type: 'update-settings',
+				settings: this.game.settings
+			});
+		},
+
 		onUpdateSettings(settings) {
 			this.game.settings = settings;
-			this.mapName = Object.entries(maps).find(x => x[1].data.join('') == this.game.settings.map.join(''))[1].name;
+			const foundMap = Object.entries(maps).find(x => x[1].data.join('') == this.game.settings.map.join(''));
+			this.mapName = foundMap ? foundMap[1].name : '-Custom-';
 		},
 
 		onMapChange(v) {
 			this.game.settings.map = Object.entries(maps).find(x => x[1].name == v)[1].data;
-			this.connection.send({
-				type: 'update-settings',
-				settings: this.game.settings
-			});
 			this.$forceUpdate();
+			this.updateSettings();
 		},
 
-		onIsLlotheoChange(v) {
-			this.connection.send({
-				type: 'update-settings',
-				settings: this.game.settings
-			});
+		onPixelClick(pos, pixel) {
+			const x = pos % this.game.settings.map[0].length;
+			const y = Math.floor(pos / this.game.settings.map[0].length);
+			const newPixel =
+				pixel == ' ' ? '-' :
+				pixel == '-' ? 'b' :
+				pixel == 'b' ? 'w' :
+				' ';
+			const line = this.game.settings.map[y].split('');
+			line[x] = newPixel;
+			this.$set(this.game.settings.map, y, line.join(''));
 			this.$forceUpdate();
-		},
-
-		onBwChange(v) {
-			this.connection.send({
-				type: 'update-settings',
-				settings: this.game.settings
-			});
-			this.$forceUpdate();
+			this.updateSettings();
 		}
 	}
 });
@@ -172,6 +177,7 @@ export default Vue.extend({
 			border solid 2px #ddd
 			border-radius 6px
 			overflow hidden
+			cursor pointer
 
 			*
 				pointer-events none

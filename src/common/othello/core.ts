@@ -69,6 +69,7 @@ export default class Othello {
 	 * 黒石の比率
 	 */
 	public get blackP() {
+		if (this.blackCount == 0 && this.whiteCount == 0) return 0;
 		return this.blackCount / (this.blackCount + this.whiteCount);
 	}
 
@@ -76,6 +77,7 @@ export default class Othello {
 	 * 白石の比率
 	 */
 	public get whiteP() {
+		if (this.blackCount == 0 && this.whiteCount == 0) return 0;
 		return this.whiteCount / (this.blackCount + this.whiteCount);
 	}
 
