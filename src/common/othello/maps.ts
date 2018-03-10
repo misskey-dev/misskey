@@ -834,3 +834,15 @@ export const test3: Map = {
 		'b--',
 	]
 };
+
+export const test4: Map = {
+	name: 'Test4',
+	category: 'Test',
+	data: [
+		'-w--b-',
+		'-w--b-',
+		'------',
+		'-w--b-',
+		'-w--b-'
+	]
+};

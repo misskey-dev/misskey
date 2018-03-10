@@ -235,7 +235,14 @@ export default class Othello {
 					//}
 
 					// 一周して自分に帰ってきたら
-					if (this.transformXyToPos(x, y) == initPos) break;
+					if (this.transformXyToPos(x, y) == initPos) {
+						// ↓のコメントアウトを外すと、「現時点で自分の石が隣接していないが、
+						// そこに置いたとするとループして最終的に挟んだことになる」というケースを有効化します。(Test4のマップで違いが分かります)
+						// このケースを有効にした方が良いのか無効にした方が良いのか判断がつかなかったためとりあえず無効としておきます
+						// (あと無効な方がゲームとしておもしろそうだった)
+						//stones = stones.concat(found);
+						break;
+					}
 				} else {
 					if (x == -1 || y == -1 || x == this.mapWidth || y == this.mapHeight) break;
 				}
