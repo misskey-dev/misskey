@@ -224,8 +224,8 @@ export default class Othello {
 
 				// 座標が指し示す位置がボード外に出たとき
 				if (this.opts.loopedBoard) {
-					if (x < 0            ) x = this.mapWidth - (-x);
-					if (y < 0            ) y = this.mapHeight - (-y);
+					if (x <  0             ) x = this.mapWidth - (-x);
+					if (y <  0             ) y = this.mapHeight - (-y);
 					if (x >= this.mapWidth ) x = x - this.mapWidth;
 					if (y >= this.mapHeight) y = y - this.mapHeight;
 
