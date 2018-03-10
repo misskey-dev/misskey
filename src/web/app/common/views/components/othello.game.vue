@@ -38,6 +38,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Othello, { Color } from '../../../../../common/othello/core';
+import { url } from '../../../config';
 
 export default Vue.extend({
 	props: ['game', 'connection'],
@@ -134,6 +135,13 @@ export default Vue.extend({
 
 			this.o.put(this.myColor, pos);
 
+			// サウンドを再生する
+			if ((this as any).os.isEnableSounds) {
+				const sound = new Audio(`${url}/assets/othello-put-me.mp3`);
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+				sound.play();
+			}
+
 			this.connection.send({
 				type: 'set',
 				pos
@@ -150,6 +158,13 @@ export default Vue.extend({
 			this.o.put(x.color, x.pos);
 			this.checkEnd();
 			this.$forceUpdate();
+
+			// サウンドを再生する
+			if ((this as any).os.isEnableSounds && x.color != this.myColor) {
+				const sound = new Audio(`${url}/assets/othello-put-you.mp3`);
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+				sound.play();
+			}
 		},
 
 		checkEnd() {
