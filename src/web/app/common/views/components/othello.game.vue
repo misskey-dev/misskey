@@ -37,17 +37,20 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as CRC32 from 'crc-32';
 import Othello, { Color } from '../../../../../common/othello/core';
 import { url } from '../../../config';
 
 export default Vue.extend({
-	props: ['game', 'connection'],
+	props: ['initGame', 'connection'],
 
 	data() {
 		return {
+			game: null,
 			o: null as Othello,
 			logs: [],
-			logPos: 0
+			logPos: 0,
+			pollingClock: null
 		};
 	},
 
@@ -104,6 +107,8 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.game = this.initGame;
+
 		this.o = new Othello(this.game.settings.map, {
 			isLlotheo: this.game.settings.is_llotheo,
 			canPutEverywhere: this.game.settings.can_put_everywhere,
@@ -116,14 +121,29 @@ export default Vue.extend({
 
 		this.logs = this.game.logs;
 		this.logPos = this.logs.length;
+
+		// 通信を取りこぼしてもいいように定期的にポーリングさせる
+		if (this.game.is_started && !this.game.is_ended) {
+			this.pollingClock = setInterval(() => {
+				const crc32 = CRC32.str(this.logs.map(x => x.pos.toString()).join(''));
+				this.connection.send({
+					type: 'check',
+					crc32
+				});
+			}, 10000);
+		}
 	},
 
 	mounted() {
 		this.connection.on('set', this.onSet);
+		this.connection.on('rescue', this.onRescue);
 	},
 
 	beforeDestroy() {
 		this.connection.off('set', this.onSet);
+		this.connection.off('rescue', this.onRescue);
+
+		clearInterval(this.pollingClock);
 	},
 
 	methods: {
@@ -181,6 +201,27 @@ export default Vue.extend({
 					this.game.winner = null;
 				}
 			}
+		},
+
+		// 正しいゲーム情報が送られてきたとき
+		onRescue(game) {
+			this.game = game;
+
+			this.o = new Othello(this.game.settings.map, {
+				isLlotheo: this.game.settings.is_llotheo,
+				canPutEverywhere: this.game.settings.can_put_everywhere,
+				loopedBoard: this.game.settings.looped_board
+			});
+
+			this.game.logs.forEach(log => {
+				this.o.put(log.color, log.pos);
+			});
+
+			this.logs = this.game.logs;
+			this.logPos = this.logs.length;
+
+			this.checkEnd();
+			this.$forceUpdate();
 		}
 	}
 });

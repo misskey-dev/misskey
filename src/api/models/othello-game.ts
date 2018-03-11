@@ -35,6 +35,9 @@ export interface IGame {
 	};
 	form1: any;
 	form2: any;
+
+	// ログのposを文字列としてすべて連結したもののCRC32値
+	crc32: string;
 }
 
 /**

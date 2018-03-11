@@ -1,5 +1,6 @@
 import * as websocket from 'websocket';
 import * as redis from 'redis';
+import * as CRC32 from 'crc-32';
 import Game, { pack } from '../models/othello-game';
 import { publishOthelloGameStream } from '../event';
 import Othello from '../../common/othello/core';
@@ -49,6 +50,11 @@ export default function(request: websocket.request, connection: websocket.connec
 			case 'set':
 				if (msg.pos == null) return;
 				set(msg.pos);
+				break;
+
+			case 'check':
+				if (msg.crc32 == null) return;
+				check(msg.crc32);
 				break;
 		}
 	});
@@ -231,11 +237,12 @@ export default function(request: websocket.request, connection: websocket.connec
 				}
 				//#endregion
 
-				publishOthelloGameStream(gameId, 'started', await pack(gameId));
+				publishOthelloGameStream(gameId, 'started', await pack(gameId, user));
 			}, 3000);
 		}
 	}
 
+	// 石を打つ
 	async function set(pos) {
 		const game = await Game.findOne({ _id: gameId });
 
@@ -278,10 +285,13 @@ export default function(request: websocket.request, connection: websocket.connec
 			pos
 		};
 
+		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString());
+
 		await Game.update({
 			_id: gameId
 		}, {
 			$set: {
+				crc32,
 				is_ended: o.isEnded,
 				winner_id: winner
 			},
@@ -298,6 +308,22 @@ export default function(request: websocket.request, connection: websocket.connec
 			publishOthelloGameStream(gameId, 'ended', {
 				winner_id: winner
 			});
+		}
+	}
+
+	async function check(crc32) {
+		const game = await Game.findOne({ _id: gameId });
+
+		if (!game.is_started) return;
+
+		// 互換性のため
+		if (game.crc32 == null) return;
+
+		if (crc32 !== game.crc32) {
+			connection.send(JSON.stringify({
+				type: 'rescue',
+				body: await pack(game, user)
+			}));
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <template>
 <div>
 	<x-room v-if="!g.is_started" :game="g" :connection="connection"/>
-	<x-game v-else :game="g" :connection="connection"/>
+	<x-game v-else :init-game="g" :connection="connection"/>
 </div>
 </template>
 
