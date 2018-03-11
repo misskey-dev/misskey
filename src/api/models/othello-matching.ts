@@ -32,6 +32,8 @@ export const pack = (
 
 	const _matching = deepcopy(matching);
 
+	// Rename _id to id
+	_matching.id = _matching._id;
 	delete _matching._id;
 
 	// Populate user

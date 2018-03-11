@@ -2,7 +2,7 @@ import $ from 'cafy';
 import Matching, { pack as packMatching } from '../../models/othello-matching';
 import Game, { pack as packGame } from '../../models/othello-game';
 import User from '../../models/user';
-import { publishOthelloStream } from '../../event';
+import publishUserStream, { publishOthelloStream } from '../../event';
 import { eighteight } from '../../../common/othello/maps';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
@@ -48,6 +48,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		res(await packGame(game, user));
 
 		publishOthelloStream(exist.parent_id, 'matched', await packGame(game, exist.parent_id));
+
+		const other = await Matching.count({
+			child_id: user._id
+		});
+
+		if (other == 0) {
+			publishUserStream(user._id, 'othello_no_invites');
+		}
 	} else {
 		// Fetch child
 		const child = await User.findOne({
@@ -77,7 +85,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		// Reponse
 		res();
 
+		const packed = await packMatching(matching, child);
+
 		// 招待
-		publishOthelloStream(child._id, 'invited', await packMatching(matching, child));
+		publishOthelloStream(child._id, 'invited', packed);
+
+		publishUserStream(child._id, 'othello_invited', packed);
 	}
 });

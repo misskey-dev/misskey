@@ -78,7 +78,8 @@ export default Vue.extend({
 			matching: null,
 			invitations: [],
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			pingClock: null
 		};
 	},
 	watch: {
@@ -112,17 +113,29 @@ export default Vue.extend({
 		(this as any).api('othello/invitations').then(invitations => {
 			this.invitations = this.invitations.concat(invitations);
 		});
+
+		this.pingClock = setInterval(() => {
+			if (this.matching) {
+				this.connection.send({
+					type: 'ping',
+					id: this.matching.id
+				});
+			}
+		}, 3000);
 	},
 	beforeDestroy() {
 		this.connection.off('matched', this.onMatched);
 		this.connection.off('invited', this.onInvited);
 		(this as any).os.streams.othelloStream.dispose(this.connectionId);
+
+		clearInterval(this.pingClock);
 	},
 	methods: {
 		go(game) {
 			(this as any).api('othello/games/show', {
 				game_id: game.id
 			}).then(game => {
+				this.matching = null;
 				this.game = game;
 			});
 		},
@@ -154,11 +167,13 @@ export default Vue.extend({
 				user_id: invitation.parent.id
 			}).then(game => {
 				if (game) {
+					this.matching = null;
 					this.game = game;
 				}
 			});
 		},
 		onMatched(game) {
+			this.matching = null;
 			this.game = game;
 		},
 		onInvited(invite) {

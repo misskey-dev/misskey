@@ -56,6 +56,8 @@ export default Vue.extend({
 
 			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
 			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.on('othello_invited', this.onOthelloInvited);
+			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
 
 			// Fetch count of unread messaging messages
 			(this as any).api('messaging/unread').then(res => {
@@ -69,16 +71,26 @@ export default Vue.extend({
 		if ((this as any).os.isSignedIn) {
 			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
 			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.off('othello_invited', this.onOthelloInvited);
+			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 	methods: {
+		onUnreadMessagingMessage() {
+			this.hasUnreadMessagingMessages = true;
+		},
+
 		onReadAllMessagingMessages() {
 			this.hasUnreadMessagingMessages = false;
 		},
 
-		onUnreadMessagingMessage() {
-			this.hasUnreadMessagingMessages = true;
+		onOthelloInvited() {
+			this.hasGameInvitations = true;
+		},
+
+		onOthelloNoInvites() {
+			this.hasGameInvitations = false;
 		},
 
 		messaging() {

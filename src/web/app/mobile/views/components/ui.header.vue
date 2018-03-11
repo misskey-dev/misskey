@@ -6,7 +6,7 @@
 		<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ os.i.name }}</b>さん</p>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
-			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages">%fa:circle%</template>
+			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages || hasGameInvitations">%fa:circle%</template>
 			<h1>
 				<slot>Misskey</slot>
 			</h1>
@@ -26,6 +26,7 @@ export default Vue.extend({
 		return {
 			hasUnreadNotifications: false,
 			hasUnreadMessagingMessages: false,
+			hasGameInvitations: false,
 			connection: null,
 			connectionId: null
 		};
@@ -39,6 +40,8 @@ export default Vue.extend({
 			this.connection.on('unread_notification', this.onUnreadNotification);
 			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
 			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.on('othello_invited', this.onOthelloInvited);
+			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
 
 			// Fetch count of unread notifications
 			(this as any).api('notifications/get_unread_count').then(res => {
@@ -107,6 +110,8 @@ export default Vue.extend({
 			this.connection.off('unread_notification', this.onUnreadNotification);
 			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
 			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
+			this.connection.off('othello_invited', this.onOthelloInvited);
+			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
@@ -122,6 +127,12 @@ export default Vue.extend({
 		},
 		onUnreadMessagingMessage() {
 			this.hasUnreadMessagingMessages = true;
+		},
+		onOthelloInvited() {
+			this.hasGameInvitations = true;
+		},
+		onOthelloNoInvites() {
+			this.hasGameInvitations = false;
 		}
 	}
 });
