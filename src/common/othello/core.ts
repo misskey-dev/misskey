@@ -166,7 +166,8 @@ export default class Othello {
 	 * @param pos 位置
 	 */
 	public mapDataGet(pos: number): MapPixel {
-		if (pos < 0 || pos >= this.map.length) return 'null';
+		const [x, y] = this.transformPosToXy(pos);
+		if (x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight) return 'null';
 		return this.map[pos];
 	}
 
