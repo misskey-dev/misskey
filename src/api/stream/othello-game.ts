@@ -232,7 +232,8 @@ export default function(request: websocket.request, connection: websocket.connec
 					});
 
 					publishOthelloGameStream(gameId, 'ended', {
-						winner_id: winner
+						winner_id: winner,
+						game: await pack(gameId, user)
 					});
 				}
 				//#endregion
