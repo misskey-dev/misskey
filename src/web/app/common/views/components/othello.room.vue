@@ -19,7 +19,7 @@
 			</div>
 			<div :class="$style.board" v-if="game.settings.map != null" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 				<div v-for="(x, i) in game.settings.map.join('')"
-					:class="{ none: x == ' ' }"
+					:data-none="x == ' '"
 					@click="onPixelClick(i, x)"
 				>
 					<template v-if="x == 'b'">%fa:circle%</template>
@@ -324,7 +324,7 @@ export default Vue.extend({
 			width 100%
 			height 100%
 
-		&.none
+		&[data-none]
 			border-color transparent
 
 </style>
