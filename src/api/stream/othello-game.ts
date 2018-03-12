@@ -307,7 +307,8 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		if (o.isEnded) {
 			publishOthelloGameStream(gameId, 'ended', {
-				winner_id: winner
+				winner_id: winner,
+				game: await pack(gameId, user)
 			});
 		}
 	}
