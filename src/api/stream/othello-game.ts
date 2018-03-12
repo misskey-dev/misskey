@@ -214,9 +214,9 @@ export default function(request: websocket.request, connection: websocket.connec
 
 				if (o.isEnded) {
 					let winner;
-					if (o.winner == 'black') {
+					if (o.winner === true) {
 						winner = freshGame.black == 1 ? freshGame.user1_id : freshGame.user2_id;
-					} else if (o.winner == 'white') {
+					} else if (o.winner === false) {
 						winner = freshGame.black == 1 ? freshGame.user2_id : freshGame.user1_id;
 					} else {
 						winner = null;
@@ -263,17 +263,17 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		const myColor =
 			(game.user1_id.equals(user._id) && game.black == 1) || (game.user2_id.equals(user._id) && game.black == 2)
-				? 'black'
-				: 'white';
+				? true
+				: false;
 
 		if (!o.canPut(myColor, pos)) return;
 		o.put(myColor, pos);
 
 		let winner;
 		if (o.isEnded) {
-			if (o.winner == 'black') {
+			if (o.winner === true) {
 				winner = game.black == 1 ? game.user1_id : game.user2_id;
-			} else if (o.winner == 'white') {
+			} else if (o.winner === false) {
 				winner = game.black == 1 ? game.user2_id : game.user1_id;
 			} else {
 				winner = null;

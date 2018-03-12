@@ -1,10 +1,34 @@
-export type Color = 'black' | 'white';
+/**
+ * true ... 黒
+ * false ... 白
+ */
+export type Color = boolean;
+const BLACK = true;
+const WHITE = false;
+
 export type MapPixel = 'null' | 'empty';
 
 export type Options = {
 	isLlotheo: boolean;
 	canPutEverywhere: boolean;
 	loopedBoard: boolean;
+};
+
+export type Undo = {
+	/**
+	 * 色
+	 */
+	color: Color,
+
+	/**
+	 * どこに打ったか
+	 */
+	pos: number;
+
+	/**
+	 * 反転した石の位置の配列
+	 */
+	effects: number[];
 };
 
 /**
@@ -15,19 +39,20 @@ export default class Othello {
 	public mapWidth: number;
 	public mapHeight: number;
 	public board: Color[];
-	public turn: Color = 'black';
+	public turn: Color = BLACK;
 	public opts: Options;
 
 	public prevPos = -1;
-	public stats: Array<{
-		b: number;
-		w: number;
-	}>;
+	public prevColor: Color = null;
 
 	/**
 	 * ゲームを初期化します
 	 */
 	constructor(map: string[], opts: Options) {
+		//#region binds
+		this.put = this.put.bind(this);
+		//#endregion
+
 		//#region Options
 		this.opts = opts;
 		if (this.opts.isLlotheo == null) this.opts.isLlotheo = false;
@@ -42,8 +67,8 @@ export default class Othello {
 
 		this.board = mapData.split('').map(d => {
 			if (d == '-') return null;
-			if (d == 'b') return 'black';
-			if (d == 'w') return 'white';
+			if (d == 'b') return BLACK;
+			if (d == 'w') return WHITE;
 			return undefined;
 		});
 
@@ -53,18 +78,12 @@ export default class Othello {
 		});
 		//#endregion
 
-		// Init stats
-		this.stats = [{
-			b: this.blackP,
-			w: this.whiteP
-		}];
-
 		// ゲームが始まった時点で片方の色の石しかないか、始まった時点で勝敗が決定するようなマップの場合がある
-		if (this.canPutSomewhere('black').length == 0) {
-			if (this.canPutSomewhere('white').length == 0) {
+		if (this.canPutSomewhere(BLACK).length == 0) {
+			if (this.canPutSomewhere(WHITE).length == 0) {
 				this.turn = null;
 			} else {
-				this.turn = 'white';
+				this.turn = WHITE;
 			}
 		}
 	}
@@ -73,14 +92,14 @@ export default class Othello {
 	 * 黒石の数
 	 */
 	public get blackCount() {
-		return this.board.filter(x => x == 'black').length;
+		return this.board.filter(x => x === BLACK).length;
 	}
 
 	/**
 	 * 白石の数
 	 */
 	public get whiteCount() {
-		return this.board.filter(x => x == 'white').length;
+		return this.board.filter(x => x === WHITE).length;
 	}
 
 	/**
@@ -123,34 +142,51 @@ export default class Othello {
 	 * @param color 石の色
 	 * @param pos 位置
 	 */
-	public put(color: Color, pos: number) {
-		if (!this.canPut(color, pos)) return;
+	public put(color: Color, pos: number, fast = false): Undo {
+		if (!fast && !this.canPut(color, pos)) return null;
 
 		this.prevPos = pos;
+		this.prevColor = color;
 		this.write(color, pos);
 
 		// 反転させられる石を取得
-		const reverses = this.effects(color, pos);
+		const effects = this.effects(color, pos);
 
 		// 反転させる
-		reverses.forEach(pos => {
+		effects.forEach(pos => {
 			this.write(color, pos);
 		});
 
-		this.stats.push({
-			b: this.blackP,
-			w: this.whiteP
-		});
+		this.calcTurn();
 
+		return {
+			color,
+			pos,
+			effects
+		};
+	}
+
+	private calcTurn() {
 		// ターン計算
-		const opColor = color == 'black' ? 'white' : 'black';
+		const opColor = this.prevColor === BLACK ? WHITE : BLACK;
 		if (this.canPutSomewhere(opColor).length > 0) {
-			this.turn = color == 'black' ? 'white' : 'black';
-		} else if (this.canPutSomewhere(color).length > 0) {
-			this.turn = color == 'black' ? 'black' : 'white';
+			this.turn = this.prevColor === BLACK ? WHITE : BLACK;
+		} else if (this.canPutSomewhere(this.prevColor).length > 0) {
+			this.turn = this.prevColor === BLACK ? BLACK : WHITE;
 		} else {
 			this.turn = null;
 		}
+	}
+
+	public undo(undo: Undo) {
+		this.prevColor = undo.color;
+		this.prevPos = undo.pos;
+		this.write(null, undo.pos);
+		for (const pos of undo.effects) {
+			const color = this.board[pos];
+			this.write(!color, pos);
+		}
+		this.calcTurn();
 	}
 
 	/**
@@ -207,8 +243,8 @@ export default class Othello {
 	 * @param color 自分の色
 	 * @param pos 位置
 	 */
-	private effects(color: Color, pos: number): number[] {
-		const enemyColor = color == 'black' ? 'white' : 'black';
+	public effects(color: Color, pos: number): number[] {
+		const enemyColor = !color;
 
 		// ひっくり返せる石(の位置)リスト
 		let stones = [];
@@ -225,7 +261,7 @@ export default class Othello {
 
 				// 座標が指し示す位置がボード外に出たとき
 				if (this.opts.loopedBoard) {
-					if (x <  0             ) x = this.mapWidth - ((-x) % this.mapWidth);
+					if (x <  0             ) x = this.mapWidth  - ((-x) % this.mapWidth);
 					if (y <  0             ) y = this.mapHeight - ((-y) % this.mapHeight);
 					if (x >= this.mapWidth ) x = x % this.mapWidth;
 					if (y >= this.mapHeight) y = y % this.mapHeight;
@@ -259,16 +295,17 @@ export default class Othello {
 				const stone = this.get(pos);
 
 				// 石が置かれていないマスなら走査終了
-				if (stone == null) break;
+				if (stone === null) break;
 
 				// 相手の石なら「ひっくり返せるかもリスト」に入れておく
-				if (stone == enemyColor) found.push(pos);
+				if (stone === enemyColor) found.push(pos);
 
 				// 自分の石なら「ひっくり返せるかもリスト」を「ひっくり返せるリスト」に入れ、走査終了
-				if (stone == color) {
+				if (stone === color) {
 					stones = stones.concat(found);
 					break;
 				}
+
 				i++;
 			}
 		};
@@ -303,9 +340,9 @@ export default class Othello {
 		if (this.blackCount == this.whiteCount) return null;
 
 		if (this.opts.isLlotheo) {
-			return this.blackCount > this.whiteCount ? 'white' : 'black';
+			return this.blackCount > this.whiteCount ? WHITE : BLACK;
 		} else {
-			return this.blackCount > this.whiteCount ? 'black' : 'white';
+			return this.blackCount > this.whiteCount ? BLACK : WHITE;
 		}
 	}
 }

@@ -25,7 +25,11 @@ export interface IGame {
 	is_started: boolean;
 	is_ended: boolean;
 	winner_id: mongo.ObjectID;
-	logs: any[];
+	logs: Array<{
+		at: Date;
+		color: boolean;
+		pos: number;
+	}>;
 	settings: {
 		map: string[];
 		bw: string | number;

@@ -60,13 +60,13 @@ export default Vue.extend({
 		},
 		myColor(): Color {
 			if (!this.iAmPlayer) return null;
-			if (this.game.user1_id == (this as any).os.i.id && this.game.black == 1) return 'black';
-			if (this.game.user2_id == (this as any).os.i.id && this.game.black == 2) return 'black';
-			return 'white';
+			if (this.game.user1_id == (this as any).os.i.id && this.game.black == 1) return true;
+			if (this.game.user2_id == (this as any).os.i.id && this.game.black == 2) return true;
+			return false;
 		},
 		opColor(): Color {
 			if (!this.iAmPlayer) return null;
-			return this.myColor == 'black' ? 'white' : 'black';
+			return this.myColor === true ? false : true;
 		},
 		blackUser(): any {
 			return this.game.black == 1 ? this.game.user1 : this.game.user2;
@@ -75,9 +75,9 @@ export default Vue.extend({
 			return this.game.black == 1 ? this.game.user2 : this.game.user1;
 		},
 		turnUser(): any {
-			if (this.o.turn == 'black') {
+			if (this.o.turn === true) {
 				return this.game.black == 1 ? this.game.user1 : this.game.user2;
-			} else if (this.o.turn == 'white') {
+			} else if (this.o.turn === false) {
 				return this.game.black == 1 ? this.game.user2 : this.game.user1;
 			} else {
 				return null;
@@ -99,7 +99,7 @@ export default Vue.extend({
 			});
 			this.logs.forEach((log, i) => {
 				if (i < v) {
-					this.o.put(log.color, log.pos);
+					this.o.put(log.color, log.pos, true);
 				}
 			});
 			this.$forceUpdate();
@@ -116,7 +116,7 @@ export default Vue.extend({
 		});
 
 		this.game.logs.forEach(log => {
-			this.o.put(log.color, log.pos);
+			this.o.put(log.color, log.pos, true);
 		});
 
 		this.logs = this.game.logs;
@@ -190,10 +190,10 @@ export default Vue.extend({
 		checkEnd() {
 			this.game.is_ended = this.o.isEnded;
 			if (this.game.is_ended) {
-				if (this.o.winner == 'black') {
+				if (this.o.winner === true) {
 					this.game.winner_id = this.game.black == 1 ? this.game.user1_id : this.game.user2_id;
 					this.game.winner = this.game.black == 1 ? this.game.user1 : this.game.user2;
-				} else if (this.o.winner == 'white') {
+				} else if (this.o.winner === false) {
 					this.game.winner_id = this.game.black == 1 ? this.game.user2_id : this.game.user1_id;
 					this.game.winner = this.game.black == 1 ? this.game.user2 : this.game.user1;
 				} else {
@@ -214,7 +214,7 @@ export default Vue.extend({
 			});
 
 			this.game.logs.forEach(log => {
-				this.o.put(log.color, log.pos);
+				this.o.put(log.color, log.pos, true);
 			});
 
 			this.logs = this.game.logs;
