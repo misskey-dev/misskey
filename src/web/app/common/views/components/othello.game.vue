@@ -130,7 +130,7 @@ export default Vue.extend({
 					type: 'check',
 					crc32
 				});
-			}, 10000);
+			}, 3000);
 		}
 	},
 
