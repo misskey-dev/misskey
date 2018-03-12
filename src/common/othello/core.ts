@@ -29,6 +29,11 @@ export type Undo = {
 	 * 反転した石の位置の配列
 	 */
 	effects: number[];
+
+	/**
+	 * ターン
+	 */
+	turn: Color;
 };
 
 /**
@@ -129,50 +134,48 @@ export default class Othello {
 	}
 
 	/**
-	 * 指定のマスに石を書き込みます
-	 * @param color 石の色
-	 * @param pos 位置
-	 */
-	private write(color: Color, pos: number) {
-		this.board[pos] = color;
-	}
-
-	/**
 	 * 指定のマスに石を打ちます
 	 * @param color 石の色
 	 * @param pos 位置
 	 */
 	public put(color: Color, pos: number, fast = false): Undo {
-		if (!fast && !this.canPut(color, pos)) return null;
+		if (!fast && !this.canPut(color, pos)) {
+			console.warn('can not put this position:', pos, color);
+			console.warn(this.board);
+			return null;
+		}
 
 		this.prevPos = pos;
 		this.prevColor = color;
-		this.write(color, pos);
+
+		this.board[pos] = color;
 
 		// 反転させられる石を取得
 		const effects = this.effects(color, pos);
 
 		// 反転させる
-		effects.forEach(pos => {
-			this.write(color, pos);
-		});
+		for (const pos of effects) {
+			this.board[pos] = color;
+		}
+
+		const turn = this.turn;
 
 		this.calcTurn();
 
 		return {
 			color,
 			pos,
-			effects
+			effects,
+			turn
 		};
 	}
 
 	private calcTurn() {
 		// ターン計算
-		const opColor = this.prevColor === BLACK ? WHITE : BLACK;
-		if (this.canPutSomewhere(opColor).length > 0) {
-			this.turn = this.prevColor === BLACK ? WHITE : BLACK;
+		if (this.canPutSomewhere(!this.prevColor).length > 0) {
+			this.turn = !this.prevColor;
 		} else if (this.canPutSomewhere(this.prevColor).length > 0) {
-			this.turn = this.prevColor === BLACK ? BLACK : WHITE;
+			this.turn = this.prevColor;
 		} else {
 			this.turn = null;
 		}
@@ -181,20 +184,12 @@ export default class Othello {
 	public undo(undo: Undo) {
 		this.prevColor = undo.color;
 		this.prevPos = undo.pos;
-		this.write(null, undo.pos);
+		this.board[undo.pos] = null;
 		for (const pos of undo.effects) {
 			const color = this.board[pos];
-			this.write(!color, pos);
+			this.board[pos] = !color;
 		}
-		this.calcTurn();
-	}
-
-	/**
-	 * 指定したマスの状態を取得します
-	 * @param pos 位置
-	 */
-	public get(pos: number) {
-		return this.board[pos];
+		this.turn = undo.turn;
 	}
 
 	/**
@@ -227,7 +222,7 @@ export default class Othello {
 	 */
 	public canPut(color: Color, pos: number): boolean {
 		// 既に石が置いてある場所には打てない
-		if (this.get(pos) !== null) return false;
+		if (this.board[pos] !== null) return false;
 
 		if (this.opts.canPutEverywhere) {
 			// 挟んでなくても置けるモード
@@ -292,7 +287,7 @@ export default class Othello {
 				//#endregion
 
 				// 石取得
-				const stone = this.get(pos);
+				const stone = this.board[pos];
 
 				// 石が置かれていないマスなら走査終了
 				if (stone === null) break;
