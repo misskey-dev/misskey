@@ -11,7 +11,9 @@ const migrate = async (doc) => {
 	});
 
 	const result = await Othello.update(doc._id, {
-		$set: doc.logs
+		$set: {
+			logs: doc.logs
+		}
 	});
 
 	return result.ok === 1;
