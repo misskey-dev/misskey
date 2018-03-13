@@ -254,8 +254,7 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'othello/games/show',
-		withCredential: true
+		name: 'othello/games/show'
 	},
 
 	{
