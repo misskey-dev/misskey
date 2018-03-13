@@ -98,7 +98,7 @@
 		"deep-equal": "1.0.1",
 		"deepcopy": "0.6.3",
 		"diskusage": "0.2.4",
-		"elasticsearch": "14.1.0",
+		"elasticsearch": "14.2.0",
 		"element-ui": "^2.2.0",
 		"emojilib": "^2.2.12",
 		"escape-regexp": "0.0.1",
