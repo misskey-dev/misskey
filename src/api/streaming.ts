@@ -53,6 +53,11 @@ module.exports = (server: http.Server) => {
 
 		const user = await authenticate(request.resourceURL.query.i);
 
+		if (request.resourceURL.pathname === '/othello-game') {
+			othelloGameStream(request, connection, subscriber, user);
+			return;
+		}
+
 		if (user == null) {
 			connection.send('authentication-failed');
 			connection.close();
@@ -64,7 +69,6 @@ module.exports = (server: http.Server) => {
 			request.resourceURL.pathname === '/drive' ? driveStream :
 			request.resourceURL.pathname === '/messaging' ? messagingStream :
 			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
-			request.resourceURL.pathname === '/othello-game' ? othelloGameStream :
 			request.resourceURL.pathname === '/othello' ? othelloStream :
 			null;
 

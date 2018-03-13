@@ -6,7 +6,7 @@ import { publishOthelloGameStream } from '../event';
 import Othello from '../../common/othello/core';
 import * as maps from '../../common/othello/maps';
 
-export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user?: any): void {
 	const gameId = request.resourceURL.query.game;
 
 	// Subscribe game stream

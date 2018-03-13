@@ -56,6 +56,7 @@ export default Vue.extend({
 
 	computed: {
 		iAmPlayer(): boolean {
+			if (!(this as any).os.isSignedIn) return false;
 			return this.game.user1_id == (this as any).os.i.id || this.game.user2_id == (this as any).os.i.id;
 		},
 		myColor(): Color {
