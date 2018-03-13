@@ -74,6 +74,10 @@ type Source = {
 		hook_secret: string;
 		username: string;
 	};
+	othello_ai?: {
+		id: string;
+		i: string;
+	};
 	line_bot?: {
 		channel_secret: string;
 		channel_access_token: string;
