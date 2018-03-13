@@ -7,7 +7,8 @@
  */
 
 import * as childProcess from 'child_process';
-import * as WebSocket from 'ws';
+const WebSocket = require('ws');
+import * as ReconnectingWebSocket from 'reconnecting-websocket';
 import * as request from 'request-promise-native';
 import conf from '../../../conf';
 
@@ -28,7 +29,9 @@ const id = conf.othello_ai.id;
 /**
  * ホームストリーム
  */
-const homeStream = new WebSocket(`wss://api.misskey.xyz/?i=${i}`);
+const homeStream = new ReconnectingWebSocket(`wss://api.misskey.xyz/?i=${i}`, undefined, {
+	constructor: WebSocket
+});
 
 homeStream.on('open', () => {
 	console.log('home stream opened');
@@ -97,7 +100,9 @@ function invite(userId) {
 /**
  * オセロストリーム
  */
-const othelloStream = new WebSocket(`wss://api.misskey.xyz/othello?i=${i}`);
+const othelloStream = new ReconnectingWebSocket(`wss://api.misskey.xyz/othello?i=${i}`, undefined, {
+	constructor: WebSocket
+});
 
 othelloStream.on('open', () => {
 	console.log('othello stream opened');
@@ -127,7 +132,9 @@ othelloStream.on('message', message => {
  */
 function gameStart(game) {
 	// ゲームストリームに接続
-	const gw = new WebSocket(`wss://api.misskey.xyz/othello-game?i=${i}&game=${game.id}`);
+	const gw = new ReconnectingWebSocket(`wss://api.misskey.xyz/othello-game?i=${i}&game=${game.id}`, undefined, {
+		constructor: WebSocket
+	});
 
 	gw.on('open', () => {
 		console.log('othello game stream opened');
