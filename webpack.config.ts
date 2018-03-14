@@ -10,6 +10,7 @@ const minify = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+
 import I18nReplacer from './src/common/build/i18n';
 import { pattern as faPattern, replacement as faReplacement } from './src/common/build/fa';
 const constants = require('./src/const.json');
@@ -23,6 +24,7 @@ const version = meta.version;
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 
+//#region Replacer definitions
 global['faReplacement'] = faReplacement;
 
 global['collapseSpacesReplacement'] = html => {
@@ -36,6 +38,7 @@ global['collapseSpacesReplacement'] = html => {
 global['base64replacement'] = (_, key) => {
 	return fs.readFileSync(__dirname + '/src/web/' + key, 'base64');
 };
+//#endregion
 
 module.exports = Object.keys(langs).map(lang => {
 	// Chunk name
