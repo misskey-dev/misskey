@@ -8,6 +8,7 @@ import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
+const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
 import cssnano = require('gulp-cssnano');
 import * as uglifyComposer from 'gulp-uglify/composer';
@@ -60,7 +61,9 @@ gulp.task('build:ts', () => {
 
 	return tsProject
 		.src()
+		.pipe(sourcemaps.init())
 		.pipe(tsProject())
+		.pipe(sourcemaps.write('.', { includeContent: false, sourceRoot: '../built' }))
 		.pipe(gulp.dest('./built/'));
 });
 
