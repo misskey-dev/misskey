@@ -23,6 +23,9 @@
 			<mk-switch v-model="os.i.client_settings.fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
 				<span>ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。</span>
 			</mk-switch>
+			<mk-switch v-model="autoPopout" text="ウィンドウの自動ポップアウト">
+				<span>ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。</span>
+			</mk-switch>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -206,6 +209,7 @@ export default Vue.extend({
 			latestVersion: undefined,
 			checkingForUpdate: false,
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
+			autoPopout: localStorage.getItem('autoPopout') == 'true',
 			soundVolume: localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) : 100,
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
@@ -214,6 +218,9 @@ export default Vue.extend({
 		};
 	},
 	watch: {
+		autoPopout() {
+			localStorage.setItem('autoPopout', this.autoPopout ? 'true' : 'false');
+		},
 		enableSounds() {
 			localStorage.setItem('enableSounds', this.enableSounds ? 'true' : 'false');
 		},

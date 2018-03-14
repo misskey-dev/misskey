@@ -72,6 +72,12 @@ export default Vue.extend({
 		}
 	},
 
+	data() {
+		return {
+			preventMount: false
+		};
+	},
+
 	computed: {
 		isFlexible(): boolean {
 			return this.height == null;
@@ -89,11 +95,21 @@ export default Vue.extend({
 	},
 
 	created() {
-		// ウィンドウをウィンドウシステムに登録
-		(this as any).os.windows.add(this);
+		if (localStorage.getItem('autoPopout') == 'true' && this.popoutUrl) {
+			this.popout();
+			this.preventMount = true;
+		} else {
+			// ウィンドウをウィンドウシステムに登録
+			(this as any).os.windows.add(this);
+		}
 	},
 
 	mounted() {
+		if (this.preventMount) {
+			this.$destroy();
+			return;
+		}
+
 		this.$nextTick(() => {
 			const main = this.$refs.main as any;
 			main.style.top = '15%';
@@ -180,21 +196,28 @@ export default Vue.extend({
 		},
 
 		popout() {
-			const main = this.$refs.main as any;
-
-			const position = main.getBoundingClientRect();
-
-			const width = parseInt(getComputedStyle(main, '').width, 10);
-			const height = parseInt(getComputedStyle(main, '').height, 10);
-			const x = window.screenX + position.left;
-			const y = window.screenY + position.top;
-
 			const url = typeof this.popoutUrl == 'function' ? this.popoutUrl() : this.popoutUrl;
 
-			window.open(url, url,
-				`height=${height}, width=${width}, left=${x}, top=${y}`);
+			const main = this.$refs.main as any;
 
-			this.close();
+			if (main) {
+				const position = main.getBoundingClientRect();
+
+				const width = parseInt(getComputedStyle(main, '').width, 10);
+				const height = parseInt(getComputedStyle(main, '').height, 10);
+				const x = window.screenX + position.left;
+				const y = window.screenY + position.top;
+
+				window.open(url, url,
+					`width=${width}, height=${height}, top=${y}, left=${x}`);
+
+				this.close();
+			} else {
+				const x = window.top.outerHeight / 2 + window.top.screenY - (parseInt(this.height, 10) / 2);
+				const y = window.top.outerWidth / 2 + window.top.screenX - (parseInt(this.width, 10) / 2);
+				window.open(url, url,
+					`width=${this.width}, height=${this.height}, top=${x}, left=${y}`);
+			}
 		},
 
 		// 最前面へ移動
