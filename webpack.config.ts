@@ -3,17 +3,25 @@
  */
 
 import * as fs from 'fs';
+import * as webpack from 'webpack';
+import chalk from 'chalk';
 import jsonImporter from 'node-sass-json-importer';
 const minify = require('html-minifier').minify;
-import I18nReplacer from '../src/common/build/i18n';
-import { pattern as faPattern, replacement as faReplacement } from '../src/common/build/fa';
-const constants = require('../src/const.json');
+const WebpackOnBuildPlugin = require('on-build-webpack');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+import I18nReplacer from './src/common/build/i18n';
+import { pattern as faPattern, replacement as faReplacement } from './src/common/build/fa';
+const constants = require('./src/const.json');
+import config from './src/conf';
+import { licenseHtml } from './src/common/build/license';
 
-import plugins from './plugins';
-
-import langs from '../locales';
-const meta = require('../package.json');
+import langs from './locales';
+const meta = require('./package.json');
 const version = meta.version;
+
+const env = process.env.NODE_ENV;
+const isProduction = env === 'production';
 
 global['faReplacement'] = faReplacement;
 
@@ -26,7 +34,7 @@ global['collapseSpacesReplacement'] = html => {
 };
 
 global['base64replacement'] = (_, key) => {
-	return fs.readFileSync(__dirname + '/../src/web/' + key, 'base64');
+	return fs.readFileSync(__dirname + '/src/web/' + key, 'base64');
 };
 
 module.exports = Object.keys(langs).map(lang => {
@@ -46,12 +54,63 @@ module.exports = Object.keys(langs).map(lang => {
 	};
 
 	const output = {
-		path: __dirname + '/../built/web/assets',
+		path: __dirname + '/built/web/assets',
 		filename: `[name].${version}.${lang}.js`
 	};
 
 	const i18nReplacer = new I18nReplacer(lang);
 	global['i18nReplacement'] = i18nReplacer.replacement;
+
+	//#region Define consts
+	const consts = {
+		_RECAPTCHA_SITEKEY_: config.recaptcha.site_key,
+		_SW_PUBLICKEY_: config.sw ? config.sw.public_key : null,
+		_THEME_COLOR_: constants.themeColor,
+		_COPYRIGHT_: constants.copyright,
+		_VERSION_: version,
+		_STATUS_URL_: config.status_url,
+		_STATS_URL_: config.stats_url,
+		_DOCS_URL_: config.docs_url,
+		_API_URL_: config.api_url,
+		_DEV_URL_: config.dev_url,
+		_CH_URL_: config.ch_url,
+		_LANG_: lang,
+		_HOST_: config.host,
+		_URL_: config.url,
+		_LICENSE_: licenseHtml,
+		_GOOGLE_MAPS_API_KEY_: config.google_maps_api_key
+	};
+
+	const _consts = {};
+
+	Object.keys(consts).forEach(key => {
+		_consts[key] = JSON.stringify(consts[key]);
+	});
+	//#endregion
+
+	const plugins = [
+		new HardSourceWebpackPlugin(),
+		new ProgressBarPlugin({
+			format: chalk`  {cyan.bold yes we can} {bold [}:bar{bold ]} {green.bold :percent} {gray (:current/:total)} :elapseds`,
+			clear: false
+		}),
+		new webpack.DefinePlugin(_consts),
+		new webpack.DefinePlugin({
+			'process.env': {
+				NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+			}
+		}),
+		new WebpackOnBuildPlugin(stats => {
+			fs.writeFileSync('./version.json', JSON.stringify({
+				version
+			}), 'utf-8');
+		})
+	];
+
+	if (isProduction) {
+		plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+		plugins.push(minify());
+	}
 
 	return {
 		name,
@@ -159,19 +218,20 @@ module.exports = Object.keys(langs).map(lang => {
 				}]
 			}]
 		},
-		plugins: plugins(version, lang),
+		plugins,
 		output,
 		resolve: {
 			extensions: [
 				'.js', '.ts', '.json'
 			],
 			alias: {
-				'const.styl': __dirname + '/../src/web/const.styl'
+				'const.styl': __dirname + '/src/web/const.styl'
 			}
 		},
 		resolveLoader: {
 			modules: ['node_modules', './webpack/loaders']
 		},
-		cache: true
+		cache: true,
+		devtool: 'source-map'
 	};
 });
