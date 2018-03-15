@@ -94,6 +94,13 @@
 		<el-tab-pane label="Streams (Inspect)">
 			<el-tabs type="card" style="height:50%">
 				<el-tab-pane v-for="c in os.connections" :label="c.name == '' ? '[Home]' : c.name" :key="c.id" :name="c.id" ref="connectionsTab">
+					<div style="padding: 12px 0 0 12px">
+					<el-button size="mini" @click="send(c)">Send</el-button>
+					<el-button size="mini" type="warning" @click="c.isSuspended = true" v-if="!c.isSuspended">Suspend</el-button>
+					<el-button size="mini" type="success" @click="c.isSuspended = false" v-else>Resume</el-button>
+					<el-button size="mini" type="danger" @click="c.close">Disconnect</el-button>
+				</div>
+
 					<el-table
 						:data="c.inout"
 						style="width: 100%"
@@ -177,6 +184,14 @@ export default Vue.extend({
 		},
 		onWindowsChanged() {
 			this.$forceUpdate();
+		},
+		send(c) {
+			(this as any).apis.input({
+				title: 'Send a JSON message',
+				allowEmpty: false
+			}).then(json => {
+				c.send(JSON.parse(json));
+			});
 		}
 	}
 });

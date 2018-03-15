@@ -22,6 +22,7 @@ export default class Connection extends EventEmitter {
 		data: string
 	}> = [];
 	public id: string;
+	public isSuspended = false;
 	private os: MiOS;
 
 	constructor(os: MiOS, endpoint, params?) {
@@ -91,6 +92,8 @@ export default class Connection extends EventEmitter {
 	 * Callback of when received a message from connection
 	 */
 	private onMessage(message) {
+		if (this.isSuspended) return;
+
 		if (this.os.debug) {
 			this.in++;
 			this.inout.push({ type: 'in', at: new Date(), data: message.data });
@@ -108,6 +111,8 @@ export default class Connection extends EventEmitter {
 	 * Send a message to connection
 	 */
 	public send(data) {
+		if (this.isSuspended) return;
+
 		// まだ接続が確立されていなかったらバッファリングして次に接続した時に送信する
 		if (this.state != 'connected') {
 			this.buffer.push(data);
