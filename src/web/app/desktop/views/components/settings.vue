@@ -162,11 +162,16 @@
 			<mk-switch v-model="debug" text="デバッグモードを有効にする">
 				<span>この設定はブラウザに記憶されます。</span>
 			</mk-switch>
+			<template v-if="debug">
+				<mk-switch v-model="useRawScript" text="生のスクリプトを読み込む">
+					<span>圧縮されていない「生の」スクリプトを使用します。サイズが大きいため、読み込みに時間がかかる場合があります。この設定はブラウザに記憶されます。</span>
+				</mk-switch>
+				<div class="none ui info">
+				<p>%fa:info-circle%Misskeyはソースマップも提供しています。</p>
+			</div>
+			</template>
 			<mk-switch v-model="enableExperimental" text="実験的機能を有効にする">
 				<span>実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。この設定はブラウザに記憶されます。</span>
-			</mk-switch>
-			<mk-switch v-model="useRawScript" text="生のスクリプトを読み込む">
-				<span>圧縮されていない「生の」スクリプトを使用します。サイズが大きいため、読み込みに時間がかかる場合があります。この設定はブラウザに記憶されます。</span>
 			</mk-switch>
 		</section>
 

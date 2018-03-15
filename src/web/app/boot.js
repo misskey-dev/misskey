@@ -65,8 +65,11 @@
 	// Script version
 	const ver = localStorage.getItem('v') || VERSION;
 
+	// Whether in debug mode
+	const isDebug = localStorage.getItem('debug') == 'true';
+
 	// Whether use raw version script
-	const raw = localStorage.getItem('useRawScript') == 'true';
+	const raw = localStorage.getItem('useRawScript') == 'true' && isDebug;
 
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.

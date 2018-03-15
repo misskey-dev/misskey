@@ -244,6 +244,7 @@ module.exports = entries.map(x => {
 		devtool: 'source-map',
 		optimization: {
 			minimize: doMinify
-		}
+		},
+		mode: doMinify ? 'production' : 'development'
 	};
 });
