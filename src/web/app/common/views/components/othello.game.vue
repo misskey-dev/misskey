@@ -23,14 +23,18 @@
 		</div>
 	</div>
 
-	<p>黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
+	<p><b>{{ logPos }}ターン目</b> 黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="player" v-if="game.is_ended">
-		<el-button type="primary" @click="logPos = 0" :disabled="logPos == 0">%fa:fast-backward%</el-button>
-		<el-button type="primary" @click="logPos--" :disabled="logPos == 0">%fa:backward%</el-button>
+		<el-button-group>
+			<el-button type="primary" @click="logPos = 0" :disabled="logPos == 0">%fa:angle-double-left%</el-button>
+			<el-button type="primary" @click="logPos--" :disabled="logPos == 0">%fa:angle-left%</el-button>
+		</el-button-group>
 		<span>{{ logPos }} / {{ logs.length }}</span>
-		<el-button type="primary" @click="logPos++" :disabled="logPos == logs.length">%fa:forward%</el-button>
-		<el-button type="primary" @click="logPos = logs.length" :disabled="logPos == logs.length">%fa:fast-forward%</el-button>
+		<el-button-group>
+			<el-button type="primary" @click="logPos++" :disabled="logPos == logs.length">%fa:angle-right%</el-button>
+			<el-button type="primary" @click="logPos = logs.length" :disabled="logPos == logs.length">%fa:angle-double-right%</el-button>
+		</el-button-group>
 	</div>
 </div>
 </template>
@@ -100,7 +104,7 @@ export default Vue.extend({
 			});
 			this.logs.forEach((log, i) => {
 				if (i < v) {
-					this.o.put(log.color, log.pos, true);
+					this.o.put(log.color, log.pos);
 				}
 			});
 			this.$forceUpdate();
@@ -117,7 +121,7 @@ export default Vue.extend({
 		});
 
 		this.game.logs.forEach(log => {
-			this.o.put(log.color, log.pos, true);
+			this.o.put(log.color, log.pos);
 		});
 
 		this.logs = this.game.logs;
@@ -306,7 +310,7 @@ export default Vue.extend({
 				background #ccc
 
 	> .player
-		margin-bottom 16px
+		padding-bottom 32px
 
 		> span
 			display inline-block
