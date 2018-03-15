@@ -4,14 +4,10 @@
 notifications:
   email: false
 
-branches:
-  except:
-    - release
-
 language: node_js
 
 node_js:
-  - 8.4.0
+  - 9.8.0
 
 env:
   - CXX=g++-4.8 NODE_ENV=production
@@ -45,9 +41,4 @@ before_script:
   - cp ./.travis/default.yml ./.config
   - cp ./.travis/test.yml ./.config
 
-  - npm run build
-
-after_success:
-  # リリース
-  - chmod u+x ./.travis/release.sh
-  - if [ $TRAVIS_BRANCH = "master" ] && [ $TRAVIS_PULL_REQUEST = "false" ]; then ./.travis/release.sh; else echo "Skipping releasing task"; fi
+  - travis_wait npm run build
