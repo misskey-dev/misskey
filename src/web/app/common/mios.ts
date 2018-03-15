@@ -405,8 +405,12 @@ export default class MiOS extends EventEmitter {
 			});
 		});
 
+		// Whether use raw version script
+		const raw = (localStorage.getItem('useRawScript') == 'true' && this.debug)
+			|| process.env.NODE_ENV != 'production';
+
 		// The path of service worker script
-		const sw = `/sw.${version}.${lang}.js`;
+		const sw = `/sw.${version}.${lang}.${raw ? 'raw' : 'min'}.js`;
 
 		// Register service worker
 		navigator.serviceWorker.register(sw).then(registration => {
