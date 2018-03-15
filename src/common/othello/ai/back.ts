@@ -6,24 +6,32 @@
  * 切断されてしまうので、別々のプロセスで行うようにします
  */
 
+import * as request from 'request-promise-native';
 import Othello, { Color } from '../core';
+import conf from '../../../conf';
 
 let game;
 let form;
 
 /**
- * このBotのユーザーID
+ * BotアカウントのユーザーID
  */
-let id;
+const id = conf.othello_ai.id;
 
-process.on('message', msg => {
+/**
+ * BotアカウントのAPIキー
+ */
+const i = conf.othello_ai.i;
+
+let post;
+
+process.on('message', async msg => {
 	console.log(msg);
 
 	// 親プロセスからデータをもらう
 	if (msg.type == '_init_') {
 		game = msg.game;
 		form = msg.form;
-		id = msg.id;
 	}
 
 	// フォームが更新されたとき
@@ -37,16 +45,18 @@ process.on('message', msg => {
 
 		//#region TLに投稿する
 		const game = msg.body;
-		const url = `https://misskey.xyz/othello/${game.id}`;
+		const url = `https://${conf.host}/othello/${game.id}`;
 		const user = game.user1_id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
-			? `?[${user.name}](https://misskey.xyz/${user.username})さんの接待を始めました！`
-			: `対局を?[${user.name}](https://misskey.xyz/${user.username})さんと始めました！ (強さ${form[0].value})`;
-		process.send({
-			type: 'tl',
-			text: `${text}\n→[観戦する](${url})`
+			? `?[${user.name}](https://${conf.host}/${user.username})さんの接待を始めました！`
+			: `対局を?[${user.name}](https://${conf.host}/${user.username})さんと始めました！ (強さ${form[0].value})`;
+		const res = await request.post(`https://api.${conf.host}/posts/create`, {
+			json: { i,
+				text: `${text}\n→[観戦する](${url})`
+			}
 		});
+		post = res.created_post;
 		//#endregion
 	}
 
@@ -58,23 +68,24 @@ process.on('message', msg => {
 		});
 
 		//#region TLに投稿する
-		const url = `https://misskey.xyz/othello/${msg.body.game.id}`;
 		const user = game.user1_id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
 			? msg.body.winner_id === null
-				? `?[${user.name}](https://misskey.xyz/${user.username})さんに接待で引き分けました...`
+				? `?[${user.name}](https://${conf.host}/${user.username})さんに接待で引き分けました...`
 				: msg.body.winner_id == id
-					? `?[${user.name}](https://misskey.xyz/${user.username})さんに接待で勝ってしまいました...`
-					: `?[${user.name}](https://misskey.xyz/${user.username})さんに接待で負けてあげました♪`
+					? `?[${user.name}](https://${conf.host}/${user.username})さんに接待で勝ってしまいました...`
+					: `?[${user.name}](https://${conf.host}/${user.username})さんに接待で負けてあげました♪`
 			: msg.body.winner_id === null
-				? `?[${user.name}](https://misskey.xyz/${user.username})さんと引き分けました～ (強さ${form[0].value})`
+				? `?[${user.name}](https://${conf.host}/${user.username})さんと引き分けました～ (強さ${form[0].value})`
 				: msg.body.winner_id == id
-					? `?[${user.name}](https://misskey.xyz/${user.username})さんに勝ちました♪ (強さ${form[0].value})`
-					: `?[${user.name}](https://misskey.xyz/${user.username})さんに負けました... (強さ${form[0].value})`;
-		process.send({
-			type: 'tl',
-			text: `${text}\n→[結果を見る](${url})`
+					? `?[${user.name}](https://${conf.host}/${user.username})さんに勝ちました♪ (強さ${form[0].value})`
+					: `?[${user.name}](https://${conf.host}/${user.username})さんに負けました... (強さ${form[0].value})`;
+		request.post(`https://api.${conf.host}/posts/create`, {
+			json: { i,
+				reply_id: post.id,
+				text: text
+			}
 		});
 		//#endregion
 	}

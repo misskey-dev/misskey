@@ -29,7 +29,7 @@ const id = conf.othello_ai.id;
 /**
  * ホームストリーム
  */
-const homeStream = new ReconnectingWebSocket(`wss://api.misskey.xyz/?i=${i}`, undefined, {
+const homeStream = new ReconnectingWebSocket(`wss://api.${conf.host}/?i=${i}`, undefined, {
 	constructor: WebSocket
 });
 
@@ -47,6 +47,8 @@ homeStream.on('message', message => {
 	// タイムライン上でなんか言われたまたは返信されたとき
 	if (msg.type == 'mention' || msg.type == 'reply') {
 		const post = msg.body;
+
+		if (post.user_id == id) return;
 
 		// リアクションする
 		request.post('https://api.misskey.xyz/posts/reactions/create', {
@@ -75,7 +77,7 @@ homeStream.on('message', message => {
 		const message = msg.body;
 		if (message.text) {
 			if (message.text.indexOf('オセロ') > -1) {
-				request.post('https://api.misskey.xyz/messaging/messages/create', {
+				request.post(`https://api.${conf.host}/messaging/messages/create`, {
 					json: { i,
 						user_id: message.user_id,
 						text: '良いですよ～'
@@ -90,7 +92,7 @@ homeStream.on('message', message => {
 
 // ユーザーを対局に誘う
 function invite(userId) {
-	request.post('https://api.misskey.xyz/othello/match', {
+	request.post(`https://api.${conf.host}/othello/match`, {
 		json: { i,
 			user_id: userId
 		}
@@ -100,7 +102,7 @@ function invite(userId) {
 /**
  * オセロストリーム
  */
-const othelloStream = new ReconnectingWebSocket(`wss://api.misskey.xyz/othello?i=${i}`, undefined, {
+const othelloStream = new ReconnectingWebSocket(`wss://api.${conf.host}/othello?i=${i}`, undefined, {
 	constructor: WebSocket
 });
 
@@ -132,7 +134,7 @@ othelloStream.on('message', message => {
  */
 function gameStart(game) {
 	// ゲームストリームに接続
-	const gw = new ReconnectingWebSocket(`wss://api.misskey.xyz/othello-game?i=${i}&game=${game.id}`, undefined, {
+	const gw = new ReconnectingWebSocket(`wss://api.${conf.host}/othello-game?i=${i}&game=${game.id}`, undefined, {
 		constructor: WebSocket
 	});
 
@@ -170,8 +172,7 @@ function gameStart(game) {
 		ai.send({
 			type: '_init_',
 			game,
-			form,
-			id
+			form
 		});
 
 		ai.on('message', msg => {
@@ -180,12 +181,6 @@ function gameStart(game) {
 					type: 'set',
 					pos: msg.pos
 				}));
-			} else if (msg.type == 'tl') {
-				request.post('https://api.misskey.xyz/posts/create', {
-					json: { i,
-						text: msg.text
-					}
-				});
 			} else if (msg.type == 'close') {
 				gw.close();
 			}
@@ -227,7 +222,7 @@ async function onInviteMe(inviter) {
 	console.log(`Someone invited me: @${inviter.username}`);
 
 	// 承認
-	const game = await request.post('https://api.misskey.xyz/othello/match', {
+	const game = await request.post(`https://api.${conf.host}/othello/match`, {
 		json: {
 			i,
 			user_id: inviter.id
