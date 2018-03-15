@@ -34,7 +34,7 @@
 		"@types/body-parser": "1.16.8",
 		"@types/chai": "4.1.2",
 		"@types/chai-http": "3.0.4",
-		"@types/compression": "0.0.35",
+		"@types/compression": "0.0.36",
 		"@types/cookie": "0.3.1",
 		"@types/cors": "2.8.3",
 		"@types/debug": "0.0.30",
