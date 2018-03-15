@@ -66,7 +66,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = new MessagingStream((this as any).os.i, this.user.id);
+		this.connection = new MessagingStream((this as any).os, (this as any).os.i, this.user.id);
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);

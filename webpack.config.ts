@@ -243,8 +243,12 @@ module.exports = entries.map(x => {
 		cache: true,
 		devtool: 'source-map',
 		optimization: {
-			minimize: doMinify
+			minimize: isProduction && doMinify
 		},
-		mode: doMinify ? 'production' : 'development'
+		mode: isProduction
+			? doMinify
+				? 'production'
+				: 'development'
+			: 'development'
 	};
 });

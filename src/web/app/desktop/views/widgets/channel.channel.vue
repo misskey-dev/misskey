@@ -54,7 +54,7 @@ export default Vue.extend({
 				});
 
 				this.disconnect();
-				this.connection = new ChannelStream(this.channel.id);
+				this.connection = new ChannelStream((this as any).os, this.channel.id);
 				this.connection.on('post', this.onPost);
 			});
 		},

@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as merge from 'object-assign-deep';
+import * as uuid from 'uuid';
 
 import { host, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
 import Progress from './scripts/loading';
+import Connection from './scripts/streaming/stream';
 import { HomeStreamManager } from './scripts/streaming/home';
 import { DriveStreamManager } from './scripts/streaming/drive';
 import { ServerStreamManager } from './scripts/streaming/server';
@@ -151,9 +153,6 @@ export default class MiOS extends EventEmitter {
 
 		this.shouldRegisterSw = shouldRegisterSw;
 
-		this.streams.serverStream = new ServerStreamManager();
-		this.streams.requestsStream = new RequestsStreamManager();
-
 		//#region BIND
 		this.log = this.log.bind(this);
 		this.logInfo = this.logInfo.bind(this);
@@ -164,16 +163,6 @@ export default class MiOS extends EventEmitter {
 		this.getMeta = this.getMeta.bind(this);
 		this.registerSw = this.registerSw.bind(this);
 		//#endregion
-
-		this.once('signedin', () => {
-			// Init home stream manager
-			this.stream = new HomeStreamManager(this, this.i);
-
-			// Init other stream manager
-			this.streams.driveStream = new DriveStreamManager(this.i);
-			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this.i);
-			this.streams.othelloStream = new OthelloStreamManager(this.i);
-		});
 
 		if (this.debug) {
 			(window as any).os = this;
@@ -240,6 +229,21 @@ export default class MiOS extends EventEmitter {
 	 * @param callback A function that call when initialized
 	 */
 	public async init(callback) {
+		//#region Init stream managers
+		this.streams.serverStream = new ServerStreamManager(this);
+		this.streams.requestsStream = new RequestsStreamManager(this);
+
+		this.once('signedin', () => {
+			// Init home stream manager
+			this.stream = new HomeStreamManager(this, this.i);
+
+			// Init other stream manager
+			this.streams.driveStream = new DriveStreamManager(this, this.i);
+			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.i);
+			this.streams.othelloStream = new OthelloStreamManager(this, this.i);
+		});
+		//#endregion
+
 		// ユーザーをフェッチしてコールバックする
 		const fetchme = (token, cb) => {
 			let me = null;
@@ -414,6 +418,8 @@ export default class MiOS extends EventEmitter {
 		});
 	}
 
+	public requests = [];
+
 	/**
 	 * Misskey APIにリクエストします
 	 * @param endpoint エンドポイント名
@@ -446,22 +452,41 @@ export default class MiOS extends EventEmitter {
 					data
 				});
 			} else {*/
+				const req = {
+					id: uuid(),
+					date: new Date(),
+					name: endpoint,
+					data,
+					res: null,
+					status: null
+				};
+
+				if (this.debug) {
+					this.requests.push(req);
+				}
+
 				// Send request
 				fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
 					method: 'POST',
 					body: JSON.stringify(data),
 					credentials: endpoint === 'signin' ? 'include' : 'omit',
 					cache: 'no-cache'
-				}).then(res => {
+				}).then(async (res) => {
 					if (--pending === 0) spinner.parentNode.removeChild(spinner);
+
+					const body = await res.json();
+
+					if (this.debug) {
+						req.status = res.status;
+						req.res = body;
+					}
+
 					if (res.status === 200) {
-						res.json().then(resolve);
+						resolve(body);
 					} else if (res.status === 204) {
 						resolve();
 					} else {
-						res.json().then(err => {
-							reject(err.error);
-						}, reject);
+						reject(body.error);
 					}
 				}).catch(reject);
 			/*}*/
@@ -499,17 +524,29 @@ export default class MiOS extends EventEmitter {
 			}
 		});
 	}
+
+	public connections: Connection[] = [];
+
+	public registerStreamConnection(connection: Connection) {
+		this.connections.push(connection);
+	}
+
+	public unregisterStreamConnection(connection: Connection) {
+		this.connections = this.connections.filter(c => c != connection);
+	}
 }
 
-class WindowSystem {
-	private windows = new Set();
+class WindowSystem extends EventEmitter {
+	public windows = new Set();
 
 	public add(window) {
 		this.windows.add(window);
+		this.emit('added', window);
 	}
 
 	public remove(window) {
 		this.windows.delete(window);
+		this.emit('removed', window);
 	}
 
 	public getAll() {

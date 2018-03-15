@@ -9,7 +9,7 @@ import MiOS from '../../mios';
  */
 export class HomeStream extends Stream {
 	constructor(os: MiOS, me) {
-		super('', {
+		super(os, '', {
 			i: me.token
 		});
 

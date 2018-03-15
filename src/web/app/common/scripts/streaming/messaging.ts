@@ -1,11 +1,12 @@
 import Stream from './stream';
+import MiOS from '../../mios';
 
 /**
  * Messaging stream connection
  */
 export class MessagingStream extends Stream {
-	constructor(me, otherparty) {
-		super('messaging', {
+	constructor(os: MiOS, me, otherparty) {
+		super(os, 'messaging', {
 			i: me.token,
 			otherparty
 		});

@@ -173,6 +173,10 @@
 			<mk-switch v-model="enableExperimental" text="実験的機能を有効にする">
 				<span>実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。この設定はブラウザに記憶されます。</span>
 			</mk-switch>
+			<details v-if="debug">
+				<summary>ツール</summary>
+				<button class="ui button block" @click="taskmngr">タスクマネージャ</button>
+			</details>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
@@ -196,6 +200,7 @@ import XSignins from './settings.signins.vue';
 import XDrive from './settings.drive.vue';
 import { url, docsUrl, license, lang, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
+import MkTaskManager from './taskmanager.vue';
 
 export default Vue.extend({
 	components: {
@@ -226,6 +231,11 @@ export default Vue.extend({
 			enableExperimental: localStorage.getItem('enableExperimental') == 'true'
 		};
 	},
+	computed: {
+		licenseUrl(): string {
+			return `${docsUrl}/${lang}/license`;
+		}
+	},
 	watch: {
 		autoPopout() {
 			localStorage.setItem('autoPopout', this.autoPopout ? 'true' : 'false');
@@ -252,17 +262,15 @@ export default Vue.extend({
 			localStorage.setItem('enableExperimental', this.enableExperimental ? 'true' : 'false');
 		}
 	},
-	computed: {
-		licenseUrl(): string {
-			return `${docsUrl}/${lang}/license`;
-		}
-	},
 	created() {
 		(this as any).os.getMeta().then(meta => {
 			this.meta = meta;
 		});
 	},
 	methods: {
+		taskmngr() {
+			(this as any).os.new(MkTaskManager);
+		},
 		customizeHome() {
 			this.$router.push('/i/customize-home');
 			this.$emit('done');

@@ -68,7 +68,12 @@ export default Vue.extend({
 			default: 'auto'
 		},
 		popoutUrl: {
-			type: [String, Function]
+			type: [String, Function],
+			default: null
+		},
+		name: {
+			type: String,
+			default: null
 		}
 	},
 

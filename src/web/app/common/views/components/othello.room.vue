@@ -135,44 +135,6 @@ export default Vue.extend({
 
 		if (this.game.user1_id != (this as any).os.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
 		if (this.game.user2_id != (this as any).os.i.id && this.game.settings.form2) this.form = this.game.settings.form2;
-
-		// for debugging
-		if ((this as any).os.i.username == 'test1') {
-			setTimeout(() => {
-				this.connection.send({
-					type: 'init-form',
-					body: [{
-						id: 'button1',
-						type: 'button',
-						label: 'Enable hoge',
-						value: false
-					}, {
-						id: 'radio1',
-						type: 'radio',
-						label: '強さ',
-						value: 2,
-						items: [{
-							label: '弱',
-							value: 1
-						}, {
-							label: '中',
-							value: 2
-						}, {
-							label: '強',
-							value: 3
-						}]
-					}]
-				});
-
-				this.connection.send({
-					type: 'message',
-					body: {
-						text: 'Hey',
-						type: 'info'
-					}
-				});
-			}, 2000);
-		}
 	},
 
 	beforeDestroy() {

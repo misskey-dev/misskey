@@ -31,6 +31,8 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 			this._connection.on('_disconnected_', () => {
 				this.emit('_disconnected_');
 			});
+
+			this._connection.user = 'Managed';
 		}
 	}
 
@@ -77,6 +79,8 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 
 		this.users.push(userId);
 
+		this._connection.user = `Managed (${ this.users.length })`;
+
 		return userId;
 	}
 
@@ -86,6 +90,8 @@ export default abstract class StreamManager<T extends Connection> extends EventE
 	 */
 	public dispose(userId) {
 		this.users = this.users.filter(id => id != userId);
+
+		this._connection.user = `Managed (${ this.users.length })`;
 
 		// 誰もコネクションの利用者がいなくなったら
 		if (this.users.length == 0) {

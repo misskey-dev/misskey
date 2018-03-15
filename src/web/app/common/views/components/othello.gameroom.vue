@@ -25,7 +25,7 @@ export default Vue.extend({
 	},
 	created() {
 		this.g = this.game;
-		this.connection = new OthelloGameStream((this as any).os.i, this.game);
+		this.connection = new OthelloGameStream((this as any).os, (this as any).os.i, this.game);
 		this.connection.on('started', this.onStarted);
 	},
 	beforeDestroy() {
