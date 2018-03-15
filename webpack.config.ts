@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import jsonImporter from 'node-sass-json-importer';
 const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+//const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 import I18nReplacer from './src/common/build/i18n';
@@ -99,7 +99,7 @@ module.exports = entries.map(x => {
 	//#endregion
 
 	const plugins = [
-		new HardSourceWebpackPlugin(),
+		//new HardSourceWebpackPlugin(),
 		new ProgressBarPlugin({
 			format: chalk`  {cyan.bold yes we can} {bold [}:bar{bold ]} {green.bold :percent} {gray (:current/:total)} :elapseds`,
 			clear: false
