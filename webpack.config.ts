@@ -241,7 +241,7 @@ module.exports = entries.map(x => {
 			modules: ['node_modules', './webpack/loaders']
 		},
 		cache: true,
-		devtool: 'source-map',
+		devtool: false, //'source-map',
 		optimization: {
 			minimize: isProduction && doMinify
 		},
