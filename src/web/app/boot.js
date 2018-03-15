@@ -36,6 +36,7 @@
 	let lang = navigator.language.split('-')[0];
 	if (!/^(en|ja)$/.test(lang)) lang = 'en';
 	if (localStorage.getItem('lang')) lang = localStorage.getItem('lang');
+	if (ENV != 'production') lang = 'ja';
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
@@ -69,7 +70,8 @@
 	const isDebug = localStorage.getItem('debug') == 'true';
 
 	// Whether use raw version script
-	const raw = localStorage.getItem('useRawScript') == 'true' && isDebug;
+	const raw = (localStorage.getItem('useRawScript') == 'true' && isDebug)
+		|| ENV != 'production';
 
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.

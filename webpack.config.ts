@@ -21,7 +21,7 @@ import locales from './locales';
 const meta = require('./package.json');
 const version = meta.version;
 
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
 const isProduction = env === 'production';
 
 //#region Replacer definitions
@@ -42,11 +42,12 @@ global['base64replacement'] = (_, key) => {
 
 const langs = Object.keys(locales);
 
-let entries = langs.map(l => [l, false]);
-entries = entries.concat(langs.map(l => [l, true]));
+const entries = isProduction
+	? langs.map(l => [l, false]).concat(langs.map(l => [l, true]))
+	: [['ja', false]];
 
 module.exports = entries.map(x => {
-	const [lang, doMinify] = x;
+	const [lang, shouldOptimize] = x;
 
 	// Chunk name
 	const name = lang;
@@ -65,7 +66,7 @@ module.exports = entries.map(x => {
 
 	const output = {
 		path: __dirname + '/built/web/assets',
-		filename: `[name].${version}.${lang}.${doMinify ? 'min' : 'raw'}.js`
+		filename: `[name].${version}.${lang}.${shouldOptimize ? 'min' : 'raw'}.js`
 	};
 
 	const i18nReplacer = new I18nReplacer(lang as string);
@@ -106,9 +107,7 @@ module.exports = entries.map(x => {
 		}),
 		new webpack.DefinePlugin(_consts),
 		new webpack.DefinePlugin({
-			'process.env': {
-				NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-			}
+			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
 		}),
 		new WebpackOnBuildPlugin(stats => {
 			fs.writeFileSync('./version.json', JSON.stringify({
@@ -117,7 +116,7 @@ module.exports = entries.map(x => {
 		})
 	];
 
-	if (doMinify) {
+	if (shouldOptimize) {
 		plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
 	}
 
@@ -243,10 +242,10 @@ module.exports = entries.map(x => {
 		cache: true,
 		devtool: false, //'source-map',
 		optimization: {
-			minimize: isProduction && doMinify
+			minimize: isProduction && shouldOptimize
 		},
 		mode: isProduction
-			? doMinify
+			? shouldOptimize
 				? 'production'
 				: 'development'
 			: 'development'

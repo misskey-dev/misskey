@@ -28,7 +28,7 @@ import config from './src/conf';
 
 const uglify = uglifyComposer(uglifyes, console);
 
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
 const isProduction = env === 'production';
 const isDebug = !isProduction;
 
@@ -123,6 +123,7 @@ gulp.task('build:client:script', () =>
 	gulp.src(['./src/web/app/boot.js', './src/web/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(version)))
 		.pipe(replace('API', JSON.stringify(config.api_url)))
+		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
