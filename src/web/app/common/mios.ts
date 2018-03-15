@@ -474,7 +474,7 @@ export default class MiOS extends EventEmitter {
 				}).then(async (res) => {
 					if (--pending === 0) spinner.parentNode.removeChild(spinner);
 
-					const body = await res.json();
+					const body = res.status === 204 ? null : await res.json();
 
 					if (this.debug) {
 						req.status = res.status;
