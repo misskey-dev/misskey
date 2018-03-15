@@ -224,7 +224,7 @@ function gameStart(game) {
  * @param inviter 誘ってきたユーザー
  */
 async function onInviteMe(inviter) {
-	console.log(`Anybody invited me: @${inviter.username}`);
+	console.log(`Someone invited me: @${inviter.username}`);
 
 	// 承認
 	const game = await request.post('https://api.misskey.xyz/othello/match', {
