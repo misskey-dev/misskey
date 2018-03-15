@@ -57,7 +57,7 @@
 		"@types/license-checker": "15.0.0",
 		"@types/mkdirp": "0.5.2",
 		"@types/mocha": "2.2.48",
-		"@types/mongodb": "3.0.7",
+		"@types/mongodb": "3.0.8",
 		"@types/monk": "6.0.0",
 		"@types/morgan": "1.7.35",
 		"@types/ms": "0.7.30",
