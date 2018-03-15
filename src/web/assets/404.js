@@ -13,6 +13,8 @@ if (yn) {
 		console.error(e);
 	}
 
+	localStorage.removeItem('v');
+
 	location.reload(true);
 } else {
 	alert('問題が解決しない場合はサーバー管理者までお問い合せください。');

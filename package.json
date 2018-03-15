@@ -184,7 +184,6 @@
 		"typescript": "2.7.2",
 		"typescript-eslint-parser": "14.0.0",
 		"uglify-es": "3.3.9",
-		"uglifyjs-webpack-plugin": "1.2.3",
 		"url-loader": "1.0.1",
 		"uuid": "3.2.1",
 		"v-animate-css": "0.0.2",

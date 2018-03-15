@@ -160,10 +160,13 @@
 		<section class="other" v-show="page == 'other'">
 			<h1>高度な設定</h1>
 			<mk-switch v-model="debug" text="デバッグモードを有効にする">
-				<span>この設定はアカウントに保存されません。</span>
+				<span>この設定はブラウザに記憶されます。</span>
 			</mk-switch>
 			<mk-switch v-model="enableExperimental" text="実験的機能を有効にする">
-				<span>この設定はアカウントに保存されません。実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。</span>
+				<span>実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。この設定はブラウザに記憶されます。</span>
+			</mk-switch>
+			<mk-switch v-model="useRawScript" text="生のスクリプトを読み込む">
+				<span>圧縮されていない「生の」スクリプトを使用します。サイズが大きいため、読み込みに時間がかかる場合があります。この設定はブラウザに記憶されます。</span>
 			</mk-switch>
 		</section>
 
@@ -214,6 +217,7 @@ export default Vue.extend({
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
 			debug: localStorage.getItem('debug') == 'true',
+			useRawScript: localStorage.getItem('useRawScript') == 'true',
 			enableExperimental: localStorage.getItem('enableExperimental') == 'true'
 		};
 	},
@@ -235,6 +239,9 @@ export default Vue.extend({
 		},
 		debug() {
 			localStorage.setItem('debug', this.debug ? 'true' : 'false');
+		},
+		useRawScript() {
+			localStorage.setItem('useRawScript', this.useRawScript ? 'true' : 'false');
 		},
 		enableExperimental() {
 			localStorage.setItem('enableExperimental', this.enableExperimental ? 'true' : 'false');

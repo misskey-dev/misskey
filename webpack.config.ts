@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
 import jsonImporter from 'node-sass-json-importer';
-const minify = require('html-minifier').minify;
+const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
@@ -17,7 +17,7 @@ const constants = require('./src/const.json');
 import config from './src/conf';
 import { licenseHtml } from './src/common/build/license';
 
-import langs from './locales';
+import locales from './locales';
 const meta = require('./package.json');
 const version = meta.version;
 
@@ -28,7 +28,7 @@ const isProduction = env === 'production';
 global['faReplacement'] = faReplacement;
 
 global['collapseSpacesReplacement'] = html => {
-	return minify(html, {
+	return minifyHtml(html, {
 		collapseWhitespace: true,
 		collapseInlineTagWhitespace: true,
 		keepClosingSlash: true
@@ -40,7 +40,14 @@ global['base64replacement'] = (_, key) => {
 };
 //#endregion
 
-module.exports = Object.keys(langs).map(lang => {
+const langs = Object.keys(locales);
+
+let entries = langs.map(l => [l, false]);
+entries = entries.concat(langs.map(l => [l, true]));
+
+module.exports = entries.map(x => {
+	const [lang, doMinify] = x;
+
 	// Chunk name
 	const name = lang;
 
@@ -58,10 +65,10 @@ module.exports = Object.keys(langs).map(lang => {
 
 	const output = {
 		path: __dirname + '/built/web/assets',
-		filename: `[name].${version}.${lang}.js`
+		filename: `[name].${version}.${lang}.${doMinify ? 'min' : 'raw'}.js`
 	};
 
-	const i18nReplacer = new I18nReplacer(lang);
+	const i18nReplacer = new I18nReplacer(lang as string);
 	global['i18nReplacement'] = i18nReplacer.replacement;
 
 	//#region Define consts
@@ -110,9 +117,8 @@ module.exports = Object.keys(langs).map(lang => {
 		})
 	];
 
-	if (isProduction) {
+	if (doMinify) {
 		plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
-		plugins.push(minify());
 	}
 
 	return {
@@ -235,6 +241,9 @@ module.exports = Object.keys(langs).map(lang => {
 			modules: ['node_modules', './webpack/loaders']
 		},
 		cache: true,
-		devtool: 'source-map'
+		devtool: 'source-map',
+		optimization: {
+			minimize: doMinify
+		}
 	};
 });
