@@ -14,8 +14,8 @@ If you can use Docker, please see [Setup with Docker](./docker.en.md).
 ----------------------------------------------------------------
 Misskey requires two domains called the primary domain and the secondary domain.
 
-* The primary domain is used to provide main service of Misskey.
-* The secondary domain is used to avoid vulnerabilities such as XSS.
+* The primary-domain is used to provide the main service of Misskey.
+* The secondary-domain is used to avoid vulnerabilities such as XSS.
 
 **Ensure that the secondary domain is not a subdomain of the primary domain.**
 
