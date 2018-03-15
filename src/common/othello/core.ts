@@ -50,6 +50,8 @@ export default class Othello {
 	public prevPos = -1;
 	public prevColor: Color = null;
 
+	private logs: Undo[] = [];
+
 	/**
 	 * ゲームを初期化します
 	 */
@@ -138,13 +140,7 @@ export default class Othello {
 	 * @param color 石の色
 	 * @param pos 位置
 	 */
-	public put(color: Color, pos: number, fast = false): Undo {
-		if (!fast && !this.canPut(color, pos)) {
-			console.warn('can not put this position:', pos, color);
-			console.warn(this.board);
-			return null;
-		}
-
+	public put(color: Color, pos: number) {
 		this.prevPos = pos;
 		this.prevColor = color;
 
@@ -160,14 +156,14 @@ export default class Othello {
 
 		const turn = this.turn;
 
-		this.calcTurn();
-
-		return {
+		this.logs.push({
 			color,
 			pos,
 			effects,
 			turn
-		};
+		});
+
+		this.calcTurn();
 	}
 
 	private calcTurn() {
@@ -181,7 +177,8 @@ export default class Othello {
 		}
 	}
 
-	public undo(undo: Undo) {
+	public undo() {
+		const undo = this.logs.pop();
 		this.prevColor = undo.color;
 		this.prevPos = undo.pos;
 		this.board[undo.pos] = null;

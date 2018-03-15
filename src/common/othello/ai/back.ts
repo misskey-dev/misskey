@@ -135,7 +135,7 @@ function onGameStarted(g) {
 }
 
 function onSet(x) {
-	o.put(x.color, x.pos, true);
+	o.put(x.color, x.pos);
 
 	if (x.next === botColor) {
 		think();
@@ -157,17 +157,17 @@ function think() {
 	 */
 	const dive = (o: Othello, pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
 		// 試し打ち
-		const undo = o.put(o.turn, pos, true);
+		o.put(o.turn, pos);
 
 		const key = o.board.toString();
 		let cache = db[key];
 		if (cache) {
 			if (alpha >= cache.upper) {
-				o.undo(undo);
+				o.undo();
 				return cache.upper;
 			}
 			if (beta <= cache.lower) {
-				o.undo(undo);
+				o.undo();
 				return cache.lower;
 			}
 			alpha = Math.max(alpha, cache.lower);
@@ -199,7 +199,7 @@ function think() {
 			}
 
 			// 巻き戻し
-			o.undo(undo);
+			o.undo();
 
 			// 接待なら自分が負けた方が高スコア
 			return isSettai
@@ -225,7 +225,7 @@ function think() {
 			});
 
 			// 巻き戻し
-			o.undo(undo);
+			o.undo();
 
 			// ロセオならスコアを反転
 			if (game.settings.is_llotheo) score = -score;
@@ -257,7 +257,7 @@ function think() {
 			}
 
 			// 巻き戻し
-			o.undo(undo);
+			o.undo();
 
 			if (value <= alpha) {
 				cache.upper = value;
