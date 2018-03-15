@@ -7,8 +7,6 @@ import getPostSummary from '../../common/get-post-summary';
 import getUserSummary from '../../common/get-user-summary';
 import getNotificationSummary from '../../common/get-notification-summary';
 
-import Othello, { ai as othelloAi } from '../../common/othello';
-
 const hmm = [
 	'？',
 	'ふぅ～む...？',
@@ -133,11 +131,6 @@ export default class BotCore extends EventEmitter {
 				this.setContext(new GuessingGameContext(this));
 				return await this.context.greet();
 
-			case 'othello':
-			case 'オセロ':
-				this.setContext(new OthelloContext(this));
-				return await this.context.greet();
-
 			default:
 				return hmm[Math.floor(Math.random() * hmm.length)];
 		}
@@ -197,7 +190,6 @@ abstract class Context extends EventEmitter {
 
 	public static import(bot: BotCore, data: any) {
 		if (data.type == 'guessing-game') return GuessingGameContext.import(bot, data.content);
-		if (data.type == 'othello') return OthelloContext.import(bot, data.content);
 		if (data.type == 'post') return PostContext.import(bot, data.content);
 		if (data.type == 'tl') return TlContext.import(bot, data.content);
 		if (data.type == 'notifications') return NotificationsContext.import(bot, data.content);
@@ -441,63 +433,6 @@ class GuessingGameContext extends Context {
 		const context = new GuessingGameContext(bot);
 		context.secret = data.secret;
 		context.history = data.history;
-		return context;
-	}
-}
-
-class OthelloContext extends Context {
-	private othello: Othello = null;
-
-	constructor(bot: BotCore) {
-		super(bot);
-
-		this.othello = new Othello();
-	}
-
-	public async greet(): Promise<string> {
-		return this.othello.toPatternString('black');
-	}
-
-	public async q(query: string): Promise<string> {
-		if (query == 'やめる') {
-			this.bot.clearContext();
-			return 'オセロをやめました。';
-		}
-
-		const n = parseInt(query, 10);
-
-		if (isNaN(n)) {
-			return '番号で指定してください。「やめる」と言うとゲームをやめます。';
-		}
-
-		this.othello.setByNumber('black', n);
-		const s = this.othello.toString() + '\n\n...(AI)...\n\n';
-		othelloAi('white', this.othello);
-		if (this.othello.getPattern('black').length === 0) {
-			this.bot.clearContext();
-			const blackCount = this.othello.board.filter(s => s == 'black').length;
-			const whiteCount = this.othello.board.filter(s => s == 'white').length;
-			const winner = blackCount == whiteCount ? '引き分け' : blackCount > whiteCount ? '黒の勝ち' : '白の勝ち';
-			return this.othello.toString() + `\n\n～終了～\n\n黒${blackCount}、白${whiteCount}で${winner}です。`;
-		} else {
-			this.emit('updated');
-			return s + this.othello.toPatternString('black');
-		}
-	}
-
-	public export() {
-		return {
-			type: 'othello',
-			content: {
-				board: this.othello.board
-			}
-		};
-	}
-
-	public static import(bot: BotCore, data: any) {
-		const context = new OthelloContext(bot);
-		context.othello = new Othello();
-		context.othello.board = data.board;
 		return context;
 	}
 }
