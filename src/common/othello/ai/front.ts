@@ -29,7 +29,7 @@ const id = conf.othello_ai.id;
 /**
  * ホームストリーム
  */
-const homeStream = new ReconnectingWebSocket(`wss://api.${conf.host}/?i=${i}`, undefined, {
+const homeStream = new ReconnectingWebSocket(`${conf.ws_url}/?i=${i}`, undefined, {
 	constructor: WebSocket
 });
 
@@ -51,7 +51,7 @@ homeStream.on('message', message => {
 		if (post.user_id == id) return;
 
 		// リアクションする
-		request.post('https://api.misskey.xyz/posts/reactions/create', {
+		request.post(`${conf.api_url}/posts/reactions/create`, {
 			json: { i,
 				post_id: post.id,
 				reaction: 'love'
@@ -60,7 +60,7 @@ homeStream.on('message', message => {
 
 		if (post.text) {
 			if (post.text.indexOf('オセロ') > -1) {
-				request.post('https://api.misskey.xyz/posts/create', {
+				request.post(`${conf.api_url}/posts/create`, {
 					json: { i,
 						reply_id: post.id,
 						text: '良いですよ～'
@@ -77,7 +77,7 @@ homeStream.on('message', message => {
 		const message = msg.body;
 		if (message.text) {
 			if (message.text.indexOf('オセロ') > -1) {
-				request.post(`https://api.${conf.host}/messaging/messages/create`, {
+				request.post(`${conf.api_url}/messaging/messages/create`, {
 					json: { i,
 						user_id: message.user_id,
 						text: '良いですよ～'
@@ -92,7 +92,7 @@ homeStream.on('message', message => {
 
 // ユーザーを対局に誘う
 function invite(userId) {
-	request.post(`https://api.${conf.host}/othello/match`, {
+	request.post(`${conf.api_url}/othello/match`, {
 		json: { i,
 			user_id: userId
 		}
@@ -102,7 +102,7 @@ function invite(userId) {
 /**
  * オセロストリーム
  */
-const othelloStream = new ReconnectingWebSocket(`wss://api.${conf.host}/othello?i=${i}`, undefined, {
+const othelloStream = new ReconnectingWebSocket(`${conf.ws_url}/othello?i=${i}`, undefined, {
 	constructor: WebSocket
 });
 
@@ -134,7 +134,7 @@ othelloStream.on('message', message => {
  */
 function gameStart(game) {
 	// ゲームストリームに接続
-	const gw = new ReconnectingWebSocket(`wss://api.${conf.host}/othello-game?i=${i}&game=${game.id}`, undefined, {
+	const gw = new ReconnectingWebSocket(`${conf.ws_url}/othello-game?i=${i}&game=${game.id}`, undefined, {
 		constructor: WebSocket
 	});
 
@@ -222,7 +222,7 @@ async function onInviteMe(inviter) {
 	console.log(`Someone invited me: @${inviter.username}`);
 
 	// 承認
-	const game = await request.post(`https://api.${conf.host}/othello/match`, {
+	const game = await request.post(`${conf.api_url}/othello/match`, {
 		json: {
 			i,
 			user_id: inviter.id

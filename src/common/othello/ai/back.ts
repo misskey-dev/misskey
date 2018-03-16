@@ -45,17 +45,19 @@ process.on('message', async msg => {
 
 		//#region TLに投稿する
 		const game = msg.body;
-		const url = `https://${conf.host}/othello/${game.id}`;
+		const url = `${conf.url}/othello/${game.id}`;
 		const user = game.user1_id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
-			? `?[${user.name}](https://${conf.host}/${user.username})さんの接待を始めました！`
-			: `対局を?[${user.name}](https://${conf.host}/${user.username})さんと始めました！ (強さ${form[0].value})`;
-		const res = await request.post(`https://api.${conf.host}/posts/create`, {
+			? `?[${user.name}](${conf.url}/${user.username})さんの接待を始めました！`
+			: `対局を?[${user.name}](${conf.url}/${user.username})さんと始めました！ (強さ${form[0].value})`;
+
+		const res = await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,
 				text: `${text}\n→[観戦する](${url})`
 			}
 		});
+
 		post = res.created_post;
 		//#endregion
 	}
@@ -72,16 +74,17 @@ process.on('message', async msg => {
 		const isSettai = form[0].value === 0;
 		const text = isSettai
 			? msg.body.winner_id === null
-				? `?[${user.name}](https://${conf.host}/${user.username})さんに接待で引き分けました...`
+				? `?[${user.name}](${conf.url}/${user.username})さんに接待で引き分けました...`
 				: msg.body.winner_id == id
-					? `?[${user.name}](https://${conf.host}/${user.username})さんに接待で勝ってしまいました...`
-					: `?[${user.name}](https://${conf.host}/${user.username})さんに接待で負けてあげました♪`
+					? `?[${user.name}](${conf.url}/${user.username})さんに接待で勝ってしまいました...`
+					: `?[${user.name}](${conf.url}/${user.username})さんに接待で負けてあげました♪`
 			: msg.body.winner_id === null
-				? `?[${user.name}](https://${conf.host}/${user.username})さんと引き分けました～ (強さ${form[0].value})`
+				? `?[${user.name}](${conf.url}/${user.username})さんと引き分けました～ (強さ${form[0].value})`
 				: msg.body.winner_id == id
-					? `?[${user.name}](https://${conf.host}/${user.username})さんに勝ちました♪ (強さ${form[0].value})`
-					: `?[${user.name}](https://${conf.host}/${user.username})さんに負けました... (強さ${form[0].value})`;
-		request.post(`https://api.${conf.host}/posts/create`, {
+					? `?[${user.name}](${conf.url}/${user.username})さんに勝ちました♪ (強さ${form[0].value})`
+					: `?[${user.name}](${conf.url}/${user.username})さんに負けました... (強さ${form[0].value})`;
+
+		request.post(`${conf.api_url}/posts/create`, {
 			json: { i,
 				reply_id: post.id,
 				text: text
