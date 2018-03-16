@@ -82,7 +82,7 @@ process.on('message', async msg => {
 					? `?[${user.name}](${conf.url}/${user.username})さんに勝ちました♪ (強さ${form[0].value})`
 					: `?[${user.name}](${conf.url}/${user.username})さんに負けました... (強さ${form[0].value})`;
 
-		request.post(`${conf.api_url}/posts/create`, {
+		await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,
 				reply_id: post.id,
 				text: text
