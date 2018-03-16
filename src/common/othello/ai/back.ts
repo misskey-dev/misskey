@@ -26,8 +26,6 @@ const i = conf.othello_ai.i;
 let post;
 
 process.on('message', async msg => {
-	console.log(msg);
-
 	// 親プロセスからデータをもらう
 	if (msg.type == '_init_') {
 		game = msg.game;
@@ -105,7 +103,7 @@ let o: Othello;
 let botColor: Color;
 
 // 各マスの強さ
-let cellStrongs;
+let cellWeights;
 
 /**
  * ゲーム開始時
@@ -122,7 +120,7 @@ function onGameStarted(g) {
 	});
 
 	// 各マスの価値を計算しておく
-	cellStrongs = o.map.map((pix, i) => {
+	cellWeights = o.map.map((pix, i) => {
 		if (pix == 'null') return 0;
 		const [x, y] = o.transformPosToXy(i);
 		let count = 0;
@@ -158,20 +156,50 @@ function onSet(x) {
 	}
 }
 
+const db = {};
+
 function think() {
 	console.log('Thinking...');
+	console.time('think');
 
 	const isSettai = form[0].value === 0;
 
 	// 接待モードのときは、全力(5手先読みくらい)で負けるようにする
 	const maxDepth = isSettai ? 5 : form[0].value;
 
-	const db = {};
+	/**
+	 * Botにとってある局面がどれだけ有利か取得する
+	 */
+	function staticEval() {
+		let score = o.canPutSomewhere(botColor).length;
+
+		cellWeights.forEach((weight, i) => {
+			// 係数
+			const coefficient = 30;
+			weight = weight * coefficient;
+
+			const stone = o.board[i];
+			if (stone === botColor) {
+				// TODO: 価値のあるマスに設置されている自分の石に縦か横に接するマスは価値があると判断する
+				score += weight;
+			} else if (stone !== null) {
+				score -= weight;
+			}
+		});
+
+		// ロセオならスコアを反転
+		if (game.settings.is_llotheo) score = -score;
+
+		// 接待ならスコアを反転
+		if (isSettai) score = -score;
+
+		return score;
+	}
 
 	/**
 	 * αβ法での探索
 	 */
-	const dive = (o: Othello, pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
+	const dive = (pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
 		// 試し打ち
 		o.put(o.turn, pos);
 
@@ -224,30 +252,11 @@ function think() {
 		}
 
 		if (depth === maxDepth) {
-			let score = o.canPutSomewhere(botColor).length;
-
-			cellStrongs.forEach((s, i) => {
-				// 係数
-				const coefficient = 30;
-				s = s * coefficient;
-
-				const stone = o.board[i];
-				if (stone === botColor) {
-					// TODO: 価値のあるマスに設置されている自分の石に縦か横に接するマスは価値があると判断する
-					score += s;
-				} else if (stone !== null) {
-					score -= s;
-				}
-			});
+			// 静的に評価
+			const score = staticEval();
 
 			// 巻き戻し
 			o.undo();
-
-			// ロセオならスコアを反転
-			if (game.settings.is_llotheo) score = -score;
-
-			// 接待ならスコアを反転
-			if (isSettai) score = -score;
 
 			return score;
 		} else {
@@ -260,12 +269,12 @@ function think() {
 			// 次のターンのプレイヤーにとって最も良い手を取得
 			for (const p of cans) {
 				if (isBotTurn) {
-					const score = dive(o, p, a, beta, depth + 1);
+					const score = dive(p, a, beta, depth + 1);
 					value = Math.max(value, score);
 					a = Math.max(a, value);
 					if (value >= beta) break;
 				} else {
-					const score = dive(o, p, alpha, b, depth + 1);
+					const score = dive(p, alpha, b, depth + 1);
 					value = Math.min(value, score);
 					b = Math.min(b, value);
 					if (value <= alpha) break;
@@ -290,11 +299,76 @@ function think() {
 		}
 	};
 
+	/**
+	 * αβ法での探索(キャッシュ無し)(デバッグ用)
+	 */
+	const dive2 = (pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
+		// 試し打ち
+		o.put(o.turn, pos);
+
+		const isBotTurn = o.turn === botColor;
+
+		// 勝った
+		if (o.turn === null) {
+			const winner = o.winner;
+
+			// 勝つことによる基本スコア
+			const base = 10000;
+
+			let score;
+
+			if (game.settings.is_llotheo) {
+				// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
+				score = o.winner ? base - (o.blackCount * 100) : base - (o.whiteCount * 100);
+			} else {
+				// 勝ちは勝ちでも、より相手の石を少なくした方が美しい勝ちだと判定する
+				score = o.winner ? base + (o.blackCount * 100) : base + (o.whiteCount * 100);
+			}
+
+			// 巻き戻し
+			o.undo();
+
+			// 接待なら自分が負けた方が高スコア
+			return isSettai
+				? winner !== botColor ? score : -score
+				: winner === botColor ? score : -score;
+		}
+
+		if (depth === maxDepth) {
+			// 静的に評価
+			const score = staticEval();
+
+			// 巻き戻し
+			o.undo();
+
+			return score;
+		} else {
+			const cans = o.canPutSomewhere(o.turn);
+
+			// 次のターンのプレイヤーにとって最も良い手を取得
+			for (const p of cans) {
+				if (isBotTurn) {
+					alpha = Math.max(alpha, dive2(p, alpha, beta, depth + 1));
+					if (alpha >= beta) break;
+				} else {
+					beta = Math.min(beta, dive2(p, alpha, beta, depth + 1));
+					if (alpha >= beta) break;
+				}
+			}
+
+			// 巻き戻し
+			o.undo();
+
+			return isBotTurn ? alpha : beta;
+		}
+	};
+
 	const cans = o.canPutSomewhere(botColor);
-	const scores = cans.map(p => dive(o, p));
+	const scores = cans.map(p => dive(p));
 	const pos = cans[scores.indexOf(Math.max(...scores))];
 
 	console.log('Thinked:', pos);
+	console.timeEnd('think');
 
 	process.send({
 		type: 'put',
