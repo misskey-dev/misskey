@@ -23,6 +23,7 @@ import twitterSetting from './twitter-setting.vue';
 import fileTypeIcon from './file-type-icon.vue';
 import Switch from './switch.vue';
 import Othello from './othello.vue';
+import welcomeTimeline from './welcome-timeline.vue';
 
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
@@ -47,3 +48,4 @@ Vue.component('mk-twitter-setting', twitterSetting);
 Vue.component('mk-file-type-icon', fileTypeIcon);
 Vue.component('mk-switch', Switch);
 Vue.component('mk-othello', Othello);
+Vue.component('mk-welcome-timeline', welcomeTimeline);

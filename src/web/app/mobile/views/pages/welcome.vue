@@ -1,9 +1,9 @@
 <template>
 <div class="welcome">
 	<h1><b>Misskey</b>へようこそ</h1>
-	<p>Twitter風ミニブログSNS、Misskeyへようこそ。思ったことを投稿したり、タイムラインでみんなの投稿を読むこともできます。</p>
+	<p>Twitter風ミニブログSNS、Misskeyへようこそ。思ったことを投稿したり、タイムラインでみんなの投稿を読むこともできます。<a href="/signup">アカウントを作成する</a></p>
 	<div class="form">
-		<p>ログイン</p>
+		<p>%fa:lock% ログイン</p>
 		<div>
 			<form @submit.prevent="onSubmit">
 				<input v-model="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange"/>
@@ -16,13 +16,19 @@
 			</div>
 		</div>
 	</div>
-	<a href="/signup">アカウントを作成する</a>
+	<div class="tl">
+		<p>%fa:comments R% タイムラインを見てみる</p>
+		<mk-welcome-timeline/>
+	</div>
+	<footer>
+		<small>{{ copyright }}</small>
+	</footer>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl } from '../../../config';
+import { apiUrl, copyright } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -32,7 +38,8 @@ export default Vue.extend({
 			username: '',
 			password: '',
 			token: '',
-			apiUrl
+			apiUrl,
+			copyright
 		};
 	},
 	mounted() {
@@ -83,15 +90,11 @@ export default Vue.extend({
 			color #949fa9
 
 	.form
+		margin-bottom 16px
 		background #fff
 		border solid 1px rgba(0, 0, 0, 0.2)
 		border-radius 8px
 		overflow hidden
-
-		& + a
-			display block
-			margin-top 16px
-			text-align center
 
 		> p
 			margin 0
@@ -142,5 +145,30 @@ export default Vue.extend({
 			> div
 				padding 16px
 				text-align center
+
+	.tl
+		background #fff
+		border solid 1px rgba(0, 0, 0, 0.2)
+		border-radius 8px
+		overflow hidden
+
+		> p
+			margin 0
+			padding 12px 20px
+			color #555
+			background #f5f5f5
+			border-bottom solid 1px #ddd
+
+		> .mk-welcome-timeline
+			max-height 300px
+			overflow auto
+
+	> footer
+		text-align center
+		color #949fa9
+
+		> small
+			display block
+			margin 16px 0 0 0
 
 </style>

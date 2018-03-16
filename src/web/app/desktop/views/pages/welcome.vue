@@ -1,13 +1,20 @@
 <template>
 <div class="mk-welcome">
 	<main>
-		<div>
-			<h1>Share<br>Everything!</h1>
-			<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです――思ったこと、共有したいことをシンプルに書き残せます。タイムラインを見れば、皆の反応や皆がどう思っているのかもすぐにわかります。<a>詳しく...</a></p>
-			<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
-		</div>
-		<div>
-
+		<div class="top">
+			<div>
+				<div>
+					<h1>Share<br>Everything!</h1>
+					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a>詳しく...</a></p>
+					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
+				</div>
+				<div>
+					<div>
+						<header>%fa:comments R% タイムライン</header>
+						<mk-welcome-timeline/>
+					</div>
+				</div>
+			</div>
 		</div>
 	</main>
 	<mk-forkit/>
@@ -69,61 +76,85 @@ export default Vue.extend({
 	> main
 		display flex
 		flex 1
-		max-width $width
-		margin 0 auto
-		padding 80px 0 0 0
 
-		> div:first-child
-			margin 0 auto 0 0
-			width calc(100% - 500px)
-			color #777
+		> .top
+			display flex
+			width 100%
+			background-image url('/assets/welcome.svg')
+			background-size cover
+			background-position top center
 
-			> h1
-				margin 0
-				font-weight normal
-				font-variant small-caps
-				letter-spacing 12px
+			> div
+				display flex
+				max-width $width
+				margin 0 auto
+				padding 80px 0 0 0
 
-			> p
-				margin 0.5em 0
-				line-height 2em
+				> div:first-child
+					margin 0 48px 0 0
+					color #777
 
-			button
-				padding 8px 16px
-				font-size inherit
+					> h1
+						margin 0
+						font-weight normal
+						font-variant small-caps
+						letter-spacing 12px
 
-			.signup
-				color $theme-color
-				border solid 2px $theme-color
-				border-radius 4px
+					> p
+						margin 0.5em 0
+						line-height 2em
 
-				&:focus
-					box-shadow 0 0 0 3px rgba($theme-color, 0.2)
+					button
+						padding 8px 16px
+						font-size inherit
 
-				&:hover
-					color $theme-color-foreground
-					background $theme-color
+					.signup
+						color $theme-color
+						border solid 2px $theme-color
+						border-radius 4px
 
-				&:active
-					color $theme-color-foreground
-					background darken($theme-color, 10%)
-					border-color darken($theme-color, 10%)
+						&:focus
+							box-shadow 0 0 0 3px rgba($theme-color, 0.2)
 
-			.signin
-				&:focus
-					color #444
+						&:hover
+							color $theme-color-foreground
+							background $theme-color
 
-				&:hover
-					color #444
+						&:active
+							color $theme-color-foreground
+							background darken($theme-color, 10%)
+							border-color darken($theme-color, 10%)
 
-				&:active
-					color #333
+					.signin
+						&:focus
+							color #444
 
-		> div:last-child
-			margin 0 0 0 auto
+						&:hover
+							color #444
+
+						&:active
+							color #333
+
+				> div:last-child
+
+					> div
+						width 410px
+						background #fff
+						border-radius 8px
+						overflow hidden
+
+						> header
+							z-index 1
+							padding 12px 16px
+							color #888d94
+							box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+
+						> .mk-welcome-timeline
+							max-height 350px
+							overflow auto
 
 	> footer
-		color #666
+		color #949ea5
 		background #fff
 
 		> div

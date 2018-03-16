@@ -27,6 +27,10 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const [poll, pollErr] = $(params.poll).optional.boolean().$;
 	if (pollErr) return rej('invalid poll param');
 
+	// Get 'bot' parameter
+	//const [bot, botErr] = $(params.bot).optional.boolean().$;
+	//if (botErr) return rej('invalid bot param');
+
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
@@ -75,6 +79,11 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	if (poll != undefined) {
 		query.poll = poll ? { $exists: true, $ne: null } : null;
 	}
+
+	// TODO
+	//if (bot != undefined) {
+	//	query.is_bot = bot;
+	//}
 
 	// Issue query
 	const posts = await Post
