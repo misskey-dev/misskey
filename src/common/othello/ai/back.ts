@@ -88,6 +88,8 @@ process.on('message', async msg => {
 			}
 		});
 		//#endregion
+
+		process.exit();
 	}
 
 	// 打たれたとき
