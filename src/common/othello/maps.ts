@@ -891,3 +891,21 @@ export const test4: Map = {
 		'-w--b-'
 	]
 };
+
+// https://misskey.xyz/othello/5aaabf7fe126e10b5216ea09 64
+export const test5: Map = {
+	name: 'Test5',
+	category: 'Test',
+	data: [
+		'--wwwwww--',
+		'--wwwbwwww',
+		'-bwwbwbwww',
+		'-bwwwbwbww',
+		'-bwwbwbwbw',
+		'-bwbwbwb-w',
+		'bwbwwbbb-w',
+		'w-wbbbbb--',
+		'--w-b-w---',
+		'----------'
+	]
+};
