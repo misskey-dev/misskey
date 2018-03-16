@@ -77,14 +77,14 @@ process.on('message', async msg => {
 					? `?[${user.name}](${conf.url}/${user.username})さんに接待で勝ってしまいました...`
 					: `?[${user.name}](${conf.url}/${user.username})さんに接待で負けてあげました♪`
 			: msg.body.winner_id === null
-				? `?[${user.name}](${conf.url}/${user.username})さんと引き分けました～ (強さ${form[0].value})`
+				? `?[${user.name}](${conf.url}/${user.username})さんと引き分けました～`
 				: msg.body.winner_id == id
-					? `?[${user.name}](${conf.url}/${user.username})さんに勝ちました♪ (強さ${form[0].value})`
-					: `?[${user.name}](${conf.url}/${user.username})さんに負けました... (強さ${form[0].value})`;
+					? `?[${user.name}](${conf.url}/${user.username})さんに勝ちました♪`
+					: `?[${user.name}](${conf.url}/${user.username})さんに負けました...`;
 
 		await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,
-				reply_id: post.id,
+				repost_id: post.id,
 				text: text
 			}
 		});
