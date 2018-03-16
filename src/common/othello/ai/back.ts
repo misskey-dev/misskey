@@ -135,7 +135,7 @@ function onGameStarted(g) {
 		if (get(x - 1, y    ) == 'null') count++;
 		if (get(x - 1, y - 1) == 'null') count++;
 		//return Math.pow(count, 3);
-		return count >= 5 ? 1 : 0;
+		return count >= 4 ? 1 : 0;
 	});
 
 	botColor = game.user1_id == id && game.black == 1 || game.user2_id == id && game.black == 2;
