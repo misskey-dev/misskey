@@ -17,13 +17,14 @@
 		<div v-for="(stone, i) in o.board"
 			:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.is_ended, myTurn: !game.is_ended && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
 			@click="set(i)"
+			:title="'[' + (o.transformPosToXy(i)[0] + 1) + ', ' + (o.transformPosToXy(i)[1] + 1) + '] (' + i + ')'"
 		>
 			<img v-if="stone === true" :src="`${blackUser.avatar_url}?thumbnail&size=128`" alt="">
 			<img v-if="stone === false" :src="`${whiteUser.avatar_url}?thumbnail&size=128`" alt="">
 		</div>
 	</div>
 
-	<p><b>{{ logPos }}ターン目</b> 黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
+	<p class="status"><b>{{ logPos }}ターン目</b> 黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="player" v-if="game.is_ended">
 		<el-button-group>
@@ -308,6 +309,10 @@ export default Vue.extend({
 
 			> div:last-child
 				background #ccc
+
+	> .status
+		margin 0
+		padding 16px 0
 
 	> .player
 		padding-bottom 32px
