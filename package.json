@@ -50,7 +50,7 @@
 		"@types/gulp-replace": "0.0.31",
 		"@types/gulp-uglify": "3.0.4",
 		"@types/gulp-util": "3.0.34",
-		"@types/inquirer": "0.0.37",
+		"@types/inquirer": "0.0.38",
 		"@types/is-root": "1.0.0",
 		"@types/is-url": "1.2.28",
 		"@types/js-yaml": "3.10.1",
