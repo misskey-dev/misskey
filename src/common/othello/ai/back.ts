@@ -349,11 +349,10 @@ function think() {
 			for (const p of cans) {
 				if (isBotTurn) {
 					alpha = Math.max(alpha, dive2(p, alpha, beta, depth + 1));
-					if (alpha >= beta) break;
 				} else {
 					beta = Math.min(beta, dive2(p, alpha, beta, depth + 1));
-					if (alpha >= beta) break;
 				}
+				if (alpha >= beta) break;
 			}
 
 			// 巻き戻し
