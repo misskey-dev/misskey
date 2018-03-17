@@ -195,7 +195,7 @@ export default Vue.extend({
 									display inline-block
 									height 11px
 									width 11px
-									margin-left 5px
+									margin-left 6px
 									background #ccc
 									border-radius 100%
 									vertical-align middle
