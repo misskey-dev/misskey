@@ -1,7 +1,7 @@
 <template>
 <div class="welcome">
 	<h1><b>Misskey</b>へようこそ</h1>
-	<p>Twitter風ミニブログSNS、Misskeyへようこそ。思ったことを投稿したり、タイムラインでみんなの投稿を読むこともできます。<br><a href="/signup">アカウントを作成する</a></p>
+	<p>Twitter風ミニブログSNS、Misskeyへようこそ。共有したいことを投稿したり、タイムラインでみんなの投稿を読むこともできます。<br><a href="/signup">アカウントを作成する</a></p>
 	<div class="form">
 		<p>%fa:lock% ログイン</p>
 		<div>
