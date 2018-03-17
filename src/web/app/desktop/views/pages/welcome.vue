@@ -113,13 +113,16 @@ export default Vue.extend({
 
 			> div
 				display flex
-				max-width $width
+				max-width $width + 64px
 				margin 0 auto
-				padding 80px 0 0 0
+				padding 80px 32px 0 32px
+
+				> *
+					margin-bottom 48px
 
 				> div:first-child
-					margin 0 48px 0 0
-					color #d1e6bf
+					margin-right 48px
+					color #fff
 					text-shadow 0 0 12px #172062
 
 					> h1
