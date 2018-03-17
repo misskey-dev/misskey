@@ -340,7 +340,7 @@ export default Vue.extend({
 					margin 0 0.5em 0 0
 					padding 0
 					overflow hidden
-					color #777
+					color #627079
 					font-size 1em
 					font-weight bold
 					text-decoration none
