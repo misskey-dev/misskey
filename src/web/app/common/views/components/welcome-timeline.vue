@@ -78,14 +78,14 @@ export default Vue.extend({
 
 			> img
 				display block
-				width 36px
-				height 36px
+				width 42px
+				height 42px
 				border-radius 6px
 
 		> .body
 			float right
-			width calc(100% - 36px)
-			padding-left 8px
+			width calc(100% - 42px)
+			padding-left 12px
 
 			> header
 				display flex

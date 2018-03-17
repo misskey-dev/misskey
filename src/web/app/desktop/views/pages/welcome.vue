@@ -70,8 +70,23 @@ export default Vue.extend({
 	display flex
 	flex-direction column
 	flex 1
-	background #eee
 	$width = 1000px
+
+	background-image url('/assets/welcome-bg.svg')
+	background-size cover
+	background-position top center
+
+	&:before
+		content ""
+		display block
+		position fixed
+		bottom 0
+		left 0
+		width 100%
+		height 100%
+		background-image url('/assets/welcome-fg.svg')
+		background-size cover
+		background-position bottom center
 
 	> main
 		display flex
@@ -80,9 +95,6 @@ export default Vue.extend({
 		> .top
 			display flex
 			width 100%
-			background-image url('/assets/welcome.svg')
-			background-size cover
-			background-position top center
 
 			> div
 				display flex
@@ -92,7 +104,8 @@ export default Vue.extend({
 
 				> div:first-child
 					margin 0 48px 0 0
-					color #777
+					color #d1e6bf
+					text-shadow 0 0 12px #172062
 
 					> h1
 						margin 0
@@ -154,18 +167,19 @@ export default Vue.extend({
 							overflow auto
 
 	> footer
+		font-size 12px
 		color #949ea5
-		background #fff
 
 		> div
 			max-width $width
 			margin 0 auto
-			padding 42px 0
+			padding 0 0 42px 0
 			text-align center
 
 			> .c
 				margin 16px 0 0 0
 				font-size 10px
+				opacity 0.7
 
 </style>
 
@@ -193,4 +207,10 @@ export default Vue.extend({
 .nav
 	a
 		color #666
+</style>
+
+<style lang="stylus">
+html
+body
+	background linear-gradient(to bottom, #1e1d65, #bd6659)
 </style>
