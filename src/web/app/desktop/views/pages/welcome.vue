@@ -10,7 +10,7 @@
 				</div>
 				<div>
 					<div>
-						<header>%fa:comments R% タイムライン</header>
+						<header>%fa:comments R% タイムライン<div><span></span><span></span><span></span></div></header>
 						<mk-welcome-timeline/>
 					</div>
 				</div>
@@ -161,6 +161,30 @@ export default Vue.extend({
 							padding 12px 16px
 							color #888d94
 							box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+
+							> div
+								position absolute
+								top 0
+								right 0
+								padding inherit
+
+								> span
+									display inline-block
+									height 11px
+									width 11px
+									margin-left 5px
+									background #ccc
+									border-radius 100%
+									vertical-align middle
+
+									&:nth-child(1)
+										background #5BCC8B
+
+									&:nth-child(2)
+										background #E6BB46
+
+									&:nth-child(3)
+										background #DF7065
 
 						> .mk-welcome-timeline
 							max-height 350px
