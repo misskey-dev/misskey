@@ -16,40 +16,38 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
-	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) return rej('invalid since_id param');
+	// Get 'offset' parameter
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
+	if (offsetErr) return rej('invalid offset param');
 
-	// Get 'until_id' parameter
-	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
-	if (untilIdErr) return rej('invalid until_id param');
-
-	// Check if both of since_id and until_id is specified
-	if (sinceId && untilId) {
-		return rej('cannot set since_id and until_id');
-	}
+	// Get 'sort' parameter
+	const [sort, sortError] = $(params.sort).optional.string().or('+follower|-follower').$;
+	if (sortError) return rej('invalid sort param');
 
 	// Construct query
-	const sort = {
-		_id: -1
-	};
-	const query = {} as any;
-	if (sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: sinceId
-		};
-	} else if (untilId) {
-		query._id = {
-			$lt: untilId
+	let _sort;
+	if (sort) {
+		if (sort == '+follower') {
+			_sort = {
+				followers_count: 1
+			};
+		} else if (sort == '-follower') {
+			_sort = {
+				followers_count: -1
+			};
+		}
+	} else {
+		_sort = {
+			_id: -1
 		};
 	}
 
 	// Issue query
 	const users = await User
-		.find(query, {
+		.find({}, {
 			limit: limit,
-			sort: sort
+			sort: _sort,
+			skip: offset
 		});
 
 	// Serialize

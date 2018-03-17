@@ -1,12 +1,12 @@
 <template>
 <div class="mk-welcome-timeline">
 	<div v-for="post in posts">
-		<router-link class="avatar-anchor" :to="`/${post.user.username}`">
+		<router-link class="avatar-anchor" :to="`/${post.user.username}`" v-user-preview="post.user.id">
 			<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
 		</router-link>
 		<div class="body">
 			<header>
-				<router-link class="name" :to="`/${post.user.username}`">{{ post.user.name }}</router-link>
+				<router-link class="name" :to="`/${post.user.username}`" v-user-preview="post.user.id">{{ post.user.name }}</router-link>
 				<span class="username">@{{ post.user.username }}</span>
 				<div class="info">
 					<router-link class="created-at" :to="`/${post.user.username}/${post.id}`">
@@ -100,6 +100,7 @@ export default Vue.extend({
 					overflow hidden
 					font-weight bold
 					text-overflow ellipsis
+					color #627079
 
 				> .username
 					margin 0 .5em 0 0

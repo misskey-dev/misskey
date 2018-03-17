@@ -5,8 +5,13 @@
 			<div>
 				<div>
 					<h1>Share<br>Everything!</h1>
-					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a>詳しく...</a></p>
+					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a :href="aboutUrl">詳しく...</a></p>
 					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
+					<div class="users">
+						<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/${user.username}`" v-user-preview="user.id">
+							<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+						</router-link>
+					</div>
 				</div>
 				<div>
 					<div>
@@ -37,13 +42,23 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { copyright } from '../../../config';
+import { docsUrl, copyright, lang } from '../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
-			copyright
+			aboutUrl: `${docsUrl}/${lang}/about`,
+			copyright,
+			users: []
 		};
+	},
+	mounted() {
+		(this as any).api('users', {
+			sort: '+follower',
+			limit: 20
+		}).then(users => {
+			this.users = users;
+		});
 	},
 	methods: {
 		signup() {
@@ -139,14 +154,22 @@ export default Vue.extend({
 							border-color darken($theme-color, 10%)
 
 					.signin
-						&:focus
-							color #444
-
 						&:hover
-							color #444
+							color #fff
 
-						&:active
-							color #333
+					> .users
+						margin 16px 0 0 0
+
+						> *
+							display inline-block
+							margin 4px
+
+							> *
+								display inline-block
+								width 38px
+								height 38px
+								vertical-align top
+								border-radius 6px
 
 				> div:last-child
 

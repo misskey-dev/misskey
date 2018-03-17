@@ -1,7 +1,7 @@
 <template>
 <div class="welcome">
 	<h1><b>Misskey</b>へようこそ</h1>
-	<p>Twitter風ミニブログSNS、Misskeyへようこそ。思ったことを投稿したり、タイムラインでみんなの投稿を読むこともできます。<a href="/signup">アカウントを作成する</a></p>
+	<p>Twitter風ミニブログSNS、Misskeyへようこそ。思ったことを投稿したり、タイムラインでみんなの投稿を読むこともできます。<br><a href="/signup">アカウントを作成する</a></p>
 	<div class="form">
 		<p>%fa:lock% ログイン</p>
 		<div>
@@ -19,6 +19,11 @@
 	<div class="tl">
 		<p>%fa:comments R% タイムラインを見てみる</p>
 		<mk-welcome-timeline/>
+	</div>
+	<div class="users">
+		<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/${user.username}`">
+			<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+		</router-link>
 	</div>
 	<footer>
 		<small>{{ copyright }}</small>
@@ -39,11 +44,17 @@ export default Vue.extend({
 			password: '',
 			token: '',
 			apiUrl,
-			copyright
+			copyright,
+			users: []
 		};
 	},
 	mounted() {
-		document.documentElement.style.background = '#293946';
+		(this as any).api('users', {
+			sort: '+follower',
+			limit: 20
+		}).then(users => {
+			this.users = users;
+		});
 	},
 	methods: {
 		onUsernameChange() {
@@ -82,7 +93,7 @@ export default Vue.extend({
 		padding 8px
 		font-size 1.5em
 		font-weight normal
-		color #c3c6ca
+		color #cacac3
 
 		& + p
 			margin 0 0 16px 0
@@ -146,7 +157,7 @@ export default Vue.extend({
 				padding 16px
 				text-align center
 
-	.tl
+	> .tl
 		background #fff
 		border solid 1px rgba(0, 0, 0, 0.2)
 		border-radius 8px
@@ -163,12 +174,33 @@ export default Vue.extend({
 			max-height 300px
 			overflow auto
 
+	> .users
+		margin 12px 0 0 0
+
+		> *
+			display inline-block
+			margin 4px
+
+			> *
+				display inline-block
+				width 38px
+				height 38px
+				vertical-align top
+				border-radius 6px
+
 	> footer
 		text-align center
-		color #949fa9
+		color #fff
 
 		> small
 			display block
 			margin 16px 0 0 0
+			opacity 0.7
 
+</style>
+
+<style lang="stylus">
+html
+body
+	background linear-gradient(to bottom, #1e1d65, #bd6659)
 </style>
