@@ -150,5 +150,13 @@ function registerNotifications(stream: HomeStreamManager) {
 			};
 			setTimeout(n.close.bind(n), 7000);
 		});
+
+		connection.on('othello_invited', matching => {
+			const _n = composeNotification('othello_invited', matching);
+			const n = new Notification(_n.title, {
+				body: _n.body,
+				icon: _n.icon
+			});
+		});
 	}
 }

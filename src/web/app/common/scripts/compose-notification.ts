@@ -54,6 +54,13 @@ export default function(type, data): Notification {
 				icon: data.user.avatar_url + '?thumbnail&size=64'
 			};
 
+		case 'othello_invited':
+			return {
+				title: '対局への招待があります',
+				body: `${data.parent.name}さんから`,
+				icon: data.parent.avatar_url + '?thumbnail&size=64'
+			};
+
 		default:
 			return null;
 	}
