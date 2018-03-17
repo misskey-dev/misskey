@@ -127,7 +127,7 @@ export default Vue.extend({
 
 					> h1
 						margin 0
-						font-weight normal
+						font-weight bold
 						font-variant small-caps
 						letter-spacing 12px
 
