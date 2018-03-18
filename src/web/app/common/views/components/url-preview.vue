@@ -1,6 +1,6 @@
 <template>
 <iframe v-if="youtubeId" type="text/html" height="250"
-	:src="`http://www.youtube.com/embed/${youtubeId}`"
+	:src="`http://www.youtube.com/embed/${youtubeId}?origin=${misskeyUrl}`"
 	frameborder="0"/>
 <div v-else>
 	<a class="mk-url-preview" :href="url" target="_blank" :title="url" v-if="!fetching">
@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { url as misskeyUrl } from '../../../config';
 
 export default Vue.extend({
 	props: ['url'],
@@ -32,7 +33,8 @@ export default Vue.extend({
 			thumbnail: null,
 			icon: null,
 			sitename: null,
-			youtubeId: null
+			youtubeId: null,
+			misskeyUrl
 		};
 	},
 	created() {
