@@ -4,7 +4,7 @@
 		<div class="top">
 			<div>
 				<div>
-					<h1>Share<br>Everything!</h1>
+					<h1>Share<br><span ref="share">Everything!</span><span class="cursor">_</span></h1>
 					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a :href="aboutUrl">詳しく...</a></p>
 					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
 					<div class="users">
@@ -44,12 +44,22 @@
 import Vue from 'vue';
 import { docsUrl, copyright, lang } from '../../../config';
 
+const shares = [
+	'Everything!',
+	'Webpages',
+	'Photos',
+	'Interests',
+	'Favorites'
+];
+
 export default Vue.extend({
 	data() {
 		return {
 			aboutUrl: `${docsUrl}/${lang}/about`,
 			copyright,
-			users: []
+			users: [],
+			clock: null,
+			i: 0
 		};
 	},
 	mounted() {
@@ -59,6 +69,32 @@ export default Vue.extend({
 		}).then(users => {
 			this.users = users;
 		});
+
+		this.clock = setInterval(() => {
+			if (++this.i == shares.length) this.i = 0;
+			const speed = 70;
+			const text = (this.$refs.share as any).innerText;
+			for (let i = 0; i < text.length; i++) {
+				setTimeout(() => {
+					if (this.$refs.share) {
+						(this.$refs.share as any).innerText = text.substr(0, text.length - i);
+					}
+				}, i * speed)
+			}
+			setTimeout(() => {
+				const newText = shares[this.i];
+				for (let i = 0; i <= newText.length; i++) {
+					setTimeout(() => {
+						if (this.$refs.share) {
+							(this.$refs.share as any).innerText = newText.substr(0, i);
+						}
+					}, i * speed)
+				}
+			}, text.length * speed);
+		}, 4000);
+	},
+	beforeDestroy() {
+		clearInterval(this.clock);
 	},
 	methods: {
 		signup() {
@@ -130,6 +166,15 @@ export default Vue.extend({
 						font-weight bold
 						font-variant small-caps
 						letter-spacing 12px
+
+						> .cursor
+							animation cursor 1s infinite linear both
+
+							@keyframes cursor
+								0%
+									opacity 1
+								50%
+									opacity 0
 
 					> p
 						margin 0.5em 0
