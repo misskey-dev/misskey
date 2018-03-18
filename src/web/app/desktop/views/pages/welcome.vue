@@ -180,6 +180,7 @@ export default Vue.extend({
 						width 410px
 						background #fff
 						border-radius 8px
+						box-shadow 0 0 0 12px rgba(0, 0, 0, 0.1)
 						overflow hidden
 
 						> header
