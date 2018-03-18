@@ -1,17 +1,22 @@
 <template>
-<a class="mk-url-preview" :href="url" target="_blank" :title="url" v-if="!fetching">
-	<div class="thumbnail" v-if="thumbnail" :style="`background-image: url(${thumbnail})`"></div>
-	<article>
-		<header>
-			<h1>{{ title }}</h1>
-		</header>
-		<p>{{ description }}</p>
-		<footer>
-			<img class="icon" v-if="icon" :src="icon"/>
-			<p>{{ sitename }}</p>
-		</footer>
-	</article>
-</a>
+<iframe v-if="youtubeId" type="text/html" height="250"
+	:src="`http://www.youtube.com/embed/${youtubeId}`"
+	frameborder="0"/>
+<div v-else>
+	<a class="mk-url-preview" :href="url" target="_blank" :title="url" v-if="!fetching">
+		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url(${thumbnail})`"></div>
+		<article>
+			<header>
+				<h1>{{ title }}</h1>
+			</header>
+			<p>{{ description }}</p>
+			<footer>
+				<img class="icon" v-if="icon" :src="icon"/>
+				<p>{{ sitename }}</p>
+			</footer>
+		</article>
+	</a>
+</div>
 </template>
 
 <script lang="ts">
@@ -26,26 +31,38 @@ export default Vue.extend({
 			description: null,
 			thumbnail: null,
 			icon: null,
-			sitename: null
+			sitename: null,
+			youtubeId: null
 		};
 	},
 	created() {
-		fetch('/api:url?url=' + this.url).then(res => {
-			res.json().then(info => {
-				this.title = info.title;
-				this.description = info.description;
-				this.thumbnail = info.thumbnail;
-				this.icon = info.icon;
-				this.sitename = info.sitename;
+		const url = new URL(this.url);
 
-				this.fetching = false;
+		if (url.hostname == 'www.youtube.com') {
+			this.youtubeId = url.searchParams.get('v');
+		} else if (url.hostname == 'youtu.be') {
+			this.youtubeId = url.pathname;
+		} else {
+			fetch('/api:url?url=' + this.url).then(res => {
+				res.json().then(info => {
+					this.title = info.title;
+					this.description = info.description;
+					this.thumbnail = info.thumbnail;
+					this.icon = info.icon;
+					this.sitename = info.sitename;
+
+					this.fetching = false;
+				});
 			});
-		});
+		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
+iframe
+	width 100%
+
 .mk-url-preview
 	display block
 	font-size 16px
