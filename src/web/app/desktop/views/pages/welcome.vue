@@ -117,6 +117,8 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
+@import url('https://fonts.googleapis.com/css?family=Sarpanch:700')
+
 .mk-welcome
 	display flex
 	flex-direction column
@@ -164,8 +166,11 @@ export default Vue.extend({
 					> h1
 						margin 0
 						font-weight bold
-						font-variant small-caps
+						//font-variant small-caps
 						letter-spacing 12px
+						font-family 'Sarpanch', sans-serif
+						font-size 42px
+						line-height 48px
 
 						> .cursor
 							animation cursor 1s infinite linear both
@@ -177,7 +182,7 @@ export default Vue.extend({
 									opacity 0
 
 					> p
-						margin 0.5em 0
+						margin 1em 0
 						line-height 2em
 
 					button
