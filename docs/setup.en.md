@@ -74,7 +74,7 @@ Please install and setup these softwares:
 *5.* Prepare configuration
 ----------------------------------------------------------------
 First, you need to create a `.config` directory in the directory that
-Misskey installed. Then you need to create a `default.yml` file in
+Misskey installed. And then you need to create a `default.yml` file in
 the directory. The template of configuration is available [here](./config.md).
 
 *6.* That is it.
