@@ -167,8 +167,7 @@ module.exports = entries.map(x => {
 					}
 				}, {
 					loader: 'stylus-loader'
-				}
-				]
+				}]
 			}, {
 				test: /\.scss$/,
 				exclude: /node_modules/,
