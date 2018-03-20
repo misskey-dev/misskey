@@ -132,7 +132,7 @@
 		"html-minifier": "3.5.12",
 		"inquirer": "5.1.0",
 		"is-root": "1.0.0",
-		"is-url": "1.2.2",
+		"is-url": "1.2.3",
 		"js-yaml": "3.11.0",
 		"license-checker": "18.0.0",
 		"loader-utils": "1.1.0",
