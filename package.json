@@ -89,7 +89,7 @@
 		"bootstrap-vue": "2.0.0-rc.1",
 		"cafy": "3.2.1",
 		"chai": "4.1.2",
-		"chai-http": "3.0.0",
+		"chai-http": "4.0.0",
 		"chalk": "2.3.2",
 		"compression": "1.7.2",
 		"cookie": "0.3.1",
