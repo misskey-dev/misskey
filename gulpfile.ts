@@ -124,6 +124,7 @@ gulp.task('build:client:script', () =>
 		.pipe(replace('VERSION', JSON.stringify(version)))
 		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(replace('ENV', JSON.stringify(env)))
+		.pipe(replace('HOST', JSON.stringify(config.host)))
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
