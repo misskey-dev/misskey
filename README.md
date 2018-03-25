@@ -5,7 +5,7 @@
 [![][dependencies-badge]][dependencies-link]
 [![][himawari-badge]][himasaku]
 [![][sakurako-badge]][himasaku]
-[![][mit-badge]][mit]
+[![][agpl-3.0-badge]][AGPL-3.0]
 
 [Misskey](https://misskey.xyz) is a completely open source,
 ultimately sophisticated new type of mini-blog based SNS.
@@ -55,8 +55,12 @@ Copyright
 ----------------------------------------------------------------
 Misskey is an open-source software licensed under [The MIT License](LICENSE).
 
-[mit]:                http://opensource.org/licenses/MIT
-[mit-badge]:          https://img.shields.io/badge/license-MIT-444444.svg?style=flat-square
+The portions of Misskey contributed by Akihiko Odaki <nekomanma@pixiv.co.jp> is
+licensed under GNU Affero General Public License (only version 3.0 of the
+license is applied.) See Git log to identify them.
+
+[agpl-3.0]:           https://www.gnu.org/licenses/agpl-3.0.en.html
+[agpl-3.0-badge]:     https://img.shields.io/badge/license-AGPL--3.0-444444.svg?style=flat-square
 [travis-link]:        https://travis-ci.org/syuilo/misskey
 [travis-badge]:       http://img.shields.io/travis/syuilo/misskey/master.svg?style=flat-square
 [dependencies-link]:  https://david-dm.org/syuilo/misskey
