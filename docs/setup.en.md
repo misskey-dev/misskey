@@ -58,7 +58,13 @@ Please install and setup these softwares:
 ##### Optional
 * [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB
 
-*4.* Install Misskey
+*4.* Prepare configuration
+----------------------------------------------------------------
+First, you need to create a `.config` directory in the directory that
+Misskey installed. And then you need to create a `default.yml` file in
+the directory. The template of configuration is available [here](./config.md).
+
+*5.* Install Misskey
 ----------------------------------------------------------------
 
 1. `git clone -b master git://github.com/syuilo/misskey.git`
@@ -70,12 +76,6 @@ Please install and setup these softwares:
 1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`
-
-*5.* Prepare configuration
-----------------------------------------------------------------
-First, you need to create a `.config` directory in the directory that
-Misskey installed. And then you need to create a `default.yml` file in
-the directory. The template of configuration is available [here](./config.md).
 
 *6.* That is it.
 ----------------------------------------------------------------
