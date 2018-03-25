@@ -18,11 +18,11 @@
 				</div>
 				<div class="description">{{ user.description }}</div>
 				<div class="info">
-					<p class="location" v-if="user.profile.location">
-						%fa:map-marker%{{ user.profile.location }}
+					<p class="location" v-if="user.account.profile.location">
+						%fa:map-marker%{{ user.account.profile.location }}
 					</p>
-					<p class="birthday" v-if="user.profile.birthday">
-						%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)
+					<p class="birthday" v-if="user.account.profile.birthday">
+						%fa:birthday-cake%{{ user.account.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)
 					</p>
 				</div>
 				<div class="status">
@@ -74,7 +74,7 @@ export default Vue.extend({
 	},
 	computed: {
 		age(): number {
-			return age(this.user.profile.birthday);
+			return age(this.user.account.profile.birthday);
 		}
 	},
 	watch: {

@@ -22,7 +22,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (newPasswordErr) return rej('invalid new_password param');
 
 	// Compare password
-	const same = await bcrypt.compare(currentPassword, user.password);
+	const same = await bcrypt.compare(currentPassword, user.account.password);
 
 	if (!same) {
 		return rej('incorrect password');
@@ -34,7 +34,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	await User.update(user._id, {
 		$set: {
-			password: hash
+			'account.password': hash
 		}
 	});
 

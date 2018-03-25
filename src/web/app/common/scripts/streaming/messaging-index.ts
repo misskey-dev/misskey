@@ -8,7 +8,7 @@ import MiOS from '../../mios';
 export class MessagingIndexStream extends Stream {
 	constructor(os: MiOS, me) {
 		super(os, 'messaging-index', {
-			i: me.token
+			i: me.account.token
 		});
 	}
 }

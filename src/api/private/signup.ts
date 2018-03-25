@@ -105,38 +105,40 @@ export default async (req: express.Request, res: express.Response) => {
 
 	// Create account
 	const account: IUser = await User.insert({
-		token: secret,
 		avatar_id: null,
 		banner_id: null,
 		created_at: new Date(),
 		description: null,
-		email: null,
 		followers_count: 0,
 		following_count: 0,
-		links: null,
 		name: name,
-		password: hash,
 		posts_count: 0,
 		likes_count: 0,
 		liked_count: 0,
 		drive_capacity: 1073741824, // 1GB
 		username: username,
 		username_lower: username.toLowerCase(),
-		profile: {
-			bio: null,
-			birthday: null,
-			blood: null,
-			gender: null,
-			handedness: null,
-			height: null,
-			location: null,
-			weight: null
-		},
-		settings: {
-			auto_watch: true
-		},
-		client_settings: {
-			home: homeData
+		account: {
+			token: secret,
+			email: null,
+			links: null,
+			password: hash,
+			profile: {
+				bio: null,
+				birthday: null,
+				blood: null,
+				gender: null,
+				handedness: null,
+				height: null,
+				location: null,
+				weight: null
+			},
+			settings: {
+				auto_watch: true
+			},
+			client_settings: {
+				home: homeData
+			}
 		}
 	});
 

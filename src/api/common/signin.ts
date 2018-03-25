@@ -2,7 +2,7 @@ import config from '../../conf';
 
 export default function(res, user, redirect: boolean) {
 	const expires = 1000 * 60 * 60 * 24 * 365; // One Year
-	res.cookie('i', user.token, {
+	res.cookie('i', user.account.token, {
 		path: '/',
 		domain: `.${config.host}`,
 		secure: config.url.substr(0, 5) === 'https',

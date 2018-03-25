@@ -53,7 +53,7 @@
 			<div class="main">
 				<a @click="hint">カスタマイズのヒント</a>
 				<div>
-					<mk-post-form v-if="os.i.client_settings.showPostFormOnTopOfTl"/>
+					<mk-post-form v-if="os.i.account.client_settings.showPostFormOnTopOfTl"/>
 					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp"/>
 			</div>
 			<div class="main">
-				<mk-post-form v-if="os.i.client_settings.showPostFormOnTopOfTl"/>
+				<mk-post-form v-if="os.i.account.client_settings.showPostFormOnTopOfTl"/>
 				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 				<mk-mentions @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
 			</div>
@@ -104,16 +104,16 @@ export default Vue.extend({
 		home: {
 			get(): any[] {
 				//#region 互換性のため
-				(this as any).os.i.client_settings.home.forEach(w => {
+				(this as any).os.i.account.client_settings.home.forEach(w => {
 					if (w.name == 'rss-reader') w.name = 'rss';
 					if (w.name == 'user-recommendation') w.name = 'users';
 					if (w.name == 'recommended-polls') w.name = 'polls';
 				});
 				//#endregion
-				return (this as any).os.i.client_settings.home;
+				return (this as any).os.i.account.client_settings.home;
 			},
 			set(value) {
-				(this as any).os.i.client_settings.home = value;
+				(this as any).os.i.account.client_settings.home = value;
 			}
 		},
 		left(): any[] {
@@ -126,7 +126,7 @@ export default Vue.extend({
 	created() {
 		this.widgets.left = this.left;
 		this.widgets.right = this.right;
-		this.$watch('os.i.client_settings', i => {
+		this.$watch('os.i.account.client_settings', i => {
 			this.widgets.left = this.left;
 			this.widgets.right = this.right;
 		}, {
@@ -161,17 +161,17 @@ export default Vue.extend({
 		},
 		onHomeUpdated(data) {
 			if (data.home) {
-				(this as any).os.i.client_settings.home = data.home;
+				(this as any).os.i.account.client_settings.home = data.home;
 				this.widgets.left = data.home.filter(w => w.place == 'left');
 				this.widgets.right = data.home.filter(w => w.place == 'right');
 			} else {
-				const w = (this as any).os.i.client_settings.home.find(w => w.id == data.id);
+				const w = (this as any).os.i.account.client_settings.home.find(w => w.id == data.id);
 				if (w != null) {
 					w.data = data.data;
 					this.$refs[w.id][0].preventSave = true;
 					this.$refs[w.id][0].props = w.data;
-					this.widgets.left = (this as any).os.i.client_settings.home.filter(w => w.place == 'left');
-					this.widgets.right = (this as any).os.i.client_settings.home.filter(w => w.place == 'right');
+					this.widgets.left = (this as any).os.i.account.client_settings.home.filter(w => w.place == 'left');
+					this.widgets.right = (this as any).os.i.account.client_settings.home.filter(w => w.place == 'right');
 				}
 			}
 		},

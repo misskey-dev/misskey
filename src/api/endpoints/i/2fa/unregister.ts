@@ -11,7 +11,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (passwordErr) return rej('invalid password param');
 
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = await bcrypt.compare(password, user.account.password);
 
 	if (!same) {
 		return rej('incorrect password');
@@ -19,8 +19,8 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	await User.update(user._id, {
 		$set: {
-			two_factor_secret: null,
-			two_factor_enabled: false
+			'account.two_factor_secret': null,
+			'account.two_factor_enabled': false
 		}
 	});
 

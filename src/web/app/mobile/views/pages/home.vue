@@ -82,8 +82,8 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		if ((this as any).os.i.client_settings.mobile_home == null) {
-			Vue.set((this as any).os.i.client_settings, 'mobile_home', [{
+		if ((this as any).os.i.account.client_settings.mobile_home == null) {
+			Vue.set((this as any).os.i.account.client_settings, 'mobile_home', [{
 				name: 'calendar',
 				id: 'a', data: {}
 			}, {
@@ -105,14 +105,14 @@ export default Vue.extend({
 				name: 'version',
 				id: 'g', data: {}
 			}]);
-			this.widgets = (this as any).os.i.client_settings.mobile_home;
+			this.widgets = (this as any).os.i.account.client_settings.mobile_home;
 			this.saveHome();
 		} else {
-			this.widgets = (this as any).os.i.client_settings.mobile_home;
+			this.widgets = (this as any).os.i.account.client_settings.mobile_home;
 		}
 
-		this.$watch('os.i.client_settings', i => {
-			this.widgets = (this as any).os.i.client_settings.mobile_home;
+		this.$watch('os.i.account.client_settings', i => {
+			this.widgets = (this as any).os.i.account.client_settings.mobile_home;
 		}, {
 			deep: true
 		});
@@ -157,15 +157,15 @@ export default Vue.extend({
 		},
 		onHomeUpdated(data) {
 			if (data.home) {
-				(this as any).os.i.client_settings.mobile_home = data.home;
+				(this as any).os.i.account.client_settings.mobile_home = data.home;
 				this.widgets = data.home;
 			} else {
-				const w = (this as any).os.i.client_settings.mobile_home.find(w => w.id == data.id);
+				const w = (this as any).os.i.account.client_settings.mobile_home.find(w => w.id == data.id);
 				if (w != null) {
 					w.data = data.data;
 					this.$refs[w.id][0].preventSave = true;
 					this.$refs[w.id][0].props = w.data;
-					this.widgets = (this as any).os.i.client_settings.mobile_home;
+					this.widgets = (this as any).os.i.account.client_settings.mobile_home;
 				}
 			}
 		},
@@ -194,7 +194,7 @@ export default Vue.extend({
 			this.saveHome();
 		},
 		saveHome() {
-			(this as any).os.i.client_settings.mobile_home = this.widgets;
+			(this as any).os.i.account.client_settings.mobile_home = this.widgets;
 			(this as any).api('i/update_mobile_home', {
 				home: this.widgets
 			});

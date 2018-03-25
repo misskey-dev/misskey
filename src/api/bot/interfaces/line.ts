@@ -110,11 +110,11 @@ class LineBot extends BotCore {
 			data: `showtl|${user.id}`
 		});
 
-		if (user.twitter) {
+		if (user.account.twitter) {
 			actions.push({
 				type: 'uri',
 				label: 'Twitterアカウントを見る',
-				uri: `https://twitter.com/${user.twitter.screen_name}`
+				uri: `https://twitter.com/${user.account.twitter.screen_name}`
 			});
 		}
 
@@ -171,7 +171,7 @@ module.exports = async (app: express.Application) => {
 
 		if (session == null) {
 			const user = await User.findOne({
-				line: {
+				'account.line': {
 					user_id: sourceId
 				}
 			});
@@ -181,7 +181,7 @@ module.exports = async (app: express.Application) => {
 			bot.on('signin', user => {
 				User.update(user._id, {
 					$set: {
-						line: {
+						'account.line': {
 							user_id: sourceId
 						}
 					}
@@ -191,7 +191,7 @@ module.exports = async (app: express.Application) => {
 			bot.on('signout', user => {
 				User.update(user._id, {
 					$set: {
-						line: {
+						'account.line': {
 							user_id: null
 						}
 					}

@@ -31,7 +31,7 @@
 			<x-followers-you-know :user="user"/>
 		</div>
 	</section>
-	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.last_used_at"/></b></p>
+	<p>%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.account.last_used_at"/></b></p>
 </div>
 </template>
 

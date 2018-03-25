@@ -24,7 +24,7 @@
 	<button class="ui primary" @click="save">%i18n:desktop.tags.mk-profile-setting.save%</button>
 	<section>
 		<h2>その他</h2>
-		<mk-switch v-model="os.i.is_bot" @change="onChangeIsBot" text="このアカウントはbotです"/>
+		<mk-switch v-model="os.i.account.is_bot" @change="onChangeIsBot" text="このアカウントはbotです"/>
 	</section>
 </div>
 </template>
@@ -43,9 +43,9 @@ export default Vue.extend({
 	},
 	created() {
 		this.name = (this as any).os.i.name;
-		this.location = (this as any).os.i.profile.location;
+		this.location = (this as any).os.i.account.profile.location;
 		this.description = (this as any).os.i.description;
-		this.birthday = (this as any).os.i.profile.birthday;
+		this.birthday = (this as any).os.i.account.profile.birthday;
 	},
 	methods: {
 		updateAvatar() {
@@ -63,7 +63,7 @@ export default Vue.extend({
 		},
 		onChangeIsBot() {
 			(this as any).api('i/update', {
-				is_bot: (this as any).os.i.is_bot
+				is_bot: (this as any).os.i.account.is_bot
 			});
 		}
 	}

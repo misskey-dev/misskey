@@ -111,7 +111,7 @@ export default Vue.extend({
 		},
 		post() {
 			this.posting = true;
-			const viaMobile = (this as any).os.i.client_settings.disableViaMobile !== true;
+			const viaMobile = (this as any).os.i.account.client_settings.disableViaMobile !== true;
 			(this as any).api('posts/create', {
 				text: this.text == '' ? undefined : this.text,
 				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,

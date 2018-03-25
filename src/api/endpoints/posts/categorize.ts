@@ -12,7 +12,7 @@ import Post from '../../models/post';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	if (!user.is_pro) {
+	if (!user.account.is_pro) {
 		return rej('This endpoint is available only from a Pro account');
 	}
 
