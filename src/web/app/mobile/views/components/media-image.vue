@@ -1,5 +1,5 @@
 <template>
-<a class="mk-images-image" :href="image.url" target="_blank" :style="style" :title="image.name"></a>
+<a class="mk-media-image" :href="image.url" target="_blank" :style="style" :title="image.name"></a>
 </template>
 
 <script lang="ts">
@@ -19,7 +19,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-images-image
+.mk-media-image
 	display block
 	overflow hidden
 	width 100%
