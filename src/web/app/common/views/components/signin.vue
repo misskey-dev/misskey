@@ -43,7 +43,7 @@ export default Vue.extend({
 			(this as any).api('signin', {
 				username: this.username,
 				password: this.password,
-				token: this.user && this.user.two_factor_enabled ? this.token : undefined
+				token: this.user && this.user.account.two_factor_enabled ? this.token : undefined
 			}).then(() => {
 				location.reload();
 			}).catch(() => {
