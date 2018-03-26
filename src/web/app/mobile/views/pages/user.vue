@@ -40,12 +40,14 @@
 					</a>
 				</div>
 			</div>
-			<nav>
+		</header>
+		<nav>
+			<div class="nav-container">
 				<a :data-is-active=" page == 'home' " @click="page = 'home'">%i18n:mobile.tags.mk-user.overview%</a>
 				<a :data-is-active=" page == 'posts' " @click="page = 'posts'">%i18n:mobile.tags.mk-user.timeline%</a>
 				<a :data-is-active=" page == 'media' " @click="page = 'media'">%i18n:mobile.tags.mk-user.media%</a>
-			</nav>
-		</header>
+			</div>
+		</nav>
 		<div class="body">
 			<x-home v-if="page == 'home'" :user="user"/>
 			<mk-user-timeline v-if="page == 'posts'" :user="user"/>
@@ -109,7 +111,6 @@ export default Vue.extend({
 
 main
 	> header
-		box-shadow 0 4px 4px rgba(0, 0, 0, 0.3)
 
 		> .banner
 			padding-bottom 33.3%
@@ -207,7 +208,13 @@ main
 					> i
 						font-size 14px
 
-		> nav
+	> nav
+		position sticky
+		top 48px
+		box-shadow 0 4px 4px rgba(0, 0, 0, 0.3)
+		background-color #313a42
+		z-index 1
+		> .nav-container
 			display flex
 			justify-content center
 			margin 0 auto
