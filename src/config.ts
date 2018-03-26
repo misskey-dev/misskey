@@ -3,6 +3,7 @@
  */
 
 import * as fs from 'fs';
+import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import isUrl = require('is-url');
 
@@ -128,11 +129,12 @@ export default function load() {
 	if (!isUrl(config.url)) urlError(config.url);
 	if (!isUrl(config.secondary_url)) urlError(config.secondary_url);
 
+	const url = new URL(config.url);
 	config.url = normalizeUrl(config.url);
 	config.secondary_url = normalizeUrl(config.secondary_url);
 
-	mixin.host = config.url.substr(config.url.indexOf('://') + 3);
-	mixin.scheme = config.url.substr(0, config.url.indexOf('://'));
+	mixin.host = url.host;
+	mixin.scheme = url.protocol.replace(/:$/, '');
 	mixin.ws_scheme = mixin.scheme.replace('http', 'ws');
 	mixin.ws_url = `${mixin.ws_scheme}://api.${mixin.host}`;
 	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
