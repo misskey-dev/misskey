@@ -69,6 +69,7 @@ gulp.task('build:ts', () => {
 
 gulp.task('build:copy', () =>
 	gulp.src([
+		'./build/Release/crypto_key.node',
 		'./src/**/assets/**/*',
 		'!./src/web/app/**/assets/**/*'
 	]).pipe(gulp.dest('./built/'))
