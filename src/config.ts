@@ -103,9 +103,11 @@ type Source = {
  */
 type Mixin = {
 	host: string;
+	hostname: string;
 	scheme: string;
 	ws_scheme: string;
 	secondary_host: string;
+	secondary_hostname: string;
 	secondary_scheme: string;
 	api_url: string;
 	ws_url: string;
@@ -130,14 +132,17 @@ export default function load() {
 	if (!isUrl(config.secondary_url)) urlError(config.secondary_url);
 
 	const url = new URL(config.url);
+	const secondaryUrl = new URL(config.secondary_url);
 	config.url = normalizeUrl(config.url);
 	config.secondary_url = normalizeUrl(config.secondary_url);
 
 	mixin.host = url.host;
+	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');
 	mixin.ws_scheme = mixin.scheme.replace('http', 'ws');
 	mixin.ws_url = `${mixin.ws_scheme}://api.${mixin.host}`;
 	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
+	mixin.secondary_hostname = secondaryUrl.hostname;
 	mixin.secondary_scheme = config.secondary_url.substr(0, config.secondary_url.indexOf('://'));
 	mixin.api_url = `${mixin.scheme}://api.${mixin.host}`;
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;

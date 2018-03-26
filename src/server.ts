@@ -14,11 +14,6 @@ import vhost = require('vhost');
 import log from './log-request';
 import config from './conf';
 
-function extractHostname(host) {
-	const index = host.indexOf(':');
-	return index < 0 ? host : host.substr(0, index);
-}
-
 /**
  * Init app
  */
@@ -58,11 +53,9 @@ app.use((req, res, next) => {
 /**
  * Register modules
  */
-const hostname = extractHostname(config.host);
-const secondaryHostname = extractHostname(config.secondary_host);
-app.use(vhost(`api.${hostname}`, require('./api/server')));
-app.use(vhost(secondaryHostname, require('./himasaku/server')));
-app.use(vhost(`file.${secondaryHostname}`, require('./file/server')));
+app.use(vhost(`api.${config.hostname}`, require('./api/server')));
+app.use(vhost(config.secondary_hostname, require('./himasaku/server')));
+app.use(vhost(`file.${config.secondary_hostname}`, require('./file/server')));
 app.use(require('./web/server'));
 
 /**
