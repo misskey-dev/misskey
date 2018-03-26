@@ -3,7 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as merge from 'object-assign-deep';
 import * as uuid from 'uuid';
 
-import { host, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
+import { hostname, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
 import Progress from './scripts/loading';
 import Connection from './scripts/streaming/stream';
 import { HomeStreamManager } from './scripts/streaming/home';
@@ -220,7 +220,7 @@ export default class MiOS extends EventEmitter {
 
 	public signout() {
 		localStorage.removeItem('me');
-		document.cookie = `i=; domain=.${host}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+		document.cookie = `i=; domain=.${hostname}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 		location.href = '/';
 	}
 

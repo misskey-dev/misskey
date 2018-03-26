@@ -84,6 +84,7 @@ module.exports = entries.map(x => {
 		_CH_URL_: config.ch_url,
 		_LANG_: lang,
 		_HOST_: config.host,
+		_HOSTNAME_: config.hostname,
 		_URL_: config.url,
 		_LICENSE_: licenseHtml,
 		_GOOGLE_MAPS_API_KEY_: config.google_maps_api_key
