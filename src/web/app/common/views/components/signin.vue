@@ -10,11 +10,13 @@
 		<input v-model="token" type="number" placeholder="%i18n:common.tags.mk-signin.token%" required/>%fa:lock%
 	</label>
 	<button type="submit" :disabled="signing">{{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }}</button>
+	もしくは <a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
 </form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { apiUrl } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -23,7 +25,8 @@ export default Vue.extend({
 			user: null,
 			username: '',
 			password: '',
-			token: ''
+			token: '',
+			apiUrl,
 		};
 	},
 	methods: {
@@ -40,7 +43,7 @@ export default Vue.extend({
 			(this as any).api('signin', {
 				username: this.username,
 				password: this.password,
-				token: this.user && this.user.account.two_factor_enabled ? this.token : undefined
+				token: this.user && this.user.two_factor_enabled ? this.token : undefined
 			}).then(() => {
 				location.reload();
 			}).catch(() => {
