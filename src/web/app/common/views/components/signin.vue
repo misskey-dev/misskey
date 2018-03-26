@@ -6,7 +6,7 @@
 	<label class="password">
 		<input v-model="password" type="password" placeholder="%i18n:common.tags.mk-signin.password%" required/>%fa:lock%
 	</label>
-	<label class="token" v-if="user && user.two_factor_enabled">
+	<label class="token" v-if="user && user.account.two_factor_enabled">
 		<input v-model="token" type="number" placeholder="%i18n:common.tags.mk-signin.token%" required/>%fa:lock%
 	</label>
 	<button type="submit" :disabled="signing">{{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }}</button>
@@ -40,7 +40,7 @@ export default Vue.extend({
 			(this as any).api('signin', {
 				username: this.username,
 				password: this.password,
-				token: this.user && this.user.two_factor_enabled ? this.token : undefined
+				token: this.user && this.user.account.two_factor_enabled ? this.token : undefined
 			}).then(() => {
 				location.reload();
 			}).catch(() => {

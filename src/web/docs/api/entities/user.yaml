@@ -81,12 +81,6 @@ props:
     desc:
       ja: "自分がこのユーザーをミュートしているか"
       en: "Whether you muted this user"
-  - name: "last_used_at"
-    type: "date"
-    optional: false
-    desc:
-      ja: "最終利用日時"
-      en: "The last used date of this user"
   - name: "posts_count"
     type: "number"
     optional: false
@@ -111,49 +105,63 @@ props:
     desc:
       ja: "ドライブの容量(bytes)"
       en: "The capacity of drive of this user (bytes)"
-  - name: "is_bot"
-    type: "boolean"
-    optional: true
-    desc:
-      ja: "botか否か(自己申告であることに留意)"
-      en: "Whether is bot or not"
-  - name: "twitter"
-    type: "object"
-    optional: true
-    desc:
-      ja: "連携されているTwitterアカウント情報"
-      en: "The info of the connected twitter account of this user"
-    defName: "twitter"
-    def:
-      - name: "user_id"
-        type: "string"
-        optional: false
-        desc:
-          ja: "ユーザーID"
-          en: "The user ID"
-      - name: "screen_name"
-        type: "string"
-        optional: false
-        desc:
-          ja: "ユーザー名"
-          en: "The screen name of this user"
-  - name: "profile"
+  - name: "account"
     type: "object"
     optional: false
     desc:
-      ja: "プロフィール"
-      en: "The profile of this user"
-    defName: "profile"
+      ja: "このサーバーにおけるアカウント"
+      en: "The account of this user on this server"
+    defName: "account"
     def:
-      - name: "location"
-        type: "string"
+      - name: "last_used_at"
+        type: "date"
+        optional: false
+        desc:
+          ja: "最終利用日時"
+          en: "The last used date of this user"
+      - name: "is_bot"
+        type: "boolean"
         optional: true
         desc:
-          ja: "場所"
-          en: "The location of this user"
-      - name: "birthday"
-        type: "string"
+          ja: "botか否か(自己申告であることに留意)"
+          en: "Whether is bot or not"
+      - name: "twitter"
+        type: "object"
         optional: true
         desc:
-          ja: "誕生日 (YYYY-MM-DD)"
-          en: "The birthday of this user (YYYY-MM-DD)"
+          ja: "連携されているTwitterアカウント情報"
+          en: "The info of the connected twitter account of this user"
+        defName: "twitter"
+        def:
+          - name: "user_id"
+            type: "string"
+            optional: false
+            desc:
+              ja: "ユーザーID"
+              en: "The user ID"
+          - name: "screen_name"
+            type: "string"
+            optional: false
+            desc:
+              ja: "ユーザー名"
+              en: "The screen name of this user"
+      - name: "profile"
+        type: "object"
+        optional: false
+        desc:
+          ja: "プロフィール"
+          en: "The profile of this user"
+        defName: "profile"
+        def:
+          - name: "location"
+            type: "string"
+            optional: true
+            desc:
+              ja: "場所"
+              en: "The location of this user"
+          - name: "birthday"
+            type: "string"
+            optional: true
+            desc:
+              ja: "誕生日 (YYYY-MM-DD)"
+              en: "The birthday of this user (YYYY-MM-DD)"

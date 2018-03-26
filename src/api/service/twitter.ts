@@ -39,10 +39,10 @@ module.exports = (app: express.Application) => {
 		if (userToken == null) return res.send('plz signin');
 
 		const user = await User.findOneAndUpdate({
-			token: userToken
+			'account.token': userToken
 		}, {
 			$set: {
-				twitter: null
+				'account.twitter': null
 			}
 		});
 
@@ -126,7 +126,7 @@ module.exports = (app: express.Application) => {
 				const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
 
 				const user = await User.findOne({
-					'twitter.user_id': result.userId
+					'account.twitter.user_id': result.userId
 				});
 
 				if (user == null) {
@@ -148,10 +148,10 @@ module.exports = (app: express.Application) => {
 				const result = await twAuth.done(JSON.parse(ctx), verifier);
 
 				const user = await User.findOneAndUpdate({
-					token: userToken
+					'account.token': userToken
 				}, {
 					$set: {
-						twitter: {
+						'account.twitter': {
 							access_token: result.accessToken,
 							access_token_secret: result.accessTokenSecret,
 							user_id: result.userId,

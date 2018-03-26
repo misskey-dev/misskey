@@ -144,7 +144,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.client_settings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.client_settings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);

@@ -50,7 +50,7 @@ export default Vue.extend({
 			reader.readAsDataURL(file);
 
 			const data = new FormData();
-			data.append('i', (this as any).os.i.token);
+			data.append('i', (this as any).os.i.account.token);
 			data.append('file', file);
 
 			if (folder) data.append('folder_id', folder);

@@ -74,7 +74,7 @@ export default async function(request: websocket.request, connection: websocket.
 				// Update lastUsedAt
 				User.update({ _id: user._id }, {
 					$set: {
-						last_used_at: new Date()
+						'account.last_used_at': new Date()
 					}
 				});
 				break;

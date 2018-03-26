@@ -270,7 +270,7 @@ export default class MiOS extends EventEmitter {
 				// Parse response
 				res.json().then(i => {
 					me = i;
-					me.token = token;
+					me.account.token = token;
 					done();
 				});
 			})
@@ -294,12 +294,12 @@ export default class MiOS extends EventEmitter {
 		const fetched = me => {
 			if (me) {
 				// デフォルトの設定をマージ
-				me.client_settings = Object.assign({
+				me.account.client_settings = Object.assign({
 					fetchOnScroll: true,
 					showMaps: true,
 					showPostFormOnTopOfTl: false,
 					gradientWindowHeader: false
-				}, me.client_settings);
+				}, me.account.client_settings);
 
 				// ローカルストレージにキャッシュ
 				localStorage.setItem('me', JSON.stringify(me));
@@ -329,7 +329,7 @@ export default class MiOS extends EventEmitter {
 			fetched(cachedMe);
 
 			// 後から新鮮なデータをフェッチ
-			fetchme(cachedMe.token, freshData => {
+			fetchme(cachedMe.account.token, freshData => {
 				merge(cachedMe, freshData);
 			});
 		} else {
@@ -437,7 +437,7 @@ export default class MiOS extends EventEmitter {
 		}
 
 		// Append a credential
-		if (this.isSignedIn) (data as any).i = this.i.token;
+		if (this.isSignedIn) (data as any).i = this.i.account.token;
 
 		// TODO
 		//const viaStream = localStorage.getItem('enableExperimental') == 'true';

@@ -30,7 +30,7 @@ const async = fn => (done) => {
 
 const request = (endpoint, params, me) => new Promise((ok, ng) => {
 	const auth = me ? {
-		i: me.token
+		i: me.account.token
 	} : {};
 
 	_chai.request(server)
@@ -136,8 +136,10 @@ describe('API', () => {
 	describe('i/update', () => {
 		it('アカウント設定を更新できる', async(async () => {
 			const me = await insertSakurako({
-				profile: {
-					gender: 'female'
+				account: {
+					profile: {
+						gender: 'female'
+					}
 				}
 			});
 
@@ -153,10 +155,10 @@ describe('API', () => {
 			res.should.have.status(200);
 			res.body.should.be.a('object');
 			res.body.should.have.property('name').eql(myName);
-			res.body.should.have.property('profile').a('object');
-			res.body.should.have.nested.property('profile.location').eql(myLocation);
-			res.body.should.have.nested.property('profile.birthday').eql(myBirthday);
-			res.body.should.have.nested.property('profile.gender').eql('female');
+			res.body.should.have.nested.property('account.profile').a('object');
+			res.body.should.have.nested.property('account.profile.location').eql(myLocation);
+			res.body.should.have.nested.property('account.profile.birthday').eql(myBirthday);
+			res.body.should.have.nested.property('account.profile.gender').eql('female');
 		}));
 
 		it('名前を空白にできない', async(async () => {
@@ -176,8 +178,8 @@ describe('API', () => {
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('profile').a('object');
-			res.body.should.have.nested.property('profile.birthday').eql(null);
+			res.body.should.have.nested.property('account.profile').a('object');
+			res.body.should.have.nested.property('account.profile.birthday').eql(null);
 		}));
 
 		it('不正な誕生日の形式で怒られる', async(async () => {
@@ -764,7 +766,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const res = await _chai.request(server)
 				.post('/drive/files/create')
-				.field('i', me.token)
+				.field('i', me.account.token)
 				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
 			res.should.have.status(200);
 			res.body.should.be.a('object');
@@ -1138,27 +1140,47 @@ describe('API', () => {
 	});
 });
 
+function deepAssign(destination, ...sources) {
+	for (const source of sources) {
+		for (const key in source) {
+			const destinationChild = destination[key];
+
+			if (typeof destinationChild === 'object' && destinationChild != null) {
+				deepAssign(destinationChild, source[key]);
+			} else {
+				destination[key] = source[key];
+			}
+		}
+	}
+
+	return destination;
+}
+
 function insertSakurako(opts) {
-	return db.get('users').insert(Object.assign({
-		token: '!00000000000000000000000000000000',
+	return db.get('users').insert(deepAssign({
 		username: 'sakurako',
 		username_lower: 'sakurako',
-		password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy', // HimawariDaisuki06160907
-		profile: {},
-		settings: {},
-		client_settings: {}
+		account: {
+			token: '!00000000000000000000000000000000',
+			password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy', // HimawariDaisuki06160907
+			profile: {},
+			settings: {},
+			client_settings: {}
+		}
 	}, opts));
 }
 
 function insertHimawari(opts) {
-	return db.get('users').insert(Object.assign({
-		token: '!00000000000000000000000000000001',
+	return db.get('users').insert(deepAssign({
 		username: 'himawari',
 		username_lower: 'himawari',
-		password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O', // ilovesakurako
-		profile: {},
-		settings: {},
-		client_settings: {}
+		account: {
+			token: '!00000000000000000000000000000001',
+			password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O', // ilovesakurako
+			profile: {},
+			settings: {},
+			client_settings: {}
+		}
 	}, opts));
 }
 
@@ -1171,14 +1193,14 @@ function insertDriveFile(opts) {
 }
 
 function insertDriveFolder(opts) {
-	return db.get('drive_folders').insert(Object.assign({
+	return db.get('drive_folders').insert(deepAssign({
 		name: 'my folder',
 		parent_id: null
 	}, opts));
 }
 
 function insertApp(opts) {
-	return db.get('apps').insert(Object.assign({
+	return db.get('apps').insert(deepAssign({
 		name: 'my app',
 		secret: 'mysecret'
 	}, opts));

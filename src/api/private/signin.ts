@@ -36,7 +36,7 @@ export default async (req: express.Request, res: express.Response) => {
 	}, {
 		fields: {
 			data: false,
-			profile: false
+			'account.profile': false
 		}
 	});
 
@@ -48,12 +48,12 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = await bcrypt.compare(password, user.account.password);
 
 	if (same) {
-		if (user.two_factor_enabled) {
+		if (user.account.two_factor_enabled) {
 			const verified = (speakeasy as any).totp.verify({
-				secret: user.two_factor_secret,
+				secret: user.account.two_factor_secret,
 				encoding: 'base32',
 				token: token
 			});

@@ -11,7 +11,7 @@ import config from '../../conf';
 const User = db.get<IUser>('users');
 
 User.createIndex('username');
-User.createIndex('token');
+User.createIndex('account.token');
 
 export default User;
 
@@ -43,46 +43,48 @@ export type IUser = {
 	_id: mongo.ObjectID;
 	created_at: Date;
 	deleted_at: Date;
-	email: string;
 	followers_count: number;
 	following_count: number;
-	links: string[];
 	name: string;
-	password: string;
 	posts_count: number;
 	drive_capacity: number;
 	username: string;
 	username_lower: string;
-	token: string;
 	avatar_id: mongo.ObjectID;
 	banner_id: mongo.ObjectID;
 	data: any;
-	twitter: {
-		access_token: string;
-		access_token_secret: string;
-		user_id: string;
-		screen_name: string;
-	};
-	line: {
-		user_id: string;
-	};
 	description: string;
-	profile: {
-		location: string;
-		birthday: string; // 'YYYY-MM-DD'
-		tags: string[];
-	};
-	last_used_at: Date;
 	latest_post: IPost;
 	pinned_post_id: mongo.ObjectID;
-	is_bot: boolean;
-	is_pro: boolean;
 	is_suspended: boolean;
 	keywords: string[];
-	two_factor_secret: string;
-	two_factor_enabled: boolean;
-	client_settings: any;
-	settings: any;
+	account: {
+		email: string;
+		links: string[];
+		password: string;
+		token: string;
+		twitter: {
+			access_token: string;
+			access_token_secret: string;
+			user_id: string;
+			screen_name: string;
+		};
+		line: {
+			user_id: string;
+		};
+		profile: {
+			location: string;
+			birthday: string; // 'YYYY-MM-DD'
+			tags: string[];
+		};
+		last_used_at: Date;
+		is_bot: boolean;
+		is_pro: boolean;
+		two_factor_secret: string;
+		two_factor_enabled: boolean;
+		client_settings: any;
+		settings: any;
+	};
 };
 
 export function init(user): IUser {
@@ -119,11 +121,11 @@ export const pack = (
 
 	const fields = opts.detail ? {
 	} : {
-		settings: false,
-		client_settings: false,
-		profile: false,
-		keywords: false,
-		domains: false
+		'account.settings': false,
+		'account.client_settings': false,
+		'account.profile': false,
+		'account.keywords': false,
+		'account.domains': false
 	};
 
 	// Populate the user if 'user' is ID
@@ -158,26 +160,26 @@ export const pack = (
 	delete _user.latest_post;
 
 	// Remove private properties
-	delete _user.password;
-	delete _user.token;
-	delete _user.two_factor_temp_secret;
-	delete _user.two_factor_secret;
+	delete _user.account.password;
+	delete _user.account.token;
+	delete _user.account.two_factor_temp_secret;
+	delete _user.account.two_factor_secret;
 	delete _user.username_lower;
-	if (_user.twitter) {
-		delete _user.twitter.access_token;
-		delete _user.twitter.access_token_secret;
+	if (_user.account.twitter) {
+		delete _user.account.twitter.access_token;
+		delete _user.account.twitter.access_token_secret;
 	}
-	delete _user.line;
+	delete _user.account.line;
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {
-		delete _user.email;
-		delete _user.settings;
-		delete _user.client_settings;
+		delete _user.account.email;
+		delete _user.account.settings;
+		delete _user.account.client_settings;
 	}
 
 	if (!opts.detail) {
-		delete _user.two_factor_enabled;
+		delete _user.account.two_factor_enabled;
 	}
 
 	_user.avatar_url = _user.avatar_id != null

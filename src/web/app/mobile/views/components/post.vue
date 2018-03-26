@@ -22,7 +22,7 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="`/${p.user.username}`">{{ p.user.name }}</router-link>
-				<span class="is-bot" v-if="p.user.is_bot">bot</span>
+				<span class="is-bot" v-if="p.user.account.is_bot">bot</span>
 				<span class="username">@{{ p.user.username }}</span>
 				<div class="info">
 					<span class="mobile" v-if="p.via_mobile">%fa:mobile-alt%</span>
@@ -137,7 +137,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.client_settings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.client_settings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);

@@ -30,7 +30,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}, {
 		fields: {
 			data: false,
-			profile: false
+			'account.profile': false
 		}
 	});
 
