@@ -1,5 +1,5 @@
 <template>
-<a class="mk-images-image"
+<a class="mk-media-image"
 	:href="image.url"
 	@mousemove="onMousemove"
 	@mouseleave="onMouseleave"
@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import MkImagesImageDialog from './images-image-dialog.vue';
+import MkMediaImageDialog from './media-image-dialog.vue';
 
 export default Vue.extend({
 	props: ['image'],
@@ -39,7 +39,7 @@ export default Vue.extend({
 		},
 
 		onClick() {
-			(this as any).os.new(MkImagesImageDialog, {
+			(this as any).os.new(MkMediaImageDialog, {
 				image: this.image
 			});
 		}
@@ -48,7 +48,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-images-image
+.mk-media-image
 	display block
 	cursor zoom-in
 	overflow hidden

@@ -42,7 +42,7 @@
 					<a class="rp" v-if="p.repost">RP:</a>
 				</div>
 				<div class="media" v-if="p.media">
-					<mk-images :images="p.media"/>
+					<mk-media-list :mediaList="p.media"/>
 				</div>
 				<mk-poll v-if="p.poll" :post="p" ref="pollViewer"/>
 				<div class="tags" v-if="p.tags && p.tags.length > 0">

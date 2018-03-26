@@ -18,7 +18,7 @@
 		<div class="body">
 			<mk-post-html v-if="post.ast" :ast="post.ast" :i="os.i" :class="$style.text"/>
 			<div class="media" v-if="post.media">
-				<mk-images :images="post.media"/>
+				<mk-media-list :mediaList="post.media"/>
 			</div>
 		</div>
 	</div>

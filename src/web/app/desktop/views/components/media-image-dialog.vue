@@ -1,5 +1,5 @@
 <template>
-<div class="mk-images-image-dialog">
+<div class="mk-media-image-dialog">
 	<div class="bg" @click="close"></div>
 	<img :src="image.url" :alt="image.name" :title="image.name" @click="close"/>
 </div>
@@ -34,7 +34,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-images-image-dialog
+.mk-media-image-dialog
 	display block
 	position fixed
 	z-index 2048
