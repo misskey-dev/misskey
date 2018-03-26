@@ -7,7 +7,7 @@
 	</div>
 	<details v-if="post.media">
 		<summary>({{ post.media.length }}個のメディア)</summary>
-		<mk-images :images="post.media"/>
+		<mk-media-list :media-list="post.media"/>
 	</details>
 	<details v-if="post.poll">
 		<summary>%i18n:mobile.tags.mk-sub-post-content.poll%</summary>

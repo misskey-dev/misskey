@@ -654,6 +654,7 @@ mobile:
     mk-user-timeline:
       no-posts: "このユーザーはまだ投稿していないようです。"
       no-posts-with-media: "メディア付き投稿はありません。"
+      load-more: "もっとみる"
 
     mk-user:
       follows-you: "フォローされています"

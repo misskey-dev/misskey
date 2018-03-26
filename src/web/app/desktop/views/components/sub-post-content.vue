@@ -8,7 +8,7 @@
 	</div>
 	<details v-if="post.media">
 		<summary>({{ post.media.length }}つのメディア)</summary>
-		<mk-images :images="post.media"/>
+		<mk-media-list :media-list="post.media"/>
 	</details>
 	<details v-if="post.poll">
 		<summary>投票</summary>

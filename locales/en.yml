@@ -654,6 +654,7 @@ mobile:
     mk-user-timeline:
       no-posts: "This user seems never post"
       no-posts-with-media: "There is no posts with media"
+      load-more: "More"
 
     mk-user:
       follows-you: "Follows you"
