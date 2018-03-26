@@ -1,6 +1,8 @@
 <template>
-<div class="mk-media-list">
-	<mk-media-image v-for="media in mediaList" ref="media" :image="media" :key="media.id"/>
+<div class="mk-media-list" :data-count="mediaList.length">
+	<template v-for="media in mediaList">
+		<mk-media-image :image="media" :key="media.id"/>
+	</template>
 </div>
 </template>
 
@@ -9,46 +11,6 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: ['mediaList'],
-	mounted() {
-		const tags = this.$refs.media as Vue[];
-
-		if (this.mediaList.length == 1) {
-			(this.$el.style as any).gridTemplateRows = '1fr';
-
-			(tags[0].$el.style as any).gridColumn = '1 / 2';
-			(tags[0].$el.style as any).gridRow = '1 / 2';
-		} else if (this.mediaList.length == 2) {
-			(this.$el.style as any).gridTemplateColumns = '1fr 1fr';
-			(this.$el.style as any).gridTemplateRows = '1fr';
-
-			(tags[0].$el.style as any).gridColumn = '1 / 2';
-			(tags[0].$el.style as any).gridRow = '1 / 2';
-			(tags[1].$el.style as any).gridColumn = '2 / 3';
-			(tags[1].$el.style as any).gridRow = '1 / 2';
-		} else if (this.mediaList.length == 3) {
-			(this.$el.style as any).gridTemplateColumns = '1fr 0.5fr';
-			(this.$el.style as any).gridTemplateRows = '1fr 1fr';
-
-			(tags[0].$el.style as any).gridColumn = '1 / 2';
-			(tags[0].$el.style as any).gridRow = '1 / 3';
-			(tags[1].$el.style as any).gridColumn = '2 / 3';
-			(tags[1].$el.style as any).gridRow = '1 / 2';
-			(tags[2].$el.style as any).gridColumn = '2 / 3';
-			(tags[2].$el.style as any).gridRow = '2 / 3';
-		} else if (this.mediaList.length == 4) {
-			(this.$el.style as any).gridTemplateColumns = '1fr 1fr';
-			(this.$el.style as any).gridTemplateRows = '1fr 1fr';
-
-			(tags[0].$el.style as any).gridColumn = '1 / 2';
-			(tags[0].$el.style as any).gridRow = '1 / 2';
-			(tags[1].$el.style as any).gridColumn = '2 / 3';
-			(tags[1].$el.style as any).gridRow = '1 / 2';
-			(tags[2].$el.style as any).gridColumn = '1 / 2';
-			(tags[2].$el.style as any).gridRow = '2 / 3';
-			(tags[3].$el.style as any).gridColumn = '2 / 3';
-			(tags[3].$el.style as any).gridRow = '2 / 3';
-		}
-	}
 });
 </script>
 
@@ -60,4 +22,35 @@ export default Vue.extend({
 
 	@media (max-width 500px)
 		height 192px
+	
+	&[data-count="1"]
+		grid-template-rows 1fr
+	&[data-count="2"]
+		grid-template-columns 1fr 1fr
+		grid-template-rows 1fr
+	&[data-count="3"]
+		grid-template-columns 1fr 0.5fr
+		grid-template-rows 1fr 1fr
+		:nth-child(1)
+			grid-row 1 / 3
+		:nth-child(3)
+			grid-column 2 / 3
+			grid-row 2/3
+	&[data-count="4"]
+		grid-template-columns 1fr 1fr
+		grid-template-rows 1fr 1fr
+	
+	:nth-child(1)
+		grid-column 1 / 2
+		grid-row 1 / 2
+	:nth-child(2)
+		grid-column 2 / 3
+		grid-row 1 / 2
+	:nth-child(3)
+		grid-column 1 / 2
+		grid-row 2 / 3
+	:nth-child(4)
+		grid-column 2 / 3
+		grid-row 2 / 3
+		
 </style>
