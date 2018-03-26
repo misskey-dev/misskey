@@ -262,6 +262,57 @@ export const pack = (
 	resolve(_user);
 });
 
+/**
+ * Pack a user for ActivityPub
+ *
+ * @param user target
+ * @return Packed user
+ */
+export const packForAp = (
+	user: string | mongo.ObjectID | IUser
+) => new Promise<any>(async (resolve, reject) => {
+
+	let _user: any;
+
+	const fields = {
+		// something
+	};
+
+	// Populate the user if 'user' is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+		_user = await User.findOne({
+			_id: user
+		}, { fields });
+	} else if (typeof user === 'string') {
+		_user = await User.findOne({
+			_id: new mongo.ObjectID(user)
+		}, { fields });
+	} else {
+		_user = deepcopy(user);
+	}
+
+	if (!_user) return reject('invalid user arg.');
+
+	resolve({
+		"@context": ["https://www.w3.org/ns/activitystreams", {
+			"@language": "ja"
+		}],
+		"type": "Person",
+		"id": `${config.url}/${_user.username}`,
+		"following": `${config.url}/${_user.username}/following.json`,
+		"followers": `${config.url}/${_user.username}/followers.json`,
+		"liked": `${config.url}/${_user.username}/liked.json`,
+		"inbox": `${config.url}/${_user.username}/inbox.json`,
+		"outbox": `${config.url}/${_user.username}/feed.json`,
+		"preferredUsername": _user.username,
+		"name": _user.name,
+		"summary": _user.description,
+		"icon": [
+			`${config.drive_url}/${_user.avatar_id}`
+		]
+	});
+});
+
 /*
 function img(url) {
 	return {
