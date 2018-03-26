@@ -114,7 +114,7 @@
 		"fuckadblock": "3.2.1",
 		"gm": "1.23.1",
 		"gulp": "3.9.1",
-		"gulp-cssnano": "2.1.2",
+		"gulp-cssnano": "2.1.3",
 		"gulp-htmlmin": "4.0.0",
 		"gulp-imagemin": "4.1.0",
 		"gulp-mocha": "5.0.0",
