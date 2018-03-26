@@ -14,7 +14,7 @@ import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './common/mios';
-import { version, host, lang } from './config';
+import { version, hostname, lang } from './config';
 
 let elementLocale;
 switch (lang) {
@@ -60,8 +60,8 @@ console.info(
 window.clearTimeout((window as any).mkBootTimer);
 delete (window as any).mkBootTimer;
 
-if (host != 'localhost') {
-	document.domain = host;
+if (hostname != 'localhost') {
+	document.domain = hostname;
 }
 
 //#region Set lang attr
