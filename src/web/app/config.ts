@@ -1,4 +1,5 @@
 declare const _HOST_: string;
+declare const _HOSTNAME_: string;
 declare const _URL_: string;
 declare const _API_URL_: string;
 declare const _DOCS_URL_: string;
@@ -16,6 +17,7 @@ declare const _LICENSE_: string;
 declare const _GOOGLE_MAPS_API_KEY_: string;
 
 export const host = _HOST_;
+export const hostname = _HOSTNAME_;
 export const url = _URL_;
 export const apiUrl = _API_URL_;
 export const docsUrl = _DOCS_URL_;

@@ -4,7 +4,7 @@ export default function(res, user, redirect: boolean) {
 	const expires = 1000 * 60 * 60 * 24 * 365; // One Year
 	res.cookie('i', user.token, {
 		path: '/',
-		domain: `.${config.host}`,
+		domain: `.${config.hostname}`,
 		secure: config.url.substr(0, 5) === 'https',
 		httpOnly: false,
 		expires: new Date(Date.now() + expires),
