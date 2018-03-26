@@ -146,7 +146,7 @@
 		"ms": "2.1.1",
 		"multer": "1.3.0",
 		"node-sass": "4.7.2",
-		"node-sass-json-importer": "3.1.5",
+		"node-sass-json-importer": "3.1.6",
 		"nprogress": "0.2.0",
 		"object-assign-deep": "0.3.1",
 		"on-build-webpack": "0.1.0",
