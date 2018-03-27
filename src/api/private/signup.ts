@@ -120,6 +120,7 @@ export default async (req: express.Request, res: express.Response) => {
 		username: username,
 		username_lower: username.toLowerCase(),
 		host: null,
+		host_lower: null,
 		account: {
 			keypair: generateKeypair(),
 			token: secret,
