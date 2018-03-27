@@ -1,11 +1,11 @@
 <template>
 <div class="mk-user-card">
 	<header :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''">
-		<a :href="`/${user.username}`">
+		<a :href="`/@${user.username}`">
 			<img :src="`${user.avatar_url}?thumbnail&size=200`" alt="avatar"/>
 		</a>
 	</header>
-	<a class="name" :href="`/${user.username}`" target="_blank">{{ user.name }}</a>
+	<a class="name" :href="`/@${user.username}`" target="_blank">{{ user.name }}</a>
 	<p class="username">@{{ user.username }}</p>
 	<mk-follow-button :user="user"/>
 </div>

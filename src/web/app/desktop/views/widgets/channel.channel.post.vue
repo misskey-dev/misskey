@@ -2,7 +2,7 @@
 <div class="post">
 	<header>
 		<a class="index" @click="reply">{{ post.index }}:</a>
-		<router-link class="name" :to="`/${post.user.username}`" v-user-preview="post.user.id"><b>{{ post.user.name }}</b></router-link>
+		<router-link class="name" :to="`/@${post.user.username}`" v-user-preview="post.user.id"><b>{{ post.user.name }}</b></router-link>
 		<span>ID:<i>{{ post.user.username }}</i></span>
 	</header>
 	<div>

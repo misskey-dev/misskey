@@ -5,23 +5,23 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<router-link class="avatar-anchor" :to="`/${post.user.username}`">
+			<router-link class="avatar-anchor" :to="`/@${post.user.username}`">
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
 			<span>{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}</span>
-			<router-link class="name" :to="`/${post.user.username}`">{{ post.user.name }}</router-link>
+			<router-link class="name" :to="`/@${post.user.username}`">{{ post.user.name }}</router-link>
 			<span>{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="post.created_at"/>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="`/${p.user.username}`">
+		<router-link class="avatar-anchor" :to="`/@${p.user.username}`">
 			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
 		</router-link>
 		<div class="main">
 			<header>
-				<router-link class="name" :to="`/${p.user.username}`">{{ p.user.name }}</router-link>
+				<router-link class="name" :to="`/@${p.user.username}`">{{ p.user.name }}</router-link>
 				<span class="is-bot" v-if="p.user.account.is_bot">bot</span>
 				<span class="username">@{{ p.user.username }}</span>
 				<div class="info">
@@ -110,7 +110,7 @@ export default Vue.extend({
 				: 0;
 		},
 		url(): string {
-			return `/${this.p.user.username}/${this.p.id}`;
+			return `/@${this.p.user.username}/${this.p.id}`;
 		},
 		urls(): string[] {
 			if (this.p.ast) {

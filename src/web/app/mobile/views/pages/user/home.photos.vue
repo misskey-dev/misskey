@@ -5,7 +5,7 @@
 		<a v-for="image in images"
 			class="img"
 			:style="`background-image: url(${image.media.url}?thumbnail&size=256)`"
-			:href="`/${image.post.user.username}/${image.post.id}`"
+			:href="`/@${image.post.user.username}/${image.post.id}`"
 		></a>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">%i18n:mobile.tags.mk-user-overview-photos.no-photos%</p>

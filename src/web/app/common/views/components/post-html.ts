@@ -61,7 +61,7 @@ export default Vue.component('mk-post-html', {
 				case 'mention':
 					return (createElement as any)('a', {
 						attrs: {
-							href: `${url}/${token.username}`,
+							href: `${url}/@${token.username}`,
 							target: '_blank',
 							dataIsMe: (this as any).i && (this as any).i.username == token.username
 						},

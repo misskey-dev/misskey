@@ -71,9 +71,9 @@ init((launch) => {
 		{ path: '/search', component: MkSearch },
 		{ path: '/othello', component: MkOthello },
 		{ path: '/othello/:game', component: MkOthello },
-		{ path: '/:user', component: MkUser },
-		{ path: '/:user/followers', component: MkFollowers },
-		{ path: '/:user/following', component: MkFollowing },
-		{ path: '/:user/:post', component: MkPost }
+		{ path: '/@:user', component: MkUser },
+		{ path: '/@:user/followers', component: MkFollowers },
+		{ path: '/@:user/following', component: MkFollowing },
+		{ path: '/@:user/:post', component: MkPost }
 	]);
 }, true);

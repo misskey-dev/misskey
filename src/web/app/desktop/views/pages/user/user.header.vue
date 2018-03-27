@@ -12,9 +12,9 @@
 			<p class="location" v-if="user.account.profile.location">%fa:map-marker%{{ user.account.profile.location }}</p>
 		</div>
 		<footer>
-			<router-link :to="`/${user.username}`" :data-active="$parent.page == 'home'">%fa:home%概要</router-link>
-			<router-link :to="`/${user.username}/media`" :data-active="$parent.page == 'media'">%fa:image%メディア</router-link>
-			<router-link :to="`/${user.username}/graphs`" :data-active="$parent.page == 'graphs'">%fa:chart-bar%グラフ</router-link>
+			<router-link :to="`/@${user.username}`" :data-active="$parent.page == 'home'">%fa:home%概要</router-link>
+			<router-link :to="`/@${user.username}/media`" :data-active="$parent.page == 'media'">%fa:image%メディア</router-link>
+			<router-link :to="`/@${user.username}/graphs`" :data-active="$parent.page == 'graphs'">%fa:chart-bar%グラフ</router-link>
 		</footer>
 	</div>
 </div>

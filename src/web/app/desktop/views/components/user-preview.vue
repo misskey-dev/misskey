@@ -2,11 +2,11 @@
 <div class="mk-user-preview">
 	<template v-if="u != null">
 		<div class="banner" :style="u.banner_url ? `background-image: url(${u.banner_url}?thumbnail&size=512)` : ''"></div>
-		<router-link class="avatar" :to="`/${u.username}`">
+		<router-link class="avatar" :to="`/@${u.username}`">
 			<img :src="`${u.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="title">
-			<router-link class="name" :to="`/${u.username}`">{{ u.name }}</router-link>
+			<router-link class="name" :to="`/@${u.username}`">{{ u.name }}</router-link>
 			<p class="username">@{{ u.username }}</p>
 		</div>
 		<div class="description">{{ u.description }}</div>

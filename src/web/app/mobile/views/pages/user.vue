@@ -30,11 +30,11 @@
 						<b>{{ user.posts_count | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.posts%</i>
 					</a>
-					<a :href="`${user.username}/following`">
+					<a :href="`@${user.username}/following`">
 						<b>{{ user.following_count | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
 					</a>
-					<a :href="`${user.username}/followers`">
+					<a :href="`@${user.username}/followers`">
 						<b>{{ user.followers_count | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>

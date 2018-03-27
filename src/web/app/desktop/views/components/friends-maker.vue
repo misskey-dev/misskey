@@ -3,11 +3,11 @@
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" v-if="!fetching && users.length > 0">
 		<div class="user" v-for="user in users" :key="user.id">
-			<router-link class="avatar-anchor" :to="`/${user.username}`">
+			<router-link class="avatar-anchor" :to="`/@${user.username}`">
 				<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=42`" alt="" v-user-preview="user.id"/>
 			</router-link>
 			<div class="body">
-				<router-link class="name" :to="`/${user.username}`" v-user-preview="user.id">{{ user.name }}</router-link>
+				<router-link class="name" :to="`/@${user.username}`" v-user-preview="user.id">{{ user.name }}</router-link>
 				<p class="username">@{{ user.username }}</p>
 			</div>
 			<mk-follow-button :user="user"/>

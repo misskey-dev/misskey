@@ -47,8 +47,8 @@ process.on('message', async msg => {
 		const user = game.user1_id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
-			? `?[${user.name}](${conf.url}/${user.username})さんの接待を始めました！`
-			: `対局を?[${user.name}](${conf.url}/${user.username})さんと始めました！ (強さ${form[0].value})`;
+			? `?[${user.name}](${conf.url}/@${user.username})さんの接待を始めました！`
+			: `対局を?[${user.name}](${conf.url}/@${user.username})さんと始めました！ (強さ${form[0].value})`;
 
 		const res = await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,
@@ -72,15 +72,15 @@ process.on('message', async msg => {
 		const isSettai = form[0].value === 0;
 		const text = isSettai
 			? msg.body.winner_id === null
-				? `?[${user.name}](${conf.url}/${user.username})さんに接待で引き分けました...`
+				? `?[${user.name}](${conf.url}/@${user.username})さんに接待で引き分けました...`
 				: msg.body.winner_id == id
-					? `?[${user.name}](${conf.url}/${user.username})さんに接待で勝ってしまいました...`
-					: `?[${user.name}](${conf.url}/${user.username})さんに接待で負けてあげました♪`
+					? `?[${user.name}](${conf.url}/@${user.username})さんに接待で勝ってしまいました...`
+					: `?[${user.name}](${conf.url}/@${user.username})さんに接待で負けてあげました♪`
 			: msg.body.winner_id === null
-				? `?[${user.name}](${conf.url}/${user.username})さんと引き分けました～`
+				? `?[${user.name}](${conf.url}/@${user.username})さんと引き分けました～`
 				: msg.body.winner_id == id
-					? `?[${user.name}](${conf.url}/${user.username})さんに勝ちました♪`
-					: `?[${user.name}](${conf.url}/${user.username})さんに負けました...`;
+					? `?[${user.name}](${conf.url}/@${user.username})さんに勝ちました♪`
+					: `?[${user.name}](${conf.url}/@${user.username})さんに負けました...`;
 
 		await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,

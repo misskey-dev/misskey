@@ -1,13 +1,13 @@
 <template>
 <div class="sub" :title="title">
-	<router-link class="avatar-anchor" :to="`/${post.user.username}`">
+	<router-link class="avatar-anchor" :to="`/@${post.user.username}`">
 		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="post.user_id"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</router-link>
+			<router-link class="name" :to="`/@${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</router-link>
 			<span class="username">@{{ post.user.username }}</span>
-			<router-link class="created-at" :to="`/${post.user.username}/${post.id}`">
+			<router-link class="created-at" :to="`/@${post.user.username}/${post.id}`">
 				<mk-time :time="post.created_at"/>
 			</router-link>
 		</header>

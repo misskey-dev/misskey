@@ -5,8 +5,8 @@
 		<button @click="fetch" title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%">%fa:sync%</button>
 	</template>
 	<div class="poll" v-if="!fetching && poll != null">
-		<p v-if="poll.text"><router-link to="`/${ poll.user.username }/${ poll.id }`">{{ poll.text }}</router-link></p>
-		<p v-if="!poll.text"><router-link to="`/${ poll.user.username }/${ poll.id }`">%fa:link%</router-link></p>
+		<p v-if="poll.text"><router-link to="`/@${ poll.user.username }/${ poll.id }`">{{ poll.text }}</router-link></p>
+		<p v-if="!poll.text"><router-link to="`/@${ poll.user.username }/${ poll.id }`">%fa:link%</router-link></p>
 		<mk-poll :post="poll"/>
 	</div>
 	<p class="empty" v-if="!fetching && poll == null">%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>

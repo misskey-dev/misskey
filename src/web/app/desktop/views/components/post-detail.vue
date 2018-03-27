@@ -18,22 +18,22 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<router-link class="avatar-anchor" :to="`/${post.user.username}`" v-user-preview="post.user_id">
+			<router-link class="avatar-anchor" :to="`/@${post.user.username}`" v-user-preview="post.user_id">
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			<router-link class="name" :href="`/${post.user.username}`">{{ post.user.name }}</router-link>
+			<router-link class="name" :href="`/@${post.user.username}`">{{ post.user.name }}</router-link>
 			がRepost
 		</p>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="`/${p.user.username}`">
+		<router-link class="avatar-anchor" :to="`/@${p.user.username}`">
 			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<header>
-			<router-link class="name" :to="`/${p.user.username}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
+			<router-link class="name" :to="`/@${p.user.username}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
 			<span class="username">@{{ p.user.username }}</span>
-			<router-link class="time" :to="`/${p.user.username}/${p.id}`">
+			<router-link class="time" :to="`/@${p.user.username}/${p.id}`">
 				<mk-time :time="p.created_at"/>
 			</router-link>
 		</header>

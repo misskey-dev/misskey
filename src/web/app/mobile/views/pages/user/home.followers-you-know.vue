@@ -2,7 +2,7 @@
 <div class="root followers-you-know">
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
-		<a v-for="user in users" :key="user.id" :href="`/${user.username}`">
+		<a v-for="user in users" :key="user.id" :href="`/@${user.username}`">
 			<img :src="`${user.avatar_url}?thumbnail&size=64`" :alt="user.name"/>
 		</a>
 	</div>
