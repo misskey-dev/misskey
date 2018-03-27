@@ -10,9 +10,6 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
-import vhost = require('vhost');
-
-import config from '../conf';
 
 /**
  * Init app
@@ -20,7 +17,7 @@ import config from '../conf';
 const app = express();
 app.disable('x-powered-by');
 
-app.use(vhost(`docs.${config.host}`, require('./docs/server')));
+app.use('/docs', require('./docs/server'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({

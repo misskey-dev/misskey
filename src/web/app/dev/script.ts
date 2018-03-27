@@ -3,6 +3,7 @@
  */
 
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
@@ -26,14 +27,18 @@ Vue.component('mk-ui', ui);
  * init
  */
 init(launch => {
-	// Launch the app
-	const [app] = launch();
+	// Init router
+	const router = new VueRouter({
+		mode: 'history',
+		base: '/dev/',
+		routes: [
+			{ path: '/', component: Index },
+			{ path: '/apps', component: Apps },
+			{ path: '/app/new', component: AppNew },
+			{ path: '/app/:id', component: App },
+		]
+	});
 
-	// Routing
-	app.$router.addRoutes([
-		{ path: '/', component: Index },
-		{ path: '/apps', component: Apps },
-		{ path: '/app/new', component: AppNew },
-		{ path: '/app/:id', component: App },
-	]);
+	// Launch the app
+	launch(router);
 });

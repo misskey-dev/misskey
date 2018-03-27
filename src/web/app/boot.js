@@ -21,13 +21,13 @@
 	// Get the current url information
 	const url = new URL(location.href);
 
-	// Extarct the (sub) domain part of the current url
-	//
-	// e.g.
-	//   misskey.alice               => misskey
-	//   misskey.strawberry.pasta    => misskey
-	//   dev.misskey.arisu.tachibana => dev
-	let app = url.host === HOST ? 'misskey' : url.host.substr(0, -HOST.length);
+	//#region Detect app name
+	let app = null;
+
+	if (url.pathname == '/docs') app = 'docs';
+	if (url.pathname == '/dev') app = 'dev';
+	if (url.pathname == '/auth') app = 'auth';
+	//#endregion
 
 	// Detect the user language
 	// Note: The default language is English
@@ -57,7 +57,7 @@
 	}
 
 	// Switch desktop or mobile version
-	if (app == 'misskey') {
+	if (app == null) {
 		app = isMobile ? 'mobile' : 'desktop';
 	}
 

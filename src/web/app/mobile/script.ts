@@ -2,6 +2,8 @@
  * Mobile Client
  */
 
+import VueRouter from 'vue-router';
+
 // Style
 import './style.styl';
 import '../../element.scss';
@@ -45,8 +47,33 @@ init((launch) => {
 	// http://qiita.com/junya/items/3ff380878f26ca447f85
 	document.body.setAttribute('ontouchstart', '');
 
+	// Init router
+	const router = new VueRouter({
+		mode: 'history',
+		routes: [
+			{ path: '/', name: 'index', component: MkIndex },
+			{ path: '/signup', name: 'signup', component: MkSignup },
+			{ path: '/i/settings', component: MkSettings },
+			{ path: '/i/settings/profile', component: MkProfileSetting },
+			{ path: '/i/notifications', component: MkNotifications },
+			{ path: '/i/messaging', component: MkMessaging },
+			{ path: '/i/messaging/:username', component: MkMessagingRoom },
+			{ path: '/i/drive', component: MkDrive },
+			{ path: '/i/drive/folder/:folder', component: MkDrive },
+			{ path: '/i/drive/file/:file', component: MkDrive },
+			{ path: '/selectdrive', component: MkSelectDrive },
+			{ path: '/search', component: MkSearch },
+			{ path: '/othello', component: MkOthello },
+			{ path: '/othello/:game', component: MkOthello },
+			{ path: '/@:user', component: MkUser },
+			{ path: '/@:user/followers', component: MkFollowers },
+			{ path: '/@:user/following', component: MkFollowing },
+			{ path: '/@:user/:post', component: MkPost }
+		]
+	});
+
 	// Launch the app
-	const [app] = launch(os => ({
+	launch(router, os => ({
 		chooseDriveFolder,
 		chooseDriveFile,
 		dialog,
@@ -54,26 +81,4 @@ init((launch) => {
 		post: post(os),
 		notify
 	}));
-
-	// Routing
-	app.$router.addRoutes([
-		{ path: '/', name: 'index', component: MkIndex },
-		{ path: '/signup', name: 'signup', component: MkSignup },
-		{ path: '/i/settings', component: MkSettings },
-		{ path: '/i/settings/profile', component: MkProfileSetting },
-		{ path: '/i/notifications', component: MkNotifications },
-		{ path: '/i/messaging', component: MkMessaging },
-		{ path: '/i/messaging/:username', component: MkMessagingRoom },
-		{ path: '/i/drive', component: MkDrive },
-		{ path: '/i/drive/folder/:folder', component: MkDrive },
-		{ path: '/i/drive/file/:file', component: MkDrive },
-		{ path: '/selectdrive', component: MkSelectDrive },
-		{ path: '/search', component: MkSearch },
-		{ path: '/othello', component: MkOthello },
-		{ path: '/othello/:game', component: MkOthello },
-		{ path: '/@:user', component: MkUser },
-		{ path: '/@:user/followers', component: MkFollowers },
-		{ path: '/@:user/following', component: MkFollowing },
-		{ path: '/@:user/:post', component: MkPost }
-	]);
 }, true);

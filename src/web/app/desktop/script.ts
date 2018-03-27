@@ -2,13 +2,15 @@
  * Desktop Client
  */
 
+import VueRouter from 'vue-router';
+
 // Style
 import './style.styl';
 import '../../element.scss';
 
 import init from '../init';
 import fuckAdBlock from '../common/scripts/fuck-ad-block';
-import HomeStreamManager from '../common/scripts/streaming/home-stream-manager';
+import { HomeStreamManager } from '../common/scripts/streaming/home';
 import composeNotification from '../common/scripts/compose-notification';
 
 import chooseDriveFolder from './api/choose-drive-folder';
@@ -41,8 +43,26 @@ init(async (launch) => {
 	require('./views/components');
 	require('./views/widgets');
 
+	// Init router
+	const router = new VueRouter({
+		mode: 'history',
+		routes: [
+			{ path: '/', name: 'index', component: MkIndex },
+			{ path: '/i/customize-home', component: MkHomeCustomize },
+			{ path: '/i/messaging/:username', component: MkMessagingRoom },
+			{ path: '/i/drive', component: MkDrive },
+			{ path: '/i/drive/folder/:folder', component: MkDrive },
+			{ path: '/selectdrive', component: MkSelectDrive },
+			{ path: '/search', component: MkSearch },
+			{ path: '/othello', component: MkOthello },
+			{ path: '/othello/:game', component: MkOthello },
+			{ path: '/@:user', component: MkUser },
+			{ path: '/@:user/:post', component: MkPost }
+		]
+	});
+
 	// Launch the app
-	const [app, os] = launch(os => ({
+	const [, os] = launch(router, os => ({
 		chooseDriveFolder,
 		chooseDriveFile,
 		dialog,
@@ -71,21 +91,6 @@ init(async (launch) => {
 			registerNotifications(os.stream);
 		}
 	}
-
-	// Routing
-	app.$router.addRoutes([
-		{ path: '/', name: 'index', component: MkIndex },
-		{ path: '/i/customize-home', component: MkHomeCustomize },
-		{ path: '/i/messaging/:username', component: MkMessagingRoom },
-		{ path: '/i/drive', component: MkDrive },
-		{ path: '/i/drive/folder/:folder', component: MkDrive },
-		{ path: '/selectdrive', component: MkSelectDrive },
-		{ path: '/search', component: MkSearch },
-		{ path: '/othello', component: MkOthello },
-		{ path: '/othello/:game', component: MkOthello },
-		{ path: '/@:user', component: MkUser },
-		{ path: '/@:user/:post', component: MkPost }
-	]);
 }, true);
 
 function registerNotifications(stream: HomeStreamManager) {

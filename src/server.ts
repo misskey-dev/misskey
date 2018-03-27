@@ -9,7 +9,6 @@ import * as cluster from 'cluster';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import Accesses from 'accesses';
-import vhost = require('vhost');
 
 import log from './log-request';
 import config from './conf';

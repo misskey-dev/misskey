@@ -91,14 +91,14 @@ if (localStorage.getItem('should-refresh') == 'true') {
 }
 
 // MiOSを初期化してコールバックする
-export default (callback: (launch: (api?: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
+export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) => [Vue, MiOS]) => void, sw = false) => {
 	const os = new MiOS(sw);
 
 	os.init(() => {
 		// アプリ基底要素マウント
 		document.body.innerHTML = '<div id="app"></div>';
 
-		const launch = (api?: (os: MiOS) => API) => {
+		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
 			os.apis = api ? api(os) : null;
 
 			Vue.mixin({
@@ -112,9 +112,7 @@ export default (callback: (launch: (api?: (os: MiOS) => API) => [Vue, MiOS]) => 
 			});
 
 			const app = new Vue({
-				router: new VueRouter({
-					mode: 'history'
-				}),
+				router,
 				created() {
 					this.$watch('os.i', i => {
 						// キャッシュ更新
