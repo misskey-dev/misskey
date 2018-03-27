@@ -293,17 +293,19 @@ export const packForAp = (
 
 	if (!_user) return reject('invalid user arg.');
 
+	const userUrl = `${config.url}/${_user.username}`;
+
 	resolve({
 		"@context": ["https://www.w3.org/ns/activitystreams", {
 			"@language": "ja"
 		}],
 		"type": "Person",
-		"id": `${config.url}/${_user.username}`,
-		"following": `${config.url}/${_user.username}/following.json`,
-		"followers": `${config.url}/${_user.username}/followers.json`,
-		"liked": `${config.url}/${_user.username}/liked.json`,
-		"inbox": `${config.url}/${_user.username}/inbox.json`,
-		"outbox": `${config.url}/${_user.username}/feed.json`,
+		"id": userUrl,
+		"following": `${userUrl}/following.json`,
+		"followers": `${userUrl}/followers.json`,
+		"liked": `${userUrl}/liked.json`,
+		"inbox": `${userUrl}/inbox.json`,
+		"outbox": `${userUrl}/outbox.json`,
 		"preferredUsername": _user.username,
 		"name": _user.name,
 		"summary": _user.description,
