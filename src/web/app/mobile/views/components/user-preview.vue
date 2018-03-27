@@ -1,11 +1,11 @@
 <template>
 <div class="mk-user-preview">
-	<router-link class="avatar-anchor" :to="`/${user.username}`">
+	<router-link class="avatar-anchor" :to="`/@${user.username}`">
 		<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/${user.username}`">{{ user.name }}</router-link>
+			<router-link class="name" :to="`/@${user.username}`">{{ user.name }}</router-link>
 			<span class="username">@{{ user.username }}</span>
 		</header>
 		<div class="body">

@@ -1,6 +1,6 @@
 <template>
 <div class="mk-post-card">
-	<a :href="`/${post.user.username}/${post.id}`">
+	<a :href="`/@${post.user.username}/${post.id}`">
 		<header>
 			<img :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/><h3>{{ post.user.name }}</h3>
 		</header>

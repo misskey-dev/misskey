@@ -1,13 +1,13 @@
 <template>
 <div class="mk-post-preview">
-	<router-link class="avatar-anchor" :to="`/${post.user.username}`">
+	<router-link class="avatar-anchor" :to="`/@${post.user.username}`">
 		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/${post.user.username}`">{{ post.user.name }}</router-link>
+			<router-link class="name" :to="`/@${post.user.username}`">{{ post.user.name }}</router-link>
 			<span class="username">@{{ post.user.username }}</span>
-			<router-link class="time" :to="`/${post.user.username}/${post.id}`">
+			<router-link class="time" :to="`/@${post.user.username}/${post.id}`">
 				<mk-time :time="post.created_at"/>
 			</router-link>
 		</header>

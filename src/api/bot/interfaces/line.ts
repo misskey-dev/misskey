@@ -121,7 +121,7 @@ class LineBot extends BotCore {
 		actions.push({
 			type: 'uri',
 			label: 'Webで見る',
-			uri: `${config.url}/${user.username}`
+			uri: `${config.url}/@${user.username}`
 		});
 
 		this.reply([{

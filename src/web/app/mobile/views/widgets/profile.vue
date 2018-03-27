@@ -8,7 +8,7 @@
 			:src="`${os.i.avatar_url}?thumbnail&size=96`"
 			alt="avatar"
 		/>
-		<router-link :class="$style.name" :to="`/${os.i.username}`">{{ os.i.name }}</router-link>
+		<router-link :class="$style.name" :to="`/@${os.i.username}`">{{ os.i.name }}</router-link>
 	</mk-widget-container>
 </div>
 </template>

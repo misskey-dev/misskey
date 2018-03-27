@@ -8,7 +8,7 @@
 		<div class="menu" v-if="isOpen">
 			<ul>
 				<li>
-					<router-link :to="`/${ os.i.username }`">%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</router-link>
+					<router-link :to="`/@${ os.i.username }`">%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</router-link>
 				</li>
 				<li @click="drive">
 					<p>%fa:cloud%%i18n:desktop.tags.mk-ui-header-account.drive%%fa:angle-right%</p>

@@ -15,7 +15,7 @@
 		title="クリックでアバター編集"
 		v-user-preview="os.i.id"
 	/>
-	<router-link class="name" :to="`/${os.i.username}`">{{ os.i.name }}</router-link>
+	<router-link class="name" :to="`/@${os.i.username}`">{{ os.i.name }}</router-link>
 	<p class="username">@{{ os.i.username }}</p>
 </div>
 </template>
