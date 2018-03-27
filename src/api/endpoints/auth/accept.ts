@@ -45,7 +45,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Fetch token
 	const session = await AuthSess
-		.findOne({ 'account.token': token });
+		.findOne({ token: token });
 
 	if (session === null) {
 		return rej('session not found');
