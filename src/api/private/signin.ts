@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import { default as User, IUser } from '../models/user';
+import { default as User, ILocalAccount, IUser } from '../models/user';
 import Signin, { pack } from '../models/signin';
 import event from '../event';
 import signin from '../common/signin';
@@ -32,7 +32,8 @@ export default async (req: express.Request, res: express.Response) => {
 
 	// Fetch user
 	const user: IUser = await User.findOne({
-		username_lower: username.toLowerCase()
+		username_lower: username.toLowerCase(),
+		host: null
 	}, {
 		fields: {
 			data: false,
@@ -47,13 +48,15 @@ export default async (req: express.Request, res: express.Response) => {
 		return;
 	}
 
+	const account = user.account as ILocalAccount;
+
 	// Compare password
-	const same = await bcrypt.compare(password, user.account.password);
+	const same = await bcrypt.compare(password, account.password);
 
 	if (same) {
-		if (user.account.two_factor_enabled) {
+		if (account.two_factor_enabled) {
 			const verified = (speakeasy as any).totp.verify({
-				secret: user.account.two_factor_secret,
+				secret: account.two_factor_secret,
 				encoding: 'base32',
 				token: token
 			});

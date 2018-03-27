@@ -17,11 +17,11 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<router-link class="avatar-anchor" :to="`/@${post.user.username}`">
+			<router-link class="avatar-anchor" :to="`/@${acct}`">
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			<router-link class="name" :to="`/@${post.user.username}`">
+			<router-link class="name" :to="`/@${acct}`">
 				{{ post.user.name }}
 			</router-link>
 			がRepost
@@ -29,12 +29,12 @@
 	</div>
 	<article>
 		<header>
-			<router-link class="avatar-anchor" :to="`/@${p.user.username}`">
+			<router-link class="avatar-anchor" :to="`/@${pAcct}`">
 				<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 			</router-link>
 			<div>
-				<router-link class="name" :to="`/@${p.user.username}`">{{ p.user.name }}</router-link>
-				<span class="username">@{{ p.user.username }}</span>
+				<router-link class="name" :to="`/@${pAcct}`">{{ p.user.name }}</router-link>
+				<span class="username">@{{ pAcct }}</span>
 			</div>
 		</header>
 		<div class="body">
@@ -53,7 +53,7 @@
 				<mk-post-preview :post="p.repost"/>
 			</div>
 		</div>
-		<router-link class="time" :to="`/@${p.user.username}/${p.id}`">
+		<router-link class="time" :to="`/@${pAcct}/${p.id}`">
 			<mk-time :time="p.created_at" mode="detail"/>
 		</router-link>
 		<footer>
@@ -80,6 +80,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './post-detail.sub.vue';
@@ -105,6 +106,12 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		acct() {
+			return getAcct(this.post.user);
+		},
+		pAcct() {
+			return getAcct(this.p.user);
+		},
 		isRepost(): boolean {
 			return (this.post.repost &&
 				this.post.text == null &&

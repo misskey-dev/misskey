@@ -30,9 +30,15 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			_id: {
 				$nin: followingIds
 			},
-			'account.last_used_at': {
-				$gte: new Date(Date.now() - ms('7days'))
-			}
+			$or: [
+				{
+					'account.last_used_at': {
+						$gte: new Date(Date.now() - ms('7days'))
+					}
+				}, {
+					host: { $not: null }
+				}
+			]
 		}, {
 			limit: limit,
 			skip: offset,

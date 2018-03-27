@@ -165,10 +165,10 @@
 <mk-channel-post>
 	<header>
 		<a class="index" @click="reply">{ post.index }:</a>
-		<a class="name" href={ _URL_ + '/@' + post.user.username }><b>{ post.user.name }</b></a>
+		<a class="name" href={ _URL_ + '/@' + acct }><b>{ post.user.name }</b></a>
 		<mk-time time={ post.created_at }/>
 		<mk-time time={ post.created_at } mode="detail"/>
-		<span>ID:<i>{ post.user.username }</i></span>
+		<span>ID:<i>{ acct }</i></span>
 	</header>
 	<div>
 		<a v-if="post.reply">&gt;&gt;{ post.reply.index }</a>
@@ -229,8 +229,11 @@
 
 	</style>
 	<script lang="typescript">
+		import getAcct from '../../../../common/user/get-acct';
+
 		this.post = this.opts.post;
 		this.form = this.opts.form;
+		this.acct = getAcct(this.post.user);
 
 		this.reply = () => {
 			this.form.update({

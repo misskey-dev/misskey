@@ -13,15 +13,15 @@
 				</div>
 				<div class="title">
 					<h1>{{ user.name }}</h1>
-					<span class="username">@{{ user.username }}</span>
+					<span class="username">@{{ acct }}</span>
 					<span class="followed" v-if="user.is_followed">%i18n:mobile.tags.mk-user.follows-you%</span>
 				</div>
 				<div class="description">{{ user.description }}</div>
 				<div class="info">
-					<p class="location" v-if="user.account.profile.location">
+					<p class="location" v-if="user.host === null && user.account.profile.location">
 						%fa:map-marker%{{ user.account.profile.location }}
 					</p>
-					<p class="birthday" v-if="user.account.profile.birthday">
+					<p class="birthday" v-if="user.host === null && user.account.profile.birthday">
 						%fa:birthday-cake%{{ user.account.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)
 					</p>
 				</div>
@@ -30,11 +30,11 @@
 						<b>{{ user.posts_count | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.posts%</i>
 					</a>
-					<a :href="`@${user.username}/following`">
+					<a :href="`@${acct}/following`">
 						<b>{{ user.following_count | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
 					</a>
-					<a :href="`@${user.username}/followers`">
+					<a :href="`@${acct}/followers`">
 						<b>{{ user.followers_count | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
@@ -60,6 +60,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as age from 's-age';
+import getAcct from '../../../../../common/user/get-acct';
+import getAcct from '../../../../../common/user/parse-acct';
 import Progress from '../../../common/scripts/loading';
 import XHome from './user/home.vue';
 
@@ -75,6 +77,9 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		acct() {
+			return this.getAcct(this.user);
+		},
 		age(): number {
 			return age(this.user.account.profile.birthday);
 		}
@@ -92,9 +97,7 @@ export default Vue.extend({
 		fetch() {
 			Progress.start();
 
-			(this as any).api('users/show', {
-				username: this.$route.params.user
-			}).then(user => {
+			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 

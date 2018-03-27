@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import { validateFileName, pack } from '../../../models/drive-file';
-import create from '../../../common/add-file-to-drive';
+import create from '../../../common/drive/add-file';
 
 /**
  * Create a file

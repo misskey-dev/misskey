@@ -5,25 +5,25 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<router-link class="avatar-anchor" :to="`/@${post.user.username}`" v-user-preview="post.user_id">
+			<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="post.user_id">
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
 			<span>{{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}</span>
-			<a class="name" :href="`/@${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</a>
+			<a class="name" :href="`/@${acct}`" v-user-preview="post.user_id">{{ post.user.name }}</a>
 			<span>{{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="post.created_at"/>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="`/@${p.user.username}`">
+		<router-link class="avatar-anchor" :to="`/@${acct}`">
 			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<div class="main">
 			<header>
-				<router-link class="name" :to="`/@${p.user.username}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
-				<span class="is-bot" v-if="p.user.account.is_bot">bot</span>
-				<span class="username">@{{ p.user.username }}</span>
+				<router-link class="name" :to="`/@${acct}`" v-user-preview="p.user.id">{{ acct }}</router-link>
+				<span class="is-bot" v-if="p.user.host === null && p.user.account.is_bot">bot</span>
+				<span class="username">@{{ acct }}</span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 					<span class="mobile" v-if="p.via_mobile">%fa:mobile-alt%</span>
@@ -85,6 +85,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
+import getAcct from '../../../../../common/user/get-acct';
 import MkPostFormWindow from './post-form-window.vue';
 import MkRepostFormWindow from './repost-form-window.vue';
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
@@ -115,6 +116,9 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		acct() {
+			return getAcct(this.p.user);
+		},
 		isRepost(): boolean {
 			return (this.post.repost &&
 				this.post.text == null &&
@@ -135,7 +139,7 @@ export default Vue.extend({
 			return dateStringify(this.p.created_at);
 		},
 		url(): string {
-			return `/@${this.p.user.username}/${this.p.id}`;
+			return `/@${this.acct}/${this.p.id}`;
 		},
 		urls(): string[] {
 			if (this.p.ast) {

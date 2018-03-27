@@ -2,12 +2,12 @@
 <div class="mk-user-preview">
 	<template v-if="u != null">
 		<div class="banner" :style="u.banner_url ? `background-image: url(${u.banner_url}?thumbnail&size=512)` : ''"></div>
-		<router-link class="avatar" :to="`/@${u.username}`">
+		<router-link class="avatar" :to="`/@${acct}`">
 			<img :src="`${u.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="title">
-			<router-link class="name" :to="`/@${u.username}`">{{ u.name }}</router-link>
-			<p class="username">@{{ u.username }}</p>
+			<router-link class="name" :to="`/@${acct}`">{{ u.name }}</router-link>
+			<p class="username">@{{ acct }}</p>
 		</div>
 		<div class="description">{{ u.description }}</div>
 		<div class="status">
@@ -29,12 +29,19 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
+import getAcct from '../../../../../common/user/get-acct';
+import parseAcct from '../../../../../common/user/parse-acct';
 
 export default Vue.extend({
 	props: {
 		user: {
 			type: [Object, String],
 			required: true
+		}
+	},
+	computed: {
+		acct() {
+			return getAcct(this.u);
 		}
 	},
 	data() {
@@ -49,10 +56,11 @@ export default Vue.extend({
 				this.open();
 			});
 		} else {
-			(this as any).api('users/show', {
-				user_id: this.user[0] == '@' ? undefined : this.user,
-				username: this.user[0] == '@' ? this.user.substr(1) : undefined
-			}).then(user => {
+			const query = this.user[0] == '@' ?
+				parseAcct(this.user[0].substr(1)) :
+				{ user_id: this.user[0] };
+
+			(this as any).api('users/show', query).then(user => {
 				this.u = user;
 				this.open();
 			});

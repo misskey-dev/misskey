@@ -8,13 +8,13 @@
 		<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=150`" alt="avatar"/>
 		<div class="title">
 			<p class="name">{{ user.name }}</p>
-			<p class="username">@{{ user.username }}</p>
-			<p class="location" v-if="user.account.profile.location">%fa:map-marker%{{ user.account.profile.location }}</p>
+			<p class="username">@{{ acct }}</p>
+			<p class="location" v-if="user.host === null && user.account.profile.location">%fa:map-marker%{{ user.account.profile.location }}</p>
 		</div>
 		<footer>
-			<router-link :to="`/@${user.username}`" :data-active="$parent.page == 'home'">%fa:home%概要</router-link>
-			<router-link :to="`/@${user.username}/media`" :data-active="$parent.page == 'media'">%fa:image%メディア</router-link>
-			<router-link :to="`/@${user.username}/graphs`" :data-active="$parent.page == 'graphs'">%fa:chart-bar%グラフ</router-link>
+			<router-link :to="`/@${acct}`" :data-active="$parent.page == 'home'">%fa:home%概要</router-link>
+			<router-link :to="`/@${acct}/media`" :data-active="$parent.page == 'media'">%fa:image%メディア</router-link>
+			<router-link :to="`/@${acct}/graphs`" :data-active="$parent.page == 'graphs'">%fa:chart-bar%グラフ</router-link>
 		</footer>
 	</div>
 </div>
@@ -22,9 +22,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	props: ['user'],
+	computed: {
+		acct() {
+			return getAcct(this.user);
+		}
+	},
 	mounted() {
 		window.addEventListener('load', this.onScroll);
 		window.addEventListener('scroll', this.onScroll);

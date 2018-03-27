@@ -1,16 +1,16 @@
 <template>
 <div class="sub" :title="title">
-	<router-link class="avatar-anchor" :to="`/@${post.user.username}`">
+	<router-link class="avatar-anchor" :to="`/@${acct}`">
 		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="post.user_id"/>
 	</router-link>
 	<div class="main">
 		<header>
 			<div class="left">
-				<router-link class="name" :to="`/@${post.user.username}`" v-user-preview="post.user_id">{{ post.user.name }}</router-link>
-				<span class="username">@{{ post.user.username }}</span>
+				<router-link class="name" :to="`/@${acct}`" v-user-preview="post.user_id">{{ post.user.name }}</router-link>
+				<span class="username">@{{ acct }}</span>
 			</div>
 			<div class="right">
-				<router-link class="time" :to="`/@${post.user.username}/${post.id}`">
+				<router-link class="time" :to="`/@${acct}/${post.id}`">
 					<mk-time :time="post.created_at"/>
 				</router-link>
 			</div>
@@ -28,10 +28,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
+import getAcct from '../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	props: ['post'],
 	computed: {
+		acct() {
+			return getAcct(this.post.user);
+		},
 		title(): string {
 			return dateStringify(this.post.created_at);
 		}

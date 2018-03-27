@@ -2,15 +2,15 @@
 <div class="mk-notification">
 	<div class="notification reaction" v-if="notification.type == 'reaction'">
 		<mk-time :time="notification.created_at"/>
-		<router-link class="avatar-anchor" :to="`/@${notification.user.username}`">
+		<router-link class="avatar-anchor" :to="`/@${acct}`">
 			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
 				<mk-reaction-icon :reaction="notification.reaction"/>
-				<router-link :to="`/@${notification.user.username}`">{{ notification.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ notification.user.name }}</router-link>
 			</p>
-			<router-link class="post-ref" :to="`/@${notification.post.user.username}/${notification.post.id}`">
+			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post) }}
 				%fa:quote-right%
 			</router-link>
@@ -19,15 +19,15 @@
 
 	<div class="notification repost" v-if="notification.type == 'repost'">
 		<mk-time :time="notification.created_at"/>
-		<router-link class="avatar-anchor" :to="`/@${notification.post.user.username}`">
+		<router-link class="avatar-anchor" :to="`/@${acct}`">
 			<img class="avatar" :src="`${notification.post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
 				%fa:retweet%
-				<router-link :to="`/@${notification.post.user.username}`">{{ notification.post.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ notification.post.user.name }}</router-link>
 			</p>
-			<router-link class="post-ref" :to="`/@${notification.post.user.username}/${notification.post.id}`">
+			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%
 			</router-link>
 		</div>
@@ -39,13 +39,13 @@
 
 	<div class="notification follow" v-if="notification.type == 'follow'">
 		<mk-time :time="notification.created_at"/>
-		<router-link class="avatar-anchor" :to="`/@${notification.user.username}`">
+		<router-link class="avatar-anchor" :to="`/@${acct}`">
 			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
 				%fa:user-plus%
-				<router-link :to="`/@${notification.user.username}`">{{ notification.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ notification.user.name }}</router-link>
 			</p>
 		</div>
 	</div>
@@ -60,15 +60,15 @@
 
 	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
 		<mk-time :time="notification.created_at"/>
-		<router-link class="avatar-anchor" :to="`/@${notification.user.username}`">
+		<router-link class="avatar-anchor" :to="`/@${acct}`">
 			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
 				%fa:chart-pie%
-				<router-link :to="`/@${notification.user.username}`">{{ notification.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ notification.user.name }}</router-link>
 			</p>
-			<router-link class="post-ref" :to="`/@${notification.post.user.username}/${notification.post.id}`">
+			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
 			</router-link>
 		</div>
@@ -79,9 +79,15 @@
 <script lang="ts">
 import Vue from 'vue';
 import getPostSummary from '../../../../../common/get-post-summary';
+import getAcct from '../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	props: ['notification'],
+	computed: {
+		acct() {
+			return getAcct(this.notification.user);
+		}
+	},
 	data() {
 		return {
 			getPostSummary

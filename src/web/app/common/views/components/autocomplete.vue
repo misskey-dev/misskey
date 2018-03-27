@@ -4,7 +4,7 @@
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
 			<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=32`" alt=""/>
 			<span class="name">{{ user.name }}</span>
-			<span class="username">@{{ user.username }}</span>
+			<span class="username">@{{ getAcct(user) }}</span>
 		</li>
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
@@ -21,6 +21,7 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
+import getAcct from '../../../../../common/user/get-acct';
 
 const lib = Object.entries(emojilib.lib).filter((x: any) => {
 	return x[1].category != 'flags';
@@ -105,6 +106,7 @@ export default Vue.extend({
 		});
 	},
 	methods: {
+		getAcct,
 		exec() {
 			this.select = -1;
 			if (this.$refs.suggests) {

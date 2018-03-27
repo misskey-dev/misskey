@@ -3,6 +3,7 @@ import * as debug from 'debug';
 import limiterDB from '../db/redis';
 import { Endpoint } from './endpoints';
 import { IAuthContext } from './authenticate';
+import getAcct from '../common/user/get-acct';
 
 const log = debug('misskey:limitter');
 
@@ -42,7 +43,7 @@ export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, rejec
 				return reject('ERR');
 			}
 
-			log(`@${ctx.user.username} ${endpoint.name} min remaining: ${info.remaining}`);
+			log(`@${getAcct(ctx.user)} ${endpoint.name} min remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('BRIEF_REQUEST_INTERVAL');
@@ -70,7 +71,7 @@ export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, rejec
 				return reject('ERR');
 			}
 
-			log(`@${ctx.user.username} ${endpoint.name} max remaining: ${info.remaining}`);
+			log(`@${getAcct(ctx.user)} ${endpoint.name} max remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('RATE_LIMIT_EXCEEDED');

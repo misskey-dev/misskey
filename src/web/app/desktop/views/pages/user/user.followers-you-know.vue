@@ -3,7 +3,7 @@
 	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.followers-you-know.title%</p>
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
-	<router-link v-for="user in users" :to="`/@${user.username}`" :key="user.id">
+	<router-link v-for="user in users" :to="`/@${getAcct(user)}`" :key="user.id">
 		<img :src="`${user.avatar_url}?thumbnail&size=64`" :alt="user.name" v-user-preview="user.id"/>
 	</router-link>
 	</div>
@@ -13,6 +13,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../../common/user/get-acct';
+
 export default Vue.extend({
 	props: ['user'],
 	data() {
@@ -20,6 +22,9 @@ export default Vue.extend({
 			users: [],
 			fetching: true
 		};
+	},
+	method() {
+		getAcct
 	},
 	mounted() {
 		(this as any).api('users/followers', {

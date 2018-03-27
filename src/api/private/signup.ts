@@ -64,7 +64,8 @@ export default async (req: express.Request, res: express.Response) => {
 	// Fetch exist user that same username
 	const usernameExist = await User
 		.count({
-			username_lower: username.toLowerCase()
+			username_lower: username.toLowerCase(),
+			host: null
 		}, {
 			limit: 1
 		});

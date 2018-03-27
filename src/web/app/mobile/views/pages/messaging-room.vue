@@ -10,6 +10,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import parseAcct from '../../../../../common/user/parse-acct';
+
 export default Vue.extend({
 	data() {
 		return {
@@ -27,9 +29,7 @@ export default Vue.extend({
 	methods: {
 		fetch() {
 			this.fetching = true;
-			(this as any).api('users/show', {
-				username: (this as any).$route.params.username
-			}).then(user => {
+			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 

@@ -5,7 +5,7 @@
 			<x-profile :user="user"/>
 			<x-photos :user="user"/>
 			<x-followers-you-know v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
-			<p>%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time :time="user.account.last_used_at"/></b></p>
+			<p v-if="user.host === null">%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time :time="user.account.last_used_at"/></b></p>
 		</div>
 	</div>
 	<main>

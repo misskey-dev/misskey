@@ -7,6 +7,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
+
 export default Vue.extend({
 	mounted() {
 		document.title = 'Misskey %i18n:mobile.tags.mk-messaging-page.message%';
@@ -14,7 +16,7 @@ export default Vue.extend({
 	},
 	methods: {
 		navigate(user) {
-			(this as any).$router.push(`/i/messaging/${user.username}`);
+			(this as any).$router.push(`/i/messaging/${getAcct(user)}`);
 		}
 	}
 });

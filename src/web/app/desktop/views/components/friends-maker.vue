@@ -3,12 +3,12 @@
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" v-if="!fetching && users.length > 0">
 		<div class="user" v-for="user in users" :key="user.id">
-			<router-link class="avatar-anchor" :to="`/@${user.username}`">
+			<router-link class="avatar-anchor" :to="`/@${getAcct(user)}`">
 				<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=42`" alt="" v-user-preview="user.id"/>
 			</router-link>
 			<div class="body">
-				<router-link class="name" :to="`/@${user.username}`" v-user-preview="user.id">{{ user.name }}</router-link>
-				<p class="username">@{{ user.username }}</p>
+				<router-link class="name" :to="`/@${getAcct(user)}`" v-user-preview="user.id">{{ user.name }}</router-link>
+				<p class="username">@{{ getAcct(user) }}</p>
 			</div>
 			<mk-follow-button :user="user"/>
 		</div>
@@ -22,6 +22,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
+
 export default Vue.extend({
 	data() {
 		return {
@@ -35,6 +37,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	methods: {
+		getAcct,
 		fetch() {
 			this.fetching = true;
 			this.users = [];

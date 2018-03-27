@@ -39,6 +39,7 @@ module.exports = (app: express.Application) => {
 		if (userToken == null) return res.send('plz signin');
 
 		const user = await User.findOneAndUpdate({
+			host: null,
 			'account.token': userToken
 		}, {
 			$set: {
@@ -126,6 +127,7 @@ module.exports = (app: express.Application) => {
 				const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
 
 				const user = await User.findOne({
+					host: null,
 					'account.twitter.user_id': result.userId
 				});
 
@@ -148,6 +150,7 @@ module.exports = (app: express.Application) => {
 				const result = await twAuth.done(JSON.parse(ctx), verifier);
 
 				const user = await User.findOneAndUpdate({
+					host: null,
 					'account.token': userToken
 				}, {
 					$set: {

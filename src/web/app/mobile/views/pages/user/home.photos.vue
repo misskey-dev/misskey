@@ -5,7 +5,7 @@
 		<a v-for="image in images"
 			class="img"
 			:style="`background-image: url(${image.media.url}?thumbnail&size=256)`"
-			:href="`/@${image.post.user.username}/${image.post.id}`"
+			:href="`/@${getAcct(image.post.user)}/${image.post.id}`"
 		></a>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">%i18n:mobile.tags.mk-user-overview-photos.no-photos%</p>
@@ -14,6 +14,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../../common/user/get-acct';
+
 export default Vue.extend({
 	props: ['user'],
 	data() {
@@ -21,6 +23,9 @@ export default Vue.extend({
 			fetching: true,
 			images: []
 		};
+	},
+	methods: {
+		getAcct
 	},
 	mounted() {
 		(this as any).api('users/posts', {

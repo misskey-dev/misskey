@@ -15,7 +15,7 @@
 				>
 					<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=32`" alt=""/>
 					<span class="name">{{ user.name }}</span>
-					<span class="username">@{{ user.username }}</span>
+					<span class="username">@{{ getAcct(user) }}</span>
 				</li>
 			</ol>
 		</div>
@@ -24,7 +24,7 @@
 		<template>
 			<a v-for="message in messages"
 				class="user"
-				:href="`/i/messaging/${isMe(message) ? message.recipient.username : message.user.username}`"
+				:href="`/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 				:data-is-me="isMe(message)"
 				:data-is-read="message.is_read"
 				@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"
@@ -34,7 +34,7 @@
 					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatar_url : message.user.avatar_url}?thumbnail&size=64`" alt=""/>
 					<header>
 						<span class="name">{{ isMe(message) ? message.recipient.name : message.user.name }}</span>
-						<span class="username">@{{ isMe(message) ? message.recipient.username : message.user.username }}</span>
+						<span class="username">@{{ getAcct(isMe(message) ? message.recipient : message.user) }}</span>
 						<mk-time :time="message.created_at"/>
 					</header>
 					<div class="body">
@@ -51,6 +51,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	props: {
@@ -92,6 +93,7 @@ export default Vue.extend({
 		(this as any).os.streams.messagingIndexStream.dispose(this.connectionId);
 	},
 	methods: {
+		getAcct,
 		isMe(message) {
 			return message.user_id == (this as any).os.i.id;
 		},
