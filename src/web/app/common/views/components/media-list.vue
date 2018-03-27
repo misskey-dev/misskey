@@ -1,7 +1,8 @@
 <template>
 <div class="mk-media-list" :data-count="mediaList.length">
 	<template v-for="media in mediaList">
-		<mk-media-image :image="media" :key="media.id"/>
+		<mk-media-video :video="media" :key="media.id" v-if="media.type.startsWith('video')" :inline-playable="mediaList.length === 1"/>
+		<mk-media-image :image="media" :key="media.id" v-else />
 	</template>
 </div>
 </template>

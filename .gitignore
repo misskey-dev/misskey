@@ -1,6 +1,7 @@
 /.config
 /.vscode
 /node_modules
+/build
 /built
 /data
 npm-debug.log

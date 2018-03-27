@@ -59,6 +59,7 @@ export type IUser = {
 	is_suspended: boolean;
 	keywords: string[];
 	account: {
+		keypair: string;
 		email: string;
 		links: string[];
 		password: string;
@@ -160,6 +161,7 @@ export const pack = (
 	delete _user.latest_post;
 
 	// Remove private properties
+	delete _user.account.keypair;
 	delete _user.account.password;
 	delete _user.account.token;
 	delete _user.account.two_factor_temp_secret;
