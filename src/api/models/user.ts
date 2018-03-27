@@ -59,6 +59,7 @@ export type IUser = {
 	is_suspended: boolean;
 	keywords: string[];
 	host: string;
+	host_lower: string;
 	account: {
 		keypair: string;
 		email: string;
