@@ -105,6 +105,12 @@ props:
     desc:
       ja: "ドライブの容量(bytes)"
       en: "The capacity of drive of this user (bytes)"
+  - name: "host"
+    type: "string | null"
+    optional: false
+    desc:
+      ja: "ホスト (例: example.com:3000)"
+      en: "Host (e.g. example.com:3000)"
   - name: "account"
     type: "object"
     optional: false
