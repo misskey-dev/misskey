@@ -7,11 +7,8 @@ maintainer:
   # メンテナの連絡先(URLかmailto形式のURL)
   url:
 
-# プライマリURL
+# (Misskeyを動かす)URL
 url:
-
-# セカンダリURL
-secondary_url:
 
 # 待受ポート
 port:
