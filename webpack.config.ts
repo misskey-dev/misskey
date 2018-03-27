@@ -80,6 +80,7 @@ module.exports = entries.map(x => {
 		_STATS_URL_: config.stats_url,
 		_DOCS_URL_: config.docs_url,
 		_API_URL_: config.api_url,
+		_WS_URL_: config.ws_url,
 		_DEV_URL_: config.dev_url,
 		_CH_URL_: config.ch_url,
 		_LANG_: lang,

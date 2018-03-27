@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 import * as ReconnectingWebsocket from 'reconnecting-websocket';
-import { apiUrl } from '../../../config';
+import { wsUrl } from '../../../config';
 import MiOS from '../../mios';
 
 /**
@@ -42,14 +42,13 @@ export default class Connection extends EventEmitter {
 		this.state = 'initializing';
 		this.buffer = [];
 
-		const host = apiUrl.replace('http', 'ws');
 		const query = params
 			? Object.keys(params)
 				.map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
 				.join('&')
 			: null;
 
-		this.socket = new ReconnectingWebsocket(`${host}/${endpoint}${query ? '?' + query : ''}`);
+		this.socket = new ReconnectingWebsocket(`${wsUrl}/${endpoint}${query ? '?' + query : ''}`);
 		this.socket.addEventListener('open', this.onOpen);
 		this.socket.addEventListener('close', this.onClose);
 		this.socket.addEventListener('message', this.onMessage);
