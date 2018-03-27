@@ -57,7 +57,7 @@ init((launch) => {
 			{ path: '/i/settings/profile', component: MkProfileSetting },
 			{ path: '/i/notifications', component: MkNotifications },
 			{ path: '/i/messaging', component: MkMessaging },
-			{ path: '/i/messaging/:username', component: MkMessagingRoom },
+			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/i/drive/file/:file', component: MkDrive },

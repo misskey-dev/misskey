@@ -8,7 +8,7 @@
 					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a :href="aboutUrl">詳しく...</a></p>
 					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
 					<div class="users">
-						<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/@${user.username}`" v-user-preview="user.id">
+						<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/@${getAcct(user)}`" v-user-preview="user.id">
 							<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
 						</router-link>
 					</div>
@@ -43,6 +43,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { docsUrl, copyright, lang } from '../../../config';
+import getAcct from '../../../../../common/user/get-acct';
 
 const shares = [
 	'Everything!',
@@ -97,6 +98,7 @@ export default Vue.extend({
 		clearInterval(this.clock);
 	},
 	methods: {
+		getAcct,
 		signup() {
 			this.$modal.show('signup');
 		},

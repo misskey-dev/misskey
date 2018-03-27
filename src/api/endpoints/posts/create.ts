@@ -5,7 +5,7 @@ import $ from 'cafy';
 import deepEqual = require('deep-equal');
 import parse from '../../common/text';
 import { default as Post, IPost, isValidText } from '../../models/post';
-import { default as User, IUser } from '../../models/user';
+import { default as User, ILocalAccount, IUser } from '../../models/user';
 import { default as Channel, IChannel } from '../../models/channel';
 import Following from '../../models/following';
 import Mute from '../../models/mute';
@@ -16,6 +16,8 @@ import { pack } from '../../models/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
 import event, { pushSw, publishChannelStream } from '../../event';
+import getAcct from '../../../common/user/get-acct';
+import parseAcct from '../../../common/user/parse-acct';
 import config from '../../../conf';
 
 /**
@@ -390,7 +392,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			});
 
 		// この投稿をWatchする
-		if (user.account.settings.auto_watch !== false) {
+		if ((user.account as ILocalAccount).settings.auto_watch !== false) {
 			watch(user._id, reply);
 		}
 
@@ -477,7 +479,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		// Extract an '@' mentions
 		const atMentions = tokens
 			.filter(t => t.type == 'mention')
-			.map(m => m.username)
+			.map(getAcct)
 			// Drop dupulicates
 			.filter((v, i, s) => s.indexOf(v) == i);
 
@@ -486,9 +488,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			// Fetch mentioned user
 			// SELECT _id
 			const mentionee = await User
-				.findOne({
-					username_lower: mention.toLowerCase()
-				}, { _id: true });
+				.findOne(parseAcct(mention), { _id: true });
 
 			// When mentioned user not found
 			if (mentionee == null) return;

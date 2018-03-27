@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
+import getAcct from '../../../../../common/user/get-acct';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
 
@@ -61,9 +62,9 @@ export default Vue.component('mk-post-html', {
 				case 'mention':
 					return (createElement as any)('a', {
 						attrs: {
-							href: `${url}/@${token.username}`,
+							href: `${url}/@${getAcct(token)}`,
 							target: '_blank',
-							dataIsMe: (this as any).i && (this as any).i.username == token.username
+							dataIsMe: (this as any).i && getAcct((this as any).i) == getAcct(token)
 						},
 						directives: [{
 							name: 'user-preview',

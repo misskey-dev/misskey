@@ -1,10 +1,11 @@
 import * as EventEmitter from 'events';
 import * as bcrypt from 'bcryptjs';
 
-import User, { IUser, init as initUser } from '../models/user';
+import User, { ILocalAccount, IUser, init as initUser } from '../models/user';
 
 import getPostSummary from '../../common/get-post-summary';
-import getUserSummary from '../../common/get-user-summary';
+import getUserSummary from '../../common/user/get-summary';
+import parseAcct from '../../common/user/parse-acct';
 import getNotificationSummary from '../../common/get-notification-summary';
 
 const hmm = [
@@ -163,9 +164,7 @@ export default class BotCore extends EventEmitter {
 
 	public async showUserCommand(q: string): Promise<string> {
 		try {
-			const user = await require('../endpoints/users/show')({
-				username: q.substr(1)
-			}, this.user);
+			const user = await require('../endpoints/users/show')(parseAcct(q.substr(1)), this.user);
 
 			const text = getUserSummary(user);
 
@@ -209,7 +208,8 @@ class SigninContext extends Context {
 		if (this.temporaryUser == null) {
 			// Fetch user
 			const user: IUser = await User.findOne({
-				username_lower: query.toLowerCase()
+				username_lower: query.toLowerCase(),
+				host: null
 			}, {
 				fields: {
 					data: false
@@ -225,7 +225,7 @@ class SigninContext extends Context {
 			}
 		} else {
 			// Compare password
-			const same = await bcrypt.compare(query, this.temporaryUser.account.password);
+			const same = await bcrypt.compare(query, (this.temporaryUser.account as ILocalAccount).password);
 
 			if (same) {
 				this.bot.signin(this.temporaryUser);

@@ -1,13 +1,13 @@
 <template>
 <div class="sub">
-	<router-link class="avatar-anchor" :to="`/@${post.user.username}`">
+	<router-link class="avatar-anchor" :to="`/@${acct}`">
 		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${post.user.username}`">{{ post.user.name }}</router-link>
-			<span class="username">@{{ post.user.username }}</span>
-			<router-link class="created-at" :to="`/@${post.user.username}/${post.id}`">
+			<router-link class="name" :to="`/@${acct}`">{{ post.user.name }}</router-link>
+			<span class="username">@{{ acct }}</span>
+			<router-link class="created-at" :to="`/@${acct}/${post.id}`">
 				<mk-time :time="post.created_at"/>
 			</router-link>
 		</header>
@@ -20,8 +20,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
+
 export default Vue.extend({
-	props: ['post']
+	props: ['post'],
+	computed: {
+		acct() {
+			return getAcct(this.post.user);
+		}
+	}
 });
 </script>
 

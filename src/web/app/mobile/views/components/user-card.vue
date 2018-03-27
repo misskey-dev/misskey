@@ -1,20 +1,27 @@
 <template>
 <div class="mk-user-card">
 	<header :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''">
-		<a :href="`/@${user.username}`">
+		<a :href="`/@${acct}`">
 			<img :src="`${user.avatar_url}?thumbnail&size=200`" alt="avatar"/>
 		</a>
 	</header>
-	<a class="name" :href="`/@${user.username}`" target="_blank">{{ user.name }}</a>
-	<p class="username">@{{ user.username }}</p>
+	<a class="name" :href="`/@${acct}`" target="_blank">{{ user.name }}</a>
+	<p class="username">@{{ acct }}</p>
 	<mk-follow-button :user="user"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
+
 export default Vue.extend({
-	props: ['user']
+	props: ['user'],
+	computed: {
+		acct() {
+			return getAcct(this.user);
+		}
+	}
 });
 </script>
 

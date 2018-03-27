@@ -1,15 +1,15 @@
 <template>
 <div class="mk-welcome-timeline">
 	<div v-for="post in posts">
-		<router-link class="avatar-anchor" :to="`/@${post.user.username}`" v-user-preview="post.user.id">
+		<router-link class="avatar-anchor" :to="`/@${getAcct(post.user)}`" v-user-preview="post.user.id">
 			<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
 		</router-link>
 		<div class="body">
 			<header>
-				<router-link class="name" :to="`/@${post.user.username}`" v-user-preview="post.user.id">{{ post.user.name }}</router-link>
-				<span class="username">@{{ post.user.username }}</span>
+				<router-link class="name" :to="`/@${getAcct(post.user)}`" v-user-preview="post.user.id">{{ post.user.name }}</router-link>
+				<span class="username">@{{ getAcct(post.user) }}</span>
 				<div class="info">
-					<router-link class="created-at" :to="`/@${post.user.username}/${post.id}`">
+					<router-link class="created-at" :to="`/@${getAcct(post.user)}/${post.id}`">
 						<mk-time :time="post.created_at"/>
 					</router-link>
 				</div>
@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	data() {
@@ -36,6 +37,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	methods: {
+		getAcct,
 		fetch(cb?) {
 			this.fetching = true;
 			(this as any).api('posts', {

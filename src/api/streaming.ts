@@ -94,6 +94,7 @@ function authenticate(token: string): Promise<IUser> {
 			// Fetch user
 			const user: IUser = await User
 				.findOne({
+					host: null,
 					'account.token': token
 				});
 

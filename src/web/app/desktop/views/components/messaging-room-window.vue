@@ -8,12 +8,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import { url } from '../../../config';
+import getAcct from '../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	props: ['user'],
 	computed: {
 		popout(): string {
-			return `${url}/i/messaging/${this.user.username}`;
+			return `${url}/i/messaging/${getAcct(this.user)}`;
 		}
 	}
 });

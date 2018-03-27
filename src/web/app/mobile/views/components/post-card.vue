@@ -1,8 +1,8 @@
 <template>
 <div class="mk-post-card">
-	<a :href="`/@${post.user.username}/${post.id}`">
+	<a :href="`/@${acct}/${post.id}`">
 		<header>
-			<img :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/><h3>{{ post.user.name }}</h3>
+			<img :src="`${acct}?thumbnail&size=64`" alt="avatar"/><h3>{{ post.user.name }}</h3>
 		</header>
 		<div>
 			{{ text }}
@@ -15,10 +15,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import summary from '../../../../../common/get-post-summary';
+import getAcct from '../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	props: ['post'],
 	computed: {
+		acct() {
+			return getAcct(this.post.user);
+		},
 		text(): string {
 			return summary(this.post);
 		}

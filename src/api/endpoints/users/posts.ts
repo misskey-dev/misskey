@@ -2,6 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
+import getHostLower from '../../common/get-host-lower';
 import Post, { pack } from '../../models/post';
 import User from '../../models/user';
 
@@ -22,7 +23,15 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (usernameErr) return rej('invalid username param');
 
 	if (userId === undefined && username === undefined) {
-		return rej('user_id or username is required');
+		return rej('user_id or pair of username and host is required');
+	}
+
+	// Get 'host' parameter
+	const [host, hostErr] = $(params.host).optional.string().$;
+	if (hostErr) return rej('invalid host param');
+
+	if (userId === undefined && host === undefined) {
+		return rej('user_id or pair of username and host is required');
 	}
 
 	// Get 'include_replies' parameter
@@ -60,7 +69,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	const q = userId !== undefined
 		? { _id: userId }
-		: { username_lower: username.toLowerCase() } ;
+		: { username_lower: username.toLowerCase(), host_lower: getHostLower(host) } ;
 
 	// Lookup user
 	const user = await User.findOne(q, {

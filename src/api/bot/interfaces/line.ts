@@ -7,6 +7,8 @@ import config from '../../../conf';
 import BotCore from '../core';
 import _redis from '../../../db/redis';
 import prominence = require('prominence');
+import getAcct from '../../../common/user/get-acct';
+import parseAcct from '../../../common/user/parse-acct';
 import getPostSummary from '../../../common/get-post-summary';
 
 const redis = prominence(_redis);
@@ -98,10 +100,9 @@ class LineBot extends BotCore {
 	}
 
 	public async showUserCommand(q: string) {
-		const user = await require('../../endpoints/users/show')({
-			username: q.substr(1)
-		}, this.user);
+		const user = await require('../../endpoints/users/show')(parseAcct(q.substr(1)), this.user);
 
+		const acct = getAcct(user);
 		const actions = [];
 
 		actions.push({
@@ -121,7 +122,7 @@ class LineBot extends BotCore {
 		actions.push({
 			type: 'uri',
 			label: 'Webで見る',
-			uri: `${config.url}/@${user.username}`
+			uri: `${config.url}/@${acct}`
 		});
 
 		this.reply([{
@@ -130,7 +131,7 @@ class LineBot extends BotCore {
 			template: {
 				type: 'buttons',
 				thumbnailImageUrl: `${user.avatar_url}?thumbnail&size=1024`,
-				title: `${user.name} (@${user.username})`,
+				title: `${user.name} (@${acct})`,
 				text: user.description || '(no description)',
 				actions: actions
 			}
@@ -171,6 +172,7 @@ module.exports = async (app: express.Application) => {
 
 		if (session == null) {
 			const user = await User.findOne({
+				host: null,
 				'account.line': {
 					user_id: sourceId
 				}

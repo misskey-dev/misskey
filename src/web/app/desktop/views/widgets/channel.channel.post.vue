@@ -2,8 +2,8 @@
 <div class="post">
 	<header>
 		<a class="index" @click="reply">{{ post.index }}:</a>
-		<router-link class="name" :to="`/@${post.user.username}`" v-user-preview="post.user.id"><b>{{ post.user.name }}</b></router-link>
-		<span>ID:<i>{{ post.user.username }}</i></span>
+		<router-link class="name" :to="`/@${acct}`" v-user-preview="post.user.id"><b>{{ post.user.name }}</b></router-link>
+		<span>ID:<i>{{ acct }}</i></span>
 	</header>
 	<div>
 		<a v-if="post.reply">&gt;&gt;{{ post.reply.index }}</a>
@@ -19,8 +19,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../common/user/get-acct';
+
 export default Vue.extend({
 	props: ['post'],
+	computed: {
+		acct() {
+			return getAcct(this.post.user);
+		}
+	},
 	methods: {
 		reply() {
 			this.$emit('reply', this.post);

@@ -9,6 +9,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import parseAcct from '../../../../../../common/user/parse-acct';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
 import XHome from './user.home.vue';
@@ -39,9 +40,7 @@ export default Vue.extend({
 		fetch() {
 			this.fetching = true;
 			Progress.start();
-			(this as any).api('users/show', {
-				username: this.$route.params.user
-			}).then(user => {
+			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 				Progress.done();

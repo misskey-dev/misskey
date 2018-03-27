@@ -11,7 +11,7 @@ describe('Text', () => {
 	it('can be analyzed', () => {
 		const tokens = analyze('@himawari お腹ペコい :cat: #yryr');
 		assert.deepEqual([
-			{ type: 'mention', content: '@himawari', username: 'himawari' },
+			{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
 			{ type: 'text', content: ' お腹ペコい ' },
 			{ type: 'emoji', content: ':cat:', emoji: 'cat'},
 			{ type: 'text', content: ' '},
@@ -36,7 +36,7 @@ describe('Text', () => {
 		it('mention', () => {
 			const tokens = analyze('@himawari お腹ペコい');
 			assert.deepEqual([
-				{ type: 'mention', content: '@himawari', username: 'himawari' },
+				{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
 				{ type: 'text', content: ' お腹ペコい' }
 			], tokens);
 		});

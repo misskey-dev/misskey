@@ -49,7 +49,7 @@ init(async (launch) => {
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
 			{ path: '/i/customize-home', component: MkHomeCustomize },
-			{ path: '/i/messaging/:username', component: MkMessagingRoom },
+			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/selectdrive', component: MkSelectDrive },

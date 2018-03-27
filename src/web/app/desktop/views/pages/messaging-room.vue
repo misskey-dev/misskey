@@ -7,6 +7,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
+import parseAcct from '../../../../../common/user/parse-acct';
 
 export default Vue.extend({
 	data() {
@@ -29,9 +30,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('users/show', {
-				username: this.$route.params.username
-			}).then(user => {
+			(this as any).api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
 				this.fetching = false;
 
