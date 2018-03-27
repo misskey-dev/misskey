@@ -37,7 +37,6 @@ type Source = {
 		url: string;
 	};
 	url: string;
-	secondary_url: string;
 	port: number;
 	https?: { [x: string]: string };
 	mongodb: {
@@ -106,9 +105,6 @@ type Mixin = {
 	hostname: string;
 	scheme: string;
 	ws_scheme: string;
-	secondary_host: string;
-	secondary_hostname: string;
-	secondary_scheme: string;
 	api_url: string;
 	ws_url: string;
 	auth_url: string;
@@ -129,21 +125,15 @@ export default function load() {
 
 	// Validate URLs
 	if (!isUrl(config.url)) urlError(config.url);
-	if (!isUrl(config.secondary_url)) urlError(config.secondary_url);
 
 	const url = new URL(config.url);
-	const secondaryUrl = new URL(config.secondary_url);
 	config.url = normalizeUrl(config.url);
-	config.secondary_url = normalizeUrl(config.secondary_url);
 
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');
 	mixin.ws_scheme = mixin.scheme.replace('http', 'ws');
 	mixin.ws_url = `${mixin.ws_scheme}://${mixin.host}`;
-	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
-	mixin.secondary_hostname = secondaryUrl.hostname;
-	mixin.secondary_scheme = config.secondary_url.substr(0, config.secondary_url.indexOf('://'));
 	mixin.api_url = `${mixin.scheme}://${mixin.host}/api`;
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;
 	mixin.ch_url = `${mixin.scheme}://ch.${mixin.host}`;
@@ -151,7 +141,7 @@ export default function load() {
 	mixin.docs_url = `${mixin.scheme}://docs.${mixin.host}`;
 	mixin.stats_url = `${mixin.scheme}://stats.${mixin.host}`;
 	mixin.status_url = `${mixin.scheme}://status.${mixin.host}`;
-	mixin.drive_url = `${mixin.secondary_scheme}://file.${mixin.secondary_host}`;
+	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
 
 	return Object.assign(config, mixin);
 }
