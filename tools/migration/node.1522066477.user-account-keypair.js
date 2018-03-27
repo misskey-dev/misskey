@@ -6,9 +6,7 @@ const updates = [];
 User.find({}).each(function(user) {
 	updates.push(User.update({ _id: user._id }, {
 		$set: {
-			account: {
-				keypair: generate(),
-			}
+			'account.keypair': generate(),
 		}
 	}));
 }).then(function () {
