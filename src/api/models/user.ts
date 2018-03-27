@@ -58,6 +58,7 @@ export type IUser = {
 	pinned_post_id: mongo.ObjectID;
 	is_suspended: boolean;
 	keywords: string[];
+	host: string;
 	account: {
 		keypair: string;
 		email: string;
