@@ -140,11 +140,11 @@ export default function load() {
 	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');
 	mixin.ws_scheme = mixin.scheme.replace('http', 'ws');
-	mixin.ws_url = `${mixin.ws_scheme}://api.${mixin.host}`;
+	mixin.ws_url = `${mixin.ws_scheme}://${mixin.host}`;
 	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
 	mixin.secondary_hostname = secondaryUrl.hostname;
 	mixin.secondary_scheme = config.secondary_url.substr(0, config.secondary_url.indexOf('://'));
-	mixin.api_url = `${mixin.scheme}://api.${mixin.host}`;
+	mixin.api_url = `${mixin.scheme}://${mixin.host}/api`;
 	mixin.auth_url = `${mixin.scheme}://auth.${mixin.host}`;
 	mixin.ch_url = `${mixin.scheme}://ch.${mixin.host}`;
 	mixin.dev_url = `${mixin.scheme}://dev.${mixin.host}`;

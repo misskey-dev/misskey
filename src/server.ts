@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 /**
  * Register modules
  */
-app.use(vhost(`api.${config.hostname}`, require('./api/server')));
+app.use('/api', require('./api/server'));
 app.use(vhost(config.secondary_hostname, require('./himasaku/server')));
 app.use(vhost(`file.${config.secondary_hostname}`, require('./file/server')));
 app.use(require('./web/server'));
