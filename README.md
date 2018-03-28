@@ -32,10 +32,6 @@ Contribution
 ----------------------------------------------------------------
 Please see [Contribution guide](./CONTRIBUTING.md).
 
-Release Notes
-----------------------------------------------------------------
-Please see [ChangeLog](./CHANGELOG.md).
-
 Sponsors & Backers
 ----------------------------------------------------------------
 Misskey has no 100+ GitHub stars currently. However, a donation is always welcome!
