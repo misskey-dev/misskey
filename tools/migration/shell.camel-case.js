@@ -175,6 +175,8 @@ db.posts.update({}, {
 		media_ids: 'mediaIds',
 		reply_id: 'replyId',
 		repost_id: 'repostId',
-		via_mobile: 'viaMobile'
+		via_mobile: 'viaMobile',
+		'_reply.user_id': '_reply.userId',
+		'_repost.user_id': '_repost.userId',
 	}
 }, false, true);
