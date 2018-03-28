@@ -4,14 +4,14 @@ import { pack as packFolder } from './drive-folder';
 import config from '../../conf';
 import monkDb, { nativeDbConn } from '../../db/mongodb';
 
-const DriveFile = monkDb.get<IDriveFile>('drive_files.files');
+const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 
 export default DriveFile;
 
 const getGridFSBucket = async (): Promise<mongodb.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongodb.GridFSBucket(db, {
-		bucketName: 'drive_files'
+		bucketName: 'driveFiles'
 	});
 	return bucket;
 };
@@ -26,8 +26,8 @@ export type IDriveFile = {
 	contentType: string;
 	metadata: {
 		properties: any;
-		user_id: mongodb.ObjectID;
-		folder_id: mongodb.ObjectID;
+		userId: mongodb.ObjectID;
+		folderId: mongodb.ObjectID;
 	}
 };
 
@@ -79,7 +79,7 @@ export const pack = (
 	let _target: any = {};
 
 	_target.id = _file._id;
-	_target.created_at = _file.uploadDate;
+	_target.createdAt = _file.uploadDate;
 	_target.name = _file.filename;
 	_target.type = _file.contentType;
 	_target.datasize = _file.length;
@@ -92,9 +92,9 @@ export const pack = (
 	if (_target.properties == null) _target.properties = {};
 
 	if (opts.detail) {
-		if (_target.folder_id) {
+		if (_target.folderId) {
 			// Populate folder
-			_target.folder = await packFolder(_target.folder_id, {
+			_target.folder = await packFolder(_target.folderId, {
 				detail: true
 			});
 		}

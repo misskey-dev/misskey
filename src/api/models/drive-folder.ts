@@ -8,10 +8,10 @@ export default DriveFolder;
 
 export type IDriveFolder = {
 	_id: mongo.ObjectID;
-	created_at: Date;
+	createdAt: Date;
 	name: string;
-	user_id: mongo.ObjectID;
-	parent_id: mongo.ObjectID;
+	userId: mongo.ObjectID;
+	parentId: mongo.ObjectID;
 };
 
 export function isValidFolderName(name: string): boolean {
@@ -55,20 +55,20 @@ export const pack = (
 
 	if (opts.detail) {
 		const childFoldersCount = await DriveFolder.count({
-			parent_id: _folder.id
+			parentId: _folder.id
 		});
 
 		const childFilesCount = await DriveFile.count({
-			'metadata.folder_id': _folder.id
+			'metadata.folderId': _folder.id
 		});
 
 		_folder.folders_count = childFoldersCount;
 		_folder.files_count = childFilesCount;
 	}
 
-	if (opts.detail && _folder.parent_id) {
+	if (opts.detail && _folder.parentId) {
 		// Populate parent folder
-		_folder.parent = await pack(_folder.parent_id, {
+		_folder.parent = await pack(_folder.parentId, {
 			detail: true
 		});
 	}

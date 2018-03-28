@@ -1,3 +1,12 @@
+import * as mongo from 'mongodb';
 import db from '../../db/mongodb';
 
-export default db.get('favorites') as any; // fuck type definition
+const Favorites = db.get<IFavorites>('favorites');
+export default Favorites;
+
+export type IFavorites = {
+	_id: mongo.ObjectID;
+	createdAt: Date;
+	userId: mongo.ObjectID;
+	postId: mongo.ObjectID;
+};

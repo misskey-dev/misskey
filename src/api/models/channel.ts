@@ -9,10 +9,11 @@ export default Channel;
 
 export type IChannel = {
 	_id: mongo.ObjectID;
-	created_at: Date;
+	createdAt: Date;
 	title: string;
-	user_id: mongo.ObjectID;
+	userId: mongo.ObjectID;
 	index: number;
+	watchingCount: number;
 };
 
 /**
@@ -47,7 +48,7 @@ export const pack = (
 	delete _channel._id;
 
 	// Remove needless properties
-	delete _channel.user_id;
+	delete _channel.userId;
 
 	// Me
 	const meId: mongo.ObjectID = me
@@ -61,9 +62,9 @@ export const pack = (
 	if (me) {
 		//#region Watchしているかどうか
 		const watch = await Watching.findOne({
-			user_id: meId,
+			userId: meId,
 			channel_id: _channel.id,
-			deleted_at: { $exists: false }
+			deletedAt: { $exists: false }
 		});
 
 		_channel.is_watching = watch !== null;
