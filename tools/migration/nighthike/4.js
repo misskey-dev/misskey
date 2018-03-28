@@ -212,21 +212,21 @@ db.users.update({}, {
 		pinned_post_id: 'pinnedPostId',
 		is_suspended: 'isSuspended',
 		host_lower: 'hostLower',
-		'twitter.access_token': 'twitter.accessToken',
-		'twitter.access_token_secret': 'twitter.accessTokenSecret',
-		'twitter.user_id': 'twitter.userId',
-		'twitter.screen_name': 'twitter.screenName',
-		'line.user_id': 'line.userId',
-		last_used_at: 'lastUsedAt',
-		is_bot: 'isBot',
-		is_pro: 'isPro',
-		two_factor_secret: 'twoFactorSecret',
-		two_factor_enabled: 'twoFactorEnabled',
-		client_settings: 'clientSettings'
+		'account.last_used_at': 'account.lastUsedAt',
+		'account.is_bot': 'account.isBot',
+		'account.is_pro': 'account.isPro',
+		'account.two_factor_secret': 'account.twoFactorSecret',
+		'account.two_factor_enabled': 'account.twoFactorEnabled',
+		'account.client_settings': 'account.clientSettings'
 	},
 	$unset: {
 		likes_count: '',
 		liked_count: '',
-		latest_post: ''
+		latest_post: '',
+		'account.twitter.access_token': '',
+		'account.twitter.access_token_secret': '',
+		'account.twitter.user_id': '',
+		'account.twitter.screen_name': '',
+		'account.line.user_id': ''
 	}
 }, false, true);
