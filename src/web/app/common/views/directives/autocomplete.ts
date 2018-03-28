@@ -77,7 +77,7 @@ class Autocomplete {
 
 		if (mentionIndex != -1 && mentionIndex > emojiIndex) {
 			const username = text.substr(mentionIndex + 1);
-			if (username != '' && username.match(/^[a-zA-Z0-9-]+$/)) {
+			if (username != '' && username.match(/^[a-zA-Z0-9_]+$/)) {
 				this.open('user', username);
 				opened = true;
 			}
