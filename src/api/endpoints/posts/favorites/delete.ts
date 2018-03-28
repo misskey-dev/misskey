@@ -37,7 +37,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Delete favorite
-	await Favorite.deleteOne({
+	await Favorite.remove({
 		_id: exist._id
 	});
 
