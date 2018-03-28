@@ -3,17 +3,17 @@ import deepcopy = require('deepcopy');
 import db from '../../db/mongodb';
 import { IUser, pack as packUser } from './user';
 
-const Game = db.get<IGame>('othello_games');
-export default Game;
+const OthelloGame = db.get<IOthelloGame>('othelloGames');
+export default OthelloGame;
 
-export interface IGame {
+export interface IOthelloGame {
 	_id: mongo.ObjectID;
-	created_at: Date;
-	started_at: Date;
-	user1_id: mongo.ObjectID;
-	user2_id: mongo.ObjectID;
-	user1_accepted: boolean;
-	user2_accepted: boolean;
+	createdAt: Date;
+	startedAt: Date;
+	user1Id: mongo.ObjectID;
+	user2Id: mongo.ObjectID;
+	user1Accepted: boolean;
+	user2Accepted: boolean;
 
 	/**
 	 * どちらのプレイヤーが先行(黒)か
@@ -22,9 +22,9 @@ export interface IGame {
 	 */
 	black: number;
 
-	is_started: boolean;
-	is_ended: boolean;
-	winner_id: mongo.ObjectID;
+	isStarted: boolean;
+	isEnded: boolean;
+	winnerId: mongo.ObjectID;
 	logs: Array<{
 		at: Date;
 		color: boolean;
@@ -33,9 +33,9 @@ export interface IGame {
 	settings: {
 		map: string[];
 		bw: string | number;
-		is_llotheo: boolean;
-		can_put_everywhere: boolean;
-		looped_board: boolean;
+		isLlotheo: boolean;
+		canPutEverywhere: boolean;
+		loopedBoard: boolean;
 	};
 	form1: any;
 	form2: any;
@@ -62,11 +62,11 @@ export const pack = (
 
 	// Populate the game if 'game' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(game)) {
-		_game = await Game.findOne({
+		_game = await OthelloGame.findOne({
 			_id: game
 		});
 	} else if (typeof game === 'string') {
-		_game = await Game.findOne({
+		_game = await OthelloGame.findOne({
 			_id: new mongo.ObjectID(game)
 		});
 	} else {

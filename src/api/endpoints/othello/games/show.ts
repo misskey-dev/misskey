@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import Game, { pack } from '../../../models/othello-game';
+import OthelloGame, { pack } from '../../../models/othello-game';
 import Othello from '../../../../common/othello/core';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
@@ -7,7 +7,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [gameId, gameIdErr] = $(params.game_id).id().$;
 	if (gameIdErr) return rej('invalid game_id param');
 
-	const game = await Game.findOne({ _id: gameId });
+	const game = await OthelloGame.findOne({ _id: gameId });
 
 	if (game == null) {
 		return rej('game not found');

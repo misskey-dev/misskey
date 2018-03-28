@@ -1,3 +1,5 @@
+// このスクリプトを走らせる前か後に notifications コレクションはdropしてください
+
 db.access_tokens.renameCollection('accessTokens');
 db.accessTokens.update({}, {
 	$rename: {
@@ -107,6 +109,24 @@ db.mute.update({}, {
 		deleted_at: 'deletedAt',
 		mutee_id: 'muteeId',
 		muter_id: 'muterId',
+	}
+}, false, true);
+
+db.othello_games.renameCollection('othelloGames');
+db.othelloGames.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		started_at: 'startedAt',
+		is_started: 'isStarted',
+		is_ended: 'isEnded',
+		user1_id: 'user1Id',
+		user2_id: 'user2Id',
+		user1_accepted: 'user1Accepted',
+		user2_accepted: 'user2Accepted',
+		winner_id: 'winnerId',
+		'settings.is_llotheo': 'settings.isLlotheo',
+		'settings.can_put_everywhere': 'settings.canPutEverywhere',
+		'settings.looped_board': 'settings.loopedBoard',
 	}
 }, false, true);
 

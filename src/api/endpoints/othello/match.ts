@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import Matching, { pack as packMatching } from '../../models/othello-matching';
-import Game, { pack as packGame } from '../../models/othello-game';
+import OthelloGame, { pack as packGame } from '../../models/othello-game';
 import User from '../../models/user';
 import publishUserStream, { publishOthelloStream } from '../../event';
 import { eighteight } from '../../../common/othello/maps';
@@ -28,7 +28,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 		// Create game
-		const game = await Game.insert({
+		const game = await OthelloGame.insert({
 			created_at: new Date(),
 			user1_id: exist.parent_id,
 			user2_id: user._id,

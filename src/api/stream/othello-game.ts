@@ -1,7 +1,7 @@
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import * as CRC32 from 'crc-32';
-import Game, { pack } from '../models/othello-game';
+import OthelloGame, { pack } from '../models/othello-game';
 import { publishOthelloGameStream } from '../event';
 import Othello from '../../common/othello/core';
 import * as maps from '../../common/othello/maps';
@@ -60,14 +60,14 @@ export default function(request: websocket.request, connection: websocket.connec
 	});
 
 	async function updateSettings(settings) {
-		const game = await Game.findOne({ _id: gameId });
+		const game = await OthelloGame.findOne({ _id: gameId });
 
 		if (game.is_started) return;
 		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
 		if (game.user1_id.equals(user._id) && game.user1_accepted) return;
 		if (game.user2_id.equals(user._id) && game.user2_accepted) return;
 
-		await Game.update({ _id: gameId }, {
+		await OthelloGame.update({ _id: gameId }, {
 			$set: {
 				settings
 			}
@@ -77,7 +77,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	}
 
 	async function initForm(form) {
-		const game = await Game.findOne({ _id: gameId });
+		const game = await OthelloGame.findOne({ _id: gameId });
 
 		if (game.is_started) return;
 		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
@@ -88,7 +88,7 @@ export default function(request: websocket.request, connection: websocket.connec
 			form2: form
 		};
 
-		await Game.update({ _id: gameId }, {
+		await OthelloGame.update({ _id: gameId }, {
 			$set: set
 		});
 
@@ -99,7 +99,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	}
 
 	async function updateForm(id, value) {
-		const game = await Game.findOne({ _id: gameId });
+		const game = await OthelloGame.findOne({ _id: gameId });
 
 		if (game.is_started) return;
 		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
@@ -118,7 +118,7 @@ export default function(request: websocket.request, connection: websocket.connec
 			form1: form
 		};
 
-		await Game.update({ _id: gameId }, {
+		await OthelloGame.update({ _id: gameId }, {
 			$set: set
 		});
 
@@ -138,14 +138,14 @@ export default function(request: websocket.request, connection: websocket.connec
 	}
 
 	async function accept(accept: boolean) {
-		const game = await Game.findOne({ _id: gameId });
+		const game = await OthelloGame.findOne({ _id: gameId });
 
 		if (game.is_started) return;
 
 		let bothAccepted = false;
 
 		if (game.user1_id.equals(user._id)) {
-			await Game.update({ _id: gameId }, {
+			await OthelloGame.update({ _id: gameId }, {
 				$set: {
 					user1_accepted: accept
 				}
@@ -158,7 +158,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 			if (accept && game.user2_accepted) bothAccepted = true;
 		} else if (game.user2_id.equals(user._id)) {
-			await Game.update({ _id: gameId }, {
+			await OthelloGame.update({ _id: gameId }, {
 				$set: {
 					user2_accepted: accept
 				}
@@ -177,7 +177,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		if (bothAccepted) {
 			// 3秒後、まだacceptされていたらゲーム開始
 			setTimeout(async () => {
-				const freshGame = await Game.findOne({ _id: gameId });
+				const freshGame = await OthelloGame.findOne({ _id: gameId });
 				if (freshGame == null || freshGame.is_started || freshGame.is_ended) return;
 				if (!freshGame.user1_accepted || !freshGame.user2_accepted) return;
 
@@ -196,7 +196,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 				const map = freshGame.settings.map != null ? freshGame.settings.map : getRandomMap();
 
-				await Game.update({ _id: gameId }, {
+				await OthelloGame.update({ _id: gameId }, {
 					$set: {
 						started_at: new Date(),
 						is_started: true,
@@ -222,7 +222,7 @@ export default function(request: websocket.request, connection: websocket.connec
 						winner = null;
 					}
 
-					await Game.update({
+					await OthelloGame.update({
 						_id: gameId
 					}, {
 						$set: {
@@ -245,7 +245,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 	// 石を打つ
 	async function set(pos) {
-		const game = await Game.findOne({ _id: gameId });
+		const game = await OthelloGame.findOne({ _id: gameId });
 
 		if (!game.is_started) return;
 		if (game.is_ended) return;
@@ -288,7 +288,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString());
 
-		await Game.update({
+		await OthelloGame.update({
 			_id: gameId
 		}, {
 			$set: {
@@ -314,7 +314,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	}
 
 	async function check(crc32) {
-		const game = await Game.findOne({ _id: gameId });
+		const game = await OthelloGame.findOne({ _id: gameId });
 
 		if (!game.is_started) return;
 
