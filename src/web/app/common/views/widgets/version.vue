@@ -1,16 +1,17 @@
 <template>
-<p>ver {{ v }} (葵 aoi)</p>
+<p>ver {{ version }} ({{ codename }})</p>
 </template>
 
 <script lang="ts">
-import { version } from '../../../config';
+import { version, codename } from '../../../config';
 import define from '../../../common/define-widget';
 export default define({
 	name: 'version'
 }).extend({
 	data() {
 		return {
-			v: version
+			version,
+			codename
 		};
 	}
 });

@@ -23,7 +23,7 @@ const defaultSwagger = {
   "swagger": "2.0",
   "info": {
     "title": "Misskey API",
-    "version": "aoi"
+    "version": "nighthike"
   },
   "host": "api.misskey.xyz",
   "schemes": [
@@ -218,8 +218,8 @@ options.apis = files.map(c => {return `${apiRoot}/${c}`;});
 if(fs.existsSync('.config/config.yml')){
   var config = yaml.safeLoad(fs.readFileSync('./.config/config.yml', 'utf8'));
   options.swaggerDefinition.host = `api.${config.url.match(/\:\/\/(.+)$/)[1]}`;
-  options.swaggerDefinition.schemes = config.https.enable ? 
-                                      ['https'] : 
+  options.swaggerDefinition.schemes = config.https.enable ?
+                                      ['https'] :
                                       ['http'];
 }
 

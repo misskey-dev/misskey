@@ -12,19 +12,20 @@
 		<ul>
 			<li><a @click="signout">%fa:power-off%%i18n:mobile.tags.mk-settings-page.signout%</a></li>
 		</ul>
-		<p><small>ver {{ v }} (葵 aoi)</small></p>
+		<p><small>ver {{ version }} ({{ codename }})</small></p>
 	</div>
 </mk-ui>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { version } from '../../../config';
+import { version, codename } from '../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
-			v: version
+			version,
+			codename
 		};
 	},
 	mounted() {

@@ -89,7 +89,6 @@ function workerMain() {
  */
 async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
-	Logger.info(chalk.bold('Misskey <aoi>'));
 	Logger.info('Initializing...');
 
 	EnvironmentInfo.show();

@@ -2,6 +2,7 @@
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
 	"version": "0.0.4224",
+	"codename": "nighthike",
 	"license": "MIT",
 	"description": "A miniblog-based SNS",
 	"bugs": "https://github.com/syuilo/misskey/issues",
