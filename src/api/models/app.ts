@@ -83,7 +83,7 @@ export const pack = (
 		delete _app.secret;
 	}
 
-	_app.icon_url = _app.icon != null
+	_app.iconUrl = _app.icon != null
 		? `${config.drive_url}/${_app.icon}`
 		: `${config.drive_url}/app-default.jpg`;
 

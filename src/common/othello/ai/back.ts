@@ -56,7 +56,7 @@ process.on('message', async msg => {
 			}
 		});
 
-		post = res.created_post;
+		post = res.createdPost;
 		//#endregion
 	}
 

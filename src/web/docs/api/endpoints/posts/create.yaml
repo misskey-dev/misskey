@@ -45,7 +45,7 @@ params:
           en: "Choices of a poll"
 
 res:
-  - name: "created_post"
+  - name: "createdPost"
     type: "entity(Post)"
     optional: false
     desc:

@@ -270,7 +270,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// Reponse
 	res({
-		created_post: postObj
+		createdPost: postObj
 	});
 
 	//#region Post processes
