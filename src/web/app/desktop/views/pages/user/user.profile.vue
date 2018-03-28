@@ -2,21 +2,21 @@
 <div class="profile">
 	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
-		<p class="followed" v-if="user.is_followed">%i18n:desktop.tags.mk-user.follows-you%</p>
-		<p v-if="user.is_muted">%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
-		<p v-if="!user.is_muted"><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
+		<p class="followed" v-if="user.isFollowed">%i18n:desktop.tags.mk-user.follows-you%</p>
+		<p v-if="user.isMuted">%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
+		<p v-if="!user.isMuted"><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
 	</div>
 	<div class="description" v-if="user.description">{{ user.description }}</div>
 	<div class="birthday" v-if="user.host === null && user.account.profile.birthday">
 		<p>%fa:birthday-cake%{{ user.account.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
 	</div>
 	<div class="twitter" v-if="user.host === null && user.account.twitter">
-		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.account.twitter.screen_name}`" target="_blank">@{{ user.account.twitter.screen_name }}</a></p>
+		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.account.twitter.screenName}`" target="_blank">@{{ user.account.twitter.screenName }}</a></p>
 	</div>
 	<div class="status">
-		<p class="posts-count">%fa:angle-right%<a>{{ user.posts_count }}</a><b>投稿</b></p>
-		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.following_count }}</a>人を<b>フォロー</b></p>
-		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followers_count }}</a>人の<b>フォロワー</b></p>
+		<p class="posts-count">%fa:angle-right%<a>{{ user.postsCount }}</a><b>投稿</b></p>
+		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.followingCount }}</a>人を<b>フォロー</b></p>
+		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followersCount }}</a>人の<b>フォロワー</b></p>
 	</div>
 </div>
 </template>
@@ -49,9 +49,9 @@ export default Vue.extend({
 
 		mute() {
 			(this as any).api('mute/create', {
-				user_id: this.user.id
+				userId: this.user.id
 			}).then(() => {
-				this.user.is_muted = true;
+				this.user.isMuted = true;
 			}, () => {
 				alert('error');
 			});
@@ -59,9 +59,9 @@ export default Vue.extend({
 
 		unmute() {
 			(this as any).api('mute/delete', {
-				user_id: this.user.id
+				userId: this.user.id
 			}).then(() => {
-				this.user.is_muted = false;
+				this.user.isMuted = false;
 			}, () => {
 				alert('error');
 			});

@@ -1,3 +1,13 @@
+import * as mongo from 'mongodb';
 import db from '../../db/mongodb';
 
-export default db.get('sw_subscriptions') as any; // fuck type definition
+const SwSubscription = db.get<ISwSubscription>('swSubscriptions');
+export default SwSubscription;
+
+export interface ISwSubscription {
+	_id: mongo.ObjectID;
+	userId: mongo.ObjectID;
+	endpoint: string;
+	auth: string;
+	publickey: string;
+}

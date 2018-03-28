@@ -32,7 +32,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			},
 			$or: [
 				{
-					'account.last_used_at': {
+					'account.lastUsedAt': {
 						$gte: new Date(Date.now() - ms('7days'))
 					}
 				}, {
@@ -43,7 +43,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			limit: limit,
 			skip: offset,
 			sort: {
-				followers_count: -1
+				followersCount: -1
 			}
 		});
 

@@ -14,7 +14,7 @@ import { pack } from '../../../models/user';
  *     summary: Get an access token(userkey)
  *     parameters:
  *       -
- *         name: app_secret
+ *         name: appSecret
  *         description: App Secret
  *         in: formData
  *         required: true
@@ -50,9 +50,9 @@ import { pack } from '../../../models/user';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	// Get 'app_secret' parameter
-	const [appSecret, appSecretErr] = $(params.app_secret).string().$;
-	if (appSecretErr) return rej('invalid app_secret param');
+	// Get 'appSecret' parameter
+	const [appSecret, appSecretErr] = $(params.appSecret).string().$;
+	if (appSecretErr) return rej('invalid appSecret param');
 
 	// Lookup app
 	const app = await App.findOne({
@@ -71,21 +71,21 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const session = await AuthSess
 		.findOne({
 			token: token,
-			app_id: app._id
+			appId: app._id
 		});
 
 	if (session === null) {
 		return rej('session not found');
 	}
 
-	if (session.user_id == null) {
+	if (session.userId == null) {
 		return rej('this session is not allowed yet');
 	}
 
 	// Lookup access token
 	const accessToken = await AccessToken.findOne({
-		app_id: app._id,
-		user_id: session.user_id
+		appId: app._id,
+		userId: session.userId
 	});
 
 	// Delete session
@@ -101,8 +101,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	// Response
 	res({
-		access_token: accessToken.token,
-		user: await pack(session.user_id, null, {
+		accessToken: accessToken.token,
+		user: await pack(session.userId, null, {
 			detail: true
 		})
 	});

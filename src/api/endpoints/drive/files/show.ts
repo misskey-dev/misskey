@@ -12,15 +12,15 @@ import DriveFile, { pack } from '../../../models/drive-file';
  * @return {Promise<any>}
  */
 module.exports = async (params, user) => {
-	// Get 'file_id' parameter
-	const [fileId, fileIdErr] = $(params.file_id).id().$;
-	if (fileIdErr) throw 'invalid file_id param';
+	// Get 'fileId' parameter
+	const [fileId, fileIdErr] = $(params.fileId).id().$;
+	if (fileIdErr) throw 'invalid fileId param';
 
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			'metadata.user_id': user._id
+			'metadata.userId': user._id
 		});
 
 	if (file === null) {

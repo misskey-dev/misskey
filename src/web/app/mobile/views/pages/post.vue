@@ -38,7 +38,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('posts/show', {
-				post_id: this.$route.params.post
+				postId: this.$route.params.post
 			}).then(post => {
 				this.post = post;
 				this.fetching = false;

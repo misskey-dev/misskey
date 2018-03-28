@@ -55,10 +55,10 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 		}
 
 		const app = await App
-			.findOne({ _id: accessToken.app_id });
+			.findOne({ _id: accessToken.appId });
 
 		const user = await User
-			.findOne({ _id: accessToken.user_id });
+			.findOne({ _id: accessToken.userId });
 
 		return resolve({
 			app: app,

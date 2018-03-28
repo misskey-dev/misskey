@@ -48,12 +48,12 @@ homeStream.on('message', message => {
 	if (msg.type == 'mention' || msg.type == 'reply') {
 		const post = msg.body;
 
-		if (post.user_id == id) return;
+		if (post.userId == id) return;
 
 		// リアクションする
 		request.post(`${conf.api_url}/posts/reactions/create`, {
 			json: { i,
-				post_id: post.id,
+				postId: post.id,
 				reaction: 'love'
 			}
 		});
@@ -62,12 +62,12 @@ homeStream.on('message', message => {
 			if (post.text.indexOf('オセロ') > -1) {
 				request.post(`${conf.api_url}/posts/create`, {
 					json: { i,
-						reply_id: post.id,
+						replyId: post.id,
 						text: '良いですよ～'
 					}
 				});
 
-				invite(post.user_id);
+				invite(post.userId);
 			}
 		}
 	}
@@ -79,12 +79,12 @@ homeStream.on('message', message => {
 			if (message.text.indexOf('オセロ') > -1) {
 				request.post(`${conf.api_url}/messaging/messages/create`, {
 					json: { i,
-						user_id: message.user_id,
+						userId: message.userId,
 						text: '良いですよ～'
 					}
 				});
 
-				invite(message.user_id);
+				invite(message.userId);
 			}
 		}
 	}
@@ -94,7 +94,7 @@ homeStream.on('message', message => {
 function invite(userId) {
 	request.post(`${conf.api_url}/othello/match`, {
 		json: { i,
-			user_id: userId
+			userId: userId
 		}
 	});
 }
@@ -225,7 +225,7 @@ async function onInviteMe(inviter) {
 	const game = await request.post(`${conf.api_url}/othello/match`, {
 		json: {
 			i,
-			user_id: inviter.id
+			userId: inviter.id
 		}
 	});
 

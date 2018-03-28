@@ -2,7 +2,7 @@
 <div class="mk-post-detail" :title="title">
 	<button
 		class="read-more"
-		v-if="p.reply && p.reply.reply_id && context == null"
+		v-if="p.reply && p.reply.replyId && context == null"
 		title="会話をもっと読み込む"
 		@click="fetchContext"
 		:disabled="contextFetching"
@@ -18,8 +18,8 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="post.user_id">
-				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
+			<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="post.userId">
+				<img class="avatar" :src="`${post.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
 			<router-link class="name" :href="`/@${acct}`">{{ post.user.name }}</router-link>
@@ -28,13 +28,13 @@
 	</div>
 	<article>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
-			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
+			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<header>
 			<router-link class="name" :to="`/@${acct}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
 			<span class="username">@{{ acct }}</span>
 			<router-link class="time" :to="`/@${acct}/${p.id}`">
-				<mk-time :time="p.created_at"/>
+				<mk-time :time="p.createdAt"/>
 			</router-link>
 		</header>
 		<div class="body">
@@ -56,12 +56,12 @@
 		<footer>
 			<mk-reactions-viewer :post="p"/>
 			<button @click="reply" title="返信">
-				%fa:reply%<p class="count" v-if="p.replies_count > 0">{{ p.replies_count }}</p>
+				%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
 			<button @click="repost" title="Repost">
-				%fa:retweet%<p class="count" v-if="p.repost_count > 0">{{ p.repost_count }}</p>
+				%fa:retweet%<p class="count" v-if="p.repostCount > 0">{{ p.repostCount }}</p>
 			</button>
-			<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="リアクション">
+			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="リアクション">
 				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">
@@ -115,21 +115,21 @@ export default Vue.extend({
 		isRepost(): boolean {
 			return (this.post.repost &&
 				this.post.text == null &&
-				this.post.media_ids == null &&
+				this.post.mediaIds == null &&
 				this.post.poll == null);
 		},
 		p(): any {
 			return this.isRepost ? this.post.repost : this.post;
 		},
 		reactionsCount(): number {
-			return this.p.reaction_counts
-				? Object.keys(this.p.reaction_counts)
-					.map(key => this.p.reaction_counts[key])
+			return this.p.reactionCounts
+				? Object.keys(this.p.reactionCounts)
+					.map(key => this.p.reactionCounts[key])
 					.reduce((a, b) => a + b)
 				: 0;
 		},
 		title(): string {
-			return dateStringify(this.p.created_at);
+			return dateStringify(this.p.createdAt);
 		},
 		urls(): string[] {
 			if (this.p.ast) {
@@ -145,7 +145,7 @@ export default Vue.extend({
 		// Get replies
 		if (!this.compact) {
 			(this as any).api('posts/replies', {
-				post_id: this.p.id,
+				postId: this.p.id,
 				limit: 8
 			}).then(replies => {
 				this.replies = replies;
@@ -154,7 +154,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.client_settings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
@@ -176,7 +176,7 @@ export default Vue.extend({
 
 			// Fetch context
 			(this as any).api('posts/context', {
-				post_id: this.p.reply_id
+				postId: this.p.replyId
 			}).then(context => {
 				this.contextFetching = false;
 				this.context = context.reverse();

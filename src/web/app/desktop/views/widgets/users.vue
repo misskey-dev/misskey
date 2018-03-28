@@ -8,7 +8,7 @@
 	<template v-else-if="users.length != 0">
 		<div class="user" v-for="_user in users">
 			<router-link class="avatar-anchor" :to="`/@${getAcct(_user)}`">
-				<img class="avatar" :src="`${_user.avatar_url}?thumbnail&size=42`" alt="" v-user-preview="_user.id"/>
+				<img class="avatar" :src="`${_user.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="_user.id"/>
 			</router-link>
 			<div class="body">
 				<router-link class="name" :to="`/@${getAcct(_user)}`" v-user-preview="_user.id">{{ _user.name }}</router-link>

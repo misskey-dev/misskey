@@ -52,8 +52,8 @@ export default Vue.extend({
 	computed: {
 		_messages(): any[] {
 			return (this.messages as any).map(message => {
-				const date = new Date(message.created_at).getDate();
-				const month = new Date(message.created_at).getMonth() + 1;
+				const date = new Date(message.createdAt).getDate();
+				const month = new Date(message.createdAt).getMonth() + 1;
 				message._date = date;
 				message._datetext = `${month}月 ${date}日`;
 				return message;
@@ -123,9 +123,9 @@ export default Vue.extend({
 				const max = this.existMoreMessages ? 20 : 10;
 
 				(this as any).api('messaging/messages', {
-					user_id: this.user.id,
+					userId: this.user.id,
 					limit: max + 1,
-					until_id: this.existMoreMessages ? this.messages[0].id : undefined
+					untilId: this.existMoreMessages ? this.messages[0].id : undefined
 				}).then(messages => {
 					if (messages.length == max + 1) {
 						this.existMoreMessages = true;
@@ -158,7 +158,7 @@ export default Vue.extend({
 			const isBottom = this.isBottom();
 
 			this.messages.push(message);
-			if (message.user_id != (this as any).os.i.id && !document.hidden) {
+			if (message.userId != (this as any).os.i.id && !document.hidden) {
 				this.connection.send({
 					type: 'read',
 					id: message.id
@@ -170,7 +170,7 @@ export default Vue.extend({
 				this.$nextTick(() => {
 					this.scrollToBottom();
 				});
-			} else if (message.user_id != (this as any).os.i.id) {
+			} else if (message.userId != (this as any).os.i.id) {
 				// Notify
 				this.notify('%i18n:common.tags.mk-messaging-room.new-message%');
 			}
@@ -181,7 +181,7 @@ export default Vue.extend({
 			ids.forEach(id => {
 				if (this.messages.some(x => x.id == id)) {
 					const exist = this.messages.map(x => x.id).indexOf(id);
-					this.messages[exist].is_read = true;
+					this.messages[exist].isRead = true;
 				}
 			});
 		},
@@ -223,7 +223,7 @@ export default Vue.extend({
 		onVisibilitychange() {
 			if (document.hidden) return;
 			this.messages.forEach(message => {
-				if (message.user_id !== (this as any).os.i.id && !message.is_read) {
+				if (message.userId !== (this as any).os.i.id && !message.isRead) {
 					this.connection.send({
 						type: 'read',
 						id: message.id

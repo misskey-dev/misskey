@@ -12,13 +12,13 @@ import Post from '../../models/post';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	if (!user.account.is_pro) {
+	if (!user.account.isPro) {
 		return rej('This endpoint is available only from a Pro account');
 	}
 
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Get categorizee
 	const post = await Post.findOne({

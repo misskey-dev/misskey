@@ -100,7 +100,7 @@ const addFile = async (
 		// Check if there is a file with the same hash
 		const much = await DriveFile.findOne({
 			md5: hash,
-			'metadata.user_id': user._id
+			'metadata.userId': user._id
 		});
 
 		if (much !== null) {
@@ -172,7 +172,7 @@ const addFile = async (
 			}
 			const driveFolder = await DriveFolder.findOne({
 				_id: folderId,
-				user_id: user._id
+				userId: user._id
 			});
 			if (!driveFolder) {
 				throw 'folder-not-found';
@@ -184,7 +184,7 @@ const addFile = async (
 			// Calculate drive usage
 			const usage = await DriveFile
 				.aggregate([{
-					$match: { 'metadata.user_id': user._id }
+					$match: { 'metadata.userId': user._id }
 				}, {
 					$project: {
 						length: true
@@ -205,7 +205,7 @@ const addFile = async (
 			log(`drive usage is ${usage}`);
 
 			// If usage limit exceeded
-			if (usage + size > user.drive_capacity) {
+			if (usage + size > user.driveCapacity) {
 				throw 'no-free-space';
 			}
 		})()
@@ -221,12 +221,12 @@ const addFile = async (
 	}
 
 	if (averageColor) {
-		properties['average_color'] = averageColor;
+		properties['avgColor'] = averageColor;
 	}
 
 	return addToGridFS(detectedName, readable, mime, {
-		user_id: user._id,
-		folder_id: folder !== null ? folder._id : null,
+		userId: user._id,
+		folderId: folder !== null ? folder._id : null,
 		comment: comment,
 		properties: properties
 	});
@@ -297,7 +297,7 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 					id: file._id.toString(),
 					body: {
 						name: file.name,
-						user_id: user._id.toString()
+						userId: user._id.toString()
 					}
 				});
 			}

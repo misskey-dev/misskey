@@ -160,7 +160,7 @@ export default Vue.extend({
 
 		onStreamDriveFileUpdated(file) {
 			const current = this.folder ? this.folder.id : null;
-			if (current != file.folder_id) {
+			if (current != file.folderId) {
 				this.removeFile(file);
 			} else {
 				this.addFile(file, true);
@@ -173,7 +173,7 @@ export default Vue.extend({
 
 		onStreamDriveFolderUpdated(folder) {
 			const current = this.folder ? this.folder.id : null;
-			if (current != folder.parent_id) {
+			if (current != folder.parentId) {
 				this.removeFolder(folder);
 			} else {
 				this.addFolder(folder, true);
@@ -282,8 +282,8 @@ export default Vue.extend({
 				if (this.files.some(f => f.id == file.id)) return;
 				this.removeFile(file.id);
 				(this as any).api('drive/files/update', {
-					file_id: file.id,
-					folder_id: this.folder ? this.folder.id : null
+					fileId: file.id,
+					folderId: this.folder ? this.folder.id : null
 				});
 			}
 			//#endregion
@@ -298,8 +298,8 @@ export default Vue.extend({
 				if (this.folders.some(f => f.id == folder.id)) return false;
 				this.removeFolder(folder.id);
 				(this as any).api('drive/folders/update', {
-					folder_id: folder.id,
-					parent_id: this.folder ? this.folder.id : null
+					folderId: folder.id,
+					parentId: this.folder ? this.folder.id : null
 				}).then(() => {
 					// noop
 				}).catch(err => {
@@ -332,7 +332,7 @@ export default Vue.extend({
 			}).then(url => {
 				(this as any).api('drive/files/upload_from_url', {
 					url: url,
-					folder_id: this.folder ? this.folder.id : undefined
+					folderId: this.folder ? this.folder.id : undefined
 				});
 
 				(this as any).apis.dialog({
@@ -352,7 +352,7 @@ export default Vue.extend({
 			}).then(name => {
 				(this as any).api('drive/folders/create', {
 					name: name,
-					folder_id: this.folder ? this.folder.id : undefined
+					folderId: this.folder ? this.folder.id : undefined
 				}).then(folder => {
 					this.addFolder(folder, true);
 				});
@@ -412,7 +412,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('drive/folders/show', {
-				folder_id: target
+				folderId: target
 			}).then(folder => {
 				this.folder = folder;
 				this.hierarchyFolders = [];
@@ -431,7 +431,7 @@ export default Vue.extend({
 
 		addFolder(folder, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
-			if (current != folder.parent_id) return;
+			if (current != folder.parentId) return;
 
 			if (this.folders.some(f => f.id == folder.id)) {
 				const exist = this.folders.map(f => f.id).indexOf(folder.id);
@@ -448,7 +448,7 @@ export default Vue.extend({
 
 		addFile(file, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
-			if (current != file.folder_id) return;
+			if (current != file.folderId) return;
 
 			if (this.files.some(f => f.id == file.id)) {
 				const exist = this.files.map(f => f.id).indexOf(file.id);
@@ -514,7 +514,7 @@ export default Vue.extend({
 
 			// フォルダ一覧取得
 			(this as any).api('drive/folders', {
-				folder_id: this.folder ? this.folder.id : null,
+				folderId: this.folder ? this.folder.id : null,
 				limit: foldersMax + 1
 			}).then(folders => {
 				if (folders.length == foldersMax + 1) {
@@ -527,7 +527,7 @@ export default Vue.extend({
 
 			// ファイル一覧取得
 			(this as any).api('drive/files', {
-				folder_id: this.folder ? this.folder.id : null,
+				folderId: this.folder ? this.folder.id : null,
 				limit: filesMax + 1
 			}).then(files => {
 				if (files.length == filesMax + 1) {
@@ -557,7 +557,7 @@ export default Vue.extend({
 
 			// ファイル一覧取得
 			(this as any).api('drive/files', {
-				folder_id: this.folder ? this.folder.id : null,
+				folderId: this.folder ? this.folder.id : null,
 				limit: max + 1
 			}).then(files => {
 				if (files.length == max + 1) {

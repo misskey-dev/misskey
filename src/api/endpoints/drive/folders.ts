@@ -17,30 +17,30 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
-	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) return rej('invalid since_id param');
+	// Get 'sinceId' parameter
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	if (sinceIdErr) return rej('invalid sinceId param');
 
-	// Get 'until_id' parameter
-	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
-	if (untilIdErr) return rej('invalid until_id param');
+	// Get 'untilId' parameter
+	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	if (untilIdErr) return rej('invalid untilId param');
 
-	// Check if both of since_id and until_id is specified
+	// Check if both of sinceId and untilId is specified
 	if (sinceId && untilId) {
-		return rej('cannot set since_id and until_id');
+		return rej('cannot set sinceId and untilId');
 	}
 
-	// Get 'folder_id' parameter
-	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) return rej('invalid folder_id param');
+	// Get 'folderId' parameter
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	if (folderIdErr) return rej('invalid folderId param');
 
 	// Construct query
 	const sort = {
 		_id: -1
 	};
 	const query = {
-		user_id: user._id,
-		parent_id: folderId
+		userId: user._id,
+		parentId: folderId
 	} as any;
 	if (sinceId) {
 		sort._id = 1;

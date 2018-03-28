@@ -5,16 +5,16 @@
 			<x-profile :user="user"/>
 			<x-photos :user="user"/>
 			<x-followers-you-know v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
-			<p v-if="user.host === null">%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time :time="user.account.last_used_at"/></b></p>
+			<p v-if="user.host === null">%i18n:desktop.tags.mk-user.last-used-at%: <b><mk-time :time="user.account.lastUsedAt"/></b></p>
 		</div>
 	</div>
 	<main>
-		<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" :compact="true"/>
+		<mk-post-detail v-if="user.pinnedPost" :post="user.pinnedPost" :compact="true"/>
 		<x-timeline class="timeline" ref="tl" :user="user"/>
 	</main>
 	<div>
 		<div ref="right">
-			<mk-calendar @chosen="warp" :start="new Date(user.created_at)"/>
+			<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 			<mk-activity :user="user"/>
 			<x-friends :user="user"/>
 			<div class="nav"><mk-nav/></div>

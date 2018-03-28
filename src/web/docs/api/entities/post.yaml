@@ -11,13 +11,13 @@ props:
     desc:
       ja: "投稿ID"
       en: "The ID of this post"
-  - name: "created_at"
+  - name: "createdAt"
     type: "date"
     optional: false
     desc:
       ja: "投稿日時"
       en: "The posted date of this post"
-  - name: "via_mobile"
+  - name: "viaMobile"
     type: "boolean"
     optional: true
     desc:
@@ -29,7 +29,7 @@ props:
     desc:
       ja: "投稿の本文"
       en: "The text of this post"
-  - name: "media_ids"
+  - name: "mediaIds"
     type: "id(DriveFile)[]"
     optional: true
     desc:
@@ -41,7 +41,7 @@ props:
     desc:
       ja: "添付されているメディア"
       en: "The attached media"
-  - name: "user_id"
+  - name: "userId"
     type: "id(User)"
     optional: false
     desc:
@@ -53,18 +53,18 @@ props:
     desc:
       ja: "投稿者"
       en: "The author of this post"
-  - name: "my_reaction"
+  - name: "myReaction"
     type: "string"
     optional: true
     desc:
       ja: "この投稿に対する自分の<a href='/docs/api/reactions'>リアクション</a>"
       en: "The your <a href='/docs/api/reactions'>reaction</a> of this post"
-  - name: "reaction_counts"
+  - name: "reactionCounts"
     type: "object"
     optional: false
     desc:
       ja: "<a href='/docs/api/reactions'>リアクション</a>をキーとし、この投稿に対するそのリアクションの数を値としたオブジェクト"
-  - name: "reply_id"
+  - name: "replyId"
     type: "id(Post)"
     optional: true
     desc:
@@ -76,7 +76,7 @@ props:
     desc:
       ja: "返信した投稿"
       en: "The replyed post"
-  - name: "repost_id"
+  - name: "repostId"
     type: "id(Post)"
     optional: true
     desc:
@@ -110,7 +110,7 @@ props:
             desc:
               ja: "選択肢ID"
               en: "The ID of this choice"
-          - name: "is_voted"
+          - name: "isVoted"
             type: "boolean"
             optional: true
             desc:

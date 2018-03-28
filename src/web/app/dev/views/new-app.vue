@@ -77,8 +77,8 @@ export default Vue.extend({
 
 			this.nidState = 'wait';
 
-			(this as any).api('app/name_id/available', {
-				name_id: this.nid
+			(this as any).api('app/nameId/available', {
+				nameId: this.nid
 			}).then(result => {
 				this.nidState = result.available ? 'ok' : 'unavailable';
 			}).catch(err => {
@@ -90,9 +90,9 @@ export default Vue.extend({
 		onSubmit() {
 			(this as any).api('app/create', {
 				name: this.name,
-				name_id: this.nid,
+				nameId: this.nid,
 				description: this.description,
-				callback_url: this.cb,
+				callbackUrl: this.cb,
 				permission: this.permission
 			}).then(() => {
 				location.href = '/apps';

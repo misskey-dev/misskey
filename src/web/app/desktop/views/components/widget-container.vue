@@ -24,8 +24,8 @@ export default Vue.extend({
 	computed: {
 		withGradient(): boolean {
 			return (this as any).os.isSignedIn
-				? (this as any).os.i.account.client_settings.gradientWindowHeader != null
-					? (this as any).os.i.account.client_settings.gradientWindowHeader
+				? (this as any).os.i.account.clientSettings.gradientWindowHeader != null
+					? (this as any).os.i.account.clientSettings.gradientWindowHeader
 					: false
 				: false;
 		}

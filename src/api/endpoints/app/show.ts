@@ -9,15 +9,15 @@ import App, { pack } from '../../models/app';
  * /app/show:
  *   post:
  *     summary: Show an application's information
- *     description: Require app_id or name_id
+ *     description: Require appId or nameId
  *     parameters:
  *       -
- *         name: app_id
+ *         name: appId
  *         description: Application ID
  *         in: formData
  *         type: string
  *       -
- *         name: name_id
+ *         name: nameId
  *         description: Application unique name
  *         in: formData
  *         type: string
@@ -44,22 +44,22 @@ import App, { pack } from '../../models/app';
  * @return {Promise<any>}
  */
 module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => {
-	// Get 'app_id' parameter
-	const [appId, appIdErr] = $(params.app_id).optional.id().$;
-	if (appIdErr) return rej('invalid app_id param');
+	// Get 'appId' parameter
+	const [appId, appIdErr] = $(params.appId).optional.id().$;
+	if (appIdErr) return rej('invalid appId param');
 
-	// Get 'name_id' parameter
-	const [nameId, nameIdErr] = $(params.name_id).optional.string().$;
-	if (nameIdErr) return rej('invalid name_id param');
+	// Get 'nameId' parameter
+	const [nameId, nameIdErr] = $(params.nameId).optional.string().$;
+	if (nameIdErr) return rej('invalid nameId param');
 
 	if (appId === undefined && nameId === undefined) {
-		return rej('app_id or name_id is required');
+		return rej('appId or nameId is required');
 	}
 
 	// Lookup app
 	const app = appId !== undefined
 		? await App.findOne({ _id: appId })
-		: await App.findOne({ name_id_lower: nameId.toLowerCase() });
+		: await App.findOne({ nameIdLower: nameId.toLowerCase() });
 
 	if (app === null) {
 		return rej('app not found');
@@ -67,6 +67,6 @@ module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => 
 
 	// Send response
 	res(await pack(app, user, {
-		includeSecret: isSecure && app.user_id.equals(user._id)
+		includeSecret: isSecure && app.userId.equals(user._id)
 	}));
 });

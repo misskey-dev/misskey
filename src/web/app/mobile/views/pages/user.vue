@@ -3,18 +3,18 @@
 	<span slot="header" v-if="!fetching">%fa:user% {{ user.name }}</span>
 	<main v-if="!fetching">
 		<header>
-			<div class="banner" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''"></div>
+			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''"></div>
 			<div class="body">
 				<div class="top">
 					<a class="avatar">
-						<img :src="`${user.avatar_url}?thumbnail&size=200`" alt="avatar"/>
+						<img :src="`${user.avatarUrl}?thumbnail&size=200`" alt="avatar"/>
 					</a>
 					<mk-follow-button v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
 					<h1>{{ user.name }}</h1>
 					<span class="username">@{{ acct }}</span>
-					<span class="followed" v-if="user.is_followed">%i18n:mobile.tags.mk-user.follows-you%</span>
+					<span class="followed" v-if="user.isFollowed">%i18n:mobile.tags.mk-user.follows-you%</span>
 				</div>
 				<div class="description">{{ user.description }}</div>
 				<div class="info">
@@ -27,15 +27,15 @@
 				</div>
 				<div class="status">
 					<a>
-						<b>{{ user.posts_count | number }}</b>
+						<b>{{ user.postsCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.posts%</i>
 					</a>
 					<a :href="`@${acct}/following`">
-						<b>{{ user.following_count | number }}</b>
+						<b>{{ user.followingCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
 					</a>
 					<a :href="`@${acct}/followers`">
-						<b>{{ user.followers_count | number }}</b>
+						<b>{{ user.followersCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
 				</div>

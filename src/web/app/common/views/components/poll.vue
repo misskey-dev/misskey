@@ -4,7 +4,7 @@
 		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? '%i18n:common.tags.mk-poll.vote-to%'.replace('{}', choice.text) : ''">
 			<div class="backdrop" :style="{ 'width': (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
-				<template v-if="choice.is_voted">%fa:check%</template>
+				<template v-if="choice.isVoted">%fa:check%</template>
 				<span>{{ choice.text }}</span>
 				<span class="votes" v-if="showResult">({{ '%i18n:common.tags.mk-poll.vote-count%'.replace('{}', choice.votes) }})</span>
 			</span>
@@ -36,7 +36,7 @@ export default Vue.extend({
 			return this.poll.choices.reduce((a, b) => a + b.votes, 0);
 		},
 		isVoted(): boolean {
-			return this.poll.choices.some(c => c.is_voted);
+			return this.poll.choices.some(c => c.isVoted);
 		}
 	},
 	created() {
@@ -47,15 +47,15 @@ export default Vue.extend({
 			this.showResult = !this.showResult;
 		},
 		vote(id) {
-			if (this.poll.choices.some(c => c.is_voted)) return;
+			if (this.poll.choices.some(c => c.isVoted)) return;
 			(this as any).api('posts/polls/vote', {
-				post_id: this.post.id,
+				postId: this.post.id,
 				choice: id
 			}).then(() => {
 				this.poll.choices.forEach(c => {
 					if (c.id == id) {
 						c.votes++;
-						Vue.set(c, 'is_voted', true);
+						Vue.set(c, 'isVoted', true);
 					}
 				});
 				this.showResult = true;

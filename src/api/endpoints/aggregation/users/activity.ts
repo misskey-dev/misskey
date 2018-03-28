@@ -18,9 +18,9 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const [limit = 365, limitErr] = $(params.limit).optional.number().range(1, 365).$;
 	if (limitErr) return rej('invalid limit param');
 
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Lookup user
 	const user = await User.findOne({
@@ -37,25 +37,25 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	const datas = await Post
 		.aggregate([
-			{ $match: { user_id: user._id } },
+			{ $match: { userId: user._id } },
 			{ $project: {
-				repost_id: '$repost_id',
-				reply_id: '$reply_id',
-				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
+				repostId: '$repostId',
+				replyId: '$replyId',
+				createdAt: { $add: ['$createdAt', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
 			{ $project: {
 				date: {
-					year: { $year: '$created_at' },
-					month: { $month: '$created_at' },
-					day: { $dayOfMonth: '$created_at' }
+					year: { $year: '$createdAt' },
+					month: { $month: '$createdAt' },
+					day: { $dayOfMonth: '$createdAt' }
 				},
 				type: {
 					$cond: {
-						if: { $ne: ['$repost_id', null] },
+						if: { $ne: ['$repostId', null] },
 						then: 'repost',
 						else: {
 							$cond: {
-								if: { $ne: ['$reply_id', null] },
+								if: { $ne: ['$replyId', null] },
 								then: 'reply',
 								else: 'post'
 							}

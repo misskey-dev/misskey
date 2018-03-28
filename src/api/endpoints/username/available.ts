@@ -20,7 +20,7 @@ module.exports = async (params) => new Promise(async (res, rej) => {
 	const exist = await User
 		.count({
 			host: null,
-			username_lower: username.toLowerCase()
+			usernameLower: username.toLowerCase()
 		}, {
 			limit: 1
 		});

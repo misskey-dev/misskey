@@ -56,14 +56,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Fetch exist access token
 	const exist = await AccessToken.findOne({
-		app_id: session.app_id,
-		user_id: user._id,
+		appId: session.appId,
+		userId: user._id,
 	});
 
 	if (exist === null) {
 		// Lookup app
 		const app = await App.findOne({
-			_id: session.app_id
+			_id: session.appId
 		});
 
 		// Generate Hash
@@ -73,9 +73,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 		// Insert access token doc
 		await AccessToken.insert({
-			created_at: new Date(),
-			app_id: session.app_id,
-			user_id: user._id,
+			createdAt: new Date(),
+			appId: session.appId,
+			userId: user._id,
 			token: accessToken,
 			hash: hash
 		});
@@ -84,7 +84,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Update session
 	await AuthSess.update(session._id, {
 		$set: {
-			user_id: user._id
+			userId: user._id
 		}
 	});
 

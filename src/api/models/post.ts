@@ -20,18 +20,20 @@ export function isValidText(text: string): boolean {
 
 export type IPost = {
 	_id: mongo.ObjectID;
-	channel_id: mongo.ObjectID;
-	created_at: Date;
-	media_ids: mongo.ObjectID[];
-	reply_id: mongo.ObjectID;
-	repost_id: mongo.ObjectID;
+	channelId: mongo.ObjectID;
+	createdAt: Date;
+	mediaIds: mongo.ObjectID[];
+	replyId: mongo.ObjectID;
+	repostId: mongo.ObjectID;
 	poll: any; // todo
 	text: string;
-	user_id: mongo.ObjectID;
-	app_id: mongo.ObjectID;
-	category: string;
-	is_category_verified: boolean;
-	via_mobile: boolean;
+	userId: mongo.ObjectID;
+	appId: mongo.ObjectID;
+	viaMobile: boolean;
+	repostCount: number;
+	repliesCount: number;
+	reactionCounts: any;
+	mentions: mongo.ObjectID[];
 	geo: {
 		latitude: number;
 		longitude: number;
@@ -102,21 +104,21 @@ export const pack = async (
 	}
 
 	// Populate user
-	_post.user = packUser(_post.user_id, meId);
+	_post.user = packUser(_post.userId, meId);
 
 	// Populate app
-	if (_post.app_id) {
-		_post.app = packApp(_post.app_id);
+	if (_post.appId) {
+		_post.app = packApp(_post.appId);
 	}
 
 	// Populate channel
-	if (_post.channel_id) {
-		_post.channel = packChannel(_post.channel_id);
+	if (_post.channelId) {
+		_post.channel = packChannel(_post.channelId);
 	}
 
 	// Populate media
-	if (_post.media_ids) {
-		_post.media = Promise.all(_post.media_ids.map(fileId =>
+	if (_post.mediaIds) {
+		_post.media = Promise.all(_post.mediaIds.map(fileId =>
 			packFile(fileId)
 		));
 	}
@@ -126,7 +128,7 @@ export const pack = async (
 		// Get previous post info
 		_post.prev = (async () => {
 			const prev = await Post.findOne({
-				user_id: _post.user_id,
+				userId: _post.userId,
 				_id: {
 					$lt: id
 				}
@@ -144,7 +146,7 @@ export const pack = async (
 		// Get next post info
 		_post.next = (async () => {
 			const next = await Post.findOne({
-				user_id: _post.user_id,
+				userId: _post.userId,
 				_id: {
 					$gt: id
 				}
@@ -159,16 +161,16 @@ export const pack = async (
 			return next ? next._id : null;
 		})();
 
-		if (_post.reply_id) {
+		if (_post.replyId) {
 			// Populate reply to post
-			_post.reply = pack(_post.reply_id, meId, {
+			_post.reply = pack(_post.replyId, meId, {
 				detail: false
 			});
 		}
 
-		if (_post.repost_id) {
+		if (_post.repostId) {
 			// Populate repost
-			_post.repost = pack(_post.repost_id, meId, {
+			_post.repost = pack(_post.repostId, meId, {
 				detail: _post.text == null
 			});
 		}
@@ -178,15 +180,15 @@ export const pack = async (
 			_post.poll = (async (poll) => {
 				const vote = await Vote
 					.findOne({
-						user_id: meId,
-						post_id: id
+						userId: meId,
+						postId: id
 					});
 
 				if (vote != null) {
 					const myChoice = poll.choices
 						.filter(c => c.id == vote.choice)[0];
 
-					myChoice.is_voted = true;
+					myChoice.isVoted = true;
 				}
 
 				return poll;
@@ -195,12 +197,12 @@ export const pack = async (
 
 		// Fetch my reaction
 		if (meId) {
-			_post.my_reaction = (async () => {
+			_post.myReaction = (async () => {
 				const reaction = await Reaction
 					.findOne({
-						user_id: meId,
-						post_id: id,
-						deleted_at: { $exists: false }
+						userId: meId,
+						postId: id,
+						deletedAt: { $exists: false }
 					});
 
 				if (reaction) {

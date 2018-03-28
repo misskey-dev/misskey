@@ -34,7 +34,7 @@ export default Vue.extend({
 	},
 	computed: {
 		alone(): boolean {
-			return (this as any).os.i.following_count == 0;
+			return (this as any).os.i.followingCount == 0;
 		}
 	},
 	mounted() {
@@ -65,7 +65,7 @@ export default Vue.extend({
 
 			(this as any).api('posts/timeline', {
 				limit: 11,
-				until_date: this.date ? this.date.getTime() : undefined
+				untilDate: this.date ? this.date.getTime() : undefined
 			}).then(posts => {
 				if (posts.length == 11) {
 					posts.pop();
@@ -82,7 +82,7 @@ export default Vue.extend({
 			this.moreFetching = true;
 			(this as any).api('posts/timeline', {
 				limit: 11,
-				until_id: this.posts[this.posts.length - 1].id
+				untilId: this.posts[this.posts.length - 1].id
 			}).then(posts => {
 				if (posts.length == 11) {
 					posts.pop();
@@ -107,7 +107,7 @@ export default Vue.extend({
 			this.fetch();
 		},
 		onScroll() {
-			if ((this as any).os.i.account.client_settings.fetchOnScroll !== false) {
+			if ((this as any).os.i.account.clientSettings.fetchOnScroll !== false) {
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.more();
 			}

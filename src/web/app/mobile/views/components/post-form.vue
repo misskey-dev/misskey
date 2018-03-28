@@ -111,11 +111,11 @@ export default Vue.extend({
 		},
 		post() {
 			this.posting = true;
-			const viaMobile = (this as any).os.i.account.client_settings.disableViaMobile !== true;
+			const viaMobile = (this as any).os.i.account.clientSettings.disableViaMobile !== true;
 			(this as any).api('posts/create', {
 				text: this.text == '' ? undefined : this.text,
-				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
-				reply_id: this.reply ? this.reply.id : undefined,
+				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				replyId: this.reply ? this.reply.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				geo: this.geo ? {
 					latitude: this.geo.latitude,
@@ -126,7 +126,7 @@ export default Vue.extend({
 					heading: isNaN(this.geo.heading) ? null : this.geo.heading,
 					speed: this.geo.speed,
 				} : null,
-				via_mobile: viaMobile
+				viaMobile: viaMobile
 			}).then(data => {
 				this.$emit('post');
 				this.$destroy();

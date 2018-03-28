@@ -14,11 +14,11 @@ import event from '../../event';
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Update documents
 	await Notification.update({
-		notifiee_id: user._id,
-		is_read: false
+		notifieeId: user._id,
+		isRead: false
 	}, {
 		$set: {
-			is_read: true
+			isRead: true
 		}
 	}, {
 		multi: true

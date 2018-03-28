@@ -29,8 +29,8 @@ export default Vue.extend({
 	},
 	mounted() {
 		(this as any).api('users/posts', {
-			user_id: this.user.id,
-			with_media: true,
+			userId: this.user.id,
+			withMedia: true,
 			limit: 6
 		}).then(posts => {
 			posts.forEach(post => {

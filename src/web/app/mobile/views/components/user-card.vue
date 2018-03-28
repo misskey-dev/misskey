@@ -1,8 +1,8 @@
 <template>
 <div class="mk-user-card">
-	<header :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''">
+	<header :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''">
 		<a :href="`/@${acct}`">
-			<img :src="`${user.avatar_url}?thumbnail&size=200`" alt="avatar"/>
+			<img :src="`${user.avatarUrl}?thumbnail&size=200`" alt="avatar"/>
 		</a>
 	</header>
 	<a class="name" :href="`/@${acct}`" target="_blank">{{ user.name }}</a>

@@ -14,16 +14,16 @@ import User from '../../models/user';
  * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).optional.id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).optional.id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'username' parameter
 	const [username, usernameErr] = $(params.username).optional.string().$;
 	if (usernameErr) return rej('invalid username param');
 
 	if (userId === undefined && username === undefined) {
-		return rej('user_id or pair of username and host is required');
+		return rej('userId or pair of username and host is required');
 	}
 
 	// Get 'host' parameter
@@ -31,45 +31,45 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (hostErr) return rej('invalid host param');
 
 	if (userId === undefined && host === undefined) {
-		return rej('user_id or pair of username and host is required');
+		return rej('userId or pair of username and host is required');
 	}
 
-	// Get 'include_replies' parameter
-	const [includeReplies = true, includeRepliesErr] = $(params.include_replies).optional.boolean().$;
-	if (includeRepliesErr) return rej('invalid include_replies param');
+	// Get 'includeReplies' parameter
+	const [includeReplies = true, includeRepliesErr] = $(params.includeReplies).optional.boolean().$;
+	if (includeRepliesErr) return rej('invalid includeReplies param');
 
-	// Get 'with_media' parameter
-	const [withMedia = false, withMediaErr] = $(params.with_media).optional.boolean().$;
-	if (withMediaErr) return rej('invalid with_media param');
+	// Get 'withMedia' parameter
+	const [withMedia = false, withMediaErr] = $(params.withMedia).optional.boolean().$;
+	if (withMediaErr) return rej('invalid withMedia param');
 
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
-	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) return rej('invalid since_id param');
+	// Get 'sinceId' parameter
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	if (sinceIdErr) return rej('invalid sinceId param');
 
-	// Get 'until_id' parameter
-	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
-	if (untilIdErr) return rej('invalid until_id param');
+	// Get 'untilId' parameter
+	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	if (untilIdErr) return rej('invalid untilId param');
 
-	// Get 'since_date' parameter
-	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
-	if (sinceDateErr) throw 'invalid since_date param';
+	// Get 'sinceDate' parameter
+	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	if (sinceDateErr) throw 'invalid sinceDate param';
 
-	// Get 'until_date' parameter
-	const [untilDate, untilDateErr] = $(params.until_date).optional.number().$;
-	if (untilDateErr) throw 'invalid until_date param';
+	// Get 'untilDate' parameter
+	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	if (untilDateErr) throw 'invalid untilDate param';
 
-	// Check if only one of since_id, until_id, since_date, until_date specified
+	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if ([sinceId, untilId, sinceDate, untilDate].filter(x => x != null).length > 1) {
-		throw 'only one of since_id, until_id, since_date, until_date can be specified';
+		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
 	const q = userId !== undefined
 		? { _id: userId }
-		: { username_lower: username.toLowerCase(), host_lower: getHostLower(host) } ;
+		: { usernameLower: username.toLowerCase(), hostLower: getHostLower(host) } ;
 
 	// Lookup user
 	const user = await User.findOne(q, {
@@ -88,7 +88,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	};
 
 	const query = {
-		user_id: user._id
+		userId: user._id
 	} as any;
 
 	if (sinceId) {
@@ -102,21 +102,21 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		};
 	} else if (sinceDate) {
 		sort._id = 1;
-		query.created_at = {
+		query.createdAt = {
 			$gt: new Date(sinceDate)
 		};
 	} else if (untilDate) {
-		query.created_at = {
+		query.createdAt = {
 			$lt: new Date(untilDate)
 		};
 	}
 
 	if (!includeReplies) {
-		query.reply_id = null;
+		query.replyId = null;
 	}
 
 	if (withMedia) {
-		query.media_ids = {
+		query.mediaIds = {
 			$exists: true,
 			$ne: null
 		};

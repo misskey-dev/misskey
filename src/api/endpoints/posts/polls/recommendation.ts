@@ -23,22 +23,22 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Get votes
 	const votes = await Vote.find({
-		user_id: user._id
+		userId: user._id
 	}, {
 		fields: {
 			_id: false,
-			post_id: true
+			postId: true
 		}
 	});
 
-	const nin = votes && votes.length != 0 ? votes.map(v => v.post_id) : [];
+	const nin = votes && votes.length != 0 ? votes.map(v => v.postId) : [];
 
 	const posts = await Post
 		.find({
 			_id: {
 				$nin: nin
 			},
-			user_id: {
+			userId: {
 				$ne: user._id
 			},
 			poll: {

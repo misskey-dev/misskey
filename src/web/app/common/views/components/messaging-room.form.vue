@@ -151,9 +151,9 @@ export default Vue.extend({
 		send() {
 			this.sending = true;
 			(this as any).api('messaging/messages/create', {
-				user_id: this.user.id,
+				userId: this.user.id,
 				text: this.text ? this.text : undefined,
-				file_id: this.file ? this.file.id : undefined
+				fileId: this.file ? this.file.id : undefined
 			}).then(message => {
 				this.clear();
 			}).catch(err => {
@@ -173,7 +173,7 @@ export default Vue.extend({
 			const data = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
 			data[this.draftId] = {
-				updated_at: new Date(),
+				updatedAt: new Date(),
 				data: {
 					text: this.text,
 					file: this.file

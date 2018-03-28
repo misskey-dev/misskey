@@ -12,12 +12,12 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	const _token = token.replace(/\s/g, '');
 
-	if (user.two_factor_temp_secret == null) {
+	if (user.twoFactorTempSecret == null) {
 		return rej('二段階認証の設定が開始されていません');
 	}
 
 	const verified = (speakeasy as any).totp.verify({
-		secret: user.two_factor_temp_secret,
+		secret: user.twoFactorTempSecret,
 		encoding: 'base32',
 		token: _token
 	});
@@ -28,8 +28,8 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	await User.update(user._id, {
 		$set: {
-			'account.two_factor_secret': user.two_factor_temp_secret,
-			'account.two_factor_enabled': true
+			'account.twoFactorSecret': user.twoFactorTempSecret,
+			'account.twoFactorEnabled': true
 		}
 	});
 

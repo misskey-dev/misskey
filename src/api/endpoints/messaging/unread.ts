@@ -13,18 +13,18 @@ import Mute from '../../models/mute';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const mute = await Mute.find({
-		muter_id: user._id,
-		deleted_at: { $exists: false }
+		muterId: user._id,
+		deletedAt: { $exists: false }
 	});
-	const mutedUserIds = mute.map(m => m.mutee_id);
+	const mutedUserIds = mute.map(m => m.muteeId);
 
 	const count = await Message
 		.count({
-			user_id: {
+			userId: {
 				$nin: mutedUserIds
 			},
-			recipient_id: user._id,
-			is_read: false
+			recipientId: user._id,
+			isRead: false
 		});
 
 	res({

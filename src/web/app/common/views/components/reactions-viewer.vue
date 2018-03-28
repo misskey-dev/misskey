@@ -20,7 +20,7 @@ export default Vue.extend({
 	props: ['post'],
 	computed: {
 		reactions(): number {
-			return this.post.reaction_counts;
+			return this.post.reactionCounts;
 		}
 	}
 });

@@ -20,7 +20,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>動作</h1>
-			<mk-switch v-model="os.i.account.client_settings.fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
+			<mk-switch v-model="os.i.account.clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
 				<span>ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。</span>
 			</mk-switch>
 			<mk-switch v-model="autoPopout" text="ウィンドウの自動ポップアウト">
@@ -33,11 +33,11 @@
 			<div class="div">
 				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
 			</div>
-			<mk-switch v-model="os.i.account.client_settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
-			<mk-switch v-model="os.i.account.client_settings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
+			<mk-switch v-model="os.i.account.clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
+			<mk-switch v-model="os.i.account.clientSettings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
 				<span>位置情報が添付された投稿のマップを自動的に展開します。</span>
 			</mk-switch>
-			<mk-switch v-model="os.i.account.client_settings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
+			<mk-switch v-model="os.i.account.clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -57,7 +57,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>モバイル</h1>
-			<mk-switch v-model="os.i.account.client_settings.disableViaMobile" @change="onChangeDisableViaMobile" text="「モバイルからの投稿」フラグを付けない"/>
+			<mk-switch v-model="os.i.account.clientSettings.disableViaMobile" @change="onChangeDisableViaMobile" text="「モバイルからの投稿」フラグを付けない"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -86,7 +86,7 @@
 
 		<section class="notification" v-show="page == 'notification'">
 			<h1>通知</h1>
-			<mk-switch v-model="os.i.account.settings.auto_watch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
+			<mk-switch v-model="os.i.account.settings.autoWatch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
 				<span>リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。</span>
 			</mk-switch>
 		</section>
@@ -283,7 +283,7 @@ export default Vue.extend({
 		},
 		onChangeAutoWatch(v) {
 			(this as any).api('i/update', {
-				auto_watch: v
+				autoWatch: v
 			});
 		},
 		onChangeShowPostFormOnTopOfTl(v) {

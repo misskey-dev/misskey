@@ -21,7 +21,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (offsetErr) return rej('invalid offset param');
 
 	const query = {
-		user_id: user._id
+		userId: user._id
 	};
 
 	// Execute query

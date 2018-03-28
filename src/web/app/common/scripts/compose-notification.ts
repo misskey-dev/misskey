@@ -23,42 +23,42 @@ export default function(type, data): Notification {
 			return {
 				title: `${data.user.name}さんから:`,
 				body: getPostSummary(data),
-				icon: data.user.avatar_url + '?thumbnail&size=64'
+				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'reply':
 			return {
 				title: `${data.user.name}さんから返信:`,
 				body: getPostSummary(data),
-				icon: data.user.avatar_url + '?thumbnail&size=64'
+				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'quote':
 			return {
 				title: `${data.user.name}さんが引用:`,
 				body: getPostSummary(data),
-				icon: data.user.avatar_url + '?thumbnail&size=64'
+				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'reaction':
 			return {
 				title: `${data.user.name}: ${getReactionEmoji(data.reaction)}:`,
 				body: getPostSummary(data.post),
-				icon: data.user.avatar_url + '?thumbnail&size=64'
+				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'unread_messaging_message':
 			return {
 				title: `${data.user.name}さんからメッセージ:`,
 				body: data.text, // TODO: getMessagingMessageSummary(data),
-				icon: data.user.avatar_url + '?thumbnail&size=64'
+				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'othello_invited':
 			return {
 				title: '対局への招待があります',
 				body: `${data.parent.name}さんから`,
-				icon: data.parent.avatar_url + '?thumbnail&size=64'
+				icon: data.parent.avatarUrl + '?thumbnail&size=64'
 			};
 
 		default:

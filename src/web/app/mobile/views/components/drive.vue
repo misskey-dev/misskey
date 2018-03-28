@@ -19,10 +19,10 @@
 	<div class="browser" :class="{ fetching }" v-if="file == null">
 		<div class="info" v-if="info">
 			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:mobile.tags.mk-drive.used%</p>
-			<p v-if="folder != null && (folder.folders_count > 0 || folder.files_count > 0)">
-				<template v-if="folder.folders_count > 0">{{ folder.folders_count }} %i18n:mobile.tags.mk-drive.folder-count%</template>
-				<template v-if="folder.folders_count > 0 && folder.files_count > 0">%i18n:mobile.tags.mk-drive.count-separator%</template>
-				<template v-if="folder.files_count > 0">{{ folder.files_count }} %i18n:mobile.tags.mk-drive.file-count%</template>
+			<p v-if="folder != null && (folder.foldersCount > 0 || folder.filesCount > 0)">
+				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} %i18n:mobile.tags.mk-drive.folder-count%</template>
+				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">%i18n:mobile.tags.mk-drive.count-separator%</template>
+				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} %i18n:mobile.tags.mk-drive.file-count%</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
@@ -129,7 +129,7 @@ export default Vue.extend({
 
 		onStreamDriveFileUpdated(file) {
 			const current = this.folder ? this.folder.id : null;
-			if (current != file.folder_id) {
+			if (current != file.folderId) {
 				this.removeFile(file);
 			} else {
 				this.addFile(file, true);
@@ -142,7 +142,7 @@ export default Vue.extend({
 
 		onStreamDriveFolderUpdated(folder) {
 			const current = this.folder ? this.folder.id : null;
-			if (current != folder.parent_id) {
+			if (current != folder.parentId) {
 				this.removeFolder(folder);
 			} else {
 				this.addFolder(folder, true);
@@ -167,7 +167,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('drive/folders/show', {
-				folder_id: target
+				folderId: target
 			}).then(folder => {
 				this.folder = folder;
 				this.hierarchyFolders = [];
@@ -182,7 +182,7 @@ export default Vue.extend({
 		addFolder(folder, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
 			// 追加しようとしているフォルダが、今居る階層とは違う階層のものだったら中断
-			if (current != folder.parent_id) return;
+			if (current != folder.parentId) return;
 
 			// 追加しようとしているフォルダを既に所有してたら中断
 			if (this.folders.some(f => f.id == folder.id)) return;
@@ -197,7 +197,7 @@ export default Vue.extend({
 		addFile(file, unshift = false) {
 			const current = this.folder ? this.folder.id : null;
 			// 追加しようとしているファイルが、今居る階層とは違う階層のものだったら中断
-			if (current != file.folder_id) return;
+			if (current != file.folderId) return;
 
 			if (this.files.some(f => f.id == file.id)) {
 				const exist = this.files.map(f => f.id).indexOf(file.id);
@@ -262,7 +262,7 @@ export default Vue.extend({
 
 			// フォルダ一覧取得
 			(this as any).api('drive/folders', {
-				folder_id: this.folder ? this.folder.id : null,
+				folderId: this.folder ? this.folder.id : null,
 				limit: foldersMax + 1
 			}).then(folders => {
 				if (folders.length == foldersMax + 1) {
@@ -275,7 +275,7 @@ export default Vue.extend({
 
 			// ファイル一覧取得
 			(this as any).api('drive/files', {
-				folder_id: this.folder ? this.folder.id : null,
+				folderId: this.folder ? this.folder.id : null,
 				limit: filesMax + 1
 			}).then(files => {
 				if (files.length == filesMax + 1) {
@@ -318,9 +318,9 @@ export default Vue.extend({
 
 			// ファイル一覧取得
 			(this as any).api('drive/files', {
-				folder_id: this.folder ? this.folder.id : null,
+				folderId: this.folder ? this.folder.id : null,
 				limit: max + 1,
-				until_id: this.files[this.files.length - 1].id
+				untilId: this.files[this.files.length - 1].id
 			}).then(files => {
 				if (files.length == max + 1) {
 					this.moreFiles = true;
@@ -357,7 +357,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('drive/files/show', {
-				file_id: file
+				fileId: file
 			}).then(file => {
 				this.file = file;
 				this.folder = null;
@@ -405,7 +405,7 @@ export default Vue.extend({
 			if (name == null || name == '') return;
 			(this as any).api('drive/folders/create', {
 				name: name,
-				parent_id: this.folder ? this.folder.id : undefined
+				parentId: this.folder ? this.folder.id : undefined
 			}).then(folder => {
 				this.addFolder(folder, true);
 			});
@@ -420,7 +420,7 @@ export default Vue.extend({
 			if (name == null || name == '') return;
 			(this as any).api('drive/folders/update', {
 				name: name,
-				folder_id: this.folder.id
+				folderId: this.folder.id
 			}).then(folder => {
 				this.cd(folder);
 			});
@@ -433,8 +433,8 @@ export default Vue.extend({
 			}
 			(this as any).apis.chooseDriveFolder().then(folder => {
 				(this as any).api('drive/folders/update', {
-					parent_id: folder ? folder.id : null,
-					folder_id: this.folder.id
+					parentId: folder ? folder.id : null,
+					folderId: this.folder.id
 				}).then(folder => {
 					this.cd(folder);
 				});
@@ -446,7 +446,7 @@ export default Vue.extend({
 			if (url == null || url == '') return;
 			(this as any).api('drive/files/upload_from_url', {
 				url: url,
-				folder_id: this.folder ? this.folder.id : undefined
+				folderId: this.folder ? this.folder.id : undefined
 			});
 			alert('アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。');
 		},

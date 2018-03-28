@@ -28,7 +28,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get tokens
 	const tokens = await AccessToken
 		.find({
-			user_id: user._id
+			userId: user._id
 		}, {
 			limit: limit,
 			skip: offset,
@@ -39,5 +39,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(tokens.map(async token =>
-		await pack(token.app_id))));
+		await pack(token.appId))));
 });

@@ -43,7 +43,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		(this as any).api('aggregation/users/activity', {
-			user_id: this.user.id,
+			userId: this.user.id,
 			limit: 20 * 7
 		}).then(activity => {
 			this.activity = activity;

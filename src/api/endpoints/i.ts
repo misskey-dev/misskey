@@ -22,7 +22,7 @@ module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => 
 	// Update lastUsedAt
 	User.update({ _id: user._id }, {
 		$set: {
-			'account.last_used_at': new Date()
+			'account.lastUsedAt': new Date()
 		}
 	});
 });

@@ -32,7 +32,7 @@ export default async (req: express.Request, res: express.Response) => {
 
 	// Fetch user
 	const user: IUser = await User.findOne({
-		username_lower: username.toLowerCase(),
+		usernameLower: username.toLowerCase(),
 		host: null
 	}, {
 		fields: {
@@ -54,9 +54,9 @@ export default async (req: express.Request, res: express.Response) => {
 	const same = await bcrypt.compare(password, account.password);
 
 	if (same) {
-		if (account.two_factor_enabled) {
+		if (account.twoFactorEnabled) {
 			const verified = (speakeasy as any).totp.verify({
-				secret: account.two_factor_secret,
+				secret: account.twoFactorSecret,
 				encoding: 'base32',
 				token: token
 			});
@@ -79,8 +79,8 @@ export default async (req: express.Request, res: express.Response) => {
 
 	// Append signin history
 	const record = await Signin.insert({
-		created_at: new Date(),
-		user_id: user._id,
+		createdAt: new Date(),
+		userId: user._id,
 		ip: req.ip,
 		headers: req.headers,
 		success: same

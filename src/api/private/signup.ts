@@ -64,7 +64,7 @@ export default async (req: express.Request, res: express.Response) => {
 	// Fetch exist user that same username
 	const usernameExist = await User
 		.count({
-			username_lower: username.toLowerCase(),
+			usernameLower: username.toLowerCase(),
 			host: null
 		}, {
 			limit: 1
@@ -107,21 +107,19 @@ export default async (req: express.Request, res: express.Response) => {
 
 	// Create account
 	const account: IUser = await User.insert({
-		avatar_id: null,
-		banner_id: null,
-		created_at: new Date(),
+		avatarId: null,
+		bannerId: null,
+		createdAt: new Date(),
 		description: null,
-		followers_count: 0,
-		following_count: 0,
+		followersCount: 0,
+		followingCount: 0,
 		name: name,
-		posts_count: 0,
-		likes_count: 0,
-		liked_count: 0,
-		drive_capacity: 1073741824, // 1GB
+		postsCount: 0,
+		driveCapacity: 1073741824, // 1GB
 		username: username,
-		username_lower: username.toLowerCase(),
+		usernameLower: username.toLowerCase(),
 		host: null,
-		host_lower: null,
+		hostLower: null,
 		account: {
 			keypair: generateKeypair(),
 			token: secret,
@@ -139,9 +137,9 @@ export default async (req: express.Request, res: express.Response) => {
 				weight: null
 			},
 			settings: {
-				auto_watch: true
+				autoWatch: true
 			},
-			client_settings: {
+			clientSettings: {
 				home: homeData
 			}
 		}

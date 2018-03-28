@@ -11,13 +11,13 @@ props:
     desc:
       ja: "ファイルID"
       en: "The ID of this file"
-  - name: "created_at"
+  - name: "createdAt"
     type: "date"
     optional: false
     desc:
       ja: "アップロード日時"
       en: "The upload date of this file"
-  - name: "user_id"
+  - name: "userId"
     type: "id(User)"
     optional: false
     desc:
@@ -59,7 +59,7 @@ props:
     desc:
       ja: "ファイルのURL"
       en: "The URL of this file"
-  - name: "folder_id"
+  - name: "folderId"
     type: "id(DriveFolder)"
     optional: true
     desc:

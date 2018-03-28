@@ -29,7 +29,7 @@
 			<span class="separator"></span>
 			<span class="data-size">{{ file.datasize | bytes }}</span>
 			<span class="separator"></span>
-			<span class="created-at" @click="showCreatedAt">%fa:R clock%<mk-time :time="file.created_at"/></span>
+			<span class="created-at" @click="showCreatedAt">%fa:R clock%<mk-time :time="file.createdAt"/></span>
 		</div>
 	</div>
 	<div class="menu">
@@ -86,8 +86,8 @@ export default Vue.extend({
 			return this.file.type.split('/')[0];
 		},
 		style(): any {
-			return this.file.properties.average_color ? {
-				'background-color': `rgb(${ this.file.properties.average_color.join(',') })`
+			return this.file.properties.avgColor ? {
+				'background-color': `rgb(${ this.file.properties.avgColor.join(',') })`
 			} : {};
 		}
 	},
@@ -96,7 +96,7 @@ export default Vue.extend({
 			const name = window.prompt('名前を変更', this.file.name);
 			if (name == null || name == '' || name == this.file.name) return;
 			(this as any).api('drive/files/update', {
-				file_id: this.file.id,
+				fileId: this.file.id,
 				name: name
 			}).then(() => {
 				this.browser.cf(this.file, true);
@@ -105,15 +105,15 @@ export default Vue.extend({
 		move() {
 			(this as any).apis.chooseDriveFolder().then(folder => {
 				(this as any).api('drive/files/update', {
-					file_id: this.file.id,
-					folder_id: folder == null ? null : folder.id
+					fileId: this.file.id,
+					folderId: folder == null ? null : folder.id
 				}).then(() => {
 					this.browser.cf(this.file, true);
 				});
 			});
 		},
 		showCreatedAt() {
-			alert(new Date(this.file.created_at).toLocaleString());
+			alert(new Date(this.file.createdAt).toLocaleString());
 		},
 		onImageLoaded() {
 			const self = this;

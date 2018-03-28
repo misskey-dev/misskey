@@ -294,12 +294,12 @@ export default class MiOS extends EventEmitter {
 		const fetched = me => {
 			if (me) {
 				// デフォルトの設定をマージ
-				me.account.client_settings = Object.assign({
+				me.account.clientSettings = Object.assign({
 					fetchOnScroll: true,
 					showMaps: true,
 					showPostFormOnTopOfTl: false,
 					gradientWindowHeader: false
-				}, me.account.client_settings);
+				}, me.account.clientSettings);
 
 				// ローカルストレージにキャッシュ
 				localStorage.setItem('me', JSON.stringify(me));

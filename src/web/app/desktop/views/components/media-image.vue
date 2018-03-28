@@ -18,7 +18,7 @@ export default Vue.extend({
 	computed: {
 		style(): any {
 			return {
-				'background-color': this.image.properties.average_color ? `rgb(${this.image.properties.average_color.join(',')})` : 'transparent',
+				'background-color': this.image.properties.avgColor ? `rgb(${this.image.properties.avgColor.join(',')})` : 'transparent',
 				'background-image': `url(${this.image.url}?thumbnail&size=512)`
 			};
 		}

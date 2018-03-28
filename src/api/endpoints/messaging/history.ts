@@ -19,25 +19,25 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (limitErr) return rej('invalid limit param');
 
 	const mute = await Mute.find({
-		muter_id: user._id,
-		deleted_at: { $exists: false }
+		muterId: user._id,
+		deletedAt: { $exists: false }
 	});
 
 	// Get history
 	const history = await History
 		.find({
-			user_id: user._id,
-			partner: {
-				$nin: mute.map(m => m.mutee_id)
+			userId: user._id,
+			partnerId: {
+				$nin: mute.map(m => m.muteeId)
 			}
 		}, {
 			limit: limit,
 			sort: {
-				updated_at: -1
+				updatedAt: -1
 			}
 		});
 
 	// Serialize
 	res(await Promise.all(history.map(async h =>
-		await pack(h.message, user))));
+		await pack(h.messageId, user))));
 });

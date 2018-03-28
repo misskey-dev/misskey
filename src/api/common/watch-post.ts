@@ -3,15 +3,15 @@ import Watching from '../models/post-watching';
 
 export default async (me: mongodb.ObjectID, post: object) => {
 	// 自分の投稿はwatchできない
-	if (me.equals((post as any).user_id)) {
+	if (me.equals((post as any).userId)) {
 		return;
 	}
 
 	// if watching now
 	const exist = await Watching.findOne({
-		post_id: (post as any)._id,
-		user_id: me,
-		deleted_at: { $exists: false }
+		postId: (post as any)._id,
+		userId: me,
+		deletedAt: { $exists: false }
 	});
 
 	if (exist !== null) {
@@ -19,8 +19,8 @@ export default async (me: mongodb.ObjectID, post: object) => {
 	}
 
 	await Watching.insert({
-		created_at: new Date(),
-		post_id: (post as any)._id,
-		user_id: me
+		createdAt: new Date(),
+		postId: (post as any)._id,
+		userId: me
 	});
 };

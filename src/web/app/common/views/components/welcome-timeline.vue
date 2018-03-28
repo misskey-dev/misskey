@@ -2,7 +2,7 @@
 <div class="mk-welcome-timeline">
 	<div v-for="post in posts">
 		<router-link class="avatar-anchor" :to="`/@${getAcct(post.user)}`" v-user-preview="post.user.id">
-			<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
+			<img class="avatar" :src="`${post.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
 		</router-link>
 		<div class="body">
 			<header>
@@ -10,7 +10,7 @@
 				<span class="username">@{{ getAcct(post.user) }}</span>
 				<div class="info">
 					<router-link class="created-at" :to="`/@${getAcct(post.user)}/${post.id}`">
-						<mk-time :time="post.created_at"/>
+						<mk-time :time="post.createdAt"/>
 					</router-link>
 				</div>
 			</header>

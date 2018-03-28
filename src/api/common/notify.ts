@@ -16,11 +16,11 @@ export default (
 
 	// Create notification
 	const notification = await Notification.insert(Object.assign({
-		created_at: new Date(),
-		notifiee_id: notifiee,
-		notifier_id: notifier,
+		createdAt: new Date(),
+		notifieeId: notifiee,
+		notifierId: notifier,
 		type: type,
-		is_read: false
+		isRead: false
 	}, content));
 
 	resolve(notification);
@@ -31,14 +31,14 @@ export default (
 
 	// 3秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 	setTimeout(async () => {
-		const fresh = await Notification.findOne({ _id: notification._id }, { is_read: true });
-		if (!fresh.is_read) {
+		const fresh = await Notification.findOne({ _id: notification._id }, { isRead: true });
+		if (!fresh.isRead) {
 			//#region ただしミュートしているユーザーからの通知なら無視
 			const mute = await Mute.find({
-				muter_id: notifiee,
-				deleted_at: { $exists: false }
+				muterId: notifiee,
+				deletedAt: { $exists: false }
 			});
-			const mutedUserIds = mute.map(m => m.mutee_id.toString());
+			const mutedUserIds = mute.map(m => m.muteeId.toString());
 			if (mutedUserIds.indexOf(notifier.toString()) != -1) {
 				return;
 			}

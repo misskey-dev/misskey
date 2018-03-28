@@ -1,3 +1,13 @@
+import * as mongo from 'mongodb';
 import db from '../../db/mongodb';
 
-export default db.get('mute') as any; // fuck type definition
+const Mute = db.get<IMute>('mute');
+export default Mute;
+
+export interface IMute {
+	_id: mongo.ObjectID;
+	createdAt: Date;
+	deletedAt: Date;
+	muterId: mongo.ObjectID;
+	muteeId: mongo.ObjectID;
+}

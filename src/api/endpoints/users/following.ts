@@ -15,9 +15,9 @@ import getFriends from '../../common/get-friends';
  * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'iknow' parameter
 	const [iknow = false, iknowErr] = $(params.iknow).optional.boolean().$;
@@ -46,8 +46,8 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Construct query
 	const query = {
-		follower_id: user._id,
-		deleted_at: { $exists: false }
+		followerId: user._id,
+		deletedAt: { $exists: false }
 	} as any;
 
 	// ログインしていてかつ iknow フラグがあるとき
@@ -55,7 +55,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		// Get my friends
 		const myFriends = await getFriends(me._id);
 
-		query.followee_id = {
+		query.followeeId = {
 			$in: myFriends
 		};
 	}
@@ -82,7 +82,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Serialize
 	const users = await Promise.all(following.map(async f =>
-		await pack(f.followee_id, me, { detail: true })));
+		await pack(f.followeeId, me, { detail: true })));
 
 	// Response
 	res({

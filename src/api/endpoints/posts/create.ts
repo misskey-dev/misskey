@@ -33,9 +33,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
 
-	// Get 'via_mobile' parameter
-	const [viaMobile = false, viaMobileErr] = $(params.via_mobile).optional.boolean().$;
-	if (viaMobileErr) return rej('invalid via_mobile');
+	// Get 'viaMobile' parameter
+	const [viaMobile = false, viaMobileErr] = $(params.viaMobile).optional.boolean().$;
+	if (viaMobileErr) return rej('invalid viaMobile');
 
 	// Get 'tags' parameter
 	const [tags = [], tagsErr] = $(params.tags).optional.array('string').unique().eachQ(t => t.range(1, 32)).$;
@@ -53,9 +53,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		.$;
 	if (geoErr) return rej('invalid geo');
 
-	// Get 'media_ids' parameter
-	const [mediaIds, mediaIdsErr] = $(params.media_ids).optional.array('id').unique().range(1, 4).$;
-	if (mediaIdsErr) return rej('invalid media_ids');
+	// Get 'mediaIds' parameter
+	const [mediaIds, mediaIdsErr] = $(params.mediaIds).optional.array('id').unique().range(1, 4).$;
+	if (mediaIdsErr) return rej('invalid mediaIds');
 
 	let files = [];
 	if (mediaIds !== undefined) {
@@ -67,7 +67,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			// SELECT _id
 			const entity = await DriveFile.findOne({
 				_id: mediaId,
-				'metadata.user_id': user._id
+				'metadata.userId': user._id
 			});
 
 			if (entity === null) {
@@ -80,9 +80,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		files = null;
 	}
 
-	// Get 'repost_id' parameter
-	const [repostId, repostIdErr] = $(params.repost_id).optional.id().$;
-	if (repostIdErr) return rej('invalid repost_id');
+	// Get 'repostId' parameter
+	const [repostId, repostIdErr] = $(params.repostId).optional.id().$;
+	if (repostIdErr) return rej('invalid repostId');
 
 	let repost: IPost = null;
 	let isQuote = false;
@@ -94,13 +94,13 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 		if (repost == null) {
 			return rej('repostee is not found');
-		} else if (repost.repost_id && !repost.text && !repost.media_ids) {
+		} else if (repost.repostId && !repost.text && !repost.mediaIds) {
 			return rej('cannot repost to repost');
 		}
 
 		// Fetch recently post
 		const latestPost = await Post.findOne({
-			user_id: user._id
+			userId: user._id
 		}, {
 			sort: {
 				_id: -1
@@ -111,8 +111,8 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 		// 直近と同じRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
-			latestPost.repost_id &&
-			latestPost.repost_id.equals(repost._id) &&
+			latestPost.repostId &&
+			latestPost.repostId.equals(repost._id) &&
 			!isQuote) {
 			return rej('cannot repost same post that already reposted in your latest post');
 		}
@@ -125,9 +125,9 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 	}
 
-	// Get 'reply_id' parameter
-	const [replyId, replyIdErr] = $(params.reply_id).optional.id().$;
-	if (replyIdErr) return rej('invalid reply_id');
+	// Get 'replyId' parameter
+	const [replyId, replyIdErr] = $(params.replyId).optional.id().$;
+	if (replyIdErr) return rej('invalid replyId');
 
 	let reply: IPost = null;
 	if (replyId !== undefined) {
@@ -141,14 +141,14 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 
 		// 返信対象が引用でないRepostだったらエラー
-		if (reply.repost_id && !reply.text && !reply.media_ids) {
+		if (reply.repostId && !reply.text && !reply.mediaIds) {
 			return rej('cannot reply to repost');
 		}
 	}
 
-	// Get 'channel_id' parameter
-	const [channelId, channelIdErr] = $(params.channel_id).optional.id().$;
-	if (channelIdErr) return rej('invalid channel_id');
+	// Get 'channelId' parameter
+	const [channelId, channelIdErr] = $(params.channelId).optional.id().$;
+	if (channelIdErr) return rej('invalid channelId');
 
 	let channel: IChannel = null;
 	if (channelId !== undefined) {
@@ -162,12 +162,12 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 
 		// 返信対象の投稿がこのチャンネルじゃなかったらダメ
-		if (reply && !channelId.equals(reply.channel_id)) {
+		if (reply && !channelId.equals(reply.channelId)) {
 			return rej('チャンネル内部からチャンネル外部の投稿に返信することはできません');
 		}
 
 		// Repost対象の投稿がこのチャンネルじゃなかったらダメ
-		if (repost && !channelId.equals(repost.channel_id)) {
+		if (repost && !channelId.equals(repost.channelId)) {
 			return rej('チャンネル内部からチャンネル外部の投稿をRepostすることはできません');
 		}
 
@@ -177,12 +177,12 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		}
 	} else {
 		// 返信対象の投稿がチャンネルへの投稿だったらダメ
-		if (reply && reply.channel_id != null) {
+		if (reply && reply.channelId != null) {
 			return rej('チャンネル外部からチャンネル内部の投稿に返信することはできません');
 		}
 
 		// Repost対象の投稿がチャンネルへの投稿だったらダメ
-		if (repost && repost.channel_id != null) {
+		if (repost && repost.channelId != null) {
 			return rej('チャンネル外部からチャンネル内部の投稿をRepostすることはできません');
 		}
 	}
@@ -206,22 +206,22 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無いかつ投票も無かったらエラー
 	if (text === undefined && files === null && repost === null && poll === undefined) {
-		return rej('text, media_ids, repost_id or poll is required');
+		return rej('text, mediaIds, repostId or poll is required');
 	}
 
 	// 直近の投稿と重複してたらエラー
 	// TODO: 直近の投稿が一日前くらいなら重複とは見なさない
-	if (user.latest_post) {
+	if (user.latestPost) {
 		if (deepEqual({
-			text: user.latest_post.text,
-			reply: user.latest_post.reply_id ? user.latest_post.reply_id.toString() : null,
-			repost: user.latest_post.repost_id ? user.latest_post.repost_id.toString() : null,
-			media_ids: (user.latest_post.media_ids || []).map(id => id.toString())
+			text: user.latestPost.text,
+			reply: user.latestPost.replyId ? user.latestPost.replyId.toString() : null,
+			repost: user.latestPost.repostId ? user.latestPost.repostId.toString() : null,
+			mediaIds: (user.latestPost.mediaIds || []).map(id => id.toString())
 		}, {
 			text: text,
 			reply: reply ? reply._id.toString() : null,
 			repost: repost ? repost._id.toString() : null,
-			media_ids: (files || []).map(file => file._id.toString())
+			mediaIds: (files || []).map(file => file._id.toString())
 		})) {
 			return rej('duplicate');
 		}
@@ -246,23 +246,23 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// 投稿を作成
 	const post = await Post.insert({
-		created_at: new Date(),
-		channel_id: channel ? channel._id : undefined,
+		createdAt: new Date(),
+		channelId: channel ? channel._id : undefined,
 		index: channel ? channel.index + 1 : undefined,
-		media_ids: files ? files.map(file => file._id) : undefined,
-		reply_id: reply ? reply._id : undefined,
-		repost_id: repost ? repost._id : undefined,
+		mediaIds: files ? files.map(file => file._id) : undefined,
+		replyId: reply ? reply._id : undefined,
+		repostId: repost ? repost._id : undefined,
 		poll: poll,
 		text: text,
 		tags: tags,
-		user_id: user._id,
-		app_id: app ? app._id : null,
-		via_mobile: viaMobile,
+		userId: user._id,
+		appId: app ? app._id : null,
+		viaMobile: viaMobile,
 		geo,
 
 		// 以下非正規化データ
-		_reply: reply ? { user_id: reply.user_id } : undefined,
-		_repost: repost ? { user_id: repost.user_id } : undefined,
+		_reply: reply ? { userId: reply.userId } : undefined,
+		_repost: repost ? { userId: repost.userId } : undefined,
 	});
 
 	// Serialize
@@ -270,14 +270,14 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// Reponse
 	res({
-		created_post: postObj
+		createdPost: postObj
 	});
 
 	//#region Post processes
 
 	User.update({ _id: user._id }, {
 		$set: {
-			latest_post: post
+			latestPost: post
 		}
 	});
 
@@ -293,10 +293,10 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		// Publish event
 		if (!user._id.equals(mentionee)) {
 			const mentioneeMutes = await Mute.find({
-				muter_id: mentionee,
-				deleted_at: { $exists: false }
+				muterId: mentionee,
+				deletedAt: { $exists: false }
 			});
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.mutee_id.toString());
+			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
 			if (mentioneesMutedUserIds.indexOf(user._id.toString()) == -1) {
 				event(mentionee, reason, postObj);
 				pushSw(mentionee, reason, postObj);
@@ -312,17 +312,17 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		// Fetch all followers
 		const followers = await Following
 			.find({
-				followee_id: user._id,
+				followeeId: user._id,
 				// 削除されたドキュメントは除く
-				deleted_at: { $exists: false }
+				deletedAt: { $exists: false }
 			}, {
-				follower_id: true,
+				followerId: true,
 				_id: false
 			});
 
 		// Publish event to followers stream
 		followers.forEach(following =>
-			event(following.follower_id, 'post', postObj));
+			event(following.followerId, 'post', postObj));
 	}
 
 	// チャンネルへの投稿
@@ -339,21 +339,21 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 		// Get channel watchers
 		const watches = await ChannelWatching.find({
-			channel_id: channel._id,
+			channelId: channel._id,
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
+			deletedAt: { $exists: false }
 		});
 
 		// チャンネルの視聴者(のタイムライン)に配信
 		watches.forEach(w => {
-			event(w.user_id, 'post', postObj);
+			event(w.userId, 'post', postObj);
 		});
 	}
 
 	// Increment my posts count
 	User.update({ _id: user._id }, {
 		$inc: {
-			posts_count: 1
+			postsCount: 1
 		}
 	});
 
@@ -362,68 +362,68 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		// Increment replies count
 		Post.update({ _id: reply._id }, {
 			$inc: {
-				replies_count: 1
+				repliesCount: 1
 			}
 		});
 
 		// 自分自身へのリプライでない限りは通知を作成
-		notify(reply.user_id, user._id, 'reply', {
-			post_id: post._id
+		notify(reply.userId, user._id, 'reply', {
+			postId: post._id
 		});
 
 		// Fetch watchers
 		Watching
 			.find({
-				post_id: reply._id,
-				user_id: { $ne: user._id },
+				postId: reply._id,
+				userId: { $ne: user._id },
 				// 削除されたドキュメントは除く
-				deleted_at: { $exists: false }
+				deletedAt: { $exists: false }
 			}, {
 				fields: {
-					user_id: true
+					userId: true
 				}
 			})
 			.then(watchers => {
 				watchers.forEach(watcher => {
-					notify(watcher.user_id, user._id, 'reply', {
-						post_id: post._id
+					notify(watcher.userId, user._id, 'reply', {
+						postId: post._id
 					});
 				});
 			});
 
 		// この投稿をWatchする
-		if ((user.account as ILocalAccount).settings.auto_watch !== false) {
+		if ((user.account as ILocalAccount).settings.autoWatch !== false) {
 			watch(user._id, reply);
 		}
 
 		// Add mention
-		addMention(reply.user_id, 'reply');
+		addMention(reply.userId, 'reply');
 	}
 
 	// If it is repost
 	if (repost) {
 		// Notify
 		const type = text ? 'quote' : 'repost';
-		notify(repost.user_id, user._id, type, {
-			post_id: post._id
+		notify(repost.userId, user._id, type, {
+			postId: post._id
 		});
 
 		// Fetch watchers
 		Watching
 			.find({
-				post_id: repost._id,
-				user_id: { $ne: user._id },
+				postId: repost._id,
+				userId: { $ne: user._id },
 				// 削除されたドキュメントは除く
-				deleted_at: { $exists: false }
+				deletedAt: { $exists: false }
 			}, {
 				fields: {
-					user_id: true
+					userId: true
 				}
 			})
 			.then(watchers => {
 				watchers.forEach(watcher => {
-					notify(watcher.user_id, user._id, type, {
-						post_id: post._id
+					notify(watcher.userId, user._id, type, {
+						postId: post._id
 					});
 				});
 			});
@@ -436,18 +436,18 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		// If it is quote repost
 		if (text) {
 			// Add mention
-			addMention(repost.user_id, 'quote');
+			addMention(repost.userId, 'quote');
 		} else {
 			// Publish event
-			if (!user._id.equals(repost.user_id)) {
-				event(repost.user_id, 'repost', postObj);
+			if (!user._id.equals(repost.userId)) {
+				event(repost.userId, 'repost', postObj);
 			}
 		}
 
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
-			user_id: user._id,
-			repost_id: repost._id,
+			userId: user._id,
+			repostId: repost._id,
 			_id: {
 				$ne: post._id
 			}
@@ -457,7 +457,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			// Update repostee status
 			Post.update({ _id: repost._id }, {
 				$inc: {
-					repost_count: 1
+					repostCount: 1
 				}
 			});
 		}
@@ -494,15 +494,15 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			if (mentionee == null) return;
 
 			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
-			if (reply && reply.user_id.equals(mentionee._id)) return;
-			if (repost && repost.user_id.equals(mentionee._id)) return;
+			if (reply && reply.userId.equals(mentionee._id)) return;
+			if (repost && repost.userId.equals(mentionee._id)) return;
 
 			// Add mention
 			addMention(mentionee._id, 'mention');
 
 			// Create notification
 			notify(mentionee._id, user._id, 'mention', {
-				post_id: post._id
+				postId: post._id
 			});
 
 			return;

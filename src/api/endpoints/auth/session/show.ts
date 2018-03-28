@@ -23,17 +23,17 @@ import AuthSess, { pack } from '../../../models/auth-session';
  *         schema:
  *           type: object
  *           properties:
- *             created_at:
+ *             createdAt:
  *               type: string
  *               format: date-time
  *               description: Date and time of the session creation
- *             app_id:
+ *             appId:
  *               type: string
  *               description: Application ID
  *             token:
  *               type: string
  *               description: Session Token
- *             user_id:
+ *             userId:
  *               type: string
  *               description: ID of user who create the session
  *             app:

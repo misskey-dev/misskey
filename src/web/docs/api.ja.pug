@@ -54,7 +54,7 @@ section
 		h3 2.ユーザーに認証させる
 		p あなたのアプリを使ってもらうには、ユーザーにアカウントへのアクセスの許可をもらう必要があります。
 		p
-			| 認証セッションを開始するには、#{common.config.api_url}/auth/session/generate へパラメータに app_secret としてシークレットキーを含めたリクエストを送信します。
+			| 認証セッションを開始するには、#{common.config.api_url}/auth/session/generate へパラメータに appSecret としてシークレットキーを含めたリクエストを送信します。
 			| リクエスト形式はJSONで、メソッドはPOSTです。
 			| レスポンスとして認証セッションのトークンや認証フォームのURLが取得できるので、認証フォームのURLをブラウザで表示し、ユーザーにフォームを提示してください。
 
@@ -76,7 +76,7 @@ section
 					th 説明
 			tbody
 				tr
-					td app_secret
+					td appSecret
 					td string
 					td あなたのアプリのシークレットキー
 				tr
