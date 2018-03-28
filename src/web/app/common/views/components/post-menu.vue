@@ -2,7 +2,7 @@
 <div class="mk-post-menu">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
-		<button v-if="post.user_id == os.i.id" @click="pin">%i18n:common.tags.mk-post-menu.pin%</button>
+		<button v-if="post.userId == os.i.id" @click="pin">%i18n:common.tags.mk-post-menu.pin%</button>
 	</div>
 </div>
 </template>
@@ -51,7 +51,7 @@ export default Vue.extend({
 	methods: {
 		pin() {
 			(this as any).api('i/pin', {
-				post_id: this.post.id
+				postId: this.post.id
 			}).then(() => {
 				this.$destroy();
 			});

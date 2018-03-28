@@ -20,11 +20,11 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	// Create a channel
 	const channel = await Channel.insert({
-		created_at: new Date(),
-		user_id: user._id,
+		createdAt: new Date(),
+		userId: user._id,
 		title: title,
 		index: 0,
-		watching_count: 1
+		watchingCount: 1
 	});
 
 	// Response
@@ -32,8 +32,8 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	// Create Watching
 	await Watching.insert({
-		created_at: new Date(),
-		user_id: user._id,
-		channel_id: channel._id
+		createdAt: new Date(),
+		userId: user._id,
+		channelId: channel._id
 	});
 });

@@ -97,7 +97,7 @@ export default define({
 			this.fetching = true;
 
 			(this as any).api('drive/files', {
-				folder_id: this.props.folder,
+				folderId: this.props.folder,
 				type: 'image/*',
 				limit: 100
 			}).then(images => {

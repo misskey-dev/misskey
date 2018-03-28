@@ -5,7 +5,7 @@
 	</router-link>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<p class="read" v-if="isMe && message.is_read">%i18n:common.tags.mk-messaging-message.is-read%</p>
+			<p class="read" v-if="isMe && message.isRead">%i18n:common.tags.mk-messaging-message.is-read%</p>
 			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
@@ -25,7 +25,7 @@
 		<div></div>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
-			<mk-time :time="message.created_at"/>
+			<mk-time :time="message.createdAt"/>
 			<template v-if="message.is_edited">%fa:pencil-alt%</template>
 		</footer>
 	</div>
@@ -43,7 +43,7 @@ export default Vue.extend({
 			return getAcct(this.message.user);
 		},
 		isMe(): boolean {
-			return this.message.user_id == (this as any).os.i.id;
+			return this.message.userId == (this as any).os.i.id;
 		},
 		urls(): string[] {
 			if (this.message.ast) {

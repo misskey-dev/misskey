@@ -63,8 +63,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	// Create session token document
 	const doc = await AuthSess.insert({
-		created_at: new Date(),
-		app_id: app._id,
+		createdAt: new Date(),
+		appId: app._id,
 		token: token
 	});
 

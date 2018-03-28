@@ -10,7 +10,7 @@
 				<span class="username">@{{ getAcct(post.user) }}</span>
 				<div class="info">
 					<router-link class="created-at" :to="`/@${getAcct(post.user)}/${post.id}`">
-						<mk-time :time="post.created_at"/>
+						<mk-time :time="post.createdAt"/>
 					</router-link>
 				</div>
 			</header>

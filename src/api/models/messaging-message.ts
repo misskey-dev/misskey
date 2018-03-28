@@ -66,16 +66,16 @@ export const pack = (
 	}
 
 	// Populate user
-	_message.user = await packUser(_message.user_id, me);
+	_message.user = await packUser(_message.userId, me);
 
-	if (_message.file_id) {
+	if (_message.fileId) {
 		// Populate file
-		_message.file = await packFile(_message.file_id);
+		_message.file = await packFile(_message.fileId);
 	}
 
 	if (opts.populateRecipient) {
 		// Populate recipient
-		_message.recipient = await packUser(_message.recipient_id, me);
+		_message.recipient = await packUser(_message.recipientId, me);
 	}
 
 	resolve(_message);

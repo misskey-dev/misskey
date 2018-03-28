@@ -1,7 +1,7 @@
 <template>
 <mk-users-list
 	:fetch="fetch"
-	:count="user.following_count"
+	:count="user.followingCount"
 	:you-know-count="user.following_you_know_count"
 >
 	フォロー中のユーザーはいないようです。
@@ -15,7 +15,7 @@ export default Vue.extend({
 	methods: {
 		fetch(iknow, limit, cursor, cb) {
 			(this as any).api('users/following', {
-				user_id: this.user.id,
+				userId: this.user.id,
 				iknow: iknow,
 				limit: limit,
 				cursor: cursor ? cursor : undefined

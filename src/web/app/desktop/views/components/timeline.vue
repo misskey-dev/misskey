@@ -34,7 +34,7 @@ export default Vue.extend({
 	},
 	computed: {
 		alone(): boolean {
-			return (this as any).os.i.following_count == 0;
+			return (this as any).os.i.followingCount == 0;
 		}
 	},
 	mounted() {
@@ -107,7 +107,7 @@ export default Vue.extend({
 			this.fetch();
 		},
 		onScroll() {
-			if ((this as any).os.i.account.client_settings.fetchOnScroll !== false) {
+			if ((this as any).os.i.account.clientSettings.fetchOnScroll !== false) {
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.more();
 			}

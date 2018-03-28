@@ -30,7 +30,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	const query = {
-		user_id: user._id
+		userId: user._id
 	} as any;
 
 	const sort = {

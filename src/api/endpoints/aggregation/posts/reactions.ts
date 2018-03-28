@@ -12,9 +12,9 @@ import Reaction from '../../../models/post-reaction';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Lookup post
 	const post = await Post.findOne({
@@ -29,10 +29,10 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	const reactions = await Reaction
 		.find({
-			post_id: post._id,
+			postId: post._id,
 			$or: [
-				{ deleted_at: { $exists: false } },
-				{ deleted_at: { $gt: startTime } }
+				{ deletedAt: { $exists: false } },
+				{ deletedAt: { $gt: startTime } }
 			]
 		}, {
 			sort: {
@@ -40,7 +40,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 			},
 			fields: {
 				_id: false,
-				post_id: false
+				postId: false
 			}
 		});
 
@@ -55,7 +55,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		// day = day.getTime();
 
 		const count = reactions.filter(r =>
-			r.created_at < day && (r.deleted_at == null || r.deleted_at > day)
+			r.createdAt < day && (r.deletedAt == null || r.deletedAt > day)
 		).length;
 
 		graph.push({

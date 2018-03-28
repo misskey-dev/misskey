@@ -17,9 +17,9 @@ import { publishPostStream } from '../../../event';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Get votee
 	const post = await Post.findOne({
@@ -43,8 +43,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// if already voted
 	const exist = await Vote.findOne({
-		post_id: post._id,
-		user_id: user._id
+		postId: post._id,
+		userId: user._id
 	});
 
 	if (exist !== null) {
@@ -53,9 +53,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Create vote
 	await Vote.insert({
-		created_at: new Date(),
-		post_id: post._id,
-		user_id: user._id,
+		createdAt: new Date(),
+		postId: post._id,
+		userId: user._id,
 		choice: choice
 	});
 
@@ -73,27 +73,27 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	publishPostStream(post._id, 'poll_voted');
 
 	// Notify
-	notify(post.user_id, user._id, 'poll_vote', {
-		post_id: post._id,
+	notify(post.userId, user._id, 'poll_vote', {
+		postId: post._id,
 		choice: choice
 	});
 
 	// Fetch watchers
 	Watching
 		.find({
-			post_id: post._id,
-			user_id: { $ne: user._id },
+			postId: post._id,
+			userId: { $ne: user._id },
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
+			deletedAt: { $exists: false }
 		}, {
 			fields: {
-				user_id: true
+				userId: true
 			}
 		})
 		.then(watchers => {
 			watchers.forEach(watcher => {
-				notify(watcher.user_id, user._id, 'poll_vote', {
-					post_id: post._id,
+				notify(watcher.userId, user._id, 'poll_vote', {
+					postId: post._id,
 					choice: choice
 				});
 			});

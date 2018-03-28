@@ -38,7 +38,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		_id: -1
 	};
 	const query = {
-		'metadata.user_id': user._id
+		'metadata.userId': user._id
 	} as any;
 	if (sinceId) {
 		sort._id = 1;

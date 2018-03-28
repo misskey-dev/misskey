@@ -7,7 +7,7 @@
 	<mk-users-list
 		v-if="!fetching"
 		:fetch="fetchUsers"
-		:count="user.followers_count"
+		:count="user.followersCount"
 		:you-know-count="user.followers_you_know_count"
 		@loaded="onLoaded"
 	>
@@ -54,7 +54,7 @@ export default Vue.extend({
 		},
 		fetchUsers(iknow, limit, cursor, cb) {
 			(this as any).api('users/followers', {
-				user_id: this.user.id,
+				userId: this.user.id,
 				iknow: iknow,
 				limit: limit,
 				cursor: cursor ? cursor : undefined

@@ -1,6 +1,6 @@
 <template>
 <div class="root home">
-	<mk-post-detail v-if="user.pinned_post" :post="user.pinned_post" :compact="true"/>
+	<mk-post-detail v-if="user.pinnedPost" :post="user.pinnedPost" :compact="true"/>
 	<section class="recent-posts">
 		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
 		<div>
@@ -31,7 +31,7 @@
 			<x-followers-you-know :user="user"/>
 		</div>
 	</section>
-	<p v-if="user.host === null">%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.account.last_used_at"/></b></p>
+	<p v-if="user.host === null">%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.account.lastUsedAt"/></b></p>
 </div>
 </template>
 

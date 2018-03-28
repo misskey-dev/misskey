@@ -18,23 +18,23 @@ module.exports = params => new Promise(async (res, rej) => {
 	const datas = await Post
 		.aggregate([
 			{ $project: {
-				repost_id: '$repost_id',
-				reply_id: '$reply_id',
-				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
+				repostId: '$repostId',
+				replyId: '$replyId',
+				createdAt: { $add: ['$createdAt', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
 			{ $project: {
 				date: {
-					year: { $year: '$created_at' },
-					month: { $month: '$created_at' },
-					day: { $dayOfMonth: '$created_at' }
+					year: { $year: '$createdAt' },
+					month: { $month: '$createdAt' },
+					day: { $dayOfMonth: '$createdAt' }
 				},
 				type: {
 					$cond: {
-						if: { $ne: ['$repost_id', null] },
+						if: { $ne: ['$repostId', null] },
 						then: 'repost',
 						else: {
 							$cond: {
-								if: { $ne: ['$reply_id', null] },
+								if: { $ne: ['$replyId', null] },
 								then: 'reply',
 								else: 'post'
 							}

@@ -29,11 +29,11 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (sort) {
 		if (sort == '+follower') {
 			_sort = {
-				followers_count: -1
+				followersCount: -1
 			};
 		} else if (sort == '-follower') {
 			_sort = {
-				followers_count: 1
+				followersCount: 1
 			};
 		}
 	} else {

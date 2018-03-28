@@ -49,7 +49,7 @@ export default (os: OS) => (cb, file = null) => {
 		}).$mount();
 		document.body.appendChild(dialog.$el);
 
-		if (folder) data.append('folder_id', folder.id);
+		if (folder) data.append('folderId', folder.id);
 
 		const xhr = new XMLHttpRequest();
 		xhr.open('POST', apiUrl + '/drive/files/create', true);
@@ -68,9 +68,9 @@ export default (os: OS) => (cb, file = null) => {
 
 	const set = file => {
 		os.api('i/update', {
-			banner_id: file.id
+			bannerId: file.id
 		}).then(i => {
-			os.i.banner_id = i.banner_id;
+			os.i.bannerId = i.bannerId;
 			os.i.banner_url = i.banner_url;
 
 			os.apis.dialog({

@@ -5,15 +5,15 @@
 	</div>
 	<div class="repost" v-if="isRepost">
 		<p>
-			<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="post.user_id">
+			<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="post.userId">
 				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
 			<span>{{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}</span>
-			<a class="name" :href="`/@${acct}`" v-user-preview="post.user_id">{{ post.user.name }}</a>
+			<a class="name" :href="`/@${acct}`" v-user-preview="post.userId">{{ post.user.name }}</a>
 			<span>{{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
-		<mk-time :time="post.created_at"/>
+		<mk-time :time="post.createdAt"/>
 	</div>
 	<article>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
@@ -22,13 +22,13 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="`/@${acct}`" v-user-preview="p.user.id">{{ acct }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.account.is_bot">bot</span>
+				<span class="is-bot" v-if="p.user.host === null && p.user.account.isBot">bot</span>
 				<span class="username">@{{ acct }}</span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
-					<span class="mobile" v-if="p.via_mobile">%fa:mobile-alt%</span>
+					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
 					<router-link class="created-at" :to="url">
-						<mk-time :time="p.created_at"/>
+						<mk-time :time="p.createdAt"/>
 					</router-link>
 				</div>
 			</header>
@@ -122,7 +122,7 @@ export default Vue.extend({
 		isRepost(): boolean {
 			return (this.post.repost &&
 				this.post.text == null &&
-				this.post.media_ids == null &&
+				this.post.mediaIds == null &&
 				this.post.poll == null);
 		},
 		p(): any {
@@ -136,7 +136,7 @@ export default Vue.extend({
 				: 0;
 		},
 		title(): string {
-			return dateStringify(this.p.created_at);
+			return dateStringify(this.p.createdAt);
 		},
 		url(): string {
 			return `/@${this.acct}/${this.p.id}`;
@@ -166,7 +166,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.client_settings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
@@ -216,7 +216,7 @@ export default Vue.extend({
 			const post = data.post;
 			if (post.id == this.post.id) {
 				this.$emit('update:post', post);
-			} else if (post.id == this.post.repost_id) {
+			} else if (post.id == this.post.repostId) {
 				this.post.repost = post;
 			}
 		},

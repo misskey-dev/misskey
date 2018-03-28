@@ -6,19 +6,19 @@ import publishUserStream, { publishOthelloStream } from '../../event';
 import { eighteight } from '../../../common/othello/maps';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'user_id' parameter
-	const [childId, childIdErr] = $(params.user_id).id().$;
-	if (childIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [childId, childIdErr] = $(params.userId).id().$;
+	if (childIdErr) return rej('invalid userId param');
 
 	// Myself
 	if (childId.equals(user._id)) {
-		return rej('invalid user_id param');
+		return rej('invalid userId param');
 	}
 
 	// Find session
 	const exist = await Matching.findOne({
-		parent_id: childId,
-		child_id: user._id
+		parentId: childId,
+		childId: user._id
 	});
 
 	if (exist) {
@@ -29,28 +29,28 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 		// Create game
 		const game = await OthelloGame.insert({
-			created_at: new Date(),
-			user1_id: exist.parent_id,
-			user2_id: user._id,
-			user1_accepted: false,
-			user2_accepted: false,
-			is_started: false,
-			is_ended: false,
+			createdAt: new Date(),
+			user1Id: exist.parentId,
+			user2Id: user._id,
+			user1Accepted: false,
+			user2Accepted: false,
+			isStarted: false,
+			isEnded: false,
 			logs: [],
 			settings: {
 				map: eighteight.data,
 				bw: 'random',
-				is_llotheo: false
+				isLlotheo: false
 			}
 		});
 
 		// Reponse
 		res(await packGame(game, user));
 
-		publishOthelloStream(exist.parent_id, 'matched', await packGame(game, exist.parent_id));
+		publishOthelloStream(exist.parentId, 'matched', await packGame(game, exist.parentId));
 
 		const other = await Matching.count({
-			child_id: user._id
+			childId: user._id
 		});
 
 		if (other == 0) {
@@ -72,14 +72,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 		// 以前のセッションはすべて削除しておく
 		await Matching.remove({
-			parent_id: user._id
+			parentId: user._id
 		});
 
 		// セッションを作成
 		const matching = await Matching.insert({
-			created_at: new Date(),
-			parent_id: user._id,
-			child_id: child._id
+			createdAt: new Date(),
+			parentId: user._id,
+			childId: child._id
 		});
 
 		// Reponse

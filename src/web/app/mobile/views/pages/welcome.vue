@@ -8,7 +8,7 @@
 			<form @submit.prevent="onSubmit">
 				<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange"/>
 				<input v-model="password" type="password" placeholder="パスワード" required/>
-				<input v-if="user && user.account.two_factor_enabled" v-model="token" type="number" placeholder="トークン" required/>
+				<input v-if="user && user.account.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
 				<button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</button>
 			</form>
 			<div>
@@ -70,7 +70,7 @@ export default Vue.extend({
 			(this as any).api('signin', {
 				username: this.username,
 				password: this.password,
-				token: this.user && this.user.account.two_factor_enabled ? this.token : undefined
+				token: this.user && this.user.account.twoFactorEnabled ? this.token : undefined
 			}).then(() => {
 				location.reload();
 			}).catch(() => {

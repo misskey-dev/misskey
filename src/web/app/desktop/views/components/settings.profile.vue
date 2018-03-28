@@ -24,7 +24,7 @@
 	<button class="ui primary" @click="save">%i18n:desktop.tags.mk-profile-setting.save%</button>
 	<section>
 		<h2>その他</h2>
-		<mk-switch v-model="os.i.account.is_bot" @change="onChangeIsBot" text="このアカウントはbotです"/>
+		<mk-switch v-model="os.i.account.isBot" @change="onChangeIsBot" text="このアカウントはbotです"/>
 	</section>
 </div>
 </template>
@@ -63,7 +63,7 @@ export default Vue.extend({
 		},
 		onChangeIsBot() {
 			(this as any).api('i/update', {
-				is_bot: (this as any).os.i.account.is_bot
+				isBot: (this as any).os.i.account.isBot
 			});
 		}
 	}

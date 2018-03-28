@@ -15,9 +15,9 @@ import read from '../../common/read-messaging-message';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'user_id' parameter
-	const [recipientId, recipientIdErr] = $(params.user_id).id().$;
-	if (recipientIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [recipientId, recipientIdErr] = $(params.userId).id().$;
+	if (recipientIdErr) return rej('invalid userId param');
 
 	// Fetch recipient
 	const recipient = await User.findOne({
@@ -55,11 +55,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	const query = {
 		$or: [{
-			user_id: user._id,
-			recipient_id: recipient._id
+			userId: user._id,
+			recipientId: recipient._id
 		}, {
-			user_id: recipient._id,
-			recipient_id: user._id
+			userId: recipient._id,
+			recipientId: user._id
 		}]
 	} as any;
 

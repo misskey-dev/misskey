@@ -6,9 +6,9 @@ import Post from '../../models/post';
 import User, { pack } from '../../models/user';
 
 module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
@@ -29,8 +29,8 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Fetch recent posts
 	const recentPosts = await Post.find({
-		user_id: user._id,
-		reply_id: {
+		userId: user._id,
+		replyId: {
 			$exists: true,
 			$ne: null
 		}
@@ -41,7 +41,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		limit: 1000,
 		fields: {
 			_id: false,
-			reply_id: true
+			replyId: true
 		}
 	});
 
@@ -52,15 +52,15 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	const replyTargetPosts = await Post.find({
 		_id: {
-			$in: recentPosts.map(p => p.reply_id)
+			$in: recentPosts.map(p => p.replyId)
 		},
-		user_id: {
+		userId: {
 			$ne: user._id
 		}
 	}, {
 		fields: {
 			_id: false,
-			user_id: true
+			userId: true
 		}
 	});
 
@@ -68,7 +68,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Extract replies from recent posts
 	replyTargetPosts.forEach(post => {
-		const userId = post.user_id.toString();
+		const userId = post.userId.toString();
 		if (repliedUsers[userId]) {
 			repliedUsers[userId]++;
 		} else {

@@ -30,8 +30,8 @@ export default Vue.extend({
 
 			(this as any).api('posts/create', {
 				text: this.text,
-				reply_id: reply ? reply.id : undefined,
-				channel_id: (this.$parent as any).channel.id
+				replyId: reply ? reply.id : undefined,
+				channelId: (this.$parent as any).channel.id
 			}).then(data => {
 				this.text = '';
 			}).catch(err => {

@@ -47,15 +47,15 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	const mute = await Mute.find({
-		muter_id: user._id,
-		deleted_at: { $exists: false }
+		muterId: user._id,
+		deletedAt: { $exists: false }
 	});
 
 	const query = {
-		notifiee_id: user._id,
+		notifieeId: user._id,
 		$and: [{
-			notifier_id: {
-				$nin: mute.map(m => m.mutee_id)
+			notifierId: {
+				$nin: mute.map(m => m.muteeId)
 			}
 		}]
 	} as any;
@@ -69,7 +69,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		const followingIds = await getFriends(user._id);
 
 		query.$and.push({
-			notifier_id: {
+			notifierId: {
 				$in: followingIds
 			}
 		});

@@ -69,7 +69,7 @@ export default Vue.extend({
 				this.avatarSaving = true;
 
 				(this as any).api('i/update', {
-					avatar_id: file.id
+					avatarId: file.id
 				}).then(() => {
 					this.avatarSaving = false;
 					alert('%i18n:mobile.tags.mk-profile-setting.avatar-saved%');
@@ -83,7 +83,7 @@ export default Vue.extend({
 				this.bannerSaving = true;
 
 				(this as any).api('i/update', {
-					banner_id: file.id
+					bannerId: file.id
 				}).then(() => {
 					this.bannerSaving = false;
 					alert('%i18n:mobile.tags.mk-profile-setting.banner-saved%');

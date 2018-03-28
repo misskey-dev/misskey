@@ -34,7 +34,7 @@
 				<img :src="`${i.parent.avatar_url}?thumbnail&size=32`" alt="">
 				<span class="name"><b>{{ i.parent.name }}</b></span>
 				<span class="username">@{{ i.parent.username }}</span>
-				<mk-time :time="i.created_at"/>
+				<mk-time :time="i.createdAt"/>
 			</div>
 		</section>
 		<section v-if="myGames.length > 0">
@@ -43,7 +43,7 @@
 				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
 				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
-				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
+				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
 			</a>
 		</section>
 		<section v-if="games.length > 0">
@@ -52,7 +52,7 @@
 				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
 				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
-				<span class="state">{{ g.is_ended ? '終了' : '進行中' }}</span>
+				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
 			</a>
 		</section>
 	</div>
@@ -147,7 +147,7 @@ export default Vue.extend({
 					username
 				}).then(user => {
 					(this as any).api('othello/match', {
-						user_id: user.id
+						userId: user.id
 					}).then(res => {
 						if (res == null) {
 							this.matching = user;
@@ -164,7 +164,7 @@ export default Vue.extend({
 		},
 		accept(invitation) {
 			(this as any).api('othello/match', {
-				user_id: invitation.parent.id
+				userId: invitation.parent.id
 			}).then(game => {
 				if (game) {
 					this.matching = null;

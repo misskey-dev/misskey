@@ -41,9 +41,9 @@
 			<div slot="header">
 				<span>ルール</span>
 			</div>
-			<mk-switch v-model="game.settings.is_llotheo" @change="updateSettings" text="石の少ない方が勝ち(ロセオ)"/>
-			<mk-switch v-model="game.settings.looped_board" @change="updateSettings" text="ループマップ"/>
-			<mk-switch v-model="game.settings.can_put_everywhere" @change="updateSettings" text="どこでも置けるモード"/>
+			<mk-switch v-model="game.settings.isLlotheo" @change="updateSettings" text="石の少ない方が勝ち(ロセオ)"/>
+			<mk-switch v-model="game.settings.loopedBoard" @change="updateSettings" text="ループマップ"/>
+			<mk-switch v-model="game.settings.canPutEverywhere" @change="updateSettings" text="どこでも置けるモード"/>
 		</el-card>
 
 		<el-card class="bot-form" v-if="form">
@@ -116,13 +116,13 @@ export default Vue.extend({
 			return categories.filter((item, pos) => categories.indexOf(item) == pos);
 		},
 		isAccepted(): boolean {
-			if (this.game.user1_id == (this as any).os.i.id && this.game.user1_accepted) return true;
-			if (this.game.user2_id == (this as any).os.i.id && this.game.user2_accepted) return true;
+			if (this.game.user1Id == (this as any).os.i.id && this.game.user1Accepted) return true;
+			if (this.game.user2Id == (this as any).os.i.id && this.game.user2Accepted) return true;
 			return false;
 		},
 		isOpAccepted(): boolean {
-			if (this.game.user1_id != (this as any).os.i.id && this.game.user1_accepted) return true;
-			if (this.game.user2_id != (this as any).os.i.id && this.game.user2_accepted) return true;
+			if (this.game.user1Id != (this as any).os.i.id && this.game.user1Accepted) return true;
+			if (this.game.user2Id != (this as any).os.i.id && this.game.user2Accepted) return true;
 			return false;
 		}
 	},
@@ -133,8 +133,8 @@ export default Vue.extend({
 		this.connection.on('init-form', this.onInitForm);
 		this.connection.on('message', this.onMessage);
 
-		if (this.game.user1_id != (this as any).os.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
-		if (this.game.user2_id != (this as any).os.i.id && this.game.settings.form2) this.form = this.game.settings.form2;
+		if (this.game.user1Id != (this as any).os.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
+		if (this.game.user2Id != (this as any).os.i.id && this.game.settings.form2) this.form = this.game.settings.form2;
 	},
 
 	beforeDestroy() {
@@ -162,8 +162,8 @@ export default Vue.extend({
 		},
 
 		onChangeAccepts(accepts) {
-			this.game.user1_accepted = accepts.user1;
-			this.game.user2_accepted = accepts.user2;
+			this.game.user1Accepted = accepts.user1;
+			this.game.user2Accepted = accepts.user2;
 			this.$forceUpdate();
 		},
 
@@ -185,12 +185,12 @@ export default Vue.extend({
 		},
 
 		onInitForm(x) {
-			if (x.user_id == (this as any).os.i.id) return;
+			if (x.userId == (this as any).os.i.id) return;
 			this.form = x.form;
 		},
 
 		onMessage(x) {
-			if (x.user_id == (this as any).os.i.id) return;
+			if (x.userId == (this as any).os.i.id) return;
 			this.messages.unshift(x.message);
 		},
 

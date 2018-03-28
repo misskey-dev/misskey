@@ -37,8 +37,8 @@ export const pack = (
 	delete _matching._id;
 
 	// Populate user
-	_matching.parent = await packUser(_matching.parent_id, meId);
-	_matching.child = await packUser(_matching.child_id, meId);
+	_matching.parent = await packUser(_matching.parentId, meId);
+	_matching.child = await packUser(_matching.childId, meId);
 
 	resolve(_matching);
 });

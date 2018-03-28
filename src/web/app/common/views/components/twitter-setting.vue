@@ -1,13 +1,13 @@
 <template>
 <div class="mk-twitter-setting">
 	<p>%i18n:common.tags.mk-twitter-setting.description%<a :href="`${docsUrl}/link-to-twitter`" target="_blank">%i18n:common.tags.mk-twitter-setting.detail%</a></p>
-	<p class="account" v-if="os.i.account.twitter" :title="`Twitter ID: ${os.i.account.twitter.user_id}`">%i18n:common.tags.mk-twitter-setting.connected-to%: <a :href="`https://twitter.com/${os.i.account.twitter.screen_name}`" target="_blank">@{{ os.i.account.twitter.screen_name }}</a></p>
+	<p class="account" v-if="os.i.account.twitter" :title="`Twitter ID: ${os.i.account.twitter.userId}`">%i18n:common.tags.mk-twitter-setting.connected-to%: <a :href="`https://twitter.com/${os.i.account.twitter.screenName}`" target="_blank">@{{ os.i.account.twitter.screenName }}</a></p>
 	<p>
 		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ os.i.account.twitter ? '%i18n:common.tags.mk-twitter-setting.reconnect%' : '%i18n:common.tags.mk-twitter-setting.connect%' }}</a>
 		<span v-if="os.i.account.twitter"> or </span>
 		<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="os.i.account.twitter" @click.prevent="disconnect">%i18n:common.tags.mk-twitter-setting.disconnect%</a>
 	</p>
-	<p class="id" v-if="os.i.account.twitter">Twitter ID: {{ os.i.account.twitter.user_id }}</p>
+	<p class="id" v-if="os.i.account.twitter">Twitter ID: {{ os.i.account.twitter.userId }}</p>
 </div>
 </template>
 

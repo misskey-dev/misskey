@@ -11,19 +11,19 @@ params:
     desc:
       ja: "投稿の本文"
       en: "The text of your post"
-  - name: "media_ids"
+  - name: "mediaIds"
     type: "id(DriveFile)[]"
     optional: true
     desc:
       ja: "添付するメディア(1~4つ)"
       en: "Media you want to attach (1~4)"
-  - name: "reply_id"
+  - name: "replyId"
     type: "id(Post)"
     optional: true
     desc:
       ja: "返信する投稿"
       en: "The post you want to reply"
-  - name: "repost_id"
+  - name: "repostId"
     type: "id(Post)"
     optional: true
     desc:

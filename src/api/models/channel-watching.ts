@@ -9,6 +9,6 @@ export interface IChannelWatching {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	deletedAt: Date;
-	channel_id: mongo.ObjectID;
+	channelId: mongo.ObjectID;
 	userId: mongo.ObjectID;
 }

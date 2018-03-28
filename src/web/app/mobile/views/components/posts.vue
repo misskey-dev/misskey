@@ -28,8 +28,8 @@ export default Vue.extend({
 	computed: {
 		_posts(): any[] {
 			return (this.posts as any).map(post => {
-				const date = new Date(post.created_at).getDate();
-				const month = new Date(post.created_at).getMonth() + 1;
+				const date = new Date(post.createdAt).getDate();
+				const month = new Date(post.createdAt).getMonth() + 1;
 				post._date = date;
 				post._datetext = `${month}月 ${date}日`;
 				return post;

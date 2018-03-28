@@ -63,7 +63,7 @@ export const pack = (
 		//#region Watchしているかどうか
 		const watch = await Watching.findOne({
 			userId: meId,
-			channel_id: _channel.id,
+			channelId: _channel.id,
 			deletedAt: { $exists: false }
 		});
 

@@ -97,10 +97,10 @@ export const pack = (
 	}
 
 	// Populate user
-	_game.user1 = await packUser(_game.user1_id, meId);
-	_game.user2 = await packUser(_game.user2_id, meId);
-	if (_game.winner_id) {
-		_game.winner = await packUser(_game.winner_id, meId);
+	_game.user1 = await packUser(_game.user1Id, meId);
+	_game.user2 = await packUser(_game.user2Id, meId);
+	if (_game.winnerId) {
+		_game.winner = await packUser(_game.winnerId, meId);
 	} else {
 		_game.winner = null;
 	}

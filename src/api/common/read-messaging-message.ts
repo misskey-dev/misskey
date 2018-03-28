@@ -37,12 +37,12 @@ export default (
 	// Update documents
 	await Message.update({
 		_id: { $in: ids },
-		user_id: otherpartyId,
-		recipient_id: userId,
-		is_read: false
+		userId: otherpartyId,
+		recipientId: userId,
+		isRead: false
 	}, {
 		$set: {
-			is_read: true
+			isRead: true
 		}
 	}, {
 		multi: true
@@ -55,8 +55,8 @@ export default (
 	// Calc count of my unread messages
 	const count = await Message
 		.count({
-			recipient_id: userId,
-			is_read: false
+			recipientId: userId,
+			isRead: false
 		});
 
 	if (count == 0) {

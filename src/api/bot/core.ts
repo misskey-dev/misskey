@@ -208,7 +208,7 @@ class SigninContext extends Context {
 		if (this.temporaryUser == null) {
 			// Fetch user
 			const user: IUser = await User.findOne({
-				username_lower: query.toLowerCase(),
+				usernameLower: query.toLowerCase(),
 				host: null
 			}, {
 				fields: {

@@ -13,9 +13,9 @@ import Reaction, { pack } from '../../models/post-reaction';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
@@ -41,8 +41,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Issue query
 	const reactions = await Reaction
 		.find({
-			post_id: post._id,
-			deleted_at: { $exists: false }
+			postId: post._id,
+			deletedAt: { $exists: false }
 		}, {
 			limit: limit,
 			skip: offset,

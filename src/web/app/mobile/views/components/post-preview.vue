@@ -8,7 +8,7 @@
 			<router-link class="name" :to="`/@${acct}`">{{ post.user.name }}</router-link>
 			<span class="username">@{{ acct }}</span>
 			<router-link class="time" :to="`/@${acct}/${post.id}`">
-				<mk-time :time="post.created_at"/>
+				<mk-time :time="post.createdAt"/>
 			</router-link>
 		</header>
 		<div class="body">

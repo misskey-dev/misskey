@@ -12,15 +12,15 @@ import DriveFolder, { pack } from '../../../models/drive-folder';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'folder_id' parameter
-	const [folderId, folderIdErr] = $(params.folder_id).id().$;
-	if (folderIdErr) return rej('invalid folder_id param');
+	// Get 'folderId' parameter
+	const [folderId, folderIdErr] = $(params.folderId).id().$;
+	if (folderIdErr) return rej('invalid folderId param');
 
 	// Get folder
 	const folder = await DriveFolder
 		.findOne({
 			_id: folderId,
-			user_id: user._id
+			userId: user._id
 		});
 
 	if (folder === null) {

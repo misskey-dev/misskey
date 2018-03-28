@@ -14,15 +14,15 @@ import { publishDriveStream } from '../../../event';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'file_id' parameter
-	const [fileId, fileIdErr] = $(params.file_id).id().$;
-	if (fileIdErr) return rej('invalid file_id param');
+	// Get 'fileId' parameter
+	const [fileId, fileIdErr] = $(params.fileId).id().$;
+	if (fileIdErr) return rej('invalid fileId param');
 
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
 			_id: fileId,
-			'metadata.user_id': user._id
+			'metadata.userId': user._id
 		});
 
 	if (file === null) {
@@ -34,33 +34,33 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (nameErr) return rej('invalid name param');
 	if (name) file.filename = name;
 
-	// Get 'folder_id' parameter
-	const [folderId, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) return rej('invalid folder_id param');
+	// Get 'folderId' parameter
+	const [folderId, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	if (folderIdErr) return rej('invalid folderId param');
 
 	if (folderId !== undefined) {
 		if (folderId === null) {
-			file.metadata.folder_id = null;
+			file.metadata.folderId = null;
 		} else {
 			// Fetch folder
 			const folder = await DriveFolder
 				.findOne({
 					_id: folderId,
-					user_id: user._id
+					userId: user._id
 				});
 
 			if (folder === null) {
 				return rej('folder-not-found');
 			}
 
-			file.metadata.folder_id = folder._id;
+			file.metadata.folderId = folder._id;
 		}
 	}
 
 	await DriveFile.update(file._id, {
 		$set: {
 			filename: file.filename,
-			'metadata.folder_id': file.metadata.folder_id
+			'metadata.folderId': file.metadata.folderId
 		}
 	});
 

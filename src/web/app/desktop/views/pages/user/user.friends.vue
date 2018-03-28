@@ -35,7 +35,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		(this as any).api('users/get_frequently_replied_users', {
-			user_id: this.user.id,
+			userId: this.user.id,
 			limit: 4
 		}).then(docs => {
 			this.users = docs.map(doc => doc.user);

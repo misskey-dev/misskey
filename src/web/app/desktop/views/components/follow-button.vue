@@ -67,7 +67,7 @@ export default Vue.extend({
 			this.wait = true;
 			if (this.user.is_following) {
 				(this as any).api('following/delete', {
-					user_id: this.user.id
+					userId: this.user.id
 				}).then(() => {
 					this.user.is_following = false;
 				}).catch(err => {
@@ -77,7 +77,7 @@ export default Vue.extend({
 				});
 			} else {
 				(this as any).api('following/create', {
-					user_id: this.user.id
+					userId: this.user.id
 				}).then(() => {
 					this.user.is_following = true;
 				}).catch(err => {

@@ -30,17 +30,17 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		return rej('cannot set since_id and until_id');
 	}
 
-	// Get 'folder_id' parameter
-	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) return rej('invalid folder_id param');
+	// Get 'folderId' parameter
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	if (folderIdErr) return rej('invalid folderId param');
 
 	// Construct query
 	const sort = {
 		_id: -1
 	};
 	const query = {
-		user_id: user._id,
-		parent_id: folderId
+		userId: user._id,
+		parentId: folderId
 	} as any;
 	if (sinceId) {
 		sort._id = 1;

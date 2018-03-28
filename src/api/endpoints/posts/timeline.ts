@@ -49,17 +49,17 @@ module.exports = async (params, user, app) => {
 
 		// Watchしているチャンネルを取得
 		watchingChannelIds: ChannelWatching.find({
-			user_id: user._id,
+			userId: user._id,
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
-		}).then(watches => watches.map(w => w.channel_id)),
+			deletedAt: { $exists: false }
+		}).then(watches => watches.map(w => w.channelId)),
 
 		// ミュートしているユーザーを取得
 		mutedUserIds: Mute.find({
-			muter_id: user._id,
+			muterId: user._id,
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
-		}).then(ms => ms.map(m => m.mutee_id))
+			deletedAt: { $exists: false }
+		}).then(ms => ms.map(m => m.muteeId))
 	});
 
 	//#region Construct query
@@ -70,31 +70,31 @@ module.exports = async (params, user, app) => {
 	const query = {
 		$or: [{
 			// フォローしている人のタイムラインへの投稿
-			user_id: {
+			userId: {
 				$in: followingIds
 			},
 			// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
 			$or: [{
-				channel_id: {
+				channelId: {
 					$exists: false
 				}
 			}, {
-				channel_id: null
+				channelId: null
 			}]
 		}, {
 			// Watchしているチャンネルへの投稿
-			channel_id: {
+			channelId: {
 				$in: watchingChannelIds
 			}
 		}],
 		// mute
-		user_id: {
+		userId: {
 			$nin: mutedUserIds
 		},
-		'_reply.user_id': {
+		'_reply.userId': {
 			$nin: mutedUserIds
 		},
-		'_repost.user_id': {
+		'_repost.userId': {
 			$nin: mutedUserIds
 		},
 	} as any;
@@ -110,11 +110,11 @@ module.exports = async (params, user, app) => {
 		};
 	} else if (sinceDate) {
 		sort._id = 1;
-		query.created_at = {
+		query.createdAt = {
 			$gt: new Date(sinceDate)
 		};
 	} else if (untilDate) {
-		query.created_at = {
+		query.createdAt = {
 			$lt: new Date(untilDate)
 		};
 	}

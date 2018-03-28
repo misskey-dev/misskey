@@ -14,16 +14,16 @@ import User from '../../models/user';
  * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).optional.id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).optional.id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'username' parameter
 	const [username, usernameErr] = $(params.username).optional.string().$;
 	if (usernameErr) return rej('invalid username param');
 
 	if (userId === undefined && username === undefined) {
-		return rej('user_id or pair of username and host is required');
+		return rej('userId or pair of username and host is required');
 	}
 
 	// Get 'host' parameter
@@ -31,7 +31,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (hostErr) return rej('invalid host param');
 
 	if (userId === undefined && host === undefined) {
-		return rej('user_id or pair of username and host is required');
+		return rej('userId or pair of username and host is required');
 	}
 
 	// Get 'include_replies' parameter
@@ -69,7 +69,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	const q = userId !== undefined
 		? { _id: userId }
-		: { username_lower: username.toLowerCase(), host_lower: getHostLower(host) } ;
+		: { usernameLower: username.toLowerCase(), hostLower: getHostLower(host) } ;
 
 	// Lookup user
 	const user = await User.findOne(q, {
@@ -88,7 +88,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	};
 
 	const query = {
-		user_id: user._id
+		userId: user._id
 	} as any;
 
 	if (sinceId) {
@@ -102,21 +102,21 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		};
 	} else if (sinceDate) {
 		sort._id = 1;
-		query.created_at = {
+		query.createdAt = {
 			$gt: new Date(sinceDate)
 		};
 	} else if (untilDate) {
-		query.created_at = {
+		query.createdAt = {
 			$lt: new Date(untilDate)
 		};
 	}
 
 	if (!includeReplies) {
-		query.reply_id = null;
+		query.replyId = null;
 	}
 
 	if (withMedia) {
-		query.media_ids = {
+		query.mediaIds = {
 			$exists: true,
 			$ne: null
 		};

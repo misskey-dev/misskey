@@ -7,7 +7,7 @@ import getAcct from './get-acct';
  */
 export default function(user: IUser): string {
 	let string = `${user.name} (@${getAcct(user)})\n` +
-		`${user.posts_count}投稿、${user.following_count}フォロー、${user.followers_count}フォロワー\n`;
+		`${user.postsCount}投稿、${user.followingCount}フォロー、${user.followersCount}フォロワー\n`;
 
 	if (user.host === null) {
 		const account = user.account as ILocalAccount;

@@ -26,7 +26,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	const users = await User
 		.find({
-			username_lower: new RegExp(query.toLowerCase())
+			usernameLower: new RegExp(query.toLowerCase())
 		}, {
 			limit: limit,
 			skip: offset

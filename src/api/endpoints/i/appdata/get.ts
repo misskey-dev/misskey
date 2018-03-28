@@ -25,8 +25,8 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 		select[`data.${key}`] = true;
 	}
 	const appdata = await Appdata.findOne({
-		app_id: app._id,
-		user_id: user._id
+		appId: app._id,
+		userId: user._id
 	}, {
 		fields: select
 	});

@@ -219,9 +219,9 @@ export default Vue.extend({
 
 			(this as any).api('posts/create', {
 				text: this.text == '' ? undefined : this.text,
-				media_ids: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
-				reply_id: this.reply ? this.reply.id : undefined,
-				repost_id: this.repost ? this.repost.id : undefined,
+				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				replyId: this.reply ? this.reply.id : undefined,
+				repostId: this.repost ? this.repost.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				geo: this.geo ? {
 					latitude: this.geo.latitude,
@@ -255,7 +255,7 @@ export default Vue.extend({
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
 			data[this.draftId] = {
-				updated_at: new Date(),
+				updatedAt: new Date(),
 				data: {
 					text: this.text,
 					files: this.files,

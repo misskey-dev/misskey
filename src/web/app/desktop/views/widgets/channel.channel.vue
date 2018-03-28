@@ -44,7 +44,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('channels/posts', {
-				channel_id: this.channel.id
+				channelId: this.channel.id
 			}).then(posts => {
 				this.posts = posts;
 				this.fetching = false;

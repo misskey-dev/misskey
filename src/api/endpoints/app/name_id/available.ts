@@ -7,12 +7,12 @@ import { isValidNameId } from '../../../models/app';
 
 /**
  * @swagger
- * /app/name_id/available:
+ * /app/nameId/available:
  *   post:
- *     summary: Check available name_id on creation an application
+ *     summary: Check available nameId on creation an application
  *     parameters:
  *       -
- *         name: name_id
+ *         name: nameId
  *         description: Application unique name
  *         in: formData
  *         required: true
@@ -25,7 +25,7 @@ import { isValidNameId } from '../../../models/app';
  *           type: object
  *           properties:
  *             available:
- *               description: Whether name_id is available
+ *               description: Whether nameId is available
  *               type: boolean
  *
  *       default:
@@ -35,20 +35,20 @@ import { isValidNameId } from '../../../models/app';
  */
 
 /**
- * Check available name_id of app
+ * Check available nameId of app
  *
  * @param {any} params
  * @return {Promise<any>}
  */
 module.exports = async (params) => new Promise(async (res, rej) => {
-	// Get 'name_id' parameter
-	const [nameId, nameIdErr] = $(params.name_id).string().pipe(isValidNameId).$;
-	if (nameIdErr) return rej('invalid name_id param');
+	// Get 'nameId' parameter
+	const [nameId, nameIdErr] = $(params.nameId).string().pipe(isValidNameId).$;
+	if (nameIdErr) return rej('invalid nameId param');
 
 	// Get exist
 	const exist = await App
 		.count({
-			name_id_lower: nameId.toLowerCase()
+			nameIdLower: nameId.toLowerCase()
 		}, {
 			limit: 1
 		});

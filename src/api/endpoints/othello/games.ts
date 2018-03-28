@@ -24,14 +24,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	const q: any = my ? {
-		is_started: true,
+		isStarted: true,
 		$or: [{
-			user1_id: user._id
+			user1Id: user._id
 		}, {
-			user2_id: user._id
+			user2Id: user._id
 		}]
 	} : {
-		is_started: true
+		isStarted: true
 	};
 
 	const sort = {

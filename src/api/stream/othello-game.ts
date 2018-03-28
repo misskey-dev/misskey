@@ -62,10 +62,10 @@ export default function(request: websocket.request, connection: websocket.connec
 	async function updateSettings(settings) {
 		const game = await OthelloGame.findOne({ _id: gameId });
 
-		if (game.is_started) return;
-		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
-		if (game.user1_id.equals(user._id) && game.user1_accepted) return;
-		if (game.user2_id.equals(user._id) && game.user2_accepted) return;
+		if (game.isStarted) return;
+		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
+		if (game.user1Id.equals(user._id) && game.user1Accepted) return;
+		if (game.user2Id.equals(user._id) && game.user2Accepted) return;
 
 		await OthelloGame.update({ _id: gameId }, {
 			$set: {
@@ -79,10 +79,10 @@ export default function(request: websocket.request, connection: websocket.connec
 	async function initForm(form) {
 		const game = await OthelloGame.findOne({ _id: gameId });
 
-		if (game.is_started) return;
-		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
+		if (game.isStarted) return;
+		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
 
-		const set = game.user1_id.equals(user._id) ? {
+		const set = game.user1Id.equals(user._id) ? {
 			form1: form
 		} : {
 			form2: form
@@ -93,7 +93,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		});
 
 		publishOthelloGameStream(gameId, 'init-form', {
-			user_id: user._id,
+			userId: user._id,
 			form
 		});
 	}
@@ -101,10 +101,10 @@ export default function(request: websocket.request, connection: websocket.connec
 	async function updateForm(id, value) {
 		const game = await OthelloGame.findOne({ _id: gameId });
 
-		if (game.is_started) return;
-		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
+		if (game.isStarted) return;
+		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
 
-		const form = game.user1_id.equals(user._id) ? game.form2 : game.form1;
+		const form = game.user1Id.equals(user._id) ? game.form2 : game.form1;
 
 		const item = form.find(i => i.id == id);
 
@@ -112,7 +112,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		item.value = value;
 
-		const set = game.user1_id.equals(user._id) ? {
+		const set = game.user1Id.equals(user._id) ? {
 			form2: form
 		} : {
 			form1: form
@@ -123,7 +123,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		});
 
 		publishOthelloGameStream(gameId, 'update-form', {
-			user_id: user._id,
+			userId: user._id,
 			id,
 			value
 		});
@@ -132,7 +132,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	async function message(message) {
 		message.id = Math.random();
 		publishOthelloGameStream(gameId, 'message', {
-			user_id: user._id,
+			userId: user._id,
 			message
 		});
 	}
@@ -140,36 +140,36 @@ export default function(request: websocket.request, connection: websocket.connec
 	async function accept(accept: boolean) {
 		const game = await OthelloGame.findOne({ _id: gameId });
 
-		if (game.is_started) return;
+		if (game.isStarted) return;
 
 		let bothAccepted = false;
 
-		if (game.user1_id.equals(user._id)) {
+		if (game.user1Id.equals(user._id)) {
 			await OthelloGame.update({ _id: gameId }, {
 				$set: {
-					user1_accepted: accept
+					user1Accepted: accept
 				}
 			});
 
 			publishOthelloGameStream(gameId, 'change-accepts', {
 				user1: accept,
-				user2: game.user2_accepted
+				user2: game.user2Accepted
 			});
 
-			if (accept && game.user2_accepted) bothAccepted = true;
-		} else if (game.user2_id.equals(user._id)) {
+			if (accept && game.user2Accepted) bothAccepted = true;
+		} else if (game.user2Id.equals(user._id)) {
 			await OthelloGame.update({ _id: gameId }, {
 				$set: {
-					user2_accepted: accept
+					user2Accepted: accept
 				}
 			});
 
 			publishOthelloGameStream(gameId, 'change-accepts', {
-				user1: game.user1_accepted,
+				user1: game.user1Accepted,
 				user2: accept
 			});
 
-			if (accept && game.user1_accepted) bothAccepted = true;
+			if (accept && game.user1Accepted) bothAccepted = true;
 		} else {
 			return;
 		}
@@ -178,8 +178,8 @@ export default function(request: websocket.request, connection: websocket.connec
 			// 3秒後、まだacceptされていたらゲーム開始
 			setTimeout(async () => {
 				const freshGame = await OthelloGame.findOne({ _id: gameId });
-				if (freshGame == null || freshGame.is_started || freshGame.is_ended) return;
-				if (!freshGame.user1_accepted || !freshGame.user2_accepted) return;
+				if (freshGame == null || freshGame.isStarted || freshGame.isEnded) return;
+				if (!freshGame.user1Accepted || !freshGame.user2Accepted) return;
 
 				let bw: number;
 				if (freshGame.settings.bw == 'random') {
@@ -198,8 +198,8 @@ export default function(request: websocket.request, connection: websocket.connec
 
 				await OthelloGame.update({ _id: gameId }, {
 					$set: {
-						started_at: new Date(),
-						is_started: true,
+						startedAt: new Date(),
+						isStarted: true,
 						black: bw,
 						'settings.map': map
 					}
@@ -207,17 +207,17 @@ export default function(request: websocket.request, connection: websocket.connec
 
 				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
 				const o = new Othello(map, {
-					isLlotheo: freshGame.settings.is_llotheo,
-					canPutEverywhere: freshGame.settings.can_put_everywhere,
-					loopedBoard: freshGame.settings.looped_board
+					isLlotheo: freshGame.settings.isLlotheo,
+					canPutEverywhere: freshGame.settings.canPutEverywhere,
+					loopedBoard: freshGame.settings.loopedBoard
 				});
 
 				if (o.isEnded) {
 					let winner;
 					if (o.winner === true) {
-						winner = freshGame.black == 1 ? freshGame.user1_id : freshGame.user2_id;
+						winner = freshGame.black == 1 ? freshGame.user1Id : freshGame.user2Id;
 					} else if (o.winner === false) {
-						winner = freshGame.black == 1 ? freshGame.user2_id : freshGame.user1_id;
+						winner = freshGame.black == 1 ? freshGame.user2Id : freshGame.user1Id;
 					} else {
 						winner = null;
 					}
@@ -226,13 +226,13 @@ export default function(request: websocket.request, connection: websocket.connec
 						_id: gameId
 					}, {
 						$set: {
-							is_ended: true,
-							winner_id: winner
+							isEnded: true,
+							winnerId: winner
 						}
 					});
 
 					publishOthelloGameStream(gameId, 'ended', {
-						winner_id: winner,
+						winnerId: winner,
 						game: await pack(gameId, user)
 					});
 				}
@@ -247,14 +247,14 @@ export default function(request: websocket.request, connection: websocket.connec
 	async function set(pos) {
 		const game = await OthelloGame.findOne({ _id: gameId });
 
-		if (!game.is_started) return;
-		if (game.is_ended) return;
-		if (!game.user1_id.equals(user._id) && !game.user2_id.equals(user._id)) return;
+		if (!game.isStarted) return;
+		if (game.isEnded) return;
+		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
 
 		const o = new Othello(game.settings.map, {
-			isLlotheo: game.settings.is_llotheo,
-			canPutEverywhere: game.settings.can_put_everywhere,
-			loopedBoard: game.settings.looped_board
+			isLlotheo: game.settings.isLlotheo,
+			canPutEverywhere: game.settings.canPutEverywhere,
+			loopedBoard: game.settings.loopedBoard
 		});
 
 		game.logs.forEach(log => {
@@ -262,7 +262,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		});
 
 		const myColor =
-			(game.user1_id.equals(user._id) && game.black == 1) || (game.user2_id.equals(user._id) && game.black == 2)
+			(game.user1Id.equals(user._id) && game.black == 1) || (game.user2Id.equals(user._id) && game.black == 2)
 				? true
 				: false;
 
@@ -272,9 +272,9 @@ export default function(request: websocket.request, connection: websocket.connec
 		let winner;
 		if (o.isEnded) {
 			if (o.winner === true) {
-				winner = game.black == 1 ? game.user1_id : game.user2_id;
+				winner = game.black == 1 ? game.user1Id : game.user2Id;
 			} else if (o.winner === false) {
-				winner = game.black == 1 ? game.user2_id : game.user1_id;
+				winner = game.black == 1 ? game.user2Id : game.user1Id;
 			} else {
 				winner = null;
 			}
@@ -293,8 +293,8 @@ export default function(request: websocket.request, connection: websocket.connec
 		}, {
 			$set: {
 				crc32,
-				is_ended: o.isEnded,
-				winner_id: winner
+				isEnded: o.isEnded,
+				winnerId: winner
 			},
 			$push: {
 				logs: log
@@ -307,7 +307,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		if (o.isEnded) {
 			publishOthelloGameStream(gameId, 'ended', {
-				winner_id: winner,
+				winnerId: winner,
 				game: await pack(gameId, user)
 			});
 		}
@@ -316,7 +316,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	async function check(crc32) {
 		const game = await OthelloGame.findOne({ _id: gameId });
 
-		if (!game.is_started) return;
+		if (!game.isStarted) return;
 
 		// 互換性のため
 		if (game.crc32 == null) return;

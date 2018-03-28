@@ -78,8 +78,8 @@ export default Vue.extend({
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
 				(this as any).api('drive/files/update', {
-					file_id: file.id,
-					folder_id: this.folder ? this.folder.id : null
+					fileId: file.id,
+					folderId: this.folder ? this.folder.id : null
 				});
 			}
 			//#endregion
@@ -92,8 +92,8 @@ export default Vue.extend({
 				if (this.folder && folder.id == this.folder.id) return;
 				this.browser.removeFolder(folder.id);
 				(this as any).api('drive/folders/update', {
-					folder_id: folder.id,
-					parent_id: this.folder ? this.folder.id : null
+					folderId: folder.id,
+					parentId: this.folder ? this.folder.id : null
 				});
 			}
 			//#endregion

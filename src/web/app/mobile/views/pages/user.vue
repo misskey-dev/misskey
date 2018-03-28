@@ -27,15 +27,15 @@
 				</div>
 				<div class="status">
 					<a>
-						<b>{{ user.posts_count | number }}</b>
+						<b>{{ user.postsCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.posts%</i>
 					</a>
 					<a :href="`@${acct}/following`">
-						<b>{{ user.following_count | number }}</b>
+						<b>{{ user.followingCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
 					</a>
 					<a :href="`@${acct}/followers`">
-						<b>{{ user.followers_count | number }}</b>
+						<b>{{ user.followersCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
 				</div>

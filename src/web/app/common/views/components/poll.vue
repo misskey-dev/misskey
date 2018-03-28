@@ -49,7 +49,7 @@ export default Vue.extend({
 		vote(id) {
 			if (this.poll.choices.some(c => c.is_voted)) return;
 			(this as any).api('posts/polls/vote', {
-				post_id: this.post.id,
+				postId: this.post.id,
 				choice: id
 			}).then(() => {
 				this.poll.choices.forEach(c => {

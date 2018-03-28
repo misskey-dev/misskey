@@ -47,7 +47,7 @@ export const pack = (
 	delete _reaction._id;
 
 	// Populate user
-	_reaction.user = await packUser(_reaction.user_id, me);
+	_reaction.user = await packUser(_reaction.userId, me);
 
 	resolve(_reaction);
 });

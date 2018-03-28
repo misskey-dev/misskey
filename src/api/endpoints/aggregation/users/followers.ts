@@ -12,9 +12,9 @@ import Following from '../../../models/following';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Lookup user
 	const user = await User.findOne({
@@ -33,17 +33,17 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	const following = await Following
 		.find({
-			followee_id: user._id,
+			followeeId: user._id,
 			$or: [
-				{ deleted_at: { $exists: false } },
-				{ deleted_at: { $gt: startTime } }
+				{ deletedAt: { $exists: false } },
+				{ deletedAt: { $gt: startTime } }
 			]
 		}, {
 			_id: false,
-			follower_id: false,
-			followee_id: false
+			followerId: false,
+			followeeId: false
 		}, {
-			sort: { created_at: -1 }
+			sort: { createdAt: -1 }
 		});
 
 	const graph = [];
@@ -57,7 +57,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		// day = day.getTime();
 
 		const count = following.filter(f =>
-			f.created_at < day && (f.deleted_at == null || f.deleted_at > day)
+			f.createdAt < day && (f.deletedAt == null || f.deletedAt > day)
 		).length;
 
 		graph.push({

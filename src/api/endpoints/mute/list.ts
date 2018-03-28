@@ -28,15 +28,15 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Construct query
 	const query = {
-		muter_id: me._id,
-		deleted_at: { $exists: false }
+		muterId: me._id,
+		deletedAt: { $exists: false }
 	} as any;
 
 	if (iknow) {
 		// Get my friends
 		const myFriends = await getFriends(me._id);
 
-		query.mutee_id = {
+		query.muteeId = {
 			$in: myFriends
 		};
 	}
@@ -63,7 +63,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Serialize
 	const users = await Promise.all(mutes.map(async m =>
-		await pack(m.mutee_id, me, { detail: true })));
+		await pack(m.muteeId, me, { detail: true })));
 
 	// Response
 	res({

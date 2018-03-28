@@ -48,7 +48,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (following) {
 		const followingIds = await getFriends(user._id);
 
-		query.user_id = {
+		query.userId = {
 			$in: followingIds
 		};
 	}

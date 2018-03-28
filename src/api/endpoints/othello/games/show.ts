@@ -14,9 +14,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	const o = new Othello(game.settings.map, {
-		isLlotheo: game.settings.is_llotheo,
-		canPutEverywhere: game.settings.can_put_everywhere,
-		loopedBoard: game.settings.looped_board
+		isLlotheo: game.settings.isLlotheo,
+		canPutEverywhere: game.settings.canPutEverywhere,
+		loopedBoard: game.settings.loopedBoard
 	});
 
 	game.logs.forEach(log => {

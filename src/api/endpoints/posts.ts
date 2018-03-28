@@ -65,15 +65,15 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	}
 
 	if (reply != undefined) {
-		query.reply_id = reply ? { $exists: true, $ne: null } : null;
+		query.replyId = reply ? { $exists: true, $ne: null } : null;
 	}
 
 	if (repost != undefined) {
-		query.repost_id = repost ? { $exists: true, $ne: null } : null;
+		query.repostId = repost ? { $exists: true, $ne: null } : null;
 	}
 
 	if (media != undefined) {
-		query.media_ids = media ? { $exists: true, $ne: null } : null;
+		query.mediaIds = media ? { $exists: true, $ne: null } : null;
 	}
 
 	if (poll != undefined) {
@@ -82,7 +82,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	// TODO
 	//if (bot != undefined) {
-	//	query.is_bot = bot;
+	//	query.isBot = bot;
 	//}
 
 	// Issue query

@@ -13,7 +13,7 @@ import App, { isValidNameId, pack } from '../../models/app';
  *     parameters:
  *       - $ref: "#/parameters/AccessToken"
  *       -
- *         name: name_id
+ *         name: nameId
  *         description: Application unique name
  *         in: formData
  *         required: true
@@ -66,9 +66,9 @@ import App, { isValidNameId, pack } from '../../models/app';
  * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'name_id' parameter
-	const [nameId, nameIdErr] = $(params.name_id).string().pipe(isValidNameId).$;
-	if (nameIdErr) return rej('invalid name_id param');
+	// Get 'nameId' parameter
+	const [nameId, nameIdErr] = $(params.nameId).string().pipe(isValidNameId).$;
+	if (nameIdErr) return rej('invalid nameId param');
 
 	// Get 'name' parameter
 	const [name, nameErr] = $(params.name).string().$;
@@ -92,11 +92,11 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	// Create account
 	const app = await App.insert({
-		created_at: new Date(),
-		user_id: user._id,
+		createdAt: new Date(),
+		userId: user._id,
 		name: name,
-		name_id: nameId,
-		name_id_lower: nameId.toLowerCase(),
+		nameId: nameId,
+		nameIdLower: nameId.toLowerCase(),
 		description: description,
 		permission: permission,
 		callback_url: callbackUrl,

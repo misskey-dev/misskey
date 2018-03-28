@@ -11,12 +11,12 @@
 		<p>%fa:birthday-cake%{{ user.account.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
 	</div>
 	<div class="twitter" v-if="user.host === null && user.account.twitter">
-		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.account.twitter.screen_name}`" target="_blank">@{{ user.account.twitter.screen_name }}</a></p>
+		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.account.twitter.screenName}`" target="_blank">@{{ user.account.twitter.screenName }}</a></p>
 	</div>
 	<div class="status">
-		<p class="posts-count">%fa:angle-right%<a>{{ user.posts_count }}</a><b>投稿</b></p>
-		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.following_count }}</a>人を<b>フォロー</b></p>
-		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followers_count }}</a>人の<b>フォロワー</b></p>
+		<p class="posts-count">%fa:angle-right%<a>{{ user.postsCount }}</a><b>投稿</b></p>
+		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.followingCount }}</a>人を<b>フォロー</b></p>
+		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followersCount }}</a>人の<b>フォロワー</b></p>
 	</div>
 </div>
 </template>
@@ -49,7 +49,7 @@ export default Vue.extend({
 
 		mute() {
 			(this as any).api('mute/create', {
-				user_id: this.user.id
+				userId: this.user.id
 			}).then(() => {
 				this.user.is_muted = true;
 			}, () => {
@@ -59,7 +59,7 @@ export default Vue.extend({
 
 		unmute() {
 			(this as any).api('mute/delete', {
-				user_id: this.user.id
+				userId: this.user.id
 			}).then(() => {
 				this.user.is_muted = false;
 			}, () => {

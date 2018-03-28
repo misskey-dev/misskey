@@ -12,9 +12,9 @@ import Post, { pack } from '../../models/post';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
@@ -39,7 +39,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Issue query
 	const replies = await Post
-		.find({ reply_id: post._id }, {
+		.find({ replyId: post._id }, {
 			limit: limit,
 			skip: offset,
 			sort: {

@@ -3,19 +3,19 @@
 	<header><b>{{ blackUser.name }}</b>(黒) vs <b>{{ whiteUser.name }}</b>(白)</header>
 
 	<div style="overflow: hidden">
-		<p class="turn" v-if="!iAmPlayer && !game.is_ended">{{ turnUser.name }}のターンです<mk-ellipsis/></p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ turnUser.name }}のターンです<mk-ellipsis/></p>
 		<p class="turn" v-if="logPos != logs.length">{{ turnUser.name }}のターン</p>
-		<p class="turn1" v-if="iAmPlayer && !game.is_ended && !isMyTurn">相手のターンです<mk-ellipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.is_ended && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">あなたのターンです</p>
-		<p class="result" v-if="game.is_ended && logPos == logs.length">
-			<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.is_llotheo ? ' (ロセオ)' : '' }}</template>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">相手のターンです<mk-ellipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">あなたのターンです</p>
+		<p class="result" v-if="game.isEnded && logPos == logs.length">
+			<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
 			<template v-else>引き分け</template>
 		</p>
 	</div>
 
 	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
 		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.is_ended, myTurn: !game.is_ended && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
+			:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
 			@click="set(i)"
 			:title="'[' + (o.transformPosToXy(i)[0] + 1) + ', ' + (o.transformPosToXy(i)[1] + 1) + '] (' + i + ')'"
 		>
@@ -26,7 +26,7 @@
 
 	<p class="status"><b>{{ logPos }}ターン目</b> 黒:{{ o.blackCount }} 白:{{ o.whiteCount }} 合計:{{ o.blackCount + o.whiteCount }}</p>
 
-	<div class="player" v-if="game.is_ended">
+	<div class="player" v-if="game.isEnded">
 		<el-button-group>
 			<el-button type="primary" @click="logPos = 0" :disabled="logPos == 0">%fa:angle-double-left%</el-button>
 			<el-button type="primary" @click="logPos--" :disabled="logPos == 0">%fa:angle-left%</el-button>
@@ -62,12 +62,12 @@ export default Vue.extend({
 	computed: {
 		iAmPlayer(): boolean {
 			if (!(this as any).os.isSignedIn) return false;
-			return this.game.user1_id == (this as any).os.i.id || this.game.user2_id == (this as any).os.i.id;
+			return this.game.user1Id == (this as any).os.i.id || this.game.user2Id == (this as any).os.i.id;
 		},
 		myColor(): Color {
 			if (!this.iAmPlayer) return null;
-			if (this.game.user1_id == (this as any).os.i.id && this.game.black == 1) return true;
-			if (this.game.user2_id == (this as any).os.i.id && this.game.black == 2) return true;
+			if (this.game.user1Id == (this as any).os.i.id && this.game.black == 1) return true;
+			if (this.game.user2Id == (this as any).os.i.id && this.game.black == 2) return true;
 			return false;
 		},
 		opColor(): Color {
@@ -97,11 +97,11 @@ export default Vue.extend({
 
 	watch: {
 		logPos(v) {
-			if (!this.game.is_ended) return;
+			if (!this.game.isEnded) return;
 			this.o = new Othello(this.game.settings.map, {
-				isLlotheo: this.game.settings.is_llotheo,
-				canPutEverywhere: this.game.settings.can_put_everywhere,
-				loopedBoard: this.game.settings.looped_board
+				isLlotheo: this.game.settings.isLlotheo,
+				canPutEverywhere: this.game.settings.canPutEverywhere,
+				loopedBoard: this.game.settings.loopedBoard
 			});
 			this.logs.forEach((log, i) => {
 				if (i < v) {
@@ -116,9 +116,9 @@ export default Vue.extend({
 		this.game = this.initGame;
 
 		this.o = new Othello(this.game.settings.map, {
-			isLlotheo: this.game.settings.is_llotheo,
-			canPutEverywhere: this.game.settings.can_put_everywhere,
-			loopedBoard: this.game.settings.looped_board
+			isLlotheo: this.game.settings.isLlotheo,
+			canPutEverywhere: this.game.settings.canPutEverywhere,
+			loopedBoard: this.game.settings.loopedBoard
 		});
 
 		this.game.logs.forEach(log => {
@@ -129,7 +129,7 @@ export default Vue.extend({
 		this.logPos = this.logs.length;
 
 		// 通信を取りこぼしてもいいように定期的にポーリングさせる
-		if (this.game.is_started && !this.game.is_ended) {
+		if (this.game.isStarted && !this.game.isEnded) {
 			this.pollingClock = setInterval(() => {
 				const crc32 = CRC32.str(this.logs.map(x => x.pos.toString()).join(''));
 				this.connection.send({
@@ -154,7 +154,7 @@ export default Vue.extend({
 
 	methods: {
 		set(pos) {
-			if (this.game.is_ended) return;
+			if (this.game.isEnded) return;
 			if (!this.iAmPlayer) return;
 			if (!this.isMyTurn) return;
 			if (!this.o.canPut(this.myColor, pos)) return;
@@ -194,16 +194,16 @@ export default Vue.extend({
 		},
 
 		checkEnd() {
-			this.game.is_ended = this.o.isEnded;
-			if (this.game.is_ended) {
+			this.game.isEnded = this.o.isEnded;
+			if (this.game.isEnded) {
 				if (this.o.winner === true) {
-					this.game.winner_id = this.game.black == 1 ? this.game.user1_id : this.game.user2_id;
+					this.game.winnerId = this.game.black == 1 ? this.game.user1Id : this.game.user2Id;
 					this.game.winner = this.game.black == 1 ? this.game.user1 : this.game.user2;
 				} else if (this.o.winner === false) {
-					this.game.winner_id = this.game.black == 1 ? this.game.user2_id : this.game.user1_id;
+					this.game.winnerId = this.game.black == 1 ? this.game.user2Id : this.game.user1Id;
 					this.game.winner = this.game.black == 1 ? this.game.user2 : this.game.user1;
 				} else {
-					this.game.winner_id = null;
+					this.game.winnerId = null;
 					this.game.winner = null;
 				}
 			}
@@ -214,9 +214,9 @@ export default Vue.extend({
 			this.game = game;
 
 			this.o = new Othello(this.game.settings.map, {
-				isLlotheo: this.game.settings.is_llotheo,
-				canPutEverywhere: this.game.settings.can_put_everywhere,
-				loopedBoard: this.game.settings.looped_board
+				isLlotheo: this.game.settings.isLlotheo,
+				canPutEverywhere: this.game.settings.canPutEverywhere,
+				loopedBoard: this.game.settings.loopedBoard
 			});
 
 			this.game.logs.forEach(log => {

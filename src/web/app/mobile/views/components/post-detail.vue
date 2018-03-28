@@ -2,7 +2,7 @@
 <div class="mk-post-detail">
 	<button
 		class="more"
-		v-if="p.reply && p.reply.reply_id && context == null"
+		v-if="p.reply && p.reply.replyId && context == null"
 		@click="fetchContext"
 		:disabled="fetchingContext"
 	>
@@ -54,7 +54,7 @@
 			</div>
 		</div>
 		<router-link class="time" :to="`/@${pAcct}/${p.id}`">
-			<mk-time :time="p.created_at" mode="detail"/>
+			<mk-time :time="p.createdAt" mode="detail"/>
 		</router-link>
 		<footer>
 			<mk-reactions-viewer :post="p"/>
@@ -115,7 +115,7 @@ export default Vue.extend({
 		isRepost(): boolean {
 			return (this.post.repost &&
 				this.post.text == null &&
-				this.post.media_ids == null &&
+				this.post.mediaIds == null &&
 				this.post.poll == null);
 		},
 		p(): any {
@@ -142,7 +142,7 @@ export default Vue.extend({
 		// Get replies
 		if (!this.compact) {
 			(this as any).api('posts/replies', {
-				post_id: this.p.id,
+				postId: this.p.id,
 				limit: 8
 			}).then(replies => {
 				this.replies = replies;
@@ -151,7 +151,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.client_settings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
@@ -173,7 +173,7 @@ export default Vue.extend({
 
 			// Fetch context
 			(this as any).api('posts/context', {
-				post_id: this.p.reply_id
+				postId: this.p.replyId
 			}).then(context => {
 				this.contextFetching = false;
 				this.context = context.reverse();

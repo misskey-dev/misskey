@@ -29,7 +29,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		(this as any).api('aggregation/users/activity', {
-			user_id: this.user.id,
+			userId: this.user.id,
 			limit: 30
 		}).then(data => {
 			data.forEach(d => d.total = d.posts + d.replies + d.reposts);

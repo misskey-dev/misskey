@@ -18,7 +18,7 @@ export default (os) => (opts) => {
 		const text = window.prompt(`「${getPostSummary(o.repost)}」をRepost`);
 		if (text == null) return;
 		os.api('posts/create', {
-			repost_id: o.repost.id,
+			repostId: o.repost.id,
 			text: text == '' ? undefined : text
 		});
 	} else {

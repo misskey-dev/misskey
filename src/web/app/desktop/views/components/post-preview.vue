@@ -1,14 +1,14 @@
 <template>
 <div class="mk-post-preview" :title="title">
 	<router-link class="avatar-anchor" :to="`/@${acct}`">
-		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="post.user_id"/>
+		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="post.userId"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${acct}`" v-user-preview="post.user_id">{{ post.user.name }}</router-link>
+			<router-link class="name" :to="`/@${acct}`" v-user-preview="post.userId">{{ post.user.name }}</router-link>
 			<span class="username">@{{ acct }}</span>
 			<router-link class="time" :to="`/@${acct}/${post.id}`">
-				<mk-time :time="post.created_at"/>
+				<mk-time :time="post.createdAt"/>
 			</router-link>
 		</header>
 		<div class="body">
@@ -30,7 +30,7 @@ export default Vue.extend({
 			return getAcct(this.post.user);
 		},
 		title(): string {
-			return dateStringify(this.post.created_at);
+			return dateStringify(this.post.createdAt);
 		}
 	}
 });

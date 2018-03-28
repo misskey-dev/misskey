@@ -30,9 +30,9 @@ module.exports = async (params, user, app) => {
 		throw 'cannot set since_id and until_id';
 	}
 
-	// Get 'folder_id' parameter
-	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) throw 'invalid folder_id param';
+	// Get 'folderId' parameter
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	if (folderIdErr) throw 'invalid folderId param';
 
 	// Get 'type' parameter
 	const [type, typeErr] = $(params.type).optional.string().match(/^[a-zA-Z\/\-\*]+$/).$;
@@ -43,8 +43,8 @@ module.exports = async (params, user, app) => {
 		_id: -1
 	};
 	const query = {
-		'metadata.user_id': user._id,
-		'metadata.folder_id': folderId
+		'metadata.userId': user._id,
+		'metadata.folderId': folderId
 	} as any;
 	if (sinceId) {
 		sort._id = 1;

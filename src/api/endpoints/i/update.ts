@@ -36,20 +36,20 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	if (birthdayErr) return rej('invalid birthday param');
 	if (birthday !== undefined) user.account.profile.birthday = birthday;
 
-	// Get 'avatar_id' parameter
-	const [avatarId, avatarIdErr] = $(params.avatar_id).optional.id().$;
-	if (avatarIdErr) return rej('invalid avatar_id param');
-	if (avatarId) user.avatar_id = avatarId;
+	// Get 'avatarId' parameter
+	const [avatarId, avatarIdErr] = $(params.avatarId).optional.id().$;
+	if (avatarIdErr) return rej('invalid avatarId param');
+	if (avatarId) user.avatarId = avatarId;
 
-	// Get 'banner_id' parameter
-	const [bannerId, bannerIdErr] = $(params.banner_id).optional.id().$;
-	if (bannerIdErr) return rej('invalid banner_id param');
-	if (bannerId) user.banner_id = bannerId;
+	// Get 'bannerId' parameter
+	const [bannerId, bannerIdErr] = $(params.bannerId).optional.id().$;
+	if (bannerIdErr) return rej('invalid bannerId param');
+	if (bannerId) user.bannerId = bannerId;
 
-	// Get 'is_bot' parameter
-	const [isBot, isBotErr] = $(params.is_bot).optional.boolean().$;
-	if (isBotErr) return rej('invalid is_bot param');
-	if (isBot != null) user.account.is_bot = isBot;
+	// Get 'isBot' parameter
+	const [isBot, isBotErr] = $(params.isBot).optional.boolean().$;
+	if (isBotErr) return rej('invalid isBot param');
+	if (isBot != null) user.account.isBot = isBot;
 
 	// Get 'auto_watch' parameter
 	const [autoWatch, autoWatchErr] = $(params.auto_watch).optional.boolean().$;
@@ -60,10 +60,10 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 		$set: {
 			name: user.name,
 			description: user.description,
-			avatar_id: user.avatar_id,
-			banner_id: user.banner_id,
+			avatarId: user.avatarId,
+			bannerId: user.bannerId,
 			'account.profile': user.account.profile,
-			'account.is_bot': user.account.is_bot,
+			'account.isBot': user.account.isBot,
 			'account.settings': user.account.settings
 		}
 	});

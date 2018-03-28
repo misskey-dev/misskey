@@ -30,9 +30,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('cannot set since_id and until_id');
 	}
 
-	// Get 'channel_id' parameter
-	const [channelId, channelIdErr] = $(params.channel_id).id().$;
-	if (channelIdErr) return rej('invalid channel_id param');
+	// Get 'channelId' parameter
+	const [channelId, channelIdErr] = $(params.channelId).id().$;
+	if (channelIdErr) return rej('invalid channelId param');
 
 	// Fetch channel
 	const channel: IChannel = await Channel.findOne({
@@ -49,7 +49,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	};
 
 	const query = {
-		channel_id: channel._id
+		channelId: channel._id
 	} as any;
 
 	if (sinceId) {

@@ -71,21 +71,21 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const session = await AuthSess
 		.findOne({
 			token: token,
-			app_id: app._id
+			appId: app._id
 		});
 
 	if (session === null) {
 		return rej('session not found');
 	}
 
-	if (session.user_id == null) {
+	if (session.userId == null) {
 		return rej('this session is not allowed yet');
 	}
 
 	// Lookup access token
 	const accessToken = await AccessToken.findOne({
-		app_id: app._id,
-		user_id: session.user_id
+		appId: app._id,
+		userId: session.userId
 	});
 
 	// Delete session
@@ -101,8 +101,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	// Response
 	res({
-		access_token: accessToken.token,
-		user: await pack(session.user_id, null, {
+		accessToken: accessToken.token,
+		user: await pack(session.userId, null, {
 			detail: true
 		})
 	});

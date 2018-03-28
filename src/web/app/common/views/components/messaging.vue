@@ -26,7 +26,7 @@
 				class="user"
 				:href="`/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 				:data-is-me="isMe(message)"
-				:data-is-read="message.is_read"
+				:data-is-read="message.isRead"
 				@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"
 				:key="message.id"
 			>
@@ -35,7 +35,7 @@
 					<header>
 						<span class="name">{{ isMe(message) ? message.recipient.name : message.user.name }}</span>
 						<span class="username">@{{ getAcct(isMe(message) ? message.recipient : message.user) }}</span>
-						<mk-time :time="message.created_at"/>
+						<mk-time :time="message.createdAt"/>
 					</header>
 					<div class="body">
 						<p class="text"><span class="me" v-if="isMe(message)">%i18n:common.tags.mk-messaging.you%:</span>{{ message.text }}</p>
@@ -95,19 +95,19 @@ export default Vue.extend({
 	methods: {
 		getAcct,
 		isMe(message) {
-			return message.user_id == (this as any).os.i.id;
+			return message.userId == (this as any).os.i.id;
 		},
 		onMessage(message) {
 			this.messages = this.messages.filter(m => !(
-				(m.recipient_id == message.recipient_id && m.user_id == message.user_id) ||
-				(m.recipient_id == message.user_id && m.user_id == message.recipient_id)));
+				(m.recipientId == message.recipientId && m.userId == message.userId) ||
+				(m.recipientId == message.userId && m.userId == message.recipientId)));
 
 			this.messages.unshift(message);
 		},
 		onRead(ids) {
 			ids.forEach(id => {
 				const found = this.messages.find(m => m.id == id);
-				if (found) found.is_read = true;
+				if (found) found.isRead = true;
 			});
 		},
 		search() {

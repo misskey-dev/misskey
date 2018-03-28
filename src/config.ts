@@ -80,7 +80,7 @@ type Source = {
 	};
 	line_bot?: {
 		channel_secret: string;
-		channel_access_token: string;
+		channel_accessToken: string;
 	};
 	analysis?: {
 		mecab_command?: string;

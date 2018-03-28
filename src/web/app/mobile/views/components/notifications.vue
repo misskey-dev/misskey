@@ -34,8 +34,8 @@ export default Vue.extend({
 	computed: {
 		_notifications(): any[] {
 			return (this.notifications as any).map(notification => {
-				const date = new Date(notification.created_at).getDate();
-				const month = new Date(notification.created_at).getMonth() + 1;
+				const date = new Date(notification.createdAt).getDate();
+				const month = new Date(notification.createdAt).getMonth() + 1;
 				notification._date = date;
 				notification._datetext = `${month}月 ${date}日`;
 				return notification;

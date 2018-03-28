@@ -20,7 +20,7 @@ export default async function(userId: mongo.ObjectID | string, type, body?) {
 
 	// Fetch
 	const subscriptions = await Subscription.find({
-		user_id: userId
+		userId: userId
 	});
 
 	subscriptions.forEach(subscription => {
@@ -41,7 +41,7 @@ export default async function(userId: mongo.ObjectID | string, type, body?) {
 
 			if (err.statusCode == 410) {
 				Subscription.remove({
-					user_id: userId,
+					userId: userId,
 					endpoint: subscription.endpoint,
 					auth: subscription.auth,
 					publickey: subscription.publickey

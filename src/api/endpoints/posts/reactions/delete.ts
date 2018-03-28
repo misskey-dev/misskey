@@ -14,9 +14,9 @@ import Post from '../../../models/post';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Fetch unreactee
 	const post = await Post.findOne({
@@ -29,9 +29,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// if already unreacted
 	const exist = await Reaction.findOne({
-		post_id: post._id,
-		user_id: user._id,
-		deleted_at: { $exists: false }
+		postId: post._id,
+		userId: user._id,
+		deletedAt: { $exists: false }
 	});
 
 	if (exist === null) {
@@ -43,7 +43,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		_id: exist._id
 	}, {
 			$set: {
-				deleted_at: new Date()
+				deletedAt: new Date()
 			}
 		});
 

@@ -10,18 +10,17 @@ import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
-import DriveFile, { getGridFSBucket } from '../../models/drive-file';
-import DriveFolder from '../../models/drive-folder';
-import { pack } from '../../models/drive-file';
-import event, { publishDriveStream } from '../../event';
-import getAcct from '../../../common/user/get-acct';
-import config from '../../../conf';
+import DriveFile, { getGridFSBucket } from '../models/drive-file';
+import DriveFolder from '../models/drive-folder';
+import { pack } from '../models/drive-file';
+import event, { publishDriveStream } from '../event';
+import config from '../../conf';
 
 const gm = _gm.subClass({
 	imageMagick: true
 });
 
-const log = debug('misskey:drive:add-file');
+const log = debug('misskey:register-drive-file');
 
 const tmpFile = (): Promise<string> => new Promise((resolve, reject) => {
 	tmp.file((e, path) => {
@@ -47,7 +46,7 @@ const addFile = async (
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
 ) => {
-	log(`registering ${name} (user: ${getAcct(user)}, path: ${path})`);
+	log(`registering ${name} (user: ${user.username}, path: ${path})`);
 
 	// Calculate hash, get content type and get file size
 	const [hash, [mime, ext], size] = await Promise.all([
@@ -111,7 +110,7 @@ const addFile = async (
 		}
 	}
 
-	const [wh, averageColor, folder] = await Promise.all([
+	const [wh, avgColor, folder] = await Promise.all([
 		// Width and height (when image)
 		(async () => {
 			// 画像かどうか
@@ -220,8 +219,8 @@ const addFile = async (
 		properties['height'] = wh[1];
 	}
 
-	if (averageColor) {
-		properties['avgColor'] = averageColor;
+	if (avgColor) {
+		properties['avgColor'] = avgColor;
 	}
 
 	return addToGridFS(detectedName, readable, mime, {

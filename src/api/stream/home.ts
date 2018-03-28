@@ -14,10 +14,10 @@ export default async function(request: websocket.request, connection: websocket.
 	subscriber.subscribe(`misskey:user-stream:${user._id}`);
 
 	const mute = await Mute.find({
-		muter_id: user._id,
-		deleted_at: { $exists: false }
+		muterId: user._id,
+		deletedAt: { $exists: false }
 	});
-	const mutedUserIds = mute.map(m => m.mutee_id.toString());
+	const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 	subscriber.on('message', async (channel, data) => {
 		switch (channel.split(':')[1]) {
@@ -26,17 +26,17 @@ export default async function(request: websocket.request, connection: websocket.
 					const x = JSON.parse(data);
 
 					if (x.type == 'post') {
-						if (mutedUserIds.indexOf(x.body.user_id) != -1) {
+						if (mutedUserIds.indexOf(x.body.userId) != -1) {
 							return;
 						}
-						if (x.body.reply != null && mutedUserIds.indexOf(x.body.reply.user_id) != -1) {
+						if (x.body.reply != null && mutedUserIds.indexOf(x.body.reply.userId) != -1) {
 							return;
 						}
-						if (x.body.repost != null && mutedUserIds.indexOf(x.body.repost.user_id) != -1) {
+						if (x.body.repost != null && mutedUserIds.indexOf(x.body.repost.userId) != -1) {
 							return;
 						}
 					} else if (x.type == 'notification') {
-						if (mutedUserIds.indexOf(x.body.user_id) != -1) {
+						if (mutedUserIds.indexOf(x.body.userId) != -1) {
 							return;
 						}
 					}
@@ -74,7 +74,7 @@ export default async function(request: websocket.request, connection: websocket.
 				// Update lastUsedAt
 				User.update({ _id: user._id }, {
 					$set: {
-						'account.last_used_at': new Date()
+						'account.lastUsedAt': new Date()
 					}
 				});
 				break;

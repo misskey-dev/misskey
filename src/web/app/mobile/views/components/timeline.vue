@@ -41,7 +41,7 @@ export default Vue.extend({
 	},
 	computed: {
 		alone(): boolean {
-			return (this as any).os.i.following_count == 0;
+			return (this as any).os.i.followingCount == 0;
 		}
 	},
 	mounted() {

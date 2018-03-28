@@ -21,13 +21,13 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [text, textError] = $(params.text).optional.string().$;
 	if (textError) return rej('invalid text param');
 
-	// Get 'include_user_ids' parameter
-	const [includeUserIds = [], includeUserIdsErr] = $(params.include_user_ids).optional.array('id').$;
-	if (includeUserIdsErr) return rej('invalid include_user_ids param');
+	// Get 'include_userIds' parameter
+	const [includeUserIds = [], includeUserIdsErr] = $(params.include_userIds).optional.array('id').$;
+	if (includeUserIdsErr) return rej('invalid include_userIds param');
 
-	// Get 'exclude_user_ids' parameter
-	const [excludeUserIds = [], excludeUserIdsErr] = $(params.exclude_user_ids).optional.array('id').$;
-	if (excludeUserIdsErr) return rej('invalid exclude_user_ids param');
+	// Get 'exclude_userIds' parameter
+	const [excludeUserIds = [], excludeUserIdsErr] = $(params.exclude_userIds).optional.array('id').$;
+	if (excludeUserIdsErr) return rej('invalid exclude_userIds param');
 
 	// Get 'include_user_usernames' parameter
 	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.include_user_usernames).optional.array('string').$;
@@ -81,7 +81,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (includeUserUsernames != null) {
 		const ids = (await Promise.all(includeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
-				username_lower: username.toLowerCase()
+				usernameLower: username.toLowerCase()
 			});
 			return _user ? _user._id : null;
 		}))).filter(id => id != null);
@@ -92,7 +92,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (excludeUserUsernames != null) {
 		const ids = (await Promise.all(excludeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
-				username_lower: username.toLowerCase()
+				usernameLower: username.toLowerCase()
 			});
 			return _user ? _user._id : null;
 		}))).filter(id => id != null);
@@ -143,13 +143,13 @@ async function search(
 
 	if (includeUserIds && includeUserIds.length != 0) {
 		push({
-			user_id: {
+			userId: {
 				$in: includeUserIds
 			}
 		});
 	} else if (excludeUserIds && excludeUserIds.length != 0) {
 		push({
-			user_id: {
+			userId: {
 				$nin: excludeUserIds
 			}
 		});
@@ -158,7 +158,7 @@ async function search(
 	if (following != null && me != null) {
 		const ids = await getFriends(me._id, false);
 		push({
-			user_id: following ? {
+			userId: following ? {
 				$in: ids
 			} : {
 				$nin: ids.concat(me._id)
@@ -168,45 +168,45 @@ async function search(
 
 	if (me != null) {
 		const mutes = await Mute.find({
-			muter_id: me._id,
-			deleted_at: { $exists: false }
+			muterId: me._id,
+			deletedAt: { $exists: false }
 		});
-		const mutedUserIds = mutes.map(m => m.mutee_id);
+		const mutedUserIds = mutes.map(m => m.muteeId);
 
 		switch (mute) {
 			case 'mute_all':
 				push({
-					user_id: {
+					userId: {
 						$nin: mutedUserIds
 					},
-					'_reply.user_id': {
+					'_reply.userId': {
 						$nin: mutedUserIds
 					},
-					'_repost.user_id': {
+					'_repost.userId': {
 						$nin: mutedUserIds
 					}
 				});
 				break;
 			case 'mute_related':
 				push({
-					'_reply.user_id': {
+					'_reply.userId': {
 						$nin: mutedUserIds
 					},
-					'_repost.user_id': {
+					'_repost.userId': {
 						$nin: mutedUserIds
 					}
 				});
 				break;
 			case 'mute_direct':
 				push({
-					user_id: {
+					userId: {
 						$nin: mutedUserIds
 					}
 				});
 				break;
 			case 'direct_only':
 				push({
-					user_id: {
+					userId: {
 						$in: mutedUserIds
 					}
 				});
@@ -214,11 +214,11 @@ async function search(
 			case 'related_only':
 				push({
 					$or: [{
-						'_reply.user_id': {
+						'_reply.userId': {
 							$in: mutedUserIds
 						}
 					}, {
-						'_repost.user_id': {
+						'_repost.userId': {
 							$in: mutedUserIds
 						}
 					}]
@@ -227,15 +227,15 @@ async function search(
 			case 'all_only':
 				push({
 					$or: [{
-						user_id: {
+						userId: {
 							$in: mutedUserIds
 						}
 					}, {
-						'_reply.user_id': {
+						'_reply.userId': {
 							$in: mutedUserIds
 						}
 					}, {
-						'_repost.user_id': {
+						'_repost.userId': {
 							$in: mutedUserIds
 						}
 					}]
@@ -247,7 +247,7 @@ async function search(
 	if (reply != null) {
 		if (reply) {
 			push({
-				reply_id: {
+				replyId: {
 					$exists: true,
 					$ne: null
 				}
@@ -255,11 +255,11 @@ async function search(
 		} else {
 			push({
 				$or: [{
-					reply_id: {
+					replyId: {
 						$exists: false
 					}
 				}, {
-					reply_id: null
+					replyId: null
 				}]
 			});
 		}
@@ -268,7 +268,7 @@ async function search(
 	if (repost != null) {
 		if (repost) {
 			push({
-				repost_id: {
+				repostId: {
 					$exists: true,
 					$ne: null
 				}
@@ -276,11 +276,11 @@ async function search(
 		} else {
 			push({
 				$or: [{
-					repost_id: {
+					repostId: {
 						$exists: false
 					}
 				}, {
-					repost_id: null
+					repostId: null
 				}]
 			});
 		}
@@ -289,7 +289,7 @@ async function search(
 	if (media != null) {
 		if (media) {
 			push({
-				media_ids: {
+				mediaIds: {
 					$exists: true,
 					$ne: null
 				}
@@ -297,11 +297,11 @@ async function search(
 		} else {
 			push({
 				$or: [{
-					media_ids: {
+					mediaIds: {
 						$exists: false
 					}
 				}, {
-					media_ids: null
+					mediaIds: null
 				}]
 			});
 		}
@@ -330,7 +330,7 @@ async function search(
 
 	if (sinceDate) {
 		push({
-			created_at: {
+			createdAt: {
 				$gt: new Date(sinceDate)
 			}
 		});
@@ -338,7 +338,7 @@ async function search(
 
 	if (untilDate) {
 		push({
-			created_at: {
+			createdAt: {
 				$lt: new Date(untilDate)
 			}
 		});

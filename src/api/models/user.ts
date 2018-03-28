@@ -47,24 +47,25 @@ export type ILocalAccount = {
 	token: string;
 	twitter: {
 		accessToken: string;
-		access_token_secret: string;
-		user_id: string;
-		screen_name: string;
+		accessTokenSecret: string;
+		userId: string;
+		screenName: string;
 	};
 	line: {
-		user_id: string;
+		userId: string;
 	};
 	profile: {
 		location: string;
 		birthday: string; // 'YYYY-MM-DD'
 		tags: string[];
 	};
-	last_used_at: Date;
-	is_bot: boolean;
-	is_pro: boolean;
-	two_factor_secret: string;
-	two_factor_enabled: boolean;
-	client_settings: any;
+	lastUsedAt: Date;
+	isBot: boolean;
+	isPro: boolean;
+	twoFactorSecret: string;
+	twoFactorEnabled: boolean;
+	twoFactorTempSecret: string;
+	clientSettings: any;
 	settings: any;
 };
 
@@ -74,33 +75,33 @@ export type IRemoteAccount = {
 
 export type IUser = {
 	_id: mongo.ObjectID;
-	created_at: Date;
-	deleted_at: Date;
-	followers_count: number;
-	following_count: number;
+	createdAt: Date;
+	deletedAt: Date;
+	followersCount: number;
+	followingCount: number;
 	name: string;
-	posts_count: number;
-	drive_capacity: number;
+	postsCount: number;
+	driveCapacity: number;
 	username: string;
-	username_lower: string;
-	avatar_id: mongo.ObjectID;
-	banner_id: mongo.ObjectID;
+	usernameLower: string;
+	avatarId: mongo.ObjectID;
+	bannerId: mongo.ObjectID;
 	data: any;
 	description: string;
 	latest_post: IPost;
-	pinned_post_id: mongo.ObjectID;
-	is_suspended: boolean;
+	pinnedPostId: mongo.ObjectID;
+	isSuspended: boolean;
 	keywords: string[];
 	host: string;
-	host_lower: string;
+	hostLower: string;
 	account: ILocalAccount | IRemoteAccount;
 };
 
 export function init(user): IUser {
 	user._id = new mongo.ObjectID(user._id);
-	user.avatar_id = new mongo.ObjectID(user.avatar_id);
-	user.banner_id = new mongo.ObjectID(user.banner_id);
-	user.pinned_post_id = new mongo.ObjectID(user.pinned_post_id);
+	user.avatarId = new mongo.ObjectID(user.avatarId);
+	user.bannerId = new mongo.ObjectID(user.bannerId);
+	user.pinnedPostId = new mongo.ObjectID(user.pinnedPostId);
 	return user;
 }
 
@@ -131,7 +132,7 @@ export const pack = (
 	const fields = opts.detail ? {
 	} : {
 		'account.settings': false,
-		'account.client_settings': false,
+		'account.clientSettings': false,
 		'account.profile': false,
 		'account.keywords': false,
 		'account.domains': false
@@ -173,12 +174,12 @@ export const pack = (
 		delete _user.account.keypair;
 		delete _user.account.password;
 		delete _user.account.token;
-		delete _user.account.two_factor_temp_secret;
-		delete _user.account.two_factor_secret;
-		delete _user.username_lower;
+		delete _user.account.twoFactorTempSecret;
+		delete _user.account.twoFactorSecret;
+		delete _user.usernameLower;
 		if (_user.account.twitter) {
-			delete _user.account.twitter.access_token;
-			delete _user.account.twitter.access_token_secret;
+			delete _user.account.twitter.accessToken;
+			delete _user.account.twitter.accessTokenSecret;
 		}
 		delete _user.account.line;
 
@@ -186,36 +187,36 @@ export const pack = (
 		if (!opts.includeSecrets) {
 			delete _user.account.email;
 			delete _user.account.settings;
-			delete _user.account.client_settings;
+			delete _user.account.clientSettings;
 		}
 
 		if (!opts.detail) {
-			delete _user.account.two_factor_enabled;
+			delete _user.account.twoFactorEnabled;
 		}
 	}
 
-	_user.avatar_url = _user.avatar_id != null
-		? `${config.drive_url}/${_user.avatar_id}`
+	_user.avatar_url = _user.avatarId != null
+		? `${config.drive_url}/${_user.avatarId}`
 		: `${config.drive_url}/default-avatar.jpg`;
 
-	_user.banner_url = _user.banner_id != null
-		? `${config.drive_url}/${_user.banner_id}`
+	_user.banner_url = _user.bannerId != null
+		? `${config.drive_url}/${_user.bannerId}`
 		: null;
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
-		delete _user.avatar_id;
-		delete _user.banner_id;
+		delete _user.avatarId;
+		delete _user.bannerId;
 
-		delete _user.drive_capacity;
+		delete _user.driveCapacity;
 	}
 
 	if (meId && !meId.equals(_user.id)) {
 		// Whether the user is following
 		_user.is_following = (async () => {
 			const follow = await Following.findOne({
-				follower_id: meId,
-				followee_id: _user.id,
-				deleted_at: { $exists: false }
+				followerId: meId,
+				followeeId: _user.id,
+				deletedAt: { $exists: false }
 			});
 			return follow !== null;
 		})();
@@ -223,9 +224,9 @@ export const pack = (
 		// Whether the user is followed
 		_user.is_followed = (async () => {
 			const follow2 = await Following.findOne({
-				follower_id: _user.id,
-				followee_id: meId,
-				deleted_at: { $exists: false }
+				followerId: _user.id,
+				followeeId: meId,
+				deletedAt: { $exists: false }
 			});
 			return follow2 !== null;
 		})();
@@ -233,18 +234,18 @@ export const pack = (
 		// Whether the user is muted
 		_user.is_muted = (async () => {
 			const mute = await Mute.findOne({
-				muter_id: meId,
-				mutee_id: _user.id,
-				deleted_at: { $exists: false }
+				muterId: meId,
+				muteeId: _user.id,
+				deletedAt: { $exists: false }
 			});
 			return mute !== null;
 		})();
 	}
 
 	if (opts.detail) {
-		if (_user.pinned_post_id) {
+		if (_user.pinnedPostId) {
 			// Populate pinned post
-			_user.pinned_post = packPost(_user.pinned_post_id, meId, {
+			_user.pinnedPost = packPost(_user.pinnedPostId, meId, {
 				detail: true
 			});
 		}
@@ -254,16 +255,16 @@ export const pack = (
 
 			// Get following you know count
 			_user.following_you_know_count = Following.count({
-				followee_id: { $in: myFollowingIds },
-				follower_id: _user.id,
-				deleted_at: { $exists: false }
+				followeeId: { $in: myFollowingIds },
+				followerId: _user.id,
+				deletedAt: { $exists: false }
 			});
 
 			// Get followers you know count
 			_user.followers_you_know_count = Following.count({
-				followee_id: _user.id,
-				follower_id: { $in: myFollowingIds },
-				deleted_at: { $exists: false }
+				followeeId: _user.id,
+				followerId: { $in: myFollowingIds },
+				deletedAt: { $exists: false }
 			});
 		}
 	}
@@ -322,7 +323,7 @@ export const packForAp = (
 		"name": _user.name,
 		"summary": _user.description,
 		"icon": [
-			`${config.drive_url}/${_user.avatar_id}`
+			`${config.drive_url}/${_user.avatarId}`
 		]
 	});
 });

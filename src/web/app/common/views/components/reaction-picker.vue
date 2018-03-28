@@ -69,7 +69,7 @@ export default Vue.extend({
 	methods: {
 		react(reaction) {
 			(this as any).api('posts/reactions/create', {
-				post_id: this.post.id,
+				postId: this.post.id,
 				reaction: reaction
 			}).then(() => {
 				if (this.cb) this.cb();

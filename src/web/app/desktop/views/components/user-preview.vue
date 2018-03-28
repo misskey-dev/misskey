@@ -12,13 +12,13 @@
 		<div class="description">{{ u.description }}</div>
 		<div class="status">
 			<div>
-				<p>投稿</p><a>{{ u.posts_count }}</a>
+				<p>投稿</p><a>{{ u.postsCount }}</a>
 			</div>
 			<div>
-				<p>フォロー</p><a>{{ u.following_count }}</a>
+				<p>フォロー</p><a>{{ u.followingCount }}</a>
 			</div>
 			<div>
-				<p>フォロワー</p><a>{{ u.followers_count }}</a>
+				<p>フォロワー</p><a>{{ u.followersCount }}</a>
 			</div>
 		</div>
 		<mk-follow-button v-if="os.isSignedIn && user.id != os.i.id" :user="u"/>
@@ -58,7 +58,7 @@ export default Vue.extend({
 		} else {
 			const query = this.user[0] == '@' ?
 				parseAcct(this.user[0].substr(1)) :
-				{ user_id: this.user[0] };
+				{ userId: this.user[0] };
 
 			(this as any).api('users/show', query).then(user => {
 				this.u = user;

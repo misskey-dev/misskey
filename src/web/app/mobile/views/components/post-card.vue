@@ -7,7 +7,7 @@
 		<div>
 			{{ text }}
 		</div>
-		<mk-time :time="post.created_at"/>
+		<mk-time :time="post.createdAt"/>
 	</a>
 </div>
 </template>

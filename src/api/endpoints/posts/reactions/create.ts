@@ -18,9 +18,9 @@ import { publishPostStream, pushSw } from '../../../event';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Get 'reaction' parameter
 	const [reaction, reactionErr] = $(params.reaction).string().or([
@@ -46,15 +46,15 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Myself
-	if (post.user_id.equals(user._id)) {
+	if (post.userId.equals(user._id)) {
 		return rej('cannot react to my post');
 	}
 
 	// if already reacted
 	const exist = await Reaction.findOne({
-		post_id: post._id,
-		user_id: user._id,
-		deleted_at: { $exists: false }
+		postId: post._id,
+		userId: user._id,
+		deletedAt: { $exists: false }
 	});
 
 	if (exist !== null) {
@@ -63,9 +63,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Create reaction
 	await Reaction.insert({
-		created_at: new Date(),
-		post_id: post._id,
-		user_id: user._id,
+		createdAt: new Date(),
+		postId: post._id,
+		userId: user._id,
 		reaction: reaction
 	});
 
@@ -83,33 +83,33 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	publishPostStream(post._id, 'reacted');
 
 	// Notify
-	notify(post.user_id, user._id, 'reaction', {
-		post_id: post._id,
+	notify(post.userId, user._id, 'reaction', {
+		postId: post._id,
 		reaction: reaction
 	});
 
-	pushSw(post.user_id, 'reaction', {
-		user: await packUser(user, post.user_id),
-		post: await packPost(post, post.user_id),
+	pushSw(post.userId, 'reaction', {
+		user: await packUser(user, post.userId),
+		post: await packPost(post, post.userId),
 		reaction: reaction
 	});
 
 	// Fetch watchers
 	Watching
 		.find({
-			post_id: post._id,
-			user_id: { $ne: user._id },
+			postId: post._id,
+			userId: { $ne: user._id },
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
+			deletedAt: { $exists: false }
 		}, {
 			fields: {
-				user_id: true
+				userId: true
 			}
 		})
 		.then(watchers => {
 			watchers.forEach(watcher => {
-				notify(watcher.user_id, user._id, 'reaction', {
-					post_id: post._id,
+				notify(watcher.userId, user._id, 'reaction', {
+					postId: post._id,
 					reaction: reaction
 				});
 			});

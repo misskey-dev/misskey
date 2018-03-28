@@ -45,7 +45,7 @@ export default Vue.extend({
 		},
 
 		onStreamPost(post) {
-			if (document.hidden && post.user_id != (this as any).os.i.id) {
+			if (document.hidden && post.userId != (this as any).os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${getPostSummary(post)}`;
 			}
