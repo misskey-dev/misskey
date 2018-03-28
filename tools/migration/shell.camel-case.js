@@ -180,3 +180,10 @@ db.posts.update({}, {
 		'_repost.user_id': '_repost.userId',
 	}
 }, false, true);
+
+db.signin.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		user_id: 'userId',
+	}
+}, false, true);
