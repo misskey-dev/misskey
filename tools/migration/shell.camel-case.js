@@ -147,3 +147,12 @@ db.pollVotes.update({}, {
 		post_id: 'postId'
 	}
 }, false, true);
+
+db.post_reactions.renameCollection('postReactions');
+db.postReactions.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		user_id: 'userId',
+		post_id: 'postId'
+	}
+}, false, true);
