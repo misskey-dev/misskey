@@ -28,16 +28,11 @@ Setup and Installation
 If you want to run your own instance of Misskey,
 please see [Setup and installation guide](./docs/setup.en.md).
 
-Contribution
+Donation
 ----------------------------------------------------------------
-Please see [Contribution guide](./CONTRIBUTING.md).
+If you want to donate to Misskey, please see [this][./docs/donate.ja.md].
 
-Sponsors & Backers
-----------------------------------------------------------------
-Misskey has no 100+ GitHub stars currently. However, a donation is always welcome!
-If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link].
-
-**Note:** When you donate to Misskey, your name will be listed in [donors](./DONORS.md).
+[List of all donors](./DONORS.md)
 
 Notable contributors
 ----------------------------------------------------------------
