@@ -35,7 +35,7 @@ props:
     desc:
       ja: "アバターのID"
       en: "The ID of the avatar of this user"
-  - name: "avatar_url"
+  - name: "avatarUrl"
     type: "string"
     optional: false
     desc:
@@ -47,7 +47,7 @@ props:
     desc:
       ja: "バナーのID"
       en: "The ID of the banner of this user"
-  - name: "banner_url"
+  - name: "bannerUrl"
     type: "string"
     optional: false
     desc:

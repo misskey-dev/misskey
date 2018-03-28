@@ -15,8 +15,8 @@
 		</div>
 		<div class="accepted" v-if="state == 'accepted'">
 			<h1>{{ session.app.is_authorized ? 'このアプリは既に連携済みです' : 'アプリケーションの連携を許可しました'}}</h1>
-			<p v-if="session.app.callback_url">アプリケーションに戻っています<mk-ellipsis/></p>
-			<p v-if="!session.app.callback_url">アプリケーションに戻って、やっていってください。</p>
+			<p v-if="session.app.callbackUrl">アプリケーションに戻っています<mk-ellipsis/></p>
+			<p v-if="!session.app.callbackUrl">アプリケーションに戻って、やっていってください。</p>
 		</div>
 		<div class="error" v-if="state == 'fetch-session-error'">
 			<p>セッションが存在しません。</p>
@@ -77,8 +77,8 @@ export default Vue.extend({
 	methods: {
 		accepted() {
 			this.state = 'accepted';
-			if (this.session.app.callback_url) {
-				location.href = this.session.app.callback_url + '?token=' + this.session.token;
+			if (this.session.app.callbackUrl) {
+				location.href = this.session.app.callbackUrl + '?token=' + this.session.token;
 			}
 		}
 	}

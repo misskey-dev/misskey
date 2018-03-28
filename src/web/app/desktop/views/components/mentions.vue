@@ -70,7 +70,7 @@ export default Vue.extend({
 			this.moreFetching = true;
 			(this as any).api('posts/mentions', {
 				following: this.mode == 'following',
-				until_id: this.posts[this.posts.length - 1].id
+				untilId: this.posts[this.posts.length - 1].id
 			}).then(posts => {
 				this.posts = this.posts.concat(posts);
 				this.moreFetching = false;

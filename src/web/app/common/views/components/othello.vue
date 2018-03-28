@@ -31,7 +31,7 @@
 		<section v-if="invitations.length > 0">
 			<h2>対局の招待があります！:</h2>
 			<div class="invitation" v-for="i in invitations" tabindex="-1" @click="accept(i)">
-				<img :src="`${i.parent.avatar_url}?thumbnail&size=32`" alt="">
+				<img :src="`${i.parent.avatarUrl}?thumbnail&size=32`" alt="">
 				<span class="name"><b>{{ i.parent.name }}</b></span>
 				<span class="username">@{{ i.parent.username }}</span>
 				<mk-time :time="i.createdAt"/>
@@ -40,8 +40,8 @@
 		<section v-if="myGames.length > 0">
 			<h2>自分の対局</h2>
 			<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
-				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
-				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
+				<img :src="`${g.user1.avatarUrl}?thumbnail&size=32`" alt="">
+				<img :src="`${g.user2.avatarUrl}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
 			</a>
@@ -49,8 +49,8 @@
 		<section v-if="games.length > 0">
 			<h2>みんなの対局</h2>
 			<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
-				<img :src="`${g.user1.avatar_url}?thumbnail&size=32`" alt="">
-				<img :src="`${g.user2.avatar_url}?thumbnail&size=32`" alt="">
+				<img :src="`${g.user1.avatarUrl}?thumbnail&size=32`" alt="">
+				<img :src="`${g.user2.avatarUrl}?thumbnail&size=32`" alt="">
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
 			</a>

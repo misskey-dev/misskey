@@ -1,7 +1,7 @@
 <template>
 <div class="root item">
 	<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="user.id">
-		<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>

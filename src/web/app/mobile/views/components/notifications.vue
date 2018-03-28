@@ -75,7 +75,7 @@ export default Vue.extend({
 
 			(this as any).api('i/notifications', {
 				limit: max + 1,
-				until_id: this.notifications[this.notifications.length - 1].id
+				untilId: this.notifications[this.notifications.length - 1].id
 			}).then(notifications => {
 				if (notifications.length == max + 1) {
 					this.moreNotifications = true;

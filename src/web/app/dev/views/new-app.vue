@@ -92,7 +92,7 @@ export default Vue.extend({
 				name: this.name,
 				nameId: this.nid,
 				description: this.description,
-				callback_url: this.cb,
+				callbackUrl: this.cb,
 				permission: this.permission
 			}).then(() => {
 				location.href = '/apps';

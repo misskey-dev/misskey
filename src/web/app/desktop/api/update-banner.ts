@@ -71,7 +71,7 @@ export default (os: OS) => (cb, file = null) => {
 			bannerId: file.id
 		}).then(i => {
 			os.i.bannerId = i.bannerId;
-			os.i.banner_url = i.banner_url;
+			os.i.bannerUrl = i.bannerUrl;
 
 			os.apis.dialog({
 				title: '%fa:info-circle%バナーを更新しました',

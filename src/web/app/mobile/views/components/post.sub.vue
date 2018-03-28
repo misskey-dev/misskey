@@ -1,7 +1,7 @@
 <template>
 <div class="sub">
 	<router-link class="avatar-anchor" :to="`/@${acct}`">
-		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
+		<img class="avatar" :src="`${post.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>

@@ -3,7 +3,7 @@
 	<div class="notification reaction" v-if="notification.type == 'reaction'">
 		<mk-time :time="notification.createdAt"/>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
-			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
@@ -20,7 +20,7 @@
 	<div class="notification repost" v-if="notification.type == 'repost'">
 		<mk-time :time="notification.createdAt"/>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
-			<img class="avatar" :src="`${notification.post.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
@@ -40,7 +40,7 @@
 	<div class="notification follow" v-if="notification.type == 'follow'">
 		<mk-time :time="notification.createdAt"/>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
-			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
@@ -61,7 +61,7 @@
 	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
 		<mk-time :time="notification.createdAt"/>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
-			<img class="avatar" :src="`${notification.user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>

@@ -137,7 +137,7 @@ export default async (req: express.Request, res: express.Response) => {
 				weight: null
 			},
 			settings: {
-				auto_watch: true
+				autoWatch: true
 			},
 			clientSettings: {
 				home: homeData

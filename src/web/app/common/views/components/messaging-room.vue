@@ -125,7 +125,7 @@ export default Vue.extend({
 				(this as any).api('messaging/messages', {
 					userId: this.user.id,
 					limit: max + 1,
-					until_id: this.existMoreMessages ? this.messages[0].id : undefined
+					untilId: this.existMoreMessages ? this.messages[0].id : undefined
 				}).then(messages => {
 					if (messages.length == max + 1) {
 						this.existMoreMessages = true;

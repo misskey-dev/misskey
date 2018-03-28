@@ -65,7 +65,7 @@ export default Vue.extend({
 
 			(this as any).api('posts/timeline', {
 				limit: 11,
-				until_date: this.date ? this.date.getTime() : undefined
+				untilDate: this.date ? this.date.getTime() : undefined
 			}).then(posts => {
 				if (posts.length == 11) {
 					posts.pop();
@@ -82,7 +82,7 @@ export default Vue.extend({
 			this.moreFetching = true;
 			(this as any).api('posts/timeline', {
 				limit: 11,
-				until_id: this.posts[this.posts.length - 1].id
+				untilId: this.posts[this.posts.length - 1].id
 			}).then(posts => {
 				if (posts.length == 11) {
 					posts.pop();

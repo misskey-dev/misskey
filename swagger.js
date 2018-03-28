@@ -83,7 +83,7 @@ const defaultSwagger = {
           "type": "string",
           "description": "アバターに設定しているドライブのファイルのID"
         },
-        "avatar_url": {
+        "avatarUrl": {
           "type": "string",
           "description": "アバターURL"
         },
@@ -91,7 +91,7 @@ const defaultSwagger = {
           "type": "string",
           "description": "バナーに設定しているドライブのファイルのID"
         },
-        "banner_url": {
+        "bannerUrl": {
           "type": "string",
           "description": "バナーURL"
         },

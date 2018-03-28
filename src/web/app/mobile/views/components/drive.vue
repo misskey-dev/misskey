@@ -320,7 +320,7 @@ export default Vue.extend({
 			(this as any).api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
 				limit: max + 1,
-				until_id: this.files[this.files.length - 1].id
+				untilId: this.files[this.files.length - 1].id
 			}).then(files => {
 				if (files.length == max + 1) {
 					this.moreFiles = true;

@@ -9,7 +9,7 @@
 					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
 					<div class="users">
 						<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/@${getAcct(user)}`" v-user-preview="user.id">
-							<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+							<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 						</router-link>
 					</div>
 				</div>

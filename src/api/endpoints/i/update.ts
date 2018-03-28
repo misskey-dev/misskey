@@ -51,10 +51,10 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	if (isBotErr) return rej('invalid isBot param');
 	if (isBot != null) user.account.isBot = isBot;
 
-	// Get 'auto_watch' parameter
-	const [autoWatch, autoWatchErr] = $(params.auto_watch).optional.boolean().$;
-	if (autoWatchErr) return rej('invalid auto_watch param');
-	if (autoWatch != null) user.account.settings.auto_watch = autoWatch;
+	// Get 'autoWatch' parameter
+	const [autoWatch, autoWatchErr] = $(params.autoWatch).optional.boolean().$;
+	if (autoWatchErr) return rej('invalid autoWatch param');
+	if (autoWatch != null) user.account.settings.autoWatch = autoWatch;
 
 	await User.update(user._id, {
 		$set: {

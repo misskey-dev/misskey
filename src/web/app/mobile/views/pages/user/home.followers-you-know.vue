@@ -3,7 +3,7 @@
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<a v-for="user in users" :key="user.id" :href="`/@${getAcct(user)}`">
-			<img :src="`${user.avatar_url}?thumbnail&size=64`" :alt="user.name"/>
+			<img :src="`${user.avatarUrl}?thumbnail&size=64`" :alt="user.name"/>
 		</a>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:mobile.tags.mk-user-overview-followers-you-know.no-users%</p>

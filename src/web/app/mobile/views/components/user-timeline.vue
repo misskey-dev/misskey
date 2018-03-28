@@ -53,7 +53,7 @@ export default Vue.extend({
 				userId: this.user.id,
 				with_media: this.withMedia,
 				limit: limit + 1,
-				until_id: this.posts[this.posts.length - 1].id
+				untilId: this.posts[this.posts.length - 1].id
 			}).then(posts => {
 				if (posts.length == limit + 1) {
 					posts.pop();

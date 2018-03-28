@@ -71,7 +71,7 @@ export default (os: OS) => (cb, file = null) => {
 			avatarId: file.id
 		}).then(i => {
 			os.i.avatarId = i.avatarId;
-			os.i.avatar_url = i.avatar_url;
+			os.i.avatarUrl = i.avatarUrl;
 
 			os.apis.dialog({
 				title: '%fa:info-circle%アバターを更新しました',

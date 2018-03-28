@@ -19,7 +19,7 @@
 	<div class="repost" v-if="isRepost">
 		<p>
 			<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="post.userId">
-				<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=32`" alt="avatar"/>
+				<img class="avatar" :src="`${post.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
 			<router-link class="name" :href="`/@${acct}`">{{ post.user.name }}</router-link>
@@ -28,7 +28,7 @@
 	</div>
 	<article>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
-			<img class="avatar" :src="`${p.user.avatar_url}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
+			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<header>
 			<router-link class="name" :to="`/@${acct}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>

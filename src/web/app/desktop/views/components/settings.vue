@@ -86,7 +86,7 @@
 
 		<section class="notification" v-show="page == 'notification'">
 			<h1>通知</h1>
-			<mk-switch v-model="os.i.account.settings.auto_watch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
+			<mk-switch v-model="os.i.account.settings.autoWatch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
 				<span>リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。</span>
 			</mk-switch>
 		</section>
@@ -283,7 +283,7 @@ export default Vue.extend({
 		},
 		onChangeAutoWatch(v) {
 			(this as any).api('i/update', {
-				auto_watch: v
+				autoWatch: v
 			});
 		},
 		onChangeShowPostFormOnTopOfTl(v) {

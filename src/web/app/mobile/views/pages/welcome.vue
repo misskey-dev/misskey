@@ -22,7 +22,7 @@
 	</div>
 	<div class="users">
 		<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/@${user.username}`">
-			<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 	</div>
 	<footer>

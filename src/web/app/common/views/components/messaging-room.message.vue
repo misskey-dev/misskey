@@ -1,7 +1,7 @@
 <template>
 <div class="message" :data-is-me="isMe">
 	<router-link class="avatar-anchor" :to="`/@${acct}`" :title="acct" target="_blank">
-		<img class="avatar" :src="`${message.user.avatar_url}?thumbnail&size=80`" alt=""/>
+		<img class="avatar" :src="`${message.user.avatarUrl}?thumbnail&size=80`" alt=""/>
 	</router-link>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">

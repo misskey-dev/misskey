@@ -61,13 +61,13 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [poll = null, pollErr] = $(params.poll).optional.nullable.boolean().$;
 	if (pollErr) return rej('invalid poll param');
 
-	// Get 'since_date' parameter
-	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
-	if (sinceDateErr) throw 'invalid since_date param';
+	// Get 'sinceDate' parameter
+	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	if (sinceDateErr) throw 'invalid sinceDate param';
 
-	// Get 'until_date' parameter
-	const [untilDate, untilDateErr] = $(params.until_date).optional.number().$;
-	if (untilDateErr) throw 'invalid until_date param';
+	// Get 'untilDate' parameter
+	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	if (untilDateErr) throw 'invalid untilDate param';
 
 	// Get 'offset' parameter
 	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;

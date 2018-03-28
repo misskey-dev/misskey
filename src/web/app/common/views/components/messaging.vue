@@ -13,7 +13,7 @@
 					@click="navigate(user)"
 					tabindex="-1"
 				>
-					<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=32`" alt=""/>
+					<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
 					<span class="name">{{ user.name }}</span>
 					<span class="username">@{{ getAcct(user) }}</span>
 				</li>
@@ -31,7 +31,7 @@
 				:key="message.id"
 			>
 				<div>
-					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatar_url : message.user.avatar_url}?thumbnail&size=64`" alt=""/>
+					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatarUrl : message.user.avatarUrl}?thumbnail&size=64`" alt=""/>
 					<header>
 						<span class="name">{{ isMe(message) ? message.recipient.name : message.user.name }}</span>
 						<span class="username">@{{ getAcct(isMe(message) ? message.recipient : message.user) }}</span>

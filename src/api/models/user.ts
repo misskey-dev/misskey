@@ -195,11 +195,11 @@ export const pack = (
 		}
 	}
 
-	_user.avatar_url = _user.avatarId != null
+	_user.avatarUrl = _user.avatarId != null
 		? `${config.drive_url}/${_user.avatarId}`
 		: `${config.drive_url}/default-avatar.jpg`;
 
-	_user.banner_url = _user.bannerId != null
+	_user.bannerUrl = _user.bannerId != null
 		? `${config.drive_url}/${_user.bannerId}`
 		: null;
 

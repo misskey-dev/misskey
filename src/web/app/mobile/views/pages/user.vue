@@ -3,11 +3,11 @@
 	<span slot="header" v-if="!fetching">%fa:user% {{ user.name }}</span>
 	<main v-if="!fetching">
 		<header>
-			<div class="banner" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=1024)` : ''"></div>
+			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''"></div>
 			<div class="body">
 				<div class="top">
 					<a class="avatar">
-						<img :src="`${user.avatar_url}?thumbnail&size=200`" alt="avatar"/>
+						<img :src="`${user.avatarUrl}?thumbnail&size=200`" alt="avatar"/>
 					</a>
 					<mk-follow-button v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 				</div>

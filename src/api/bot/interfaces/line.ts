@@ -130,7 +130,7 @@ class LineBot extends BotCore {
 			altText: await super.showUserCommand(q),
 			template: {
 				type: 'buttons',
-				thumbnailImageUrl: `${user.avatar_url}?thumbnail&size=1024`,
+				thumbnailImageUrl: `${user.avatarUrl}?thumbnail&size=1024`,
 				title: `${user.name} (@${acct})`,
 				text: user.description || '(no description)',
 				actions: actions

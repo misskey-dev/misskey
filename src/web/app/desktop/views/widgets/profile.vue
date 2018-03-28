@@ -4,12 +4,12 @@
 	:data-melt="props.design == 2"
 >
 	<div class="banner"
-		:style="os.i.banner_url ? `background-image: url(${os.i.banner_url}?thumbnail&size=256)` : ''"
+		:style="os.i.bannerUrl ? `background-image: url(${os.i.bannerUrl}?thumbnail&size=256)` : ''"
 		title="クリックでバナー編集"
 		@click="os.apis.updateBanner"
 	></div>
 	<img class="avatar"
-		:src="`${os.i.avatar_url}?thumbnail&size=96`"
+		:src="`${os.i.avatarUrl}?thumbnail&size=96`"
 		@click="os.apis.updateAvatar"
 		alt="avatar"
 		title="クリックでアバター編集"

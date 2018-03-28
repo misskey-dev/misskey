@@ -1,7 +1,7 @@
 <template>
 <mk-window width="400px" height="550px" @closed="$destroy">
 	<span slot="header" :class="$style.header">
-		<img :src="`${user.avatar_url}?thumbnail&size=64`" alt=""/>{{ user.name }}のフォロー
+		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt=""/>{{ user.name }}のフォロー
 	</span>
 	<mk-following :user="user"/>
 </mk-window>

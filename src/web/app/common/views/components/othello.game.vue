@@ -19,8 +19,8 @@
 			@click="set(i)"
 			:title="'[' + (o.transformPosToXy(i)[0] + 1) + ', ' + (o.transformPosToXy(i)[1] + 1) + '] (' + i + ')'"
 		>
-			<img v-if="stone === true" :src="`${blackUser.avatar_url}?thumbnail&size=128`" alt="">
-			<img v-if="stone === false" :src="`${whiteUser.avatar_url}?thumbnail&size=128`" alt="">
+			<img v-if="stone === true" :src="`${blackUser.avatarUrl}?thumbnail&size=128`" alt="">
+			<img v-if="stone === false" :src="`${whiteUser.avatarUrl}?thumbnail&size=128`" alt="">
 		</div>
 	</div>
 

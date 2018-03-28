@@ -2,7 +2,7 @@
 <div class="profile">
 	<label class="avatar ui from group">
 		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p>
-		<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<button class="ui" @click="updateAvatar">%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
 	</label>
 	<label class="ui from group">

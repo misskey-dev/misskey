@@ -392,7 +392,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			});
 
 		// この投稿をWatchする
-		if ((user.account as ILocalAccount).settings.auto_watch !== false) {
+		if ((user.account as ILocalAccount).settings.autoWatch !== false) {
 			watch(user._id, reply);
 		}
 

@@ -33,8 +33,8 @@ export default Vue.extend({
 							return;
 						}
 						(this as any).api('i/change_password', {
-							current_password: currentPassword,
-							new_password: newPassword
+							currentPasword: currentPassword,
+							newPassword: newPassword
 						}).then(() => {
 							(this as any).apis.notify('%i18n:desktop.tags.mk-password-setting.changed%');
 						});

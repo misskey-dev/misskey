@@ -22,25 +22,25 @@ module.exports = async (params, user, app) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) throw 'invalid limit param';
 
-	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) throw 'invalid since_id param';
+	// Get 'sinceId' parameter
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	if (sinceIdErr) throw 'invalid sinceId param';
 
-	// Get 'until_id' parameter
-	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
-	if (untilIdErr) throw 'invalid until_id param';
+	// Get 'untilId' parameter
+	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	if (untilIdErr) throw 'invalid untilId param';
 
-	// Get 'since_date' parameter
-	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
-	if (sinceDateErr) throw 'invalid since_date param';
+	// Get 'sinceDate' parameter
+	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	if (sinceDateErr) throw 'invalid sinceDate param';
 
-	// Get 'until_date' parameter
-	const [untilDate, untilDateErr] = $(params.until_date).optional.number().$;
-	if (untilDateErr) throw 'invalid until_date param';
+	// Get 'untilDate' parameter
+	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	if (untilDateErr) throw 'invalid untilDate param';
 
-	// Check if only one of since_id, until_id, since_date, until_date specified
+	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if ([sinceId, untilId, sinceDate, untilDate].filter(x => x != null).length > 1) {
-		throw 'only one of since_id, until_id, since_date, until_date can be specified';
+		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
 	const { followingIds, watchingChannelIds, mutedUserIds } = await rap({

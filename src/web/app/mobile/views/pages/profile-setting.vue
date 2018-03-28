@@ -4,8 +4,8 @@
 	<div :class="$style.content">
 		<p>%fa:info-circle%%i18n:mobile.tags.mk-profile-setting.will-be-published%</p>
 		<div :class="$style.form">
-			<div :style="os.i.banner_url ? `background-image: url(${os.i.banner_url}?thumbnail&size=1024)` : ''" @click="setBanner">
-				<img :src="`${os.i.avatar_url}?thumbnail&size=200`" alt="avatar" @click="setAvatar"/>
+			<div :style="os.i.bannerUrl ? `background-image: url(${os.i.bannerUrl}?thumbnail&size=1024)` : ''" @click="setBanner">
+				<img :src="`${os.i.avatarUrl}?thumbnail&size=200`" alt="avatar" @click="setAvatar"/>
 			</div>
 			<label>
 				<p>%i18n:mobile.tags.mk-profile-setting.name%</p>

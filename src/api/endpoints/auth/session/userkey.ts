@@ -14,7 +14,7 @@ import { pack } from '../../../models/user';
  *     summary: Get an access token(userkey)
  *     parameters:
  *       -
- *         name: app_secret
+ *         name: appSecret
  *         description: App Secret
  *         in: formData
  *         required: true
@@ -50,9 +50,9 @@ import { pack } from '../../../models/user';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	// Get 'app_secret' parameter
-	const [appSecret, appSecretErr] = $(params.app_secret).string().$;
-	if (appSecretErr) return rej('invalid app_secret param');
+	// Get 'appSecret' parameter
+	const [appSecret, appSecretErr] = $(params.appSecret).string().$;
+	if (appSecretErr) return rej('invalid appSecret param');
 
 	// Lookup app
 	const app = await App.findOne({

@@ -2,10 +2,10 @@
 <div class="mkw-profile">
 	<mk-widget-container>
 		<div :class="$style.banner"
-			:style="os.i.banner_url ? `background-image: url(${os.i.banner_url}?thumbnail&size=256)` : ''"
+			:style="os.i.bannerUrl ? `background-image: url(${os.i.bannerUrl}?thumbnail&size=256)` : ''"
 		></div>
 		<img :class="$style.avatar"
-			:src="`${os.i.avatar_url}?thumbnail&size=96`"
+			:src="`${os.i.avatarUrl}?thumbnail&size=96`"
 			alt="avatar"
 		/>
 		<router-link :class="$style.name" :to="`/@${os.i.username}`">{{ os.i.name }}</router-link>

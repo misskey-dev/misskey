@@ -40,7 +40,7 @@ import App, { isValidNameId, pack } from '../../models/app';
  *           type: string
  *           collectionFormat: csv
  *       -
- *         name: callback_url
+ *         name: callbackUrl
  *         description: URL called back after authentication
  *         in: formData
  *         required: false
@@ -82,10 +82,10 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	const [permission, permissionErr] = $(params.permission).array('string').unique().$;
 	if (permissionErr) return rej('invalid permission param');
 
-	// Get 'callback_url' parameter
+	// Get 'callbackUrl' parameter
 	// TODO: Check it is valid url
-	const [callbackUrl = null, callbackUrlErr] = $(params.callback_url).optional.nullable.string().$;
-	if (callbackUrlErr) return rej('invalid callback_url param');
+	const [callbackUrl = null, callbackUrlErr] = $(params.callbackUrl).optional.nullable.string().$;
+	if (callbackUrlErr) return rej('invalid callbackUrl param');
 
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
@@ -99,7 +99,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 		nameIdLower: nameId.toLowerCase(),
 		description: description,
 		permission: permission,
-		callback_url: callbackUrl,
+		callbackUrl: callbackUrl,
 		secret: secret
 	});
 

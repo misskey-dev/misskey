@@ -116,7 +116,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 	// この投稿をWatchする
-	if (user.account.settings.auto_watch !== false) {
+	if (user.account.settings.autoWatch !== false) {
 		watch(user._id, post);
 	}
 });
