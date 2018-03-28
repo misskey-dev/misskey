@@ -101,3 +101,12 @@ db.messagingMessages.update({}, {
 	}
 }, false, true);
 
+db.mute.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		deleted_at: 'deletedAt',
+		mutee_id: 'muteeId',
+		muter_id: 'muterId',
+	}
+}, false, true);
+
