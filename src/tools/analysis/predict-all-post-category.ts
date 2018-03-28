@@ -1,4 +1,4 @@
-import Post from '../../api/models/post';
+import Post from '../../server/api/models/post';
 import Core from './core';
 
 const c = new Core();

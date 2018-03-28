@@ -1,7 +1,7 @@
 const bayes = require('./naive-bayes.js');
 
 const MeCab = require('./mecab');
-import Post from '../../api/models/post';
+import Post from '../../server/api/models/post';
 
 /**
  * 投稿を学習したり与えられた投稿のカテゴリを予測します

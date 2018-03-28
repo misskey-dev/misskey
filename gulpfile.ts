@@ -22,7 +22,7 @@ import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 
-import { fa } from './src/common/build/fa';
+import { fa } from './src/build/fa';
 import version from './src/version';
 import config from './src/conf';
 
@@ -39,7 +39,7 @@ if (isDebug) {
 
 const constants = require('./src/const.json');
 
-require('./src/web/docs/gulpfile.ts');
+require('./src/server/web/docs/gulpfile.ts');
 
 gulp.task('build', [
 	'build:js',
@@ -52,7 +52,7 @@ gulp.task('build', [
 gulp.task('rebuild', ['clean', 'build']);
 
 gulp.task('build:js', () =>
-	gulp.src(['./src/**/*.js', '!./src/web/**/*.js'])
+	gulp.src(['./src/**/*.js', '!./src/server/web/**/*.js'])
 		.pipe(gulp.dest('./built/'))
 );
 
@@ -71,7 +71,7 @@ gulp.task('build:copy', () =>
 	gulp.src([
 		'./build/Release/crypto_key.node',
 		'./src/**/assets/**/*',
-		'!./src/web/app/**/assets/**/*'
+		'!./src/server/web/app/**/assets/**/*'
 	]).pipe(gulp.dest('./built/'))
 );
 
@@ -121,7 +121,7 @@ gulp.task('build:client', [
 ]);
 
 gulp.task('build:client:script', () =>
-	gulp.src(['./src/web/app/boot.js', './src/web/app/safe.js'])
+	gulp.src(['./src/server/web/app/boot.js', './src/server/web/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(version)))
 		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(replace('ENV', JSON.stringify(env)))
@@ -129,15 +129,15 @@ gulp.task('build:client:script', () =>
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
-		.pipe(gulp.dest('./built/web/assets/')) as any
+		.pipe(gulp.dest('./built/server/web/assets/')) as any
 );
 
 gulp.task('build:client:styles', () =>
-	gulp.src('./src/web/app/init.css')
+	gulp.src('./src/server/web/app/init.css')
 		.pipe(isProduction
 			? (cssnano as any)()
 			: gutil.noop())
-		.pipe(gulp.dest('./built/web/assets/'))
+		.pipe(gulp.dest('./built/server/web/assets/'))
 );
 
 gulp.task('copy:client', [
@@ -145,14 +145,14 @@ gulp.task('copy:client', [
 ], () =>
 		gulp.src([
 			'./assets/**/*',
-			'./src/web/assets/**/*',
-			'./src/web/app/*/assets/**/*'
+			'./src/server/web/assets/**/*',
+			'./src/server/web/app/*/assets/**/*'
 		])
 			.pipe(isProduction ? (imagemin as any)() : gutil.noop())
 			.pipe(rename(path => {
 				path.dirname = path.dirname.replace('assets', '.');
 			}))
-			.pipe(gulp.dest('./built/web/assets/'))
+			.pipe(gulp.dest('./built/server/web/assets/'))
 );
 
 gulp.task('build:client:pug', [
@@ -160,13 +160,13 @@ gulp.task('build:client:pug', [
 	'build:client:script',
 	'build:client:styles'
 ], () =>
-		gulp.src('./src/web/app/base.pug')
+		gulp.src('./src/server/web/app/base.pug')
 			.pipe(pug({
 				locals: {
 					themeColor: constants.themeColor,
 					facss: fa.dom.css(),
 					//hljscss: fs.readFileSync('./node_modules/highlight.js/styles/default.css', 'utf8')
-					hljscss: fs.readFileSync('./src/web/assets/code-highlight.css', 'utf8')
+					hljscss: fs.readFileSync('./src/server/web/assets/code-highlight.css', 'utf8')
 				}
 			}))
 			.pipe(htmlmin({
@@ -201,5 +201,5 @@ gulp.task('build:client:pug', [
 				// CSSも圧縮する
 				minifyCSS: true
 			}))
-			.pipe(gulp.dest('./built/web/app/'))
+			.pipe(gulp.dest('./built/server/web/app/'))
 );
