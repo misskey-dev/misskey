@@ -46,7 +46,7 @@ export type ILocalAccount = {
 	password: string;
 	token: string;
 	twitter: {
-		access_token: string;
+		accessToken: string;
 		access_token_secret: string;
 		user_id: string;
 		screen_name: string;

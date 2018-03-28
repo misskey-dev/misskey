@@ -194,3 +194,36 @@ db.swSubscriptions.update({}, {
 		user_id: 'userId',
 	}
 }, false, true);
+
+db.users.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		deleted_at: 'deletedAt',
+		followers_count: 'followersCount',
+		following_count: 'followingCount',
+		posts_count: 'postsCount',
+		drive_capacity: 'driveCapacity',
+		username_lower: 'usernameLower',
+		avatar_id: 'avatarId',
+		banner_id: 'bannerId',
+		pinned_post_id: 'pinnedPostId',
+		is_suspended: 'isSuspended',
+		host_lower: 'hostLower',
+		'twitter.access_token': 'twitter.accessToken',
+		'twitter.access_token_secret': 'twitter.accessTokenSecret',
+		'twitter.user_id': 'twitter.userId',
+		'twitter.screen_name': 'twitter.screenName',
+		'line.user_id': 'line.userId',
+		last_used_at: 'lastUsedAt',
+		is_bot: 'isBot',
+		is_pro: 'isPro',
+		two_factor_secret: 'twoFactorSecret',
+		two_factor_enabled: 'twoFactorEnabled',
+		client_settings: 'clientSettings'
+	},
+	$unset: {
+		likes_count: '',
+		liked_count: '',
+		latest_post: ''
+	}
+}, false, true);
