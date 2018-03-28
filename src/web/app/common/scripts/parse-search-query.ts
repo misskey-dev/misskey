@@ -11,7 +11,7 @@ export default function(qs: string) {
 					q['includeUserUsernames'] = value.split(',');
 					break;
 				case 'exclude_user':
-					q['exclude_userUsernames'] = value.split(',');
+					q['excludeUserUsernames'] = value.split(',');
 					break;
 				case 'follow':
 					q['following'] = value == 'null' ? null : value == 'true';

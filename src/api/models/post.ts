@@ -197,7 +197,7 @@ export const pack = async (
 
 		// Fetch my reaction
 		if (meId) {
-			_post.my_reaction = (async () => {
+			_post.myReaction = (async () => {
 				const reaction = await Reaction
 					.findOne({
 						userId: meId,

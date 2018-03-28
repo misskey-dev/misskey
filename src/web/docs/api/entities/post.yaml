@@ -53,7 +53,7 @@ props:
     desc:
       ja: "投稿者"
       en: "The author of this post"
-  - name: "my_reaction"
+  - name: "myReaction"
     type: "string"
     optional: true
     desc:

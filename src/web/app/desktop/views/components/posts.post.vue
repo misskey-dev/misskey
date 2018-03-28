@@ -63,7 +63,7 @@
 				<button @click="repost" title="%i18n:desktop.tags.mk-timeline-post.repost%">
 					%fa:retweet%<p class="count" v-if="p.repostCount > 0">{{ p.repostCount }}</p>
 				</button>
-				<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%">
+				<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:desktop.tags.mk-timeline-post.add-reaction%">
 					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 				</button>
 				<button @click="menu" ref="menuButton">
