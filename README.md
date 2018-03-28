@@ -39,11 +39,11 @@ If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link
 
 **Note:** When you donate to Misskey, your name will be listed in [donors](./DONORS.md).
 
-Collaborators
+Notable contributors
 ----------------------------------------------------------------
-| ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon]        |
-|------------------------|-----------------------------------|---------------------------------|
-| [syuilo][syuilo-link]  | [Aya Morisawa][ayamorisawa-link]  | [otofune][otofune-link] |
+| ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon] | ![akihikodaki][akihikodaki-icon] |
+|:-:|:-:|:-:|:-:|
+| [syuilo][syuilo-link]<br>Owner | [Aya Morisawa][ayamorisawa-link]<br>Collaborator | [otofune][otofune-link]<br>Collaborator | [akihikodaki][akihikodaki-link] |
 
 [List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
@@ -65,10 +65,12 @@ license is applied.) See Git log to identify them.
 [himawari-badge]:     https://img.shields.io/badge/%E5%8F%A4%E8%B0%B7-%E5%90%91%E6%97%A5%E8%91%B5-1684c5.svg?style=flat-square
 [sakurako-badge]:     https://img.shields.io/badge/%E5%A4%A7%E5%AE%A4-%E6%AB%BB%E5%AD%90-efb02a.svg?style=flat-square
 
-<!-- Collaborators Info -->
+<!-- Contributors Info -->
 [syuilo-link]:      https://syuilo.com
 [syuilo-icon]:      https://avatars2.githubusercontent.com/u/4439005?v=3&s=70
 [ayamorisawa-link]: https://github.com/ayamorisawa
 [ayamorisawa-icon]: https://avatars0.githubusercontent.com/u/10798641?v=3&s=70
 [otofune-link]:     https://github.com/otofune
 [otofune-icon]:     https://avatars0.githubusercontent.com/u/15062473?v=3&s=70
+[akihikodaki-link]: https://github.com/akihikodaki
+[akihikodaki-icon]: https://avatars2.githubusercontent.com/u/17036990?s=70&v=4
