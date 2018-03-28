@@ -44,11 +44,7 @@ Notable contributors
 
 Copyright
 ----------------------------------------------------------------
-Misskey is an open-source software licensed under [The MIT License](LICENSE).
-
-The portions of Misskey contributed by Akihiko Odaki <nekomanma@pixiv.co.jp> is
-licensed under GNU Affero General Public License (only version 3.0 of the
-license is applied.) See Git log to identify them.
+Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 
 [agpl-3.0]:           https://www.gnu.org/licenses/agpl-3.0.en.html
 [agpl-3.0-badge]:     https://img.shields.io/badge/license-AGPL--3.0-444444.svg?style=flat-square
