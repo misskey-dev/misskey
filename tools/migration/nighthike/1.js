@@ -1,21 +1,20 @@
 // for Node.js interpret
 
-const { default: App } = require('../../built/api/models/app');
-const { generate } = require('../../built/crypto_key');
+const { default: User } = require('../../../built/api/models/user');
 const { default: zip } = require('@prezzemolo/zip')
 
-const migrate = async (app) => {
-	const result = await User.update(app._id, {
+const migrate = async (user) => {
+	const result = await User.update(user._id, {
 		$set: {
-			'name_id': app.name_id.replace(/\-/g, '_'),
-			'name_id_lower': app.name_id_lower.replace(/\-/g, '_')
+			'username': user.username.replace(/\-/g, '_'),
+			'username_lower': user.username_lower.replace(/\-/g, '_')
 		}
 	});
 	return result.ok === 1;
 }
 
 async function main() {
-	const count = await App.count({});
+	const count = await User.count({});
 
 	const dop = Number.parseInt(process.argv[2]) || 5
 	const idop = ((count - (count % dop)) / dop) + 1
@@ -24,7 +23,7 @@ async function main() {
 		1,
 		async (time) => {
 			console.log(`${time} / ${idop}`)
-			const doc = await App.find({}, {
+			const doc = await User.find({}, {
 				limit: dop, skip: time * dop
 			})
 			return Promise.all(doc.map(migrate))
