@@ -88,7 +88,7 @@ export type IUser = {
 	bannerId: mongo.ObjectID;
 	data: any;
 	description: string;
-	latest_post: IPost;
+	latestPost: IPost;
 	pinnedPostId: mongo.ObjectID;
 	isSuspended: boolean;
 	keywords: string[];
@@ -167,7 +167,7 @@ export const pack = (
 	delete _user._id;
 
 	// Remove needless properties
-	delete _user.latest_post;
+	delete _user.latestPost;
 
 	if (!_user.host) {
 		// Remove private properties
@@ -212,7 +212,7 @@ export const pack = (
 
 	if (meId && !meId.equals(_user.id)) {
 		// Whether the user is following
-		_user.is_following = (async () => {
+		_user.isFollowing = (async () => {
 			const follow = await Following.findOne({
 				followerId: meId,
 				followeeId: _user.id,
@@ -222,7 +222,7 @@ export const pack = (
 		})();
 
 		// Whether the user is followed
-		_user.is_followed = (async () => {
+		_user.isFollowed = (async () => {
 			const follow2 = await Following.findOne({
 				followerId: _user.id,
 				followeeId: meId,
@@ -232,7 +232,7 @@ export const pack = (
 		})();
 
 		// Whether the user is muted
-		_user.is_muted = (async () => {
+		_user.isMuted = (async () => {
 			const mute = await Mute.findOne({
 				muterId: meId,
 				muteeId: _user.id,
@@ -254,14 +254,14 @@ export const pack = (
 			const myFollowingIds = await getFriends(meId);
 
 			// Get following you know count
-			_user.following_you_know_count = Following.count({
+			_user.followingYouKnowCount = Following.count({
 				followeeId: { $in: myFollowingIds },
 				followerId: _user.id,
 				deletedAt: { $exists: false }
 			});
 
 			// Get followers you know count
-			_user.followers_you_know_count = Following.count({
+			_user.followersYouKnowCount = Following.count({
 				followeeId: _user.id,
 				followerId: { $in: myFollowingIds },
 				deletedAt: { $exists: false }

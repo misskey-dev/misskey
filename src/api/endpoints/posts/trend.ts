@@ -41,7 +41,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		createdAt: {
 			$gte: new Date(Date.now() - ms('1days'))
 		},
-		repost_count: {
+		repostCount: {
 			$gt: 0
 		}
 	} as any;
@@ -68,7 +68,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			limit: limit,
 			skip: offset,
 			sort: {
-				repost_count: -1,
+				repostCount: -1,
 				_id: -1
 			}
 		});

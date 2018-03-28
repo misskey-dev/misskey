@@ -67,7 +67,7 @@ export const pack = (
 			deletedAt: { $exists: false }
 		});
 
-		_channel.is_watching = watch !== null;
+		_channel.isWatching = watch !== null;
 		//#endregion
 	}
 

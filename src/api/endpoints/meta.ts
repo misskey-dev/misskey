@@ -53,7 +53,6 @@ module.exports = (params) => new Promise(async (res, rej) => {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
 		},
-		top_image: meta.top_image,
 		broadcasts: meta.broadcasts
 	});
 });

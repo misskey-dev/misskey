@@ -9,7 +9,7 @@
 			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
-			<div class="content" v-if="!message.is_deleted">
+			<div class="content" v-if="!message.isDeleted">
 				<mk-post-html class="text" v-if="message.ast" :ast="message.ast" :i="os.i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" target="_blank" :title="message.file.name">
@@ -18,7 +18,7 @@
 					</a>
 				</div>
 			</div>
-			<div class="content" v-if="message.is_deleted">
+			<div class="content" v-if="message.isDeleted">
 				<p class="is-deleted">%i18n:common.tags.mk-messaging-message.deleted%</p>
 			</div>
 		</div>

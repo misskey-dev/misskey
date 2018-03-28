@@ -2,7 +2,7 @@
 <mk-users-list
 	:fetch="fetch"
 	:count="user.followingCount"
-	:you-know-count="user.following_you_know_count"
+	:you-know-count="user.followingYouKnowCount"
 >
 	フォロー中のユーザーはいないようです。
 </mk-users-list>

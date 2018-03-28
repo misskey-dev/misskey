@@ -34,7 +34,7 @@ export default Vue.extend({
 	mounted() {
 		(this as any).api('users/posts', {
 			userId: this.user.id,
-			with_media: this.withMedia,
+			withMedia: this.withMedia,
 			limit: limit + 1
 		}).then(posts => {
 			if (posts.length == limit + 1) {
@@ -51,7 +51,7 @@ export default Vue.extend({
 			this.moreFetching = true;
 			(this as any).api('users/posts', {
 				userId: this.user.id,
-				with_media: this.withMedia,
+				withMedia: this.withMedia,
 				limit: limit + 1,
 				untilId: this.posts[this.posts.length - 1].id
 			}).then(posts => {

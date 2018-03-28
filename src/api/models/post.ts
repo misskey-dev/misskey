@@ -30,6 +30,10 @@ export type IPost = {
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;
 	viaMobile: boolean;
+	repostCount: number;
+	repliesCount: number;
+	reactionCounts: any;
+	mentions: mongo.ObjectID[];
 	geo: {
 		latitude: number;
 		longitude: number;
@@ -184,7 +188,7 @@ export const pack = async (
 					const myChoice = poll.choices
 						.filter(c => c.id == vote.choice)[0];
 
-					myChoice.is_voted = true;
+					myChoice.isVoted = true;
 				}
 
 				return poll;

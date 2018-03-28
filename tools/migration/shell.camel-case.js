@@ -176,6 +176,9 @@ db.posts.update({}, {
 		reply_id: 'replyId',
 		repost_id: 'repostId',
 		via_mobile: 'viaMobile',
+		reaction_counts: 'reactionCounts',
+		replies_count: 'repliesCount',
+		repost_count: 'repostCount',
 		'_reply.user_id': '_reply.userId',
 		'_repost.user_id': '_repost.userId',
 	}

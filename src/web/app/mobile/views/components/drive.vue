@@ -19,10 +19,10 @@
 	<div class="browser" :class="{ fetching }" v-if="file == null">
 		<div class="info" v-if="info">
 			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:mobile.tags.mk-drive.used%</p>
-			<p v-if="folder != null && (folder.folders_count > 0 || folder.files_count > 0)">
-				<template v-if="folder.folders_count > 0">{{ folder.folders_count }} %i18n:mobile.tags.mk-drive.folder-count%</template>
-				<template v-if="folder.folders_count > 0 && folder.files_count > 0">%i18n:mobile.tags.mk-drive.count-separator%</template>
-				<template v-if="folder.files_count > 0">{{ folder.files_count }} %i18n:mobile.tags.mk-drive.file-count%</template>
+			<p v-if="folder != null && (folder.foldersCount > 0 || folder.filesCount > 0)">
+				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} %i18n:mobile.tags.mk-drive.folder-count%</template>
+				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">%i18n:mobile.tags.mk-drive.count-separator%</template>
+				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} %i18n:mobile.tags.mk-drive.file-count%</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">

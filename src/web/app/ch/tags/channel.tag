@@ -5,8 +5,8 @@
 		<h1>{ channel.title }</h1>
 
 		<div v-if="$root.$data.os.isSignedIn">
-			<p v-if="channel.is_watching">このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
-			<p v-if="!channel.is_watching"><a @click="watch">このチャンネルをウォッチする</a></p>
+			<p v-if="channel.isWatching">このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
+			<p v-if="!channel.isWatching"><a @click="watch">このチャンネルをウォッチする</a></p>
 		</div>
 
 		<div class="share">
@@ -142,7 +142,7 @@
 			this.$root.$data.os.api('channels/watch', {
 				channelId: this.id
 			}).then(() => {
-				this.channel.is_watching = true;
+				this.channel.isWatching = true;
 				this.update();
 			}, e => {
 				alert('error');
@@ -153,7 +153,7 @@
 			this.$root.$data.os.api('channels/unwatch', {
 				channelId: this.id
 			}).then(() => {
-				this.channel.is_watching = false;
+				this.channel.isWatching = false;
 				this.update();
 			}, e => {
 				alert('error');

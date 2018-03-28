@@ -2,9 +2,9 @@
 <div class="profile">
 	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
-		<p class="followed" v-if="user.is_followed">%i18n:desktop.tags.mk-user.follows-you%</p>
-		<p v-if="user.is_muted">%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
-		<p v-if="!user.is_muted"><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
+		<p class="followed" v-if="user.isFollowed">%i18n:desktop.tags.mk-user.follows-you%</p>
+		<p v-if="user.isMuted">%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
+		<p v-if="!user.isMuted"><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
 	</div>
 	<div class="description" v-if="user.description">{{ user.description }}</div>
 	<div class="birthday" v-if="user.host === null && user.account.profile.birthday">
@@ -51,7 +51,7 @@ export default Vue.extend({
 			(this as any).api('mute/create', {
 				userId: this.user.id
 			}).then(() => {
-				this.user.is_muted = true;
+				this.user.isMuted = true;
 			}, () => {
 				alert('error');
 			});
@@ -61,7 +61,7 @@ export default Vue.extend({
 			(this as any).api('mute/delete', {
 				userId: this.user.id
 			}).then(() => {
-				this.user.is_muted = false;
+				this.user.isMuted = false;
 			}, () => {
 				alert('error');
 			});

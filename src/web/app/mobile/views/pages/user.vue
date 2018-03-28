@@ -14,7 +14,7 @@
 				<div class="title">
 					<h1>{{ user.name }}</h1>
 					<span class="username">@{{ acct }}</span>
-					<span class="followed" v-if="user.is_followed">%i18n:mobile.tags.mk-user.follows-you%</span>
+					<span class="followed" v-if="user.isFollowed">%i18n:mobile.tags.mk-user.follows-you%</span>
 				</div>
 				<div class="description">{{ user.description }}</div>
 				<div class="info">

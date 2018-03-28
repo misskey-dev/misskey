@@ -96,7 +96,7 @@ export const pack = (
 				limit: 1
 			});
 
-		_app.is_authorized = exist === 1;
+		_app.isAuthorized = exist === 1;
 	}
 
 	resolve(_app);

@@ -59,10 +59,10 @@
 		<footer>
 			<mk-reactions-viewer :post="p"/>
 			<button @click="reply" title="%i18n:mobile.tags.mk-post-detail.reply%">
-				%fa:reply%<p class="count" v-if="p.replies_count > 0">{{ p.replies_count }}</p>
+				%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
 			<button @click="repost" title="Repost">
-				%fa:retweet%<p class="count" v-if="p.repost_count > 0">{{ p.repost_count }}</p>
+				%fa:retweet%<p class="count" v-if="p.repostCount > 0">{{ p.repostCount }}</p>
 			</button>
 			<button :class="{ reacted: p.my_reaction != null }" @click="react" ref="reactButton" title="%i18n:mobile.tags.mk-post-detail.reaction%">
 				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
@@ -122,9 +122,9 @@ export default Vue.extend({
 			return this.isRepost ? this.post.repost : this.post;
 		},
 		reactionsCount(): number {
-			return this.p.reaction_counts
-				? Object.keys(this.p.reaction_counts)
-					.map(key => this.p.reaction_counts[key])
+			return this.p.reactionCounts
+				? Object.keys(this.p.reactionCounts)
+					.map(key => this.p.reactionCounts[key])
 					.reduce((a, b) => a + b)
 				: 0;
 		},

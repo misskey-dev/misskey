@@ -34,13 +34,13 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		return rej('userId or pair of username and host is required');
 	}
 
-	// Get 'include_replies' parameter
-	const [includeReplies = true, includeRepliesErr] = $(params.include_replies).optional.boolean().$;
-	if (includeRepliesErr) return rej('invalid include_replies param');
+	// Get 'includeReplies' parameter
+	const [includeReplies = true, includeRepliesErr] = $(params.includeReplies).optional.boolean().$;
+	if (includeRepliesErr) return rej('invalid includeReplies param');
 
-	// Get 'with_media' parameter
-	const [withMedia = false, withMediaErr] = $(params.with_media).optional.boolean().$;
-	if (withMediaErr) return rej('invalid with_media param');
+	// Get 'withMedia' parameter
+	const [withMedia = false, withMediaErr] = $(params.withMedia).optional.boolean().$;
+	if (withMediaErr) return rej('invalid withMedia param');
 
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;

@@ -133,7 +133,7 @@ export default Vue.extend({
 	methods: {
 		go(game) {
 			(this as any).api('othello/games/show', {
-				game_id: game.id
+				gameId: game.id
 			}).then(game => {
 				this.matching = null;
 				this.game = game;

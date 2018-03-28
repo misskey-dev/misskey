@@ -62,8 +62,8 @@ export const pack = (
 			'metadata.folderId': _folder.id
 		});
 
-		_folder.folders_count = childFoldersCount;
-		_folder.files_count = childFilesCount;
+		_folder.foldersCount = childFoldersCount;
+		_folder.filesCount = childFilesCount;
 	}
 
 	if (opts.detail && _folder.parentId) {

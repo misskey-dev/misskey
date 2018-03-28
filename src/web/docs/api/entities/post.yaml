@@ -59,7 +59,7 @@ props:
     desc:
       ja: "この投稿に対する自分の<a href='/docs/api/reactions'>リアクション</a>"
       en: "The your <a href='/docs/api/reactions'>reaction</a> of this post"
-  - name: "reaction_counts"
+  - name: "reactionCounts"
     type: "object"
     optional: false
     desc:
@@ -110,7 +110,7 @@ props:
             desc:
               ja: "選択肢ID"
               en: "The ID of this choice"
-          - name: "is_voted"
+          - name: "isVoted"
             type: "boolean"
             optional: true
             desc:

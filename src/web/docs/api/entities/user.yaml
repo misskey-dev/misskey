@@ -65,17 +65,17 @@ props:
     desc:
       ja: "フォローしているユーザーの数"
       en: "The number of the following users for this user"
-  - name: "is_following"
+  - name: "isFollowing"
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーをフォローしているか"
-  - name: "is_followed"
+  - name: "isFollowed"
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーにフォローされているか"
-  - name: "is_muted"
+  - name: "isMuted"
     type: "boolean"
     optional: true
     desc:

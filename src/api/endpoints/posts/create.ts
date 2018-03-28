@@ -211,12 +211,12 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	// 直近の投稿と重複してたらエラー
 	// TODO: 直近の投稿が一日前くらいなら重複とは見なさない
-	if (user.latest_post) {
+	if (user.latestPost) {
 		if (deepEqual({
-			text: user.latest_post.text,
-			reply: user.latest_post.replyId ? user.latest_post.replyId.toString() : null,
-			repost: user.latest_post.repostId ? user.latest_post.repostId.toString() : null,
-			mediaIds: (user.latest_post.mediaIds || []).map(id => id.toString())
+			text: user.latestPost.text,
+			reply: user.latestPost.replyId ? user.latestPost.replyId.toString() : null,
+			repost: user.latestPost.repostId ? user.latestPost.repostId.toString() : null,
+			mediaIds: (user.latestPost.mediaIds || []).map(id => id.toString())
 		}, {
 			text: text,
 			reply: reply ? reply._id.toString() : null,
@@ -277,7 +277,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 
 	User.update({ _id: user._id }, {
 		$set: {
-			latest_post: post
+			latestPost: post
 		}
 	});
 
@@ -362,7 +362,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		// Increment replies count
 		Post.update({ _id: reply._id }, {
 			$inc: {
-				replies_count: 1
+				repliesCount: 1
 			}
 		});
 
@@ -457,7 +457,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			// Update repostee status
 			Post.update({ _id: repost._id }, {
 				$inc: {
-					repost_count: 1
+					repostCount: 1
 				}
 			});
 		}

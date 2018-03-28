@@ -83,7 +83,7 @@
 </mk-posts>
 
 <mk-users>
-	<h2>%i18n:stats.users-count% <b>{ stats.users_count }</b></h2>
+	<h2>%i18n:stats.users-count% <b>{ stats.usersCount }</b></h2>
 	<mk-users-chart v-if="!initializing" data={ data }/>
 	<style lang="stylus" scoped>
 		:scope

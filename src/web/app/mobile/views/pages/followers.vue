@@ -8,7 +8,7 @@
 		v-if="!fetching"
 		:fetch="fetchUsers"
 		:count="user.followersCount"
-		:you-know-count="user.followers_you_know_count"
+		:you-know-count="user.followersYouKnowCount"
 		@loaded="onLoaded"
 	>
 		%i18n:mobile.tags.mk-user-followers.no-users%

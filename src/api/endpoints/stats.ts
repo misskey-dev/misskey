@@ -18,7 +18,7 @@ import User from '../models/user';
  *             postsCount:
  *               description: count of all posts of misskey
  *               type: number
- *             users_count:
+ *             usersCount:
  *               description: count of all users of misskey
  *               type: number
  *
@@ -43,6 +43,6 @@ module.exports = params => new Promise(async (res, rej) => {
 
 	res({
 		postsCount: postsCount,
-		users_count: usersCount
+		usersCount: usersCount
 	});
 });

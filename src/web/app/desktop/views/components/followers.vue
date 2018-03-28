@@ -2,7 +2,7 @@
 <mk-users-list
 	:fetch="fetch"
 	:count="user.followersCount"
-	:you-know-count="user.followers_you_know_count"
+	:you-know-count="user.followersYouKnowCount"
 >
 	フォロワーはいないようです。
 </mk-users-list>

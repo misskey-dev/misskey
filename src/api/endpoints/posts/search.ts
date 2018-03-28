@@ -21,21 +21,21 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [text, textError] = $(params.text).optional.string().$;
 	if (textError) return rej('invalid text param');
 
-	// Get 'include_userIds' parameter
-	const [includeUserIds = [], includeUserIdsErr] = $(params.include_userIds).optional.array('id').$;
-	if (includeUserIdsErr) return rej('invalid include_userIds param');
+	// Get 'includeUserIds' parameter
+	const [includeUserIds = [], includeUserIdsErr] = $(params.includeUserIds).optional.array('id').$;
+	if (includeUserIdsErr) return rej('invalid includeUserIds param');
 
 	// Get 'exclude_userIds' parameter
 	const [excludeUserIds = [], excludeUserIdsErr] = $(params.exclude_userIds).optional.array('id').$;
 	if (excludeUserIdsErr) return rej('invalid exclude_userIds param');
 
-	// Get 'include_user_usernames' parameter
-	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.include_user_usernames).optional.array('string').$;
-	if (includeUserUsernamesErr) return rej('invalid include_user_usernames param');
+	// Get 'includeUserUsernames' parameter
+	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.includeUserUsernames).optional.array('string').$;
+	if (includeUserUsernamesErr) return rej('invalid includeUserUsernames param');
 
-	// Get 'exclude_user_usernames' parameter
-	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.exclude_user_usernames).optional.array('string').$;
-	if (excludeUserUsernamesErr) return rej('invalid exclude_user_usernames param');
+	// Get 'exclude_userUsernames' parameter
+	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.exclude_userUsernames).optional.array('string').$;
+	if (excludeUserUsernamesErr) return rej('invalid exclude_userUsernames param');
 
 	// Get 'following' parameter
 	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().$;

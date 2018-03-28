@@ -51,7 +51,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	res();
 
 	const dec = {};
-	dec[`reaction_counts.${exist.reaction}`] = -1;
+	dec[`reactionCounts.${exist.reaction}`] = -1;
 
 	// Decrement reactions count
 	Post.update({ _id: post._id }, {

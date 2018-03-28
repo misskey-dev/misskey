@@ -1,15 +1,15 @@
 <template>
 <button class="mk-follow-button"
-	:class="{ wait, follow: !user.is_following, unfollow: user.is_following, big: size == 'big' }"
+	:class="{ wait, follow: !user.isFollowing, unfollow: user.isFollowing, big: size == 'big' }"
 	@click="onClick"
 	:disabled="wait"
-	:title="user.is_following ? 'フォロー解除' : 'フォローする'"
+	:title="user.isFollowing ? 'フォロー解除' : 'フォローする'"
 >
-	<template v-if="!wait && user.is_following">
+	<template v-if="!wait && user.isFollowing">
 		<template v-if="size == 'compact'">%fa:minus%</template>
 		<template v-if="size == 'big'">%fa:minus%フォロー解除</template>
 	</template>
-	<template v-if="!wait && !user.is_following">
+	<template v-if="!wait && !user.isFollowing">
 		<template v-if="size == 'compact'">%fa:plus%</template>
 		<template v-if="size == 'big'">%fa:plus%フォロー</template>
 	</template>
@@ -53,23 +53,23 @@ export default Vue.extend({
 
 		onFollow(user) {
 			if (user.id == this.user.id) {
-				this.user.is_following = user.is_following;
+				this.user.isFollowing = user.isFollowing;
 			}
 		},
 
 		onUnfollow(user) {
 			if (user.id == this.user.id) {
-				this.user.is_following = user.is_following;
+				this.user.isFollowing = user.isFollowing;
 			}
 		},
 
 		onClick() {
 			this.wait = true;
-			if (this.user.is_following) {
+			if (this.user.isFollowing) {
 				(this as any).api('following/delete', {
 					userId: this.user.id
 				}).then(() => {
-					this.user.is_following = false;
+					this.user.isFollowing = false;
 				}).catch(err => {
 					console.error(err);
 				}).then(() => {
@@ -79,7 +79,7 @@ export default Vue.extend({
 				(this as any).api('following/create', {
 					userId: this.user.id
 				}).then(() => {
-					this.user.is_following = true;
+					this.user.isFollowing = true;
 				}).catch(err => {
 					console.error(err);
 				}).then(() => {

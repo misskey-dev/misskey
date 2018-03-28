@@ -14,7 +14,7 @@
 			<p>このアプリがあなたのアカウントにアクセスすることはありません。</p>
 		</div>
 		<div class="accepted" v-if="state == 'accepted'">
-			<h1>{{ session.app.is_authorized ? 'このアプリは既に連携済みです' : 'アプリケーションの連携を許可しました'}}</h1>
+			<h1>{{ session.app.isAuthorized ? 'このアプリは既に連携済みです' : 'アプリケーションの連携を許可しました' }}</h1>
 			<p v-if="session.app.callbackUrl">アプリケーションに戻っています<mk-ellipsis/></p>
 			<p v-if="!session.app.callbackUrl">アプリケーションに戻って、やっていってください。</p>
 		</div>
@@ -61,7 +61,7 @@ export default Vue.extend({
 			this.fetching = false;
 
 			// 既に連携していた場合
-			if (this.session.app.is_authorized) {
+			if (this.session.app.isAuthorized) {
 				this.$root.$data.os.api('auth/accept', {
 					token: this.session.token
 				}).then(() => {
