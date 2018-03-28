@@ -156,3 +156,25 @@ db.postReactions.update({}, {
 		post_id: 'postId'
 	}
 }, false, true);
+
+db.post_watching.renameCollection('postWatching');
+db.postWatching.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		user_id: 'userId',
+		post_id: 'postId'
+	}
+}, false, true);
+
+db.posts.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		channel_id: 'channelId',
+		user_id: 'userId',
+		app_id: 'appId',
+		media_ids: 'mediaIds',
+		reply_id: 'replyId',
+		repost_id: 'repostId',
+		via_mobile: 'viaMobile'
+	}
+}, false, true);

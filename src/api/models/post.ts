@@ -20,18 +20,16 @@ export function isValidText(text: string): boolean {
 
 export type IPost = {
 	_id: mongo.ObjectID;
-	channel_id: mongo.ObjectID;
-	created_at: Date;
-	media_ids: mongo.ObjectID[];
-	reply_id: mongo.ObjectID;
-	repost_id: mongo.ObjectID;
+	channelId: mongo.ObjectID;
+	createdAt: Date;
+	mediaIds: mongo.ObjectID[];
+	replyId: mongo.ObjectID;
+	repostId: mongo.ObjectID;
 	poll: any; // todo
 	text: string;
-	user_id: mongo.ObjectID;
-	app_id: mongo.ObjectID;
-	category: string;
-	is_category_verified: boolean;
-	via_mobile: boolean;
+	userId: mongo.ObjectID;
+	appId: mongo.ObjectID;
+	viaMobile: boolean;
 	geo: {
 		latitude: number;
 		longitude: number;
