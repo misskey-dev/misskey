@@ -9,7 +9,9 @@ Misskey
 [![][sakurako-badge]][himasaku]
 [![][agpl-3.0-badge]][AGPL-3.0]
 
-[Misskey](https://misskey.xyz) is a completely open source,
+> Lead Maintainer: [syuilo][syuilo-link]
+
+**[Misskey](https://misskey.xyz)** is a completely open source,
 ultimately sophisticated new type of mini-blog based SNS.
 
 Key features
