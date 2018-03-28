@@ -187,3 +187,10 @@ db.signin.update({}, {
 		user_id: 'userId',
 	}
 }, false, true);
+
+db.sw_subscriptions.renameCollection('swSubscriptions');
+db.swSubscriptions.update({}, {
+	$rename: {
+		user_id: 'userId',
+	}
+}, false, true);
