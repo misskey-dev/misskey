@@ -44,6 +44,8 @@ Notable contributors
 
 Copyright
 ----------------------------------------------------------------
+> Copyright (c) 2014-2018 syuilo
+
 Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 
 [agpl-3.0]:           https://www.gnu.org/licenses/agpl-3.0.en.html
