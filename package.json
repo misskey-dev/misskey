@@ -16,6 +16,7 @@
 		"swagger": "node ./swagger.js",
 		"build": "node --max_old_space_size=16384 ./node_modules/webpack/bin/webpack.js && gulp build",
 		"webpack": "node --max_old_space_size=16384 ./node_modules/webpack/bin/webpack.js",
+		"watch": "node --max_old_space_size=16384 ./node_modules/webpack/bin/webpack.js --watch",
 		"gulp": "gulp build",
 		"rebuild": "gulp rebuild",
 		"clean": "gulp clean",
