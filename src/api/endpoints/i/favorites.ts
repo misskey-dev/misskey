@@ -39,6 +39,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(favorites.map(async favorite =>
-		await pack(favorite.post)
+		await pack(favorite.postId)
 	)));
 });
