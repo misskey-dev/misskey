@@ -130,3 +130,20 @@ db.othelloGames.update({}, {
 	}
 }, false, true);
 
+db.othello_matchings.renameCollection('othelloMatchings');
+db.othelloMatchings.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		parent_id: 'parentId',
+		child_id: 'childId'
+	}
+}, false, true);
+
+db.poll_votes.renameCollection('pollVotes');
+db.pollVotes.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		user_id: 'userId',
+		post_id: 'postId'
+	}
+}, false, true);
