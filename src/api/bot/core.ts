@@ -67,7 +67,7 @@ export default class BotCore extends EventEmitter {
 			return await this.context.q(query);
 		}
 
-		if (/^@[a-zA-Z0-9-]+$/.test(query)) {
+		if (/^@[a-zA-Z0-9_]+$/.test(query)) {
 			return await this.showUserCommand(query);
 		}
 

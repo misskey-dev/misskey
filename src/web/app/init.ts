@@ -14,7 +14,7 @@ import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS, { API } from './common/mios';
-import { version, hostname, lang } from './config';
+import { version, codename, hostname, lang } from './config';
 
 let elementLocale;
 switch (lang) {
@@ -51,7 +51,7 @@ Vue.mixin({
  * APP ENTRY POINT!
  */
 
-console.info(`Misskey v${version} (葵 aoi)`);
+console.info(`Misskey v${version} (${codename})`);
 console.info(
 	'%cここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。',
 	'color: red; background: yellow; font-size: 16px; font-weight: bold;');

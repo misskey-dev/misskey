@@ -19,7 +19,7 @@ Key features
 * Two-Factor Authentication support
 * ServiceWorker support
 * Web API for third-party applications
-* No ads
+* ActivityPub compatible
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
 

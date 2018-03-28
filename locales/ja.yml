@@ -147,7 +147,7 @@ common:
       available: "利用できます"
       unavailable: "既に利用されています"
       error: "通信エラー"
-      invalid-format: "a~z、A~Z、0~9、-(ハイフン)が使えます"
+      invalid-format: "a~z、A~Z、0~9、_が使えます"
       too-short: "3文字以上でお願いします！"
       too-long: "20文字以内でお願いします"
       password: "パスワード"

@@ -1,7 +1,7 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
 	<label class="user-name">
-		<input v-model="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="%i18n:common.tags.mk-signin.username%" autofocus required @change="onUsernameChange"/>%fa:at%
+		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="%i18n:common.tags.mk-signin.username%" autofocus required @change="onUsernameChange"/>%fa:at%
 	</label>
 	<label class="password">
 		<input v-model="password" type="password" placeholder="%i18n:common.tags.mk-signin.password%" required/>%fa:lock%
