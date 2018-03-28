@@ -5,16 +5,17 @@ import { pack as packFile } from './drive-file';
 import db from '../../db/mongodb';
 import parse from '../common/text';
 
-const MessagingMessage = db.get<IMessagingMessage>('messaging_messages');
+const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
 export default MessagingMessage;
 
 export interface IMessagingMessage {
 	_id: mongo.ObjectID;
-	created_at: Date;
+	createdAt: Date;
 	text: string;
-	user_id: mongo.ObjectID;
-	recipient_id: mongo.ObjectID;
-	is_read: boolean;
+	userId: mongo.ObjectID;
+	recipientId: mongo.ObjectID;
+	isRead: boolean;
+	fileId: mongo.ObjectID;
 }
 
 export function isValidText(text: string): boolean {

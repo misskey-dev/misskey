@@ -79,3 +79,25 @@ db.following.update({}, {
 		follower_id: 'followerId',
 	}
 }, false, true);
+
+db.messaging_histories.renameCollection('messagingHistories');
+db.messagingHistories.update({}, {
+	$rename: {
+		updated_at: 'updatedAt',
+		user_id: 'userId',
+		partner: 'partnerId',
+		message: 'messageId',
+	}
+}, false, true);
+
+db.messaging_messages.renameCollection('messagingMessages');
+db.messagingMessages.update({}, {
+	$rename: {
+		created_at: 'createdAt',
+		user_id: 'userId',
+		recipient_id: 'recipientId',
+		file_id: 'fileId',
+		is_read: 'isRead'
+	}
+}, false, true);
+
