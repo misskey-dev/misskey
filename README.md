@@ -1,4 +1,6 @@
-![Misskey](./assets/title.png)
+<img src="https://github.com/syuilo/misskey/blob/b3f42e62af698a67c2250533c437569559f1fdf9/src/himasaku/resources/himasaku.png?raw=true" align="right" width="320px"/>
+
+Misskey
 ================================================================
 
 [![][travis-badge]][travis-link]
@@ -9,8 +11,6 @@
 
 [Misskey](https://misskey.xyz) is a completely open source,
 ultimately sophisticated new type of mini-blog based SNS.
-
-![ss](./assets/ss.jpg)
 
 Key features
 ----------------------------------------------------------------
