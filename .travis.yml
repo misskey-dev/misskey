@@ -36,8 +36,7 @@ before_script:
   # --only=dev オプションを付けてそれらもインストールされるようにする:
   - npm install --only=dev
 
-  # 設定ファイルを設定
-  - mkdir ./.config
+  # 設定ファイルを配置
   - cp ./.travis/default.yml ./.config
   - cp ./.travis/test.yml ./.config
 
