@@ -175,7 +175,7 @@
 		"s-age": "1.1.2",
 		"sass-loader": "6.0.7",
 		"seedrandom": "2.4.3",
-		"serve-favicon": "2.4.5",
+		"serve-favicon": "2.5.0",
 		"speakeasy": "2.0.0",
 		"style-loader": "0.20.3",
 		"stylus": "0.54.5",
