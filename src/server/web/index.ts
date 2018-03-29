@@ -17,7 +17,7 @@ const client = `${__dirname}/../../client/`;
 const app = express();
 app.disable('x-powered-by');
 
-app.use('/docs', require('./docs/server'));
+app.use('/docs', require('./docs'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({
