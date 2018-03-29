@@ -1,5 +1,5 @@
-import Post from '../../api/models/post';
-import User from '../../api/models/user';
+import Post from '../../server/api/models/post';
+import User from '../../server/api/models/user';
 
 export async function predictOne(id) {
 	console.log(`predict interest of ${id} ...`);

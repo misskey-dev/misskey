@@ -1,0 +1,38 @@
+doctype html
+
+!= '\n<!-- Thank you for using Misskey! @syuilo -->\n'
+
+html
+
+	head
+		meta(charset='utf-8')
+		meta(name='application-name' content='Misskey')
+		meta(name='theme-color' content=themeColor)
+		meta(name='referrer' content='origin')
+		link(rel='manifest' href='/manifest.json')
+
+		title Misskey
+
+		style
+			include ./../../../../built/server/web/assets/init.css
+		script
+			include ./../../../../built/server/web/assets/boot.js
+
+		script
+			include ./../../../../built/server/web/assets/safe.js
+
+		//- FontAwesome style
+		style #{facss}
+
+		//- highlight.js style
+		style #{hljscss}
+
+	body
+		noscript: p
+			| JavaScriptを有効にしてください
+			br
+			| Please turn on your JavaScript
+		div#ini: p
+			span .
+			span .
+			span .

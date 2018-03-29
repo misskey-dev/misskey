@@ -24,6 +24,8 @@ import stats from './utils/stats';
 import { Config, path as configPath } from './config';
 import loadConfig from './config';
 
+import parseOpt from './parse-opt';
+
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
 
@@ -36,20 +38,22 @@ main();
  * Init process
  */
 function main() {
+	const opt = parseOpt(process.argv, 2);
+
 	if (cluster.isMaster) {
-		masterMain();
+		masterMain(opt);
 
 		ev.mount();
 		stats();
 	} else {
-		workerMain();
+		workerMain(opt);
 	}
 }
 
 /**
  * Init master process
  */
-async function masterMain() {
+async function masterMain(opt) {
 	let config: Config;
 
 	try {
@@ -69,19 +73,35 @@ async function masterMain() {
 	}
 
 	spawnWorkers(() => {
-		Logger.info(chalk.bold.green(
-			`Now listening on port ${chalk.underline(config.port.toString())}`));
+		if (!opt['only-processor']) {
+			Logger.info(chalk.bold.green(
+				`Now listening on port ${chalk.underline(config.port.toString())}`));
 
-		Logger.info(chalk.bold.green(config.url));
+			Logger.info(chalk.bold.green(config.url));
+		}
+
+		if (!opt['only-server']) {
+			Logger.info(chalk.bold.green('Now processing jobs'));
+		}
 	});
 }
 
 /**
  * Init worker process
  */
-function workerMain() {
-	// start server
-	require('./server');
+async function workerMain(opt) {
+	if (!opt['only-processor']) {
+		// start server
+		await require('./server').default();
+	}
+
+	if (!opt['only-server']) {
+		// start processor
+		require('./processor').default();
+	}
+
+	// Send a 'ready' message to parent process
+	process.send('ready');
 }
 
 /**

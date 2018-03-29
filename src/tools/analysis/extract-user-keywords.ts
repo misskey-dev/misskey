@@ -1,9 +1,9 @@
 const moji = require('moji');
 
 const MeCab = require('./mecab');
-import Post from '../../api/models/post';
-import User from '../../api/models/user';
-import parse from '../../api/common/text';
+import Post from '../../server/api/models/post';
+import User from '../../server/api/models/user';
+import parse from '../../server/api/common/text';
 
 process.on('unhandledRejection', console.dir);
 
