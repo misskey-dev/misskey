@@ -319,6 +319,7 @@ export const packForAp = (
 		"liked": `${userUrl}/liked.json`,
 		"inbox": `${userUrl}/inbox.json`,
 		"outbox": `${userUrl}/outbox.json`,
+		"sharedInbox": `${config.url}/inbox`,
 		"preferredUsername": _user.username,
 		"name": _user.name,
 		"summary": _user.description,
