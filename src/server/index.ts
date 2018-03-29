@@ -51,9 +51,9 @@ app.use((req, res, next) => {
 /**
  * Register modules
  */
-app.use('/api', require('./api/server'));
-app.use('/files', require('./file/server'));
-app.use(require('./web/server'));
+app.use('/api', require('./api'));
+app.use('/files', require('./file'));
+app.use(require('./web'));
 
 function createServer() {
 	if (config.https) {
