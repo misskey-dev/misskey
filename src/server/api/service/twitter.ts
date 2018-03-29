@@ -128,7 +128,7 @@ module.exports = (app: express.Application) => {
 
 				const user = await User.findOne({
 					host: null,
-					'account.twitter.user_id': result.userId
+					'account.twitter.userId': result.userId
 				});
 
 				if (user == null) {
@@ -155,10 +155,10 @@ module.exports = (app: express.Application) => {
 				}, {
 					$set: {
 						'account.twitter': {
-							access_token: result.accessToken,
-							access_token_secret: result.accessTokenSecret,
-							user_id: result.userId,
-							screen_name: result.screenName
+							accessToken: result.accessToken,
+							accessTokenSecret: result.accessTokenSecret,
+							userId: result.userId,
+							screenName: result.screenName
 						}
 					}
 				});

@@ -1,3 +1,12 @@
+import * as mongo from 'mongodb';
 import db from '../../../db/mongodb';
 
-export default db.get('post_watching') as any; // fuck type definition
+const PostWatching = db.get<IPostWatching>('postWatching');
+export default PostWatching;
+
+export interface IPostWatching {
+	_id: mongo.ObjectID;
+	createdAt: Date;
+	userId: mongo.ObjectID;
+	postId: mongo.ObjectID;
+}

@@ -3,14 +3,14 @@ import deepcopy = require('deepcopy');
 import db from '../../../db/mongodb';
 import { IUser, pack as packUser } from './user';
 
-const Matching = db.get<IMatching>('othello_matchings');
+const Matching = db.get<IMatching>('othelloMatchings');
 export default Matching;
 
 export interface IMatching {
 	_id: mongo.ObjectID;
-	created_at: Date;
-	parent_id: mongo.ObjectID;
-	child_id: mongo.ObjectID;
+	createdAt: Date;
+	parentId: mongo.ObjectID;
+	childId: mongo.ObjectID;
 }
 
 /**
@@ -37,8 +37,8 @@ export const pack = (
 	delete _matching._id;
 
 	// Populate user
-	_matching.parent = await packUser(_matching.parent_id, meId);
-	_matching.child = await packUser(_matching.child_id, meId);
+	_matching.parent = await packUser(_matching.parentId, meId);
+	_matching.child = await packUser(_matching.childId, meId);
 
 	resolve(_matching);
 });

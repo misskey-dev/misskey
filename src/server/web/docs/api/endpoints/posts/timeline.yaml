@@ -10,22 +10,22 @@ params:
     optional: true
     desc:
       ja: "取得する最大の数"
-  - name: "since_id"
+  - name: "sinceId"
     type: "id(Post)"
     optional: true
     desc:
       ja: "指定すると、この投稿を基点としてより新しい投稿を取得します"
-  - name: "until_id"
+  - name: "untilId"
     type: "id(Post)"
     optional: true
     desc:
       ja: "指定すると、この投稿を基点としてより古い投稿を取得します"
-  - name: "since_date"
+  - name: "sinceDate"
     type: "number"
     optional: true
     desc:
       ja: "指定した時間を基点としてより新しい投稿を取得します。数値は、1970 年 1 月 1 日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。"
-  - name: "until_date"
+  - name: "untilDate"
     type: "number"
     optional: true
     desc:

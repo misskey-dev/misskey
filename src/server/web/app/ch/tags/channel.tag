@@ -5,8 +5,8 @@
 		<h1>{ channel.title }</h1>
 
 		<div v-if="$root.$data.os.isSignedIn">
-			<p v-if="channel.is_watching">このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
-			<p v-if="!channel.is_watching"><a @click="watch">このチャンネルをウォッチする</a></p>
+			<p v-if="channel.isWatching">このチャンネルをウォッチしています <a @click="unwatch">ウォッチ解除</a></p>
+			<p v-if="!channel.isWatching"><a @click="watch">このチャンネルをウォッチする</a></p>
 		</div>
 
 		<div class="share">
@@ -77,7 +77,7 @@
 
 			// チャンネル概要読み込み
 			this.$root.$data.os.api('channels/show', {
-				channel_id: this.id
+				channelId: this.id
 			}).then(channel => {
 				if (fetched) {
 					Progress.done();
@@ -96,7 +96,7 @@
 
 			// 投稿読み込み
 			this.$root.$data.os.api('channels/posts', {
-				channel_id: this.id
+				channelId: this.id
 			}).then(posts => {
 				if (fetched) {
 					Progress.done();
@@ -125,7 +125,7 @@
 			this.posts.unshift(post);
 			this.update();
 
-			if (document.hidden && this.$root.$data.os.isSignedIn && post.user_id !== this.$root.$data.os.i.id) {
+			if (document.hidden && this.$root.$data.os.isSignedIn && post.userId !== this.$root.$data.os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${this.channel.title} | Misskey`;
 			}
@@ -140,9 +140,9 @@
 
 		this.watch = () => {
 			this.$root.$data.os.api('channels/watch', {
-				channel_id: this.id
+				channelId: this.id
 			}).then(() => {
-				this.channel.is_watching = true;
+				this.channel.isWatching = true;
 				this.update();
 			}, e => {
 				alert('error');
@@ -151,9 +151,9 @@
 
 		this.unwatch = () => {
 			this.$root.$data.os.api('channels/unwatch', {
-				channel_id: this.id
+				channelId: this.id
 			}).then(() => {
-				this.channel.is_watching = false;
+				this.channel.isWatching = false;
 				this.update();
 			}, e => {
 				alert('error');
@@ -166,8 +166,8 @@
 	<header>
 		<a class="index" @click="reply">{ post.index }:</a>
 		<a class="name" href={ _URL_ + '/@' + acct }><b>{ post.user.name }</b></a>
-		<mk-time time={ post.created_at }/>
-		<mk-time time={ post.created_at } mode="detail"/>
+		<mk-time time={ post.createdAt }/>
+		<mk-time time={ post.createdAt } mode="detail"/>
 		<span>ID:<i>{ acct }</i></span>
 	</header>
 	<div>
@@ -328,9 +328,9 @@
 
 			this.$root.$data.os.api('posts/create', {
 				text: this.$refs.text.value == '' ? undefined : this.$refs.text.value,
-				media_ids: files,
-				reply_id: this.reply ? this.reply.id : undefined,
-				channel_id: this.channel.id
+				mediaIds: files,
+				replyId: this.reply ? this.reply.id : undefined,
+				channelId: this.channel.id
 			}).then(data => {
 				this.clear();
 			}).catch(err => {

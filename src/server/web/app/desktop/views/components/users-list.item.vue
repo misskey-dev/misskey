@@ -1,7 +1,7 @@
 <template>
 <div class="root item">
 	<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="user.id">
-		<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
@@ -9,7 +9,7 @@
 			<span class="username">@{{ acct }}</span>
 		</header>
 		<div class="body">
-			<p class="followed" v-if="user.is_followed">フォローされています</p>
+			<p class="followed" v-if="user.isFollowed">フォローされています</p>
 			<div class="description">{{ user.description }}</div>
 		</div>
 	</div>

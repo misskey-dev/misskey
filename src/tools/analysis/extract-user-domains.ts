@@ -50,7 +50,7 @@ function extractDomainsOne(id) {
 
 		// Fetch recent posts
 		const recentPosts = await Post.find({
-			user_id: id,
+			userId: id,
 			text: {
 				$exists: true
 			}

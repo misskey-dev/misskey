@@ -38,24 +38,24 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (pollErr) return rej('invalid poll param');
 
 	const query = {
-		created_at: {
+		createdAt: {
 			$gte: new Date(Date.now() - ms('1days'))
 		},
-		repost_count: {
+		repostCount: {
 			$gt: 0
 		}
 	} as any;
 
 	if (reply != undefined) {
-		query.reply_id = reply ? { $exists: true, $ne: null } : null;
+		query.replyId = reply ? { $exists: true, $ne: null } : null;
 	}
 
 	if (repost != undefined) {
-		query.repost_id = repost ? { $exists: true, $ne: null } : null;
+		query.repostId = repost ? { $exists: true, $ne: null } : null;
 	}
 
 	if (media != undefined) {
-		query.media_ids = media ? { $exists: true, $ne: null } : null;
+		query.mediaIds = media ? { $exists: true, $ne: null } : null;
 	}
 
 	if (poll != undefined) {
@@ -68,7 +68,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			limit: limit,
 			skip: offset,
 			sort: {
-				repost_count: -1,
+				repostCount: -1,
 				_id: -1
 			}
 		});

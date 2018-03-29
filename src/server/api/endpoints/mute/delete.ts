@@ -15,9 +15,9 @@ import Mute from '../../models/mute';
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const muter = user;
 
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Check if the mutee is yourself
 	if (user._id.equals(userId)) {
@@ -40,9 +40,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Check not muting
 	const exist = await Mute.findOne({
-		muter_id: muter._id,
-		mutee_id: mutee._id,
-		deleted_at: { $exists: false }
+		muterId: muter._id,
+		muteeId: mutee._id,
+		deletedAt: { $exists: false }
 	});
 
 	if (exist === null) {
@@ -54,7 +54,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		_id: exist._id
 	}, {
 		$set: {
-			deleted_at: new Date()
+			deletedAt: new Date()
 		}
 	});
 

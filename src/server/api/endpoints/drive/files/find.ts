@@ -16,16 +16,16 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [name, nameErr] = $(params.name).string().$;
 	if (nameErr) return rej('invalid name param');
 
-	// Get 'folder_id' parameter
-	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) return rej('invalid folder_id param');
+	// Get 'folderId' parameter
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	if (folderIdErr) return rej('invalid folderId param');
 
 	// Issue query
 	const files = await DriveFile
 		.find({
 			filename: name,
-			'metadata.user_id': user._id,
-			'metadata.folder_id': folderId
+			'metadata.userId': user._id,
+			'metadata.folderId': folderId
 		});
 
 	// Serialize

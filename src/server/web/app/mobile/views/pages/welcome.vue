@@ -6,9 +6,9 @@
 		<p>%fa:lock% ログイン</p>
 		<div>
 			<form @submit.prevent="onSubmit">
-				<input v-model="username" type="text" pattern="^[a-zA-Z0-9-]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange"/>
+				<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange"/>
 				<input v-model="password" type="password" placeholder="パスワード" required/>
-				<input v-if="user && user.account.two_factor_enabled" v-model="token" type="number" placeholder="トークン" required/>
+				<input v-if="user && user.account.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
 				<button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</button>
 			</form>
 			<div>
@@ -22,7 +22,7 @@
 	</div>
 	<div class="users">
 		<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/@${user.username}`">
-			<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+			<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 	</div>
 	<footer>
@@ -70,7 +70,7 @@ export default Vue.extend({
 			(this as any).api('signin', {
 				username: this.username,
 				password: this.password,
-				token: this.user && this.user.account.two_factor_enabled ? this.token : undefined
+				token: this.user && this.user.account.twoFactorEnabled ? this.token : undefined
 			}).then(() => {
 				location.reload();
 			}).catch(() => {

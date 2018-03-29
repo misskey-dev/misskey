@@ -28,7 +28,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get favorites
 	const favorites = await Favorite
 		.find({
-			user_id: user._id
+			userId: user._id
 		}, {
 			limit: limit,
 			skip: offset,
@@ -39,6 +39,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(favorites.map(async favorite =>
-		await pack(favorite.post)
+		await pack(favorite.postId)
 	)));
 });

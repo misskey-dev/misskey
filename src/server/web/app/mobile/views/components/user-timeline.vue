@@ -33,8 +33,8 @@ export default Vue.extend({
 	},
 	mounted() {
 		(this as any).api('users/posts', {
-			user_id: this.user.id,
-			with_media: this.withMedia,
+			userId: this.user.id,
+			withMedia: this.withMedia,
 			limit: limit + 1
 		}).then(posts => {
 			if (posts.length == limit + 1) {
@@ -50,10 +50,10 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 			(this as any).api('users/posts', {
-				user_id: this.user.id,
-				with_media: this.withMedia,
+				userId: this.user.id,
+				withMedia: this.withMedia,
 				limit: limit + 1,
-				until_id: this.posts[this.posts.length - 1].id
+				untilId: this.posts[this.posts.length - 1].id
 			}).then(posts => {
 				if (posts.length == limit + 1) {
 					posts.pop();

@@ -21,9 +21,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		$(params.following).optional.boolean().$;
 	if (followingError) return rej('invalid following param');
 
-	// Get 'mark_as_read' parameter
-	const [markAsRead = true, markAsReadErr] = $(params.mark_as_read).optional.boolean().$;
-	if (markAsReadErr) return rej('invalid mark_as_read param');
+	// Get 'markAsRead' parameter
+	const [markAsRead = true, markAsReadErr] = $(params.markAsRead).optional.boolean().$;
+	if (markAsReadErr) return rej('invalid markAsRead param');
 
 	// Get 'type' parameter
 	const [type, typeErr] = $(params.type).optional.array('string').unique().$;
@@ -33,29 +33,29 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
-	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) return rej('invalid since_id param');
+	// Get 'sinceId' parameter
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	if (sinceIdErr) return rej('invalid sinceId param');
 
-	// Get 'until_id' parameter
-	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
-	if (untilIdErr) return rej('invalid until_id param');
+	// Get 'untilId' parameter
+	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	if (untilIdErr) return rej('invalid untilId param');
 
-	// Check if both of since_id and until_id is specified
+	// Check if both of sinceId and untilId is specified
 	if (sinceId && untilId) {
-		return rej('cannot set since_id and until_id');
+		return rej('cannot set sinceId and untilId');
 	}
 
 	const mute = await Mute.find({
-		muter_id: user._id,
-		deleted_at: { $exists: false }
+		muterId: user._id,
+		deletedAt: { $exists: false }
 	});
 
 	const query = {
-		notifiee_id: user._id,
+		notifieeId: user._id,
 		$and: [{
-			notifier_id: {
-				$nin: mute.map(m => m.mutee_id)
+			notifierId: {
+				$nin: mute.map(m => m.muteeId)
 			}
 		}]
 	} as any;
@@ -69,7 +69,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		const followingIds = await getFriends(user._id);
 
 		query.$and.push({
-			notifier_id: {
+			notifierId: {
 				$in: followingIds
 			}
 		});

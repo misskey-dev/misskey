@@ -14,7 +14,7 @@ import config from '../../../../../conf';
  *     summary: Generate a session
  *     parameters:
  *       -
- *         name: app_secret
+ *         name: appSecret
  *         description: App Secret
  *         in: formData
  *         required: true
@@ -45,9 +45,9 @@ import config from '../../../../../conf';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	// Get 'app_secret' parameter
-	const [appSecret, appSecretErr] = $(params.app_secret).string().$;
-	if (appSecretErr) return rej('invalid app_secret param');
+	// Get 'appSecret' parameter
+	const [appSecret, appSecretErr] = $(params.appSecret).string().$;
+	if (appSecretErr) return rej('invalid appSecret param');
 
 	// Lookup app
 	const app = await App.findOne({
@@ -63,8 +63,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	// Create session token document
 	const doc = await AuthSess.insert({
-		created_at: new Date(),
-		app_id: app._id,
+		createdAt: new Date(),
+		appId: app._id,
 		token: token
 	});
 

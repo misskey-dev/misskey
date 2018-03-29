@@ -29,7 +29,7 @@ export default Vue.extend({
 		ok() {
 			this.wait = true;
 			(this as any).api('posts/create', {
-				repost_id: this.post.id
+				repostId: this.post.id
 			}).then(data => {
 				this.$emit('posted');
 				(this as any).apis.notify('%i18n:desktop.tags.mk-repost-form.success%');

@@ -6,17 +6,17 @@ export default async (me: mongodb.ObjectID, includeMe: boolean = true) => {
 	// SELECT followee
 	const myfollowing = await Following
 		.find({
-			follower_id: me,
+			followerId: me,
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
+			deletedAt: { $exists: false }
 		}, {
 			fields: {
-				followee_id: true
+				followeeId: true
 			}
 		});
 
 	// ID list of other users who the I follows
-	const myfollowingIds = myfollowing.map(follow => follow.followee_id);
+	const myfollowingIds = myfollowing.map(follow => follow.followeeId);
 
 	if (includeMe) {
 		myfollowingIds.push(me);

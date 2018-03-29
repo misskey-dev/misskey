@@ -28,7 +28,7 @@ export default Vue.extend({
 		fetch() {
 			this.fetching = true;
 			(this as any).api('app/show', {
-				app_id: this.$route.params.id
+				appId: this.$route.params.id
 			}).then(app => {
 				this.app = app;
 				this.fetching = false;

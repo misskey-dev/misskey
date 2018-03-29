@@ -34,7 +34,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('othello/games/show', {
-				game_id: this.$route.params.game
+				gameId: this.$route.params.game
 			}).then(game => {
 				this.game = game;
 				this.fetching = false;

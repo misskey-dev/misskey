@@ -14,7 +14,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Calculate drive usage
 	const usage = ((await DriveFile
 		.aggregate([
-			{ $match: { 'metadata.user_id': user._id } },
+			{ $match: { 'metadata.userId': user._id } },
 			{
 				$project: {
 					length: true
@@ -31,7 +31,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		}).usage;
 
 	res({
-		capacity: user.drive_capacity,
+		capacity: user.driveCapacity,
 		usage: usage
 	});
 });

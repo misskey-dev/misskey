@@ -11,7 +11,7 @@ props:
     desc:
       ja: "ユーザーID"
       en: "The ID of this user"
-  - name: "created_at"
+  - name: "createdAt"
     type: "date"
     optional: false
     desc:
@@ -29,77 +29,77 @@ props:
     desc:
       ja: "アカウントの説明(自己紹介)"
       en: "The description of this user"
-  - name: "avatar_id"
+  - name: "avatarId"
     type: "id(DriveFile)"
     optional: true
     desc:
       ja: "アバターのID"
       en: "The ID of the avatar of this user"
-  - name: "avatar_url"
+  - name: "avatarUrl"
     type: "string"
     optional: false
     desc:
       ja: "アバターのURL"
       en: "The URL of the avatar of this user"
-  - name: "banner_id"
+  - name: "bannerId"
     type: "id(DriveFile)"
     optional: true
     desc:
       ja: "バナーのID"
       en: "The ID of the banner of this user"
-  - name: "banner_url"
+  - name: "bannerUrl"
     type: "string"
     optional: false
     desc:
       ja: "バナーのURL"
       en: "The URL of the banner of this user"
-  - name: "followers_count"
+  - name: "followersCount"
     type: "number"
     optional: false
     desc:
       ja: "フォロワーの数"
       en: "The number of the followers for this user"
-  - name: "following_count"
+  - name: "followingCount"
     type: "number"
     optional: false
     desc:
       ja: "フォローしているユーザーの数"
       en: "The number of the following users for this user"
-  - name: "is_following"
+  - name: "isFollowing"
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーをフォローしているか"
-  - name: "is_followed"
+  - name: "isFollowed"
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーにフォローされているか"
-  - name: "is_muted"
+  - name: "isMuted"
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーをミュートしているか"
       en: "Whether you muted this user"
-  - name: "posts_count"
+  - name: "postsCount"
     type: "number"
     optional: false
     desc:
       ja: "投稿の数"
       en: "The number of the posts of this user"
-  - name: "pinned_post"
+  - name: "pinnedPost"
     type: "entity(Post)"
     optional: true
     desc:
       ja: "ピン留めされた投稿"
       en: "The pinned post of this user"
-  - name: "pinned_post_id"
+  - name: "pinnedPostId"
     type: "id(Post)"
     optional: true
     desc:
       ja: "ピン留めされた投稿のID"
       en: "The ID of the pinned post of this user"
-  - name: "drive_capacity"
+  - name: "driveCapacity"
     type: "number"
     optional: false
     desc:
@@ -119,13 +119,13 @@ props:
       en: "The account of this user on this server"
     defName: "account"
     def:
-      - name: "last_used_at"
+      - name: "lastUsedAt"
         type: "date"
         optional: false
         desc:
           ja: "最終利用日時"
           en: "The last used date of this user"
-      - name: "is_bot"
+      - name: "isBot"
         type: "boolean"
         optional: true
         desc:
@@ -139,13 +139,13 @@ props:
           en: "The info of the connected twitter account of this user"
         defName: "twitter"
         def:
-          - name: "user_id"
+          - name: "userId"
             type: "string"
             optional: false
             desc:
               ja: "ユーザーID"
               en: "The user ID"
-          - name: "screen_name"
+          - name: "screenName"
             type: "string"
             optional: false
             desc:

@@ -9,7 +9,7 @@ export default Notification;
 
 export interface INotification {
 	_id: mongo.ObjectID;
-	created_at: Date;
+	createdAt: Date;
 
 	/**
 	 * 通知の受信者
@@ -19,7 +19,7 @@ export interface INotification {
 	/**
 	 * 通知の受信者
 	 */
-	notifiee_id: mongo.ObjectID;
+	notifieeId: mongo.ObjectID;
 
 	/**
 	 * イニシエータ(initiator)、Origin。通知を行う原因となったユーザー
@@ -29,7 +29,7 @@ export interface INotification {
 	/**
 	 * イニシエータ(initiator)、Origin。通知を行う原因となったユーザー
 	 */
-	notifier_id: mongo.ObjectID;
+	notifierId: mongo.ObjectID;
 
 	/**
 	 * 通知の種類。
@@ -46,7 +46,7 @@ export interface INotification {
 	/**
 	 * 通知が読まれたかどうか
 	 */
-	is_read: Boolean;
+	isRead: Boolean;
 }
 
 /**
@@ -75,15 +75,15 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 	_notification.id = _notification._id;
 	delete _notification._id;
 
-	// Rename notifier_id to user_id
-	_notification.user_id = _notification.notifier_id;
-	delete _notification.notifier_id;
+	// Rename notifierId to userId
+	_notification.userId = _notification.notifierId;
+	delete _notification.notifierId;
 
-	const me = _notification.notifiee_id;
-	delete _notification.notifiee_id;
+	const me = _notification.notifieeId;
+	delete _notification.notifieeId;
 
 	// Populate notifier
-	_notification.user = await packUser(_notification.user_id, me);
+	_notification.user = await packUser(_notification.userId, me);
 
 	switch (_notification.type) {
 		case 'follow':
@@ -96,7 +96,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 		case 'reaction':
 		case 'poll_vote':
 			// Populate post
-			_notification.post = await packPost(_notification.post_id, me);
+			_notification.post = await packPost(_notification.postId, me);
 			break;
 		default:
 			console.error(`Unknown type: ${_notification.type}`);

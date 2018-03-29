@@ -2,7 +2,7 @@
 <div class="profile">
 	<label class="avatar ui from group">
 		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p>
-		<img class="avatar" :src="`${os.i.avatar_url}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<button class="ui" @click="updateAvatar">%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
 	</label>
 	<label class="ui from group">
@@ -24,7 +24,7 @@
 	<button class="ui primary" @click="save">%i18n:desktop.tags.mk-profile-setting.save%</button>
 	<section>
 		<h2>その他</h2>
-		<mk-switch v-model="os.i.account.is_bot" @change="onChangeIsBot" text="このアカウントはbotです"/>
+		<mk-switch v-model="os.i.account.isBot" @change="onChangeIsBot" text="このアカウントはbotです"/>
 	</section>
 </div>
 </template>
@@ -63,7 +63,7 @@ export default Vue.extend({
 		},
 		onChangeIsBot() {
 			(this as any).api('i/update', {
-				is_bot: (this as any).os.i.account.is_bot
+				isBot: (this as any).os.i.account.isBot
 			});
 		}
 	}

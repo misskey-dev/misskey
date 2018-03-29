@@ -9,10 +9,10 @@
 	@contextmenu.prevent.stop="onContextmenu"
 	:title="title"
 >
-	<div class="label" v-if="os.i.avatar_id == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="os.i.avatarId == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.avatar%</p>
 	</div>
-	<div class="label" v-if="os.i.banner_id == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="os.i.bannerId == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:desktop.tags.mk-drive-browser-file.banner%</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
@@ -50,8 +50,8 @@ export default Vue.extend({
 			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.datasize)}`;
 		},
 		background(): string {
-			return this.file.properties.average_color
-				? `rgb(${this.file.properties.average_color.join(',')})`
+			return this.file.properties.avgColor
+				? `rgb(${this.file.properties.avgColor.join(',')})`
 				: 'transparent';
 		}
 	},
@@ -129,10 +129,10 @@ export default Vue.extend({
 		},
 
 		onThumbnailLoaded() {
-			if (this.file.properties.average_color) {
+			if (this.file.properties.avgColor) {
 				anime({
 					targets: this.$refs.thumbnail,
-					backgroundColor: `rgba(${this.file.properties.average_color.join(',')}, 0)`,
+					backgroundColor: `rgba(${this.file.properties.avgColor.join(',')}, 0)`,
 					duration: 100,
 					easing: 'linear'
 				});
@@ -147,7 +147,7 @@ export default Vue.extend({
 				allowEmpty: false
 			}).then(name => {
 				(this as any).api('drive/files/update', {
-					file_id: this.file.id,
+					fileId: this.file.id,
 					name: name
 				})
 			});

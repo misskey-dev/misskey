@@ -48,7 +48,7 @@ export default define({
 			this.fetching = true;
 
 			(this as any).api('channels/show', {
-				channel_id: this.props.channel
+				channelId: this.props.channel
 			}).then(channel => {
 				this.channel = channel;
 				this.fetching = false;

@@ -13,15 +13,15 @@ import { publishDriveStream } from '../../../event';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'folder_id' parameter
-	const [folderId, folderIdErr] = $(params.folder_id).id().$;
-	if (folderIdErr) return rej('invalid folder_id param');
+	// Get 'folderId' parameter
+	const [folderId, folderIdErr] = $(params.folderId).id().$;
+	if (folderIdErr) return rej('invalid folderId param');
 
 	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
 			_id: folderId,
-			user_id: user._id
+			userId: user._id
 		});
 
 	if (folder === null) {
@@ -33,18 +33,18 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (nameErr) return rej('invalid name param');
 	if (name) folder.name = name;
 
-	// Get 'parent_id' parameter
-	const [parentId, parentIdErr] = $(params.parent_id).optional.nullable.id().$;
-	if (parentIdErr) return rej('invalid parent_id param');
+	// Get 'parentId' parameter
+	const [parentId, parentIdErr] = $(params.parentId).optional.nullable.id().$;
+	if (parentIdErr) return rej('invalid parentId param');
 	if (parentId !== undefined) {
 		if (parentId === null) {
-			folder.parent_id = null;
+			folder.parentId = null;
 		} else {
 			// Get parent folder
 			const parent = await DriveFolder
 				.findOne({
 					_id: parentId,
-					user_id: user._id
+					userId: user._id
 				});
 
 			if (parent === null) {
@@ -58,25 +58,25 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 					_id: folderId
 				}, {
 					_id: true,
-					parent_id: true
+					parentId: true
 				});
 
 				if (folder2._id.equals(folder._id)) {
 					return true;
-				} else if (folder2.parent_id) {
-					return await checkCircle(folder2.parent_id);
+				} else if (folder2.parentId) {
+					return await checkCircle(folder2.parentId);
 				} else {
 					return false;
 				}
 			}
 
-			if (parent.parent_id !== null) {
-				if (await checkCircle(parent.parent_id)) {
+			if (parent.parentId !== null) {
+				if (await checkCircle(parent.parentId)) {
 					return rej('detected-circular-definition');
 				}
 			}
 
-			folder.parent_id = parent._id;
+			folder.parentId = parent._id;
 		}
 	}
 
@@ -84,7 +84,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	DriveFolder.update(folder._id, {
 		$set: {
 			name: folder.name,
-			parent_id: folder.parent_id
+			parentId: folder.parentId
 		}
 	});
 

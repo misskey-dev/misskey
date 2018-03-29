@@ -12,9 +12,9 @@ import Reaction from '../../../models/post-reaction';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Lookup post
 	const post = await Post.findOne({
@@ -27,15 +27,15 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	const datas = await Reaction
 		.aggregate([
-			{ $match: { post_id: post._id } },
+			{ $match: { postId: post._id } },
 			{ $project: {
-				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
+				createdAt: { $add: ['$createdAt', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
 			{ $project: {
 				date: {
-					year: { $year: '$created_at' },
-					month: { $month: '$created_at' },
-					day: { $dayOfMonth: '$created_at' }
+					year: { $year: '$createdAt' },
+					month: { $month: '$createdAt' },
+					day: { $dayOfMonth: '$createdAt' }
 				}
 			}},
 			{ $group: {

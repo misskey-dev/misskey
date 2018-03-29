@@ -13,9 +13,9 @@ import Watching from '../../models/channel-watching';
  * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'channel_id' parameter
-	const [channelId, channelIdErr] = $(params.channel_id).id().$;
-	if (channelIdErr) return rej('invalid channel_id param');
+	// Get 'channelId' parameter
+	const [channelId, channelIdErr] = $(params.channelId).id().$;
+	if (channelIdErr) return rej('invalid channelId param');
 
 	//#region Fetch channel
 	const channel = await Channel.findOne({
@@ -29,9 +29,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	//#region Check whether already watching
 	const exist = await Watching.findOne({
-		user_id: user._id,
-		channel_id: channel._id,
-		deleted_at: { $exists: false }
+		userId: user._id,
+		channelId: channel._id,
+		deletedAt: { $exists: false }
 	});
 
 	if (exist !== null) {
@@ -41,9 +41,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Create Watching
 	await Watching.insert({
-		created_at: new Date(),
-		user_id: user._id,
-		channel_id: channel._id
+		createdAt: new Date(),
+		userId: user._id,
+		channelId: channel._id
 	});
 
 	// Send response
@@ -52,7 +52,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Increment watching count
 	Channel.update(channel._id, {
 		$inc: {
-			watching_count: 1
+			watchingCount: 1
 		}
 	});
 });

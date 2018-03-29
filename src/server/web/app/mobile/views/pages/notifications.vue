@@ -22,7 +22,7 @@ export default Vue.extend({
 			const ok = window.confirm('%i18n:mobile.tags.mk-notifications-page.read-all%');
 			if (!ok) return;
 
-			(this as any).api('notifications/mark_as_read_all');
+			(this as any).api('notifications/markAsRead_all');
 		},
 		onFetched() {
 			Progress.done();

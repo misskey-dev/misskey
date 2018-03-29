@@ -22,8 +22,8 @@ module.exports = params => new Promise(async (res, rej) => {
 			},
 			fields: {
 				_id: false,
-				created_at: true,
-				deleted_at: true
+				createdAt: true,
+				deletedAt: true
 			}
 		});
 
@@ -44,11 +44,11 @@ module.exports = params => new Promise(async (res, rej) => {
 		// day = day.getTime();
 
 		const total = users.filter(u =>
-			u.created_at < dayEnd && (u.deleted_at == null || u.deleted_at > dayEnd)
+			u.createdAt < dayEnd && (u.deletedAt == null || u.deletedAt > dayEnd)
 		).length;
 
 		const created = users.filter(u =>
-			u.created_at < dayEnd && u.created_at > dayStart
+			u.createdAt < dayEnd && u.createdAt > dayStart
 		).length;
 
 		graph.push({

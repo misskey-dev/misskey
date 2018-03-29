@@ -43,11 +43,11 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	}
 
 	await Appdata.update({
-		app_id: app._id,
-		user_id: user._id
+		appId: app._id,
+		userId: user._id
 	}, Object.assign({
-		app_id: app._id,
-		user_id: user._id
+		appId: app._id,
+		userId: user._id
 	}, {
 			$set: set
 		}), {

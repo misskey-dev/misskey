@@ -1,14 +1,14 @@
 <template>
 <div class="sub">
 	<router-link class="avatar-anchor" :to="`/@${acct}`">
-		<img class="avatar" :src="`${post.user.avatar_url}?thumbnail&size=96`" alt="avatar"/>
+		<img class="avatar" :src="`${post.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
 			<router-link class="name" :to="`/@${acct}`">{{ post.user.name }}</router-link>
 			<span class="username">@{{ acct }}</span>
 			<router-link class="created-at" :to="`/@${acct}/${post.id}`">
-				<mk-time :time="post.created_at"/>
+				<mk-time :time="post.createdAt"/>
 			</router-link>
 		</header>
 		<div class="body">

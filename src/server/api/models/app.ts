@@ -5,16 +5,22 @@ import db from '../../../db/mongodb';
 import config from '../../../conf';
 
 const App = db.get<IApp>('apps');
-App.createIndex('name_id');
-App.createIndex('name_id_lower');
+App.createIndex('nameId');
+App.createIndex('nameIdLower');
 App.createIndex('secret');
 export default App;
 
 export type IApp = {
 	_id: mongo.ObjectID;
-	created_at: Date;
-	user_id: mongo.ObjectID;
+	createdAt: Date;
+	userId: mongo.ObjectID;
 	secret: string;
+	name: string;
+	nameId: string;
+	nameIdLower: string;
+	description: string;
+	permission: string;
+	callbackUrl: string;
 };
 
 export function isValidNameId(nameId: string): boolean {
@@ -70,27 +76,27 @@ export const pack = (
 	_app.id = _app._id;
 	delete _app._id;
 
-	delete _app.name_id_lower;
+	delete _app.nameIdLower;
 
 	// Visible by only owner
 	if (!opts.includeSecret) {
 		delete _app.secret;
 	}
 
-	_app.icon_url = _app.icon != null
+	_app.iconUrl = _app.icon != null
 		? `${config.drive_url}/${_app.icon}`
 		: `${config.drive_url}/app-default.jpg`;
 
 	if (me) {
 		// 既に連携しているか
 		const exist = await AccessToken.count({
-			app_id: _app.id,
-			user_id: me,
+			appId: _app.id,
+			userId: me,
 		}, {
 				limit: 1
 			});
 
-		_app.is_authorized = exist === 1;
+		_app.isAuthorized = exist === 1;
 	}
 
 	resolve(_app);

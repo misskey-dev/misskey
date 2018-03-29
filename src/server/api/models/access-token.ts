@@ -1,8 +1,16 @@
+import * as mongo from 'mongodb';
 import db from '../../../db/mongodb';
 
-const collection = db.get('access_tokens');
+const AccessToken = db.get<IAccessTokens>('accessTokens');
+AccessToken.createIndex('token');
+AccessToken.createIndex('hash');
+export default AccessToken;
 
-(collection as any).createIndex('token'); // fuck type definition
-(collection as any).createIndex('hash'); // fuck type definition
-
-export default collection as any; // fuck type definition
+export type IAccessTokens = {
+	_id: mongo.ObjectID;
+	createdAt: Date;
+	appId: mongo.ObjectID;
+	userId: mongo.ObjectID;
+	token: string;
+	hash: string;
+};

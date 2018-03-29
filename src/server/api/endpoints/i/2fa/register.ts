@@ -27,7 +27,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	await User.update(user._id, {
 		$set: {
-			two_factor_temp_secret: secret.base32
+			twoFactorTempSecret: secret.base32
 		}
 	});
 

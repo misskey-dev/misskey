@@ -17,9 +17,9 @@ import event from '../../event';
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// 自分自身
 	if (user._id.equals(userId)) {
@@ -42,9 +42,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Check if already following
 	const exist = await Following.findOne({
-		follower_id: follower._id,
-		followee_id: followee._id,
-		deleted_at: { $exists: false }
+		followerId: follower._id,
+		followeeId: followee._id,
+		deletedAt: { $exists: false }
 	});
 
 	if (exist !== null) {
@@ -53,9 +53,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Create following
 	await Following.insert({
-		created_at: new Date(),
-		follower_id: follower._id,
-		followee_id: followee._id
+		createdAt: new Date(),
+		followerId: follower._id,
+		followeeId: followee._id
 	});
 
 	// Send response
@@ -64,14 +64,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Increment following count
 	User.update(follower._id, {
 		$inc: {
-			following_count: 1
+			followingCount: 1
 		}
 	});
 
 	// Increment followers count
 	User.update({ _id: followee._id }, {
 		$inc: {
-			followers_count: 1
+			followersCount: 1
 		}
 	});
 

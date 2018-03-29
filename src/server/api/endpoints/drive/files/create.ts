@@ -33,9 +33,9 @@ module.exports = async (file, params, user): Promise<any> => {
 		name = null;
 	}
 
-	// Get 'folder_id' parameter
-	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) throw 'invalid folder_id param';
+	// Get 'folderId' parameter
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	if (folderIdErr) throw 'invalid folderId param';
 
 	try {
 		// Create file

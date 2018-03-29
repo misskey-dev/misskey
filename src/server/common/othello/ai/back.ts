@@ -44,7 +44,7 @@ process.on('message', async msg => {
 		//#region TLに投稿する
 		const game = msg.body;
 		const url = `${conf.url}/othello/${game.id}`;
-		const user = game.user1_id == id ? game.user2 : game.user1;
+		const user = game.user1Id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
 			? `?[${user.name}](${conf.url}/@${user.username})さんの接待を始めました！`
@@ -56,7 +56,7 @@ process.on('message', async msg => {
 			}
 		});
 
-		post = res.created_post;
+		post = res.createdPost;
 		//#endregion
 	}
 
@@ -68,23 +68,23 @@ process.on('message', async msg => {
 		});
 
 		//#region TLに投稿する
-		const user = game.user1_id == id ? game.user2 : game.user1;
+		const user = game.user1Id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
-			? msg.body.winner_id === null
+			? msg.body.winnerId === null
 				? `?[${user.name}](${conf.url}/@${user.username})さんに接待で引き分けました...`
-				: msg.body.winner_id == id
+				: msg.body.winnerId == id
 					? `?[${user.name}](${conf.url}/@${user.username})さんに接待で勝ってしまいました...`
 					: `?[${user.name}](${conf.url}/@${user.username})さんに接待で負けてあげました♪`
-			: msg.body.winner_id === null
+			: msg.body.winnerId === null
 				? `?[${user.name}](${conf.url}/@${user.username})さんと引き分けました～`
-				: msg.body.winner_id == id
+				: msg.body.winnerId == id
 					? `?[${user.name}](${conf.url}/@${user.username})さんに勝ちました♪`
 					: `?[${user.name}](${conf.url}/@${user.username})さんに負けました...`;
 
 		await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,
-				repost_id: post.id,
+				repostId: post.id,
 				text: text
 			}
 		});
@@ -114,9 +114,9 @@ function onGameStarted(g) {
 
 	// オセロエンジン初期化
 	o = new Othello(game.settings.map, {
-		isLlotheo: game.settings.is_llotheo,
-		canPutEverywhere: game.settings.can_put_everywhere,
-		loopedBoard: game.settings.looped_board
+		isLlotheo: game.settings.isLlotheo,
+		canPutEverywhere: game.settings.canPutEverywhere,
+		loopedBoard: game.settings.loopedBoard
 	});
 
 	// 各マスの価値を計算しておく
@@ -141,7 +141,7 @@ function onGameStarted(g) {
 		return count >= 4 ? 1 : 0;
 	});
 
-	botColor = game.user1_id == id && game.black == 1 || game.user2_id == id && game.black == 2;
+	botColor = game.user1Id == id && game.black == 1 || game.user2Id == id && game.black == 2;
 
 	if (botColor) {
 		think();
@@ -188,7 +188,7 @@ function think() {
 		});
 
 		// ロセオならスコアを反転
-		if (game.settings.is_llotheo) score = -score;
+		if (game.settings.isLlotheo) score = -score;
 
 		// 接待ならスコアを反転
 		if (isSettai) score = -score;
@@ -234,7 +234,7 @@ function think() {
 
 			let score;
 
-			if (game.settings.is_llotheo) {
+			if (game.settings.isLlotheo) {
 				// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
 				score = o.winner ? base - (o.blackCount * 100) : base - (o.whiteCount * 100);
 			} else {
@@ -317,7 +317,7 @@ function think() {
 
 			let score;
 
-			if (game.settings.is_llotheo) {
+			if (game.settings.isLlotheo) {
 				// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
 				score = o.winner ? base - (o.blackCount * 100) : base - (o.whiteCount * 100);
 			} else {

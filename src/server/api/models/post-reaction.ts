@@ -4,13 +4,15 @@ import db from '../../../db/mongodb';
 import Reaction from './post-reaction';
 import { pack as packUser } from './user';
 
-const PostReaction = db.get<IPostReaction>('post_reactions');
+const PostReaction = db.get<IPostReaction>('postReactions');
 export default PostReaction;
 
 export interface IPostReaction {
 	_id: mongo.ObjectID;
-	created_at: Date;
-	deleted_at: Date;
+	createdAt: Date;
+	deletedAt: Date;
+	postId: mongo.ObjectID;
+	userId: mongo.ObjectID;
 	reaction: string;
 }
 
@@ -45,7 +47,7 @@ export const pack = (
 	delete _reaction._id;
 
 	// Populate user
-	_reaction.user = await packUser(_reaction.user_id, me);
+	_reaction.user = await packUser(_reaction.userId, me);
 
 	resolve(_reaction);
 });

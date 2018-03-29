@@ -115,7 +115,7 @@ class LineBot extends BotCore {
 			actions.push({
 				type: 'uri',
 				label: 'Twitterアカウントを見る',
-				uri: `https://twitter.com/${user.account.twitter.screen_name}`
+				uri: `https://twitter.com/${user.account.twitter.screenName}`
 			});
 		}
 
@@ -130,7 +130,7 @@ class LineBot extends BotCore {
 			altText: await super.showUserCommand(q),
 			template: {
 				type: 'buttons',
-				thumbnailImageUrl: `${user.avatar_url}?thumbnail&size=1024`,
+				thumbnailImageUrl: `${user.avatarUrl}?thumbnail&size=1024`,
 				title: `${user.name} (@${acct})`,
 				text: user.description || '(no description)',
 				actions: actions
@@ -142,7 +142,7 @@ class LineBot extends BotCore {
 
 	public async showUserTimelinePostback(userId: string) {
 		const tl = await require('../../endpoints/users/posts')({
-			user_id: userId,
+			userId: userId,
 			limit: 5
 		}, this.user);
 
@@ -174,7 +174,7 @@ module.exports = async (app: express.Application) => {
 			const user = await User.findOne({
 				host: null,
 				'account.line': {
-					user_id: sourceId
+					userId: sourceId
 				}
 			});
 
@@ -184,7 +184,7 @@ module.exports = async (app: express.Application) => {
 				User.update(user._id, {
 					$set: {
 						'account.line': {
-							user_id: sourceId
+							userId: sourceId
 						}
 					}
 				});
@@ -194,7 +194,7 @@ module.exports = async (app: express.Application) => {
 				User.update(user._id, {
 					$set: {
 						'account.line': {
-							user_id: null
+							userId: null
 						}
 					}
 				});

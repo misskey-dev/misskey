@@ -22,7 +22,7 @@ const summarize = (post: any): string => {
 	}
 
 	// 返信のとき
-	if (post.reply_id) {
+	if (post.replyId) {
 		if (post.reply) {
 			summary += ` RE: ${summarize(post.reply)}`;
 		} else {
@@ -31,7 +31,7 @@ const summarize = (post: any): string => {
 	}
 
 	// Repostのとき
-	if (post.repost_id) {
+	if (post.repostId) {
 		if (post.repost) {
 			summary += ` RP: ${summarize(post.repost)}`;
 		} else {

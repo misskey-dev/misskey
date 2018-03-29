@@ -17,9 +17,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [name = '無題のフォルダー', nameErr] = $(params.name).optional.string().pipe(isValidFolderName).$;
 	if (nameErr) return rej('invalid name param');
 
-	// Get 'parent_id' parameter
-	const [parentId = null, parentIdErr] = $(params.parent_id).optional.nullable.id().$;
-	if (parentIdErr) return rej('invalid parent_id param');
+	// Get 'parentId' parameter
+	const [parentId = null, parentIdErr] = $(params.parentId).optional.nullable.id().$;
+	if (parentIdErr) return rej('invalid parentId param');
 
 	// If the parent folder is specified
 	let parent = null;
@@ -28,7 +28,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		parent = await DriveFolder
 			.findOne({
 				_id: parentId,
-				user_id: user._id
+				userId: user._id
 			});
 
 		if (parent === null) {
@@ -38,10 +38,10 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Create folder
 	const folder = await DriveFolder.insert({
-		created_at: new Date(),
+		createdAt: new Date(),
 		name: name,
-		parent_id: parent !== null ? parent._id : null,
-		user_id: user._id
+		parentId: parent !== null ? parent._id : null,
+		userId: user._id
 	});
 
 	// Serialize

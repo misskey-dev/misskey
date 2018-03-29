@@ -28,11 +28,11 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 
 	// if already subscribed
 	const exist = await Subscription.findOne({
-		user_id: user._id,
+		userId: user._id,
 		endpoint: endpoint,
 		auth: auth,
 		publickey: publickey,
-		deleted_at: { $exists: false }
+		deletedAt: { $exists: false }
 	});
 
 	if (exist !== null) {
@@ -40,7 +40,7 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	}
 
 	await Subscription.insert({
-		user_id: user._id,
+		userId: user._id,
 		endpoint: endpoint,
 		auth: auth,
 		publickey: publickey

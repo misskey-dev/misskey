@@ -18,11 +18,11 @@ export default function(request: websocket.request, connection: websocket.connec
 			case 'ping':
 				if (msg.id == null) return;
 				const matching = await Matching.findOne({
-					parent_id: user._id,
-					child_id: new mongo.ObjectID(msg.id)
+					parentId: user._id,
+					childId: new mongo.ObjectID(msg.id)
 				});
 				if (matching == null) return;
-				publishUserStream(matching.child_id, 'othello_invited', await pack(matching, matching.child_id));
+				publishUserStream(matching.childId, 'othello_invited', await pack(matching, matching.childId));
 				break;
 		}
 	});

@@ -14,14 +14,14 @@ import { pack } from '../../models/user';
  * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'post_id' parameter
-	const [postId, postIdErr] = $(params.post_id).id().$;
-	if (postIdErr) return rej('invalid post_id param');
+	// Get 'postId' parameter
+	const [postId, postIdErr] = $(params.postId).id().$;
+	if (postIdErr) return rej('invalid postId param');
 
 	// Fetch pinee
 	const post = await Post.findOne({
 		_id: postId,
-		user_id: user._id
+		userId: user._id
 	});
 
 	if (post === null) {
@@ -30,7 +30,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	await User.update(user._id, {
 		$set: {
-			pinned_post_id: post._id
+			pinnedPostId: post._id
 		}
 	});
 

@@ -20,6 +20,7 @@ import { licenseHtml } from './src/build/license';
 import locales from './locales';
 const meta = require('./package.json');
 const version = meta.version;
+const codename = meta.codename;
 
 //#region Replacer definitions
 global['faReplacement'] = faReplacement;
@@ -76,13 +77,13 @@ module.exports = entries.map(x => {
 		_THEME_COLOR_: constants.themeColor,
 		_COPYRIGHT_: constants.copyright,
 		_VERSION_: version,
+		_CODENAME_: codename,
 		_STATUS_URL_: config.status_url,
 		_STATS_URL_: config.stats_url,
 		_DOCS_URL_: config.docs_url,
 		_API_URL_: config.api_url,
 		_WS_URL_: config.ws_url,
 		_DEV_URL_: config.dev_url,
-		_CH_URL_: config.ch_url,
 		_LANG_: lang,
 		_HOST_: config.host,
 		_HOSTNAME_: config.hostname,

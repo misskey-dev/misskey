@@ -1,14 +1,14 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching">
-		<img :src="`${user.avatar_url}?thumbnail&size=64`" alt="">
+		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt="">
 		{{ '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', user.name) }}
 	</template>
 	<mk-users-list
 		v-if="!fetching"
 		:fetch="fetchUsers"
-		:count="user.followers_count"
-		:you-know-count="user.followers_you_know_count"
+		:count="user.followersCount"
+		:you-know-count="user.followersYouKnowCount"
 		@loaded="onLoaded"
 	>
 		%i18n:mobile.tags.mk-user-followers.no-users%
@@ -54,7 +54,7 @@ export default Vue.extend({
 		},
 		fetchUsers(iknow, limit, cursor, cb) {
 			(this as any).api('users/followers', {
-				user_id: this.user.id,
+				userId: this.user.id,
 				iknow: iknow,
 				limit: limit,
 				cursor: cursor ? cursor : undefined

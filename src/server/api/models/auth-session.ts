@@ -3,11 +3,15 @@ import deepcopy = require('deepcopy');
 import db from '../../../db/mongodb';
 import { pack as packApp } from './app';
 
-const AuthSession = db.get('auth_sessions');
+const AuthSession = db.get<IAuthSession>('authSessions');
 export default AuthSession;
 
 export interface IAuthSession {
 	_id: mongo.ObjectID;
+	createdAt: Date;
+	appId: mongo.ObjectID;
+	userId: mongo.ObjectID;
+	token: string;
 }
 
 /**
@@ -24,7 +28,6 @@ export const pack = (
 	let _session: any;
 
 	// TODO: Populate session if it ID
-
 	_session = deepcopy(session);
 
 	// Me
@@ -39,7 +42,7 @@ export const pack = (
 	delete _session._id;
 
 	// Populate app
-	_session.app = await packApp(_session.app_id, me);
+	_session.app = await packApp(_session.appId, me);
 
 	resolve(_session);
 });

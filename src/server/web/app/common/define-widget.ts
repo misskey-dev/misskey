@@ -56,14 +56,14 @@ export default function<T extends object>(data: {
 						id: this.id,
 						data: newProps
 					}).then(() => {
-						(this as any).os.i.account.client_settings.mobile_home.find(w => w.id == this.id).data = newProps;
+						(this as any).os.i.account.clientSettings.mobile_home.find(w => w.id == this.id).data = newProps;
 					});
 				} else {
 					(this as any).api('i/update_home', {
 						id: this.id,
 						data: newProps
 					}).then(() => {
-						(this as any).os.i.account.client_settings.home.find(w => w.id == this.id).data = newProps;
+						(this as any).os.i.account.clientSettings.home.find(w => w.id == this.id).data = newProps;
 					});
 				}
 			}, {

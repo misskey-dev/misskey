@@ -53,7 +53,7 @@ export default Vue.extend({
 			data.append('i', (this as any).os.i.account.token);
 			data.append('file', file);
 
-			if (folder) data.append('folder_id', folder);
+			if (folder) data.append('folderId', folder);
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);

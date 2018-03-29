@@ -6,7 +6,7 @@ export async function predictOne(id) {
 
 	// TODO: repostなども含める
 	const recentPosts = await Post.find({
-		user_id: id,
+		userId: id,
 		category: {
 			$exists: true
 		}

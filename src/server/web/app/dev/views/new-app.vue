@@ -6,12 +6,12 @@
 				<b-form-input v-model="name" type="text" placeholder="ex) Misskey for iOS" autocomplete="off" required/>
 			</b-form-group>
 			<b-form-group label="ID" description="あなたのアプリのID。">
-				<b-input v-model="nid" type="text" pattern="^[a-zA-Z0-9-]{3,30}$" placeholder="ex) misskey-for-ios" autocomplete="off" required/>
+				<b-input v-model="nid" type="text" pattern="^[a-zA-Z0-9_]{3,30}$" placeholder="ex) misskey-for-ios" autocomplete="off" required/>
 				<p class="info" v-if="nidState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%確認しています...</p>
 				<p class="info" v-if="nidState == 'ok'" style="color:#3CB7B5">%fa:fw check%利用できます</p>
 				<p class="info" v-if="nidState == 'unavailable'" style="color:#FF1161">%fa:fw exclamation-triangle%既に利用されています</p>
 				<p class="info" v-if="nidState == 'error'" style="color:#FF1161">%fa:fw exclamation-triangle%通信エラー</p>
-				<p class="info" v-if="nidState == 'invalid-format'" style="color:#FF1161">%fa:fw exclamation-triangle%a~z、A~Z、0~9、-(ハイフン)が使えます</p>
+				<p class="info" v-if="nidState == 'invalid-format'" style="color:#FF1161">%fa:fw exclamation-triangle%a~z、A~Z、0~9、_が使えます</p>
 				<p class="info" v-if="nidState == 'min-range'" style="color:#FF1161">%fa:fw exclamation-triangle%3文字以上でお願いします！</p>
 				<p class="info" v-if="nidState == 'max-range'" style="color:#FF1161">%fa:fw exclamation-triangle%30文字以内でお願いします</p>
 			</b-form-group>
@@ -77,8 +77,8 @@ export default Vue.extend({
 
 			this.nidState = 'wait';
 
-			(this as any).api('app/name_id/available', {
-				name_id: this.nid
+			(this as any).api('app/nameId/available', {
+				nameId: this.nid
 			}).then(result => {
 				this.nidState = result.available ? 'ok' : 'unavailable';
 			}).catch(err => {
@@ -90,9 +90,9 @@ export default Vue.extend({
 		onSubmit() {
 			(this as any).api('app/create', {
 				name: this.name,
-				name_id: this.nid,
+				nameId: this.nid,
 				description: this.description,
-				callback_url: this.cb,
+				callbackUrl: this.cb,
 				permission: this.permission
 			}).then(() => {
 				location.href = '/apps';

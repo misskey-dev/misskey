@@ -16,9 +16,9 @@ import event from '../../event';
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Check if the followee is yourself
 	if (user._id.equals(userId)) {
@@ -41,9 +41,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Check not following
 	const exist = await Following.findOne({
-		follower_id: follower._id,
-		followee_id: followee._id,
-		deleted_at: { $exists: false }
+		followerId: follower._id,
+		followeeId: followee._id,
+		deletedAt: { $exists: false }
 	});
 
 	if (exist === null) {
@@ -55,7 +55,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		_id: exist._id
 	}, {
 		$set: {
-			deleted_at: new Date()
+			deletedAt: new Date()
 		}
 	});
 
@@ -65,14 +65,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Decrement following count
 	User.update({ _id: follower._id }, {
 		$inc: {
-			following_count: -1
+			followingCount: -1
 		}
 	});
 
 	// Decrement followers count
 	User.update({ _id: followee._id }, {
 		$inc: {
-			followers_count: -1
+			followersCount: -1
 		}
 	});
 

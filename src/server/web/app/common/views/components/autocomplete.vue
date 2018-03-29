@@ -2,7 +2,7 @@
 <div class="mk-autocomplete" @contextmenu.prevent="() => {}">
 	<ol class="users" ref="suggests" v-if="users.length > 0">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
-			<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=32`" alt=""/>
+			<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
 			<span class="name">{{ user.name }}</span>
 			<span class="username">@{{ getAcct(user) }}</span>
 		</li>

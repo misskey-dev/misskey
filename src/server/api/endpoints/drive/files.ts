@@ -17,22 +17,22 @@ module.exports = async (params, user, app) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) throw 'invalid limit param';
 
-	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) throw 'invalid since_id param';
+	// Get 'sinceId' parameter
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	if (sinceIdErr) throw 'invalid sinceId param';
 
-	// Get 'until_id' parameter
-	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
-	if (untilIdErr) throw 'invalid until_id param';
+	// Get 'untilId' parameter
+	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	if (untilIdErr) throw 'invalid untilId param';
 
-	// Check if both of since_id and until_id is specified
+	// Check if both of sinceId and untilId is specified
 	if (sinceId && untilId) {
-		throw 'cannot set since_id and until_id';
+		throw 'cannot set sinceId and untilId';
 	}
 
-	// Get 'folder_id' parameter
-	const [folderId = null, folderIdErr] = $(params.folder_id).optional.nullable.id().$;
-	if (folderIdErr) throw 'invalid folder_id param';
+	// Get 'folderId' parameter
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	if (folderIdErr) throw 'invalid folderId param';
 
 	// Get 'type' parameter
 	const [type, typeErr] = $(params.type).optional.string().match(/^[a-zA-Z\/\-\*]+$/).$;
@@ -43,8 +43,8 @@ module.exports = async (params, user, app) => {
 		_id: -1
 	};
 	const query = {
-		'metadata.user_id': user._id,
-		'metadata.folder_id': folderId
+		'metadata.userId': user._id,
+		'metadata.folderId': folderId
 	} as any;
 	if (sinceId) {
 		sort._id = 1;

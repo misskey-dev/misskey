@@ -56,9 +56,9 @@ function webFingerAndVerify(query, verifier) {
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	let user;
 
-	// Get 'user_id' parameter
-	const [userId, userIdErr] = $(params.user_id).optional.id().$;
-	if (userIdErr) return rej('invalid user_id param');
+	// Get 'userId' parameter
+	const [userId, userIdErr] = $(params.userId).optional.id().$;
+	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'username' parameter
 	const [username, usernameErr] = $(params.username).optional.string().$;
@@ -69,25 +69,25 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (hostErr) return rej('invalid username param');
 
 	if (userId === undefined && typeof username !== 'string') {
-		return rej('user_id or pair of username and host is required');
+		return rej('userId or pair of username and host is required');
 	}
 
 	// Lookup user
 	if (typeof host === 'string') {
-		const username_lower = username.toLowerCase();
-		const host_lower_ascii = toASCII(host).toLowerCase();
-		const host_lower = toUnicode(host_lower_ascii);
+		const usernameLower = username.toLowerCase();
+		const hostLower_ascii = toASCII(host).toLowerCase();
+		const hostLower = toUnicode(hostLower_ascii);
 
-		user = await findUser({ username_lower, host_lower });
+		user = await findUser({ usernameLower, hostLower });
 
 		if (user === null) {
-			const acct_lower = `${username_lower}@${host_lower_ascii}`;
+			const acct_lower = `${usernameLower}@${hostLower_ascii}`;
 			let activityStreams;
 			let finger;
-			let followers_count;
-			let following_count;
+			let followersCount;
+			let followingCount;
 			let likes_count;
-			let posts_count;
+			let postsCount;
 
 			if (!validateUsername(username)) {
 				return rej('username validation failed');
@@ -122,7 +122,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 					activityStreams['@context'] === 'https://www.w3.org/ns/activitystreams') &&
 				activityStreams.type === 'Person' &&
 				typeof activityStreams.preferredUsername === 'string' &&
-				activityStreams.preferredUsername.toLowerCase() === username_lower &&
+				activityStreams.preferredUsername.toLowerCase() === usernameLower &&
 				isValidName(activityStreams.name) &&
 				isValidDescription(activityStreams.summary)
 			)) {
@@ -130,7 +130,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			}
 
 			try {
-				[followers_count, following_count, likes_count, posts_count] = await Promise.all([
+				[followersCount, followingCount, likes_count, postsCount] = await Promise.all([
 					getCollectionCount(activityStreams.followers),
 					getCollectionCount(activityStreams.following),
 					getCollectionCount(activityStreams.liked),
@@ -145,21 +145,21 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 			// Create user
 			user = await User.insert({
-				avatar_id: null,
-				banner_id: null,
-				created_at: new Date(),
+				avatarId: null,
+				bannerId: null,
+				createdAt: new Date(),
 				description: summaryDOM.textContent,
-				followers_count,
-				following_count,
+				followersCount,
+				followingCount,
 				name: activityStreams.name,
-				posts_count,
+				postsCount,
 				likes_count,
 				liked_count: 0,
-				drive_capacity: 1073741824, // 1GB
+				driveCapacity: 1073741824, // 1GB
 				username: username,
-				username_lower,
+				usernameLower,
 				host: toUnicode(finger.subject.replace(/^.*?@/, '')),
-				host_lower,
+				hostLower,
 				account: {
 					uri: activityStreams.id,
 				},
@@ -182,18 +182,18 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 			User.update({ _id: user._id }, {
 				$set: {
-					avatar_id: icon._id,
-					banner_id: image._id,
+					avatarId: icon._id,
+					bannerId: image._id,
 				},
 			});
 
-			user.avatar_id = icon._id;
-			user.banner_id = icon._id;
+			user.avatarId = icon._id;
+			user.bannerId = icon._id;
 		}
 	} else {
 		const q = userId !== undefined
 			? { _id: userId }
-			: { username_lower: username.toLowerCase(), host: null };
+			: { usernameLower: username.toLowerCase(), host: null };
 
 		user = await findUser(q);
 

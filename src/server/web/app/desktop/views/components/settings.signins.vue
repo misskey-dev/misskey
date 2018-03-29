@@ -6,7 +6,7 @@
 			<template v-if="signin.success">%fa:check%</template>
 			<template v-else>%fa:times%</template>
 			<span class="ip">{{ signin.ip }}</span>
-			<mk-time :time="signin.created_at"/>
+			<mk-time :time="signin.createdAt"/>
 		</header>
 		<div class="headers" v-show="signin._show">
 			<tree-view :data="signin.headers"/>

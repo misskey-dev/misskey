@@ -22,25 +22,25 @@ module.exports = async (params, user, app) => {
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) throw 'invalid limit param';
 
-	// Get 'since_id' parameter
-	const [sinceId, sinceIdErr] = $(params.since_id).optional.id().$;
-	if (sinceIdErr) throw 'invalid since_id param';
+	// Get 'sinceId' parameter
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	if (sinceIdErr) throw 'invalid sinceId param';
 
-	// Get 'until_id' parameter
-	const [untilId, untilIdErr] = $(params.until_id).optional.id().$;
-	if (untilIdErr) throw 'invalid until_id param';
+	// Get 'untilId' parameter
+	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	if (untilIdErr) throw 'invalid untilId param';
 
-	// Get 'since_date' parameter
-	const [sinceDate, sinceDateErr] = $(params.since_date).optional.number().$;
-	if (sinceDateErr) throw 'invalid since_date param';
+	// Get 'sinceDate' parameter
+	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	if (sinceDateErr) throw 'invalid sinceDate param';
 
-	// Get 'until_date' parameter
-	const [untilDate, untilDateErr] = $(params.until_date).optional.number().$;
-	if (untilDateErr) throw 'invalid until_date param';
+	// Get 'untilDate' parameter
+	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	if (untilDateErr) throw 'invalid untilDate param';
 
-	// Check if only one of since_id, until_id, since_date, until_date specified
+	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
 	if ([sinceId, untilId, sinceDate, untilDate].filter(x => x != null).length > 1) {
-		throw 'only one of since_id, until_id, since_date, until_date can be specified';
+		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
 	const { followingIds, watchingChannelIds, mutedUserIds } = await rap({
@@ -49,17 +49,17 @@ module.exports = async (params, user, app) => {
 
 		// Watchしているチャンネルを取得
 		watchingChannelIds: ChannelWatching.find({
-			user_id: user._id,
+			userId: user._id,
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
-		}).then(watches => watches.map(w => w.channel_id)),
+			deletedAt: { $exists: false }
+		}).then(watches => watches.map(w => w.channelId)),
 
 		// ミュートしているユーザーを取得
 		mutedUserIds: Mute.find({
-			muter_id: user._id,
+			muterId: user._id,
 			// 削除されたドキュメントは除く
-			deleted_at: { $exists: false }
-		}).then(ms => ms.map(m => m.mutee_id))
+			deletedAt: { $exists: false }
+		}).then(ms => ms.map(m => m.muteeId))
 	});
 
 	//#region Construct query
@@ -70,31 +70,31 @@ module.exports = async (params, user, app) => {
 	const query = {
 		$or: [{
 			// フォローしている人のタイムラインへの投稿
-			user_id: {
+			userId: {
 				$in: followingIds
 			},
 			// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
 			$or: [{
-				channel_id: {
+				channelId: {
 					$exists: false
 				}
 			}, {
-				channel_id: null
+				channelId: null
 			}]
 		}, {
 			// Watchしているチャンネルへの投稿
-			channel_id: {
+			channelId: {
 				$in: watchingChannelIds
 			}
 		}],
 		// mute
-		user_id: {
+		userId: {
 			$nin: mutedUserIds
 		},
-		'_reply.user_id': {
+		'_reply.userId': {
 			$nin: mutedUserIds
 		},
-		'_repost.user_id': {
+		'_repost.userId': {
 			$nin: mutedUserIds
 		},
 	} as any;
@@ -110,11 +110,11 @@ module.exports = async (params, user, app) => {
 		};
 	} else if (sinceDate) {
 		sort._id = 1;
-		query.created_at = {
+		query.createdAt = {
 			$gt: new Date(sinceDate)
 		};
 	} else if (untilDate) {
-		query.created_at = {
+		query.createdAt = {
 			$lt: new Date(untilDate)
 		};
 	}

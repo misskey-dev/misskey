@@ -1,11 +1,11 @@
 <template>
-<div class="header" :data-is-dark-background="user.banner_url != null">
-	<div class="banner-container" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=2048)` : ''">
-		<div class="banner" ref="banner" :style="user.banner_url ? `background-image: url(${user.banner_url}?thumbnail&size=2048)` : ''" @click="onBannerClick"></div>
+<div class="header" :data-is-dark-background="user.bannerUrl != null">
+	<div class="banner-container" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''">
+		<div class="banner" ref="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''" @click="onBannerClick"></div>
 	</div>
 	<div class="fade"></div>
 	<div class="container">
-		<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=150`" alt="avatar"/>
+		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=150`" alt="avatar"/>
 		<div class="title">
 			<p class="name">{{ user.name }}</p>
 			<p class="username">@{{ acct }}</p>
@@ -59,7 +59,7 @@ export default Vue.extend({
 			if (!(this as any).os.isSignedIn || (this as any).os.i.id != this.user.id) return;
 
 			(this as any).apis.updateBanner((this as any).os.i, i => {
-				this.user.banner_url = i.banner_url;
+				this.user.bannerUrl = i.bannerUrl;
 			});
 		}
 	}

@@ -4,7 +4,7 @@
 	<div class="users" v-if="!fetching && users.length > 0">
 		<div class="user" v-for="user in users" :key="user.id">
 			<router-link class="avatar-anchor" :to="`/@${getAcct(user)}`">
-				<img class="avatar" :src="`${user.avatar_url}?thumbnail&size=42`" alt="" v-user-preview="user.id"/>
+				<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="user.id"/>
 			</router-link>
 			<div class="body">
 				<router-link class="name" :to="`/@${getAcct(user)}`" v-user-preview="user.id">{{ user.name }}</router-link>

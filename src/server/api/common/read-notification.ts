@@ -29,10 +29,10 @@ export default (
 	// Update documents
 	await Notification.update({
 		_id: { $in: ids },
-		is_read: false
+		isRead: false
 	}, {
 		$set: {
-			is_read: true
+			isRead: true
 		}
 	}, {
 		multi: true
@@ -41,8 +41,8 @@ export default (
 	// Calc count of my unread notifications
 	const count = await Notification
 		.count({
-			notifiee_id: userId,
-			is_read: false
+			notifieeId: userId,
+			isRead: false
 		});
 
 	if (count == 0) {

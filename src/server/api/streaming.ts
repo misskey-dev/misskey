@@ -110,7 +110,7 @@ function authenticate(token: string): Promise<IUser> {
 
 			// Fetch user
 			const user: IUser = await User
-				.findOne({ _id: accessToken.user_id });
+				.findOne({ _id: accessToken.userId });
 
 			resolve(user);
 		}

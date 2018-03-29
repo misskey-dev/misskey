@@ -19,7 +19,7 @@
 				<p class="data-size">{{ file.datasize | bytes }}</p>
 				<p class="separator"></p>
 				<p class="created-at">
-					%fa:R clock%<mk-time :time="file.created_at"/>
+					%fa:R clock%<mk-time :time="file.createdAt"/>
 				</p>
 			</footer>
 		</div>
@@ -42,7 +42,7 @@ export default Vue.extend({
 		},
 		thumbnail(): any {
 			return {
-				'background-color': this.file.properties.average_color ? `rgb(${this.file.properties.average_color.join(',')})` : 'transparent',
+				'background-color': this.file.properties.avgColor ? `rgb(${this.file.properties.avgColor.join(',')})` : 'transparent',
 				'background-image': `url(${this.file.url}?thumbnail&size=128)`
 			};
 		}

@@ -44,9 +44,9 @@ export default Vue.extend({
 	},
 	mounted() {
 		if ((this as any).os.isSignedIn) {
-			const ago = (new Date().getTime() - new Date((this as any).os.i.account.last_used_at).getTime()) / 1000
+			const ago = (new Date().getTime() - new Date((this as any).os.i.account.lastUsedAt).getTime()) / 1000
 			const isHisasiburi = ago >= 3600;
-			(this as any).os.i.account.last_used_at = new Date();
+			(this as any).os.i.account.lastUsedAt = new Date();
 			if (isHisasiburi) {
 				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';

@@ -61,8 +61,8 @@ export default Vue.extend({
 		},
 		fetch(cb?) {
 			(this as any).api('users/posts', {
-				user_id: this.user.id,
-				until_date: this.date ? this.date.getTime() : undefined,
+				userId: this.user.id,
+				untilDate: this.date ? this.date.getTime() : undefined,
 				with_replies: this.mode == 'with-replies'
 			}).then(posts => {
 				this.posts = posts;
@@ -74,9 +74,9 @@ export default Vue.extend({
 			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
 			this.moreFetching = true;
 			(this as any).api('users/posts', {
-				user_id: this.user.id,
+				userId: this.user.id,
 				with_replies: this.mode == 'with-replies',
-				until_id: this.posts[this.posts.length - 1].id
+				untilId: this.posts[this.posts.length - 1].id
 			}).then(posts => {
 				this.moreFetching = false;
 				this.posts = this.posts.concat(posts);
