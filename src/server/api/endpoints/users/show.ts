@@ -66,7 +66,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Get 'host' parameter
 	const [host, hostErr] = $(params.host).optional.string().$;
-	if (hostErr) return rej('invalid username param');
+	if (hostErr) return rej('invalid host param');
 
 	if (userId === undefined && typeof username !== 'string') {
 		return rej('userId or pair of username and host is required');
