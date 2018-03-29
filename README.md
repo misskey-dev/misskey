@@ -14,7 +14,7 @@ Misskey
 **[Misskey](https://misskey.xyz)** is a completely open source,
 ultimately sophisticated new type of mini-blog based SNS.
 
-Key features
+:sparkles: Features
 ----------------------------------------------------------------
 * Automatically updated timeline
 * Private messages
@@ -25,18 +25,18 @@ Key features
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
 
-Setup and Installation
+:package: Setup and Installation
 ----------------------------------------------------------------
 If you want to run your own instance of Misskey,
 please see [Setup and installation guide](./docs/setup.en.md).
 
-Donation
+:yen: Donation
 ----------------------------------------------------------------
 If you want to donate to Misskey, please see [this](./docs/donate.ja.md).
 
 [List of all donors](./DONORS.md)
 
-Notable contributors
+:mortar_board: Notable contributors
 ----------------------------------------------------------------
 | ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon] | ![akihikodaki][akihikodaki-icon] |
 |:-:|:-:|:-:|:-:|
@@ -44,7 +44,7 @@ Notable contributors
 
 [List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
-Copyright
+:four_leaf_clover: Copyright
 ----------------------------------------------------------------
 > Copyright (c) 2014-2018 syuilo
 
