@@ -103,7 +103,7 @@
 		"deepcopy": "0.6.3",
 		"diskusage": "0.2.4",
 		"elasticsearch": "14.2.1",
-		"element-ui": "2.3.0",
+		"element-ui": "2.3.2",
 		"emojilib": "2.2.12",
 		"escape-regexp": "0.0.1",
 		"eslint": "4.19.1",
