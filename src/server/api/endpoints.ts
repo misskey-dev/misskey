@@ -289,7 +289,7 @@ const endpoints: Endpoint[] = [
 		kind: 'notification-write'
 	},
 	{
-		name: 'notifications/markAsRead_all',
+		name: 'notifications/mark_as_read_all',
 		withCredential: true,
 		kind: 'notification-write'
 	},
