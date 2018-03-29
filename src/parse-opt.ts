@@ -1,4 +1,4 @@
-const nopt = require('nopt');
+import * as nopt from 'nopt';
 
 export default (vector, index) => {
 	const parsed = nopt({
