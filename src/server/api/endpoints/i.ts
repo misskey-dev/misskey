@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import User, { pack } from '../models/user';
+import User, { pack } from '../../../models/user';
 
 /**
  * Show myself

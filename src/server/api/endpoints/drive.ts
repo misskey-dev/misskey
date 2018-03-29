@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import DriveFile from '../models/drive-file';
+import DriveFile from '../../../models/drive-file';
 
 /**
  * Get drive information

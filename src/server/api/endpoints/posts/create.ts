@@ -3,21 +3,21 @@
  */
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
-import parse from '../../common/text';
-import { default as Post, IPost, isValidText } from '../../models/post';
-import { default as User, ILocalAccount, IUser } from '../../models/user';
-import { default as Channel, IChannel } from '../../models/channel';
-import Following from '../../models/following';
-import Mute from '../../models/mute';
-import DriveFile from '../../models/drive-file';
-import Watching from '../../models/post-watching';
-import ChannelWatching from '../../models/channel-watching';
-import { pack } from '../../models/post';
+import parse from '../../../../common/text';
+import { default as Post, IPost, isValidText } from '../../../../models/post';
+import { default as User, ILocalAccount, IUser } from '../../../../models/user';
+import { default as Channel, IChannel } from '../../../../models/channel';
+import Following from '../../../../models/following';
+import Mute from '../../../../models/mute';
+import DriveFile from '../../../../models/drive-file';
+import Watching from '../../../../models/post-watching';
+import ChannelWatching from '../../../../models/channel-watching';
+import { pack } from '../../../../models/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
 import event, { pushSw, publishChannelStream } from '../../event';
-import getAcct from '../../../common/user/get-acct';
-import parseAcct from '../../../common/user/parse-acct';
+import getAcct from '../../../../common/user/get-acct';
+import parseAcct from '../../../../common/user/parse-acct';
 import config from '../../../../conf';
 
 /**

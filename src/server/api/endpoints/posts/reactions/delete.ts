@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Reaction from '../../../models/post-reaction';
-import Post from '../../../models/post';
+import Reaction from '../../../../../models/post-reaction';
+import Post from '../../../../../models/post';
 // import event from '../../../event';
 
 /**

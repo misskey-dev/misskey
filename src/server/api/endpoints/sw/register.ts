@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Subscription from '../../models/sw-subscription';
+import Subscription from '../../../../models/sw-subscription';
 
 /**
  * subscribe service worker

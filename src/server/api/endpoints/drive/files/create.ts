@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import { validateFileName, pack } from '../../../models/drive-file';
+import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../common/drive/add-file';
 
 /**

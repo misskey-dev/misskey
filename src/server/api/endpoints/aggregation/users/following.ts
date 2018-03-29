@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../../models/user';
-import Following from '../../../models/following';
+import User from '../../../../../models/user';
+import Following from '../../../../../models/following';
 
 /**
  * Aggregate following of a user
@@ -39,11 +39,12 @@ module.exports = (params) => new Promise(async (res, rej) => {
 				{ deletedAt: { $gt: startTime } }
 			]
 		}, {
-			_id: false,
-			followerId: false,
-			followeeId: false
-		}, {
-			sort: { createdAt: -1 }
+			sort: { createdAt: -1 },
+			fields: {
+				_id: false,
+				followerId: false,
+				followeeId: false
+			}
 		});
 
 	const graph = [];

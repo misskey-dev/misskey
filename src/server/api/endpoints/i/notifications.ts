@@ -2,9 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Notification from '../../models/notification';
-import Mute from '../../models/mute';
-import { pack } from '../../models/notification';
+import Notification from '../../../../models/notification';
+import Mute from '../../../../models/mute';
+import { pack } from '../../../../models/notification';
 import getFriends from '../../common/get-friends';
 import read from '../../common/read-notification';
 

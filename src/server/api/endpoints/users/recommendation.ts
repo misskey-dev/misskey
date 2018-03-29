@@ -3,7 +3,7 @@
  */
 const ms = require('ms');
 import $ from 'cafy';
-import User, { pack } from '../../models/user';
+import User, { pack } from '../../../../models/user';
 import getFriends from '../../common/get-friends';
 
 /**

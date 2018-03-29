@@ -1,12 +1,12 @@
 import * as EventEmitter from 'events';
 import * as bcrypt from 'bcryptjs';
 
-import User, { ILocalAccount, IUser, init as initUser } from '../models/user';
+import User, { ILocalAccount, IUser, init as initUser } from '../../../models/user';
 
-import getPostSummary from '../../common/get-post-summary';
-import getUserSummary from '../../common/user/get-summary';
-import parseAcct from '../../common/user/parse-acct';
-import getNotificationSummary from '../../common/get-notification-summary';
+import getPostSummary from '../../../common/get-post-summary';
+import getUserSummary from '../../../common/user/get-summary';
+import parseAcct from '../../../common/user/parse-acct';
+import getNotificationSummary from '../../../common/get-notification-summary';
 
 const hmm = [
 	'？',

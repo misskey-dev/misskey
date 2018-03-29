@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import Notification from '../../models/notification';
+import Notification from '../../../../models/notification';
 import event from '../../event';
 
 /**

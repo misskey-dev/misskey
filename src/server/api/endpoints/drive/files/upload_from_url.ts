@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import { pack } from '../../../models/drive-file';
+import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../common/drive/upload_from_url';
 
 /**

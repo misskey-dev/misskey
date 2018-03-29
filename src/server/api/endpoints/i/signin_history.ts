@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Signin, { pack } from '../../models/signin';
+import Signin, { pack } from '../../../../models/signin';
 
 /**
  * Get signin history of my account

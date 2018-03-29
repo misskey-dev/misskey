@@ -5,7 +5,7 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import User from '../../../models/user';
+import User from '../../../../../models/user';
 import config from '../../../../../conf';
 
 module.exports = async (params, user) => new Promise(async (res, rej) => {

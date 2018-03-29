@@ -2,9 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Message from '../../models/messaging-message';
-import User from '../../models/user';
-import { pack } from '../../models/messaging-message';
+import Message from '../../../../models/messaging-message';
+import User from '../../../../models/user';
+import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 
 /**

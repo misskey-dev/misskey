@@ -21,6 +21,6 @@
     "./src/**/*.ts"
   ],
   "exclude": [
-    "./src/server/web/app/**/*.ts"
+    "./src/client/app/**/*.ts"
   ]
 }

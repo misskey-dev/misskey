@@ -4,7 +4,7 @@
 import * as os from 'os';
 import version from '../../../version';
 import config from '../../../conf';
-import Meta from '../models/meta';
+import Meta from '../../../models/meta';
 
 /**
  * @swagger
@@ -40,7 +40,7 @@ import Meta from '../models/meta';
  * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
-	const meta = (await Meta.findOne()) || {};
+	const meta: any = (await Meta.findOne()) || {};
 
 	res({
 		maintainer: config.maintainer,

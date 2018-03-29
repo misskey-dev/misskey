@@ -1,8 +1,8 @@
 /**
  * Module dependencies
  */
-import Post from '../models/post';
-import User from '../models/user';
+import Post from '../../../models/post';
+import User from '../../../models/user';
 
 /**
  * @swagger

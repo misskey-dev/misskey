@@ -1,5 +1,5 @@
 import * as request from 'request';
-import User from '../server/api/models/user';
+import User from '../models/user';
 const createPost = require('../server/api/endpoints/posts/create');
 
 export default ({ data }, done) => {

@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import { default as Channel, IChannel } from '../../models/channel';
-import Post, { pack } from '../../models/post';
+import { default as Channel, IChannel } from '../../../../models/channel';
+import Post, { pack } from '../../../../models/post';
 
 /**
  * Show a posts of a channel

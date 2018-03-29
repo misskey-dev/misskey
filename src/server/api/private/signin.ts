@@ -1,8 +1,8 @@
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import { default as User, ILocalAccount, IUser } from '../models/user';
-import Signin, { pack } from '../models/signin';
+import { default as User, ILocalAccount, IUser } from '../../../models/user';
+import Signin, { pack } from '../../../models/signin';
 import event from '../event';
 import signin from '../common/signin';
 import config from '../../../conf';

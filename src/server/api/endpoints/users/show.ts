@@ -5,7 +5,7 @@ import $ from 'cafy';
 import { JSDOM } from 'jsdom';
 import { toUnicode, toASCII } from 'punycode';
 import uploadFromUrl from '../../common/drive/upload_from_url';
-import User, { pack, validateUsername, isValidName, isValidDescription } from '../../models/user';
+import User, { pack, validateUsername, isValidName, isValidDescription } from '../../../../models/user';
 const request = require('request-promise-native');
 const WebFinger = require('webfinger.js');
 

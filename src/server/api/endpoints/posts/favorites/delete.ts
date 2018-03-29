@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Favorite from '../../../models/favorite';
-import Post from '../../../models/post';
+import Favorite from '../../../../../models/favorite';
+import Post from '../../../../../models/post';
 
 /**
  * Unfavorite a post

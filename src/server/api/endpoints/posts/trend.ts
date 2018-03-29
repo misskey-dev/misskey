@@ -3,7 +3,7 @@
  */
 const ms = require('ms');
 import $ from 'cafy';
-import Post, { pack } from '../../models/post';
+import Post, { pack } from '../../../../models/post';
 
 /**
  * Get trend posts

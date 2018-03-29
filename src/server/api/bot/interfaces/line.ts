@@ -2,14 +2,14 @@ import * as EventEmitter from 'events';
 import * as express from 'express';
 import * as request from 'request';
 import * as crypto from 'crypto';
-import User from '../../models/user';
+import User from '../../../../models/user';
 import config from '../../../../conf';
 import BotCore from '../core';
 import _redis from '../../../../db/redis';
 import prominence = require('prominence');
-import getAcct from '../../../common/user/get-acct';
-import parseAcct from '../../../common/user/parse-acct';
-import getPostSummary from '../../../common/get-post-summary';
+import getAcct from '../../../../common/user/get-acct';
+import parseAcct from '../../../../common/user/parse-acct';
+import getPostSummary from '../../../../common/get-post-summary';
 
 const redis = prominence(_redis);
 

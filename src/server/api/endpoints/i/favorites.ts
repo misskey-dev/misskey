@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Favorite from '../../models/favorite';
-import { pack } from '../../models/post';
+import Favorite from '../../../../models/favorite';
+import { pack } from '../../../../models/post';
 
 /**
  * Get followers of a user

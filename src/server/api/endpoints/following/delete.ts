@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User, { pack as packUser } from '../../models/user';
-import Following from '../../models/following';
+import User, { pack as packUser } from '../../../../models/user';
+import Following from '../../../../models/following';
 import event from '../../event';
 
 /**

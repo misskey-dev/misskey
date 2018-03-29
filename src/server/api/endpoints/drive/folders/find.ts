@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import DriveFolder, { pack } from '../../../models/drive-folder';
+import DriveFolder, { pack } from '../../../../../models/drive-folder';
 
 /**
  * Find a folder(s)

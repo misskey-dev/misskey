@@ -2,9 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import History from '../../models/messaging-history';
-import Mute from '../../models/mute';
-import { pack } from '../../models/messaging-message';
+import History from '../../../../models/messaging-history';
+import Mute from '../../../../models/mute';
+import { pack } from '../../../../models/messaging-message';
 
 /**
  * Show messaging history

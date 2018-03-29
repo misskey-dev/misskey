@@ -1,4 +1,4 @@
-import Matching, { pack as packMatching } from '../../models/othello-matching';
+import Matching, { pack as packMatching } from '../../../../models/othello-matching';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Find session

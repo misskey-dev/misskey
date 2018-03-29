@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../../models/user';
-import Post from '../../../models/post';
+import User from '../../../../../models/user';
+import Post from '../../../../../models/post';
 
 // TODO: likeやfollowも集計
 

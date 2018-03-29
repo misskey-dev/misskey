@@ -1,7 +1,7 @@
 import * as EventEmitter from 'events';
 import * as express from 'express';
-const crypto = require('crypto');
-import User from '../models/user';
+//const crypto = require('crypto');
+import User from '../../../models/user';
 import config from '../../../conf';
 import queue from '../../../queue';
 

@@ -2,9 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../models/user';
-import Following from '../../models/following';
-import { pack } from '../../models/user';
+import User from '../../../../models/user';
+import Following from '../../../../models/following';
+import { pack } from '../../../../models/user';
 import getFriends from '../../common/get-friends';
 
 /**

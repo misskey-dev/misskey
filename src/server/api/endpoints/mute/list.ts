@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Mute from '../../models/mute';
-import { pack } from '../../models/user';
+import Mute from '../../../../models/mute';
+import { pack } from '../../../../models/user';
 import getFriends from '../../common/get-friends';
 
 /**

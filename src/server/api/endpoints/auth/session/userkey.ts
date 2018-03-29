@@ -2,10 +2,10 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import App from '../../../models/app';
-import AuthSess from '../../../models/auth-session';
-import AccessToken from '../../../models/access-token';
-import { pack } from '../../../models/user';
+import App from '../../../../../models/app';
+import AuthSess from '../../../../../models/auth-session';
+import AccessToken from '../../../../../models/access-token';
+import { pack } from '../../../../../models/user';
 
 /**
  * @swagger

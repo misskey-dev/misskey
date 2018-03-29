@@ -1,8 +1,8 @@
 /**
  * Module dependencies
  */
-import Message from '../../models/messaging-message';
-import Mute from '../../models/mute';
+import Message from '../../../../models/messaging-message';
+import Mute from '../../../../models/mute';
 
 /**
  * Get count of unread messages

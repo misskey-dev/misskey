@@ -3,8 +3,8 @@
  */
 import $ from 'cafy';
 import getHostLower from '../../common/get-host-lower';
-import Post, { pack } from '../../models/post';
-import User from '../../models/user';
+import Post, { pack } from '../../../../models/post';
+import User from '../../../../models/user';
 
 /**
  * Get posts of a user

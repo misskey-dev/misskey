@@ -1,5 +1,5 @@
 /**
- * Web Server
+ * Web Client Server
  */
 
 import * as path from 'path';
@@ -11,9 +11,9 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 
-/**
- * Init app
- */
+const client = `${__dirname}/../../client/`;
+
+// Create server
 const app = express();
 app.disable('x-powered-by');
 
@@ -25,51 +25,40 @@ app.use(bodyParser.json({
 }));
 app.use(compression());
 
-/**
- * Initialize requests
- */
 app.use((req, res, next) => {
 	res.header('X-Frame-Options', 'DENY');
 	next();
 });
 
-/**
- * Static assets
- */
-app.use(favicon(`${__dirname}/assets/favicon.ico`));
-app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${__dirname}/assets/apple-touch-icon.png`));
-app.use('/assets', express.static(`${__dirname}/assets`, {
+//#region static assets
+
+app.use(favicon(`${client}/assets/favicon.ico`));
+app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${client}/assets/apple-touch-icon.png`));
+app.use('/assets', express.static(`${client}/assets`, {
 	maxAge: ms('7 days')
 }));
-app.use('/assets/*.js', (req, res) => res.sendFile(`${__dirname}/assets/404.js`));
+app.use('/assets/*.js', (req, res) => res.sendFile(`${client}/assets/404.js`));
 app.use('/assets', (req, res) => {
 	res.sendStatus(404);
 });
 
-app.use('/recover', (req, res) => res.sendFile(`${__dirname}/assets/recover.html`));
+app.use('/recover', (req, res) => res.sendFile(`${client}/assets/recover.html`));
 
-/**
- * ServiceWroker
- */
+// ServiceWroker
 app.get(/^\/sw\.(.+?)\.js$/, (req, res) =>
-	res.sendFile(`${__dirname}/assets/sw.${req.params[0]}.js`));
+	res.sendFile(`${client}/assets/sw.${req.params[0]}.js`));
 
-/**
- * Manifest
- */
+// Manifest
 app.get('/manifest.json', (req, res) =>
-	res.sendFile(`${__dirname}/assets/manifest.json`));
+	res.sendFile(`${client}/assets/manifest.json`));
 
-/**
- * Common API
- */
-app.get(/\/api:url/, require('./service/url-preview'));
+//#endregion
 
-/**
- * Routing
- */
+app.get(/\/api:url/, require('./url-preview'));
+
+// Render base html for all requests
 app.get('*', (req, res) => {
-	res.sendFile(path.resolve(`${__dirname}/app/base.html`), {
+	res.sendFile(path.resolve(`${client}/app/base.html`), {
 		maxAge: ms('7 days')
 	});
 });

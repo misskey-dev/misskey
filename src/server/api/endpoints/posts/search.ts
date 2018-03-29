@@ -3,11 +3,11 @@
  */
 import $ from 'cafy';
 const escapeRegexp = require('escape-regexp');
-import Post from '../../models/post';
-import User from '../../models/user';
-import Mute from '../../models/mute';
+import Post from '../../../../models/post';
+import User from '../../../../models/user';
+import Mute from '../../../../models/mute';
 import getFriends from '../../common/get-friends';
-import { pack } from '../../models/post';
+import { pack } from '../../../../models/post';
 
 /**
  * Search a post

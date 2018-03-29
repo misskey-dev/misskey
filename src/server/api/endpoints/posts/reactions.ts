@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../models/post';
-import Reaction, { pack } from '../../models/post-reaction';
+import Post from '../../../../models/post';
+import Reaction, { pack } from '../../../../models/post-reaction';
 
 /**
  * Show reactions of a post

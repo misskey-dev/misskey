@@ -1,5 +1,5 @@
 import * as mongodb from 'mongodb';
-import Following from '../models/following';
+import Following from '../../../models/following';
 
 export default async (me: mongodb.ObjectID, includeMe: boolean = true) => {
 	// Fetch relation to other users who the I follows

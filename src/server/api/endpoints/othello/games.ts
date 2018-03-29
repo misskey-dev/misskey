@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import OthelloGame, { pack } from '../../models/othello-game';
+import OthelloGame, { pack } from '../../../../models/othello-game';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'my' parameter

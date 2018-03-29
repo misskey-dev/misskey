@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../models/user';
+import User from '../../../../models/user';
 import event from '../../event';
 
 module.exports = async (params, user) => new Promise(async (res, rej) => {

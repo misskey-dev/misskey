@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Channel from '../../models/channel';
-import Watching from '../../models/channel-watching';
+import Channel from '../../../../models/channel';
+import Watching from '../../../../models/channel-watching';
 
 /**
  * Watch a channel

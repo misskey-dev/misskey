@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import { default as Notification, INotification } from '../models/notification';
+import { default as Notification, INotification } from '../../../models/notification';
 import publishUserStream from '../event';
 
 /**

@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../models/post';
-import User, { pack } from '../../models/user';
+import Post from '../../../../models/post';
+import User, { pack } from '../../../../models/user';
 
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter

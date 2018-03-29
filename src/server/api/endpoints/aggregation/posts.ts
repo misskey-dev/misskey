@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../models/post';
+import Post from '../../../../models/post';
 
 /**
  * Aggregate posts

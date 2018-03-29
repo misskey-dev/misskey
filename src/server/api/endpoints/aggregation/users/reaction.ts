@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../../models/user';
-import Reaction from '../../../models/post-reaction';
+import User from '../../../../../models/user';
+import Reaction from '../../../../../models/post-reaction';
 
 /**
  * Aggregate reaction of a user

@@ -10,7 +10,7 @@ import * as mongodb from 'mongodb';
 import * as _gm from 'gm';
 import * as stream from 'stream';
 
-import DriveFile, { getGridFSBucket } from '../api/models/drive-file';
+import DriveFile, { getGridFSBucket } from '../../models/drive-file';
 
 const gm = _gm.subClass({
 	imageMagick: true

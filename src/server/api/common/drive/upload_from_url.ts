@@ -1,5 +1,5 @@
 import * as URL from 'url';
-import { IDriveFile, validateFileName } from '../../models/drive-file';
+import { IDriveFile, validateFileName } from '../../../../models/drive-file';
 import create from './add-file';
 import * as debug from 'debug';
 import * as tmp from 'tmp';

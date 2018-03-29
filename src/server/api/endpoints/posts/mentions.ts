@@ -2,9 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../models/post';
+import Post from '../../../../models/post';
 import getFriends from '../../common/get-friends';
-import { pack } from '../../models/post';
+import { pack } from '../../../../models/post';
 
 /**
  * Get mentions of myself

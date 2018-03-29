@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User from '../../models/user';
+import User from '../../../../models/user';
 import event from '../../event';
 import generateUserToken from '../../common/generate-native-user-token';
 

@@ -4,9 +4,9 @@
 import rndstr from 'rndstr';
 const crypto = require('crypto');
 import $ from 'cafy';
-import App from '../../models/app';
-import AuthSess from '../../models/auth-session';
-import AccessToken from '../../models/access-token';
+import App from '../../../../models/app';
+import AuthSess from '../../../../models/auth-session';
+import AccessToken from '../../../../models/access-token';
 
 /**
  * @swagger

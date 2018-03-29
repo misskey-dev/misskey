@@ -2,8 +2,8 @@ import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import config from '../../conf';
-import { default as User, IUser } from './models/user';
-import AccessToken from './models/access-token';
+import { default as User, IUser } from '../../models/user';
+import AccessToken from '../../models/access-token';
 import isNativeToken from './common/is-native-token';
 
 import homeStream from './stream/home';
@@ -15,6 +15,7 @@ import othelloStream from './stream/othello';
 import serverStream from './stream/server';
 import requestsStream from './stream/requests';
 import channelStream from './stream/channel';
+import { ParsedUrlQuery } from 'querystring';
 
 module.exports = (server: http.Server) => {
 	/**
@@ -51,7 +52,8 @@ module.exports = (server: http.Server) => {
 			return;
 		}
 
-		const user = await authenticate(request.resourceURL.query.i);
+		const q = request.resourceURL.query as ParsedUrlQuery;
+		const user = await authenticate(q.i as string);
 
 		if (request.resourceURL.pathname === '/othello-game') {
 			othelloGameStream(request, connection, subscriber, user);

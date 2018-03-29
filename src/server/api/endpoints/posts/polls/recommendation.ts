@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Vote from '../../../models/poll-vote';
-import Post, { pack } from '../../../models/post';
+import Vote from '../../../../../models/poll-vote';
+import Post, { pack } from '../../../../../models/post';
 
 /**
  * Get recommended polls

@@ -1,8 +1,8 @@
 /**
  * Module dependencies
  */
-import Notification from '../../models/notification';
-import Mute from '../../models/mute';
+import Notification from '../../../../models/notification';
+import Mute from '../../../../models/mute';
 
 /**
  * Get count of unread notifications

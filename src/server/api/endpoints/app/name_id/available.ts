@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import App from '../../../models/app';
-import { isValidNameId } from '../../../models/app';
+import App from '../../../../../models/app';
+import { isValidNameId } from '../../../../../models/app';
 
 /**
  * @swagger

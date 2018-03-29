@@ -1,6 +1,6 @@
 const push = require('web-push');
 import * as mongo from 'mongodb';
-import Subscription from '../models/sw-subscription';
+import Subscription from '../../../models/sw-subscription';
 import config from '../../../conf';
 
 if (config.sw) {

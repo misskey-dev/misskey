@@ -2,9 +2,9 @@ import * as websocket from 'websocket';
 import * as redis from 'redis';
 import * as debug from 'debug';
 
-import User from '../models/user';
-import Mute from '../models/mute';
-import { pack as packPost } from '../models/post';
+import User from '../../../models/user';
+import Mute from '../../../models/mute';
+import { pack as packPost } from '../../../models/post';
 import readNotification from '../common/read-notification';
 
 const log = debug('misskey');

@@ -2,9 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../models/user';
-import Post from '../../models/post';
-import { pack } from '../../models/user';
+import User from '../../../../models/user';
+import Post from '../../../../models/post';
+import { pack } from '../../../../models/user';
 
 /**
  * Pin post

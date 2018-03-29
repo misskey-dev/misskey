@@ -1,5 +1,5 @@
 import * as mongodb from 'mongodb';
-import Watching from '../models/post-watching';
+import Watching from '../../../models/post-watching';
 
 export default async (me: mongodb.ObjectID, post: object) => {
 	// 自分の投稿はwatchできない

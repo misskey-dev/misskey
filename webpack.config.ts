@@ -34,7 +34,7 @@ global['collapseSpacesReplacement'] = html => {
 };
 
 global['base64replacement'] = (_, key) => {
-	return fs.readFileSync(__dirname + '/src/server/web/' + key, 'base64');
+	return fs.readFileSync(__dirname + '/src/client/' + key, 'base64');
 };
 //#endregion
 
@@ -52,18 +52,18 @@ module.exports = entries.map(x => {
 
 	// Entries
 	const entry = {
-		desktop: './src/server/web/app/desktop/script.ts',
-		mobile: './src/server/web/app/mobile/script.ts',
-		//ch: './src/server/web/app/ch/script.ts',
-		//stats: './src/server/web/app/stats/script.ts',
-		//status: './src/server/web/app/status/script.ts',
-		dev: './src/server/web/app/dev/script.ts',
-		auth: './src/server/web/app/auth/script.ts',
-		sw: './src/server/web/app/sw.js'
+		desktop: './src/client/app/desktop/script.ts',
+		mobile: './src/client/app/mobile/script.ts',
+		//ch: './src/client/app/ch/script.ts',
+		//stats: './src/client/app/stats/script.ts',
+		//status: './src/client/app/status/script.ts',
+		dev: './src/client/app/dev/script.ts',
+		auth: './src/client/app/auth/script.ts',
+		sw: './src/client/app/sw.js'
 	};
 
 	const output = {
-		path: __dirname + '/built/server/web/assets',
+		path: __dirname + '/built/client/assets',
 		filename: `[name].${version}.${lang}.${isProduction ? 'min' : 'raw'}.js`
 	};
 
@@ -207,7 +207,7 @@ module.exports = entries.map(x => {
 					loader: 'ts-loader',
 					options: {
 						happyPackMode: true,
-						configFile: __dirname + '/../src/server/web/app/tsconfig.json',
+						configFile: __dirname + '/src/client/app/tsconfig.json',
 						appendTsSuffixTo: [/\.vue$/]
 					}
 				}, {
@@ -232,7 +232,7 @@ module.exports = entries.map(x => {
 				'.js', '.ts', '.json'
 			],
 			alias: {
-				'const.styl': __dirname + '/src/server/web/const.styl'
+				'const.styl': __dirname + '/src/client/const.styl'
 			}
 		},
 		resolveLoader: {

@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User from '../../../models/user';
+import User from '../../../../../models/user';
 
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'password' parameter

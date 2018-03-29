@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User from '../../models/user';
-import Mute from '../../models/mute';
+import User from '../../../../models/user';
+import Mute from '../../../../models/mute';
 
 /**
  * Unmute a user

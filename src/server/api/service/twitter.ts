@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 // const Twitter = require('twitter');
 import autwh from 'autwh';
 import redis from '../../../db/redis';
-import User, { pack } from '../models/user';
+import User, { pack } from '../../../models/user';
 import event from '../event';
 import config from '../../../conf';
 import signin from '../common/signin';

@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User, { pack } from '../../models/user';
+import User, { pack } from '../../../../models/user';
 import event from '../../event';
 
 /**

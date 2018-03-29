@@ -2,8 +2,8 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import DriveFolder from '../../../models/drive-folder';
-import DriveFile, { validateFileName, pack } from '../../../models/drive-file';
+import DriveFolder from '../../../../../models/drive-folder';
+import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
 import { publishDriveStream } from '../../../event';
 
 /**

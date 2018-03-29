@@ -3,11 +3,11 @@
  */
 import $ from 'cafy';
 import rap from '@prezzemolo/rap';
-import Post from '../../models/post';
-import Mute from '../../models/mute';
-import ChannelWatching from '../../models/channel-watching';
+import Post from '../../../../models/post';
+import Mute from '../../../../models/mute';
+import ChannelWatching from '../../../../models/channel-watching';
 import getFriends from '../../common/get-friends';
-import { pack } from '../../models/post';
+import { pack } from '../../../../models/post';
 
 /**
  * Get timeline of myself
