@@ -320,6 +320,7 @@ export const packForAp = (
 		"inbox": `${userUrl}/inbox.json`,
 		"outbox": `${userUrl}/outbox.json`,
 		"sharedInbox": `${config.url}/inbox`,
+		"url": `${config.url}/@${_user.username}`,
 		"preferredUsername": _user.username,
 		"name": _user.name,
 		"summary": _user.description,
