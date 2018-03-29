@@ -90,7 +90,11 @@ export default Vue.component('mk-post-html', {
 					]);
 
 				case 'inline-code':
-					return createElement('code', token.html);
+					return createElement('code', {
+						domProps: {
+							innerHTML: token.html
+						}
+					});
 
 				case 'quote':
 					const text2 = token.quote.replace(/(\r\n|\n|\r)/g, '\n');
