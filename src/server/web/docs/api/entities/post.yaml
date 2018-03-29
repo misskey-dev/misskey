@@ -136,16 +136,11 @@ props:
       en: "Geo location"
     defName: "geo"
     def:
-      - name: "latitude"
-        type: "number"
+      - name: "coordinates"
+        type: "number[]"
         optional: false
         desc:
-          ja: "緯度。-90〜90で表す。"
-      - name: "longitude"
-        type: "number"
-        optional: false
-        desc:
-          ja: "経度。-180〜180で表す。"
+          ja: "座標。最初に経度：-180〜180で表す。最後に緯度：-90〜90で表す。"
       - name: "altitude"
         type: "number"
         optional: false

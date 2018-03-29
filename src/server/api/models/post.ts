@@ -35,8 +35,7 @@ export type IPost = {
 	reactionCounts: any;
 	mentions: mongo.ObjectID[];
 	geo: {
-		latitude: number;
-		longitude: number;
+		coordinates: number[];
 		altitude: number;
 		accuracy: number;
 		altitudeAccuracy: number;
@@ -97,6 +96,7 @@ export const pack = async (
 	delete _post._id;
 
 	delete _post.mentions;
+	if (_post.geo) delete _post.geo.type;
 
 	// Parse text
 	if (_post.text) {

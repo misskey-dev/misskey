@@ -118,8 +118,7 @@ export default Vue.extend({
 				replyId: this.reply ? this.reply.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				geo: this.geo ? {
-					latitude: this.geo.latitude,
-					longitude: this.geo.longitude,
+					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
 					accuracy: this.geo.accuracy,
 					altitudeAccuracy: this.geo.altitudeAccuracy,

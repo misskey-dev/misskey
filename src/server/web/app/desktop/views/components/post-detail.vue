@@ -47,7 +47,7 @@
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
-			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.latitude},${p.geo.longitude}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 			<div class="map" v-if="p.geo" ref="map"></div>
 			<div class="repost" v-if="p.repost">
 				<mk-post-preview :post="p.repost"/>
@@ -157,7 +157,7 @@ export default Vue.extend({
 			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
-					const uluru = new maps.LatLng(this.p.geo.latitude, this.p.geo.longitude);
+					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
 					const map = new maps.Map(this.$refs.map, {
 						center: uluru,
 						zoom: 15
