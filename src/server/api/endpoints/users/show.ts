@@ -155,7 +155,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 				postsCount,
 				likes_count,
 				liked_count: 0,
-				driveCapacity: 1073741824, // 1GB
+				driveCapacity: 1024 * 1024 * 8, // 8MiB
 				username: username,
 				usernameLower,
 				host: toUnicode(finger.subject.replace(/^.*?@/, '')),
