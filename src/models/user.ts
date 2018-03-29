@@ -306,7 +306,7 @@ export const packForAp = (
 
 	if (!_user) return reject('invalid user arg.');
 
-	const userUrl = `${config.url}/@${_user.username}`;
+	const userUrl = `${config.url}/@@${_user._id}`;
 
 	resolve({
 		"@context": ["https://www.w3.org/ns/activitystreams", {
