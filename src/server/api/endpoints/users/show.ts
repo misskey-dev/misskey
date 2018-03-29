@@ -75,18 +75,17 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Lookup user
 	if (typeof host === 'string') {
 		const usernameLower = username.toLowerCase();
-		const hostLower_ascii = toASCII(host).toLowerCase();
-		const hostLower = toUnicode(hostLower_ascii);
+		const hostLowerAscii = toASCII(host).toLowerCase();
+		const hostLower = toUnicode(hostLowerAscii);
 
 		user = await findUser({ usernameLower, hostLower });
 
 		if (user === null) {
-			const acct_lower = `${usernameLower}@${hostLower_ascii}`;
+			const acctLower = `${usernameLower}@${hostLowerAscii}`;
 			let activityStreams;
 			let finger;
 			let followersCount;
 			let followingCount;
-			let likes_count;
 			let postsCount;
 
 			if (!validateUsername(username)) {
@@ -94,7 +93,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			}
 
 			try {
-				finger = await webFingerAndVerify(acct_lower, acct_lower);
+				finger = await webFingerAndVerify(acctLower, acctLower);
 			} catch (exception) {
 				return rej('WebFinger lookup failed');
 			}
@@ -130,12 +129,11 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			}
 
 			try {
-				[followersCount, followingCount, likes_count, postsCount] = await Promise.all([
+				[followersCount, followingCount, postsCount] = await Promise.all([
 					getCollectionCount(activityStreams.followers),
 					getCollectionCount(activityStreams.following),
-					getCollectionCount(activityStreams.liked),
 					getCollectionCount(activityStreams.outbox),
-					webFingerAndVerify(activityStreams.id, acct_lower),
+					webFingerAndVerify(activityStreams.id, acctLower),
 				]);
 			} catch (exception) {
 				return rej('failed to fetch assets');
@@ -153,10 +151,8 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 				followingCount,
 				name: activityStreams.name,
 				postsCount,
-				likes_count,
-				liked_count: 0,
 				driveCapacity: 1024 * 1024 * 8, // 8MiB
-				username: username,
+				username,
 				usernameLower,
 				host: toUnicode(finger.subject.replace(/^.*?@/, '')),
 				hostLower,
