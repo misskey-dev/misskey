@@ -2,7 +2,7 @@
 <div class="form">
 	<header>
 		<h1><i>{{ app.name }}</i>があなたのアカウントにアクセスすることを<b>許可</b>しますか？</h1>
-		<img :src="`${app.icon_url}?thumbnail&size=64`"/>
+		<img :src="`${app.iconUrl}?thumbnail&size=64`"/>
 	</header>
 	<div class="app">
 		<section>
