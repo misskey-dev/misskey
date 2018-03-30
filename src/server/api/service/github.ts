@@ -9,7 +9,8 @@ module.exports = async (app: express.Application) => {
 	if (config.github_bot == null) return;
 
 	const bot = await User.findOne({
-		usernameLower: config.github_bot.username.toLowerCase()
+		usernameLower: config.github_bot.username.toLowerCase(),
+		host: null
 	});
 
 	if (bot == null) {
