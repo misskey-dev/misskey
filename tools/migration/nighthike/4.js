@@ -227,6 +227,7 @@ db.users.update({}, {
 		'account.twitter.access_token_secret': '',
 		'account.twitter.user_id': '',
 		'account.twitter.screen_name': '',
-		'account.line.user_id': ''
+		'account.line.user_id': '',
+		'account.client_settings.mobile_home': ''
 	}
 }, false, true);
