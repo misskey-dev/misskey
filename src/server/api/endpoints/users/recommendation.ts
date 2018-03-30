@@ -36,7 +36,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 						$gte: new Date(Date.now() - ms('7days'))
 					}
 				}, {
-					host: { $not: null }
+					host: { $ne: null }
 				}
 			]
 		}, {
