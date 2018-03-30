@@ -115,7 +115,7 @@ export default async (req: express.Request, res: express.Response) => {
 		followingCount: 0,
 		name: name,
 		postsCount: 0,
-		driveCapacity: 1073741824, // 1GB
+		driveCapacity: 1024 * 1024 * 128, // 128MiB
 		username: username,
 		usernameLower: username.toLowerCase(),
 		host: null,
