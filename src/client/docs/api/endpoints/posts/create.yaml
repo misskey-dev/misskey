@@ -11,6 +11,12 @@ params:
     desc:
       ja: "投稿の本文"
       en: "The text of your post"
+  - name: "cw"
+    type: "string"
+    optional: true
+    desc:
+      ja: "コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。"
+      en: "Content Warning"
   - name: "mediaIds"
     type: "id(DriveFile)[]"
     optional: true

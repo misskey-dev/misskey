@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
 import parse from '../../../../common/text';
-import { default as Post, IPost, isValidText } from '../../../../models/post';
+import { default as Post, IPost, isValidText, isValidCw } from '../../../../models/post';
 import { default as User, ILocalAccount, IUser } from '../../../../models/user';
 import { default as Channel, IChannel } from '../../../../models/channel';
 import Following from '../../../../models/following';
@@ -32,6 +32,10 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
+
+	// Get 'cw' parameter
+	const [cw, cwErr] = $(params.cw).optional.string().pipe(isValidCw).$;
+	if (cwErr) return rej('invalid cw');
 
 	// Get 'viaMobile' parameter
 	const [viaMobile = false, viaMobileErr] = $(params.viaMobile).optional.boolean().$;
@@ -255,6 +259,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		repostId: repost ? repost._id : undefined,
 		poll: poll,
 		text: text,
+		cw: cw,
 		tags: tags,
 		userId: user._id,
 		appId: app ? app._id : null,

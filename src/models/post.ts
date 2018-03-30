@@ -18,6 +18,10 @@ export function isValidText(text: string): boolean {
 	return text.length <= 1000 && text.trim() != '';
 }
 
+export function isValidCw(text: string): boolean {
+	return text.length <= 100 && text.trim() != '';
+}
+
 export type IPost = {
 	_id: mongo.ObjectID;
 	channelId: mongo.ObjectID;
@@ -27,6 +31,7 @@ export type IPost = {
 	repostId: mongo.ObjectID;
 	poll: any; // todo
 	text: string;
+	cw: string;
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;
 	viaMobile: boolean;
