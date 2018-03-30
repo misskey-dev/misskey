@@ -4,7 +4,6 @@
 		<a class="reply" v-if="post.replyId">%fa:reply%</a>
 		<mk-post-html :ast="post.ast" :i="os.i"/>
 		<a class="rp" v-if="post.repostId" :href="`/post:${post.repostId}`">RP: ...</a>
-		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 	</div>
 	<details v-if="post.media">
 		<summary>({{ post.media.length }}つのメディア)</summary>
@@ -21,18 +20,7 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['post'],
-	computed: {
-		urls(): string[] {
-			if (this.post.ast) {
-				return this.post.ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
-			} else {
-				return null;
-			}
-		}
-	}
+	props: ['post']
 });
 </script>
 
