@@ -3,7 +3,8 @@
  */
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
-import parse from '../../../../common/text';
+import html from '../../../../common/text/html';
+import parse from '../../../../common/text/parse';
 import { default as Post, IPost, isValidText, isValidCw } from '../../../../models/post';
 import { default as User, ILocalAccount, IUser } from '../../../../models/user';
 import { default as Channel, IChannel } from '../../../../models/channel';
@@ -259,6 +260,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		repostId: repost ? repost._id : undefined,
 		poll: poll,
 		text: text,
+		textHtml: tokens === null ? null : html(tokens),
 		cw: cw,
 		tags: tags,
 		userId: user._id,

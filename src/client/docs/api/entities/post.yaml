@@ -27,8 +27,14 @@ props:
     type: "string"
     optional: true
     desc:
-      ja: "投稿の本文"
-      en: "The text of this post"
+      ja: "投稿の本文 (ローカルの場合Markdown風のフォーマット)"
+      en: "The text of this post (in Markdown like format if local)"
+  - name: "textHtml"
+    type: "string"
+    optional: true
+    desc:
+      ja: "投稿の本文 (HTML) (投稿時は無視)"
+      en: "The text of this post (in HTML. Ignored when posting.)"
   - name: "mediaIds"
     type: "id(DriveFile)[]"
     optional: true

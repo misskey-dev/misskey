@@ -8,7 +8,6 @@ import { pack as packChannel } from './channel';
 import Vote from './poll-vote';
 import Reaction from './post-reaction';
 import { pack as packFile } from './drive-file';
-import parse from '../common/text';
 
 const Post = db.get<IPost>('posts');
 
@@ -31,6 +30,7 @@ export type IPost = {
 	repostId: mongo.ObjectID;
 	poll: any; // todo
 	text: string;
+	textHtml: string;
 	cw: string;
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;
@@ -102,11 +102,6 @@ export const pack = async (
 
 	delete _post.mentions;
 	if (_post.geo) delete _post.geo.type;
-
-	// Parse text
-	if (_post.text) {
-		_post.ast = parse(_post.text);
-	}
 
 	// Populate user
 	_post.user = packUser(_post.userId, meId);
