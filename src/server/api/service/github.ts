@@ -42,7 +42,8 @@ module.exports = async (app: express.Application) => {
 				const commit = event.commit;
 				const parent = commit.parents[0];
 
-				queue.create('gitHubFailureReport', {
+				queue.create('http', {
+					type: 'gitHubFailureReport',
 					userId: bot._id,
 					parentUrl: parent.url,
 					htmlUrl: commit.html_url,

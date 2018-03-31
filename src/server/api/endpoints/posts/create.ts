@@ -16,7 +16,7 @@ import ChannelWatching from '../../../../models/channel-watching';
 import { pack } from '../../../../models/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
-import event, { pushSw, publishChannelStream } from '../../event';
+import event, { pushSw, publishChannelStream } from '../../../../common/event';
 import getAcct from '../../../../common/user/get-acct';
 import parseAcct from '../../../../common/user/parse-acct';
 import config from '../../../../conf';

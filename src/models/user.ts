@@ -97,6 +97,9 @@ export type IUser = {
 	account: ILocalAccount | IRemoteAccount;
 };
 
+export type ILocalUser = IUser & { account: ILocalAccount };
+export type IRemoteUser = IUser & { account: IRemoteAccount };
+
 export function init(user): IUser {
 	user._id = new mongo.ObjectID(user._id);
 	user.avatarId = new mongo.ObjectID(user.avatarId);

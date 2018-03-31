@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import * as redis from 'redis';
-import swPush from './common/push-sw';
-import config from '../../conf';
+import swPush from './push-sw';
+import config from '../conf';
 
 type ID = string | mongo.ObjectID;
 

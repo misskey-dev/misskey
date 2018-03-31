@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { default as User, ILocalAccount, IUser } from '../../../models/user';
 import Signin, { pack } from '../../../models/signin';
-import event from '../event';
+import event from '../../../common/event';
 import signin from '../common/signin';
 import config from '../../../conf';
 

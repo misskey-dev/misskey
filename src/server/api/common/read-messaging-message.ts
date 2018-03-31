@@ -1,9 +1,9 @@
 import * as mongo from 'mongodb';
 import Message from '../../../models/messaging-message';
 import { IMessagingMessage as IMessage } from '../../../models/messaging-message';
-import publishUserStream from '../event';
-import { publishMessagingStream } from '../event';
-import { publishMessagingIndexStream } from '../event';
+import publishUserStream from '../../../common/event';
+import { publishMessagingStream } from '../../../common/event';
+import { publishMessagingIndexStream } from '../../../common/event';
 
 /**
  * Mark as read message(s)

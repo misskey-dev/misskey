@@ -1,6 +1,6 @@
 import * as request from 'request';
-import User from '../models/user';
-const createPost = require('../server/api/endpoints/posts/create');
+import User from '../../models/user';
+const createPost = require('../../server/api/endpoints/posts/create');
 
 export default ({ data }, done) => {
 	const asyncBot = User.findOne({ _id: data.userId });
