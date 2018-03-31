@@ -17,7 +17,7 @@ const should = _chai.should();
 
 _chai.use(chaiHttp);
 
-const server = require('../built/server/api/server');
+const server = require('../built/server/api');
 const db = require('../built/db/mongodb').default;
 
 const async = fn => (done) => {
