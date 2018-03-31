@@ -15,7 +15,7 @@
 				</div>
 			</header>
 			<div class="text">
-				<mk-post-html :ast="post.ast"/>
+				<mk-post-html :html="post.textHtml"/>
 			</div>
 		</div>
 	</div>

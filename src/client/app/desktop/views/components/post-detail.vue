@@ -38,8 +38,8 @@
 			</router-link>
 		</header>
 		<div class="body">
-			<mk-post-html :class="$style.text" v-if="p.ast" :ast="p.ast" :i="os.i"/>
-			<div class="media" v-if="p.media">
+			<mk-post-html :class="$style.text" v-if="p.text" ref="text" :text="p.text" :i="os.i"/>
+			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media"/>
 			</div>
 			<mk-poll v-if="p.poll" :post="p"/>
@@ -109,6 +109,7 @@ export default Vue.extend({
 			context: [],
 			contextFetching: false,
 			replies: [],
+			urls: []
 		};
 	},
 	computed: {
@@ -130,15 +131,6 @@ export default Vue.extend({
 		},
 		title(): string {
 			return dateStringify(this.p.createdAt);
-		},
-		urls(): string[] {
-			if (this.p.ast) {
-				return this.p.ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
-			} else {
-				return null;
-			}
 		}
 	},
 	mounted() {
@@ -168,6 +160,21 @@ export default Vue.extend({
 					});
 				});
 			}
+		}
+	},
+	watch: {
+		post: {
+			handler(newPost, oldPost) {
+				if (!oldPost || newPost.text !== oldPost.text) {
+					this.$nextTick(() => {
+						const elements = this.$refs.text.$el.getElementsByTagName('a');
+
+						this.urls = [].filter.call(elements, ({ origin }) => origin !== location.origin)
+							.map(({ href }) => href);
+					});
+				}
+			},
+			immediate: true
 		}
 	},
 	methods: {

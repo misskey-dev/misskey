@@ -2,10 +2,10 @@
 <div class="mk-sub-post-content">
 	<div class="body">
 		<a class="reply" v-if="post.replyId">%fa:reply%</a>
-		<mk-post-html v-if="post.ast" :ast="post.ast" :i="os.i"/>
+		<mk-post-html v-if="post.text" :ast="post.text" :i="os.i"/>
 		<a class="rp" v-if="post.repostId">RP: ...</a>
 	</div>
-	<details v-if="post.media">
+	<details v-if="post.media.length > 0">
 		<summary>({{ post.media.length }}個のメディア)</summary>
 		<mk-media-list :media-list="post.media"/>
 	</details>

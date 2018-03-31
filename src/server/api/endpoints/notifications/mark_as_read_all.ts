@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import Notification from '../../../../models/notification';
-import event from '../../event';
+import event from '../../../../common/event';
 
 /**
  * Mark as read all notifications

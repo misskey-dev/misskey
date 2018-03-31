@@ -38,11 +38,11 @@
 			</div>
 		</header>
 		<div class="body">
-			<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
+			<mk-post-html v-if="p.text" :ast="p.text" :i="os.i" :class="$style.text"/>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
-			<div class="media" v-if="p.media">
+			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media"/>
 			</div>
 			<mk-poll v-if="p.poll" :post="p"/>
@@ -103,6 +103,7 @@ export default Vue.extend({
 			context: [],
 			contextFetching: false,
 			replies: [],
+			urls: []
 		};
 	},
 	computed: {
@@ -127,15 +128,6 @@ export default Vue.extend({
 					.map(key => this.p.reactionCounts[key])
 					.reduce((a, b) => a + b)
 				: 0;
-		},
-		urls(): string[] {
-			if (this.p.ast) {
-				return this.p.ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
-			} else {
-				return null;
-			}
 		}
 	},
 	mounted() {
@@ -165,6 +157,21 @@ export default Vue.extend({
 					});
 				});
 			}
+		}
+	},
+	watch: {
+		post: {
+			handler(newPost, oldPost) {
+				if (!oldPost || newPost.text !== oldPost.text) {
+					this.$nextTick(() => {
+						const elements = this.$refs.text.$el.getElementsByTagName('a');
+
+						this.urls = [].filter.call(elements, ({ origin }) => origin !== location.origin)
+							.map(({ href }) => href);
+					});
+				}
+			},
+			immediate: true
 		}
 	},
 	methods: {

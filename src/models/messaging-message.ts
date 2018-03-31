@@ -3,7 +3,6 @@ import deepcopy = require('deepcopy');
 import { pack as packUser } from './user';
 import { pack as packFile } from './drive-file';
 import db from '../db/mongodb';
-import parse from '../common/text';
 
 const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
 export default MessagingMessage;
@@ -12,6 +11,7 @@ export interface IMessagingMessage {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	text: string;
+	textHtml: string;
 	userId: mongo.ObjectID;
 	recipientId: mongo.ObjectID;
 	isRead: boolean;
@@ -59,11 +59,6 @@ export const pack = (
 	// Rename _id to id
 	_message.id = _message._id;
 	delete _message._id;
-
-	// Parse text
-	if (_message.text) {
-		_message.ast = parse(_message.text);
-	}
 
 	// Populate user
 	_message.user = await packUser(_message.userId, me);

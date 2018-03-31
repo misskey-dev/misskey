@@ -5,7 +5,7 @@ import $ from 'cafy';
 import User, { pack as packUser } from '../../../../models/user';
 import Following from '../../../../models/following';
 import notify from '../../common/notify';
-import event from '../../event';
+import event from '../../../../common/event';
 
 /**
  * Follow a user

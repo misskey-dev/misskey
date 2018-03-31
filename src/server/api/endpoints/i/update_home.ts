@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import User from '../../../../models/user';
-import event from '../../event';
+import event from '../../../../common/event';
 
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'home' parameter

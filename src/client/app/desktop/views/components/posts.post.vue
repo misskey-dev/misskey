@@ -38,10 +38,10 @@
 				</p>
 				<div class="text">
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
+					<mk-post-html v-if="p.textHtml" ref="text" :html="p.textHtml" :i="os.i" :class="$style.text"/>
 					<a class="rp" v-if="p.repost">RP:</a>
 				</div>
-				<div class="media" v-if="p.media">
+				<div class="media" v-if="p.media.length > 0">
 					<mk-media-list :media-list="p.media"/>
 				</div>
 				<mk-poll v-if="p.poll" :post="p" ref="pollViewer"/>
@@ -112,7 +112,8 @@ export default Vue.extend({
 		return {
 			isDetailOpened: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			urls: []
 		};
 	},
 	computed: {
@@ -140,15 +141,6 @@ export default Vue.extend({
 		},
 		url(): string {
 			return `/@${this.acct}/${this.p.id}`;
-		},
-		urls(): string[] {
-			if (this.p.ast) {
-				return this.p.ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
-			} else {
-				return null;
-			}
 		}
 	},
 	created() {
@@ -188,6 +180,21 @@ export default Vue.extend({
 		if ((this as any).os.isSignedIn) {
 			this.connection.off('_connected_', this.onStreamConnected);
 			(this as any).os.stream.dispose(this.connectionId);
+		}
+	},
+	watch: {
+		post: {
+			handler(newPost, oldPost) {
+				if (!oldPost || newPost.textHtml !== oldPost.textHtml) {
+					this.$nextTick(() => {
+						const elements = this.$refs.text.$el.getElementsByTagName('a');
+
+						this.urls = [].filter.call(elements, ({ origin }) => origin !== location.origin)
+							.map(({ href }) => href);
+					});
+				}
+			},
+			immediate: true
 		}
 	},
 	methods: {
@@ -450,7 +457,7 @@ export default Vue.extend({
 					font-size 1.1em
 					color #717171
 
-					>>> .quote
+					>>> blockquote
 						margin 8px
 						padding 6px 12px
 						color #aaa

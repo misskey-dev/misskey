@@ -1,7 +1,7 @@
 /**
  * Mention
  */
-import parseAcct from '../../../common/user/parse-acct';
+import parseAcct from '../../../../common/user/parse-acct';
 
 module.exports = text => {
 	const match = text.match(/^(?:@[a-zA-Z0-9\-]+){1,2}/);

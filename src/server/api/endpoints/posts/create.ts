@@ -3,7 +3,8 @@
  */
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
-import parse from '../../../../common/text';
+import html from '../../../../common/text/html';
+import parse from '../../../../common/text/parse';
 import { default as Post, IPost, isValidText, isValidCw } from '../../../../models/post';
 import { default as User, ILocalAccount, IUser } from '../../../../models/user';
 import { default as Channel, IChannel } from '../../../../models/channel';
@@ -15,7 +16,7 @@ import ChannelWatching from '../../../../models/channel-watching';
 import { pack } from '../../../../models/post';
 import notify from '../../common/notify';
 import watch from '../../common/watch-post';
-import event, { pushSw, publishChannelStream } from '../../event';
+import event, { pushSw, publishChannelStream } from '../../../../common/event';
 import getAcct from '../../../../common/user/get-acct';
 import parseAcct from '../../../../common/user/parse-acct';
 import config from '../../../../conf';
@@ -254,11 +255,12 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		createdAt: new Date(),
 		channelId: channel ? channel._id : undefined,
 		index: channel ? channel.index + 1 : undefined,
-		mediaIds: files ? files.map(file => file._id) : undefined,
+		mediaIds: files ? files.map(file => file._id) : [],
 		replyId: reply ? reply._id : undefined,
 		repostId: repost ? repost._id : undefined,
 		poll: poll,
 		text: text,
+		textHtml: tokens === null ? null : html(tokens),
 		cw: cw,
 		tags: tags,
 		userId: user._id,

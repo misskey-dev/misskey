@@ -4,13 +4,13 @@
 		<img class="avatar" :src="`${message.user.avatarUrl}?thumbnail&size=80`" alt=""/>
 	</router-link>
 	<div class="content">
-		<div class="balloon" :data-no-text="message.text == null">
+		<div class="balloon" :data-no-text="message.textHtml == null">
 			<p class="read" v-if="isMe && message.isRead">%i18n:common.tags.mk-messaging-message.is-read%</p>
 			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
-				<mk-post-html class="text" v-if="message.ast" :ast="message.ast" :i="os.i"/>
+				<mk-post-html class="text" v-if="message.textHtml" ref="text" :html="message.textHtml" :i="os.i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
@@ -38,21 +38,32 @@ import getAcct from '../../../../../common/user/get-acct';
 
 export default Vue.extend({
 	props: ['message'],
+	data() {
+		return {
+			urls: []
+		};
+	},
 	computed: {
 		acct() {
 			return getAcct(this.message.user);
 		},
 		isMe(): boolean {
 			return this.message.userId == (this as any).os.i.id;
-		},
-		urls(): string[] {
-			if (this.message.ast) {
-				return this.message.ast
-					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
-					.map(t => t.url);
-			} else {
-				return null;
-			}
+		}
+	},
+	watch: {
+		message: {
+			handler(newMessage, oldMessage) {
+				if (!oldMessage || newMessage.textHtml !== oldMessage.textHtml) {
+					this.$nextTick(() => {
+						const elements = this.$refs.text.$el.getElementsByTagName('a');
+
+						this.urls = [].filter.call(elements, ({ origin }) => origin !== location.origin)
+							.map(({ href }) => href);
+					});
+				}
+			},
+			immediate: true
 		}
 	}
 });
