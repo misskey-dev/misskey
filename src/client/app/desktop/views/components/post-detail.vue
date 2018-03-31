@@ -27,13 +27,13 @@
 		</p>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="`/@${acct}`">
+		<router-link class="avatar-anchor" :to="`/@${pAcct}`">
 			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<header>
-			<router-link class="name" :to="`/@${acct}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
-			<span class="username">@{{ acct }}</span>
-			<router-link class="time" :to="`/@${acct}/${p.id}`">
+			<router-link class="name" :to="`/@${pAcct}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
+			<span class="username">@{{ pAcct }}</span>
+			<router-link class="time" :to="`/@${pAcct}/${p.id}`">
 				<mk-time :time="p.createdAt"/>
 			</router-link>
 		</header>
@@ -131,6 +131,9 @@ export default Vue.extend({
 			return dateStringify(this.p.createdAt);
 		},
 		acct(): string {
+			return getAcct(this.post.user);
+		},
+		pAcct(): string {
 			return getAcct(this.p.user);
 		},
 		urls(): string[] {
