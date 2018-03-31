@@ -4,7 +4,7 @@ import signin from './signin.vue';
 import signup from './signup.vue';
 import forkit from './forkit.vue';
 import nav from './nav.vue';
-import postHtml from './post-html.vue';
+import postHtml from './post-html';
 import poll from './poll.vue';
 import pollEditor from './poll-editor.vue';
 import reactionIcon from './reaction-icon.vue';

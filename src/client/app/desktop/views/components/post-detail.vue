@@ -38,7 +38,7 @@
 			</router-link>
 		</header>
 		<div class="body">
-			<mk-post-html :class="$style.text" v-if="p.text" ref="text" :text="p.text" :i="os.i"/>
+			<mk-post-html :class="$style.text" v-if="p.text" :text="p.text" :i="os.i"/>
 			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media"/>
 			</div>
@@ -79,6 +79,7 @@
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 import getAcct from '../../../../../common/user/get-acct';
+import parse from '../../../../../common/text/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
 import MkRepostFormWindow from './repost-form-window.vue';
@@ -90,6 +91,7 @@ export default Vue.extend({
 	components: {
 		XSub
 	},
+
 	props: {
 		post: {
 			type: Object,
@@ -99,19 +101,15 @@ export default Vue.extend({
 			default: false
 		}
 	},
-	computed: {
-		acct() {
-			return getAcct(this.post.user);
-		}
-	},
+
 	data() {
 		return {
 			context: [],
 			contextFetching: false,
-			replies: [],
-			urls: []
+			replies: []
 		};
 	},
+
 	computed: {
 		isRepost(): boolean {
 			return (this.post.repost &&
@@ -131,8 +129,22 @@ export default Vue.extend({
 		},
 		title(): string {
 			return dateStringify(this.p.createdAt);
+		},
+		acct(): string {
+			return getAcct(this.p.user);
+		},
+		urls(): string[] {
+			if (this.p.text) {
+				const ast = parse(this.p.text);
+				return ast
+					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+					.map(t => t.url);
+			} else {
+				return null;
+			}
 		}
 	},
+
 	mounted() {
 		// Get replies
 		if (!this.compact) {
@@ -162,21 +174,7 @@ export default Vue.extend({
 			}
 		}
 	},
-	watch: {
-		post: {
-			handler(newPost, oldPost) {
-				if (!oldPost || newPost.text !== oldPost.text) {
-					this.$nextTick(() => {
-						const elements = this.$refs.text.$el.getElementsByTagName('a');
 
-						this.urls = [].filter.call(elements, ({ origin }) => origin !== location.origin)
-							.map(({ href }) => href);
-					});
-				}
-			},
-			immediate: true
-		}
-	},
 	methods: {
 		fetchContext() {
 			this.contextFetching = true;
