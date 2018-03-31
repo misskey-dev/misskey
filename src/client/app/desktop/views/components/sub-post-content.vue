@@ -5,7 +5,7 @@
 		<mk-post-html :ast="post.ast" :i="os.i"/>
 		<a class="rp" v-if="post.repostId" :href="`/post:${post.repostId}`">RP: ...</a>
 	</div>
-	<details v-if="post.media">
+	<details v-if="post.media.length > 0">
 		<summary>({{ post.media.length }}つのメディア)</summary>
 		<mk-media-list :media-list="post.media"/>
 	</details>

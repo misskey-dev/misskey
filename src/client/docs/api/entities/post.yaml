@@ -33,8 +33,8 @@ props:
     type: "id(DriveFile)[]"
     optional: true
     desc:
-      ja: "添付されているメディアのID"
-      en: "The IDs of the attached media"
+      ja: "添付されているメディアのID (なければレスポンスでは空配列)"
+      en: "The IDs of the attached media (empty array for response if no media is attached)"
   - name: "media"
     type: "entity(DriveFile)[]"
     optional: true

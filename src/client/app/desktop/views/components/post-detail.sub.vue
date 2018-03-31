@@ -17,7 +17,7 @@
 		</header>
 		<div class="body">
 			<mk-post-html v-if="post.ast" :ast="post.ast" :i="os.i" :class="$style.text"/>
-			<div class="media" v-if="post.media">
+			<div class="media" v-if="post.media > 0">
 				<mk-media-list :media-list="post.media"/>
 			</div>
 		</div>

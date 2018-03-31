@@ -254,7 +254,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 		createdAt: new Date(),
 		channelId: channel ? channel._id : undefined,
 		index: channel ? channel.index + 1 : undefined,
-		mediaIds: files ? files.map(file => file._id) : undefined,
+		mediaIds: files ? files.map(file => file._id) : [],
 		replyId: reply ? reply._id : undefined,
 		repostId: repost ? repost._id : undefined,
 		poll: poll,

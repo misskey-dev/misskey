@@ -41,7 +41,7 @@
 					<mk-post-html v-if="p.ast" :ast="p.ast" :i="os.i" :class="$style.text"/>
 					<a class="rp" v-if="p.repost">RP:</a>
 				</div>
-				<div class="media" v-if="p.media">
+				<div class="media" v-if="p.media.length > 0">
 					<mk-media-list :media-list="p.media"/>
 				</div>
 				<mk-poll v-if="p.poll" :post="p" ref="pollViewer"/>

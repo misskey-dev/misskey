@@ -5,7 +5,7 @@
 		<mk-post-html v-if="post.ast" :ast="post.ast" :i="os.i"/>
 		<a class="rp" v-if="post.repostId">RP: ...</a>
 	</div>
-	<details v-if="post.media">
+	<details v-if="post.media.length > 0">
 		<summary>({{ post.media.length }}個のメディア)</summary>
 		<mk-media-list :media-list="post.media"/>
 	</details>
