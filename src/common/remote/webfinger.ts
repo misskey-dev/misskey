@@ -5,12 +5,12 @@ const webFinger = new WebFinger({});
 type ILink = {
   href: string;
   rel: string;
-}
+};
 
 type IWebFinger = {
-  links: Array<ILink>;
+  links: ILink[];
   subject: string;
-}
+};
 
 export default (query, verifier): Promise<IWebFinger> => new Promise((res, rej) => webFinger.lookup(query, (error, result) => {
 	if (error) {

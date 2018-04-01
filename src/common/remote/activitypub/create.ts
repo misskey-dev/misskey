@@ -3,6 +3,7 @@ import config from '../../../conf';
 import Post from '../../../models/post';
 import RemoteUserObject, { IRemoteUserObject } from '../../../models/remote-user-object';
 import uploadFromUrl from '../../drive/upload_from_url';
+import Resolver from './resolver';
 const createDOMPurify = require('dompurify');
 
 function createRemoteUserObject($ref, $id, { id }) {
@@ -17,7 +18,7 @@ function createRemoteUserObject($ref, $id, { id }) {
 
 async function createImage(actor, object) {
 	if ('attributedTo' in object && actor.account.uri !== object.attributedTo) {
-		throw new Error;
+		throw new Error();
 	}
 
 	const { _id } = await uploadFromUrl(object.url, actor);
@@ -26,7 +27,7 @@ async function createImage(actor, object) {
 
 async function createNote(resolver, actor, object) {
 	if ('attributedTo' in object && actor.account.uri !== object.attributedTo) {
-		throw new Error;
+		throw new Error();
 	}
 
 	const mediaIds = 'attachment' in object &&
@@ -69,10 +70,10 @@ async function createNote(resolver, actor, object) {
 	return createRemoteUserObject('posts', _id, object);
 }
 
-export default async function create(parentResolver, actor, value): Promise<Promise<IRemoteUserObject>[]> {
+export default async function create(parentResolver: Resolver, actor, value): Promise<Array<Promise<IRemoteUserObject>>> {
 	const results = await parentResolver.resolveRemoteUserObjects(value);
 
-	return results.map(asyncResult => asyncResult.then(({ resolver, object }) => {
+	return results.map(promisedResult => promisedResult.then(({ resolver, object }) => {
 		switch (object.type) {
 		case 'Image':
 			return createImage(actor, object);
@@ -83,4 +84,4 @@ export default async function create(parentResolver, actor, value): Promise<Prom
 
 		return null;
 	}));
-};
+}

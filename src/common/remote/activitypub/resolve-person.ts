@@ -12,10 +12,10 @@ async function isCollection(collection) {
 
 export default async (value, usernameLower, hostLower, acctLower) => {
 	if (!validateUsername(usernameLower)) {
-		throw new Error;
+		throw new Error();
 	}
 
-	const { resolver, object } = await (new Resolver).resolveOne(value);
+	const { resolver, object } = await new Resolver().resolveOne(value);
 
 	if (
 		object === null ||
@@ -25,7 +25,7 @@ export default async (value, usernameLower, hostLower, acctLower) => {
 		!isValidName(object.name) ||
 		!isValidDescription(object.summary)
 	) {
-		throw new Error;
+		throw new Error();
 	}
 
 	const [followers, following, outbox, finger] = await Promise.all([

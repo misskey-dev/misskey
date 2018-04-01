@@ -29,7 +29,7 @@ async function resolveUnrequestedOne(this: Resolver, value) {
 			!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
 			object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 	)) {
-		throw new Error;
+		throw new Error();
 	}
 
 	return { resolver, object };
@@ -57,13 +57,13 @@ async function resolveCollection(this: Resolver, value) {
 }
 
 export default class Resolver {
-	requesting: Set<string>;
+	private requesting: Set<string>;
 
 	constructor(iterable?: Iterable<string>) {
 		this.requesting = new Set(iterable);
 	}
 
-	async resolve(value): Promise<Promise<IResult>[]> {
+	public async resolve(value): Promise<Array<Promise<IResult>>> {
 		const collection = await resolveCollection.call(this, value);
 
 		return collection
@@ -71,15 +71,15 @@ export default class Resolver {
 			.map(resolveUnrequestedOne.bind(this));
 	}
 
-	resolveOne(value) {
+	public resolveOne(value) {
 		if (this.requesting.has(value)) {
-			throw new Error;
+			throw new Error();
 		}
 
 		return resolveUnrequestedOne.call(this, value);
 	}
 
-	async resolveRemoteUserObjects(value) {
+	public async resolveRemoteUserObjects(value) {
 		const collection = await resolveCollection.call(this, value);
 
 		return collection.filter(element => !this.requesting.has(element)).map(element => {
