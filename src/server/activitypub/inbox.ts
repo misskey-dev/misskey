@@ -11,16 +11,32 @@ app.use(bodyParser.json());
 app.post('/@:user/inbox', async (req, res) => {
 	let parsed;
 
+	req.headers.authorization = 'Signature ' + req.headers.signature;
+
 	try {
 		parsed = parseRequest(req);
 	} catch (exception) {
 		return res.sendStatus(401);
 	}
 
-	const user = await User.findOne({
-		host: { $ne: null },
-		'account.publicKey.id': parsed.keyId
-	});
+	const keyIdLower = parsed.keyId.toLowerCase();
+	let query;
+
+	if (keyIdLower.startsWith('acct:')) {
+		const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
+		if (host === null) {
+			return res.sendStatus(401);
+		}
+
+		query = { usernameLower: username, hostLower: host };
+	} else {
+		query = {
+			host: { $ne: null },
+			'account.publicKey.id': parsed.keyId
+		};
+	}
+
+	const user = await User.findOne(query);
 
 	if (user === null) {
 		return res.sendStatus(401);
