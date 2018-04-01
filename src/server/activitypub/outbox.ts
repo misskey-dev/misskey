@@ -1,19 +1,16 @@
 import * as express from 'express';
 import context from '../../common/remote/activitypub/renderer/context';
-import render from '../../common/remote/activitypub/renderer/note';
+import renderNote from '../../common/remote/activitypub/renderer/note';
+import renderOrderedCollection from '../../common/remote/activitypub/renderer/ordered-collection';
 import parseAcct from '../../common/user/parse-acct';
+import config from '../../conf';
 import Post from '../../models/post';
 import User from '../../models/user';
 
 const app = express();
 app.disable('x-powered-by');
 
-app.get('/@:user/:post', async (req, res, next) => {
-	const accepted = req.accepts(['html', 'application/activity+json', 'application/ld+json']);
-	if (!(['application/activity+json', 'application/ld+json'] as any[]).includes(accepted)) {
-		return next();
-	}
-
+app.get('/@:user/outbox', async (req, res) => {
 	const { username, host } = parseAcct(req.params.user);
 	if (host !== null) {
 		return res.sendStatus(422);
@@ -27,15 +24,19 @@ app.get('/@:user/:post', async (req, res, next) => {
 		return res.sendStatus(404);
 	}
 
-	const post = await Post.findOne({
-		_id: req.params.post,
-		userId: user._id
-	});
-	if (post === null) {
-		return res.sendStatus(404);
+	const id = `${config.url}/@${user.username}/inbox`;
+
+	if (username !== user.username) {
+		return res.redirect(id);
 	}
 
-	const rendered = await render(user, post);
+	const posts = await Post.find({ userId: user._id }, {
+		limit: 20,
+		sort: { _id: -1 }
+	});
+
+	const renderedPosts = await Promise.all(posts.map(post => renderNote(user, post)));
+	const rendered = renderOrderedCollection(id, user.postsCount, renderedPosts);
 	rendered['@context'] = context;
 
 	res.json(rendered);
