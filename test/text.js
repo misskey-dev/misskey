@@ -5,7 +5,7 @@
 const assert = require('assert');
 
 const analyze = require('../built/common/text/parse').default;
-const syntaxhighlighter = require('../built/common/text/core/syntax-highlighter').default;
+const syntaxhighlighter = require('../built/common/text/parse/core/syntax-highlighter').default;
 
 describe('Text', () => {
 	it('can be analyzed', () => {
