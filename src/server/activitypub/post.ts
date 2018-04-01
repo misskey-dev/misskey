@@ -36,7 +36,7 @@ app.get('/@:user/:post', async (req, res, next) => {
 		return res.sendStatus(404);
 	}
 
-	const asyncFiles = DriveFile.find({ _id: { $in: post.mediaIds } });
+	const promisedFiles = DriveFile.find({ _id: { $in: post.mediaIds } });
 	let inReplyTo;
 
 	if (post.replyId) {
@@ -69,7 +69,7 @@ app.get('/@:user/:post', async (req, res, next) => {
 		to: 'https://www.w3.org/ns/activitystreams#Public',
 		cc: `${attributedTo}/followers`,
 		inReplyTo,
-		attachment: (await asyncFiles).map(({ _id, contentType }) => ({
+		attachment: (await promisedFiles).map(({ _id, contentType }) => ({
 			type: 'Document',
 			mediaType: contentType,
 			url: `${config.drive_url}/${_id}`
