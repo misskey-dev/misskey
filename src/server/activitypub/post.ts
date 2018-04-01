@@ -11,7 +11,7 @@ app.disable('x-powered-by');
 
 app.get('/@:user/:post', async (req, res, next) => {
 	const accepted = req.accepts(['html', 'application/activity+json', 'application/ld+json']);
-	if (!(['application/activity+json', 'application/ld+json'] as Array<any>).includes(accepted)) {
+	if (!(['application/activity+json', 'application/ld+json'] as any[]).includes(accepted)) {
 		return next();
 	}
 
