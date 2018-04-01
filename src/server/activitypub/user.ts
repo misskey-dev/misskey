@@ -1,16 +1,15 @@
 import * as express from 'express';
-
-import config from '../conf';
-import { extractPublic } from '../crypto_key';
-import parseAcct from '../common/user/parse-acct';
-import User, { ILocalAccount } from '../models/user';
+import config from '../../conf';
+import { extractPublic } from '../../crypto_key';
+import parseAcct from '../../common/user/parse-acct';
+import User, { ILocalAccount } from '../../models/user';
 
 const app = express();
 app.disable('x-powered-by');
 
 app.get('/@:user', async (req, res, next) => {
 	const accepted = req.accepts(['html', 'application/activity+json', 'application/ld+json']);
-	if (!['application/activity+json', 'application/ld+json'].includes(accepted)) {
+	if (!(['application/activity+json', 'application/ld+json'] as Array<any>).includes(accepted)) {
 		return next();
 	}
 
@@ -40,6 +39,7 @@ app.get('/@:user', async (req, res, next) => {
 		],
 		type: 'Person',
 		id,
+		inbox: `${id}/inbox`,
 		preferredUsername: user.username,
 		name: user.name,
 		summary: user.description,

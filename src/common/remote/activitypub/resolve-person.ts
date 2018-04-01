@@ -62,6 +62,10 @@ export default async (value, usernameLower, hostLower, acctLower) => {
 		host: toUnicode(finger.subject.replace(/^.*?@/, '')),
 		hostLower,
 		account: {
+			publicKey: {
+				id: object.publicKey.id,
+				publicKeyPem: object.publicKey.publicKeyPem
+			},
 			uri: object.id,
 		},
 	});
