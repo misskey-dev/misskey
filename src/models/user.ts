@@ -15,30 +15,6 @@ User.createIndex('account.token');
 
 export default User;
 
-export function validateUsername(username: string): boolean {
-	return typeof username == 'string' && /^[a-zA-Z0-9\-]{3,20}$/.test(username);
-}
-
-export function validatePassword(password: string): boolean {
-	return typeof password == 'string' && password != '';
-}
-
-export function isValidName(name: string): boolean {
-	return typeof name == 'string' && name.length < 30 && name.trim() != '';
-}
-
-export function isValidDescription(description: string): boolean {
-	return typeof description == 'string' && description.length < 500 && description.trim() != '';
-}
-
-export function isValidLocation(location: string): boolean {
-	return typeof location == 'string' && location.length < 50 && location.trim() != '';
-}
-
-export function isValidBirthday(birthday: string): boolean {
-	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
-}
-
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
@@ -60,8 +36,6 @@ type IUserBase = {
 	keywords: string[];
 	hostLower: string;
 };
-
-export type IUser = ILocalUser | IRemoteUser;
 
 export interface ILocalUser extends IUserBase {
 	host: null;
@@ -108,11 +82,37 @@ export interface IRemoteUser extends IUserBase {
 	};
 }
 
+export type IUser = ILocalUser | IRemoteUser;
+
 export const isLocalUser = (user: any): user is ILocalUser =>
 	user.host === null;
 
 export const isRemoteUser = (user: any): user is IRemoteUser =>
 	!isLocalUser(user);
+
+export function validateUsername(username: string): boolean {
+	return typeof username == 'string' && /^[a-zA-Z0-9\-]{3,20}$/.test(username);
+}
+
+export function validatePassword(password: string): boolean {
+	return typeof password == 'string' && password != '';
+}
+
+export function isValidName(name: string): boolean {
+	return typeof name == 'string' && name.length < 30 && name.trim() != '';
+}
+
+export function isValidDescription(description: string): boolean {
+	return typeof description == 'string' && description.length < 500 && description.trim() != '';
+}
+
+export function isValidLocation(location: string): boolean {
+	return typeof location == 'string' && location.length < 50 && location.trim() != '';
+}
+
+export function isValidBirthday(birthday: string): boolean {
+	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
+}
 
 export function init(user): IUser {
 	user._id = new mongo.ObjectID(user._id);
