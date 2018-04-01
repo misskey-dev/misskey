@@ -20,4 +20,4 @@ export default (redirect, respond) => async (req, res, next) => {
 	}
 
 	return respond(user, req, res, next);
-}
+};
