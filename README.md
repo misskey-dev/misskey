@@ -7,7 +7,7 @@ Misskey
 [![][dependencies-badge]][dependencies-link]
 [![][himawari-badge]][himasaku]
 [![][sakurako-badge]][himasaku]
-[![][agpl-3.0-badge]][AGPL-3.0]
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 > Lead Maintainer: [syuilo][syuilo-link]
 
@@ -49,6 +49,8 @@ If you want to donate to Misskey, please see [this](./docs/donate.ja.md).
 > Copyright (c) 2014-2018 syuilo
 
 Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
+
+[![][agpl-3.0-badge]][AGPL-3.0]
 
 [agpl-3.0]:           https://www.gnu.org/licenses/agpl-3.0.en.html
 [agpl-3.0-badge]:     https://img.shields.io/badge/license-AGPL--3.0-444444.svg?style=flat-square
