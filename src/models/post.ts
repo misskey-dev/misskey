@@ -48,7 +48,6 @@ export type IPost = {
 		heading: number;
 		speed: number;
 	};
-	tags: string[];
 };
 
 /**
