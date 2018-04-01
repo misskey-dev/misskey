@@ -49,7 +49,7 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 						port,
 						pathname,
 						search
-					} = new URL(followee.account as IRemoteAccount).inbox);
+					} = new URL((followee.account as IRemoteAccount).inbox);
 
 					const req = request({
 						protocol,
