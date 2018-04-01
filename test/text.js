@@ -4,7 +4,7 @@
 
 const assert = require('assert');
 
-const analyze = require('../built/common/text').default;
+const analyze = require('../built/common/text/parse').default;
 const syntaxhighlighter = require('../built/common/text/core/syntax-highlighter').default;
 
 describe('Text', () => {
