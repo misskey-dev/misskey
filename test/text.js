@@ -4,8 +4,8 @@
 
 const assert = require('assert');
 
-const analyze = require('../built/server/api/common/text').default;
-const syntaxhighlighter = require('../built/server/api/common/text/core/syntax-highlighter').default;
+const analyze = require('../built/common/text').default;
+const syntaxhighlighter = require('../built/common/text/core/syntax-highlighter').default;
 
 describe('Text', () => {
 	it('can be analyzed', () => {
