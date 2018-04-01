@@ -19,7 +19,7 @@ app.get('/@:user/inbox', async (req, res) => {
 
 	const user = await User.findOne({
 		host: { $ne: null },
-		account: { publicKey: { id: parsed.keyId } }
+		'account.publicKey.id': parsed.keyId
 	});
 
 	if (user === null) {
