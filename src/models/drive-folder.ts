@@ -3,7 +3,7 @@ import deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 import DriveFile from './drive-file';
 
-const DriveFolder = db.get<IDriveFolder>('drive_folders');
+const DriveFolder = db.get<IDriveFolder>('driveFolders');
 export default DriveFolder;
 
 export type IDriveFolder = {
