@@ -39,45 +39,6 @@ export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }
 
-type ILocalAccount = {
-	keypair: string;
-	email: string;
-	links: string[];
-	password: string;
-	token: string;
-	twitter: {
-		accessToken: string;
-		accessTokenSecret: string;
-		userId: string;
-		screenName: string;
-	};
-	line: {
-		userId: string;
-	};
-	profile: {
-		location: string;
-		birthday: string; // 'YYYY-MM-DD'
-		tags: string[];
-	};
-	lastUsedAt: Date;
-	isBot: boolean;
-	isPro: boolean;
-	twoFactorSecret: string;
-	twoFactorEnabled: boolean;
-	twoFactorTempSecret: string;
-	clientSettings: any;
-	settings: any;
-};
-
-type IRemoteAccount = {
-	inbox: string;
-	uri: string;
-	publicKey: {
-		id: string;
-		publicKeyPem: string;
-	};
-};
-
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
@@ -102,8 +63,50 @@ type IUserBase = {
 
 export type IUser = ILocalUser | IRemoteUser;
 
-export interface ILocalUser extends IUserBase { host: null; account: ILocalAccount; }
-export interface IRemoteUser extends IUserBase { host: string; account: IRemoteAccount; }
+export interface ILocalUser extends IUserBase {
+	host: null;
+	account: {
+		keypair: string;
+		email: string;
+		links: string[];
+		password: string;
+		token: string;
+		twitter: {
+			accessToken: string;
+			accessTokenSecret: string;
+			userId: string;
+			screenName: string;
+		};
+		line: {
+			userId: string;
+		};
+		profile: {
+			location: string;
+			birthday: string; // 'YYYY-MM-DD'
+			tags: string[];
+		};
+		lastUsedAt: Date;
+		isBot: boolean;
+		isPro: boolean;
+		twoFactorSecret: string;
+		twoFactorEnabled: boolean;
+		twoFactorTempSecret: string;
+		clientSettings: any;
+		settings: any;
+	};
+}
+
+export interface IRemoteUser extends IUserBase {
+	host: string;
+	account: {
+		inbox: string;
+		uri: string;
+		publicKey: {
+			id: string;
+			publicKeyPem: string;
+		};
+	};
+}
 
 export const isLocalUser = (user: any): user is ILocalUser =>
 	user.host === null;
