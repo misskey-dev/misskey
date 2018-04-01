@@ -1,6 +1,7 @@
 import * as express from 'express';
 import config from '../../conf';
 import { extractPublic } from '../../crypto_key';
+import context from '../../common/remote/activitypub/context';
 import parseAcct from '../../common/user/parse-acct';
 import User, { ILocalAccount } from '../../models/user';
 
@@ -33,10 +34,7 @@ app.get('/@:user', async (req, res, next) => {
 	}
 
 	res.json({
-		'@context': [
-			'https://www.w3.org/ns/activitystreams',
-			'https://w3id.org/security/v1'
-		],
+		'@context': context,
 		type: 'Person',
 		id,
 		inbox: `${id}/inbox`,
