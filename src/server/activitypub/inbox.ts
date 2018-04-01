@@ -8,7 +8,7 @@ const app = express();
 app.disable('x-powered-by');
 app.use(bodyParser.json());
 
-app.get('/@:user/inbox', async (req, res) => {
+app.post('/@:user/inbox', async (req, res) => {
 	let parsed;
 
 	try {
