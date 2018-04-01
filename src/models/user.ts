@@ -71,6 +71,10 @@ export type ILocalAccount = {
 
 export type IRemoteAccount = {
 	uri: string;
+	publicKey: {
+		id: string;
+		publicKeyPem: string;
+	};
 };
 
 export type IUser = {
@@ -276,61 +280,6 @@ export const pack = (
 	_user = await rap(_user);
 
 	resolve(_user);
-});
-
-/**
- * Pack a user for ActivityPub
- *
- * @param user target
- * @return Packed user
- */
-export const packForAp = (
-	user: string | mongo.ObjectID | IUser
-) => new Promise<any>(async (resolve, reject) => {
-
-	let _user: any;
-
-	const fields = {
-		// something
-	};
-
-	// Populate the user if 'user' is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
-		_user = await User.findOne({
-			_id: user
-		}, { fields });
-	} else if (typeof user === 'string') {
-		_user = await User.findOne({
-			_id: new mongo.ObjectID(user)
-		}, { fields });
-	} else {
-		_user = deepcopy(user);
-	}
-
-	if (!_user) return reject('invalid user arg.');
-
-	const userUrl = `${config.url}/@@${_user._id}`;
-
-	resolve({
-		"@context": ["https://www.w3.org/ns/activitystreams", {
-			"@language": "ja"
-		}],
-		"type": "Person",
-		"id": userUrl,
-		"following": `${userUrl}/following.json`,
-		"followers": `${userUrl}/followers.json`,
-		"liked": `${userUrl}/liked.json`,
-		"inbox": `${userUrl}/inbox.json`,
-		"outbox": `${userUrl}/outbox.json`,
-		"sharedInbox": `${config.url}/inbox`,
-		"url": `${config.url}/@${_user.username}`,
-		"preferredUsername": _user.username,
-		"name": _user.name,
-		"summary": _user.description,
-		"icon": [
-			`${config.drive_url}/${_user.avatarId}`
-		]
-	});
 });
 
 /*

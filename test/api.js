@@ -17,7 +17,7 @@ const should = _chai.should();
 
 _chai.use(chaiHttp);
 
-const server = require('../built/server/api/server');
+const server = require('../built/server/api');
 const db = require('../built/db/mongodb').default;
 
 const async = fn => (done) => {
@@ -46,12 +46,12 @@ describe('API', () => {
 	beforeEach(() => Promise.all([
 		db.get('users').drop(),
 		db.get('posts').drop(),
-		db.get('drive_files.files').drop(),
-		db.get('drive_files.chunks').drop(),
-		db.get('drive_folders').drop(),
+		db.get('driveFiles.files').drop(),
+		db.get('driveFiles.chunks').drop(),
+		db.get('driveFolders').drop(),
 		db.get('apps').drop(),
-		db.get('access_tokens').drop(),
-		db.get('auth_sessions').drop()
+		db.get('accessTokens').drop(),
+		db.get('authSessions').drop()
 	]));
 
 	it('greet server', done => {
@@ -195,7 +195,7 @@ describe('API', () => {
 		it('ユーザーが取得できる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/users/show', {
-				user_id: me._id.toString()
+				userId: me._id.toString()
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
@@ -204,14 +204,14 @@ describe('API', () => {
 
 		it('ユーザーが存在しなかったら怒る', async(async () => {
 			const res = await request('/users/show', {
-				user_id: '000000000000000000000000'
+				userId: '000000000000000000000000'
 			});
 			res.should.have.status(400);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
 			const res = await request('/users/show', {
-				user_id: 'kyoppie'
+				userId: 'kyoppie'
 			});
 			res.should.have.status(400);
 		}));
@@ -226,32 +226,32 @@ describe('API', () => {
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('created_post');
-			res.body.created_post.should.have.property('text').eql(post.text);
+			res.body.should.have.property('createdPost');
+			res.body.createdPost.should.have.property('text').eql(post.text);
 		}));
 
 		it('ファイルを添付できる', async(async () => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
-				user_id: me._id
+				userId: me._id
 			});
 			const res = await request('/posts/create', {
-				media_ids: [file._id.toString()]
+				mediaIds: [file._id.toString()]
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('created_post');
-			res.body.created_post.should.have.property('media_ids').eql([file._id.toString()]);
+			res.body.should.have.property('createdPost');
+			res.body.createdPost.should.have.property('mediaIds').eql([file._id.toString()]);
 		}));
 
 		it('他人のファイルは添付できない', async(async () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const file = await insertDriveFile({
-				user_id: hima._id
+				userId: hima._id
 			});
 			const res = await request('/posts/create', {
-				media_ids: [file._id.toString()]
+				mediaIds: [file._id.toString()]
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -259,7 +259,7 @@ describe('API', () => {
 		it('存在しないファイルは添付できない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/posts/create', {
-				media_ids: ['000000000000000000000000']
+				mediaIds: ['000000000000000000000000']
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -267,7 +267,7 @@ describe('API', () => {
 		it('不正なファイルIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/posts/create', {
-				media_ids: ['kyoppie']
+				mediaIds: ['kyoppie']
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -275,65 +275,65 @@ describe('API', () => {
 		it('返信できる', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
-				user_id: hima._id,
+				userId: hima._id,
 				text: 'ひま'
 			});
 
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
-				reply_id: himaPost._id.toString()
+				replyId: himaPost._id.toString()
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('created_post');
-			res.body.created_post.should.have.property('text').eql(post.text);
-			res.body.created_post.should.have.property('reply_id').eql(post.reply_id);
-			res.body.created_post.should.have.property('reply');
-			res.body.created_post.reply.should.have.property('text').eql(himaPost.text);
+			res.body.should.have.property('createdPost');
+			res.body.createdPost.should.have.property('text').eql(post.text);
+			res.body.createdPost.should.have.property('replyId').eql(post.replyId);
+			res.body.createdPost.should.have.property('reply');
+			res.body.createdPost.reply.should.have.property('text').eql(himaPost.text);
 		}));
 
 		it('repostできる', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
-				user_id: hima._id,
+				userId: hima._id,
 				text: 'こらっさくらこ！'
 			});
 
 			const me = await insertSakurako();
 			const post = {
-				repost_id: himaPost._id.toString()
+				repostId: himaPost._id.toString()
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('created_post');
-			res.body.created_post.should.have.property('repost_id').eql(post.repost_id);
-			res.body.created_post.should.have.property('repost');
-			res.body.created_post.repost.should.have.property('text').eql(himaPost.text);
+			res.body.should.have.property('createdPost');
+			res.body.createdPost.should.have.property('repostId').eql(post.repostId);
+			res.body.createdPost.should.have.property('repost');
+			res.body.createdPost.repost.should.have.property('text').eql(himaPost.text);
 		}));
 
 		it('引用repostできる', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
-				user_id: hima._id,
+				userId: hima._id,
 				text: 'こらっさくらこ！'
 			});
 
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
-				repost_id: himaPost._id.toString()
+				repostId: himaPost._id.toString()
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('created_post');
-			res.body.created_post.should.have.property('text').eql(post.text);
-			res.body.created_post.should.have.property('repost_id').eql(post.repost_id);
-			res.body.created_post.should.have.property('repost');
-			res.body.created_post.repost.should.have.property('text').eql(himaPost.text);
+			res.body.should.have.property('createdPost');
+			res.body.createdPost.should.have.property('text').eql(post.text);
+			res.body.createdPost.should.have.property('repostId').eql(post.repostId);
+			res.body.createdPost.should.have.property('repost');
+			res.body.createdPost.repost.should.have.property('text').eql(himaPost.text);
 		}));
 
 		it('文字数ぎりぎりで怒られない', async(async () => {
@@ -358,7 +358,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
-				reply_id: '000000000000000000000000'
+				replyId: '000000000000000000000000'
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(400);
@@ -367,7 +367,7 @@ describe('API', () => {
 		it('存在しないrepost対象で怒られる', async(async () => {
 			const me = await insertSakurako();
 			const post = {
-				repost_id: '000000000000000000000000'
+				repostId: '000000000000000000000000'
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(400);
@@ -377,7 +377,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const post = {
 				text: 'さく',
-				reply_id: 'kyoppie'
+				replyId: 'kyoppie'
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(400);
@@ -386,7 +386,7 @@ describe('API', () => {
 		it('不正なrepost対象IDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const post = {
-				repost_id: 'kyoppie'
+				repostId: 'kyoppie'
 			};
 			const res = await request('/posts/create', post, me);
 			res.should.have.status(400);
@@ -402,8 +402,8 @@ describe('API', () => {
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('created_post');
-			res.body.created_post.should.have.property('poll');
+			res.body.should.have.property('createdPost');
+			res.body.createdPost.should.have.property('poll');
 		}));
 
 		it('投票の選択肢が無くて怒られる', async(async () => {
@@ -439,11 +439,11 @@ describe('API', () => {
 		it('投稿が取得できる', async(async () => {
 			const me = await insertSakurako();
 			const myPost = await db.get('posts').insert({
-				user_id: me._id,
+				userId: me._id,
 				text: 'お腹ペコい'
 			});
 			const res = await request('/posts/show', {
-				post_id: myPost._id.toString()
+				postId: myPost._id.toString()
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
@@ -452,14 +452,14 @@ describe('API', () => {
 
 		it('投稿が存在しなかったら怒る', async(async () => {
 			const res = await request('/posts/show', {
-				post_id: '000000000000000000000000'
+				postId: '000000000000000000000000'
 			});
 			res.should.have.status(400);
 		}));
 
 		it('間違ったIDで怒られる', async(async () => {
 			const res = await request('/posts/show', {
-				post_id: 'kyoppie'
+				postId: 'kyoppie'
 			});
 			res.should.have.status(400);
 		}));
@@ -469,13 +469,13 @@ describe('API', () => {
 		it('リアクションできる', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
-				user_id: hima._id,
+				userId: hima._id,
 				text: 'ひま'
 			});
 
 			const me = await insertSakurako();
 			const res = await request('/posts/reactions/create', {
-				post_id: himaPost._id.toString(),
+				postId: himaPost._id.toString(),
 				reaction: 'like'
 			}, me);
 			res.should.have.status(204);
@@ -484,12 +484,12 @@ describe('API', () => {
 		it('自分の投稿にはリアクションできない', async(async () => {
 			const me = await insertSakurako();
 			const myPost = await db.get('posts').insert({
-				user_id: me._id,
+				userId: me._id,
 				text: 'お腹ペコい'
 			});
 
 			const res = await request('/posts/reactions/create', {
-				post_id: myPost._id.toString(),
+				postId: myPost._id.toString(),
 				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
@@ -498,19 +498,19 @@ describe('API', () => {
 		it('二重にリアクションできない', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
-				user_id: hima._id,
+				userId: hima._id,
 				text: 'ひま'
 			});
 
 			const me = await insertSakurako();
-			await db.get('post_reactions').insert({
-				user_id: me._id,
-				post_id: himaPost._id,
+			await db.get('postReactions').insert({
+				userId: me._id,
+				postId: himaPost._id,
 				reaction: 'like'
 			});
 
 			const res = await request('/posts/reactions/create', {
-				post_id: himaPost._id.toString(),
+				postId: himaPost._id.toString(),
 				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
@@ -519,7 +519,7 @@ describe('API', () => {
 		it('存在しない投稿にはリアクションできない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/posts/reactions/create', {
-				post_id: '000000000000000000000000',
+				postId: '000000000000000000000000',
 				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
@@ -534,7 +534,7 @@ describe('API', () => {
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/posts/reactions/create', {
-				post_id: 'kyoppie',
+				postId: 'kyoppie',
 				reaction: 'like'
 			}, me);
 			res.should.have.status(400);
@@ -545,19 +545,19 @@ describe('API', () => {
 		it('リアクションをキャンセルできる', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
-				user_id: hima._id,
+				userId: hima._id,
 				text: 'ひま'
 			});
 
 			const me = await insertSakurako();
-			await db.get('post_reactions').insert({
-				user_id: me._id,
-				post_id: himaPost._id,
+			await db.get('postReactions').insert({
+				userId: me._id,
+				postId: himaPost._id,
 				reaction: 'like'
 			});
 
 			const res = await request('/posts/reactions/delete', {
-				post_id: himaPost._id.toString()
+				postId: himaPost._id.toString()
 			}, me);
 			res.should.have.status(204);
 		}));
@@ -565,13 +565,13 @@ describe('API', () => {
 		it('リアクションしていない投稿はリアクションをキャンセルできない', async(async () => {
 			const hima = await insertHimawari();
 			const himaPost = await db.get('posts').insert({
-				user_id: hima._id,
+				userId: hima._id,
 				text: 'ひま'
 			});
 
 			const me = await insertSakurako();
 			const res = await request('/posts/reactions/delete', {
-				post_id: himaPost._id.toString()
+				postId: himaPost._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -579,7 +579,7 @@ describe('API', () => {
 		it('存在しない投稿はリアクションをキャンセルできない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/posts/reactions/delete', {
-				post_id: '000000000000000000000000'
+				postId: '000000000000000000000000'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -593,7 +593,7 @@ describe('API', () => {
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/posts/reactions/delete', {
-				post_id: 'kyoppie'
+				postId: 'kyoppie'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -604,7 +604,7 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			const res = await request('/following/create', {
-				user_id: hima._id.toString()
+				userId: hima._id.toString()
 			}, me);
 			res.should.have.status(204);
 		}));
@@ -613,12 +613,12 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
-				followee_id: hima._id,
-				follower_id: me._id,
-				deleted_at: new Date()
+				followeeId: hima._id,
+				followerId: me._id,
+				deletedAt: new Date()
 			});
 			const res = await request('/following/create', {
-				user_id: hima._id.toString()
+				userId: hima._id.toString()
 			}, me);
 			res.should.have.status(204);
 		}));
@@ -627,11 +627,11 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
-				followee_id: hima._id,
-				follower_id: me._id
+				followeeId: hima._id,
+				followerId: me._id
 			});
 			const res = await request('/following/create', {
-				user_id: hima._id.toString()
+				userId: hima._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -639,7 +639,7 @@ describe('API', () => {
 		it('存在しないユーザーはフォローできない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/following/create', {
-				user_id: '000000000000000000000000'
+				userId: '000000000000000000000000'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -647,7 +647,7 @@ describe('API', () => {
 		it('自分自身はフォローできない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/following/create', {
-				user_id: me._id.toString()
+				userId: me._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -661,7 +661,7 @@ describe('API', () => {
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/following/create', {
-				user_id: 'kyoppie'
+				userId: 'kyoppie'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -672,11 +672,11 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
-				followee_id: hima._id,
-				follower_id: me._id
+				followeeId: hima._id,
+				followerId: me._id
 			});
 			const res = await request('/following/delete', {
-				user_id: hima._id.toString()
+				userId: hima._id.toString()
 			}, me);
 			res.should.have.status(204);
 		}));
@@ -685,16 +685,16 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			await db.get('following').insert({
-				followee_id: hima._id,
-				follower_id: me._id,
-				deleted_at: new Date()
+				followeeId: hima._id,
+				followerId: me._id,
+				deletedAt: new Date()
 			});
 			await db.get('following').insert({
-				followee_id: hima._id,
-				follower_id: me._id
+				followeeId: hima._id,
+				followerId: me._id
 			});
 			const res = await request('/following/delete', {
-				user_id: hima._id.toString()
+				userId: hima._id.toString()
 			}, me);
 			res.should.have.status(204);
 		}));
@@ -703,7 +703,7 @@ describe('API', () => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
 			const res = await request('/following/delete', {
-				user_id: hima._id.toString()
+				userId: hima._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -711,7 +711,7 @@ describe('API', () => {
 		it('存在しないユーザーはフォロー解除できない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/following/delete', {
-				user_id: '000000000000000000000000'
+				userId: '000000000000000000000000'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -719,7 +719,7 @@ describe('API', () => {
 		it('自分自身はフォロー解除できない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/following/delete', {
-				user_id: me._id.toString()
+				userId: me._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -733,7 +733,7 @@ describe('API', () => {
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/following/delete', {
-				user_id: 'kyoppie'
+				userId: 'kyoppie'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -743,15 +743,15 @@ describe('API', () => {
 		it('ドライブ情報を取得できる', async(async () => {
 			const me = await insertSakurako();
 			await insertDriveFile({
-				user_id: me._id,
+				userId: me._id,
 				datasize: 256
 			});
 			await insertDriveFile({
-				user_id: me._id,
+				userId: me._id,
 				datasize: 512
 			});
 			await insertDriveFile({
-				user_id: me._id,
+				userId: me._id,
 				datasize: 1024
 			});
 			const res = await request('/drive', {}, me);
@@ -784,11 +784,11 @@ describe('API', () => {
 		it('名前を更新できる', async(async () => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
-				user_id: me._id
+				userId: me._id
 			});
 			const newName = 'いちごパスタ.png';
 			const res = await request('/drive/files/update', {
-				file_id: file._id.toString(),
+				fileId: file._id.toString(),
 				name: newName
 			}, me);
 			res.should.have.status(200);
@@ -800,10 +800,10 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const file = await insertDriveFile({
-				user_id: hima._id
+				userId: hima._id
 			});
 			const res = await request('/drive/files/update', {
-				file_id: file._id.toString(),
+				fileId: file._id.toString(),
 				name: 'いちごパスタ.png'
 			}, me);
 			res.should.have.status(400);
@@ -812,47 +812,47 @@ describe('API', () => {
 		it('親フォルダを更新できる', async(async () => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
-				user_id: me._id
+				userId: me._id
 			});
 			const folder = await insertDriveFolder({
-				user_id: me._id
+				userId: me._id
 			});
 			const res = await request('/drive/files/update', {
-				file_id: file._id.toString(),
-				folder_id: folder._id.toString()
+				fileId: file._id.toString(),
+				folderId: folder._id.toString()
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('folder_id').eql(folder._id.toString());
+			res.body.should.have.property('folderId').eql(folder._id.toString());
 		}));
 
 		it('親フォルダを無しにできる', async(async () => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
-				user_id: me._id,
-				folder_id: '000000000000000000000000'
+				userId: me._id,
+				folderId: '000000000000000000000000'
 			});
 			const res = await request('/drive/files/update', {
-				file_id: file._id.toString(),
-				folder_id: null
+				fileId: file._id.toString(),
+				folderId: null
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('folder_id').eql(null);
+			res.body.should.have.property('folderId').eql(null);
 		}));
 
 		it('他人のフォルダには入れられない', async(async () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const file = await insertDriveFile({
-				user_id: me._id
+				userId: me._id
 			});
 			const folder = await insertDriveFolder({
-				user_id: hima._id
+				userId: hima._id
 			});
 			const res = await request('/drive/files/update', {
-				file_id: file._id.toString(),
-				folder_id: folder._id.toString()
+				fileId: file._id.toString(),
+				folderId: folder._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -860,11 +860,11 @@ describe('API', () => {
 		it('存在しないフォルダで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
-				user_id: me._id
+				userId: me._id
 			});
 			const res = await request('/drive/files/update', {
-				file_id: file._id.toString(),
-				folder_id: '000000000000000000000000'
+				fileId: file._id.toString(),
+				folderId: '000000000000000000000000'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -872,11 +872,11 @@ describe('API', () => {
 		it('不正なフォルダIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const file = await insertDriveFile({
-				user_id: me._id
+				userId: me._id
 			});
 			const res = await request('/drive/files/update', {
-				file_id: file._id.toString(),
-				folder_id: 'kyoppie'
+				fileId: file._id.toString(),
+				folderId: 'kyoppie'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -884,7 +884,7 @@ describe('API', () => {
 		it('ファイルが存在しなかったら怒る', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/drive/files/update', {
-				file_id: '000000000000000000000000',
+				fileId: '000000000000000000000000',
 				name: 'いちごパスタ.png'
 			}, me);
 			res.should.have.status(400);
@@ -893,7 +893,7 @@ describe('API', () => {
 		it('間違ったIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/drive/files/update', {
-				file_id: 'kyoppie',
+				fileId: 'kyoppie',
 				name: 'いちごパスタ.png'
 			}, me);
 			res.should.have.status(400);
@@ -916,10 +916,10 @@ describe('API', () => {
 		it('名前を更新できる', async(async () => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder({
-				user_id: me._id
+				userId: me._id
 			});
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
+				folderId: folder._id.toString(),
 				name: 'new name'
 			}, me);
 			res.should.have.status(200);
@@ -931,10 +931,10 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const folder = await insertDriveFolder({
-				user_id: hima._id
+				userId: hima._id
 			});
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
+				folderId: folder._id.toString(),
 				name: 'new name'
 			}, me);
 			res.should.have.status(400);
@@ -943,47 +943,47 @@ describe('API', () => {
 		it('親フォルダを更新できる', async(async () => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder({
-				user_id: me._id
+				userId: me._id
 			});
 			const parentFolder = await insertDriveFolder({
-				user_id: me._id
+				userId: me._id
 			});
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
-				parent_id: parentFolder._id.toString()
+				folderId: folder._id.toString(),
+				parentId: parentFolder._id.toString()
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('parent_id').eql(parentFolder._id.toString());
+			res.body.should.have.property('parentId').eql(parentFolder._id.toString());
 		}));
 
 		it('親フォルダを無しに更新できる', async(async () => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder({
-				user_id: me._id,
-				parent_id: '000000000000000000000000'
+				userId: me._id,
+				parentId: '000000000000000000000000'
 			});
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
-				parent_id: null
+				folderId: folder._id.toString(),
+				parentId: null
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.property('parent_id').eql(null);
+			res.body.should.have.property('parentId').eql(null);
 		}));
 
 		it('他人のフォルダを親フォルダに設定できない', async(async () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const folder = await insertDriveFolder({
-				user_id: me._id
+				userId: me._id
 			});
 			const parentFolder = await insertDriveFolder({
-				user_id: hima._id
+				userId: hima._id
 			});
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
-				parent_id: parentFolder._id.toString()
+				folderId: folder._id.toString(),
+				parentId: parentFolder._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -992,11 +992,11 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder();
 			const parentFolder = await insertDriveFolder({
-				parent_id: folder._id
+				parentId: folder._id
 			});
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
-				parent_id: parentFolder._id.toString()
+				folderId: folder._id.toString(),
+				parentId: parentFolder._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -1005,14 +1005,14 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const folderA = await insertDriveFolder();
 			const folderB = await insertDriveFolder({
-				parent_id: folderA._id
+				parentId: folderA._id
 			});
 			const folderC = await insertDriveFolder({
-				parent_id: folderB._id
+				parentId: folderB._id
 			});
 			const res = await request('/drive/folders/update', {
-				folder_id: folderA._id.toString(),
-				parent_id: folderC._id.toString()
+				folderId: folderA._id.toString(),
+				parentId: folderC._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -1021,8 +1021,8 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder();
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
-				parent_id: '000000000000000000000000'
+				folderId: folder._id.toString(),
+				parentId: '000000000000000000000000'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -1031,8 +1031,8 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const folder = await insertDriveFolder();
 			const res = await request('/drive/folders/update', {
-				folder_id: folder._id.toString(),
-				parent_id: 'kyoppie'
+				folderId: folder._id.toString(),
+				parentId: 'kyoppie'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -1040,7 +1040,7 @@ describe('API', () => {
 		it('存在しないフォルダを更新できない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/drive/folders/update', {
-				folder_id: '000000000000000000000000'
+				folderId: '000000000000000000000000'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -1048,7 +1048,7 @@ describe('API', () => {
 		it('不正なフォルダIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/drive/folders/update', {
-				folder_id: 'kyoppie'
+				folderId: 'kyoppie'
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -1059,7 +1059,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const res = await request('/messaging/messages/create', {
-				user_id: hima._id.toString(),
+				userId: hima._id.toString(),
 				text: 'Hey hey ひまわり'
 			}, me);
 			res.should.have.status(200);
@@ -1070,7 +1070,7 @@ describe('API', () => {
 		it('自分自身にはメッセージを送信できない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/messaging/messages/create', {
-				user_id: me._id.toString(),
+				userId: me._id.toString(),
 				text: 'Yo'
 			}, me);
 			res.should.have.status(400);
@@ -1079,7 +1079,7 @@ describe('API', () => {
 		it('存在しないユーザーにはメッセージを送信できない', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/messaging/messages/create', {
-				user_id: '000000000000000000000000',
+				userId: '000000000000000000000000',
 				text: 'Yo'
 			}, me);
 			res.should.have.status(400);
@@ -1088,7 +1088,7 @@ describe('API', () => {
 		it('不正なユーザーIDで怒られる', async(async () => {
 			const me = await insertSakurako();
 			const res = await request('/messaging/messages/create', {
-				user_id: 'kyoppie',
+				userId: 'kyoppie',
 				text: 'Yo'
 			}, me);
 			res.should.have.status(400);
@@ -1098,7 +1098,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const res = await request('/messaging/messages/create', {
-				user_id: hima._id.toString()
+				userId: hima._id.toString()
 			}, me);
 			res.should.have.status(400);
 		}));
@@ -1107,7 +1107,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const hima = await insertHimawari();
 			const res = await request('/messaging/messages/create', {
-				user_id: hima._id.toString(),
+				userId: hima._id.toString(),
 				text: '!'.repeat(1001)
 			}, me);
 			res.should.have.status(400);
@@ -1118,7 +1118,7 @@ describe('API', () => {
 		it('認証セッションを作成できる', async(async () => {
 			const app = await insertApp();
 			const res = await request('/auth/session/generate', {
-				app_secret: app.secret
+				appSecret: app.secret
 			});
 			res.should.have.status(200);
 			res.body.should.be.a('object');
@@ -1126,14 +1126,14 @@ describe('API', () => {
 			res.body.should.have.property('url');
 		}));
 
-		it('app_secret 無しで怒られる', async(async () => {
+		it('appSecret 無しで怒られる', async(async () => {
 			const res = await request('/auth/session/generate', {});
 			res.should.have.status(400);
 		}));
 
-		it('誤った app secret で怒られる', async(async () => {
+		it('誤った appSecret で怒られる', async(async () => {
 			const res = await request('/auth/session/generate', {
-				app_secret: 'kyoppie'
+				appSecret: 'kyoppie'
 			});
 			res.should.have.status(400);
 		}));
@@ -1159,14 +1159,14 @@ function deepAssign(destination, ...sources) {
 function insertSakurako(opts) {
 	return db.get('users').insert(deepAssign({
 		username: 'sakurako',
-		username_lower: 'sakurako',
+		usernameLower: 'sakurako',
 		account: {
 			keypair: '-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAtdTG9rlFWjNqhgbg2V6X5XF1WpQXZS3KNXykEWl2UAiMyfVV\nBvf3zQP0dDEdNtcqdPJgis03bpiHCzQusc/YLyHYB0m+TJXsxJatb8cqUogOFeE4\ngQ4Dc5kAT6gLh/d4yz03EIg9bizX07EiGWnZqWxb+21ypqsPxST64sAtG9f5O/G4\nXe2m3cSbfAAvEUP1Ig1LUNyJB4jhM60w1cQic/qO8++sk/+GoX9g71X+i4NArGv+\n1c11acDIIPGAAQpFeYVeGaKakNDNp8RtJJp8R8FLwJXZ4/gATBnScCiHUSrGfRly\nYyR0w/BNlQ6/NijAdB9pR5csPvyIPkx1gauZewIDAQABAoIBAQCwWf/mhuY2h6uG\n9eDZsZ7Mj2/sO7k9Dl4R5iMSKCDxmnlB3slqitExa+aJUqEs8R5icjkkJcjfYNuJ\nCEFJf3YCsGZfGyyQBtCuEh2ATcBEb2SJ3/f3YuoCEaB1oVwdsOzc4TAovpol4yQo\nUqHp1/mdElVb01jhQQN4h1c02IJnfzvfU1C8szBni+Etfd+MxqGfv006DY3KOEb3\nlCrCS3GmooJW2Fjj7q1kCcaEQbMB1/aQHLXd1qe3KJOzXh3Voxsp/jEH0hvp2TII\nfY9UK+b7mA+xlvXwKuTkHVaZm0ylg0nbembS8MF4GfFMujinSexvLrVKaQhdMFoF\nvBLxHYHRAoGBANfNVYJYeCDPFNLmak5Xg33Rfvc2II8UmrZOVdhOWs8ZK0pis9e+\nPo2MKtTzrzipXI2QXv5w7kO+LJWNDva+xRlW8Wlj9Dde9QdQ7Y8+dk7SJgf24DzM\n023elgX5DvTeLODjStk6SMPRL0FmGovUqAAA8ZeHtJzkIr1HROWnQiwnAoGBANez\nhFwKnVoQu0RpBz/i4W0RKIxOwltN2zmlN8KjJPhSy00A7nBUfKLRbcwiSHE98Yi/\nUrXwMwR5QeD2ngngRppddJnpiRfjNjnsaqeqNtpO8AxB3XjpCC5zmHUMFHKvPpDj\n1zU/F44li0YjKcMBebZy9PbfAjrIgJfxhPo/oXiNAoGAfx6gaTjOAp2ZaaZ7Jozc\nkyft/5et1DrR6+P3I4T8bxQncRj1UXfqhxzzOiAVrm3tbCKIIp/JarRCtRGzp9u2\nZPfXGzra6CcSdW3Rkli7/jBCYNynOIl7XjQI8ZnFmq6phwu80ntH07mMeZy4tHff\nQqlLpvQ0i1rDr/Wkexdsnm8CgYBgxha9ILoF/Xm3MJPjEsxmnYsen/tM8XpIu5pv\nxbhBfQvfKWrQlOcyOVnUexEbVVo3KvdVz0VkXW60GpE/BxNGEGXO49rxD6x1gl87\nh/+CJGZIaYiOxaY5CP2+jcPizEL6yG32Yq8TxD5fIkmLRu8vbxX+aIFclDY1dVNe\n3wt3xQKBgGEL0EjwRch+P2V+YHAhbETPrEqJjHRWT95pIdF9XtC8fasSOVH81cLX\nXXsX1FTvOJNwG9Nk8rQjYJXGTb2O/2unaazlYUwxKwVpwuGzz/vhH/roHZBAkIVT\njvpykpn9QMezEdpzj5BEv01QzSYBPzIh5myrpoJIoSW7py7zFG3h\n-----END RSA PRIVATE KEY-----\n',
 			token: '!00000000000000000000000000000000',
 			password: '$2a$08$FnHXg3tP.M/kINWgQSXNqeoBsiVrkj.ecXX8mW9rfBzMRkibYfjYy', // HimawariDaisuki06160907
 			profile: {},
 			settings: {},
-			client_settings: {}
+			clientSettings: {}
 		}
 	}, opts));
 }
@@ -1174,20 +1174,20 @@ function insertSakurako(opts) {
 function insertHimawari(opts) {
 	return db.get('users').insert(deepAssign({
 		username: 'himawari',
-		username_lower: 'himawari',
+		usernameLower: 'himawari',
 		account: {
 			keypair: '-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAtdTG9rlFWjNqhgbg2V6X5XF1WpQXZS3KNXykEWl2UAiMyfVV\nBvf3zQP0dDEdNtcqdPJgis03bpiHCzQusc/YLyHYB0m+TJXsxJatb8cqUogOFeE4\ngQ4Dc5kAT6gLh/d4yz03EIg9bizX07EiGWnZqWxb+21ypqsPxST64sAtG9f5O/G4\nXe2m3cSbfAAvEUP1Ig1LUNyJB4jhM60w1cQic/qO8++sk/+GoX9g71X+i4NArGv+\n1c11acDIIPGAAQpFeYVeGaKakNDNp8RtJJp8R8FLwJXZ4/gATBnScCiHUSrGfRly\nYyR0w/BNlQ6/NijAdB9pR5csPvyIPkx1gauZewIDAQABAoIBAQCwWf/mhuY2h6uG\n9eDZsZ7Mj2/sO7k9Dl4R5iMSKCDxmnlB3slqitExa+aJUqEs8R5icjkkJcjfYNuJ\nCEFJf3YCsGZfGyyQBtCuEh2ATcBEb2SJ3/f3YuoCEaB1oVwdsOzc4TAovpol4yQo\nUqHp1/mdElVb01jhQQN4h1c02IJnfzvfU1C8szBni+Etfd+MxqGfv006DY3KOEb3\nlCrCS3GmooJW2Fjj7q1kCcaEQbMB1/aQHLXd1qe3KJOzXh3Voxsp/jEH0hvp2TII\nfY9UK+b7mA+xlvXwKuTkHVaZm0ylg0nbembS8MF4GfFMujinSexvLrVKaQhdMFoF\nvBLxHYHRAoGBANfNVYJYeCDPFNLmak5Xg33Rfvc2II8UmrZOVdhOWs8ZK0pis9e+\nPo2MKtTzrzipXI2QXv5w7kO+LJWNDva+xRlW8Wlj9Dde9QdQ7Y8+dk7SJgf24DzM\n023elgX5DvTeLODjStk6SMPRL0FmGovUqAAA8ZeHtJzkIr1HROWnQiwnAoGBANez\nhFwKnVoQu0RpBz/i4W0RKIxOwltN2zmlN8KjJPhSy00A7nBUfKLRbcwiSHE98Yi/\nUrXwMwR5QeD2ngngRppddJnpiRfjNjnsaqeqNtpO8AxB3XjpCC5zmHUMFHKvPpDj\n1zU/F44li0YjKcMBebZy9PbfAjrIgJfxhPo/oXiNAoGAfx6gaTjOAp2ZaaZ7Jozc\nkyft/5et1DrR6+P3I4T8bxQncRj1UXfqhxzzOiAVrm3tbCKIIp/JarRCtRGzp9u2\nZPfXGzra6CcSdW3Rkli7/jBCYNynOIl7XjQI8ZnFmq6phwu80ntH07mMeZy4tHff\nQqlLpvQ0i1rDr/Wkexdsnm8CgYBgxha9ILoF/Xm3MJPjEsxmnYsen/tM8XpIu5pv\nxbhBfQvfKWrQlOcyOVnUexEbVVo3KvdVz0VkXW60GpE/BxNGEGXO49rxD6x1gl87\nh/+CJGZIaYiOxaY5CP2+jcPizEL6yG32Yq8TxD5fIkmLRu8vbxX+aIFclDY1dVNe\n3wt3xQKBgGEL0EjwRch+P2V+YHAhbETPrEqJjHRWT95pIdF9XtC8fasSOVH81cLX\nXXsX1FTvOJNwG9Nk8rQjYJXGTb2O/2unaazlYUwxKwVpwuGzz/vhH/roHZBAkIVT\njvpykpn9QMezEdpzj5BEv01QzSYBPzIh5myrpoJIoSW7py7zFG3h\n-----END RSA PRIVATE KEY-----\n',
 			token: '!00000000000000000000000000000001',
 			password: '$2a$08$OPESxR2RE/ZijjGanNKk6ezSqGFitqsbZqTjWUZPLhORMKxHCbc4O', // ilovesakurako
 			profile: {},
 			settings: {},
-			client_settings: {}
+			clientSettings: {}
 		}
 	}, opts));
 }
 
 function insertDriveFile(opts) {
-	return db.get('drive_files.files').insert({
+	return db.get('driveFiles.files').insert({
 		length: opts.datasize,
 		filename: 'strawberry-pasta.png',
 		metadata: opts
@@ -1195,9 +1195,9 @@ function insertDriveFile(opts) {
 }
 
 function insertDriveFolder(opts) {
-	return db.get('drive_folders').insert(deepAssign({
+	return db.get('driveFolders').insert(deepAssign({
 		name: 'my folder',
-		parent_id: null
+		parentId: null
 	}, opts));
 }
 

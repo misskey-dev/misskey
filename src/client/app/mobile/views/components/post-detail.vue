@@ -81,6 +81,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../common/user/get-acct';
+import parse from '../../../../../common/text/parse';
+
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
 import XSub from './post-detail.sub.vue';
@@ -89,6 +91,7 @@ export default Vue.extend({
 	components: {
 		XSub
 	},
+
 	props: {
 		post: {
 			type: Object,
@@ -98,19 +101,20 @@ export default Vue.extend({
 			default: false
 		}
 	},
+
 	data() {
 		return {
 			context: [],
 			contextFetching: false,
-			replies: [],
-			urls: []
+			replies: []
 		};
 	},
+
 	computed: {
-		acct() {
+		acct(): string {
 			return getAcct(this.post.user);
 		},
-		pAcct() {
+		pAcct(): string {
 			return getAcct(this.p.user);
 		},
 		isRepost(): boolean {
@@ -128,8 +132,19 @@ export default Vue.extend({
 					.map(key => this.p.reactionCounts[key])
 					.reduce((a, b) => a + b)
 				: 0;
+		},
+		urls(): string[] {
+			if (this.p.text) {
+				const ast = parse(this.p.text);
+				return ast
+					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+					.map(t => t.url);
+			} else {
+				return null;
+			}
 		}
 	},
+
 	mounted() {
 		// Get replies
 		if (!this.compact) {
@@ -159,21 +174,7 @@ export default Vue.extend({
 			}
 		}
 	},
-	watch: {
-		post: {
-			handler(newPost, oldPost) {
-				if (!oldPost || newPost.text !== oldPost.text) {
-					this.$nextTick(() => {
-						const elements = this.$refs.text.$el.getElementsByTagName('a');
 
-						this.urls = [].filter.call(elements, ({ origin }) => origin !== location.origin)
-							.map(({ href }) => href);
-					});
-				}
-			},
-			immediate: true
-		}
-	},
 	methods: {
 		fetchContext() {
 			this.contextFetching = true;

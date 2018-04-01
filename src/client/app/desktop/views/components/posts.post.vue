@@ -38,7 +38,7 @@
 				</p>
 				<div class="text">
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-post-html v-if="p.textHtml" ref="text" :html="p.textHtml" :i="os.i" :class="$style.text"/>
+					<mk-post-html v-if="p.textHtml" :text="p.text" :i="os.i" :class="$style.text"/>
 					<a class="rp" v-if="p.repost">RP:</a>
 				</div>
 				<div class="media" v-if="p.media.length > 0">
@@ -86,6 +86,8 @@
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 import getAcct from '../../../../../common/user/get-acct';
+import parse from '../../../../../common/text/parse';
+
 import MkPostFormWindow from './post-form-window.vue';
 import MkRepostFormWindow from './repost-form-window.vue';
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
@@ -107,17 +109,19 @@ export default Vue.extend({
 	components: {
 		XSub
 	},
+
 	props: ['post'],
+
 	data() {
 		return {
 			isDetailOpened: false,
 			connection: null,
-			connectionId: null,
-			urls: []
+			connectionId: null
 		};
 	},
+
 	computed: {
-		acct() {
+		acct(): string {
 			return getAcct(this.p.user);
 		},
 		isRepost(): boolean {
@@ -141,14 +145,26 @@ export default Vue.extend({
 		},
 		url(): string {
 			return `/@${this.acct}/${this.p.id}`;
+		},
+		urls(): string[] {
+			if (this.p.text) {
+				const ast = parse(this.p.text);
+				return ast
+					.filter(t => (t.type == 'url' || t.type == 'link') && !t.silent)
+					.map(t => t.url);
+			} else {
+				return null;
+			}
 		}
 	},
+
 	created() {
 		if ((this as any).os.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 		}
 	},
+
 	mounted() {
 		this.capture(true);
 
@@ -174,6 +190,7 @@ export default Vue.extend({
 			}
 		}
 	},
+
 	beforeDestroy() {
 		this.decapture(true);
 
@@ -182,21 +199,7 @@ export default Vue.extend({
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
-	watch: {
-		post: {
-			handler(newPost, oldPost) {
-				if (!oldPost || newPost.textHtml !== oldPost.textHtml) {
-					this.$nextTick(() => {
-						const elements = this.$refs.text.$el.getElementsByTagName('a');
 
-						this.urls = [].filter.call(elements, ({ origin }) => origin !== location.origin)
-							.map(({ href }) => href);
-					});
-				}
-			},
-			immediate: true
-		}
-	},
 	methods: {
 		capture(withHandler = false) {
 			if ((this as any).os.isSignedIn) {
@@ -457,7 +460,7 @@ export default Vue.extend({
 					font-size 1.1em
 					color #717171
 
-					>>> blockquote
+					>>> .quote
 						margin 8px
 						padding 6px 12px
 						color #aaa

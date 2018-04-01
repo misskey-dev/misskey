@@ -30,6 +30,7 @@ export type IPost = {
 	repostId: mongo.ObjectID;
 	poll: any; // todo
 	text: string;
+	tags: string[];
 	textHtml: string;
 	cw: string;
 	userId: mongo.ObjectID;

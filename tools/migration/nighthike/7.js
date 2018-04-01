@@ -1,16 +1,40 @@
-// for Node.js interpretation
+// for Node.js interpret
 
-const Message = require('../../../built/models/messaging-message').default;
-const Post = require('../../../built/models/post').default;
+const { default: Post } = require('../../../built/api/models/post');
+const { default: zip } = require('@prezzemolo/zip')
 const html = require('../../../built/common/text/html').default;
 const parse = require('../../../built/common/text/parse').default;
 
-Promise.all([Message, Post].map(async model => {
-	const documents = await model.find();
-
-	return Promise.all(documents.map(({ _id, text }) => model.update(_id, {
+const migrate = async (post) => {
+	const result = await Post.update(post._id, {
 		$set: {
-			textHtml: html(parse(text))
+			textHtml: post.text ? html(parse(post.text)) : null
 		}
-	})));
-})).catch(console.error).then(process.exit);
+	});
+	return result.ok === 1;
+}
+
+async function main() {
+	const count = await Post.count({});
+
+	const dop = Number.parseInt(process.argv[2]) || 5
+	const idop = ((count - (count % dop)) / dop) + 1
+
+	return zip(
+		1,
+		async (time) => {
+			console.log(`${time} / ${idop}`)
+			const doc = await Post.find({}, {
+				limit: dop, skip: time * dop
+			})
+			return Promise.all(doc.map(migrate))
+		},
+		idop
+	).then(a => {
+		const rv = []
+		a.forEach(e => rv.push(...e))
+		return rv
+	})
+}
+
+main().then(console.dir).catch(console.error)

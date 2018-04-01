@@ -1,1 +1,13 @@
-db.posts.update({ mediaIds: null }, { $set: { mediaIds: [] } }, false, true);
+db.posts.update({
+	$or: [{
+		mediaIds: null
+	}, {
+		mediaIds: {
+			$exist: false
+		}
+	}]
+}, {
+	$set: {
+		mediaIds: []
+	}
+}, false, true);

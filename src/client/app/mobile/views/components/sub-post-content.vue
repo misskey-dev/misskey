@@ -2,7 +2,7 @@
 <div class="mk-sub-post-content">
 	<div class="body">
 		<a class="reply" v-if="post.replyId">%fa:reply%</a>
-		<mk-post-html v-if="post.text" :ast="post.text" :i="os.i"/>
+		<mk-post-html v-if="post.text" :text="post.text" :i="os.i"/>
 		<a class="rp" v-if="post.repostId">RP: ...</a>
 	</div>
 	<details v-if="post.media.length > 0">

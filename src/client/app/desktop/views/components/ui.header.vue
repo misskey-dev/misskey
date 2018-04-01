@@ -95,7 +95,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.header
+root(isDark)
 	position -webkit-sticky
 	position sticky
 	top 0
@@ -112,7 +112,7 @@ export default Vue.extend({
 			z-index 1000
 			width 100%
 			height 48px
-			background #f7f7f7
+			background isDark ? #313543 : #f7f7f7
 
 		> .main
 			z-index 1001
@@ -168,5 +168,11 @@ export default Vue.extend({
 					@media (max-width 1100px)
 						> .mk-ui-header-search
 							display none
+
+.header[data-is-darkmode]
+	root(true)
+
+.header
+	root(false)
 
 </style>

@@ -1,28 +1,21 @@
 // for Node.js interpret
 
-const { default: DriveFile } = require('../../built/api/models/drive-file')
+const { default: Message } = require('../../../built/api/models/message');
 const { default: zip } = require('@prezzemolo/zip')
+const html = require('../../../built/common/text/html').default;
+const parse = require('../../../built/common/text/parse').default;
 
-const migrate = async (doc) => {
-	const result = await DriveFile.update(doc._id, {
+const migrate = async (message) => {
+	const result = await Message.update(message._id, {
 		$set: {
-			contentType: doc.metadata.type
-		},
-		$unset: {
-			'metadata.type': ''
+			textHtml: message.text ? html(parse(message.text)) : null
 		}
-	})
-	return result.ok === 1
+	});
+	return result.ok === 1;
 }
 
 async function main() {
-	const query = {
-		'metadata.type': {
-			$exists: true
-		}
-	}
-
-	const count = await DriveFile.count(query);
+	const count = await Message.count({});
 
 	const dop = Number.parseInt(process.argv[2]) || 5
 	const idop = ((count - (count % dop)) / dop) + 1
@@ -31,7 +24,7 @@ async function main() {
 		1,
 		async (time) => {
 			console.log(`${time} / ${idop}`)
-			const doc = await DriveFile.find(query, {
+			const doc = await Message.find({}, {
 				limit: dop, skip: time * dop
 			})
 			return Promise.all(doc.map(migrate))

@@ -14,7 +14,7 @@ const elements = [
 	require('./elements/emoji')
 ];
 
-export default (source: string) => {
+export default (source: string): any[] => {
 
 	if (source == '') {
 		return null;
