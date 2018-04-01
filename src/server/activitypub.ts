@@ -1,8 +1,9 @@
+import * as express from 'express';
+
 import config from '../conf';
 import { extractPublic } from '../crypto_key';
 import parseAcct from '../common/user/parse-acct';
 import User, { ILocalAccount } from '../models/user';
-const express = require('express');
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.get('/@:user', async (req, res, next) => {
 
 	const { username, host } = parseAcct(req.params.user);
 	if (host !== null) {
-		return res.send(422);
+		return res.sendStatus(422);
 	}
 
 	const user = await User.findOne({
@@ -22,7 +23,7 @@ app.get('/@:user', async (req, res, next) => {
 		host: null
 	});
 	if (user === null) {
-		return res.send(404);
+		return res.sendStatus(404);
 	}
 
 	const id = `${config.url}/@${user.username}`;
