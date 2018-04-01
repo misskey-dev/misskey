@@ -70,6 +70,7 @@ export type ILocalAccount = {
 };
 
 export type IRemoteAccount = {
+	inbox: string;
 	uri: string;
 	publicKey: {
 		id: string;

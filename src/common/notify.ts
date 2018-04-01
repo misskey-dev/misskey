@@ -1,8 +1,8 @@
 import * as mongo from 'mongodb';
-import Notification from '../../../models/notification';
-import Mute from '../../../models/mute';
-import event from '../../../common/event';
-import { pack } from '../../../models/notification';
+import Notification from '../models/notification';
+import Mute from '../models/mute';
+import event from './event';
+import { pack } from '../models/notification';
 
 export default (
 	notifiee: mongo.ObjectID,

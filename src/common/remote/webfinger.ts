@@ -1,6 +1,6 @@
 const WebFinger = require('webfinger.js');
 
-const webFinger = new WebFinger({});
+const webFinger = new WebFinger({ tls_only: false });
 
 type ILink = {
   href: string;

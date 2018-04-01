@@ -66,6 +66,7 @@ export default async (value, usernameLower, hostLower, acctLower) => {
 				id: object.publicKey.id,
 				publicKeyPem: object.publicKey.publicKeyPem
 			},
+			inbox: object.inbox,
 			uri: object.id,
 		},
 	});
