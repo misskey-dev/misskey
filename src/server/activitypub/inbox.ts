@@ -36,7 +36,7 @@ app.post('/@:user/inbox', async (req, res) => {
 		outbox: req.body,
 	}).save();
 
-	return res.sendStatus(200);
+	return res.status(202).end();
 });
 
 export default app;
