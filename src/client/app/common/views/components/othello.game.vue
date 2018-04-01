@@ -43,7 +43,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as CRC32 from 'crc-32';
-import Othello, { Color } from '../../../../../common/othello/core';
+import Othello, { Color } from '../../../../../misc/othello/core';
 import { url } from '../../../config';
 
 export default Vue.extend({

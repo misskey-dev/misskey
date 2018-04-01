@@ -1,5 +1,5 @@
 import { toUnicode, toASCII } from 'punycode';
-import User from '../../models/user';
+import User from '../models/user';
 import resolvePerson from './activitypub/resolve-person';
 import webFinger from './webfinger';
 

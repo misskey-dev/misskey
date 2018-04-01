@@ -7,9 +7,9 @@ import config from '../../../../conf';
 import BotCore from '../core';
 import _redis from '../../../../db/redis';
 import prominence = require('prominence');
-import getAcct from '../../../../common/user/get-acct';
-import parseAcct from '../../../../common/user/parse-acct';
-import getPostSummary from '../../../../common/get-post-summary';
+import getAcct from '../../../../misc/user/get-acct';
+import parseAcct from '../../../../misc/user/parse-acct';
+import getPostSummary from '../../../../misc/get-post-summary';
 
 const redis = prominence(_redis);
 

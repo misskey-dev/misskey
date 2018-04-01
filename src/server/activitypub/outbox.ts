@@ -1,7 +1,7 @@
 import * as express from 'express';
-import context from '../../common/remote/activitypub/renderer/context';
-import renderNote from '../../common/remote/activitypub/renderer/note';
-import renderOrderedCollection from '../../common/remote/activitypub/renderer/ordered-collection';
+import context from '../../remote/activitypub/renderer/context';
+import renderNote from '../../remote/activitypub/renderer/note';
+import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import config from '../../conf';
 import Post from '../../models/post';
 import withUser from './with-user';

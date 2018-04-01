@@ -1,7 +1,7 @@
 import * as express from 'express';
 import config from '../../conf';
-import context from '../../common/remote/activitypub/renderer/context';
-import render from '../../common/remote/activitypub/renderer/person';
+import context from '../../remote/activitypub/renderer/context';
+import render from '../../remote/activitypub/renderer/person';
 import withUser from './with-user';
 
 const respond = withUser(username => `${config.url}/@${username}`, (user, req, res) => {

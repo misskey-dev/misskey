@@ -77,7 +77,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../common/user/get-acct';
+import getAcct from '../../../../../misc/user/get-acct';
 import parse from '../../../../../common/text/parse';
 
 import MkPostMenu from '../../../common/views/components/post-menu.vue';

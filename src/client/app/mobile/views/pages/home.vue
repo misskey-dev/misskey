@@ -64,7 +64,7 @@ import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
 import Progress from '../../../common/scripts/loading';
-import getPostSummary from '../../../../../common/get-post-summary';
+import getPostSummary from '../../../../../misc/get-post-summary';
 
 export default Vue.extend({
 	components: {

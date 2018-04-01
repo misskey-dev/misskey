@@ -1,5 +1,5 @@
-import getPostSummary from '../../../../common/get-post-summary';
-import getReactionEmoji from '../../../../common/get-reaction-emoji';
+import getPostSummary from '../../../../misc/get-post-summary';
+import getReactionEmoji from '../../../../misc/get-reaction-emoji';
 
 type Notification = {
 	title: string;

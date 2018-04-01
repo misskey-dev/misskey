@@ -1,6 +1,6 @@
 import * as express from 'express';
-import context from '../../common/remote/activitypub/renderer/context';
-import render from '../../common/remote/activitypub/renderer/key';
+import context from '../../remote/activitypub/renderer/context';
+import render from '../../remote/activitypub/renderer/key';
 import config from '../../conf';
 import withUser from './with-user';
 

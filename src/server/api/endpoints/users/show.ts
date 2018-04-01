@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
-import resolveRemoteUser from '../../../../common/remote/resolve-user';
+import resolveRemoteUser from '../../../../remote/resolve-user';
 
 const cursorOption = { fields: { data: false } };
 

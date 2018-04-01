@@ -14,7 +14,7 @@ import DriveFile, { getGridFSBucket } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../event';
-import getAcct from '../user/get-acct';
+import getAcct from '../../misc/user/get-acct';
 import config from '../../conf';
 
 const gm = _gm.subClass({

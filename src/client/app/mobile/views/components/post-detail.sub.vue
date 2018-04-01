@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../common/user/get-acct';
+import getAcct from '../../../../../misc/user/get-acct';
 
 export default Vue.extend({
 	props: ['post'],

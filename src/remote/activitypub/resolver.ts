@@ -1,4 +1,4 @@
-import RemoteUserObject from '../../../models/remote-user-object';
+import RemoteUserObject from '../../models/remote-user-object';
 import { IObject } from './type';
 const request = require('request-promise-native');
 

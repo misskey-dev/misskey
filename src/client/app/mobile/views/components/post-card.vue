@@ -14,8 +14,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import summary from '../../../../../common/get-post-summary';
-import getAcct from '../../../../../common/user/get-acct';
+import summary from '../../../../../misc/get-post-summary';
+import getAcct from '../../../../../misc/user/get-acct';
 
 export default Vue.extend({
 	props: ['post'],

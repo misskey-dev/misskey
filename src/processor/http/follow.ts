@@ -5,8 +5,8 @@ import User, { isLocalUser, pack as packUser, ILocalUser } from '../../models/us
 import Following from '../../models/following';
 import event from '../../common/event';
 import notify from '../../common/notify';
-import context from '../../common/remote/activitypub/renderer/context';
-import render from '../../common/remote/activitypub/renderer/follow';
+import context from '../../remote/activitypub/renderer/context';
+import render from '../../remote/activitypub/renderer/follow';
 import config from '../../conf';
 
 export default ({ data }, done) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {

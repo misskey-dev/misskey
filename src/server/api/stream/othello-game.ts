@@ -3,8 +3,8 @@ import * as redis from 'redis';
 import * as CRC32 from 'crc-32';
 import OthelloGame, { pack } from '../../../models/othello-game';
 import { publishOthelloGameStream } from '../../../common/event';
-import Othello from '../../../common/othello/core';
-import * as maps from '../../../common/othello/maps';
+import Othello from '../../../misc/othello/core';
+import * as maps from '../../../misc/othello/maps';
 import { ParsedUrlQuery } from 'querystring';
 
 export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user?: any): void {

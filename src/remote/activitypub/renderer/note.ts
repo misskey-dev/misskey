@@ -1,9 +1,9 @@
 import renderDocument from './document';
 import renderHashtag from './hashtag';
-import config from '../../../../conf';
-import DriveFile from '../../../../models/drive-file';
-import Post from '../../../../models/post';
-import User from '../../../../models/user';
+import config from '../../../conf';
+import DriveFile from '../../../models/drive-file';
+import Post from '../../../models/post';
+import User from '../../../models/user';
 
 export default async (user, post) => {
 	const promisedFiles = DriveFile.find({ _id: { $in: post.mediaIds } });

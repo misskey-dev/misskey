@@ -1,4 +1,4 @@
-import config from '../../../../conf';
+import config from '../../../conf';
 
 export default ({ _id }) => ({
 	type: 'Image',

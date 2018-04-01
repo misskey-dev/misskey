@@ -102,8 +102,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../common/user/get-acct';
-import getPostSummary from '../../../../../common/get-post-summary';
+import getAcct from '../../../../../misc/user/get-acct';
+import getPostSummary from '../../../../../misc/get-post-summary';
 
 export default Vue.extend({
 	data() {

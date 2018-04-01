@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
-import User, { validateUsername, isValidName, isValidDescription } from '../../../models/user';
-import queue from '../../../queue';
+import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
+import queue from '../../queue';
 import webFinger from '../webfinger';
 import create from './create';
 import Resolver from './resolver';

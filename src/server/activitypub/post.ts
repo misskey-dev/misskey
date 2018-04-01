@@ -1,7 +1,7 @@
 import * as express from 'express';
-import context from '../../common/remote/activitypub/renderer/context';
-import render from '../../common/remote/activitypub/renderer/note';
-import parseAcct from '../../common/user/parse-acct';
+import context from '../../remote/activitypub/renderer/context';
+import render from '../../remote/activitypub/renderer/note';
+import parseAcct from '../../misc/user/parse-acct';
 import Post from '../../models/post';
 import User from '../../models/user';
 

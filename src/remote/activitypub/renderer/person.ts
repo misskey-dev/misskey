@@ -1,6 +1,6 @@
 import renderImage from './image';
 import renderKey from './key';
-import config from '../../../../conf';
+import config from '../../../conf';
 
 export default user => {
 	const id = `${config.url}/@${user.username}`;
