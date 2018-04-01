@@ -10,6 +10,7 @@ import * as morgan from 'morgan';
 import Accesses from 'accesses';
 
 import activityPub from './activitypub';
+import webFinger from './webfinger';
 import log from './log-request';
 import config from '../conf';
 
@@ -55,6 +56,7 @@ app.use((req, res, next) => {
 app.use('/api', require('./api'));
 app.use('/files', require('./file'));
 app.use(activityPub);
+app.use(webFinger);
 app.use(require('./web'));
 
 function createServer() {
