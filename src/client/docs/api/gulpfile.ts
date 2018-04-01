@@ -101,7 +101,7 @@ gulp.task('doc:api:endpoints', async () => {
 		}
 		//console.log(files);
 		files.forEach(file => {
-			const ep = yaml.safeLoad(fs.readFileSync(file, 'utf-8'));
+			const ep: any = yaml.safeLoad(fs.readFileSync(file, 'utf-8'));
 			const vars = {
 				endpoint: ep.endpoint,
 				url: {
