@@ -1,9 +1,9 @@
 import * as express from 'express';
 import config from '../../conf';
-import { extractPublic } from '../../crypto_key';
-import context from '../../common/remote/activitypub/context';
+import context from '../../common/remote/activitypub/renderer/context';
+import render from '../../common/remote/activitypub/renderer/person';
 import parseAcct from '../../common/user/parse-acct';
-import User, { ILocalAccount } from '../../models/user';
+import User from '../../models/user';
 
 const app = express();
 app.disable('x-powered-by');
@@ -27,34 +27,14 @@ app.get('/@:user', async (req, res, next) => {
 		return res.sendStatus(404);
 	}
 
-	const id = `${config.url}/@${user.username}`;
-
 	if (username !== user.username) {
-		return res.redirect(id);
+		return res.redirect(`${config.url}/@${user.username}`);
 	}
 
-	res.json({
-		'@context': context,
-		type: 'Person',
-		id,
-		inbox: `${id}/inbox`,
-		preferredUsername: user.username,
-		name: user.name,
-		summary: user.description,
-		icon: user.avatarId && {
-			type: 'Image',
-			url: `${config.drive_url}/${user.avatarId}`
-		},
-		image: user.bannerId && {
-			type: 'Image',
-			url: `${config.drive_url}/${user.bannerId}`
-		},
-		publicKey: {
-			type: 'Key',
-			owner: id,
-			publicKeyPem: extractPublic((user.account as ILocalAccount).keypair)
-		}
-	});
+	const rendered = render(user);
+	rendered['@context'] = context;
+
+	res.json(rendered);
 });
 
 export default app;
