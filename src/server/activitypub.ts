@@ -6,6 +6,7 @@ import parseAcct from '../common/user/parse-acct';
 import User, { ILocalAccount } from '../models/user';
 
 const app = express();
+app.disable('x-powered-by');
 
 app.get('/@:user', async (req, res, next) => {
 	const accepted = req.accepts(['html', 'application/activity+json', 'application/ld+json']);
