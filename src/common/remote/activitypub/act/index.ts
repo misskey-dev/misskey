@@ -19,4 +19,4 @@ export default (actor, value) => {
 			return null;
 		}
 	})));
-}
+};
