@@ -71,6 +71,10 @@ export type ILocalAccount = {
 
 export type IRemoteAccount = {
 	uri: string;
+	publicKey: {
+		id: string;
+		publicKeyPem: string;
+	};
 };
 
 export type IUser = {
