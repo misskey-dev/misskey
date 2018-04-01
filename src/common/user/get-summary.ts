@@ -1,4 +1,4 @@
-import { ILocalAccount, IUser } from '../../models/user';
+import { IUser, isLocalUser } from '../../models/user';
 import getAcct from './get-acct';
 
 /**
@@ -9,8 +9,8 @@ export default function(user: IUser): string {
 	let string = `${user.name} (@${getAcct(user)})\n` +
 		`${user.postsCount}投稿、${user.followingCount}フォロー、${user.followersCount}フォロワー\n`;
 
-	if (user.host === null) {
-		const account = user.account as ILocalAccount;
+	if (isLocalUser(user)) {
+		const account = user.account;
 		string += `場所: ${account.profile.location}、誕生日: ${account.profile.birthday}\n`;
 	}
 

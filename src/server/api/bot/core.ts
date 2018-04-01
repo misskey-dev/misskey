@@ -1,7 +1,7 @@
 import * as EventEmitter from 'events';
 import * as bcrypt from 'bcryptjs';
 
-import User, { ILocalAccount, IUser, init as initUser } from '../../../models/user';
+import User, { IUser, init as initUser, ILocalUser } from '../../../models/user';
 
 import getPostSummary from '../../../common/get-post-summary';
 import getUserSummary from '../../../common/user/get-summary';
@@ -198,7 +198,7 @@ abstract class Context extends EventEmitter {
 }
 
 class SigninContext extends Context {
-	private temporaryUser: IUser = null;
+	private temporaryUser: ILocalUser = null;
 
 	public async greet(): Promise<string> {
 		return 'まずユーザー名を教えてください:';
@@ -207,14 +207,14 @@ class SigninContext extends Context {
 	public async q(query: string): Promise<string> {
 		if (this.temporaryUser == null) {
 			// Fetch user
-			const user: IUser = await User.findOne({
+			const user = await User.findOne({
 				usernameLower: query.toLowerCase(),
 				host: null
 			}, {
 				fields: {
 					data: false
 				}
-			});
+			}) as ILocalUser;
 
 			if (user === null) {
 				return `${query}というユーザーは存在しませんでした... もう一度教えてください:`;
@@ -225,7 +225,7 @@ class SigninContext extends Context {
 			}
 		} else {
 			// Compare password
-			const same = await bcrypt.compare(query, (this.temporaryUser.account as ILocalAccount).password);
+			const same = await bcrypt.compare(query, this.temporaryUser.account.password);
 
 			if (same) {
 				this.bot.signin(this.temporaryUser);

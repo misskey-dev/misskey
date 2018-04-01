@@ -5,9 +5,9 @@ import $ from 'cafy';
 import deepEqual = require('deep-equal');
 import html from '../../../../common/text/html';
 import parse from '../../../../common/text/parse';
-import { default as Post, IPost, isValidText, isValidCw } from '../../../../models/post';
-import { default as User, ILocalAccount, IUser } from '../../../../models/user';
-import { default as Channel, IChannel } from '../../../../models/channel';
+import Post, { IPost, isValidText, isValidCw } from '../../../../models/post';
+import User, { ILocalUser } from '../../../../models/user';
+import Channel, { IChannel } from '../../../../models/channel';
 import Following from '../../../../models/following';
 import Mute from '../../../../models/mute';
 import DriveFile from '../../../../models/drive-file';
@@ -29,7 +29,7 @@ import config from '../../../../conf';
  * @param {any} app
  * @return {Promise<any>}
  */
-module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
+module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
@@ -400,7 +400,7 @@ module.exports = (params, user: IUser, app) => new Promise(async (res, rej) => {
 			});
 
 		// この投稿をWatchする
-		if ((user.account as ILocalAccount).settings.autoWatch !== false) {
+		if (user.account.settings.autoWatch !== false) {
 			watch(user._id, reply);
 		}
 

@@ -1,8 +1,9 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { parseRequest, verifySignature } from 'http-signature';
-import User, { IRemoteAccount } from '../../models/user';
+import User, { IRemoteUser } from '../../models/user';
 import queue from '../../queue';
+import parseAcct from '../../common/user/parse-acct';
 
 const app = express();
 app.disable('x-powered-by');
@@ -36,13 +37,13 @@ app.post('/@:user/inbox', async (req, res) => {
 		};
 	}
 
-	const user = await User.findOne(query);
+	const user = await User.findOne(query) as IRemoteUser;
 
 	if (user === null) {
 		return res.sendStatus(401);
 	}
 
-	if (!verifySignature(parsed, (user.account as IRemoteAccount).publicKey.publicKeyPem)) {
+	if (!verifySignature(parsed, user.account.publicKey.publicKeyPem)) {
 		return res.sendStatus(401);
 	}
 

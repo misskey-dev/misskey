@@ -1,7 +1,7 @@
 import { request } from 'https';
 import { sign } from 'http-signature';
 import { URL } from 'url';
-import User, { ILocalAccount, IRemoteAccount, pack as packUser } from '../../models/user';
+import User, { isLocalUser, pack as packUser, ILocalUser } from '../../models/user';
 import Following from '../../models/following';
 import event from '../../common/event';
 import notify from '../../common/notify';
@@ -10,7 +10,7 @@ import render from '../../common/remote/activitypub/renderer/follow';
 import config from '../../conf';
 
 export default ({ data }, done) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {
-	const promisedFollower = User.findOne({ _id: followerId });
+	const promisedFollower: Promise<ILocalUser> = User.findOne({ _id: followerId });
 	const promisedFollowee = User.findOne({ _id: followeeId });
 
 	return Promise.all([
@@ -38,7 +38,7 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 				.then(packed => event(follower._id, 'follow', packed));
 			let followeeEvent;
 
-			if (followee.host === null) {
+			if (isLocalUser(followee)) {
 				followeeEvent = packUser(follower, followee)
 					.then(packed => event(followee._id, 'followed', packed));
 			} else {
@@ -49,7 +49,7 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 						port,
 						pathname,
 						search
-					} = new URL((followee.account as IRemoteAccount).inbox);
+					} = new URL(followee.account.inbox);
 
 					const req = request({
 						protocol,
@@ -72,7 +72,7 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 
 					sign(req, {
 						authorizationHeaderName: 'Signature',
-						key: (follower.account as ILocalAccount).keypair,
+						key: follower.account.keypair,
 						keyId: `acct:${follower.username}@${config.host}`
 					});
 

@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import { default as User, ILocalAccount, IUser } from '../../../models/user';
+import User, { ILocalUser } from '../../../models/user';
 import Signin, { pack } from '../../../models/signin';
 import event from '../../../common/event';
 import signin from '../common/signin';
@@ -31,7 +31,7 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Fetch user
-	const user: IUser = await User.findOne({
+	const user = await User.findOne({
 		usernameLower: username.toLowerCase(),
 		host: null
 	}, {
@@ -39,7 +39,7 @@ export default async (req: express.Request, res: express.Response) => {
 			data: false,
 			'account.profile': false
 		}
-	});
+	}) as ILocalUser;
 
 	if (user === null) {
 		res.status(404).send({
@@ -48,7 +48,7 @@ export default async (req: express.Request, res: express.Response) => {
 		return;
 	}
 
-	const account = user.account as ILocalAccount;
+	const account = user.account;
 
 	// Compare password
 	const same = await bcrypt.compare(password, account.password);

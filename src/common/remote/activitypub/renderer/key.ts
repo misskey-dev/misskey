@@ -1,10 +1,10 @@
 import config from '../../../../conf';
 import { extractPublic } from '../../../../crypto_key';
-import { ILocalAccount } from '../../../../models/user';
+import { ILocalUser } from '../../../../models/user';
 
-export default ({ username, account }) => ({
-	id: `${config.url}/@${username}/publickey`,
+export default (user: ILocalUser) => ({
+	id: `${config.url}/@${user.username}/publickey`,
 	type: 'Key',
-	owner: `${config.url}/@${username}`,
-	publicKeyPem: extractPublic((account as ILocalAccount).keypair)
+	owner: `${config.url}/@${user.username}`,
+	publicKeyPem: extractPublic(user.account.keypair)
 });

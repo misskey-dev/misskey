@@ -1,8 +1,8 @@
 import config from '../../../../conf';
-import { IRemoteAccount } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/user';
 
-export default ({ username }, { account }) => ({
+export default ({ username }, followee: IRemoteUser) => ({
 	type: 'Follow',
 	actor: `${config.url}/@${username}`,
-	object: (account as IRemoteAccount).uri
+	object: followee.account.uri
 });

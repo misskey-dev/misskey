@@ -39,7 +39,7 @@ export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }
 
-export type ILocalAccount = {
+type ILocalAccount = {
 	keypair: string;
 	email: string;
 	links: string[];
@@ -69,7 +69,7 @@ export type ILocalAccount = {
 	settings: any;
 };
 
-export type IRemoteAccount = {
+type IRemoteAccount = {
 	inbox: string;
 	uri: string;
 	publicKey: {
@@ -78,7 +78,7 @@ export type IRemoteAccount = {
 	};
 };
 
-export type IUser = {
+type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	deletedAt: Date;
@@ -97,13 +97,19 @@ export type IUser = {
 	pinnedPostId: mongo.ObjectID;
 	isSuspended: boolean;
 	keywords: string[];
-	host: string;
 	hostLower: string;
-	account: ILocalAccount | IRemoteAccount;
 };
 
-export type ILocalUser = IUser & { account: ILocalAccount };
-export type IRemoteUser = IUser & { account: IRemoteAccount };
+export type IUser = ILocalUser | IRemoteUser;
+
+export interface ILocalUser extends IUserBase { host: null; account: ILocalAccount; }
+export interface IRemoteUser extends IUserBase { host: string; account: IRemoteAccount; }
+
+export const isLocalUser = (user: any): user is ILocalUser =>
+	user.host === null;
+
+export const isRemoteUser = (user: any): user is IRemoteUser =>
+	!isLocalUser(user);
 
 export function init(user): IUser {
 	user._id = new mongo.ObjectID(user._id);
