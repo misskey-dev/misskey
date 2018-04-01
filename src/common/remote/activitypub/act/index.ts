@@ -3,7 +3,7 @@ import createObject from '../create';
 import Resolver from '../resolver';
 
 export default (actor, value) => {
-	return (new Resolver).resolve(value).then(resolved => Promise.all(resolved.map(async asyncResult => {
+	return (new Resolver()).resolve(value).then(resolved => Promise.all(resolved.map(async asyncResult => {
 		const { resolver, object } = await asyncResult;
 		const created = await (await createObject(resolver, actor, [object]))[0];
 
