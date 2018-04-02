@@ -46,8 +46,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Construct query
 	const query = {
-		followeeId: user._id,
-		deletedAt: { $exists: false }
+		followeeId: user._id
 	} as any;
 
 	// ログインしていてかつ iknow フラグがあるとき

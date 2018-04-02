@@ -42,8 +42,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Check not following
 	const exist = await Following.findOne({
 		followerId: follower._id,
-		followeeId: followee._id,
-		deletedAt: { $exists: false }
+		followeeId: followee._id
 	});
 
 	if (exist === null) {
@@ -51,12 +50,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Delete following
-	await Following.update({
+	await Following.findOneAndDelete({
 		_id: exist._id
-	}, {
-		$set: {
-			deletedAt: new Date()
-		}
 	});
 
 	// Send response

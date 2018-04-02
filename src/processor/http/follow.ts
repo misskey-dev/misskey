@@ -3,6 +3,8 @@ import { sign } from 'http-signature';
 import { URL } from 'url';
 import User, { isLocalUser, pack as packUser } from '../../models/user';
 import Following from '../../models/following';
+import FollowingLog from '../../models/following-log';
+import FollowedLog from '../../models/followed-log';
 import event from '../../publishers/stream';
 import notify from '../../publishers/notify';
 import context from '../../remote/activitypub/renderer/context';
@@ -21,12 +23,22 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 			}
 		}),
 
+		promisedFollower.then(({ followingCount }) => FollowingLog.insert({
+			userId: followerId,
+			count: followingCount + 1
+		})),
+
 		// Increment followers count
 		User.update({ _id: followeeId }, {
 			$inc: {
 				followersCount: 1
 			}
 		}),
+
+		promisedFollowee.then(({ followersCount }) => FollowedLog.insert({
+			userId: followerId,
+			count: followersCount + 1
+		})),
 
 		// Notify
 		promisedFollowee.then(followee => followee.host === null ?

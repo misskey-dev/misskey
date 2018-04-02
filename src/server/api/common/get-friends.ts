@@ -6,9 +6,7 @@ export default async (me: mongodb.ObjectID, includeMe: boolean = true) => {
 	// SELECT followee
 	const myfollowing = await Following
 		.find({
-			followerId: me,
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
+			followerId: me
 		}, {
 			fields: {
 				followeeId: true

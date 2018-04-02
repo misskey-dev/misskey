@@ -42,8 +42,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Check if already following
 	const exist = await Following.findOne({
 		followerId: follower._id,
-		followeeId: followee._id,
-		deletedAt: { $exists: false }
+		followeeId: followee._id
 	});
 
 	if (exist !== null) {
