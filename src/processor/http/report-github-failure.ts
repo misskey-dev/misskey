@@ -1,29 +1,24 @@
-import * as request from 'request';
+import * as request from 'request-promise-native';
 import User from '../../models/user';
 const createPost = require('../../server/api/endpoints/posts/create');
 
-export default ({ data }, done) => {
+export default async ({ data }) => {
 	const asyncBot = User.findOne({ _id: data.userId });
 
 	// Fetch parent status
-	request({
+	const parentStatuses = await request({
 		url: `${data.parentUrl}/statuses`,
 		headers: {
 			'User-Agent': 'misskey'
-		}
-	}, async (err, res, body) => {
-		if (err) {
-			console.error(err);
-			return;
-		}
-		const parentStatuses = JSON.parse(body);
-		const parentState = parentStatuses[0].state;
-		const stillFailed = parentState == 'failure' || parentState == 'error';
-		const text = stillFailed ?
-			`**⚠️BUILD STILL FAILED⚠️**: ?[${data.message}](${data.htmlUrl})` :
-			`**🚨BUILD FAILED🚨**: →→→?[${data.message}](${data.htmlUrl})←←←`;
-
-		createPost({ text }, await asyncBot);
-		done();
+		},
+		json: true
 	});
+
+	const parentState = parentStatuses[0].state;
+	const stillFailed = parentState == 'failure' || parentState == 'error';
+	const text = stillFailed ?
+		`**⚠️BUILD STILL FAILED⚠️**: ?[${data.message}](${data.htmlUrl})` :
+		`**🚨BUILD FAILED🚨**: →→→?[${data.message}](${data.htmlUrl})←←←`;
+
+	createPost({ text }, await asyncBot);
 };

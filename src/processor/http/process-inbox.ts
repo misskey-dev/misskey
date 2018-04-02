@@ -4,7 +4,7 @@ import User, { IRemoteUser } from '../../models/user';
 import act from '../../remote/activitypub/act';
 import resolvePerson from '../../remote/activitypub/resolve-person';
 
-export default ({ data }, done) => (async () => {
+export default async ({ data }) => {
 	const keyIdLower = data.signature.keyId.toLowerCase();
 	let user;
 
@@ -35,4 +35,4 @@ export default ({ data }, done) => (async () => {
 	}
 
 	await act(user, data.inbox, true);
-})().then(done, done);
+};

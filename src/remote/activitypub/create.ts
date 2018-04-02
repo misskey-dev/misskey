@@ -1,6 +1,5 @@
 import { JSDOM } from 'jsdom';
 import config from '../../config';
-import { pack as packPost } from '../../models/post';
 import RemoteUserObject, { IRemoteUserObject } from '../../models/remote-user-object';
 import { IRemoteUser } from '../../models/user';
 import uploadFromUrl from '../../drive/upload-from-url';
@@ -69,7 +68,7 @@ class Creator {
 		const promises = [];
 
 		if (this.distribute) {
-			promises.push(distributePost(this.actor, inserted.mentions, packPost(inserted)));
+			promises.push(distributePost(this.actor, inserted.mentions, inserted));
 		}
 
 		// Register to search database

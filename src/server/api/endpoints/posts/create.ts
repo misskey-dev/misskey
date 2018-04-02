@@ -7,7 +7,7 @@ import renderAcct from '../../../../acct/render';
 import config from '../../../../config';
 import html from '../../../../text/html';
 import parse from '../../../../text/parse';
-import Post, { IPost, isValidText, isValidCw, pack } from '../../../../models/post';
+import Post, { IPost, isValidText, isValidCw } from '../../../../models/post';
 import { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
 import DriveFile from '../../../../models/drive-file';
@@ -283,15 +283,12 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 		geo
 	}, reply, repost, atMentions);
 
-	// Serialize
-	const postObj = await pack(post);
+	const postObj = await distribute(user, post.mentions, post);
 
 	// Reponse
 	res({
 		createdPost: postObj
 	});
-
-	distribute(user, post.mentions, postObj);
 
 	// Register to search database
 	if (post.text && config.elasticsearch.enable) {

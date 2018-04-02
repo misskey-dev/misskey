@@ -1,6 +1,3 @@
-import { request } from 'https';
-import { sign } from 'http-signature';
-import { URL } from 'url';
 import User, { isLocalUser, pack as packUser } from '../../models/user';
 import Following from '../../models/following';
 import FollowingLog from '../../models/following-log';
@@ -9,9 +6,9 @@ import event from '../../publishers/stream';
 import notify from '../../publishers/notify';
 import context from '../../remote/activitypub/renderer/context';
 import render from '../../remote/activitypub/renderer/follow';
-import config from '../../config';
+import request from '../../remote/request';
 
-export default ({ data }, done) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {
+export default ({ data }) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {
 	const promisedFollower = User.findOne({ _id: followerId });
 	const promisedFollowee = User.findOne({ _id: followeeId });
 
@@ -60,48 +57,13 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 				followeeEvent = packUser(follower, followee)
 					.then(packed => event(followee._id, 'followed', packed));
 			} else if (isLocalUser(follower)) {
-				followeeEvent = new Promise((resolve, reject) => {
-					const {
-						protocol,
-						hostname,
-						port,
-						pathname,
-						search
-					} = new URL(followee.account.inbox);
+				const rendered = render(follower, followee);
+				rendered['@context'] = context;
 
-					const req = request({
-						protocol,
-						hostname,
-						port,
-						method: 'POST',
-						path: pathname + search,
-					}, res => {
-						res.on('close', () => {
-							if (res.statusCode >= 200 && res.statusCode < 300) {
-								resolve();
-							} else {
-								reject(res);
-							}
-						});
-
-						res.on('data', () => {});
-						res.on('error', reject);
-					});
-
-					sign(req, {
-						authorizationHeaderName: 'Signature',
-						key: follower.account.keypair,
-						keyId: `acct:${follower.username}@${config.host}`
-					});
-
-					const rendered = render(follower, followee);
-					rendered['@context'] = context;
-
-					req.end(JSON.stringify(rendered));
-				});
+				followeeEvent = request(follower, followee.account.inbox, rendered);
 			}
 
 			return Promise.all([followerEvent, followeeEvent]);
 		})
 	]);
-}).then(done, done);
+});
