@@ -34,6 +34,7 @@ type IUserBase = {
 	pinnedPostId: mongo.ObjectID;
 	isSuspended: boolean;
 	keywords: string[];
+	host: string;
 	hostLower: string;
 };
 
@@ -71,7 +72,6 @@ export interface ILocalUser extends IUserBase {
 }
 
 export interface IRemoteUser extends IUserBase {
-	host: string;
 	account: {
 		inbox: string;
 		uri: string;
@@ -90,6 +90,7 @@ export const isLocalUser = (user: any): user is ILocalUser =>
 export const isRemoteUser = (user: any): user is IRemoteUser =>
 	!isLocalUser(user);
 
+//#region Validators
 export function validateUsername(username: string): boolean {
 	return typeof username == 'string' && /^[a-zA-Z0-9\-]{3,20}$/.test(username);
 }
@@ -113,6 +114,7 @@ export function isValidLocation(location: string): boolean {
 export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }
+//#endregion
 
 export function init(user): IUser {
 	user._id = new mongo.ObjectID(user._id);
