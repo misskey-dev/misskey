@@ -5,12 +5,12 @@ import Reaction from './post-reaction';
 import { pack as packUser } from './user';
 
 const PostReaction = db.get<IPostReaction>('postReactions');
-PostReaction.createIndex(['userId', 'postId'], { unique: true });
 export default PostReaction;
 
 export interface IPostReaction {
 	_id: mongo.ObjectID;
 	createdAt: Date;
+	deletedAt: Date;
 	postId: mongo.ObjectID;
 	userId: mongo.ObjectID;
 	reaction: string;
