@@ -52,10 +52,10 @@ export default async (value, usernameLower, hostLower, acctLower) => {
 		bannerId: null,
 		createdAt: Date.parse(object.published),
 		description: summaryDOM.textContent,
-		followersCount: followers.totalItem,
-		followingCount: following.totalItem,
+		followersCount: followers ? followers.totalItem || 0 : 0,
+		followingCount: following ? following.totalItem || 0 : 0,
 		name: object.name,
-		postsCount: outbox.totalItem,
+		postsCount: outbox ? outbox.totalItem || 0 : 0,
 		driveCapacity: 1024 * 1024 * 8, // 8MiB
 		username: object.preferredUsername,
 		usernameLower,

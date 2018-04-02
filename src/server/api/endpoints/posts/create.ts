@@ -3,24 +3,16 @@
  */
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
+import renderAcct from '../../../../acct/render';
+import config from '../../../../config';
 import html from '../../../../text/html';
 import parse from '../../../../text/parse';
-import Post, { IPost, isValidText, isValidCw } from '../../../../models/post';
-import User, { ILocalUser } from '../../../../models/user';
+import Post, { IPost, isValidText, isValidCw, pack } from '../../../../models/post';
+import { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
-import Following from '../../../../models/following';
-import Mute from '../../../../models/mute';
 import DriveFile from '../../../../models/drive-file';
-import Watching from '../../../../models/post-watching';
-import ChannelWatching from '../../../../models/channel-watching';
-import { pack } from '../../../../models/post';
-import watch from '../../common/watch-post';
-import stream, { publishChannelStream } from '../../../../publishers/stream';
-import notify from '../../../../publishers/notify';
-import pushSw from '../../../../publishers/push-sw';
-import getAcct from '../../../../acct/render';
-import parseAcct from '../../../../acct/parse';
-import config from '../../../../config';
+import create from '../../../../post/create';
+import distribute from '../../../../post/distribute';
 
 /**
  * Create a post
@@ -251,226 +243,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 		});
 	}
 
-	// 投稿を作成
-	const post = await Post.insert({
-		createdAt: new Date(),
-		channelId: channel ? channel._id : undefined,
-		index: channel ? channel.index + 1 : undefined,
-		mediaIds: files ? files.map(file => file._id) : [],
-		replyId: reply ? reply._id : undefined,
-		repostId: repost ? repost._id : undefined,
-		poll: poll,
-		text: text,
-		textHtml: tokens === null ? null : html(tokens),
-		cw: cw,
-		tags: tags,
-		userId: user._id,
-		appId: app ? app._id : null,
-		viaMobile: viaMobile,
-		geo,
-
-		// 以下非正規化データ
-		_reply: reply ? { userId: reply.userId } : undefined,
-		_repost: repost ? { userId: repost.userId } : undefined,
-	});
-
-	// Serialize
-	const postObj = await pack(post);
-
-	// Reponse
-	res({
-		createdPost: postObj
-	});
-
-	//#region Post processes
-
-	User.update({ _id: user._id }, {
-		$set: {
-			latestPost: post
-		}
-	});
-
-	const mentions = [];
-
-	async function addMention(mentionee, reason) {
-		// Reject if already added
-		if (mentions.some(x => x.equals(mentionee))) return;
-
-		// Add mention
-		mentions.push(mentionee);
-
-		// Publish event
-		if (!user._id.equals(mentionee)) {
-			const mentioneeMutes = await Mute.find({
-				muterId: mentionee,
-				deletedAt: { $exists: false }
-			});
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
-			if (mentioneesMutedUserIds.indexOf(user._id.toString()) == -1) {
-				stream(mentionee, reason, postObj);
-				pushSw(mentionee, reason, postObj);
-			}
-		}
-	}
-
-	// タイムラインへの投稿
-	if (!channel) {
-		// Publish event to myself's stream
-		stream(user._id, 'post', postObj);
-
-		// Fetch all followers
-		const followers = await Following
-			.find({
-				followeeId: user._id,
-				// 削除されたドキュメントは除く
-				deletedAt: { $exists: false }
-			}, {
-				followerId: true,
-				_id: false
-			});
-
-		// Publish event to followers stream
-		followers.forEach(following =>
-			stream(following.followerId, 'post', postObj));
-	}
-
-	// チャンネルへの投稿
-	if (channel) {
-		// Increment channel index(posts count)
-		Channel.update({ _id: channel._id }, {
-			$inc: {
-				index: 1
-			}
-		});
-
-		// Publish event to channel
-		publishChannelStream(channel._id, 'post', postObj);
-
-		// Get channel watchers
-		const watches = await ChannelWatching.find({
-			channelId: channel._id,
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
-		});
-
-		// チャンネルの視聴者(のタイムライン)に配信
-		watches.forEach(w => {
-			stream(w.userId, 'post', postObj);
-		});
-	}
-
-	// Increment my posts count
-	User.update({ _id: user._id }, {
-		$inc: {
-			postsCount: 1
-		}
-	});
-
-	// If has in reply to post
-	if (reply) {
-		// Increment replies count
-		Post.update({ _id: reply._id }, {
-			$inc: {
-				repliesCount: 1
-			}
-		});
-
-		// 自分自身へのリプライでない限りは通知を作成
-		notify(reply.userId, user._id, 'reply', {
-			postId: post._id
-		});
-
-		// Fetch watchers
-		Watching
-			.find({
-				postId: reply._id,
-				userId: { $ne: user._id },
-				// 削除されたドキュメントは除く
-				deletedAt: { $exists: false }
-			}, {
-				fields: {
-					userId: true
-				}
-			})
-			.then(watchers => {
-				watchers.forEach(watcher => {
-					notify(watcher.userId, user._id, 'reply', {
-						postId: post._id
-					});
-				});
-			});
-
-		// この投稿をWatchする
-		if (user.account.settings.autoWatch !== false) {
-			watch(user._id, reply);
-		}
-
-		// Add mention
-		addMention(reply.userId, 'reply');
-	}
-
-	// If it is repost
-	if (repost) {
-		// Notify
-		const type = text ? 'quote' : 'repost';
-		notify(repost.userId, user._id, type, {
-			postId: post._id
-		});
-
-		// Fetch watchers
-		Watching
-			.find({
-				postId: repost._id,
-				userId: { $ne: user._id },
-				// 削除されたドキュメントは除く
-				deletedAt: { $exists: false }
-			}, {
-				fields: {
-					userId: true
-				}
-			})
-			.then(watchers => {
-				watchers.forEach(watcher => {
-					notify(watcher.userId, user._id, type, {
-						postId: post._id
-					});
-				});
-			});
-
-		// この投稿をWatchする
-		// TODO: ユーザーが「Repostしたときに自動でWatchする」設定を
-		//       オフにしていた場合はしない
-		watch(user._id, repost);
-
-		// If it is quote repost
-		if (text) {
-			// Add mention
-			addMention(repost.userId, 'quote');
-		} else {
-			// Publish event
-			if (!user._id.equals(repost.userId)) {
-				stream(repost.userId, 'repost', postObj);
-			}
-		}
-
-		// 今までで同じ投稿をRepostしているか
-		const existRepost = await Post.findOne({
-			userId: user._id,
-			repostId: repost._id,
-			_id: {
-				$ne: post._id
-			}
-		});
-
-		if (!existRepost) {
-			// Update repostee status
-			Post.update({ _id: repost._id }, {
-				$inc: {
-					repostCount: 1
-				}
-			});
-		}
-	}
+	let atMentions = [];
 
 	// If has text content
 	if (text) {
@@ -486,40 +259,42 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 				registerHashtags(user, hashtags);
 		*/
 		// Extract an '@' mentions
-		const atMentions = tokens
+		atMentions = tokens
 			.filter(t => t.type == 'mention')
-			.map(getAcct)
+			.map(renderAcct)
 			// Drop dupulicates
 			.filter((v, i, s) => s.indexOf(v) == i);
-
-		// Resolve all mentions
-		await Promise.all(atMentions.map(async (mention) => {
-			// Fetch mentioned user
-			// SELECT _id
-			const mentionee = await User
-				.findOne(parseAcct(mention), { _id: true });
-
-			// When mentioned user not found
-			if (mentionee == null) return;
-
-			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
-			if (reply && reply.userId.equals(mentionee._id)) return;
-			if (repost && repost.userId.equals(mentionee._id)) return;
-
-			// Add mention
-			addMention(mentionee._id, 'mention');
-
-			// Create notification
-			notify(mentionee._id, user._id, 'mention', {
-				postId: post._id
-			});
-
-			return;
-		}));
 	}
 
+	// 投稿を作成
+	const post = await create({
+		createdAt: new Date(),
+		channelId: channel ? channel._id : undefined,
+		index: channel ? channel.index + 1 : undefined,
+		mediaIds: files ? files.map(file => file._id) : [],
+		poll: poll,
+		text: text,
+		textHtml: tokens === null ? null : html(tokens),
+		cw: cw,
+		tags: tags,
+		userId: user._id,
+		appId: app ? app._id : null,
+		viaMobile: viaMobile,
+		geo
+	}, reply, repost, atMentions);
+
+	// Serialize
+	const postObj = await pack(post);
+
+	// Reponse
+	res({
+		createdPost: postObj
+	});
+
+	distribute(user, post.mentions, postObj);
+
 	// Register to search database
-	if (text && config.elasticsearch.enable) {
+	if (post.text && config.elasticsearch.enable) {
 		const es = require('../../../db/elasticsearch');
 
 		es.index({
@@ -531,15 +306,4 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 			}
 		});
 	}
-
-	// Append mentions data
-	if (mentions.length > 0) {
-		Post.update({ _id: post._id }, {
-			$set: {
-				mentions: mentions
-			}
-		});
-	}
-
-	//#endregion
 });

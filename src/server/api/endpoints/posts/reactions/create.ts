@@ -6,7 +6,7 @@ import Reaction from '../../../../../models/post-reaction';
 import Post, { pack as packPost } from '../../../../../models/post';
 import { pack as packUser } from '../../../../../models/user';
 import Watching from '../../../../../models/post-watching';
-import watch from '../../../common/watch-post';
+import watch from '../../../../../post/watch';
 import { publishPostStream } from '../../../../../publishers/stream';
 import notify from '../../../../../publishers/notify';
 import pushSw from '../../../../../publishers/push-sw';
