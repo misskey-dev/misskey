@@ -1,7 +1,7 @@
 import { request } from 'https';
 import { sign } from 'http-signature';
 import { URL } from 'url';
-import User, { isLocalUser, pack as packUser, ILocalUser } from '../../models/user';
+import User, { isLocalUser, pack as packUser } from '../../models/user';
 import Following from '../../models/following';
 import event from '../../publishers/stream';
 import notify from '../../publishers/notify';
@@ -10,7 +10,7 @@ import render from '../../remote/activitypub/renderer/follow';
 import config from '../../config';
 
 export default ({ data }, done) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {
-	const promisedFollower: Promise<ILocalUser> = User.findOne({ _id: followerId });
+	const promisedFollower = User.findOne({ _id: followerId });
 	const promisedFollowee = User.findOne({ _id: followeeId });
 
 	return Promise.all([
@@ -34,14 +34,18 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 
 		// Publish follow event
 		Promise.all([promisedFollower, promisedFollowee]).then(([follower, followee]) => {
-			const followerEvent = packUser(followee, follower)
-				.then(packed => event(follower._id, 'follow', packed));
+			let followerEvent;
 			let followeeEvent;
+
+			if (isLocalUser(follower)) {
+				followerEvent = packUser(followee, follower)
+					.then(packed => event(follower._id, 'follow', packed));
+			}
 
 			if (isLocalUser(followee)) {
 				followeeEvent = packUser(follower, followee)
 					.then(packed => event(followee._id, 'followed', packed));
-			} else {
+			} else if (isLocalUser(follower)) {
 				followeeEvent = new Promise((resolve, reject) => {
 					const {
 						protocol,
