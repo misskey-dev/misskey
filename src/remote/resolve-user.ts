@@ -19,7 +19,7 @@ export default async (username, host, option) => {
 			throw new Error();
 		}
 
-		user = await resolvePerson(self.href, usernameLower, hostLower, acctLower);
+		user = await resolvePerson(self.href, acctLower);
 	}
 
 	return user;
