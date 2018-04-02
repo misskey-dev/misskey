@@ -6,7 +6,7 @@ import * as uuid from 'uuid';
 import autwh from 'autwh';
 import redis from '../../../db/redis';
 import User, { pack } from '../../../models/user';
-import event from '../../../event';
+import event from '../../../publishers/stream';
 import config from '../../../config';
 import signin from '../common/signin';
 

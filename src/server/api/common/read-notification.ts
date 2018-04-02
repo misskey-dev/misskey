@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
 import { default as Notification, INotification } from '../../../models/notification';
-import publishUserStream from '../../../event';
+import publishUserStream from '../../../publishers/stream';
 
 /**
  * Mark as read notification(s)

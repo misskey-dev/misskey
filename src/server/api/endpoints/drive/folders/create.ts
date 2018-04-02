@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
-import { publishDriveStream } from '../../../../../event';
+import { publishDriveStream } from '../../../../../publishers/stream';
 
 /**
  * Create drive folder
