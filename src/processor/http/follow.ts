@@ -11,7 +11,7 @@ import context from '../../remote/activitypub/renderer/context';
 import render from '../../remote/activitypub/renderer/follow';
 import config from '../../config';
 
-export default ({ data }, done) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {
+export default ({ data }) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {
 	const promisedFollower = User.findOne({ _id: followerId });
 	const promisedFollowee = User.findOne({ _id: followeeId });
 
@@ -104,4 +104,4 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 			return Promise.all([followerEvent, followeeEvent]);
 		})
 	]);
-}).then(done, done);
+});
