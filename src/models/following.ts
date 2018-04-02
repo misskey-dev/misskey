@@ -8,7 +8,6 @@ export default Following;
 export type IFollowing = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
-	deletedAt: Date;
 	followeeId: mongo.ObjectID;
 	followerId: mongo.ObjectID;
 };

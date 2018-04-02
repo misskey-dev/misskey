@@ -2,8 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
+import { ObjectID } from 'mongodb';
 import User from '../../../../../models/user';
-import Following from '../../../../../models/following';
+import FollowedLog from '../../../../../models/followed-log';
 
 /**
  * Aggregate followers of a user
@@ -29,47 +30,36 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	const startTime = new Date(new Date().setMonth(new Date().getMonth() - 1));
-
-	const following = await Following
-		.find({
-			followeeId: user._id,
-			$or: [
-				{ deletedAt: { $exists: false } },
-				{ deletedAt: { $gt: startTime } }
-			]
-		}, {
-			sort: { createdAt: -1 },
-			fields: {
-				_id: false,
-				followerId: false,
-				followeeId: false
-			}
-		});
-
+	const today = new Date();
 	const graph = [];
 
+	today.setMinutes(0);
+	today.setSeconds(0);
+	today.setMilliseconds(0);
+
+	let cursorDate = new Date(today.getTime());
+	let cursorTime = cursorDate.setDate(new Date(today.getTime()).getDate() + 1);
+
 	for (let i = 0; i < 30; i++) {
-		let day = new Date(new Date().setDate(new Date().getDate() - i));
-		day = new Date(day.setMilliseconds(999));
-		day = new Date(day.setSeconds(59));
-		day = new Date(day.setMinutes(59));
-		day = new Date(day.setHours(23));
-		// day = day.getTime();
+		graph.push(FollowedLog.findOne({
+			_id: { $lt: ObjectID.createFromTime(cursorTime / 1000) },
+			userId: user._id
+		}, {
+			sort: { _id: -1 },
+		}).then(log => {
+			cursorDate = new Date(today.getTime());
+			cursorTime = cursorDate.setDate(today.getDate() - i);
 
-		const count = following.filter(f =>
-			f.createdAt < day && (f.deletedAt == null || f.deletedAt > day)
-		).length;
-
-		graph.push({
-			date: {
-				year: day.getFullYear(),
-				month: day.getMonth() + 1, // In JavaScript, month is zero-based.
-				day: day.getDate()
-			},
-			count: count
-		});
+			return {
+				date: {
+					year: cursorDate.getFullYear(),
+					month: cursorDate.getMonth() + 1, // In JavaScript, month is zero-based.
+					day: cursorDate.getDate()
+				},
+				count: log ? log.count : 0
+			};
+		}));
 	}
 
-	res(graph);
+	res(await Promise.all(graph));
 });

@@ -48,9 +48,7 @@ export default async (user, mentions, post) => {
 		// Fetch all followers
 		const followers = await Following
 			.find({
-				followeeId: user._id,
-				// 削除されたドキュメントは除く
-				deletedAt: { $exists: false }
+				followeeId: user._id
 			}, {
 				followerId: true,
 				_id: false

@@ -234,8 +234,7 @@ export const pack = (
 		_user.isFollowing = (async () => {
 			const follow = await Following.findOne({
 				followerId: meId,
-				followeeId: _user.id,
-				deletedAt: { $exists: false }
+				followeeId: _user.id
 			});
 			return follow !== null;
 		})();
@@ -244,8 +243,7 @@ export const pack = (
 		_user.isFollowed = (async () => {
 			const follow2 = await Following.findOne({
 				followerId: _user.id,
-				followeeId: meId,
-				deletedAt: { $exists: false }
+				followeeId: meId
 			});
 			return follow2 !== null;
 		})();
@@ -275,15 +273,13 @@ export const pack = (
 			// Get following you know count
 			_user.followingYouKnowCount = Following.count({
 				followeeId: { $in: myFollowingIds },
-				followerId: _user.id,
-				deletedAt: { $exists: false }
+				followerId: _user.id
 			});
 
 			// Get followers you know count
 			_user.followersYouKnowCount = Following.count({
 				followeeId: _user.id,
-				followerId: { $in: myFollowingIds },
-				deletedAt: { $exists: false }
+				followerId: { $in: myFollowingIds }
 			});
 		}
 	}
