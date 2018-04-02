@@ -1,6 +1,6 @@
 import PostForm from '../views/components/post-form.vue';
 //import RepostForm from '../views/components/repost-form.vue';
-import getPostSummary from '../../../../misc/get-post-summary';
+import getPostSummary from '../../../../get-post-summary';
 
 export default (os) => (opts) => {
 	const o = opts || {};

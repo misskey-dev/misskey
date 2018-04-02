@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import OthelloGame, { pack } from '../../../../../models/othello-game';
-import Othello from '../../../../../misc/othello/core';
+import Othello from '../../../../../othello/core';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'gameId' parameter

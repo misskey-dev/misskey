@@ -21,7 +21,7 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
-import getAcct from '../../../../../misc/user/get-acct';
+import getAcct from '../../../../../user/get-acct';
 
 const lib = Object.entries(emojilib.lib).filter((x: any) => {
 	return x[1].category != 'flags';

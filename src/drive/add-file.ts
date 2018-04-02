@@ -10,12 +10,12 @@ import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
-import DriveFile, { getGridFSBucket } from '../../models/drive-file';
-import DriveFolder from '../../models/drive-folder';
-import { pack } from '../../models/drive-file';
+import DriveFile, { getGridFSBucket } from '../models/drive-file';
+import DriveFolder from '../models/drive-folder';
+import { pack } from '../models/drive-file';
 import event, { publishDriveStream } from '../event';
-import getAcct from '../../misc/user/get-acct';
-import config from '../../conf';
+import getAcct from '../user/get-acct';
+import config from '../conf';
 
 const gm = _gm.subClass({
 	imageMagick: true
@@ -290,7 +290,7 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 
 			// Register to search database
 			if (config.elasticsearch.enable) {
-				const es = require('../../db/elasticsearch');
+				const es = require('../db/elasticsearch');
 				es.index({
 					index: 'misskey',
 					type: 'drive_file',

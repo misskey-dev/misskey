@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
-import { publishDriveStream } from '../../../../../common/event';
+import { publishDriveStream } from '../../../../../event';
 
 /**
  * Update a file

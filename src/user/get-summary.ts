@@ -1,4 +1,4 @@
-import { IUser, isLocalUser } from '../../models/user';
+import { IUser, isLocalUser } from '../models/user';
 import getAcct from './get-acct';
 
 /**

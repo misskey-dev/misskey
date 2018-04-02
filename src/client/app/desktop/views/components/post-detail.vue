@@ -78,8 +78,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
-import getAcct from '../../../../../misc/user/get-acct';
-import parse from '../../../../../common/text/parse';
+import getAcct from '../../../../../user/get-acct';
+import parse from '../../../../../text/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
 import MkRepostFormWindow from './repost-form-window.vue';

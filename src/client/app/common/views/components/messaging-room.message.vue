@@ -34,8 +34,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../misc/user/get-acct';
-import parse from '../../../../../common/text/parse';
+import getAcct from '../../../../../user/get-acct';
+import parse from '../../../../../text/parse';
 
 export default Vue.extend({
 	props: {

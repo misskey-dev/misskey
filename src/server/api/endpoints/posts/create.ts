@@ -3,8 +3,8 @@
  */
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
-import html from '../../../../common/text/html';
-import parse from '../../../../common/text/parse';
+import html from '../../../../text/html';
+import parse from '../../../../text/parse';
 import Post, { IPost, isValidText, isValidCw } from '../../../../models/post';
 import User, { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
@@ -15,10 +15,10 @@ import Watching from '../../../../models/post-watching';
 import ChannelWatching from '../../../../models/channel-watching';
 import { pack } from '../../../../models/post';
 import watch from '../../common/watch-post';
-import event, { pushSw, publishChannelStream } from '../../../../common/event';
-import notify from '../../../../common/notify';
-import getAcct from '../../../../misc/user/get-acct';
-import parseAcct from '../../../../misc/user/parse-acct';
+import event, { pushSw, publishChannelStream } from '../../../../event';
+import notify from '../../../../notify';
+import getAcct from '../../../../user/get-acct';
+import parseAcct from '../../../../user/parse-acct';
 import config from '../../../../conf';
 
 /**

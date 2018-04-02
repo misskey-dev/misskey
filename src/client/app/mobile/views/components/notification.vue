@@ -78,8 +78,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getPostSummary from '../../../../../misc/get-post-summary';
-import getAcct from '../../../../../misc/user/get-acct';
+import getPostSummary from '../../../../../get-post-summary';
+import getAcct from '../../../../../user/get-acct';
 
 export default Vue.extend({
 	props: ['notification'],

@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import Matching, { pack } from '../../../models/othello-matching';
-import publishUserStream from '../../../common/event';
+import publishUserStream from '../../../event';
 
 export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
 	// Subscribe othello stream

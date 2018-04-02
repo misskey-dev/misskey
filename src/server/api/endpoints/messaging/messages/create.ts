@@ -9,10 +9,10 @@ import User from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
-import publishUserStream from '../../../../../common/event';
-import { publishMessagingStream, publishMessagingIndexStream, pushSw } from '../../../../../common/event';
-import html from '../../../../../common/text/html';
-import parse from '../../../../../common/text/parse';
+import publishUserStream from '../../../../../event';
+import { publishMessagingStream, publishMessagingIndexStream, pushSw } from '../../../../../event';
+import html from '../../../../../text/html';
+import parse from '../../../../../text/parse';
 import config from '../../../../../conf';
 
 /**

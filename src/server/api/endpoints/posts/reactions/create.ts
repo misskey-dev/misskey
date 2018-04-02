@@ -7,8 +7,8 @@ import Post, { pack as packPost } from '../../../../../models/post';
 import { pack as packUser } from '../../../../../models/user';
 import Watching from '../../../../../models/post-watching';
 import watch from '../../../common/watch-post';
-import { publishPostStream, pushSw } from '../../../../../common/event';
-import notify from '../../../../../common/notify';
+import { publishPostStream, pushSw } from '../../../../../event';
+import notify from '../../../../../notify';
 
 /**
  * React to a post

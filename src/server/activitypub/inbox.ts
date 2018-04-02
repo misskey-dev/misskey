@@ -3,7 +3,7 @@ import * as express from 'express';
 import { parseRequest, verifySignature } from 'http-signature';
 import User, { IRemoteUser } from '../../models/user';
 import queue from '../../queue';
-import parseAcct from '../../misc/user/parse-acct';
+import parseAcct from '../../user/parse-acct';
 
 const app = express();
 app.disable('x-powered-by');

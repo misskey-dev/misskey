@@ -8,7 +8,7 @@
 
 import * as request from 'request-promise-native';
 import Othello, { Color } from '../core';
-import conf from '../../../conf';
+import conf from '../../conf';
 
 let game;
 let form;

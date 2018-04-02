@@ -3,7 +3,7 @@ import * as debug from 'debug';
 import limiterDB from '../../db/redis';
 import { Endpoint } from './endpoints';
 import { IAuthContext } from './authenticate';
-import getAcct from '../../misc/user/get-acct';
+import getAcct from '../../user/get-acct';
 
 const log = debug('misskey:limitter');
 
