@@ -63,7 +63,7 @@ web-push generate-vapid-keys
 ### 起動
 `sudo npm start`するだけです。GLHF!
 
-#### Misskeyを最新バージョンにアップデートする方法:
+### Misskeyを最新バージョンにアップデートする方法:
 1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`

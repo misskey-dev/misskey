@@ -62,7 +62,7 @@ Well done! Now, you have an environment that run to Misskey.
 ### Launch
 Just `sudo npm start`. GLHF!
 
-#### Way to Update to latest version of your Misskey
+### Way to Update to latest version of your Misskey
 1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`
