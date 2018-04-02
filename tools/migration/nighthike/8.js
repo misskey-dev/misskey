@@ -2,8 +2,8 @@
 
 const { default: Message } = require('../../../built/api/models/message');
 const { default: zip } = require('@prezzemolo/zip')
-const html = require('../../../built/common/text/html').default;
-const parse = require('../../../built/common/text/parse').default;
+const html = require('../../../built/text/html').default;
+const parse = require('../../../built/text/parse').default;
 
 const migrate = async (message) => {
 	const result = await Message.update(message._id, {
