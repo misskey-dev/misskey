@@ -42,10 +42,10 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	for (let i = 0; i < 30; i++) {
 		graph.push(FollowedLog.findOne({
-			_id: { $lt: ObjectID.createFromTime(cursorTime / 1000) },
+			createdAt: { $lt: new Date(cursorTime / 1000) },
 			userId: user._id
 		}, {
-			sort: { _id: -1 },
+			sort: { createdAt: -1 },
 		}).then(log => {
 			cursorDate = new Date(today.getTime());
 			cursorTime = cursorDate.setDate(today.getDate() - i);

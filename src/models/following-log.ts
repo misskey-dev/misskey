@@ -6,6 +6,7 @@ export default FollowingLog;
 
 export type IFollowingLog = {
 	_id: ObjectID;
+	createdAt: Date;
 	userId: ObjectID;
 	count: number;
 };

@@ -24,6 +24,7 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 		}),
 
 		promisedFollower.then(({ followingCount }) => FollowingLog.insert({
+			createdAt: data.following.createdAt,
 			userId: followerId,
 			count: followingCount + 1
 		})),
@@ -36,6 +37,7 @@ export default ({ data }, done) => Following.findOne({ _id: data.following }).th
 		}),
 
 		promisedFollowee.then(({ followersCount }) => FollowedLog.insert({
+			createdAt: data.following.createdAt,
 			userId: followerId,
 			count: followersCount + 1
 		})),
