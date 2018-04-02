@@ -1,4 +1,5 @@
 import create from './create';
+import follow from './follow';
 import createObject from '../create';
 import Resolver from '../resolver';
 
@@ -14,6 +15,9 @@ export default (actor, value, distribute) => {
 		switch (object.type) {
 		case 'Create':
 			return create(resolver, actor, object, distribute);
+
+		case 'Follow':
+			return follow(actor, object);
 
 		default:
 			return null;
