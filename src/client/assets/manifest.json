@@ -3,5 +3,12 @@
 	"name": "Misskey",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#313a42"
+	"background_color": "#313a42",
+	"icons": {
+		"16": "/assets/favicon/16.png",
+		"32": "/assets/favicon/32.png",
+		"64": "/assets/favicon/64.png",
+		"128": "/assets/favicon/128.png",
+		"256": "/assets/favicon/256.png"
+	}
 }
