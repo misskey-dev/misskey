@@ -66,10 +66,3 @@ Just `sudo npm start`. GLHF!
 1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`
-
-### Testing
-Run `npm test` after building
-
-### Debugging :bug:
-#### Show debug messages
-Misskey uses [debug](https://github.com/visionmedia/debug) and the namespace is `misskey:*`.

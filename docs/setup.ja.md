@@ -67,10 +67,3 @@ web-push generate-vapid-keys
 1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`
-
-### テスト
-(ビルドされている状態で)`npm test`
-
-### デバッグ :bug:
-#### デバッグメッセージを表示するようにする
-Misskeyは[debug](https://github.com/visionmedia/debug)モジュールを利用しており、ネームスペースは`misskey:*`となっています。
