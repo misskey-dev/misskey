@@ -1,6 +1,6 @@
 // for Node.js interpret
 
-const { default: Post } = require('../../../built/api/models/post');
+const { default: Post } = require('../../../built/models/post');
 const { default: zip } = require('@prezzemolo/zip')
 const html = require('../../../built/text/html').default;
 const parse = require('../../../built/text/parse').default;

@@ -1,6 +1,6 @@
 // for Node.js interpret
 
-const { default: User } = require('../../../built/api/models/user');
+const { default: User } = require('../../../built/models/user');
 const { default: zip } = require('@prezzemolo/zip')
 
 const migrate = async (user) => {

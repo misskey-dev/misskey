@@ -1,6 +1,6 @@
 // for Node.js interpret
 
-const { default: Message } = require('../../../built/api/models/message');
+const { default: Message } = require('../../../built/models/messaging-message');
 const { default: zip } = require('@prezzemolo/zip')
 const html = require('../../../built/text/html').default;
 const parse = require('../../../built/text/parse').default;

@@ -1,6 +1,6 @@
 // for Node.js interpret
 
-const { default: User } = require('../../../built/api/models/user');
+const { default: User } = require('../../../built/models/user');
 const { generate } = require('../../../built/crypto_key');
 const { default: zip } = require('@prezzemolo/zip')
 
