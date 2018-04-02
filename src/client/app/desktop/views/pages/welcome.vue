@@ -43,7 +43,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { docsUrl, copyright, lang } from '../../../config';
-import getAcct from '../../../../../user/get-acct';
+import getAcct from '../../../../../acct/render';
 
 const shares = [
 	'Everything!',

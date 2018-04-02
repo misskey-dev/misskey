@@ -15,7 +15,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import summary from '../../../../../renderers/get-post-summary';
-import getAcct from '../../../../../user/get-acct';
+import getAcct from '../../../../../acct/render';
 
 export default Vue.extend({
 	props: ['post'],

@@ -8,7 +8,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { url } from '../../../config';
-import getAcct from '../../../../../user/get-acct';
+import getAcct from '../../../../../acct/render';
 
 export default Vue.extend({
 	props: ['user'],

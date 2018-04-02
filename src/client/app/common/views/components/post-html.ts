@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import parse from '../../../../../text/parse';
-import getAcct from '../../../../../user/get-acct';
+import getAcct from '../../../../../acct/render';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
 

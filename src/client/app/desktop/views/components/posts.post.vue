@@ -85,7 +85,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
-import getAcct from '../../../../../user/get-acct';
+import getAcct from '../../../../../acct/render';
 import parse from '../../../../../text/parse';
 
 import MkPostFormWindow from './post-form-window.vue';

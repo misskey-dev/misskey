@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
-import getAcct from '../../../../../user/get-acct';
+import getAcct from '../../../../../acct/render';
 
 export default define({
 	name: 'trends',

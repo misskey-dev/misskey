@@ -5,7 +5,7 @@ import User, { IUser, init as initUser, ILocalUser } from '../../../models/user'
 
 import getPostSummary from '../../../renderers/get-post-summary';
 import getUserSummary from '../../../renderers/get-user-summary';
-import parseAcct from '../../../user/parse-acct';
+import parseAcct from '../../../acct/parse';
 import getNotificationSummary from '../../../renderers/get-notification-summary';
 
 const hmm = [
