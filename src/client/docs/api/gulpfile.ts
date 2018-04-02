@@ -151,7 +151,7 @@ gulp.task('doc:api:entities', async () => {
 			return;
 		}
 		files.forEach(file => {
-			const entity = yaml.safeLoad(fs.readFileSync(file, 'utf-8'));
+			const entity = yaml.safeLoad(fs.readFileSync(file, 'utf-8')) as any;
 			const vars = {
 				name: entity.name,
 				desc: entity.desc,

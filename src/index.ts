@@ -30,6 +30,9 @@ const ev = new Xev();
 
 process.title = 'Misskey';
 
+// https://github.com/Automattic/kue/issues/822
+require('events').EventEmitter.prototype._maxListeners = 256;
+
 // Start app
 main();
 

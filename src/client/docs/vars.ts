@@ -15,13 +15,13 @@ export default async function(): Promise<{ [key: string]: any }> {
 
 	const endpoints = glob.sync('./src/client/docs/api/endpoints/**/*.yaml');
 	vars['endpoints'] = endpoints.map(ep => {
-		const _ep = yaml.safeLoad(fs.readFileSync(ep, 'utf-8'));
+		const _ep = yaml.safeLoad(fs.readFileSync(ep, 'utf-8')) as any;
 		return _ep.endpoint;
 	});
 
 	const entities = glob.sync('./src/client/docs/api/entities/**/*.yaml');
 	vars['entities'] = entities.map(x => {
-		const _x = yaml.safeLoad(fs.readFileSync(x, 'utf-8'));
+		const _x = yaml.safeLoad(fs.readFileSync(x, 'utf-8')) as any;
 		return _x.name;
 	});
 
