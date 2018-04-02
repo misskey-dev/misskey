@@ -1,4 +1,4 @@
-import parseAcct from '../../user/parse-acct';
+import parseAcct from '../../acct/parse';
 import User from '../../models/user';
 
 export default (redirect, respond) => async (req, res, next) => {

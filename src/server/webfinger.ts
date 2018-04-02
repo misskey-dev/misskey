@@ -1,5 +1,5 @@
 import config from '../config';
-import parseAcct from '../user/parse-acct';
+import parseAcct from '../acct/parse';
 import User from '../models/user';
 const express = require('express');
 

@@ -229,7 +229,7 @@
 
 	</style>
 	<script lang="typescript">
-		import getAcct from '../../../../user/get-acct';
+		import getAcct from '../../../../acct/render';
 
 		this.post = this.opts.post;
 		this.form = this.opts.form;

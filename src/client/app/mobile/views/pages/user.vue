@@ -60,8 +60,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as age from 's-age';
-import getAcct from '../../../../../user/get-acct';
-import getAcct from '../../../../../user/parse-acct';
+import getAcct from '../../../../../acct/render';
+import getAcct from '../../../../../acct/parse';
 import Progress from '../../../common/scripts/loading';
 import XHome from './user/home.vue';
 

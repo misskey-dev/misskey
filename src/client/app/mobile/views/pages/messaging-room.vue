@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parseAcct from '../../../../../user/parse-acct';
+import parseAcct from '../../../../../acct/parse';
 
 export default Vue.extend({
 	data() {

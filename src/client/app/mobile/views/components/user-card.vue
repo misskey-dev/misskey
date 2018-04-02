@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../user/get-acct';
+import getAcct from '../../../../../acct/render';
 
 export default Vue.extend({
 	props: ['user'],

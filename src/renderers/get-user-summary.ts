@@ -1,5 +1,5 @@
 import { IUser, isLocalUser } from '../models/user';
-import getAcct from '../user/get-acct';
+import getAcct from '../acct/render';
 
 /**
  * ユーザーを表す文字列を取得します。

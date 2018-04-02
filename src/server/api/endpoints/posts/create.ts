@@ -18,8 +18,8 @@ import watch from '../../common/watch-post';
 import stream, { publishChannelStream } from '../../../../publishers/stream';
 import notify from '../../../../publishers/notify';
 import pushSw from '../../../../publishers/push-sw';
-import getAcct from '../../../../user/get-acct';
-import parseAcct from '../../../../user/parse-acct';
+import getAcct from '../../../../acct/render';
+import parseAcct from '../../../../acct/parse';
 import config from '../../../../config';
 
 /**
