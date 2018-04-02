@@ -15,7 +15,7 @@ import DriveFolder from '../models/drive-folder';
 import { pack } from '../models/drive-file';
 import event, { publishDriveStream } from '../event';
 import getAcct from '../user/get-acct';
-import config from '../conf';
+import config from '../config';
 
 const gm = _gm.subClass({
 	imageMagick: true

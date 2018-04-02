@@ -1,4 +1,4 @@
-import config from '../conf';
+import config from '../config';
 import parseAcct from '../user/parse-acct';
 import User from '../models/user';
 const express = require('express');

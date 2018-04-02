@@ -3,7 +3,7 @@ import * as express from 'express';
 import * as request from 'request';
 import * as crypto from 'crypto';
 import User from '../../../../models/user';
-import config from '../../../../conf';
+import config from '../../../../config';
 import BotCore from '../core';
 import _redis from '../../../../db/redis';
 import prominence = require('prominence');

@@ -1,5 +1,5 @@
 import { createQueue } from 'kue';
-import config from './conf';
+import config from './config';
 
 export default createQueue({
 	redis: {

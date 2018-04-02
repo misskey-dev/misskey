@@ -7,7 +7,7 @@ import event from '../../event';
 import notify from '../../notify';
 import context from '../../remote/activitypub/renderer/context';
 import render from '../../remote/activitypub/renderer/follow';
-import config from '../../conf';
+import config from '../../config';
 
 export default ({ data }, done) => Following.findOne({ _id: data.following }).then(({ followerId, followeeId }) => {
 	const promisedFollower: Promise<ILocalUser> = User.findOne({ _id: followerId });

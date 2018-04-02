@@ -3,7 +3,7 @@
  */
 import * as os from 'os';
 import version from '../../../version';
-import config from '../../../conf';
+import config from '../../../config';
 import Meta from '../../../models/meta';
 
 /**

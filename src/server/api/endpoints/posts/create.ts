@@ -19,7 +19,7 @@ import event, { pushSw, publishChannelStream } from '../../../../event';
 import notify from '../../../../notify';
 import getAcct from '../../../../user/get-acct';
 import parseAcct from '../../../../user/parse-acct';
-import config from '../../../../conf';
+import config from '../../../../config';
 
 /**
  * Create a post

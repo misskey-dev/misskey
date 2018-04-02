@@ -1,7 +1,7 @@
 import * as mongodb from 'mongodb';
 import deepcopy = require('deepcopy');
 import { pack as packFolder } from './drive-folder';
-import config from '../conf';
+import config from '../config';
 import monkDb, { nativeDbConn } from '../db/mongodb';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');

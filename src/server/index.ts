@@ -12,7 +12,7 @@ import Accesses from 'accesses';
 import activityPub from './activitypub';
 import webFinger from './webfinger';
 import log from './log-request';
-import config from '../conf';
+import config from '../config';
 
 /**
  * Init app

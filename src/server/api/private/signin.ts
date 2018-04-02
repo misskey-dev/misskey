@@ -5,7 +5,7 @@ import User, { ILocalUser } from '../../../models/user';
 import Signin, { pack } from '../../../models/signin';
 import event from '../../../event';
 import signin from '../common/signin';
-import config from '../../../conf';
+import config from '../../../config';
 
 export default async (req: express.Request, res: express.Response) => {
 	res.header('Access-Control-Allow-Origin', config.url);

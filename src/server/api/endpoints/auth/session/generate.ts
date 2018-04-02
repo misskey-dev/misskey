@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import $ from 'cafy';
 import App from '../../../../../models/app';
 import AuthSess from '../../../../../models/auth-session';
-import config from '../../../../../conf';
+import config from '../../../../../config';
 
 /**
  * @swagger

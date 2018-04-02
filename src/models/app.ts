@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import AccessToken from './access-token';
 import db from '../db/mongodb';
-import config from '../conf';
+import config from '../config';
 
 const App = db.get<IApp>('apps');
 App.createIndex('nameId');

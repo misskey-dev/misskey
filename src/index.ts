@@ -4,7 +4,6 @@
 
 Error.stackTraceLimit = Infinity;
 
-import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
 import * as debug from 'debug';
@@ -21,8 +20,8 @@ import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 import stats from './utils/stats';
 
-import { Config, path as configPath } from './config';
-import loadConfig from './config';
+import loadConfig from './config/load';
+import { Config } from './config/types';
 
 import parseOpt from './parse-opt';
 
@@ -116,11 +115,17 @@ async function init(): Promise<Config> {
 	new DependencyInfo().showAll();
 
 	const configLogger = new Logger('Config');
-	if (!fs.existsSync(configPath)) {
-		throw 'Configuration not found - Please run "npm run config" command.';
-	}
+	let config;
 
-	const config = loadConfig();
+	try {
+		config = loadConfig();
+	} catch (exception) {
+		if (exception.code === 'ENOENT') {
+			throw 'Configuration not found - Please run "npm run config" command.';
+		}
+
+		throw exception;
+	}
 
 	configLogger.info('Successfully loaded');
 	configLogger.info(`maintainer: ${config.maintainer}`);

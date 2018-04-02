@@ -1,5 +1,5 @@
 import * as express from 'express';
-import config from '../../conf';
+import config from '../../config';
 import context from '../../remote/activitypub/renderer/context';
 import render from '../../remote/activitypub/renderer/person';
 import withUser from './with-user';

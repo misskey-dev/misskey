@@ -6,7 +6,7 @@ import { IPost, pack as packPost } from './post';
 import Following from './following';
 import Mute from './mute';
 import getFriends from '../server/api/common/get-friends';
-import config from '../conf';
+import config from '../config';
 
 const User = db.get<IUser>('users');
 

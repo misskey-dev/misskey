@@ -14,7 +14,7 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 import I18nReplacer from './src/build/i18n';
 import { pattern as faPattern, replacement as faReplacement } from './src/build/fa';
 const constants = require('./src/const.json');
-import config from './src/conf';
+import config from './src/config';
 import { licenseHtml } from './src/build/license';
 
 import locales from './locales';

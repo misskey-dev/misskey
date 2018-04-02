@@ -2,7 +2,7 @@ import * as EventEmitter from 'events';
 import * as express from 'express';
 //const crypto = require('crypto');
 import User from '../../../models/user';
-import config from '../../../conf';
+import config from '../../../config';
 import queue from '../../../queue';
 
 module.exports = async (app: express.Application) => {

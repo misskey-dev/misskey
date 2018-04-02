@@ -1,4 +1,4 @@
-import config from '../../../conf';
+import config from '../../../config';
 
 export default function(res, user, redirect: boolean) {
 	const expires = 1000 * 60 * 60 * 24 * 365; // One Year

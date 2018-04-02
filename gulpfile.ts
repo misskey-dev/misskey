@@ -24,7 +24,7 @@ const uglifyes = require('uglify-es');
 
 import { fa } from './src/build/fa';
 import version from './src/version';
-import config from './src/conf';
+import config from './src/config';
 
 const uglify = uglifyComposer(uglifyes, console);
 
