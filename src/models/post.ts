@@ -40,6 +40,7 @@ export type IPost = {
 	repliesCount: number;
 	reactionCounts: any;
 	mentions: mongo.ObjectID[];
+	visibility: 'public' | 'unlisted' | 'private' | 'direct';
 	geo: {
 		coordinates: number[];
 		altitude: number;
