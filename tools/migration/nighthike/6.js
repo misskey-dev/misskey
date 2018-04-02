@@ -3,7 +3,7 @@ db.posts.update({
 		mediaIds: null
 	}, {
 		mediaIds: {
-			$exist: false
+			$exists: false
 		}
 	}]
 }, {
