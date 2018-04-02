@@ -77,8 +77,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../misc/user/get-acct';
-import parse from '../../../../../common/text/parse';
+import getAcct from '../../../../../user/get-acct';
+import parse from '../../../../../text/parse';
 
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';

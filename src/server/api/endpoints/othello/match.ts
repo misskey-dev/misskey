@@ -2,8 +2,8 @@ import $ from 'cafy';
 import Matching, { pack as packMatching } from '../../../../models/othello-matching';
 import OthelloGame, { pack as packGame } from '../../../../models/othello-game';
 import User from '../../../../models/user';
-import publishUserStream, { publishOthelloStream } from '../../../../common/event';
-import { eighteight } from '../../../../misc/othello/maps';
+import publishUserStream, { publishOthelloStream } from '../../../../event';
+import { eighteight } from '../../../../othello/maps';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter

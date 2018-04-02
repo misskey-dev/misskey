@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
-import event from '../../../../common/event';
+import event from '../../../../event';
 import config from '../../../../conf';
 
 /**

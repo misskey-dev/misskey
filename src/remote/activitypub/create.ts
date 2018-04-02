@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import config from '../../conf';
 import Post from '../../models/post';
 import RemoteUserObject, { IRemoteUserObject } from '../../models/remote-user-object';
-import uploadFromUrl from '../../common/drive/upload-from-url';
+import uploadFromUrl from '../../drive/upload-from-url';
 import Resolver from './resolver';
 const createDOMPurify = require('dompurify');
 

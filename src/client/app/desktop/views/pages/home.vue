@@ -7,7 +7,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
-import getPostSummary from '../../../../../misc/get-post-summary';
+import getPostSummary from '../../../../../get-post-summary';
 
 export default Vue.extend({
 	props: {

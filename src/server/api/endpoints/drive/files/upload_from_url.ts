@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import { pack } from '../../../../../models/drive-file';
-import uploadFromUrl from '../../../../../common/drive/upload-from-url';
+import uploadFromUrl from '../../../../../drive/upload-from-url';
 
 /**
  * Create a file from a URL

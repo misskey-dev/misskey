@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
-import { publishDriveStream } from '../../../../../common/event';
+import { publishDriveStream } from '../../../../../event';
 
 /**
  * Update a folder

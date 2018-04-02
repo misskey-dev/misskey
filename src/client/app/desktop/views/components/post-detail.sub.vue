@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
-import getAcct from '../../../../../misc/user/get-acct';
+import getAcct from '../../../../../user/get-acct';
 
 export default Vue.extend({
 	props: ['post'],

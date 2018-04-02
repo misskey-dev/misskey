@@ -3,10 +3,10 @@ import * as bcrypt from 'bcryptjs';
 
 import User, { IUser, init as initUser, ILocalUser } from '../../../models/user';
 
-import getPostSummary from '../../../misc/get-post-summary';
-import getUserSummary from '../../../misc/user/get-summary';
-import parseAcct from '../../../misc/user/parse-acct';
-import getNotificationSummary from '../../../misc/get-notification-summary';
+import getPostSummary from '../../../get-post-summary';
+import getUserSummary from '../../../user/get-summary';
+import parseAcct from '../../../user/parse-acct';
+import getNotificationSummary from '../../../get-notification-summary';
 
 const hmm = [
 	'？',
