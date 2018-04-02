@@ -35,31 +35,37 @@ Please install and setup these softwares:
 ##### Optional
 * [Elasticsearch](https://www.elastic.co/) - used to provide searching feature instead of MongoDB
 
-*3.* Prepare configuration
+*3.* Install Misskey
+----------------------------------------------------------------
+1. `git clone -b master git://github.com/syuilo/misskey.git`
+2. `cd misskey`
+3. `npm install`
+
+*4.* Prepare configuration
 ----------------------------------------------------------------
 1. Copy `example.yml` of `.config` directory
 2. Rename it to `default.yml`
 3. Edit it
 
-*4.* Install and build Misskey
+---
+
+Or you can generate config file via `npm run config` command.
+
+*5.* Build Misskey
 ----------------------------------------------------------------
+1. `npm run build`
 
-1. `git clone -b master git://github.com/syuilo/misskey.git`
-2. `cd misskey`
-3. `npm install`
-4. `npm run build`
-
-#### Update
-1. `git reset --hard && git pull origin master`
-2. `npm install`
-3. `npm run build`
-
-*5.* That is it.
+*6.* That is it.
 ----------------------------------------------------------------
 Well done! Now, you have an environment that run to Misskey.
 
 ### Launch
 Just `sudo npm start`. GLHF!
+
+#### Way to Update to latest version of your Misskey
+1. `git reset --hard && git pull origin master`
+2. `npm install`
+3. `npm run build`
 
 ### Testing
 Run `npm test` after building

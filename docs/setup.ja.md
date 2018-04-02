@@ -35,31 +35,38 @@ web-push generate-vapid-keys
 ##### オプション
 * [Elasticsearch](https://www.elastic.co/) - 検索機能を向上させるために用います。
 
-*3.* 設定ファイルを用意する
+*3.* Misskeyのインストール
+----------------------------------------------------------------
+1. `git clone -b master git://github.com/syuilo/misskey.git`
+2. `cd misskey`
+3. `npm install`
+
+*4.* 設定ファイルを用意する
 ----------------------------------------------------------------
 1. `.config`ディレクトリ内の`example.yml`をコピー
 2. `default.yml`にリネーム
 3. 編集する
 
-*4.* Misskeyのインストール(とビルド)
+---
+
+または、`npm run config`コマンドを利用して、ガイドに従って情報を
+入力して設定ファイルを生成することもできます。
+
+*5.* Misskeyのビルド
 ----------------------------------------------------------------
+1. `npm run build`
 
-1. `git clone -b master git://github.com/syuilo/misskey.git`
-2. `cd misskey`
-3. `npm install`
-4. `npm run build`
-
-#### アップデートするには:
-1. `git reset --hard && git pull origin master`
-2. `npm install`
-3. `npm run build`
-
-*5.* 以上です！
+*6.* 以上です！
 ----------------------------------------------------------------
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
 
 ### 起動
 `sudo npm start`するだけです。GLHF!
+
+#### Misskeyを最新バージョンにアップデートする方法:
+1. `git reset --hard && git pull origin master`
+2. `npm install`
+3. `npm run build`
 
 ### テスト
 (ビルドされている状態で)`npm test`
