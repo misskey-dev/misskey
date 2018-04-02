@@ -12,14 +12,22 @@ type IWebFinger = {
   subject: string;
 };
 
-export default (query, verifier): Promise<IWebFinger> => new Promise((res, rej) => webFinger.lookup(query, (error, result) => {
-	if (error) {
-		return rej(error);
+export default async function resolve(query, verifier?: string): Promise<IWebFinger> {
+	const finger = await new Promise((res, rej) => webFinger.lookup(query, (error, result) => {
+		if (error) {
+			return rej(error);
+		}
+
+		res(result.object);
+	})) as IWebFinger;
+
+	if (verifier) {
+		if (finger.subject.toLowerCase().replace(/^acct:/, '') !== verifier) {
+			throw 'WebFinger verfification failed';
+		}
+
+		return finger;
 	}
 
-	if (result.object.subject.toLowerCase().replace(/^acct:/, '') !== verifier) {
-		return rej('WebFinger verfification failed');
-	}
-
-	res(result.object);
-}));
+	return resolve(finger.subject, finger.subject.toLowerCase());
+}

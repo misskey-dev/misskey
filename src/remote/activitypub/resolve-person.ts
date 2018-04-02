@@ -10,18 +10,14 @@ async function isCollection(collection) {
 	return ['Collection', 'OrderedCollection'].includes(collection.type);
 }
 
-export default async (value, usernameLower, hostLower, acctLower) => {
-	if (!validateUsername(usernameLower)) {
-		throw new Error();
-	}
-
+export default async (value, verifier?: string) => {
 	const { resolver, object } = await new Resolver().resolveOne(value);
 
 	if (
 		object === null ||
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
-		object.preferredUsername.toLowerCase() !== usernameLower ||
+		!validateUsername(object.preferredUsername) ||
 		!isValidName(object.name) ||
 		!isValidDescription(object.summary)
 	) {
@@ -41,9 +37,11 @@ export default async (value, usernameLower, hostLower, acctLower) => {
 			resolved => isCollection(resolved.object) ? resolved.object : null,
 			() => null
 		),
-		webFinger(object.id, acctLower),
+		webFinger(object.id, verifier),
 	]);
 
+	const host = toUnicode(finger.subject.replace(/^.*?@/, ''));
+	const hostLower = host.replace(/[A-Z]+/, matched => matched.toLowerCase());
 	const summaryDOM = JSDOM.fragment(object.summary);
 
 	// Create user
@@ -58,8 +56,8 @@ export default async (value, usernameLower, hostLower, acctLower) => {
 		postsCount: outbox ? outbox.totalItem || 0 : 0,
 		driveCapacity: 1024 * 1024 * 8, // 8MiB
 		username: object.preferredUsername,
-		usernameLower,
-		host: toUnicode(finger.subject.replace(/^.*?@/, '')),
+		usernameLower: object.preferredUsername.toLowerCase(),
+		host,
 		hostLower,
 		account: {
 			publicKey: {
