@@ -2,7 +2,6 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import { ObjectID } from 'mongodb';
 import User from '../../../../../models/user';
 import FollowingLog from '../../../../../models/following-log';
 
