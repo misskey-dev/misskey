@@ -6,10 +6,14 @@ import queue from '../../queue';
 import parseAcct from '../../acct/parse';
 
 const app = express();
-app.disable('x-powered-by');
-app.use(bodyParser.json());
 
-app.post('/@:user/inbox', async (req, res) => {
+app.disable('x-powered-by');
+
+app.post('/@:user/inbox', bodyParser.json({
+	type() {
+		return true;
+	}
+}), async (req, res) => {
 	let parsed;
 
 	req.headers.authorization = 'Signature ' + req.headers.signature;
@@ -51,6 +55,7 @@ app.post('/@:user/inbox', async (req, res) => {
 		type: 'performActivityPub',
 		actor: user._id,
 		outbox: req.body,
+		distribute: true,
 	}).save();
 
 	return res.status(202).end();

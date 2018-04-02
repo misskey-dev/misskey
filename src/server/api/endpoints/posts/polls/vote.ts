@@ -5,7 +5,7 @@ import $ from 'cafy';
 import Vote from '../../../../../models/poll-vote';
 import Post from '../../../../../models/post';
 import Watching from '../../../../../models/post-watching';
-import watch from '../../../common/watch-post';
+import watch from '../../../../../post/watch';
 import { publishPostStream } from '../../../../../publishers/stream';
 import notify from '../../../../../publishers/notify';
 
