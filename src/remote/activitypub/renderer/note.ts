@@ -30,7 +30,7 @@ export default async (user, post) => {
 	const attributedTo = `${config.url}/@${user.username}`;
 
 	return {
-		id: `${config.url}/posts/${post._id}`,
+		id: `${config.url}/posts/${post._id}}`,
 		type: 'Note',
 		attributedTo,
 		content: post.textHtml,
