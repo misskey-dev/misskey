@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
-import event from '../../../../event';
+import event from '../../../../publishers/stream';
 
 /**
  * Update myself

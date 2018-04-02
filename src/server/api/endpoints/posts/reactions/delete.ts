@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Reaction from '../../../../../models/post-reaction';
 import Post from '../../../../../models/post';
-// import event from '../../../event';
+// import event from '../../../publishers/stream';
 
 /**
  * Unreact to a post

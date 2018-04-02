@@ -2,7 +2,7 @@ import * as websocket from 'websocket';
 import * as redis from 'redis';
 import * as CRC32 from 'crc-32';
 import OthelloGame, { pack } from '../../../models/othello-game';
-import { publishOthelloGameStream } from '../../../event';
+import { publishOthelloGameStream } from '../../../publishers/stream';
 import Othello from '../../../othello/core';
 import * as maps from '../../../othello/maps';
 import { ParsedUrlQuery } from 'querystring';

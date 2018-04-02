@@ -15,8 +15,9 @@ import Watching from '../../../../models/post-watching';
 import ChannelWatching from '../../../../models/channel-watching';
 import { pack } from '../../../../models/post';
 import watch from '../../common/watch-post';
-import event, { pushSw, publishChannelStream } from '../../../../event';
-import notify from '../../../../notify';
+import stream, { publishChannelStream } from '../../../../publishers/stream';
+import notify from '../../../../publishers/notify';
+import pushSw from '../../../../publishers/push-sw';
 import getAcct from '../../../../user/get-acct';
 import parseAcct from '../../../../user/parse-acct';
 import config from '../../../../config';
@@ -306,7 +307,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 			});
 			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
 			if (mentioneesMutedUserIds.indexOf(user._id.toString()) == -1) {
-				event(mentionee, reason, postObj);
+				stream(mentionee, reason, postObj);
 				pushSw(mentionee, reason, postObj);
 			}
 		}
@@ -315,7 +316,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 	// タイムラインへの投稿
 	if (!channel) {
 		// Publish event to myself's stream
-		event(user._id, 'post', postObj);
+		stream(user._id, 'post', postObj);
 
 		// Fetch all followers
 		const followers = await Following
@@ -330,7 +331,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 
 		// Publish event to followers stream
 		followers.forEach(following =>
-			event(following.followerId, 'post', postObj));
+			stream(following.followerId, 'post', postObj));
 	}
 
 	// チャンネルへの投稿
@@ -354,7 +355,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 
 		// チャンネルの視聴者(のタイムライン)に配信
 		watches.forEach(w => {
-			event(w.userId, 'post', postObj);
+			stream(w.userId, 'post', postObj);
 		});
 	}
 
@@ -448,7 +449,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 		} else {
 			// Publish event
 			if (!user._id.equals(repost.userId)) {
-				event(repost.userId, 'repost', postObj);
+				stream(repost.userId, 'repost', postObj);
 			}
 		}
 

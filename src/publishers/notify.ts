@@ -1,8 +1,8 @@
 import * as mongo from 'mongodb';
-import Notification from './models/notification';
-import Mute from './models/mute';
-import event from './event';
-import { pack } from './models/notification';
+import Notification from '../models/notification';
+import Mute from '../models/mute';
+import { pack } from '../models/notification';
+import stream from './stream';
 
 export default (
 	notifiee: mongo.ObjectID,
@@ -26,7 +26,7 @@ export default (
 	resolve(notification);
 
 	// Publish notification event
-	event(notifiee, 'notification',
+	stream(notifiee, 'notification',
 		await pack(notification));
 
 	// 3秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
@@ -44,7 +44,7 @@ export default (
 			}
 			//#endregion
 
-			event(notifiee, 'unread_notification', await pack(notification));
+			stream(notifiee, 'unread_notification', await pack(notification));
 		}
 	}, 3000);
 });
