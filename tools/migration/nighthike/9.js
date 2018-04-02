@@ -4,13 +4,11 @@ const { default: Following } = require('../../../built/models/following');
 const { default: FollowingLog } = require('../../../built/models/following-log');
 const { default: FollowedLog } = require('../../../built/models/followed-log');
 const { default: zip } = require('@prezzemolo/zip')
-const html = require('../../../built/text/html').default;
-const parse = require('../../../built/text/parse').default;
 
 const migrate = async (following) => {
 	const followingCount = await Following.count({
 		followerId: following.followerId,
-		_id: { $lt: following._id },
+		createdAt: { $lt: following.createdAt },
 		$or: [
 			{ deletedAt: { $exists: false } },
 			{ deletedAt: { $gt: following.createdAt } }
@@ -24,7 +22,7 @@ const migrate = async (following) => {
 
 	const followersCount = await Following.count({
 		followeeId: following.followeeId,
-		_id: { $lt: following._id },
+		createdAt: { $lt: following.createdAt },
 		$or: [
 			{ deletedAt: { $exists: false } },
 			{ deletedAt: { $gt: following.createdAt } }
@@ -37,16 +35,32 @@ const migrate = async (following) => {
 	});
 
 	if (following.deletedAt) {
+		const followingCount2 = await Following.count({
+			followerId: following.followerId,
+			createdAt: { $lt: following.deletedAt },
+			$or: [
+				{ deletedAt: { $exists: false } },
+				{ deletedAt: { $gt: following.createdAt } }
+			]
+		});
 		await FollowingLog.insert({
 			createdAt: following.deletedAt,
 			userId: following.followerId,
-			count: followingCount - 1
+			count: followingCount2 - 1
 		});
 
+		const followersCount2 = await Following.count({
+			followeeId: following.followeeId,
+			createdAt: { $lt: following.deletedAt },
+			$or: [
+				{ deletedAt: { $exists: false } },
+				{ deletedAt: { $gt: following.createdAt } }
+			]
+		});
 		await FollowedLog.insert({
 			createdAt: following.deletedAt,
 			userId: following.followeeId,
-			count: followersCount - 1
+			count: followersCount2 - 1
 		});
 	}
 
