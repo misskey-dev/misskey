@@ -13,7 +13,7 @@ import publishUserStream from '../../../../../event';
 import { publishMessagingStream, publishMessagingIndexStream, pushSw } from '../../../../../event';
 import html from '../../../../../text/html';
 import parse from '../../../../../text/parse';
-import config from '../../../../../conf';
+import config from '../../../../../config';
 
 /**
  * Create a message

@@ -7,7 +7,7 @@ import autwh from 'autwh';
 import redis from '../../../db/redis';
 import User, { pack } from '../../../models/user';
 import event from '../../../event';
-import config from '../../../conf';
+import config from '../../../config';
 import signin from '../common/signin';
 
 module.exports = (app: express.Application) => {

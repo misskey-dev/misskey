@@ -13,7 +13,7 @@ import * as mkdirp from 'mkdirp';
 import locales from '../../../../locales';
 import I18nReplacer from '../../../build/i18n';
 import fa from '../../../build/fa';
-import config from './../../../conf';
+import config from './../../../config';
 
 import generateVars from '../vars';
 

@@ -5,7 +5,7 @@ import { generate as generateKeypair } from '../../../crypto_key';
 import recaptcha = require('recaptcha-promise');
 import User, { IUser, validateUsername, validatePassword, pack } from '../../../models/user';
 import generateUserToken from '../common/generate-native-user-token';
-import config from '../../../conf';
+import config from '../../../config';
 
 recaptcha.init({
 	secret_key: config.recaptcha.secret_key

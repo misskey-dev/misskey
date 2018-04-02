@@ -1,4 +1,4 @@
-import config from '../../../conf';
+import config from '../../../config';
 
 export default tag => ({
 	type: 'Hashtag',

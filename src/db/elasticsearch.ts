@@ -1,5 +1,5 @@
 import * as elasticsearch from 'elasticsearch';
-import config from '../conf';
+import config from '../config';
 
 // Init ElasticSearch connection
 const client = new elasticsearch.Client({

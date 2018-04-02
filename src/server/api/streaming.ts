@@ -1,7 +1,7 @@
 import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
-import config from '../../conf';
+import config from '../../config';
 import { default as User, IUser } from '../../models/user';
 import AccessToken from '../../models/access-token';
 import isNativeToken from './common/is-native-token';

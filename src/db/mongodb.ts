@@ -1,4 +1,4 @@
-import config from '../conf';
+import config from '../config';
 
 const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
 const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;

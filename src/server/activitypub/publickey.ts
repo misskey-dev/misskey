@@ -1,7 +1,7 @@
 import * as express from 'express';
 import context from '../../remote/activitypub/renderer/context';
 import render from '../../remote/activitypub/renderer/key';
-import config from '../../conf';
+import config from '../../config';
 import withUser from './with-user';
 
 const app = express();

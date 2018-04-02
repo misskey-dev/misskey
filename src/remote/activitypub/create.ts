@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import config from '../../conf';
+import config from '../../config';
 import Post from '../../models/post';
 import RemoteUserObject, { IRemoteUserObject } from '../../models/remote-user-object';
 import uploadFromUrl from '../../drive/upload-from-url';

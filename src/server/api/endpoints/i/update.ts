@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import event from '../../../../event';
-import config from '../../../../conf';
+import config from '../../../../config';
 
 /**
  * Update myself

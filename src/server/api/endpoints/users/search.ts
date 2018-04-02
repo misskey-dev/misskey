@@ -4,7 +4,7 @@
 import * as mongo from 'mongodb';
 import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
-import config from '../../../../conf';
+import config from '../../../../config';
 const escapeRegexp = require('escape-regexp');
 
 /**

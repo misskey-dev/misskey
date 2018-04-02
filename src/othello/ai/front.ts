@@ -10,7 +10,7 @@ import * as childProcess from 'child_process';
 const WebSocket = require('ws');
 import * as ReconnectingWebSocket from 'reconnecting-websocket';
 import * as request from 'request-promise-native';
-import conf from '../../conf';
+import conf from '../../config';
 
 // 設定 ////////////////////////////////////////////////////////
 

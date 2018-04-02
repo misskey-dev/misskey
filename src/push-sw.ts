@@ -1,7 +1,7 @@
 const push = require('web-push');
 import * as mongo from 'mongodb';
 import Subscription from './models/sw-subscription';
-import config from './conf';
+import config from './config';
 
 if (config.sw) {
 	// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録

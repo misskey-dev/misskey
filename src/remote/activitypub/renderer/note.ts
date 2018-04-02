@@ -1,6 +1,6 @@
 import renderDocument from './document';
 import renderHashtag from './hashtag';
-import config from '../../../conf';
+import config from '../../../config';
 import DriveFile from '../../../models/drive-file';
 import Post from '../../../models/post';
 import User from '../../../models/user';

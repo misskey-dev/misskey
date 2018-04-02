@@ -6,7 +6,7 @@ import * as licenseChecker from 'license-checker';
 import * as tmp from 'tmp';
 
 import { fa } from '../../build/fa';
-import config from '../../conf';
+import config from '../../config';
 import { licenseHtml } from '../../build/license';
 const constants = require('../../const.json');
 
