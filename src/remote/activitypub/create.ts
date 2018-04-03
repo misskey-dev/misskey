@@ -93,9 +93,19 @@ class Creator {
 	}
 
 	public async create(parentResolver, value): Promise<Array<Promise<IRemoteUserObject>>> {
-		const results = await parentResolver.resolveRemoteUserObjects(value);
+		const collection = await parentResolver.resolveCollection(value);
 
-		return results.map(promisedResult => promisedResult.then(({ resolver, object }) => {
+		return collection.object.map(async element => {
+			if (typeof element === 'string') {
+				const object = RemoteUserObject.findOne({ uri: element });
+
+				if (object !== null) {
+					return object;
+				}
+			}
+
+			const { resolver, object } = await collection.resolver.resolveOne(element);
+
 			switch (object.type) {
 			case 'Image':
 				return this.createImage(object);
@@ -105,7 +115,7 @@ class Creator {
 			}
 
 			return null;
-		}));
+		});
 	}
 }
 

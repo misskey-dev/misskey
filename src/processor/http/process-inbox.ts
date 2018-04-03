@@ -35,5 +35,5 @@ export default async ({ data }) => {
 		throw 'signature verification failed';
 	}
 
-	await act(new Resolver(), user, data.inbox, true);
+	await Promise.all(await act(new Resolver(), user, data.inbox, true));
 };
