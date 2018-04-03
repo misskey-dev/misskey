@@ -25,21 +25,18 @@ export default ({ data }) => Post.findOne({ _id: data.id }).then(post => {
 				User.findOne({ _id: post.userId }),
 
 				// Fetch all followers
-				Following.aggregate([
-					{
-						$lookup: {
-							from: 'users',
-							localField: 'followerId',
-							foreignField: '_id',
-							as: 'follower'
-						}
-					},
-					{
-					$match: {
-							followeeId: post.userId
-						}
+				Following.aggregate([{
+					$lookup: {
+						from: 'users',
+						localField: 'followerId',
+						foreignField: '_id',
+						as: 'follower'
 					}
-				], {
+				}, {
+					$match: {
+						followeeId: post.userId
+					}
+				}], {
 					_id: false
 				})
 			]).then(([user, followers]) => Promise.all(followers.map(following => {
