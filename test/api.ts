@@ -2,6 +2,8 @@
  * API TESTS
  */
 
+import * as merge from 'object-assign-deep';
+
 Error.stackTraceLimit = Infinity;
 
 // During the test the env variable is set to test
@@ -28,7 +30,7 @@ const async = fn => (done) => {
 	});
 };
 
-const request = (endpoint, params, me) => new Promise((ok, ng) => {
+const request = (endpoint, params, me?) => new Promise<any>((ok, ng) => {
 	const auth = me ? {
 		i: me.account.token
 	} : {};
@@ -1126,24 +1128,8 @@ describe('API', () => {
 	});
 });
 
-function deepAssign(destination, ...sources) {
-	for (const source of sources) {
-		for (const key in source) {
-			const destinationChild = destination[key];
-
-			if (typeof destinationChild === 'object' && destinationChild != null) {
-				deepAssign(destinationChild, source[key]);
-			} else {
-				destination[key] = source[key];
-			}
-		}
-	}
-
-	return destination;
-}
-
-function insertSakurako(opts) {
-	return db.get('users').insert(deepAssign({
+function insertSakurako(opts?) {
+	return db.get('users').insert(merge({
 		username: 'sakurako',
 		usernameLower: 'sakurako',
 		account: {
@@ -1157,8 +1143,8 @@ function insertSakurako(opts) {
 	}, opts));
 }
 
-function insertHimawari(opts) {
-	return db.get('users').insert(deepAssign({
+function insertHimawari(opts?) {
+	return db.get('users').insert(merge({
 		username: 'himawari',
 		usernameLower: 'himawari',
 		account: {
@@ -1172,7 +1158,7 @@ function insertHimawari(opts) {
 	}, opts));
 }
 
-function insertDriveFile(opts) {
+function insertDriveFile(opts?) {
 	return db.get('driveFiles.files').insert({
 		length: opts.datasize,
 		filename: 'strawberry-pasta.png',
@@ -1180,15 +1166,15 @@ function insertDriveFile(opts) {
 	});
 }
 
-function insertDriveFolder(opts) {
-	return db.get('driveFolders').insert(deepAssign({
+function insertDriveFolder(opts?) {
+	return db.get('driveFolders').insert(merge({
 		name: 'my folder',
 		parentId: null
 	}, opts));
 }
 
-function insertApp(opts) {
-	return db.get('apps').insert(deepAssign({
+function insertApp(opts?) {
+	return db.get('apps').insert(merge({
 		name: 'my app',
 		secret: 'mysecret'
 	}, opts));
