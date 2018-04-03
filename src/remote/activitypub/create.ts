@@ -36,7 +36,7 @@ class Creator {
 		return createRemoteUserObject('driveFiles.files', _id, object);
 	}
 
-	private async createNote(resolver, object) {
+	private async createNote(resolver: Resolver, object) {
 		if ('attributedTo' in object && this.actor.account.uri !== object.attributedTo) {
 			throw new Error();
 		}
@@ -92,7 +92,7 @@ class Creator {
 		return promisedRemoteUserObject;
 	}
 
-	public async create(parentResolver, value): Promise<Array<Promise<IRemoteUserObject>>> {
+	public async create(parentResolver: Resolver, value): Promise<Array<Promise<IRemoteUserObject>>> {
 		const collection = await parentResolver.resolveCollection(value);
 
 		return collection.object.map(async element => {
