@@ -5,6 +5,7 @@ import Post, { pack } from '../../models/post';
 import User, { isLocalUser } from '../../models/user';
 import stream, { publishChannelStream } from '../../publishers/stream';
 import context from '../../remote/activitypub/renderer/context';
+import renderCreate from '../../remote/activitypub/renderer/create';
 import renderNote from '../../remote/activitypub/renderer/note';
 import request from '../../remote/request';
 
@@ -49,9 +50,10 @@ export default ({ data }) => Post.findOne({ _id: data.id }).then(post => {
 					});
 				}
 
-				return renderNote(user, post).then(rendered => {
-					rendered['@context'] = context;
-					return request(user, following.follower[0].account.inbox, rendered);
+				return renderNote(user, post).then(note => {
+					const create = renderCreate(note);
+					create['@context'] = context;
+					return request(user, following.follower[0].account.inbox, create);
 				});
 			})))
 		);
