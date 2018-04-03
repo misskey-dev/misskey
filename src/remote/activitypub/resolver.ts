@@ -43,32 +43,35 @@ export default class Resolver {
 	}
 
 	private async resolveCollection(value) {
-		if (Array.isArray(value)) {
-			return value;
-		}
-
 		const resolved = typeof value === 'string' ?
 			await this.resolveUnrequestedOne(value) :
-			value;
+			{ resolver: this, object: value };
 
-		switch (resolved.type) {
+		switch (resolved.object.type) {
 		case 'Collection':
-			return resolved.items;
+			resolved.object = resolved.object.items;
+			break;
 
 		case 'OrderedCollection':
-			return resolved.orderedItems;
+			resolved.object = resolved.object.orderedItems;
+			break;
 
 		default:
-			return [resolved];
+			if (!Array.isArray(value)) {
+				resolved.object = [resolved.object];
+			}
+			break;
 		}
+
+		return resolved;
 	}
 
 	public async resolve(value): Promise<Array<Promise<IResult>>> {
-		const collection = await this.resolveCollection(value);
+		const { resolver, object } = await this.resolveCollection(value);
 
-		return collection
-			.filter(element => !this.requesting.has(element))
-			.map(this.resolveUnrequestedOne.bind(this));
+		return object
+			.filter(element => !resolver.requesting.has(element))
+			.map(resolver.resolveUnrequestedOne.bind(resolver));
 	}
 
 	public resolveOne(value) {
@@ -80,9 +83,9 @@ export default class Resolver {
 	}
 
 	public async resolveRemoteUserObjects(value) {
-		const collection = await this.resolveCollection(value);
+		const { resolver, object } = await this.resolveCollection(value);
 
-		return collection.filter(element => !this.requesting.has(element)).map(element => {
+		return object.filter(element => !resolver.requesting.has(element)).map(element => {
 			if (typeof element === 'string') {
 				const object = RemoteUserObject.findOne({ uri: element });
 
@@ -91,7 +94,7 @@ export default class Resolver {
 				}
 			}
 
-			return this.resolveUnrequestedOne(element);
+			return resolver.resolveUnrequestedOne(element);
 		});
 	}
 }
