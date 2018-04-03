@@ -1,6 +1,7 @@
 import create from '../create';
+import Resolver from '../resolver';
 
-export default (resolver, actor, activity, distribute) => {
+export default (resolver: Resolver, actor, activity, distribute) => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
 		throw new Error();
 	}

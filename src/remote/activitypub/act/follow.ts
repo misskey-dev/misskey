@@ -7,8 +7,9 @@ import queue from '../../../queue';
 import context from '../renderer/context';
 import renderAccept from '../renderer/accept';
 import request from '../../request';
+import Resolver from '../resolver';
 
-export default async (resolver, actor, activity, distribute) => {
+export default async (resolver: Resolver, actor, activity, distribute) => {
 	const prefix = config.url + '/@';
 	const id = activity.object.id || activity.object;
 

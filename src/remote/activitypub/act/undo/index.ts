@@ -1,7 +1,8 @@
 import act from '../../act';
 import unfollow from './unfollow';
+import Resolver from '../../resolver';
 
-export default async (resolver, actor, activity) => {
+export default async (resolver: Resolver, actor, activity) => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
 		throw new Error();
 	}

@@ -2,8 +2,9 @@ import create from './create';
 import follow from './follow';
 import undo from './undo';
 import createObject from '../create';
+import Resolver from '../resolver';
 
-export default (resolver, actor, value, distribute?: boolean) => {
+export default (resolver: Resolver, actor, value, distribute?: boolean) => {
 	return resolver.resolve(value).then(resolved => Promise.all(resolved.map(async promisedResult => {
 		const result = await promisedResult;
 		const created = await (await createObject(result.resolver, actor, [result.object], distribute))[0];
