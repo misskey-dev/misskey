@@ -5,7 +5,7 @@ import act from '../../remote/activitypub/act';
 import resolvePerson from '../../remote/activitypub/resolve-person';
 import Resolver from '../../remote/activitypub/resolver';
 
-export default async ({ data }) => {
+export default async ({ data }): Promise<void> => {
 	const keyIdLower = data.signature.keyId.toLowerCase();
 	let user;
 
