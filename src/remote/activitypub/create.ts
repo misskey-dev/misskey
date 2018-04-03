@@ -105,36 +105,36 @@ class Creator {
 		const collection = await parentResolver.resolveCollection(value);
 
 		return collection.object.map(async element => {
-			if (typeof element === 'string') {
-				try {
-					await Promise.all([
-						DriveFile.findOne({ 'metadata.uri': element }).then(file => {
-							if (file === null) {
-								return;
-							}
+			const uri = element.id || element;
 
-							throw {
-								$ref: 'driveFile.files',
-								$id: file._id
-							};
-						}, () => {}),
-						Post.findOne({ uri: element }).then(post => {
-							if (post === null) {
-								return;
-							}
+			try {
+				await Promise.all([
+					DriveFile.findOne({ 'metadata.uri': uri }).then(file => {
+						if (file === null) {
+							return;
+						}
 
-							throw {
-								$ref: 'posts',
-								$id: post._id
-							};
-						}, () => {})
-					]);
-				} catch (object) {
-					return {
-						resolver: collection.resolver,
-						object
-					};
-				}
+						throw {
+							$ref: 'driveFile.files',
+							$id: file._id
+						};
+					}, () => {}),
+					Post.findOne({ uri }).then(post => {
+						if (post === null) {
+							return;
+						}
+
+						throw {
+							$ref: 'posts',
+							$id: post._id
+						};
+					}, () => {})
+				]);
+			} catch (object) {
+				return {
+					resolver: collection.resolver,
+					object
+				};
 			}
 
 			const { resolver, object } = await collection.resolver.resolveOne(element);
