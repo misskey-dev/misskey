@@ -1,4 +1,5 @@
 import create from './create';
+import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
 import createObject from '../create';
@@ -18,6 +19,9 @@ export default async (parentResolver: Resolver, actor, value, distribute?: boole
 		switch (object.type) {
 		case 'Create':
 			return create(resolver, actor, object, distribute);
+
+		case 'Delete':
+			return performDeleteActivity(resolver, actor, object);
 
 		case 'Follow':
 			return follow(resolver, actor, object, distribute);
