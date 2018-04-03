@@ -23,6 +23,10 @@ import distribute from '../../../../post/distribute';
  * @return {Promise<any>}
  */
 module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej) => {
+	// Get 'visibility' parameter
+	const [visibility = 'public', visibilityErr] = $(params.visibility).optional.string().or(['public', 'unlisted', 'private', 'direct']).$;
+	if (visibilityErr) return rej('invalid visibility');
+
 	// Get 'text' parameter
 	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
@@ -280,6 +284,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 		userId: user._id,
 		appId: app ? app._id : null,
 		viaMobile: viaMobile,
+		visibility,
 		geo
 	}, reply, repost, atMentions);
 
