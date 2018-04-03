@@ -11,6 +11,8 @@ import { pack as packFile } from './drive-file';
 
 const Post = db.get<IPost>('posts');
 
+Post.createIndex('uri', { sparse: true, unique: true });
+
 export default Post;
 
 export function isValidText(text: string): boolean {
@@ -49,6 +51,7 @@ export type IPost = {
 		heading: number;
 		speed: number;
 	};
+	uri: string;
 };
 
 /**
