@@ -22,6 +22,7 @@ export default async ({ data }) => {
 		// Decrement following count
 		User.update({ _id: following.followerId }, { $inc: { followingCount: -1 } }),
 		promisedFollower.then(({ followingCount }) => FollowingLog.insert({
+			createdAt: new Date(),
 			userId: following.followerId,
 			count: followingCount - 1
 		})),
@@ -29,6 +30,7 @@ export default async ({ data }) => {
 		// Decrement followers count
 		User.update({ _id: following.followeeId }, { $inc: { followersCount: -1 } }),
 		promisedFollowee.then(({ followersCount }) => FollowedLog.insert({
+			createdAt: new Date(),
 			userId: following.followeeId,
 			count: followersCount - 1
 		})),
