@@ -6,6 +6,8 @@ import monkDb, { nativeDbConn } from '../db/mongodb';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 
+DriveFile.createIndex('metadata.uri', { sparse: true, unique: true });
+
 export default DriveFile;
 
 const getGridFSBucket = async (): Promise<mongodb.GridFSBucket> => {
@@ -18,17 +20,21 @@ const getGridFSBucket = async (): Promise<mongodb.GridFSBucket> => {
 
 export { getGridFSBucket };
 
+export type IMetadata = {
+	properties: any;
+	userId: mongodb.ObjectID;
+	folderId: mongodb.ObjectID;
+	comment: string;
+	uri: string;
+};
+
 export type IDriveFile = {
 	_id: mongodb.ObjectID;
 	uploadDate: Date;
 	md5: string;
 	filename: string;
 	contentType: string;
-	metadata: {
-		properties: any;
-		userId: mongodb.ObjectID;
-		folderId: mongodb.ObjectID;
-	}
+	metadata: IMetadata;
 };
 
 export function validateFileName(name: string): boolean {

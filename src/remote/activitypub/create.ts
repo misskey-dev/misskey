@@ -1,6 +1,8 @@
 import { JSDOM } from 'jsdom';
+import { ObjectID } from 'mongodb';
 import config from '../../config';
-import RemoteUserObject, { IRemoteUserObject } from '../../models/remote-user-object';
+import DriveFile from '../../models/drive-file';
+import Post from '../../models/post';
 import { IRemoteUser } from '../../models/user';
 import uploadFromUrl from '../../drive/upload-from-url';
 import createPost from '../../post/create';
@@ -8,15 +10,13 @@ import distributePost from '../../post/distribute';
 import Resolver from './resolver';
 const createDOMPurify = require('dompurify');
 
-function createRemoteUserObject($ref, $id, { id }) {
-	const object = { $ref, $id };
-
-	if (!id) {
-		return { object };
-	}
-
-	return RemoteUserObject.insert({ uri: id, object });
-}
+type IResult = {
+	resolver: Resolver;
+	object: {
+		$ref: string;
+		$id: ObjectID;
+	};
+};
 
 class Creator {
 	private actor: IRemoteUser;
@@ -27,17 +27,23 @@ class Creator {
 		this.distribute = distribute;
 	}
 
-	private async createImage(image) {
+	private async createImage(resolver: Resolver, image) {
 		if ('attributedTo' in image && this.actor.account.uri !== image.attributedTo) {
 			throw new Error();
 		}
 
-		const { _id } = await uploadFromUrl(image.url, this.actor);
-		return createRemoteUserObject('driveFiles.files', _id, image);
+		const { _id } = await uploadFromUrl(image.url, this.actor, image.id || null);
+		return {
+			resolver,
+			object: { $ref: 'driveFiles.files', $id: _id }
+		};
 	}
 
 	private async createNote(resolver: Resolver, note) {
-		if ('attributedTo' in note && this.actor.account.uri !== note.attributedTo) {
+		if (
+			('attributedTo' in note && this.actor.account.uri !== note.attributedTo) ||
+			typeof note.id !== 'string'
+		) {
 			throw new Error();
 		}
 
@@ -61,10 +67,10 @@ class Creator {
 			userId: this.actor._id,
 			appId: null,
 			viaMobile: false,
-			geo: undefined
+			geo: undefined,
+			uri: note.id
 		}, null, null, []);
 
-		const promisedRemoteUserObject = createRemoteUserObject('posts', inserted._id, note);
 		const promises = [];
 
 		if (this.distribute) {
@@ -89,18 +95,45 @@ class Creator {
 
 		await Promise.all(promises);
 
-		return promisedRemoteUserObject;
+		return {
+			resolver,
+			object: { $ref: 'posts', id: inserted._id }
+		};
 	}
 
-	public async create(parentResolver: Resolver, value): Promise<Array<Promise<IRemoteUserObject>>> {
+	public async create(parentResolver: Resolver, value): Promise<Array<Promise<IResult>>> {
 		const collection = await parentResolver.resolveCollection(value);
 
 		return collection.object.map(async element => {
 			if (typeof element === 'string') {
-				const object = RemoteUserObject.findOne({ uri: element });
+				try {
+					await Promise.all([
+						DriveFile.findOne({ 'metadata.uri': element }).then(file => {
+							if (file === null) {
+								return;
+							}
 
-				if (object !== null) {
-					return object;
+							throw {
+								$ref: 'driveFile.files',
+								$id: file._id
+							};
+						}, () => {}),
+						Post.findOne({ uri: element }).then(post => {
+							if (post === null) {
+								return;
+							}
+
+							throw {
+								$ref: 'posts',
+								$id: post._id
+							};
+						}, () => {})
+					]);
+				} catch (object) {
+					return {
+						resolver: collection.resolver,
+						object
+					};
 				}
 			}
 
@@ -108,7 +141,7 @@ class Creator {
 
 			switch (object.type) {
 			case 'Image':
-				return this.createImage(object);
+				return this.createImage(resolver, object);
 
 			case 'Note':
 				return this.createNote(resolver, object);

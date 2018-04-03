@@ -8,7 +8,7 @@ import * as request from 'request';
 
 const log = debug('misskey:common:drive:upload_from_url');
 
-export default async (url, user, folderId = null): Promise<IDriveFile> => {
+export default async (url, user, folderId = null, uri = null): Promise<IDriveFile> => {
 	let name = URL.parse(url).pathname.split('/').pop();
 	if (!validateFileName(name)) {
 		name = null;
@@ -35,7 +35,7 @@ export default async (url, user, folderId = null): Promise<IDriveFile> => {
 			.on('error', rej);
 	});
 
-	const driveFile = await create(user, path, name, null, folderId);
+	const driveFile = await create(user, path, name, null, folderId, false, uri);
 
 	// clean-up
 	fs.unlink(path, (e) => {

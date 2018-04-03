@@ -10,7 +10,7 @@ import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
-import DriveFile, { getGridFSBucket } from '../models/drive-file';
+import DriveFile, { IMetadata, getGridFSBucket } from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import { pack } from '../models/drive-file';
 import event, { publishDriveStream } from '../publishers/stream';
@@ -45,7 +45,8 @@ const addFile = async (
 	name: string = null,
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
-	force: boolean = false
+	force: boolean = false,
+	uri: string = null
 ) => {
 	log(`registering ${name} (user: ${getAcct(user)}, path: ${path})`);
 
@@ -224,12 +225,18 @@ const addFile = async (
 		properties['avgColor'] = averageColor;
 	}
 
-	return addToGridFS(detectedName, readable, mime, {
+	const metadata = {
 		userId: user._id,
 		folderId: folder !== null ? folder._id : null,
 		comment: comment,
 		properties: properties
-	});
+	} as IMetadata;
+
+	if (uri !== null) {
+		metadata.uri = uri;
+	}
+
+	return addToGridFS(detectedName, readable, mime, metadata);
 };
 
 /**
