@@ -3,6 +3,7 @@ import parseAcct from '../../acct/parse';
 import User, { IRemoteUser } from '../../models/user';
 import act from '../../remote/activitypub/act';
 import resolvePerson from '../../remote/activitypub/resolve-person';
+import Resolver from '../../remote/activitypub/resolver';
 
 export default async ({ data }) => {
 	const keyIdLower = data.signature.keyId.toLowerCase();
@@ -34,5 +35,5 @@ export default async ({ data }) => {
 		throw 'signature verification failed';
 	}
 
-	await act(user, data.inbox, true);
+	await act(new Resolver(), user, data.inbox, true);
 };
