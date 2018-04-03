@@ -42,8 +42,6 @@ app.use('/assets', (req, res) => {
 	res.sendStatus(404);
 });
 
-app.use('/recover', (req, res) => res.sendFile(`${client}/assets/recover.html`));
-
 // ServiceWroker
 app.get(/^\/sw\.(.+?)\.js$/, (req, res) =>
 	res.sendFile(`${client}/assets/sw.${req.params[0]}.js`));
