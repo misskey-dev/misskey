@@ -15,7 +15,7 @@ export default async (resolver, actor, activity) => {
 
 		switch (result.object.$ref) {
 		case 'following':
-			await unfollow(result.resolver, result.object);
+			await unfollow(result.object);
 		}
 	}));
 

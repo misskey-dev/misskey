@@ -2,9 +2,9 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User, { pack as packUser } from '../../../../models/user';
+import User from '../../../../models/user';
 import Following from '../../../../models/following';
-import event from '../../../../publishers/stream';
+import queue from '../../../../queue';
 
 /**
  * Unfollow a user
@@ -49,28 +49,15 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('already not following');
 	}
 
-	// Delete following
-	await Following.findOneAndDelete({
-		_id: exist._id
-	});
-
-	// Send response
-	res();
-
-	// Decrement following count
-	User.update({ _id: follower._id }, {
-		$inc: {
-			followingCount: -1
+	queue.create('http', {
+		type: 'unfollow',
+		id: exist._id
+	}).save(error => {
+		if (error) {
+			return rej('unfollow failed');
 		}
-	});
 
-	// Decrement followers count
-	User.update({ _id: followee._id }, {
-		$inc: {
-			followersCount: -1
-		}
+		// Send response
+		res();
 	});
-
-	// Publish follow event
-	event(follower._id, 'unfollow', await packUser(followee, follower));
 });
