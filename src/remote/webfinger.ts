@@ -24,7 +24,7 @@ export default async function resolve(query, verifier?: string): Promise<IWebFin
 
 	if (typeof verifier === 'string') {
 		if (subject !== verifier) {
-			throw new Error;
+			throw new Error();
 		}
 
 		return finger;
@@ -34,5 +34,5 @@ export default async function resolve(query, verifier?: string): Promise<IWebFin
 		return resolve(subject, subject);
 	}
 
-	throw new Error;
+	throw new Error();
 }
