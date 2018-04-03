@@ -4,27 +4,29 @@ import undo from './undo';
 import createObject from '../create';
 import Resolver from '../resolver';
 
-export default (resolver: Resolver, actor, value, distribute?: boolean) => {
-	return resolver.resolve(value).then(resolved => Promise.all(resolved.map(async promisedResult => {
-		const result = await promisedResult;
-		const created = await (await createObject(result.resolver, actor, [result.object], distribute))[0];
+export default async (parentResolver: Resolver, actor, value, distribute?: boolean) => {
+	const collection = await parentResolver.resolveCollection(value);
+
+	return collection.object.map(async element => {
+		const { resolver, object } = await collection.resolver.resolveOne(element);
+		const created = await (await createObject(resolver, actor, [object], distribute))[0];
 
 		if (created !== null) {
 			return created;
 		}
 
-		switch (result.object.type) {
+		switch (object.type) {
 		case 'Create':
-			return create(result.resolver, actor, result.object, distribute);
+			return create(resolver, actor, object, distribute);
 
 		case 'Follow':
-			return follow(result.resolver, actor, result.object, distribute);
+			return follow(resolver, actor, object, distribute);
 
 		case 'Undo':
-			return undo(result.resolver, actor, result.object);
+			return undo(resolver, actor, object);
 
 		default:
 			return null;
 		}
-	})));
+	});
 };
