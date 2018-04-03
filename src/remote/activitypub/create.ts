@@ -27,44 +27,44 @@ class Creator {
 		this.distribute = distribute;
 	}
 
-	private async createImage(object) {
-		if ('attributedTo' in object && this.actor.account.uri !== object.attributedTo) {
+	private async createImage(image) {
+		if ('attributedTo' in image && this.actor.account.uri !== image.attributedTo) {
 			throw new Error();
 		}
 
-		const { _id } = await uploadFromUrl(object.url, this.actor);
-		return createRemoteUserObject('driveFiles.files', _id, object);
+		const { _id } = await uploadFromUrl(image.url, this.actor);
+		return createRemoteUserObject('driveFiles.files', _id, image);
 	}
 
-	private async createNote(resolver: Resolver, object) {
-		if ('attributedTo' in object && this.actor.account.uri !== object.attributedTo) {
+	private async createNote(resolver: Resolver, note) {
+		if ('attributedTo' in note && this.actor.account.uri !== note.attributedTo) {
 			throw new Error();
 		}
 
-		const mediaIds = 'attachment' in object &&
-			(await Promise.all(await this.create(resolver, object.attachment)))
+		const mediaIds = 'attachment' in note &&
+			(await Promise.all(await this.create(resolver, note.attachment)))
 				.filter(media => media !== null && media.object.$ref === 'driveFiles.files')
 				.map(({ object }) => object.$id);
 
-		const { window } = new JSDOM(object.content);
+		const { window } = new JSDOM(note.content);
 
 		const inserted = await createPost({
 			channelId: undefined,
 			index: undefined,
-			createdAt: new Date(object.published),
+			createdAt: new Date(note.published),
 			mediaIds,
 			replyId: undefined,
 			repostId: undefined,
 			poll: undefined,
 			text: window.document.body.textContent,
-			textHtml: object.content && createDOMPurify(window).sanitize(object.content),
+			textHtml: note.content && createDOMPurify(window).sanitize(note.content),
 			userId: this.actor._id,
 			appId: null,
 			viaMobile: false,
 			geo: undefined
 		}, null, null, []);
 
-		const promisedRemoteUserObject = createRemoteUserObject('posts', inserted._id, object);
+		const promisedRemoteUserObject = createRemoteUserObject('posts', inserted._id, note);
 		const promises = [];
 
 		if (this.distribute) {
@@ -72,7 +72,7 @@ class Creator {
 		}
 
 		// Register to search database
-		if (object.content && config.elasticsearch.enable) {
+		if (note.content && config.elasticsearch.enable) {
 			const es = require('../../db/elasticsearch');
 
 			promises.push(new Promise((resolve, reject) => {
