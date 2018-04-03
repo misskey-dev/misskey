@@ -669,24 +669,6 @@ describe('API', () => {
 			res.should.have.status(204);
 		}));
 
-		it('過去にフォロー歴があった状態でフォロー解除できる', async(async () => {
-			const hima = await insertHimawari();
-			const me = await insertSakurako();
-			await db.get('following').insert({
-				followeeId: hima._id,
-				followerId: me._id,
-				deletedAt: new Date()
-			});
-			await db.get('following').insert({
-				followeeId: hima._id,
-				followerId: me._id
-			});
-			const res = await request('/following/delete', {
-				userId: hima._id.toString()
-			}, me);
-			res.should.have.status(204);
-		}));
-
 		it('フォローしていない場合は怒る', async(async () => {
 			const hima = await insertHimawari();
 			const me = await insertSakurako();
