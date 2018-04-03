@@ -30,7 +30,7 @@ export default async (resolver, actor, activity, distribute) => {
 		const { _id } = await Following.findOne({
 			followerId: actor._id,
 			followeeId: followee._id
-		})
+		});
 
 		return {
 			resolver,
