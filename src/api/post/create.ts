@@ -15,6 +15,8 @@ import Mute from '../../models/mute';
 import pushSw from '../../publishers/push-sw';
 import event from '../../publishers/stream';
 import parse from '../../text/parse';
+import html from '../../text/html';
+import { IApp } from '../../models/app';
 
 export default async (user: IUser, content: {
 	createdAt: Date;
@@ -23,9 +25,14 @@ export default async (user: IUser, content: {
 	repost: IPost;
 	media: IDriveFile[];
 	geo: any;
+	poll: any;
 	viaMobile: boolean;
 	tags: string[];
-}) => new Promise(async (res, rej) => {
+	cw: string;
+	visibility: string;
+	uri?: string;
+	app?: IApp;
+}) => new Promise<IPost>(async (res, rej) => {
 	const tags = content.tags || [];
 
 	let tokens = null;
@@ -53,10 +60,16 @@ export default async (user: IUser, content: {
 		replyId: content.reply ? content.reply._id : null,
 		repostId: content.repost ? content.repost._id : null,
 		text: content.text,
+		textHtml: tokens === null ? null : html(tokens),
+		poll: content.poll,
+		cw: content.cw,
 		tags,
 		userId: user._id,
 		viaMobile: content.viaMobile,
 		geo: content.geo || null,
+		uri: content.uri,
+		appId: content.app ? content.app._id : null,
+		visibility: content.visibility,
 
 		// 以下非正規化データ
 		_reply: content.reply ? { userId: content.reply.userId } : null,

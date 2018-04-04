@@ -3,16 +3,12 @@
  */
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
-import renderAcct from '../../../../acct/render';
-import config from '../../../../config';
-import html from '../../../../text/html';
-import parse from '../../../../text/parse';
-import Post, { IPost, isValidText, isValidCw } from '../../../../models/post';
+import Post, { IPost, isValidText, isValidCw, pack } from '../../../../models/post';
 import { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
 import DriveFile from '../../../../models/drive-file';
-import create from '../../../../post/create';
-import distribute from '../../../../post/distribute';
+import create from '../../../../api/post/create';
+import { IApp } from '../../../../models/app';
 
 /**
  * Create a post
@@ -22,7 +18,7 @@ import distribute from '../../../../post/distribute';
  * @param {any} app
  * @return {Promise<any>}
  */
-module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej) => {
+module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	// Get 'visibility' parameter
 	const [visibility = 'public', visibilityErr] = $(params.visibility).optional.string().or(['public', 'unlisted', 'private', 'direct']).$;
 	if (visibilityErr) return rej('invalid visibility');
@@ -230,82 +226,26 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 		}
 	}
 
-	let tokens = null;
-	if (text) {
-		// Analyze
-		tokens = parse(text);
-
-		// Extract hashtags
-		const hashtags = tokens
-			.filter(t => t.type == 'hashtag')
-			.map(t => t.hashtag);
-
-		hashtags.forEach(tag => {
-			if (tags.indexOf(tag) == -1) {
-				tags.push(tag);
-			}
-		});
-	}
-
-	let atMentions = [];
-
-	// If has text content
-	if (text) {
-		/*
-				// Extract a hashtags
-				const hashtags = tokens
-					.filter(t => t.type == 'hashtag')
-					.map(t => t.hashtag)
-					// Drop dupulicates
-					.filter((v, i, s) => s.indexOf(v) == i);
-
-				// ハッシュタグをデータベースに登録
-				registerHashtags(user, hashtags);
-		*/
-		// Extract an '@' mentions
-		atMentions = tokens
-			.filter(t => t.type == 'mention')
-			.map(renderAcct)
-			// Drop dupulicates
-			.filter((v, i, s) => s.indexOf(v) == i);
-	}
-
 	// 投稿を作成
-	const post = await create({
+	const post = await create(user, {
 		createdAt: new Date(),
-		channelId: channel ? channel._id : undefined,
-		index: channel ? channel.index + 1 : undefined,
-		mediaIds: files ? files.map(file => file._id) : [],
+		media: files,
 		poll: poll,
 		text: text,
-		textHtml: tokens === null ? null : html(tokens),
+		reply,
+		repost,
 		cw: cw,
 		tags: tags,
-		userId: user._id,
-		appId: app ? app._id : null,
+		app: app,
 		viaMobile: viaMobile,
 		visibility,
 		geo
-	}, reply, repost, atMentions);
+	});
 
-	const postObj = await distribute(user, post.mentions, post);
+	const postObj = await pack(post, user);
 
 	// Reponse
 	res({
 		createdPost: postObj
 	});
-
-	// Register to search database
-	if (post.text && config.elasticsearch.enable) {
-		const es = require('../../../db/elasticsearch');
-
-		es.index({
-			index: 'misskey',
-			type: 'post',
-			id: post._id.toString(),
-			body: {
-				text: post.text
-			}
-		});
-	}
 });

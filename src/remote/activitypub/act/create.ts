@@ -63,32 +63,26 @@ export default async (actor, activity): Promise<void> => {
 			throw new Error('invalid note');
 		}
 
-		const mediaIds = [];
+		const media = [];
 
 		if ('attachment' in note) {
 			note.attachment.forEach(async media => {
 				const created = await createImage(resolver, media);
-				mediaIds.push(created._id);
+				media.push(created);
 			});
 		}
 
 		const { window } = new JSDOM(note.content);
 
 		await createPost(actor, {
-			channelId: undefined,
-			index: undefined,
 			createdAt: new Date(note.published),
-			mediaIds,
-			replyId: undefined,
-			repostId: undefined,
-			poll: undefined,
+			media,
+			reply: undefined,
+			repost: undefined,
 			text: window.document.body.textContent,
-			textHtml: note.content && createDOMPurify(window).sanitize(note.content),
-			userId: actor._id,
-			appId: null,
 			viaMobile: false,
 			geo: undefined,
 			uri: note.id
-		}, null, null, []);
+		});
 	}
 };
