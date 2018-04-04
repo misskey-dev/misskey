@@ -1,8 +1,6 @@
-import parseAcct from '../acct/parse';
 import Post from '../models/post';
-import User from '../models/user';
 
-export default async (post, reply, repost, atMentions) => {
+export default async (post, reply, repost, mentions) => {
 	post.mentions = [];
 
 	function addMention(mentionee) {
@@ -36,15 +34,7 @@ export default async (post, reply, repost, atMentions) => {
 		post._repost = null;
 	}
 
-	await Promise.all(atMentions.map(async mention => {
-		// Fetch mentioned user
-		// SELECT _id
-		const { _id } = await User
-			.findOne(parseAcct(mention), { _id: true });
-
-		// Add mention
-		addMention(_id);
-	}));
+	await Promise.all(mentions.map(({ _id }) => addMention(_id)));
 
 	return Post.insert(post);
 };

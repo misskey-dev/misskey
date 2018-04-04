@@ -4,14 +4,13 @@ import User, { validateUsername, isValidName, isValidDescription } from '../../m
 import { createHttp } from '../../queue';
 import webFinger from '../webfinger';
 import create from './create';
-import Resolver from './resolver';
 
 async function isCollection(collection) {
 	return ['Collection', 'OrderedCollection'].includes(collection.type);
 }
 
-export default async (value, verifier?: string) => {
-	const { resolver, object } = await new Resolver().resolveOne(value);
+export default async (parentResolver, value, verifier?: string) => {
+	const { resolver, object } = parentResolver.resolveOne(value);
 
 	if (
 		object === null ||

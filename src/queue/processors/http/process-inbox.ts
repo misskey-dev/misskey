@@ -25,7 +25,7 @@ export default async ({ data }, done) => {
 			}) as IRemoteUser;
 
 			if (user === null) {
-				user = await resolvePerson(data.signature.keyId);
+				user = await resolvePerson(new Resolver(), data.signature.keyId);
 			}
 		}
 
