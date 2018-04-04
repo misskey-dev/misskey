@@ -1,5 +1,5 @@
-import create from '../../create';
-import deletePost from './post';
+import create from '../create';
+import deleteObject from '../delete';
 
 export default async (resolver, actor, activity) => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
@@ -14,10 +14,7 @@ export default async (resolver, actor, activity) => {
 			return;
 		}
 
-		switch (result.object.$ref) {
-		case 'posts':
-			await deletePost(result.object);
-		}
+		await deleteObject(result);
 	}));
 
 	return null;

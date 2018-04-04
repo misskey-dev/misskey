@@ -1,4 +1,5 @@
 import act from '../../act';
+import deleteObject from '../../delete';
 import unfollow from './unfollow';
 import Resolver from '../../resolver';
 
@@ -12,7 +13,7 @@ export default async (resolver: Resolver, actor, activity): Promise<void> => {
 	await Promise.all(results.map(async promisedResult => {
 		const result = await promisedResult;
 
-		if (result === null) {
+		if (result === null || await deleteObject(result) !== null) {
 			return;
 		}
 
@@ -21,4 +22,6 @@ export default async (resolver: Resolver, actor, activity): Promise<void> => {
 			await unfollow(result.object);
 		}
 	}));
+
+	return null;
 };
