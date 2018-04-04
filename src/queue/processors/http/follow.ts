@@ -7,10 +7,8 @@ import notify from '../../../publishers/notify';
 import context from '../../../remote/activitypub/renderer/context';
 import render from '../../../remote/activitypub/renderer/follow';
 import request from '../../../remote/request';
-import Logger from '../../../utils/logger';
 
-export default async ({ data }) => {
-	const { followerId, followeeId } = await Following.findOne({ _id: data.following });
+export default ({ data }, done) => Following.findOne({ _id: data.following }).then(async ({ followerId, followeeId }) => {
 	const [follower, followee] = await Promise.all([
 		User.findOne({ _id: followerId }),
 		User.findOne({ _id: followeeId })
@@ -23,47 +21,46 @@ export default async ({ data }) => {
 		await request(follower, followee.account.inbox, rendered);
 	}
 
-	try {
-		await Promise.all([
-			// Increment following count
-			User.update(followerId, {
-				$inc: {
-					followingCount: 1
-				}
-			}),
+	return [follower, followee];
+}).then(([follower, followee]) => Promise.all([
+	// Increment following count
+	User.update(follower._id, {
+		$inc: {
+			followingCount: 1
+		}
+	}),
 
-			FollowingLog.insert({
-				createdAt: data.following.createdAt,
-				userId: followerId,
-				count: follower.followingCount + 1
-			}),
+	FollowingLog.insert({
+		createdAt: data.following.createdAt,
+		userId: follower._id,
+		count: follower.followingCount + 1
+	}),
 
-			// Increment followers count
-			User.update({ _id: followeeId }, {
-				$inc: {
-					followersCount: 1
-				}
-			}),
+	// Increment followers count
+	User.update({ _id: followee._id }, {
+		$inc: {
+			followersCount: 1
+		}
+	}),
 
-			FollowedLog.insert({
-				createdAt: data.following.createdAt,
-				userId: followerId,
-				count: followee.followersCount + 1
-			}),
+	FollowedLog.insert({
+		createdAt: data.following.createdAt,
+		userId: follower._id,
+		count: followee.followersCount + 1
+	}),
 
-			// Publish follow event
-			isLocalUser(follower) && packUser(followee, follower)
-				.then(packed => event(follower._id, 'follow', packed)),
+	// Publish follow event
+	isLocalUser(follower) && packUser(followee, follower)
+		.then(packed => event(follower._id, 'follow', packed)),
 
-			isLocalUser(followee) && Promise.all([
-				packUser(follower, followee)
-					.then(packed => event(followee._id, 'followed', packed)),
+	isLocalUser(followee) && Promise.all([
+		packUser(follower, followee)
+			.then(packed => event(followee._id, 'followed', packed)),
 
-				// Notify
-				isLocalUser(followee) && notify(followeeId, followerId, 'follow')
-			])
-		]);
-	} catch (error) {
-		Logger.error(error.toString());
-	}
-};
+		// Notify
+		isLocalUser(followee) && notify(followee._id, follower._id, 'follow')
+	])
+]).then(() => done(), error => {
+	done();
+	throw error;
+}), done);
