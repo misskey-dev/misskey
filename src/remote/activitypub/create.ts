@@ -55,9 +55,16 @@ class Creator {
 
 		const { window } = new JSDOM(note.content);
 		const mentions = [];
+		const tags = [];
 
-		for (const { href, type } of note.tags) {
+		for (const { href, name, type } of note.tags) {
 			switch (type) {
+			case 'Hashtag':
+				if (name.startsWith('#')) {
+					tags.push(name.slice(1));
+				}
+				break;
+
 			case 'Mention':
 				mentions.push(resolvePerson(resolver, href));
 				break;
@@ -78,7 +85,8 @@ class Creator {
 			appId: null,
 			viaMobile: false,
 			geo: undefined,
-			uri: note.id
+			uri: note.id,
+			tags
 		}, null, null, await Promise.all(mentions));
 
 		const promises = [];
