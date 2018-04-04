@@ -48,11 +48,6 @@ class Creator {
 			throw new Error();
 		}
 
-		const mediaIds = 'attachment' in note &&
-			(await Promise.all(await this.create(resolver, note.attachment)))
-				.filter(media => media !== null && media.object.$ref === 'driveFiles.files')
-				.map(({ object }) => object.$id);
-
 		const { window } = new JSDOM(note.content);
 		const mentions = [];
 		const tags = [];
@@ -71,13 +66,27 @@ class Creator {
 			}
 		}
 
+		const [mediaIds, reply] = await Promise.all([
+			'attachment' in note && this.create(resolver, note.attachment)
+				.then(collection => Promise.all(collection))
+				.then(collection => collection
+					.filter(media => media !== null && media.object.$ref === 'driveFiles.files')
+					.map(({ object }: IResult) => object.$id)),
+
+			'inReplyTo' in note && this.create(resolver, note.inReplyTo)
+				.then(collection => Promise.all(collection.map(promise => promise.then(result => {
+					if (result !== null && result.object.$ref === 'posts') {
+						throw result.object;
+					}
+				}, () => { }))))
+				.then(() => null, ({ $id }) => Post.findOne({ _id: $id }))
+		]);
+
 		const inserted = await createPost({
 			channelId: undefined,
 			index: undefined,
 			createdAt: new Date(note.published),
 			mediaIds,
-			replyId: undefined,
-			repostId: undefined,
 			poll: undefined,
 			text: window.document.body.textContent,
 			textHtml: note.content && createDOMPurify(window).sanitize(note.content),
@@ -87,7 +96,7 @@ class Creator {
 			geo: undefined,
 			uri: note.id,
 			tags
-		}, null, null, await Promise.all(mentions));
+		}, reply, null, await Promise.all(mentions));
 
 		const promises = [];
 
