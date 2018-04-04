@@ -2,35 +2,29 @@ import create from './create';
 import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
-import createObject from '../create';
 import Resolver from '../resolver';
+import { IObject } from '../type';
 
-export default async (parentResolver: Resolver, actor, value, distribute?: boolean) => {
-	const collection = await parentResolver.resolveCollection(value);
+export default async (parentResolver: Resolver, actor, activity: IObject): Promise<void> => {
+	switch (activity.type) {
+	case 'Create':
+		await create(parentResolver, actor, activity);
+		break;
 
-	return collection.object.map(async element => {
-		const { resolver, object } = await collection.resolver.resolveOne(element);
-		const created = await (await createObject(resolver, actor, [object], distribute))[0];
+	case 'Delete':
+		await performDeleteActivity(parentResolver, actor, activity);
+		break;
 
-		if (created !== null) {
-			return created;
-		}
+	case 'Follow':
+		await follow(parentResolver, actor, activity);
+		break;
 
-		switch (object.type) {
-		case 'Create':
-			return create(resolver, actor, object, distribute);
+	case 'Undo':
+		await undo(parentResolver, actor, activity);
+		break;
 
-		case 'Delete':
-			return performDeleteActivity(resolver, actor, object);
-
-		case 'Follow':
-			return follow(resolver, actor, object, distribute);
-
-		case 'Undo':
-			return undo(resolver, actor, object);
-
-		default:
-			return null;
-		}
-	});
+	default:
+		console.warn(`unknown activity type: ${activity.type}`);
+		return null;
+	}
 };

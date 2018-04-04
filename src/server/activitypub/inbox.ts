@@ -24,7 +24,7 @@ app.post('/@:user/inbox', bodyParser.json({
 
 	queue.create('http', {
 		type: 'processInbox',
-		inbox: req.body,
+		activity: req.body,
 		signature,
 	}).save();
 
