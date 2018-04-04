@@ -1,5 +1,4 @@
 import { JSDOM } from 'jsdom';
-const createDOMPurify = require('dompurify');
 
 import Resolver from '../resolver';
 import DriveFile from '../../../models/drive-file';

@@ -2,25 +2,24 @@ import create from './create';
 import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
-import Resolver from '../resolver';
 import { IObject } from '../type';
 
-export default async (parentResolver: Resolver, actor, activity: IObject): Promise<void> => {
+export default async (actor, activity: IObject): Promise<void> => {
 	switch (activity.type) {
 	case 'Create':
-		await create(parentResolver, actor, activity);
+		await create(actor, activity);
 		break;
 
 	case 'Delete':
-		await performDeleteActivity(parentResolver, actor, activity);
+		await performDeleteActivity(actor, activity);
 		break;
 
 	case 'Follow':
-		await follow(parentResolver, actor, activity);
+		await follow(actor, activity);
 		break;
 
 	case 'Undo':
-		await undo(parentResolver, actor, activity);
+		await undo(actor, activity);
 		break;
 
 	default:
