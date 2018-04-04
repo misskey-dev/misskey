@@ -1,9 +1,9 @@
-import Post from '../../models/post';
-import User, { IRemoteUser } from '../../models/user';
-import context from '../../remote/activitypub/renderer/context';
-import renderCreate from '../../remote/activitypub/renderer/create';
-import renderNote from '../../remote/activitypub/renderer/note';
-import request from '../../remote/request';
+import Post from '../../../models/post';
+import User, { IRemoteUser } from '../../../models/user';
+import context from '../../../remote/activitypub/renderer/context';
+import renderCreate from '../../../remote/activitypub/renderer/create';
+import renderNote from '../../../remote/activitypub/renderer/note';
+import request from '../../../remote/request';
 
 export default async ({ data }) => {
 	const promisedTo = User.findOne({ _id: data.toId }) as Promise<IRemoteUser>;

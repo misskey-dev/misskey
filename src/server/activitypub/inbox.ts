@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { parseRequest } from 'http-signature';
-import queue from '../../queue';
+import { createHttp } from '../../queue';
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.post('/@:user/inbox', bodyParser.json({
 		return res.sendStatus(401);
 	}
 
-	queue.create('http', {
+	createHttp({
 		type: 'processInbox',
 		inbox: req.body,
 		signature,

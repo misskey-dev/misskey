@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
 import Following from '../../../../models/following';
-import queue from '../../../../queue';
+import { createHttp } from '../../../../queue';
 
 /**
  * Unfollow a user
@@ -49,7 +49,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('already not following');
 	}
 
-	queue.create('http', {
+	createHttp({
 		type: 'unfollow',
 		id: exist._id
 	}).save(error => {

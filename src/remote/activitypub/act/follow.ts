@@ -3,7 +3,7 @@ import parseAcct from '../../../acct/parse';
 import Following, { IFollowing } from '../../../models/following';
 import User from '../../../models/user';
 import config from '../../../config';
-import queue from '../../../queue';
+import { createHttp } from '../../../queue';
 import context from '../renderer/context';
 import renderAccept from '../renderer/accept';
 import request from '../../request';
@@ -44,7 +44,7 @@ export default async (resolver: Resolver, actor, activity, distribute) => {
 		followerId: actor._id,
 		followeeId: followee._id
 	}).then(following => new Promise((resolve, reject) => {
-		queue.create('http', {
+		createHttp({
 			type: 'follow',
 			following: following._id
 		}).save(error => {

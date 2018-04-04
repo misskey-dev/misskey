@@ -1,13 +1,13 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser } from '../../models/user';
-import Following from '../../models/following';
-import FollowingLog from '../../models/following-log';
-import FollowedLog from '../../models/followed-log';
-import event from '../../publishers/stream';
-import notify from '../../publishers/notify';
-import context from '../../remote/activitypub/renderer/context';
-import render from '../../remote/activitypub/renderer/follow';
-import request from '../../remote/request';
-import Logger from '../../utils/logger';
+import User, { isLocalUser, isRemoteUser, pack as packUser } from '../../../models/user';
+import Following from '../../../models/following';
+import FollowingLog from '../../../models/following-log';
+import FollowedLog from '../../../models/followed-log';
+import event from '../../../publishers/stream';
+import notify from '../../../publishers/notify';
+import context from '../../../remote/activitypub/renderer/context';
+import render from '../../../remote/activitypub/renderer/follow';
+import request from '../../../remote/request';
+import Logger from '../../../utils/logger';
 
 export default async ({ data }) => {
 	const { followerId, followeeId } = await Following.findOne({ _id: data.following });

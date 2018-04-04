@@ -8,7 +8,7 @@ import User, { isLocalUser } from '../models/user';
 import stream, { publishChannelStream } from '../publishers/stream';
 import notify from '../publishers/notify';
 import pushSw from '../publishers/push-sw';
-import queue from '../queue';
+import { createHttp } from '../queue';
 import watch from './watch';
 
 export default async (user, mentions, post) => {
@@ -84,7 +84,7 @@ export default async (user, mentions, post) => {
 				}
 
 				return new Promise((resolve, reject) => {
-					queue.create('http', {
+					createHttp({
 						type: 'deliverPost',
 						fromId: user._id,
 						toId: following.followerId,

@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
 import Following from '../../../../models/following';
-import queue from '../../../../queue';
+import { createHttp } from '../../../../queue';
 
 /**
  * Follow a user
@@ -56,7 +56,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		followeeId: followee._id
 	});
 
-	queue.create('http', { type: 'follow', following: _id }).save();
+	createHttp({ type: 'follow', following: _id }).save();
 
 	// Send response
 	res();

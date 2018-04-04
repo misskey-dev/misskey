@@ -1,9 +1,9 @@
 import { verifySignature } from 'http-signature';
-import parseAcct from '../../acct/parse';
-import User, { IRemoteUser } from '../../models/user';
-import act from '../../remote/activitypub/act';
-import resolvePerson from '../../remote/activitypub/resolve-person';
-import Resolver from '../../remote/activitypub/resolver';
+import parseAcct from '../../../acct/parse';
+import User, { IRemoteUser } from '../../../models/user';
+import act from '../../../remote/activitypub/act';
+import resolvePerson from '../../../remote/activitypub/resolve-person';
+import Resolver from '../../../remote/activitypub/resolver';
 
 export default async ({ data }): Promise<void> => {
 	const keyIdLower = data.signature.keyId.toLowerCase();

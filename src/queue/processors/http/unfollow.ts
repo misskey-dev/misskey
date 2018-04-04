@@ -1,13 +1,13 @@
-import FollowedLog from '../../models/followed-log';
-import Following from '../../models/following';
-import FollowingLog from '../../models/following-log';
-import User, { isLocalUser, isRemoteUser, pack as packUser } from '../../models/user';
-import stream from '../../publishers/stream';
-import renderFollow from '../../remote/activitypub/renderer/follow';
-import renderUndo from '../../remote/activitypub/renderer/undo';
-import context from '../../remote/activitypub/renderer/context';
-import request from '../../remote/request';
-import Logger from '../../utils/logger';
+import FollowedLog from '../../../models/followed-log';
+import Following from '../../../models/following';
+import FollowingLog from '../../../models/following-log';
+import User, { isLocalUser, isRemoteUser, pack as packUser } from '../../../models/user';
+import stream from '../../../publishers/stream';
+import renderFollow from '../../../remote/activitypub/renderer/follow';
+import renderUndo from '../../../remote/activitypub/renderer/undo';
+import context from '../../../remote/activitypub/renderer/context';
+import request from '../../../remote/request';
+import Logger from '../../../utils/logger';
 
 export default async ({ data }) => {
 	const following = await Following.findOne({ _id: data.id });
