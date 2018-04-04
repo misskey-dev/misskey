@@ -1,21 +1,28 @@
-import create from '../create';
-import deleteObject from '../delete';
+import Resolver from '../resolver';
+import Post from '../../../models/post';
+import { createDb } from '../../../queue';
 
-export default async (resolver, actor, activity) => {
+export default async (actor, activity): Promise<void> => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
 		throw new Error();
 	}
 
-	const results = await create(resolver, actor, activity.object);
+	const resolver = new Resolver();
 
-	await Promise.all(results.map(async promisedResult => {
-		const result = await promisedResult;
-		if (result === null) {
-			return;
-		}
+	const object = await resolver.resolve(activity);
 
-		await deleteObject(result);
-	}));
+	switch (object.type) {
+	case 'Note':
+		deleteNote(object);
+		break;
+	}
 
-	return null;
+	async function deleteNote(note) {
+		const post = await Post.findOneAndDelete({ uri: note.id });
+
+		createDb({
+			type: 'deletePostDependents',
+			id: post._id
+		}).delay(65536).save();
+	}
 };

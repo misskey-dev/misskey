@@ -5,7 +5,6 @@ import parseAcct from '../../../acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import act from '../../../remote/activitypub/act';
 import resolvePerson from '../../../remote/activitypub/resolve-person';
-import Resolver from '../../../remote/activitypub/resolver';
 
 // ユーザーのinboxにアクティビティが届いた時の処理
 export default async (job: kue.Job, done): Promise<void> => {

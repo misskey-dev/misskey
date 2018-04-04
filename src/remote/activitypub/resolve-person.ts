@@ -2,7 +2,6 @@ import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
 import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
 import webFinger from '../webfinger';
-import create from './create';
 import Resolver from './resolver';
 import uploadFromUrl from '../../api/drive/upload-from-url';
 

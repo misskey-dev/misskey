@@ -1,6 +1,5 @@
-import parseAcct from '../../acct/parse';
 import Post, { pack, IPost } from '../../models/post';
-import User, { isLocalUser, isRemoteUser, IUser } from '../../models/user';
+import User, { isLocalUser, IUser } from '../../models/user';
 import stream from '../../publishers/stream';
 import Following from '../../models/following';
 import { createHttp } from '../../queue';
@@ -25,14 +24,16 @@ export default async (user: IUser, content: {
 	repost: IPost;
 	media: IDriveFile[];
 	geo: any;
-	poll: any;
+	poll?: any;
 	viaMobile: boolean;
-	tags: string[];
-	cw: string;
-	visibility: string;
+	tags?: string[];
+	cw?: string;
+	visibility?: string;
 	uri?: string;
 	app?: IApp;
 }) => new Promise<IPost>(async (res, rej) => {
+	if (content.visibility == null) content.visibility = 'public';
+
 	const tags = content.tags || [];
 
 	let tokens = null;

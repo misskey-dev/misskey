@@ -7,7 +7,7 @@ export default async (actor, activity): Promise<void> => {
 
 	switch (activity.object.type) {
 		case 'Follow':
-			unfollow(activity.object);
+			unfollow(actor, activity.object);
 			break;
 	}
 

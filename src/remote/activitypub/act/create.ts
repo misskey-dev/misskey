@@ -36,17 +36,17 @@ export default async (actor, activity): Promise<void> => {
 
 	switch (object.type) {
 	case 'Image':
-		createImage(resolver, object);
+		createImage(object);
 		break;
 
 	case 'Note':
-		createNote(resolver, object);
+		createNote(object);
 		break;
 	}
 
 	///
 
-	async function createImage(resolver: Resolver, image) {
+	async function createImage(image) {
 		if ('attributedTo' in image && actor.account.uri !== image.attributedTo) {
 			throw new Error('invalid image');
 		}
@@ -54,7 +54,7 @@ export default async (actor, activity): Promise<void> => {
 		return await uploadFromUrl(image.url, actor);
 	}
 
-	async function createNote(resolver: Resolver, note) {
+	async function createNote(note) {
 		if (
 			('attributedTo' in note && actor.account.uri !== note.attributedTo) ||
 			typeof note.id !== 'string'
@@ -63,20 +63,29 @@ export default async (actor, activity): Promise<void> => {
 		}
 
 		const media = [];
-
 		if ('attachment' in note) {
 			note.attachment.forEach(async media => {
-				const created = await createImage(resolver, media);
+				const created = await createImage(media);
 				media.push(created);
 			});
 		}
 
+		let reply = null;
+		if ('inReplyTo' in note) {
+			const inReplyToPost = await Post.findOne({ uri: note.id || note });
+			if (inReplyToPost) {
+				reply = inReplyToPost;
+			} else {
+				reply = await createNote(await resolver.resolve(note));
+			}
+		}
+
 		const { window } = new JSDOM(note.content);
 
-		await createPost(actor, {
+		return await createPost(actor, {
 			createdAt: new Date(note.published),
 			media,
-			reply: undefined,
+			reply,
 			repost: undefined,
 			text: window.document.body.textContent,
 			viaMobile: false,
