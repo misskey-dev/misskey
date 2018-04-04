@@ -52,7 +52,7 @@
 		"@types/gulp-replace": "0.0.31",
 		"@types/gulp-uglify": "3.0.5",
 		"@types/gulp-util": "3.0.34",
-		"@types/inquirer": "0.0.40",
+		"@types/inquirer": "0.0.41",
 		"@types/is-root": "1.0.0",
 		"@types/is-url": "1.2.28",
 		"@types/js-yaml": "3.11.1",
