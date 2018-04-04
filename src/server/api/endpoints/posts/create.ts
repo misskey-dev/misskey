@@ -3,12 +3,13 @@
  */
 import $ from 'cafy';
 import deepEqual = require('deep-equal');
+import parseAcct from '../../../../acct/parse';
 import renderAcct from '../../../../acct/render';
 import config from '../../../../config';
 import html from '../../../../text/html';
 import parse from '../../../../text/parse';
 import Post, { IPost, isValidText, isValidCw } from '../../../../models/post';
-import { ILocalUser } from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
 import DriveFile from '../../../../models/drive-file';
 import create from '../../../../post/create';
@@ -267,7 +268,10 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 			.filter(t => t.type == 'mention')
 			.map(renderAcct)
 			// Drop dupulicates
-			.filter((v, i, s) => s.indexOf(v) == i);
+			.filter((v, i, s) => s.indexOf(v) == i)
+			// Fetch mentioned user
+			// SELECT _id
+			.map(mention => User.findOne(parseAcct(mention), { _id: true }));
 	}
 
 	// 投稿を作成
@@ -286,7 +290,7 @@ module.exports = (params, user: ILocalUser, app) => new Promise(async (res, rej)
 		viaMobile: viaMobile,
 		visibility,
 		geo
-	}, reply, repost, atMentions);
+	}, reply, repost, await Promise.all(atMentions));
 
 	const postObj = await distribute(user, post.mentions, post);
 

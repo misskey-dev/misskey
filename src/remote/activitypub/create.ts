@@ -7,6 +7,7 @@ import { IRemoteUser } from '../../models/user';
 import uploadFromUrl from '../../drive/upload-from-url';
 import createPost from '../../post/create';
 import distributePost from '../../post/distribute';
+import resolvePerson from './resolve-person';
 import Resolver from './resolver';
 const createDOMPurify = require('dompurify');
 
@@ -53,6 +54,15 @@ class Creator {
 				.map(({ object }) => object.$id);
 
 		const { window } = new JSDOM(note.content);
+		const mentions = [];
+
+		for (const { href, type } of note.tags) {
+			switch (type) {
+			case 'Mention':
+				mentions.push(resolvePerson(resolver, href));
+				break;
+			}
+		}
 
 		const inserted = await createPost({
 			channelId: undefined,
@@ -69,7 +79,7 @@ class Creator {
 			viaMobile: false,
 			geo: undefined,
 			uri: note.id
-		}, null, null, []);
+		}, null, null, await Promise.all(mentions));
 
 		const promises = [];
 
