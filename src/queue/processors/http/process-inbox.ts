@@ -1,11 +1,11 @@
 import * as kue from 'kue';
 
 import { verifySignature } from 'http-signature';
-import parseAcct from '../../acct/parse';
-import User, { IRemoteUser } from '../../models/user';
-import act from '../../remote/activitypub/act';
-import resolvePerson from '../../remote/activitypub/resolve-person';
-import Resolver from '../../remote/activitypub/resolver';
+import parseAcct from '../../../acct/parse';
+import User, { IRemoteUser } from '../../../models/user';
+import act from '../../../remote/activitypub/act';
+import resolvePerson from '../../../remote/activitypub/resolve-person';
+import Resolver from '../../../remote/activitypub/resolver';
 
 // ユーザーのinboxにアクティビティが届いた時の処理
 export default async (job: kue.Job, done): Promise<void> => {
@@ -47,7 +47,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 
 	// アクティビティを処理
 	try {
-		await act(new Resolver(), user, activity);
+		await act(user, activity);
 		done();
 	} catch (e) {
 		done(e);
