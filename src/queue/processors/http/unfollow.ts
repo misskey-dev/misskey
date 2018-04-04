@@ -15,7 +15,8 @@ export default async ({ data }, done) => {
 		return;
 	}
 
-	let follower, followee;
+	let follower;
+	let followee;
 
 	try {
 		[follower, followee] = await Promise.all([
