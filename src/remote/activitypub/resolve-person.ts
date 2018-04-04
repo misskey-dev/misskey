@@ -1,17 +1,15 @@
 import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
 import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
-import queue from '../../queue';
 import webFinger from '../webfinger';
 import create from './create';
 import Resolver from './resolver';
-
-async function isCollection(collection) {
-	return ['Collection', 'OrderedCollection'].includes(collection.type);
-}
+import uploadFromUrl from '../../api/drive/upload-from-url';
 
 export default async (value, verifier?: string) => {
-	const { resolver, object } = await new Resolver().resolveOne(value);
+	const resolver = new Resolver();
+
+	const object = await resolver.resolve(value) as any;
 
 	if (
 		object === null ||
@@ -21,24 +19,10 @@ export default async (value, verifier?: string) => {
 		!isValidName(object.name) ||
 		!isValidDescription(object.summary)
 	) {
-		throw new Error();
+		throw new Error('invalid person');
 	}
 
-	const [followers, following, outbox, finger] = await Promise.all([
-		resolver.resolveOne(object.followers).then(
-			resolved => isCollection(resolved.object) ? resolved.object : null,
-			() => null
-		),
-		resolver.resolveOne(object.following).then(
-			resolved => isCollection(resolved.object) ? resolved.object : null,
-			() => null
-		),
-		resolver.resolveOne(object.outbox).then(
-			resolved => isCollection(resolved.object) ? resolved.object : null,
-			() => null
-		),
-		webFinger(object.id, verifier),
-	]);
+	const finger = await webFinger(object.id, verifier);
 
 	const host = toUnicode(finger.subject.replace(/^.*?@/, ''));
 	const hostLower = host.replace(/[A-Z]+/, matched => matched.toLowerCase());
@@ -50,10 +34,10 @@ export default async (value, verifier?: string) => {
 		bannerId: null,
 		createdAt: Date.parse(object.published),
 		description: summaryDOM.textContent,
-		followersCount: followers ? followers.totalItem || 0 : 0,
-		followingCount: following ? following.totalItem || 0 : 0,
+		followersCount: 0,
+		followingCount: 0,
 		name: object.name,
-		postsCount: outbox ? outbox.totalItem || 0 : 0,
+		postsCount: 0,
 		driveCapacity: 1024 * 1024 * 8, // 8MiB
 		username: object.preferredUsername,
 		usernameLower: object.preferredUsername.toLowerCase(),
@@ -69,33 +53,17 @@ export default async (value, verifier?: string) => {
 		},
 	});
 
-	queue.create('http', {
-		type: 'performActivityPub',
-		actor: user._id,
-		outbox
-	}).save();
-
 	const [avatarId, bannerId] = await Promise.all([
 		object.icon,
 		object.image
-	].map(async value => {
-		if (value === undefined) {
+	].map(async url => {
+		if (url === undefined) {
 			return null;
 		}
 
-		try {
-			const created = await create(resolver, user, value);
+		const img = await uploadFromUrl(url, user);
 
-			await Promise.all(created.map(asyncCreated => asyncCreated.then(created => {
-				if (created !== null && created.object.$ref === 'driveFiles.files') {
-					throw created.object.$id;
-				}
-			}, () => {})));
-
-			return null;
-		} catch (id) {
-			return id;
-		}
+		return img._id;
 	}));
 
 	User.update({ _id: user._id }, { $set: { avatarId, bannerId } });
