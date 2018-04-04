@@ -4,10 +4,10 @@ const createDOMPurify = require('dompurify');
 import Resolver from '../resolver';
 import DriveFile from '../../../models/drive-file';
 import Post from '../../../models/post';
-import uploadFromUrl from '../../../drive/upload-from-url';
-import createPost from '../../../post/create';
+import uploadFromUrl from '../../../api/drive/upload-from-url';
+import createPost from '../../../api/post/create';
 
-export default async (resolver: Resolver, actor, activity): Promise<void> => {
+export default async (actor, activity): Promise<void> => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}
@@ -30,6 +30,8 @@ export default async (resolver: Resolver, actor, activity): Promise<void> => {
 	} catch (object) {
 		throw new Error(`already registered: ${uri}`);
 	}
+
+	const resolver = new Resolver();
 
 	const object = await resolver.resolve(activity);
 
