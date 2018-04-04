@@ -7,24 +7,31 @@ import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
 import context from '../../../remote/activitypub/renderer/context';
 import request from '../../../remote/request';
-import Logger from '../../../utils/logger';
 
-export default async ({ data }) => {
+export default async ({ data }, done) => {
 	const following = await Following.findOne({ _id: data.id });
 	if (following === null) {
+		done();
 		return;
 	}
 
-	const [follower, followee] = await Promise.all([
-		User.findOne({ _id: following.followerId }),
-		User.findOne({ _id: following.followeeId })
-	]);
+	let follower, followee;
 
-	if (isLocalUser(follower) && isRemoteUser(followee)) {
-		const undo = renderUndo(renderFollow(follower, followee));
-		undo['@context'] = context;
+	try {
+		[follower, followee] = await Promise.all([
+			User.findOne({ _id: following.followerId }),
+			User.findOne({ _id: following.followeeId })
+		]);
 
-		await request(follower, followee.account.inbox, undo);
+		if (isLocalUser(follower) && isRemoteUser(followee)) {
+			const undo = renderUndo(renderFollow(follower, followee));
+			undo['@context'] = context;
+
+			await request(follower, followee.account.inbox, undo);
+		}
+	} catch (error) {
+		done(error);
+		return;
 	}
 
 	try {
@@ -57,7 +64,7 @@ export default async ({ data }) => {
 
 		// Publish follow event
 		stream(follower._id, 'unfollow', promisedPackedUser);
-	} catch (error) {
-		Logger.error(error.toString());
+	} finally {
+		done();
 	}
 };

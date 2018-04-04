@@ -4,4 +4,4 @@ const handlers = {
   deletePostDependents
 };
 
-export default (job, done) => handlers[job.data.type](job).then(() => done(), done);
+export default (job, done) => handlers[job.data.type](job, done);

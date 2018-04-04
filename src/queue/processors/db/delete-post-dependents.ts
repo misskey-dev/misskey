@@ -5,7 +5,7 @@ import PostReaction from '../../../models/post-reaction';
 import PostWatching from '../../../models/post-watching';
 import Post from '../../../models/post';
 
-export default async ({ data }) => Promise.all([
+export default ({ data }, done) => Promise.all([
 	Favorite.remove({ postId: data._id }),
 	Notification.remove({ postId: data._id }),
 	PollVote.remove({ postId: data._id }),
@@ -19,4 +19,4 @@ export default async ({ data }) => Promise.all([
 		}),
 		Post.remove({ repostId: data._id })
 	]))
-]);
+]).then(() => done(), done);
