@@ -1,76 +1,90 @@
-import parseAcct from '../acct/parse';
-import Post, { pack } from '../models/post';
-import User, { isLocalUser, isRemoteUser, IUser } from '../models/user';
-import stream from '../publishers/stream';
-import Following from '../models/following';
-import { createHttp } from '../queue';
-import renderNote from '../remote/activitypub/renderer/note';
-import renderCreate from '../remote/activitypub/renderer/create';
-import context from '../remote/activitypub/renderer/context';
+import parseAcct from '../../acct/parse';
+import Post, { pack, IPost } from '../../models/post';
+import User, { isLocalUser, isRemoteUser, IUser } from '../../models/user';
+import stream from '../../publishers/stream';
+import Following from '../../models/following';
+import { createHttp } from '../../queue';
+import renderNote from '../../remote/activitypub/renderer/note';
+import renderCreate from '../../remote/activitypub/renderer/create';
+import context from '../../remote/activitypub/renderer/context';
+import { IDriveFile } from '../../models/drive-file';
+import notify from '../../publishers/notify';
+import PostWatching from '../../models/post-watching';
+import watch from './watch';
+import Mute from '../../models/mute';
+import pushSw from '../../publishers/push-sw';
+import event from '../../publishers/stream';
+import parse from '../../text/parse';
 
-export default async (user: IUser, post, reply, repost, atMentions) => {
-	post.mentions = [];
+export default async (user: IUser, content: {
+	createdAt: Date;
+	text: string;
+	reply: IPost;
+	repost: IPost;
+	media: IDriveFile[];
+	geo: any;
+	viaMobile: boolean;
+	tags: string[];
+}) => new Promise(async (res, rej) => {
+	const tags = content.tags || [];
 
-	function addMention(mentionee) {
-		// Reject if already added
-		if (post.mentions.some(x => x.equals(mentionee))) return;
+	let tokens = null;
 
-		// Add mention
-		post.mentions.push(mentionee);
+	if (content.text) {
+		// Analyze
+		tokens = parse(content.text);
+
+		// Extract hashtags
+		const hashtags = tokens
+			.filter(t => t.type == 'hashtag')
+			.map(t => t.hashtag);
+
+		hashtags.forEach(tag => {
+			if (tags.indexOf(tag) == -1) {
+				tags.push(tag);
+			}
+		});
 	}
 
-	if (reply) {
-		// Add mention
-		addMention(reply.userId);
-		post.replyId = reply._id;
-		post._reply = { userId: reply.userId };
-	} else {
-		post.replyId = null;
-		post._reply = null;
-	}
+	// 投稿を作成
+	const post = await Post.insert({
+		createdAt: content.createdAt,
+		mediaIds: content.media ? content.media.map(file => file._id) : [],
+		replyId: content.reply ? content.reply._id : null,
+		repostId: content.repost ? content.repost._id : null,
+		text: content.text,
+		tags,
+		userId: user._id,
+		viaMobile: content.viaMobile,
+		geo: content.geo || null,
 
-	if (repost) {
-		if (post.text) {
-			// Add mention
-			addMention(repost.userId);
-		}
+		// 以下非正規化データ
+		_reply: content.reply ? { userId: content.reply.userId } : null,
+		_repost: content.repost ? { userId: content.repost.userId } : null,
+	});
 
-		post.repostId = repost._id;
-		post._repost = { userId: repost.userId };
-	} else {
-		post.repostId = null;
-		post._repost = null;
-	}
-
-	await Promise.all(atMentions.map(async mention => {
-		// Fetch mentioned user
-		// SELECT _id
-		const { _id } = await User
-			.findOne(parseAcct(mention), { _id: true });
-
-		// Add mention
-		addMention(_id);
-	}));
-
-	const inserted = await Post.insert(post);
+	res(post);
 
 	User.update({ _id: user._id }, {
-		// Increment my posts count
+		// Increment posts count
 		$inc: {
 			postsCount: 1
 		},
-
+		// Update latest post
 		$set: {
-			latestPost: post._id
+			latestPost: post
 		}
 	});
 
-	const postObj = await pack(inserted);
+	// Serialize
+	const postObj = await pack(post);
 
 	// タイムラインへの投稿
 	if (!post.channelId) {
 		// Publish event to myself's stream
-		stream(post.userId, 'post', postObj);
+		if (isLocalUser(user)) {
+			stream(post.userId, 'post', postObj);
+		}
 
 		// Fetch all followers
 		const followers = await Following.aggregate([{
@@ -144,6 +158,172 @@ export default async (user: IUser, post, reply, repost, atMentions) => {
 		);
 	}*/
 
-	return Promise.all(promises);
+	const mentions = [];
 
-};
+	async function addMention(mentionee, reason) {
+		// Reject if already added
+		if (mentions.some(x => x.equals(mentionee))) return;
+
+		// Add mention
+		mentions.push(mentionee);
+
+		// Publish event
+		if (!user._id.equals(mentionee)) {
+			const mentioneeMutes = await Mute.find({
+				muter_id: mentionee,
+				deleted_at: { $exists: false }
+			});
+			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
+			if (mentioneesMutedUserIds.indexOf(user._id.toString()) == -1) {
+				event(mentionee, reason, postObj);
+				pushSw(mentionee, reason, postObj);
+			}
+		}
+	}
+
+	// If has in reply to post
+	if (content.reply) {
+		// Increment replies count
+		Post.update({ _id: content.reply._id }, {
+			$inc: {
+				repliesCount: 1
+			}
+		});
+
+		// (自分自身へのリプライでない限りは)通知を作成
+		notify(content.reply.userId, user._id, 'reply', {
+			postId: post._id
+		});
+
+		// Fetch watchers
+		PostWatching.find({
+			postId: content.reply._id,
+			userId: { $ne: user._id },
+			// 削除されたドキュメントは除く
+			deletedAt: { $exists: false }
+		}, {
+			fields: {
+				userId: true
+			}
+		}).then(watchers => {
+			watchers.forEach(watcher => {
+				notify(watcher.userId, user._id, 'reply', {
+					postId: post._id
+				});
+			});
+		});
+
+		// この投稿をWatchする
+		if (isLocalUser(user) && user.account.settings.autoWatch !== false) {
+			watch(user._id, content.reply);
+		}
+
+		// Add mention
+		addMention(content.reply.userId, 'reply');
+	}
+
+	// If it is repost
+	if (content.repost) {
+		// Notify
+		const type = content.text ? 'quote' : 'repost';
+		notify(content.repost.userId, user._id, type, {
+			post_id: post._id
+		});
+
+		// Fetch watchers
+		PostWatching.find({
+			postId: content.repost._id,
+			userId: { $ne: user._id },
+			// 削除されたドキュメントは除く
+			deletedAt: { $exists: false }
+		}, {
+			fields: {
+				userId: true
+			}
+		}).then(watchers => {
+			watchers.forEach(watcher => {
+				notify(watcher.userId, user._id, type, {
+					postId: post._id
+				});
+			});
+		});
+
+		// この投稿をWatchする
+		if (isLocalUser(user) && user.account.settings.autoWatch !== false) {
+			watch(user._id, content.repost);
+		}
+
+		// If it is quote repost
+		if (content.text) {
+			// Add mention
+			addMention(content.repost.userId, 'quote');
+		} else {
+			// Publish event
+			if (!user._id.equals(content.repost.userId)) {
+				event(content.repost.userId, 'repost', postObj);
+			}
+		}
+
+		// 今までで同じ投稿をRepostしているか
+		const existRepost = await Post.findOne({
+			userId: user._id,
+			repostId: content.repost._id,
+			_id: {
+				$ne: post._id
+			}
+		});
+
+		if (!existRepost) {
+			// Update repostee status
+			Post.update({ _id: content.repost._id }, {
+				$inc: {
+					repostCount: 1
+				}
+			});
+		}
+	}
+
+	// If has text content
+	if (content.text) {
+		// Extract an '@' mentions
+		const atMentions = tokens
+			.filter(t => t.type == 'mention')
+			.map(m => m.username)
+			// Drop dupulicates
+			.filter((v, i, s) => s.indexOf(v) == i);
+
+		// Resolve all mentions
+		await Promise.all(atMentions.map(async mention => {
+			// Fetch mentioned user
+			// SELECT _id
+			const mentionee = await User
+				.findOne({
+					usernameLower: mention.toLowerCase()
+				}, { _id: true });
+
+			// When mentioned user not found
+			if (mentionee == null) return;
+
+			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
+			if (content.reply && content.reply.userId.equals(mentionee._id)) return;
+			if (content.repost && content.repost.userId.equals(mentionee._id)) return;
+
+			// Add mention
+			addMention(mentionee._id, 'mention');
+
+			// Create notification
+			notify(mentionee._id, user._id, 'mention', {
+				post_id: post._id
+			});
+		}));
+	}
+
+	// Append mentions data
+	if (mentions.length > 0) {
+		Post.update({ _id: post._id }, {
+			$set: {
+				mentions
+			}
+		});
+	}
+});
