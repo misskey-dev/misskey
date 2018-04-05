@@ -47,7 +47,7 @@ export default async (req: express.Request, res: express.Response) => {
 
 	const username = req.body['username'];
 	const password = req.body['password'];
-	const name = '名無し';
+	const name = username;
 
 	// Validate username
 	if (!validateUsername(username)) {
