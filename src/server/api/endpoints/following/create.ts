@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
 import Following from '../../../../models/following';
-import queue from '../../../../queue';
+import create from '../../../../api/following/create';
 
 /**
  * Follow a user
@@ -50,15 +50,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Create following
-	const { _id } = await Following.insert({
-		createdAt: new Date(),
-		followerId: follower._id,
-		followeeId: followee._id
-	});
-
-	queue.create('http', { type: 'follow', following: _id }).save();
+	create(follower, followee);
 
 	// Send response
 	res();
-
 });

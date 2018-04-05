@@ -103,7 +103,7 @@ async function workerMain(opt) {
 
 	if (!opt['only-server']) {
 		// start processor
-		require('./processor').default();
+		require('./queue').default();
 	}
 
 	// Send a 'ready' message to parent process

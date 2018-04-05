@@ -59,7 +59,7 @@ export default class Resolver {
 			throw new Error('invalid response');
 		}
 
-		log(`resolved: ${JSON.stringify(object)}`);
+		log(`resolved: ${JSON.stringify(object, null, 2)}`);
 
 		return object;
 	}

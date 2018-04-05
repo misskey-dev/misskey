@@ -18,20 +18,21 @@ import html from '../../text/html';
 import { IApp } from '../../models/app';
 
 export default async (user: IUser, content: {
-	createdAt: Date;
-	text: string;
-	reply: IPost;
-	repost: IPost;
-	media: IDriveFile[];
-	geo: any;
+	createdAt?: Date;
+	text?: string;
+	reply?: IPost;
+	repost?: IPost;
+	media?: IDriveFile[];
+	geo?: any;
 	poll?: any;
-	viaMobile: boolean;
+	viaMobile?: boolean;
 	tags?: string[];
 	cw?: string;
 	visibility?: string;
 	uri?: string;
 	app?: IApp;
 }) => new Promise<IPost>(async (res, rej) => {
+	if (content.createdAt == null) content.createdAt = new Date();
 	if (content.visibility == null) content.visibility = 'public';
 
 	const tags = content.tags || [];

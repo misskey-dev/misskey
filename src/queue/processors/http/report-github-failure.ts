@@ -1,6 +1,6 @@
 import * as request from 'request-promise-native';
-import User from '../../models/user';
-const createPost = require('../../server/api/endpoints/posts/create');
+import User from '../../../models/user';
+import createPost from '../../../api/post/create';
 
 export default async ({ data }) => {
 	const asyncBot = User.findOne({ _id: data.userId });
@@ -20,5 +20,5 @@ export default async ({ data }) => {
 		`**⚠️BUILD STILL FAILED⚠️**: ?[${data.message}](${data.htmlUrl})` :
 		`**🚨BUILD FAILED🚨**: →→→?[${data.message}](${data.htmlUrl})←←←`;
 
-	createPost({ text }, await asyncBot);
+	createPost(await asyncBot, { text });
 };
