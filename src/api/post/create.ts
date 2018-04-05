@@ -31,7 +31,7 @@ export default async (user: IUser, content: {
 	visibility?: string;
 	uri?: string;
 	app?: IApp;
-}) => new Promise<IPost>(async (res, rej) => {
+}, silent = false) => new Promise<IPost>(async (res, rej) => {
 	if (content.createdAt == null) content.createdAt = new Date();
 	if (content.visibility == null) content.visibility = 'public';
 
@@ -120,26 +120,28 @@ export default async (user: IUser, content: {
 			_id: false
 		});
 
-		const note = await renderNote(user, post);
-		const content = renderCreate(note);
-		content['@context'] = context;
+		if (!silent) {
+			const note = await renderNote(user, post);
+			const content = renderCreate(note);
+			content['@context'] = context;
 
-		Promise.all(followers.map(({ follower }) => {
-			if (isLocalUser(follower)) {
-				// Publish event to followers stream
-				stream(follower._id, 'post', postObj);
-			} else {
-				// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
-				if (isLocalUser(user)) {
-					createHttp({
-						type: 'deliver',
-						user,
-						content,
-						to: follower.account.inbox
-					}).save();
+			Promise.all(followers.map(({ follower }) => {
+				if (isLocalUser(follower)) {
+					// Publish event to followers stream
+					stream(follower._id, 'post', postObj);
+				} else {
+					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
+					if (isLocalUser(user)) {
+						createHttp({
+							type: 'deliver',
+							user,
+							content,
+							to: follower.account.inbox
+						}).save();
+					}
 				}
-			}
-		}));
+			}));
+		}
 	}
 
 	// チャンネルへの投稿

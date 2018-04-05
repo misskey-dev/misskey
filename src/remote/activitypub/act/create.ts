@@ -58,7 +58,7 @@ async function createImage(resolver: Resolver, actor: IRemoteUser, image) {
 	return await uploadFromUrl(image.url, actor);
 }
 
-async function createNote(resolver: Resolver, actor: IRemoteUser, note) {
+async function createNote(resolver: Resolver, actor: IRemoteUser, note, silent = false) {
 	if (
 		('attributedTo' in note && actor.account.uri !== note.attributedTo) ||
 		typeof note.id !== 'string'
@@ -86,7 +86,7 @@ async function createNote(resolver: Resolver, actor: IRemoteUser, note) {
 			const inReplyTo = await resolver.resolve(note.inReplyTo) as any;
 			const actor = await resolvePerson(inReplyTo.attributedTo);
 			if (isRemoteUser(actor)) {
-				reply = await createNote(resolver, actor, inReplyTo);
+				reply = await createNote(resolver, actor, inReplyTo, true);
 			}
 		}
 	}
@@ -102,5 +102,5 @@ async function createNote(resolver: Resolver, actor: IRemoteUser, note) {
 		viaMobile: false,
 		geo: undefined,
 		uri: note.id
-	});
+	}, silent);
 }
