@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
 import Following from '../../../../models/following';
-import create from '../../../../api/following/create';
+import create from '../../../../services/following/create';
 
 /**
  * Follow a user

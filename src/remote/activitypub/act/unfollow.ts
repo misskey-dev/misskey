@@ -1,7 +1,7 @@
 import parseAcct from '../../../acct/parse';
 import User from '../../../models/user';
 import config from '../../../config';
-import unfollow from '../../../api/following/delete';
+import unfollow from '../../../services/following/delete';
 
 export default async (actor, activity): Promise<void> => {
 	const prefix = config.url + '/@';

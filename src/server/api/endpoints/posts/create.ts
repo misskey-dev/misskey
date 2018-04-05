@@ -7,7 +7,7 @@ import Post, { IPost, isValidText, isValidCw, pack } from '../../../../models/po
 import { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
 import DriveFile from '../../../../models/drive-file';
-import create from '../../../../api/post/create';
+import create from '../../../../services/post/create';
 import { IApp } from '../../../../models/app';
 
 /**

@@ -1,6 +1,6 @@
 import * as request from 'request-promise-native';
 import User from '../../../models/user';
-import createPost from '../../../api/post/create';
+import createPost from '../../../services/post/create';
 
 export default async ({ data }) => {
 	const asyncBot = User.findOne({ _id: data.userId });

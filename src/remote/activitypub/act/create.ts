@@ -3,8 +3,8 @@ import * as debug from 'debug';
 
 import Resolver from '../resolver';
 import Post from '../../../models/post';
-import uploadFromUrl from '../../../api/drive/upload-from-url';
-import createPost from '../../../api/post/create';
+import uploadFromUrl from '../../../services/drive/upload-from-url';
+import createPost from '../../../services/post/create';
 import { IRemoteUser, isRemoteUser } from '../../../models/user';
 import resolvePerson from '../resolve-person';
 

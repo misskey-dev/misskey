@@ -3,7 +3,7 @@ import { toUnicode } from 'punycode';
 import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
 import webFinger from '../webfinger';
 import Resolver from './resolver';
-import uploadFromUrl from '../../api/drive/upload-from-url';
+import uploadFromUrl from '../../services/drive/upload-from-url';
 
 export default async (value, verifier?: string) => {
 	const resolver = new Resolver();
