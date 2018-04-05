@@ -78,7 +78,7 @@ export default async (actor, activity): Promise<void> => {
 
 		let reply = null;
 		if ('inReplyTo' in note && note.inReplyTo != null) {
-			const inReplyToPost = await Post.findOne({ uri: note.id || note });
+			const inReplyToPost = await Post.findOne({ uri: note.inReplyTo.id || note.inReplyTo });
 			if (inReplyToPost) {
 				reply = inReplyToPost;
 			} else {
