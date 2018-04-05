@@ -10,7 +10,7 @@ async function isCollection(collection) {
 }
 
 export default async (parentResolver, value, verifier?: string) => {
-	const { resolver, object } = parentResolver.resolveOne(value);
+	const { resolver, object } = await parentResolver.resolveOne(value);
 
 	if (
 		object === null ||
