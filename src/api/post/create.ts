@@ -54,8 +54,7 @@ export default async (user: IUser, content: {
 		});
 	}
 
-	// 投稿を作成
-	const post = await Post.insert({
+	const data: any = {
 		createdAt: content.createdAt,
 		mediaIds: content.media ? content.media.map(file => file._id) : [],
 		replyId: content.reply ? content.reply._id : null,
@@ -68,14 +67,18 @@ export default async (user: IUser, content: {
 		userId: user._id,
 		viaMobile: content.viaMobile,
 		geo: content.geo || null,
-		uri: content.uri,
 		appId: content.app ? content.app._id : null,
 		visibility: content.visibility,
 
 		// 以下非正規化データ
 		_reply: content.reply ? { userId: content.reply.userId } : null,
 		_repost: content.repost ? { userId: content.repost.userId } : null,
-	});
+	};
+
+	if (content.uri != null) data.uri = content.uri;
+
+	// 投稿を作成
+	const post = await Post.insert(data);
 
 	res(post);
 
