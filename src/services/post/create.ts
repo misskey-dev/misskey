@@ -1,5 +1,5 @@
 import Post, { pack, IPost } from '../../models/post';
-import User, { isLocalUser, IUser } from '../../models/user';
+import User, { isLocalUser, IUser, isRemoteUser } from '../../models/user';
 import stream from '../../publishers/stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
@@ -17,7 +17,7 @@ import parse from '../../text/parse';
 import html from '../../text/html';
 import { IApp } from '../../models/app';
 
-export default async (user: IUser, content: {
+export default async (user: IUser, data: {
 	createdAt?: Date;
 	text?: string;
 	reply?: IPost;
@@ -32,16 +32,16 @@ export default async (user: IUser, content: {
 	uri?: string;
 	app?: IApp;
 }, silent = false) => new Promise<IPost>(async (res, rej) => {
-	if (content.createdAt == null) content.createdAt = new Date();
-	if (content.visibility == null) content.visibility = 'public';
+	if (data.createdAt == null) data.createdAt = new Date();
+	if (data.visibility == null) data.visibility = 'public';
 
-	const tags = content.tags || [];
+	const tags = data.tags || [];
 
 	let tokens = null;
 
-	if (content.text) {
+	if (data.text) {
 		// Analyze
-		tokens = parse(content.text);
+		tokens = parse(data.text);
 
 		// Extract hashtags
 		const hashtags = tokens
@@ -55,31 +55,38 @@ export default async (user: IUser, content: {
 		});
 	}
 
-	const data: any = {
-		createdAt: content.createdAt,
-		mediaIds: content.media ? content.media.map(file => file._id) : [],
-		replyId: content.reply ? content.reply._id : null,
-		repostId: content.repost ? content.repost._id : null,
-		text: content.text,
+	const insert: any = {
+		createdAt: data.createdAt,
+		mediaIds: data.media ? data.media.map(file => file._id) : [],
+		replyId: data.reply ? data.reply._id : null,
+		repostId: data.repost ? data.repost._id : null,
+		text: data.text,
 		textHtml: tokens === null ? null : html(tokens),
-		poll: content.poll,
-		cw: content.cw,
+		poll: data.poll,
+		cw: data.cw,
 		tags,
 		userId: user._id,
-		viaMobile: content.viaMobile,
-		geo: content.geo || null,
-		appId: content.app ? content.app._id : null,
-		visibility: content.visibility,
+		viaMobile: data.viaMobile,
+		geo: data.geo || null,
+		appId: data.app ? data.app._id : null,
+		visibility: data.visibility,
 
 		// 以下非正規化データ
-		_reply: content.reply ? { userId: content.reply.userId } : null,
-		_repost: content.repost ? { userId: content.repost.userId } : null,
+		_reply: data.reply ? { userId: data.reply.userId } : null,
+		_repost: data.repost ? { userId: data.repost.userId } : null,
+		_user: {
+			host: user.host,
+			hostLower: user.hostLower,
+			account: isLocalUser(user) ? {} : {
+				inbox: user.account.inbox
+			}
+		}
 	};
 
-	if (content.uri != null) data.uri = content.uri;
+	if (data.uri != null) insert.uri = data.uri;
 
 	// 投稿を作成
-	const post = await Post.insert(data);
+	const post = await Post.insert(insert);
 
 	res(post);
 
@@ -124,6 +131,11 @@ export default async (user: IUser, content: {
 			const note = await renderNote(user, post);
 			const content = renderCreate(note);
 			content['@context'] = context;
+
+			// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
+			if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
+				deliver(user, content, data.reply._user.account.inbox).save();
+			}
 
 			Promise.all(followers.map(follower => {
 				follower = follower.user[0];
@@ -199,22 +211,22 @@ export default async (user: IUser, content: {
 	}
 
 	// If has in reply to post
-	if (content.reply) {
+	if (data.reply) {
 		// Increment replies count
-		Post.update({ _id: content.reply._id }, {
+		Post.update({ _id: data.reply._id }, {
 			$inc: {
 				repliesCount: 1
 			}
 		});
 
 		// (自分自身へのリプライでない限りは)通知を作成
-		notify(content.reply.userId, user._id, 'reply', {
+		notify(data.reply.userId, user._id, 'reply', {
 			postId: post._id
 		});
 
 		// Fetch watchers
 		PostWatching.find({
-			postId: content.reply._id,
+			postId: data.reply._id,
 			userId: { $ne: user._id },
 			// 削除されたドキュメントは除く
 			deletedAt: { $exists: false }
@@ -232,24 +244,24 @@ export default async (user: IUser, content: {
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.account.settings.autoWatch !== false) {
-			watch(user._id, content.reply);
+			watch(user._id, data.reply);
 		}
 
 		// Add mention
-		addMention(content.reply.userId, 'reply');
+		addMention(data.reply.userId, 'reply');
 	}
 
 	// If it is repost
-	if (content.repost) {
+	if (data.repost) {
 		// Notify
-		const type = content.text ? 'quote' : 'repost';
-		notify(content.repost.userId, user._id, type, {
+		const type = data.text ? 'quote' : 'repost';
+		notify(data.repost.userId, user._id, type, {
 			post_id: post._id
 		});
 
 		// Fetch watchers
 		PostWatching.find({
-			postId: content.repost._id,
+			postId: data.repost._id,
 			userId: { $ne: user._id },
 			// 削除されたドキュメントは除く
 			deletedAt: { $exists: false }
@@ -267,24 +279,24 @@ export default async (user: IUser, content: {
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.account.settings.autoWatch !== false) {
-			watch(user._id, content.repost);
+			watch(user._id, data.repost);
 		}
 
 		// If it is quote repost
-		if (content.text) {
+		if (data.text) {
 			// Add mention
-			addMention(content.repost.userId, 'quote');
+			addMention(data.repost.userId, 'quote');
 		} else {
 			// Publish event
-			if (!user._id.equals(content.repost.userId)) {
-				event(content.repost.userId, 'repost', postObj);
+			if (!user._id.equals(data.repost.userId)) {
+				event(data.repost.userId, 'repost', postObj);
 			}
 		}
 
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
 			userId: user._id,
-			repostId: content.repost._id,
+			repostId: data.repost._id,
 			_id: {
 				$ne: post._id
 			}
@@ -292,7 +304,7 @@ export default async (user: IUser, content: {
 
 		if (!existRepost) {
 			// Update repostee status
-			Post.update({ _id: content.repost._id }, {
+			Post.update({ _id: data.repost._id }, {
 				$inc: {
 					repostCount: 1
 				}
@@ -301,7 +313,7 @@ export default async (user: IUser, content: {
 	}
 
 	// If has text content
-	if (content.text) {
+	if (data.text) {
 		// Extract an '@' mentions
 		const atMentions = tokens
 			.filter(t => t.type == 'mention')
@@ -322,8 +334,8 @@ export default async (user: IUser, content: {
 			if (mentionee == null) return;
 
 			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
-			if (content.reply && content.reply.userId.equals(mentionee._id)) return;
-			if (content.repost && content.repost.userId.equals(mentionee._id)) return;
+			if (data.reply && data.reply.userId.equals(mentionee._id)) return;
+			if (data.repost && data.repost.userId.equals(mentionee._id)) return;
 
 			// Add mention
 			addMention(mentionee._id, 'mention');

@@ -52,6 +52,20 @@ export type IPost = {
 		speed: number;
 	};
 	uri: string;
+
+	_reply?: {
+		userId: mongo.ObjectID;
+	};
+	_repost?: {
+		userId: mongo.ObjectID;
+	};
+	_user: {
+		host: string;
+		hostLower: string;
+		account: {
+			inbox?: string;
+		};
+	};
 };
 
 /**
