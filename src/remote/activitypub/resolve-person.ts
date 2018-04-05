@@ -11,7 +11,7 @@ export default async (value, verifier?: string) => {
 	const object = await resolver.resolve(value) as any;
 
 	if (
-		object === null ||
+		object == null ||
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
 		!validateUsername(object.preferredUsername) ||

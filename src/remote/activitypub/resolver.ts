@@ -33,6 +33,10 @@ export default class Resolver {
 	}
 
 	public async resolve(value): Promise<IObject> {
+		if (value == null) {
+			throw new Error('resolvee is null (or undefined)');
+		}
+
 		if (typeof value !== 'string') {
 			return value;
 		}

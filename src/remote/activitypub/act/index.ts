@@ -3,8 +3,9 @@ import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
 import { IObject } from '../type';
+import { IUser } from '../../../models/user';
 
-export default async (actor, activity: IObject): Promise<void> => {
+export default async (actor: IUser, activity: IObject): Promise<void> => {
 	switch (activity.type) {
 	case 'Create':
 		await create(actor, activity);
