@@ -5,8 +5,7 @@ import parseAcct from '../../acct/parse';
 import Post from '../../models/post';
 import User from '../../models/user';
 
-const app = express();
-app.disable('x-powered-by');
+const app = express.Router();
 
 app.get('/@:user/:post', async (req, res, next) => {
 	const accepted = req.accepts(['html', 'application/activity+json', 'application/ld+json']);
