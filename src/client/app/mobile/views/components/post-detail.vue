@@ -22,7 +22,7 @@
 			</router-link>
 			%fa:retweet%
 			<router-link class="name" :to="`/@${acct}`">
-				{{ post.user.name }}
+				{{ name }}
 			</router-link>
 			がRepost
 		</p>
@@ -33,7 +33,7 @@
 				<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 			</router-link>
 			<div>
-				<router-link class="name" :to="`/@${pAcct}`">{{ p.user.name }}</router-link>
+				<router-link class="name" :to="`/@${pAcct}`">{{ pName }}</router-link>
 				<span class="username">@{{ pAcct }}</span>
 			</div>
 		</header>
@@ -81,6 +81,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 import parse from '../../../../../text/parse';
 
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
@@ -114,8 +115,14 @@ export default Vue.extend({
 		acct(): string {
 			return getAcct(this.post.user);
 		},
+		name(): string {
+			return getUserName(this.post.user);
+		},
 		pAcct(): string {
 			return getAcct(this.p.user);
+		},
+		pName(): string {
+			return getUserName(this.p.user);
 		},
 		isRepost(): boolean {
 			return (this.post.repost &&

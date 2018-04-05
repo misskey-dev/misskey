@@ -6,7 +6,7 @@
 		</router-link>
 		<div class="body">
 			<header>
-				<router-link class="name" :to="`/@${getAcct(post.user)}`" v-user-preview="post.user.id">{{ post.user.name }}</router-link>
+				<router-link class="name" :to="`/@${getAcct(post.user)}`" v-user-preview="post.user.id">{{ getUserName(post.user) }}</router-link>
 				<span class="username">@{{ getAcct(post.user) }}</span>
 				<div class="info">
 					<router-link class="created-at" :to="`/@${getAcct(post.user)}/${post.id}`">
@@ -25,6 +25,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -38,6 +39,7 @@ export default Vue.extend({
 	},
 	methods: {
 		getAcct,
+		getUserName,
 		fetch(cb?) {
 			this.fetching = true;
 			(this as any).api('posts', {

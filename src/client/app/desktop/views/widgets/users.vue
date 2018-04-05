@@ -11,7 +11,7 @@
 				<img class="avatar" :src="`${_user.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="_user.id"/>
 			</router-link>
 			<div class="body">
-				<router-link class="name" :to="`/@${getAcct(_user)}`" v-user-preview="_user.id">{{ _user.name }}</router-link>
+				<router-link class="name" :to="`/@${getAcct(_user)}`" v-user-preview="_user.id">{{ getUserName(_user) }}</router-link>
 				<p class="username">@{{ getAcct(_user) }}</p>
 			</div>
 			<mk-follow-button :user="_user"/>
@@ -24,6 +24,7 @@
 <script lang="ts">
 import define from '../../../common/define-widget';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 const limit = 3;
 
@@ -45,6 +46,7 @@ export default define({
 	},
 	methods: {
 		getAcct,
+		getUserName,
 		func() {
 			this.props.compact = !this.props.compact;
 		},

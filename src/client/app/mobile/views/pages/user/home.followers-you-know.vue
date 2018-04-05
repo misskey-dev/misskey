@@ -3,7 +3,7 @@
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:mobile.tags.mk-user-overview-followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 		<a v-for="user in users" :key="user.id" :href="`/@${getAcct(user)}`">
-			<img :src="`${user.avatarUrl}?thumbnail&size=64`" :alt="user.name"/>
+			<img :src="`${user.avatarUrl}?thumbnail&size=64`" :alt="getUserName(user)"/>
 		</a>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:mobile.tags.mk-user-overview-followers-you-know.no-users%</p>
@@ -13,6 +13,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../../acct/render';
+import getUserName from '../../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['user'],
@@ -21,6 +22,11 @@ export default Vue.extend({
 			fetching: true,
 			users: []
 		};
+	},
+	computed: {
+		name() {
+			return getUserName(this.user);
+		}
 	},
 	methods: {
 		getAcct

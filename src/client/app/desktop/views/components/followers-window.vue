@@ -1,7 +1,7 @@
 <template>
 <mk-window width="400px" height="550px" @closed="$destroy">
 	<span slot="header" :class="$style.header">
-		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt=""/>{{ user.name }}のフォロワー
+		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt=""/>{{ name }}のフォロワー
 	</span>
 	<mk-followers :user="user"/>
 </mk-window>
@@ -9,8 +9,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getUserName from '../../../../../renderers/get-user-name';
+
 export default Vue.extend({
-	props: ['user']
+	props: ['user'],
+	computed {
+		name() {
+			return getUserName(this.user);
+		}
+	}
 });
 </script>
 

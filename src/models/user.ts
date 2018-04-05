@@ -21,7 +21,7 @@ type IUserBase = {
 	deletedAt: Date;
 	followersCount: number;
 	followingCount: number;
-	name: string;
+	name?: string;
 	postsCount: number;
 	driveCapacity: number;
 	username: string;
@@ -99,8 +99,8 @@ export function validatePassword(password: string): boolean {
 	return typeof password == 'string' && password != '';
 }
 
-export function isValidName(name: string): boolean {
-	return typeof name == 'string' && name.length < 30 && name.trim() != '';
+export function isValidName(name?: string): boolean {
+	return name === null || (typeof name == 'string' && name.length < 30 && name.trim() != '');
 }
 
 export function isValidDescription(description: string): boolean {

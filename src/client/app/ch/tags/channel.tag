@@ -165,7 +165,7 @@
 <mk-channel-post>
 	<header>
 		<a class="index" @click="reply">{ post.index }:</a>
-		<a class="name" href={ _URL_ + '/@' + acct }><b>{ post.user.name }</b></a>
+		<a class="name" href={ _URL_ + '/@' + acct }><b>{ getUserName(post.user) }</b></a>
 		<mk-time time={ post.createdAt }/>
 		<mk-time time={ post.createdAt } mode="detail"/>
 		<span>ID:<i>{ acct }</i></span>
@@ -230,10 +230,12 @@
 	</style>
 	<script lang="typescript">
 		import getAcct from '../../../../acct/render';
+		import getUserName from '../../../../renderers/get-user-name';
 
 		this.post = this.opts.post;
 		this.form = this.opts.form;
 		this.acct = getAcct(this.post.user);
+		this.name = getUserName(this.post.user);
 
 		this.reply = () => {
 			this.form.update({
@@ -244,7 +246,7 @@
 </mk-channel-post>
 
 <mk-channel-form>
-	<p v-if="reply"><b>&gt;&gt;{ reply.index }</b> ({ reply.user.name }): <a @click="clearReply">[x]</a></p>
+	<p v-if="reply"><b>&gt;&gt;{ reply.index }</b> ({ getUserName(reply.user) }): <a @click="clearReply">[x]</a></p>
 	<textarea ref="text" disabled={ wait } oninput={ update } onkeydown={ onkeydown } onpaste={ onpaste } placeholder="%i18n:ch.tags.mk-channel-form.textarea%"></textarea>
 	<div class="actions">
 		<button @click="selectFile">%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
@@ -286,6 +288,8 @@
 
 	</style>
 	<script lang="typescript">
+		import getUserName from '../../../../renderers/get-user-name';
+
 		this.mixin('api');
 
 		this.channel = this.opts.channel;
@@ -373,6 +377,8 @@
 				}
 			});
 		};
+
+		this.getUserName = getUserName;
 	</script>
 </mk-channel-form>
 

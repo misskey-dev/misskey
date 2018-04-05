@@ -10,6 +10,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import parseAcct from '../../../../../../acct/parse';
+import getUserName from '../../../../../../renderers/get-user-name';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
 import XHome from './user.home.vue';
@@ -44,7 +45,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 				Progress.done();
-				document.title = user.name + ' | Misskey';
+				document.title = getUserName(user) + ' | Misskey';
 			});
 		}
 	}

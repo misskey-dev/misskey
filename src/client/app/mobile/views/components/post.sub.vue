@@ -5,7 +5,7 @@
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${acct}`">{{ post.user.name }}</router-link>
+			<router-link class="name" :to="`/@${acct}`">{{ getUserName(post.user) }}</router-link>
 			<span class="username">@{{ acct }}</span>
 			<router-link class="created-at" :to="`/@${acct}/${post.id}`">
 				<mk-time :time="post.createdAt"/>
@@ -21,12 +21,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['post'],
 	computed: {
 		acct() {
 			return getAcct(this.post.user);
+		},
+		name() {
+			return getUserName(this.post.user);
 		}
 	}
 });

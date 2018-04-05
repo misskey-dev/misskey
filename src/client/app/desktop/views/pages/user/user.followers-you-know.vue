@@ -4,7 +4,7 @@
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.followers-you-know.loading%<mk-ellipsis/></p>
 	<div v-if="!fetching && users.length > 0">
 	<router-link v-for="user in users" :to="`/@${getAcct(user)}`" :key="user.id">
-		<img :src="`${user.avatarUrl}?thumbnail&size=64`" :alt="user.name" v-user-preview="user.id"/>
+		<img :src="`${user.avatarUrl}?thumbnail&size=64`" :alt="getUserName(user)" v-user-preview="user.id"/>
 	</router-link>
 	</div>
 	<p class="empty" v-if="!fetching && users.length == 0">%i18n:desktop.tags.mk-user.followers-you-know.no-users%</p>
@@ -14,6 +14,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../../acct/render';
+import getUserName from '../../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['user'],
@@ -24,7 +25,8 @@ export default Vue.extend({
 		};
 	},
 	method() {
-		getAcct
+		getAcct,
+		getUserName
 	},
 	mounted() {
 		(this as any).api('users/followers', {
