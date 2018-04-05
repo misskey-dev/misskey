@@ -15,7 +15,7 @@ export default async (value, verifier?: string) => {
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
 		!validateUsername(object.preferredUsername) ||
-		!isValidName(object.name) ||
+		(object.name != '' && !isValidName(object.name)) ||
 		!isValidDescription(object.summary)
 	) {
 		throw new Error('invalid person');

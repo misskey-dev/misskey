@@ -16,7 +16,7 @@ export default async (username, host, option) => {
 		const finger = await webFinger(acctLower, acctLower);
 		const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
 		if (!self) {
-			throw new Error();
+			throw new Error('self link not found');
 		}
 
 		user = await resolvePerson(self.href, acctLower);
