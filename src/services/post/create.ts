@@ -98,7 +98,7 @@ export default async (user: IUser, content: {
 	const postObj = await pack(post);
 
 	// タイムラインへの投稿
-	if (!post.channelId) {
+	if (post.channelId == null) {
 		// Publish event to myself's stream
 		if (isLocalUser(user)) {
 			stream(post.userId, 'post', postObj);
@@ -110,7 +110,7 @@ export default async (user: IUser, content: {
 				from: 'users',
 				localField: 'followerId',
 				foreignField: '_id',
-				as: 'follower'
+				as: 'user'
 			}
 		}, {
 			$match: {
@@ -125,7 +125,9 @@ export default async (user: IUser, content: {
 			const content = renderCreate(note);
 			content['@context'] = context;
 
-			Promise.all(followers.map(({ follower }) => {
+			Promise.all(followers.map(follower => {
+				follower = follower.user[0];
+
 				if (isLocalUser(follower)) {
 					// Publish event to followers stream
 					stream(follower._id, 'post', postObj);

@@ -12,8 +12,9 @@ export default (job, done) => {
 	const handler = handlers[job.data.type];
 
 	if (handler) {
-		handler(job).then(() => done(), done);
+		handler(job, done);
 	} else {
 		console.warn(`Unknown job: ${job.data.type}`);
+		done();
 	}
 };
