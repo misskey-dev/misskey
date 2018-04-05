@@ -2,7 +2,7 @@ import Post, { pack, IPost } from '../../models/post';
 import User, { isLocalUser, IUser } from '../../models/user';
 import stream from '../../publishers/stream';
 import Following from '../../models/following';
-import { createHttp } from '../../queue';
+import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import context from '../../remote/activitypub/renderer/context';
@@ -132,12 +132,7 @@ export default async (user: IUser, content: {
 				} else {
 					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 					if (isLocalUser(user)) {
-						createHttp({
-							type: 'deliver',
-							user,
-							content,
-							to: follower.account.inbox
-						}).save();
+						deliver(user, content, follower.account.inbox).save();
 					}
 				}
 			}));

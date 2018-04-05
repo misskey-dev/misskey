@@ -28,6 +28,15 @@ export function createDb(data) {
 	return queue.create('db', data);
 }
 
+export function deliver(user, content, to) {
+	return createHttp({
+		type: 'deliver',
+		user,
+		content,
+		to
+	});
+}
+
 export default function() {
 	queue.process('db', db);
 

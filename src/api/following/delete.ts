@@ -6,7 +6,7 @@ import event from '../../publishers/stream';
 import context from '../../remote/activitypub/renderer/context';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
-import { createHttp } from '../../queue';
+import { deliver } from '../../queue';
 
 export default async function(follower: IUser, followee: IUser, activity?) {
 	const following = await Following.findOne({
@@ -59,11 +59,6 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 		const content = renderUndo(renderFollow(follower, followee));
 		content['@context'] = context;
 
-		createHttp({
-			type: 'deliver',
-			user: follower,
-			content,
-			to: followee.account.inbox
-		}).save();
+		deliver(follower, content, followee.account.inbox).save();
 	}
 }

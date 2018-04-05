@@ -7,7 +7,7 @@ import notify from '../../publishers/notify';
 import context from '../../remote/activitypub/renderer/context';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
-import { createHttp } from '../../queue';
+import { deliver } from '../../queue';
 
 export default async function(follower: IUser, followee: IUser, activity?) {
 	const following = await Following.insert({
@@ -60,23 +60,13 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 		const content = renderFollow(follower, followee);
 		content['@context'] = context;
 
-		createHttp({
-			type: 'deliver',
-			user: follower,
-			content,
-			to: followee.account.inbox
-		}).save();
+		deliver(follower, content, followee.account.inbox).save();
 	}
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
 		const content = renderAccept(activity);
 		content['@context'] = context;
 
-		createHttp({
-			type: 'deliver',
-			user: followee,
-			content,
-			to: follower.account.inbox
-		}).save();
+		deliver(followee, content, follower.account.inbox).save();
 	}
 }
