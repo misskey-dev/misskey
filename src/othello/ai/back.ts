@@ -9,6 +9,7 @@
 import * as request from 'request-promise-native';
 import Othello, { Color } from '../core';
 import conf from '../../config';
+import getUserName from '../../renderers/get-user-name';
 
 let game;
 let form;
@@ -47,8 +48,8 @@ process.on('message', async msg => {
 		const user = game.user1Id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
-			? `?[${user.name}](${conf.url}/@${user.username})さんの接待を始めました！`
-			: `対局を?[${user.name}](${conf.url}/@${user.username})さんと始めました！ (強さ${form[0].value})`;
+			? `?[${getUserName(user)}](${conf.url}/@${user.username})さんの接待を始めました！`
+			: `対局を?[${getUserName(user)}](${conf.url}/@${user.username})さんと始めました！ (強さ${form[0].value})`;
 
 		const res = await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,
@@ -72,15 +73,15 @@ process.on('message', async msg => {
 		const isSettai = form[0].value === 0;
 		const text = isSettai
 			? msg.body.winnerId === null
-				? `?[${user.name}](${conf.url}/@${user.username})さんに接待で引き分けました...`
+				? `?[${getUserName(user)}](${conf.url}/@${user.username})さんに接待で引き分けました...`
 				: msg.body.winnerId == id
-					? `?[${user.name}](${conf.url}/@${user.username})さんに接待で勝ってしまいました...`
-					: `?[${user.name}](${conf.url}/@${user.username})さんに接待で負けてあげました♪`
+					? `?[${getUserName(user)}](${conf.url}/@${user.username})さんに接待で勝ってしまいました...`
+					: `?[${getUserName(user)}](${conf.url}/@${user.username})さんに接待で負けてあげました♪`
 			: msg.body.winnerId === null
-				? `?[${user.name}](${conf.url}/@${user.username})さんと引き分けました～`
+				? `?[${getUserName(user)}](${conf.url}/@${user.username})さんと引き分けました～`
 				: msg.body.winnerId == id
-					? `?[${user.name}](${conf.url}/@${user.username})さんに勝ちました♪`
-					: `?[${user.name}](${conf.url}/@${user.username})さんに負けました...`;
+					? `?[${getUserName(user)}](${conf.url}/@${user.username})さんに勝ちました♪`
+					: `?[${getUserName(user)}](${conf.url}/@${user.username})さんに負けました...`;
 
 		await request.post(`${conf.api_url}/posts/create`, {
 			json: { i,

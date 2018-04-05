@@ -47,7 +47,6 @@ export default async (req: express.Request, res: express.Response) => {
 
 	const username = req.body['username'];
 	const password = req.body['password'];
-	const name = '名無し';
 
 	// Validate username
 	if (!validateUsername(username)) {
@@ -113,7 +112,7 @@ export default async (req: express.Request, res: express.Response) => {
 		description: null,
 		followersCount: 0,
 		followingCount: 0,
-		name: name,
+		name: null,
 		postsCount: 0,
 		driveCapacity: 1024 * 1024 * 128, // 128MiB
 		username: username,

@@ -2,7 +2,7 @@
 <mk-ui>
 	<span slot="header">%fa:cog%%i18n:mobile.tags.mk-settings-page.settings%</span>
 	<div :class="$style.content">
-		<p v-html="'%i18n:mobile.tags.mk-settings.signed-in-as%'.replace('{}', '<b>' + os.i.name + '</b>')"></p>
+		<p v-html="'%i18n:mobile.tags.mk-settings.signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
 		<ul>
 			<li><router-link to="./settings/profile">%fa:user%%i18n:mobile.tags.mk-settings-page.profile%%fa:angle-right%</router-link></li>
 			<li><router-link to="./settings/authorized-apps">%fa:puzzle-piece%%i18n:mobile.tags.mk-settings-page.applications%%fa:angle-right%</router-link></li>
@@ -20,6 +20,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { version, codename } from '../../../config';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -27,6 +28,11 @@ export default Vue.extend({
 			version,
 			codename
 		};
+	},
+	computed: {
+		name() {
+			return getUserName(this.os.i);
+		}
 	},
 	mounted() {
 		document.title = 'Misskey | %i18n:mobile.tags.mk-settings-page.settings%';

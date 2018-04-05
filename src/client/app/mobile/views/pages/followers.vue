@@ -2,7 +2,7 @@
 <mk-ui>
 	<template slot="header" v-if="!fetching">
 		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt="">
-		{{ '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', user.name) }}
+		{{ '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', name) }}
 	</template>
 	<mk-users-list
 		v-if="!fetching"
@@ -20,6 +20,7 @@
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import parseAcct from '../../../../../acct/parse';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -27,6 +28,11 @@ export default Vue.extend({
 			fetching: true,
 			user: null
 		};
+	},
+	computed: {
+		name() {
+			return getUserName(this.user);
+		}
 	},
 	watch: {
 		$route: 'fetch'
@@ -46,7 +52,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', user.name) + ' | Misskey';
+				document.title = '%i18n:mobile.tags.mk-user-followers-page.followers-of%'.replace('{}', this.name) + ' | Misskey';
 			});
 		},
 		onLoaded() {

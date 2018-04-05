@@ -8,6 +8,7 @@
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import parseAcct from '../../../../../acct/parse';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -34,7 +35,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = 'メッセージ: ' + this.user.name;
+				document.title = 'メッセージ: ' + getUserName(this.user);
 
 				Progress.done();
 			});

@@ -3,7 +3,7 @@
 	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
-		<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ os.i.name }}</b>さん</p>
+		<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ name }}</b>さん</p>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages || hasGameInvitations">%fa:circle%</template>
@@ -19,9 +19,15 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['func'],
+	computed: {
+		name() {
+			return getUserName(this.os.i);
+		}
+	},
 	data() {
 		return {
 			hasUnreadNotifications: false,

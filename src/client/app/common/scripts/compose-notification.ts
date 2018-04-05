@@ -1,5 +1,6 @@
 import getPostSummary from '../../../../renderers/get-post-summary';
 import getReactionEmoji from '../../../../renderers/get-reaction-emoji';
+import getUserName from '../../../../renderers/get-user-name';
 
 type Notification = {
 	title: string;
@@ -21,35 +22,35 @@ export default function(type, data): Notification {
 
 		case 'mention':
 			return {
-				title: `${data.user.name}さんから:`,
+				title: `${getUserName(data.user)}さんから:`,
 				body: getPostSummary(data),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'reply':
 			return {
-				title: `${data.user.name}さんから返信:`,
+				title: `${getUserName(data.user)}さんから返信:`,
 				body: getPostSummary(data),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'quote':
 			return {
-				title: `${data.user.name}さんが引用:`,
+				title: `${getUserName(data.user)}さんが引用:`,
 				body: getPostSummary(data),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'reaction':
 			return {
-				title: `${data.user.name}: ${getReactionEmoji(data.reaction)}:`,
+				title: `${getUserName(data.user)}: ${getReactionEmoji(data.reaction)}:`,
 				body: getPostSummary(data.post),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'unread_messaging_message':
 			return {
-				title: `${data.user.name}さんからメッセージ:`,
+				title: `${getUserName(data.user)}さんからメッセージ:`,
 				body: data.text, // TODO: getMessagingMessageSummary(data),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
@@ -57,7 +58,7 @@ export default function(type, data): Notification {
 		case 'othello_invited':
 			return {
 				title: '対局への招待があります',
-				body: `${data.parent.name}さんから`,
+				body: `${getUserName(data.parent)}さんから`,
 				icon: data.parent.avatarUrl + '?thumbnail&size=64'
 			};
 

@@ -11,7 +11,7 @@
 		<div class="body" v-if="isOpen">
 			<router-link class="me" v-if="os.isSignedIn" :to="`/@${os.i.username}`">
 				<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=128`" alt="avatar"/>
-				<p class="name">{{ os.i.name }}</p>
+				<p class="name">{{ name }}</p>
 			</router-link>
 			<div class="links">
 				<ul>
@@ -40,9 +40,15 @@
 <script lang="ts">
 import Vue from 'vue';
 import { docsUrl, chUrl, lang } from '../../../config';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['isOpen'],
+	computed: {
+		name() {
+			return getUserName(this.os.i);
+		}
+	},
 	data() {
 		return {
 			hasUnreadNotifications: false,

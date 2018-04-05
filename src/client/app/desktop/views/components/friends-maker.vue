@@ -7,7 +7,7 @@
 				<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="user.id"/>
 			</router-link>
 			<div class="body">
-				<router-link class="name" :to="`/@${getAcct(user)}`" v-user-preview="user.id">{{ user.name }}</router-link>
+				<router-link class="name" :to="`/@${getAcct(user)}`" v-user-preview="user.id">{{ getUserName(user) }}</router-link>
 				<p class="username">@{{ getAcct(user) }}</p>
 			</div>
 			<mk-follow-button :user="user"/>
@@ -23,6 +23,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -38,6 +39,7 @@ export default Vue.extend({
 	},
 	methods: {
 		getAcct,
+		getUserName,
 		fetch() {
 			this.fetching = true;
 			this.users = [];
