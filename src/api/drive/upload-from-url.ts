@@ -6,13 +6,17 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 import * as request from 'request';
 
-const log = debug('misskey:common:drive:upload_from_url');
+const log = debug('misskey:drive:upload-from-url');
 
 export default async (url, user, folderId = null, uri = null): Promise<IDriveFile> => {
+	log(`REQUESTED: ${url}`);
+
 	let name = URL.parse(url).pathname.split('/').pop();
 	if (!validateFileName(name)) {
 		name = null;
 	}
+
+	log(`name: ${name}`);
 
 	// Create temp file
 	const path = await new Promise((res: (string) => void, rej) => {
@@ -36,6 +40,8 @@ export default async (url, user, folderId = null, uri = null): Promise<IDriveFil
 	});
 
 	const driveFile = await create(user, path, name, null, folderId, false, uri);
+
+	log(`created: ${driveFile._id}`);
 
 	// clean-up
 	fs.unlink(path, (e) => {

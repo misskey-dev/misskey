@@ -31,7 +31,7 @@ export default async (value, verifier?: string) => {
 	const user = await User.insert({
 		avatarId: null,
 		bannerId: null,
-		createdAt: Date.parse(object.published),
+		createdAt: Date.parse(object.published) || null,
 		description: summaryDOM.textContent,
 		followersCount: 0,
 		followingCount: 0,
@@ -55,14 +55,14 @@ export default async (value, verifier?: string) => {
 	const [avatarId, bannerId] = await Promise.all([
 		object.icon,
 		object.image
-	].map(async url => {
-		if (url === undefined) {
+	].map(async img => {
+		if (img === undefined) {
 			return null;
 		}
 
-		const img = await uploadFromUrl(url, user);
+		const file = await uploadFromUrl(img.url, user);
 
-		return img._id;
+		return file._id;
 	}));
 
 	User.update({ _id: user._id }, { $set: { avatarId, bannerId } });

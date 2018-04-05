@@ -1,6 +1,8 @@
-import { IObject } from "./type";
+import * as request from 'request-promise-native';
+import * as debug from 'debug';
+import { IObject } from './type';
 
-const request = require('request-promise-native');
+const log = debug('misskey:activitypub:resolver');
 
 export default class Resolver {
 	private history: Set<string>;
@@ -56,6 +58,8 @@ export default class Resolver {
 		)) {
 			throw new Error('invalid response');
 		}
+
+		log(`resolved: ${JSON.stringify(object)}`);
 
 		return object;
 	}
