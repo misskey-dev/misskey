@@ -18,6 +18,10 @@ export default async (actor, activity: IObject): Promise<void> => {
 		await follow(actor, activity);
 		break;
 
+	case 'Accept':
+		// noop
+		break;
+
 	case 'Undo':
 		await undo(actor, activity);
 		break;

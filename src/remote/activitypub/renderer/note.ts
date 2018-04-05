@@ -2,11 +2,14 @@ import renderDocument from './document';
 import renderHashtag from './hashtag';
 import config from '../../../config';
 import DriveFile from '../../../models/drive-file';
-import Post from '../../../models/post';
-import User from '../../../models/user';
+import Post, { IPost } from '../../../models/post';
+import User, { IUser } from '../../../models/user';
 
-export default async (user, post) => {
-	const promisedFiles = DriveFile.find({ _id: { $in: post.mediaIds } });
+export default async (user: IUser, post: IPost) => {
+	const promisedFiles = post.mediaIds
+		? DriveFile.find({ _id: { $in: post.mediaIds } })
+		: Promise.resolve([]);
+
 	let inReplyTo;
 
 	if (post.replyId) {
@@ -39,6 +42,6 @@ export default async (user, post) => {
 		cc: `${attributedTo}/followers`,
 		inReplyTo,
 		attachment: (await promisedFiles).map(renderDocument),
-		tag: post.tags.map(renderHashtag)
+		tag: (post.tags || []).map(renderHashtag)
 	};
 };
