@@ -1,8 +1,10 @@
 import { JSDOM } from 'jsdom';
 import { ObjectID } from 'mongodb';
+import parseAcct from '../../acct/parse';
 import config from '../../config';
 import DriveFile from '../../models/drive-file';
 import Post from '../../models/post';
+import User from '../../models/user';
 import { IRemoteUser } from '../../models/user';
 import uploadFromUrl from '../../drive/upload-from-url';
 import createPost from '../../post/create';
@@ -133,6 +135,41 @@ class Creator {
 
 		return collection.object.map(async element => {
 			const uri = element.id || element;
+			const localPrefix = config.url + '/@';
+
+			if (uri.startsWith(localPrefix)) {
+				const [acct, id] = uri.slice(localPrefix).split('/', 2);
+				const user = await User.aggregate([
+					{
+						$match: parseAcct(acct)
+					},
+					{
+						$lookup: {
+							from: 'posts',
+							localField: '_id',
+							foreignField: 'userId',
+							as: 'post'
+						}
+					},
+					{
+						$match: {
+							post: { _id: id }
+						}
+					}
+				]);
+
+				if (user === null || user.posts.length <= 0) {
+					throw new Error();
+				}
+
+				return {
+					resolver: collection.resolver,
+					object: {
+						$ref: 'posts',
+						id
+					}
+				};
+			}
 
 			try {
 				await Promise.all([
