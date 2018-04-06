@@ -1,11 +1,8 @@
 import { createQueue } from 'kue';
-import * as debug from 'debug';
 
 import config from '../config';
 import db from './processors/db';
 import http from './processors/http';
-
-const log = debug('misskey:queue');
 
 const queue = createQueue({
 	redis: {
@@ -16,8 +13,6 @@ const queue = createQueue({
 });
 
 export function createHttp(data) {
-	log(`HTTP job created: ${JSON.stringify(data)}`);
-
 	return queue
 		.create('http', data)
 		.attempts(16)
