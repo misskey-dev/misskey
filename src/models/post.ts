@@ -27,6 +27,7 @@ export type IPost = {
 	_id: mongo.ObjectID;
 	channelId: mongo.ObjectID;
 	createdAt: Date;
+	deletedAt: Date;
 	mediaIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	repostId: mongo.ObjectID;

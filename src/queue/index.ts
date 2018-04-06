@@ -1,7 +1,6 @@
 import { createQueue } from 'kue';
 
 import config from '../config';
-import db from './processors/db';
 import http from './processors/http';
 
 const queue = createQueue({
@@ -19,10 +18,6 @@ export function createHttp(data) {
 		.backoff({ delay: 16384, type: 'exponential' });
 }
 
-export function createDb(data) {
-	return queue.create('db', data);
-}
-
 export function deliver(user, content, to) {
 	return createHttp({
 		type: 'deliver',
@@ -33,8 +28,6 @@ export function deliver(user, content, to) {
 }
 
 export default function() {
-	queue.process('db', db);
-
 	/*
 		256 is the default concurrency limit of Mozilla Firefox and Google
 		Chromium.
