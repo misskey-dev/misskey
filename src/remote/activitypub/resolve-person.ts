@@ -1,11 +1,20 @@
 import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
+import parseAcct from '../../acct/parse';
+import config from '../../config';
 import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
 import webFinger from '../webfinger';
 import Resolver from './resolver';
 import uploadFromUrl from '../../services/drive/upload-from-url';
 
 export default async (value, verifier?: string) => {
+	const id = value.id || value;
+	const localPrefix = config.url + '/@';
+
+	if (id.startsWith(localPrefix)) {
+		return User.findOne(parseAcct(id.slice(localPrefix)));
+	}
+
 	const resolver = new Resolver();
 
 	const object = await resolver.resolve(value) as any;
@@ -21,7 +30,7 @@ export default async (value, verifier?: string) => {
 		throw new Error('invalid person');
 	}
 
-	const finger = await webFinger(object.id, verifier);
+	const finger = await webFinger(id, verifier);
 
 	const host = toUnicode(finger.subject.replace(/^.*?@/, ''));
 	const hostLower = host.replace(/[A-Z]+/, matched => matched.toLowerCase());
@@ -48,7 +57,7 @@ export default async (value, verifier?: string) => {
 				publicKeyPem: object.publicKey.publicKeyPem
 			},
 			inbox: object.inbox,
-			uri: object.id,
+			uri: id,
 		},
 	});
 
