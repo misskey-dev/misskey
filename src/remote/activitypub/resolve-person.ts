@@ -1,5 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
+import parseAcct from '../../acct/parse';
+import config from '../../config';
 import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
 import { createHttp } from '../../queue';
 import webFinger from '../webfinger';
@@ -10,10 +12,18 @@ async function isCollection(collection) {
 }
 
 export default async (parentResolver, value, verifier?: string) => {
+	const id = value.id || value;
+	const localPrefix = config.url + '/@';
+
+	if (id.startsWith(localPrefix)) {
+		return User.findOne(parseAcct(id.slice(localPrefix)));
+	}
+
 	const { resolver, object } = await parentResolver.resolveOne(value);
 
 	if (
 		object === null ||
+		object.id !== id ||
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
 		!validateUsername(object.preferredUsername) ||
@@ -36,7 +46,7 @@ export default async (parentResolver, value, verifier?: string) => {
 			resolved => isCollection(resolved.object) ? resolved.object : null,
 			() => null
 		),
-		webFinger(object.id, verifier),
+		webFinger(id, verifier),
 	]);
 
 	const host = toUnicode(finger.subject.replace(/^.*?@/, ''));
@@ -64,7 +74,7 @@ export default async (parentResolver, value, verifier?: string) => {
 				publicKeyPem: object.publicKey.publicKeyPem
 			},
 			inbox: object.inbox,
-			uri: object.id,
+			uri: id,
 		},
 	});
 
