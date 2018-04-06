@@ -28,7 +28,7 @@ export default async (actor: IRemoteUser, activity): Promise<void> => {
 	try {
 		object = await resolver.resolve(activity.object);
 	} catch (e) {
-		log(`Resolve failed: ${e}`);
+		log(`Resolution failed: ${e}`);
 		throw e;
 	}
 
