@@ -5,7 +5,7 @@ import undo from './undo';
 import { IObject } from '../type';
 import { IRemoteUser } from '../../../models/user';
 
-export default async (actor: IRemoteUser, activity: IObject): Promise<void> => {
+const self = async (actor: IRemoteUser, activity: IObject): Promise<void> => {
 	switch (activity.type) {
 	case 'Create':
 		await create(actor, activity);
@@ -27,8 +27,15 @@ export default async (actor: IRemoteUser, activity: IObject): Promise<void> => {
 		await undo(actor, activity);
 		break;
 
+	case 'Collection':
+	case 'OrderedCollection':
+		// TODO
+		break;
+
 	default:
 		console.warn(`unknown activity type: ${activity.type}`);
 		return null;
 	}
 };
+
+export default self;
