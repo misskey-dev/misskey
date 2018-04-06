@@ -18,13 +18,13 @@ export default async (actor, activity): Promise<void> => {
 
 	switch (object.type) {
 	case 'Note':
-		deleteNote(uri);
+		deleteNote(actor, uri);
 		break;
 
 	case 'Tombstone':
 		const post = await Post.findOne({ uri });
 		if (post != null) {
-			deleteNote(uri);
+			deleteNote(actor, uri);
 		}
 		break;
 
