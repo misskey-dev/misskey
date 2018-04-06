@@ -1,8 +1,14 @@
+import * as debug from 'debug';
+
 import Post from '../../../../models/post';
 import { createDb } from '../../../../queue';
 
-export default async function(note) {
-	const post = await Post.findOneAndDelete({ uri: note.id });
+const log = debug('misskey:activitypub');
+
+export default async function(uri: string) {
+	log(`Deleting the Note: ${uri}`);
+
+	const post = await Post.findOneAndDelete({ uri });
 
 	createDb({
 		type: 'deletePostDependents',
