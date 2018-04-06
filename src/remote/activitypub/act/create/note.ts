@@ -28,6 +28,11 @@ export default async function createNote(resolver: Resolver, actor: IRemoteUser,
 
 	log(`Creating the Note: ${note.id}`);
 
+	//#region Visibility
+	let visibility = 'public';
+	if (note.cc.length == 0) visibility = 'private';
+	//#endergion
+
 	//#region 添付メディア
 	const media = [];
 	if ('attachment' in note && note.attachment != null) {
@@ -74,6 +79,7 @@ export default async function createNote(resolver: Resolver, actor: IRemoteUser,
 		text: window.document.body.textContent,
 		viaMobile: false,
 		geo: undefined,
+		visibility,
 		uri: note.id
 	});
 }
