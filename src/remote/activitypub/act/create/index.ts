@@ -16,8 +16,6 @@ export default async (actor: IRemoteUser, activity): Promise<void> => {
 
 	log(`Create: ${uri}`);
 
-	// TODO: 同じURIをもつものが既に登録されていないかチェック
-
 	const resolver = new Resolver();
 
 	let object;

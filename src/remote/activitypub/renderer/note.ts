@@ -19,11 +19,11 @@ export default async (user: IUser, post: IPost) => {
 
 		if (inReplyToPost !== null) {
 			const inReplyToUser = await User.findOne({
-				_id: post.userId,
+				_id: inReplyToPost.userId,
 			});
 
 			if (inReplyToUser !== null) {
-				inReplyTo = `${config.url}@${inReplyToUser.username}/${inReplyToPost._id}`;
+				inReplyTo = inReplyToPost.uri || `${config.url}/@${inReplyToUser.username}/${inReplyToPost._id}`;
 			}
 		}
 	} else {
