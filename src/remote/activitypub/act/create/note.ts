@@ -40,6 +40,7 @@ export default async function createNote(resolver: Resolver, actor: IRemoteUser,
 			const inReplyTo = await resolver.resolve(note.inReplyTo) as any;
 			const actor = await resolvePerson(inReplyTo.attributedTo);
 			if (isRemoteUser(actor)) {
+				// TODO: silentを常にtrueにしてはならない
 				reply = await createNote(resolver, actor, inReplyTo);
 			}
 		}
