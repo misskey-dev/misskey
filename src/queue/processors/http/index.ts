@@ -14,7 +14,7 @@ export default (job, done) => {
 	if (handler) {
 		handler(job, done);
 	} else {
-		console.warn(`Unknown job: ${job.data.type}`);
+		console.error(`Unknown job: ${job.data.type}`);
 		done();
 	}
 };
