@@ -71,6 +71,8 @@ async function createNote(resolver: Resolver, actor: IRemoteUser, note) {
 
 	const media = [];
 	if ('attachment' in note && note.attachment != null) {
+		// TODO: attachmentは必ずしもImageではない
+		// TODO: ループの中でawaitはすべきでない
 		note.attachment.forEach(async media => {
 			const created = await createImage(resolver, note.actor, media);
 			media.push(created);
