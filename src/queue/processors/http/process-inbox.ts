@@ -1,4 +1,5 @@
 import * as kue from 'kue';
+import * as debug from 'debug';
 
 import { verifySignature } from 'http-signature';
 import parseAcct from '../../../acct/parse';
@@ -6,10 +7,19 @@ import User, { IRemoteUser } from '../../../models/user';
 import act from '../../../remote/activitypub/act';
 import resolvePerson from '../../../remote/activitypub/resolve-person';
 
+const log = debug('misskey:queue:inbox');
+
 // ユーザーのinboxにアクティビティが届いた時の処理
 export default async (job: kue.Job, done): Promise<void> => {
 	const signature = job.data.signature;
 	const activity = job.data.activity;
+
+	//#region Log
+	const info = Object.assign({}, activity);
+	delete info['@context'];
+	delete info['signature'];
+	log(info);
+	//#endregion
 
 	const keyIdLower = signature.keyId.toLowerCase();
 	let user;
