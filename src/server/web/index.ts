@@ -11,7 +11,7 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 
-const client = `${__dirname}/../../client/`;
+const client = path.resolve(`${__dirname}/../../client/`);
 
 // Create server
 const app = express();
