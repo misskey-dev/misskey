@@ -6,9 +6,14 @@ export default async (job: kue.Job, done): Promise<void> => {
 	try {
 		await request(job.data.user, job.data.to, job.data.content);
 		done();
-	} catch (e) {
-		console.warn(`deliver failed: ${e}`);
-
-		done(e);
+	} catch (res) {
+		if (res.statusCode >= 300 && res.statusCode < 400) {
+			// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
+			// 何回再送しても成功することはないということなのでエラーにはしないでおく
+			done();
+		} else {
+			console.warn(`deliver failed: ${res.statusMessage}`);
+			done(new Error(res.statusMessage));
+		}
 	}
 };
