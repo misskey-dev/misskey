@@ -35,7 +35,7 @@ if (process.env.NODE_ENV != 'production') {
 }
 
 // https://github.com/Automattic/kue/issues/822
-require('events').EventEmitter.prototype._maxListeners = 256;
+require('events').EventEmitter.prototype._maxListeners = 512;
 
 // Start app
 main();
