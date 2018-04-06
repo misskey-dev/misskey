@@ -19,6 +19,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 		if (host === null) {
 			console.warn(`request was made by local user: @${username}`);
 			done();
+			return;
 		}
 
 		user = await User.findOne({ usernameLower: username, hostLower: host }) as IRemoteUser;
@@ -40,7 +41,8 @@ export default async (job: kue.Job, done): Promise<void> => {
 	}
 
 	if (!verifySignature(signature, user.account.publicKey.publicKeyPem)) {
-		done(new Error('signature verification failed'));
+		console.warn('signature verification failed');
+		done();
 		return;
 	}
 
