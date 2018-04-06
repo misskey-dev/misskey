@@ -2,10 +2,11 @@ import * as debug from 'debug';
 
 import Post from '../../../../models/post';
 import { createDb } from '../../../../queue';
+import { IRemoteUser } from '../../../../models/user';
 
 const log = debug('misskey:activitypub');
 
-export default async function(actor, uri: string) {
+export default async function(actor: IRemoteUser, uri: string): Promise<void> {
 	log(`Deleting the Note: ${uri}`);
 
 	const post = await Post.findOne({ uri });
@@ -14,7 +15,7 @@ export default async function(actor, uri: string) {
 		throw new Error('post not found');
 	}
 
-	if (post.userId !== actor._id) {
+	if (!post.userId.equals(actor._id)) {
 		throw new Error('投稿を削除しようとしているユーザーは投稿の作成者ではありません');
 	}
 
