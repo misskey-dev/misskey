@@ -10,7 +10,7 @@ import createImage from './image';
 
 const log = debug('misskey:activitypub');
 
-export default async function createNote(resolver: Resolver, actor: IRemoteUser, note): Promise<IPost> {
+export default async function createNote(resolver: Resolver, actor: IRemoteUser, note, silent = false): Promise<IPost> {
 	if (
 		('attributedTo' in note && actor.account.uri !== note.attributedTo) ||
 		typeof note.id !== 'string'

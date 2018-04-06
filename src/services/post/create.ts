@@ -31,7 +31,7 @@ export default async (user: IUser, data: {
 	visibility?: string;
 	uri?: string;
 	app?: IApp;
-}) => new Promise<IPost>(async (res, rej) => {
+}, silent = false) => new Promise<IPost>(async (res, rej) => {
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
 
@@ -127,10 +127,7 @@ export default async (user: IUser, data: {
 			_id: false
 		});
 
-		// この投稿が3分以内に作成されたものであるならストリームに配信
-		const shouldDistribute = new Date().getTime() - post.createdAt.getTime() < 1000 * 60 * 3;
-
-		if (shouldDistribute) {
+		if (!silent) {
 			const note = await renderNote(user, post);
 			const content = renderCreate(note);
 			content['@context'] = context;
