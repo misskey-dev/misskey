@@ -32,6 +32,8 @@ export default async function createNote(resolver: Resolver, actor: IRemoteUser,
 	let visibility = 'public';
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';
 	if (note.cc.length == 0) visibility = 'private';
+	// TODO
+	if (visibility != 'public') throw new Error('unspported visibility');
 	//#endergion
 
 	//#region 添付メディア
