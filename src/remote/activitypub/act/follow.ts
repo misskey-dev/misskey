@@ -6,7 +6,7 @@ import { IFollow } from '../type';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const prefix = config.url + '/@';
-	const id = typeof activity == 'string' ? activity : activity.id;
+	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
 
 	if (!id.startsWith(prefix)) {
 		return null;
