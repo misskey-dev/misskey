@@ -9,7 +9,7 @@ import _redis from '../../../../db/redis';
 import prominence = require('prominence');
 import getAcct from '../../../../acct/render';
 import parseAcct from '../../../../acct/parse';
-import getPostSummary from '../../../../renderers/get-post-summary';
+import getNoteSummary from '../../../../renderers/get-note-summary';
 import getUserName from '../../../../renderers/get-user-name';
 
 const redis = prominence(_redis);
@@ -80,14 +80,14 @@ class LineBot extends BotCore {
 				}
 				break;
 
-			// postback
-			case 'postback':
-				const data = ev.postback.data;
+			// noteback
+			case 'noteback':
+				const data = ev.noteback.data;
 				const cmd = data.split('|')[0];
 				const arg = data.split('|')[1];
 				switch (cmd) {
 					case 'showtl':
-						this.showUserTimelinePostback(arg);
+						this.showUserTimelineNoteback(arg);
 						break;
 				}
 				break;
@@ -107,7 +107,7 @@ class LineBot extends BotCore {
 		const actions = [];
 
 		actions.push({
-			type: 'postback',
+			type: 'noteback',
 			label: 'タイムラインを見る',
 			data: `showtl|${user.id}`
 		});
@@ -141,14 +141,14 @@ class LineBot extends BotCore {
 		return null;
 	}
 
-	public async showUserTimelinePostback(userId: string) {
-		const tl = await require('../../endpoints/users/posts')({
+	public async showUserTimelineNoteback(userId: string) {
+		const tl = await require('../../endpoints/users/notes')({
 			userId: userId,
 			limit: 5
 		}, this.user);
 
 		const text = `${getUserName(tl[0].user)}さんのタイムラインはこちらです:\n\n` + tl
-			.map(post => getPostSummary(post))
+			.map(note => getNoteSummary(note))
 			.join('\n-----\n');
 
 		this.reply([{

@@ -14,7 +14,7 @@
 		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.account.twitter.screenName}`" target="_blank">@{{ user.account.twitter.screenName }}</a></p>
 	</div>
 	<div class="status">
-		<p class="posts-count">%fa:angle-right%<a>{{ user.postsCount }}</a><b>投稿</b></p>
+		<p class="notes-count">%fa:angle-right%<a>{{ user.notesCount }}</a><b>投稿</b></p>
 		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.followingCount }}</a>人を<b>フォロー</b></p>
 		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followersCount }}</a>人の<b>フォロワー</b></p>
 	</div>

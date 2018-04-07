@@ -17,10 +17,10 @@
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
-	props: ['post'],
+	props: ['note'],
 	computed: {
 		reactions(): number {
-			return this.post.reactionCounts;
+			return this.note.reactionCounts;
 		}
 	}
 });

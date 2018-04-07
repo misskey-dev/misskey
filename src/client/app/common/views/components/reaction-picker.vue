@@ -25,7 +25,7 @@ import * as anime from 'animejs';
 const placeholder = '%i18n:common.tags.mk-reaction-picker.choose-reaction%';
 
 export default Vue.extend({
-	props: ['post', 'source', 'compact', 'cb'],
+	props: ['note', 'source', 'compact', 'cb'],
 	data() {
 		return {
 			title: placeholder
@@ -68,8 +68,8 @@ export default Vue.extend({
 	},
 	methods: {
 		react(reaction) {
-			(this as any).api('posts/reactions/create', {
-				postId: this.post.id,
+			(this as any).api('notes/reactions/create', {
+				noteId: this.note.id,
 				reaction: reaction
 			}).then(() => {
 				if (this.cb) this.cb();

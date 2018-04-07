@@ -31,7 +31,7 @@ export default async (value, verifier?: string) => {
 		throw new Error('invalid person');
 	}
 
-	const [followersCount = 0, followingCount = 0, postsCount = 0, finger] = await Promise.all([
+	const [followersCount = 0, followingCount = 0, notesCount = 0, finger] = await Promise.all([
 		resolver.resolve(object.followers).then(
 			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
 			() => undefined
@@ -59,7 +59,7 @@ export default async (value, verifier?: string) => {
 		description: summaryDOM.textContent,
 		followersCount,
 		followingCount,
-		postsCount,
+		notesCount,
 		name: object.name,
 		driveCapacity: 1024 * 1024 * 8, // 8MiB
 		username: object.preferredUsername,

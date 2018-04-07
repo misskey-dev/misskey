@@ -113,7 +113,7 @@ const endpoints: Endpoint[] = [
 		secure: true
 	},
 	{
-		name: 'aggregation/posts',
+		name: 'aggregation/notes',
 	},
 	{
 		name: 'aggregation/users',
@@ -122,7 +122,7 @@ const endpoints: Endpoint[] = [
 		name: 'aggregation/users/activity',
 	},
 	{
-		name: 'aggregation/users/post',
+		name: 'aggregation/users/note',
 	},
 	{
 		name: 'aggregation/users/followers'
@@ -134,16 +134,16 @@ const endpoints: Endpoint[] = [
 		name: 'aggregation/users/reaction'
 	},
 	{
-		name: 'aggregation/posts/repost'
+		name: 'aggregation/notes/renote'
 	},
 	{
-		name: 'aggregation/posts/reply'
+		name: 'aggregation/notes/reply'
 	},
 	{
-		name: 'aggregation/posts/reaction'
+		name: 'aggregation/notes/reaction'
 	},
 	{
-		name: 'aggregation/posts/reactions'
+		name: 'aggregation/notes/reactions'
 	},
 
 	{
@@ -391,7 +391,7 @@ const endpoints: Endpoint[] = [
 		name: 'users/search_by_username'
 	},
 	{
-		name: 'users/posts'
+		name: 'users/notes'
 	},
 	{
 		name: 'users/following'
@@ -428,35 +428,35 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'posts'
+		name: 'notes'
 	},
 	{
-		name: 'posts/show'
+		name: 'notes/show'
 	},
 	{
-		name: 'posts/replies'
+		name: 'notes/replies'
 	},
 	{
-		name: 'posts/context'
+		name: 'notes/context'
 	},
 	{
-		name: 'posts/create',
+		name: 'notes/create',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
 			max: 120,
 			minInterval: ms('1second')
 		},
-		kind: 'post-write'
+		kind: 'note-write'
 	},
 	{
-		name: 'posts/reposts'
+		name: 'notes/renotes'
 	},
 	{
-		name: 'posts/search'
+		name: 'notes/search'
 	},
 	{
-		name: 'posts/timeline',
+		name: 'notes/timeline',
 		withCredential: true,
 		limit: {
 			duration: ms('10minutes'),
@@ -464,7 +464,7 @@ const endpoints: Endpoint[] = [
 		}
 	},
 	{
-		name: 'posts/mentions',
+		name: 'notes/mentions',
 		withCredential: true,
 		limit: {
 			duration: ms('10minutes'),
@@ -472,19 +472,19 @@ const endpoints: Endpoint[] = [
 		}
 	},
 	{
-		name: 'posts/trend',
+		name: 'notes/trend',
 		withCredential: true
 	},
 	{
-		name: 'posts/categorize',
+		name: 'notes/categorize',
 		withCredential: true
 	},
 	{
-		name: 'posts/reactions',
+		name: 'notes/reactions',
 		withCredential: true
 	},
 	{
-		name: 'posts/reactions/create',
+		name: 'notes/reactions/create',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
@@ -493,7 +493,7 @@ const endpoints: Endpoint[] = [
 		kind: 'reaction-write'
 	},
 	{
-		name: 'posts/reactions/delete',
+		name: 'notes/reactions/delete',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
@@ -502,7 +502,7 @@ const endpoints: Endpoint[] = [
 		kind: 'reaction-write'
 	},
 	{
-		name: 'posts/favorites/create',
+		name: 'notes/favorites/create',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
@@ -511,7 +511,7 @@ const endpoints: Endpoint[] = [
 		kind: 'favorite-write'
 	},
 	{
-		name: 'posts/favorites/delete',
+		name: 'notes/favorites/delete',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
@@ -520,7 +520,7 @@ const endpoints: Endpoint[] = [
 		kind: 'favorite-write'
 	},
 	{
-		name: 'posts/polls/vote',
+		name: 'notes/polls/vote',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
@@ -529,7 +529,7 @@ const endpoints: Endpoint[] = [
 		kind: 'vote-write'
 	},
 	{
-		name: 'posts/polls/recommendation',
+		name: 'notes/polls/recommendation',
 		withCredential: true
 	},
 
@@ -566,7 +566,7 @@ const endpoints: Endpoint[] = [
 		name: 'channels/show'
 	},
 	{
-		name: 'channels/posts'
+		name: 'channels/notes'
 	},
 	{
 		name: 'channels/watch',

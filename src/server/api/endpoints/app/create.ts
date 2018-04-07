@@ -8,7 +8,7 @@ import App, { isValidNameId, pack } from '../../../../models/app';
 /**
  * @swagger
  * /app/create:
- *   post:
+ *   note:
  *     summary: Create an application
  *     parameters:
  *       - $ref: "#/parameters/AccessToken"

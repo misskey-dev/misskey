@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import Favorite from '../../../../models/favorite';
-import { pack } from '../../../../models/post';
+import { pack } from '../../../../models/note';
 
 /**
  * Get followers of a user
@@ -39,6 +39,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Serialize
 	res(await Promise.all(favorites.map(async favorite =>
-		await pack(favorite.postId)
+		await pack(favorite.noteId)
 	)));
 });

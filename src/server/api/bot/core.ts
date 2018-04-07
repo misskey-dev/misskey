@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 
 import User, { IUser, init as initUser, ILocalUser } from '../../../models/user';
 
-import getPostSummary from '../../../renderers/get-post-summary';
+import getNoteSummary from '../../../renderers/get-note-summary';
 import getUserName from '../../../renderers/get-user-name';
 import getUserSummary from '../../../renderers/get-user-summary';
 import parseAcct from '../../../acct/parse';
@@ -83,7 +83,7 @@ export default class BotCore extends EventEmitter {
 					'me: アカウント情報を見ます\n' +
 					'login, signin: サインインします\n' +
 					'logout, signout: サインアウトします\n' +
-					'post: 投稿します\n' +
+					'note: 投稿します\n' +
 					'tl: タイムラインを見ます\n' +
 					'no: 通知を見ます\n' +
 					'@<ユーザー名>: ユーザーを表示します\n' +
@@ -109,10 +109,10 @@ export default class BotCore extends EventEmitter {
 				this.signout();
 				return 'ご利用ありがとうございました <3';
 
-			case 'post':
+			case 'note':
 			case '投稿':
 				if (this.user == null) return 'まずサインインしてください。';
-				this.setContext(new PostContext(this));
+				this.setContext(new NoteContext(this));
 				return await this.context.greet();
 
 			case 'tl':
@@ -190,7 +190,7 @@ abstract class Context extends EventEmitter {
 
 	public static import(bot: BotCore, data: any) {
 		if (data.type == 'guessing-game') return GuessingGameContext.import(bot, data.content);
-		if (data.type == 'post') return PostContext.import(bot, data.content);
+		if (data.type == 'note') return NoteContext.import(bot, data.content);
 		if (data.type == 'tl') return TlContext.import(bot, data.content);
 		if (data.type == 'notifications') return NotificationsContext.import(bot, data.content);
 		if (data.type == 'signin') return SigninContext.import(bot, data.content);
@@ -254,13 +254,13 @@ class SigninContext extends Context {
 	}
 }
 
-class PostContext extends Context {
+class NoteContext extends Context {
 	public async greet(): Promise<string> {
 		return '内容:';
 	}
 
 	public async q(query: string): Promise<string> {
-		await require('../endpoints/posts/create')({
+		await require('../endpoints/notes/create')({
 			text: query
 		}, this.bot.user);
 		this.bot.clearContext();
@@ -269,12 +269,12 @@ class PostContext extends Context {
 
 	public export() {
 		return {
-			type: 'post'
+			type: 'note'
 		};
 	}
 
 	public static import(bot: BotCore, data: any) {
-		const context = new PostContext(bot);
+		const context = new NoteContext(bot);
 		return context;
 	}
 }
@@ -296,7 +296,7 @@ class TlContext extends Context {
 	}
 
 	private async getTl() {
-		const tl = await require('../endpoints/posts/timeline')({
+		const tl = await require('../endpoints/notes/timeline')({
 			limit: 5,
 			untilId: this.next ? this.next : undefined
 		}, this.bot.user);
@@ -306,7 +306,7 @@ class TlContext extends Context {
 			this.emit('updated');
 
 			const text = tl
-				.map(post => `${getUserName(post.user)}\n「${getPostSummary(post)}」`)
+				.map(note => `${getUserName(note.user)}\n「${getNoteSummary(note)}」`)
 				.join('\n-----\n');
 
 			return text;

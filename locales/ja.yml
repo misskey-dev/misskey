@@ -33,7 +33,7 @@ common:
     confused: "こまこまのこまり"
     pudding: "Pudding"
 
-  post_categories:
+  note_categories:
     music: "音楽"
     game: "ゲーム"
     anime: "アニメ"
@@ -124,7 +124,7 @@ common:
       show-result: "結果を見る"
       voted: "投票済み"
 
-    mk-post-menu:
+    mk-note-menu:
       pin: "ピン留め"
       pinned: "ピン留めしました"
       select: "カテゴリを選択"
@@ -211,7 +211,7 @@ ch:
       textarea: "書いて"
       upload: "アップロード"
       drive: "ドライブ"
-      post: "やる"
+      note: "やる"
       posting: "やってます"
 
 desktop:
@@ -304,8 +304,8 @@ desktop:
       settings: "設定"
       signout: "サインアウト"
 
-    mk-ui-header-post-button:
-      post: "新規投稿"
+    mk-ui-header-note-button:
+      note: "新規投稿"
 
     mk-ui-header-notifications:
       title: "通知"
@@ -350,18 +350,18 @@ desktop:
       no-users: "ミュートしているユーザーはいません"
 
     mk-post-form:
-      post-placeholder: "いまどうしてる？"
+      note-placeholder: "いまどうしてる？"
       reply-placeholder: "この投稿への返信..."
       quote-placeholder: "この投稿を引用..."
-      post: "投稿"
+      note: "投稿"
       reply: "返信"
-      repost: "Repost"
+      renote: "Renote"
       posted: "投稿しました！"
       replied: "返信しました！"
-      reposted: "Repostしました！"
-      post-failed: "投稿に失敗しました"
+      reposted: "Renoteしました！"
+      note-failed: "投稿に失敗しました"
       reply-failed: "返信に失敗しました"
-      repost-failed: "Repostに失敗しました"
+      renote-failed: "Renoteに失敗しました"
       posting: "投稿中"
       attach-media-from-local: "PCからメディアを添付"
       attach-media-from-drive: "ドライブからメディアを添付"
@@ -371,12 +371,12 @@ desktop:
       text-remain: "のこり{}文字"
 
     mk-post-form-window:
-      post: "新規投稿"
+      note: "新規投稿"
       reply: "返信"
       attaches: "添付: {}メディア"
       uploading-media: "{}個のメディアをアップロード中"
 
-    mk-post-page:
+    mk-note-page:
       prev: "前の投稿"
       next: "次の投稿"
 
@@ -390,10 +390,10 @@ desktop:
       other: "その他"
       license: "ライセンス"
 
-    mk-timeline-post:
-      reposted-by: "{}がRepost"
+    mk-timeline-note:
+      reposted-by: "{}がRenote"
       reply: "返信"
-      repost: "Repost"
+      renote: "Renote"
       add-reaction: "リアクション"
       detail: "詳細"
 
@@ -448,7 +448,7 @@ desktop:
 
     mk-post-form-home-widget:
       title: "投稿"
-      post: "投稿"
+      note: "投稿"
       placeholder: "いまどうしてる？"
 
     mk-access-log-home-widget:
@@ -463,16 +463,16 @@ desktop:
       have-a-nice-day: "良い一日を！"
       next: "次"
 
-    mk-repost-form:
+    mk-renote-form:
       quote: "引用する..."
       cancel: "キャンセル"
-      repost: "Repost"
+      renote: "Renote"
       reposting: "しています..."
-      success: "Repostしました！"
-      failure: "Repostに失敗しました"
+      success: "Renoteしました！"
+      failure: "Renoteに失敗しました"
 
-    mk-repost-form-window:
-      title: "この投稿をRepostしますか？"
+    mk-renote-form-window:
+      title: "この投稿をRenoteしますか？"
 
     mk-user:
       last-used-at: "最終アクセス"
@@ -541,7 +541,7 @@ mobile:
       notifications: "通知"
       read-all: "すべての通知を既読にしますか？"
 
-    mk-post-page:
+    mk-note-page:
       title: "投稿"
       prev: "前の投稿"
       next: "次の投稿"
@@ -612,24 +612,24 @@ mobile:
       more: "もっと見る"
       empty: "ありません！"
 
-    mk-post-detail:
+    mk-note-detail:
       reply: "返信"
       reaction: "リアクション"
 
     mk-post-form:
       submit: "投稿"
       reply-placeholder: "この投稿への返信..."
-      post-placeholder: "いまどうしてる？"
+      note-placeholder: "いまどうしてる？"
 
-    mk-search-posts:
+    mk-search-notes:
       empty: "「{}」に関する投稿は見つかりませんでした。"
 
-    mk-sub-post-content:
+    mk-sub-note-content:
       media-count: "{}個のメディア"
       poll: "投票"
 
-    mk-timeline-post:
-      reposted-by: "{}がRepost"
+    mk-timeline-note:
+      reposted-by: "{}がRenote"
 
     mk-timeline:
       empty: "表示するものがありません"
@@ -652,21 +652,21 @@ mobile:
       no-users: "フォロー中のユーザーはいないようです。"
 
     mk-user-timeline:
-      no-posts: "このユーザーはまだ投稿していないようです。"
-      no-posts-with-media: "メディア付き投稿はありません。"
+      no-notes: "このユーザーはまだ投稿していないようです。"
+      no-notes-with-media: "メディア付き投稿はありません。"
       load-more: "もっとみる"
 
     mk-user:
       follows-you: "フォローされています"
       following: "フォロー"
       followers: "フォロワー"
-      posts: "投稿"
+      notes: "投稿"
       overview: "概要"
       timeline: "タイムライン"
       media: "メディア"
 
     mk-user-overview:
-      recent-posts: "最近の投稿"
+      recent-notes: "最近の投稿"
       images: "画像"
       activity: "アクティビティ"
       keywords: "キーワード"
@@ -675,9 +675,9 @@ mobile:
       followers-you-know: "知り合いのフォロワー"
       last-used-at: "最終ログイン"
 
-    mk-user-overview-posts:
+    mk-user-overview-notes:
       loading: "読み込み中"
-      no-posts: "投稿はありません"
+      no-notes: "投稿はありません"
 
     mk-user-overview-photos:
       loading: "読み込み中"
@@ -703,7 +703,7 @@ mobile:
       load-more: "もっと"
 
 stats:
-  posts-count: "投稿の数"
+  notes-count: "投稿の数"
   users-count: "アカウントの数"
 
 status:

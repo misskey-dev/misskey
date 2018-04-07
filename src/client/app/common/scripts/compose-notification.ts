@@ -1,4 +1,4 @@
-import getPostSummary from '../../../../renderers/get-post-summary';
+import getNoteSummary from '../../../../renderers/get-note-summary';
 import getReactionEmoji from '../../../../renderers/get-reaction-emoji';
 import getUserName from '../../../../renderers/get-user-name';
 
@@ -23,28 +23,28 @@ export default function(type, data): Notification {
 		case 'mention':
 			return {
 				title: `${getUserName(data.user)}さんから:`,
-				body: getPostSummary(data),
+				body: getNoteSummary(data),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'reply':
 			return {
 				title: `${getUserName(data.user)}さんから返信:`,
-				body: getPostSummary(data),
+				body: getNoteSummary(data),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'quote':
 			return {
 				title: `${getUserName(data.user)}さんが引用:`,
-				body: getPostSummary(data),
+				body: getNoteSummary(data),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
 		case 'reaction':
 			return {
 				title: `${getUserName(data.user)}: ${getReactionEmoji(data.reaction)}:`,
-				body: getPostSummary(data.post),
+				body: getNoteSummary(data.note),
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 

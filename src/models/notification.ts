@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
-import { pack as packPost } from './post';
+import { pack as packNote } from './note';
 
 const Notification = db.get<INotification>('notifications');
 export default Notification;
@@ -36,12 +36,12 @@ export interface INotification {
 	 * follow - フォローされた
 	 * mention - 投稿で自分が言及された
 	 * reply - (自分または自分がWatchしている)投稿が返信された
-	 * repost - (自分または自分がWatchしている)投稿がRepostされた
-	 * quote - (自分または自分がWatchしている)投稿が引用Repostされた
+	 * renote - (自分または自分がWatchしている)投稿がRenoteされた
+	 * quote - (自分または自分がWatchしている)投稿が引用Renoteされた
 	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
 	 * poll_vote - (自分または自分がWatchしている)投稿の投票に投票された
 	 */
-	type: 'follow' | 'mention' | 'reply' | 'repost' | 'quote' | 'reaction' | 'poll_vote';
+	type: 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'poll_vote';
 
 	/**
 	 * 通知が読まれたかどうか
@@ -91,12 +91,12 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 			break;
 		case 'mention':
 		case 'reply':
-		case 'repost':
+		case 'renote':
 		case 'quote':
 		case 'reaction':
 		case 'poll_vote':
-			// Populate post
-			_notification.post = await packPost(_notification.postId, me);
+			// Populate note
+			_notification.note = await packNote(_notification.noteId, me);
 			break;
 		default:
 			console.error(`Unknown type: ${_notification.type}`);

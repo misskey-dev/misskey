@@ -81,24 +81,24 @@ props:
     desc:
       ja: "自分がこのユーザーをミュートしているか"
       en: "Whether you muted this user"
-  - name: "postsCount"
+  - name: "notesCount"
     type: "number"
     optional: false
     desc:
       ja: "投稿の数"
-      en: "The number of the posts of this user"
-  - name: "pinnedPost"
-    type: "entity(Post)"
+      en: "The number of the notes of this user"
+  - name: "pinnedNote"
+    type: "entity(Note)"
     optional: true
     desc:
       ja: "ピン留めされた投稿"
-      en: "The pinned post of this user"
-  - name: "pinnedPostId"
-    type: "id(Post)"
+      en: "The pinned note of this user"
+  - name: "pinnedNoteId"
+    type: "id(Note)"
     optional: true
     desc:
       ja: "ピン留めされた投稿のID"
-      en: "The ID of the pinned post of this user"
+      en: "The ID of the pinned note of this user"
   - name: "driveCapacity"
     type: "number"
     optional: false

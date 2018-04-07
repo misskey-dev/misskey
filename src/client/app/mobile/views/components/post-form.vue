@@ -9,8 +9,8 @@
 		</div>
 	</header>
 	<div class="form">
-		<mk-post-preview v-if="reply" :post="reply"/>
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.post-placeholder%'"></textarea>
+		<mk-note-preview v-if="reply" :note="reply"/>
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.note-placeholder%'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 				<div class="file" v-for="file in files" :key="file.id">
@@ -112,7 +112,7 @@ export default Vue.extend({
 		post() {
 			this.posting = true;
 			const viaMobile = (this as any).os.i.account.clientSettings.disableViaMobile !== true;
-			(this as any).api('posts/create', {
+			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
@@ -127,7 +127,7 @@ export default Vue.extend({
 				} : null,
 				viaMobile: viaMobile
 			}).then(data => {
-				this.$emit('post');
+				this.$emit('note');
 				this.$destroy();
 			}).catch(err => {
 				this.posting = false;
@@ -200,7 +200,7 @@ export default Vue.extend({
 		max-width 500px
 		margin 0 auto
 
-		> .mk-post-preview
+		> .mk-note-preview
 			padding 16px
 
 		> .attaches

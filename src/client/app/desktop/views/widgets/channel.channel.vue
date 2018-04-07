@@ -1,9 +1,9 @@
 <template>
 <div class="channel">
 	<p v-if="fetching">読み込み中<mk-ellipsis/></p>
-	<div v-if="!fetching" ref="posts" class="posts">
-		<p v-if="posts.length == 0">まだ投稿がありません</p>
-		<x-post class="post" v-for="post in posts.slice().reverse()" :post="post" :key="post.id" @reply="reply"/>
+	<div v-if="!fetching" ref="notes" class="notes">
+		<p v-if="notes.length == 0">まだ投稿がありません</p>
+		<x-note class="note" v-for="note in notes.slice().reverse()" :note="note" :key="note.id" @reply="reply"/>
 	</div>
 	<x-form class="form" ref="form"/>
 </div>
@@ -13,18 +13,18 @@
 import Vue from 'vue';
 import ChannelStream from '../../../common/scripts/streaming/channel';
 import XForm from './channel.channel.form.vue';
-import XPost from './channel.channel.post.vue';
+import XNote from './channel.channel.note.vue';
 
 export default Vue.extend({
 	components: {
 		XForm,
-		XPost
+		XNote
 	},
 	props: ['channel'],
 	data() {
 		return {
 			fetching: true,
-			posts: [],
+			notes: [],
 			connection: null
 		};
 	},
@@ -43,10 +43,10 @@ export default Vue.extend({
 		zap() {
 			this.fetching = true;
 
-			(this as any).api('channels/posts', {
+			(this as any).api('channels/notes', {
 				channelId: this.channel.id
-			}).then(posts => {
-				this.posts = posts;
+			}).then(notes => {
+				this.notes = notes;
 				this.fetching = false;
 
 				this.$nextTick(() => {
@@ -55,24 +55,24 @@ export default Vue.extend({
 
 				this.disconnect();
 				this.connection = new ChannelStream((this as any).os, this.channel.id);
-				this.connection.on('post', this.onPost);
+				this.connection.on('note', this.onNote);
 			});
 		},
 		disconnect() {
 			if (this.connection) {
-				this.connection.off('post', this.onPost);
+				this.connection.off('note', this.onNote);
 				this.connection.close();
 			}
 		},
-		onPost(post) {
-			this.posts.unshift(post);
+		onNote(note) {
+			this.notes.unshift(note);
 			this.scrollToBottom();
 		},
 		scrollToBottom() {
-			(this.$refs.posts as any).scrollTop = (this.$refs.posts as any).scrollHeight;
+			(this.$refs.notes as any).scrollTop = (this.$refs.notes as any).scrollHeight;
 		},
-		reply(post) {
-			(this.$refs.form as any).text = `>>${ post.index } `;
+		reply(note) {
+			(this.$refs.form as any).text = `>>${ note.index } `;
 		}
 	}
 });
@@ -87,12 +87,12 @@ export default Vue.extend({
 		text-align center
 		color #aaa
 
-	> .posts
+	> .notes
 		height calc(100% - 38px)
 		overflow auto
 		font-size 0.9em
 
-		> .post
+		> .note
 			border-bottom solid 1px #eee
 
 			&:last-child

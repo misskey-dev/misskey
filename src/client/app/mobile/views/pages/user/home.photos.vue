@@ -5,7 +5,7 @@
 		<a v-for="image in images"
 			class="img"
 			:style="`background-image: url(${image.media.url}?thumbnail&size=256)`"
-			:href="`/@${getAcct(image.post.user)}/${image.post.id}`"
+			:href="`/@${getAcct(image.note.user)}/${image.note.id}`"
 		></a>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">%i18n:mobile.tags.mk-user-overview-photos.no-photos%</p>
@@ -28,15 +28,15 @@ export default Vue.extend({
 		getAcct
 	},
 	mounted() {
-		(this as any).api('users/posts', {
+		(this as any).api('users/notes', {
 			userId: this.user.id,
 			withMedia: true,
 			limit: 6
-		}).then(posts => {
-			posts.forEach(post => {
-				post.media.forEach(media => {
+		}).then(notes => {
+			notes.forEach(note => {
+				note.media.forEach(media => {
 					if (this.images.length < 9) this.images.push({
-						post,
+						note,
 						media
 					});
 				});

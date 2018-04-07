@@ -10,31 +10,31 @@
 				<mk-reaction-icon :reaction="notification.reaction"/>
 				<router-link :to="`/@${acct}`">{{ getUserName(notification.user) }}</router-link>
 			</p>
-			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
-				%fa:quote-left%{{ getPostSummary(notification.post) }}
+			<router-link class="note-ref" :to="`/@${acct}/${notification.note.id}`">
+				%fa:quote-left%{{ getNoteSummary(notification.note) }}
 				%fa:quote-right%
 			</router-link>
 		</div>
 	</div>
 
-	<div class="notification repost" v-if="notification.type == 'repost'">
+	<div class="notification renote" v-if="notification.type == 'renote'">
 		<mk-time :time="notification.createdAt"/>
 		<router-link class="avatar-anchor" :to="`/@${acct}`">
-			<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+			<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="text">
 			<p>
 				%fa:retweet%
-				<router-link :to="`/@${acct}`">{{ getUserName(notification.post.user) }}</router-link>
+				<router-link :to="`/@${acct}`">{{ getUserName(notification.note.user) }}</router-link>
 			</p>
-			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
-				%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%
+			<router-link class="note-ref" :to="`/@${acct}/${notification.note.id}`">
+				%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
 			</router-link>
 		</div>
 	</div>
 
 	<template v-if="notification.type == 'quote'">
-		<mk-post :post="notification.post"/>
+		<mk-note :note="notification.note"/>
 	</template>
 
 	<div class="notification follow" v-if="notification.type == 'follow'">
@@ -51,11 +51,11 @@
 	</div>
 
 	<template v-if="notification.type == 'reply'">
-		<mk-post :post="notification.post"/>
+		<mk-note :note="notification.note"/>
 	</template>
 
 	<template v-if="notification.type == 'mention'">
-		<mk-post :post="notification.post"/>
+		<mk-note :note="notification.note"/>
 	</template>
 
 	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
@@ -68,8 +68,8 @@
 				%fa:chart-pie%
 				<router-link :to="`/@${acct}`">{{ getUserName(notification.user) }}</router-link>
 			</p>
-			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
-				%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
+			<router-link class="note-ref" :to="`/@${acct}/${notification.note.id}`">
+				%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
 			</router-link>
 		</div>
 	</div>
@@ -78,7 +78,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getPostSummary from '../../../../../renderers/get-post-summary';
+import getNoteSummary from '../../../../../renderers/get-note-summary';
 import getAcct from '../../../../../acct/render';
 import getUserName from '../../../../../renderers/get-user-name';
 
@@ -91,13 +91,13 @@ export default Vue.extend({
 		name() {
 			return getUserName(this.notification.user);
 		},
-		posterName() {
- 			return getUserName(this.notification.post.user);
+		noteerName() {
+ 			return getUserName(this.notification.note.user);
 		}
 	},
 	data() {
 		return {
-			getPostSummary
+			getNoteSummary
 		};
 	}
 });
@@ -146,10 +146,10 @@ export default Vue.extend({
 				i, .mk-reaction-icon
 					margin-right 4px
 
-			> .post-preview
+			> .note-preview
 				color rgba(0, 0, 0, 0.7)
 
-			> .post-ref
+			> .note-ref
 				color rgba(0, 0, 0, 0.7)
 
 				[data-fa]
@@ -159,7 +159,7 @@ export default Vue.extend({
 					display inline-block
 					margin-right 3px
 
-		&.repost
+		&.renote
 			.text p i
 				color #77B255
 

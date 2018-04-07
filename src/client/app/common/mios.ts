@@ -49,7 +49,7 @@ export type API = {
 
 	post: (opts?: {
 		reply?: any;
-		repost?: any;
+		renote?: any;
 	}) => void;
 
 	notify: (message: string) => void;
@@ -312,7 +312,7 @@ export default class MiOS extends EventEmitter {
 			// Finish init
 			callback();
 
-			//#region Post
+			//#region Note
 
 			// Init service worker
 			if (this.shouldRegisterSw) this.registerSw();

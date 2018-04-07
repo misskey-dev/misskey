@@ -8,7 +8,7 @@ import getUserName from './get-user-name';
  */
 export default function(user: IUser): string {
 	let string = `${getUserName(user)} (@${getAcct(user)})\n` +
-		`${user.postsCount}投稿、${user.followingCount}フォロー、${user.followersCount}フォロワー\n`;
+		`${user.notesCount}投稿、${user.followingCount}フォロー、${user.followersCount}フォロワー\n`;
 
 	if (isLocalUser(user)) {
 		const account = user.account;

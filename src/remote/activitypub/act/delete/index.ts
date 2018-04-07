@@ -1,6 +1,6 @@
 import Resolver from '../../resolver';
 import deleteNote from './note';
-import Post from '../../../../models/post';
+import Note from '../../../../models/note';
 import { IRemoteUser } from '../../../../models/user';
 
 /**
@@ -23,8 +23,8 @@ export default async (actor: IRemoteUser, activity): Promise<void> => {
 		break;
 
 	case 'Tombstone':
-		const post = await Post.findOne({ uri });
-		if (post != null) {
+		const note = await Note.findOne({ uri });
+		if (note != null) {
 			deleteNote(actor, uri);
 		}
 		break;

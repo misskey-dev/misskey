@@ -24,11 +24,11 @@ export default Vue.extend({
 
 			if (/^>>([0-9]+) /.test(this.text)) {
 				const index = this.text.match(/^>>([0-9]+) /)[1];
-				reply = (this.$parent as any).posts.find(p => p.index.toString() == index);
+				reply = (this.$parent as any).notes.find(p => p.index.toString() == index);
 				this.text = this.text.replace(/^>>([0-9]+) /, '');
 			}
 
-			(this as any).api('posts/create', {
+			(this as any).api('notes/create', {
 				text: this.text,
 				replyId: reply ? reply.id : undefined,
 				channelId: (this.$parent as any).channel.id

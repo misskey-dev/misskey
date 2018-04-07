@@ -12,7 +12,7 @@
 		<div class="description">{{ u.description }}</div>
 		<div class="status">
 			<div>
-				<p>投稿</p><a>{{ u.postsCount }}</a>
+				<p>投稿</p><a>{{ u.notesCount }}</a>
 			</div>
 			<div>
 				<p>フォロー</p><a>{{ u.followingCount }}</a>

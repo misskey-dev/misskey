@@ -1,8 +1,8 @@
 <template>
 <svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" @mousedown.prevent="onMousedown">
-	<title>Black ... Total<br/>Blue ... Posts<br/>Red ... Replies<br/>Green ... Reposts</title>
+	<title>Black ... Total<br/>Blue ... Notes<br/>Red ... Replies<br/>Green ... Renotes</title>
 	<polyline
-		:points="pointsPost"
+		:points="pointsNote"
 		fill="none"
 		stroke-width="1"
 		stroke="#41ddde"/>
@@ -12,7 +12,7 @@
 		stroke-width="1"
 		stroke="#f7796c"/>
 	<polyline
-		:points="pointsRepost"
+		:points="pointsRenote"
 		fill="none"
 		stroke-width="1"
 		stroke="#a1de41"/>
@@ -48,24 +48,24 @@ export default Vue.extend({
 			viewBoxY: 60,
 			zoom: 1,
 			pos: 0,
-			pointsPost: null,
+			pointsNote: null,
 			pointsReply: null,
-			pointsRepost: null,
+			pointsRenote: null,
 			pointsTotal: null
 		};
 	},
 	created() {
 		this.data.reverse();
-		this.data.forEach(d => d.total = d.posts + d.replies + d.reposts);
+		this.data.forEach(d => d.total = d.notes + d.replies + d.renotes);
 		this.render();
 	},
 	methods: {
 		render() {
 			const peak = Math.max.apply(null, this.data.map(d => d.total));
 			if (peak != 0) {
-				this.pointsPost = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.posts / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsNote = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.notes / peak)) * this.viewBoxY}`).join(' ');
 				this.pointsReply = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsRepost = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.reposts / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsRenote = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' ');
 				this.pointsTotal = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
 			}
 		},

@@ -113,7 +113,7 @@ export default async (req: express.Request, res: express.Response) => {
 		followersCount: 0,
 		followingCount: 0,
 		name: null,
-		postsCount: 0,
+		notesCount: 0,
 		driveCapacity: 1024 * 1024 * 128, // 128MiB
 		username: username,
 		usernameLower: username.toLowerCase(),

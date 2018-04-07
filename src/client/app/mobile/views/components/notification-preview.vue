@@ -4,23 +4,23 @@
 		<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
 			<p><mk-reaction-icon :reaction="notification.reaction"/>{{ name }}</p>
-			<p class="post-ref">%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%</p>
+			<p class="note-ref">%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%</p>
 		</div>
 	</template>
 
-	<template v-if="notification.type == 'repost'">
-		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+	<template v-if="notification.type == 'renote'">
+		<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:retweet%{{ posterName }}</p>
-			<p class="post-ref">%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%</p>
+			<p>%fa:retweet%{{ noteerName }}</p>
+			<p class="note-ref">%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%</p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'quote'">
-		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:quote-left%{{ posterName }}</p>
-			<p class="post-preview">{{ getPostSummary(notification.post) }}</p>
+			<p>%fa:quote-left%{{ noteerName }}</p>
+			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
 
@@ -32,18 +32,18 @@
 	</template>
 
 	<template v-if="notification.type == 'reply'">
-		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:reply%{{ posterName }}</p>
-			<p class="post-preview">{{ getPostSummary(notification.post) }}</p>
+			<p>%fa:reply%{{ noteerName }}</p>
+			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'mention'">
-		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:at%{{ posterName }}</p>
-			<p class="post-preview">{{ getPostSummary(notification.post) }}</p>
+			<p>%fa:at%{{ noteerName }}</p>
+			<p class="note-preview">{{ getNoteSummary(notification.note) }}</p>
 		</div>
 	</template>
 
@@ -51,7 +51,7 @@
 		<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
 			<p>%fa:chart-pie%{{ name }}</p>
-			<p class="post-ref">%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%</p>
+			<p class="note-ref">%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%</p>
 		</div>
 	</template>
 </div>
@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getPostSummary from '../../../../../renderers/get-post-summary';
+import getNoteSummary from '../../../../../renderers/get-note-summary';
 import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
@@ -68,13 +68,13 @@ export default Vue.extend({
 		name() {
 			return getUserName(this.notification.user);
 		},
-		posterName() {
-			return getUserName(this.notification.post.user);
+		noteerName() {
+			return getUserName(this.notification.note.user);
 		}
 	},
 	data() {
 		return {
-			getPostSummary
+			getNoteSummary
 		};
 	}
 });
@@ -112,7 +112,7 @@ export default Vue.extend({
 			i, mk-reaction-icon
 				margin-right 4px
 
-	.post-ref
+	.note-ref
 
 		[data-fa]
 			font-size 1em
@@ -121,7 +121,7 @@ export default Vue.extend({
 			display inline-block
 			margin-right 3px
 
-	&.repost, &.quote
+	&.renote, &.quote
 		.text p i
 			color #77B255
 

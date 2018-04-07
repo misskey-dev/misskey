@@ -7,12 +7,12 @@
 		<mk-ellipsis-icon/>
 	</div>
 	<p :class="$style.empty" v-if="!fetching && empty">%fa:search%「{{ q }}」に関する投稿は見つかりませんでした。</p>
-	<mk-posts ref="timeline" :class="$style.posts" :posts="posts">
+	<mk-notes ref="timeline" :class="$style.notes" :notes="notes">
 		<div slot="footer">
 			<template v-if="!moreFetching">%fa:search%</template>
 			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
 		</div>
-	</mk-posts>
+	</mk-notes>
 </mk-ui>
 </template>
 
@@ -30,7 +30,7 @@ export default Vue.extend({
 			moreFetching: false,
 			existMore: false,
 			offset: 0,
-			posts: []
+			notes: []
 		};
 	},
 	watch: {
@@ -38,7 +38,7 @@ export default Vue.extend({
 	},
 	computed: {
 		empty(): boolean {
-			return this.posts.length == 0;
+			return this.notes.length == 0;
 		},
 		q(): string {
 			return this.$route.query.q;
@@ -66,33 +66,33 @@ export default Vue.extend({
 			this.fetching = true;
 			Progress.start();
 
-			(this as any).api('posts/search', Object.assign({
+			(this as any).api('notes/search', Object.assign({
 				limit: limit + 1,
 				offset: this.offset
-			}, parse(this.q))).then(posts => {
-				if (posts.length == limit + 1) {
-					posts.pop();
+			}, parse(this.q))).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
 					this.existMore = true;
 				}
-				this.posts = posts;
+				this.notes = notes;
 				this.fetching = false;
 				Progress.done();
 			});
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.posts.length == 0 || !this.existMore) return;
+			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.offset += limit;
 			this.moreFetching = true;
-			return (this as any).api('posts/search', Object.assign({
+			return (this as any).api('notes/search', Object.assign({
 				limit: limit + 1,
 				offset: this.offset
-			}, parse(this.q))).then(posts => {
-				if (posts.length == limit + 1) {
-					posts.pop();
+			}, parse(this.q))).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
 				} else {
 					this.existMore = false;
 				}
-				this.posts = this.posts.concat(posts);
+				this.notes = this.notes.concat(notes);
 				this.moreFetching = false;
 			});
 		},
@@ -111,7 +111,7 @@ export default Vue.extend({
 	margin 0 auto
 	color #555
 
-.posts
+.notes
 	max-width 600px
 	margin 0 auto
 	border solid 1px rgba(0, 0, 0, 0.075)

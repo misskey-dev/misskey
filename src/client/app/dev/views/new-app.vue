@@ -27,7 +27,7 @@
 					<b-form-checkbox-group v-model="permission" stacked>
 						<b-form-checkbox value="account-read">アカウントの情報を見る。</b-form-checkbox>
 						<b-form-checkbox value="account-write">アカウントの情報を操作する。</b-form-checkbox>
-						<b-form-checkbox value="post-write">投稿する。</b-form-checkbox>
+						<b-form-checkbox value="note-write">投稿する。</b-form-checkbox>
 						<b-form-checkbox value="reaction-write">リアクションしたりリアクションをキャンセルする。</b-form-checkbox>
 						<b-form-checkbox value="following-write">フォローしたりフォロー解除する。</b-form-checkbox>
 						<b-form-checkbox value="drive-read">ドライブを見る。</b-form-checkbox>

@@ -7,7 +7,7 @@ import AuthSess, { pack } from '../../../../../models/auth-session';
 /**
  * @swagger
  * /auth/session/show:
- *   post:
+ *   note:
  *     summary: Show a session information
  *     parameters:
  *       -

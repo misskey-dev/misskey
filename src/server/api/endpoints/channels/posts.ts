@@ -3,10 +3,10 @@
  */
 import $ from 'cafy';
 import { default as Channel, IChannel } from '../../../../models/channel';
-import Post, { pack } from '../../../../models/post';
+import Note, { pack } from '../../../../models/note';
 
 /**
- * Show a posts of a channel
+ * Show a notes of a channel
  *
  * @param {any} params
  * @param {any} user
@@ -65,14 +65,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	//#endregion Construct query
 
 	// Issue query
-	const posts = await Post
+	const notes = await Note
 		.find(query, {
 			limit: limit,
 			sort: sort
 		});
 
 	// Serialize
-	res(await Promise.all(posts.map(async (post) =>
-		await pack(post, user)
+	res(await Promise.all(notes.map(async (note) =>
+		await pack(note, user)
 	)));
 });

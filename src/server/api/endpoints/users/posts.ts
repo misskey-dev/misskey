@@ -3,11 +3,11 @@
  */
 import $ from 'cafy';
 import getHostLower from '../../common/get-host-lower';
-import Post, { pack } from '../../../../models/post';
+import Note, { pack } from '../../../../models/note';
 import User from '../../../../models/user';
 
 /**
- * Get posts of a user
+ * Get notes of a user
  *
  * @param {any} params
  * @param {any} me
@@ -124,14 +124,14 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	//#endregion
 
 	// Issue query
-	const posts = await Post
+	const notes = await Note
 		.find(query, {
 			limit: limit,
 			sort: sort
 		});
 
 	// Serialize
-	res(await Promise.all(posts.map(async (post) =>
-		await pack(post, me)
+	res(await Promise.all(notes.map(async (note) =>
+		await pack(note, me)
 	)));
 });

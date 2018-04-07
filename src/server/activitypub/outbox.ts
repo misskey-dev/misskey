@@ -3,7 +3,7 @@ import context from '../../remote/activitypub/renderer/context';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import config from '../../config';
-import Post from '../../models/post';
+import Note from '../../models/note';
 import withUser from './with-user';
 
 const app = express.Router();
@@ -11,13 +11,13 @@ const app = express.Router();
 app.get('/@:user/outbox', withUser(username => {
 	return `${config.url}/@${username}/inbox`;
 }, async (user, req, res) => {
-	const posts = await Post.find({ userId: user._id }, {
+	const notes = await Note.find({ userId: user._id }, {
 		limit: 20,
 		sort: { _id: -1 }
 	});
 
-	const renderedPosts = await Promise.all(posts.map(post => renderNote(user, post)));
-	const rendered = renderOrderedCollection(`${config.url}/@${user.username}/inbox`, user.postsCount, renderedPosts);
+	const renderedNotes = await Promise.all(notes.map(note => renderNote(user, note)));
+	const rendered = renderOrderedCollection(`${config.url}/@${user.username}/inbox`, user.notesCount, renderedNotes);
 	rendered['@context'] = context;
 
 	res.json(rendered);

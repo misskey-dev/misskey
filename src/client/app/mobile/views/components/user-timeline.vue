@@ -1,18 +1,18 @@
 <template>
 <div class="mk-user-timeline">
-	<mk-posts :posts="posts">
+	<mk-notes :notes="notes">
 		<div class="init" v-if="fetching">
 			%fa:spinner .pulse%%i18n:common.loading%
 		</div>
-		<div class="empty" v-if="!fetching && posts.length == 0">
+		<div class="empty" v-if="!fetching && notes.length == 0">
 			%fa:R comments%
-			{{ withMedia ? '%i18n:mobile.tags.mk-user-timeline.no-posts-with-media%' : '%i18n:mobile.tags.mk-user-timeline.no-posts%' }}
+			{{ withMedia ? '%i18n:mobile.tags.mk-user-timeline.no-notes-with-media%' : '%i18n:mobile.tags.mk-user-timeline.no-notes%' }}
 		</div>
 		<button v-if="!fetching && existMore" @click="more" :disabled="moreFetching" slot="tail">
 			<span v-if="!moreFetching">%i18n:mobile.tags.mk-user-timeline.load-more%</span>
 			<span v-if="moreFetching">%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
-	</mk-posts>
+	</mk-notes>
 </div>
 </template>
 
@@ -26,22 +26,22 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			posts: [],
+			notes: [],
 			existMore: false,
 			moreFetching: false
 		};
 	},
 	mounted() {
-		(this as any).api('users/posts', {
+		(this as any).api('users/notes', {
 			userId: this.user.id,
 			withMedia: this.withMedia,
 			limit: limit + 1
-		}).then(posts => {
-			if (posts.length == limit + 1) {
-				posts.pop();
+		}).then(notes => {
+			if (notes.length == limit + 1) {
+				notes.pop();
 				this.existMore = true;
 			}
-			this.posts = posts;
+			this.notes = notes;
 			this.fetching = false;
 			this.$emit('loaded');
 		});
@@ -49,19 +49,19 @@ export default Vue.extend({
 	methods: {
 		more() {
 			this.moreFetching = true;
-			(this as any).api('users/posts', {
+			(this as any).api('users/notes', {
 				userId: this.user.id,
 				withMedia: this.withMedia,
 				limit: limit + 1,
-				untilId: this.posts[this.posts.length - 1].id
-			}).then(posts => {
-				if (posts.length == limit + 1) {
-					posts.pop();
+				untilId: this.notes[this.notes.length - 1].id
+			}).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
 					this.existMore = true;
 				} else {
 					this.existMore = false;
 				}
-				this.posts = this.posts.concat(posts);
+				this.notes = this.notes.concat(notes);
 				this.moreFetching = false;
 			});
 		}

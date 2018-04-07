@@ -28,7 +28,7 @@ import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkHomeCustomize from './views/pages/home-customize.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
-import MkPost from './views/pages/post.vue';
+import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
 import MkOthello from './views/pages/othello.vue';
 
@@ -57,7 +57,7 @@ init(async (launch) => {
 			{ path: '/othello', component: MkOthello },
 			{ path: '/othello/:game', component: MkOthello },
 			{ path: '/@:user', component: MkUser },
-			{ path: '/@:user/:post', component: MkPost }
+			{ path: '/@:user/:note', component: MkNote }
 		]
 	});
 
@@ -114,8 +114,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 5000);
 		});
 
-		connection.on('mention', post => {
-			const _n = composeNotification('mention', post);
+		connection.on('mention', note => {
+			const _n = composeNotification('mention', note);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon
@@ -123,8 +123,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 6000);
 		});
 
-		connection.on('reply', post => {
-			const _n = composeNotification('reply', post);
+		connection.on('reply', note => {
+			const _n = composeNotification('reply', note);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon
@@ -132,8 +132,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 6000);
 		});
 
-		connection.on('quote', post => {
-			const _n = composeNotification('quote', post);
+		connection.on('quote', note => {
+			const _n = composeNotification('quote', note);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon

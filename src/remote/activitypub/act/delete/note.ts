@@ -1,6 +1,6 @@
 import * as debug from 'debug';
 
-import Post from '../../../../models/post';
+import Note from '../../../../models/note';
 import { IRemoteUser } from '../../../../models/user';
 
 const log = debug('misskey:activitypub');
@@ -8,17 +8,17 @@ const log = debug('misskey:activitypub');
 export default async function(actor: IRemoteUser, uri: string): Promise<void> {
 	log(`Deleting the Note: ${uri}`);
 
-	const post = await Post.findOne({ uri });
+	const note = await Note.findOne({ uri });
 
-	if (post == null) {
-		throw new Error('post not found');
+	if (note == null) {
+		throw new Error('note not found');
 	}
 
-	if (!post.userId.equals(actor._id)) {
+	if (!note.userId.equals(actor._id)) {
 		throw new Error('投稿を削除しようとしているユーザーは投稿の作成者ではありません');
 	}
 
-	Post.update({ _id: post._id }, {
+	Note.update({ _id: note._id }, {
 		$set: {
 			deletedAt: new Date(),
 			text: null,

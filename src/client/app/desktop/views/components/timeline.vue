@@ -4,15 +4,15 @@
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" v-if="posts.length == 0 && !fetching">
+	<p class="empty" v-if="notes.length == 0 && !fetching">
 		%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。
 	</p>
-	<mk-posts :posts="posts" ref="timeline">
+	<mk-notes :notes="notes" ref="timeline">
 		<button slot="footer" @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">もっと見る</template>
 			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
 		</button>
-	</mk-posts>
+	</mk-notes>
 </div>
 </template>
 
@@ -26,7 +26,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			posts: [],
+			notes: [],
 			connection: null,
 			connectionId: null,
 			date: null
@@ -41,7 +41,7 @@ export default Vue.extend({
 		this.connection = (this as any).os.stream.getConnection();
 		this.connectionId = (this as any).os.stream.use();
 
-		this.connection.on('post', this.onPost);
+		this.connection.on('note', this.onNote);
 		this.connection.on('follow', this.onChangeFollowing);
 		this.connection.on('unfollow', this.onChangeFollowing);
 
@@ -51,7 +51,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	beforeDestroy() {
-		this.connection.off('post', this.onPost);
+		this.connection.off('note', this.onNote);
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
 		(this as any).os.stream.dispose(this.connectionId);
@@ -63,45 +63,45 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 
-			(this as any).api('posts/timeline', {
+			(this as any).api('notes/timeline', {
 				limit: 11,
 				untilDate: this.date ? this.date.getTime() : undefined
-			}).then(posts => {
-				if (posts.length == 11) {
-					posts.pop();
+			}).then(notes => {
+				if (notes.length == 11) {
+					notes.pop();
 					this.existMore = true;
 				}
-				this.posts = posts;
+				this.notes = notes;
 				this.fetching = false;
 				this.$emit('loaded');
 				if (cb) cb();
 			});
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.posts.length == 0 || !this.existMore) return;
+			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
-			(this as any).api('posts/timeline', {
+			(this as any).api('notes/timeline', {
 				limit: 11,
-				untilId: this.posts[this.posts.length - 1].id
-			}).then(posts => {
-				if (posts.length == 11) {
-					posts.pop();
+				untilId: this.notes[this.notes.length - 1].id
+			}).then(notes => {
+				if (notes.length == 11) {
+					notes.pop();
 				} else {
 					this.existMore = false;
 				}
-				this.posts = this.posts.concat(posts);
+				this.notes = this.notes.concat(notes);
 				this.moreFetching = false;
 			});
 		},
-		onPost(post) {
+		onNote(note) {
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds) {
-				const sound = new Audio(`${url}/assets/post.mp3`);
+				const sound = new Audio(`${url}/assets/note.mp3`);
 				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
 				sound.play();
 			}
 
-			this.posts.unshift(post);
+			this.notes.unshift(note);
 		},
 		onChangeFollowing() {
 			this.fetch();

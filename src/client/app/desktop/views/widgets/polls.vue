@@ -7,7 +7,7 @@
 	<div class="poll" v-if="!fetching && poll != null">
 		<p v-if="poll.text"><router-link to="`/@${ acct }/${ poll.id }`">{{ poll.text }}</router-link></p>
 		<p v-if="!poll.text"><router-link to="`/@${ acct }/${ poll.id }`">%fa:link%</router-link></p>
-		<mk-poll :post="poll"/>
+		<mk-poll :note="poll"/>
 	</div>
 	<p class="empty" v-if="!fetching && poll == null">%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
@@ -47,11 +47,11 @@ export default define({
 			this.fetching = true;
 			this.poll = null;
 
-			(this as any).api('posts/polls/recommendation', {
+			(this as any).api('notes/polls/recommendation', {
 				limit: 1,
 				offset: this.offset
-			}).then(posts => {
-				const poll = posts ? posts[0] : null;
+			}).then(notes => {
+				const poll = notes ? notes[0] : null;
 				if (poll == null) {
 					this.offset = 0;
 				} else {

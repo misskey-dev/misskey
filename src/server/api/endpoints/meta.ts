@@ -9,7 +9,7 @@ import Meta from '../../../models/meta';
 /**
  * @swagger
  * /meta:
- *   post:
+ *   note:
  *     summary: Show the misskey's information
  *     responses:
  *       200:

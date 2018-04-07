@@ -4,7 +4,7 @@ import * as debug from 'debug';
 
 import User from '../../../models/user';
 import Mute from '../../../models/mute';
-import { pack as packPost } from '../../../models/post';
+import { pack as packNote } from '../../../models/note';
 import readNotification from '../common/read-notification';
 
 const log = debug('misskey');
@@ -25,14 +25,14 @@ export default async function(request: websocket.request, connection: websocket.
 				try {
 					const x = JSON.parse(data);
 
-					if (x.type == 'post') {
+					if (x.type == 'note') {
 						if (mutedUserIds.indexOf(x.body.userId) != -1) {
 							return;
 						}
 						if (x.body.reply != null && mutedUserIds.indexOf(x.body.reply.userId) != -1) {
 							return;
 						}
-						if (x.body.repost != null && mutedUserIds.indexOf(x.body.repost.userId) != -1) {
+						if (x.body.renote != null && mutedUserIds.indexOf(x.body.renote.userId) != -1) {
 							return;
 						}
 					} else if (x.type == 'notification') {
@@ -46,16 +46,16 @@ export default async function(request: websocket.request, connection: websocket.
 					connection.send(data);
 				}
 				break;
-			case 'post-stream':
-				const postId = channel.split(':')[2];
-				log(`RECEIVED: ${postId} ${data} by @${user.username}`);
-				const post = await packPost(postId, user, {
+			case 'note-stream':
+				const noteId = channel.split(':')[2];
+				log(`RECEIVED: ${noteId} ${data} by @${user.username}`);
+				const note = await packNote(noteId, user, {
 					detail: true
 				});
 				connection.send(JSON.stringify({
-					type: 'post-updated',
+					type: 'note-updated',
 					body: {
-						post: post
+						note: note
 					}
 				}));
 				break;
@@ -86,9 +86,9 @@ export default async function(request: websocket.request, connection: websocket.
 
 			case 'capture':
 				if (!msg.id) return;
-				const postId = msg.id;
-				log(`CAPTURE: ${postId} by @${user.username}`);
-				subscriber.subscribe(`misskey:post-stream:${postId}`);
+				const noteId = msg.id;
+				log(`CAPTURE: ${noteId} by @${user.username}`);
+				subscriber.subscribe(`misskey:note-stream:${noteId}`);
 				break;
 		}
 	});

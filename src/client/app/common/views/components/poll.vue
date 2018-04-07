@@ -22,7 +22,7 @@
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
-	props: ['post'],
+	props: ['note'],
 	data() {
 		return {
 			showResult: false
@@ -30,7 +30,7 @@ export default Vue.extend({
 	},
 	computed: {
 		poll(): any {
-			return this.post.poll;
+			return this.note.poll;
 		},
 		total(): number {
 			return this.poll.choices.reduce((a, b) => a + b.votes, 0);
@@ -48,8 +48,8 @@ export default Vue.extend({
 		},
 		vote(id) {
 			if (this.poll.choices.some(c => c.isVoted)) return;
-			(this as any).api('posts/polls/vote', {
-				postId: this.post.id,
+			(this as any).api('notes/polls/vote', {
+				noteId: this.note.id,
 				choice: id
 			}).then(() => {
 				this.poll.choices.forEach(c => {

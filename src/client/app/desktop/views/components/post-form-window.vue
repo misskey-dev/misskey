@@ -2,13 +2,13 @@
 <mk-window ref="window" is-modal @closed="$destroy">
 	<span slot="header">
 		<span :class="$style.icon" v-if="geo">%fa:map-marker-alt%</span>
-		<span v-if="!reply">%i18n:desktop.tags.mk-post-form-window.post%</span>
+		<span v-if="!reply">%i18n:desktop.tags.mk-post-form-window.note%</span>
 		<span v-if="reply">%i18n:desktop.tags.mk-post-form-window.reply%</span>
 		<span :class="$style.count" v-if="media.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', media.length) }}</span>
 		<span :class="$style.count" v-if="uploadings.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
 	</span>
 
-	<mk-post-preview v-if="reply" :class="$style.postPreview" :post="reply"/>
+	<mk-note-preview v-if="reply" :class="$style.notePreview" :note="reply"/>
 	<mk-post-form ref="form"
 		:reply="reply"
 		@posted="onPosted"
@@ -70,7 +70,7 @@ export default Vue.extend({
 	&:after
 		content ')'
 
-.postPreview
+.notePreview
 	margin 16px 22px
 
 </style>

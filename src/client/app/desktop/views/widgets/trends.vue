@@ -5,8 +5,8 @@
 		<button @click="fetch" title="%i18n:desktop.tags.mk-trends-home-widget.refresh%">%fa:sync%</button>
 	</template>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<div class="post" v-else-if="post != null">
-		<p class="text"><router-link :to="`/@${ acct }/${ post.id }`">{{ post.text }}</router-link></p>
+	<div class="note" v-else-if="note != null">
+		<p class="text"><router-link :to="`/@${ acct }/${ note.id }`">{{ note.text }}</router-link></p>
 		<p class="author">―<router-link :to="`/@${ acct }`">@{{ acct }}</router-link></p>
 	</div>
 	<p class="empty" v-else>%i18n:desktop.tags.mk-trends-home-widget.nothing%</p>
@@ -25,12 +25,12 @@ export default define({
 }).extend({
 	computed: {
 		acct() {
-			return getAcct(this.post.user);
+			return getAcct(this.note.user);
 		},
 	},
 	data() {
 		return {
-			post: null,
+			note: null,
 			fetching: true,
 			offset: 0
 		};
@@ -44,23 +44,23 @@ export default define({
 		},
 		fetch() {
 			this.fetching = true;
-			this.post = null;
+			this.note = null;
 
-			(this as any).api('posts/trend', {
+			(this as any).api('notes/trend', {
 				limit: 1,
 				offset: this.offset,
-				repost: false,
+				renote: false,
 				reply: false,
 				media: false,
 				poll: false
-			}).then(posts => {
-				const post = posts ? posts[0] : null;
-				if (post == null) {
+			}).then(notes => {
+				const note = notes ? notes[0] : null;
+				if (note == null) {
 					this.offset = 0;
 				} else {
 					this.offset++;
 				}
-				this.post = post;
+				this.note = note;
 				this.fetching = false;
 			});
 		}
@@ -103,7 +103,7 @@ export default define({
 		&:active
 			color #999
 
-	> .post
+	> .note
 		padding 16px
 		font-size 12px
 		font-style oblique

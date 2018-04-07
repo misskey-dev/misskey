@@ -13,33 +13,33 @@
 							<mk-reaction-icon :reaction="notification.reaction"/>
 							<router-link :to="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ getUserName(notification.user) }}</router-link>
 						</p>
-						<router-link class="post-ref" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">
-							%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
+						<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+							%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
 						</router-link>
 					</div>
 				</template>
-				<template v-if="notification.type == 'repost'">
-					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">
-						<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
+				<template v-if="notification.type == 'renote'">
+					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">
+						<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
 					</router-link>
 					<div class="text">
 						<p>%fa:retweet%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
+							<router-link :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">{{ getUserName(notification.note.user) }}</router-link>
 						</p>
-						<router-link class="post-ref" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">
-							%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%
+						<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+							%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
 						</router-link>
 					</div>
 				</template>
 				<template v-if="notification.type == 'quote'">
-					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">
-						<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
+					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">
+						<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
 					</router-link>
 					<div class="text">
 						<p>%fa:quote-left%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
+							<router-link :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">{{ getUserName(notification.note.user) }}</router-link>
 						</p>
-						<router-link class="post-preview" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</router-link>
+						<router-link class="note-preview" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">{{ getNoteSummary(notification.note) }}</router-link>
 					</div>
 				</template>
 				<template v-if="notification.type == 'follow'">
@@ -53,25 +53,25 @@
 					</div>
 				</template>
 				<template v-if="notification.type == 'reply'">
-					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">
-						<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
+					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">
+						<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
 					</router-link>
 					<div class="text">
 						<p>%fa:reply%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
+							<router-link :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">{{ getUserName(notification.note.user) }}</router-link>
 						</p>
-						<router-link class="post-preview" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</router-link>
+						<router-link class="note-preview" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">{{ getNoteSummary(notification.note) }}</router-link>
 					</div>
 				</template>
 				<template v-if="notification.type == 'mention'">
-					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">
-						<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
+					<router-link class="avatar-anchor" :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">
+						<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
 					</router-link>
 					<div class="text">
 						<p>%fa:at%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
+							<router-link :to="`/@${getAcct(notification.note.user)}`" v-user-preview="notification.note.userId">{{ getUserName(notification.note.user) }}</router-link>
 						</p>
-						<a class="post-preview" :href="`/@${getAcct(notification.post.user)}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</a>
+						<a class="note-preview" :href="`/@${getAcct(notification.note.user)}/${notification.note.id}`">{{ getNoteSummary(notification.note) }}</a>
 					</div>
 				</template>
 				<template v-if="notification.type == 'poll_vote'">
@@ -80,8 +80,8 @@
 					</router-link>
 					<div class="text">
 						<p>%fa:chart-pie%<a :href="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ getUserName(notification.user) }}</a></p>
-						<router-link class="post-ref" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">
-							%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
+						<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+							%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
 						</router-link>
 					</div>
 				</template>
@@ -103,7 +103,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
-import getPostSummary from '../../../../../renderers/get-post-summary';
+import getNoteSummary from '../../../../../renderers/get-note-summary';
 import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
@@ -115,7 +115,7 @@ export default Vue.extend({
 			moreNotifications: false,
 			connection: null,
 			connectionId: null,
-			getPostSummary
+			getNoteSummary
 		};
 	},
 	computed: {
@@ -241,10 +241,10 @@ export default Vue.extend({
 					i, .mk-reaction-icon
 						margin-right 4px
 
-			.post-preview
+			.note-preview
 				color rgba(0, 0, 0, 0.7)
 
-			.post-ref
+			.note-ref
 				color rgba(0, 0, 0, 0.7)
 
 				[data-fa]
@@ -254,7 +254,7 @@ export default Vue.extend({
 					display inline-block
 					margin-right 3px
 
-			&.repost, &.quote
+			&.renote, &.quote
 				.text p i
 					color #77B255
 

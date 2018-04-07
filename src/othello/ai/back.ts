@@ -24,7 +24,7 @@ const id = conf.othello_ai.id;
  */
 const i = conf.othello_ai.i;
 
-let post;
+let note;
 
 process.on('message', async msg => {
 	// 親プロセスからデータをもらう
@@ -51,13 +51,13 @@ process.on('message', async msg => {
 			? `?[${getUserName(user)}](${conf.url}/@${user.username})さんの接待を始めました！`
 			: `対局を?[${getUserName(user)}](${conf.url}/@${user.username})さんと始めました！ (強さ${form[0].value})`;
 
-		const res = await request.post(`${conf.api_url}/posts/create`, {
+		const res = await request.post(`${conf.api_url}/notes/create`, {
 			json: { i,
 				text: `${text}\n→[観戦する](${url})`
 			}
 		});
 
-		post = res.createdPost;
+		note = res.createdNote;
 		//#endregion
 	}
 
@@ -83,9 +83,9 @@ process.on('message', async msg => {
 					? `?[${getUserName(user)}](${conf.url}/@${user.username})さんに勝ちました♪`
 					: `?[${getUserName(user)}](${conf.url}/@${user.username})さんに負けました...`;
 
-		await request.post(`${conf.api_url}/posts/create`, {
+		await request.post(`${conf.api_url}/notes/create`, {
 			json: { i,
-				repostId: post.id,
+				renoteId: note.id,
 				text: text
 			}
 		});

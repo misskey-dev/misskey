@@ -1,6 +1,6 @@
 <template>
-<div class="post">
-	<button @click="post" title="%i18n:desktop.tags.mk-ui-header-post-button.post%">%fa:pencil-alt%</button>
+<div class="note">
+	<button @click="post" title="%i18n:desktop.tags.mk-ui-header-note-button.note%">%fa:pencil-alt%</button>
 </div>
 </template>
 
@@ -19,7 +19,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.post
+.note
 	display inline-block
 	padding 8px
 	height 100%

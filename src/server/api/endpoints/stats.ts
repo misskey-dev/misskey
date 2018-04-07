@@ -1,13 +1,13 @@
 /**
  * Module dependencies
  */
-import Post from '../../../models/post';
+import Note from '../../../models/note';
 import User from '../../../models/user';
 
 /**
  * @swagger
  * /stats:
- *   post:
+ *   note:
  *     summary: Show the misskey's statistics
  *     responses:
  *       200:
@@ -15,8 +15,8 @@ import User from '../../../models/user';
  *         schema:
  *           type: object
  *           properties:
- *             postsCount:
- *               description: count of all posts of misskey
+ *             notesCount:
+ *               description: count of all notes of misskey
  *               type: number
  *             usersCount:
  *               description: count of all users of misskey
@@ -35,14 +35,14 @@ import User from '../../../models/user';
  * @return {Promise<any>}
  */
 module.exports = params => new Promise(async (res, rej) => {
-	const postsCount = await Post
+	const notesCount = await Note
 		.count();
 
 	const usersCount = await User
 		.count();
 
 	res({
-		postsCount: postsCount,
+		notesCount: notesCount,
 		usersCount: usersCount
 	});
 });

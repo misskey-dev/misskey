@@ -2,13 +2,13 @@
 <mk-ui>
 	<span slot="header">%fa:search% {{ q }}</span>
 	<main v-if="!fetching">
-		<mk-posts :class="$style.posts" :posts="posts">
-			<span v-if="posts.length == 0">{{ '%i18n:mobile.tags.mk-search-posts.empty%'.replace('{}', q) }}</span>
+		<mk-notes :class="$style.notes" :notes="notes">
+			<span v-if="notes.length == 0">{{ '%i18n:mobile.tags.mk-search-notes.empty%'.replace('{}', q) }}</span>
 			<button v-if="existMore" @click="more" :disabled="fetching" slot="tail">
 				<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
 				<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
 			</button>
-		</mk-posts>
+		</mk-notes>
 	</main>
 </mk-ui>
 </template>
@@ -25,7 +25,7 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			existMore: false,
-			posts: [],
+			notes: [],
 			offset: 0
 		};
 	},
@@ -48,30 +48,30 @@ export default Vue.extend({
 			this.fetching = true;
 			Progress.start();
 
-			(this as any).api('posts/search', Object.assign({
+			(this as any).api('notes/search', Object.assign({
 				limit: limit + 1
-			}, parse(this.q))).then(posts => {
-				if (posts.length == limit + 1) {
-					posts.pop();
+			}, parse(this.q))).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
 					this.existMore = true;
 				}
-				this.posts = posts;
+				this.notes = notes;
 				this.fetching = false;
 				Progress.done();
 			});
 		},
 		more() {
 			this.offset += limit;
-			(this as any).api('posts/search', Object.assign({
+			(this as any).api('notes/search', Object.assign({
 				limit: limit + 1,
 				offset: this.offset
-			}, parse(this.q))).then(posts => {
-				if (posts.length == limit + 1) {
-					posts.pop();
+			}, parse(this.q))).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.pop();
 				} else {
 					this.existMore = false;
 				}
-				this.posts = this.posts.concat(posts);
+				this.notes = this.notes.concat(notes);
 			});
 		}
 	}
@@ -79,7 +79,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" module>
-.posts
+.notes
 	margin 8px auto
 	max-width 500px
 	width calc(100% - 16px)

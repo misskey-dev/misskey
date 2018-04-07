@@ -16,7 +16,7 @@
 				<template v-for="p in app.permission">
 					<li v-if="p == 'account-read'">アカウントの情報を見る。</li>
 					<li v-if="p == 'account-write'">アカウントの情報を操作する。</li>
-					<li v-if="p == 'post-write'">投稿する。</li>
+					<li v-if="p == 'note-write'">投稿する。</li>
 					<li v-if="p == 'like-write'">いいねしたりいいね解除する。</li>
 					<li v-if="p == 'following-write'">フォローしたりフォロー解除する。</li>
 					<li v-if="p == 'drive-read'">ドライブを見る。</li>

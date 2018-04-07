@@ -9,7 +9,7 @@
 		</div>
 	</div>
 	<main>
-		<mk-post-detail v-if="user.pinnedPost" :post="user.pinnedPost" :compact="true"/>
+		<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
 		<x-timeline class="timeline" ref="tl" :user="user"/>
 	</main>
 	<div>

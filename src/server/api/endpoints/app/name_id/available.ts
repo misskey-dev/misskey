@@ -8,7 +8,7 @@ import { isValidNameId } from '../../../../../models/app';
 /**
  * @swagger
  * /app/nameId/available:
- *   post:
+ *   note:
  *     summary: Check available nameId on creation an application
  *     parameters:
  *       -

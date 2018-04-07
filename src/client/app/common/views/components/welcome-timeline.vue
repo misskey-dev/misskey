@@ -1,21 +1,21 @@
 <template>
 <div class="mk-welcome-timeline">
-	<div v-for="post in posts">
-		<router-link class="avatar-anchor" :to="`/@${getAcct(post.user)}`" v-user-preview="post.user.id">
-			<img class="avatar" :src="`${post.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
+	<div v-for="note in notes">
+		<router-link class="avatar-anchor" :to="`/@${getAcct(note.user)}`" v-user-preview="note.user.id">
+			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
 		</router-link>
 		<div class="body">
 			<header>
-				<router-link class="name" :to="`/@${getAcct(post.user)}`" v-user-preview="post.user.id">{{ getUserName(post.user) }}</router-link>
-				<span class="username">@{{ getAcct(post.user) }}</span>
+				<router-link class="name" :to="`/@${getAcct(note.user)}`" v-user-preview="note.user.id">{{ getUserName(note.user) }}</router-link>
+				<span class="username">@{{ getAcct(note.user) }}</span>
 				<div class="info">
-					<router-link class="created-at" :to="`/@${getAcct(post.user)}/${post.id}`">
-						<mk-time :time="post.createdAt"/>
+					<router-link class="created-at" :to="`/@${getAcct(note.user)}/${note.id}`">
+						<mk-time :time="note.createdAt"/>
 					</router-link>
 				</div>
 			</header>
 			<div class="text">
-				<mk-post-html :text="post.text"/>
+				<mk-note-html :text="note.text"/>
 			</div>
 		</div>
 	</div>
@@ -31,7 +31,7 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			posts: []
+			notes: []
 		};
 	},
 	mounted() {
@@ -42,14 +42,14 @@ export default Vue.extend({
 		getUserName,
 		fetch(cb?) {
 			this.fetching = true;
-			(this as any).api('posts', {
+			(this as any).api('notes', {
 				reply: false,
-				repost: false,
+				renote: false,
 				media: false,
 				poll: false,
 				bot: false
-			}).then(posts => {
-				this.posts = posts;
+			}).then(notes => {
+				this.notes = notes;
 				this.fetching = false;
 			});
 		}

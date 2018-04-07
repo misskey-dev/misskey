@@ -1,10 +1,10 @@
 <template>
 <div class="root home">
-	<mk-post-detail v-if="user.pinnedPost" :post="user.pinnedPost" :compact="true"/>
-	<section class="recent-posts">
-		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-posts%</h2>
+	<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
+	<section class="recent-notes">
+		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-notes%</h2>
 		<div>
-			<x-posts :user="user"/>
+			<x-notes :user="user"/>
 		</div>
 	</section>
 	<section class="images">
@@ -37,14 +37,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XPosts from './home.posts.vue';
+import XNotes from './home.notes.vue';
 import XPhotos from './home.photos.vue';
 import XFriends from './home.friends.vue';
 import XFollowersYouKnow from './home.followers-you-know.vue';
 
 export default Vue.extend({
 	components: {
-		XPosts,
+		XNotes,
 		XPhotos,
 		XFriends,
 		XFollowersYouKnow
@@ -58,7 +58,7 @@ export default Vue.extend({
 	max-width 600px
 	margin 0 auto
 
-	> .mk-post-detail
+	> .mk-note-detail
 		margin 0 0 8px 0
 
 	> section

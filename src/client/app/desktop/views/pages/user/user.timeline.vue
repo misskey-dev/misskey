@@ -8,12 +8,12 @@
 		<mk-ellipsis-icon/>
 	</div>
 	<p class="empty" v-if="empty">%fa:R comments%このユーザーはまだ何も投稿していないようです。</p>
-	<mk-posts ref="timeline" :posts="posts">
+	<mk-notes ref="timeline" :notes="notes">
 		<div slot="footer">
 			<template v-if="!moreFetching">%fa:moon%</template>
 			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
 		</div>
-	</mk-posts>
+	</mk-notes>
 </div>
 </template>
 
@@ -27,7 +27,7 @@ export default Vue.extend({
 			moreFetching: false,
 			mode: 'default',
 			unreadCount: 0,
-			posts: [],
+			notes: [],
 			date: null
 		};
 	},
@@ -38,7 +38,7 @@ export default Vue.extend({
 	},
 	computed: {
 		empty(): boolean {
-			return this.posts.length == 0;
+			return this.notes.length == 0;
 		}
 	},
 	mounted() {
@@ -60,26 +60,26 @@ export default Vue.extend({
 			}
 		},
 		fetch(cb?) {
-			(this as any).api('users/posts', {
+			(this as any).api('users/notes', {
 				userId: this.user.id,
 				untilDate: this.date ? this.date.getTime() : undefined,
 				with_replies: this.mode == 'with-replies'
-			}).then(posts => {
-				this.posts = posts;
+			}).then(notes => {
+				this.notes = notes;
 				this.fetching = false;
 				if (cb) cb();
 			});
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
+			if (this.moreFetching || this.fetching || this.notes.length == 0) return;
 			this.moreFetching = true;
-			(this as any).api('users/posts', {
+			(this as any).api('users/notes', {
 				userId: this.user.id,
 				with_replies: this.mode == 'with-replies',
-				untilId: this.posts[this.posts.length - 1].id
-			}).then(posts => {
+				untilId: this.notes[this.notes.length - 1].id
+			}).then(notes => {
 				this.moreFetching = false;
-				this.posts = this.posts.concat(posts);
+				this.notes = this.notes.concat(notes);
 			});
 		},
 		onScroll() {

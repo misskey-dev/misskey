@@ -22,13 +22,13 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		(this as any).api('users/posts', {
+		(this as any).api('users/notes', {
 			userId: this.user.id,
 			withMedia: true,
 			limit: 9
-		}).then(posts => {
-			posts.forEach(post => {
-				post.media.forEach(media => {
+		}).then(notes => {
+			notes.forEach(note => {
+				note.media.forEach(media => {
 					if (this.images.length < 9) this.images.push(media);
 				});
 			});

@@ -2,28 +2,28 @@ import renderDocument from './document';
 import renderHashtag from './hashtag';
 import config from '../../../config';
 import DriveFile from '../../../models/drive-file';
-import Post, { IPost } from '../../../models/post';
+import Note, { INote } from '../../../models/note';
 import User, { IUser } from '../../../models/user';
 
-export default async (user: IUser, post: IPost) => {
-	const promisedFiles = post.mediaIds
-		? DriveFile.find({ _id: { $in: post.mediaIds } })
+export default async (user: IUser, note: INote) => {
+	const promisedFiles = note.mediaIds
+		? DriveFile.find({ _id: { $in: note.mediaIds } })
 		: Promise.resolve([]);
 
 	let inReplyTo;
 
-	if (post.replyId) {
-		const inReplyToPost = await Post.findOne({
-			_id: post.replyId,
+	if (note.replyId) {
+		const inReplyToNote = await Note.findOne({
+			_id: note.replyId,
 		});
 
-		if (inReplyToPost !== null) {
+		if (inReplyToNote !== null) {
 			const inReplyToUser = await User.findOne({
-				_id: inReplyToPost.userId,
+				_id: inReplyToNote.userId,
 			});
 
 			if (inReplyToUser !== null) {
-				inReplyTo = inReplyToPost.uri || `${config.url}/posts/${inReplyToPost._id}`;
+				inReplyTo = inReplyToNote.uri || `${config.url}/notes/${inReplyToNote._id}`;
 			}
 		}
 	} else {
@@ -33,15 +33,15 @@ export default async (user: IUser, post: IPost) => {
 	const attributedTo = `${config.url}/@${user.username}`;
 
 	return {
-		id: `${config.url}/posts/${post._id}`,
+		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
-		content: post.textHtml,
-		published: post.createdAt.toISOString(),
+		content: note.textHtml,
+		published: note.createdAt.toISOString(),
 		to: 'https://www.w3.org/ns/activitystreams#Public',
 		cc: `${attributedTo}/followers`,
 		inReplyTo,
 		attachment: (await promisedFiles).map(renderDocument),
-		tag: (post.tags || []).map(renderHashtag)
+		tag: (note.tags || []).map(renderHashtag)
 	};
 };

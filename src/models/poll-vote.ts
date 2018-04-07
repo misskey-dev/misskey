@@ -8,6 +8,6 @@ export interface IPollVote {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	userId: mongo.ObjectID;
-	postId: mongo.ObjectID;
+	noteId: mongo.ObjectID;
 	choice: number;
 }

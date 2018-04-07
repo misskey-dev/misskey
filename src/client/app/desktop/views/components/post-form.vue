@@ -46,7 +46,7 @@ export default Vue.extend({
 	components: {
 		XDraggable
 	},
-	props: ['reply', 'repost'],
+	props: ['reply', 'renote'],
 	data() {
 		return {
 			posting: false,
@@ -61,28 +61,28 @@ export default Vue.extend({
 	},
 	computed: {
 		draftId(): string {
-			return this.repost
-				? 'repost:' + this.repost.id
+			return this.renote
+				? 'renote:' + this.renote.id
 				: this.reply
 					? 'reply:' + this.reply.id
-					: 'post';
+					: 'note';
 		},
 		placeholder(): string {
-			return this.repost
+			return this.renote
 				? '%i18n:desktop.tags.mk-post-form.quote-placeholder%'
 				: this.reply
 					? '%i18n:desktop.tags.mk-post-form.reply-placeholder%'
-					: '%i18n:desktop.tags.mk-post-form.post-placeholder%';
+					: '%i18n:desktop.tags.mk-post-form.note-placeholder%';
 		},
 		submitText(): string {
-			return this.repost
-				? '%i18n:desktop.tags.mk-post-form.repost%'
+			return this.renote
+				? '%i18n:desktop.tags.mk-post-form.renote%'
 				: this.reply
 					? '%i18n:desktop.tags.mk-post-form.reply%'
-					: '%i18n:desktop.tags.mk-post-form.post%';
+					: '%i18n:desktop.tags.mk-post-form.note%';
 		},
 		canPost(): boolean {
-			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.repost);
+			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
 		}
 	},
 	watch: {
@@ -217,11 +217,11 @@ export default Vue.extend({
 		post() {
 			this.posting = true;
 
-			(this as any).api('posts/create', {
+			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
-				repostId: this.repost ? this.repost.id : undefined,
+				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
@@ -235,17 +235,17 @@ export default Vue.extend({
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
-				(this as any).apis.notify(this.repost
+				(this as any).apis.notify(this.renote
 					? '%i18n:desktop.tags.mk-post-form.reposted%'
 					: this.reply
 						? '%i18n:desktop.tags.mk-post-form.replied%'
 						: '%i18n:desktop.tags.mk-post-form.posted%');
 			}).catch(err => {
-				(this as any).apis.notify(this.repost
-					? '%i18n:desktop.tags.mk-post-form.repost-failed%'
+				(this as any).apis.notify(this.renote
+					? '%i18n:desktop.tags.mk-post-form.renote-failed%'
 					: this.reply
 						? '%i18n:desktop.tags.mk-post-form.reply-failed%'
-						: '%i18n:desktop.tags.mk-post-form.post-failed%');
+						: '%i18n:desktop.tags.mk-post-form.note-failed%');
 			}).then(() => {
 				this.posting = false;
 			});

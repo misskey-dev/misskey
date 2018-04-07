@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import { IPost, pack as packPost } from './post';
+import { INote, pack as packNote } from './note';
 import Following from './following';
 import Mute from './mute';
 import getFriends from '../server/api/common/get-friends';
@@ -22,7 +22,7 @@ type IUserBase = {
 	followersCount: number;
 	followingCount: number;
 	name?: string;
-	postsCount: number;
+	notesCount: number;
 	driveCapacity: number;
 	username: string;
 	usernameLower: string;
@@ -30,8 +30,8 @@ type IUserBase = {
 	bannerId: mongo.ObjectID;
 	data: any;
 	description: string;
-	latestPost: IPost;
-	pinnedPostId: mongo.ObjectID;
+	latestNote: INote;
+	pinnedNoteId: mongo.ObjectID;
 	isSuspended: boolean;
 	keywords: string[];
 	host: string;
@@ -120,7 +120,7 @@ export function init(user): IUser {
 	user._id = new mongo.ObjectID(user._id);
 	user.avatarId = new mongo.ObjectID(user.avatarId);
 	user.bannerId = new mongo.ObjectID(user.bannerId);
-	user.pinnedPostId = new mongo.ObjectID(user.pinnedPostId);
+	user.pinnedNoteId = new mongo.ObjectID(user.pinnedNoteId);
 	return user;
 }
 
@@ -186,7 +186,7 @@ export const pack = (
 	delete _user._id;
 
 	// Remove needless properties
-	delete _user.latestPost;
+	delete _user.latestNote;
 
 	if (!_user.host) {
 		// Remove private properties
@@ -260,9 +260,9 @@ export const pack = (
 	}
 
 	if (opts.detail) {
-		if (_user.pinnedPostId) {
-			// Populate pinned post
-			_user.pinnedPost = packPost(_user.pinnedPostId, meId, {
+		if (_user.pinnedNoteId) {
+			// Populate pinned note
+			_user.pinnedNote = packNote(_user.pinnedNoteId, meId, {
 				detail: true
 			});
 		}

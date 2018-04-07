@@ -1,24 +1,24 @@
 import PostForm from '../views/components/post-form.vue';
-//import RepostForm from '../views/components/repost-form.vue';
-import getPostSummary from '../../../../renderers/get-post-summary';
+//import RenoteForm from '../views/components/renote-form.vue';
+import getNoteSummary from '../../../../renderers/get-note-summary';
 
 export default (os) => (opts) => {
 	const o = opts || {};
 
-	if (o.repost) {
-		/*const vm = new RepostForm({
+	if (o.renote) {
+		/*const vm = new RenoteForm({
 			propsData: {
-				repost: o.repost
+				renote: o.renote
 			}
 		}).$mount();
 		vm.$once('cancel', recover);
-		vm.$once('post', recover);
+		vm.$once('note', recover);
 		document.body.appendChild(vm.$el);*/
 
-		const text = window.prompt(`「${getPostSummary(o.repost)}」をRepost`);
+		const text = window.prompt(`「${getNoteSummary(o.renote)}」をRenote`);
 		if (text == null) return;
-		os.api('posts/create', {
-			repostId: o.repost.id,
+		os.api('notes/create', {
+			renoteId: o.renote.id,
 			text: text == '' ? undefined : text
 		});
 	} else {
@@ -36,7 +36,7 @@ export default (os) => (opts) => {
 			}
 		}).$mount();
 		vm.$once('cancel', recover);
-		vm.$once('post', recover);
+		vm.$once('note', recover);
 		document.body.appendChild(vm.$el);
 		(vm as any).focus();
 	}

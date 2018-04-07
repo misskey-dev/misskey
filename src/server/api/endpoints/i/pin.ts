@@ -3,34 +3,34 @@
  */
 import $ from 'cafy';
 import User from '../../../../models/user';
-import Post from '../../../../models/post';
+import Note from '../../../../models/note';
 import { pack } from '../../../../models/user';
 
 /**
- * Pin post
+ * Pin note
  *
  * @param {any} params
  * @param {any} user
  * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
-	// Get 'postId' parameter
-	const [postId, postIdErr] = $(params.postId).id().$;
-	if (postIdErr) return rej('invalid postId param');
+	// Get 'noteId' parameter
+	const [noteId, noteIdErr] = $(params.noteId).id().$;
+	if (noteIdErr) return rej('invalid noteId param');
 
 	// Fetch pinee
-	const post = await Post.findOne({
-		_id: postId,
+	const note = await Note.findOne({
+		_id: noteId,
 		userId: user._id
 	});
 
-	if (post === null) {
-		return rej('post not found');
+	if (note === null) {
+		return rej('note not found');
 	}
 
 	await User.update(user._id, {
 		$set: {
-			pinnedPostId: post._id
+			pinnedNoteId: note._id
 		}
 	});
 

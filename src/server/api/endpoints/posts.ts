@@ -2,10 +2,10 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post, { pack } from '../../../models/post';
+import Note, { pack } from '../../../models/note';
 
 /**
- * Lists all posts
+ * Lists all notes
  *
  * @param {any} params
  * @return {Promise<any>}
@@ -15,9 +15,9 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const [reply, replyErr] = $(params.reply).optional.boolean().$;
 	if (replyErr) return rej('invalid reply param');
 
-	// Get 'repost' parameter
-	const [repost, repostErr] = $(params.repost).optional.boolean().$;
-	if (repostErr) return rej('invalid repost param');
+	// Get 'renote' parameter
+	const [renote, renoteErr] = $(params.renote).optional.boolean().$;
+	if (renoteErr) return rej('invalid renote param');
 
 	// Get 'media' parameter
 	const [media, mediaErr] = $(params.media).optional.boolean().$;
@@ -68,8 +68,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		query.replyId = reply ? { $exists: true, $ne: null } : null;
 	}
 
-	if (repost != undefined) {
-		query.repostId = repost ? { $exists: true, $ne: null } : null;
+	if (renote != undefined) {
+		query.renoteId = renote ? { $exists: true, $ne: null } : null;
 	}
 
 	if (media != undefined) {
@@ -86,12 +86,12 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	//}
 
 	// Issue query
-	const posts = await Post
+	const notes = await Note
 		.find(query, {
 			limit: limit,
 			sort: sort
 		});
 
 	// Serialize
-	res(await Promise.all(posts.map(async post => await pack(post))));
+	res(await Promise.all(notes.map(async note => await pack(note))));
 });

@@ -19,8 +19,8 @@ export default function(qs: string) {
 				case 'reply':
 					q['reply'] = value == 'null' ? null : value == 'true';
 					break;
-				case 'repost':
-					q['repost'] = value == 'null' ? null : value == 'true';
+				case 'renote':
+					q['renote'] = value == 'null' ? null : value == 'true';
 					break;
 				case 'media':
 					q['media'] = value == 'null' ? null : value == 'true';

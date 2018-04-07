@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Post from '../../../../models/post';
+import Note from '../../../../models/note';
 import User, { pack } from '../../../../models/user';
 
 module.exports = (params, me) => new Promise(async (res, rej) => {
@@ -27,8 +27,8 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	// Fetch recent posts
-	const recentPosts = await Post.find({
+	// Fetch recent notes
+	const recentNotes = await Note.find({
 		userId: user._id,
 		replyId: {
 			$exists: true,
@@ -46,13 +46,13 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	});
 
 	// 投稿が少なかったら中断
-	if (recentPosts.length === 0) {
+	if (recentNotes.length === 0) {
 		return res([]);
 	}
 
-	const replyTargetPosts = await Post.find({
+	const replyTargetNotes = await Note.find({
 		_id: {
-			$in: recentPosts.map(p => p.replyId)
+			$in: recentNotes.map(p => p.replyId)
 		},
 		userId: {
 			$ne: user._id
@@ -66,9 +66,9 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	const repliedUsers = {};
 
-	// Extract replies from recent posts
-	replyTargetPosts.forEach(post => {
-		const userId = post.userId.toString();
+	// Extract replies from recent notes
+	replyTargetNotes.forEach(note => {
+		const userId = note.userId.toString();
 		if (repliedUsers[userId]) {
 			repliedUsers[userId]++;
 		} else {

@@ -7,7 +7,7 @@ import App, { pack } from '../../../../models/app';
 /**
  * @swagger
  * /app/show:
- *   post:
+ *   note:
  *     summary: Show an application's information
  *     description: Require appId or nameId
  *     parameters:

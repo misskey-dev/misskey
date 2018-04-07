@@ -10,7 +10,7 @@ import config from '../../../../../config';
 /**
  * @swagger
  * /auth/session/generate:
- *   post:
+ *   note:
  *     summary: Generate a session
  *     parameters:
  *       -

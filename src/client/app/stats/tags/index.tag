@@ -2,7 +2,7 @@
 	<h1>Misskey<i>Statistics</i></h1>
 	<main v-if="!initializing">
 		<mk-users stats={ stats }/>
-		<mk-posts stats={ stats }/>
+		<mk-notes stats={ stats }/>
 	</main>
 	<footer><a href={ _URL_ }>{ _HOST_ }</a></footer>
 	<style lang="stylus" scoped>
@@ -56,9 +56,9 @@
 	</script>
 </mk-index>
 
-<mk-posts>
-	<h2>%i18n:stats.posts-count% <b>{ stats.postsCount }</b></h2>
-	<mk-posts-chart v-if="!initializing" data={ data }/>
+<mk-notes>
+	<h2>%i18n:stats.notes-count% <b>{ stats.notesCount }</b></h2>
+	<mk-notes-chart v-if="!initializing" data={ data }/>
 	<style lang="stylus" scoped>
 		:scope
 			display block
@@ -70,7 +70,7 @@
 		this.stats = this.opts.stats;
 
 		this.on('mount', () => {
-			this.$root.$data.os.api('aggregation/posts', {
+			this.$root.$data.os.api('aggregation/notes', {
 				limit: 365
 			}).then(data => {
 				this.update({
@@ -80,7 +80,7 @@
 			});
 		});
 	</script>
-</mk-posts>
+</mk-notes>
 
 <mk-users>
 	<h2>%i18n:stats.users-count% <b>{ stats.usersCount }</b></h2>
@@ -108,11 +108,11 @@
 	</script>
 </mk-users>
 
-<mk-posts-chart>
+<mk-notes-chart>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">
-		<title>Black ... Total<br/>Blue ... Posts<br/>Red ... Replies<br/>Green ... Reposts</title>
+		<title>Black ... Total<br/>Blue ... Notes<br/>Red ... Replies<br/>Green ... Renotes</title>
 		<polyline
-			riot-points={ pointsPost }
+			riot-points={ pointsNote }
 			fill="none"
 			stroke-width="1"
 			stroke="#41ddde"/>
@@ -122,7 +122,7 @@
 			stroke-width="1"
 			stroke="#f7796c"/>
 		<polyline
-			riot-points={ pointsRepost }
+			riot-points={ pointsRenote }
 			fill="none"
 			stroke-width="1"
 			stroke="#a1de41"/>
@@ -147,7 +147,7 @@
 		this.viewBoxY = 80;
 
 		this.data = this.opts.data.reverse();
-		this.data.forEach(d => d.total = d.posts + d.replies + d.reposts);
+		this.data.forEach(d => d.total = d.notes + d.replies + d.renotes);
 		const peak = Math.max.apply(null, this.data.map(d => d.total));
 
 		this.on('mount', () => {
@@ -156,14 +156,14 @@
 
 		this.render = () => {
 			this.update({
-				pointsPost: this.data.map((d, i) => `${i},${(1 - (d.posts / peak)) * this.viewBoxY}`).join(' '),
+				pointsNote: this.data.map((d, i) => `${i},${(1 - (d.notes / peak)) * this.viewBoxY}`).join(' '),
 				pointsReply: this.data.map((d, i) => `${i},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' '),
-				pointsRepost: this.data.map((d, i) => `${i},${(1 - (d.reposts / peak)) * this.viewBoxY}`).join(' '),
+				pointsRenote: this.data.map((d, i) => `${i},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' '),
 				pointsTotal: this.data.map((d, i) => `${i},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ')
 			});
 		};
 	</script>
-</mk-posts-chart>
+</mk-notes-chart>
 
 <mk-users-chart>
 	<svg riot-viewBox="0 0 { viewBoxX } { viewBoxY }" preserveAspectRatio="none">

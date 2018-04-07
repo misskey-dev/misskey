@@ -1,12 +1,12 @@
 import PostFormWindow from '../views/components/post-form-window.vue';
-import RepostFormWindow from '../views/components/repost-form-window.vue';
+import RenoteFormWindow from '../views/components/renote-form-window.vue';
 
 export default function(opts) {
 	const o = opts || {};
-	if (o.repost) {
-		const vm = new RepostFormWindow({
+	if (o.renote) {
+		const vm = new RenoteFormWindow({
 			propsData: {
-				repost: o.repost
+				renote: o.renote
 			}
 		}).$mount();
 		document.body.appendChild(vm.$el);

@@ -11,7 +11,7 @@ import AccessToken from '../../../../models/access-token';
 /**
  * @swagger
  * /auth/accept:
- *   post:
+ *   note:
  *     summary: Accept a session
  *     parameters:
  *       - $ref: "#/parameters/NativeToken"

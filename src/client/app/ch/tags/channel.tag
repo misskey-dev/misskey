@@ -15,11 +15,11 @@
 		</div>
 
 		<div class="body">
-			<p v-if="postsFetching">読み込み中<mk-ellipsis/></p>
-			<div v-if="!postsFetching">
-				<p v-if="posts == null || posts.length == 0">まだ投稿がありません</p>
-				<template v-if="posts != null">
-					<mk-channel-post each={ post in posts.slice().reverse() } post={ post } form={ parent.refs.form }/>
+			<p v-if="notesFetching">読み込み中<mk-ellipsis/></p>
+			<div v-if="!notesFetching">
+				<p v-if="notes == null || notes.length == 0">まだ投稿がありません</p>
+				<template v-if="notes != null">
+					<mk-channel-note each={ note in notes.slice().reverse() } note={ note } form={ parent.refs.form }/>
 				</template>
 			</div>
 		</div>
@@ -62,9 +62,9 @@
 
 		this.id = this.opts.id;
 		this.fetching = true;
-		this.postsFetching = true;
+		this.notesFetching = true;
 		this.channel = null;
-		this.posts = null;
+		this.notes = null;
 		this.connection = new ChannelStream(this.id);
 		this.unreadCount = 0;
 
@@ -95,9 +95,9 @@
 			});
 
 			// 投稿読み込み
-			this.$root.$data.os.api('channels/posts', {
+			this.$root.$data.os.api('channels/notes', {
 				channelId: this.id
-			}).then(posts => {
+			}).then(notes => {
 				if (fetched) {
 					Progress.done();
 				} else {
@@ -106,26 +106,26 @@
 				}
 
 				this.update({
-					postsFetching: false,
-					posts: posts
+					notesFetching: false,
+					notes: notes
 				});
 			});
 
-			this.connection.on('post', this.onPost);
+			this.connection.on('note', this.onNote);
 			document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 		});
 
 		this.on('unmount', () => {
-			this.connection.off('post', this.onPost);
+			this.connection.off('note', this.onNote);
 			this.connection.close();
 			document.removeEventListener('visibilitychange', this.onVisibilitychange);
 		});
 
-		this.onPost = post => {
-			this.posts.unshift(post);
+		this.onNote = note => {
+			this.notes.unshift(note);
 			this.update();
 
-			if (document.hidden && this.$root.$data.os.isSignedIn && post.userId !== this.$root.$data.os.i.id) {
+			if (document.hidden && this.$root.$data.os.isSignedIn && note.userId !== this.$root.$data.os.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${this.channel.title} | Misskey`;
 			}
@@ -162,19 +162,19 @@
 	</script>
 </mk-channel>
 
-<mk-channel-post>
+<mk-channel-note>
 	<header>
-		<a class="index" @click="reply">{ post.index }:</a>
-		<a class="name" href={ _URL_ + '/@' + acct }><b>{ getUserName(post.user) }</b></a>
-		<mk-time time={ post.createdAt }/>
-		<mk-time time={ post.createdAt } mode="detail"/>
+		<a class="index" @click="reply">{ note.index }:</a>
+		<a class="name" href={ _URL_ + '/@' + acct }><b>{ getUserName(note.user) }</b></a>
+		<mk-time time={ note.createdAt }/>
+		<mk-time time={ note.createdAt } mode="detail"/>
 		<span>ID:<i>{ acct }</i></span>
 	</header>
 	<div>
-		<a v-if="post.reply">&gt;&gt;{ post.reply.index }</a>
-		{ post.text }
-		<div class="media" v-if="post.media">
-			<template each={ file in post.media }>
+		<a v-if="note.reply">&gt;&gt;{ note.reply.index }</a>
+		{ note.text }
+		<div class="media" v-if="note.media">
+			<template each={ file in note.media }>
 				<a href={ file.url } target="_blank">
 					<img src={ file.url + '?thumbnail&size=512' } alt={ file.name } title={ file.name }/>
 				</a>
@@ -232,18 +232,18 @@
 		import getAcct from '../../../../acct/render';
 		import getUserName from '../../../../renderers/get-user-name';
 
-		this.post = this.opts.post;
+		this.note = this.opts.note;
 		this.form = this.opts.form;
-		this.acct = getAcct(this.post.user);
-		this.name = getUserName(this.post.user);
+		this.acct = getAcct(this.note.user);
+		this.name = getUserName(this.note.user);
 
 		this.reply = () => {
 			this.form.update({
-				reply: this.post
+				reply: this.note
 			});
 		};
 	</script>
-</mk-channel-post>
+</mk-channel-note>
 
 <mk-channel-form>
 	<p v-if="reply"><b>&gt;&gt;{ reply.index }</b> ({ getUserName(reply.user) }): <a @click="clearReply">[x]</a></p>
@@ -251,8 +251,8 @@
 	<div class="actions">
 		<button @click="selectFile">%fa:upload%%i18n:ch.tags.mk-channel-form.upload%</button>
 		<button @click="drive">%fa:cloud%%i18n:ch.tags.mk-channel-form.drive%</button>
-		<button :class="{ wait: wait }" ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="post">
-			<template v-if="!wait">%fa:paper-plane%</template>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.post%' }<mk-ellipsis v-if="wait"/>
+		<button :class="{ wait: wait }" ref="submit" disabled={ wait || (refs.text.value.length == 0) } @click="note">
+			<template v-if="!wait">%fa:paper-plane%</template>{ wait ? '%i18n:ch.tags.mk-channel-form.posting%' : '%i18n:ch.tags.mk-channel-form.note%' }<mk-ellipsis v-if="wait"/>
 		</button>
 	</div>
 	<mk-uploader ref="uploader"/>
@@ -321,7 +321,7 @@
 			this.$refs.text.value = '';
 		};
 
-		this.post = () => {
+		this.note = () => {
 			this.update({
 				wait: true
 			});
@@ -330,7 +330,7 @@
 				? this.files.map(f => f.id)
 				: undefined;
 
-			this.$root.$data.os.api('posts/create', {
+			this.$root.$data.os.api('notes/create', {
 				text: this.$refs.text.value == '' ? undefined : this.$refs.text.value,
 				mediaIds: files,
 				replyId: this.reply ? this.reply.id : undefined,

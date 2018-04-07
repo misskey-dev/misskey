@@ -7,12 +7,12 @@
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" v-if="posts.length == 0 && !fetching">
+	<p class="empty" v-if="notes.length == 0 && !fetching">
 		%fa:R comments%
 		<span v-if="mode == 'all'">あなた宛ての投稿はありません。</span>
 		<span v-if="mode == 'following'">あなたがフォローしているユーザーからの言及はありません。</span>
 	</p>
-	<mk-posts :posts="posts" ref="timeline"/>
+	<mk-notes :notes="notes" ref="timeline"/>
 </div>
 </template>
 
@@ -24,7 +24,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			mode: 'all',
-			posts: []
+			notes: []
 		};
 	},
 	watch: {
@@ -56,23 +56,23 @@ export default Vue.extend({
 		},
 		fetch(cb?) {
 			this.fetching = true;
-			this.posts =  [];
-			(this as any).api('posts/mentions', {
+			this.notes =  [];
+			(this as any).api('notes/mentions', {
 				following: this.mode == 'following'
-			}).then(posts => {
-				this.posts = posts;
+			}).then(notes => {
+				this.notes = notes;
 				this.fetching = false;
 				if (cb) cb();
 			});
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.posts.length == 0) return;
+			if (this.moreFetching || this.fetching || this.notes.length == 0) return;
 			this.moreFetching = true;
-			(this as any).api('posts/mentions', {
+			(this as any).api('notes/mentions', {
 				following: this.mode == 'following',
-				untilId: this.posts[this.posts.length - 1].id
-			}).then(posts => {
-				this.posts = this.posts.concat(posts);
+				untilId: this.notes[this.notes.length - 1].id
+			}).then(notes => {
+				this.notes = this.notes.concat(notes);
 				this.moreFetching = false;
 			});
 		}

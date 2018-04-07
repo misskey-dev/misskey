@@ -46,28 +46,28 @@ homeStream.on('message', message => {
 
 	// タイムライン上でなんか言われたまたは返信されたとき
 	if (msg.type == 'mention' || msg.type == 'reply') {
-		const post = msg.body;
+		const note = msg.body;
 
-		if (post.userId == id) return;
+		if (note.userId == id) return;
 
 		// リアクションする
-		request.post(`${conf.api_url}/posts/reactions/create`, {
+		request.post(`${conf.api_url}/notes/reactions/create`, {
 			json: { i,
-				postId: post.id,
+				noteId: note.id,
 				reaction: 'love'
 			}
 		});
 
-		if (post.text) {
-			if (post.text.indexOf('オセロ') > -1) {
-				request.post(`${conf.api_url}/posts/create`, {
+		if (note.text) {
+			if (note.text.indexOf('オセロ') > -1) {
+				request.post(`${conf.api_url}/notes/create`, {
 					json: { i,
-						replyId: post.id,
+						replyId: note.id,
 						text: '良いですよ～'
 					}
 				});
 
-				invite(post.userId);
+				invite(note.userId);
 			}
 		}
 	}

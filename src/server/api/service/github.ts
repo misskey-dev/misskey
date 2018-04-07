@@ -18,7 +18,7 @@ module.exports = async (app: express.Application) => {
 		return;
 	}
 
-	const post = text => require('../endpoints/posts/create')({ text }, bot);
+	const post = text => require('../endpoints/notes/create')({ text }, bot);
 
 	const handler = new EventEmitter();
 

@@ -10,7 +10,7 @@ import { pack } from '../../../../../models/user';
 /**
  * @swagger
  * /auth/session/userkey:
- *   post:
+ *   note:
  *     summary: Get an access token(userkey)
  *     parameters:
  *       -

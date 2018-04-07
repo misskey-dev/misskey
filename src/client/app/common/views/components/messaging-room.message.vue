@@ -10,7 +10,7 @@
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
-				<mk-post-html class="text" v-if="message.text" ref="text" :text="message.text" :i="os.i"/>
+				<mk-note-html class="text" v-if="message.text" ref="text" :text="message.text" :i="os.i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>

@@ -1,0 +1,59 @@
+endpoint: "notes/create"
+
+desc:
+  ja: "投稿します。"
+  en: "Compose new note."
+
+params:
+  - name: "text"
+    type: "string"
+    optional: true
+    desc:
+      ja: "投稿の本文"
+      en: "The text of your note"
+  - name: "cw"
+    type: "string"
+    optional: true
+    desc:
+      ja: "コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。"
+      en: "Content Warning"
+  - name: "mediaIds"
+    type: "id(DriveFile)[]"
+    optional: true
+    desc:
+      ja: "添付するメディア(1~4つ)"
+      en: "Media you want to attach (1~4)"
+  - name: "replyId"
+    type: "id(Note)"
+    optional: true
+    desc:
+      ja: "返信する投稿"
+      en: "The note you want to reply"
+  - name: "renoteId"
+    type: "id(Note)"
+    optional: true
+    desc:
+      ja: "引用する投稿"
+      en: "The note you want to quote"
+  - name: "poll"
+    type: "object"
+    optional: true
+    desc:
+      ja: "投票"
+      en: "The poll"
+    defName: "poll"
+    def:
+      - name: "choices"
+        type: "string[]"
+        optional: false
+        desc:
+          ja: "投票の選択肢"
+          en: "Choices of a poll"
+
+res:
+  - name: "createdNote"
+    type: "entity(Note)"
+    optional: false
+    desc:
+      ja: "作成した投稿"
+      en: "A note that created"

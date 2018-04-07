@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import User from '../../../../../models/user';
-import Post from '../../../../../models/post';
+import Note from '../../../../../models/note';
 
 // TODO: likeやfollowも集計
 
@@ -35,11 +35,11 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		return rej('user not found');
 	}
 
-	const datas = await Post
+	const datas = await Note
 		.aggregate([
 			{ $match: { userId: user._id } },
 			{ $project: {
-				repostId: '$repostId',
+				renoteId: '$renoteId',
 				replyId: '$replyId',
 				createdAt: { $add: ['$createdAt', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
@@ -51,13 +51,13 @@ module.exports = (params) => new Promise(async (res, rej) => {
 				},
 				type: {
 					$cond: {
-						if: { $ne: ['$repostId', null] },
-						then: 'repost',
+						if: { $ne: ['$renoteId', null] },
+						then: 'renote',
 						else: {
 							$cond: {
 								if: { $ne: ['$replyId', null] },
 								then: 'reply',
-								else: 'post'
+								else: 'note'
 							}
 						}
 					}
@@ -80,8 +80,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		data.date = data._id;
 		delete data._id;
 
-		data.posts = (data.data.filter(x => x.type == 'post')[0] || { count: 0 }).count;
-		data.reposts = (data.data.filter(x => x.type == 'repost')[0] || { count: 0 }).count;
+		data.notes = (data.data.filter(x => x.type == 'note')[0] || { count: 0 }).count;
+		data.renotes = (data.data.filter(x => x.type == 'renote')[0] || { count: 0 }).count;
 		data.replies = (data.data.filter(x => x.type == 'reply')[0] || { count: 0 }).count;
 
 		delete data.data;
@@ -105,8 +105,8 @@ module.exports = (params) => new Promise(async (res, rej) => {
 					month: day.getMonth() + 1, // In JavaScript, month is zero-based.
 					day: day.getDate()
 				},
-				posts: 0,
-				reposts: 0,
+				notes: 0,
+				renotes: 0,
 				replies: 0
 			});
 		}

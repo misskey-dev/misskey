@@ -29,7 +29,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: ['data'],
 	created() {
-		this.data.forEach(d => d.total = d.posts + d.replies + d.reposts);
+		this.data.forEach(d => d.total = d.notes + d.replies + d.renotes);
 		const peak = Math.max.apply(null, this.data.map(d => d.total));
 
 		let x = 0;

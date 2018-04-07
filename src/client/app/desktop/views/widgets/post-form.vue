@@ -4,7 +4,7 @@
 		<p class="title">%fa:pencil-alt%%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
 	</template>
 	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>
-	<button @click="post" :disabled="posting">%i18n:desktop.tags.mk-post-form-home-widget.post%</button>
+	<button @click="post" :disabled="posting">%i18n:desktop.tags.mk-post-form-home-widget.note%</button>
 </div>
 </template>
 
@@ -36,7 +36,7 @@ export default define({
 		post() {
 			this.posting = true;
 
-			(this as any).api('posts/create', {
+			(this as any).api('notes/create', {
 				text: this.text
 			}).then(data => {
 				this.clear();
