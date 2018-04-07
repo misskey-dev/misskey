@@ -6,6 +6,7 @@ import User, { validateUsername, isValidName, isValidDescription } from '../../m
 import webFinger from '../webfinger';
 import Resolver from './resolver';
 import uploadFromUrl from '../../services/drive/upload-from-url';
+import { isCollectionOrOrderedCollection } from './type';
 
 export default async (value, verifier?: string) => {
 	const id = value.id || value;
@@ -30,7 +31,21 @@ export default async (value, verifier?: string) => {
 		throw new Error('invalid person');
 	}
 
-	const finger = await webFinger(id, verifier);
+	const [followersCount = 0, followingCount = 0, postsCount = 0, finger] = await Promise.all([
+		resolver.resolve(object.followers).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
+		),
+		resolver.resolve(object.following).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
+		),
+		resolver.resolve(object.outbox).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
+		),
+		webFinger(id, verifier)
+	]);
 
 	const host = toUnicode(finger.subject.replace(/^.*?@/, ''));
 	const hostLower = host.replace(/[A-Z]+/, matched => matched.toLowerCase());
@@ -42,10 +57,10 @@ export default async (value, verifier?: string) => {
 		bannerId: null,
 		createdAt: Date.parse(object.published) || null,
 		description: summaryDOM.textContent,
-		followersCount: 0,
-		followingCount: 0,
+		followersCount,
+		followingCount,
+		postsCount,
 		name: object.name,
-		postsCount: 0,
 		driveCapacity: 1024 * 1024 * 8, // 8MiB
 		username: object.preferredUsername,
 		usernameLower: object.preferredUsername.toLowerCase(),
@@ -61,18 +76,14 @@ export default async (value, verifier?: string) => {
 		},
 	});
 
-	const [avatarId, bannerId] = await Promise.all([
+	const [avatarId, bannerId] = (await Promise.all([
 		object.icon,
 		object.image
-	].map(async img => {
-		if (img === undefined) {
-			return null;
-		}
-
-		const file = await uploadFromUrl(img.url, user);
-
-		return file._id;
-	}));
+	].map(img =>
+		img == null
+			? Promise.resolve(null)
+			: uploadFromUrl(img.url, user)
+	))).map(file => file != null ? file._id : null);
 
 	User.update({ _id: user._id }, { $set: { avatarId, bannerId } });
 
