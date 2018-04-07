@@ -2,10 +2,10 @@ import create from './create';
 import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
-import { IObject } from '../type';
+import { Object } from '../type';
 import { IRemoteUser } from '../../../models/user';
 
-const self = async (actor: IRemoteUser, activity: IObject): Promise<void> => {
+const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	switch (activity.type) {
 	case 'Create':
 		await create(actor, activity);

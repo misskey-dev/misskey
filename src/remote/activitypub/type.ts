@@ -1,7 +1,7 @@
-export type Object = { [x: string]: any };
+export type obj = { [x: string]: any };
 
 export interface IObject {
-	'@context': string | object | any[];
+	'@context': string | obj | obj[];
 	type: string;
 	id?: string;
 	summary?: string;
@@ -39,6 +39,10 @@ export interface ICreate extends IActivity {
 	type: 'Create';
 }
 
+export interface IDelete extends IActivity {
+	type: 'Delete';
+}
+
 export interface IUndo extends IActivity {
 	type: 'Undo';
 }
@@ -46,3 +50,16 @@ export interface IUndo extends IActivity {
 export interface IFollow extends IActivity {
 	type: 'Follow';
 }
+
+export interface IAccept extends IActivity {
+	type: 'Accept';
+}
+
+export type Object =
+	ICollection |
+	IOrderedCollection |
+	ICreate |
+	IDelete |
+	IUndo |
+	IFollow |
+	IAccept;
