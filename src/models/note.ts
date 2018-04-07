@@ -112,7 +112,7 @@ export const pack = async (
 		_note = deepcopy(note);
 	}
 
-	if (!_note) throw 'invalid note arg.';
+	if (!_note) throw `invalid note arg ${note}`;
 
 	const id = _note._id;
 

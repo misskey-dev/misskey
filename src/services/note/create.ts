@@ -5,6 +5,7 @@ import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
+import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import context from '../../remote/activitypub/renderer/context';
 import { IDriveFile } from '../../models/drive-file';
 import notify from '../../publishers/notify';
@@ -34,6 +35,7 @@ export default async (user: IUser, data: {
 }, silent = false) => new Promise<INote>(async (res, rej) => {
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
+	if (data.viaMobile == null) data.viaMobile = false;
 
 	const tags = data.tags || [];
 
@@ -77,9 +79,7 @@ export default async (user: IUser, data: {
 		_user: {
 			host: user.host,
 			hostLower: user.hostLower,
-			account: isLocalUser(user) ? {} : {
-				inbox: user.inbox
-			}
+			inbox: isRemoteUser(user) ? user.inbox : undefined
 		}
 	};
 
@@ -128,15 +128,25 @@ export default async (user: IUser, data: {
 		});
 
 		if (!silent) {
-			const content = renderCreate(await renderNote(user, note));
-			content['@context'] = context;
+			const render = async () => {
+				const content = data.renote && data.text == null
+					? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
+					: renderCreate(await renderNote(note));
+				content['@context'] = context;
+				return content;
+			};
 
 			// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 			if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
-				deliver(user, content, data.reply._user.inbox).save();
+				deliver(user, await render(), data.reply._user.inbox).save();
 			}
 
-			Promise.all(followers.map(follower => {
+			// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
+			if (data.renote && isLocalUser(user) && isRemoteUser(data.renote._user)) {
+				deliver(user, await render(), data.renote._user.inbox).save();
+			}
+
+			Promise.all(followers.map(async follower => {
 				follower = follower.user[0];
 
 				if (isLocalUser(follower)) {
@@ -145,7 +155,7 @@ export default async (user: IUser, data: {
 				} else {
 					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 					if (isLocalUser(user)) {
-						deliver(user, content, follower.inbox).save();
+						deliver(user, await render(), follower.inbox).save();
 					}
 				}
 			}));
@@ -255,15 +265,13 @@ export default async (user: IUser, data: {
 		// Notify
 		const type = data.text ? 'quote' : 'renote';
 		notify(data.renote.userId, user._id, type, {
-			note_id: note._id
+			noteId: note._id
 		});
 
 		// Fetch watchers
 		NoteWatching.find({
 			noteId: data.renote._id,
-			userId: { $ne: user._id },
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
+			userId: { $ne: user._id }
 		}, {
 			fields: {
 				userId: true

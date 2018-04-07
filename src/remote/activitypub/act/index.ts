@@ -5,6 +5,7 @@ import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
 import like from './like';
+import announce from './announce';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	switch (activity.type) {
@@ -22,6 +23,10 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 
 	case 'Accept':
 		// noop
+		break;
+
+	case 'Announce':
+		await announce(actor, activity);
 		break;
 
 	case 'Like':

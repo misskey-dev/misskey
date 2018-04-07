@@ -51,9 +51,6 @@ export interface INotification {
 
 /**
  * Pack a notification for API response
- *
- * @param {any} notification
- * @return {Promise<any>}
  */
 export const pack = (notification: any) => new Promise<any>(async (resolve, reject) => {
 	let _notification: any;

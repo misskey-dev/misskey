@@ -5,6 +5,10 @@ export interface IObject {
 	type: string;
 	id?: string;
 	summary?: string;
+	published?: string;
+	cc?: string[];
+	to?: string[];
+	attributedTo: string;
 }
 
 export interface IActivity extends IObject {
@@ -24,6 +28,10 @@ export interface IOrderedCollection extends IObject {
 	type: 'OrderedCollection';
 	totalItems: number;
 	orderedItems: IObject | string | IObject[] | string[];
+}
+
+export interface INote extends IObject {
+	type: 'Note';
 }
 
 export const isCollection = (object: IObject): object is ICollection =>
@@ -59,6 +67,10 @@ export interface ILike extends IActivity {
 	type: 'Like';
 }
 
+export interface IAnnounce extends IActivity {
+	type: 'Announce';
+}
+
 export type Object =
 	ICollection |
 	IOrderedCollection |
@@ -67,4 +79,5 @@ export type Object =
 	IUndo |
 	IFollow |
 	IAccept |
-	ILike;
+	ILike |
+	IAnnounce;

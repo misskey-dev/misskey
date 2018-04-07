@@ -3,9 +3,9 @@ import renderHashtag from './hashtag';
 import config from '../../../config';
 import DriveFile from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
-import User, { IUser } from '../../../models/user';
+import User from '../../../models/user';
 
-export default async (user: IUser, note: INote) => {
+export default async (note: INote) => {
 	const promisedFiles = note.mediaIds
 		? DriveFile.find({ _id: { $in: note.mediaIds } })
 		: Promise.resolve([]);
@@ -29,6 +29,10 @@ export default async (user: IUser, note: INote) => {
 	} else {
 		inReplyTo = null;
 	}
+
+	const user = await User.findOne({
+		_id: note.userId
+	});
 
 	const attributedTo = `${config.url}/@${user.username}`;
 

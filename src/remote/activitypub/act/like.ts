@@ -7,7 +7,7 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
 
 	// Transform:
-	// https://misskey.ex/@syuilo/xxxx to
+	// https://misskey.ex/notes/xxxx to
 	// xxxx
 	const noteId = id.split('/').pop();
 

@@ -2,18 +2,18 @@ import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
 import parseAcct from '../../acct/parse';
 import config from '../../config';
-import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
+import User, { validateUsername, isValidName, isValidDescription, IUser } from '../../models/user';
 import webFinger from '../webfinger';
 import Resolver from './resolver';
 import uploadFromUrl from '../../services/drive/upload-from-url';
-import { isCollectionOrOrderedCollection } from './type';
+import { isCollectionOrOrderedCollection, IObject } from './type';
 
-export default async (value, verifier?: string) => {
-	const id = value.id || value;
+export default async (value: string | IObject, verifier?: string): Promise<IUser> => {
+	const id = typeof value == 'string' ? value : value.id;
 	const localPrefix = config.url + '/@';
 
 	if (id.startsWith(localPrefix)) {
-		return User.findOne(parseAcct(id.slice(localPrefix)));
+		return await User.findOne(parseAcct(id.substr(localPrefix.length)));
 	}
 
 	const resolver = new Resolver();

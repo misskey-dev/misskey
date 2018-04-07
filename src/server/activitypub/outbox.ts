@@ -16,7 +16,7 @@ app.get('/@:user/outbox', withUser(username => {
 		sort: { _id: -1 }
 	});
 
-	const renderedNotes = await Promise.all(notes.map(note => renderNote(user, note)));
+	const renderedNotes = await Promise.all(notes.map(note => renderNote(note)));
 	const rendered = renderOrderedCollection(`${config.url}/@${user.username}/inbox`, user.notesCount, renderedNotes);
 	rendered['@context'] = context;
 

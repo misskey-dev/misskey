@@ -1,6 +1,7 @@
 import config from '../../../config';
+import { ILocalUser } from '../../../models/user';
 
-export default (user, note) => {
+export default (user: ILocalUser, note) => {
 	return {
 		type: 'Like',
 		actor: `${config.url}/@${user.username}`,
