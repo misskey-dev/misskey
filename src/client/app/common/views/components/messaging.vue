@@ -14,7 +14,7 @@
 					tabindex="-1"
 				>
 					<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
-					<span class="name">{{ user.name }}</span>
+					<span class="name">{{ getUserName(user) }}</span>
 					<span class="username">@{{ getAcct(user) }}</span>
 				</li>
 			</ol>
@@ -33,7 +33,7 @@
 				<div>
 					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatarUrl : message.user.avatarUrl}?thumbnail&size=64`" alt=""/>
 					<header>
-						<span class="name">{{ isMe(message) ? message.recipient.name : message.user.name }}</span>
+						<span class="name">{{ getUserName(isMe(message) ? message.recipient : message.user) }}</span>
 						<span class="username">@{{ getAcct(isMe(message) ? message.recipient : message.user) }}</span>
 						<mk-time :time="message.createdAt"/>
 					</header>
@@ -52,6 +52,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: {
@@ -94,6 +95,7 @@ export default Vue.extend({
 	},
 	methods: {
 		getAcct,
+		getUserName,
 		isMe(message) {
 			return message.userId == (this as any).os.i.id;
 		},

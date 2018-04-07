@@ -22,7 +22,7 @@
 				<img class="avatar" :src="`${post.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			<router-link class="name" :href="`/@${acct}`">{{ post.user.name }}</router-link>
+			<router-link class="name" :href="`/@${acct}`">{{ getUserName(post.user) }}</router-link>
 			がRepost
 		</p>
 	</div>
@@ -31,7 +31,7 @@
 			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<header>
-			<router-link class="name" :to="`/@${pAcct}`" v-user-preview="p.user.id">{{ p.user.name }}</router-link>
+			<router-link class="name" :to="`/@${pAcct}`" v-user-preview="p.user.id">{{ getUserName(p.user) }}</router-link>
 			<span class="username">@{{ pAcct }}</span>
 			<router-link class="time" :to="`/@${pAcct}/${p.id}`">
 				<mk-time :time="p.createdAt"/>
@@ -79,6 +79,7 @@
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 import parse from '../../../../../text/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
@@ -133,8 +134,14 @@ export default Vue.extend({
 		acct(): string {
 			return getAcct(this.post.user);
 		},
+		name(): string {
+			return getUserName(this.post.user);
+		},
 		pAcct(): string {
 			return getAcct(this.p.user);
+		},
+		pName(): string {
+			return getUserName(this.p.user);
 		},
 		urls(): string[] {
 			if (this.p.text) {

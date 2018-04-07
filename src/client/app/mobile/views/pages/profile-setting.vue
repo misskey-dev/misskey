@@ -52,7 +52,7 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.name = (this as any).os.i.name;
+		this.name = (this as any).os.i.name || '';
 		this.location = (this as any).os.i.account.profile.location;
 		this.description = (this as any).os.i.description;
 		this.birthday = (this as any).os.i.account.profile.birthday;
@@ -94,7 +94,7 @@ export default Vue.extend({
 			this.saving = true;
 
 			(this as any).api('i/update', {
-				name: this.name,
+				name: this.name || null,
 				location: this.location || null,
 				description: this.description || null,
 				birthday: this.birthday || null

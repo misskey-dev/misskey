@@ -15,19 +15,26 @@
 		title="クリックでアバター編集"
 		v-user-preview="os.i.id"
 	/>
-	<router-link class="name" :to="`/@${os.i.username}`">{{ os.i.name }}</router-link>
+	<router-link class="name" :to="`/@${os.i.username}`">{{ name }}</router-link>
 	<p class="username">@{{ os.i.username }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import getUserName from '../../../../../renderers/get-user-name';
+
 export default define({
 	name: 'profile',
 	props: () => ({
 		design: 0
 	})
 }).extend({
+	computed: {
+		name() {
+			return getUserName(this.os.i);
+		}
+	},
 	methods: {
 		func() {
 			if (this.props.design == 2) {

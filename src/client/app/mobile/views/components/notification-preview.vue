@@ -3,7 +3,7 @@
 	<template v-if="notification.type == 'reaction'">
 		<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p><mk-reaction-icon :reaction="notification.reaction"/>{{ notification.user.name }}</p>
+			<p><mk-reaction-icon :reaction="notification.reaction"/>{{ name }}</p>
 			<p class="post-ref">%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%</p>
 		</div>
 	</template>
@@ -11,7 +11,7 @@
 	<template v-if="notification.type == 'repost'">
 		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:retweet%{{ notification.post.user.name }}</p>
+			<p>%fa:retweet%{{ posterName }}</p>
 			<p class="post-ref">%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%</p>
 		</div>
 	</template>
@@ -19,7 +19,7 @@
 	<template v-if="notification.type == 'quote'">
 		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:quote-left%{{ notification.post.user.name }}</p>
+			<p>%fa:quote-left%{{ posterName }}</p>
 			<p class="post-preview">{{ getPostSummary(notification.post) }}</p>
 		</div>
 	</template>
@@ -27,14 +27,14 @@
 	<template v-if="notification.type == 'follow'">
 		<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:user-plus%{{ notification.user.name }}</p>
+			<p>%fa:user-plus%{{ name }}</p>
 		</div>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
 		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:reply%{{ notification.post.user.name }}</p>
+			<p>%fa:reply%{{ posterName }}</p>
 			<p class="post-preview">{{ getPostSummary(notification.post) }}</p>
 		</div>
 	</template>
@@ -42,7 +42,7 @@
 	<template v-if="notification.type == 'mention'">
 		<img class="avatar" :src="`${notification.post.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:at%{{ notification.post.user.name }}</p>
+			<p>%fa:at%{{ posterName }}</p>
 			<p class="post-preview">{{ getPostSummary(notification.post) }}</p>
 		</div>
 	</template>
@@ -50,7 +50,7 @@
 	<template v-if="notification.type == 'poll_vote'">
 		<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<div class="text">
-			<p>%fa:chart-pie%{{ notification.user.name }}</p>
+			<p>%fa:chart-pie%{{ name }}</p>
 			<p class="post-ref">%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%</p>
 		</div>
 	</template>
@@ -60,9 +60,18 @@
 <script lang="ts">
 import Vue from 'vue';
 import getPostSummary from '../../../../../renderers/get-post-summary';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['notification'],
+	computed: {
+		name() {
+			return getUserName(this.notification.user);
+		},
+		posterName() {
+			return getUserName(this.notification.post.user);
+		}
+	},
 	data() {
 		return {
 			getPostSummary

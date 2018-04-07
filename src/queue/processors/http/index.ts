@@ -1,20 +1,17 @@
-import deliver from './deliver';
+import deliverPost from './deliver-post';
+import follow from './follow';
+import performActivityPub from './perform-activitypub';
 import processInbox from './process-inbox';
 import reportGitHubFailure from './report-github-failure';
+import unfollow from './unfollow';
 
 const handlers = {
-	deliver,
-	processInbox,
-	reportGitHubFailure
+  deliverPost,
+  follow,
+  performActivityPub,
+  processInbox,
+  reportGitHubFailure,
+  unfollow
 };
 
-export default (job, done) => {
-	const handler = handlers[job.data.type];
-
-	if (handler) {
-		handler(job, done);
-	} else {
-		console.error(`Unknown job: ${job.data.type}`);
-		done();
-	}
-};
+export default (job, done) => handlers[job.data.type](job, done);

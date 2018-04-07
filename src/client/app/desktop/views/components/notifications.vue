@@ -11,7 +11,7 @@
 					<div class="text">
 						<p>
 							<mk-reaction-icon :reaction="notification.reaction"/>
-							<router-link :to="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ notification.user.name }}</router-link>
+							<router-link :to="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ getUserName(notification.user) }}</router-link>
 						</p>
 						<router-link class="post-ref" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">
 							%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
@@ -24,7 +24,7 @@
 					</router-link>
 					<div class="text">
 						<p>%fa:retweet%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ notification.post.user.name }}</router-link>
+							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
 						</p>
 						<router-link class="post-ref" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">
 							%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%
@@ -37,7 +37,7 @@
 					</router-link>
 					<div class="text">
 						<p>%fa:quote-left%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ notification.post.user.name }}</router-link>
+							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
 						</p>
 						<router-link class="post-preview" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</router-link>
 					</div>
@@ -48,7 +48,7 @@
 					</router-link>
 					<div class="text">
 						<p>%fa:user-plus%
-							<router-link :to="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ notification.user.name }}</router-link>
+							<router-link :to="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ getUserName(notification.user) }}</router-link>
 						</p>
 					</div>
 				</template>
@@ -58,7 +58,7 @@
 					</router-link>
 					<div class="text">
 						<p>%fa:reply%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ notification.post.user.name }}</router-link>
+							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
 						</p>
 						<router-link class="post-preview" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</router-link>
 					</div>
@@ -69,7 +69,7 @@
 					</router-link>
 					<div class="text">
 						<p>%fa:at%
-							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ notification.post.user.name }}</router-link>
+							<router-link :to="`/@${getAcct(notification.post.user)}`" v-user-preview="notification.post.userId">{{ getUserName(notification.post.user) }}</router-link>
 						</p>
 						<a class="post-preview" :href="`/@${getAcct(notification.post.user)}/${notification.post.id}`">{{ getPostSummary(notification.post) }}</a>
 					</div>
@@ -79,7 +79,7 @@
 						<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
 					</router-link>
 					<div class="text">
-						<p>%fa:chart-pie%<a :href="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ notification.user.name }}</a></p>
+						<p>%fa:chart-pie%<a :href="`/@${getAcct(notification.user)}`" v-user-preview="notification.user.id">{{ getUserName(notification.user) }}</a></p>
 						<router-link class="post-ref" :to="`/@${getAcct(notification.post.user)}/${notification.post.id}`">
 							%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
 						</router-link>
@@ -104,6 +104,7 @@
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
 import getPostSummary from '../../../../../renderers/get-post-summary';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -154,6 +155,7 @@ export default Vue.extend({
 	},
 	methods: {
 		getAcct,
+		getUserName,
 		fetchMoreNotifications() {
 			this.fetchingMoreNotifications = true;
 

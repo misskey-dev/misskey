@@ -3,7 +3,7 @@ import * as express from 'express';
 //const crypto = require('crypto');
 import User from '../../../models/user';
 import config from '../../../config';
-import queue from '../../../queue';
+import { createHttp } from '../../../queue';
 
 module.exports = async (app: express.Application) => {
 	if (config.github_bot == null) return;
@@ -42,7 +42,7 @@ module.exports = async (app: express.Application) => {
 				const commit = event.commit;
 				const parent = commit.parents[0];
 
-				queue.create('http', {
+				createHttp({
 					type: 'gitHubFailureReport',
 					userId: bot._id,
 					parentUrl: parent.url,

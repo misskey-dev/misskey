@@ -5,7 +5,7 @@
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${acct}`" v-user-preview="post.userId">{{ post.user.name }}</router-link>
+			<router-link class="name" :to="`/@${acct}`" v-user-preview="post.userId">{{ name }}</router-link>
 			<span class="username">@{{ acct }}</span>
 			<router-link class="time" :to="`/@${acct}/${post.id}`">
 				<mk-time :time="post.createdAt"/>
@@ -22,12 +22,16 @@
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['post'],
 	computed: {
 		acct() {
 			return getAcct(this.post.user);
+		},
+		name() {
+			return getUserName(this.post.user);
 		},
 		title(): string {
 			return dateStringify(this.post.createdAt);
