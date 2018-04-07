@@ -5,7 +5,7 @@
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${acct}`" v-user-preview="user.id">{{ user.name }}</router-link>
+			<router-link class="name" :to="`/@${acct}`" v-user-preview="user.id">{{ name }}</router-link>
 			<span class="username">@{{ acct }}</span>
 		</header>
 		<div class="body">
@@ -20,12 +20,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['user'],
 	computed: {
 		acct() {
 			return getAcct(this.user);
+		},
+		name() {
+			return getUserName(this.user);
 		}
 	}
 });

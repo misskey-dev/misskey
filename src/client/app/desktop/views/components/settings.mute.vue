@@ -5,7 +5,7 @@
 	</div>
 	<div class="users" v-if="users.length != 0">
 		<div v-for="user in users" :key="user.id">
-			<p><b>{{ user.name }}</b> @{{ getAcct(user) }}</p>
+			<p><b>{{ getUserName(user) }}</b> @{{ getAcct(user) }}</p>
 		</div>
 	</div>
 </div>
@@ -14,6 +14,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -23,7 +24,8 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		getAcct
+		getAcct,
+		getUserName
 	},
 	mounted() {
 		(this as any).api('mute/list').then(x => {

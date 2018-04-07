@@ -10,6 +10,7 @@ import prominence = require('prominence');
 import getAcct from '../../../../acct/render';
 import parseAcct from '../../../../acct/parse';
 import getPostSummary from '../../../../renderers/get-post-summary';
+import getUserName from '../../../../renderers/get-user-name';
 
 const redis = prominence(_redis);
 
@@ -131,7 +132,7 @@ class LineBot extends BotCore {
 			template: {
 				type: 'buttons',
 				thumbnailImageUrl: `${user.avatarUrl}?thumbnail&size=1024`,
-				title: `${user.name} (@${acct})`,
+				title: `${getUserName(user)} (@${acct})`,
 				text: user.description || '(no description)',
 				actions: actions
 			}
@@ -146,7 +147,7 @@ class LineBot extends BotCore {
 			limit: 5
 		}, this.user);
 
-		const text = `${tl[0].user.name}さんのタイムラインはこちらです:\n\n` + tl
+		const text = `${getUserName(tl[0].user)}さんのタイムラインはこちらです:\n\n` + tl
 			.map(post => getPostSummary(post))
 			.join('\n-----\n');
 

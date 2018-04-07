@@ -1,36 +1,46 @@
+import { Object } from '../type';
+import { IRemoteUser } from '../../../models/user';
 import create from './create';
 import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
-import createObject from '../create';
-import Resolver from '../resolver';
+import like from './like';
 
-export default async (parentResolver: Resolver, actor, value, distribute?: boolean) => {
-	const collection = await parentResolver.resolveCollection(value);
+const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
+	switch (activity.type) {
+	case 'Create':
+		await create(actor, activity);
+		break;
 
-	return collection.object.map(async element => {
-		const { resolver, object } = await collection.resolver.resolveOne(element);
-		const created = await (await createObject(resolver, actor, [object], distribute))[0];
+	case 'Delete':
+		await performDeleteActivity(actor, activity);
+		break;
 
-		if (created !== null) {
-			return created;
-		}
+	case 'Follow':
+		await follow(actor, activity);
+		break;
 
-		switch (object.type) {
-		case 'Create':
-			return create(resolver, actor, object, distribute);
+	case 'Accept':
+		// noop
+		break;
 
-		case 'Delete':
-			return performDeleteActivity(resolver, actor, object);
+	case 'Like':
+		await like(actor, activity);
+		break;
 
-		case 'Follow':
-			return follow(resolver, actor, object, distribute);
+	case 'Undo':
+		await undo(actor, activity);
+		break;
 
-		case 'Undo':
-			return undo(resolver, actor, object);
+	case 'Collection':
+	case 'OrderedCollection':
+		// TODO
+		break;
 
-		default:
-			return null;
-		}
-	});
+	default:
+		console.warn(`unknown activity type: ${(activity as any).type}`);
+		return null;
+	}
 };
+
+export default self;

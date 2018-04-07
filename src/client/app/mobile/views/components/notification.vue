@@ -8,7 +8,7 @@
 		<div class="text">
 			<p>
 				<mk-reaction-icon :reaction="notification.reaction"/>
-				<router-link :to="`/@${acct}`">{{ notification.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ getUserName(notification.user) }}</router-link>
 			</p>
 			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post) }}
@@ -25,7 +25,7 @@
 		<div class="text">
 			<p>
 				%fa:retweet%
-				<router-link :to="`/@${acct}`">{{ notification.post.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ getUserName(notification.post.user) }}</router-link>
 			</p>
 			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post.repost) }}%fa:quote-right%
@@ -45,7 +45,7 @@
 		<div class="text">
 			<p>
 				%fa:user-plus%
-				<router-link :to="`/@${acct}`">{{ notification.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ getUserName(notification.user) }}</router-link>
 			</p>
 		</div>
 	</div>
@@ -66,7 +66,7 @@
 		<div class="text">
 			<p>
 				%fa:chart-pie%
-				<router-link :to="`/@${acct}`">{{ notification.user.name }}</router-link>
+				<router-link :to="`/@${acct}`">{{ getUserName(notification.user) }}</router-link>
 			</p>
 			<router-link class="post-ref" :to="`/@${acct}/${notification.post.id}`">
 				%fa:quote-left%{{ getPostSummary(notification.post) }}%fa:quote-right%
@@ -80,12 +80,19 @@
 import Vue from 'vue';
 import getPostSummary from '../../../../../renderers/get-post-summary';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['notification'],
 	computed: {
 		acct() {
 			return getAcct(this.notification.user);
+		},
+		name() {
+			return getUserName(this.notification.user);
+		},
+		posterName() {
+ 			return getUserName(this.notification.post.user);
 		}
 	},
 	data() {

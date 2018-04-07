@@ -10,7 +10,7 @@
 			</router-link>
 			%fa:retweet%
 			<span>{{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}</span>
-			<a class="name" :href="`/@${acct}`" v-user-preview="post.userId">{{ post.user.name }}</a>
+			<a class="name" :href="`/@${acct}`" v-user-preview="post.userId">{{ getUserName(post.user) }}</a>
 			<span>{{ '%i18n:desktop.tags.mk-timeline-post.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="post.createdAt"/>
@@ -86,6 +86,7 @@
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 import parse from '../../../../../text/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
@@ -123,6 +124,9 @@ export default Vue.extend({
 	computed: {
 		acct(): string {
 			return getAcct(this.p.user);
+		},
+		name(): string {
+			return getUserName(this.p.user);
 		},
 		isRepost(): boolean {
 			return (this.post.repost &&

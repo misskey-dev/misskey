@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header">
-		<template v-if="user">%fa:R comments%{{ user.name }}</template>
+		<template v-if="user">%fa:R comments%{{ name }}</template>
 		<template v-else><mk-ellipsis/></template>
 	</span>
 	<mk-messaging-room v-if="!fetching" :user="user" :is-naked="true"/>
@@ -11,6 +11,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import parseAcct from '../../../../../acct/parse';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -18,6 +19,11 @@ export default Vue.extend({
 			fetching: true,
 			user: null
 		};
+	},
+	computed: {
+		name() {
+			return getUserName(this.user);
+		}
 	},
 	watch: {
 		$route: 'fetch'
@@ -33,7 +39,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `%i18n:mobile.tags.mk-messaging-room-page.message%: ${user.name} | Misskey`;
+				document.title = `%i18n:mobile.tags.mk-messaging-room-page.message%: ${this.name} | Misskey`;
 			});
 		}
 	}

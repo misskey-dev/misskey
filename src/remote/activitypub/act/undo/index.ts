@@ -1,27 +1,37 @@
-import act from '../../act';
-import deleteObject from '../../delete';
-import unfollow from './unfollow';
+import * as debug from 'debug';
+
+import { IRemoteUser } from '../../../../models/user';
+import { IUndo } from '../../type';
+import unfollow from './follow';
 import Resolver from '../../resolver';
 
-export default async (resolver: Resolver, actor, activity): Promise<void> => {
+const log = debug('misskey:activitypub');
+
+export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
-		throw new Error();
+		throw new Error('invalid actor');
 	}
 
-	const results = await act(resolver, actor, activity.object);
+	const uri = activity.id || activity;
 
-	await Promise.all(results.map(async promisedResult => {
-		const result = await promisedResult;
+	log(`Undo: ${uri}`);
 
-		if (result === null || await deleteObject(result) !== null) {
-			return;
-		}
+	const resolver = new Resolver();
 
-		switch (result.object.$ref) {
-		case 'following':
-			await unfollow(result.object);
-		}
-	}));
+	let object;
+
+	try {
+		object = await resolver.resolve(activity.object);
+	} catch (e) {
+		log(`Resolution failed: ${e}`);
+		throw e;
+	}
+
+	switch (object.type) {
+		case 'Follow':
+			unfollow(actor, object);
+			break;
+	}
 
 	return null;
 };

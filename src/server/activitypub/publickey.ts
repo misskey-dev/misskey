@@ -4,8 +4,7 @@ import render from '../../remote/activitypub/renderer/key';
 import config from '../../config';
 import withUser from './with-user';
 
-const app = express();
-app.disable('x-powered-by');
+const app = express.Router();
 
 app.get('/@:user/publickey', withUser(username => {
 	return `${config.url}/@${username}/publickey`;

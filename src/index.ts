@@ -30,8 +30,12 @@ const ev = new Xev();
 
 process.title = 'Misskey';
 
+if (process.env.NODE_ENV != 'production') {
+	process.env.DEBUG = 'misskey:*';
+}
+
 // https://github.com/Automattic/kue/issues/822
-require('events').EventEmitter.prototype._maxListeners = 256;
+require('events').EventEmitter.prototype._maxListeners = 512;
 
 // Start app
 main();
@@ -99,7 +103,7 @@ async function workerMain(opt) {
 
 	if (!opt['only-server']) {
 		// start processor
-		require('./queue').process();
+		require('./queue').default();
 	}
 
 	// Send a 'ready' message to parent process

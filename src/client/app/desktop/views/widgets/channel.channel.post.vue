@@ -2,7 +2,7 @@
 <div class="post">
 	<header>
 		<a class="index" @click="reply">{{ post.index }}:</a>
-		<router-link class="name" :to="`/@${acct}`" v-user-preview="post.user.id"><b>{{ post.user.name }}</b></router-link>
+		<router-link class="name" :to="`/@${acct}`" v-user-preview="post.user.id"><b>{{ name }}</b></router-link>
 		<span>ID:<i>{{ acct }}</i></span>
 	</header>
 	<div>
@@ -20,12 +20,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['post'],
 	computed: {
 		acct() {
 			return getAcct(this.post.user);
+		},
+		name() {
+			return getUserName(this.post.user);
 		}
 	},
 	methods: {

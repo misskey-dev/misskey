@@ -27,6 +27,7 @@ export type IPost = {
 	_id: mongo.ObjectID;
 	channelId: mongo.ObjectID;
 	createdAt: Date;
+	deletedAt: Date;
 	mediaIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	repostId: mongo.ObjectID;
@@ -52,6 +53,20 @@ export type IPost = {
 		speed: number;
 	};
 	uri: string;
+
+	_reply?: {
+		userId: mongo.ObjectID;
+	};
+	_repost?: {
+		userId: mongo.ObjectID;
+	};
+	_user: {
+		host: string;
+		hostLower: string;
+		account: {
+			inbox?: string;
+		};
+	};
 };
 
 /**

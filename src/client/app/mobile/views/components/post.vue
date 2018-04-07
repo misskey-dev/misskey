@@ -10,7 +10,7 @@
 			</router-link>
 			%fa:retweet%
 			<span>{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('{')) }}</span>
-			<router-link class="name" :to="`/@${acct}`">{{ post.user.name }}</router-link>
+			<router-link class="name" :to="`/@${acct}`">{{ name }}</router-link>
 			<span>{{ '%i18n:mobile.tags.mk-timeline-post.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-post.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="post.createdAt"/>
@@ -21,7 +21,7 @@
 		</router-link>
 		<div class="main">
 			<header>
-				<router-link class="name" :to="`/@${pAcct}`">{{ p.user.name }}</router-link>
+				<router-link class="name" :to="`/@${pAcct}`">{{ pName }}</router-link>
 				<span class="is-bot" v-if="p.user.host === null && p.user.account.isBot">bot</span>
 				<span class="username">@{{ pAcct }}</span>
 				<div class="info">
@@ -78,6 +78,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 import parse from '../../../../../text/parse';
 
 import MkPostMenu from '../../../common/views/components/post-menu.vue';
@@ -102,8 +103,14 @@ export default Vue.extend({
 		acct(): string {
 			return getAcct(this.post.user);
 		},
+		name(): string {
+			return getUserName(this.post.user);
+		},
 		pAcct(): string {
 			return getAcct(this.p.user);
+		},
+		pName(): string {
+			return getUserName(this.p.user);
 		},
 		isRepost(): boolean {
 			return (this.post.repost &&

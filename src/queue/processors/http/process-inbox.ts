@@ -1,44 +1,66 @@
+import * as kue from 'kue';
+import * as debug from 'debug';
+
 import { verifySignature } from 'http-signature';
 import parseAcct from '../../../acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import act from '../../../remote/activitypub/act';
 import resolvePerson from '../../../remote/activitypub/resolve-person';
-import Resolver from '../../../remote/activitypub/resolver';
 
-export default async ({ data }, done) => {
-	try {
-		const keyIdLower = data.signature.keyId.toLowerCase();
-		let user;
+const log = debug('misskey:queue:inbox');
 
-		if (keyIdLower.startsWith('acct:')) {
-			const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
-			if (host === null) {
-				done();
-				return;
-			}
+// ユーザーのinboxにアクティビティが届いた時の処理
+export default async (job: kue.Job, done): Promise<void> => {
+	const signature = job.data.signature;
+	const activity = job.data.activity;
 
-			user = await User.findOne({ usernameLower: username, hostLower: host }) as IRemoteUser;
-		} else {
-			user = await User.findOne({
-				host: { $ne: null },
-				'account.publicKey.id': data.signature.keyId
-			}) as IRemoteUser;
+	//#region Log
+	const info = Object.assign({}, activity);
+	delete info['@context'];
+	delete info['signature'];
+	log(info);
+	//#endregion
 
-			if (user === null) {
-				user = await resolvePerson(new Resolver(), data.signature.keyId);
-			}
-		}
+	const keyIdLower = signature.keyId.toLowerCase();
+	let user;
 
-		if (user === null || !verifySignature(data.signature, user.account.publicKey.publicKeyPem)) {
+	if (keyIdLower.startsWith('acct:')) {
+		const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
+		if (host === null) {
+			console.warn(`request was made by local user: @${username}`);
 			done();
 			return;
 		}
 
-		await Promise.all(await act(new Resolver(), user, data.inbox, true));
-	} catch (error) {
-		done(error);
+		user = await User.findOne({ usernameLower: username, hostLower: host }) as IRemoteUser;
+	} else {
+		user = await User.findOne({
+			host: { $ne: null },
+			'account.publicKey.id': signature.keyId
+		}) as IRemoteUser;
+
+		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
+		if (user === null) {
+			user = await resolvePerson(signature.keyId);
+		}
+	}
+
+	if (user === null) {
+		done(new Error('failed to resolve user'));
 		return;
 	}
 
-	done();
+	if (!verifySignature(signature, user.account.publicKey.publicKeyPem)) {
+		console.warn('signature verification failed');
+		done();
+		return;
+	}
+
+	// アクティビティを処理
+	try {
+		await act(user, activity);
+		done();
+	} catch (e) {
+		done(e);
+	}
 };

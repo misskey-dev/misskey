@@ -37,7 +37,8 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (typeof host === 'string') {
 		try {
 			user = await resolveRemoteUser(username, host, cursorOption);
-		} catch (exception) {
+		} catch (e) {
+			console.warn(`failed to resolve remote user: ${e}`);
 			return rej('failed to resolve remote user');
 		}
 	} else {

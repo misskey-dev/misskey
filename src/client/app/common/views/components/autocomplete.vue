@@ -3,7 +3,7 @@
 	<ol class="users" ref="suggests" v-if="users.length > 0">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
 			<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
-			<span class="name">{{ user.name }}</span>
+			<span class="name">{{ getUserName(user) }}</span>
 			<span class="username">@{{ getAcct(user) }}</span>
 		</li>
 	</ol>
@@ -22,6 +22,7 @@ import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
 import getAcct from '../../../../../acct/render';
+import getUserName from '../../../../../renderers/get-user-name';
 
 const lib = Object.entries(emojilib.lib).filter((x: any) => {
 	return x[1].category != 'flags';
@@ -107,6 +108,7 @@ export default Vue.extend({
 	},
 	methods: {
 		getAcct,
+		getUserName,
 		exec() {
 			this.select = -1;
 			if (this.$refs.suggests) {

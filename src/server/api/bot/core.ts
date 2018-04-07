@@ -4,6 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import User, { IUser, init as initUser, ILocalUser } from '../../../models/user';
 
 import getPostSummary from '../../../renderers/get-post-summary';
+import getUserName from '../../../renderers/get-user-name';
 import getUserSummary from '../../../renderers/get-user-summary';
 import parseAcct from '../../../acct/parse';
 import getNotificationSummary from '../../../renderers/get-notification-summary';
@@ -90,7 +91,7 @@ export default class BotCore extends EventEmitter {
 					'タイムラインや通知を見た後、「次」というとさらに遡ることができます。';
 
 			case 'me':
-				return this.user ? `${this.user.name}としてサインインしています。\n\n${getUserSummary(this.user)}` : 'サインインしていません';
+				return this.user ? `${getUserName(this.user)}としてサインインしています。\n\n${getUserSummary(this.user)}` : 'サインインしていません';
 
 			case 'login':
 			case 'signin':
@@ -230,7 +231,7 @@ class SigninContext extends Context {
 			if (same) {
 				this.bot.signin(this.temporaryUser);
 				this.bot.clearContext();
-				return `${this.temporaryUser.name}さん、おかえりなさい！`;
+				return `${getUserName(this.temporaryUser)}さん、おかえりなさい！`;
 			} else {
 				return `パスワードが違います... もう一度教えてください:`;
 			}
@@ -305,7 +306,7 @@ class TlContext extends Context {
 			this.emit('updated');
 
 			const text = tl
-				.map(post => `${post.user.name}\n「${getPostSummary(post)}」`)
+				.map(post => `${getUserName(post.user)}\n「${getPostSummary(post)}」`)
 				.join('\n-----\n');
 
 			return text;
