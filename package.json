@@ -106,7 +106,7 @@
 		"diskusage": "0.2.4",
 		"dompurify": "^1.0.3",
 		"elasticsearch": "14.2.2",
-		"element-ui": "2.3.2",
+		"element-ui": "2.3.3",
 		"emojilib": "2.2.12",
 		"escape-regexp": "0.0.1",
 		"eslint": "4.19.1",
