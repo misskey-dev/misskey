@@ -1,20 +1,51 @@
-const request = require('request-promise-native');
+import * as request from 'request-promise-native';
+import * as debug from 'debug';
+import { IObject } from './type';
+
+const log = debug('misskey:activitypub:resolver');
 
 export default class Resolver {
-	private requesting: Set<string>;
+	private history: Set<string>;
 
-	constructor(iterable?: Iterable<string>) {
-		this.requesting = new Set(iterable);
+	constructor() {
+		this.history = new Set();
 	}
 
-	private async resolveUnrequestedOne(value) {
-		if (typeof value !== 'string') {
-			return { resolver: this, object: value };
+	public async resolveCollection(value) {
+		const collection = typeof value === 'string'
+			? await this.resolve(value)
+			: value;
+
+		switch (collection.type) {
+		case 'Collection':
+			collection.objects = collection.object.items;
+			break;
+
+		case 'OrderedCollection':
+			collection.objects = collection.object.orderedItems;
+			break;
+
+		default:
+			throw new Error(`unknown collection type: ${collection.type}`);
 		}
 
-		const resolver = new Resolver(this.requesting);
+		return collection;
+	}
 
-		resolver.requesting.add(value);
+	public async resolve(value): Promise<IObject> {
+		if (value == null) {
+			throw new Error('resolvee is null (or undefined)');
+		}
+
+		if (typeof value !== 'string') {
+			return value;
+		}
+
+		if (this.history.has(value)) {
+			throw new Error('cannot resolve already resolved one');
+		}
+
+		this.history.add(value);
 
 		const object = await request({
 			url: value,
@@ -29,41 +60,11 @@ export default class Resolver {
 				!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		)) {
-			throw new Error();
+			throw new Error('invalid response');
 		}
 
-		return { resolver, object };
-	}
+		log(`resolved: ${JSON.stringify(object, null, 2)}`);
 
-	public async resolveCollection(value) {
-		const resolved = typeof value === 'string' ?
-			await this.resolveUnrequestedOne(value) :
-			{ resolver: this, object: value };
-
-		switch (resolved.object.type) {
-		case 'Collection':
-			resolved.object = resolved.object.items;
-			break;
-
-		case 'OrderedCollection':
-			resolved.object = resolved.object.orderedItems;
-			break;
-
-		default:
-			if (!Array.isArray(value)) {
-				resolved.object = [resolved.object];
-			}
-			break;
-		}
-
-		return resolved;
-	}
-
-	public resolveOne(value) {
-		if (this.requesting.has(value)) {
-			throw new Error();
-		}
-
-		return this.resolveUnrequestedOne(value);
+		return object;
 	}
 }

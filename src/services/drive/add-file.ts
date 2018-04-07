@@ -10,12 +10,12 @@ import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
-import DriveFile, { IMetadata, getGridFSBucket } from '../models/drive-file';
-import DriveFolder from '../models/drive-folder';
-import { pack } from '../models/drive-file';
-import event, { publishDriveStream } from '../publishers/stream';
-import getAcct from '../acct/render';
-import config from '../config';
+import DriveFile, { IMetadata, getGridFSBucket } from '../../models/drive-file';
+import DriveFolder from '../../models/drive-folder';
+import { pack } from '../../models/drive-file';
+import event, { publishDriveStream } from '../../publishers/stream';
+import getAcct from '../../acct/render';
+import config from '../../config';
 
 const gm = _gm.subClass({
 	imageMagick: true

@@ -11,8 +11,7 @@ const respond = withUser(username => `${config.url}/@${username}`, (user, req, r
 	res.json(rendered);
 });
 
-const app = express();
-app.disable('x-powered-by');
+const app = express.Router();
 
 app.get('/@:user', (req, res, next) => {
 	const accepted = req.accepts(['html', 'application/activity+json', 'application/ld+json']);

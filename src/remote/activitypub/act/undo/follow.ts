@@ -1,8 +1,8 @@
-import parseAcct from '../../../acct/parse';
-import User, { IRemoteUser } from '../../../models/user';
-import config from '../../../config';
-import follow from '../../../services/following/create';
-import { IFollow } from '../type';
+import parseAcct from '../../../../acct/parse';
+import User, { IRemoteUser } from '../../../../models/user';
+import config from '../../../../config';
+import unfollow from '../../../../services/following/delete';
+import { IFollow } from '../../type';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const prefix = config.url + '/@';
@@ -22,5 +22,5 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		throw new Error();
 	}
 
-	await follow(actor, followee, activity);
+	await unfollow(actor, followee, activity);
 };

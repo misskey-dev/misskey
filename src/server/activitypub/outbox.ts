@@ -6,8 +6,7 @@ import config from '../../config';
 import Post from '../../models/post';
 import withUser from './with-user';
 
-const app = express();
-app.disable('x-powered-by');
+const app = express.Router();
 
 app.get('/@:user/outbox', withUser(username => {
 	return `${config.url}/@${username}/inbox`;

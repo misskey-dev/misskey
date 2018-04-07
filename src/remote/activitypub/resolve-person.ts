@@ -3,15 +3,12 @@ import { toUnicode } from 'punycode';
 import parseAcct from '../../acct/parse';
 import config from '../../config';
 import User, { validateUsername, isValidName, isValidDescription } from '../../models/user';
-import { createHttp } from '../../queue';
 import webFinger from '../webfinger';
-import create from './create';
+import Resolver from './resolver';
+import uploadFromUrl from '../../services/drive/upload-from-url';
+import { isCollectionOrOrderedCollection } from './type';
 
-async function isCollection(collection) {
-	return ['Collection', 'OrderedCollection'].includes(collection.type);
-}
-
-export default async (parentResolver, value, verifier?: string) => {
+export default async (value, verifier?: string) => {
 	const id = value.id || value;
 	const localPrefix = config.url + '/@';
 
@@ -19,34 +16,35 @@ export default async (parentResolver, value, verifier?: string) => {
 		return User.findOne(parseAcct(id.slice(localPrefix)));
 	}
 
-	const { resolver, object } = await parentResolver.resolveOne(value);
+	const resolver = new Resolver();
+
+	const object = await resolver.resolve(value) as any;
 
 	if (
-		object === null ||
-		object.id !== id ||
+		object == null ||
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
 		!validateUsername(object.preferredUsername) ||
-		!isValidName(object.name) ||
+		!isValidName(object.name == '' ? null : object.name) ||
 		!isValidDescription(object.summary)
 	) {
-		throw new Error();
+		throw new Error('invalid person');
 	}
 
-	const [followers, following, outbox, finger] = await Promise.all([
-		resolver.resolveOne(object.followers).then(
-			resolved => isCollection(resolved.object) ? resolved.object : null,
-			() => null
+	const [followersCount = 0, followingCount = 0, postsCount = 0, finger] = await Promise.all([
+		resolver.resolve(object.followers).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
 		),
-		resolver.resolveOne(object.following).then(
-			resolved => isCollection(resolved.object) ? resolved.object : null,
-			() => null
+		resolver.resolve(object.following).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
 		),
-		resolver.resolveOne(object.outbox).then(
-			resolved => isCollection(resolved.object) ? resolved.object : null,
-			() => null
+		resolver.resolve(object.outbox).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
 		),
-		webFinger(id, verifier),
+		webFinger(id, verifier)
 	]);
 
 	const host = toUnicode(finger.subject.replace(/^.*?@/, ''));
@@ -57,12 +55,12 @@ export default async (parentResolver, value, verifier?: string) => {
 	const user = await User.insert({
 		avatarId: null,
 		bannerId: null,
-		createdAt: Date.parse(object.published),
+		createdAt: Date.parse(object.published) || null,
 		description: summaryDOM.textContent,
-		followersCount: followers ? followers.totalItem || 0 : 0,
-		followingCount: following ? following.totalItem || 0 : 0,
+		followersCount,
+		followingCount,
+		postsCount,
 		name: object.name,
-		postsCount: outbox ? outbox.totalItem || 0 : 0,
 		driveCapacity: 1024 * 1024 * 8, // 8MiB
 		username: object.preferredUsername,
 		usernameLower: object.preferredUsername.toLowerCase(),
@@ -78,34 +76,14 @@ export default async (parentResolver, value, verifier?: string) => {
 		},
 	});
 
-	createHttp({
-		type: 'performActivityPub',
-		actor: user._id,
-		outbox
-	}).save();
-
-	const [avatarId, bannerId] = await Promise.all([
+	const [avatarId, bannerId] = (await Promise.all([
 		object.icon,
 		object.image
-	].map(async value => {
-		if (value === undefined) {
-			return null;
-		}
-
-		try {
-			const created = await create(resolver, user, value);
-
-			await Promise.all(created.map(asyncCreated => asyncCreated.then(created => {
-				if (created !== null && created.object.$ref === 'driveFiles.files') {
-					throw created.object.$id;
-				}
-			}, () => {})));
-
-			return null;
-		} catch (id) {
-			return id;
-		}
-	}));
+	].map(img =>
+		img == null
+			? Promise.resolve(null)
+			: uploadFromUrl(img.url, user)
+	))).map(file => file != null ? file._id : null);
 
 	User.update({ _id: user._id }, { $set: { avatarId, bannerId } });
 

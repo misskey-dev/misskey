@@ -3,9 +3,7 @@ import * as express from 'express';
 import { parseRequest } from 'http-signature';
 import { createHttp } from '../../queue';
 
-const app = express();
-
-app.disable('x-powered-by');
+const app = express.Router();
 
 app.post('/@:user/inbox', bodyParser.json({
 	type() {
@@ -24,7 +22,7 @@ app.post('/@:user/inbox', bodyParser.json({
 
 	createHttp({
 		type: 'processInbox',
-		inbox: req.body,
+		activity: req.body,
 		signature,
 	}).save();
 
