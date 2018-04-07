@@ -158,7 +158,7 @@
 		"node-sass-json-importer": "3.1.6",
 		"nopt": "4.0.1",
 		"nprogress": "0.2.0",
-		"object-assign-deep": "0.3.1",
+		"object-assign-deep": "0.4.0",
 		"on-build-webpack": "0.1.0",
 		"os-utils": "0.0.14",
 		"progress-bar-webpack-plugin": "1.11.0",
