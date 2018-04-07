@@ -1,4 +1,4 @@
-import unfollow from './unfollow';
+import unfollow from './follow';
 
 export default async (actor, activity): Promise<void> => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
