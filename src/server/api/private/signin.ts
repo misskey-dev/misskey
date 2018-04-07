@@ -49,7 +49,7 @@ export default async (req: express.Request, res: express.Response) => {
 	}
 
 	// Compare password
-	const same = await bcrypt.compare(password, password);
+	const same = await bcrypt.compare(password, user.password);
 
 	if (same) {
 		if (user.twoFactorEnabled) {
