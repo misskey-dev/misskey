@@ -66,14 +66,12 @@ export default async (value, verifier?: string) => {
 		usernameLower: object.preferredUsername.toLowerCase(),
 		host,
 		hostLower,
-		account: {
-			publicKey: {
-				id: object.publicKey.id,
-				publicKeyPem: object.publicKey.publicKeyPem
-			},
-			inbox: object.inbox,
-			uri: id,
+		publicKey: {
+			id: object.publicKey.id,
+			publicKeyPem: object.publicKey.publicKeyPem
 		},
+		inbox: object.inbox,
+		uri: id
 	});
 
 	const [avatarId, bannerId] = (await Promise.all([

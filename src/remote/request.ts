@@ -8,7 +8,7 @@ import { ILocalUser } from '../models/user';
 
 const log = debug('misskey:activitypub:deliver');
 
-export default (user: ILocalUser, url, object) => new Promise((resolve, reject) => {
+export default (user: ILocalUser, url: string, object) => new Promise((resolve, reject) => {
 	log(`--> ${url}`);
 
 	const { protocol, hostname, port, pathname, search } = new URL(url);

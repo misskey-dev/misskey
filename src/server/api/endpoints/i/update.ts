@@ -4,7 +4,6 @@
 import $ from 'cafy';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import event from '../../../../publishers/stream';
-import config from '../../../../config';
 
 /**
  * Update myself
@@ -17,7 +16,7 @@ import config from '../../../../config';
  */
 module.exports = async (params, user, _, isSecure) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).optional.string().pipe(isValidName).$;
+	const [name, nameErr] = $(params.name).optional.nullable.string().pipe(isValidName).$;
 	if (nameErr) return rej('invalid name param');
 	if (name) user.name = name;
 
@@ -62,9 +61,9 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 			description: user.description,
 			avatarId: user.avatarId,
 			bannerId: user.bannerId,
-			'profile': user.profile,
-			'isBot': user.isBot,
-			'settings': user.settings
+			profile: user.profile,
+			isBot: user.isBot,
+			settings: user.settings
 		}
 	});
 
@@ -79,19 +78,4 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 
 	// Publish i updated event
 	event(user._id, 'i_updated', iObj);
-
-	// Update search index
-	if (config.elasticsearch.enable) {
-		const es = require('../../../db/elasticsearch');
-
-		es.index({
-			index: 'misskey',
-			type: 'user',
-			id: user._id.toString(),
-			body: {
-				name: user.name,
-				bio: user.bio
-			}
-		});
-	}
 });
