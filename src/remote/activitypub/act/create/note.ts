@@ -43,7 +43,7 @@ export default async function createNote(resolver: Resolver, actor: IRemoteUser,
 		// TODO: attachmentは必ずしも配列ではない
 		// TODO: ループの中でawaitはすべきでない
 		note.attachment.forEach(async media => {
-			const created = await createImage(resolver, note.actor, media);
+			const created = await createImage(note.actor, media);
 			media.push(created);
 		});
 	}

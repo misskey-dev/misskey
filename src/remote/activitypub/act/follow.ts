@@ -1,11 +1,12 @@
 import parseAcct from '../../../acct/parse';
-import User from '../../../models/user';
+import User, { IRemoteUser } from '../../../models/user';
 import config from '../../../config';
 import follow from '../../../services/following/create';
+import { IFollow } from '../type';
 
-export default async (actor, activity): Promise<void> => {
+export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const prefix = config.url + '/@';
-	const id = activity.object.id || activity.object;
+	const id = typeof activity == 'string' ? activity : activity.id;
 
 	if (!id.startsWith(prefix)) {
 		return null;

@@ -4,10 +4,11 @@ import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/user';
 import createNote from './note';
 import createImage from './image';
+import { ICreate } from '../../type';
 
 const log = debug('misskey:activitypub');
 
-export default async (actor: IRemoteUser, activity): Promise<void> => {
+export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 	if ('actor' in activity && actor.account.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}
@@ -29,7 +30,7 @@ export default async (actor: IRemoteUser, activity): Promise<void> => {
 
 	switch (object.type) {
 	case 'Image':
-		createImage(resolver, actor, object);
+		createImage(actor, object);
 		break;
 
 	case 'Note':

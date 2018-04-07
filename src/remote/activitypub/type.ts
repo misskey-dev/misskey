@@ -1,13 +1,17 @@
 export type Object = { [x: string]: any };
 
-export type ActivityType =
-	'Create';
-
 export interface IObject {
 	'@context': string | object | any[];
 	type: string;
 	id?: string;
 	summary?: string;
+}
+
+export interface IActivity extends IObject {
+	//type: 'Activity';
+	actor: IObject | string;
+	object: IObject | string;
+	target?: IObject | string;
 }
 
 export interface ICollection extends IObject {
@@ -30,3 +34,15 @@ export const isOrderedCollection = (object: IObject): object is IOrderedCollecti
 
 export const isCollectionOrOrderedCollection = (object: IObject): object is ICollection | IOrderedCollection =>
 	isCollection(object) || isOrderedCollection(object);
+
+export interface ICreate extends IActivity {
+	type: 'Create';
+}
+
+export interface IUndo extends IActivity {
+	type: 'Undo';
+}
+
+export interface IFollow extends IActivity {
+	type: 'Follow';
+}
