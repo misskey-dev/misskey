@@ -7,10 +7,6 @@ import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 
 /**
  * Create a file from a URL
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user): Promise<any> => {
 	// Get 'url' parameter

@@ -12,7 +12,7 @@ export default async function(actor: IRemoteUser, image): Promise<IDriveFile> {
 		throw new Error('invalid image');
 	}
 
-	log(`Creating the Image: ${image.id}`);
+	log(`Creating the Image: ${image.url}`);
 
 	return await uploadFromUrl(image.url, actor);
 }

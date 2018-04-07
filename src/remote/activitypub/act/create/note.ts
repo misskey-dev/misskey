@@ -37,15 +37,13 @@ export default async function createNote(resolver: Resolver, actor: IRemoteUser,
 	//#endergion
 
 	//#region 添付メディア
-	const media = [];
+	let media = [];
 	if ('attachment' in note && note.attachment != null) {
 		// TODO: attachmentは必ずしもImageではない
 		// TODO: attachmentは必ずしも配列ではない
-		// TODO: ループの中でawaitはすべきでない
-		note.attachment.forEach(async media => {
-			const created = await createImage(note.actor, media);
-			media.push(created);
-		});
+		media = await Promise.all(note.attachment.map(x => {
+			return createImage(actor, x);
+		}));
 	}
 	//#endregion
 
