@@ -2,7 +2,6 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
 
