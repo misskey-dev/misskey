@@ -1,9 +1,10 @@
+import { Object } from '../type';
+import { IRemoteUser } from '../../../models/user';
 import create from './create';
 import performDeleteActivity from './delete';
 import follow from './follow';
 import undo from './undo';
-import { Object } from '../type';
-import { IRemoteUser } from '../../../models/user';
+import like from './like';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	switch (activity.type) {
@@ -23,6 +24,10 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 		// noop
 		break;
 
+	case 'Like':
+		await like(actor, activity);
+		break;
+
 	case 'Undo':
 		await undo(actor, activity);
 		break;
@@ -33,7 +38,7 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 		break;
 
 	default:
-		console.warn(`unknown activity type: ${activity.type}`);
+		console.warn(`unknown activity type: ${(activity as any).type}`);
 		return null;
 	}
 };

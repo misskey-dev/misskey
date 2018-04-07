@@ -55,6 +55,10 @@ export interface IAccept extends IActivity {
 	type: 'Accept';
 }
 
+export interface ILike extends IActivity {
+	type: 'Like';
+}
+
 export type Object =
 	ICollection |
 	IOrderedCollection |
@@ -62,4 +66,5 @@ export type Object =
 	IDelete |
 	IUndo |
 	IFollow |
-	IAccept;
+	IAccept |
+	ILike;

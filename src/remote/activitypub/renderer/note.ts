@@ -23,7 +23,7 @@ export default async (user: IUser, post: IPost) => {
 			});
 
 			if (inReplyToUser !== null) {
-				inReplyTo = inReplyToPost.uri || `${config.url}/@${inReplyToUser.username}/${inReplyToPost._id}`;
+				inReplyTo = inReplyToPost.uri || `${config.url}/posts/${inReplyToPost._id}`;
 			}
 		}
 	} else {
@@ -33,7 +33,7 @@ export default async (user: IUser, post: IPost) => {
 	const attributedTo = `${config.url}/@${user.username}`;
 
 	return {
-		id: `${attributedTo}/${post._id}`,
+		id: `${config.url}/posts/${post._id}`,
 		type: 'Note',
 		attributedTo,
 		content: post.textHtml,
