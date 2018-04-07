@@ -78,7 +78,7 @@ export default async (user: IUser, data: {
 			host: user.host,
 			hostLower: user.hostLower,
 			account: isLocalUser(user) ? {} : {
-				inbox: user.account.inbox
+				inbox: user.inbox
 			}
 		}
 	};
@@ -133,7 +133,7 @@ export default async (user: IUser, data: {
 
 			// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 			if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
-				deliver(user, content, data.reply._user.account.inbox).save();
+				deliver(user, content, data.reply._user.inbox).save();
 			}
 
 			Promise.all(followers.map(follower => {
@@ -145,7 +145,7 @@ export default async (user: IUser, data: {
 				} else {
 					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 					if (isLocalUser(user)) {
-						deliver(user, content, follower.account.inbox).save();
+						deliver(user, content, follower.inbox).save();
 					}
 				}
 			}));
@@ -242,7 +242,7 @@ export default async (user: IUser, data: {
 		});
 
 		// この投稿をWatchする
-		if (isLocalUser(user) && user.account.settings.autoWatch !== false) {
+		if (isLocalUser(user) && user.settings.autoWatch !== false) {
 			watch(user._id, data.reply);
 		}
 
@@ -277,7 +277,7 @@ export default async (user: IUser, data: {
 		});
 
 		// この投稿をWatchする
-		if (isLocalUser(user) && user.account.settings.autoWatch !== false) {
+		if (isLocalUser(user) && user.settings.autoWatch !== false) {
 			watch(user._id, data.renote);
 		}
 

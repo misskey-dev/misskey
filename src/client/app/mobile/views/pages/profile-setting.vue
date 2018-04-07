@@ -53,9 +53,9 @@ export default Vue.extend({
 	},
 	created() {
 		this.name = (this as any).os.i.name || '';
-		this.location = (this as any).os.i.account.profile.location;
+		this.location = (this as any).os.i.profile.location;
 		this.description = (this as any).os.i.description;
-		this.birthday = (this as any).os.i.account.profile.birthday;
+		this.birthday = (this as any).os.i.profile.birthday;
 	},
 	mounted() {
 		document.title = 'Misskey | %i18n:mobile.tags.mk-profile-setting-page.title%';

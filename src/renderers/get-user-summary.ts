@@ -11,8 +11,7 @@ export default function(user: IUser): string {
 		`${user.notesCount}投稿、${user.followingCount}フォロー、${user.followersCount}フォロワー\n`;
 
 	if (isLocalUser(user)) {
-		const account = user.account;
-		string += `場所: ${account.profile.location}、誕生日: ${account.profile.birthday}\n`;
+		string += `場所: ${user.profile.location}、誕生日: ${user.profile.birthday}\n`;
 	}
 
 	return string + `「${user.description}」`;

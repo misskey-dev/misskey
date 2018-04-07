@@ -36,7 +36,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 	} else {
 		user = await User.findOne({
 			host: { $ne: null },
-			'account.publicKey.id': signature.keyId
+			'publicKey.id': signature.keyId
 		}) as IRemoteUser;
 
 		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
@@ -50,7 +50,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 		return;
 	}
 
-	if (!verifySignature(signature, user.account.publicKey.publicKeyPem)) {
+	if (!verifySignature(signature, user.publicKey.publicKeyPem)) {
 		console.warn('signature verification failed');
 		done();
 		return;

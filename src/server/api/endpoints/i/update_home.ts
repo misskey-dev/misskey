@@ -26,7 +26,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (home) {
 		await User.update(user._id, {
 			$set: {
-				'account.clientSettings.home': home
+				'clientSettings.home': home
 			}
 		});
 
@@ -38,7 +38,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	} else {
 		if (id == null && data == null) return rej('you need to set id and data params if home param unset');
 
-		const _home = user.account.clientSettings.home;
+		const _home = user.clientSettings.home;
 		const widget = _home.find(w => w.id == id);
 
 		if (widget == null) return rej('widget not found');
@@ -47,7 +47,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 		await User.update(user._id, {
 			$set: {
-				'account.clientSettings.home': _home
+				'clientSettings.home': _home
 			}
 		});
 

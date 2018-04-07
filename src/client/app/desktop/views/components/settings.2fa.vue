@@ -2,8 +2,8 @@
 <div class="2fa">
 	<p>%i18n:desktop.tags.mk-2fa-setting.intro%<a href="%i18n:desktop.tags.mk-2fa-setting.url%" target="_blank">%i18n:desktop.tags.mk-2fa-setting.detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-2fa-setting.caution%</p></div>
-	<p v-if="!data && !os.i.account.twoFactorEnabled"><button @click="register" class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
-	<template v-if="os.i.account.twoFactorEnabled">
+	<p v-if="!data && !os.i.twoFactorEnabled"><button @click="register" class="ui primary">%i18n:desktop.tags.mk-2fa-setting.register%</button></p>
+	<template v-if="os.i.twoFactorEnabled">
 		<p>%i18n:desktop.tags.mk-2fa-setting.already-registered%</p>
 		<button @click="unregister" class="ui">%i18n:desktop.tags.mk-2fa-setting.unregister%</button>
 	</template>
@@ -54,7 +54,7 @@ export default Vue.extend({
 					password: password
 				}).then(() => {
 					(this as any).apis.notify('%i18n:desktop.tags.mk-2fa-setting.unregistered%');
-					(this as any).os.i.account.twoFactorEnabled = false;
+					(this as any).os.i.twoFactorEnabled = false;
 				});
 			});
 		},
@@ -64,7 +64,7 @@ export default Vue.extend({
 				token: this.token
 			}).then(() => {
 				(this as any).apis.notify('%i18n:desktop.tags.mk-2fa-setting.success%');
-				(this as any).os.i.account.twoFactorEnabled = true;
+				(this as any).os.i.twoFactorEnabled = true;
 			}).catch(() => {
 				(this as any).apis.notify('%i18n:desktop.tags.mk-2fa-setting.failed%');
 			});

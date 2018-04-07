@@ -4,10 +4,11 @@ import { URL } from 'url';
 import * as debug from 'debug';
 
 import config from '../config';
+import { ILocalUser } from '../models/user';
 
 const log = debug('misskey:activitypub:deliver');
 
-export default ({ account, username }, url, object) => new Promise((resolve, reject) => {
+export default (user: ILocalUser, url, object) => new Promise((resolve, reject) => {
 	log(`--> ${url}`);
 
 	const { protocol, hostname, port, pathname, search } = new URL(url);
@@ -35,8 +36,8 @@ export default ({ account, username }, url, object) => new Promise((resolve, rej
 
 	sign(req, {
 		authorizationHeaderName: 'Signature',
-		key: account.keypair,
-		keyId: `acct:${username}@${config.host}`
+		key: user.keypair,
+		keyId: `acct:${user.username}@${config.host}`
 	});
 
 	req.end(JSON.stringify(object));

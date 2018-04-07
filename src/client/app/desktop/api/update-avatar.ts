@@ -16,7 +16,7 @@ export default (os: OS) => (cb, file = null) => {
 
 		w.$once('cropped', blob => {
 			const data = new FormData();
-			data.append('i', os.i.account.token);
+			data.append('i', os.i.token);
 			data.append('file', blob, file.name + '.cropped.png');
 
 			os.api('drive/folders/find', {

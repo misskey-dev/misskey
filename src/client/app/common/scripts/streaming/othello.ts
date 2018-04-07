@@ -5,7 +5,7 @@ import MiOS from '../../mios';
 export class OthelloStream extends Stream {
 	constructor(os: MiOS, me) {
 		super(os, 'othello', {
-			i: me.account.token
+			i: me.token
 		});
 	}
 }

@@ -5,25 +5,25 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="note.userId">
+			<router-link class="avatar-anchor" :to="`/@${getAcct(note.user)}`" v-user-preview="note.userId">
 				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
 			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('{')) }}</span>
-			<a class="name" :href="`/@${acct}`" v-user-preview="note.userId">{{ getUserName(note.user) }}</a>
+			<a class="name" :href="`/@${getAcct(note.user)}`" v-user-preview="note.userId">{{ getUserName(note.user) }}</a>
 			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="`/@${acct}`">
+		<router-link class="avatar-anchor" :to="`/@${getAcct(p.user)}`">
 			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<div class="main">
 			<header>
-				<router-link class="name" :to="`/@${acct}`" v-user-preview="p.user.id">{{ acct }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.account.isBot">bot</span>
-				<span class="username">@{{ acct }}</span>
+				<router-link class="name" :to="`/@${getAcct(p.user)}`" v-user-preview="p.user.id">{{ getUserName(p) }}</router-link>
+				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
+				<span class="username">@{{ getAcct(p.user) }}</span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
@@ -117,21 +117,18 @@ export default Vue.extend({
 		return {
 			isDetailOpened: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			getAcct,
+			getUserName
 		};
 	},
 
 	computed: {
-		acct(): string {
-			return getAcct(this.p.user);
-		},
-		name(): string {
-			return getUserName(this.p.user);
-		},
+
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds == null &&
+				this.note.mediaIds.length == 0 &&
 				this.note.poll == null);
 		},
 		p(): any {
@@ -178,7 +175,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.clientSettings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);

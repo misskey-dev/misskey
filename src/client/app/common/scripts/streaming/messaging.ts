@@ -7,13 +7,13 @@ import MiOS from '../../mios';
 export class MessagingStream extends Stream {
 	constructor(os: MiOS, me, otherparty) {
 		super(os, 'messaging', {
-			i: me.account.token,
+			i: me.token,
 			otherparty
 		});
 
 		(this as any).on('_connected_', () => {
 			this.send({
-				i: me.account.token
+				i: me.token
 			});
 		});
 	}

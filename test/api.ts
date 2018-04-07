@@ -32,7 +32,7 @@ const async = fn => (done) => {
 
 const request = (endpoint, params, me?) => new Promise<any>((ok, ng) => {
 	const auth = me ? {
-		i: me.account.token
+		i: me.token
 	} : {};
 
 	_chai.request(server)
@@ -157,10 +157,10 @@ describe('API', () => {
 			res.should.have.status(200);
 			res.body.should.be.a('object');
 			res.body.should.have.property('name').eql(myName);
-			res.body.should.have.nested.property('account.profile').a('object');
-			res.body.should.have.nested.property('account.profile.location').eql(myLocation);
-			res.body.should.have.nested.property('account.profile.birthday').eql(myBirthday);
-			res.body.should.have.nested.property('account.profile.gender').eql('female');
+			res.body.should.have.nested.property('profile').a('object');
+			res.body.should.have.nested.property('profile.location').eql(myLocation);
+			res.body.should.have.nested.property('profile.birthday').eql(myBirthday);
+			res.body.should.have.nested.property('profile.gender').eql('female');
 		}));
 
 		it('名前を空白にできない', async(async () => {
@@ -180,8 +180,8 @@ describe('API', () => {
 			}, me);
 			res.should.have.status(200);
 			res.body.should.be.a('object');
-			res.body.should.have.nested.property('account.profile').a('object');
-			res.body.should.have.nested.property('account.profile.birthday').eql(null);
+			res.body.should.have.nested.property('profile').a('object');
+			res.body.should.have.nested.property('profile.birthday').eql(null);
 		}));
 
 		it('不正な誕生日の形式で怒られる', async(async () => {
@@ -736,7 +736,7 @@ describe('API', () => {
 			const me = await insertSakurako();
 			const res = await _chai.request(server)
 				.post('/drive/files/create')
-				.field('i', me.account.token)
+				.field('i', me.token)
 				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
 			res.should.have.status(200);
 			res.body.should.be.a('object');

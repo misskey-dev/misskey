@@ -10,13 +10,13 @@ import MiOS from '../../mios';
 export class HomeStream extends Stream {
 	constructor(os: MiOS, me) {
 		super(os, '', {
-			i: me.account.token
+			i: me.token
 		});
 
 		// 最終利用日時を更新するため定期的にaliveメッセージを送信
 		setInterval(() => {
 			this.send({ type: 'alive' });
-			me.account.lastUsedAt = new Date();
+			me.lastUsedAt = new Date();
 		}, 1000 * 60);
 
 		// 自分の情報が更新されたとき

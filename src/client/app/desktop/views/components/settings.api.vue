@@ -1,6 +1,6 @@
 <template>
 <div class="root api">
-	<p>Token: <code>{{ os.i.account.token }}</code></p>
+	<p>Token: <code>{{ os.i.token }}</code></p>
 	<p>%i18n:desktop.tags.mk-api-info.intro%</p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:desktop.tags.mk-api-info.caution%</p></div>
 	<p>%i18n:desktop.tags.mk-api-info.regeneration-of-token%</p>

@@ -7,7 +7,7 @@ import { IRemoteUser } from '../../../../models/user';
  * 削除アクティビティを捌きます
  */
 export default async (actor: IRemoteUser, activity): Promise<void> => {
-	if ('actor' in activity && actor.account.uri !== activity.actor) {
+	if ('actor' in activity && actor.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}
 

@@ -40,10 +40,10 @@ module.exports = (app: express.Application) => {
 
 		const user = await User.findOneAndUpdate({
 			host: null,
-			'account.token': userToken
+			'token': userToken
 		}, {
 			$set: {
-				'account.twitter': null
+				'twitter': null
 			}
 		});
 
@@ -128,7 +128,7 @@ module.exports = (app: express.Application) => {
 
 				const user = await User.findOne({
 					host: null,
-					'account.twitter.userId': result.userId
+					'twitter.userId': result.userId
 				});
 
 				if (user == null) {
@@ -151,10 +151,10 @@ module.exports = (app: express.Application) => {
 
 				const user = await User.findOneAndUpdate({
 					host: null,
-					'account.token': userToken
+					'token': userToken
 				}, {
 					$set: {
-						'account.twitter': {
+						'twitter': {
 							accessToken: result.accessToken,
 							accessTokenSecret: result.accessTokenSecret,
 							userId: result.userId,

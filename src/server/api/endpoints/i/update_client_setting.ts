@@ -22,14 +22,14 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (valueErr) return rej('invalid value param');
 
 	const x = {};
-	x[`account.clientSettings.${name}`] = value;
+	x[`clientSettings.${name}`] = value;
 
 	await User.update(user._id, {
 		$set: x
 	});
 
 	// Serialize
-	user.account.clientSettings[name] = value;
+	user.clientSettings[name] = value;
 	const iObj = await pack(user, user, {
 		detail: true,
 		includeSecrets: true

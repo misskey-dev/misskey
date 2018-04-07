@@ -9,7 +9,7 @@
 		<div class="title">
 			<p class="name">{{ name }}</p>
 			<p class="username">@{{ acct }}</p>
-			<p class="location" v-if="user.host === null && user.account.profile.location">%fa:map-marker%{{ user.account.profile.location }}</p>
+			<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker%{{ user.profile.location }}</p>
 		</div>
 		<footer>
 			<router-link :to="`/@${acct}`" :data-active="$parent.page == 'home'">%fa:home%概要</router-link>

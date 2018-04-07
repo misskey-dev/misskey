@@ -32,7 +32,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			},
 			$or: [
 				{
-					'account.lastUsedAt': {
+					'lastUsedAt': {
 						$gte: new Date(Date.now() - ms('7days'))
 					}
 				}, {

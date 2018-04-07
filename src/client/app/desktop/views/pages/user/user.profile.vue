@@ -7,11 +7,11 @@
 		<p v-if="!user.isMuted"><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
 	</div>
 	<div class="description" v-if="user.description">{{ user.description }}</div>
-	<div class="birthday" v-if="user.host === null && user.account.profile.birthday">
-		<p>%fa:birthday-cake%{{ user.account.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
+	<div class="birthday" v-if="user.host === null && user.profile.birthday">
+		<p>%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
 	</div>
-	<div class="twitter" v-if="user.host === null && user.account.twitter">
-		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.account.twitter.screenName}`" target="_blank">@{{ user.account.twitter.screenName }}</a></p>
+	<div class="twitter" v-if="user.host === null && user.twitter">
+		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">@{{ user.twitter.screenName }}</a></p>
 	</div>
 	<div class="status">
 		<p class="notes-count">%fa:angle-right%<a>{{ user.notesCount }}</a><b>投稿</b></p>
@@ -31,7 +31,7 @@ export default Vue.extend({
 	props: ['user'],
 	computed: {
 		age(): number {
-			return age(this.user.account.profile.birthday);
+			return age(this.user.profile.birthday);
 		}
 	},
 	methods: {

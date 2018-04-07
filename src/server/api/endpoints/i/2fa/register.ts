@@ -14,7 +14,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (passwordErr) return rej('invalid password param');
 
 	// Compare password
-	const same = await bcrypt.compare(password, user.account.password);
+	const same = await bcrypt.compare(password, user.password);
 
 	if (!same) {
 		return rej('incorrect password');

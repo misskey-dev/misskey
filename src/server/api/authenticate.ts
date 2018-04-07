@@ -34,7 +34,7 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 
 	if (isNativeToken(token)) {
 		const user: IUser = await User
-			.findOne({ 'account.token': token });
+			.findOne({ 'token': token });
 
 		if (user === null) {
 			return reject('user not found');

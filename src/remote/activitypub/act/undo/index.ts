@@ -8,7 +8,7 @@ import Resolver from '../../resolver';
 const log = debug('misskey:activitypub');
 
 export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
-	if ('actor' in activity && actor.account.uri !== activity.actor) {
+	if ('actor' in activity && actor.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}
 

@@ -119,44 +119,29 @@ export default async (req: express.Request, res: express.Response) => {
 		usernameLower: username.toLowerCase(),
 		host: null,
 		hostLower: null,
-		account: {
-			keypair: generateKeypair(),
-			token: secret,
-			email: null,
-			links: null,
-			password: hash,
-			profile: {
-				bio: null,
-				birthday: null,
-				blood: null,
-				gender: null,
-				handedness: null,
-				height: null,
-				location: null,
-				weight: null
-			},
-			settings: {
-				autoWatch: true
-			},
-			clientSettings: {
-				home: homeData
-			}
+		keypair: generateKeypair(),
+		token: secret,
+		email: null,
+		links: null,
+		password: hash,
+		profile: {
+			bio: null,
+			birthday: null,
+			blood: null,
+			gender: null,
+			handedness: null,
+			height: null,
+			location: null,
+			weight: null
+		},
+		settings: {
+			autoWatch: true
+		},
+		clientSettings: {
+			home: homeData
 		}
 	});
 
 	// Response
 	res.send(await pack(account));
-
-	// Create search index
-	if (config.elasticsearch.enable) {
-		const es = require('../../db/elasticsearch');
-		es.index({
-			index: 'misskey',
-			type: 'user',
-			id: account._id.toString(),
-			body: {
-				username: username
-			}
-		});
-	}
 };

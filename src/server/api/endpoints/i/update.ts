@@ -29,12 +29,12 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	// Get 'location' parameter
 	const [location, locationErr] = $(params.location).optional.nullable.string().pipe(isValidLocation).$;
 	if (locationErr) return rej('invalid location param');
-	if (location !== undefined) user.account.profile.location = location;
+	if (location !== undefined) user.profile.location = location;
 
 	// Get 'birthday' parameter
 	const [birthday, birthdayErr] = $(params.birthday).optional.nullable.string().pipe(isValidBirthday).$;
 	if (birthdayErr) return rej('invalid birthday param');
-	if (birthday !== undefined) user.account.profile.birthday = birthday;
+	if (birthday !== undefined) user.profile.birthday = birthday;
 
 	// Get 'avatarId' parameter
 	const [avatarId, avatarIdErr] = $(params.avatarId).optional.id().$;
@@ -49,12 +49,12 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 	// Get 'isBot' parameter
 	const [isBot, isBotErr] = $(params.isBot).optional.boolean().$;
 	if (isBotErr) return rej('invalid isBot param');
-	if (isBot != null) user.account.isBot = isBot;
+	if (isBot != null) user.isBot = isBot;
 
 	// Get 'autoWatch' parameter
 	const [autoWatch, autoWatchErr] = $(params.autoWatch).optional.boolean().$;
 	if (autoWatchErr) return rej('invalid autoWatch param');
-	if (autoWatch != null) user.account.settings.autoWatch = autoWatch;
+	if (autoWatch != null) user.settings.autoWatch = autoWatch;
 
 	await User.update(user._id, {
 		$set: {
@@ -62,9 +62,9 @@ module.exports = async (params, user, _, isSecure) => new Promise(async (res, re
 			description: user.description,
 			avatarId: user.avatarId,
 			bannerId: user.bannerId,
-			'account.profile': user.account.profile,
-			'account.isBot': user.account.isBot,
-			'account.settings': user.account.settings
+			'profile': user.profile,
+			'isBot': user.isBot,
+			'settings': user.settings
 		}
 	});
 

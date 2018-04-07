@@ -9,7 +9,7 @@ import { ICreate } from '../../type';
 const log = debug('misskey:activitypub');
 
 export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
-	if ('actor' in activity && actor.account.uri !== activity.actor) {
+	if ('actor' in activity && actor.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}
 

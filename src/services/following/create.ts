@@ -60,13 +60,13 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 		const content = renderFollow(follower, followee);
 		content['@context'] = context;
 
-		deliver(follower, content, followee.account.inbox).save();
+		deliver(follower, content, followee.inbox).save();
 	}
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
 		const content = renderAccept(activity);
 		content['@context'] = context;
 
-		deliver(followee, content, follower.account.inbox).save();
+		deliver(followee, content, follower.inbox).save();
 	}
 }

@@ -7,7 +7,7 @@ import { IDriveFile } from '../../../../models/drive-file';
 const log = debug('misskey:activitypub');
 
 export default async function(actor: IRemoteUser, image): Promise<IDriveFile> {
-	if ('attributedTo' in image && actor.account.uri !== image.attributedTo) {
+	if ('attributedTo' in image && actor.uri !== image.attributedTo) {
 		log(`invalid image: ${JSON.stringify(image, null, 2)}`);
 		throw new Error('invalid image');
 	}

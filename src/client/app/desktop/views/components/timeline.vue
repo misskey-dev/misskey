@@ -107,7 +107,7 @@ export default Vue.extend({
 			this.fetch();
 		},
 		onScroll() {
-			if ((this as any).os.i.account.clientSettings.fetchOnScroll !== false) {
+			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.more();
 			}

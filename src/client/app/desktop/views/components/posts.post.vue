@@ -22,7 +22,7 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="`/@${acct}`" v-user-preview="p.user.id">{{ acct }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.account.isBot">bot</span>
+				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
 				<span class="username">@{{ acct }}</span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
@@ -131,7 +131,7 @@ export default Vue.extend({
 		isRenote(): boolean {
 			return (this.note.renote &&
 				this.note.text == null &&
-				this.note.mediaIds == null &&
+				this.note.mediaIds.length == 0 &&
 				this.note.poll == null);
 		},
 		p(): any {
@@ -178,7 +178,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.account.clientSettings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);

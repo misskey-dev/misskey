@@ -11,7 +11,7 @@ import config from '../config';
 const User = db.get<IUser>('users');
 
 User.createIndex('username');
-User.createIndex('account.token');
+User.createIndex('token');
 
 export default User;
 
@@ -40,45 +40,41 @@ type IUserBase = {
 
 export interface ILocalUser extends IUserBase {
 	host: null;
-	account: {
-		keypair: string;
-		email: string;
-		links: string[];
-		password: string;
-		token: string;
-		twitter: {
-			accessToken: string;
-			accessTokenSecret: string;
-			userId: string;
-			screenName: string;
-		};
-		line: {
-			userId: string;
-		};
-		profile: {
-			location: string;
-			birthday: string; // 'YYYY-MM-DD'
-			tags: string[];
-		};
-		lastUsedAt: Date;
-		isBot: boolean;
-		isPro: boolean;
-		twoFactorSecret: string;
-		twoFactorEnabled: boolean;
-		twoFactorTempSecret: string;
-		clientSettings: any;
-		settings: any;
+	keypair: string;
+	email: string;
+	links: string[];
+	password: string;
+	token: string;
+	twitter: {
+		accessToken: string;
+		accessTokenSecret: string;
+		userId: string;
+		screenName: string;
 	};
+	line: {
+		userId: string;
+	};
+	profile: {
+		location: string;
+		birthday: string; // 'YYYY-MM-DD'
+		tags: string[];
+	};
+	lastUsedAt: Date;
+	isBot: boolean;
+	isPro: boolean;
+	twoFactorSecret: string;
+	twoFactorEnabled: boolean;
+	twoFactorTempSecret: string;
+	clientSettings: any;
+	settings: any;
 }
 
 export interface IRemoteUser extends IUserBase {
-	account: {
-		inbox: string;
-		uri: string;
-		publicKey: {
-			id: string;
-			publicKeyPem: string;
-		};
+	inbox: string;
+	uri: string;
+	publicKey: {
+		id: string;
+		publicKeyPem: string;
 	};
 }
 
@@ -150,11 +146,11 @@ export const pack = (
 
 	const fields = opts.detail ? {
 	} : {
-		'account.settings': false,
-		'account.clientSettings': false,
-		'account.profile': false,
-		'account.keywords': false,
-		'account.domains': false
+		settings: false,
+		clientSettings: false,
+		profile: false,
+		keywords: false,
+		domains: false
 	};
 
 	// Populate the user if 'user' is ID
@@ -188,29 +184,29 @@ export const pack = (
 	// Remove needless properties
 	delete _user.latestNote;
 
-	if (!_user.host) {
+	if (_user.host == null) {
 		// Remove private properties
-		delete _user.account.keypair;
-		delete _user.account.password;
-		delete _user.account.token;
-		delete _user.account.twoFactorTempSecret;
-		delete _user.account.twoFactorSecret;
+		delete _user.keypair;
+		delete _user.password;
+		delete _user.token;
+		delete _user.twoFactorTempSecret;
+		delete _user.twoFactorSecret;
 		delete _user.usernameLower;
-		if (_user.account.twitter) {
-			delete _user.account.twitter.accessToken;
-			delete _user.account.twitter.accessTokenSecret;
+		if (_user.twitter) {
+			delete _user.twitter.accessToken;
+			delete _user.twitter.accessTokenSecret;
 		}
-		delete _user.account.line;
+		delete _user.line;
 
 		// Visible via only the official client
 		if (!opts.includeSecrets) {
-			delete _user.account.email;
-			delete _user.account.settings;
-			delete _user.account.clientSettings;
+			delete _user.email;
+			delete _user.settings;
+			delete _user.clientSettings;
 		}
 
 		if (!opts.detail) {
-			delete _user.account.twoFactorEnabled;
+			delete _user.twoFactorEnabled;
 		}
 	}
 

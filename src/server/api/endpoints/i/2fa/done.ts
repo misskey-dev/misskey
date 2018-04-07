@@ -28,8 +28,8 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 
 	await User.update(user._id, {
 		$set: {
-			'account.twoFactorSecret': user.twoFactorTempSecret,
-			'account.twoFactorEnabled': true
+			'twoFactorSecret': user.twoFactorTempSecret,
+			'twoFactorEnabled': true
 		}
 	});
 

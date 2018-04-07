@@ -226,7 +226,7 @@ class SigninContext extends Context {
 			}
 		} else {
 			// Compare password
-			const same = await bcrypt.compare(query, this.temporaryUser.account.password);
+			const same = await bcrypt.compare(query, this.temporaryUser.password);
 
 			if (same) {
 				this.bot.signin(this.temporaryUser);

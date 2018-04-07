@@ -8,7 +8,7 @@ import MiOS from '../../mios';
 export class DriveStream extends Stream {
 	constructor(os: MiOS, me) {
 		super(os, 'drive', {
-			i: me.account.token
+			i: me.token
 		});
 	}
 }

@@ -59,6 +59,6 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 		const content = renderUndo(renderFollow(follower, followee));
 		content['@context'] = context;
 
-		deliver(follower, content, followee.account.inbox).save();
+		deliver(follower, content, followee.inbox).save();
 	}
 }

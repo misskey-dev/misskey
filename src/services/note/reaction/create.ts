@@ -78,7 +78,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 		});
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
-	if (isLocalUser(user) && user.account.settings.autoWatch !== false) {
+	if (isLocalUser(user) && user.settings.autoWatch !== false) {
 		watch(user._id, note);
 	}
 
@@ -88,7 +88,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (isLocalUser(user) && isRemoteUser(note._user)) {
-		deliver(user, content, note._user.account.inbox).save();
+		deliver(user, content, note._user.inbox).save();
 	}
 	//#endregion
 });

@@ -31,7 +31,7 @@
 			<x-followers-you-know :user="user"/>
 		</div>
 	</section>
-	<p v-if="user.host === null">%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.account.lastUsedAt"/></b></p>
+	<p v-if="user.host === null">%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
 </div>
 </template>
 
