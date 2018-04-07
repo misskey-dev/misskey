@@ -1,7 +1,6 @@
 import { toUnicode, toASCII } from 'punycode';
 import User from '../models/user';
 import resolvePerson from './activitypub/resolve-person';
-import Resolver from './activitypub/resolver';
 import webFinger from './webfinger';
 
 export default async (username, host, option) => {
@@ -20,7 +19,7 @@ export default async (username, host, option) => {
 			throw new Error('self link not found');
 		}
 
-		user = await resolvePerson(new Resolver(), self.href, acctLower);
+		user = await resolvePerson(self.href, acctLower);
 	}
 
 	return user;
