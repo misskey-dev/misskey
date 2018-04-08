@@ -6,7 +6,7 @@
 	<div class="main">
 		<header>
 			<div class="left">
-				<router-link class="name" :to="`/@${acct}`" v-user-preview="note.userId">{{ getUserName(note.user) }}</router-link>
+				<router-link class="name" :to="`/@${acct}`" v-user-preview="note.userId">{{ name }}</router-link>
 				<span class="username">@{{ acct }}</span>
 			</div>
 			<div class="right">
