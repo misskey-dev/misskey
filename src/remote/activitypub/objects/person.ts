@@ -3,7 +3,7 @@ import { toUnicode } from 'punycode';
 import * as debug from 'debug';
 
 import config from '../../../config';
-import User, { validateUsername, isValidName, isValidDescription, IUser, IRemoteUser } from '../../../models/user';
+import User, { validateUsername, isValidName, IUser, IRemoteUser } from '../../../models/user';
 import webFinger from '../../webfinger';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
