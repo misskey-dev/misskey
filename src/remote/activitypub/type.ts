@@ -14,6 +14,7 @@ export interface IObject {
 	content: string;
 	icon?: any;
 	image?: any;
+	url?: string;
 }
 
 export interface IActivity extends IObject {
