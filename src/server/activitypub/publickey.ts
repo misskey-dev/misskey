@@ -1,7 +1,7 @@
 import * as express from 'express';
 import context from '../../remote/activitypub/renderer/context';
 import render from '../../remote/activitypub/renderer/key';
-import User from '../../models/user';
+import User, { isLocalUser } from '../../models/user';
 
 const app = express.Router();
 
@@ -10,10 +10,14 @@ app.get('/users/:user/publickey', async (req, res) => {
 
 	const user = await User.findOne({ _id: userId });
 
-	const rendered = render(user);
-	rendered['@context'] = context;
+	if (isLocalUser(user)) {
+		const rendered = render(user);
+		rendered['@context'] = context;
 
-	res.json(rendered);
+		res.json(rendered);
+	} else {
+		res.sendStatus(400);
+	}
 });
 
 export default app;
