@@ -1,6 +1,8 @@
 // for Node.js interpret
 
-const { default: Post } = require('../../../built/models/note');
+const mongodb = require("../../../built/db/mongodb");
+const Post = mongodb.default.get('posts');
+
 const { default: zip } = require('@prezzemolo/zip')
 
 const migrate = async (post) => {
