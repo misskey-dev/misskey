@@ -12,8 +12,8 @@
 					<mk-follow-button v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
-					<h1>{{ user }}</h1>
-					<span class="username">@{{ acct }}</span>
+					<h1>{{ getUserName(user) }}</h1>
+					<span class="username">@{{ getAcct(user) }}</span>
 					<span class="followed" v-if="user.isFollowed">%i18n:mobile.tags.mk-user.follows-you%</span>
 				</div>
 				<div class="description">{{ user.description }}</div>
@@ -30,11 +30,11 @@
 						<b>{{ user.notesCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.notes%</i>
 					</a>
-					<a :href="`@${acct}/following`">
+					<a :href="`@${getAcct(user)}/following`">
 						<b>{{ user.followingCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
 					</a>
-					<a :href="`@${acct}/followers`">
+					<a :href="`@${getAcct(user)}/followers`">
 						<b>{{ user.followersCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
@@ -60,6 +60,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as age from 's-age';
+import parseAcct from '../../../../../acct/parse';
 import getAcct from '../../../../../acct/render';
 import getUserName from '../../../../../renderers/get-user-name';
 import Progress from '../../../common/scripts/loading';
@@ -73,18 +74,14 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			user: null,
-			page: 'home'
+			page: 'home',
+			getAcct,
+			getUserName
 		};
 	},
 	computed: {
-		acct() {
-			return this.getAcct(this.user);
-		},
 		age(): number {
 			return age(this.user.profile.birthday);
-		},
-		name() {
-			return getUserName(this.user);
 		}
 	},
 	watch: {
@@ -105,7 +102,7 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
-				document.title = this.name + ' | Misskey';
+				document.title = this.getUserName(this.user) + ' | Misskey';
 			});
 		}
 	}
