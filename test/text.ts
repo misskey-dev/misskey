@@ -9,9 +9,11 @@ const syntaxhighlighter = require('../built/text/parse/core/syntax-highlighter')
 
 describe('Text', () => {
 	it('can be analyzed', () => {
-		const tokens = analyze('@himawari お腹ペコい :cat: #yryr');
+		const tokens = analyze('@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr');
 		assert.deepEqual([
 			{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
+			{ type: 'text', content: ' '},
+			{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
 			{ type: 'text', content: ' お腹ペコい ' },
 			{ type: 'emoji', content: ':cat:', emoji: 'cat'},
 			{ type: 'text', content: ' '},
@@ -20,7 +22,7 @@ describe('Text', () => {
 	});
 
 	it('can be inverted', () => {
-		const text = '@himawari お腹ペコい :cat: #yryr';
+		const text = '@himawari @hima_sub@namori.net お腹ペコい :cat: #yryr';
 		assert.equal(analyze(text).map(x => x.content).join(''), text);
 	});
 
@@ -37,6 +39,14 @@ describe('Text', () => {
 			const tokens = analyze('@himawari お腹ペコい');
 			assert.deepEqual([
 				{ type: 'mention', content: '@himawari', username: 'himawari', host: null },
+				{ type: 'text', content: ' お腹ペコい' }
+			], tokens);
+		});
+
+		it('remote mention', () => {
+			const tokens = analyze('@hima_sub@namori.net お腹ペコい');
+			assert.deepEqual([
+				{ type: 'mention', content: '@hima_sub@namori.net', username: 'hima_sub', host: 'namori.net' },
 				{ type: 'text', content: ' お腹ペコい' }
 			], tokens);
 		});
