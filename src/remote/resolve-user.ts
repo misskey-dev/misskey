@@ -2,11 +2,16 @@ import { toUnicode, toASCII } from 'punycode';
 import User from '../models/user';
 import resolvePerson from './activitypub/resolve-person';
 import webFinger from './webfinger';
+import config from '../config';
 
 export default async (username, host, option) => {
 	const usernameLower = username.toLowerCase();
 	const hostLowerAscii = toASCII(host).toLowerCase();
 	const hostLower = toUnicode(hostLowerAscii);
+
+	if (config.host == hostLower) {
+		return await User.findOne({ usernameLower });
+	}
 
 	let user = await User.findOne({ usernameLower, hostLower }, option);
 

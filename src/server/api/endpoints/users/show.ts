@@ -9,10 +9,6 @@ const cursorOption = { fields: { data: false } };
 
 /**
  * Show a user
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	let user;

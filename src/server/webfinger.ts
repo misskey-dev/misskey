@@ -4,9 +4,9 @@ import config from '../config';
 import parseAcct from '../acct/parse';
 import User from '../models/user';
 
-const app = express();
+const app = express.Router();
 
-app.get('/.well-known/webfinger', async (req: express.Request, res: express.Response) => {
+app.get('/.well-known/webfinger', async (req, res) => {
 	if (typeof req.query.resource !== 'string') {
 		return res.sendStatus(400);
 	}
@@ -38,11 +38,14 @@ app.get('/.well-known/webfinger', async (req: express.Request, res: express.Resp
 		links: [{
 			rel: 'self',
 			type: 'application/activity+json',
-			href: `${config.url}/@${user.username}`
+			href: `${config.url}/users/${user._id}`
 		}, {
 			rel: 'http://webfinger.net/rel/profile-page',
 			type: 'text/html',
 			href: `${config.url}/@${user.username}`
+		}, {
+			rel: 'http://ostatus.org/schema/1.0/subscribe',
+			template: `${config.url}/authorize-follow?acct={uri}`
 		}]
 	});
 });
