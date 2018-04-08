@@ -1,12 +1,10 @@
 import * as debug from 'debug';
 
 import Resolver from '../../resolver';
-import Note from '../../../../models/note';
 import post from '../../../../services/note/create';
-import { IRemoteUser, isRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/user';
 import { IAnnounce, INote } from '../../type';
-import createNote from '../create/note';
-import resolvePerson from '../../resolve-person';
+import { fetchNote, resolveNote } from '../../objects/note';
 
 const log = debug('misskey:activitypub');
 
@@ -21,17 +19,12 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	}
 
 	// 既に同じURIを持つものが登録されていないかチェック
-	const exist = await Note.findOne({ uri });
+	const exist = await fetchNote(uri);
 	if (exist) {
 		return;
 	}
 
-	// アナウンス元の投稿の投稿者をフェッチ
-	const announcee = await resolvePerson(note.attributedTo);
-
-	const renote = isRemoteUser(announcee)
-		? await createNote(resolver, announcee, note, true)
-		: await Note.findOne({ _id: note.id.split('/').pop() });
+	const renote = await resolveNote(note);
 
 	log(`Creating the (Re)Note: ${uri}`);
 
