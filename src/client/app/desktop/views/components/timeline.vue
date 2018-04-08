@@ -96,7 +96,7 @@ export default Vue.extend({
 		onNote(note) {
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds) {
-				const sound = new Audio(`${url}/assets/note.mp3`);
+				const sound = new Audio(`${url}/assets/post.mp3`);
 				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
 				sound.play();
 			}

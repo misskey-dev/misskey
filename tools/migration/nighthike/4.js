@@ -50,8 +50,20 @@ db.drive_files.files.renameCollection('driveFiles.files');
 db.drive_files.chunks.renameCollection('driveFiles.chunks');
 db.driveFiles.files.update({}, {
 	$rename: {
-		'metadata.user_id': 'metadata.userId',
+		'metadata.user_id': 'metadata.userId'
+	}
+}, false, true);
+db.driveFiles.files.update({
+	'metadata.folder_id': { $ne: null }
+}, {
+	$rename: {
 		'metadata.folder_id': 'metadata.folderId',
+	}
+}, false, true);
+db.driveFiles.files.update({
+	'metadata.properties.average_color': { $ne: null }
+}, {
+	$rename: {
 		'metadata.properties.average_color': 'metadata.properties.avgColor'
 	}
 }, false, true);
