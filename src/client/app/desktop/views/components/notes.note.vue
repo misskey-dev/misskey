@@ -21,7 +21,7 @@
 		</router-link>
 		<div class="main">
 			<header>
-				<router-link class="name" :to="`/@${getAcct(p.user)}`" v-user-preview="p.user.id">{{ getUserName(p) }}</router-link>
+				<router-link class="name" :to="`/@${getAcct(p.user)}`" v-user-preview="p.user.id">{{ getUserName(p.user) }}</router-link>
 				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
 				<span class="username">@{{ getAcct(p.user) }}</span>
 				<div class="info">
