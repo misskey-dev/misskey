@@ -51,6 +51,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		!isValidName(object.name == '' ? null : object.name) ||
 		!isValidDescription(object.summary)
 	) {
+		log(`invalid person: ${JSON.stringify(object, null, 2)}`);
 		throw new Error('invalid person');
 	}
 
