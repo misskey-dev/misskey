@@ -4,8 +4,8 @@ import * as debug from 'debug';
 import { verifySignature } from 'http-signature';
 import parseAcct from '../../../acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
-import act from '../../../remote/activitypub/act';
-import resolvePerson from '../../../remote/activitypub/resolve-person';
+import perform from '../../../remote/activitypub/perform';
+import { resolvePerson } from '../../../remote/activitypub/objects/person';
 
 const log = debug('misskey:queue:inbox');
 
@@ -58,7 +58,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 
 	// アクティビティを処理
 	try {
-		await act(user, activity);
+		await perform(user, activity);
 		done();
 	} catch (e) {
 		done(e);

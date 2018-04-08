@@ -9,6 +9,11 @@ export interface IObject {
 	cc?: string[];
 	to?: string[];
 	attributedTo: string;
+	attachment?: any[];
+	inReplyTo?: any;
+	content: string;
+	icon?: any;
+	image?: any;
 }
 
 export interface IActivity extends IObject {
@@ -32,6 +37,17 @@ export interface IOrderedCollection extends IObject {
 
 export interface INote extends IObject {
 	type: 'Note';
+}
+
+export interface IPerson extends IObject {
+	type: 'Person';
+	name: string;
+	preferredUsername: string;
+	inbox: string;
+	publicKey: any;
+	followers: any;
+	following: any;
+	outbox: any;
 }
 
 export const isCollection = (object: IObject): object is ICollection =>

@@ -1,8 +1,8 @@
 import { toUnicode, toASCII } from 'punycode';
 import User from '../models/user';
-import resolvePerson from './activitypub/resolve-person';
 import webFinger from './webfinger';
 import config from '../config';
+import { createPerson } from './activitypub/objects/person';
 
 export default async (username, host, option) => {
 	const usernameLower = username.toLowerCase();
@@ -18,13 +18,13 @@ export default async (username, host, option) => {
 	if (user === null) {
 		const acctLower = `${usernameLower}@${hostLowerAscii}`;
 
-		const finger = await webFinger(acctLower, acctLower);
+		const finger = await webFinger(acctLower);
 		const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
 		if (!self) {
 			throw new Error('self link not found');
 		}
 
-		user = await resolvePerson(self.href, acctLower);
+		user = await createPerson(self.href);
 	}
 
 	return user;
