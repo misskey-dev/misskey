@@ -10,10 +10,6 @@ import read from '../../common/read-notification';
 
 /**
  * Get notifications
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
