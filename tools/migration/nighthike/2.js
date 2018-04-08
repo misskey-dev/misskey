@@ -4,7 +4,7 @@ const { default: App } = require('../../../built/models/app');
 const { default: zip } = require('@prezzemolo/zip')
 
 const migrate = async (app) => {
-	const result = await User.update(app._id, {
+	const result = await App.update(app._id, {
 		$set: {
 			'name_id': app.name_id.replace(/\-/g, '_'),
 			'name_id_lower': app.name_id_lower.replace(/\-/g, '_')
