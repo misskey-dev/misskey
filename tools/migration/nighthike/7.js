@@ -1,6 +1,7 @@
 // for Node.js interpret
 
-const { default: Post } = require('../../../built/models/post');
+const mongodb = require("../../../built/db/mongodb");
+const Post = mongodb.default.get('posts');
 const { default: zip } = require('@prezzemolo/zip')
 const html = require('../../../built/text/html').default;
 const parse = require('../../../built/text/parse').default;
