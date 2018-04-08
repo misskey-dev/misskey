@@ -2,12 +2,12 @@
 <div class="mk-user-preview">
 	<template v-if="u != null">
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl}?thumbnail&size=512)` : ''"></div>
-		<router-link class="avatar" :to="`/@${acct}`">
+		<router-link class="avatar" :to="`/@${getAcct(u)}`">
 			<img :src="`${u.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="title">
-			<router-link class="name" :to="`/@${acct}`">{{ u.name }}</router-link>
-			<p class="username">@{{ acct }}</p>
+			<router-link class="name" :to="`/@${getAcct(u)}`">{{ u.name }}</router-link>
+			<p class="username">@{{ getAcct(u) }}</p>
 		</div>
 		<div class="description">{{ u.description }}</div>
 		<div class="status">
@@ -39,14 +39,10 @@ export default Vue.extend({
 			required: true
 		}
 	},
-	computed: {
-		acct() {
-			return getAcct(this.u);
-		}
-	},
 	data() {
 		return {
-			u: null
+			u: null,
+			getAcct
 		};
 	},
 	mounted() {
@@ -57,8 +53,8 @@ export default Vue.extend({
 			});
 		} else {
 			const query = this.user[0] == '@' ?
-				parseAcct(this.user[0].substr(1)) :
-				{ userId: this.user[0] };
+				parseAcct(this.user.substr(1)) :
+				{ userId: this.user };
 
 			(this as any).api('users/show', query).then(user => {
 				this.u = user;
