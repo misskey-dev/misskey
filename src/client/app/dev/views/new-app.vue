@@ -65,7 +65,7 @@ export default Vue.extend({
 			}
 
 			const err =
-				!this.nid.match(/^[a-zA-Z0-9\-]+$/) ? 'invalid-format' :
+				!this.nid.match(/^[a-zA-Z0-9_]+$/) ? 'invalid-format' :
 				this.nid.length < 3                 ? 'min-range' :
 				this.nid.length > 30                ? 'max-range' :
 				null;

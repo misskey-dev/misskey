@@ -24,7 +24,7 @@ export type IApp = {
 };
 
 export function isValidNameId(nameId: string): boolean {
-	return typeof nameId == 'string' && /^[a-zA-Z0-9\-]{3,30}$/.test(nameId);
+	return typeof nameId == 'string' && /^[a-zA-Z0-9_]{3,30}$/.test(nameId);
 }
 
 /**
