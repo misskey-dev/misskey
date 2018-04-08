@@ -178,8 +178,22 @@ db.posts.update({}, {
 		via_mobile: 'viaMobile',
 		reaction_counts: 'reactionCounts',
 		replies_count: 'repliesCount',
-		repost_count: 'repostCount',
+		repost_count: 'repostCount'
+	}
+}, false, true);
+
+db.posts.update({
+	_reply: { $ne: null }
+}, {
+	$rename: {
 		'_reply.user_id': '_reply.userId',
+	}
+}, false, true);
+
+db.posts.update({
+	_repost: { $ne: null }
+}, {
+	$rename: {
 		'_repost.user_id': '_repost.userId',
 	}
 }, false, true);
@@ -195,6 +209,20 @@ db.sw_subscriptions.renameCollection('swSubscriptions');
 db.swSubscriptions.update({}, {
 	$rename: {
 		user_id: 'userId',
+	}
+}, false, true);
+
+db.users.update({}, {
+	$unset: {
+		likes_count: '',
+		liked_count: '',
+		latest_post: '',
+		'account.twitter.access_token': '',
+		'account.twitter.access_token_secret': '',
+		'account.twitter.user_id': '',
+		'account.twitter.screen_name': '',
+		'account.line.user_id': '',
+		'account.client_settings.mobile_home': ''
 	}
 }, false, true);
 
@@ -218,16 +246,5 @@ db.users.update({}, {
 		'account.two_factor_secret': 'account.twoFactorSecret',
 		'account.two_factor_enabled': 'account.twoFactorEnabled',
 		'account.client_settings': 'account.clientSettings'
-	},
-	$unset: {
-		likes_count: '',
-		liked_count: '',
-		latest_post: '',
-		'account.twitter.access_token': '',
-		'account.twitter.access_token_secret': '',
-		'account.twitter.user_id': '',
-		'account.twitter.screen_name': '',
-		'account.line.user_id': '',
-		'account.client_settings.mobile_home': ''
 	}
 }, false, true);
