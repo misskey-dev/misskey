@@ -50,6 +50,14 @@ app.use((req, res, next) => {
 	}
 });
 
+// 互換性のため
+app.post('/meta', (req, res) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.json({
+		version: 'nighthike'
+	});
+});
+
 /**
  * Register modules
  */
