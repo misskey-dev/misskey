@@ -8,10 +8,6 @@ import { IAnnounce } from '../../type';
 const log = debug('misskey:activitypub');
 
 export default async (actor: IRemoteUser, activity: IAnnounce): Promise<void> => {
-	if ('actor' in activity && actor.uri !== activity.actor) {
-		throw new Error('invalid actor');
-	}
-
 	const uri = activity.id || activity;
 
 	log(`Announce: ${uri}`);
