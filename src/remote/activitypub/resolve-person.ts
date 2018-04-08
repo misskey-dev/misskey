@@ -1,6 +1,5 @@
 import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
-import parseAcct from '../../acct/parse';
 import config from '../../config';
 import User, { validateUsername, isValidName, isValidDescription, IUser } from '../../models/user';
 import webFinger from '../webfinger';
@@ -10,10 +9,9 @@ import { isCollectionOrOrderedCollection, IObject } from './type';
 
 export default async (value: string | IObject, verifier?: string): Promise<IUser> => {
 	const id = typeof value == 'string' ? value : value.id;
-	const localPrefix = config.url + '/@';
 
-	if (id.startsWith(localPrefix)) {
-		return await User.findOne(parseAcct(id.substr(localPrefix.length)));
+	if (id.startsWith(config.url + '/')) {
+		return await User.findOne({ _id: id.split('/').pop() });
 	}
 
 	const resolver = new Resolver();

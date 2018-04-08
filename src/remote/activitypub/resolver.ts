@@ -50,7 +50,7 @@ export default class Resolver {
 
 		//#region resolve local objects
 		// TODO
-		//if (value.startsWith(`${config.url}/@`)) {
+		//if (value.startsWith(`${config.url}/`)) {
 		//#endregion
 
 		const object = await request({

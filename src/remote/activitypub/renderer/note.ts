@@ -34,7 +34,7 @@ export default async (note: INote) => {
 		_id: note.userId
 	});
 
-	const attributedTo = `${config.url}/@${user.username}`;
+	const attributedTo = `${config.url}/users/${user._id}`;
 
 	return {
 		id: `${config.url}/notes/${note._id}`,

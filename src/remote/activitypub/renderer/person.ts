@@ -3,7 +3,7 @@ import renderKey from './key';
 import config from '../../../config';
 
 export default user => {
-	const id = `${config.url}/@${user.username}`;
+	const id = `${config.url}/users/${user._id}`;
 
 	return {
 		type: 'Person',

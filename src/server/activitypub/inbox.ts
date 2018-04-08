@@ -5,7 +5,7 @@ import { createHttp } from '../../queue';
 
 const app = express.Router();
 
-app.post('/@:user/inbox', bodyParser.json({
+app.post('/users/:user/inbox', bodyParser.json({
 	type() {
 		return true;
 	}
