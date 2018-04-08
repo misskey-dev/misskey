@@ -62,7 +62,7 @@ export default Vue.extend({
 		onBannerClick() {
 			if (!(this as any).os.isSignedIn || (this as any).os.i.id != this.user.id) return;
 
-			(this as any).apis.updateBanner((this as any).os.i, i => {
+			(this as any).apis.updateBanner().then(i => {
 				this.user.bannerUrl = i.bannerUrl;
 			});
 		}
