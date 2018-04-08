@@ -30,7 +30,7 @@ export default Vue.extend({
 			fetching: true
 		};
 	},
-	method() {
+	methods: {
 		getAcct
 	},
 	mounted() {
