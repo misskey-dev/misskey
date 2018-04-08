@@ -108,7 +108,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(user, img.url)
+			: resolveImage(user, img)
 	))).map(file => file != null ? file._id : null);
 
 	User.update({ _id: user._id }, { $set: { avatarId, bannerId } });
