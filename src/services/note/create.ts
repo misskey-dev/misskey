@@ -349,7 +349,7 @@ export default async (user: IUser, data: {
 
 			// Create notification
 			notify(mentionee._id, user._id, 'mention', {
-				note_id: note._id
+				noteId: note._id
 			});
 		}));
 	}
