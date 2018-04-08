@@ -12,6 +12,7 @@ const User = db.get<IUser>('users');
 
 User.createIndex('username');
 User.createIndex('token');
+User.createIndex('uri', { sparse: true, unique: true });
 
 export default User;
 

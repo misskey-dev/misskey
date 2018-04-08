@@ -12,6 +12,14 @@ export default async (value: string | IObject, verifier?: string): Promise<IUser
 
 	if (id.startsWith(config.url + '/')) {
 		return await User.findOne({ _id: id.split('/').pop() });
+	} else {
+		const exist = await User.findOne({
+			uri: id
+		});
+
+		if (exist) {
+			return exist;
+		}
 	}
 
 	const resolver = new Resolver();
