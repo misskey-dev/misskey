@@ -12,7 +12,7 @@ const summarize = (note: any): string => {
 	summary += note.text ? note.text : '';
 
 	// メディアが添付されているとき
-	if (note.media) {
+	if (note.media.length != 0) {
 		summary += ` (${note.media.length}つのメディア)`;
 	}
 
