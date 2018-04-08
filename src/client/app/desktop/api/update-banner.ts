@@ -3,9 +3,9 @@ import { apiUrl } from '../../config';
 import CropWindow from '../views/components/crop-window.vue';
 import ProgressDialog from '../views/components/progress-dialog.vue';
 
-export default (os: OS) => (cb, file = null) => {
-	const fileSelected = file => {
+export default (os: OS) => {
 
+	const cropImage = file => new Promise((resolve, reject) => {
 		const w = new CropWindow({
 			propsData: {
 				image: file,
@@ -26,22 +26,24 @@ export default (os: OS) => (cb, file = null) => {
 					os.api('drive/folders/create', {
 						name: 'バナー'
 					}).then(iconFolder => {
-						upload(data, iconFolder);
+						resolve(upload(data, iconFolder));
 					});
 				} else {
-					upload(data, bannerFolder[0]);
+					resolve(upload(data, bannerFolder[0]));
 				}
 			});
 		});
 
 		w.$once('skipped', () => {
-			set(file);
+			resolve(file);
 		});
 
-		document.body.appendChild(w.$el);
-	};
+		w.$once('cancelled', reject);
 
-	const upload = (data, folder) => {
+		document.body.appendChild(w.$el);
+	});
+
+	const upload = (data, folder) => new Promise((resolve, reject) => {
 		const dialog = new ProgressDialog({
 			propsData: {
 				title: '新しいバナーをアップロードしています'
@@ -56,18 +58,19 @@ export default (os: OS) => (cb, file = null) => {
 		xhr.onload = e => {
 			const file = JSON.parse((e.target as any).response);
 			(dialog as any).close();
-			set(file);
+			resolve(file);
 		};
+		xhr.onerror = reject;
 
 		xhr.upload.onprogress = e => {
 			if (e.lengthComputable) (dialog as any).update(e.loaded, e.total);
 		};
 
 		xhr.send(data);
-	};
+	});
 
-	const set = file => {
-		os.api('i/update', {
+	const setBanner = file => {
+		return os.api('i/update', {
 			bannerId: file.id
 		}).then(i => {
 			os.i.bannerId = i.bannerId;
@@ -81,18 +84,21 @@ export default (os: OS) => (cb, file = null) => {
 				}]
 			});
 
-			if (cb) cb(i);
+			return i;
 		});
 	};
 
-	if (file) {
-		fileSelected(file);
-	} else {
-		os.apis.chooseDriveFile({
-			multiple: false,
-			title: '%fa:image%バナーにする画像を選択'
-		}).then(file => {
-			fileSelected(file);
-		});
-	}
+	return (file = null) => {
+		const selectedFile = file
+			? Promise.resolve(file)
+			: os.apis.chooseDriveFile({
+				multiple: false,
+				title: '%fa:image%バナーにする画像を選択'
+			});
+		
+		return selectedFile
+			.then(cropImage)
+			.then(setBanner)
+			.catch(err => err && console.warn(err));
+	};
 };
