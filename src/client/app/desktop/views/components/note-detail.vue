@@ -22,7 +22,7 @@
 				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			<router-link class="name" :href="`/@${acct}`">{{ getUserName(note.user) }}</router-link>
+			<router-link class="name" :href="`/@${acct}`">{{ name }}</router-link>
 			がRenote
 		</p>
 	</div>
@@ -31,7 +31,7 @@
 			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<header>
-			<router-link class="name" :to="`/@${pAcct}`" v-user-preview="p.user.id">{{ getUserName(p.user) }}</router-link>
+			<router-link class="name" :to="`/@${pAcct}`" v-user-preview="p.user.id">{{ name }}</router-link>
 			<span class="username">@{{ pAcct }}</span>
 			<router-link class="time" :to="`/@${pAcct}/${p.id}`">
 				<mk-time :time="p.createdAt"/>
