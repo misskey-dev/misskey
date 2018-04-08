@@ -48,8 +48,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
 		!validateUsername(object.preferredUsername) ||
-		!isValidName(object.name == '' ? null : object.name) ||
-		!isValidDescription(object.summary)
+		!isValidName(object.name == '' ? null : object.name)
 	) {
 		log(`invalid person: ${JSON.stringify(object, null, 2)}`);
 		throw new Error('invalid person');
