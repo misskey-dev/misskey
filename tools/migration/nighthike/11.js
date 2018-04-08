@@ -23,6 +23,7 @@ db.notes.update({}, {
 	$rename: {
 		_repost: '_renote',
 		repostId: 'renoteId',
+		repostCount: 'renoteCount'
 	}
 }, false, true);
 
