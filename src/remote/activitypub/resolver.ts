@@ -48,11 +48,6 @@ export default class Resolver {
 
 		this.history.add(value);
 
-		//#region resolve local objects
-		// TODO
-		//if (value.startsWith(`${config.url}/`)) {
-		//#endregion
-
 		const object = await request({
 			url: value,
 			headers: {
@@ -66,11 +61,9 @@ export default class Resolver {
 				!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		)) {
-			log(`invalid response: ${JSON.stringify(object, null, 2)}`);
+			log(`invalid response: ${value}`);
 			throw new Error('invalid response');
 		}
-
-		log(`resolved: ${JSON.stringify(object, null, 2)}`);
 
 		return object;
 	}
