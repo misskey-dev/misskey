@@ -167,6 +167,8 @@ export const pack = (
 		_user = deepcopy(user);
 	}
 
+	// TODO: ここでエラーにするのではなくダミーのユーザーデータを返す
+	// SEE: https://github.com/syuilo/misskey/issues/1432
 	if (!_user) return reject('invalid user arg.');
 
 	// Me
