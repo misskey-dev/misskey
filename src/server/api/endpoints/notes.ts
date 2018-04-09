@@ -5,10 +5,7 @@ import $ from 'cafy';
 import Note, { pack } from '../../../models/note';
 
 /**
- * Lists all notes
- *
- * @param {any} params
- * @return {Promise<any>}
+ * Get all notes
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'reply' parameter
@@ -73,7 +70,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	}
 
 	if (media != undefined) {
-		query.mediaIds = media ? { $exists: true, $ne: null } : null;
+		query.mediaIds = media ? { $exists: true, $ne: null } : [];
 	}
 
 	if (poll != undefined) {
@@ -93,5 +90,5 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(notes.map(async note => await pack(note))));
+	res(await Promise.all(notes.map(note => pack(note))));
 });
