@@ -34,7 +34,7 @@
 			</div>
 		</header>
 		<div class="body">
-			<mk-note-html v-if="p.text" :ast="p.text" :i="os.i" :class="$style.text"/>
+			<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
@@ -49,7 +49,7 @@
 				<mk-note-preview :note="p.renote"/>
 			</div>
 		</div>
-		<router-link class="time" :to="`/@${pAcct}/${p.id}`">
+		<router-link class="time" :to="p | notePage">
 			<mk-time :time="p.createdAt" mode="detail"/>
 		</router-link>
 		<footer>
