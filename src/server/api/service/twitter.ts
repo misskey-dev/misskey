@@ -70,7 +70,8 @@ module.exports = (app: express.Application) => {
 
 	const twAuth = autwh({
 		consumerKey: config.twitter.consumer_key,
-		consumerSecret: config.twitter.consumer_secret
+		consumerSecret: config.twitter.consumer_secret,
+		callbackUrl: `${config.url}/api/tw/cb`
 	});
 
 	app.get('/connect/twitter', async (req, res): Promise<any> => {
