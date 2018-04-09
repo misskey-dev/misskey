@@ -23,10 +23,10 @@ const gm = _gm.subClass({
 
 const log = debug('misskey:drive:add-file');
 
-const tmpFile = (): Promise<string> => new Promise((resolve, reject) => {
-	tmp.file((e, path) => {
+const tmpFile = (): Promise<[string, any]> => new Promise((resolve, reject) => {
+	tmp.file((e, path, fd, cleanup) => {
 		if (e) return reject(e);
-		resolve(path);
+		resolve([path, cleanup]);
 	});
 });
 
@@ -254,18 +254,18 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 	const isStream = typeof file === 'object' && typeof file.read === 'function';
 
 	// Get file path
-	new Promise<string>((res, rej) => {
+	new Promise<[string, any]>((res, rej) => {
 		if (typeof file === 'string') {
-			res(file);
+			res([file, null]);
 		} else if (isStream) {
 			tmpFile()
-				.then(path => {
+				.then(([path, cleanup]) => {
 					const readable: stream.Readable = file;
 					const writable = fs.createWriteStream(path);
 					readable
 						.on('error', rej)
 						.on('end', () => {
-							res(path);
+							res([path, cleanup]);
 						})
 						.pipe(writable)
 						.on('error', rej);
@@ -275,15 +275,11 @@ export default (user: any, file: string | stream.Readable, ...args) => new Promi
 			rej(new Error('un-compatible file.'));
 		}
 	})
-	.then(path => new Promise<IDriveFile>((res, rej) => {
+	.then(([path, cleanup]) => new Promise<IDriveFile>((res, rej) => {
 		addFile(user, path, ...args)
 			.then(file => {
 				res(file);
-				if (isStream) {
-					fs.unlink(path, e => {
-						if (e) console.error(e.stack);
-					});
-				}
+				if (cleanup) cleanup();
 			})
 			.catch(rej);
 	}))

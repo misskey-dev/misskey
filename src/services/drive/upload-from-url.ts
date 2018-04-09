@@ -19,10 +19,10 @@ export default async (url, user, folderId = null, uri = null): Promise<IDriveFil
 	log(`name: ${name}`);
 
 	// Create temp file
-	const path = await new Promise<string>((res, rej) => {
-		tmp.file((e, path) => {
+	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
+		tmp.file((e, path, fd, cleanup) => {
 			if (e) return rej(e);
-			res(path);
+			res([path, cleanup]);
 		});
 	});
 
@@ -44,9 +44,7 @@ export default async (url, user, folderId = null, uri = null): Promise<IDriveFil
 	log(`created: ${driveFile._id}`);
 
 	// clean-up
-	fs.unlink(path, e => {
-		if (e) console.error(e);
-	});
+	cleanup();
 
 	return driveFile;
 };
