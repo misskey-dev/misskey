@@ -3,8 +3,8 @@ import { sign } from 'http-signature';
 import { URL } from 'url';
 import * as debug from 'debug';
 
-import config from '../config';
-import { ILocalUser } from '../models/user';
+import config from '../../config';
+import { ILocalUser } from '../../models/user';
 
 const log = debug('misskey:activitypub:deliver');
 

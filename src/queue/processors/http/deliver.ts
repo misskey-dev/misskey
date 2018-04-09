@@ -1,6 +1,6 @@
 import * as kue from 'kue';
 
-import request from '../../../remote/request';
+import request from '../../../remote/activitypub/request';
 
 export default async (job: kue.Job, done): Promise<void> => {
 	try {
