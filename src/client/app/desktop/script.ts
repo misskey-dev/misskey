@@ -57,7 +57,7 @@ init(async (launch) => {
 			{ path: '/othello', component: MkOthello },
 			{ path: '/othello/:game', component: MkOthello },
 			{ path: '/@:user', component: MkUser },
-			{ path: '/@:user/:note', component: MkNote }
+			{ path: '/notes/:note', component: MkNote }
 		]
 	});
 

@@ -10,6 +10,6 @@ Vue.filter('userName', user => {
 	return getUserName(user);
 });
 
-Vue.filter('userPage', user => {
-	return '/@' + Vue.filter('acct')(user);
+Vue.filter('userPage', (user, path?) => {
+	return '/@' + Vue.filter('acct')(user) + (path ? '/' + path : '');
 });

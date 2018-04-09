@@ -68,7 +68,7 @@ init((launch) => {
 			{ path: '/@:user', component: MkUser },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },
-			{ path: '/@:user/:note', component: MkNote }
+			{ path: '/notes/:note', component: MkNote }
 		]
 	});
 

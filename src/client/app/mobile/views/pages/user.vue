@@ -30,11 +30,11 @@
 						<b>{{ user.notesCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.notes%</i>
 					</a>
-					<a :href="`${user | userPage}/following`">
+					<a :href="user | userPage('following')">
 						<b>{{ user.followingCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.following%</i>
 					</a>
-					<a :href="`${user | userPage}/followers`">
+					<a :href="user | userPage('followers')">
 						<b>{{ user.followersCount | number }}</b>
 						<i>%i18n:mobile.tags.mk-user.followers%</i>
 					</a>
