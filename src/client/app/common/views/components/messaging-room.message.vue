@@ -1,6 +1,6 @@
 <template>
 <div class="message" :data-is-me="isMe">
-	<router-link class="avatar-anchor" :to="message.user | userPage" :title="acct" target="_blank">
+	<router-link class="avatar-anchor" :to="message.user | userPage" :title="message.user | acct" target="_blank">
 		<img class="avatar" :src="`${message.user.avatarUrl}?thumbnail&size=80`" alt=""/>
 	</router-link>
 	<div class="content">
