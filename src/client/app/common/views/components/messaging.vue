@@ -33,7 +33,7 @@
 				<div>
 					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatarUrl : message.user.avatarUrl}?thumbnail&size=64`" alt=""/>
 					<header>
-						<span class="name">{{ isMe(message) ? message.recipient : message.use | userName }}</span>
+						<span class="name">{{ isMe(message) ? message.recipient : message.user | userName }}</span>
 						<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
 						<mk-time :time="message.createdAt"/>
 					</header>
