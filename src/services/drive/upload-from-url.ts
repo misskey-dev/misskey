@@ -33,7 +33,7 @@ export default async (url, user, folderId = null, uri = null): Promise<IDriveFil
 			.on('error', rej)
 			.on('end', () => {
 				writable.close();
-				res(path);
+				res();
 			})
 			.pipe(writable)
 			.on('error', rej);
