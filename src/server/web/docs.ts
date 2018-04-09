@@ -2,9 +2,10 @@
  * Docs Server
  */
 
+import * as path from 'path';
 import * as express from 'express';
 
-const docs = `${__dirname}/../../client/docs/`;
+const docs = path.resolve(`${__dirname}/../../client/docs/`);
 
 /**
  * Init app
