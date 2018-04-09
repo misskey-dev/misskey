@@ -23,19 +23,12 @@
 				</a>
 			</li>
 		</template>
-		<li class="ch">
-			<a :href="chUrl" target="_blank">
-				%fa:tv%
-				<p>%i18n:desktop.tags.mk-ui-header-nav.ch%</p>
-			</a>
-		</li>
 	</ul>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { chUrl } from '../../../config';
 import MkMessagingWindow from './messaging-window.vue';
 import MkGameWindow from './game-window.vue';
 
@@ -45,8 +38,7 @@ export default Vue.extend({
 			hasUnreadMessagingMessages: false,
 			hasGameInvitations: false,
 			connection: null,
-			connectionId: null,
-			chUrl
+			connectionId: null
 		};
 	},
 	mounted() {

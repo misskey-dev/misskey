@@ -21,7 +21,6 @@
 					<li><router-link to="/othello">%fa:gamepad%ゲーム<template v-if="hasGameInvitations">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
-					<li><a :href="chUrl" target="_blank">%fa:tv%%i18n:mobile.tags.mk-ui-nav.ch%%fa:angle-right%</a></li>
 					<li><router-link to="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
