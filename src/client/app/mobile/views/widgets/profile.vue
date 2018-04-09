@@ -8,23 +8,16 @@
 			:src="`${os.i.avatarUrl}?thumbnail&size=96`"
 			alt="avatar"
 		/>
-		<router-link :class="$style.name" :to="`/@${os.i.username}`">{{ name }}</router-link>
+		<router-link :class="$style.name" :to="os.i | userPage">{{ os.i | userName }}</router-link>
 	</mk-widget-container>
 </div>
 </template>
 
 <script lang="ts">
 import define from '../../../common/define-widget';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default define({
 	name: 'profile'
-}).extend({
-	computed: {
-		name() {
-			return getUserName(this.os.i);
-		}
-	}
 });
 </script>
 

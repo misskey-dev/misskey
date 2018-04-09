@@ -8,7 +8,7 @@
 					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a :href="aboutUrl">詳しく...</a></p>
 					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
 					<div class="users">
-						<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="`/@${getAcct(user)}`" v-user-preview="user.id">
+						<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="user | userPage" v-user-preview="user.id">
 							<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 						</router-link>
 					</div>

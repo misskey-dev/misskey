@@ -7,12 +7,12 @@
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<template v-else-if="users.length != 0">
 		<div class="user" v-for="_user in users">
-			<router-link class="avatar-anchor" :to="`/@${getAcct(_user)}`">
+			<router-link class="avatar-anchor" :to="_user | userPage">
 				<img class="avatar" :src="`${_user.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="_user.id"/>
 			</router-link>
 			<div class="body">
-				<router-link class="name" :to="`/@${getAcct(_user)}`" v-user-preview="_user.id">{{ getUserName(_user) }}</router-link>
-				<p class="username">@{{ getAcct(_user) }}</p>
+				<router-link class="name" :to="_user | userPage" v-user-preview="_user.id">{{ _user | userName }}</router-link>
+				<p class="username">@{{ _user | acct }}</p>
 			</div>
 			<mk-follow-button :user="_user"/>
 		</div>
@@ -23,8 +23,6 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 
 const limit = 3;
 
@@ -45,8 +43,6 @@ export default define({
 		this.fetch();
 	},
 	methods: {
-		getAcct,
-		getUserName,
 		func() {
 			this.props.compact = !this.props.compact;
 		},

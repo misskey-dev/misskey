@@ -4,7 +4,7 @@
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="main">
-			<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ name }}</b>さん</p>
+			<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ os.i | userName }}</b>さん</p>
 			<div class="container" ref="mainContainer">
 				<div class="left">
 					<x-nav/>
@@ -33,14 +33,7 @@ import XNotifications from './ui.header.notifications.vue';
 import XPost from './ui.header.post.vue';
 import XClock from './ui.header.clock.vue';
 
-import getUserName from '../../../../../renderers/get-user-name';
-
 export default Vue.extend({
-	computed: {
-		name(): string {
-			return getUserName((this as any).os.i);
-		}
-	},
 	components: {
 		XNav,
 		XSearch,

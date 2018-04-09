@@ -14,8 +14,8 @@
 					tabindex="-1"
 				>
 					<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
-					<span class="name">{{ getUserName(user) }}</span>
-					<span class="username">@{{ getAcct(user) }}</span>
+					<span class="name">{{ user | userName }}</span>
+					<span class="username">@{{ user | acct }}</span>
 				</li>
 			</ol>
 		</div>
@@ -33,8 +33,8 @@
 				<div>
 					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatarUrl : message.user.avatarUrl}?thumbnail&size=64`" alt=""/>
 					<header>
-						<span class="name">{{ getUserName(isMe(message) ? message.recipient : message.user) }}</span>
-						<span class="username">@{{ getAcct(isMe(message) ? message.recipient : message.user) }}</span>
+						<span class="name">{{ isMe(message) ? message.recipient : message.use | userName }}</span>
+						<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
 						<mk-time :time="message.createdAt"/>
 					</header>
 					<div class="body">
@@ -51,8 +51,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: {
@@ -94,8 +92,6 @@ export default Vue.extend({
 		(this as any).os.streams.messagingIndexStream.dispose(this.connectionId);
 	},
 	methods: {
-		getAcct,
-		getUserName,
 		isMe(message) {
 			return message.userId == (this as any).os.i.id;
 		},

@@ -20,7 +20,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { version, codename } from '../../../config';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -30,8 +29,8 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		name() {
-			return getUserName(this.os.i);
+		name(): string {
+			return Vue.filter('userName')((this as any).os.i);
 		}
 	},
 	mounted() {

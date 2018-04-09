@@ -2,12 +2,12 @@
 <div class="mk-user-preview">
 	<template v-if="u != null">
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl}?thumbnail&size=512)` : ''"></div>
-		<router-link class="avatar" :to="`/@${getAcct(u)}`">
+		<router-link class="avatar" :to="u | userPage">
 			<img :src="`${u.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
 		<div class="title">
-			<router-link class="name" :to="`/@${getAcct(u)}`">{{ u.name }}</router-link>
-			<p class="username">@{{ getAcct(u) }}</p>
+			<router-link class="name" :to="u | userPage">{{ u.name }}</router-link>
+			<p class="username">@{{ u | acct }}</p>
 		</div>
 		<div class="description">{{ u.description }}</div>
 		<div class="status">

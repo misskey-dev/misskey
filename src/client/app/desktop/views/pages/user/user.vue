@@ -45,7 +45,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 				Progress.done();
-				document.title = getUserName(user) + ' | Misskey';
+				document.title = getUserName(this.user) + ' | Misskey';
 			});
 		}
 	}

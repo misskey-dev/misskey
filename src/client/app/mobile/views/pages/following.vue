@@ -20,7 +20,6 @@
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
 import parseAcct from '../../../../../acct/parse';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -30,8 +29,8 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		name() {
-			return getUserName(this.user);
+		name(): string {
+			return Vue.filter('userName')(this.user);
 		}
 	},
 	watch: {

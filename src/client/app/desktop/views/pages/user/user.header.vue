@@ -7,8 +7,8 @@
 	<div class="container">
 		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=150`" alt="avatar"/>
 		<div class="title">
-			<p class="name">{{ name }}</p>
-			<p class="username">@{{ acct }}</p>
+			<p class="name">{{ user | userName }}</p>
+			<p class="username">@{{ user | acct }}</p>
 			<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker%{{ user.profile.location }}</p>
 		</div>
 		<footer>
@@ -22,19 +22,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../../acct/render';
-import getUserName from '../../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	props: ['user'],
-	computed: {
-		acct() {
-			return getAcct(this.user);
-		},
-		name() {
-			return getUserName(this.user);
-		}
-	},
 	mounted() {
 		window.addEventListener('load', this.onScroll);
 		window.addEventListener('scroll', this.onScroll);

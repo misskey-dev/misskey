@@ -5,29 +5,29 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<router-link class="avatar-anchor" :to="`/@${getAcct(note.user)}`" v-user-preview="note.userId">
+			<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.userId">
 				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
 			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('{')) }}</span>
-			<a class="name" :href="`/@${getAcct(note.user)}`" v-user-preview="note.userId">{{ getUserName(note.user) }}</a>
+			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
 			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="`/@${getAcct(p.user)}`">
+		<router-link class="avatar-anchor" :to="p.user | userPage">
 			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<div class="main">
 			<header>
-				<router-link class="name" :to="`/@${getAcct(p.user)}`" v-user-preview="p.user.id">{{ getUserName(p.user) }}</router-link>
+				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
 				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
-				<span class="username">@{{ getAcct(p.user) }}</span>
+				<span class="username">@{{ p.user | acct }}</span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
-					<router-link class="created-at" :to="url">
+					<router-link class="created-at" :to="p | notePage">
 						<mk-time :time="p.createdAt"/>
 					</router-link>
 				</div>
@@ -85,8 +85,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 import parse from '../../../../../text/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
@@ -117,9 +115,7 @@ export default Vue.extend({
 		return {
 			isDetailOpened: false,
 			connection: null,
-			connectionId: null,
-			getAcct,
-			getUserName
+			connectionId: null
 		};
 	},
 
@@ -143,9 +139,6 @@ export default Vue.extend({
 		},
 		title(): string {
 			return dateStringify(this.p.createdAt);
-		},
-		url(): string {
-			return `/@${this.acct}/${this.p.id}`;
 		},
 		urls(): string[] {
 			if (this.p.text) {

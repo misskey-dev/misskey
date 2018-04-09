@@ -1,13 +1,13 @@
 <template>
 <div class="sub">
-	<router-link class="avatar-anchor" :to="`/@${getAcct(note.user)}`">
+	<router-link class="avatar-anchor" :to="note.user | userPage">
 		<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${getAcct(note.user)}`">{{ getUserName(note.user) }}</router-link>
-			<span class="username">@{{ getAcct(note.user) }}</span>
-			<router-link class="created-at" :to="`/@${getAcct(note.user)}/${note.id}`">
+			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
+			<span class="username">@{{ note.user | acct }}</span>
+			<router-link class="created-at" :to="note | notePage">
 				<mk-time :time="note.createdAt"/>
 			</router-link>
 		</header>
@@ -20,17 +20,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
-	props: ['note'],
-	data() {
-		return {
-			getAcct,
-			getUserName
-		};
-	}
+	props: ['note']
 });
 </script>
 

@@ -1,13 +1,13 @@
 <template>
 <div class="mk-welcome-timeline">
 	<div v-for="note in notes">
-		<router-link class="avatar-anchor" :to="`/@${getAcct(note.user)}`" v-user-preview="note.user.id">
+		<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.user.id">
 			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
 		</router-link>
 		<div class="body">
 			<header>
-				<router-link class="name" :to="`/@${getAcct(note.user)}`" v-user-preview="note.user.id">{{ getUserName(note.user) }}</router-link>
-				<span class="username">@{{ getAcct(note.user) }}</span>
+				<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
+				<span class="username">@{{ note.user | acct }}</span>
 				<div class="info">
 					<router-link class="created-at" :to="`/@${getAcct(note.user)}/${note.id}`">
 						<mk-time :time="note.createdAt"/>
@@ -24,8 +24,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
 	data() {
@@ -38,8 +36,6 @@ export default Vue.extend({
 		this.fetch();
 	},
 	methods: {
-		getAcct,
-		getUserName,
 		fetch(cb?) {
 			this.fetching = true;
 			(this as any).api('notes', {

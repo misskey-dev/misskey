@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header" v-if="!fetching">%fa:user% {{ user }}</span>
+	<span slot="header" v-if="!fetching">%fa:user% {{ user | userName }}</span>
 	<main v-if="!fetching">
 		<header>
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''"></div>
@@ -12,8 +12,8 @@
 					<mk-follow-button v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
-					<h1>{{ getUserName(user) }}</h1>
-					<span class="username">@{{ getAcct(user) }}</span>
+					<h1>{{ user | userName }}</h1>
+					<span class="username">@{{ user | acct }}</span>
 					<span class="followed" v-if="user.isFollowed">%i18n:mobile.tags.mk-user.follows-you%</span>
 				</div>
 				<div class="description">{{ user.description }}</div>
@@ -61,8 +61,6 @@
 import Vue from 'vue';
 import * as age from 's-age';
 import parseAcct from '../../../../../acct/parse';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 import Progress from '../../../common/scripts/loading';
 import XHome from './user/home.vue';
 
@@ -74,9 +72,7 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			user: null,
-			page: 'home',
-			getAcct,
-			getUserName
+			page: 'home'
 		};
 	},
 	computed: {
@@ -102,7 +98,7 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
-				document.title = this.getUserName(this.user) + ' | Misskey';
+				document.title = Vue.filter('userName')(this.user) + ' | Misskey';
 			});
 		}
 	}

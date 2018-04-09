@@ -1,12 +1,12 @@
 <template>
 <div class="root item">
-	<router-link class="avatar-anchor" :to="`/@${acct}`" v-user-preview="user.id">
+	<router-link class="avatar-anchor" :to="user | userPage" v-user-preview="user.id">
 		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${acct}`" v-user-preview="user.id">{{ name }}</router-link>
-			<span class="username">@{{ acct }}</span>
+			<router-link class="name" :to="user | userPage" v-user-preview="user.id">{{ user | userName }}</router-link>
+			<span class="username">@{{ user | acct }}</span>
 		</header>
 		<div class="body">
 			<p class="followed" v-if="user.isFollowed">フォローされています</p>
@@ -19,19 +19,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
-	props: ['user'],
-	computed: {
-		acct() {
-			return getAcct(this.user);
-		},
-		name() {
-			return getUserName(this.user);
-		}
-	}
+	props: ['user']
 });
 </script>
 

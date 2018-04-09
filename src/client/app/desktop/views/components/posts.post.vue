@@ -1,44 +1,45 @@
 <template>
-<div class="note" :class="{ renote: isRenote }">
+<div class="note" tabindex="-1" :title="title" @keydown="onKeydown">
 	<div class="reply-to" v-if="p.reply">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+			<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.userId">
+				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			<span>{{ '%i18n:mobile.tags.mk-timeline-note.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-note.reposted-by%'.indexOf('{')) }}</span>
-			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:mobile.tags.mk-timeline-note.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-note.reposted-by%'.indexOf('}') + 1) }}</span>
+			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('{')) }}</span>
+			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
+			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
 		<router-link class="avatar-anchor" :to="p.user | userPage">
-			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
+			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
 		</router-link>
 		<div class="main">
 			<header>
-				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
+				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
 				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
 				<span class="username">@{{ p.user | acct }}</span>
 				<div class="info">
+					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
-					<router-link class="created-at" :to="p | notePage">
+					<router-link class="created-at" :to="url">
 						<mk-time :time="p.createdAt"/>
 					</router-link>
 				</div>
 			</header>
 			<div class="body">
-				<p class="channel" v-if="p.channel != null"><a target="_blank">{{ p.channel.title }}</a>:</p>
+				<p class="channel" v-if="p.channel">
+					<a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:
+				</p>
 				<div class="text">
-					<a class="reply" v-if="p.reply">
-						%fa:reply%
-					</a>
-					<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
-					<a class="rp" v-if="p.renote != null">RP:</a>
+					<a class="reply" v-if="p.reply">%fa:reply%</a>
+					<mk-note-html v-if="p.textHtml" :text="p.text" :i="os.i" :class="$style.text"/>
+					<a class="rp" v-if="p.renote">RP:</a>
 				</div>
 				<div class="media" v-if="p.media.length > 0">
 					<mk-media-list :media-list="p.media"/>
@@ -47,41 +48,61 @@
 				<div class="tags" v-if="p.tags && p.tags.length > 0">
 					<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 				</div>
-				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 				<div class="map" v-if="p.geo" ref="map"></div>
-				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 				<div class="renote" v-if="p.renote">
 					<mk-note-preview :note="p.renote"/>
 				</div>
+				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			</div>
 			<footer>
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
-				<button @click="reply">
+				<button @click="reply" title="%i18n:desktop.tags.mk-timeline-note.reply%">
 					%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 				</button>
-				<button @click="renote" title="Renote">
+				<button @click="renote" title="%i18n:desktop.tags.mk-timeline-note.renote%">
 					%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 				</button>
-				<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton">
+				<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:desktop.tags.mk-timeline-note.add-reaction%">
 					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 				</button>
-				<button class="menu" @click="menu" ref="menuButton">
+				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
+				</button>
+				<button title="%i18n:desktop.tags.mk-timeline-note.detail">
+					<template v-if="!isDetailOpened">%fa:caret-down%</template>
+					<template v-if="isDetailOpened">%fa:caret-up%</template>
 				</button>
 			</footer>
 		</div>
 	</article>
+	<div class="detail" v-if="isDetailOpened">
+		<mk-note-status-graph width="462" height="130" :note="p"/>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import dateStringify from '../../../common/scripts/date-stringify';
 import parse from '../../../../../text/parse';
 
+import MkPostFormWindow from './post-form-window.vue';
+import MkRenoteFormWindow from './renote-form-window.vue';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
-import XSub from './note.sub.vue';
+import XSub from './notes.note.sub.vue';
+
+function focus(el, fn) {
+	const target = fn(el);
+	if (target) {
+		if (target.hasAttribute('tabindex')) {
+			target.focus();
+		} else {
+			focus(target, fn);
+		}
+	}
+}
 
 export default Vue.extend({
 	components: {
@@ -92,6 +113,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			isDetailOpened: false,
 			connection: null,
 			connectionId: null
 		};
@@ -113,6 +135,9 @@ export default Vue.extend({
 					.map(key => this.p.reactionCounts[key])
 					.reduce((a, b) => a + b)
 				: 0;
+		},
+		title(): string {
+			return dateStringify(this.p.createdAt);
 		},
 		urls(): string[] {
 			if (this.p.text) {
@@ -199,28 +224,62 @@ export default Vue.extend({
 			}
 		},
 		reply() {
-			(this as any).apis.post({
+			(this as any).os.new(MkPostFormWindow, {
 				reply: this.p
 			});
 		},
 		renote() {
-			(this as any).apis.post({
-				renote: this.p
+			(this as any).os.new(MkRenoteFormWindow, {
+				note: this.p
 			});
 		},
 		react() {
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
-				note: this.p,
-				compact: true
+				note: this.p
 			});
 		},
 		menu() {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
-				note: this.p,
-				compact: true
+				note: this.p
 			});
+		},
+		onKeydown(e) {
+			let shouldBeCancel = true;
+
+			switch (true) {
+				case e.which == 38: // [↑]
+				case e.which == 74: // [j]
+				case e.which == 9 && e.shiftKey: // [Shift] + [Tab]
+					focus(this.$el, e => e.previousElementSibling);
+					break;
+
+				case e.which == 40: // [↓]
+				case e.which == 75: // [k]
+				case e.which == 9: // [Tab]
+					focus(this.$el, e => e.nextElementSibling);
+					break;
+
+				case e.which == 81: // [q]
+				case e.which == 69: // [e]
+					this.renote();
+					break;
+
+				case e.which == 70: // [f]
+				case e.which == 76: // [l]
+					//this.like();
+					break;
+
+				case e.which == 82: // [r]
+					this.reply();
+					break;
+
+				default:
+					shouldBeCancel = false;
+			}
+
+			if (shouldBeCancel) e.preventDefault();
 		}
 	}
 });
@@ -230,23 +289,35 @@ export default Vue.extend({
 @import '~const.styl'
 
 .note
-	font-size 12px
+	margin 0
+	padding 0
+	background #fff
 	border-bottom solid 1px #eaeaea
 
 	&:first-child
-		border-radius 8px 8px 0 0
+		border-top-left-radius 6px
+		border-top-right-radius 6px
 
 		> .renote
-			border-radius 8px 8px 0 0
+			border-top-left-radius 6px
+			border-top-right-radius 6px
 
 	&:last-of-type
 		border-bottom none
 
-	@media (min-width 350px)
-		font-size 14px
+	&:focus
+		z-index 1
 
-	@media (min-width 500px)
-		font-size 16px
+		&:after
+			content ""
+			pointer-events none
+			position absolute
+			top 2px
+			right 2px
+			bottom 2px
+			left 2px
+			border 2px solid rgba($theme-color, 0.3)
+			border-radius 4px
 
 	> .renote
 		color #9dbb00
@@ -254,11 +325,8 @@ export default Vue.extend({
 
 		> p
 			margin 0
-			padding 8px 16px
+			padding 16px 32px
 			line-height 28px
-
-			@media (min-width 500px)
-				padding 16px
 
 			.avatar-anchor
 				display inline-block
@@ -278,73 +346,62 @@ export default Vue.extend({
 
 		> .mk-time
 			position absolute
-			top 8px
-			right 16px
+			top 16px
+			right 32px
 			font-size 0.9em
 			line-height 28px
-
-			@media (min-width 500px)
-				top 16px
 
 		& + article
 			padding-top 8px
 
 	> .reply-to
+		padding 0 16px
 		background rgba(0, 0, 0, 0.0125)
 
 		> .mk-note-preview
 			background transparent
 
 	> article
-		padding 14px 16px 9px 16px
+		padding 28px 32px 18px 32px
 
 		&:after
 			content ""
 			display block
 			clear both
 
+		&:hover
+			> .main > footer > button
+				color #888
+
 		> .avatar-anchor
 			display block
 			float left
-			margin 0 10px 8px 0
-			position -webkit-sticky
-			position sticky
-			top 62px
-
-			@media (min-width 500px)
-				margin-right 16px
+			margin 0 16px 10px 0
+			//position -webkit-sticky
+			//position sticky
+			//top 74px
 
 			> .avatar
 				display block
-				width 48px
-				height 48px
+				width 58px
+				height 58px
 				margin 0
-				border-radius 6px
+				border-radius 8px
 				vertical-align bottom
-
-				@media (min-width 500px)
-					width 58px
-					height 58px
-					border-radius 8px
 
 		> .main
 			float left
-			width calc(100% - 58px)
-
-			@media (min-width 500px)
-				width calc(100% - 74px)
+			width calc(100% - 74px)
 
 			> header
 				display flex
 				align-items center
+				margin-bottom 4px
 				white-space nowrap
-
-				@media (min-width 500px)
-					margin-bottom 2px
 
 				> .name
 					display block
-					margin 0 0.5em 0 0
+					margin 0 .5em 0 0
 					padding 0
 					overflow hidden
 					color #627079
@@ -357,7 +414,7 @@ export default Vue.extend({
 						text-decoration underline
 
 				> .is-bot
-					margin 0 0.5em 0 0
+					margin 0 .5em 0 0
 					padding 1px 6px
 					font-size 12px
 					color #aaa
@@ -365,7 +422,7 @@ export default Vue.extend({
 					border-radius 3px
 
 				> .username
-					margin 0 0.5em 0 0
+					margin 0 .5em 0 0
 					color #ccc
 
 				> .info
@@ -373,8 +430,14 @@ export default Vue.extend({
 					font-size 0.9em
 
 					> .mobile
-						margin-right 6px
-						color #c0c0c0
+						margin-right 8px
+						color #ccc
+
+					> .app
+						margin-right 8px
+						padding-right 8px
+						color #ccc
+						border-right solid 1px #eaeaea
 
 					> .created-at
 						color #c0c0c0
@@ -382,6 +445,7 @@ export default Vue.extend({
 			> .body
 
 				> .text
+					cursor default
 					display block
 					margin 0
 					padding 0
@@ -404,20 +468,17 @@ export default Vue.extend({
 						font-style oblique
 						color #a0bf46
 
-					[data-is-me]:after
-						content "you"
-						padding 0 4px
-						margin-left 4px
-						font-size 80%
-						color $theme-color-foreground
-						background $theme-color
-						border-radius 4px
+				> .location
+					margin 4px 0
+					font-size 12px
+					color #ccc
 
-				.mk-url-preview
-					margin-top 8px
+				> .map
+					width 100%
+					height 300px
 
-				> .channel
-					margin 0
+					&:empty
+						display none
 
 				> .tags
 					margin 4px 0 0 0
@@ -444,26 +505,15 @@ export default Vue.extend({
 							background #fff
 							border-radius 100%
 
-				> .media
-					> img
-						display block
-						max-width 100%
+						&:hover
+							text-decoration none
+							background #e2e7ec
 
-				> .location
-					margin 4px 0
-					font-size 12px
-					color #ccc
+				.mk-url-preview
+					margin-top 8px
 
-				> .map
-					width 100%
-					height 200px
-
-					&:empty
-						display none
-
-				> .app
-					font-size 12px
-					color #ccc
+				> .channel
+					margin 0
 
 				> .mk-poll
 					font-size 80%
@@ -478,17 +528,14 @@ export default Vue.extend({
 
 			> footer
 				> button
-					margin 0
-					padding 8px
-					background transparent
-					border none
-					box-shadow none
+					margin 0 28px 0 0
+					padding 0 8px
+					line-height 32px
 					font-size 1em
 					color #ddd
+					background transparent
+					border none
 					cursor pointer
-
-					&:not(:last-child)
-						margin-right 28px
 
 					&:hover
 						color #666
@@ -501,14 +548,20 @@ export default Vue.extend({
 					&.reacted
 						color $theme-color
 
-					&.menu
-						@media (max-width 350px)
-							display none
+					&:last-child
+						position absolute
+						right 0
+						margin 0
+
+	> .detail
+		padding-top 4px
+		background rgba(0, 0, 0, 0.0125)
 
 </style>
 
 <style lang="stylus" module>
 .text
+
 	code
 		padding 4px 8px
 		margin 0 0.5em
@@ -520,4 +573,13 @@ export default Vue.extend({
 	pre > code
 		padding 16px
 		margin 0
+
+	[data-is-me]:after
+		content "you"
+		padding 0 4px
+		margin-left 4px
+		font-size 80%
+		color $theme-color-foreground
+		background $theme-color
+		border-radius 4px
 </style>

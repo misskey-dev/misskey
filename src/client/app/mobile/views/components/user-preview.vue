@@ -1,12 +1,12 @@
 <template>
 <div class="mk-user-preview">
-	<router-link class="avatar-anchor" :to="`/@${acct}`">
+	<router-link class="avatar-anchor" :to="user | userPage">
 		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 	</router-link>
 	<div class="main">
 		<header>
-			<router-link class="name" :to="`/@${acct}`">{{ name }}</router-link>
-			<span class="username">@{{ acct }}</span>
+			<router-link class="name" :to="user | userPage">{{ user | userName }}</router-link>
+			<span class="username">@{{ user | acct }}</span>
 		</header>
 		<div class="body">
 			<div class="description">{{ user.description }}</div>
@@ -17,19 +17,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 
 export default Vue.extend({
-	props: ['user'],
-	computed: {
-		acct() {
-			return getAcct(this.user);
-		},
-		name() {
-			return getUserName(this.user);
-		}
-	}
+	props: ['user']
 });
 </script>
 

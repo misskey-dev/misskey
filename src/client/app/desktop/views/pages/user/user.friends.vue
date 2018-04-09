@@ -4,12 +4,12 @@
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
-			<router-link class="avatar-anchor" :to="`/@${getAcct(friend)}`">
+			<router-link class="avatar-anchor" :to="friend | userPage">
 				<img class="avatar" :src="`${friend.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="friend.id"/>
 			</router-link>
 			<div class="body">
-				<router-link class="name" :to="`/@${getAcct(friend)}`" v-user-preview="friend.id">{{ friend.name }}</router-link>
-				<p class="username">@{{ getAcct(friend) }}</p>
+				<router-link class="name" :to="friend | userPage" v-user-preview="friend.id">{{ friend.name }}</router-link>
+				<p class="username">@{{ friend | acct }}</p>
 			</div>
 			<mk-follow-button :user="friend"/>
 		</div>

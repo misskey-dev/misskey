@@ -11,7 +11,7 @@
 		<div class="body" v-if="isOpen">
 			<router-link class="me" v-if="os.isSignedIn" :to="`/@${os.i.username}`">
 				<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=128`" alt="avatar"/>
-				<p class="name">{{ name }}</p>
+				<p class="name">{{ os.i | userName }}</p>
 			</router-link>
 			<div class="links">
 				<ul>
@@ -39,16 +39,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { docsUrl, chUrl, lang } from '../../../config';
-import getUserName from '../../../../../renderers/get-user-name';
+import { docsUrl, lang } from '../../../config';
 
 export default Vue.extend({
 	props: ['isOpen'],
-	computed: {
-		name() {
-			return getUserName(this.os.i);
-		}
-	},
 	data() {
 		return {
 			hasUnreadNotifications: false,
@@ -56,8 +50,7 @@ export default Vue.extend({
 			hasGameInvitations: false,
 			connection: null,
 			connectionId: null,
-			aboutUrl: `${docsUrl}/${lang}/about`,
-			chUrl
+			aboutUrl: `${docsUrl}/${lang}/about`
 		};
 	},
 	mounted() {

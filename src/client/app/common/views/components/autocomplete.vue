@@ -3,8 +3,8 @@
 	<ol class="users" ref="suggests" v-if="users.length > 0">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
 			<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
-			<span class="name">{{ getUserName(user) }}</span>
-			<span class="username">@{{ getAcct(user) }}</span>
+			<span class="name">{{ user | userName }}</span>
+			<span class="username">@{{ user | acct }}</span>
 		</li>
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
@@ -21,17 +21,17 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
 
 const lib = Object.entries(emojilib.lib).filter((x: any) => {
 	return x[1].category != 'flags';
 });
+
 const emjdb = lib.map((x: any) => ({
 	emoji: x[1].char,
 	name: x[0],
 	alias: null
 }));
+
 lib.forEach((x: any) => {
 	if (x[1].keywords) {
 		x[1].keywords.forEach(k => {
@@ -43,6 +43,7 @@ lib.forEach((x: any) => {
 		});
 	}
 });
+
 emjdb.sort((a, b) => a.name.length - b.name.length);
 
 export default Vue.extend({
@@ -107,8 +108,6 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		getAcct,
-		getUserName,
 		exec() {
 			this.select = -1;
 			if (this.$refs.suggests) {
