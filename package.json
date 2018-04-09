@@ -87,7 +87,7 @@
 		"accesses": "2.5.0",
 		"animejs": "2.2.0",
 		"autosize": "4.0.1",
-		"autwh": "0.0.1",
+		"autwh": "0.1.0",
 		"bcryptjs": "2.4.3",
 		"body-parser": "1.18.2",
 		"bootstrap-vue": "2.0.0-rc.6",
