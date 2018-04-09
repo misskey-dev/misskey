@@ -1,16 +1,17 @@
 import * as EventEmitter from 'events';
 import * as express from 'express';
-//const crypto = require('crypto');
+import * as request from 'request';
+const crypto = require('crypto');
+
 import User from '../../../models/user';
+import createNote from '../../../services/note/create';
 import config from '../../../config';
-import { createHttp } from '../../../queue';
 
 module.exports = async (app: express.Application) => {
 	if (config.github_bot == null) return;
 
 	const bot = await User.findOne({
-		usernameLower: config.github_bot.username.toLowerCase(),
-		host: null
+		username_lower: config.github_bot.username.toLowerCase()
 	});
 
 	if (bot == null) {
@@ -18,7 +19,7 @@ module.exports = async (app: express.Application) => {
 		return;
 	}
 
-	const post = text => require('../endpoints/notes/create')({ text }, bot);
+	const post = text => createNote(bot, { text });
 
 	const handler = new EventEmitter();
 
@@ -26,12 +27,12 @@ module.exports = async (app: express.Application) => {
 		// req.headers['x-hub-signature'] および
 		// req.headers['x-github-event'] は常に string ですが、型定義の都合上
 		// string | string[] になっているので string を明示しています
-//		if ((new Buffer(req.headers['x-hub-signature'] as string)).equals(new Buffer(`sha1=${crypto.createHmac('sha1', config.github_bot.hook_secret).update(JSON.stringify(req.body)).digest('hex')}`))) {
+		if ((new Buffer(req.headers['x-hub-signature'] as string)).equals(new Buffer(`sha1=${crypto.createHmac('sha1', config.github_bot.hook_secret).update(JSON.stringify(req.body)).digest('hex')}`))) {
 			handler.emit(req.headers['x-github-event'] as string, req.body);
 			res.sendStatus(200);
-//		} else {
-//			res.sendStatus(400);
-//		}
+		} else {
+			res.sendStatus(400);
+		}
 	});
 
 	handler.on('status', event => {
@@ -42,13 +43,26 @@ module.exports = async (app: express.Application) => {
 				const commit = event.commit;
 				const parent = commit.parents[0];
 
-				createHttp({
-					type: 'gitHubFailureReport',
-					userId: bot._id,
-					parentUrl: parent.url,
-					htmlUrl: commit.html_url,
-					message: commit.commit.message,
-				}).save();
+				// Fetch parent status
+				request({
+					url: `${parent.url}/statuses`,
+					headers: {
+						'User-Agent': 'misskey'
+					}
+				}, (err, res, body) => {
+					if (err) {
+						console.error(err);
+						return;
+					}
+					const parentStatuses = JSON.parse(body);
+					const parentState = parentStatuses[0].state;
+					const stillFailed = parentState == 'failure' || parentState == 'error';
+					if (stillFailed) {
+						post(`**⚠️BUILD STILL FAILED⚠️**: ?[${commit.commit.message}](${commit.html_url})`);
+					} else {
+						post(`**🚨BUILD FAILED🚨**: →→→?[${commit.commit.message}](${commit.html_url})←←←`);
+					}
+				});
 				break;
 		}
 	});
