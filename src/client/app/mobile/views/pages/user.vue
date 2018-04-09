@@ -208,11 +208,13 @@ main
 						font-size 14px
 
 	> nav
+		position -webkit-sticky
 		position sticky
 		top 48px
 		box-shadow 0 4px 4px rgba(0, 0, 0, 0.3)
 		background-color #313a42
 		z-index 1
+
 		> .nav-container
 			display flex
 			justify-content center
