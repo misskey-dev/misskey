@@ -89,7 +89,7 @@ export const isRemoteUser = (user: any): user is IRemoteUser =>
 
 //#region Validators
 export function validateUsername(username: string): boolean {
-	return typeof username == 'string' && /^[a-zA-Z0-9_]{3,20}$/.test(username);
+	return typeof username == 'string' && /^[a-zA-Z0-9_]{1,20}$/.test(username);
 }
 
 export function validatePassword(password: string): boolean {

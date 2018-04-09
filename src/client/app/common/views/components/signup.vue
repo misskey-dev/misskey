@@ -2,7 +2,7 @@
 <form class="mk-signup" @submit.prevent="onSubmit" autocomplete="off">
 	<label class="username">
 		<p class="caption">%fa:at%%i18n:common.tags.mk-signup.username%</p>
-		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{3,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required @input="onChangeUsername"/>
+		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required @input="onChangeUsername"/>
 		<p class="profile-page-url-preview" v-if="shouldShowProfileUrl">{{ `${url}/@${username}` }}</p>
 		<p class="info" v-if="usernameState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%%i18n:common.tags.mk-signup.checking%</p>
 		<p class="info" v-if="usernameState == 'ok'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.available%</p>
