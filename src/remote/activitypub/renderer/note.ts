@@ -5,7 +5,7 @@ import DriveFile from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 
-export default async (note: INote) => {
+export default async function renderNote(note: INote, dive = true) {
 	const promisedFiles = note.mediaIds
 		? DriveFile.find({ _id: { $in: note.mediaIds } })
 		: Promise.resolve([]);
@@ -23,7 +23,15 @@ export default async (note: INote) => {
 			});
 
 			if (inReplyToUser !== null) {
-				inReplyTo = inReplyToNote.uri || `${config.url}/notes/${inReplyToNote._id}`;
+				if (inReplyToNote.uri) {
+					inReplyTo = inReplyToNote.uri;
+				} else {
+					if (dive) {
+						inReplyTo = await renderNote(inReplyToNote, false);
+					} else {
+						inReplyTo = `${config.url}/notes/${inReplyToNote._id}`;
+					}
+				}
 			}
 		}
 	} else {
@@ -48,4 +56,4 @@ export default async (note: INote) => {
 		attachment: (await promisedFiles).map(renderDocument),
 		tag: (note.tags || []).map(renderHashtag)
 	};
-};
+}
