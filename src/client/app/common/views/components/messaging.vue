@@ -24,7 +24,7 @@
 		<template>
 			<a v-for="message in messages"
 				class="user"
-				:href="`/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+				:href="`/i/messaging/${isMe(message) ? message.recipient : message.user | acct}`"
 				:data-is-me="isMe(message)"
 				:data-is-read="message.isRead"
 				@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"

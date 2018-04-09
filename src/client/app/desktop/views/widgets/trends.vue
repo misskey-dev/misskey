@@ -6,8 +6,8 @@
 	</template>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<div class="note" v-else-if="note != null">
-		<p class="text"><router-link :to="`/@${ acct }/${ note.id }`">{{ note.text }}</router-link></p>
-		<p class="author">―<router-link :to="`/@${ acct }`">@{{ acct }}</router-link></p>
+		<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
+		<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>
 	</div>
 	<p class="empty" v-else>%i18n:desktop.tags.mk-trends-home-widget.nothing%</p>
 </div>
@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
-import getAcct from '../../../../../acct/render';
 
 export default define({
 	name: 'trends',
@@ -23,11 +22,6 @@ export default define({
 		compact: false
 	})
 }).extend({
-	computed: {
-		acct() {
-			return getAcct(this.note.user);
-		},
-	},
 	data() {
 		return {
 			note: null,

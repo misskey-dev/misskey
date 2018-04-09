@@ -10,7 +10,7 @@
 				<mk-reaction-icon :reaction="notification.reaction"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 			</p>
-			<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+			<router-link class="note-ref" :to="notification.note | notePage">
 				%fa:quote-left%{{ getNoteSummary(notification.note) }}
 				%fa:quote-right%
 			</router-link>
@@ -27,7 +27,7 @@
 				%fa:retweet%
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 			</p>
-			<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+			<router-link class="note-ref" :to="notification.note | notePage">
 				%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
 			</router-link>
 		</div>
@@ -68,7 +68,7 @@
 				%fa:chart-pie%
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
 			</p>
-			<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+			<router-link class="note-ref" :to="notification.note | notePage">
 				%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
 			</router-link>
 		</div>

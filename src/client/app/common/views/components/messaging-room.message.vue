@@ -1,6 +1,6 @@
 <template>
 <div class="message" :data-is-me="isMe">
-	<router-link class="avatar-anchor" :to="`/@${acct}`" :title="acct" target="_blank">
+	<router-link class="avatar-anchor" :to="message.user | userPage" :title="acct" target="_blank">
 		<img class="avatar" :src="`${message.user.avatarUrl}?thumbnail&size=80`" alt=""/>
 	</router-link>
 	<div class="content">
@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
 import parse from '../../../../../text/parse';
 
 export default Vue.extend({
@@ -44,9 +43,6 @@ export default Vue.extend({
 		}
 	},
 	computed: {
-		acct(): string {
-			return getAcct(this.message.user);
-		},
 		isMe(): boolean {
 			return this.message.userId == (this as any).os.i.id;
 		},

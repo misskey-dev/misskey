@@ -29,7 +29,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
-import getAcct from '../../../../../acct/render';
 import parseAcct from '../../../../../acct/parse';
 
 export default Vue.extend({
@@ -41,8 +40,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			u: null,
-			getAcct
+			u: null
 		};
 	},
 	mounted() {

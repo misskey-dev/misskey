@@ -9,7 +9,7 @@
 				<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
 				<span class="username">@{{ note.user | acct }}</span>
 				<div class="info">
-					<router-link class="created-at" :to="`/@${getAcct(note.user)}/${note.id}`">
+					<router-link class="created-at" :to="note | notePage">
 						<mk-time :time="note.createdAt"/>
 					</router-link>
 				</div>

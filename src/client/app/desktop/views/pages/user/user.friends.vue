@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getAcct from '../../../../../../acct/render';
 
 export default Vue.extend({
 	props: ['user'],
@@ -29,9 +28,6 @@ export default Vue.extend({
 			users: [],
 			fetching: true
 		};
-	},
-	methods: {
-		getAcct
 	},
 	mounted() {
 		(this as any).api('users/get_frequently_replied_users', {

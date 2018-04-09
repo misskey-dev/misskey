@@ -13,7 +13,7 @@
 							<mk-reaction-icon :reaction="notification.reaction"/>
 							<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
 						</p>
-						<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+						<router-link class="note-ref" :to="notification.note | notePage">
 							%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
 						</router-link>
 					</div>
@@ -26,7 +26,7 @@
 						<p>%fa:retweet%
 							<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 						</p>
-						<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+						<router-link class="note-ref" :to="notification.note | notePage">
 							%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
 						</router-link>
 					</div>
@@ -39,7 +39,7 @@
 						<p>%fa:quote-left%
 							<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 						</p>
-						<router-link class="note-preview" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">{{ getNoteSummary(notification.note) }}</router-link>
+						<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
 					</div>
 				</template>
 				<template v-if="notification.type == 'follow'">
@@ -60,7 +60,7 @@
 						<p>%fa:reply%
 							<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 						</p>
-						<router-link class="note-preview" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">{{ getNoteSummary(notification.note) }}</router-link>
+						<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
 					</div>
 				</template>
 				<template v-if="notification.type == 'mention'">
@@ -71,7 +71,7 @@
 						<p>%fa:at%
 							<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
 						</p>
-						<a class="note-preview" :href="`/@${getAcct(notification.note.user)}/${notification.note.id}`">{{ getNoteSummary(notification.note) }}</a>
+						<a class="note-preview" :href="notification.note | notePage">{{ getNoteSummary(notification.note) }}</a>
 					</div>
 				</template>
 				<template v-if="notification.type == 'poll_vote'">
@@ -80,7 +80,7 @@
 					</router-link>
 					<div class="text">
 						<p>%fa:chart-pie%<a :href="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</a></p>
-						<router-link class="note-ref" :to="`/@${getAcct(notification.note.user)}/${notification.note.id}`">
+						<router-link class="note-ref" :to="notification.note | notePage">
 							%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
 						</router-link>
 					</div>

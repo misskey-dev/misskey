@@ -5,8 +5,8 @@
 		<button @click="fetch" title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%">%fa:sync%</button>
 	</template>
 	<div class="poll" v-if="!fetching && poll != null">
-		<p v-if="poll.text"><router-link to="`/@${ acct }/${ poll.id }`">{{ poll.text }}</router-link></p>
-		<p v-if="!poll.text"><router-link to="`/@${ acct }/${ poll.id }`">%fa:link%</router-link></p>
+		<p v-if="poll.text"><router-link to="poll | notePage">{{ poll.text }}</router-link></p>
+		<p v-if="!poll.text"><router-link to="poll | notePage">%fa:link%</router-link></p>
 		<mk-poll :note="poll"/>
 	</div>
 	<p class="empty" v-if="!fetching && poll == null">%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
-import getAcct from '../../../../../acct/render';
 
 export default define({
 	name: 'polls',
@@ -24,11 +23,6 @@ export default define({
 		compact: false
 	})
 }).extend({
-	computed: {
-		acct() {
-			return getAcct(this.poll.user);
-		},
-	},
 	data() {
 		return {
 			poll: null,

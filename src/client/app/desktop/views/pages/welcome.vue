@@ -43,7 +43,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { docsUrl, copyright, lang } from '../../../config';
-import getAcct from '../../../../../acct/render';
 
 const shares = [
 	'Everything!',
@@ -98,7 +97,6 @@ export default Vue.extend({
 		clearInterval(this.clock);
 	},
 	methods: {
-		getAcct,
 		signup() {
 			this.$modal.show('signup');
 		},
