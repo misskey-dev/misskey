@@ -24,7 +24,7 @@
 		<template>
 			<a v-for="message in messages"
 				class="user"
-				:href="`/i/messaging/${isMe(message) ? message.recipient : message.user | acct}`"
+				:href="`/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 				:data-is-me="isMe(message)"
 				:data-is-read="message.isRead"
 				@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"
@@ -51,6 +51,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import getAcct from '../../../../../acct/render';
 
 export default Vue.extend({
 	props: {
@@ -92,6 +93,7 @@ export default Vue.extend({
 		(this as any).os.streams.messagingIndexStream.dispose(this.connectionId);
 	},
 	methods: {
+		getAcct,
 		isMe(message) {
 			return message.userId == (this as any).os.i.id;
 		},
