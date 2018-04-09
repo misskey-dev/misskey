@@ -39,12 +39,23 @@ export default async (url, user, folderId = null, uri = null): Promise<IDriveFil
 			.on('error', rej);
 	});
 
-	const driveFile = await create(user, path, name, null, folderId, false, uri);
+	let driveFile: IDriveFile;
+	let error;
 
-	log(`created: ${driveFile._id}`);
+	try {
+		driveFile = await create(user, path, name, null, folderId, false, uri);
+		log(`created: ${driveFile._id}`);
+	} catch (e) {
+		error = e;
+		log(`failed: ${e}`);
+	}
 
 	// clean-up
 	cleanup();
 
-	return driveFile;
+	if (error) {
+		throw error;
+	} else {
+		return driveFile;
+	}
 };
