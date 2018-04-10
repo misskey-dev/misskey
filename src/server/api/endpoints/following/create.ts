@@ -8,10 +8,6 @@ import create from '../../../../services/following/create';
 
 /**
  * Follow a user
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const follower = user;

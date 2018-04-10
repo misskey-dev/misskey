@@ -4,14 +4,10 @@
 import $ from 'cafy';
 import User from '../../../../models/user';
 import Following from '../../../../models/following';
-import { createHttp } from '../../../../queue';
+import deleteFollowing from '../../../../services/following/delete';
 
 /**
  * Unfollow a user
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const follower = user;
@@ -49,15 +45,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('already not following');
 	}
 
-	createHttp({
-		type: 'unfollow',
-		id: exist._id
-	}).save(error => {
-		if (error) {
-			return rej('unfollow failed');
-		}
+	// Delete following
+	deleteFollowing(follower, followee);
 
-		// Send response
-		res();
-	});
+	// Send response
+	res();
 });
