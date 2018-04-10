@@ -16,18 +16,18 @@ html(lang= lang)
 		nav
 			ul
 				each doc in common.docs
-					li: a(href=`/${lang}/${doc.name}`)= doc.title[lang] || doc.title['ja']
+					li: a(href=`/docs/${lang}/${doc.name}`)= doc.title[lang] || doc.title['ja']
 			section
 				h2 API
 				ul
 					li Entities
 						ul
 							each entity in common.entities
-								li: a(href=`/${lang}/api/entities/${common.kebab(entity)}`)= entity
+								li: a(href=`/docs/${lang}/api/entities/${common.kebab(entity)}`)= entity
 					li Endpoints
 						ul
 							each endpoint in common.endpoints
-								li: a(href=`/${lang}/api/endpoints/${common.kebab(endpoint)}`)= endpoint
+								li: a(href=`/docs/${lang}/api/endpoints/${common.kebab(endpoint)}`)= endpoint
 		main
 			article
 				block main
