@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Misskeyのリカバリ</title>
+		<script>
+			const v = window.prompt('Enter version');
+			if (v) {
+				localStorage.setItem('v', v);
+				setTimeout(() => {
+					location.reload(true);
+				}, 500);
+			} else {
+				location.href = '/';
+			}
+		</script>
+	</head>
+</html>
