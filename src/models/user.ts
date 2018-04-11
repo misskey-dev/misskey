@@ -11,6 +11,7 @@ import config from '../config';
 const User = db.get<IUser>('users');
 
 User.createIndex('username');
+User.createIndex('usernameLower');
 User.createIndex('token');
 User.createIndex('uri', { sparse: true, unique: true });
 
