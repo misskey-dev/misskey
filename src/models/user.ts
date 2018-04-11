@@ -11,6 +11,8 @@ import AccessToken, { deleteAccessToken } from './access-token';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
 import Favorite, { deleteFavorite } from './favorite';
 import NoteReaction, { deleteNoteReaction } from './note-reaction';
+import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
+import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
 
 const User = db.get<IUser>('users');
 
@@ -173,8 +175,19 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteFavorite(x)));
 
 	// このユーザーのMessageをすべて削除
+	await Promise.all((
+		await MessagingMessage.find({ userId: u._id })
+	).map(x => deleteMessagingMessage(x)));
 
 	// このユーザーへのMessageをすべて削除
+	await Promise.all((
+		await MessagingMessage.find({ recipientId: u._id })
+	).map(x => deleteMessagingMessage(x)));
+
+	// このユーザーの関わるMessagingHistoryをすべて削除
+	await Promise.all((
+		await MessagingHistory.find({ $or: [{ partnerId: u._id }, { userId: u._id }] })
+	).map(x => deleteMessagingHistory(x)));
 
 	// このユーザーのDriveFileをすべて削除
 
