@@ -18,6 +18,7 @@ import DriveFolder, { deleteDriveFolder } from './drive-folder';
 import PollVote, { deletePollVote } from './poll-vote';
 import FollowingLog, { deleteFollowingLog } from './following-log';
 import FollowedLog, { deleteFollowedLog } from './followed-log';
+import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 
 const User = db.get<IUser>('users');
 
@@ -238,6 +239,11 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await Promise.all((
 		await FollowedLog.find({ userId: u._id })
 	).map(x => deleteFollowedLog(x)));
+
+	// このユーザーのSwSubscriptionをすべて削除
+	await Promise.all((
+		await SwSubscription.find({ userId: u._id })
+	).map(x => deleteSwSubscription(x)));
 
 	// このユーザーを削除
 }
