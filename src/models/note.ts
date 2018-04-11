@@ -6,8 +6,11 @@ import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import { pack as packChannel } from './channel';
 import Vote from './poll-vote';
-import Reaction from './note-reaction';
+import Reaction, { deleteNoteReaction } from './note-reaction';
 import { pack as packFile } from './drive-file';
+import NoteWatching, { deleteNoteWatching } from './note-watching';
+import NoteReaction from './note-reaction';
+import Favorite, { deleteFavorite } from './favorite';
 
 const Note = db.get<INote>('notes');
 
@@ -69,8 +72,10 @@ export type INote = {
 	};
 };
 
-// TODO
-export async function physicalDelete(note: string | mongo.ObjectID | INote) {
+/**
+ * Noteを物理削除します
+ */
+export async function deleteNote(note: string | mongo.ObjectID | INote) {
 	let n: INote;
 
 	// Populate
@@ -88,17 +93,35 @@ export async function physicalDelete(note: string | mongo.ObjectID | INote) {
 
 	if (n == null) return;
 
-	// この投稿の返信をすべて削除
-	const replies = await Note.find({
-		replyId: n._id
-	});
-	await Promise.all(replies.map(r => physicalDelete(r)));
+	// このNoteへの返信をすべて削除
+	await Promise.all((
+		await Note.find({ replyId: n._id })
+	).map(x => deleteNote(x)));
 
-	// この投稿のWatchをすべて削除
+	// このNoteのRenoteをすべて削除
+	await Promise.all((
+		await Note.find({ renoteId: n._id })
+	).map(x => deleteNote(x)));
 
-	// この投稿のReactionをすべて削除
+	// この投稿に対するNoteWatchingをすべて削除
+	await Promise.all((
+		await NoteWatching.find({ noteId: n._id })
+	).map(x => deleteNoteWatching(x)));
+
+	// この投稿に対するNoteReactionをすべて削除
+	await Promise.all((
+		await NoteReaction.find({ noteId: n._id })
+	).map(x => deleteNoteReaction(x)));
 
 	// この投稿に対するFavoriteをすべて削除
+	await Promise.all((
+		await Favorite.find({ noteId: n._id })
+	).map(x => deleteFavorite(x)));
+
+	// このNoteを削除
+	await Note.remove({
+		_id: n._id
+	});
 }
 
 /**

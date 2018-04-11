@@ -2,11 +2,15 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import Note, { INote, pack as packNote, physicalDelete as physicalDeleteNote } from './note';
+import Note, { INote, pack as packNote, deleteNote } from './note';
 import Following from './following';
 import Mute from './mute';
 import getFriends from '../server/api/common/get-friends';
 import config from '../config';
+import AccessToken, { deleteAccessToken } from './access-token';
+import NoteWatching, { deleteNoteWatching } from './note-watching';
+import Favorite, { deleteFavorite } from './favorite';
+import NoteReaction, { deleteNoteReaction } from './note-reaction';
 
 const User = db.get<IUser>('users');
 
@@ -122,8 +126,10 @@ export function init(user): IUser {
 	return user;
 }
 
-// TODO
-export async function physicalDelete(user: string | mongo.ObjectID | IUser) {
+/**
+ * Userを物理削除します
+ */
+export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	let u: IUser;
 
 	// Populate
@@ -141,17 +147,40 @@ export async function physicalDelete(user: string | mongo.ObjectID | IUser) {
 
 	if (u == null) return;
 
-	// このユーザーが行った投稿をすべて削除
-	const notes = await Note.find({ userId: u._id });
-	await Promise.all(notes.map(n => physicalDeleteNote(n)));
+	// このユーザーのAccessTokenをすべて削除
+	await Promise.all((
+		await AccessToken.find({ userId: u._id })
+	).map(x => deleteAccessToken(x)));
 
-	// このユーザーのお気に入りをすべて削除
+	// このユーザーのNoteをすべて削除
+	await Promise.all((
+		await Note.find({ userId: u._id })
+	).map(x => deleteNote(x)));
 
-	// このユーザーが行ったメッセージをすべて削除
+	// このユーザーのNoteReactionをすべて削除
+	await Promise.all((
+		await NoteReaction.find({ userId: u._id })
+	).map(x => deleteNoteReaction(x)));
 
-	// このユーザーのドライブのファイルをすべて削除
+	// このユーザーのNoteWatchingをすべて削除
+	await Promise.all((
+		await NoteWatching.find({ userId: u._id })
+	).map(x => deleteNoteWatching(x)));
 
-	// このユーザーに関するfollowingをすべて削除
+	// このユーザーのFavoriteをすべて削除
+	await Promise.all((
+		await Favorite.find({ userId: u._id })
+	).map(x => deleteFavorite(x)));
+
+	// このユーザーのMessageをすべて削除
+
+	// このユーザーへのMessageをすべて削除
+
+	// このユーザーのDriveFileをすべて削除
+
+	// このユーザーのFollowingをすべて削除
+
+	// このユーザーへのFollowingをすべて削除
 
 	// このユーザーを削除
 }
