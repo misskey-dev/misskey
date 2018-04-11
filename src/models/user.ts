@@ -3,7 +3,7 @@ import deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import Note, { INote, pack as packNote, deleteNote } from './note';
-import Following from './following';
+import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
 import getFriends from '../server/api/common/get-friends';
 import config from '../config';
@@ -212,8 +212,14 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteMute(x)));
 
 	// このユーザーのFollowingをすべて削除
+	await Promise.all((
+		await Following.find({ followerId: u._id })
+	).map(x => deleteFollowing(x)));
 
 	// このユーザーへのFollowingをすべて削除
+	await Promise.all((
+		await Following.find({ followeeId: u._id })
+	).map(x => deleteFollowing(x)));
 
 	// このユーザーのFollowingLogをすべて削除
 
