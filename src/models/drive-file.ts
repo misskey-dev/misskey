@@ -114,13 +114,13 @@ export const pack = (
 	let _file: any;
 
 	// Populate the file if 'file' is ID
-	if (mongodb.ObjectID.prototype.isPrototypeOf(file)) {
+	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
 		_file = await DriveFile.findOne({
 			_id: file
 		});
 	} else if (typeof file === 'string') {
 		_file = await DriveFile.findOne({
-			_id: new mongodb.ObjectID(file)
+			_id: new mongo.ObjectID(file)
 		});
 	} else {
 		_file = deepcopy(file);
