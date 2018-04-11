@@ -33,7 +33,7 @@ common:
     confused: "Confused"
     pudding: "Pudding"
 
-  post_categories:
+  note_categories:
     music: "Music"
     game: "Video Game"
     anime: "Anime"
@@ -124,7 +124,7 @@ common:
       show-result: "Show result"
       voted: "Voted"
 
-    mk-post-menu:
+    mk-note-menu:
       pin: "Pin"
       pinned: "Pinned"
       select: "Select category"
@@ -183,6 +183,24 @@ common:
     mk-uploader:
       waiting: "Waiting"
 
+docs:
+  edit-this-page-on-github: "Caught a mistake or want to contribute to the documentation? "
+  edit-this-page-on-github-link: "Edit this page on Github!"
+
+  api:
+    entities:
+      properties: "Properties"
+    endpoints:
+      params: "Parameters"
+      res: "Response"
+    props:
+      name: "Name"
+      type: "Type"
+      optional: "Optional"
+      description: "Description"
+      yes: "Yes"
+      no: "No"
+
 ch:
   tags:
     mk-index:
@@ -193,13 +211,17 @@ ch:
       textarea: "Write here"
       upload: "Upload"
       drive: "Drive"
-      post: "Do"
+      note: "Do"
       posting: "Doing"
 
 desktop:
   tags:
     mk-api-info:
-      regenerate-token: "Please enter the password"
+      intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+      caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+      regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+      regenerate-token: "Regenerate the token"
+      enter-password: "Please enter the password"
 
     mk-drive-browser-base-contextmenu:
       create-folder: "Create a folder"
@@ -282,8 +304,8 @@ desktop:
       settings: "Settings"
       signout: "Sign out"
 
-    mk-ui-header-post-button:
-      post: "Compose new Post"
+    mk-ui-header-note-button:
+      note: "Compose new Post"
 
     mk-ui-header-notifications:
       title: "Notifications"
@@ -324,19 +346,22 @@ desktop:
       failed: "Failed to setup. please ensure that the token is correct."
       info: "From the next sign in, enter the token that is displayed on the device in addition to the password."
 
+    mk-mute-setting:
+      no-users: "No muted users"
+
     mk-post-form:
-      post-placeholder: "What's happening?"
-      reply-placeholder: "Reply to this post..."
-      quote-placeholder: "Quote this post..."
-      post: "Post"
+      note-placeholder: "What's happening?"
+      reply-placeholder: "Reply to this note..."
+      quote-placeholder: "Quote this note..."
+      note: "Post"
       reply: "Reply"
-      repost: "Repost"
+      renote: "Renote"
       posted: "Posted!"
       replied: "Replied!"
       reposted: "Reposted!"
-      post-failed: "Failed to post"
+      note-failed: "Failed to note"
       reply-failed: "Failed to reply"
-      repost-failed: "Failed to repost"
+      renote-failed: "Failed to renote"
       posting: "Posting"
       attach-media-from-local: "Attach media from your pc"
       attach-media-from-drive: "Attach media from the drive"
@@ -346,26 +371,29 @@ desktop:
       text-remain: "{} chars remaining"
 
     mk-post-form-window:
-      post: "New post"
+      note: "New note"
       reply: "Reply"
       attaches: "{} media attached"
       uploading-media: "Uploading {} media"
 
-    mk-post-page:
-      prev: "Previous post"
-      next: "Next post"
+    mk-note-page:
+      prev: "Previous note"
+      next: "Next note"
 
     mk-settings:
       profile: "Profile"
+      mute: "Mute"
       drive: "Drive"
       security: "Security"
       password: "Password"
       2fa: "Two-factor authentication"
+      other: "Other"
+      license: "License"
 
-    mk-timeline-post:
+    mk-timeline-note:
       reposted-by: "Reposted by {}"
       reply: "Reply"
-      repost: "Repost"
+      renote: "Renote"
       add-reaction: "Add your reaction"
       detail: "Show detail"
 
@@ -420,7 +448,7 @@ desktop:
 
     mk-post-form-home-widget:
       title: "Post"
-      post: "Post"
+      note: "Post"
       placeholder: "What's happening?"
 
     mk-access-log-home-widget:
@@ -435,19 +463,24 @@ desktop:
       have-a-nice-day: "Have a nice day!"
       next: "Next"
 
-    mk-repost-form:
+    mk-renote-form:
       quote: "Quote..."
       cancel: "Cancel"
-      repost: "Repost"
+      renote: "Renote"
       reposting: "Reposting..."
       success: "Reposted!"
-      failure: "Failed to Repost"
+      failure: "Failed to Renote"
 
-    mk-repost-form-window:
-      title: "Are you sure you want to repost this post?"
+    mk-renote-form-window:
+      title: "Are you sure you want to renote this note?"
 
     mk-user:
       last-used-at: "Last used at"
+
+      follows-you: "Follows you"
+      mute: "Mute"
+      muted: "Muting"
+      unmute: "Unmute"
 
       photos:
         title: "Photos"
@@ -508,10 +541,10 @@ mobile:
       notifications: "Notifications"
       read-all: "Are you sure you want to mark all unread notifications as read?"
 
-    mk-post-page:
+    mk-note-page:
       title: "Post"
-      prev: "Previous post"
-      next: "Next post"
+      prev: "Previous note"
+      next: "Next note"
 
     mk-search-page:
       search: "Search"
@@ -524,7 +557,6 @@ mobile:
       applications: "Applications"
       twitter-integration: "Twitter integration"
       signin-history: "Sign in history"
-      api: "API"
       link: "MisskeyLink"
       settings: "Settings"
       signout: "Sign out"
@@ -574,34 +606,33 @@ mobile:
       unfollow: "Unfollow"
 
     mk-home-timeline:
-      empty-timeline: "There is no posts"
+      empty-timeline: "There is no notes"
 
     mk-notifications:
       more: "More"
       empty: "No notifications"
 
-    mk-post-detail:
+    mk-note-detail:
       reply: "Reply"
       reaction: "Reaction"
 
     mk-post-form:
       submit: "Post"
-      reply-placeholder: "Reply to this post..."
-      post-placeholder: "What's happening?"
-      attach-media-from-local: "Attach media from your device"
+      reply-placeholder: "Reply to this note..."
+      note-placeholder: "What's happening?"
 
-    mk-search-posts:
-      empty: "There is no post related to the 「{}」"
+    mk-search-notes:
+      empty: "There is no note related to the 「{}」"
 
-    mk-sub-post-content:
+    mk-sub-note-content:
       media-count: "{} media"
       poll: "Poll"
 
-    mk-timeline-post:
+    mk-timeline-note:
       reposted-by: "Reposted by {}"
 
     mk-timeline:
-      empty: "No posts"
+      empty: "No notes"
       load-more: "More"
 
     mk-ui-nav:
@@ -621,20 +652,21 @@ mobile:
       no-users: "No following."
 
     mk-user-timeline:
-      no-posts: "This user seems never post"
-      no-posts-with-media: "There is no posts with media"
+      no-notes: "This user seems never note"
+      no-notes-with-media: "There is no notes with media"
+      load-more: "More"
 
     mk-user:
       follows-you: "Follows you"
       following: "Following"
       followers: "Followers"
-      posts: "Posts"
+      notes: "Posts"
       overview: "Overview"
       timeline: "Timeline"
       media: "Media"
 
     mk-user-overview:
-      recent-posts: "Recent posts"
+      recent-notes: "Recent notes"
       images: "Images"
       activity: "Activity"
       keywords: "Keywords"
@@ -643,9 +675,9 @@ mobile:
       followers-you-know: "Followers you know"
       last-used-at: "Last used at"
 
-    mk-user-overview-posts:
+    mk-user-overview-notes:
       loading: "Loading"
-      no-posts: "No posts"
+      no-notes: "No notes"
 
     mk-user-overview-photos:
       loading: "Loading"
@@ -671,7 +703,7 @@ mobile:
       load-more: "More"
 
 stats:
-  posts-count: "Number of all posts"
+  notes-count: "Number of all notes"
   users-count: "Number of all users"
 
 status:

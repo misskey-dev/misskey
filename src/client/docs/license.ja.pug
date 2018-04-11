@@ -1,0 +1,17 @@
+h1 ライセンス
+
+div!= common.license
+
+details
+	summary サードパーティ
+
+	section
+		h2 サードパーティ
+
+		each dependency, name in common.dependencies
+			details
+				summary= name
+
+				section
+					h3= name
+					pre= dependency.licenseText

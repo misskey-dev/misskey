@@ -1,0 +1,53 @@
+import * as express from 'express';
+
+import config from '../config';
+import parseAcct from '../acct/parse';
+import User from '../models/user';
+
+const app = express.Router();
+
+app.get('/.well-known/webfinger', async (req, res) => {
+	if (typeof req.query.resource !== 'string') {
+		return res.sendStatus(400);
+	}
+
+	const resourceLower = req.query.resource.toLowerCase();
+	const webPrefix = config.url.toLowerCase() + '/@';
+	let acctLower;
+
+	if (resourceLower.startsWith(webPrefix)) {
+		acctLower = resourceLower.slice(webPrefix.length);
+	} else if (resourceLower.startsWith('acct:')) {
+		acctLower = resourceLower.slice('acct:'.length);
+	} else {
+		acctLower = resourceLower;
+	}
+
+	const parsedAcctLower = parseAcct(acctLower);
+	if (![null, config.host.toLowerCase()].includes(parsedAcctLower.host)) {
+		return res.sendStatus(422);
+	}
+
+	const user = await User.findOne({ usernameLower: parsedAcctLower.username, host: null });
+	if (user === null) {
+		return res.sendStatus(404);
+	}
+
+	return res.json({
+		subject: `acct:${user.username}@${config.host}`,
+		links: [{
+			rel: 'self',
+			type: 'application/activity+json',
+			href: `${config.url}/users/${user._id}`
+		}, {
+			rel: 'http://webfinger.net/rel/profile-page',
+			type: 'text/html',
+			href: `${config.url}/@${user.username}`
+		}, {
+			rel: 'http://ostatus.org/schema/1.0/subscribe',
+			template: `${config.url}/authorize-follow?acct={uri}`
+		}]
+	});
+});
+
+export default app;

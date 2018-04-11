@@ -1,0 +1,41 @@
+doctype html
+
+html(lang= lang)
+	head
+		meta(charset="UTF-8")
+		meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no")
+		title
+			| #{title} | Misskey Docs
+		link(rel="stylesheet" href="/assets/style.css")
+		block meta
+
+		//- FontAwesome style
+		style #{common.facss}
+
+	body
+		nav
+			ul
+				each doc in common.docs
+					li: a(href=`/docs/${lang}/${doc.name}`)= doc.title[lang] || doc.title['ja']
+			section
+				h2 API
+				ul
+					li Entities
+						ul
+							each entity in common.entities
+								li: a(href=`/docs/${lang}/api/entities/${common.kebab(entity)}`)= entity
+					li Endpoints
+						ul
+							each endpoint in common.endpoints
+								li: a(href=`/docs/${lang}/api/endpoints/${common.kebab(endpoint)}`)= endpoint
+		main
+			article
+				block main
+				if content
+					| !{content}
+
+			footer
+				p
+					| %i18n:docs.edit-this-page-on-github%
+					a(href=src target="_blank") %i18n:docs.edit-this-page-on-github-link%
+				small= common.copyright

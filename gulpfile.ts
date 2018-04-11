@@ -8,8 +8,8 @@ import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
+const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
-import * as es from 'event-stream';
 import cssnano = require('gulp-cssnano');
 import * as uglifyComposer from 'gulp-uglify/composer';
 import pug = require('gulp-pug');
@@ -21,21 +21,14 @@ import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
-import * as fontawesome from '@fortawesome/fontawesome';
-import * as regular from '@fortawesome/fontawesome-free-regular';
-import * as solid from '@fortawesome/fontawesome-free-solid';
-import * as brands from '@fortawesome/fontawesome-free-brands';
 
-// Add icons
-fontawesome.library.add(regular);
-fontawesome.library.add(solid);
-fontawesome.library.add(brands);
-
+import { fa } from './src/build/fa';
 import version from './src/version';
+import config from './src/config';
 
 const uglify = uglifyComposer(uglifyes, console);
 
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
 const isProduction = env === 'production';
 const isDebug = !isProduction;
 
@@ -46,40 +39,34 @@ if (isDebug) {
 
 const constants = require('./src/const.json');
 
+require('./src/client/docs/gulpfile.ts');
+
 gulp.task('build', [
-	'build:js',
 	'build:ts',
 	'build:copy',
-	'build:client'
+	'build:client',
+	'doc'
 ]);
 
 gulp.task('rebuild', ['clean', 'build']);
 
-gulp.task('build:js', () =>
-	gulp.src(['./src/**/*.js', '!./src/web/**/*.js'])
-		.pipe(gulp.dest('./built/'))
-);
-
 gulp.task('build:ts', () => {
-	const tsProject = ts.createProject('./src/tsconfig.json');
+	const tsProject = ts.createProject('./tsconfig.json');
 
 	return tsProject
 		.src()
+		.pipe(sourcemaps.init())
 		.pipe(tsProject())
+		.pipe(sourcemaps.write('.', { includeContent: false, sourceRoot: '../built' }))
 		.pipe(gulp.dest('./built/'));
 });
 
 gulp.task('build:copy', () =>
-	es.merge(
-		gulp.src([
-			'./src/**/assets/**/*',
-			'!./src/web/app/**/assets/**/*'
-		]).pipe(gulp.dest('./built/')) as any,
-		gulp.src([
-			'./src/web/about/**/*',
-			'!./src/web/about/**/*.pug'
-		]).pipe(gulp.dest('./built/web/about/')) as any
-	)
+	gulp.src([
+		'./build/Release/crypto_key.node',
+		'./src/**/assets/**/*',
+		'!./src/client/app/**/assets/**/*'
+	]).pipe(gulp.dest('./built/'))
 );
 
 gulp.task('test', ['lint', 'mocha']);
@@ -104,8 +91,8 @@ gulp.src('./src/**/*.ts')
 gulp.task('mocha', () =>
 	gulp.src([])
 		.pipe(mocha({
-			exit: true
-			//compilers: 'ts:ts-node/register'
+			exit: true,
+			compilers: 'ts:ts-node/register'
 		} as any))
 );
 
@@ -121,55 +108,43 @@ gulp.task('default', ['build']);
 
 gulp.task('build:client', [
 	'build:ts',
-	'build:js',
-	'webpack',
 	'build:client:script',
 	'build:client:pug',
 	'copy:client'
 ]);
 
-gulp.task('webpack', done => {
-	const webpack = childProcess.spawn(
-		Path.join('.', 'node_modules', '.bin', 'webpack'),
-		['--config', './webpack/webpack.config.ts'], {
-			shell: true,
-			stdio: 'inherit'
-		});
-
-	webpack.on('exit', done);
-});
-
 gulp.task('build:client:script', () =>
-	gulp.src(['./src/web/app/boot.js', './src/web/app/safe.js'])
+	gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(version)))
+		.pipe(replace('API', JSON.stringify(config.api_url)))
+		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())
-		.pipe(gulp.dest('./built/web/assets/')) as any
+		.pipe(gulp.dest('./built/client/assets/')) as any
 );
 
 gulp.task('build:client:styles', () =>
-	gulp.src('./src/web/app/init.css')
+	gulp.src('./src/client/app/init.css')
 		.pipe(isProduction
 			? (cssnano as any)()
 			: gutil.noop())
-		.pipe(gulp.dest('./built/web/assets/'))
+		.pipe(gulp.dest('./built/client/assets/'))
 );
 
 gulp.task('copy:client', [
-	'build:client:script',
-	'webpack'
+	'build:client:script'
 ], () =>
 		gulp.src([
 			'./assets/**/*',
-			'./src/web/assets/**/*',
-			'./src/web/app/*/assets/**/*'
+			'./src/client/assets/**/*',
+			'./src/client/app/*/assets/**/*'
 		])
 			.pipe(isProduction ? (imagemin as any)() : gutil.noop())
 			.pipe(rename(path => {
 				path.dirname = path.dirname.replace('assets', '.');
 			}))
-			.pipe(gulp.dest('./built/web/assets/'))
+			.pipe(gulp.dest('./built/client/assets/'))
 );
 
 gulp.task('build:client:pug', [
@@ -177,13 +152,13 @@ gulp.task('build:client:pug', [
 	'build:client:script',
 	'build:client:styles'
 ], () =>
-		gulp.src('./src/web/app/base.pug')
+		gulp.src('./src/client/app/base.pug')
 			.pipe(pug({
 				locals: {
 					themeColor: constants.themeColor,
-					facss: fontawesome.dom.css(),
+					facss: fa.dom.css(),
 					//hljscss: fs.readFileSync('./node_modules/highlight.js/styles/default.css', 'utf8')
-					hljscss: fs.readFileSync('./src/web/assets/code-highlight.css', 'utf8')
+					hljscss: fs.readFileSync('./src/client/assets/code-highlight.css', 'utf8')
 				}
 			}))
 			.pipe(htmlmin({
@@ -218,5 +193,5 @@ gulp.task('build:client:pug', [
 				// CSSも圧縮する
 				minifyCSS: true
 			}))
-			.pipe(gulp.dest('./built/web/app/'))
+			.pipe(gulp.dest('./built/client/app/'))
 );

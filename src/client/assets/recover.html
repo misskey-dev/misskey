@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Misskeyのリカバリ</title>
+		<script>
+			const yn = window.confirm('キャッシュをクリアしますか？(他のタブでMisskeyを開いている状態だと正常にクリアできないので、他のMisskeyのタブをすべて閉じてから行ってください)\n\nDo you want to clear caches? (Please close all other Misskey tabs before clear cache)');
+			if (yn) {
+				try {
+					navigator.serviceWorker.controller.postMessage('clear');
+					navigator.serviceWorker.getRegistrations().then(registrations => {
+						registrations.forEach(registration => registration.unregister());
+					});
+				} catch (e) {
+					console.error(e);
+				}
+				alert('キャッシュをクリアしました。\n\ncache cleared.');
+				alert('まもなくページを再度読み込みします。再度読み込みが終わると、再度キャッシュをクリアするか尋ねられるので、「キャンセル」を選択して抜けてください。\n\nWe will reload the page shortly. After that, you are asked whether you want to clear the cache again, so please select "Cancel" and exit.');
+				setTimeout(() => {
+					location.reload(true);
+				}, 100);
+			} else {
+				location.href = '/';
+			}
+		</script>
+	</head>
+</html>
