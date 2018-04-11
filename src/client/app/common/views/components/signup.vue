@@ -77,7 +77,7 @@ export default Vue.extend({
 
 			const err =
 				!this.username.match(/^[a-zA-Z0-9_]+$/) ? 'invalid-format' :
-				this.username.length < 3 ? 'min-range' :
+				this.username.length < 1 ? 'min-range' :
 				this.username.length > 20 ? 'max-range' :
 				null;
 
