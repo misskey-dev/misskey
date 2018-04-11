@@ -84,7 +84,6 @@
 		"@types/webpack-stream": "3.2.10",
 		"@types/websocket": "0.0.38",
 		"@types/ws": "4.0.2",
-		"accesses": "2.5.0",
 		"animejs": "2.2.0",
 		"autosize": "4.0.1",
 		"autwh": "0.1.0",

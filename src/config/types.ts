@@ -41,10 +41,6 @@ export type Source = {
 		secret_key: string;
 	};
 	accesslog?: string;
-	accesses?: {
-		enable: boolean;
-		port: number;
-	};
 	twitter?: {
 		consumer_key: string;
 		consumer_secret: string;
