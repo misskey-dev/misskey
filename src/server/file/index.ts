@@ -54,23 +54,22 @@ interface ISend {
 
 function thumbnail(data: stream.Readable, type: string, resize: number): ISend {
 	const readable: stream.Readable = (() => {
-		// 画像ではない場合
-		if (!/^image\/.*$/.test(type)) {
-			// 使わないことにしたストリームはしっかり取り壊しておく
+		// 動画か画像であれば
+		if (/^(?:video|image)\/.*$/.test(type)) {
+			// 0フレーム目を送る
+			try {
+				return gm(data).selectFrame(0).stream();
+			// だめだったら
+			} catch (e) {
+				// 使わないことになったストリームはしっかり取り壊す
+				data.destroy();
+				return fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
+			}
+		// 動画か画像以外
+		} else {
 			data.destroy();
 			return fs.createReadStream(`${__dirname}/assets/not-an-image.png`);
 		}
-
-		const imageType = type.split('/')[1];
-
-		// 画像でもPNGかJPEGでないならダメ
-		if (imageType != 'png' && imageType != 'jpeg') {
-			// 使わないことにしたストリームはしっかり取り壊しておく
-			data.destroy();
-			return fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
-		}
-
-		return data;
 	})();
 
 	let g = gm(readable);
