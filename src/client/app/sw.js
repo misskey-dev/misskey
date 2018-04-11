@@ -43,8 +43,6 @@ self.addEventListener('fetch', ev => {
 
 // プッシュ通知を受け取ったとき
 self.addEventListener('push', ev => {
-	console.log('pushed');
-
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true
