@@ -5,15 +5,19 @@
 		<meta charset="utf-8">
 		<title>Misskeyのリカバリ</title>
 		<script>
-			const v = window.prompt('Enter version');
+			const v = window.prompt('Enter version:');
 			if (v) {
 				localStorage.setItem('v', v);
-				setTimeout(() => {
-					location.reload(true);
-				}, 500);
-			} else {
-				location.href = '/';
 			}
+
+			const lang = window.prompt('Enter language (optional):');
+			if (lang && lang.length > 0) {
+				localStorage.setItem('lang', lang);
+			}
+
+			setTimeout(() => {
+				location.href = '/';
+			}, 500);
 		</script>
 	</head>
 </html>
