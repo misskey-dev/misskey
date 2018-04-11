@@ -8,10 +8,6 @@ import User from '../../../../models/user';
 
 /**
  * Get notes of a user
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
@@ -118,7 +114,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (withMedia) {
 		query.mediaIds = {
 			$exists: true,
-			$ne: null
+			$ne: []
 		};
 	}
 	//#endregion
