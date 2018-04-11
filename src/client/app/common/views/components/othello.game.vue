@@ -164,7 +164,7 @@ export default Vue.extend({
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds) {
 				const sound = new Audio(`${url}/assets/othello-put-me.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
 				sound.play();
 			}
 
@@ -188,7 +188,7 @@ export default Vue.extend({
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds && x.color != this.myColor) {
 				const sound = new Audio(`${url}/assets/othello-put-you.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
 				sound.play();
 			}
 		},

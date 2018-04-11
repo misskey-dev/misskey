@@ -230,7 +230,7 @@ export default Vue.extend({
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
 			autoPopout: localStorage.getItem('autoPopout') == 'true',
 			apiViaStream: localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true,
-			soundVolume: localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) : 100,
+			soundVolume: localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) : 50,
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
 			debug: localStorage.getItem('debug') == 'true',
@@ -347,7 +347,7 @@ export default Vue.extend({
 		},
 		soundTest() {
 			const sound = new Audio(`${url}/assets/message.mp3`);
-			sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+			sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
 			sound.play();
 		}
 	}
