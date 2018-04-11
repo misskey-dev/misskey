@@ -4,11 +4,10 @@
 
 Error.stackTraceLimit = Infinity;
 
-import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
 import * as debug from 'debug';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 // import portUsed = require('tcp-port-used');
 import isRoot = require('is-root');
 import { master } from 'accesses';
@@ -21,13 +20,22 @@ import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 import stats from './utils/stats';
 
-import { Config, path as configPath } from './config';
-import loadConfig from './config';
+import loadConfig from './config/load';
+import { Config } from './config/types';
+
+import parseOpt from './parse-opt';
 
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
 
 process.title = 'Misskey';
+
+if (process.env.NODE_ENV != 'production') {
+	process.env.DEBUG = 'misskey:*';
+}
+
+// https://github.com/Automattic/kue/issues/822
+require('events').EventEmitter.prototype._maxListeners = 512;
 
 // Start app
 main();
@@ -36,20 +44,22 @@ main();
  * Init process
  */
 function main() {
+	const opt = parseOpt(process.argv, 2);
+
 	if (cluster.isMaster) {
-		masterMain();
+		masterMain(opt);
 
 		ev.mount();
 		stats();
 	} else {
-		workerMain();
+		workerMain(opt);
 	}
 }
 
 /**
  * Init master process
  */
-async function masterMain() {
+async function masterMain(opt) {
 	let config: Config;
 
 	try {
@@ -69,19 +79,35 @@ async function masterMain() {
 	}
 
 	spawnWorkers(() => {
-		Logger.info(chalk.bold.green(
-			`Now listening on port ${chalk.underline(config.port.toString())}`));
+		if (!opt['only-processor']) {
+			Logger.info(chalk.bold.green(
+				`Now listening on port ${chalk.underline(config.port.toString())}`));
 
-		Logger.info(chalk.bold.green(config.url));
+			Logger.info(chalk.bold.green(config.url));
+		}
+
+		if (!opt['only-server']) {
+			Logger.info(chalk.bold.green('Now processing jobs'));
+		}
 	});
 }
 
 /**
  * Init worker process
  */
-function workerMain() {
-	// start server
-	require('./server');
+async function workerMain(opt) {
+	if (!opt['only-processor']) {
+		// start server
+		await require('./server').default();
+	}
+
+	if (!opt['only-server']) {
+		// start processor
+		require('./queue').default();
+	}
+
+	// Send a 'ready' message to parent process
+	process.send('ready');
 }
 
 /**
@@ -89,7 +115,6 @@ function workerMain() {
  */
 async function init(): Promise<Config> {
 	Logger.info('Welcome to Misskey!');
-	Logger.info(chalk.bold('Misskey <aoi>'));
 	Logger.info('Initializing...');
 
 	EnvironmentInfo.show();
@@ -97,11 +122,17 @@ async function init(): Promise<Config> {
 	new DependencyInfo().showAll();
 
 	const configLogger = new Logger('Config');
-	if (!fs.existsSync(configPath)) {
-		throw 'Configuration not found - Please run "npm run config" command.';
-	}
+	let config;
 
-	const config = loadConfig();
+	try {
+		config = loadConfig();
+	} catch (exception) {
+		if (exception.code === 'ENOENT') {
+			throw 'Configuration not found - Please run "npm run config" command.';
+		}
+
+		throw exception;
+	}
 
 	configLogger.info('Successfully loaded');
 	configLogger.info(`maintainer: ${config.maintainer}`);

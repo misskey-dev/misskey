@@ -1,8 +1,8 @@
-import * as chalk from 'chalk';
+import chalk, { Chalk } from 'chalk';
 
 export type LogLevel = 'Error' | 'Warn' | 'Info';
 
-function toLevelColor(level: LogLevel): chalk.ChalkStyle {
+function toLevelColor(level: LogLevel): Chalk {
 	switch (level) {
 		case 'Error': return chalk.red;
 		case 'Warn': return chalk.yellow;

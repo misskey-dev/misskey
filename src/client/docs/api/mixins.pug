@@ -1,0 +1,37 @@
+mixin propTable(props)
+	table.props
+		thead: tr
+			th %i18n:docs.api.props.name%
+			th %i18n:docs.api.props.type%
+			th %i18n:docs.api.props.optional%
+			th %i18n:docs.api.props.description%
+		tbody
+			each prop in props
+				tr
+					td.name= prop.name
+					td.type
+						i= prop.type
+						if prop.kind == 'id'
+							if prop.entity
+								|  (
+								a(href=`/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
+								|  ID)
+							else
+								|  (ID)
+						else if prop.kind == 'entity'
+							|   (
+							a(href=`/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
+							| )
+						else if prop.kind == 'object'
+							if prop.def
+								|  (
+								a(href=`#${prop.defName}`)= prop.defName
+								| )
+						else if prop.kind == 'date'
+							|  (Date)
+					td.optional
+						if prop.optional
+							| %i18n:docs.api.props.yes%
+						else
+							| %i18n:docs.api.props.no%
+					td.desc!= prop.desc[lang] || prop.desc['ja']

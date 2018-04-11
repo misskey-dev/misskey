@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "noEmitOnError": false,
     "noImplicitAny": false,
     "noImplicitReturns": true,
@@ -7,14 +8,19 @@
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
     "declaration": false,
-    "sourceMap": false,
+    "sourceMap": true,
     "target": "es2017",
     "module": "commonjs",
     "removeComments": false,
-    "noLib": false
+    "noLib": false,
+    "strict": true,
+    "strictNullChecks": false
   },
   "compileOnSave": false,
   "include": [
-    "./gulpfile.ts"
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./src/client/app/**/*.ts"
   ]
 }

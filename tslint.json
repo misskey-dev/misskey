@@ -13,9 +13,11 @@
 		"object-literal-sort-keys": false,
 		"curly": false,
 		"no-console": [false],
+		"no-empty":false,
 		"ordered-imports": [false],
 		"arrow-parens": false,
 		"object-literal-shorthand": false,
+		"object-literal-key-quotes": false,
 		"triple-equals": [false],
 		"no-shadowed-variable": false,
 		"no-string-literal": false,
@@ -23,6 +25,7 @@
 		"comment-format": [false],
 		"interface-over-type-literal": false,
 		"max-line-length": [false],
+		"max-classes-per-file": false,
 		"member-ordering": [false],
 		"ban-types": [
 			"Object"

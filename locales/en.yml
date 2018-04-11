@@ -1,4 +1,6 @@
 common:
+  misskey: "Note everything and share it others using Misskey."
+
   time:
     unknown: "unknown"
     future: "future"
@@ -11,6 +13,15 @@ common:
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
 
+  weekday-short:
+    sunday: "S"
+    monday: "M"
+    tuesday: "T"
+    wednesday: "W"
+    thursday: "T"
+    friday: "F"
+    satruday: "S"
+
   reactions:
     like: "Like"
     love: "Love"
@@ -22,14 +33,32 @@ common:
     confused: "Confused"
     pudding: "Pudding"
 
+  note_categories:
+    music: "Music"
+    game: "Video Game"
+    anime: "Anime"
+    it: "IT"
+    gadgets: "Gadgets"
+    photography: "Photography"
+
   input-message-here: "Enter message here"
   send: "Send"
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
   update-available: "New version of Misskey is now available({newer}, current is {current}). Reload page to apply update."
+  my-token-regenerated: "Your token is just regenerated, so you will signout."
 
   tags:
+    mk-nav-links:
+      about: "About"
+      stats: "Stats"
+      status: "Status"
+      wiki: "Wiki"
+      donors: "Donors"
+      repository: "Repository"
+      develop: "Developers"
+
     mk-messaging-form:
       attach-from-local: "Attach file from your pc"
       attach-from-drive: "Attach file from the drive"
@@ -55,8 +84,27 @@ common:
 
     mk-error:
       title: "Unable to connect to the server"
-      description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
+      description: "There is a problem with Internet connection, or the server may be down or maintaining. Please {try again} later."
       thanks: "Thank you for using Misskey."
+      troubleshoot: "Troubleshoot"
+
+      troubleshooter:
+        title: "TroubleShooting"
+        network: "Network connection"
+        checking-network: "Checking network connection"
+        internet: "Internet connection"
+        checking-internet: "Checking internet connection"
+        server: "Server connection"
+        checking-server: "Checking server connection"
+        finding: "Finding a problem"
+        no-network: "There is no Network connection"
+        no-network-desc: "Please make sure you are connected to the Network."
+        no-internet: "There is no Internet connection"
+        no-internet-desc: "Please make sure you are connected to the Internet."
+        no-server: "Unable to connect to the server"
+        no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is down or maintaining, please try to access it again after a while."
+        success: "Successfully connect to the Misskey's server"
+        success-desc: "It seems to be able to connect normally. Please reload the page."
 
     mk-forkit:
       open-github-link: "View source on Github"
@@ -76,12 +124,20 @@ common:
       show-result: "Show result"
       voted: "Voted"
 
+    mk-note-menu:
+      pin: "Pin"
+      pinned: "Pinned"
+      select: "Select category"
+      categorize: "Accept"
+      categorized: "Category reported. Thank you!"
+
     mk-reaction-picker:
       choose-reaction: "Pick your reaction"
 
     mk-signin:
       username: "Username"
       password: "Password"
+      token: "Token"
       signing-in: "Signing in..."
       signin: "Sign in"
 
@@ -127,8 +183,46 @@ common:
     mk-uploader:
       waiting: "Waiting"
 
+docs:
+  edit-this-page-on-github: "Caught a mistake or want to contribute to the documentation? "
+  edit-this-page-on-github-link: "Edit this page on Github!"
+
+  api:
+    entities:
+      properties: "Properties"
+    endpoints:
+      params: "Parameters"
+      res: "Response"
+    props:
+      name: "Name"
+      type: "Type"
+      optional: "Optional"
+      description: "Description"
+      yes: "Yes"
+      no: "No"
+
+ch:
+  tags:
+    mk-index:
+      new: "Create new channel"
+      channel-title: "Channel title"
+
+    mk-channel-form:
+      textarea: "Write here"
+      upload: "Upload"
+      drive: "Drive"
+      note: "Do"
+      posting: "Doing"
+
 desktop:
   tags:
+    mk-api-info:
+      intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+      caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+      regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+      regenerate-token: "Regenerate the token"
+      enter-password: "Please enter the password"
+
     mk-drive-browser-base-contextmenu:
       create-folder: "Create a folder"
       upload: "Upload a file"
@@ -172,7 +266,6 @@ desktop:
     mk-drive-browser-file:
       avatar: "Avatar"
       banner: "Banner"
-      wallpaper: "Wallpaper"
 
     mk-drive-browser-folder-contextmenu:
       move-to-this-folder: "Move to this folder"
@@ -189,9 +282,16 @@ desktop:
     mk-drive-browser-nav-folder:
       drive: "Drive"
 
+    mk-selectdrive-page:
+      title: "Choose a file(s)"
+      ok: "OK"
+      cancel: "Cancel"
+      upload: "Upload a file(s) from you PC"
+
     mk-ui-header-nav:
       home: "Home"
       messaging: "Messages"
+      ch: "Channels"
       info: "News"
 
     mk-ui-header-search:
@@ -204,19 +304,64 @@ desktop:
       settings: "Settings"
       signout: "Sign out"
 
+    mk-ui-header-note-button:
+      note: "Compose new Post"
+
+    mk-ui-header-notifications:
+      title: "Notifications"
+
+    mk-profile-setting:
+      avatar: "Avatar"
+      choice-avatar: "Choice an image"
+      name: "Name"
+      location: "Location"
+      description: "Description"
+      birthday: "Birthday"
+      save: "Update profile"
+
+    mk-password-setting:
+      reset: "Change your password"
+      enter-current-password: "Enter the current password"
+      enter-new-password: "Enter the new password"
+      enter-new-password-again: "Enter the new password again"
+      not-match: "New password not matched"
+      changed: "Password updated successfully"
+
+    mk-2fa-setting:
+      intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security. "
+      detail: "See details..."
+      url: "https://www.google.com/landing/2step/"
+      caution: "As a caveat, security improves, but you can not sign in to Misskey if you lose a registered device, etc."
+      register: "Register a device"
+      already-registered: "The setting has already been completed."
+      unregister: "Disable"
+      unregistered: "Two-step authentication has been disabled."
+      enter-password: "Enter the password"
+      authenticator: "First, you need install Google Authenticator to your device:"
+      howtoinstall: "How to install"
+      scan: "Next, please scan displayed QR code:"
+      done: "Please enter the token displaying in your device:"
+      submit: "Submit"
+      success: "Setup completed successfully!"
+      failed: "Failed to setup. please ensure that the token is correct."
+      info: "From the next sign in, enter the token that is displayed on the device in addition to the password."
+
+    mk-mute-setting:
+      no-users: "No muted users"
+
     mk-post-form:
-      post-placeholder: "What's happening?"
-      reply-placeholder: "Reply to this post..."
-      quote-placeholder: "Quote this post..."
-      post: "Post"
+      note-placeholder: "What's happening?"
+      reply-placeholder: "Reply to this note..."
+      quote-placeholder: "Quote this note..."
+      note: "Post"
       reply: "Reply"
-      repost: "Repost"
+      renote: "Renote"
       posted: "Posted!"
       replied: "Replied!"
       reposted: "Reposted!"
-      post-failed: "Failed to post"
+      note-failed: "Failed to note"
       reply-failed: "Failed to reply"
-      repost-failed: "Failed to repost"
+      renote-failed: "Failed to renote"
       posting: "Posting"
       attach-media-from-local: "Attach media from your pc"
       attach-media-from-drive: "Attach media from the drive"
@@ -226,15 +371,29 @@ desktop:
       text-remain: "{} chars remaining"
 
     mk-post-form-window:
-      post: "New post"
+      note: "New note"
       reply: "Reply"
       attaches: "{} media attached"
       uploading-media: "Uploading {} media"
 
-    mk-timeline-post:
+    mk-note-page:
+      prev: "Previous note"
+      next: "Next note"
+
+    mk-settings:
+      profile: "Profile"
+      mute: "Mute"
+      drive: "Drive"
+      security: "Security"
+      password: "Password"
+      2fa: "Two-factor authentication"
+      other: "Other"
+      license: "License"
+
+    mk-timeline-note:
       reposted-by: "Reposted by {}"
       reply: "Reply"
-      repost: "Repost"
+      renote: "Renote"
       add-reaction: "Add your reaction"
       detail: "Show detail"
 
@@ -249,7 +408,7 @@ desktop:
       title: "Server info"
       toggle: "Toggle views"
 
-    mk-activity-home-widget:
+    mk-activity-widget:
       title: "Activity"
       toggle: "Toggle views"
 
@@ -276,24 +435,79 @@ desktop:
       title: "Donation"
       text: "To manage Misskey we spend money for our domain server etc.. There's no incomes for us so we need your tip. If you're interested contact {}. Thank you for your contribution!"
 
-    mk-repost-form:
+    mk-channel-home-widget:
+      title: "Channel"
+      settings: "Widget settings"
+      get-started: "Please click the cog in the upper right to specify the channel to receive"
+
+    mk-calendar-widget:
+      title: "{1} / {2}"
+      prev: "Previous month"
+      next: "Next month"
+      go: "Click to travel"
+
+    mk-post-form-home-widget:
+      title: "Post"
+      note: "Post"
+      placeholder: "What's happening?"
+
+    mk-access-log-home-widget:
+      title: "Access log"
+
+    mk-messaging-home-widget:
+      title: "Messaging"
+
+    mk-broadcast-home-widget:
+      fetching: "Fetching"
+      no-broadcasts: "No broadcasts"
+      have-a-nice-day: "Have a nice day!"
+      next: "Next"
+
+    mk-renote-form:
       quote: "Quote..."
       cancel: "Cancel"
-      repost: "Repost"
+      renote: "Renote"
       reposting: "Reposting..."
       success: "Reposted!"
-      failure: "Failed to Repost"
+      failure: "Failed to Renote"
 
-    mk-repost-form-window:
-      title: "Are you sure you want to repost this post?"
+    mk-renote-form-window:
+      title: "Are you sure you want to renote this note?"
+
+    mk-user:
+      last-used-at: "Last used at"
+
+      follows-you: "Follows you"
+      mute: "Mute"
+      muted: "Muting"
+      unmute: "Unmute"
+
+      photos:
+        title: "Photos"
+        loading: "Loading"
+        no-photos: "No photos"
+
+      frequently-replied-users:
+        title: "Frequently replied"
+        loading: "Loading"
+        no-users: "No users"
+
+      followers-you-know:
+        title: "Followers you know"
+        loading: "Loading"
+        no-users: "No users"
 
 mobile:
   tags:
+    mk-selectdrive-page:
+      select-file: "Select file(s)"
+
     mk-drive-file-viewer:
       download: "Download"
       rename: "Rename"
       move: "Move"
-      hash: "Hash"
+      hash: "Hash (md5)"
+      exif: "EXIF"
 
     mk-entrance-signin:
       signup: "Sign up"
@@ -325,19 +539,45 @@ mobile:
 
     mk-notifications-page:
       notifications: "Notifications"
+      read-all: "Are you sure you want to mark all unread notifications as read?"
 
-    mk-post-page:
-      submit: "Post"
+    mk-note-page:
+      title: "Post"
+      prev: "Previous note"
+      next: "Next note"
 
     mk-search-page:
       search: "Search"
+
+    mk-settings:
+      signed-in-as: "Signed in as {}"
 
     mk-settings-page:
       profile: "Profile"
       applications: "Applications"
       twitter-integration: "Twitter integration"
       signin-history: "Sign in history"
+      link: "MisskeyLink"
       settings: "Settings"
+      signout: "Sign out"
+
+    mk-profile-setting-page:
+      title: "Profile Settings"
+
+    mk-profile-setting:
+      will-be-published: "These profiles will be published."
+      name: "Name"
+      location: "Location"
+      description: "Description"
+      birthday: "Birthday"
+      avatar: "Avatar"
+      banner: "Banner"
+      avatar-saved: "Avatar updated successfully"
+      banner-saved: "Banner updated successfully"
+      set-avatar: "Choose an avatar"
+      set-banner: "Choose a banner"
+      save: "Save"
+      saved: "Profile updated successfully"
 
     mk-user-followers-page:
       followers-of: "Followers of {}"
@@ -366,40 +606,40 @@ mobile:
       unfollow: "Unfollow"
 
     mk-home-timeline:
-      empty-timeline: "There is no posts"
+      empty-timeline: "There is no notes"
 
     mk-notifications:
       more: "More"
       empty: "No notifications"
 
-    mk-post-detail:
+    mk-note-detail:
       reply: "Reply"
       reaction: "Reaction"
 
     mk-post-form:
       submit: "Post"
-      reply-placeholder: "Reply to this post..."
-      post-placeholder: "What's happening?"
-      attach-media-from-local: "Attach media from your device"
+      reply-placeholder: "Reply to this note..."
+      note-placeholder: "What's happening?"
 
-    mk-search-posts:
-      empty: "There is no post related to the 「{}」"
+    mk-search-notes:
+      empty: "There is no note related to the 「{}」"
 
-    mk-sub-post-content:
+    mk-sub-note-content:
       media-count: "{} media"
       poll: "Poll"
 
-    mk-timeline-post:
+    mk-timeline-note:
       reposted-by: "Reposted by {}"
 
     mk-timeline:
-      empty: "No posts"
+      empty: "No notes"
       load-more: "More"
 
     mk-ui-nav:
       home: "Home"
       notifications: "Notifications"
       messaging: "Messages"
+      ch: "Channels"
       drive: "Drive"
       settings: "Settings"
       about: "About Misskey"
@@ -412,15 +652,50 @@ mobile:
       no-users: "No following."
 
     mk-user-timeline:
-      no-posts: "This user seems never post"
-      no-posts-with-media: "There is no posts with media"
+      no-notes: "This user seems never note"
+      no-notes-with-media: "There is no notes with media"
+      load-more: "More"
 
     mk-user:
-      is-followed: "Followed you"
+      follows-you: "Follows you"
       following: "Following"
       followers: "Followers"
-      posts: "Timeline"
+      notes: "Posts"
+      overview: "Overview"
+      timeline: "Timeline"
       media: "Media"
+
+    mk-user-overview:
+      recent-notes: "Recent notes"
+      images: "Images"
+      activity: "Activity"
+      keywords: "Keywords"
+      domains: "Domains"
+      frequently-replied-users: "Frequently talking users"
+      followers-you-know: "Followers you know"
+      last-used-at: "Last used at"
+
+    mk-user-overview-notes:
+      loading: "Loading"
+      no-notes: "No notes"
+
+    mk-user-overview-photos:
+      loading: "Loading"
+      no-photos: "No photos"
+
+    mk-user-overview-keywords:
+      no-keywords: "No keywords"
+
+    mk-user-overview-domains:
+      no-domains: "No domains"
+
+    mk-user-overview-frequently-replied-users:
+      loading: "Loading"
+      no-users: "No users"
+
+    mk-user-overview-followers-you-know:
+      loading: "Loading"
+      no-users: "No users"
 
     mk-users-list:
       all: "All"
@@ -428,7 +703,7 @@ mobile:
       load-more: "More"
 
 stats:
-  posts-count: "Number of all posts"
+  notes-count: "Number of all notes"
   users-count: "Number of all users"
 
 status:

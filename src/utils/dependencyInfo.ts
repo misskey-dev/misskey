@@ -11,7 +11,7 @@ export default class {
 	public showAll(): void {
 		this.show('MongoDB', 'mongo --version', x => x.match(/^MongoDB shell version:? (.*)\r?\n/));
 		this.show('Redis', 'redis-server --version', x => x.match(/v=([0-9\.]*)/));
-		this.show('GraphicsMagick', 'gm -version', x => x.match(/^GraphicsMagick ([0-9\.]*) .*/));
+		this.show('ImageMagick', 'magick -version', x => x.match(/^Version: ImageMagick (.+?)\r?\n/));
 	}
 
 	public show(serviceName: string, command: string, transform: (x: string) => RegExpMatchArray): void {
