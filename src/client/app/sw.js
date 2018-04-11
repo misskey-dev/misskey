@@ -52,8 +52,6 @@ self.addEventListener('push', ev => {
 
 		const { type, body } = ev.data.json();
 
-		console.log(type, body);
-
 		const n = composeNotification(type, body);
 		return self.registration.showNotification(n.title, {
 			body: n.body,
