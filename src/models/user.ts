@@ -16,6 +16,8 @@ import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
 import DriveFile, { deleteDriveFile } from './drive-file';
 import DriveFolder, { deleteDriveFolder } from './drive-folder';
 import PollVote, { deletePollVote } from './poll-vote';
+import FollowingLog, { deleteFollowingLog } from './following-log';
+import FollowedLog, { deleteFollowedLog } from './followed-log';
 
 const User = db.get<IUser>('users');
 
@@ -228,8 +230,14 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteFollowing(x)));
 
 	// このユーザーのFollowingLogをすべて削除
+	await Promise.all((
+		await FollowingLog.find({ userId: u._id })
+	).map(x => deleteFollowingLog(x)));
 
 	// このユーザーのFollowedLogをすべて削除
+	await Promise.all((
+		await FollowedLog.find({ userId: u._id })
+	).map(x => deleteFollowedLog(x)));
 
 	// このユーザーを削除
 }
