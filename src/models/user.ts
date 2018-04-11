@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import { INote, pack as packNote } from './note';
+import Note, { INote, pack as packNote, physicalDelete as physicalDeleteNote } from './note';
 import Following from './following';
 import Mute from './mute';
 import getFriends from '../server/api/common/get-friends';
@@ -119,6 +119,40 @@ export function init(user): IUser {
 	user.bannerId = new mongo.ObjectID(user.bannerId);
 	user.pinnedNoteId = new mongo.ObjectID(user.pinnedNoteId);
 	return user;
+}
+
+// TODO
+export async function physicalDelete(user: string | mongo.ObjectID | IUser) {
+	let u: IUser;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+		u = await User.findOne({
+			_id: user
+		});
+	} else if (typeof user === 'string') {
+		u = await User.findOne({
+			_id: new mongo.ObjectID(user)
+		});
+	} else {
+		u = user as IUser;
+	}
+
+	if (u == null) return;
+
+	// このユーザーが行った投稿をすべて削除
+	const notes = await Note.find({ userId: u._id });
+	await Promise.all(notes.map(n => physicalDeleteNote(n)));
+
+	// このユーザーのお気に入りをすべて削除
+
+	// このユーザーが行ったメッセージをすべて削除
+
+	// このユーザーのドライブのファイルをすべて削除
+
+	// このユーザーに関するfollowingをすべて削除
+
+	// このユーザーを削除
 }
 
 /**

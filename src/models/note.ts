@@ -69,6 +69,38 @@ export type INote = {
 	};
 };
 
+// TODO
+export async function physicalDelete(note: string | mongo.ObjectID | INote) {
+	let n: INote;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(note)) {
+		n = await Note.findOne({
+			_id: note
+		});
+	} else if (typeof note === 'string') {
+		n = await Note.findOne({
+			_id: new mongo.ObjectID(note)
+		});
+	} else {
+		n = note as INote;
+	}
+
+	if (n == null) return;
+
+	// この投稿の返信をすべて削除
+	const replies = await Note.find({
+		replyId: n._id
+	});
+	await Promise.all(replies.map(r => physicalDelete(r)));
+
+	// この投稿のWatchをすべて削除
+
+	// この投稿のReactionをすべて削除
+
+	// この投稿に対するFavoriteをすべて削除
+}
+
 /**
  * Pack a note for API response
  *
