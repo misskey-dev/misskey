@@ -13,6 +13,8 @@ import Favorite, { deleteFavorite } from './favorite';
 import NoteReaction, { deleteNoteReaction } from './note-reaction';
 import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
 import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
+import DriveFile, { deleteDriveFile } from './drive-file';
+import DriveFolder, { deleteDriveFolder } from './drive-folder';
 
 const User = db.get<IUser>('users');
 
@@ -190,6 +192,14 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteMessagingHistory(x)));
 
 	// このユーザーのDriveFileをすべて削除
+	await Promise.all((
+		await DriveFile.find({ 'metadata.userId': u._id })
+	).map(x => deleteDriveFile(x)));
+
+	// このユーザーのDriveFolderをすべて削除
+	await Promise.all((
+		await DriveFolder.find({ userId: u._id })
+	).map(x => deleteDriveFolder(x)));
 
 	// このユーザーのFollowingをすべて削除
 

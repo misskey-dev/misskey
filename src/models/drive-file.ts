@@ -1,8 +1,11 @@
-import * as mongodb from 'mongodb';
+import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import { pack as packFolder } from './drive-folder';
 import config from '../config';
 import monkDb, { nativeDbConn } from '../db/mongodb';
+import Note, { deleteNote } from './note';
+import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
+import User from './user';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 
@@ -10,9 +13,9 @@ DriveFile.createIndex('metadata.uri', { sparse: true, unique: true });
 
 export default DriveFile;
 
-const getGridFSBucket = async (): Promise<mongodb.GridFSBucket> => {
+const getGridFSBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
-	const bucket = new mongodb.GridFSBucket(db, {
+	const bucket = new mongo.GridFSBucket(db, {
 		bucketName: 'driveFiles'
 	});
 	return bucket;
@@ -22,14 +25,14 @@ export { getGridFSBucket };
 
 export type IMetadata = {
 	properties: any;
-	userId: mongodb.ObjectID;
-	folderId: mongodb.ObjectID;
+	userId: mongo.ObjectID;
+	folderId: mongo.ObjectID;
 	comment: string;
 	uri: string;
 };
 
 export type IDriveFile = {
-	_id: mongodb.ObjectID;
+	_id: mongo.ObjectID;
 	uploadDate: Date;
 	md5: string;
 	filename: string;
@@ -48,11 +51,55 @@ export function validateFileName(name: string): boolean {
 }
 
 /**
+ * DriveFileを物理削除します
+ */
+export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriveFile) {
+	let d: IDriveFile;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(driveFile)) {
+		d = await DriveFile.findOne({
+			_id: driveFile
+		});
+	} else if (typeof driveFile === 'string') {
+		d = await DriveFile.findOne({
+			_id: new mongo.ObjectID(driveFile)
+		});
+	} else {
+		d = driveFile as IDriveFile;
+	}
+
+	if (d == null) return;
+
+	// このDriveFileを添付しているNoteをすべて削除
+	await Promise.all((
+		await Note.find({ mediaIds: d._id })
+	).map(x => deleteNote(x)));
+
+	// このDriveFileを添付しているMessagingMessageをすべて削除
+	await Promise.all((
+		await MessagingMessage.find({ fileId: d._id })
+	).map(x => deleteMessagingMessage(x)));
+
+	// このDriveFileがアバターやバナーに使われていたらそれらのプロパティをnullにする
+	const u = await User.findOne({ _id: d.metadata.userId });
+	if (u) {
+		if (u.avatarId.equals(d._id)) {
+			await User.update({ _id: u._id }, { $set: { avatarId: null } });
+		}
+		if (u.bannerId.equals(d._id)) {
+			await User.update({ _id: u._id }, { $set: { bannerId: null } });
+		}
+	}
+
+	// このDriveFileを削除
+	await DriveFile.remove({
+		_id: d._id
+	});
+}
+
+/**
  * Pack a drive file for API response
- *
- * @param {any} file
- * @param {any} options?
- * @return {Promise<any>}
  */
 export const pack = (
 	file: any,
