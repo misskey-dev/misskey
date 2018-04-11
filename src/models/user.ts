@@ -4,7 +4,7 @@ import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import Note, { INote, pack as packNote, deleteNote } from './note';
 import Following from './following';
-import Mute from './mute';
+import Mute, { deleteMute } from './mute';
 import getFriends from '../server/api/common/get-friends';
 import config from '../config';
 import AccessToken, { deleteAccessToken } from './access-token';
@@ -201,9 +201,23 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		await DriveFolder.find({ userId: u._id })
 	).map(x => deleteDriveFolder(x)));
 
+	// このユーザーのMuteをすべて削除
+	await Promise.all((
+		await Mute.find({ muterId: u._id })
+	).map(x => deleteMute(x)));
+
+	// このユーザーへのMuteをすべて削除
+	await Promise.all((
+		await Mute.find({ muteeId: u._id })
+	).map(x => deleteMute(x)));
+
 	// このユーザーのFollowingをすべて削除
 
 	// このユーザーへのFollowingをすべて削除
+
+	// このユーザーのFollowingLogをすべて削除
+
+	// このユーザーのFollowedLogをすべて削除
 
 	// このユーザーを削除
 }
