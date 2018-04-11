@@ -15,6 +15,7 @@ import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
 import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
 import DriveFile, { deleteDriveFile } from './drive-file';
 import DriveFolder, { deleteDriveFolder } from './drive-folder';
+import PollVote, { deletePollVote } from './poll-vote';
 
 const User = db.get<IUser>('users');
 
@@ -170,6 +171,11 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await Promise.all((
 		await NoteWatching.find({ userId: u._id })
 	).map(x => deleteNoteWatching(x)));
+
+	// このユーザーのPollVoteをすべて削除
+	await Promise.all((
+		await PollVote.find({ userId: u._id })
+	).map(x => deletePollVote(x)));
 
 	// このユーザーのFavoriteをすべて削除
 	await Promise.all((
