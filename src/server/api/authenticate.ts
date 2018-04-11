@@ -1,50 +1,24 @@
-import * as express from 'express';
-import App from '../../models/app';
+import App, { IApp } from '../../models/app';
 import { default as User, IUser } from '../../models/user';
 import AccessToken from '../../models/access-token';
 import isNativeToken from './common/is-native-token';
 
-export interface IAuthContext {
-	/**
-	 * App which requested
-	 */
-	app: any;
-
-	/**
-	 * Authenticated user
-	 */
-	user: IUser;
-
-	/**
-	 * Whether requested with a User-Native Token
-	 */
-	isSecure: boolean;
-}
-
-export default (req: express.Request) => new Promise<IAuthContext>(async (resolve, reject) => {
-	const token = req.body['i'] as string;
-
+export default (token: string) => new Promise<[IUser, IApp]>(async (resolve, reject) => {
 	if (token == null) {
-		return resolve({
-			app: null,
-			user: null,
-			isSecure: false
-		});
+		resolve([null, null]);
+		return;
 	}
 
 	if (isNativeToken(token)) {
+		// Fetch user
 		const user: IUser = await User
-			.findOne({ 'token': token });
+			.findOne({ token });
 
 		if (user === null) {
 			return reject('user not found');
 		}
 
-		return resolve({
-			app: null,
-			user: user,
-			isSecure: true
-		});
+		resolve([user, null]);
 	} else {
 		const accessToken = await AccessToken.findOne({
 			hash: token.toLowerCase()
@@ -60,10 +34,6 @@ export default (req: express.Request) => new Promise<IAuthContext>(async (resolv
 		const user = await User
 			.findOne({ _id: accessToken.userId });
 
-		return resolve({
-			app: app,
-			user: user,
-			isSecure: false
-		});
+		resolve([user, app]);
 	}
 });

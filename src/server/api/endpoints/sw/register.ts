@@ -6,14 +6,8 @@ import Subscription from '../../../../models/sw-subscription';
 
 /**
  * subscribe service worker
- *
- * @param {any} params
- * @param {any} user
- * @param {any} _
- * @param {boolean} isSecure
- * @return {Promise<any>}
  */
-module.exports = async (params, user, _, isSecure) => new Promise(async (res, rej) => {
+module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	// Get 'endpoint' parameter
 	const [endpoint, endpointErr] = $(params.endpoint).string().$;
 	if (endpointErr) return rej('invalid endpoint param');

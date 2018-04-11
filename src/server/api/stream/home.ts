@@ -2,14 +2,22 @@ import * as websocket from 'websocket';
 import * as redis from 'redis';
 import * as debug from 'debug';
 
-import User from '../../../models/user';
+import User, { IUser } from '../../../models/user';
 import Mute from '../../../models/mute';
 import { pack as packNote } from '../../../models/note';
 import readNotification from '../common/read-notification';
+import call from '../call';
+import { IApp } from '../../../models/app';
 
 const log = debug('misskey');
 
-export default async function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any) {
+export default async function(
+	request: websocket.request,
+	connection: websocket.connection,
+	subscriber: redis.RedisClient,
+	user: IUser,
+	app: IApp
+) {
 	// Subscribe Home stream channel
 	subscriber.subscribe(`misskey:user-stream:${user._id}`);
 
@@ -67,7 +75,17 @@ export default async function(request: websocket.request, connection: websocket.
 
 		switch (msg.type) {
 			case 'api':
-				// TODO
+				call(msg.endpoint, user, app, msg.data).then(res => {
+					connection.send(JSON.stringify({
+						type: `api-res:${msg.id}`,
+						body: { res }
+					}));
+				}).catch(e => {
+					connection.send(JSON.stringify({
+						type: `api-res:${msg.id}`,
+						body: { e }
+					}));
+				});
 				break;
 
 			case 'alive':

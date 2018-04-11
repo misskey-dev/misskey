@@ -36,14 +36,10 @@ import App, { pack } from '../../../../models/app';
 
 /**
  * Show an app
- *
- * @param {any} params
- * @param {any} user
- * @param {any} _
- * @param {any} isSecure
- * @return {Promise<any>}
  */
-module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => {
+module.exports = (params, user, app) => new Promise(async (res, rej) => {
+	const isSecure = user != null && app == null;
+
 	// Get 'appId' parameter
 	const [appId, appIdErr] = $(params.appId).optional.id().$;
 	if (appIdErr) return rej('invalid appId param');
@@ -57,16 +53,16 @@ module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => 
 	}
 
 	// Lookup app
-	const app = appId !== undefined
+	const ap = appId !== undefined
 		? await App.findOne({ _id: appId })
 		: await App.findOne({ nameIdLower: nameId.toLowerCase() });
 
-	if (app === null) {
+	if (ap === null) {
 		return rej('app not found');
 	}
 
 	// Send response
-	res(await pack(app, user, {
-		includeSecret: isSecure && app.userId.equals(user._id)
+	res(await pack(ap, user, {
+		includeSecret: isSecure && ap.userId.equals(user._id)
 	}));
 });

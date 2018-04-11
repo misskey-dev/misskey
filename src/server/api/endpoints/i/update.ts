@@ -7,14 +7,10 @@ import event from '../../../../publishers/stream';
 
 /**
  * Update myself
- *
- * @param {any} params
- * @param {any} user
- * @param {any} _
- * @param {boolean} isSecure
- * @return {Promise<any>}
  */
-module.exports = async (params, user, _, isSecure) => new Promise(async (res, rej) => {
+module.exports = async (params, user, app) => new Promise(async (res, rej) => {
+	const isSecure = user != null && app == null;
+
 	// Get 'name' parameter
 	const [name, nameErr] = $(params.name).optional.nullable.string().pipe(isValidName).$;
 	if (nameErr) return rej('invalid name param');

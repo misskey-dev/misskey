@@ -2,12 +2,12 @@ import * as Limiter from 'ratelimiter';
 import * as debug from 'debug';
 import limiterDB from '../../db/redis';
 import { Endpoint } from './endpoints';
-import { IAuthContext } from './authenticate';
 import getAcct from '../../acct/render';
+import { IUser } from '../../models/user';
 
 const log = debug('misskey:limitter');
 
-export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, reject) => {
+export default (endpoint: Endpoint, user: IUser) => new Promise((ok, reject) => {
 	const limitation = endpoint.limit;
 
 	const key = limitation.hasOwnProperty('key')
@@ -32,7 +32,7 @@ export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, rejec
 	// Short-term limit
 	function min() {
 		const minIntervalLimiter = new Limiter({
-			id: `${ctx.user._id}:${key}:min`,
+			id: `${user._id}:${key}:min`,
 			duration: limitation.minInterval,
 			max: 1,
 			db: limiterDB
@@ -43,7 +43,7 @@ export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, rejec
 				return reject('ERR');
 			}
 
-			log(`@${getAcct(ctx.user)} ${endpoint.name} min remaining: ${info.remaining}`);
+			log(`@${getAcct(user)} ${endpoint.name} min remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('BRIEF_REQUEST_INTERVAL');
@@ -60,7 +60,7 @@ export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, rejec
 	// Long term limit
 	function max() {
 		const limiter = new Limiter({
-			id: `${ctx.user._id}:${key}`,
+			id: `${user._id}:${key}`,
 			duration: limitation.duration,
 			max: limitation.max,
 			db: limiterDB
@@ -71,7 +71,7 @@ export default (endpoint: Endpoint, ctx: IAuthContext) => new Promise((ok, rejec
 				return reject('ERR');
 			}
 
-			log(`@${getAcct(ctx.user)} ${endpoint.name} max remaining: ${info.remaining}`);
+			log(`@${getAcct(user)} ${endpoint.name} max remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('RATE_LIMIT_EXCEEDED');

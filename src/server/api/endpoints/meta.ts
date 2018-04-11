@@ -35,9 +35,6 @@ import Meta from '../../../models/meta';
 
 /**
  * Show core info
- *
- * @param {any} params
- * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	const meta: any = (await Meta.findOne()) || {};

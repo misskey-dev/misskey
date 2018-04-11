@@ -2,9 +2,6 @@ import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import config from '../../config';
-import { default as User, IUser } from '../../models/user';
-import AccessToken from '../../models/access-token';
-import isNativeToken from './common/is-native-token';
 
 import homeStream from './stream/home';
 import driveStream from './stream/drive';
@@ -16,6 +13,7 @@ import serverStream from './stream/server';
 import requestsStream from './stream/requests';
 import channelStream from './stream/channel';
 import { ParsedUrlQuery } from 'querystring';
+import authenticate from './authenticate';
 
 module.exports = (server: http.Server) => {
 	/**
@@ -53,7 +51,7 @@ module.exports = (server: http.Server) => {
 		}
 
 		const q = request.resourceURL.query as ParsedUrlQuery;
-		const user = await authenticate(q.i as string);
+		const [user, app] = await authenticate(q.i as string);
 
 		if (request.resourceURL.pathname === '/othello-game') {
 			othelloGameStream(request, connection, subscriber, user);
@@ -75,46 +73,9 @@ module.exports = (server: http.Server) => {
 			null;
 
 		if (channel !== null) {
-			channel(request, connection, subscriber, user);
+			channel(request, connection, subscriber, user, app);
 		} else {
 			connection.close();
 		}
 	});
 };
-
-/**
- * 接続してきたユーザーを取得します
- * @param token 送信されてきたトークン
- */
-function authenticate(token: string): Promise<IUser> {
-	if (token == null) {
-		return Promise.resolve(null);
-	}
-
-	return new Promise(async (resolve, reject) => {
-		if (isNativeToken(token)) {
-			// Fetch user
-			const user: IUser = await User
-				.findOne({
-					host: null,
-					'token': token
-				});
-
-			resolve(user);
-		} else {
-			const accessToken = await AccessToken.findOne({
-				hash: token
-			});
-
-			if (accessToken == null) {
-				return reject('invalid signature');
-			}
-
-			// Fetch user
-			const user: IUser = await User
-				.findOne({ _id: accessToken.userId });
-
-			resolve(user);
-		}
-	});
-}

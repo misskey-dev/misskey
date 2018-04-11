@@ -6,7 +6,9 @@ import User, { pack } from '../../../models/user';
 /**
  * Show myself
  */
-module.exports = (params, user, _, isSecure) => new Promise(async (res, rej) => {
+module.exports = (params, user, app) => new Promise(async (res, rej) => {
+	const isSecure = user != null && app == null;
+
 	// Serialize
 	res(await pack(user, user, {
 		detail: true,

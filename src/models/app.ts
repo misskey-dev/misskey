@@ -19,7 +19,7 @@ export type IApp = {
 	nameId: string;
 	nameIdLower: string;
 	description: string;
-	permission: string;
+	permission: string[];
 	callbackUrl: string;
 };
 

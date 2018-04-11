@@ -7,7 +7,6 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as multer from 'multer';
 
-// import authenticate from './authenticate';
 import endpoints from './endpoints';
 
 /**
