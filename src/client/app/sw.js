@@ -43,8 +43,6 @@ self.addEventListener('fetch', ev => {
 
 // プッシュ通知を受け取ったとき
 self.addEventListener('push', ev => {
-	console.log('pushed');
-
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true
@@ -53,8 +51,6 @@ self.addEventListener('push', ev => {
 		if (clients.length != 0) return;
 
 		const { type, body } = ev.data.json();
-
-		console.log(type, body);
 
 		const n = composeNotification(type, body);
 		return self.registration.showNotification(n.title, {
