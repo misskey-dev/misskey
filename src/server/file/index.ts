@@ -56,11 +56,12 @@ function thumbnail(data: stream.Readable, type: string, resize: number): ISend {
 	const readable: stream.Readable = (() => {
 		// 動画であれば
 		if (/^video\/.*$/.test(type)) {
-			// 実装は先延ばし
+			// TODO
 			// 使わないことになったストリームはしっかり取り壊す
 			data.destroy();
 			return fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
 		// 画像であれば
+		// Note: SVGはapplication/xml
 		} else if (/^image\/.*$/.test(type) || type == 'application/xml') {
 			// 0フレーム目を送る
 			try {
