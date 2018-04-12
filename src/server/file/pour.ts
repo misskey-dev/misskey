@@ -80,10 +80,11 @@ export default function(readable: stream.Readable, type: string, ctx: Koa.Contex
 	}
 
 	if (ctx.query.download !== undefined) {
-		ctx.header('Content-Disposition', 'attachment');
+		ctx.set('Content-Disposition', 'attachment');
 	}
 
-	ctx.header('Content-Type', data.contentType);
+	ctx.set('Cache-Control', 'max-age=31536000, immutable');
+	ctx.set('Content-Type', data.contentType);
 
 	data.stream.pipe(ctx.res);
 

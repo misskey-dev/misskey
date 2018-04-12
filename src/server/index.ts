@@ -4,10 +4,9 @@
 
 import * as fs from 'fs';
 import * as http from 'http';
-import * as https from 'https';
+import * as http2 from 'http2';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
-import * as bodyParser from 'koa-bodyparser';
 import * as mount from 'koa-mount';
 
 import activityPub from './activitypub';
@@ -17,14 +16,13 @@ import config from '../config';
 // Init app
 const app = new Koa();
 app.proxy = true;
-app.use(bodyParser);
 
 // HSTS
 // 6months (15552000sec)
 if (config.url.startsWith('https')) {
-	app.use((ctx, next) => {
+	app.use(async (ctx, next) => {
 		ctx.set('strict-transport-security', 'max-age=15552000; preload');
-		next();
+		await next();
 	});
 }
 
@@ -38,10 +36,10 @@ const router = new Router();
 router.use(activityPub.routes());
 router.use(webFinger.routes());
 
-app.use(mount(require('./web')));
-
 // Register router
 app.use(router.routes());
+
+app.use(mount(require('./web')));
 
 function createServer() {
 	if (config.https) {
@@ -49,9 +47,9 @@ function createServer() {
 		Object.keys(config.https).forEach(k => {
 			certs[k] = fs.readFileSync(config.https[k]);
 		});
-		return https.createServer(certs, app.callback);
+		return http2.createSecureServer(certs, app.callback());
 	} else {
-		return http.createServer(app.callback);
+		return http.createServer(app.callback());
 	}
 }
 

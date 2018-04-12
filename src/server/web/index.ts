@@ -2,15 +2,13 @@
  * Web Client Server
  */
 
-import * as path from 'path';
 import ms = require('ms');
-
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 
-const client = path.resolve(`${__dirname}/../../client/`);
+const client = `${__dirname}/../../client/`;
 
 // Init app
 const app = new Koa();
@@ -19,10 +17,10 @@ const app = new Koa();
 app.use(favicon(`${client}/assets/favicon.ico`));
 
 // Common request handler
-app.use((ctx, next) => {
+app.use(async (ctx, next) => {
 	// IFrameの中に入れられないようにする
 	ctx.set('X-Frame-Options', 'DENY');
-	next();
+	await next();
 });
 
 // Init router
@@ -30,9 +28,9 @@ const router = new Router();
 
 //#region static assets
 
-router.get('/assets', async ctx => {
+router.get('/assets/*', async ctx => {
 	await send(ctx, ctx.path, {
-		root: `${client}/assets`,
+		root: client,
 		maxage: ms('7 days'),
 		immutable: true
 	});
@@ -63,8 +61,9 @@ router.get('url', require('./url-preview'));
 
 // Render base html for all requests
 router.get('*', async ctx => {
-	await send(ctx, `${client}/app/base.html`, {
-		maxage: ms('7 days'),
+	await send(ctx, `app/base.html`, {
+		root: client,
+		maxage: ms('3 days'),
 		immutable: true
 	});
 });
