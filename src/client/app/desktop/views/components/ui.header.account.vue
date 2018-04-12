@@ -18,6 +18,9 @@
 				</li>
 			</ul>
 			<ul>
+				<li>
+					<a href="/i/customize-home">%fa:wrench%カスタマイズ%fa:angle-right%</a>
+				</li>
 				<li @click="settings">
 					<p>%fa:cog%%i18n:desktop.tags.mk-ui-header-account.settings%%fa:angle-right%</p>
 				</li>
