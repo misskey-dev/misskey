@@ -1,11 +1,12 @@
-import * as express from 'express';
+import * as http from 'http';
+import * as multer from 'koa-multer';
 
 import endpoints, { Endpoint } from './endpoints';
 import limitter from './limitter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 
-export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, req?: express.Request) => new Promise(async (ok, rej) => {
+export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, req?: http.IncomingMessage) => new Promise(async (ok, rej) => {
 	const isSecure = user != null && app == null;
 
 	//console.log(endpoint, user, app, data);
@@ -38,7 +39,7 @@ export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, 
 	let exec = require(`${__dirname}/endpoints/${ep.name}`);
 
 	if (ep.withFile && req) {
-		exec = exec.bind(null, req.file);
+		exec = exec.bind(null, (req as multer.MulterIncomingMessage).file);
 	}
 
 	let res;

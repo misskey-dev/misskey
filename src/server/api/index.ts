@@ -2,53 +2,41 @@
  * API Server
  */
 
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
-import * as multer from 'multer';
+import * as Koa from 'koa';
+import * as Router from 'koa-router';
+import * as multer from 'koa-multer';
 
 import endpoints from './endpoints';
 
-/**
- * Init app
- */
-const app = express();
+const handler = require('./api-handler').default;
 
-app.disable('x-powered-by');
-app.set('etag', false);
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({
-	type: ['application/json', 'text/plain'],
-	verify: (req, res, buf, encoding) => {
-		if (buf && buf.length) {
-			(req as any).rawBody = buf.toString(encoding || 'utf8');
-		}
-	}
-}));
-app.use(cors());
+// Init app
+const app = new Koa();
 
-app.get('/', (req, res) => {
-	res.send('YEE HAW');
+// Init multer instance
+const upload = multer({
+	storage: multer.diskStorage({})
 });
+
+// Init router
+const router = new Router();
 
 /**
  * Register endpoint handlers
  */
-endpoints.forEach(endpoint =>
-	endpoint.withFile ?
-		app.post(`/${endpoint.name}`,
-			endpoint.withFile ? multer({ storage: multer.diskStorage({}) }).single('file') : null,
-			require('./api-handler').default.bind(null, endpoint)) :
-		app.post(`/${endpoint.name}`,
-			require('./api-handler').default.bind(null, endpoint))
+endpoints.forEach(endpoint => endpoint.withFile
+	? router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint))
+	: router.post(`/${endpoint.name}`, handler.bind(null, endpoint))
 );
 
-app.post('/signup', require('./private/signup').default);
-app.post('/signin', require('./private/signin').default);
+router.post('/signup', require('./private/signup').default);
+router.post('/signin', require('./private/signin').default);
 
-require('./service/github')(app);
-require('./service/twitter')(app);
+router.use(require('./service/github').routes());
+router.use(require('./service/twitter').routes());
+router.use(require('./bot/interfaces/line').routes());
 
-require('./bot/interfaces/line')(app);
+// Register router
+app.use(router.routes());
 
 module.exports = app;

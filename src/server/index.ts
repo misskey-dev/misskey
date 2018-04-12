@@ -13,7 +13,7 @@ import activityPub from './activitypub';
 import webFinger from './webfinger';
 import config from '../config';
 
-// Init server
+// Init app
 const app = new Koa();
 app.proxy = true;
 app.use(bodyParser);
@@ -46,9 +46,9 @@ function createServer() {
 		Object.keys(config.https).forEach(k => {
 			certs[k] = fs.readFileSync(config.https[k]);
 		});
-		return https.createServer(certs, app);
+		return https.createServer(certs, app.callback);
 	} else {
-		return http.createServer(app);
+		return http.createServer(app.callback);
 	}
 }
 

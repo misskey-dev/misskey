@@ -1,4 +1,4 @@
-import * as express from 'express';
+import * as Koa from 'koa';
 
 import { Endpoint } from './endpoints';
 import authenticate from './authenticate';
@@ -6,16 +6,17 @@ import call from './call';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 
-export default async (endpoint: Endpoint, req: express.Request, res: express.Response) => {
+export default async (endpoint: Endpoint, ctx: Koa.Context) => {
 	const reply = (x?: any, y?: any) => {
 		if (x === undefined) {
-			res.sendStatus(204);
+			ctx.status = 204;
 		} else if (typeof x === 'number') {
-			res.status(x).send({
+			ctx.status = x;
+			ctx.body = {
 				error: x === 500 ? 'INTERNAL_ERROR' : y
-			});
+			};
 		} else {
-			res.send(x);
+			ctx.body = x;
 		}
 	};
 
@@ -24,11 +25,11 @@ export default async (endpoint: Endpoint, req: express.Request, res: express.Res
 
 	// Authentication
 	try {
-		[user, app] = await authenticate(req.body['i']);
+		[user, app] = await authenticate(ctx.body['i']);
 	} catch (e) {
 		return reply(403, 'AUTHENTICATION_FAILED');
 	}
 
 	// API invoking
-	call(endpoint, user, app, req.body, req).then(reply).catch(e => reply(400, e));
+	call(endpoint, user, app, ctx.body, ctx.req).then(reply).catch(e => reply(400, e));
 };

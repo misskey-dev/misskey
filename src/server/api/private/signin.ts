@@ -1,4 +1,4 @@
-import * as express from 'express';
+import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import User, { ILocalUser } from '../../../models/user';
@@ -7,26 +7,26 @@ import event from '../../../publishers/stream';
 import signin from '../common/signin';
 import config from '../../../config';
 
-export default async (req: express.Request, res: express.Response) => {
-	res.header('Access-Control-Allow-Origin', config.url);
-	res.header('Access-Control-Allow-Credentials', 'true');
+export default async (ctx: Koa.Context) => {
+	ctx.set('Access-Control-Allow-Origin', config.url);
+	ctx.set('Access-Control-Allow-Credentials', 'true');
 
-	const username = req.body['username'];
-	const password = req.body['password'];
-	const token = req.body['token'];
+	const username = ctx.body['username'];
+	const password = ctx.body['password'];
+	const token = ctx.body['token'];
 
 	if (typeof username != 'string') {
-		res.sendStatus(400);
+		ctx.status = 400;
 		return;
 	}
 
 	if (typeof password != 'string') {
-		res.sendStatus(400);
+		ctx.status = 400;
 		return;
 	}
 
 	if (token != null && typeof token != 'string') {
-		res.sendStatus(400);
+		ctx.status = 400;
 		return;
 	}
 
@@ -37,12 +37,12 @@ export default async (req: express.Request, res: express.Response) => {
 	}, {
 		fields: {
 			data: false,
-			'profile': false
+			profile: false
 		}
 	}) as ILocalUser;
 
 	if (user === null) {
-		res.status(404).send({
+		ctx.throw(404, {
 			error: 'user not found'
 		});
 		return;
@@ -60,17 +60,17 @@ export default async (req: express.Request, res: express.Response) => {
 			});
 
 			if (verified) {
-				signin(res, user, false);
+				signin(ctx, user, false);
 			} else {
-				res.status(400).send({
+				ctx.throw(400, {
 					error: 'invalid token'
 				});
 			}
 		} else {
-			signin(res, user, false);
+			signin(ctx, user, false);
 		}
 	} else {
-		res.status(400).send({
+		ctx.throw(400, {
 			error: 'incorrect password'
 		});
 	}
@@ -79,8 +79,8 @@ export default async (req: express.Request, res: express.Response) => {
 	const record = await Signin.insert({
 		createdAt: new Date(),
 		userId: user._id,
-		ip: req.ip,
-		headers: req.headers,
+		ip: ctx.ip,
+		headers: ctx.headers,
 		success: same
 	});
 

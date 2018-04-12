@@ -1,5 +1,5 @@
 import * as uuid from 'uuid';
-import * as express from 'express';
+import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
 import recaptcha = require('recaptcha-promise');
@@ -33,30 +33,30 @@ const home = {
 	]
 };
 
-export default async (req: express.Request, res: express.Response) => {
+export default async (ctx: Koa.Context) => {
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
 	if (process.env.NODE_ENV !== 'test') {
-		const success = await recaptcha(req.body['g-recaptcha-response']);
+		const success = await recaptcha(ctx.body['g-recaptcha-response']);
 
 		if (!success) {
-			res.status(400).send('recaptcha-failed');
+			ctx.throw(400, 'recaptcha-failed');
 			return;
 		}
 	}
 
-	const username = req.body['username'];
-	const password = req.body['password'];
+	const username = ctx.body['username'];
+	const password = ctx.body['password'];
 
 	// Validate username
 	if (!validateUsername(username)) {
-		res.sendStatus(400);
+		ctx.status = 400;
 		return;
 	}
 
 	// Validate password
 	if (!validatePassword(password)) {
-		res.sendStatus(400);
+		ctx.status = 400;
 		return;
 	}
 
@@ -71,7 +71,7 @@ export default async (req: express.Request, res: express.Response) => {
 
 	// Check username already used
 	if (usernameExist !== 0) {
-		res.sendStatus(400);
+		ctx.status = 400;
 		return;
 	}
 
@@ -143,5 +143,5 @@ export default async (req: express.Request, res: express.Response) => {
 	});
 
 	// Response
-	res.send(await pack(account));
+	ctx.body = await pack(account);
 };
