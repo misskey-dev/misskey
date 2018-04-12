@@ -8,6 +8,7 @@ import * as https from 'https';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as bodyParser from 'koa-bodyparser';
+import * as mount from 'koa-mount';
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
@@ -27,15 +28,17 @@ if (config.url.startsWith('https')) {
 	});
 }
 
+app.use(mount('/api', require('./api')));
+app.use(mount('/files', require('./file')));
+
 // Init router
 const router = new Router();
 
 // Routing
-router.use('/api', require('./api'));
-router.use('/files', require('./file'));
 router.use(activityPub.routes());
 router.use(webFinger.routes());
-router.use(require('./web'));
+
+app.use(mount(require('./web')));
 
 // Register router
 app.use(router.routes());
