@@ -1,5 +1,3 @@
-import * as multer from 'koa-multer';
-
 import endpoints, { Endpoint } from './endpoints';
 import limitter from './limitter';
 import { IUser } from '../../models/user';
