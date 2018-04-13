@@ -60,14 +60,14 @@ export default async (ctx: Koa.Context) => {
 			});
 
 			if (verified) {
-				signin(ctx, user, false);
+				signin(ctx, user);
 			} else {
 				ctx.throw(400, {
 					error: 'invalid token'
 				});
 			}
 		} else {
-			signin(ctx, user, false);
+			signin(ctx, user);
 		}
 	} else {
 		ctx.throw(400, {
