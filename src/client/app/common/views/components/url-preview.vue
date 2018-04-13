@@ -45,7 +45,7 @@ export default Vue.extend({
 		} else if (url.hostname == 'youtu.be') {
 			this.youtubeId = url.pathname;
 		} else {
-			fetch('/api:url?url=' + this.url).then(res => {
+			fetch('/url?url=' + this.url).then(res => {
 				res.json().then(info => {
 					this.title = info.title;
 					this.description = info.description;

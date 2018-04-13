@@ -2,20 +2,26 @@
  * Docs
  */
 
-import * as path from 'path';
+import ms = require('ms');
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
 
-const docs = path.resolve(`${__dirname}/../../client/docs/`);
+const docs = `${__dirname}/../../client/docs/`;
 
 const router = new Router();
 
-router.get('/assets', async ctx => {
-	await send(ctx, `${docs}/assets`);
+router.get('/assets/*', async ctx => {
+	await send(ctx, ctx.path, {
+		root: docs,
+		maxage: ms('7 days'),
+		immutable: true
+	});
 });
 
-router.get(/^\/([a-z_\-\/]+?)$/, async ctx => {
-	await send(ctx, `${docs}/${ctx.params[0]}.html`);
+router.get('*', async ctx => {
+	await send(ctx, `${ctx.params[0]}.html`, {
+		root: docs
+	});
 });
 
-module.exports = router;
+export default router;

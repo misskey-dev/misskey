@@ -8,6 +8,8 @@ import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 
+import docs from './docs';
+
 const client = `${__dirname}/../../client/`;
 
 // Init app
@@ -54,7 +56,7 @@ router.get('/manifest.json', async ctx => {
 //#endregion
 
 // Docs
-router.use('/docs', require('./docs').routes());
+router.use('/docs', docs.routes());
 
 // URL preview endpoint
 router.get('url', require('./url-preview'));
