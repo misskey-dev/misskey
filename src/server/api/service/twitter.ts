@@ -107,7 +107,7 @@ if (config.twitter == null) {
 		ctx.redirect(twCtx.url);
 	});
 
-	router.get('/tw/cb', ctx => {
+	router.get('/tw/cb', async ctx => {
 		const userToken = getUserToken(ctx);
 
 		if (userToken == null) {
@@ -141,31 +141,37 @@ if (config.twitter == null) {
 				return;
 			}
 
-			redis.get(userToken, async (_, twCtx) => {
-				const result = await twAuth.done(JSON.parse(twCtx), verifier);
-
-				const user = await User.findOneAndUpdate({
-					host: null,
-					token: userToken
-				}, {
-					$set: {
-						twitter: {
-							accessToken: result.accessToken,
-							accessTokenSecret: result.accessTokenSecret,
-							userId: result.userId,
-							screenName: result.screenName
-						}
-					}
+			const get = new Promise<any>((res, rej) => {
+				redis.get(userToken, async (_, twCtx) => {
+					res(twCtx);
 				});
-
-				ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
-
-				// Publish i updated event
-				event(user._id, 'i_updated', await pack(user, user, {
-					detail: true,
-					includeSecrets: true
-				}));
 			});
+
+			const twCtx = await get;
+
+			const result = await twAuth.done(JSON.parse(twCtx), verifier);
+
+			const user = await User.findOneAndUpdate({
+				host: null,
+				token: userToken
+			}, {
+				$set: {
+					twitter: {
+						accessToken: result.accessToken,
+						accessTokenSecret: result.accessTokenSecret,
+						userId: result.userId,
+						screenName: result.screenName
+					}
+				}
+			});
+
+			ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
+
+			// Publish i updated event
+			event(user._id, 'i_updated', await pack(user, user, {
+				detail: true,
+				includeSecrets: true
+			}));
 		}
 	});
 }
