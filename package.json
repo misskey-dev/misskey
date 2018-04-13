@@ -176,7 +176,7 @@
 		"rimraf": "2.6.2",
 		"rndstr": "1.0.0",
 		"s-age": "1.1.2",
-		"sass-loader": "6.0.7",
+		"sass-loader": "7.0.0",
 		"seedrandom": "2.4.3",
 		"speakeasy": "2.0.0",
 		"style-loader": "0.20.3",
