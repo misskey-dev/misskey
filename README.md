@@ -17,10 +17,9 @@ ultimately sophisticated new type of mini-blog based SNS.
 :sparkles: Features
 ----------------------------------------------------------------
 * Automatically updated timeline
+* Reactions
 * Private messages
-* Two-Factor Authentication support
 * ServiceWorker support
-* Web API for third-party applications
 * ActivityPub compatible
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
