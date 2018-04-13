@@ -5,9 +5,11 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as http2 from 'http2';
+import * as zlib from 'zlib';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as mount from 'koa-mount';
+import * as compress from 'koa-compress';
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
@@ -16,6 +18,10 @@ import config from '../config';
 // Init app
 const app = new Koa();
 app.proxy = true;
+
+app.use(compress({
+	flush: zlib.constants.Z_SYNC_FLUSH
+}));
 
 // HSTS
 // 6months (15552000sec)
