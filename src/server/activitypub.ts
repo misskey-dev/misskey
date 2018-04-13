@@ -1,5 +1,5 @@
 import * as Router from 'koa-router';
-import { parseRequest } from 'http-signature';
+const parseRequest = require('http-signature');
 
 import { createHttp } from '../queue';
 import pack from '../remote/activitypub/renderer';
