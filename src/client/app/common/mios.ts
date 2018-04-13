@@ -457,7 +457,9 @@ export default class MiOS extends EventEmitter {
 				const id = Math.random().toString();
 
 				stream.once(`api-res:${id}`, res => {
-					if (res.res) {
+					if (res == null || Object.keys(res).length == 0) {
+						resolve(null);
+					} else if (res.res) {
 						resolve(res.res);
 					} else {
 						reject(res.e);
