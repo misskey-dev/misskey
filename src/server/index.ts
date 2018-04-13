@@ -63,13 +63,9 @@ function createServer() {
 export default () => new Promise(resolve => {
 	const server = createServer();
 
-	/**
-	 * Steaming
-	 */
+	// Init stream server
 	require('./api/streaming')(server);
 
-	/**
-	 * Server listen
-	 */
+	// Listen
 	server.listen(config.port, resolve);
 });
