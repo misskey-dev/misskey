@@ -4,68 +4,48 @@
 
 import * as fs from 'fs';
 import * as http from 'http';
-import * as https from 'https';
-import * as express from 'express';
-import * as morgan from 'morgan';
-import Accesses from 'accesses';
+import * as http2 from 'http2';
+import * as zlib from 'zlib';
+import * as Koa from 'koa';
+import * as Router from 'koa-router';
+import * as mount from 'koa-mount';
+import * as compress from 'koa-compress';
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
-import log from './log-request';
 import config from '../config';
 
-/**
- * Init app
- */
-const app = express();
-app.disable('x-powered-by');
-app.set('trust proxy', 'loopback');
+// Init app
+const app = new Koa();
+app.proxy = true;
 
-// Log
-if (config.accesses && config.accesses.enable) {
-	const accesses = new Accesses({
-		appName: 'Misskey',
-		port: config.accesses.port
-	});
-
-	app.use(accesses.express);
-}
-
-app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev', {
-	// create a write stream (in append mode)
-	stream: config.accesslog ? fs.createWriteStream(config.accesslog) : null
+app.use(compress({
+	flush: zlib.constants.Z_SYNC_FLUSH
 }));
 
-app.use((req, res, next) => {
-	log(req);
-	next();
-});
-
-// Drop request when without 'Host' header
-app.use((req, res, next) => {
-	if (!req.headers['host']) {
-		res.sendStatus(400);
-	} else {
-		next();
-	}
-});
-
-// 互換性のため
-app.post('/meta', (req, res) => {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.json({
-		version: 'nighthike'
+// HSTS
+// 6months (15552000sec)
+if (config.url.startsWith('https')) {
+	app.use(async (ctx, next) => {
+		ctx.set('strict-transport-security', 'max-age=15552000; preload');
+		await next();
 	});
-});
+}
 
-/**
- * Register modules
- */
-app.use('/api', require('./api'));
-app.use('/files', require('./file'));
-app.use(activityPub);
-app.use(webFinger);
-app.use(require('./web'));
+app.use(mount('/api', require('./api')));
+app.use(mount('/files', require('./file')));
+
+// Init router
+const router = new Router();
+
+// Routing
+router.use(activityPub.routes());
+router.use(webFinger.routes());
+
+// Register router
+app.use(router.routes());
+
+app.use(mount(require('./web')));
 
 function createServer() {
 	if (config.https) {
@@ -73,9 +53,9 @@ function createServer() {
 		Object.keys(config.https).forEach(k => {
 			certs[k] = fs.readFileSync(config.https[k]);
 		});
-		return https.createServer(certs, app);
+		return http2.createSecureServer(certs, app.callback());
 	} else {
-		return http.createServer(app);
+		return http.createServer(app.callback());
 	}
 }
 

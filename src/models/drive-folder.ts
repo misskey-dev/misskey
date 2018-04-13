@@ -22,11 +22,52 @@ export function isValidFolderName(name: string): boolean {
 }
 
 /**
+ * DriveFolderを物理削除します
+ */
+export async function deleteDriveFolder(driveFolder: string | mongo.ObjectID | IDriveFolder) {
+	let d: IDriveFolder;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(driveFolder)) {
+		d = await DriveFolder.findOne({
+			_id: driveFolder
+		});
+	} else if (typeof driveFolder === 'string') {
+		d = await DriveFolder.findOne({
+			_id: new mongo.ObjectID(driveFolder)
+		});
+	} else {
+		d = driveFolder as IDriveFolder;
+	}
+
+	if (d == null) return;
+
+	// このDriveFolderに格納されているDriveFileがあればすべてルートに移動
+	await DriveFile.update({
+		'metadata.folderId': d._id
+	}, {
+		$set: {
+			'metadata.folderId': null
+		}
+	});
+
+	// このDriveFolderに格納されているDriveFolderがあればすべてルートに移動
+	await DriveFolder.update({
+		parentId: d._id
+	}, {
+		$set: {
+			parentId: null
+		}
+	});
+
+	// このDriveFolderを削除
+	await DriveFolder.remove({
+		_id: d._id
+	});
+}
+
+/**
  * Pack a drive folder for API response
- *
- * @param {any} folder
- * @param {any} options?
- * @return {Promise<any>}
  */
 export const pack = (
 	folder: any,

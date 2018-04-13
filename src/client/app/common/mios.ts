@@ -444,14 +444,17 @@ export default class MiOS extends EventEmitter {
 		// Append a credential
 		if (this.isSignedIn) (data as any).i = this.i.token;
 
-		const viaStream = localStorage.getItem('enableExperimental') == 'true';
-
 		return new Promise((resolve, reject) => {
+			const viaStream = this.stream.hasConnection &&
+				(localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true);
+
 			if (viaStream) {
 				const stream = this.stream.borrow();
 				const id = Math.random().toString();
 
 				stream.once(`api-res:${id}`, res => {
+					if (--pending === 0) spinner.parentNode.removeChild(spinner);
+
 					if (res.res) {
 						resolve(res.res);
 					} else {
@@ -503,7 +506,7 @@ export default class MiOS extends EventEmitter {
 						reject(body.error);
 					}
 				}).catch(reject);
-			/*}*/
+			}
 		});
 	}
 

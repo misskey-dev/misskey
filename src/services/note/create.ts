@@ -6,7 +6,7 @@ import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
-import context from '../../remote/activitypub/renderer/context';
+import packAp from '../../remote/activitypub/renderer';
 import { IDriveFile } from '../../models/drive-file';
 import notify from '../../publishers/notify';
 import NoteWatching from '../../models/note-watching';
@@ -132,8 +132,7 @@ export default async (user: IUser, data: {
 				const content = data.renote && data.text == null
 					? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
 					: renderCreate(await renderNote(note));
-				content['@context'] = context;
-				return content;
+				return packAp(content);
 			};
 
 			// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送

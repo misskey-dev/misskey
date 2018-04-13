@@ -1,11 +1,11 @@
-import * as express from 'express';
+import * as Koa from 'koa';
 import summaly from 'summaly';
 
-module.exports = async (req: express.Request, res: express.Response) => {
-	const summary = await summaly(req.query.url);
+module.exports = async (ctx: Koa.Context) => {
+	const summary = await summaly(ctx.query.url);
 	summary.icon = wrap(summary.icon);
 	summary.thumbnail = wrap(summary.thumbnail);
-	res.send(summary);
+	ctx.body = summary;
 };
 
 function wrap(url: string): string {

@@ -4,7 +4,7 @@ import FollowingLog from '../../models/following-log';
 import FollowedLog from '../../models/followed-log';
 import event from '../../publishers/stream';
 import notify from '../../publishers/notify';
-import context from '../../remote/activitypub/renderer/context';
+import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
 import { deliver } from '../../queue';
@@ -57,16 +57,12 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {
-		const content = renderFollow(follower, followee);
-		content['@context'] = context;
-
+		const content = pack(renderFollow(follower, followee));
 		deliver(follower, content, followee.inbox).save();
 	}
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
-		const content = renderAccept(activity);
-		content['@context'] = context;
-
+		const content = pack(renderAccept(activity));
 		deliver(followee, content, follower.inbox).save();
 	}
 }

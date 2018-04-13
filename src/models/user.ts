@@ -2,15 +2,28 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import { INote, pack as packNote } from './note';
-import Following from './following';
-import Mute from './mute';
+import Note, { INote, pack as packNote, deleteNote } from './note';
+import Following, { deleteFollowing } from './following';
+import Mute, { deleteMute } from './mute';
 import getFriends from '../server/api/common/get-friends';
 import config from '../config';
+import AccessToken, { deleteAccessToken } from './access-token';
+import NoteWatching, { deleteNoteWatching } from './note-watching';
+import Favorite, { deleteFavorite } from './favorite';
+import NoteReaction, { deleteNoteReaction } from './note-reaction';
+import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
+import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
+import DriveFile, { deleteDriveFile } from './drive-file';
+import DriveFolder, { deleteDriveFolder } from './drive-folder';
+import PollVote, { deletePollVote } from './poll-vote';
+import FollowingLog, { deleteFollowingLog } from './following-log';
+import FollowedLog, { deleteFollowedLog } from './followed-log';
+import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 
 const User = db.get<IUser>('users');
 
 User.createIndex('username');
+User.createIndex('usernameLower');
 User.createIndex('token');
 User.createIndex('uri', { sparse: true, unique: true });
 
@@ -119,6 +132,120 @@ export function init(user): IUser {
 	user.bannerId = new mongo.ObjectID(user.bannerId);
 	user.pinnedNoteId = new mongo.ObjectID(user.pinnedNoteId);
 	return user;
+}
+
+/**
+ * Userを物理削除します
+ */
+export async function deleteUser(user: string | mongo.ObjectID | IUser) {
+	let u: IUser;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+		u = await User.findOne({
+			_id: user
+		});
+	} else if (typeof user === 'string') {
+		u = await User.findOne({
+			_id: new mongo.ObjectID(user)
+		});
+	} else {
+		u = user as IUser;
+	}
+
+	if (u == null) return;
+
+	// このユーザーのAccessTokenをすべて削除
+	await Promise.all((
+		await AccessToken.find({ userId: u._id })
+	).map(x => deleteAccessToken(x)));
+
+	// このユーザーのNoteをすべて削除
+	await Promise.all((
+		await Note.find({ userId: u._id })
+	).map(x => deleteNote(x)));
+
+	// このユーザーのNoteReactionをすべて削除
+	await Promise.all((
+		await NoteReaction.find({ userId: u._id })
+	).map(x => deleteNoteReaction(x)));
+
+	// このユーザーのNoteWatchingをすべて削除
+	await Promise.all((
+		await NoteWatching.find({ userId: u._id })
+	).map(x => deleteNoteWatching(x)));
+
+	// このユーザーのPollVoteをすべて削除
+	await Promise.all((
+		await PollVote.find({ userId: u._id })
+	).map(x => deletePollVote(x)));
+
+	// このユーザーのFavoriteをすべて削除
+	await Promise.all((
+		await Favorite.find({ userId: u._id })
+	).map(x => deleteFavorite(x)));
+
+	// このユーザーのMessageをすべて削除
+	await Promise.all((
+		await MessagingMessage.find({ userId: u._id })
+	).map(x => deleteMessagingMessage(x)));
+
+	// このユーザーへのMessageをすべて削除
+	await Promise.all((
+		await MessagingMessage.find({ recipientId: u._id })
+	).map(x => deleteMessagingMessage(x)));
+
+	// このユーザーの関わるMessagingHistoryをすべて削除
+	await Promise.all((
+		await MessagingHistory.find({ $or: [{ partnerId: u._id }, { userId: u._id }] })
+	).map(x => deleteMessagingHistory(x)));
+
+	// このユーザーのDriveFileをすべて削除
+	await Promise.all((
+		await DriveFile.find({ 'metadata.userId': u._id })
+	).map(x => deleteDriveFile(x)));
+
+	// このユーザーのDriveFolderをすべて削除
+	await Promise.all((
+		await DriveFolder.find({ userId: u._id })
+	).map(x => deleteDriveFolder(x)));
+
+	// このユーザーのMuteをすべて削除
+	await Promise.all((
+		await Mute.find({ muterId: u._id })
+	).map(x => deleteMute(x)));
+
+	// このユーザーへのMuteをすべて削除
+	await Promise.all((
+		await Mute.find({ muteeId: u._id })
+	).map(x => deleteMute(x)));
+
+	// このユーザーのFollowingをすべて削除
+	await Promise.all((
+		await Following.find({ followerId: u._id })
+	).map(x => deleteFollowing(x)));
+
+	// このユーザーへのFollowingをすべて削除
+	await Promise.all((
+		await Following.find({ followeeId: u._id })
+	).map(x => deleteFollowing(x)));
+
+	// このユーザーのFollowingLogをすべて削除
+	await Promise.all((
+		await FollowingLog.find({ userId: u._id })
+	).map(x => deleteFollowingLog(x)));
+
+	// このユーザーのFollowedLogをすべて削除
+	await Promise.all((
+		await FollowedLog.find({ userId: u._id })
+	).map(x => deleteFollowedLog(x)));
+
+	// このユーザーのSwSubscriptionをすべて削除
+	await Promise.all((
+		await SwSubscription.find({ userId: u._id })
+	).map(x => deleteSwSubscription(x)));
+
+	// このユーザーを削除
 }
 
 /**

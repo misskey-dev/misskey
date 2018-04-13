@@ -26,6 +26,12 @@
 			<mk-switch v-model="autoPopout" text="ウィンドウの自動ポップアウト">
 				<span>ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。</span>
 			</mk-switch>
+			<details>
+				<summary>詳細設定</summary>
+				<mk-switch v-model="apiViaStream" text="ストリームを経由したAPIリクエスト">
+					<span>この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。</span>
+				</mk-switch>
+			</details>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -223,7 +229,8 @@ export default Vue.extend({
 			checkingForUpdate: false,
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
 			autoPopout: localStorage.getItem('autoPopout') == 'true',
-			soundVolume: localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) : 100,
+			apiViaStream: localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true,
+			soundVolume: localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) : 50,
 			lang: localStorage.getItem('lang') || '',
 			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
 			debug: localStorage.getItem('debug') == 'true',
@@ -239,6 +246,9 @@ export default Vue.extend({
 	watch: {
 		autoPopout() {
 			localStorage.setItem('autoPopout', this.autoPopout ? 'true' : 'false');
+		},
+		apiViaStream() {
+			localStorage.setItem('apiViaStream', this.apiViaStream ? 'true' : 'false');
 		},
 		enableSounds() {
 			localStorage.setItem('enableSounds', this.enableSounds ? 'true' : 'false');
@@ -337,7 +347,7 @@ export default Vue.extend({
 		},
 		soundTest() {
 			const sound = new Audio(`${url}/assets/message.mp3`);
-			sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 1;
+			sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
 			sound.play();
 		}
 	}

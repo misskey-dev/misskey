@@ -3,7 +3,7 @@ import Following from '../../models/following';
 import FollowingLog from '../../models/following-log';
 import FollowedLog from '../../models/followed-log';
 import event from '../../publishers/stream';
-import context from '../../remote/activitypub/renderer/context';
+import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
@@ -56,9 +56,7 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {
-		const content = renderUndo(renderFollow(follower, followee));
-		content['@context'] = context;
-
+		const content = pack(renderUndo(renderFollow(follower, followee)));
 		deliver(follower, content, followee.inbox).save();
 	}
 }

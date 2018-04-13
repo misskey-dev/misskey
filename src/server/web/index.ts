@@ -2,63 +2,75 @@
  * Web Client Server
  */
 
-import * as path from 'path';
 import ms = require('ms');
+import * as Koa from 'koa';
+import * as Router from 'koa-router';
+import * as send from 'koa-send';
+import * as favicon from 'koa-favicon';
 
-// express modules
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as favicon from 'serve-favicon';
-import * as compression from 'compression';
+import docs from './docs';
 
-const client = path.resolve(`${__dirname}/../../client/`);
+const client = `${__dirname}/../../client/`;
 
-// Create server
-const app = express();
-app.disable('x-powered-by');
+// Init app
+const app = new Koa();
 
-app.use('/docs', require('./docs'));
+// Serve favicon
+app.use(favicon(`${client}/assets/favicon.ico`));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({
-	type: ['application/json', 'text/plain']
-}));
-app.use(compression());
-
-app.use((req, res, next) => {
-	res.header('X-Frame-Options', 'DENY');
-	next();
+// Common request handler
+app.use(async (ctx, next) => {
+	// IFrameの中に入れられないようにする
+	ctx.set('X-Frame-Options', 'DENY');
+	await next();
 });
+
+// Init router
+const router = new Router();
 
 //#region static assets
 
-app.use(favicon(`${client}/assets/favicon.ico`));
-app.get('/apple-touch-icon.png', (req, res) => res.sendFile(`${client}/assets/apple-touch-icon.png`));
-app.use('/assets', express.static(`${client}/assets`, {
-	maxAge: ms('7 days')
-}));
-app.use('/assets/*.js', (req, res) => res.sendFile(`${client}/assets/404.js`));
-app.use('/assets', (req, res) => {
-	res.sendStatus(404);
+router.get('/assets/*', async ctx => {
+	await send(ctx, ctx.path, {
+		root: client,
+		maxage: ms('7 days'),
+		immutable: true
+	});
+});
+
+// Apple touch icon
+router.get('/apple-touch-icon.png', async ctx => {
+	await send(ctx, `${client}/assets/apple-touch-icon.png`);
 });
 
 // ServiceWroker
-app.get(/^\/sw\.(.+?)\.js$/, (req, res) =>
-	res.sendFile(`${client}/assets/sw.${req.params[0]}.js`));
+router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
+	await send(ctx, `${client}/assets/sw.${ctx.params[0]}.js`);
+});
 
 // Manifest
-app.get('/manifest.json', (req, res) =>
-	res.sendFile(`${client}/assets/manifest.json`));
+router.get('/manifest.json', async ctx => {
+	await send(ctx, `${client}/assets/manifest.json`);
+});
 
 //#endregion
 
-app.get(/\/api:url/, require('./url-preview'));
+// Docs
+router.use('/docs', docs.routes());
+
+// URL preview endpoint
+router.get('url', require('./url-preview'));
 
 // Render base html for all requests
-app.get('*', (req, res) => {
-	res.sendFile(path.resolve(`${client}/app/base.html`), {
-		maxAge: ms('7 days')
+router.get('*', async ctx => {
+	await send(ctx, `app/base.html`, {
+		root: client,
+		maxage: ms('3 days'),
+		immutable: true
 	});
 });
+
+// Register router
+app.use(router.routes());
 
 module.exports = app;

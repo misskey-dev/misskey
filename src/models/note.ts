@@ -5,9 +5,13 @@ import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import { pack as packChannel } from './channel';
-import Vote from './poll-vote';
-import Reaction from './note-reaction';
+import Vote, { deletePollVote } from './poll-vote';
+import Reaction, { deleteNoteReaction } from './note-reaction';
 import { pack as packFile } from './drive-file';
+import NoteWatching, { deleteNoteWatching } from './note-watching';
+import NoteReaction from './note-reaction';
+import Favorite, { deleteFavorite } from './favorite';
+import PollVote from './poll-vote';
 
 const Note = db.get<INote>('notes');
 
@@ -68,6 +72,63 @@ export type INote = {
 		};
 	};
 };
+
+/**
+ * Noteを物理削除します
+ */
+export async function deleteNote(note: string | mongo.ObjectID | INote) {
+	let n: INote;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(note)) {
+		n = await Note.findOne({
+			_id: note
+		});
+	} else if (typeof note === 'string') {
+		n = await Note.findOne({
+			_id: new mongo.ObjectID(note)
+		});
+	} else {
+		n = note as INote;
+	}
+
+	if (n == null) return;
+
+	// このNoteへの返信をすべて削除
+	await Promise.all((
+		await Note.find({ replyId: n._id })
+	).map(x => deleteNote(x)));
+
+	// このNoteのRenoteをすべて削除
+	await Promise.all((
+		await Note.find({ renoteId: n._id })
+	).map(x => deleteNote(x)));
+
+	// この投稿に対するNoteWatchingをすべて削除
+	await Promise.all((
+		await NoteWatching.find({ noteId: n._id })
+	).map(x => deleteNoteWatching(x)));
+
+	// この投稿に対するNoteReactionをすべて削除
+	await Promise.all((
+		await NoteReaction.find({ noteId: n._id })
+	).map(x => deleteNoteReaction(x)));
+
+	// この投稿に対するPollVoteをすべて削除
+	await Promise.all((
+		await PollVote.find({ noteId: n._id })
+	).map(x => deletePollVote(x)));
+
+	// この投稿に対するFavoriteをすべて削除
+	await Promise.all((
+		await Favorite.find({ noteId: n._id })
+	).map(x => deleteFavorite(x)));
+
+	// このNoteを削除
+	await Note.remove({
+		_id: n._id
+	});
+}
 
 /**
  * Pack a note for API response

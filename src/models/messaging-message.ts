@@ -3,6 +3,7 @@ import deepcopy = require('deepcopy');
 import { pack as packUser } from './user';
 import { pack as packFile } from './drive-file';
 import db from '../db/mongodb';
+import MessagingHistory, { deleteMessagingHistory } from './messaging-history';
 
 const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
 export default MessagingMessage;
@@ -23,12 +24,39 @@ export function isValidText(text: string): boolean {
 }
 
 /**
+ * MessagingMessageを物理削除します
+ */
+export async function deleteMessagingMessage(messagingMessage: string | mongo.ObjectID | IMessagingMessage) {
+	let m: IMessagingMessage;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(messagingMessage)) {
+		m = await MessagingMessage.findOne({
+			_id: messagingMessage
+		});
+	} else if (typeof messagingMessage === 'string') {
+		m = await MessagingMessage.findOne({
+			_id: new mongo.ObjectID(messagingMessage)
+		});
+	} else {
+		m = messagingMessage as IMessagingMessage;
+	}
+
+	if (m == null) return;
+
+	// このMessagingMessageを指すMessagingHistoryをすべて削除
+	await Promise.all((
+		await MessagingHistory.find({ messageId: m._id })
+	).map(x => deleteMessagingHistory(x)));
+
+	// このMessagingMessageを削除
+	await MessagingMessage.remove({
+		_id: m._id
+	});
+}
+
+/**
  * Pack a messaging message for API response
- *
- * @param {any} message
- * @param {any} me?
- * @param {any} options?
- * @return {Promise<any>}
  */
 export const pack = (
 	message: any,

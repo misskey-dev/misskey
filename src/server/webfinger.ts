@@ -1,17 +1,19 @@
-import * as express from 'express';
+import * as Router from 'koa-router';
 
 import config from '../config';
 import parseAcct from '../acct/parse';
 import User from '../models/user';
 
-const app = express.Router();
+// Init router
+const router = new Router();
 
-app.get('/.well-known/webfinger', async (req, res) => {
-	if (typeof req.query.resource !== 'string') {
-		return res.sendStatus(400);
+router.get('/.well-known/webfinger', async ctx => {
+	if (typeof ctx.query.resource !== 'string') {
+		ctx.status = 400;
+		return;
 	}
 
-	const resourceLower = req.query.resource.toLowerCase();
+	const resourceLower = ctx.query.resource.toLowerCase();
 	const webPrefix = config.url.toLowerCase() + '/@';
 	let acctLower;
 
@@ -25,15 +27,21 @@ app.get('/.well-known/webfinger', async (req, res) => {
 
 	const parsedAcctLower = parseAcct(acctLower);
 	if (![null, config.host.toLowerCase()].includes(parsedAcctLower.host)) {
-		return res.sendStatus(422);
+		ctx.status = 422;
+		return;
 	}
 
-	const user = await User.findOne({ usernameLower: parsedAcctLower.username, host: null });
+	const user = await User.findOne({
+		usernameLower: parsedAcctLower.username,
+		host: null
+	});
+
 	if (user === null) {
-		return res.sendStatus(404);
+		ctx.status = 404;
+		return;
 	}
 
-	return res.json({
+	ctx.body = {
 		subject: `acct:${user.username}@${config.host}`,
 		links: [{
 			rel: 'self',
@@ -47,7 +55,7 @@ app.get('/.well-known/webfinger', async (req, res) => {
 			rel: 'http://ostatus.org/schema/1.0/subscribe',
 			template: `${config.url}/authorize-follow?acct={uri}`
 		}]
-	});
+	};
 });
 
-export default app;
+export default router;
