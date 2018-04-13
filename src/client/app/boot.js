@@ -97,6 +97,8 @@
 
 		// Compare versions
 		if (meta.version != ver) {
+			localStorage.setItem('v', meta.version);
+
 			alert(
 				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
 				'\n\n' +

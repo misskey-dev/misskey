@@ -10,7 +10,6 @@ import * as debug from 'debug';
 import chalk from 'chalk';
 // import portUsed = require('tcp-port-used');
 import isRoot = require('is-root');
-import { master } from 'accesses';
 import Xev from 'xev';
 
 import Logger from './utils/logger';
@@ -72,11 +71,6 @@ async function masterMain(opt) {
 	}
 
 	Logger.info(chalk.green('Successfully initialized :)'));
-
-	// Init accesses
-	if (config.accesses && config.accesses.enable) {
-		master();
-	}
 
 	spawnWorkers(() => {
 		if (!opt['only-processor']) {

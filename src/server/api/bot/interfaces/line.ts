@@ -1,5 +1,5 @@
 import * as EventEmitter from 'events';
-import * as express from 'express';
+import * as Router from 'koa-router';
 import * as request from 'request';
 import * as crypto from 'crypto';
 import User from '../../../../models/user';
@@ -158,82 +158,81 @@ class LineBot extends BotCore {
 	}
 }
 
-module.exports = async (app: express.Application) => {
-	if (config.line_bot == null) return;
+const handler = new EventEmitter();
 
-	const handler = new EventEmitter();
+handler.on('event', async (ev) => {
 
-	handler.on('event', async (ev) => {
+	const sourceId = ev.source.userId;
+	const sessionId = `line-bot-sessions:${sourceId}`;
 
-		const sourceId = ev.source.userId;
-		const sessionId = `line-bot-sessions:${sourceId}`;
+	const session = await redis.get(sessionId);
+	let bot: LineBot;
 
-		const session = await redis.get(sessionId);
-		let bot: LineBot;
-
-		if (session == null) {
-			const user = await User.findOne({
-				host: null,
-				'line': {
-					userId: sourceId
-				}
-			});
-
-			bot = new LineBot(user);
-
-			bot.on('signin', user => {
-				User.update(user._id, {
-					$set: {
-						'line': {
-							userId: sourceId
-						}
-					}
-				});
-			});
-
-			bot.on('signout', user => {
-				User.update(user._id, {
-					$set: {
-						'line': {
-							userId: null
-						}
-					}
-				});
-			});
-
-			redis.set(sessionId, JSON.stringify(bot.export()));
-		} else {
-			bot = LineBot.import(JSON.parse(session));
-		}
-
-		bot.on('updated', () => {
-			redis.set(sessionId, JSON.stringify(bot.export()));
+	if (session == null) {
+		const user = await User.findOne({
+			host: null,
+			'line': {
+				userId: sourceId
+			}
 		});
 
-		if (session != null) bot.refreshUser();
+		bot = new LineBot(user);
 
-		bot.react(ev);
+		bot.on('signin', user => {
+			User.update(user._id, {
+				$set: {
+					'line': {
+						userId: sourceId
+					}
+				}
+			});
+		});
+
+		bot.on('signout', user => {
+			User.update(user._id, {
+				$set: {
+					'line': {
+						userId: null
+					}
+				}
+			});
+		});
+
+		redis.set(sessionId, JSON.stringify(bot.export()));
+	} else {
+		bot = LineBot.import(JSON.parse(session));
+	}
+
+	bot.on('updated', () => {
+		redis.set(sessionId, JSON.stringify(bot.export()));
 	});
 
-	app.post('/hooks/line', (req, res, next) => {
-		// req.headers['x-line-signature'] は常に string ですが、型定義の都合上
-		// string | string[] になっているので string を明示しています
-		const sig1 = req.headers['x-line-signature'] as string;
+	if (session != null) bot.refreshUser();
+
+	bot.react(ev);
+});
+
+// Init router
+const router = new Router();
+
+if (config.line_bot) {
+	router.post('/hooks/line', ctx => {
+		const sig1 = ctx.headers['x-line-signature'];
 
 		const hash = crypto.createHmac('SHA256', config.line_bot.channel_secret)
-			.update((req as any).rawBody);
+			.update(ctx.request.rawBody);
 
 		const sig2 = hash.digest('base64');
 
 		// シグネチャ比較
 		if (sig1 === sig2) {
-			req.body.events.forEach(ev => {
+			ctx.request.body.events.forEach(ev => {
 				handler.emit('event', ev);
 			});
-
-			res.sendStatus(200);
 		} else {
-			res.sendStatus(400);
+			ctx.status = 400;
 		}
 	});
-};
+}
+
+module.exports = router;

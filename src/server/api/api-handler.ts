@@ -1,4 +1,4 @@
-import * as express from 'express';
+import * as Koa from 'koa';
 
 import { Endpoint } from './endpoints';
 import authenticate from './authenticate';
@@ -6,16 +6,19 @@ import call from './call';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 
-export default async (endpoint: Endpoint, req: express.Request, res: express.Response) => {
+export default async (endpoint: Endpoint, ctx: Koa.Context) => {
+	const body = ctx.is('multipart/form-data') ? (ctx.req as any).body : ctx.request.body;
+
 	const reply = (x?: any, y?: any) => {
 		if (x === undefined) {
-			res.sendStatus(204);
+			ctx.status = 204;
 		} else if (typeof x === 'number') {
-			res.status(x).send({
+			ctx.status = x;
+			ctx.body = {
 				error: x === 500 ? 'INTERNAL_ERROR' : y
-			});
+			};
 		} else {
-			res.send(x);
+			ctx.body = x;
 		}
 	};
 
@@ -24,11 +27,21 @@ export default async (endpoint: Endpoint, req: express.Request, res: express.Res
 
 	// Authentication
 	try {
-		[user, app] = await authenticate(req.body['i']);
+		[user, app] = await authenticate(body['i']);
 	} catch (e) {
-		return reply(403, 'AUTHENTICATION_FAILED');
+		reply(403, 'AUTHENTICATION_FAILED');
+		return;
 	}
 
+	let res;
+
 	// API invoking
-	call(endpoint, user, app, req.body, req).then(reply).catch(e => reply(400, e));
+	try {
+		res = await call(endpoint, user, app, body, (ctx.req as any).file);
+	} catch (e) {
+		reply(400, e);
+		return;
+	}
+
+	reply(res);
 };

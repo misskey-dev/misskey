@@ -1,160 +1,155 @@
-import * as express from 'express';
-import * as cookie from 'cookie';
+import * as Koa from 'koa';
+import * as Router from 'koa-router';
 import * as uuid from 'uuid';
-// import * as Twitter from 'twitter';
-// const Twitter = require('twitter');
 import autwh from 'autwh';
 import redis from '../../../db/redis';
-import User, { pack } from '../../../models/user';
+import User, { pack, ILocalUser } from '../../../models/user';
 import event from '../../../publishers/stream';
 import config from '../../../config';
 import signin from '../common/signin';
 
-module.exports = (app: express.Application) => {
-	function getUserToken(req: express.Request) {
-		// req.headers['cookie'] は常に string ですが、型定義の都合上
-		// string | string[] になっているので string を明示しています
-		return ((req.headers['cookie'] as string || '').match(/i=(!\w+)/) || [null, null])[1];
+function getUserToken(ctx: Koa.Context) {
+	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+}
+
+function compareOrigin(ctx: Koa.Context) {
+	function normalizeUrl(url: string) {
+		return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
 	}
 
-	function compareOrigin(req: express.Request) {
-		function normalizeUrl(url: string) {
-			return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
-		}
+	const referer = ctx.headers['referer'];
 
-		// req.headers['referer'] は常に string ですが、型定義の都合上
-		// string | string[] になっているので string を明示しています
-		const referer = req.headers['referer'] as string;
+	return (normalizeUrl(referer) == normalizeUrl(config.url));
+}
 
-		return (normalizeUrl(referer) == normalizeUrl(config.url));
-	}
+// Init router
+const router = new Router();
 
-	app.get('/disconnect/twitter', async (req, res): Promise<any> => {
-		if (!compareOrigin(req)) {
-			res.status(400).send('invalid origin');
-			return;
-		}
-
-		const userToken = getUserToken(req);
-		if (userToken == null) return res.send('plz signin');
-
-		const user = await User.findOneAndUpdate({
-			host: null,
-			'token': userToken
-		}, {
-			$set: {
-				'twitter': null
-			}
-		});
-
-		res.send(`Twitterの連携を解除しました :v:`);
-
-		// Publish i updated event
-		event(user._id, 'i_updated', await pack(user, user, {
-			detail: true,
-			includeSecrets: true
-		}));
-	});
-
-	if (config.twitter == null) {
-		app.get('/connect/twitter', (req, res) => {
-			res.send('現在Twitterへ接続できません (このインスタンスではTwitterはサポートされていません)');
-		});
-
-		app.get('/signin/twitter', (req, res) => {
-			res.send('現在Twitterへ接続できません (このインスタンスではTwitterはサポートされていません)');
-		});
-
+router.get('/disconnect/twitter', async ctx => {
+	if (!compareOrigin(ctx)) {
+		ctx.throw(400, 'invalid origin');
 		return;
 	}
 
+	const userToken = getUserToken(ctx);
+	if (userToken == null) {
+		ctx.throw(400, 'signin required');
+		return;
+	}
+
+	const user = await User.findOneAndUpdate({
+		host: null,
+		'token': userToken
+	}, {
+		$set: {
+			'twitter': null
+		}
+	});
+
+	ctx.body = `Twitterの連携を解除しました :v:`;
+
+	// Publish i updated event
+	event(user._id, 'i_updated', await pack(user, user, {
+		detail: true,
+		includeSecrets: true
+	}));
+});
+
+if (config.twitter == null) {
+	router.get('/connect/twitter', ctx => {
+		ctx.body = '現在Twitterへ接続できません (このインスタンスではTwitterはサポートされていません)';
+	});
+
+	router.get('/signin/twitter', ctx => {
+		ctx.body = '現在Twitterへ接続できません (このインスタンスではTwitterはサポートされていません)';
+	});
+} else {
 	const twAuth = autwh({
 		consumerKey: config.twitter.consumer_key,
 		consumerSecret: config.twitter.consumer_secret,
 		callbackUrl: `${config.url}/api/tw/cb`
 	});
 
-	app.get('/connect/twitter', async (req, res): Promise<any> => {
-		if (!compareOrigin(req)) {
-			res.status(400).send('invalid origin');
+	router.get('/connect/twitter', async ctx => {
+		if (!compareOrigin(ctx)) {
+			ctx.throw(400, 'invalid origin');
 			return;
 		}
 
-		const userToken = getUserToken(req);
-		if (userToken == null) return res.send('plz signin');
+		const userToken = getUserToken(ctx);
+		if (userToken == null) {
+			ctx.throw(400, 'signin required');
+			return;
+		}
 
-		const ctx = await twAuth.begin();
-		redis.set(userToken, JSON.stringify(ctx));
-		res.redirect(ctx.url);
+		const twCtx = await twAuth.begin();
+		redis.set(userToken, JSON.stringify(twCtx));
+		ctx.redirect(twCtx.url);
 	});
 
-	app.get('/signin/twitter', async (req, res): Promise<any> => {
-		const ctx = await twAuth.begin();
+	router.get('/signin/twitter', async ctx => {
+		const twCtx = await twAuth.begin();
 
 		const sessid = uuid();
 
-		redis.set(sessid, JSON.stringify(ctx));
+		redis.set(sessid, JSON.stringify(twCtx));
 
 		const expires = 1000 * 60 * 60; // 1h
-		res.cookie('signin_with_twitter_session_id', sessid, {
+		ctx.cookies.set('signin_with_twitter_session_id', sessid, {
 			path: '/',
-			domain: `.${config.host}`,
-			secure: config.url.substr(0, 5) === 'https',
+			domain: config.host,
+			secure: config.url.startsWith('https'),
 			httpOnly: true,
 			expires: new Date(Date.now() + expires),
 			maxAge: expires
 		});
 
-		res.redirect(ctx.url);
+		ctx.redirect(twCtx.url);
 	});
 
-	app.get('/tw/cb', (req, res): any => {
-		const userToken = getUserToken(req);
+	router.get('/tw/cb', ctx => {
+		const userToken = getUserToken(ctx);
 
 		if (userToken == null) {
-			// req.headers['cookie'] は常に string ですが、型定義の都合上
-			// string | string[] になっているので string を明示しています
-			const cookies = cookie.parse((req.headers['cookie'] as string || ''));
+			const sessid = ctx.cookies.get('signin_with_twitter_session_id');
 
-			const sessid = cookies['signin_with_twitter_session_id'];
-
-			if (sessid == undefined) {
-				res.status(400).send('invalid session');
+			if (sessid == null) {
+				ctx.throw(400, 'invalid session');
 				return;
 			}
 
-			redis.get(sessid, async (_, ctx) => {
-				const result = await twAuth.done(JSON.parse(ctx), req.query.oauth_verifier);
+			redis.get(sessid, async (_, twCtx) => {
+				const result = await twAuth.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
 				const user = await User.findOne({
 					host: null,
 					'twitter.userId': result.userId
-				});
+				}) as ILocalUser;
 
 				if (user == null) {
-					res.status(404).send(`@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
+					ctx.throw(404, `@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
 					return;
 				}
 
-				signin(res, user, true);
+				signin(ctx, user, true);
 			});
 		} else {
-			const verifier = req.query.oauth_verifier;
+			const verifier = ctx.query.oauth_verifier;
 
 			if (verifier == null) {
-				res.status(400).send('invalid session');
+				ctx.throw(400, 'invalid session');
 				return;
 			}
 
-			redis.get(userToken, async (_, ctx) => {
-				const result = await twAuth.done(JSON.parse(ctx), verifier);
+			redis.get(userToken, async (_, twCtx) => {
+				const result = await twAuth.done(JSON.parse(twCtx), verifier);
 
 				const user = await User.findOneAndUpdate({
 					host: null,
-					'token': userToken
+					token: userToken
 				}, {
 					$set: {
-						'twitter': {
+						twitter: {
 							accessToken: result.accessToken,
 							accessTokenSecret: result.accessTokenSecret,
 							userId: result.userId,
@@ -163,7 +158,7 @@ module.exports = (app: express.Application) => {
 					}
 				});
 
-				res.send(`Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`);
+				ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
 
 				// Publish i updated event
 				event(user._id, 'i_updated', await pack(user, user, {
@@ -173,4 +168,6 @@ module.exports = (app: express.Application) => {
 			});
 		}
 	});
-};
+}
+
+module.exports = router;

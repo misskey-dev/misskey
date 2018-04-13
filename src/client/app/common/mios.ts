@@ -444,9 +444,10 @@ export default class MiOS extends EventEmitter {
 		// Append a credential
 		if (this.isSignedIn) (data as any).i = this.i.token;
 
-		const viaStream = localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true;
-
 		return new Promise((resolve, reject) => {
+			const viaStream = this.stream.hasConnection &&
+				(localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true);
+
 			if (viaStream) {
 				const stream = this.stream.borrow();
 				const id = Math.random().toString();
