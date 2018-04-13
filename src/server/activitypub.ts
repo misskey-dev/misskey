@@ -44,7 +44,7 @@ router.post('/users/:user/inbox', ctx => {
 router.get('/notes/:note', async (ctx, next) => {
 	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
 	if (!['application/activity+json', 'application/ld+json'].includes(accepted as string)) {
-		next();
+		await next();
 		return;
 	}
 
