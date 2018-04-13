@@ -12,6 +12,7 @@ The list of people who have sent donation for Misskey.
 * 音船 https://otofune.me/
 * aqz https://misskey.xyz/aqz
 * kotodu "虚無創作中"
+* Maya Minatsuki
 
 :heart: Thanks for donating, guys!
 
