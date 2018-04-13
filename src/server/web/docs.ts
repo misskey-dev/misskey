@@ -11,8 +11,8 @@ const docs = `${__dirname}/../../client/docs/`;
 const router = new Router();
 
 router.get('/assets/*', async ctx => {
-	await send(ctx, ctx.path, {
-		root: docs,
+	await send(ctx, ctx.params[0], {
+		root: docs + '/assets/',
 		maxage: ms('7 days'),
 		immutable: true
 	});
