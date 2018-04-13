@@ -1,4 +1,5 @@
 import * as Router from 'koa-router';
+const koaBody = require('koa-body');
 const parseRequest = require('http-signature');
 
 import { createHttp } from '../queue';
@@ -18,7 +19,7 @@ const router = new Router();
 //#region Routing
 
 // inbox
-router.post('/users/:user/inbox', ctx => {
+router.post('/users/:user/inbox', koaBody(), ctx => {
 	let signature;
 
 	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
