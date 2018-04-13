@@ -35,10 +35,14 @@ if (config.github_bot != null) {
 	const secret = config.github_bot.hook_secret;
 
 	router.post('/hooks/github', ctx => {
+		const body = JSON.stringify(ctx.request.body);
+		const hash = crypto.createHmac('sha1', secret).update(body).digest('hex');
 		const sig1 = new Buffer(ctx.headers['x-hub-signature']);
-		const sig2 = new Buffer(`sha1=${crypto.createHmac('sha1', secret).update(JSON.stringify(ctx.body)).digest('hex')}`);
+		const sig2 = new Buffer(`sha1=${hash}`);
+
+		// シグネチャ比較
 		if (sig1.equals(sig2)) {
-			handler.emit(ctx.headers['x-github-event'], ctx.body);
+			handler.emit(ctx.headers['x-github-event'], ctx.request.body);
 			ctx.status = 204;
 		} else {
 			ctx.status = 400;

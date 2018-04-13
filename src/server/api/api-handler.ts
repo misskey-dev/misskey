@@ -25,11 +25,21 @@ export default async (endpoint: Endpoint, ctx: Koa.Context) => {
 
 	// Authentication
 	try {
-		[user, app] = await authenticate(ctx.body['i']);
+		[user, app] = await authenticate(ctx.request.body['i']);
 	} catch (e) {
-		return reply(403, 'AUTHENTICATION_FAILED');
+		reply(403, 'AUTHENTICATION_FAILED');
+		return;
 	}
 
+	let res;
+
 	// API invoking
-	call(endpoint, user, app, ctx.body, ctx.req).then(reply).catch(e => reply(400, e));
+	try {
+		res = await call(endpoint, user, app, ctx.request.body, ctx.req);
+	} catch (e) {
+		reply(400, e);
+		return;
+	}
+
+	reply(res);
 };

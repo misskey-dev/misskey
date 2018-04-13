@@ -13,6 +13,11 @@ import sendDriveFile from './send-drive-file';
 const app = new Koa();
 app.use(cors());
 
+app.use(async (ctx, next) => {
+	ctx.set('Cache-Control', 'max-age=31536000, immutable');
+	await next();
+});
+
 // Init router
 const router = new Router();
 
@@ -27,7 +32,7 @@ router.get('/app-default.jpg', ctx => {
 });
 
 router.get('/:id', sendDriveFile);
-router.get('/:id/:name', sendDriveFile);
+router.get('/:id/*', sendDriveFile);
 
 // Register router
 app.use(router.routes());

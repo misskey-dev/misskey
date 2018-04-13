@@ -11,9 +11,9 @@ export default async (ctx: Koa.Context) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
 	ctx.set('Access-Control-Allow-Credentials', 'true');
 
-	const username = ctx.body['username'];
-	const password = ctx.body['password'];
-	const token = ctx.body['token'];
+	const username = ctx.request.body['username'];
+	const password = ctx.request.body['password'];
+	const token = ctx.request.body['token'];
 
 	if (typeof username != 'string') {
 		ctx.status = 400;

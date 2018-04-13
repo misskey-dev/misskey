@@ -6,10 +6,8 @@ import limitter from './limitter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
 
-export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, req?: http.IncomingMessage) => new Promise(async (ok, rej) => {
+export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, req?: http.IncomingMessage) => new Promise<any>(async (ok, rej) => {
 	const isSecure = user != null && app == null;
-
-	//console.log(endpoint, user, app, data);
 
 	const ep = typeof endpoint == 'string' ? endpoints.find(e => e.name == endpoint) : endpoint;
 

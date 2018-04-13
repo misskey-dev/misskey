@@ -226,7 +226,7 @@ if (config.line_bot) {
 
 		// シグネチャ比較
 		if (sig1 === sig2) {
-			ctx.body.events.forEach(ev => {
+			ctx.request.body.events.forEach(ev => {
 				handler.emit('event', ev);
 			});
 		} else {

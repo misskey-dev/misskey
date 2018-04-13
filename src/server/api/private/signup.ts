@@ -37,7 +37,7 @@ export default async (ctx: Koa.Context) => {
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
 	if (process.env.NODE_ENV !== 'test') {
-		const success = await recaptcha(ctx.body['g-recaptcha-response']);
+		const success = await recaptcha(ctx.request.body['g-recaptcha-response']);
 
 		if (!success) {
 			ctx.throw(400, 'recaptcha-failed');
@@ -45,8 +45,8 @@ export default async (ctx: Koa.Context) => {
 		}
 	}
 
-	const username = ctx.body['username'];
-	const password = ctx.body['password'];
+	const username = ctx.request.body['username'];
+	const password = ctx.request.body['password'];
 
 	// Validate username
 	if (!validateUsername(username)) {

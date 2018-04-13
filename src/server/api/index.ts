@@ -13,7 +13,9 @@ const handler = require('./api-handler').default;
 
 // Init app
 const app = new Koa();
-app.use(bodyParser);
+app.use(bodyParser({
+	detectJSON: () => true
+}));
 
 // Init multer instance
 const upload = multer({

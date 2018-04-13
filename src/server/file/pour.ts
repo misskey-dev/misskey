@@ -83,12 +83,6 @@ export default function(readable: stream.Readable, type: string, ctx: Koa.Contex
 		ctx.set('Content-Disposition', 'attachment');
 	}
 
-	ctx.set('Cache-Control', 'max-age=31536000, immutable');
 	ctx.set('Content-Type', data.contentType);
-
-	data.stream.pipe(ctx.res);
-
-	data.stream.on('end', () => {
-		ctx.res.end();
-	});
+	ctx.body = data.stream;
 }
