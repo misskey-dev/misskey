@@ -68,7 +68,7 @@
 		"@types/mongodb": "3.0.12",
 		"@types/monk": "6.0.0",
 		"@types/ms": "0.7.30",
-		"@types/node": "9.6.4",
+		"@types/node": "9.6.5",
 		"@types/nopt": "3.0.29",
 		"@types/pug": "2.0.4",
 		"@types/qrcode": "0.8.1",
