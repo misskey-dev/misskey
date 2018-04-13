@@ -2,8 +2,7 @@ import * as Router from 'koa-router';
 import { parseRequest } from 'http-signature';
 
 import { createHttp } from '../queue';
-import context from '../remote/activitypub/renderer/context';
-import render from '../remote/activitypub/renderer/note';
+import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
 import User, { isLocalUser } from '../models/user';
 import renderNote from '../remote/activitypub/renderer/note';
@@ -57,10 +56,7 @@ router.get('/notes/:note', async (ctx, next) => {
 		return;
 	}
 
-	const rendered = await render(note);
-	rendered['@context'] = context;
-
-	ctx.body = rendered;
+	ctx.body = pack(await renderNote(note));
 });
 
 // outbot
@@ -81,9 +77,8 @@ router.get('/users/:user/outbox', async ctx => {
 
 	const renderedNotes = await Promise.all(notes.map(note => renderNote(note)));
 	const rendered = renderOrderedCollection(`${config.url}/users/${userId}/inbox`, user.notesCount, renderedNotes);
-	rendered['@context'] = context;
 
-	ctx.body = rendered;
+	ctx.body = pack(rendered);
 });
 
 // publickey
@@ -98,10 +93,7 @@ router.get('/users/:user/publickey', async ctx => {
 	}
 
 	if (isLocalUser(user)) {
-		const rendered = renderKey(user);
-		rendered['@context'] = context;
-
-		ctx.body = rendered;
+		ctx.body = pack(renderKey(user));
 	} else {
 		ctx.status = 400;
 	}
@@ -118,10 +110,7 @@ router.get('/users/:user', async ctx => {
 		return;
 	}
 
-	const rendered = renderPerson(user);
-	rendered['@context'] = context;
-
-	ctx.body = rendered;
+	ctx.body = pack(renderPerson(user));
 });
 
 // follow form

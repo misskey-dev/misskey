@@ -8,7 +8,7 @@ import NoteWatching from '../../../models/note-watching';
 import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
-import context from '../../../remote/activitypub/renderer/context';
+import pack from '../../../remote/activitypub/renderer';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself
@@ -85,9 +85,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	//#region 配信
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (isLocalUser(user) && isRemoteUser(note._user)) {
-		const content = renderLike(user, note);
-		content['@context'] = context;
-
+		const content = pack(renderLike(user, note));
 		deliver(user, content, note._user.inbox).save();
 	}
 	//#endregion
