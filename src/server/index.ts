@@ -3,7 +3,6 @@
  */
 
 import * as fs from 'fs';
-import * as http from 'http';
 import * as http2 from 'http2';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
@@ -49,7 +48,7 @@ function createServer() {
 		});
 		return http2.createSecureServer(certs, app.callback());
 	} else {
-		return http.createServer(app.callback());
+		return http2.createServer(app.callback());
 	}
 }
 
