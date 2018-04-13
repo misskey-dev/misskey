@@ -14,6 +14,7 @@ const app = new Koa();
 app.use(cors());
 
 app.use(async (ctx, next) => {
+	// Cache 365days
 	ctx.set('Cache-Control', 'max-age=31536000, immutable');
 	await next();
 });
