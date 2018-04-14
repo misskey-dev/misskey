@@ -33,7 +33,7 @@ please see [Setup and installation guide](./docs/setup.en.md).
 ----------------------------------------------------------------
 If you want to donate to Misskey, please see [this](./docs/donate.ja.md).
 
-[List of all donors](./DONORS.md)
+[List of all donators](./DONATORS.md)
 
 :mortar_board: Notable contributors
 ----------------------------------------------------------------
