@@ -143,7 +143,8 @@ module.exports = entries.map(x => {
 					loader: 'replace',
 					query: {
 						search: i18nReplacer.pattern.toString(),
-						replace: 'i18nReplacement'
+						replace: 'i18nReplacement',
+						i18n: true
 					}
 				}, {
 					loader: 'replace',
@@ -214,7 +215,8 @@ module.exports = entries.map(x => {
 					loader: 'replace',
 					query: {
 						search: i18nReplacer.pattern.toString(),
-						replace: 'i18nReplacement'
+						replace: 'i18nReplacement',
+						i18n: true
 					}
 				}, {
 					loader: 'replace',
