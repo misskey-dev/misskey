@@ -33,8 +33,6 @@ common:
     confused: "こまこまのこまり"
     pudding: "Pudding"
 
-  input-message-here: "ここにメッセージを入力"
-  send: "送信"
   delete: "削除"
   loading: "読み込み中"
   ok: "わかった"
@@ -78,6 +76,8 @@ common/views/components/messaging-room.vue:
   new-message: "新しいメッセージがあります"
 
 common/views/components/messaging-room.form.vue:
+  input-message-here: "ここにメッセージを入力"
+  send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
 

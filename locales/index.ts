@@ -11,7 +11,7 @@ const loadLang = lang => yaml.safeLoad(
 const native = loadLang('ja');
 
 const langs = {
-	//'en': loadLang('en'),
+	'en': loadLang('en'),
 	'ja': native
 };
 

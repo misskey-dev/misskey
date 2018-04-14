@@ -8,12 +8,12 @@
 		ref="textarea"
 		@keypress="onKeypress"
 		@paste="onPaste"
-		placeholder="%i18n:common.input-message-here%"
+		placeholder="%i18n:@input-message-here%"
 		v-autocomplete="'text'"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
 	<mk-uploader ref="uploader" @uploaded="onUploaded"/>
-	<button class="send" @click="send" :disabled="!canSend || sending" title="%i18n:common.send%">
+	<button class="send" @click="send" :disabled="!canSend || sending" title="%i18n:@send%">
 		<template v-if="!sending">%fa:paper-plane%</template><template v-if="sending">%fa:spinner .spin%</template>
 	</button>
 	<button class="attach-from-local" @click="chooseFile" title="%i18n:@attach-from-local%">
