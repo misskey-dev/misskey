@@ -19,7 +19,7 @@
 			</ul>
 			<ul>
 				<li>
-					<a href="/i/customize-home">%fa:wrench%カスタマイズ%fa:angle-right%</a>
+					<a href="/i/customize-home">%fa:wrench%%i18n:@customize%%fa:angle-right%</a>
 				</li>
 				<li @click="settings">
 					<p>%fa:cog%%i18n:@settings%%fa:angle-right%</p>

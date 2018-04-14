@@ -18,7 +18,7 @@
 			<li class="game">
 				<a @click="game">
 					%fa:gamepad%
-					<p>ゲーム</p>
+					<p>%i18n:@game%</p>
 					<template v-if="hasGameInvitations">%fa:circle%</template>
 				</a>
 			</li>

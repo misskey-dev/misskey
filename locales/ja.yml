@@ -154,14 +154,14 @@ desktop/views/components/drive-window.vue:
   drive: "ドライブ"
 
 desktop/views/components/drive.file.vue:
-  avatar: "アバター"
+  avatar: "アイコン"
   banner: "バナー"
   contextmenu:
     rename: "名前を変更"
     copy-url: "URLをコピー"
     download: "ダウンロード"
     else-files: "その他..."
-    set-as-avatar: "アバターに設定"
+    set-as-avatar: "アイコンに設定"
     set-as-banner: "バナーに設定"
     open-in-app: "アプリで開く"
     add-app: "アプリを追加"
@@ -205,11 +205,121 @@ desktop/views/components/drive.vue:
     upload: "ファイルをアップロード"
     url-upload: "URLからアップロード"
 
+desktop/views/components/notes.note.vue:
+  reposted-by: "{}がRenote"
+  reply: "返信"
+  renote: "Renote"
+  add-reaction: "リアクション"
+  detail: "詳細"
 
+desktop/views/components/notifications.vue:
+  more: "もっと見る"
 
+desktop/views/components/post-form.vue:
+  note-placeholder: "いまどうしてる？"
+  reply-placeholder: "この投稿への返信..."
+  quote-placeholder: "この投稿を引用..."
+  note: "投稿"
+  reply: "返信"
+  renote: "Renote"
+  posted: "投稿しました！"
+  replied: "返信しました！"
+  reposted: "Renoteしました！"
+  note-failed: "投稿に失敗しました"
+  reply-failed: "返信に失敗しました"
+  renote-failed: "Renoteに失敗しました"
+  posting: "投稿中"
+  attach-media-from-local: "PCからメディアを添付"
+  attach-media-from-drive: "ドライブからメディアを添付"
+  attach-cancel: "添付取り消し"
+  insert-a-kao: "v(‘ω’)v"
+  create-poll: "投票を作成"
+  text-remain: "残り{}文字"
 
+desktop/views/components/post-form-window.vue:
+  note: "新規投稿"
+  reply: "返信"
+  attaches: "添付: {}メディア"
+  uploading-media: "{}個のメディアをアップロード中"
 
+desktop/views/components/renote-form.vue:
+  quote: "引用する..."
+  cancel: "キャンセル"
+  renote: "Renote"
+  reposting: "しています..."
+  success: "Renoteしました！"
+  failure: "Renoteに失敗しました"
 
+desktop/views/components/renote-form-window.vue:
+  title: "この投稿をRenoteしますか？"
+
+desktop/views/components/settings.vue:
+  profile: "プロフィール"
+  mute: "ミュート"
+  drive: "ドライブ"
+  security: "セキュリティ"
+  password: "パスワード"
+  2fa: "二段階認証"
+  other: "その他"
+
+desktop/views/components/settings.2fa.vue:
+  intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
+  detail: "詳細..."
+  url: "https://www.google.co.jp/intl/ja/landing/2step/"
+  caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
+  register: "デバイスを登録する"
+  already-registered: "既に設定は完了しています。"
+  unregister: "設定を解除"
+  unregistered: "二段階認証が無効になりました。"
+  enter-password: "パスワードを入力してください"
+  authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
+  howtoinstall: "インストール方法はこちら"
+  scan: "次に、表示されているQRコードをスキャンします:"
+  done: "お使いのデバイスに表示されているトークンを入力して完了します:"
+  submit: "完了"
+  success: "設定が完了しました！"
+  failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
+  info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+
+desktop/views/components/settings.api.vue:
+  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  regenerate-token: "トークンを再生成"
+  enter-password: "パスワードを入力してください"
+
+desktop/views/components/settings.mute.vue:
+  no-users: "ミュートしているユーザーはいません"
+
+desktop/views/components/settings.password.vue:
+  reset: "パスワードを変更する"
+  enter-current-password: "現在のパスワードを入力してください"
+  enter-new-password: "新しいパスワードを入力してください"
+  enter-new-password-again: "もう一度新しいパスワードを入力してください"
+  not-match: "新しいパスワードが一致しません"
+  changed: "パスワードを変更しました"
+
+desktop/views/components/settings.profile.vue:
+  avatar: "アイコン"
+  choice-avatar: "画像を選択"
+  name: "名前"
+  location: "場所"
+  description: "自己紹介"
+  birthday: "誕生日"
+  save: "保存"
+
+desktop/views/components/ui.header.account.vue:
+  profile: "プロフィール"
+  drive: "ドライブ"
+  mentions: "あなた宛て"
+  customize: "カスタマイズ"
+  settings: "設定"
+  signout: "サインアウト"
+
+desktop/views/components/ui.header.nav.vue:
+  home: "ホーム"
+  messaging: "メッセージ"
+  game: "ゲーム"
 
 
 
@@ -291,12 +401,6 @@ docs:
 
 desktop:
   tags:
-    api-info:
-      intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-      caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-      regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
-      regenerate-token: "トークンを再生成"
-      enter-password: "パスワードを入力してください"
 
     selectdrive-page:
       title: "ファイルを選択してください"
@@ -304,21 +408,8 @@ desktop:
       cancel: "キャンセル"
       upload: "PCからドライブにファイルをアップロード"
 
-    ui-header-nav:
-      home: "ホーム"
-      messaging: "メッセージ"
-      ch: "チャンネル"
-      info: "お知らせ"
-
     ui-header-search:
       placeholder: "検索"
-
-    ui-header-account:
-      profile: "プロフィール"
-      drive: "ドライブ"
-      mentions: "あなた宛て"
-      settings: "設定"
-      signout: "サインアウト"
 
     ui-header-note-button:
       note: "新規投稿"
@@ -326,95 +417,9 @@ desktop:
     ui-header-notifications:
       title: "通知"
 
-    profile-setting:
-      avatar: "アバター"
-      choice-avatar: "画像を選択"
-      name: "名前"
-      location: "場所"
-      description: "自己紹介"
-      birthday: "誕生日"
-      save: "保存"
-
-    password-setting:
-      reset: "パスワードを変更する"
-      enter-current-password: "現在のパスワードを入力してください"
-      enter-new-password: "新しいパスワードを入力してください"
-      enter-new-password-again: "もう一度新しいパスワードを入力してください"
-      not-match: "新しいパスワードが一致しません"
-      changed: "パスワードを変更しました"
-
-    2fa-setting:
-      intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
-      detail: "詳細..."
-      url: "https://www.google.co.jp/intl/ja/landing/2step/"
-      caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
-      register: "デバイスを登録する"
-      already-registered: "既に設定は完了しています。"
-      unregister: "設定を解除"
-      unregistered: "二段階認証が無効になりました。"
-      enter-password: "パスワードを入力してください"
-      authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
-      howtoinstall: "インストール方法はこちら"
-      scan: "次に、表示されているQRコードをスキャンします:"
-      done: "お使いのデバイスに表示されているトークンを入力して完了します:"
-      submit: "完了"
-      success: "設定が完了しました！"
-      failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
-      info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
-
-    mute-setting:
-      no-users: "ミュートしているユーザーはいません"
-
-    post-form:
-      note-placeholder: "いまどうしてる？"
-      reply-placeholder: "この投稿への返信..."
-      quote-placeholder: "この投稿を引用..."
-      note: "投稿"
-      reply: "返信"
-      renote: "Renote"
-      posted: "投稿しました！"
-      replied: "返信しました！"
-      reposted: "Renoteしました！"
-      note-failed: "投稿に失敗しました"
-      reply-failed: "返信に失敗しました"
-      renote-failed: "Renoteに失敗しました"
-      posting: "投稿中"
-      attach-media-from-local: "PCからメディアを添付"
-      attach-media-from-drive: "ドライブからメディアを添付"
-      attach-cancel: "添付取り消し"
-      insert-a-kao: "v(‘ω’)v"
-      create-poll: "投票を作成"
-      text-remain: "のこり{}文字"
-
-    post-form-window:
-      note: "新規投稿"
-      reply: "返信"
-      attaches: "添付: {}メディア"
-      uploading-media: "{}個のメディアをアップロード中"
-
     note-page:
       prev: "前の投稿"
       next: "次の投稿"
-
-    settings:
-      profile: "プロフィール"
-      mute: "ミュート"
-      drive: "ドライブ"
-      security: "セキュリティ"
-      password: "パスワード"
-      2fa: "二段階認証"
-      other: "その他"
-      license: "ライセンス"
-
-    timeline-note:
-      reposted-by: "{}がRenote"
-      reply: "返信"
-      renote: "Renote"
-      add-reaction: "リアクション"
-      detail: "詳細"
-
-    notifications:
-      more: "もっと見る"
 
     notifications-home-widget:
       title: "通知"
@@ -450,17 +455,6 @@ desktop:
 
     messaging-home-widget:
       title: "メッセージ"
-
-    renote-form:
-      quote: "引用する..."
-      cancel: "キャンセル"
-      renote: "Renote"
-      reposting: "しています..."
-      success: "Renoteしました！"
-      failure: "Renoteに失敗しました"
-
-    renote-form-window:
-      title: "この投稿をRenoteしますか？"
 
     user:
       last-used-at: "最終アクセス"
@@ -558,11 +552,11 @@ mobile:
       location: "場所"
       description: "自己紹介"
       birthday: "誕生日"
-      avatar: "アバター"
+      avatar: "アイコン"
       banner: "バナー"
-      avatar-saved: "アバターを保存しました"
+      avatar-saved: "アイコンを保存しました"
       banner-saved: "バナーを保存しました"
-      set-avatar: "アバターを選択する"
+      set-avatar: "アイコンを選択する"
       set-banner: "バナーを選択する"
       save: "保存"
       saved: "プロフィールを保存しました"
