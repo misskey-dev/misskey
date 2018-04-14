@@ -91,7 +91,7 @@ const endpoints: Endpoint[] = [
 		name: 'app/show'
 	},
 	{
-		name: 'app/name_id/available'
+		name: 'app/nameId/available'
 	},
 	{
 		name: 'auth/session/generate'
