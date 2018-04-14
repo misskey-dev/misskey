@@ -110,4 +110,7 @@ export default Vue.extend({
 	&[data-draghover]
 		background #eee
 
+	[data-fa].cloud
+		margin-right 4px
+
 </style>
