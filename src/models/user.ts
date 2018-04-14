@@ -22,9 +22,9 @@ import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 
 const User = db.get<IUser>('users');
 
-User.createIndex('username');
-User.createIndex('usernameLower');
-User.createIndex('token');
+User.createIndex(['username', 'host'], { unique: true });
+User.createIndex(['usernameLower', 'host'], { unique: true });
+User.createIndex('token', { unique: true });
 User.createIndex('uri', { sparse: true, unique: true });
 
 export default User;
