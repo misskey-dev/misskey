@@ -63,6 +63,8 @@ export default class Replacer {
 			key = key.substr(1);
 		}
 
+		if (ctx && ctx.lang) this.lang = ctx.lang;
+
 		if (match[0] == '"') {
 			return '"' + this.get(name, key).replace(/"/g, '\\"') + '"';
 		} else if (match[0] == "'") {

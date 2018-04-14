@@ -11,7 +11,8 @@ module.exports = function(src) {
 	const g = search[search.length - 1] == 'g';
 	const file = this.resourcePath.replace(/\\/g, '/');
 	const replace = options.i18n ? global[options.replace].bind(null, {
-		src: file
+		src: file,
+		lang: options.lang
 	}) : global[options.replace];
 	if (typeof search != 'string' || search.length == 0) console.error('invalid search');
 	if (typeof replace != 'function') console.error('invalid replacer:', replace, this.request);
