@@ -78,7 +78,6 @@ export default async (user: IUser, data: {
 		_renote: data.renote ? { userId: data.renote.userId } : null,
 		_user: {
 			host: user.host,
-			hostLower: user.hostLower,
 			inbox: isRemoteUser(user) ? user.inbox : undefined
 		}
 	};

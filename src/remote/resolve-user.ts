@@ -4,19 +4,19 @@ import webFinger from './webfinger';
 import config from '../config';
 import { createPerson } from './activitypub/objects/person';
 
-export default async (username, host, option) => {
+export default async (username, _host, option) => {
 	const usernameLower = username.toLowerCase();
-	const hostLowerAscii = toASCII(host).toLowerCase();
-	const hostLower = toUnicode(hostLowerAscii);
+	const hostAscii = toASCII(_host).toLowerCase();
+	const host = toUnicode(hostAscii);
 
-	if (config.host == hostLower) {
+	if (config.host == host) {
 		return await User.findOne({ usernameLower });
 	}
 
-	let user = await User.findOne({ usernameLower, hostLower }, option);
+	let user = await User.findOne({ usernameLower, host }, option);
 
 	if (user === null) {
-		const acctLower = `${usernameLower}@${hostLowerAscii}`;
+		const acctLower = `${usernameLower}@${hostAscii}`;
 
 		const finger = await webFinger(acctLower);
 		const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');

@@ -32,7 +32,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 			return;
 		}
 
-		user = await User.findOne({ usernameLower: username, hostLower: host }) as IRemoteUser;
+		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
 	} else {
 		user = await User.findOne({
 			host: { $ne: null },

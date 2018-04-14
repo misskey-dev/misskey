@@ -74,8 +74,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		webFinger(person.id)
 	]);
 
-	const host = toUnicode(finger.subject.replace(/^.*?@/, ''));
-	const hostLower = host.replace(/[A-Z]+/, matched => matched.toLowerCase());
+	const host = toUnicode(finger.subject.replace(/^.*?@/, '')).toLowerCase();
 	const summaryDOM = JSDOM.fragment(person.summary);
 
 	// Create user
@@ -92,7 +91,6 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		username: person.preferredUsername,
 		usernameLower: person.preferredUsername.toLowerCase(),
 		host,
-		hostLower,
 		publicKey: {
 			id: person.publicKey.id,
 			publicKeyPem: person.publicKey.publicKeyPem

@@ -118,7 +118,6 @@ export default async (ctx: Koa.Context) => {
 		username: username,
 		usernameLower: username.toLowerCase(),
 		host: null,
-		hostLower: null,
 		keypair: generateKeypair(),
 		token: secret,
 		email: null,

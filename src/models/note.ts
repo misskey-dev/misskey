@@ -66,7 +66,6 @@ export type INote = {
 	};
 	_user: {
 		host: string;
-		hostLower: string;
 		account: {
 			inbox?: string;
 		};

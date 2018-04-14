@@ -49,7 +49,6 @@ type IUserBase = {
 	isSuspended: boolean;
 	keywords: string[];
 	host: string;
-	hostLower: string;
 };
 
 export interface ILocalUser extends IUserBase {
