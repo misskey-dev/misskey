@@ -50,6 +50,33 @@ export interface INotification {
 }
 
 /**
+ * Notificationを物理削除します
+ */
+export async function deleteNotification(notification: string | mongo.ObjectID | INotification) {
+	let n: INotification;
+
+	// Populate
+	if (mongo.ObjectID.prototype.isPrototypeOf(notification)) {
+		n = await Notification.findOne({
+			_id: notification
+		});
+	} else if (typeof notification === 'string') {
+		n = await Notification.findOne({
+			_id: new mongo.ObjectID(notification)
+		});
+	} else {
+		n = notification as INotification;
+	}
+
+	if (n == null) return;
+
+	// このNotificationを削除
+	await Notification.remove({
+		_id: n._id
+	});
+}
+
+/**
  * Pack a notification for API response
  */
 export const pack = (notification: any) => new Promise<any>(async (resolve, reject) => {

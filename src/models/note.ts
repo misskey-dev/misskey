@@ -5,13 +5,13 @@ import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import { pack as packChannel } from './channel';
-import Vote, { deletePollVote } from './poll-vote';
+import PollVote, { deletePollVote } from './poll-vote';
 import Reaction, { deleteNoteReaction } from './note-reaction';
 import { pack as packFile } from './drive-file';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
 import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
-import PollVote from './poll-vote';
+import Notification, { deleteNotification } from './notification';
 
 const Note = db.get<INote>('notes');
 
@@ -122,6 +122,11 @@ export async function deleteNote(note: string | mongo.ObjectID | INote) {
 	await Promise.all((
 		await Favorite.find({ noteId: n._id })
 	).map(x => deleteFavorite(x)));
+
+	// この投稿に対するNotificationをすべて削除
+	await Promise.all((
+		await Notification.find({ noteId: n._id })
+	).map(x => deleteNotification(x)));
 
 	// このNoteを削除
 	await Note.remove({
@@ -258,7 +263,7 @@ export const pack = async (
 		// Poll
 		if (meId && _note.poll) {
 			_note.poll = (async (poll) => {
-				const vote = await Vote
+				const vote = await PollVote
 					.findOne({
 						userId: meId,
 						noteId: id

@@ -19,6 +19,7 @@ import PollVote, { deletePollVote } from './poll-vote';
 import FollowingLog, { deleteFollowingLog } from './following-log';
 import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
+import Notification, { deleteNotification } from './notification';
 
 const User = db.get<IUser>('users');
 
@@ -245,6 +246,16 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await Promise.all((
 		await SwSubscription.find({ userId: u._id })
 	).map(x => deleteSwSubscription(x)));
+
+	// このユーザーのNotificationをすべて削除
+	await Promise.all((
+		await Notification.find({ notifieeId: u._id })
+	).map(x => deleteNotification(x)));
+
+	// このユーザーが原因となったNotificationをすべて削除
+	await Promise.all((
+		await Notification.find({ notifierId: u._id })
+	).map(x => deleteNotification(x)));
 
 	// このユーザーを削除
 }
