@@ -8,13 +8,13 @@
 		<div class="menu" v-if="isOpen">
 			<ul>
 				<li>
-					<router-link :to="`/@${ os.i.username }`">%fa:user%%i18n:desktop.tags.mk-ui-header-account.profile%%fa:angle-right%</router-link>
+					<router-link :to="`/@${ os.i.username }`">%fa:user%%i18n:@profile%%fa:angle-right%</router-link>
 				</li>
 				<li @click="drive">
-					<p>%fa:cloud%%i18n:desktop.tags.mk-ui-header-account.drive%%fa:angle-right%</p>
+					<p>%fa:cloud%%i18n:@drive%%fa:angle-right%</p>
 				</li>
 				<li>
-					<a href="/i/mentions">%fa:at%%i18n:desktop.tags.mk-ui-header-account.mentions%%fa:angle-right%</a>
+					<a href="/i/mentions">%fa:at%%i18n:@mentions%%fa:angle-right%</a>
 				</li>
 			</ul>
 			<ul>
@@ -22,12 +22,12 @@
 					<a href="/i/customize-home">%fa:wrench%カスタマイズ%fa:angle-right%</a>
 				</li>
 				<li @click="settings">
-					<p>%fa:cog%%i18n:desktop.tags.mk-ui-header-account.settings%%fa:angle-right%</p>
+					<p>%fa:cog%%i18n:@settings%%fa:angle-right%</p>
 				</li>
 			</ul>
 			<ul>
 				<li @click="signout">
-					<p>%fa:power-off%%i18n:desktop.tags.mk-ui-header-account.signout%%fa:angle-right%</p>
+					<p>%fa:power-off%%i18n:@signout%%fa:angle-right%</p>
 				</li>
 			</ul>
 		</div>

@@ -16,10 +16,10 @@
 	<button class="send" @click="send" :disabled="!canSend || sending" title="%i18n:common.send%">
 		<template v-if="!sending">%fa:paper-plane%</template><template v-if="sending">%fa:spinner .spin%</template>
 	</button>
-	<button class="attach-from-local" @click="chooseFile" title="%i18n:common.tags.mk-messaging-form.attach-from-local%">
+	<button class="attach-from-local" @click="chooseFile" title="%i18n:@attach-from-local%">
 		%fa:upload%
 	</button>
-	<button class="attach-from-drive" @click="chooseFileFromDrive" title="%i18n:common.tags.mk-messaging-form.attach-from-drive%">
+	<button class="attach-from-drive" @click="chooseFileFromDrive" title="%i18n:@attach-from-drive%">
 		%fa:R folder-open%
 	</button>
 	<input ref="file" type="file" @change="onChangeFile"/>

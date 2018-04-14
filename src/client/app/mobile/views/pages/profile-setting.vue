@@ -1,38 +1,38 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:user%%i18n:mobile.tags.mk-profile-setting-page.title%</span>
+	<span slot="header">%fa:user%%i18n:@title%</span>
 	<div :class="$style.content">
-		<p>%fa:info-circle%%i18n:mobile.tags.mk-profile-setting.will-be-published%</p>
+		<p>%fa:info-circle%%i18n:@will-be-published%</p>
 		<div :class="$style.form">
 			<div :style="os.i.bannerUrl ? `background-image: url(${os.i.bannerUrl}?thumbnail&size=1024)` : ''" @click="setBanner">
 				<img :src="`${os.i.avatarUrl}?thumbnail&size=200`" alt="avatar" @click="setAvatar"/>
 			</div>
 			<label>
-				<p>%i18n:mobile.tags.mk-profile-setting.name%</p>
+				<p>%i18n:@name%</p>
 				<input v-model="name" type="text"/>
 			</label>
 			<label>
-				<p>%i18n:mobile.tags.mk-profile-setting.location%</p>
+				<p>%i18n:@location%</p>
 				<input v-model="location" type="text"/>
 			</label>
 			<label>
-				<p>%i18n:mobile.tags.mk-profile-setting.description%</p>
+				<p>%i18n:@description%</p>
 				<textarea v-model="description"></textarea>
 			</label>
 			<label>
-				<p>%i18n:mobile.tags.mk-profile-setting.birthday%</p>
+				<p>%i18n:@birthday%</p>
 				<input v-model="birthday" type="date"/>
 			</label>
 			<label>
-				<p>%i18n:mobile.tags.mk-profile-setting.avatar%</p>
-				<button @click="setAvatar" :disabled="avatarSaving">%i18n:mobile.tags.mk-profile-setting.set-avatar%</button>
+				<p>%i18n:@avatar%</p>
+				<button @click="setAvatar" :disabled="avatarSaving">%i18n:@set-avatar%</button>
 			</label>
 			<label>
-				<p>%i18n:mobile.tags.mk-profile-setting.banner%</p>
-				<button @click="setBanner" :disabled="bannerSaving">%i18n:mobile.tags.mk-profile-setting.set-banner%</button>
+				<p>%i18n:@banner%</p>
+				<button @click="setBanner" :disabled="bannerSaving">%i18n:@set-banner%</button>
 			</label>
 		</div>
-		<button :class="$style.save" @click="save" :disabled="saving">%fa:check%%i18n:mobile.tags.mk-profile-setting.save%</button>
+		<button :class="$style.save" @click="save" :disabled="saving">%fa:check%%i18n:@save%</button>
 	</div>
 </mk-ui>
 </template>
@@ -58,7 +58,7 @@ export default Vue.extend({
 		this.birthday = (this as any).os.i.profile.birthday;
 	},
 	mounted() {
-		document.title = 'Misskey | %i18n:mobile.tags.mk-profile-setting-page.title%';
+		document.title = 'Misskey | %i18n:@title%';
 		document.documentElement.style.background = '#313a42';
 	},
 	methods: {
@@ -72,7 +72,7 @@ export default Vue.extend({
 					avatarId: file.id
 				}).then(() => {
 					this.avatarSaving = false;
-					alert('%i18n:mobile.tags.mk-profile-setting.avatar-saved%');
+					alert('%i18n:@avatar-saved%');
 				});
 			});
 		},
@@ -86,7 +86,7 @@ export default Vue.extend({
 					bannerId: file.id
 				}).then(() => {
 					this.bannerSaving = false;
-					alert('%i18n:mobile.tags.mk-profile-setting.banner-saved%');
+					alert('%i18n:@banner-saved%');
 				});
 			});
 		},
@@ -100,7 +100,7 @@ export default Vue.extend({
 				birthday: this.birthday || null
 			}).then(() => {
 				this.saving = false;
-				alert('%i18n:mobile.tags.mk-profile-setting.saved%');
+				alert('%i18n:@saved%');
 			});
 		}
 	}

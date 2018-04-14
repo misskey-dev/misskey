@@ -2,9 +2,9 @@
 <div class="profile">
 	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
-		<p class="followed" v-if="user.isFollowed">%i18n:desktop.tags.mk-user.follows-you%</p>
-		<p v-if="user.isMuted">%i18n:desktop.tags.mk-user.muted% <a @click="unmute">%i18n:desktop.tags.mk-user.unmute%</a></p>
-		<p v-if="!user.isMuted"><a @click="mute">%i18n:desktop.tags.mk-user.mute%</a></p>
+		<p class="followed" v-if="user.isFollowed">%i18n:@follows-you%</p>
+		<p v-if="user.isMuted">%i18n:@muted% <a @click="unmute">%i18n:@unmute%</a></p>
+		<p v-if="!user.isMuted"><a @click="mute">%i18n:@mute%</a></p>
 	</div>
 	<div class="description" v-if="user.description">{{ user.description }}</div>
 	<div class="birthday" v-if="user.host === null && user.profile.birthday">

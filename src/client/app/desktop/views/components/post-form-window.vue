@@ -2,10 +2,10 @@
 <mk-window ref="window" is-modal @closed="$destroy">
 	<span slot="header">
 		<span :class="$style.icon" v-if="geo">%fa:map-marker-alt%</span>
-		<span v-if="!reply">%i18n:desktop.tags.mk-post-form-window.note%</span>
-		<span v-if="reply">%i18n:desktop.tags.mk-post-form-window.reply%</span>
-		<span :class="$style.count" v-if="media.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.attaches%'.replace('{}', media.length) }}</span>
-		<span :class="$style.count" v-if="uploadings.length != 0">{{ '%i18n:desktop.tags.mk-post-form-window.uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
+		<span v-if="!reply">%i18n:@note%</span>
+		<span v-if="reply">%i18n:@reply%</span>
+		<span :class="$style.count" v-if="media.length != 0">{{ '%i18n:@attaches%'.replace('{}', media.length) }}</span>
+		<span :class="$style.count" v-if="uploadings.length != 0">{{ '%i18n:@uploading-media%'.replace('{}', uploadings.length) }}<mk-ellipsis/></span>
 	</span>
 
 	<mk-note-preview v-if="reply" :class="$style.notePreview" :note="reply"/>

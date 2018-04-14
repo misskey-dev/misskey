@@ -1,8 +1,8 @@
 <template>
 <div class="mk-activity" :data-melt="design == 2">
 	<template v-if="design == 0">
-		<p class="title">%fa:chart-bar%%i18n:desktop.tags.mk-activity-widget.title%</p>
-		<button @click="toggle" title="%i18n:desktop.tags.mk-activity-widget.toggle%">%fa:sort%</button>
+		<p class="title">%fa:chart-bar%%i18n:@title%</p>
+		<button @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
 	</template>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<template v-else>

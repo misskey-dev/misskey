@@ -1,18 +1,18 @@
 <template>
 <span class="mk-nav">
-	<a :href="aboutUrl">%i18n:common.tags.mk-nav-links.about%</a>
+	<a :href="aboutUrl">%i18n:@about%</a>
 	<i>・</i>
-	<a :href="statsUrl">%i18n:common.tags.mk-nav-links.stats%</a>
+	<a :href="statsUrl">%i18n:@stats%</a>
 	<i>・</i>
-	<a :href="statusUrl">%i18n:common.tags.mk-nav-links.status%</a>
+	<a :href="statusUrl">%i18n:@status%</a>
 	<i>・</i>
-	<a href="http://zawazawa.jp/misskey/">%i18n:common.tags.mk-nav-links.wiki%</a>
+	<a href="http://zawazawa.jp/misskey/">%i18n:@wiki%</a>
 	<i>・</i>
-	<a href="https://github.com/syuilo/misskey/blob/master/DONORS.md">%i18n:common.tags.mk-nav-links.donors%</a>
+	<a href="https://github.com/syuilo/misskey/blob/master/DONORS.md">%i18n:@donors%</a>
 	<i>・</i>
-	<a href="https://github.com/syuilo/misskey">%i18n:common.tags.mk-nav-links.repository%</a>
+	<a href="https://github.com/syuilo/misskey">%i18n:@repository%</a>
 	<i>・</i>
-	<a :href="devUrl">%i18n:common.tags.mk-nav-links.develop%</a>
+	<a :href="devUrl">%i18n:@develop%</a>
 	<i>・</i>
 	<a href="https://twitter.com/misskey_xyz" target="_blank">Follow us on %fa:B twitter%</a>
 </span>

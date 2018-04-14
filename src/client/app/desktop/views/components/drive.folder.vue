@@ -54,19 +54,19 @@ export default Vue.extend({
 			this.isContextmenuShowing = true;
 			contextmenu(e, [{
 				type: 'item',
-				text: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.move-to-this-folder%',
+				text: '%i18n:@contextmenu.move-to-this-folder%',
 				icon: '%fa:arrow-right%',
 				onClick: this.go
 			}, {
 				type: 'item',
-				text: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.show-in-new-window%',
+				text: '%i18n:@contextmenu.show-in-new-window%',
 				icon: '%fa:R window-restore%',
 				onClick: this.newWindow
 			}, {
 				type: 'divider',
 			}, {
 				type: 'item',
-				text: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename%',
+				text: '%i18n:@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
 				onClick: this.rename
 			}, {
@@ -159,15 +159,15 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser-folder.unable-to-process%',
-								text: '%i18n:desktop.tags.mk-drive-browser-folder.circular-reference-detected%',
+								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
+								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'
 								}]
 							});
 							break;
 						default:
-							alert('%i18n:desktop.tags.mk-drive-browser-folder.unhandled-error% ' + err);
+							alert('%i18n:@unhandled-error% ' + err);
 					}
 				});
 			}
@@ -199,8 +199,8 @@ export default Vue.extend({
 
 		rename() {
 			(this as any).apis.input({
-				title: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.rename-folder%',
-				placeholder: '%i18n:desktop.tags.mk-drive-browser-folder-contextmenu.input-new-folder-name%',
+				title: '%i18n:@contextmenu.rename-folder%',
+				placeholder: '%i18n:@contextmenu.input-new-folder-name%',
 				default: this.folder.name
 			}).then(name => {
 				(this as any).api('drive/folders/update', {

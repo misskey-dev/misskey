@@ -44,8 +44,19 @@ export default class Replacer {
 		}
 	}
 
-	public replacement(match, a, b, c) {
-		const key = a || b || c;
+	public replacement(ctx, match, a, b, c) {
+		const client = 'misskey/src/client/app/';
+		const name = ctx.src.substr(ctx.src.indexOf(client) + client.length);
+		if (name == '') return match;
+
+		let key = a || b || c;
+		if (key[0] == '@') {
+			const prefix = name.split('.')[0].replace(/\//g, '.') + '.';
+			//if (name.startsWith('app/desktop/views/')) prefix = 'desktop.views.';
+			//if (name.startsWith('app/mobile/views/')) prefix = 'mobile.views.';
+			key = prefix + key.substr(1);
+		}
+
 		if (match[0] == '"') {
 			return '"' + this.get(key).replace(/"/g, '\\"') + '"';
 		} else if (match[0] == "'") {

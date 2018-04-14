@@ -1,13 +1,13 @@
 <template>
 <div class="mkw-photo-stream" :class="$style.root" :data-melt="props.design == 2">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header">%fa:camera%%i18n:desktop.tags.mk-photo-stream-home-widget.title%</template>
+		<template slot="header">%fa:camera%%i18n:@title%</template>
 
 		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 		<div :class="$style.stream" v-if="!fetching && images.length > 0">
 			<div v-for="image in images" :class="$style.img" :style="`background-image: url(${image.url}?thumbnail&size=256)`"></div>
 		</div>
-		<p :class="$style.empty" v-if="!fetching && images.length == 0">%i18n:desktop.tags.mk-photo-stream-home-widget.no-photos%</p>
+		<p :class="$style.empty" v-if="!fetching && images.length == 0">%i18n:@no-photos%</p>
 	</mk-widget-container>
 </div>
 </template>

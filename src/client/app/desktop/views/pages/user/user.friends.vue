@@ -1,7 +1,7 @@
 <template>
 <div class="friends">
-	<p class="title">%fa:users%%i18n:desktop.tags.mk-user.frequently-replied-users.title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.frequently-replied-users.loading%<mk-ellipsis/></p>
+	<p class="title">%fa:users%%i18n:@frequently-replied-users.title%</p>
+	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@frequently-replied-users.loading%<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
 			<router-link class="avatar-anchor" :to="friend | userPage">
@@ -14,7 +14,7 @@
 			<mk-follow-button :user="friend"/>
 		</div>
 	</template>
-	<p class="empty" v-if="!fetching && users.length == 0">%i18n:desktop.tags.mk-user.frequently-replied-users.no-users%</p>
+	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@frequently-replied-users.no-users%</p>
 </div>
 </template>
 

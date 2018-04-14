@@ -15,22 +15,22 @@
 			</router-link>
 			<div class="links">
 				<ul>
-					<li><router-link to="/">%fa:home%%i18n:mobile.tags.mk-ui-nav.home%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/notifications">%fa:R bell%%i18n:mobile.tags.mk-ui-nav.notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/messaging">%fa:R comments%%i18n:mobile.tags.mk-ui-nav.messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/">%fa:home%%i18n:@home%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/notifications">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/messaging">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
 					<li><router-link to="/othello">%fa:gamepad%ゲーム<template v-if="hasGameInvitations">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-ui-nav.drive%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/drive">%fa:cloud%%i18n:@drive%%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
-					<li><a @click="search">%fa:search%%i18n:mobile.tags.mk-ui-nav.search%%fa:angle-right%</a></li>
+					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/settings">%fa:cog%%i18n:mobile.tags.mk-ui-nav.settings%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/settings">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
 				</ul>
 			</div>
-			<a :href="aboutUrl"><p class="about">%i18n:mobile.tags.mk-ui-nav.about%</p></a>
+			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
 		</div>
 	</transition>
 </div>
@@ -92,7 +92,7 @@ export default Vue.extend({
 	},
 	methods: {
 		search() {
-			const query = window.prompt('%i18n:mobile.tags.mk-ui-nav.search%');
+			const query = window.prompt('%i18n:@search%');
 			if (query == null || query == '') return;
 			this.$router.push('/search?q=' + encodeURIComponent(query));
 		},

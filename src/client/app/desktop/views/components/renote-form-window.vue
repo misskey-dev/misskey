@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal @closed="$destroy">
-	<span slot="header" :class="$style.header">%fa:retweet%%i18n:desktop.tags.mk-renote-form-window.title%</span>
+	<span slot="header" :class="$style.header">%fa:retweet%%i18n:@title%</span>
 	<mk-renote-form ref="form" :note="note" @posted="onPosted" @canceled="onCanceled"/>
 </mk-window>
 </template>

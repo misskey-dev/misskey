@@ -1,13 +1,13 @@
 <template>
 <div class="photos">
-	<p class="title">%fa:camera%%i18n:desktop.tags.mk-user.photos.title%</p>
-	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:desktop.tags.mk-user.photos.loading%<mk-ellipsis/></p>
+	<p class="title">%fa:camera%%i18n:@photos.title%</p>
+	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@photos.loading%<mk-ellipsis/></p>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<div v-for="image in images" class="img"
 			:style="`background-image: url(${image.url}?thumbnail&size=256)`"
 		></div>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">%i18n:desktop.tags.mk-user.photos.no-photos%</p>
+	<p class="empty" v-if="!fetching && images.length == 0">%i18n:@photos.no-photos%</p>
 </div>
 </template>
 

@@ -3,9 +3,9 @@
 	<span slot="header">%fa:search% {{ q }}</span>
 	<main v-if="!fetching">
 		<mk-notes :class="$style.notes" :notes="notes">
-			<span v-if="notes.length == 0">{{ '%i18n:mobile.tags.mk-search-notes.empty%'.replace('{}', q) }}</span>
+			<span v-if="notes.length == 0">{{ '%i18n:@empty%'.replace('{}', q) }}</span>
 			<button v-if="existMore" @click="more" :disabled="fetching" slot="tail">
-				<span v-if="!fetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
+				<span v-if="!fetching">%i18n:@load-more%</span>
 				<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
 			</button>
 		</mk-notes>
@@ -38,7 +38,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = `%i18n:mobile.tags.mk-search-page.search%: ${this.q} | Misskey`;
+		document.title = `%i18n:@search%: ${this.q} | Misskey`;
 		document.documentElement.style.background = '#313a42';
 
 		this.fetch();

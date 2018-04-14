@@ -11,9 +11,9 @@
 	</div>
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>
-		{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-notifications.more%' }}
+		{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
-	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:mobile.tags.mk-notifications.empty%</p>
+	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>

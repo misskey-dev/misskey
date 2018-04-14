@@ -1,12 +1,12 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:R sticky-note%%i18n:mobile.tags.mk-note-page.title%</span>
+	<span slot="header">%fa:R sticky-note%%i18n:@title%</span>
 	<main v-if="!fetching">
-		<a v-if="note.next" :href="note.next">%fa:angle-up%%i18n:mobile.tags.mk-note-page.next%</a>
+		<a v-if="note.next" :href="note.next">%fa:angle-up%%i18n:@next%</a>
 		<div>
 			<mk-note-detail :note="note"/>
 		</div>
-		<a v-if="note.prev" :href="note.prev">%fa:angle-down%%i18n:mobile.tags.mk-note-page.prev%</a>
+		<a v-if="note.prev" :href="note.prev">%fa:angle-down%%i18n:@prev%</a>
 	</main>
 </mk-ui>
 </template>

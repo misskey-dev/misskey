@@ -1,16 +1,16 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:cog%%i18n:mobile.tags.mk-settings-page.settings%</span>
+	<span slot="header">%fa:cog%%i18n:@settings%</span>
 	<div :class="$style.content">
-		<p v-html="'%i18n:mobile.tags.mk-settings.signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
+		<p v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
 		<ul>
-			<li><router-link to="./settings/profile">%fa:user%%i18n:mobile.tags.mk-settings-page.profile%%fa:angle-right%</router-link></li>
-			<li><router-link to="./settings/authorized-apps">%fa:puzzle-piece%%i18n:mobile.tags.mk-settings-page.applications%%fa:angle-right%</router-link></li>
-			<li><router-link to="./settings/twitter">%fa:B twitter%%i18n:mobile.tags.mk-settings-page.twitter-integration%%fa:angle-right%</router-link></li>
-			<li><router-link to="./settings/signin-history">%fa:sign-in-alt%%i18n:mobile.tags.mk-settings-page.signin-history%%fa:angle-right%</router-link></li>
+			<li><router-link to="./settings/profile">%fa:user%%i18n:@profile%%fa:angle-right%</router-link></li>
+			<li><router-link to="./settings/authorized-apps">%fa:puzzle-piece%%i18n:@applications%%fa:angle-right%</router-link></li>
+			<li><router-link to="./settings/twitter">%fa:B twitter%%i18n:@twitter-integration%%fa:angle-right%</router-link></li>
+			<li><router-link to="./settings/signin-history">%fa:sign-in-alt%%i18n:@signin-history%%fa:angle-right%</router-link></li>
 		</ul>
 		<ul>
-			<li><a @click="signout">%fa:power-off%%i18n:mobile.tags.mk-settings-page.signout%</a></li>
+			<li><a @click="signout">%fa:power-off%%i18n:@signout%</a></li>
 		</ul>
 		<p><small>ver {{ version }} ({{ codename }})</small></p>
 	</div>
@@ -34,7 +34,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = 'Misskey | %i18n:mobile.tags.mk-settings-page.settings%';
+		document.title = 'Misskey | %i18n:@settings%';
 		document.documentElement.style.background = '#313a42';
 	},
 	methods: {

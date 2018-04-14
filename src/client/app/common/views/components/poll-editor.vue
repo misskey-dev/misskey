@@ -1,18 +1,18 @@
 <template>
 <div class="mk-poll-editor">
 	<p class="caution" v-if="choices.length < 2">
-		%fa:exclamation-triangle%%i18n:common.tags.mk-poll-editor.no-only-one-choice%
+		%fa:exclamation-triangle%%i18n:@no-only-one-choice%
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices">
-			<input :value="choice" @input="onInput(i, $event)" :placeholder="'%i18n:common.tags.mk-poll-editor.choice-n%'.replace('{}', i + 1)">
-			<button @click="remove(i)" title="%i18n:common.tags.mk-poll-editor.remove%">
+			<input :value="choice" @input="onInput(i, $event)" :placeholder="'%i18n:@choice-n%'.replace('{}', i + 1)">
+			<button @click="remove(i)" title="%i18n:@remove%">
 				%fa:times%
 			</button>
 		</li>
 	</ul>
-	<button class="add" v-if="choices.length < 10" @click="add">%i18n:common.tags.mk-poll-editor.add%</button>
-	<button class="destroy" @click="destroy" title="%i18n:common.tags.mk-poll-editor.destroy%">
+	<button class="add" v-if="choices.length < 10" @click="add">%i18n:@add%</button>
+	<button class="destroy" @click="destroy" title="%i18n:@destroy%">
 		%fa:times%
 	</button>
 </div>

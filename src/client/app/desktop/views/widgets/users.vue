@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-users">
 	<template v-if="!props.compact">
-		<p class="title">%fa:users%%i18n:desktop.tags.mk-user-recommendation-home-widget.title%</p>
-		<button @click="refresh" title="%i18n:desktop.tags.mk-user-recommendation-home-widget.refresh%">%fa:sync%</button>
+		<p class="title">%fa:users%%i18n:@title%</p>
+		<button @click="refresh" title="%i18n:@refresh%">%fa:sync%</button>
 	</template>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<template v-else-if="users.length != 0">
@@ -17,7 +17,7 @@
 			<mk-follow-button :user="_user"/>
 		</div>
 	</template>
-	<p class="empty" v-else>%i18n:desktop.tags.mk-user-recommendation-home-widget.no-one%</p>
+	<p class="empty" v-else>%i18n:@no-one%</p>
 </div>
 </template>
 

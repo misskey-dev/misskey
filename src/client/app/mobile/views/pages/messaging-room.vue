@@ -33,7 +33,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `%i18n:mobile.tags.mk-messaging-room-page.message%: ${Vue.filter('userName')(this.user)} | Misskey`;
+				document.title = `%i18n:@message%: ${Vue.filter('userName')(this.user)} | Misskey`;
 			});
 		}
 	}
