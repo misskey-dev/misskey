@@ -7,7 +7,7 @@
 	<template v-if="!wait && user.isFollowing">%fa:minus%</template>
 	<template v-if="!wait && !user.isFollowing">%fa:plus%</template>
 	<template v-if="wait">%fa:spinner .pulse .fw%</template>
-	{{ user.isFollowing ? '%i18n:mobile.tags.mk-follow-button.unfollow%' : '%i18n:mobile.tags.mk-follow-button.follow%' }}
+	{{ user.isFollowing ? '%i18n:@unfollow%' : '%i18n:@follow%' }}
 </button>
 </template>
 

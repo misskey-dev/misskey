@@ -2,7 +2,7 @@
 <div class="mk-note-menu">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
-		<button v-if="note.userId == os.i.id" @click="pin">%i18n:common.tags.mk-note-menu.pin%</button>
+		<button v-if="note.userId == os.i.id" @click="pin">%i18n:@pin%</button>
 	</div>
 </div>
 </template>

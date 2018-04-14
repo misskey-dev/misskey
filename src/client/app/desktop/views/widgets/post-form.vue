@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-post-form">
 	<template v-if="props.design == 0">
-		<p class="title">%fa:pencil-alt%%i18n:desktop.tags.mk-post-form-home-widget.title%</p>
+		<p class="title">%fa:pencil-alt%%i18n:@title%</p>
 	</template>
-	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" placeholder="%i18n:desktop.tags.mk-post-form-home-widget.placeholder%"></textarea>
-	<button @click="post" :disabled="posting">%i18n:desktop.tags.mk-post-form-home-widget.note%</button>
+	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" placeholder="%i18n:@placeholder%"></textarea>
+	<button @click="post" :disabled="posting">%i18n:@note%</button>
 </div>
 </template>
 

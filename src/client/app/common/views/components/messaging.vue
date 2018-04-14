@@ -3,7 +3,7 @@
 	<div class="search" v-if="!compact" :style="{ top: headerTop + 'px' }">
 		<div class="form">
 			<label for="search-input">%fa:search%</label>
-			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:common.tags.mk-messaging.search-user%"/>
+			<input v-model="q" type="search" @input="search" @keydown="onSearchKeydown" placeholder="%i18n:@search-user%"/>
 		</div>
 		<div class="result">
 			<ol class="users" v-if="result.length > 0" ref="searchResult">
@@ -38,13 +38,13 @@
 						<mk-time :time="message.createdAt"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">%i18n:common.tags.mk-messaging.you%:</span>{{ message.text }}</p>
+						<p class="text"><span class="me" v-if="isMe(message)">%i18n:@you%:</span>{{ message.text }}</p>
 					</div>
 				</div>
 			</a>
 		</template>
 	</div>
-	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:common.tags.mk-messaging.no-history%</p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">%i18n:@no-history%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>

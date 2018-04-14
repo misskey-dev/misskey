@@ -7,10 +7,10 @@
 		</div>
 		<div class="empty" v-if="!fetching && notes.length == 0">
 			%fa:R comments%
-			%i18n:mobile.tags.mk-home-timeline.empty-timeline%
+			%i18n:@empty%
 		</div>
 		<button v-if="!fetching && existMore" @click="more" :disabled="moreFetching" slot="tail">
-			<span v-if="!moreFetching">%i18n:mobile.tags.mk-timeline.load-more%</span>
+			<span v-if="!moreFetching">%i18n:@load-more%</span>
 			<span v-if="moreFetching">%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
 	</mk-notes>
@@ -26,7 +26,8 @@ export default Vue.extend({
 	props: {
 		date: {
 			type: Date,
-			required: false
+			required: false,
+			default: null
 		}
 	},
 	data() {

@@ -6,9 +6,9 @@
 		@change-selection="onChangeSelection"
 	/>
 	<footer>
-		<button class="upload" title="%i18n:desktop.tags.mk-selectdrive-page.upload%" @click="upload">%fa:upload%</button>
-		<button class="cancel" @click="close">%i18n:desktop.tags.mk-selectdrive-page.cancel%</button>
-		<button class="ok" @click="ok">%i18n:desktop.tags.mk-selectdrive-page.ok%</button>
+		<button class="upload" title="%i18n:@upload%" @click="upload">%fa:upload%</button>
+		<button class="cancel" @click="close">%i18n:@cancel%</button>
+		<button class="ok" @click="ok">%i18n:@ok%</button>
 	</footer>
 </div>
 </template>
@@ -29,7 +29,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = '%i18n:desktop.tags.mk-selectdrive-page.title%';
+		document.title = '%i18n:@title%';
 	},
 	methods: {
 		onSelected(file) {

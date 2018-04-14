@@ -14,7 +14,7 @@ fontawesome.library.add(brands);
 
 export const pattern = /%fa:(.+?)%/g;
 
-export const replacement = (_, key) => {
+export const replacement = (match, key) => {
 	const args = key.split(' ');
 	let prefix = 'fas';
 	const classes = [];

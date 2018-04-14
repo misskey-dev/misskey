@@ -1,42 +1,42 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" autocomplete="off">
 	<label class="username">
-		<p class="caption">%fa:at%%i18n:common.tags.mk-signup.username%</p>
+		<p class="caption">%fa:at%%i18n:@username%</p>
 		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required @input="onChangeUsername"/>
 		<p class="profile-page-url-preview" v-if="shouldShowProfileUrl">{{ `${url}/@${username}` }}</p>
-		<p class="info" v-if="usernameState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%%i18n:common.tags.mk-signup.checking%</p>
-		<p class="info" v-if="usernameState == 'ok'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.available%</p>
-		<p class="info" v-if="usernameState == 'unavailable'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.unavailable%</p>
-		<p class="info" v-if="usernameState == 'error'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.error%</p>
-		<p class="info" v-if="usernameState == 'invalid-format'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.invalid-format%</p>
-		<p class="info" v-if="usernameState == 'min-range'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.too-short%</p>
-		<p class="info" v-if="usernameState == 'max-range'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.too-long%</p>
+		<p class="info" v-if="usernameState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%%i18n:@checking%</p>
+		<p class="info" v-if="usernameState == 'ok'" style="color:#3CB7B5">%fa:check .fw%%i18n:@available%</p>
+		<p class="info" v-if="usernameState == 'unavailable'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@unavailable%</p>
+		<p class="info" v-if="usernameState == 'error'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@error%</p>
+		<p class="info" v-if="usernameState == 'invalid-format'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@invalid-format%</p>
+		<p class="info" v-if="usernameState == 'min-range'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@too-short%</p>
+		<p class="info" v-if="usernameState == 'max-range'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@too-long%</p>
 	</label>
 	<label class="password">
-		<p class="caption">%fa:lock%%i18n:common.tags.mk-signup.password%</p>
-		<input v-model="password" type="password" placeholder="%i18n:common.tags.mk-signup.password-placeholder%" autocomplete="off" required @input="onChangePassword"/>
+		<p class="caption">%fa:lock%%i18n:@password%</p>
+		<input v-model="password" type="password" placeholder="%i18n:@password-placeholder%" autocomplete="off" required @input="onChangePassword"/>
 		<div class="meter" v-show="passwordStrength != ''" :data-strength="passwordStrength">
 			<div class="value" ref="passwordMetar"></div>
 		</div>
-		<p class="info" v-if="passwordStrength == 'low'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.weak-password%</p>
-		<p class="info" v-if="passwordStrength == 'medium'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.normal-password%</p>
-		<p class="info" v-if="passwordStrength == 'high'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.strong-password%</p>
+		<p class="info" v-if="passwordStrength == 'low'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@weak-password%</p>
+		<p class="info" v-if="passwordStrength == 'medium'" style="color:#3CB7B5">%fa:check .fw%%i18n:@normal-password%</p>
+		<p class="info" v-if="passwordStrength == 'high'" style="color:#3CB7B5">%fa:check .fw%%i18n:@strong-password%</p>
 	</label>
 	<label class="retype-password">
-		<p class="caption">%fa:lock%%i18n:common.tags.mk-signup.password%(%i18n:common.tags.mk-signup.retype%)</p>
-		<input v-model="retypedPassword" type="password" placeholder="%i18n:common.tags.mk-signup.retype-placeholder%" autocomplete="off" required @input="onChangePasswordRetype"/>
-		<p class="info" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5">%fa:check .fw%%i18n:common.tags.mk-signup.password-matched%</p>
-		<p class="info" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:common.tags.mk-signup.password-not-matched%</p>
+		<p class="caption">%fa:lock%%i18n:@password%(%i18n:@retype%)</p>
+		<input v-model="retypedPassword" type="password" placeholder="%i18n:@retype-placeholder%" autocomplete="off" required @input="onChangePasswordRetype"/>
+		<p class="info" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5">%fa:check .fw%%i18n:@password-matched%</p>
+		<p class="info" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@password-not-matched%</p>
 	</label>
 	<label class="recaptcha">
-		<p class="caption"><template v-if="recaptchaed">%fa:toggle-on%</template><template v-if="!recaptchaed">%fa:toggle-off%</template>%i18n:common.tags.mk-signup.recaptcha%</p>
+		<p class="caption"><template v-if="recaptchaed">%fa:toggle-on%</template><template v-if="!recaptchaed">%fa:toggle-off%</template>%i18n:@recaptcha%</p>
 		<div class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" :data-sitekey="recaptchaSitekey"></div>
 	</label>
 	<label class="agree-tou">
 		<input name="agree-tou" type="checkbox" autocomplete="off" required/>
 		<p><a :href="touUrl" target="_blank">利用規約</a>に同意する</p>
 	</label>
-	<button type="submit">%i18n:common.tags.mk-signup.create%</button>
+	<button type="submit">%i18n:@create%</button>
 </form>
 </template>
 
@@ -127,7 +127,7 @@ export default Vue.extend({
 					location.href = '/';
 				});
 			}).catch(() => {
-				alert('%i18n:common.tags.mk-signup.some-error%');
+				alert('%i18n:@some-error%');
 
 				(window as any).grecaptcha.reset();
 				this.recaptchaed = false;

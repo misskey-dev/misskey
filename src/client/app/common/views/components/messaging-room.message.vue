@@ -5,7 +5,7 @@
 	</router-link>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
-			<p class="read" v-if="isMe && message.isRead">%i18n:common.tags.mk-messaging-message.is-read%</p>
+			<p class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
 			<button class="delete-button" v-if="isMe" title="%i18n:common.delete%">
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
@@ -19,7 +19,7 @@
 				</div>
 			</div>
 			<div class="content" v-if="message.isDeleted">
-				<p class="is-deleted">%i18n:common.tags.mk-messaging-message.deleted%</p>
+				<p class="is-deleted">%i18n:@deleted%</p>
 			</div>
 		</div>
 		<div></div>

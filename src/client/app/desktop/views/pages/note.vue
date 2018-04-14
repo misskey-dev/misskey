@@ -1,9 +1,9 @@
 <template>
 <mk-ui>
 	<main v-if="!fetching">
-		<a v-if="note.next" :href="note.next">%fa:angle-up%%i18n:desktop.tags.mk-note-page.next%</a>
+		<a v-if="note.next" :href="note.next">%fa:angle-up%%i18n:@next%</a>
 		<mk-note-detail :note="note"/>
-		<a v-if="note.prev" :href="note.prev">%fa:angle-down%%i18n:desktop.tags.mk-note-page.prev%</a>
+		<a v-if="note.prev" :href="note.prev">%fa:angle-down%%i18n:@prev%</a>
 	</main>
 </mk-ui>
 </template>

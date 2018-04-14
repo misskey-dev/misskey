@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:R bell%%i18n:mobile.tags.mk-notifications-page.notifications%</span>
+	<span slot="header">%fa:R bell%%i18n:@notifications%</span>
 	<template slot="func"><button @click="fn">%fa:check%</button></template>
 	<mk-notifications @fetched="onFetched"/>
 </mk-ui>
@@ -12,14 +12,14 @@ import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
 	mounted() {
-		document.title = 'Misskey | %i18n:mobile.tags.mk-notifications-page.notifications%';
+		document.title = 'Misskey | %i18n:@notifications%';
 		document.documentElement.style.background = '#313a42';
 
 		Progress.start();
 	},
 	methods: {
 		fn() {
-			const ok = window.confirm('%i18n:mobile.tags.mk-notifications-page.read-all%');
+			const ok = window.confirm('%i18n:@read-all%');
 			if (!ok) return;
 
 			(this as any).api('notifications/markAsRead_all');

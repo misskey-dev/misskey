@@ -5,20 +5,20 @@
 			<li class="home" :class="{ active: $route.name == 'index' }">
 				<router-link to="/">
 					%fa:home%
-					<p>%i18n:desktop.tags.mk-ui-header-nav.home%</p>
+					<p>%i18n:@home%</p>
 				</router-link>
 			</li>
 			<li class="messaging">
 				<a @click="messaging">
 					%fa:comments%
-					<p>%i18n:desktop.tags.mk-ui-header-nav.messaging%</p>
+					<p>%i18n:@messaging%</p>
 					<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>
 				</a>
 			</li>
 			<li class="game">
 				<a @click="game">
 					%fa:gamepad%
-					<p>ゲーム</p>
+					<p>%i18n:@game%</p>
 					<template v-if="hasGameInvitations">%fa:circle%</template>
 				</a>
 			</li>

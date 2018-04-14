@@ -1,7 +1,7 @@
 <template>
 <div class="mk-drive">
 	<nav ref="nav">
-		<a @click.prevent="goRoot()" href="/i/drive">%fa:cloud%%i18n:mobile.tags.mk-drive.drive%</a>
+		<a @click.prevent="goRoot()" href="/i/drive">%fa:cloud%%i18n:@drive%</a>
 		<template v-for="folder in hierarchyFolders">
 			<span :key="folder.id + '>'">%fa:angle-right%</span>
 			<a :key="folder.id" @click.prevent="cd(folder)" :href="`/i/drive/folder/${folder.id}`">{{ folder.name }}</a>
@@ -18,26 +18,26 @@
 	<mk-uploader ref="uploader"/>
 	<div class="browser" :class="{ fetching }" v-if="file == null">
 		<div class="info" v-if="info">
-			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:mobile.tags.mk-drive.used%</p>
+			<p v-if="folder == null">{{ (info.usage / info.capacity * 100).toFixed(1) }}% %i18n:@used%</p>
 			<p v-if="folder != null && (folder.foldersCount > 0 || folder.filesCount > 0)">
-				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} %i18n:mobile.tags.mk-drive.folder-count%</template>
-				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">%i18n:mobile.tags.mk-drive.count-separator%</template>
-				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} %i18n:mobile.tags.mk-drive.file-count%</template>
+				<template v-if="folder.foldersCount > 0">{{ folder.foldersCount }} %i18n:@folder-count%</template>
+				<template v-if="folder.foldersCount > 0 && folder.filesCount > 0">%i18n:@count-separator%</template>
+				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} %i18n:@file-count%</template>
 			</p>
 		</div>
 		<div class="folders" v-if="folders.length > 0">
 			<x-folder v-for="folder in folders" :key="folder.id" :folder="folder"/>
-			<p v-if="moreFolders">%i18n:mobile.tags.mk-drive.load-more%</p>
+			<p v-if="moreFolders">%i18n:@load-more%</p>
 		</div>
 		<div class="files" v-if="files.length > 0">
 			<x-file v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
-				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:mobile.tags.mk-drive.load-more%' }}
+				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:@load-more%' }}
 			</button>
 		</div>
 		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
-			<p v-if="folder == null">%i18n:mobile.tags.mk-drive.nothing-in-drive%</p>
-			<p v-if="folder != null">%i18n:mobile.tags.mk-drive.folder-is-empty%</p>
+			<p v-if="folder == null">%i18n:@nothing-in-drive%</p>
+			<p v-if="folder != null">%i18n:@folder-is-empty%</p>
 		</div>
 	</div>
 	<div class="fetching" v-if="fetching && file == null && files.length == 0 && folders.length == 0">

@@ -9,9 +9,9 @@
 				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr(0, '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('{')) }}</span>
+			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
 			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-			<span>{{ '%i18n:desktop.tags.mk-timeline-note.reposted-by%'.substr('%i18n:desktop.tags.mk-timeline-note.reposted-by%'.indexOf('}') + 1) }}</span>
+			<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="note.createdAt"/>
 	</div>
@@ -57,19 +57,19 @@
 			</div>
 			<footer>
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
-				<button @click="reply" title="%i18n:desktop.tags.mk-timeline-note.reply%">
+				<button @click="reply" title="%i18n:@reply%">
 					%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 				</button>
-				<button @click="renote" title="%i18n:desktop.tags.mk-timeline-note.renote%">
+				<button @click="renote" title="%i18n:@renote%">
 					%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 				</button>
-				<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:desktop.tags.mk-timeline-note.add-reaction%">
+				<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@add-reaction%">
 					%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 				</button>
 				<button @click="menu" ref="menuButton">
 					%fa:ellipsis-h%
 				</button>
-				<button title="%i18n:desktop.tags.mk-timeline-note.detail">
+				<button title="%i18n:@detail">
 					<template v-if="!isDetailOpened">%fa:caret-down%</template>
 					<template v-if="isDetailOpened">%fa:caret-up%</template>
 				</button>

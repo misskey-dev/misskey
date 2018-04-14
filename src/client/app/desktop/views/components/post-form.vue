@@ -15,7 +15,7 @@
 			<x-draggable :list="files" :options="{ animation: 150 }">
 				<div v-for="file in files" :key="file.id">
 					<div class="img" :style="{ backgroundImage: `url(${file.url}?thumbnail&size=64)` }" :title="file.name"></div>
-					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:desktop.tags.mk-post-form.attach-cancel%" alt=""/>
+					<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" title="%i18n:@attach-cancel%" alt=""/>
 				</div>
 			</x-draggable>
 			<p class="remain">{{ 4 - files.length }}/4</p>
@@ -23,14 +23,14 @@
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="saveDraft()"/>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-	<button class="upload" title="%i18n:desktop.tags.mk-post-form.attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
-	<button class="drive" title="%i18n:desktop.tags.mk-post-form.attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
-	<button class="kao" title="%i18n:desktop.tags.mk-post-form.insert-a-kao%" @click="kao">%fa:R smile%</button>
-	<button class="poll" title="%i18n:desktop.tags.mk-post-form.create-poll%" @click="poll = true">%fa:chart-pie%</button>
+	<button class="upload" title="%i18n:@attach-media-from-local%" @click="chooseFile">%fa:upload%</button>
+	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
+	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
+	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
 	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:desktop.tags.mk-post-form.text-remain%'.replace('{}', 1000 - text.length) }}</p>
+	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:@text-remain%'.replace('{}', 1000 - text.length) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
-		{{ posting ? '%i18n:desktop.tags.mk-post-form.posting%' : submitText }}<mk-ellipsis v-if="posting"/>
+		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
@@ -69,17 +69,17 @@ export default Vue.extend({
 		},
 		placeholder(): string {
 			return this.renote
-				? '%i18n:desktop.tags.mk-post-form.quote-placeholder%'
+				? '%i18n:@quote-placeholder%'
 				: this.reply
-					? '%i18n:desktop.tags.mk-post-form.reply-placeholder%'
-					: '%i18n:desktop.tags.mk-post-form.note-placeholder%';
+					? '%i18n:@reply-placeholder%'
+					: '%i18n:@note-placeholder%';
 		},
 		submitText(): string {
 			return this.renote
-				? '%i18n:desktop.tags.mk-post-form.renote%'
+				? '%i18n:@renote%'
 				: this.reply
-					? '%i18n:desktop.tags.mk-post-form.reply%'
-					: '%i18n:desktop.tags.mk-post-form.note%';
+					? '%i18n:@reply%'
+					: '%i18n:@note%';
 		},
 		canPost(): boolean {
 			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
@@ -236,16 +236,16 @@ export default Vue.extend({
 				this.deleteDraft();
 				this.$emit('posted');
 				(this as any).apis.notify(this.renote
-					? '%i18n:desktop.tags.mk-post-form.reposted%'
+					? '%i18n:@reposted%'
 					: this.reply
-						? '%i18n:desktop.tags.mk-post-form.replied%'
-						: '%i18n:desktop.tags.mk-post-form.posted%');
+						? '%i18n:@replied%'
+						: '%i18n:@posted%');
 			}).catch(err => {
 				(this as any).apis.notify(this.renote
-					? '%i18n:desktop.tags.mk-post-form.renote-failed%'
+					? '%i18n:@renote-failed%'
 					: this.reply
-						? '%i18n:desktop.tags.mk-post-form.reply-failed%'
-						: '%i18n:desktop.tags.mk-post-form.note-failed%');
+						? '%i18n:@reply-failed%'
+						: '%i18n:@note-failed%');
 			}).then(() => {
 				this.posting = false;
 			});

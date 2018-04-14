@@ -10,7 +10,7 @@
 		<mk-media-list :media-list="note.media"/>
 	</details>
 	<details v-if="note.poll">
-		<summary>%i18n:mobile.tags.mk-sub-note-content.poll%</summary>
+		<summary>%i18n:@poll%</summary>
 		<mk-poll :note="note"/>
 	</details>
 </div>

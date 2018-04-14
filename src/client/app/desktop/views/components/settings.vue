@@ -1,20 +1,20 @@
 <template>
 <div class="mk-settings">
 	<div class="nav">
-		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'">%fa:user .fw%%i18n:desktop.tags.mk-settings.profile%</p>
+		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'">%fa:user .fw%%i18n:@profile%</p>
 		<p :class="{ active: page == 'web' }" @mousedown="page = 'web'">%fa:desktop .fw%Web</p>
 		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'">%fa:R bell .fw%通知</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:desktop.tags.mk-settings.drive%</p>
-		<p :class="{ active: page == 'mute' }" @mousedown="page = 'mute'">%fa:ban .fw%%i18n:desktop.tags.mk-settings.mute%</p>
+		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'">%fa:cloud .fw%%i18n:@drive%</p>
+		<p :class="{ active: page == 'mute' }" @mousedown="page = 'mute'">%fa:ban .fw%%i18n:@mute%</p>
 		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'">%fa:puzzle-piece .fw%アプリ</p>
 		<p :class="{ active: page == 'twitter' }" @mousedown="page = 'twitter'">%fa:B twitter .fw%Twitter</p>
-		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'">%fa:unlock-alt .fw%%i18n:desktop.tags.mk-settings.security%</p>
+		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'">%fa:unlock-alt .fw%%i18n:@security%</p>
 		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'">%fa:key .fw%API</p>
-		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'">%fa:cogs .fw%%i18n:desktop.tags.mk-settings.other%</p>
+		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'">%fa:cogs .fw%%i18n:@other%</p>
 	</div>
 	<div class="pages">
 		<section class="profile" v-show="page == 'profile'">
-			<h1>%i18n:desktop.tags.mk-settings.profile%</h1>
+			<h1>%i18n:@profile%</h1>
 			<x-profile/>
 		</section>
 
@@ -98,12 +98,12 @@
 		</section>
 
 		<section class="drive" v-show="page == 'drive'">
-			<h1>%i18n:desktop.tags.mk-settings.drive%</h1>
+			<h1>%i18n:@drive%</h1>
 			<x-drive/>
 		</section>
 
 		<section class="mute" v-show="page == 'mute'">
-			<h1>%i18n:desktop.tags.mk-settings.mute%</h1>
+			<h1>%i18n:@mute%</h1>
 			<x-mute/>
 		</section>
 
@@ -118,12 +118,12 @@
 		</section>
 
 		<section class="password" v-show="page == 'security'">
-			<h1>%i18n:desktop.tags.mk-settings.password%</h1>
+			<h1>%i18n:@password%</h1>
 			<x-password/>
 		</section>
 
 		<section class="2fa" v-show="page == 'security'">
-			<h1>%i18n:desktop.tags.mk-settings.2fa%</h1>
+			<h1>%i18n:@2fa%</h1>
 			<x-2fa/>
 		</section>
 
@@ -186,7 +186,7 @@
 		</section>
 
 		<section class="other" v-show="page == 'other'">
-			<h1>%i18n:desktop.tags.mk-settings.license%</h1>
+			<h1>%i18n:@license%</h1>
 			<div v-html="license"></div>
 			<a :href="licenseUrl" target="_blank">サードパーティ</a>
 		</section>

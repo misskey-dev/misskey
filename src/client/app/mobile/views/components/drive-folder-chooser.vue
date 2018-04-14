@@ -2,7 +2,7 @@
 <div class="mk-drive-folder-chooser">
 	<div class="body">
 		<header>
-			<h1>%i18n:mobile.tags.mk-drive-folder-selector.select-folder%</h1>
+			<h1>%i18n:@select-folder%</h1>
 			<button class="close" @click="cancel">%fa:times%</button>
 			<button class="ok" @click="ok">%fa:check%</button>
 		</header>

@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-server">
 	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header">%fa:server%%i18n:desktop.tags.mk-server-home-widget.title%</template>
-		<button slot="func" @click="toggle" title="%i18n:desktop.tags.mk-server-home-widget.toggle%">%fa:sort%</button>
+		<template slot="header">%fa:server%%i18n:@title%</template>
+		<button slot="func" @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
 
 		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 		<template v-if="!fetching">

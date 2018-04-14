@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="none ui info" v-if="!fetching && users.length == 0">
-		<p>%fa:info-circle%%i18n:desktop.tags.mk-mute-setting.no-users%</p>
+		<p>%fa:info-circle%%i18n:@no-users%</p>
 	</div>
 	<div class="users" v-if="users.length != 0">
 		<div v-for="user in users" :key="user.id">

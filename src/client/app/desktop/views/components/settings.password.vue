@@ -1,6 +1,6 @@
 <template>
 <div>
-	<button @click="reset" class="ui primary">%i18n:desktop.tags.mk-password-setting.reset%</button>
+	<button @click="reset" class="ui primary">%i18n:@reset%</button>
 </div>
 </template>
 
@@ -11,21 +11,21 @@ export default Vue.extend({
 	methods: {
 		reset() {
 			(this as any).apis.input({
-				title: '%i18n:desktop.tags.mk-password-setting.enter-current-password%',
+				title: '%i18n:@enter-current-password%',
 				type: 'password'
 			}).then(currentPassword => {
 				(this as any).apis.input({
-					title: '%i18n:desktop.tags.mk-password-setting.enter-new-password%',
+					title: '%i18n:@enter-new-password%',
 					type: 'password'
 				}).then(newPassword => {
 					(this as any).apis.input({
-						title: '%i18n:desktop.tags.mk-password-setting.enter-new-password-again%',
+						title: '%i18n:@enter-new-password-again%',
 						type: 'password'
 					}).then(newPassword2 => {
 						if (newPassword !== newPassword2) {
 							(this as any).apis.dialog({
 								title: null,
-								text: '%i18n:desktop.tags.mk-password-setting.not-match%',
+								text: '%i18n:@not-match%',
 								actions: [{
 									text: 'OK'
 								}]
@@ -36,7 +36,7 @@ export default Vue.extend({
 							currentPasword: currentPassword,
 							newPassword: newPassword
 						}).then(() => {
-							(this as any).apis.notify('%i18n:desktop.tags.mk-password-setting.changed%');
+							(this as any).apis.notify('%i18n:@changed%');
 						});
 					});
 				});

@@ -54,13 +54,13 @@
 		</router-link>
 		<footer>
 			<mk-reactions-viewer :note="p"/>
-			<button @click="reply" title="%i18n:mobile.tags.mk-note-detail.reply%">
+			<button @click="reply" title="%i18n:@reply%">
 				%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
 			<button @click="renote" title="Renote">
 				%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
-			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:mobile.tags.mk-note-detail.reaction%">
+			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@reaction%">
 				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">

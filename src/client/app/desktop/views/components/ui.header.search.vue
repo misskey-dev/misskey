@@ -1,7 +1,7 @@
 <template>
 <form class="search" @submit.prevent="onSubmit">
 	%fa:search%
-	<input v-model="q" type="search" placeholder="%i18n:desktop.tags.mk-ui-header-search.placeholder%"/>
+	<input v-model="q" type="search" placeholder="%i18n:@placeholder%"/>
 	<div class="result"></div>
 </form>
 </template>

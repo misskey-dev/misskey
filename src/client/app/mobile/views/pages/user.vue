@@ -14,7 +14,7 @@
 				<div class="title">
 					<h1>{{ user | userName }}</h1>
 					<span class="username">@{{ user | acct }}</span>
-					<span class="followed" v-if="user.isFollowed">%i18n:mobile.tags.mk-user.follows-you%</span>
+					<span class="followed" v-if="user.isFollowed">%i18n:@follows-you%</span>
 				</div>
 				<div class="description">{{ user.description }}</div>
 				<div class="info">
@@ -28,24 +28,24 @@
 				<div class="status">
 					<a>
 						<b>{{ user.notesCount | number }}</b>
-						<i>%i18n:mobile.tags.mk-user.notes%</i>
+						<i>%i18n:@notes%</i>
 					</a>
 					<a :href="user | userPage('following')">
 						<b>{{ user.followingCount | number }}</b>
-						<i>%i18n:mobile.tags.mk-user.following%</i>
+						<i>%i18n:@following%</i>
 					</a>
 					<a :href="user | userPage('followers')">
 						<b>{{ user.followersCount | number }}</b>
-						<i>%i18n:mobile.tags.mk-user.followers%</i>
+						<i>%i18n:@followers%</i>
 					</a>
 				</div>
 			</div>
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-is-active=" page == 'home' " @click="page = 'home'">%i18n:mobile.tags.mk-user.overview%</a>
-				<a :data-is-active=" page == 'notes' " @click="page = 'notes'">%i18n:mobile.tags.mk-user.timeline%</a>
-				<a :data-is-active=" page == 'media' " @click="page = 'media'">%i18n:mobile.tags.mk-user.media%</a>
+				<a :data-is-active=" page == 'home' " @click="page = 'home'">%i18n:@overview%</a>
+				<a :data-is-active=" page == 'notes' " @click="page = 'notes'">%i18n:@timeline%</a>
+				<a :data-is-active=" page == 'media' " @click="page = 'media'">%i18n:@media%</a>
 			</div>
 		</nav>
 		<div class="body">

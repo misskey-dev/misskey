@@ -1,15 +1,15 @@
 <template>
 <div class="mk-connect-failed">
 	<img src="data:image/jpeg;base64,%base64:/assets/error.jpg%" alt=""/>
-	<h1>%i18n:common.tags.mk-error.title%</h1>
+	<h1>%i18n:@title%</h1>
 	<p class="text">
-		{{ '%i18n:common.tags.mk-error.description%'.substr(0, '%i18n:common.tags.mk-error.description%'.indexOf('{')) }}
-		<a @click="reload">{{ '%i18n:common.tags.mk-error.description%'.match(/\{(.+?)\}/)[1] }}</a>
-		{{ '%i18n:common.tags.mk-error.description%'.substr('%i18n:common.tags.mk-error.description%'.indexOf('}') + 1) }}
+		{{ '%i18n:@description%'.substr(0, '%i18n:@description%'.indexOf('{')) }}
+		<a @click="reload">{{ '%i18n:@description%'.match(/\{(.+?)\}/)[1] }}</a>
+		{{ '%i18n:@description%'.substr('%i18n:@description%'.indexOf('}') + 1) }}
 	</p>
-	<button v-if="!troubleshooting" @click="troubleshooting = true">%i18n:common.tags.mk-error.troubleshoot%</button>
+	<button v-if="!troubleshooting" @click="troubleshooting = true">%i18n:@troubleshoot%</button>
 	<x-troubleshooter v-if="troubleshooting"/>
-	<p class="thanks">%i18n:common.tags.mk-error.thanks%</p>
+	<p class="thanks">%i18n:@thanks%</p>
 </div>
 </template>
 
