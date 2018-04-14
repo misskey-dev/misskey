@@ -55,8 +55,7 @@ export default class Replacer {
 
 	public replacement(ctx, match, a, b, c) {
 		const client = 'misskey/src/client/app/';
-		const name = ctx.src.substr(ctx.src.indexOf(client) + client.length);
-		if (name == '') return match;
+		const name = ctx ? ctx.src.substr(ctx.src.indexOf(client) + client.length) : null;
 
 		let key = a || b || c;
 		if (key[0] == '@') {
