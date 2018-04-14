@@ -1,5 +1,5 @@
 DONATORS
-======
+========
 The list of people who have sent donation for Misskey.
 
 (In random order, honorific titles are omitted.)
@@ -15,7 +15,8 @@ The list of people who have sent donation for Misskey.
 * Maya Minatsuki
 * Knzk https://knzk.me/@Knzk
 * ねじりわさび https://knzk.me/@y
-* NCLS https://knzk.me/@imncls
+* NCLS https://knzk.me/@imncls]
+* こじま @skoji@sandbox.skoji.jp
 
 :heart: Thanks for donating, guys!
 
