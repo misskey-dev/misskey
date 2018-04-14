@@ -257,6 +257,7 @@ desktop/views/components/notes.note.vue:
 
 desktop/views/components/notifications.vue:
   more: "もっと見る"
+  empty: "ありません！"
 
 desktop/views/components/post-form.vue:
   note-placeholder: "いまどうしてる？"

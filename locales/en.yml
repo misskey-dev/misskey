@@ -257,6 +257,7 @@ desktop/views/components/notes.note.vue:
 
 desktop/views/components/notifications.vue:
   more: "More"
+  empty: "No notifications"
 
 desktop/views/components/post-form.vue:
   note-placeholder: "What's happening?"
