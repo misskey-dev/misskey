@@ -1,8 +1,8 @@
-DONORS
+DONATORS
 ======
 The list of people who have sent donation for Misskey.
 
-(no particular order)
+(In random order, honorific titles are omitted.)
 
 * らふぁ
 * 俺様
