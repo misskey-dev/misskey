@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<span slot="header" @click="showTl = !showTl">
-		<template v-if="showTl">%fa:home%タイムライン</template>
+		<template v-if="showTl">%fa:home%%i18n:@timeline%</template>
 		<template v-else>%fa:home%ウィジェット</template>
 		<span style="margin-left:8px">
 			<template v-if="showTl">%fa:angle-down%</template>
