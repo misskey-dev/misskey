@@ -139,7 +139,7 @@
 		"koa": "2.5.0",
 		"koa-body": "^2.5.0",
 		"koa-bodyparser": "4.2.0",
-		"koa-compress": "^2.0.0",
+		"koa-compress": "^3.0.0",
 		"koa-favicon": "2.0.1",
 		"koa-mount": "3.0.0",
 		"koa-multer": "1.0.2",
