@@ -258,6 +258,9 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteNotification(x)));
 
 	// このユーザーを削除
+	await User.remove({
+		_id: u._id
+	});
 }
 
 /**
