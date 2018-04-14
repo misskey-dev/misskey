@@ -41,13 +41,13 @@ common:
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
 
-common/views/connect-failed.vue:
+common/views/components/connect-failed.vue:
   title: "サーバーに接続できません"
   description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
   thanks: "いつもMisskeyをご利用いただきありがとうございます。"
   troubleshoot: "トラブルシュート"
 
-common/views/connect-failed.troubleshooter.vue:
+common/views/components/connect-failed.troubleshooter.vue:
   title: "トラブルシューティング"
   network: "ネットワーク接続"
   checking-network: "ネットワーク接続を確認中"
@@ -182,11 +182,11 @@ common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
 
-common/views/widgets/activity.vue:
+desktop/views/components/activity.vue:
   title: "アクティビティ"
   toggle: "表示を切り替え"
 
-desktop/views/widgets/calendar.vue:
+desktop/views/components/calendar.vue:
   title: "{1}年 {2}月"
   prev: "前の月"
   next: "次の月"
@@ -304,6 +304,7 @@ desktop/views/components/settings.vue:
   password: "パスワード"
   2fa: "二段階認証"
   other: "その他"
+  license: "ライセンス"
 
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
@@ -330,6 +331,9 @@ desktop/views/components/settings.api.vue:
   regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
   regenerate-token: "トークンを再生成"
   enter-password: "パスワードを入力してください"
+
+desktop/views/components/settings.app.vue:
+  no-apps: "連携しているアプリケーションはありません"
 
 desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
@@ -557,6 +561,7 @@ mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
 
 mobile/views/pages/settings.vue:
+  signed-in-as: "{}としてサインイン中"
   profile: "プロフィール"
   twitter: "Twitter連携"
   signin-history: "サインイン履歴"

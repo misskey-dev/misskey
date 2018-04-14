@@ -5,7 +5,6 @@
 		<p v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
 		<ul>
 			<li><router-link to="./settings/profile">%fa:user%%i18n:@profile%%fa:angle-right%</router-link></li>
-			<li><router-link to="./settings/authorized-apps">%fa:puzzle-piece%%i18n:@applications%%fa:angle-right%</router-link></li>
 			<li><router-link to="./settings/twitter">%fa:B twitter%%i18n:@twitter%%fa:angle-right%</router-link></li>
 			<li><router-link to="./settings/signin-history">%fa:sign-in-alt%%i18n:@signin-history%%fa:angle-right%</router-link></li>
 		</ul>

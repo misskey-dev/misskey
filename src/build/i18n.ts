@@ -55,12 +55,11 @@ export default class Replacer {
 
 	public replacement(ctx, match, a, b, c) {
 		const client = 'misskey/src/client/app/';
-		const name = ctx ? ctx.src.substr(ctx.src.indexOf(client) + client.length) : null;
+		let name = null;
 
 		let key = a || b || c;
 		if (key[0] == '@') {
-			//if (name.startsWith('app/desktop/views/')) prefix = 'desktop.views.';
-			//if (name.startsWith('app/mobile/views/')) prefix = 'mobile.views.';
+			name = ctx.src.substr(ctx.src.indexOf(client) + client.length);
 			key = key.substr(1);
 		}
 

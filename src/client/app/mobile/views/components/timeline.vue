@@ -7,7 +7,7 @@
 		</div>
 		<div class="empty" v-if="!fetching && notes.length == 0">
 			%fa:R comments%
-			%i18n:@empty-timeline%
+			%i18n:@empty%
 		</div>
 		<button v-if="!fetching && existMore" @click="more" :disabled="moreFetching" slot="tail">
 			<span v-if="!moreFetching">%i18n:@load-more%</span>
@@ -26,7 +26,8 @@ export default Vue.extend({
 	props: {
 		date: {
 			type: Date,
-			required: false
+			required: false,
+			default: null
 		}
 	},
 	data() {
