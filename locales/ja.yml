@@ -248,6 +248,9 @@ desktop/views/components/drive.vue:
     upload: "ファイルをアップロード"
     url-upload: "URLからアップロード"
 
+desktop/views/components/messaging-window.vue:
+  title: "メッセージ"
+
 desktop/views/components/notes.note.vue:
   reposted-by: "{}がRenote"
   reply: "返信"

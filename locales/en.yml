@@ -248,6 +248,9 @@ desktop/views/components/drive.vue:
     upload: "Upload a file"
     url-upload: "Upload from a URL"
 
+desktop/views/components/messaging-window.vue:
+  title: "Messaging"
+
 desktop/views/components/notes.note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
