@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:R comments%%i18n:@message%</span>
+	<span slot="header">%fa:R comments%%i18n:@messaging%</span>
 	<mk-messaging @navigate="navigate" :header-top="48"/>
 </mk-ui>
 </template>
@@ -11,7 +11,7 @@ import getAcct from '../../../../../acct/render';
 
 export default Vue.extend({
 	mounted() {
-		document.title = 'Misskey %i18n:@message%';
+		document.title = 'Misskey %i18n:@messaging%';
 		document.documentElement.style.background = '#fff';
 	},
 	methods: {

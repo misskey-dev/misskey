@@ -1,3 +1,46 @@
+common:
+  misskey: "Misskeyで皆と共有しよう。"
+
+  time:
+    unknown: "なぞのじかん"
+    future: "未来"
+    just_now: "たった今"
+    seconds_ago: "{}秒前"
+    minutes_ago: "{}分前"
+    hours_ago: "{}時間前"
+    days_ago: "{}日前"
+    weeks_ago: "{}週間前"
+    months_ago: "{}ヶ月前"
+    years_ago: "{}年前"
+
+  weekday-short:
+    sunday: "日"
+    monday: "月"
+    tuesday: "火"
+    wednesday: "水"
+    thursday: "木"
+    friday: "金"
+    satruday: "土"
+
+  reactions:
+    like: "いいね"
+    love: "しゅき"
+    laugh: "笑"
+    hmm: "ふぅ～む"
+    surprise: "わお"
+    congrats: "おめでとう"
+    angry: "おこ"
+    confused: "こまこまのこまり"
+    pudding: "Pudding"
+
+  input-message-here: "ここにメッセージを入力"
+  send: "送信"
+  delete: "削除"
+  loading: "読み込み中"
+  ok: "わかった"
+  update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
+  my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
+
 common/views/connect-failed.vue:
   title: "サーバーに接続できません"
   description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
@@ -321,65 +364,239 @@ desktop/views/components/ui.header.nav.vue:
   messaging: "メッセージ"
   game: "ゲーム"
 
+desktop/views/components/ui.header.notifications.vue:
+  title: "通知"
 
+desktop/views/components/ui.header.post.vue:
+  post: "新規投稿"
 
+desktop/views/components/ui.header.search.vue:
+  placeholder: "検索"
 
+desktop/views/pages/note.vue:
+  prev: "前の投稿"
+  next: "次の投稿"
 
+desktop/views/pages/selectdrive.vue:
+  title: "ファイルを選択してください"
+  ok: "決定"
+  cancel: "キャンセル"
+  upload: "PCからドライブにファイルをアップロード"
 
-
-common:
-  misskey: "Misskeyで皆と共有しよう。"
-
-  time:
-    unknown: "なぞのじかん"
-    future: "未来"
-    just_now: "たった今"
-    seconds_ago: "{}秒前"
-    minutes_ago: "{}分前"
-    hours_ago: "{}時間前"
-    days_ago: "{}日前"
-    weeks_ago: "{}週間前"
-    months_ago: "{}ヶ月前"
-    years_ago: "{}年前"
-
-  weekday-short:
-    sunday: "日"
-    monday: "月"
-    tuesday: "火"
-    wednesday: "水"
-    thursday: "木"
-    friday: "金"
-    satruday: "土"
-
-  reactions:
-    like: "いいね"
-    love: "しゅき"
-    laugh: "笑"
-    hmm: "ふぅ～む"
-    surprise: "わお"
-    congrats: "おめでとう"
-    angry: "おこ"
-    confused: "こまこまのこまり"
-    pudding: "Pudding"
-
-  input-message-here: "ここにメッセージを入力"
-  send: "送信"
-  delete: "削除"
+desktop/views/pages/user/user.followers-you-know.vue:
+  title: "知り合いのフォロワー"
   loading: "読み込み中"
-  ok: "わかった"
-  update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
-  my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
+  no-users: "知り合いのフォロワーはいません"
 
-  tags:
+desktop/views/pages/user/user.friends.vue:
+  title: "よく話すユーザー"
+  loading: "読み込み中"
+  no-users: "よく話すユーザーはいません"
 
-    authorized-apps:
-      no-apps: "連携しているアプリケーションはありません"
+desktop/views/pages/user/user.home.vue:
+  last-used-at: "最終アクセス"
 
+desktop/views/pages/user/user.photos.vue:
+  title: "フォト"
+  loading: "読み込み中"
+  no-photos: "写真はありません"
 
+desktop/views/pages/user/user.profile.vue:
+  follows-you: "フォローされています"
+  mute: "ミュートする"
+  muted: "ミュートしています"
+  unmute: "ミュート解除"
 
+desktop/views/widgets/messaging.vue:
+  title: "メッセージ"
 
+desktop/views/widgets/notifications.vue:
+  title: "通知"
+  settings: "通知の設定"
 
+desktop/views/widgets/polls.vue:
+  title: "投票"
+  refresh: "他を見る"
+  nothing: "ありません！"
 
+desktop/views/widgets/post-form.vue:
+  title: "投稿"
+  note: "投稿"
+  placeholder: "いまどうしてる？"
+
+desktop/views/widgets/trends.vue:
+  title: "トレンド"
+  refresh: "他を見る"
+  nothing: "ありません！"
+
+desktop/views/widgets/users.vue:
+  title: "おすすめユーザー"
+  refresh: "他を見る"
+  no-one: "いません！"
+
+desktop/views/widgets/channel.vue:
+  title: "チャンネル"
+  settings: "ウィジェットの設定"
+  get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
+
+mobile/views/components/drive.vue:
+  drive: "ドライブ"
+  used: "使用中"
+  folder-count: "フォルダ"
+  count-separator: "、"
+  file-count: "ファイル"
+  load-more: "もっと読み込む"
+  nothing-in-drive: "ドライブには何もありません"
+  folder-is-empty: "このフォルダは空です"
+
+mobile/views/components/drive-file-chooser.vue:
+  select-file: "ファイルを選択"
+
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: "フォルダーを選択"
+
+mobile/views/components/drive.file-detail.vue:
+  download: "ダウンロード"
+  rename: "名前を変更"
+  move: "移動"
+  hash: "ハッシュ (md5)"
+  exif: "EXIF"
+
+mobile/views/components/follow-button.vue:
+  follow: "フォロー"
+  unfollow: "フォロー解除"
+
+mobile/views/components/note.vue:
+  reposted-by: "{}がRenote"
+
+mobile/views/components/note-detail.vue:
+  reply: "返信"
+  reaction: "リアクション"
+
+mobile/views/components/notifications.vue:
+  more: "もっと見る"
+  empty: "ありません！"
+
+mobile/views/components/post-form.vue:
+  submit: "投稿"
+  reply-placeholder: "この投稿への返信..."
+  note-placeholder: "いまどうしてる？"
+
+mobile/views/components/sub-note-content.vue:
+  media-count: "{}個のメディア"
+  poll: "投票"
+
+mobile/views/components/timeline.vue:
+  empty: "投稿がありません"
+  load-more: "もっと"
+
+mobile/views/components/ui.nav.vue:
+  home: "ホーム"
+  notifications: "通知"
+  messaging: "メッセージ"
+  search: "検索"
+  drive: "ドライブ"
+  settings: "設定"
+  about: "Misskeyについて"
+
+mobile/views/components/user-timeline.vue:
+  no-notes: "このユーザーは投稿していないようです。"
+  no-notes-with-media: "メディア付き投稿はありません。"
+  load-more: "もっと"
+
+mobile/views/components/users-list.vue:
+  all: "すべて"
+  known: "知り合い"
+  load-more: "もっと"
+
+mobile/views/pages/drive.vue:
+  drive: "ドライブ"
+
+mobile/views/pages/followers.vue:
+  followers-of: "{}のフォロワー"
+
+mobile/views/pages/following.vue:
+  following-of: "{}のフォロー"
+
+mobile/views/pages/messaging.vue:
+  messaging: "メッセージ"
+
+mobile/views/pages/messaging-room.vue:
+  messaging: "メッセージ"
+
+mobile/views/pages/note.vue:
+  title: "投稿"
+  prev: "前の投稿"
+  next: "次の投稿"
+
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
+  read-all: "すべての通知を既読にしますか？"
+
+mobile/views/pages/profile-setting.vue:
+  title: "プロフィール設定"
+  will-be-published: "これらのプロフィールは公開されます。"
+  name: "名前"
+  location: "場所"
+  description: "自己紹介"
+  birthday: "誕生日"
+  avatar: "アイコン"
+  banner: "バナー"
+  avatar-saved: "アイコンを保存しました"
+  banner-saved: "バナーを保存しました"
+  set-avatar: "アイコンを選択する"
+  set-banner: "バナーを選択する"
+  save: "保存"
+  saved: "プロフィールを保存しました"
+
+mobile/views/pages/search.vue:
+  search: "検索"
+  empty: "「{}」に関する投稿は見つかりませんでした。"
+
+mobile/views/pages/selectdrive.vue:
+  select-file: "ファイルを選択"
+
+mobile/views/pages/settings.vue:
+  profile: "プロフィール"
+  twitter: "Twitter連携"
+  signin-history: "サインイン履歴"
+  settings: "設定"
+  signout: "サインアウト"
+
+mobile/views/pages/user.vue:
+  follows-you: "フォローされています"
+  following: "フォロー"
+  followers: "フォロワー"
+  notes: "投稿"
+  overview: "概要"
+  timeline: "タイムライン"
+  media: "メディア"
+
+mobile/views/pages/user/home.vue:
+  recent-notes: "最近の投稿"
+  images: "画像"
+  activity: "アクティビティ"
+  keywords: "キーワード"
+  domains: "頻出ドメイン"
+  frequently-replied-users: "よく会話するユーザー"
+  followers-you-know: "知り合いのフォロワー"
+  last-used-at: "最終ログイン"
+
+mobile/views/pages/user/home.followers-you-know.vue:
+  loading: "読み込み中"
+  no-users: "知り合いのユーザーはいません"
+
+mobile/views/pages/user/home.friends.vue:
+  loading: "読み込み中"
+  no-users: "よく会話するユーザーはいません"
+
+mobile/views/pages/user/home.notes.vue:
+  loading: "読み込み中"
+  no-notes: "投稿はありません"
+
+mobile/views/pages/user/home.photos.vue:
+  loading: "読み込み中"
+  no-photos: "写真はありません"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
@@ -398,296 +615,3 @@ docs:
       description: "説明"
       yes: "はい"
       no: "いいえ"
-
-desktop:
-  tags:
-
-    selectdrive-page:
-      title: "ファイルを選択してください"
-      ok: "決定"
-      cancel: "キャンセル"
-      upload: "PCからドライブにファイルをアップロード"
-
-    ui-header-search:
-      placeholder: "検索"
-
-    ui-header-note-button:
-      note: "新規投稿"
-
-    ui-header-notifications:
-      title: "通知"
-
-    note-page:
-      prev: "前の投稿"
-      next: "次の投稿"
-
-    notifications-home-widget:
-      title: "通知"
-      settings: "通知の設定"
-
-    user-recommendation-home-widget:
-      title: "おすすめユーザー"
-      refresh: "他を見る"
-      no-one: "いません！"
-
-    recommended-polls-home-widget:
-      title: "投票"
-      refresh: "他を見る"
-      nothing: "ありません！"
-
-    trends-home-widget:
-      title: "トレンド"
-      refresh: "他を見る"
-      nothing: "ありません！"
-
-    channel-home-widget:
-      title: "チャンネル"
-      settings: "ウィジェットの設定"
-      get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
-
-    post-form-home-widget:
-      title: "投稿"
-      note: "投稿"
-      placeholder: "いまどうしてる？"
-
-    access-log-home-widget:
-      title: "アクセスログ"
-
-    messaging-home-widget:
-      title: "メッセージ"
-
-    user:
-      last-used-at: "最終アクセス"
-
-      follows-you: "フォローされています"
-      mute: "ミュートする"
-      muted: "ミュートしています"
-      unmute: "ミュート解除"
-
-      photos:
-        title: "フォト"
-        loading: "読み込み中"
-        no-photos: "写真はありません"
-
-      frequently-replied-users:
-        title: "よく話すユーザー"
-        loading: "読み込み中"
-        no-users: "よく話すユーザーはいません"
-
-      followers-you-know:
-        title: "知り合いのフォロワー"
-        loading: "読み込み中"
-        no-users: "知り合いのフォロワーはいません"
-
-mobile:
-  tags:
-    selectdrive-page:
-      select-file: "ファイルを選択"
-
-    drive-file-viewer:
-      download: "ダウンロード"
-      rename: "名前を変更"
-      move: "移動"
-      hash: "ハッシュ (md5)"
-      exif: "EXIF"
-
-    entrance-signin:
-      signup: "新規登録"
-      about: "Misskeyについて"
-
-    entrance-signup:
-      cancel: "キャンセル"
-
-    authorized-apps-page:
-      application: "アプリケーション"
-
-    signin-history-page:
-      signin-history: "ログイン履歴"
-
-    twitter-setting-page:
-      twitter-integration: "Twitter連携"
-
-    drive-page:
-      drive: "ドライブ"
-
-    home:
-      home: "ホーム"
-
-    messaging-room-page:
-      message: "メッセージ"
-
-    messaging-page:
-      message: "メッセージ"
-
-    notifications-page:
-      notifications: "通知"
-      read-all: "すべての通知を既読にしますか？"
-
-    note-page:
-      title: "投稿"
-      prev: "前の投稿"
-      next: "次の投稿"
-
-    search-page:
-      search: "検索"
-
-    settings:
-      signed-in-as: "{}としてサインイン中"
-
-    settings-page:
-      profile: "プロフィール"
-      applications: "アプリケーション"
-      twitter-integration: "Twitter連携"
-      signin-history: "サインイン履歴"
-      link: "Misskeyリンク"
-      settings: "設定"
-      signout: "サインアウト"
-
-    profile-setting-page:
-      title: "プロフィール設定"
-
-    profile-setting:
-      will-be-published: "これらのプロフィールは公開されます。"
-      name: "名前"
-      location: "場所"
-      description: "自己紹介"
-      birthday: "誕生日"
-      avatar: "アイコン"
-      banner: "バナー"
-      avatar-saved: "アイコンを保存しました"
-      banner-saved: "バナーを保存しました"
-      set-avatar: "アイコンを選択する"
-      set-banner: "バナーを選択する"
-      save: "保存"
-      saved: "プロフィールを保存しました"
-
-    user-followers-page:
-      followers-of: "{}のフォロワー"
-
-    user-following-page:
-      following-of: "{}のフォロー"
-
-    drive-folder-selector:
-      select-folder: "フォルダーを選択"
-
-    drive-selector:
-      select-file: "ファイルを選択"
-
-    drive:
-      drive: "ドライブ"
-      used: "使用中"
-      folder-count: "フォルダ"
-      count-separator: "、"
-      file-count: "ファイル"
-      load-more: "もっと読み込む"
-      nothing-in-drive: "ドライブには何もありません"
-      folder-is-empty: "このフォルダは空です"
-
-    follow-button:
-      follow: "フォロー"
-      unfollow: "フォロー解除"
-
-    home-timeline:
-      empty-timeline: "表示する投稿がありません。誰かしらをフォローするなどしましょう。"
-
-    notifications:
-      more: "もっと見る"
-      empty: "ありません！"
-
-    note-detail:
-      reply: "返信"
-      reaction: "リアクション"
-
-    post-form:
-      submit: "投稿"
-      reply-placeholder: "この投稿への返信..."
-      note-placeholder: "いまどうしてる？"
-
-    search-notes:
-      empty: "「{}」に関する投稿は見つかりませんでした。"
-
-    sub-note-content:
-      media-count: "{}個のメディア"
-      poll: "投票"
-
-    timeline-note:
-      reposted-by: "{}がRenote"
-
-    timeline:
-      empty: "表示するものがありません"
-      load-more: "もっとみる"
-
-    ui-nav:
-      home: "ホーム"
-      notifications: "通知"
-      messaging: "メッセージ"
-      ch: "チャンネル"
-      search: "検索"
-      drive: "ドライブ"
-      settings: "設定"
-      about: "Misskeyについて"
-
-    user-followers:
-      no-users: "フォロワーはいないようです。"
-
-    user-following:
-      no-users: "フォロー中のユーザーはいないようです。"
-
-    user-timeline:
-      no-notes: "このユーザーはまだ投稿していないようです。"
-      no-notes-with-media: "メディア付き投稿はありません。"
-      load-more: "もっとみる"
-
-    user:
-      follows-you: "フォローされています"
-      following: "フォロー"
-      followers: "フォロワー"
-      notes: "投稿"
-      overview: "概要"
-      timeline: "タイムライン"
-      media: "メディア"
-
-    user-overview:
-      recent-notes: "最近の投稿"
-      images: "画像"
-      activity: "アクティビティ"
-      keywords: "キーワード"
-      domains: "頻出ドメイン"
-      frequently-replied-users: "よく会話するユーザー"
-      followers-you-know: "知り合いのフォロワー"
-      last-used-at: "最終ログイン"
-
-    user-overview-notes:
-      loading: "読み込み中"
-      no-notes: "投稿はありません"
-
-    user-overview-photos:
-      loading: "読み込み中"
-      no-photos: "写真はありません"
-
-    user-overview-keywords:
-      no-keywords: "キーワードはありません(十分な数の投稿をしていない可能性があります)"
-
-    user-overview-domains:
-      no-domains: "よく表れるドメインは検出されませんでした"
-
-    user-overview-frequently-replied-users:
-      loading: "読み込み中"
-      no-users: "よく会話するユーザーはいません"
-
-    user-overview-followers-you-know:
-      loading: "読み込み中"
-      no-users: "知り合いのユーザーはいません"
-
-    users-list:
-      all: "すべて"
-      known: "知り合い"
-      load-more: "もっと"
-
-stats:
-  notes-count: "投稿の数"
-  users-count: "アカウントの数"
-
-status:
-  all-systems-maybe-operational: "すべてのシステムがたぶん正常に作動しています"
-  what-is-this-site: ""
