@@ -16,7 +16,7 @@ export default class Replacer {
 		this.replacement = this.replacement.bind(this);
 	}
 
-	private get(key: string) {
+	private get(path: string, key: string) {
 		const texts = locale[this.lang];
 
 		if (texts == null) {
@@ -25,6 +25,15 @@ export default class Replacer {
 		}
 
 		let text = texts;
+
+		if (path) {
+			if (text.hasOwnProperty(path)) {
+				text = text[path];
+			} else {
+				console.warn(`path '${path}' not found in '${this.lang}'`);
+				return key; // Fallback
+			}
+		}
 
 		// Check the key existance
 		const error = key.split('.').some(k => {
@@ -37,7 +46,7 @@ export default class Replacer {
 		});
 
 		if (error) {
-			console.warn(`key '${key}' not found in '${this.lang}'`);
+			console.warn(`key '${key}' not found in '${path}' of '${this.lang}'`);
 			return key; // Fallback
 		} else {
 			return text;
@@ -51,18 +60,17 @@ export default class Replacer {
 
 		let key = a || b || c;
 		if (key[0] == '@') {
-			const prefix = name.split('.')[0].replace(/\//g, '.') + '.';
 			//if (name.startsWith('app/desktop/views/')) prefix = 'desktop.views.';
 			//if (name.startsWith('app/mobile/views/')) prefix = 'mobile.views.';
-			key = prefix + key.substr(1);
+			key = key.substr(1);
 		}
 
 		if (match[0] == '"') {
-			return '"' + this.get(key).replace(/"/g, '\\"') + '"';
+			return '"' + this.get(name, key).replace(/"/g, '\\"') + '"';
 		} else if (match[0] == "'") {
-			return '\'' + this.get(key).replace(/'/g, '\\\'') + '\'';
+			return '\'' + this.get(name, key).replace(/'/g, '\\\'') + '\'';
 		} else {
-			return this.get(key);
+			return this.get(name, key);
 		}
 	}
 }
