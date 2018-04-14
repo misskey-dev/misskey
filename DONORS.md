@@ -13,6 +13,9 @@ The list of people who have sent donation for Misskey.
 * aqz https://misskey.xyz/aqz
 * kotodu "虚無創作中"
 * Maya Minatsuki
+* Knzk https://knzk.me/@Knzk
+* ねじわさび https://knzk.me/@y
+* NCLS https://knzk.me/@imncls
 
 :heart: Thanks for donating, guys!
 
