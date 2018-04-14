@@ -31,8 +31,6 @@ please see [Setup and installation guide](./docs/setup.en.md).
 
 :heart: Backers
 ----------------------------------------------------------------
-Support us with a monthly donation and help us continue our activities.
-
 [![Backers][backers-image]][support-url]
 
 :mortar_board: Notable contributors
