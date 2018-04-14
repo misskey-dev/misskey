@@ -77,7 +77,7 @@ export default Vue.extend({
 
 			this.nidState = 'wait';
 
-			(this as any).api('app/nameId/available', {
+			(this as any).api('app/name_id/available', {
 				nameId: this.nid
 			}).then(result => {
 				this.nidState = result.available ? 'ok' : 'unavailable';
