@@ -29,11 +29,11 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 If you want to run your own instance of Misskey,
 please see [Setup and installation guide](./docs/setup.en.md).
 
-:yen: Donation
+:heart: Backers
 ----------------------------------------------------------------
-If you want to donate to Misskey, please see [this](./docs/donate.ja.md).
+Support us with a monthly donation and help us continue our activities.
 
-[List of all donators](./DONATORS.md)
+[![Backers][backers-image]][support-url]
 
 :mortar_board: Notable contributors
 ----------------------------------------------------------------
@@ -60,6 +60,12 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 [himasaku]:           https://himasaku.net
 [himawari-badge]:     https://img.shields.io/badge/%E5%8F%A4%E8%B0%B7-%E5%90%91%E6%97%A5%E8%91%B5-1684c5.svg?style=flat-square
 [sakurako-badge]:     https://img.shields.io/badge/%E5%A4%A7%E5%AE%A4-%E6%AB%BB%E5%AD%90-efb02a.svg?style=flat-square
+
+[backer-url]: #backers
+[backer-badge]: https://opencollective.com/misskey/backers/badge.svg?color=blue
+[backers-image]: https://opencollective.com/misskey/backers.svg
+
+[support-url]: https://opencollective.com/misskey#support
 
 <!-- Contributors Info -->
 [syuilo-link]:      https://syuilo.com
