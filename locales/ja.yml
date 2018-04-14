@@ -72,9 +72,138 @@ common/views/components/poll-editor.vue:
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
 
+common/views/components/signin.vue:
+  username: "ユーザー名"
+  password: "パスワード"
+  token: "トークン"
+  signing-in: "やってます..."
+  signin: "サインイン"
 
+common/views/components/signup.vue:
+  username: "ユーザー名"
+  checking: "確認しています..."
+  available: "利用できます"
+  unavailable: "既に利用されています"
+  error: "通信エラー"
+  invalid-format: "a~z、A~Z、0~9、_が使えます"
+  too-short: "1文字以上でお願いします！"
+  too-long: "20文字以内でお願いします"
+  password: "パスワード"
+  password-placeholder: "8文字以上を推奨します"
+  weak-password: "弱いパスワード"
+  normal-password: "まあまあのパスワード"
+  strong-password: "強いパスワード"
+  retype: "再入力"
+  retype-placeholder: "確認のため再入力してください"
+  password-matched: "確認されました"
+  password-not-matched: "一致していません"
+  recaptcha: "認証"
+  create: "アカウント作成"
+  some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
 
+common/views/components/special-message.vue:
+  new-year: "Happy New Year!"
+  christmas: "Merry Christmas!"
 
+common/views/components/stream-indicator.vue:
+  connecting: "接続中"
+  reconnecting: "再接続中"
+  connected: "接続完了"
+
+common/views/components/twitter-setting.vue:
+  description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のTwitterアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "Twitterと接続する"
+  disconnect: "切断する"
+
+common/views/components/uploader.vue:
+  waiting: "待機中"
+
+common/views/widgets/broadcast.vue:
+  fetching: "確認中"
+  no-broadcasts: "お知らせはありません"
+  have-a-nice-day: "良い一日を！"
+  next: "次"
+
+common/views/widgets/donation.vue:
+  title: "寄付のお願い"
+  text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
+
+common/views/widgets/photo-stream.vue:
+  title: "フォトストリーム"
+  no-photos: "写真はありません"
+
+common/views/widgets/server.vue:
+  title: "サーバー情報"
+  toggle: "表示を切り替え"
+
+common/views/widgets/activity.vue:
+  title: "アクティビティ"
+  toggle: "表示を切り替え"
+
+desktop/views/widgets/calendar.vue:
+  title: "{1}年 {2}月"
+  prev: "前の月"
+  next: "次の月"
+  go: "クリックして時間遡行"
+
+desktop/views/components/drive-window.vue:
+  used: "使用中"
+  drive: "ドライブ"
+
+desktop/views/components/drive.file.vue:
+  avatar: "アバター"
+  banner: "バナー"
+  contextmenu:
+    rename: "名前を変更"
+    copy-url: "URLをコピー"
+    download: "ダウンロード"
+    else-files: "その他..."
+    set-as-avatar: "アバターに設定"
+    set-as-banner: "バナーに設定"
+    open-in-app: "アプリで開く"
+    add-app: "アプリを追加"
+    rename-file: "ファイル名の変更"
+    input-new-file-name: "新しいファイル名を入力してください"
+    copied: "コピー完了"
+    copied-url-to-clipboard: "URLをクリップボードにコピーしました"
+
+desktop/views/components/drive.folder.vue:
+  unable-to-process: "操作を完了できません"
+  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unhandled-error: "不明なエラー"
+  contextmenu:
+    move-to-this-folder: "このフォルダへ移動"
+    show-in-new-window: "新しいウィンドウで表示"
+    rename: "名前を変更"
+    rename-folder: "フォルダ名の変更"
+    input-new-folder-name: "新しいフォルダ名を入力してください"
+
+desktop/views/components/drive.nav-folder.vue:
+  drive: "ドライブ"
+
+desktop/views/components/drive.vue:
+  search: "検索"
+  load-more: "もっと読み込む"
+  empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
+  empty-drive: "ドライブには何もありません。"
+  empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
+  empty-folder: "このフォルダーは空です"
+  unable-to-process: "操作を完了できません"
+  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unhandled-error: "不明なエラー"
+  url-upload: "URLアップロード"
+  url-of-file: "アップロードしたいファイルのURL"
+  url-upload-requested: "アップロードをリクエストしました"
+  may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
+  create-folder: "フォルダー作成"
+  folder-name: "フォルダー名"
+  contextmenu:
+    create-folder: "フォルダーを作成"
+    upload: "ファイルをアップロード"
+    url-upload: "URLからアップロード"
 
 
 
@@ -136,54 +265,11 @@ common:
     authorized-apps:
       no-apps: "連携しているアプリケーションはありません"
 
-    signin:
-      username: "ユーザー名"
-      password: "パスワード"
-      token: "トークン"
-      signing-in: "やってます..."
-      signin: "サインイン"
 
-    signup:
-      username: "ユーザー名"
-      checking: "確認しています..."
-      available: "利用できます"
-      unavailable: "既に利用されています"
-      error: "通信エラー"
-      invalid-format: "a~z、A~Z、0~9、_が使えます"
-      too-short: "1文字以上でお願いします！"
-      too-long: "20文字以内でお願いします"
-      password: "パスワード"
-      password-placeholder: "8文字以上を推奨します"
-      weak-password: "弱いパスワード"
-      normal-password: "まあまあのパスワード"
-      strong-password: "強いパスワード"
-      retype: "再入力"
-      retype-placeholder: "確認のため再入力してください"
-      password-matched: "確認されました"
-      password-not-matched: "一致していません"
-      recaptcha: "認証"
-      create: "アカウント作成"
-      some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
 
-    special-message:
-      new-year: "Happy New Year!"
-      christmas: "Merry Christmas!"
 
-    stream-indicator:
-      connecting: "接続中"
-      reconnecting: "再接続中"
-      connected: "接続完了"
 
-    twitter-setting:
-      description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-      connected-to: "次のTwitterアカウントに接続されています"
-      detail: "詳細..."
-      reconnect: "再接続する"
-      connect: "Twitterと接続する"
-      disconnect: "切断する"
 
-    uploader:
-      waiting: "待機中"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
@@ -211,65 +297,6 @@ desktop:
       regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
       regenerate-token: "トークンを再生成"
       enter-password: "パスワードを入力してください"
-
-    drive-browser-base-contextmenu:
-      create-folder: "フォルダーを作成"
-      upload: "ファイルをアップロード"
-      url-upload: "URLからアップロード"
-
-    drive-browser-window:
-      used: "使用中"
-      drive: "ドライブ"
-
-    drive-browser:
-      search: "検索"
-      load-more: "もっと読み込む"
-      empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
-      empty-drive: "ドライブには何もありません。"
-      empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
-      empty-folder: "このフォルダーは空です"
-      unable-to-process: "操作を完了できません"
-      circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      unhandled-error: "不明なエラー"
-      url-upload: "URLアップロード"
-      url-of-file: "アップロードしたいファイルのURL"
-      url-upload-requested: "アップロードをリクエストしました"
-      may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
-      create-folder: "フォルダー作成"
-      folder-name: "フォルダー名"
-
-    drive-browser-file-contextmenu:
-      rename: "名前を変更"
-      copy-url: "URLをコピー"
-      download: "ダウンロード"
-      else-files: "その他..."
-      set-as-avatar: "アバターに設定"
-      set-as-banner: "バナーに設定"
-      open-in-app: "アプリで開く"
-      add-app: "アプリを追加"
-      rename-file: "ファイル名の変更"
-      input-new-file-name: "新しいファイル名を入力してください"
-      copied: "コピー完了"
-      copied-url-to-clipboard: "URLをクリップボードにコピーしました"
-
-    drive-browser-file:
-      avatar: "アバター"
-      banner: "バナー"
-
-    drive-browser-folder-contextmenu:
-      move-to-this-folder: "このフォルダへ移動"
-      show-in-new-window: "新しいウィンドウで表示"
-      rename: "名前を変更"
-      rename-folder: "フォルダ名の変更"
-      input-new-folder-name: "新しいフォルダ名を入力してください"
-
-    drive-browser-folder:
-      unable-to-process: "操作を完了できません"
-      circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      unhandled-error: "不明なエラー"
-
-    drive-browser-nav-folder:
-      drive: "ドライブ"
 
     selectdrive-page:
       title: "ファイルを選択してください"
@@ -393,14 +420,6 @@ desktop:
       title: "通知"
       settings: "通知の設定"
 
-    server-home-widget:
-      title: "サーバー情報"
-      toggle: "表示を切り替え"
-
-    activity-widget:
-      title: "アクティビティ"
-      toggle: "表示を切り替え"
-
     user-recommendation-home-widget:
       title: "おすすめユーザー"
       refresh: "他を見る"
@@ -416,24 +435,10 @@ desktop:
       refresh: "他を見る"
       nothing: "ありません！"
 
-    photo-stream-home-widget:
-      title: "フォトストリーム"
-      no-photos: "写真はありません"
-
-    donation-home-widget:
-      title: "寄付のお願い"
-      text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
-
     channel-home-widget:
       title: "チャンネル"
       settings: "ウィジェットの設定"
       get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
-
-    calendar-widget:
-      title: "{1}年 {2}月"
-      prev: "前の月"
-      next: "次の月"
-      go: "クリックして時間遡行"
 
     post-form-home-widget:
       title: "投稿"
@@ -445,12 +450,6 @@ desktop:
 
     messaging-home-widget:
       title: "メッセージ"
-
-    broadcast-home-widget:
-      fetching: "確認中"
-      no-broadcasts: "お知らせはありません"
-      have-a-nice-day: "良い一日を！"
-      next: "次"
 
     renote-form:
       quote: "引用する..."
