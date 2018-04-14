@@ -299,6 +299,8 @@ desktop/views/components/renote-form-window.vue:
 
 desktop/views/components/settings.vue:
   profile: "プロフィール"
+  notification: "通知"
+  apps: "アプリ"
   mute: "ミュート"
   drive: "ドライブ"
   security: "セキュリティ"
