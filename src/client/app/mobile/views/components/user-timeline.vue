@@ -6,7 +6,7 @@
 		</div>
 		<div class="empty" v-if="!fetching && notes.length == 0">
 			%fa:R comments%
-			{{ withMedia ? '%i18n:@no-notes-with-media%' : '%i18n:@no-notes%' }}
+			{{ withMedia ? '%i18n:!@no-notes-with-media%' : '%i18n:!@no-notes%' }}
 		</div>
 		<button v-if="!fetching && existMore" @click="more" :disabled="moreFetching" slot="tail">
 			<span v-if="!moreFetching">%i18n:@load-more%</span>

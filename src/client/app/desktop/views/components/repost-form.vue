@@ -3,9 +3,9 @@
 	<mk-note-preview :note="note"/>
 	<template v-if="!quote">
 		<footer>
-			<a class="quote" v-if="!quote" @click="onQuote">%i18n:@quote%</a>
-			<button class="cancel" @click="cancel">%i18n:@cancel%</button>
-			<button class="ok" @click="ok" :disabled="wait">{{ wait ? '%i18n:!@reposting%' : '%i18n:!@renote%' }}</button>
+			<a class="quote" v-if="!quote" @click="onQuote">%i18n:desktop.tags.mk-renote-form.quote%</a>
+			<button class="cancel" @click="cancel">%i18n:desktop.tags.mk-renote-form.cancel%</button>
+			<button class="ok" @click="ok" :disabled="wait">{{ wait ? '%i18n:!desktop.tags.mk-renote-form.reposting%' : '%i18n:!desktop.tags.mk-renote-form.renote%' }}</button>
 		</footer>
 	</template>
 	<template v-if="quote">
@@ -32,9 +32,9 @@ export default Vue.extend({
 				renoteId: this.note.id
 			}).then(data => {
 				this.$emit('posted');
-				(this as any).apis.notify('%i18n:!@success%');
+				(this as any).apis.notify('%i18n:!desktop.tags.mk-renote-form.success%');
 			}).catch(err => {
-				(this as any).apis.notify('%i18n:!@failure%');
+				(this as any).apis.notify('%i18n:!desktop.tags.mk-renote-form.failure%');
 			}).then(() => {
 				this.wait = false;
 			});

@@ -3,9 +3,9 @@
 	<img src="data:image/jpeg;base64,%base64:/assets/error.jpg%" alt=""/>
 	<h1>%i18n:@title%</h1>
 	<p class="text">
-		{{ '%i18n:@description%'.substr(0, '%i18n:@description%'.indexOf('{')) }}
-		<a @click="reload">{{ '%i18n:@description%'.match(/\{(.+?)\}/)[1] }}</a>
-		{{ '%i18n:@description%'.substr('%i18n:@description%'.indexOf('}') + 1) }}
+		{{ '%i18n:!@description%'.substr(0, '%i18n:!@description%'.indexOf('{')) }}
+		<a @click="reload">{{ '%i18n:!@description%'.match(/\{(.+?)\}/)[1] }}</a>
+		{{ '%i18n:!@description%'.substr('%i18n:!@description%'.indexOf('}') + 1) }}
 	</p>
 	<button v-if="!troubleshooting" @click="troubleshooting = true">%i18n:@troubleshoot%</button>
 	<x-troubleshooter v-if="troubleshooting"/>

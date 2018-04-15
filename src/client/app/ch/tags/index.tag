@@ -25,7 +25,7 @@
 		});
 
 		this.n = () => {
-			const title = window.prompt('%i18n:ch.tags.mk-index.channel-title%');
+			const title = window.prompt('%i18n:!ch.tags.mk-index.channel-title%');
 
 			this.$root.$data.os.api('channels/create', {
 				title: title

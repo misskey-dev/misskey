@@ -7,7 +7,7 @@ import locale from '../../locales';
 export default class Replacer {
 	private lang: string;
 
-	public pattern = /%i18n:(.+?)%/g;
+	public pattern = /%i18n:([a-z_\-@\.\!]+?)%/g;
 
 	constructor(lang: string) {
 		this.lang = lang;
@@ -53,11 +53,15 @@ export default class Replacer {
 		}
 	}
 
-	public replacement(ctx, match, a, b, c) {
+	public replacement(ctx, match, key) {
 		const client = 'misskey/src/client/app/';
 		let name = null;
 
-		let key = a || b || c;
+		const shouldEscape = key[0] == '!';
+		if (shouldEscape) {
+			key = key.substr(1);
+		}
+
 		if (key[0] == '@') {
 			name = ctx.src.substr(ctx.src.indexOf(client) + client.length);
 			key = key.substr(1);
@@ -65,6 +69,10 @@ export default class Replacer {
 
 		if (ctx && ctx.lang) this.lang = ctx.lang;
 
-		return this.get(name, key).replace(/'/g, '\\x27').replace(/"/g, '\\x22');
+		const txt = this.get(name, key);
+
+		return shouldEscape
+			? txt.replace(/'/g, '\\x27').replace(/"/g, '\\x22')
+			: txt.replace(/"/g, '&quot;');
 	}
 }

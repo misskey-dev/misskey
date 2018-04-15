@@ -54,26 +54,26 @@ export default Vue.extend({
 			this.isContextmenuShowing = true;
 			contextmenu(e, [{
 				type: 'item',
-				text: '%i18n:@contextmenu.move-to-this-folder%',
+				text: '%i18n:!@contextmenu.move-to-this-folder%',
 				icon: '%fa:arrow-right%',
 				onClick: this.go
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.show-in-new-window%',
+				text: '%i18n:!@contextmenu.show-in-new-window%',
 				icon: '%fa:R window-restore%',
 				onClick: this.newWindow
 			}, {
 				type: 'divider',
 			}, {
 				type: 'item',
-				text: '%i18n:@contextmenu.rename%',
+				text: '%i18n:!@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
 				onClick: this.rename
 			}, {
 				type: 'divider',
 			}, {
 				type: 'item',
-				text: '%i18n:common.delete%',
+				text: '%i18n:!common.delete%',
 				icon: '%fa:R trash-alt%',
 				onClick: this.deleteFolder
 			}], {
@@ -159,15 +159,15 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
-								text: '%i18n:@circular-reference-detected%',
+								title: '%fa:exclamation-triangle%%i18n:!@unable-to-process%',
+								text: '%i18n:!@circular-reference-detected%',
 								actions: [{
-									text: '%i18n:common.ok%'
+									text: '%i18n:!common.ok%'
 								}]
 							});
 							break;
 						default:
-							alert('%i18n:@unhandled-error% ' + err);
+							alert('%i18n:!@unhandled-error% ' + err);
 					}
 				});
 			}
@@ -199,8 +199,8 @@ export default Vue.extend({
 
 		rename() {
 			(this as any).apis.input({
-				title: '%i18n:@contextmenu.rename-folder%',
-				placeholder: '%i18n:@contextmenu.input-new-folder-name%',
+				title: '%i18n:!@contextmenu.rename-folder%',
+				placeholder: '%i18n:!@contextmenu.input-new-folder-name%',
 				default: this.folder.name
 			}).then(name => {
 				(this as any).api('drive/folders/update', {
