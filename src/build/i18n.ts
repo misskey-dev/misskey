@@ -7,7 +7,7 @@ import locale from '../../locales';
 export default class Replacer {
 	private lang: string;
 
-	public pattern = /"%i18n:(.+?)%"|'%i18n:(.+?)%'|%i18n:(.+?)%/g;
+	public pattern = /%i18n:(.+?)%/g;
 
 	constructor(lang: string) {
 		this.lang = lang;
@@ -65,12 +65,6 @@ export default class Replacer {
 
 		if (ctx && ctx.lang) this.lang = ctx.lang;
 
-		if (match[0] == '"') {
-			return '"' + this.get(name, key).replace(/"/g, '\\"') + '"';
-		} else if (match[0] == "'") {
-			return '\'' + this.get(name, key).replace(/'/g, '\\\'') + '\'';
-		} else {
-			return this.get(name, key);
-		}
+		return this.get(name, key).replace(/'/g, '\\x27').replace(/"/g, '\\x22');
 	}
 }
