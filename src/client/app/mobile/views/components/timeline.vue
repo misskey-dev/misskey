@@ -37,7 +37,8 @@ export default Vue.extend({
 			notes: [],
 			existMore: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			isTop: true;
 		};
 	},
 	computed: {
@@ -52,6 +53,8 @@ export default Vue.extend({
 		this.connection.on('note', this.onNote);
 		this.connection.on('follow', this.onChangeFollowing);
 		this.connection.on('unfollow', this.onChangeFollowing);
+
+		window.addEventListener('scroll', this.onScroll);
 
 		this.fetch();
 	},
@@ -95,11 +98,19 @@ export default Vue.extend({
 			});
 		},
 		onNote(note) {
-			this.notes.pop();
+			if (this.isTop) this.notes.pop();
 			this.notes.unshift(note);
 		},
 		onChangeFollowing() {
 			this.fetch();
+		},
+		onScroll() {
+			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.more();
+			}
+			if (window.scrollY > 100) this.isTop = false;
+			else this.isTop = true;
 		}
 	}
 });
