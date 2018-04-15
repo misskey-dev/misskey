@@ -101,6 +101,7 @@ export default Vue.extend({
 				sound.play();
 			}
 
+			this.notes.pop();
 			this.notes.unshift(note);
 		},
 		onChangeFollowing() {
