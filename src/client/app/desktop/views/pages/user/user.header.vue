@@ -73,7 +73,7 @@ export default Vue.extend({
 	$footer-height = 58px
 
 	overflow hidden
-	background #bfccd0
+	background #f7f7f7
 	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
 
 	> .is-remote
@@ -111,7 +111,7 @@ export default Vue.extend({
 
 		> .banner
 			height 100%
-			background-color #f5f5f5
+			background-color #bfccd0
 			background-size cover
 			background-position center
 
