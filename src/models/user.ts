@@ -88,6 +88,7 @@ export interface ILocalUser extends IUserBase {
 export interface IRemoteUser extends IUserBase {
 	inbox: string;
 	uri: string;
+	url?: string;
 	publicKey: {
 		id: string;
 		publicKeyPem: string;

@@ -403,6 +403,10 @@ desktop/views/pages/user/user.friends.vue:
   loading: "Loading"
   no-users: "No users"
 
+desktop/views/pages/user/user.header.vue:
+  is-remote: "This user is not a user of Misskey, so the information is not accurate."
+  view-remote: "See accurate information"
+
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last used at"
 
@@ -585,6 +589,8 @@ mobile/views/pages/user.vue:
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
+  is-remote: "This user is not a user of Misskey, so the information is not accurate."
+  view-remote: "See accurate information"
 
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
