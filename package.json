@@ -10,7 +10,7 @@
 	"main": "./built/index.js",
 	"private": true,
 	"scripts": {
-		"config": "node ./tools/init.js",
+		"config": "node ./cli/init.js",
 		"start": "node ./built",
 		"debug": "DEBUG=misskey:* node ./built",
 		"swagger": "node ./swagger.js",
