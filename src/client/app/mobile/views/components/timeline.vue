@@ -38,7 +38,7 @@ export default Vue.extend({
 			existMore: false,
 			connection: null,
 			connectionId: null,
-			isTop: true;
+			isTop: true
 		};
 	},
 	computed: {
