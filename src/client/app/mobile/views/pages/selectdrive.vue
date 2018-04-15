@@ -1,7 +1,7 @@
 <template>
 <div class="mk-selectdrive">
 	<header>
-		<h1>%i18n:mobile.tags.mk-selectdrive-page.select-file%<span class="count" v-if="files.length > 0">({{ files.length }})</span></h1>
+		<h1>%i18n:@select-file%<span class="count" v-if="files.length > 0">({{ files.length }})</span></h1>
 		<button class="upload" @click="upload">%fa:upload%</button>
 		<button v-if="multiple" class="ok" @click="ok">%fa:check%</button>
 	</header>
@@ -25,7 +25,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = '%i18n:desktop.tags.mk-selectdrive-page.title%';
+		document.title = '%i18n:@title%';
 	},
 	methods: {
 		onSelected(file) {

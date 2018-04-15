@@ -65,7 +65,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	const q = userId !== undefined
 		? { _id: userId }
-		: { usernameLower: username.toLowerCase(), hostLower: getHostLower(host) } ;
+		: { usernameLower: username.toLowerCase(), host: getHostLower(host) } ;
 
 	// Lookup user
 	const user = await User.findOne(q, {

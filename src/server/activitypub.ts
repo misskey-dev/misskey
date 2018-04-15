@@ -1,5 +1,6 @@
 import * as Router from 'koa-router';
-import { parseRequest } from 'http-signature';
+const json = require('koa-json-body');
+const httpSignature = require('http-signature');
 
 import { createHttp } from '../queue';
 import pack from '../remote/activitypub/renderer';
@@ -18,13 +19,13 @@ const router = new Router();
 //#region Routing
 
 // inbox
-router.post('/users/:user/inbox', ctx => {
+router.post('/users/:user/inbox', json(), ctx => {
 	let signature;
 
 	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
 
 	try {
-		signature = parseRequest(ctx.req);
+		signature = httpSignature.parseRequest(ctx.req);
 	} catch (e) {
 		ctx.status = 401;
 		return;

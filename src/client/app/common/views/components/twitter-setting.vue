@@ -1,11 +1,11 @@
 <template>
 <div class="mk-twitter-setting">
-	<p>%i18n:common.tags.mk-twitter-setting.description%<a :href="`${docsUrl}/link-to-twitter`" target="_blank">%i18n:common.tags.mk-twitter-setting.detail%</a></p>
-	<p class="account" v-if="os.i.twitter" :title="`Twitter ID: ${os.i.twitter.userId}`">%i18n:common.tags.mk-twitter-setting.connected-to%: <a :href="`https://twitter.com/${os.i.twitter.screenName}`" target="_blank">@{{ os.i.twitter.screenName }}</a></p>
+	<p>%i18n:@description%<a :href="`${docsUrl}/link-to-twitter`" target="_blank">%i18n:@detail%</a></p>
+	<p class="account" v-if="os.i.twitter" :title="`Twitter ID: ${os.i.twitter.userId}`">%i18n:@connected-to%: <a :href="`https://twitter.com/${os.i.twitter.screenName}`" target="_blank">@{{ os.i.twitter.screenName }}</a></p>
 	<p>
-		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ os.i.twitter ? '%i18n:common.tags.mk-twitter-setting.reconnect%' : '%i18n:common.tags.mk-twitter-setting.connect%' }}</a>
+		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ os.i.twitter ? '%i18n:@reconnect%' : '%i18n:@connect%' }}</a>
 		<span v-if="os.i.twitter"> or </span>
-		<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="os.i.twitter" @click.prevent="disconnect">%i18n:common.tags.mk-twitter-setting.disconnect%</a>
+		<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="os.i.twitter" @click.prevent="disconnect">%i18n:@disconnect%</a>
 	</p>
 	<p class="id" v-if="os.i.twitter">Twitter ID: {{ os.i.twitter.userId }}</p>
 </div>

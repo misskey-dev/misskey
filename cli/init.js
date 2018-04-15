@@ -121,12 +121,6 @@ inquirer.prompt(form).then(as => {
 		},
 		url: as['url'],
 		port: parseInt(as['port'], 10),
-		https: {
-			enable: as['https'],
-			key: as['https_key'] || null,
-			cert: as['https_cert'] || null,
-			ca: as['https_ca'] || null
-		},
 		mongodb: {
 			host: as['mongo_host'],
 			port: parseInt(as['mongo_port'], 10),
@@ -150,6 +144,14 @@ inquirer.prompt(form).then(as => {
 			secretKey: as['recaptcha_secret']
 		}
 	};
+
+	if (as['https']) {
+		conf.https = {
+			key: as['https_key'] || null,
+			cert: as['https_cert'] || null,
+			ca: as['https_ca'] || null
+		};
+	}
 
 	console.log(`Thanks. Writing the configuration to ${chalk.bold(path.resolve(configPath))}`);
 

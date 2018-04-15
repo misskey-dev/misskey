@@ -1,27 +1,27 @@
 <template>
 <div class="profile">
 	<label class="avatar ui from group">
-		<p>%i18n:desktop.tags.mk-profile-setting.avatar%</p>
+		<p>%i18n:@avatar%</p>
 		<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		<button class="ui" @click="updateAvatar">%i18n:desktop.tags.mk-profile-setting.choice-avatar%</button>
+		<button class="ui" @click="updateAvatar">%i18n:@choice-avatar%</button>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:desktop.tags.mk-profile-setting.name%</p>
+		<p>%i18n:@name%</p>
 		<input v-model="name" type="text" class="ui"/>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:desktop.tags.mk-profile-setting.location%</p>
+		<p>%i18n:@location%</p>
 		<input v-model="location" type="text" class="ui"/>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:desktop.tags.mk-profile-setting.description%</p>
+		<p>%i18n:@description%</p>
 		<textarea v-model="description" class="ui"></textarea>
 	</label>
 	<label class="ui from group">
-		<p>%i18n:desktop.tags.mk-profile-setting.birthday%</p>
+		<p>%i18n:@birthday%</p>
 		<el-date-picker v-model="birthday" type="date" value-format="yyyy-MM-dd"/>
 	</label>
-	<button class="ui primary" @click="save">%i18n:desktop.tags.mk-profile-setting.save%</button>
+	<button class="ui primary" @click="save">%i18n:@save%</button>
 	<section>
 		<h2>その他</h2>
 		<mk-switch v-model="os.i.isBot" @change="onChangeIsBot" text="このアカウントはbotです"/>

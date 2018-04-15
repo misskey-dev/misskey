@@ -1,29 +1,30 @@
-// for Node.js interpret
-
-const { default: User } = require('../../../built/models/user');
+const { default: User, deleteUser } = require('../built/models/user');
 const { default: zip } = require('@prezzemolo/zip')
 
 const migrate = async (user) => {
-	const result = await User.update(user._id, {
-		$set: {
-			'username': user.username.replace(/\-/g, '_'),
-			'username_lower': user.username_lower.replace(/\-/g, '_')
-		}
-	});
-	return result.ok === 1;
+	try {
+		await deleteUser(user._id);
+		return true;
+	} catch (e) {
+		return false;
+	}
 }
 
 async function main() {
-	const count = await User.count({});
+	const count = await User.count({
+		uri: /#/
+	});
 
-	const dop = Number.parseInt(process.argv[2]) || 5
+	const dop = 1
 	const idop = ((count - (count % dop)) / dop) + 1
 
 	return zip(
 		1,
 		async (time) => {
 			console.log(`${time} / ${idop}`)
-			const doc = await User.find({}, {
+			const doc = await User.find({
+				uri: /#/
+			}, {
 				limit: dop, skip: time * dop
 			})
 			return Promise.all(doc.map(migrate))

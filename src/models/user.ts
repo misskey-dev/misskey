@@ -19,12 +19,15 @@ import PollVote, { deletePollVote } from './poll-vote';
 import FollowingLog, { deleteFollowingLog } from './following-log';
 import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
+import Notification, { deleteNotification } from './notification';
 
 const User = db.get<IUser>('users');
 
 User.createIndex('username');
 User.createIndex('usernameLower');
-User.createIndex('token');
+User.createIndex(['username', 'host'], { unique: true });
+User.createIndex(['usernameLower', 'host'], { unique: true });
+User.createIndex('token', { sparse: true, unique: true });
 User.createIndex('uri', { sparse: true, unique: true });
 
 export default User;
@@ -49,7 +52,6 @@ type IUserBase = {
 	isSuspended: boolean;
 	keywords: string[];
 	host: string;
-	hostLower: string;
 };
 
 export interface ILocalUser extends IUserBase {
@@ -153,6 +155,8 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		u = user as IUser;
 	}
 
+	console.log(u == null ? `User: delete skipped ${user}` : `User: deleting ${u._id}`);
+
 	if (u == null) return;
 
 	// このユーザーのAccessTokenをすべて削除
@@ -245,7 +249,22 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		await SwSubscription.find({ userId: u._id })
 	).map(x => deleteSwSubscription(x)));
 
+	// このユーザーのNotificationをすべて削除
+	await Promise.all((
+		await Notification.find({ notifieeId: u._id })
+	).map(x => deleteNotification(x)));
+
+	// このユーザーが原因となったNotificationをすべて削除
+	await Promise.all((
+		await Notification.find({ notifierId: u._id })
+	).map(x => deleteNotification(x)));
+
 	// このユーザーを削除
+	await User.remove({
+		_id: u._id
+	});
+
+	console.log(`User: deleted ${u._id}`);
 }
 
 /**

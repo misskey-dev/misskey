@@ -127,7 +127,7 @@ gulp.task('doc:api:endpoints', async () => {
 						return;
 					}
 					const i18n = new I18nReplacer(lang);
-					html = html.replace(i18n.pattern, i18n.replacement);
+					html = html.replace(i18n.pattern, i18n.replacement.bind(null, null));
 					html = fa(html);
 					const htmlPath = `./built/client/docs/${lang}/api/endpoints/${ep.endpoint}.html`;
 					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
@@ -171,7 +171,7 @@ gulp.task('doc:api:entities', async () => {
 						return;
 					}
 					const i18n = new I18nReplacer(lang);
-					html = html.replace(i18n.pattern, i18n.replacement);
+					html = html.replace(i18n.pattern, i18n.replacement.bind(null, null));
 					html = fa(html);
 					const htmlPath = `./built/client/docs/${lang}/api/entities/${kebab(entity.name)}.html`;
 					mkdirp(path.dirname(htmlPath), (mkdirErr) => {

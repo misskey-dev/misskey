@@ -2,36 +2,36 @@
 <div class="root home">
 	<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
 	<section class="recent-notes">
-		<h2>%fa:R comments%%i18n:mobile.tags.mk-user-overview.recent-notes%</h2>
+		<h2>%fa:R comments%%i18n:@recent-notes%</h2>
 		<div>
 			<x-notes :user="user"/>
 		</div>
 	</section>
 	<section class="images">
-		<h2>%fa:image%%i18n:mobile.tags.mk-user-overview.images%</h2>
+		<h2>%fa:image%%i18n:@images%</h2>
 		<div>
 			<x-photos :user="user"/>
 		</div>
 	</section>
 	<section class="activity">
-		<h2>%fa:chart-bar%%i18n:mobile.tags.mk-user-overview.activity%</h2>
+		<h2>%fa:chart-bar%%i18n:@activity%</h2>
 		<div>
 			<mk-activity :user="user"/>
 		</div>
 	</section>
 	<section class="frequently-replied-users">
-		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.frequently-replied-users%</h2>
+		<h2>%fa:users%%i18n:@frequently-replied-users%</h2>
 		<div>
 			<x-friends :user="user"/>
 		</div>
 	</section>
 	<section class="followers-you-know" v-if="os.isSignedIn && os.i.id !== user.id">
-		<h2>%fa:users%%i18n:mobile.tags.mk-user-overview.followers-you-know%</h2>
+		<h2>%fa:users%%i18n:@followers-you-know%</h2>
 		<div>
 			<x-followers-you-know :user="user"/>
 		</div>
 	</section>
-	<p v-if="user.host === null">%i18n:mobile.tags.mk-user-overview.last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
+	<p v-if="user.host === null">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
 </div>
 </template>
 

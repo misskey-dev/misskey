@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-access-log">
 	<mk-widget-container :show-header="props.design == 0">
-		<template slot="header">%fa:server%%i18n:desktop.tags.mk-access-log-home-widget.title%</template>
+		<template slot="header">%fa:server%%i18n:@title%</template>
 
 		<div :class="$style.logs" ref="log">
 			<p v-for="req in requests">

@@ -30,11 +30,10 @@
 	//#endregion
 
 	// Detect the user language
-	// Note: The default language is English
+	// Note: The default language is Japanese
 	let lang = navigator.language.split('-')[0];
-	if (!/^(en|ja)$/.test(lang)) lang = 'en';
+	if (!/^(en|ja)$/.test(lang)) lang = 'ja';
 	if (localStorage.getItem('lang')) lang = localStorage.getItem('lang');
-	if (ENV != 'production') lang = 'ja';
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
@@ -80,7 +79,7 @@
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);
 
-	// 1秒経ってもスクリプトがロードされない場合はバージョンが古くて
+	// 3秒経ってもスクリプトがロードされない場合はバージョンが古くて
 	// 404になっているせいかもしれないので、バージョンを確認して古ければ更新する
 	//
 	// 読み込まれたスクリプトからこのタイマーを解除できるように、
@@ -118,5 +117,5 @@
 			// Force reload
 			location.reload(true);
 		}
-	}, 1000);
+	}, 3000);
 }

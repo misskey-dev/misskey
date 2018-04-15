@@ -1,15 +1,15 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
 	<label class="user-name">
-		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="%i18n:common.tags.mk-signin.username%" autofocus required @change="onUsernameChange"/>%fa:at%
+		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="%i18n:@username%" autofocus required @change="onUsernameChange"/>%fa:at%
 	</label>
 	<label class="password">
-		<input v-model="password" type="password" placeholder="%i18n:common.tags.mk-signin.password%" required/>%fa:lock%
+		<input v-model="password" type="password" placeholder="%i18n:@password%" required/>%fa:lock%
 	</label>
 	<label class="token" v-if="user && user.twoFactorEnabled">
-		<input v-model="token" type="number" placeholder="%i18n:common.tags.mk-signin.token%" required/>%fa:lock%
+		<input v-model="token" type="number" placeholder="%i18n:@token%" required/>%fa:lock%
 	</label>
-	<button type="submit" :disabled="signing">{{ signing ? '%i18n:common.tags.mk-signin.signing-in%' : '%i18n:common.tags.mk-signin.signin%' }}</button>
+	<button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</button>
 	もしくは <a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
 </form>
 </template>

@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-messaging">
-	<p class="title" v-if="props.design == 0">%fa:comments%%i18n:desktop.tags.mk-messaging-home-widget.title%</p>
+	<p class="title" v-if="props.design == 0">%fa:comments%%i18n:@title%</p>
 	<mk-messaging ref="index" compact @navigate="navigate"/>
 </div>
 </template>

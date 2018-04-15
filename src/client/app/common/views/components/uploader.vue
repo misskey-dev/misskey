@@ -5,7 +5,7 @@
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
 			<p class="name">%fa:spinner .pulse%{{ ctx.name }}</p>
 			<p class="status">
-				<span class="initing" v-if="ctx.progress == undefined">%i18n:common.tags.mk-uploader.waiting%<mk-ellipsis/></span>
+				<span class="initing" v-if="ctx.progress == undefined">%i18n:@waiting%<mk-ellipsis/></span>
 				<span class="kb" v-if="ctx.progress != undefined">{{ String(Math.floor(ctx.progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
 				<span class="percentage" v-if="ctx.progress != undefined">{{ Math.floor((ctx.progress.value / ctx.progress.max) * 100) }}</span>
 			</p>

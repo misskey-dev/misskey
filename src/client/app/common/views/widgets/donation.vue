@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-donation" :data-mobile="isMobile">
 	<article>
-		<h1>%fa:heart%%i18n:desktop.tags.mk-donation-home-widget.title%</h1>
+		<h1>%fa:heart%%i18n:@title%</h1>
 		<p>
-			{{ '%i18n:desktop.tags.mk-donation-home-widget.text%'.substr(0, '%i18n:desktop.tags.mk-donation-home-widget.text%'.indexOf('{')) }}
+			{{ '%i18n:@text%'.substr(0, '%i18n:@text%'.indexOf('{')) }}
 			<a href="https://syuilo.com">@syuilo</a>
-			{{ '%i18n:desktop.tags.mk-donation-home-widget.text%'.substr('%i18n:desktop.tags.mk-donation-home-widget.text%'.indexOf('}') + 1) }}
+			{{ '%i18n:@text%'.substr('%i18n:@text%'.indexOf('}') + 1) }}
 		</p>
 	</article>
 </div>

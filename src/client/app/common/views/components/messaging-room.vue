@@ -5,10 +5,10 @@
 >
 	<div class="stream">
 		<p class="init" v-if="init">%fa:spinner .spin%%i18n:common.loading%</p>
-		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:common.tags.mk-messaging-room.empty%</p>
-		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:common.tags.mk-messaging-room.no-history%</p>
+		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:@empty%</p>
+		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:@no-history%</p>
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:common.tags.mk-messaging-room.more%' }}
+			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:@more%' }}
 		</button>
 		<template v-for="(message, i) in _messages">
 			<x-message :message="message" :key="message.id"/>
@@ -172,7 +172,7 @@ export default Vue.extend({
 				});
 			} else if (message.userId != (this as any).os.i.id) {
 				// Notify
-				this.notify('%i18n:common.tags.mk-messaging-room.new-message%');
+				this.notify('%i18n:@new-message%');
 			}
 		},
 

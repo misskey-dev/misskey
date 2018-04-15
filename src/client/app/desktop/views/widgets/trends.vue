@@ -1,15 +1,15 @@
 <template>
 <div class="mkw-trends">
 	<template v-if="!props.compact">
-		<p class="title">%fa:fire%%i18n:desktop.tags.mk-trends-home-widget.title%</p>
-		<button @click="fetch" title="%i18n:desktop.tags.mk-trends-home-widget.refresh%">%fa:sync%</button>
+		<p class="title">%fa:fire%%i18n:@title%</p>
+		<button @click="fetch" title="%i18n:@refresh%">%fa:sync%</button>
 	</template>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 	<div class="note" v-else-if="note != null">
 		<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
 		<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>
 	</div>
-	<p class="empty" v-else>%i18n:desktop.tags.mk-trends-home-widget.nothing%</p>
+	<p class="empty" v-else>%i18n:@nothing%</p>
 </div>
 </template>
 

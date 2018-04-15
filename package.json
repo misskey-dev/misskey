@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "0.0.4771",
+	"version": "0.0.4876",
 	"codename": "nighthike",
 	"license": "MIT",
 	"description": "A miniblog-based SNS",
@@ -10,7 +10,7 @@
 	"main": "./built/index.js",
 	"private": true,
 	"scripts": {
-		"config": "node ./tools/init.js",
+		"config": "node ./cli/init.js",
 		"start": "node ./built",
 		"debug": "DEBUG=misskey:* node ./built",
 		"swagger": "node ./swagger.js",
@@ -140,6 +140,7 @@
 		"koa-bodyparser": "4.2.0",
 		"koa-compress": "^2.0.0",
 		"koa-favicon": "2.0.1",
+		"koa-json-body": "^5.3.0",
 		"koa-mount": "3.0.0",
 		"koa-multer": "1.0.2",
 		"koa-router": "7.4.0",

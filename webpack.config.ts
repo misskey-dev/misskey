@@ -42,7 +42,7 @@ const langs = Object.keys(locales);
 
 const entries = process.env.NODE_ENV == 'production'
 	? langs.map(l => [l, false]).concat(langs.map(l => [l, true]))
-	: [['ja', false]];
+	: langs.map(l => [l, false]);
 
 module.exports = entries.map(x => {
 	const [lang, isProduction] = x;
@@ -143,7 +143,9 @@ module.exports = entries.map(x => {
 					loader: 'replace',
 					query: {
 						search: i18nReplacer.pattern.toString(),
-						replace: 'i18nReplacement'
+						replace: 'i18nReplacement',
+						i18n: true,
+						lang
 					}
 				}, {
 					loader: 'replace',
@@ -214,7 +216,9 @@ module.exports = entries.map(x => {
 					loader: 'replace',
 					query: {
 						search: i18nReplacer.pattern.toString(),
-						replace: 'i18nReplacement'
+						replace: 'i18nReplacement',
+						i18n: true,
+						lang
 					}
 				}, {
 					loader: 'replace',

@@ -441,10 +441,11 @@ export default class MiOS extends EventEmitter {
 			document.body.appendChild(spinner);
 		}
 
-		// Append a credential
-		if (this.isSignedIn) (data as any).i = this.i.token;
+		const onFinally = () => {
+			if (--pending === 0) spinner.parentNode.removeChild(spinner);
+		};
 
-		return new Promise((resolve, reject) => {
+		const promise = new Promise((resolve, reject) => {
 			const viaStream = this.stream.hasConnection &&
 				(localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true);
 
@@ -453,9 +454,9 @@ export default class MiOS extends EventEmitter {
 				const id = Math.random().toString();
 
 				stream.once(`api-res:${id}`, res => {
-					if (--pending === 0) spinner.parentNode.removeChild(spinner);
-
-					if (res.res) {
+					if (res == null || Object.keys(res).length == 0) {
+						resolve(null);
+					} else if (res.res) {
 						resolve(res.res);
 					} else {
 						reject(res.e);
@@ -469,6 +470,9 @@ export default class MiOS extends EventEmitter {
 					data
 				});
 			} else {
+				// Append a credential
+				if (this.isSignedIn) (data as any).i = this.i.token;
+
 				const req = {
 					id: uuid(),
 					date: new Date(),
@@ -489,8 +493,6 @@ export default class MiOS extends EventEmitter {
 					credentials: endpoint === 'signin' ? 'include' : 'omit',
 					cache: 'no-cache'
 				}).then(async (res) => {
-					if (--pending === 0) spinner.parentNode.removeChild(spinner);
-
 					const body = res.status === 204 ? null : await res.json();
 
 					if (this.debug) {
@@ -508,6 +510,10 @@ export default class MiOS extends EventEmitter {
 				}).catch(reject);
 			}
 		});
+
+		promise.then(onFinally, onFinally);
+
+		return promise;
 	}
 
 	/**

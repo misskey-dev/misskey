@@ -13,13 +13,13 @@
 			<path class="wave d" d="M29.18,1.06c-0.479-0.502-1.273-0.522-1.775-0.044c-0.016,0.015-0.029,0.029-0.045,0.044c-0.5,0.52-0.5,1.36,0,1.88 c1.361,1.4,2.041,3.24,2.041,5.08s-0.68,3.66-2.041,5.08c-0.5,0.52-0.5,1.36,0,1.88c0.509,0.508,1.332,0.508,1.841,0 c1.86-1.92,2.8-4.44,2.8-6.96C31.99,5.424,30.98,2.931,29.18,1.06z"></path>
 		</svg>
 	</div>
-	<p class="fetching" v-if="fetching">%i18n:desktop.tags.mk-broadcast-home-widget.fetching%<mk-ellipsis/></p>
-	<h1 v-if="!fetching">{{ broadcasts.length == 0 ? '%i18n:desktop.tags.mk-broadcast-home-widget.no-broadcasts%' : broadcasts[i].title }}</h1>
+	<p class="fetching" v-if="fetching">%i18n:@fetching%<mk-ellipsis/></p>
+	<h1 v-if="!fetching">{{ broadcasts.length == 0 ? '%i18n:@no-broadcasts%' : broadcasts[i].title }}</h1>
 	<p v-if="!fetching">
 		<span v-if="broadcasts.length != 0" v-html="broadcasts[i].text"></span>
-		<template v-if="broadcasts.length == 0">%i18n:desktop.tags.mk-broadcast-home-widget.have-a-nice-day%</template>
+		<template v-if="broadcasts.length == 0">%i18n:@have-a-nice-day%</template>
 	</p>
-	<a v-if="broadcasts.length > 1" @click="next">%i18n:desktop.tags.mk-broadcast-home-widget.next% &gt;&gt;</a>
+	<a v-if="broadcasts.length > 1" @click="next">%i18n:@next% &gt;&gt;</a>
 </div>
 </template>
 

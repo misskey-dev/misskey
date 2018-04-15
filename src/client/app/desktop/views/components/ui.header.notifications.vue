@@ -1,6 +1,6 @@
 <template>
 <div class="notifications">
-	<button :data-active="isOpen" @click="toggle" title="%i18n:desktop.tags.mk-ui-header-notifications.title%">
+	<button :data-active="isOpen" @click="toggle" title="%i18n:@title%">
 		%fa:R bell%<template v-if="hasUnreadNotifications">%fa:circle%</template>
 	</button>
 	<div class="pop" v-if="isOpen">

@@ -1,5 +1,5 @@
 common:
-  misskey: "Misskeyに何でも投稿して皆と共有しましょう。"
+  misskey: "Misskeyで皆と共有しよう。"
 
   time:
     unknown: "なぞのじかん"
@@ -33,155 +33,584 @@ common:
     confused: "こまこまのこまり"
     pudding: "Pudding"
 
-  note_categories:
-    music: "音楽"
-    game: "ゲーム"
-    anime: "アニメ"
-    it: "IT"
-    gadgets: "ガジェット"
-    photography: "写真"
-
-  input-message-here: "ここにメッセージを入力"
-  send: "送信"
   delete: "削除"
   loading: "読み込み中"
   ok: "わかった"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
 
-  tags:
-    mk-nav-links:
-      about: "Misskeyについて"
-      stats: "統計"
-      status: "ステータス"
-      wiki: "Wiki"
-      donors: "ドナー"
-      repository: "リポジトリ"
-      develop: "開発者"
+common/views/components/connect-failed.vue:
+  title: "サーバーに接続できません"
+  description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
+  thanks: "いつもMisskeyをご利用いただきありがとうございます。"
+  troubleshoot: "トラブルシュート"
 
-    mk-messaging-form:
-      attach-from-local: "PCからファイルを添付する"
-      attach-from-drive: "ドライブからファイルを添付する"
+common/views/components/connect-failed.troubleshooter.vue:
+  title: "トラブルシューティング"
+  network: "ネットワーク接続"
+  checking-network: "ネットワーク接続を確認中"
+  internet: "インターネット接続"
+  checking-internet: "インターネット接続を確認中"
+  server: "サーバー接続"
+  checking-server: "サーバー接続を確認中"
+  finding: "問題を調べています"
+  no-network: "ネットワークに接続されていません"
+  no-network-desc: "お使いのPCのネットワーク接続が正常か確認してください。"
+  no-internet: "インターネットに接続されていません"
+  no-internet-desc: "ネットワークには接続されていますが、インターネットには接続されていないようです。お使いのPCのインターネット接続が正常か確認してください。"
+  no-server: "Misskeyのサーバーに接続できません"
+  no-server-desc: "お使いのPCのインターネット接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
+  success: "Misskeyのサーバーに接続できました"
+  success-desc: "正常に接続できるようです。ページを再度読み込みしてください。"
 
-    mk-messaging:
-      search-user: "ユーザーを探す"
-      you: "あなた"
-      no-history: "履歴はありません"
+common/views/components/messaging.vue:
+  search-user: "ユーザーを探す"
+  you: "あなた"
+  no-history: "履歴はありません"
 
-    mk-messaging-message:
-      is-read: "既読"
-      deleted: "このメッセージは削除されました"
+common/views/components/messaging-room.vue:
+  empty: "このユーザーと話したことはありません"
+  more: "もっと読む"
+  no-history: "これより過去の履歴はありません"
+  resize-form: "ドラッグしてフォームの広さを調整"
+  new-message: "新しいメッセージがあります"
 
-    mk-messaging-room:
-      empty: "このユーザーと話したことはありません"
-      more: "もっと読む"
-      no-history: "これより過去の履歴はありません"
-      resize-form: "ドラッグしてフォームの広さを調整"
-      new-message: "新しいメッセージがあります"
+common/views/components/messaging-room.form.vue:
+  input-message-here: "ここにメッセージを入力"
+  send: "送信"
+  attach-from-local: "PCからファイルを添付する"
+  attach-from-drive: "ドライブからファイルを添付する"
 
-    mk-authorized-apps:
-      no-apps: "連携しているアプリケーションはありません"
+common/views/components/messaging-room.message.vue:
+  is-read: "既読"
+  deleted: "このメッセージは削除されました"
 
-    mk-error:
-      title: "サーバーに接続できません"
-      description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
-      thanks: "いつもMisskeyをご利用いただきありがとうございます。"
-      troubleshoot: "トラブルシュート"
+common/views/components/nav.vue:
+  about: "Misskeyについて"
+  stats: "統計"
+  status: "ステータス"
+  wiki: "Wiki"
+  donors: "ドナー"
+  repository: "リポジトリ"
+  develop: "開発者"
 
-      troubleshooter:
-        title: "トラブルシューティング"
-        network: "ネットワーク接続"
-        checking-network: "ネットワーク接続を確認中"
-        internet: "インターネット接続"
-        checking-internet: "インターネット接続を確認中"
-        server: "サーバー接続"
-        checking-server: "サーバー接続を確認中"
-        finding: "問題を調べています"
-        no-network: "ネットワークに接続されていません"
-        no-network-desc: "お使いのPCのネットワーク接続が正常か確認してください。"
-        no-internet: "インターネットに接続されていません"
-        no-internet-desc: "ネットワークには接続されていますが、インターネットには接続されていないようです。お使いのPCのインターネット接続が正常か確認してください。"
-        no-server: "Misskeyのサーバーに接続できません"
-        no-server-desc: "お使いのPCのインターネット接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
-        success: "Misskeyのサーバーに接続できました"
-        success-desc: "正常に接続できるようです。ページを再度読み込みしてください。"
+common/views/components/note-menu.vue:
+  pin: "ピン留め"
 
-    mk-forkit:
-      open-github-link: "View source on Github"
+common/views/components/poll.vue:
+  vote-to: "「{}」に投票する"
+  vote-count: "{}票"
+  total-users: "{}人が投票"
+  vote: "投票する"
+  show-result: "結果を見る"
+  voted: "投票済み"
 
-    mk-poll-editor:
-      no-only-one-choice: "投票には、選択肢が最低2つ必要です"
-      choice-n: "選択肢{}"
-      remove: "この選択肢を削除"
-      add: "+選択肢を追加"
-      destroy: "投票を破棄"
+common/views/components/poll-editor.vue:
+  no-only-one-choice: "投票には、選択肢が最低2つ必要です"
+  choice-n: "選択肢{}"
+  remove: "この選択肢を削除"
+  add: "+選択肢を追加"
+  destroy: "投票を破棄"
 
-    mk-poll:
-      vote-to: "「{}」に投票する"
-      vote-count: "{}票"
-      total-users: "{}人が投票"
-      vote: "投票する"
-      show-result: "結果を見る"
-      voted: "投票済み"
+common/views/components/reaction-picker.vue:
+  choose-reaction: "リアクションを選択"
 
-    mk-note-menu:
-      pin: "ピン留め"
-      pinned: "ピン留めしました"
-      select: "カテゴリを選択"
-      categorize: "決定"
-      categorized: "カテゴリを報告しました。これによりMisskeyが賢くなり、投稿の自動カテゴライズに役立てられます。ご協力ありがとうございました。"
+common/views/components/signin.vue:
+  username: "ユーザー名"
+  password: "パスワード"
+  token: "トークン"
+  signing-in: "やってます..."
+  signin: "サインイン"
 
-    mk-reaction-picker:
-      choose-reaction: "リアクションを選択"
+common/views/components/signup.vue:
+  username: "ユーザー名"
+  checking: "確認しています..."
+  available: "利用できます"
+  unavailable: "既に利用されています"
+  error: "通信エラー"
+  invalid-format: "a~z、A~Z、0~9、_が使えます"
+  too-short: "1文字以上でお願いします！"
+  too-long: "20文字以内でお願いします"
+  password: "パスワード"
+  password-placeholder: "8文字以上を推奨します"
+  weak-password: "弱いパスワード"
+  normal-password: "まあまあのパスワード"
+  strong-password: "強いパスワード"
+  retype: "再入力"
+  retype-placeholder: "確認のため再入力してください"
+  password-matched: "確認されました"
+  password-not-matched: "一致していません"
+  recaptcha: "認証"
+  create: "アカウント作成"
+  some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
 
-    mk-signin:
-      username: "ユーザー名"
-      password: "パスワード"
-      token: "トークン"
-      signing-in: "やってます..."
-      signin: "サインイン"
+common/views/components/special-message.vue:
+  new-year: "Happy New Year!"
+  christmas: "Merry Christmas!"
 
-    mk-signup:
-      username: "ユーザー名"
-      checking: "確認しています..."
-      available: "利用できます"
-      unavailable: "既に利用されています"
-      error: "通信エラー"
-      invalid-format: "a~z、A~Z、0~9、_が使えます"
-      too-short: "1文字以上でお願いします！"
-      too-long: "20文字以内でお願いします"
-      password: "パスワード"
-      password-placeholder: "8文字以上を推奨します"
-      weak-password: "弱いパスワード"
-      normal-password: "まあまあのパスワード"
-      strong-password: "強いパスワード"
-      retype: "再入力"
-      retype-placeholder: "確認のため再入力してください"
-      password-matched: "確認されました"
-      password-not-matched: "一致していません"
-      recaptcha: "認証"
-      create: "アカウント作成"
-      some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
+common/views/components/stream-indicator.vue:
+  connecting: "接続中"
+  reconnecting: "再接続中"
+  connected: "接続完了"
 
-    mk-special-message:
-      new-year: "Happy New Year!"
-      christmas: "Merry Christmas!"
+common/views/components/twitter-setting.vue:
+  description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
+  connected-to: "次のTwitterアカウントに接続されています"
+  detail: "詳細..."
+  reconnect: "再接続する"
+  connect: "Twitterと接続する"
+  disconnect: "切断する"
 
-    mk-stream-indicator:
-      connecting: "接続中"
-      reconnecting: "再接続中"
-      connected: "接続完了"
+common/views/components/uploader.vue:
+  waiting: "待機中"
 
-    mk-twitter-setting:
-      description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-      connected-to: "次のTwitterアカウントに接続されています"
-      detail: "詳細..."
-      reconnect: "再接続する"
-      connect: "Twitterと接続する"
-      disconnect: "切断する"
+common/views/widgets/broadcast.vue:
+  fetching: "確認中"
+  no-broadcasts: "お知らせはありません"
+  have-a-nice-day: "良い一日を！"
+  next: "次"
 
-    mk-uploader:
-      waiting: "待機中"
+common/views/widgets/donation.vue:
+  title: "寄付のお願い"
+  text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
+
+common/views/widgets/photo-stream.vue:
+  title: "フォトストリーム"
+  no-photos: "写真はありません"
+
+common/views/widgets/server.vue:
+  title: "サーバー情報"
+  toggle: "表示を切り替え"
+
+desktop/views/components/activity.vue:
+  title: "アクティビティ"
+  toggle: "表示を切り替え"
+
+desktop/views/components/calendar.vue:
+  title: "{1}年 {2}月"
+  prev: "前の月"
+  next: "次の月"
+  go: "クリックして時間遡行"
+
+desktop/views/components/drive-window.vue:
+  used: "使用中"
+  drive: "ドライブ"
+
+desktop/views/components/drive.file.vue:
+  avatar: "アイコン"
+  banner: "バナー"
+  contextmenu:
+    rename: "名前を変更"
+    copy-url: "URLをコピー"
+    download: "ダウンロード"
+    else-files: "その他..."
+    set-as-avatar: "アイコンに設定"
+    set-as-banner: "バナーに設定"
+    open-in-app: "アプリで開く"
+    add-app: "アプリを追加"
+    rename-file: "ファイル名の変更"
+    input-new-file-name: "新しいファイル名を入力してください"
+    copied: "コピー完了"
+    copied-url-to-clipboard: "URLをクリップボードにコピーしました"
+
+desktop/views/components/drive.folder.vue:
+  unable-to-process: "操作を完了できません"
+  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unhandled-error: "不明なエラー"
+  contextmenu:
+    move-to-this-folder: "このフォルダへ移動"
+    show-in-new-window: "新しいウィンドウで表示"
+    rename: "名前を変更"
+    rename-folder: "フォルダ名の変更"
+    input-new-folder-name: "新しいフォルダ名を入力してください"
+
+desktop/views/components/drive.nav-folder.vue:
+  drive: "ドライブ"
+
+desktop/views/components/drive.vue:
+  search: "検索"
+  load-more: "もっと読み込む"
+  empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
+  empty-drive: "ドライブには何もありません。"
+  empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
+  empty-folder: "このフォルダーは空です"
+  unable-to-process: "操作を完了できません"
+  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unhandled-error: "不明なエラー"
+  url-upload: "URLアップロード"
+  url-of-file: "アップロードしたいファイルのURL"
+  url-upload-requested: "アップロードをリクエストしました"
+  may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
+  create-folder: "フォルダー作成"
+  folder-name: "フォルダー名"
+  contextmenu:
+    create-folder: "フォルダーを作成"
+    upload: "ファイルをアップロード"
+    url-upload: "URLからアップロード"
+
+desktop/views/components/messaging-window.vue:
+  title: "メッセージ"
+
+desktop/views/components/notes.note.vue:
+  reposted-by: "{}がRenote"
+  reply: "返信"
+  renote: "Renote"
+  add-reaction: "リアクション"
+  detail: "詳細"
+
+desktop/views/components/notifications.vue:
+  more: "もっと見る"
+  empty: "ありません！"
+
+desktop/views/components/post-form.vue:
+  note-placeholder: "いまどうしてる？"
+  reply-placeholder: "この投稿への返信..."
+  quote-placeholder: "この投稿を引用..."
+  note: "投稿"
+  reply: "返信"
+  renote: "Renote"
+  posted: "投稿しました！"
+  replied: "返信しました！"
+  reposted: "Renoteしました！"
+  note-failed: "投稿に失敗しました"
+  reply-failed: "返信に失敗しました"
+  renote-failed: "Renoteに失敗しました"
+  posting: "投稿中"
+  attach-media-from-local: "PCからメディアを添付"
+  attach-media-from-drive: "ドライブからメディアを添付"
+  attach-cancel: "添付取り消し"
+  insert-a-kao: "v(‘ω’)v"
+  create-poll: "投票を作成"
+  text-remain: "残り{}文字"
+
+desktop/views/components/post-form-window.vue:
+  note: "新規投稿"
+  reply: "返信"
+  attaches: "添付: {}メディア"
+  uploading-media: "{}個のメディアをアップロード中"
+
+desktop/views/components/renote-form.vue:
+  quote: "引用する..."
+  cancel: "キャンセル"
+  renote: "Renote"
+  reposting: "しています..."
+  success: "Renoteしました！"
+  failure: "Renoteに失敗しました"
+
+desktop/views/components/renote-form-window.vue:
+  title: "この投稿をRenoteしますか？"
+
+desktop/views/components/settings.vue:
+  profile: "プロフィール"
+  notification: "通知"
+  apps: "アプリ"
+  mute: "ミュート"
+  drive: "ドライブ"
+  security: "セキュリティ"
+  password: "パスワード"
+  2fa: "二段階認証"
+  other: "その他"
+  license: "ライセンス"
+
+desktop/views/components/settings.2fa.vue:
+  intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
+  detail: "詳細..."
+  url: "https://www.google.co.jp/intl/ja/landing/2step/"
+  caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
+  register: "デバイスを登録する"
+  already-registered: "既に設定は完了しています。"
+  unregister: "設定を解除"
+  unregistered: "二段階認証が無効になりました。"
+  enter-password: "パスワードを入力してください"
+  authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
+  howtoinstall: "インストール方法はこちら"
+  scan: "次に、表示されているQRコードをスキャンします:"
+  done: "お使いのデバイスに表示されているトークンを入力して完了します:"
+  submit: "完了"
+  success: "設定が完了しました！"
+  failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
+  info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+
+desktop/views/components/settings.api.vue:
+  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
+  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  regenerate-token: "トークンを再生成"
+  enter-password: "パスワードを入力してください"
+
+desktop/views/components/settings.app.vue:
+  no-apps: "連携しているアプリケーションはありません"
+
+desktop/views/components/settings.mute.vue:
+  no-users: "ミュートしているユーザーはいません"
+
+desktop/views/components/settings.password.vue:
+  reset: "パスワードを変更する"
+  enter-current-password: "現在のパスワードを入力してください"
+  enter-new-password: "新しいパスワードを入力してください"
+  enter-new-password-again: "もう一度新しいパスワードを入力してください"
+  not-match: "新しいパスワードが一致しません"
+  changed: "パスワードを変更しました"
+
+desktop/views/components/settings.profile.vue:
+  avatar: "アイコン"
+  choice-avatar: "画像を選択"
+  name: "名前"
+  location: "場所"
+  description: "自己紹介"
+  birthday: "誕生日"
+  save: "保存"
+
+desktop/views/components/ui.header.account.vue:
+  profile: "プロフィール"
+  drive: "ドライブ"
+  mentions: "あなた宛て"
+  customize: "カスタマイズ"
+  settings: "設定"
+  signout: "サインアウト"
+
+desktop/views/components/ui.header.nav.vue:
+  home: "ホーム"
+  messaging: "メッセージ"
+  game: "ゲーム"
+
+desktop/views/components/ui.header.notifications.vue:
+  title: "通知"
+
+desktop/views/components/ui.header.post.vue:
+  post: "新規投稿"
+
+desktop/views/components/ui.header.search.vue:
+  placeholder: "検索"
+
+desktop/views/pages/note.vue:
+  prev: "前の投稿"
+  next: "次の投稿"
+
+desktop/views/pages/selectdrive.vue:
+  title: "ファイルを選択してください"
+  ok: "決定"
+  cancel: "キャンセル"
+  upload: "PCからドライブにファイルをアップロード"
+
+desktop/views/pages/user/user.followers-you-know.vue:
+  title: "知り合いのフォロワー"
+  loading: "読み込み中"
+  no-users: "知り合いのフォロワーはいません"
+
+desktop/views/pages/user/user.friends.vue:
+  title: "よく話すユーザー"
+  loading: "読み込み中"
+  no-users: "よく話すユーザーはいません"
+
+desktop/views/pages/user/user.home.vue:
+  last-used-at: "最終アクセス"
+
+desktop/views/pages/user/user.photos.vue:
+  title: "フォト"
+  loading: "読み込み中"
+  no-photos: "写真はありません"
+
+desktop/views/pages/user/user.profile.vue:
+  follows-you: "フォローされています"
+  mute: "ミュートする"
+  muted: "ミュートしています"
+  unmute: "ミュート解除"
+
+desktop/views/widgets/messaging.vue:
+  title: "メッセージ"
+
+desktop/views/widgets/notifications.vue:
+  title: "通知"
+  settings: "通知の設定"
+
+desktop/views/widgets/polls.vue:
+  title: "投票"
+  refresh: "他を見る"
+  nothing: "ありません！"
+
+desktop/views/widgets/post-form.vue:
+  title: "投稿"
+  note: "投稿"
+  placeholder: "いまどうしてる？"
+
+desktop/views/widgets/trends.vue:
+  title: "トレンド"
+  refresh: "他を見る"
+  nothing: "ありません！"
+
+desktop/views/widgets/users.vue:
+  title: "おすすめユーザー"
+  refresh: "他を見る"
+  no-one: "いません！"
+
+desktop/views/widgets/channel.vue:
+  title: "チャンネル"
+  settings: "ウィジェットの設定"
+  get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
+
+mobile/views/components/drive.vue:
+  drive: "ドライブ"
+  used: "使用中"
+  folder-count: "フォルダ"
+  count-separator: "、"
+  file-count: "ファイル"
+  load-more: "もっと読み込む"
+  nothing-in-drive: "ドライブには何もありません"
+  folder-is-empty: "このフォルダは空です"
+
+mobile/views/components/drive-file-chooser.vue:
+  select-file: "ファイルを選択"
+
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: "フォルダーを選択"
+
+mobile/views/components/drive.file-detail.vue:
+  download: "ダウンロード"
+  rename: "名前を変更"
+  move: "移動"
+  hash: "ハッシュ (md5)"
+  exif: "EXIF"
+
+mobile/views/components/follow-button.vue:
+  follow: "フォロー"
+  unfollow: "フォロー解除"
+
+mobile/views/components/note.vue:
+  reposted-by: "{}がRenote"
+
+mobile/views/components/note-detail.vue:
+  reply: "返信"
+  reaction: "リアクション"
+
+mobile/views/components/notifications.vue:
+  more: "もっと見る"
+  empty: "ありません！"
+
+mobile/views/components/post-form.vue:
+  submit: "投稿"
+  reply-placeholder: "この投稿への返信..."
+  note-placeholder: "いまどうしてる？"
+
+mobile/views/components/sub-note-content.vue:
+  media-count: "{}個のメディア"
+  poll: "投票"
+
+mobile/views/components/timeline.vue:
+  empty: "投稿がありません"
+  load-more: "もっと"
+
+mobile/views/components/ui.nav.vue:
+  home: "ホーム"
+  notifications: "通知"
+  messaging: "メッセージ"
+  search: "検索"
+  drive: "ドライブ"
+  settings: "設定"
+  about: "Misskeyについて"
+
+mobile/views/components/user-timeline.vue:
+  no-notes: "このユーザーは投稿していないようです。"
+  no-notes-with-media: "メディア付き投稿はありません。"
+  load-more: "もっと"
+
+mobile/views/components/users-list.vue:
+  all: "すべて"
+  known: "知り合い"
+  load-more: "もっと"
+
+mobile/views/pages/drive.vue:
+  drive: "ドライブ"
+
+mobile/views/pages/followers.vue:
+  followers-of: "{}のフォロワー"
+
+mobile/views/pages/following.vue:
+  following-of: "{}のフォロー"
+
+mobile/views/pages/home.vue:
+  timeline: "タイムライン"
+
+mobile/views/pages/messaging.vue:
+  messaging: "メッセージ"
+
+mobile/views/pages/messaging-room.vue:
+  messaging: "メッセージ"
+
+mobile/views/pages/note.vue:
+  title: "投稿"
+  prev: "前の投稿"
+  next: "次の投稿"
+
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
+  read-all: "すべての通知を既読にしますか？"
+
+mobile/views/pages/profile-setting.vue:
+  title: "プロフィール設定"
+  will-be-published: "これらのプロフィールは公開されます。"
+  name: "名前"
+  location: "場所"
+  description: "自己紹介"
+  birthday: "誕生日"
+  avatar: "アイコン"
+  banner: "バナー"
+  avatar-saved: "アイコンを保存しました"
+  banner-saved: "バナーを保存しました"
+  set-avatar: "アイコンを選択する"
+  set-banner: "バナーを選択する"
+  save: "保存"
+  saved: "プロフィールを保存しました"
+
+mobile/views/pages/search.vue:
+  search: "検索"
+  empty: "「{}」に関する投稿は見つかりませんでした。"
+
+mobile/views/pages/selectdrive.vue:
+  select-file: "ファイルを選択"
+
+mobile/views/pages/settings.vue:
+  signed-in-as: "{}としてサインイン中"
+  profile: "プロフィール"
+  twitter: "Twitter連携"
+  signin-history: "サインイン履歴"
+  settings: "設定"
+  signout: "サインアウト"
+
+mobile/views/pages/user.vue:
+  follows-you: "フォローされています"
+  following: "フォロー"
+  followers: "フォロワー"
+  notes: "投稿"
+  overview: "概要"
+  timeline: "タイムライン"
+  media: "メディア"
+
+mobile/views/pages/user/home.vue:
+  recent-notes: "最近の投稿"
+  images: "画像"
+  activity: "アクティビティ"
+  keywords: "キーワード"
+  domains: "頻出ドメイン"
+  frequently-replied-users: "よく会話するユーザー"
+  followers-you-know: "知り合いのフォロワー"
+  last-used-at: "最終ログイン"
+
+mobile/views/pages/user/home.followers-you-know.vue:
+  loading: "読み込み中"
+  no-users: "知り合いのユーザーはいません"
+
+mobile/views/pages/user/home.friends.vue:
+  loading: "読み込み中"
+  no-users: "よく会話するユーザーはいません"
+
+mobile/views/pages/user/home.notes.vue:
+  loading: "読み込み中"
+  no-notes: "投稿はありません"
+
+mobile/views/pages/user/home.photos.vue:
+  loading: "読み込み中"
+  no-photos: "写真はありません"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
@@ -200,512 +629,3 @@ docs:
       description: "説明"
       yes: "はい"
       no: "いいえ"
-
-ch:
-  tags:
-    mk-index:
-      new: "チャンネルを作成"
-      channel-title: "チャンネルのタイトル"
-
-    mk-channel-form:
-      textarea: "書いて"
-      upload: "アップロード"
-      drive: "ドライブ"
-      note: "やる"
-      posting: "やってます"
-
-desktop:
-  tags:
-    mk-api-info:
-      intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-      caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-      regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
-      regenerate-token: "トークンを再生成"
-      enter-password: "パスワードを入力してください"
-
-    mk-drive-browser-base-contextmenu:
-      create-folder: "フォルダーを作成"
-      upload: "ファイルをアップロード"
-      url-upload: "URLからアップロード"
-
-    mk-drive-browser-window:
-      used: "使用中"
-      drive: "ドライブ"
-
-    mk-drive-browser:
-      search: "検索"
-      load-more: "もっと読み込む"
-      empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
-      empty-drive: "ドライブには何もありません。"
-      empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
-      empty-folder: "このフォルダーは空です"
-      unable-to-process: "操作を完了できません"
-      circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      unhandled-error: "不明なエラー"
-      url-upload: "URLアップロード"
-      url-of-file: "アップロードしたいファイルのURL"
-      url-upload-requested: "アップロードをリクエストしました"
-      may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
-      create-folder: "フォルダー作成"
-      folder-name: "フォルダー名"
-
-    mk-drive-browser-file-contextmenu:
-      rename: "名前を変更"
-      copy-url: "URLをコピー"
-      download: "ダウンロード"
-      else-files: "その他..."
-      set-as-avatar: "アバターに設定"
-      set-as-banner: "バナーに設定"
-      open-in-app: "アプリで開く"
-      add-app: "アプリを追加"
-      rename-file: "ファイル名の変更"
-      input-new-file-name: "新しいファイル名を入力してください"
-      copied: "コピー完了"
-      copied-url-to-clipboard: "URLをクリップボードにコピーしました"
-
-    mk-drive-browser-file:
-      avatar: "アバター"
-      banner: "バナー"
-
-    mk-drive-browser-folder-contextmenu:
-      move-to-this-folder: "このフォルダへ移動"
-      show-in-new-window: "新しいウィンドウで表示"
-      rename: "名前を変更"
-      rename-folder: "フォルダ名の変更"
-      input-new-folder-name: "新しいフォルダ名を入力してください"
-
-    mk-drive-browser-folder:
-      unable-to-process: "操作を完了できません"
-      circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
-      unhandled-error: "不明なエラー"
-
-    mk-drive-browser-nav-folder:
-      drive: "ドライブ"
-
-    mk-selectdrive-page:
-      title: "ファイルを選択してください"
-      ok: "決定"
-      cancel: "キャンセル"
-      upload: "PCからドライブにファイルをアップロード"
-
-    mk-ui-header-nav:
-      home: "ホーム"
-      messaging: "メッセージ"
-      ch: "チャンネル"
-      info: "お知らせ"
-
-    mk-ui-header-search:
-      placeholder: "検索"
-
-    mk-ui-header-account:
-      profile: "プロフィール"
-      drive: "ドライブ"
-      mentions: "あなた宛て"
-      settings: "設定"
-      signout: "サインアウト"
-
-    mk-ui-header-note-button:
-      note: "新規投稿"
-
-    mk-ui-header-notifications:
-      title: "通知"
-
-    mk-profile-setting:
-      avatar: "アバター"
-      choice-avatar: "画像を選択"
-      name: "名前"
-      location: "場所"
-      description: "自己紹介"
-      birthday: "誕生日"
-      save: "保存"
-
-    mk-password-setting:
-      reset: "パスワードを変更する"
-      enter-current-password: "現在のパスワードを入力してください"
-      enter-new-password: "新しいパスワードを入力してください"
-      enter-new-password-again: "もう一度新しいパスワードを入力してください"
-      not-match: "新しいパスワードが一致しません"
-      changed: "パスワードを変更しました"
-
-    mk-2fa-setting:
-      intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
-      detail: "詳細..."
-      url: "https://www.google.co.jp/intl/ja/landing/2step/"
-      caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
-      register: "デバイスを登録する"
-      already-registered: "既に設定は完了しています。"
-      unregister: "設定を解除"
-      unregistered: "二段階認証が無効になりました。"
-      enter-password: "パスワードを入力してください"
-      authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
-      howtoinstall: "インストール方法はこちら"
-      scan: "次に、表示されているQRコードをスキャンします:"
-      done: "お使いのデバイスに表示されているトークンを入力して完了します:"
-      submit: "完了"
-      success: "設定が完了しました！"
-      failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
-      info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
-
-    mk-mute-setting:
-      no-users: "ミュートしているユーザーはいません"
-
-    mk-post-form:
-      note-placeholder: "いまどうしてる？"
-      reply-placeholder: "この投稿への返信..."
-      quote-placeholder: "この投稿を引用..."
-      note: "投稿"
-      reply: "返信"
-      renote: "Renote"
-      posted: "投稿しました！"
-      replied: "返信しました！"
-      reposted: "Renoteしました！"
-      note-failed: "投稿に失敗しました"
-      reply-failed: "返信に失敗しました"
-      renote-failed: "Renoteに失敗しました"
-      posting: "投稿中"
-      attach-media-from-local: "PCからメディアを添付"
-      attach-media-from-drive: "ドライブからメディアを添付"
-      attach-cancel: "添付取り消し"
-      insert-a-kao: "v(‘ω’)v"
-      create-poll: "投票を作成"
-      text-remain: "のこり{}文字"
-
-    mk-post-form-window:
-      note: "新規投稿"
-      reply: "返信"
-      attaches: "添付: {}メディア"
-      uploading-media: "{}個のメディアをアップロード中"
-
-    mk-note-page:
-      prev: "前の投稿"
-      next: "次の投稿"
-
-    mk-settings:
-      profile: "プロフィール"
-      mute: "ミュート"
-      drive: "ドライブ"
-      security: "セキュリティ"
-      password: "パスワード"
-      2fa: "二段階認証"
-      other: "その他"
-      license: "ライセンス"
-
-    mk-timeline-note:
-      reposted-by: "{}がRenote"
-      reply: "返信"
-      renote: "Renote"
-      add-reaction: "リアクション"
-      detail: "詳細"
-
-    mk-notifications:
-      more: "もっと見る"
-
-    mk-notifications-home-widget:
-      title: "通知"
-      settings: "通知の設定"
-
-    mk-server-home-widget:
-      title: "サーバー情報"
-      toggle: "表示を切り替え"
-
-    mk-activity-widget:
-      title: "アクティビティ"
-      toggle: "表示を切り替え"
-
-    mk-user-recommendation-home-widget:
-      title: "おすすめユーザー"
-      refresh: "他を見る"
-      no-one: "いません！"
-
-    mk-recommended-polls-home-widget:
-      title: "投票"
-      refresh: "他を見る"
-      nothing: "ありません！"
-
-    mk-trends-home-widget:
-      title: "トレンド"
-      refresh: "他を見る"
-      nothing: "ありません！"
-
-    mk-photo-stream-home-widget:
-      title: "フォトストリーム"
-      no-photos: "写真はありません"
-
-    mk-donation-home-widget:
-      title: "寄付のお願い"
-      text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
-
-    mk-channel-home-widget:
-      title: "チャンネル"
-      settings: "ウィジェットの設定"
-      get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
-
-    mk-calendar-widget:
-      title: "{1}年 {2}月"
-      prev: "前の月"
-      next: "次の月"
-      go: "クリックして時間遡行"
-
-    mk-post-form-home-widget:
-      title: "投稿"
-      note: "投稿"
-      placeholder: "いまどうしてる？"
-
-    mk-access-log-home-widget:
-      title: "アクセスログ"
-
-    mk-messaging-home-widget:
-      title: "メッセージ"
-
-    mk-broadcast-home-widget:
-      fetching: "確認中"
-      no-broadcasts: "お知らせはありません"
-      have-a-nice-day: "良い一日を！"
-      next: "次"
-
-    mk-renote-form:
-      quote: "引用する..."
-      cancel: "キャンセル"
-      renote: "Renote"
-      reposting: "しています..."
-      success: "Renoteしました！"
-      failure: "Renoteに失敗しました"
-
-    mk-renote-form-window:
-      title: "この投稿をRenoteしますか？"
-
-    mk-user:
-      last-used-at: "最終アクセス"
-
-      follows-you: "フォローされています"
-      mute: "ミュートする"
-      muted: "ミュートしています"
-      unmute: "ミュート解除"
-
-      photos:
-        title: "フォト"
-        loading: "読み込み中"
-        no-photos: "写真はありません"
-
-      frequently-replied-users:
-        title: "よく話すユーザー"
-        loading: "読み込み中"
-        no-users: "よく話すユーザーはいません"
-
-      followers-you-know:
-        title: "知り合いのフォロワー"
-        loading: "読み込み中"
-        no-users: "知り合いのフォロワーはいません"
-
-mobile:
-  tags:
-    mk-selectdrive-page:
-      select-file: "ファイルを選択"
-
-    mk-drive-file-viewer:
-      download: "ダウンロード"
-      rename: "名前を変更"
-      move: "移動"
-      hash: "ハッシュ (md5)"
-      exif: "EXIF"
-
-    mk-entrance-signin:
-      signup: "新規登録"
-      about: "Misskeyについて"
-
-    mk-entrance-signup:
-      cancel: "キャンセル"
-
-    mk-authorized-apps-page:
-      application: "アプリケーション"
-
-    mk-signin-history-page:
-      signin-history: "ログイン履歴"
-
-    mk-twitter-setting-page:
-      twitter-integration: "Twitter連携"
-
-    mk-drive-page:
-      drive: "ドライブ"
-
-    mk-home:
-      home: "ホーム"
-
-    mk-messaging-room-page:
-      message: "メッセージ"
-
-    mk-messaging-page:
-      message: "メッセージ"
-
-    mk-notifications-page:
-      notifications: "通知"
-      read-all: "すべての通知を既読にしますか？"
-
-    mk-note-page:
-      title: "投稿"
-      prev: "前の投稿"
-      next: "次の投稿"
-
-    mk-search-page:
-      search: "検索"
-
-    mk-settings:
-      signed-in-as: "{}としてサインイン中"
-
-    mk-settings-page:
-      profile: "プロフィール"
-      applications: "アプリケーション"
-      twitter-integration: "Twitter連携"
-      signin-history: "サインイン履歴"
-      link: "Misskeyリンク"
-      settings: "設定"
-      signout: "サインアウト"
-
-    mk-profile-setting-page:
-      title: "プロフィール設定"
-
-    mk-profile-setting:
-      will-be-published: "これらのプロフィールは公開されます。"
-      name: "名前"
-      location: "場所"
-      description: "自己紹介"
-      birthday: "誕生日"
-      avatar: "アバター"
-      banner: "バナー"
-      avatar-saved: "アバターを保存しました"
-      banner-saved: "バナーを保存しました"
-      set-avatar: "アバターを選択する"
-      set-banner: "バナーを選択する"
-      save: "保存"
-      saved: "プロフィールを保存しました"
-
-    mk-user-followers-page:
-      followers-of: "{}のフォロワー"
-
-    mk-user-following-page:
-      following-of: "{}のフォロー"
-
-    mk-drive-folder-selector:
-      select-folder: "フォルダーを選択"
-
-    mk-drive-selector:
-      select-file: "ファイルを選択"
-
-    mk-drive:
-      drive: "ドライブ"
-      used: "使用中"
-      folder-count: "フォルダ"
-      count-separator: "、"
-      file-count: "ファイル"
-      load-more: "もっと読み込む"
-      nothing-in-drive: "ドライブには何もありません"
-      folder-is-empty: "このフォルダは空です"
-
-    mk-follow-button:
-      follow: "フォロー"
-      unfollow: "フォロー解除"
-
-    mk-home-timeline:
-      empty-timeline: "表示する投稿がありません。誰かしらをフォローするなどしましょう。"
-
-    mk-notifications:
-      more: "もっと見る"
-      empty: "ありません！"
-
-    mk-note-detail:
-      reply: "返信"
-      reaction: "リアクション"
-
-    mk-post-form:
-      submit: "投稿"
-      reply-placeholder: "この投稿への返信..."
-      note-placeholder: "いまどうしてる？"
-
-    mk-search-notes:
-      empty: "「{}」に関する投稿は見つかりませんでした。"
-
-    mk-sub-note-content:
-      media-count: "{}個のメディア"
-      poll: "投票"
-
-    mk-timeline-note:
-      reposted-by: "{}がRenote"
-
-    mk-timeline:
-      empty: "表示するものがありません"
-      load-more: "もっとみる"
-
-    mk-ui-nav:
-      home: "ホーム"
-      notifications: "通知"
-      messaging: "メッセージ"
-      ch: "チャンネル"
-      search: "検索"
-      drive: "ドライブ"
-      settings: "設定"
-      about: "Misskeyについて"
-
-    mk-user-followers:
-      no-users: "フォロワーはいないようです。"
-
-    mk-user-following:
-      no-users: "フォロー中のユーザーはいないようです。"
-
-    mk-user-timeline:
-      no-notes: "このユーザーはまだ投稿していないようです。"
-      no-notes-with-media: "メディア付き投稿はありません。"
-      load-more: "もっとみる"
-
-    mk-user:
-      follows-you: "フォローされています"
-      following: "フォロー"
-      followers: "フォロワー"
-      notes: "投稿"
-      overview: "概要"
-      timeline: "タイムライン"
-      media: "メディア"
-
-    mk-user-overview:
-      recent-notes: "最近の投稿"
-      images: "画像"
-      activity: "アクティビティ"
-      keywords: "キーワード"
-      domains: "頻出ドメイン"
-      frequently-replied-users: "よく会話するユーザー"
-      followers-you-know: "知り合いのフォロワー"
-      last-used-at: "最終ログイン"
-
-    mk-user-overview-notes:
-      loading: "読み込み中"
-      no-notes: "投稿はありません"
-
-    mk-user-overview-photos:
-      loading: "読み込み中"
-      no-photos: "写真はありません"
-
-    mk-user-overview-keywords:
-      no-keywords: "キーワードはありません(十分な数の投稿をしていない可能性があります)"
-
-    mk-user-overview-domains:
-      no-domains: "よく表れるドメインは検出されませんでした"
-
-    mk-user-overview-frequently-replied-users:
-      loading: "読み込み中"
-      no-users: "よく会話するユーザーはいません"
-
-    mk-user-overview-followers-you-know:
-      loading: "読み込み中"
-      no-users: "知り合いのユーザーはいません"
-
-    mk-users-list:
-      all: "すべて"
-      known: "知り合い"
-      load-more: "もっと"
-
-stats:
-  notes-count: "投稿の数"
-  users-count: "アカウントの数"
-
-status:
-  all-systems-maybe-operational: "すべてのシステムがたぶん正常に作動しています"
-  what-is-this-site: ""

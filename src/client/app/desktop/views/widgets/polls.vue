@@ -1,15 +1,15 @@
 <template>
 <div class="mkw-polls">
 	<template v-if="!props.compact">
-		<p class="title">%fa:chart-pie%%i18n:desktop.tags.mk-recommended-polls-home-widget.title%</p>
-		<button @click="fetch" title="%i18n:desktop.tags.mk-recommended-polls-home-widget.refresh%">%fa:sync%</button>
+		<p class="title">%fa:chart-pie%%i18n:@title%</p>
+		<button @click="fetch" title="%i18n:@refresh%">%fa:sync%</button>
 	</template>
 	<div class="poll" v-if="!fetching && poll != null">
 		<p v-if="poll.text"><router-link to="poll | notePage">{{ poll.text }}</router-link></p>
 		<p v-if="!poll.text"><router-link to="poll | notePage">%fa:link%</router-link></p>
 		<mk-poll :note="poll"/>
 	</div>
-	<p class="empty" v-if="!fetching && poll == null">%i18n:desktop.tags.mk-recommended-polls-home-widget.nothing%</p>
+	<p class="empty" v-if="!fetching && poll == null">%i18n:@nothing%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>

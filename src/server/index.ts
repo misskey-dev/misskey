@@ -53,6 +53,7 @@ function createServer() {
 		Object.keys(config.https).forEach(k => {
 			certs[k] = fs.readFileSync(config.https[k]);
 		});
+		certs['allowHTTP1'] = true;
 		return http2.createSecureServer(certs, app.callback());
 	} else {
 		return http.createServer(app.callback());
@@ -62,13 +63,9 @@ function createServer() {
 export default () => new Promise(resolve => {
 	const server = createServer();
 
-	/**
-	 * Steaming
-	 */
+	// Init stream server
 	require('./api/streaming')(server);
 
-	/**
-	 * Server listen
-	 */
+	// Listen
 	server.listen(config.port, resolve);
 });

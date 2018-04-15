@@ -1,10 +1,10 @@
 <template>
 <div class="mkw-channel">
 	<template v-if="!props.compact">
-		<p class="title">%fa:tv%{{ channel ? channel.title : '%i18n:desktop.tags.mk-channel-home-widget.title%' }}</p>
-		<button @click="settings" title="%i18n:desktop.tags.mk-channel-home-widget.settings%">%fa:cog%</button>
+		<p class="title">%fa:tv%{{ channel ? channel.title : '%i18n:@title%' }}</p>
+		<button @click="settings" title="%i18n:@settings%">%fa:cog%</button>
 	</template>
-	<p class="get-started" v-if="props.channel == null">%i18n:desktop.tags.mk-channel-home-widget.get-started%</p>
+	<p class="get-started" v-if="props.channel == null">%i18n:@get-started%</p>
 	<x-channel class="channel" :channel="channel" v-if="channel != null"/>
 </div>
 </template>

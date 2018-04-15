@@ -2,15 +2,15 @@
 <div class="mk-stream-indicator">
 	<p v-if=" stream.state == 'initializing' ">
 		%fa:spinner .pulse%
-		<span>%i18n:common.tags.mk-stream-indicator.connecting%<mk-ellipsis/></span>
+		<span>%i18n:@connecting%<mk-ellipsis/></span>
 	</p>
 	<p v-if=" stream.state == 'reconnecting' ">
 		%fa:spinner .pulse%
-		<span>%i18n:common.tags.mk-stream-indicator.reconnecting%<mk-ellipsis/></span>
+		<span>%i18n:@reconnecting%<mk-ellipsis/></span>
 	</p>
 	<p v-if=" stream.state == 'connected' ">
 		%fa:check%
-		<span>%i18n:common.tags.mk-stream-indicator.connected%</span>
+		<span>%i18n:@connected%</span>
 	</p>
 </div>
 </template>

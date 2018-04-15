@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" @closed="$destroy">
-	<span slot="header" :class="$style.header">%fa:comments%メッセージ</span>
+	<span slot="header" :class="$style.header">%fa:comments%%i18n:@title%</span>
 	<mk-messaging :class="$style.content" @navigate="navigate"/>
 </mk-window>
 </template>

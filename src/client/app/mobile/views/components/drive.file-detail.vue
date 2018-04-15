@@ -35,20 +35,20 @@
 	<div class="menu">
 		<div>
 			<a :href="`${file.url}?download`" :download="file.name">
-				%fa:download%%i18n:mobile.tags.mk-drive-file-viewer.download%
+				%fa:download%%i18n:@download%
 			</a>
 			<button @click="rename">
-				%fa:pencil-alt%%i18n:mobile.tags.mk-drive-file-viewer.rename%
+				%fa:pencil-alt%%i18n:@rename%
 			</button>
 			<button @click="move">
-				%fa:R folder-open%%i18n:mobile.tags.mk-drive-file-viewer.move%
+				%fa:R folder-open%%i18n:@move%
 			</button>
 		</div>
 	</div>
 	<div class="exif" v-show="exif">
 		<div>
 			<p>
-				%fa:camera%%i18n:mobile.tags.mk-drive-file-viewer.exif%
+				%fa:camera%%i18n:@exif%
 			</p>
 			<pre ref="exif" class="json">{{ exif ? JSON.stringify(exif, null, 2) : '' }}</pre>
 		</div>
@@ -56,7 +56,7 @@
 	<div class="hash">
 		<div>
 			<p>
-				%fa:hashtag%%i18n:mobile.tags.mk-drive-file-viewer.hash%
+				%fa:hashtag%%i18n:@hash%
 			</p>
 			<code>{{ file.md5 }}</code>
 		</div>

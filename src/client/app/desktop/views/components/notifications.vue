@@ -93,9 +93,9 @@
 		</template>
 	</div>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
-		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:desktop.tags.mk-notifications.more%' }}
+		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
-	<p class="empty" v-if="notifications.length == 0 && !fetching">ありません！</p>
+	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
 	<p class="loading" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
 </template>

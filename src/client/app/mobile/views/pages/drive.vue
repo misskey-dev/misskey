@@ -3,7 +3,7 @@
 	<span slot="header">
 		<template v-if="folder">%fa:R folder-open%{{ folder.name }}</template>
 		<template v-if="file"><mk-file-type-icon data-icon :type="file.type"/>{{ file.name }}</template>
-		<template v-if="!folder && !file">%fa:cloud%%i18n:mobile.tags.mk-drive-page.drive%</template>
+		<template v-if="!folder && !file">%fa:cloud%%i18n:@drive%</template>
 	</span>
 	<template slot="func"><button @click="fn">%fa:ellipsis-h%</button></template>
 	<mk-drive

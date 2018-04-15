@@ -9,9 +9,9 @@
 				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 			</router-link>
 			%fa:retweet%
-			<span>{{ '%i18n:mobile.tags.mk-timeline-note.reposted-by%'.substr(0, '%i18n:mobile.tags.mk-timeline-note.reposted-by%'.indexOf('{')) }}</span>
+			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
 			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:mobile.tags.mk-timeline-note.reposted-by%'.substr('%i18n:mobile.tags.mk-timeline-note.reposted-by%'.indexOf('}') + 1) }}</span>
+			<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
 		</p>
 		<mk-time :time="note.createdAt"/>
 	</div>

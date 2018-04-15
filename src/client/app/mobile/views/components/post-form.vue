@@ -5,12 +5,12 @@
 		<div>
 			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
 			<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
-			<button class="submit" :disabled="posting" @click="post">{{ reply ? '返信' : '%i18n:mobile.tags.mk-post-form.submit%' }}</button>
+			<button class="submit" :disabled="posting" @click="post">{{ reply ? '返信' : '%i18n:@submit%' }}</button>
 		</div>
 	</header>
 	<div class="form">
 		<mk-note-preview v-if="reply" :note="reply"/>
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:mobile.tags.mk-post-form.reply-placeholder%' : '%i18n:mobile.tags.mk-post-form.note-placeholder%'"></textarea>
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:@reply-placeholder%' : '%i18n:@note-placeholder%'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 				<div class="file" v-for="file in files" :key="file.id">

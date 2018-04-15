@@ -10,7 +10,7 @@
 			<span class="separator" v-if="folder != null">%fa:angle-right%</span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
-		<input class="search" type="search" placeholder="&#xf002; %i18n:desktop.tags.mk-drive-browser.search%"/>
+		<input class="search" type="search" placeholder="&#xf002; %i18n:@search%"/>
 	</nav>
 	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
@@ -27,18 +27,18 @@
 				<x-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<button v-if="moreFolders">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
+				<button v-if="moreFolders">%i18n:@load-more%</button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:desktop.tags.mk-drive-browser.load-more%</button>
+				<button v-if="moreFiles" @click="fetchMoreFiles">%i18n:@load-more%</button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
-				<p v-if="draghover">%i18n:desktop.tags.mk-drive-browser.empty-draghover%</p>
-				<p v-if="!draghover && folder == null"><strong>%i18n:desktop.tags.mk-drive-browser.empty-drive%</strong><br/>%i18n:desktop.tags.mk-drive-browser.empty-drive-description%</p>
-				<p v-if="!draghover && folder != null">%i18n:desktop.tags.mk-drive-browser.empty-folder%</p>
+				<p v-if="draghover">%i18n:@empty-draghover%</p>
+				<p v-if="!draghover && folder == null"><strong>%i18n:@empty-drive%</strong><br/>%i18n:@empty-drive-description%</p>
+				<p v-if="!draghover && folder != null">%i18n:@empty-folder%</p>
 			</div>
 		</div>
 		<div class="fetching" v-if="fetching">
@@ -138,17 +138,17 @@ export default Vue.extend({
 		onContextmenu(e) {
 			contextmenu(e, [{
 				type: 'item',
-				text: '%i18n:desktop.tags.mk-drive-browser-base-contextmenu.create-folder%',
+				text: '%i18n:@contextmenu.create-folder%',
 				icon: '%fa:R folder%',
 				onClick: this.createFolder
 			}, {
 				type: 'item',
-				text: '%i18n:desktop.tags.mk-drive-browser-base-contextmenu.upload%',
+				text: '%i18n:@contextmenu.upload%',
 				icon: '%fa:upload%',
 				onClick: this.selectLocalFile
 			}, {
 				type: 'item',
-				text: '%i18n:desktop.tags.mk-drive-browser-base-contextmenu.url-upload%',
+				text: '%i18n:@contextmenu.url-upload%',
 				icon: '%fa:cloud-upload-alt%',
 				onClick: this.urlUpload
 			}]);
@@ -306,15 +306,15 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:desktop.tags.mk-drive-browser.unable-to-process%',
-								text: '%i18n:desktop.tags.mk-drive-browser.circular-reference-detected%',
+								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
+								text: '%i18n:@circular-reference-detected%',
 								actions: [{
 									text: '%i18n:common.ok%'
 								}]
 							});
 							break;
 						default:
-							alert('%i18n:desktop.tags.mk-drive-browser.unhandled-error% ' + err);
+							alert('%i18n:@unhandled-error% ' + err);
 					}
 				});
 			}
@@ -327,8 +327,8 @@ export default Vue.extend({
 
 		urlUpload() {
 			(this as any).apis.input({
-				title: '%i18n:desktop.tags.mk-drive-browser.url-upload%',
-				placeholder: '%i18n:desktop.tags.mk-drive-browser.url-of-file%'
+				title: '%i18n:@url-upload%',
+				placeholder: '%i18n:@url-of-file%'
 			}).then(url => {
 				(this as any).api('drive/files/upload_from_url', {
 					url: url,
@@ -336,8 +336,8 @@ export default Vue.extend({
 				});
 
 				(this as any).apis.dialog({
-					title: '%fa:check%%i18n:desktop.tags.mk-drive-browser.url-upload-requested%',
-					text: '%i18n:desktop.tags.mk-drive-browser.may-take-time%',
+					title: '%fa:check%%i18n:@url-upload-requested%',
+					text: '%i18n:@may-take-time%',
 					actions: [{
 						text: '%i18n:common.ok%'
 					}]
@@ -347,8 +347,8 @@ export default Vue.extend({
 
 		createFolder() {
 			(this as any).apis.input({
-				title: '%i18n:desktop.tags.mk-drive-browser.create-folder%',
-				placeholder: '%i18n:desktop.tags.mk-drive-browser.folder-name%'
+				title: '%i18n:@create-folder%',
+				placeholder: '%i18n:@folder-name%'
 			}).then(name => {
 				(this as any).api('drive/folders/create', {
 					name: name,
