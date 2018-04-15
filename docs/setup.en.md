@@ -53,6 +53,11 @@ Or you can generate config file via `npm run config` command.
 
 *5.* Build Misskey
 ----------------------------------------------------------------
+We need to use `node-gyp` to build the `crypto` module.
+
+1. `npm install -g node-gyp`
+2.  `node-gyp configure`
+3. `node-gyp build`
 1. `npm run build`
 
 *6.* That is it.
