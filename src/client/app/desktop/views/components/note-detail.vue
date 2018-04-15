@@ -2,7 +2,7 @@
 <div class="mk-note-detail" :title="title">
 	<button
 		class="read-more"
-		v-if="p.reply && p.reply.replyId && context == null"
+		v-if="p.reply && p.reply.replyId && context.length == 0"
 		title="会話をもっと読み込む"
 		@click="fetchContext"
 		:disabled="contextFetching"

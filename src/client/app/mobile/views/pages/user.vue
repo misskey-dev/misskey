@@ -2,6 +2,7 @@
 <mk-ui>
 	<span slot="header" v-if="!fetching">%fa:user% {{ user | userName }}</span>
 	<main v-if="!fetching">
+		<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote% <a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 		<header>
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''"></div>
 			<div class="body">
@@ -109,6 +110,18 @@ export default Vue.extend({
 @import '~const.styl'
 
 main
+	> .is-remote
+		padding 16px
+		color #573c08
+		background #fff0db
+
+		> p
+			margin 0 auto
+			max-width 1024px
+
+			> a
+				font-weight bold
+
 	> header
 
 		> .banner

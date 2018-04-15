@@ -403,6 +403,10 @@ desktop/views/pages/user/user.friends.vue:
   loading: "読み込み中"
   no-users: "よく話すユーザーはいません"
 
+desktop/views/pages/user/user.header.vue:
+  is-remote: "このユーザーはMisskeyのユーザーではないため情報が正確ではありません。"
+  view-remote: "正確な情報を見る"
+
 desktop/views/pages/user/user.home.vue:
   last-used-at: "最終アクセス"
 
@@ -585,6 +589,8 @@ mobile/views/pages/user.vue:
   overview: "概要"
   timeline: "タイムライン"
   media: "メディア"
+  is-remote: "このユーザーはMisskeyのユーザーではないため情報が正確ではありません。"
+  view-remote: "正確な情報を見る"
 
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"

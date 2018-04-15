@@ -96,7 +96,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 			publicKeyPem: person.publicKey.publicKeyPem
 		},
 		inbox: person.inbox,
-		uri: person.id
+		uri: person.id,
+		url: person.url
 	}) as IRemoteUser;
 
 	//#region アイコンとヘッダー画像をフェッチ

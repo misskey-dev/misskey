@@ -1,5 +1,6 @@
 <template>
 <div class="header" :data-is-dark-background="user.bannerUrl != null">
+	<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote% <a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 	<div class="banner-container" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''">
 		<div class="banner" ref="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''" @click="onBannerClick"></div>
 	</div>
@@ -26,14 +27,18 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: ['user'],
 	mounted() {
-		window.addEventListener('load', this.onScroll);
-		window.addEventListener('scroll', this.onScroll);
-		window.addEventListener('resize', this.onScroll);
+		if (this.user.bannerUrl) {
+			window.addEventListener('load', this.onScroll);
+			window.addEventListener('scroll', this.onScroll);
+			window.addEventListener('resize', this.onScroll);
+		}
 	},
 	beforeDestroy() {
-		window.removeEventListener('load', this.onScroll);
-		window.removeEventListener('scroll', this.onScroll);
-		window.removeEventListener('resize', this.onScroll);
+		if (this.user.bannerUrl) {
+			window.removeEventListener('load', this.onScroll);
+			window.removeEventListener('scroll', this.onScroll);
+			window.removeEventListener('resize', this.onScroll);
+		}
 	},
 	methods: {
 		onScroll() {
@@ -68,8 +73,20 @@ export default Vue.extend({
 	$footer-height = 58px
 
 	overflow hidden
-	background #f7f7f7
+	background #bfccd0
 	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
+
+	> .is-remote
+		padding 16px
+		color #573c08
+		background #fff0db
+
+		> p
+			margin 0 auto
+			max-width 1024px
+
+			> a
+				font-weight bold
 
 	&[data-is-dark-background]
 		> .banner-container
@@ -130,7 +147,7 @@ export default Vue.extend({
 			left 0
 			width 100%
 			padding 0 0 8px 195px
-			color #656565
+			color #5e6367
 			font-family '游ゴシック', 'YuGothic', 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'Meiryo', 'メイリオ', sans-serif
 
 			> .name
