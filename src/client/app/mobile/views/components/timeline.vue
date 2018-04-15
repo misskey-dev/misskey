@@ -98,8 +98,7 @@ export default Vue.extend({
 			});
 		},
 		onNote(note) {
-			if (this.isTop) this.notes.pop();
-			this.notes.unshift(note);
+			this.isTop = window.scrollY < 100;
 		},
 		onChangeFollowing() {
 			this.fetch();
