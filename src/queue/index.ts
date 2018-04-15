@@ -19,12 +19,12 @@ export function createHttp(data) {
 }
 
 export function deliver(user, content, to) {
-	return createHttp({
+	createHttp({
 		type: 'deliver',
 		user,
 		content,
 		to
-	});
+	}).save();
 }
 
 export default function() {

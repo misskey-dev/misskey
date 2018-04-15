@@ -58,11 +58,11 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {
 		const content = pack(renderFollow(follower, followee));
-		deliver(follower, content, followee.inbox).save();
+		deliver(follower, content, followee.inbox);
 	}
 
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
 		const content = pack(renderAccept(activity));
-		deliver(followee, content, follower.inbox).save();
+		deliver(followee, content, follower.inbox);
 	}
 }

@@ -9,6 +9,7 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import pack from '../../../remote/activitypub/renderer';
+import { MongoError } from 'mongodb';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself
@@ -16,23 +17,23 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 		return rej('cannot react to my note');
 	}
 
-	// if already reacted
-	const exist = await NoteReaction.findOne({
-		noteId: note._id,
-		userId: user._id
-	});
-
-	if (exist !== null) {
-		return rej('already reacted');
-	}
-
 	// Create reaction
-	await NoteReaction.insert({
-		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id,
-		reaction
-	});
+	try {
+		await NoteReaction.insert({
+			createdAt: new Date(),
+			noteId: note._id,
+			userId: user._id,
+			reaction
+		});
+	} catch (e) {
+		// duplicate key error
+		if (e instanceof MongoError && e.code === 11000) {
+			return rej('already reacted');
+		}
+
+		console.error(e);
+		return rej('something happened');
+	}
 
 	res();
 
@@ -86,7 +87,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (isLocalUser(user) && isRemoteUser(note._user)) {
 		const content = pack(renderLike(user, note));
-		deliver(user, content, note._user.inbox).save();
+		deliver(user, content, note._user.inbox);
 	}
 	//#endregion
 });

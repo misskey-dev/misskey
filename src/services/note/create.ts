@@ -136,12 +136,12 @@ export default async (user: IUser, data: {
 
 			// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 			if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
-				deliver(user, await render(), data.reply._user.inbox).save();
+				deliver(user, await render(), data.reply._user.inbox);
 			}
 
 			// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 			if (data.renote && isLocalUser(user) && isRemoteUser(data.renote._user)) {
-				deliver(user, await render(), data.renote._user.inbox).save();
+				deliver(user, await render(), data.renote._user.inbox);
 			}
 
 			Promise.all(followers.map(async follower => {
@@ -153,7 +153,7 @@ export default async (user: IUser, data: {
 				} else {
 					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 					if (isLocalUser(user)) {
-						deliver(user, await render(), follower.inbox).save();
+						deliver(user, await render(), follower.inbox);
 					}
 				}
 			}));
