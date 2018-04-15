@@ -232,7 +232,7 @@ desktop/views/components/drive.vue:
   load-more: "Load more"
   empty-draghover: "Drop Welcome!"
   empty-drive: "Your drive is empty"
-  empty-drive-description: "You can also upload by right clicking and selecting "Upload file" or you can drag and drop a file onto the window."
+  empty-drive-description: "You can also upload by right clicking and selecting \"Upload file\" or you can drag and drop a file onto the window."
   empty-folder: "This folder is empty"
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
