@@ -1,6 +1,6 @@
 import * as Router from 'koa-router';
 const koaBody = require('koa-body');
-const parseRequest = require('http-signature');
+const httpSignature = require('http-signature');
 
 import { createHttp } from '../queue';
 import pack from '../remote/activitypub/renderer';
@@ -25,7 +25,7 @@ router.post('/users/:user/inbox', koaBody(), ctx => {
 	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
 
 	try {
-		signature = parseRequest(ctx.req);
+		signature = httpSignature.parseRequest(ctx.req);
 	} catch (e) {
 		ctx.status = 401;
 		return;

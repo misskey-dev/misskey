@@ -1,7 +1,7 @@
 import * as kue from 'kue';
 import * as debug from 'debug';
 
-import { verifySignature } from 'http-signature';
+const httpSignature = require('http-signature');
 import parseAcct from '../../../acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import perform from '../../../remote/activitypub/perform';
@@ -50,7 +50,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 		return;
 	}
 
-	if (!verifySignature(signature, user.publicKey.publicKeyPem)) {
+	if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
 		console.warn('signature verification failed');
 		done();
 		return;
