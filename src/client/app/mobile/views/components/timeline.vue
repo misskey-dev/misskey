@@ -95,6 +95,7 @@ export default Vue.extend({
 			});
 		},
 		onNote(note) {
+			this.notes.pop();
 			this.notes.unshift(note);
 		},
 		onChangeFollowing() {
