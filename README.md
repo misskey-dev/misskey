@@ -29,12 +29,16 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 If you want to run your own instance of Misskey,
 please see [Setup and installation guide](./docs/setup.en.md).
 
+:wrench: Contribute
+----------------------------------------------------------------
+**PRs welcome!**
+
+If you want to translate Misskey, please see [Translation guide](./docs/translate.en.md).
+
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
 [![Backers][backers-image]][support-url]
 [![Sponsors][sponsors-image]][support-url]
-
----
 
 <a href="https://www.patreon.com/syuilo"><img src="http://i.imgur.com/xEO164Z.png" alt="Become a Patron!" width="200" /></a>
 
