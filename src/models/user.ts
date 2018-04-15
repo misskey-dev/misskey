@@ -155,6 +155,8 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		u = user as IUser;
 	}
 
+	console.log(u == null ? `User: delete skipped ${user}` : `User: deleting ${u._id}`);
+
 	if (u == null) return;
 
 	// このユーザーのAccessTokenをすべて削除
@@ -261,6 +263,8 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await User.remove({
 		_id: u._id
 	});
+
+	console.log(`User: deleted ${u._id}`);
 }
 
 /**

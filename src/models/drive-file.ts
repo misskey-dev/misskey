@@ -84,13 +84,18 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 	// このDriveFileがアバターやバナーに使われていたらそれらのプロパティをnullにする
 	const u = await User.findOne({ _id: d.metadata.userId });
 	if (u) {
-		if (u.avatarId.equals(d._id)) {
+		if (u.avatarId && u.avatarId.equals(d._id)) {
 			await User.update({ _id: u._id }, { $set: { avatarId: null } });
 		}
-		if (u.bannerId.equals(d._id)) {
+		if (u.bannerId && u.bannerId.equals(d._id)) {
 			await User.update({ _id: u._id }, { $set: { bannerId: null } });
 		}
 	}
+
+	// このDriveFileのチャンクをすべて削除
+	await monkDb.get('driveFiles.chunks').remove({
+		files_id: d._id
+	});
 
 	// このDriveFileを削除
 	await DriveFile.remove({

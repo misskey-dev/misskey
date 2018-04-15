@@ -91,6 +91,8 @@ export async function deleteNote(note: string | mongo.ObjectID | INote) {
 		n = note as INote;
 	}
 
+	console.log(n == null ? `Note: delete skipped ${note}` : `Note: deleting ${n._id}`);
+
 	if (n == null) return;
 
 	// このNoteへの返信をすべて削除
@@ -132,6 +134,8 @@ export async function deleteNote(note: string | mongo.ObjectID | INote) {
 	await Note.remove({
 		_id: n._id
 	});
+
+	console.log(`Note: deleted ${n._id}`);
 }
 
 /**
