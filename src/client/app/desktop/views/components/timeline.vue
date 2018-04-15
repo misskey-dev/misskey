@@ -5,11 +5,11 @@
 		<mk-ellipsis-icon/>
 	</div>
 	<p class="empty" v-if="notes.length == 0 && !fetching">
-		%fa:R comments%自分の投稿や、自分がフォローしているユーザーの投稿が表示されます。
+		%fa:R comments%%i18n:@empty%
 	</p>
 	<mk-notes :notes="notes" ref="timeline">
 		<button slot="footer" @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">もっと見る</template>
+			<template v-if="!moreFetching">%i18n:@load-more%</template>
 			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
 		</button>
 	</mk-notes>
@@ -29,7 +29,8 @@ export default Vue.extend({
 			notes: [],
 			connection: null,
 			connectionId: null,
-			date: null
+			date: null,
+			isTop: true
 		};
 	},
 	computed: {
@@ -101,7 +102,7 @@ export default Vue.extend({
 				sound.play();
 			}
 
-			this.notes.pop();
+			if (this.isTop) this.notes.pop();
 			this.notes.unshift(note);
 		},
 		onChangeFollowing() {
@@ -112,6 +113,8 @@ export default Vue.extend({
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.more();
 			}
+			if (window.scrollY > 100) this.isTop = false;
+			else this.isTop = true;
 		},
 		onKeydown(e) {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
