@@ -36,12 +36,12 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
-  update-available: "New version of Misskey is now available({newer}, current is {current}). Reload page to apply update."
-  my-token-regenerated: "Your token is just regenerated, so you will signout."
+  update-available: "A new version of Misskey is now available({newer}, current is {current}). Reload the page to apply the update."
+  my-token-regenerated: "Your token has been generated. You will now get logged out."
 
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
-  description: "There is a problem with Internet connection, or the server may be down or maintaining. Please {try again} later."
+  description: "There is a problem either with your internet connection, or the server may be down or under maintenance. Please {try again} later."
   thanks: "Thank you for using Misskey."
   troubleshoot: "Troubleshoot"
 
@@ -60,7 +60,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet-desc: "Please make sure you are connected to the Internet."
   no-server: "Unable to connect to the server"
   no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is down or maintaining, please try to access it again after a while."
-  success: "Successfully connect to the Misskey's server"
+  success: "Successfully connected to the Misskey's server"
   success-desc: "It seems to be able to connect normally. Please reload the page."
 
 common/views/components/messaging.vue:
@@ -90,7 +90,7 @@ common/views/components/nav.vue:
   stats: "Stats"
   status: "Status"
   wiki: "Wiki"
-  donors: "Donors"
+  donors: "Donators"
   repository: "Repository"
   develop: "Developers"
 
@@ -106,7 +106,7 @@ common/views/components/poll.vue:
   voted: "Voted"
 
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "You need to enter two or more choice."
+  no-only-one-choice: "You need to enter two or more choices."
   choice-n: "Choice {}"
   remove: "Remove this choice"
   add: "+ Add a choice"
@@ -139,7 +139,7 @@ common/views/components/signup.vue:
   retype: "Type again"
   retype-placeholder: "Confirm your password"
   password-matched: "OK"
-  password-not-matched: "Not matched"
+  password-not-matched: "Doesn't match"
   recaptcha: "Verify"
   create: "Create an Account"
   some-error: "Account creation failed for some reason. Please try again."
@@ -154,11 +154,11 @@ common/views/components/stream-indicator.vue:
   connected: "Connected"
 
 common/views/components/twitter-setting.vue:
-  description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-  connected-to: "You to connected this Twitter account"
+  description: "If you connect your Twitter account to your Misskey account, you will be able to see your Twitter account information on your profile and you can sign-in using Twitter."
+  connected-to: "You are connected to this Twitter account"
   detail: "Detail..."
   reconnect: "Reconnect"
-  connect: "Connect to Twitter"
+  connect: "Link your twitter account"
   disconnect: "Disconnect"
 
 common/views/components/uploader.vue:
@@ -214,8 +214,8 @@ desktop/views/components/drive.file.vue:
     copied-url-to-clipboard: "Copied URL to clipboard"
 
 desktop/views/components/drive.folder.vue:
-  unable-to-process: "操作を完了できません"
-  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unable-to-process: "The operation could not be completed."
+  circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
   unhandled-error: "Unknown error"
   contextmenu:
     move-to-this-folder: "Move to this folder"
@@ -232,15 +232,15 @@ desktop/views/components/drive.vue:
   load-more: "Load more"
   empty-draghover: "Drop Welcome!"
   empty-drive: "Your drive is empty"
-  empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
+  empty-drive-description: "You can also upload by right clicking and selecting "Upload file" or you can drag and drop a file onto the window."
   empty-folder: "This folder is empty"
-  unable-to-process: "操作を完了できません"
-  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unable-to-process: "The operation could not be completed."
+  circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
   unhandled-error: "Unknown error"
   url-upload: "Upload from a URL"
   url-of-file: "URL of file you want to upload"
   url-upload-requested: "Upload requested"
-  may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
+  may-take-time: "It may take some time for the upload to complete."
   create-folder: "Create a folder"
   folder-name: "Folder name"
   contextmenu:
@@ -333,8 +333,8 @@ desktop/views/components/settings.2fa.vue:
 
 desktop/views/components/settings.api.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  caution: "Please do not show this token to third parties (do not enter it somewhere else other than here) otherwise your account could get compromised."
+  regeneration-of-token: "In the unlikely event that this token leaks out you can regenerate it."
   regenerate-token: "Regenerate the token"
   enter-password: "Please enter the password"
 
@@ -451,7 +451,7 @@ desktop/views/widgets/users.vue:
 desktop/views/widgets/channel.vue:
   title: "Channel"
   settings: "Widget settings"
-  get-started: "Please click the cog in the upper right to specify the channel to receive"
+  get-started: "Please click the cog in the upper right corner to specify the channel to receive"
 
 mobile/views/components/drive.vue:
   drive: "Drive"
@@ -568,7 +568,7 @@ mobile/views/pages/profile-setting.vue:
 
 mobile/views/pages/search.vue:
   search: "Search"
-  empty: "「{}」に関する投稿は見つかりませんでした。"
+  empty: "No posts were found for '{}'"
 
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose a file"
@@ -589,7 +589,7 @@ mobile/views/pages/user.vue:
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
-  is-remote: "This user is not a user of Misskey, so the information is not accurate."
+  is-remote: "This user is not a user of Misskey, so the information might not be accurate."
   view-remote: "See accurate information"
 
 mobile/views/pages/user/home.vue:
@@ -619,7 +619,7 @@ mobile/views/pages/user/home.photos.vue:
   no-photos: "No photos"
 
 docs:
-  edit-this-page-on-github: "Caught a mistake or want to contribute to the documentation? "
+  edit-this-page-on-github: "Found a mistake or want to contribute to the documentation? "
   edit-this-page-on-github-link: "Edit this page on Github!"
 
   api:
