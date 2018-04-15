@@ -2,7 +2,7 @@
 <div class="mk-note-detail">
 	<button
 		class="more"
-		v-if="p.reply && p.reply.replyId && context == null"
+		v-if="p.reply && p.reply.replyId && context.length == 0"
 		@click="fetchContext"
 		:disabled="fetchingContext"
 	>
