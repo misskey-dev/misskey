@@ -113,8 +113,7 @@ export default Vue.extend({
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.more();
 			}
-			if (window.scrollY > 100) this.isTop = false;
-			else this.isTop = true;
+			this.isTop = window.scrollY < 100;
 		},
 		onKeydown(e) {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
