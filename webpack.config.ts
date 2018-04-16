@@ -40,8 +40,12 @@ global['base64replacement'] = (_, key) => {
 
 const langs = Object.keys(locales);
 
+// 無圧縮スクリプトを用意するのは重いので一時的に無効化
+//const entries = process.env.NODE_ENV == 'production'
+//	? langs.map(l => [l, false]).concat(langs.map(l => [l, true]))
+//	: langs.map(l => [l, false]);
 const entries = process.env.NODE_ENV == 'production'
-	? langs.map(l => [l, false]).concat(langs.map(l => [l, true]))
+	? langs.map(l => [l, true])
 	: langs.map(l => [l, false]);
 
 module.exports = entries.map(x => {
