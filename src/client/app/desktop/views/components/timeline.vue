@@ -29,15 +29,16 @@ export default Vue.extend({
 			notes: [],
 			connection: null,
 			connectionId: null,
-			date: null,
-			isTop: true
+			date: null
 		};
 	},
+
 	computed: {
 		alone(): boolean {
 			return (this as any).os.i.followingCount == 0;
 		}
 	},
+
 	mounted() {
 		this.connection = (this as any).os.stream.getConnection();
 		this.connectionId = (this as any).os.stream.use();
@@ -51,6 +52,7 @@ export default Vue.extend({
 
 		this.fetch();
 	},
+
 	beforeDestroy() {
 		this.connection.off('note', this.onNote);
 		this.connection.off('follow', this.onChangeFollowing);
@@ -60,6 +62,7 @@ export default Vue.extend({
 		document.removeEventListener('keydown', this.onKeydown);
 		window.removeEventListener('scroll', this.onScroll);
 	},
+
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
@@ -78,6 +81,7 @@ export default Vue.extend({
 				if (cb) cb();
 			});
 		},
+
 		more() {
 			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
@@ -94,6 +98,7 @@ export default Vue.extend({
 				this.moreFetching = false;
 			});
 		},
+
 		onNote(note) {
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds) {
@@ -102,19 +107,23 @@ export default Vue.extend({
 				sound.play();
 			}
 
-			if (this.isTop) this.notes.pop();
 			this.notes.unshift(note);
+
+			const isTop = window.scrollY > 8;
+			if (isTop) this.notes.pop();
 		},
+
 		onChangeFollowing() {
 			this.fetch();
 		},
+
 		onScroll() {
 			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.more();
 			}
-			this.isTop = window.scrollY < 100;
 		},
+
 		onKeydown(e) {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
 				if (e.which == 84) { // t
@@ -122,6 +131,7 @@ export default Vue.extend({
 				}
 			}
 		},
+
 		warp(date) {
 			this.date = date;
 			this.fetch();
