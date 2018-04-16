@@ -37,7 +37,8 @@ export default Vue.extend({
 			notes: [],
 			existMore: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			isTop: true
 		};
 	},
 	computed: {
@@ -53,13 +54,18 @@ export default Vue.extend({
 		this.connection.on('follow', this.onChangeFollowing);
 		this.connection.on('unfollow', this.onChangeFollowing);
 
+		window.addEventListener('scroll', this.onScroll);
+
 		this.fetch();
 	},
 	beforeDestroy() {
 		this.connection.off('note', this.onNote);
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
+		this.connection.off('unfollow', this.onChangeFollowing);
 		(this as any).os.stream.dispose(this.connectionId);
+
+		window.removeEventListener('scroll', this.onScroll);
 	},
 	methods: {
 		fetch(cb?) {
@@ -95,10 +101,18 @@ export default Vue.extend({
 			});
 		},
 		onNote(note) {
-			this.notes.unshift(note);
+			this.isTop = window.scrollY < 100;
 		},
 		onChangeFollowing() {
 			this.fetch();
+		},
+		onScroll() {
+			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.more();
+			}
+			if (window.scrollY > 100) this.isTop = false;
+			else this.isTop = true;
 		}
 	}
 });
