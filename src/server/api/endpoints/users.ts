@@ -44,7 +44,9 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	// Issue query
 	const users = await User
-		.find({}, {
+		.find({
+			host: null
+		}, {
 			limit: limit,
 			sort: _sort,
 			skip: offset
