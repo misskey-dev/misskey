@@ -44,15 +44,15 @@
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-is-active=" page == 'home' " @click="page = 'home'">%i18n:@overview%</a>
-				<a :data-is-active=" page == 'notes' " @click="page = 'notes'">%i18n:@timeline%</a>
-				<a :data-is-active=" page == 'media' " @click="page = 'media'">%i18n:@media%</a>
+				<a :data-is-active="page == 'home'" @click="page = 'home'">%i18n:@overview%</a>
+				<a :data-is-active="page == 'notes'" @click="page = 'notes'">%i18n:@timeline%</a>
+				<a :data-is-active="page == 'media'" @click="page = 'media'">%i18n:@media%</a>
 			</div>
 		</nav>
 		<div class="body">
 			<x-home v-if="page == 'home'" :user="user"/>
-			<mk-user-timeline v-if="page == 'notes'" :user="user"/>
-			<mk-user-timeline v-if="page == 'media'" :user="user" with-media/>
+			<mk-user-timeline v-if="page == 'notes'" :user="user" key="tl"/>
+			<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" key="media"/>
 		</div>
 	</main>
 </mk-ui>
