@@ -82,9 +82,6 @@ export default Vue.extend({
 		&:active
 			background darken($theme-color, 10%)
 
-	> .troubleshooter
-		margin 1em auto 0 auto
-
 	> .thanks
 		display block
 		margin 2em auto 0 auto

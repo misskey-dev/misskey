@@ -82,9 +82,12 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .troubleshooter
+	margin-top 1em
+
 	> .body
 		width 100%
 		max-width 500px
+		margin 0 auto
 		text-align left
 		background #fff
 		border-radius 8px
