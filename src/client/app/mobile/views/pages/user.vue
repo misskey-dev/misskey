@@ -122,6 +122,9 @@ main
 			> a
 				font-weight bold
 
+			@media (max-width 500px)
+				font-size 12px
+
 	> header
 
 		> .banner
