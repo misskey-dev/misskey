@@ -62,6 +62,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-server-desc: "Votre connexion est OK, mais il a été impossible de vous connecter au serveur de Misskey. Il y a des chances que le serveur soit hors-ligne ou en maintenance, veuillez ressayer plus tard."
   success: "Connexion au serveur de Misskey reussie!"
   success-desc: "La connexion au serveur a été reussie. Veuillez recharger la page."
+  flush: "キャッシュの削除"
+  set-version: "バージョン指定"
 
 common/views/components/messaging.vue:
   search-user: "Trouver un utilisateur"

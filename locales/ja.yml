@@ -62,6 +62,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-server-desc: "お使いのPCのインターネット接続は正常ですが、Misskeyのサーバーには接続できませんでした。サーバーがダウンまたはメンテナンスしている可能性があるので、しばらくしてから再度御アクセスください。"
   success: "Misskeyのサーバーに接続できました"
   success-desc: "正常に接続できるようです。ページを再度読み込みしてください。"
+  flush: "キャッシュの削除"
+  set-version: "バージョン指定"
 
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"

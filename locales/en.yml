@@ -62,6 +62,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is either down or under maintenance, please try again later."
   success: "Successfully connected to Misskey's server"
   success-desc: "It seems to be able to connect. Please reload the page."
+  flush: "Clean cache"
+  set-version: "Specify version"
 
 common/views/components/messaging.vue:
   search-user: "Find an user"
