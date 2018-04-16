@@ -31,7 +31,7 @@ please see [Setup and installation guide](./docs/setup.en.md).
 
 :wrench: Contribute
 ----------------------------------------------------------------
-**PRs welcome!**
+**[PR](https://github.com/syuilo/misskey/pulls)s welcome!**
 
 If you want to translate Misskey, please see [Translation guide](./docs/translate.en.md).
 
