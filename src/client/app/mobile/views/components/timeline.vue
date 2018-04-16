@@ -62,7 +62,10 @@ export default Vue.extend({
 		this.connection.off('note', this.onNote);
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
+		this.connection.off('unfollow', this.onChangeFollowing);
 		(this as any).os.stream.dispose(this.connectionId);
+
+		window.removeEventListener('scroll', this.onScroll);
 	},
 	methods: {
 		fetch(cb?) {
