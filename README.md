@@ -50,7 +50,7 @@ If you want to translate Misskey, please see [Translation guide](./docs/translat
 
 [List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
-### translators
+### :earth_americas: Translators
 | ![][mirro-san-icon] | ![][Conan-kun-icon] |
 |:-:|:-:|
 | [Mirro][mirro-san-link]<br>English, French | [Asriel][Conan-kun-link]<br>English, French |
