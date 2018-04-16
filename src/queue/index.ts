@@ -14,7 +14,7 @@ const queue = createQueue({
 export function createHttp(data) {
 	return queue
 		.create('http', data)
-		.attempts(16)
+		.attempts(8)
 		.backoff({ delay: 16384, type: 'exponential' });
 }
 
@@ -24,7 +24,7 @@ export function deliver(user, content, to) {
 		user,
 		content,
 		to
-	}).save();
+	}).removeOnComplete(true).save();
 }
 
 export default function() {
@@ -36,5 +36,6 @@ export default function() {
 		Network.http.max-connections - MozillaZine Knowledge Base
 		http://kb.mozillazine.org/Network.http.max-connections
 	*/
-	queue.process('http', 256, http);
+	//queue.process('http', 256, http);
+	queue.process('http', 128, http);
 }
