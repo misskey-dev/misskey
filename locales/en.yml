@@ -113,7 +113,7 @@ common/views/components/poll-editor.vue:
   destroy: "Destroy this poll"
 
 common/views/components/reaction-picker.vue:
-  choose-reaction: "Choose a reaction reaction"
+  choose-reaction: "Choose a reaction"
 
 common/views/components/signin.vue:
   username: "Username"
@@ -255,7 +255,7 @@ desktop/views/components/notes.note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
   renote: "Renote"
-  add-reaction: "Add your reaction"
+  add-reaction: "Add a reaction"
   detail: "Show detail"
 
 desktop/views/components/notifications.vue:
