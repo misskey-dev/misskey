@@ -7,10 +7,6 @@ import Mute from '../../../../models/mute';
 
 /**
  * Unmute a user
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const muter = user;
@@ -30,7 +26,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}, {
 		fields: {
 			data: false,
-			'profile': false
+			profile: false
 		}
 	});
 
@@ -41,8 +37,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Check not muting
 	const exist = await Mute.findOne({
 		muterId: muter._id,
-		muteeId: mutee._id,
-		deletedAt: { $exists: false }
+		muteeId: mutee._id
 	});
 
 	if (exist === null) {
@@ -50,12 +45,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Delete mute
-	await Mute.update({
+	await Mute.remove({
 		_id: exist._id
-	}, {
-		$set: {
-			deletedAt: new Date()
-		}
 	});
 
 	// Send response

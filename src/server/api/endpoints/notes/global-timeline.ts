@@ -2,15 +2,12 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import rap from '@prezzemolo/rap';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
-import ChannelWatching from '../../../../models/channel-watching';
-import getFriends from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 
 /**
- * Get timeline of myself
+ * Get timeline of global
  */
 module.exports = async (params, user, app) => {
 	// Get 'limit' parameter
@@ -38,22 +35,10 @@ module.exports = async (params, user, app) => {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
-	const { followingIds, watchingChannelIds, mutedUserIds } = await rap({
-		// ID list of the user itself and other users who the user follows
-		followingIds: getFriends(user._id),
-
-		// Watchしているチャンネルを取得
-		watchingChannelIds: ChannelWatching.find({
-			userId: user._id,
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
-		}).then(watches => watches.map(w => w.channelId)),
-
-		// ミュートしているユーザーを取得
-		mutedUserIds: Mute.find({
-			muterId: user._id
-		}).then(ms => ms.map(m => m.muteeId))
-	});
+	// ミュートしているユーザーを取得
+	const mutedUserIds = (await Mute.find({
+		muterId: user._id
+	})).map(m => m.muteeId);
 
 	//#region Construct query
 	const sort = {
@@ -61,25 +46,6 @@ module.exports = async (params, user, app) => {
 	};
 
 	const query = {
-		$or: [{
-			// フォローしている人のタイムラインへの投稿
-			userId: {
-				$in: followingIds
-			},
-			// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
-			$or: [{
-				channelId: {
-					$exists: false
-				}
-			}, {
-				channelId: null
-			}]
-		}, {
-			// Watchしているチャンネルへの投稿
-			channelId: {
-				$in: watchingChannelIds
-			}
-		}],
 		// mute
 		userId: {
 			$nin: mutedUserIds
@@ -89,7 +55,7 @@ module.exports = async (params, user, app) => {
 		},
 		'_renote.userId': {
 			$nin: mutedUserIds
-		},
+		}
 	} as any;
 
 	if (sinceId) {

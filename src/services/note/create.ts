@@ -1,6 +1,6 @@
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser } from '../../models/user';
-import stream from '../../publishers/stream';
+import stream, { publishLocalTimelineStream, publishGlobalTimelineStream } from '../../publishers/stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -105,10 +105,16 @@ export default async (user: IUser, data: {
 
 	// タイムラインへの投稿
 	if (note.channelId == null) {
-		// Publish event to myself's stream
 		if (isLocalUser(user)) {
+			// Publish event to myself's stream
 			stream(note.userId, 'note', noteObj);
+
+			// Publish note to local timeline stream
+			publishLocalTimelineStream(noteObj);
 		}
+
+		// Publish note to global timeline stream
+		publishGlobalTimelineStream(noteObj);
 
 		// Fetch all followers
 		const followers = await Following.aggregate([{

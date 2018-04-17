@@ -45,6 +45,14 @@ class MisskeyEvent {
 		this.publish(`channel-stream:${channelId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	public publishLocalTimelineStream(note: any): void {
+		this.redisClient.publish('misskey:local-timeline', JSON.stringify(note));
+	}
+
+	public publishGlobalTimelineStream(note: any): void {
+		this.redisClient.publish('misskey:global-timeline', JSON.stringify(note));
+	}
+
 	private publish(channel: string, type: string, value?: any): void {
 		const message = value == null ?
 			{ type: type } :
@@ -58,16 +66,12 @@ const ev = new MisskeyEvent();
 
 export default ev.publishUserStream.bind(ev);
 
+export const publishLocalTimelineStream = ev.publishLocalTimelineStream.bind(ev);
+export const publishGlobalTimelineStream = ev.publishGlobalTimelineStream.bind(ev);
 export const publishDriveStream = ev.publishDriveStream.bind(ev);
-
 export const publishNoteStream = ev.publishNoteStream.bind(ev);
-
 export const publishMessagingStream = ev.publishMessagingStream.bind(ev);
-
 export const publishMessagingIndexStream = ev.publishMessagingIndexStream.bind(ev);
-
 export const publishOthelloStream = ev.publishOthelloStream.bind(ev);
-
 export const publishOthelloGameStream = ev.publishOthelloGameStream.bind(ev);
-
 export const publishChannelStream = ev.publishChannelStream.bind(ev);

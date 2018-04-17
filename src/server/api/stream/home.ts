@@ -21,10 +21,7 @@ export default async function(
 	// Subscribe Home stream channel
 	subscriber.subscribe(`misskey:user-stream:${user._id}`);
 
-	const mute = await Mute.find({
-		muterId: user._id,
-		deletedAt: { $exists: false }
-	});
+	const mute = await Mute.find({ muterId: user._id });
 	const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 	subscriber.on('message', async (channel, data) => {
@@ -33,6 +30,7 @@ export default async function(
 				try {
 					const x = JSON.parse(data);
 
+					//#region 流れてきたメッセージがミュートしているユーザーが関わるものだったら無視する
 					if (x.type == 'note') {
 						if (mutedUserIds.indexOf(x.body.userId) != -1) {
 							return;
@@ -48,6 +46,7 @@ export default async function(
 							return;
 						}
 					}
+					//#endregion
 
 					connection.send(data);
 				} catch (e) {

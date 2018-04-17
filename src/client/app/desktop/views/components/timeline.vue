@@ -1,169 +1,93 @@
 <template>
 <div class="mk-timeline">
-	<mk-friends-maker v-if="alone"/>
-	<div class="fetching" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
-	<p class="empty" v-if="notes.length == 0 && !fetching">
-		%fa:R comments%%i18n:@empty%
-	</p>
-	<mk-notes :notes="notes" ref="timeline">
-		<button slot="footer" @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
-		</button>
-	</mk-notes>
+	<header>
+		<span :data-is-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
+		<span :data-is-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
+		<span :data-is-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+	</header>
+	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
+	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
+	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { url } from '../../../config';
+import XCore from './timeline.core.vue';
 
 export default Vue.extend({
+	components: {
+		XCore
+	},
+
 	data() {
 		return {
-			fetching: true,
-			moreFetching: false,
-			existMore: false,
-			notes: [],
-			connection: null,
-			connectionId: null,
-			date: null
+			src: 'home'
 		};
 	},
 
-	computed: {
-		alone(): boolean {
-			return (this as any).os.i.followingCount == 0;
-		}
-	},
-
 	mounted() {
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
-
-		this.connection.on('note', this.onNote);
-		this.connection.on('follow', this.onChangeFollowing);
-		this.connection.on('unfollow', this.onChangeFollowing);
-
 		document.addEventListener('keydown', this.onKeydown);
 		window.addEventListener('scroll', this.onScroll);
 
-		this.fetch();
+		console.log(this.$refs.tl);
+
+		(this.$refs.tl as any).$once('loaded', () => {
+			this.$emit('loaded');
+		});
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		this.connection.off('follow', this.onChangeFollowing);
-		this.connection.off('unfollow', this.onChangeFollowing);
-		(this as any).os.stream.dispose(this.connectionId);
-
 		document.removeEventListener('keydown', this.onKeydown);
 		window.removeEventListener('scroll', this.onScroll);
 	},
 
 	methods: {
-		fetch(cb?) {
-			this.fetching = true;
-
-			(this as any).api('notes/timeline', {
-				limit: 11,
-				untilDate: this.date ? this.date.getTime() : undefined
-			}).then(notes => {
-				if (notes.length == 11) {
-					notes.pop();
-					this.existMore = true;
-				}
-				this.notes = notes;
-				this.fetching = false;
-				this.$emit('loaded');
-				if (cb) cb();
-			});
-		},
-
-		more() {
-			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
-			this.moreFetching = true;
-			(this as any).api('notes/timeline', {
-				limit: 11,
-				untilId: this.notes[this.notes.length - 1].id
-			}).then(notes => {
-				if (notes.length == 11) {
-					notes.pop();
-				} else {
-					this.existMore = false;
-				}
-				this.notes = this.notes.concat(notes);
-				this.moreFetching = false;
-			});
-		},
-
-		onNote(note) {
-			// サウンドを再生する
-			if ((this as any).os.isEnableSounds) {
-				const sound = new Audio(`${url}/assets/post.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
-				sound.play();
-			}
-
-			this.notes.unshift(note);
-
-			const isTop = window.scrollY > 8;
-			if (isTop) this.notes.pop();
-		},
-
-		onChangeFollowing() {
-			this.fetch();
-		},
-
 		onScroll() {
 			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
 				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) this.more();
+				if (current > document.body.offsetHeight - 8) (this.$refs.tl as any).more();
 			}
 		},
 
 		onKeydown(e) {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
 				if (e.which == 84) { // t
-					(this.$refs.timeline as any).focus();
+					(this.$refs.tl as any).focus();
 				}
 			}
 		},
 
 		warp(date) {
-			this.date = date;
-			this.fetch();
+			(this.$refs.tl as any).warp(date);
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-timeline
 	background #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
 
-	> .mk-friends-maker
+	> header
+		padding 8px 16px
 		border-bottom solid 1px #eee
 
-	> .fetching
-		padding 64px 0
+		> span
+			margin-right 16px
+			line-height 27px
+			font-size 14px
+			color #555
 
-	> .empty
-		display block
-		margin 0 auto
-		padding 32px
-		max-width 400px
-		text-align center
-		color #999
+			&:not([data-is-active])
+				color $theme-color
+				cursor pointer
 
-		> [data-fa]
-			display block
-			margin-bottom 16px
-			font-size 3em
-			color #ccc
+				&:hover
+					text-decoration underline
 
 </style>

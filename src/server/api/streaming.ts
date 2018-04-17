@@ -4,6 +4,8 @@ import * as redis from 'redis';
 import config from '../../config';
 
 import homeStream from './stream/home';
+import localTimelineStream from './stream/local-timeline';
+import globalTimelineStream from './stream/global-timeline';
 import driveStream from './stream/drive';
 import messagingStream from './stream/messaging';
 import messagingIndexStream from './stream/messaging-index';
@@ -64,8 +66,10 @@ module.exports = (server: http.Server) => {
 			return;
 		}
 
-		const channel =
+		const channel: any =
 			request.resourceURL.pathname === '/' ? homeStream :
+			request.resourceURL.pathname === '/local-timeline' ? localTimelineStream :
+			request.resourceURL.pathname === '/global-timeline' ? globalTimelineStream :
 			request.resourceURL.pathname === '/drive' ? driveStream :
 			request.resourceURL.pathname === '/messaging' ? messagingStream :
 			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
