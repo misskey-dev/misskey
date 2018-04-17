@@ -93,6 +93,7 @@ export interface IRemoteUser extends IUserBase {
 		id: string;
 		publicKeyPem: string;
 	};
+	updatedAt: Date;
 }
 
 export type IUser = ILocalUser | IRemoteUser;
