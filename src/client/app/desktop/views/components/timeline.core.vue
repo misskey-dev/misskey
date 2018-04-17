@@ -88,7 +88,7 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 
-			(this as any).api('notes/timeline', {
+			(this as any).api(this.endpoint, {
 				limit: 11,
 				untilDate: this.date ? this.date.getTime() : undefined
 			}).then(notes => {
@@ -106,7 +106,7 @@ export default Vue.extend({
 		more() {
 			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
-			(this as any).api('notes/timeline', {
+			(this as any).api(this.endpoint, {
 				limit: 11,
 				untilId: this.notes[this.notes.length - 1].id
 			}).then(notes => {
