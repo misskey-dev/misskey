@@ -82,6 +82,7 @@ this.fetch();
 			});
 		},
 		prev() {
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0) return;
 			this.prevFetching = true;
 			(this as any).api('notes/timeline', {
 				limit: limit + 1,
@@ -94,11 +95,12 @@ this.fetch();
 					this.existPrev = false;
 				}
 				this.notes = notes.concat(this.notes);
-				if(this.notes.length > 20) this.notes = this.notes.slice(0,10);
+				if (this.notes.length > 20) this.notes = this.notes.slice(0,10);
 				this.prevFetching = false;
 			});
 		},
 		more() {
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
 			(this as any).api('notes/timeline', {
 				limit: limit + 1,
@@ -111,7 +113,7 @@ this.fetch();
 					this.existMore = false;
 				}
 				this.notes = this.notes.concat(notes);
-				if(this.notes.length > 20) this.notes = this.notes.slice(10);
+				if (this.notes.length > 20) this.notes = this.notes.slice(10);
 				this.moreFetching = false;
 			});
 		},
