@@ -125,10 +125,10 @@ this.fetch();
 			this.fetch();
 		},
 		onScroll() {
-			if(!this.isTop && window.scrollY < 100) {
-				if (existPrev) this.prev()
+			if (!this.isTop && window.scrollY < 100) {
+				if (existPrev) this.prev();
 			}
-			this.isTop = window.scrollY < 100
+			this.isTop = window.scrollY < 100;
 		}
 	}
 });
