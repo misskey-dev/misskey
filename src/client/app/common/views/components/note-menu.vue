@@ -3,6 +3,7 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
 		<button v-if="note.userId == os.i.id" @click="pin">%i18n:@pin%</button>
+		<a v-if="note.uri" :href="note.uri" target="_blank">%i18n:@remote%</a>
 	</div>
 </div>
 </template>
@@ -81,6 +82,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 $border-color = rgba(27, 31, 35, 0.15)
 
 .mk-note-menu
@@ -99,6 +102,7 @@ $border-color = rgba(27, 31, 35, 0.15)
 	> .popover
 		position absolute
 		z-index 10001
+		padding 8px 0
 		background #fff
 		border 1px solid $border-color
 		border-radius 4px
@@ -135,7 +139,17 @@ $border-color = rgba(27, 31, 35, 0.15)
 				border-bottom solid $balloon-size #fff
 
 		> button
+		> a
 			display block
-			padding 16px
+			padding 8px 16px
+
+			&:hover
+				color $theme-color-foreground
+				background $theme-color
+				text-decoration none
+
+			&:active
+				color $theme-color-foreground
+				background darken($theme-color, 10%)
 
 </style>
