@@ -29,6 +29,7 @@ export type IMetadata = {
 	folderId: mongo.ObjectID;
 	comment: string;
 	uri: string;
+	deletedAt?: Date;
 };
 
 export type IDriveFile = {
