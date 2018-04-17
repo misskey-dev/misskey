@@ -75,7 +75,7 @@ export default Vue.extend({
 
 	> header
 		padding 0 8px
-		z-index 1
+		z-index 10
 		box-shadow 0 1px rgba(0, 0, 0, 0.08)
 
 		> span
