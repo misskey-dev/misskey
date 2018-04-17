@@ -406,7 +406,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Pas d'utilisateurs"
 
 desktop/views/pages/user/user.header.vue:
-  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées"
+  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
   view-remote: "Voir les informations détaillées"
 
 desktop/views/pages/user/user.home.vue:
@@ -591,7 +591,7 @@ mobile/views/pages/user.vue:
   overview: "Aperçu"
   timeline: "Fil d'actualité"
   media: "Media"
-  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées"
+  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
   view-remote: "Voir les informations détaillées"
 
 mobile/views/pages/user/home.vue:
