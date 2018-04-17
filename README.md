@@ -29,12 +29,16 @@ and more! You can touch with your own eyes at https://misskey.xyz/.
 If you want to run your own instance of Misskey,
 please see [Setup and installation guide](./docs/setup.en.md).
 
+:wrench: Contribute
+----------------------------------------------------------------
+**[PR](https://github.com/syuilo/misskey/pulls)s welcome!**
+
+If you want to translate Misskey, please see [Translation guide](./docs/translate.en.md).
+
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
 [![Backers][backers-image]][support-url]
 [![Sponsors][sponsors-image]][support-url]
-
----
 
 <a href="https://www.patreon.com/syuilo"><img src="http://i.imgur.com/xEO164Z.png" alt="Become a Patron!" width="200" /></a>
 
@@ -45,6 +49,11 @@ please see [Setup and installation guide](./docs/setup.en.md).
 | [syuilo][syuilo-link]<br>Owner | [Aya Morisawa][ayamorisawa-link]<br>Collaborator | [otofune][otofune-link]<br>Collaborator | [akihikodaki][akihikodaki-link] | [rinsuki][rinsuki-link] |
 
 [List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
+
+### :earth_americas: Translators
+| ![][mirro-san-icon] | ![][Conan-kun-icon] |
+|:-:|:-:|
+| [Mirro][mirro-san-link]<br>English, French | [Asriel][Conan-kun-link]<br>English, French |
 
 :four_leaf_clover: Copyright
 ----------------------------------------------------------------
@@ -83,3 +92,9 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 [akihikodaki-icon]: https://avatars2.githubusercontent.com/u/17036990?s=70&v=4
 [rinsuki-link]:     https://github.com/rinsuki
 [rinsuki-icon]:     https://avatars0.githubusercontent.com/u/6533808?s=70&v=4
+
+[mirro-san-link]:   https://github.com/mirro-san
+[mirro-san-icon]:   https://avatars1.githubusercontent.com/u/17948612?s=70&v=4
+[Conan-kun-link]:   https://github.com/Conan-kun
+[Conan-kun-icon]:   https://avatars3.githubusercontent.com/u/30003708?s=70&v=4
+

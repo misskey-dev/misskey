@@ -2,7 +2,7 @@
 <mk-ui>
 	<span slot="header" v-if="!fetching">%fa:user% {{ user | userName }}</span>
 	<main v-if="!fetching">
-		<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote% <a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
+		<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 		<header>
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''"></div>
 			<div class="body">
@@ -44,15 +44,15 @@
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-is-active=" page == 'home' " @click="page = 'home'">%i18n:@overview%</a>
-				<a :data-is-active=" page == 'notes' " @click="page = 'notes'">%i18n:@timeline%</a>
-				<a :data-is-active=" page == 'media' " @click="page = 'media'">%i18n:@media%</a>
+				<a :data-is-active="page == 'home'" @click="page = 'home'">%i18n:@overview%</a>
+				<a :data-is-active="page == 'notes'" @click="page = 'notes'">%i18n:@timeline%</a>
+				<a :data-is-active="page == 'media'" @click="page = 'media'">%i18n:@media%</a>
 			</div>
 		</nav>
 		<div class="body">
 			<x-home v-if="page == 'home'" :user="user"/>
-			<mk-user-timeline v-if="page == 'notes'" :user="user"/>
-			<mk-user-timeline v-if="page == 'media'" :user="user" with-media/>
+			<mk-user-timeline v-if="page == 'notes'" :user="user" key="tl"/>
+			<mk-user-timeline v-if="page == 'media'" :user="user" :with-media="true" key="media"/>
 		</div>
 	</main>
 </mk-ui>
@@ -121,6 +121,9 @@ main
 
 			> a
 				font-weight bold
+
+			@media (max-width 500px)
+				font-size 12px
 
 	> header
 

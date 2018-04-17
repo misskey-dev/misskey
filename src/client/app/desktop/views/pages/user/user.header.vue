@@ -1,6 +1,6 @@
 <template>
 <div class="header" :data-is-dark-background="user.bannerUrl != null">
-	<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote% <a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
+	<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 	<div class="banner-container" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''">
 		<div class="banner" ref="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''" @click="onBannerClick"></div>
 	</div>
@@ -13,9 +13,7 @@
 			<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker%{{ user.profile.location }}</p>
 		</div>
 		<footer>
-			<router-link :to="user | userPage" :data-active="$parent.page == 'home'">%fa:home%概要</router-link>
-			<router-link :to="user | userPage('media')" :data-active="$parent.page == 'media'">%fa:image%メディア</router-link>
-			<router-link :to="user | userPage('graphs')" :data-active="$parent.page == 'graphs'">%fa:chart-bar%グラフ</router-link>
+			<router-link :to="user | userPage" :data-active="$parent.page == 'home'">%fa:home%ホーム</router-link>
 		</footer>
 	</div>
 </div>

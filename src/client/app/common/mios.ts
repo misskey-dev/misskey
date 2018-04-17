@@ -9,11 +9,12 @@ import Connection from './scripts/streaming/stream';
 import { HomeStreamManager } from './scripts/streaming/home';
 import { DriveStreamManager } from './scripts/streaming/drive';
 import { ServerStreamManager } from './scripts/streaming/server';
-import { RequestsStreamManager } from './scripts/streaming/requests';
 import { MessagingIndexStreamManager } from './scripts/streaming/messaging-index';
 import { OthelloStreamManager } from './scripts/streaming/othello';
 
 import Err from '../common/views/components/connect-failed.vue';
+import { LocalTimelineStreamManager } from './scripts/streaming/local-timeline';
+import { GlobalTimelineStreamManager } from './scripts/streaming/global-timeline';
 
 //#region api requests
 let spinner = null;
@@ -116,15 +117,17 @@ export default class MiOS extends EventEmitter {
 	 * Connection managers
 	 */
 	public streams: {
+		localTimelineStream: LocalTimelineStreamManager;
+		globalTimelineStream: GlobalTimelineStreamManager;
 		driveStream: DriveStreamManager;
 		serverStream: ServerStreamManager;
-		requestsStream: RequestsStreamManager;
 		messagingIndexStream: MessagingIndexStreamManager;
 		othelloStream: OthelloStreamManager;
 	} = {
+		localTimelineStream: null,
+		globalTimelineStream: null,
 		driveStream: null,
 		serverStream: null,
-		requestsStream: null,
 		messagingIndexStream: null,
 		othelloStream: null
 	};
@@ -231,13 +234,14 @@ export default class MiOS extends EventEmitter {
 	public async init(callback) {
 		//#region Init stream managers
 		this.streams.serverStream = new ServerStreamManager(this);
-		this.streams.requestsStream = new RequestsStreamManager(this);
 
 		this.once('signedin', () => {
 			// Init home stream manager
 			this.stream = new HomeStreamManager(this, this.i);
 
 			// Init other stream manager
+			this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.i);
+			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.i);
 			this.streams.driveStream = new DriveStreamManager(this, this.i);
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.i);
 			this.streams.othelloStream = new OthelloStreamManager(this, this.i);

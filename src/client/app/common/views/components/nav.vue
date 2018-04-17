@@ -2,15 +2,9 @@
 <span class="mk-nav">
 	<a :href="aboutUrl">%i18n:@about%</a>
 	<i>・</i>
-	<a :href="statsUrl">%i18n:@stats%</a>
-	<i>・</i>
-	<a :href="statusUrl">%i18n:@status%</a>
-	<i>・</i>
-	<a href="http://zawazawa.jp/misskey/">%i18n:@wiki%</a>
-	<i>・</i>
-	<a href="https://github.com/syuilo/misskey/blob/master/DONORS.md">%i18n:@donors%</a>
-	<i>・</i>
 	<a href="https://github.com/syuilo/misskey">%i18n:@repository%</a>
+	<i>・</i>
+	<a href="https://github.com/syuilo/misskey/issues/new" target="_blank">%i18n:@feedback%</a>
 	<i>・</i>
 	<a :href="devUrl">%i18n:@develop%</a>
 	<i>・</i>

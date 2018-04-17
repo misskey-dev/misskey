@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import { JSDOM } from 'jsdom';
 import * as debug from 'debug';
 
@@ -6,7 +7,7 @@ import Resolver from '../resolver';
 import Note, { INote } from '../../../models/note';
 import post from '../../../services/note/create';
 import { INote as INoteActivityStreamsObject, IObject } from '../type';
-import { resolvePerson } from './person';
+import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser } from '../../../models/user';
 
@@ -22,7 +23,8 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		return await Note.findOne({ _id: uri.split('/').pop() });
+		const id = new mongo.ObjectID(uri.split('/').pop());
+		return await Note.findOne({ _id: id });
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -74,6 +76,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
 	const { window } = new JSDOM(note.content);
+
+	// ユーザーの情報が古かったらついでに更新しておく
+	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
+		updatePerson(note.attributedTo);
+	}
 
 	return await post(actor, {
 		createdAt: new Date(note.published),

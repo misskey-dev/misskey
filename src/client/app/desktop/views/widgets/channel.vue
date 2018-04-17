@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-channel">
 	<template v-if="!props.compact">
-		<p class="title">%fa:tv%{{ channel ? channel.title : '%i18n:@title%' }}</p>
+		<p class="title">%fa:tv%{{ channel ? channel.title : '%i18n:!@title%' }}</p>
 		<button @click="settings" title="%i18n:@settings%">%fa:cog%</button>
 	</template>
 	<p class="get-started" v-if="props.channel == null">%i18n:@get-started%</p>

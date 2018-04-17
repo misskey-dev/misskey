@@ -13,9 +13,6 @@
 				<li @click="drive">
 					<p>%fa:cloud%%i18n:@drive%%fa:angle-right%</p>
 				</li>
-				<li>
-					<a href="/i/mentions">%fa:at%%i18n:@mentions%%fa:angle-right%</a>
-				</li>
 			</ul>
 			<ul>
 				<li>

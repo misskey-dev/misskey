@@ -19,7 +19,7 @@ export default Vue.extend({
 	},
 	methods: {
 		fn() {
-			const ok = window.confirm('%i18n:@read-all%');
+			const ok = window.confirm('%i18n:!@read-all%');
 			if (!ok) return;
 
 			(this as any).api('notifications/markAsRead_all');

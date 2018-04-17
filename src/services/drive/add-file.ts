@@ -10,12 +10,12 @@ import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
-import DriveFile, { IMetadata, getGridFSBucket, IDriveFile } from '../../models/drive-file';
+import DriveFile, { IMetadata, getGridFSBucket, IDriveFile, DriveFileChunk } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../../publishers/stream';
 import getAcct from '../../acct/render';
-import { IUser } from '../../models/user';
+import { IUser, isLocalUser } from '../../models/user';
 
 const gm = _gm.subClass({
 	imageMagick: true
@@ -207,7 +207,34 @@ const addFile = async (
 
 			// If usage limit exceeded
 			if (usage + size > user.driveCapacity) {
-				throw 'no-free-space';
+				if (isLocalUser(user)) {
+					throw 'no-free-space';
+				} else {
+					//#region (アバターまたはバナーを含まず)最も古いファイルを削除する
+					const oldFile = await DriveFile.findOne({
+						_id: {
+							$nin: [user.avatarId, user.bannerId]
+						}
+					}, {
+						sort: {
+							_id: 1
+						}
+					});
+
+					if (oldFile) {
+						// チャンクをすべて削除
+						DriveFileChunk.remove({
+							files_id: oldFile._id
+						});
+
+						DriveFile.update({ _id: oldFile._id }, {
+							$set: {
+								'metadata.deletedAt': new Date()
+							}
+						});
+					}
+					//#endregion
+				}
 			}
 		})()
 	]);

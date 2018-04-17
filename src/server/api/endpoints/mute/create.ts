@@ -30,7 +30,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}, {
 		fields: {
 			data: false,
-			'profile': false
+			profile: false
 		}
 	});
 
@@ -41,8 +41,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Check if already muting
 	const exist = await Mute.findOne({
 		muterId: muter._id,
-		muteeId: mutee._id,
-		deletedAt: { $exists: false }
+		muteeId: mutee._id
 	});
 
 	if (exist !== null) {

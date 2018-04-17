@@ -11,11 +11,6 @@ import { pack } from '../../../../models/note';
 
 /**
  * Get timeline of myself
- *
- * @param {any} params
- * @param {any} user
- * @param {any} app
- * @return {Promise<any>}
  */
 module.exports = async (params, user, app) => {
 	// Get 'limit' parameter
@@ -56,9 +51,7 @@ module.exports = async (params, user, app) => {
 
 		// ミュートしているユーザーを取得
 		mutedUserIds: Mute.find({
-			muterId: user._id,
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
+			muterId: user._id
 		}).then(ms => ms.map(m => m.muteeId))
 	});
 

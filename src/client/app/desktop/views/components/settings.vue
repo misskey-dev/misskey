@@ -75,6 +75,7 @@
 				<el-option-group label="言語を指定">
 					<el-option label="ja-JP" value="ja"/>
 					<el-option label="en-US" value="en"/>
+					<el-option label="fr" value="fr"/>
 				</el-option-group>
 			</el-select>
 			<div class="none ui info">

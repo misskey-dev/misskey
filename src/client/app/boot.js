@@ -18,6 +18,8 @@
 // ブロック内に入れてスコープを非グローバル化するとそれが防げます
 // (Chrome以外のブラウザでは検証していません)
 {
+	if (localStorage.getItem('shouldFlush') == 'true') refresh();
+
 	// Get the current url information
 	const url = new URL(location.href);
 
@@ -103,19 +105,25 @@
 				'\n\n' +
 				'New version of Misskey available. The page will be reloaded.');
 
-			// Clear cache (serive worker)
-			try {
-				navigator.serviceWorker.controller.postMessage('clear');
-
-				navigator.serviceWorker.getRegistrations().then(registrations => {
-					registrations.forEach(registration => registration.unregister());
-				});
-			} catch (e) {
-				console.error(e);
-			}
-
-			// Force reload
-			location.reload(true);
+			refresh();
 		}
 	}, 3000);
+
+	function refresh() {
+		localStorage.setItem('shouldFlush', 'false');
+
+		// Clear cache (serive worker)
+		try {
+			navigator.serviceWorker.controller.postMessage('clear');
+
+			navigator.serviceWorker.getRegistrations().then(registrations => {
+				registrations.forEach(registration => registration.unregister());
+			});
+		} catch (e) {
+			console.error(e);
+		}
+
+		// Force reload
+		location.reload(true);
+	}
 }

@@ -72,7 +72,7 @@ export default Vue.extend({
 					avatarId: file.id
 				}).then(() => {
 					this.avatarSaving = false;
-					alert('%i18n:@avatar-saved%');
+					alert('%i18n:!@avatar-saved%');
 				});
 			});
 		},
@@ -86,7 +86,7 @@ export default Vue.extend({
 					bannerId: file.id
 				}).then(() => {
 					this.bannerSaving = false;
-					alert('%i18n:@banner-saved%');
+					alert('%i18n:!@banner-saved%');
 				});
 			});
 		},
@@ -100,7 +100,7 @@ export default Vue.extend({
 				birthday: this.birthday || null
 			}).then(() => {
 				this.saving = false;
-				alert('%i18n:@saved%');
+				alert('%i18n:!@saved%');
 			});
 		}
 	}

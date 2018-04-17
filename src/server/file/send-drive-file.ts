@@ -22,6 +22,12 @@ export default async function(ctx: Koa.Context) {
 		return;
 	}
 
+	if (file.metadata.deletedAt) {
+		ctx.status = 410;
+		await send(ctx, `${__dirname}/assets/tombstone.png`);
+		return;
+	}
+
 	const bucket = await getGridFSBucket();
 
 	const readable = bucket.openDownloadStream(fileId);

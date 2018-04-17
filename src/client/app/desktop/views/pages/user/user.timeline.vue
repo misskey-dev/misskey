@@ -3,6 +3,7 @@
 	<header>
 		<span :data-is-active="mode == 'default'" @click="mode = 'default'">投稿</span>
 		<span :data-is-active="mode == 'with-replies'" @click="mode = 'with-replies'">投稿と返信</span>
+		<span :data-is-active="mode == 'with-media'" @click="mode = 'with-media'">メディア</span>
 	</header>
 	<div class="loading" v-if="fetching">
 		<mk-ellipsis-icon/>
@@ -31,14 +32,14 @@ export default Vue.extend({
 			date: null
 		};
 	},
-	watch: {
-		mode() {
-			this.fetch();
-		}
-	},
 	computed: {
 		empty(): boolean {
 			return this.notes.length == 0;
+		}
+	},
+	watch: {
+		mode() {
+			this.fetch();
 		}
 	},
 	mounted() {
@@ -63,7 +64,8 @@ export default Vue.extend({
 			(this as any).api('users/notes', {
 				userId: this.user.id,
 				untilDate: this.date ? this.date.getTime() : undefined,
-				with_replies: this.mode == 'with-replies'
+				includeReplies: this.mode == 'with-replies',
+				withMedia: this.mode == 'with-media'
 			}).then(notes => {
 				this.notes = notes;
 				this.fetching = false;
@@ -75,7 +77,8 @@ export default Vue.extend({
 			this.moreFetching = true;
 			(this as any).api('users/notes', {
 				userId: this.user.id,
-				with_replies: this.mode == 'with-replies',
+				includeReplies: this.mode == 'with-replies',
+				withMedia: this.mode == 'with-media',
 				untilId: this.notes[this.notes.length - 1].id
 			}).then(notes => {
 				this.moreFetching = false;

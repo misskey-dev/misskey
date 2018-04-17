@@ -2,7 +2,7 @@
 <mk-ui>
 	<span slot="header">%fa:cog%%i18n:@settings%</span>
 	<div :class="$style.content">
-		<p v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
+		<p v-html="'%i18n:!@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
 		<ul>
 			<li><router-link to="./settings/profile">%fa:user%%i18n:@profile%%fa:angle-right%</router-link></li>
 			<li><router-link to="./settings/twitter">%fa:B twitter%%i18n:@twitter%%fa:angle-right%</router-link></li>

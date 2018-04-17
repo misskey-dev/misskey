@@ -4,7 +4,7 @@ import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
 import { IRemoteUser } from '../../../../models/user';
 import { IAnnounce, INote } from '../../type';
-import { fetchNote, resolveNote } from '../../objects/note';
+import { fetchNote, resolveNote } from '../../models/note';
 
 const log = debug('misskey:activitypub');
 

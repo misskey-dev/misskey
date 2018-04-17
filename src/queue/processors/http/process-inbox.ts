@@ -5,7 +5,7 @@ const httpSignature = require('http-signature');
 import parseAcct from '../../../acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import perform from '../../../remote/activitypub/perform';
-import { resolvePerson } from '../../../remote/activitypub/objects/person';
+import { resolvePerson } from '../../../remote/activitypub/models/person';
 
 const log = debug('misskey:queue:inbox');
 

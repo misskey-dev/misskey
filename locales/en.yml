@@ -1,5 +1,5 @@
 common:
-  misskey: "Share everything others using Misskey."
+  misskey: "Share everything with others using Misskey."
 
   time:
     unknown: "unknown"
@@ -36,17 +36,17 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
-  update-available: "New version of Misskey is now available({newer}, current is {current}). Reload page to apply update."
-  my-token-regenerated: "Your token is just regenerated, so you will signout."
+  update-available: "A new version of Misskey is now available({newer}, current is {current}). Reload the page to apply the update."
+  my-token-regenerated: "Your token has been generated. You will now get logged out."
 
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
-  description: "There is a problem with Internet connection, or the server may be down or maintaining. Please {try again} later."
+  description: "There is a problem either with your internet connection, or the server may be down or under maintenance. Please {try again} later."
   thanks: "Thank you for using Misskey."
   troubleshoot: "Troubleshoot"
 
 common/views/components/connect-failed.troubleshooter.vue:
-  title: "TroubleShooting"
+  title: "Troubleshooting"
   network: "Network connection"
   checking-network: "Checking network connection"
   internet: "Internet connection"
@@ -59,12 +59,14 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet: "There is no Internet connection"
   no-internet-desc: "Please make sure you are connected to the Internet."
   no-server: "Unable to connect to the server"
-  no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is down or maintaining, please try to access it again after a while."
-  success: "Successfully connect to the Misskey's server"
-  success-desc: "It seems to be able to connect normally. Please reload the page."
+  no-server-desc: "The network connection of your PC is normal, but you could not connect to Misskey's server. There is a possibility that the server is either down or under maintenance, please try again later."
+  success: "Successfully connected to Misskey's server"
+  success-desc: "It seems to be able to connect. Please reload the page."
+  flush: "Clean cache"
+  set-version: "Specify version"
 
 common/views/components/messaging.vue:
-  search-user: "Find a user"
+  search-user: "Find an user"
   you: "You"
   no-history: "No history"
 
@@ -78,8 +80,8 @@ common/views/components/messaging-room.vue:
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
-  attach-from-local: "Attach file from your pc"
-  attach-from-drive: "Attach file from the drive"
+  attach-from-local: "Attach files from your pc"
+  attach-from-drive: "Attach files from your Drive"
 
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
@@ -90,30 +92,31 @@ common/views/components/nav.vue:
   stats: "Stats"
   status: "Status"
   wiki: "Wiki"
-  donors: "Donors"
+  donors: "Donators"
   repository: "Repository"
   develop: "Developers"
+  feedback: "Feedback"
 
 common/views/components/note-menu.vue:
   pin: "Pin to profile page"
 
 common/views/components/poll.vue:
-  vote-to: "Vote to 「{}」"
+  vote-to: "Vote for '{}'"
   vote-count: "{} votes"
   total-users: "{} users voted"
   vote: "Vote"
-  show-result: "Show result"
+  show-result: "Show results"
   voted: "Voted"
 
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "You need to enter two or more choice."
+  no-only-one-choice: "You need to enter two or more choices."
   choice-n: "Choice {}"
   remove: "Remove this choice"
   add: "+ Add a choice"
   destroy: "Destroy this poll"
 
 common/views/components/reaction-picker.vue:
-  choose-reaction: "Pick your reaction"
+  choose-reaction: "Choose a reaction"
 
 common/views/components/signin.vue:
   username: "Username"
@@ -129,17 +132,17 @@ common/views/components/signup.vue:
   unavailable: "Unavailable"
   error: "Network error"
   invalid-format: "Only use letters, numbers and -."
-  too-short: "Please enter at least 1 letters！"
-  too-long: "Please enter within 20 letters."
+  too-short: "Please enter at least 1 character！"
+  too-long: "Please enter up to 20 characters."
   password: "Password"
-  password-placeholder: "We recommend more than 8 letters."
+  password-placeholder: "We recommend more than 8 characters."
   weak-password: "Weak"
   normal-password: "So so"
   strong-password: "Strong"
   retype: "Type again"
   retype-placeholder: "Confirm your password"
   password-matched: "OK"
-  password-not-matched: "Not matched"
+  password-not-matched: "Doesn't match"
   recaptcha: "Verify"
   create: "Create an Account"
   some-error: "Account creation failed for some reason. Please try again."
@@ -154,11 +157,11 @@ common/views/components/stream-indicator.vue:
   connected: "Connected"
 
 common/views/components/twitter-setting.vue:
-  description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
-  connected-to: "You to connected this Twitter account"
+  description: "If you connect your Twitter account to your Misskey account, you will be able to see your Twitter account information on your profile and you can sign-in using Twitter."
+  connected-to: "You are connected to this Twitter account"
   detail: "Detail..."
   reconnect: "Reconnect"
-  connect: "Connect to Twitter"
+  connect: "Link your twitter account"
   disconnect: "Disconnect"
 
 common/views/components/uploader.vue:
@@ -172,7 +175,7 @@ common/views/widgets/broadcast.vue:
 
 common/views/widgets/donation.vue:
   title: "Donation"
-  text: "To manage Misskey we spend money for our domain server etc.. There's no incomes for us so we need your tip. If you're interested contact {}. Thank you for your contribution!"
+  text: "To keep Misskey up and running we spend money for our domain name, servers and so on.. We don't get any money from it, and we would really appreciate it if you could donate. If you're interested contact {}. Thank you for your contribution!"
 
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
@@ -190,7 +193,7 @@ desktop/views/components/calendar.vue:
   title: "{1} / {2}"
   prev: "Previous month"
   next: "Next month"
-  go: "Click to travel"
+  go: "Click to naviguate"
 
 desktop/views/components/drive-window.vue:
   used: "used"
@@ -203,7 +206,7 @@ desktop/views/components/drive.file.vue:
     rename: "Rename"
     copy-url: "Copy URL"
     download: "Download"
-    else-files: "その他..."
+    else-files: "Others"
     set-as-avatar: "Set as avatar"
     set-as-banner: "Set as banner"
     open-in-app: "Open in app"
@@ -214,8 +217,8 @@ desktop/views/components/drive.file.vue:
     copied-url-to-clipboard: "Copied URL to clipboard"
 
 desktop/views/components/drive.folder.vue:
-  unable-to-process: "操作を完了できません"
-  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unable-to-process: "The operation could not be completed."
+  circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
   unhandled-error: "Unknown error"
   contextmenu:
     move-to-this-folder: "Move to this folder"
@@ -232,15 +235,15 @@ desktop/views/components/drive.vue:
   load-more: "Load more"
   empty-draghover: "Drop Welcome!"
   empty-drive: "Your drive is empty"
-  empty-drive-description: "右クリックして「ファイルをアップロード」を選んだり、ファイルをドラッグ&ドロップすることでもアップロードできます。"
+  empty-drive-description: "You can also upload by right clicking and selecting \"Upload file\" or you can drag and drop a file onto the window."
   empty-folder: "This folder is empty"
-  unable-to-process: "操作を完了できません"
-  circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
+  unable-to-process: "The operation could not be completed."
+  circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
   unhandled-error: "Unknown error"
   url-upload: "Upload from a URL"
   url-of-file: "URL of file you want to upload"
   url-upload-requested: "Upload requested"
-  may-take-time: "アップロードが完了するまで時間がかかる場合があります。"
+  may-take-time: "It may take some time for the upload to complete."
   create-folder: "Create a folder"
   folder-name: "Folder name"
   contextmenu:
@@ -255,7 +258,7 @@ desktop/views/components/notes.note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
   renote: "Renote"
-  add-reaction: "Add your reaction"
+  add-reaction: "Add a reaction"
   detail: "Show detail"
 
 desktop/views/components/notifications.vue:
@@ -277,7 +280,7 @@ desktop/views/components/post-form.vue:
   renote-failed: "Failed to renote"
   posting: "Posting"
   attach-media-from-local: "Attach media from your pc"
-  attach-media-from-drive: "Attach media from the drive"
+  attach-media-from-drive: "Attach media from your Drive"
   attach-cancel: "Cancel attachment"
   insert-a-kao: "v(‘ω’)v"
   create-poll: "Create a poll"
@@ -316,25 +319,25 @@ desktop/views/components/settings.2fa.vue:
   intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security. "
   detail: "See details..."
   url: "https://www.google.com/landing/2step/"
-  caution: "As a caveat, security improves, but you can not sign in to Misskey if you lose a registered device, etc."
+  caution: "If you lose access to your device, you won't be able to connect to Misskey anymore!"
   register: "Register a device"
-  already-registered: "The setting has already been completed."
+  already-registered: "A device is already registered"
   unregister: "Disable"
   unregistered: "Two-step authentication has been disabled."
   enter-password: "Enter the password"
-  authenticator: "First, you need install Google Authenticator to your device:"
+  authenticator: "First, you need install Google Authenticator on your device:"
   howtoinstall: "How to install"
-  scan: "Next, please scan displayed QR code:"
-  done: "Please enter the token displaying in your device:"
+  scan: "And then, scan the QR code:"
+  done: "Please enter the token displaying on your device:"
   submit: "Submit"
   success: "Setup completed successfully!"
   failed: "Failed to setup. please ensure that the token is correct."
-  info: "From the next sign in, enter the token that is displayed on the device in addition to the password."
+  info: "From now on, enter the token that is displayed on your device in addition to your password when signing-in to Misskey."
 
 desktop/views/components/settings.api.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
-  caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
-  regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
+  caution: "Please do not show this token to third parties (do not enter it somewhere else other than here) otherwise your account could get compromised."
+  regeneration-of-token: "In the unlikely event that this token leaks out you can regenerate it."
   regenerate-token: "Regenerate the token"
   enter-password: "Please enter the password"
 
@@ -349,12 +352,12 @@ desktop/views/components/settings.password.vue:
   enter-current-password: "Enter the current password"
   enter-new-password: "Enter the new password"
   enter-new-password-again: "Enter the new password again"
-  not-match: "New password not matched"
+  not-match: "New password doesn't match"
   changed: "Password updated successfully"
 
 desktop/views/components/settings.profile.vue:
   avatar: "Avatar"
-  choice-avatar: "Choice an image"
+  choice-avatar: "Choose an image"
   name: "Name"
   location: "Location"
   description: "Description"
@@ -364,7 +367,6 @@ desktop/views/components/settings.profile.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Drive"
-  mentions: "Mentions"
   customize: "Customize"
   settings: "Settings"
   signout: "Sign out"
@@ -388,10 +390,10 @@ desktop/views/pages/note.vue:
   next: "Next note"
 
 desktop/views/pages/selectdrive.vue:
-  title: "Choose a file(s)"
+  title: "Choose file(s)"
   ok: "OK"
   cancel: "Cancel"
-  upload: "Upload a file(s) from you PC"
+  upload: "Upload files from you PC"
 
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Followers you know"
@@ -404,11 +406,11 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No users"
 
 desktop/views/pages/user/user.header.vue:
-  is-remote: "This user is not a user of Misskey, so the information is not accurate."
+  is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
 
 desktop/views/pages/user/user.home.vue:
-  last-used-at: "Last used at"
+  last-used-at: "Last active: "
 
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
@@ -451,7 +453,7 @@ desktop/views/widgets/users.vue:
 desktop/views/widgets/channel.vue:
   title: "Channel"
   settings: "Widget settings"
-  get-started: "Please click the cog in the upper right to specify the channel to receive"
+  get-started: "Please click the cog in the upper right corner to specify a channel"
 
 mobile/views/components/drive.vue:
   drive: "Drive"
@@ -514,8 +516,8 @@ mobile/views/components/ui.nav.vue:
   search: "Search"
 
 mobile/views/components/user-timeline.vue:
-  no-notes: "This user seems never note"
-  no-notes-with-media: "There is no notes with media"
+  no-notes: "It seems this user hasn't posted yet"
+  no-notes-with-media: "There is no notes with attached media"
   load-more: "More"
 
 mobile/views/components/users-list.vue:
@@ -552,7 +554,7 @@ mobile/views/pages/notifications.vue:
 
 mobile/views/pages/profile-setting.vue:
   title: "Profile settings"
-  will-be-published: "These profiles will be published."
+  will-be-published: "These profile settings will be updated."
   name: "Name"
   location: "Location"
   description: "Description"
@@ -568,7 +570,7 @@ mobile/views/pages/profile-setting.vue:
 
 mobile/views/pages/search.vue:
   search: "Search"
-  empty: "「{}」に関する投稿は見つかりませんでした。"
+  empty: "No posts were found for '{}'"
 
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose a file"
@@ -589,7 +591,7 @@ mobile/views/pages/user.vue:
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
-  is-remote: "This user is not a user of Misskey, so the information is not accurate."
+  is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
 
 mobile/views/pages/user/home.vue:
@@ -600,7 +602,7 @@ mobile/views/pages/user/home.vue:
   domains: "Domains"
   frequently-replied-users: "Frequently talking users"
   followers-you-know: "Followers you know"
-  last-used-at: "Last used at"
+  last-used-at: "Last active:"
 
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Loading"
@@ -619,7 +621,7 @@ mobile/views/pages/user/home.photos.vue:
   no-photos: "No photos"
 
 docs:
-  edit-this-page-on-github: "Caught a mistake or want to contribute to the documentation? "
+  edit-this-page-on-github: "Did you find an error or do you want to contribute to the documentation? "
   edit-this-page-on-github-link: "Edit this page on Github!"
 
   api:

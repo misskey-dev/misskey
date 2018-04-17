@@ -2,7 +2,7 @@ import { toUnicode, toASCII } from 'punycode';
 import User from '../models/user';
 import webFinger from './webfinger';
 import config from '../config';
-import { createPerson } from './activitypub/objects/person';
+import { createPerson } from './activitypub/models/person';
 
 export default async (username, _host, option) => {
 	const usernameLower = username.toLowerCase();

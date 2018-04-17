@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import Note, { INote, pack as packNote, deleteNote } from './note';
+import Note, { pack as packNote, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
 import getFriends from '../server/api/common/get-friends';
@@ -47,7 +47,6 @@ type IUserBase = {
 	bannerId: mongo.ObjectID;
 	data: any;
 	description: string;
-	latestNote: INote;
 	pinnedNoteId: mongo.ObjectID;
 	isSuspended: boolean;
 	keywords: string[];
@@ -93,6 +92,7 @@ export interface IRemoteUser extends IUserBase {
 		id: string;
 		publicKeyPem: string;
 	};
+	updatedAt: Date;
 }
 
 export type IUser = ILocalUser | IRemoteUser;
@@ -331,9 +331,6 @@ export const pack = (
 	_user.id = _user._id;
 	delete _user._id;
 
-	// Remove needless properties
-	delete _user.latestNote;
-
 	if (_user.host == null) {
 		// Remove private properties
 		delete _user.keypair;
@@ -358,6 +355,8 @@ export const pack = (
 		if (!opts.detail) {
 			delete _user.twoFactorEnabled;
 		}
+	} else {
+		delete _user.publicKey;
 	}
 
 	_user.avatarUrl = _user.avatarId != null
