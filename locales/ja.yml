@@ -369,6 +369,7 @@ desktop/views/components/ui.header.account.vue:
   mentions: "あなた宛て"
   customize: "カスタマイズ"
   settings: "設定"
+  feedback: "フィードバック"
   signout: "サインアウト"
 
 desktop/views/components/ui.header.nav.vue:
