@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import Note, { INote, pack as packNote, deleteNote } from './note';
+import Note, { pack as packNote, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
 import getFriends from '../server/api/common/get-friends';

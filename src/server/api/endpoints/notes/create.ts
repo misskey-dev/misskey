@@ -2,7 +2,6 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import deepEqual = require('deep-equal');
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
