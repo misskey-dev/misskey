@@ -359,6 +359,8 @@ export const pack = (
 		if (!opts.detail) {
 			delete _user.twoFactorEnabled;
 		}
+	} else {
+		delete _user.publicKey;
 	}
 
 	_user.avatarUrl = _user.avatarId != null
