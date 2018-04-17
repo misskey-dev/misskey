@@ -1,6 +1,6 @@
 <template>
 <div class="note" :class="{ renote: isRenote }">
-	<div class="reply-to" v-if="p.reply">
+	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || os.i.clientSettings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">

@@ -16,6 +16,14 @@ import Err from '../common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './scripts/streaming/local-timeline';
 import { GlobalTimelineStreamManager } from './scripts/streaming/global-timeline';
 
+const defaultSettings = {
+	fetchOnScroll: true,
+	showMaps: true,
+	showPostFormOnTopOfTl: false,
+	gradientWindowHeader: false,
+	showReplyTarget: true
+};
+
 //#region api requests
 let spinner = null;
 let pending = 0;
@@ -298,12 +306,7 @@ export default class MiOS extends EventEmitter {
 		const fetched = me => {
 			if (me) {
 				// デフォルトの設定をマージ
-				me.clientSettings = Object.assign({
-					fetchOnScroll: true,
-					showMaps: true,
-					showPostFormOnTopOfTl: false,
-					gradientWindowHeader: false
-				}, me.clientSettings);
+				me.clientSettings = Object.assign(defaultSettings, me.clientSettings);
 
 				// ローカルストレージにキャッシュ
 				localStorage.setItem('me', JSON.stringify(me));
