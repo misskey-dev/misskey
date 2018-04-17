@@ -1,6 +1,6 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/user';
-import { createNote, fetchNote } from '../../objects/note';
+import { createNote, fetchNote } from '../../models/note';
 
 /**
  * 投稿作成アクティビティを捌きます
