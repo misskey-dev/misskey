@@ -74,20 +74,36 @@ export default Vue.extend({
 	border-radius 6px
 
 	> header
-		padding 8px 16px
-		border-bottom solid 1px #eee
+		padding 0 8px
+		z-index 1
+		box-shadow 0 1px rgba(0, 0, 0, 0.08)
 
 		> span
-			margin-right 16px
-			line-height 27px
-			font-size 14px
-			color #555
+			display inline-block
+			padding 0 10px
+			line-height 42px
+			font-size 12px
+			user-select none
+
+			&[data-is-active]
+				color $theme-color
+				cursor default
+
+				&:before
+					content ""
+					display block
+					position absolute
+					bottom 0
+					left -8px
+					width calc(100% + 16px)
+					height 2px
+					background $theme-color
 
 			&:not([data-is-active])
-				color $theme-color
+				color #6f7477
 				cursor pointer
 
 				&:hover
-					text-decoration underline
+					color #525a5f
 
 </style>
