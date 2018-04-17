@@ -54,7 +54,7 @@ export default class Replacer {
 	}
 
 	public replacement(ctx, match, key) {
-		const client = 'misskey/src/client/app/';
+		const client = '/src/client/app/';
 		let name = null;
 
 		const shouldEscape = key[0] == '!';
