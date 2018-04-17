@@ -8,10 +8,10 @@ import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
 import User from './user';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
-
 DriveFile.createIndex('metadata.uri', { sparse: true, unique: true });
-
 export default DriveFile;
+
+export const DriveFileChunk = monkDb.get('driveFiles.chunks');
 
 const getGridFSBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
@@ -93,7 +93,7 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 	}
 
 	// このDriveFileのチャンクをすべて削除
-	await monkDb.get('driveFiles.chunks').remove({
+	await DriveFileChunk.remove({
 		files_id: d._id
 	});
 
