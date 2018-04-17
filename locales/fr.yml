@@ -446,7 +446,7 @@ desktop/views/widgets/trends.vue:
   nothing: "Rien"
 
 desktop/views/widgets/users.vue:
-  title: "Utilisateurs recommandés"
+  title: "Utilisateurs"
   refresh: "Afficher d'autres"
   no-one: "Personne"
 
