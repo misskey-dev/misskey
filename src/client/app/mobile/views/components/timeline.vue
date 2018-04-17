@@ -34,10 +34,13 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			moreFetching: false,
+			prevFetching: false,
 			notes: [],
 			existMore: false,
+			existPrev: false,
 			connection: null,
-			connectionId: null
+			connectionId: null,
+			isTop: true
 		};
 	},
 	computed: {
@@ -78,7 +81,26 @@ this.fetch();
 				if (cb) cb();
 			});
 		},
+		prev() {
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0) return;
+			this.prevFetching = true;
+			(this as any).api('notes/timeline', {
+				limit: limit + 1,
+				sinceId: this.notes[0].id
+			}).then(notes => {
+				if (notes.length == limit + 1) {
+					notes.shift();
+					this.existPrev = true;
+				} else {
+					this.existPrev = false;
+				}
+				this.notes = notes.concat(this.notes);
+				if (this.notes.length > 20) this.notes = this.notes.slice(0,10);
+				this.prevFetching = false;
+			});
+		},
 		more() {
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
 			(this as any).api('notes/timeline', {
 				limit: limit + 1,
@@ -91,17 +113,24 @@ this.fetch();
 					this.existMore = false;
 				}
 				this.notes = this.notes.concat(notes);
+				if (this.notes.length > 20) this.notes = this.notes.slice(10);
 				this.moreFetching = false;
 			});
 		},
 		onNote(note) {
-			this.notes.unshift(note);
-
-			const isTop = window.scrollY > 8;
-			if (isTop) this.notes.pop();
+			if (this.isTop && !existPrev) {
+				this.notes.unshift(note);
+				this.notes.pop();
+			}
 		},
 		onChangeFollowing() {
 			this.fetch();
+		},
+		onScroll() {
+			if (!this.isTop && window.scrollY < 100) {
+				this.prev();
+			}
+			this.isTop = window.scrollY < 100;
 		}
 	}
 });
