@@ -88,6 +88,7 @@ export default Vue.extend({
 			&[data-is-active]
 				color $theme-color
 				cursor default
+				font-weight bold
 
 				&:before
 					content ""
