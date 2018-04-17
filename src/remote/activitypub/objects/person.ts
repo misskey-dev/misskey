@@ -120,6 +120,86 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 }
 
 /**
+ * Personの情報を更新します。
+ *
+ * Misskeyに対象のPersonが登録されていなければ無視します。
+ */
+export async function updatePerson(value: string | IObject, resolver?: Resolver): Promise<void> {
+	const uri = typeof value == 'string' ? value : value.id;
+
+	// URIがこのサーバーを指しているならスキップ
+	if (uri.startsWith(config.url + '/')) {
+		return;
+	}
+
+	//#region このサーバーに既に登録されているか
+	const exist = await User.findOne({ uri }) as IRemoteUser;
+
+	if (exist == null) {
+		return;
+	}
+	//#endregion
+
+	if (resolver == null) resolver = new Resolver();
+
+	const object = await resolver.resolve(value) as any;
+
+	if (
+		object == null ||
+		object.type !== 'Person'
+	) {
+		log(`invalid person: ${JSON.stringify(object, null, 2)}`);
+		throw new Error('invalid person');
+	}
+
+	const person: IPerson = object;
+
+	log(`Updating the Person: ${person.id}`);
+
+	const [followersCount = 0, followingCount = 0, notesCount = 0] = await Promise.all([
+		resolver.resolve(person.followers).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
+		),
+		resolver.resolve(person.following).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
+		),
+		resolver.resolve(person.outbox).then(
+			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
+			() => undefined
+		)
+	]);
+
+	const summaryDOM = JSDOM.fragment(person.summary);
+
+	// アイコンとヘッダー画像をフェッチ
+	const [avatarId, bannerId] = (await Promise.all([
+		person.icon,
+		person.image
+	].map(img =>
+		img == null
+			? Promise.resolve(null)
+			: resolveImage(exist, img)
+	))).map(file => file != null ? file._id : null);
+
+	// Update user
+	await User.update({ _id: exist._id }, {
+		$set: {
+			updatedAt: new Date(),
+			avatarId,
+			bannerId,
+			description: summaryDOM.textContent,
+			followersCount,
+			followingCount,
+			notesCount,
+			name: person.name,
+			url: person.url
+		}
+	});
+}
+
+/**
  * Personを解決します。
  *
  * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ

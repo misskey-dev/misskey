@@ -6,7 +6,7 @@ import Resolver from '../resolver';
 import Note, { INote } from '../../../models/note';
 import post from '../../../services/note/create';
 import { INote as INoteActivityStreamsObject, IObject } from '../type';
-import { resolvePerson } from './person';
+import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser } from '../../../models/user';
 
@@ -74,6 +74,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
 	const { window } = new JSDOM(note.content);
+
+	// ユーザーの情報が古かったらついでに更新しておく
+	if (actor.updatedAt && Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
+		updatePerson(note.attributedTo);
+	}
 
 	return await post(actor, {
 		createdAt: new Date(note.published),
