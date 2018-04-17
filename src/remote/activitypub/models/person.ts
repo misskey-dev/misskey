@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
 import * as debug from 'debug';
@@ -21,7 +22,8 @@ export async function fetchPerson(value: string | IObject, resolver?: Resolver):
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		return await User.findOne({ _id: uri.split('/').pop() });
+		const id = new mongo.ObjectID(uri.split('/').pop());
+		return await User.findOne({ _id: id });
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す

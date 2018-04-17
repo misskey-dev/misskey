@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import { JSDOM } from 'jsdom';
 import * as debug from 'debug';
 
@@ -22,7 +23,8 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		return await Note.findOne({ _id: uri.split('/').pop() });
+		const id = new mongo.ObjectID(uri.split('/').pop());
+		return await Note.findOne({ _id: id });
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
