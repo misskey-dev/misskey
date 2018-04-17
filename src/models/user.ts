@@ -47,7 +47,6 @@ type IUserBase = {
 	bannerId: mongo.ObjectID;
 	data: any;
 	description: string;
-	latestNote: INote;
 	pinnedNoteId: mongo.ObjectID;
 	isSuspended: boolean;
 	keywords: string[];
@@ -331,9 +330,6 @@ export const pack = (
 	// Rename _id to id
 	_user.id = _user._id;
 	delete _user._id;
-
-	// Remove needless properties
-	delete _user.latestNote;
 
 	if (_user.host == null) {
 		// Remove private properties

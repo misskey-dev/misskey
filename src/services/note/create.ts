@@ -89,14 +89,10 @@ export default async (user: IUser, data: {
 
 	res(note);
 
+	// Increment notes count
 	User.update({ _id: user._id }, {
-		// Increment notes count
 		$inc: {
 			notesCount: 1
-		},
-		// Update latest note
-		$set: {
-			latestNote: note
 		}
 	});
 

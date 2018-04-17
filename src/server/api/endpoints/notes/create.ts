@@ -97,31 +97,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 			return rej('cannot renote to renote');
 		}
 
-		// Fetch recently note
-		const latestNote = await Note.findOne({
-			userId: user._id
-		}, {
-			sort: {
-				_id: -1
-			}
-		});
-
 		isQuote = text != null || files != null;
-
-		// 直近と同じRenote対象かつ引用じゃなかったらエラー
-		if (latestNote &&
-			latestNote.renoteId &&
-			latestNote.renoteId.equals(renote._id) &&
-			!isQuote) {
-			return rej('cannot renote same note that already reposted in your latest note');
-		}
-
-		// 直近がRenote対象かつ引用じゃなかったらエラー
-		if (latestNote &&
-			latestNote._id.equals(renote._id) &&
-			!isQuote) {
-			return rej('cannot renote your latest note');
-		}
 	}
 
 	// Get 'replyId' parameter
@@ -206,24 +182,6 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
 	if (text === undefined && files === null && renote === null && poll === undefined) {
 		return rej('text, mediaIds, renoteId or poll is required');
-	}
-
-	// 直近の投稿と重複してたらエラー
-	// TODO: 直近の投稿が一日前くらいなら重複とは見なさない
-	if (user.latestNote) {
-		if (deepEqual({
-			text: user.latestNote.text,
-			reply: user.latestNote.replyId ? user.latestNote.replyId.toString() : null,
-			renote: user.latestNote.renoteId ? user.latestNote.renoteId.toString() : null,
-			mediaIds: (user.latestNote.mediaIds || []).map(id => id.toString())
-		}, {
-			text: text,
-			reply: reply ? reply._id.toString() : null,
-			renote: renote ? renote._id.toString() : null,
-			mediaIds: (files || []).map(file => file._id.toString())
-		})) {
-			return rej('duplicate');
-		}
 	}
 
 	// 投稿を作成
