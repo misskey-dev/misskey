@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
@@ -49,7 +50,7 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	const note = await Note.findOne({
-		_id: ctx.params.note
+		_id: new mongo.ObjectID(ctx.params.note)
 	});
 
 	if (note === null) {
@@ -62,7 +63,7 @@ router.get('/notes/:note', async (ctx, next) => {
 
 // outbot
 router.get('/users/:user/outbox', async ctx => {
-	const userId = ctx.params.user;
+	const userId = new mongo.ObjectID(ctx.params.user);
 
 	const user = await User.findOne({ _id: userId });
 
@@ -84,7 +85,7 @@ router.get('/users/:user/outbox', async ctx => {
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
-	const userId = ctx.params.user;
+	const userId = new mongo.ObjectID(ctx.params.user);
 
 	const user = await User.findOne({ _id: userId });
 
@@ -102,7 +103,7 @@ router.get('/users/:user/publickey', async ctx => {
 
 // user
 router.get('/users/:user', async ctx => {
-	const userId = ctx.params.user;
+	const userId = new mongo.ObjectID(ctx.params.user);
 
 	const user = await User.findOne({ _id: userId });
 
