@@ -32,11 +32,14 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			moreFetching: false,
+			prevFetching: false,
 			existMore: false,
+			existPrev: false,
 			notes: [],
 			connection: null,
 			connectionId: null,
-			date: null
+			date: null,
+			isTop: null
 		};
 	},
 
@@ -103,8 +106,26 @@ export default Vue.extend({
 			});
 		},
 
+		prev() {
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0) return;
+			this.prevFetching = true;
+			(this as any).api(this.endpoint, {
+				limit: 11,
+				sinceId: this.notes[0].id
+			}).then(notes => {
+				if (notes.length == 11) {
+					notes.shift();
+				} else {
+					this.existMore = false;
+				}
+				this.notes = notes.concat(this.notes);
+				if (this.notes.length > 20) this.notes = this.notes.slice(0,10);
+				this.prevFetching = false;
+			});
+		},
+	
 		more() {
-			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
 			(this as any).api(this.endpoint, {
 				limit: 11,
@@ -116,6 +137,7 @@ export default Vue.extend({
 					this.existMore = false;
 				}
 				this.notes = this.notes.concat(notes);
+				if (this.notes.length > 20) this.notes = this.notes.slice(10);
 				this.moreFetching = false;
 			});
 		},
@@ -128,14 +150,26 @@ export default Vue.extend({
 				sound.play();
 			}
 
-			this.notes.unshift(note);
-
-			const isTop = window.scrollY > 8;
-			if (isTop) this.notes.pop();
+			if (this.isTop && !existPrev) {
+				this.notes.unshift(note);
+				this.notes.pop();
+			}
 		},
 
 		onChangeFollowing() {
 			this.fetch();
+		},
+
+		onScroll() {
+			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) (this.$refs.tl as any).more();
+			}
+			
+			if (!this.isTop && window.scrollY < 100) {
+				this.prev();
+			}
+			this.isTop = window.scrollY < 100
 		},
 
 		focus() {

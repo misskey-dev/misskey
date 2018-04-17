@@ -43,13 +43,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onScroll() {
-			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
-				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) (this.$refs.tl as any).more();
-			}
-		},
-
 		onKeydown(e) {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
 				if (e.which == 84) { // t
