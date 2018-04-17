@@ -13,9 +13,6 @@
 				<li @click="drive">
 					<p>%fa:cloud%%i18n:@drive%%fa:angle-right%</p>
 				</li>
-				<li>
-					<a href="/i/mentions">%fa:at%%i18n:@mentions%%fa:angle-right%</a>
-				</li>
 			</ul>
 			<ul>
 				<li>
@@ -23,9 +20,6 @@
 				</li>
 				<li @click="settings">
 					<p>%fa:cog%%i18n:@settings%%fa:angle-right%</p>
-				</li>
-				<li>
-					<a href="https://github.com/syuilo/misskey/issues/new" target="_blank">%fa:comment%%i18n:@feedback%%fa:external-link-alt%</a>
 				</li>
 			</ul>
 			<ul>

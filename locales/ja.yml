@@ -95,6 +95,7 @@ common/views/components/nav.vue:
   donors: "ドナー"
   repository: "リポジトリ"
   develop: "開発者"
+  feedback: "フィードバック"
 
 common/views/components/note-menu.vue:
   pin: "ピン留め"
@@ -366,10 +367,8 @@ desktop/views/components/settings.profile.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   drive: "ドライブ"
-  mentions: "あなた宛て"
   customize: "カスタマイズ"
   settings: "設定"
-  feedback: "フィードバック"
   signout: "サインアウト"
 
 desktop/views/components/ui.header.nav.vue:

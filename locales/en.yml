@@ -95,6 +95,7 @@ common/views/components/nav.vue:
   donors: "Donators"
   repository: "Repository"
   develop: "Developers"
+  feedback: "Feedback"
 
 common/views/components/note-menu.vue:
   pin: "Pin to profile page"
@@ -366,10 +367,8 @@ desktop/views/components/settings.profile.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Drive"
-  mentions: "Mentions"
   customize: "Customize"
   settings: "Settings"
-  feedback: "Feedback"
   signout: "Sign out"
 
 desktop/views/components/ui.header.nav.vue:
