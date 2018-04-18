@@ -14,6 +14,7 @@ const queue = createQueue({
 export function createHttp(data) {
 	return queue
 		.create('http', data)
+		.events(false)
 		.attempts(8)
 		.backoff({ delay: 16384, type: 'exponential' });
 }
