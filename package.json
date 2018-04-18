@@ -193,7 +193,7 @@
 		"ts-node": "5.0.1",
 		"tslint": "5.9.1",
 		"typescript": "2.8.1",
-		"typescript-eslint-parser": "14.0.0",
+		"typescript-eslint-parser": "15.0.0",
 		"uglify-es": "3.3.9",
 		"url-loader": "1.0.1",
 		"uuid": "3.2.1",
