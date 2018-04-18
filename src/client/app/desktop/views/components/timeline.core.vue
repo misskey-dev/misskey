@@ -125,7 +125,7 @@ export default Vue.extend({
 				if (this.notes.length > 30) {
 					this.moreNotes = this.notes.slice(-10).concat(this.moreNotes);
 					// 200までたまったら150に減らす
-					if (this.moreNotes.length > 200) this.moreNotes = this.moreNotes.slice(0,150)
+					if (this.moreNotes.length > 200) this.moreNotes = this.moreNotes.slice(0,150);
 					this.notes = this.notes.slice(0,-10);
 				}
 				this.prevFetching = false;
@@ -149,7 +149,7 @@ export default Vue.extend({
 					if (this.notes.length > 30) {
 						this.moreNotes = this.notes.slice(-10).concat(this.moreNotes);
 						// 200までたまったら150に減らす
-						if (this.moreNotes.length > 200) this.moreNotes = this.moreNotes.slice(0,150)
+						if (this.moreNotes.length > 200) this.moreNotes = this.moreNotes.slice(0,150);
 						this.notes = this.notes.slice(0,-10);
 					}
 					this.prevFetching = false;
@@ -172,7 +172,7 @@ export default Vue.extend({
 				if (this.notes.length > 30) {
 					this.prevNotes = this.prevNotes.concat(this.notes.slice(0,10));
 					// 200までたまったら150に減らす
-					if (this.prevNotes.length > 200) this.prevNotes = this.prevNotes.slice(-150)
+					if (this.prevNotes.length > 200) this.prevNotes = this.prevNotes.slice(-150);
 					this.notes = this.notes.slice(10);
 				}
 				this.moreFetching = false;
@@ -191,7 +191,7 @@ export default Vue.extend({
 					if (this.notes.length > 30) {
 						this.prevNotes = this.prevNotes.concat(this.notes.slice(0,10));
 						// 200までたまったら150に減らす
-						if (this.prevNotes.length > 200) this.prevNotes = this.prevNotes.slice(-150)
+						if (this.prevNotes.length > 200) this.prevNotes = this.prevNotes.slice(-150);
 						this.notes = this.notes.slice(10);
 					}
 					this.moreFetching = false;
