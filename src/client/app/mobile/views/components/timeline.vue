@@ -71,6 +71,8 @@ export default Vue.extend({
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
+			this.prevNotes = [];
+			this.moreNotes = [];
 			(this as any).api('notes/timeline', {
 				limit: limit + 1,
 				untilDate: this.date ? (this.date as any).getTime() : undefined
