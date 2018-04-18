@@ -51,6 +51,17 @@ export default Vue.extend({
 			}
 		},
 
+		onScroll() {
+			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) (this.$refs.tl as any).more();
+			}
+			
+			if (window.scrollY < 100) {
+				(this.$refs.tl as any).prev();
+			}
+		},
+
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
 		}
