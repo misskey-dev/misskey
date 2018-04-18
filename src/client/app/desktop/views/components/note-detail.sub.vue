@@ -17,7 +17,7 @@
 		</header>
 		<div class="body">
 			<mk-note-html v-if="note.text" :text="note.text" :i="os.i" :class="$style.text"/>
-			<div class="media" v-if="note.media > 0">
+			<div class="media" v-if="note.mediaIds.length > 0">
 				<mk-media-list :media-list="note.media"/>
 			</div>
 		</div>
