@@ -40,7 +40,7 @@ If you want to translate Misskey, please see [Translation guide](./docs/translat
 [![Backers][backers-image]][support-url]
 [![Sponsors][sponsors-image]][support-url]
 
-<a href="https://www.patreon.com/syuilo"><img src="http://i.imgur.com/xEO164Z.png" alt="Become a Patron!" width="200" /></a>
+<a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
 :mortar_board: Notable contributors
 ----------------------------------------------------------------
