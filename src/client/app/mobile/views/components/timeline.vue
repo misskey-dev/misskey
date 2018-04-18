@@ -35,12 +35,13 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			prevFetching: false,
+			prevNotes: [],
 			notes: [],
-			existMore: false,
+			moreNotes: [],
 			existPrev: false,
+			existMore: false,
 			connection: null,
-			connectionId: null,
-			isTop: true
+			connectionId: null
 		};
 	},
 	computed: {
@@ -56,17 +57,22 @@ export default Vue.extend({
 		this.connection.on('follow', this.onChangeFollowing);
 		this.connection.on('unfollow', this.onChangeFollowing);
 
-this.fetch();
+		window.addEventListener('scroll', this.onScroll);
+		this.fetch();
 	},
 	beforeDestroy() {
 		this.connection.off('note', this.onNote);
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
+
+		window.removeEventListener('scroll', this.onScroll);
 		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
+			this.prevNotes = [];
+			this.moreNotes = [];
 			(this as any).api('notes/timeline', {
 				limit: limit + 1,
 				untilDate: this.date ? (this.date as any).getTime() : undefined
@@ -81,45 +87,101 @@ this.fetch();
 				if (cb) cb();
 			});
 		},
+
 		prev() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0) return;
 			this.prevFetching = true;
-			(this as any).api('notes/timeline', {
-				limit: limit + 1,
-				sinceId: this.notes[0].id
-			}).then(notes => {
-				if (notes.length == limit + 1) {
-					notes.shift();
-					this.existPrev = true;
+
+			if (this.prevNotes.length > 0) {
+				if (this.prevNotes.length < 10) {
+					this.notes = this.prevNotes.concat(this.notes);
+					this.prevNotes = [];
 				} else {
-					this.existPrev = false;
+					this.notes = this.prevNotes.slice(-10).concat(this.notes);
+					this.prevNotes = this.prevNotes.slice(0,-10);
 				}
-				this.notes = notes.concat(this.notes);
-				if (this.notes.length > 20) this.notes = this.notes.slice(0,10);
+
+				if (this.notes.length > 30) {
+					this.moreNotes = this.notes.slice(-10).concat(this.moreNotes);
+					// 200までたまったら150に減らす
+					if (this.moreNotes.length > 200) this.moreNotes = this.moreNotes.slice(0,150);
+					this.notes = this.notes.slice(0,-10);
+				}
 				this.prevFetching = false;
-			});
+			} else {
+				(this as any).api(this.endpoint, {
+					limit: 11,
+					sinceId: this.notes[0].id
+				}).then(notes => {
+					if (notes.length == 0) {
+						this.prevFetching = false;
+						this.existPrev = false;
+						return;
+					} else if (notes.length == 11) {
+						this.existPrev = true;
+						notes.shift();
+					} else {
+						this.existPrev = false;
+					}
+					this.notes = notes.concat(this.notes);
+
+					if (this.notes.length > 30) {
+						this.moreNotes = this.notes.slice(-10).concat(this.moreNotes);
+						// 200までたまったら150に減らす
+						if (this.moreNotes.length > 200) this.moreNotes = this.moreNotes.slice(0,150);
+						this.notes = this.notes.slice(0,-10);
+					}
+					this.prevFetching = false;
+				});
+			}
 		},
+	
 		more() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
-			(this as any).api('notes/timeline', {
-				limit: limit + 1,
-				untilId: this.notes[this.notes.length - 1].id
-			}).then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-					this.existMore = true;
+			if (this.moreNotes.length > 0) {
+				if (this.moreNotes.length < 10) {
+					this.notes = this.notes.concat(this.moreNotes);
+					this.moreNotes = [];
 				} else {
-					this.existMore = false;
+					this.notes = this.notes.concat(this.moreNotes.slice(0,10));
+					this.moreNotes = this.moreNotes.slice(10);
 				}
-				this.notes = this.notes.concat(notes);
-				if (this.notes.length > 20) this.notes = this.notes.slice(10);
+
+				if (this.notes.length > 30) {
+					this.prevNotes = this.prevNotes.concat(this.notes.slice(0,10));
+					// 200までたまったら150に減らす
+					if (this.prevNotes.length > 200) this.prevNotes = this.prevNotes.slice(-150);
+					this.notes = this.notes.slice(10);
+				}
 				this.moreFetching = false;
-			});
+			} else {
+				(this as any).api(this.endpoint, {
+					limit: 11,
+					untilId: this.notes[this.notes.length - 1].id
+				}).then(notes => {
+					if (notes.length == 11) {
+						notes.pop();
+					} else {
+						this.existMore = false;
+					}
+					this.notes = this.notes.concat(notes);
+
+					if (this.notes.length > 30) {
+						this.prevNotes = this.prevNotes.concat(this.notes.slice(0,10));
+						// 200までたまったら150に減らす
+						if (this.prevNotes.length > 200) this.prevNotes = this.prevNotes.slice(-150);
+						this.notes = this.notes.slice(10);
+					}
+					this.moreFetching = false;
+				});
+			}
 		},
+
 		onNote(note) {
-			if (this.isTop && !existPrev) {
+			if (!this.date && window.scrollY < 100 && !existPrev) {
 				this.notes.unshift(note);
+				this.moreNotes.unshift(this.notes[this.notes.length - 1]);
 				this.notes.pop();
 			}
 		},
@@ -127,10 +189,9 @@ this.fetch();
 			this.fetch();
 		},
 		onScroll() {
-			if (!this.isTop && window.scrollY < 100) {
+			if (window.scrollY < 100) {
 				this.prev();
 			}
-			this.isTop = window.scrollY < 100;
 		}
 	}
 });
