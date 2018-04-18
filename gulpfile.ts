@@ -2,9 +2,7 @@
  * Gulp tasks
  */
 
-import * as childProcess from 'child_process';
 import * as fs from 'fs';
-import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
