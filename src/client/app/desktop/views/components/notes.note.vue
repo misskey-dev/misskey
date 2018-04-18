@@ -1,6 +1,6 @@
 <template>
 <div class="note" tabindex="-1" :title="title" @keydown="onKeydown">
-	<div class="reply-to" v-if="p.reply">
+	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || os.i.clientSettings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
@@ -58,7 +58,9 @@
 			<footer>
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
 				<button @click="reply" title="%i18n:@reply%">
-					%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
+					<template v-if="p.reply">%fa:reply-all%</template>
+					<template v-else>%fa:reply%</template>
+					<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 				</button>
 				<button @click="renote" title="%i18n:@renote%">
 					%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>

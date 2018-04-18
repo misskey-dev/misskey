@@ -1,3 +1,4 @@
+import { MongoError } from 'mongodb';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser } from '../../models/user';
 import stream, { publishLocalTimelineStream, publishGlobalTimelineStream } from '../../publishers/stream';
@@ -85,7 +86,18 @@ export default async (user: IUser, data: {
 	if (data.uri != null) insert.uri = data.uri;
 
 	// 投稿を作成
-	const note = await Note.insert(insert);
+	let note: INote;
+	try {
+		note = await Note.insert(insert);
+	} catch (e) {
+		// duplicate key error
+		if (e instanceof MongoError && e.code === 11000) {
+			return res(null);
+		}
+
+		console.error(e);
+		return rej('something happened');
+	}
 
 	res(note);
 

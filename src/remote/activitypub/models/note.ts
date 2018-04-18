@@ -75,7 +75,9 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// リプライ
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
-	const { window } = new JSDOM(note.content);
+	// MastodonはHTMLを送り付けてくる
+	// そして改行は<br />で表現されている
+	const { window } = new JSDOM(note.content.replace(/<br \/>/g, '\n'));
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {

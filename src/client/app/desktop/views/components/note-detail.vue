@@ -56,7 +56,9 @@
 		<footer>
 			<mk-reactions-viewer :note="p"/>
 			<button @click="reply" title="返信">
-				%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
+				<template v-if="p.reply">%fa:reply-all%</template>
+				<template v-else>%fa:reply%</template>
+				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
 			<button @click="renote" title="Renote">
 				%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>

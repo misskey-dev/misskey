@@ -1,8 +1,9 @@
+import * as mongo from 'mongodb';
 import * as Router from 'koa-router';
 
 import config from '../config';
 import parseAcct from '../acct/parse';
-import User from '../models/user';
+import User, { IUser } from '../models/user';
 
 // Init router
 const router = new Router();
@@ -14,27 +15,38 @@ router.get('/.well-known/webfinger', async ctx => {
 	}
 
 	const resourceLower = ctx.query.resource.toLowerCase();
-	const webPrefix = config.url.toLowerCase() + '/@';
 	let acctLower;
+	let id;
 
-	if (resourceLower.startsWith(webPrefix)) {
-		acctLower = resourceLower.slice(webPrefix.length);
+	if (resourceLower.startsWith(config.url.toLowerCase() + '/@')) {
+		acctLower = resourceLower.split('/').pop();
+	} else if (resourceLower.startsWith(config.url.toLowerCase() + '/users/')) {
+		id = new mongo.ObjectID(resourceLower.split('/').pop());
 	} else if (resourceLower.startsWith('acct:')) {
 		acctLower = resourceLower.slice('acct:'.length);
 	} else {
 		acctLower = resourceLower;
 	}
 
-	const parsedAcctLower = parseAcct(acctLower);
-	if (![null, config.host.toLowerCase()].includes(parsedAcctLower.host)) {
-		ctx.status = 422;
-		return;
-	}
+	let user: IUser;
 
-	const user = await User.findOne({
-		usernameLower: parsedAcctLower.username,
-		host: null
-	});
+	if (acctLower) {
+		const parsedAcctLower = parseAcct(acctLower);
+		if (![null, config.host.toLowerCase()].includes(parsedAcctLower.host)) {
+			ctx.status = 422;
+			return;
+		}
+
+		user = await User.findOne({
+			usernameLower: parsedAcctLower.username,
+			host: null
+		});
+	} else {
+		user = await User.findOne({
+			_id: id,
+			host: null
+		});
+	}
 
 	if (user === null) {
 		ctx.status = 404;

@@ -30,8 +30,6 @@ export default Vue.extend({
 		document.addEventListener('keydown', this.onKeydown);
 		window.addEventListener('scroll', this.onScroll);
 
-		console.log(this.$refs.tl);
-
 		(this.$refs.tl as any).$once('loaded', () => {
 			this.$emit('loaded');
 		});

@@ -118,6 +118,7 @@ main
 		> p
 			margin 0 auto
 			max-width 1024px
+			font-size 14px
 
 			> a
 				font-weight bold

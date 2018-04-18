@@ -5,6 +5,7 @@ const ms = require('ms');
 import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
 import getFriends from '../../common/get-friends';
+import Mute from '../../../../models/mute';
 
 /**
  * Get recommended users
@@ -25,13 +26,18 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// ID list of the user itself and other users who the user follows
 	const followingIds = await getFriends(me._id);
 
+	// ミュートしているユーザーを取得
+	const mutedUserIds = (await Mute.find({
+		muterId: me._id
+	})).map(m => m.muteeId);
+
 	const users = await User
 		.find({
 			_id: {
-				$nin: followingIds
+				$nin: followingIds.concat(mutedUserIds)
 			},
 			$or: [{
-				'lastUsedAt': {
+				lastUsedAt: {
 					$gte: new Date(Date.now() - ms('7days'))
 				}
 			}, {
