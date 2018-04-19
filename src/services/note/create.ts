@@ -150,8 +150,11 @@ export default async (user: IUser, data: {
 				const follower = following._follower;
 
 				if (isLocalUser(follower)) {
-					// この投稿が返信かつstalkフォローでないならスキップ
-					if (note.replyId && !following.stalk) return;
+					// ストーキングしていない場合
+					if (!following.stalk) {
+						// この投稿が返信ならスキップ
+						if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId)) return;
+					}
 
 					// Publish event to followers stream
 					stream(following.followerId, 'note', noteObj);
