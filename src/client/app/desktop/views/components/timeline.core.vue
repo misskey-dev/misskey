@@ -134,14 +134,12 @@ export default Vue.extend({
 					this.notes = notes.concat(this.notes);
 				});
 			}
-			// もし30投稿より多くタイムラインに表示されていたら
+			// もし50投稿より多くタイムラインに表示されていたら
 			if (this.notes.length > 50) {
-				// 20個残してキャッシュする
-				this.moreNotes = this.notes.slice(20).concat(this.moreNotes);
-				this.notes = this.notes.slice(0,20);
+				// 30個残してキャッシュする
+				this.moreNotes = this.notes.slice(30).concat(this.moreNotes);
+				this.notes = this.notes.slice(0,30);
 				this.existMore = true;
-				// moreNotesのキャッシュが300までたまったら250に減らす
-				if (this.moreNotes.length > 300) this.moreNotes = this.moreNotes.slice(0,250);
 			}
 			this.prevFetching = false;
 		},
@@ -188,7 +186,7 @@ export default Vue.extend({
 					this.notes.unshift(note);
 					this.moreNotes.unshift(this.notes[this.notes.length - 1]);
 					this.notes.pop();
-				} else if (this.prevNotes.length <= 300) {
+				} else {
 					this.prevNotes.unshift(note);
 					this.existPrev = true;
 				}
