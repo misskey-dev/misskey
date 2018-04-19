@@ -2,11 +2,10 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import rap from '@prezzemolo/rap';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import ChannelWatching from '../../../../models/channel-watching';
-import getFriends from '../../common/get-friends';
+import { getFriends } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 
 /**
@@ -38,41 +37,66 @@ module.exports = async (params, user, app) => {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
-	const { followingIds, watchingChannelIds, mutedUserIds } = await rap({
-		// ID list of the user itself and other users who the user follows
-		followingIds: getFriends(user._id),
+	const [followings, watchingChannelIds, mutedUserIds] = await Promise.all([
+		// フォローを取得
+		// Fetch following
+		getFriends(user._id),
 
 		// Watchしているチャンネルを取得
-		watchingChannelIds: ChannelWatching.find({
+		ChannelWatching.find({
 			userId: user._id,
 			// 削除されたドキュメントは除く
 			deletedAt: { $exists: false }
 		}).then(watches => watches.map(w => w.channelId)),
 
 		// ミュートしているユーザーを取得
-		mutedUserIds: Mute.find({
+		Mute.find({
 			muterId: user._id
 		}).then(ms => ms.map(m => m.muteeId))
-	});
+	]);
 
 	//#region Construct query
 	const sort = {
 		_id: -1
 	};
 
+	const followQuery = followings.map(f => f.stalk ? {
+		userId: f.id
+	} : {
+		userId: f.id,
+
+		// ストーキングしてないならリプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
+		$or: [{
+			// リプライでない
+			replyId: null
+		}, { // または
+			// リプライだが返信先が投稿者自身の投稿
+			$expr: {
+				'$_reply.userId': '$userId'
+			}
+		}, { // または
+			// リプライだが返信先が自分(フォロワー)の投稿
+			'_reply.userId': user._id
+		}, { // または
+			// 自分(フォロワー)が送信したリプライ
+			userId: user._id
+		}]
+	});
+
 	const query = {
 		$or: [{
-			// フォローしている人のタイムラインへの投稿
-			userId: {
-				$in: followingIds
-			},
-			// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
-			$or: [{
-				channelId: {
-					$exists: false
-				}
+			$and: [{
+				// フォローしている人のタイムラインへの投稿
+				$or: followQuery
 			}, {
-				channelId: null
+				// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
+				$or: [{
+					channelId: {
+						$exists: false
+					}
+				}, {
+					channelId: null
+				}]
 			}]
 		}, {
 			// Watchしているチャンネルへの投稿

@@ -419,6 +419,9 @@ desktop/views/pages/user/user.photos.vue:
 
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Follows you"
+  stalk: "Stalk"
+  stalking: "Stalking"
+  unstalk: "Unstalk"
   mute: "Mute"
   muted: "Muting"
   unmute: "Unmute"

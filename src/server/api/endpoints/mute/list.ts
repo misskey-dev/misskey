@@ -4,7 +4,7 @@
 import $ from 'cafy';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/user';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 
 /**
  * Get muted users of a user
@@ -34,7 +34,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	if (iknow) {
 		// Get my friends
-		const myFriends = await getFriends(me._id);
+		const myFriends = await getFriendIds(me._id);
 
 		query.muteeId = {
 			$in: myFriends

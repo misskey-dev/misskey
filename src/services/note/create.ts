@@ -124,19 +124,8 @@ export default async (user: IUser, data: {
 		publishGlobalTimelineStream(noteObj);
 
 		// Fetch all followers
-		const followers = await Following.aggregate([{
-			$lookup: {
-				from: 'users',
-				localField: 'followerId',
-				foreignField: '_id',
-				as: 'user'
-			}
-		}, {
-			$match: {
-				followeeId: note.userId
-			}
-		}], {
-			_id: false
+		const followers = await Following.find({
+			followeeId: note.userId
 		});
 
 		if (!silent) {
@@ -157,12 +146,15 @@ export default async (user: IUser, data: {
 				deliver(user, await render(), data.renote._user.inbox);
 			}
 
-			Promise.all(followers.map(async follower => {
-				follower = follower.user[0];
+			Promise.all(followers.map(async following => {
+				const follower = following._follower;
 
 				if (isLocalUser(follower)) {
+					// この投稿が返信かつstalkフォローでないならスキップ
+					if (note.replyId && !following.stalk) return;
+
 					// Publish event to followers stream
-					stream(follower._id, 'note', noteObj);
+					stream(following.followerId, 'note', noteObj);
 				} else {
 					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 					if (isLocalUser(user)) {

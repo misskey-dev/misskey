@@ -4,7 +4,7 @@
 const ms = require('ms');
 import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';
 
 /**
@@ -24,7 +24,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (offsetErr) return rej('invalid offset param');
 
 	// ID list of the user itself and other users who the user follows
-	const followingIds = await getFriends(me._id);
+	const followingIds = await getFriendIds(me._id);
 
 	// ミュートしているユーザーを取得
 	const mutedUserIds = (await Mute.find({

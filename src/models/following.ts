@@ -10,6 +10,17 @@ export type IFollowing = {
 	createdAt: Date;
 	followeeId: mongo.ObjectID;
 	followerId: mongo.ObjectID;
+	stalk: boolean;
+
+	// 非正規化
+	_followee: {
+		host: string;
+		inbox?: string;
+	},
+	_follower: {
+		host: string;
+		inbox?: string;
+	}
 };
 
 /**

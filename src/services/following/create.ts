@@ -13,7 +13,18 @@ export default async function(follower: IUser, followee: IUser, activity?) {
 	const following = await Following.insert({
 		createdAt: new Date(),
 		followerId: follower._id,
-		followeeId: followee._id
+		followeeId: followee._id,
+		stalk: true,
+
+		// 非正規化
+		_follower: {
+			host: follower.host,
+			inbox: isRemoteUser(follower) ? follower.inbox : undefined
+		},
+		_followee: {
+			host: followee.host,
+			inbox: isRemoteUser(followee) ? followee.inbox : undefined
+		}
 	});
 
 	//#region Increment following count

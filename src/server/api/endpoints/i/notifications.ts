@@ -5,7 +5,7 @@ import $ from 'cafy';
 import Notification from '../../../../models/notification';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/notification';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 
 /**
@@ -62,7 +62,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	if (following) {
 		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriends(user._id);
+		const followingIds = await getFriendIds(user._id);
 
 		query.$and.push({
 			notifierId: {

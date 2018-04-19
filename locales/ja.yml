@@ -419,6 +419,9 @@ desktop/views/pages/user/user.photos.vue:
 
 desktop/views/pages/user/user.profile.vue:
   follows-you: "フォローされています"
+  stalk: "ストークする"
+  stalking: "ストーキングしています"
+  unstalk: "ストーク解除"
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"

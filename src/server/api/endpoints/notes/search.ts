@@ -6,7 +6,7 @@ const escapeRegexp = require('escape-regexp');
 import Note from '../../../../models/note';
 import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 
 /**
@@ -156,7 +156,7 @@ async function search(
 	}
 
 	if (following != null && me != null) {
-		const ids = await getFriends(me._id, false);
+		const ids = await getFriendIds(me._id, false);
 		push({
 			userId: following ? {
 				$in: ids

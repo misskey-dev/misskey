@@ -3,7 +3,7 @@
  */
 import $ from 'cafy';
 import Note from '../../../../models/note';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 
 /**
@@ -46,7 +46,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	};
 
 	if (following) {
-		const followingIds = await getFriends(user._id);
+		const followingIds = await getFriendIds(user._id);
 
 		query.userId = {
 			$in: followingIds

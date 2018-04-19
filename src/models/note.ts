@@ -58,6 +58,7 @@ export type INote = {
 	};
 	uri: string;
 
+	// 非正規化
 	_reply?: {
 		userId: mongo.ObjectID;
 	};
@@ -66,9 +67,7 @@ export type INote = {
 	};
 	_user: {
 		host: string;
-		account: {
-			inbox?: string;
-		};
+		inbox?: string;
 	};
 };
 

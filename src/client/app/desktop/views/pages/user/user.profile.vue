@@ -3,8 +3,14 @@
 	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
 		<p class="followed" v-if="user.isFollowed">%i18n:@follows-you%</p>
-		<p v-if="user.isMuted">%i18n:@muted% <a @click="unmute">%i18n:@unmute%</a></p>
-		<p v-if="!user.isMuted"><a @click="mute">%i18n:@mute%</a></p>
+		<p class="stalk">
+			<span v-if="user.isStalking">%i18n:@stalking% <a @click="unstalk">%i18n:@unstalk%</a></span>
+			<span v-if="!user.isStalking"><a @click="stalk">%i18n:@stalk%</a></span>
+		</p>
+		<p class="mute">
+			<span v-if="user.isMuted">%i18n:@muted% <a @click="unmute">%i18n:@unmute%</a></span>
+			<span v-if="!user.isMuted"><a @click="mute">%i18n:@mute%</a></span>
+		</p>
 	</div>
 	<div class="description" v-if="user.description">{{ user.description }}</div>
 	<div class="birthday" v-if="user.host === null && user.profile.birthday">
@@ -44,6 +50,26 @@ export default Vue.extend({
 		showFollowers() {
 			(this as any).os.new(MkFollowersWindow, {
 				user: this.user
+			});
+		},
+
+		stalk() {
+			(this as any).api('following/stalk', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isStalking = true;
+			}, () => {
+				alert('error');
+			});
+		},
+
+		unstalk() {
+			(this as any).api('following/unstalk', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isStalking = false;
+			}, () => {
+				alert('error');
 			});
 		},
 
