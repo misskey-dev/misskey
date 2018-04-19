@@ -46,7 +46,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.disk
+root(isDark)
 	> .pie
 		padding 10px
 		height 100px
@@ -60,7 +60,7 @@ export default Vue.extend({
 		> p
 			margin 0
 			font-size 12px
-			color #505050
+			color isDark ? #a8b4bd : #505050
 
 			&:first-child
 				font-weight bold
@@ -72,5 +72,11 @@ export default Vue.extend({
 		content ""
 		display block
 		clear both
+
+.disk[data-darkmode]
+	root(true)
+
+.disk:not([data-darkmode])
+	root(false)
 
 </style>
