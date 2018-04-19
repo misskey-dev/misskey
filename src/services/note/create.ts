@@ -1,4 +1,3 @@
-import { MongoError } from 'mongodb';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser } from '../../models/user';
 import stream, { publishLocalTimelineStream, publishGlobalTimelineStream } from '../../publishers/stream';
@@ -91,7 +90,7 @@ export default async (user: IUser, data: {
 		note = await Note.insert(insert);
 	} catch (e) {
 		// duplicate key error
-		if (e instanceof MongoError && e.code === 11000) {
+		if (e.code === 11000) {
 			return res(null);
 		}
 

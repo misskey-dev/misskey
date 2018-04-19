@@ -9,7 +9,6 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import pack from '../../../remote/activitypub/renderer';
-import { MongoError } from 'mongodb';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself
@@ -27,8 +26,8 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 		});
 	} catch (e) {
 		// duplicate key error
-		if (e instanceof MongoError && e.code === 11000) {
-			return rej('already reacted');
+		if (e.code === 11000) {
+			return res(null);
 		}
 
 		console.error(e);
