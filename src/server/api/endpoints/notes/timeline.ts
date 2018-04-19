@@ -72,7 +72,7 @@ module.exports = async (params, user, app) => {
 		}, { // または
 			// リプライだが返信先が投稿者自身の投稿
 			$expr: {
-				'$_reply.userId': '$userId'
+				$eq: ['$_reply.userId', '$userId']
 			}
 		}, { // または
 			// リプライだが返信先が自分(フォロワー)の投稿
