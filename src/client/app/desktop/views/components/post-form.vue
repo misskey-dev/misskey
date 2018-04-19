@@ -281,10 +281,10 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-post-form
+root(isDark)
 	display block
 	padding 16px
-	background lighten($theme-color, 95%)
+	background isDark ? #282C37 : lighten($theme-color, 95%)
 
 	&:after
 		content ""
@@ -303,7 +303,7 @@ export default Vue.extend({
 			min-height calc(16px + 12px + 12px)
 			font-size 16px
 			color #333
-			background #fff
+			background isDark ? #191d23 : #fff
 			outline none
 			border solid 1px rgba($theme-color, 0.1)
 			border-radius 4px
@@ -496,7 +496,7 @@ export default Vue.extend({
 		width 40px
 		height 40px
 		font-size 1em
-		color rgba($theme-color, 0.5)
+		color isDark ? $theme-color : rgba($theme-color, 0.5)
 		background transparent
 		outline none
 		border solid 1px transparent
@@ -504,11 +504,11 @@ export default Vue.extend({
 
 		&:hover
 			background transparent
-			border-color rgba($theme-color, 0.3)
+			border-color isDark ? rgba($theme-color, 0.5) : rgba($theme-color, 0.3)
 
 		&:active
 			color rgba($theme-color, 0.6)
-			background linear-gradient(to bottom, lighten($theme-color, 80%) 0%, lighten($theme-color, 90%) 100%)
+			background isDark ? transparent : linear-gradient(to bottom, lighten($theme-color, 80%) 0%, lighten($theme-color, 90%) 100%)
 			border-color rgba($theme-color, 0.5)
 			box-shadow 0 2px 4px rgba(0, 0, 0, 0.15) inset
 
@@ -532,5 +532,11 @@ export default Vue.extend({
 		height 100%
 		border dashed 2px rgba($theme-color, 0.5)
 		pointer-events none
+
+.mk-post-form[data-darkmode]
+	root(true)
+
+.mk-post-form:not([data-darkmode])
+	root(false)
 
 </style>
