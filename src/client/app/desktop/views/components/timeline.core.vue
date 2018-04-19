@@ -112,10 +112,15 @@ export default Vue.extend({
 		async prev() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0) return;
 			this.prevFetching = true;
-
+			const heightBefore = document.body.offsetHeight
 			if (this.prevNotes.length > 0) {
-				this.notes = this.prevNotes.concat(this.notes);
-				this.prevNotes = [];
+				if (this.prevNotes.length < 50) {
+					this.notes = this.prevNotes.concat(this.notes);
+					this.prevNotes = [];
+				} else {
+					this.notes = this.prevNotes.slice(-50).concat(this.notes);
+					this.prevNotes = this.prevNotes.slice(0,-50);
+				}
 			} else {
 				await (this as any).api(this.endpoint, {
 					limit: 50,
@@ -134,6 +139,9 @@ export default Vue.extend({
 					this.notes = notes.concat(this.notes);
 				});
 			}
+
+			// スクロールしてあげる
+			window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore)
 			// もし50投稿より多くタイムラインに表示されていたら
 			if (this.notes.length > 50) {
 				// 30個残してキャッシュする
