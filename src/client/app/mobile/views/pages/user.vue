@@ -113,8 +113,6 @@ export default Vue.extend({
 main
 	> .is-suspended
 	> .is-remote
-		padding 16px
-
 		&.is-suspended
 			color #570808
 			background #ffdbdb
@@ -125,13 +123,15 @@ main
 
 		> p
 			margin 0 auto
-			max-width 1024px
+			padding 14px
+			max-width 600px
 			font-size 14px
 
 			> a
 				font-weight bold
 
 			@media (max-width 500px)
+				padding 12px
 				font-size 12px
 
 	> header
