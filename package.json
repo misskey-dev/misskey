@@ -180,7 +180,7 @@
 		"sass-loader": "7.0.1",
 		"seedrandom": "2.4.3",
 		"speakeasy": "2.0.0",
-		"style-loader": "0.20.3",
+		"style-loader": "0.21.0",
 		"stylus": "0.54.5",
 		"stylus-loader": "3.0.2",
 		"summaly": "2.0.4",
