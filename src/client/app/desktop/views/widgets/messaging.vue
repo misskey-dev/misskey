@@ -37,7 +37,7 @@ export default define({
 
 <style lang="stylus" scoped>
 .mkw-messaging
-	> .mk-messaging
+	.mk-messaging
 		max-height 250px
 		overflow auto
 
