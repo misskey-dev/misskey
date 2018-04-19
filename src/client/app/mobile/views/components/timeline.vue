@@ -92,30 +92,22 @@ export default Vue.extend({
 			this.prevFetching = true;
 			const heightBefore = document.body.offsetHeight
 			if (this.prevNotes.length > 0) {
-				if (this.prevNotes.length < 20) {
-					this.notes = this.prevNotes.concat(this.notes);
-					this.prevNotes = [];
-					this.existPrev = true;
-				} else {
-					this.notes = this.prevNotes.slice(-20).concat(this.notes);
-					this.prevNotes = this.prevNotes.slice(0,-20);
-					this.existPrev = true;
-				}
+				this.notes = this.prevNotes.slice(-20).concat(this.notes);
+				this.prevNotes = this.prevNotes.slice(0,-20);
+				this.existPrev = true;
 			} else {
 				await (this as any).api(this.endpoint, {
-					limit: 21,
+					limit: 11,
 					sinceId: this.notes[0].id
 				}).then(notes => {
-					if (notes.length == 0) {
-						this.prevFetching = false;
-						this.existPrev = false;
-					} else if (notes.length == 21) {
+					if (notes.length == 11) {
 						this.existPrev = true;
 						notes.shift();
 					} else {
 						this.existPrev = false;
 					}
 					this.notes = notes.concat(this.notes);
+					return;
 				});
 			}
 
@@ -136,15 +128,9 @@ export default Vue.extend({
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
 			if (this.moreNotes.length > 0) {
-				if (this.moreNotes.length < 10) {
-					this.notes = this.notes.concat(this.moreNotes);
-					this.moreNotes = [];
-					this.existMore = true;
-				} else {
-					this.notes = this.notes.concat(this.moreNotes.slice(0,10));
-					this.moreNotes = this.moreNotes.slice(10);
-					this.existMore = true;
-				}
+				this.notes = this.notes.concat(this.moreNotes);
+				this.moreNotes = [];
+				this.existMore = true;
 				this.moreFetching = false;
 			} else {
 				(this as any).api(this.endpoint, {
