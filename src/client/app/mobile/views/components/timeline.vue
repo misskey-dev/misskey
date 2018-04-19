@@ -94,17 +94,17 @@ export default Vue.extend({
 
 			if (this.prevNotes.length > 0) {
 				this.notes = this.prevNotes.concat(this.notes);
-				this.prevNotes = []
+				this.prevNotes = [];
 			} else {
 				await (this as any).api(this.endpoint, {
-					limit: 11,
+					limit: 50,
 					sinceId: this.notes[0].id
 				}).then(notes => {
 					if (notes.length == 0) {
 						this.prevFetching = false;
 						this.existPrev = false;
 						return;
-					} else if (notes.length == 11) {
+					} else if (notes.length == 50) {
 						this.existPrev = true;
 						notes.shift();
 					} else {
@@ -113,17 +113,19 @@ export default Vue.extend({
 					this.notes = notes.concat(this.notes);
 				});
 			}
-			if (this.notes.length > 30) {
-				this.moreNotes = this.notes.slice(-10).concat(this.moreNotes);
+			// もし30投稿より多くタイムラインに表示されていたら
+			if (this.notes.length > 50) {
+				// 20個残してキャッシュする
+				this.moreNotes = this.notes.slice(20).concat(this.moreNotes);
+				this.notes = this.notes.slice(0,20);
 				this.existMore = true;
-				// 200までたまったら150に減らす
-				if (this.moreNotes.length > 200) this.moreNotes = this.moreNotes.slice(0,150);
-				this.notes = this.notes.slice(0,-10);
+				// moreNotesのキャッシュが300までたまったら250に減らす
+				if (this.moreNotes.length > 300) this.moreNotes = this.moreNotes.slice(0,250);
 			}
 			this.prevFetching = false;
 		},
 	
-		async more() {
+		more() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
 			if (this.moreNotes.length > 0) {
@@ -136,16 +138,14 @@ export default Vue.extend({
 					this.moreNotes = this.moreNotes.slice(10);
 					this.existMore = true;
 				}
+				this.moreFetching = false;
 			} else {
-				await (this as any).api(this.endpoint, {
+				(this as any).api(this.endpoint, {
 					limit: 11,
 					untilId: this.notes[this.notes.length - 1].id
 				}).then(notes => {
 					if (notes.length == 11) {
 						notes.pop();
-					} else if (notes.length == 0) {
-						return;
-						this.existMore = false;
 					} else {
 						this.existMore = false;
 					}
@@ -161,11 +161,13 @@ export default Vue.extend({
 					this.notes.unshift(note);
 					this.moreNotes.unshift(this.notes[this.notes.length - 1]);
 					this.notes.pop();
-				} else {
-					this.prevNotes.unshift(note)
+				} else if (this.prevNotes.length <= 300) {
+					this.prevNotes.unshift(note);
+					this.existPrev = true;
 				}
 			}
 		},
+
 		onChangeFollowing() {
 			this.fetch();
 		},
