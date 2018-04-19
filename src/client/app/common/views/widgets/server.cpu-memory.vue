@@ -100,7 +100,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.cpu-memory
+root(isDark)
 	> svg
 		display block
 		padding 10px
@@ -115,7 +115,7 @@ export default Vue.extend({
 
 		> text
 			font-size 5px
-			fill rgba(0, 0, 0, 0.55)
+			fill isDark ? rgba(#fff, 0.55) : rgba(#000, 0.55)
 
 			> tspan
 				opacity 0.5
@@ -124,4 +124,11 @@ export default Vue.extend({
 		content ""
 		display block
 		clear both
+
+.cpu-memory[data-darkmode]
+	root(true)
+
+.cpu-memory:not([data-darkmode])
+	root(false)
+
 </style>

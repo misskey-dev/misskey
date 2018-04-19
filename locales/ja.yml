@@ -370,6 +370,7 @@ desktop/views/components/ui.header.account.vue:
   customize: "カスタマイズ"
   settings: "設定"
   signout: "サインアウト"
+  dark: "闇に飲まれる"
 
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"

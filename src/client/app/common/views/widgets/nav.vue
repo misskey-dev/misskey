@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-nav">
 	<mk-widget-container>
-		<div :class="$style.body">
+		<div class="mkw-nav--body">
 			<mk-nav/>
 		</div>
 	</mk-widget-container>
@@ -15,17 +15,24 @@ export default define({
 });
 </script>
 
-<style lang="stylus" module>
-.body
-	padding 16px
-	font-size 12px
-	color #aaa
-	background #fff
+<style lang="stylus" scoped>
+root(isDark)
+	.mkw-nav--body
+		padding 16px
+		font-size 12px
+		color isDark ? #9aa4b3 : #aaa
+		background isDark ? #282c37 : #fff
 
-	a
-		color #999
+		a
+			color isDark ? #9aa4b3 : #999
 
-	i
-		color #ccc
+		i
+			color isDark ? #9aa4b3 : #ccc
+
+.mkw-nav[data-darkmode]
+	root(true)
+
+.mkw-nav:not([data-darkmode])
+	root(false)
 
 </style>

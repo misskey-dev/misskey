@@ -434,8 +434,8 @@ root(isDark)
 						margin 0 0 1em 0
 						padding 0 0 8px 0
 						font-size 1em
-						color #555
-						border-bottom solid 1px #eee
+						color isDark ? #e3e7ea : #555
+						border-bottom solid 1px isDark ? #1c2023 : #eee
 
 		> .web
 			> .div

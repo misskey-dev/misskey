@@ -297,13 +297,14 @@ root(isDark)
 	background isDark ? #282C37 : #fff
 	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
-	&:first-child
-		border-top-left-radius 6px
-		border-top-right-radius 6px
-
-		> .renote
+	&[data-round]
+		&:first-child
 			border-top-left-radius 6px
 			border-top-right-radius 6px
+
+			> .renote
+				border-top-left-radius 6px
+				border-top-right-radius 6px
 
 	&:last-of-type
 		border-bottom none
@@ -324,7 +325,7 @@ root(isDark)
 
 	> .renote
 		color #9dbb00
-		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
 		> p
 			margin 0
@@ -434,7 +435,7 @@ root(isDark)
 
 					> .mobile
 						margin-right 8px
-						color #ccc
+						color isDark ? #606984 : #ccc
 
 					> .app
 						margin-right 8px

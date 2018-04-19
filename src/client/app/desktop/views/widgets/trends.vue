@@ -1,15 +1,18 @@
 <template>
 <div class="mkw-trends">
-	<template v-if="!props.compact">
-		<p class="title">%fa:fire%%i18n:@title%</p>
-		<button @click="fetch" title="%i18n:@refresh%">%fa:sync%</button>
-	</template>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<div class="note" v-else-if="note != null">
-		<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
-		<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>
-	</div>
-	<p class="empty" v-else>%i18n:@nothing%</p>
+	<mk-widget-container :show-header="!props.compact">
+		<template slot="header">%fa:fire%%i18n:@title%</template>
+		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
+
+		<div class="mkw-trends--body">
+			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<div class="note" v-else-if="note != null">
+				<p class="text"><router-link :to="note | notePage">{{ note.text }}</router-link></p>
+				<p class="author">―<router-link :to="note.user | userPage">@{{ note.user | acct }}</router-link></p>
+			</div>
+			<p class="empty" v-else>%i18n:@nothing%</p>
+		</div>
+	</mk-widget-container>
 </div>
 </template>
 
@@ -63,67 +66,41 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-.mkw-trends
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
-	border-radius 6px
+root(isDark)
+	.mkw-trends--body
+		> .note
+			padding 16px
+			font-size 12px
+			font-style oblique
+			color #555
 
-	> .title
-		margin 0
-		padding 0 16px
-		line-height 42px
-		font-size 0.9em
-		font-weight bold
-		color #888
-		border-bottom solid 1px #eee
+			> p
+				margin 0
 
-		> [data-fa]
-			margin-right 4px
+			> .text,
+			> .author
+				> a
+					color inherit
 
-	> button
-		position absolute
-		z-index 2
-		top 0
-		right 0
-		padding 0
-		width 42px
-		font-size 0.9em
-		line-height 42px
-		color #ccc
-
-		&:hover
+		> .empty
+			margin 0
+			padding 16px
+			text-align center
 			color #aaa
 
-		&:active
-			color #999
-
-	> .note
-		padding 16px
-		font-size 12px
-		font-style oblique
-		color #555
-
-		> p
+		> .fetching
 			margin 0
+			padding 16px
+			text-align center
+			color #aaa
 
-		> .text,
-		> .author
-			> a
-				color inherit
+			> [data-fa]
+				margin-right 4px
 
-	> .empty
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
+.mkw-trends[data-darkmode]
+	root(true)
 
-	> .fetching
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
-
-		> [data-fa]
-			margin-right 4px
+.mkw-trends:not([data-darkmode])
+	root(false)
 
 </style>

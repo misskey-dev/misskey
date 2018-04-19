@@ -341,7 +341,7 @@ root(isDark)
 		> .medias
 			margin 0
 			padding 0
-			background lighten($theme-color, 98%)
+			background isDark ? #181b23 : lighten($theme-color, 98%)
 			border solid 1px rgba($theme-color, 0.1)
 			border-top none
 			border-radius 0 0 4px 4px

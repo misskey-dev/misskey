@@ -370,6 +370,7 @@ desktop/views/components/ui.header.account.vue:
   customize: "Customize"
   settings: "Settings"
   signout: "Sign out"
+  dark: "Fall in dark"
 
 desktop/views/components/ui.header.nav.vue:
   home: "Home"

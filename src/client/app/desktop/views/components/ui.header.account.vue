@@ -8,23 +8,28 @@
 		<div class="menu" v-if="isOpen">
 			<ul>
 				<li>
-					<router-link :to="`/@${ os.i.username }`">%fa:user%%i18n:@profile%%fa:angle-right%</router-link>
+					<router-link :to="`/@${ os.i.username }`">%fa:user%<span>%i18n:@profile%</span>%fa:angle-right%</router-link>
 				</li>
 				<li @click="drive">
-					<p>%fa:cloud%%i18n:@drive%%fa:angle-right%</p>
+					<p>%fa:cloud%<span>%i18n:@drive%</span>%fa:angle-right%</p>
 				</li>
 			</ul>
 			<ul>
 				<li>
-					<a href="/i/customize-home">%fa:wrench%%i18n:@customize%%fa:angle-right%</a>
+					<a href="/i/customize-home">%fa:wrench%<span>%i18n:@customize%</span>%fa:angle-right%</a>
 				</li>
 				<li @click="settings">
-					<p>%fa:cog%%i18n:@settings%%fa:angle-right%</p>
+					<p>%fa:cog%<span>%i18n:@settings%</span>%fa:angle-right%</p>
 				</li>
 			</ul>
 			<ul>
 				<li @click="signout">
-					<p>%fa:power-off%%i18n:@signout%%fa:angle-right%</p>
+					<p>%fa:power-off%<span>%i18n:@signout%</span></p>
+				</li>
+			</ul>
+			<ul>
+				<li @click="dark">
+					<p><span>%i18n:@dark%</span><template v-if="_darkmode_">%fa:moon%</template><template v-else>%fa:R moon%</template></p>
 				</li>
 			</ul>
 		</div>
@@ -78,6 +83,12 @@ export default Vue.extend({
 		},
 		signout() {
 			(this as any).os.signout();
+		},
+		dark() {
+			(this as any).api('i/update_client_setting', {
+				name: 'dark',
+				value: !(this as any)._darkmode_
+			});
 		}
 	}
 });
@@ -86,7 +97,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.account
+root(isDark)
 	> .header
 		display block
 		margin 0
@@ -101,13 +112,13 @@ export default Vue.extend({
 
 		&:hover
 		&[data-active='true']
-			color darken(#9eaba8, 20%)
+			color isDark ? #fff : darken(#9eaba8, 20%)
 
 			> .avatar
 				filter saturate(150%)
 
 		&:active
-			color darken(#9eaba8, 30%)
+			color isDark ? #fff : darken(#9eaba8, 30%)
 
 		> .username
 			display block
@@ -134,13 +145,14 @@ export default Vue.extend({
 			transition filter 100ms ease
 
 	> .menu
+		$bgcolor = isDark ? #282c37 : #fff
 		display block
 		position absolute
 		top 56px
 		right -2px
 		width 230px
 		font-size 0.8em
-		background #fff
+		background $bgcolor
 		border-radius 4px
 		box-shadow 0 1px 4px rgba(0, 0, 0, 0.25)
 
@@ -165,7 +177,7 @@ export default Vue.extend({
 			right 12px
 			border-top solid 14px transparent
 			border-right solid 14px transparent
-			border-bottom solid 14px #fff
+			border-bottom solid 14px $bgcolor
 			border-left solid 14px transparent
 
 		ul
@@ -176,7 +188,7 @@ export default Vue.extend({
 
 			& + ul
 				padding-top 10px
-				border-top solid 1px #eee
+				border-top solid 1px isDark ? #1c2023 : #eee
 
 			> li
 				display block
@@ -190,16 +202,20 @@ export default Vue.extend({
 					padding 0 28px
 					margin 0
 					line-height 40px
-					color #868C8C
+					color isDark ? #c8cece : #868C8C
 					cursor pointer
 
 					*
 						pointer-events none
 
-					> [data-fa]:first-of-type
-						margin-right 6px
+					> span:first-child
+						padding-left 16px
 
-					> [data-fa]:last-of-type
+					> [data-fa]:first-child
+						margin-right 6px
+						width 16px
+
+					> [data-fa]:last-child
 						display block
 						position absolute
 						top 0
@@ -221,5 +237,11 @@ export default Vue.extend({
 .zoom-in-top-leave-active {
 	transform-origin: center -16px;
 }
+
+.account[data-darkmode]
+	root(true)
+
+.account:not([data-darkmode])
+	root(false)
 
 </style>

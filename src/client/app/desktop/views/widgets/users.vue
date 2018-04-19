@@ -4,7 +4,7 @@
 		<template slot="header">%fa:users%%i18n:@title%</template>
 		<button slot="func" title="%i18n:@refresh%" @click="refresh">%fa:sync%</button>
 
-		<div class="mkw-users--body" :data-darkmode="_darkmode_">
+		<div class="mkw-users--body">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 			<template v-else-if="users.length != 0">
 				<div class="user" v-for="_user in users">
@@ -75,72 +75,73 @@ export default define({
 
 <style lang="stylus" scoped>
 root(isDark)
-	> .user
-		padding 16px
-		border-bottom solid 1px isDark ? #1c2023 : #eee
+	.mkw-users--body
+		> .user
+			padding 16px
+			border-bottom solid 1px isDark ? #1c2023 : #eee
 
-		&:last-child
-			border-bottom none
+			&:last-child
+				border-bottom none
 
-		&:after
-			content ""
-			display block
-			clear both
-
-		> .avatar-anchor
-			display block
-			float left
-			margin 0 12px 0 0
-
-			> .avatar
+			&:after
+				content ""
 				display block
-				width 42px
-				height 42px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
+				clear both
 
-		> .body
-			float left
-			width calc(100% - 54px)
-
-			> .name
-				margin 0
-				font-size 16px
-				line-height 24px
-				color isDark ? #fff : #555
-
-			> .username
+			> .avatar-anchor
 				display block
-				margin 0
-				font-size 15px
-				line-height 16px
-				color isDark ? #606984 : #ccc
+				float left
+				margin 0 12px 0 0
 
-		> .mk-follow-button
-			position absolute
-			top 16px
-			right 16px
+				> .avatar
+					display block
+					width 42px
+					height 42px
+					margin 0
+					border-radius 8px
+					vertical-align bottom
 
-	> .empty
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
+			> .body
+				float left
+				width calc(100% - 54px)
 
-	> .fetching
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
+				> .name
+					margin 0
+					font-size 16px
+					line-height 24px
+					color isDark ? #fff : #555
 
-		> [data-fa]
-			margin-right 4px
+				> .username
+					display block
+					margin 0
+					font-size 15px
+					line-height 16px
+					color isDark ? #606984 : #ccc
 
-.mkw-users--body[data-darkmode]
+			> .mk-follow-button
+				position absolute
+				top 16px
+				right 16px
+
+		> .empty
+			margin 0
+			padding 16px
+			text-align center
+			color #aaa
+
+		> .fetching
+			margin 0
+			padding 16px
+			text-align center
+			color #aaa
+
+			> [data-fa]
+				margin-right 4px
+
+.mkw-users[data-darkmode]
 	root(true)
 
-.mkw-users--body:not([data-darkmode])
+.mkw-users:not([data-darkmode])
 	root(false)
 
 </style>
