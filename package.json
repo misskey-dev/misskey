@@ -150,7 +150,7 @@
 		"loader-utils": "1.1.0",
 		"mecab-async": "0.1.2",
 		"mkdirp": "0.5.1",
-		"mocha": "5.1.0",
+		"mocha": "5.1.1",
 		"moji": "0.5.1",
 		"mongodb": "3.0.7",
 		"monk": "6.0.5",
