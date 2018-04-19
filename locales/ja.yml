@@ -406,7 +406,8 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "よく話すユーザーはいません"
 
 desktop/views/pages/user/user.header.vue:
-  is-remote: "このユーザーはリモートユーザーのため情報が正確ではありません。"
+  is-suspended: "このユーザーは凍結されています。"
+  is-remote: "このユーザーはリモートユーザーです。"
   view-remote: "正確な情報を見る"
 
 desktop/views/pages/user/user.home.vue:
@@ -419,6 +420,9 @@ desktop/views/pages/user/user.photos.vue:
 
 desktop/views/pages/user/user.profile.vue:
   follows-you: "フォローされています"
+  stalk: "ストークする"
+  stalking: "ストーキングしています"
+  unstalk: "ストーク解除"
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
@@ -591,7 +595,8 @@ mobile/views/pages/user.vue:
   overview: "概要"
   timeline: "タイムライン"
   media: "メディア"
-  is-remote: "このユーザーはリモートユーザーのため情報が正確ではありません。"
+  is-suspended: "このユーザーは凍結されています。"
+  is-remote: "このユーザーはリモートユーザーです。"
   view-remote: "正確な情報を見る"
 
 mobile/views/pages/user/home.vue:

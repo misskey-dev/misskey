@@ -391,6 +391,18 @@ export default Vue.extend({
 					font-size 1.1em
 					color #717171
 
+					>>> .title
+						display block
+						margin-bottom 4px
+						padding 4px
+						font-size 90%
+						text-align center
+						background #eef1f3
+						border-radius 4px
+
+					>>> .code
+						margin 8px 0
+
 					>>> .quote
 						margin 8px
 						padding 6px 12px

@@ -5,7 +5,7 @@ import db from '../db/mongodb';
 import Note, { pack as packNote, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
-import getFriends from '../server/api/common/get-friends';
+import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
 import AccessToken, { deleteAccessToken } from './access-token';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
@@ -375,33 +375,30 @@ export const pack = (
 	}
 
 	if (meId && !meId.equals(_user.id)) {
-		// Whether the user is following
-		_user.isFollowing = (async () => {
-			const follow = await Following.findOne({
+		const [following1, following2, mute] = await Promise.all([
+			Following.findOne({
 				followerId: meId,
 				followeeId: _user.id
-			});
-			return follow !== null;
-		})();
-
-		// Whether the user is followed
-		_user.isFollowed = (async () => {
-			const follow2 = await Following.findOne({
+			}),
+			Following.findOne({
 				followerId: _user.id,
 				followeeId: meId
-			});
-			return follow2 !== null;
-		})();
+			}),
+			Mute.findOne({
+				muterId: meId,
+				muteeId: _user.id
+			})
+		]);
+
+		// Whether the user is following
+		_user.isFollowing = following1 !== null;
+		_user.isStalking = following1 && following1.stalk;
+
+		// Whether the user is followed
+		_user.isFollowed = following2 !== null;
 
 		// Whether the user is muted
-		_user.isMuted = (async () => {
-			const mute = await Mute.findOne({
-				muterId: meId,
-				muteeId: _user.id,
-				deletedAt: { $exists: false }
-			});
-			return mute !== null;
-		})();
+		_user.isMuted = mute !== null;
 	}
 
 	if (opts.detail) {
@@ -413,7 +410,7 @@ export const pack = (
 		}
 
 		if (meId && !meId.equals(_user.id)) {
-			const myFollowingIds = await getFriends(meId);
+			const myFollowingIds = await getFriendIds(meId);
 
 			// Get following you know count
 			_user.followingYouKnowCount = Following.count({

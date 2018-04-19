@@ -1,4 +1,3 @@
-import { MongoError } from 'mongodb';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser } from '../../models/user';
 import stream, { publishLocalTimelineStream, publishGlobalTimelineStream } from '../../publishers/stream';
@@ -91,7 +90,7 @@ export default async (user: IUser, data: {
 		note = await Note.insert(insert);
 	} catch (e) {
 		// duplicate key error
-		if (e instanceof MongoError && e.code === 11000) {
+		if (e.code === 11000) {
 			return res(null);
 		}
 
@@ -125,19 +124,8 @@ export default async (user: IUser, data: {
 		publishGlobalTimelineStream(noteObj);
 
 		// Fetch all followers
-		const followers = await Following.aggregate([{
-			$lookup: {
-				from: 'users',
-				localField: 'followerId',
-				foreignField: '_id',
-				as: 'user'
-			}
-		}, {
-			$match: {
-				followeeId: note.userId
-			}
-		}], {
-			_id: false
+		const followers = await Following.find({
+			followeeId: note.userId
 		});
 
 		if (!silent) {
@@ -158,12 +146,18 @@ export default async (user: IUser, data: {
 				deliver(user, await render(), data.renote._user.inbox);
 			}
 
-			Promise.all(followers.map(async follower => {
-				follower = follower.user[0];
+			Promise.all(followers.map(async following => {
+				const follower = following._follower;
 
 				if (isLocalUser(follower)) {
+					// ストーキングしていない場合
+					if (!following.stalk) {
+						// この投稿が返信ならスキップ
+						if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId)) return;
+					}
+
 					// Publish event to followers stream
-					stream(follower._id, 'note', noteObj);
+					stream(following.followerId, 'note', noteObj);
 				} else {
 					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 					if (isLocalUser(user)) {

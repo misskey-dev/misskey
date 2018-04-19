@@ -10,6 +10,7 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
+import * as logger from 'koa-logger';
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
@@ -19,6 +20,12 @@ import config from '../config';
 const app = new Koa();
 app.proxy = true;
 
+if (process.env.NODE_ENV != 'production') {
+	// Logger
+	app.use(logger());
+}
+
+// Compress response
 app.use(compress({
 	flush: zlib.constants.Z_SYNC_FLUSH
 }));

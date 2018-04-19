@@ -406,6 +406,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Pas d'utilisateurs"
 
 desktop/views/pages/user/user.header.vue:
+  is-suspended: "This account has been suspended."
   is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
   view-remote: "Voir les informations détaillées"
 
@@ -419,6 +420,9 @@ desktop/views/pages/user/user.photos.vue:
 
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Vous suis"
+  stalk: "ストークする"
+  stalking: "ストーキングしています"
+  unstalk: "ストーク解除"
   mute: "Mettre en sourdine"
   muted: "Muting"
   unmute: "Enlever la sourdine"
@@ -591,6 +595,7 @@ mobile/views/pages/user.vue:
   overview: "Aperçu"
   timeline: "Fil d'actualité"
   media: "Media"
+  is-suspended: "This account has been suspended."
   is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
   view-remote: "Voir les informations détaillées"
 

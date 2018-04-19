@@ -80,27 +80,38 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 	const summaryDOM = JSDOM.fragment(person.summary);
 
 	// Create user
-	const user = await User.insert({
-		avatarId: null,
-		bannerId: null,
-		createdAt: Date.parse(person.published) || null,
-		description: summaryDOM.textContent,
-		followersCount,
-		followingCount,
-		notesCount,
-		name: person.name,
-		driveCapacity: 1024 * 1024 * 8, // 8MiB
-		username: person.preferredUsername,
-		usernameLower: person.preferredUsername.toLowerCase(),
-		host,
-		publicKey: {
-			id: person.publicKey.id,
-			publicKeyPem: person.publicKey.publicKeyPem
-		},
-		inbox: person.inbox,
-		uri: person.id,
-		url: person.url
-	}) as IRemoteUser;
+	let user: IRemoteUser;
+	try {
+		user = await User.insert({
+			avatarId: null,
+			bannerId: null,
+			createdAt: Date.parse(person.published) || null,
+			description: summaryDOM.textContent,
+			followersCount,
+			followingCount,
+			notesCount,
+			name: person.name,
+			driveCapacity: 1024 * 1024 * 8, // 8MiB
+			username: person.preferredUsername,
+			usernameLower: person.preferredUsername.toLowerCase(),
+			host,
+			publicKey: {
+				id: person.publicKey.id,
+				publicKeyPem: person.publicKey.publicKeyPem
+			},
+			inbox: person.inbox,
+			uri: person.id,
+			url: person.url
+		}) as IRemoteUser;
+	} catch (e) {
+		// duplicate key error
+		if (e.code === 11000) {
+			throw new Error('already registered');
+		}
+
+		console.error(e);
+		throw e;
+	}
 
 	//#region アイコンとヘッダー画像をフェッチ
 	const [avatarId, bannerId] = (await Promise.all([

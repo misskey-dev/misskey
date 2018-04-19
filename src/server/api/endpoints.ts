@@ -426,6 +426,24 @@ const endpoints: Endpoint[] = [
 		},
 		kind: 'following-write'
 	},
+	{
+		name: 'following/stalk',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'following-write'
+	},
+	{
+		name: 'following/unstalk',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'following-write'
+	},
 
 	{
 		name: 'notes'

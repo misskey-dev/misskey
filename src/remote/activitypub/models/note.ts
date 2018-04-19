@@ -47,7 +47,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const object = await resolver.resolve(value) as any;
 
 	if (object == null || object.type !== 'Note') {
-		throw new Error('invalid note');
+		log(`invalid note: ${object}`);
+		return null;
 	}
 
 	const note: INoteActivityStreamsObject = object;
@@ -57,12 +58,17 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// 投稿者をフェッチ
 	const actor = await resolvePerson(note.attributedTo) as IRemoteUser;
 
+	// 投稿者が凍結されていたらスキップ
+	if (actor.isSuspended) {
+		return null;
+	}
+
 	//#region Visibility
 	let visibility = 'public';
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';
 	if (note.cc.length == 0) visibility = 'private';
 	// TODO
-	if (visibility != 'public') throw new Error('unspported visibility');
+	if (visibility != 'public') return null;
 	//#endergion
 
 	// 添付メディア
