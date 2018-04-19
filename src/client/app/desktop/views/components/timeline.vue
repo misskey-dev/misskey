@@ -66,14 +66,16 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-timeline
-	background #fff
+root(isDark)
+	background isDark ? #282C37 : #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
 
 	> header
 		padding 0 8px
 		z-index 10
+		background isDark ? #313543 : #fff
+		border-radius 6px 6px 0 0
 		box-shadow 0 1px rgba(0, 0, 0, 0.08)
 
 		> span
@@ -99,10 +101,16 @@ export default Vue.extend({
 					background $theme-color
 
 			&:not([data-is-active])
-				color #6f7477
+				color isDark ? #9aa2a7 : #6f7477
 				cursor pointer
 
 				&:hover
-					color #525a5f
+					color isDark ? #d9dcde : #525a5f
+
+.mk-timeline[data-darkmode]
+	root(true)
+
+.mk-timeline:not([data-darkmode])
+	root(false)
 
 </style>

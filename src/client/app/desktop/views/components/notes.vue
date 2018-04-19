@@ -50,17 +50,16 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-notes
-
+root(isDark)
 	> .date
 		display block
 		margin 0
 		line-height 32px
 		font-size 14px
 		text-align center
-		color #aaa
-		background #fdfdfd
-		border-bottom solid 1px #eaeaea
+		color isDark ? #666b79 : #aaa
+		background isDark ? #242731 : #fdfdfd
+		border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 		span
 			margin 0 16px
@@ -86,4 +85,11 @@ export default Vue.extend({
 
 			&:active
 				background #eee
+
+.mk-notes[data-darkmode]
+	root(true)
+
+.mk-notes:not([data-darkmode])
+	root(false)
+
 </style>

@@ -2,6 +2,7 @@
  * Desktop Client
  */
 
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
@@ -42,6 +43,30 @@ init(async (launch) => {
 	// Register components
 	require('./views/components');
 	require('./views/widgets');
+
+	// Dark/Light
+	Vue.mixin({
+		mounted() {
+			const set = () => {
+				if (!this.$el || !this.os || !this.os.i) return;
+				if (this.os.i.clientSettings.dark) {
+					document.documentElement.setAttribute('data-darkmode', 'true');
+					this.$el.setAttribute('data-darkmode', 'true');
+				} else {
+					document.documentElement.removeAttribute('data-darkmode');
+					this.$el.removeAttribute('data-darkmode');
+				}
+			};
+
+			set();
+
+			this.$watch('os.i.clientSettings', i => {
+				set();
+			}, {
+				deep: true
+			});
+		}
+	});
 
 	// Init router
 	const router = new VueRouter({
