@@ -11,6 +11,11 @@ const log = debug('misskey:activitypub');
  * Imageを作成します。
  */
 export async function createImage(actor: IRemoteUser, value): Promise<IDriveFile> {
+	// 投稿者が凍結されていたらスキップ
+	if (actor.isSuspended) {
+		return null;
+	}
+
 	const image = await new Resolver().resolve(value);
 
 	if (image.url == null) {

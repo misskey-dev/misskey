@@ -58,6 +58,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// 投稿者をフェッチ
 	const actor = await resolvePerson(note.attributedTo) as IRemoteUser;
 
+	// 投稿者が凍結されていたらスキップ
+	if (actor.isSuspended) {
+		return null;
+	}
+
 	//#region Visibility
 	let visibility = 'public';
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';

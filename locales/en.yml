@@ -406,6 +406,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No users"
 
 desktop/views/pages/user/user.header.vue:
+  is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
 
@@ -594,6 +595,7 @@ mobile/views/pages/user.vue:
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
+  is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
 

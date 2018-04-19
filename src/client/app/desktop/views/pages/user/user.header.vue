@@ -1,5 +1,6 @@
 <template>
 <div class="header" :data-is-dark-background="user.bannerUrl != null">
+	<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
 	<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 	<div class="banner-container" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''">
 		<div class="banner" ref="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''" @click="onBannerClick"></div>
@@ -73,10 +74,17 @@ export default Vue.extend({
 	background #f7f7f7
 	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
 
+	> .is-suspended
 	> .is-remote
 		padding 16px
-		color #573c08
-		background #fff0db
+
+		&.is-suspended
+			color #570808
+			background #ffdbdb
+
+		&.is-remote
+			color #573c08
+			background #fff0db
 
 		> p
 			margin 0 auto
