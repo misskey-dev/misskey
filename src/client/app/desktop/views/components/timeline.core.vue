@@ -110,7 +110,7 @@ export default Vue.extend({
 		},
 
 		async prev() {
-			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0) return;
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existPrev) return;
 			this.prevFetching = true;
 			const heightBefore = document.body.offsetHeight
 			if (this.prevNotes.length > 0) {
@@ -125,14 +125,13 @@ export default Vue.extend({
 				}
 			} else {
 				await (this as any).api(this.endpoint, {
-					limit: 50,
+					limit: 21,
 					sinceId: this.notes[0].id
 				}).then(notes => {
 					if (notes.length == 0) {
 						this.prevFetching = false;
 						this.existPrev = false;
-						return;
-					} else if (notes.length == 50) {
+					} else if (notes.length == 21) {
 						this.existPrev = true;
 						notes.shift();
 					} else {
@@ -152,8 +151,9 @@ export default Vue.extend({
 				this.existMore = true;
 			}
 			this.prevFetching = false;
+			return;
 		},
-	
+
 		more() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
