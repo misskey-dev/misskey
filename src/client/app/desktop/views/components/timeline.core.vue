@@ -114,12 +114,14 @@ export default Vue.extend({
 			this.prevFetching = true;
 			const heightBefore = document.body.offsetHeight
 			if (this.prevNotes.length > 0) {
-				if (this.prevNotes.length < 50) {
+				if (this.prevNotes.length < 20) {
 					this.notes = this.prevNotes.concat(this.notes);
 					this.prevNotes = [];
+					this.existPrev = true;
 				} else {
-					this.notes = this.prevNotes.slice(-50).concat(this.notes);
-					this.prevNotes = this.prevNotes.slice(0,-50);
+					this.notes = this.prevNotes.slice(-20).concat(this.notes);
+					this.prevNotes = this.prevNotes.slice(0,-20);
+					this.existPrev = true;
 				}
 			} else {
 				await (this as any).api(this.endpoint, {
