@@ -94,7 +94,6 @@ export default Vue.extend({
 			if (this.prevNotes.length > 0) {
 				this.notes = this.prevNotes.slice(-20).concat(this.notes);
 				this.prevNotes = this.prevNotes.slice(0,-20);
-				this.existPrev = true;
 			} else {
 				await (this as any).api(this.endpoint, {
 					limit: 11,
@@ -130,7 +129,6 @@ export default Vue.extend({
 			if (this.moreNotes.length > 0) {
 				this.notes = this.notes.concat(this.moreNotes);
 				this.moreNotes = [];
-				this.existMore = true;
 				this.moreFetching = false;
 			} else {
 				(this as any).api(this.endpoint, {
