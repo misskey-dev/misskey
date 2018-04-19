@@ -44,43 +44,6 @@ init(async (launch) => {
 	require('./views/components');
 	require('./views/widgets');
 
-	// Dark/Light
-	Vue.mixin({
-		data() {
-			return {
-				_darkmode_: false
-			};
-		},
-		beforeCreate() {
-			// なぜか警告が出るため
-			this._darkmode_ = false;
-		},
-		mounted() {
-			const set = () => {
-				if (!this.$el || !this.$el.setAttribute || !this.os || !this.os.i) return;
-				if (this.os.i.clientSettings.dark) {
-					document.documentElement.setAttribute('data-darkmode', 'true');
-					this.$el.setAttribute('data-darkmode', 'true');
-					this._darkmode_ = true;
-					this.$forceUpdate();
-				} else {
-					document.documentElement.removeAttribute('data-darkmode');
-					this.$el.removeAttribute('data-darkmode');
-					this._darkmode_ = false;
-					this.$forceUpdate();
-				}
-			};
-
-			set();
-
-			this.$watch('os.i.clientSettings', i => {
-				set();
-			}, {
-				deep: true
-			});
-		}
-	});
-
 	// Init router
 	const router = new VueRouter({
 		mode: 'history',
