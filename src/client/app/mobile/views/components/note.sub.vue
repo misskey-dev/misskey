@@ -93,6 +93,8 @@ export default Vue.extend({
 				color #b2b8bb
 
 		> .body
+			max-height 128px
+			overflow hidden
 
 			> .text
 				cursor default
