@@ -374,7 +374,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-settings
+root(isDark)
 	display flex
 	width 100%
 	height 100%
@@ -385,13 +385,13 @@ export default Vue.extend({
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		border-right solid 1px #ddd
+		border-right solid 1px isDark ? #1c2023 : #ddd
 
 		> p
 			display block
 			padding 10px 16px
 			margin 0
-			color #666
+			color isDark ? #9aa2a7 : #666
 			cursor pointer
 			user-select none
 			transition margin-left 0.2s ease
@@ -400,7 +400,7 @@ export default Vue.extend({
 				margin-right 4px
 
 			&:hover
-				color #555
+				color isDark ? #fff : #555
 
 			&.active
 				margin-left 8px
@@ -414,14 +414,14 @@ export default Vue.extend({
 
 		> section
 			margin 32px
-			color #4a535a
+			color isDark ? #c4ccd2 : #4a535a
 
 			> h1
 				margin 0 0 1em 0
 				padding 0 0 8px 0
 				font-size 1em
-				color #555
-				border-bottom solid 1px #eee
+				color isDark ? #e3e7ea : #555
+				border-bottom solid 1px isDark ? #1c2023 : #eee
 
 			&, >>> *
 				.ui.button.block
@@ -439,7 +439,13 @@ export default Vue.extend({
 
 		> .web
 			> .div
-				border-bottom solid 1px #eee
+				border-bottom solid 1px isDark ? #1c2023 : #eee
 				margin 16px 0
+
+.mk-settings[data-darkmode]
+	root(true)
+
+.mk-settings:not([data-darkmode])
+	root(false)
 
 </style>

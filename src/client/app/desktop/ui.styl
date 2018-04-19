@@ -65,6 +65,20 @@ button.ui
 			background $theme-color
 			border-color $theme-color
 
+html[data-darkmode] button.ui
+html[data-darkmode] .button.ui
+	color #fff
+	background linear-gradient(to bottom, #313543 0%, #282c37 100%)
+	border-color #1c2023
+
+	&:hover
+		background linear-gradient(to bottom, #2c2f3c 0%, #22262f 100%)
+		border-color #151a1d
+
+	&:active
+		background #22262f
+		border-color #151a1d
+
 input:not([type]).ui
 input[type='text'].ui
 input[type='password'].ui
