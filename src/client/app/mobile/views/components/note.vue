@@ -4,15 +4,13 @@
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
-		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-			</router-link>
-			%fa:retweet%
-			<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
-			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
-		</p>
+		%fa:retweet%
+		<div class="no-shrink">{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</div>
+		<router-link class="avatar-anchor no-shrink" :to="note.user | userPage">
+			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		</router-link>
+		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
+		<div class="last">{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</div>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
@@ -251,40 +249,47 @@ export default Vue.extend({
 	> .renote
 		color #9dbb00
 		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		display flex
+		align-items center
+		margin 0
+		padding 8px 16px
+		line-height 28px
 
-		> p
-			margin 0
-			padding 8px 16px
-			line-height 28px
+		@media (min-width 500px)
+			padding 16px
 
-			@media (min-width 500px)
-				padding 16px
+		i
+			flex-shrink 0
 
-			.avatar-anchor
-				display inline-block
+		.no-shrink
+			flex-shrink 0
 
-				.avatar
-					vertical-align bottom
-					width 28px
-					height 28px
-					margin 0 8px 0 0
-					border-radius 6px
+		.avatar-anchor
+			display block
+
+			.avatar
+				vertical-align bottom
+				width 28px
+				height 28px
+				margin 0 8px 0 0
+				border-radius 6px
 
 			[data-fa]
 				margin-right 4px
 
-			.name
-				font-weight bold
+		.name
+			font-weight bold
+			flex-shrink 1
+			overflow hidden
+			text-overflow ellipsis
+
+		.last
+			margin-right: .3em
+			flex-shrink 0
 
 		> .mk-time
-			position absolute
-			top 8px
-			right 16px
-			font-size 0.9em
-			line-height 28px
-
-			@media (min-width 500px)
-				top 16px
+			margin-left auto
+			flex-shrink 0
 
 		& + article
 			padding-top 8px
