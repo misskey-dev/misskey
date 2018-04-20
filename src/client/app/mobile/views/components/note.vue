@@ -22,8 +22,8 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
-				<span class="username">@{{ p.user | acct }}</span>
+				<div class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</div>
+				<div class="username">@{{ p.user | acct }}</div>
 				<div class="info">
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
 					<router-link class="created-at" :to="p | notePage">
