@@ -22,8 +22,8 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
-				<span class="username">@{{ p.user | acct }}</span>
+				<div class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</div>
+				<div class="username">@{{ p.user | acct }}</div>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
@@ -410,6 +410,7 @@ export default Vue.extend({
 					font-weight bold
 					text-decoration none
 					text-overflow ellipsis
+					flex-shrink 1
 
 					&:hover
 						text-decoration underline
@@ -421,10 +422,15 @@ export default Vue.extend({
 					color #aaa
 					border solid 1px #ddd
 					border-radius 3px
+					flex-shrink: 0
 
 				> .username
 					margin 0 .5em 0 0
+					font-size .93em
 					color #ccc
+					overflow hidden
+					text-overflow ellipsis
+					flex-shrink 50
 
 				> .info
 					margin-left auto
