@@ -5,12 +5,12 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		%fa:retweet%
-		<span class="no-shrink">{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
+		<div class="no-shrink">{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</div>
 		<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.userId">
 			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
 		</router-link>
 		<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-		<span class="no-shrink">{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
+		<div class="no-shrink">{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</div>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
