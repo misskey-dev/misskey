@@ -33,18 +33,13 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-note-preview
+root(isDark)
 	font-size 0.9em
-	background #fff
 
 	&:after
 		content ""
 		display block
 		clear both
-
-	&:hover
-		> .main > footer > button
-			color #888
 
 	> .avatar-anchor
 		display block
@@ -70,7 +65,7 @@ export default Vue.extend({
 			> .name
 				margin 0 .5em 0 0
 				padding 0
-				color #607073
+				color isDark ? #fff : #607073
 				font-size 1em
 				font-weight bold
 				text-decoration none
@@ -81,11 +76,11 @@ export default Vue.extend({
 
 			> .username
 				margin 0 .5em 0 0
-				color #d1d8da
+				color isDark ? #606984 : #d1d8da
 
 			> .time
 				margin-left auto
-				color #b2b8bb
+				color isDark ? #606984 : #b2b8bb
 
 		> .body
 
@@ -94,6 +89,12 @@ export default Vue.extend({
 				margin 0
 				padding 0
 				font-size 1.1em
-				color #717171
+				color isDark ? #959ba7 : #717171
+
+.mk-note-preview[data-darkmode]
+	root(true)
+
+.mk-note-preview:not([data-darkmode])
+	root(false)
 
 </style>

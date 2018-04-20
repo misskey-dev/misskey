@@ -133,9 +133,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-calendar
-	color #777
-	background #fff
+root(isDark)
+	color isDark ? #c5ced6 : #777
+	background isDark ? #282C37 : #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
 
@@ -248,5 +248,11 @@ export default Vue.extend({
 
 					&:active > div
 						background darken($theme-color, 10%)
+
+.mk-calendar[data-darkmode]
+	root(true)
+
+.mk-calendar:not([data-darkmode])
+	root(false)
 
 </style>

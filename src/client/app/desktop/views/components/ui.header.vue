@@ -169,10 +169,10 @@ root(isDark)
 						> .mk-ui-header-search
 							display none
 
-.header[data-is-darkmode]
+.header[data-darkmode]
 	root(true)
 
-.header
+.header:not([data-darkmode])
 	root(false)
 
 </style>

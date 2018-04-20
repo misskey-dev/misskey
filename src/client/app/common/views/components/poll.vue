@@ -68,7 +68,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-poll
+root(isDark)
 
 	> ul
 		display block
@@ -81,7 +81,8 @@ export default Vue.extend({
 			margin 4px 0
 			padding 4px 8px
 			width 100%
-			border solid 1px #eee
+			color isDark ? #fff : #000
+			border solid 1px isDark ? #5e636f : #eee
 			border-radius 4px
 			overflow hidden
 			cursor pointer
@@ -108,6 +109,8 @@ export default Vue.extend({
 					margin-left 4px
 
 	> p
+		color isDark ? #a3aebf : #000
+
 		a
 			color inherit
 
@@ -120,5 +123,11 @@ export default Vue.extend({
 
 			&:active
 				background transparent
+
+.mk-poll[data-darkmode]
+	root(true)
+
+.mk-poll:not([data-darkmode])
+	root(false)
 
 </style>

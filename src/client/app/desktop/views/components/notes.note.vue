@@ -291,19 +291,20 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.note
+root(isDark)
 	margin 0
 	padding 0
-	background #fff
-	border-bottom solid 1px #eaeaea
+	background isDark ? #282C37 : #fff
+	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
-	&:first-child
-		border-top-left-radius 6px
-		border-top-right-radius 6px
-
-		> .renote
+	&[data-round]
+		&:first-child
 			border-top-left-radius 6px
 			border-top-right-radius 6px
+
+			> .renote
+				border-top-left-radius 6px
+				border-top-right-radius 6px
 
 	&:last-of-type
 		border-bottom none
@@ -324,7 +325,7 @@ export default Vue.extend({
 
 	> .renote
 		color #9dbb00
-		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
 		> p
 			margin 0
@@ -374,7 +375,7 @@ export default Vue.extend({
 
 		&:hover
 			> .main > footer > button
-				color #888
+				color isDark ? #707b97 : #888
 
 		> .avatar-anchor
 			display block
@@ -407,7 +408,7 @@ export default Vue.extend({
 					margin 0 .5em 0 0
 					padding 0
 					overflow hidden
-					color #627079
+					color isDark ? #fff : #627079
 					font-size 1em
 					font-weight bold
 					text-decoration none
@@ -426,7 +427,7 @@ export default Vue.extend({
 
 				> .username
 					margin 0 .5em 0 0
-					color #ccc
+					color isDark ? #606984 : #ccc
 
 				> .info
 					margin-left auto
@@ -434,7 +435,7 @@ export default Vue.extend({
 
 					> .mobile
 						margin-right 8px
-						color #ccc
+						color isDark ? #606984 : #ccc
 
 					> .app
 						margin-right 8px
@@ -443,7 +444,7 @@ export default Vue.extend({
 						border-right solid 1px #eaeaea
 
 					> .created-at
-						color #c0c0c0
+						color isDark ? #606984 : #c0c0c0
 
 			> .body
 
@@ -454,7 +455,7 @@ export default Vue.extend({
 					padding 0
 					overflow-wrap break-word
 					font-size 1.1em
-					color #717171
+					color isDark ? #fff : #717171
 
 					>>> .title
 						display block
@@ -462,7 +463,7 @@ export default Vue.extend({
 						padding 4px
 						font-size 90%
 						text-align center
-						background #eef1f3
+						background isDark ? #2f3944 : #eef1f3
 						border-radius 4px
 
 					>>> .code
@@ -471,12 +472,12 @@ export default Vue.extend({
 					>>> .quote
 						margin 8px
 						padding 6px 12px
-						color #aaa
-						border-left solid 3px #eee
+						color isDark ? #6f808e : #aaa
+						border-left solid 3px isDark ? #637182 : #eee
 
 					> .reply
 						margin-right 8px
-						color #717171
+						color isDark ? #99abbf : #717171
 
 					> .rp
 						margin-left 4px
@@ -547,13 +548,13 @@ export default Vue.extend({
 					padding 0 8px
 					line-height 32px
 					font-size 1em
-					color #ddd
+					color isDark ? #606984 : #ddd
 					background transparent
 					border none
 					cursor pointer
 
 					&:hover
-						color #666
+						color isDark ? #9198af : #666
 
 					> .count
 						display inline
@@ -571,6 +572,12 @@ export default Vue.extend({
 	> .detail
 		padding-top 4px
 		background rgba(0, 0, 0, 0.0125)
+
+.note[data-darkmode]
+	root(true)
+
+.note:not([data-darkmode])
+	root(false)
 
 </style>
 

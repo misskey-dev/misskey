@@ -1,14 +1,15 @@
 <template>
-<div class="mk-activity" :data-melt="design == 2">
-	<template v-if="design == 0">
-		<p class="title">%fa:chart-bar%%i18n:@title%</p>
-		<button @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
-	</template>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-	<template v-else>
-		<x-calendar v-show="view == 0" :data="[].concat(activity)"/>
-		<x-chart v-show="view == 1" :data="[].concat(activity)"/>
-	</template>
+<div class="mk-activity">
+	<mk-widget-container :show-header="design == 0" :naked="design == 2">
+		<template slot="header">%fa:chart-bar%%i18n:@title%</template>
+		<button slot="func" title="%i18n:@toggle%" @click="toggle">%fa:sort%</button>
+
+		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+		<template v-else>
+			<x-calendar v-show="view == 0" :data="[].concat(activity)"/>
+			<x-chart v-show="view == 1" :data="[].concat(activity)"/>
+		</template>
+	</mk-widget-container>
 </div>
 </template>
 
@@ -64,53 +65,14 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" scoped>
-.mk-activity
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
-	border-radius 6px
+<style lang="stylus" module>
+.fetching
+	margin 0
+	padding 16px
+	text-align center
+	color #aaa
 
-	&[data-melt]
-		background transparent !important
-		border none !important
-
-	> .title
-		z-index 1
-		margin 0
-		padding 0 16px
-		line-height 42px
-		font-size 0.9em
-		font-weight bold
-		color #888
-		box-shadow 0 1px rgba(0, 0, 0, 0.07)
-
-		> [data-fa]
-			margin-right 4px
-
-	> button
-		position absolute
-		z-index 2
-		top 0
-		right 0
-		padding 0
-		width 42px
-		font-size 0.9em
-		line-height 42px
-		color #ccc
-
-		&:hover
-			color #aaa
-
-		&:active
-			color #999
-
-	> .fetching
-		margin 0
-		padding 16px
-		text-align center
-		color #aaa
-
-		> [data-fa]
-			margin-right 4px
+	> [data-fa]
+		margin-right 4px
 
 </style>

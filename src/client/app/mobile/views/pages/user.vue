@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header" v-if="!fetching">%fa:user% {{ user | userName }}</span>
+	<template slot="header" v-if="!fetching"><img :src="`${user.avatarUrl}?thumbnail&size=64`" alt="">{{ user | userName }}</template>
 	<main v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
 		<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
@@ -113,8 +113,6 @@ export default Vue.extend({
 main
 	> .is-suspended
 	> .is-remote
-		padding 16px
-
 		&.is-suspended
 			color #570808
 			background #ffdbdb
@@ -125,13 +123,15 @@ main
 
 		> p
 			margin 0 auto
-			max-width 1024px
+			padding 14px
+			max-width 600px
 			font-size 14px
 
 			> a
 				font-weight bold
 
 			@media (max-width 500px)
+				padding 12px
 				font-size 12px
 
 	> header

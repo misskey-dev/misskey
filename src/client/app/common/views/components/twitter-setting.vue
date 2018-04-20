@@ -50,8 +50,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-twitter-setting
-	color #4a535a
-
 	.account
 		border solid 1px #e1e8ed
 		border-radius 4px

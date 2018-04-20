@@ -2,43 +2,52 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import Favorite from '../../../../models/favorite';
-import { pack } from '../../../../models/note';
+import Favorite, { pack } from '../../../../models/favorite';
 
 /**
- * Get followers of a user
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
+ * Get favorited notes
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
 	if (limitErr) return rej('invalid limit param');
 
-	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
-	if (offsetErr) return rej('invalid offset param');
+	// Get 'sinceId' parameter
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	if (sinceIdErr) return rej('invalid sinceId param');
 
-	// Get 'sort' parameter
-	const [sort = 'desc', sortError] = $(params.sort).optional.string().or('desc asc').$;
-	if (sortError) return rej('invalid sort param');
+	// Get 'untilId' parameter
+	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	if (untilIdErr) return rej('invalid untilId param');
+
+	// Check if both of sinceId and untilId is specified
+	if (sinceId && untilId) {
+		return rej('cannot set sinceId and untilId');
+	}
+
+	const query = {
+		userId: user._id
+	} as any;
+
+	const sort = {
+		_id: -1
+	};
+
+	if (sinceId) {
+		sort._id = 1;
+		query._id = {
+			$gt: sinceId
+		};
+	} else if (untilId) {
+		query._id = {
+			$lt: untilId
+		};
+	}
 
 	// Get favorites
 	const favorites = await Favorite
-		.find({
-			userId: user._id
-		}, {
-			limit: limit,
-			skip: offset,
-			sort: {
-				_id: sort == 'asc' ? 1 : -1
-			}
-		});
+		.find(query, { limit, sort });
 
 	// Serialize
-	res(await Promise.all(favorites.map(async favorite =>
-		await pack(favorite.noteId)
-	)));
+	res(await Promise.all(favorites.map(favorite => pack(favorite, user))));
 });

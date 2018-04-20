@@ -150,6 +150,9 @@ export default Vue.extend({
 	width 100%
 	box-shadow 0 1px 0 rgba(#000, 0.075)
 
+	&, *
+		user-select none
+
 	> .main
 		color rgba(#fff, 0.9)
 

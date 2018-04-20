@@ -45,7 +45,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-svg
+root(isDark)
 	display block
 	height 100%
 
@@ -56,6 +56,12 @@ svg
 
 	> text
 		font-size 0.15px
-		fill rgba(0, 0, 0, 0.6)
+		fill isDark ? rgba(#fff, 0.6) : rgba(0, 0, 0, 0.6)
+
+svg[data-darkmode]
+	root(true)
+
+svg:not([data-darkmode])
+	root(false)
 
 </style>
