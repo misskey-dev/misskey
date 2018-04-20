@@ -4,15 +4,13 @@
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
-		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-			</router-link>
-			%fa:retweet%
-			<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
-			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
-		</p>
+		%fa:retweet%
+		<div class="no-shrink">{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</div>
+		<router-link class="avatar-anchor no-shrink" :to="note.user | userPage">
+			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		</router-link>
+		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
+		<div class="last">{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</div>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
@@ -22,8 +20,8 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
-				<span class="username">@{{ p.user | acct }}</span>
+				<div class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</div>
+				<div class="username">@{{ p.user | acct }}</div>
 				<div class="info">
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
 					<router-link class="created-at" :to="p | notePage">
@@ -253,40 +251,49 @@ export default Vue.extend({
 	> .renote
 		color #9dbb00
 		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		display flex
+		align-items center
+		margin 0
+		padding 8px 16px
+		line-height 28px
 
-		> p
-			margin 0
-			padding 8px 16px
-			line-height 28px
+		@media (min-width 500px)
+			padding 16px
 
-			@media (min-width 500px)
-				padding 16px
+		i
+			flex-shrink 0
 
-			.avatar-anchor
-				display inline-block
+		.no-shrink
+			flex-shrink 0
 
-				.avatar
-					vertical-align bottom
-					width 28px
-					height 28px
-					margin 0 8px 0 0
-					border-radius 6px
+		.avatar-anchor
+			display block
+
+			.avatar
+				vertical-align bottom
+				width 28px
+				height 28px
+				margin 0 4px
+				border-radius 6px
 
 			[data-fa]
 				margin-right 4px
 
-			.name
-				font-weight bold
+		.name
+			font-weight bold
+			flex-shrink 1
+			overflow hidden
+			text-overflow ellipsis
+
+		.last
+			margin-right: .3em
+			flex-shrink 0
 
 		> .mk-time
-			position absolute
-			top 8px
-			right 16px
-			font-size 0.9em
-			line-height 28px
-
-			@media (min-width 500px)
-				top 16px
+			display block
+			margin-left auto
+			flex-shrink 0
+			font-size .9em
 
 		& + article
 			padding-top 8px
@@ -346,7 +353,7 @@ export default Vue.extend({
 
 				> .name
 					display block
-					margin 0 0.5em 0 0
+					margin 0 0.3em 0 0
 					padding 0
 					overflow hidden
 					color #627079
@@ -354,25 +361,32 @@ export default Vue.extend({
 					font-weight bold
 					text-decoration none
 					text-overflow ellipsis
+					flex-shrink 1
 
 					&:hover
 						text-decoration underline
 
 				> .is-bot
-					margin 0 0.5em 0 0
+					margin 0 0.3em 0 0
 					padding 1px 6px
 					font-size 12px
 					color #aaa
 					border solid 1px #ddd
 					border-radius 3px
+					flex-shrink 0
 
 				> .username
-					margin 0 0.5em 0 0
-					color #ccc
+					margin 0 0.3em 0 0
+					color #d1d8da
+					font-size .93em
+					overflow hidden
+					text-overflow ellipsis
+					flex-shrink 50
 
 				> .info
+					display block
 					margin-left auto
-					font-size 0.9em
+					font-size .9em
 
 					> .mobile
 						margin-right 6px

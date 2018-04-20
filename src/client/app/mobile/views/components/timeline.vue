@@ -19,8 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-
-const limit = 10;
+import elasticsearch from '../../../../../db/elasticsearch';
 
 export default Vue.extend({
 	props: {
@@ -34,7 +33,10 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			moreFetching: false,
+			prevFetching: false,
+			prevNotes: [],
 			notes: [],
+			moreNotes: [],
 			existMore: false,
 			connection: null,
 			connectionId: null
@@ -53,22 +55,27 @@ export default Vue.extend({
 		this.connection.on('follow', this.onChangeFollowing);
 		this.connection.on('unfollow', this.onChangeFollowing);
 
-this.fetch();
+		window.addEventListener('scroll', this.onScroll);
+		this.fetch();
 	},
 	beforeDestroy() {
 		this.connection.off('note', this.onNote);
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
+
+		window.removeEventListener('scroll', this.onScroll);
 		(this as any).os.stream.dispose(this.connectionId);
 	},
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
+			this.prevNotes = [];
+			this.moreNotes = [];
 			(this as any).api('notes/timeline', {
-				limit: limit + 1,
+				limit: 11,
 				untilDate: this.date ? (this.date as any).getTime() : undefined
 			}).then(notes => {
-				if (notes.length == limit + 1) {
+				if (notes.length == 11) {
 					notes.pop();
 					this.existMore = true;
 				}
@@ -78,30 +85,71 @@ this.fetch();
 				if (cb) cb();
 			});
 		},
-		more() {
-			this.moreFetching = true;
-			(this as any).api('notes/timeline', {
-				limit: limit + 1,
-				untilId: this.notes[this.notes.length - 1].id
-			}).then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-					this.existMore = true;
-				} else {
-					this.existMore = false;
-				}
-				this.notes = this.notes.concat(notes);
-				this.moreFetching = false;
-			});
-		},
-		onNote(note) {
-			this.notes.unshift(note);
 
-			const isTop = window.scrollY > 8;
-			if (isTop) this.notes.pop();
+		prev() {
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || this.prevNotes.length == 0) return;
+			this.prevFetching = true;
+			const heightBefore = document.body.offsetHeight
+
+			this.notes = this.prevNotes.slice(-20).concat(this.notes);
+			this.prevNotes = this.prevNotes.slice(0,-20);
+
+			// スクロールしてあげる
+			window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore)
+
+			// もし50投稿より多くタイムラインに表示されていたら
+			if (this.notes.length > 50) {
+				// 30個残してキャッシュする
+				this.moreNotes = this.notes.slice(30).concat(this.moreNotes);
+				this.notes = this.notes.slice(0,30);
+				this.existMore = true;
+			}
+			this.prevFetching = false;
+			return;
 		},
+
+		more() {
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
+			this.moreFetching = true;
+			if (this.moreNotes.length > 0) {
+				this.notes = this.notes.concat(this.moreNotes);
+				this.moreNotes = [];
+				this.moreFetching = false;
+			} else {
+				(this as any).api('notes/timeline', {
+					limit: 11,
+					untilId: this.notes[this.notes.length - 1].id
+				}).then(notes => {
+					if (notes.length == 11) {
+						notes.pop();
+					} else {
+						this.existMore = false;
+					}
+					this.notes = this.notes.concat(notes);
+					this.moreFetching = false;
+				});
+			}
+		},
+
+		onNote(note) {
+			if (!this.date) {
+				if (window.scrollY < 100 && this.prevNotes.length == 0) {
+					this.notes.unshift(note);
+					this.moreNotes.unshift(this.notes[this.notes.length - 1]);
+					this.notes.pop();
+				} else {
+					this.prevNotes.unshift(note);
+				}
+			}
+		},
+
 		onChangeFollowing() {
 			this.fetch();
+		},
+		onScroll() {
+			if (window.scrollY < 100) {
+				this.prev();
+			}
 		}
 	}
 });

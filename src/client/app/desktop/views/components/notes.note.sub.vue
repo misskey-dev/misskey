@@ -6,7 +6,7 @@
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
-			<span class="username">@{{ note.user | acct }}</span>
+			<div class="username">@{{ note.user | acct }}</div>
 			<router-link class="created-at" :to="note | notePage">
 				<mk-time :time="note.createdAt"/>
 			</router-link>
@@ -68,7 +68,7 @@ root(isDark)
 
 			> .name
 				display block
-				margin 0 .5em 0 0
+				margin 0 .3em 0 0
 				padding 0
 				overflow hidden
 				color isDark ? #fff : #607073
@@ -76,15 +76,22 @@ root(isDark)
 				font-weight bold
 				text-decoration none
 				text-overflow ellipsis
+				flex-shrink 1
 
 				&:hover
 					text-decoration underline
 
 			> .username
-				margin 0 .5em 0 0
+				margin 0 .3em 0 0
+				font-size .93em
+				color #d1d8da
+				overflow hidden
+				text-overflow ellipsis
+				flex-shrink 50
 				color isDark ? #606984 : #d1d8da
 
 			> .created-at
+				display block
 				margin-left auto
 				color isDark ? #606984 : #b2b8bb
 
