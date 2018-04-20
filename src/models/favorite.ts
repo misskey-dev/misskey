@@ -2,6 +2,7 @@ import * as mongo from 'mongodb';
 import db from '../db/mongodb';
 
 const Favorite = db.get<IFavorite>('favorites');
+Favorite.createIndex(['userId', 'noteId'], { unique: true });
 export default Favorite;
 
 export type IFavorite = {

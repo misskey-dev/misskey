@@ -13,6 +13,9 @@
 				<li @click="drive">
 					<p>%fa:cloud%<span>%i18n:@drive%</span>%fa:angle-right%</p>
 				</li>
+				<li>
+					<router-link to="/i/favorites">%fa:star%<span>%i18n:@favorites%</span>%fa:angle-right%</router-link>
+				</li>
 			</ul>
 			<ul>
 				<li>
@@ -24,7 +27,7 @@
 			</ul>
 			<ul>
 				<li @click="signout">
-					<p>%fa:power-off%<span>%i18n:@signout%</span></p>
+					<p class="signout">%fa:power-off%<span>%i18n:@signout%</span></p>
 				</li>
 			</ul>
 			<ul>
@@ -209,7 +212,7 @@ root(isDark)
 						pointer-events none
 
 					> span:first-child
-						padding-left 16px
+						padding-left 22px
 
 					> [data-fa]:first-child
 						margin-right 6px
@@ -232,6 +235,16 @@ root(isDark)
 
 					&:active
 						background darken($theme-color, 10%)
+
+					&.signout
+						$color = #e64137
+
+						&:hover, &:active
+							background $color
+							color #fff
+
+						&:active
+							background darken($color, 10%)
 
 .zoom-in-top-enter-active,
 .zoom-in-top-leave-active {

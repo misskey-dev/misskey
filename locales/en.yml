@@ -367,6 +367,7 @@ desktop/views/components/settings.profile.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Drive"
+  favorites: "Favorites"
   customize: "Customize"
   settings: "Settings"
   signout: "Sign out"
