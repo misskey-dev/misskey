@@ -344,7 +344,7 @@ export default Vue.extend({
 
 				> .name
 					display block
-					margin 0 0.3em 0 0
+					margin 0 0.5em 0 0
 					padding 0
 					overflow hidden
 					color #627079
@@ -352,27 +352,21 @@ export default Vue.extend({
 					font-weight bold
 					text-decoration none
 					text-overflow ellipsis
-					flex-shrink 1
 
 					&:hover
 						text-decoration underline
 
 				> .is-bot
-					margin 0 0.3em 0 0
+					margin 0 0.5em 0 0
 					padding 1px 6px
 					font-size 12px
 					color #aaa
 					border solid 1px #ddd
 					border-radius 3px
-					flex-shrink 0
 
 				> .username
-					margin 0 0.3em 0 0
-					font-size .93em
+					margin 0 0.5em 0 0
 					color #ccc
-					overflow hidden
-					text-overflow ellipsis
-					flex-shrink 50
 
 				> .info
 					margin-left auto
