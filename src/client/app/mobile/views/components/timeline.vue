@@ -86,7 +86,7 @@ export default Vue.extend({
 			});
 		},
 
-		async prev() {
+		prev() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || this.prevNotes.length == 0) return;
 			this.prevFetching = true;
 			const heightBefore = document.body.offsetHeight
