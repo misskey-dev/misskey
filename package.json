@@ -34,7 +34,7 @@
 		"@prezzemolo/rap": "0.1.2",
 		"@prezzemolo/zip": "0.0.3",
 		"@types/bcryptjs": "2.4.1",
-		"@types/chai": "4.1.2",
+		"@types/chai": "4.1.3",
 		"@types/chai-http": "3.0.4",
 		"@types/debug": "0.0.30",
 		"@types/deep-equal": "1.0.1",
