@@ -37,7 +37,6 @@ export default Vue.extend({
 			prevNotes: [],
 			notes: [],
 			moreNotes: [],
-			existPrev: false,
 			existMore: false,
 			connection: null,
 			connectionId: null
@@ -88,30 +87,16 @@ export default Vue.extend({
 		},
 
 		async prev() {
-			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existPrev) return;
+			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || this.prevNotes.length == 0) return;
 			this.prevFetching = true;
 			const heightBefore = document.body.offsetHeight
-			if (this.prevNotes.length > 0) {
-				this.notes = this.prevNotes.slice(-20).concat(this.notes);
-				this.prevNotes = this.prevNotes.slice(0,-20);
-			} else {
-				await (this as any).api(this.endpoint, {
-					limit: 11,
-					sinceId: this.notes[0].id
-				}).then(notes => {
-					if (notes.length == 11) {
-						this.existPrev = true;
-						notes.shift();
-					} else {
-						this.existPrev = false;
-					}
-					this.notes = notes.concat(this.notes);
-					return;
-				});
-			}
+
+			this.notes = this.prevNotes.slice(-20).concat(this.notes);
+			this.prevNotes = this.prevNotes.slice(0,-20);
 
 			// スクロールしてあげる
 			window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore)
+
 			// もし50投稿より多くタイムラインに表示されていたら
 			if (this.notes.length > 50) {
 				// 30個残してキャッシュする
@@ -148,13 +133,12 @@ export default Vue.extend({
 
 		onNote(note) {
 			if (!this.date) {
-				if (window.scrollY < 100 && !this.existPrev) {
+				if (window.scrollY < 100 && this.prevNotes.length == 0) {
 					this.notes.unshift(note);
 					this.moreNotes.unshift(this.notes[this.notes.length - 1]);
 					this.notes.pop();
 				} else {
 					this.prevNotes.unshift(note);
-					this.existPrev = true;
 				}
 			}
 		},
