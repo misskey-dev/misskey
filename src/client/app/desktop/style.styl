@@ -47,6 +47,19 @@ html
 	&[data-darkmode]
 		background #191B22
 
+		&, *
+			&::-webkit-scrollbar-track
+				background-color #282C37
+
+			&::-webkit-scrollbar
+				width 6px
+
+			&::-webkit-scrollbar-thumb
+				background-color #454954
+
+				&:hover
+					background-color #535660
+
 body
 	display flex
 	flex-direction column
