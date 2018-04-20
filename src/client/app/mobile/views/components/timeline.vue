@@ -116,7 +116,7 @@ export default Vue.extend({
 				this.moreNotes = [];
 				this.moreFetching = false;
 			} else {
-				(this as any).api(this.endpoint, {
+				(this as any).api('notes/timeline', {
 					limit: 11,
 					untilId: this.notes[this.notes.length - 1].id
 				}).then(notes => {
