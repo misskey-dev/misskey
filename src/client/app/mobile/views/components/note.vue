@@ -369,6 +369,9 @@ export default Vue.extend({
 				> .username
 					margin 0 0.3em 0 0
 					font-size .93em
+					overflow hidden
+					text-overflow ellipsis
+					flex-shrink 50
 
 				> .info
 					margin-left auto
