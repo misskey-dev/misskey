@@ -141,7 +141,7 @@ root(isDark)
 	> .description
 		padding 0 16px
 		font-size 0.7em
-		color #555
+		color isDark ? #9ea4ad : #555
 
 	> .status
 		padding 8px 16px

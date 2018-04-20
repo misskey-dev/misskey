@@ -67,7 +67,7 @@ root(isDark)
 	> .poll
 		padding 16px
 		font-size 12px
-		color #555
+		color isDark ? #9ea4ad : #555
 
 		> p
 			margin 0 0 8px 0
