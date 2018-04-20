@@ -51,13 +51,13 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	&.mk-notes-enter-active
+	.mk-notes-enter-active
 		transition all .3s
 
-	&.mk-notes-enter
-	&.mk-notes-leave-to
+	.mk-notes-enter
+	.mk-notes-leave-to
 		opacity 0
-		transform translateX(30px)
+		transform translateX(-30px)
 
 	> .date
 		display block
