@@ -2,6 +2,7 @@
 <div class="mkw-messaging">
 	<mk-widget-container :show-header="props.design == 0">
 		<template slot="header">%fa:comments%%i18n:@title%</template>
+		<button slot="func" @click="add">%fa:plus%</button>
 
 		<mk-messaging ref="index" compact @navigate="navigate"/>
 	</mk-widget-container>
@@ -11,6 +12,7 @@
 <script lang="ts">
 import define from '../../../common/define-widget';
 import MkMessagingRoomWindow from '../components/messaging-room-window.vue';
+import MkMessagingWindow from '../components/messaging-window.vue';
 
 export default define({
 	name: 'messaging',
@@ -23,6 +25,9 @@ export default define({
 			(this as any).os.new(MkMessagingRoomWindow, {
 				user: user
 			});
+		},
+		add() {
+			(this as any).os.new(MkMessagingWindow);
 		},
 		func() {
 			if (this.props.design == 1) {
