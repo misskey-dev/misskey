@@ -330,9 +330,6 @@ root(isDark)
 		padding 16px 32px
 		line-height 28px
 
-		@media (min-width 500px)
-			padding 16px
-
 		i
 			flex-shrink 0
 
@@ -346,7 +343,7 @@ root(isDark)
 				vertical-align bottom
 				width 28px
 				height 28px
-				margin 0 8px 0 0
+				margin 0 4px
 				border-radius 6px
 
 			[data-fa]
@@ -366,6 +363,7 @@ root(isDark)
 			display block
 			margin-left auto
 			flex-shrink 0
+			font-size .9em
 
 		& + article
 			padding-top 8px
@@ -450,7 +448,7 @@ root(isDark)
 				> .info
 					display block
 					margin-left auto
-					font-size 0.9em
+					font-size .9em
 
 					> .mobile
 						margin-right 8px

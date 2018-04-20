@@ -273,7 +273,7 @@ export default Vue.extend({
 				vertical-align bottom
 				width 28px
 				height 28px
-				margin 0 8px 0 0
+				margin 0 4px
 				border-radius 6px
 
 			[data-fa]
@@ -293,6 +293,7 @@ export default Vue.extend({
 			display block
 			margin-left auto
 			flex-shrink 0
+			font-size .9em
 
 		& + article
 			padding-top 8px
@@ -384,7 +385,7 @@ export default Vue.extend({
 				> .info
 					display block
 					margin-left auto
-					font-size 0.9em
+					font-size .9em
 
 					> .mobile
 						margin-right 6px
