@@ -1,10 +1,11 @@
 <template>
 <div class="header" :data-is-dark-background="user.bannerUrl != null">
+	<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
 	<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 	<div class="banner-container" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''">
 		<div class="banner" ref="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=2048)` : ''" @click="onBannerClick"></div>
+		<div class="fade"></div>
 	</div>
-	<div class="fade"></div>
 	<div class="container">
 		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=150`" alt="avatar"/>
 		<div class="title">
@@ -67,21 +68,27 @@ export default Vue.extend({
 @import '~const.styl'
 
 .header
-	$banner-height = 320px
 	$footer-height = 58px
 
 	overflow hidden
 	background #f7f7f7
 	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
 
+	> .is-suspended
 	> .is-remote
-		padding 16px
-		color #573c08
-		background #fff0db
+		&.is-suspended
+			color #570808
+			background #ffdbdb
+
+		&.is-remote
+			color #573c08
+			background #fff0db
 
 		> p
 			margin 0 auto
-			max-width 1024px
+			padding 14px 16px
+			max-width 1200px
+			font-size 14px
 
 			> a
 				font-weight bold
@@ -91,8 +98,8 @@ export default Vue.extend({
 			> .banner
 				background-color #383838
 
-		> .fade
-			background linear-gradient(transparent, rgba(0, 0, 0, 0.7))
+			> .fade
+				background linear-gradient(transparent, rgba(0, 0, 0, 0.7))
 
 		> .container
 			> .title
@@ -102,7 +109,7 @@ export default Vue.extend({
 					text-shadow 0 0 8px #000
 
 	> .banner-container
-		height $banner-height
+		height 320px
 		overflow hidden
 		background-size cover
 		background-position center
@@ -113,14 +120,12 @@ export default Vue.extend({
 			background-size cover
 			background-position center
 
-	> .fade
-		$fade-hight = 78px
-
-		position absolute
-		top ($banner-height - $fade-hight)
-		left 0
-		width 100%
-		height $fade-hight
+		> .fade
+			position absolute
+			bottom 0
+			left 0
+			width 100%
+			height 78px
 
 	> .container
 		max-width 1200px

@@ -33,7 +33,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.sub
+root(isDark)
 	margin 0
 	padding 16px
 	font-size 0.9em
@@ -42,10 +42,6 @@ export default Vue.extend({
 		content ""
 		display block
 		clear both
-
-	&:hover
-		> .main > footer > button
-			color #888
 
 	> .avatar-anchor
 		display block
@@ -75,7 +71,7 @@ export default Vue.extend({
 				margin 0 .3em 0 0
 				padding 0
 				overflow hidden
-				color #607073
+				color isDark ? #fff : #607073
 				font-size 1em
 				font-weight bold
 				text-decoration none
@@ -92,22 +88,31 @@ export default Vue.extend({
 				overflow hidden
 				text-overflow ellipsis
 				flex-shrink 50
+				color isDark ? #606984 : #d1d8da
 
 			> .created-at
 				margin-left auto
-				color #b2b8bb
+				color isDark ? #606984 : #b2b8bb
 
 		> .body
+			max-height 128px
+			overflow hidden
 
 			> .text
 				cursor default
 				margin 0
 				padding 0
 				font-size 1.1em
-				color #717171
+				color isDark ? #959ba7 : #717171
 
 				pre
 					max-height 120px
 					font-size 80%
+
+.sub[data-darkmode]
+	root(true)
+
+.sub:not([data-darkmode])
+	root(false)
 
 </style>

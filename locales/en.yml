@@ -98,7 +98,9 @@ common/views/components/nav.vue:
   feedback: "Feedback"
 
 common/views/components/note-menu.vue:
+  favorite: "Favorite this note"
   pin: "Pin to profile page"
+  remote: "Show on origin"
 
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
@@ -367,9 +369,11 @@ desktop/views/components/settings.profile.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Drive"
+  favorites: "Favorites"
   customize: "Customize"
   settings: "Settings"
   signout: "Sign out"
+  dark: "Fall in dark"
 
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
@@ -406,6 +410,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No users"
 
 desktop/views/pages/user/user.header.vue:
+  is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
 
@@ -419,6 +424,9 @@ desktop/views/pages/user/user.photos.vue:
 
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Follows you"
+  stalk: "Stalk"
+  stalking: "Stalking"
+  unstalk: "Unstalk"
   mute: "Mute"
   muted: "Muting"
   unmute: "Unmute"
@@ -591,6 +599,7 @@ mobile/views/pages/user.vue:
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
+  is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
 

@@ -465,7 +465,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-window
+root(isDark)
 	display block
 
 	> .bg
@@ -559,7 +559,7 @@ export default Vue.extend({
 		> .body
 			height 100%
 			overflow hidden
-			background #fff
+			background isDark ? #282C37 : #fff
 			border-radius 6px
 			box-shadow 0 2px 6px 0 rgba(0, 0, 0, 0.2)
 
@@ -571,12 +571,12 @@ export default Vue.extend({
 				overflow hidden
 				white-space nowrap
 				cursor move
-				background #fff
+				background isDark ? #313543 : #fff
 				border-radius 6px 6px 0 0
 				box-shadow 0 1px 0 rgba(#000, 0.1)
 
 				&.withGradient
-					background linear-gradient(to bottom, #fff, #ececec)
+					background isDark ? linear-gradient(to bottom, #313543, #1d2027) : linear-gradient(to bottom, #fff, #ececec)
 					box-shadow 0 1px 0 rgba(#000, 0.15)
 
 				&, *
@@ -593,7 +593,7 @@ export default Vue.extend({
 					font-size 1em
 					line-height $header-height
 					font-weight normal
-					color #666
+					color isDark ? #e3e5e8 : #666
 
 				> div:last-child
 					position absolute
@@ -608,16 +608,16 @@ export default Vue.extend({
 						padding 0
 						cursor pointer
 						font-size 1em
-						color rgba(#000, 0.4)
+						color isDark ? #9baec8 : rgba(#000, 0.4)
 						border none
 						outline none
 						background transparent
 
 						&:hover
-							color rgba(#000, 0.6)
+							color isDark ? #b2c1d5 : rgba(#000, 0.6)
 
 						&:active
-							color darken(#000, 30%)
+							color isDark ? #b2c1d5 : darken(#000, 30%)
 
 						> [data-fa]
 							padding 0
@@ -631,5 +631,11 @@ export default Vue.extend({
 	&:not([flexible])
 		> .main > .body > .content
 			height calc(100% - 40px)
+
+.mk-window[data-darkmode]
+	root(true)
+
+.mk-window:not([data-darkmode])
+	root(false)
 
 </style>

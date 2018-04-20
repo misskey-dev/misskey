@@ -4,6 +4,7 @@
 
 const elements = [
 	require('./elements/bold'),
+	require('./elements/title'),
 	require('./elements/url'),
 	require('./elements/link'),
 	require('./elements/mention'),

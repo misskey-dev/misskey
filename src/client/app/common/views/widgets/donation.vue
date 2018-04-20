@@ -19,9 +19,9 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-.mkw-donation
-	background #fff
-	border solid 1px #ead8bb
+root(isDark)
+	background isDark ? #282c37 : #fff
+	border solid 1px isDark ? #c3831c : #ead8bb
 	border-radius 6px
 
 	> article
@@ -30,7 +30,7 @@ export default define({
 		> h1
 			margin 0 0 5px 0
 			font-size 1em
-			color #888
+			color isDark ? #b2bac1 : #888
 
 			> [data-fa]
 				margin-right 0.25em
@@ -40,7 +40,7 @@ export default define({
 			z-index 1
 			margin 0
 			font-size 0.8em
-			color #999
+			color isDark ? #a1a6ab : #999
 
 	&[data-mobile]
 		border none
@@ -54,5 +54,11 @@ export default define({
 
 			> p
 				color #777d71
+
+.mkw-donation[data-darkmode]
+	root(true)
+
+.mkw-donation:not([data-darkmode])
+	root(false)
 
 </style>

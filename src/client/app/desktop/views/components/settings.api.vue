@@ -29,8 +29,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .root.api
-	color #4a535a
-
 	code
 		display inline-block
 		padding 4px 6px

@@ -98,7 +98,9 @@ common/views/components/nav.vue:
   feedback: "フィードバック"
 
 common/views/components/note-menu.vue:
+  favorite: "Favorite this note"
   pin: "Épingler sur votre profile"
+  remote: "投稿元で見る"
 
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
@@ -367,9 +369,11 @@ desktop/views/components/settings.profile.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
+  favorites: "Favorites"
   customize: "Modifications"
   settings: "Réglages"
   signout: "Déconnexion"
+  dark: "Fall in dark"
 
 desktop/views/components/ui.header.nav.vue:
   home: "Accueil"
@@ -406,6 +410,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "Pas d'utilisateurs"
 
 desktop/views/pages/user/user.header.vue:
+  is-suspended: "This account has been suspended."
   is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
   view-remote: "Voir les informations détaillées"
 
@@ -419,6 +424,9 @@ desktop/views/pages/user/user.photos.vue:
 
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Vous suis"
+  stalk: "ストークする"
+  stalking: "ストーキングしています"
+  unstalk: "ストーク解除"
   mute: "Mettre en sourdine"
   muted: "Muting"
   unmute: "Enlever la sourdine"
@@ -591,6 +599,7 @@ mobile/views/pages/user.vue:
   overview: "Aperçu"
   timeline: "Fil d'actualité"
   media: "Media"
+  is-suspended: "This account has been suspended."
   is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
   view-remote: "Voir les informations détaillées"
 

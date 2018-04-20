@@ -54,6 +54,12 @@ const handlers = {
 		document.body.appendChild(blockquote);
 	},
 
+	title({ document }, { title }) {
+		const h1 = document.createElement('h1');
+		h1.textContent = title;
+		document.body.appendChild(h1);
+	},
+
 	text({ document }, { content }) {
 		for (const text of content.split('\n')) {
 			const node = document.createTextNode(text);

@@ -37,13 +37,17 @@
 		<section class="web" v-show="page == 'web'">
 			<h1>デザインと表示</h1>
 			<div class="div">
-				<button class="ui button" @click="customizeHome">ホームをカスタマイズ</button>
+				<button class="ui button" @click="customizeHome" style="margin-bottom: 16px">ホームをカスタマイズ</button>
+			</div>
+			<div class="div">
+				<mk-switch v-model="os.i.clientSettings.dark" @change="onChangeDark" text="ダークモード"/>
+				<mk-switch v-model="os.i.clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
 			</div>
 			<mk-switch v-model="os.i.clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
+			<mk-switch v-model="os.i.clientSettings.showReplyTarget" @change="onChangeShowReplyTarget" text="リプライ先を表示する"/>
 			<mk-switch v-model="os.i.clientSettings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
 				<span>位置情報が添付された投稿のマップを自動的に展開します。</span>
 			</mk-switch>
-			<mk-switch v-model="os.i.clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -297,9 +301,21 @@ export default Vue.extend({
 				autoWatch: v
 			});
 		},
+		onChangeDark(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'dark',
+				value: v
+			});
+		},
 		onChangeShowPostFormOnTopOfTl(v) {
 			(this as any).api('i/update_client_setting', {
 				name: 'showPostFormOnTopOfTl',
+				value: v
+			});
+		},
+		onChangeShowReplyTarget(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'showReplyTarget',
 				value: v
 			});
 		},
@@ -358,7 +374,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-settings
+root(isDark)
 	display flex
 	width 100%
 	height 100%
@@ -369,13 +385,13 @@ export default Vue.extend({
 		height 100%
 		padding 16px 0 0 0
 		overflow auto
-		border-right solid 1px #ddd
+		border-right solid 1px isDark ? #1c2023 : #ddd
 
 		> p
 			display block
 			padding 10px 16px
 			margin 0
-			color #666
+			color isDark ? #9aa2a7 : #666
 			cursor pointer
 			user-select none
 			transition margin-left 0.2s ease
@@ -384,7 +400,7 @@ export default Vue.extend({
 				margin-right 4px
 
 			&:hover
-				color #555
+				color isDark ? #fff : #555
 
 			&.active
 				margin-left 8px
@@ -398,14 +414,14 @@ export default Vue.extend({
 
 		> section
 			margin 32px
-			color #4a535a
+			color isDark ? #c4ccd2 : #4a535a
 
 			> h1
 				margin 0 0 1em 0
 				padding 0 0 8px 0
 				font-size 1em
-				color #555
-				border-bottom solid 1px #eee
+				color isDark ? #e3e7ea : #555
+				border-bottom solid 1px isDark ? #1c2023 : #eee
 
 			&, >>> *
 				.ui.button.block
@@ -418,13 +434,18 @@ export default Vue.extend({
 						margin 0 0 1em 0
 						padding 0 0 8px 0
 						font-size 1em
-						color #555
-						border-bottom solid 1px #eee
+						color isDark ? #e3e7ea : #555
+						border-bottom solid 1px isDark ? #1c2023 : #eee
 
 		> .web
 			> .div
-				border-bottom solid 1px #eee
-				padding 0 0 16px 0
-				margin 0 0 16px 0
+				border-bottom solid 1px isDark ? #1c2023 : #eee
+				margin 16px 0
+
+.mk-settings[data-darkmode]
+	root(true)
+
+.mk-settings:not([data-darkmode])
+	root(false)
 
 </style>

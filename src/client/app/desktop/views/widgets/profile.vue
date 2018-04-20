@@ -42,9 +42,9 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-.mkw-profile
+root(isDark)
 	overflow hidden
-	background #fff
+	background isDark ? #282c37 : #fff
 	border solid 1px rgba(0, 0, 0, 0.075)
 	border-radius 6px
 
@@ -104,7 +104,7 @@ export default define({
 		width 58px
 		height 58px
 		margin 0
-		border solid 3px #fff
+		border solid 3px isDark ? #282c37 : #fff
 		border-radius 8px
 		vertical-align bottom
 		cursor pointer
@@ -114,13 +114,19 @@ export default define({
 		margin 10px 0 0 84px
 		line-height 16px
 		font-weight bold
-		color #555
+		color isDark ? #fff : #555
 
 	> .username
 		display block
 		margin 4px 0 8px 84px
 		line-height 16px
 		font-size 0.9em
-		color #999
+		color isDark ? #606984 : #999
+
+.mkw-profile[data-darkmode]
+	root(true)
+
+.mkw-profile:not([data-darkmode])
+	root(false)
 
 </style>

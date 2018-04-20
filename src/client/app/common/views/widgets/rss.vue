@@ -4,9 +4,11 @@
 		<template slot="header">%fa:rss-square%RSS</template>
 		<button slot="func" title="設定" @click="setting">%fa:cog%</button>
 
-		<p :class="$style.fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-		<div :class="$style.feed" v-else>
-			<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
+		<div class="mkw-rss--body">
+			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<div class="feed" v-else>
+				<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
+			</div>
 		</div>
 	</mk-widget-container>
 </div>
@@ -56,38 +58,46 @@ export default define({
 });
 </script>
 
-<style lang="stylus" module>
-.feed
-	padding 12px 16px
-	font-size 0.9em
+<style lang="stylus" scoped>
+root(isDark)
+	.mkw-rss--body
+		.feed
+			padding 12px 16px
+			font-size 0.9em
 
-	> a
-		display block
-		padding 4px 0
-		color #666
-		border-bottom dashed 1px #eee
+			> a
+				display block
+				padding 4px 0
+				color isDark ? #9aa4b3 : #666
+				border-bottom dashed 1px isDark ? #1c2023 : #eee
 
-		&:last-child
-			border-bottom none
+				&:last-child
+					border-bottom none
 
-.fetching
-	margin 0
-	padding 16px
-	text-align center
-	color #aaa
+		.fetching
+			margin 0
+			padding 16px
+			text-align center
+			color #aaa
 
-	> [data-fa]
-		margin-right 4px
+			> [data-fa]
+				margin-right 4px
 
-&[data-mobile]
-	.feed
-		padding 0
-		font-size 1em
+		&[data-mobile]
+			.feed
+				padding 0
+				font-size 1em
 
-		> a
-			padding 8px 16px
+				> a
+					padding 8px 16px
 
-			&:nth-child(even)
-				background rgba(0, 0, 0, 0.05)
+					&:nth-child(even)
+						background rgba(0, 0, 0, 0.05)
+
+.mkw-rss[data-darkmode]
+	root(true)
+
+.mkw-rss:not([data-darkmode])
+	root(false)
 
 </style>
