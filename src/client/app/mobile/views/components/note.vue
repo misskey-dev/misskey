@@ -377,6 +377,7 @@ export default Vue.extend({
 
 				> .username
 					margin 0 0.3em 0 0
+					color #d1d8da
 					font-size .93em
 					overflow hidden
 					text-overflow ellipsis
