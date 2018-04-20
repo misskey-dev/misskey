@@ -86,7 +86,7 @@ export default Vue.extend({
 			});
 		},
 
-		async prev() {
+		prev() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || this.prevNotes.length == 0) return;
 			this.prevFetching = true;
 			const heightBefore = document.body.offsetHeight
@@ -116,7 +116,7 @@ export default Vue.extend({
 				this.moreNotes = [];
 				this.moreFetching = false;
 			} else {
-				(this as any).api(this.endpoint, {
+				(this as any).api('notes/timeline', {
 					limit: 11,
 					untilId: this.notes[this.notes.length - 1].id
 				}).then(notes => {

@@ -6,7 +6,7 @@
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span class="username">@{{ note.user | acct }}</span>
+			<div class="username">@{{ note.user | acct }}</div>
 			<router-link class="created-at" :to="note | notePage">
 				<mk-time :time="note.createdAt"/>
 			</router-link>
@@ -66,11 +66,12 @@ export default Vue.extend({
 		> header
 			display flex
 			margin-bottom 2px
+			align-items center
 			white-space nowrap
 
 			> .name
 				display block
-				margin 0 0.5em 0 0
+				margin 0 0.3em 0 0
 				padding 0
 				overflow hidden
 				color #607073
@@ -79,14 +80,19 @@ export default Vue.extend({
 				text-align left
 				text-decoration none
 				text-overflow ellipsis
+				flex-shrink 1
 
 				&:hover
 					text-decoration underline
 
 			> .username
 				text-align left
+				font-size .93em
 				margin 0
 				color #d1d8da
+				overflow hidden
+				text-overflow ellipsis
+				flex-shrink 50
 
 			> .created-at
 				margin-left auto
