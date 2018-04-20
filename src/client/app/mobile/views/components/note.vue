@@ -22,8 +22,8 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
-				<span class="username">@{{ p.user | acct }}</span>
+				<div class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
+				<div class="username">@{{ p.user | acct }}</span>
 				<div class="info">
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
 					<router-link class="created-at" :to="p | notePage">
@@ -344,7 +344,7 @@ export default Vue.extend({
 
 				> .name
 					display block
-					margin 0 0.5em 0 0
+					margin 0 0.25em 0 0
 					padding 0
 					overflow hidden
 					color #627079
@@ -352,21 +352,27 @@ export default Vue.extend({
 					font-weight bold
 					text-decoration none
 					text-overflow ellipsis
+					flex-shrink 50
 
 					&:hover
 						text-decoration underline
 
 				> .is-bot
-					margin 0 0.5em 0 0
+					margin 0 0.3em 0 0
 					padding 1px 6px
 					font-size 12px
 					color #aaa
 					border solid 1px #ddd
 					border-radius 3px
+					flex-shrink: 1
 
 				> .username
-					margin 0 0.5em 0 0
+					margin 0 0.3em 0 0
+					font-size .93em
 					color #ccc
+					overflow hidden
+					text-overflow ellipsis
+					flex-shrink 50
 
 				> .info
 					margin-left auto
