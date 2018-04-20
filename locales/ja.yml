@@ -98,7 +98,9 @@ common/views/components/nav.vue:
   feedback: "フィードバック"
 
 common/views/components/note-menu.vue:
+  favorite: "お気に入り"
   pin: "ピン留め"
+  remote: "投稿元で見る"
 
 common/views/components/poll.vue:
   vote-to: "「{}」に投票する"

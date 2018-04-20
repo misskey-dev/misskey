@@ -98,7 +98,9 @@ common/views/components/nav.vue:
   feedback: "Feedback"
 
 common/views/components/note-menu.vue:
+  favorite: "Favorite this note"
   pin: "Pin to profile page"
+  remote: "Show on origin"
 
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"

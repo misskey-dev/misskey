@@ -234,6 +234,12 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'i/favorites',
+		withCredential: true,
+		kind: 'favorites-read'
+	},
+
+	{
 		name: 'othello/match',
 		withCredential: true
 	},
