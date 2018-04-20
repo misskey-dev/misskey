@@ -91,6 +91,7 @@ root(isDark)
 				color isDark ? #606984 : #d1d8da
 
 			> .created-at
+				display block
 				margin-left auto
 				color isDark ? #606984 : #b2b8bb
 

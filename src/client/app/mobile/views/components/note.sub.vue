@@ -95,6 +95,7 @@ export default Vue.extend({
 				flex-shrink 50
 
 			> .created-at
+				display block
 				margin-left auto
 				color #b2b8bb
 

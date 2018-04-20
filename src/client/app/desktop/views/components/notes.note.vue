@@ -363,6 +363,7 @@ root(isDark)
 			flex-shrink 0
 
 		> .mk-time
+			display block
 			margin-left auto
 			flex-shrink 0
 
@@ -447,6 +448,7 @@ root(isDark)
 					flex-shrink 50
 
 				> .info
+					display block
 					margin-left auto
 					font-size 0.9em
 
