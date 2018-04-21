@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notes">
+<transition-group name="mk-notes" tag="div" class="mk-notes">
 	<slot name="head"></slot>
 	<slot></slot>
 	<template v-for="(note, i) in _notes">
@@ -12,7 +12,7 @@
 	<footer>
 		<slot name="tail"></slot>
 	</footer>
-</div>
+</transition-group>
 </template>
 
 <script lang="ts">
@@ -51,6 +51,15 @@ export default Vue.extend({
 	background #fff
 	border-radius 8px
 	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+
+	.mk-notes-enter-active
+		transition all .3s ease
+
+	.mk-notes-enter
+	.mk-notes-leave-to
+		opacity 0
+		transform translateX(-30px)
+
 
 	> .init
 		padding 64px 0
