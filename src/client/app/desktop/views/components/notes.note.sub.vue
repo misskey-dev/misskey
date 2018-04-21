@@ -84,11 +84,10 @@ root(isDark)
 			> .username
 				margin 0 .3em 0 0
 				font-size .93em
-				color #d1d8da
+				color isDark ? #606984 : #d1d8da
 				overflow hidden
 				text-overflow ellipsis
 				flex-shrink 50
-				color isDark ? #606984 : #d1d8da
 
 			> .created-at
 				display block

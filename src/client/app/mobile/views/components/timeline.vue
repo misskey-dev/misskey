@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import elasticsearch from '../../../../../db/elasticsearch';
 
 export default Vue.extend({
 	props: {
