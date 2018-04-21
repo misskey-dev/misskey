@@ -4,15 +4,13 @@
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
-		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-			</router-link>
-			%fa:retweet%
-			<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
-			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-			<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
-		</p>
+		<router-link class="avatar-anchor" :to="note.user | userPage">
+			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		</router-link>
+		%fa:retweet%
+		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
+		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
+		<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
@@ -251,42 +249,47 @@ export default Vue.extend({
 		font-size 16px
 
 	> .renote
+		display flex
+		align-items baseline
+		padding 8px 16px
+		line-height 28px
 		color #9dbb00
 		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
-		> p
-			margin 0
-			padding 8px 16px
-			line-height 28px
+		@media (min-width 500px)
+			padding 16px
 
-			@media (min-width 500px)
-				padding 16px
+		.avatar-anchor
+			display inline-block
 
-			.avatar-anchor
-				display inline-block
+			.avatar
+				vertical-align bottom
+				width 28px
+				height 28px
+				margin 0 8px 0 0
+				border-radius 6px
 
-				.avatar
-					vertical-align bottom
-					width 28px
-					height 28px
-					margin 0 8px 0 0
-					border-radius 6px
+		[data-fa]
+			margin-right 4px
 
-			[data-fa]
-				margin-right 4px
+		> span
+			flex-shrink 0
 
-			.name
-				font-weight bold
+			&:last-of-type
+				margin-right 8px
+
+		.name
+			overflow hidden
+			flex-shrink 1
+			text-overflow ellipsis
+			white-space nowrap
+			font-weight bold
 
 		> .mk-time
-			position absolute
-			top 8px
-			right 16px
+			display block
+			margin-left auto
+			flex-shrink 0
 			font-size 0.9em
-			line-height 28px
-
-			@media (min-width 500px)
-				top 16px
 
 		& + article
 			padding-top 8px

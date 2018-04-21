@@ -4,15 +4,13 @@
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
-		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.userId">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
-			</router-link>
-			%fa:retweet%
-			<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
-			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-			<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
-		</p>
+		<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.userId">
+			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
+		</router-link>
+		%fa:retweet%
+		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
+		<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
+		<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
@@ -324,36 +322,44 @@ root(isDark)
 			border-radius 4px
 
 	> .renote
+		display flex
+		align-items baseline
+		padding 16px 32px
+		line-height 28px
 		color #9dbb00
 		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
-		> p
-			margin 0
-			padding 16px 32px
-			line-height 28px
+		.avatar-anchor
+			display inline-block
 
-			.avatar-anchor
-				display inline-block
+			.avatar
+				vertical-align bottom
+				width 28px
+				height 28px
+				margin 0 8px 0 0
+				border-radius 6px
 
-				.avatar
-					vertical-align bottom
-					width 28px
-					height 28px
-					margin 0 8px 0 0
-					border-radius 6px
+		[data-fa]
+			margin-right 4px
 
-			[data-fa]
-				margin-right 4px
+		> span
+			flex-shrink 0
 
-			.name
-				font-weight bold
+			&:last-of-type
+				margin-right 8px
+
+		.name
+			overflow hidden
+			flex-shrink 1
+			text-overflow ellipsis
+			white-space nowrap
+			font-weight bold
 
 		> .mk-time
-			position absolute
-			top 16px
-			right 32px
+			display block
+			margin-left auto
+			flex-shrink 0
 			font-size 0.9em
-			line-height 28px
 
 		& + article
 			padding-top 8px
