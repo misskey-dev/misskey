@@ -130,6 +130,8 @@
 		}
 
 		// Force reload
-		location.reload(true);
+		setTimeout(() => {
+			location.reload(true);
+		}, 1000);
 	}
 })();
