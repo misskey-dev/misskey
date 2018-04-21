@@ -14,6 +14,7 @@ const queue = createQueue({
 export function createHttp(data) {
 	return queue
 		.create('http', data)
+		.removeOnComplete(true)
 		.events(false)
 		.attempts(8)
 		.backoff({ delay: 16384, type: 'exponential' });
@@ -26,7 +27,7 @@ export function deliver(user, content, to) {
 		user,
 		content,
 		to
-	}).removeOnComplete(true).save();
+	}).save();
 }
 
 export default function() {
