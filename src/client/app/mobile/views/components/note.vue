@@ -371,6 +371,8 @@ export default Vue.extend({
 
 				> .username
 					margin 0 0.5em 0 0
+					overflow hidden
+					text-overflow ellipsis
 					color #ccc
 
 				> .info

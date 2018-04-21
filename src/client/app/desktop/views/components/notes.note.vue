@@ -433,6 +433,8 @@ root(isDark)
 
 				> .username
 					margin 0 .5em 0 0
+					overflow hidden
+					text-overflow ellipsis
 					color isDark ? #606984 : #ccc
 
 				> .info
