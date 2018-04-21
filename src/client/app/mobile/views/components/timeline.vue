@@ -93,9 +93,6 @@ export default Vue.extend({
 			this.notes = this.prevNotes.slice(-20).concat(this.notes);
 			this.prevNotes = this.prevNotes.slice(0,-20);
 
-			// スクロールしてあげる
-			window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore)
-
 			// もし50投稿より多くタイムラインに表示されていたら
 			if (this.notes.length > 50) {
 				// 30個残してキャッシュする
@@ -104,7 +101,10 @@ export default Vue.extend({
 				this.existMore = true;
 			}
 			this.prevFetching = false;
-			return;
+			// スクロールしてあげる
+			this.$nextTick(() => {
+				window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore)
+			})
 		},
 
 		more() {
