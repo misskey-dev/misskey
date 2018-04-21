@@ -392,7 +392,7 @@ root(isDark)
 						cursor pointer
 
 		> .mk-poll-editor
-			background lighten($theme-color, 98%)
+			background isDark ? #181b23 : lighten($theme-color, 98%)
 			border solid 1px rgba($theme-color, 0.1)
 			border-top none
 			border-radius 0 0 4px 4px

@@ -219,7 +219,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-home
+root(isDark)
 	display block
 
 	&[data-customize]
@@ -249,7 +249,8 @@ export default Vue.extend({
 		left 0
 		width 100%
 		height 48px
-		background #f7f7f7
+		color isDark ? #fff : #000
+		background isDark ? #313543 : #f7f7f7
 		box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
 
 		> a
@@ -289,7 +290,7 @@ export default Vue.extend({
 						line-height 48px
 
 				&.trash
-					border-left solid 1px #ddd
+					border-left solid 1px isDark ? #1c2023 : #ddd
 
 					> div
 						width 100%
@@ -329,7 +330,7 @@ export default Vue.extend({
 
 			.mk-post-form
 				margin-bottom 16px
-				border solid 1px #e5e5e5
+				border solid 1px rgba(#000, 0.075)
 				border-radius 4px
 
 		> *:not(.main)
@@ -356,5 +357,11 @@ export default Vue.extend({
 				width 100%
 				max-width 700px
 				margin 0 auto
+
+.mk-home[data-darkmode]
+	root(true)
+
+.mk-home:not([data-darkmode])
+	root(false)
 
 </style>
