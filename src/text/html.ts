@@ -75,6 +75,13 @@ const handlers = {
 		a.href = url;
 		a.textContent = url;
 		document.body.appendChild(a);
+	},
+
+	search({ document }, { content, query }) {
+		const a = document.createElement('a');
+		a.href = `https://www.google.com/?#q=${query}`;
+		a.textContent = content;
+		document.body.appendChild(a);
 	}
 };
 

@@ -4,6 +4,7 @@ import parse from '../../../../../text/parse';
 import getAcct from '../../../../../acct/render';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
+import MkGoogle from './google.vue';
 
 const flatten = list => list.reduce(
 	(a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
@@ -144,6 +145,13 @@ export default Vue.component('mk-note-html', {
 				case 'emoji':
 					const emoji = emojilib.lib[token.emoji];
 					return createElement('span', emoji ? emoji.char : token.content);
+
+				case 'search':
+					return createElement(MkGoogle, {
+						props: {
+							q: token.query
+						}
+					});
 
 				default:
 					console.log('unknown ast type:', token.type);
