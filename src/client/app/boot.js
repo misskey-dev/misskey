@@ -18,7 +18,11 @@
 // ブロック内に入れてスコープを非グローバル化するとそれが防げます
 // (Chrome以外のブラウザでは検証していません)
 {
-	if (localStorage.getItem('shouldFlush') == 'true') refresh();
+	// キャッシュ削除要求があれば従う
+	if (localStorage.getItem('shouldFlush') == 'true') {
+		refresh();
+		return;
+	}
 
 	// Get the current url information
 	const url = new URL(location.href);
