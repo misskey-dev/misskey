@@ -111,20 +111,20 @@ export default Vue.extend({
 		prev() {
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || this.prevNotes.length == 0) return;
 			this.prevFetching = true;
-			const heightBefore = document.body.offsetHeight
+			const heightBefore = document.body.offsetHeight;
 
 			this.notes = this.prevNotes.slice(-20).concat(this.notes);
-			this.prevNotes = this.prevNotes.slice(0,-20);
+			this.prevNotes = this.prevNotes.slice(0, -20);
 			
 			this.$nextTick(() => {
 				// スクロールしてあげる
-				window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore)
+				window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore);
 
 				// もし50投稿より多くタイムラインに表示されていたら
 				if (this.notes.length > 50) {
 					// 30個残してキャッシュする
 					this.moreNotes = this.notes.slice(30).concat(this.moreNotes);
-					this.notes = this.notes.slice(0,30);
+					this.notes = this.notes.slice(0, 30);
 					this.existMore = true;
 				}
 				this.prevFetching = false;
@@ -135,7 +135,7 @@ export default Vue.extend({
 			if (this.moreFetching || this.prevFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.moreFetching = true;
 			if (this.moreNotes.length > 0) {
-				this.notes = this.notes.concat(this.moreNotes.slice(0,10));
+				this.notes = this.notes.concat(this.moreNotes.slice(0, 10));
 				this.moreNotes = this.moreNotes.slice(10);
 				this.moreFetching = false;
 			} else {

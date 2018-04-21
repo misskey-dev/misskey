@@ -286,7 +286,7 @@ export default Vue.extend({
 			text-overflow ellipsis
 
 		.last
-			margin-right: .3em
+			margin-right .3em
 			flex-shrink 0
 
 		> .mk-time

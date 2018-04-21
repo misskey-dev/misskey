@@ -435,7 +435,7 @@ root(isDark)
 					color #aaa
 					border solid 1px #ddd
 					border-radius 3px
-					flex-shrink: 0
+					flex-shrink 0
 
 				> .username
 					margin 0 .5em 0 0
