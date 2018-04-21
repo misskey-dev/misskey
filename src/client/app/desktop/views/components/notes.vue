@@ -1,16 +1,16 @@
 <template>
-<div class="mk-notes">
+<transition-group name="mk-notes" tag="div" class="mk-notes">
 	<template v-for="(note, i) in _notes">
 		<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
-		<p class="date" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
+		<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
 			<span>%fa:angle-up%{{ note._datetext }}</span>
 			<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
 		</p>
 	</template>
-	<footer>
+	<footer :key="'footer'">
 		<slot name="footer"></slot>
 	</footer>
-</div>
+</transition-group>
 </template>
 
 <script lang="ts">
@@ -51,6 +51,14 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
+	.mk-notes-enter-active
+		transition all .3s ease
+
+	.mk-notes-enter
+	.mk-notes-leave-to
+		opacity 0
+		transform translateX(-30px)
+
 	> .date
 		display block
 		margin 0
