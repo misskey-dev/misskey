@@ -21,7 +21,9 @@ const defaultSettings = {
 	showMaps: true,
 	showPostFormOnTopOfTl: false,
 	gradientWindowHeader: false,
-	showReplyTarget: true
+	showReplyTarget: true,
+	showMyRenotes: true,
+	showRenotedMyNotes: true
 };
 
 //#region api requests

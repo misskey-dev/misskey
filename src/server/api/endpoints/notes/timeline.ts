@@ -37,6 +37,14 @@ module.exports = async (params, user, app) => {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
+	// Get 'includeMyRenotes' parameter
+	const [includeMyRenotes = true, includeMyRenotesErr] = $(params.includeMyRenotes).optional.boolean().$;
+	if (includeMyRenotesErr) throw 'invalid includeMyRenotes param';
+
+	// Get 'includeRenotedMyNotes' parameter
+	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $(params.includeRenotedMyNotes).optional.boolean().$;
+	if (includeRenotedMyNotesErr) throw 'invalid includeRenotedMyNotes param';
+
 	const [followings, watchingChannelIds, mutedUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
@@ -84,37 +92,75 @@ module.exports = async (params, user, app) => {
 	});
 
 	const query = {
-		$or: [{
-			$and: [{
-				// フォローしている人のタイムラインへの投稿
-				$or: followQuery
-			}, {
-				// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
-				$or: [{
-					channelId: {
-						$exists: false
-					}
+		$and: [{
+			$or: [{
+				$and: [{
+					// フォローしている人のタイムラインへの投稿
+					$or: followQuery
 				}, {
-					channelId: null
+					// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
+					$or: [{
+						channelId: {
+							$exists: false
+						}
+					}, {
+						channelId: null
+					}]
 				}]
-			}]
-		}, {
-			// Watchしているチャンネルへの投稿
-			channelId: {
-				$in: watchingChannelIds
-			}
-		}],
-		// mute
-		userId: {
-			$nin: mutedUserIds
-		},
-		'_reply.userId': {
-			$nin: mutedUserIds
-		},
-		'_renote.userId': {
-			$nin: mutedUserIds
-		},
+			}, {
+				// Watchしているチャンネルへの投稿
+				channelId: {
+					$in: watchingChannelIds
+				}
+			}],
+			// mute
+			userId: {
+				$nin: mutedUserIds
+			},
+			'_reply.userId': {
+				$nin: mutedUserIds
+			},
+			'_renote.userId': {
+				$nin: mutedUserIds
+			},
+		}]
 	} as any;
+
+	// MongoDBではトップレベルで否定ができないため、De Morganの法則を利用してクエリします。
+	// つまり、「『自分の投稿かつRenote』ではない」を「『自分の投稿ではない』または『Renoteではない』」と表現します。
+	// for details: https://en.wikipedia.org/wiki/De_Morgan%27s_laws
+
+	if (includeMyRenotes === false) {
+		query.$and.push({
+			$or: [{
+				userId: { $ne: user._id }
+			}, {
+				renoteId: null
+			}, {
+				text: { $ne: null }
+			}, {
+				mediaIds: { $ne: [] }
+			}, {
+				poll: { $ne: null }
+			}]
+		});
+	}
+
+	if (includeRenotedMyNotes === false) {
+		query.$and.push({
+			$or: [{
+				'_renote.userId': { $ne: user._id }
+			}, {
+				renoteId: null
+			}, {
+				text: { $ne: null }
+			}, {
+				mediaIds: { $ne: [] }
+			}, {
+				poll: { $ne: null }
+			}]
+		});
+	}
 
 	if (sinceId) {
 		sort._id = 1;

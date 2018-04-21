@@ -30,6 +30,7 @@ export default Vue.extend({
 			default: null
 		}
 	},
+
 	data() {
 		return {
 			fetching: true,
@@ -40,11 +41,13 @@ export default Vue.extend({
 			connectionId: null
 		};
 	},
+
 	computed: {
 		alone(): boolean {
 			return (this as any).os.i.followingCount == 0;
 		}
 	},
+
 	mounted() {
 		this.connection = (this as any).os.stream.getConnection();
 		this.connectionId = (this as any).os.stream.use();
@@ -53,20 +56,24 @@ export default Vue.extend({
 		this.connection.on('follow', this.onChangeFollowing);
 		this.connection.on('unfollow', this.onChangeFollowing);
 
-this.fetch();
+		this.fetch();
 	},
+
 	beforeDestroy() {
 		this.connection.off('note', this.onNote);
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
 		(this as any).os.stream.dispose(this.connectionId);
 	},
+
 	methods: {
 		fetch(cb?) {
 			this.fetching = true;
 			(this as any).api('notes/timeline', {
 				limit: limit + 1,
-				untilDate: this.date ? (this.date as any).getTime() : undefined
+				untilDate: this.date ? (this.date as any).getTime() : undefined,
+				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
+				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
@@ -78,11 +85,14 @@ this.fetch();
 				if (cb) cb();
 			});
 		},
+
 		more() {
 			this.moreFetching = true;
 			(this as any).api('notes/timeline', {
 				limit: limit + 1,
-				untilId: this.notes[this.notes.length - 1].id
+				untilId: this.notes[this.notes.length - 1].id,
+				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
+				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
@@ -94,12 +104,29 @@ this.fetch();
 				this.moreFetching = false;
 			});
 		},
+
 		onNote(note) {
+			const isMyNote = note.userId == (this as any).os.i.id;
+			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
+
+			if ((this as any).os.i.clientSettings.showMyRenotes === false) {
+				if (isMyNote && isPureRenote) {
+					return;
+				}
+			}
+
+			if ((this as any).os.i.clientSettings.showRenotedMyNotes === false) {
+				if (isPureRenote && (note.renote.userId == (this as any).os.i.id)) {
+					return;
+				}
+			}
+
 			this.notes.unshift(note);
 
 			const isTop = window.scrollY > 8;
 			if (isTop) this.notes.pop();
 		},
+
 		onChangeFollowing() {
 			this.fetch();
 		}

@@ -45,6 +45,8 @@
 			</div>
 			<mk-switch v-model="os.i.clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
 			<mk-switch v-model="os.i.clientSettings.showReplyTarget" @change="onChangeShowReplyTarget" text="リプライ先を表示する"/>
+			<mk-switch v-model="os.i.clientSettings.showMyRenotes" @change="onChangeShowMyRenotes" text="自分の行ったRenoteをタイムラインに表示する"/>
+			<mk-switch v-model="os.i.clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="Renoteされた自分の投稿をタイムラインに表示する"/>
 			<mk-switch v-model="os.i.clientSettings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
 				<span>位置情報が添付された投稿のマップを自動的に展開します。</span>
 			</mk-switch>
@@ -316,6 +318,18 @@ export default Vue.extend({
 		onChangeShowReplyTarget(v) {
 			(this as any).api('i/update_client_setting', {
 				name: 'showReplyTarget',
+				value: v
+			});
+		},
+		onChangeShowMyRenotes(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'showMyRenotes',
+				value: v
+			});
+		},
+		onChangeShowRenotedMyNotes(v) {
+			(this as any).api('i/update_client_setting', {
+				name: 'showRenotedMyNotes',
 				value: v
 			});
 		},

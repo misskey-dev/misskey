@@ -90,7 +90,9 @@ export default Vue.extend({
 
 			(this as any).api(this.endpoint, {
 				limit: 11,
-				untilDate: this.date ? this.date.getTime() : undefined
+				untilDate: this.date ? this.date.getTime() : undefined,
+				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
+				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
 				if (notes.length == 11) {
 					notes.pop();
@@ -108,7 +110,9 @@ export default Vue.extend({
 			this.moreFetching = true;
 			(this as any).api(this.endpoint, {
 				limit: 11,
-				untilId: this.notes[this.notes.length - 1].id
+				untilId: this.notes[this.notes.length - 1].id,
+				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
+				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
 				if (notes.length == 11) {
 					notes.pop();
@@ -121,6 +125,21 @@ export default Vue.extend({
 		},
 
 		onNote(note) {
+			const isMyNote = note.userId == (this as any).os.i.id;
+			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
+
+			if ((this as any).os.i.clientSettings.showMyRenotes === false) {
+				if (isMyNote && isPureRenote) {
+					return;
+				}
+			}
+
+			if ((this as any).os.i.clientSettings.showRenotedMyNotes === false) {
+				if (isPureRenote && (note.renote.userId == (this as any).os.i.id)) {
+					return;
+				}
+			}
+
 			// サウンドを再生する
 			if ((this as any).os.isEnableSounds) {
 				const sound = new Audio(`${url}/assets/post.mp3`);
