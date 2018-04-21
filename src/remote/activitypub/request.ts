@@ -40,5 +40,10 @@ export default (user: ILocalUser, url: string, object) => new Promise((resolve, 
 		keyId: `acct:${user.username}@${config.host}`
 	});
 
+	// Signature: Signature ... => Signature: ...
+	let sig = req.getHeader('Signature').toString();
+	sig = sig.replace(/^Signature /, '');
+	req.setHeader('Signature', sig);
+
 	req.end(JSON.stringify(object));
 });

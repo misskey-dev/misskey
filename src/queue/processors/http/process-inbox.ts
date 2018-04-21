@@ -33,6 +33,11 @@ export default async (job: kue.Job, done): Promise<void> => {
 		}
 
 		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
+
+		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
+		if (user === null) {
+			user = await resolvePerson(activity.actor);
+		}
 	} else {
 		user = await User.findOne({
 			host: { $ne: null },
