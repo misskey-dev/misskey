@@ -284,6 +284,7 @@ export default Vue.extend({
 			flex-shrink 1
 			overflow hidden
 			text-overflow ellipsis
+			white-space nowrap
 
 		.last
 			margin-right .3em
