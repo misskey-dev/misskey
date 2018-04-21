@@ -52,7 +52,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 root(isDark)
 	.mk-notes-enter-active
-		transition all .3s
+		transition all .3s ease
 
 	.mk-notes-enter
 	.mk-notes-leave-to
