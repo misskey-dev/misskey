@@ -2,13 +2,15 @@
 <div class="mk-notes">
 	<slot name="head"></slot>
 	<slot></slot>
-	<template v-for="(note, i) in _notes">
-		<mk-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
-		<p class="date" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
-			<span>%fa:angle-up%{{ note._datetext }}</span>
-			<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
-		</p>
-	</template>
+	<transition-group name="mk-notes" class="transition">
+		<template v-for="(note, i) in _notes">
+			<mk-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
+			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
+				<span>%fa:angle-up%{{ note._datetext }}</span>
+				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
+			</p>
+		</template>
+	</transition-group>
 	<footer>
 		<slot name="tail"></slot>
 	</footer>
@@ -52,6 +54,31 @@ export default Vue.extend({
 	border-radius 8px
 	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
 
+	.transition
+		.mk-notes-enter
+		.mk-notes-leave-to
+			opacity 0
+			transform translateY(-30px)
+
+		> *
+			transition transform .3s ease, opacity .3s ease
+
+		> .date
+			display block
+			margin 0
+			line-height 32px
+			text-align center
+			font-size 0.9em
+			color #aaa
+			background #fdfdfd
+			border-bottom solid 1px #eaeaea
+
+			span
+				margin 0 16px
+
+			[data-fa]
+				margin-right 8px
+
 	> .init
 		padding 64px 0
 		text-align center
@@ -72,22 +99,6 @@ export default Vue.extend({
 			margin-bottom 16px
 			font-size 3em
 			color #ccc
-
-	> .date
-		display block
-		margin 0
-		line-height 32px
-		text-align center
-		font-size 0.9em
-		color #aaa
-		background #fdfdfd
-		border-bottom solid 1px #eaeaea
-
-		span
-			margin 0 16px
-
-		[data-fa]
-			margin-right 8px
 
 	> footer
 		text-align center
