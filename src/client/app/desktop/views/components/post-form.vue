@@ -302,7 +302,7 @@ root(isDark)
 			min-width 100%
 			min-height calc(16px + 12px + 12px)
 			font-size 16px
-			color #333
+			color isDark ? #fff : #333
 			background isDark ? #191d23 : #fff
 			outline none
 			border solid 1px rgba($theme-color, 0.1)
