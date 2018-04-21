@@ -21,6 +21,7 @@ export function createHttp(data) {
 
 export function deliver(user, content, to) {
 	createHttp({
+		title: 'deliver',
 		type: 'deliver',
 		user,
 		content,
