@@ -115,22 +115,20 @@ export default Vue.extend({
 
 			this.notes = this.prevNotes.slice(-20).concat(this.notes);
 			this.prevNotes = this.prevNotes.slice(0,-20);
-
-			const heightAfter = window.scrollY + document.body.offsetHeight
-
-			// もし50投稿より多くタイムラインに表示されていたら
-			if (this.notes.length > 50) {
-				// 30個残してキャッシュする
-				this.moreNotes = this.notes.slice(30).concat(this.moreNotes);
-				this.notes = this.notes.slice(0,30);
-				this.existMore = true;
-			}
-			this.prevFetching = false;
-
-			// スクロールしてあげる
+			
 			this.$nextTick(() => {
-				window.scrollTo(0, heightAfter - heightBefore)
-			})
+				// スクロールしてあげる
+				window.scrollTo(0, window.scrollY + document.body.offsetHeight - heightBefore)
+
+				// もし50投稿より多くタイムラインに表示されていたら
+				if (this.notes.length > 50) {
+					// 30個残してキャッシュする
+					this.moreNotes = this.notes.slice(30).concat(this.moreNotes);
+					this.notes = this.notes.slice(0,30);
+					this.existMore = true;
+				}
+				this.prevFetching = false;
+			});
 		},
 
 		more() {
