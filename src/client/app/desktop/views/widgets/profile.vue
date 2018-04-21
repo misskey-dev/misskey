@@ -91,7 +91,7 @@ root(isDark)
 
 	> .banner
 		height 100px
-		background-color #f5f5f5
+		background-color isDark ? #303e4a : #f5f5f5
 		background-size cover
 		background-position center
 		cursor pointer
