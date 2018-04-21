@@ -12,7 +12,8 @@ const elements = [
 	require('./elements/code'),
 	require('./elements/inline-code'),
 	require('./elements/quote'),
-	require('./elements/emoji')
+	require('./elements/emoji'),
+	require('./elements/search')
 ];
 
 export default (source: string): any[] => {
