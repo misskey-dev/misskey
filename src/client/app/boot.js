@@ -78,11 +78,16 @@
 	const raw = (localStorage.getItem('useRawScript') == 'true' && isDebug)
 		|| ENV != 'production';
 
+	// Get salt query
+	const salt = localStorage.getItem('salt')
+		? '?salt=' + localStorage.getItem('salt')
+		: '';
+
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.${raw ? 'raw' : 'min'}.js`);
+	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.${raw ? 'raw' : 'min'}.js${salt}`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);
@@ -117,6 +122,9 @@
 
 	function refresh() {
 		localStorage.setItem('shouldFlush', 'false');
+
+		// Random
+		localStorage.setItem('salt', Math.random().toString());
 
 		// Clear cache (serive worker)
 		try {
