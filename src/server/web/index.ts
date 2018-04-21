@@ -61,7 +61,7 @@ router.get('/manifest.json', async ctx => {
 router.use('/docs', docs.routes());
 
 // URL preview endpoint
-router.get('url', require('./url-preview'));
+router.get('/url', require('./url-preview'));
 
 // Render base html for all requests
 router.get('*', async ctx => {
