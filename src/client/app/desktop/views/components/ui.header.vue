@@ -43,6 +43,8 @@ export default Vue.extend({
 		XClock,
 	},
 	mounted() {
+		this.$store.commit('setUiHeaderHeight', 48);
+
 		if ((this as any).os.isSignedIn) {
 			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000
 			const isHisasiburi = ago >= 3600;

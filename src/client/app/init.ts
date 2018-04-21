@@ -3,6 +3,7 @@
  */
 
 import Vue from 'vue';
+import Vuex from 'vuex';
 import VueRouter from 'vue-router';
 import VModal from 'vue-js-modal';
 import * as TreeView from 'vue-json-tree-view';
@@ -23,6 +24,7 @@ switch (lang) {
 	default: elementLocale = ElementLocaleEn; break;
 }
 
+Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(VModal);
 Vue.use(TreeView);
@@ -38,6 +40,17 @@ require('./common/views/widgets');
 
 // Register global filters
 require('./common/views/filters');
+
+const store = new Vuex.Store({
+	state: {
+		uiHeaderHeight: 0
+	},
+	mutations: {
+		setUiHeaderHeight(state, height) {
+			state.uiHeaderHeight = height;
+		}
+	}
+});
 
 Vue.mixin({
 	destroyed(this: any) {
@@ -145,6 +158,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			});
 
 			const app = new Vue({
+				store,
 				router,
 				created() {
 					this.$watch('os.i', i => {

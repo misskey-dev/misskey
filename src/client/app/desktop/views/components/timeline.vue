@@ -27,35 +27,12 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		document.addEventListener('keydown', this.onKeydown);
-		window.addEventListener('scroll', this.onScroll);
-
 		(this.$refs.tl as any).$once('loaded', () => {
 			this.$emit('loaded');
 		});
 	},
 
-	beforeDestroy() {
-		document.removeEventListener('keydown', this.onKeydown);
-		window.removeEventListener('scroll', this.onScroll);
-	},
-
 	methods: {
-		onScroll() {
-			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
-				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) (this.$refs.tl as any).more();
-			}
-		},
-
-		onKeydown(e) {
-			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
-				if (e.which == 84) { // t
-					(this.$refs.tl as any).focus();
-				}
-			}
-		},
-
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
 		}

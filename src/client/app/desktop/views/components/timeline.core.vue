@@ -1,5 +1,6 @@
 <template>
 <div class="mk-home-timeline">
+	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
 	<mk-friends-maker v-if="src == 'home' && alone"/>
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
@@ -20,6 +21,9 @@
 import Vue from 'vue';
 import { url } from '../../../config';
 
+const fetchLimit = 10;
+const displayLimit = 30;
+
 export default Vue.extend({
 	props: {
 		src: {
@@ -34,6 +38,7 @@ export default Vue.extend({
 			moreFetching: false,
 			existMore: false,
 			notes: [],
+			queue: [],
 			connection: null,
 			connectionId: null,
 			date: null
@@ -59,6 +64,10 @@ export default Vue.extend({
 				: this.src == 'local'
 					? 'notes/local-timeline'
 					: 'notes/global-timeline';
+		},
+
+		canFetchMore(): boolean {
+			return !this.moreFetching && !this.fetching && this.notes.length > 0 && this.existMore;
 		}
 	},
 
@@ -72,6 +81,9 @@ export default Vue.extend({
 			this.connection.on('unfollow', this.onChangeFollowing);
 		}
 
+		document.addEventListener('keydown', this.onKeydown);
+		window.addEventListener('scroll', this.onScroll);
+
 		this.fetch();
 	},
 
@@ -82,19 +94,27 @@ export default Vue.extend({
 			this.connection.off('unfollow', this.onChangeFollowing);
 		}
 		this.stream.dispose(this.connectionId);
+
+		document.removeEventListener('keydown', this.onKeydown);
+		window.removeEventListener('scroll', this.onScroll);
 	},
 
 	methods: {
+		isScrollTop() {
+			return window.scrollY <= 8;
+		},
+
 		fetch(cb?) {
+			this.queue = [];
 			this.fetching = true;
 
 			(this as any).api(this.endpoint, {
-				limit: 11,
+				limit: fetchLimit + 1,
 				untilDate: this.date ? this.date.getTime() : undefined,
 				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
 				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
-				if (notes.length == 11) {
+				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 					this.existMore = true;
 				}
@@ -106,15 +126,17 @@ export default Vue.extend({
 		},
 
 		more() {
-			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
+			if (!this.canFetchMore) return;
+
 			this.moreFetching = true;
+
 			(this as any).api(this.endpoint, {
-				limit: 11,
+				limit: fetchLimit + 1,
 				untilId: this.notes[this.notes.length - 1].id,
 				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
 				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
-				if (notes.length == 11) {
+				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 				} else {
 					this.existMore = false;
@@ -124,7 +146,30 @@ export default Vue.extend({
 			});
 		},
 
+		prependNote(note, silent = false) {
+			// サウンドを再生する
+			if ((this as any).os.isEnableSounds && !silent) {
+				const sound = new Audio(`${url}/assets/post.mp3`);
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+				sound.play();
+			}
+
+			// Prepent a note
+			this.notes.unshift(note);
+
+			// オーバーフローしたら古い投稿は捨てる
+			if (this.notes.length >= displayLimit) {
+				this.notes = this.notes.slice(0, displayLimit);
+			}
+		},
+
+		releaseQueue() {
+			this.queue.forEach(n => this.prependNote(n, true));
+			this.queue = [];
+		},
+
 		onNote(note) {
+			//#region 弾く
 			const isMyNote = note.userId == (this as any).os.i.id;
 			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
 
@@ -139,18 +184,13 @@ export default Vue.extend({
 					return;
 				}
 			}
+			//#endregion
 
-			// サウンドを再生する
-			if ((this as any).os.isEnableSounds) {
-				const sound = new Audio(`${url}/assets/post.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
-				sound.play();
+			if (this.isScrollTop()) {
+				this.prependNote(note);
+			} else {
+				this.queue.unshift(note);
 			}
-
-			this.notes.unshift(note);
-
-			const isTop = window.scrollY > 8;
-			if (isTop) this.notes.pop();
 		},
 
 		onChangeFollowing() {
@@ -164,13 +204,41 @@ export default Vue.extend({
 		warp(date) {
 			this.date = date;
 			this.fetch();
-		}
+		},
+
+		onScroll() {
+			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.more();
+			}
+
+			if (this.isScrollTop()) {
+				this.releaseQueue();
+			}
+		},
+
+		onKeydown(e) {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 84) { // t
+					this.focus();
+				}
+			}
+		},
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 .mk-home-timeline
+	> .newer-indicator
+		position -webkit-sticky
+		position sticky
+		z-index 100
+		height 3px
+		background $theme-color
+
 	> .mk-friends-maker
 		border-bottom solid 1px #eee
 

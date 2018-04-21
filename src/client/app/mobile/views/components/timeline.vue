@@ -1,5 +1,6 @@
 <template>
 <div class="mk-timeline">
+	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
 	<mk-friends-maker v-if="alone"/>
 	<mk-notes :notes="notes">
 		<div class="init" v-if="fetching">
@@ -9,7 +10,7 @@
 			%fa:R comments%
 			%i18n:@empty%
 		</div>
-		<button v-if="!fetching && existMore" @click="more" :disabled="moreFetching" slot="tail">
+		<button v-if="canFetchMore" @click="more" :disabled="moreFetching" slot="tail">
 			<span v-if="!moreFetching">%i18n:@load-more%</span>
 			<span v-if="moreFetching">%i18n:common.loading%<mk-ellipsis/></span>
 		</button>
@@ -20,7 +21,8 @@
 <script lang="ts">
 import Vue from 'vue';
 
-const limit = 10;
+const fetchLimit = 10;
+const displayLimit = 30;
 
 export default Vue.extend({
 	props: {
@@ -36,6 +38,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			notes: [],
+			queue: [],
 			existMore: false,
 			connection: null,
 			connectionId: null
@@ -45,6 +48,10 @@ export default Vue.extend({
 	computed: {
 		alone(): boolean {
 			return (this as any).os.i.followingCount == 0;
+		},
+
+		canFetchMore(): boolean {
+			return !this.moreFetching && !this.fetching && this.notes.length > 0 && this.existMore;
 		}
 	},
 
@@ -56,6 +63,8 @@ export default Vue.extend({
 		this.connection.on('follow', this.onChangeFollowing);
 		this.connection.on('unfollow', this.onChangeFollowing);
 
+		window.addEventListener('scroll', this.onScroll);
+
 		this.fetch();
 	},
 
@@ -64,18 +73,25 @@ export default Vue.extend({
 		this.connection.off('follow', this.onChangeFollowing);
 		this.connection.off('unfollow', this.onChangeFollowing);
 		(this as any).os.stream.dispose(this.connectionId);
+
+		window.removeEventListener('scroll', this.onScroll);
 	},
 
 	methods: {
+		isScrollTop() {
+			return window.scrollY <= 8;
+		},
+
 		fetch(cb?) {
+			this.queue = [];
 			this.fetching = true;
 			(this as any).api('notes/timeline', {
-				limit: limit + 1,
+				limit: fetchLimit + 1,
 				untilDate: this.date ? (this.date as any).getTime() : undefined,
 				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
 				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
-				if (notes.length == limit + 1) {
+				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 					this.existMore = true;
 				}
@@ -89,12 +105,12 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 			(this as any).api('notes/timeline', {
-				limit: limit + 1,
+				limit: fetchLimit + 1,
 				untilId: this.notes[this.notes.length - 1].id,
 				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
 				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
-				if (notes.length == limit + 1) {
+				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 					this.existMore = true;
 				} else {
@@ -105,7 +121,23 @@ export default Vue.extend({
 			});
 		},
 
+		prependNote(note) {
+			// Prepent a note
+			this.notes.unshift(note);
+
+			// オーバーフローしたら古い投稿は捨てる
+			if (this.notes.length >= displayLimit) {
+				this.notes = this.notes.slice(0, displayLimit);
+			}
+		},
+
+		releaseQueue() {
+			this.queue.forEach(n => this.prependNote(n));
+			this.queue = [];
+		},
+
 		onNote(note) {
+			//#region 弾く
 			const isMyNote = note.userId == (this as any).os.i.id;
 			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
 
@@ -120,21 +152,39 @@ export default Vue.extend({
 					return;
 				}
 			}
+			//#endregion
 
-			this.notes.unshift(note);
-
-			const isTop = window.scrollY > 8;
-			if (isTop) this.notes.pop();
+			if (this.isScrollTop()) {
+				this.prependNote(note);
+			} else {
+				this.queue.unshift(note);
+			}
 		},
 
 		onChangeFollowing() {
 			this.fetch();
+		},
+
+		onScroll() {
+			if (this.isScrollTop()) {
+				this.releaseQueue();
+			}
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.mk-friends-maker
-	margin-bottom 8px
+@import '~const.styl'
+
+.mk-timeline
+	> .newer-indicator
+		position -webkit-sticky
+		position sticky
+		z-index 100
+		height 3px
+		background $theme-color
+
+	> .mk-friends-maker
+		margin-bottom 8px
 </style>

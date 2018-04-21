@@ -32,6 +32,8 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		this.$store.commit('setUiHeaderHeight', 48);
+
 		if ((this as any).os.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
