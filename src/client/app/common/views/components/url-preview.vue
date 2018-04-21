@@ -68,13 +68,13 @@ iframe
 root(isDark)
 	display block
 	font-size 16px
-	border solid 1px isDark ? #58606b : #eee
+	border solid 1px isDark ? #191b1f : #eee
 	border-radius 4px
 	overflow hidden
 
 	&:hover
 		text-decoration none
-		border-color isDark ? #7d8590 : #ddd
+		border-color isDark ? #4f5561 : #ddd
 
 		> article > header > h1
 			text-decoration underline
