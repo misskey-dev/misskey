@@ -65,16 +65,16 @@ export default Vue.extend({
 iframe
 	width 100%
 
-.mk-url-preview
+root(isDark)
 	display block
 	font-size 16px
-	border solid 1px #eee
+	border solid 1px isDark ? #58606b : #eee
 	border-radius 4px
 	overflow hidden
 
 	&:hover
 		text-decoration none
-		border-color #ddd
+		border-color isDark ? #7d8590 : #ddd
 
 		> article > header > h1
 			text-decoration underline
@@ -99,11 +99,11 @@ iframe
 			> h1
 				margin 0
 				font-size 1em
-				color #555
+				color isDark ? #d6dae0 : #555
 
 		> p
 			margin 0
-			color #777
+			color isDark ? #a4aab3 : #777
 			font-size 0.8em
 
 		> footer
@@ -120,7 +120,7 @@ iframe
 			> p
 				display inline-block
 				margin 0
-				color #666
+				color isDark ? #b0b4bf : #666
 				font-size 0.8em
 				line-height 16px
 				vertical-align top
@@ -138,5 +138,11 @@ iframe
 
 		> article
 			padding 8px
+
+.mk-url-preview[data-darkmode]
+	root(true)
+
+.mk-url-preview:not([data-darkmode])
+	root(false)
 
 </style>
