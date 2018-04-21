@@ -54,9 +54,9 @@ const handlers = {
 		document.body.appendChild(blockquote);
 	},
 
-	title({ document }, { title }) {
+	title({ document }, { content }) {
 		const h1 = document.createElement('h1');
-		h1.textContent = title;
+		h1.textContent = content;
 		document.body.appendChild(h1);
 	},
 
