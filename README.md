@@ -44,9 +44,9 @@ If you want to translate Misskey, please see [Translation guide](./docs/translat
 
 :mortar_board: Notable contributors
 ----------------------------------------------------------------
-| ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon] | ![akihikodaki][akihikodaki-icon] | ![rinsuki][rinsuki-icon] |
-|:-:|:-:|:-:|:-:|:-:|
-| [syuilo][syuilo-link]<br>Owner | [Aya Morisawa][ayamorisawa-link]<br>Collaborator | [otofune][otofune-link]<br>Collaborator | [akihikodaki][akihikodaki-link] | [rinsuki][rinsuki-link] |
+| ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon] | ![akihikodaki][akihikodaki-icon] | ![tamaina][tamaina-icon] | ![rinsuki][rinsuki-icon] |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| [syuilo][syuilo-link]<br>Owner | [Aya Morisawa][ayamorisawa-link]<br>Collaborator | [otofune][otofune-link]<br>Collaborator | [akihikodaki][akihikodaki-link] | [tamaina][tamaina-link] | [rinsuki][rinsuki-link] |
 
 [List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
@@ -92,6 +92,8 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 [akihikodaki-icon]: https://avatars2.githubusercontent.com/u/17036990?s=70&v=4
 [rinsuki-link]:     https://github.com/rinsuki
 [rinsuki-icon]:     https://avatars0.githubusercontent.com/u/6533808?s=70&v=4
+[tamaina-link]:     https://github.com/tamaina
+[tamaina-icon]:     https://avatars1.githubusercontent.com/u/7973572?s=70&v=4
 
 [mirro-san-link]:   https://github.com/mirro-san
 [mirro-san-icon]:   https://avatars1.githubusercontent.com/u/17948612?s=70&v=4
