@@ -63,7 +63,7 @@ export default async (user: IUser, data: {
 		renoteId: data.renote ? data.renote._id : null,
 		text: data.text,
 		poll: data.poll,
-		cw: data.cw,
+		cw: data.cw == null ? null : data.cw,
 		tags,
 		userId: user._id,
 		viaMobile: data.viaMobile,

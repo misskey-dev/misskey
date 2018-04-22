@@ -24,7 +24,7 @@ export function isValidText(text: string): boolean {
 }
 
 export function isValidCw(text: string): boolean {
-	return text.length <= 100 && text.trim() != '';
+	return text.length <= 100;
 }
 
 export type INote = {

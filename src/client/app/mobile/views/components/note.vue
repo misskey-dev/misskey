@@ -31,27 +31,33 @@
 			</header>
 			<div class="body">
 				<p class="channel" v-if="p.channel != null"><a target="_blank">{{ p.channel.title }}</a>:</p>
-				<div class="text">
-					<a class="reply" v-if="p.reply">
-						%fa:reply%
-					</a>
-					<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
-					<a class="rp" v-if="p.renote != null">RP:</a>
+				<p v-if="p.cw != null" class="cw">
+					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '隠す' : 'もっと見る' }}</span>
+				</p>
+				<div class="content" v-show="p.cw == null || showContent">
+					<div class="text">
+						<a class="reply" v-if="p.reply">
+							%fa:reply%
+						</a>
+						<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
+						<a class="rp" v-if="p.renote != null">RP:</a>
+					</div>
+					<div class="media" v-if="p.media.length > 0">
+						<mk-media-list :media-list="p.media"/>
+					</div>
+					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
+					<div class="tags" v-if="p.tags && p.tags.length > 0">
+						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
+					</div>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
+					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+					<div class="map" v-if="p.geo" ref="map"></div>
+					<div class="renote" v-if="p.renote">
+						<mk-note-preview :note="p.renote"/>
+					</div>
 				</div>
-				<div class="media" v-if="p.media.length > 0">
-					<mk-media-list :media-list="p.media"/>
-				</div>
-				<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
-				<div class="tags" v-if="p.tags && p.tags.length > 0">
-					<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
-				</div>
-				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-				<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
-				<div class="map" v-if="p.geo" ref="map"></div>
 				<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
-				<div class="renote" v-if="p.renote">
-					<mk-note-preview :note="p.renote"/>
-				</div>
 			</div>
 			<footer>
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
@@ -92,6 +98,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			showContent: false,
 			connection: null,
 			connectionId: null
 		};
@@ -229,7 +236,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.note
+root(isDark)
 	font-size 12px
 	border-bottom solid 1px #eaeaea
 
@@ -388,112 +395,139 @@ export default Vue.extend({
 
 			> .body
 
-				> .text
+				> .cw
+					cursor default
 					display block
 					margin 0
 					padding 0
 					overflow-wrap break-word
 					font-size 1.1em
-					color #717171
+					color isDark ? #fff : #717171
 
-					>>> .title
-						display block
-						margin-bottom 4px
-						padding 4px
-						font-size 90%
-						text-align center
-						background #eef1f3
-						border-radius 4px
-
-					>>> .code
-						margin 8px 0
-
-					>>> .quote
-						margin 8px
-						padding 6px 12px
-						color #aaa
-						border-left solid 3px #eee
-
-					> .reply
+					> .text
 						margin-right 8px
+
+					> .toggle
+						display inline-block
+						padding 4px 8px
+						font-size 0.7em
+						color isDark ? #393f4f : #fff
+						background isDark ? #687390 : #b1b9c1
+						border-radius 2px
+						cursor pointer
+						user-select none
+
+						&:hover
+							background isDark ? #707b97 : #bbc4ce
+
+				> .content
+
+					> .text
+						display block
+						margin 0
+						padding 0
+						overflow-wrap break-word
+						font-size 1.1em
 						color #717171
 
-					> .rp
-						margin-left 4px
-						font-style oblique
-						color #a0bf46
-
-					[data-is-me]:after
-						content "you"
-						padding 0 4px
-						margin-left 4px
-						font-size 80%
-						color $theme-color-foreground
-						background $theme-color
-						border-radius 4px
-
-				.mk-url-preview
-					margin-top 8px
-
-				> .channel
-					margin 0
-
-				> .tags
-					margin 4px 0 0 0
-
-					> *
-						display inline-block
-						margin 0 8px 0 0
-						padding 2px 8px 2px 16px
-						font-size 90%
-						color #8d969e
-						background #edf0f3
-						border-radius 4px
-
-						&:before
-							content ""
+						>>> .title
 							display block
-							position absolute
-							top 0
-							bottom 0
-							left 4px
-							width 8px
-							height 8px
-							margin auto 0
-							background #fff
-							border-radius 100%
+							margin-bottom 4px
+							padding 4px
+							font-size 90%
+							text-align center
+							background #eef1f3
+							border-radius 4px
 
-				> .media
-					> img
-						display block
-						max-width 100%
+						>>> .code
+							margin 8px 0
 
-				> .location
-					margin 4px 0
-					font-size 12px
-					color #ccc
+						>>> .quote
+							margin 8px
+							padding 6px 12px
+							color #aaa
+							border-left solid 3px #eee
 
-				> .map
-					width 100%
-					height 200px
+						> .reply
+							margin-right 8px
+							color #717171
 
-					&:empty
-						display none
+						> .rp
+							margin-left 4px
+							font-style oblique
+							color #a0bf46
+
+						[data-is-me]:after
+							content "you"
+							padding 0 4px
+							margin-left 4px
+							font-size 80%
+							color $theme-color-foreground
+							background $theme-color
+							border-radius 4px
+
+					.mk-url-preview
+						margin-top 8px
+
+					> .channel
+						margin 0
+
+					> .tags
+						margin 4px 0 0 0
+
+						> *
+							display inline-block
+							margin 0 8px 0 0
+							padding 2px 8px 2px 16px
+							font-size 90%
+							color #8d969e
+							background #edf0f3
+							border-radius 4px
+
+							&:before
+								content ""
+								display block
+								position absolute
+								top 0
+								bottom 0
+								left 4px
+								width 8px
+								height 8px
+								margin auto 0
+								background #fff
+								border-radius 100%
+
+					> .media
+						> img
+							display block
+							max-width 100%
+
+					> .location
+						margin 4px 0
+						font-size 12px
+						color #ccc
+
+					> .map
+						width 100%
+						height 200px
+
+						&:empty
+							display none
+
+					> .mk-poll
+						font-size 80%
+
+					> .renote
+						margin 8px 0
+
+						> .mk-note-preview
+							padding 16px
+							border dashed 1px #c0dac6
+							border-radius 8px
 
 				> .app
 					font-size 12px
 					color #ccc
-
-				> .mk-poll
-					font-size 80%
-
-				> .renote
-					margin 8px 0
-
-					> .mk-note-preview
-						padding 16px
-						border dashed 1px #c0dac6
-						border-radius 8px
 
 			> footer
 				> button
@@ -523,6 +557,12 @@ export default Vue.extend({
 					&.menu
 						@media (max-width 350px)
 							display none
+
+.note[data-darkmode]
+	root(true)
+
+.note:not([data-darkmode])
+	root(false)
 
 </style>
 

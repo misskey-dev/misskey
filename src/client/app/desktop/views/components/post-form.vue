@@ -6,6 +6,7 @@
 	@drop.stop="onDrop"
 >
 	<div class="content">
+		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
 			@keydown="onKeydown" @paste="onPaste" :placeholder="placeholder"
@@ -27,6 +28,7 @@
 	<button class="drive" title="%i18n:@attach-media-from-drive%" @click="chooseFileFromDrive">%fa:cloud%</button>
 	<button class="kao" title="%i18n:@insert-a-kao%" @click="kao">%fa:R smile%</button>
 	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
+	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
 	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
 	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:!@text-remain%'.replace('{}', 1000 - text.length) }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
@@ -46,7 +48,9 @@ export default Vue.extend({
 	components: {
 		XDraggable
 	},
+
 	props: ['reply', 'renote'],
+
 	data() {
 		return {
 			posting: false,
@@ -54,11 +58,14 @@ export default Vue.extend({
 			files: [],
 			uploadings: [],
 			poll: false,
+			useCw: false,
+			cw: null,
 			geo: null,
 			autocomplete: null,
 			draghover: false
 		};
 	},
+
 	computed: {
 		draftId(): string {
 			return this.renote
@@ -67,6 +74,7 @@ export default Vue.extend({
 					? 'reply:' + this.reply.id
 					: 'note';
 		},
+
 		placeholder(): string {
 			return this.renote
 				? '%i18n:!@quote-placeholder%'
@@ -74,6 +82,7 @@ export default Vue.extend({
 					? '%i18n:!@reply-placeholder%'
 					: '%i18n:!@note-placeholder%';
 		},
+
 		submitText(): string {
 			return this.renote
 				? '%i18n:!@renote%'
@@ -81,21 +90,26 @@ export default Vue.extend({
 					? '%i18n:!@reply%'
 					: '%i18n:!@note%';
 		},
+
 		canPost(): boolean {
 			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
 		}
 	},
+
 	watch: {
 		text() {
 			this.saveDraft();
 		},
+
 		poll() {
 			this.saveDraft();
 		},
+
 		files() {
 			this.saveDraft();
 		}
 	},
+
 	mounted() {
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
@@ -113,13 +127,16 @@ export default Vue.extend({
 			}
 		});
 	},
+
 	methods: {
 		focus() {
 			(this.$refs.text as any).focus();
 		},
+
 		chooseFile() {
 			(this.$refs.file as any).click();
 		},
+
 		chooseFileFromDrive() {
 			(this as any).apis.chooseDriveFile({
 				multiple: true
@@ -127,32 +144,40 @@ export default Vue.extend({
 				files.forEach(this.attachMedia);
 			});
 		},
+
 		attachMedia(driveFile) {
 			this.files.push(driveFile);
 			this.$emit('change-attached-media', this.files);
 		},
+
 		detachMedia(id) {
 			this.files = this.files.filter(x => x.id != id);
 			this.$emit('change-attached-media', this.files);
 		},
+
 		onChangeFile() {
 			Array.from((this.$refs.file as any).files).forEach(this.upload);
 		},
+
 		upload(file) {
 			(this.$refs.uploader as any).upload(file);
 		},
+
 		onChangeUploadings(uploads) {
 			this.$emit('change-uploadings', uploads);
 		},
+
 		clear() {
 			this.text = '';
 			this.files = [];
 			this.poll = false;
 			this.$emit('change-attached-media', this.files);
 		},
+
 		onKeydown(e) {
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
 		},
+
 		onPaste(e) {
 			Array.from(e.clipboardData.items).forEach((item: any) => {
 				if (item.kind == 'file') {
@@ -160,6 +185,7 @@ export default Vue.extend({
 				}
 			});
 		},
+
 		onDragover(e) {
 			const isFile = e.dataTransfer.items[0].kind == 'file';
 			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
@@ -169,12 +195,15 @@ export default Vue.extend({
 				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
 			}
 		},
+
 		onDragenter(e) {
 			this.draghover = true;
 		},
+
 		onDragleave(e) {
 			this.draghover = false;
 		},
+
 		onDrop(e): void {
 			this.draghover = false;
 
@@ -195,6 +224,7 @@ export default Vue.extend({
 			}
 			//#endregion
 		},
+
 		setGeo() {
 			if (navigator.geolocation == null) {
 				alert('お使いの端末は位置情報に対応していません');
@@ -210,10 +240,12 @@ export default Vue.extend({
 				enableHighAccuracy: true
 			});
 		},
+
 		removeGeo() {
 			this.geo = null;
 			this.$emit('geo-dettached');
 		},
+
 		post() {
 			this.posting = true;
 
@@ -223,6 +255,7 @@ export default Vue.extend({
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
+				cw: this.useCw ? this.cw || '' : undefined,
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
@@ -250,6 +283,7 @@ export default Vue.extend({
 				this.posting = false;
 			});
 		},
+
 		saveDraft() {
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
@@ -264,6 +298,7 @@ export default Vue.extend({
 
 			localStorage.setItem('drafts', JSON.stringify(data));
 		},
+
 		deleteDraft() {
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
@@ -271,6 +306,7 @@ export default Vue.extend({
 
 			localStorage.setItem('drafts', JSON.stringify(data));
 		},
+
 		kao() {
 			this.text += getKao();
 		}
@@ -293,46 +329,53 @@ root(isDark)
 
 	> .content
 
-		textarea
+		> input
+		> textarea
 			display block
-			padding 12px
-			margin 0
 			width 100%
-			max-width 100%
-			min-width 100%
-			min-height calc(16px + 12px + 12px)
+			padding 12px
 			font-size 16px
 			color isDark ? #fff : #333
 			background isDark ? #191d23 : #fff
 			outline none
 			border solid 1px rgba($theme-color, 0.1)
 			border-radius 4px
-			transition border-color .3s ease
+			transition border-color .2s ease
 
 			&:hover
 				border-color rgba($theme-color, 0.2)
 				transition border-color .1s ease
 
-				& + *
-				& + * + *
-					border-color rgba($theme-color, 0.2)
-					transition border-color .1s ease
-
 			&:focus
-				color $theme-color
 				border-color rgba($theme-color, 0.5)
 				transition border-color 0s ease
-
-				& + *
-				& + * + *
-					border-color rgba($theme-color, 0.5)
-					transition border-color 0s ease
 
 			&:disabled
 				opacity 0.5
 
 			&::-webkit-input-placeholder
 				color rgba($theme-color, 0.3)
+
+		> input
+			margin-bottom 8px
+
+		> textarea
+			margin 0
+			max-width 100%
+			min-width 100%
+			min-height 64px
+
+			&:hover
+				& + *
+				& + * + *
+					border-color rgba($theme-color, 0.2)
+					transition border-color .1s ease
+
+			&:focus
+				& + *
+				& + * + *
+					border-color rgba($theme-color, 0.5)
+					transition border-color 0s ease
 
 			&.with
 				border-bottom solid 1px rgba($theme-color, 0.1) !important

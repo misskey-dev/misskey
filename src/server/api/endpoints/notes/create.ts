@@ -23,11 +23,11 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	if (visibilityErr) return rej('invalid visibility');
 
 	// Get 'text' parameter
-	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
+	const [text = null, textErr] = $(params.text).optional.nullable.string().pipe(isValidText).$;
 	if (textErr) return rej('invalid text');
 
 	// Get 'cw' parameter
-	const [cw, cwErr] = $(params.cw).optional.string().pipe(isValidCw).$;
+	const [cw, cwErr] = $(params.cw).optional.nullable.string().pipe(isValidCw).$;
 	if (cwErr) return rej('invalid cw');
 
 	// Get 'viaMobile' parameter
@@ -187,14 +187,14 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	const note = await create(user, {
 		createdAt: new Date(),
 		media: files,
-		poll: poll,
-		text: text,
+		poll,
+		text,
 		reply,
 		renote,
-		cw: cw,
-		tags: tags,
-		app: app,
-		viaMobile: viaMobile,
+		cw,
+		tags,
+		app,
+		viaMobile,
 		visibility,
 		geo
 	});

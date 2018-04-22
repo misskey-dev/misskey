@@ -34,24 +34,30 @@
 				<p class="channel" v-if="p.channel">
 					<a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:
 				</p>
-				<div class="text">
-					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
-					<a class="rp" v-if="p.renote">RP:</a>
+				<p v-if="p.cw != null" class="cw">
+					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '隠す' : 'もっと見る' }}</span>
+				</p>
+				<div class="content" v-show="p.cw == null || showContent">
+					<div class="text">
+						<a class="reply" v-if="p.reply">%fa:reply%</a>
+						<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
+						<a class="rp" v-if="p.renote">RP:</a>
+					</div>
+					<div class="media" v-if="p.media.length > 0">
+						<mk-media-list :media-list="p.media"/>
+					</div>
+					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
+					<div class="tags" v-if="p.tags && p.tags.length > 0">
+						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
+					</div>
+					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+					<div class="map" v-if="p.geo" ref="map"></div>
+					<div class="renote" v-if="p.renote">
+						<mk-note-preview :note="p.renote"/>
+					</div>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
-				<div class="media" v-if="p.media.length > 0">
-					<mk-media-list :media-list="p.media"/>
-				</div>
-				<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
-				<div class="tags" v-if="p.tags && p.tags.length > 0">
-					<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
-				</div>
-				<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
-				<div class="map" v-if="p.geo" ref="map"></div>
-				<div class="renote" v-if="p.renote">
-					<mk-note-preview :note="p.renote"/>
-				</div>
-				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			</div>
 			<footer>
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
@@ -113,6 +119,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			showContent: false,
 			isDetailOpened: false,
 			connection: null,
 			connectionId: null
@@ -456,7 +463,7 @@ root(isDark)
 
 			> .body
 
-				> .text
+				> .cw
 					cursor default
 					display block
 					margin 0
@@ -465,90 +472,117 @@ root(isDark)
 					font-size 1.1em
 					color isDark ? #fff : #717171
 
-					>>> .title
-						display block
-						margin-bottom 4px
-						padding 4px
-						font-size 90%
-						text-align center
-						background isDark ? #2f3944 : #eef1f3
-						border-radius 4px
-
-					>>> .code
-						margin 8px 0
-
-					>>> .quote
-						margin 8px
-						padding 6px 12px
-						color isDark ? #6f808e : #aaa
-						border-left solid 3px isDark ? #637182 : #eee
-
-					> .reply
+					> .text
 						margin-right 8px
-						color isDark ? #99abbf : #717171
 
-					> .rp
-						margin-left 4px
-						font-style oblique
-						color #a0bf46
-
-				> .location
-					margin 4px 0
-					font-size 12px
-					color #ccc
-
-				> .map
-					width 100%
-					height 300px
-
-					&:empty
-						display none
-
-				> .tags
-					margin 4px 0 0 0
-
-					> *
+					> .toggle
 						display inline-block
-						margin 0 8px 0 0
-						padding 2px 8px 2px 16px
-						font-size 90%
-						color #8d969e
-						background #edf0f3
-						border-radius 4px
-
-						&:before
-							content ""
-							display block
-							position absolute
-							top 0
-							bottom 0
-							left 4px
-							width 8px
-							height 8px
-							margin auto 0
-							background #fff
-							border-radius 100%
+						padding 4px 8px
+						font-size 0.7em
+						color isDark ? #393f4f : #fff
+						background isDark ? #687390 : #b1b9c1
+						border-radius 2px
+						cursor pointer
+						user-select none
 
 						&:hover
-							text-decoration none
-							background #e2e7ec
+							background isDark ? #707b97 : #bbc4ce
 
-				.mk-url-preview
-					margin-top 8px
+				> .content
 
-				> .channel
-					margin 0
+					> .text
+						cursor default
+						display block
+						margin 0
+						padding 0
+						overflow-wrap break-word
+						font-size 1.1em
+						color isDark ? #fff : #717171
 
-				> .mk-poll
-					font-size 80%
+						>>> .title
+							display block
+							margin-bottom 4px
+							padding 4px
+							font-size 90%
+							text-align center
+							background isDark ? #2f3944 : #eef1f3
+							border-radius 4px
 
-				> .renote
-					margin 8px 0
+						>>> .code
+							margin 8px 0
 
-					> .mk-note-preview
-						padding 16px
-						border dashed 1px isDark ? #4e945e : #c0dac6
-						border-radius 8px
+						>>> .quote
+							margin 8px
+							padding 6px 12px
+							color isDark ? #6f808e : #aaa
+							border-left solid 3px isDark ? #637182 : #eee
+
+						> .reply
+							margin-right 8px
+							color isDark ? #99abbf : #717171
+
+						> .rp
+							margin-left 4px
+							font-style oblique
+							color #a0bf46
+
+					> .location
+						margin 4px 0
+						font-size 12px
+						color #ccc
+
+					> .map
+						width 100%
+						height 300px
+
+						&:empty
+							display none
+
+					> .tags
+						margin 4px 0 0 0
+
+						> *
+							display inline-block
+							margin 0 8px 0 0
+							padding 2px 8px 2px 16px
+							font-size 90%
+							color #8d969e
+							background #edf0f3
+							border-radius 4px
+
+							&:before
+								content ""
+								display block
+								position absolute
+								top 0
+								bottom 0
+								left 4px
+								width 8px
+								height 8px
+								margin auto 0
+								background #fff
+								border-radius 100%
+
+							&:hover
+								text-decoration none
+								background #e2e7ec
+
+					.mk-url-preview
+						margin-top 8px
+
+					> .channel
+						margin 0
+
+					> .mk-poll
+						font-size 80%
+
+					> .renote
+						margin 8px 0
+
+						> .mk-note-preview
+							padding 16px
+							border dashed 1px isDark ? #4e945e : #c0dac6
+							border-radius 8px
 
 			> footer
 				> button
