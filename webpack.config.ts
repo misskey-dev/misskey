@@ -19,7 +19,7 @@ import { licenseHtml } from './src/build/license';
 
 import locales from './locales';
 const meta = require('./package.json');
-const version = meta.version;
+const version = meta.clientVersion;
 const codename = meta.codename;
 
 //#region Replacer definitions
@@ -114,7 +114,7 @@ module.exports = entries.map(x => {
 			'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
 		}),
 		new WebpackOnBuildPlugin(stats => {
-			fs.writeFileSync('./version.json', JSON.stringify({
+			fs.writeFileSync('./built/client/meta.json', JSON.stringify({
 				version
 			}), 'utf-8');
 		})

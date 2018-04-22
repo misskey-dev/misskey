@@ -1,12 +1,9 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "0.0.5089",
+	"version": "1.0.0",
+	"clientVersion": "1.0.0",
 	"codename": "nighthike",
-	"license": "MIT",
-	"description": "A miniblog-based SNS",
-	"bugs": "https://github.com/syuilo/misskey/issues",
-	"repository": "https://github.com/syuilo/misskey.git",
 	"main": "./built/index.js",
 	"private": true,
 	"scripts": {
