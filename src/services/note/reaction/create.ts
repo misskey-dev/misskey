@@ -46,11 +46,13 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 
 	publishNoteStream(note._id, 'reacted');
 
-	// Notify
-	notify(note.userId, user._id, 'reaction', {
-		noteId: note._id,
-		reaction: reaction
-	});
+	// リアクションされたユーザーがローカルユーザーなら通知を作成
+	if (isLocalUser(note._user)) {
+		notify(note.userId, user._id, 'reaction', {
+			noteId: note._id,
+			reaction: reaction
+		});
+	}
 
 	pushSw(note.userId, 'reaction', {
 		user: await packUser(user, note.userId),
