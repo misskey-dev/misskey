@@ -140,8 +140,8 @@ inquirer.prompt(form).then(as => {
 			pass: as['es_pass'] || null
 		},
 		recaptcha: {
-			siteKey: as['recaptcha_site'],
-			secretKey: as['recaptcha_secret']
+			site_key: as['recaptcha_site'],
+			secret_key: as['recaptcha_secret']
 		}
 	};
 
