@@ -38,7 +38,6 @@ export type INote = {
 	poll: any; // todo
 	text: string;
 	tags: string[];
-	textHtml: string;
 	cw: string;
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;

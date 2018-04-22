@@ -12,8 +12,6 @@ import { pack } from '../../../../../models/messaging-message';
 import publishUserStream from '../../../../../publishers/stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../publishers/stream';
 import pushSw from '../../../../../publishers/push-sw';
-import html from '../../../../../text/html';
-import parse from '../../../../../text/parse';
 import config from '../../../../../config';
 
 /**
@@ -77,7 +75,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		fileId: file ? file._id : undefined,
 		recipientId: recipient._id,
 		text: text ? text : undefined,
-		textHtml: text ? html(parse(text)) : undefined,
 		userId: user._id,
 		isRead: false
 	});

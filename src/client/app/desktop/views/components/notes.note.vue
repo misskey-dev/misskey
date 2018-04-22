@@ -36,7 +36,7 @@
 				</p>
 				<div class="text">
 					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-note-html v-if="p.textHtml" :text="p.text" :i="os.i" :class="$style.text"/>
+					<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
 					<a class="rp" v-if="p.renote">RP:</a>
 				</div>
 				<div class="media" v-if="p.media.length > 0">

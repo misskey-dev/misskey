@@ -15,7 +15,6 @@ import Mute from '../../models/mute';
 import pushSw from '../../publishers/push-sw';
 import event from '../../publishers/stream';
 import parse from '../../text/parse';
-import html from '../../text/html';
 import { IApp } from '../../models/app';
 
 export default async (user: IUser, data: {
@@ -63,7 +62,6 @@ export default async (user: IUser, data: {
 		replyId: data.reply ? data.reply._id : null,
 		renoteId: data.renote ? data.renote._id : null,
 		text: data.text,
-		textHtml: tokens === null ? null : html(tokens),
 		poll: data.poll,
 		cw: data.cw,
 		tags,
