@@ -40,7 +40,7 @@
 				<button class="ui button" @click="customizeHome" style="margin-bottom: 16px">ホームをカスタマイズ</button>
 			</div>
 			<div class="div">
-				<mk-switch v-model="os.i.clientSettings.dark" @change="onChangeDark" text="ダークモード"/>
+				<mk-switch v-model="darkmode" text="ダークモード"/>
 				<mk-switch v-model="os.i.clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
 			</div>
 			<mk-switch v-model="os.i.clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
@@ -234,6 +234,7 @@ export default Vue.extend({
 			version,
 			latestVersion: undefined,
 			checkingForUpdate: false,
+			darkmode: localStorage.getItem('darkmode') == 'true',
 			enableSounds: localStorage.getItem('enableSounds') == 'true',
 			autoPopout: localStorage.getItem('autoPopout') == 'true',
 			apiViaStream: localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true,
@@ -256,6 +257,9 @@ export default Vue.extend({
 		},
 		apiViaStream() {
 			localStorage.setItem('apiViaStream', this.apiViaStream ? 'true' : 'false');
+		},
+		darkmode() {
+			(this as any)._updateDarkmode_(this.darkmode);
 		},
 		enableSounds() {
 			localStorage.setItem('enableSounds', this.enableSounds ? 'true' : 'false');

@@ -61,39 +61,44 @@ Vue.mixin({
 });
 
 // Dark/Light
+const bus = new Vue();
 Vue.mixin({
 	data() {
 		return {
-			_darkmode_: false
+			_darkmode_: localStorage.getItem('darkmode') == 'true'
 		};
 	},
 	beforeCreate() {
-		// なぜか警告が出るため
-		this._darkmode_ = false;
+		// なぜか警告が出るので
+		this._darkmode_ = localStorage.getItem('darkmode') == 'true';
+	},
+	beforeDestroy() {
+		bus.$off('updated', this._onDarkmodeUpdated_);
 	},
 	mounted() {
-		const set = () => {
-			if (!this.$el || !this.$el.setAttribute || !this.os || !this.os.i) return;
-			if (this.os.i.clientSettings.dark) {
+		this._onDarkmodeUpdated_(this._darkmode_);
+		bus.$on('updated', this._onDarkmodeUpdated_);
+	},
+	methods: {
+		_updateDarkmode_(v) {
+			localStorage.setItem('darkmode', v.toString());
+			bus.$emit('updated', v);
+			if (v) {
 				document.documentElement.setAttribute('data-darkmode', 'true');
-				this.$el.setAttribute('data-darkmode', 'true');
-				this._darkmode_ = true;
-				this.$forceUpdate();
 			} else {
 				document.documentElement.removeAttribute('data-darkmode');
-				this.$el.removeAttribute('data-darkmode');
-				this._darkmode_ = false;
-				this.$forceUpdate();
 			}
-		};
-
-		set();
-
-		this.$watch('os.i.clientSettings', i => {
-			set();
-		}, {
-			deep: true
-		});
+		},
+		_onDarkmodeUpdated_(v) {
+			if (!this.$el || !this.$el.setAttribute) return;
+			if (v) {
+				this.$el.setAttribute('data-darkmode', 'true');
+			} else {
+				this.$el.removeAttribute('data-darkmode');
+			}
+			this._darkmode_ = v;
+			this.$forceUpdate();
+		}
 	}
 });
 

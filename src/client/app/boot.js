@@ -61,11 +61,8 @@
 	}
 
 	// Dark/Light
-	const me = JSON.parse(localStorage.getItem('me') || null);
-	if (me && me.clientSettings) {
-		if ((app == 'desktop' && me.clientSettings.dark) || (app == 'mobile' && me.clientSettings.darkMobile)) {
-			document.documentElement.setAttribute('data-darkmode', 'true');
-		}
+	if (localStorage.getItem('darkmode') == 'true') {
+		document.documentElement.setAttribute('data-darkmode', 'true');
 	}
 
 	// Script version

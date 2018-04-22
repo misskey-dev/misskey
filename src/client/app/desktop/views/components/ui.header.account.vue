@@ -88,10 +88,7 @@ export default Vue.extend({
 			(this as any).os.signout();
 		},
 		dark() {
-			(this as any).api('i/update_client_setting', {
-				name: 'dark',
-				value: !(this as any)._darkmode_
-			});
+			(this as any)._updateDarkmode_(!(this as any)._darkmode_);
 		}
 	}
 });
