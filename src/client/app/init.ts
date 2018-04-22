@@ -82,12 +82,12 @@ Vue.mixin({
 	methods: {
 		_updateDarkmode_(v) {
 			localStorage.setItem('darkmode', v.toString());
-			bus.$emit('updated', v);
 			if (v) {
 				document.documentElement.setAttribute('data-darkmode', 'true');
 			} else {
 				document.documentElement.removeAttribute('data-darkmode');
 			}
+			bus.$emit('updated', v);
 		},
 		_onDarkmodeUpdated_(v) {
 			if (!this.$el || !this.$el.setAttribute) return;
