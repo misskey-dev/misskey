@@ -32,17 +32,17 @@ export default async function(
 
 					//#region 流れてきたメッセージがミュートしているユーザーが関わるものだったら無視する
 					if (x.type == 'note') {
-						if (mutedUserIds.indexOf(x.body.userId) != -1) {
+						if (mutedUserIds.includes(x.body.userId)) {
 							return;
 						}
-						if (x.body.reply != null && mutedUserIds.indexOf(x.body.reply.userId) != -1) {
+						if (x.body.reply != null && mutedUserIds.includes(x.body.reply.userId)) {
 							return;
 						}
-						if (x.body.renote != null && mutedUserIds.indexOf(x.body.renote.userId) != -1) {
+						if (x.body.renote != null && mutedUserIds.includes(x.body.renote.userId)) {
 							return;
 						}
 					} else if (x.type == 'notification') {
-						if (mutedUserIds.indexOf(x.body.userId) != -1) {
+						if (mutedUserIds.includes(x.body.userId)) {
 							return;
 						}
 					}
@@ -53,6 +53,7 @@ export default async function(
 					connection.send(data);
 				}
 				break;
+
 			case 'note-stream':
 				const noteId = channel.split(':')[2];
 				log(`RECEIVED: ${noteId} ${data} by @${user.username}`);
