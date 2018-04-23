@@ -133,7 +133,7 @@
 		"is-root": "2.0.0",
 		"is-url": "1.2.4",
 		"js-yaml": "3.11.0",
-		"jsdom": "11.8.0",
+		"jsdom": "11.9.0",
 		"koa": "2.5.0",
 		"koa-bodyparser": "4.2.0",
 		"koa-compress": "3.0.0",
