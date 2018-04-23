@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import $ from 'cafy';
 import deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 import Reaction from './note-reaction';
@@ -15,6 +16,18 @@ export interface INoteReaction {
 	userId: mongo.ObjectID;
 	reaction: string;
 }
+
+export const validateReaction = $().string().or([
+	'like',
+	'love',
+	'laugh',
+	'hmm',
+	'surprise',
+	'congrats',
+	'angry',
+	'confused',
+	'pudding'
+]);
 
 /**
  * NoteReactionを物理削除します

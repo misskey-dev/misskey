@@ -3,6 +3,7 @@ import Note from '../../../models/note';
 import { IRemoteUser } from '../../../models/user';
 import { ILike } from '../type';
 import create from '../../../services/note/reaction/create';
+import { validateReaction } from '../../../models/note-reaction';
 
 export default async (actor: IRemoteUser, activity: ILike) => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
@@ -17,5 +18,14 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 		throw new Error();
 	}
 
-	await create(actor, note, 'pudding');
+	let reaction = 'pudding';
+
+	// 他のMisskeyインスタンスからのリアクション
+	if (activity._misskey_reaction) {
+		if (validateReaction.ok(activity._misskey_reaction)) {
+			reaction = activity._misskey_reaction;
+		}
+	}
+
+	await create(actor, note, reaction);
 };

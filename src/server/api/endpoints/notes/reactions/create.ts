@@ -4,6 +4,7 @@
 import $ from 'cafy';
 import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
+import { validateReaction } from '../../../../../models/note-reaction';
 
 /**
  * React to a note
@@ -14,17 +15,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get 'reaction' parameter
-	const [reaction, reactionErr] = $(params.reaction).string().or([
-		'like',
-		'love',
-		'laugh',
-		'hmm',
-		'surprise',
-		'congrats',
-		'angry',
-		'confused',
-		'pudding'
-	]).$;
+	const [reaction, reactionErr] = $(params.reaction).string().pipe(validateReaction.ok).$;
 	if (reactionErr) return rej('invalid reaction param');
 
 	// Fetch reactee

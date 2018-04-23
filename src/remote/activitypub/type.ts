@@ -82,6 +82,7 @@ export interface IAccept extends IActivity {
 
 export interface ILike extends IActivity {
 	type: 'Like';
+	_misskey_reaction: string;
 }
 
 export interface IAnnounce extends IActivity {

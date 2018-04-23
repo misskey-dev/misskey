@@ -87,7 +87,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	//#region 配信
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (isLocalUser(user) && isRemoteUser(note._user)) {
-		const content = pack(renderLike(user, note));
+		const content = pack(renderLike(user, note, reaction));
 		deliver(user, content, note._user.inbox);
 	}
 	//#endregion
