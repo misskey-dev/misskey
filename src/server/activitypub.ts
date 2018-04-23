@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import * as Koa from 'koa';
 import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
@@ -19,8 +20,7 @@ const router = new Router();
 
 //#region Routing
 
-// inbox
-router.post('/users/:user/inbox', json(), ctx => {
+function inbox(ctx: Koa.Context) {
 	let signature;
 
 	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
@@ -39,7 +39,11 @@ router.post('/users/:user/inbox', json(), ctx => {
 	}).save();
 
 	ctx.status = 202;
-});
+}
+
+// inbox
+router.post('/inbox', json(), inbox);
+router.post('/users/:user/inbox', json(), inbox);
 
 // note
 router.get('/notes/:note', async (ctx, next) => {
