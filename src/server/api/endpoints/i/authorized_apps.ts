@@ -7,10 +7,6 @@ import { pack } from '../../../../models/app';
 
 /**
  * Get authorized apps of my account
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter

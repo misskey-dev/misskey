@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 const escapeRegexp = require('escape-regexp');
 import Note from '../../../../models/note';
 import User from '../../../../models/user';
@@ -22,19 +22,19 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (textError) return rej('invalid text param');
 
 	// Get 'includeUserIds' parameter
-	const [includeUserIds = [], includeUserIdsErr] = $(params.includeUserIds).optional.array('id').$;
+	const [includeUserIds = [], includeUserIdsErr] = $(params.includeUserIds).optional.array($().type(ID)).$;
 	if (includeUserIdsErr) return rej('invalid includeUserIds param');
 
 	// Get 'excludeUserIds' parameter
-	const [excludeUserIds = [], excludeUserIdsErr] = $(params.excludeUserIds).optional.array('id').$;
+	const [excludeUserIds = [], excludeUserIdsErr] = $(params.excludeUserIds).optional.array($().type(ID)).$;
 	if (excludeUserIdsErr) return rej('invalid excludeUserIds param');
 
 	// Get 'includeUserUsernames' parameter
-	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.includeUserUsernames).optional.array('string').$;
+	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.includeUserUsernames).optional.array($().string()).$;
 	if (includeUserUsernamesErr) return rej('invalid includeUserUsernames param');
 
 	// Get 'excludeUserUsernames' parameter
-	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.excludeUserUsernames).optional.array('string').$;
+	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.excludeUserUsernames).optional.array($().string()).$;
 	if (excludeUserUsernamesErr) return rej('invalid excludeUserUsernames param');
 
 	// Get 'following' parameter

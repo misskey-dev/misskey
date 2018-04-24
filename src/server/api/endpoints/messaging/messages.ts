@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Message from '../../../../models/messaging-message';
 import User from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
@@ -16,7 +16,7 @@ import read from '../../common/read-messaging-message';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [recipientId, recipientIdErr] = $(params.userId).id().$;
+	const [recipientId, recipientIdErr] = $(params.userId).type(ID).$;
 	if (recipientIdErr) return rej('invalid userId param');
 
 	// Fetch recipient
@@ -41,11 +41,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).$;
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).$;
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Check if both of sinceId and untilId is specified

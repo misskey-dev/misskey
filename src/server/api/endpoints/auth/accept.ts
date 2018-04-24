@@ -3,7 +3,7 @@
  */
 import rndstr from 'rndstr';
 const crypto = require('crypto');
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import App from '../../../../models/app';
 import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';

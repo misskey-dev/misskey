@@ -1,19 +1,15 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 
 /**
  * Show a file
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user) => {
 	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $(params.fileId).id().$;
+	const [fileId, fileIdErr] = $(params.fileId).type(ID).$;
 	if (fileIdErr) throw 'invalid fileId param';
 
 	// Fetch file

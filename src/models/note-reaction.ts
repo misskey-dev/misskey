@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 import Reaction from './note-reaction';

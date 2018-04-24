@@ -6,10 +6,6 @@ import event from '../../../../publishers/stream';
 
 /**
  * Mark as read all notifications
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Update documents

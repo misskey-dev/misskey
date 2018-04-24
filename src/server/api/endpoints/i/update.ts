@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import event from '../../../../publishers/stream';
 
@@ -32,12 +32,12 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	if (birthday !== undefined) user.profile.birthday = birthday;
 
 	// Get 'avatarId' parameter
-	const [avatarId, avatarIdErr] = $(params.avatarId).optional.id().$;
+	const [avatarId, avatarIdErr] = $(params.avatarId).optional.type(ID).$;
 	if (avatarIdErr) return rej('invalid avatarId param');
 	if (avatarId) user.avatarId = avatarId;
 
 	// Get 'bannerId' parameter
-	const [bannerId, bannerIdErr] = $(params.bannerId).optional.id().$;
+	const [bannerId, bannerIdErr] = $(params.bannerId).optional.type(ID).$;
 	if (bannerIdErr) return rej('invalid bannerId param');
 	if (bannerId) user.bannerId = bannerId;
 

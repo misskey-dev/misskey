@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import ChannelWatching from '../../../../models/channel-watching';
@@ -17,11 +17,11 @@ module.exports = async (params, user, app) => {
 	if (limitErr) throw 'invalid limit param';
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).$;
 	if (sinceIdErr) throw 'invalid sinceId param';
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).$;
 	if (untilIdErr) throw 'invalid untilId param';
 
 	// Get 'sinceDate' parameter

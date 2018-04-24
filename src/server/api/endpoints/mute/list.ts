@@ -1,17 +1,13 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 
 /**
  * Get muted users of a user
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'iknow' parameter
@@ -23,7 +19,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $(params.cursor).optional.id().$;
+	const [cursor = null, cursorErr] = $(params.cursor).optional.type(ID).$;
 	if (cursorErr) return rej('invalid cursor param');
 
 	// Construct query

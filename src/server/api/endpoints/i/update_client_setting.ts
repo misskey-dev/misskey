@@ -7,10 +7,6 @@ import event from '../../../../publishers/stream';
 
 /**
  * Update myself
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter

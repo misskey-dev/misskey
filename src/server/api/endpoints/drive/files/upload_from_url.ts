@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 
@@ -15,7 +15,7 @@ module.exports = async (params, user): Promise<any> => {
 	if (urlErr) throw 'invalid url param';
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).$;
 	if (folderIdErr) throw 'invalid folderId param';
 
 	return pack(await uploadFromUrl(url, user, folderId));

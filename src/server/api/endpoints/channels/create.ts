@@ -8,10 +8,6 @@ import { pack } from '../../../../models/channel';
 
 /**
  * Create a channel
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'title' parameter

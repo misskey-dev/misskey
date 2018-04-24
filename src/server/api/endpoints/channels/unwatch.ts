@@ -1,20 +1,16 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Channel from '../../../../models/channel';
 import Watching from '../../../../models/channel-watching';
 
 /**
  * Unwatch a channel
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $(params.channelId).id().$;
+	const [channelId, channelIdErr] = $(params.channelId).type(ID).$;
 	if (channelIdErr) return rej('invalid channelId param');
 
 	//#region Fetch channel

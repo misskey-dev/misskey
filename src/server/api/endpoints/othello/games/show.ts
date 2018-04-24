@@ -1,10 +1,10 @@
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import OthelloGame, { pack } from '../../../../../models/othello-game';
 import Othello from '../../../../../othello/core';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'gameId' parameter
-	const [gameId, gameIdErr] = $(params.gameId).id().$;
+	const [gameId, gameIdErr] = $(params.gameId).type(ID).$;
 	if (gameIdErr) return rej('invalid gameId param');
 
 	const game = await OthelloGame.findOne({ _id: gameId });

@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import User, { pack } from '../../../../models/user';
 import config from '../../../../config';
 const escapeRegexp = require('escape-regexp');

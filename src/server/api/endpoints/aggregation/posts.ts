@@ -6,9 +6,6 @@ import Note from '../../../../models/note';
 
 /**
  * Aggregate notes
- *
- * @param {any} params
- * @return {Promise<any>}
  */
 module.exports = params => new Promise(async (res, rej) => {
 	// Get 'limit' parameter

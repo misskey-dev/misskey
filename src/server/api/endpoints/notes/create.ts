@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
 import { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
@@ -11,11 +11,6 @@ import { IApp } from '../../../../models/app';
 
 /**
  * Create a note
- *
- * @param {any} params
- * @param {any} user
- * @param {any} app
- * @return {Promise<any>}
  */
 module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	// Get 'visibility' parameter
@@ -35,11 +30,11 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	if (viaMobileErr) return rej('invalid viaMobile');
 
 	// Get 'tags' parameter
-	const [tags = [], tagsErr] = $(params.tags).optional.array('string').unique().eachQ(t => t.range(1, 32)).$;
+	const [tags = [], tagsErr] = $(params.tags).optional.array($().string().range(1, 32)).unique().$;
 	if (tagsErr) return rej('invalid tags');
 
 	// Get 'geo' parameter
-	const [geo, geoErr] = $(params.geo).optional.nullable.strict.object()
+	const [geo, geoErr] = $(params.geo).optional.nullable.object(true)
 		.have('coordinates', $().array().length(2)
 			.item(0, $().number().range(-180, 180))
 			.item(1, $().number().range(-90, 90)))
@@ -52,7 +47,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	if (geoErr) return rej('invalid geo');
 
 	// Get 'mediaIds' parameter
-	const [mediaIds, mediaIdsErr] = $(params.mediaIds).optional.array('id').unique().range(1, 4).$;
+	const [mediaIds, mediaIdsErr] = $(params.mediaIds).optional.array($().type(ID)).unique().range(1, 4).$;
 	if (mediaIdsErr) return rej('invalid mediaIds');
 
 	let files = [];
@@ -79,7 +74,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'renoteId' parameter
-	const [renoteId, renoteIdErr] = $(params.renoteId).optional.id().$;
+	const [renoteId, renoteIdErr] = $(params.renoteId).optional.type(ID).$;
 	if (renoteIdErr) return rej('invalid renoteId');
 
 	let renote: INote = null;
@@ -100,7 +95,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'replyId' parameter
-	const [replyId, replyIdErr] = $(params.replyId).optional.id().$;
+	const [replyId, replyIdErr] = $(params.replyId).optional.type(ID).$;
 	if (replyIdErr) return rej('invalid replyId');
 
 	let reply: INote = null;
@@ -121,7 +116,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $(params.channelId).optional.id().$;
+	const [channelId, channelIdErr] = $(params.channelId).optional.type(ID).$;
 	if (channelIdErr) return rej('invalid channelId');
 
 	let channel: IChannel = null;
@@ -162,8 +157,8 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'poll' parameter
-	const [poll, pollErr] = $(params.poll).optional.strict.object()
-		.have('choices', $().array('string')
+	const [poll, pollErr] = $(params.poll).optional.object(true)
+		.have('choices', $().array($().string())
 			.unique()
 			.range(2, 10)
 			.each(c => c.length > 0 && c.length < 50))

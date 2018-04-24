@@ -1,4 +1,5 @@
 import * as mongo from 'mongodb';
+import deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 
 const UserList = db.get<IUserList>('userList');
@@ -38,3 +39,29 @@ export async function deleteUserList(userList: string | mongo.ObjectID | IUserLi
 		_id: u._id
 	});
 }
+
+export const pack = (
+	userList: string | mongo.ObjectID | IUserList
+) => new Promise<any>(async (resolve, reject) => {
+	let _userList: any;
+
+	if (mongo.ObjectID.prototype.isPrototypeOf(userList)) {
+		_userList = await UserList.findOne({
+			_id: userList
+		});
+	} else if (typeof userList === 'string') {
+		_userList = await UserList.findOne({
+			_id: new mongo.ObjectID(userList)
+		});
+	} else {
+		_userList = deepcopy(userList);
+	}
+
+	if (!_userList) throw `invalid userList arg ${userList}`;
+
+	// Rename _id to id
+	_userList.id = _userList._id;
+	delete _userList._id;
+
+	resolve(_userList);
+});

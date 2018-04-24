@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { pack } from '../../../../models/note';
 
 /**
@@ -13,7 +13,7 @@ import Note, { pack } from '../../../../models/note';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).id().$;
+	const [noteId, noteIdErr] = $(params.noteId).type(ID).$;
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get 'limit' parameter

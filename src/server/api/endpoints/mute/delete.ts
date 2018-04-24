@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
 
@@ -12,7 +12,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const muter = user;
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).id().$;
+	const [userId, userIdErr] = $(params.userId).type(ID).$;
 	if (userIdErr) return rej('invalid userId param');
 
 	// Check if the mutee is yourself
