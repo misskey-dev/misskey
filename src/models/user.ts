@@ -266,7 +266,7 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		await UserList.find({ userId: u._id })
 	).map(x => deleteUserList(x)));
 
-	// このユーザーの入っているすべてのUserListからこのユーザーを削除
+	// このユーザーが入っているすべてのUserListからこのユーザーを削除
 	await Promise.all((
 		await UserList.find({ userIds: u._id })
 	).map(x =>
