@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
+import sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import Note, { pack as packNote, deleteNote } from './note';
@@ -167,9 +168,9 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteAccessToken(x)));
 
 	// このユーザーのNoteをすべて削除
-	await Promise.all((
-		await Note.find({ userId: u._id })
-	).map(x => deleteNote(x)));
+	//await sequential((
+	//	await Note.find({ userId: u._id })
+	//).map(x => () => deleteNote(x)));
 
 	// このユーザーのNoteReactionをすべて削除
 	await Promise.all((

@@ -2,7 +2,7 @@
  * Module dependencies
  */
 const ms = require('ms');
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';

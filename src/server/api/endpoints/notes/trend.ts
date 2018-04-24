@@ -2,7 +2,7 @@
  * Module dependencies
  */
 const ms = require('ms');
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy';
 import Note, { pack } from '../../../../models/note';
 
 /**
