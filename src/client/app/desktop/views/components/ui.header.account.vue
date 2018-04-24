@@ -16,6 +16,9 @@
 				<li>
 					<router-link to="/i/favorites">%fa:star%<span>%i18n:@favorites%</span>%fa:angle-right%</router-link>
 				</li>
+				<li @click="list">
+					<p>%fa:cog%<span>%i18n:@lists%</span>%fa:angle-right%</p>
+				</li>
 			</ul>
 			<ul>
 				<li>
