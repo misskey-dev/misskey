@@ -20,6 +20,7 @@ import FollowingLog, { deleteFollowingLog } from './following-log';
 import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
+import UserList, { deleteUserList } from './user-list';
 
 const User = db.get<IUser>('users');
 
@@ -259,6 +260,20 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await Promise.all((
 		await Notification.find({ notifierId: u._id })
 	).map(x => deleteNotification(x)));
+
+	// このユーザーのUserListをすべて削除
+	await Promise.all((
+		await UserList.find({ userId: u._id })
+	).map(x => deleteUserList(x)));
+
+	// このユーザーの入っているすべてのUserListからこのユーザーを削除
+	await Promise.all((
+		await UserList.find({ userIds: u._id })
+	).map(x =>
+		UserList.update({ _id: x._id }, {
+			$pull: { userIds: u._id }
+		})
+	));
 
 	// このユーザーを削除
 	await User.remove({
