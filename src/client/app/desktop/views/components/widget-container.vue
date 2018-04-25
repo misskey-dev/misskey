@@ -58,7 +58,7 @@ root(isDark)
 			box-shadow 0 1px rgba(0, 0, 0, 0.07)
 
 			> [data-fa]
-				margin-right 4px
+				margin-right 6px
 
 			&:empty
 				display none
