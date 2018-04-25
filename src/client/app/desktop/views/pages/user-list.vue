@@ -1,11 +1,13 @@
 <template>
 <mk-ui>
-	<template v-if="!fetching">
-		<header :class="$style.header">
-			<h1>{{ list.title }}</h1>
-		</header>
-		<mk-user-list-timeline :list="list"/>
-	</template>
+	<div v-if="!fetching" data-id="02010e15-cc48-4245-8636-16078a9b623c">
+		<div>
+			<div><h1>{{ list.title }}</h1></div>
+		</div>
+		<main>
+			<mk-user-list-timeline :list="list"/>
+		</main>
+	</div>
 </mk-ui>
 </template>
 
@@ -40,35 +42,25 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" module>
-.header
-	width 100%
-	max-width 600px
+<style lang="stylus" scoped>
+[data-id="02010e15-cc48-4245-8636-16078a9b623c"]
+	display flex
+	justify-content center
 	margin 0 auto
-	color #555
+	max-width 1200px
 
-.notes
-	max-width 600px
-	margin 0 auto
-	border solid 1px rgba(0, 0, 0, 0.075)
-	border-radius 6px
-	overflow hidden
+	> main
+	> div > div
+		> *:not(:last-child)
+			margin-bottom 16px
 
-.loading
-	padding 64px 0
+	> main
+		padding 16px
+		width calc(100% - 275px * 2)
 
-.empty
-	display block
-	margin 0 auto
-	padding 32px
-	max-width 400px
-	text-align center
-	color #999
-
-	> [data-fa]
-		display block
-		margin-bottom 16px
-		font-size 3em
-		color #ccc
+	> div
+		width 275px
+		margin 0
+		padding 16px 0 16px 16px
 
 </style>
