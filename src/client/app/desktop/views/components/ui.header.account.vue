@@ -86,7 +86,10 @@ export default Vue.extend({
 		},
 		list() {
 			this.close();
-			(this as any).os.new(MkUserListsWindow);
+			const w = (this as any).os.new(MkUserListsWindow);
+			w.$once('choosen', list => {
+				this.$router.push(`i/lists/${ list.id }`);
+			});
 		},
 		settings() {
 			this.close();

@@ -3,7 +3,7 @@
 	<span slot="header">%fa:list% リスト</span>
 
 	<button class="ui" @click="add">リストを作成</button>
-	<router-link v-for="list in lists" :key="list.id" :to="`/i/lists/${list.id}`">{{ list.title }}</router-link>
+	<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
 </mk-window>
 </template>
 
@@ -31,8 +31,11 @@ export default Vue.extend({
 					title
 				});
 
-				this.$router.push(`i/lists/${ list.id }`);
+				this.$emit('choosen', list);
 			});
+		},
+		choice(list) {
+			this.$emit('choosen', list);
 		},
 		close() {
 			(this as any).$refs.window.close();

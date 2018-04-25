@@ -4,18 +4,20 @@
 		<span :data-is-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
 		<span :data-is-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
 		<span :data-is-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
-
-		<button @click="list" title="リスト">%fa:list%</button>
+		<span :data-is-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
+		<button @click="chooseList" title="リスト">%fa:list%</button>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
 	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
+	<mk-user-list-timeline v-if="src == 'list'" ref="tl" key="list" :list="list"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import XCore from './timeline.core.vue';
+import MkUserListsWindow from './user-lists-window.vue';
 
 export default Vue.extend({
 	components: {
@@ -24,7 +26,8 @@ export default Vue.extend({
 
 	data() {
 		return {
-			src: 'home'
+			src: 'home',
+			list: null
 		};
 	},
 
@@ -39,8 +42,11 @@ export default Vue.extend({
 			(this.$refs.tl as any).warp(date);
 		},
 
-		list() {
-
+		chooseList() {
+			const w = (this as any).os.new(MkUserListsWindow);
+			w.$once('choosen', list => {
+				this.list = list;
+			});
 		}
 	}
 });
