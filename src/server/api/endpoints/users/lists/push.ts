@@ -1,6 +1,7 @@
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import UserList from '../../../../../models/user-list';
-import User from '../../../../../models/user';
+import User, { pack as packUser } from '../../../../../models/user';
+import { publishUserListStream } from '../../../../../publishers/stream';
 
 /**
  * Add a user to a user list
@@ -45,4 +46,6 @@ module.exports = async (params, me) => new Promise(async (res, rej) => {
 	});
 
 	res();
+
+	publishUserListStream(userList._id, 'userAdded', await packUser(user));
 });
