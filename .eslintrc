@@ -14,6 +14,7 @@
 		"vue/no-unused-vars": false,
 		"vue/attributes-order": false,
 		"vue/require-prop-types": false,
+		"vue/require-default-prop": false,
 		"no-console": 0,
 		"no-unused-vars": 0,
 		"no-empty": 0

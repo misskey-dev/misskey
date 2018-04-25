@@ -2,10 +2,8 @@
 <mk-window ref="window" is-modal width="500px" height="550px" @closed="$destroy">
 	<span slot="header" :class="$style.header">%fa:list% リスト</span>
 
-	<button class="ui">リストを作成</button>
-	<a v-for="list in lists" :key="list.id">
-
-	</a>
+	<button class="ui" @click="add">リストを作成</button>
+	<router-link v-for="list in lists" :key="list.id" :to="`/i/lists/${list.id}`">{{ list.title }}</router-link>
 </mk-window>
 </template>
 
@@ -25,6 +23,17 @@ export default Vue.extend({
 		});
 	},
 	methods: {
+		add() {
+			(this as any).apis.input({
+				title: 'リスト名',
+			}).then(async title => {
+				const list = await (this as any).api('users/lists/create', {
+					title
+				});
+
+				this.$router.push(`i/lists/${ list.id }`);
+			});
+		},
 		close() {
 			(this as any).$refs.window.close();
 		}

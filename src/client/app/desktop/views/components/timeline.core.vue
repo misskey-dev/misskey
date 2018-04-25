@@ -1,5 +1,5 @@
 <template>
-<div class="mk-home-timeline">
+<div class="mk-timeline-core">
 	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
 	<mk-friends-maker v-if="src == 'home' && alone"/>
 	<div class="fetching" v-if="fetching">
@@ -8,12 +8,7 @@
 	<p class="empty" v-if="notes.length == 0 && !fetching">
 		%fa:R comments%%i18n:@empty%
 	</p>
-	<mk-notes :notes="notes" ref="timeline">
-		<button slot="footer" @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
-		</button>
-	</mk-notes>
+	<mk-notes :notes="notes" ref="timeline" :more="canFetchMore ? more : null"/>
 </div>
 </template>
 
@@ -22,7 +17,6 @@ import Vue from 'vue';
 import { url } from '../../../config';
 
 const fetchLimit = 10;
-const displayLimit = 30;
 
 export default Vue.extend({
 	props: {
@@ -37,8 +31,6 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			notes: [],
-			queue: [],
 			connection: null,
 			connectionId: null,
 			date: null
@@ -67,7 +59,7 @@ export default Vue.extend({
 		},
 
 		canFetchMore(): boolean {
-			return !this.moreFetching && !this.fetching && this.notes.length > 0 && this.existMore;
+			return !this.moreFetching && !this.fetching && this.existMore;
 		}
 	},
 
@@ -82,7 +74,6 @@ export default Vue.extend({
 		}
 
 		document.addEventListener('keydown', this.onKeydown);
-		window.addEventListener('scroll', this.onScroll);
 
 		this.fetch();
 	},
@@ -96,7 +87,6 @@ export default Vue.extend({
 		this.stream.dispose(this.connectionId);
 
 		document.removeEventListener('keydown', this.onKeydown);
-		window.removeEventListener('scroll', this.onScroll);
 	},
 
 	methods: {
@@ -105,7 +95,6 @@ export default Vue.extend({
 		},
 
 		fetch(cb?) {
-			this.queue = [];
 			this.fetching = true;
 
 			(this as any).api(this.endpoint, {
@@ -118,7 +107,7 @@ export default Vue.extend({
 					notes.pop();
 					this.existMore = true;
 				}
-				this.notes = notes;
+				(this.$refs.timeline as any).init(notes);
 				this.fetching = false;
 				this.$emit('loaded');
 				if (cb) cb();
@@ -132,7 +121,7 @@ export default Vue.extend({
 
 			(this as any).api(this.endpoint, {
 				limit: fetchLimit + 1,
-				untilId: this.notes[this.notes.length - 1].id,
+				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
 				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
 			}).then(notes => {
@@ -141,31 +130,9 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				this.notes = this.notes.concat(notes);
+				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
-		},
-
-		prependNote(note, silent = false) {
-			// サウンドを再生する
-			if ((this as any).os.isEnableSounds && !silent) {
-				const sound = new Audio(`${url}/assets/post.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
-				sound.play();
-			}
-
-			// Prepent a note
-			this.notes.unshift(note);
-
-			// オーバーフローしたら古い投稿は捨てる
-			if (this.notes.length >= displayLimit) {
-				this.notes = this.notes.slice(0, displayLimit);
-			}
-		},
-
-		releaseQueue() {
-			this.queue.forEach(n => this.prependNote(n, true));
-			this.queue = [];
 		},
 
 		onNote(note) {
@@ -186,11 +153,15 @@ export default Vue.extend({
 			}
 			//#endregion
 
-			if (this.isScrollTop()) {
-				this.prependNote(note);
-			} else {
-				this.queue.unshift(note);
+			// サウンドを再生する
+			if ((this as any).os.isEnableSounds) {
+				const sound = new Audio(`${url}/assets/post.mp3`);
+				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+				sound.play();
 			}
+
+			// Prepend a note
+			(this.$refs.timeline as any).prepend(note);
 		},
 
 		onChangeFollowing() {
@@ -204,17 +175,6 @@ export default Vue.extend({
 		warp(date) {
 			this.date = date;
 			this.fetch();
-		},
-
-		onScroll() {
-			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
-				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) this.more();
-			}
-
-			if (this.isScrollTop()) {
-				this.releaseQueue();
-			}
 		},
 
 		onKeydown(e) {
@@ -231,7 +191,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-home-timeline
+.mk-timeline-core
 	> .newer-indicator
 		position -webkit-sticky
 		position sticky

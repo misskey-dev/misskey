@@ -45,6 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkListsWindow from './lists-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
@@ -82,6 +83,10 @@ export default Vue.extend({
 		drive() {
 			this.close();
 			(this as any).os.new(MkDriveWindow);
+		},
+		list() {
+			this.close();
+			(this as any).os.new(MkListsWindow);
 		},
 		settings() {
 			this.close();

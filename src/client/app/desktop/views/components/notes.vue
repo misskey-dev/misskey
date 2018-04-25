@@ -9,8 +9,11 @@
 			</p>
 		</template>
 	</transition-group>
-	<footer>
-		<slot name="footer"></slot>
+	<footer v-if="loadMore">
+		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<template v-if="!moreFetching">%i18n:@load-more%</template>
+			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
+		</button>
 	</footer>
 </div>
 </template>
@@ -19,16 +22,29 @@
 import Vue from 'vue';
 import XNote from './notes.note.vue';
 
+const displayLimit = 30;
+
 export default Vue.extend({
 	components: {
 		XNote
 	},
+
 	props: {
-		notes: {
-			type: Array,
-			default: () => []
+		more: {
+			type: Function,
+			required: false
 		}
 	},
+
+	data() {
+		return {
+			notes: [],
+			queue: [],
+			fetching: false,
+			moreFetching: false
+		};
+	},
+
 	computed: {
 		_notes(): any[] {
 			return (this.notes as any).map(note => {
@@ -40,12 +56,74 @@ export default Vue.extend({
 			});
 		}
 	},
+
+	mounted() {
+		window.addEventListener('scroll', this.onScroll);
+	},
+
+	beforeDestroy() {
+		window.removeEventListener('scroll', this.onScroll);
+	},
+
 	methods: {
+		isScrollTop() {
+			return window.scrollY <= 8;
+		},
+
 		focus() {
 			(this.$el as any).children[0].focus();
 		},
+
 		onNoteUpdated(i, note) {
 			Vue.set((this as any).notes, i, note);
+		},
+
+		init(notes) {
+			this.queue = [];
+			this.notes = notes;
+		},
+
+		prepend(note) {
+			if (this.isScrollTop()) {
+				this.notes.unshift(note);
+
+				// オーバーフローしたら古い投稿は捨てる
+				if (this.notes.length >= displayLimit) {
+					this.notes = this.notes.slice(0, displayLimit);
+				}
+			} else {
+				this.queue.unshift(note);
+			}
+		},
+
+		append(note) {
+			this.notes.push(note);
+		},
+
+		tail() {
+			return this.notes[this.notes.length - 1];
+		},
+
+		releaseQueue() {
+			this.queue.forEach(n => this.prepend(n));
+			this.queue = [];
+		},
+
+		async loadMore() {
+			this.moreFetching = true;
+			await this.more();
+			this.moreFetching = false;
+		},
+
+		onScroll() {
+			if (this.isScrollTop()) {
+				this.releaseQueue();
+			}
+
+			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.loadMore();
+			}
 		}
 	}
 });
