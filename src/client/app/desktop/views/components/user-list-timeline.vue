@@ -1,5 +1,7 @@
 <template>
+<div>
 	<mk-notes ref="timeline" :more="existMore ? more : null"/>
+</div>
 </template>
 
 <script lang="ts">

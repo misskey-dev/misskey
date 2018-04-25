@@ -223,18 +223,18 @@ root(isDark)
 		background $theme-color
 
 	> footer
-		> *
+		> button
 			display block
 			margin 0
 			padding 16px
 			width 100%
 			text-align center
 			color #ccc
+			background isDark ? #282C37 : #fff
 			border-top solid 1px isDark ? #1c2023 : #eaeaea
-			border-bottom-left-radius 4px
-			border-bottom-right-radius 4px
+			border-bottom-left-radius 6px
+			border-bottom-right-radius 6px
 
-		> button
 			&:hover
 				background isDark ? #2e3440 : #f5f5f5
 

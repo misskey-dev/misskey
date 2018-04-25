@@ -3,6 +3,7 @@
 	<div v-if="!fetching" data-id="02010e15-cc48-4245-8636-16078a9b623c">
 		<div>
 			<div><h1>{{ list.title }}</h1></div>
+			<x-users :list="list"/>
 		</div>
 		<main>
 			<mk-user-list-timeline :list="list"/>
@@ -13,8 +14,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import XUsers from './user-list.users.vue';
 
 export default Vue.extend({
+	components: {
+		XUsers
+	},
 	data() {
 		return {
 			fetching: true,
