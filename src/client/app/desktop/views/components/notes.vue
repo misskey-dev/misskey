@@ -20,6 +20,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { url } from '../../../config';
+
 import XNote from './notes.note.vue';
 
 const displayLimit = 30;
@@ -83,9 +85,34 @@ export default Vue.extend({
 			this.notes = notes;
 		},
 
-		prepend(note) {
+		prepend(note, silent = false) {
+			//#region 弾く
+			const isMyNote = note.userId == (this as any).os.i.id;
+			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
+
+			if ((this as any).os.i.clientSettings.showMyRenotes === false) {
+				if (isMyNote && isPureRenote) {
+					return;
+				}
+			}
+
+			if ((this as any).os.i.clientSettings.showRenotedMyNotes === false) {
+				if (isPureRenote && (note.renote.userId == (this as any).os.i.id)) {
+					return;
+				}
+			}
+			//#endregion
+
 			if (this.isScrollTop()) {
+				// Prepend the note
 				this.notes.unshift(note);
+
+				// サウンドを再生する
+				if ((this as any).os.isEnableSounds && !silent) {
+					const sound = new Audio(`${url}/assets/post.mp3`);
+					sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+					sound.play();
+				}
 
 				// オーバーフローしたら古い投稿は捨てる
 				if (this.notes.length >= displayLimit) {
@@ -105,7 +132,7 @@ export default Vue.extend({
 		},
 
 		releaseQueue() {
-			this.queue.forEach(n => this.prepend(n));
+			this.queue.forEach(n => this.prepend(n, true));
 			this.queue = [];
 		},
 

@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { UserListStream } from '../../../common/scripts/streaming/user-list';
 
 const fetchLimit = 10;
 
@@ -21,21 +22,19 @@ export default Vue.extend({
 		$route: 'fetch'
 	},
 	mounted() {
-		this.connection = new UserListStream((this as any).os, (this as any).os.i, this.list.id);
-		this.connection.on('note', this.onNote);
-		this.connection.on('userAdded', this.onUserAdded);
-		this.connection.on('userRemoved', this.onUserRemoved);
-
 		this.fetch();
 	},
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		this.connection.off('userAdded', this.onUserAdded);
-		this.connection.off('userRemoved', this.onUserRemoved);
 		this.connection.close();
 	},
 	methods: {
 		fetch() {
+			if (this.connection) this.connection.close();
+			this.connection = new UserListStream((this as any).os, (this as any).os.i, this.list.id);
+			this.connection.on('note', this.onNote);
+			this.connection.on('userAdded', this.onUserAdded);
+			this.connection.on('userRemoved', this.onUserRemoved);
+
 			this.fetching = true;
 
 			(this as any).api('notes/list-timeline', {

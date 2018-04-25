@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { url } from '../../../config';
 
 const fetchLimit = 10;
 
@@ -136,30 +135,6 @@ export default Vue.extend({
 		},
 
 		onNote(note) {
-			//#region 弾く
-			const isMyNote = note.userId == (this as any).os.i.id;
-			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
-
-			if ((this as any).os.i.clientSettings.showMyRenotes === false) {
-				if (isMyNote && isPureRenote) {
-					return;
-				}
-			}
-
-			if ((this as any).os.i.clientSettings.showRenotedMyNotes === false) {
-				if (isPureRenote && (note.renote.userId == (this as any).os.i.id)) {
-					return;
-				}
-			}
-			//#endregion
-
-			// サウンドを再生する
-			if ((this as any).os.isEnableSounds) {
-				const sound = new Audio(`${url}/assets/post.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
-				sound.play();
-			}
-
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
