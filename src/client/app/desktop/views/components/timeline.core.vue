@@ -1,14 +1,15 @@
 <template>
 <div class="mk-timeline-core">
-	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
 	<mk-friends-maker v-if="src == 'home' && alone"/>
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" v-if="notes.length == 0 && !fetching">
-		%fa:R comments%%i18n:@empty%
-	</p>
-	<mk-notes :notes="notes" ref="timeline" :more="canFetchMore ? more : null"/>
+
+	<mk-notes ref="timeline" :more="canFetchMore ? more : null">
+		<p :class="$style.empty" slot="empty">
+			%fa:R comments%%i18n:@empty%
+		</p>
+	</mk-notes>
 </div>
 </template>
 
@@ -89,28 +90,26 @@ export default Vue.extend({
 	},
 
 	methods: {
-		isScrollTop() {
-			return window.scrollY <= 8;
-		},
-
 		fetch(cb?) {
 			this.fetching = true;
 
-			(this as any).api(this.endpoint, {
-				limit: fetchLimit + 1,
-				untilDate: this.date ? this.date.getTime() : undefined,
-				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
-				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
-			}).then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-					this.existMore = true;
-				}
-				(this.$refs.timeline as any).init(notes);
-				this.fetching = false;
-				this.$emit('loaded');
-				if (cb) cb();
-			});
+			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
+				(this as any).api(this.endpoint, {
+					limit: fetchLimit + 1,
+					untilDate: this.date ? this.date.getTime() : undefined,
+					includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
+					includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
+				}).then(notes => {
+					if (notes.length == fetchLimit + 1) {
+						notes.pop();
+						this.existMore = true;
+					}
+					res(notes);
+					this.fetching = false;
+					this.$emit('loaded');
+					if (cb) cb();
+				}, rej);
+			}));
 		},
 
 		more() {
@@ -167,31 +166,27 @@ export default Vue.extend({
 @import '~const.styl'
 
 .mk-timeline-core
-	> .newer-indicator
-		position -webkit-sticky
-		position sticky
-		z-index 100
-		height 3px
-		background $theme-color
-
 	> .mk-friends-maker
 		border-bottom solid 1px #eee
 
 	> .fetching
 		padding 64px 0
 
-	> .empty
-		display block
-		margin 0 auto
-		padding 32px
-		max-width 400px
-		text-align center
-		color #999
+</style>
 
-		> [data-fa]
-			display block
-			margin-bottom 16px
-			font-size 3em
-			color #ccc
+<style lang="stylus" module>
+.empty
+	display block
+	margin 0 auto
+	padding 32px
+	max-width 400px
+	text-align center
+	color #999
+
+	> [data-fa]
+		display block
+		margin-bottom 16px
+		font-size 3em
+		color #ccc
 
 </style>

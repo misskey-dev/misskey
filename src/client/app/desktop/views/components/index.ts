@@ -28,6 +28,7 @@ import friendsMaker from './friends-maker.vue';
 import followers from './followers.vue';
 import following from './following.vue';
 import usersList from './users-list.vue';
+import userListTimeline from './user-list-timeline.vue';
 import widgetContainer from './widget-container.vue';
 
 Vue.component('mk-ui', ui);
@@ -58,4 +59,5 @@ Vue.component('mk-friends-maker', friendsMaker);
 Vue.component('mk-followers', followers);
 Vue.component('mk-following', following);
 Vue.component('mk-users-list', usersList);
+Vue.component('mk-user-list-timeline', userListTimeline);
 Vue.component('mk-widget-container', widgetContainer);

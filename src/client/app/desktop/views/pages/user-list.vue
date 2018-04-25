@@ -1,9 +1,11 @@
 <template>
 <mk-ui>
-	<header :class="$style.header">
-		<h1>{{ list.title }}</h1>
-	</header>
-	<mk-list-timeline :list="list"/>
+	<template v-if="!fetching">
+		<header :class="$style.header">
+			<h1>{{ list.title }}</h1>
+		</header>
+		<mk-user-list-timeline :list="list"/>
+	</template>
 </mk-ui>
 </template>
 
@@ -28,7 +30,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this as any).api('users/lists/show', {
-				id: this.$route.params.list
+				listId: this.$route.params.list
 			}).then(list => {
 				this.list = list;
 				this.fetching = false;

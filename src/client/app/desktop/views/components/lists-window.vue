@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="500px" height="550px" @closed="$destroy">
-	<span slot="header" :class="$style.header">%fa:list% リスト</span>
+	<span slot="header">%fa:list% リスト</span>
 
 	<button class="ui" @click="add">リストを作成</button>
 	<router-link v-for="list in lists" :key="list.id" :to="`/i/lists/${list.id}`">{{ list.title }}</router-link>

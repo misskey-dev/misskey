@@ -1,5 +1,14 @@
 <template>
 <div class="mk-notes">
+	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
+
+	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
+
+	<div v-if="!fetching && requestInitPromise != null">
+		<p>読み込みに失敗しました。</p>
+		<button @click="resolveInitPromise">リトライ</button>
+	</div>
+
 	<transition-group name="mk-notes" class="transition">
 		<template v-for="(note, i) in _notes">
 			<x-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
@@ -9,7 +18,8 @@
 			</p>
 		</template>
 	</transition-group>
-	<footer v-if="loadMore">
+
+	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">%i18n:@load-more%</template>
 			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
@@ -40,9 +50,10 @@ export default Vue.extend({
 
 	data() {
 		return {
+			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
-			fetching: false,
+			fetching: true,
 			moreFetching: false
 		};
 	},
@@ -80,9 +91,25 @@ export default Vue.extend({
 			Vue.set((this as any).notes, i, note);
 		},
 
-		init(notes) {
+		init(promiseGenerator: () => Promise<any[]>) {
+			this.requestInitPromise = promiseGenerator;
+			this.resolveInitPromise();
+		},
+
+		resolveInitPromise() {
 			this.queue = [];
-			this.notes = notes;
+			this.notes = [];
+			this.fetching = true;
+
+			const promise = this.requestInitPromise();
+
+			promise.then(notes => {
+				this.notes = notes;
+				this.requestInitPromise = null;
+				this.fetching = false;
+			}, e => {
+				this.fetching = false;
+			});
 		},
 
 		prepend(note, silent = false) {
@@ -137,6 +164,9 @@ export default Vue.extend({
 		},
 
 		async loadMore() {
+			if (this.more == null) return;
+			if (this.moreFetching) return;
+
 			this.moreFetching = true;
 			await this.more();
 			this.moreFetching = false;
@@ -157,6 +187,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 root(isDark)
 	.transition
 		.mk-notes-enter
@@ -183,6 +215,13 @@ root(isDark)
 			[data-fa]
 				margin-right 8px
 
+	> .newer-indicator
+		position -webkit-sticky
+		position sticky
+		z-index 100
+		height 3px
+		background $theme-color
+
 	> footer
 		> *
 			display block
@@ -191,16 +230,16 @@ root(isDark)
 			width 100%
 			text-align center
 			color #ccc
-			border-top solid 1px #eaeaea
+			border-top solid 1px isDark ? #1c2023 : #eaeaea
 			border-bottom-left-radius 4px
 			border-bottom-right-radius 4px
 
 		> button
 			&:hover
-				background #f5f5f5
+				background isDark ? #2e3440 : #f5f5f5
 
 			&:active
-				background #eee
+				background isDark ? #21242b : #eee
 
 .mk-notes[data-darkmode]
 	root(true)

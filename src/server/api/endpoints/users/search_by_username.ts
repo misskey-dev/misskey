@@ -1,15 +1,11 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy';
 import User, { pack } from '../../../../models/user';
 
 /**
  * Search a user by username
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
