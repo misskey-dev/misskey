@@ -4,6 +4,8 @@
 		<span :data-is-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
 		<span :data-is-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
 		<span :data-is-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+
+		<button @click="list" title="リスト">%fa:list%</button>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
@@ -35,6 +37,10 @@ export default Vue.extend({
 	methods: {
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
+		},
+
+		list() {
+
 		}
 	}
 });
@@ -54,6 +60,23 @@ root(isDark)
 		background isDark ? #313543 : #fff
 		border-radius 6px 6px 0 0
 		box-shadow 0 1px rgba(0, 0, 0, 0.08)
+
+		> button
+			position absolute
+			z-index 2
+			top 0
+			right 0
+			padding 0
+			width 42px
+			font-size 0.9em
+			line-height 42px
+			color isDark ? #9baec8 : #ccc
+
+			&:hover
+				color isDark ? #b2c1d5 : #aaa
+
+			&:active
+				color isDark ? #b2c1d5 : #999
 
 		> span
 			display inline-block
