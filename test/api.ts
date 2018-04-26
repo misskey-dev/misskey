@@ -55,16 +55,6 @@ describe('API', () => {
 		db.get('authSessions').drop()
 	]));
 
-	it('greet server', done => {
-		_chai.request(server)
-			.get('/')
-			.end((err, res) => {
-				res.should.have.status(200);
-				res.text.should.be.equal('YEE HAW');
-				done();
-			});
-	});
-
 	describe('signup', () => {
 		it('不正なユーザー名でアカウントが作成できない', async(async () => {
 			const res = await request('/signup', {
