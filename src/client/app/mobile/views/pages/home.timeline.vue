@@ -1,14 +1,12 @@
 <template>
-<div class="mk-timeline-core">
-	<mk-friends-maker v-if="src == 'home' && alone"/>
-	<div class="fetching" v-if="fetching">
-		<mk-ellipsis-icon/>
-	</div>
+<div>
+	<mk-friends-maker v-if="src == 'home' && alone" style="margin-bottom:8px"/>
 
-	<mk-notes ref="timeline" :more="canFetchMore ? more : null">
-		<p :class="$style.empty" slot="empty">
-			%fa:R comments%%i18n:@empty%
-		</p>
+	<mk-notes ref="timeline" :more="existMore ? more : null">
+		<div slot="empty">
+			%fa:R comments%
+			%i18n:@empty%
+		</div>
 	</mk-notes>
 </div>
 </template>
@@ -75,7 +73,6 @@ export default Vue.extend({
 			this.connection.on('unfollow', this.onChangeFollowing);
 		}
 
-		document.addEventListener('keydown', this.onKeydown);
 		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 		this.fetch();
@@ -89,7 +86,6 @@ export default Vue.extend({
 		}
 		this.stream.dispose(this.connectionId);
 
-		document.removeEventListener('keydown', this.onKeydown);
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
 
@@ -164,44 +160,7 @@ export default Vue.extend({
 				this.unreadCount = 0;
 				document.title = 'Misskey';
 			}
-		},
-
-		onKeydown(e) {
-			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
-				if (e.which == 84) { // t
-					this.focus();
-				}
-			}
 		}
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-@import '~const.styl'
-
-.mk-timeline-core
-	> .mk-friends-maker
-		border-bottom solid 1px #eee
-
-	> .fetching
-		padding 64px 0
-
-</style>
-
-<style lang="stylus" module>
-.empty
-	display block
-	margin 0 auto
-	padding 32px
-	max-width 400px
-	text-align center
-	color #999
-
-	> [data-fa]
-		display block
-		margin-bottom 16px
-		font-size 3em
-		color #ccc
-
-</style>
