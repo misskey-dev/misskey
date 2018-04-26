@@ -10,7 +10,7 @@
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
 	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
-	<mk-user-list-timeline v-if="src == 'list'" ref="tl" key="list" :list="list"/>
+	<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 </div>
 </template>
 

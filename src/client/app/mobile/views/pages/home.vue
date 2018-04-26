@@ -36,7 +36,7 @@
 			<x-tl v-if="src == 'home'" ref="tl" key="home" src="home" @loaded="onLoaded"/>
 			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
-			<mk-user-list-timeline v-if="src.startsWith('list:')" ref="tl" key="list" :list="list"/>
+			<mk-user-list-timeline v-if="src.startsWith('list:')" ref="tl" :key="list.id" :list="list"/>
 		</div>
 	</main>
 </mk-ui>
