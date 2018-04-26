@@ -18,7 +18,7 @@ const chaiHttp = require('chai-http');
 
 _chai.use(chaiHttp);
 
-const server = require('../built/server/api');
+const server = require('../built/server/api').callback();
 const db = require('../built/db/mongodb').default;
 
 const async = fn => (done) => {
