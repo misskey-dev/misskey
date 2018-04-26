@@ -88,6 +88,7 @@ export default class MiOS extends EventEmitter {
 			propsData: props
 		}).$mount();
 		document.body.appendChild(w.$el);
+		return w;
 	}
 
 	/**

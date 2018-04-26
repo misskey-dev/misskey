@@ -1,17 +1,10 @@
 <template>
 <div class="mk-user-timeline">
-	<mk-notes :notes="notes">
-		<div class="init" v-if="fetching">
-			%fa:spinner .pulse%%i18n:common.loading%
-		</div>
-		<div class="empty" v-if="!fetching && notes.length == 0">
+	<mk-notes ref="timeline" :more="existMore ? more : null">
+		<div slot="empty">
 			%fa:R comments%
 			{{ withMedia ? '%i18n:!@no-notes-with-media%' : '%i18n:!@no-notes%' }}
 		</div>
-		<button v-if="!fetching && existMore" @click="more" :disabled="moreFetching" slot="tail">
-			<span v-if="!moreFetching">%i18n:@load-more%</span>
-			<span v-if="moreFetching">%i18n:common.loading%<mk-ellipsis/></span>
-		</button>
 	</mk-notes>
 </div>
 </template>
@@ -19,49 +12,53 @@
 <script lang="ts">
 import Vue from 'vue';
 
-const limit = 10;
+const fetchLimit = 10;
 
 export default Vue.extend({
 	props: ['user', 'withMedia'],
 	data() {
 		return {
 			fetching: true,
-			notes: [],
 			existMore: false,
 			moreFetching: false
 		};
 	},
 	mounted() {
-		(this as any).api('users/notes', {
-			userId: this.user.id,
-			withMedia: this.withMedia,
-			limit: limit + 1
-		}).then(notes => {
-			if (notes.length == limit + 1) {
-				notes.pop();
-				this.existMore = true;
-			}
-			this.notes = notes;
-			this.fetching = false;
-			this.$emit('loaded');
-		});
+		this.fetch();
 	},
 	methods: {
+		fetch() {
+			this.fetching = true;
+			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
+				(this as any).api('users/notes', {
+					userId: this.user.id,
+					withMedia: this.withMedia,
+					limit: fetchLimit + 1
+				}).then(notes => {
+					if (notes.length == fetchLimit + 1) {
+						notes.pop();
+						this.existMore = true;
+					}
+					res(notes);
+					this.fetching = false;
+					this.$emit('loaded');
+				}, rej);
+			}));
+		},
 		more() {
 			this.moreFetching = true;
 			(this as any).api('users/notes', {
 				userId: this.user.id,
 				withMedia: this.withMedia,
-				limit: limit + 1,
-				untilId: this.notes[this.notes.length - 1].id
+				limit: fetchLimit + 1,
+				untilId: (this.$refs.timeline as any).tail().id
 			}).then(notes => {
-				if (notes.length == limit + 1) {
+				if (notes.length == fetchLimit + 1) {
 					notes.pop();
-					this.existMore = true;
 				} else {
 					this.existMore = false;
 				}
-				this.notes = this.notes.concat(notes);
+				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
 		}

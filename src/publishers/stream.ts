@@ -25,6 +25,10 @@ class MisskeyEvent {
 		this.publish(`note-stream:${noteId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	public publishUserListStream(listId: ID, type: string, value?: any): void {
+		this.publish(`user-list-stream:${listId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
 	public publishMessagingStream(userId: ID, otherpartyId: ID, type: string, value?: any): void {
 		this.publish(`messaging-stream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -69,6 +73,7 @@ export default ev.publishUserStream.bind(ev);
 export const publishLocalTimelineStream = ev.publishLocalTimelineStream.bind(ev);
 export const publishGlobalTimelineStream = ev.publishGlobalTimelineStream.bind(ev);
 export const publishDriveStream = ev.publishDriveStream.bind(ev);
+export const publishUserListStream = ev.publishUserListStream.bind(ev);
 export const publishNoteStream = ev.publishNoteStream.bind(ev);
 export const publishMessagingStream = ev.publishMessagingStream.bind(ev);
 export const publishMessagingIndexStream = ev.publishMessagingIndexStream.bind(ev);

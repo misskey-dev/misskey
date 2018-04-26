@@ -1,7 +1,6 @@
 import Vue from 'vue';
 
 import ui from './ui.vue';
-import timeline from './timeline.vue';
 import note from './note.vue';
 import notes from './notes.vue';
 import mediaImage from './media-image.vue';
@@ -20,11 +19,11 @@ import notificationPreview from './notification-preview.vue';
 import usersList from './users-list.vue';
 import userPreview from './user-preview.vue';
 import userTimeline from './user-timeline.vue';
+import userListTimeline from './user-list-timeline.vue';
 import activity from './activity.vue';
 import widgetContainer from './widget-container.vue';
 
 Vue.component('mk-ui', ui);
-Vue.component('mk-timeline', timeline);
 Vue.component('mk-note', note);
 Vue.component('mk-notes', notes);
 Vue.component('mk-media-image', mediaImage);
@@ -43,5 +42,6 @@ Vue.component('mk-notification-preview', notificationPreview);
 Vue.component('mk-users-list', usersList);
 Vue.component('mk-user-preview', userPreview);
 Vue.component('mk-user-timeline', userTimeline);
+Vue.component('mk-user-list-timeline', userListTimeline);
 Vue.component('mk-activity', activity);
 Vue.component('mk-widget-container', widgetContainer);

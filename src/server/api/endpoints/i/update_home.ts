@@ -8,7 +8,7 @@ import event from '../../../../publishers/stream';
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'home' parameter
 	const [home, homeErr] = $(params.home).optional.array().each(
-		$().strict.object()
+		$().object(true)
 			.have('name', $().string())
 			.have('id', $().string())
 			.have('place', $().string())

@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
+import sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import Note, { pack as packNote, deleteNote } from './note';
@@ -20,6 +21,7 @@ import FollowingLog, { deleteFollowingLog } from './following-log';
 import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
+import UserList, { deleteUserList } from './user-list';
 
 const User = db.get<IUser>('users');
 
@@ -166,9 +168,9 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteAccessToken(x)));
 
 	// このユーザーのNoteをすべて削除
-	await Promise.all((
-		await Note.find({ userId: u._id })
-	).map(x => deleteNote(x)));
+	//await sequential((
+	//	await Note.find({ userId: u._id })
+	//).map(x => () => deleteNote(x)));
 
 	// このユーザーのNoteReactionをすべて削除
 	await Promise.all((
@@ -259,6 +261,20 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await Promise.all((
 		await Notification.find({ notifierId: u._id })
 	).map(x => deleteNotification(x)));
+
+	// このユーザーのUserListをすべて削除
+	await Promise.all((
+		await UserList.find({ userId: u._id })
+	).map(x => deleteUserList(x)));
+
+	// このユーザーが入っているすべてのUserListからこのユーザーを削除
+	await Promise.all((
+		await UserList.find({ userIds: u._id })
+	).map(x =>
+		UserList.update({ _id: x._id }, {
+			$pull: { userIds: u._id }
+		})
+	));
 
 	// このユーザーを削除
 	await User.remove({

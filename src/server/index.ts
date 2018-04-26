@@ -11,6 +11,7 @@ import * as Router from 'koa-router';
 import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
 import * as logger from 'koa-logger';
+const slow = require('koa-slow');
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
@@ -23,6 +24,11 @@ app.proxy = true;
 if (process.env.NODE_ENV != 'production') {
 	// Logger
 	app.use(logger());
+
+	// Delay
+	app.use(slow({
+		delay: 1000
+	}));
 }
 
 // Compress response

@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import getHostLower from '../../common/get-host-lower';
 import Note, { pack } from '../../../../models/note';
 import User from '../../../../models/user';
@@ -11,7 +11,7 @@ import User from '../../../../models/user';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).optional.id().$;
+	const [userId, userIdErr] = $(params.userId).optional.type(ID).$;
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'username' parameter
@@ -43,11 +43,11 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).$;
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).$;
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Get 'sinceDate' parameter

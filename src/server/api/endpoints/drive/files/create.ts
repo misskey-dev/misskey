@@ -1,17 +1,12 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
 
 /**
  * Create a file
- *
- * @param {any} file
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (file, params, user): Promise<any> => {
 	if (file == null) {
@@ -34,7 +29,7 @@ module.exports = async (file, params, user): Promise<any> => {
 	}
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).$;
 	if (folderIdErr) throw 'invalid folderId param';
 
 	try {

@@ -1,4 +1,4 @@
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Matching, { pack as packMatching } from '../../../../models/othello-matching';
 import OthelloGame, { pack as packGame } from '../../../../models/othello-game';
 import User from '../../../../models/user';
@@ -7,7 +7,7 @@ import { eighteight } from '../../../../othello/maps';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [childId, childIdErr] = $(params.userId).id().$;
+	const [childId, childIdErr] = $(params.userId).type(ID).$;
 	if (childIdErr) return rej('invalid userId param');
 
 	// Myself

@@ -7,10 +7,6 @@ import User from '../../../../models/user';
 
 /**
  * Change password
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'currentPasword' parameter

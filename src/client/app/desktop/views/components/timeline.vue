@@ -1,19 +1,23 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-is-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
-		<span :data-is-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
-		<span :data-is-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+		<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
+		<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
+		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
+		<button @click="chooseList" title="リスト">%fa:list%</button>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>
 	<x-core v-if="src == 'global'" ref="tl" key="global" src="global"/>
+	<mk-user-list-timeline v-if="src == 'list'" ref="tl" key="list" :list="list"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import XCore from './timeline.core.vue';
+import MkUserListsWindow from './user-lists-window.vue';
 
 export default Vue.extend({
 	components: {
@@ -22,7 +26,8 @@ export default Vue.extend({
 
 	data() {
 		return {
-			src: 'home'
+			src: 'home',
+			list: null
 		};
 	},
 
@@ -35,6 +40,15 @@ export default Vue.extend({
 	methods: {
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
+		},
+
+		chooseList() {
+			const w = (this as any).os.new(MkUserListsWindow);
+			w.$once('choosen', list => {
+				this.list = list;
+				this.src = 'list';
+				w.close();
+			});
 		}
 	}
 });
@@ -55,6 +69,23 @@ root(isDark)
 		border-radius 6px 6px 0 0
 		box-shadow 0 1px rgba(0, 0, 0, 0.08)
 
+		> button
+			position absolute
+			z-index 2
+			top 0
+			right 0
+			padding 0
+			width 42px
+			font-size 0.9em
+			line-height 42px
+			color isDark ? #9baec8 : #ccc
+
+			&:hover
+				color isDark ? #b2c1d5 : #aaa
+
+			&:active
+				color isDark ? #b2c1d5 : #999
+
 		> span
 			display inline-block
 			padding 0 10px
@@ -62,7 +93,7 @@ root(isDark)
 			font-size 12px
 			user-select none
 
-			&[data-is-active]
+			&[data-active]
 				color $theme-color
 				cursor default
 				font-weight bold
@@ -77,7 +108,7 @@ root(isDark)
 					height 2px
 					background $theme-color
 
-			&:not([data-is-active])
+			&:not([data-active])
 				color isDark ? #9aa2a7 : #6f7477
 				cursor pointer
 

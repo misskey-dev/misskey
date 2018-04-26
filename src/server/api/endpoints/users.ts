@@ -6,10 +6,6 @@ import User, { pack } from '../../../models/user';
 
 /**
  * Lists all users
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter

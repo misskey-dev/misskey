@@ -1,21 +1,16 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
-// import event from '../../../publishers/stream';
 
 /**
  * Unreact to a note
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).id().$;
+	const [noteId, noteIdErr] = $(params.noteId).type(ID).$;
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Fetch unreactee

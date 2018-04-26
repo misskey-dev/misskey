@@ -79,7 +79,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	if (descriptionErr) return rej('invalid description param');
 
 	// Get 'permission' parameter
-	const [permission, permissionErr] = $(params.permission).array('string').unique().$;
+	const [permission, permissionErr] = $(params.permission).array($().string()).unique().$;
 	if (permissionErr) return rej('invalid permission param');
 
 	// Get 'callbackUrl' parameter

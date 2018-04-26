@@ -5,6 +5,7 @@
 	],
 	"jsRules": {},
 	"rules": {
+		"align": false,
 		"indent": ["tab"],
 		"quotemark": ["single"],
 		"no-var-requires": false,

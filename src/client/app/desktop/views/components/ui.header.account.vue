@@ -16,6 +16,9 @@
 				<li>
 					<router-link to="/i/favorites">%fa:star%<span>%i18n:@favorites%</span>%fa:angle-right%</router-link>
 				</li>
+				<li @click="list">
+					<p>%fa:list%<span>%i18n:@lists%</span>%fa:angle-right%</p>
+				</li>
 			</ul>
 			<ul>
 				<li>
@@ -42,6 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import MkUserListsWindow from './user-lists-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
@@ -79,6 +83,13 @@ export default Vue.extend({
 		drive() {
 			this.close();
 			(this as any).os.new(MkDriveWindow);
+		},
+		list() {
+			this.close();
+			const w = (this as any).os.new(MkUserListsWindow);
+			w.$once('choosen', list => {
+				this.$router.push(`i/lists/${ list.id }`);
+			});
 		},
 		settings() {
 			this.close();

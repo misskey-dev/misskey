@@ -1,13 +1,13 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import User, { pack } from '../../../../models/user';
 
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).id().$;
+	const [userId, userIdErr] = $(params.userId).type(ID).$;
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'limit' parameter

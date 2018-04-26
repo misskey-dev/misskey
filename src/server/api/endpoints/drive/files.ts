@@ -1,16 +1,11 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import DriveFile, { pack } from '../../../../models/drive-file';
 
 /**
  * Get drive files
- *
- * @param {any} params
- * @param {any} user
- * @param {any} app
- * @return {Promise<any>}
  */
 module.exports = async (params, user, app) => {
 	// Get 'limit' parameter
@@ -18,11 +13,11 @@ module.exports = async (params, user, app) => {
 	if (limitErr) throw 'invalid limit param';
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).$;
 	if (sinceIdErr) throw 'invalid sinceId param';
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).$;
 	if (untilIdErr) throw 'invalid untilId param';
 
 	// Check if both of sinceId and untilId is specified
@@ -31,7 +26,7 @@ module.exports = async (params, user, app) => {
 	}
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).$;
 	if (folderIdErr) throw 'invalid folderId param';
 
 	// Get 'type' parameter

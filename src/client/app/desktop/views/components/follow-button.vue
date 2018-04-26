@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
 export default Vue.extend({
 	props: {
 		user: {
@@ -30,6 +31,7 @@ export default Vue.extend({
 			default: 'compact'
 		}
 	},
+
 	data() {
 		return {
 			wait: false,
@@ -37,6 +39,7 @@ export default Vue.extend({
 			connectionId: null
 		};
 	},
+
 	mounted() {
 		this.connection = (this as any).os.stream.getConnection();
 		this.connectionId = (this as any).os.stream.use();
@@ -44,13 +47,14 @@ export default Vue.extend({
 		this.connection.on('follow', this.onFollow);
 		this.connection.on('unfollow', this.onUnfollow);
 	},
+
 	beforeDestroy() {
 		this.connection.off('follow', this.onFollow);
 		this.connection.off('unfollow', this.onUnfollow);
 		(this as any).os.stream.dispose(this.connectionId);
 	},
-	methods: {
 
+	methods: {
 		onFollow(user) {
 			if (user.id == this.user.id) {
 				this.user.isFollowing = user.isFollowing;

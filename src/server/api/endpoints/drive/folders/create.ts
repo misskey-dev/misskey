@@ -1,16 +1,12 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../publishers/stream';
 
 /**
  * Create drive folder
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
@@ -18,7 +14,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $(params.parentId).optional.nullable.id().$;
+	const [parentId = null, parentIdErr] = $(params.parentId).optional.nullable.type(ID).$;
 	if (parentIdErr) return rej('invalid parentId param');
 
 	// If the parent folder is specified

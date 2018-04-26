@@ -9,10 +9,6 @@ import generateUserToken from '../../common/generate-native-user-token';
 
 /**
  * Regenerate native token
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'password' parameter
