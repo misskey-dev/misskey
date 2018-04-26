@@ -15,7 +15,6 @@ process.on('unhandledRejection', console.dir);
 const fs = require('fs');
 const _chai = require('chai');
 const chaiHttp = require('chai-http');
-const should = _chai.should();
 
 _chai.use(chaiHttp);
 

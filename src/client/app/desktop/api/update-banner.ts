@@ -95,7 +95,7 @@ export default (os: OS) => {
 				multiple: false,
 				title: '%fa:image%バナーにする画像を選択'
 			});
-		
+
 		return selectedFile
 			.then(cropImage)
 			.then(setBanner)
