@@ -37,7 +37,7 @@ export default User;
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
-	deletedAt: Date;
+	deletedAt?: Date;
 	followersCount: number;
 	followingCount: number;
 	name?: string;
@@ -51,7 +51,6 @@ type IUserBase = {
 	description: string;
 	pinnedNoteId: mongo.ObjectID;
 	isSuspended: boolean;
-	keywords: string[];
 	host: string;
 };
 
@@ -81,7 +80,7 @@ export interface ILocalUser extends IUserBase {
 	isPro: boolean;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;
-	twoFactorTempSecret: string;
+	twoFactorTempSecret?: string;
 	clientSettings: any;
 	settings: any;
 }
