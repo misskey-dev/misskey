@@ -1,9 +1,11 @@
 <template>
-<mk-window ref="window" is-modal width="500px" height="550px" @closed="$destroy">
+<mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
 	<span slot="header">%fa:list% リスト</span>
 
-	<button class="ui" @click="add">リストを作成</button>
-	<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
+	<div data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82" :data-darkmode="_darkmode_">
+		<button class="ui" @click="add">リストを作成</button>
+		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
+	</div>
 </mk-window>
 </template>
 
@@ -45,5 +47,23 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+
+root(isDark)
+	padding 16px
+
+	> button
+		margin-bottom 16px
+
+	> a
+		display block
+		padding 16px
+		border solid 1px isDark ? #1c2023 : #eee
+		border-radius 4px
+
+[data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82"][data-darkmode]
+	root(true)
+
+[data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82"]:not([data-darkmode])
+	root(false)
 
 </style>

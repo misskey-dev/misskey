@@ -46,6 +46,8 @@ export default Vue.extend({
 			const w = (this as any).os.new(MkUserListsWindow);
 			w.$once('choosen', list => {
 				this.list = list;
+				this.src = 'list';
+				w.close();
 			});
 		}
 	}

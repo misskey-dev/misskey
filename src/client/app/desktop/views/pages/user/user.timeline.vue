@@ -8,34 +8,28 @@
 	<div class="loading" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" v-if="empty">%fa:R comments%このユーザーはまだ何も投稿していないようです。</p>
-	<mk-notes ref="timeline" :notes="notes">
-		<div slot="footer">
-			<template v-if="!moreFetching">%fa:moon%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
-		</div>
+	<mk-notes ref="timeline" :more="existMore ? more : null">
+		<p class="empty" slot="empty">%fa:R comments%このユーザーはまだ何も投稿していないようです。</p>
 	</mk-notes>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+
+const fetchLimit = 10;
+
 export default Vue.extend({
 	props: ['user'],
 	data() {
 		return {
 			fetching: true,
 			moreFetching: false,
+			existMore: false,
 			mode: 'default',
 			unreadCount: 0,
-			notes: [],
 			date: null
 		};
-	},
-	computed: {
-		empty(): boolean {
-			return this.notes.length == 0;
-		}
 	},
 	watch: {
 		mode() {
@@ -44,13 +38,11 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
-		window.addEventListener('scroll', this.onScroll);
 
 		this.fetch(() => this.$emit('loaded'));
 	},
 	beforeDestroy() {
 		document.removeEventListener('keydown', this.onDocumentKeydown);
-		window.removeEventListener('scroll', this.onScroll);
 	},
 	methods: {
 		onDocumentKeydown(e) {
@@ -61,35 +53,42 @@ export default Vue.extend({
 			}
 		},
 		fetch(cb?) {
-			(this as any).api('users/notes', {
-				userId: this.user.id,
-				untilDate: this.date ? this.date.getTime() : undefined,
-				includeReplies: this.mode == 'with-replies',
-				withMedia: this.mode == 'with-media'
-			}).then(notes => {
-				this.notes = notes;
-				this.fetching = false;
-				if (cb) cb();
-			});
+			this.fetching = true;
+			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
+				(this as any).api('users/notes', {
+					userId: this.user.id,
+					limit: fetchLimit + 1,
+					untilDate: this.date ? this.date.getTime() : undefined,
+					includeReplies: this.mode == 'with-replies',
+					withMedia: this.mode == 'with-media'
+				}).then(notes => {
+					if (notes.length == fetchLimit + 1) {
+						notes.pop();
+						this.existMore = true;
+					}
+					res(notes);
+					this.fetching = false;
+					if (cb) cb();
+				}, rej);
+			}));
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.notes.length == 0) return;
 			this.moreFetching = true;
 			(this as any).api('users/notes', {
 				userId: this.user.id,
+				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',
 				withMedia: this.mode == 'with-media',
-				untilId: this.notes[this.notes.length - 1].id
+				untilId: (this.$refs.timeline as any).tail().id
 			}).then(notes => {
+				if (notes.length == fetchLimit + 1) {
+					notes.pop();
+				} else {
+					this.existMore = false;
+				}
+				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
-				this.notes = this.notes.concat(notes);
 			});
-		},
-		onScroll() {
-			const current = window.scrollY + window.innerHeight;
-			if (current > document.body.offsetHeight - 16/*遊び*/) {
-				this.more();
-			}
 		},
 		warp(date) {
 			this.date = date;
