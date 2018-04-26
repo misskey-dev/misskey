@@ -45,9 +45,9 @@
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-is-active="page == 'home'" @click="page = 'home'">%i18n:@overview%</a>
-				<a :data-is-active="page == 'notes'" @click="page = 'notes'">%i18n:@timeline%</a>
-				<a :data-is-active="page == 'media'" @click="page = 'media'">%i18n:@media%</a>
+				<a :data-active="page == 'home'" @click="page = 'home'">%i18n:@overview%</a>
+				<a :data-active="page == 'notes'" @click="page = 'notes'">%i18n:@timeline%</a>
+				<a :data-active="page == 'media'" @click="page = 'media'">%i18n:@media%</a>
 			</div>
 		</nav>
 		<div class="body">
@@ -256,7 +256,7 @@ main
 				color #657786
 				border-bottom solid 2px transparent
 
-				&[data-is-active]
+				&[data-active]
 					font-weight bold
 					color $theme-color
 					border-color $theme-color

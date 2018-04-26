@@ -1,8 +1,8 @@
 <template>
 <div class="mk-users-list">
 	<nav>
-		<span :data-is-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
-		<span v-if="os.isSignedIn && youKnowCount" :data-is-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@known%<span>{{ youKnowCount }}</span></span>
+		<span :data-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
+		<span v-if="os.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@known%<span>{{ youKnowCount }}</span></span>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
 		<mk-user-preview v-for="u in users" :user="u" :key="u.id"/>
@@ -85,7 +85,7 @@ export default Vue.extend({
 			color #657786
 			border-bottom solid 2px transparent
 
-			&[data-is-active]
+			&[data-active]
 				font-weight bold
 				color $theme-color
 				border-color $theme-color

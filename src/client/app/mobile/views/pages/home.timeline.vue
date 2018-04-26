@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
 
 const fetchLimit = 10;
 
@@ -73,8 +72,6 @@ export default Vue.extend({
 			this.connection.on('unfollow', this.onChangeFollowing);
 		}
 
-		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
-
 		this.fetch();
 	},
 
@@ -85,8 +82,6 @@ export default Vue.extend({
 			this.connection.off('unfollow', this.onChangeFollowing);
 		}
 		this.stream.dispose(this.connectionId);
-
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
 
 	methods: {
@@ -133,11 +128,6 @@ export default Vue.extend({
 		},
 
 		onNote(note) {
-			if (document.hidden && note.userId !== (this as any).os.i.id) {
-				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
-			}
-
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
@@ -153,13 +143,6 @@ export default Vue.extend({
 		warp(date) {
 			this.date = date;
 			this.fetch();
-		},
-
-		onVisibilitychange() {
-			if (!document.hidden) {
-				this.unreadCount = 0;
-				document.title = 'Misskey';
-			}
 		}
 	}
 });

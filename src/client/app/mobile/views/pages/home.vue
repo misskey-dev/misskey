@@ -5,7 +5,7 @@
 			<span v-if="src == 'home'">%fa:home%ホーム</span>
 			<span v-if="src == 'local'">%fa:R comments%ローカル</span>
 			<span v-if="src == 'global'">%fa:globe%グローバル</span>
-			<span v-if="src == 'list'">%fa:list%{{ list.title }}</span>
+			<span v-if="src.startsWith('list')">%fa:list%{{ list.title }}</span>
 		</span>
 		<span style="margin-left:8px">
 			<template v-if="!showNav">%fa:angle-down%</template>
@@ -21,9 +21,14 @@
 		<div class="nav" v-if="showNav">
 			<div class="bg" @click="showNav = false"></div>
 			<div class="body">
-				<span :data-is-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
-				<span :data-is-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
-				<span :data-is-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+				<div>
+					<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
+					<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
+					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+					<template v-if="lists">
+						<span v-for="l in lists" :data-active="src == 'list:' + l.id" @click="src = 'list:' + l.id; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
+					</template>
+				</div>
 			</div>
 		</div>
 
@@ -31,7 +36,7 @@
 			<x-tl v-if="src == 'home'" ref="tl" key="home" src="home" @loaded="onLoaded"/>
 			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
-			<mk-user-list-timeline v-if="src == 'list'" ref="tl" key="list" :list="list"/>
+			<mk-user-list-timeline v-if="src.startsWith('list:')" ref="tl" key="list" :list="list"/>
 		</div>
 	</main>
 </mk-ui>
@@ -51,8 +56,23 @@ export default Vue.extend({
 		return {
 			src: 'home',
 			list: null,
+			lists: null,
 			showNav: false
 		};
+	},
+
+	watch: {
+		src() {
+			this.showNav = false;
+		},
+
+		showNav(v) {
+			if (v && this.lists === null) {
+				(this as any).api('users/lists/list').then(lists => {
+					this.lists = lists;
+				});
+			}
+		}
 	},
 
 	mounted() {
@@ -79,6 +99,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+@import '~const.styl'
+
 main
 	> .nav
 		> .bg
@@ -93,10 +115,52 @@ main
 		> .body
 			position fixed
 			z-index 10001
-			top 48px
+			top 56px
 			left 0
+			right 0
+			width 300px
+			margin 0 auto
 			background #fff
 			border-radius 8px
+			box-shadow 0 0 16px rgba(0, 0, 0, 0.1)
+
+			$balloon-size = 16px
+
+			&:before
+				content ""
+				display block
+				position absolute
+				top -($balloon-size * 2)
+				left s('calc(50% - %s)', $balloon-size)
+				border-top solid $balloon-size transparent
+				border-left solid $balloon-size transparent
+				border-right solid $balloon-size transparent
+				border-bottom solid $balloon-size $border-color
+
+			&:after
+				content ""
+				display block
+				position absolute
+				top -($balloon-size * 2) + 1.5px
+				left s('calc(50% - %s)', $balloon-size)
+				border-top solid $balloon-size transparent
+				border-left solid $balloon-size transparent
+				border-right solid $balloon-size transparent
+				border-bottom solid $balloon-size #fff
+
+			> div
+				padding 8px 0
+
+				> *
+					display block
+					padding 8px 16px
+
+					&[data-active]
+						color $theme-color-foreground
+						background $theme-color
+
+					&:not([data-active]):hover
+						background #eee
 
 	> .tl
 		max-width 600px

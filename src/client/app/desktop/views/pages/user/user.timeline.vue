@@ -1,9 +1,9 @@
 <template>
 <div class="timeline">
 	<header>
-		<span :data-is-active="mode == 'default'" @click="mode = 'default'">投稿</span>
-		<span :data-is-active="mode == 'with-replies'" @click="mode = 'with-replies'">投稿と返信</span>
-		<span :data-is-active="mode == 'with-media'" @click="mode = 'with-media'">メディア</span>
+		<span :data-active="mode == 'default'" @click="mode = 'default'">投稿</span>
+		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'">投稿と返信</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'">メディア</span>
 	</header>
 	<div class="loading" v-if="fetching">
 		<mk-ellipsis-icon/>
@@ -114,7 +114,7 @@ export default Vue.extend({
 			font-size 18px
 			color #555
 
-			&:not([data-is-active])
+			&:not([data-active])
 				color $theme-color
 				cursor pointer
 

@@ -1,10 +1,10 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-is-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
-		<span :data-is-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
-		<span :data-is-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
-		<span :data-is-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
+		<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
+		<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
+		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
 		<button @click="chooseList" title="リスト">%fa:list%</button>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
@@ -93,7 +93,7 @@ root(isDark)
 			font-size 12px
 			user-select none
 
-			&[data-is-active]
+			&[data-active]
 				color $theme-color
 				cursor default
 				font-weight bold
@@ -108,7 +108,7 @@ root(isDark)
 					height 2px
 					background $theme-color
 
-			&:not([data-is-active])
+			&:not([data-active])
 				color isDark ? #9aa2a7 : #6f7477
 				cursor pointer
 
