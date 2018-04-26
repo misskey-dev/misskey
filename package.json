@@ -156,7 +156,7 @@
 		"monk": "6.0.5",
 		"ms": "2.1.1",
 		"nan": "2.10.0",
-		"node-sass": "4.8.3",
+		"node-sass": "4.9.0",
 		"node-sass-json-importer": "3.2.0",
 		"nopt": "4.0.1",
 		"nprogress": "0.2.0",
