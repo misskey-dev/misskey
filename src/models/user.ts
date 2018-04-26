@@ -458,3 +458,7 @@ function img(url) {
 	};
 }
 */
+
+export function getGhost(): Promise<ILocalUser> {
+	return User.findOne({ _id: new mongo.ObjectId(config.ghost) });
+}

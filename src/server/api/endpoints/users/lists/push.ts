@@ -1,7 +1,10 @@
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import UserList from '../../../../../models/user-list';
-import User, { pack as packUser } from '../../../../../models/user';
+import User, { pack as packUser, isRemoteUser, getGhost } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../publishers/stream';
+import ap from '../../../../../remote/activitypub/renderer';
+import renderFollow from '../../../../../remote/activitypub/renderer/follow';
+import { deliver } from '../../../../../queue';
 
 /**
  * Add a user to a user list
@@ -48,4 +51,11 @@ module.exports = async (params, me) => new Promise(async (res, rej) => {
 	res();
 
 	publishUserListStream(userList._id, 'userAdded', await packUser(user));
+
+	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
+	if (isRemoteUser(user)) {
+		const ghost = await getGhost();
+		const content = ap(renderFollow(ghost, user));
+		deliver(ghost, content, user.inbox);
+	}
 });
