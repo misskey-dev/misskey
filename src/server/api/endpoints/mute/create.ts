@@ -12,7 +12,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const muter = user;
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).$;
+	const [userId, userIdErr] = $(params.userId).type(ID).get();
 	if (userIdErr) return rej('invalid userId param');
 
 	// 自分自身

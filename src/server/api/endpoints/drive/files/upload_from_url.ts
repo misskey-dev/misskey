@@ -11,11 +11,11 @@ import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 module.exports = async (params, user): Promise<any> => {
 	// Get 'url' parameter
 	// TODO: Validate this url
-	const [url, urlErr] = $(params.url).string().$;
+	const [url, urlErr] = $(params.url).string().get();
 	if (urlErr) throw 'invalid url param';
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).$;
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).get();
 	if (folderIdErr) throw 'invalid folderId param';
 
 	return pack(await uploadFromUrl(url, user, folderId));

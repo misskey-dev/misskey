@@ -16,19 +16,19 @@ import { pack } from '../../../../models/note';
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following = false, followingError] =
-		$(params.following).optional.boolean().$;
+		$(params.following).optional.boolean().get();
 	if (followingError) return rej('invalid following param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).$;
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).get();
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).$;
+	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).get();
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Check if both of sinceId and untilId is specified

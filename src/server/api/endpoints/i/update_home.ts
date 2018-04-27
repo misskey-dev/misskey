@@ -12,15 +12,15 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 			.have('name', $().string())
 			.have('id', $().string())
 			.have('place', $().string())
-			.have('data', $().object())).$;
+			.have('data', $().object())).get();
 	if (homeErr) return rej('invalid home param');
 
 	// Get 'id' parameter
-	const [id, idErr] = $(params.id).optional.string().$;
+	const [id, idErr] = $(params.id).optional.string().get();
 	if (idErr) return rej('invalid id param');
 
 	// Get 'data' parameter
-	const [data, dataErr] = $(params.data).optional.object().$;
+	const [data, dataErr] = $(params.data).optional.object().get();
 	if (dataErr) return rej('invalid data param');
 
 	if (home) {

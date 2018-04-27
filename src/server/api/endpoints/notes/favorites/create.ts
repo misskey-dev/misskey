@@ -10,7 +10,7 @@ import Note from '../../../../../models/note';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).type(ID).$;
+	const [noteId, noteIdErr] = $(params.noteId).type(ID).get();
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get favoritee

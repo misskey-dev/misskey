@@ -7,7 +7,7 @@ import { eighteight } from '../../../../othello/maps';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [childId, childIdErr] = $(params.userId).type(ID).$;
+	const [childId, childIdErr] = $(params.userId).type(ID).get();
 	if (childIdErr) return rej('invalid userId param');
 
 	// Myself

@@ -10,15 +10,15 @@ import Note, { pack } from '../../../../models/note';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 1000, limitErr] = $(params.limit).optional.number().range(1, 1000).$;
+	const [limit = 1000, limitErr] = $(params.limit).optional.number().range(1, 1000).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).$;
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).get();
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).$;
+	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).get();
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Check if both of sinceId and untilId is specified
@@ -27,7 +27,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $(params.channelId).type(ID).$;
+	const [channelId, channelIdErr] = $(params.channelId).type(ID).get();
 	if (channelIdErr) return rej('invalid channelId param');
 
 	// Fetch channel

@@ -11,15 +11,15 @@ import { getFriendIds } from '../../common/get-friends';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = $(params.iknow).optional.boolean().$;
+	const [iknow = false, iknowErr] = $(params.iknow).optional.boolean().get();
 	if (iknowErr) return rej('invalid iknow param');
 
 	// Get 'limit' parameter
-	const [limit = 30, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 30, limitErr] = $(params.limit).optional.number().range(1, 100).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $(params.cursor).optional.type(ID).$;
+	const [cursor = null, cursorErr] = $(params.cursor).optional.type(ID).get();
 	if (cursorErr) return rej('invalid cursor param');
 
 	// Construct query

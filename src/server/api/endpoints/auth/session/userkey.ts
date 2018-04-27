@@ -51,7 +51,7 @@ import { pack } from '../../../../../models/user';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'appSecret' parameter
-	const [appSecret, appSecretErr] = $(params.appSecret).string().$;
+	const [appSecret, appSecretErr] = $(params.appSecret).string().get();
 	if (appSecretErr) return rej('invalid appSecret param');
 
 	// Lookup app
@@ -64,7 +64,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'token' parameter
-	const [token, tokenErr] = $(params.token).string().$;
+	const [token, tokenErr] = $(params.token).string().get();
 	if (tokenErr) return rej('invalid token param');
 
 	// Fetch token

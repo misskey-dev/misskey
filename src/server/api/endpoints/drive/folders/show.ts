@@ -9,7 +9,7 @@ import DriveFolder, { pack } from '../../../../../models/drive-folder';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $(params.folderId).type(ID).$;
+	const [folderId, folderIdErr] = $(params.folderId).type(ID).get();
 	if (folderIdErr) return rej('invalid folderId param');
 
 	// Get folder

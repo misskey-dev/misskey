@@ -19,7 +19,7 @@ import config from '../../../../../config';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [recipientId, recipientIdErr] = $(params.userId).type(ID).$;
+	const [recipientId, recipientIdErr] = $(params.userId).type(ID).get();
 	if (recipientIdErr) return rej('invalid userId param');
 
 	// Myself
@@ -41,11 +41,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'text' parameter
-	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
+	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).get();
 	if (textErr) return rej('invalid text');
 
 	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $(params.fileId).optional.type(ID).$;
+	const [fileId, fileIdErr] = $(params.fileId).optional.type(ID).get();
 	if (fileIdErr) return rej('invalid fileId param');
 
 	let file = null;

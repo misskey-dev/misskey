@@ -10,11 +10,11 @@ import { publishDriveStream } from '../../../../../publishers/stream';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name = '無題のフォルダー', nameErr] = $(params.name).optional.string().pipe(isValidFolderName).$;
+	const [name = '無題のフォルダー', nameErr] = $(params.name).optional.string().pipe(isValidFolderName).get();
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $(params.parentId).optional.nullable.type(ID).$;
+	const [parentId = null, parentIdErr] = $(params.parentId).optional.nullable.type(ID).get();
 	if (parentIdErr) return rej('invalid parentId param');
 
 	// If the parent folder is specified

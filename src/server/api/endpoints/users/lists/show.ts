@@ -6,7 +6,7 @@ import UserList, { pack } from '../../../../../models/user-list';
  */
 module.exports = async (params, me) => new Promise(async (res, rej) => {
 	// Get 'listId' parameter
-	const [listId, listIdErr] = $(params.listId).type(ID).$;
+	const [listId, listIdErr] = $(params.listId).type(ID).get();
 	if (listIdErr) return rej('invalid listId param');
 
 	// Fetch the list

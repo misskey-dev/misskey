@@ -9,15 +9,15 @@ import DriveFile, { pack } from '../../../../models/drive-file';
  */
 module.exports = async (params, user, app) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
 	if (limitErr) throw 'invalid limit param';
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).$;
+	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).get();
 	if (sinceIdErr) throw 'invalid sinceId param';
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).$;
+	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).get();
 	if (untilIdErr) throw 'invalid untilId param';
 
 	// Check if both of sinceId and untilId is specified
@@ -26,11 +26,11 @@ module.exports = async (params, user, app) => {
 	}
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).$;
+	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).get();
 	if (folderIdErr) throw 'invalid folderId param';
 
 	// Get 'type' parameter
-	const [type, typeErr] = $(params.type).optional.string().match(/^[a-zA-Z\/\-\*]+$/).$;
+	const [type, typeErr] = $(params.type).optional.string().match(/^[a-zA-Z\/\-\*]+$/).get();
 	if (typeErr) throw 'invalid type param';
 
 	// Construct query

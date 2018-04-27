@@ -9,7 +9,7 @@ import Channel, { IChannel, pack } from '../../../../models/channel';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $(params.channelId).type(ID).$;
+	const [channelId, channelIdErr] = $(params.channelId).type(ID).get();
 	if (channelIdErr) return rej('invalid channelId param');
 
 	// Fetch channel

@@ -12,11 +12,11 @@ import Note from '../../../../../models/note';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 365, limitErr] = $(params.limit).optional.number().range(1, 365).$;
+	const [limit = 365, limitErr] = $(params.limit).optional.number().range(1, 365).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).$;
+	const [userId, userIdErr] = $(params.userId).type(ID).get();
 	if (userIdErr) return rej('invalid userId param');
 
 	// Lookup user

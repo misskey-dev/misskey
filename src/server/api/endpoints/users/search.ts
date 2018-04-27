@@ -16,15 +16,15 @@ const escapeRegexp = require('escape-regexp');
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
-	const [query, queryError] = $(params.query).string().pipe(x => x != '').$;
+	const [query, queryError] = $(params.query).string().pipe(x => x != '').get();
 	if (queryError) return rej('invalid query param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).get();
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'max' parameter
-	const [max = 10, maxErr] = $(params.max).optional.number().range(1, 30).$;
+	const [max = 10, maxErr] = $(params.max).optional.number().range(1, 30).get();
 	if (maxErr) return rej('invalid max param');
 
 	// If Elasticsearch is available, search by $

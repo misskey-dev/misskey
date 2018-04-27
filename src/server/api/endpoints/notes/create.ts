@@ -14,23 +14,23 @@ import { IApp } from '../../../../models/app';
  */
 module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	// Get 'visibility' parameter
-	const [visibility = 'public', visibilityErr] = $(params.visibility).optional.string().or(['public', 'unlisted', 'private', 'direct']).$;
+	const [visibility = 'public', visibilityErr] = $(params.visibility).optional.string().or(['public', 'unlisted', 'private', 'direct']).get();
 	if (visibilityErr) return rej('invalid visibility');
 
 	// Get 'text' parameter
-	const [text = null, textErr] = $(params.text).optional.nullable.string().pipe(isValidText).$;
+	const [text = null, textErr] = $(params.text).optional.nullable.string().pipe(isValidText).get();
 	if (textErr) return rej('invalid text');
 
 	// Get 'cw' parameter
-	const [cw, cwErr] = $(params.cw).optional.nullable.string().pipe(isValidCw).$;
+	const [cw, cwErr] = $(params.cw).optional.nullable.string().pipe(isValidCw).get();
 	if (cwErr) return rej('invalid cw');
 
 	// Get 'viaMobile' parameter
-	const [viaMobile = false, viaMobileErr] = $(params.viaMobile).optional.boolean().$;
+	const [viaMobile = false, viaMobileErr] = $(params.viaMobile).optional.boolean().get();
 	if (viaMobileErr) return rej('invalid viaMobile');
 
 	// Get 'tags' parameter
-	const [tags = [], tagsErr] = $(params.tags).optional.array($().string().range(1, 32)).unique().$;
+	const [tags = [], tagsErr] = $(params.tags).optional.array($().string().range(1, 32)).unique().get();
 	if (tagsErr) return rej('invalid tags');
 
 	// Get 'geo' parameter
@@ -43,11 +43,11 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 		.have('altitudeAccuracy', $().nullable.number())
 		.have('heading', $().nullable.number().range(0, 360))
 		.have('speed', $().nullable.number())
-		.$;
+		.get();
 	if (geoErr) return rej('invalid geo');
 
 	// Get 'mediaIds' parameter
-	const [mediaIds, mediaIdsErr] = $(params.mediaIds).optional.array($().type(ID)).unique().range(1, 4).$;
+	const [mediaIds, mediaIdsErr] = $(params.mediaIds).optional.array($().type(ID)).unique().range(1, 4).get();
 	if (mediaIdsErr) return rej('invalid mediaIds');
 
 	let files = [];
@@ -74,7 +74,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'renoteId' parameter
-	const [renoteId, renoteIdErr] = $(params.renoteId).optional.type(ID).$;
+	const [renoteId, renoteIdErr] = $(params.renoteId).optional.type(ID).get();
 	if (renoteIdErr) return rej('invalid renoteId');
 
 	let renote: INote = null;
@@ -95,7 +95,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'replyId' parameter
-	const [replyId, replyIdErr] = $(params.replyId).optional.type(ID).$;
+	const [replyId, replyIdErr] = $(params.replyId).optional.type(ID).get();
 	if (replyIdErr) return rej('invalid replyId');
 
 	let reply: INote = null;
@@ -116,7 +116,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $(params.channelId).optional.type(ID).$;
+	const [channelId, channelIdErr] = $(params.channelId).optional.type(ID).get();
 	if (channelIdErr) return rej('invalid channelId');
 
 	let channel: IChannel = null;
@@ -162,7 +162,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 			.unique()
 			.range(2, 10)
 			.each(c => c.length > 0 && c.length < 50))
-		.$;
+		.get();
 	if (pollErr) return rej('invalid poll');
 
 	if (poll) {

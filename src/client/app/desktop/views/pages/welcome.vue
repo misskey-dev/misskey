@@ -125,7 +125,8 @@ export default Vue.extend({
 	flex 1
 	$width = 1000px
 
-	background-image url('/assets/welcome-bg.svg')
+	background linear-gradient(to bottom, #1e1d65, #bd6659)
+	//background-image url('/assets/welcome-bg.svg')
 	background-size cover
 	background-position top center
 
@@ -308,10 +309,4 @@ export default Vue.extend({
 .nav
 	a
 		color #666
-</style>
-
-<style lang="stylus">
-html
-body
-	background linear-gradient(to bottom, #1e1d65, #bd6659)
 </style>

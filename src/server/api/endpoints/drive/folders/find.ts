@@ -9,11 +9,11 @@ import DriveFolder, { pack } from '../../../../../models/drive-folder';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).string().$;
+	const [name, nameErr] = $(params.name).string().get();
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $(params.parentId).optional.nullable.type(ID).$;
+	const [parentId = null, parentIdErr] = $(params.parentId).optional.nullable.type(ID).get();
 	if (parentIdErr) return rej('invalid parentId param');
 
 	// Issue query

@@ -12,42 +12,42 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).optional.nullable.string().pipe(isValidName).$;
+	const [name, nameErr] = $(params.name).optional.nullable.string().pipe(isValidName).get();
 	if (nameErr) return rej('invalid name param');
 	if (name) user.name = name;
 
 	// Get 'description' parameter
-	const [description, descriptionErr] = $(params.description).optional.nullable.string().pipe(isValidDescription).$;
+	const [description, descriptionErr] = $(params.description).optional.nullable.string().pipe(isValidDescription).get();
 	if (descriptionErr) return rej('invalid description param');
 	if (description !== undefined) user.description = description;
 
 	// Get 'location' parameter
-	const [location, locationErr] = $(params.location).optional.nullable.string().pipe(isValidLocation).$;
+	const [location, locationErr] = $(params.location).optional.nullable.string().pipe(isValidLocation).get();
 	if (locationErr) return rej('invalid location param');
 	if (location !== undefined) user.profile.location = location;
 
 	// Get 'birthday' parameter
-	const [birthday, birthdayErr] = $(params.birthday).optional.nullable.string().pipe(isValidBirthday).$;
+	const [birthday, birthdayErr] = $(params.birthday).optional.nullable.string().pipe(isValidBirthday).get();
 	if (birthdayErr) return rej('invalid birthday param');
 	if (birthday !== undefined) user.profile.birthday = birthday;
 
 	// Get 'avatarId' parameter
-	const [avatarId, avatarIdErr] = $(params.avatarId).optional.type(ID).$;
+	const [avatarId, avatarIdErr] = $(params.avatarId).optional.type(ID).get();
 	if (avatarIdErr) return rej('invalid avatarId param');
 	if (avatarId) user.avatarId = avatarId;
 
 	// Get 'bannerId' parameter
-	const [bannerId, bannerIdErr] = $(params.bannerId).optional.type(ID).$;
+	const [bannerId, bannerIdErr] = $(params.bannerId).optional.type(ID).get();
 	if (bannerIdErr) return rej('invalid bannerId param');
 	if (bannerId) user.bannerId = bannerId;
 
 	// Get 'isBot' parameter
-	const [isBot, isBotErr] = $(params.isBot).optional.boolean().$;
+	const [isBot, isBotErr] = $(params.isBot).optional.boolean().get();
 	if (isBotErr) return rej('invalid isBot param');
 	if (isBot != null) user.isBot = isBot;
 
 	// Get 'autoWatch' parameter
-	const [autoWatch, autoWatchErr] = $(params.autoWatch).optional.boolean().$;
+	const [autoWatch, autoWatchErr] = $(params.autoWatch).optional.boolean().get();
 	if (autoWatchErr) return rej('invalid autoWatch param');
 	if (autoWatch != null) user.settings.autoWatch = autoWatch;
 

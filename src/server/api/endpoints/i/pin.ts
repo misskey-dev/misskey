@@ -11,7 +11,7 @@ import { pack } from '../../../../models/user';
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).type(ID).$;
+	const [noteId, noteIdErr] = $(params.noteId).type(ID).get();
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Fetch pinee

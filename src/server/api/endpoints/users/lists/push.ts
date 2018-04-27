@@ -11,7 +11,7 @@ import { deliver } from '../../../../../queue';
  */
 module.exports = async (params, me) => new Promise(async (res, rej) => {
 	// Get 'listId' parameter
-	const [listId, listIdErr] = $(params.listId).type(ID).$;
+	const [listId, listIdErr] = $(params.listId).type(ID).get();
 	if (listIdErr) return rej('invalid listId param');
 
 	// Fetch the list
@@ -25,7 +25,7 @@ module.exports = async (params, me) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).$;
+	const [userId, userIdErr] = $(params.userId).type(ID).get();
 	if (userIdErr) return rej('invalid userId param');
 
 	// Fetch the user

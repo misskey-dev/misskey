@@ -7,7 +7,7 @@ import User from '../../../../../models/user';
 
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'password' parameter
-	const [password, passwordErr] = $(params.password).string().$;
+	const [password, passwordErr] = $(params.password).string().get();
 	if (passwordErr) return rej('invalid password param');
 
 	// Compare password

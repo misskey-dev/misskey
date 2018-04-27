@@ -14,7 +14,7 @@ import notify from '../../../../../publishers/notify';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).type(ID).$;
+	const [noteId, noteIdErr] = $(params.noteId).type(ID).get();
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get votee
@@ -34,7 +34,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [choice, choiceError] =
 		$(params.choice).number()
 			.pipe(c => note.poll.choices.some(x => x.id == c))
-			.$;
+			.get();
 	if (choiceError) return rej('invalid choice param');
 
 	// if already voted

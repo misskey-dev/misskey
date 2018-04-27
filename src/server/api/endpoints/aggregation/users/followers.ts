@@ -10,7 +10,7 @@ import FollowedLog from '../../../../../models/followed-log';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).$;
+	const [userId, userIdErr] = $(params.userId).type(ID).get();
 	if (userIdErr) return rej('invalid userId param');
 
 	// Lookup user

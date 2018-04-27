@@ -10,11 +10,11 @@ import User from '../../../../models/user';
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'currentPasword' parameter
-	const [currentPassword, currentPasswordErr] = $(params.currentPasword).string().$;
+	const [currentPassword, currentPasswordErr] = $(params.currentPasword).string().get();
 	if (currentPasswordErr) return rej('invalid currentPasword param');
 
 	// Get 'newPassword' parameter
-	const [newPassword, newPasswordErr] = $(params.newPassword).string().$;
+	const [newPassword, newPasswordErr] = $(params.newPassword).string().get();
 	if (newPasswordErr) return rej('invalid newPassword param');
 
 	// Compare password

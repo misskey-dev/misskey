@@ -11,7 +11,7 @@ import { pack } from '../../../../models/channel';
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'title' parameter
-	const [title, titleErr] = $(params.title).string().range(1, 100).$;
+	const [title, titleErr] = $(params.title).string().range(1, 100).get();
 	if (titleErr) return rej('invalid title param');
 
 	// Create a channel

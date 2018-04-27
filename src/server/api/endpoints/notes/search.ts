@@ -18,63 +18,63 @@ import { pack } from '../../../../models/note';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
-	const [text, textError] = $(params.text).optional.string().$;
+	const [text, textError] = $(params.text).optional.string().get();
 	if (textError) return rej('invalid text param');
 
 	// Get 'includeUserIds' parameter
-	const [includeUserIds = [], includeUserIdsErr] = $(params.includeUserIds).optional.array($().type(ID)).$;
+	const [includeUserIds = [], includeUserIdsErr] = $(params.includeUserIds).optional.array($().type(ID)).get();
 	if (includeUserIdsErr) return rej('invalid includeUserIds param');
 
 	// Get 'excludeUserIds' parameter
-	const [excludeUserIds = [], excludeUserIdsErr] = $(params.excludeUserIds).optional.array($().type(ID)).$;
+	const [excludeUserIds = [], excludeUserIdsErr] = $(params.excludeUserIds).optional.array($().type(ID)).get();
 	if (excludeUserIdsErr) return rej('invalid excludeUserIds param');
 
 	// Get 'includeUserUsernames' parameter
-	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.includeUserUsernames).optional.array($().string()).$;
+	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.includeUserUsernames).optional.array($().string()).get();
 	if (includeUserUsernamesErr) return rej('invalid includeUserUsernames param');
 
 	// Get 'excludeUserUsernames' parameter
-	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.excludeUserUsernames).optional.array($().string()).$;
+	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.excludeUserUsernames).optional.array($().string()).get();
 	if (excludeUserUsernamesErr) return rej('invalid excludeUserUsernames param');
 
 	// Get 'following' parameter
-	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().$;
+	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().get();
 	if (followingErr) return rej('invalid following param');
 
 	// Get 'mute' parameter
-	const [mute = 'mute_all', muteErr] = $(params.mute).optional.string().$;
+	const [mute = 'mute_all', muteErr] = $(params.mute).optional.string().get();
 	if (muteErr) return rej('invalid mute param');
 
 	// Get 'reply' parameter
-	const [reply = null, replyErr] = $(params.reply).optional.nullable.boolean().$;
+	const [reply = null, replyErr] = $(params.reply).optional.nullable.boolean().get();
 	if (replyErr) return rej('invalid reply param');
 
 	// Get 'renote' parameter
-	const [renote = null, renoteErr] = $(params.renote).optional.nullable.boolean().$;
+	const [renote = null, renoteErr] = $(params.renote).optional.nullable.boolean().get();
 	if (renoteErr) return rej('invalid renote param');
 
 	// Get 'media' parameter
-	const [media = null, mediaErr] = $(params.media).optional.nullable.boolean().$;
+	const [media = null, mediaErr] = $(params.media).optional.nullable.boolean().get();
 	if (mediaErr) return rej('invalid media param');
 
 	// Get 'poll' parameter
-	const [poll = null, pollErr] = $(params.poll).optional.nullable.boolean().$;
+	const [poll = null, pollErr] = $(params.poll).optional.nullable.boolean().get();
 	if (pollErr) return rej('invalid poll param');
 
 	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().get();
 	if (sinceDateErr) throw 'invalid sinceDate param';
 
 	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().get();
 	if (untilDateErr) throw 'invalid untilDate param';
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).get();
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 30).$;
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 30).get();
 	if (limitErr) return rej('invalid limit param');
 
 	let includeUsers = includeUserIds;

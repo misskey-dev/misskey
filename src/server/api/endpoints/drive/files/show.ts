@@ -9,7 +9,7 @@ import DriveFile, { pack } from '../../../../../models/drive-file';
  */
 module.exports = async (params, user) => {
 	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $(params.fileId).type(ID).$;
+	const [fileId, fileIdErr] = $(params.fileId).type(ID).get();
 	if (fileIdErr) throw 'invalid fileId param';
 
 	// Fetch file

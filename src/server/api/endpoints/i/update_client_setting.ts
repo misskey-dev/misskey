@@ -10,11 +10,11 @@ import event from '../../../../publishers/stream';
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).string().$;
+	const [name, nameErr] = $(params.name).string().get();
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'value' parameter
-	const [value, valueErr] = $(params.value).nullable.any().$;
+	const [value, valueErr] = $(params.value).nullable.any().get();
 	if (valueErr) return rej('invalid value param');
 
 	const x = {};

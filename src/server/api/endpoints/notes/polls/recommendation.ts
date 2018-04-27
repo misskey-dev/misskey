@@ -10,11 +10,11 @@ import Note, { pack } from '../../../../../models/note';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
+	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).get();
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get votes
