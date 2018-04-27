@@ -18,10 +18,11 @@ ultimately sophisticated new type of mini-blog based SNS.
 
 :sparkles: Features
 ----------------------------------------------------------------
-* Automatically updated timeline
 * Reactions
+* User lists
 * Private messages
-* ServiceWorker support
+* Mute
+* Real time contents
 * ActivityPub compatible
 
 and more! You can touch with your own eyes at https://misskey.xyz/.
