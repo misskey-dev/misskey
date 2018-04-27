@@ -39,7 +39,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = `%i18n:@search%: ${this.q} | Misskey`;
-		document.documentElement.style.background = '#313a42';
 
 		this.fetch();
 	},

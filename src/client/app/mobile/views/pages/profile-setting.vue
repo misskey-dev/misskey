@@ -59,7 +59,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = 'Misskey | %i18n:@title%';
-		document.documentElement.style.background = '#313a42';
 	},
 	methods: {
 		setAvatar() {

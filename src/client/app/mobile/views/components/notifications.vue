@@ -1,18 +1,20 @@
 <template>
 <div class="mk-notifications">
-	<div class="notifications" v-if="notifications.length != 0">
+	<transition-group name="mk-notifications" class="transition notifications">
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
-			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
+			<p class="date" :key="notification.id + '_date'" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
 				<span>%fa:angle-up%{{ notification._datetext }}</span>
 				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</div>
+	</transition-group>
+
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>
 		{{ fetchingMoreNotifications ? '%i18n:!common.loading%' : '%i18n:!@more%' }}
 	</button>
+
 	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
@@ -102,23 +104,26 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-notifications
-	margin 8px auto
-	padding 0
-	max-width 500px
-	width calc(100% - 16px)
+	margin 0 auto
 	background #fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 2px rgba(0, 0, 0, 0.1)
 
 	@media (min-width 500px)
-		margin 16px auto
-		width calc(100% - 32px)
+		box-shadow 0 8px 32px rgba(0, 0, 0, 0.1)
+
+	.transition
+		.mk-notifications-enter
+		.mk-notifications-leave-to
+			opacity 0
+			transform translateY(-30px)
+
+		> *
+			transition transform .3s ease, opacity .3s ease
 
 	> .notifications
 
 		> .mk-notification
-			margin 0 auto
-			max-width 500px
 			border-bottom solid 1px rgba(0, 0, 0, 0.05)
 
 			&:last-child

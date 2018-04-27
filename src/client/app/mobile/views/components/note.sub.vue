@@ -31,6 +31,9 @@ export default Vue.extend({
 	font-size 0.9em
 	padding 16px
 
+	@media (min-width 600px)
+		padding 24px 32px
+
 	&:after
 		content ""
 		display block
