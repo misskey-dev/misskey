@@ -143,14 +143,14 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.header
+root(isDark)
 	$height = 48px
 
 	position fixed
 	top 0
 	z-index 1024
 	width 100%
-	box-shadow 0 1px 0 rgba(#000, 0.075)
+	//box-shadow 0 1px 0 rgba(#000, 0.075)
 
 	&, *
 		user-select none
@@ -167,7 +167,7 @@ export default Vue.extend({
 			-webkit-backdrop-filter blur(12px)
 			backdrop-filter blur(12px)
 			//background-color rgba(#1b2023, 0.75)
-			background-color #1b2023
+			background-color isDark ? #313543 : #595f6f
 
 		> p
 			display none
@@ -243,5 +243,11 @@ export default Vue.extend({
 				color inherit
 				line-height $height
 				border-left solid 1px rgba(#000, 0.1)
+
+.header[data-darkmode]
+	root(true)
+
+.header:not([data-darkmode])
+	root(false)
 
 </style>

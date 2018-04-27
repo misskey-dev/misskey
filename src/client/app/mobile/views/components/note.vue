@@ -238,7 +238,7 @@ export default Vue.extend({
 
 root(isDark)
 	font-size 12px
-	border-bottom solid 1px #eaeaea
+	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 	&:first-child
 		border-radius 8px 8px 0 0
@@ -308,7 +308,10 @@ root(isDark)
 			background transparent
 
 	> article
-		padding 14px 16px 9px 16px
+		padding 16px 16px 9px
+
+		@media (min-width 600px)
+			padding 32px 32px 22px
 
 		&:after
 			content ""

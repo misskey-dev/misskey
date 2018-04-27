@@ -77,7 +77,6 @@ export default Vue.extend({
 
 	mounted() {
 		document.title = 'Misskey';
-		document.documentElement.style.background = '#313a42';
 
 		Progress.start();
 	},
@@ -163,11 +162,14 @@ main
 						background #eee
 
 	> .tl
-		max-width 600px
+		max-width 680px
 		margin 0 auto
 		padding 8px
 
 		@media (min-width 500px)
 			padding 16px
+
+		@media (min-width 600px)
+			padding 32px
 
 </style>

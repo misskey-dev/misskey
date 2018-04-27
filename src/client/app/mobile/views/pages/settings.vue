@@ -34,7 +34,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = 'Misskey | %i18n:@settings%';
-		document.documentElement.style.background = '#313a42';
 	},
 	methods: {
 		signout() {

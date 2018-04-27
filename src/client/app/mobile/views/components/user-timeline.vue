@@ -65,9 +65,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.mk-user-timeline
-	max-width 600px
-	margin 0 auto
-</style>

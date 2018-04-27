@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<template slot="header" v-if="!fetching"><img :src="`${user.avatarUrl}?thumbnail&size=64`" alt="">{{ user | userName }}</template>
-	<main v-if="!fetching">
+	<main v-if="!fetching" :data-darkmode="_darkmode_">
 		<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
 		<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 		<header>
@@ -88,9 +88,6 @@ export default Vue.extend({
 	created() {
 		this.fetch();
 	},
-	mounted() {
-		document.documentElement.style.background = '#313a42';
-	},
 	methods: {
 		fetch() {
 			Progress.start();
@@ -110,7 +107,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-main
+root(isDark)
 	> .is-suspended
 	> .is-remote
 		&.is-suspended
@@ -138,7 +135,7 @@ main
 
 		> .banner
 			padding-bottom 33.3%
-			background-color #1b1b1b
+			background-color isDark ? #0e0e0e : #cacaca
 			background-size cover
 			background-position center
 
@@ -165,13 +162,13 @@ main
 						left -2px
 						bottom -2px
 						width 100%
-						border 3px solid #313a42
+						border 3px solid isDark ? #191b22 : #ececed
 						border-radius 6px
 
 						@media (min-width 500px)
 							left -4px
 							bottom -4px
-							border 4px solid #313a42
+							border 4px solid isDark ? #191b22 : #ececed
 							border-radius 12px
 
 				> .mk-follow-button
@@ -185,14 +182,14 @@ main
 					margin 0
 					line-height 22px
 					font-size 20px
-					color #fff
+					color isDark ? #fff : #757c82
 
 				> .username
 					display inline-block
 					line-height 20px
 					font-size 16px
 					font-weight bold
-					color #657786
+					color isDark ? #657786 : #969ea5
 
 				> .followed
 					margin-left 8px
@@ -219,7 +216,7 @@ main
 
 			> .status
 				> a
-					color #657786
+					color isDark ? #657786 : #818a92
 
 					&:not(:last-child)
 						margin-right 16px
@@ -227,7 +224,7 @@ main
 					> b
 						margin-right 4px
 						font-size 16px
-						color #fff
+						color isDark ? #fff : #787e86
 
 					> i
 						font-size 14px
@@ -235,9 +232,9 @@ main
 	> nav
 		position -webkit-sticky
 		position sticky
-		top 48px
-		box-shadow 0 4px 4px rgba(0, 0, 0, 0.3)
-		background-color #313a42
+		top 47px
+		box-shadow 0 4px 4px isDark ? rgba(#000, 0.3) : rgba(#000, 0.07)
+		background-color isDark ? #191b22 : #ececed
 		z-index 1
 
 		> .nav-container
@@ -253,7 +250,7 @@ main
 				line-height 52px
 				font-size 14px
 				text-decoration none
-				color #657786
+				color isDark ? #657786 : #9ca1a5
 				border-bottom solid 2px transparent
 
 				&[data-active]
@@ -262,9 +259,20 @@ main
 					border-color $theme-color
 
 	> .body
+		max-width 680px
+		margin 0 auto
 		padding 8px
 
 		@media (min-width 500px)
 			padding 16px
+
+		@media (min-width 600px)
+			padding 32px
+
+main[data-darkmode]
+	root(true)
+
+main:not([data-darkmode])
+	root(false)
 
 </style>

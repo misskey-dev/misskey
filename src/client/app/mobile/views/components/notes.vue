@@ -199,10 +199,13 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-notes
-	background #fff
+root(isDark)
+	background isDark ? #282C37 : #fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 2px rgba(0, 0, 0, 0.1)
+
+	@media (min-width 500px)
+		box-shadow 0 8px 32px rgba(0, 0, 0, 0.1)
 
 	.transition
 		.mk-notes-enter
@@ -260,8 +263,8 @@ export default Vue.extend({
 	> footer
 		text-align center
 		border-top solid 1px #eaeaea
-		border-bottom-left-radius 4px
-		border-bottom-right-radius 4px
+		border-bottom-left-radius 8px
+		border-bottom-right-radius 8px
 
 		&:empty
 			display none
@@ -270,10 +273,18 @@ export default Vue.extend({
 			margin 0
 			padding 16px
 			width 100%
-			color $theme-color
 			border-radius 0 0 8px 8px
+
+			@media (min-width 500px)
+				padding 20px
 
 			&:disabled
 				opacity 0.7
+
+.mk-notes[data-darkmode]
+	root(true)
+
+.mk-notes:not([data-darkmode])
+	root(false)
 
 </style>

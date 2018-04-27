@@ -40,9 +40,6 @@ export default Vue.extend({
 	created() {
 		this.fetch();
 	},
-	mounted() {
-		document.documentElement.style.background = '#313a42';
-	},
 	methods: {
 		fetch() {
 			Progress.start();

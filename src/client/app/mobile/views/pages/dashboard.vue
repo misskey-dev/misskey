@@ -102,7 +102,6 @@ export default Vue.extend({
 
 	mounted() {
 		document.title = 'Misskey';
-		document.documentElement.style.background = '#313a42';
 	},
 
 	methods: {

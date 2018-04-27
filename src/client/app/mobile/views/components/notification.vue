@@ -1,15 +1,15 @@
 <template>
 <div class="mk-notification">
 	<div class="notification reaction" v-if="notification.type == 'reaction'">
-		<mk-time :time="notification.createdAt"/>
 		<router-link class="avatar-anchor" :to="notification.user | userPage">
 			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
-		<div class="text">
-			<p>
+		<div>
+			<header>
 				<mk-reaction-icon :reaction="notification.reaction"/>
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
-			</p>
+				<mk-time :time="notification.createdAt"/>
+			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
 				%fa:quote-left%{{ getNoteSummary(notification.note) }}
 				%fa:quote-right%
@@ -18,17 +18,46 @@
 	</div>
 
 	<div class="notification renote" v-if="notification.type == 'renote'">
-		<mk-time :time="notification.createdAt"/>
 		<router-link class="avatar-anchor" :to="notification.user | userPage">
 			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		</router-link>
-		<div class="text">
-			<p>
+		<div>
+			<header>
 				%fa:retweet%
 				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
-			</p>
+				<mk-time :time="notification.createdAt"/>
+			</header>
 			<router-link class="note-ref" :to="notification.note | notePage">
 				%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
+			</router-link>
+		</div>
+	</div>
+
+	<div class="notification follow" v-if="notification.type == 'follow'">
+		<router-link class="avatar-anchor" :to="notification.user | userPage">
+			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		</router-link>
+		<div>
+			<header>
+				%fa:user-plus%
+				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<mk-time :time="notification.createdAt"/>
+			</header>
+		</div>
+	</div>
+
+	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
+		<router-link class="avatar-anchor" :to="notification.user | userPage">
+			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		</router-link>
+		<div>
+			<header>
+				%fa:chart-pie%
+				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<mk-time :time="notification.createdAt"/>
+			</header>
+			<router-link class="note-ref" :to="notification.note | notePage">
+				%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
 			</router-link>
 		</div>
 	</div>
@@ -37,19 +66,6 @@
 		<mk-note :note="notification.note"/>
 	</template>
 
-	<div class="notification follow" v-if="notification.type == 'follow'">
-		<mk-time :time="notification.createdAt"/>
-		<router-link class="avatar-anchor" :to="notification.user | userPage">
-			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
-		<div class="text">
-			<p>
-				%fa:user-plus%
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
-			</p>
-		</div>
-	</div>
-
 	<template v-if="notification.type == 'reply'">
 		<mk-note :note="notification.note"/>
 	</template>
@@ -57,22 +73,6 @@
 	<template v-if="notification.type == 'mention'">
 		<mk-note :note="notification.note"/>
 	</template>
-
-	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
-		<mk-time :time="notification.createdAt"/>
-		<router-link class="avatar-anchor" :to="notification.user | userPage">
-			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
-		<div class="text">
-			<p>
-				%fa:chart-pie%
-				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
-			</p>
-			<router-link class="note-ref" :to="notification.note | notePage">
-				%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
-			</router-link>
-		</div>
-	</div>
 </div>
 </template>
 
@@ -95,43 +95,56 @@ export default Vue.extend({
 
 	> .notification
 		padding 16px
+		font-size 12px
 		overflow-wrap break-word
+
+		@media (min-width 350px)
+			font-size 14px
+
+		@media (min-width 500px)
+			font-size 16px
+
+		@media (min-width 600px)
+			padding 32px
 
 		&:after
 			content ""
 			display block
 			clear both
 
-		> .mk-time
-			display inline
-			position absolute
-			top 16px
-			right 12px
-			vertical-align top
-			color rgba(0, 0, 0, 0.6)
-			font-size 0.9em
-
 		> .avatar-anchor
 			display block
 			float left
 
 			img
-				min-width 36px
-				min-height 36px
-				max-width 36px
-				max-height 36px
+				width 36px
+				height 36px
 				border-radius 6px
 
-		> .text
+				@media (min-width 500px)
+					width 42px
+					height 42px
+
+		> div
 			float right
 			width calc(100% - 36px)
 			padding-left 8px
 
-			p
-				margin 0
+			@media (min-width 500px)
+				width calc(100% - 42px)
+
+			> header
+				display flex
+				align-items center
+				white-space nowrap
 
 				i, .mk-reaction-icon
 					margin-right 4px
+
+				> .mk-time
+					margin-left auto
+					color rgba(0, 0, 0, 0.3)
+					font-size 0.9em
 
 			> .note-preview
 				color rgba(0, 0, 0, 0.7)
@@ -147,11 +160,11 @@ export default Vue.extend({
 					margin-right 3px
 
 		&.renote
-			.text p i
+			> div > header i
 				color #77B255
 
 		&.follow
-			.text p i
+			> div > header i
 				color #53c7ce
 
 </style>
