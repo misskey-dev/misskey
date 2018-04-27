@@ -434,7 +434,7 @@ root(isDark)
 					margin 0 .5em 0 0
 					padding 1px 6px
 					font-size 12px
-					color isDark ? #758188 :#aaa
+					color isDark ? #758188 : #aaa
 					border solid 1px isDark ? #57616f : #ddd
 					border-radius 3px
 

@@ -61,6 +61,9 @@ export default Vue.extend({
 	> .mk-note-detail
 		margin 0 0 8px 0
 
+		@media (min-width 500px)
+			margin 0 0 16px 0
+
 	> section
 		background #eee
 		border-radius 8px

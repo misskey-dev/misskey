@@ -103,9 +103,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-notifications
+root(isDark)
 	margin 0 auto
-	background #fff
+	background isDark ? #282C37 :#fff
 	border-radius 8px
 	box-shadow 0 0 2px rgba(0, 0, 0, 0.1)
 
@@ -123,11 +123,8 @@ export default Vue.extend({
 
 	> .notifications
 
-		> .mk-notification
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
-
-			&:last-child
-				border-bottom none
+		> .mk-notification:not(:last-child)
+			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 		> .date
 			display block
@@ -135,9 +132,9 @@ export default Vue.extend({
 			line-height 32px
 			text-align center
 			font-size 0.8em
-			color #aaa
-			background #fdfdfd
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
+			color isDark ? #666b79 : #aaa
+			background isDark ? #242731 : #fdfdfd
+			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 			span
 				margin 0 16px
@@ -169,5 +166,11 @@ export default Vue.extend({
 
 		> [data-fa]
 			margin-right 4px
+
+.mk-notifications[data-darkmode]
+	root(true)
+
+.mk-notifications:not([data-darkmode])
+	root(false)
 
 </style>

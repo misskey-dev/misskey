@@ -91,8 +91,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-notification
-
+root(isDark)
 	> .notification
 		padding 16px
 		font-size 12px
@@ -105,7 +104,7 @@ export default Vue.extend({
 			font-size 16px
 
 		@media (min-width 600px)
-			padding 32px
+			padding 24px 32px
 
 		&:after
 			content ""
@@ -143,14 +142,14 @@ export default Vue.extend({
 
 				> .mk-time
 					margin-left auto
-					color rgba(0, 0, 0, 0.3)
+					color isDark ? #606984 : #c0c0c0
 					font-size 0.9em
 
 			> .note-preview
-				color rgba(0, 0, 0, 0.7)
+				color isDark ? #fff : #717171
 
 			> .note-ref
-				color rgba(0, 0, 0, 0.7)
+				color isDark ? #fff : #717171
 
 				[data-fa]
 					font-size 1em
@@ -167,5 +166,10 @@ export default Vue.extend({
 			> div > header i
 				color #53c7ce
 
-</style>
+.mk-notification[data-darkmode]
+	root(true)
 
+.mk-notification:not([data-darkmode])
+	root(false)
+
+</style>

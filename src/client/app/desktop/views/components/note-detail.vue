@@ -38,7 +38,9 @@
 			</router-link>
 		</header>
 		<div class="body">
-			<mk-note-html :class="$style.text" v-if="p.text" :text="p.text" :i="os.i"/>
+			<div class="text">
+				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
+			</div>
 			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media"/>
 			</div>
@@ -214,12 +216,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-note-detail
+root(isDark)
 	margin 0
 	padding 0
 	overflow hidden
 	text-align left
-	background #fff
+	background isDark ? #282C37 : #fff
 	border solid 1px rgba(0, 0, 0, 0.1)
 	border-radius 8px
 
@@ -232,10 +234,10 @@ export default Vue.extend({
 		text-align center
 		color #999
 		cursor pointer
-		background #fafafa
+		background isDark ? #21242d : #fafafa
 		outline none
 		border none
-		border-bottom solid 1px #eef0f2
+		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
 		border-radius 6px 6px 0 0
 
 		&:hover
@@ -249,11 +251,11 @@ export default Vue.extend({
 
 	> .context
 		> *
-			border-bottom 1px solid #eef0f2
+			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 
 	> .renote
 		color #9dbb00
-		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
 		> p
 			margin 0
@@ -281,7 +283,7 @@ export default Vue.extend({
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid #eef0f2
+		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 
 	> article
 		padding 28px 32px 18px 32px
@@ -318,7 +320,7 @@ export default Vue.extend({
 				display inline-block
 				margin 0
 				line-height 24px
-				color #777
+				color isDark ? #fff : #627079
 				font-size 18px
 				font-weight 700
 				text-align left
@@ -331,7 +333,7 @@ export default Vue.extend({
 				display block
 				text-align left
 				margin 0
-				color #ccc
+				color isDark ? #606984 : #ccc
 
 			> .time
 				position absolute
@@ -342,6 +344,15 @@ export default Vue.extend({
 
 		> .body
 			padding 8px 0
+
+			> .text
+				cursor default
+				display block
+				margin 0
+				padding 0
+				overflow-wrap break-word
+				font-size 1.5em
+				color isDark ? #fff : #717171
 
 			> .renote
 				margin 8px 0
@@ -420,17 +431,12 @@ export default Vue.extend({
 
 	> .replies
 		> *
-			border-top 1px solid #eef0f2
+			border-top 1px solid isDark ? #1c2023 : #eef0f2
 
-</style>
+.mk-note-detail[data-darkmode]
+	root(true)
 
-<style lang="stylus" module>
-.text
-	cursor default
-	display block
-	margin 0
-	padding 0
-	overflow-wrap break-word
-	font-size 1.5em
-	color #717171
+.mk-note-detail:not([data-darkmode])
+	root(false)
+
 </style>

@@ -135,7 +135,7 @@ root(isDark)
 
 		> .banner
 			padding-bottom 33.3%
-			background-color isDark ? #0e0e0e : #cacaca
+			background-color isDark ? #5f7273 : #cacaca
 			background-size cover
 			background-position center
 
@@ -162,6 +162,7 @@ root(isDark)
 						left -2px
 						bottom -2px
 						width 100%
+						background isDark ? #191b22 : #ececed
 						border 3px solid isDark ? #191b22 : #ececed
 						border-radius 6px
 
@@ -195,8 +196,8 @@ root(isDark)
 					margin-left 8px
 					padding 2px 4px
 					font-size 12px
-					color #657786
-					background #f8f8f8
+					color isDark ? #657786 : #fff
+					background isDark ? #f8f8f8 : #a7bec7
 					border-radius 4px
 
 			> .description

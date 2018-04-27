@@ -34,7 +34,9 @@
 			</div>
 		</header>
 		<div class="body">
-			<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
+			<div class="text">
+				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
+			</div>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
@@ -209,15 +211,18 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-note-detail
+root(isDark)
 	overflow hidden
 	margin 0 auto
 	padding 0
 	width 100%
 	text-align left
-	background #fff
+	background isDark ? #282C37 : #fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 2px rgba(#000, 0.1)
+
+	@media (min-width 500px)
+		box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	> .fetching
 		padding 64px 0
@@ -231,29 +236,26 @@ export default Vue.extend({
 		text-align center
 		color #999
 		cursor pointer
-		background #fafafa
+		background isDark ? #21242d : #fafafa
 		outline none
 		border none
-		border-bottom solid 1px #eef0f2
+		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
 		border-radius 6px 6px 0 0
 		box-shadow none
 
 		&:hover
-			background #f6f6f6
-
-		&:active
-			background #f0f0f0
+			background isDark ? #16181d : #f6f6f6
 
 		&:disabled
 			color #ccc
 
 	> .context
 		> *
-			border-bottom 1px solid #eef0f2
+			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 
 	> .renote
 		color #9dbb00
-		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
 		> p
 			margin 0
@@ -281,7 +283,7 @@ export default Vue.extend({
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid #eef0f2
+		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 
 	> article
 		padding 14px 16px 9px 16px
@@ -294,17 +296,13 @@ export default Vue.extend({
 			display block
 			clear both
 
-		&:hover
-			> .main > footer > button
-				color #888
-
 		> header
 			display flex
-			line-height 1.1
+			line-height 1.1em
 
 			> .avatar-anchor
 				display block
-				padding 0 .5em 0 0
+				padding 0 12px 0 0
 
 				> .avatar
 					display block
@@ -323,7 +321,7 @@ export default Vue.extend({
 				> .name
 					display inline-block
 					margin .4em 0
-					color #777
+					color isDark ? #fff : #627079
 					font-size 16px
 					font-weight bold
 					text-align left
@@ -336,10 +334,21 @@ export default Vue.extend({
 					display block
 					text-align left
 					margin 0
-					color #ccc
+					color isDark ? #606984 : #ccc
 
 		> .body
 			padding 8px 0
+
+			> .text
+				display block
+				margin 0
+				padding 0
+				overflow-wrap break-word
+				font-size 16px
+				color isDark ? #fff : #717171
+
+				@media (min-width 500px)
+					font-size 24px
 
 			> .renote
 				margin 8px 0
@@ -427,20 +436,12 @@ export default Vue.extend({
 
 	> .replies
 		> *
-			border-top 1px solid #eef0f2
+			border-top 1px solid isDark ? #1c2023 : #eef0f2
 
-</style>
+.mk-note-detail[data-darkmode]
+	root(true)
 
-<style lang="stylus" module>
-.text
-	display block
-	margin 0
-	padding 0
-	overflow-wrap break-word
-	font-size 16px
-	color #717171
-
-	@media (min-width 500px)
-		font-size 24px
+.mk-note-detail:not([data-darkmode])
+	root(false)
 
 </style>

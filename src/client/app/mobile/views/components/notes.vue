@@ -202,10 +202,10 @@ export default Vue.extend({
 root(isDark)
 	background isDark ? #282C37 : #fff
 	border-radius 8px
-	box-shadow 0 0 2px rgba(0, 0, 0, 0.1)
+	box-shadow 0 0 2px rgba(#000, 0.1)
 
 	@media (min-width 500px)
-		box-shadow 0 8px 32px rgba(0, 0, 0, 0.1)
+		box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	.transition
 		.mk-notes-enter
@@ -222,9 +222,9 @@ root(isDark)
 			line-height 32px
 			text-align center
 			font-size 0.9em
-			color #aaa
-			background #fdfdfd
-			border-bottom solid 1px #eaeaea
+			color isDark ? #666b79 : #aaa
+			background isDark ? #242731 : #fdfdfd
+			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 			span
 				margin 0 16px

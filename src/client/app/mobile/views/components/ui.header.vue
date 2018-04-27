@@ -150,7 +150,7 @@ root(isDark)
 	top 0
 	z-index 1024
 	width 100%
-	//box-shadow 0 1px 0 rgba(#000, 0.075)
+	box-shadow 0 1px 0 rgba(#000, 0.075)
 
 	&, *
 		user-select none

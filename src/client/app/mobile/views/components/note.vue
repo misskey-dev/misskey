@@ -261,7 +261,7 @@ root(isDark)
 		padding 8px 16px
 		line-height 28px
 		color #9dbb00
-		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
 		@media (min-width 500px)
 			padding 16px
@@ -325,9 +325,9 @@ root(isDark)
 			display block
 			float left
 			margin 0 10px 8px 0
-			position -webkit-sticky
-			position sticky
-			top 62px
+			//position -webkit-sticky
+			//position sticky
+			//top 62px
 
 			@media (min-width 500px)
 				margin-right 16px
@@ -365,7 +365,7 @@ root(isDark)
 					margin 0 0.5em 0 0
 					padding 0
 					overflow hidden
-					color #627079
+					color isDark ? #fff : #627079
 					font-size 1em
 					font-weight bold
 					text-decoration none
@@ -378,15 +378,15 @@ root(isDark)
 					margin 0 0.5em 0 0
 					padding 1px 6px
 					font-size 12px
-					color #aaa
-					border solid 1px #ddd
+					color isDark ? #758188 : #aaa
+					border solid 1px isDark ? #57616f : #ddd
 					border-radius 3px
 
 				> .username
 					margin 0 0.5em 0 0
 					overflow hidden
 					text-overflow ellipsis
-					color #ccc
+					color isDark ? #606984 : #ccc
 
 				> .info
 					margin-left auto
@@ -394,10 +394,10 @@ root(isDark)
 
 					> .mobile
 						margin-right 6px
-						color #c0c0c0
+						color isDark ? #606984 : #c0c0c0
 
 					> .created-at
-						color #c0c0c0
+						color isDark ? #606984 : #c0c0c0
 
 			> .body
 
@@ -434,7 +434,7 @@ root(isDark)
 						padding 0
 						overflow-wrap break-word
 						font-size 1.1em
-						color #717171
+						color isDark ? #fff : #717171
 
 						>>> .title
 							display block
@@ -442,7 +442,7 @@ root(isDark)
 							padding 4px
 							font-size 90%
 							text-align center
-							background #eef1f3
+							background isDark ? #2f3944 : #eef1f3
 							border-radius 4px
 
 						>>> .code
@@ -451,12 +451,12 @@ root(isDark)
 						>>> .quote
 							margin 8px
 							padding 6px 12px
-							color #aaa
-							border-left solid 3px #eee
+							color isDark ? #6f808e : #aaa
+							border-left solid 3px isDark ? #637182 : #eee
 
 						> .reply
 							margin-right 8px
-							color #717171
+							color isDark ? #99abbf : #717171
 
 						> .rp
 							margin-left 4px
@@ -528,7 +528,7 @@ root(isDark)
 
 						> .mk-note-preview
 							padding 16px
-							border dashed 1px #c0dac6
+							border dashed 1px isDark ? #4e945e : #c0dac6
 							border-radius 8px
 
 				> .app
@@ -543,14 +543,14 @@ root(isDark)
 					border none
 					box-shadow none
 					font-size 1em
-					color #ddd
+					color isDark ? #606984 : #ddd
 					cursor pointer
 
 					&:not(:last-child)
 						margin-right 28px
 
 					&:hover
-						color #666
+						color isDark ? #9198af : #666
 
 					> .count
 						display inline

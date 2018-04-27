@@ -15,19 +15,20 @@
 			</router-link>
 			<div class="links">
 				<ul>
-					<li><router-link to="/">%fa:home%%i18n:@home%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/notifications">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/messaging">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/othello">%fa:gamepad%ゲーム<template v-if="hasGameInvitations">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@home%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/othello" :data-active="$route.name == 'othello'">%fa:gamepad%ゲーム<template v-if="hasGameInvitations">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/drive">%fa:cloud%%i18n:@drive%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'">%fa:cloud%%i18n:@drive%%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
 					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
 				</ul>
 				<ul>
 					<li><router-link to="/i/settings">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
+					<li @click="dark"><p><template v-if="_darkmode_">%fa:moon%</template><template v-else>%fa:R moon%</template><span>ダークモード</span></p></li>
 				</ul>
 			</div>
 			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
@@ -113,6 +114,9 @@ export default Vue.extend({
 		},
 		onOthelloNoInvites() {
 			this.hasGameInvitations = false;
+		},
+		dark() {
+			(this as any)._updateDarkmode_(!(this as any)._darkmode_);
 		}
 	}
 });
@@ -121,7 +125,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.nav
+root(isDark)
+	$color = isDark ? #c9d2e0 : #777
+
 	.backdrop
 		position fixed
 		top 0
@@ -129,7 +135,7 @@ export default Vue.extend({
 		z-index 1025
 		width 100%
 		height 100%
-		background rgba(0, 0, 0, 0.2)
+		background isDark ? rgba(#000, 0.7) : rgba(#000, 0.2)
 
 	.body
 		position fixed
@@ -140,8 +146,7 @@ export default Vue.extend({
 		height 100%
 		overflow auto
 		-webkit-overflow-scrolling touch
-		color #777
-		background #fff
+		background isDark ? #16191f : #fff
 
 	.me
 		display block
@@ -162,7 +167,7 @@ export default Vue.extend({
 			left 80px
 			padding 0
 			width calc(100% - 112px)
-			color #777
+			color $color
 			line-height 96px
 			overflow hidden
 			text-overflow ellipsis
@@ -182,13 +187,21 @@ export default Vue.extend({
 			font-size 1em
 			line-height 1em
 
-			a
+			a, p
 				display block
+				margin 0
 				padding 0 20px
 				line-height 3rem
 				line-height calc(1rem + 30px)
-				color #777
+				color $color
 				text-decoration none
+
+				&[data-active]
+					color $theme-color-foreground
+					background $theme-color
+
+					> [data-fa]:last-child
+						color $theme-color-foreground
 
 				> [data-fa]:first-child
 					margin-right 0.5em
@@ -205,17 +218,15 @@ export default Vue.extend({
 					padding 0 20px
 					font-size 1.2em
 					line-height calc(1rem + 30px)
-					color #ccc
+					color $color
 
 	.about
 		margin 0
 		padding 1em 0
 		text-align center
 		font-size 0.8em
+		color $color
 		opacity 0.5
-
-		a
-			color #777
 
 .nav-enter-active,
 .nav-leave-active {
@@ -238,5 +249,11 @@ export default Vue.extend({
 .back-leave-active {
 	opacity: 0;
 }
+
+.nav[data-darkmode]
+	root(true)
+
+.nav:not([data-darkmode])
+	root(false)
 
 </style>
