@@ -45,9 +45,9 @@
 		</header>
 		<nav>
 			<div class="nav-container">
-				<a :data-active="page == 'home'" @click="page = 'home'">%i18n:@overview%</a>
-				<a :data-active="page == 'notes'" @click="page = 'notes'">%i18n:@timeline%</a>
-				<a :data-active="page == 'media'" @click="page = 'media'">%i18n:@media%</a>
+				<a :data-active="page == 'home'" @click="page = 'home'">%fa:home% %i18n:@overview%</a>
+				<a :data-active="page == 'notes'" @click="page = 'notes'">%fa:R comment-alt% %i18n:@timeline%</a>
+				<a :data-active="page == 'media'" @click="page = 'media'">%fa:image% %i18n:@media%</a>
 			</div>
 		</nav>
 		<div class="body">
@@ -201,7 +201,7 @@ root(isDark)
 
 			> .description
 				margin 8px 0
-				color #fff
+				color isDark ? #fff : #757c82
 
 			> .info
 				margin 8px 0
@@ -209,7 +209,7 @@ root(isDark)
 				> p
 					display inline
 					margin 0 16px 0 0
-					color #a9b9c1
+					color isDark ? #a9b9c1 : #90989c
 
 					> i
 						margin-right 4px

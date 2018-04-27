@@ -175,11 +175,15 @@ export default Vue.extend({
 	margin 8px auto
 	background #fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 2px rgba(0, 0, 0, 0.1)
 
 	@media (min-width 500px)
 		margin 16px auto
 		width calc(100% - 32px)
+		box-shadow 0 8px 32px rgba(0, 0, 0, 0.1)
+
+	@media (min-width 600px)
+		margin 32px auto
 
 	> header
 		z-index 1

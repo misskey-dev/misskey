@@ -266,6 +266,9 @@ root(isDark)
 		@media (min-width 500px)
 			padding 16px
 
+		@media (min-width 600px)
+			padding 16px 32px
+
 		.avatar-anchor
 			display inline-block
 

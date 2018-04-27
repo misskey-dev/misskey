@@ -64,10 +64,13 @@ export default Vue.extend({
 	> section
 		background #eee
 		border-radius 8px
-		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+		box-shadow 0 4px 16px rgba(#000, 0.1)
 
 		&:not(:last-child)
 			margin-bottom 8px
+
+			@media (min-width 500px)
+				margin-bottom 16px
 
 		> h2
 			margin 0
