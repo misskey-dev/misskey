@@ -200,6 +200,7 @@ export default Vue.extend({
 @import '~const.styl'
 
 root(isDark)
+	overflow hidden
 	background isDark ? #282C37 : #fff
 	border-radius 8px
 	box-shadow 0 0 2px rgba(#000, 0.1)

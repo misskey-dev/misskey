@@ -240,12 +240,6 @@ root(isDark)
 	font-size 12px
 	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
-	&:first-child
-		border-radius 8px 8px 0 0
-
-		> .renote
-			border-radius 8px 8px 0 0
-
 	&:last-of-type
 		border-bottom none
 
@@ -303,12 +297,6 @@ root(isDark)
 
 		& + article
 			padding-top 8px
-
-	> .reply-to
-		background rgba(0, 0, 0, 0.0125)
-
-		> .mk-note-preview
-			background transparent
 
 	> article
 		padding 16px 16px 9px

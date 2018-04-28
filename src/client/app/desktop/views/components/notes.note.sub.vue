@@ -35,8 +35,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 root(isDark)
 	margin 0
-	padding 16px
+	padding 16px 32px
 	font-size 0.9em
+	background isDark ? #21242d : #fcfcfc
 
 	&:after
 		content ""

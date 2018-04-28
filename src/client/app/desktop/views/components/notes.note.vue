@@ -371,13 +371,6 @@ root(isDark)
 		& + article
 			padding-top 8px
 
-	> .reply-to
-		padding 0 16px
-		background rgba(0, 0, 0, 0.0125)
-
-		> .mk-note-preview
-			background transparent
-
 	> article
 		padding 28px 32px 18px 32px
 

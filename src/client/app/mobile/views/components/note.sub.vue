@@ -28,8 +28,9 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	font-size 0.9em
 	padding 16px
+	font-size 0.9em
+	background isDark ? #21242d : #fcfcfc
 
 	@media (min-width 600px)
 		padding 24px 32px

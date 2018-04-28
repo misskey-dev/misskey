@@ -31,7 +31,6 @@ export default Vue.extend({
 	margin 0
 	padding 0
 	font-size 0.9em
-	background #fff
 
 	&:after
 		content ""
