@@ -62,7 +62,7 @@ export default Vue.extend({
 		overflow-wrap break-word
 		font-size .9em
 		color #4C4C4C
-		border-bottom 1px solid rgba(0, 0, 0, 0.05)
+		border-bottom 1px solid rgba(#000, 0.05)
 
 		&:after
 			content ""

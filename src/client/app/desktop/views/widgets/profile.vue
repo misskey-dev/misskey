@@ -45,7 +45,7 @@ export default define({
 root(isDark)
 	overflow hidden
 	background isDark ? #282c37 : #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	&[data-compact]
@@ -54,14 +54,14 @@ root(isDark)
 			display block
 			width 100%
 			height 100%
-			background rgba(0, 0, 0, 0.5)
+			background rgba(#000, 0.5)
 
 		> .avatar
 			top ((100px - 58px) / 2)
 			left ((100px - 58px) / 2)
 			border none
 			border-radius 100%
-			box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
+			box-shadow 0 0 16px rgba(#000, 0.5)
 
 		> .name
 			position absolute
@@ -70,7 +70,7 @@ root(isDark)
 			margin 0
 			line-height 100px
 			color #fff
-			text-shadow 0 0 8px rgba(0, 0, 0, 0.5)
+			text-shadow 0 0 8px rgba(#000, 0.5)
 
 		> .username
 			display none

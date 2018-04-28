@@ -105,7 +105,7 @@ $border-color = rgba(27, 31, 35, 0.15)
 		z-index 10000
 		width 100%
 		height 100%
-		background rgba(0, 0, 0, 0.1)
+		background rgba(#000, 0.1)
 		opacity 0
 
 	> .popover

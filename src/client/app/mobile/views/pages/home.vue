@@ -121,7 +121,7 @@ root(isDark)
 			margin 0 auto
 			background isDark ? #272f3a : #fff
 			border-radius 8px
-			box-shadow 0 0 16px rgba(0, 0, 0, 0.1)
+			box-shadow 0 0 16px rgba(#000, 0.1)
 
 			$balloon-size = 16px
 

@@ -17,14 +17,16 @@
 				<slot></slot>
 			</div>
 		</div>
-		<div class="handle top" v-if="canResize" @mousedown.prevent="onTopHandleMousedown"></div>
-		<div class="handle right" v-if="canResize" @mousedown.prevent="onRightHandleMousedown"></div>
-		<div class="handle bottom" v-if="canResize" @mousedown.prevent="onBottomHandleMousedown"></div>
-		<div class="handle left" v-if="canResize" @mousedown.prevent="onLeftHandleMousedown"></div>
-		<div class="handle top-left" v-if="canResize" @mousedown.prevent="onTopLeftHandleMousedown"></div>
-		<div class="handle top-right" v-if="canResize" @mousedown.prevent="onTopRightHandleMousedown"></div>
-		<div class="handle bottom-right" v-if="canResize" @mousedown.prevent="onBottomRightHandleMousedown"></div>
-		<div class="handle bottom-left" v-if="canResize" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
+		<template v-if="canResize">
+			<div class="handle top" @mousedown.prevent="onTopHandleMousedown"></div>
+			<div class="handle right" @mousedown.prevent="onRightHandleMousedown"></div>
+			<div class="handle bottom" @mousedown.prevent="onBottomHandleMousedown"></div>
+			<div class="handle left" @mousedown.prevent="onLeftHandleMousedown"></div>
+			<div class="handle top-left" @mousedown.prevent="onTopLeftHandleMousedown"></div>
+			<div class="handle top-right" @mousedown.prevent="onTopRightHandleMousedown"></div>
+			<div class="handle bottom-right" @mousedown.prevent="onBottomRightHandleMousedown"></div>
+			<div class="handle bottom-left" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
+		</template>
 	</div>
 </div>
 </template>
@@ -85,7 +87,7 @@ export default Vue.extend({
 
 	computed: {
 		isFlexible(): boolean {
-			return this.height == null;
+			return this.height == 'auto';
 		},
 		canResize(): boolean {
 			return !this.isFlexible;
@@ -476,7 +478,7 @@ root(isDark)
 		left 0
 		width 100%
 		height 100%
-		background rgba(0, 0, 0, 0.7)
+		background rgba(#000, 0.7)
 		opacity 0
 		pointer-events none
 
@@ -493,7 +495,7 @@ root(isDark)
 		&:focus
 			&:not([data-is-modal])
 				> .body
-					box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(0, 0, 0, 0.2)
+					box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(#000, 0.2)
 
 		> .handle
 			$size = 8px
@@ -561,7 +563,7 @@ root(isDark)
 			overflow hidden
 			background isDark ? #282C37 : #fff
 			border-radius 6px
-			box-shadow 0 2px 6px 0 rgba(0, 0, 0, 0.2)
+			box-shadow 0 2px 6px 0 rgba(#000, 0.2)
 
 			> header
 				$header-height = 40px

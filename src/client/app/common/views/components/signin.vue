@@ -91,7 +91,7 @@ export default Vue.extend({
 			width 100%
 			line-height 44px
 			font-size 1em
-			color rgba(0, 0, 0, 0.7)
+			color rgba(#000, 0.7)
 			background #fff
 			outline none
 			border solid 1px #eee
@@ -117,7 +117,7 @@ export default Vue.extend({
 		margin -6px 0 0 0
 		width 100%
 		font-size 1.2em
-		color rgba(0, 0, 0, 0.5)
+		color rgba(#000, 0.5)
 		outline none
 		border none
 		border-radius 0

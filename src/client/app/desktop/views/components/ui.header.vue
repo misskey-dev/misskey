@@ -103,7 +103,7 @@ root(isDark)
 	top 0
 	z-index 1000
 	width 100%
-	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
+	box-shadow 0 1px 1px rgba(#000, 0.075)
 
 	> .main
 		height 48px

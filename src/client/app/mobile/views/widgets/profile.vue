@@ -34,7 +34,7 @@ export default define({
 	display block
 	width 100%
 	height 100%
-	background rgba(0, 0, 0, 0.5)
+	background rgba(#000, 0.5)
 
 .avatar
 	display block
@@ -47,7 +47,7 @@ export default define({
 	left ((100px - 58px) / 2)
 	border none
 	border-radius 100%
-	box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
+	box-shadow 0 0 16px rgba(#000, 0.5)
 
 .name
 	display block
@@ -58,6 +58,6 @@ export default define({
 	line-height 100px
 	color #fff
 	font-weight bold
-	text-shadow 0 0 8px rgba(0, 0, 0, 0.5)
+	text-shadow 0 0 8px rgba(#000, 0.5)
 
 </style>

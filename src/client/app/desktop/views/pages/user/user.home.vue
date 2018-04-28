@@ -65,7 +65,7 @@ export default Vue.extend({
 		width calc(100% - 275px * 2)
 
 		> .timeline
-			border solid 1px rgba(0, 0, 0, 0.075)
+			border solid 1px rgba(#000, 0.075)
 			border-radius 6px
 
 	> div
@@ -91,7 +91,7 @@ export default Vue.extend({
 				font-size 12px
 				color #aaa
 				background #fff
-				border solid 1px rgba(0, 0, 0, 0.075)
+				border solid 1px rgba(#000, 0.075)
 				border-radius 6px
 
 				a

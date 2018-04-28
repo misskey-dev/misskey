@@ -54,7 +54,7 @@ export default Vue.extend({
 	width 100%
 	height 100%
 	padding 8px
-	background rgba(0, 0, 0, 0.2)
+	background rgba(#000, 0.2)
 
 	> .body
 		width 100%

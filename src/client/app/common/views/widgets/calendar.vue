@@ -113,7 +113,7 @@ root(isDark)
 	padding 16px 0
 	color isDark ? #c5ced6 :#777
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	&[data-special='on-new-years-day']
@@ -126,7 +126,7 @@ root(isDark)
 	&[data-mobile]
 		border none
 		border-radius 8px
-		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+		box-shadow 0 0 0 1px rgba(#000, 0.2)
 
 	&:after
 		content ""

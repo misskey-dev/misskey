@@ -94,7 +94,7 @@ root(isDark)
 	width 250px
 	background isDark ? #282c37 : #fff
 	background-clip content-box
-	border solid 1px rgba(0, 0, 0, 0.1)
+	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
 	overflow hidden
 	opacity 0

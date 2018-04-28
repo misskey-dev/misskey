@@ -88,10 +88,10 @@ root(isDark)
 			cursor pointer
 
 			&:hover
-				background rgba(0, 0, 0, 0.05)
+				background rgba(#000, 0.05)
 
 			&:active
-				background rgba(0, 0, 0, 0.1)
+				background rgba(#000, 0.1)
 
 			> .backdrop
 				position absolute

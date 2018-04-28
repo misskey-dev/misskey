@@ -106,7 +106,7 @@ root(isDark)
 		width $width
 		background isDark ? #282c37 :#fff
 		border-radius 0 4px 4px 4px
-		box-shadow 2px 2px 8px rgba(0, 0, 0, 0.2)
+		box-shadow 2px 2px 8px rgba(#000, 0.2)
 		transition visibility 0s linear 0.2s
 
 .menu[data-darkmode]

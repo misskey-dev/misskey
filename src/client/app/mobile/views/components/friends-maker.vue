@@ -57,7 +57,7 @@ export default Vue.extend({
 .mk-friends-maker
 	background #fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 0 1px rgba(#000, 0.2)
 
 	> .title
 		margin 0

@@ -5,7 +5,7 @@
 		cx="50%" cy="50%"
 		fill="none"
 		stroke-width="0.1"
-		stroke="rgba(0, 0, 0, 0.05)"/>
+		stroke="rgba(#000, 0.05)"/>
 	<circle
 		:r="r"
 		cx="50%" cy="50%"
@@ -56,7 +56,7 @@ root(isDark)
 
 	> text
 		font-size 0.15px
-		fill isDark ? rgba(#fff, 0.6) : rgba(0, 0, 0, 0.6)
+		fill isDark ? rgba(#fff, 0.6) : rgba(#000, 0.6)
 
 svg[data-darkmode]
 	root(true)

@@ -92,7 +92,7 @@ root(isDark)
 					padding 8px 16px
 
 					&:nth-child(even)
-						background rgba(0, 0, 0, 0.05)
+						background rgba(#000, 0.05)
 
 .mkw-rss[data-darkmode]
 	root(true)

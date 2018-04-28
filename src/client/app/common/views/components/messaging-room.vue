@@ -256,7 +256,7 @@ export default Vue.extend({
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(0, 0, 0, 0.4)
+			color rgba(#000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -267,7 +267,7 @@ export default Vue.extend({
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(0, 0, 0, 0.4)
+			color rgba(#000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -278,7 +278,7 @@ export default Vue.extend({
 			padding 16px
 			text-align center
 			font-size 0.8em
-			color rgba(0, 0, 0, 0.4)
+			color rgba(#000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -289,14 +289,14 @@ export default Vue.extend({
 			padding 0 12px
 			line-height 24px
 			color #fff
-			background rgba(0, 0, 0, 0.3)
+			background rgba(#000, 0.3)
 			border-radius 12px
 
 			&:hover
-				background rgba(0, 0, 0, 0.4)
+				background rgba(#000, 0.4)
 
 			&:active
-				background rgba(0, 0, 0, 0.5)
+				background rgba(#000, 0.5)
 
 			&.fetching
 				cursor wait
@@ -322,7 +322,7 @@ export default Vue.extend({
 				left 0
 				right 0
 				margin 0 auto
-				background rgba(0, 0, 0, 0.1)
+				background rgba(#000, 0.1)
 
 			> span
 				display inline-block
@@ -330,7 +330,7 @@ export default Vue.extend({
 				padding 0 16px
 				//font-weight bold
 				line-height 32px
-				color rgba(0, 0, 0, 0.3)
+				color rgba(#000, 0.3)
 				background #fff
 
 	> footer

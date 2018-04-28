@@ -3,6 +3,10 @@
  * @param {*} note 投稿
  */
 const summarize = (note: any): string => {
+	if (note.isHidden) {
+		return '(非公開の投稿)';
+	}
+
 	let summary = '';
 
 	// チャンネル

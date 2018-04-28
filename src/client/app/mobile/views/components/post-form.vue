@@ -10,6 +10,10 @@
 	</header>
 	<div class="form">
 		<mk-note-preview v-if="reply" :note="reply"/>
+		<div v-if="visibility == 'specified'" class="visibleUsers">
+			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
+			<a @click="addVisibleUser">+ユーザーを追加</a>
+		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
 		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:!@reply-placeholder%' : '%i18n:!@note-placeholder%'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
@@ -27,6 +31,7 @@
 		<button class="poll" @click="poll = true">%fa:chart-pie%</button>
 		<button class="poll" @click="useCw = !useCw">%fa:eye-slash%</button>
 		<button class="geo" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
+		<button class="visibility" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
 		<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>
@@ -35,11 +40,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
+import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import getKao from '../../../common/scripts/get-kao';
 
 export default Vue.extend({
 	components: {
-		XDraggable
+		XDraggable,
+		MkVisibilityChooser
 	},
 
 	props: ['reply'],
@@ -52,6 +59,8 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			geo: null,
+			visibility: 'public',
+			visibleUsers: [],
 			useCw: false,
 			cw: null
 		};
@@ -121,6 +130,33 @@ export default Vue.extend({
 			this.geo = null;
 		},
 
+		setVisibility() {
+			const w = (this as any).os.new(MkVisibilityChooser, {
+				source: this.$refs.visibilityButton,
+				compact: true,
+				v: this.visibility
+			});
+			w.$once('chosen', v => {
+				this.visibility = v;
+			});
+		},
+
+		addVisibleUser() {
+			(this as any).apis.input({
+				title: 'ユーザー名を入力してください'
+			}).then(username => {
+				(this as any).api('users/show', {
+					username
+				}).then(user => {
+					this.visibleUsers.push(user);
+				});
+			});
+		},
+
+		removeVisibleUser(user) {
+			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+		},
+
 		clear() {
 			this.text = '';
 			this.files = [];
@@ -145,6 +181,8 @@ export default Vue.extend({
 					heading: isNaN(this.geo.heading) ? null : this.geo.heading,
 					speed: this.geo.speed,
 				} : null,
+				visibility: this.visibility,
+				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
 				viaMobile: viaMobile
 			}).then(data => {
 				this.$emit('note');
@@ -169,33 +207,33 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-post-form
+root(isDark)
 	max-width 500px
 	width calc(100% - 16px)
 	margin 8px auto
-	background #fff
+	background isDark ? #282C37 : #fff
 	border-radius 8px
-	box-shadow 0 0 2px rgba(0, 0, 0, 0.1)
+	box-shadow 0 0 2px rgba(#000, 0.1)
 
 	@media (min-width 500px)
 		margin 16px auto
 		width calc(100% - 32px)
-		box-shadow 0 8px 32px rgba(0, 0, 0, 0.1)
+		box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	@media (min-width 600px)
 		margin 32px auto
 
 	> header
-		z-index 1
+		z-index 1000
 		height 50px
-		box-shadow 0 1px 0 0 rgba(0, 0, 0, 0.1)
+		box-shadow 0 1px 0 0 isDark ? rgba(#000, 0.2) : rgba(#000, 0.1)
 
 		> .cancel
 			padding 0
 			width 50px
 			line-height 50px
 			font-size 24px
-			color #555
+			color isDark ? #9baec8 : #555
 
 		> div
 			position absolute
@@ -228,6 +266,38 @@ export default Vue.extend({
 
 		> .mk-note-preview
 			padding 16px
+
+		> .visibleUsers
+			margin-bottom 8px
+			font-size 14px
+
+			> span
+				margin-right 16px
+				color isDark ? #fff : #666
+
+		> input
+			z-index 1
+
+		> input
+		> textarea
+			display block
+			padding 12px
+			margin 0
+			width 100%
+			font-size 16px
+			color isDark ? #fff : #333
+			background isDark ? #191d23 : #fff
+			border none
+			border-radius 0
+			box-shadow 0 1px 0 0 isDark ? rgba(#000, 0.2) : rgba(#000, 0.1)
+
+			&:disabled
+				opacity 0.5
+
+		> textarea
+			max-width 100%
+			min-width 100%
+			min-height 80px
 
 		> .attaches
 
@@ -262,31 +332,12 @@ export default Vue.extend({
 		> .file
 			display none
 
-		> input
-		> textarea
-			display block
-			padding 12px
-			margin 0
-			width 100%
-			font-size 16px
-			color #333
-			border none
-			border-bottom solid 1px #ddd
-			border-radius 0
-
-			&:disabled
-				opacity 0.5
-
-		> textarea
-			max-width 100%
-			min-width 100%
-			min-height 80px
-
 		> .upload
 		> .drive
 		> .kao
 		> .poll
 		> .geo
+		> .visibility
 			display inline-block
 			padding 0
 			margin 0
@@ -300,5 +351,10 @@ export default Vue.extend({
 			border-radius 0
 			box-shadow none
 
-</style>
+.mk-post-form[data-darkmode]
+	root(true)
 
+.mk-post-form:not([data-darkmode])
+	root(false)
+
+</style>

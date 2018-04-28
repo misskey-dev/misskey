@@ -53,17 +53,27 @@ export default Vue.extend({
 			const width = popover.offsetWidth;
 			const height = popover.offsetHeight;
 
+			let left;
+			let top;
+
 			if (this.compact) {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
-				popover.style.left = (x - (width / 2)) + 'px';
-				popover.style.top = (y - (height / 2)) + 'px';
+				left = (x - (width / 2));
+				top = (y - (height / 2));
 			} else {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + this.source.offsetHeight;
-				popover.style.left = (x - (width / 2)) + 'px';
-				popover.style.top = y + 'px';
+				left = (x - (width / 2));
+				top = y;
 			}
+
+			if (left + width > window.innerWidth) {
+				left = window.innerWidth - width;
+			}
+
+			popover.style.left = left + 'px';
+			popover.style.top = top + 'px';
 
 			anime({
 				targets: this.$refs.backdrop,

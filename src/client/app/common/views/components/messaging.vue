@@ -205,7 +205,7 @@ root(isDark)
 		z-index 1
 		width 100%
 		background #fff
-		box-shadow 0 0px 2px rgba(0, 0, 0, 0.2)
+		box-shadow 0 0px 2px rgba(#000, 0.2)
 
 		> .form
 			padding 8px
@@ -279,7 +279,7 @@ root(isDark)
 					vertical-align top
 					white-space nowrap
 					overflow hidden
-					color rgba(0, 0, 0, 0.8)
+					color rgba(#000, 0.8)
 					text-decoration none
 					transition none
 					cursor pointer
@@ -318,11 +318,11 @@ root(isDark)
 						margin 0 8px 0 0
 						/*font-weight bold*/
 						font-weight normal
-						color rgba(0, 0, 0, 0.8)
+						color rgba(#000, 0.8)
 
 					.username
 						font-weight normal
-						color rgba(0, 0, 0, 0.3)
+						color rgba(#000, 0.3)
 
 	> .history
 
@@ -383,17 +383,17 @@ root(isDark)
 						overflow hidden
 						text-overflow ellipsis
 						font-size 1em
-						color isDark ? #fff : rgba(0, 0, 0, 0.9)
+						color isDark ? #fff : rgba(#000, 0.9)
 						font-weight bold
 						transition all 0.1s ease
 
 					> .username
 						margin 0 8px
-						color isDark ? #606984 : rgba(0, 0, 0, 0.5)
+						color isDark ? #606984 : rgba(#000, 0.5)
 
 					> .mk-time
 						margin 0 0 0 auto
-						color isDark ? #606984 : rgba(0, 0, 0, 0.5)
+						color isDark ? #606984 : rgba(#000, 0.5)
 						font-size 80%
 
 				> .avatar
@@ -413,10 +413,10 @@ root(isDark)
 						overflow hidden
 						overflow-wrap break-word
 						font-size 1.1em
-						color isDark ? #fff : rgba(0, 0, 0, 0.8)
+						color isDark ? #fff : rgba(#000, 0.8)
 
 						.me
-							color isDark ? rgba(#fff, 0.7) : rgba(0, 0, 0, 0.4)
+							color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.4)
 
 					> .image
 						display block

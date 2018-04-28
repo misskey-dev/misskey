@@ -364,7 +364,6 @@ root(isDark)
 		clear both
 
 	> .content
-
 		> input
 		> textarea
 			display block
@@ -585,7 +584,7 @@ root(isDark)
 			color rgba($theme-color, 0.6)
 			background isDark ? transparent : linear-gradient(to bottom, lighten($theme-color, 80%) 0%, lighten($theme-color, 90%) 100%)
 			border-color rgba($theme-color, 0.5)
-			box-shadow 0 2px 4px rgba(0, 0, 0, 0.15) inset
+			box-shadow 0 2px 4px rgba(#000, 0.15) inset
 
 		&:focus
 			&:after

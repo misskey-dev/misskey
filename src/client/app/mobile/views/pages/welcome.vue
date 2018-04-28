@@ -108,7 +108,7 @@ export default Vue.extend({
 		.form
 			margin-bottom 16px
 			background #fff
-			border solid 1px rgba(0, 0, 0, 0.2)
+			border solid 1px rgba(#000, 0.2)
 			border-radius 8px
 			overflow hidden
 
@@ -131,7 +131,7 @@ export default Vue.extend({
 						margin 0 0 16px 0
 						width 100%
 						font-size 1em
-						color rgba(0, 0, 0, 0.7)
+						color rgba(#000, 0.7)
 						background #fff
 						outline none
 						border solid 1px #ddd
@@ -156,7 +156,7 @@ export default Vue.extend({
 							background-color #767676
 							background-image none
 							border-color #444
-							box-shadow 0 1px 3px rgba(0, 0, 0, 0.075), inset 0 0 5px rgba(0, 0, 0, 0.2)
+							box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
 
 				> div
 					padding 16px
@@ -164,7 +164,7 @@ export default Vue.extend({
 
 		> .tl
 			background #fff
-			border solid 1px rgba(0, 0, 0, 0.2)
+			border solid 1px rgba(#000, 0.2)
 			border-radius 8px
 			overflow hidden
 

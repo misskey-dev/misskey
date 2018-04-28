@@ -72,7 +72,7 @@ export default Vue.extend({
 
 	overflow hidden
 	background #f7f7f7
-	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
+	box-shadow 0 1px 1px rgba(#000, 0.075)
 
 	> .is-suspended
 	> .is-remote
@@ -99,7 +99,7 @@ export default Vue.extend({
 				background-color #383838
 
 			> .fade
-				background linear-gradient(transparent, rgba(0, 0, 0, 0.7))
+				background linear-gradient(transparent, rgba(#000, 0.7))
 
 		> .container
 			> .title
@@ -142,7 +142,7 @@ export default Vue.extend({
 			margin 0
 			border solid 3px #fff
 			border-radius 8px
-			box-shadow 1px 1px 3px rgba(0, 0, 0, 0.2)
+			box-shadow 1px 1px 3px rgba(#000, 0.2)
 
 		> .title
 			position absolute

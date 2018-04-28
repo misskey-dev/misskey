@@ -607,7 +607,7 @@ root(isDark)
 
 	> .detail
 		padding-top 4px
-		background rgba(0, 0, 0, 0.0125)
+		background rgba(#000, 0.0125)
 
 .note[data-darkmode]
 	root(true)

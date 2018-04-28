@@ -125,7 +125,7 @@ root(isDark)
 		width 300px
 		background $bgcolor
 		border-radius 4px
-		box-shadow 0 1px 4px rgba(0, 0, 0, 0.25)
+		box-shadow 0 1px 4px rgba(#000, 0.25)
 
 		&:before
 			content ""
@@ -136,7 +136,7 @@ root(isDark)
 			right 74px
 			border-top solid 14px transparent
 			border-right solid 14px transparent
-			border-bottom solid 14px rgba(0, 0, 0, 0.1)
+			border-bottom solid 14px rgba(#000, 0.1)
 			border-left solid 14px transparent
 
 		&:after

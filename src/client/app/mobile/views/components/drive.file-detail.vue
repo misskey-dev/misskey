@@ -139,7 +139,7 @@ export default Vue.extend({
 			max-width 100%
 			max-height 300px
 			margin 0 auto
-			box-shadow 1px 1px 4px rgba(0, 0, 0, 0.2)
+			box-shadow 1px 1px 4px rgba(#000, 0.2)
 
 		> footer
 			padding 8px 8px 0 8px
@@ -226,7 +226,7 @@ export default Vue.extend({
 					background-color #767676
 					background-image none
 					border-color #444
-					box-shadow 0 1px 3px rgba(0, 0, 0, 0.075), inset 0 0 5px rgba(0, 0, 0, 0.2)
+					box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
 
 				> [data-fa]
 					margin-right 4px
