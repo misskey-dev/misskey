@@ -46,7 +46,16 @@ export type INote = {
 	repliesCount: number;
 	reactionCounts: any;
 	mentions: mongo.ObjectID[];
-	visibility: 'public' | 'unlisted' | 'private' | 'direct';
+
+	/**
+	 * public ... 公開
+	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
+	 * followers ... フォロワーのみ
+	 * mentioned ... 言及したユーザーのみ
+	 * private ... 自分のみ
+	 */
+	visibility: 'public' | 'home' | 'followers' | 'mentioned' | 'private';
+
 	geo: {
 		coordinates: number[];
 		altitude: number;

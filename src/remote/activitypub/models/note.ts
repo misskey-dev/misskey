@@ -65,8 +65,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	//#region Visibility
 	let visibility = 'public';
-	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';
-	if (note.cc.length == 0) visibility = 'private';
+	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'home';
+	if (note.cc.length == 0) visibility = 'followers';
 	// TODO
 	if (visibility != 'public') return null;
 	//#endergion

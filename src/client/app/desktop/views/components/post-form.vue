@@ -30,7 +30,7 @@
 	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
 	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
 	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:!@text-remain%'.replace('{}', 1000 - text.length) }}</p>
+	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:!@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -43,10 +43,12 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import getKao from '../../../common/scripts/get-kao';
+import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 
 export default Vue.extend({
 	components: {
-		XDraggable
+		XDraggable,
+		MkVisibilityChooser
 	},
 
 	props: ['reply', 'renote'],
@@ -61,6 +63,7 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
+			visibility: 'public',
 			autocomplete: null,
 			draghover: false
 		};
@@ -246,6 +249,16 @@ export default Vue.extend({
 			this.$emit('geo-dettached');
 		},
 
+		setVisibility() {
+			const w = (this as any).os.new(MkVisibilityChooser, {
+				source: this.$refs.visibilityButton,
+				v: this.visibility
+			});
+			w.$once('chosen', v => {
+				this.visibility = v;
+			});
+		},
+
 		post() {
 			this.posting = true;
 
@@ -256,6 +269,7 @@ export default Vue.extend({
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
+				visibility: this.visibility,
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
@@ -450,19 +464,6 @@ root(isDark)
 	input[type='file']
 		display none
 
-	.text-count
-		pointer-events none
-		display block
-		position absolute
-		bottom 16px
-		right 138px
-		margin 0
-		line-height 40px
-		color rgba($theme-color, 0.5)
-
-		&.over
-			color #ec3828
-
 	.submit
 		display block
 		position absolute
@@ -532,6 +533,7 @@ root(isDark)
 	> .kao
 	> .poll
 	> .geo
+	> .visibility
 		display inline-block
 		cursor pointer
 		padding 0

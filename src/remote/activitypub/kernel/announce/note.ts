@@ -30,8 +30,8 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 
 	//#region Visibility
 	let visibility = 'public';
-	if (!activity.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';
-	if (activity.cc.length == 0) visibility = 'private';
+	if (!activity.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'home';
+	if (activity.cc.length == 0) visibility = 'followers';
 	// TODO
 	if (visibility != 'public') throw new Error('unspported visibility');
 	//#endergion
