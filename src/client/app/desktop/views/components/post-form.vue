@@ -6,6 +6,10 @@
 	@drop.stop="onDrop"
 >
 	<div class="content">
+		<div v-if="visibility == 'specified'" class="visibleUsers">
+			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
+			<a @click="addVisibleUser">+ユーザーを追加</a>
+		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
@@ -64,6 +68,7 @@ export default Vue.extend({
 			cw: null,
 			geo: null,
 			visibility: 'public',
+			visibleUsers: [],
 			autocomplete: null,
 			draghover: false
 		};
@@ -259,6 +264,22 @@ export default Vue.extend({
 			});
 		},
 
+		addVisibleUser() {
+			(this as any).apis.input({
+				title: 'ユーザー名を入力してください'
+			}).then(username => {
+				(this as any).api('users/show', {
+					username
+				}).then(user => {
+					this.visibleUsers.push(user);
+				});
+			});
+		},
+
+		removeVisibleUser(user) {
+			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+		},
+
 		post() {
 			this.posting = true;
 
@@ -270,6 +291,7 @@ export default Vue.extend({
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
 				visibility: this.visibility,
+				visibleUserIds: this.visibleUsers.map(u => u.id),
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
@@ -394,6 +416,14 @@ root(isDark)
 			&.with
 				border-bottom solid 1px rgba($theme-color, 0.1) !important
 				border-radius 4px 4px 0 0
+
+		> .visibleUsers
+			margin-bottom 8px
+			font-size 14px
+
+			> span
+				margin-right 16px
+				color isDark ? #fff : #666
 
 		> .medias
 			margin 0

@@ -76,7 +76,11 @@ export default async (user: IUser, data: {
 		geo: data.geo || null,
 		appId: data.app ? data.app._id : null,
 		visibility: data.visibility,
-		visibleUserIds: data.visibleUsers ? data.visibleUsers.map(u => u._id) : [],
+		visibleUserIds: data.visibility == 'specified'
+			? data.visibleUsers
+				? data.visibleUsers.map(u => u._id)
+				: []
+			: [],
 
 		// 以下非正規化データ
 		_reply: data.reply ? { userId: data.reply.userId } : null,
