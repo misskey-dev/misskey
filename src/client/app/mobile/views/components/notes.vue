@@ -263,9 +263,7 @@ root(isDark)
 
 	> footer
 		text-align center
-		border-top solid 1px #eaeaea
-		border-bottom-left-radius 8px
-		border-bottom-right-radius 8px
+		border-top solid 1px isDark ? #1c2023 : #eaeaea
 
 		&:empty
 			display none
@@ -274,7 +272,7 @@ root(isDark)
 			margin 0
 			padding 16px
 			width 100%
-			border-radius 0 0 8px 8px
+			color #ccc
 
 			@media (min-width 500px)
 				padding 20px
