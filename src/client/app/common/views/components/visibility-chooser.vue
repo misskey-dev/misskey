@@ -19,14 +19,14 @@
 			<div>%fa:unlock%</div>
 			<div>
 				<span>フォロワー</span>
-				<span>自分のフォロワーのみに公開</span>
+				<span>自分のフォロワーにのみ公開</span>
 			</div>
 		</div>
 		<div @click="choose('mentioned')" :class="{ active: v == 'mentioned' }">
 			<div>%fa:envelope%</div>
 			<div>
 				<span>メンション</span>
-				<span>言及したユーザーのみに公開</span>
+				<span>言及したユーザーにのみ公開</span>
 			</div>
 		</div>
 		<div @click="choose('private')" :class="{ active: v == 'private' }">
