@@ -17,7 +17,7 @@
 		<button @click="fn">%fa:pencil-alt%</button>
 	</template>
 
-	<main>
+	<main :data-darkmode="_darkmode_">
 		<div class="nav" v-if="showNav">
 			<div class="bg" @click="showNav = false"></div>
 			<div class="body">
@@ -100,7 +100,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-main
+root(isDark)
 	> .nav
 		> .bg
 			position fixed
@@ -119,22 +119,11 @@ main
 			right 0
 			width 300px
 			margin 0 auto
-			background #fff
+			background isDark ? #272f3a : #fff
 			border-radius 8px
 			box-shadow 0 0 16px rgba(0, 0, 0, 0.1)
 
 			$balloon-size = 16px
-
-			&:before
-				content ""
-				display block
-				position absolute
-				top -($balloon-size * 2)
-				left s('calc(50% - %s)', $balloon-size)
-				border-top solid $balloon-size transparent
-				border-left solid $balloon-size transparent
-				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size $border-color
 
 			&:after
 				content ""
@@ -145,7 +134,7 @@ main
 				border-top solid $balloon-size transparent
 				border-left solid $balloon-size transparent
 				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size #fff
+				border-bottom solid $balloon-size isDark ? #272f3a : #fff
 
 			> div
 				padding 8px 0
@@ -153,13 +142,14 @@ main
 				> *
 					display block
 					padding 8px 16px
+					color isDark ? #cdd0d8 : #666
 
 					&[data-active]
 						color $theme-color-foreground
 						background $theme-color
 
 					&:not([data-active]):hover
-						background #eee
+						background isDark ? #353e4a : #eee
 
 	> .tl
 		max-width 680px
@@ -171,5 +161,11 @@ main
 
 		@media (min-width 600px)
 			padding 32px
+
+main[data-darkmode]
+	root(true)
+
+main:not([data-darkmode])
+	root(false)
 
 </style>

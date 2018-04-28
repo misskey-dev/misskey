@@ -405,7 +405,7 @@ root(isDark)
 
 		> .time
 			font-size 16px
-			color #c0c0c0
+			color isDark ? #606984 : #c0c0c0
 
 		> footer
 			font-size 1.2em
@@ -417,14 +417,14 @@ root(isDark)
 				border none
 				box-shadow none
 				font-size 1em
-				color #ddd
+				color isDark ? #606984 : #ddd
 				cursor pointer
 
 				&:not(:last-child)
 					margin-right 28px
 
 				&:hover
-					color #666
+					color isDark ? #9198af : #666
 
 				> .count
 					display inline

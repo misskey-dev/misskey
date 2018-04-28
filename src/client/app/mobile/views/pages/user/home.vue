@@ -54,7 +54,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.root.home
+root(isDark)
 	max-width 600px
 	margin 0 auto
 
@@ -65,7 +65,7 @@ export default Vue.extend({
 			margin 0 0 16px 0
 
 	> section
-		background #eee
+		background isDark ? #21242f : #eee
 		border-radius 8px
 		box-shadow 0 4px 16px rgba(#000, 0.1)
 
@@ -80,9 +80,12 @@ export default Vue.extend({
 			padding 8px 10px
 			font-size 15px
 			font-weight normal
-			color #465258
-			background #fff
+			color isDark ? #b8c5cc : #465258
+			background isDark ? #282c37 : #fff
 			border-radius 8px 8px 0 0
+
+			@media (min-width 500px)
+				padding 10px 16px
 
 			> i
 				margin-right 6px
@@ -95,6 +98,12 @@ export default Vue.extend({
 		display block
 		margin 16px
 		text-align center
-		color #cad2da
+		color isDark ? #cad2da : #929aa0
+
+.root.home[data-darkmode]
+	root(true)
+
+.root.home:not([data-darkmode])
+	root(false)
 
 </style>

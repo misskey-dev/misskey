@@ -27,17 +27,17 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-note-card
+root(isDark)
 	display inline-block
 	width 150px
 	//height 120px
 	font-size 12px
-	background #fff
+	background isDark ? #282c37 : #fff
 	border-radius 4px
 
 	> a
 		display block
-		color #2c3940
+		color isDark ? #fff : #2c3940
 
 		&:hover
 			text-decoration none
@@ -75,11 +75,17 @@ export default Vue.extend({
 				left 0
 				width 100%
 				height 20px
-				background linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 100%)
+				background isDark ? linear-gradient(to bottom, rgba(#282c37, 0) 0%, #282c37 100%) : linear-gradient(to bottom, rgba(#fff, 0) 0%, #fff 100%)
 
 		> .mk-time
 			display inline-block
 			padding 8px
 			color #aaa
+
+.mk-note-card[data-darkmode]
+	root(true)
+
+.mk-note-card:not([data-darkmode])
+	root(false)
 
 </style>

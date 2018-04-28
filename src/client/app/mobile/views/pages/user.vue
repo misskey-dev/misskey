@@ -108,6 +108,8 @@ export default Vue.extend({
 @import '~const.styl'
 
 root(isDark)
+	$bg = isDark ? #22252f : #f7f7f7
+
 	> .is-suspended
 	> .is-remote
 		&.is-suspended
@@ -132,6 +134,7 @@ root(isDark)
 				font-size 12px
 
 	> header
+		background $bg
 
 		> .banner
 			padding-bottom 33.3%
@@ -162,14 +165,14 @@ root(isDark)
 						left -2px
 						bottom -2px
 						width 100%
-						background isDark ? #191b22 : #ececed
-						border 3px solid isDark ? #191b22 : #ececed
+						background $bg
+						border 3px solid $bg
 						border-radius 6px
 
 						@media (min-width 500px)
 							left -4px
 							bottom -4px
-							border 4px solid isDark ? #191b22 : #ececed
+							border 4px solid $bg
 							border-radius 12px
 
 				> .mk-follow-button
@@ -235,7 +238,7 @@ root(isDark)
 		position sticky
 		top 47px
 		box-shadow 0 4px 4px isDark ? rgba(#000, 0.3) : rgba(#000, 0.07)
-		background-color isDark ? #191b22 : #ececed
+		background-color $bg
 		z-index 1
 
 		> .nav-container
@@ -248,11 +251,15 @@ root(isDark)
 				display block
 				flex 1 1
 				text-align center
-				line-height 52px
-				font-size 14px
+				line-height 48px
+				font-size 12px
 				text-decoration none
 				color isDark ? #657786 : #9ca1a5
 				border-bottom solid 2px transparent
+
+				@media (min-width 400px)
+					line-height 52px
+					font-size 14px
 
 				&[data-active]
 					font-weight bold

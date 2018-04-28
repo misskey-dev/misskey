@@ -217,7 +217,7 @@ export default Vue.extend({
 @import '~const.styl'
 
 root(isDark)
-	margin 0
+	margin 0 auto
 	padding 0
 	overflow hidden
 	text-align left
@@ -241,13 +241,13 @@ root(isDark)
 		border-radius 6px 6px 0 0
 
 		&:hover
-			background #f6f6f6
+			background isDark ? #2e3440 : #f6f6f6
 
 		&:active
-			background #f0f0f0
+			background isDark ? #21242b : #f0f0f0
 
 		&:disabled
-			color #ccc
+			color isDark ? #21242b : #ccc
 
 	> .context
 		> *
@@ -294,8 +294,8 @@ root(isDark)
 			clear both
 
 		&:hover
-			> .main > footer > button
-				color #888
+			> footer > button
+				color isDark ? #707b97 : #888
 
 		> .avatar-anchor
 			display block
@@ -340,7 +340,7 @@ root(isDark)
 				top 0
 				right 32px
 				font-size 1em
-				color #c0c0c0
+				color isDark ? #606984 : #c0c0c0
 
 		> .body
 			padding 8px 0
@@ -415,11 +415,11 @@ root(isDark)
 				background transparent
 				border none
 				font-size 1em
-				color #ddd
+				color isDark ? #606984 : #ccc
 				cursor pointer
 
 				&:hover
-					color #666
+					color isDark ? #9198af : #666
 
 				> .count
 					display inline
