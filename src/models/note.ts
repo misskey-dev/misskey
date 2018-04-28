@@ -262,7 +262,7 @@ export const pack = async (
 	}
 
 	// Populate media
-	if (_note.mediaIds) {
+	if (_note.mediaIds && !hide) {
 		_note.media = Promise.all(_note.mediaIds.map(fileId =>
 			packFile(fileId)
 		));
@@ -321,7 +321,7 @@ export const pack = async (
 		}
 
 		// Poll
-		if (meId && _note.poll) {
+		if (meId && _note.poll && !hide) {
 			_note.poll = (async (poll) => {
 				const vote = await PollVote
 					.findOne({
@@ -361,6 +361,13 @@ export const pack = async (
 
 	// resolve promises in _note object
 	_note = await rap(_note);
+
+	if (hide) {
+		_note.mediaIds = [];
+		_note.text = null;
+		_note.poll = null;
+		_note.isHidden = true;
+	}
 
 	return _note;
 };
