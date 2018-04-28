@@ -40,6 +40,7 @@
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
+						<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
 						<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote">RP:</a>

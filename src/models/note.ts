@@ -163,9 +163,9 @@ export const pack = async (
 		detail: boolean
 	}
 ) => {
-	const opts = options || {
-		detail: true,
-	};
+	const opts = Object.assign({
+		detail: true
+	}, options);
 
 	// Me
 	const meId: mongo.ObjectID = me
@@ -208,7 +208,7 @@ export const pack = async (
 			hide = false;
 		} else {
 			// 指定されているかどうか
-			const specified = _note.visibleUserIds.test(id => id.equals(meId));
+			const specified = _note.visibleUserIds.some(id => id.equals(meId));
 
 			if (specified) {
 				hide = false;
@@ -245,6 +245,9 @@ export const pack = async (
 	_note.id = _note._id;
 	delete _note._id;
 
+	delete _note._user;
+	delete _note._reply;
+	delete _note.repost;
 	delete _note.mentions;
 	if (_note.geo) delete _note.geo.type;
 
@@ -262,11 +265,9 @@ export const pack = async (
 	}
 
 	// Populate media
-	if (_note.mediaIds && !hide) {
-		_note.media = Promise.all(_note.mediaIds.map(fileId =>
-			packFile(fileId)
-		));
-	}
+	_note.media = hide ? [] : Promise.all(_note.mediaIds.map(fileId =>
+		packFile(fileId)
+	));
 
 	// When requested a detailed note data
 	if (opts.detail) {
