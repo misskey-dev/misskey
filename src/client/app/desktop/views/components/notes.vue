@@ -156,7 +156,7 @@ export default Vue.extend({
 					this.notes = this.notes.slice(0, displayLimit);
 				}
 			} else {
-				this.queue.unshift(note);
+				this.queue.push(note);
 			}
 		},
 
