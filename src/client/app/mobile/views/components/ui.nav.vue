@@ -219,6 +219,7 @@ root(isDark)
 					font-size 1.2em
 					line-height calc(1rem + 30px)
 					color $color
+					opacity 0.5
 
 	.about
 		margin 0
