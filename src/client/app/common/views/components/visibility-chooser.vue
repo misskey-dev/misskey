@@ -181,7 +181,7 @@ root(isDark)
 				background isDark ? #21242b : #ddd
 
 			&.active
-				cursor $theme-color-foreground
+				color $theme-color-foreground
 				background $theme-color
 
 			> *
