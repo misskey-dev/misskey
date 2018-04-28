@@ -22,11 +22,11 @@
 				<span>自分のフォロワーにのみ公開</span>
 			</div>
 		</div>
-		<div @click="choose('mentioned')" :class="{ active: v == 'mentioned' }">
+		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
 			<div>%fa:envelope%</div>
 			<div>
-				<span>メンション</span>
-				<span>言及したユーザーにのみ公開</span>
+				<span>ダイレクト</span>
+				<span>指定したユーザーにのみ公開</span>
 			</div>
 		</div>
 		<div @click="choose('private')" :class="{ active: v == 'private' }">

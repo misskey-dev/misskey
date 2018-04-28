@@ -12,6 +12,7 @@ import NoteWatching, { deleteNoteWatching } from './note-watching';
 import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
 import Notification, { deleteNotification } from './notification';
+import Following from './following';
 
 const Note = db.get<INote>('notes');
 
@@ -51,10 +52,12 @@ export type INote = {
 	 * public ... 公開
 	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
 	 * followers ... フォロワーのみ
-	 * mentioned ... 言及したユーザーのみ
+	 * specified ... visibleUserIds で指定したユーザーのみ
 	 * private ... 自分のみ
 	 */
-	visibility: 'public' | 'home' | 'followers' | 'mentioned' | 'private';
+	visibility: 'public' | 'home' | 'followers' | 'specified' | 'private';
+
+	visibleUserIds: mongo.ObjectID[];
 
 	geo: {
 		coordinates: number[];
@@ -189,6 +192,52 @@ export const pack = async (
 	}
 
 	if (!_note) throw `invalid note arg ${note}`;
+
+	let hide = false;
+
+	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示
+	if (_note.visibility == 'private' && (meId == null || !meId.equals(_note.userId))) {
+		hide = true;
+	}
+
+	// visibility が specified かつ自分が指定されていなかったら非表示
+	if (_note.visibility == 'specified') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId.equals(_note.userId)) {
+			hide = false;
+		} else {
+			// 指定されているかどうか
+			const specified = _note.visibleUserIds.test(id => id.equals(meId));
+
+			if (specified) {
+				hide = false;
+			} else {
+				hide = true;
+			}
+		}
+	}
+
+	// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
+	if (_note.visibility == 'followers') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId.equals(_note.userId)) {
+			hide = false;
+		} else {
+			// フォロワーかどうか
+			const following = await Following.findOne({
+				followeeId: _note.userId,
+				followerId: meId
+			});
+
+			if (following == null) {
+				hide = true;
+			} else {
+				hide = false;
+			}
+		}
+	}
 
 	const id = _note._id;
 

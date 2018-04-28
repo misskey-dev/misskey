@@ -30,6 +30,7 @@ export default async (user: IUser, data: {
 	tags?: string[];
 	cw?: string;
 	visibility?: string;
+	visibleUsers?: IUser[];
 	uri?: string;
 	app?: IApp;
 }, silent = false) => new Promise<INote>(async (res, rej) => {
@@ -57,6 +58,10 @@ export default async (user: IUser, data: {
 		});
 	}
 
+	if (data.visibleUsers) {
+		data.visibleUsers = data.visibleUsers.filter(x => x != null);
+	}
+
 	const insert: any = {
 		createdAt: data.createdAt,
 		mediaIds: data.media ? data.media.map(file => file._id) : [],
@@ -71,6 +76,7 @@ export default async (user: IUser, data: {
 		geo: data.geo || null,
 		appId: data.app ? data.app._id : null,
 		visibility: data.visibility,
+		visibleUserIds: data.visibleUsers ? data.visibleUsers.map(u => u._id) : [],
 
 		// 以下非正規化データ
 		_reply: data.reply ? { userId: data.reply.userId } : null,
