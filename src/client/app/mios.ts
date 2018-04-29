@@ -3,19 +3,19 @@ import { EventEmitter } from 'eventemitter3';
 import * as merge from 'object-assign-deep';
 import * as uuid from 'uuid';
 
-import initStore from '../store';
-import { hostname, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
-import Progress from './scripts/loading';
-import Connection from './scripts/streaming/stream';
-import { HomeStreamManager } from './scripts/streaming/home';
-import { DriveStreamManager } from './scripts/streaming/drive';
-import { ServerStreamManager } from './scripts/streaming/server';
-import { MessagingIndexStreamManager } from './scripts/streaming/messaging-index';
-import { OthelloStreamManager } from './scripts/streaming/othello';
+import initStore from './store';
+import { hostname, apiUrl, swPublickey, version, lang, googleMapsApiKey } from './config';
+import Progress from './common/scripts/loading';
+import Connection from './common/scripts/streaming/stream';
+import { HomeStreamManager } from './common/scripts/streaming/home';
+import { DriveStreamManager } from './common/scripts/streaming/drive';
+import { ServerStreamManager } from './common/scripts/streaming/server';
+import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
+import { OthelloStreamManager } from './common/scripts/streaming/othello';
 
 import Err from '../common/views/components/connect-failed.vue';
-import { LocalTimelineStreamManager } from './scripts/streaming/local-timeline';
-import { GlobalTimelineStreamManager } from './scripts/streaming/global-timeline';
+import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
+import { GlobalTimelineStreamManager } from './common/scripts/streaming/global-timeline';
 
 //#region api requests
 let spinner = null;
