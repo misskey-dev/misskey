@@ -14,7 +14,7 @@
 		display inline-block
 		width 18px
 		height 18px
-		background-color rgba(0, 0, 0, 0.3)
+		background-color rgba(#000, 0.3)
 		border-radius 100%
 		animation bounce 1.4s infinite ease-in-out both
 

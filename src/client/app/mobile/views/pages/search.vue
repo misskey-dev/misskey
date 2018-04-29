@@ -84,7 +84,7 @@ export default Vue.extend({
 	width calc(100% - 16px)
 	background #fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 0 1px rgba(#000, 0.2)
 
 	@media (min-width 500px)
 		margin 16px auto

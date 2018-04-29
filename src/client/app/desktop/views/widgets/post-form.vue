@@ -59,7 +59,7 @@ export default define({
 .mkw-post-form
 	background #fff
 	overflow hidden
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	> .title
@@ -70,7 +70,7 @@ export default define({
 		font-size 0.9em
 		font-weight bold
 		color #888
-		box-shadow 0 1px rgba(0, 0, 0, 0.07)
+		box-shadow 0 1px rgba(#000, 0.07)
 
 		> [data-fa]
 			margin-right 4px

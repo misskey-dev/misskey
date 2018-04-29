@@ -587,7 +587,7 @@ root(isDark)
 		font-size 0.9em
 		color isDark ? #d2d9dc : #555
 		background isDark ? #282c37 : #fff
-		box-shadow 0 1px 0 rgba(0, 0, 0, 0.05)
+		box-shadow 0 1px 0 rgba(#000, 0.05)
 
 		&, *
 			user-select none
@@ -733,7 +733,7 @@ root(isDark)
 				display inline-block
 				position absolute
 				top 0
-				background-color rgba(0, 0, 0, 0.3)
+				background-color rgba(#000, 0.3)
 				border-radius 100%
 
 				animation sk-bounce 2.0s infinite ease-in-out

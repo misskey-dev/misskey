@@ -1,10 +1,40 @@
 <template>
-<div class="mk-note-menu">
+<div class="mk-visibility-chooser">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
-		<button @click="favorite">%i18n:@favorite%</button>
-		<button v-if="note.userId == os.i.id" @click="pin">%i18n:@pin%</button>
-		<a v-if="note.uri" :href="note.uri" target="_blank">%i18n:@remote%</a>
+		<div @click="choose('public')" :class="{ active: v == 'public' }">
+			<div>%fa:globe%</div>
+			<div>
+				<span>公開</span>
+			</div>
+		</div>
+		<div @click="choose('home')" :class="{ active: v == 'home' }">
+			<div>%fa:home%</div>
+			<div>
+				<span>ホーム</span>
+				<span>ホームタイムラインにのみ公開</span>
+			</div>
+		</div>
+		<div @click="choose('followers')" :class="{ active: v == 'followers' }">
+			<div>%fa:unlock%</div>
+			<div>
+				<span>フォロワー</span>
+				<span>自分のフォロワーにのみ公開</span>
+			</div>
+		</div>
+		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
+			<div>%fa:envelope%</div>
+			<div>
+				<span>ダイレクト</span>
+				<span>指定したユーザーにのみ公開</span>
+			</div>
+		</div>
+		<div @click="choose('private')" :class="{ active: v == 'private' }">
+			<div>%fa:lock%</div>
+			<div>
+				<span>非公開</span>
+			</div>
+		</div>
 	</div>
 </div>
 </template>
@@ -14,7 +44,7 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	props: ['note', 'source', 'compact'],
+	props: ['source', 'compact', 'v'],
 	mounted() {
 		this.$nextTick(() => {
 			const popover = this.$refs.popover as any;
@@ -23,17 +53,27 @@ export default Vue.extend({
 			const width = popover.offsetWidth;
 			const height = popover.offsetHeight;
 
+			let left;
+			let top;
+
 			if (this.compact) {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
-				popover.style.left = (x - (width / 2)) + 'px';
-				popover.style.top = (y - (height / 2)) + 'px';
+				left = (x - (width / 2));
+				top = (y - (height / 2));
 			} else {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + this.source.offsetHeight;
-				popover.style.left = (x - (width / 2)) + 'px';
-				popover.style.top = y + 'px';
+				left = (x - (width / 2));
+				top = y;
 			}
+
+			if (left + width > window.innerWidth) {
+				left = window.innerWidth - width;
+			}
+
+			popover.style.left = left + 'px';
+			popover.style.top = top + 'px';
 
 			anime({
 				targets: this.$refs.backdrop,
@@ -51,22 +91,10 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		pin() {
-			(this as any).api('i/pin', {
-				noteId: this.note.id
-			}).then(() => {
-				this.$destroy();
-			});
+		choose(visibility) {
+			this.$emit('chosen', visibility);
+			this.$destroy();
 		},
-
-		favorite() {
-			(this as any).api('notes/favorites/create', {
-				noteId: this.note.id
-			}).then(() => {
-				this.$destroy();
-			});
-		},
-
 		close() {
 			(this.$refs.backdrop as any).style.pointerEvents = 'none';
 			anime({
@@ -95,7 +123,7 @@ export default Vue.extend({
 
 $border-color = rgba(27, 31, 35, 0.15)
 
-.mk-note-menu
+root(isDark)
 	position initial
 
 	> .backdrop
@@ -105,21 +133,23 @@ $border-color = rgba(27, 31, 35, 0.15)
 		z-index 10000
 		width 100%
 		height 100%
-		background rgba(#000, 0.1)
+		background isDark ? rgba(#000, 0.4) : rgba(#000, 0.1)
 		opacity 0
 
 	> .popover
+		$bgcolor = isDark ? #2c303c : #fff
 		position absolute
 		z-index 10001
+		width 240px
 		padding 8px 0
-		background #fff
+		background $bgcolor
 		border 1px solid $border-color
 		border-radius 4px
 		box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
 		transform scale(0.5)
 		opacity 0
 
-		$balloon-size = 16px
+		$balloon-size = 10px
 
 		&:not(.compact)
 			margin-top $balloon-size
@@ -145,21 +175,49 @@ $border-color = rgba(27, 31, 35, 0.15)
 				border-top solid $balloon-size transparent
 				border-left solid $balloon-size transparent
 				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size #fff
+				border-bottom solid $balloon-size $bgcolor
 
-		> button
-		> a
-			display block
-			padding 8px 16px
-			width 100%
+		> div
+			display flex
+			padding 8px 14px
+			font-size 12px
+			color isDark ? #fff : #666
+			cursor pointer
 
 			&:hover
-				color $theme-color-foreground
-				background $theme-color
-				text-decoration none
+				background isDark ? #252731 : #eee
 
 			&:active
+				background isDark ? #21242b : #ddd
+
+			&.active
 				color $theme-color-foreground
-				background darken($theme-color, 10%)
+				background $theme-color
+
+			> *
+				user-select none
+				pointer-events none
+
+			> *:first-child
+				display flex
+				justify-content center
+				align-items center
+				margin-right 10px
+
+			> *:last-child
+				flex 1 1 auto
+
+				> span:first-child
+					display block
+					font-weight bold
+
+				> span:last-child:not(:first-child)
+					opacity 0.6
+
+.mk-visibility-chooser[data-darkmode]
+	root(true)
+
+.mk-visibility-chooser:not([data-darkmode])
+	root(false)
 
 </style>

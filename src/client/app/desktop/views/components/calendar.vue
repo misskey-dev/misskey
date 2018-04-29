@@ -136,7 +136,7 @@ export default Vue.extend({
 root(isDark)
 	color isDark ? #c5ced6 : #777
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	&[data-melt]
@@ -152,7 +152,7 @@ root(isDark)
 		font-size 0.9em
 		font-weight bold
 		color #888
-		box-shadow 0 1px rgba(0, 0, 0, 0.07)
+		box-shadow 0 1px rgba(#000, 0.07)
 
 		> [data-fa]
 			margin-right 4px
@@ -214,10 +214,10 @@ root(isDark)
 					border-radius 6px
 
 				&:hover > div
-					background rgba(0, 0, 0, 0.025)
+					background rgba(#000, 0.025)
 
 				&:active > div
-					background rgba(0, 0, 0, 0.05)
+					background rgba(#000, 0.05)
 
 				&[data-is-donichi]
 					color #ef95a0
@@ -233,10 +233,10 @@ root(isDark)
 					font-weight bold
 
 					> div
-						background rgba(0, 0, 0, 0.025)
+						background rgba(#000, 0.025)
 
 					&:active > div
-						background rgba(0, 0, 0, 0.05)
+						background rgba(#000, 0.05)
 
 				&[data-today]
 					> div

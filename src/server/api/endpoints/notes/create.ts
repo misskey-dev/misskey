@@ -3,7 +3,7 @@
  */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
 import DriveFile from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
@@ -14,8 +14,19 @@ import { IApp } from '../../../../models/app';
  */
 module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	// Get 'visibility' parameter
-	const [visibility = 'public', visibilityErr] = $(params.visibility).optional.string().or(['public', 'unlisted', 'private', 'direct']).get();
+	const [visibility = 'public', visibilityErr] = $(params.visibility).optional.string().or(['public', 'home', 'followers', 'specified', 'private']).get();
 	if (visibilityErr) return rej('invalid visibility');
+
+	// Get 'visibleUserIds' parameter
+	const [visibleUserIds, visibleUserIdsErr] = $(params.visibleUserIds).optional.array($().type(ID)).unique().min(1).get();
+	if (visibleUserIdsErr) return rej('invalid visibleUserIds');
+
+	let visibleUsers = [];
+	if (visibleUserIds !== undefined) {
+		visibleUsers = await Promise.all(visibleUserIds.map(id => User.findOne({
+			_id: id
+		})));
+	}
 
 	// Get 'text' parameter
 	const [text = null, textErr] = $(params.text).optional.nullable.string().pipe(isValidText).get();
@@ -191,6 +202,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 		app,
 		viaMobile,
 		visibility,
+		visibleUsers,
 		geo
 	});
 

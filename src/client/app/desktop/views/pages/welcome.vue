@@ -231,14 +231,14 @@ export default Vue.extend({
 						width 410px
 						background #fff
 						border-radius 8px
-						box-shadow 0 0 0 12px rgba(0, 0, 0, 0.1)
+						box-shadow 0 0 0 12px rgba(#000, 0.1)
 						overflow hidden
 
 						> header
 							z-index 1
 							padding 12px 16px
 							color #888d94
-							box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+							box-shadow 0 1px 0px rgba(#000, 0.1)
 
 							> div
 								position absolute

@@ -234,7 +234,7 @@ export default Vue.extend({
 	margin-top calc(1em + 8px)
 	overflow hidden
 	background #fff
-	border solid 1px rgba(0, 0, 0, 0.1)
+	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
 	transition top 0.1s ease, left 0.1s ease
 
@@ -253,7 +253,7 @@ export default Vue.extend({
 			white-space nowrap
 			overflow hidden
 			font-size 0.9em
-			color rgba(0, 0, 0, 0.8)
+			color rgba(#000, 0.8)
 			cursor default
 
 			&, *
@@ -285,10 +285,10 @@ export default Vue.extend({
 
 		.name
 			margin 0 8px 0 0
-			color rgba(0, 0, 0, 0.8)
+			color rgba(#000, 0.8)
 
 		.username
-			color rgba(0, 0, 0, 0.3)
+			color rgba(#000, 0.3)
 
 	> .emojis > li
 
@@ -298,10 +298,10 @@ export default Vue.extend({
 			width 24px
 
 		.name
-			color rgba(0, 0, 0, 0.8)
+			color rgba(#000, 0.8)
 
 		.alias
 			margin 0 0 0 8px
-			color rgba(0, 0, 0, 0.3)
+			color rgba(#000, 0.3)
 
 </style>

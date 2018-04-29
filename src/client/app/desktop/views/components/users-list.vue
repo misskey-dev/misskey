@@ -119,7 +119,7 @@ export default Vue.extend({
 		overflow auto
 
 		> *
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
+			border-bottom solid 1px rgba(#000, 0.05)
 
 			> *
 				max-width 600px

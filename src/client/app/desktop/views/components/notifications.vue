@@ -204,7 +204,7 @@ root(isDark)
 				padding 16px
 				overflow-wrap break-word
 				font-size 0.9em
-				border-bottom solid 1px isDark ? #1c2023 : rgba(0, 0, 0, 0.05)
+				border-bottom solid 1px isDark ? #1c2023 : rgba(#000, 0.05)
 
 				&:last-child
 					border-bottom none
@@ -215,7 +215,7 @@ root(isDark)
 					top 16px
 					right 12px
 					vertical-align top
-					color isDark ? #606984 : rgba(0, 0, 0, 0.6)
+					color isDark ? #606984 : rgba(#000, 0.6)
 					font-size small
 
 				&:after
@@ -250,10 +250,10 @@ root(isDark)
 							margin-right 4px
 
 				.note-preview
-					color isDark ? #c2cad4 : rgba(0, 0, 0, 0.7)
+					color isDark ? #c2cad4 : rgba(#000, 0.7)
 
 				.note-ref
-					color isDark ? #c2cad4 : rgba(0, 0, 0, 0.7)
+					color isDark ? #c2cad4 : rgba(#000, 0.7)
 
 					[data-fa]
 						font-size 1em
@@ -282,7 +282,7 @@ root(isDark)
 				font-size 0.8em
 				color isDark ? #666b79 : #aaa
 				background isDark ? #242731 : #fdfdfd
-				border-bottom solid 1px isDark ? #1c2023 : rgba(0, 0, 0, 0.05)
+				border-bottom solid 1px isDark ? #1c2023 : rgba(#000, 0.05)
 
 				span
 					margin 0 16px
@@ -295,13 +295,13 @@ root(isDark)
 		width 100%
 		padding 16px
 		color #555
-		border-top solid 1px rgba(0, 0, 0, 0.05)
+		border-top solid 1px rgba(#000, 0.05)
 
 		&:hover
-			background rgba(0, 0, 0, 0.025)
+			background rgba(#000, 0.025)
 
 		&:active
-			background rgba(0, 0, 0, 0.05)
+			background rgba(#000, 0.05)
 
 		&.fetching
 			cursor wait

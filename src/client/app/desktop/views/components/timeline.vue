@@ -59,7 +59,7 @@ export default Vue.extend({
 
 root(isDark)
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	> header

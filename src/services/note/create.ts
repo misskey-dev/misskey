@@ -30,6 +30,7 @@ export default async (user: IUser, data: {
 	tags?: string[];
 	cw?: string;
 	visibility?: string;
+	visibleUsers?: IUser[];
 	uri?: string;
 	app?: IApp;
 }, silent = false) => new Promise<INote>(async (res, rej) => {
@@ -57,6 +58,10 @@ export default async (user: IUser, data: {
 		});
 	}
 
+	if (data.visibleUsers) {
+		data.visibleUsers = data.visibleUsers.filter(x => x != null);
+	}
+
 	const insert: any = {
 		createdAt: data.createdAt,
 		mediaIds: data.media ? data.media.map(file => file._id) : [],
@@ -71,6 +76,11 @@ export default async (user: IUser, data: {
 		geo: data.geo || null,
 		appId: data.app ? data.app._id : null,
 		visibility: data.visibility,
+		visibleUserIds: data.visibility == 'specified'
+			? data.visibleUsers
+				? data.visibleUsers.map(u => u._id)
+				: []
+			: [],
 
 		// 以下非正規化データ
 		_reply: data.reply ? { userId: data.reply.userId } : null,
@@ -113,42 +123,61 @@ export default async (user: IUser, data: {
 	if (note.channelId == null) {
 		if (!silent) {
 			if (isLocalUser(user)) {
-				// Publish event to myself's stream
-				stream(note.userId, 'note', noteObj);
+				if (note.visibility == 'private' || note.visibility == 'followers' || note.visibility == 'specified') {
+					// Publish event to myself's stream
+					stream(note.userId, 'note', await pack(note, user, {
+						detail: true
+					}));
+				} else {
+					// Publish event to myself's stream
+					stream(note.userId, 'note', noteObj);
 
-				// Publish note to local timeline stream
-				publishLocalTimelineStream(noteObj);
+					// Publish note to local timeline stream
+					if (note.visibility != 'home') {
+						publishLocalTimelineStream(noteObj);
+					}
+				}
 			}
 
 			// Publish note to global timeline stream
 			publishGlobalTimelineStream(noteObj);
 
-			// フォロワーに配信
-			Following.find({
-				followeeId: note.userId
-			}).then(followers => {
-				followers.map(async following => {
-					const follower = following._follower;
-
-					if (isLocalUser(follower)) {
-						// ストーキングしていない場合
-						if (!following.stalk) {
-							// この投稿が返信ならスキップ
-							if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId)) return;
-						}
-
-						// Publish event to followers stream
-						stream(following.followerId, 'note', noteObj);
-					} else {
-						//#region AP配送
-						// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
-						if (isLocalUser(user)) {
-							deliver(user, await render(), follower.inbox);
-						}
-						//#endergion
-					}
+			if (note.visibility == 'specified') {
+				data.visibleUsers.forEach(async u => {
+					stream(u._id, 'note', await pack(note, u, {
+						detail: true
+					}));
 				});
-			});
+			}
+
+			if (note.visibility == 'public' || note.visibility == 'home' || note.visibility == 'followers') {
+				// フォロワーに配信
+				Following.find({
+					followeeId: note.userId
+				}).then(followers => {
+					followers.map(async following => {
+						const follower = following._follower;
+
+						if (isLocalUser(follower)) {
+							// ストーキングしていない場合
+							if (!following.stalk) {
+								// この投稿が返信ならスキップ
+								if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId)) return;
+							}
+
+							// Publish event to followers stream
+							stream(following.followerId, 'note', noteObj);
+						} else {
+							//#region AP配送
+							// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
+							if (isLocalUser(user)) {
+								deliver(user, await render(), follower.inbox);
+							}
+							//#endergion
+						}
+					});
+				});
+			}
 
 			// リストに配信
 			UserList.find({
@@ -160,7 +189,7 @@ export default async (user: IUser, data: {
 			});
 		}
 
-		//#region AP配送
+		//#region リプライとAnnounceのAP配送
 		const render = async () => {
 			const content = data.renote && data.text == null
 				? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))

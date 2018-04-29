@@ -94,13 +94,13 @@ export default Vue.extend({
 			margin 0 auto -38px auto
 			border solid 5px #fff
 			border-radius 100%
-			box-shadow 0 2px 2px rgba(0, 0, 0, 0.1)
+			box-shadow 0 2px 2px rgba(#000, 0.1)
 
 	> .app
 		padding 44px 16px 0 16px
 		color #555
 		background #eee
-		box-shadow 0 2px 2px rgba(0, 0, 0, 0.1) inset
+		box-shadow 0 2px 2px rgba(#000, 0.1) inset
 
 		&:after
 			content ''

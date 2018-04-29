@@ -65,10 +65,16 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	//#region Visibility
 	let visibility = 'public';
-	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';
-	if (note.cc.length == 0) visibility = 'private';
-	// TODO
-	if (visibility != 'public') return null;
+	let visibleUsers = [];
+	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
+		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
+			visibility = 'home';
+		} else {
+			visibility = 'specified';
+			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
+		}
+	}
+	if (note.cc.length == 0) visibility = 'followers';
 	//#endergion
 
 	// 添付メディア
@@ -99,6 +105,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		viaMobile: false,
 		geo: undefined,
 		visibility,
+		visibleUsers,
 		uri: note.id
 	}, silent);
 }

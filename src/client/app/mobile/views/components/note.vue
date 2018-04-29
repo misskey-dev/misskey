@@ -27,6 +27,12 @@
 					<router-link class="created-at" :to="p | notePage">
 						<mk-time :time="p.createdAt"/>
 					</router-link>
+					<span class="visibility" v-if="p.visibility != 'public'">
+						<template v-if="p.visibility == 'home'">%fa:home%</template>
+						<template v-if="p.visibility == 'followers'">%fa:unlock%</template>
+						<template v-if="p.visibility == 'specified'">%fa:envelope%</template>
+						<template v-if="p.visibility == 'private'">%fa:lock%</template>
+					</span>
 				</div>
 			</header>
 			<div class="body">
@@ -37,9 +43,8 @@
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
-						<a class="reply" v-if="p.reply">
-							%fa:reply%
-						</a>
+						<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+						<a class="reply" v-if="p.reply">%fa:reply%</a>
 						<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
 					</div>
@@ -380,12 +385,14 @@ root(isDark)
 					margin-left auto
 					font-size 0.9em
 
-					> .mobile
-						margin-right 6px
+					> *
 						color isDark ? #606984 : #c0c0c0
 
-					> .created-at
-						color isDark ? #606984 : #c0c0c0
+					> .mobile
+						margin-right 6px
+
+					> .visibility
+						margin-left 6px
 
 			> .body
 

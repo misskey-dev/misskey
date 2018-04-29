@@ -39,6 +39,7 @@
 		</header>
 		<div class="body">
 			<div class="text">
+				<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
 				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
@@ -222,7 +223,7 @@ root(isDark)
 	overflow hidden
 	text-align left
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(0, 0, 0, 0.1)
+	border solid 1px rgba(#000, 0.1)
 	border-radius 8px
 
 	> .read-more

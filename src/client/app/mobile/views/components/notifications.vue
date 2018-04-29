@@ -107,10 +107,11 @@ root(isDark)
 	margin 0 auto
 	background isDark ? #282C37 :#fff
 	border-radius 8px
-	box-shadow 0 0 2px rgba(0, 0, 0, 0.1)
+	box-shadow 0 0 2px rgba(#000, 0.1)
+	overflow hidden
 
 	@media (min-width 500px)
-		box-shadow 0 8px 32px rgba(0, 0, 0, 0.1)
+		box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	.transition
 		.mk-notifications-enter
@@ -147,7 +148,7 @@ root(isDark)
 		width 100%
 		padding 16px
 		color #555
-		border-top solid 1px rgba(0, 0, 0, 0.05)
+		border-top solid 1px rgba(#000, 0.05)
 
 		> [data-fa]
 			margin-right 4px

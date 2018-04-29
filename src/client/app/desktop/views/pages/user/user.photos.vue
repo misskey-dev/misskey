@@ -41,7 +41,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .photos
 	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	> .title
@@ -52,7 +52,7 @@ export default Vue.extend({
 		font-size 0.9em
 		font-weight bold
 		color #888
-		box-shadow 0 1px rgba(0, 0, 0, 0.07)
+		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
 			margin-right 4px

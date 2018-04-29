@@ -1,6 +1,7 @@
 <template>
 <div class="mk-sub-note-content">
 	<div class="body">
+		<span v-if="note.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
 		<a class="reply" v-if="note.replyId">%fa:reply%</a>
 		<mk-note-html :text="note.text" :i="os.i"/>
 		<a class="rp" v-if="note.renoteId" :href="`/note:${note.renoteId}`">RP: ...</a>

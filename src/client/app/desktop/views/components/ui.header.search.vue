@@ -50,7 +50,7 @@ export default Vue.extend({
 		width 14em
 		height 32px
 		font-size 1em
-		background rgba(0, 0, 0, 0.05)
+		background rgba(#000, 0.05)
 		outline none
 		//border solid 1px #ddd
 		border none
@@ -62,7 +62,7 @@ export default Vue.extend({
 			color #9eaba8
 
 		&:hover
-			background rgba(0, 0, 0, 0.08)
+			background rgba(#000, 0.08)
 
 		&:focus
 			box-shadow 0 0 0 2px rgba($theme-color, 0.5) !important

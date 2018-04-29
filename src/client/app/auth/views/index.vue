@@ -94,7 +94,7 @@ export default Vue.extend({
 		margin 0 auto
 		text-align center
 		background #fff
-		box-shadow 0px 4px 16px rgba(0, 0, 0, 0.2)
+		box-shadow 0px 4px 16px rgba(#000, 0.2)
 
 		> .fetching
 			margin 0

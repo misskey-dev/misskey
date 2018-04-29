@@ -134,7 +134,7 @@ export default Vue.extend({
 				bottom -4px
 				left -12px
 				margin 0
-				color rgba(0, 0, 0, 0.5)
+				color rgba(#000, 0.5)
 				font-size 11px
 
 			> .content
@@ -146,7 +146,7 @@ export default Vue.extend({
 					overflow hidden
 					overflow-wrap break-word
 					font-size 1em
-					color rgba(0, 0, 0, 0.5)
+					color rgba(#000, 0.5)
 
 				> .text
 					display block
@@ -155,7 +155,7 @@ export default Vue.extend({
 					overflow hidden
 					overflow-wrap break-word
 					font-size 1em
-					color rgba(0, 0, 0, 0.8)
+					color rgba(#000, 0.8)
 
 					& + .file
 						> a
@@ -195,7 +195,7 @@ export default Vue.extend({
 			display block
 			margin 2px 0 0 0
 			font-size 10px
-			color rgba(0, 0, 0, 0.4)
+			color rgba(#000, 0.4)
 
 			> [data-fa]
 				margin-left 4px

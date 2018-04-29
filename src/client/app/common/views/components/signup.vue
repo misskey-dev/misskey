@@ -234,13 +234,13 @@ export default Vue.extend({
 		color #333 !important
 		background #fff !important
 		outline none
-		border solid 1px rgba(0, 0, 0, 0.1)
+		border solid 1px rgba(#000, 0.1)
 		border-radius 4px
 		box-shadow 0 0 0 114514px #fff inset
 		transition all .3s ease
 
 		&:hover
-			border-color rgba(0, 0, 0, 0.2)
+			border-color rgba(#000, 0.2)
 			transition all .1s ease
 
 		&:focus

@@ -28,7 +28,7 @@ export default Vue.extend({
 .mk-widget-container
 	background #eee
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 0 1px rgba(#000, 0.2)
 	overflow hidden
 
 	&.hideHeader

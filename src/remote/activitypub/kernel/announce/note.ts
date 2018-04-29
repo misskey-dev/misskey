@@ -5,6 +5,7 @@ import post from '../../../../services/note/create';
 import { IRemoteUser } from '../../../../models/user';
 import { IAnnounce, INote } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
+import { resolvePerson } from '../../models/person';
 
 const log = debug('misskey:activitypub');
 
@@ -30,16 +31,22 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 
 	//#region Visibility
 	let visibility = 'public';
-	if (!activity.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';
-	if (activity.cc.length == 0) visibility = 'private';
-	// TODO
-	if (visibility != 'public') throw new Error('unspported visibility');
+	let visibleUsers = [];
+	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
+		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
+			visibility = 'home';
+		} else {
+			visibility = 'specified';
+			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
+		}
+	}	if (activity.cc.length == 0) visibility = 'followers';
 	//#endergion
 
 	await post(actor, {
 		createdAt: new Date(activity.published),
 		renote,
 		visibility,
+		visibleUsers,
 		uri
 	});
 }

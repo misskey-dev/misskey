@@ -6,6 +6,10 @@
 	@drop.stop="onDrop"
 >
 	<div class="content">
+		<div v-if="visibility == 'specified'" class="visibleUsers">
+			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
+			<a @click="addVisibleUser">+ユーザーを追加</a>
+		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
 		<textarea :class="{ with: (files.length != 0 || poll) }"
 			ref="text" v-model="text" :disabled="posting"
@@ -30,7 +34,8 @@
 	<button class="poll" title="%i18n:@create-poll%" @click="poll = true">%fa:chart-pie%</button>
 	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
 	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-	<p class="text-count" :class="{ over: text.length > 1000 }">{{ '%i18n:!@text-remain%'.replace('{}', 1000 - text.length) }}</p>
+	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
+	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:!@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -43,10 +48,12 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import getKao from '../../../common/scripts/get-kao';
+import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 
 export default Vue.extend({
 	components: {
-		XDraggable
+		XDraggable,
+		MkVisibilityChooser
 	},
 
 	props: ['reply', 'renote'],
@@ -61,6 +68,8 @@ export default Vue.extend({
 			useCw: false,
 			cw: null,
 			geo: null,
+			visibility: 'public',
+			visibleUsers: [],
 			autocomplete: null,
 			draghover: false
 		};
@@ -246,6 +255,32 @@ export default Vue.extend({
 			this.$emit('geo-dettached');
 		},
 
+		setVisibility() {
+			const w = (this as any).os.new(MkVisibilityChooser, {
+				source: this.$refs.visibilityButton,
+				v: this.visibility
+			});
+			w.$once('chosen', v => {
+				this.visibility = v;
+			});
+		},
+
+		addVisibleUser() {
+			(this as any).apis.input({
+				title: 'ユーザー名を入力してください'
+			}).then(username => {
+				(this as any).api('users/show', {
+					username
+				}).then(user => {
+					this.visibleUsers.push(user);
+				});
+			});
+		},
+
+		removeVisibleUser(user) {
+			this.visibleUsers = this.visibleUsers.filter(u => u != user);
+		},
+
 		post() {
 			this.posting = true;
 
@@ -256,6 +291,8 @@ export default Vue.extend({
 				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
+				visibility: this.visibility,
+				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
 				geo: this.geo ? {
 					coordinates: [this.geo.longitude, this.geo.latitude],
 					altitude: this.geo.altitude,
@@ -328,7 +365,6 @@ root(isDark)
 		clear both
 
 	> .content
-
 		> input
 		> textarea
 			display block
@@ -380,6 +416,14 @@ root(isDark)
 			&.with
 				border-bottom solid 1px rgba($theme-color, 0.1) !important
 				border-radius 4px 4px 0 0
+
+		> .visibleUsers
+			margin-bottom 8px
+			font-size 14px
+
+			> span
+				margin-right 16px
+				color isDark ? #fff : #666
 
 		> .medias
 			margin 0
@@ -450,19 +494,6 @@ root(isDark)
 	input[type='file']
 		display none
 
-	.text-count
-		pointer-events none
-		display block
-		position absolute
-		bottom 16px
-		right 138px
-		margin 0
-		line-height 40px
-		color rgba($theme-color, 0.5)
-
-		&.over
-			color #ec3828
-
 	.submit
 		display block
 		position absolute
@@ -527,11 +558,25 @@ root(isDark)
 				from {background-position: 0 0;}
 				to   {background-position: -64px 32px;}
 
+	> .text-count
+		pointer-events none
+		display block
+		position absolute
+		bottom 16px
+		right 138px
+		margin 0
+		line-height 40px
+		color rgba($theme-color, 0.5)
+
+		&.over
+			color #ec3828
+
 	> .upload
 	> .drive
 	> .kao
 	> .poll
 	> .geo
+	> .visibility
 		display inline-block
 		cursor pointer
 		padding 0
@@ -553,7 +598,7 @@ root(isDark)
 			color rgba($theme-color, 0.6)
 			background isDark ? transparent : linear-gradient(to bottom, lighten($theme-color, 80%) 0%, lighten($theme-color, 90%) 100%)
 			border-color rgba($theme-color, 0.5)
-			box-shadow 0 2px 4px rgba(0, 0, 0, 0.15) inset
+			box-shadow 0 2px 4px rgba(#000, 0.15) inset
 
 		&:focus
 			&:after

@@ -12,6 +12,7 @@ import NoteWatching, { deleteNoteWatching } from './note-watching';
 import NoteReaction from './note-reaction';
 import Favorite, { deleteFavorite } from './favorite';
 import Notification, { deleteNotification } from './notification';
+import Following from './following';
 
 const Note = db.get<INote>('notes');
 
@@ -46,7 +47,18 @@ export type INote = {
 	repliesCount: number;
 	reactionCounts: any;
 	mentions: mongo.ObjectID[];
-	visibility: 'public' | 'unlisted' | 'private' | 'direct';
+
+	/**
+	 * public ... 公開
+	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
+	 * followers ... フォロワーのみ
+	 * specified ... visibleUserIds で指定したユーザーのみ
+	 * private ... 自分のみ
+	 */
+	visibility: 'public' | 'home' | 'followers' | 'specified' | 'private';
+
+	visibleUserIds: mongo.ObjectID[];
+
 	geo: {
 		coordinates: number[];
 		altitude: number;
@@ -151,9 +163,9 @@ export const pack = async (
 		detail: boolean
 	}
 ) => {
-	const opts = options || {
-		detail: true,
-	};
+	const opts = Object.assign({
+		detail: true
+	}, options);
 
 	// Me
 	const meId: mongo.ObjectID = me
@@ -181,12 +193,61 @@ export const pack = async (
 
 	if (!_note) throw `invalid note arg ${note}`;
 
+	let hide = false;
+
+	// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示
+	if (_note.visibility == 'private' && (meId == null || !meId.equals(_note.userId))) {
+		hide = true;
+	}
+
+	// visibility が specified かつ自分が指定されていなかったら非表示
+	if (_note.visibility == 'specified') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId.equals(_note.userId)) {
+			hide = false;
+		} else {
+			// 指定されているかどうか
+			const specified = _note.visibleUserIds.some(id => id.equals(meId));
+
+			if (specified) {
+				hide = false;
+			} else {
+				hide = true;
+			}
+		}
+	}
+
+	// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
+	if (_note.visibility == 'followers') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId.equals(_note.userId)) {
+			hide = false;
+		} else {
+			// フォロワーかどうか
+			const following = await Following.findOne({
+				followeeId: _note.userId,
+				followerId: meId
+			});
+
+			if (following == null) {
+				hide = true;
+			} else {
+				hide = false;
+			}
+		}
+	}
+
 	const id = _note._id;
 
 	// Rename _id to id
 	_note.id = _note._id;
 	delete _note._id;
 
+	delete _note._user;
+	delete _note._reply;
+	delete _note.repost;
 	delete _note.mentions;
 	if (_note.geo) delete _note.geo.type;
 
@@ -204,11 +265,9 @@ export const pack = async (
 	}
 
 	// Populate media
-	if (_note.mediaIds) {
-		_note.media = Promise.all(_note.mediaIds.map(fileId =>
-			packFile(fileId)
-		));
-	}
+	_note.media = hide ? [] : Promise.all(_note.mediaIds.map(fileId =>
+		packFile(fileId)
+	));
 
 	// When requested a detailed note data
 	if (opts.detail) {
@@ -263,7 +322,7 @@ export const pack = async (
 		}
 
 		// Poll
-		if (meId && _note.poll) {
+		if (meId && _note.poll && !hide) {
 			_note.poll = (async (poll) => {
 				const vote = await PollVote
 					.findOne({
@@ -303,6 +362,13 @@ export const pack = async (
 
 	// resolve promises in _note object
 	_note = await rap(_note);
+
+	if (hide) {
+		_note.mediaIds = [];
+		_note.text = null;
+		_note.poll = null;
+		_note.isHidden = true;
+	}
 
 	return _note;
 };

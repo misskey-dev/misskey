@@ -195,7 +195,7 @@ root(isDark)
 		cursor pointer
 
 	&:hover
-		background rgba(0, 0, 0, 0.05)
+		background rgba(#000, 0.05)
 
 		> .label
 			&:before
@@ -203,7 +203,7 @@ root(isDark)
 				background #0b65a5
 
 	&:active
-		background rgba(0, 0, 0, 0.1)
+		background rgba(#000, 0.1)
 
 		> .label
 			&:before

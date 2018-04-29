@@ -136,7 +136,7 @@ export default Vue.extend({
 .form
 	position relative
 	background #fff
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 0 1px rgba(#000, 0.2)
 	border-radius 8px
 
 	&:before
@@ -145,7 +145,7 @@ export default Vue.extend({
 		position absolute
 		bottom -20px
 		left calc(50% - 10px)
-		border-top solid 10px rgba(0, 0, 0, 0.2)
+		border-top solid 10px rgba(#000, 0.2)
 		border-right solid 10px transparent
 		border-bottom solid 10px transparent
 		border-left solid 10px transparent

@@ -40,7 +40,7 @@ export default Vue.extend({
 
 	.form
 		background #fff
-		border solid 1px rgba(0, 0, 0, 0.2)
+		border solid 1px rgba(#000, 0.2)
 		border-radius 8px
 		overflow hidden
 
