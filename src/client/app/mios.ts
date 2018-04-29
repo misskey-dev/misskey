@@ -13,7 +13,7 @@ import { ServerStreamManager } from './common/scripts/streaming/server';
 import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
 import { OthelloStreamManager } from './common/scripts/streaming/othello';
 
-import Err from '../common/views/components/connect-failed.vue';
+import Err from './common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
 import { GlobalTimelineStreamManager } from './common/scripts/streaming/global-timeline';
 
