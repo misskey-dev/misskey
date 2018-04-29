@@ -37,6 +37,7 @@ export default define({
 	methods: {
 		func() {
 			this.props.compact = !this.props.compact;
+			this.save();
 		},
 		settings() {
 			const id = window.prompt('チャンネルID');

@@ -1,8 +1,6 @@
 <template>
 <div class="sub" :title="title">
-	<router-link class="avatar-anchor" :to="note.user | userPage">
-		<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="note.userId"/>
-	</router-link>
+	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
@@ -53,18 +51,13 @@ root(isDark)
 		display block
 		clear both
 
-	> .avatar-anchor
+	> .avatar
 		display block
 		float left
 		margin 0 14px 0 0
-
-		> .avatar
-			display block
-			width 52px
-			height 52px
-			margin 0
-			border-radius 8px
-			vertical-align bottom
+		width 52px
+		height 52px
+		border-radius 8px
 
 	> .main
 		float left

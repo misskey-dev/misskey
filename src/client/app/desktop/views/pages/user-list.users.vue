@@ -8,9 +8,7 @@
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw% %i18n:common.loading%<mk-ellipsis/></p>
 			<template v-else-if="users.length != 0">
 				<div class="user" v-for="_user in users">
-					<router-link class="avatar-anchor" :to="_user | userPage">
-						<img class="avatar" :src="`${_user.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="_user.id"/>
-					</router-link>
+					<mk-avatar class="avatar" :user="_user"/>
 					<div class="body">
 						<router-link class="name" :to="_user | userPage" v-user-preview="_user.id">{{ _user | userName }}</router-link>
 						<p class="username">@{{ _user | acct }}</p>
@@ -80,18 +78,13 @@ root(isDark)
 			display block
 			clear both
 
-		> .avatar-anchor
+		> .avatar
 			display block
 			float left
 			margin 0 12px 0 0
-
-			> .avatar
-				display block
-				width 42px
-				height 42px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
+			width 42px
+			height 42px
+			border-radius 8px
 
 		> .body
 			float left

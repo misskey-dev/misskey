@@ -23,6 +23,7 @@ export default define({
 		},
 		func() {
 			this.props.compact = !this.props.compact;
+			this.save();
 		}
 	}
 });

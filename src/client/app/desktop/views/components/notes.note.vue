@@ -1,12 +1,10 @@
 <template>
 <div class="note" tabindex="-1" :title="title" @keydown="onKeydown">
-	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || os.i.clientSettings.showReplyTarget)">
+	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || clientSettings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
-		<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.userId">
-			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="note.user"/>
 		%fa:retweet%
 		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
 		<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
@@ -14,9 +12,7 @@
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="p.user | userPage">
-			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="p.user"/>
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
@@ -182,7 +178,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.clientSettings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -343,15 +339,12 @@ root(isDark)
 		color #9dbb00
 		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
-		.avatar-anchor
+		.avatar
 			display inline-block
-
-			.avatar
-				vertical-align bottom
-				width 28px
-				height 28px
-				margin 0 8px 0 0
-				border-radius 6px
+			width 28px
+			height 28px
+			margin 0 8px 0 0
+			border-radius 6px
 
 		[data-fa]
 			margin-right 4px
@@ -390,21 +383,16 @@ root(isDark)
 			> .main > footer > button
 				color isDark ? #707b97 : #888
 
-		> .avatar-anchor
+		> .avatar
 			display block
 			float left
 			margin 0 16px 10px 0
+			width 58px
+			height 58px
+			border-radius 8px
 			//position -webkit-sticky
 			//position sticky
 			//top 74px
-
-			> .avatar
-				display block
-				width 58px
-				height 58px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
 
 		> .main
 			float left

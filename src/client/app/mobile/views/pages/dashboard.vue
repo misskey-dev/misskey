@@ -64,8 +64,8 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		if ((this as any).os.i.clientSettings.mobileHome == null) {
-			Vue.set((this as any).os.i.clientSettings, 'mobileHome', [{
+		if ((this as any).clientSettings.mobileHome == null) {
+			Vue.set((this as any).clientSettings, 'mobileHome', [{
 				name: 'calendar',
 				id: 'a', data: {}
 			}, {
@@ -87,14 +87,14 @@ export default Vue.extend({
 				name: 'version',
 				id: 'g', data: {}
 			}]);
-			this.widgets = (this as any).os.i.clientSettings.mobileHome;
+			this.widgets = (this as any).clientSettings.mobileHome;
 			this.saveHome();
 		} else {
-			this.widgets = (this as any).os.i.clientSettings.mobileHome;
+			this.widgets = (this as any).clientSettings.mobileHome;
 		}
 
-		this.$watch('os.i.clientSettings', i => {
-			this.widgets = (this as any).os.i.clientSettings.mobileHome;
+		this.$watch('clientSettings', i => {
+			this.widgets = (this as any).clientSettings.mobileHome;
 		}, {
 			deep: true
 		});
@@ -107,15 +107,15 @@ export default Vue.extend({
 	methods: {
 		onHomeUpdated(data) {
 			if (data.home) {
-				(this as any).os.i.clientSettings.mobileHome = data.home;
+				(this as any).clientSettings.mobileHome = data.home;
 				this.widgets = data.home;
 			} else {
-				const w = (this as any).os.i.clientSettings.mobileHome.find(w => w.id == data.id);
+				const w = (this as any).clientSettings.mobileHome.find(w => w.id == data.id);
 				if (w != null) {
 					w.data = data.data;
 					this.$refs[w.id][0].preventSave = true;
 					this.$refs[w.id][0].props = w.data;
-					this.widgets = (this as any).os.i.clientSettings.mobileHome;
+					this.widgets = (this as any).clientSettings.mobileHome;
 				}
 			}
 		},
@@ -144,7 +144,7 @@ export default Vue.extend({
 			this.saveHome();
 		},
 		saveHome() {
-			(this as any).os.i.clientSettings.mobileHome = this.widgets;
+			(this as any).clientSettings.mobileHome = this.widgets;
 			(this as any).api('i/update_mobile_home', {
 				home: this.widgets
 			});

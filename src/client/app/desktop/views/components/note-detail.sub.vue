@@ -1,8 +1,6 @@
 <template>
 <div class="sub" :title="title">
-	<router-link class="avatar-anchor" :to="note.user | userPage">
-		<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="note.userId"/>
-	</router-link>
+	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<header>
 			<div class="left">
@@ -57,18 +55,13 @@ root(isDark)
 		> .main > footer > button
 			color #888
 
-	> .avatar-anchor
+	> .avatar
 		display block
 		float left
 		margin 0 16px 0 0
-
-		> .avatar
-			display block
-			width 44px
-			height 44px
-			margin 0
-			border-radius 4px
-			vertical-align bottom
+		width 44px
+		height 44px
+		border-radius 4px
 
 	> .main
 		float left

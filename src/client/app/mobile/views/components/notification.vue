@@ -1,9 +1,7 @@
 <template>
 <div class="mk-notification">
 	<div class="notification reaction" v-if="notification.type == 'reaction'">
-		<router-link class="avatar-anchor" :to="notification.user | userPage">
-			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
 				<mk-reaction-icon :reaction="notification.reaction"/>
@@ -18,9 +16,7 @@
 	</div>
 
 	<div class="notification renote" v-if="notification.type == 'renote'">
-		<router-link class="avatar-anchor" :to="notification.user | userPage">
-			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
 				%fa:retweet%
@@ -34,9 +30,7 @@
 	</div>
 
 	<div class="notification follow" v-if="notification.type == 'follow'">
-		<router-link class="avatar-anchor" :to="notification.user | userPage">
-			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
 				%fa:user-plus%
@@ -47,9 +41,7 @@
 	</div>
 
 	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
-		<router-link class="avatar-anchor" :to="notification.user | userPage">
-			<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
 				%fa:chart-pie%
@@ -111,18 +103,16 @@ root(isDark)
 			display block
 			clear both
 
-		> .avatar-anchor
+		> .avatar
 			display block
 			float left
+			width 36px
+			height 36px
+			border-radius 6px
 
-			img
-				width 36px
-				height 36px
-				border-radius 6px
-
-				@media (min-width 500px)
-					width 42px
-					height 42px
+			@media (min-width 500px)
+				width 42px
+				height 42px
 
 		> div
 			float right

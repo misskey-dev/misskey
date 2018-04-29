@@ -39,6 +39,7 @@ export default define({
 	methods: {
 		func() {
 			this.props.compact = !this.props.compact;
+			this.save();
 		},
 		fetch() {
 			this.fetching = true;

@@ -3,6 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as merge from 'object-assign-deep';
 import * as uuid from 'uuid';
 
+import initStore from '../store';
 import { hostname, apiUrl, swPublickey, version, lang, googleMapsApiKey } from '../config';
 import Progress from './scripts/loading';
 import Connection from './scripts/streaming/stream';
@@ -15,16 +16,6 @@ import { OthelloStreamManager } from './scripts/streaming/othello';
 import Err from '../common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './scripts/streaming/local-timeline';
 import { GlobalTimelineStreamManager } from './scripts/streaming/global-timeline';
-
-const defaultSettings = {
-	fetchOnScroll: true,
-	showMaps: true,
-	showPostFormOnTopOfTl: false,
-	gradientWindowHeader: false,
-	showReplyTarget: true,
-	showMyRenotes: true,
-	showRenotedMyNotes: true
-};
 
 //#region api requests
 let spinner = null;
@@ -116,6 +107,8 @@ export default class MiOS extends EventEmitter {
 	public get isEnableSounds() {
 		return localStorage.getItem('enableSounds') == 'true';
 	}
+
+	public store: ReturnType<typeof initStore>;
 
 	public apis: API;
 
@@ -232,6 +225,11 @@ export default class MiOS extends EventEmitter {
 		console.error.apply(null, args);
 	}
 
+	public bakeMe() {
+		// ローカルストレージにキャッシュ
+		localStorage.setItem('me', JSON.stringify(this.i));
+	}
+
 	public signout() {
 		localStorage.removeItem('me');
 		document.cookie = `i=; domain=${hostname}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -243,6 +241,8 @@ export default class MiOS extends EventEmitter {
 	 * @param callback A function that call when initialized
 	 */
 	public async init(callback) {
+		this.store = initStore(this);
+
 		//#region Init stream managers
 		this.streams.serverStream = new ServerStreamManager(this);
 
@@ -307,15 +307,10 @@ export default class MiOS extends EventEmitter {
 
 		// フェッチが完了したとき
 		const fetched = me => {
-			if (me) {
-				// デフォルトの設定をマージ
-				me.clientSettings = Object.assign(defaultSettings, me.clientSettings);
-
-				// ローカルストレージにキャッシュ
-				localStorage.setItem('me', JSON.stringify(me));
-			}
-
 			this.i = me;
+
+			// ローカルストレージにキャッシュ
+			this.bakeMe();
 
 			this.emit('signedin');
 
@@ -333,6 +328,14 @@ export default class MiOS extends EventEmitter {
 		// Get cached account data
 		const cachedMe = JSON.parse(localStorage.getItem('me'));
 
+		//#region キャッシュされた設定を復元
+		const cachedSettings = JSON.parse(localStorage.getItem('settings'));
+
+		if (cachedSettings) {
+			this.store.commit('settings/init', cachedSettings);
+		}
+		//#endregion
+
 		// キャッシュがあったとき
 		if (cachedMe) {
 			if (cachedMe.token == null) {
@@ -346,12 +349,25 @@ export default class MiOS extends EventEmitter {
 			// 後から新鮮なデータをフェッチ
 			fetchme(cachedMe.token, freshData => {
 				merge(cachedMe, freshData);
+
+				this.store.commit('settings/init', freshData.clientSettings);
 			});
 		} else {
 			// Get token from cookie
 			const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1];
 
-			fetchme(i, fetched);
+			fetchme(i, me => {
+				if (me) {
+					Object.entries(me.clientSettings).forEach(([key, value]) => {
+						this.store.commit('settings/set', { key, value });
+					});
+
+					fetched(me);
+				} else {
+					// Finish init
+					callback();
+				}
+			});
 		}
 	}
 
@@ -456,7 +472,7 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream.hasConnection &&
+			const viaStream = this.stream && this.stream.hasConnection &&
 				(localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true);
 
 			if (viaStream) {

@@ -2,9 +2,7 @@
 <div class="mk-user-preview">
 	<template v-if="u != null">
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl}?thumbnail&size=512)` : ''"></div>
-		<router-link class="avatar" :to="u | userPage">
-			<img :src="`${u.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
 			<router-link class="name" :to="u | userPage">{{ u | userName }}</router-link>
 			<p class="username">@{{ u | acct }}</p>
@@ -111,14 +109,10 @@ root(isDark)
 		top 62px
 		left 13px
 		z-index 2
-
-		> img
-			display block
-			width 58px
-			height 58px
-			margin 0
-			border solid 3px isDark ? #282c37 : #fff
-			border-radius 8px
+		width 58px
+		height 58px
+		border solid 3px isDark ? #282c37 : #fff
+		border-radius 8px
 
 	> .title
 		display block

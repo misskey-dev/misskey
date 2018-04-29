@@ -1,12 +1,10 @@
 <template>
 <div class="note" :class="{ renote: isRenote }">
-	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || os.i.clientSettings.showReplyTarget)">
+	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || clientSettings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
-		<router-link class="avatar-anchor" :to="note.user | userPage">
-			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="note.user"/>
 		%fa:retweet%
 		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
 		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
@@ -14,9 +12,7 @@
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="p.user | userPage">
-			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="p.user"/>
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
@@ -154,7 +150,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.clientSettings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -268,15 +264,12 @@ root(isDark)
 		@media (min-width 600px)
 			padding 16px 32px
 
-		.avatar-anchor
+		.avatar
 			display inline-block
-
-			.avatar
-				vertical-align bottom
-				width 28px
-				height 28px
-				margin 0 8px 0 0
-				border-radius 6px
+			width 28px
+			height 28px
+			margin 0 8px 0 0
+			border-radius 6px
 
 		[data-fa]
 			margin-right 4px
@@ -314,29 +307,22 @@ root(isDark)
 			display block
 			clear both
 
-		> .avatar-anchor
+		> .avatar
 			display block
 			float left
 			margin 0 10px 8px 0
+			width 48px
+			height 48px
+			border-radius 6px
 			//position -webkit-sticky
 			//position sticky
 			//top 62px
 
 			@media (min-width 500px)
 				margin-right 16px
-
-			> .avatar
-				display block
-				width 48px
-				height 48px
-				margin 0
-				border-radius 6px
-				vertical-align bottom
-
-				@media (min-width 500px)
-					width 58px
-					height 58px
-					border-radius 8px
+				width 58px
+				height 58px
+				border-radius 8px
 
 		> .main
 			float left

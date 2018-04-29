@@ -40,6 +40,7 @@ export default define({
 	methods: {
 		func() {
 			this.props.compact = !this.props.compact;
+			this.save();
 		},
 		fetch() {
 			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`, {

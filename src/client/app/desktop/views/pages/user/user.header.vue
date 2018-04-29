@@ -7,7 +7,7 @@
 		<div class="fade"></div>
 	</div>
 	<div class="container">
-		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=150`" alt="avatar"/>
+		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 		<div class="title">
 			<p class="name">{{ user | userName }}</p>
 			<p class="username">@{{ user | acct }}</p>
@@ -139,7 +139,6 @@ export default Vue.extend({
 			z-index 2
 			width 160px
 			height 160px
-			margin 0
 			border solid 3px #fff
 			border-radius 8px
 			box-shadow 1px 1px 3px rgba(#000, 0.2)

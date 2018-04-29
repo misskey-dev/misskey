@@ -92,8 +92,8 @@ export default Vue.extend({
 				(this as any).api(this.endpoint, {
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined,
-					includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
-					includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
+					includeMyRenotes: (this as any).clientSettings.showMyRenotes,
+					includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -114,8 +114,8 @@ export default Vue.extend({
 			(this as any).api(this.endpoint, {
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
-				includeMyRenotes: (this as any).os.i.clientSettings.showMyRenotes,
-				includeRenotedMyNotes: (this as any).os.i.clientSettings.showRenotedMyNotes
+				includeMyRenotes: (this as any).clientSettings.showMyRenotes,
+				includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
 			}).then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();

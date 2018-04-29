@@ -17,17 +17,12 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
-			</router-link>
-			%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>がRenote
+			<mk-avatar class="avatar" :user="note.user"/>%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>がRenote
 		</p>
 	</div>
 	<article>
 		<header>
-			<router-link class="avatar-anchor" :to="p.user | userPage">
-				<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-			</router-link>
+			<mk-avatar class="avatar" :user="p.user"/>
 			<div>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
 				<span class="username">@{{ p.user | acct }}</span>
@@ -152,7 +147,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.clientSettings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -262,17 +257,12 @@ root(isDark)
 			margin 0
 			padding 16px 32px
 
-			.avatar-anchor
+			.avatar
 				display inline-block
-
-				.avatar
-					vertical-align bottom
-					min-width 28px
-					min-height 28px
-					max-width 28px
-					max-height 28px
-					margin 0 8px 0 0
-					border-radius 6px
+				width 28px
+				height 28px
+				margin 0 8px 0 0
+				border-radius 6px
 
 			[data-fa]
 				margin-right 4px
@@ -301,21 +291,16 @@ root(isDark)
 			display flex
 			line-height 1.1em
 
-			> .avatar-anchor
+			> .avatar
 				display block
-				padding 0 12px 0 0
+				margin 0 12px 0 0
+				width 54px
+				height 54px
+				border-radius 8px
 
-				> .avatar
-					display block
-					width 54px
-					height 54px
-					margin 0
-					border-radius 8px
-					vertical-align bottom
-
-					@media (min-width 500px)
-						width 60px
-						height 60px
+				@media (min-width 500px)
+					width 60px
+					height 60px
 
 			> div
 

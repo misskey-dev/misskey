@@ -6,9 +6,7 @@
 				<div class="notification" :class="notification.type" :key="notification.id">
 					<mk-time :time="notification.createdAt"/>
 					<template v-if="notification.type == 'reaction'">
-						<router-link class="avatar-anchor" :to="notification.user | userPage" v-user-preview="notification.user.id">
-							<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p>
 								<mk-reaction-icon :reaction="notification.reaction"/>
@@ -20,9 +18,7 @@
 						</div>
 					</template>
 					<template v-if="notification.type == 'renote'">
-						<router-link class="avatar-anchor" :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
-							<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p>%fa:retweet%
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
@@ -33,9 +29,7 @@
 						</div>
 					</template>
 					<template v-if="notification.type == 'quote'">
-						<router-link class="avatar-anchor" :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
-							<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p>%fa:quote-left%
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
@@ -44,9 +38,7 @@
 						</div>
 					</template>
 					<template v-if="notification.type == 'follow'">
-						<router-link class="avatar-anchor" :to="notification.user | userPage" v-user-preview="notification.user.id">
-							<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p>%fa:user-plus%
 								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
@@ -54,9 +46,7 @@
 						</div>
 					</template>
 					<template v-if="notification.type == 'reply'">
-						<router-link class="avatar-anchor" :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
-							<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p>%fa:reply%
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
@@ -65,9 +55,7 @@
 						</div>
 					</template>
 					<template v-if="notification.type == 'mention'">
-						<router-link class="avatar-anchor" :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
-							<img class="avatar" :src="`${notification.note.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
 							<p>%fa:at%
 								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
@@ -76,9 +64,7 @@
 						</div>
 					</template>
 					<template v-if="notification.type == 'poll_vote'">
-						<router-link class="avatar-anchor" :to="notification.user | userPage" v-user-preview="notification.user.id">
-							<img class="avatar" :src="`${notification.user.avatarUrl}?thumbnail&size=48`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p>%fa:chart-pie%<a :href="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</a></p>
 							<router-link class="note-ref" :to="notification.note | notePage">
@@ -223,20 +209,15 @@ root(isDark)
 					display block
 					clear both
 
-				> .avatar-anchor
+				> .avatar
 					display block
 					float left
 					position -webkit-sticky
 					position sticky
 					top 16px
-
-					> img
-						display block
-						min-width 36px
-						min-height 36px
-						max-width 36px
-						max-height 36px
-						border-radius 6px
+					width 36px
+					height 36px
+					border-radius 6px
 
 				> .text
 					float right

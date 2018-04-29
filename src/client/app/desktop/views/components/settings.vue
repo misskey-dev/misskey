@@ -20,7 +20,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>動作</h1>
-			<mk-switch v-model="os.i.clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
+			<mk-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
 				<span>ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。</span>
 			</mk-switch>
 			<mk-switch v-model="autoPopout" text="ウィンドウの自動ポップアウト">
@@ -41,13 +41,14 @@
 			</div>
 			<div class="div">
 				<mk-switch v-model="darkmode" text="ダークモード"/>
-				<mk-switch v-model="os.i.clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
+				<mk-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons" text="丸いアイコンを使用"/>
+				<mk-switch v-model="clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
 			</div>
-			<mk-switch v-model="os.i.clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
-			<mk-switch v-model="os.i.clientSettings.showReplyTarget" @change="onChangeShowReplyTarget" text="リプライ先を表示する"/>
-			<mk-switch v-model="os.i.clientSettings.showMyRenotes" @change="onChangeShowMyRenotes" text="自分の行ったRenoteをタイムラインに表示する"/>
-			<mk-switch v-model="os.i.clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="Renoteされた自分の投稿をタイムラインに表示する"/>
-			<mk-switch v-model="os.i.clientSettings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
+			<mk-switch v-model="clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
+			<mk-switch v-model="clientSettings.showReplyTarget" @change="onChangeShowReplyTarget" text="リプライ先を表示する"/>
+			<mk-switch v-model="clientSettings.showMyRenotes" @change="onChangeShowMyRenotes" text="自分の行ったRenoteをタイムラインに表示する"/>
+			<mk-switch v-model="clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="Renoteされた自分の投稿をタイムラインに表示する"/>
+			<mk-switch v-model="clientSettings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
 				<span>位置情報が添付された投稿のマップを自動的に展開します。</span>
 			</mk-switch>
 		</section>
@@ -69,7 +70,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>モバイル</h1>
-			<mk-switch v-model="os.i.clientSettings.disableViaMobile" @change="onChangeDisableViaMobile" text="「モバイルからの投稿」フラグを付けない"/>
+			<mk-switch v-model="clientSettings.disableViaMobile" @change="onChangeDisableViaMobile" text="「モバイルからの投稿」フラグを付けない"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -297,8 +298,8 @@ export default Vue.extend({
 			this.$emit('done');
 		},
 		onChangeFetchOnScroll(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'fetchOnScroll',
+			this.$store.dispatch('settings/set', {
+				key: 'fetchOnScroll',
 				value: v
 			});
 		},
@@ -308,50 +309,56 @@ export default Vue.extend({
 			});
 		},
 		onChangeDark(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'dark',
+			this.$store.dispatch('settings/set', {
+				key: 'dark',
 				value: v
 			});
 		},
 		onChangeShowPostFormOnTopOfTl(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'showPostFormOnTopOfTl',
+			this.$store.dispatch('settings/set', {
+				key: 'showPostFormOnTopOfTl',
 				value: v
 			});
 		},
 		onChangeShowReplyTarget(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'showReplyTarget',
+			this.$store.dispatch('settings/set', {
+				key: 'showReplyTarget',
 				value: v
 			});
 		},
 		onChangeShowMyRenotes(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'showMyRenotes',
+			this.$store.dispatch('settings/set', {
+				key: 'showMyRenotes',
 				value: v
 			});
 		},
 		onChangeShowRenotedMyNotes(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'showRenotedMyNotes',
+			this.$store.dispatch('settings/set', {
+				key: 'showRenotedMyNotes',
 				value: v
 			});
 		},
 		onChangeShowMaps(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'showMaps',
+			this.$store.dispatch('settings/set', {
+				key: 'showMaps',
+				value: v
+			});
+		},
+		onChangeCircleIcons(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'circleIcons',
 				value: v
 			});
 		},
 		onChangeGradientWindowHeader(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'gradientWindowHeader',
+			this.$store.dispatch('settings/set', {
+				key: 'gradientWindowHeader',
 				value: v
 			});
 		},
 		onChangeDisableViaMobile(v) {
-			(this as any).api('i/update_client_setting', {
-				name: 'disableViaMobile',
+			this.$store.dispatch('settings/set', {
+				key: 'disableViaMobile',
 				value: v
 			});
 		},

@@ -166,7 +166,7 @@ export default Vue.extend({
 
 		post() {
 			this.posting = true;
-			const viaMobile = (this as any).os.i.clientSettings.disableViaMobile !== true;
+			const viaMobile = (this as any).clientSettings.disableViaMobile !== true;
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,

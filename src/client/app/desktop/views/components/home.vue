@@ -53,7 +53,7 @@
 			<div class="main">
 				<a @click="hint">カスタマイズのヒント</a>
 				<div>
-					<mk-post-form v-if="os.i.clientSettings.showPostFormOnTopOfTl"/>
+					<mk-post-form v-if="clientSettings.showPostFormOnTopOfTl"/>
 					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp"/>
 			</div>
 			<div class="main">
-				<mk-post-form v-if="os.i.clientSettings.showPostFormOnTopOfTl"/>
+				<mk-post-form v-if="clientSettings.showPostFormOnTopOfTl"/>
 				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 				<mk-mentions @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
 			</div>
@@ -81,6 +81,7 @@ export default Vue.extend({
 	components: {
 		XDraggable
 	},
+
 	props: {
 		customize: {
 			type: Boolean,
@@ -91,61 +92,43 @@ export default Vue.extend({
 			default: 'timeline'
 		}
 	},
+
 	data() {
 		return {
 			connection: null,
 			connectionId: null,
 			widgetAdderSelected: null,
-			trash: [],
-			widgets: {
-				left: [],
-				right: []
-			}
+			trash: []
 		};
 	},
+
 	computed: {
-		home: {
-			get(): any[] {
-				//#region 互換性のため
-				(this as any).os.i.clientSettings.home.forEach(w => {
-					if (w.name == 'rss-reader') w.name = 'rss';
-					if (w.name == 'user-recommendation') w.name = 'users';
-					if (w.name == 'recommended-polls') w.name = 'polls';
-				});
-				//#endregion
-				return (this as any).os.i.clientSettings.home;
-			},
-			set(value) {
-				(this as any).os.i.clientSettings.home = value;
-			}
+		home(): any[] {
+			return this.$store.state.settings.data.home;
 		},
 		left(): any[] {
 			return this.home.filter(w => w.place == 'left');
 		},
 		right(): any[] {
 			return this.home.filter(w => w.place == 'right');
+		},
+		widgets(): any {
+			return {
+				left: this.left,
+				right: this.right
+			};
 		}
 	},
-	created() {
-		this.widgets.left = this.left;
-		this.widgets.right = this.right;
-		this.$watch('os.i.clientSettings', i => {
-			this.widgets.left = this.left;
-			this.widgets.right = this.right;
-		}, {
-			deep: true
-		});
-	},
+
 	mounted() {
 		this.connection = (this as any).os.stream.getConnection();
 		this.connectionId = (this as any).os.stream.use();
-
-		this.connection.on('home_updated', this.onHomeUpdated);
 	},
+
 	beforeDestroy() {
-		this.connection.off('home_updated', this.onHomeUpdated);
 		(this as any).os.stream.dispose(this.connectionId);
 	},
+
 	methods: {
 		hint() {
 			(this as any).apis.dialog({
@@ -159,56 +142,44 @@ export default Vue.extend({
 				}]
 			});
 		},
+
 		onTlLoaded() {
 			this.$emit('loaded');
 		},
-		onHomeUpdated(data) {
-			if (data.home) {
-				(this as any).os.i.clientSettings.home = data.home;
-				this.widgets.left = data.home.filter(w => w.place == 'left');
-				this.widgets.right = data.home.filter(w => w.place == 'right');
-			} else {
-				const w = (this as any).os.i.clientSettings.home.find(w => w.id == data.id);
-				if (w != null) {
-					w.data = data.data;
-					this.$refs[w.id][0].preventSave = true;
-					this.$refs[w.id][0].props = w.data;
-					this.widgets.left = (this as any).os.i.clientSettings.home.filter(w => w.place == 'left');
-					this.widgets.right = (this as any).os.i.clientSettings.home.filter(w => w.place == 'right');
-				}
-			}
-		},
+
 		onWidgetContextmenu(widgetId) {
 			const w = (this.$refs[widgetId] as any)[0];
 			if (w.func) w.func();
 		},
+
 		onWidgetSort() {
 			this.saveHome();
 		},
+
 		onTrash(evt) {
 			this.saveHome();
 		},
+
 		addWidget() {
-			const widget = {
+			this.$store.dispatch('settings/addHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				place: 'left',
 				data: {}
-			};
-
-			this.widgets.left.unshift(widget);
-			this.saveHome();
+			});
 		},
+
 		saveHome() {
 			const left = this.widgets.left;
 			const right = this.widgets.right;
-			this.home = left.concat(right);
+			this.$store.commit('settings/setHome', left.concat(right));
 			left.forEach(w => w.place = 'left');
 			right.forEach(w => w.place = 'right');
 			(this as any).api('i/update_home', {
 				home: this.home
 			});
 		},
+
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
 		}

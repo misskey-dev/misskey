@@ -26,9 +26,9 @@ if (process.env.NODE_ENV != 'production') {
 	app.use(logger());
 
 	// Delay
-	app.use(slow({
-		delay: 1000
-	}));
+	//app.use(slow({
+	//	delay: 1000
+	//}));
 }
 
 // Compress response

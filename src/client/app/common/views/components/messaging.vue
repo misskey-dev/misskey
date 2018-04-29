@@ -13,7 +13,7 @@
 					@click="navigate(user)"
 					tabindex="-1"
 				>
-					<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
+					<mk-avatar class="avatar" :user="user"/>
 					<span class="name">{{ user | userName }}</span>
 					<span class="username">@{{ user | acct }}</span>
 				</li>
@@ -31,7 +31,7 @@
 				:key="message.id"
 			>
 				<div>
-					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatarUrl : message.user.avatarUrl}?thumbnail&size=64`" alt=""/>
+					<mk-avatar class="avatar" :user="isMe(message) ? message.recipient : message.user"/>
 					<header>
 						<span class="name">{{ isMe(message) ? message.recipient : message.user | userName }}</span>
 						<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>

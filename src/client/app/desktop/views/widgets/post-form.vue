@@ -29,6 +29,7 @@ export default define({
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		},
 		onKeydown(e) {
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();

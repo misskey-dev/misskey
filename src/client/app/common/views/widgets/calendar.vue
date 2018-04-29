@@ -73,6 +73,7 @@ export default define({
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		},
 		tick() {
 			const now = new Date();

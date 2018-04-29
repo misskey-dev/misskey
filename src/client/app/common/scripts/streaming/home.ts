@@ -25,10 +25,31 @@ export class HomeStream extends Stream {
 				console.log('I updated:', i);
 			}
 			merge(me, i);
+
+			// キャッシュ更新
+			os.bakeMe();
+		});
+
+		this.on('clientSettingUpdated', x => {
+			os.store.commit('settings/set', {
+				key: x.key,
+				value: x.value
+			});
+		});
+
+		this.on('home_updated', x => {
+			if (x.home) {
+				os.store.commit('settings/setHome', x.home);
+			} else {
+				os.store.commit('settings/setHomeWidget', {
+					id: x.id,
+					data: x.data
+				});
+			}
 		});
 
 		// トークンが再生成されたとき
-		// このままではAPIが利用できないので強制的にサインアウトさせる
+		// このままではMisskeyが利用できないので強制的にサインアウトさせる
 		this.on('my_token_regenerated', () => {
 			alert('%i18n:!common.my-token-regenerated%');
 			os.signout();

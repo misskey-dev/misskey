@@ -24,16 +24,11 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 		$set: x
 	});
 
-	// Serialize
-	user.clientSettings[name] = value;
-	const iObj = await pack(user, user, {
-		detail: true,
-		includeSecrets: true
+	res();
+
+	// Publish event
+	event(user._id, 'clientSettingUpdated', {
+		key: name,
+		value
 	});
-
-	// Send response
-	res(iObj);
-
-	// Publish i updated event
-	event(user._id, 'i_updated', iObj);
 });

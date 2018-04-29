@@ -68,6 +68,7 @@ export default define({
 			} else {
 				this.props.view++;
 			}
+			this.save();
 		},
 		func() {
 			if (this.props.design == 2) {
@@ -75,6 +76,7 @@ export default define({
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		}
 	}
 });

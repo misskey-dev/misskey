@@ -116,13 +116,13 @@ export default Vue.extend({
 			const isMyNote = note.userId == (this as any).os.i.id;
 			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
 
-			if ((this as any).os.i.clientSettings.showMyRenotes === false) {
+			if ((this as any).clientSettings.showMyRenotes === false) {
 				if (isMyNote && isPureRenote) {
 					return;
 				}
 			}
 
-			if ((this as any).os.i.clientSettings.showRenotedMyNotes === false) {
+			if ((this as any).clientSettings.showRenotedMyNotes === false) {
 				if (isPureRenote && (note.renote.userId == (this as any).os.i.id)) {
 					return;
 				}
@@ -187,7 +187,7 @@ export default Vue.extend({
 				this.clearNotification();
 			}
 
-			if ((this as any).os.i.clientSettings.fetchOnScroll !== false) {
+			if ((this as any).clientSettings.fetchOnScroll !== false) {
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.loadMore();
 			}
