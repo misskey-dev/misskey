@@ -46,9 +46,10 @@ export default Vue.extend({
 		this.$store.commit('setUiHeaderHeight', 48);
 
 		if ((this as any).os.isSignedIn) {
-			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000
+			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000;
 			const isHisasiburi = ago >= 3600;
 			(this as any).os.i.lastUsedAt = new Date();
+			(this as any).os.bakeMe();
 			if (isHisasiburi) {
 				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';
@@ -132,7 +133,7 @@ root(isDark)
 				line-height 48px
 				margin 0
 				text-align center
-				color #888
+				color isDark ? #fff : #888
 				opacity 0
 
 			> .container

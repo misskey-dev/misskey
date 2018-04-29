@@ -59,9 +59,10 @@ export default Vue.extend({
 				}
 			});
 
-			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000
+			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000;
 			const isHisasiburi = ago >= 3600;
 			(this as any).os.i.lastUsedAt = new Date();
+			(this as any).os.bakeMe();
 			if (isHisasiburi) {
 				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';
