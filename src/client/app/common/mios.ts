@@ -232,6 +232,7 @@ export default class MiOS extends EventEmitter {
 
 	public signout() {
 		localStorage.removeItem('me');
+		localStorage.removeItem('settings');
 		document.cookie = `i=; domain=${hostname}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 		location.href = '/';
 	}
