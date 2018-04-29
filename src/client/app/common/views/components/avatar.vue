@@ -35,4 +35,5 @@ export default Vue.extend({
 		margin 0
 		border-radius inherit
 		vertical-align bottom
+		transition border-radius 1s ease
 </style>
