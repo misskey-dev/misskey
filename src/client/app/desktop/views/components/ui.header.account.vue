@@ -22,7 +22,7 @@
 			</ul>
 			<ul>
 				<li>
-					<a href="/i/customize-home">%fa:wrench%<span>%i18n:@customize%</span>%fa:angle-right%</a>
+					<router-link to="/i/customize-home">%fa:wrench%<span>%i18n:@customize%</span>%fa:angle-right%</router-link>
 				</li>
 				<li @click="settings">
 					<p>%fa:cog%<span>%i18n:@settings%</span>%fa:angle-right%</p>

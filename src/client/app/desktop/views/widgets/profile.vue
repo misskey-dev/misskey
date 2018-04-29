@@ -8,12 +8,9 @@
 		title="クリックでバナー編集"
 		@click="os.apis.updateBanner"
 	></div>
-	<img class="avatar"
-		:src="`${os.i.avatarUrl}?thumbnail&size=96`"
+	<mk-avatar class="avatar" :user="os.i"
 		@click="os.apis.updateAvatar"
-		alt="avatar"
 		title="クリックでアバター編集"
-		v-user-preview="os.i.id"
 	/>
 	<router-link class="name" :to="os.i | userPage">{{ os.i | userName }}</router-link>
 	<p class="username">@{{ os.i | acct }}</p>
@@ -104,10 +101,8 @@ root(isDark)
 		left 16px
 		width 58px
 		height 58px
-		margin 0
 		border solid 3px isDark ? #282c37 : #fff
 		border-radius 8px
-		vertical-align bottom
 		cursor pointer
 
 	> .name
