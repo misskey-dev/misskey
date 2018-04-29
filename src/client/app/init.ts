@@ -3,7 +3,7 @@
  */
 
 import Vue from 'vue';
-import Vuex, { mapState } from 'vuex';
+import Vuex from 'vuex';
 import VueRouter from 'vue-router';
 import VModal from 'vue-js-modal';
 import * as TreeView from 'vue-json-tree-view';
@@ -146,12 +146,10 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 					return {
 						os,
 						api: os.api,
-						apis: os.apis
+						apis: os.apis,
+						clientSettings: os.store.state.settings.data
 					};
-				},
-				computed: mapState({
-					clientSettings: state => state.settings.data
-				})
+				}
 			});
 
 			const app = new Vue({

@@ -4,7 +4,7 @@
 	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown" :style="{ width, height }">
 		<div class="body">
 			<header ref="header"
-				:class="{ withGradient }"
+				:class="{ withGradient: clientSettings.gradientWindowHeader }"
 				@contextmenu.prevent="() => {}" @mousedown.prevent="onHeaderMousedown"
 			>
 				<h1><slot name="header"></slot></h1>
@@ -91,13 +91,6 @@ export default Vue.extend({
 		},
 		canResize(): boolean {
 			return !this.isFlexible;
-		},
-		withGradient(): boolean {
-			return (this as any).os.isSignedIn
-				? (this as any).clientSettings.gradientWindowHeader != null
-					? (this as any).clientSettings.gradientWindowHeader
-					: false
-				: false;
 		}
 	},
 
