@@ -41,10 +41,6 @@ export default (os: MiOS) => new Vuex.Store({
 			},
 
 			mutations: {
-				init(state, settings) {
-					state.data = settings;
-				},
-
 				set(state, x: { key: string; value: any }) {
 					state.data[x.key] = x.value;
 				},
@@ -66,6 +62,12 @@ export default (os: MiOS) => new Vuex.Store({
 			},
 
 			actions: {
+				merge(ctx, settings) {
+					Object.entries(settings).forEach(([key, value]) => {
+						ctx.commit('set', { key, value });
+					});
+				},
+
 				set(ctx, x) {
 					ctx.commit('set', x);
 

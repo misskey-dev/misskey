@@ -22,7 +22,7 @@
 			<mk-welcome-timeline/>
 		</div>
 		<div class="users">
-			<mk-avatar class="avatar" :key="user.id" :user="user"/>
+			<mk-avatar class="avatar" v-for="user in users" :key="user.id" :user="user"/>
 		</div>
 		<footer>
 			<small>{{ copyright }}</small>
@@ -183,13 +183,9 @@ export default Vue.extend({
 			> *
 				display inline-block
 				margin 4px
-
-				> *
-					display inline-block
-					width 38px
-					height 38px
-					vertical-align top
-					border-radius 6px
+				width 38px
+				height 38px
+				border-radius 6px
 
 		> footer
 			text-align center

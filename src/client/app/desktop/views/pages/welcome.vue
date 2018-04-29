@@ -8,7 +8,7 @@
 					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a :href="aboutUrl">詳しく...</a></p>
 					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
 					<div class="users">
-						<mk-avatar class="avatar" :key="user.id" :user="user"/>
+						<mk-avatar class="avatar" v-for="user in users" :key="user.id" :user="user"/>
 					</div>
 				</div>
 				<div>
@@ -215,13 +215,9 @@ export default Vue.extend({
 						> *
 							display inline-block
 							margin 4px
-
-							> *
-								display inline-block
-								width 38px
-								height 38px
-								vertical-align top
-								border-radius 6px
+							width 38px
+							height 38px
+							border-radius 6px
 
 				> div:last-child
 

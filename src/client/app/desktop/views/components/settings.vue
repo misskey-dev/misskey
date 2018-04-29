@@ -41,7 +41,7 @@
 			</div>
 			<div class="div">
 				<mk-switch v-model="darkmode" text="ダークモード"/>
-				<mk-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons" text="丸いアイコンを使用"/>
+				<mk-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons" text="円形のアイコンを使用"/>
 				<mk-switch v-model="clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
 			</div>
 			<mk-switch v-model="clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>

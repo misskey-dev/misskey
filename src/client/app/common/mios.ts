@@ -332,7 +332,7 @@ export default class MiOS extends EventEmitter {
 		const cachedSettings = JSON.parse(localStorage.getItem('settings'));
 
 		if (cachedSettings) {
-			this.store.commit('settings/init', cachedSettings);
+			this.store.dispatch('settings/merge', cachedSettings);
 		}
 		//#endregion
 
@@ -350,7 +350,7 @@ export default class MiOS extends EventEmitter {
 			fetchme(cachedMe.token, freshData => {
 				merge(cachedMe, freshData);
 
-				this.store.commit('settings/init', freshData.clientSettings);
+				this.store.dispatch('settings/merge', freshData.clientSettings);
 			});
 		} else {
 			// Get token from cookie
@@ -358,9 +358,7 @@ export default class MiOS extends EventEmitter {
 
 			fetchme(i, me => {
 				if (me) {
-					Object.entries(me.clientSettings).forEach(([key, value]) => {
-						this.store.commit('settings/set', { key, value });
-					});
+					this.store.dispatch('settings/merge', me.clientSettings);
 
 					fetched(me);
 				} else {
