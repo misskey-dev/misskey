@@ -28,6 +28,12 @@
 					<router-link class="created-at" :to="p | notePage">
 						<mk-time :time="p.createdAt"/>
 					</router-link>
+					<span class="visibility" v-if="p.visibility != 'public'">
+						<template v-if="p.visibility == 'home'">%fa:home%</template>
+						<template v-if="p.visibility == 'followers'">%fa:unlock%</template>
+						<template v-if="p.visibility == 'specified'">%fa:envelope%</template>
+						<template v-if="p.visibility == 'private'">%fa:lock%</template>
+					</span>
 				</div>
 			</header>
 			<div class="body">
@@ -442,18 +448,19 @@ root(isDark)
 					margin-left auto
 					font-size 0.9em
 
+					> *
+						color isDark ? #606984 : #c0c0c0
+
 					> .mobile
 						margin-right 8px
-						color isDark ? #606984 : #ccc
 
 					> .app
 						margin-right 8px
 						padding-right 8px
-						color #ccc
 						border-right solid 1px #eaeaea
 
-					> .created-at
-						color isDark ? #606984 : #c0c0c0
+					> .visibility
+						margin-left 8px
 
 			> .body
 

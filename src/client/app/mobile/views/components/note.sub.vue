@@ -7,9 +7,18 @@
 		<header>
 			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
 			<span class="username">@{{ note.user | acct }}</span>
-			<router-link class="created-at" :to="note | notePage">
-				<mk-time :time="note.createdAt"/>
-			</router-link>
+			<div class="info">
+				<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
+				<router-link class="created-at" :to="note | notePage">
+					<mk-time :time="note.createdAt"/>
+				</router-link>
+				<span class="visibility" v-if="note.visibility != 'public'">
+					<template v-if="note.visibility == 'home'">%fa:home%</template>
+					<template v-if="note.visibility == 'followers'">%fa:unlock%</template>
+					<template v-if="note.visibility == 'specified'">%fa:envelope%</template>
+					<template v-if="note.visibility == 'private'">%fa:lock%</template>
+				</span>
+			</div>
 		</header>
 		<div class="body">
 			<mk-sub-note-content class="text" :note="note"/>
@@ -92,9 +101,18 @@ root(isDark)
 				margin 0
 				color isDark ? #606984 : #d1d8da
 
-			> .created-at
+			> .info
 				margin-left auto
-				color isDark ? #606984 : #b2b8bb
+				font-size 0.9em
+
+				> *
+					color isDark ? #606984 : #b2b8bb
+
+				> .mobile
+					margin-right 6px
+
+				> .visibility
+					margin-left 6px
 
 		> .body
 			max-height 128px
