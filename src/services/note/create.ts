@@ -123,7 +123,7 @@ export default async (user: IUser, data: {
 	if (note.channelId == null) {
 		if (!silent) {
 			if (isLocalUser(user)) {
-				if (note.visibility == 'private') {
+				if (note.visibility == 'private' || note.visibility == 'followers' || note.visibility == 'specified') {
 					// Publish event to myself's stream
 					stream(note.userId, 'note', await pack(note, user, {
 						detail: true
@@ -133,7 +133,9 @@ export default async (user: IUser, data: {
 					stream(note.userId, 'note', noteObj);
 
 					// Publish note to local timeline stream
-					publishLocalTimelineStream(noteObj);
+					if (note.visibility != 'home') {
+						publishLocalTimelineStream(noteObj);
+					}
 				}
 			}
 
