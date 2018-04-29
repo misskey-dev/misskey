@@ -35,6 +35,7 @@
 	<button class="poll" title="内容を隠す" @click="useCw = !useCw">%fa:eye-slash%</button>
 	<button class="geo" title="位置情報を添付する" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
 	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
+	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
 		{{ posting ? '%i18n:!@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
@@ -556,6 +557,19 @@ root(isDark)
 			@keyframes stripe-bg
 				from {background-position: 0 0;}
 				to   {background-position: -64px 32px;}
+
+	> .text-count
+		pointer-events none
+		display block
+		position absolute
+		bottom 16px
+		right 138px
+		margin 0
+		line-height 40px
+		color rgba($theme-color, 0.5)
+
+		&.over
+			color #ec3828
 
 	> .upload
 	> .drive
