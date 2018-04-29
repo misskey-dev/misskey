@@ -14,7 +14,7 @@ import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
 
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
-import MiOS, { API } from './common/mios';
+import MiOS, { API } from './mios';
 import { version, codename, lang } from './config';
 
 let elementLocale;

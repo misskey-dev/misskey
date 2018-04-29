@@ -1,5 +1,5 @@
 import Vuex from 'vuex';
-import MiOS from './common/mios';
+import MiOS from './mios';
 
 const defaultSettings = {
 	home: [],

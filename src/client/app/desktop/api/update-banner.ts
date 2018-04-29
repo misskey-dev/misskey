@@ -1,4 +1,4 @@
-import OS from '../../common/mios';
+import OS from '../../mios';
 import { apiUrl } from '../../config';
 import CropWindow from '../views/components/crop-window.vue';
 import ProgressDialog from '../views/components/progress-dialog.vue';

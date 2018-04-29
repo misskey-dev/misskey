@@ -1,4 +1,4 @@
-import MiOS from '../mios';
+import MiOS from '../../mios';
 import { version as current } from '../../config';
 
 export default async function(mios: MiOS, force = false, silent = false) {

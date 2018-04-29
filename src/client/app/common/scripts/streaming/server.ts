@@ -1,6 +1,6 @@
 import Stream from './stream';
 import StreamManager from './stream-manager';
-import MiOS from '../../mios';
+import MiOS from '../../../mios';
 
 /**
  * Server stream connection
