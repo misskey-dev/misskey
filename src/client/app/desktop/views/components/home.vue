@@ -250,7 +250,7 @@ root(isDark)
 		> div
 			display flex
 			margin 0 auto
-			max-width 1200px - 32px
+			max-width 1220px - 32px
 
 			> div
 				width 50%
@@ -281,7 +281,7 @@ root(isDark)
 		display flex
 		justify-content center
 		margin 0 auto
-		max-width 1200px
+		max-width 1220px
 
 		> *
 			.customize-container
