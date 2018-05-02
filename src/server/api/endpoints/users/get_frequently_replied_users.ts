@@ -7,11 +7,11 @@ import User, { pack } from '../../../../models/user';
 
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).get();
+	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Lookup user

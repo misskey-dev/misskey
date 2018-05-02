@@ -13,7 +13,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).get();
+	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// 自分自身

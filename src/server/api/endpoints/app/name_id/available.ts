@@ -42,7 +42,7 @@ import { isValidNameId } from '../../../../../models/app';
  */
 module.exports = async (params) => new Promise(async (res, rej) => {
 	// Get 'nameId' parameter
-	const [nameId, nameIdErr] = $(params.nameId).string().pipe(isValidNameId).get();
+	const [nameId, nameIdErr] = $.str.pipe(isValidNameId).get(params.nameId);
 	if (nameIdErr) return rej('invalid nameId param');
 
 	// Get exist

@@ -17,7 +17,7 @@ export interface INoteReaction {
 	reaction: string;
 }
 
-export const validateReaction = $().string().or([
+export const validateReaction = $.str.or([
 	'like',
 	'love',
 	'laugh',

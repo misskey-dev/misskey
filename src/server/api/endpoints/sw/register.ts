@@ -9,15 +9,15 @@ import Subscription from '../../../../models/sw-subscription';
  */
 module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	// Get 'endpoint' parameter
-	const [endpoint, endpointErr] = $(params.endpoint).string().get();
+	const [endpoint, endpointErr] = $.str.get(params.endpoint);
 	if (endpointErr) return rej('invalid endpoint param');
 
 	// Get 'auth' parameter
-	const [auth, authErr] = $(params.auth).string().get();
+	const [auth, authErr] = $.str.get(params.auth);
 	if (authErr) return rej('invalid auth param');
 
 	// Get 'publickey' parameter
-	const [publickey, publickeyErr] = $(params.publickey).string().get();
+	const [publickey, publickeyErr] = $.str.get(params.publickey);
 	if (publickeyErr) return rej('invalid publickey param');
 
 	// if already subscribed

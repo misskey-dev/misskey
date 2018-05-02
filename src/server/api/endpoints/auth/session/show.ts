@@ -53,7 +53,7 @@ import AuthSess, { pack } from '../../../../../models/auth-session';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
-	const [token, tokenErr] = $(params.token).string().get();
+	const [token, tokenErr] = $.str.get(params.token);
 	if (tokenErr) return rej('invalid token param');
 
 	// Lookup session

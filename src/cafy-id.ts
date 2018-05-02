@@ -8,8 +8,8 @@ export const isNotAnId = x => !isAnId(x);
  * ID
  */
 export default class ID extends Query<mongo.ObjectID> {
-	constructor(...args) {
-		super(...args);
+	constructor() {
+		super();
 
 		this.transform = v => {
 			if (isAnId(v) && !mongo.ObjectID.prototype.isPrototypeOf(v)) {
@@ -19,7 +19,7 @@ export default class ID extends Query<mongo.ObjectID> {
 			}
 		};
 
-		this.pushValidator(v => {
+		this.push(v => {
 			if (!mongo.ObjectID.prototype.isPrototypeOf(v) && isNotAnId(v)) {
 				return new Error('must-be-an-id');
 			}

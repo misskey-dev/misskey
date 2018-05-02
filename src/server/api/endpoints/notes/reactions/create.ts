@@ -11,11 +11,11 @@ import { validateReaction } from '../../../../../models/note-reaction';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).type(ID).get();
+	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get 'reaction' parameter
-	const [reaction, reactionErr] = $(params.reaction).string().pipe(validateReaction.ok).get();
+	const [reaction, reactionErr] = $.str.pipe(validateReaction.ok).get(params.reaction);
 	if (reactionErr) return rej('invalid reaction param');
 
 	// Fetch reactee

@@ -9,15 +9,15 @@ import User, { pack } from '../../../../models/user';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
-	const [query, queryError] = $(params.query).string().get();
+	const [query, queryError] = $.str.get(params.query);
 	if (queryError) return rej('invalid query param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).get();
+	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	const users = await User

@@ -12,23 +12,23 @@ import UserList from '../../../../models/user-list';
  */
 module.exports = async (params, user, app) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.type(ID).get();
+	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
 	if (sinceIdErr) throw 'invalid sinceId param';
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.type(ID).get();
+	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
 	if (untilIdErr) throw 'invalid untilId param';
 
 	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().get();
+	const [sinceDate, sinceDateErr] = $.num.optional().get(params.sinceDate);
 	if (sinceDateErr) throw 'invalid sinceDate param';
 
 	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().get();
+	const [untilDate, untilDateErr] = $.num.optional().get(params.untilDate);
 	if (untilDateErr) throw 'invalid untilDate param';
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
@@ -37,15 +37,15 @@ module.exports = async (params, user, app) => {
 	}
 
 	// Get 'includeMyRenotes' parameter
-	const [includeMyRenotes = true, includeMyRenotesErr] = $(params.includeMyRenotes).optional.boolean().get();
+	const [includeMyRenotes = true, includeMyRenotesErr] = $.bool.optional().get(params.includeMyRenotes);
 	if (includeMyRenotesErr) throw 'invalid includeMyRenotes param';
 
 	// Get 'includeRenotedMyNotes' parameter
-	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $(params.includeRenotedMyNotes).optional.boolean().get();
+	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $.bool.optional().get(params.includeRenotedMyNotes);
 	if (includeRenotedMyNotesErr) throw 'invalid includeRenotedMyNotes param';
 
 	// Get 'listId' parameter
-	const [listId, listIdErr] = $(params.listId).type(ID).get();
+	const [listId, listIdErr] = $.type(ID).get(params.listId);
 	if (listIdErr) throw 'invalid listId param';
 
 	const [list, mutedUserIds] = await Promise.all([

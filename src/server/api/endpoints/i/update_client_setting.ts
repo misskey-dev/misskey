@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
+import User from '../../../../models/user';
 import event from '../../../../publishers/stream';
 
 /**
@@ -10,11 +10,11 @@ import event from '../../../../publishers/stream';
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).string().get();
+	const [name, nameErr] = $.str.get(params.name);
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'value' parameter
-	const [value, valueErr] = $(params.value).nullable.any().get();
+	const [value, valueErr] = $.any.nullable().get(params.value);
 	if (valueErr) return rej('invalid value param');
 
 	const x = {};

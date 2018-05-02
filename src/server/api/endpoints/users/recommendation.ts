@@ -16,11 +16,11 @@ import Mute from '../../../../models/mute';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).get();
+	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
 	if (offsetErr) return rej('invalid offset param');
 
 	// ID list of the user itself and other users who the user follows

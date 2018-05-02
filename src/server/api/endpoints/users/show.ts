@@ -14,19 +14,19 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	let user;
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).optional.type(ID).get();
+	const [userId, userIdErr] = $.type(ID).optional().get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'userIds' parameter
-	const [userIds, userIdsErr] = $(params.userIds).optional.array($().type(ID)).get();
+	const [userIds, userIdsErr] = $.arr($.type(ID)).optional().get(params.userIds);
 	if (userIdsErr) return rej('invalid userIds param');
 
 	// Get 'username' parameter
-	const [username, usernameErr] = $(params.username).optional.string().get();
+	const [username, usernameErr] = $.str.optional().get(params.username);
 	if (usernameErr) return rej('invalid username param');
 
 	// Get 'host' parameter
-	const [host, hostErr] = $(params.host).nullable.optional.string().get();
+	const [host, hostErr] = $.str.optional().nullable().get(params.host);
 	if (hostErr) return rej('invalid host param');
 
 	if (userIds) {

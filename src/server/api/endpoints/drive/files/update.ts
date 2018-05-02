@@ -11,7 +11,7 @@ import { publishDriveStream } from '../../../../../publishers/stream';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $(params.fileId).type(ID).get();
+	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
 	if (fileIdErr) return rej('invalid fileId param');
 
 	// Fetch file
@@ -26,12 +26,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).get();
+	const [name, nameErr] = $.str.optional().pipe(validateFileName).get(params.name);
 	if (nameErr) return rej('invalid name param');
 	if (name) file.filename = name;
 
 	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $(params.folderId).optional.nullable.type(ID).get();
+	const [folderId, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');
 
 	if (folderId !== undefined) {

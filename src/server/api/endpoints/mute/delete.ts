@@ -12,7 +12,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const muter = user;
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).get();
+	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Check if the mutee is yourself

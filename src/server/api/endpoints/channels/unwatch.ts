@@ -10,7 +10,7 @@ import Watching from '../../../../models/channel-watching';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $(params.channelId).type(ID).get();
+	const [channelId, channelIdErr] = $.type(ID).get(params.channelId);
 	if (channelIdErr) return rej('invalid channelId param');
 
 	//#region Fetch channel

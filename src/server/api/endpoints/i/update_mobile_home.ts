@@ -7,19 +7,20 @@ import event from '../../../../publishers/stream';
 
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'home' parameter
-	const [home, homeErr] = $(params.home).optional.array().each(
-		$().object(true)
-			.have('name', $().string())
-			.have('id', $().string())
-			.have('data', $().object())).get();
+	const [home, homeErr] = $.arr(
+		$.obj.strict()
+			.have('name', $.str)
+			.have('id', $.str)
+			.have('data', $.obj))
+		.optional().get(params.home);
 	if (homeErr) return rej('invalid home param');
 
 	// Get 'id' parameter
-	const [id, idErr] = $(params.id).optional.string().get();
+	const [id, idErr] = $.str.optional().get(params.id);
 	if (idErr) return rej('invalid id param');
 
 	// Get 'data' parameter
-	const [data, dataErr] = $(params.data).optional.object().get();
+	const [data, dataErr] = $.obj.optional().get(params.data);
 	if (dataErr) return rej('invalid data param');
 
 	if (home) {

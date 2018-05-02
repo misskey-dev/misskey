@@ -12,19 +12,19 @@ import { getFriendIds } from '../../common/get-friends';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).type(ID).get();
+	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = $(params.iknow).optional.boolean().get();
+	const [iknow = false, iknowErr] = $.bool.optional().get(params.iknow);
 	if (iknowErr) return rej('invalid iknow param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).get();
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $(params.cursor).optional.type(ID).get();
+	const [cursor = null, cursorErr] = $.type(ID).optional().get(params.cursor);
 	if (cursorErr) return rej('invalid cursor param');
 
 	// Lookup user

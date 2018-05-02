@@ -40,7 +40,7 @@ import AccessToken from '../../../../models/access-token';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
-	const [token, tokenErr] = $(params.token).string().get();
+	const [token, tokenErr] = $.str.get(params.token);
 	if (tokenErr) return rej('invalid token param');
 
 	// Fetch token

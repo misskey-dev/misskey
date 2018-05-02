@@ -29,7 +29,7 @@ module.exports = async (file, params, user): Promise<any> => {
 	}
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $(params.folderId).optional.nullable.type(ID).get();
+	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
 	if (folderIdErr) throw 'invalid folderId param';
 
 	try {

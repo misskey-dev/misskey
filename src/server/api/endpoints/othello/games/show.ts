@@ -4,7 +4,7 @@ import Othello from '../../../../../othello/core';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'gameId' parameter
-	const [gameId, gameIdErr] = $(params.gameId).type(ID).get();
+	const [gameId, gameIdErr] = $.type(ID).get(params.gameId);
 	if (gameIdErr) return rej('invalid gameId param');
 
 	const game = await OthelloGame.findOne({ _id: gameId });
