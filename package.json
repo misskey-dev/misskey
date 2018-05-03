@@ -165,6 +165,7 @@
 		"os-utils": "0.0.14",
 		"progress-bar-webpack-plugin": "1.11.0",
 		"prominence": "0.2.0",
+		"promise-sequential": "^1.1.1",
 		"pug": "2.0.3",
 		"punycode": "2.1.0",
 		"qrcode": "1.2.0",
