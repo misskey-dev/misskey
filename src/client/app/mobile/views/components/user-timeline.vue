@@ -16,6 +16,7 @@ const fetchLimit = 10;
 
 export default Vue.extend({
 	props: ['user', 'withMedia'],
+
 	data() {
 		return {
 			fetching: true,
@@ -23,9 +24,17 @@ export default Vue.extend({
 			moreFetching: false
 		};
 	},
+
+	computed: {
+		canFetchMore(): boolean {
+			return !this.moreFetching && !this.fetching && this.existMore;
+		}
+	},
+
 	mounted() {
 		this.fetch();
 	},
+
 	methods: {
 		fetch() {
 			this.fetching = true;
@@ -45,7 +54,10 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
+
 		more() {
+			if (!this.canFetchMore) return;
+
 			this.moreFetching = true;
 			(this as any).api('users/notes', {
 				userId: this.user.id,
