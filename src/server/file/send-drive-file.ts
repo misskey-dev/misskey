@@ -35,12 +35,23 @@ export default async function(ctx: Koa.Context) {
 		return;
 	}
 
+	const sendRaw = async () => {
+		const bucket = await getDriveFileBucket();
+		const readable = bucket.openDownloadStream(fileId);
+		readable.on('error', commonReadableHandlerGenerator(ctx));
+		ctx.set('Content-Type', file.contentType);
+		ctx.body = readable;
+	};
+
 	if ('thumbnail' in ctx.query) {
-		// 動画か画像以外
-		if (!/^image\/.*$/.test(file.contentType) && !/^video\/.*$/.test(file.contentType)) {
+		// 画像以外
+		if (!file.contentType.startsWith('image/')) {
 			const readable = fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
 			ctx.set('Content-Type', 'image/png');
 			ctx.body = readable;
+		} else if (file.contentType == 'image/gif') {
+			// GIF
+			await sendRaw();
 		} else {
 			const thumb = await DriveFileThumbnail.findOne({ 'metadata.originalId': fileId });
 			if (thumb != null) {
@@ -48,9 +59,7 @@ export default async function(ctx: Koa.Context) {
 				const bucket = await getDriveFileThumbnailBucket();
 				ctx.body = bucket.openDownloadStream(thumb._id);
 			} else {
-				ctx.set('Content-Type', file.contentType);
-				const bucket = await getDriveFileBucket();
-				ctx.body = bucket.openDownloadStream(fileId);
+				await sendRaw();
 			}
 		}
 	} else {
@@ -58,10 +67,6 @@ export default async function(ctx: Koa.Context) {
 			ctx.set('Content-Disposition', 'attachment');
 		}
 
-		const bucket = await getDriveFileBucket();
-		const readable = bucket.openDownloadStream(fileId);
-		readable.on('error', commonReadableHandlerGenerator(ctx));
-		ctx.set('Content-Type', file.contentType);
-		ctx.body = readable;
+		await sendRaw();
 	}
 }
