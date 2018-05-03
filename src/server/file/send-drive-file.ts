@@ -1,8 +1,15 @@
+import * as fs from 'fs';
+
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as mongodb from 'mongodb';
-import DriveFile, { getGridFSBucket } from '../../models/drive-file';
-import pour from './pour';
+import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
+import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
+
+const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
+	console.error(e);
+	ctx.status = 500;
+};
 
 export default async function(ctx: Koa.Context) {
 	// Validate id
@@ -28,9 +35,33 @@ export default async function(ctx: Koa.Context) {
 		return;
 	}
 
-	const bucket = await getGridFSBucket();
+	if ('thumbnail' in ctx.query) {
+		// 動画か画像以外
+		if (!/^image\/.*$/.test(file.contentType) && !/^video\/.*$/.test(file.contentType)) {
+			const readable = fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
+			ctx.set('Content-Type', 'image/png');
+			ctx.body = readable;
+		} else {
+			const thumb = await DriveFileThumbnail.findOne({ 'metadata.originalId': fileId });
+			if (thumb != null) {
+				ctx.set('Content-Type', 'image/jpeg');
+				const bucket = await getDriveFileThumbnailBucket();
+				ctx.body = bucket.openDownloadStream(thumb._id);
+			} else {
+				ctx.set('Content-Type', file.contentType);
+				const bucket = await getDriveFileBucket();
+				ctx.body = bucket.openDownloadStream(fileId);
+			}
+		}
+	} else {
+		if ('download' in ctx.query) {
+			ctx.set('Content-Disposition', 'attachment');
+		}
 
-	const readable = bucket.openDownloadStream(fileId);
-
-	pour(readable, file.contentType, ctx);
+		const bucket = await getDriveFileBucket();
+		const readable = bucket.openDownloadStream(fileId);
+		readable.on('error', commonReadableHandlerGenerator(ctx));
+		ctx.set('Content-Type', file.contentType);
+		ctx.body = readable;
+	}
 }
