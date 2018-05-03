@@ -41,7 +41,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	if (viaMobileErr) return rej('invalid viaMobile');
 
 	// Get 'tags' parameter
-	const [tags = [], tagsErr] = $.arr($.str.optional().range(1, 32)).unique().get(params.tags);
+	const [tags = [], tagsErr] = $.arr($.str.range(1, 32)).optional().unique().get(params.tags);
 	if (tagsErr) return rej('invalid tags');
 
 	// Get 'geo' parameter
