@@ -1,0 +1,32 @@
+extends ../../layout.pug
+include ../mixins
+
+block meta
+	link(rel="stylesheet" href="/docs/assets/api/endpoints/style.css")
+
+block main
+	h1= endpoint
+
+	p#url
+		span.method POST
+		span.host
+			= url.host
+			| /
+		span.path= url.path
+
+	p#desc= desc[lang] || desc['ja']
+
+	section
+		h2 %i18n:docs.api.endpoints.params%
+		+propTable(params)
+
+		if paramDefs
+			each paramDef in paramDefs
+				section(id= paramDef.name)
+					h3= paramDef.name
+					+propTable(paramDef.params)
+
+	if res
+		section
+			h2 %i18n:docs.api.endpoints.res%
+			+propTable(res)

@@ -14,7 +14,7 @@ RUN pacman -S --noconfirm pacman
 RUN pacman-db-upgrade
 RUN pacman -S --noconfirm archlinux-keyring
 RUN pacman -Syyu --noconfirm
-RUN pacman -S --noconfirm git nodejs npm mongodb redis graphicsmagick
+RUN pacman -S --noconfirm git nodejs npm mongodb redis imagemagick
 
 COPY misskey.sh /root/misskey.sh
 RUN chmod u+x /root/misskey.sh

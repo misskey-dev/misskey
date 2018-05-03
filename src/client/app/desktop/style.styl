@@ -1,0 +1,70 @@
+@import "../app"
+@import "../reset"
+
+@import "./ui"
+
+*::input-placeholder
+	color #D8CBC5
+
+*
+	&:focus
+		outline none
+
+	&::scrollbar
+		width 5px
+		background transparent
+
+		&:horizontal
+			height 5px
+
+	&::scrollbar-button
+		width 0
+		height 0
+		background rgba(0, 0, 0, 0.2)
+
+	&::scrollbar-piece
+		background transparent
+
+		&:start
+			background transparent
+
+	&::scrollbar-thumb
+		background rgba(0, 0, 0, 0.2)
+
+		&:hover
+			background rgba(0, 0, 0, 0.4)
+
+		&:active
+			background $theme-color
+
+	&::scrollbar-corner
+		background rgba(0, 0, 0, 0.2)
+
+html
+	height 100%
+	background #f7f7f7
+
+	&[data-darkmode]
+		background #191B22
+
+		&, *
+			&::-webkit-scrollbar-track
+				background-color #282C37
+
+			&::-webkit-scrollbar
+				width 6px
+				height 6px
+
+			&::-webkit-scrollbar-thumb
+				background-color #454954
+
+				&:hover
+					background-color #535660
+
+				&:active
+					background-color $theme-color
+
+body
+	display flex
+	flex-direction column
+	min-height 100%

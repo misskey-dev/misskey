@@ -1,0 +1,168 @@
+name: "Note"
+
+desc:
+  ja: "投稿。"
+  en: "A note."
+
+props:
+  - name: "id"
+    type: "id"
+    optional: false
+    desc:
+      ja: "投稿ID"
+      en: "The ID of this note"
+  - name: "createdAt"
+    type: "date"
+    optional: false
+    desc:
+      ja: "投稿日時"
+      en: "The posted date of this note"
+  - name: "viaMobile"
+    type: "boolean"
+    optional: true
+    desc:
+      ja: "モバイル端末から投稿したか否か(自己申告であることに留意)"
+      en: "Whether this note sent via a mobile device"
+  - name: "text"
+    type: "string"
+    optional: true
+    desc:
+      ja: "投稿の本文 (ローカルの場合Markdown風のフォーマット)"
+      en: "The text of this note (in Markdown like format if local)"
+  - name: "mediaIds"
+    type: "id(DriveFile)[]"
+    optional: true
+    desc:
+      ja: "添付されているメディアのID (なければレスポンスでは空配列)"
+      en: "The IDs of the attached media (empty array for response if no media is attached)"
+  - name: "media"
+    type: "entity(DriveFile)[]"
+    optional: true
+    desc:
+      ja: "添付されているメディア"
+      en: "The attached media"
+  - name: "userId"
+    type: "id(User)"
+    optional: false
+    desc:
+      ja: "投稿者ID"
+      en: "The ID of author of this note"
+  - name: "user"
+    type: "entity(User)"
+    optional: true
+    desc:
+      ja: "投稿者"
+      en: "The author of this note"
+  - name: "myReaction"
+    type: "string"
+    optional: true
+    desc:
+      ja: "この投稿に対する自分の<a href='/docs/api/reactions'>リアクション</a>"
+      en: "The your <a href='/docs/api/reactions'>reaction</a> of this note"
+  - name: "reactionCounts"
+    type: "object"
+    optional: false
+    desc:
+      ja: "<a href='/docs/api/reactions'>リアクション</a>をキーとし、この投稿に対するそのリアクションの数を値としたオブジェクト"
+  - name: "replyId"
+    type: "id(Note)"
+    optional: true
+    desc:
+      ja: "返信した投稿のID"
+      en: "The ID of the replyed note"
+  - name: "reply"
+    type: "entity(Note)"
+    optional: true
+    desc:
+      ja: "返信した投稿"
+      en: "The replyed note"
+  - name: "renoteId"
+    type: "id(Note)"
+    optional: true
+    desc:
+      ja: "引用した投稿のID"
+      en: "The ID of the quoted note"
+  - name: "renote"
+    type: "entity(Note)"
+    optional: true
+    desc:
+      ja: "引用した投稿"
+      en: "The quoted note"
+  - name: "poll"
+    type: "object"
+    optional: true
+    desc:
+      ja: "投票"
+      en: "The poll"
+    defName: "poll"
+    def:
+      - name: "choices"
+        type: "object[]"
+        optional: false
+        desc:
+          ja: "投票の選択肢"
+          en: "The choices of this poll"
+        defName: "choice"
+        def:
+          - name: "id"
+            type: "number"
+            optional: false
+            desc:
+              ja: "選択肢ID"
+              en: "The ID of this choice"
+          - name: "isVoted"
+            type: "boolean"
+            optional: true
+            desc:
+              ja: "自分がこの選択肢に投票したかどうか"
+              en: "Whether you voted to this choice"
+          - name: "text"
+            type: "string"
+            optional: false
+            desc:
+              ja: "選択肢本文"
+              en: "The text of this choice"
+          - name: "votes"
+            type: "number"
+            optional: false
+            desc:
+              ja: "この選択肢に投票された数"
+              en: "The number voted for this choice"
+  - name: "geo"
+    type: "object"
+    optional: true
+    desc:
+      ja: "位置情報"
+      en: "Geo location"
+    defName: "geo"
+    def:
+      - name: "coordinates"
+        type: "number[]"
+        optional: false
+        desc:
+          ja: "座標。最初に経度：-180〜180で表す。最後に緯度：-90〜90で表す。"
+      - name: "altitude"
+        type: "number"
+        optional: false
+        desc:
+          ja: "高度。メートル単位で表す。"
+      - name: "accuracy"
+        type: "number"
+        optional: false
+        desc:
+          ja: "緯度、経度の精度。メートル単位で表す。"
+      - name: "altitudeAccuracy"
+        type: "number"
+        optional: false
+        desc:
+          ja: "高度の精度。メートル単位で表す。"
+      - name: "heading"
+        type: "number"
+        optional: false
+        desc:
+          ja: "方角。0〜360の角度で表す。0が北、90が東、180が南、270が西。"
+      - name: "speed"
+        type: "number"
+        optional: false
+        desc:
+          ja: "速度。メートル / 秒数で表す。"

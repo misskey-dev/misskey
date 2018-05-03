@@ -1,0 +1,73 @@
+name: "DriveFile"
+
+desc:
+  ja: "ドライブのファイル。"
+  en: "A file of Drive."
+
+props:
+  - name: "id"
+    type: "id"
+    optional: false
+    desc:
+      ja: "ファイルID"
+      en: "The ID of this file"
+  - name: "createdAt"
+    type: "date"
+    optional: false
+    desc:
+      ja: "アップロード日時"
+      en: "The upload date of this file"
+  - name: "userId"
+    type: "id(User)"
+    optional: false
+    desc:
+      ja: "所有者ID"
+      en: "The ID of the owner of this file"
+  - name: "user"
+    type: "entity(User)"
+    optional: true
+    desc:
+      ja: "所有者"
+      en: "The owner of this file"
+  - name: "name"
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイル名"
+      en: "The name of this file"
+  - name: "md5"
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイルのMD5ハッシュ値"
+      en: "The md5 hash value of this file"
+  - name: "type"
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイルの種類"
+      en: "The type of this file"
+  - name: "datasize"
+    type: "number"
+    optional: false
+    desc:
+      ja: "ファイルサイズ(bytes)"
+      en: "The size of this file (bytes)"
+  - name: "url"
+    type: "string"
+    optional: false
+    desc:
+      ja: "ファイルのURL"
+      en: "The URL of this file"
+  - name: "folderId"
+    type: "id(DriveFolder)"
+    optional: true
+    desc:
+      ja: "フォルダID"
+      en: "The ID of the folder of this file"
+  - name: "folder"
+    type: "entity(DriveFolder)"
+    optional: true
+    desc:
+      ja: "フォルダ"
+      en: "The folder of this file"

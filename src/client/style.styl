@@ -1,0 +1,37 @@
+@charset 'utf-8'
+
+@import "./const"
+
+/*
+	::selection
+		background $theme-color
+		color #fff
+*/
+
+*
+	position relative
+	box-sizing border-box
+	background-clip padding-box !important
+	tap-highlight-color transparent
+	-webkit-tap-highlight-color transparent
+
+html, body
+	margin 0
+	padding 0
+	scroll-behavior smooth
+	text-size-adjust 100%
+	font-family sans-serif
+
+a
+	text-decoration none
+	color $theme-color
+	cursor pointer
+	tap-highlight-color rgba($theme-color, 0.7) !important
+	-webkit-tap-highlight-color rgba($theme-color, 0.7) !important
+
+	&:hover
+		text-decoration underline
+
+	*
+		cursor pointer
+

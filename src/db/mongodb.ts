@@ -1,13 +1,16 @@
-import config from '../conf';
+import config from '../config';
 
-const uri = config.mongodb.user && config.mongodb.pass
-? `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`
-: `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
+const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
+const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
+
+const uri = u && p
+	? `mongodb://${u}:${p}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`
+	: `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
 
 /**
  * monk
  */
-import * as mongo from 'monk';
+import mongo from 'monk';
 
 const db = mongo(uri);
 
@@ -24,9 +27,9 @@ const nativeDbConn = async (): Promise<mongodb.Db> => {
 	if (mdb) return mdb;
 
 	const db = await ((): Promise<mongodb.Db> => new Promise((resolve, reject) => {
-		mongodb.MongoClient.connect(uri, (e, db) => {
+		(mongodb as any).MongoClient.connect(uri, (e, client) => {
 			if (e) return reject(e);
-			resolve(db);
+			resolve(client.db(config.mongodb.db));
 		});
 	}))();
 
