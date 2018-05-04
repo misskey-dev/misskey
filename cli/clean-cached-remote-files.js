@@ -60,7 +60,7 @@ async function main() {
 							'metadata.isExpired': true
 						}
 					})
-				]).then(() => {
+				]).then(async () => {
 					res([i, file, true]);
 
 					//#region サムネイルもあれば削除
