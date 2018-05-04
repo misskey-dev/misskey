@@ -3,8 +3,6 @@ const log = require('single-line-log').stdout;
 const sequential = require('promise-sequential');
 const { default: DriveFile, DriveFileChunk } = require('../built/models/drive-file');
 const { default: DriveFileThumbnail, DriveFileThumbnailChunk } = require('../built/models/drive-file-thumbnail');
-const { default: Note } = require('../built/models/note');
-const { default: MessagingMessage } = require('../built/models/messaging-message');
 const { default: User } = require('../built/models/user');
 
 const q = {
@@ -33,41 +31,62 @@ async function main() {
 
 				prev = file;
 
-				if (file == null) return res([i, null]);
+				function skip() {
+					res([i, file, false]);
+				}
 
-				// チャンクをすべて削除
-				await DriveFileChunk.remove({
-					files_id: file._id
-				});
+				if (file == null) return skip();
 
-				await DriveFile.update({ _id: file._id }, {
-					$set: {
-						'metadata.deletedAt': new Date(),
-						'metadata.isExpired': true
-					}
-				});
+				log(chalk`{gray ${i}} scanning {bold ${file._id}} ${file.filename} ...`);
 
-				res([i, file]);
+				const attachingUsersCount = await User.count({
+					$or: [{
+						avatarId: file._id
+					}, {
+						bannerId: file._id
+					}]
+				}, { limit: 1 });
+				if (attachingUsersCount !== 0) return skip();
 
-				//#region サムネイルもあれば削除
-				const thumbnail = await DriveFileThumbnail.findOne({
-					'metadata.originalId': file._id
-				});
+				Promise.all([
+					// チャンクをすべて削除
+					DriveFileChunk.remove({
+						files_id: file._id
+					}),
 
-				if (thumbnail) {
-					DriveFileThumbnailChunk.remove({
-						files_id: thumbnail._id
+					DriveFile.update({ _id: file._id }, {
+						$set: {
+							'metadata.deletedAt': new Date(),
+							'metadata.isExpired': true
+						}
+					})
+				]).then(() => {
+					res([i, file, true]);
+
+					//#region サムネイルもあれば削除
+					const thumbnail = await DriveFileThumbnail.findOne({
+						'metadata.originalId': file._id
 					});
 
-					DriveFileThumbnail.remove({ _id: thumbnail._id });
-				}
-				//#endregion
+					if (thumbnail) {
+						DriveFileThumbnailChunk.remove({
+							files_id: thumbnail._id
+						});
+
+						DriveFileThumbnail.remove({ _id: thumbnail._id });
+					}
+					//#endregion
+				});
 			});
 
-			promise.then(([i, file]) => {
-				if (file) {
-					console.log(chalk`{gray ${i}} {green done: {bold ${file._id}} ${file.filename}}`);
+			promise.then(([i, file, deleted]) => {
+				if (deleted) {
+					log(chalk`{gray ${i}} {red deleted: {bold ${file._id}} ${file.filename}}`);
+				} else {
+					log(chalk`{gray ${i}} {green skipped: {bold ${file._id}} ${file.filename}}`);
 				}
+				log.clear();
+				console.log();
 			});
 
 			return promise;

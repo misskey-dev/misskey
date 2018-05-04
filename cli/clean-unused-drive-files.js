@@ -16,10 +16,6 @@ async function main() {
 	for (let i = 0; i < count; i++) {
 		promiseGens.push(() => {
 			const promise = new Promise(async (res, rej) => {
-				function skip() {
-					res([i, file, false]);
-				}
-
 				const file = await DriveFile.findOne(prev ? {
 					_id: { $lt: prev._id }
 				} : {}, {
@@ -29,6 +25,10 @@ async function main() {
 				});
 
 				prev = file;
+
+				function skip() {
+					res([i, file, false]);
+				}
 
 				if (file == null) return skip();
 
