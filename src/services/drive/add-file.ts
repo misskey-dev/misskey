@@ -201,7 +201,10 @@ const addFile = async (
 			// Calculate drive usage
 			const usage = await DriveFile
 				.aggregate([{
-					$match: { 'metadata.userId': user._id }
+					$match: {
+						'metadata.userId': user._id,
+						'metadata.deletedAt': { $exists: false }
+					}
 				}, {
 					$project: {
 						length: true
@@ -245,7 +248,8 @@ const addFile = async (
 
 						DriveFile.update({ _id: oldFile._id }, {
 							$set: {
-								'metadata.deletedAt': new Date()
+								'metadata.deletedAt': new Date(),
+								'metadata.isExpired': true
 							}
 						});
 
