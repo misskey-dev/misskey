@@ -30,6 +30,7 @@ export type IMetadata = {
 	comment: string;
 	uri: string;
 	deletedAt?: Date;
+	isExpired?: boolean;
 };
 
 export type IDriveFile = {
