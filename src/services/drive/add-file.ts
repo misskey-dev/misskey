@@ -15,7 +15,7 @@ import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../../publishers/stream';
 import getAcct from '../../acct/render';
-import { IUser, isLocalUser } from '../../models/user';
+import { IUser, isLocalUser, isRemoteUser } from '../../models/user';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket, DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
 import genThumbnail from '../../drive/gen-thumbnail';
 
@@ -284,6 +284,9 @@ const addFile = async (
 
 	const metadata = {
 		userId: user._id,
+		_user: {
+			host: user.host
+		},
 		folderId: folder !== null ? folder._id : null,
 		comment: comment,
 		properties: properties

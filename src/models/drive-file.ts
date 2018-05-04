@@ -25,6 +25,7 @@ export const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 export type IMetadata = {
 	properties: any;
 	userId: mongo.ObjectID;
+	_user: any;
 	folderId: mongo.ObjectID;
 	comment: string;
 	uri: string;
