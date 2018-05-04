@@ -26,7 +26,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-avatar
-	display block
+	display inline-block
 
 	> img
 		display inline-block
