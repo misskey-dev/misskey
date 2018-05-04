@@ -27,16 +27,16 @@ export default async function(ctx: Koa.Context) {
 
 	if (file == null) {
 		ctx.status = 404;
-		await send(ctx, `${__dirname}/assets/dummy.png`, { root: assets });
+		await send(ctx, '/dummy.png', { root: assets });
 		return;
 	}
 
 	if (file.metadata.deletedAt) {
 		ctx.status = 410;
 		if (file.metadata.isExpired) {
-			await send(ctx, `${__dirname}/assets/cache-expired.png`, { root: assets });
+			await send(ctx, '/cache-expired.png', { root: assets });
 		} else {
-			await send(ctx, `${__dirname}/assets/tombstone.png`, { root: assets });
+			await send(ctx, '/tombstone.png', { root: assets });
 		}
 		return;
 	}
