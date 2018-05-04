@@ -6,6 +6,8 @@ import * as mongodb from 'mongodb';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 
+const assets = `${__dirname}/../../server/file/assets/`;
+
 const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
 	console.error(e);
 	ctx.status = 500;
@@ -25,16 +27,16 @@ export default async function(ctx: Koa.Context) {
 
 	if (file == null) {
 		ctx.status = 404;
-		await send(ctx, `${__dirname}/assets/dummy.png`);
+		await send(ctx, `${__dirname}/assets/dummy.png`, { root: assets });
 		return;
 	}
 
 	if (file.metadata.deletedAt) {
 		ctx.status = 410;
 		if (file.metadata.isExpired) {
-			await send(ctx, `${__dirname}/assets/cache-expired.png`);
+			await send(ctx, `${__dirname}/assets/cache-expired.png`, { root: assets });
 		} else {
-			await send(ctx, `${__dirname}/assets/tombstone.png`);
+			await send(ctx, `${__dirname}/assets/tombstone.png`, { root: assets });
 		}
 		return;
 	}

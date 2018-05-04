@@ -42,17 +42,21 @@ router.get('/assets/*', async ctx => {
 
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
-	await send(ctx, `${client}/assets/apple-touch-icon.png`);
+	await send(ctx, '/assets/apple-touch-icon.png', {
+		root: client
+	});
 });
 
 // ServiceWroker
-router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
-	await send(ctx, `${client}/assets/sw.${ctx.params[0]}.js`);
-});
+//router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
+//	await send(ctx, `${client}/assets/sw.${ctx.params[0]}.js`);
+//});
 
 // Manifest
 router.get('/manifest.json', async ctx => {
-	await send(ctx, `${client}/assets/manifest.json`);
+	await send(ctx, '/assets/manifest.json', {
+		root: client
+	});
 });
 
 //#endregion
