@@ -62,6 +62,7 @@ const addFile = async (
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false,
+	url: string = null,
 	uri: string = null
 ): Promise<IDriveFile> => {
 	log(`registering ${name} (user: ${getAcct(user)}, path: ${path})`);
@@ -295,6 +296,10 @@ const addFile = async (
 		comment: comment,
 		properties: properties
 	} as IMetadata;
+
+	if (url !== null) {
+		metadata.url = url;
+	}
 
 	if (uri !== null) {
 		metadata.uri = uri;

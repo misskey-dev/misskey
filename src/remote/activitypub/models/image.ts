@@ -24,7 +24,7 @@ export async function createImage(actor: IRemoteUser, value): Promise<IDriveFile
 
 	log(`Creating the Image: ${image.url}`);
 
-	return await uploadFromUrl(image.url, actor);
+	return await uploadFromUrl(image.url, actor, null, image.url);
 }
 
 /**

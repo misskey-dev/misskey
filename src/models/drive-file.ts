@@ -28,7 +28,8 @@ export type IMetadata = {
 	_user: any;
 	folderId: mongo.ObjectID;
 	comment: string;
-	uri: string;
+	uri?: string;
+	url?: string;
 	deletedAt?: Date;
 	isExpired?: boolean;
 };
