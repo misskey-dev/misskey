@@ -40,8 +40,8 @@
 		<section v-if="myGames.length > 0">
 			<h2>自分の対局</h2>
 			<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
-				<mk-avatar class="avatar" :user="g.user1.avatarUrl"/>
-				<mk-avatar class="avatar" :user="g.user2.avatarUrl"/>
+				<mk-avatar class="avatar" :user="g.user1"/>
+				<mk-avatar class="avatar" :user="g.user2"/>
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
 			</a>
@@ -49,8 +49,8 @@
 		<section v-if="games.length > 0">
 			<h2>みんなの対局</h2>
 			<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
-				<mk-avatar class="avatar" :user="g.user1.avatarUrl"/>
-				<mk-avatar class="avatar" :user="g.user2.avatarUrl"/>
+				<mk-avatar class="avatar" :user="g.user1"/>
+				<mk-avatar class="avatar" :user="g.user2"/>
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
 				<span class="state">{{ g.isEnded ? '終了' : '進行中' }}</span>
 			</a>
