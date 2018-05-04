@@ -83,6 +83,7 @@
 					<el-option label="ja-JP" value="ja"/>
 					<el-option label="en-US" value="en"/>
 					<el-option label="fr" value="fr"/>
+					<el-option label="pl" value="pl"/>
 				</el-option-group>
 			</el-select>
 			<div class="none ui info">
