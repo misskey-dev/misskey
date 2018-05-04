@@ -272,6 +272,8 @@ export default Vue.extend({
 			background #eee
 
 		> .avatar
+			width 32px
+			height 32px
 			border-radius 100%
 
 		> span
@@ -301,6 +303,8 @@ export default Vue.extend({
 			background #eee
 
 		> .avatar
+			width 32px
+			height 32px
 			border-radius 100%
 
 		> span
