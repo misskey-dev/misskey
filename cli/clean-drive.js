@@ -32,7 +32,7 @@ async function main() {
 
 				if (file == null) return skip();
 
-				log(chalk`{gray ${i}} scanning: {bold ${file._id}} ...`);
+				log(chalk`{gray ${i}} scanning {bold ${file._id}} ${file.filename} ...`);
 
 				const attachingUsersCount = await User.count({
 					$or: [{
@@ -60,9 +60,9 @@ async function main() {
 
 			promise.then(([i, file, deleted]) => {
 				if (deleted) {
-					log(chalk`{gray ${i}} {red deleted: {bold ${file._id}}}`);
+					log(chalk`{gray ${i}} {red deleted: {bold ${file._id}} ${file.filename}}`);
 				} else {
-					log(chalk`{gray ${i}} {green skipped: {bold ${file._id}}}`);
+					log(chalk`{gray ${i}} {green skipped: {bold ${file._id}} ${file.filename}}`);
 				}
 				log.clear();
 				console.log();
@@ -75,4 +75,6 @@ async function main() {
 	return await sequential(promiseGens);
 }
 
-main().then().catch(console.error);
+main().then(() => {
+	console.log('done');
+}).catch(console.error);
