@@ -52,9 +52,9 @@ If you want to translate Misskey, please see [Translation guide](./docs/translat
 [List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
 ### :earth_americas: Translators
-| ![][mirro-san-icon] | ![][Conan-kun-icon] |
-|:-:|:-:|
-| [Mirro][mirro-san-link]<br>English, French | [Asriel][Conan-kun-link]<br>English, French |
+| ![][mirro-san-icon] | ![][Conan-kun-icon] | ![][m4sk1n-icon] |
+|:-:|:-:|:-:|
+| [Mirro][mirro-san-link]<br>English, French | [Asriel][Conan-kun-link]<br>English, French | [Marcin Mikołajczak][m4sk1n-link]<br>Polish |
 
 :four_leaf_clover: Copyright
 ----------------------------------------------------------------
@@ -100,4 +100,5 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 [mirro-san-icon]:   https://avatars1.githubusercontent.com/u/17948612?s=70&v=4
 [Conan-kun-link]:   https://github.com/Conan-kun
 [Conan-kun-icon]:   https://avatars3.githubusercontent.com/u/30003708?s=70&v=4
-
+[m4sk1n-link]:      https://github.com/m4sk1n
+[m4sk1n-icon]:      https://avatars3.githubusercontent.com/u/21127288?s=70&v=4
