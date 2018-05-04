@@ -6,10 +6,6 @@ const { default: Note } = require('../built/models/note');
 const { default: MessagingMessage } = require('../built/models/messaging-message');
 const { default: User } = require('../built/models/user');
 
-const args = process.argv.slice(2);
-
-const skip = parseInt(args[0] || '0', 10);
-
 async function main() {
 	const promiseGens = [];
 
@@ -17,7 +13,7 @@ async function main() {
 
 	let prev;
 
-	for (let i = skip; i < count; i++) {
+	for (let i = 0; i < count; i++) {
 		promiseGens.push(() => {
 			const promise = new Promise(async (res, rej) => {
 				function skip() {
