@@ -509,7 +509,7 @@ mobile/views/components/user-timeline.vue:
   load-more: "Więcej"
 
 mobile/views/components/users-list.vue:
-  all: "Wszyscy
+  all: "Wszyscy"
   known: "Znasz"
   load-more: "Więcej"
 
