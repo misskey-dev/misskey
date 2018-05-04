@@ -37,7 +37,7 @@
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
-				<mk-media-list :media-list="p.media"/>
+				<mk-media-list :media-list="p.media" :raw="true"/>
 			</div>
 			<mk-poll v-if="p.poll" :note="p"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>

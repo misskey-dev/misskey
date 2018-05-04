@@ -333,7 +333,7 @@ root(isDark)
 
 			> header
 				display flex
-				align-items center
+				align-items baseline
 				white-space nowrap
 
 				@media (min-width 500px)

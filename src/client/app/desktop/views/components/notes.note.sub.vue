@@ -65,6 +65,7 @@ root(isDark)
 
 		> header
 			display flex
+			align-items baseline
 			margin-bottom 2px
 			white-space nowrap
 			line-height 21px

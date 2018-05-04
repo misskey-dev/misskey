@@ -53,6 +53,7 @@ root(isDark)
 
 		> header
 			display flex
+			align-items baseline
 			white-space nowrap
 
 			> .name

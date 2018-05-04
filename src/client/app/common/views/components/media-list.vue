@@ -2,7 +2,7 @@
 <div class="mk-media-list" :data-count="mediaList.length">
 	<template v-for="media in mediaList">
 		<mk-media-video :video="media" :key="media.id" v-if="media.type.startsWith('video')" :inline-playable="mediaList.length === 1"/>
-		<mk-media-image :image="media" :key="media.id" v-else />
+		<mk-media-image :image="media" :key="media.id" v-else :raw="raw"/>
 	</template>
 </div>
 </template>
@@ -11,7 +11,14 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['mediaList'],
+	props: {
+		mediaList: {
+			required: true
+		},
+		raw: {
+			default: false
+		}
+	}
 });
 </script>
 
@@ -23,7 +30,7 @@ export default Vue.extend({
 
 	@media (max-width 500px)
 		height 192px
-	
+
 	&[data-count="1"]
 		grid-template-rows 1fr
 	&[data-count="2"]
@@ -40,7 +47,7 @@ export default Vue.extend({
 	&[data-count="4"]
 		grid-template-columns 1fr 1fr
 		grid-template-rows 1fr 1fr
-	
+
 	:nth-child(1)
 		grid-column 1 / 2
 		grid-row 1 / 2
@@ -53,5 +60,5 @@ export default Vue.extend({
 	:nth-child(4)
 		grid-column 2 / 3
 		grid-row 2 / 3
-		
+
 </style>

@@ -52,6 +52,7 @@ export default Vue.extend({
 	width 100%
 	height 100%
 	border-radius 4px
+
 .mk-media-video-thumbnail
 	display flex
 	justify-content center

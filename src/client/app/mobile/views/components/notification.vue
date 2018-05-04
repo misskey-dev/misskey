@@ -124,7 +124,7 @@ root(isDark)
 
 			> header
 				display flex
-				align-items center
+				align-items baseline
 				white-space nowrap
 
 				i, .mk-reaction-icon

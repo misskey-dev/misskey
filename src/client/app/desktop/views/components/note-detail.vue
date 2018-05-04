@@ -39,7 +39,7 @@
 				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
-				<mk-media-list :media-list="p.media"/>
+				<mk-media-list :media-list="p.media" :raw="true"/>
 			</div>
 			<mk-poll v-if="p.poll" :note="p"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
