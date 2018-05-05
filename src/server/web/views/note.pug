@@ -19,3 +19,8 @@ block meta
 	meta(property='og:description' content= summary)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= img)
+
+	if note.prev
+		link(rel='prev' href=`${config.url}/notes/${note.prev.id}`)
+	if note.next
+		link(rel='next' href=`${config.url}/notes/${note.next.id}`)
