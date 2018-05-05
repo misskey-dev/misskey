@@ -59,9 +59,15 @@ gulp.task('build:ts', () => {
 		.pipe(gulp.dest('./built/'));
 });
 
-gulp.task('build:copy', () =>
+gulp.task('build:copy:views', () =>
+	gulp.src('./src/server/web/views/**/*').pipe(gulp.dest('./built/server/web/views'))
+);
+
+gulp.task('build:copy', ['build:copy:views'], () =>
 	gulp.src([
 		'./build/Release/crypto_key.node',
+		'./src/const.json',
+		'./src/server/web/views/**/*',
 		'./src/**/assets/**/*',
 		'!./src/client/app/**/assets/**/*'
 	]).pipe(gulp.dest('./built/'))

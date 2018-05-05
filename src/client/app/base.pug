@@ -1,3 +1,5 @@
+block vars
+
 doctype html
 
 != '\n<!-- Thank you for using Misskey! @syuilo -->\n'
@@ -9,9 +11,17 @@ html
 		meta(name='application-name' content='Misskey')
 		meta(name='theme-color' content=themeColor)
 		meta(name='referrer' content='origin')
+		meta(property='og:site_name' content='Misskey')
 		link(rel='manifest' href='/manifest.json')
 
-		title Misskey
+		title
+			block title
+				| Misskey
+
+		block desc
+			meta(name='description' content='A SNS')
+
+		block meta
 
 		style
 			include ./../../../built/client/assets/init.css
