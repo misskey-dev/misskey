@@ -286,7 +286,7 @@ export const pack = async (
 					_id: -1
 				}
 			});
-			return prev ? prev._id : null;
+			return prev ? prev._id.toHexString() : null;
 		})();
 
 		// Get next note info
@@ -304,7 +304,7 @@ export const pack = async (
 					_id: 1
 				}
 			});
-			return next ? next._id : null;
+			return next ? next._id.toHexString() : null;
 		})();
 
 		if (_note.replyId) {

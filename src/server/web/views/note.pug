@@ -21,6 +21,6 @@ block meta
 	meta(property='og:image'       content= img)
 
 	if note.prev
-		link(rel='prev' href=`${config.url}/notes/${note.prev.id}`)
+		link(rel='prev' href=`${config.url}/notes/${note.prev}`)
 	if note.next
-		link(rel='next' href=`${config.url}/notes/${note.next.id}`)
+		link(rel='next' href=`${config.url}/notes/${note.next}`)
