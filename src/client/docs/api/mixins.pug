@@ -14,13 +14,13 @@ mixin propTable(props)
 						if prop.kind == 'id'
 							if prop.entity
 								|  (
-								a(href=`/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
+								a(href=`/docs/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
 								|  ID)
 							else
 								|  (ID)
 						else if prop.kind == 'entity'
 							|   (
-							a(href=`/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
+							a(href=`/docs/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
 							| )
 						else if prop.kind == 'object'
 							if prop.def
