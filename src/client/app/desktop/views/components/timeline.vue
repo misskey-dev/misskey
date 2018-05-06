@@ -31,6 +31,12 @@ export default Vue.extend({
 		};
 	},
 
+	created() {
+		if ((this as any).os.i.followingCount == 0) {
+			this.src = 'local';
+		}
+	},
+
 	mounted() {
 		(this.$refs.tl as any).$once('loaded', () => {
 			this.$emit('loaded');

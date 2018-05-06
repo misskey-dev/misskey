@@ -75,6 +75,12 @@ export default Vue.extend({
 		}
 	},
 
+	created() {
+		if ((this as any).os.i.followingCount == 0) {
+			this.src = 'local';
+		}
+	},
+
 	mounted() {
 		document.title = 'Misskey';
 
