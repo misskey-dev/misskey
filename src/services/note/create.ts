@@ -17,6 +17,7 @@ import event from '../../publishers/stream';
 import parse from '../../text/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
+import resolveUser from '../../remote/resolve-user';
 
 export default async (user: IUser, data: {
 	createdAt?: Date;
@@ -119,6 +120,13 @@ export default async (user: IUser, data: {
 	// Serialize
 	const noteObj = await pack(note);
 
+	const render = async () => {
+		const content = data.renote && data.text == null
+			? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
+			: renderCreate(await renderNote(note));
+		return packAp(content);
+	};
+
 	// タイムラインへの投稿
 	if (note.channelId == null) {
 		if (!silent) {
@@ -190,12 +198,6 @@ export default async (user: IUser, data: {
 		}
 
 		//#region リプライとAnnounceのAP配送
-		const render = async () => {
-			const content = data.renote && data.text == null
-				? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
-				: renderCreate(await renderNote(note));
-			return packAp(content);
-		};
 
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
@@ -242,6 +244,40 @@ export default async (user: IUser, data: {
 			})
 		);
 	}*/
+
+	//#region メンション
+	if (data.text) {
+		// TODO: Drop dupulicates
+		const mentions = tokens
+			.filter(t => t.type == 'mention');
+
+		mentions.forEach(async m => {
+			const u = await resolveUser(m.username, m.host);
+
+			if (isLocalUser(u)) {
+				// Fetch mentioned user
+				const mentionee = await User
+					.findOne({
+						usernameLower: m.username.toLowerCase()
+					}, { _id: true });
+
+				// When mentioned user not found
+				if (mentionee == null) return;
+
+				// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
+				if (data.reply && data.reply.userId.equals(mentionee._id)) return;
+				if (data.renote && data.renote.userId.equals(mentionee._id)) return;
+
+				// Create notification
+				notify(mentionee._id, user._id, 'mention', {
+					noteId: note._id
+				});
+			} else {
+				deliver(user, await render(), u.inbox);
+			}
+		});
+	}
+	//#endregion
 
 	const mentions = [];
 

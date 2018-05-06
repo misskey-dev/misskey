@@ -4,7 +4,7 @@ import webFinger from './webfinger';
 import config from '../config';
 import { createPerson } from './activitypub/models/person';
 
-export default async (username, _host, option) => {
+export default async (username, _host, option?) => {
 	const usernameLower = username.toLowerCase();
 	const hostAscii = toASCII(_host).toLowerCase();
 	const host = toUnicode(hostAscii);
