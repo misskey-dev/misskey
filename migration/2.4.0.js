@@ -44,6 +44,8 @@ async function main() {
 					}
 				}
 
+				if (Object.keys(set).length === 0) return res([i, user]);
+
 				User.update({
 					_id: user._id
 				}, {
