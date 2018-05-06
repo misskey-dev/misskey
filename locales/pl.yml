@@ -255,7 +255,7 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/notes.note.vue:
   reposted-by: "Udostępniono przez {}"
   reply: "Odpowiedz"
-  renote: "Przeredaguj”
+  renote: "Przeredaguj"
   add-reaction: "Dodaj reakcję"
   detail: "Pokaż szczegóły"
 
