@@ -1,8 +1,6 @@
 <template>
-	<router-link class="mk-avatar" :to="user | userPage" :title="user | acct" :target="target" :style="{ borderRadius: clientSettings.circleIcons ? '100%' : null }">
-		<img v-if="disablePreview" :src="`${user.avatarUrl}?thumbnail&size=128`" alt=""/>
-		<img v-else :src="`${user.avatarUrl}?thumbnail&size=128`" alt="" v-user-preview="user.id"/>
-	</router-link>
+	<router-link class="mk-avatar" :to="user | userPage" :title="user | acct" :target="target" :style="style" v-if="disablePreview"></router-link>
+	<router-link class="mk-avatar" :to="user | userPage" :title="user | acct" :target="target" :style="style" v-else v-user-preview="user.id"></router-link>
 </template>
 
 <script lang="ts">
@@ -10,6 +8,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: {
 		user: {
+			type: Object,
 			required: true
 		},
 		target: {
@@ -20,6 +19,15 @@ export default Vue.extend({
 			required: false,
 			default: false
 		}
+	},
+	computed: {
+		style(): any {
+			return {
+				backgroundColor: this.user.avatarColor ? `rgb(${ this.user.avatarColor.join(',') })` : null,
+				backgroundImage: `url(${ this.user.avatarUrl }?thumbnail)`,
+				borderRadius: (this as any).clientSettings.circleIcons ? '100%' : null
+			};
+		}
 	}
 });
 </script>
@@ -27,13 +35,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-avatar
 	display inline-block
-
-	> img
-		display inline-block
-		width 100%
-		height 100%
-		margin 0
-		border-radius inherit
-		vertical-align bottom
-		transition border-radius 1s ease
+	background-size cover
+	background-position center center
+	transition border-radius 1s ease
 </style>

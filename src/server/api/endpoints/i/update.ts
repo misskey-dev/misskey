@@ -4,6 +4,7 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import event from '../../../../publishers/stream';
+import DriveFile from '../../../../models/drive-file';
 
 /**
  * Update myself
@@ -51,12 +52,34 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	if (autoWatchErr) return rej('invalid autoWatch param');
 	if (autoWatch != null) user.settings.autoWatch = autoWatch;
 
+	if (avatarId) {
+		const avatar = await DriveFile.findOne({
+			_id: avatarId
+		});
+
+		if (avatar != null && avatar.metadata.properties.avgColor) {
+			user.avatarColor = avatar.metadata.properties.avgColor;
+		}
+	}
+
+	if (bannerId) {
+		const banner = await DriveFile.findOne({
+			_id: bannerId
+		});
+
+		if (banner != null && banner.metadata.properties.avgColor) {
+			user.bannerColor = banner.metadata.properties.avgColor;
+		}
+	}
+
 	await User.update(user._id, {
 		$set: {
 			name: user.name,
 			description: user.description,
 			avatarId: user.avatarId,
+			avatarColor: user.avatarColor,
 			bannerId: user.bannerId,
+			bannerColor: user.bannerColor,
 			profile: user.profile,
 			isBot: user.isBot,
 			settings: user.settings

@@ -9,7 +9,7 @@
 			<div class="body">
 				<div class="top">
 					<a class="avatar">
-						<img :src="`${user.avatarUrl}?thumbnail&size=200`" alt="avatar"/>
+						<img :src="user.avatarUrl" alt="avatar"/>
 					</a>
 					<mk-follow-button v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
 				</div>
