@@ -30,7 +30,7 @@ class NotificationManager {
 	private list: Array<{
 		user: ILocalUser['_id'],
 		reason: Reason;
-	}>;
+	}> = [];
 
 	constructor(user, note) {
 		this.user = user;
@@ -300,10 +300,10 @@ export default async (user: IUser, data: {
 		});
 
 		// Append mentions data
-		if (mentions.length > 0) {
+		if (mentionedUsers.length > 0) {
 			Note.update({ _id: note._id }, {
 				$set: {
-					mentions
+					mentions: mentionedUsers.map(u => u._id)
 				}
 			});
 		}

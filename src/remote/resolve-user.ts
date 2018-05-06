@@ -6,6 +6,11 @@ import { createPerson } from './activitypub/models/person';
 
 export default async (username, _host, option?): Promise<IUser> => {
 	const usernameLower = username.toLowerCase();
+
+	if (_host == null) {
+		return await User.findOne({ usernameLower });
+	}
+
 	const hostAscii = toASCII(_host).toLowerCase();
 	const host = toUnicode(hostAscii);
 
