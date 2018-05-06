@@ -35,6 +35,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-avatar
 	display inline-block
+	vertical-align bottom
 	background-size cover
 	background-position center center
 	transition border-radius 1s ease
