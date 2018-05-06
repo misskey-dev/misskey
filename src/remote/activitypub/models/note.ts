@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import { JSDOM } from 'jsdom';
+import * as parse5 from 'parse5';
 import * as debug from 'debug';
 
 import config from '../../../config';
@@ -12,6 +12,72 @@ import { resolveImage } from './image';
 import { IRemoteUser } from '../../../models/user';
 
 const log = debug('misskey:activitypub');
+
+function parse(tag, html: string): string {
+	const dom = parse5.parseFragment(html) as parse5.AST.Default.Document;
+
+	let text = '';
+
+	dom.childNodes.forEach(n => analyze(n));
+
+	return text.trim();
+
+	function analyze(node) {
+		switch (node.nodeName) {
+			case '#text':
+				text += node.value;
+				break;
+
+			case 'br':
+				text += '\n';
+				break;
+
+			case 'a':
+				const cls = node.attrs
+					? (node.attrs.find(x => x.name == 'class') || { value: '' }).value.split(' ')
+					: [];
+
+				// for Mastodon
+				if (cls.includes('mention')) {
+					//#region ホスト名部分が省略されているので復元する
+
+					// Activityのtag情報に次のような形で省略前の情報が添付されているのでそこから持ってくる
+					// {
+					//   "type": "Mention",
+					//   "href": "https://misskey.xyz/users/57d01a501fdf2d07be417afe",
+					//   "name": "@syuilo@misskey.xyz"
+					// }
+
+					const href = node.attrs.find(x => x.name == 'href').value;
+					const acct = tag.find(t => t.type == 'Mention' && t.href == href).name;
+
+					text += acct;
+
+					break;
+
+					//#endregion
+				}
+
+				if (node.childNodes) {
+					node.childNodes.forEach(n => analyze(n));
+				}
+				break;
+
+			case 'p':
+				text += '\n';
+				if (node.childNodes) {
+					node.childNodes.forEach(n => analyze(n));
+				}
+				break;
+
+			default:
+				if (node.childNodes) {
+					node.childNodes.forEach(n => analyze(n));
+				}
+				break;
+		}
+	}
+}
 
 /**
  * Noteをフェッチします。
@@ -87,9 +153,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// リプライ
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
-	// MastodonはHTMLを送り付けてくる
-	// そして改行は<br />で表現されている
-	const { window } = new JSDOM(note.content.replace(/<br \/>/g, '\n'));
+	// テキストのパース
+	const text = parse(note.tag, note.content);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {

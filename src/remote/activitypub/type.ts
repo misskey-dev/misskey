@@ -15,6 +15,7 @@ export interface IObject {
 	icon?: any;
 	image?: any;
 	url?: string;
+	tag?: any[];
 }
 
 export interface IActivity extends IObject {
