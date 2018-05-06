@@ -275,7 +275,7 @@ desktop/views/components/post-form.vue:
   reposted: "Udostępniono!"
   note-failed: "Nie udało się wysłać"
   reply-failed: "Nie udało się odpowiedzieć"
-  renote-failed "Nie udało się przeredagować"
+  renote-failed: "Nie udało się przeredagować"
   posting: "Wysyłanie"
   attach-media-from-local: "Załącz zawartość multimedialną z komputera"
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
