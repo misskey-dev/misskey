@@ -95,7 +95,7 @@ common/views/components/nav.vue:
   donors: "Sponsorzy"
   repository: "Repozytorium"
   develop: "Autorzy"
-  feedback: "Opinie"
+  feedback: "Podziel się opinią"
 
 common/views/components/note-menu.vue:
   favorite: "Dodaj do ulubionych"
@@ -232,7 +232,7 @@ desktop/views/components/drive.nav-folder.vue:
 desktop/views/components/drive.vue:
   search: "Szukaj"
   load-more: "Załaduj więcej"
-  empty-drive: "Twój dysk jest posty"
+  empty-drive: "Twój dysk jest pusty"
   empty-drive-description: "Możesz wysłać plik klikając prawym przyciskiem myszy i wybierając \"Wyślij plik\" lub przeciągnąć plik i upuścić w tym oknie."
   empty-folder: "Ten katalog jest posty"
   unable-to-process: "Nie udało się dokończyć działania."
@@ -240,6 +240,7 @@ desktop/views/components/drive.vue:
   unhandled-error: "Nieznany błąd"
   url-upload: "Wyślij z adresu"
   url-of-file: "Adres URL pliku, który chcesz wysłać"
+  url-upload-requested: "Zaplanowano wysyłanie"
   may-take-time: "Może trochę potrwać, zanim wysyłanie zostanie ukończone."
   create-folder: "Utwórz katalog"
   folder-name: "Nazwa katalogu"
@@ -254,6 +255,7 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/notes.note.vue:
   reposted-by: "Udostępniono przez {}"
   reply: "Odpowiedz"
+  renote: "Przeredaguj”
   add-reaction: "Dodaj reakcję"
   detail: "Pokaż szczegóły"
 
@@ -267,11 +269,13 @@ desktop/views/components/post-form.vue:
   quote-placeholder: "Zacytuj ten wpis…"
   note: "Wyślij"
   reply: "Odpowiedz"
-  posted: "Posted!"
+  renote: "Przeredaguj"
+  posted: "Opublikowano!"
   replied: "Odpowiedziano!"
   reposted: "Udostępniono!"
   note-failed: "Nie udało się wysłać"
   reply-failed: "Nie udało się odpowiedzieć"
+  renote-failed "Nie udało się przeredagować"
   posting: "Wysyłanie"
   attach-media-from-local: "Załącz zawartość multimedialną z komputera"
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
@@ -289,14 +293,19 @@ desktop/views/components/post-form-window.vue:
 desktop/views/components/renote-form.vue:
   quote: "Cytuj…"
   cancel: "Anuluj"
+  renote: "Przeredaguj"
   reposting: "Udostępnianie…"
   success: "Udostępniono!"
+  failure: "Nie udało się przeredagować"
+
+desktop/views/components/renote-form-window.vue:
+  title: "Czy na pewno chcesz przeredagować ten wpis?"
 
 desktop/views/components/settings.vue:
   profile: "Profil"
-  notification: "Powiadomienie"
+  notification: "Powiadomienia"
   apps: "Aplikacje"
-  mute: "Wycisz"
+  mute: "Wyciszanie"
   drive: "Dysk"
   security: "Bezpieczeństwo"
   password: "Hasło"
@@ -392,7 +401,7 @@ desktop/views/pages/user/user.followers-you-know.vue:
   no-users: "Brak użytkowników"
 
 desktop/views/pages/user/user.friends.vue:
-  title: "Najczęściej odpisujący"
+  title: "Najbardziej aktywni"
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
 
