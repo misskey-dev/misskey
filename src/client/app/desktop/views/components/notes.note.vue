@@ -333,7 +333,7 @@ root(isDark)
 
 	> .renote
 		display flex
-		align-items baseline
+		align-items center
 		padding 16px 32px
 		line-height 28px
 		color #9dbb00
