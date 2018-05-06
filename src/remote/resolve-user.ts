@@ -1,10 +1,10 @@
 import { toUnicode, toASCII } from 'punycode';
-import User from '../models/user';
+import User, { IUser } from '../models/user';
 import webFinger from './webfinger';
 import config from '../config';
 import { createPerson } from './activitypub/models/person';
 
-export default async (username, _host, option?) => {
+export default async (username, _host, option?): Promise<IUser> => {
 	const usernameLower = username.toLowerCase();
 	const hostAscii = toASCII(_host).toLowerCase();
 	const host = toUnicode(hostAscii);
