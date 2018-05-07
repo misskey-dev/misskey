@@ -43,27 +43,21 @@ function parse(html: string): string {
 				break;
 
 			case 'a':
-				const cls = node.attrs
-					? (node.attrs.find(x => x.name == 'class') || { value: '' }).value.split(' ')
-					: [];
+				const txt = getText(node);
 
-				// for Mastodon
-				if (cls.includes('mention')) {
-					const mention = getText(node);
-
-					const part = mention.split('@');
+				// メンション
+				if (txt.startsWith('@')) {
+					const part = txt.split('@');
 
 					if (part.length == 2) {
 						//#region ホスト名部分が省略されているので復元する
-
 						const href = new URL(node.attrs.find(x => x.name == 'href').value);
-						const acct = mention + '@' + href.hostname;
+						const acct = txt + '@' + href.hostname;
 						text += acct;
 						break;
-
 						//#endregion
 					} else if (part.length == 3) {
-						text += mention;
+						text += txt;
 						break;
 					}
 				}
