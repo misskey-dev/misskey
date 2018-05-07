@@ -13,7 +13,7 @@ import { IRemoteUser } from '../../../models/user';
 
 const log = debug('misskey:activitypub');
 
-function parse(tag, html: string): string {
+function parse(html: string): string {
 	const dom = parse5.parseFragment(html) as parse5.AST.Default.Document;
 
 	let text = '';
@@ -21,6 +21,16 @@ function parse(tag, html: string): string {
 	dom.childNodes.forEach(n => analyze(n));
 
 	return text.trim();
+
+	function getText(node) {
+		if (node.nodeName == '#text') return node.value;
+
+		if (node.childNodes) {
+			return node.childNodes.map(n => getText(n)).join('');
+		}
+
+		return '';
+	}
 
 	function analyze(node) {
 		switch (node.nodeName) {
@@ -39,23 +49,23 @@ function parse(tag, html: string): string {
 
 				// for Mastodon
 				if (cls.includes('mention')) {
-					//#region ホスト名部分が省略されているので復元する
+					const mention = getText(node);
 
-					// Activityのtag情報に次のような形で省略前の情報が添付されているのでそこから持ってくる
-					// {
-					//   "type": "Mention",
-					//   "href": "https://misskey.xyz/users/57d01a501fdf2d07be417afe",
-					//   "name": "@syuilo@misskey.xyz"
-					// }
+					const part = mention.split('@');
 
-					const href = node.attrs.find(x => x.name == 'href').value;
-					const acct = tag.find(t => t.type == 'Mention' && t.href == href).name;
+					if (part.length == 2) {
+						//#region ホスト名部分が省略されているので復元する
 
-					text += acct;
+						const href = new URL(node.attrs.find(x => x.name == 'href').value);
+						const acct = mention + '@' + href.hostname;
+						text += acct;
+						break;
 
-					break;
-
-					//#endregion
+						//#endregion
+					} else if (part.length == 3) {
+						text += mention;
+						break;
+					}
 				}
 
 				if (node.childNodes) {
@@ -154,7 +164,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
 	// テキストのパース
-	const text = parse(note.tag, note.content);
+	const text = parse(note.content);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
