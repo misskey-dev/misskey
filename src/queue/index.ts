@@ -2,6 +2,7 @@ import { createQueue } from 'kue';
 
 import config from '../config';
 import http from './processors/http';
+import { ILocalUser } from '../models/user';
 
 const queue = createQueue({
 	redis: {
@@ -20,7 +21,7 @@ export function createHttp(data) {
 		.backoff({ delay: 16384, type: 'exponential' });
 }
 
-export function deliver(user, content, to) {
+export function deliver(user: ILocalUser, content, to) {
 	createHttp({
 		title: 'deliver',
 		type: 'deliver',

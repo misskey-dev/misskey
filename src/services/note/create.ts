@@ -295,9 +295,11 @@ export default async (user: IUser, data: {
 			nm.push(u._id, 'mention');
 		});
 
-		mentionedUsers.filter(u => isRemoteUser(u)).forEach(async u => {
-			deliver(user, await render(), (u as IRemoteUser).inbox);
-		});
+		if (isLocalUser(user)) {
+			mentionedUsers.filter(u => isRemoteUser(u)).forEach(async u => {
+				deliver(user, await render(), (u as IRemoteUser).inbox);
+			});
+		}
 
 		// Append mentions data
 		if (mentionedUsers.length > 0) {
