@@ -64,7 +64,7 @@ function parse(tag, html: string): string {
 				break;
 
 			case 'p':
-				text += '\n';
+				text += '\n\n';
 				if (node.childNodes) {
 					node.childNodes.forEach(n => analyze(n));
 				}
