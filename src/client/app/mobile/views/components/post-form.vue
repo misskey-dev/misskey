@@ -25,13 +25,15 @@
 		</div>
 		<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false"/>
 		<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
-		<button class="upload" @click="chooseFile">%fa:upload%</button>
-		<button class="drive" @click="chooseFileFromDrive">%fa:cloud%</button>
-		<button class="kao" @click="kao">%fa:R smile%</button>
-		<button class="poll" @click="poll = true">%fa:chart-pie%</button>
-		<button class="poll" @click="useCw = !useCw">%fa:eye-slash%</button>
-		<button class="geo" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
-		<button class="visibility" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
+		<footer>
+			<button class="upload" @click="chooseFile">%fa:upload%</button>
+			<button class="drive" @click="chooseFileFromDrive">%fa:cloud%</button>
+			<button class="kao" @click="kao">%fa:R smile%</button>
+			<button class="poll" @click="poll = true">%fa:chart-pie%</button>
+			<button class="poll" @click="useCw = !useCw">%fa:eye-slash%</button>
+			<button class="geo" @click="geo ? removeGeo() : setGeo()">%fa:map-marker-alt%</button>
+			<button class="visibility" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
+		</footer>
 		<input ref="file" class="file" type="file" accept="image/*" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>
@@ -336,24 +338,25 @@ root(isDark)
 		> .file
 			display none
 
-		> .upload
-		> .drive
-		> .kao
-		> .poll
-		> .geo
-		> .visibility
-			display inline-block
-			padding 0
-			margin 0
-			width 48px
-			height 48px
-			font-size 20px
-			color #657786
-			background transparent
-			outline none
-			border none
-			border-radius 0
-			box-shadow none
+		> footer
+			white-space nowrap
+			overflow auto
+			-webkit-overflow-scrolling touch
+			overflow-scrolling touch
+
+			> *
+				display inline-block
+				padding 0
+				margin 0
+				width 48px
+				height 48px
+				font-size 20px
+				color #657786
+				background transparent
+				outline none
+				border none
+				border-radius 0
+				box-shadow none
 
 .mk-post-form[data-darkmode]
 	root(true)
