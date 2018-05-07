@@ -188,6 +188,11 @@ export default Vue.extend({
 			}
 
 			if ((this as any).clientSettings.fetchOnScroll !== false) {
+				// 親要素が display none だったら弾く
+				// https://github.com/syuilo/misskey/issues/1569
+				// http://d.hatena.ne.jp/favril/20091105/1257403319
+				if (this.$el.offsetHeight == 0) return;
+
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.loadMore();
 			}
