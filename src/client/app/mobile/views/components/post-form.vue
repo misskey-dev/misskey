@@ -67,6 +67,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		if (this.reply && this.reply.user.host != null) {
+			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+		}
+
 		this.$nextTick(() => {
 			this.focus();
 		});

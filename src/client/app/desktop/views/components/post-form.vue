@@ -105,21 +105,11 @@ export default Vue.extend({
 		}
 	},
 
-	watch: {
-		text() {
-			this.saveDraft();
-		},
-
-		poll() {
-			this.saveDraft();
-		},
-
-		files() {
-			this.saveDraft();
-		}
-	},
-
 	mounted() {
+		if (this.reply && this.reply.user.host != null) {
+			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+		}
+
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
 			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
@@ -134,10 +124,18 @@ export default Vue.extend({
 				}
 				this.$emit('change-attached-media', this.files);
 			}
+
+			this.$nextTick(() => this.watch());
 		});
 	},
 
 	methods: {
+		watch() {
+			this.$watch('text', () => this.saveDraft());
+			this.$watch('poll', () => this.saveDraft());
+			this.$watch('files', () => this.saveDraft());
+		},
+
 		focus() {
 			(this.$refs.text as any).focus();
 		},
