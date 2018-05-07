@@ -166,7 +166,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		media,
 		reply,
 		renote: undefined,
-		text: window.document.body.textContent,
+		text: text,
 		viaMobile: false,
 		geo: undefined,
 		visibility,
