@@ -6,8 +6,8 @@
 			<mk-note-detail :note="note"/>
 		</div>
 		<footer>
-			<a v-if="note.prev" :href="note.prev">%fa:angle-left% %i18n:@prev%</a>
-			<a v-if="note.next" :href="note.next">%i18n:@next% %fa:angle-right%</a>
+			<router-link v-if="note.prev" :to="note.prev">%fa:angle-left% %i18n:@prev%</router-link>
+			<router-link v-if="note.next" :to="note.next">%i18n:@next% %fa:angle-right%</router-link>
 		</footer>
 	</main>
 </mk-ui>
