@@ -1,48 +1,26 @@
-/**
- * Module dependencies
- */
 import Note from '../../../models/note';
 import User from '../../../models/user';
 
 /**
- * @swagger
- * /stats:
- *   note:
- *     summary: Show the misskey's statistics
- *     responses:
- *       200:
- *         description: Success
- *         schema:
- *           type: object
- *           properties:
- *             notesCount:
- *               description: count of all notes of misskey
- *               type: number
- *             usersCount:
- *               description: count of all users of misskey
- *               type: number
- *
- *       default:
- *         description: Failed
- *         schema:
- *           $ref: "#/definitions/Error"
- */
-
-/**
- * Show the misskey's statistics
- *
- * @param {any} params
- * @return {Promise<any>}
+ * Get the misskey's statistics
  */
 module.exports = params => new Promise(async (res, rej) => {
-	const notesCount = await Note
-		.count();
+	const notesCount = await Note.count();
 
-	const usersCount = await User
-		.count();
+	const usersCount = await User.count();
+
+	const originalNotesCount = await Note.count({
+		'_user.host': null
+	});
+
+	const originalUsersCount = await User.count({
+		host: null
+	});
 
 	res({
-		notesCount: notesCount,
-		usersCount: usersCount
+		notesCount,
+		usersCount,
+		originalNotesCount,
+		originalUsersCount
 	});
 });
