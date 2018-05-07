@@ -5,7 +5,7 @@
 		<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
 		<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 		<header>
-			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
+			<div class="banner" :style="style"></div>
 			<div class="body">
 				<div class="top">
 					<a class="avatar">
@@ -80,6 +80,13 @@ export default Vue.extend({
 	computed: {
 		age(): number {
 			return age(this.user.profile.birthday);
+		},
+		style(): any {
+			if (this.user.bannerUrl == null) return {};
+			return {
+				backgroundColor: this.user.bannerColor ? `rgb(${ this.user.bannerColor.join(',') })` : null,
+				backgroundImage: `url(${ this.user.bannerUrl })`
+			};
 		}
 	},
 	watch: {

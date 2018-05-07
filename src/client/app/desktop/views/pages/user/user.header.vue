@@ -2,8 +2,8 @@
 <div class="header" :data-is-dark-background="user.bannerUrl != null">
 	<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
 	<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
-	<div class="banner-container" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
-		<div class="banner" ref="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''" @click="onBannerClick"></div>
+	<div class="banner-container" :style="style">
+		<div class="banner" ref="banner" :style="style" @click="onBannerClick"></div>
 		<div class="fade"></div>
 	</div>
 	<div class="container">
@@ -25,6 +25,15 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: ['user'],
+	computed: {
+		style(): any {
+			if (this.user.bannerUrl == null) return {};
+			return {
+				backgroundColor: this.user.bannerColor ? `rgb(${ this.user.bannerColor.join(',') })` : null,
+				backgroundImage: `url(${ this.user.bannerUrl })`
+			};
+		}
+	},
 	mounted() {
 		if (this.user.bannerUrl) {
 			window.addEventListener('load', this.onScroll);
