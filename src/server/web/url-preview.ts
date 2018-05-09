@@ -16,6 +16,6 @@ function wrap(url: string): string {
 	return url != null
 		? url.startsWith('https://')
 			? url
-			: `https://images.weserv.nl/?url=${url.replace(/^http:\/\//, '')}`
+			: `https://images.weserv.nl/?url=${encodeURIComponent(url.replace(/^http:\/\//, ''))}`
 		: null;
 }
