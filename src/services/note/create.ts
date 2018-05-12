@@ -392,6 +392,7 @@ export default async (user: IUser, data: {
 			}
 		}
 
+		//#region TODO: これ重い
 		// 今までで同じ投稿をRenoteしているか
 		const existRenote = await Note.findOne({
 			userId: user._id,
@@ -400,6 +401,7 @@ export default async (user: IUser, data: {
 				$ne: note._id
 			}
 		});
+		//#endregion
 
 		if (!existRenote) {
 			// Update renoteee status
