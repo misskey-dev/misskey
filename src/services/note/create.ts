@@ -394,13 +394,14 @@ export default async (user: IUser, data: {
 
 		//#region TODO: これ重い
 		// 今までで同じ投稿をRenoteしているか
-		const existRenote = await Note.findOne({
-			userId: user._id,
-			renoteId: data.renote._id,
-			_id: {
-				$ne: note._id
-			}
-		});
+		//const existRenote = await Note.findOne({
+		//	userId: user._id,
+		//	renoteId: data.renote._id,
+		//	_id: {
+		//		$ne: note._id
+		//	}
+		//});
+		const existRenote = null;
 		//#endregion
 
 		if (!existRenote) {
