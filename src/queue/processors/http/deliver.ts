@@ -14,7 +14,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 			done();
 		} else {
 			console.warn(`deliver failed: ${res.statusMessage}`);
-			done(new Error(res.statusMessage));
+			done(res);
 		}
 	}
 };
