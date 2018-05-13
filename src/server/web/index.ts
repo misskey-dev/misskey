@@ -87,7 +87,7 @@ router.get('/url', require('./url-preview'));
 
 //#region for crawlers
 // User
-router.get('/@:user', async ctx => {
+router.get('/@:user', async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
 	const user = await User.findOne({
 		usernameLower: username.toLowerCase(),
@@ -97,7 +97,8 @@ router.get('/@:user', async ctx => {
 	if (user != null) {
 		await ctx.render('user', { user });
 	} else {
-		ctx.status = 404;
+		// リモートユーザーなので
+		await next();
 	}
 });
 
