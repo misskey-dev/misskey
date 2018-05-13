@@ -118,7 +118,8 @@ const addFile = async (
 		// Check if there is a file with the same hash
 		const much = await DriveFile.findOne({
 			md5: hash,
-			'metadata.userId': user._id
+			'metadata.userId': user._id,
+			deletedAt: { $exists: false }
 		});
 
 		if (much !== null) {
