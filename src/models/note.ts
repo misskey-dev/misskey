@@ -15,9 +15,8 @@ import Notification, { deleteNotification } from './notification';
 import Following from './following';
 
 const Note = db.get<INote>('notes');
-
 Note.createIndex('uri', { sparse: true, unique: true });
-
+Note.createIndex('userId');
 export default Note;
 
 export function isValidText(text: string): boolean {
