@@ -43,7 +43,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		},
 		renoteCount: {
 			$gt: 0
-		}
+		},
+		'_user.host': null
 	} as any;
 
 	if (reply != undefined) {
