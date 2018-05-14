@@ -119,7 +119,7 @@ const addFile = async (
 		const much = await DriveFile.findOne({
 			md5: hash,
 			'metadata.userId': user._id,
-			deletedAt: { $exists: false }
+			'metadata.deletedAt': { $exists: false }
 		});
 
 		if (much !== null) {
