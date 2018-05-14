@@ -271,41 +271,10 @@ export const pack = async (
 
 	// When requested a detailed note data
 	if (opts.detail) {
-		// Get previous note info
-		_note.prev = (async () => {
-			const prev = await Note.findOne({
-				userId: _note.userId,
-				_id: {
-					$lt: id
-				}
-			}, {
-				fields: {
-					_id: true
-				},
-				sort: {
-					_id: -1
-				}
-			});
-			return prev ? prev._id.toHexString() : null;
-		})();
-
-		// Get next note info
-		_note.next = (async () => {
-			const next = await Note.findOne({
-				userId: _note.userId,
-				_id: {
-					$gt: id
-				}
-			}, {
-				fields: {
-					_id: true
-				},
-				sort: {
-					_id: 1
-				}
-			});
-			return next ? next._id.toHexString() : null;
-		})();
+		//#region 重いので廃止
+		_note.prev = null;
+		_note.next = null;
+		//#endregion
 
 		if (_note.replyId) {
 			// Populate reply to note
