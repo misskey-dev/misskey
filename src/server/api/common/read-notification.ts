@@ -43,6 +43,8 @@ export default (
 		.count({
 			notifieeId: userId,
 			isRead: false
+		}, {
+			limit: 1
 		});
 
 	if (count == 0) {
