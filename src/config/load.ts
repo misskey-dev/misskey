@@ -53,5 +53,5 @@ function normalizeUrl(url: string) {
 
 function urlError(url: string) {
 	console.error(`「${url}」は、正しいURLではありません。先頭に http:// または https:// をつけ忘れてないかなど確認してください。`);
-	process.exit();
+	process.exit(99);
 }
