@@ -501,7 +501,7 @@ mobile/views/pages/selectdrive.vue:
 mobile/views/pages/settings.vue:
   signed-in-as: "Signed in as {}"
   profile: "Profile"
-  twitter: "Twitter連携"
+  twitter: "Twitter integration"
   signin-history: "Sign in history"
   settings: "Settings"
   signout: "Sign out"
