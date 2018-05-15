@@ -18,7 +18,11 @@ const form = [{
 }, {
 	type: 'input',
 	name: 'url',
-	message: 'URL you want to run Misskey:'
+	message: 'URL you want to run Misskey:',
+	validate: function(wannabeurl) {
+		return wannabeurl.match('^http\(s?\)://') ? true :
+		       'URL needs to start with http:// or https://';
+	}
 }, {
 	type: 'input',
 	name: 'port',
