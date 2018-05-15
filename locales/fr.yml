@@ -320,6 +320,11 @@ desktop/views/components/settings.profile.vue:
   description: "Description"
   birthday: "Date de naissance"
   save: "Mettre à jour le profil"
+desktop/views/components/timeline.vue:
+  home: "ホーム"
+  local: "ローカル"
+  global: "グローバル"
+  list: "リスト"
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
