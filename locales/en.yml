@@ -1,6 +1,6 @@
+---
 common:
   misskey: "Share everything with others using Misskey."
-
   time:
     unknown: "unknown"
     future: "future"
@@ -12,7 +12,6 @@ common:
     weeks_ago: "{}week(s) ago"
     months_ago: "{}month(s) ago"
     years_ago: "{}year(s) ago"
-
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -21,7 +20,6 @@ common:
     thursday: "T"
     friday: "F"
     satruday: "S"
-
   reactions:
     like: "Like"
     love: "Love"
@@ -32,19 +30,16 @@ common:
     angry: "Angry"
     confused: "Confused"
     pudding: "Pudding"
-
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
   update-available: "A new version of Misskey is now available({newer}, current is {current}). Reload the page to apply the update."
   my-token-regenerated: "Your token has been generated. You will now get logged out."
-
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem either with your internet connection, or the server may be down or under maintenance. Please {try again} later."
   thanks: "Thank you for using Misskey."
   troubleshoot: "Troubleshoot"
-
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Troubleshooting"
   network: "Network connection"
@@ -64,29 +59,24 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "It seems to be able to connect. Please reload the page."
   flush: "Clean cache"
   set-version: "Specify version"
-
 common/views/components/messaging.vue:
   search-user: "Find an user"
   you: "You"
   no-history: "No history"
-
 common/views/components/messaging-room.vue:
   empty: "No conversations"
   more: "More"
   no-history: "There is no more history"
   resize-form: "Drag to resize"
   new-message: "New message"
-
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
   attach-from-local: "Attach files from your pc"
   attach-from-drive: "Attach files from your Drive"
-
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
   deleted: "This message has been deleted"
-
 common/views/components/nav.vue:
   about: "About"
   stats: "Stats"
@@ -96,12 +86,10 @@ common/views/components/nav.vue:
   repository: "Repository"
   develop: "Developers"
   feedback: "Feedback"
-
 common/views/components/note-menu.vue:
   favorite: "Favorite this note"
   pin: "Pin to profile page"
   remote: "Show on origin"
-
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
@@ -109,24 +97,20 @@ common/views/components/poll.vue:
   vote: "Vote"
   show-result: "Show results"
   voted: "Voted"
-
 common/views/components/poll-editor.vue:
   no-only-one-choice: "You need to enter two or more choices."
   choice-n: "Choice {}"
   remove: "Remove this choice"
   add: "+ Add a choice"
   destroy: "Destroy this poll"
-
 common/views/components/reaction-picker.vue:
   choose-reaction: "Choose a reaction"
-
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
   token: "Token"
   signing-in: "Signing in..."
   signin: "Sign in"
-
 common/views/components/signup.vue:
   username: "Username"
   checking: "Checking..."
@@ -148,16 +132,13 @@ common/views/components/signup.vue:
   recaptcha: "Verify"
   create: "Create an Account"
   some-error: "Account creation failed for some reason. Please try again."
-
 common/views/components/special-message.vue:
   new-year: "Happy New Year!"
   christmas: "Merry Christmas!"
-
 common/views/components/stream-indicator.vue:
   connecting: "Connecting"
   reconnecting: "Reconnecting"
   connected: "Connected"
-
 common/views/components/twitter-setting.vue:
   description: "If you connect your Twitter account to your Misskey account, you will be able to see your Twitter account information on your profile and you can sign-in using Twitter."
   connected-to: "You are connected to this Twitter account"
@@ -165,42 +146,33 @@ common/views/components/twitter-setting.vue:
   reconnect: "Reconnect"
   connect: "Link your twitter account"
   disconnect: "Disconnect"
-
 common/views/components/uploader.vue:
   waiting: "Waiting"
-
 common/views/widgets/broadcast.vue:
   fetching: "Fetching"
   no-broadcasts: "No broadcasts"
   have-a-nice-day: "Have a nice day!"
   next: "Next"
-
 common/views/widgets/donation.vue:
   title: "Donation"
   text: "To keep Misskey up and running we spend money for our domain name, servers and so on.. We don't get any money from it, and we would really appreciate it if you could donate. If you're interested contact {}. Thank you for your contribution!"
-
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "No photos"
-
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
-
 desktop/views/components/activity.vue:
   title: "Activity"
   toggle: "Toggle views"
-
 desktop/views/components/calendar.vue:
   title: "{1} / {2}"
   prev: "Previous month"
   next: "Next month"
   go: "Click to naviguate"
-
 desktop/views/components/drive-window.vue:
   used: "used"
   drive: "Drive"
-
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Banner"
@@ -217,7 +189,6 @@ desktop/views/components/drive.file.vue:
     input-new-file-name: "Enter new name"
     copied: "Copied"
     copied-url-to-clipboard: "Copied URL to clipboard"
-
 desktop/views/components/drive.folder.vue:
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
@@ -228,10 +199,8 @@ desktop/views/components/drive.folder.vue:
     rename: "Rename"
     rename-folder: "Rename folder"
     input-new-folder-name: "Enter new name"
-
 desktop/views/components/drive.nav-folder.vue:
   drive: "Drive"
-
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
@@ -252,21 +221,17 @@ desktop/views/components/drive.vue:
     create-folder: "Create a folder"
     upload: "Upload a file"
     url-upload: "Upload from a URL"
-
 desktop/views/components/messaging-window.vue:
   title: "Messaging"
-
 desktop/views/components/notes.note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
   renote: "Renote"
   add-reaction: "Add a reaction"
   detail: "Show detail"
-
 desktop/views/components/notifications.vue:
   more: "More"
   empty: "No notifications"
-
 desktop/views/components/post-form.vue:
   note-placeholder: "What's happening?"
   reply-placeholder: "Reply to this note..."
@@ -287,13 +252,11 @@ desktop/views/components/post-form.vue:
   insert-a-kao: "v(‘ω’)v"
   create-poll: "Create a poll"
   text-remain: "{} chars remaining"
-
 desktop/views/components/post-form-window.vue:
   note: "New note"
   reply: "Reply"
   attaches: "{} media attached"
   uploading-media: "Uploading {} media"
-
 desktop/views/components/renote-form.vue:
   quote: "Quote..."
   cancel: "Cancel"
@@ -301,10 +264,8 @@ desktop/views/components/renote-form.vue:
   reposting: "Reposting..."
   success: "Reposted!"
   failure: "Failed to Renote"
-
 desktop/views/components/renote-form-window.vue:
   title: "Are you sure you want to renote this note?"
-
 desktop/views/components/settings.vue:
   profile: "Profile"
   notification: "Notification"
@@ -316,7 +277,6 @@ desktop/views/components/settings.vue:
   2fa: "Two-factor authentication"
   other: "Other"
   license: "License"
-
 desktop/views/components/settings.2fa.vue:
   intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security. "
   detail: "See details..."
@@ -335,20 +295,16 @@ desktop/views/components/settings.2fa.vue:
   success: "Setup completed successfully!"
   failed: "Failed to setup. please ensure that the token is correct."
   info: "From now on, enter the token that is displayed on your device in addition to your password when signing-in to Misskey."
-
 desktop/views/components/settings.api.vue:
   intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "Please do not show this token to third parties (do not enter it somewhere else other than here) otherwise your account could get compromised."
   regeneration-of-token: "In the unlikely event that this token leaks out you can regenerate it."
   regenerate-token: "Regenerate the token"
   enter-password: "Please enter the password"
-
 desktop/views/components/settings.app.vue:
   no-apps: "No authorized apps"
-
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
-
 desktop/views/components/settings.password.vue:
   reset: "Change your password"
   enter-current-password: "Enter the current password"
@@ -356,7 +312,6 @@ desktop/views/components/settings.password.vue:
   enter-new-password-again: "Enter the new password again"
   not-match: "New password doesn't match"
   changed: "Password updated successfully"
-
 desktop/views/components/settings.profile.vue:
   avatar: "Avatar"
   choice-avatar: "Choose an image"
@@ -365,7 +320,6 @@ desktop/views/components/settings.profile.vue:
   description: "Description"
   birthday: "Birthday"
   save: "Update profile"
-
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Drive"
@@ -375,54 +329,42 @@ desktop/views/components/ui.header.account.vue:
   settings: "Settings"
   signout: "Sign out"
   dark: "Fall in dark"
-
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   messaging: "Messages"
   game: "Game"
-
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
-
 desktop/views/components/ui.header.post.vue:
   post: "Compose new Post"
-
 desktop/views/components/ui.header.search.vue:
   placeholder: "Search"
-
 desktop/views/pages/note.vue:
   prev: "Previous note"
   next: "Next note"
-
 desktop/views/pages/selectdrive.vue:
   title: "Choose file(s)"
   ok: "OK"
   cancel: "Cancel"
   upload: "Upload files from you PC"
-
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Followers you know"
   loading: "Loading"
   no-users: "No users"
-
 desktop/views/pages/user/user.friends.vue:
   title: "Frequently replied"
   loading: "Loading"
   no-users: "No users"
-
 desktop/views/pages/user/user.header.vue:
   is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
-
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active: "
-
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
   no-photos: "No photos"
-
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Follows you"
   stalk: "Stalk"
@@ -431,39 +373,31 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mute"
   muted: "Muting"
   unmute: "Unmute"
-
 desktop/views/widgets/messaging.vue:
   title: "Messaging"
-
 desktop/views/widgets/notifications.vue:
   title: "Notifications"
   settings: "Settings"
-
 desktop/views/widgets/polls.vue:
   title: "Polls"
   refresh: "Show others"
   nothing: "Nothing"
-
 desktop/views/widgets/post-form.vue:
   title: "Post"
   note: "Post"
   placeholder: "What's happening?"
-
 desktop/views/widgets/trends.vue:
   title: "Trend"
   refresh: "Show others"
   nothing: "Nothing"
-
 desktop/views/widgets/users.vue:
   title: "Recommended users"
   refresh: "Show others"
   no-one: "No one"
-
 desktop/views/widgets/channel.vue:
   title: "Channel"
   settings: "Widget settings"
   get-started: "Please click the cog in the upper right corner to specify a channel"
-
 mobile/views/components/drive.vue:
   drive: "Drive"
   used: "used"
@@ -473,94 +407,72 @@ mobile/views/components/drive.vue:
   load-more: "Load more"
   nothing-in-drive: "Nothing"
   folder-is-empty: "This folder is empty"
-
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose a file"
-
 mobile/views/components/drive-folder-chooser.vue:
   select-folder: "Choose a folder"
-
 mobile/views/components/drive.file-detail.vue:
   download: "Download"
   rename: "Rename"
   move: "Move"
   hash: "Hash (md5)"
   exif: "EXIF"
-
 mobile/views/components/follow-button.vue:
   follow: "Follow"
   unfollow: "Unfollow"
-
 mobile/views/components/note.vue:
   reposted-by: "Renoted by {}"
-
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
-
 mobile/views/components/notifications.vue:
   more: "More"
   empty: "No notifications"
-
 mobile/views/components/post-form.vue:
   submit: "Post"
   reply-placeholder: "Reply to this note..."
   note-placeholder: "What's happening?"
-
 mobile/views/components/sub-note-content.vue:
   media-count: "{} media"
   poll: "Poll"
-
 mobile/views/components/timeline.vue:
   empty: "No notes"
   load-more: "More"
-
 mobile/views/components/ui.nav.vue:
   home: "Home"
   notifications: "Notifications"
   messaging: "Messages"
+  search: "Search"
   drive: "Drive"
   settings: "Settings"
   about: "About Misskey"
-  search: "Search"
-
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted yet"
   no-notes-with-media: "There is no notes with attached media"
   load-more: "More"
-
 mobile/views/components/users-list.vue:
   all: "All"
   known: "You know"
   load-more: "More"
-
 mobile/views/pages/drive.vue:
   drive: "Drive"
-
 mobile/views/pages/followers.vue:
   followers-of: "Followers of {}"
-
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
-
 mobile/views/pages/home.vue:
   timeline: "Timeline"
-
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
-
 mobile/views/pages/messaging-room.vue:
   messaging: "Messaging"
-
 mobile/views/pages/note.vue:
   title: "Post"
   prev: "Previous note"
   next: "Next note"
-
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
   read-all: "Are you sure you want to mark all unread notifications as read?"
-
 mobile/views/pages/profile-setting.vue:
   title: "Profile settings"
   will-be-published: "These profile settings will be updated."
@@ -576,22 +488,18 @@ mobile/views/pages/profile-setting.vue:
   set-banner: "Choose a banner"
   save: "Save"
   saved: "Profile updated successfully"
-
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
-
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose a file"
-
 mobile/views/pages/settings.vue:
   signed-in-as: "Signed in as {}"
   profile: "Profile"
-  twitter-integration: "Twitter integration"
+  twitter: "Twitter連携"
   signin-history: "Sign in history"
   settings: "Settings"
   signout: "Sign out"
-
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
@@ -603,7 +511,6 @@ mobile/views/pages/user.vue:
   is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
-
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"
@@ -613,27 +520,21 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "Frequently talking users"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
-
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Loading"
   no-users: "No users"
-
 mobile/views/pages/user/home.friends.vue:
   loading: "Loading"
   no-users: "No users"
-
 mobile/views/pages/user/home.notes.vue:
   loading: "Loading"
   no-notes: "No notes"
-
 mobile/views/pages/user/home.photos.vue:
   loading: "Loading"
   no-photos: "No photos"
-
 docs:
   edit-this-page-on-github: "Did you find an error or do you want to contribute to the documentation? "
   edit-this-page-on-github-link: "Edit this page on Github!"
-
   api:
     entities:
       properties: "Properties"

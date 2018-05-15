@@ -1,6 +1,6 @@
+---
 common:
   misskey: "Dziel się zawartością z innymi korzystając z Misskey."
-
   time:
     unknown: "nieznany"
     future: "w przyszłości"
@@ -12,7 +12,6 @@ common:
     weeks_ago: "{} tyg. temu"
     months_ago: "{} mies. temu"
     years_ago: "{} lat temu"
-
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -21,7 +20,6 @@ common:
     thursday: "C"
     friday: "P"
     satruday: "S"
-
   reactions:
     like: "Lubię"
     love: "Kocham"
@@ -32,19 +30,16 @@ common:
     angry: "Wściekły"
     confused: "Zmieszany"
     pudding: "Pudding"
-
   delete: "Usuń"
   loading: "Ładowanie"
   ok: "OK"
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
-
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
   thanks: "Dziękujemy za korzystanie z Misskey."
   troubleshoot: "Rozwiązywanie problemów"
-
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Rozwiązywanie problemów"
   network: "Połączenie z siecią"
@@ -64,29 +59,24 @@ common/views/components/connect-failed.troubleshooter.vue:
   success-desc: "Wygląda na to, że udało się połączyć. Odśwież stronę."
   flush: "Wyczyść pamięć podręczną"
   set-version: "Określ wersję"
-
 common/views/components/messaging.vue:
   search-user: "Znajdź użytkownika"
   you: "Ty"
   no-history: "Brak historii"
-
 common/views/components/messaging-room.vue:
   empty: "Brak konwersacji"
   more: "Więcej"
   no-history: "Brak dalszej historii"
   resize-form: "Przeciągnij aby zmienić rozmiar"
   new-message: "Nowa wiadomość"
-
 common/views/components/messaging-room.form.vue:
   input-message-here: "Wprowadź wiadomość tutaj"
   send: "Wyślij"
   attach-from-local: "Załącz pliki z komputera"
   attach-from-drive: "Załącz pliki z dysku"
-
 common/views/components/messaging-room.message.vue:
   is-read: "Przeczytano"
   deleted: "Wiadomość została usunięta"
-
 common/views/components/nav.vue:
   about: "O stronie"
   stats: "Statystyki"
@@ -96,11 +86,10 @@ common/views/components/nav.vue:
   repository: "Repozytorium"
   develop: "Autorzy"
   feedback: "Podziel się opinią"
-
 common/views/components/note-menu.vue:
   favorite: "Dodaj do ulubionych"
   pin: "Przypnij do profilu"
-
+  remote: "投稿元で見る"
 common/views/components/poll.vue:
   vote-to: "Zagłosuj na '{}'"
   vote-count: "{} głosów"
@@ -108,24 +97,20 @@ common/views/components/poll.vue:
   vote: "Zagłosuj"
   show-result: "Pokaż wyniki"
   voted: "Zagłosowano"
-
 common/views/components/poll-editor.vue:
   no-only-one-choice: "Musisz wprowadzić dwie lub więcej opcji."
   choice-n: "Opcja {}"
   remove: "Usuń tą opcję"
   add: "+ Dodaj opcję"
   destroy: "Usuń ankietę"
-
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wybierz reakcję"
-
 common/views/components/signin.vue:
   username: "Nazwa użytkownika"
   password: "Hasło"
   token: "Token"
   signing-in: "Logowanie…"
   signin: "Zaloguj"
-
 common/views/components/signup.vue:
   username: "Nazwa użytkownika"
   checking: "Sprawdzanie…"
@@ -147,16 +132,13 @@ common/views/components/signup.vue:
   recaptcha: "Weryfikacja"
   create: "Utwórz konto"
   some-error: "Nie udało się utworzyć konta. Spróbuj ponownie."
-
 common/views/components/special-message.vue:
   new-year: "Szczęśliwego nowego roku!"
   christmas: "Wesołych świąt!"
-
 common/views/components/stream-indicator.vue:
   connecting: "Łączenie"
   reconnecting: "Ponowne łączenie"
   connected: "Połączono"
-
 common/views/components/twitter-setting.vue:
   description: "Jeżeli połączysz konto Twittera z kontem Misskey, informacje z Twittera będą widoczne na Twoim profilu i będziesz mógł logować się z użyciem Twittera."
   connected-to: "Jesteś połączony z tym kontem Twittera"
@@ -164,40 +146,33 @@ common/views/components/twitter-setting.vue:
   reconnect: "Połącz ponownie"
   connect: "Połącz z kontem Twittera"
   disconnect: "Rozłącz"
-
 common/views/components/uploader.vue:
   waiting: "Oczekiwanie"
-
 common/views/widgets/broadcast.vue:
+  fetching: "確認中"
   no-broadcasts: "Brak transmisji"
   have-a-nice-day: "Miłego dnia!"
   next: "Dalej"
-
 common/views/widgets/donation.vue:
   title: "Dotacje"
   text: "Aby utrzymywać Misskey, płacimy za domenę, serwery i nie tylko… Nie zarabiamy na tym, więc byłoby nam miło, gdybyśmy uzyskali od Ciebie dotację. Jeżeli jesteś zainteresowany, skontaktuj się z {}. Dziękujemy za wsparcie!"
-
 common/views/widgets/photo-stream.vue:
+  title: "フォトストリーム"
   no-photos: "Brak zdjęć"
-
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
-
 desktop/views/components/activity.vue:
   title: "Aktywność"
   toggle: "Przełącz widok"
-
 desktop/views/components/calendar.vue:
   title: "{1} / {2}"
   prev: "Poprzedni miesiąc"
   next: "Następny miesiąc"
   go: "Naciśnij, aby przejść"
-
 desktop/views/components/drive-window.vue:
   used: "wykorzystane"
   drive: "Dysk"
-
 desktop/views/components/drive.file.vue:
   avatar: "Awatar"
   banner: "Baner"
@@ -214,7 +189,6 @@ desktop/views/components/drive.file.vue:
     input-new-file-name: "Wprowadź nową nazwę"
     copied: "Skopiowano"
     copied-url-to-clipboard: "Skopiowano adres do schowka"
-
 desktop/views/components/drive.folder.vue:
   unable-to-process: "Nie udało się ukończyć działania."
   circular-reference-detected: "Docelowy katalog znajduje się w katalogu, który chcesz przenieść."
@@ -225,13 +199,12 @@ desktop/views/components/drive.folder.vue:
     rename: "Zmień nazwę"
     rename-folder: "Zmień nazwę katalogu"
     input-new-folder-name: "Wprowadź nową nazwę"
-
 desktop/views/components/drive.nav-folder.vue:
   drive: "Dysk"
-
 desktop/views/components/drive.vue:
   search: "Szukaj"
   load-more: "Załaduj więcej"
+  empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
   empty-drive: "Twój dysk jest pusty"
   empty-drive-description: "Możesz wysłać plik klikając prawym przyciskiem myszy i wybierając \"Wyślij plik\" lub przeciągnąć plik i upuścić w tym oknie."
   empty-folder: "Ten katalog jest posty"
@@ -248,21 +221,17 @@ desktop/views/components/drive.vue:
     create-folder: "Utwórz katalog"
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
-
 desktop/views/components/messaging-window.vue:
   title: "Wiadomości"
-
 desktop/views/components/notes.note.vue:
   reposted-by: "Udostępniono przez {}"
   reply: "Odpowiedz"
   renote: "Przeredaguj"
   add-reaction: "Dodaj reakcję"
   detail: "Pokaż szczegóły"
-
 desktop/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
-
 desktop/views/components/post-form.vue:
   note-placeholder: "Co się dzieje?"
   reply-placeholder: "Odpowiedz na ten wpis…"
@@ -283,13 +252,11 @@ desktop/views/components/post-form.vue:
   insert-a-kao: "v(‘ω’)v"
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
-
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
   reply: "Odpowiedz"
   attaches: "{} załączników multimedialnych"
   uploading-media: "Wysyłanie {} treści multimedialnych"
-
 desktop/views/components/renote-form.vue:
   quote: "Cytuj…"
   cancel: "Anuluj"
@@ -297,10 +264,8 @@ desktop/views/components/renote-form.vue:
   reposting: "Udostępnianie…"
   success: "Udostępniono!"
   failure: "Nie udało się przeredagować"
-
 desktop/views/components/renote-form-window.vue:
   title: "Czy na pewno chcesz przeredagować ten wpis?"
-
 desktop/views/components/settings.vue:
   profile: "Profil"
   notification: "Powiadomienia"
@@ -312,7 +277,6 @@ desktop/views/components/settings.vue:
   2fa: "Uwierzytelnianie dwuetapowe"
   other: "Inne"
   license: "Licencja"
-
 desktop/views/components/settings.2fa.vue:
   intro: "Jeżeli skonfigurujesz uwierzytelnianie dwuetapowe, aby zablokować się będziesz potrzebować (oprócz hasła) kodu ze skonfigurowanego urządzenia (np. smartfonu), co zwiększy bezpieczeństwo."
   detail: "Zobacz szczegóły…"
@@ -331,19 +295,16 @@ desktop/views/components/settings.2fa.vue:
   success: "Pomyślnie ukończono konfigurację!"
   failed: "Nie udało się skonfigurować uwierzytelniania dwuetapowego, upewnij się że wprowadziłeś prawidłowy token."
   info: "Od teraz, wprowadzaj token wyświetlany na urządzeniu przy każdym logowaniu do Misskey."
-
 desktop/views/components/settings.api.vue:
+  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
   caution: "Nie pokazuj tego tokenu osobom trzecim (nie wprowadzaj go nigdzie indziej), aby konto nie trafiło w niepowołane ręce."
   regeneration-of-token: "W przypadku wycieku tokenu, możesz wygenerować nowy."
   regenerate-token: "Wygeneruj nowy token"
   enter-password: "Wprowadź hasło"
-
 desktop/views/components/settings.app.vue:
   no-apps: "Brak zautoryzowanych aplikacji"
-
 desktop/views/components/settings.mute.vue:
   no-users: "Brak wyciszonych użytkowników"
-
 desktop/views/components/settings.password.vue:
   reset: "Zmień hasło"
   enter-current-password: "Wprowadź obecne hasło"
@@ -351,7 +312,6 @@ desktop/views/components/settings.password.vue:
   enter-new-password-again: "Wprowadź ponownie nowe hasło"
   not-match: "Nowe hasła nie pasują do siebie"
   changed: "Pomyślnie zmieniono hasło"
-
 desktop/views/components/settings.profile.vue:
   avatar: "Awatar"
   choice-avatar: "Wybierz obraz"
@@ -360,7 +320,6 @@ desktop/views/components/settings.profile.vue:
   description: "Opis"
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
-
 desktop/views/components/ui.header.account.vue:
   profile: "Twój profil"
   drive: "Dysk"
@@ -370,54 +329,42 @@ desktop/views/components/ui.header.account.vue:
   settings: "Ustawienia"
   signout: "Wyloguj się"
   dark: "Sprowadź ciemność"
-
 desktop/views/components/ui.header.nav.vue:
   home: "Strona główna"
   messaging: "Wiadomości"
   game: "Gra"
-
 desktop/views/components/ui.header.notifications.vue:
   title: "Powiadomienia"
-
 desktop/views/components/ui.header.post.vue:
   post: "Utwórz nowy wpis"
-
 desktop/views/components/ui.header.search.vue:
   placeholder: "Szukaj"
-
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
-
 desktop/views/pages/selectdrive.vue:
   title: "Wybierz plik(i)"
   ok: "OK"
   cancel: "Anuluj"
   upload: "Wyślij pliki z Twojego komputera"
-
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Śledzący których znasz"
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
-
 desktop/views/pages/user/user.friends.vue:
   title: "Najbardziej aktywni"
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
-
 desktop/views/pages/user/user.header.vue:
   is-suspended: "To konto zostało zawieszone."
   is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
   view-remote: "Wyświetl dokładne informacje"
-
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Ostatnio aktywny: "
-
 desktop/views/pages/user/user.photos.vue:
   title: "Zdjęcia"
   loading: "Ładowanie"
   no-photos: "Brak zdjęć"
-
 desktop/views/pages/user/user.profile.vue:
   follows-you: "Śledzi Cię"
   stalk: "Stalkuj"
@@ -426,35 +373,31 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Wycisz"
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
-
+desktop/views/widgets/messaging.vue:
+  title: "メッセージ"
 desktop/views/widgets/notifications.vue:
   title: "Powiadomienia"
   settings: "Ustawienia"
-
 desktop/views/widgets/polls.vue:
   title: "Ankiety"
   refresh: "Pokaż inne"
   nothing: "Pusto"
-
 desktop/views/widgets/post-form.vue:
   title: "Wpis"
   note: "Wpis"
   placeholder: "Co się dzieje?"
-
 desktop/views/widgets/trends.vue:
   title: "Na czasie"
   refresh: "Pokaż inne"
   nothing: "Pusto"
-
 desktop/views/widgets/users.vue:
   title: "Polecani użytkownicy"
   refresh: "Pokaż innych"
   no-one: "Pusto"
-
 desktop/views/widgets/channel.vue:
   title: "Kanał"
   settings: "Ustawienia widżetu"
-
+  get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
 mobile/views/components/drive.vue:
   drive: "Dysk"
   used: "użyto"
@@ -464,91 +407,72 @@ mobile/views/components/drive.vue:
   load-more: "Załaduj więcej"
   nothing-in-drive: "Pusto"
   folder-is-empty: "Ten katalog jest pusty"
-
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Wybierz plik"
-
 mobile/views/components/drive-folder-chooser.vue:
   select-folder: "Wybierz katalog"
-
 mobile/views/components/drive.file-detail.vue:
   download: "Pobierz"
   rename: "Zmień nazwę"
   move: "Przenieś"
   hash: "Hash (md5)"
   exif: "EXIF"
-
 mobile/views/components/follow-button.vue:
   follow: "Śledź"
   unfollow: "Przestań śledzić"
-
+mobile/views/components/note.vue:
+  reposted-by: "{}がRenote"
 mobile/views/components/note-detail.vue:
   reply: "Odpowiedz"
   reaction: "Reakcja"
-
 mobile/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
-
 mobile/views/components/post-form.vue:
   submit: "Wyślij"
   reply-placeholder: "Odpowiedź na ten wpis…"
   note-placeholder: "Co się dzieje?"
-
 mobile/views/components/sub-note-content.vue:
   media-count: "{} zawartości multimedialnej"
   poll: "Ankieta"
-
 mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
   load-more: "Więcej"
-
 mobile/views/components/ui.nav.vue:
   home: "Strona główna"
   notifications: "Powiadomienia"
   messaging: "Wiadomości"
+  search: "Szukaj"
   drive: "Dysk"
   settings: "Ustawienia"
   about: "O Misskey"
-  search: "Szukaj"
-
 mobile/views/components/user-timeline.vue:
   no-notes: "Wygląda na to, że ten użytkownik nie opublikował jeszcze niczego"
   no-notes-with-media: "Brak wpisów z zawartością multimedialną"
   load-more: "Więcej"
-
 mobile/views/components/users-list.vue:
   all: "Wszyscy"
   known: "Znasz"
   load-more: "Więcej"
-
 mobile/views/pages/drive.vue:
   drive: "Dysk"
-
 mobile/views/pages/followers.vue:
   followers-of: "Śledzący {}"
-
 mobile/views/pages/following.vue:
   following-of: "Śledzeni przez {}"
-
 mobile/views/pages/home.vue:
   timeline: "Oś czasu"
-
 mobile/views/pages/messaging.vue:
   messaging: "Wiadomości"
-
 mobile/views/pages/messaging-room.vue:
   messaging: "Wiadomości"
-
 mobile/views/pages/note.vue:
   title: "Wyślij"
   prev: "Poprzedni wpis"
   next: "Następny wpis"
-
 mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
-
 mobile/views/pages/profile-setting.vue:
   title: "Ustawienia profilu"
   will-be-published: "Te ustawienia profilu zostaną zaktualizowane."
@@ -564,22 +488,18 @@ mobile/views/pages/profile-setting.vue:
   set-banner: "Wybierz baner"
   save: "Zapisz"
   saved: "Pomyślnie zaktualizowano profil"
-
 mobile/views/pages/search.vue:
   search: "Szukaj"
   empty: "Nie znaleziono wpisów zawierających '{}'"
-
 mobile/views/pages/selectdrive.vue:
   select-file: "Wybierz plik"
-
 mobile/views/pages/settings.vue:
   signed-in-as: "Zalogowany jako {}"
   profile: "Profil"
-  twitter-integration: "Integracja z Twitterem"
+  twitter: "Twitter連携"
   signin-history: "Historia logowań"
   settings: "Ustawienia"
   signout: "Wyloguj"
-
 mobile/views/pages/user.vue:
   follows-you: "Śledzi Cię"
   following: "Śledzeni"
@@ -591,7 +511,6 @@ mobile/views/pages/user.vue:
   is-suspended: "To konto zostało zablokowane"
   is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
   view-remote: "Wyświetl dokładne informacje"
-
 mobile/views/pages/user/home.vue:
   recent-notes: "Ostatnie wpisy"
   images: "Zdjęcia"
@@ -601,27 +520,21 @@ mobile/views/pages/user/home.vue:
   frequently-replied-users: "Często aktywni użytkownicy"
   followers-you-know: "Śledzący których znasz"
   last-used-at: "Ostatnio aktywny:"
-
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
-
 mobile/views/pages/user/home.friends.vue:
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
-
 mobile/views/pages/user/home.notes.vue:
   loading: "Ładowanie"
   no-notes: "Brak wpisów"
-
 mobile/views/pages/user/home.photos.vue:
   loading: "Ładowanie"
   no-photos: "Brak zdjęć"
-
 docs:
   edit-this-page-on-github: "Znalazłeś błąd lub chcesz pomóc w tworzeniu dokumentacji?"
   edit-this-page-on-github-link: "Edytuj stronę na GitHubie!"
-
   api:
     entities:
       properties: "Właściwości"
