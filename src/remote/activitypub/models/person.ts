@@ -101,6 +101,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 				publicKeyPem: person.publicKey.publicKeyPem
 			},
 			inbox: person.inbox,
+			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url
 		}) as IRemoteUser;
@@ -208,7 +209,8 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 			followingCount,
 			notesCount,
 			name: person.name,
-			url: person.url
+			url: person.url,
+			endpoints: person.endpoints
 		}
 	});
 }
