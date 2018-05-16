@@ -19,7 +19,7 @@ common:
     wednesday: "水"
     thursday: "木"
     friday: "金"
-    satruday: "土"
+    saturday: "土"
   reactions:
     like: "いいね"
     love: "しゅき"
