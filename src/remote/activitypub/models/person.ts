@@ -49,6 +49,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		object == null ||
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
+		typeof object.inbox !== 'string' ||
 		!validateUsername(object.preferredUsername) ||
 		!isValidName(object.name == '' ? null : object.name)
 	) {
