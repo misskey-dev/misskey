@@ -149,7 +149,7 @@ common/views/components/twitter-setting.vue:
 common/views/components/uploader.vue:
   waiting: "Oczekiwanie"
 common/views/widgets/broadcast.vue:
-  fetching: "確認中"
+  fetching: "Sprawdzanie"
   no-broadcasts: "Brak transmisji"
   have-a-nice-day: "Miłego dnia!"
   next: "Dalej"
