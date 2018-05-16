@@ -131,14 +131,14 @@ common/views/components/signup.vue:
   password-not-matched: "Stimmt nicht überein"
   recaptcha: "Captcha"
   create: "Account erstellen"
-  some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
+  some-error: "Die Anmeldung konnte aufgrund eines Fehler nicht abgeschlossen werden. Bitte versuche es erneut."
 common/views/components/special-message.vue:
-  new-year: "Happy New Year!"
-  christmas: "Merry Christmas!"
+  new-year: "Frohes neues Jahr!"
+  christmas: "Frohe Weihnachten!"
 common/views/components/stream-indicator.vue:
-  connecting: "接続中"
-  reconnecting: "再接続中"
-  connected: "接続完了"
+  connecting: "Verbindung wird hergestellt"
+  reconnecting: "Erneut verbinden"
+  connected: "Verbindung hergestellt"
 common/views/components/twitter-setting.vue:
   description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のTwitterアカウントに接続されています"
