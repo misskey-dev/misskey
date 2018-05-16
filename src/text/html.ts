@@ -1,5 +1,6 @@
 import { lib as emojilib } from 'emojilib';
 import { JSDOM } from 'jsdom';
+import config from '../config';
 
 const handlers = {
 	bold({ document }, { bold }) {
@@ -43,7 +44,7 @@ const handlers = {
 
 	mention({ document }, { content }) {
 		const a = document.createElement('a');
-		a.href = '/' + content;
+		a.href = `${config.url}/${content}`;
 		a.textContent = content;
 		document.body.appendChild(a);
 	},
