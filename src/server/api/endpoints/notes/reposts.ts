@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { pack } from '../../../../models/note';
 
 /**
@@ -13,19 +13,19 @@ import Note, { pack } from '../../../../models/note';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).id().$;
+	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Check if both of sinceId and untilId is specified

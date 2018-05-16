@@ -2,11 +2,13 @@
 <mk-ui>
 	<span slot="header">%fa:R sticky-note%%i18n:@title%</span>
 	<main v-if="!fetching">
-		<a v-if="note.next" :href="note.next">%fa:angle-up%%i18n:@next%</a>
 		<div>
 			<mk-note-detail :note="note"/>
 		</div>
-		<a v-if="note.prev" :href="note.prev">%fa:angle-down%%i18n:@prev%</a>
+		<footer>
+			<router-link v-if="note.prev" :to="note.prev">%fa:angle-left% %i18n:@prev%</router-link>
+			<router-link v-if="note.next" :to="note.next">%i18n:@next% %fa:angle-right%</router-link>
+		</footer>
 	</main>
 </mk-ui>
 </template>
@@ -30,7 +32,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = 'Misskey';
-		document.documentElement.style.background = '#313a42';
 	},
 	methods: {
 		fetch() {
@@ -53,33 +54,24 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 main
 	text-align center
+	padding 8px
+
+	@media (min-width 500px)
+		padding 16px
+
+	@media (min-width 600px)
+		padding 32px
 
 	> div
-		margin 8px auto
+		margin 0 auto
 		padding 0
-		max-width 500px
-		width calc(100% - 16px)
+		max-width 600px
 
-		@media (min-width 500px)
-			margin 16px auto
-			width calc(100% - 32px)
+	> footer
+		margin-top 16px
 
-	> a
-		display inline-block
-
-		&:first-child
-			margin-top 8px
-
-			@media (min-width 500px)
-				margin-top 16px
-
-		&:last-child
-			margin-bottom 8px
-
-			@media (min-width 500px)
-				margin-bottom 16px
-
-		> [data-fa]
-			margin-right 4px
+		> a
+			display inline-block
+			margin 0 16px
 
 </style>

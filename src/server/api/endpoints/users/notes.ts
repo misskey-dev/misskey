@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import getHostLower from '../../common/get-host-lower';
 import Note, { pack } from '../../../../models/note';
 import User from '../../../../models/user';
@@ -11,11 +11,11 @@ import User from '../../../../models/user';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).optional.id().$;
+	const [userId, userIdErr] = $.type(ID).optional().get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'username' parameter
-	const [username, usernameErr] = $(params.username).optional.string().$;
+	const [username, usernameErr] = $.str.optional().get(params.username);
 	if (usernameErr) return rej('invalid username param');
 
 	if (userId === undefined && username === undefined) {
@@ -23,7 +23,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'host' parameter
-	const [host, hostErr] = $(params.host).optional.string().$;
+	const [host, hostErr] = $.str.optional().get(params.host);
 	if (hostErr) return rej('invalid host param');
 
 	if (userId === undefined && host === undefined) {
@@ -31,31 +31,31 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'includeReplies' parameter
-	const [includeReplies = true, includeRepliesErr] = $(params.includeReplies).optional.boolean().$;
+	const [includeReplies = true, includeRepliesErr] = $.bool.optional().get(params.includeReplies);
 	if (includeRepliesErr) return rej('invalid includeReplies param');
 
 	// Get 'withMedia' parameter
-	const [withMedia = false, withMediaErr] = $(params.withMedia).optional.boolean().$;
+	const [withMedia = false, withMediaErr] = $.bool.optional().get(params.withMedia);
 	if (withMediaErr) return rej('invalid withMedia param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	const [sinceDate, sinceDateErr] = $.num.optional().get(params.sinceDate);
 	if (sinceDateErr) throw 'invalid sinceDate param';
 
 	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	const [untilDate, untilDateErr] = $.num.optional().get(params.untilDate);
 	if (untilDateErr) throw 'invalid untilDate param';
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified

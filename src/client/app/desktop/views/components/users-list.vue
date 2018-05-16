@@ -2,8 +2,8 @@
 <div class="mk-users-list">
 	<nav>
 		<div>
-			<span :data-is-active="mode == 'all'" @click="mode = 'all'">すべて<span>{{ count }}</span></span>
-			<span v-if="os.isSignedIn && youKnowCount" :data-is-active="mode == 'iknow'" @click="mode = 'iknow'">知り合い<span>{{ youKnowCount }}</span></span>
+			<span :data-active="mode == 'all'" @click="mode = 'all'">すべて<span>{{ count }}</span></span>
+			<span v-if="os.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">知り合い<span>{{ youKnowCount }}</span></span>
 		</div>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
@@ -98,7 +98,7 @@ export default Vue.extend({
 				*
 					pointer-events none
 
-				&[data-is-active]
+				&[data-active]
 					font-weight bold
 					color $theme-color
 					border-color $theme-color
@@ -119,7 +119,7 @@ export default Vue.extend({
 		overflow auto
 
 		> *
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
+			border-bottom solid 1px rgba(#000, 0.05)
 
 			> *
 				max-width 600px

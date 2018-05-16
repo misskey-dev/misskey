@@ -1,10 +1,9 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
-import deepEqual = require('deep-equal');
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
-import { ILocalUser } from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import Channel, { IChannel } from '../../../../models/channel';
 import DriveFile from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
@@ -12,48 +11,54 @@ import { IApp } from '../../../../models/app';
 
 /**
  * Create a note
- *
- * @param {any} params
- * @param {any} user
- * @param {any} app
- * @return {Promise<any>}
  */
 module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	// Get 'visibility' parameter
-	const [visibility = 'public', visibilityErr] = $(params.visibility).optional.string().or(['public', 'unlisted', 'private', 'direct']).$;
+	const [visibility = 'public', visibilityErr] = $.str.optional().or(['public', 'home', 'followers', 'specified', 'private']).get(params.visibility);
 	if (visibilityErr) return rej('invalid visibility');
 
+	// Get 'visibleUserIds' parameter
+	const [visibleUserIds, visibleUserIdsErr] = $.arr($.type(ID)).optional().unique().min(1).get(params.visibleUserIds);
+	if (visibleUserIdsErr) return rej('invalid visibleUserIds');
+
+	let visibleUsers = [];
+	if (visibleUserIds !== undefined) {
+		visibleUsers = await Promise.all(visibleUserIds.map(id => User.findOne({
+			_id: id
+		})));
+	}
+
 	// Get 'text' parameter
-	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
+	const [text = null, textErr] = $.str.optional().nullable().pipe(isValidText).get(params.text);
 	if (textErr) return rej('invalid text');
 
 	// Get 'cw' parameter
-	const [cw, cwErr] = $(params.cw).optional.string().pipe(isValidCw).$;
+	const [cw, cwErr] = $.str.optional().nullable().pipe(isValidCw).get(params.cw);
 	if (cwErr) return rej('invalid cw');
 
 	// Get 'viaMobile' parameter
-	const [viaMobile = false, viaMobileErr] = $(params.viaMobile).optional.boolean().$;
+	const [viaMobile = false, viaMobileErr] = $.bool.optional().get(params.viaMobile);
 	if (viaMobileErr) return rej('invalid viaMobile');
 
 	// Get 'tags' parameter
-	const [tags = [], tagsErr] = $(params.tags).optional.array('string').unique().eachQ(t => t.range(1, 32)).$;
+	const [tags = [], tagsErr] = $.arr($.str.range(1, 32)).optional().unique().get(params.tags);
 	if (tagsErr) return rej('invalid tags');
 
 	// Get 'geo' parameter
-	const [geo, geoErr] = $(params.geo).optional.nullable.strict.object()
-		.have('coordinates', $().array().length(2)
-			.item(0, $().number().range(-180, 180))
-			.item(1, $().number().range(-90, 90)))
-		.have('altitude', $().nullable.number())
-		.have('accuracy', $().nullable.number())
-		.have('altitudeAccuracy', $().nullable.number())
-		.have('heading', $().nullable.number().range(0, 360))
-		.have('speed', $().nullable.number())
-		.$;
+	const [geo, geoErr] = $.obj.optional().nullable().strict()
+		.have('coordinates', $.arr().length(2)
+			.item(0, $.num.range(-180, 180))
+			.item(1, $.num.range(-90, 90)))
+		.have('altitude', $.num.nullable())
+		.have('accuracy', $.num.nullable())
+		.have('altitudeAccuracy', $.num.nullable())
+		.have('heading', $.num.nullable().range(0, 360))
+		.have('speed', $.num.nullable())
+		.get(params.geo);
 	if (geoErr) return rej('invalid geo');
 
 	// Get 'mediaIds' parameter
-	const [mediaIds, mediaIdsErr] = $(params.mediaIds).optional.array('id').unique().range(1, 4).$;
+	const [mediaIds, mediaIdsErr] = $.arr($.type(ID)).optional().unique().range(1, 4).get(params.mediaIds);
 	if (mediaIdsErr) return rej('invalid mediaIds');
 
 	let files = [];
@@ -80,7 +85,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'renoteId' parameter
-	const [renoteId, renoteIdErr] = $(params.renoteId).optional.id().$;
+	const [renoteId, renoteIdErr] = $.type(ID).optional().get(params.renoteId);
 	if (renoteIdErr) return rej('invalid renoteId');
 
 	let renote: INote = null;
@@ -97,35 +102,11 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 			return rej('cannot renote to renote');
 		}
 
-		// Fetch recently note
-		const latestNote = await Note.findOne({
-			userId: user._id
-		}, {
-			sort: {
-				_id: -1
-			}
-		});
-
 		isQuote = text != null || files != null;
-
-		// 直近と同じRenote対象かつ引用じゃなかったらエラー
-		if (latestNote &&
-			latestNote.renoteId &&
-			latestNote.renoteId.equals(renote._id) &&
-			!isQuote) {
-			return rej('cannot renote same note that already reposted in your latest note');
-		}
-
-		// 直近がRenote対象かつ引用じゃなかったらエラー
-		if (latestNote &&
-			latestNote._id.equals(renote._id) &&
-			!isQuote) {
-			return rej('cannot renote your latest note');
-		}
 	}
 
 	// Get 'replyId' parameter
-	const [replyId, replyIdErr] = $(params.replyId).optional.id().$;
+	const [replyId, replyIdErr] = $.type(ID).optional().get(params.replyId);
 	if (replyIdErr) return rej('invalid replyId');
 
 	let reply: INote = null;
@@ -146,7 +127,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $(params.channelId).optional.id().$;
+	const [channelId, channelIdErr] = $.type(ID).optional().get(params.channelId);
 	if (channelIdErr) return rej('invalid channelId');
 
 	let channel: IChannel = null;
@@ -187,12 +168,12 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// Get 'poll' parameter
-	const [poll, pollErr] = $(params.poll).optional.strict.object()
-		.have('choices', $().array('string')
+	const [poll, pollErr] = $.obj.optional().strict()
+		.have('choices', $.arr($.str)
 			.unique()
 			.range(2, 10)
 			.each(c => c.length > 0 && c.length < 50))
-		.$;
+		.get(params.poll);
 	if (pollErr) return rej('invalid poll');
 
 	if (poll) {
@@ -208,37 +189,20 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 		return rej('text, mediaIds, renoteId or poll is required');
 	}
 
-	// 直近の投稿と重複してたらエラー
-	// TODO: 直近の投稿が一日前くらいなら重複とは見なさない
-	if (user.latestNote) {
-		if (deepEqual({
-			text: user.latestNote.text,
-			reply: user.latestNote.replyId ? user.latestNote.replyId.toString() : null,
-			renote: user.latestNote.renoteId ? user.latestNote.renoteId.toString() : null,
-			mediaIds: (user.latestNote.mediaIds || []).map(id => id.toString())
-		}, {
-			text: text,
-			reply: reply ? reply._id.toString() : null,
-			renote: renote ? renote._id.toString() : null,
-			mediaIds: (files || []).map(file => file._id.toString())
-		})) {
-			return rej('duplicate');
-		}
-	}
-
 	// 投稿を作成
 	const note = await create(user, {
 		createdAt: new Date(),
 		media: files,
-		poll: poll,
-		text: text,
+		poll,
+		text,
 		reply,
 		renote,
-		cw: cw,
-		tags: tags,
-		app: app,
-		viaMobile: viaMobile,
+		cw,
+		tags,
+		app,
+		viaMobile,
 		visibility,
+		visibleUsers,
 		geo
 	});
 

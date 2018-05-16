@@ -2,9 +2,11 @@
  * Module dependencies
  */
 import * as os from 'os';
-import version from '../../../version';
 import config from '../../../config';
 import Meta from '../../../models/meta';
+
+const pkg = require('../../../../package.json');
+const client = require('../../../../built/client/meta.json');
 
 /**
  * @swagger
@@ -41,7 +43,10 @@ module.exports = (params) => new Promise(async (res, rej) => {
 
 	res({
 		maintainer: config.maintainer,
-		version: version,
+
+		version: pkg.version,
+		clientVersion: client.version,
+
 		secure: config.https != null,
 		machine: os.hostname(),
 		os: os.platform(),

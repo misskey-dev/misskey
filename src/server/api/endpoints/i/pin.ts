@@ -1,21 +1,17 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import User from '../../../../models/user';
 import Note from '../../../../models/note';
 import { pack } from '../../../../models/user';
 
 /**
  * Pin note
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).id().$;
+	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Fetch pinee

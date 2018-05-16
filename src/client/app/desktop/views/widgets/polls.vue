@@ -1,16 +1,19 @@
 <template>
 <div class="mkw-polls">
-	<template v-if="!props.compact">
-		<p class="title">%fa:chart-pie%%i18n:@title%</p>
-		<button @click="fetch" title="%i18n:@refresh%">%fa:sync%</button>
-	</template>
-	<div class="poll" v-if="!fetching && poll != null">
-		<p v-if="poll.text"><router-link to="poll | notePage">{{ poll.text }}</router-link></p>
-		<p v-if="!poll.text"><router-link to="poll | notePage">%fa:link%</router-link></p>
-		<mk-poll :note="poll"/>
-	</div>
-	<p class="empty" v-if="!fetching && poll == null">%i18n:@nothing%</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+	<mk-widget-container :show-header="!props.compact">
+		<template slot="header">%fa:chart-pie%%i18n:@title%</template>
+		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
+
+		<div class="mkw-polls--body" :data-darkmode="_darkmode_">
+			<div class="poll" v-if="!fetching && poll != null">
+				<p v-if="poll.text"><router-link to="poll | notePage">{{ poll.text }}</router-link></p>
+				<p v-if="!poll.text"><router-link to="poll | notePage">%fa:link%</router-link></p>
+				<mk-poll :note="poll"/>
+			</div>
+			<p class="empty" v-if="!fetching && poll == null">%i18n:@nothing%</p>
+			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+		</div>
+	</mk-widget-container>
 </div>
 </template>
 
@@ -36,6 +39,7 @@ export default define({
 	methods: {
 		func() {
 			this.props.compact = !this.props.compact;
+			this.save();
 		},
 		fetch() {
 			this.fetching = true;
@@ -60,44 +64,11 @@ export default define({
 </script>
 
 <style lang="stylus" scoped>
-.mkw-polls
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
-	border-radius 6px
-
-	> .title
-		margin 0
-		padding 0 16px
-		line-height 42px
-		font-size 0.9em
-		font-weight bold
-		color #888
-		border-bottom solid 1px #eee
-
-		> [data-fa]
-			margin-right 4px
-
-	> button
-		position absolute
-		z-index 2
-		top 0
-		right 0
-		padding 0
-		width 42px
-		font-size 0.9em
-		line-height 42px
-		color #ccc
-
-		&:hover
-			color #aaa
-
-		&:active
-			color #999
-
+root(isDark)
 	> .poll
 		padding 16px
 		font-size 12px
-		color #555
+		color isDark ? #9ea4ad : #555
 
 		> p
 			margin 0 0 8px 0
@@ -119,5 +90,11 @@ export default define({
 
 		> [data-fa]
 			margin-right 4px
+
+.mkw-polls--body[data-darkmode]
+	root(true)
+
+.mkw-polls--body:not([data-darkmode])
+	root(false)
 
 </style>

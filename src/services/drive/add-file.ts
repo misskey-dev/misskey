@@ -10,12 +10,14 @@ import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
-import DriveFile, { IMetadata, getGridFSBucket, IDriveFile } from '../../models/drive-file';
+import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile, DriveFileChunk } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../../publishers/stream';
 import getAcct from '../../acct/render';
-import { IUser } from '../../models/user';
+import { IUser, isLocalUser, isRemoteUser } from '../../models/user';
+import DriveFileThumbnail, { getDriveFileThumbnailBucket, DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
+import genThumbnail from '../../drive/gen-thumbnail';
 
 const gm = _gm.subClass({
 	imageMagick: true
@@ -30,10 +32,24 @@ const tmpFile = (): Promise<[string, any]> => new Promise((resolve, reject) => {
 	});
 });
 
-const addToGridFS = (name: string, readable: stream.Readable, type: string, metadata: any): Promise<any> =>
-	getGridFSBucket()
+const writeChunks = (name: string, readable: stream.Readable, type: string, metadata: any) =>
+	getDriveFileBucket()
 		.then(bucket => new Promise((resolve, reject) => {
 			const writeStream = bucket.openUploadStream(name, { contentType: type, metadata });
+			writeStream.once('finish', resolve);
+			writeStream.on('error', reject);
+			readable.pipe(writeStream);
+		}));
+
+const writeThumbnailChunks = (name: string, readable: stream.Readable, originalId) =>
+	getDriveFileThumbnailBucket()
+		.then(bucket => new Promise((resolve, reject) => {
+			const writeStream = bucket.openUploadStream(name, {
+				contentType: 'image/jpeg',
+				metadata: {
+					originalId
+				}
+			});
 			writeStream.once('finish', resolve);
 			writeStream.on('error', reject);
 			readable.pipe(writeStream);
@@ -46,6 +62,7 @@ const addFile = async (
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false,
+	url: string = null,
 	uri: string = null
 ): Promise<IDriveFile> => {
 	log(`registering ${name} (user: ${getAcct(user)}, path: ${path})`);
@@ -101,7 +118,8 @@ const addFile = async (
 		// Check if there is a file with the same hash
 		const much = await DriveFile.findOne({
 			md5: hash,
-			'metadata.userId': user._id
+			'metadata.userId': user._id,
+			'metadata.deletedAt': { $exists: false }
 		});
 
 		if (much !== null) {
@@ -185,7 +203,10 @@ const addFile = async (
 			// Calculate drive usage
 			const usage = await DriveFile
 				.aggregate([{
-					$match: { 'metadata.userId': user._id }
+					$match: {
+						'metadata.userId': user._id,
+						'metadata.deletedAt': { $exists: false }
+					}
 				}, {
 					$project: {
 						length: true
@@ -207,7 +228,49 @@ const addFile = async (
 
 			// If usage limit exceeded
 			if (usage + size > user.driveCapacity) {
-				throw 'no-free-space';
+				if (isLocalUser(user)) {
+					throw 'no-free-space';
+				} else {
+					//#region (アバターまたはバナーを含まず)最も古いファイルを削除する
+					const oldFile = await DriveFile.findOne({
+						_id: {
+							$nin: [user.avatarId, user.bannerId]
+						}
+					}, {
+						sort: {
+							_id: 1
+						}
+					});
+
+					if (oldFile) {
+						// チャンクをすべて削除
+						DriveFileChunk.remove({
+							files_id: oldFile._id
+						});
+
+						DriveFile.update({ _id: oldFile._id }, {
+							$set: {
+								'metadata.deletedAt': new Date(),
+								'metadata.isExpired': true
+							}
+						});
+
+						//#region サムネイルもあれば削除
+						const thumbnail = await DriveFileThumbnail.findOne({
+							'metadata.originalId': oldFile._id
+						});
+
+						if (thumbnail) {
+							DriveFileThumbnailChunk.remove({
+								files_id: thumbnail._id
+							});
+
+							DriveFileThumbnail.remove({ _id: thumbnail._id });
+						}
+						//#endregion
+					}
+					//#endregion
+				}
 			}
 		})()
 	]);
@@ -227,16 +290,34 @@ const addFile = async (
 
 	const metadata = {
 		userId: user._id,
+		_user: {
+			host: user.host
+		},
 		folderId: folder !== null ? folder._id : null,
 		comment: comment,
 		properties: properties
 	} as IMetadata;
 
+	if (url !== null) {
+		metadata.url = url;
+	}
+
 	if (uri !== null) {
 		metadata.uri = uri;
 	}
 
-	return addToGridFS(detectedName, readable, mime, metadata);
+	const file = await (writeChunks(detectedName, readable, mime, metadata) as Promise<IDriveFile>);
+
+	try {
+		const thumb = await genThumbnail(file);
+		if (thumb) {
+			await writeThumbnailChunks(detectedName, thumb, file._id);
+		}
+	} catch (e) {
+		// noop
+	}
+
+	return file;
 };
 
 /**

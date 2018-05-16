@@ -1,6 +1,6 @@
 import Note, { pack, INote } from '../../models/note';
-import User, { isLocalUser, IUser, isRemoteUser } from '../../models/user';
-import stream, { publishLocalTimelineStream, publishGlobalTimelineStream } from '../../publishers/stream';
+import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
+import stream, { publishLocalTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../publishers/stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -15,8 +15,64 @@ import Mute from '../../models/mute';
 import pushSw from '../../publishers/push-sw';
 import event from '../../publishers/stream';
 import parse from '../../text/parse';
-import html from '../../text/html';
 import { IApp } from '../../models/app';
+import UserList from '../../models/user-list';
+import resolveUser from '../../remote/resolve-user';
+
+type Reason = 'reply' | 'quote' | 'mention';
+
+/**
+ * ServiceWorkerへの通知を担当
+ */
+class NotificationManager {
+	private user: IUser;
+	private note: any;
+	private list: Array<{
+		user: ILocalUser['_id'],
+		reason: Reason;
+	}> = [];
+
+	constructor(user, note) {
+		this.user = user;
+		this.note = note;
+	}
+
+	public push(user: ILocalUser['_id'], reason: Reason) {
+		// 自分自身へは通知しない
+		if (this.user._id.equals(user)) return;
+
+		const exist = this.list.find(x => x.user.equals(user));
+
+		if (exist) {
+			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
+			if (reason != 'mention') {
+				exist.reason = reason;
+			}
+		} else {
+			this.list.push({
+				user, reason
+			});
+		}
+	}
+
+	public deliver() {
+		this.list.forEach(async x => {
+			const mentionee = x.user;
+
+			// ミュート情報を取得
+			const mentioneeMutes = await Mute.find({
+				muterId: mentionee
+			});
+
+			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
+
+			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
+			if (!mentioneesMutedUserIds.includes(this.user._id.toString())) {
+				pushSw(mentionee, x.reason, this.note);
+			}
+		});
+	}
+}
 
 export default async (user: IUser, data: {
 	createdAt?: Date;
@@ -30,6 +86,7 @@ export default async (user: IUser, data: {
 	tags?: string[];
 	cw?: string;
 	visibility?: string;
+	visibleUsers?: IUser[];
 	uri?: string;
 	app?: IApp;
 }, silent = false) => new Promise<INote>(async (res, rej) => {
@@ -39,7 +96,7 @@ export default async (user: IUser, data: {
 
 	const tags = data.tags || [];
 
-	let tokens = null;
+	let tokens: any[] = null;
 
 	if (data.text) {
 		// Analyze
@@ -57,21 +114,29 @@ export default async (user: IUser, data: {
 		});
 	}
 
+	if (data.visibleUsers) {
+		data.visibleUsers = data.visibleUsers.filter(x => x != null);
+	}
+
 	const insert: any = {
 		createdAt: data.createdAt,
 		mediaIds: data.media ? data.media.map(file => file._id) : [],
 		replyId: data.reply ? data.reply._id : null,
 		renoteId: data.renote ? data.renote._id : null,
 		text: data.text,
-		textHtml: tokens === null ? null : html(tokens),
 		poll: data.poll,
-		cw: data.cw,
+		cw: data.cw == null ? null : data.cw,
 		tags,
 		userId: user._id,
 		viaMobile: data.viaMobile,
 		geo: data.geo || null,
 		appId: data.app ? data.app._id : null,
 		visibility: data.visibility,
+		visibleUserIds: data.visibility == 'specified'
+			? data.visibleUsers
+				? data.visibleUsers.map(u => u._id)
+				: []
+			: [],
 
 		// 以下非正規化データ
 		_reply: data.reply ? { userId: data.reply.userId } : null,
@@ -85,143 +150,167 @@ export default async (user: IUser, data: {
 	if (data.uri != null) insert.uri = data.uri;
 
 	// 投稿を作成
-	const note = await Note.insert(insert);
+	let note: INote;
+	try {
+		note = await Note.insert(insert);
+	} catch (e) {
+		// duplicate key error
+		if (e.code === 11000) {
+			return res(null);
+		}
+
+		console.error(e);
+		return rej('something happened');
+	}
 
 	res(note);
 
+	// Increment notes count
 	User.update({ _id: user._id }, {
-		// Increment notes count
 		$inc: {
 			notesCount: 1
-		},
-		// Update latest note
-		$set: {
-			latestNote: note
 		}
 	});
 
 	// Serialize
 	const noteObj = await pack(note);
 
-	// タイムラインへの投稿
-	if (note.channelId == null) {
-		if (isLocalUser(user)) {
-			// Publish event to myself's stream
-			stream(note.userId, 'note', noteObj);
+	const nm = new NotificationManager(user, noteObj);
 
-			// Publish note to local timeline stream
-			publishLocalTimelineStream(noteObj);
+	const render = async () => {
+		const content = data.renote && data.text == null
+			? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
+			: renderCreate(await renderNote(note));
+		return packAp(content);
+	};
+
+	if (!silent) {
+		if (isLocalUser(user)) {
+			if (note.visibility == 'private' || note.visibility == 'followers' || note.visibility == 'specified') {
+				// Publish event to myself's stream
+				stream(note.userId, 'note', await pack(note, user, {
+					detail: true
+				}));
+			} else {
+				// Publish event to myself's stream
+				stream(note.userId, 'note', noteObj);
+
+				// Publish note to local timeline stream
+				if (note.visibility != 'home') {
+					publishLocalTimelineStream(noteObj);
+				}
+			}
 		}
 
 		// Publish note to global timeline stream
 		publishGlobalTimelineStream(noteObj);
 
-		// Fetch all followers
-		const followers = await Following.aggregate([{
-			$lookup: {
-				from: 'users',
-				localField: 'followerId',
-				foreignField: '_id',
-				as: 'user'
-			}
-		}, {
-			$match: {
+		if (note.visibility == 'specified') {
+			data.visibleUsers.forEach(async u => {
+				stream(u._id, 'note', await pack(note, u, {
+					detail: true
+				}));
+			});
+		}
+
+		if (note.visibility == 'public' || note.visibility == 'home' || note.visibility == 'followers') {
+			// フォロワーに配信
+			Following.find({
 				followeeId: note.userId
+			}).then(followers => {
+				followers.map(async following => {
+					const follower = following._follower;
+
+					if (isLocalUser(follower)) {
+						// ストーキングしていない場合
+						if (!following.stalk) {
+							// この投稿が返信ならスキップ
+							if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId)) return;
+						}
+
+						// Publish event to followers stream
+						stream(following.followerId, 'note', noteObj);
+					} else {
+						//#region AP配送
+						// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
+						if (isLocalUser(user)) {
+							deliver(user, await render(), follower.inbox);
+						}
+						//#endergion
+					}
+				});
+			});
+		}
+
+		// リストに配信
+		UserList.find({
+			userIds: note.userId
+		}).then(lists => {
+			lists.forEach(list => {
+				publishUserListStream(list._id, 'note', noteObj);
+			});
+		});
+	}
+
+	//#region リプライとAnnounceのAP配送
+
+	// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
+	if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
+		deliver(user, await render(), data.reply._user.inbox);
+	}
+
+	// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
+	if (data.renote && isLocalUser(user) && isRemoteUser(data.renote._user)) {
+		deliver(user, await render(), data.renote._user.inbox);
+	}
+	//#endergion
+
+	//#region メンション
+	if (data.text) {
+		// TODO: Drop dupulicates
+		const mentions = tokens
+			.filter(t => t.type == 'mention');
+
+		let mentionedUsers = await Promise.all(mentions.map(async m => {
+			try {
+				return await resolveUser(m.username, m.host);
+			} catch (e) {
+				return null;
 			}
-		}], {
-			_id: false
+		}));
+
+		// TODO: Drop dupulicates
+		mentionedUsers = mentionedUsers.filter(x => x != null);
+
+		mentionedUsers.filter(u => isLocalUser(u)).forEach(async u => {
+			// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
+			if (data.reply && data.reply.userId.equals(u._id)) return;
+			if (data.renote && data.renote.userId.equals(u._id)) return;
+
+			// Create notification
+			notify(u._id, user._id, 'mention', {
+				noteId: note._id
+			});
+
+			nm.push(u._id, 'mention');
 		});
 
-		if (!silent) {
-			const render = async () => {
-				const content = data.renote && data.text == null
-					? renderAnnounce(data.renote.uri ? data.renote.uri : await renderNote(data.renote))
-					: renderCreate(await renderNote(note));
-				return packAp(content);
-			};
-
-			// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
-			if (data.reply && isLocalUser(user) && isRemoteUser(data.reply._user)) {
-				deliver(user, await render(), data.reply._user.inbox);
-			}
-
-			// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
-			if (data.renote && isLocalUser(user) && isRemoteUser(data.renote._user)) {
-				deliver(user, await render(), data.renote._user.inbox);
-			}
-
-			Promise.all(followers.map(async follower => {
-				follower = follower.user[0];
-
-				if (isLocalUser(follower)) {
-					// Publish event to followers stream
-					stream(follower._id, 'note', noteObj);
-				} else {
-					// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
-					if (isLocalUser(user)) {
-						deliver(user, await render(), follower.inbox);
-					}
-				}
-			}));
-		}
-	}
-
-	// チャンネルへの投稿
-	/* TODO
-	if (note.channelId) {
-		promises.push(
-			// Increment channel index(notes count)
-			Channel.update({ _id: note.channelId }, {
-				$inc: {
-					index: 1
-				}
-			}),
-
-			// Publish event to channel
-			promisedNoteObj.then(noteObj => {
-				publishChannelStream(note.channelId, 'note', noteObj);
-			}),
-
-			Promise.all([
-				promisedNoteObj,
-
-				// Get channel watchers
-				ChannelWatching.find({
-					channelId: note.channelId,
-					// 削除されたドキュメントは除く
-					deletedAt: { $exists: false }
-				})
-			]).then(([noteObj, watches]) => {
-				// チャンネルの視聴者(のタイムライン)に配信
-				watches.forEach(w => {
-					stream(w.userId, 'note', noteObj);
-				});
-			})
-		);
-	}*/
-
-	const mentions = [];
-
-	async function addMention(mentionee, reason) {
-		// Reject if already added
-		if (mentions.some(x => x.equals(mentionee))) return;
-
-		// Add mention
-		mentions.push(mentionee);
-
-		// Publish event
-		if (!user._id.equals(mentionee)) {
-			const mentioneeMutes = await Mute.find({
-				muter_id: mentionee,
-				deleted_at: { $exists: false }
+		if (isLocalUser(user)) {
+			mentionedUsers.filter(u => isRemoteUser(u)).forEach(async u => {
+				deliver(user, await render(), (u as IRemoteUser).inbox);
 			});
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
-			if (mentioneesMutedUserIds.indexOf(user._id.toString()) == -1) {
-				event(mentionee, reason, noteObj);
-				pushSw(mentionee, reason, noteObj);
-			}
+		}
+
+		// Append mentions data
+		if (mentionedUsers.length > 0) {
+			Note.update({ _id: note._id }, {
+				$set: {
+					mentions: mentionedUsers.map(u => u._id)
+				}
+			});
 		}
 	}
+	//#endregion
 
 	// If has in reply to note
 	if (data.reply) {
@@ -260,8 +349,7 @@ export default async (user: IUser, data: {
 			watch(user._id, data.reply);
 		}
 
-		// Add mention
-		addMention(data.reply.userId, 'reply');
+		nm.push(data.reply.userId, 'reply');
 	}
 
 	// If it is renote
@@ -296,7 +384,7 @@ export default async (user: IUser, data: {
 		// If it is quote renote
 		if (data.text) {
 			// Add mention
-			addMention(data.renote.userId, 'quote');
+			nm.push(data.renote.userId, 'quote');
 		} else {
 			// Publish event
 			if (!user._id.equals(data.renote.userId)) {
@@ -304,14 +392,17 @@ export default async (user: IUser, data: {
 			}
 		}
 
+		//#region TODO: これ重い
 		// 今までで同じ投稿をRenoteしているか
-		const existRenote = await Note.findOne({
-			userId: user._id,
-			renoteId: data.renote._id,
-			_id: {
-				$ne: note._id
-			}
-		});
+		//const existRenote = await Note.findOne({
+		//	userId: user._id,
+		//	renoteId: data.renote._id,
+		//	_id: {
+		//		$ne: note._id
+		//	}
+		//});
+		const existRenote = null;
+		//#endregion
 
 		if (!existRenote) {
 			// Update renoteee status
@@ -321,49 +412,5 @@ export default async (user: IUser, data: {
 				}
 			});
 		}
-	}
-
-	// If has text content
-	if (data.text) {
-		// Extract an '@' mentions
-		const atMentions = tokens
-			.filter(t => t.type == 'mention')
-			.map(m => m.username)
-			// Drop dupulicates
-			.filter((v, i, s) => s.indexOf(v) == i);
-
-		// Resolve all mentions
-		await Promise.all(atMentions.map(async mention => {
-			// Fetch mentioned user
-			// SELECT _id
-			const mentionee = await User
-				.findOne({
-					usernameLower: mention.toLowerCase()
-				}, { _id: true });
-
-			// When mentioned user not found
-			if (mentionee == null) return;
-
-			// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
-			if (data.reply && data.reply.userId.equals(mentionee._id)) return;
-			if (data.renote && data.renote.userId.equals(mentionee._id)) return;
-
-			// Add mention
-			addMention(mentionee._id, 'mention');
-
-			// Create notification
-			notify(mentionee._id, user._id, 'mention', {
-				noteId: note._id
-			});
-		}));
-	}
-
-	// Append mentions data
-	if (mentions.length > 0) {
-		Note.update({ _id: note._id }, {
-			$set: {
-				mentions
-			}
-		});
 	}
 });

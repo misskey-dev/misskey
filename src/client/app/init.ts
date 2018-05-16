@@ -3,6 +3,7 @@
  */
 
 import Vue from 'vue';
+import Vuex from 'vuex';
 import VueRouter from 'vue-router';
 import VModal from 'vue-js-modal';
 import * as TreeView from 'vue-json-tree-view';
@@ -13,7 +14,7 @@ import ElementLocaleJa from 'element-ui/lib/locale/lang/ja';
 
 import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
-import MiOS, { API } from './common/mios';
+import MiOS, { API } from './mios';
 import { version, codename, lang } from './config';
 
 let elementLocale;
@@ -23,6 +24,7 @@ switch (lang) {
 	default: elementLocale = ElementLocaleEn; break;
 }
 
+Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(VModal);
 Vue.use(TreeView);
@@ -43,6 +45,48 @@ Vue.mixin({
 	destroyed(this: any) {
 		if (this.$el.parentNode) {
 			this.$el.parentNode.removeChild(this.$el);
+		}
+	}
+});
+
+// Dark/Light
+const bus = new Vue();
+Vue.mixin({
+	data() {
+		return {
+			_darkmode_: localStorage.getItem('darkmode') == 'true'
+		};
+	},
+	beforeCreate() {
+		// なぜか警告が出るので
+		this._darkmode_ = localStorage.getItem('darkmode') == 'true';
+	},
+	beforeDestroy() {
+		bus.$off('updated', this._onDarkmodeUpdated_);
+	},
+	mounted() {
+		this._onDarkmodeUpdated_(this._darkmode_);
+		bus.$on('updated', this._onDarkmodeUpdated_);
+	},
+	methods: {
+		_updateDarkmode_(v) {
+			localStorage.setItem('darkmode', v.toString());
+			if (v) {
+				document.documentElement.setAttribute('data-darkmode', 'true');
+			} else {
+				document.documentElement.removeAttribute('data-darkmode');
+			}
+			bus.$emit('updated', v);
+		},
+		_onDarkmodeUpdated_(v) {
+			if (!this.$el || !this.$el.setAttribute) return;
+			if (v) {
+				this.$el.setAttribute('data-darkmode', 'true');
+			} else {
+				this.$el.removeAttribute('data-darkmode');
+			}
+			this._darkmode_ = v;
+			this.$forceUpdate();
 		}
 	}
 });
@@ -102,21 +146,15 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 					return {
 						os,
 						api: os.api,
-						apis: os.apis
+						apis: os.apis,
+						clientSettings: os.store.state.settings.data
 					};
 				}
 			});
 
 			const app = new Vue({
+				store: os.store,
 				router,
-				created() {
-					this.$watch('os.i', i => {
-						// キャッシュ更新
-						localStorage.setItem('me', JSON.stringify(i));
-					}, {
-						deep: true
-					});
-				},
 				render: createEl => createEl(App)
 			});
 

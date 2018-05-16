@@ -474,11 +474,11 @@ export default Vue.extend({
 		overflow auto
 		white-space nowrap
 		font-size 0.9em
-		color rgba(0, 0, 0, 0.67)
+		color rgba(#000, 0.67)
 		-webkit-backdrop-filter blur(12px)
 		backdrop-filter blur(12px)
 		background-color rgba(#fff, 0.75)
-		border-bottom solid 1px rgba(0, 0, 0, 0.13)
+		border-bottom solid 1px rgba(#000, 0.13)
 
 		> p
 		> a
@@ -555,7 +555,7 @@ export default Vue.extend({
 			display inline-block
 			position absolute
 			top 0
-			background rgba(0, 0, 0, 0.2)
+			background rgba(#000, 0.2)
 			border-radius 100%
 
 			animation sk-bounce 2.0s infinite ease-in-out

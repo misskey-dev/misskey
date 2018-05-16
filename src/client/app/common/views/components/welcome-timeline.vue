@@ -1,9 +1,7 @@
 <template>
 <div class="mk-welcome-timeline">
 	<div v-for="note in notes">
-		<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.user.id">
-			<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=96`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="note.user" target="_blank"/>
 		<div class="body">
 			<header>
 				<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">{{ note.user | userName }}</router-link>
@@ -62,25 +60,22 @@ export default Vue.extend({
 		overflow-wrap break-word
 		font-size .9em
 		color #4C4C4C
-		border-bottom 1px solid rgba(0, 0, 0, 0.05)
+		border-bottom 1px solid rgba(#000, 0.05)
 
 		&:after
 			content ""
 			display block
 			clear both
 
-		> .avatar-anchor
+		> .avatar
 			display block
 			float left
 			position -webkit-sticky
 			position sticky
 			top 16px
-
-			> img
-				display block
-				width 42px
-				height 42px
-				border-radius 6px
+			width 42px
+			height 42px
+			border-radius 6px
 
 		> .body
 			float right

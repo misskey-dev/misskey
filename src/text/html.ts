@@ -54,6 +54,12 @@ const handlers = {
 		document.body.appendChild(blockquote);
 	},
 
+	title({ document }, { content }) {
+		const h1 = document.createElement('h1');
+		h1.textContent = content;
+		document.body.appendChild(h1);
+	},
+
 	text({ document }, { content }) {
 		for (const text of content.split('\n')) {
 			const node = document.createTextNode(text);
@@ -68,6 +74,13 @@ const handlers = {
 		const a = document.createElement('a');
 		a.href = url;
 		a.textContent = url;
+		document.body.appendChild(a);
+	},
+
+	search({ document }, { content, query }) {
+		const a = document.createElement('a');
+		a.href = `https://www.google.com/?#q=${query}`;
+		a.textContent = content;
 		document.body.appendChild(a);
 	}
 };

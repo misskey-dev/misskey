@@ -4,9 +4,7 @@
 	<p class="initializing" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@loading%<mk-ellipsis/></p>
 	<template v-if="!fetching && users.length != 0">
 		<div class="user" v-for="friend in users">
-			<router-link class="avatar-anchor" :to="friend | userPage">
-				<img class="avatar" :src="`${friend.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="friend.id"/>
-			</router-link>
+			<mk-avatar class="avatar" :user="friend"/>
 			<div class="body">
 				<router-link class="name" :to="friend | userPage" v-user-preview="friend.id">{{ friend.name }}</router-link>
 				<p class="username">@{{ friend | acct }}</p>
@@ -44,7 +42,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .friends
 	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	> .title
@@ -55,7 +53,7 @@ export default Vue.extend({
 		font-size 0.9em
 		font-weight bold
 		color #888
-		box-shadow 0 1px rgba(0, 0, 0, 0.07)
+		box-shadow 0 1px rgba(#000, 0.07)
 
 		> i
 			margin-right 4px
@@ -82,18 +80,13 @@ export default Vue.extend({
 			display block
 			clear both
 
-		> .avatar-anchor
+		> .avatar
 			display block
 			float left
 			margin 0 12px 0 0
-
-			> .avatar
-				display block
-				width 42px
-				height 42px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
+			width 42px
+			height 42px
+			border-radius 8px
 
 		> .body
 			float left

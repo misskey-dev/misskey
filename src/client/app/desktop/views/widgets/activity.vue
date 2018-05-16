@@ -22,9 +22,11 @@ export default define({
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		},
 		viewChanged(view) {
 			this.props.view = view;
+			this.save();
 		}
 	}
 });

@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import Vote from '../../../../../models/poll-vote';
 import Note from '../../../../../models/note';
 import Watching from '../../../../../models/note-watching';
@@ -11,14 +11,10 @@ import notify from '../../../../../publishers/notify';
 
 /**
  * Vote poll of a note
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).id().$;
+	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get votee
@@ -36,9 +32,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	// Get 'choice' parameter
 	const [choice, choiceError] =
-		$(params.choice).number()
+		$.num
 			.pipe(c => note.poll.choices.some(x => x.id == c))
-			.$;
+			.get(params.choice);
 	if (choiceError) return rej('invalid choice param');
 
 	// if already voted

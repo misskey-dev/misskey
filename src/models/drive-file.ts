@@ -6,14 +6,16 @@ import monkDb, { nativeDbConn } from '../db/mongodb';
 import Note, { deleteNote } from './note';
 import MessagingMessage, { deleteMessagingMessage } from './messaging-message';
 import User from './user';
+import DriveFileThumbnail, { deleteDriveFileThumbnail } from './drive-file-thumbnail';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
-
+DriveFile.createIndex('md5');
 DriveFile.createIndex('metadata.uri', { sparse: true, unique: true });
-
 export default DriveFile;
 
-const getGridFSBucket = async (): Promise<mongo.GridFSBucket> => {
+export const DriveFileChunk = monkDb.get('driveFiles.chunks');
+
+export const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
 		bucketName: 'driveFiles'
@@ -21,14 +23,16 @@ const getGridFSBucket = async (): Promise<mongo.GridFSBucket> => {
 	return bucket;
 };
 
-export { getGridFSBucket };
-
 export type IMetadata = {
 	properties: any;
 	userId: mongo.ObjectID;
+	_user: any;
 	folderId: mongo.ObjectID;
 	comment: string;
-	uri: string;
+	uri?: string;
+	url?: string;
+	deletedAt?: Date;
+	isExpired?: boolean;
 };
 
 export type IDriveFile = {
@@ -92,8 +96,13 @@ export async function deleteDriveFile(driveFile: string | mongo.ObjectID | IDriv
 		}
 	}
 
+	// このDriveFileのDriveFileThumbnailをすべて削除
+	await Promise.all((
+		await DriveFileThumbnail.find({ 'metadata.originalId': d._id })
+	).map(x => deleteDriveFileThumbnail(x)));
+
 	// このDriveFileのチャンクをすべて削除
-	await monkDb.get('driveFiles.chunks').remove({
+	await DriveFileChunk.remove({
 		files_id: d._id
 	});
 

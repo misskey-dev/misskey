@@ -1,5 +1,5 @@
 import Stream from './stream';
-import MiOS from '../../mios';
+import MiOS from '../../../mios';
 
 /**
  * Messaging stream connection

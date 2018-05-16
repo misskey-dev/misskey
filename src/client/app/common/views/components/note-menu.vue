@@ -2,6 +2,7 @@
 <div class="mk-note-menu">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
+		<button @click="favorite">%i18n:@favorite%</button>
 		<button v-if="note.userId == os.i.id" @click="pin">%i18n:@pin%</button>
 		<a v-if="note.uri" :href="note.uri" target="_blank">%i18n:@remote%</a>
 	</div>
@@ -58,6 +59,14 @@ export default Vue.extend({
 			});
 		},
 
+		favorite() {
+			(this as any).api('notes/favorites/create', {
+				noteId: this.note.id
+			}).then(() => {
+				this.$destroy();
+			});
+		},
+
 		close() {
 			(this.$refs.backdrop as any).style.pointerEvents = 'none';
 			anime({
@@ -96,7 +105,7 @@ $border-color = rgba(27, 31, 35, 0.15)
 		z-index 10000
 		width 100%
 		height 100%
-		background rgba(0, 0, 0, 0.1)
+		background rgba(#000, 0.1)
 		opacity 0
 
 	> .popover
@@ -142,6 +151,7 @@ $border-color = rgba(27, 31, 35, 0.15)
 		> a
 			display block
 			padding 8px 16px
+			width 100%
 
 			&:hover
 				color $theme-color-foreground

@@ -34,7 +34,6 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = 'Misskey | %i18n:@settings%';
-		document.documentElement.style.background = '#313a42';
 	},
 	methods: {
 		signout() {
@@ -63,7 +62,7 @@ export default Vue.extend({
 		width calc(100% - 32px)
 		list-style none
 		background #fff
-		border solid 1px rgba(0, 0, 0, 0.2)
+		border solid 1px rgba(#000, 0.2)
 		border-radius $radius
 
 		> li
@@ -71,7 +70,7 @@ export default Vue.extend({
 			border-bottom solid 1px #ddd
 
 			&:hover
-				background rgba(0, 0, 0, 0.1)
+				background rgba(#000, 0.1)
 
 			&:first-child
 				border-top-left-radius $radius

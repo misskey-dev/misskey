@@ -43,7 +43,7 @@ export default async (url, user, folderId = null, uri = null): Promise<IDriveFil
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, false, uri);
+		driveFile = await create(user, path, name, null, folderId, false, url, uri);
 		log(`created: ${driveFile._id}`);
 	} catch (e) {
 		error = e;

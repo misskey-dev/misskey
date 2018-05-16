@@ -43,10 +43,13 @@ export default Vue.extend({
 		XClock,
 	},
 	mounted() {
+		this.$store.commit('setUiHeaderHeight', 48);
+
 		if ((this as any).os.isSignedIn) {
-			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000
+			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000;
 			const isHisasiburi = ago >= 3600;
 			(this as any).os.i.lastUsedAt = new Date();
+			(this as any).os.bakeMe();
 			if (isHisasiburi) {
 				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';
@@ -101,7 +104,7 @@ root(isDark)
 	top 0
 	z-index 1000
 	width 100%
-	box-shadow 0 1px 1px rgba(0, 0, 0, 0.075)
+	box-shadow 0 1px 1px rgba(#000, 0.075)
 
 	> .main
 		height 48px
@@ -130,7 +133,7 @@ root(isDark)
 				line-height 48px
 				margin 0
 				text-align center
-				color #888
+				color isDark ? #fff : #888
 				opacity 0
 
 			> .container
@@ -169,10 +172,10 @@ root(isDark)
 						> .mk-ui-header-search
 							display none
 
-.header[data-is-darkmode]
+.header[data-darkmode]
 	root(true)
 
-.header
+.header:not([data-darkmode])
 	root(false)
 
 </style>

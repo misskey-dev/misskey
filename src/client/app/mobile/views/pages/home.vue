@@ -1,59 +1,42 @@
 <template>
 <mk-ui>
-	<span slot="header" @click="showTl = !showTl">
-		<template v-if="showTl">%fa:home%%i18n:@timeline%</template>
-		<template v-else>%fa:home%ウィジェット</template>
+	<span slot="header" @click="showNav = true">
+		<span>
+			<span v-if="src == 'home'">%fa:home%ホーム</span>
+			<span v-if="src == 'local'">%fa:R comments%ローカル</span>
+			<span v-if="src == 'global'">%fa:globe%グローバル</span>
+			<span v-if="src.startsWith('list')">%fa:list%{{ list.title }}</span>
+		</span>
 		<span style="margin-left:8px">
-			<template v-if="showTl">%fa:angle-down%</template>
+			<template v-if="!showNav">%fa:angle-down%</template>
 			<template v-else>%fa:angle-up%</template>
 		</span>
 	</span>
+
 	<template slot="func">
-		<button @click="fn" v-if="showTl">%fa:pencil-alt%</button>
-		<button @click="customizing = !customizing" v-else>%fa:cog%</button>
+		<button @click="fn">%fa:pencil-alt%</button>
 	</template>
-	<main>
-		<div class="tl">
-			<mk-timeline @loaded="onLoaded" v-show="showTl"/>
+
+	<main :data-darkmode="_darkmode_">
+		<div class="nav" v-if="showNav">
+			<div class="bg" @click="showNav = false"></div>
+			<div class="body">
+				<div>
+					<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
+					<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
+					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+					<template v-if="lists">
+						<span v-for="l in lists" :data-active="src == 'list:' + l.id" @click="src = 'list:' + l.id; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
+					</template>
+				</div>
+			</div>
 		</div>
-		<div class="widgets" v-show="!showTl">
-			<template v-if="customizing">
-				<header>
-					<select v-model="widgetAdderSelected">
-						<option value="profile">プロフィール</option>
-						<option value="calendar">カレンダー</option>
-						<option value="activity">アクティビティ</option>
-						<option value="rss">RSSリーダー</option>
-						<option value="photo-stream">フォトストリーム</option>
-						<option value="slideshow">スライドショー</option>
-						<option value="version">バージョン</option>
-						<option value="access-log">アクセスログ</option>
-						<option value="server">サーバー情報</option>
-						<option value="donation">寄付のお願い</option>
-						<option value="nav">ナビゲーション</option>
-						<option value="tips">ヒント</option>
-					</select>
-					<button @click="addWidget">追加</button>
-					<p><a @click="hint">カスタマイズのヒント</a></p>
-				</header>
-				<x-draggable
-					:list="widgets"
-					:options="{ handle: '.handle', animation: 150 }"
-					@sort="onWidgetSort"
-				>
-					<div v-for="widget in widgets" class="customize-container" :key="widget.id">
-						<header>
-							<span class="handle">%fa:bars%</span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
-						</header>
-						<div @click="widgetFunc(widget.id)">
-							<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :is-mobile="true"/>
-						</div>
-					</div>
-				</x-draggable>
-			</template>
-			<template v-else>
-				<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :is-mobile="true" @chosen="warp"/>
-			</template>
+
+		<div class="tl">
+			<x-tl v-if="src == 'home'" ref="tl" key="home" src="home" @loaded="onLoaded"/>
+			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
+			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
+			<mk-user-list-timeline v-if="src.startsWith('list:')" ref="tl" :key="list.id" :list="list"/>
 		</div>
 	</main>
 </mk-ui>
@@ -61,144 +44,58 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as XDraggable from 'vuedraggable';
-import * as uuid from 'uuid';
 import Progress from '../../../common/scripts/loading';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
+import XTl from './home.timeline.vue';
 
 export default Vue.extend({
 	components: {
-		XDraggable
+		XTl
 	},
+
 	data() {
 		return {
-			connection: null,
-			connectionId: null,
-			unreadCount: 0,
-			showTl: true,
-			widgets: [],
-			customizing: false,
-			widgetAdderSelected: null
+			src: 'home',
+			list: null,
+			lists: null,
+			showNav: false
 		};
 	},
-	created() {
-		if ((this as any).os.i.clientSettings.mobileHome == null) {
-			Vue.set((this as any).os.i.clientSettings, 'mobileHome', [{
-				name: 'calendar',
-				id: 'a', data: {}
-			}, {
-				name: 'activity',
-				id: 'b', data: {}
-			}, {
-				name: 'rss',
-				id: 'c', data: {}
-			}, {
-				name: 'photo-stream',
-				id: 'd', data: {}
-			}, {
-				name: 'donation',
-				id: 'e', data: {}
-			}, {
-				name: 'nav',
-				id: 'f', data: {}
-			}, {
-				name: 'version',
-				id: 'g', data: {}
-			}]);
-			this.widgets = (this as any).os.i.clientSettings.mobileHome;
-			this.saveHome();
-		} else {
-			this.widgets = (this as any).os.i.clientSettings.mobileHome;
-		}
 
-		this.$watch('os.i.clientSettings', i => {
-			this.widgets = (this as any).os.i.clientSettings.mobileHome;
-		}, {
-			deep: true
-		});
+	watch: {
+		src() {
+			this.showNav = false;
+		},
+
+		showNav(v) {
+			if (v && this.lists === null) {
+				(this as any).api('users/lists/list').then(lists => {
+					this.lists = lists;
+				});
+			}
+		}
 	},
+
+	created() {
+		if ((this as any).os.i.followingCount == 0) {
+			this.src = 'local';
+		}
+	},
+
 	mounted() {
 		document.title = 'Misskey';
-		document.documentElement.style.background = '#313a42';
-
-		this.connection = (this as any).os.stream.getConnection();
-		this.connectionId = (this as any).os.stream.use();
-
-		this.connection.on('note', this.onStreamNote);
-		this.connection.on('mobile_home_updated', this.onHomeUpdated);
-		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 		Progress.start();
 	},
-	beforeDestroy() {
-		this.connection.off('note', this.onStreamNote);
-		this.connection.off('mobile_home_updated', this.onHomeUpdated);
-		(this as any).os.stream.dispose(this.connectionId);
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
-	},
+
 	methods: {
 		fn() {
 			(this as any).apis.post();
 		},
+
 		onLoaded() {
 			Progress.done();
 		},
-		onStreamNote(note) {
-			if (document.hidden && note.userId !== (this as any).os.i.id) {
-				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
-			}
-		},
-		onVisibilitychange() {
-			if (!document.hidden) {
-				this.unreadCount = 0;
-				document.title = 'Misskey';
-			}
-		},
-		onHomeUpdated(data) {
-			if (data.home) {
-				(this as any).os.i.clientSettings.mobileHome = data.home;
-				this.widgets = data.home;
-			} else {
-				const w = (this as any).os.i.clientSettings.mobileHome.find(w => w.id == data.id);
-				if (w != null) {
-					w.data = data.data;
-					this.$refs[w.id][0].preventSave = true;
-					this.$refs[w.id][0].props = w.data;
-					this.widgets = (this as any).os.i.clientSettings.mobileHome;
-				}
-			}
-		},
-		hint() {
-			alert('ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。');
-		},
-		widgetFunc(id) {
-			const w = this.$refs[id][0];
-			if (w.func) w.func();
-		},
-		onWidgetSort() {
-			this.saveHome();
-		},
-		addWidget() {
-			const widget = {
-				name: this.widgetAdderSelected,
-				id: uuid(),
-				data: {}
-			};
 
-			this.widgets.unshift(widget);
-			this.saveHome();
-		},
-		removeWidget(widget) {
-			this.widgets = this.widgets.filter(w => w.id != widget.id);
-			this.saveHome();
-		},
-		saveHome() {
-			(this as any).os.i.clientSettings.mobileHome = this.widgets;
-			(this as any).api('i/update_mobile_home', {
-				home: this.widgets
-			});
-		},
 		warp() {
 
 		}
@@ -207,53 +104,74 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-main
+@import '~const.styl'
 
-	> .tl
-		> .mk-timeline
-			max-width 600px
+root(isDark)
+	> .nav
+		> .bg
+			position fixed
+			z-index 10000
+			top 0
+			left 0
+			width 100%
+			height 100%
+			background rgba(#000, 0.5)
+
+		> .body
+			position fixed
+			z-index 10001
+			top 56px
+			left 0
+			right 0
+			width 300px
 			margin 0 auto
-			padding 8px
+			background isDark ? #272f3a : #fff
+			border-radius 8px
+			box-shadow 0 0 16px rgba(#000, 0.1)
 
-			@media (min-width 500px)
-				padding 16px
+			$balloon-size = 16px
 
-	> .widgets
-		margin 0 auto
-		max-width 500px
-
-		@media (min-width 500px)
-			padding 8px
-
-		> header
-			padding 8px
-			background #fff
-
-		.widget
-			margin 8px
-
-		.customize-container
-			margin 8px
-			background #fff
-
-			> header
-				line-height 32px
-				background #eee
-
-				> .handle
-					padding 0 8px
-
-				> .remove
-					position absolute
-					top 0
-					right 0
-					padding 0 8px
-					line-height 32px
+			&:after
+				content ""
+				display block
+				position absolute
+				top -($balloon-size * 2) + 1.5px
+				left s('calc(50% - %s)', $balloon-size)
+				border-top solid $balloon-size transparent
+				border-left solid $balloon-size transparent
+				border-right solid $balloon-size transparent
+				border-bottom solid $balloon-size isDark ? #272f3a : #fff
 
 			> div
-				padding 8px
+				padding 8px 0
 
 				> *
-					pointer-events none
+					display block
+					padding 8px 16px
+					color isDark ? #cdd0d8 : #666
+
+					&[data-active]
+						color $theme-color-foreground
+						background $theme-color
+
+					&:not([data-active]):hover
+						background isDark ? #353e4a : #eee
+
+	> .tl
+		max-width 680px
+		margin 0 auto
+		padding 8px
+
+		@media (min-width 500px)
+			padding 16px
+
+		@media (min-width 600px)
+			padding 32px
+
+main[data-darkmode]
+	root(true)
+
+main:not([data-darkmode])
+	root(false)
 
 </style>

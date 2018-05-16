@@ -8,12 +8,9 @@
 		title="クリックでバナー編集"
 		@click="os.apis.updateBanner"
 	></div>
-	<img class="avatar"
-		:src="`${os.i.avatarUrl}?thumbnail&size=96`"
+	<mk-avatar class="avatar" :user="os.i"
 		@click="os.apis.updateAvatar"
-		alt="avatar"
 		title="クリックでアバター編集"
-		v-user-preview="os.i.id"
 	/>
 	<router-link class="name" :to="os.i | userPage">{{ os.i | userName }}</router-link>
 	<p class="username">@{{ os.i | acct }}</p>
@@ -36,16 +33,17 @@ export default define({
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.mkw-profile
+root(isDark)
 	overflow hidden
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	background isDark ? #282c37 : #fff
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	&[data-compact]
@@ -54,14 +52,14 @@ export default define({
 			display block
 			width 100%
 			height 100%
-			background rgba(0, 0, 0, 0.5)
+			background rgba(#000, 0.5)
 
 		> .avatar
 			top ((100px - 58px) / 2)
 			left ((100px - 58px) / 2)
 			border none
 			border-radius 100%
-			box-shadow 0 0 16px rgba(0, 0, 0, 0.5)
+			box-shadow 0 0 16px rgba(#000, 0.5)
 
 		> .name
 			position absolute
@@ -70,7 +68,7 @@ export default define({
 			margin 0
 			line-height 100px
 			color #fff
-			text-shadow 0 0 8px rgba(0, 0, 0, 0.5)
+			text-shadow 0 0 8px rgba(#000, 0.5)
 
 		> .username
 			display none
@@ -91,7 +89,7 @@ export default define({
 
 	> .banner
 		height 100px
-		background-color #f5f5f5
+		background-color isDark ? #303e4a : #f5f5f5
 		background-size cover
 		background-position center
 		cursor pointer
@@ -103,10 +101,8 @@ export default define({
 		left 16px
 		width 58px
 		height 58px
-		margin 0
-		border solid 3px #fff
+		border solid 3px isDark ? #282c37 : #fff
 		border-radius 8px
-		vertical-align bottom
 		cursor pointer
 
 	> .name
@@ -114,13 +110,19 @@ export default define({
 		margin 10px 0 0 84px
 		line-height 16px
 		font-weight bold
-		color #555
+		color isDark ? #fff : #555
 
 	> .username
 		display block
 		margin 4px 0 8px 84px
 		line-height 16px
 		font-size 0.9em
-		color #999
+		color isDark ? #606984 : #999
+
+.mkw-profile[data-darkmode]
+	root(true)
+
+.mkw-profile:not([data-darkmode])
+	root(false)
 
 </style>

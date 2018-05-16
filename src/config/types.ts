@@ -40,6 +40,12 @@ export type Source = {
 		site_key: string;
 		secret_key: string;
 	};
+
+	/**
+	 * ゴーストアカウントのID
+	 */
+	ghost?: string;
+
 	accesslog?: string;
 	twitter?: {
 		consumer_key: string;

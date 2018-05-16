@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
@@ -11,23 +11,23 @@ import { pack } from '../../../../models/note';
  */
 module.exports = async (params, user, app) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
 	if (sinceIdErr) throw 'invalid sinceId param';
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
 	if (untilIdErr) throw 'invalid untilId param';
 
 	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	const [sinceDate, sinceDateErr] = $.num.optional().get(params.sinceDate);
 	if (sinceDateErr) throw 'invalid sinceDate param';
 
 	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	const [untilDate, untilDateErr] = $.num.optional().get(params.untilDate);
 	if (untilDateErr) throw 'invalid untilDate param';
 
 	// Check if only one of sinceId, untilId, sinceDate, untilDate specified

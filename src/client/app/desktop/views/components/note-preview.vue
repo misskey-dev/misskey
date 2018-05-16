@@ -1,8 +1,6 @@
 <template>
 <div class="mk-note-preview" :title="title">
-	<router-link class="avatar-anchor" :to="note.user | userPage">
-		<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="note.userId"/>
-	</router-link>
+	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
@@ -33,31 +31,21 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-note-preview
+root(isDark)
 	font-size 0.9em
-	background #fff
 
 	&:after
 		content ""
 		display block
 		clear both
 
-	&:hover
-		> .main > footer > button
-			color #888
-
-	> .avatar-anchor
+	> .avatar
 		display block
 		float left
 		margin 0 16px 0 0
-
-		> .avatar
-			display block
-			width 52px
-			height 52px
-			margin 0
-			border-radius 8px
-			vertical-align bottom
+		width 52px
+		height 52px
+		border-radius 8px
 
 	> .main
 		float left
@@ -65,12 +53,13 @@ export default Vue.extend({
 
 		> header
 			display flex
+			align-items baseline
 			white-space nowrap
 
 			> .name
 				margin 0 .5em 0 0
 				padding 0
-				color #607073
+				color isDark ? #fff : #607073
 				font-size 1em
 				font-weight bold
 				text-decoration none
@@ -81,11 +70,11 @@ export default Vue.extend({
 
 			> .username
 				margin 0 .5em 0 0
-				color #d1d8da
+				color isDark ? #606984 : #d1d8da
 
 			> .time
 				margin-left auto
-				color #b2b8bb
+				color isDark ? #606984 : #b2b8bb
 
 		> .body
 
@@ -94,6 +83,12 @@ export default Vue.extend({
 				margin 0
 				padding 0
 				font-size 1.1em
-				color #717171
+				color isDark ? #959ba7 : #717171
+
+.mk-note-preview[data-darkmode]
+	root(true)
+
+.mk-note-preview:not([data-darkmode])
+	root(false)
 
 </style>

@@ -1,21 +1,17 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
 import { publishDriveStream } from '../../../../../publishers/stream';
 
 /**
  * Update a file
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $(params.fileId).id().$;
+	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
 	if (fileIdErr) return rej('invalid fileId param');
 
 	// Fetch file
@@ -30,12 +26,12 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).optional.string().pipe(validateFileName).$;
+	const [name, nameErr] = $.str.optional().pipe(validateFileName).get(params.name);
 	if (nameErr) return rej('invalid name param');
 	if (name) file.filename = name;
 
 	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $(params.folderId).optional.nullable.id().$;
+	const [folderId, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');
 
 	if (folderId !== undefined) {

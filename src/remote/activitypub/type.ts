@@ -15,6 +15,7 @@ export interface IObject {
 	icon?: any;
 	image?: any;
 	url?: string;
+	tag?: any[];
 }
 
 export interface IActivity extends IObject {
@@ -49,6 +50,7 @@ export interface IPerson extends IObject {
 	followers: any;
 	following: any;
 	outbox: any;
+	endpoints: string[];
 }
 
 export const isCollection = (object: IObject): object is ICollection =>
@@ -82,6 +84,7 @@ export interface IAccept extends IActivity {
 
 export interface ILike extends IActivity {
 	type: 'Like';
+	_misskey_reaction: string;
 }
 
 export interface IAnnounce extends IActivity {

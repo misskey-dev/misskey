@@ -6,13 +6,10 @@ import Note from '../../../../models/note';
 
 /**
  * Aggregate notes
- *
- * @param {any} params
- * @return {Promise<any>}
  */
 module.exports = params => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 365, limitErr] = $(params.limit).optional.number().range(1, 365).$;
+	const [limit = 365, limitErr] = $.num.optional().range(1, 365).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	const datas = await Note

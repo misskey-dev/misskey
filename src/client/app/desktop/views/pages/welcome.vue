@@ -8,9 +8,7 @@
 					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a :href="aboutUrl">詳しく...</a></p>
 					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
 					<div class="users">
-						<router-link v-for="user in users" :key="user.id" class="avatar-anchor" :to="user | userPage" v-user-preview="user.id">
-							<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-						</router-link>
+						<mk-avatar class="avatar" v-for="user in users" :key="user.id" :user="user"/>
 					</div>
 				</div>
 				<div>
@@ -125,7 +123,8 @@ export default Vue.extend({
 	flex 1
 	$width = 1000px
 
-	background-image url('/assets/welcome-bg.svg')
+	background linear-gradient(to bottom, #1e1d65, #bd6659)
+	//background-image url('/assets/welcome-bg.svg')
 	background-size cover
 	background-position top center
 
@@ -216,13 +215,9 @@ export default Vue.extend({
 						> *
 							display inline-block
 							margin 4px
-
-							> *
-								display inline-block
-								width 38px
-								height 38px
-								vertical-align top
-								border-radius 6px
+							width 38px
+							height 38px
+							border-radius 6px
 
 				> div:last-child
 
@@ -230,14 +225,14 @@ export default Vue.extend({
 						width 410px
 						background #fff
 						border-radius 8px
-						box-shadow 0 0 0 12px rgba(0, 0, 0, 0.1)
+						box-shadow 0 0 0 12px rgba(#000, 0.1)
 						overflow hidden
 
 						> header
 							z-index 1
 							padding 12px 16px
 							color #888d94
-							box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+							box-shadow 0 1px 0px rgba(#000, 0.1)
 
 							> div
 								position absolute
@@ -308,10 +303,4 @@ export default Vue.extend({
 .nav
 	a
 		color #666
-</style>
-
-<style lang="stylus">
-html
-body
-	background linear-gradient(to bottom, #1e1d65, #bd6659)
 </style>

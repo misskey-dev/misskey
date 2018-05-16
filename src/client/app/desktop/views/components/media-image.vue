@@ -14,12 +14,20 @@ import Vue from 'vue';
 import MkMediaImageDialog from './media-image-dialog.vue';
 
 export default Vue.extend({
-	props: ['image'],
+	props: {
+		image: {
+			type: Object,
+			required: true
+		},
+		raw: {
+			default: false
+		}
+	},
 	computed: {
 		style(): any {
 			return {
 				'background-color': this.image.properties.avgColor ? `rgb(${this.image.properties.avgColor.join(',')})` : 'transparent',
-				'background-image': `url(${this.image.url}?thumbnail&size=512)`
+				'background-image': this.raw ? `url(${this.image.url})` : `url(${this.image.url}?thumbnail&size=512)`
 			};
 		}
 	},
@@ -31,7 +39,7 @@ export default Vue.extend({
 			const xp = mouseX / this.$el.offsetWidth * 100;
 			const yp = mouseY / this.$el.offsetHeight * 100;
 			this.$el.style.backgroundPosition = xp + '% ' + yp + '%';
-			this.$el.style.backgroundImage = 'url("' + this.image.url + '?thumbnail")';
+			this.$el.style.backgroundImage = `url("${this.image.url}")`;
 		},
 
 		onMouseleave() {

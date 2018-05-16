@@ -17,29 +17,27 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
-			</router-link>
-			%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>がRenote
+			<mk-avatar class="avatar" :user="note.user"/>%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>がRenote
 		</p>
 	</div>
 	<article>
 		<header>
-			<router-link class="avatar-anchor" :to="p.user | userPage">
-				<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-			</router-link>
+			<mk-avatar class="avatar" :user="p.user"/>
 			<div>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
 				<span class="username">@{{ p.user | acct }}</span>
 			</div>
 		</header>
 		<div class="body">
-			<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
+			<div class="text">
+				<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
+			</div>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
-				<mk-media-list :media-list="p.media"/>
+				<mk-media-list :media-list="p.media" :raw="true"/>
 			</div>
 			<mk-poll v-if="p.poll" :note="p"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
@@ -55,7 +53,9 @@
 		<footer>
 			<mk-reactions-viewer :note="p"/>
 			<button @click="reply" title="%i18n:@reply%">
-				%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
+				<template v-if="p.reply">%fa:reply-all%</template>
+				<template v-else>%fa:reply%</template>
+				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
 			<button @click="renote" title="Renote">
 				%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
@@ -147,7 +147,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.clientSettings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -207,15 +207,18 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-note-detail
+root(isDark)
 	overflow hidden
 	margin 0 auto
 	padding 0
 	width 100%
 	text-align left
-	background #fff
+	background isDark ? #282C37 : #fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 2px rgba(#000, 0.1)
+
+	@media (min-width 500px)
+		box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	> .fetching
 		padding 64px 0
@@ -229,45 +232,37 @@ export default Vue.extend({
 		text-align center
 		color #999
 		cursor pointer
-		background #fafafa
+		background isDark ? #21242d : #fafafa
 		outline none
 		border none
-		border-bottom solid 1px #eef0f2
+		border-bottom solid 1px isDark ? #1c2023 : #eef0f2
 		border-radius 6px 6px 0 0
 		box-shadow none
 
 		&:hover
-			background #f6f6f6
-
-		&:active
-			background #f0f0f0
+			background isDark ? #16181d : #f6f6f6
 
 		&:disabled
 			color #ccc
 
 	> .context
 		> *
-			border-bottom 1px solid #eef0f2
+			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 
 	> .renote
 		color #9dbb00
-		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
 		> p
 			margin 0
 			padding 16px 32px
 
-			.avatar-anchor
+			.avatar
 				display inline-block
-
-				.avatar
-					vertical-align bottom
-					min-width 28px
-					min-height 28px
-					max-width 28px
-					max-height 28px
-					margin 0 8px 0 0
-					border-radius 6px
+				width 28px
+				height 28px
+				margin 0 8px 0 0
+				border-radius 6px
 
 			[data-fa]
 				margin-right 4px
@@ -279,7 +274,7 @@ export default Vue.extend({
 			padding-top 8px
 
 	> .reply-to
-		border-bottom 1px solid #eef0f2
+		border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 
 	> article
 		padding 14px 16px 9px 16px
@@ -292,36 +287,27 @@ export default Vue.extend({
 			display block
 			clear both
 
-		&:hover
-			> .main > footer > button
-				color #888
-
 		> header
 			display flex
-			line-height 1.1
+			line-height 1.1em
 
-			> .avatar-anchor
+			> .avatar
 				display block
-				padding 0 .5em 0 0
+				margin 0 12px 0 0
+				width 54px
+				height 54px
+				border-radius 8px
 
-				> .avatar
-					display block
-					width 54px
-					height 54px
-					margin 0
-					border-radius 8px
-					vertical-align bottom
-
-					@media (min-width 500px)
-						width 60px
-						height 60px
+				@media (min-width 500px)
+					width 60px
+					height 60px
 
 			> div
 
 				> .name
 					display inline-block
 					margin .4em 0
-					color #777
+					color isDark ? #fff : #627079
 					font-size 16px
 					font-weight bold
 					text-align left
@@ -334,10 +320,21 @@ export default Vue.extend({
 					display block
 					text-align left
 					margin 0
-					color #ccc
+					color isDark ? #606984 : #ccc
 
 		> .body
 			padding 8px 0
+
+			> .text
+				display block
+				margin 0
+				padding 0
+				overflow-wrap break-word
+				font-size 16px
+				color isDark ? #fff : #717171
+
+				@media (min-width 500px)
+					font-size 24px
 
 			> .renote
 				margin 8px 0
@@ -394,7 +391,7 @@ export default Vue.extend({
 
 		> .time
 			font-size 16px
-			color #c0c0c0
+			color isDark ? #606984 : #c0c0c0
 
 		> footer
 			font-size 1.2em
@@ -406,14 +403,14 @@ export default Vue.extend({
 				border none
 				box-shadow none
 				font-size 1em
-				color #ddd
+				color isDark ? #606984 : #ddd
 				cursor pointer
 
 				&:not(:last-child)
 					margin-right 28px
 
 				&:hover
-					color #666
+					color isDark ? #9198af : #666
 
 				> .count
 					display inline
@@ -425,20 +422,12 @@ export default Vue.extend({
 
 	> .replies
 		> *
-			border-top 1px solid #eef0f2
+			border-top 1px solid isDark ? #1c2023 : #eef0f2
 
-</style>
+.mk-note-detail[data-darkmode]
+	root(true)
 
-<style lang="stylus" module>
-.text
-	display block
-	margin 0
-	padding 0
-	overflow-wrap break-word
-	font-size 16px
-	color #717171
-
-	@media (min-width 500px)
-		font-size 24px
+.mk-note-detail:not([data-darkmode])
+	root(false)
 
 </style>

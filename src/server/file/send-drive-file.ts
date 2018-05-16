@@ -1,8 +1,17 @@
+import * as fs from 'fs';
+
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as mongodb from 'mongodb';
-import DriveFile, { getGridFSBucket } from '../../models/drive-file';
-import pour from './pour';
+import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
+import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
+
+const assets = `${__dirname}/../../server/file/assets/`;
+
+const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
+	console.error(e);
+	ctx.status = 500;
+};
 
 export default async function(ctx: Koa.Context) {
 	// Validate id
@@ -18,13 +27,52 @@ export default async function(ctx: Koa.Context) {
 
 	if (file == null) {
 		ctx.status = 404;
-		await send(ctx, `${__dirname}/assets/dummy.png`);
+		await send(ctx, '/dummy.png', { root: assets });
 		return;
 	}
 
-	const bucket = await getGridFSBucket();
+	if (file.metadata.deletedAt) {
+		ctx.status = 410;
+		if (file.metadata.isExpired) {
+			await send(ctx, '/cache-expired.png', { root: assets });
+		} else {
+			await send(ctx, '/tombstone.png', { root: assets });
+		}
+		return;
+	}
 
-	const readable = bucket.openDownloadStream(fileId);
+	const sendRaw = async () => {
+		const bucket = await getDriveFileBucket();
+		const readable = bucket.openDownloadStream(fileId);
+		readable.on('error', commonReadableHandlerGenerator(ctx));
+		ctx.set('Content-Type', file.contentType);
+		ctx.body = readable;
+	};
 
-	pour(readable, file.contentType, ctx);
+	if ('thumbnail' in ctx.query) {
+		// 画像以外
+		if (!file.contentType.startsWith('image/')) {
+			const readable = fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
+			ctx.set('Content-Type', 'image/png');
+			ctx.body = readable;
+		} else if (file.contentType == 'image/gif') {
+			// GIF
+			await sendRaw();
+		} else {
+			const thumb = await DriveFileThumbnail.findOne({ 'metadata.originalId': fileId });
+			if (thumb != null) {
+				ctx.set('Content-Type', 'image/jpeg');
+				const bucket = await getDriveFileThumbnailBucket();
+				ctx.body = bucket.openDownloadStream(thumb._id);
+			} else {
+				await sendRaw();
+			}
+		}
+	} else {
+		if ('download' in ctx.query) {
+			ctx.set('Content-Disposition', 'attachment');
+		}
+
+		await sendRaw();
+	}
 }

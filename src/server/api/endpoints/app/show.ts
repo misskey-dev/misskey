@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import App, { pack } from '../../../../models/app';
 
 /**
@@ -41,11 +41,11 @@ module.exports = (params, user, app) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	// Get 'appId' parameter
-	const [appId, appIdErr] = $(params.appId).optional.id().$;
+	const [appId, appIdErr] = $.type(ID).optional().get(params.appId);
 	if (appIdErr) return rej('invalid appId param');
 
 	// Get 'nameId' parameter
-	const [nameId, nameIdErr] = $(params.nameId).optional.string().$;
+	const [nameId, nameIdErr] = $.str.optional().get(params.nameId);
 	if (nameIdErr) return rej('invalid nameId param');
 
 	if (appId === undefined && nameId === undefined) {

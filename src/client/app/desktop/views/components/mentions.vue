@@ -1,8 +1,8 @@
 <template>
 <div class="mk-mentions">
 	<header>
-		<span :data-is-active="mode == 'all'" @click="mode = 'all'">すべて</span>
-		<span :data-is-active="mode == 'following'" @click="mode = 'following'">フォロー中</span>
+		<span :data-active="mode == 'all'" @click="mode = 'all'">すべて</span>
+		<span :data-active="mode == 'following'" @click="mode = 'following'">フォロー中</span>
 	</header>
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
@@ -85,7 +85,7 @@ export default Vue.extend({
 
 .mk-mentions
 	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	> header
@@ -98,7 +98,7 @@ export default Vue.extend({
 			font-size 18px
 			color #555
 
-			&:not([data-is-active])
+			&:not([data-active])
 				color $theme-color
 				cursor pointer
 

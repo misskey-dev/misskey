@@ -2,7 +2,10 @@
 <mk-ui>
 	<span slot="header">%fa:R bell%%i18n:@notifications%</span>
 	<template slot="func"><button @click="fn">%fa:check%</button></template>
-	<mk-notifications @fetched="onFetched"/>
+
+	<main>
+		<mk-notifications @fetched="onFetched"/>
+	</main>
 </mk-ui>
 </template>
 
@@ -13,7 +16,6 @@ import Progress from '../../../common/scripts/loading';
 export default Vue.extend({
 	mounted() {
 		document.title = 'Misskey | %i18n:@notifications%';
-		document.documentElement.style.background = '#313a42';
 
 		Progress.start();
 	},
@@ -30,3 +32,20 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+@import '~const.styl'
+
+main
+	width 100%
+	max-width 680px
+	margin 0 auto
+	padding 8px
+
+	@media (min-width 500px)
+		padding 16px
+
+	@media (min-width 600px)
+		padding 32px
+
+</style>

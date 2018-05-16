@@ -4,6 +4,7 @@ import parse from '../../../../../text/parse';
 import getAcct from '../../../../../acct/render';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
+import MkGoogle from './google.vue';
 
 const flatten = list => list.reduce(
 	(a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
@@ -97,7 +98,9 @@ export default Vue.component('mk-note-html', {
 					}, token.content);
 
 				case 'code':
-					return createElement('pre', [
+					return createElement('pre', {
+						class: 'code'
+					}, [
 						createElement('code', {
 							domProps: {
 								innerHTML: token.html
@@ -132,9 +135,23 @@ export default Vue.component('mk-note-html', {
 						}, text2.replace(/\n/g, ' '));
 					}
 
+				case 'title':
+					return createElement('div', {
+						attrs: {
+							class: 'title'
+						}
+					}, token.title);
+
 				case 'emoji':
 					const emoji = emojilib.lib[token.emoji];
 					return createElement('span', emoji ? emoji.char : token.content);
+
+				case 'search':
+					return createElement(MkGoogle, {
+						props: {
+							q: token.query
+						}
+					});
 
 				default:
 					console.log('unknown ast type:', token.type);
@@ -144,7 +161,7 @@ export default Vue.component('mk-note-html', {
 		const _els = [];
 		els.forEach((el, i) => {
 			if (el.tag == 'br') {
-				if (els[i - 1].tag != 'div') {
+				if (!['div', 'pre'].includes(els[i - 1].tag)) {
 					_els.push(el);
 				}
 			} else {

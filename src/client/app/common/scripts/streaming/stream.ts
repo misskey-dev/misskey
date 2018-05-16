@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 import * as ReconnectingWebsocket from 'reconnecting-websocket';
 import { wsUrl } from '../../../config';
-import MiOS from '../../mios';
+import MiOS from '../../../mios';
 
 /**
  * Misskey stream connection

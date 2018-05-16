@@ -13,7 +13,7 @@ import { validateUsername } from '../../../../models/user';
  */
 module.exports = async (params) => new Promise(async (res, rej) => {
 	// Get 'username' parameter
-	const [username, usernameError] = $(params.username).string().pipe(validateUsername).$;
+	const [username, usernameError] = $.str.pipe(validateUsername).get(params.username);
 	if (usernameError) return rej('invalid username param');
 
 	// Get exist

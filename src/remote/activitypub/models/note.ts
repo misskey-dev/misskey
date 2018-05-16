@@ -1,4 +1,5 @@
-import { JSDOM } from 'jsdom';
+import * as mongo from 'mongodb';
+import * as parse5 from 'parse5';
 import * as debug from 'debug';
 
 import config from '../../../config';
@@ -12,6 +13,76 @@ import { IRemoteUser } from '../../../models/user';
 
 const log = debug('misskey:activitypub');
 
+function parse(html: string): string {
+	const dom = parse5.parseFragment(html) as parse5.AST.Default.Document;
+
+	let text = '';
+
+	dom.childNodes.forEach(n => analyze(n));
+
+	return text.trim();
+
+	function getText(node) {
+		if (node.nodeName == '#text') return node.value;
+
+		if (node.childNodes) {
+			return node.childNodes.map(n => getText(n)).join('');
+		}
+
+		return '';
+	}
+
+	function analyze(node) {
+		switch (node.nodeName) {
+			case '#text':
+				text += node.value;
+				break;
+
+			case 'br':
+				text += '\n';
+				break;
+
+			case 'a':
+				const txt = getText(node);
+
+				// メンション
+				if (txt.startsWith('@')) {
+					const part = txt.split('@');
+
+					if (part.length == 2) {
+						//#region ホスト名部分が省略されているので復元する
+						const href = new URL(node.attrs.find(x => x.name == 'href').value);
+						const acct = txt + '@' + href.hostname;
+						text += acct;
+						break;
+						//#endregion
+					} else if (part.length == 3) {
+						text += txt;
+						break;
+					}
+				}
+
+				if (node.childNodes) {
+					node.childNodes.forEach(n => analyze(n));
+				}
+				break;
+
+			case 'p':
+				text += '\n\n';
+				if (node.childNodes) {
+					node.childNodes.forEach(n => analyze(n));
+				}
+				break;
+
+			default:
+				if (node.childNodes) {
+					node.childNodes.forEach(n => analyze(n));
+				}
+				break;
+		}
+	}
+}
+
 /**
  * Noteをフェッチします。
  *
@@ -22,7 +93,8 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		return await Note.findOne({ _id: uri.split('/').pop() });
+		const id = new mongo.ObjectID(uri.split('/').pop());
+		return await Note.findOne({ _id: id });
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -45,7 +117,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const object = await resolver.resolve(value) as any;
 
 	if (object == null || object.type !== 'Note') {
-		throw new Error('invalid note');
+		log(`invalid note: ${object}`);
+		return null;
 	}
 
 	const note: INoteActivityStreamsObject = object;
@@ -55,12 +128,23 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// 投稿者をフェッチ
 	const actor = await resolvePerson(note.attributedTo) as IRemoteUser;
 
+	// 投稿者が凍結されていたらスキップ
+	if (actor.isSuspended) {
+		return null;
+	}
+
 	//#region Visibility
 	let visibility = 'public';
-	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) visibility = 'unlisted';
-	if (note.cc.length == 0) visibility = 'private';
-	// TODO
-	if (visibility != 'public') throw new Error('unspported visibility');
+	let visibleUsers = [];
+	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
+		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
+			visibility = 'home';
+		} else {
+			visibility = 'specified';
+			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
+		}
+	}
+	if (note.cc.length == 0) visibility = 'followers';
 	//#endergion
 
 	// 添付メディア
@@ -73,7 +157,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// リプライ
 	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
 
-	const { window } = new JSDOM(note.content);
+	// テキストのパース
+	const text = parse(note.content);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.updatedAt == null || Date.now() - actor.updatedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -85,10 +170,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		media,
 		reply,
 		renote: undefined,
-		text: window.document.body.textContent,
+		text: text,
 		viaMobile: false,
 		geo: undefined,
 		visibility,
+		visibleUsers,
 		uri: note.id
 	}, silent);
 }

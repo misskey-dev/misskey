@@ -1,5 +1,5 @@
 import Stream from './stream';
-import MiOS from '../../mios';
+import MiOS from '../../../mios';
 
 export class OthelloGameStream extends Stream {
 	constructor(os: MiOS, me, game) {

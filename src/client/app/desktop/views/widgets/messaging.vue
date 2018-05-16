@@ -1,13 +1,18 @@
 <template>
 <div class="mkw-messaging">
-	<p class="title" v-if="props.design == 0">%fa:comments%%i18n:@title%</p>
-	<mk-messaging ref="index" compact @navigate="navigate"/>
+	<mk-widget-container :show-header="props.design == 0">
+		<template slot="header">%fa:comments%%i18n:@title%</template>
+		<button slot="func" @click="add">%fa:plus%</button>
+
+		<mk-messaging ref="index" compact @navigate="navigate"/>
+	</mk-widget-container>
 </div>
 </template>
 
 <script lang="ts">
 import define from '../../../common/define-widget';
 import MkMessagingRoomWindow from '../components/messaging-room-window.vue';
+import MkMessagingWindow from '../components/messaging-window.vue';
 
 export default define({
 	name: 'messaging',
@@ -21,12 +26,16 @@ export default define({
 				user: user
 			});
 		},
+		add() {
+			(this as any).os.new(MkMessagingWindow);
+		},
 		func() {
 			if (this.props.design == 1) {
 				this.props.design = 0;
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		}
 	}
 });
@@ -34,25 +43,7 @@ export default define({
 
 <style lang="stylus" scoped>
 .mkw-messaging
-	overflow hidden
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
-	border-radius 6px
-
-	> .title
-		z-index 2
-		margin 0
-		padding 0 16px
-		line-height 42px
-		font-size 0.9em
-		font-weight bold
-		color #888
-		box-shadow 0 1px rgba(0, 0, 0, 0.07)
-
-		> [data-fa]
-			margin-right 4px
-
-	> .mk-messaging
+	.mk-messaging
 		max-height 250px
 		overflow auto
 

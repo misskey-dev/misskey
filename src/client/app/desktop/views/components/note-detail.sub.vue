@@ -1,8 +1,6 @@
 <template>
 <div class="sub" :title="title">
-	<router-link class="avatar-anchor" :to="note.user | userPage">
-		<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="note.userId"/>
-	</router-link>
+	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<header>
 			<div class="left">
@@ -16,8 +14,11 @@
 			</div>
 		</header>
 		<div class="body">
-			<mk-note-html v-if="note.text" :text="note.text" :i="os.i" :class="$style.text"/>
-			<div class="media" v-if="note.media > 0">
+			<div class="text">
+				<span v-if="note.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+				<mk-note-html v-if="note.text" :text="note.text" :i="os.i"/>
+			</div>
+			<div class="media" v-if="note.mediaIds.length > 0">
 				<mk-media-list :media-list="note.media"/>
 			</div>
 		</div>
@@ -40,10 +41,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.sub
+root(isDark)
 	margin 0
 	padding 20px 32px
-	background #fdfdfd
+	background isDark ? #21242d : #fdfdfd
 
 	&:after
 		content ""
@@ -54,18 +55,13 @@ export default Vue.extend({
 		> .main > footer > button
 			color #888
 
-	> .avatar-anchor
+	> .avatar
 		display block
 		float left
 		margin 0 16px 0 0
-
-		> .avatar
-			display block
-			width 44px
-			height 44px
-			margin 0
-			border-radius 4px
-			vertical-align bottom
+		width 44px
+		height 44px
+		border-radius 4px
 
 	> .main
 		float left
@@ -87,7 +83,7 @@ export default Vue.extend({
 					display inline
 					margin 0
 					padding 0
-					color #777
+					color isDark ? #fff : #777
 					font-size 1em
 					font-weight 700
 					text-align left
@@ -99,24 +95,29 @@ export default Vue.extend({
 				> .username
 					text-align left
 					margin 0 0 0 8px
-					color #ccc
+					color isDark ? #606984 : #ccc
 
 			> .right
 				float right
 
 				> .time
 					font-size 0.9em
-					color #c0c0c0
+					color isDark ? #606984 : #c0c0c0
 
-</style>
+		> .body
+			> .text
+				cursor default
+				display block
+				margin 0
+				padding 0
+				overflow-wrap break-word
+				font-size 1em
+				color isDark ? #959ba7 : #717171
 
-<style lang="stylus" module>
-.text
-	cursor default
-	display block
-	margin 0
-	padding 0
-	overflow-wrap break-word
-	font-size 1em
-	color #717171
+.sub[data-darkmode]
+	root(true)
+
+.sub:not([data-darkmode])
+	root(false)
+
 </style>

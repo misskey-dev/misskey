@@ -1,29 +1,25 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/user';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 
 /**
  * Get muted users of a user
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = $(params.iknow).optional.boolean().$;
+	const [iknow = false, iknowErr] = $.bool.optional().get(params.iknow);
 	if (iknowErr) return rej('invalid iknow param');
 
 	// Get 'limit' parameter
-	const [limit = 30, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 30, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $(params.cursor).optional.id().$;
+	const [cursor = null, cursorErr] = $.type(ID).optional().get(params.cursor);
 	if (cursorErr) return rej('invalid cursor param');
 
 	// Construct query
@@ -34,7 +30,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 
 	if (iknow) {
 		// Get my friends
-		const myFriends = await getFriends(me._id);
+		const myFriends = await getFriendIds(me._id);
 
 		query.muteeId = {
 			$in: myFriends

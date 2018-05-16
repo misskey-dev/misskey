@@ -57,6 +57,8 @@ export default (
 		.count({
 			recipientId: userId,
 			isRead: false
+		}, {
+			limit: 1
 		});
 
 	if (count == 0) {

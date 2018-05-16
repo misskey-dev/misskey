@@ -1,12 +1,12 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 const escapeRegexp = require('escape-regexp');
 import Note from '../../../../models/note';
 import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 
 /**
@@ -18,63 +18,63 @@ import { pack } from '../../../../models/note';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'text' parameter
-	const [text, textError] = $(params.text).optional.string().$;
+	const [text, textError] = $.str.optional().get(params.text);
 	if (textError) return rej('invalid text param');
 
 	// Get 'includeUserIds' parameter
-	const [includeUserIds = [], includeUserIdsErr] = $(params.includeUserIds).optional.array('id').$;
+	const [includeUserIds = [], includeUserIdsErr] = $.arr($.type(ID)).optional().get(params.includeUserIds);
 	if (includeUserIdsErr) return rej('invalid includeUserIds param');
 
 	// Get 'excludeUserIds' parameter
-	const [excludeUserIds = [], excludeUserIdsErr] = $(params.excludeUserIds).optional.array('id').$;
+	const [excludeUserIds = [], excludeUserIdsErr] = $.arr($.type(ID)).optional().get(params.excludeUserIds);
 	if (excludeUserIdsErr) return rej('invalid excludeUserIds param');
 
 	// Get 'includeUserUsernames' parameter
-	const [includeUserUsernames = [], includeUserUsernamesErr] = $(params.includeUserUsernames).optional.array('string').$;
+	const [includeUserUsernames = [], includeUserUsernamesErr] = $.arr($.str).optional().get(params.includeUserUsernames);
 	if (includeUserUsernamesErr) return rej('invalid includeUserUsernames param');
 
 	// Get 'excludeUserUsernames' parameter
-	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $(params.excludeUserUsernames).optional.array('string').$;
+	const [excludeUserUsernames = [], excludeUserUsernamesErr] = $.arr($.str).optional().get(params.excludeUserUsernames);
 	if (excludeUserUsernamesErr) return rej('invalid excludeUserUsernames param');
 
 	// Get 'following' parameter
-	const [following = null, followingErr] = $(params.following).optional.nullable.boolean().$;
+	const [following = null, followingErr] = $.bool.optional().nullable().get(params.following);
 	if (followingErr) return rej('invalid following param');
 
 	// Get 'mute' parameter
-	const [mute = 'mute_all', muteErr] = $(params.mute).optional.string().$;
+	const [mute = 'mute_all', muteErr] = $.str.optional().get(params.mute);
 	if (muteErr) return rej('invalid mute param');
 
 	// Get 'reply' parameter
-	const [reply = null, replyErr] = $(params.reply).optional.nullable.boolean().$;
+	const [reply = null, replyErr] = $.bool.optional().nullable().get(params.reply);
 	if (replyErr) return rej('invalid reply param');
 
 	// Get 'renote' parameter
-	const [renote = null, renoteErr] = $(params.renote).optional.nullable.boolean().$;
+	const [renote = null, renoteErr] = $.bool.optional().nullable().get(params.renote);
 	if (renoteErr) return rej('invalid renote param');
 
 	// Get 'media' parameter
-	const [media = null, mediaErr] = $(params.media).optional.nullable.boolean().$;
+	const [media = null, mediaErr] = $.bool.optional().nullable().get(params.media);
 	if (mediaErr) return rej('invalid media param');
 
 	// Get 'poll' parameter
-	const [poll = null, pollErr] = $(params.poll).optional.nullable.boolean().$;
+	const [poll = null, pollErr] = $.bool.optional().nullable().get(params.poll);
 	if (pollErr) return rej('invalid poll param');
 
 	// Get 'sinceDate' parameter
-	const [sinceDate, sinceDateErr] = $(params.sinceDate).optional.number().$;
+	const [sinceDate, sinceDateErr] = $.num.optional().get(params.sinceDate);
 	if (sinceDateErr) throw 'invalid sinceDate param';
 
 	// Get 'untilDate' parameter
-	const [untilDate, untilDateErr] = $(params.untilDate).optional.number().$;
+	const [untilDate, untilDateErr] = $.num.optional().get(params.untilDate);
 	if (untilDateErr) throw 'invalid untilDate param';
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
+	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 30).$;
+	const [limit = 10, limitErr] = $.num.optional().range(1, 30).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	let includeUsers = includeUserIds;
@@ -156,7 +156,7 @@ async function search(
 	}
 
 	if (following != null && me != null) {
-		const ids = await getFriends(me._id, false);
+		const ids = await getFriendIds(me._id, false);
 		push({
 			userId: following ? {
 				$in: ids

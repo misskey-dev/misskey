@@ -6,22 +6,18 @@ import User, { pack } from '../../../models/user';
 
 /**
  * Lists all users
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $(params.offset).optional.number().min(0).$;
+	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'sort' parameter
-	const [sort, sortError] = $(params.sort).optional.string().or('+follower|-follower').$;
+	const [sort, sortError] = $.str.optional().or('+follower|-follower').get(params.sort);
 	if (sortError) return rej('invalid sort param');
 
 	// Construct query

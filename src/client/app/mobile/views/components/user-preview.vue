@@ -1,8 +1,6 @@
 <template>
 <div class="mk-user-preview">
-	<router-link class="avatar-anchor" :to="user | userPage">
-		<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-	</router-link>
+	<mk-avatar class="avatar" :user="user"/>
 	<div class="main">
 		<header>
 			<router-link class="name" :to="user | userPage">{{ user | userName }}</router-link>
@@ -40,26 +38,19 @@ export default Vue.extend({
 		display block
 		clear both
 
-	> .avatar-anchor
+	> .avatar
 		display block
 		float left
 		margin 0 10px 0 0
+		width 48px
+		height 48px
+		border-radius 6px
 
 		@media (min-width 500px)
 			margin-right 16px
-
-		> .avatar
-			display block
-			width 48px
-			height 48px
-			margin 0
-			border-radius 6px
-			vertical-align bottom
-
-			@media (min-width 500px)
-				width 58px
-				height 58px
-				border-radius 8px
+			width 58px
+			height 58px
+			border-radius 8px
 
 	> .main
 		float left

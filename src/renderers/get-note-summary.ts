@@ -1,8 +1,12 @@
 /**
  * 投稿を表す文字列を取得します。
- * @param {*} note 投稿
+ * @param {*} note (packされた)投稿
  */
 const summarize = (note: any): string => {
+	if (note.isHidden) {
+		return '(非公開の投稿)';
+	}
+
 	let summary = '';
 
 	// チャンネル

@@ -15,11 +15,10 @@ process.on('unhandledRejection', console.dir);
 const fs = require('fs');
 const _chai = require('chai');
 const chaiHttp = require('chai-http');
-const should = _chai.should();
 
 _chai.use(chaiHttp);
 
-const server = require('../built/server/api');
+const server = require('../built/server/api').callback();
 const db = require('../built/db/mongodb').default;
 
 const async = fn => (done) => {
@@ -55,16 +54,6 @@ describe('API', () => {
 		db.get('accessTokens').drop(),
 		db.get('authSessions').drop()
 	]));
-
-	it('greet server', done => {
-		_chai.request(server)
-			.get('/')
-			.end((err, res) => {
-				res.should.have.status(200);
-				res.text.should.be.equal('YEE HAW');
-				done();
-			});
-	});
 
 	describe('signup', () => {
 		it('不正なユーザー名でアカウントが作成できない', async(async () => {

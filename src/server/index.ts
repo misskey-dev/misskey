@@ -4,12 +4,15 @@
 
 import * as fs from 'fs';
 import * as http from 'http';
-import * as http2 from 'http2';
+import * as https from 'https';
+//import * as http2 from 'http2';
 import * as zlib from 'zlib';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
+import * as logger from 'koa-logger';
+//const slow = require('koa-slow');
 
 import activityPub from './activitypub';
 import webFinger from './webfinger';
@@ -19,6 +22,17 @@ import config from '../config';
 const app = new Koa();
 app.proxy = true;
 
+if (process.env.NODE_ENV != 'production') {
+	// Logger
+	app.use(logger());
+
+	// Delay
+	//app.use(slow({
+	//	delay: 1000
+	//}));
+}
+
+// Compress response
 app.use(compress({
 	flush: zlib.constants.Z_SYNC_FLUSH
 }));
@@ -54,7 +68,8 @@ function createServer() {
 			certs[k] = fs.readFileSync(config.https[k]);
 		});
 		certs['allowHTTP1'] = true;
-		return http2.createSecureServer(certs, app.callback());
+		//return http2.createSecureServer(certs, app.callback());
+		return https.createServer(certs, app.callback());
 	} else {
 		return http.createServer(app.callback());
 	}

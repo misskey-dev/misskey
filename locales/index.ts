@@ -13,7 +13,8 @@ const native = loadLang('ja');
 const langs = {
 	'en': loadLang('en'),
 	'fr': loadLang('fr'),
-	'ja': native
+	'ja': native,
+ 'pl': loadLang('pl')
 };
 
 Object.entries(langs).map(([, locale]) => {

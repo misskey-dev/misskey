@@ -64,6 +64,7 @@ export default define({
 			} else {
 				this.props.size++;
 			}
+			this.save();
 
 			this.applySize();
 		},
@@ -111,6 +112,7 @@ export default define({
 		choose() {
 			(this as any).apis.chooseDriveFolder().then(folder => {
 				this.props.folder = folder ? folder.id : null;
+				this.save();
 				this.fetch();
 			});
 		}
@@ -122,13 +124,13 @@ export default define({
 .mkw-slideshow
 	overflow hidden
 	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	&[data-mobile]
 		border none
 		border-radius 8px
-		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+		box-shadow 0 0 0 1px rgba(#000, 0.2)
 
 	> div
 		width 100%

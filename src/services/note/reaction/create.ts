@@ -9,7 +9,6 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import pack from '../../../remote/activitypub/renderer';
-import { MongoError } from 'mongodb';
 
 export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
 	// Myself
@@ -27,8 +26,8 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 		});
 	} catch (e) {
 		// duplicate key error
-		if (e instanceof MongoError && e.code === 11000) {
-			return rej('already reacted');
+		if (e.code === 11000) {
+			return res(null);
 		}
 
 		console.error(e);
@@ -47,11 +46,13 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 
 	publishNoteStream(note._id, 'reacted');
 
-	// Notify
-	notify(note.userId, user._id, 'reaction', {
-		noteId: note._id,
-		reaction: reaction
-	});
+	// リアクションされたユーザーがローカルユーザーなら通知を作成
+	if (isLocalUser(note._user)) {
+		notify(note.userId, user._id, 'reaction', {
+			noteId: note._id,
+			reaction: reaction
+		});
+	}
 
 	pushSw(note.userId, 'reaction', {
 		user: await packUser(user, note.userId),
@@ -86,7 +87,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 	//#region 配信
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (isLocalUser(user) && isRemoteUser(note._user)) {
-		const content = pack(renderLike(user, note));
+		const content = pack(renderLike(user, note, reaction));
 		deliver(user, content, note._user.inbox);
 	}
 	//#endregion

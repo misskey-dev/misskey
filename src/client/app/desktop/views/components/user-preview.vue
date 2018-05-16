@@ -2,11 +2,9 @@
 <div class="mk-user-preview">
 	<template v-if="u != null">
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl}?thumbnail&size=512)` : ''"></div>
-		<router-link class="avatar" :to="u | userPage">
-			<img :src="`${u.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
-			<router-link class="name" :to="u | userPage">{{ u.name }}</router-link>
+			<router-link class="name" :to="u | userPage">{{ u | userName }}</router-link>
 			<p class="username">@{{ u | acct }}</p>
 		</div>
 		<div class="description">{{ u.description }}</div>
@@ -87,21 +85,21 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-user-preview
+root(isDark)
 	position absolute
 	z-index 2048
 	margin-top -8px
 	width 250px
-	background #fff
+	background isDark ? #282c37 : #fff
 	background-clip content-box
-	border solid 1px rgba(0, 0, 0, 0.1)
+	border solid 1px rgba(#000, 0.1)
 	border-radius 4px
 	overflow hidden
 	opacity 0
 
 	> .banner
 		height 84px
-		background-color #f5f5f5
+		background-color isDark ? #1c1e26 : #f5f5f5
 		background-size cover
 		background-position center
 
@@ -111,14 +109,10 @@ export default Vue.extend({
 		top 62px
 		left 13px
 		z-index 2
-
-		> img
-			display block
-			width 58px
-			height 58px
-			margin 0
-			border solid 3px #fff
-			border-radius 8px
+		width 58px
+		height 58px
+		border solid 3px isDark ? #282c37 : #fff
+		border-radius 8px
 
 	> .title
 		display block
@@ -129,19 +123,19 @@ export default Vue.extend({
 			margin 0
 			font-weight bold
 			line-height 16px
-			color #656565
+			color isDark ? #fff : #656565
 
 		> .username
 			display block
 			margin 0
 			line-height 16px
 			font-size 0.8em
-			color #999
+			color isDark ? #606984 : #999
 
 	> .description
 		padding 0 16px
 		font-size 0.7em
-		color #555
+		color isDark ? #9ea4ad : #555
 
 	> .status
 		padding 8px 16px
@@ -163,5 +157,11 @@ export default Vue.extend({
 		position absolute
 		top 92px
 		right 8px
+
+.mk-user-preview[data-darkmode]
+	root(true)
+
+.mk-user-preview:not([data-darkmode])
+	root(false)
 
 </style>

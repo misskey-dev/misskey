@@ -18,61 +18,65 @@ export default function<T extends object>(data: {
 				default: false
 			}
 		},
+
 		computed: {
 			id(): string {
 				return this.widget.id;
+			},
+
+			props(): T {
+				return this.widget.data;
 			}
 		},
+
 		data() {
 			return {
-				props: data.props ? data.props() : {} as T,
-				bakedOldProps: null,
-				preventSave: false
+				bakedOldProps: null
 			};
 		},
+
 		created() {
-			if (this.props) {
-				Object.keys(this.props).forEach(prop => {
-					if (this.widget.data.hasOwnProperty(prop)) {
-						this.props[prop] = this.widget.data[prop];
-					}
-				});
-			}
+			this.mergeProps();
+
+			this.$watch('props', () => {
+				this.mergeProps();
+			});
 
 			this.bakeProps();
+		},
 
-			this.$watch('props', newProps => {
-				if (this.preventSave) {
-					this.preventSave = false;
-					this.bakeProps();
-					return;
+		methods: {
+			bakeProps() {
+				this.bakedOldProps = JSON.stringify(this.props);
+			},
+
+			mergeProps() {
+				if (data.props) {
+					const defaultProps = data.props();
+					Object.keys(defaultProps).forEach(prop => {
+						if (!this.props.hasOwnProperty(prop)) {
+							Vue.set(this.props, prop, defaultProps[prop]);
+						}
+					});
 				}
-				if (this.bakedOldProps == JSON.stringify(newProps)) return;
+			},
+
+			save() {
+				if (this.bakedOldProps == JSON.stringify(this.props)) return;
 
 				this.bakeProps();
 
 				if (this.isMobile) {
 					(this as any).api('i/update_mobile_home', {
 						id: this.id,
-						data: newProps
-					}).then(() => {
-						(this as any).os.i.clientSettings.mobileHome.find(w => w.id == this.id).data = newProps;
+						data: this.props
 					});
 				} else {
 					(this as any).api('i/update_home', {
 						id: this.id,
-						data: newProps
-					}).then(() => {
-						(this as any).os.i.clientSettings.home.find(w => w.id == this.id).data = newProps;
+						data: this.props
 					});
 				}
-			}, {
-				deep: true
-			});
-		},
-		methods: {
-			bakeProps() {
-				this.bakedOldProps = JSON.stringify(this.props);
 			}
 		}
 	});

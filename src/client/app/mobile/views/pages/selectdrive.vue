@@ -62,7 +62,7 @@ export default Vue.extend({
 		width 100%
 		z-index 1000
 		background #fff
-		box-shadow 0 1px rgba(0, 0, 0, 0.1)
+		box-shadow 0 1px rgba(#000, 0.1)
 
 		> h1
 			margin 0

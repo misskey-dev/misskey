@@ -87,7 +87,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-switch
+root(isDark)
 	display flex
 	margin 12px 0
 	cursor pointer
@@ -121,11 +121,12 @@ export default Vue.extend({
 	&:hover
 		> .label
 			> span
-				color #2e3338
+				color isDark ? #fff : #2e3338
 
 		> .button
-			background #ced2da
-			border-color #ced2da
+			$color = isDark ? #15181d : #ced2da
+			background $color
+			border-color $color
 
 	> input
 		position absolute
@@ -147,14 +148,16 @@ export default Vue.extend({
 				border-radius 14px
 
 	> .button
+		$color = isDark ? #1c1f25 : #dcdfe6
+
 		display inline-block
 		margin 0
 		width 40px
 		min-width 40px
 		height 20px
 		min-height 20px
-		background #dcdfe6
-		border 1px solid #dcdfe6
+		background $color
+		border 1px solid $color
 		outline none
 		border-radius 10px
 		transition inherit
@@ -179,12 +182,18 @@ export default Vue.extend({
 		> span
 			display block
 			line-height 20px
-			color #4a535a
+			color isDark ? #c4ccd2 : #4a535a
 			transition inherit
 
 		> p
 			margin 0
 			//font-size 90%
-			color #9daab3
+			color isDark ? #78858e : #9daab3
+
+.mk-switch[data-darkmode]
+	root(true)
+
+.mk-switch:not([data-darkmode])
+	root(false)
 
 </style>

@@ -12,7 +12,6 @@ export interface IMessagingMessage {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	text: string;
-	textHtml: string;
 	userId: mongo.ObjectID;
 	recipientId: mongo.ObjectID;
 	isRead: boolean;

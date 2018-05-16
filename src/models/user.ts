@@ -1,11 +1,12 @@
 import * as mongo from 'mongodb';
 import deepcopy = require('deepcopy');
+import sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
-import Note, { INote, pack as packNote, deleteNote } from './note';
+import Note, { pack as packNote, deleteNote } from './note';
 import Following, { deleteFollowing } from './following';
 import Mute, { deleteMute } from './mute';
-import getFriends from '../server/api/common/get-friends';
+import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
 import AccessToken, { deleteAccessToken } from './access-token';
 import NoteWatching, { deleteNoteWatching } from './note-watching';
@@ -20,6 +21,7 @@ import FollowingLog, { deleteFollowingLog } from './following-log';
 import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
+import UserList, { deleteUserList } from './user-list';
 
 const User = db.get<IUser>('users');
 
@@ -35,7 +37,7 @@ export default User;
 type IUserBase = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
-	deletedAt: Date;
+	deletedAt?: Date;
 	followersCount: number;
 	followingCount: number;
 	name?: string;
@@ -47,10 +49,8 @@ type IUserBase = {
 	bannerId: mongo.ObjectID;
 	data: any;
 	description: string;
-	latestNote: INote;
 	pinnedNoteId: mongo.ObjectID;
 	isSuspended: boolean;
-	keywords: string[];
 	host: string;
 };
 
@@ -80,13 +80,14 @@ export interface ILocalUser extends IUserBase {
 	isPro: boolean;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;
-	twoFactorTempSecret: string;
+	twoFactorTempSecret?: string;
 	clientSettings: any;
 	settings: any;
 }
 
 export interface IRemoteUser extends IUserBase {
 	inbox: string;
+	endpoints: string[];
 	uri: string;
 	url?: string;
 	publicKey: {
@@ -114,7 +115,7 @@ export function validatePassword(password: string): boolean {
 }
 
 export function isValidName(name?: string): boolean {
-	return name === null || (typeof name == 'string' && name.length < 30 && name.trim() != '');
+	return name === null || (typeof name == 'string' && name.length < 50 && name.trim() != '');
 }
 
 export function isValidDescription(description: string): boolean {
@@ -167,9 +168,9 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteAccessToken(x)));
 
 	// このユーザーのNoteをすべて削除
-	await Promise.all((
-		await Note.find({ userId: u._id })
-	).map(x => deleteNote(x)));
+	//await sequential((
+	//	await Note.find({ userId: u._id })
+	//).map(x => () => deleteNote(x)));
 
 	// このユーザーのNoteReactionをすべて削除
 	await Promise.all((
@@ -261,6 +262,20 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		await Notification.find({ notifierId: u._id })
 	).map(x => deleteNotification(x)));
 
+	// このユーザーのUserListをすべて削除
+	await Promise.all((
+		await UserList.find({ userId: u._id })
+	).map(x => deleteUserList(x)));
+
+	// このユーザーが入っているすべてのUserListからこのユーザーを削除
+	await Promise.all((
+		await UserList.find({ userIds: u._id })
+	).map(x =>
+		UserList.update({ _id: x._id }, {
+			$pull: { userIds: u._id }
+		})
+	));
+
 	// このユーザーを削除
 	await User.remove({
 		_id: u._id
@@ -332,9 +347,6 @@ export const pack = (
 	_user.id = _user._id;
 	delete _user._id;
 
-	// Remove needless properties
-	delete _user.latestNote;
-
 	if (_user.host == null) {
 		// Remove private properties
 		delete _user.keypair;
@@ -359,6 +371,8 @@ export const pack = (
 		if (!opts.detail) {
 			delete _user.twoFactorEnabled;
 		}
+	} else {
+		delete _user.publicKey;
 	}
 
 	_user.avatarUrl = _user.avatarId != null
@@ -377,33 +391,30 @@ export const pack = (
 	}
 
 	if (meId && !meId.equals(_user.id)) {
-		// Whether the user is following
-		_user.isFollowing = (async () => {
-			const follow = await Following.findOne({
+		const [following1, following2, mute] = await Promise.all([
+			Following.findOne({
 				followerId: meId,
 				followeeId: _user.id
-			});
-			return follow !== null;
-		})();
-
-		// Whether the user is followed
-		_user.isFollowed = (async () => {
-			const follow2 = await Following.findOne({
+			}),
+			Following.findOne({
 				followerId: _user.id,
 				followeeId: meId
-			});
-			return follow2 !== null;
-		})();
+			}),
+			Mute.findOne({
+				muterId: meId,
+				muteeId: _user.id
+			})
+		]);
+
+		// Whether the user is following
+		_user.isFollowing = following1 !== null;
+		_user.isStalking = following1 && following1.stalk;
+
+		// Whether the user is followed
+		_user.isFollowed = following2 !== null;
 
 		// Whether the user is muted
-		_user.isMuted = (async () => {
-			const mute = await Mute.findOne({
-				muterId: meId,
-				muteeId: _user.id,
-				deletedAt: { $exists: false }
-			});
-			return mute !== null;
-		})();
+		_user.isMuted = mute !== null;
 	}
 
 	if (opts.detail) {
@@ -415,7 +426,7 @@ export const pack = (
 		}
 
 		if (meId && !meId.equals(_user.id)) {
-			const myFollowingIds = await getFriends(meId);
+			const myFollowingIds = await getFriendIds(meId);
 
 			// Get following you know count
 			_user.followingYouKnowCount = Following.count({
@@ -448,3 +459,7 @@ function img(url) {
 	};
 }
 */
+
+export function getGhost(): Promise<ILocalUser> {
+	return User.findOne({ _id: new mongo.ObjectId(config.ghost) });
+}

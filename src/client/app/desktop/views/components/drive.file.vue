@@ -186,7 +186,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.root.file
+root(isDark)
 	padding 8px 0 0 0
 	height 180px
 	border-radius 4px
@@ -195,7 +195,7 @@ export default Vue.extend({
 		cursor pointer
 
 	&:hover
-		background rgba(0, 0, 0, 0.05)
+		background rgba(#000, 0.05)
 
 		> .label
 			&:before
@@ -203,7 +203,7 @@ export default Vue.extend({
 				background #0b65a5
 
 	&:active
-		background rgba(0, 0, 0, 0.1)
+		background rgba(#000, 0.1)
 
 		> .label
 			&:before
@@ -308,10 +308,16 @@ export default Vue.extend({
 		font-size 0.8em
 		text-align center
 		word-break break-all
-		color #444
+		color isDark ? #fff : #444
 		overflow hidden
 
 		> .ext
 			opacity 0.5
+
+.root.file[data-darkmode]
+	root(true)
+
+.root.file:not([data-darkmode])
+	root(false)
 
 </style>

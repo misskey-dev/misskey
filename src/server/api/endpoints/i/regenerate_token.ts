@@ -9,14 +9,10 @@ import generateUserToken from '../../common/generate-native-user-token';
 
 /**
  * Regenerate native token
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'password' parameter
-	const [password, passwordErr] = $(params.password).string().$;
+	const [password, passwordErr] = $.str.get(params.password);
 	if (passwordErr) return rej('invalid password param');
 
 	// Compare password

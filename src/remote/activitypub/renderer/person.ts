@@ -10,6 +10,7 @@ export default user => {
 		id,
 		inbox: `${id}/inbox`,
 		outbox: `${id}/outbox`,
+		sharedInbox: `${config.url}/inbox`,
 		url: `${config.url}/@${user.username}`,
 		preferredUsername: user.username,
 		name: user.name,

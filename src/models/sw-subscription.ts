@@ -38,4 +38,3 @@ export async function deleteSwSubscription(swSubscription: string | mongo.Object
 		_id: s._id
 	});
 }
-

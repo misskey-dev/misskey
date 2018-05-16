@@ -4,6 +4,7 @@ import config from '../../../config';
 import DriveFile from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
+import toHtml from '../misc/get-note-html';
 
 export default async function renderNote(note: INote, dive = true) {
 	const promisedFiles = note.mediaIds
@@ -48,7 +49,7 @@ export default async function renderNote(note: INote, dive = true) {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
-		content: note.textHtml,
+		content: toHtml(note),
 		published: note.createdAt.toISOString(),
 		to: 'https://www.w3.org/ns/activitystreams#Public',
 		cc: `${attributedTo}/followers`,

@@ -1,30 +1,21 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
+import { validateReaction } from '../../../../../models/note-reaction';
 
 /**
  * React to a note
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $(params.noteId).id().$;
+	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');
 
 	// Get 'reaction' parameter
-	const [reaction, reactionErr] = $(params.reaction).string().or([
-		'like',
-		'love',
-		'laugh',
-		'hmm',
-		'surprise',
-		'congrats',
-		'angry',
-		'confused',
-		'pudding'
-	]).$;
+	const [reaction, reactionErr] = $.str.pipe(validateReaction.ok).get(params.reaction);
 	if (reactionErr) return rej('invalid reaction param');
 
 	// Fetch reactee

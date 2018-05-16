@@ -1,15 +1,22 @@
 <template>
 <div class="sub" :title="title">
-	<router-link class="avatar-anchor" :to="note.user | userPage">
-		<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="note.userId"/>
-	</router-link>
+	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
 			<span class="username">@{{ note.user | acct }}</span>
-			<router-link class="created-at" :to="note | notePage">
-				<mk-time :time="note.createdAt"/>
-			</router-link>
+			<div class="info">
+				<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
+				<router-link class="created-at" :to="note | notePage">
+					<mk-time :time="note.createdAt"/>
+				</router-link>
+				<span class="visibility" v-if="note.visibility != 'public'">
+					<template v-if="note.visibility == 'home'">%fa:home%</template>
+					<template v-if="note.visibility == 'followers'">%fa:unlock%</template>
+					<template v-if="note.visibility == 'specified'">%fa:envelope%</template>
+					<template v-if="note.visibility == 'private'">%fa:lock%</template>
+				</span>
+			</div>
 		</header>
 		<div class="body">
 			<mk-sub-note-content class="text" :note="note"/>
@@ -33,32 +40,24 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.sub
+root(isDark)
 	margin 0
-	padding 16px
+	padding 16px 32px
 	font-size 0.9em
+	background isDark ? #21242d : #fcfcfc
 
 	&:after
 		content ""
 		display block
 		clear both
 
-	&:hover
-		> .main > footer > button
-			color #888
-
-	> .avatar-anchor
+	> .avatar
 		display block
 		float left
 		margin 0 14px 0 0
-
-		> .avatar
-			display block
-			width 52px
-			height 52px
-			margin 0
-			border-radius 8px
-			vertical-align bottom
+		width 52px
+		height 52px
+		border-radius 8px
 
 	> .main
 		float left
@@ -66,6 +65,7 @@ export default Vue.extend({
 
 		> header
 			display flex
+			align-items baseline
 			margin-bottom 2px
 			white-space nowrap
 			line-height 21px
@@ -75,7 +75,7 @@ export default Vue.extend({
 				margin 0 .5em 0 0
 				padding 0
 				overflow hidden
-				color #607073
+				color isDark ? #fff : #607073
 				font-size 1em
 				font-weight bold
 				text-decoration none
@@ -86,23 +86,40 @@ export default Vue.extend({
 
 			> .username
 				margin 0 .5em 0 0
-				color #d1d8da
+				color isDark ? #606984 : #d1d8da
 
-			> .created-at
+			> .info
 				margin-left auto
-				color #b2b8bb
+				font-size 0.9em
+
+				> *
+					color isDark ? #606984 : #b2b8bb
+
+				> .mobile
+					margin-right 6px
+
+				> .visibility
+					margin-left 6px
 
 		> .body
+			max-height 128px
+			overflow hidden
 
 			> .text
 				cursor default
 				margin 0
 				padding 0
 				font-size 1.1em
-				color #717171
+				color isDark ? #959ba7 : #717171
 
 				pre
 					max-height 120px
 					font-size 80%
+
+.sub[data-darkmode]
+	root(true)
+
+.sub:not([data-darkmode])
+	root(false)
 
 </style>

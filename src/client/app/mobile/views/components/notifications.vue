@@ -1,18 +1,20 @@
 <template>
 <div class="mk-notifications">
-	<div class="notifications" v-if="notifications.length != 0">
+	<transition-group name="mk-notifications" class="transition notifications">
 		<template v-for="(notification, i) in _notifications">
 			<mk-notification :notification="notification" :key="notification.id"/>
-			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
+			<p class="date" :key="notification.id + '_date'" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date">
 				<span>%fa:angle-up%{{ notification._datetext }}</span>
 				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</div>
+	</transition-group>
+
 	<button class="more" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>
 		{{ fetchingMoreNotifications ? '%i18n:!common.loading%' : '%i18n:!@more%' }}
 	</button>
+
 	<p class="empty" v-if="notifications.length == 0 && !fetching">%i18n:@empty%</p>
 	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 </div>
@@ -101,28 +103,29 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-notifications
-	margin 8px auto
-	padding 0
-	max-width 500px
-	width calc(100% - 16px)
-	background #fff
+root(isDark)
+	margin 0 auto
+	background isDark ? #282C37 :#fff
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+	box-shadow 0 0 2px rgba(#000, 0.1)
+	overflow hidden
 
 	@media (min-width 500px)
-		margin 16px auto
-		width calc(100% - 32px)
+		box-shadow 0 8px 32px rgba(#000, 0.1)
+
+	.transition
+		.mk-notifications-enter
+		.mk-notifications-leave-to
+			opacity 0
+			transform translateY(-30px)
+
+		> *
+			transition transform .3s ease, opacity .3s ease
 
 	> .notifications
 
-		> .mk-notification
-			margin 0 auto
-			max-width 500px
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
-
-			&:last-child
-				border-bottom none
+		> .mk-notification:not(:last-child)
+			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 		> .date
 			display block
@@ -130,9 +133,9 @@ export default Vue.extend({
 			line-height 32px
 			text-align center
 			font-size 0.8em
-			color #aaa
-			background #fdfdfd
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
+			color isDark ? #666b79 : #aaa
+			background isDark ? #242731 : #fdfdfd
+			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 			span
 				margin 0 16px
@@ -145,7 +148,7 @@ export default Vue.extend({
 		width 100%
 		padding 16px
 		color #555
-		border-top solid 1px rgba(0, 0, 0, 0.05)
+		border-top solid 1px rgba(#000, 0.05)
 
 		> [data-fa]
 			margin-right 4px
@@ -164,5 +167,11 @@ export default Vue.extend({
 
 		> [data-fa]
 			margin-right 4px
+
+.mk-notifications[data-darkmode]
+	root(true)
+
+.mk-notifications:not([data-darkmode])
+	root(false)
 
 </style>

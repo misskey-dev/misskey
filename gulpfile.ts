@@ -2,9 +2,7 @@
  * Gulp tasks
  */
 
-import * as childProcess from 'child_process';
 import * as fs from 'fs';
-import * as Path from 'path';
 import * as gulp from 'gulp';
 import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
@@ -23,7 +21,7 @@ import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 
 import { fa } from './src/build/fa';
-import version from './src/version';
+const client = require('./built/client/meta.json');
 import config from './src/config';
 
 const uglify = uglifyComposer(uglifyes, console);
@@ -61,9 +59,15 @@ gulp.task('build:ts', () => {
 		.pipe(gulp.dest('./built/'));
 });
 
-gulp.task('build:copy', () =>
+gulp.task('build:copy:views', () =>
+	gulp.src('./src/server/web/views/**/*').pipe(gulp.dest('./built/server/web/views'))
+);
+
+gulp.task('build:copy', ['build:copy:views'], () =>
 	gulp.src([
 		'./build/Release/crypto_key.node',
+		'./src/const.json',
+		'./src/server/web/views/**/*',
 		'./src/**/assets/**/*',
 		'!./src/client/app/**/assets/**/*'
 	]).pipe(gulp.dest('./built/'))
@@ -115,7 +119,7 @@ gulp.task('build:client', [
 
 gulp.task('build:client:script', () =>
 	gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
-		.pipe(replace('VERSION', JSON.stringify(version)))
+		.pipe(replace('VERSION', JSON.stringify(client.version)))
 		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(isProduction ? uglify({

@@ -1,19 +1,16 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import User from '../../../../../models/user';
 import Note from '../../../../../models/note';
 
 /**
  * Aggregate note of a user
- *
- * @param {any} params
- * @return {Promise<any>}
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).id().$;
+	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Lookup user

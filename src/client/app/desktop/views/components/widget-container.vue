@@ -24,8 +24,8 @@ export default Vue.extend({
 	computed: {
 		withGradient(): boolean {
 			return (this as any).os.isSignedIn
-				? (this as any).os.i.clientSettings.gradientWindowHeader != null
-					? (this as any).os.i.clientSettings.gradientWindowHeader
+				? (this as any).clientSettings.gradientWindowHeader != null
+					? (this as any).clientSettings.gradientWindowHeader
 					: false
 				: false;
 		}
@@ -34,9 +34,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-widget-container
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+root(isDark)
+	background isDark ? #282C37 : #fff
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 	overflow hidden
 
@@ -45,6 +45,8 @@ export default Vue.extend({
 		border none !important
 
 	> header
+		background isDark ? #313543 : #fff
+
 		> .title
 			z-index 1
 			margin 0
@@ -52,11 +54,11 @@ export default Vue.extend({
 			line-height 42px
 			font-size 0.9em
 			font-weight bold
-			color #888
-			box-shadow 0 1px rgba(0, 0, 0, 0.07)
+			color isDark ? #e3e5e8 : #888
+			box-shadow 0 1px rgba(#000, 0.07)
 
 			> [data-fa]
-				margin-right 4px
+				margin-right 6px
 
 			&:empty
 				display none
@@ -70,16 +72,23 @@ export default Vue.extend({
 			width 42px
 			font-size 0.9em
 			line-height 42px
-			color #ccc
+			color isDark ? #9baec8 : #ccc
 
 			&:hover
-				color #aaa
+				color isDark ? #b2c1d5 : #aaa
 
 			&:active
-				color #999
+				color isDark ? #b2c1d5 : #999
 
 		&.withGradient
 			> .title
-				background linear-gradient(to bottom, #fff, #ececec)
+				background isDark ? linear-gradient(to bottom, #313543, #1d2027) : linear-gradient(to bottom, #fff, #ececec)
 				box-shadow 0 1px rgba(#000, 0.11)
+
+.mk-widget-container[data-darkmode]
+	root(true)
+
+.mk-widget-container:not([data-darkmode])
+	root(false)
+
 </style>

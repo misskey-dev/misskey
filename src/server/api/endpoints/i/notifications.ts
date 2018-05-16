@@ -1,11 +1,11 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Notification from '../../../../models/notification';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/notification';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 
 /**
@@ -14,27 +14,27 @@ import read from '../../common/read-notification';
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following = false, followingError] =
-		$(params.following).optional.boolean().$;
+		$.bool.optional().get(params.following);
 	if (followingError) return rej('invalid following param');
 
 	// Get 'markAsRead' parameter
-	const [markAsRead = true, markAsReadErr] = $(params.markAsRead).optional.boolean().$;
+	const [markAsRead = true, markAsReadErr] = $.bool.optional().get(params.markAsRead);
 	if (markAsReadErr) return rej('invalid markAsRead param');
 
 	// Get 'type' parameter
-	const [type, typeErr] = $(params.type).optional.array('string').unique().$;
+	const [type, typeErr] = $.arr($.str).optional().unique().get(params.type);
 	if (typeErr) return rej('invalid type param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $(params.sinceId).optional.id().$;
+	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $(params.untilId).optional.id().$;
+	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Check if both of sinceId and untilId is specified
@@ -62,7 +62,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	if (following) {
 		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriends(user._id);
+		const followingIds = await getFriendIds(user._id);
 
 		query.$and.push({
 			notifierId: {

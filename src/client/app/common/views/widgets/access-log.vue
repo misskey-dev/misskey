@@ -61,6 +61,7 @@ export default define({
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		}
 	}
 });
@@ -78,7 +79,7 @@ export default define({
 		color #555
 
 		&:nth-child(odd)
-			background rgba(0, 0, 0, 0.025)
+			background rgba(#000, 0.025)
 
 		> b
 			margin-right 4px

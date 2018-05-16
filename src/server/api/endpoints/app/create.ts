@@ -67,24 +67,24 @@ import App, { isValidNameId, pack } from '../../../../models/app';
  */
 module.exports = async (params, user) => new Promise(async (res, rej) => {
 	// Get 'nameId' parameter
-	const [nameId, nameIdErr] = $(params.nameId).string().pipe(isValidNameId).$;
+	const [nameId, nameIdErr] = $.str.pipe(isValidNameId).get(params.nameId);
 	if (nameIdErr) return rej('invalid nameId param');
 
 	// Get 'name' parameter
-	const [name, nameErr] = $(params.name).string().$;
+	const [name, nameErr] = $.str.get(params.name);
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'description' parameter
-	const [description, descriptionErr] = $(params.description).string().$;
+	const [description, descriptionErr] = $.str.get(params.description);
 	if (descriptionErr) return rej('invalid description param');
 
 	// Get 'permission' parameter
-	const [permission, permissionErr] = $(params.permission).array('string').unique().$;
+	const [permission, permissionErr] = $.arr($.str).unique().get(params.permission);
 	if (permissionErr) return rej('invalid permission param');
 
 	// Get 'callbackUrl' parameter
 	// TODO: Check it is valid url
-	const [callbackUrl = null, callbackUrlErr] = $(params.callbackUrl).optional.nullable.string().$;
+	const [callbackUrl = null, callbackUrlErr] = $.str.optional().nullable().get(params.callbackUrl);
 	if (callbackUrlErr) return rej('invalid callbackUrl param');
 
 	// Generate secret

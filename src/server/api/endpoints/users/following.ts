@@ -1,11 +1,11 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../cafy-id';
 import User from '../../../../models/user';
 import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
-import getFriends from '../../common/get-friends';
+import { getFriendIds } from '../../common/get-friends';
 
 /**
  * Get following users of a user
@@ -16,19 +16,19 @@ import getFriends from '../../common/get-friends';
  */
 module.exports = (params, me) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $(params.userId).id().$;
+	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'iknow' parameter
-	const [iknow = false, iknowErr] = $(params.iknow).optional.boolean().$;
+	const [iknow = false, iknowErr] = $.bool.optional().get(params.iknow);
 	if (iknowErr) return rej('invalid iknow param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $(params.limit).optional.number().range(1, 100).$;
+	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'cursor' parameter
-	const [cursor = null, cursorErr] = $(params.cursor).optional.id().$;
+	const [cursor = null, cursorErr] = $.type(ID).optional().get(params.cursor);
 	if (cursorErr) return rej('invalid cursor param');
 
 	// Lookup user
@@ -52,7 +52,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	// ログインしていてかつ iknow フラグがあるとき
 	if (me && iknow) {
 		// Get my friends
-		const myFriends = await getFriends(me._id);
+		const myFriends = await getFriendIds(me._id);
 
 		query.followeeId = {
 			$in: myFriends

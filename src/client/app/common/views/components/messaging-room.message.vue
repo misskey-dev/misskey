@@ -1,8 +1,6 @@
 <template>
 <div class="message" :data-is-me="isMe">
-	<router-link class="avatar-anchor" :to="message.user | userPage" :title="message.user | acct" target="_blank">
-		<img class="avatar" :src="`${message.user.avatarUrl}?thumbnail&size=80`" alt=""/>
-	</router-link>
+	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
 			<p class="read" v-if="isMe && message.isRead">%i18n:@is-read%</p>
@@ -67,20 +65,14 @@ export default Vue.extend({
 	padding 10px 12px 10px 12px
 	background-color transparent
 
-	> .avatar-anchor
+	> .avatar
 		display block
 		position absolute
 		top 10px
-
-		> .avatar
-			display block
-			min-width 54px
-			min-height 54px
-			max-width 54px
-			max-height 54px
-			margin 0
-			border-radius 8px
-			transition all 0.1s ease
+		width 54px
+		height 54px
+		border-radius 8px
+		transition all 0.1s ease
 
 	> .content
 
@@ -134,7 +126,7 @@ export default Vue.extend({
 				bottom -4px
 				left -12px
 				margin 0
-				color rgba(0, 0, 0, 0.5)
+				color rgba(#000, 0.5)
 				font-size 11px
 
 			> .content
@@ -146,7 +138,7 @@ export default Vue.extend({
 					overflow hidden
 					overflow-wrap break-word
 					font-size 1em
-					color rgba(0, 0, 0, 0.5)
+					color rgba(#000, 0.5)
 
 				> .text
 					display block
@@ -155,7 +147,7 @@ export default Vue.extend({
 					overflow hidden
 					overflow-wrap break-word
 					font-size 1em
-					color rgba(0, 0, 0, 0.8)
+					color rgba(#000, 0.8)
 
 					& + .file
 						> a
@@ -195,13 +187,13 @@ export default Vue.extend({
 			display block
 			margin 2px 0 0 0
 			font-size 10px
-			color rgba(0, 0, 0, 0.4)
+			color rgba(#000, 0.4)
 
 			> [data-fa]
 				margin-left 4px
 
 	&:not([data-is-me])
-		> .avatar-anchor
+		> .avatar
 			left 12px
 
 		> .content
@@ -225,7 +217,7 @@ export default Vue.extend({
 				text-align left
 
 	&[data-is-me]
-		> .avatar-anchor
+		> .avatar
 			right 12px
 
 		> .content

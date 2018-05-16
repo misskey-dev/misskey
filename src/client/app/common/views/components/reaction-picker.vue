@@ -110,7 +110,7 @@ export default Vue.extend({
 
 $border-color = rgba(27, 31, 35, 0.15)
 
-.mk-reaction-picker
+root(isDark)
 	position initial
 
 	> .backdrop
@@ -120,13 +120,14 @@ $border-color = rgba(27, 31, 35, 0.15)
 		z-index 10000
 		width 100%
 		height 100%
-		background rgba(0, 0, 0, 0.1)
+		background isDark ? rgba(#000, 0.4) : rgba(#000, 0.1)
 		opacity 0
 
 	> .popover
+		$bgcolor = isDark ? #2c303c : #fff
 		position absolute
 		z-index 10001
-		background #fff
+		background $bgcolor
 		border 1px solid $border-color
 		border-radius 4px
 		box-shadow 0 3px 12px rgba(27, 31, 35, 0.15)
@@ -159,15 +160,15 @@ $border-color = rgba(27, 31, 35, 0.15)
 				border-top solid $balloon-size transparent
 				border-left solid $balloon-size transparent
 				border-right solid $balloon-size transparent
-				border-bottom solid $balloon-size #fff
+				border-bottom solid $balloon-size $bgcolor
 
 		> p
 			display block
 			margin 0
 			padding 8px 10px
 			font-size 14px
-			color #586069
-			border-bottom solid 1px #e1e4e8
+			color isDark ? #d6dce2 : #586069
+			border-bottom solid 1px isDark ? #1c2023 : #e1e4e8
 
 		> div
 			padding 4px
@@ -182,10 +183,16 @@ $border-color = rgba(27, 31, 35, 0.15)
 				border-radius 2px
 
 				&:hover
-					background #eee
+					background isDark ? #252731 : #eee
 
 				&:active
 					background $theme-color
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
+
+.mk-reaction-picker[data-darkmode]
+	root(true)
+
+.mk-reaction-picker:not([data-darkmode])
+	root(false)
 
 </style>

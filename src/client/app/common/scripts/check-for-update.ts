@@ -1,9 +1,9 @@
-import MiOS from '../mios';
+import MiOS from '../../mios';
 import { version as current } from '../../config';
 
 export default async function(mios: MiOS, force = false, silent = false) {
 	const meta = await mios.getMeta(force);
-	const newer = meta.version;
+	const newer = meta.clientVersion;
 
 	if (newer != current) {
 		localStorage.setItem('should-refresh', 'true');

@@ -3,8 +3,17 @@
 	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
 		<p class="followed" v-if="user.isFollowed">%i18n:@follows-you%</p>
-		<p v-if="user.isMuted">%i18n:@muted% <a @click="unmute">%i18n:@unmute%</a></p>
-		<p v-if="!user.isMuted"><a @click="mute">%i18n:@mute%</a></p>
+		<p class="stalk" v-if="user.isFollowing">
+			<span v-if="user.isStalking">%i18n:@stalking% <a @click="unstalk">%fa:meh% %i18n:@unstalk%</a></span>
+			<span v-if="!user.isStalking"><a @click="stalk">%fa:user-secret% %i18n:@stalk%</a></span>
+		</p>
+	</div>
+	<div class="action-form">
+		<button class="mute ui" @click="user.isMuted ? unmute() : mute()">
+			<span v-if="user.isMuted">%fa:eye% %i18n:@unmute%</span>
+			<span v-if="!user.isMuted">%fa:eye-slash% %i18n:@mute%</span>
+		</button>
+		<button class="mute ui" @click="list">%fa:list% リストに追加</button>
 	</div>
 	<div class="description" v-if="user.description">{{ user.description }}</div>
 	<div class="birthday" v-if="user.host === null && user.profile.birthday">
@@ -26,6 +35,7 @@ import Vue from 'vue';
 import * as age from 's-age';
 import MkFollowingWindow from '../../components/following-window.vue';
 import MkFollowersWindow from '../../components/followers-window.vue';
+import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({
 	props: ['user'],
@@ -47,6 +57,26 @@ export default Vue.extend({
 			});
 		},
 
+		stalk() {
+			(this as any).api('following/stalk', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isStalking = true;
+			}, () => {
+				alert('error');
+			});
+		},
+
+		unstalk() {
+			(this as any).api('following/unstalk', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isStalking = false;
+			}, () => {
+				alert('error');
+			});
+		},
+
 		mute() {
 			(this as any).api('mute/create', {
 				userId: this.user.id
@@ -65,6 +95,21 @@ export default Vue.extend({
 			}, () => {
 				alert('error');
 			});
+		},
+
+		list() {
+			const w = (this as any).os.new(MkUserListsWindow);
+			w.$once('choosen', async list => {
+				w.close();
+				await (this as any).api('users/lists/push', {
+					listId: list.id,
+					userId: this.user.id
+				});
+				(this as any).apis.dialog({
+					title: 'Done!',
+					text: `${this.user.name}を${list.title}に追加しました。`
+				});
+			});
 		}
 	}
 });
@@ -73,7 +118,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .profile
 	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	> *:first-child
@@ -81,10 +126,8 @@ export default Vue.extend({
 
 	> .friend-form
 		padding 16px
+		text-align center
 		border-top solid 1px #eee
-
-		> .mk-big-follow-button
-			width 100%
 
 		> .followed
 			margin 12px 0 0 0
@@ -95,6 +138,20 @@ export default Vue.extend({
 			color #71afc7
 			background #eefaff
 			border-radius 4px
+
+		> .stalk
+			margin 12px 0 0 0
+
+	> .action-form
+		padding 16px
+		text-align center
+		border-top solid 1px #eee
+
+		> *
+			width 100%
+
+			&:not(:last-child)
+				margin-bottom 12px
 
 	> .description
 		padding 16px

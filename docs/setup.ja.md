@@ -67,3 +67,15 @@ web-push generate-vapid-keys
 1. `git reset --hard && git pull origin master`
 2. `npm install`
 3. `npm run build`
+
+## メモリが足りなくてビルドできない場合
+Misskeyの(クライアントの)ビルドには、目安として8GBくらいのメモリを必要とします。
+VPSなどでビルドする時は、もしかしたらメモリが足りなくなる可能性があります。
+そうなった場合、もしVPSではなくあなたのPCが十分なメモリを搭載しているなら、あなたのPC上でビルドし、生成されたファイルをVPSにFTPでアップロードする方法を採ることができます。
+
+1. あなたのPC上にMisskeyをインストールする
+2. 設定ファイルを用意する。設定ファイルは、サーバーに合わせた設定にします。
+3. npm run webpack
+4. built/client をサーバーにアップロードする
+5. サーバー上で、npm run gulp
+6. 完了

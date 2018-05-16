@@ -56,6 +56,13 @@ body > noscript {
 			animation-delay: 0.32s;
 		}
 
+html[data-darkmode] #ini {
+	background: #191b22;
+}
+	html[data-darkmode] #ini > p {
+		color: #fff;
+	}
+
 @keyframes ini {
 	0%, 80%, 100% {
 		opacity: 1;

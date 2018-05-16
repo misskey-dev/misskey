@@ -18,7 +18,11 @@ const form = [{
 }, {
 	type: 'input',
 	name: 'url',
-	message: 'URL you want to run Misskey:'
+	message: 'URL you want to run Misskey:',
+	validate: function(wannabeurl) {
+		return wannabeurl.match('^http\(s?\)://') ? true :
+		       'URL needs to start with http:// or https://';
+	}
 }, {
 	type: 'input',
 	name: 'port',
@@ -140,8 +144,8 @@ inquirer.prompt(form).then(as => {
 			pass: as['es_pass'] || null
 		},
 		recaptcha: {
-			siteKey: as['recaptcha_site'],
-			secretKey: as['recaptcha_secret']
+			site_key: as['recaptcha_site'],
+			secret_key: as['recaptcha_secret']
 		}
 	};
 

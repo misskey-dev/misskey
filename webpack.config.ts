@@ -5,6 +5,7 @@
 import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
+const { VueLoaderPlugin } = require('vue-loader');
 import jsonImporter from 'node-sass-json-importer';
 const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
@@ -19,7 +20,7 @@ import { licenseHtml } from './src/build/license';
 
 import locales from './locales';
 const meta = require('./package.json');
-const version = meta.version;
+const version = meta.clientVersion;
 const codename = meta.codename;
 
 //#region Replacer definitions
@@ -114,10 +115,11 @@ module.exports = entries.map(x => {
 			'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
 		}),
 		new WebpackOnBuildPlugin(stats => {
-			fs.writeFileSync('./version.json', JSON.stringify({
+			fs.writeFileSync('./built/client/meta.json', JSON.stringify({
 				version
 			}), 'utf-8');
-		})
+		}),
+		new VueLoaderPlugin()
 	];
 
 	if (isProduction) {
@@ -135,7 +137,9 @@ module.exports = entries.map(x => {
 					loader: 'vue-loader',
 					options: {
 						cssSourceMap: false,
-						preserveWhitespace: false
+						compilerOptions: {
+							preserveWhitespace: false
+						}
 					}
 				}, {
 					loader: 'replace',
@@ -165,17 +169,32 @@ module.exports = entries.map(x => {
 					}
 				}]
 			}, {
-				test: /\.styl$/,
+				test: /\.styl(us)?$/,
 				exclude: /node_modules/,
-				use: [{
-					loader: 'style-loader'
+				oneOf: [{
+					resourceQuery: /module/,
+					use: [{
+						loader: 'vue-style-loader'
+					}, {
+						loader: 'css-loader',
+						options: {
+							modules: true,
+							minimize: true
+						}
+					}, {
+						loader: 'stylus-loader'
+					}]
 				}, {
-					loader: 'css-loader',
-					options: {
-						minimize: true
-					}
-				}, {
-					loader: 'stylus-loader'
+					use: [{
+						loader: 'vue-style-loader'
+					}, {
+						loader: 'css-loader',
+						options: {
+							minimize: true
+						}
+					}, {
+						loader: 'stylus-loader'
+					}]
 				}]
 			}, {
 				test: /\.scss$/,
@@ -196,7 +215,7 @@ module.exports = entries.map(x => {
 			}, {
 				test: /\.css$/,
 				use: [{
-					loader: 'style-loader'
+					loader: 'vue-style-loader'
 				}, {
 					loader: 'css-loader',
 					options: {

@@ -1,9 +1,11 @@
 <template>
 <mk-ui>
 	<main v-if="!fetching">
-		<a v-if="note.next" :href="note.next">%fa:angle-up%%i18n:@next%</a>
 		<mk-note-detail :note="note"/>
-		<a v-if="note.prev" :href="note.prev">%fa:angle-down%%i18n:@prev%</a>
+		<footer>
+			<router-link v-if="note.next" :to="note.next">%fa:angle-left% %i18n:@next%</router-link>
+			<router-link v-if="note.prev" :to="note.prev">%i18n:@prev% %fa:angle-right%</router-link>
+		</footer>
 	</main>
 </mk-ui>
 </template>
@@ -48,17 +50,12 @@ main
 	padding 16px
 	text-align center
 
-	> a
-		display inline-block
+	> footer
+		margin-top 16px
 
-		&:first-child
-			margin-bottom 4px
-
-		&:last-child
-			margin-top 4px
-
-		> [data-fa]
-			margin-right 4px
+		> a
+			display inline-block
+			margin 0 16px
 
 	> .mk-note-detail
 		margin 0 auto

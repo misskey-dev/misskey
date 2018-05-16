@@ -22,7 +22,6 @@ export default async function(actor: IRemoteUser, uri: string): Promise<void> {
 		$set: {
 			deletedAt: new Date(),
 			text: null,
-			textHtml: null,
 			mediaIds: [],
 			poll: null
 		}

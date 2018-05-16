@@ -54,7 +54,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.context-menu
+root(isDark)
 	$width = 240px
 	$item-height = 38px
 	$padding = 10px
@@ -66,9 +66,15 @@ export default Vue.extend({
 	z-index 4096
 	width $width
 	font-size 0.8em
-	background #fff
+	background isDark ? #282c37 : #fff
 	border-radius 0 4px 4px 4px
-	box-shadow 2px 2px 8px rgba(0, 0, 0, 0.2)
+	box-shadow 2px 2px 8px rgba(#000, 0.2)
 	opacity 0
+
+.context-menu[data-darkmode]
+	root(true)
+
+.context-menu:not([data-darkmode])
+	root(false)
 
 </style>

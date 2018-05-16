@@ -1,3 +1,5 @@
+import * as mongo from 'mongodb';
+import * as Koa from 'koa';
 import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
@@ -18,8 +20,7 @@ const router = new Router();
 
 //#region Routing
 
-// inbox
-router.post('/users/:user/inbox', json(), ctx => {
+function inbox(ctx: Koa.Context) {
 	let signature;
 
 	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
@@ -38,7 +39,11 @@ router.post('/users/:user/inbox', json(), ctx => {
 	}).save();
 
 	ctx.status = 202;
-});
+}
+
+// inbox
+router.post('/inbox', json(), inbox);
+router.post('/users/:user/inbox', json(), inbox);
 
 // note
 router.get('/notes/:note', async (ctx, next) => {
@@ -49,7 +54,7 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	const note = await Note.findOne({
-		_id: ctx.params.note
+		_id: new mongo.ObjectID(ctx.params.note)
 	});
 
 	if (note === null) {
@@ -62,7 +67,7 @@ router.get('/notes/:note', async (ctx, next) => {
 
 // outbot
 router.get('/users/:user/outbox', async ctx => {
-	const userId = ctx.params.user;
+	const userId = new mongo.ObjectID(ctx.params.user);
 
 	const user = await User.findOne({ _id: userId });
 
@@ -84,7 +89,7 @@ router.get('/users/:user/outbox', async ctx => {
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
-	const userId = ctx.params.user;
+	const userId = new mongo.ObjectID(ctx.params.user);
 
 	const user = await User.findOne({ _id: userId });
 
@@ -102,7 +107,7 @@ router.get('/users/:user/publickey', async ctx => {
 
 // user
 router.get('/users/:user', async ctx => {
-	const userId = ctx.params.user;
+	const userId = new mongo.ObjectID(ctx.params.user);
 
 	const user = await User.findOne({ _id: userId });
 

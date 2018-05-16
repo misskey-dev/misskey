@@ -1,8 +1,8 @@
 <template>
 <div class="mk-users-list">
 	<nav>
-		<span :data-is-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
-		<span v-if="os.isSignedIn && youKnowCount" :data-is-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@known%<span>{{ youKnowCount }}</span></span>
+		<span :data-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
+		<span v-if="os.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@known%<span>{{ youKnowCount }}</span></span>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
 		<mk-user-preview v-for="u in users" :user="u" :key="u.id"/>
@@ -74,7 +74,7 @@ export default Vue.extend({
 		justify-content center
 		margin 0 auto
 		max-width 600px
-		border-bottom solid 1px rgba(0, 0, 0, 0.2)
+		border-bottom solid 1px rgba(#000, 0.2)
 
 		> span
 			display block
@@ -85,7 +85,7 @@ export default Vue.extend({
 			color #657786
 			border-bottom solid 2px transparent
 
-			&[data-is-active]
+			&[data-active]
 				font-weight bold
 				color $theme-color
 				border-color $theme-color
@@ -97,7 +97,7 @@ export default Vue.extend({
 				font-size 12px
 				line-height 1
 				color #fff
-				background rgba(0, 0, 0, 0.3)
+				background rgba(#000, 0.3)
 				border-radius 20px
 
 	> .users
@@ -106,14 +106,14 @@ export default Vue.extend({
 		width calc(100% - 16px)
 		background #fff
 		border-radius 8px
-		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+		box-shadow 0 0 0 1px rgba(#000, 0.2)
 
 		@media (min-width 500px)
 			margin 16px auto
 			width calc(100% - 32px)
 
 		> *
-			border-bottom solid 1px rgba(0, 0, 0, 0.05)
+			border-bottom solid 1px rgba(#000, 0.05)
 
 	> .no
 		margin 0

@@ -13,7 +13,7 @@
 					@click="navigate(user)"
 					tabindex="-1"
 				>
-					<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=32`" alt=""/>
+					<mk-avatar class="avatar" :user="user"/>
 					<span class="name">{{ user | userName }}</span>
 					<span class="username">@{{ user | acct }}</span>
 				</li>
@@ -31,7 +31,7 @@
 				:key="message.id"
 			>
 				<div>
-					<img class="avatar" :src="`${isMe(message) ? message.recipient.avatarUrl : message.user.avatarUrl}?thumbnail&size=64`" alt=""/>
+					<mk-avatar class="avatar" :user="isMe(message) ? message.recipient : message.user"/>
 					<header>
 						<span class="name">{{ isMe(message) ? message.recipient : message.user | userName }}</span>
 						<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
@@ -169,7 +169,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-messaging
+root(isDark)
 
 	&[data-compact]
 		font-size 0.8em
@@ -205,11 +205,11 @@ export default Vue.extend({
 		z-index 1
 		width 100%
 		background #fff
-		box-shadow 0 0px 2px rgba(0, 0, 0, 0.2)
+		box-shadow 0 0px 2px rgba(#000, 0.2)
 
 		> .form
 			padding 8px
-			background #f7f7f7
+			background isDark ? #282c37 : #f7f7f7
 
 			> label
 				display block
@@ -241,13 +241,14 @@ export default Vue.extend({
 				line-height 38px
 				color #000
 				outline none
-				border solid 1px #eee
+				background isDark ? #191b22 : #fff
+				border solid 1px isDark ? #495156 : #eee
 				border-radius 5px
 				box-shadow none
 				transition color 0.5s ease, border 0.5s ease
 
 				&:hover
-					border solid 1px #ddd
+					border solid 1px isDark ? #b0b0b0 : #ddd
 					transition border 0.2s ease
 
 				&:focus
@@ -278,7 +279,7 @@ export default Vue.extend({
 					vertical-align top
 					white-space nowrap
 					overflow hidden
-					color rgba(0, 0, 0, 0.8)
+					color rgba(#000, 0.8)
 					text-decoration none
 					transition none
 					cursor pointer
@@ -317,32 +318,32 @@ export default Vue.extend({
 						margin 0 8px 0 0
 						/*font-weight bold*/
 						font-weight normal
-						color rgba(0, 0, 0, 0.8)
+						color rgba(#000, 0.8)
 
 					.username
 						font-weight normal
-						color rgba(0, 0, 0, 0.3)
+						color rgba(#000, 0.3)
 
 	> .history
 
 		> a
 			display block
 			text-decoration none
-			background #fff
-			border-bottom solid 1px #eee
+			background isDark ? #282c37 : #fff
+			border-bottom solid 1px isDark ? #1c2023 : #eee
 
 			*
 				pointer-events none
 				user-select none
 
 			&:hover
-				background #fafafa
+				background isDark ? #1e2129 : #fafafa
 
 				> .avatar
 					filter saturate(200%)
 
 			&:active
-				background #eee
+				background isDark ? #14161b : #eee
 
 			&[data-is-read]
 			&[data-is-me]
@@ -382,17 +383,17 @@ export default Vue.extend({
 						overflow hidden
 						text-overflow ellipsis
 						font-size 1em
-						color rgba(0, 0, 0, 0.9)
+						color isDark ? #fff : rgba(#000, 0.9)
 						font-weight bold
 						transition all 0.1s ease
 
 					> .username
 						margin 0 8px
-						color rgba(0, 0, 0, 0.5)
+						color isDark ? #606984 : rgba(#000, 0.5)
 
 					> .mk-time
 						margin 0 0 0 auto
-						color rgba(0, 0, 0, 0.5)
+						color isDark ? #606984 : rgba(#000, 0.5)
 						font-size 80%
 
 				> .avatar
@@ -412,10 +413,10 @@ export default Vue.extend({
 						overflow hidden
 						overflow-wrap break-word
 						font-size 1.1em
-						color rgba(0, 0, 0, 0.8)
+						color isDark ? #fff : rgba(#000, 0.8)
 
 						.me
-							color rgba(0, 0, 0, 0.4)
+							color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.4)
 
 					> .image
 						display block
@@ -459,5 +460,11 @@ export default Vue.extend({
 
 					> .avatar
 						margin 0 12px 0 0
+
+.mk-messaging[data-darkmode]
+	root(true)
+
+.mk-messaging:not([data-darkmode])
+	root(false)
 
 </style>

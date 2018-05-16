@@ -22,14 +22,14 @@ NAN_METHOD(extractPublic)
 	const auto source = BIO_new_mem_buf(sourceBuf, sourceLength);
 	if (source == nullptr) {
 		Nan::ThrowError("Memory allocation failed");
-		delete sourceBuf;
+		delete[] sourceBuf;
 		return;
 	}
 
 	const auto rsa = PEM_read_bio_RSAPrivateKey(source, nullptr, nullptr, nullptr);
 
 	BIO_free(source);
-	delete sourceBuf;
+	delete[] sourceBuf;
 
 	if (rsa == nullptr) {
 		Nan::ThrowError("Decode failed");

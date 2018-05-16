@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import History from '../../../../../models/messaging-history';
@@ -12,20 +12,14 @@ import { pack } from '../../../../../models/messaging-message';
 import publishUserStream from '../../../../../publishers/stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../publishers/stream';
 import pushSw from '../../../../../publishers/push-sw';
-import html from '../../../../../text/html';
-import parse from '../../../../../text/parse';
 import config from '../../../../../config';
 
 /**
  * Create a message
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
-	const [recipientId, recipientIdErr] = $(params.userId).id().$;
+	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);
 	if (recipientIdErr) return rej('invalid userId param');
 
 	// Myself
@@ -47,11 +41,11 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Get 'text' parameter
-	const [text, textErr] = $(params.text).optional.string().pipe(isValidText).$;
+	const [text, textErr] = $.str.optional().pipe(isValidText).get(params.text);
 	if (textErr) return rej('invalid text');
 
 	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $(params.fileId).optional.id().$;
+	const [fileId, fileIdErr] = $.type(ID).optional().get(params.fileId);
 	if (fileIdErr) return rej('invalid fileId param');
 
 	let file = null;
@@ -77,7 +71,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		fileId: file ? file._id : undefined,
 		recipientId: recipient._id,
 		text: text ? text : undefined,
-		textHtml: text ? html(parse(text)) : undefined,
 		userId: user._id,
 		isRead: false
 	});

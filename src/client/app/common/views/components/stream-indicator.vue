@@ -73,7 +73,7 @@ export default Vue.extend({
 	padding 6px 12px
 	font-size 0.9em
 	color #fff
-	background rgba(0, 0, 0, 0.8)
+	background rgba(#000, 0.8)
 	border-radius 4px
 
 	> p

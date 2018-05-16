@@ -73,6 +73,7 @@ export default define({
 			} else {
 				this.props.design++;
 			}
+			this.save();
 		},
 		tick() {
 			const now = new Date();
@@ -109,11 +110,11 @@ export default define({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mkw-calendar
+root(isDark)
 	padding 16px 0
-	color #777
-	background #fff
-	border solid 1px rgba(0, 0, 0, 0.075)
+	color isDark ? #c5ced6 :#777
+	background isDark ? #282C37 : #fff
+	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
 	&[data-special='on-new-years-day']
@@ -126,7 +127,7 @@ export default define({
 	&[data-mobile]
 		border none
 		border-radius 8px
-		box-shadow 0 0 0 1px rgba(0, 0, 0, 0.2)
+		box-shadow 0 0 0 1px rgba(#000, 0.2)
 
 	&:after
 		content ""
@@ -171,7 +172,7 @@ export default define({
 				margin 0 0 2px 0
 				font-size 12px
 				line-height 18px
-				color #888
+				color isDark ? #7a8692 : #888
 
 				> b
 					margin-left 2px
@@ -179,7 +180,7 @@ export default define({
 			> .meter
 				width 100%
 				overflow hidden
-				background #eee
+				background isDark ? #1c1f25 : #eee
 				border-radius 8px
 
 				> .val
@@ -197,5 +198,11 @@ export default define({
 			&:nth-child(3)
 				> .meter > .val
 					background #41ddde
+
+.mkw-calendar[data-darkmode]
+	root(true)
+
+.mkw-calendar:not([data-darkmode])
+	root(false)
 
 </style>

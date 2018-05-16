@@ -14,15 +14,18 @@
 **[Misskey](https://misskey.xyz)** is a completely open source,
 ultimately sophisticated new type of mini-blog based SNS.
 
+<a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
+
 :sparkles: Features
 ----------------------------------------------------------------
-* Automatically updated timeline
 * Reactions
+* User lists
 * Private messages
-* ServiceWorker support
+* Mute
+* Real time contents
 * ActivityPub compatible
 
-and more! You can touch with your own eyes at https://misskey.xyz/.
+and more! You can touch with your own eyes at [misskey.xyz](https://misskey.xyz).
 
 :package: Create your instance
 ----------------------------------------------------------------
@@ -33,27 +36,27 @@ please see [Setup and installation guide](./docs/setup.en.md).
 ----------------------------------------------------------------
 **[PR](https://github.com/syuilo/misskey/pulls)s welcome!**
 
-If you want to translate Misskey, please see [Translation guide](./docs/translate.en.md).
+If you want to...
+* i18n ... please see [Translation guide](./docs/translate.en.md).
+* l10n ... please visit https://crowdin.com/project/misskey
 
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
 [![Backers][backers-image]][support-url]
 [![Sponsors][sponsors-image]][support-url]
 
-<a href="https://www.patreon.com/syuilo"><img src="http://i.imgur.com/xEO164Z.png" alt="Become a Patron!" width="200" /></a>
-
 :mortar_board: Notable contributors
 ----------------------------------------------------------------
-| ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon] | ![akihikodaki][akihikodaki-icon] | ![rinsuki][rinsuki-icon] |
-|:-:|:-:|:-:|:-:|:-:|
-| [syuilo][syuilo-link]<br>Owner | [Aya Morisawa][ayamorisawa-link]<br>Collaborator | [otofune][otofune-link]<br>Collaborator | [akihikodaki][akihikodaki-link] | [rinsuki][rinsuki-link] |
+| ![syuilo][syuilo-icon] | ![Morisawa Aya][ayamorisawa-icon] | ![otofune][otofune-icon] | ![akihikodaki][akihikodaki-icon] | ![tamaina][tamaina-icon] | ![rinsuki][rinsuki-icon] |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| [syuilo][syuilo-link]<br>Owner | [Aya Morisawa][ayamorisawa-link]<br>Collaborator | [otofune][otofune-link]<br>Collaborator | [akihikodaki][akihikodaki-link] | [tamaina][tamaina-link] | [rinsuki][rinsuki-link] |
 
 [List of all contributors](https://github.com/syuilo/misskey/graphs/contributors)
 
 ### :earth_americas: Translators
-| ![][mirro-san-icon] | ![][Conan-kun-icon] |
-|:-:|:-:|
-| [Mirro][mirro-san-link]<br>English, French | [Asriel][Conan-kun-link]<br>English, French |
+| ![][mirro-san-icon] | ![][Conan-kun-icon] | ![][m4sk1n-icon] |
+|:-:|:-:|:-:|
+| [Mirro][mirro-san-link]<br>English, French | [Asriel][Conan-kun-link]<br>English, French | [Marcin Mikołajczak][m4sk1n-link]<br>Polish |
 
 :four_leaf_clover: Copyright
 ----------------------------------------------------------------
@@ -92,9 +95,12 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 [akihikodaki-icon]: https://avatars2.githubusercontent.com/u/17036990?s=70&v=4
 [rinsuki-link]:     https://github.com/rinsuki
 [rinsuki-icon]:     https://avatars0.githubusercontent.com/u/6533808?s=70&v=4
+[tamaina-link]:     https://github.com/tamaina
+[tamaina-icon]:     https://avatars1.githubusercontent.com/u/7973572?s=70&v=4
 
 [mirro-san-link]:   https://github.com/mirro-san
 [mirro-san-icon]:   https://avatars1.githubusercontent.com/u/17948612?s=70&v=4
 [Conan-kun-link]:   https://github.com/Conan-kun
 [Conan-kun-icon]:   https://avatars3.githubusercontent.com/u/30003708?s=70&v=4
-
+[m4sk1n-link]:      https://github.com/m4sk1n
+[m4sk1n-icon]:      https://avatars3.githubusercontent.com/u/21127288?s=70&v=4

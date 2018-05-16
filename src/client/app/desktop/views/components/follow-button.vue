@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
 export default Vue.extend({
 	props: {
 		user: {
@@ -30,6 +31,7 @@ export default Vue.extend({
 			default: 'compact'
 		}
 	},
+
 	data() {
 		return {
 			wait: false,
@@ -37,6 +39,7 @@ export default Vue.extend({
 			connectionId: null
 		};
 	},
+
 	mounted() {
 		this.connection = (this as any).os.stream.getConnection();
 		this.connectionId = (this as any).os.stream.use();
@@ -44,13 +47,14 @@ export default Vue.extend({
 		this.connection.on('follow', this.onFollow);
 		this.connection.on('unfollow', this.onUnfollow);
 	},
+
 	beforeDestroy() {
 		this.connection.off('follow', this.onFollow);
 		this.connection.off('unfollow', this.onUnfollow);
 		(this as any).os.stream.dispose(this.connectionId);
 	},
-	methods: {
 
+	methods: {
 		onFollow(user) {
 			if (user.id == this.user.id) {
 				this.user.isFollowing = user.isFollowing;
@@ -94,7 +98,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-follow-button
+root(isDark)
 	display block
 	cursor pointer
 	padding 0
@@ -121,17 +125,17 @@ export default Vue.extend({
 			border-radius 8px
 
 	&.follow
-		color #888
-		background linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%)
-		border solid 1px #e2e2e2
+		color isDark ? #fff : #888
+		background isDark ? linear-gradient(to bottom, #313543 0%, #282c37 100%) : linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%)
+		border solid 1px isDark ? #1c2023 : #e2e2e2
 
 		&:hover
-			background linear-gradient(to bottom, #f9f9f9 0%, #ececec 100%)
-			border-color #dcdcdc
+			background isDark ? linear-gradient(to bottom, #2c2f3c 0%, #22262f 100%) : linear-gradient(to bottom, #f9f9f9 0%, #ececec 100%)
+			border-color isDark ? #151a1d : #dcdcdc
 
 		&:active
-			background #ececec
-			border-color #dcdcdc
+			background isDark ? #22262f : #ececec
+			border-color isDark ? #151a1d : #dcdcdc
 
 	&.unfollow
 		color $theme-color-foreground
@@ -160,5 +164,11 @@ export default Vue.extend({
 
 		i
 			margin-right 8px
+
+.mk-follow-button[data-darkmode]
+	root(true)
+
+.mk-follow-button:not([data-darkmode])
+	root(false)
 
 </style>

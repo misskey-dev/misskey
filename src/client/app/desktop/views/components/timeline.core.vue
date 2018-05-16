@@ -1,24 +1,23 @@
 <template>
-<div class="mk-home-timeline">
+<div class="mk-timeline-core">
 	<mk-friends-maker v-if="src == 'home' && alone"/>
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
-	<p class="empty" v-if="notes.length == 0 && !fetching">
-		%fa:R comments%%i18n:@empty%
-	</p>
-	<mk-notes :notes="notes" ref="timeline">
-		<button slot="footer" @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">%i18n:@load-more%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
-		</button>
+
+	<mk-notes ref="timeline" :more="canFetchMore ? more : null">
+		<p :class="$style.empty" slot="empty">
+			%fa:R comments%%i18n:@empty%
+		</p>
 	</mk-notes>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { url } from '../../../config';
+import getNoteSummary from '../../../../../renderers/get-note-summary';
+
+const fetchLimit = 10;
 
 export default Vue.extend({
 	props: {
@@ -33,9 +32,9 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			notes: [],
 			connection: null,
 			connectionId: null,
+			unreadCount: 0,
 			date: null
 		};
 	},
@@ -59,6 +58,10 @@ export default Vue.extend({
 				: this.src == 'local'
 					? 'notes/local-timeline'
 					: 'notes/global-timeline';
+		},
+
+		canFetchMore(): boolean {
+			return !this.moreFetching && !this.fetching && this.existMore;
 		}
 	},
 
@@ -72,6 +75,9 @@ export default Vue.extend({
 			this.connection.on('unfollow', this.onChangeFollowing);
 		}
 
+		document.addEventListener('keydown', this.onKeydown);
+		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
+
 		this.fetch();
 	},
 
@@ -82,56 +88,62 @@ export default Vue.extend({
 			this.connection.off('unfollow', this.onChangeFollowing);
 		}
 		this.stream.dispose(this.connectionId);
+
+		document.removeEventListener('keydown', this.onKeydown);
+		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
 
 	methods: {
-		fetch(cb?) {
+		fetch() {
 			this.fetching = true;
 
-			(this as any).api(this.endpoint, {
-				limit: 11,
-				untilDate: this.date ? this.date.getTime() : undefined
-			}).then(notes => {
-				if (notes.length == 11) {
-					notes.pop();
-					this.existMore = true;
-				}
-				this.notes = notes;
-				this.fetching = false;
-				this.$emit('loaded');
-				if (cb) cb();
-			});
+			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
+				(this as any).api(this.endpoint, {
+					limit: fetchLimit + 1,
+					untilDate: this.date ? this.date.getTime() : undefined,
+					includeMyRenotes: (this as any).clientSettings.showMyRenotes,
+					includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
+				}).then(notes => {
+					if (notes.length == fetchLimit + 1) {
+						notes.pop();
+						this.existMore = true;
+					}
+					res(notes);
+					this.fetching = false;
+					this.$emit('loaded');
+				}, rej);
+			}));
 		},
 
 		more() {
-			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
+			if (!this.canFetchMore) return;
+
 			this.moreFetching = true;
+
 			(this as any).api(this.endpoint, {
-				limit: 11,
-				untilId: this.notes[this.notes.length - 1].id
+				limit: fetchLimit + 1,
+				untilId: (this.$refs.timeline as any).tail().id,
+				includeMyRenotes: (this as any).clientSettings.showMyRenotes,
+				includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
 			}).then(notes => {
-				if (notes.length == 11) {
+				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 				} else {
 					this.existMore = false;
 				}
-				this.notes = this.notes.concat(notes);
+				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
 		},
 
 		onNote(note) {
-			// サウンドを再生する
-			if ((this as any).os.isEnableSounds) {
-				const sound = new Audio(`${url}/assets/post.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
-				sound.play();
+			if (document.hidden && note.userId !== (this as any).os.i.id) {
+				this.unreadCount++;
+				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
 			}
 
-			this.notes.unshift(note);
-
-			const isTop = window.scrollY > 8;
-			if (isTop) this.notes.pop();
+			// Prepend a note
+			(this.$refs.timeline as any).prepend(note);
 		},
 
 		onChangeFollowing() {
@@ -145,31 +157,51 @@ export default Vue.extend({
 		warp(date) {
 			this.date = date;
 			this.fetch();
+		},
+
+		onVisibilitychange() {
+			if (!document.hidden) {
+				this.unreadCount = 0;
+				document.title = 'Misskey';
+			}
+		},
+
+		onKeydown(e) {
+			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
+				if (e.which == 84) { // t
+					this.focus();
+				}
+			}
 		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.mk-home-timeline
+@import '~const.styl'
+
+.mk-timeline-core
 	> .mk-friends-maker
 		border-bottom solid 1px #eee
 
 	> .fetching
 		padding 64px 0
 
-	> .empty
-		display block
-		margin 0 auto
-		padding 32px
-		max-width 400px
-		text-align center
-		color #999
+</style>
 
-		> [data-fa]
-			display block
-			margin-bottom 16px
-			font-size 3em
-			color #ccc
+<style lang="stylus" module>
+.empty
+	display block
+	margin 0 auto
+	padding 32px
+	max-width 400px
+	text-align center
+	color #999
+
+	> [data-fa]
+		display block
+		margin-bottom 16px
+		font-size 3em
+		color #ccc
 
 </style>

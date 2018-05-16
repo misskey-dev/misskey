@@ -32,6 +32,8 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		this.$store.commit('setUiHeaderHeight', 48);
+
 		if ((this as any).os.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
@@ -57,9 +59,10 @@ export default Vue.extend({
 				}
 			});
 
-			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000
+			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000;
 			const isHisasiburi = ago >= 3600;
 			(this as any).os.i.lastUsedAt = new Date();
+			(this as any).os.bakeMe();
 			if (isHisasiburi) {
 				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';
@@ -141,7 +144,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.header
+root(isDark)
 	$height = 48px
 
 	position fixed
@@ -149,6 +152,9 @@ export default Vue.extend({
 	z-index 1024
 	width 100%
 	box-shadow 0 1px 0 rgba(#000, 0.075)
+
+	&, *
+		user-select none
 
 	> .main
 		color rgba(#fff, 0.9)
@@ -162,7 +168,7 @@ export default Vue.extend({
 			-webkit-backdrop-filter blur(12px)
 			backdrop-filter blur(12px)
 			//background-color rgba(#1b2023, 0.75)
-			background-color #1b2023
+			background-color isDark ? #313543 : #595f6f
 
 		> p
 			display none
@@ -238,5 +244,11 @@ export default Vue.extend({
 				color inherit
 				line-height $height
 				border-left solid 1px rgba(#000, 0.1)
+
+.header[data-darkmode]
+	root(true)
+
+.header:not([data-darkmode])
+	root(false)
 
 </style>

@@ -11,14 +11,12 @@
 
 'use strict';
 
-// Chromeで確認したことなのですが、constやletを用いたとしても
-// グローバルなスコープで定数/変数を定義するとwindowのプロパティ
-// としてそれがアクセスできるようになる訳ではありませんが、普通に
-// コンソールから定数/変数名を入力するとアクセスできてしまいます。
-// ブロック内に入れてスコープを非グローバル化するとそれが防げます
-// (Chrome以外のブラウザでは検証していません)
-{
-	if (localStorage.getItem('shouldFlush') == 'true') refresh();
+(function() {
+	// キャッシュ削除要求があれば従う
+	if (localStorage.getItem('shouldFlush') == 'true') {
+		refresh();
+		return;
+	}
 
 	// Get the current url information
 	const url = new URL(location.href);
@@ -62,6 +60,11 @@
 		app = isMobile ? 'mobile' : 'desktop';
 	}
 
+	// Dark/Light
+	if (localStorage.getItem('darkmode') == 'true') {
+		document.documentElement.setAttribute('data-darkmode', 'true');
+	}
+
 	// Script version
 	const ver = localStorage.getItem('v') || VERSION;
 
@@ -72,11 +75,16 @@
 	const raw = (localStorage.getItem('useRawScript') == 'true' && isDebug)
 		|| ENV != 'production';
 
+	// Get salt query
+	const salt = localStorage.getItem('salt')
+		? '?salt=' + localStorage.getItem('salt')
+		: '';
+
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.${raw ? 'raw' : 'min'}.js`);
+	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.${raw ? 'raw' : 'min'}.js${salt}`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);
@@ -97,8 +105,8 @@
 		const meta = await res.json();
 
 		// Compare versions
-		if (meta.version != ver) {
-			localStorage.setItem('v', meta.version);
+		if (meta.clientVersion != ver) {
+			localStorage.setItem('v', meta.clientVersion);
 
 			alert(
 				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
@@ -111,6 +119,9 @@
 
 	function refresh() {
 		localStorage.setItem('shouldFlush', 'false');
+
+		// Random
+		localStorage.setItem('salt', Math.random().toString());
 
 		// Clear cache (serive worker)
 		try {
@@ -126,4 +137,4 @@
 		// Force reload
 		location.reload(true);
 	}
-}
+})();

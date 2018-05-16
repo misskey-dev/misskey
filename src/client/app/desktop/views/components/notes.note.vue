@@ -1,24 +1,18 @@
 <template>
 <div class="note" tabindex="-1" :title="title" @keydown="onKeydown">
-	<div class="reply-to" v-if="p.reply">
+	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || clientSettings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
-		<p>
-			<router-link class="avatar-anchor" :to="note.user | userPage" v-user-preview="note.userId">
-				<img class="avatar" :src="`${note.user.avatarUrl}?thumbnail&size=32`" alt="avatar"/>
-			</router-link>
-			%fa:retweet%
-			<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
-			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-			<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
-		</p>
+		<mk-avatar class="avatar" :user="note.user"/>
+		%fa:retweet%
+		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
+		<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
+		<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<router-link class="avatar-anchor" :to="p.user | userPage">
-			<img class="avatar" :src="`${p.user.avatarUrl}?thumbnail&size=64`" alt="avatar" v-user-preview="p.user.id"/>
-		</router-link>
+		<mk-avatar class="avatar" :user="p.user"/>
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
@@ -30,35 +24,50 @@
 					<router-link class="created-at" :to="p | notePage">
 						<mk-time :time="p.createdAt"/>
 					</router-link>
+					<span class="visibility" v-if="p.visibility != 'public'">
+						<template v-if="p.visibility == 'home'">%fa:home%</template>
+						<template v-if="p.visibility == 'followers'">%fa:unlock%</template>
+						<template v-if="p.visibility == 'specified'">%fa:envelope%</template>
+						<template v-if="p.visibility == 'private'">%fa:lock%</template>
+					</span>
 				</div>
 			</header>
 			<div class="body">
 				<p class="channel" v-if="p.channel">
 					<a :href="`${_CH_URL_}/${p.channel.id}`" target="_blank">{{ p.channel.title }}</a>:
 				</p>
-				<div class="text">
-					<a class="reply" v-if="p.reply">%fa:reply%</a>
-					<mk-note-html v-if="p.textHtml" :text="p.text" :i="os.i" :class="$style.text"/>
-					<a class="rp" v-if="p.renote">RP:</a>
+				<p v-if="p.cw != null" class="cw">
+					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
+					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '隠す' : 'もっと見る' }}</span>
+				</p>
+				<div class="content" v-show="p.cw == null || showContent">
+					<div class="text">
+						<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+						<a class="reply" v-if="p.reply">%fa:reply%</a>
+						<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
+						<a class="rp" v-if="p.renote">RP:</a>
+					</div>
+					<div class="media" v-if="p.media.length > 0">
+						<mk-media-list :media-list="p.media"/>
+					</div>
+					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
+					<div class="tags" v-if="p.tags && p.tags.length > 0">
+						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
+					</div>
+					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+					<div class="map" v-if="p.geo" ref="map"></div>
+					<div class="renote" v-if="p.renote">
+						<mk-note-preview :note="p.renote"/>
+					</div>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 				</div>
-				<div class="media" v-if="p.media.length > 0">
-					<mk-media-list :media-list="p.media"/>
-				</div>
-				<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
-				<div class="tags" v-if="p.tags && p.tags.length > 0">
-					<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
-				</div>
-				<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
-				<div class="map" v-if="p.geo" ref="map"></div>
-				<div class="renote" v-if="p.renote">
-					<mk-note-preview :note="p.renote"/>
-				</div>
-				<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 			</div>
 			<footer>
 				<mk-reactions-viewer :note="p" ref="reactionsViewer"/>
 				<button @click="reply" title="%i18n:@reply%">
-					%fa:reply%<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
+					<template v-if="p.reply">%fa:reply-all%</template>
+					<template v-else>%fa:reply%</template>
+					<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 				</button>
 				<button @click="renote" title="%i18n:@renote%">
 					%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
@@ -113,6 +122,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			showContent: false,
 			isDetailOpened: false,
 			connection: null,
 			connectionId: null
@@ -168,7 +178,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).os.i.clientSettings.showMaps : true;
+			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -289,19 +299,20 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.note
+root(isDark)
 	margin 0
 	padding 0
-	background #fff
-	border-bottom solid 1px #eaeaea
+	background isDark ? #282C37 : #fff
+	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
-	&:first-child
-		border-top-left-radius 6px
-		border-top-right-radius 6px
-
-		> .renote
+	&[data-round]
+		&:first-child
 			border-top-left-radius 6px
 			border-top-right-radius 6px
+
+			> .renote
+				border-top-left-radius 6px
+				border-top-right-radius 6px
 
 	&:last-of-type
 		border-bottom none
@@ -321,46 +332,44 @@ export default Vue.extend({
 			border-radius 4px
 
 	> .renote
+		display flex
+		align-items center
+		padding 16px 32px
+		line-height 28px
 		color #9dbb00
-		background linear-gradient(to bottom, #edfde2 0%, #fff 100%)
+		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
-		> p
-			margin 0
-			padding 16px 32px
-			line-height 28px
+		.avatar
+			display inline-block
+			width 28px
+			height 28px
+			margin 0 8px 0 0
+			border-radius 6px
 
-			.avatar-anchor
-				display inline-block
+		[data-fa]
+			margin-right 4px
 
-				.avatar
-					vertical-align bottom
-					width 28px
-					height 28px
-					margin 0 8px 0 0
-					border-radius 6px
+		> span
+			flex-shrink 0
 
-			[data-fa]
-				margin-right 4px
+			&:last-of-type
+				margin-right 8px
 
-			.name
-				font-weight bold
+		.name
+			overflow hidden
+			flex-shrink 1
+			text-overflow ellipsis
+			white-space nowrap
+			font-weight bold
 
 		> .mk-time
-			position absolute
-			top 16px
-			right 32px
+			display block
+			margin-left auto
+			flex-shrink 0
 			font-size 0.9em
-			line-height 28px
 
 		& + article
 			padding-top 8px
-
-	> .reply-to
-		padding 0 16px
-		background rgba(0, 0, 0, 0.0125)
-
-		> .mk-note-preview
-			background transparent
 
 	> article
 		padding 28px 32px 18px 32px
@@ -372,23 +381,18 @@ export default Vue.extend({
 
 		&:hover
 			> .main > footer > button
-				color #888
+				color isDark ? #707b97 : #888
 
-		> .avatar-anchor
+		> .avatar
 			display block
 			float left
 			margin 0 16px 10px 0
+			width 58px
+			height 58px
+			border-radius 8px
 			//position -webkit-sticky
 			//position sticky
 			//top 74px
-
-			> .avatar
-				display block
-				width 58px
-				height 58px
-				margin 0
-				border-radius 8px
-				vertical-align bottom
 
 		> .main
 			float left
@@ -396,7 +400,7 @@ export default Vue.extend({
 
 			> header
 				display flex
-				align-items center
+				align-items baseline
 				margin-bottom 4px
 				white-space nowrap
 
@@ -405,7 +409,7 @@ export default Vue.extend({
 					margin 0 .5em 0 0
 					padding 0
 					overflow hidden
-					color #627079
+					color isDark ? #fff : #627079
 					font-size 1em
 					font-weight bold
 					text-decoration none
@@ -418,114 +422,156 @@ export default Vue.extend({
 					margin 0 .5em 0 0
 					padding 1px 6px
 					font-size 12px
-					color #aaa
-					border solid 1px #ddd
+					color isDark ? #758188 : #aaa
+					border solid 1px isDark ? #57616f : #ddd
 					border-radius 3px
 
 				> .username
 					margin 0 .5em 0 0
-					color #ccc
+					overflow hidden
+					text-overflow ellipsis
+					color isDark ? #606984 : #ccc
 
 				> .info
 					margin-left auto
 					font-size 0.9em
 
+					> *
+						color isDark ? #606984 : #c0c0c0
+
 					> .mobile
 						margin-right 8px
-						color #ccc
 
 					> .app
 						margin-right 8px
 						padding-right 8px
-						color #ccc
 						border-right solid 1px #eaeaea
 
-					> .created-at
-						color #c0c0c0
+					> .visibility
+						margin-left 8px
 
 			> .body
 
-				> .text
+				> .cw
 					cursor default
 					display block
 					margin 0
 					padding 0
 					overflow-wrap break-word
 					font-size 1.1em
-					color #717171
+					color isDark ? #fff : #717171
 
-					>>> .quote
-						margin 8px
-						padding 6px 12px
-						color #aaa
-						border-left solid 3px #eee
-
-					> .reply
+					> .text
 						margin-right 8px
-						color #717171
 
-					> .rp
-						margin-left 4px
-						font-style oblique
-						color #a0bf46
-
-				> .location
-					margin 4px 0
-					font-size 12px
-					color #ccc
-
-				> .map
-					width 100%
-					height 300px
-
-					&:empty
-						display none
-
-				> .tags
-					margin 4px 0 0 0
-
-					> *
+					> .toggle
 						display inline-block
-						margin 0 8px 0 0
-						padding 2px 8px 2px 16px
-						font-size 90%
-						color #8d969e
-						background #edf0f3
-						border-radius 4px
-
-						&:before
-							content ""
-							display block
-							position absolute
-							top 0
-							bottom 0
-							left 4px
-							width 8px
-							height 8px
-							margin auto 0
-							background #fff
-							border-radius 100%
+						padding 4px 8px
+						font-size 0.7em
+						color isDark ? #393f4f : #fff
+						background isDark ? #687390 : #b1b9c1
+						border-radius 2px
+						cursor pointer
+						user-select none
 
 						&:hover
-							text-decoration none
-							background #e2e7ec
+							background isDark ? #707b97 : #bbc4ce
 
-				.mk-url-preview
-					margin-top 8px
+				> .content
 
-				> .channel
-					margin 0
+					> .text
+						cursor default
+						display block
+						margin 0
+						padding 0
+						overflow-wrap break-word
+						font-size 1.1em
+						color isDark ? #fff : #717171
 
-				> .mk-poll
-					font-size 80%
+						>>> .title
+							display block
+							margin-bottom 4px
+							padding 4px
+							font-size 90%
+							text-align center
+							background isDark ? #2f3944 : #eef1f3
+							border-radius 4px
 
-				> .renote
-					margin 8px 0
+						>>> .code
+							margin 8px 0
 
-					> .mk-note-preview
-						padding 16px
-						border dashed 1px #c0dac6
-						border-radius 8px
+						>>> .quote
+							margin 8px
+							padding 6px 12px
+							color isDark ? #6f808e : #aaa
+							border-left solid 3px isDark ? #637182 : #eee
+
+						> .reply
+							margin-right 8px
+							color isDark ? #99abbf : #717171
+
+						> .rp
+							margin-left 4px
+							font-style oblique
+							color #a0bf46
+
+					> .location
+						margin 4px 0
+						font-size 12px
+						color #ccc
+
+					> .map
+						width 100%
+						height 300px
+
+						&:empty
+							display none
+
+					> .tags
+						margin 4px 0 0 0
+
+						> *
+							display inline-block
+							margin 0 8px 0 0
+							padding 2px 8px 2px 16px
+							font-size 90%
+							color #8d969e
+							background #edf0f3
+							border-radius 4px
+
+							&:before
+								content ""
+								display block
+								position absolute
+								top 0
+								bottom 0
+								left 4px
+								width 8px
+								height 8px
+								margin auto 0
+								background #fff
+								border-radius 100%
+
+							&:hover
+								text-decoration none
+								background #e2e7ec
+
+					.mk-url-preview
+						margin-top 8px
+
+					> .channel
+						margin 0
+
+					> .mk-poll
+						font-size 80%
+
+					> .renote
+						margin 8px 0
+
+						> .mk-note-preview
+							padding 16px
+							border dashed 1px isDark ? #4e945e : #c0dac6
+							border-radius 8px
 
 			> footer
 				> button
@@ -533,13 +579,13 @@ export default Vue.extend({
 					padding 0 8px
 					line-height 32px
 					font-size 1em
-					color #ddd
+					color isDark ? #606984 : #ddd
 					background transparent
 					border none
 					cursor pointer
 
 					&:hover
-						color #666
+						color isDark ? #9198af : #666
 
 					> .count
 						display inline
@@ -556,7 +602,13 @@ export default Vue.extend({
 
 	> .detail
 		padding-top 4px
-		background rgba(0, 0, 0, 0.0125)
+		background rgba(#000, 0.0125)
+
+.note[data-darkmode]
+	root(true)
+
+.note:not([data-darkmode])
+	root(false)
 
 </style>
 

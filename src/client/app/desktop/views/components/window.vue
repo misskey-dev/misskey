@@ -4,7 +4,7 @@
 	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown" :style="{ width, height }">
 		<div class="body">
 			<header ref="header"
-				:class="{ withGradient }"
+				:class="{ withGradient: clientSettings.gradientWindowHeader }"
 				@contextmenu.prevent="() => {}" @mousedown.prevent="onHeaderMousedown"
 			>
 				<h1><slot name="header"></slot></h1>
@@ -17,14 +17,16 @@
 				<slot></slot>
 			</div>
 		</div>
-		<div class="handle top" v-if="canResize" @mousedown.prevent="onTopHandleMousedown"></div>
-		<div class="handle right" v-if="canResize" @mousedown.prevent="onRightHandleMousedown"></div>
-		<div class="handle bottom" v-if="canResize" @mousedown.prevent="onBottomHandleMousedown"></div>
-		<div class="handle left" v-if="canResize" @mousedown.prevent="onLeftHandleMousedown"></div>
-		<div class="handle top-left" v-if="canResize" @mousedown.prevent="onTopLeftHandleMousedown"></div>
-		<div class="handle top-right" v-if="canResize" @mousedown.prevent="onTopRightHandleMousedown"></div>
-		<div class="handle bottom-right" v-if="canResize" @mousedown.prevent="onBottomRightHandleMousedown"></div>
-		<div class="handle bottom-left" v-if="canResize" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
+		<template v-if="canResize">
+			<div class="handle top" @mousedown.prevent="onTopHandleMousedown"></div>
+			<div class="handle right" @mousedown.prevent="onRightHandleMousedown"></div>
+			<div class="handle bottom" @mousedown.prevent="onBottomHandleMousedown"></div>
+			<div class="handle left" @mousedown.prevent="onLeftHandleMousedown"></div>
+			<div class="handle top-left" @mousedown.prevent="onTopLeftHandleMousedown"></div>
+			<div class="handle top-right" @mousedown.prevent="onTopRightHandleMousedown"></div>
+			<div class="handle bottom-right" @mousedown.prevent="onBottomRightHandleMousedown"></div>
+			<div class="handle bottom-left" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
+		</template>
 	</div>
 </div>
 </template>
@@ -85,17 +87,10 @@ export default Vue.extend({
 
 	computed: {
 		isFlexible(): boolean {
-			return this.height == null;
+			return this.height == 'auto';
 		},
 		canResize(): boolean {
 			return !this.isFlexible;
-		},
-		withGradient(): boolean {
-			return (this as any).os.isSignedIn
-				? (this as any).os.i.clientSettings.gradientWindowHeader != null
-					? (this as any).os.i.clientSettings.gradientWindowHeader
-					: false
-				: false;
 		}
 	},
 
@@ -465,7 +460,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-window
+root(isDark)
 	display block
 
 	> .bg
@@ -476,7 +471,7 @@ export default Vue.extend({
 		left 0
 		width 100%
 		height 100%
-		background rgba(0, 0, 0, 0.7)
+		background rgba(#000, 0.7)
 		opacity 0
 		pointer-events none
 
@@ -493,7 +488,7 @@ export default Vue.extend({
 		&:focus
 			&:not([data-is-modal])
 				> .body
-					box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(0, 0, 0, 0.2)
+					box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(#000, 0.2)
 
 		> .handle
 			$size = 8px
@@ -559,9 +554,9 @@ export default Vue.extend({
 		> .body
 			height 100%
 			overflow hidden
-			background #fff
+			background isDark ? #282C37 : #fff
 			border-radius 6px
-			box-shadow 0 2px 6px 0 rgba(0, 0, 0, 0.2)
+			box-shadow 0 2px 6px 0 rgba(#000, 0.2)
 
 			> header
 				$header-height = 40px
@@ -571,12 +566,12 @@ export default Vue.extend({
 				overflow hidden
 				white-space nowrap
 				cursor move
-				background #fff
+				background isDark ? #313543 : #fff
 				border-radius 6px 6px 0 0
 				box-shadow 0 1px 0 rgba(#000, 0.1)
 
 				&.withGradient
-					background linear-gradient(to bottom, #fff, #ececec)
+					background isDark ? linear-gradient(to bottom, #313543, #1d2027) : linear-gradient(to bottom, #fff, #ececec)
 					box-shadow 0 1px 0 rgba(#000, 0.15)
 
 				&, *
@@ -593,7 +588,7 @@ export default Vue.extend({
 					font-size 1em
 					line-height $header-height
 					font-weight normal
-					color #666
+					color isDark ? #e3e5e8 : #666
 
 				> div:last-child
 					position absolute
@@ -608,16 +603,16 @@ export default Vue.extend({
 						padding 0
 						cursor pointer
 						font-size 1em
-						color rgba(#000, 0.4)
+						color isDark ? #9baec8 : rgba(#000, 0.4)
 						border none
 						outline none
 						background transparent
 
 						&:hover
-							color rgba(#000, 0.6)
+							color isDark ? #b2c1d5 : rgba(#000, 0.6)
 
 						&:active
-							color darken(#000, 30%)
+							color isDark ? #b2c1d5 : darken(#000, 30%)
 
 						> [data-fa]
 							padding 0
@@ -631,5 +626,11 @@ export default Vue.extend({
 	&:not([flexible])
 		> .main > .body > .content
 			height calc(100% - 40px)
+
+.mk-window[data-darkmode]
+	root(true)
+
+.mk-window:not([data-darkmode])
+	root(false)
 
 </style>

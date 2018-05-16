@@ -46,7 +46,7 @@ import config from '../../../../../config';
  */
 module.exports = (params) => new Promise(async (res, rej) => {
 	// Get 'appSecret' parameter
-	const [appSecret, appSecretErr] = $(params.appSecret).string().$;
+	const [appSecret, appSecretErr] = $.str.get(params.appSecret);
 	if (appSecretErr) return rej('invalid appSecret param');
 
 	// Lookup app

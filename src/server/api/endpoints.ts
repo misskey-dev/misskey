@@ -234,6 +234,12 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'i/favorites',
+		withCredential: true,
+		kind: 'favorites-read'
+	},
+
+	{
 		name: 'othello/match',
 		withCredential: true
 	},
@@ -409,6 +415,27 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'users/lists/show',
+		withCredential: true,
+		kind: 'account-read'
+	},
+	{
+		name: 'users/lists/create',
+		withCredential: true,
+		kind: 'account-write'
+	},
+	{
+		name: 'users/lists/push',
+		withCredential: true,
+		kind: 'account-write'
+	},
+	{
+		name: 'users/lists/list',
+		withCredential: true,
+		kind: 'account-read'
+	},
+
+	{
 		name: 'following/create',
 		withCredential: true,
 		limit: {
@@ -419,6 +446,24 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'following/delete',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'following-write'
+	},
+	{
+		name: 'following/stalk',
+		withCredential: true,
+		limit: {
+			duration: ms('1hour'),
+			max: 100
+		},
+		kind: 'following-write'
+	},
+	{
+		name: 'following/unstalk',
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
@@ -473,6 +518,14 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'notes/global-timeline',
+		withCredential: true,
+		limit: {
+			duration: ms('10minutes'),
+			max: 100
+		}
+	},
+	{
+		name: 'notes/user-list-timeline',
 		withCredential: true,
 		limit: {
 			duration: ms('10minutes'),

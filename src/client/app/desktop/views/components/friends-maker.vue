@@ -3,9 +3,7 @@
 	<p class="title">気になるユーザーをフォロー:</p>
 	<div class="users" v-if="!fetching && users.length > 0">
 		<div class="user" v-for="user in users" :key="user.id">
-			<router-link class="avatar-anchor" :to="user | userPage">
-				<img class="avatar" :src="`${user.avatarUrl}?thumbnail&size=42`" alt="" v-user-preview="user.id"/>
-			</router-link>
+			<mk-avatar class="avatar" :user="user" target="_blank"/>
 			<div class="body">
 				<router-link class="name" :to="user | userPage" v-user-preview="user.id">{{ user | userName }}</router-link>
 				<p class="username">@{{ user | acct }}</p>
@@ -86,18 +84,13 @@ export default Vue.extend({
 				display block
 				clear both
 
-			> .avatar-anchor
+			> .avatar
 				display block
 				float left
 				margin 0 12px 0 0
-
-				> .avatar
-					display block
-					width 42px
-					height 42px
-					margin 0
-					border-radius 8px
-					vertical-align bottom
+				width 42px
+				height 42px
+				border-radius 8px
 
 			> .body
 				float left

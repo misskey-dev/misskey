@@ -84,7 +84,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.notifications
+root(isDark)
 
 	> button
 		display block
@@ -101,10 +101,10 @@ export default Vue.extend({
 
 		&:hover
 		&[data-active='true']
-			color darken(#9eaba8, 20%)
+			color isDark ? #fff : darken(#9eaba8, 20%)
 
 		&:active
-			color darken(#9eaba8, 30%)
+			color isDark ? #fff : darken(#9eaba8, 30%)
 
 		> [data-fa].bell
 			font-size 1.2em
@@ -117,14 +117,15 @@ export default Vue.extend({
 			color $theme-color
 
 	> .pop
+		$bgcolor = isDark ? #282c37 : #fff
 		display block
 		position absolute
 		top 56px
 		right -72px
 		width 300px
-		background #fff
+		background $bgcolor
 		border-radius 4px
-		box-shadow 0 1px 4px rgba(0, 0, 0, 0.25)
+		box-shadow 0 1px 4px rgba(#000, 0.25)
 
 		&:before
 			content ""
@@ -135,7 +136,7 @@ export default Vue.extend({
 			right 74px
 			border-top solid 14px transparent
 			border-right solid 14px transparent
-			border-bottom solid 14px rgba(0, 0, 0, 0.1)
+			border-bottom solid 14px rgba(#000, 0.1)
 			border-left solid 14px transparent
 
 		&:after
@@ -147,12 +148,18 @@ export default Vue.extend({
 			right 74px
 			border-top solid 14px transparent
 			border-right solid 14px transparent
-			border-bottom solid 14px #fff
+			border-bottom solid 14px $bgcolor
 			border-left solid 14px transparent
 
 		> .mk-notifications
 			max-height 350px
 			font-size 1rem
 			overflow auto
+
+.notifications[data-darkmode]
+	root(true)
+
+.notifications:not([data-darkmode])
+	root(false)
 
 </style>

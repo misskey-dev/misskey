@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
 import * as debug from 'debug';
@@ -21,7 +22,8 @@ export async function fetchPerson(value: string | IObject, resolver?: Resolver):
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		return await User.findOne({ _id: uri.split('/').pop() });
+		const id = new mongo.ObjectID(uri.split('/').pop());
+		return await User.findOne({ _id: id });
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -47,6 +49,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		object == null ||
 		object.type !== 'Person' ||
 		typeof object.preferredUsername !== 'string' ||
+		typeof object.inbox !== 'string' ||
 		!validateUsername(object.preferredUsername) ||
 		!isValidName(object.name == '' ? null : object.name)
 	) {
@@ -78,27 +81,39 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 	const summaryDOM = JSDOM.fragment(person.summary);
 
 	// Create user
-	const user = await User.insert({
-		avatarId: null,
-		bannerId: null,
-		createdAt: Date.parse(person.published) || null,
-		description: summaryDOM.textContent,
-		followersCount,
-		followingCount,
-		notesCount,
-		name: person.name,
-		driveCapacity: 1024 * 1024 * 8, // 8MiB
-		username: person.preferredUsername,
-		usernameLower: person.preferredUsername.toLowerCase(),
-		host,
-		publicKey: {
-			id: person.publicKey.id,
-			publicKeyPem: person.publicKey.publicKeyPem
-		},
-		inbox: person.inbox,
-		uri: person.id,
-		url: person.url
-	}) as IRemoteUser;
+	let user: IRemoteUser;
+	try {
+		user = await User.insert({
+			avatarId: null,
+			bannerId: null,
+			createdAt: Date.parse(person.published) || null,
+			description: summaryDOM.textContent,
+			followersCount,
+			followingCount,
+			notesCount,
+			name: person.name,
+			driveCapacity: 1024 * 1024 * 8, // 8MiB
+			username: person.preferredUsername,
+			usernameLower: person.preferredUsername.toLowerCase(),
+			host,
+			publicKey: {
+				id: person.publicKey.id,
+				publicKeyPem: person.publicKey.publicKeyPem
+			},
+			inbox: person.inbox,
+			endpoints: person.endpoints,
+			uri: person.id,
+			url: person.url
+		}) as IRemoteUser;
+	} catch (e) {
+		// duplicate key error
+		if (e.code === 11000) {
+			throw new Error('already registered');
+		}
+
+		console.error(e);
+		throw e;
+	}
 
 	//#region アイコンとヘッダー画像をフェッチ
 	const [avatarId, bannerId] = (await Promise.all([
@@ -194,7 +209,8 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 			followingCount,
 			notesCount,
 			name: person.name,
-			url: person.url
+			url: person.url,
+			endpoints: person.endpoints
 		}
 	});
 }
