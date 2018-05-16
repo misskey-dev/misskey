@@ -114,7 +114,7 @@ export function validatePassword(password: string): boolean {
 }
 
 export function isValidName(name?: string): boolean {
-	return name === null || (typeof name == 'string' && name.length < 30 && name.trim() != '');
+	return name === null || (typeof name == 'string' && name.length < 50 && name.trim() != '');
 }
 
 export function isValidDescription(description: string): boolean {
