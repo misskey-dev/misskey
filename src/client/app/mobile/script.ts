@@ -23,6 +23,7 @@ import MkUser from './views/pages/user.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
 import MkNotifications from './views/pages/notifications.vue';
+import MkWidgets from './views/pages/widgets.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkNote from './views/pages/note.vue';
@@ -56,6 +57,7 @@ init((launch) => {
 			{ path: '/i/settings', component: MkSettings },
 			{ path: '/i/settings/profile', component: MkProfileSetting },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
+			{ path: '/i/widgets', name: 'widgets', component: MkWidgets },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', name: 'drive', component: MkDrive },
