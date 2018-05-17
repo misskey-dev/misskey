@@ -29,18 +29,17 @@ const async = fn => (done) => {
 	});
 };
 
-const request = (endpoint, params, me?) => new Promise<any>((ok, ng) => {
+const request = async (endpoint, params, me?) => {
 	const auth = me ? {
 		i: me.token
 	} : {};
 
-	chai.request(server)
+	const res = await chai.request(server)
 		.post(endpoint)
-		.send(Object.assign(auth, params))
-		.end((err, res) => {
-			ok(res);
-		});
-});
+		.send(Object.assign(auth, params));
+
+	return res;
+};
 
 describe('API', () => {
 	// Reset database each test
