@@ -80,10 +80,11 @@
 					<el-option label="自動" value=""/>
 				</el-option-group>
 				<el-option-group label="言語を指定">
-					<el-option label="ja-JP" value="ja"/>
-					<el-option label="en-US" value="en"/>
+					<el-option label="ja" value="ja"/>
+					<el-option label="en" value="en"/>
 					<el-option label="fr" value="fr"/>
 					<el-option label="pl" value="pl"/>
+					<el-option label="de" value="de"/>
 				</el-option-group>
 			</el-select>
 			<div class="none ui info">
