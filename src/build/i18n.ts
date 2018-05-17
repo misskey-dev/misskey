@@ -7,7 +7,7 @@ import locale from '../../locales';
 export default class Replacer {
 	private lang: string;
 
-	public pattern = /%i18n:([a-z0-9_\-\.\!]+?)%/g;
+	public pattern = /%i18n:([a-z0-9_\-\.\/\|\!]+?)%/g;
 
 	constructor(lang: string) {
 		this.lang = lang;
