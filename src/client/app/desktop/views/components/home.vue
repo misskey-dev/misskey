@@ -1,34 +1,34 @@
 <template>
 <div class="mk-home" :data-customize="customize">
 	<div class="customize" v-if="customize">
-		<router-link to="/">%fa:check%完了</router-link>
+		<router-link to="/">%fa:check%%i18n:@done%</router-link>
 		<div>
 			<div class="adder">
-				<p>ウィジェットを追加:</p>
+				<p>%i18n:@add-widget%</p>
 				<select v-model="widgetAdderSelected">
-					<option value="profile">プロフィール</option>
-					<option value="calendar">カレンダー</option>
-					<option value="timemachine">カレンダー(タイムマシン)</option>
-					<option value="activity">アクティビティ</option>
-					<option value="rss">RSSリーダー</option>
-					<option value="trends">トレンド</option>
-					<option value="photo-stream">フォトストリーム</option>
-					<option value="slideshow">スライドショー</option>
-					<option value="version">バージョン</option>
-					<option value="broadcast">ブロードキャスト</option>
-					<option value="notifications">通知</option>
-					<option value="users">おすすめユーザー</option>
-					<option value="polls">投票</option>
-					<option value="post-form">投稿フォーム</option>
-					<option value="messaging">メッセージ</option>
-					<option value="channel">チャンネル</option>
-					<option value="access-log">アクセスログ</option>
-					<option value="server">サーバー情報</option>
-					<option value="donation">寄付のお願い</option>
-					<option value="nav">ナビゲーション</option>
-					<option value="tips">ヒント</option>
+					<option value="profile">%i18n:@profile%</option>
+					<option value="calendar">%i18n:@calendar%</option>
+					<option value="timemachine">%i18n:@timemachine%</option>
+					<option value="activity">%i18n:@activity%</option>
+					<option value="rss">%i18n:@rss%</option>
+					<option value="trends">%i18n:@trends%</option>
+					<option value="photo-stream">%i18n:@photo-stream%</option>
+					<option value="slideshow">%i18n:@slideshow%</option>
+					<option value="version">%i18n:@version%</option>
+					<option value="broadcast">%i18n:@broadcast%</option>
+					<option value="notifications">%i18n:@notifications%</option>
+					<option value="users">%i18n:@users%</option>
+					<option value="polls">%i18n:@polls%</option>
+					<option value="post-form">%i18n:@post-form%</option>
+					<option value="messaging">%i18n:@messaging%</option>
+					<option value="channel">%i18n:@channel%</option>
+					<option value="access-log">%i18n:@access-log%</option>
+					<option value="server">%i18n:@server%</option>
+					<option value="donation">%i18n:@donation%</option>
+					<option value="nav">%i18n:@nav%</option>
+					<option value="tips">%i18n:@tips%</option>
 				</select>
-				<button @click="addWidget">追加</button>
+				<button @click="addWidget">%i18n:@add%</button>
 			</div>
 			<div class="trash">
 				<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
