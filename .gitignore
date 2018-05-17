@@ -10,3 +10,4 @@ npm-debug.log
 run.bat
 api-docs.json
 package-lock.json
+yarn.lock

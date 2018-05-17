@@ -1,11 +1,11 @@
 <template>
 <div class="mk-timeline">
 	<header>
-		<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
-		<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
-		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+		<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% %i18n:@home%</span>
+		<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% %i18n:@local%</span>
+		<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
 		<span :data-active="src == 'list'" @click="src = 'list'" v-if="list">%fa:list% {{ list.title }}</span>
-		<button @click="chooseList" title="リスト">%fa:list%</button>
+		<button @click="chooseList" title="%i18n:@list%">%fa:list%</button>
 	</header>
 	<x-core v-if="src == 'home'" ref="tl" key="home" src="home"/>
 	<x-core v-if="src == 'local'" ref="tl" key="local" src="local"/>

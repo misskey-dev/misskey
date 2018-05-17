@@ -50,6 +50,7 @@ export interface IPerson extends IObject {
 	followers: any;
 	following: any;
 	outbox: any;
+	endpoints: string[];
 }
 
 export const isCollection = (object: IObject): object is ICollection =>

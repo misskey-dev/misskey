@@ -19,7 +19,7 @@ common:
     wednesday: "M"
     thursday: "J"
     friday: "V"
-    saturday: "土"
+    saturday: "S"
   reactions:
     like: "Aime"
     love: "Adore"

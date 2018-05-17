@@ -19,7 +19,7 @@ common:
     wednesday: "Ś"
     thursday: "C"
     friday: "P"
-    saturday: "土"
+    saturday: "S"
   reactions:
     like: "Lubię"
     love: "Kocham"

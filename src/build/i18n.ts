@@ -7,7 +7,7 @@ import locale from '../../locales';
 export default class Replacer {
 	private lang: string;
 
-	public pattern = /%i18n:([a-z0-9_\-@\.\!]+?)%/g;
+	public pattern = /%i18n:([a-z0-9_\-\.\/\|\!]+?)%/g;
 
 	constructor(lang: string) {
 		this.lang = lang;
@@ -53,23 +53,20 @@ export default class Replacer {
 		}
 	}
 
-	public replacement(ctx, match, key) {
-		const client = '/src/client/app/';
-		let name = null;
+	public replacement(match, key) {
+		let path = null;
 
 		const shouldEscape = key[0] == '!';
 		if (shouldEscape) {
 			key = key.substr(1);
 		}
 
-		if (key[0] == '@') {
-			name = ctx.src.substr(ctx.src.indexOf(client) + client.length);
-			key = key.substr(1);
+		if (key.indexOf('|') != -1) {
+			path = key.split('|')[0];
+			key = key.split('|')[1];
 		}
 
-		if (ctx && ctx.lang) this.lang = ctx.lang;
-
-		const txt = this.get(name, key);
+		const txt = this.get(path, key);
 
 		return shouldEscape
 			? txt.replace(/'/g, '\\x27').replace(/"/g, '\\x22')

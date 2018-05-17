@@ -25,7 +25,7 @@ ultimately sophisticated new type of mini-blog based SNS.
 * Real time contents
 * ActivityPub compatible
 
-and more! You can touch with your own eyes at https://misskey.xyz/.
+and more! You can touch with your own eyes at [misskey.xyz](https://misskey.xyz).
 
 :package: Create your instance
 ----------------------------------------------------------------
@@ -36,7 +36,9 @@ please see [Setup and installation guide](./docs/setup.en.md).
 ----------------------------------------------------------------
 **[PR](https://github.com/syuilo/misskey/pulls)s welcome!**
 
-If you want to translate Misskey, please see [Translation guide](./docs/translate.en.md).
+If you want to...
+* i18n ... please see [Translation guide](./docs/translate.en.md).
+* l10n ... please visit https://crowdin.com/project/misskey
 
 :heart: Backers & Sponsors
 ----------------------------------------------------------------

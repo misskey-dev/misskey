@@ -19,7 +19,7 @@ common:
     wednesday: "W"
     thursday: "T"
     friday: "F"
-    saturday: "土"
+    saturday: "S"
   reactions:
     like: "Like"
     love: "Love"
