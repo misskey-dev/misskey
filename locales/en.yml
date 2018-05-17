@@ -324,7 +324,7 @@ desktop/views/components/timeline.vue:
   home: "Home"
   local: "Local"
   global: "Global"
-  list: "List"
+  list: "Lists"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Drive"
@@ -337,7 +337,7 @@ desktop/views/components/ui.header.account.vue:
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   messaging: "Messages"
-  game: "Game"
+  game: "Play Othello"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
 desktop/views/components/ui.header.post.vue:

@@ -149,7 +149,7 @@ common/views/components/twitter-setting.vue:
 common/views/components/uploader.vue:
   waiting: "Oczekiwanie"
 common/views/widgets/broadcast.vue:
-  fetching: "確認中"
+  fetching: "Sprawdzanie"
   no-broadcasts: "Brak transmisji"
   have-a-nice-day: "Miłego dnia!"
   next: "Dalej"
@@ -320,6 +320,11 @@ desktop/views/components/settings.profile.vue:
   description: "Opis"
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
+desktop/views/components/timeline.vue:
+  home: "ホーム"
+  local: "ローカル"
+  global: "グローバル"
+  list: "リスト"
 desktop/views/components/ui.header.account.vue:
   profile: "Twój profil"
   drive: "Dysk"
