@@ -11,7 +11,6 @@ const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const I18nPlugin = require('webpack-multilang-i18n-plugin');
 
 import I18nReplacer from './src/build/i18n';
 import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
@@ -123,8 +122,7 @@ const plugins = [
 		});
 		//#endregion
 	}),
-	new VueLoaderPlugin(),
-	new I18nPlugin()
+	new VueLoaderPlugin()
 ];
 
 if (isProduction) {
