@@ -64,7 +64,7 @@ export default Vue.extend({
 				'%i18n:!common.weekday-short.wednesday%',
 				'%i18n:!common.weekday-short.thursday%',
 				'%i18n:!common.weekday-short.friday%',
-				'%i18n:!common.weekday-short.satruday%'
+				'%i18n:!common.weekday-short.saturday%'
 			]
 		};
 	},
