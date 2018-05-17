@@ -2,7 +2,9 @@
  * API TESTS
  */
 
+import * as fs from 'fs';
 import * as merge from 'object-assign-deep';
+import * as chai from 'chai';
 
 Error.stackTraceLimit = Infinity;
 
@@ -12,11 +14,9 @@ process.env.NODE_ENV = 'test';
 // Display detail of unhandled promise rejection
 process.on('unhandledRejection', console.dir);
 
-const fs = require('fs');
-const _chai = require('chai');
 const chaiHttp = require('chai-http');
 
-_chai.use(chaiHttp);
+chai.use(chaiHttp);
 
 const server = require('../built/server/api').callback();
 const db = require('../built/db/mongodb').default;
@@ -34,7 +34,7 @@ const request = (endpoint, params, me?) => new Promise<any>((ok, ng) => {
 		i: me.token
 	} : {};
 
-	_chai.request(server)
+	chai.request(server)
 		.post(endpoint)
 		.send(Object.assign(auth, params))
 		.end((err, res) => {
@@ -723,7 +723,7 @@ describe('API', () => {
 	describe('drive/files/create', () => {
 		it('ファイルを作成できる', async(async () => {
 			const me = await insertSakurako();
-			const res = await _chai.request(server)
+			const res = await chai.request(server)
 				.post('/drive/files/create')
 				.field('i', me.token)
 				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
