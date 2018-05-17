@@ -19,7 +19,7 @@ common:
     wednesday: "Mi"
     thursday: "Do"
     friday: "Fr"
-    satruday: "Sa"
+    saturday: "土"
   reactions:
     like: "Gefällt mir"
     love: "Lieben"
