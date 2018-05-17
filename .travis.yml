@@ -29,10 +29,7 @@ services:
   - redis-server
 
 before_script:
-  # Travisはproduction環境なので(10行目により)、
-  # npm install しただけでは devDependencies はインストールされないので、
-  # --only=dev オプションを付けてそれらもインストールされるようにする:
-  - npm install --only=dev
+  - npm install
 
   # 設定ファイルを配置
   - cp ./.travis/default.yml ./.config
