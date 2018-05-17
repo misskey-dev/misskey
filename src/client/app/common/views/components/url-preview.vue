@@ -126,16 +126,21 @@ root(isDark)
 					line-height 16px
 					vertical-align top
 
-		@media (max-width 500px)
-			font-size 8px
-			border none
-
+		@media (max-width 700px)
 			> .thumbnail
-				width 70px
+				position relative
+				width 100%
+				height 100px
 
 				& + article
-					left 70px
-					width calc(100% - 70px)
+					left 0
+					width 100%
+
+		@media (max-width 500px)
+			font-size 8px
+
+			> .thumbnail
+				height 70px
 
 			> article
 				padding 8px
