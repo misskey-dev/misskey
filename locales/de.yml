@@ -221,6 +221,31 @@ desktop/views/components/drive.vue:
     create-folder: "Ein Verzeichnis erstellen"
     upload: "Eine Datei hochladen"
     url-upload: "Von einer URL hochladen"
+desktop/views/components/home.vue:
+  done: "完了"
+  add-widget: "ウィジェットを追加:"
+  profile: "プロフィール"
+  calendar: "カレンダー"
+  timemachine: "カレンダー(タイムマシン)"
+  activity: "アクティビティ"
+  rss: "RSSリーダー"
+  trends: "トレンド"
+  photostream: "フォトストリーム"
+  slideshow: "スライドショー"
+  version: "バージョン"
+  broadcast: "ブロードキャスト"
+  notifications: "通知"
+  users: "おすすめユーザー"
+  polls: "投票"
+  post-form: "投稿フォーム"
+  messaging: "メッセージ"
+  channel: "チャンネル"
+  access-log: "アクセスログ"
+  server: "サーバー情報"
+  donation: "寄付のお願い"
+  nav: "ナビゲーション"
+  tips: "ヒント"
+  add: "追加"
 desktop/views/components/messaging-window.vue:
   title: "Nachrichten"
 desktop/views/components/notes.note.vue:
@@ -273,6 +298,7 @@ desktop/views/components/settings.vue:
   mute: "ミュート"
   drive: "ドライブ"
   security: "セキュリティ"
+  signin: "サインイン履歴"
   password: "パスワード"
   2fa: "二段階認証"
   other: "その他"
@@ -300,6 +326,7 @@ desktop/views/components/settings.api.vue:
   caution: "アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。"
   regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
   regenerate-token: "トークンを再生成"
+  token: "Token:"
   enter-password: "パスワードを入力してください"
 desktop/views/components/settings.app.vue:
   no-apps: "連携しているアプリケーションはありません"
@@ -344,6 +371,17 @@ desktop/views/components/ui.header.post.vue:
   post: "Einen neuen Post erstellen"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Suchen"
+desktop/views/components/user-lists-window.vue:
+  create-list: "リストを作成"
+desktop/views/components/user-preview.vue:
+  notes: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+desktop/views/components/users-list.vue:
+  all: "すべて"
+  iknow: "知り合い"
+  load-more: "もっと"
+  fetching: "読み込んでいます"
 desktop/views/pages/note.vue:
   prev: "Vorheriger Kommentar"
   next: "Nächster Kommentar"
