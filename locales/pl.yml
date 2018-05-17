@@ -157,7 +157,7 @@ common/views/widgets/donation.vue:
   title: "Dotacje"
   text: "Aby utrzymywać Misskey, płacimy za domenę, serwery i nie tylko… Nie zarabiamy na tym, więc byłoby nam miło, gdybyśmy uzyskali od Ciebie dotację. Jeżeli jesteś zainteresowany, skontaktuj się z {}. Dziękujemy za wsparcie!"
 common/views/widgets/photo-stream.vue:
-  title: "フォトストリーム"
+  title: "Photostream"
   no-photos: "Brak zdjęć"
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
@@ -221,6 +221,31 @@ desktop/views/components/drive.vue:
     create-folder: "Utwórz katalog"
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
+desktop/views/components/home.vue:
+  done: "Wyślij"
+  add-widget: "Dodaj widżet:"
+  profile: "Profil"
+  calendar: "Kalendarz"
+  timemachine: "Kalendarz (wehikuł czasu)"
+  activity: "Aktywność"
+  rss: "Czytnik RSS"
+  trends: "Na czasie"
+  photostream: "Photostream"
+  slideshow: "Pokaz slajdów"
+  version: "Wersja"
+  broadcast: "ブロードキャスト"
+  notifications: "Powiadomienia"
+  users: "Polecani użytkownicy"
+  polls: "Ankiety"
+  post-form: "投稿フォーム"
+  messaging: "Wiadomości"
+  channel: "Kanał"
+  access-log: "アクセスログ"
+  server: "Informacje o serwerze"
+  donation: "Dotacje"
+  nav: "Nawigacja"
+  tips: "Wskazówki"
+  add: "Dodaj"
 desktop/views/components/messaging-window.vue:
   title: "Wiadomości"
 desktop/views/components/notes.note.vue:
@@ -273,6 +298,7 @@ desktop/views/components/settings.vue:
   mute: "Wyciszanie"
   drive: "Dysk"
   security: "Bezpieczeństwo"
+  signin: "Historia logowań"
   password: "Hasło"
   2fa: "Uwierzytelnianie dwuetapowe"
   other: "Inne"
@@ -300,6 +326,7 @@ desktop/views/components/settings.api.vue:
   caution: "Nie pokazuj tego tokenu osobom trzecim (nie wprowadzaj go nigdzie indziej), aby konto nie trafiło w niepowołane ręce."
   regeneration-of-token: "W przypadku wycieku tokenu, możesz wygenerować nowy."
   regenerate-token: "Wygeneruj nowy token"
+  token: "Token:"
   enter-password: "Wprowadź hasło"
 desktop/views/components/settings.app.vue:
   no-apps: "Brak zautoryzowanych aplikacji"
@@ -321,10 +348,10 @@ desktop/views/components/settings.profile.vue:
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
 desktop/views/components/timeline.vue:
-  home: "ホーム"
-  local: "ローカル"
-  global: "グローバル"
-  list: "リスト"
+  home: "Strona główna"
+  local: "Lokalne"
+  global: "Globalne"
+  list: "Listy"
 desktop/views/components/ui.header.account.vue:
   profile: "Twój profil"
   drive: "Dysk"
@@ -344,6 +371,17 @@ desktop/views/components/ui.header.post.vue:
   post: "Utwórz nowy wpis"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Szukaj"
+desktop/views/components/user-lists-window.vue:
+  create-list: "Utwórz listę"
+desktop/views/components/user-preview.vue:
+  notes: "Wpisy"
+  following: "Śledzeni"
+  followers: "Śledzący"
+desktop/views/components/users-list.vue:
+  all: "Wszyscy"
+  iknow: "Znasz"
+  load-more: "Więcej"
+  fetching: "Ładowanie…"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -379,7 +417,7 @@ desktop/views/pages/user/user.profile.vue:
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
 desktop/views/widgets/messaging.vue:
-  title: "メッセージ"
+  title: "Wiadomości"
 desktop/views/widgets/notifications.vue:
   title: "Powiadomienia"
   settings: "Ustawienia"
@@ -426,7 +464,7 @@ mobile/views/components/follow-button.vue:
   follow: "Śledź"
   unfollow: "Przestań śledzić"
 mobile/views/components/note.vue:
-  reposted-by: "{}がRenote"
+  reposted-by: "Udostępniono przez {}"
 mobile/views/components/note-detail.vue:
   reply: "Odpowiedz"
   reaction: "Reakcja"
@@ -501,7 +539,7 @@ mobile/views/pages/selectdrive.vue:
 mobile/views/pages/settings.vue:
   signed-in-as: "Zalogowany jako {}"
   profile: "Profil"
-  twitter: "Twitter連携"
+  twitter: "Połączenie z Twitterem"
   signin-history: "Historia logowań"
   settings: "Ustawienia"
   signout: "Wyloguj"

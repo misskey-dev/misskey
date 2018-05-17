@@ -19,7 +19,7 @@ common:
     wednesday: "W"
     thursday: "T"
     friday: "F"
-    saturday: "S"
+    saturday: "土"
   reactions:
     like: "Like"
     love: "Love"
@@ -221,6 +221,31 @@ desktop/views/components/drive.vue:
     create-folder: "Create a folder"
     upload: "Upload a file"
     url-upload: "Upload from a URL"
+desktop/views/components/home.vue:
+  done: "Submit"
+  add-widget: "Add widget:"
+  profile: "Profile"
+  calendar: "Calendar"
+  timemachine: "Calendar (Time Machine)"
+  activity: "Activity"
+  rss: "RSS reader"
+  trends: "Trends"
+  photostream: "Photostream"
+  slideshow: "Slideshow"
+  version: "Version"
+  broadcast: "Broadcast"
+  notifications: "Notifications"
+  users: "Recommended users"
+  polls: "Polls"
+  post-form: "投稿フォーム"
+  messaging: "Messaging"
+  channel: "Channel"
+  access-log: "Access log"
+  server: "Server info"
+  donation: "Donation"
+  nav: "Navigation"
+  tips: "Tips"
+  add: "Add"
 desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/notes.note.vue:
@@ -273,6 +298,7 @@ desktop/views/components/settings.vue:
   mute: "Mute"
   drive: "Drive"
   security: "Security"
+  signin: "Sign in history"
   password: "Password"
   2fa: "Two-factor authentication"
   other: "Other"
@@ -300,6 +326,7 @@ desktop/views/components/settings.api.vue:
   caution: "Please do not show this token to third parties (do not enter it somewhere else other than here) otherwise your account could get compromised."
   regeneration-of-token: "In the unlikely event that this token leaks out you can regenerate it."
   regenerate-token: "Regenerate the token"
+  token: "Token:"
   enter-password: "Please enter the password"
 desktop/views/components/settings.app.vue:
   no-apps: "No authorized apps"
@@ -344,6 +371,17 @@ desktop/views/components/ui.header.post.vue:
   post: "Compose new Post"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Search"
+desktop/views/components/user-lists-window.vue:
+  create-list: "Create list"
+desktop/views/components/user-preview.vue:
+  notes: "Posts"
+  following: "Following"
+  followers: "Followers"
+desktop/views/components/users-list.vue:
+  all: "All"
+  iknow: "You know"
+  load-more: "More"
+  fetching: "Loading…"
 desktop/views/pages/note.vue:
   prev: "Previous note"
   next: "Next note"
