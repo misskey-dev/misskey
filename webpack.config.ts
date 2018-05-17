@@ -146,27 +146,20 @@ module.exports = {
 			}, {
 				loader: 'replace',
 				query: {
-					search: /%base64:(.+?)%/g.toString(),
-					replace: 'base64replacement'
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					search: i18nPattern.toString(),
-					replace: 'i18nReplacement',
-					i18n: true
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					search: faPattern.toString(),
-					replace: 'faReplacement'
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
-					replace: 'collapseSpacesReplacement'
+					qs: [{
+						search: /%base64:(.+?)%/g.toString(),
+						replace: 'base64replacement'
+					}, {
+						search: i18nPattern.toString(),
+						replace: 'i18nReplacement',
+						i18n: true
+					}, {
+						search: faPattern.toString(),
+						replace: 'faReplacement'
+					}, {
+						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
+						replace: 'collapseSpacesReplacement'
+					}]
 				}
 			}]
 		}, {
