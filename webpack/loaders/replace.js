@@ -1,12 +1,12 @@
-const loaderUtils = require('loader-utils');
+import { getOptions } from 'loader-utils';
 
 function trim(text, g) {
 	return text.substring(1, text.length - (g ? 2 : 0));
 }
 
-module.exports = function(src) {
+export default function(src) {
 	this.cacheable();
-	const options = loaderUtils.getOptions(this);
+	const options = getOptions(this);
 	const search = options.search;
 	const g = search[search.length - 1] == 'g';
 	const file = this.resourcePath.replace(/\\/g, '/');
@@ -19,4 +19,4 @@ module.exports = function(src) {
 	src = src.replace(new RegExp(trim(search, g), g ? 'g' : ''), replace);
 	this.callback(null, src);
 	return src;
-};
+}
