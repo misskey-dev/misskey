@@ -473,6 +473,9 @@ mobile/views/components/notifications.vue:
   empty: "No notifications"
 mobile/views/components/post-form.vue:
   submit: "Post"
+  reply: "返信"
+  renote: "Renote"
+  renote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "Reply to this note..."
   note-placeholder: "What's happening?"
 mobile/views/components/sub-note-content.vue:
