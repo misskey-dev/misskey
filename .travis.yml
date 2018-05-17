@@ -7,7 +7,7 @@ notifications:
 language: node_js
 
 node_js:
-  - 9.8.0
+  - 10.1.0
 
 env:
   - CXX=g++-4.8 NODE_ENV=production
@@ -22,9 +22,7 @@ addons:
 
 cache:
   directories:
-    # パッケージをキャッシュすると本来は動かないはずなのに動いてしまう
-    # 場合があり危険なのでキャッシュはしない:
-    #- node_modules
+    - node_modules
 
 services:
   - mongodb
