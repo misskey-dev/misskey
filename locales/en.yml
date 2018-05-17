@@ -19,7 +19,7 @@ common:
     wednesday: "W"
     thursday: "T"
     friday: "F"
-    saturday: "S"
+    saturday: "土"
   reactions:
     like: "Like"
     love: "Love"
@@ -221,6 +221,31 @@ desktop/views/components/drive.vue:
     create-folder: "Create a folder"
     upload: "Upload a file"
     url-upload: "Upload from a URL"
+desktop/views/components/home.vue:
+  done: "完了"
+  add-widget: "ウィジェットを追加:"
+  profile: "プロフィール"
+  calendar: "カレンダー"
+  timemachine: "カレンダー(タイムマシン)"
+  activity: "アクティビティ"
+  rss: "RSSリーダー"
+  trends: "トレンド"
+  photostream: "フォトストリーム"
+  slideshow: "スライドショー"
+  version: "バージョン"
+  broadcast: "ブロードキャスト"
+  notifications: "通知"
+  users: "おすすめユーザー"
+  polls: "投票"
+  post-form: "投稿フォーム"
+  messaging: "メッセージ"
+  channel: "チャンネル"
+  access-log: "アクセスログ"
+  server: "サーバー情報"
+  donation: "寄付のお願い"
+  nav: "ナビゲーション"
+  tips: "ヒント"
+  add: "追加"
 desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/notes.note.vue:
@@ -273,6 +298,7 @@ desktop/views/components/settings.vue:
   mute: "Mute"
   drive: "Drive"
   security: "Security"
+  signin: "サインイン履歴"
   password: "Password"
   2fa: "Two-factor authentication"
   other: "Other"
@@ -300,6 +326,7 @@ desktop/views/components/settings.api.vue:
   caution: "Please do not show this token to third parties (do not enter it somewhere else other than here) otherwise your account could get compromised."
   regeneration-of-token: "In the unlikely event that this token leaks out you can regenerate it."
   regenerate-token: "Regenerate the token"
+  token: "Token:"
   enter-password: "Please enter the password"
 desktop/views/components/settings.app.vue:
   no-apps: "No authorized apps"
@@ -344,6 +371,17 @@ desktop/views/components/ui.header.post.vue:
   post: "Compose new Post"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Search"
+desktop/views/components/user-lists-window.vue:
+  create-list: "リストを作成"
+desktop/views/components/user-preview.vue:
+  notes: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+desktop/views/components/users-list.vue:
+  all: "すべて"
+  iknow: "知り合い"
+  load-more: "もっと"
+  fetching: "読み込んでいます"
 desktop/views/pages/note.vue:
   prev: "Previous note"
   next: "Next note"
