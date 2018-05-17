@@ -24,10 +24,15 @@ export default (os: MiOS) => new Vuex.Store({
 	}],
 
 	state: {
+		indicate: false,
 		uiHeaderHeight: 0
 	},
 
 	mutations: {
+		indicate(state, x) {
+			state.indicate = x;
+		},
+
 		setUiHeaderHeight(state, height) {
 			state.uiHeaderHeight = height;
 		}

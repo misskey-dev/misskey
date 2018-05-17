@@ -13,6 +13,7 @@
 			<slot name="func"></slot>
 		</div>
 	</div>
+	<div class="indicator" v-show="$store.state.indicate"></div>
 </div>
 </template>
 
@@ -155,6 +156,10 @@ root(isDark)
 
 	&, *
 		user-select none
+
+	> .indicator
+		height 3px
+		background $theme-color
 
 	> .main
 		color rgba(#fff, 0.9)
