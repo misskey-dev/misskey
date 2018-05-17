@@ -19,7 +19,7 @@ common:
     wednesday: "Mi"
     thursday: "Do"
     friday: "Fr"
-    saturday: "土"
+    saturday: "Sa"
   reactions:
     like: "Gefällt mir"
     love: "Lieben"
@@ -142,10 +142,10 @@ common/views/components/stream-indicator.vue:
 common/views/components/twitter-setting.vue:
   description: "お使いのTwitterアカウントをお使いのMisskeyアカウントに接続しておくと、プロフィールでTwitterアカウント情報が表示されるようになったり、Twitterを用いた便利なサインインを利用できるようになります。"
   connected-to: "次のTwitterアカウントに接続されています"
-  detail: "詳細..."
-  reconnect: "再接続する"
-  connect: "Twitterと接続する"
-  disconnect: "切断する"
+  detail: "Mehr..."
+  reconnect: "Erneut verbinden"
+  connect: "Mit Twitter verbinden"
+  disconnect: "Trennen"
 common/views/components/uploader.vue:
   waiting: "待機中"
 common/views/widgets/broadcast.vue:
