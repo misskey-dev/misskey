@@ -141,17 +141,24 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 main
 	margin 0 auto
+	padding 8px
 	max-width 500px
 
 	@media (min-width 500px)
-		padding 8px
+		padding 16px 8px
+
+	@media (min-width 600px)
+		padding 32px 8px
 
 	> header
 		padding 8px
 		background #fff
 
 	.widget
-		margin 8px
+		margin-bottom 8px
+
+		@media (min-width 600px)
+			margin-bottom 16px
 
 	.customize-container
 		margin 8px
