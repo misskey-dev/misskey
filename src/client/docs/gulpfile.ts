@@ -53,7 +53,7 @@ gulp.task('doc:docs', async () => {
 						return;
 					}
 					const i18n = new I18nReplacer(lang);
-					html = html.replace(i18n.pattern, i18n.replacement.bind(null, null));
+					html = html.replace(i18n.pattern, i18n.replacement);
 					html = fa(html);
 					const htmlPath = `./built/client/docs/${lang}/${name}.html`;
 					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
