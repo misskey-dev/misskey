@@ -470,7 +470,7 @@ desktop/views/components/settings.profile.vue:
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
 desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
+  title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
   home: "Strona główna"
   local: "Lokalne"
@@ -564,7 +564,7 @@ desktop/views/widgets/users.vue:
 desktop/views/widgets/channel.vue:
   title: "Kanał"
   settings: "Ustawienia widżetu"
-  get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
+  get-started: "Naciśnij na zębatkę w prawym górnym rogu, aby określić kanał"
 mobile/views/components/drive.vue:
   drive: "Dysk"
   used: "użyto"
@@ -597,9 +597,9 @@ mobile/views/components/notifications.vue:
   empty: "Brak powiadomień"
 mobile/views/components/post-form.vue:
   submit: "Wyślij"
-  reply: "返信"
-  renote: "Renote"
-  renote-placeholder: "この投稿を引用... (オプション)"
+  reply: "Odpowiedz"
+  renote: "Przeredaguj"
+  renote-placeholder: "Zacytuj wpis… (nieobowiązkowe)"
   reply-placeholder: "Odpowiedź na ten wpis…"
   note-placeholder: "Co się dzieje?"
 mobile/views/components/sub-note-content.vue:
