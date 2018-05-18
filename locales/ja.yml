@@ -1,3 +1,7 @@
+meta:
+  lang: "日本語"
+  divider: ""
+
 common:
   misskey: "Misskeyで皆と共有しよう。"
 

@@ -69,8 +69,9 @@ root(isDark)
 					text-decoration underline
 
 			> .username
-				text-align left
 				margin 0 .5em 0 0
+				overflow hidden
+				text-overflow ellipsis
 				color isDark ? #606984 : #d1d8da
 
 			> .time

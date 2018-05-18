@@ -350,6 +350,7 @@ root(isDark)
 		align-items center
 		padding 16px 32px
 		line-height 28px
+		white-space pre
 		color #9dbb00
 		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 
