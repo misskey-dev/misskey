@@ -166,10 +166,10 @@ common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
 desktop/views/components/activity.chart.vue:
-  total: "Black ... Total"
-  notes: "Blue ... Notes"
-  replies: "Red ... Replies"
-  renotes: "Green ... Renotes"
+  total: "Czarny … Łącznie"
+  notes: "Niebieski … Wpisy"
+  replies: "Czerwony … Odpowiedzi"
+  renotes: "Czerwony … Udostępnienia"
 desktop/views/components/activity.vue:
   title: "Aktywność"
   toggle: "Przełącz widok"
@@ -179,19 +179,19 @@ desktop/views/components/calendar.vue:
   next: "Następny miesiąc"
   go: "Naciśnij, aby przejść"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択中"
-  upload: "PCからドライブにファイルをアップロード"
-  cancel: "キャンセル"
-  ok: "決定"
-  choose-prompt: "ファイルを選択"
+  choose-file: "Wybierz plik"
+  upload: "Wyślij pliki z Twojego komputera"
+  cancel: "Anuluj"
+  ok: "OK"
+  choose-prompt: "Wybierz plik"
 desktop/views/components/choose-folder-from-drive-window.vue:
-  cancel: "キャンセル"
-  ok: "決定"
-  choose-prompt: "フォルダを選択"
+  cancel: "Anuluj"
+  ok: "OK"
+  choose-prompt: "Wybierz katalog"
 desktop/views/components/crop-window.vue:
-  skip: "クロップをスキップ"
-  cancel: "キャンセル"
-  ok: "決定"
+  skip: "Pomiń przycinanie"
+  cancel: "Anuluj"
+  ok: "OK"
 desktop/views/components/drive-window.vue:
   used: "wykorzystane"
   drive: "Dysk"
@@ -244,24 +244,24 @@ desktop/views/components/drive.vue:
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
 desktop/views/components/follow-button.vue:
-  unfollow: "フォロー解除"
-  follow: "フォローする"
+  unfollow: "Przestań śledzić"
+  follow: "Śledź"
 desktop/views/components/followers-window.vue:
-  followers: "{} のフォロワー"
+  followers: "Śledzący"
 desktop/views/components/followers.vue:
-  empty: "フォロワーはいないようです。"
+  empty: "Wygląda na to, że nikt Cię nie śledzi…"
 desktop/views/components/following-window.vue:
-  following: "{} のフォロー"
+  following: "Śledzeni przez {}"
 desktop/views/components/following.vue:
-  empty: "フォロー中のユーザーはいないようです。"
+  empty: "Nikt Cię nie śledzi."
 desktop/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー:"
-  empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
-  refresh: "もっと見る"
-  close: "閉じる"
+  title: "Zacznij śledzić ludzi takich jak Ty:"
+  empty: "Nie znaleziono podobnych użytkowników."
+  fetching: "Ładowanie…"
+  refresh: "Więcej"
+  close: "Zamknij"
 desktop/views/components/game-window.vue:
-  game: "オセロ"
+  game: "Othello"
 desktop/views/components/home.vue:
   done: "Wyślij"
   add-widget: "Dodaj widżet:"
@@ -274,7 +274,7 @@ desktop/views/components/home.vue:
   photostream: "Photostream"
   slideshow: "Pokaz slajdów"
   version: "Wersja"
-  broadcast: "ブロードキャスト"
+  broadcast: "Transmisja"
   notifications: "Powiadomienia"
   users: "Polecani użytkownicy"
   polls: "Ankiety"
@@ -288,10 +288,10 @@ desktop/views/components/home.vue:
   tips: "Wskazówki"
   add: "Dodaj"
 desktop/views/input-dialog.vue:
-  cancel: "キャンセル"
-  ok: "決定"
+  cancel: "Anuluj"
+  ok: "OK"
 desktop/views/components/mentions.vue:
-  all: "すべて"
+  all: "Wszyscy"
   followed: "フォロー中"
   empty: "あなた宛ての投稿はありません。"
   empty-followed: "あなたがフォローしているユーザーからの言及はありません。"
