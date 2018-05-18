@@ -171,6 +171,9 @@ const addFile = async (
 
 			log('calculate average color...');
 
+			const info = await prominence(gm(fs.createReadStream(path), name)).identify();
+			const isTransparent = info ? info['Channel depth'].Alpha != null : false;
+
 			const buffer = await prominence(gm(fs.createReadStream(path), name)
 				.setFormat('ppm')
 				.resize(1, 1)) // 1pxのサイズに縮小して平均色を取得するというハック
@@ -182,7 +185,7 @@ const addFile = async (
 
 			log(`average color is calculated: ${r}, ${g}, ${b}`);
 
-			return [r, g, b];
+			return isTransparent ? [r, g, b, 255] : [r, g, b];
 		})(),
 		// folder
 		(async () => {
