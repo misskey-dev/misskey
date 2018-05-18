@@ -280,8 +280,6 @@ desktop/views/components/home.vue:
   polls: "投票"
   post-form: "投稿フォーム"
   messaging: "メッセージ"
-  channel: "チャンネル"
-  access-log: "アクセスログ"
   server: "サーバー情報"
   donation: "寄付のお願い"
   nav: "ナビゲーション"
@@ -290,11 +288,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "キャンセル"
   ok: "決定"
-desktop/views/components/mentions.vue:
-  all: "すべて"
-  followed: "フォロー中"
-  empty: "あなた宛ての投稿はありません。"
-  empty-followed: "あなたがフォローしているユーザーからの言及はありません。"
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
 desktop/views/components/messaging-window.vue:
@@ -561,10 +554,6 @@ desktop/views/widgets/users.vue:
   title: "おすすめユーザー"
   refresh: "他を見る"
   no-one: "いません！"
-desktop/views/widgets/channel.vue:
-  title: "チャンネル"
-  settings: "ウィジェットの設定"
-  get-started: "右上の歯車をクリックして受信するチャンネルを指定してください"
 mobile/views/components/drive.vue:
   drive: "ドライブ"
   used: "使用中"
