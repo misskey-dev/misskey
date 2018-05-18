@@ -3,7 +3,9 @@ import summaly from 'summaly';
 
 module.exports = async (ctx: Koa.Context) => {
 	try {
-		const summary = await summaly(ctx.query.url);
+		const summary = await summaly(ctx.query.url, {
+			followRedirects: false
+		});
 		summary.icon = wrap(summary.icon);
 		summary.thumbnail = wrap(summary.thumbnail);
 
