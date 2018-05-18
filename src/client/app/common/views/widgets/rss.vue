@@ -1,10 +1,10 @@
 <template>
-<div class="mkw-rss" :data-mobile="isMobile">
+<div class="mkw-rss">
 	<mk-widget-container :show-header="!props.compact">
 		<template slot="header">%fa:rss-square%RSS</template>
 		<button slot="func" title="設定" @click="setting">%fa:cog%</button>
 
-		<div class="mkw-rss--body">
+		<div class="mkw-rss--body" :data-mobile="isMobile">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 			<div class="feed" v-else>
 				<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
@@ -85,15 +85,17 @@ root(isDark)
 				margin-right 4px
 
 		&[data-mobile]
+			background isDark ? #21242f : #f3f3f3
+
 			.feed
 				padding 0
-				font-size 1em
 
 				> a
 					padding 8px 16px
+					border-bottom none
 
 					&:nth-child(even)
-						background rgba(#000, 0.05)
+						background isDark ? rgba(#000, 0.05) : rgba(#fff, 0.7)
 
 .mkw-rss[data-darkmode]
 	root(true)
