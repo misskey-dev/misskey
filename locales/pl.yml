@@ -280,8 +280,6 @@ desktop/views/components/home.vue:
   polls: "Ankiety"
   post-form: "投稿フォーム"
   messaging: "Wiadomości"
-  channel: "Kanał"
-  access-log: "アクセスログ"
   server: "Informacje o serwerze"
   donation: "Dotacje"
   nav: "Nawigacja"
@@ -290,11 +288,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Anuluj"
   ok: "OK"
-desktop/views/components/mentions.vue:
-  all: "Wszyscy"
-  followed: "Śledzeni"
-  empty: "Brak wpisów wspominających o Tobie."
-  empty-followed: "Brak wpisów osób które śledzisz wspominających o Tobie."
 desktop/views/components/messaging-room-window.vue:
   title: "Wiadomości:"
 desktop/views/components/messaging-window.vue:
@@ -561,10 +554,6 @@ desktop/views/widgets/users.vue:
   title: "Polecani użytkownicy"
   refresh: "Pokaż innych"
   no-one: "Pusto"
-desktop/views/widgets/channel.vue:
-  title: "Kanał"
-  settings: "Ustawienia widżetu"
-  get-started: "Naciśnij na zębatkę w prawym górnym rogu, aby określić kanał"
 mobile/views/components/drive.vue:
   drive: "Dysk"
   used: "użyto"
