@@ -45,10 +45,6 @@ class MisskeyEvent {
 		this.publish(`othello-game-stream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishChannelStream(channelId: ID, type: string, value?: any): void {
-		this.publish(`channel-stream:${channelId}`, type, typeof value === 'undefined' ? null : value);
-	}
-
 	public publishLocalTimelineStream(note: any): void {
 		this.redisClient.publish('misskey:local-timeline', JSON.stringify(note));
 	}
@@ -79,4 +75,3 @@ export const publishMessagingStream = ev.publishMessagingStream.bind(ev);
 export const publishMessagingIndexStream = ev.publishMessagingIndexStream.bind(ev);
 export const publishOthelloStream = ev.publishOthelloStream.bind(ev);
 export const publishOthelloGameStream = ev.publishOthelloGameStream.bind(ev);
-export const publishChannelStream = ev.publishChannelStream.bind(ev);

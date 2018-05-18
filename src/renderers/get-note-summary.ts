@@ -9,9 +9,6 @@ const summarize = (note: any): string => {
 
 	let summary = '';
 
-	// チャンネル
-	summary += note.channel ? `${note.channel.title}:` : '';
-
 	// 本文
 	summary += note.text ? note.text : '';
 

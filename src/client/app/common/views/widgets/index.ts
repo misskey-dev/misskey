@@ -1,6 +1,5 @@
 import Vue from 'vue';
 
-import wAccessLog from './access-log.vue';
 import wVersion from './version.vue';
 import wRss from './rss.vue';
 import wServer from './server.vue';
@@ -22,4 +21,3 @@ Vue.component('mkw-broadcast', wBroadcast);
 Vue.component('mkw-server', wServer);
 Vue.component('mkw-rss', wRss);
 Vue.component('mkw-version', wVersion);
-Vue.component('mkw-access-log', wAccessLog);

@@ -4,7 +4,6 @@ import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
-import { pack as packChannel } from './channel';
 import PollVote, { deletePollVote } from './poll-vote';
 import Reaction, { deleteNoteReaction } from './note-reaction';
 import { pack as packFile } from './drive-file';
@@ -29,7 +28,6 @@ export function isValidCw(text: string): boolean {
 
 export type INote = {
 	_id: mongo.ObjectID;
-	channelId: mongo.ObjectID;
 	createdAt: Date;
 	deletedAt: Date;
 	mediaIds: mongo.ObjectID[];
@@ -256,11 +254,6 @@ export const pack = async (
 	// Populate app
 	if (_note.appId) {
 		_note.app = packApp(_note.appId);
-	}
-
-	// Populate channel
-	if (_note.channelId) {
-		_note.channel = packChannel(_note.channelId);
 	}
 
 	// Populate media

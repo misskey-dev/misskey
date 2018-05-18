@@ -4,7 +4,6 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
-import ChannelWatching from '../../../../models/channel-watching';
 import { getFriends } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
 
@@ -45,17 +44,10 @@ module.exports = async (params, user, app) => {
 	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $.bool.optional().get(params.includeRenotedMyNotes);
 	if (includeRenotedMyNotesErr) throw 'invalid includeRenotedMyNotes param';
 
-	const [followings, watchingChannelIds, mutedUserIds] = await Promise.all([
+	const [followings, mutedUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
 		getFriends(user._id),
-
-		// Watchしているチャンネルを取得
-		ChannelWatching.find({
-			userId: user._id,
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
-		}).then(watches => watches.map(w => w.channelId)),
 
 		// ミュートしているユーザーを取得
 		Mute.find({
@@ -93,26 +85,9 @@ module.exports = async (params, user, app) => {
 
 	const query = {
 		$and: [{
-			$or: [{
-				$and: [{
-					// フォローしている人のタイムラインへの投稿
-					$or: followQuery
-				}, {
-					// 「タイムラインへの」投稿に限定するためにチャンネルが指定されていないもののみに限る
-					$or: [{
-						channelId: {
-							$exists: false
-						}
-					}, {
-						channelId: null
-					}]
-				}]
-			}, {
-				// Watchしているチャンネルへの投稿
-				channelId: {
-					$in: watchingChannelIds
-				}
-			}],
+			// フォローしている人の投稿
+			$or: followQuery,
+
 			// mute
 			userId: {
 				$nin: mutedUserIds

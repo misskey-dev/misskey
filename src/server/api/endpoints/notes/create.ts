@@ -4,7 +4,6 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
 import User, { ILocalUser } from '../../../../models/user';
-import Channel, { IChannel } from '../../../../models/channel';
 import DriveFile from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import { IApp } from '../../../../models/app';
@@ -89,7 +88,6 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	if (renoteIdErr) return rej('invalid renoteId');
 
 	let renote: INote = null;
-	let isQuote = false;
 	if (renoteId !== undefined) {
 		// Fetch renote to note
 		renote = await Note.findOne({
@@ -101,8 +99,6 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 		} else if (renote.renoteId && !renote.text && !renote.mediaIds) {
 			return rej('cannot renote to renote');
 		}
-
-		isQuote = text != null || files != null;
 	}
 
 	// Get 'replyId' parameter
@@ -123,47 +119,6 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 		// 返信対象が引用でないRenoteだったらエラー
 		if (reply.renoteId && !reply.text && !reply.mediaIds) {
 			return rej('cannot reply to renote');
-		}
-	}
-
-	// Get 'channelId' parameter
-	const [channelId, channelIdErr] = $.type(ID).optional().get(params.channelId);
-	if (channelIdErr) return rej('invalid channelId');
-
-	let channel: IChannel = null;
-	if (channelId !== undefined) {
-		// Fetch channel
-		channel = await Channel.findOne({
-			_id: channelId
-		});
-
-		if (channel === null) {
-			return rej('channel not found');
-		}
-
-		// 返信対象の投稿がこのチャンネルじゃなかったらダメ
-		if (reply && !channelId.equals(reply.channelId)) {
-			return rej('チャンネル内部からチャンネル外部の投稿に返信することはできません');
-		}
-
-		// Renote対象の投稿がこのチャンネルじゃなかったらダメ
-		if (renote && !channelId.equals(renote.channelId)) {
-			return rej('チャンネル内部からチャンネル外部の投稿をRenoteすることはできません');
-		}
-
-		// 引用ではないRenoteはダメ
-		if (renote && !isQuote) {
-			return rej('チャンネル内部では引用ではないRenoteをすることはできません');
-		}
-	} else {
-		// 返信対象の投稿がチャンネルへの投稿だったらダメ
-		if (reply && reply.channelId != null) {
-			return rej('チャンネル外部からチャンネル内部の投稿に返信することはできません');
-		}
-
-		// Renote対象の投稿がチャンネルへの投稿だったらダメ
-		if (renote && renote.channelId != null) {
-			return rej('チャンネル外部からチャンネル内部の投稿をRenoteすることはできません');
 		}
 	}
 

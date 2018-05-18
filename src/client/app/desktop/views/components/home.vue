@@ -21,8 +21,6 @@
 					<option value="polls">%i18n:@polls%</option>
 					<option value="post-form">%i18n:@post-form%</option>
 					<option value="messaging">%i18n:@messaging%</option>
-					<option value="channel">%i18n:@channel%</option>
-					<option value="access-log">%i18n:@access-log%</option>
 					<option value="server">%i18n:@server%</option>
 					<option value="donation">%i18n:@donation%</option>
 					<option value="nav">%i18n:@nav%</option>
