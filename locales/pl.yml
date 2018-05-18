@@ -1,4 +1,7 @@
 ---
+meta:
+  lang: "日本語"
+  divider: ""
 common:
   misskey: "Dziel się zawartością z innymi korzystając z Misskey."
   time:
