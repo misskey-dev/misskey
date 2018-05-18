@@ -110,14 +110,14 @@ const plugins = [
 		//#region i18n
 		langs.forEach(lang => {
 			Object.keys(entry).forEach(file => {
-				let src = fs.readFileSync(`${__dirname}/built/client/assets/${file}.${version}.-.${isProduction ? 'min' : 'raw'}.js`, 'utf8');
+				let src = fs.readFileSync(`${__dirname}/built/client/assets/${file}.${version}.-.${isProduction ? 'min' : 'raw'}.js`, 'utf-8');
 
 				const i18nReplacer = new I18nReplacer(lang);
 
 				src = src.replace(i18nReplacer.pattern, i18nReplacer.replacement);
 				src = src.replace('%lang%', lang);
 
-				fs.writeFileSync(`${__dirname}/built/client/assets/${file}.${version}.${lang}.${isProduction ? 'min' : 'raw'}.js`, src, 'utf8');
+				fs.writeFileSync(`${__dirname}/built/client/assets/${file}.${version}.${lang}.${isProduction ? 'min' : 'raw'}.js`, src, 'utf-8');
 			});
 		});
 		//#endregion
@@ -146,27 +146,20 @@ module.exports = {
 			}, {
 				loader: 'replace',
 				query: {
-					search: /%base64:(.+?)%/g.toString(),
-					replace: 'base64replacement'
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					search: i18nPattern.toString(),
-					replace: 'i18nReplacement',
-					i18n: true
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					search: faPattern.toString(),
-					replace: 'faReplacement'
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
-					replace: 'collapseSpacesReplacement'
+					qs: [{
+						search: /%base64:(.+?)%/g.toString(),
+						replace: 'base64replacement'
+					}, {
+						search: i18nPattern.toString(),
+						replace: 'i18nReplacement',
+						i18n: true
+					}, {
+						search: faPattern.toString(),
+						replace: 'faReplacement'
+					}, {
+						search: /^<template>([\s\S]+?)\r?\n<\/template>/.toString(),
+						replace: 'collapseSpacesReplacement'
+					}]
 				}
 			}]
 		}, {

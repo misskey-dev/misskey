@@ -1,11 +1,7 @@
-/**
- * Text Tests!
- */
+import * as assert from 'assert';
 
-const assert = require('assert');
-
-const analyze = require('../built/text/parse').default;
-const syntaxhighlighter = require('../built/text/parse/core/syntax-highlighter').default;
+import analyze from '../src/text/parse';
+import syntaxhighlighter from '../src/text/parse/core/syntax-highlighter';
 
 describe('Text', () => {
 	it('can be analyzed', () => {

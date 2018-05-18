@@ -1,7 +1,5 @@
 <template>
 <div class="mk-notes">
-	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
-
 	<slot name="head"></slot>
 
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
@@ -68,6 +66,16 @@ export default Vue.extend({
 				note._datetext = `${month}月 ${date}日`;
 				return note;
 			});
+		}
+	},
+
+	watch: {
+		queue(x) {
+			if (x.length > 0) {
+				this.$store.commit('indicate', true);
+			} else {
+				this.$store.commit('indicate', false);
+			}
 		}
 	},
 
@@ -237,13 +245,6 @@ root(isDark)
 
 			[data-fa]
 				margin-right 8px
-
-	> .newer-indicator
-		position -webkit-sticky
-		position sticky
-		z-index 100
-		height 3px
-		background $theme-color
 
 	> .init
 		padding 64px 0

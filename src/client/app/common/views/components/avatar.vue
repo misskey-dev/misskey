@@ -23,7 +23,7 @@ export default Vue.extend({
 	computed: {
 		style(): any {
 			return {
-				backgroundColor: this.user.avatarColor ? `rgb(${ this.user.avatarColor.join(',') })` : null,
+				backgroundColor: this.user.avatarColor && this.user.avatarColor.length == 3 ? `rgb(${ this.user.avatarColor.join(',') })` : null,
 				backgroundImage: `url(${ this.user.avatarUrl }?thumbnail)`,
 				borderRadius: (this as any).clientSettings.circleIcons ? '100%' : null
 			};

@@ -25,18 +25,18 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-widget-container
-	background #eee
+root(isDark)
+	background isDark ? #21242f : #eee
 	border-radius 8px
-	box-shadow 0 0 0 1px rgba(#000, 0.2)
+	box-shadow 0 4px 16px rgba(#000, 0.1)
 	overflow hidden
-
-	&.hideHeader
-		background #fff
 
 	&.naked
 		background transparent !important
 		box-shadow none !important
+
+	&.hideHeader
+		background isDark ? #21242f : #fff
 
 	> header
 		> .title
@@ -44,8 +44,8 @@ export default Vue.extend({
 			padding 8px 10px
 			font-size 15px
 			font-weight normal
-			color #465258
-			background #fff
+			color isDark ? #b8c5cc : #465258
+			background isDark ? #282c37 : #fff
 			border-radius 8px 8px 0 0
 
 			> [data-fa]
@@ -64,5 +64,11 @@ export default Vue.extend({
 			height 100%
 			font-size 15px
 			color #465258
+
+.mk-widget-container[data-darkmode]
+	root(true)
+
+.mk-widget-container:not([data-darkmode])
+	root(false)
 
 </style>

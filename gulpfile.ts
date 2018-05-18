@@ -20,6 +20,7 @@ import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 
+import locales from './locales';
 import { fa } from './src/build/fa';
 const client = require('./built/client/meta.json');
 import config from './src/config';
@@ -122,6 +123,7 @@ gulp.task('build:client:script', () =>
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
 		.pipe(replace('API', JSON.stringify(config.api_url)))
 		.pipe(replace('ENV', JSON.stringify(env)))
+		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
 		.pipe(isProduction ? uglify({
 			toplevel: true
 		} as any) : gutil.noop())

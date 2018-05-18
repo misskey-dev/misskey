@@ -41,7 +41,7 @@
 					<div class="text">
 						<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<mk-note-html v-if="p.text" :text="p.text" :i="os.i" :class="$style.text"/>
+						<mk-note-html v-if="p.text && !canHideText(p)" :text="p.text" :i="os.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
 					</div>
 					<div class="media" v-if="p.media.length > 0">
@@ -85,6 +85,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import parse from '../../../../../text/parse';
+import canHideText from '../../../common/scripts/can-hide-text';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
@@ -112,9 +113,11 @@ export default Vue.extend({
 				this.note.mediaIds.length == 0 &&
 				this.note.poll == null);
 		},
+
 		p(): any {
 			return this.isRenote ? this.note.renote : this.note;
 		},
+
 		reactionsCount(): number {
 			return this.p.reactionCounts
 				? Object.keys(this.p.reactionCounts)
@@ -122,6 +125,7 @@ export default Vue.extend({
 					.reduce((a, b) => a + b)
 				: 0;
 		},
+
 		urls(): string[] {
 			if (this.p.text) {
 				const ast = parse(this.p.text);
@@ -177,6 +181,8 @@ export default Vue.extend({
 	},
 
 	methods: {
+		canHideText,
+
 		capture(withHandler = false) {
 			if ((this as any).os.isSignedIn) {
 				this.connection.send({
@@ -186,6 +192,7 @@ export default Vue.extend({
 				if (withHandler) this.connection.on('note-updated', this.onStreamNoteUpdated);
 			}
 		},
+
 		decapture(withHandler = false) {
 			if ((this as any).os.isSignedIn) {
 				this.connection.send({
@@ -195,9 +202,11 @@ export default Vue.extend({
 				if (withHandler) this.connection.off('note-updated', this.onStreamNoteUpdated);
 			}
 		},
+
 		onStreamConnected() {
 			this.capture();
 		},
+
 		onStreamNoteUpdated(data) {
 			const note = data.note;
 			if (note.id == this.note.id) {
@@ -206,16 +215,19 @@ export default Vue.extend({
 				this.note.renote = note;
 			}
 		},
+
 		reply() {
 			(this as any).apis.post({
 				reply: this.p
 			});
 		},
+
 		renote() {
 			(this as any).apis.post({
 				renote: this.p
 			});
 		},
+
 		react() {
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
@@ -223,6 +235,7 @@ export default Vue.extend({
 				compact: true
 			});
 		},
+
 		menu() {
 			(this as any).os.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
@@ -255,6 +268,7 @@ root(isDark)
 		align-items center
 		padding 8px 16px
 		line-height 28px
+		white-space pre
 		color #9dbb00
 		background isDark ? linear-gradient(to bottom, #314027 0%, #282c37 100%) : linear-gradient(to bottom, #edfde2 0%, #fff 100%)
 

@@ -80,10 +80,11 @@
 					<el-option label="自動" value=""/>
 				</el-option-group>
 				<el-option-group label="言語を指定">
-					<el-option label="ja-JP" value="ja"/>
-					<el-option label="en-US" value="en"/>
+					<el-option label="ja" value="ja"/>
+					<el-option label="en" value="en"/>
 					<el-option label="fr" value="fr"/>
 					<el-option label="pl" value="pl"/>
+					<el-option label="de" value="de"/>
 				</el-option-group>
 			</el-select>
 			<div class="none ui info">
@@ -100,7 +101,7 @@
 		</section>
 
 		<section class="notification" v-show="page == 'notification'">
-			<h1>通知</h1>
+			<h1>%i18n:@notification%</h1>
 			<mk-switch v-model="os.i.settings.autoWatch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
 				<span>リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。</span>
 			</mk-switch>
@@ -117,7 +118,7 @@
 		</section>
 
 		<section class="apps" v-show="page == 'apps'">
-			<h1>アプリケーション</h1>
+			<h1>%i18n:@apps%</h1>
 			<x-apps/>
 		</section>
 
@@ -137,7 +138,7 @@
 		</section>
 
 		<section class="signin" v-show="page == 'security'">
-			<h1>サインイン履歴</h1>
+			<h1>%i18n:@signin%</h1>
 			<x-signins/>
 		</section>
 

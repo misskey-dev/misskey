@@ -2,8 +2,8 @@
 <div class="mk-users-list">
 	<nav>
 		<div>
-			<span :data-active="mode == 'all'" @click="mode = 'all'">すべて<span>{{ count }}</span></span>
-			<span v-if="os.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">知り合い<span>{{ youKnowCount }}</span></span>
+			<span :data-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
+			<span v-if="os.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@iknow%<span>{{ youKnowCount }}</span></span>
 		</div>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
@@ -12,13 +12,13 @@
 		</div>
 	</div>
 	<button class="more" v-if="!fetching && next != null" @click="more" :disabled="moreFetching">
-		<span v-if="!moreFetching">もっと</span>
-		<span v-if="moreFetching">読み込み中<mk-ellipsis/></span>
+		<span v-if="!moreFetching">%i18n:@load-more%</span>
+		<span v-if="moreFetching">%i18n:common.loading%<mk-ellipsis/></span>
 	</button>
 	<p class="no" v-if="!fetching && users.length == 0">
 		<slot></slot>
 	</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@fetching%<mk-ellipsis/></p>
 </div>
 </template>
 

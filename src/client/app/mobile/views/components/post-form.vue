@@ -5,17 +5,22 @@
 		<div>
 			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
 			<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
-			<button class="submit" :disabled="posting" @click="post">{{ reply ? '返信' : '%i18n:!@submit%' }}</button>
+			<button class="submit" :disabled="posting" @click="post">
+				<template v-if="reply">%i18n:@reply%</template>
+				<template v-else-if="renote">%i18n:@renote%</template>
+				<template v-else>%i18n:@submit%</template>
+			</button>
 		</div>
 	</header>
 	<div class="form">
 		<mk-note-preview v-if="reply" :note="reply"/>
+		<mk-note-preview v-if="renote" :note="renote"/>
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
 			<a @click="addVisibleUser">+ユーザーを追加</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:!@reply-placeholder%' : '%i18n:!@note-placeholder%'"></textarea>
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:!@reply-placeholder%' : renote ? '%i18n:!@renote-placeholder%' : '%i18n:!@note-placeholder%'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 				<div class="file" v-for="file in files" :key="file.id">
@@ -51,7 +56,7 @@ export default Vue.extend({
 		MkVisibilityChooser
 	},
 
-	props: ['reply'],
+	props: ['reply', 'renote'],
 
 	data() {
 		return {
@@ -177,6 +182,7 @@ export default Vue.extend({
 				text: this.text == '' ? undefined : this.text,
 				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
+				renoteId: this.renote ? this.renote.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
 				geo: this.geo ? {

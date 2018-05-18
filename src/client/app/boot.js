@@ -32,7 +32,7 @@
 	// Detect the user language
 	// Note: The default language is Japanese
 	let lang = navigator.language.split('-')[0];
-	if (!/^(en|ja)$/.test(lang)) lang = 'ja';
+	if (!LANGS.includes(lang)) lang = 'en';
 	if (localStorage.getItem('lang')) lang = localStorage.getItem('lang');
 
 	// Detect the user agent

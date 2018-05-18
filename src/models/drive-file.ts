@@ -154,6 +154,7 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
+	_target.src = _file.metadata.url;
 	_target.url = `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
 
 	if (_target.properties == null) _target.properties = {};

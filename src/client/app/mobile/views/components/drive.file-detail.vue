@@ -86,7 +86,7 @@ export default Vue.extend({
 			return this.file.type.split('/')[0];
 		},
 		style(): any {
-			return this.file.properties.avgColor ? {
+			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3 ? {
 				'background-color': `rgb(${ this.file.properties.avgColor.join(',') })`
 			} : {};
 		}

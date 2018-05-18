@@ -7,10 +7,7 @@ import * as regular from '@fortawesome/fontawesome-free-regular';
 import * as solid from '@fortawesome/fontawesome-free-solid';
 import * as brands from '@fortawesome/fontawesome-free-brands';
 
-// Add icons
-fontawesome.library.add(regular);
-fontawesome.library.add(solid);
-fontawesome.library.add(brands);
+fontawesome.library.add(regular, solid, brands);
 
 export const pattern = /%fa:(.+?)%/g;
 

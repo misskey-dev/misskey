@@ -50,7 +50,7 @@ export default Vue.extend({
 			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.datasize)}`;
 		},
 		background(): string {
-			return this.file.properties.avgColor
+			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3
 				? `rgb(${this.file.properties.avgColor.join(',')})`
 				: 'transparent';
 		}
@@ -129,7 +129,7 @@ export default Vue.extend({
 		},
 
 		onThumbnailLoaded() {
-			if (this.file.properties.avgColor) {
+			if (this.file.properties.avgColor && this.file.properties.avgColor.length == 3) {
 				anime({
 					targets: this.$refs.thumbnail,
 					backgroundColor: `rgba(${this.file.properties.avgColor.join(',')}, 0)`,

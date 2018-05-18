@@ -48,6 +48,17 @@ export class HomeStream extends Stream {
 			}
 		});
 
+		this.on('mobile_home_updated', x => {
+			if (x.home) {
+				os.store.commit('settings/setMobileHome', x.home);
+			} else {
+				os.store.commit('settings/setMobileHomeWidget', {
+					id: x.id,
+					data: x.data
+				});
+			}
+		});
+
 		// トークンが再生成されたとき
 		// このままではMisskeyが利用できないので強制的にサインアウトさせる
 		this.on('my_token_regenerated', () => {

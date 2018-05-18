@@ -40,7 +40,7 @@
 			</x-draggable>
 		</template>
 		<template v-else>
-			<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :is-mobile="true" @chosen="warp"/>
+			<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :is-mobile="true"/>
 		</template>
 	</main>
 </mk-ui>
@@ -55,17 +55,24 @@ export default Vue.extend({
 	components: {
 		XDraggable
 	},
+
 	data() {
 		return {
 			showNav: false,
-			widgets: [],
 			customizing: false,
 			widgetAdderSelected: null
 		};
 	},
+
+	computed: {
+		widgets(): any[] {
+			return this.$store.state.settings.data.mobileHome;
+		}
+	},
+
 	created() {
-		if ((this as any).clientSettings.mobileHome == null) {
-			Vue.set((this as any).clientSettings, 'mobileHome', [{
+		if (this.widgets.length == 0) {
+			this.widgets = [{
 				name: 'calendar',
 				id: 'a', data: {}
 			}, {
@@ -86,18 +93,9 @@ export default Vue.extend({
 			}, {
 				name: 'version',
 				id: 'g', data: {}
-			}]);
-			this.widgets = (this as any).clientSettings.mobileHome;
+			}];
 			this.saveHome();
-		} else {
-			this.widgets = (this as any).clientSettings.mobileHome;
 		}
-
-		this.$watch('clientSettings', i => {
-			this.widgets = (this as any).clientSettings.mobileHome;
-		}, {
-			deep: true
-		});
 	},
 
 	mounted() {
@@ -105,46 +103,33 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onHomeUpdated(data) {
-			if (data.home) {
-				(this as any).clientSettings.mobileHome = data.home;
-				this.widgets = data.home;
-			} else {
-				const w = (this as any).clientSettings.mobileHome.find(w => w.id == data.id);
-				if (w != null) {
-					w.data = data.data;
-					this.$refs[w.id][0].preventSave = true;
-					this.$refs[w.id][0].props = w.data;
-					this.widgets = (this as any).clientSettings.mobileHome;
-				}
-			}
-		},
 		hint() {
 			alert('ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。');
 		},
+
 		widgetFunc(id) {
 			const w = this.$refs[id][0];
 			if (w.func) w.func();
 		},
+
 		onWidgetSort() {
 			this.saveHome();
 		},
+
 		addWidget() {
-			const widget = {
+			this.$store.dispatch('settings/addMobileHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				data: {}
-			};
+			});
+		},
 
-			this.widgets.unshift(widget);
-			this.saveHome();
-		},
 		removeWidget(widget) {
-			this.widgets = this.widgets.filter(w => w.id != widget.id);
-			this.saveHome();
+			this.$store.dispatch('settings/removeMobileHomeWidget', widget);
 		},
+
 		saveHome() {
-			(this as any).clientSettings.mobileHome = this.widgets;
+			this.$store.commit('settings/setMobileHome', this.widgets);
 			(this as any).api('i/update_mobile_home', {
 				home: this.widgets
 			});
@@ -156,17 +141,25 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 main
 	margin 0 auto
+	padding 8px
 	max-width 500px
+	width 100%
 
 	@media (min-width 500px)
-		padding 8px
+		padding 16px 8px
+
+	@media (min-width 600px)
+		padding 32px 8px
 
 	> header
 		padding 8px
 		background #fff
 
 	.widget
-		margin 8px
+		margin-bottom 8px
+
+		@media (min-width 600px)
+			margin-bottom 16px
 
 	.customize-container
 		margin 8px

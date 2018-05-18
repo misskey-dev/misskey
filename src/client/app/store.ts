@@ -3,6 +3,7 @@ import MiOS from './mios';
 
 const defaultSettings = {
 	home: [],
+	mobileHome: [],
 	fetchOnScroll: true,
 	showMaps: true,
 	showPostFormOnTopOfTl: false,
@@ -23,10 +24,15 @@ export default (os: MiOS) => new Vuex.Store({
 	}],
 
 	state: {
+		indicate: false,
 		uiHeaderHeight: 0
 	},
 
 	mutations: {
+		indicate(state, x) {
+			state.indicate = x;
+		},
+
 		setUiHeaderHeight(state, height) {
 			state.uiHeaderHeight = height;
 		}
@@ -58,6 +64,25 @@ export default (os: MiOS) => new Vuex.Store({
 
 				addHomeWidget(state, widget) {
 					state.data.home.unshift(widget);
+				},
+
+				setMobileHome(state, data) {
+					state.data.mobileHome = data;
+				},
+
+				setMobileHomeWidget(state, x) {
+					const w = state.data.mobileHome.find(w => w.id == x.id);
+					if (w) {
+						w.data = x.data;
+					}
+				},
+
+				addMobileHomeWidget(state, widget) {
+					state.data.mobileHome.unshift(widget);
+				},
+
+				removeMobileHomeWidget(state, widget) {
+					state.data.mobileHome = state.data.mobileHome.filter(w => w.id != widget.id);
 				}
 			},
 
@@ -84,6 +109,22 @@ export default (os: MiOS) => new Vuex.Store({
 
 					os.api('i/update_home', {
 						home: ctx.state.data.home
+					});
+				},
+
+				addMobileHomeWidget(ctx, widget) {
+					ctx.commit('addMobileHomeWidget', widget);
+
+					os.api('i/update_mobile_home', {
+						home: ctx.state.data.mobileHome
+					});
+				},
+
+				removeMobileHomeWidget(ctx, widget) {
+					ctx.commit('removeMobileHomeWidget', widget);
+
+					os.api('i/update_mobile_home', {
+						home: ctx.state.data.mobileHome.filter(w => w.id != widget.id)
 					});
 				}
 			}

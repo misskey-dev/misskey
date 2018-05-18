@@ -4,7 +4,7 @@
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
-			<span class="username">@{{ note.user | acct }}</span>
+			<span class="username"><mk-acct :user="note.user"/></span>
 			<router-link class="time" :to="note | notePage">
 				<mk-time :time="note.createdAt"/>
 			</router-link>
@@ -59,17 +59,20 @@ root(isDark)
 			> .name
 				margin 0 .5em 0 0
 				padding 0
+				overflow hidden
 				color isDark ? #fff : #607073
 				font-size 1em
 				font-weight bold
 				text-decoration none
-				white-space normal
+				text-overflow ellipsis
 
 				&:hover
 					text-decoration underline
 
 			> .username
 				margin 0 .5em 0 0
+				overflow hidden
+				text-overflow ellipsis
 				color isDark ? #606984 : #d1d8da
 
 			> .time

@@ -2,14 +2,20 @@ import * as Koa from 'koa';
 import summaly from 'summaly';
 
 module.exports = async (ctx: Koa.Context) => {
-	const summary = await summaly(ctx.query.url);
-	summary.icon = wrap(summary.icon);
-	summary.thumbnail = wrap(summary.thumbnail);
+	try {
+		const summary = await summaly(ctx.query.url, {
+			followRedirects: false
+		});
+		summary.icon = wrap(summary.icon);
+		summary.thumbnail = wrap(summary.thumbnail);
 
-	// Cache 7days
-	ctx.set('Cache-Control', 'max-age=604800, immutable');
+		// Cache 7days
+		ctx.set('Cache-Control', 'max-age=604800, immutable');
 
-	ctx.body = summary;
+		ctx.body = summary;
+	} catch (e) {
+		ctx.status = 500;
+	}
 };
 
 function wrap(url: string): string {

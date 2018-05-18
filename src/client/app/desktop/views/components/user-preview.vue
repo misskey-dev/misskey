@@ -10,13 +10,13 @@
 		<div class="description">{{ u.description }}</div>
 		<div class="status">
 			<div>
-				<p>投稿</p><a>{{ u.notesCount }}</a>
+				<p>%i18n:@notes%</p><a>{{ u.notesCount }}</a>
 			</div>
 			<div>
-				<p>フォロー</p><a>{{ u.followingCount }}</a>
+				<p>%i18n:@following%</p><a>{{ u.followingCount }}</a>
 			</div>
 			<div>
-				<p>フォロワー</p><a>{{ u.followersCount }}</a>
+				<p>%i18n:@followers%</p><a>{{ u.followersCount }}</a>
 			</div>
 		</div>
 		<mk-follow-button v-if="os.isSignedIn && user.id != os.i.id" :user="u"/>
