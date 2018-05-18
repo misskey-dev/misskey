@@ -31,6 +31,10 @@ init:
   - git config --global core.autocrlf false
 
 before_test:
+  # 設定ファイルを配置
+  - cp ./.travis/default.yml ./.config
+  - cp ./.travis/test.yml ./.config
+
   - npm run build
 
 test_script:
