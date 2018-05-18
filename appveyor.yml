@@ -5,6 +5,9 @@ environment:
   matrix:
     - nodejs_version: 10.1.0
 
+cache:
+  - node_modules
+
 build: off
 
 install:
@@ -26,6 +29,9 @@ install:
 init:
   # git clone の際の改行を変換しないようにします
   - git config --global core.autocrlf false
+
+before_test:
+  - npm run build
 
 test_script:
   - npm test
