@@ -381,11 +381,11 @@ desktop/views/components/settings.vue:
   show-maps: "マップの自動展開"
   show-maps-desc: "位置情報が添付された投稿のマップを自動的に展開します。"
   sound: "Sound"
-  enable-sounds: "サウンドを有効にする"
+  enable-sounds: "Enable sound"
   enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
-  volume: "ボリューム"
-  test: "テスト"
-  mobile: "モバイル"
+  volume: "Volume"
+  test: "Test"
+  mobile: "Mobile"
   disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
   language: "言語"
   pick-language: "言語を選択"
@@ -423,8 +423,8 @@ desktop/views/components/settings.vue:
   experimental: "実験的機能を有効にする"
   experimental-desc: "実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。この設定はブラウザに記憶されます。"
   tools: "ツール"
-  task-manager: "タスクマネージャ"
-  third-parties: "サードパーティ"
+  task-manager: "Task Manager"
+  third-parties: "Third-party"
 desktop/views/components/settings.2fa.vue:
   intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security. "
   detail: "See details..."
@@ -470,7 +470,7 @@ desktop/views/components/settings.profile.vue:
   birthday: "Birthday"
   save: "Update profile"
 desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
+  title: "Task Manager"
 desktop/views/components/timeline.vue:
   home: "Home"
   local: "Local"
@@ -597,9 +597,9 @@ mobile/views/components/notifications.vue:
   empty: "No notifications"
 mobile/views/components/post-form.vue:
   submit: "Post"
-  reply: "返信"
+  reply: "Reply"
   renote: "Renote"
-  renote-placeholder: "この投稿を引用... (オプション)"
+  renote-placeholder: "Quote this post. (optional)"
   reply-placeholder: "Reply to this note..."
   note-placeholder: "What's happening?"
 mobile/views/components/sub-note-content.vue:
