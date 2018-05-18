@@ -20,7 +20,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@behaviour%</h1>
-			<mk-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="%i18n:@fetch-on-scroll%>
+			<mk-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="%i18n:@fetch-on-scroll%">
 				<span>%i18n:@fetch-on-scroll-desc%</span>
 			</mk-switch>
 			<mk-switch v-model="autoPopout" text="%i18n:@auto-popout%">
@@ -167,7 +167,7 @@
 			</button>
 			<details>
 				<summary>%i18n:@update-settings%</summary>
-				<mk-switch v-model="preventUpdate" text="%i18n:@prevent-update%>
+				<mk-switch v-model="preventUpdate" text="%i18n:@prevent-update%">
 					<span>%i18n:@prevent-update-desc%</span>
 				</mk-switch>
 			</details>
@@ -371,13 +371,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					(this as any).apis.dialog({
-						title: '%i18n:@no-updates%',
-						text: '%i18n:@no-updates-desc%'
+						title: '%i18n:!@no-updates%',
+						text: '%i18n:!@no-updates-desc%'
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '%i18n:@update-available%',
-						text: '%i18n:@update-available-desc%'
+						title: '%i18n:!@update-available%',
+						text: '%i18n:!@update-available-desc%'
 					});
 				}
 			});
@@ -385,8 +385,8 @@ export default Vue.extend({
 		clean() {
 			localStorage.clear();
 			(this as any).apis.dialog({
-				title: '%i18n:@cache-cleared%',
-				text: '%i18n:@caache-cleared-desc%'
+				title: '%i18n:!@cache-cleared%',
+				text: '%i18n:!@caache-cleared-desc%'
 			});
 		},
 		soundTest() {
