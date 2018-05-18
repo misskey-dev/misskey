@@ -143,6 +143,7 @@ main
 	margin 0 auto
 	padding 8px
 	max-width 500px
+	width 100%
 
 	@media (min-width 500px)
 		padding 16px 8px

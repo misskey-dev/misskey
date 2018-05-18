@@ -1,37 +1,37 @@
 <template>
-<div class="mkw-calendar"
-	:data-melt="props.design == 1"
-	:data-special="special"
-	:data-mobile="isMobile"
->
-	<div class="calendar" :data-is-holiday="isHoliday">
-		<p class="month-and-year">
-			<span class="year">{{ year }}年</span>
-			<span class="month">{{ month }}月</span>
-		</p>
-		<p class="day">{{ day }}日</p>
-		<p class="week-day">{{ weekDay }}曜日</p>
-	</div>
-	<div class="info">
-		<div>
-			<p>今日:<b>{{ dayP.toFixed(1) }}%</b></p>
-			<div class="meter">
-				<div class="val" :style="{ width: `${dayP}%` }"></div>
+<div class="mkw-calendar" :data-special="special" :data-mobile="isMobile">
+	<mk-widget-container :naked="props.design == 1" :show-header="false">
+		<div class="mkw-calendar--body">
+			<div class="calendar" :data-is-holiday="isHoliday">
+				<p class="month-and-year">
+					<span class="year">{{ year }}年</span>
+					<span class="month">{{ month }}月</span>
+				</p>
+				<p class="day">{{ day }}日</p>
+				<p class="week-day">{{ weekDay }}曜日</p>
+			</div>
+			<div class="info">
+				<div>
+					<p>今日:<b>{{ dayP.toFixed(1) }}%</b></p>
+					<div class="meter">
+						<div class="val" :style="{ width: `${dayP}%` }"></div>
+					</div>
+				</div>
+				<div>
+					<p>今月:<b>{{ monthP.toFixed(1) }}%</b></p>
+					<div class="meter">
+						<div class="val" :style="{ width: `${monthP}%` }"></div>
+					</div>
+				</div>
+				<div>
+					<p>今年:<b>{{ yearP.toFixed(1) }}%</b></p>
+					<div class="meter">
+						<div class="val" :style="{ width: `${yearP}%` }"></div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div>
-			<p>今月:<b>{{ monthP.toFixed(1) }}%</b></p>
-			<div class="meter">
-				<div class="val" :style="{ width: `${monthP}%` }"></div>
-			</div>
-		</div>
-		<div>
-			<p>今年:<b>{{ yearP.toFixed(1) }}%</b></p>
-			<div class="meter">
-				<div class="val" :style="{ width: `${yearP}%` }"></div>
-			</div>
-		</div>
-	</div>
+	</mk-widget-container>
 </div>
 </template>
 
@@ -111,93 +111,82 @@ export default define({
 @import '~const.styl'
 
 root(isDark)
-	padding 16px 0
-	color isDark ? #c5ced6 :#777
-	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.075)
-	border-radius 6px
-
 	&[data-special='on-new-years-day']
 		border-color #ef95a0
 
-	&[data-melt]
-		background transparent
-		border none
+	.mkw-calendar--body
+		padding 16px 0
+		color isDark ? #c5ced6 : #777
 
-	&[data-mobile]
-		border none
-		border-radius 8px
-		box-shadow 0 0 0 1px rgba(#000, 0.2)
+		&:after
+			content ""
+			display block
+			clear both
 
-	&:after
-		content ""
-		display block
-		clear both
+		> .calendar
+			float left
+			width 60%
+			text-align center
 
-	> .calendar
-		float left
-		width 60%
-		text-align center
-
-		&[data-is-holiday]
-			> .day
-				color #ef95a0
-
-		> p
-			margin 0
-			line-height 18px
-			font-size 14px
-
-			> span
-				margin 0 4px
-
-		> .day
-			margin 10px 0
-			line-height 32px
-			font-size 28px
-
-	> .info
-		display block
-		float left
-		width 40%
-		padding 0 16px 0 0
-
-		> div
-			margin-bottom 8px
-
-			&:last-child
-				margin-bottom 4px
+			&[data-is-holiday]
+				> .day
+					color #ef95a0
 
 			> p
-				margin 0 0 2px 0
-				font-size 12px
+				margin 0
 				line-height 18px
-				color isDark ? #7a8692 : #888
+				font-size 14px
 
-				> b
-					margin-left 2px
+				> span
+					margin 0 4px
 
-			> .meter
-				width 100%
-				overflow hidden
-				background isDark ? #1c1f25 : #eee
-				border-radius 8px
+			> .day
+				margin 10px 0
+				line-height 32px
+				font-size 28px
 
-				> .val
-					height 4px
-					background $theme-color
+		> .info
+			display block
+			float left
+			width 40%
+			padding 0 16px 0 0
 
-			&:nth-child(1)
-				> .meter > .val
-					background #f7796c
+			> div
+				margin-bottom 8px
 
-			&:nth-child(2)
-				> .meter > .val
-					background #a1de41
+				&:last-child
+					margin-bottom 4px
 
-			&:nth-child(3)
-				> .meter > .val
-					background #41ddde
+				> p
+					margin 0 0 2px 0
+					font-size 12px
+					line-height 18px
+					color isDark ? #7a8692 : #888
+
+					> b
+						margin-left 2px
+
+				> .meter
+					width 100%
+					overflow hidden
+					background isDark ? #1c1f25 : #eee
+					border-radius 8px
+
+					> .val
+						height 4px
+						background $theme-color
+
+				&:nth-child(1)
+					> .meter > .val
+						background #f7796c
+
+				&:nth-child(2)
+					> .meter > .val
+						background #a1de41
+
+				&:nth-child(3)
+					> .meter > .val
+						background #41ddde
 
 .mkw-calendar[data-darkmode]
 	root(true)

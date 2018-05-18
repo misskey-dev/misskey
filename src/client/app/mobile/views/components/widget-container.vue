@@ -35,6 +35,9 @@ root(isDark)
 		background transparent !important
 		box-shadow none !important
 
+	&.hideHeader
+		background isDark ? #21242f : #fff
+
 	> header
 		> .title
 			margin 0
