@@ -28,7 +28,7 @@
 		<mk-avatar class="avatar" :user="p.user"/>
 		<header>
 			<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
-			<span class="username">@{{ p.user | acct }}</span>
+			<span class="username"><mk-acct :user="p.user"/></span>
 			<router-link class="time" :to="p | notePage">
 				<mk-time :time="p.createdAt"/>
 			</router-link>

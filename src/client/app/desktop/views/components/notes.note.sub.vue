@@ -4,7 +4,7 @@
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
-			<span class="username">@{{ note.user | acct }}</span>
+			<span class="username"><mk-acct :user="note.user"/></span>
 			<div class="info">
 				<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
 				<router-link class="created-at" :to="note | notePage">

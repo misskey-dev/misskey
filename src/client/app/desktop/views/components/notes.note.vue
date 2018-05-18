@@ -17,7 +17,7 @@
 			<header>
 				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
 				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
-				<span class="username">@{{ p.user | acct }}</span>
+				<span class="username"><mk-acct :user="p.user"/></span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>

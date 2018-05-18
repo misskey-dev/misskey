@@ -5,7 +5,7 @@
 		<header>
 			<div class="left">
 				<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
-				<span class="username">@{{ note.user | acct }}</span>
+				<span class="username"><mk-acct :user="note.user"/></span>
 			</div>
 			<div class="right">
 				<router-link class="time" :to="note | notePage">
