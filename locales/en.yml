@@ -280,8 +280,6 @@ desktop/views/components/home.vue:
   polls: "Polls"
   post-form: "投稿フォーム"
   messaging: "Messaging"
-  channel: "Channel"
-  access-log: "Access log"
   server: "Server info"
   donation: "Donation"
   nav: "Navigation"
@@ -290,11 +288,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Cancel"
   ok: "OK"
-desktop/views/components/mentions.vue:
-  all: "All"
-  followed: "Followed"
-  empty: "No posts mentioning you."
-  empty-followed: "No mentions about you from people you are following."
 desktop/views/components/messaging-room-window.vue:
   title: "Messages:"
 desktop/views/components/messaging-window.vue:
@@ -561,10 +554,6 @@ desktop/views/widgets/users.vue:
   title: "Recommended users"
   refresh: "Show others"
   no-one: "No one"
-desktop/views/widgets/channel.vue:
-  title: "Channel"
-  settings: "Widget settings"
-  get-started: "Please click the cog in the upper right corner to specify a channel"
 mobile/views/components/drive.vue:
   drive: "Drive"
   used: "used"
