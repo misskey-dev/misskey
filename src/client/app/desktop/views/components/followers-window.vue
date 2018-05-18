@@ -1,7 +1,7 @@
 <template>
 <mk-window width="400px" height="550px" @closed="$destroy">
 	<span slot="header" :class="$style.header">
-		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt=""/>{{ user | userName }}のフォロワー
+		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt=""/>%i18n:!@followers%.replace('{}', {{ user | userName }})
 	</span>
 	<mk-followers :user="user"/>
 </mk-window>

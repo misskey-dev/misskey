@@ -5,8 +5,8 @@
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
 	<div v-if="!fetching && requestInitPromise != null">
-		<p>読み込みに失敗しました。</p>
-		<button @click="resolveInitPromise">リトライ</button>
+		<p>%i18n:@error%</p>
+		<button @click="resolveInitPromise">%i18n:@retry%</button>
 	</div>
 
 	<transition-group name="mk-notes" class="transition">
