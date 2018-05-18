@@ -25,7 +25,7 @@
 			<mk-avatar class="avatar" :user="p.user"/>
 			<div>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
-				<span class="username">@{{ p.user | acct }}</span>
+				<span class="username"><mk-acct :user="p.user"/></span>
 			</div>
 		</header>
 		<div class="body">

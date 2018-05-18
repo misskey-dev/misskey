@@ -6,7 +6,7 @@
 		</a>
 	</header>
 	<a class="name" :href="user | userPage" target="_blank">{{ user | userName }}</a>
-	<p class="username">@{{ user | acct }}</p>
+	<p class="username"><mk-acct :user="user"/></p>
 	<mk-follow-button :user="user"/>
 </div>
 </template>
