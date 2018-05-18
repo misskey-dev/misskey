@@ -1,12 +1,8 @@
-Traduction de Misskey - Version Française
-============
-
-Comment ajouter une nouvelle langue ?
-----------------------
-Veuillez copier un fichier de langue dans /locales puis renommez-le du nom de la langue que vous voulez ajouter et modifier.
+Traduction de Misskey
+=====================
 
 Si vous trouvez un segment non-traduit sur Misskey :
--------------------------------
+----------------------------------------------------
 
 1. Veuillez chercher des parties non-traduites dans le code source de Misskey.
 	- Par exemple, supposons que vous trouviez un segment non-traduit dans : `src/client/app/mobile/views/pages/home.vue`.
