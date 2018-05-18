@@ -2,7 +2,7 @@
 <mk-window ref="window" is-modal width="800px" height="500px" @closed="$destroy">
 	<span slot="header">
 		<span v-html="title" :class="$style.title"></span>
-		<span :class="$style.count" v-if="multiple && files.length > 0">({{ files.length }}ファイル選択中)</span>
+		<span :class="$style.count" v-if="multiple && files.length > 0">({{ files.length }}%i18n:@choose-file%)</span>
 	</span>
 
 	<mk-drive
@@ -13,9 +13,9 @@
 		@change-selection="onChangeSelection"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.upload" title="PCからドライブにファイルをアップロード" @click="upload">%fa:upload%</button>
-		<button :class="$style.cancel" @click="cancel">キャンセル</button>
-		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">決定</button>
+		<button :class="$style.upload" title="%i18n:@upload%" @click="upload">%fa:upload%</button>
+		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
+		<button :class="$style.ok" :disabled="multiple && files.length == 0" @click="ok">%i18n:@ok%</button>
 	</div>
 </mk-window>
 </template>
@@ -28,7 +28,7 @@ export default Vue.extend({
 			default: false
 		},
 		title: {
-			default: '%fa:R file%ファイルを選択'
+			default: '%fa:R file%%i18n:@choose-prompt%s'
 		}
 	},
 	data() {
@@ -177,4 +177,3 @@ export default Vue.extend({
 		border-color #dcdcdc
 
 </style>
-

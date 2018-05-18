@@ -1,6 +1,6 @@
 <template>
 <div class="mk-friends-maker">
-	<p class="title">気になるユーザーをフォロー:</p>
+	<p class="title">%i18n:@title%</p>
 	<div class="users" v-if="!fetching && users.length > 0">
 		<div class="user" v-for="user in users" :key="user.id">
 			<mk-avatar class="avatar" :user="user" target="_blank"/>
@@ -11,10 +11,10 @@
 			<mk-follow-button :user="user"/>
 		</div>
 	</div>
-	<p class="empty" v-if="!fetching && users.length == 0">おすすめのユーザーは見つかりませんでした。</p>
-	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%読み込んでいます<mk-ellipsis/></p>
-	<a class="refresh" @click="refresh">もっと見る</a>
-	<button class="close" @click="$destroy()" title="閉じる">%fa:times%</button>
+	<p class="empty" v-if="!fetching && users.length == 0">%i18n:@empty%</p>
+	<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:@fetching%<mk-ellipsis/></p>
+	<a class="refresh" @click="refresh">%i18n:@refresh%</a>
+	<button class="close" @click="$destroy()" title="%i18n:@close%">%fa:times%</button>
 </div>
 </template>
 

@@ -3,15 +3,15 @@
 	:class="{ wait, follow: !user.isFollowing, unfollow: user.isFollowing, big: size == 'big' }"
 	@click="onClick"
 	:disabled="wait"
-	:title="user.isFollowing ? 'フォロー解除' : 'フォローする'"
+	:title="user.isFollowing ? '%i18n:@unfollow%' : '%i18n:@follow%'"
 >
 	<template v-if="!wait && user.isFollowing">
 		<template v-if="size == 'compact'">%fa:minus%</template>
-		<template v-if="size == 'big'">%fa:minus%フォロー解除</template>
+		<template v-if="size == 'big'">%fa:minus%%i18n:@unfollow%</template>
 	</template>
 	<template v-if="!wait && !user.isFollowing">
 		<template v-if="size == 'compact'">%fa:plus%</template>
-		<template v-if="size == 'big'">%fa:plus%フォロー</template>
+		<template v-if="size == 'big'">%fa:plus%%i18n:@follow%</template>
 	</template>
 	<template v-if="wait">%fa:spinner .pulse .fw%</template>
 </button>

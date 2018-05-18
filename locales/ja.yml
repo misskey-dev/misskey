@@ -191,6 +191,12 @@ common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
 
+desktop/views/components/activity.chart.vue:
+  total: "Black ... Total"
+  notes: "Blue ... Notes"
+  replies: "Red ... Replies"
+  renotes: "Green ... Renotes"
+
 desktop/views/components/activity.vue:
   title: "アクティビティ"
   toggle: "表示を切り替え"
@@ -200,6 +206,23 @@ desktop/views/components/calendar.vue:
   prev: "前の月"
   next: "次の月"
   go: "クリックして時間遡行"
+
+desktop/views/components/choose-file-from-drive-window.vue:
+  choose-file: "ファイル選択中"
+  upload: "PCからドライブにファイルをアップロード"
+  cancel: "キャンセル"
+  ok: "決定"
+  choose-prompt: "ファイルを選択"
+
+desktop/views/components/choose-folder-from-drive-window.vue:
+  cancel: "キャンセル"
+  ok: "決定"
+  choose-prompt: "フォルダを選択"
+
+desktop/views/components/crop-window.vue:
+  skip: "クロップをスキップ"
+  cancel: "キャンセル"
+  ok: "決定"
 
 desktop/views/components/drive-window.vue:
   used: "使用中"
@@ -257,6 +280,32 @@ desktop/views/components/drive.vue:
     upload: "ファイルをアップロード"
     url-upload: "URLからアップロード"
 
+desktop/views/components/follow-button.vue:
+  unfollow: "フォロー解除"
+  follow: "フォローする"
+
+desktop/views/components/followers-window.vue:
+  followers: "{} のフォロワー"
+
+desktop/views/components/followers.vue:
+  empty: "フォロワーはいないようです。"
+
+desktop/views/components/following-window.vue:
+  following: "{} のフォロー"
+
+desktop/views/components/following.vue:
+  empty: "フォロー中のユーザーはいないようです。"
+
+desktop/views/components/friends-maker.vue:
+  title: "気になるユーザーをフォロー:"
+  empty: "おすすめのユーザーは見つかりませんでした。"
+  fetching: "読み込んでいます"
+  refresh: "もっと見る"
+  close: "閉じる"
+
+desktop/views/components/game-window.vue:
+  game: "オセロ"
+
 desktop/views/components/home.vue:
   done: "完了"
   add-widget: "ウィジェットを追加:"
@@ -283,8 +332,24 @@ desktop/views/components/home.vue:
   tips: "ヒント"
   add: "追加"
 
+desktop/views/input-dialog.vue:
+  cancel: "キャンセル"
+  ok: "決定"
+
+desktop/views/components/mentions.vue:
+  all: "すべて"
+  followed: "フォロー中"
+  empty: "あなた宛ての投稿はありません。"
+  empty-followed: "あなたがフォローしているユーザーからの言及はありません。"
+
+desktop/views/components/messaging-room-window.vue:
+  title: "メッセージ:"
+
 desktop/views/components/messaging-window.vue:
   title: "メッセージ"
+
+desktop/views/components/note-detail.sub.vue:
+  private: "(この投稿は非公開です)"
 
 desktop/views/components/notes.note.vue:
   reposted-by: "{}がRenote"
@@ -292,6 +357,10 @@ desktop/views/components/notes.note.vue:
   renote: "Renote"
   add-reaction: "リアクション"
   detail: "詳細"
+
+desktop/views/components/notes.vue:
+  error: "読み込みに失敗しました。"
+  retry: "リトライ"
 
 desktop/views/components/notifications.vue:
   more: "もっと見る"
@@ -324,6 +393,9 @@ desktop/views/components/post-form-window.vue:
   attaches: "添付: {}メディア"
   uploading-media: "{}個のメディアをアップロード中"
 
+desktop/views/components/progress-dialog.vue:
+  waiting: "待機中"
+
 desktop/views/components/renote-form.vue:
   quote: "引用する..."
   cancel: "キャンセル"
@@ -347,6 +419,80 @@ desktop/views/components/settings.vue:
   2fa: "二段階認証"
   other: "その他"
   license: "ライセンス"
+
+  behaviour: "動作"
+  fetch-on-scroll: "スクロールで自動読み込み"
+  fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
+  auto-popout: "ウィンドウの自動ポップアウト"
+  auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
+  advanced: "詳細設定"
+  api-via-stream: "ストリームを経由したAPIリクエスト"
+  api-via-stream-desc: "この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。"
+
+  display: "デザインと表示"
+  customize: "ホームをカスタマイズ"
+  dark-mode: "ダークモード"
+  circle-icons: "円形のアイコンを使用"
+  gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
+  post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
+  show-reply-target: "リプライ先を表示する"
+  show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
+  show-renoted-my-notes: "Renoteされた自分の投稿をタイムラインに表示する"
+  show-maps: "マップの自動展開"
+  show-maps-desc: "位置情報が添付された投稿のマップを自動的に展開します。"
+
+  sound: "サウンド"
+  enable-sounds: "サウンドを有効にする"
+  enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
+  volume: "ボリューム"
+  test: "テスト"
+
+  mobile: "モバイル"
+  disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
+
+  language: "言語"
+  pick-language: "言語を選択"
+  recommended: "推奨"
+  auto: "自動"
+  specify-language: "言語を指定"
+  language-desc: "変更はページの再度読み込み後に反映されます。"
+
+  cache: "キャッシュ"
+  clean-cache: "クリーンアップ"
+  cache-warn: "クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。"
+  cache-cleared: "キャッシュを削除しました"
+  cache-cleared-desc: "ページを再度読み込みしてください。"
+
+  auto-watch: "投稿の自動ウォッチ"
+  auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
+
+  about: "Misskeyについて"
+  operator: "このサーバーの運営者"
+
+  update: "Misskey Update"
+  version: "バージョン:"
+  latest-version: "最新のバージョン:"
+  update-checking: "アップデートを確認中"
+  do-update: "アップデートを確認"
+  update-settings: "詳細設定"
+  prevent-update: "アップデートを延期する(非推奨)"
+  prevent-update-desc: "この設定をオンにしてもアップデートが反映される場合があります。この設定はこのデバイスのみ有効です。"
+  no-updates: "利用可能な更新はありません"
+  no-updates-desc: "お使いのMisskeyは最新です。"
+  update-available: "新しいバージョンが利用可能です"
+  update-available-desc: "ページを再度読み込みすると更新が適用されます。"
+
+  advanced-settings: "高度な設定"
+  debug-mode: "デバッグモードを有効にする"
+  debug-mode-desc: "この設定はブラウザに記憶されます。"
+  use-raw-script: "生のスクリプトを読み込む"
+  use-raw-script-desc: "圧縮されていない「生の」スクリプトを使用します。サイズが大きいため、読み込みに時間がかかる場合があります。この設定はブラウザに記憶されます。"
+  source-info: "Misskeyはソースマップも提供しています。"
+  experimental: "実験的機能を有効にする"
+  experimental-desc: "実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。この設定はブラウザに記憶されます。"
+  tools: "ツール"
+  task-manager: "タスクマネージャ"
+  third-parties: "サードパーティ"
 
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
@@ -397,6 +543,9 @@ desktop/views/components/settings.profile.vue:
   description: "自己紹介"
   birthday: "誕生日"
   save: "保存"
+
+desktop/views/components/taskmanager.vue:
+  title: "タスクマネージャ"
 
 desktop/views/components/timeline.vue:
   home: "ホーム"

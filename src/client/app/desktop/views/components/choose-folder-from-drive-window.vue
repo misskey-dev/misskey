@@ -10,8 +10,8 @@
 		:multiple="false"
 	/>
 	<div :class="$style.footer">
-		<button :class="$style.cancel" @click="cancel">キャンセル</button>
-		<button :class="$style.ok" @click="ok">決定</button>
+		<button :class="$style.cancel" @click="cancel">%i18n:@cancel%</button>
+		<button :class="$style.ok" @click="ok">%i18n:@ok%</button>
 	</div>
 </mk-window>
 </template>
@@ -21,7 +21,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: {
 		title: {
-			default: '%fa:R folder%フォルダを選択'
+			default: '%fa:R folder%%i18n:@choose-prompt%'
 		}
 	},
 	methods: {

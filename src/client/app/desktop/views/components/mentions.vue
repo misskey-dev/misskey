@@ -1,16 +1,16 @@
 <template>
 <div class="mk-mentions">
 	<header>
-		<span :data-active="mode == 'all'" @click="mode = 'all'">すべて</span>
-		<span :data-active="mode == 'following'" @click="mode = 'following'">フォロー中</span>
+		<span :data-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%</span>
+		<span :data-active="mode == 'following'" @click="mode = 'following'">%i18n:@followed%</span>
 	</header>
 	<div class="fetching" v-if="fetching">
 		<mk-ellipsis-icon/>
 	</div>
 	<p class="empty" v-if="notes.length == 0 && !fetching">
 		%fa:R comments%
-		<span v-if="mode == 'all'">あなた宛ての投稿はありません。</span>
-		<span v-if="mode == 'following'">あなたがフォローしているユーザーからの言及はありません。</span>
+		<span v-if="mode == 'all'">%i18n:@empty%</span>
+		<span v-if="mode == 'following'">%i18n:@empty-followed%</span>
 	</p>
 	<mk-notes :notes="notes" ref="timeline"/>
 </div>
