@@ -165,6 +165,15 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
+commons/views/widgets/visibility-chooser.vue:
+  public: "公開"
+  home: "ホーム"
+  home-desc: "ホームタイムラインにのみ公開"
+  followers: "フォロワー"
+  followers-desc: "自分のフォロワーにのみ公開"
+  specified: "ダイレクト"
+  specified-desc: "指定したユーザーにのみ公開"
+  private: "非公開"
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -292,6 +301,13 @@ desktop/views/components/messaging-room-window.vue:
   title: "Wiadomości:"
 desktop/views/components/messaging-window.vue:
   title: "Wiadomości"
+desktop/views/components/note-detail.vue:
+  more: "会話をもっと読み込む"
+  private: "(この投稿は非公開です)"
+  is-renote: "がRenote"
+  location: "位置情報"
+  renote: "Renote"
+  add-reaction: "リアクション"
 desktop/views/components/note-detail.sub.vue:
   private: "(ten wpis jest prywatny)"
 desktop/views/components/notes.note.vue:
@@ -462,6 +478,10 @@ desktop/views/components/settings.profile.vue:
   description: "Opis"
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
+desktop/views/components/sub-note-content.vue:
+  hidden: "(この投稿は非公開です)"
+  media: "つのメディア"
+  poll: "投票"
 desktop/views/components/taskmanager.vue:
   title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
@@ -499,6 +519,17 @@ desktop/views/components/users-list.vue:
   iknow: "Znasz"
   load-more: "Więcej"
   fetching: "Ładowanie…"
+desktop/views/components/users-list-item.vue:
+  followed: "フォローされています"
+desktop/views/components/window.vue:
+  popout: "ポップアウト"
+  close: "閉じる"
+desktop/views/pages/drive.vue:
+  title: "Misskey Drive"
+desktop/views/pages/favorites.vue:
+  more: "さらに読み込む"
+desktop/views/pages/home-customize.vue:
+  title: "ホームのカスタマイズ"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -507,6 +538,10 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Anuluj"
   upload: "Wyślij pliki z Twojego komputera"
+desktop/views/pages/user-list.users.vue:
+  users: "ユーザー"
+  add-user: "ユーザーを追加"
+  username: "ユーザー名"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Śledzący których znasz"
   loading: "Ładowanie"
@@ -533,6 +568,11 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Wycisz"
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
+desktop/views/pages/user/user.timeline.vue:
+  default: "投稿"
+  with-replies: "投稿と返信"
+  with-media: "メディア"
+  empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
 desktop/views/widgets/notifications.vue:
@@ -546,6 +586,9 @@ desktop/views/widgets/post-form.vue:
   title: "Wpis"
   note: "Wpis"
   placeholder: "Co się dzieje?"
+desktop/views/widgets/profile.vue:
+  update-banner: "クリックでバナー編集"
+  update-avatar: "クリックでアバター編集"
 desktop/views/widgets/trends.vue:
   title: "Na czasie"
   refresh: "Pokaż inne"
@@ -633,20 +676,20 @@ mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
 mobile/views/pages/settings/settings.profile.vue:
-  title: "Ustawienia profilu"
-  will-be-published: "Te ustawienia profilu zostaną zaktualizowane."
-  name: "Nazwa"
-  location: "Lokalizacja"
-  description: "Opis"
-  birthday: "Data urodzenia"
-  avatar: "Awatar"
-  banner: "Baner"
-  avatar-saved: "Pomyślnie zaktualizowano awatar"
-  banner-saved: "Pomyślnie zaktualizowano baner"
-  set-avatar: "Wybierz awatar"
-  set-banner: "Wybierz baner"
-  save: "Zapisz"
-  saved: "Pomyślnie zaktualizowano profil"
+  title: "プロフィール設定"
+  will-be-published: "これらのプロフィールは公開されます。"
+  name: "名前"
+  location: "場所"
+  description: "自己紹介"
+  birthday: "誕生日"
+  avatar: "アイコン"
+  banner: "バナー"
+  avatar-saved: "アイコンを保存しました"
+  banner-saved: "バナーを保存しました"
+  set-avatar: "アイコンを選択する"
+  set-banner: "バナーを選択する"
+  save: "保存"
+  saved: "プロフィールを保存しました"
 mobile/views/pages/search.vue:
   search: "Szukaj"
   empty: "Nie znaleziono wpisów zawierających '{}'"
