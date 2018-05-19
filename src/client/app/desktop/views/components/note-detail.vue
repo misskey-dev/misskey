@@ -3,7 +3,7 @@
 	<button
 		class="read-more"
 		v-if="p.reply && p.reply.replyId && context.length == 0"
-		title="会話をもっと読み込む"
+		title="%i18n:@more%"
 		@click="fetchContext"
 		:disabled="contextFetching"
 	>
@@ -21,7 +21,7 @@
 			<mk-avatar class="avatar" :user="note.user"/>
 			%fa:retweet%
 			<router-link class="name" :href="note.user | userPage">{{ note.user | userName }}</router-link>
-			がRenote
+			%i18n:@is-renote%
 		</p>
 	</div>
 	<article>
@@ -35,7 +35,7 @@
 		</header>
 		<div class="body">
 			<div class="text">
-				<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+				<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
 				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
@@ -46,7 +46,7 @@
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
 				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 			</div>
-			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 			<div class="map" v-if="p.geo" ref="map"></div>
 			<div class="renote" v-if="p.renote">
 				<mk-note-preview :note="p.renote"/>
@@ -54,15 +54,15 @@
 		</div>
 		<footer>
 			<mk-reactions-viewer :note="p"/>
-			<button @click="reply" title="返信">
+			<button @click="reply" title="">
 				<template v-if="p.reply">%fa:reply-all%</template>
 				<template v-else>%fa:reply%</template>
 				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
-			<button @click="renote" title="Renote">
+			<button @click="renote" title="%i18n:@renote%>
 				%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
-			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="リアクション">
+			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@add-reaction%">
 				%fa:plus%<p class="count" v-if="p.reactions_count > 0">{{ p.reactions_count }}</p>
 			</button>
 			<button @click="menu" ref="menuButton">

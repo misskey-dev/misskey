@@ -5,12 +5,12 @@
 >
 	<div class="banner"
 		:style="os.i.bannerUrl ? `background-image: url(${os.i.bannerUrl}?thumbnail&size=256)` : ''"
-		title="クリックでバナー編集"
+		title="%i18n:@update-banner%"
 		@click="os.apis.updateBanner"
 	></div>
 	<mk-avatar class="avatar" :user="os.i"
 		@click="os.apis.updateAvatar"
-		title="クリックでアバター編集"
+		title="%i18n:@update-avatar%"
 	/>
 	<router-link class="name" :to="os.i | userPage">{{ os.i | userName }}</router-link>
 	<p class="username">@{{ os.i | acct }}</p>

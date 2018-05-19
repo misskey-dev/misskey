@@ -16,11 +16,11 @@ export default Vue.extend({
 		this.folder = this.$route.params.folder;
 	},
 	mounted() {
-		document.title = 'Misskey Drive';
+		document.title = '%i18n:@title%';
 	},
 	methods: {
 		onMoveRoot() {
-			const title = 'Misskey Drive';
+			const title = '%i18n:@title%';
 
 			// Rewrite URL
 			history.pushState(null, title, '/i/drive');
@@ -28,7 +28,7 @@ export default Vue.extend({
 			document.title = title;
 		},
 		onOpenFolder(folder) {
-			const title = folder.name + ' | Misskey Drive';
+			const title = folder.name + ' | %i18n:@title%';
 
 			// Rewrite URL
 			history.pushState(null, title, '/i/drive/folder/' + folder.id);
@@ -49,4 +49,3 @@ export default Vue.extend({
 	> .mk-drive
 		height 100%
 </style>
-
