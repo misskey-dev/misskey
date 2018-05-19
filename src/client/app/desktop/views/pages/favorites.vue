@@ -4,7 +4,7 @@
 		<template v-for="favorite in favorites">
 			<mk-note-detail :note="favorite.note" :key="favorite.note.id"/>
 		</template>
-		<a v-if="existMore" @click="more">さらに読み込む</a>
+		<a v-if="existMore" @click="more">%i18n:@more%</a>
 	</main>
 </mk-ui>
 </template>

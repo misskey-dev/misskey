@@ -7,7 +7,7 @@
 			<span class="username">@{{ user | acct }}</span>
 		</header>
 		<div class="body">
-			<p class="followed" v-if="user.isFollowed">フォローされています</p>
+			<p class="followed" v-if="user.isFollowed">%i18n:@followed%</p>
 			<div class="description">{{ user.description }}</div>
 		</div>
 	</div>

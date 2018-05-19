@@ -1,17 +1,17 @@
 <template>
 <div class="mk-sub-note-content">
 	<div class="body">
-		<span v-if="note.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+		<span v-if="note.isHidden" style="opacity: 0.5">%i18n:@hidden%</span>
 		<a class="reply" v-if="note.replyId">%fa:reply%</a>
 		<mk-note-html :text="note.text" :i="os.i"/>
 		<a class="rp" v-if="note.renoteId" :href="`/note:${note.renoteId}`">RP: ...</a>
 	</div>
 	<details v-if="note.media.length > 0">
-		<summary>({{ note.media.length }}つのメディア)</summary>
+		<summary>({{ note.media.length }}%i18n:@media%)</summary>
 		<mk-media-list :media-list="note.media"/>
 	</details>
 	<details v-if="note.poll">
-		<summary>投票</summary>
+		<summary>%i18n:@poll%</summary>
 		<mk-poll :note="note"/>
 	</details>
 </div>
