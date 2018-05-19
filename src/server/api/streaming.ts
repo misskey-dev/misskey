@@ -14,7 +14,6 @@ import othelloGameStream from './stream/othello-game';
 import othelloStream from './stream/othello';
 import serverStream from './stream/server';
 import requestsStream from './stream/requests';
-import channelStream from './stream/channel';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 
@@ -47,11 +46,6 @@ module.exports = (server: http.Server) => {
 			subscriber.unsubscribe();
 			subscriber.quit();
 		});
-
-		if (request.resourceURL.pathname === '/channel') {
-			channelStream(request, connection, subscriber);
-			return;
-		}
 
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);

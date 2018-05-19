@@ -10,7 +10,7 @@
 		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 		<div class="title">
 			<p class="name">{{ user | userName }}</p>
-			<p class="username">@{{ user | acct }}</p>
+			<p class="username"><mk-acct :user="user"/></p>
 			<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker%{{ user.profile.location }}</p>
 		</div>
 		<footer>

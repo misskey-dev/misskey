@@ -1,18 +1,29 @@
 <template>
 <mk-ui>
 	<span slot="header">%fa:cog%%i18n:@settings%</span>
-	<div :class="$style.content">
+	<main>
 		<p v-html="'%i18n:!@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
-		<ul>
-			<li><router-link to="./settings/profile">%fa:user%%i18n:@profile%%fa:angle-right%</router-link></li>
-			<li><router-link to="./settings/twitter">%fa:B twitter%%i18n:@twitter%%fa:angle-right%</router-link></li>
-			<li><router-link to="./settings/signin-history">%fa:sign-in-alt%%i18n:@signin-history%%fa:angle-right%</router-link></li>
-		</ul>
-		<ul>
-			<li><a @click="signout">%fa:power-off%%i18n:@signout%</a></li>
-		</ul>
+		<div>
+			<x-profile/>
+
+			<md-card class="md-layout-item md-size-50 md-small-size-100">
+				<md-card-header>
+					<div class="md-title">%i18n:@design%</div>
+				</md-card-header>
+
+				<md-card-content>
+					<div>
+						<md-switch v-model="darkmode">%i18n:@dark-mode%</md-switch>
+					</div>
+
+					<div>
+						<md-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</md-switch>
+					</div>
+				</md-card-content>
+			</md-card>
+		</div>
 		<p><small>ver {{ version }} ({{ codename }})</small></p>
-	</div>
+	</main>
 </mk-ui>
 </template>
 
@@ -20,31 +31,59 @@
 import Vue from 'vue';
 import { version, codename } from '../../../config';
 
+import XProfile from './settings/settings.profile.vue';
+
 export default Vue.extend({
+	components: {
+		XProfile
+	},
+
 	data() {
 		return {
 			version,
-			codename
+			codename,
+			darkmode: localStorage.getItem('darkmode') == 'true'
 		};
 	},
+
 	computed: {
 		name(): string {
 			return Vue.filter('userName')((this as any).os.i);
 		}
 	},
+
+	watch: {
+		darkmode() {
+			(this as any)._updateDarkmode_(this.darkmode);
+		}
+	},
+
 	mounted() {
 		document.title = 'Misskey | %i18n:@settings%';
 	},
+
 	methods: {
 		signout() {
 			(this as any).os.signout();
+		},
+
+		onChangeCircleIcons(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'circleIcons',
+				value: v
+			});
 		}
 	}
 });
 </script>
 
-<style lang="stylus" module>
-.content
+<style lang="stylus" scoped>
+main
+	padding 0 16px
+
+	> div
+		> *
+			margin-bottom 16px
 
 	> p
 		display block

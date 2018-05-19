@@ -17,7 +17,7 @@
 			<header>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
 				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
-				<span class="username">@{{ p.user | acct }}</span>
+				<span class="username"><mk-acct :user="p.user"/></span>
 				<div class="info">
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
 					<router-link class="created-at" :to="p | notePage">
@@ -32,7 +32,6 @@
 				</div>
 			</header>
 			<div class="body">
-				<p class="channel" v-if="p.channel != null"><a target="_blank">{{ p.channel.title }}</a>:</p>
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
 					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '隠す' : 'もっと見る' }}</span>
@@ -469,9 +468,6 @@ root(isDark)
 
 					.mk-url-preview
 						margin-top 8px
-
-					> .channel
-						margin 0
 
 					> .tags
 						margin 4px 0 0 0

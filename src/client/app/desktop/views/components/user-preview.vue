@@ -5,7 +5,7 @@
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
 			<router-link class="name" :to="u | userPage">{{ u | userName }}</router-link>
-			<p class="username">@{{ u | acct }}</p>
+			<p class="username"><mk-acct :user="u"/></p>
 		</div>
 		<div class="description">{{ u.description }}</div>
 		<div class="status">

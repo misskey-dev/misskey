@@ -4,7 +4,7 @@
 	:count="user.followingCount"
 	:you-know-count="user.followingYouKnowCount"
 >
-	フォロー中のユーザーはいないようです。
+	%i18n:@empty%
 </mk-users-list>
 </template>
 

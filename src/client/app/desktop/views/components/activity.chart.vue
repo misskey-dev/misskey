@@ -1,6 +1,6 @@
 <template>
 <svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" @mousedown.prevent="onMousedown">
-	<title>Black ... Total<br/>Blue ... Notes<br/>Red ... Replies<br/>Green ... Renotes</title>
+	<title>%i18n:@total%<br/>%i18n:@notes%<br/>%i18n:@replies%<br/>%i18n:@renotes%</title>
 	<polyline
 		:points="pointsNote"
 		fill="none"

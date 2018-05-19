@@ -19,91 +19,91 @@
 		</section>
 
 		<section class="web" v-show="page == 'web'">
-			<h1>動作</h1>
-			<mk-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="スクロールで自動読み込み">
-				<span>ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。</span>
+			<h1>%i18n:@behaviour%</h1>
+			<mk-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="%i18n:@fetch-on-scroll%">
+				<span>%i18n:@fetch-on-scroll-desc%</span>
 			</mk-switch>
-			<mk-switch v-model="autoPopout" text="ウィンドウの自動ポップアウト">
-				<span>ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。</span>
+			<mk-switch v-model="autoPopout" text="%i18n:@auto-popout%">
+				<span>%i18n:@auto-popout-desc%</span>
 			</mk-switch>
 			<details>
-				<summary>詳細設定</summary>
-				<mk-switch v-model="apiViaStream" text="ストリームを経由したAPIリクエスト">
-					<span>この設定をオンにすると、websocket接続を経由してAPIリクエストが行われます(パフォーマンス向上が期待できます)。オフにすると、ネイティブの fetch APIが利用されます。この設定はこのデバイスのみ有効です。</span>
+				<summary>%i18n:@advanced%</summary>
+				<mk-switch v-model="apiViaStream" text="%i18n:@api-via-stream%">
+					<span>%i18n:@api-via-stream-desc%</span>
 				</mk-switch>
 			</details>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
-			<h1>デザインと表示</h1>
+			<h1>%i18n:@display%</h1>
 			<div class="div">
-				<button class="ui button" @click="customizeHome" style="margin-bottom: 16px">ホームをカスタマイズ</button>
+				<button class="ui button" @click="customizeHome" style="margin-bottom: 16px">%i18n:@customize%</button>
 			</div>
 			<div class="div">
-				<mk-switch v-model="darkmode" text="ダークモード"/>
-				<mk-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons" text="円形のアイコンを使用"/>
-				<mk-switch v-model="clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="ウィンドウのタイトルバーにグラデーションを使用"/>
+				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
+				<mk-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons" text="%i18n:@circle-icons%"/>
+				<mk-switch v-model="clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="%i18n:@gradient-window-header%"/>
 			</div>
-			<mk-switch v-model="clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="タイムライン上部に投稿フォームを表示する"/>
-			<mk-switch v-model="clientSettings.showReplyTarget" @change="onChangeShowReplyTarget" text="リプライ先を表示する"/>
-			<mk-switch v-model="clientSettings.showMyRenotes" @change="onChangeShowMyRenotes" text="自分の行ったRenoteをタイムラインに表示する"/>
-			<mk-switch v-model="clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="Renoteされた自分の投稿をタイムラインに表示する"/>
-			<mk-switch v-model="clientSettings.showMaps" @change="onChangeShowMaps" text="マップの自動展開">
-				<span>位置情報が添付された投稿のマップを自動的に展開します。</span>
+			<mk-switch v-model="clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
+			<mk-switch v-model="clientSettings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
+			<mk-switch v-model="clientSettings.showMyRenotes" @change="onChangeShowMyRenotes" text="%i18n:@show-my-renotes%"/>
+			<mk-switch v-model="clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
+			<mk-switch v-model="clientSettings.showMaps" @change="onChangeShowMaps" text="%i18n:@show-maps%">
+				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
-			<h1>サウンド</h1>
-			<mk-switch v-model="enableSounds" text="サウンドを有効にする">
-				<span>投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。</span>
+			<h1>%i18n:@sound%</h1>
+			<mk-switch v-model="enableSounds" text="%i18n:@enable-sounds%">
+				<span>%i18n:@enable-sounds-desc%</span>
 			</mk-switch>
-			<label>ボリューム</label>
+			<label>%i18n:@volume%</label>
 			<el-slider
 				v-model="soundVolume"
 				:show-input="true"
 				:format-tooltip="v => `${v}%`"
 				:disabled="!enableSounds"
 			/>
-			<button class="ui button" @click="soundTest">%fa:volume-up% テスト</button>
+			<button class="ui button" @click="soundTest">%fa:volume-up% %i18n:@test%</button>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
-			<h1>モバイル</h1>
-			<mk-switch v-model="clientSettings.disableViaMobile" @change="onChangeDisableViaMobile" text="「モバイルからの投稿」フラグを付けない"/>
+			<h1>%i18n:@mobile%</h1>
+			<mk-switch v-model="clientSettings.disableViaMobile" @change="onChangeDisableViaMobile" text="%i18n:@disable-via-mobile%"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
-			<h1>言語</h1>
-			<el-select v-model="lang" placeholder="言語を選択">
-				<el-option-group label="推奨">
-					<el-option label="自動" value=""/>
+			<h1>%i18n:@language%</h1>
+			<el-select v-model="lang" placeholder="%i18n:@pick-language%">
+				<el-option-group label="%i18n:@recommended%">
+					<el-option label="%i18n:@auto%" value=""/>
 				</el-option-group>
-				<el-option-group label="言語を指定">
-					<el-option label="ja" value="ja"/>
-					<el-option label="en" value="en"/>
-					<el-option label="fr" value="fr"/>
-					<el-option label="pl" value="pl"/>
-					<el-option label="de" value="de"/>
+				<el-option-group label="%i18n:@specify-language%">
+					<el-option label="日本語" value="ja"/>
+					<el-option label="English" value="en"/>
+					<el-option label="Français" value="fr"/>
+					<el-option label="Polski" value="pl"/>
+					<el-option label="Deutsch" value="de"/>
 				</el-option-group>
 			</el-select>
 			<div class="none ui info">
-				<p>%fa:info-circle%変更はページの再度読み込み後に反映されます。</p>
+				<p>%fa:info-circle%%i18n:@language-desc%</p>
 			</div>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
-			<h1>キャッシュ</h1>
-			<button class="ui button" @click="clean">クリーンアップ</button>
+			<h1>%i18n:@cache%</h1>
+			<button class="ui button" @click="clean">%i18n:@clean-cache%</button>
 			<div class="none ui info warn">
-				<p>%fa:exclamation-triangle%クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。</p>
+				<p>%fa:exclamation-triangle%%i18n:@cache-warn%</p>
 			</div>
 		</section>
 
 		<section class="notification" v-show="page == 'notification'">
 			<h1>%i18n:@notification%</h1>
-			<mk-switch v-model="os.i.settings.autoWatch" @change="onChangeAutoWatch" text="投稿の自動ウォッチ">
-				<span>リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。</span>
+			<mk-switch v-model="os.i.settings.autoWatch" @change="onChangeAutoWatch" text="%i18n:@auto-watch%">
+				<span>%i18n:@auto-watch-desc%</span>
 			</mk-switch>
 		</section>
 
@@ -148,57 +148,57 @@
 		</section>
 
 		<section class="other" v-show="page == 'other'">
-			<h1>Misskeyについて</h1>
-			<p v-if="meta">このサーバーの運営者: <i><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></i></p>
+			<h1>%i18n:@about%</h1>
+			<p v-if="meta">%i18n:@operator%: <i><a :href="meta.maintainer.url" target="_blank">{{ meta.maintainer.name }}</a></i></p>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
-			<h1>Misskey Update</h1>
+			<h1>%i18n:@update%</h1>
 			<p>
-				<span>バージョン: <i>{{ version }}</i></span>
+				<span>%i18n:@version% <i>{{ version }}</i></span>
 				<template v-if="latestVersion !== undefined">
 					<br>
-					<span>最新のバージョン: <i>{{ latestVersion ? latestVersion : version }}</i></span>
+					<span>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></span>
 				</template>
 			</p>
 			<button class="ui button block" @click="checkForUpdate" :disabled="checkingForUpdate">
-				<template v-if="checkingForUpdate">アップデートを確認中<mk-ellipsis/></template>
-				<template v-else>アップデートを確認</template>
+				<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
+				<template v-else>%i18n:@do-update%</template>
 			</button>
 			<details>
-				<summary>詳細設定</summary>
-				<mk-switch v-model="preventUpdate" text="アップデートを延期する(非推奨)">
-					<span>この設定をオンにしてもアップデートが反映される場合があります。この設定はこのデバイスのみ有効です。</span>
+				<summary>%i18n:@update-settings%</summary>
+				<mk-switch v-model="preventUpdate" text="%i18n:@prevent-update%">
+					<span>%i18n:@prevent-update-desc%</span>
 				</mk-switch>
 			</details>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
-			<h1>高度な設定</h1>
-			<mk-switch v-model="debug" text="デバッグモードを有効にする">
-				<span>この設定はブラウザに記憶されます。</span>
+			<h1>%i18n:@advanced-settings%</h1>
+			<mk-switch v-model="debug" text="%i18n:@debug-mode%">
+				<span>%i18n:@debug-mode-desc%</span>
 			</mk-switch>
 			<template v-if="debug">
-				<mk-switch v-model="useRawScript" text="生のスクリプトを読み込む">
-					<span>圧縮されていない「生の」スクリプトを使用します。サイズが大きいため、読み込みに時間がかかる場合があります。この設定はブラウザに記憶されます。</span>
+				<mk-switch v-model="useRawScript" text="%i18n:@use-raw-script%">
+					<span>%i18n:@use-raw-script-desc%</span>
 				</mk-switch>
 				<div class="none ui info">
-				<p>%fa:info-circle%Misskeyはソースマップも提供しています。</p>
+				<p>%fa:info-circle%%i18n:@source-info%</p>
 			</div>
 			</template>
-			<mk-switch v-model="enableExperimental" text="実験的機能を有効にする">
-				<span>実験的機能を有効にするとMisskeyの動作が不安定になる可能性があります。この設定はブラウザに記憶されます。</span>
+			<mk-switch v-model="enableExperimental" text="%i18n:@experimental%">
+				<span>%i18n:@experimental-desc%</span>
 			</mk-switch>
 			<details v-if="debug">
-				<summary>ツール</summary>
-				<button class="ui button block" @click="taskmngr">タスクマネージャ</button>
+				<summary>%i18n:@tools%</summary>
+				<button class="ui button block" @click="taskmngr">%i18n:@task-manager%</button>
 			</details>
 		</section>
 
 		<section class="other" v-show="page == 'other'">
 			<h1>%i18n:@license%</h1>
 			<div v-html="license"></div>
-			<a :href="licenseUrl" target="_blank">サードパーティ</a>
+			<a :href="licenseUrl" target="_blank">%i18n:@third-parties%</a>
 		</section>
 	</div>
 </div>
@@ -371,13 +371,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					(this as any).apis.dialog({
-						title: '利用可能な更新はありません',
-						text: 'お使いのMisskeyは最新です。'
+						title: '%i18n:!@no-updates%',
+						text: '%i18n:!@no-updates-desc%'
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '新しいバージョンが利用可能です',
-						text: 'ページを再度読み込みすると更新が適用されます。'
+						title: '%i18n:!@update-available%',
+						text: '%i18n:!@update-available-desc%'
 					});
 				}
 			});
@@ -385,8 +385,8 @@ export default Vue.extend({
 		clean() {
 			localStorage.clear();
 			(this as any).apis.dialog({
-				title: 'キャッシュを削除しました',
-				text: 'ページを再度読み込みしてください。'
+				title: '%i18n:!@cache-cleared%',
+				text: '%i18n:!@caache-cleared-desc%'
 			});
 		},
 		soundTest() {

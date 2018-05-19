@@ -1,0 +1,13 @@
+/* SEE: https://vuematerial.io/themes/configuration */
+
+@import '../const.json';
+
+@import "~vue-material/dist/theme/engine";
+
+@include md-register-theme("default", (
+	primary: $themeColor,
+	accent: md-get-palette-color(red, A200)
+));
+
+@import "~vue-material/dist/components/MdButton/theme";
+@import "~vue-material/dist/components/MdField/theme";

@@ -15,7 +15,6 @@
 					<option value="photo-stream">フォトストリーム</option>
 					<option value="slideshow">スライドショー</option>
 					<option value="version">バージョン</option>
-					<option value="access-log">アクセスログ</option>
 					<option value="server">サーバー情報</option>
 					<option value="donation">寄付のお願い</option>
 					<option value="nav">ナビゲーション</option>

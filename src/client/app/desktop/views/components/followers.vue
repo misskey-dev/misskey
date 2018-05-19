@@ -4,7 +4,7 @@
 	:count="user.followersCount"
 	:you-know-count="user.followersYouKnowCount"
 >
-	フォロワーはいないようです。
+	%i18n:@empty%
 </mk-users-list>
 </template>
 

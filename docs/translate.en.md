@@ -1,12 +1,8 @@
-Misskey's Translation - English version
-============
-
-How to add a new language?
-----------------------
-Copy a language file to `/locales` and rename it after the language you wish to add.
+Misskey's Translation
+=====================
 
 If you find an untranslated part on Misskey:
--------------------------------
+--------------------------------------------
 
 1. Look for untranslated parts in the miskey's source code.
 	- For instance, if you find an untranslated part in: `src/client/app/mobile/views/pages/home.vue`.

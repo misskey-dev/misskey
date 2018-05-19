@@ -4,7 +4,7 @@
 	<div class="main">
 		<header>
 			<router-link class="name" :to="user | userPage">{{ user | userName }}</router-link>
-			<span class="username">@{{ user | acct }}</span>
+			<span class="username"><mk-acct :user="user"/></span>
 		</header>
 		<div class="body">
 			<div class="description">{{ user.description }}</div>

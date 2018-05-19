@@ -2,7 +2,7 @@
 <mk-window ref="window" :is-modal="false" :can-close="false" width="500px" @closed="$destroy">
 	<span slot="header">{{ title }}<mk-ellipsis/></span>
 	<div :class="$style.body">
-		<p :class="$style.init" v-if="isNaN(value)">待機中<mk-ellipsis/></p>
+		<p :class="$style.init" v-if="isNaN(value)">%i18n:@waiting%<mk-ellipsis/></p>
 		<p :class="$style.percentage" v-if="!isNaN(value)">{{ Math.floor((value / max) * 100) }}</p>
 		<progress :class="$style.progress"
 			v-if="!isNaN(value) && value < max"

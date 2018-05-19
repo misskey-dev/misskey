@@ -15,7 +15,7 @@
 				</div>
 				<div class="title">
 					<h1>{{ user | userName }}</h1>
-					<span class="username">@{{ user | acct }}</span>
+					<span class="username"><mk-acct :user="user"/></span>
 					<span class="followed" v-if="user.isFollowed">%i18n:@follows-you%</span>
 				</div>
 				<div class="description">{{ user.description }}</div>

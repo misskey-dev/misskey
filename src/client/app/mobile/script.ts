@@ -2,11 +2,17 @@
  * Mobile Client
  */
 
+import Vue from 'vue';
 import VueRouter from 'vue-router';
+
+import { MdCard, MdButton, MdField, MdMenu, MdList, MdSwitch } from 'vue-material/dist/components';
+import 'vue-material/dist/vue-material.min.css';
+import 'vue-material/dist/theme/default.css';
 
 // Style
 import './style.styl';
 import '../../element.scss';
+import '../../md.scss';
 
 import init from '../init';
 
@@ -33,6 +39,13 @@ import MkFollowing from './views/pages/following.vue';
 import MkSettings from './views/pages/settings.vue';
 import MkProfileSetting from './views/pages/profile-setting.vue';
 import MkOthello from './views/pages/othello.vue';
+
+Vue.use(MdCard);
+Vue.use(MdButton);
+Vue.use(MdField);
+Vue.use(MdMenu);
+Vue.use(MdList);
+Vue.use(MdSwitch);
 
 /**
  * init

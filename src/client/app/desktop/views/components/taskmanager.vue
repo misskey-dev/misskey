@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="750px" height="500px" @closed="$destroy" name="TaskManager">
-	<span slot="header" :class="$style.header">%fa:stethoscope%タスクマネージャ</span>
+	<span slot="header" :class="$style.header">%fa:stethoscope%%i18n:@title%</span>
 	<el-tabs :class="$style.content">
 		<el-tab-pane label="Requests">
 			<el-table

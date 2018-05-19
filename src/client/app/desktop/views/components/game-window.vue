@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="$destroy">
-	<span slot="header" :class="$style.header">%fa:gamepad%オセロ</span>
+	<span slot="header" :class="$style.header">%fa:gamepad%%i18n:@game%</span>
 	<mk-othello :class="$style.content" @gamed="g => game = g"/>
 </mk-window>
 </template>
