@@ -632,7 +632,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
-mobile/views/pages/profile-setting.vue:
+mobile/views/pages/settings/settings.profile.vue:
   title: "Ustawienia profilu"
   will-be-published: "Te ustawienia profilu zostaną zaktualizowane."
   name: "Nazwa"

@@ -632,7 +632,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
   read-all: "Are you sure you want to mark all unread notifications as read?"
-mobile/views/pages/profile-setting.vue:
+mobile/views/pages/settings/settings.profile.vue:
   title: "Profile settings"
   will-be-published: "These profile settings will be updated."
   name: "Name"
