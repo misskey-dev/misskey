@@ -165,6 +165,15 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
+commons/views/widgets/visibility-chooser.vue:
+  public: "公開"
+  home: "ホーム"
+  home-desc: "ホームタイムラインにのみ公開"
+  followers: "フォロワー"
+  followers-desc: "自分のフォロワーにのみ公開"
+  specified: "ダイレクト"
+  specified-desc: "指定したユーザーにのみ公開"
+  private: "非公開"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -292,6 +301,13 @@ desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
 desktop/views/components/messaging-window.vue:
   title: "Nachrichten"
+desktop/views/components/note-detail.vue:
+  more: "会話をもっと読み込む"
+  private: "(この投稿は非公開です)"
+  is-renote: "がRenote"
+  location: "位置情報"
+  renote: "Renote"
+  add-reaction: "リアクション"
 desktop/views/components/note-detail.sub.vue:
   private: "(この投稿は非公開です)"
 desktop/views/components/notes.note.vue:
@@ -462,6 +478,10 @@ desktop/views/components/settings.profile.vue:
   description: "自己紹介"
   birthday: "誕生日"
   save: "Profil aktualisieren"
+desktop/views/components/sub-note-content.vue:
+  hidden: "(この投稿は非公開です)"
+  media: "つのメディア"
+  poll: "投票"
 desktop/views/components/taskmanager.vue:
   title: "タスクマネージャ"
 desktop/views/components/timeline.vue:
@@ -499,6 +519,17 @@ desktop/views/components/users-list.vue:
   iknow: "知り合い"
   load-more: "もっと"
   fetching: "読み込んでいます"
+desktop/views/components/users-list-item.vue:
+  followed: "フォローされています"
+desktop/views/components/window.vue:
+  popout: "ポップアウト"
+  close: "閉じる"
+desktop/views/pages/drive.vue:
+  title: "Misskey Drive"
+desktop/views/pages/favorites.vue:
+  more: "さらに読み込む"
+desktop/views/pages/home-customize.vue:
+  title: "ホームのカスタマイズ"
 desktop/views/pages/note.vue:
   prev: "Vorheriger Kommentar"
   next: "Nächster Kommentar"
@@ -507,6 +538,10 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Abbrechen"
   upload: "PCからドライブにファイルをアップロード"
+desktop/views/pages/user-list.users.vue:
+  users: "ユーザー"
+  add-user: "ユーザーを追加"
+  username: "ユーザー名"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "知り合いのフォロワー"
   loading: "読み込み中"
@@ -533,6 +568,11 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+desktop/views/pages/user/user.timeline.vue:
+  default: "投稿"
+  with-replies: "投稿と返信"
+  with-media: "メディア"
+  empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
 desktop/views/widgets/notifications.vue:
@@ -546,6 +586,9 @@ desktop/views/widgets/post-form.vue:
   title: "投稿"
   note: "投稿"
   placeholder: "いまどうしてる？"
+desktop/views/widgets/profile.vue:
+  update-banner: "クリックでバナー編集"
+  update-avatar: "クリックでアバター編集"
 desktop/views/widgets/trends.vue:
   title: "トレンド"
   refresh: "他を見る"
