@@ -37,7 +37,6 @@ import MkSearch from './views/pages/search.vue';
 import MkFollowers from './views/pages/followers.vue';
 import MkFollowing from './views/pages/following.vue';
 import MkSettings from './views/pages/settings.vue';
-import MkProfileSetting from './views/pages/profile-setting.vue';
 import MkOthello from './views/pages/othello.vue';
 
 Vue.use(MdCard);
@@ -71,7 +70,6 @@ init((launch) => {
 			{ path: '/', name: 'index', component: MkIndex },
 			{ path: '/signup', name: 'signup', component: MkSignup },
 			{ path: '/i/settings', component: MkSettings },
-			{ path: '/i/settings/profile', component: MkProfileSetting },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/widgets', name: 'widgets', component: MkWidgets },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },
