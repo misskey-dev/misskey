@@ -21,10 +21,13 @@ export default Vue.extend({
 		}
 	},
 	computed: {
+		lightmode(): boolean {
+			return localStorage.getItem('lightmode') == 'true';
+		},
 		style(): any {
 			return {
 				backgroundColor: this.user.avatarColor && this.user.avatarColor.length == 3 ? `rgb(${ this.user.avatarColor.join(',') })` : null,
-				backgroundImage: `url(${ this.user.avatarUrl }?thumbnail)`,
+				backgroundImage: this.lightmode ? null : `url(${ this.user.avatarUrl }?thumbnail)`,
 				borderRadius: (this as any).clientSettings.circleIcons ? '100%' : null
 			};
 		}

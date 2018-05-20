@@ -51,6 +51,10 @@
 					<div>
 						<md-switch v-model="clientSettings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</md-switch>
 					</div>
+
+					<div>
+						<md-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</md-switch>
+					</div>
 				</md-card-content>
 			</md-card>
 
@@ -134,6 +138,7 @@ export default Vue.extend({
 			version,
 			codename,
 			darkmode: localStorage.getItem('darkmode') == 'true',
+			lightmode: localStorage.getItem('lightmode') == 'true',
 			lang: localStorage.getItem('lang') || '',
 			latestVersion: undefined,
 			checkingForUpdate: false
@@ -150,6 +155,11 @@ export default Vue.extend({
 		darkmode() {
 			(this as any)._updateDarkmode_(this.darkmode);
 		},
+
+		lightmode() {
+			localStorage.setItem('lightmode', this.lightmode);
+		},
+
 		lang() {
 			localStorage.setItem('lang', this.lang);
 		}

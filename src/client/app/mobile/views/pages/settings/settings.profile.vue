@@ -11,6 +11,13 @@
 			</md-field>
 
 			<md-field>
+				<label>%i18n:@account%</label>
+				<span class="md-prefix">@</span>
+				<md-input v-model="username" readonly></md-input>
+				<span class="md-suffix">@{{ host }}</span>
+			</md-field>
+
+			<md-field>
 				<md-icon>%fa:map-marker-alt%</md-icon>
 				<label>%i18n:@location%</label>
 				<md-input v-model="location" :disabled="saving"/>
@@ -54,12 +61,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl } from '../../../../config';
+import { apiUrl, host } from '../../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
+			host,
 			name: null,
+			username: null,
 			location: null,
 			description: null,
 			birthday: null,
@@ -72,6 +81,7 @@ export default Vue.extend({
 
 	created() {
 		this.name = (this as any).os.i.name || '';
+		this.username = (this as any).os.i.username;
 		this.location = (this as any).os.i.profile.location;
 		this.description = (this as any).os.i.description;
 		this.birthday = (this as any).os.i.profile.birthday;
