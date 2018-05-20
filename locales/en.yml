@@ -287,7 +287,7 @@ desktop/views/components/home.vue:
   notifications: "Notifications"
   users: "Recommended users"
   polls: "Polls"
-  post-form: "投稿フォーム"
+  post-form: "Post form"
   messaging: "Messaging"
   server: "Server info"
   donation: "Donation"
@@ -302,10 +302,10 @@ desktop/views/components/messaging-room-window.vue:
 desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/note-detail.vue:
-  more: "会話をもっと読み込む"
-  private: "(この投稿は非公開です)"
+  more: "Load more conversations"
+  private: "(this post is private)"
   is-renote: "がRenote"
-  location: "位置情報"
+  location: "Location"
   renote: "Renote"
   add-reaction: "リアクション"
 desktop/views/components/note-detail.sub.vue:
@@ -419,7 +419,7 @@ desktop/views/components/settings.vue:
   update-settings: "Advanced settings"
   prevent-update: "アップデートを延期する(非推奨)"
   prevent-update-desc: "この設定をオンにしてもアップデートが反映される場合があります。この設定はこのデバイスのみ有効です。"
-  no-updates: "利用可能な更新はありません"
+  no-updates: "No updates available"
   no-updates-desc: "Your Misskey is up to date."
   update-available: "New version is available!"
   update-available-desc: "To reload the page and updates are applied."
@@ -479,9 +479,9 @@ desktop/views/components/settings.profile.vue:
   birthday: "Birthday"
   save: "Update profile"
 desktop/views/components/sub-note-content.vue:
-  hidden: "(この投稿は非公開です)"
+  hidden: "(this post is private)"
   media: "つのメディア"
-  poll: "投票"
+  poll: "Polls"
 desktop/views/components/taskmanager.vue:
   title: "Task Manager"
 desktop/views/components/timeline.vue:
@@ -520,14 +520,14 @@ desktop/views/components/users-list.vue:
   load-more: "More"
   fetching: "Loading…"
 desktop/views/components/users-list-item.vue:
-  followed: "フォローされています"
+  followed: "Follows you"
 desktop/views/components/window.vue:
-  popout: "ポップアウト"
-  close: "閉じる"
+  popout: "Popout"
+  close: "Close"
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
+  more: "Load More"
 desktop/views/pages/home-customize.vue:
   title: "Customize home"
 desktop/views/pages/note.vue:
@@ -570,8 +570,8 @@ desktop/views/pages/user/user.profile.vue:
   unmute: "Unmute"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
-  with-replies: "投稿と返信"
-  with-media: "メディア"
+  with-replies: "Posts and replies"
+  with-media: "Media"
   empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
   title: "Messaging"
@@ -587,8 +587,8 @@ desktop/views/widgets/post-form.vue:
   note: "Post"
   placeholder: "What's happening?"
 desktop/views/widgets/profile.vue:
-  update-banner: "クリックでバナー編集"
-  update-avatar: "クリックでアバター編集"
+  update-banner: "Click to edit your banner"
+  update-avatar: "Click to edit your avatar"
 desktop/views/widgets/trends.vue:
   title: "Trend"
   refresh: "Show others"
@@ -677,11 +677,11 @@ mobile/views/pages/notifications.vue:
   read-all: "Are you sure you want to mark all unread notifications as read?"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
-  will-be-published: "これらのプロフィールは公開されます。"
-  name: "名前"
-  account: "アカウント"
-  location: "場所"
-  description: "自己紹介"
+  will-be-published: "※公開されます"
+  name: "Name"
+  account: "Account"
+  location: "Location"
+  description: "Description"
   birthday: "Birthday"
   avatar: "Avatar"
   banner: "Banner"
@@ -704,7 +704,7 @@ mobile/views/pages/settings.vue:
   specify-language: "Specify the language"
   design: "Design and display"
   dark-mode: "Dark Mode"
-  i-am-under-limited-internet: "私は通信を制限されている"
+  i-am-under-limited-internet: "I'm under limited internet"
   circle-icons: "Use circle icons"
   timeline: "Timeline"
   show-reply-target: "Show reply target"

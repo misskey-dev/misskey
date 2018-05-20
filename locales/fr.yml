@@ -677,7 +677,7 @@ mobile/views/pages/notifications.vue:
   read-all: "Êtes vous sûr de vouloir marqués toutes les notifications non-lus en tant que lus?"
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"
-  will-be-published: "これらのプロフィールは公開されます。"
+  will-be-published: "※公開されます"
   name: "名前"
   account: "アカウント"
   location: "場所"
