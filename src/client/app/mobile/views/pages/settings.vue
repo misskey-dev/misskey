@@ -243,7 +243,7 @@ root(isDark)
 		display block
 		margin 24px
 		text-align center
-		color isDark ? #cad2da : #848e9a
+		color isDark ? #cad2da : #a2a9b1
 
 main[data-darkmode]
 	root(true)
