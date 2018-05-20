@@ -813,9 +813,13 @@ mobile/views/pages/settings/settings.profile.vue:
   location: "場所"
   description: "自己紹介"
   birthday: "誕生日"
+  avatar: "アイコン"
+  banner: "バナー"
   is-bot: "このアカウントはBotです"
   save: "保存"
   saved: "プロフィールを保存しました"
+  uploading: "アップロード中"
+  upload-failed: "アップロードに失敗しました"
 
 mobile/views/pages/search.vue:
   search: "検索"

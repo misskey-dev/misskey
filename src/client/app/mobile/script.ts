@@ -5,7 +5,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import { MdCard, MdButton, MdField, MdMenu, MdList, MdSwitch, MdSubheader } from 'vue-material/dist/components';
+import { MdCard, MdButton, MdField, MdMenu, MdList, MdSwitch, MdSubheader, MdDialog, MdDialogAlert } from 'vue-material/dist/components';
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default.css';
 
@@ -47,6 +47,8 @@ Vue.use(MdMenu);
 Vue.use(MdList);
 Vue.use(MdSwitch);
 Vue.use(MdSubheader);
+Vue.use(MdDialog);
+Vue.use(MdDialogAlert);
 
 /**
  * init

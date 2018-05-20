@@ -229,8 +229,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-main
+root(isDark)
 	padding 0 16px
+	margin 0 auto
+	max-width 500px
+	width 100%
 
 	> div
 		> *
@@ -240,57 +243,12 @@ main
 		display block
 		margin 24px
 		text-align center
-		color #cad2da
+		color isDark ? #cad2da : #848e9a
 
-	> ul
-		$radius = 8px
+main[data-darkmode]
+	root(true)
 
-		display block
-		margin 16px auto
-		padding 0
-		max-width 500px
-		width calc(100% - 32px)
-		list-style none
-		background #fff
-		border solid 1px rgba(#000, 0.2)
-		border-radius $radius
-
-		> li
-			display block
-			border-bottom solid 1px #ddd
-
-			&:hover
-				background rgba(#000, 0.1)
-
-			&:first-child
-				border-top-left-radius $radius
-				border-top-right-radius $radius
-
-			&:last-child
-				border-bottom-left-radius $radius
-				border-bottom-right-radius $radius
-				border-bottom none
-
-			> a
-				$height = 48px
-
-				display block
-				position relative
-				padding 0 16px
-				line-height $height
-				color #4d635e
-
-				> [data-fa]:nth-of-type(1)
-					margin-right 4px
-
-				> [data-fa]:nth-of-type(2)
-					display block
-					position absolute
-					top 0
-					right 8px
-					z-index 1
-					padding 0 20px
-					font-size 1.2em
-					line-height $height
+main:not([data-darkmode])
+	root(false)
 
 </style>
