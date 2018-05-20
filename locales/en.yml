@@ -401,7 +401,7 @@ desktop/views/components/settings.vue:
   recommended: "Recommended"
   auto: "Auto"
   specify-language: "Specify the language"
-  language-desc: "You will need to reload the page for the changes to take effect."
+  language-desc: "You need to reload the page for the changes to take effect."
   cache: "Cache"
   clean-cache: "Cleanup"
   cache-warn: "クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。"
