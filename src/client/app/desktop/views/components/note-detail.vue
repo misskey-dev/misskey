@@ -59,7 +59,7 @@
 				<template v-else>%fa:reply%</template>
 				<p class="count" v-if="p.repliesCount > 0">{{ p.repliesCount }}</p>
 			</button>
-			<button @click="renote" title="%i18n:@renote%>
+			<button @click="renote" title="%i18n:@renote%">
 				%fa:retweet%<p class="count" v-if="p.renoteCount > 0">{{ p.renoteCount }}</p>
 			</button>
 			<button :class="{ reacted: p.myReaction != null }" @click="react" ref="reactButton" title="%i18n:@add-reaction%">
