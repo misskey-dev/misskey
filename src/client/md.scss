@@ -6,7 +6,7 @@
 
 @include md-register-theme("default", (
 	primary: $themeColor,
-	accent: md-get-palette-color(red, A200)
+	accent: $themeColor
 ));
 
 @import "~vue-material/dist/components/MdButton/theme";

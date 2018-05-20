@@ -6,9 +6,9 @@
 		<div>
 			<x-profile/>
 
-			<md-card class="md-layout-item md-size-50 md-small-size-100">
+			<md-card>
 				<md-card-header>
-					<div class="md-title">%i18n:@design%</div>
+					<div class="md-title">%fa:palette% %i18n:@design%</div>
 				</md-card-header>
 
 				<md-card-content>
@@ -19,6 +19,95 @@
 					<div>
 						<md-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</md-switch>
 					</div>
+
+					<div>
+						<div class="md-body-2">%i18n:@timeline%</div>
+
+						<div>
+							<md-switch v-model="clientSettings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</md-switch>
+						</div>
+
+						<div>
+							<md-switch v-model="clientSettings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</md-switch>
+						</div>
+
+						<div>
+							<md-switch v-model="clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</md-switch>
+						</div>
+					</div>
+				</md-card-content>
+			</md-card>
+
+			<md-card>
+				<md-card-header>
+					<div class="md-title">%fa:cog% %i18n:@behavior%</div>
+				</md-card-header>
+
+				<md-card-content>
+					<div>
+						<md-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</md-switch>
+					</div>
+
+					<div>
+						<md-switch v-model="clientSettings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</md-switch>
+					</div>
+				</md-card-content>
+			</md-card>
+
+			<md-card>
+				<md-card-header>
+					<div class="md-title">%fa:language% %i18n:@lang%</div>
+				</md-card-header>
+
+				<md-card-content>
+					<md-field>
+						<md-select v-model="lang" placeholder="%i18n:@auto%">
+							<md-optgroup label="%i18n:@recommended%">
+								<md-option value="">%i18n:@auto%</md-option>
+							</md-optgroup>
+
+							<md-optgroup label="%i18n:@specify-language%">
+								<md-option value="ja">日本語</md-option>
+								<md-option value="en">English</md-option>
+								<md-option value="fr">Français</md-option>
+								<md-option value="pl">Polski</md-option>
+								<md-option value="de">Deutsch</md-option>
+							</md-optgroup>
+						</md-select>
+					</md-field>
+					<span class="md-helper-text">%fa:info-circle% %i18n:@lang-tip%</span>
+				</md-card-content>
+			</md-card>
+
+			<md-card>
+				<md-card-header>
+					<div class="md-title">%fa:B twitter% %i18n:@twitter%</div>
+				</md-card-header>
+
+				<md-card-content>
+					<p class="account" v-if="os.i.twitter"><a :href="`https://twitter.com/${os.i.twitter.screenName}`" target="_blank">@{{ os.i.twitter.screenName }}</a></p>
+					<p>
+						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ os.i.twitter ? '%i18n:!@twitter-reconnect%' : '%i18n:!@twitter-connect%' }}</a>
+						<span v-if="os.i.twitter"> or </span>
+						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="os.i.twitter">%i18n:@twitter-disconnect%</a>
+					</p>
+				</md-card-content>
+			</md-card>
+
+			<md-card>
+				<md-card-header>
+					<div class="md-title">%fa:sync-alt% %i18n:@update%</div>
+				</md-card-header>
+
+				<md-card-content>
+					<div>%i18n:@version% <i>{{ version }}</i></div>
+					<template v-if="latestVersion !== undefined">
+						<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
+					</template>
+					<md-button class="md-raised md-primary" @click="checkForUpdate" :disabled="checkingForUpdate">
+						<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
+						<template v-else>%i18n:@check-for-updates%</template>
+					</md-button>
 				</md-card-content>
 			</md-card>
 		</div>
@@ -29,7 +118,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { version, codename } from '../../../config';
+import { apiUrl, version, codename } from '../../../config';
+import checkForUpdate from '../../../common/scripts/check-for-update';
 
 import XProfile from './settings/settings.profile.vue';
 
@@ -40,9 +130,13 @@ export default Vue.extend({
 
 	data() {
 		return {
+			apiUrl,
 			version,
 			codename,
-			darkmode: localStorage.getItem('darkmode') == 'true'
+			darkmode: localStorage.getItem('darkmode') == 'true',
+			lang: localStorage.getItem('lang') || '',
+			latestVersion: undefined,
+			checkingForUpdate: false
 		};
 	},
 
@@ -55,6 +149,9 @@ export default Vue.extend({
 	watch: {
 		darkmode() {
 			(this as any)._updateDarkmode_(this.darkmode);
+		},
+		lang() {
+			localStorage.setItem('lang', this.lang);
 		}
 	},
 
@@ -67,10 +164,64 @@ export default Vue.extend({
 			(this as any).os.signout();
 		},
 
+		onChangeFetchOnScroll(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'fetchOnScroll',
+				value: v
+			});
+		},
+
+		onChangeDisableViaMobile(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'disableViaMobile',
+				value: v
+			});
+		},
+
 		onChangeCircleIcons(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'circleIcons',
 				value: v
+			});
+		},
+
+		onChangeShowReplyTarget(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'showReplyTarget',
+				value: v
+			});
+		},
+
+		onChangeShowMyRenotes(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'showMyRenotes',
+				value: v
+			});
+		},
+
+		onChangeShowRenotedMyNotes(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'showRenotedMyNotes',
+				value: v
+			});
+		},
+
+		checkForUpdate() {
+			this.checkingForUpdate = true;
+			checkForUpdate((this as any).os, true, true).then(newer => {
+				this.checkingForUpdate = false;
+				this.latestVersion = newer;
+				if (newer == null) {
+					(this as any).apis.dialog({
+						title: '%i18n:!@no-updates%',
+						text: '%i18n:!@no-updates-desc%'
+					});
+				} else {
+					(this as any).apis.dialog({
+						title: '%i18n:!@update-available%',
+						text: '%i18n:!@update-available-desc%'
+					});
+				}
 			});
 		}
 	}
