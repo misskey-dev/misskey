@@ -98,14 +98,7 @@ export default class MiOS extends EventEmitter {
 	 * Whether is debug mode
 	 */
 	public get debug() {
-		return localStorage.getItem('debug') == 'true';
-	}
-
-	/**
-	 * Whether enable sounds
-	 */
-	public get isEnableSounds() {
-		return localStorage.getItem('enableSounds') == 'true';
+		return this.store ? this.store.state.device.debug : false;
 	}
 
 	public store: ReturnType<typeof initStore>;
@@ -435,12 +428,8 @@ export default class MiOS extends EventEmitter {
 			});
 		});
 
-		// Whether use raw version script
-		const raw = (localStorage.getItem('useRawScript') == 'true' && this.debug)
-			|| process.env.NODE_ENV != 'production';
-
 		// The path of service worker script
-		const sw = `/sw.${version}.${lang}.${raw ? 'raw' : 'min'}.js`;
+		const sw = `/sw.${version}.${lang}.js`;
 
 		// Register service worker
 		navigator.serviceWorker.register(sw).then(registration => {
@@ -471,8 +460,7 @@ export default class MiOS extends EventEmitter {
 		};
 
 		const promise = new Promise((resolve, reject) => {
-			const viaStream = this.stream && this.stream.hasConnection &&
-				(localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true);
+			const viaStream = this.stream && this.stream.hasConnection && this.store.state.device.apiViaStream;
 
 			if (viaStream) {
 				const stream = this.stream.borrow();

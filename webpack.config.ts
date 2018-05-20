@@ -60,7 +60,7 @@ const entry = {
 
 const output = {
 	path: __dirname + '/built/client/assets',
-	filename: `[name].${version}.-.${isProduction ? 'min' : 'raw'}.js`
+	filename: `[name].${version}.-.js`
 };
 
 //#region Define consts
@@ -78,6 +78,7 @@ const consts = {
 	_WS_URL_: config.ws_url,
 	_DEV_URL_: config.dev_url,
 	_LANG_: '%lang%',
+	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
 	_HOST_: config.host,
 	_HOSTNAME_: config.hostname,
 	_URL_: config.url,
@@ -110,14 +111,14 @@ const plugins = [
 		//#region i18n
 		langs.forEach(lang => {
 			Object.keys(entry).forEach(file => {
-				let src = fs.readFileSync(`${__dirname}/built/client/assets/${file}.${version}.-.${isProduction ? 'min' : 'raw'}.js`, 'utf-8');
+				let src = fs.readFileSync(`${__dirname}/built/client/assets/${file}.${version}.-.js`, 'utf-8');
 
 				const i18nReplacer = new I18nReplacer(lang);
 
 				src = src.replace(i18nReplacer.pattern, i18nReplacer.replacement);
 				src = src.replace('%lang%', lang);
 
-				fs.writeFileSync(`${__dirname}/built/client/assets/${file}.${version}.${lang}.${isProduction ? 'min' : 'raw'}.js`, src, 'utf-8');
+				fs.writeFileSync(`${__dirname}/built/client/assets/${file}.${version}.${lang}.js`, src, 'utf-8');
 			});
 		});
 		//#endregion

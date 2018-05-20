@@ -71,11 +71,7 @@
 							</md-optgroup>
 
 							<md-optgroup label="%i18n:@specify-language%">
-								<md-option value="ja">日本語</md-option>
-								<md-option value="en">English</md-option>
-								<md-option value="fr">Français</md-option>
-								<md-option value="pl">Polski</md-option>
-								<md-option value="de">Deutsch</md-option>
+								<md-option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</md-option>
 							</md-optgroup>
 						</md-select>
 					</md-field>
@@ -122,7 +118,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, version, codename } from '../../../config';
+import { apiUrl, version, codename, langs } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 
 import XProfile from './settings/settings.profile.vue';
@@ -137,9 +133,8 @@ export default Vue.extend({
 			apiUrl,
 			version,
 			codename,
+			langs,
 			darkmode: localStorage.getItem('darkmode') == 'true',
-			lightmode: localStorage.getItem('lightmode') == 'true',
-			lang: localStorage.getItem('lang') || '',
 			latestVersion: undefined,
 			checkingForUpdate: false
 		};
@@ -148,20 +143,22 @@ export default Vue.extend({
 	computed: {
 		name(): string {
 			return Vue.filter('userName')((this as any).os.i);
-		}
+		},
+
+		lightmode: {
+			get() { return this.$store.state.device.lightmode; },
+			set(value) { this.$store.commit('device/set', { key: 'lightmode', value }); }
+		},
+
+		lang: {
+			get() { return this.$store.state.device.lang; },
+			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
+		},
 	},
 
 	watch: {
 		darkmode() {
 			(this as any)._updateDarkmode_(this.darkmode);
-		},
-
-		lightmode() {
-			localStorage.setItem('lightmode', this.lightmode);
-		},
-
-		lang() {
-			localStorage.setItem('lang', this.lang);
 		}
 	},
 

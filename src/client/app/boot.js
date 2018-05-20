@@ -29,11 +29,21 @@
 	if (url.pathname == '/auth') app = 'auth';
 	//#endregion
 
-	// Detect the user language
-	// Note: The default language is Japanese
+	//#region Detect the user language
 	let lang = navigator.language.split('-')[0];
+
+	// The default language is English
 	if (!LANGS.includes(lang)) lang = 'en';
-	if (localStorage.getItem('lang')) lang = localStorage.getItem('lang');
+
+	const vuex = localStorage.getItem('vuex');
+	if (vuex) {
+		const data = JSON.parse(vuex);
+		if (data.device.lang) lang = data.device.lang;
+	}
+
+	const storedLang = localStorage.getItem('lang');
+	if (storedLang) lang = storedLang;
+	//#endregion
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
@@ -68,13 +78,6 @@
 	// Script version
 	const ver = localStorage.getItem('v') || VERSION;
 
-	// Whether in debug mode
-	const isDebug = localStorage.getItem('debug') == 'true';
-
-	// Whether use raw version script
-	const raw = (localStorage.getItem('useRawScript') == 'true' && isDebug)
-		|| ENV != 'production';
-
 	// Get salt query
 	const salt = localStorage.getItem('salt')
 		? '?salt=' + localStorage.getItem('salt')
@@ -84,7 +87,7 @@
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.${raw ? 'raw' : 'min'}.js${salt}`);
+	script.setAttribute('src', `/assets/${app}.${ver}.${lang}.js${salt}`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);

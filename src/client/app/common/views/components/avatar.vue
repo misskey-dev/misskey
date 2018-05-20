@@ -22,7 +22,7 @@ export default Vue.extend({
 	},
 	computed: {
 		lightmode(): boolean {
-			return localStorage.getItem('lightmode') == 'true';
+			return this.$store.state.device.lightmode;
 		},
 		style(): any {
 			return {

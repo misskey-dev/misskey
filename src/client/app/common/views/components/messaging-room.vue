@@ -149,9 +149,9 @@ export default Vue.extend({
 
 		onMessage(message) {
 			// サウンドを再生する
-			if ((this as any).os.isEnableSounds) {
+			if (this.$store.state.device.enableSounds) {
 				const sound = new Audio(`${url}/assets/message.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+				sound.volume = this.$store.state.device.soundVolume;
 				sound.play();
 			}
 

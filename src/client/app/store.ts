@@ -1,4 +1,6 @@
 import Vuex from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
+
 import MiOS from './mios';
 
 const defaultSettings = {
@@ -14,14 +16,28 @@ const defaultSettings = {
 	showRenotedMyNotes: true
 };
 
+const defaultDeviceSettings = {
+	apiViaStream: true,
+	autoPopout: false,
+	enableSounds: true,
+	soundVolume: 0.5,
+	lang: null,
+	preventUpdate: false,
+	debug: false,
+	lightmode: false,
+};
+
 export default (os: MiOS) => new Vuex.Store({
 	plugins: [store => {
 		store.subscribe((mutation, state) => {
 			if (mutation.type.startsWith('settings/')) {
-				localStorage.setItem('settings', JSON.stringify(state.settings.data));
+				localStorage.setItem('settings', JSON.stringify(state.settings));
 			}
 		});
-	}],
+	}, createPersistedState({
+		paths: ['device'],
+		filter: mut => mut.type.startsWith('device/')
+	})],
 
 	state: {
 		indicate: false,
@@ -39,50 +55,60 @@ export default (os: MiOS) => new Vuex.Store({
 	},
 
 	modules: {
-		settings: {
+		device: {
 			namespaced: true,
 
-			state: {
-				data: defaultSettings
-			},
+			state: defaultDeviceSettings,
 
 			mutations: {
 				set(state, x: { key: string; value: any }) {
-					state.data[x.key] = x.value;
+					state[x.key] = x.value;
+				}
+			}
+		},
+
+		settings: {
+			namespaced: true,
+
+			state: defaultSettings,
+
+			mutations: {
+				set(state, x: { key: string; value: any }) {
+					state[x.key] = x.value;
 				},
 
 				setHome(state, data) {
-					state.data.home = data;
+					state.home = data;
 				},
 
 				setHomeWidget(state, x) {
-					const w = state.data.home.find(w => w.id == x.id);
+					const w = state.home.find(w => w.id == x.id);
 					if (w) {
 						w.data = x.data;
 					}
 				},
 
 				addHomeWidget(state, widget) {
-					state.data.home.unshift(widget);
+					state.home.unshift(widget);
 				},
 
 				setMobileHome(state, data) {
-					state.data.mobileHome = data;
+					state.mobileHome = data;
 				},
 
 				setMobileHomeWidget(state, x) {
-					const w = state.data.mobileHome.find(w => w.id == x.id);
+					const w = state.mobileHome.find(w => w.id == x.id);
 					if (w) {
 						w.data = x.data;
 					}
 				},
 
 				addMobileHomeWidget(state, widget) {
-					state.data.mobileHome.unshift(widget);
+					state.mobileHome.unshift(widget);
 				},
 
 				removeMobileHomeWidget(state, widget) {
-					state.data.mobileHome = state.data.mobileHome.filter(w => w.id != widget.id);
+					state.mobileHome = state.mobileHome.filter(w => w.id != widget.id);
 				}
 			},
 
@@ -108,7 +134,7 @@ export default (os: MiOS) => new Vuex.Store({
 					ctx.commit('addHomeWidget', widget);
 
 					os.api('i/update_home', {
-						home: ctx.state.data.home
+						home: ctx.state.home
 					});
 				},
 
@@ -116,7 +142,7 @@ export default (os: MiOS) => new Vuex.Store({
 					ctx.commit('addMobileHomeWidget', widget);
 
 					os.api('i/update_mobile_home', {
-						home: ctx.state.data.mobileHome
+						home: ctx.state.mobileHome
 					});
 				},
 
@@ -124,7 +150,7 @@ export default (os: MiOS) => new Vuex.Store({
 					ctx.commit('removeMobileHomeWidget', widget);
 
 					os.api('i/update_mobile_home', {
-						home: ctx.state.data.mobileHome.filter(w => w.id != widget.id)
+						home: ctx.state.mobileHome.filter(w => w.id != widget.id)
 					});
 				}
 			}

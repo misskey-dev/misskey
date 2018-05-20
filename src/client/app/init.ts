@@ -147,7 +147,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 						os,
 						api: os.api,
 						apis: os.apis,
-						clientSettings: os.store.state.settings.data
+						clientSettings: os.store.state.settings
 					};
 				}
 			});
@@ -173,7 +173,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 		}
 
 		//#region 更新チェック
-		const preventUpdate = localStorage.getItem('preventUpdate') == 'true';
+		const preventUpdate = os.store.state.device.preventUpdate;
 		if (!preventUpdate) {
 			setTimeout(() => {
 				checkForUpdate(os);
