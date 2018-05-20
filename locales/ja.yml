@@ -808,7 +808,7 @@ mobile/views/pages/notifications.vue:
 
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"
-  will-be-published: "これらのプロフィールは公開されます。"
+  will-be-published: "※公開されます"
   name: "名前"
   account: "アカウント"
   location: "場所"

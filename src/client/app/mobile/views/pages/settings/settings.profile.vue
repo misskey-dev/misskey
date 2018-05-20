@@ -7,7 +7,7 @@
 		<md-card-content>
 			<md-field>
 				<label>%i18n:@name%</label>
-				<md-input v-model="name" :disabled="saving"/>
+				<md-input v-model="name" :disabled="saving" md-counter="30"/>
 			</md-field>
 
 			<md-field>
@@ -27,11 +27,12 @@
 				<md-icon>%fa:birthday-cake%</md-icon>
 				<label>%i18n:@birthday%</label>
 				<md-input type="date" v-model="birthday" :disabled="saving"/>
+				<span class="md-helper-text">%i18n:@will-be-published%</span>
 			</md-field>
 
 			<md-field>
 				<label>%i18n:@description%</label>
-				<md-textarea v-model="description" :disabled="saving"/>
+				<md-textarea v-model="description" :disabled="saving" md-counter="500"/>
 			</md-field>
 
 			<md-field>
