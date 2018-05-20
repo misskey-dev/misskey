@@ -522,11 +522,11 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 desktop/views/pages/drive.vue:
-  title: "Misskey Drive"
+  title: "Dysk Misskey"
 desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
+  more: "Załaduj więcej"
 desktop/views/pages/home-customize.vue:
-  title: "ホームのカスタマイズ"
+  title: "Dostosuj stronę główną"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -536,9 +536,9 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Anuluj"
   upload: "Wyślij pliki z Twojego komputera"
 desktop/views/pages/user-list.users.vue:
-  users: "ユーザー"
-  add-user: "ユーザーを追加"
-  username: "ユーザー名"
+  users: "Użytkownicy"
+  add-user: "Dodaj użytkownika"
+  username: "Nazwa użytkownika"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Śledzący których znasz"
   loading: "Ładowanie"
@@ -566,8 +566,8 @@ desktop/views/pages/user/user.profile.vue:
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
 desktop/views/pages/user/user.timeline.vue:
-  default: "投稿"
-  with-replies: "投稿と返信"
+  default: "Wpisy"
+  with-replies: "Wpisy i odpowiedzi"
   with-media: "メディア"
   empty: "このユーザーはまだ何も投稿していないようです。"
 desktop/views/widgets/messaging.vue:
@@ -666,7 +666,7 @@ mobile/views/pages/messaging.vue:
 mobile/views/pages/messaging-room.vue:
   messaging: "Wiadomości"
 mobile/views/pages/note.vue:
-  title: "Wyślij"
+  title: "Wpis"
   prev: "Poprzedni wpis"
   next: "Następny wpis"
 mobile/views/pages/notifications.vue:
