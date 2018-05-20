@@ -113,7 +113,7 @@ html.setAttribute('lang', lang);
 const head = document.getElementsByTagName('head')[0];
 const meta = document.createElement('meta');
 meta.setAttribute('name', 'description');
-meta.setAttribute('content', '%i18n:!common.misskey%');
+meta.setAttribute('content', '%i18n:common.misskey%');
 head.appendChild(meta);
 //#endregion
 

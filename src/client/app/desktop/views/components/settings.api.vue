@@ -15,7 +15,7 @@ export default Vue.extend({
 	methods: {
 		regenerateToken() {
 			(this as any).apis.input({
-				title: '%i18n:!@enter-password%',
+				title: '%i18n:@enter-password%',
 				type: 'password'
 			}).then(password => {
 				(this as any).api('i/regenerate_token', {

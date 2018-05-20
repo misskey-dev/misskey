@@ -371,13 +371,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					(this as any).apis.dialog({
-						title: '%i18n:!@no-updates%',
-						text: '%i18n:!@no-updates-desc%'
+						title: '%i18n:@no-updates%',
+						text: '%i18n:@no-updates-desc%'
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '%i18n:!@update-available%',
-						text: '%i18n:!@update-available-desc%'
+						title: '%i18n:@update-available%',
+						text: '%i18n:@update-available-desc%'
 					});
 				}
 			});
@@ -385,8 +385,8 @@ export default Vue.extend({
 		clean() {
 			localStorage.clear();
 			(this as any).apis.dialog({
-				title: '%i18n:!@cache-cleared%',
-				text: '%i18n:!@caache-cleared-desc%'
+				title: '%i18n:@cache-cleared%',
+				text: '%i18n:@caache-cleared-desc%'
 			});
 		},
 		soundTest() {

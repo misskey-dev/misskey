@@ -6,9 +6,9 @@
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		%fa:retweet%
-		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
+		<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
 		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-		<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
+		<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>

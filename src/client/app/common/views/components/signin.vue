@@ -9,7 +9,7 @@
 	<label class="token" v-if="user && user.twoFactorEnabled">
 		<input v-model="token" type="number" placeholder="%i18n:@token%" required/>%fa:lock%
 	</label>
-	<button type="submit" :disabled="signing">{{ signing ? '%i18n:!@signing-in%' : '%i18n:!@signin%' }}</button>
+	<button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</button>
 	もしくは <a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
 </form>
 </template>

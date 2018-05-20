@@ -2,7 +2,7 @@
 <mk-ui>
 	<template slot="header" v-if="!fetching">
 		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt="">
-		{{ '%i18n:!@followers-of%'.replace('{}', name) }}
+		{{ '%i18n:@followers-of%'.replace('{}', name) }}
 	</template>
 	<mk-users-list
 		v-if="!fetching"
@@ -49,7 +49,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = '%i18n:!@followers-of%'.replace('{}', this.name) + ' | Misskey';
+				document.title = '%i18n:@followers-of%'.replace('{}', this.name) + ' | Misskey';
 			});
 		},
 		onLoaded() {

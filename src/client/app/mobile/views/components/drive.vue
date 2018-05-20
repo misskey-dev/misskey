@@ -32,7 +32,7 @@
 		<div class="files" v-if="files.length > 0">
 			<x-file v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
-				{{ fetchingMoreFiles ? '%i18n:!common.loading%' : '%i18n:!@load-more%' }}
+				{{ fetchingMoreFiles ? '%i18n:common.loading%' : '%i18n:@load-more%' }}
 			</button>
 		</div>
 		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">

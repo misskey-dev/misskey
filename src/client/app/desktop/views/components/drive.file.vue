@@ -64,46 +64,46 @@ export default Vue.extend({
 			this.isContextmenuShowing = true;
 			contextmenu(e, [{
 				type: 'item',
-				text: '%i18n:!@contextmenu.rename%',
+				text: '%i18n:@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
 				onClick: this.rename
 			}, {
 				type: 'item',
-				text: '%i18n:!@contextmenu.copy-url%',
+				text: '%i18n:@contextmenu.copy-url%',
 				icon: '%fa:link%',
 				onClick: this.copyUrl
 			}, {
 				type: 'link',
 				href: `${this.file.url}?download`,
-				text: '%i18n:!@contextmenu.download%',
+				text: '%i18n:@contextmenu.download%',
 				icon: '%fa:download%',
 			}, {
 				type: 'divider',
 			}, {
 				type: 'item',
-				text: '%i18n:!common.delete%',
+				text: '%i18n:common.delete%',
 				icon: '%fa:R trash-alt%',
 				onClick: this.deleteFile
 			}, {
 				type: 'divider',
 			}, {
 				type: 'nest',
-				text: '%i18n:!@contextmenu.else-files%',
+				text: '%i18n:@contextmenu.else-files%',
 				menu: [{
 					type: 'item',
-					text: '%i18n:!@contextmenu.set-as-avatar%',
+					text: '%i18n:@contextmenu.set-as-avatar%',
 					onClick: this.setAsAvatar
 				}, {
 					type: 'item',
-					text: '%i18n:!@contextmenu.set-as-banner%',
+					text: '%i18n:@contextmenu.set-as-banner%',
 					onClick: this.setAsBanner
 				}]
 			}, {
 				type: 'nest',
-				text: '%i18n:!@contextmenu.open-in-app%',
+				text: '%i18n:@contextmenu.open-in-app%',
 				menu: [{
 					type: 'item',
-					text: '%i18n:!@contextmenu.add-app%...',
+					text: '%i18n:@contextmenu.add-app%...',
 					onClick: this.addApp
 				}]
 			}], {
@@ -141,8 +141,8 @@ export default Vue.extend({
 
 		rename() {
 			(this as any).apis.input({
-				title: '%i18n:!@contextmenu.rename-file%',
-				placeholder: '%i18n:!@contextmenu.input-new-file-name%',
+				title: '%i18n:@contextmenu.rename-file%',
+				placeholder: '%i18n:@contextmenu.input-new-file-name%',
 				default: this.file.name,
 				allowEmpty: false
 			}).then(name => {
@@ -157,9 +157,9 @@ export default Vue.extend({
 			copyToClipboard(this.file.url);
 			(this as any).apis.dialog({
 				title: '%fa:check%%i18n:@contextmenu.copied%',
-				text: '%i18n:!@contextmenu.copied-url-to-clipboard%',
+				text: '%i18n:@contextmenu.copied-url-to-clipboard%',
 				actions: [{
-					text: '%i18n:!common.ok%'
+					text: '%i18n:common.ok%'
 				}]
 			});
 		},

@@ -158,7 +158,7 @@ export default Vue.extend({
 				(this as any).os.i.bannerId = i.bannerId;
 				(this as any).os.i.bannerUrl = i.bannerUrl;
 
-				alert('%i18n:!@saved%');
+				alert('%i18n:@saved%');
 			});
 		}
 	}

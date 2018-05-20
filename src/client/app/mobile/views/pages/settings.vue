@@ -2,7 +2,7 @@
 <mk-ui>
 	<span slot="header">%fa:cog%%i18n:@settings%</span>
 	<main>
-		<p v-html="'%i18n:!@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
+		<p v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
 		<div>
 			<x-profile/>
 
@@ -91,7 +91,7 @@
 				<md-card-content>
 					<p class="account" v-if="os.i.twitter"><a :href="`https://twitter.com/${os.i.twitter.screenName}`" target="_blank">@{{ os.i.twitter.screenName }}</a></p>
 					<p>
-						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ os.i.twitter ? '%i18n:!@twitter-reconnect%' : '%i18n:!@twitter-connect%' }}</a>
+						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ os.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
 						<span v-if="os.i.twitter"> or </span>
 						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="os.i.twitter">%i18n:@twitter-disconnect%</a>
 					</p>
@@ -223,13 +223,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					(this as any).apis.dialog({
-						title: '%i18n:!@no-updates%',
-						text: '%i18n:!@no-updates-desc%'
+						title: '%i18n:@no-updates%',
+						text: '%i18n:@no-updates-desc%'
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '%i18n:!@update-available%',
-						text: '%i18n:!@update-available-desc%'
+						title: '%i18n:@update-available%',
+						text: '%i18n:@update-available-desc%'
 					});
 				}
 			});
