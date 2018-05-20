@@ -35,6 +35,13 @@
 							<md-switch v-model="clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</md-switch>
 						</div>
 					</div>
+
+					<div>
+						<div class="md-body-2">%i18n:@post-style%</div>
+
+						<md-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</md-radio>
+						<md-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</md-radio>
+					</div>
 				</md-card-content>
 			</md-card>
 
@@ -143,6 +150,11 @@ export default Vue.extend({
 	computed: {
 		name(): string {
 			return Vue.filter('userName')((this as any).os.i);
+		},
+
+		postStyle: {
+			get() { return this.$store.state.device.postStyle; },
+			set(value) { this.$store.commit('device/set', { key: 'postStyle', value }); }
 		},
 
 		lightmode: {

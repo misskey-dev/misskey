@@ -1,5 +1,5 @@
 <template>
-<div class="note" :class="{ renote: isRenote }">
+<div class="note" :class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }">
 	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || clientSettings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
@@ -12,9 +12,10 @@
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<mk-avatar class="avatar" :user="p.user"/>
+		<mk-avatar class="avatar" :user="p.user" v-if="$store.state.device.postStyle != 'smart'"/>
 		<div class="main">
 			<header>
+				<mk-avatar class="avatar" :user="p.user" v-if="$store.state.device.postStyle == 'smart'"/>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
 				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
 				<span class="username"><mk-acct :user="p.user"/></span>
@@ -262,6 +263,15 @@ root(isDark)
 	@media (min-width 500px)
 		font-size 16px
 
+	&.smart
+		> article
+			> .main
+				width 100%
+
+				> header
+					align-items center
+					margin-bottom 4px
+
 	> .renote
 		display flex
 		align-items center
@@ -279,10 +289,14 @@ root(isDark)
 
 		.avatar
 			display inline-block
-			width 28px
-			height 28px
+			width 20px
+			height 20px
 			margin 0 8px 0 0
 			border-radius 6px
+
+			@media (min-width 500px)
+				width 28px
+				height 28px
 
 		[data-fa]
 			margin-right 4px
@@ -352,13 +366,18 @@ root(isDark)
 				@media (min-width 500px)
 					margin-bottom 2px
 
+				> .avatar
+					margin-right 8px
+					width 20px
+					height 20px
+					border-radius 100%
+
 				> .name
 					display block
 					margin 0 0.5em 0 0
 					padding 0
 					overflow hidden
 					color isDark ? #fff : #627079
-					font-size 1em
 					font-weight bold
 					text-decoration none
 					text-overflow ellipsis

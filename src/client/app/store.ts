@@ -25,6 +25,7 @@ const defaultDeviceSettings = {
 	preventUpdate: false,
 	debug: false,
 	lightmode: false,
+	postStyle: 'standard'
 };
 
 export default (os: MiOS) => new Vuex.Store({
