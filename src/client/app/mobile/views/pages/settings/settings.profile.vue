@@ -50,7 +50,11 @@
 					md-content="%18n:!@uploading%"/>
 
 			<div>
-				<md-switch v-model="os.i.isBot" @change="onChangeIsBot">%i18n:@is-bot%</md-switch>
+				<md-switch v-model="isBot">%i18n:@is-bot%</md-switch>
+			</div>
+
+			<div>
+				<md-switch v-model="isCat">%i18n:@is-cat%</md-switch>
 			</div>
 		</md-card-content>
 
@@ -75,6 +79,8 @@ export default Vue.extend({
 			birthday: null,
 			avatarId: null,
 			bannerId: null,
+			isBot: false,
+			isCat: false,
 			saving: false,
 			uploading: false
 		};
@@ -88,15 +94,11 @@ export default Vue.extend({
 		this.birthday = (this as any).os.i.profile.birthday;
 		this.avatarId = (this as any).os.i.avatarId;
 		this.bannerId = (this as any).os.i.bannerId;
+		this.isBot = (this as any).os.i.isBot;
+		this.isCat = (this as any).os.i.isCat;
 	},
 
 	methods: {
-		onChangeIsBot() {
-			(this as any).api('i/update', {
-				isBot: (this as any).os.i.isBot
-			});
-		},
-
 		onAvatarChange([file]) {
 			this.uploading = true;
 
@@ -150,7 +152,9 @@ export default Vue.extend({
 				description: this.description || null,
 				birthday: this.birthday || null,
 				avatarId: this.avatarId,
-				bannerId: this.bannerId
+				bannerId: this.bannerId,
+				isBot: this.isBot,
+				isCat: this.isCat
 			}).then(i => {
 				this.saving = false;
 				(this as any).os.i.avatarId = i.avatarId;

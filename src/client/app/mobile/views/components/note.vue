@@ -17,7 +17,8 @@
 			<header>
 				<mk-avatar class="avatar" :user="p.user" v-if="$store.state.device.postStyle == 'smart'"/>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
+				<span class="is-bot" v-if="p.user.isBot">bot</span>
+				<span class="is-cat" v-if="p.user.isCat">cat</span>
 				<span class="username"><mk-acct :user="p.user"/></span>
 				<div class="info">
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
@@ -386,6 +387,7 @@ root(isDark)
 						text-decoration underline
 
 				> .is-bot
+				> .is-cat
 					margin 0 0.5em 0 0
 					padding 1px 6px
 					font-size 12px

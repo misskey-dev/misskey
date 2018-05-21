@@ -16,7 +16,8 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
+				<span class="is-bot" v-if="p.user.isBot">bot</span>
+				<span class="is-cat" v-if="p.user.isCat">cat</span>
 				<span class="username"><mk-acct :user="p.user"/></span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
@@ -431,6 +432,7 @@ root(isDark)
 						text-decoration underline
 
 				> .is-bot
+				> .is-cat
 					margin 0 .5em 0 0
 					padding 1px 6px
 					font-size 12px
