@@ -522,11 +522,11 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 desktop/views/pages/drive.vue:
-  title: "Misskey Drive"
+  title: "Dysk Misskey"
 desktop/views/pages/favorites.vue:
-  more: "さらに読み込む"
+  more: "Załaduj więcej"
 desktop/views/pages/home-customize.vue:
-  title: "ホームのカスタマイズ"
+  title: "Dostosuj stronę główną"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -536,9 +536,9 @@ desktop/views/pages/selectdrive.vue:
   cancel: "Anuluj"
   upload: "Wyślij pliki z Twojego komputera"
 desktop/views/pages/user-list.users.vue:
-  users: "ユーザー"
-  add-user: "ユーザーを追加"
-  username: "ユーザー名"
+  users: "Użytkownicy"
+  add-user: "Dodaj użytkownika"
+  username: "Nazwa użytkownika"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Śledzący których znasz"
   loading: "Ładowanie"
@@ -566,10 +566,10 @@ desktop/views/pages/user/user.profile.vue:
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
 desktop/views/pages/user/user.timeline.vue:
-  default: "投稿"
-  with-replies: "投稿と返信"
-  with-media: "メディア"
-  empty: "このユーザーはまだ何も投稿していないようです。"
+  default: "Wpisy"
+  with-replies: "Wpisy i odpowiedzi"
+  with-media: "Zawartość multimedialna"
+  empty: "Ten użytkownik nie umieścił jeszcze niczego."
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
 desktop/views/widgets/notifications.vue:
@@ -584,8 +584,8 @@ desktop/views/widgets/post-form.vue:
   note: "Wpis"
   placeholder: "Co się dzieje?"
 desktop/views/widgets/profile.vue:
-  update-banner: "クリックでバナー編集"
-  update-avatar: "クリックでアバター編集"
+  update-banner: "Naciśnij, aby zmienić baner"
+  update-avatar: "Naciśnij, aby zmienić awatar"
 desktop/views/widgets/trends.vue:
   title: "Na czasie"
   refresh: "Pokaż inne"
@@ -666,27 +666,27 @@ mobile/views/pages/messaging.vue:
 mobile/views/pages/messaging-room.vue:
   messaging: "Wiadomości"
 mobile/views/pages/note.vue:
-  title: "Wyślij"
+  title: "Wpis"
   prev: "Poprzedni wpis"
   next: "Następny wpis"
 mobile/views/pages/notifications.vue:
   notifications: "Powiadomienia"
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
 mobile/views/pages/settings/settings.profile.vue:
-  title: "プロフィール"
+  title: "Profil"
   will-be-published: "※公開されます"
-  name: "名前"
-  account: "アカウント"
-  location: "場所"
-  description: "自己紹介"
-  birthday: "誕生日"
-  avatar: "アイコン"
-  banner: "バナー"
-  is-bot: "このアカウントはBotです"
-  save: "保存"
-  saved: "プロフィールを保存しました"
-  uploading: "アップロード中"
-  upload-failed: "アップロードに失敗しました"
+  name: "Nazwa"
+  account: "Konto"
+  location: "Lokalizacja"
+  description: "Opis"
+  birthday: "Data urodzenia"
+  avatar: "Awatar"
+  banner: "Baner"
+  is-bot: "To konto jest botem"
+  save: "Aktualizuj profil"
+  saved: "Pomyślnie zaktualizowano profil"
+  uploading: "Wysyłanie"
+  upload-failed: "Wysyłanie nie powiodło się"
 mobile/views/pages/search.vue:
   search: "Szukaj"
   empty: "Nie znaleziono wpisów zawierających '{}'"
@@ -707,8 +707,8 @@ mobile/views/pages/settings.vue:
   show-reply-target: "Pokazuj cel odpowiedzi"
   show-my-renotes: "自分の行ったRenoteを表示する"
   show-renoted-my-notes: "Renoteされた自分の投稿を表示する"
-  post-style: "投稿の表示スタイル"
-  post-style-standard: "標準"
+  post-style: "Styl wpisów"
+  post-style-standard: "Standardowy"
   post-style-smart: "スマート"
   behavior: "Zachowanie"
   fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
