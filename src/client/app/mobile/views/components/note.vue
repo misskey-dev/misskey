@@ -17,6 +17,7 @@
 			<header>
 				<mk-avatar class="avatar" :user="p.user" v-if="$store.state.device.postStyle == 'smart'"/>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
+				<span class="is-admin" v-if="p.user.isAdmin">admin</span>
 				<span class="is-bot" v-if="p.user.isBot">bot</span>
 				<span class="is-cat" v-if="p.user.isCat">cat</span>
 				<span class="username"><mk-acct :user="p.user"/></span>
@@ -387,6 +388,7 @@ root(isDark)
 					&:hover
 						text-decoration underline
 
+				> .is-admin
 				> .is-bot
 				> .is-cat
 					margin 0 0.5em 0 0
@@ -395,6 +397,10 @@ root(isDark)
 					color isDark ? #758188 : #aaa
 					border solid 1px isDark ? #57616f : #ddd
 					border-radius 3px
+
+					&.is-admin
+						border-color isDark ? #d42c41 : #f56a7b
+						color isDark ? #d42c41 : #f56a7b
 
 				> .username
 					margin 0 0.5em 0 0
