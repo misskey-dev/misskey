@@ -612,6 +612,13 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 
+desktop/views/pages/welcome.vue:
+  signin: "ログイン"
+  signup: "新規登録"
+  signin-button: "やってる"
+  signup-button: "やる"
+  timeline: "タイムライン"
+
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 

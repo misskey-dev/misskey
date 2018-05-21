@@ -1,23 +1,12 @@
 <template>
 <div class="mk-welcome">
 	<main>
-		<div class="top">
-			<div>
-				<div>
-					<h1>Share<br><span ref="share">Everything!</span><span class="cursor">_</span></h1>
-					<p>ようこそ！ <b>Misskey</b>はTwitter風ミニブログSNSです。思ったことや皆と共有したいことを投稿しましょう。タイムラインを見れば、皆の関心事をすぐにチェックすることもできます。<a :href="aboutUrl">詳しく...</a></p>
-					<p><button class="signup" @click="signup">はじめる</button><button class="signin" @click="signin">ログイン</button></p>
-					<div class="users">
-						<mk-avatar class="avatar" v-for="user in users" :key="user.id" :user="user"/>
-					</div>
-				</div>
-				<div>
-					<div>
-						<header>%fa:comments R% タイムライン<div><span></span><span></span><span></span></div></header>
-						<mk-welcome-timeline/>
-					</div>
-				</div>
-			</div>
+		<img src="assets/title.svg" alt="Misskey">
+		<p><button class="signup" @click="signup">%i18n:@signup-button%</button><button class="signin" @click="signin">%i18n:@signin-button%</button></p>
+
+		<div class="tl">
+			<header>%fa:comments R% %i18n:@timeline%<div><span></span><span></span><span></span></div></header>
+			<mk-welcome-timeline/>
 		</div>
 	</main>
 	<mk-forkit/>
@@ -28,11 +17,11 @@
 		</div>
 	</footer>
 	<modal name="signup" width="500px" height="auto" scrollable>
-		<header :class="$style.signupFormHeader">新規登録</header>
+		<header :class="$style.signupFormHeader">%i18n:@signup%</header>
 		<mk-signup :class="$style.signupForm"/>
 	</modal>
 	<modal name="signin" width="500px" height="auto" scrollable>
-		<header :class="$style.signinFormHeader">ログイン</header>
+		<header :class="$style.signinFormHeader">%i18n:@signin%</header>
 		<mk-signin :class="$style.signinForm"/>
 	</modal>
 </div>
@@ -42,57 +31,12 @@
 import Vue from 'vue';
 import { docsUrl, copyright, lang } from '../../../config';
 
-const shares = [
-	'Everything!',
-	'Webpages',
-	'Photos',
-	'Interests',
-	'Favorites'
-];
-
 export default Vue.extend({
 	data() {
 		return {
 			aboutUrl: `${docsUrl}/${lang}/about`,
-			copyright,
-			users: [],
-			clock: null,
-			i: 0
+			copyright
 		};
-	},
-	mounted() {
-		(this as any).api('users', {
-			sort: '+follower',
-			limit: 20
-		}).then(users => {
-			this.users = users;
-		});
-
-		this.clock = setInterval(() => {
-			if (++this.i == shares.length) this.i = 0;
-			const speed = 70;
-			const text = (this.$refs.share as any).innerText;
-			for (let i = 0; i < text.length; i++) {
-				setTimeout(() => {
-					if (this.$refs.share) {
-						(this.$refs.share as any).innerText = text.substr(0, text.length - i);
-					}
-				}, i * speed)
-			}
-			setTimeout(() => {
-				const newText = shares[this.i];
-				for (let i = 0; i <= newText.length; i++) {
-					setTimeout(() => {
-						if (this.$refs.share) {
-							(this.$refs.share as any).innerText = newText.substr(0, i);
-						}
-					}, i * speed)
-				}
-			}, text.length * speed);
-		}, 4000);
-	},
-	beforeDestroy() {
-		clearInterval(this.clock);
 	},
 	methods: {
 		signup() {
@@ -121,155 +65,95 @@ export default Vue.extend({
 	display flex
 	flex-direction column
 	flex 1
-	$width = 1000px
-
-	background linear-gradient(to bottom, #1e1d65, #bd6659)
-	//background-image url('/assets/welcome-bg.svg')
-	background-size cover
-	background-position top center
-
-	&:before
-		content ""
-		display block
-		position fixed
-		bottom 0
-		left 0
-		width 100%
-		height 100%
-		background-image url('/assets/welcome-fg.svg')
-		background-size cover
-		background-position bottom center
 
 	> main
-		display flex
 		flex 1
+		padding 64px 0 0 0
+		text-align center
+		color #555
 
-		> .top
-			display flex
-			width 100%
+		> img
+			width 350px
 
-			> div
-				display flex
-				max-width $width + 64px
-				margin 0 auto
-				padding 80px 32px 0 32px
+		> p
+			margin 8px 0
+			line-height 2em
 
-				> *
-					margin-bottom 48px
+			button
+				padding 8px 16px
+				font-size inherit
 
-				> div:first-child
-					margin-right 48px
-					color #fff
-					text-shadow 0 0 12px #172062
+			.signup
+				color $theme-color
+				border solid 2px $theme-color
+				border-radius 4px
 
-					> h1
-						margin 0
-						font-weight bold
-						//font-variant small-caps
-						letter-spacing 12px
-						font-family 'Sarpanch', sans-serif
-						font-size 42px
-						line-height 48px
+				&:focus
+					box-shadow 0 0 0 3px rgba($theme-color, 0.2)
 
-						> .cursor
-							animation cursor 1s infinite linear both
+				&:hover
+					color $theme-color-foreground
+					background $theme-color
 
-							@keyframes cursor
-								0%
-									opacity 1
-								50%
-									opacity 0
+				&:active
+					color $theme-color-foreground
+					background darken($theme-color, 10%)
+					border-color darken($theme-color, 10%)
 
-					> p
-						margin 1em 0
-						line-height 2em
+			.signin
+				&:hover
+					color #000
 
-					button
-						padding 8px 16px
-						font-size inherit
+		> .tl
+			margin 32px auto 0 auto
+			width 410px
+			text-align left
+			background #fff
+			border-radius 8px
+			box-shadow 0 8px 32px rgba(#000, 0.15)
+			overflow hidden
 
-					.signup
-						color $theme-color
-						border solid 2px $theme-color
-						border-radius 4px
+			> header
+				z-index 1
+				padding 12px 16px
+				color #888d94
+				box-shadow 0 1px 0px rgba(#000, 0.1)
 
-						&:focus
-							box-shadow 0 0 0 3px rgba($theme-color, 0.2)
+				> div
+					position absolute
+					top 0
+					right 0
+					padding inherit
 
-						&:hover
-							color $theme-color-foreground
-							background $theme-color
+					> span
+						display inline-block
+						height 11px
+						width 11px
+						margin-left 6px
+						background #ccc
+						border-radius 100%
+						vertical-align middle
 
-						&:active
-							color $theme-color-foreground
-							background darken($theme-color, 10%)
-							border-color darken($theme-color, 10%)
+						&:nth-child(1)
+							background #5BCC8B
 
-					.signin
-						&:hover
-							color #fff
+						&:nth-child(2)
+							background #E6BB46
 
-					> .users
-						margin 16px 0 0 0
+						&:nth-child(3)
+							background #DF7065
 
-						> *
-							display inline-block
-							margin 4px
-							width 38px
-							height 38px
-							border-radius 6px
-
-				> div:last-child
-
-					> div
-						width 410px
-						background #fff
-						border-radius 8px
-						box-shadow 0 0 0 12px rgba(#000, 0.1)
-						overflow hidden
-
-						> header
-							z-index 1
-							padding 12px 16px
-							color #888d94
-							box-shadow 0 1px 0px rgba(#000, 0.1)
-
-							> div
-								position absolute
-								top 0
-								right 0
-								padding inherit
-
-								> span
-									display inline-block
-									height 11px
-									width 11px
-									margin-left 6px
-									background #ccc
-									border-radius 100%
-									vertical-align middle
-
-									&:nth-child(1)
-										background #5BCC8B
-
-									&:nth-child(2)
-										background #E6BB46
-
-									&:nth-child(3)
-										background #DF7065
-
-						> .mk-welcome-timeline
-							max-height 350px
-							overflow auto
+			> .mk-welcome-timeline
+				max-height 350px
+				overflow auto
 
 	> footer
 		font-size 12px
 		color #949ea5
 
 		> div
-			max-width $width
 			margin 0 auto
-			padding 0 0 42px 0
+			padding 64px
 			text-align center
 
 			> .c
