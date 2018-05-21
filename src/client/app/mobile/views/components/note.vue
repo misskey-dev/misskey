@@ -368,6 +368,7 @@ root(isDark)
 					margin-bottom 2px
 
 				> .avatar
+					flex-shrink 0
 					margin-right 8px
 					width 20px
 					height 20px
