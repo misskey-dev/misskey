@@ -475,6 +475,8 @@ desktop/views/components/settings.profile.vue:
   description: "自己紹介"
   birthday: "誕生日"
   save: "保存"
+  is-bot: "このアカウントはBotです"
+  is-cat: "このアカウントはCatです"
 desktop/views/components/sub-note-content.vue:
   hidden: "(この投稿は非公開です)"
   media: "つのメディア"
@@ -683,6 +685,7 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "アイコン"
   banner: "バナー"
   is-bot: "このアカウントはBotです"
+  is-cat: "このアカウントはCatです"
   save: "保存"
   saved: "プロフィールを保存しました"
   uploading: "アップロード中"

@@ -475,6 +475,8 @@ desktop/views/components/settings.profile.vue:
   description: "Opis"
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
+  is-bot: "このアカウントはBotです"
+  is-cat: "このアカウントはCatです"
 desktop/views/components/sub-note-content.vue:
   hidden: "(この投稿は非公開です)"
   media: "つのメディア"
@@ -683,6 +685,7 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "Awatar"
   banner: "Baner"
   is-bot: "To konto jest botem"
+  is-cat: "このアカウントはCatです"
   save: "Aktualizuj profil"
   saved: "Pomyślnie zaktualizowano profil"
   uploading: "Wysyłanie"
