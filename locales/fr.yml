@@ -165,7 +165,7 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
-commons/views/widgets/visibility-chooser.vue:
+common/views/widgets/visibility-chooser.vue:
   public: "公開"
   home: "ホーム"
   home-desc: "ホームタイムラインにのみ公開"
