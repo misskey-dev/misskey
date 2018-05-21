@@ -475,6 +475,8 @@ desktop/views/components/settings.profile.vue:
   description: "Description"
   birthday: "Birthday"
   save: "Update profile"
+  is-bot: "このアカウントはBotです"
+  is-cat: "このアカウントはCatです"
 desktop/views/components/sub-note-content.vue:
   hidden: "(this post is private)"
   media: " media"
@@ -683,6 +685,7 @@ mobile/views/pages/settings/settings.profile.vue:
   avatar: "Avatar"
   banner: "Banner"
   is-bot: "This account is a Bot"
+  is-cat: "このアカウントはCatです"
   save: "Update profile"
   saved: "Profile updated successfully"
   uploading: "Uploading"
