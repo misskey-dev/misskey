@@ -676,7 +676,6 @@ mobile/views/pages/notifications.vue:
   read-all: "Are you sure you want to mark all unread notifications as read?"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
-  will-be-published: "※公開されます"
   name: "Name"
   account: "Account"
   location: "Location"

@@ -676,7 +676,6 @@ mobile/views/pages/notifications.vue:
   read-all: "すべての通知を既読にしますか？"
 mobile/views/pages/settings/settings.profile.vue:
   title: "プロフィール"
-  will-be-published: "※公開されます"
   name: "名前"
   account: "アカウント"
   location: "場所"
