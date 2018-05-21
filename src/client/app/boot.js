@@ -40,9 +40,6 @@
 		const data = JSON.parse(vuex);
 		if (data.device.lang) lang = data.device.lang;
 	}
-
-	const storedLang = localStorage.getItem('lang');
-	if (storedLang) lang = storedLang;
 	//#endregion
 
 	// Detect the user agent
