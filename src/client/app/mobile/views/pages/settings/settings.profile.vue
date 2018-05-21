@@ -27,7 +27,6 @@
 				<md-icon>%fa:birthday-cake%</md-icon>
 				<label>%i18n:@birthday%</label>
 				<md-input type="date" v-model="birthday" :disabled="saving"/>
-				<span class="md-helper-text">%i18n:@will-be-published%</span>
 			</md-field>
 
 			<md-field>
