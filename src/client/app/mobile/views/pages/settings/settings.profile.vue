@@ -50,10 +50,6 @@
 					md-content="%18n:!@uploading%"/>
 
 			<div>
-				<md-switch v-model="isBot">%i18n:@is-bot%</md-switch>
-			</div>
-
-			<div>
 				<md-switch v-model="isCat">%i18n:@is-cat%</md-switch>
 			</div>
 		</md-card-content>
