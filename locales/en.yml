@@ -523,6 +523,12 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "Popout"
   close: "Close"
+desktop/views/pages/welcome.vue:
+  signin: "ログイン"
+  signup: "新規登録"
+  signin-button: "やってる"
+  signup-button: "やる"
+  timeline: "タイムライン"
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 desktop/views/pages/favorites.vue:
