@@ -28,7 +28,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.title = 'Oops!';
-		document.documentElement.style.background = '#f8f8f8';
+		document.documentElement.style.setProperty('background', '#f8f8f8', 'important');
 	},
 	methods: {
 		reload() {
