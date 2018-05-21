@@ -290,6 +290,7 @@ root(isDark)
 			padding 16px 32px
 
 		.avatar
+			flex-shrink 0
 			display inline-block
 			width 20px
 			height 20px

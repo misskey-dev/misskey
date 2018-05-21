@@ -4,6 +4,9 @@
 	<div class="main">
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
+			<span class="is-admin" v-if="note.user.isAdmin">admin</span>
+			<span class="is-bot" v-if="note.user.isBot">bot</span>
+			<span class="is-cat" v-if="note.user.isCat">cat</span>
 			<span class="username"><mk-acct :user="note.user"/></span>
 			<div class="info">
 				<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
@@ -68,7 +71,6 @@ root(isDark)
 			align-items baseline
 			margin-bottom 2px
 			white-space nowrap
-			line-height 21px
 
 			> .name
 				display block
@@ -83,6 +85,20 @@ root(isDark)
 
 				&:hover
 					text-decoration underline
+
+			> .is-admin
+			> .is-bot
+			> .is-cat
+				margin 0 0.5em 0 0
+				padding 1px 5px
+				font-size 10px
+				color isDark ? #758188 : #aaa
+				border solid 1px isDark ? #57616f : #ddd
+				border-radius 3px
+
+				&.is-admin
+					border-color isDark ? #d42c41 : #f56a7b
+					color isDark ? #d42c41 : #f56a7b
 
 			> .username
 				margin 0 .5em 0 0
