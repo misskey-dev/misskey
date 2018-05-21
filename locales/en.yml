@@ -684,7 +684,6 @@ mobile/views/pages/settings/settings.profile.vue:
   birthday: "Birthday"
   avatar: "Avatar"
   banner: "Banner"
-  is-bot: "This account is a Bot"
   is-cat: "このアカウントはCatです"
   save: "Update profile"
   saved: "Profile updated successfully"
