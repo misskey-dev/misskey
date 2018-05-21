@@ -1,7 +1,7 @@
 ---
 meta:
   lang: "Deutsch"
-  divider: ""
+  divider: " "
 common:
   misskey: "Teile alles mit anderen mithilfe von Misskey"
   time:
