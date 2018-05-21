@@ -676,7 +676,6 @@ mobile/views/pages/notifications.vue:
   read-all: "Czy na pewno chcesz oznaczyć wszystkie powiadomienia jako przeczytane?"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profil"
-  will-be-published: "※公開されます"
   name: "Nazwa"
   account: "Konto"
   location: "Lokalizacja"
