@@ -9,8 +9,7 @@ import Mute from '../../../../models/mute';
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	const mute = await Mute.find({
-		muterId: user._id,
-		deletedAt: { $exists: false }
+		muterId: user._id
 	});
 	const mutedUserIds = mute.map(m => m.muteeId);
 
