@@ -26,7 +26,11 @@ export default Vue.extend({
 		},
 		style(): any {
 			return {
-				backgroundColor: this.user.avatarColor && this.user.avatarColor.length == 3 ? `rgb(${ this.user.avatarColor.join(',') })` : null,
+				backgroundColor: this.lightmode
+					? `rgb(${ this.user.avatarColor.slice(0, 3).join(',') })`
+					: this.user.avatarColor && this.user.avatarColor.length == 3
+						? `rgb(${ this.user.avatarColor.join(',') })`
+						: null,
 				backgroundImage: this.lightmode ? null : `url(${ this.user.avatarUrl }?thumbnail)`,
 				borderRadius: (this as any).clientSettings.circleIcons ? '100%' : null
 			};
