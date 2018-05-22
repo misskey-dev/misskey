@@ -96,8 +96,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 	// Serialize
-	res(await Promise.all(notifications.map(async notification =>
-		await pack(notification))));
+	res(await Promise.all(notifications.map(notification => pack(notification))));
 
 	// Mark as read all
 	if (notifications.length > 0 && markAsRead) {
