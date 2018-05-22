@@ -70,7 +70,7 @@ init((launch) => {
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
 			{ path: '/signup', name: 'signup', component: MkSignup },
-			{ path: '/i/settings', component: MkSettings },
+			{ path: '/i/settings', name: 'settings', component: MkSettings },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/widgets', name: 'widgets', component: MkWidgets },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },

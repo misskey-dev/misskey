@@ -28,7 +28,7 @@
 					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/settings">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
 					<li @click="dark"><p><template v-if="_darkmode_">%fa:moon%</template><template v-else>%fa:R moon%</template><span>ダークモード</span></p></li>
 				</ul>
 			</div>
