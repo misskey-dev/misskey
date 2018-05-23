@@ -66,7 +66,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	}
 
 	if (local) {
-		query._user = { host: null };
+		query['_user.host'] = null;
 	}
 
 	if (reply != undefined) {
