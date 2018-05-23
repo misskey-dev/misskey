@@ -8,6 +8,10 @@ import Note, { pack } from '../../../models/note';
  * Get all notes
  */
 module.exports = (params) => new Promise(async (res, rej) => {
+	// Get 'local' parameter
+	const [local, localErr] = $.bool.optional().get(params.local);
+	if (localErr) return rej('invalid local param');
+
 	// Get 'reply' parameter
 	const [reply, replyErr] = $.bool.optional().get(params.reply);
 	if (replyErr) return rej('invalid reply param');
@@ -59,6 +63,10 @@ module.exports = (params) => new Promise(async (res, rej) => {
 		query._id = {
 			$lt: untilId
 		};
+	}
+
+	if (local) {
+		query._user.host = null;
 	}
 
 	if (reply != undefined) {

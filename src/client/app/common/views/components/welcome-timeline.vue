@@ -37,6 +37,7 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 			(this as any).api('notes', {
+				local: true,
 				reply: false,
 				renote: false,
 				media: false,
