@@ -27,7 +27,7 @@ export default Vue.extend({
 		const applyBg = v =>
 			document.documentElement.style.setProperty('background', v ? '#191b22' : '#fff', 'important');
 
-		this.$nextTick(() => applyBg(this.$store.state.device.darkmode));
+		applyBg(this.$store.state.device.darkmode);
 
 		this.unwatchDarkmode = this.$store.watch(s => {
 			return s.device.darkmode;
@@ -52,4 +52,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
