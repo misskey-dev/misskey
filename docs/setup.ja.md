@@ -54,7 +54,10 @@ web-push generate-vapid-keys
 
 *5.* Misskeyのビルド
 ----------------------------------------------------------------
-1. `npm run build`
+1. `npm install -g node-gyp`
+2. `node-gyp configure`
+3. `node-gyp build`
+4. `npm run build`
 
 *6.* 以上です！
 ----------------------------------------------------------------
