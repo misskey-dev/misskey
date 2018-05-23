@@ -18,7 +18,11 @@
 		</template>
 	</div>
 	<footer>
-		<div ref="notifications" class="notifications"></div>
+		<transition name="fade">
+			<div class="new-message" v-show="showIndicator">
+				<button @click="onIndicatorClick">%fa:arrow-circle-down%%i18n:@new-message%</button>
+			</div>
+		</transition>
 		<x-form :user="user" ref="form"/>
 	</footer>
 </div>
@@ -45,7 +49,9 @@ export default Vue.extend({
 			fetchingMoreMessages: false,
 			messages: [],
 			existMoreMessages: false,
-			connection: null
+			connection: null,
+			showIndicator: false,
+			timer: null
 		};
 	},
 
@@ -172,7 +178,7 @@ export default Vue.extend({
 				});
 			} else if (message.userId != (this as any).os.i.id) {
 				// Notify
-				this.notify('%i18n:@new-message%');
+				this.notifyNewMessage();
 			}
 		},
 
@@ -205,18 +211,18 @@ export default Vue.extend({
 			}
 		},
 
-		notify(message) {
-			const n = document.createElement('p') as any;
-			n.innerHTML = '%fa:arrow-circle-down%' + message;
-			n.onclick = () => {
-				this.scrollToBottom();
-				n.parentNode.removeChild(n);
-			};
-			(this.$refs.notifications as any).appendChild(n);
+		onIndicatorClick() {
+			this.showIndicator = false;
+			this.scrollToBottom();
+		},
 
-			setTimeout(() => {
-				n.style.opacity = 0;
-				setTimeout(() => n.parentNode.removeChild(n), 1000);
+		notifyNewMessage() {
+			this.showIndicator = true;
+
+			if (this.timer) clearTimeout(this.timer);
+
+			this.timer = setTimeout(() => {
+				this.showIndicator = false;
 			}, 4000);
 		},
 
@@ -345,17 +351,14 @@ export default Vue.extend({
 		background rgba(255, 255, 255, 0.95)
 		background-clip content-box
 
-		> .notifications
+		> .new-message
 			position absolute
 			top -48px
 			width 100%
 			padding 8px 0
 			text-align center
 
-			&:empty
-				display none
-
-			> p
+			> button
 				display inline-block
 				margin 0
 				padding 0 12px 0 28px
@@ -365,7 +368,12 @@ export default Vue.extend({
 				color $theme-color-foreground
 				background $theme-color
 				border-radius 16px
-				transition opacity 1s ease
+
+				&:hover
+					background lighten($theme-color, 10%)
+
+				&:active
+					background darken($theme-color, 10%)
 
 				> [data-fa]
 					position absolute
@@ -373,5 +381,12 @@ export default Vue.extend({
 					left 10px
 					line-height 32px
 					font-size 16px
+
+.fade-enter-active, .fade-leave-active
+	transition opacity 0.1s
+
+.fade-enter, .fade-leave-to
+	transition opacity 0.5s
+	opacity 0
 
 </style>
