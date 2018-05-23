@@ -95,7 +95,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.$store.state.device.autoPopout && this.popoutUrl) {
+		if ((this as any).os.store.state.device.autoPopout && this.popoutUrl) {
 			this.popout();
 			this.preventMount = true;
 		} else {
