@@ -122,7 +122,7 @@ root(isDark)
 			margin 32px auto 0 auto
 			width 410px
 			text-align left
-			background #fff
+			background isDark ? #313543 : #fff
 			border-radius 8px
 			box-shadow 0 8px 32px rgba(#000, 0.15)
 			overflow hidden
@@ -130,7 +130,7 @@ root(isDark)
 			> header
 				z-index 1
 				padding 12px 16px
-				color #888d94
+				color isDark ? #e3e5e8 : #888d94
 				box-shadow 0 1px 0px rgba(#000, 0.1)
 
 				> div
@@ -144,7 +144,6 @@ root(isDark)
 						height 11px
 						width 11px
 						margin-left 6px
-						background #ccc
 						border-radius 100%
 						vertical-align middle
 
