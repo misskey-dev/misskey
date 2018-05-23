@@ -337,7 +337,7 @@ root(isDark)
 				padding 0 16px
 				//font-weight bold
 				line-height 32px
-				color rgba(#000, 0.3)
+				color rgba(isDark ? #fff : #000, 0.3)
 				background isDark ? #191b22 : #fff
 
 	> footer
