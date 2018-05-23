@@ -244,11 +244,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-messaging-room
+root(isDark)
 	display flex
 	flex 1
 	flex-direction column
 	height 100%
+	background isDark ? #191b22 : #fff
 
 	> .stream
 		width 100%
@@ -273,7 +274,7 @@ export default Vue.extend({
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(#000, 0.4)
+			color rgba(isDark ? #fff : #000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -284,7 +285,7 @@ export default Vue.extend({
 			padding 16px
 			text-align center
 			font-size 0.8em
-			color rgba(#000, 0.4)
+			color rgba(isDark ? #fff : #000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -328,7 +329,7 @@ export default Vue.extend({
 				left 0
 				right 0
 				margin 0 auto
-				background rgba(#000, 0.1)
+				background rgba(isDark ? #fff : #000, 0.1)
 
 			> span
 				display inline-block
@@ -337,7 +338,7 @@ export default Vue.extend({
 				//font-weight bold
 				line-height 32px
 				color rgba(#000, 0.3)
-				background #fff
+				background isDark ? #191b22 : #fff
 
 	> footer
 		position -webkit-sticky
@@ -348,7 +349,7 @@ export default Vue.extend({
 		max-width 600px
 		margin 0 auto
 		padding 0
-		background rgba(255, 255, 255, 0.95)
+		background rgba(isDark ? #282c37 : #fff, 0.95)
 		background-clip content-box
 
 		> .new-message
@@ -388,5 +389,11 @@ export default Vue.extend({
 .fade-enter, .fade-leave-to
 	transition opacity 0.5s
 	opacity 0
+
+.mk-messaging-room[data-darkmode]
+	root(true)
+
+.mk-messaging-room:not([data-darkmode])
+	root(false)
 
 </style>

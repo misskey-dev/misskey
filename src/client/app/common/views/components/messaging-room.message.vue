@@ -59,8 +59,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.message
-	$me-balloon-color = #23A7B6
+@import '~const.styl'
+
+root(isDark)
+	$me-balloon-color = $theme-color
 
 	padding 10px 12px 10px 12px
 	background-color transparent
@@ -126,7 +128,7 @@ export default Vue.extend({
 				bottom -4px
 				left -12px
 				margin 0
-				color rgba(#000, 0.5)
+				color isDark ? rgba(#fff, 0.5) : rgba(#000, 0.5)
 				font-size 11px
 
 			> .content
@@ -187,7 +189,7 @@ export default Vue.extend({
 			display block
 			margin 2px 0 0 0
 			font-size 10px
-			color rgba(#000, 0.4)
+			color isDark ? rgba(#fff, 0.4) : rgba(#000, 0.4)
 
 			> [data-fa]
 				margin-left 4px
@@ -200,8 +202,9 @@ export default Vue.extend({
 			padding-left 66px
 
 			> .balloon
+				$color = isDark ? #2d3338 : #eee
 				float left
-				background #eee
+				background $color
 
 				&[data-no-text]
 					background transparent
@@ -209,9 +212,14 @@ export default Vue.extend({
 				&:not([data-no-text]):before
 					left -14px
 					border-top solid 8px transparent
-					border-right solid 8px #eee
+					border-right solid 8px $color
 					border-bottom solid 8px transparent
 					border-left solid 8px transparent
+
+				> .content
+					> .text
+						if isDark
+							color #fff
 
 			> footer
 				text-align left
@@ -241,7 +249,7 @@ export default Vue.extend({
 				> .content
 
 					> p.is-deleted
-						color rgba(255, 255, 255, 0.5)
+						color rgba(#fff, 0.5)
 
 					> .text >>>
 						&, *
@@ -253,5 +261,11 @@ export default Vue.extend({
 	&[data-is-deleted]
 		> .baloon
 			opacity 0.5
+
+.message[data-darkmode]
+	root(true)
+
+.message:not([data-darkmode])
+	root(false)
 
 </style>
