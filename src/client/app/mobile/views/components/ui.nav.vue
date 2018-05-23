@@ -29,7 +29,7 @@
 				</ul>
 				<ul>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
-					<li @click="dark"><p><template v-if="_darkmode_">%fa:moon%</template><template v-else>%fa:R moon%</template><span>ダークモード</span></p></li>
+					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>ダークモード</span></p></li>
 				</ul>
 			</div>
 			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
@@ -117,7 +117,10 @@ export default Vue.extend({
 			this.hasGameInvitations = false;
 		},
 		dark() {
-			(this as any)._updateDarkmode_(!(this as any)._darkmode_);
+			this.$store.commit('device/set', {
+				key: 'darkmode',
+				value: !this.$store.state.device.darkmode
+			});
 		}
 	}
 });

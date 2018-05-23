@@ -17,7 +17,7 @@
 		<button @click="fn">%fa:pencil-alt%</button>
 	</template>
 
-	<main :data-darkmode="_darkmode_">
+	<main :data-darkmode="$store.state.device.darkmode">
 		<div class="nav" v-if="showNav">
 			<div class="bg" @click="showNav = false"></div>
 			<div class="body">

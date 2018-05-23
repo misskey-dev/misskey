@@ -227,8 +227,7 @@ export default Vue.extend({
 			version,
 			langs,
 			latestVersion: undefined,
-			checkingForUpdate: false,
-			darkmode: localStorage.getItem('darkmode') == 'true'
+			checkingForUpdate: false
 		};
 	},
 	computed: {
@@ -244,6 +243,11 @@ export default Vue.extend({
 		autoPopout: {
 			get() { return this.$store.state.device.autoPopout; },
 			set(value) { this.$store.commit('device/set', { key: 'autoPopout', value }); }
+		},
+
+		darkmode: {
+			get() { return this.$store.state.device.darkmode; },
+			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
 		},
 
 		enableSounds: {
@@ -274,11 +278,6 @@ export default Vue.extend({
 		enableExperimentalFeatures: {
 			get() { return this.$store.state.device.enableExperimentalFeatures; },
 			set(value) { this.$store.commit('device/set', { key: 'enableExperimentalFeatures', value }); }
-		}
-	},
-	watch: {
-		darkmode() {
-			(this as any)._updateDarkmode_(this.darkmode);
 		}
 	},
 	created() {

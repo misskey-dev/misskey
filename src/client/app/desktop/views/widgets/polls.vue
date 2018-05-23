@@ -4,7 +4,7 @@
 		<template slot="header">%fa:chart-pie%%i18n:@title%</template>
 		<button slot="func" title="%i18n:@refresh%" @click="fetch">%fa:sync%</button>
 
-		<div class="mkw-polls--body" :data-darkmode="_darkmode_">
+		<div class="mkw-polls--body" :data-darkmode="$store.state.device.darkmode">
 			<div class="poll" v-if="!fetching && poll != null">
 				<p v-if="poll.text"><router-link to="poll | notePage">{{ poll.text }}</router-link></p>
 				<p v-if="!poll.text"><router-link to="poll | notePage">%fa:link%</router-link></p>

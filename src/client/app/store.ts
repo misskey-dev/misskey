@@ -19,6 +19,7 @@ const defaultSettings = {
 const defaultDeviceSettings = {
 	apiViaStream: true,
 	autoPopout: false,
+	darkmode: false,
 	enableSounds: true,
 	soundVolume: 0.5,
 	lang: null,

@@ -18,6 +18,14 @@
 		return;
 	}
 
+	//#region Load settings
+	let settings = null;
+	const vuex = localStorage.getItem('vuex');
+	if (vuex) {
+		settings = JSON.parse(vuex);
+	}
+	//#endregion
+
 	// Get the current url information
 	const url = new URL(location.href);
 
@@ -35,10 +43,8 @@
 	// The default language is English
 	if (!LANGS.includes(lang)) lang = 'en';
 
-	const vuex = localStorage.getItem('vuex');
-	if (vuex) {
-		const data = JSON.parse(vuex);
-		if (data.device.lang) lang = data.device.lang;
+	if (settings) {
+		if (settings.device.lang) lang = settings.device.lang;
 	}
 	//#endregion
 
@@ -68,8 +74,10 @@
 	}
 
 	// Dark/Light
-	if (localStorage.getItem('darkmode') == 'true') {
-		document.documentElement.setAttribute('data-darkmode', 'true');
+	if (settings) {
+		if (settings.device.darkmode) {
+			document.documentElement.setAttribute('data-darkmode', 'true');
+		}
 	}
 
 	// Script version

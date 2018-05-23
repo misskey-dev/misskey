@@ -1,11 +1,11 @@
 <template>
 <div class="mk-welcome">
 	<button @click="dark">
-		<template v-if="_darkmode_">%fa:moon%</template>
+		<template v-if="$store.state.device.darkmode">%fa:moon%</template>
 		<template v-else>%fa:R moon%</template>
 	</button>
 	<main>
-		<img :src="_darkmode_ ? 'assets/title-dark.svg' : 'assets/title.svg'" alt="Misskey">
+		<img :src="$store.state.device.darkmode ? 'assets/title-dark.svg' : 'assets/title.svg'" alt="Misskey">
 		<p><button class="signup" @click="signup">%i18n:@signup-button%</button><button class="signin" @click="signin">%i18n:@signin-button%</button></p>
 
 		<div class="tl">
@@ -50,7 +50,6 @@ export default Vue.extend({
 			this.$modal.show('signin');
 		},
 		dark() {
-			(this as any)._updateDarkmode_(!(this as any)._darkmode_);
 		}
 	}
 });
