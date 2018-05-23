@@ -1,7 +1,11 @@
 <template>
 <div class="mk-welcome">
+	<button @click="dark">
+		<template v-if="_darkmode_">%fa:moon%</template>
+		<template v-else>%fa:R moon%</template>
+	</button>
 	<main>
-		<img src="assets/title.svg" alt="Misskey">
+		<img :src="_darkmode_ ? 'assets/title-dark.svg' : 'assets/title.svg'" alt="Misskey">
 		<p><button class="signup" @click="signup">%i18n:@signup-button%</button><button class="signin" @click="signin">%i18n:@signin-button%</button></p>
 
 		<div class="tl">
@@ -44,6 +48,9 @@ export default Vue.extend({
 		},
 		signin() {
 			this.$modal.show('signin');
+		},
+		dark() {
+			(this as any)._updateDarkmode_(!(this as any)._darkmode_);
 		}
 	}
 });
@@ -59,18 +66,25 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-@import url('https://fonts.googleapis.com/css?family=Sarpanch:700')
-
-.mk-welcome
+root(isDark)
 	display flex
 	flex-direction column
 	flex 1
+
+	> button
+		position absolute
+		z-index 1
+		top 0
+		left 0
+		padding 16px
+		font-size 18px
+		color isDark ? #fff : #555
 
 	> main
 		flex 1
 		padding 64px 0 0 0
 		text-align center
-		color #555
+		color isDark ? #9aa4b3 : #555
 
 		> img
 			width 350px
@@ -102,7 +116,7 @@ export default Vue.extend({
 
 			.signin
 				&:hover
-					color #000
+					color isDark ? #fff : #000
 
 		> .tl
 			margin 32px auto 0 auto
@@ -149,7 +163,7 @@ export default Vue.extend({
 
 	> footer
 		font-size 12px
-		color #949ea5
+		color isDark ? #949ea5 : #737c82
 
 		> div
 			margin 0 auto
@@ -160,6 +174,12 @@ export default Vue.extend({
 				margin 16px 0 0 0
 				font-size 10px
 				opacity 0.7
+
+.mk-welcome[data-darkmode]
+	root(true)
+
+.mk-welcome:not([data-darkmode])
+	root(false)
 
 </style>
 
