@@ -12,7 +12,6 @@ import getAcct from '../../../../../acct/render';
 export default Vue.extend({
 	mounted() {
 		document.title = 'Misskey %i18n:@messaging%';
-		document.documentElement.style.background = '#fff';
 	},
 	methods: {
 		navigate(user) {
