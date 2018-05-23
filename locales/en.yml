@@ -121,7 +121,7 @@ common/views/components/signup.vue:
   unavailable: "Unavailable"
   error: "Network error"
   invalid-format: "Only use letters, numbers and -."
-  too-short: "Please enter at least 1 character！"
+  too-short: "Please enter at least 1 character!"
   too-long: "Please enter up to 20 characters."
   password: "Password"
   password-placeholder: "We recommend more than 8 characters."
@@ -168,11 +168,11 @@ common/views/widgets/server.vue:
 common/views/widgets/visibility-chooser.vue:
   public: "Public"
   home: "Home"
-  home-desc: "ホームタイムラインにのみ公開"
+  home-desc: "Post to the home timeline only"
   followers: "Followers"
-  followers-desc: "自分のフォロワーにのみ公開"
+  followers-desc: "Post to followers only"
   specified: "Direct"
-  specified-desc: "指定したユーザーにのみ公開"
+  specified-desc: "Post to specified users only"
   private: "Private"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
