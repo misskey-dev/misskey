@@ -188,7 +188,7 @@ desktop/views/components/calendar.vue:
   next: "Next month"
   go: "Click to naviguate"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択中"
+  choose-file: "Choosing files"
   upload: "Upload files from your PC"
   cancel: "Cancel"
   ok: "OK"
