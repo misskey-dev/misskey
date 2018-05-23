@@ -43,13 +43,7 @@ Please install and setup these softwares:
 
 *4.* Prepare configuration
 ----------------------------------------------------------------
-1. Copy `example.yml` of `.config` directory
-2. Rename it to `default.yml`
-3. Edit it
-
----
-
-Or you can generate config file via `npm run config` command.
+You need to generate config file via `npm run config` command.
 
 *5.* Build Misskey
 ----------------------------------------------------------------
