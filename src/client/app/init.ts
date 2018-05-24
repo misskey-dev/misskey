@@ -104,7 +104,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 				data() {
 					_unwatchDarkmode_: null
 				},
-				created() {
+				mounted() {
 					const apply = v => {
 						if (this.$el.setAttribute == null) return;
 						if (v) {
@@ -114,7 +114,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 						}
 					};
 
-					this.$nextTick(() => apply(os.store.state.device.darkmode));
+					apply(os.store.state.device.darkmode);
 
 					this._unwatchDarkmode_ = os.store.watch(s => {
 						return s.device.darkmode;
