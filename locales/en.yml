@@ -307,7 +307,7 @@ desktop/views/components/note-detail.vue:
   is-renote: "がRenote"
   location: "Location"
   renote: "Renote"
-  add-reaction: "リアクション"
+  add-reaction: "Add a reaction"
 desktop/views/components/note-detail.sub.vue:
   private: "(this post is private)"
 desktop/views/components/notes.note.vue:
