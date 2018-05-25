@@ -668,9 +668,9 @@ mobile/views/pages/followers.vue:
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
 mobile/views/pages/home.vue:
-  home: "ホーム"
-  local: "ローカル"
-  global: "グローバル"
+  home: "Home"
+  local: "Local"
+  global: "Global"
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
