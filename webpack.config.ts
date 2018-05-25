@@ -233,15 +233,14 @@ module.exports = {
 			}, {
 				loader: 'replace',
 				query: {
-					search: i18nPattern.toString(),
-					replace: 'i18nReplacement',
-					i18n: true
-				}
-			}, {
-				loader: 'replace',
-				query: {
-					search: faPattern.toString(),
-					replace: 'faReplacement'
+					qs: [{
+						search: i18nPattern.toString(),
+						replace: 'i18nReplacement',
+						i18n: true
+					}, {
+						search: faPattern.toString(),
+						replace: 'faReplacement'
+					}]
 				}
 			}]
 		}]
