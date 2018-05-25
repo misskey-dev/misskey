@@ -235,7 +235,7 @@ desktop/views/components/drive.nav-folder.vue:
 desktop/views/components/drive.vue:
   search: "Szukaj"
   load-more: "Załaduj więcej"
-  empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
+  empty-draghover: "Przeciągnij tutaj!"
   empty-drive: "Twój dysk jest pusty"
   empty-drive-description: "Możesz wysłać plik klikając prawym przyciskiem myszy i wybierając \"Wyślij plik\" lub przeciągnąć plik i upuścić w tym oknie."
   empty-folder: "Ten katalog jest posty"
