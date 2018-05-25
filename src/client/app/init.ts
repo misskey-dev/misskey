@@ -102,7 +102,9 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 			//#region Dark/Light
 			Vue.mixin({
 				data() {
-					_unwatchDarkmode_: null
+					return {
+						_unwatchDarkmode_: null
+					};
 				},
 				mounted() {
 					const apply = v => {
