@@ -304,7 +304,7 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   more: "Load more conversations"
   private: "(this post is private)"
-  is-renote: "がRenote"
+  reposted-by: "Renoted by {}"
   location: "Location"
   renote: "Renote"
   add-reaction: "Add a reaction"
@@ -668,7 +668,9 @@ mobile/views/pages/followers.vue:
 mobile/views/pages/following.vue:
   following-of: "Following of {}"
 mobile/views/pages/home.vue:
-  timeline: "Timeline"
+  home: "Home"
+  local: "Local"
+  global: "Global"
 mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
@@ -720,6 +722,8 @@ mobile/views/pages/settings.vue:
   behavior: "Behavior"
   fetch-on-scroll: "Fetch on scroll"
   disable-via-mobile: "Without the \"mobile posts\" flag"
+  load-raw-images: "Show attached pictures in high-quality"
+  load-remote-media: "Show media on a remote server"
   twitter: "Twitter integration"
   twitter-connect: "Connect to your Twitter account"
   twitter-reconnect: "Reconnect"
