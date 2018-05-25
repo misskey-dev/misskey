@@ -304,7 +304,7 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   more: "Załaduj więcej konwersacji"
   private: "(ten wpis jest prywatny)"
-  is-renote: "がRenote"
+  reposted-by: "{}がRenote"
   location: "Informacje o lokalizacji"
   renote: "Przeredaguj"
   add-reaction: "Dodaj reakcję"
@@ -720,6 +720,8 @@ mobile/views/pages/settings.vue:
   behavior: "Zachowanie"
   fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
   disable-via-mobile: "Nie oznaczaj wpisów jako „wysłane z telefonu”"
+  load-raw-images: "添付された画像を高画質で表示する"
+  load-remote-media: "リモートサーバーのメディアを表示する"
   twitter: "Połączenie z Twitterem"
   twitter-connect: "Połącz z Twitterem"
   twitter-reconnect: "Połącz ponownie"
