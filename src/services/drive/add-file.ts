@@ -104,6 +104,7 @@ export default async function(
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false,
+	metaOnly: boolean = false,
 	url: string = null,
 	uri: string = null
 ): Promise<IDriveFile> {
@@ -170,38 +171,40 @@ export default async function(
 	}
 
 	//#region Check drive usage
-	const usage = await DriveFile
-		.aggregate([{
-			$match: {
-				'metadata.userId': user._id,
-				'metadata.deletedAt': { $exists: false }
-			}
-		}, {
-			$project: {
-				length: true
-			}
-		}, {
-			$group: {
-				_id: null,
-				usage: { $sum: '$length' }
-			}
-		}])
-		.then((aggregates: any[]) => {
-			if (aggregates.length > 0) {
-				return aggregates[0].usage;
-			}
-			return 0;
-		});
+	if (!metaOnly) {
+		const usage = await DriveFile
+			.aggregate([{
+				$match: {
+					'metadata.userId': user._id,
+					'metadata.deletedAt': { $exists: false }
+				}
+			}, {
+				$project: {
+					length: true
+				}
+			}, {
+				$group: {
+					_id: null,
+					usage: { $sum: '$length' }
+				}
+			}])
+			.then((aggregates: any[]) => {
+				if (aggregates.length > 0) {
+					return aggregates[0].usage;
+				}
+				return 0;
+			});
 
-	log(`drive usage is ${usage}`);
+		log(`drive usage is ${usage}`);
 
-	// If usage limit exceeded
-	if (usage + size > user.driveCapacity) {
-		if (isLocalUser(user)) {
-			throw 'no-free-space';
-		} else {
-			// (アバターまたはバナーを含まず)最も古いファイルを削除する
-			deleteOldFile(user);
+		// If usage limit exceeded
+		if (usage + size > user.driveCapacity) {
+			if (isLocalUser(user)) {
+				throw 'no-free-space';
+			} else {
+				// (アバターまたはバナーを含まず)最も古いファイルを削除する
+				deleteOldFile(user);
+			}
 		}
 	}
 	//#endregion
@@ -270,8 +273,6 @@ export default async function(
 
 	const [folder] = await Promise.all([fetchFolder(), propPromises]);
 
-	const readable = fs.createReadStream(path);
-
 	const metadata = {
 		userId: user._id,
 		_user: {
@@ -279,7 +280,8 @@ export default async function(
 		},
 		folderId: folder !== null ? folder._id : null,
 		comment: comment,
-		properties: properties
+		properties: properties,
+		isMetaOnly: metaOnly
 	} as IMetadata;
 
 	if (url !== null) {
@@ -290,7 +292,16 @@ export default async function(
 		metadata.uri = uri;
 	}
 
-	const driveFile = await (writeChunks(detectedName, readable, mime, metadata) as Promise<IDriveFile>);
+	const driveFile = metaOnly
+		? await DriveFile.insert({
+			length: 0,
+			uploadDate: new Date(),
+			md5: hash,
+			filename: detectedName,
+			metadata: metadata,
+			contentType: mime
+		})
+		: await (writeChunks(detectedName, fs.createReadStream(path), mime, metadata) as Promise<IDriveFile>);
 
 	log(`drive file has been created ${driveFile._id}`);
 
@@ -300,13 +311,15 @@ export default async function(
 		publishDriveStream(user._id, 'file_created', packedFile);
 	});
 
-	try {
-		const thumb = await genThumbnail(driveFile);
-		if (thumb) {
-			await writeThumbnailChunks(detectedName, thumb, driveFile._id);
+	if (!metaOnly) {
+		try {
+			const thumb = await genThumbnail(driveFile);
+			if (thumb) {
+				await writeThumbnailChunks(detectedName, thumb, driveFile._id);
+			}
+		} catch (e) {
+			// noop
 		}
-	} catch (e) {
-		// noop
 	}
 
 	return driveFile;

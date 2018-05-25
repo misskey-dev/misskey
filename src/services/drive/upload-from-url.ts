@@ -1,14 +1,17 @@
+import * as fs from 'fs';
 import * as URL from 'url';
-import { IDriveFile, validateFileName } from '../../models/drive-file';
-import create from './add-file';
+
 import * as debug from 'debug';
 import * as tmp from 'tmp';
-import * as fs from 'fs';
 import * as request from 'request';
+
+import { IDriveFile, validateFileName } from '../../models/drive-file';
+import create from './add-file';
+import config from '../../config';
 
 const log = debug('misskey:drive:upload-from-url');
 
-export default async (url, user, folderId = null, uri = null): Promise<IDriveFile> => {
+export default async (url: string, user, folderId = null, uri: string = null): Promise<IDriveFile> => {
 	log(`REQUESTED: ${url}`);
 
 	let name = URL.parse(url).pathname.split('/').pop();
@@ -43,7 +46,7 @@ export default async (url, user, folderId = null, uri = null): Promise<IDriveFil
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, false, url, uri);
+		driveFile = await create(user, path, name, null, folderId, false, config.preventCacheRemoteFiles, url, uri);
 		log(`created: ${driveFile._id}`);
 	} catch (e) {
 		error = e;

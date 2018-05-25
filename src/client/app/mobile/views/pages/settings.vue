@@ -60,6 +60,14 @@
 					</div>
 
 					<div>
+						<md-switch v-model="loadRawImages">%i18n:@load-raw-images%</md-switch>
+					</div>
+
+					<div>
+						<md-switch v-model="clientSettings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</md-switch>
+					</div>
+
+					<div>
 						<md-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</md-switch>
 					</div>
 				</md-card-content>
@@ -166,6 +174,11 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'lightmode', value }); }
 		},
 
+		loadRawImages: {
+			get() { return this.$store.state.device.loadRawImages; },
+			set(value) { this.$store.commit('device/set', { key: 'loadRawImages', value }); }
+		},
+
 		lang: {
 			get() { return this.$store.state.device.lang; },
 			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
@@ -191,6 +204,13 @@ export default Vue.extend({
 		onChangeDisableViaMobile(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'disableViaMobile',
+				value: v
+			});
+		},
+
+		onChangeLoadRemoteMedia(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'loadRemoteMedia',
 				value: v
 			});
 		},

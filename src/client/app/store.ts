@@ -13,7 +13,9 @@ const defaultSettings = {
 	gradientWindowHeader: false,
 	showReplyTarget: true,
 	showMyRenotes: true,
-	showRenotedMyNotes: true
+	showRenotedMyNotes: true,
+	loadRemoteMedia: true,
+	disableViaMobile: false
 };
 
 const defaultDeviceSettings = {
@@ -26,6 +28,7 @@ const defaultDeviceSettings = {
 	preventUpdate: false,
 	debug: false,
 	lightmode: false,
+	loadRawImages: false,
 	postStyle: 'standard'
 };
 
