@@ -50,6 +50,10 @@ export default Vue.extend({
 			this.$modal.show('signin');
 		},
 		dark() {
+			this.$store.commit('device/set', {
+				key: 'darkmode',
+				value: !this.$store.state.device.darkmode
+			});
 		}
 	}
 });
