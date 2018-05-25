@@ -353,7 +353,7 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   more: "会話をもっと読み込む"
   private: "(この投稿は非公開です)"
-  is-renote: "がRenote"
+  reposted-by: "{}がRenote"
   location: "位置情報"
   renote: "Renote"
   add-reaction: "リアクション"
