@@ -2,9 +2,9 @@
 <mk-ui>
 	<span slot="header" @click="showNav = true">
 		<span>
-			<span v-if="src == 'home'">%fa:home%ホーム</span>
-			<span v-if="src == 'local'">%fa:R comments%ローカル</span>
-			<span v-if="src == 'global'">%fa:globe%グローバル</span>
+			<span v-if="src == 'home'">%fa:home%%i18n:@home%</span>
+			<span v-if="src == 'local'">%fa:R comments%%i18n:@local%</span>
+			<span v-if="src == 'global'">%fa:globe%%i18n:@global%</span>
 			<span v-if="src.startsWith('list')">%fa:list%{{ list.title }}</span>
 		</span>
 		<span style="margin-left:8px">
@@ -22,9 +22,9 @@
 			<div class="bg" @click="showNav = false"></div>
 			<div class="body">
 				<div>
-					<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% ホーム</span>
-					<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% ローカル</span>
-					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% グローバル</span>
+					<span :data-active="src == 'home'" @click="src = 'home'">%fa:home% %i18n:@home%</span>
+					<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% %i18n:@local%</span>
+					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
 					<template v-if="lists">
 						<span v-for="l in lists" :data-active="src == 'list:' + l.id" @click="src = 'list:' + l.id; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
 					</template>

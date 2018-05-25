@@ -795,7 +795,9 @@ mobile/views/pages/following.vue:
   following-of: "{}のフォロー"
 
 mobile/views/pages/home.vue:
-  timeline: "タイムライン"
+  home: "ホーム"
+  local: "ローカル"
+  global: "グローバル"
 
 mobile/views/pages/messaging.vue:
   messaging: "メッセージ"
