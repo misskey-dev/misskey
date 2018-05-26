@@ -25,7 +25,7 @@ ultimately sophisticated new type of mini-blog based SNS.
 * Real time contents
 * ActivityPub compatible
 
-and more! You can touch with your own eyes at [misskey.xyz](https://misskey.xyz).
+and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
 
 :package: Create your instance
 ----------------------------------------------------------------
