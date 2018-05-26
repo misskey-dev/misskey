@@ -169,9 +169,9 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteAccessToken(x)));
 
 	// このユーザーのNoteをすべて削除
-	//await sequential((
-	//	await Note.find({ userId: u._id })
-	//).map(x => () => deleteNote(x)));
+	await sequential((
+		await Note.find({ userId: u._id })
+	).map(x => () => deleteNote(x)));
 
 	// このユーザーのNoteReactionをすべて削除
 	await Promise.all((
