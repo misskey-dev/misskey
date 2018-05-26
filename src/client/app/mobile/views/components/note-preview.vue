@@ -61,7 +61,7 @@ root(isDark)
 		> header
 			display flex
 			align-items baseline
-			margin-bottom 4px
+			margin-bottom 2px
 			white-space nowrap
 
 			> .avatar
