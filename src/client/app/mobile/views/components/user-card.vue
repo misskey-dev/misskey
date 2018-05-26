@@ -1,9 +1,7 @@
 <template>
 <div class="mk-user-card">
 	<header :style="user.bannerUrl ? `background-image: url(${user.bannerUrl}?thumbnail&size=1024)` : ''">
-		<a :href="user | userPage">
-			<img :src="`${user.avatarUrl}?thumbnail&size=200`" alt="avatar"/>
-		</a>
+		<mk-avatar class="avatar" :user="user"/>
 	</header>
 	<a class="name" :href="user | userPage" target="_blank">{{ user | userName }}</a>
 	<p class="username"><mk-acct :user="user"/></p>
@@ -35,15 +33,14 @@ export default Vue.extend({
 		background-position center
 		border-radius 8px 8px 0 0
 
-		> a
-			> img
-				position absolute
-				top 20px
-				left calc(50% - 40px)
-				width 80px
-				height 80px
-				border solid 2px #fff
-				border-radius 8px
+		> .avatar
+			position absolute
+			top 20px
+			left calc(50% - 40px)
+			width 80px
+			height 80px
+			border solid 2px #fff
+			border-radius 8px
 
 	> .name
 		display block
