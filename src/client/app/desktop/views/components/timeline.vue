@@ -33,17 +33,11 @@ export default Vue.extend({
 
 	watch: {
 		src() {
-			this.$store.commit('device/setTl', {
-				src: this.src,
-				arg: this.list
-			});
+			this.saveSrc();
 		},
 
 		list() {
-			this.$store.commit('device/setTl', {
-				src: this.src,
-				arg: this.list
-			});
+			this.saveSrc();
 		}
 	},
 
@@ -65,6 +59,13 @@ export default Vue.extend({
 	},
 
 	methods: {
+		saveSrc() {
+			this.$store.commit('device/setTl', {
+				src: this.src,
+				arg: this.list
+			});
+		},
+
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
 		},

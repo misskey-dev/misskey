@@ -64,20 +64,12 @@ export default Vue.extend({
 	watch: {
 		src() {
 			this.showNav = false;
-
-			this.$store.commit('device/setTl', {
-				src: this.src,
-				arg: this.list
-			});
+			this.saveSrc();
 		},
 
 		list() {
 			this.showNav = false;
-
-			this.$store.commit('device/setTl', {
-				src: this.src,
-				arg: this.list
-			});
+			this.saveSrc();
 		},
 
 		showNav(v) {
@@ -113,6 +105,13 @@ export default Vue.extend({
 	methods: {
 		fn() {
 			(this as any).apis.post();
+		},
+
+		saveSrc() {
+			this.$store.commit('device/setTl', {
+				src: this.src,
+				arg: this.list
+			});
 		},
 
 		warp() {
