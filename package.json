@@ -95,7 +95,7 @@
 		"css-loader": "0.28.11",
 		"debug": "3.1.0",
 		"deep-equal": "1.0.1",
-		"deepcopy": "1.0.0",
+		"deepcopy": "0.6.3",
 		"diskusage": "0.2.4",
 		"dompurify": "1.0.4",
 		"elasticsearch": "15.0.0",

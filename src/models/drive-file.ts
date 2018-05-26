@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import { pack as packFolder } from './drive-folder';
 import config from '../config';
 import monkDb, { nativeDbConn } from '../db/mongodb';

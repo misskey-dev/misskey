@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import AccessToken from './access-token';
 import db from '../db/mongodb';
 import config from '../config';

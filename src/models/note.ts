@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import deepcopy = require('deepcopy');
+import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
