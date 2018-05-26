@@ -21,6 +21,7 @@ const fetchLimit = 10;
 
 export default Vue.extend({
 	props: ['user'],
+
 	data() {
 		return {
 			fetching: true,
@@ -31,19 +32,23 @@ export default Vue.extend({
 			date: null
 		};
 	},
+
 	watch: {
 		mode() {
 			this.fetch();
 		}
 	},
+
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
 
 		this.fetch(() => this.$emit('loaded'));
 	},
+
 	beforeDestroy() {
 		document.removeEventListener('keydown', this.onDocumentKeydown);
 	},
+
 	methods: {
 		onDocumentKeydown(e) {
 			if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
@@ -52,6 +57,7 @@ export default Vue.extend({
 				}
 			}
 		},
+
 		fetch(cb?) {
 			this.fetching = true;
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
@@ -72,15 +78,19 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
+
 		more() {
 			this.moreFetching = true;
-			(this as any).api('users/notes', {
+
+			const promise = (this as any).api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				includeReplies: this.mode == 'with-replies',
 				withMedia: this.mode == 'with-media',
 				untilId: (this.$refs.timeline as any).tail().id
-			}).then(notes => {
+			});
+
+			promise.then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 				} else {
@@ -89,7 +99,10 @@ export default Vue.extend({
 				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
+
+			return promise;
 		},
+
 		warp(date) {
 			this.date = date;
 			this.fetch();

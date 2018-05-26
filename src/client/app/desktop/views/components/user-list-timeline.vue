@@ -62,13 +62,15 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			(this as any).api('notes/user-list-timeline', {
+			const promise = (this as any).api('notes/user-list-timeline', {
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: (this as any).clientSettings.showMyRenotes,
 				includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
-			}).then(notes => {
+			});
+
+			promise.then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 				} else {
@@ -77,6 +79,8 @@ export default Vue.extend({
 				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
+
+			return promise;
 		},
 		onNote(note) {
 			// Prepend a note

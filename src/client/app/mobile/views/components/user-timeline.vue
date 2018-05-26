@@ -59,12 +59,15 @@ export default Vue.extend({
 			if (!this.canFetchMore) return;
 
 			this.moreFetching = true;
-			(this as any).api('users/notes', {
+
+			const promise = (this as any).api('users/notes', {
 				userId: this.user.id,
 				withMedia: this.withMedia,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id
-			}).then(notes => {
+			});
+
+			promise.then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 				} else {
@@ -73,6 +76,8 @@ export default Vue.extend({
 				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
+
+			return promise;
 		}
 	}
 });
