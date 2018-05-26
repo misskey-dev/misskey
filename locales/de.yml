@@ -151,6 +151,15 @@ common/views/components/twitter-setting.vue:
   disconnect: "Trennen"
 common/views/components/uploader.vue:
   waiting: "Warten"
+common/views/components/visibility-chooser.vue:
+  public: "公開"
+  home: "ホーム"
+  home-desc: "ホームタイムラインにのみ公開"
+  followers: "フォロワー"
+  followers-desc: "自分のフォロワーにのみ公開"
+  specified: "ダイレクト"
+  specified-desc: "指定したユーザーにのみ公開"
+  private: "非公開"
 common/views/widgets/broadcast.vue:
   fetching: "Laden"
   no-broadcasts: "Keine Broadcasts"
@@ -165,15 +174,6 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "Serverinformationen"
   toggle: "Sicht umschalten"
-common/views/widgets/visibility-chooser.vue:
-  public: "公開"
-  home: "ホーム"
-  home-desc: "ホームタイムラインにのみ公開"
-  followers: "フォロワー"
-  followers-desc: "自分のフォロワーにのみ公開"
-  specified: "ダイレクト"
-  specified-desc: "指定したユーザーにのみ公開"
-  private: "非公開"
 desktop/views/components/activity.chart.vue:
   total: "Schwarz ... komplett"
   notes: "Blau ... Hinweise"
