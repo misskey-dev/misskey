@@ -13,7 +13,7 @@ import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile, DriveFileChunk } 
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../../publishers/stream';
-import { isLocalUser, IRemoteUser } from '../../models/user';
+import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket, DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
 import genThumbnail from '../../drive/gen-thumbnail';
 
@@ -98,7 +98,7 @@ async function deleteOldFile(user: IRemoteUser) {
  * @return Created drive file
  */
 export default async function(
-	user: any,
+	user: IUser,
 	path: string,
 	name: string = null,
 	comment: string = null,
