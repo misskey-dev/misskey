@@ -358,6 +358,8 @@ desktop/views/components/renote-form.vue:
   failure: "Failed to Renote"
 desktop/views/components/renote-form-window.vue:
   title: "Are you sure you want to renote this note?"
+desktop/views/components/settings-window.vue:
+  settings: "設定"
 desktop/views/components/settings.vue:
   profile: "Profile"
   notification: "Notification"
