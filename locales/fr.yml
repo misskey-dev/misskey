@@ -151,6 +151,15 @@ common/views/components/twitter-setting.vue:
   disconnect: "Deconnecter"
 common/views/components/uploader.vue:
   waiting: "En attente"
+common/views/components/visibility-chooser.vue:
+  public: "公開"
+  home: "ホーム"
+  home-desc: "ホームタイムラインにのみ公開"
+  followers: "フォロワー"
+  followers-desc: "自分のフォロワーにのみ公開"
+  specified: "ダイレクト"
+  specified-desc: "指定したユーザーにのみ公開"
+  private: "非公開"
 common/views/widgets/broadcast.vue:
   fetching: "Récuperation"
   no-broadcasts: "No broadcasts"
@@ -165,15 +174,6 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
-common/views/widgets/visibility-chooser.vue:
-  public: "公開"
-  home: "ホーム"
-  home-desc: "ホームタイムラインにのみ公開"
-  followers: "フォロワー"
-  followers-desc: "自分のフォロワーにのみ公開"
-  specified: "ダイレクト"
-  specified-desc: "指定したユーザーにのみ公開"
-  private: "非公開"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -358,6 +358,8 @@ desktop/views/components/renote-form.vue:
   failure: "La renote a échoué"
 desktop/views/components/renote-form-window.vue:
   title: "Êtes vous sûr de vouloir renote cette note?"
+desktop/views/components/settings-window.vue:
+  settings: "設定"
 desktop/views/components/settings.vue:
   profile: "Profil"
   notification: "Notification"
