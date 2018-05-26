@@ -116,9 +116,14 @@ export default Vue.extend({
 
 			ast.filter(t => t.type == 'mention').forEach(x => {
 				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
-				if (this.text.indexOf(`${mention} `) == -1) {
-					this.text += `${mention} `;
-				}
+
+				// 自分は除外
+				if (this.os.i.username == x.username && x.host == null) return;
+
+				// 重複は除外
+				if (this.text.indexOf(`${mention} `) != -1) return;
+
+				this.text += `${mention} `;
 			});
 		}
 
