@@ -31,8 +31,29 @@ export default Vue.extend({
 		};
 	},
 
+	watch: {
+		src() {
+			this.$store.commit('device/setTl', {
+				src: this.src,
+				arg: this.list
+			});
+		},
+
+		list() {
+			this.$store.commit('device/setTl', {
+				src: this.src,
+				arg: this.list
+			});
+		}
+	},
+
 	created() {
-		if ((this as any).os.i.followingCount == 0) {
+		if (this.$store.state.device.tl) {
+			this.src = this.$store.state.device.tl.src;
+			if (this.src == 'list') {
+				this.list = this.$store.state.device.tl.arg;
+			}
+		} else if ((this as any).os.i.followingCount == 0) {
 			this.src = 'local';
 		}
 	},

@@ -68,6 +68,13 @@ export default (os: MiOS) => new Vuex.Store({
 			mutations: {
 				set(state, x: { key: string; value: any }) {
 					state[x.key] = x.value;
+				},
+
+				setTl(state, x) {
+					state.tl = {
+						src: x.src,
+						arg: x.arg
+					};
 				}
 			}
 		},

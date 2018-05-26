@@ -5,7 +5,7 @@
 			<span v-if="src == 'home'">%fa:home%%i18n:@home%</span>
 			<span v-if="src == 'local'">%fa:R comments%%i18n:@local%</span>
 			<span v-if="src == 'global'">%fa:globe%%i18n:@global%</span>
-			<span v-if="src.startsWith('list')">%fa:list%{{ list.title }}</span>
+			<span v-if="src == 'list'">%fa:list%{{ list.title }}</span>
 		</span>
 		<span style="margin-left:8px">
 			<template v-if="!showNav">%fa:angle-down%</template>
@@ -26,17 +26,17 @@
 					<span :data-active="src == 'local'" @click="src = 'local'">%fa:R comments% %i18n:@local%</span>
 					<span :data-active="src == 'global'" @click="src = 'global'">%fa:globe% %i18n:@global%</span>
 					<template v-if="lists">
-						<span v-for="l in lists" :data-active="src == 'list:' + l.id" @click="src = 'list:' + l.id; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
+						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id">%fa:list% {{ l.title }}</span>
 					</template>
 				</div>
 			</div>
 		</div>
 
 		<div class="tl">
-			<x-tl v-if="src == 'home'" ref="tl" key="home" src="home" @loaded="onLoaded"/>
+			<x-tl v-if="src == 'home'" ref="tl" key="home" src="home"/>
 			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
-			<mk-user-list-timeline v-if="src.startsWith('list:')" ref="tl" :key="list.id" :list="list"/>
+			<mk-user-list-timeline v-if="src == 'list'" ref="tl" :key="list.id" :list="list"/>
 		</div>
 	</main>
 </mk-ui>
@@ -64,6 +64,20 @@ export default Vue.extend({
 	watch: {
 		src() {
 			this.showNav = false;
+
+			this.$store.commit('device/setTl', {
+				src: this.src,
+				arg: this.list
+			});
+		},
+
+		list() {
+			this.showNav = false;
+
+			this.$store.commit('device/setTl', {
+				src: this.src,
+				arg: this.list
+			});
 		},
 
 		showNav(v) {
@@ -76,7 +90,12 @@ export default Vue.extend({
 	},
 
 	created() {
-		if ((this as any).os.i.followingCount == 0) {
+		if (this.$store.state.device.tl) {
+			this.src = this.$store.state.device.tl.src;
+			if (this.src == 'list') {
+				this.list = this.$store.state.device.tl.arg;
+			}
+		} else if ((this as any).os.i.followingCount == 0) {
 			this.src = 'local';
 		}
 	},
@@ -85,15 +104,15 @@ export default Vue.extend({
 		document.title = 'Misskey';
 
 		Progress.start();
+
+		(this.$refs.tl as any).$once('loaded', () => {
+			Progress.done();
+		});
 	},
 
 	methods: {
 		fn() {
 			(this as any).apis.post();
-		},
-
-		onLoaded() {
-			Progress.done();
 		},
 
 		warp() {
