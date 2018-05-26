@@ -34,7 +34,6 @@ export default Vue.extend({
 			existMore: false,
 			connection: null,
 			connectionId: null,
-			unreadCount: 0,
 			date: null
 		};
 	},
@@ -76,7 +75,6 @@ export default Vue.extend({
 		}
 
 		document.addEventListener('keydown', this.onKeydown);
-		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
 
 		this.fetch();
 	},
@@ -90,7 +88,6 @@ export default Vue.extend({
 		this.stream.dispose(this.connectionId);
 
 		document.removeEventListener('keydown', this.onKeydown);
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
 	},
 
 	methods: {
@@ -141,11 +138,6 @@ export default Vue.extend({
 		},
 
 		onNote(note) {
-			if (document.hidden && note.userId !== (this as any).os.i.id) {
-				this.unreadCount++;
-				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
-			}
-
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
@@ -161,13 +153,6 @@ export default Vue.extend({
 		warp(date) {
 			this.date = date;
 			this.fetch();
-		},
-
-		onVisibilitychange() {
-			if (!document.hidden) {
-				this.unreadCount = 0;
-				document.title = 'Misskey';
-			}
 		},
 
 		onKeydown(e) {
