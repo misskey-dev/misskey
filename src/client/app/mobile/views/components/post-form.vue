@@ -49,6 +49,7 @@ import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import getKao from '../../../common/scripts/get-kao';
+import parse from '../../../../../text/parse';
 
 export default Vue.extend({
 	components: {
@@ -76,6 +77,17 @@ export default Vue.extend({
 	mounted() {
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+		}
+
+		if (this.reply && this.reply.text != null) {
+			const ast = parse(this.reply.text);
+
+			ast.filter(t => t.type == 'mention').forEach(x => {
+				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+				if (this.text.indexOf(`${mention} `) == -1) {
+					this.text += `${mention} `;
+				}
+			});
 		}
 
 		this.$nextTick(() => {
