@@ -1,7 +1,7 @@
 ---
 meta:
-  lang: "język polski"
-  divider: " "
+  lang: "japoński"
+  divider: ""
 common:
   misskey: "Dziel się zawartością z innymi korzystając z Misskey."
   time:
@@ -578,7 +578,7 @@ desktop/views/pages/user/user.profile.vue:
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
-  with-media: "Zawartość multimedialna"
+  with-media: "Multimedia"
   empty: "Ten użytkownik nie umieścił jeszcze niczego."
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
@@ -748,7 +748,7 @@ mobile/views/pages/user.vue:
   notes: "Wpisy"
   overview: "Przegląd"
   timeline: "Oś czasu"
-  media: "Zawartość multimedialna"
+  media: "Multimedia"
   is-suspended: "To konto zostało zablokowane"
   is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
   view-remote: "Wyświetl dokładne informacje"
@@ -760,7 +760,7 @@ mobile/views/pages/user/home.vue:
   domains: "Domeny"
   frequently-replied-users: "Często aktywni użytkownicy"
   followers-you-know: "Śledzący których znasz"
-  last-used-at: "Ostatnio aktywny:"
+  last-used-at: "Ostatnio aktywny"
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
