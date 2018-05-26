@@ -263,7 +263,7 @@ root(isDark)
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(#000, 0.4)
+			color rgba(isDark ? #fff : #000, 0.4)
 
 			[data-fa]
 				margin-right 4px
