@@ -1,9 +1,13 @@
 <template>
-<div class="mk-note-preview">
-	<mk-avatar class="avatar" :user="note.user"/>
+<div class="mk-note-preview" :class="{ smart: $store.state.device.postStyle == 'smart' }">
+	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle != 'smart'"/>
 	<div class="main">
 		<header>
+			<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle == 'smart'"/>
 			<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
+			<span class="is-admin" v-if="note.user.isAdmin">admin</span>
+			<span class="is-bot" v-if="note.user.isBot">bot</span>
+			<span class="is-cat" v-if="note.user.isCat">cat</span>
 			<span class="username"><mk-acct :user="note.user"/></span>
 			<router-link class="time" :to="note | notePage">
 				<mk-time :time="note.createdAt"/>
@@ -35,6 +39,13 @@ root(isDark)
 		display block
 		clear both
 
+	&.smart
+		> .main
+			width 100%
+
+			> header
+				align-items center
+
 	> .avatar
 		display block
 		float left
@@ -53,6 +64,13 @@ root(isDark)
 			margin-bottom 4px
 			white-space nowrap
 
+			> .avatar
+				flex-shrink 0
+				margin-right 8px
+				width 18px
+				height 18px
+				border-radius 100%
+
 			> .name
 				display block
 				margin 0 .5em 0 0
@@ -65,8 +83,19 @@ root(isDark)
 				text-decoration none
 				text-overflow ellipsis
 
-				&:hover
-					text-decoration underline
+			> .is-admin
+			> .is-bot
+			> .is-cat
+				margin 0 0.5em 0 0
+				padding 1px 6px
+				font-size 10px
+				color isDark ? #758188 : #aaa
+				border solid 1px isDark ? #57616f : #ddd
+				border-radius 3px
+
+				&.is-admin
+					border-color isDark ? #d42c41 : #f56a7b
+					color isDark ? #d42c41 : #f56a7b
 
 			> .username
 				margin 0 .5em 0 0

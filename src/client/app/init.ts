@@ -49,48 +49,6 @@ Vue.mixin({
 	}
 });
 
-// Dark/Light
-const bus = new Vue();
-Vue.mixin({
-	data() {
-		return {
-			_darkmode_: localStorage.getItem('darkmode') == 'true'
-		};
-	},
-	beforeCreate() {
-		// なぜか警告が出るので
-		this._darkmode_ = localStorage.getItem('darkmode') == 'true';
-	},
-	beforeDestroy() {
-		bus.$off('updated', this._onDarkmodeUpdated_);
-	},
-	mounted() {
-		this._onDarkmodeUpdated_(this._darkmode_);
-		bus.$on('updated', this._onDarkmodeUpdated_);
-	},
-	methods: {
-		_updateDarkmode_(v) {
-			localStorage.setItem('darkmode', v.toString());
-			if (v) {
-				document.documentElement.setAttribute('data-darkmode', 'true');
-			} else {
-				document.documentElement.removeAttribute('data-darkmode');
-			}
-			bus.$emit('updated', v);
-		},
-		_onDarkmodeUpdated_(v) {
-			if (!this.$el || !this.$el.setAttribute) return;
-			if (v) {
-				this.$el.setAttribute('data-darkmode', 'true');
-			} else {
-				this.$el.removeAttribute('data-darkmode');
-			}
-			this._darkmode_ = v;
-			this.$forceUpdate();
-		}
-	}
-});
-
 /**
  * APP ENTRY POINT!
  */
@@ -113,7 +71,7 @@ html.setAttribute('lang', lang);
 const head = document.getElementsByTagName('head')[0];
 const meta = document.createElement('meta');
 meta.setAttribute('name', 'description');
-meta.setAttribute('content', '%i18n:!common.misskey%');
+meta.setAttribute('content', '%i18n:common.misskey%');
 head.appendChild(meta);
 //#endregion
 
@@ -141,13 +99,52 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 		const launch = (router: VueRouter, api?: (os: MiOS) => API) => {
 			os.apis = api ? api(os) : null;
 
+			//#region Dark/Light
+			Vue.mixin({
+				data() {
+					return {
+						_unwatchDarkmode_: null
+					};
+				},
+				mounted() {
+					const apply = v => {
+						if (this.$el.setAttribute == null) return;
+						if (v) {
+							this.$el.setAttribute('data-darkmode', 'true');
+						} else {
+							this.$el.removeAttribute('data-darkmode');
+						}
+					};
+
+					apply(os.store.state.device.darkmode);
+
+					this._unwatchDarkmode_ = os.store.watch(s => {
+						return s.device.darkmode;
+					}, apply);
+				},
+				beforeDestroy() {
+					this._unwatchDarkmode_();
+				}
+			});
+
+			os.store.watch(s => {
+				return s.device.darkmode;
+			}, v => {
+				if (v) {
+					document.documentElement.setAttribute('data-darkmode', 'true');
+				} else {
+					document.documentElement.removeAttribute('data-darkmode');
+				}
+			});
+			//#endregion
+
 			Vue.mixin({
 				data() {
 					return {
 						os,
 						api: os.api,
 						apis: os.apis,
-						clientSettings: os.store.state.settings.data
+						clientSettings: os.store.state.settings
 					};
 				}
 			});
@@ -173,7 +170,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 		}
 
 		//#region 更新チェック
-		const preventUpdate = localStorage.getItem('preventUpdate') == 'true';
+		const preventUpdate = os.store.state.device.preventUpdate;
 		if (!preventUpdate) {
 			setTimeout(() => {
 				checkForUpdate(os);

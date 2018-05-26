@@ -5,7 +5,7 @@
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices">
-			<input :value="choice" @input="onInput(i, $event)" :placeholder="'%i18n:!@choice-n%'.replace('{}', i + 1)">
+			<input :value="choice" @input="onInput(i, $event)" :placeholder="'%i18n:@choice-n%'.replace('{}', i + 1)">
 			<button @click="remove(i)" title="%i18n:@remove%">
 				%fa:times%
 			</button>

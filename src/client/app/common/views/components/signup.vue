@@ -127,7 +127,7 @@ export default Vue.extend({
 					location.href = '/';
 				});
 			}).catch(() => {
-				alert('%i18n:!@some-error%');
+				alert('%i18n:@some-error%');
 
 				(window as any).grecaptcha.reset();
 				this.recaptchaed = false;

@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 import { default as Notification, INotification } from '../../../models/notification';
 import publishUserStream from '../../../publishers/stream';
+import Mute from '../../../models/mute';
 
 /**
  * Mark as read notification(s)
@@ -26,6 +27,11 @@ export default (
 				? [new mongo.ObjectID(message)]
 				: [(message as INotification)._id];
 
+	const mute = await Mute.find({
+		muterId: userId
+	});
+	const mutedUserIds = mute.map(m => m.muteeId);
+
 	// Update documents
 	await Notification.update({
 		_id: { $in: ids },
@@ -42,6 +48,9 @@ export default (
 	const count = await Notification
 		.count({
 			notifieeId: userId,
+			notifierId: {
+				$nin: mutedUserIds
+			},
 			isRead: false
 		}, {
 			limit: 1

@@ -5,34 +5,34 @@
 		<div @click="choose('public')" :class="{ active: v == 'public' }">
 			<div>%fa:globe%</div>
 			<div>
-				<span>公開</span>
+				<span>%i18n:@public%</span>
 			</div>
 		</div>
 		<div @click="choose('home')" :class="{ active: v == 'home' }">
 			<div>%fa:home%</div>
 			<div>
-				<span>ホーム</span>
-				<span>ホームタイムラインにのみ公開</span>
+				<span>%i18n:@home%</span>
+				<span>%i18n:@home-desc%</span>
 			</div>
 		</div>
 		<div @click="choose('followers')" :class="{ active: v == 'followers' }">
 			<div>%fa:unlock%</div>
 			<div>
-				<span>フォロワー</span>
-				<span>自分のフォロワーにのみ公開</span>
+				<span>%i18n:@followers%</span>
+				<span>%i18n:@followers-desc%</span>
 			</div>
 		</div>
 		<div @click="choose('specified')" :class="{ active: v == 'specified' }">
 			<div>%fa:envelope%</div>
 			<div>
-				<span>ダイレクト</span>
-				<span>指定したユーザーにのみ公開</span>
+				<span>%i18n:@specified%</span>
+				<span>%i18n:@specified-desc%</span>
 			</div>
 		</div>
 		<div @click="choose('private')" :class="{ active: v == 'private' }">
 			<div>%fa:lock%</div>
 			<div>
-				<span>非公開</span>
+				<span>%i18n:@private%</span>
 			</div>
 		</div>
 	</div>

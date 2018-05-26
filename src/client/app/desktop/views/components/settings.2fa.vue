@@ -34,7 +34,7 @@ export default Vue.extend({
 	methods: {
 		register() {
 			(this as any).apis.input({
-				title: '%i18n:!@enter-password%',
+				title: '%i18n:@enter-password%',
 				type: 'password'
 			}).then(password => {
 				(this as any).api('i/2fa/register', {
@@ -47,13 +47,13 @@ export default Vue.extend({
 
 		unregister() {
 			(this as any).apis.input({
-				title: '%i18n:!@enter-password%',
+				title: '%i18n:@enter-password%',
 				type: 'password'
 			}).then(password => {
 				(this as any).api('i/2fa/unregister', {
 					password: password
 				}).then(() => {
-					(this as any).apis.notify('%i18n:!@unregistered%');
+					(this as any).apis.notify('%i18n:@unregistered%');
 					(this as any).os.i.twoFactorEnabled = false;
 				});
 			});
@@ -63,10 +63,10 @@ export default Vue.extend({
 			(this as any).api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
-				(this as any).apis.notify('%i18n:!@success%');
+				(this as any).apis.notify('%i18n:@success%');
 				(this as any).os.i.twoFactorEnabled = true;
 			}).catch(() => {
-				(this as any).apis.notify('%i18n:!@failed%');
+				(this as any).apis.notify('%i18n:@failed%');
 			});
 		}
 	}

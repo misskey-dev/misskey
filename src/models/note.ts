@@ -324,6 +324,10 @@ export const pack = async (
 	// resolve promises in _note object
 	_note = await rap(_note);
 
+	if (_note.user.isCat && _note.text) {
+		_note.text = _note.text.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ');
+	}
+
 	if (hide) {
 		_note.mediaIds = [];
 		_note.text = null;

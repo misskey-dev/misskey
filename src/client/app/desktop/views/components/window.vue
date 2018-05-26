@@ -9,8 +9,8 @@
 			>
 				<h1><slot name="header"></slot></h1>
 				<div>
-					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="ポップアウト">%fa:R window-restore%</button>
-					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="閉じる">%fa:times%</button>
+					<button class="popout" v-if="popoutUrl" @mousedown.stop="() => {}" @click="popout" title="%i18n:@popout%">%fa:R window-restore%</button>
+					<button class="close" v-if="canClose" @mousedown.stop="() => {}" @click="close" title="%i18n:@close%">%fa:times%</button>
 				</div>
 			</header>
 			<div class="content">
@@ -95,7 +95,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (localStorage.getItem('autoPopout') == 'true' && this.popoutUrl) {
+		if ((this as any).os.store.state.device.autoPopout && this.popoutUrl) {
 			this.popout();
 			this.preventMount = true;
 		} else {

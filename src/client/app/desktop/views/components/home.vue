@@ -102,7 +102,7 @@ export default Vue.extend({
 
 	computed: {
 		home(): any[] {
-			return this.$store.state.settings.data.home;
+			return this.$store.state.settings.home;
 		},
 		left(): any[] {
 			return this.home.filter(w => w.place == 'left');

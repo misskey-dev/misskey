@@ -8,7 +8,7 @@
 		<p class="empty" v-if="!init && messages.length == 0">%fa:info-circle%%i18n:@empty%</p>
 		<p class="no-history" v-if="!init && messages.length > 0 && !existMoreMessages">%fa:flag%%i18n:@no-history%</p>
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:!common.loading%' : '%i18n:!@more%' }}
+			<template v-if="fetchingMoreMessages">%fa:spinner .pulse .fw%</template>{{ fetchingMoreMessages ? '%i18n:common.loading%' : '%i18n:@more%' }}
 		</button>
 		<template v-for="(message, i) in _messages">
 			<x-message :message="message" :key="message.id"/>
@@ -18,7 +18,11 @@
 		</template>
 	</div>
 	<footer>
-		<div ref="notifications" class="notifications"></div>
+		<transition name="fade">
+			<div class="new-message" v-show="showIndicator">
+				<button @click="onIndicatorClick">%fa:arrow-circle-down%%i18n:@new-message%</button>
+			</div>
+		</transition>
 		<x-form :user="user" ref="form"/>
 	</footer>
 </div>
@@ -45,7 +49,9 @@ export default Vue.extend({
 			fetchingMoreMessages: false,
 			messages: [],
 			existMoreMessages: false,
-			connection: null
+			connection: null,
+			showIndicator: false,
+			timer: null
 		};
 	},
 
@@ -149,9 +155,9 @@ export default Vue.extend({
 
 		onMessage(message) {
 			// サウンドを再生する
-			if ((this as any).os.isEnableSounds) {
+			if (this.$store.state.device.enableSounds) {
 				const sound = new Audio(`${url}/assets/message.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+				sound.volume = this.$store.state.device.soundVolume;
 				sound.play();
 			}
 
@@ -172,7 +178,7 @@ export default Vue.extend({
 				});
 			} else if (message.userId != (this as any).os.i.id) {
 				// Notify
-				this.notify('%i18n:!@new-message%');
+				this.notifyNewMessage();
 			}
 		},
 
@@ -205,18 +211,18 @@ export default Vue.extend({
 			}
 		},
 
-		notify(message) {
-			const n = document.createElement('p') as any;
-			n.innerHTML = '%fa:arrow-circle-down%' + message;
-			n.onclick = () => {
-				this.scrollToBottom();
-				n.parentNode.removeChild(n);
-			};
-			(this.$refs.notifications as any).appendChild(n);
+		onIndicatorClick() {
+			this.showIndicator = false;
+			this.scrollToBottom();
+		},
 
-			setTimeout(() => {
-				n.style.opacity = 0;
-				setTimeout(() => n.parentNode.removeChild(n), 1000);
+		notifyNewMessage() {
+			this.showIndicator = true;
+
+			if (this.timer) clearTimeout(this.timer);
+
+			this.timer = setTimeout(() => {
+				this.showIndicator = false;
 			}, 4000);
 		},
 
@@ -238,11 +244,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-messaging-room
+root(isDark)
 	display flex
 	flex 1
 	flex-direction column
 	height 100%
+	background isDark ? #191b22 : #fff
 
 	> .stream
 		width 100%
@@ -256,7 +263,7 @@ export default Vue.extend({
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(#000, 0.4)
+			color rgba(isDark ? #fff : #000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -267,7 +274,7 @@ export default Vue.extend({
 			padding 16px 8px 8px 8px
 			text-align center
 			font-size 0.8em
-			color rgba(#000, 0.4)
+			color rgba(isDark ? #fff : #000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -278,7 +285,7 @@ export default Vue.extend({
 			padding 16px
 			text-align center
 			font-size 0.8em
-			color rgba(#000, 0.4)
+			color rgba(isDark ? #fff : #000, 0.4)
 
 			[data-fa]
 				margin-right 4px
@@ -322,7 +329,7 @@ export default Vue.extend({
 				left 0
 				right 0
 				margin 0 auto
-				background rgba(#000, 0.1)
+				background rgba(isDark ? #fff : #000, 0.1)
 
 			> span
 				display inline-block
@@ -330,8 +337,8 @@ export default Vue.extend({
 				padding 0 16px
 				//font-weight bold
 				line-height 32px
-				color rgba(#000, 0.3)
-				background #fff
+				color rgba(isDark ? #fff : #000, 0.3)
+				background isDark ? #191b22 : #fff
 
 	> footer
 		position -webkit-sticky
@@ -342,30 +349,32 @@ export default Vue.extend({
 		max-width 600px
 		margin 0 auto
 		padding 0
-		background rgba(255, 255, 255, 0.95)
+		background rgba(isDark ? #282c37 : #fff, 0.95)
 		background-clip content-box
 
-		> .notifications
+		> .new-message
 			position absolute
 			top -48px
 			width 100%
 			padding 8px 0
 			text-align center
 
-			&:empty
-				display none
-
-			> p
+			> button
 				display inline-block
 				margin 0
-				padding 0 12px 0 28px
+				padding 0 12px 0 30px
 				cursor pointer
 				line-height 32px
 				font-size 12px
 				color $theme-color-foreground
 				background $theme-color
 				border-radius 16px
-				transition opacity 1s ease
+
+				&:hover
+					background lighten($theme-color, 10%)
+
+				&:active
+					background darken($theme-color, 10%)
 
 				> [data-fa]
 					position absolute
@@ -373,5 +382,18 @@ export default Vue.extend({
 					left 10px
 					line-height 32px
 					font-size 16px
+
+.fade-enter-active, .fade-leave-active
+	transition opacity 0.1s
+
+.fade-enter, .fade-leave-to
+	transition opacity 0.5s
+	opacity 0
+
+.mk-messaging-room[data-darkmode]
+	root(true)
+
+.mk-messaging-room:not([data-darkmode])
+	root(false)
 
 </style>

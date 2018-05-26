@@ -24,7 +24,8 @@
 	<button class="ui primary" @click="save">%i18n:@save%</button>
 	<section>
 		<h2>その他</h2>
-		<mk-switch v-model="os.i.isBot" @change="onChangeIsBot" text="このアカウントはbotです"/>
+		<mk-switch v-model="os.i.isBot" @change="onChangeIsBot" text="%i18n:@is-bot%"/>
+		<mk-switch v-model="os.i.isCat" @change="onChangeIsCat" text="%i18n:@is-cat%"/>
 	</section>
 </div>
 </template>
@@ -64,6 +65,11 @@ export default Vue.extend({
 		onChangeIsBot() {
 			(this as any).api('i/update', {
 				isBot: (this as any).os.i.isBot
+			});
+		},
+		onChangeIsCat() {
+			(this as any).api('i/update', {
+				isCat: (this as any).os.i.isCat
 			});
 		}
 	}

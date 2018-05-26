@@ -32,7 +32,7 @@ export type IMetadata = {
 	uri?: string;
 	url?: string;
 	deletedAt?: Date;
-	isExpired?: boolean;
+	isMetaOnly?: boolean;
 };
 
 export type IDriveFile = {
@@ -155,7 +155,8 @@ export const pack = (
 	_target = Object.assign(_target, _file.metadata);
 
 	_target.src = _file.metadata.url;
-	_target.url = `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
+	_target.url = _file.metadata.isMetaOnly ? _file.metadata.url : `${config.drive_url}/${_target.id}/${encodeURIComponent(_target.name)}`;
+	_target.isRemote = _file.metadata.isMetaOnly;
 
 	if (_target.properties == null) _target.properties = {};
 

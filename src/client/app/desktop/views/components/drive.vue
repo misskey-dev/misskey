@@ -138,17 +138,17 @@ export default Vue.extend({
 		onContextmenu(e) {
 			contextmenu(e, [{
 				type: 'item',
-				text: '%i18n:!@contextmenu.create-folder%',
+				text: '%i18n:@contextmenu.create-folder%',
 				icon: '%fa:R folder%',
 				onClick: this.createFolder
 			}, {
 				type: 'item',
-				text: '%i18n:!@contextmenu.upload%',
+				text: '%i18n:@contextmenu.upload%',
 				icon: '%fa:upload%',
 				onClick: this.selectLocalFile
 			}, {
 				type: 'item',
-				text: '%i18n:!@contextmenu.url-upload%',
+				text: '%i18n:@contextmenu.url-upload%',
 				icon: '%fa:cloud-upload-alt%',
 				onClick: this.urlUpload
 			}]);
@@ -306,15 +306,15 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							(this as any).apis.dialog({
-								title: '%fa:exclamation-triangle%%i18n:!@unable-to-process%',
-								text: '%i18n:!@circular-reference-detected%',
+								title: '%fa:exclamation-triangle%%i18n:@unable-to-process%',
+								text: '%i18n:@circular-reference-detected%',
 								actions: [{
-									text: '%i18n:!common.ok%'
+									text: '%i18n:common.ok%'
 								}]
 							});
 							break;
 						default:
-							alert('%i18n:!@unhandled-error% ' + err);
+							alert('%i18n:@unhandled-error% ' + err);
 					}
 				});
 			}
@@ -327,8 +327,8 @@ export default Vue.extend({
 
 		urlUpload() {
 			(this as any).apis.input({
-				title: '%i18n:!@url-upload%',
-				placeholder: '%i18n:!@url-of-file%'
+				title: '%i18n:@url-upload%',
+				placeholder: '%i18n:@url-of-file%'
 			}).then(url => {
 				(this as any).api('drive/files/upload_from_url', {
 					url: url,
@@ -337,9 +337,9 @@ export default Vue.extend({
 
 				(this as any).apis.dialog({
 					title: '%fa:check%%i18n:@url-upload-requested%',
-					text: '%i18n:!@may-take-time%',
+					text: '%i18n:@may-take-time%',
 					actions: [{
-						text: '%i18n:!common.ok%'
+						text: '%i18n:common.ok%'
 					}]
 				});
 			});
@@ -347,8 +347,8 @@ export default Vue.extend({
 
 		createFolder() {
 			(this as any).apis.input({
-				title: '%i18n:!@create-folder%',
-				placeholder: '%i18n:!@folder-name%'
+				title: '%i18n:@create-folder%',
+				placeholder: '%i18n:@folder-name%'
 			}).then(name => {
 				(this as any).api('drive/folders/create', {
 					name: name,

@@ -62,8 +62,10 @@
 			<el-slider
 				v-model="soundVolume"
 				:show-input="true"
-				:format-tooltip="v => `${v}%`"
+				:format-tooltip="v => `${v * 100}%`"
 				:disabled="!enableSounds"
+				:max="1"
+				:step="0.1"
 			/>
 			<button class="ui button" @click="soundTest">%fa:volume-up% %i18n:@test%</button>
 		</section>
@@ -77,14 +79,10 @@
 			<h1>%i18n:@language%</h1>
 			<el-select v-model="lang" placeholder="%i18n:@pick-language%">
 				<el-option-group label="%i18n:@recommended%">
-					<el-option label="%i18n:@auto%" value=""/>
+					<el-option label="%i18n:@auto%" :value="null"/>
 				</el-option-group>
 				<el-option-group label="%i18n:@specify-language%">
-					<el-option label="日本語" value="ja"/>
-					<el-option label="English" value="en"/>
-					<el-option label="Français" value="fr"/>
-					<el-option label="Polski" value="pl"/>
-					<el-option label="Deutsch" value="de"/>
+					<el-option v-for="x in langs" :label="x[1]" :value="x[0]" :key="x[0]"/>
 				</el-option-group>
 			</el-select>
 			<div class="none ui info">
@@ -178,15 +176,7 @@
 			<mk-switch v-model="debug" text="%i18n:@debug-mode%">
 				<span>%i18n:@debug-mode-desc%</span>
 			</mk-switch>
-			<template v-if="debug">
-				<mk-switch v-model="useRawScript" text="%i18n:@use-raw-script%">
-					<span>%i18n:@use-raw-script-desc%</span>
-				</mk-switch>
-				<div class="none ui info">
-				<p>%fa:info-circle%%i18n:@source-info%</p>
-			</div>
-			</template>
-			<mk-switch v-model="enableExperimental" text="%i18n:@experimental%">
+			<mk-switch v-model="enableExperimentalFeatures" text="%i18n:@experimental%">
 				<span>%i18n:@experimental-desc%</span>
 			</mk-switch>
 			<details v-if="debug">
@@ -214,7 +204,7 @@ import XApi from './settings.api.vue';
 import XApps from './settings.apps.vue';
 import XSignins from './settings.signins.vue';
 import XDrive from './settings.drive.vue';
-import { url, docsUrl, license, lang, version } from '../../../config';
+import { url, docsUrl, license, lang, langs, version } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 import MkTaskManager from './taskmanager.vue';
 
@@ -235,55 +225,59 @@ export default Vue.extend({
 			meta: null,
 			license,
 			version,
+			langs,
 			latestVersion: undefined,
-			checkingForUpdate: false,
-			darkmode: localStorage.getItem('darkmode') == 'true',
-			enableSounds: localStorage.getItem('enableSounds') == 'true',
-			autoPopout: localStorage.getItem('autoPopout') == 'true',
-			apiViaStream: localStorage.getItem('apiViaStream') ? localStorage.getItem('apiViaStream') == 'true' : true,
-			soundVolume: localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) : 50,
-			lang: localStorage.getItem('lang') || '',
-			preventUpdate: localStorage.getItem('preventUpdate') == 'true',
-			debug: localStorage.getItem('debug') == 'true',
-			useRawScript: localStorage.getItem('useRawScript') == 'true',
-			enableExperimental: localStorage.getItem('enableExperimental') == 'true'
+			checkingForUpdate: false
 		};
 	},
 	computed: {
 		licenseUrl(): string {
 			return `${docsUrl}/${lang}/license`;
-		}
-	},
-	watch: {
-		autoPopout() {
-			localStorage.setItem('autoPopout', this.autoPopout ? 'true' : 'false');
 		},
-		apiViaStream() {
-			localStorage.setItem('apiViaStream', this.apiViaStream ? 'true' : 'false');
+
+		apiViaStream: {
+			get() { return this.$store.state.device.apiViaStream; },
+			set(value) { this.$store.commit('device/set', { key: 'apiViaStream', value }); }
 		},
-		darkmode() {
-			(this as any)._updateDarkmode_(this.darkmode);
+
+		autoPopout: {
+			get() { return this.$store.state.device.autoPopout; },
+			set(value) { this.$store.commit('device/set', { key: 'autoPopout', value }); }
 		},
-		enableSounds() {
-			localStorage.setItem('enableSounds', this.enableSounds ? 'true' : 'false');
+
+		darkmode: {
+			get() { return this.$store.state.device.darkmode; },
+			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
 		},
-		soundVolume() {
-			localStorage.setItem('soundVolume', this.soundVolume.toString());
+
+		enableSounds: {
+			get() { return this.$store.state.device.enableSounds; },
+			set(value) { this.$store.commit('device/set', { key: 'enableSounds', value }); }
 		},
-		lang() {
-			localStorage.setItem('lang', this.lang);
+
+		soundVolume: {
+			get() { return this.$store.state.device.soundVolume; },
+			set(value) { this.$store.commit('device/set', { key: 'soundVolume', value }); }
 		},
-		preventUpdate() {
-			localStorage.setItem('preventUpdate', this.preventUpdate ? 'true' : 'false');
+
+		lang: {
+			get() { return this.$store.state.device.lang; },
+			set(value) { this.$store.commit('device/set', { key: 'lang', value }); }
 		},
-		debug() {
-			localStorage.setItem('debug', this.debug ? 'true' : 'false');
+
+		preventUpdate: {
+			get() { return this.$store.state.device.preventUpdate; },
+			set(value) { this.$store.commit('device/set', { key: 'preventUpdate', value }); }
 		},
-		useRawScript() {
-			localStorage.setItem('useRawScript', this.useRawScript ? 'true' : 'false');
+
+		debug: {
+			get() { return this.$store.state.device.debug; },
+			set(value) { this.$store.commit('device/set', { key: 'debug', value }); }
 		},
-		enableExperimental() {
-			localStorage.setItem('enableExperimental', this.enableExperimental ? 'true' : 'false');
+
+		enableExperimentalFeatures: {
+			get() { return this.$store.state.device.enableExperimentalFeatures; },
+			set(value) { this.$store.commit('device/set', { key: 'enableExperimentalFeatures', value }); }
 		}
 	},
 	created() {
@@ -371,13 +365,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					(this as any).apis.dialog({
-						title: '%i18n:!@no-updates%',
-						text: '%i18n:!@no-updates-desc%'
+						title: '%i18n:@no-updates%',
+						text: '%i18n:@no-updates-desc%'
 					});
 				} else {
 					(this as any).apis.dialog({
-						title: '%i18n:!@update-available%',
-						text: '%i18n:!@update-available-desc%'
+						title: '%i18n:@update-available%',
+						text: '%i18n:@update-available-desc%'
 					});
 				}
 			});
@@ -385,13 +379,13 @@ export default Vue.extend({
 		clean() {
 			localStorage.clear();
 			(this as any).apis.dialog({
-				title: '%i18n:!@cache-cleared%',
-				text: '%i18n:!@caache-cleared-desc%'
+				title: '%i18n:@cache-cleared%',
+				text: '%i18n:@caache-cleared-desc%'
 			});
 		},
 		soundTest() {
 			const sound = new Audio(`${url}/assets/message.mp3`);
-			sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+			sound.volume = this.$store.state.device.soundVolume;
 			sound.play();
 		}
 	}

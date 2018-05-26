@@ -283,6 +283,8 @@ export default async (user: IUser, data: {
 		mentionedUsers = mentionedUsers.filter(x => x != null);
 
 		mentionedUsers.filter(u => isLocalUser(u)).forEach(async u => {
+			event(u, 'mention', noteObj);
+
 			// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
 			if (data.reply && data.reply.userId.equals(u._id)) return;
 			if (data.renote && data.renote.userId.equals(u._id)) return;

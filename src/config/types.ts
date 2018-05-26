@@ -41,6 +41,8 @@ export type Source = {
 		secret_key: string;
 	};
 
+	preventCacheRemoteFiles: boolean;
+
 	/**
 	 * ゴーストアカウントのID
 	 */

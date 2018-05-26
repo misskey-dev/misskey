@@ -6,9 +6,9 @@
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		%fa:retweet%
-		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
+		<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
 		<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
-		<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
+		<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
@@ -16,7 +16,9 @@
 		<div class="main">
 			<header>
 				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
+				<span class="is-admin" v-if="p.user.isAdmin">admin</span>
+				<span class="is-bot" v-if="p.user.isBot">bot</span>
+				<span class="is-cat" v-if="p.user.isCat">cat</span>
 				<span class="username"><mk-acct :user="p.user"/></span>
 				<div class="info">
 					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
@@ -430,13 +432,19 @@ root(isDark)
 					&:hover
 						text-decoration underline
 
+				> .is-admin
 				> .is-bot
+				> .is-cat
 					margin 0 .5em 0 0
 					padding 1px 6px
 					font-size 12px
 					color isDark ? #758188 : #aaa
 					border solid 1px isDark ? #57616f : #ddd
 					border-radius 3px
+
+					&.is-admin
+						border-color isDark ? #d42c41 : #f56a7b
+						color isDark ? #d42c41 : #f56a7b
 
 				> .username
 					margin 0 .5em 0 0

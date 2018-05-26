@@ -21,10 +21,21 @@ export default Vue.extend({
 		$route: 'fetch'
 	},
 	created() {
+		const applyBg = v =>
+			document.documentElement.style.setProperty('background', v ? '#191b22' : '#fff', 'important');
+
+		applyBg(this.$store.state.device.darkmode);
+
+		this.unwatchDarkmode = this.$store.watch(s => {
+			return s.device.darkmode;
+		}, applyBg);
+
 		this.fetch();
 	},
-	mounted() {
-		document.documentElement.style.background = '#fff';
+	beforeDestroy() {
+		document.documentElement.style.removeProperty('background');
+		document.documentElement.style.removeProperty('background-color'); // for safari's bug
+		this.unwatchDarkmode();
 	},
 	methods: {
 		fetch() {
@@ -50,6 +61,5 @@ export default Vue.extend({
 	flex 1
 	flex-direction column
 	min-height 100%
-	background #fff
 
 </style>

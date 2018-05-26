@@ -22,7 +22,7 @@
 import Vue from 'vue';
 import * as anime from 'animejs';
 
-const placeholder = '%i18n:!@choose-reaction%';
+const placeholder = '%i18n:@choose-reaction%';
 
 export default Vue.extend({
 	props: ['note', 'source', 'compact', 'cb'],

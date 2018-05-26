@@ -62,7 +62,7 @@ export class HomeStream extends Stream {
 		// トークンが再生成されたとき
 		// このままではMisskeyが利用できないので強制的にサインアウトさせる
 		this.on('my_token_regenerated', () => {
-			alert('%i18n:!common.my-token-regenerated%');
+			alert('%i18n:common.my-token-regenerated%');
 			os.signout();
 		});
 	}

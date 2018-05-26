@@ -28,8 +28,8 @@
 					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/settings">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
-					<li @click="dark"><p><template v-if="_darkmode_">%fa:moon%</template><template v-else>%fa:R moon%</template><span>ダークモード</span></p></li>
+					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
+					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>ダークモード</span></p></li>
 				</ul>
 			</div>
 			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
@@ -94,7 +94,7 @@ export default Vue.extend({
 	},
 	methods: {
 		search() {
-			const query = window.prompt('%i18n:!@search%');
+			const query = window.prompt('%i18n:@search%');
 			if (query == null || query == '') return;
 			this.$router.push('/search?q=' + encodeURIComponent(query));
 		},
@@ -117,7 +117,10 @@ export default Vue.extend({
 			this.hasGameInvitations = false;
 		},
 		dark() {
-			(this as any)._updateDarkmode_(!(this as any)._darkmode_);
+			this.$store.commit('device/set', {
+				key: 'darkmode',
+				value: !this.$store.state.device.darkmode
+			});
 		}
 	}
 });

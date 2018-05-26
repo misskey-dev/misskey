@@ -162,9 +162,9 @@ export default Vue.extend({
 			this.o.put(this.myColor, pos);
 
 			// サウンドを再生する
-			if ((this as any).os.isEnableSounds) {
+			if (this.$store.state.device.enableSounds) {
 				const sound = new Audio(`${url}/assets/othello-put-me.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+				sound.volume = this.$store.state.device.soundVolume;
 				sound.play();
 			}
 
@@ -186,9 +186,9 @@ export default Vue.extend({
 			this.$forceUpdate();
 
 			// サウンドを再生する
-			if ((this as any).os.isEnableSounds && x.color != this.myColor) {
+			if (this.$store.state.device.enableSounds && x.color != this.myColor) {
 				const sound = new Audio(`${url}/assets/othello-put-you.mp3`);
-				sound.volume = localStorage.getItem('soundVolume') ? parseInt(localStorage.getItem('soundVolume'), 10) / 100 : 0.5;
+				sound.volume = this.$store.state.device.soundVolume;
 				sound.play();
 			}
 		},

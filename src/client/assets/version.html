@@ -10,11 +10,6 @@
 				localStorage.setItem('v', v);
 			}
 
-			const lang = window.prompt('Enter language (optional):');
-			if (lang && lang.length > 0) {
-				localStorage.setItem('lang', lang);
-			}
-
 			setTimeout(() => {
 				location.href = '/';
 			}, 500);

@@ -7,7 +7,7 @@ import locale from '../../locales';
 export default class Replacer {
 	private lang: string;
 
-	public pattern = /%i18n:([a-z0-9_\-\.\/\|\!]+?)%/g;
+	public pattern = /%i18n:([a-z0-9_\-\.\/\|]+?)%/g;
 
 	constructor(lang: string) {
 		this.lang = lang;
@@ -56,11 +56,6 @@ export default class Replacer {
 	public replacement(match, key) {
 		let path = null;
 
-		const shouldEscape = key[0] == '!';
-		if (shouldEscape) {
-			key = key.substr(1);
-		}
-
 		if (key.indexOf('|') != -1) {
 			path = key.split('|')[0];
 			key = key.split('|')[1];
@@ -68,8 +63,6 @@ export default class Replacer {
 
 		const txt = this.get(path, key);
 
-		return shouldEscape
-			? txt.replace(/'/g, '\\x27').replace(/"/g, '\\x22')
-			: txt.replace(/"/g, '&quot;');
+		return txt.replace(/'/g, '\\x27').replace(/"/g, '\\x22');
 	}
 }

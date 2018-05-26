@@ -4,6 +4,10 @@
 notifications:
   email: false
 
+branches:
+  except:
+    - l10n_master
+
 language: node_js
 
 node_js:

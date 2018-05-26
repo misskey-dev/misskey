@@ -77,6 +77,7 @@ export interface ILocalUser extends IUserBase {
 	};
 	lastUsedAt: Date;
 	isBot: boolean;
+	isCat: boolean;
 	isPro: boolean;
 	twoFactorSecret: string;
 	twoFactorEnabled: boolean;

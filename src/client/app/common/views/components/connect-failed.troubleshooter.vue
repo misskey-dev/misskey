@@ -8,21 +8,21 @@
 					<template v-if="network">%fa:check%</template>
 					<template v-if="!network">%fa:times%</template>
 				</template>
-				{{ network == null ? '%i18n:!@checking-network%' : '%i18n:!@network%' }}<mk-ellipsis v-if="network == null"/>
+				{{ network == null ? '%i18n:@checking-network%' : '%i18n:@network%' }}<mk-ellipsis v-if="network == null"/>
 			</p>
 			<p v-if="network == true" :data-wip="internet == null">
 				<template v-if="internet != null">
 					<template v-if="internet">%fa:check%</template>
 					<template v-if="!internet">%fa:times%</template>
 				</template>
-				{{ internet == null ? '%i18n:!@checking-internet%' : '%i18n:!@internet%' }}<mk-ellipsis v-if="internet == null"/>
+				{{ internet == null ? '%i18n:@checking-internet%' : '%i18n:@internet%' }}<mk-ellipsis v-if="internet == null"/>
 			</p>
 			<p v-if="internet == true" :data-wip="server == null">
 				<template v-if="server != null">
 					<template v-if="server">%fa:check%</template>
 					<template v-if="!server">%fa:times%</template>
 				</template>
-				{{ server == null ? '%i18n:!@checking-server%' : '%i18n:!@server%' }}<mk-ellipsis v-if="server == null"/>
+				{{ server == null ? '%i18n:@checking-server%' : '%i18n:@server%' }}<mk-ellipsis v-if="server == null"/>
 			</p>
 		</div>
 		<p v-if="!end">%i18n:@finding%<mk-ellipsis/></p>

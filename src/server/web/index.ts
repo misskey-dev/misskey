@@ -49,8 +49,8 @@ const router = new Router();
 //#region static assets
 
 router.get('/assets/*', async ctx => {
-	// 無圧縮スクリプトを用意するのは大変なので一時的に無効化
-	const path = process.env.NODE_ENV == 'production' ? ctx.path.replace('raw.js', 'min.js') : ctx.path.replace('min.js', 'raw.js');
+	// 互換性のため
+	const path = ctx.path.replace('.raw.js', '.js').replace('.min.js', '.js');
 	await send(ctx, path, {
 		root: client,
 		maxage: ms('7 days'),

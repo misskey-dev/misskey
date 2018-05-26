@@ -2,7 +2,7 @@
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
 	<span slot="header">%fa:list% リスト</span>
 
-	<div data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82" :data-darkmode="_darkmode_">
+	<div data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82" :data-darkmode="$store.state.device.darkmode">
 		<button class="ui" @click="add">%i18n:@create-list%</button>
 		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
 	</div>

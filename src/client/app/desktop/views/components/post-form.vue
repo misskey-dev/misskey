@@ -37,7 +37,7 @@
 	<button class="visibility" title="公開範囲" @click="setVisibility" ref="visibilityButton">%fa:lock%</button>
 	<p class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</p>
 	<button :class="{ posting }" class="submit" :disabled="!canPost" @click="post">
-		{{ posting ? '%i18n:!@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
+		{{ posting ? '%i18n:@posting%' : submitText }}<mk-ellipsis v-if="posting"/>
 	</button>
 	<input ref="file" type="file" accept="image/*" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 	<div class="dropzone" v-if="draghover"></div>
@@ -86,18 +86,18 @@ export default Vue.extend({
 
 		placeholder(): string {
 			return this.renote
-				? '%i18n:!@quote-placeholder%'
+				? '%i18n:@quote-placeholder%'
 				: this.reply
-					? '%i18n:!@reply-placeholder%'
-					: '%i18n:!@note-placeholder%';
+					? '%i18n:@reply-placeholder%'
+					: '%i18n:@note-placeholder%';
 		},
 
 		submitText(): string {
 			return this.renote
-				? '%i18n:!@renote%'
+				? '%i18n:@renote%'
 				: this.reply
-					? '%i18n:!@reply%'
-					: '%i18n:!@note%';
+					? '%i18n:@reply%'
+					: '%i18n:@note%';
 		},
 
 		canPost(): boolean {
@@ -304,16 +304,16 @@ export default Vue.extend({
 				this.deleteDraft();
 				this.$emit('posted');
 				(this as any).apis.notify(this.renote
-					? '%i18n:!@reposted%'
+					? '%i18n:@reposted%'
 					: this.reply
-						? '%i18n:!@replied%'
-						: '%i18n:!@posted%');
+						? '%i18n:@replied%'
+						: '%i18n:@posted%');
 			}).catch(err => {
 				(this as any).apis.notify(this.renote
-					? '%i18n:!@renote-failed%'
+					? '%i18n:@renote-failed%'
 					: this.reply
-						? '%i18n:!@reply-failed%'
-						: '%i18n:!@note-failed%');
+						? '%i18n:@reply-failed%'
+						: '%i18n:@note-failed%');
 			}).then(() => {
 				this.posting = false;
 			});

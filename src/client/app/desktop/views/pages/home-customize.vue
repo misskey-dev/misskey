@@ -6,7 +6,7 @@
 import Vue from 'vue';
 export default Vue.extend({
 	mounted() {
-		document.title = 'Misskey - ホームのカスタマイズ';
+		document.title = 'Misskey - %i18n:@title%';
 	}
 });
 </script>

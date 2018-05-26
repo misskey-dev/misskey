@@ -33,11 +33,12 @@ export default async function(ctx: Koa.Context) {
 
 	if (file.metadata.deletedAt) {
 		ctx.status = 410;
-		if (file.metadata.isExpired) {
-			await send(ctx, '/cache-expired.png', { root: assets });
-		} else {
-			await send(ctx, '/tombstone.png', { root: assets });
-		}
+		await send(ctx, '/tombstone.png', { root: assets });
+		return;
+	}
+
+	if (file.metadata.isMetaOnly) {
+		ctx.status = 204;
 		return;
 	}
 

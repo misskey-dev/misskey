@@ -16,15 +16,29 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			user: null
+			user: null,
+			unwatchDarkmode: null
 		};
 	},
 	watch: {
 		$route: 'fetch'
 	},
 	created() {
-		document.documentElement.style.background = '#fff';
+		const applyBg = v =>
+			document.documentElement.style.setProperty('background', v ? '#191b22' : '#fff', 'important');
+
+		applyBg(this.$store.state.device.darkmode);
+
+		this.unwatchDarkmode = this.$store.watch(s => {
+			return s.device.darkmode;
+		}, applyBg);
+
 		this.fetch();
+	},
+	beforeDestroy() {
+		document.documentElement.style.removeProperty('background');
+		document.documentElement.style.removeProperty('background-color'); // for safari's bug
+		this.unwatchDarkmode();
 	},
 	methods: {
 		fetch() {
@@ -39,4 +53,3 @@ export default Vue.extend({
 	}
 });
 </script>
-

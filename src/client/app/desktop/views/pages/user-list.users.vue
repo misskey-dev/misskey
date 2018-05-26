@@ -1,8 +1,8 @@
 <template>
 <div>
 	<mk-widget-container>
-		<template slot="header">%fa:users% ユーザー</template>
-		<button slot="func" title="ユーザーを追加" @click="add">%fa:plus%</button>
+		<template slot="header">%fa:users% %i18n:@users%</template>
+		<button slot="func" title="%i18n:@add-user%" @click="add">%fa:plus%</button>
 
 		<div data-id="d0b63759-a822-4556-a5ce-373ab966e08a">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw% %i18n:common.loading%<mk-ellipsis/></p>
@@ -48,7 +48,7 @@ export default Vue.extend({
 	methods: {
 		add() {
 			(this as any).apis.input({
-				title: 'ユーザー名',
+				title: '%i18n:@username%',
 			}).then(async username => {
 				const user = await (this as any).api('users/show', {
 					username

@@ -20,7 +20,7 @@
 			<a @click="addVisibleUser">+ユーザーを追加</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:!@reply-placeholder%' : renote ? '%i18n:!@renote-placeholder%' : '%i18n:!@note-placeholder%'"></textarea>
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:@reply-placeholder%' : renote ? '%i18n:@renote-placeholder%' : '%i18n:@note-placeholder%'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 				<div class="file" v-for="file in files" :key="file.id">

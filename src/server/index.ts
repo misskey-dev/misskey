@@ -4,8 +4,7 @@
 
 import * as fs from 'fs';
 import * as http from 'http';
-import * as https from 'https';
-//import * as http2 from 'http2';
+import * as http2 from 'http2';
 import * as zlib from 'zlib';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
@@ -68,8 +67,7 @@ function createServer() {
 			certs[k] = fs.readFileSync(config.https[k]);
 		});
 		certs['allowHTTP1'] = true;
-		//return http2.createSecureServer(certs, app.callback());
-		return https.createServer(certs, app.callback());
+		return http2.createSecureServer(certs, app.callback());
 	} else {
 		return http.createServer(app.callback());
 	}

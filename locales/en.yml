@@ -359,7 +359,7 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "Are you sure you want to renote this note?"
 desktop/views/components/settings-window.vue:
-  settings: "設定"
+  settings: "Settings"
 desktop/views/components/settings.vue:
   profile: "Profile"
   notification: "Notification"

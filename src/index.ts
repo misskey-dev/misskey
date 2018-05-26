@@ -194,7 +194,12 @@ cluster.on('exit', worker => {
 // Display detail of unhandled promise rejection
 process.on('unhandledRejection', console.dir);
 
+// Display detail of uncaught exception
+process.on('uncaughtException', err => {
+	console.error(err);
+});
+
 // Dying away...
-process.on('exit', () => {
-	Logger.info('The process is going exit');
+process.on('exit', code => {
+	Logger.info(`The process is going exit (${code})`);
 });

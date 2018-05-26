@@ -2,15 +2,15 @@
 <div class="mk-note-detail">
 	<button
 		class="more"
-		v-if="p.reply && p.reply.replyId && context.length == 0"
-		@click="fetchContext"
-		:disabled="fetchingContext"
+		v-if="p.reply && p.reply.replyId && conversation.length == 0"
+		@click="fetchConversation"
+		:disabled="conversationFetching"
 	>
-		<template v-if="!contextFetching">%fa:ellipsis-v%</template>
-		<template v-if="contextFetching">%fa:spinner .pulse%</template>
+		<template v-if="!conversationFetching">%fa:ellipsis-v%</template>
+		<template v-if="conversationFetching">%fa:spinner .pulse%</template>
 	</button>
-	<div class="context">
-		<x-sub v-for="note in context" :key="note.id" :note="note"/>
+	<div class="conversation">
+		<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
 	</div>
 	<div class="reply-to" v-if="p.reply">
 		<x-sub :note="p.reply"/>
@@ -99,8 +99,8 @@ export default Vue.extend({
 
 	data() {
 		return {
-			context: [],
-			contextFetching: false,
+			conversation: [],
+			conversationFetching: false,
 			replies: []
 		};
 	},
@@ -166,14 +166,14 @@ export default Vue.extend({
 
 	methods: {
 		fetchContext() {
-			this.contextFetching = true;
+			this.conversationFetching = true;
 
-			// Fetch context
-			(this as any).api('notes/context', {
+			// Fetch conversation
+			(this as any).api('notes/conversation', {
 				noteId: this.p.replyId
-			}).then(context => {
-				this.contextFetching = false;
-				this.context = context.reverse();
+			}).then(conversation => {
+				this.conversationFetching = false;
+				this.conversation = conversation.reverse();
 			});
 		},
 		reply() {
@@ -245,7 +245,7 @@ root(isDark)
 		&:disabled
 			color #ccc
 
-	> .context
+	> .conversation
 		> *
 			border-bottom 1px solid isDark ? #1c2023 : #eef0f2
 

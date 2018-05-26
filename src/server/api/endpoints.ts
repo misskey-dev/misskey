@@ -482,7 +482,7 @@ const endpoints: Endpoint[] = [
 		name: 'notes/replies'
 	},
 	{
-		name: 'notes/context'
+		name: 'notes/conversation'
 	},
 	{
 		name: 'notes/create',

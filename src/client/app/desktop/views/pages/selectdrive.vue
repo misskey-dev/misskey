@@ -29,7 +29,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = '%i18n:!@title%';
+		document.title = '%i18n:@title%';
 	},
 	methods: {
 		onSelected(file) {

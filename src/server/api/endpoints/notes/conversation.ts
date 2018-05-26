@@ -5,11 +5,7 @@ import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { pack } from '../../../../models/note';
 
 /**
- * Show a context of a note
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
+ * Show conversation of a note
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
@@ -33,7 +29,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('note not found');
 	}
 
-	const context = [];
+	const conversation = [];
 	let i = 0;
 
 	async function get(id) {
@@ -41,10 +37,10 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		const p = await Note.findOne({ _id: id });
 
 		if (i > offset) {
-			context.push(p);
+			conversation.push(p);
 		}
 
-		if (context.length == limit) {
+		if (conversation.length == limit) {
 			return;
 		}
 
@@ -58,6 +54,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Serialize
-	res(await Promise.all(context.map(async note =>
-		await pack(note, user))));
+	res(await Promise.all(conversation.map(note => pack(note, user))));
 });

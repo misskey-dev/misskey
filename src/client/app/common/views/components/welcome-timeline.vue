@@ -37,6 +37,7 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 			(this as any).api('notes', {
+				local: true,
 				reply: false,
 				renote: false,
 				media: false,
@@ -52,15 +53,15 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-welcome-timeline
-	background #fff
+root(isDark)
+	background isDark ? #282C37 : #fff
 
 	> div
 		padding 16px
 		overflow-wrap break-word
 		font-size .9em
-		color #4C4C4C
-		border-bottom 1px solid rgba(#000, 0.05)
+		color isDark ? #fff : #4C4C4C
+		border-bottom 1px solid isDark ? rgba(#000, 0.1) : rgba(#000, 0.05)
 
 		&:after
 			content ""
@@ -95,17 +96,23 @@ export default Vue.extend({
 					overflow hidden
 					font-weight bold
 					text-overflow ellipsis
-					color #627079
+					color isDark ? #fff : #627079
 
 				> .username
 					margin 0 .5em 0 0
-					color #ccc
+					color isDark ? #606984 : #ccc
 
 				> .info
 					margin-left auto
 					font-size 0.9em
 
 					> .created-at
-						color #c0c0c0
+						color isDark ? #606984 : #c0c0c0
+
+.mk-welcome-timeline[data-darkmode]
+	root(true)
+
+.mk-welcome-timeline:not([data-darkmode])
+	root(false)
 
 </style>

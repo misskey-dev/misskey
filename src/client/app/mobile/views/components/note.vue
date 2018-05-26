@@ -1,22 +1,25 @@
 <template>
-<div class="note" :class="{ renote: isRenote }">
+<div class="note" :class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }">
 	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || clientSettings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		%fa:retweet%
-		<span>{{ '%i18n:!@reposted-by%'.substr(0, '%i18n:!@reposted-by%'.indexOf('{')) }}</span>
+		<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
 		<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>
-		<span>{{ '%i18n:!@reposted-by%'.substr('%i18n:!@reposted-by%'.indexOf('}') + 1) }}</span>
+		<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
 		<mk-time :time="note.createdAt"/>
 	</div>
 	<article>
-		<mk-avatar class="avatar" :user="p.user"/>
+		<mk-avatar class="avatar" :user="p.user" v-if="$store.state.device.postStyle != 'smart'"/>
 		<div class="main">
 			<header>
+				<mk-avatar class="avatar" :user="p.user" v-if="$store.state.device.postStyle == 'smart'"/>
 				<router-link class="name" :to="p.user | userPage">{{ p.user | userName }}</router-link>
-				<span class="is-bot" v-if="p.user.host === null && p.user.isBot">bot</span>
+				<span class="is-admin" v-if="p.user.isAdmin">admin</span>
+				<span class="is-bot" v-if="p.user.isBot">bot</span>
+				<span class="is-cat" v-if="p.user.isCat">cat</span>
 				<span class="username"><mk-acct :user="p.user"/></span>
 				<div class="info">
 					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
@@ -262,6 +265,15 @@ root(isDark)
 	@media (min-width 500px)
 		font-size 16px
 
+	&.smart
+		> article
+			> .main
+				width 100%
+
+				> header
+					align-items center
+					margin-bottom 4px
+
 	> .renote
 		display flex
 		align-items center
@@ -278,11 +290,16 @@ root(isDark)
 			padding 16px 32px
 
 		.avatar
+			flex-shrink 0
 			display inline-block
-			width 28px
-			height 28px
+			width 20px
+			height 20px
 			margin 0 8px 0 0
 			border-radius 6px
+
+			@media (min-width 500px)
+				width 28px
+				height 28px
 
 		[data-fa]
 			margin-right 4px
@@ -352,27 +369,36 @@ root(isDark)
 				@media (min-width 500px)
 					margin-bottom 2px
 
+				> .avatar
+					flex-shrink 0
+					margin-right 8px
+					width 20px
+					height 20px
+					border-radius 100%
+
 				> .name
 					display block
 					margin 0 0.5em 0 0
 					padding 0
 					overflow hidden
 					color isDark ? #fff : #627079
-					font-size 1em
 					font-weight bold
 					text-decoration none
 					text-overflow ellipsis
 
-					&:hover
-						text-decoration underline
-
+				> .is-admin
 				> .is-bot
+				> .is-cat
 					margin 0 0.5em 0 0
 					padding 1px 6px
 					font-size 12px
 					color isDark ? #758188 : #aaa
 					border solid 1px isDark ? #57616f : #ddd
 					border-radius 3px
+
+					&.is-admin
+						border-color isDark ? #d42c41 : #f56a7b
+						color isDark ? #d42c41 : #f56a7b
 
 				> .username
 					margin 0 0.5em 0 0

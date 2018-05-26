@@ -5,6 +5,7 @@
 /build
 /built
 /data
+/.cache-loader
 npm-debug.log
 *.pem
 run.bat

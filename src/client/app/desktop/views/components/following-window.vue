@@ -1,7 +1,7 @@
 <template>
 <mk-window width="400px" height="550px" @closed="$destroy">
 	<span slot="header" :class="$style.header">
-		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt=""/>%i18n:!@following%.replace('{}', {{ user | userName }})
+		<img :src="`${user.avatarUrl}?thumbnail&size=64`" alt=""/>{{ '%i18n:@following%'.replace('{}', name) }}
 	</span>
 	<mk-following :user="user"/>
 </mk-window>
@@ -11,7 +11,12 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['user']
+	props: ['user'],
+	computed: {
+		name(): string {
+			return Vue.filter('userName')(this.user);
+		}
+	}
 });
 </script>
 

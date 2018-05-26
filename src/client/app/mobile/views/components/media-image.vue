@@ -17,9 +17,17 @@ export default Vue.extend({
 	},
 	computed: {
 		style(): any {
+			let url = `url(${this.image.url}?thumbnail)`;
+
+			if (this.$store.state.device.loadRemoteMedia || this.$store.state.device.lightmode) {
+				url = null;
+			} else if (this.raw || this.$store.state.device.loadRawImages) {
+				url = `url(${this.image.url})`;
+			}
+
 			return {
 				'background-color': this.image.properties.avgColor && this.image.properties.avgColor.length == 3 ? `rgb(${this.image.properties.avgColor.join(',')})` : 'transparent',
-				'background-image': this.raw ? `url(${this.image.url})` : `url(${this.image.url}?thumbnail&size=512)`
+				'background-image': url
 			};
 		}
 	}

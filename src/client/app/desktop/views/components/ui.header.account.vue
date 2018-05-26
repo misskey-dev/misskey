@@ -35,7 +35,7 @@
 			</ul>
 			<ul>
 				<li @click="dark">
-					<p><span>%i18n:@dark%</span><template v-if="_darkmode_">%fa:moon%</template><template v-else>%fa:R moon%</template></p>
+					<p><span>%i18n:@dark%</span><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template></p>
 				</li>
 			</ul>
 		</div>
@@ -99,7 +99,10 @@ export default Vue.extend({
 			(this as any).os.signout();
 		},
 		dark() {
-			(this as any)._updateDarkmode_(!(this as any)._darkmode_);
+			this.$store.commit('device/set', {
+				key: 'darkmode',
+				value: !this.$store.state.device.darkmode
+			});
 		}
 	}
 });

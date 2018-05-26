@@ -8,7 +8,8 @@ const { default: User } = require('../built/models/user');
 const q = {
 	'metadata._user.host': {
 		$ne: null
-	}
+	},
+	'metadata.isMetaOnly': false
 };
 
 async function main() {
@@ -56,8 +57,7 @@ async function main() {
 
 					DriveFile.update({ _id: file._id }, {
 						$set: {
-							'metadata.deletedAt': new Date(),
-							'metadata.isExpired': true
+							'metadata.isMetaOnly': true
 						}
 					})
 				]).then(async () => {

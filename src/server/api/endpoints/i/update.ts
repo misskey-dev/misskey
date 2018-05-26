@@ -47,6 +47,11 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	if (isBotErr) return rej('invalid isBot param');
 	if (isBot != null) user.isBot = isBot;
 
+	// Get 'isCat' parameter
+	const [isCat, isCatErr] = $.bool.optional().get(params.isCat);
+	if (isCatErr) return rej('invalid isCat param');
+	if (isCat != null) user.isCat = isCat;
+
 	// Get 'autoWatch' parameter
 	const [autoWatch, autoWatchErr] = $.bool.optional().get(params.autoWatch);
 	if (autoWatchErr) return rej('invalid autoWatch param');
@@ -82,6 +87,7 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 			bannerColor: user.bannerColor,
 			profile: user.profile,
 			isBot: user.isBot,
+			isCat: user.isCat,
 			settings: user.settings
 		}
 	});
