@@ -152,14 +152,14 @@ common/views/components/twitter-setting.vue:
 common/views/components/uploader.vue:
   waiting: "Waiting"
 common/views/components/visibility-chooser.vue:
-  public: "公開"
-  home: "ホーム"
-  home-desc: "ホームタイムラインにのみ公開"
-  followers: "フォロワー"
-  followers-desc: "自分のフォロワーにのみ公開"
-  specified: "ダイレクト"
-  specified-desc: "指定したユーザーにのみ公開"
-  private: "非公開"
+  public: "Public"
+  home: "Home"
+  home-desc: "Post to the home timeline only"
+  followers: "Followers"
+  followers-desc: "Post to followers only"
+  specified: "Direct"
+  specified-desc: "Post to specified users only"
+  private: "Private"
 common/views/widgets/broadcast.vue:
   fetching: "Fetching"
   no-broadcasts: "No broadcasts"
