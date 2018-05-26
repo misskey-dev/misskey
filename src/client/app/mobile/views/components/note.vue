@@ -386,9 +386,6 @@ root(isDark)
 					text-decoration none
 					text-overflow ellipsis
 
-					&:hover
-						text-decoration underline
-
 				> .is-admin
 				> .is-bot
 				> .is-cat
