@@ -12,6 +12,7 @@ const fetchLimit = 10;
 
 export default Vue.extend({
 	props: ['list'],
+
 	data() {
 		return {
 			fetching: true,
@@ -20,15 +21,25 @@ export default Vue.extend({
 			connection: null
 		};
 	},
+
+	computed: {
+		canFetchMore(): boolean {
+			return !this.moreFetching && !this.fetching && this.existMore;
+		}
+	},
+
 	watch: {
 		$route: 'init'
 	},
+
 	mounted() {
 		this.init();
 	},
+
 	beforeDestroy() {
 		this.connection.close();
 	},
+
 	methods: {
 		init() {
 			if (this.connection) this.connection.close();
@@ -39,6 +50,7 @@ export default Vue.extend({
 
 			this.fetch();
 		},
+
 		fetch() {
 			this.fetching = true;
 
@@ -59,7 +71,10 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
+
 		more() {
+			if (!this.canFetchMore) return;
+
 			this.moreFetching = true;
 
 			(this as any).api('notes/user-list-timeline', {
@@ -78,13 +93,16 @@ export default Vue.extend({
 				this.moreFetching = false;
 			});
 		},
+
 		onNote(note) {
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
+
 		onUserAdded() {
 			this.fetch();
 		},
+
 		onUserRemoved() {
 			this.fetch();
 		}
