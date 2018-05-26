@@ -1,7 +1,7 @@
 ---
 meta:
-  lang: "Français"
-  divider: " "
+  lang: "Français (France)"
+  divider: ""
 common:
   misskey: "Partagez avec les autres en utilisant Misskey"
   time:
