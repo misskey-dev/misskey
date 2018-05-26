@@ -358,6 +358,8 @@ desktop/views/components/renote-form.vue:
   failure: "Nie udało się udostępnić"
 desktop/views/components/renote-form-window.vue:
   title: "Czy na pewno chcesz udostępnić ten wpis?"
+desktop/views/components/settings-window.vue:
+  settings: "設定"
 desktop/views/components/settings.vue:
   profile: "Profil"
   notification: "Powiadomienia"
