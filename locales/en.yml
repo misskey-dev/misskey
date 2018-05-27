@@ -613,6 +613,15 @@ mobile/views/components/drive.vue:
   load-more: "Load more"
   nothing-in-drive: "Nothing"
   folder-is-empty: "This folder is empty"
+  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  folder-name: "フォルダー名"
+  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
+  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  url-prompt: "アップロードしたいファイルのURL"
+  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+mobile/views/components/drive-file-detail.vue:
+  rename: "名前を変更"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose a file"
 mobile/views/components/drive-folder-chooser.vue:
@@ -626,22 +635,52 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/follow-button.vue:
   follow: "Follow"
   unfollow: "Unfollow"
+mobile/views/components/friends-maker.vue:
+  title: "気になるユーザーをフォロー"
+  empty: "おすすめのユーザーは見つかりませんでした。"
+  fetching: "読み込んでいます"
+  refresh: "もっと見る"
+  close: "閉じる"
 mobile/views/components/note.vue:
   reposted-by: "Renoted by {}"
+  more: "もっと見る"
+  less: "隠す"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
+  is-renote: "がRenote"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/notes.vue:
+  failed: "読み込みに失敗しました。"
+  retry: "リトライ"
 mobile/views/components/notifications.vue:
   more: "More"
   empty: "No notifications"
 mobile/views/components/post-form.vue:
+  add-visible-user: "ユーザーを追加"
   submit: "Post"
   reply: "Reply"
   renote: "Renote"
   renote-placeholder: "Quote this post. (optional)"
   reply-placeholder: "Reply to this note..."
   note-placeholder: "What's happening?"
+  cw-placeholder: "内容への注釈 (オプション)"
+  location-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  username-prompt: "ユーザー名を入力してください"
 mobile/views/components/sub-note-content.vue:
+  hidden: "この投稿は非公開です"
   media-count: "{} media"
   poll: "Poll"
 mobile/views/components/timeline.vue:
