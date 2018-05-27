@@ -15,4 +15,4 @@ export default (os: OS) => opts => {
 		});
 		document.body.appendChild(d.$el);
 	});
-}
+};
