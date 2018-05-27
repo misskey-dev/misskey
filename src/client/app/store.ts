@@ -16,7 +16,8 @@ const defaultSettings = {
 	showMyRenotes: true,
 	showRenotedMyNotes: true,
 	loadRemoteMedia: true,
-	disableViaMobile: false
+	disableViaMobile: false,
+	memo: null
 };
 
 const defaultDeviceSettings = {
