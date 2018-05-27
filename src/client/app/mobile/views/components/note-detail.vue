@@ -17,7 +17,13 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<mk-avatar class="avatar" :user="note.user"/>%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>%i18n:@is-renote%
+			<mk-avatar class="avatar" :user="note.user"/>
+			%fa:retweet%
+			<router-link class="name" :href="note.user | userPage">{{ note.user | userName }}</router-link>
+			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
+			<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+			<mk-time :time="note.createdAt"/>
 		</p>
 	</div>
 	<article>
