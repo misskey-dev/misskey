@@ -116,13 +116,13 @@ export default Vue.extend({
 			return categories.filter((item, pos) => categories.indexOf(item) == pos);
 		},
 		isAccepted(): boolean {
-			if (this.game.user1Id == (this as any).os.i.id && this.game.user1Accepted) return true;
-			if (this.game.user2Id == (this as any).os.i.id && this.game.user2Accepted) return true;
+			if (this.game.user1Id == this.$store.state.i.id && this.game.user1Accepted) return true;
+			if (this.game.user2Id == this.$store.state.i.id && this.game.user2Accepted) return true;
 			return false;
 		},
 		isOpAccepted(): boolean {
-			if (this.game.user1Id != (this as any).os.i.id && this.game.user1Accepted) return true;
-			if (this.game.user2Id != (this as any).os.i.id && this.game.user2Accepted) return true;
+			if (this.game.user1Id != this.$store.state.i.id && this.game.user1Accepted) return true;
+			if (this.game.user2Id != this.$store.state.i.id && this.game.user2Accepted) return true;
 			return false;
 		}
 	},
@@ -133,8 +133,8 @@ export default Vue.extend({
 		this.connection.on('init-form', this.onInitForm);
 		this.connection.on('message', this.onMessage);
 
-		if (this.game.user1Id != (this as any).os.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
-		if (this.game.user2Id != (this as any).os.i.id && this.game.settings.form2) this.form = this.game.settings.form2;
+		if (this.game.user1Id != this.$store.state.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
+		if (this.game.user2Id != this.$store.state.i.id && this.game.settings.form2) this.form = this.game.settings.form2;
 	},
 
 	beforeDestroy() {
@@ -185,12 +185,12 @@ export default Vue.extend({
 		},
 
 		onInitForm(x) {
-			if (x.userId == (this as any).os.i.id) return;
+			if (x.userId == this.$store.state.i.id) return;
 			this.form = x.form;
 		},
 
 		onMessage(x) {
-			if (x.userId == (this as any).os.i.id) return;
+			if (x.userId == this.$store.state.i.id) return;
 			this.messages.unshift(x.message);
 		},
 

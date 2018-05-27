@@ -2,7 +2,7 @@
 <div class="mk-users-list">
 	<nav>
 		<span :data-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
-		<span v-if="os.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@known%<span>{{ youKnowCount }}</span></span>
+		<span v-if="$store.getters.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@known%<span>{{ youKnowCount }}</span></span>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">
 		<mk-user-preview v-for="u in users" :user="u" :key="u.id"/>

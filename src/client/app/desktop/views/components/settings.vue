@@ -20,7 +20,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@behaviour%</h1>
-			<mk-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll" text="%i18n:@fetch-on-scroll%">
+			<mk-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll" text="%i18n:@fetch-on-scroll%">
 				<span>%i18n:@fetch-on-scroll-desc%</span>
 			</mk-switch>
 			<mk-switch v-model="autoPopout" text="%i18n:@auto-popout%">
@@ -41,14 +41,14 @@
 			</div>
 			<div class="div">
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
-				<mk-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons" text="%i18n:@circle-icons%"/>
-				<mk-switch v-model="clientSettings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="%i18n:@gradient-window-header%"/>
+				<mk-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons" text="%i18n:@circle-icons%"/>
+				<mk-switch v-model="$store.state.settings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="%i18n:@gradient-window-header%"/>
 			</div>
-			<mk-switch v-model="clientSettings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
-			<mk-switch v-model="clientSettings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
-			<mk-switch v-model="clientSettings.showMyRenotes" @change="onChangeShowMyRenotes" text="%i18n:@show-my-renotes%"/>
-			<mk-switch v-model="clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
-			<mk-switch v-model="clientSettings.showMaps" @change="onChangeShowMaps" text="%i18n:@show-maps%">
+			<mk-switch v-model="$store.state.settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
+			<mk-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
+			<mk-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes" text="%i18n:@show-my-renotes%"/>
+			<mk-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes" text="%i18n:@show-renoted-my-notes%"/>
+			<mk-switch v-model="$store.state.settings.showMaps" @change="onChangeShowMaps" text="%i18n:@show-maps%">
 				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
 		</section>
@@ -72,7 +72,7 @@
 
 		<section class="web" v-show="page == 'web'">
 			<h1>%i18n:@mobile%</h1>
-			<mk-switch v-model="clientSettings.disableViaMobile" @change="onChangeDisableViaMobile" text="%i18n:@disable-via-mobile%"/>
+			<mk-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile" text="%i18n:@disable-via-mobile%"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -100,7 +100,7 @@
 
 		<section class="notification" v-show="page == 'notification'">
 			<h1>%i18n:@notification%</h1>
-			<mk-switch v-model="os.i.settings.autoWatch" @change="onChangeAutoWatch" text="%i18n:@auto-watch%">
+			<mk-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch" text="%i18n:@auto-watch%">
 				<span>%i18n:@auto-watch-desc%</span>
 			</mk-switch>
 		</section>

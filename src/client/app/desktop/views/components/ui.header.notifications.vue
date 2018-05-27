@@ -23,7 +23,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
@@ -39,7 +39,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.off('read_all_notifications', this.onReadAllNotifications);
 			this.connection.off('unread_notification', this.onUnreadNotification);
 			(this as any).os.stream.dispose(this.connectionId);

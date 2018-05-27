@@ -2,7 +2,7 @@
 <div class="profile">
 	<label class="avatar ui from group">
 		<p>%i18n:@avatar%</p>
-		<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
+		<img class="avatar" :src="`${$store.state.i.avatarUrl}?thumbnail&size=64`" alt="avatar"/>
 		<button class="ui" @click="updateAvatar">%i18n:@choice-avatar%</button>
 	</label>
 	<label class="ui from group">
@@ -24,8 +24,8 @@
 	<button class="ui primary" @click="save">%i18n:@save%</button>
 	<section>
 		<h2>その他</h2>
-		<mk-switch v-model="os.i.isBot" @change="onChangeIsBot" text="%i18n:@is-bot%"/>
-		<mk-switch v-model="os.i.isCat" @change="onChangeIsCat" text="%i18n:@is-cat%"/>
+		<mk-switch v-model="$store.state.i.isBot" @change="onChangeIsBot" text="%i18n:@is-bot%"/>
+		<mk-switch v-model="$store.state.i.isCat" @change="onChangeIsCat" text="%i18n:@is-cat%"/>
 	</section>
 </div>
 </template>
@@ -43,10 +43,10 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.name = (this as any).os.i.name || '';
-		this.location = (this as any).os.i.profile.location;
-		this.description = (this as any).os.i.description;
-		this.birthday = (this as any).os.i.profile.birthday;
+		this.name = this.$store.state.i.name || '';
+		this.location = this.$store.state.i.profile.location;
+		this.description = this.$store.state.i.description;
+		this.birthday = this.$store.state.i.profile.birthday;
 	},
 	methods: {
 		updateAvatar() {
@@ -64,12 +64,12 @@ export default Vue.extend({
 		},
 		onChangeIsBot() {
 			(this as any).api('i/update', {
-				isBot: (this as any).os.i.isBot
+				isBot: this.$store.state.i.isBot
 			});
 		},
 		onChangeIsCat() {
 			(this as any).api('i/update', {
-				isCat: (this as any).os.i.isCat
+				isCat: this.$store.state.i.isCat
 			});
 		}
 	}

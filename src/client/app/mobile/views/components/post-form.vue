@@ -86,7 +86,7 @@ export default Vue.extend({
 				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.os.i.username == x.username && x.host == null) return;
+				if (this.$store.state.i.username == x.username && x.host == null) return;
 
 				// 重複は除外
 				if (this.text.indexOf(`${mention} `) != -1) return;
@@ -194,7 +194,7 @@ export default Vue.extend({
 
 		post() {
 			this.posting = true;
-			const viaMobile = (this as any).clientSettings.disableViaMobile !== true;
+			const viaMobile = this.$store.state.settings.disableViaMobile !== true;
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,

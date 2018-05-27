@@ -143,8 +143,7 @@ export default (callback: (launch: (router: VueRouter, api?: (os: MiOS) => API) 
 					return {
 						os,
 						api: os.api,
-						apis: os.apis,
-						clientSettings: os.store.state.settings
+						apis: os.apis
 					};
 				}
 			});

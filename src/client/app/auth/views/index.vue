@@ -1,6 +1,6 @@
 <template>
 <div class="index">
-	<main v-if="os.isSignedIn">
+	<main v-if="$store.getters.isSignedIn">
 		<p class="fetching" v-if="fetching">読み込み中<mk-ellipsis/></p>
 		<x-form
 			ref="form"
@@ -22,7 +22,7 @@
 			<p>セッションが存在しません。</p>
 		</div>
 	</main>
-	<main class="signin" v-if="!os.isSignedIn">
+	<main class="signin" v-if="!$store.getters.isSignedIn">
 		<h1>サインインしてください</h1>
 		<mk-signin/>
 	</main>
@@ -51,7 +51,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		if (!this.$root.$data.os.isSignedIn) return;
+		if (!this.$root.$data.$store.getters.isSignedIn) return;
 
 		// Fetch session
 		(this as any).api('auth/session/show', {

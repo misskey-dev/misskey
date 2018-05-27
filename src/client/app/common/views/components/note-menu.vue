@@ -3,7 +3,7 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
 		<button @click="favorite">%i18n:@favorite%</button>
-		<button v-if="note.userId == os.i.id" @click="pin">%i18n:@pin%</button>
+		<button v-if="note.userId == $store.state.i.id" @click="pin">%i18n:@pin%</button>
 		<a v-if="note.uri" :href="note.uri" target="_blank">%i18n:@remote%</a>
 	</div>
 </div>

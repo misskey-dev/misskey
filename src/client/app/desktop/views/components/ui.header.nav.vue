@@ -1,7 +1,7 @@
 <template>
 <div class="nav">
 	<ul>
-		<template v-if="os.isSignedIn">
+		<template v-if="$store.getters.isSignedIn">
 			<li class="home" :class="{ active: $route.name == 'index' }">
 				<router-link to="/">
 					%fa:home%
@@ -42,7 +42,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
@@ -60,7 +60,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
 			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
 			this.connection.off('othello_invited', this.onOthelloInvited);

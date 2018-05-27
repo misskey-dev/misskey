@@ -51,7 +51,7 @@
 			<div class="main">
 				<a @click="hint">カスタマイズのヒント</a>
 				<div>
-					<mk-post-form v-if="clientSettings.showPostFormOnTopOfTl"/>
+					<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
 					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
 				</div>
 			</div>
@@ -61,7 +61,7 @@
 				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp"/>
 			</div>
 			<div class="main">
-				<mk-post-form v-if="clientSettings.showPostFormOnTopOfTl"/>
+				<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
 				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 				<mk-mentions @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
 			</div>

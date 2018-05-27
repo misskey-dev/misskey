@@ -39,7 +39,7 @@
 		<div class="body">
 			<div class="text">
 				<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
-				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
+				<mk-note-html v-if="p.text" :text="p.text" :i="$store.state.i"/>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media" :raw="true"/>
@@ -158,7 +158,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
+			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);

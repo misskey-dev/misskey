@@ -11,7 +11,7 @@
 					<a class="avatar">
 						<img :src="user.avatarUrl" alt="avatar"/>
 					</a>
-					<mk-follow-button v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
+					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
 					<h1>{{ user | userName }}</h1>

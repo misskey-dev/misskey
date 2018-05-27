@@ -3,7 +3,7 @@
 	<nav>
 		<div>
 			<span :data-active="mode == 'all'" @click="mode = 'all'">%i18n:@all%<span>{{ count }}</span></span>
-			<span v-if="os.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@iknow%<span>{{ youKnowCount }}</span></span>
+			<span v-if="$store.getters.isSignedIn && youKnowCount" :data-active="mode == 'iknow'" @click="mode = 'iknow'">%i18n:@iknow%<span>{{ youKnowCount }}</span></span>
 		</div>
 	</nav>
 	<div class="users" v-if="!fetching && users.length != 0">

@@ -118,7 +118,7 @@ export default Vue.extend({
 				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.os.i.username == x.username && x.host == null) return;
+				if (this.$store.state.i.username == x.username && x.host == null) return;
 
 				// 重複は除外
 				if (this.text.indexOf(`${mention} `) != -1) return;

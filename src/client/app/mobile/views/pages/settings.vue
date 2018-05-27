@@ -17,22 +17,22 @@
 					</div>
 
 					<div>
-						<md-switch v-model="clientSettings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</md-switch>
+						<md-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</md-switch>
 					</div>
 
 					<div>
 						<div class="md-body-2">%i18n:@timeline%</div>
 
 						<div>
-							<md-switch v-model="clientSettings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</md-switch>
+							<md-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</md-switch>
 						</div>
 
 						<div>
-							<md-switch v-model="clientSettings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</md-switch>
+							<md-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</md-switch>
 						</div>
 
 						<div>
-							<md-switch v-model="clientSettings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</md-switch>
+							<md-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</md-switch>
 						</div>
 					</div>
 
@@ -52,11 +52,11 @@
 
 				<md-card-content>
 					<div>
-						<md-switch v-model="clientSettings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</md-switch>
+						<md-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</md-switch>
 					</div>
 
 					<div>
-						<md-switch v-model="clientSettings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</md-switch>
+						<md-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</md-switch>
 					</div>
 
 					<div>
@@ -64,7 +64,7 @@
 					</div>
 
 					<div>
-						<md-switch v-model="clientSettings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</md-switch>
+						<md-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</md-switch>
 					</div>
 
 					<div>
@@ -100,11 +100,11 @@
 				</md-card-header>
 
 				<md-card-content>
-					<p class="account" v-if="os.i.twitter"><a :href="`https://twitter.com/${os.i.twitter.screenName}`" target="_blank">@{{ os.i.twitter.screenName }}</a></p>
+					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
 					<p>
-						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ os.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
-						<span v-if="os.i.twitter"> or </span>
-						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="os.i.twitter">%i18n:@twitter-disconnect%</a>
+						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
+						<span v-if="$store.state.i.twitter"> or </span>
+						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">%i18n:@twitter-disconnect%</a>
 					</p>
 				</md-card-content>
 			</md-card>
@@ -156,7 +156,7 @@ export default Vue.extend({
 
 	computed: {
 		name(): string {
-			return Vue.filter('userName')((this as any).os.i);
+			return Vue.filter('userName')(this.$store.state.i);
 		},
 
 		darkmode: {

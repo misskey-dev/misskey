@@ -24,10 +24,8 @@ export class HomeStream extends Stream {
 			if (os.debug) {
 				console.log('I updated:', i);
 			}
-			merge(me, i);
 
-			// キャッシュ更新
-			os.bakeMe();
+			os.store.dispatch('mergeMe', i);
 		});
 
 		this.on('clientSettingUpdated', x => {

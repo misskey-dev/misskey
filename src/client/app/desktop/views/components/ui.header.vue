@@ -4,16 +4,16 @@
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="main">
-			<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ os.i | userName }}</b>さん</p>
+			<p ref="welcomeback" v-if="$store.getters.isSignedIn">おかえりなさい、<b>{{ $store.state.i | userName }}</b>さん</p>
 			<div class="container" ref="mainContainer">
 				<div class="left">
 					<x-nav/>
 				</div>
 				<div class="right">
 					<x-search/>
-					<x-account v-if="os.isSignedIn"/>
-					<x-notifications v-if="os.isSignedIn"/>
-					<x-post v-if="os.isSignedIn"/>
+					<x-account v-if="$store.getters.isSignedIn"/>
+					<x-notifications v-if="$store.getters.isSignedIn"/>
+					<x-post v-if="$store.getters.isSignedIn"/>
 					<x-clock/>
 				</div>
 			</div>
@@ -45,11 +45,11 @@ export default Vue.extend({
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', 48);
 
-		if ((this as any).os.isSignedIn) {
-			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000;
+		if (this.$store.getters.isSignedIn) {
+			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
 			const isHisasiburi = ago >= 3600;
-			(this as any).os.i.lastUsedAt = new Date();
-			(this as any).os.bakeMe();
+			this.$store.state.i.lastUsedAt = new Date();
+
 			if (isHisasiburi) {
 				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';

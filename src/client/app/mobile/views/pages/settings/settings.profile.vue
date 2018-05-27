@@ -82,15 +82,15 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.name = (this as any).os.i.name || '';
-		this.username = (this as any).os.i.username;
-		this.location = (this as any).os.i.profile.location;
-		this.description = (this as any).os.i.description;
-		this.birthday = (this as any).os.i.profile.birthday;
-		this.avatarId = (this as any).os.i.avatarId;
-		this.bannerId = (this as any).os.i.bannerId;
-		this.isBot = (this as any).os.i.isBot;
-		this.isCat = (this as any).os.i.isCat;
+		this.name = this.$store.state.i.name || '';
+		this.username = this.$store.state.i.username;
+		this.location = this.$store.state.i.profile.location;
+		this.description = this.$store.state.i.description;
+		this.birthday = this.$store.state.i.profile.birthday;
+		this.avatarId = this.$store.state.i.avatarId;
+		this.bannerId = this.$store.state.i.bannerId;
+		this.isBot = this.$store.state.i.isBot;
+		this.isCat = this.$store.state.i.isCat;
 	},
 
 	methods: {
@@ -99,7 +99,7 @@ export default Vue.extend({
 
 			const data = new FormData();
 			data.append('file', file);
-			data.append('i', (this as any).os.i.token);
+			data.append('i', this.$store.state.i.token);
 
 			fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
@@ -121,7 +121,7 @@ export default Vue.extend({
 
 			const data = new FormData();
 			data.append('file', file);
-			data.append('i', (this as any).os.i.token);
+			data.append('i', this.$store.state.i.token);
 
 			fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
@@ -152,10 +152,10 @@ export default Vue.extend({
 				isCat: this.isCat
 			}).then(i => {
 				this.saving = false;
-				(this as any).os.i.avatarId = i.avatarId;
-				(this as any).os.i.avatarUrl = i.avatarUrl;
-				(this as any).os.i.bannerId = i.bannerId;
-				(this as any).os.i.bannerUrl = i.bannerUrl;
+				this.$store.state.i.avatarId = i.avatarId;
+				this.$store.state.i.avatarUrl = i.avatarUrl;
+				this.$store.state.i.bannerId = i.bannerId;
+				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				alert('%i18n:@saved%');
 			});

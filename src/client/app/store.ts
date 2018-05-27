@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 
 import MiOS from './mios';
+import { hostname } from './config';
 
 const defaultSettings = {
 	home: [],
@@ -33,23 +34,29 @@ const defaultDeviceSettings = {
 };
 
 export default (os: MiOS) => new Vuex.Store({
-	plugins: [store => {
-		store.subscribe((mutation, state) => {
-			if (mutation.type.startsWith('settings/')) {
-				localStorage.setItem('settings', JSON.stringify(state.settings));
-			}
-		});
-	}, createPersistedState({
-		paths: ['device'],
-		filter: mut => mut.type.startsWith('device/')
+	plugins: [createPersistedState({
+		paths: ['i', 'device', 'settings']
 	})],
 
 	state: {
+		i: null,
 		indicate: false,
 		uiHeaderHeight: 0
 	},
 
+	getters: {
+		isSignedIn: state => state.i != null
+	},
+
 	mutations: {
+		updateI(state, x) {
+			state.i = x;
+		},
+
+		updateIKeyValue(state, x) {
+			state.i[x.key] = x.value;
+		},
+
 		indicate(state, x) {
 			state.indicate = x;
 		},
@@ -57,6 +64,28 @@ export default (os: MiOS) => new Vuex.Store({
 		setUiHeaderHeight(state, height) {
 			state.uiHeaderHeight = height;
 		}
+	},
+
+	actions: {
+		login(ctx, i) {
+			ctx.commit('updateI', i);
+			ctx.dispatch('settings/merge', i.clientSettings);
+		},
+
+		logout(ctx) {
+			ctx.commit('updateI', null);
+			document.cookie = `i=; domain=${hostname}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+		},
+
+		mergeMe(ctx, me) {
+			Object.entries(me).forEach(([key, value]) => {
+				ctx.commit('updateIKeyValue', { key, value });
+			});
+
+			if (me.clientSettings) {
+				ctx.dispatch('settings/merge', me.clientSettings);
+			}
+		},
 	},
 
 	modules: {
@@ -134,7 +163,7 @@ export default (os: MiOS) => new Vuex.Store({
 				set(ctx, x) {
 					ctx.commit('set', x);
 
-					if (os.isSignedIn) {
+					if (ctx.rootGetters.isSignedIn) {
 						os.api('i/update_client_setting', {
 							name: x.key,
 							value: x.value

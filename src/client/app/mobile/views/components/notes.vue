@@ -121,24 +121,24 @@ export default Vue.extend({
 
 		prepend(note, silent = false) {
 			//#region 弾く
-			const isMyNote = note.userId == (this as any).os.i.id;
+			const isMyNote = note.userId == this.$store.state.i.id;
 			const isPureRenote = note.renoteId != null && note.text == null && note.mediaIds.length == 0 && note.poll == null;
 
-			if ((this as any).clientSettings.showMyRenotes === false) {
+			if (this.$store.state.settings.showMyRenotes === false) {
 				if (isMyNote && isPureRenote) {
 					return;
 				}
 			}
 
-			if ((this as any).clientSettings.showRenotedMyNotes === false) {
-				if (isPureRenote && (note.renote.userId == (this as any).os.i.id)) {
+			if (this.$store.state.settings.showRenotedMyNotes === false) {
+				if (isPureRenote && (note.renote.userId == this.$store.state.i.id)) {
 					return;
 				}
 			}
 			//#endregion
 
 			// 投稿が自分のものではないかつ、タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
-			if ((document.hidden || !this.isScrollTop()) && note.userId !== (this as any).os.i.id) {
+			if ((document.hidden || !this.isScrollTop()) && note.userId !== this.$store.state.i.id) {
 				this.unreadCount++;
 				document.title = `(${this.unreadCount}) ${getNoteSummary(note)}`;
 			}
@@ -195,7 +195,7 @@ export default Vue.extend({
 				this.clearNotification();
 			}
 
-			if ((this as any).clientSettings.fetchOnScroll !== false) {
+			if (this.$store.state.settings.fetchOnScroll !== false) {
 				// 親要素が display none だったら弾く
 				// https://github.com/syuilo/misskey/issues/1569
 				// http://d.hatena.ne.jp/favril/20091105/1257403319

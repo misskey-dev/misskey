@@ -2,7 +2,7 @@
 <mk-activity
 	:design="props.design"
 	:init-view="props.view"
-	:user="os.i"
+	:user="$store.state.i"
 	@view-changed="viewChanged"/>
 </template>
 

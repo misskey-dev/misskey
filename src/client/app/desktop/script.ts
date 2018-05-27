@@ -2,7 +2,6 @@
  * Desktop Client
  */
 
-import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
@@ -68,8 +67,8 @@ init(async (launch) => {
 
 	// Launch the app
 	const [, os] = launch(router, os => ({
-		chooseDriveFolder,
-		chooseDriveFile,
+		chooseDriveFolder: chooseDriveFolder(os),
+		chooseDriveFile: chooseDriveFile(os),
 		dialog,
 		input,
 		post,

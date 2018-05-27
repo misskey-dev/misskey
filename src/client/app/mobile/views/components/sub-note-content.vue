@@ -3,7 +3,7 @@
 	<div class="body">
 		<span v-if="note.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
 		<a class="reply" v-if="note.replyId">%fa:reply%</a>
-		<mk-note-html v-if="note.text" :text="note.text" :i="os.i"/>
+		<mk-note-html v-if="note.text" :text="note.text" :i="$store.state.i"/>
 		<a class="rp" v-if="note.renoteId">RP: ...</a>
 	</div>
 	<details v-if="note.media.length > 0">

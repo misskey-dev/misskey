@@ -87,7 +87,7 @@ export default Vue.extend({
 			if (this.src == 'list') {
 				this.list = this.$store.state.device.tl.arg;
 			}
-		} else if ((this as any).os.i.followingCount == 0) {
+		} else if (this.$store.state.i.followingCount == 0) {
 			this.src = 'local';
 		}
 	},

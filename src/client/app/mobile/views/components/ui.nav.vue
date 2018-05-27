@@ -9,9 +9,9 @@
 	</transition>
 	<transition name="nav">
 		<div class="body" v-if="isOpen">
-			<router-link class="me" v-if="os.isSignedIn" :to="`/@${os.i.username}`">
-				<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=128`" alt="avatar"/>
-				<p class="name">{{ os.i | userName }}</p>
+			<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
+				<img class="avatar" :src="`${$store.state.i.avatarUrl}?thumbnail&size=128`" alt="avatar"/>
+				<p class="name">{{ $store.state.i | userName }}</p>
 			</router-link>
 			<div class="links">
 				<ul>
@@ -55,7 +55,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
@@ -82,7 +82,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.off('read_all_notifications', this.onReadAllNotifications);
 			this.connection.off('unread_notification', this.onUnreadNotification);
 			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);

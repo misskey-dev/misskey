@@ -8,7 +8,7 @@
 				<img src="/assets/desktop/messaging/delete.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
-				<mk-note-html class="text" v-if="message.text" ref="text" :text="message.text" :i="os.i"/>
+				<mk-note-html class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
@@ -42,7 +42,7 @@ export default Vue.extend({
 	},
 	computed: {
 		isMe(): boolean {
-			return this.message.userId == (this as any).os.i.id;
+			return this.message.userId == this.$store.state.i.id;
 		},
 		urls(): string[] {
 			if (this.message.text) {

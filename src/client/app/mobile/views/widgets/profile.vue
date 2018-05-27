@@ -2,13 +2,13 @@
 <div class="mkw-profile">
 	<mk-widget-container>
 		<div :class="$style.banner"
-			:style="os.i.bannerUrl ? `background-image: url(${os.i.bannerUrl}?thumbnail&size=256)` : ''"
+			:style="$store.state.i.bannerUrl ? `background-image: url(${$store.state.i.bannerUrl}?thumbnail&size=256)` : ''"
 		></div>
 		<img :class="$style.avatar"
-			:src="`${os.i.avatarUrl}?thumbnail&size=96`"
+			:src="`${$store.state.i.avatarUrl}?thumbnail&size=96`"
 			alt="avatar"
 		/>
-		<router-link :class="$style.name" :to="os.i | userPage">{{ os.i | userName }}</router-link>
+		<router-link :class="$style.name" :to="$store.state.i | userPage">{{ $store.state.i | userName }}</router-link>
 	</mk-widget-container>
 </div>
 </template>

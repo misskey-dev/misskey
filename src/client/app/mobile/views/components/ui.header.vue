@@ -3,7 +3,7 @@
 	<mk-special-message/>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
-		<p ref="welcomeback" v-if="os.isSignedIn">おかえりなさい、<b>{{ os.i | userName }}</b>さん</p>
+		<p ref="welcomeback" v-if="$store.getters.isSignedIn">おかえりなさい、<b>{{ $store.state.i | userName }}</b>さん</p>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
 			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages || hasGameInvitations">%fa:circle%</template>
@@ -35,7 +35,7 @@ export default Vue.extend({
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', 48);
 
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
@@ -60,10 +60,10 @@ export default Vue.extend({
 				}
 			});
 
-			const ago = (new Date().getTime() - new Date((this as any).os.i.lastUsedAt).getTime()) / 1000;
+			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
 			const isHisasiburi = ago >= 3600;
-			(this as any).os.i.lastUsedAt = new Date();
-			(this as any).os.bakeMe();
+			this.$store.state.i.lastUsedAt = new Date();
+
 			if (isHisasiburi) {
 				(this.$refs.welcomeback as any).style.display = 'block';
 				(this.$refs.main as any).style.overflow = 'hidden';
@@ -109,7 +109,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.off('read_all_notifications', this.onReadAllNotifications);
 			this.connection.off('unread_notification', this.onUnreadNotification);
 			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);

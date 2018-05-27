@@ -4,7 +4,7 @@
 		<div ref="left">
 			<x-profile :user="user"/>
 			<x-photos :user="user"/>
-			<x-followers-you-know v-if="os.isSignedIn && os.i.id != user.id" :user="user"/>
+			<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 			<p v-if="user.host === null">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
 		</div>
 	</div>

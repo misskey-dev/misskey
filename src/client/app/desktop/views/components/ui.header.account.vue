@@ -1,14 +1,14 @@
 <template>
 <div class="account">
 	<button class="header" :data-active="isOpen" @click="toggle">
-		<span class="username">{{ os.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
-		<mk-avatar class="avatar" :user="os.i"/>
+		<span class="username">{{ $store.state.i.username }}<template v-if="!isOpen">%fa:angle-down%</template><template v-if="isOpen">%fa:angle-up%</template></span>
+		<mk-avatar class="avatar" :user="$store.state.i"/>
 	</button>
 	<transition name="zoom-in-top">
 		<div class="menu" v-if="isOpen">
 			<ul>
 				<li>
-					<router-link :to="`/@${ os.i.username }`">%fa:user%<span>%i18n:@profile%</span>%fa:angle-right%</router-link>
+					<router-link :to="`/@${ $store.state.i.username }`">%fa:user%<span>%i18n:@profile%</span>%fa:angle-right%</router-link>
 				</li>
 				<li @click="drive">
 					<p>%fa:cloud%<span>%i18n:@drive%</span>%fa:angle-right%</p>

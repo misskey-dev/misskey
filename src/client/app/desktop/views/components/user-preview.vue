@@ -19,7 +19,7 @@
 				<p>%i18n:@followers%</p><a>{{ u.followersCount }}</a>
 			</div>
 		</div>
-		<mk-follow-button v-if="os.isSignedIn && user.id != os.i.id" :user="u"/>
+		<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="u"/>
 	</template>
 </div>
 </template>

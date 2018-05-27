@@ -6,17 +6,15 @@ import ProgressDialog from '../views/components/progress-dialog.vue';
 export default (os: OS) => {
 
 	const cropImage = file => new Promise((resolve, reject) => {
-		const w = new CropWindow({
-			propsData: {
-				image: file,
-				title: 'バナーとして表示する部分を選択',
-				aspectRatio: 16 / 9
-			}
-		}).$mount();
+		const w = os.new(CropWindow, {
+			image: file,
+			title: 'バナーとして表示する部分を選択',
+			aspectRatio: 16 / 9
+		});
 
 		w.$once('cropped', blob => {
 			const data = new FormData();
-			data.append('i', os.i.token);
+			data.append('i', os.store.state.i.token);
 			data.append('file', blob, file.name + '.cropped.png');
 
 			os.api('drive/folders/find', {
@@ -44,11 +42,9 @@ export default (os: OS) => {
 	});
 
 	const upload = (data, folder) => new Promise((resolve, reject) => {
-		const dialog = new ProgressDialog({
-			propsData: {
-				title: '新しいバナーをアップロードしています'
-			}
-		}).$mount();
+		const dialog = os.new(ProgressDialog, {
+			title: '新しいバナーをアップロードしています'
+		});
 		document.body.appendChild(dialog.$el);
 
 		if (folder) data.append('folderId', folder.id);
@@ -73,8 +69,14 @@ export default (os: OS) => {
 		return os.api('i/update', {
 			bannerId: file.id
 		}).then(i => {
-			os.i.bannerId = i.bannerId;
-			os.i.bannerUrl = i.bannerUrl;
+			os.store.commit('updateIKeyValue', {
+				key: 'bannerId',
+				value: i.bannerId
+			});
+			os.store.commit('updateIKeyValue', {
+				key: 'bannerUrl',
+				value: i.bannerUrl
+			});
 
 			os.apis.dialog({
 				title: '%fa:info-circle%バナーを更新しました',

@@ -9,10 +9,10 @@
 	@contextmenu.prevent.stop="onContextmenu"
 	:title="title"
 >
-	<div class="label" v-if="os.i.avatarId == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="$store.state.i.avatarId == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:@avatar%</p>
 	</div>
-	<div class="label" v-if="os.i.bannerId == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="$store.state.i.bannerId == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:@banner%</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">

@@ -61,13 +61,13 @@ export default Vue.extend({
 
 	computed: {
 		iAmPlayer(): boolean {
-			if (!(this as any).os.isSignedIn) return false;
-			return this.game.user1Id == (this as any).os.i.id || this.game.user2Id == (this as any).os.i.id;
+			if (!this.$store.getters.isSignedIn) return false;
+			return this.game.user1Id == this.$store.state.i.id || this.game.user2Id == this.$store.state.i.id;
 		},
 		myColor(): Color {
 			if (!this.iAmPlayer) return null;
-			if (this.game.user1Id == (this as any).os.i.id && this.game.black == 1) return true;
-			if (this.game.user2Id == (this as any).os.i.id && this.game.black == 2) return true;
+			if (this.game.user1Id == this.$store.state.i.id && this.game.black == 1) return true;
+			if (this.game.user2Id == this.$store.state.i.id && this.game.black == 2) return true;
 			return false;
 		},
 		opColor(): Color {
@@ -91,7 +91,7 @@ export default Vue.extend({
 		},
 		isMyTurn(): boolean {
 			if (this.turnUser == null) return null;
-			return this.turnUser.id == (this as any).os.i.id;
+			return this.turnUser.id == this.$store.state.i.id;
 		}
 	},
 

@@ -16,7 +16,7 @@
 		<div class="body">
 			<div class="text">
 				<span v-if="note.isHidden" style="opacity: 0.5">%i18n:@private%</span>
-				<mk-note-html v-if="note.text" :text="note.text" :i="os.i"/>
+				<mk-note-html v-if="note.text" :text="note.text" :i="$store.state.i"/>
 			</div>
 			<div class="media" v-if="note.mediaIds.length > 0">
 				<mk-media-list :media-list="note.media"/>

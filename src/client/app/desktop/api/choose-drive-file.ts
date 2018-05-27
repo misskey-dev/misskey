@@ -1,18 +1,17 @@
+import OS from '../../mios';
 import { url } from '../../config';
 import MkChooseFileFromDriveWindow from '../views/components/choose-file-from-drive-window.vue';
 
-export default function(opts) {
+export default (os: OS) => opts => {
 	return new Promise((res, rej) => {
 		const o = opts || {};
 
 		if (document.body.clientWidth > 800) {
-			const w = new MkChooseFileFromDriveWindow({
-				propsData: {
-					title: o.title,
-					multiple: o.multiple,
-					initFolder: o.currentFolder
-				}
-			}).$mount();
+			const w = os.new(MkChooseFileFromDriveWindow, {
+				title: o.title,
+				multiple: o.multiple,
+				initFolder: o.currentFolder
+			});
 			w.$once('selected', file => {
 				res(file);
 			});
@@ -27,4 +26,4 @@ export default function(opts) {
 				'height=500, width=800');
 		}
 	});
-}
+};

@@ -4,7 +4,7 @@
 	<div class="main" ref="main" tabindex="-1" :data-is-modal="isModal" @mousedown="onBodyMousedown" @keydown="onKeydown" :style="{ width, height }">
 		<div class="body">
 			<header ref="header"
-				:class="{ withGradient: clientSettings.gradientWindowHeader }"
+				:class="{ withGradient: $store.state.settings.gradientWindowHeader }"
 				@contextmenu.prevent="() => {}" @mousedown.prevent="onHeaderMousedown"
 			>
 				<h1><slot name="header"></slot></h1>
@@ -95,7 +95,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		if ((this as any).os.store.state.device.autoPopout && this.popoutUrl) {
+		if (this.$store.state.device.autoPopout && this.popoutUrl) {
 			this.popout();
 			this.preventMount = true;
 		} else {

@@ -1,6 +1,6 @@
 <template>
 <div class="note" :class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }">
-	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || clientSettings.showReplyTarget)">
+	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
@@ -43,7 +43,7 @@
 					<div class="text">
 						<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<mk-note-html v-if="p.text && !canHideText(p)" :text="p.text" :i="os.i" :class="$style.text"/>
+						<mk-note-html v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
 					</div>
 					<div class="media" v-if="p.media.length > 0">
@@ -141,7 +141,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 		}
@@ -150,13 +150,13 @@ export default Vue.extend({
 	mounted() {
 		this.capture(true);
 
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
+			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -176,7 +176,7 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.decapture(true);
 
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.off('_connected_', this.onStreamConnected);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
@@ -186,7 +186,7 @@ export default Vue.extend({
 		canHideText,
 
 		capture(withHandler = false) {
-			if ((this as any).os.isSignedIn) {
+			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
 					type: 'capture',
 					id: this.p.id
@@ -196,7 +196,7 @@ export default Vue.extend({
 		},
 
 		decapture(withHandler = false) {
-			if ((this as any).os.isSignedIn) {
+			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
 					type: 'decapture',
 					id: this.p.id

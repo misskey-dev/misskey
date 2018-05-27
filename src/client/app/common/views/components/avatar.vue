@@ -32,7 +32,7 @@ export default Vue.extend({
 						? `rgb(${ this.user.avatarColor.join(',') })`
 						: null,
 				backgroundImage: this.lightmode ? null : `url(${ this.user.avatarUrl }?thumbnail)`,
-				borderRadius: (this as any).clientSettings.circleIcons ? '100%' : null
+				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
 		}
 	}

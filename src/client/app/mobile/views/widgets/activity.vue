@@ -3,7 +3,7 @@
 	<mk-widget-container :show-header="!props.compact">
 		<template slot="header">%fa:chart-bar%アクティビティ</template>
 		<div :class="$style.body">
-			<mk-activity :user="os.i"/>
+			<mk-activity :user="$store.state.i"/>
 		</div>
 	</mk-widget-container>
 </div>

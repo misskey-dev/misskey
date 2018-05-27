@@ -40,7 +40,7 @@ export default Vue.extend({
 
 	computed: {
 		alone(): boolean {
-			return (this as any).os.i.followingCount == 0;
+			return this.$store.state.i.followingCount == 0;
 		},
 
 		stream(): any {
@@ -98,8 +98,8 @@ export default Vue.extend({
 				(this as any).api(this.endpoint, {
 					limit: fetchLimit + 1,
 					untilDate: this.date ? this.date.getTime() : undefined,
-					includeMyRenotes: (this as any).clientSettings.showMyRenotes,
-					includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
+					includeMyRenotes: this.$store.state.settings.showMyRenotes,
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -120,8 +120,8 @@ export default Vue.extend({
 			const promise = (this as any).api(this.endpoint, {
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
-				includeMyRenotes: (this as any).clientSettings.showMyRenotes,
-				includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
 			});
 
 			promise.then(notes => {
