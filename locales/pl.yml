@@ -1,7 +1,7 @@
 ---
 meta:
   lang: "język polski"
-  divider: " "
+  divider: ""
 common:
   misskey: "Dziel się zawartością z innymi korzystając z Misskey."
   time:
@@ -38,6 +38,27 @@ common:
   ok: "OK"
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
+  widgets:
+    profile: "Profil"
+    calendar: "Kalendarz"
+    timemachine: "Kalendarz (wehikuł czasu)"
+    activity: "Aktywność"
+    rss: "Czytnik RSS"
+    memo: "メモ"
+    trends: "Na czasie"
+    photo-stream: "フォトストリーム"
+    slideshow: "Pokaz slajdów"
+    version: "Wersja"
+    broadcast: "Transmisja"
+    notifications: "Powiadomienia"
+    users: "Polecani użytkownicy"
+    polls: "Ankiety"
+    post-form: "Formularz tworzenia"
+    messaging: "Wiadomości"
+    server: "Informacje o serwerze"
+    donation: "Dotacje"
+    nav: "Nawigacja"
+    tips: "Wskazówki"
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
@@ -174,6 +195,10 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
+common/views/widgets/memo.vue:
+  title: "メモ"
+  memo: "ここに書いて！"
+  save: "保存"
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -274,25 +299,6 @@ desktop/views/components/game-window.vue:
 desktop/views/components/home.vue:
   done: "Wyślij"
   add-widget: "Dodaj widżet:"
-  profile: "Profil"
-  calendar: "Kalendarz"
-  timemachine: "Kalendarz (wehikuł czasu)"
-  activity: "Aktywność"
-  rss: "Czytnik RSS"
-  trends: "Na czasie"
-  photostream: "Photostream"
-  slideshow: "Pokaz slajdów"
-  version: "Wersja"
-  broadcast: "Transmisja"
-  notifications: "Powiadomienia"
-  users: "Polecani użytkownicy"
-  polls: "Ankiety"
-  post-form: "Formularz tworzenia"
-  messaging: "Wiadomości"
-  server: "Informacje o serwerze"
-  donation: "Dotacje"
-  nav: "Nawigacja"
-  tips: "Wskazówki"
   add: "Dodaj"
 desktop/views/input-dialog.vue:
   cancel: "Anuluj"
@@ -578,7 +584,7 @@ desktop/views/pages/user/user.profile.vue:
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
-  with-media: "Zawartość multimedialna"
+  with-media: "Multimedia"
   empty: "Ten użytkownik nie umieścił jeszcze niczego."
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
@@ -613,6 +619,15 @@ mobile/views/components/drive.vue:
   load-more: "Załaduj więcej"
   nothing-in-drive: "Pusto"
   folder-is-empty: "Ten katalog jest pusty"
+  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  folder-name: "フォルダー名"
+  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
+  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  url-prompt: "アップロードしたいファイルのURL"
+  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+mobile/views/components/drive-file-detail.vue:
+  rename: "名前を変更"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Wybierz plik"
 mobile/views/components/drive-folder-chooser.vue:
@@ -626,22 +641,52 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/follow-button.vue:
   follow: "Śledź"
   unfollow: "Przestań śledzić"
+mobile/views/components/friends-maker.vue:
+  title: "気になるユーザーをフォロー"
+  empty: "おすすめのユーザーは見つかりませんでした。"
+  fetching: "読み込んでいます"
+  refresh: "もっと見る"
+  close: "閉じる"
 mobile/views/components/note.vue:
   reposted-by: "Udostępniono przez {}"
+  more: "もっと見る"
+  less: "隠す"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
 mobile/views/components/note-detail.vue:
   reply: "Odpowiedz"
   reaction: "Reakcja"
+  reposted-by: "{}がRenote"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/notes.vue:
+  failed: "読み込みに失敗しました。"
+  retry: "リトライ"
 mobile/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
 mobile/views/components/post-form.vue:
+  add-visible-user: "ユーザーを追加"
   submit: "Wyślij"
   reply: "Odpowiedz"
   renote: "Udostępnij"
   renote-placeholder: "Zacytuj wpis… (nieobowiązkowe)"
   reply-placeholder: "Odpowiedź na ten wpis…"
   note-placeholder: "Co się dzieje?"
+  cw-placeholder: "内容への注釈 (オプション)"
+  location-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  username-prompt: "ユーザー名を入力してください"
 mobile/views/components/sub-note-content.vue:
+  hidden: "この投稿は非公開です"
   media-count: "{} zawartości multimedialnej"
   poll: "Ankieta"
 mobile/views/components/timeline.vue:
@@ -748,7 +793,7 @@ mobile/views/pages/user.vue:
   notes: "Wpisy"
   overview: "Przegląd"
   timeline: "Oś czasu"
-  media: "Zawartość multimedialna"
+  media: "Multimedia"
   is-suspended: "To konto zostało zablokowane"
   is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
   view-remote: "Wyświetl dokładne informacje"
@@ -760,7 +805,7 @@ mobile/views/pages/user/home.vue:
   domains: "Domeny"
   frequently-replied-users: "Często aktywni użytkownicy"
   followers-you-know: "Śledzący których znasz"
-  last-used-at: "Ostatnio aktywny:"
+  last-used-at: "Ostatnio aktywny"
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Ładowanie"
   no-users: "Brak użytkowników"

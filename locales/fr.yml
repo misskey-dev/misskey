@@ -1,7 +1,7 @@
 ---
 meta:
   lang: "Français"
-  divider: " "
+  divider: ""
 common:
   misskey: "Partagez avec les autres en utilisant Misskey"
   time:
@@ -38,6 +38,27 @@ common:
   ok: "OK"
   update-available: "Une nouvelle version de Misskey est disponible({newer}, version actuelle: {current}). Recharger la page pour appliquer la mise à jour."
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
+  widgets:
+    profile: "プロフィール"
+    calendar: "カレンダー"
+    timemachine: "カレンダー(タイムマシン)"
+    activity: "アクティビティ"
+    rss: "RSSリーダー"
+    memo: "メモ"
+    trends: "トレンド"
+    photo-stream: "フォトストリーム"
+    slideshow: "スライドショー"
+    version: "バージョン"
+    broadcast: "ブロードキャスト"
+    notifications: "通知"
+    users: "おすすめユーザー"
+    polls: "投票"
+    post-form: "投稿フォーム"
+    messaging: "メッセージ"
+    server: "サーバー情報"
+    donation: "寄付のお願い"
+    nav: "ナビゲーション"
+    tips: "ヒント"
 common/views/components/connect-failed.vue:
   title: "Impossible de se connecter au server."
   description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
@@ -174,6 +195,10 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
+common/views/widgets/memo.vue:
+  title: "メモ"
+  memo: "ここに書いて！"
+  save: "保存"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -274,25 +299,6 @@ desktop/views/components/game-window.vue:
 desktop/views/components/home.vue:
   done: "完了"
   add-widget: "ウィジェットを追加:"
-  profile: "プロフィール"
-  calendar: "カレンダー"
-  timemachine: "カレンダー(タイムマシン)"
-  activity: "アクティビティ"
-  rss: "RSSリーダー"
-  trends: "トレンド"
-  photostream: "フォトストリーム"
-  slideshow: "スライドショー"
-  version: "バージョン"
-  broadcast: "ブロードキャスト"
-  notifications: "通知"
-  users: "おすすめユーザー"
-  polls: "投票"
-  post-form: "投稿フォーム"
-  messaging: "メッセージ"
-  server: "サーバー情報"
-  donation: "寄付のお願い"
-  nav: "ナビゲーション"
-  tips: "ヒント"
   add: "追加"
 desktop/views/input-dialog.vue:
   cancel: "キャンセル"
@@ -613,6 +619,15 @@ mobile/views/components/drive.vue:
   load-more: "Charger plus"
   nothing-in-drive: "Rien"
   folder-is-empty: "Ce dossier est vide"
+  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  folder-name: "フォルダー名"
+  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
+  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  url-prompt: "アップロードしたいファイルのURL"
+  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+mobile/views/components/drive-file-detail.vue:
+  rename: "名前を変更"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choisissez un fichier"
 mobile/views/components/drive-folder-chooser.vue:
@@ -626,22 +641,52 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/follow-button.vue:
   follow: "Suivre"
   unfollow: "Ne plus suivre"
+mobile/views/components/friends-maker.vue:
+  title: "気になるユーザーをフォロー"
+  empty: "おすすめのユーザーは見つかりませんでした。"
+  fetching: "読み込んでいます"
+  refresh: "もっと見る"
+  close: "閉じる"
 mobile/views/components/note.vue:
   reposted-by: "Renoté par {}"
+  more: "もっと見る"
+  less: "隠す"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
 mobile/views/components/note-detail.vue:
   reply: "Répondre"
   reaction: "Réaction"
+  reposted-by: "{}がRenote"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/notes.vue:
+  failed: "読み込みに失敗しました。"
+  retry: "リトライ"
 mobile/views/components/notifications.vue:
   more: "Plus"
   empty: "Pas de notifications"
 mobile/views/components/post-form.vue:
+  add-visible-user: "ユーザーを追加"
   submit: "Poster"
   reply: "返信"
   renote: "Renote"
   renote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "Répondre à cette note"
   note-placeholder: "Qu'est-ce qu'il se passe?"
+  cw-placeholder: "内容への注釈 (オプション)"
+  location-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  username-prompt: "ユーザー名を入力してください"
 mobile/views/components/sub-note-content.vue:
+  hidden: "この投稿は非公開です"
   media-count: "{} media"
   poll: "Sondage"
 mobile/views/components/timeline.vue:
