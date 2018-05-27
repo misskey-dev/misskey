@@ -9,8 +9,8 @@
 	</div>
 
 	<div v-if="!fetching && requestInitPromise != null">
-		<p>読み込みに失敗しました。</p>
-		<button @click="resolveInitPromise">リトライ</button>
+		<p>%i18n:@failed%</p>
+		<button @click="resolveInitPromise">%i18n:@retry%</button>
 	</div>
 
 	<transition-group name="mk-notes" class="transition">

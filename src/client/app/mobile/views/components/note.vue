@@ -37,11 +37,11 @@
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
-					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '隠す' : 'もっと見る' }}</span>
+					<span class="toggle" @click="showContent = !showContent">{{ showContent ? '%i18n:@less%' : '%i18n:@more%' }}</span>
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
-						<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+						<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@hidden%)</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
 						<mk-note-html v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
@@ -54,7 +54,7 @@
 						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
 					</div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
 					<div class="renote" v-if="p.renote">
 						<mk-note-preview :note="p.renote"/>
