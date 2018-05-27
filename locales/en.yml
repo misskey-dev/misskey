@@ -285,7 +285,7 @@ desktop/views/components/followers-window.vue:
 desktop/views/components/followers.vue:
   empty: "Seems that you don’t have any followers."
 desktop/views/components/following-window.vue:
-  following: "Following {}"
+  following: "Following of {}"
 desktop/views/components/following.vue:
   empty: "You don’t follow anyone."
 desktop/views/components/friends-maker.vue:
@@ -620,11 +620,11 @@ mobile/views/components/drive.vue:
   nothing-in-drive: "Nothing"
   folder-is-empty: "This folder is empty"
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
-  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
   root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
   root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
-  url-prompt: "アップロードしたいファイルのURL"
+  url-prompt: "URL of file you want to upload"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
 mobile/views/components/drive-file-detail.vue:
   rename: "Rename"
@@ -656,9 +656,9 @@ mobile/views/components/note.vue:
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
-  is-renote: "がRenote"
+  reposted-by: "{}がRenote"
   hidden: "この投稿は非公開です"
-  location: "位置情報"
+  location: "Location"
 mobile/views/components/note-preview.vue:
   admin: "admin"
   bot: "bot"
