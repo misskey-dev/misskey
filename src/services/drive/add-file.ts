@@ -226,7 +226,7 @@ export default async function(
 
 	const properties = {};
 
-	let propPromises = [];
+	let propPromises: Array<Promise<void>> = [];
 
 	const isImage = ['image/jpeg', 'image/gif', 'image/png'].includes(mime);
 
@@ -271,7 +271,7 @@ export default async function(
 		propPromises = [calcWh(), calcAvg()];
 	}
 
-	const [folder] = await Promise.all([fetchFolder(), propPromises]);
+	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
 	const metadata = {
 		userId: user._id,
