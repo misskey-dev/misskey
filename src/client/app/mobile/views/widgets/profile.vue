@@ -56,7 +56,7 @@ export default define({
 	left 92px
 	margin 0
 	line-height 100px
-	color #fff
+	color #fff !important // !important is for md
 	font-weight bold
 	text-shadow 0 0 8px rgba(#000, 0.5)
 
