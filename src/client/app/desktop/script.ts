@@ -69,10 +69,10 @@ init(async (launch) => {
 	const [, os] = launch(router, os => ({
 		chooseDriveFolder: chooseDriveFolder(os),
 		chooseDriveFile: chooseDriveFile(os),
-		dialog,
-		input,
-		post,
-		notify,
+		dialog: dialog(os),
+		input: input(os),
+		post: post(os),
+		notify: notify(os),
 		updateAvatar: updateAvatar(os),
 		updateBanner: updateBanner(os)
 	}));

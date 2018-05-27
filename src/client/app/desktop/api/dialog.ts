@@ -1,16 +1,15 @@
+import OS from '../../mios';
 import Dialog from '../views/components/dialog.vue';
 
-export default function(opts) {
+export default (os: OS) => opts => {
 	return new Promise<string>((res, rej) => {
 		const o = opts || {};
-		const d = new Dialog({
-			propsData: {
-				title: o.title,
-				text: o.text,
-				modal: o.modal,
-				buttons: o.actions
-			}
-		}).$mount();
+		const d = os.new(Dialog, {
+			title: o.title,
+			text: o.text,
+			modal: o.modal,
+			buttons: o.actions
+		});
 		d.$once('clicked', id => {
 			res(id);
 		});

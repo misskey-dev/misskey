@@ -1,21 +1,18 @@
+import OS from '../../mios';
 import PostFormWindow from '../views/components/post-form-window.vue';
 import RenoteFormWindow from '../views/components/renote-form-window.vue';
 
-export default function(opts) {
+export default (os: OS) => opts => {
 	const o = opts || {};
 	if (o.renote) {
-		const vm = new RenoteFormWindow({
-			propsData: {
-				renote: o.renote
-			}
-		}).$mount();
+		const vm = os.new(RenoteFormWindow, {
+			renote: o.renote
+		});
 		document.body.appendChild(vm.$el);
 	} else {
-		const vm = new PostFormWindow({
-			propsData: {
-				reply: o.reply
-			}
-		}).$mount();
+		const vm = os.new(PostFormWindow, {
+			reply: o.reply
+		});
 		document.body.appendChild(vm.$el);
 	}
-}
+};
