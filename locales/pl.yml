@@ -656,7 +656,7 @@ mobile/views/components/note.vue:
 mobile/views/components/note-detail.vue:
   reply: "Odpowiedz"
   reaction: "Reakcja"
-  is-renote: "がRenote"
+  reposted-by: "{}がRenote"
   hidden: "この投稿は非公開です"
   location: "位置情報"
 mobile/views/components/note-preview.vue:
