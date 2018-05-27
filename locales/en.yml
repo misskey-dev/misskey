@@ -656,8 +656,8 @@ mobile/views/components/note.vue:
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
-  reposted-by: "{}がRenote"
-  hidden: "この投稿は非公開です"
+  reposted-by: "Renoted by {}"
+  hidden: "this post is private"
   location: "Location"
 mobile/views/components/note-preview.vue:
   admin: "admin"
