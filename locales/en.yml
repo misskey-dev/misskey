@@ -38,6 +38,27 @@ common:
   ok: "OK"
   update-available: "A new version of Misskey is now available({newer}, current is {current}). Reload the page to apply the update."
   my-token-regenerated: "Your token has been generated. You will now get logged out."
+  widgets:
+    profile: "Profile"
+    calendar: "Calendar"
+    timemachine: "Calendar (Time Machine)"
+    activity: "Activity"
+    rss: "RSS reader"
+    memo: "Memo"
+    trends: "Trends"
+    photo-stream: "Photo stream"
+    slideshow: "Slideshow"
+    version: "Version"
+    broadcast: "Broadcast"
+    notifications: "Notifications"
+    users: "Recommended users"
+    polls: "Polls"
+    post-form: "Post form"
+    messaging: "Messages"
+    server: "Server info"
+    donation: "Donation"
+    nav: "Navigation"
+    tips: "Tips"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem either with your internet connection, or the server may be down or under maintenance. Please {try again} later."
@@ -174,6 +195,10 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
+common/views/widgets/memo.vue:
+  title: "Memo"
+  memo: "Write here!"
+  save: "Save"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -260,7 +285,7 @@ desktop/views/components/followers-window.vue:
 desktop/views/components/followers.vue:
   empty: "Seems that you don’t have any followers."
 desktop/views/components/following-window.vue:
-  following: "Following {}"
+  following: "Following of {}"
 desktop/views/components/following.vue:
   empty: "You don’t follow anyone."
 desktop/views/components/friends-maker.vue:
@@ -274,25 +299,6 @@ desktop/views/components/game-window.vue:
 desktop/views/components/home.vue:
   done: "Submit"
   add-widget: "Add widget:"
-  profile: "Profile"
-  calendar: "Calendar"
-  timemachine: "Calendar (Time Machine)"
-  activity: "Activity"
-  rss: "RSS reader"
-  trends: "Trends"
-  photostream: "Photostream"
-  slideshow: "Slideshow"
-  version: "Version"
-  broadcast: "Broadcast"
-  notifications: "Notifications"
-  users: "Recommended users"
-  polls: "Polls"
-  post-form: "Post form"
-  messaging: "Messaging"
-  server: "Server info"
-  donation: "Donation"
-  nav: "Navigation"
-  tips: "Tips"
   add: "Add"
 desktop/views/input-dialog.vue:
   cancel: "Cancel"
@@ -613,6 +619,15 @@ mobile/views/components/drive.vue:
   load-more: "Load more"
   nothing-in-drive: "Nothing"
   folder-is-empty: "This folder is empty"
+  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  deletion-alert: "Sorry! Deleting a folder is not yet implemented."
+  folder-name: "Folder name"
+  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
+  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  url-prompt: "URL of file you want to upload"
+  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+mobile/views/components/drive-file-detail.vue:
+  rename: "Rename"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose a file"
 mobile/views/components/drive-folder-chooser.vue:
@@ -626,22 +641,52 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/follow-button.vue:
   follow: "Follow"
   unfollow: "Unfollow"
+mobile/views/components/friends-maker.vue:
+  title: "Let's follow users"
+  empty: "Featured user was not found."
+  fetching: "Loading"
+  refresh: "See more"
+  close: "Close"
 mobile/views/components/note.vue:
   reposted-by: "Renoted by {}"
+  more: "See more"
+  less: "Hide"
+  hidden: "this post is private"
+  location: "Location"
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
+  reposted-by: "Renoted by {}"
+  hidden: "this post is private"
+  location: "Location"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/notes.vue:
+  failed: "Failed to load."
+  retry: "Retry"
 mobile/views/components/notifications.vue:
   more: "More"
   empty: "No notifications"
 mobile/views/components/post-form.vue:
+  add-visible-user: "Add a user"
   submit: "Post"
   reply: "Reply"
   renote: "Renote"
   renote-placeholder: "Quote this post. (optional)"
   reply-placeholder: "Reply to this note..."
   note-placeholder: "What's happening?"
+  cw-placeholder: "内容への注釈 (オプション)"
+  location-alert: "お使いの端末は位置情報に対応していません"
+  error: "Error"
+  username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
+  hidden: "this post is private"
   media-count: "{} media"
   poll: "Poll"
 mobile/views/components/timeline.vue:

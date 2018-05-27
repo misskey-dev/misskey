@@ -38,6 +38,27 @@ common:
   ok: "わかった"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
+  widgets:
+    profile: "プロフィール"
+    calendar: "カレンダー"
+    timemachine: "カレンダー(タイムマシン)"
+    activity: "アクティビティ"
+    rss: "RSSリーダー"
+    memo: "メモ"
+    trends: "トレンド"
+    photo-stream: "フォトストリーム"
+    slideshow: "スライドショー"
+    version: "バージョン"
+    broadcast: "ブロードキャスト"
+    notifications: "通知"
+    users: "おすすめユーザー"
+    polls: "投票"
+    post-form: "投稿フォーム"
+    messaging: "メッセージ"
+    server: "サーバー情報"
+    donation: "寄付のお願い"
+    nav: "ナビゲーション"
+    tips: "ヒント"
 common/views/components/connect-failed.vue:
   title: "サーバーに接続できません"
   description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
@@ -174,6 +195,10 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
+common/views/widgets/memo.vue:
+  title: "メモ"
+  memo: "ここに書いて！"
+  save: "保存"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -274,25 +299,6 @@ desktop/views/components/game-window.vue:
 desktop/views/components/home.vue:
   done: "完了"
   add-widget: "ウィジェットを追加:"
-  profile: "プロフィール"
-  calendar: "カレンダー"
-  timemachine: "カレンダー(タイムマシン)"
-  activity: "アクティビティ"
-  rss: "RSSリーダー"
-  trends: "トレンド"
-  photostream: "フォトストリーム"
-  slideshow: "スライドショー"
-  version: "バージョン"
-  broadcast: "ブロードキャスト"
-  notifications: "通知"
-  users: "おすすめユーザー"
-  polls: "投票"
-  post-form: "投稿フォーム"
-  messaging: "メッセージ"
-  server: "サーバー情報"
-  donation: "寄付のお願い"
-  nav: "ナビゲーション"
-  tips: "ヒント"
   add: "追加"
 desktop/views/input-dialog.vue:
   cancel: "キャンセル"
@@ -613,6 +619,15 @@ mobile/views/components/drive.vue:
   load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
+  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  folder-name: "フォルダー名"
+  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
+  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  url-prompt: "アップロードしたいファイルのURL"
+  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+mobile/views/components/drive-file-detail.vue:
+  rename: "名前を変更"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
 mobile/views/components/drive-folder-chooser.vue:
@@ -626,22 +641,52 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/follow-button.vue:
   follow: "フォロー"
   unfollow: "フォロー解除"
+mobile/views/components/friends-maker.vue:
+  title: "気になるユーザーをフォロー"
+  empty: "おすすめのユーザーは見つかりませんでした。"
+  fetching: "読み込んでいます"
+  refresh: "もっと見る"
+  close: "閉じる"
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
+  more: "もっと見る"
+  less: "隠す"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
 mobile/views/components/note-detail.vue:
   reply: "返信"
   reaction: "リアクション"
+  reposted-by: "{}がRenote"
+  hidden: "この投稿は非公開です"
+  location: "位置情報"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/notes.vue:
+  failed: "読み込みに失敗しました。"
+  retry: "リトライ"
 mobile/views/components/notifications.vue:
   more: "もっと見る"
   empty: "ありません！"
 mobile/views/components/post-form.vue:
+  add-visible-user: "ユーザーを追加"
   submit: "投稿"
   reply: "返信"
   renote: "Renote"
   renote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "この投稿への返信..."
   note-placeholder: "いまどうしてる？"
+  cw-placeholder: "内容への注釈 (オプション)"
+  location-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  username-prompt: "ユーザー名を入力してください"
 mobile/views/components/sub-note-content.vue:
+  hidden: "この投稿は非公開です"
   media-count: "{}個のメディア"
   poll: "投票"
 mobile/views/components/timeline.vue:
