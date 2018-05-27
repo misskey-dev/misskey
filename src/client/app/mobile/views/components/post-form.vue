@@ -17,9 +17,9 @@
 		<mk-note-preview v-if="renote" :note="renote"/>
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">+ユーザーを追加</a>
+			<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
 		</div>
-		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
+		<input v-show="useCw" v-model="cw" placeholder="%i18n:@cw-placeholder%">
 		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:@reply-placeholder%' : renote ? '%i18n:@renote-placeholder%' : '%i18n:@note-placeholder%'"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
@@ -141,14 +141,14 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('お使いの端末は位置情報に対応していません');
+				alert('%i18n:@location-alert%');
 				return;
 			}
 
 			navigator.geolocation.getCurrentPosition(pos => {
 				this.geo = pos.coords;
 			}, err => {
-				alert('エラー: ' + err.message);
+				alert('%i18n:@error%: ' + err.message);
 			}, {
 				enableHighAccuracy: true
 			});
@@ -171,7 +171,7 @@ export default Vue.extend({
 
 		addVisibleUser() {
 			(this as any).apis.input({
-				title: 'ユーザー名を入力してください'
+				title: '%i18n:@username-prompt%'
 			}).then(username => {
 				(this as any).api('users/show', {
 					username

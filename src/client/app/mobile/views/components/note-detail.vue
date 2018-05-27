@@ -17,7 +17,7 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<mk-avatar class="avatar" :user="note.user"/>%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>がRenote
+			<mk-avatar class="avatar" :user="note.user"/>%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>%i18n:@is-renote%
 		</p>
 	</div>
 	<article>
@@ -30,7 +30,7 @@
 		</header>
 		<div class="body">
 			<div class="text">
-				<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+				<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@hidden%)</span>
 				<mk-note-html v-if="p.text" :text="p.text" :i="$store.state.i"/>
 			</div>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
@@ -41,7 +41,7 @@
 			</div>
 			<mk-poll v-if="p.poll" :note="p"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 			<div class="map" v-if="p.geo" ref="map"></div>
 			<div class="renote" v-if="p.renote">
 				<mk-note-preview :note="p.renote"/>

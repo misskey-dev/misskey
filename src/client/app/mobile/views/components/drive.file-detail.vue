@@ -93,7 +93,7 @@ export default Vue.extend({
 	},
 	methods: {
 		rename() {
-			const name = window.prompt('名前を変更', this.file.name);
+			const name = window.prompt('%i18n:@rename%', this.file.name);
 			if (name == null || name == '' || name == this.file.name) return;
 			(this as any).api('drive/files/update', {
 				fileId: this.file.id,
