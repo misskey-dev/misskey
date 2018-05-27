@@ -196,9 +196,9 @@ common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
 common/views/widgets/memo.vue:
-  title: "メモ"
-  memo: "ここに書いて！"
-  save: "保存"
+  title: "Notatki"
+  memo: "Napisz tutaj!"
+  save: "Zapisz"
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -365,7 +365,7 @@ desktop/views/components/renote-form.vue:
 desktop/views/components/renote-form-window.vue:
   title: "Czy na pewno chcesz udostępnić ten wpis?"
 desktop/views/components/settings-window.vue:
-  settings: "設定"
+  settings: "Ustawienia"
 desktop/views/components/settings.vue:
   profile: "Profil"
   notification: "Powiadomienia"
@@ -529,7 +529,7 @@ desktop/views/components/users-list.vue:
 desktop/views/components/users-list-item.vue:
   followed: "Obserwuje Cię"
 desktop/views/components/window.vue:
-  popout: "ポップアウト"
+  popout: "Pop-out"
   close: "Zamknij"
 desktop/views/pages/welcome.vue:
   signin: "Zaloguj się"
@@ -619,15 +619,15 @@ mobile/views/components/drive.vue:
   load-more: "Załaduj więcej"
   nothing-in-drive: "Pusto"
   folder-is-empty: "Ten katalog jest pusty"
-  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  prompt: "Co chcesz zrobić? (wprowadź odpowiednią cyfrę): <1 → Wysłać plik | 2 → Wysłać plik z adresu URL | 3 → Utworzyć katalog | 4 → Zmienić nazwę tego katalogu | 5 → Przenieść ten katalog | 6 → Usunąć ten katalog>"
   deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
-  folder-name: "フォルダー名"
+  folder-name: "Nazwa katalogu"
   root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
   root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
-  url-prompt: "アップロードしたいファイルのURL"
+  url-prompt: "Adres URL pliku, który chcesz wysłać"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
 mobile/views/components/drive-file-detail.vue:
-  rename: "名前を変更"
+  rename: "Zmień nazwę"
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Wybierz plik"
 mobile/views/components/drive-folder-chooser.vue:
@@ -642,39 +642,39 @@ mobile/views/components/follow-button.vue:
   follow: "Śledź"
   unfollow: "Przestań śledzić"
 mobile/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー"
-  empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
-  refresh: "もっと見る"
-  close: "閉じる"
+  title: "Zacznij śledzić ludzi takich jak Ty"
+  empty: "Nie znaleziono podobnych użytkowników."
+  fetching: "Ładowanie…"
+  refresh: "Więcej"
+  close: "Zamknij"
 mobile/views/components/note.vue:
   reposted-by: "Udostępniono przez {}"
-  more: "もっと見る"
-  less: "隠す"
-  hidden: "この投稿は非公開です"
-  location: "位置情報"
+  more: "Rozwiń"
+  less: "Zwiń"
+  hidden: "ten wpis jest prywatny"
+  location: "Informacje o lokalizacji"
 mobile/views/components/note-detail.vue:
   reply: "Odpowiedz"
   reaction: "Reakcja"
-  reposted-by: "{}がRenote"
-  hidden: "この投稿は非公開です"
-  location: "位置情報"
+  reposted-by: "Udostępniono przez {}"
+  hidden: "ten wpis jest prywatny"
+  location: "Informacje o lokalizacji"
 mobile/views/components/note-preview.vue:
   admin: "admin"
   bot: "bot"
-  cat: "cat"
+  cat: "kot"
 mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
-  cat: "cat"
+  cat: "kot"
 mobile/views/components/notes.vue:
-  failed: "読み込みに失敗しました。"
-  retry: "リトライ"
+  failed: "Ładowanie nie powiodło się."
+  retry: "Spróbuj ponownie"
 mobile/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
 mobile/views/components/post-form.vue:
-  add-visible-user: "ユーザーを追加"
+  add-visible-user: "Dodaj użytkownika"
   submit: "Wyślij"
   reply: "Odpowiedz"
   renote: "Udostępnij"
@@ -683,10 +683,10 @@ mobile/views/components/post-form.vue:
   note-placeholder: "Co się dzieje?"
   cw-placeholder: "内容への注釈 (オプション)"
   location-alert: "お使いの端末は位置情報に対応していません"
-  error: "エラー"
-  username-prompt: "ユーザー名を入力してください"
+  error: "Błąd"
+  username-prompt: "Wprowadź nazwę użytkownika"
 mobile/views/components/sub-note-content.vue:
-  hidden: "この投稿は非公開です"
+  hidden: "ten wpis jest prywatny"
   media-count: "{} zawartości multimedialnej"
   poll: "Ankieta"
 mobile/views/components/timeline.vue:
