@@ -488,7 +488,10 @@ root(isDark)
 		&:focus
 			&:not([data-is-modal])
 				> .body
-					box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(#000, 0.2)
+					if isDark
+						box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 12px 0 rgba(#000, 0.5)
+					else
+						box-shadow 0 0 0px 1px rgba($theme-color, 0.5), 0 2px 6px 0 rgba(#000, 0.2)
 
 		> .handle
 			$size = 8px
@@ -556,7 +559,11 @@ root(isDark)
 			overflow hidden
 			background isDark ? #282C37 : #fff
 			border-radius 6px
-			box-shadow 0 2px 6px 0 rgba(#000, 0.2)
+
+			if isDark
+				box-shadow 0 2px 12px 0 rgba(#000, 0.5)
+			else
+				box-shadow 0 2px 6px 0 rgba(#000, 0.2)
 
 			> header
 				$header-height = 40px
