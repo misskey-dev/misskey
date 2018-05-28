@@ -492,9 +492,9 @@ desktop/views/components/settings.profile.vue:
   is-bot: "To konto jest prowadzone przez bota"
   is-cat: "To konto jest prowadzone przez kota"
 desktop/views/components/sub-note-content.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
-  media-count: "{}つのメディア"
+  private: "ten wpis jest prywatny"
+  deleted: "ten wpis został usunięty"
+  media-count: "{}zawartości multimedialnej"
   poll: "Ankiety"
 desktop/views/components/taskmanager.vue:
   title: "Menedżer zadań"
@@ -627,7 +627,7 @@ mobile/views/components/drive.vue:
   nothing-in-drive: "Pusto"
   folder-is-empty: "Ten katalog jest pusty"
   prompt: "Co chcesz zrobić? (wprowadź odpowiednią cyfrę): <1 → Wysłać plik | 2 → Wysłać plik z adresu URL | 3 → Utworzyć katalog | 4 → Zmienić nazwę tego katalogu | 5 → Przenieść ten katalog | 6 → Usunąć ten katalog>"
-  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  deletion-alert: "Przepraszamy. Usuwanie katalogów nie zostało jeszcze zaimplementowane."
   folder-name: "Nazwa katalogu"
   root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
   root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
