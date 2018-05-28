@@ -9,7 +9,7 @@ import { pack } from '../../../../models/note';
 /**
  * Get timeline of global
  */
-module.exports = async (params, user, app) => {
+module.exports = async (params, user) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';
@@ -36,9 +36,9 @@ module.exports = async (params, user, app) => {
 	}
 
 	// ミュートしているユーザーを取得
-	const mutedUserIds = (await Mute.find({
+	const mutedUserIds = user ? (await Mute.find({
 		muterId: user._id
-	})).map(m => m.muteeId);
+	})).map(m => m.muteeId) : null;
 
 	//#region Construct query
 	const sort = {
@@ -46,17 +46,23 @@ module.exports = async (params, user, app) => {
 	};
 
 	const query = {
-		// mute
-		userId: {
-			$nin: mutedUserIds
-		},
-		'_reply.userId': {
-			$nin: mutedUserIds
-		},
-		'_renote.userId': {
-			$nin: mutedUserIds
-		}
+		// public only
+		visibility: 'public'
 	} as any;
+
+	if (mutedUserIds && mutedUserIds.length > 0) {
+		query.userId = {
+			$nin: mutedUserIds
+		};
+
+		query['_reply.userId'] = {
+			$nin: mutedUserIds
+		};
+
+		query['_renote.userId'] = {
+			$nin: mutedUserIds
+		};
+	}
 
 	if (sinceId) {
 		sort._id = 1;

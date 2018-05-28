@@ -515,7 +515,6 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'notes/local-timeline',
-		withCredential: true,
 		limit: {
 			duration: ms('10minutes'),
 			max: 100
@@ -523,7 +522,6 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'notes/global-timeline',
-		withCredential: true,
 		limit: {
 			duration: ms('10minutes'),
 			max: 100
