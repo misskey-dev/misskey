@@ -126,7 +126,6 @@ root(isDark)
 				cursor default
 				margin 0
 				padding 0
-				font-size 1.1em
 				color isDark ? #959ba7 : #717171
 
 				pre

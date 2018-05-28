@@ -71,6 +71,6 @@ export default Vue.extend({
 		content ')'
 
 .notePreview
-	margin 16px 22px
+	margin 16px 22px 0 22px
 
 </style>

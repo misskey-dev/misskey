@@ -480,7 +480,6 @@ root(isDark)
 					margin 0
 					padding 0
 					overflow-wrap break-word
-					font-size 1.1em
 					color isDark ? #fff : #717171
 
 					> .text
@@ -507,7 +506,6 @@ root(isDark)
 						margin 0
 						padding 0
 						overflow-wrap break-word
-						font-size 1.1em
 						color isDark ? #fff : #717171
 
 						>>> .title
