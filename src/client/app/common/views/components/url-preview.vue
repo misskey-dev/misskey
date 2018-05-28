@@ -68,7 +68,7 @@ iframe
 root(isDark)
 	> a
 		display block
-		font-size 16px
+		font-size 14px
 		border solid 1px isDark ? #191b1f : #eee
 		border-radius 4px
 		overflow hidden
@@ -136,14 +136,33 @@ root(isDark)
 					left 0
 					width 100%
 
+		@media (max-width 550px)
+			font-size 12px
+
+			> .thumbnail
+				height 80px
+
+			> article
+				padding 12px
+
 		@media (max-width 500px)
-			font-size 8px
+			font-size 10px
 
 			> .thumbnail
 				height 70px
 
 			> article
 				padding 8px
+
+				> header
+					margin-bottom 4px
+
+				> footer
+					margin-top 4px
+
+					> img
+						width 12px
+						height 12px
 
 .mk-url-preview[data-darkmode]
 	root(true)
