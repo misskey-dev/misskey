@@ -35,6 +35,12 @@ common:
     angry: "Angry"
     confused: "Confused"
     pudding: "Pudding"
+  note-placeholders:
+    a: "今どうしてる？"
+    b: "何かありましたか？"
+    c: "言いたいことは？"
+    d: "ここに書いてください"
+    e: "あなたが書くのを待っています..."
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
@@ -337,10 +343,9 @@ desktop/views/components/notifications.vue:
   more: "More"
   empty: "No notifications"
 desktop/views/components/post-form.vue:
-  note-placeholder: "What's happening?"
   reply-placeholder: "Reply to this note..."
   quote-placeholder: "Quote this note..."
-  note: "Post"
+  submit: "投稿"
   reply: "Reply"
   renote: "Renote"
   posted: "Posted!"
@@ -609,7 +614,6 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "Post"
   note: "Post"
-  placeholder: "What's happening?"
 desktop/views/widgets/profile.vue:
   update-banner: "Click to edit your banner"
   update-avatar: "Click to edit your avatar"
@@ -693,7 +697,6 @@ mobile/views/components/post-form.vue:
   renote: "Renote"
   renote-placeholder: "Quote this post. (optional)"
   reply-placeholder: "Reply to this note..."
-  note-placeholder: "What's happening?"
   cw-placeholder: "内容への注釈 (オプション)"
   location-alert: "お使いの端末は位置情報に対応していません"
   error: "Error"
