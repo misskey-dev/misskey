@@ -113,6 +113,8 @@ common/views/components/nav.vue:
 common/views/components/note-menu.vue:
   favorite: "Dodaj do ulubionych"
   pin: "Przypnij do profilu"
+  delete: "削除"
+  delete-confirm: "この投稿を削除しますか？"
   remote: "Pokaż oryginał"
 common/views/components/poll.vue:
   vote-to: "Zagłosuj na '{}'"
@@ -309,13 +311,15 @@ desktop/views/components/messaging-window.vue:
   title: "Wiadomości"
 desktop/views/components/note-detail.vue:
   more: "Załaduj więcej konwersacji"
-  private: "(ten wpis jest prywatny)"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   reposted-by: "Udostępniono przez {}"
   location: "Informacje o lokalizacji"
   renote: "Udostępnienie"
   add-reaction: "Dodaj reakcję"
 desktop/views/components/note-detail.sub.vue:
-  private: "(ten wpis jest prywatny)"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 desktop/views/components/notes.note.vue:
   reposted-by: "Udostępniono przez {}"
   reply: "Odpowiedz"
@@ -486,8 +490,9 @@ desktop/views/components/settings.profile.vue:
   is-bot: "To konto jest prowadzone przez bota"
   is-cat: "To konto jest prowadzone przez kota"
 desktop/views/components/sub-note-content.vue:
-  hidden: "(ten wpis jest prywatny)"
-  media: "zawartość multimedialna"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
   poll: "Ankiety"
 desktop/views/components/taskmanager.vue:
   title: "Menedżer zadań"
@@ -651,13 +656,15 @@ mobile/views/components/note.vue:
   reposted-by: "Udostępniono przez {}"
   more: "Rozwiń"
   less: "Zwiń"
-  hidden: "ten wpis jest prywatny"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   location: "Informacje o lokalizacji"
 mobile/views/components/note-detail.vue:
   reply: "Odpowiedz"
   reaction: "Reakcja"
   reposted-by: "Udostępniono przez {}"
-  hidden: "ten wpis jest prywatny"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   location: "Informacje o lokalizacji"
 mobile/views/components/note-preview.vue:
   admin: "admin"
@@ -686,8 +693,9 @@ mobile/views/components/post-form.vue:
   error: "Błąd"
   username-prompt: "Wprowadź nazwę użytkownika"
 mobile/views/components/sub-note-content.vue:
-  hidden: "ten wpis jest prywatny"
-  media-count: "{} zawartości multimedialnej"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
   poll: "Ankieta"
 mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
