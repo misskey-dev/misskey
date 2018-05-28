@@ -435,6 +435,7 @@ root(isDark)
 				> .is-admin
 				> .is-bot
 				> .is-cat
+					align-self center
 					margin 0 .5em 0 0
 					padding 1px 6px
 					font-size 12px
