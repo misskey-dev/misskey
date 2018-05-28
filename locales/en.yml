@@ -326,6 +326,8 @@ desktop/views/components/notes.note.vue:
   renote: "Renote"
   add-reaction: "Add a reaction"
   detail: "Show detail"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
