@@ -12,7 +12,7 @@
 		</article>
 	</main>
 	<main v-else class="index">
-		<img :src="$store.state.device.darkmode ? 'assets/title-dark.svg' : 'assets/title.svg'" alt="Misskey">
+		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey">
 		<p class="desc"><b>%i18n:common.misskey%</b> - <span @click="about = true">%i18n:@about%</span></p>
 		<p class="account">
 			<button class="signup" @click="signup">%i18n:@signup-button%</button>

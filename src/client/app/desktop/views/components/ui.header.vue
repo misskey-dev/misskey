@@ -150,8 +150,8 @@ root(isDark)
 					display block
 					width 100%
 					height 48px
-					background-image url(/assets/desktop/header-logo.svg)
-					background-size 46px
+					background-image isDark ? url('/assets/desktop/header-icon.dark.svg') : url('/assets/desktop/header-icon.light.svg')
+					background-size 24px
 					background-position center
 					background-repeat no-repeat
 					opacity 0.3
