@@ -495,6 +495,11 @@ const endpoints: Endpoint[] = [
 		kind: 'note-write'
 	},
 	{
+		name: 'notes/delete',
+		withCredential: true,
+		kind: 'note-write'
+	},
+	{
 		name: 'notes/renotes'
 	},
 	{

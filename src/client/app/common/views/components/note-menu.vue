@@ -4,6 +4,7 @@
 	<div class="popover" :class="{ compact }" ref="popover">
 		<button @click="favorite">%i18n:@favorite%</button>
 		<button v-if="note.userId == $store.state.i.id" @click="pin">%i18n:@pin%</button>
+		<button v-if="note.userId == $store.state.i.id" @click="del">%i18n:@delete%</button>
 		<a v-if="note.uri" :href="note.uri" target="_blank">%i18n:@remote%</a>
 	</div>
 </div>
@@ -53,6 +54,15 @@ export default Vue.extend({
 	methods: {
 		pin() {
 			(this as any).api('i/pin', {
+				noteId: this.note.id
+			}).then(() => {
+				this.$destroy();
+			});
+		},
+
+		del() {
+			if (!window.confirm('%i18n:@delete-confirm%')) return;
+			(this as any).api('notes/delete', {
 				noteId: this.note.id
 			}).then(() => {
 				this.$destroy();

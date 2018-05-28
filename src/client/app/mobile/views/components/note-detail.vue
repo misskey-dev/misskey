@@ -36,7 +36,8 @@
 		</header>
 		<div class="body">
 			<div class="text">
-				<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@hidden%)</span>
+				<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
+				<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
 				<mk-note-html v-if="p.text" :text="p.text" :i="$store.state.i"/>
 			</div>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">

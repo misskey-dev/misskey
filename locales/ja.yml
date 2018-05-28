@@ -126,6 +126,8 @@ common/views/components/nav.vue:
 common/views/components/note-menu.vue:
   favorite: "お気に入り"
   pin: "ピン留め"
+  delete: "削除"
+  delete-confirm: "この投稿を削除しますか？"
   remote: "投稿元で見る"
 
 common/views/components/poll.vue:
@@ -360,14 +362,16 @@ desktop/views/components/messaging-window.vue:
 
 desktop/views/components/note-detail.vue:
   more: "会話をもっと読み込む"
-  private: "(この投稿は非公開です)"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   reposted-by: "{}がRenote"
   location: "位置情報"
   renote: "Renote"
   add-reaction: "リアクション"
 
 desktop/views/components/note-detail.sub.vue:
-  private: "(この投稿は非公開です)"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 
 desktop/views/components/notes.note.vue:
   reposted-by: "{}がRenote"
@@ -565,8 +569,9 @@ desktop/views/components/settings.profile.vue:
   is-cat: "このアカウントはCatです"
 
 desktop/views/components/sub-note-content.vue:
-  hidden: "(この投稿は非公開です)"
-  media: "つのメディア"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
   poll: "投票"
 
 desktop/views/components/taskmanager.vue:
@@ -771,14 +776,16 @@ mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
   more: "もっと見る"
   less: "隠す"
-  hidden: "この投稿は非公開です"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   location: "位置情報"
 
 mobile/views/components/note-detail.vue:
   reply: "返信"
   reaction: "リアクション"
   reposted-by: "{}がRenote"
-  hidden: "この投稿は非公開です"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   location: "位置情報"
 
 mobile/views/components/note-preview.vue:
@@ -813,8 +820,9 @@ mobile/views/components/post-form.vue:
   username-prompt: "ユーザー名を入力してください"
 
 mobile/views/components/sub-note-content.vue:
-  hidden: "この投稿は非公開です"
-  media-count: "{}個のメディア"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
   poll: "投票"
 
 mobile/views/components/timeline.vue:

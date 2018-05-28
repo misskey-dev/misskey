@@ -2,6 +2,7 @@ import * as debug from 'debug';
 
 import Note from '../../../../models/note';
 import { IRemoteUser } from '../../../../models/user';
+import deleteNode from '../../../../services/note/delete';
 
 const log = debug('misskey:activitypub');
 
@@ -18,12 +19,5 @@ export default async function(actor: IRemoteUser, uri: string): Promise<void> {
 		throw new Error('投稿を削除しようとしているユーザーは投稿の作成者ではありません');
 	}
 
-	Note.update({ _id: note._id }, {
-		$set: {
-			deletedAt: new Date(),
-			text: null,
-			mediaIds: [],
-			poll: null
-		}
-	});
+	await deleteNode(actor, note);
 }

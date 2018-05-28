@@ -1,13 +1,14 @@
 <template>
 <div class="mk-sub-note-content">
 	<div class="body">
-		<span v-if="note.isHidden" style="opacity: 0.5">(%i18n:@hidden%)</span>
+		<span v-if="note.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
+		<span v-if="note.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
 		<a class="reply" v-if="note.replyId">%fa:reply%</a>
 		<mk-note-html v-if="note.text" :text="note.text" :i="$store.state.i"/>
 		<a class="rp" v-if="note.renoteId">RP: ...</a>
 	</div>
 	<details v-if="note.media.length > 0">
-		<summary>({{ note.media.length }}個のメディア)</summary>
+		<summary>({{ '%i18n:@media-count%'.replace('{}', note.media.length) }})</summary>
 		<mk-media-list :media-list="note.media"/>
 	</details>
 	<details v-if="note.poll">
