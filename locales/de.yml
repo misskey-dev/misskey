@@ -113,6 +113,8 @@ common/views/components/nav.vue:
 common/views/components/note-menu.vue:
   favorite: "Diese Anmerkung favorisieren"
   pin: "An die Profilseite pinnen"
+  delete: "削除"
+  delete-confirm: "この投稿を削除しますか？"
   remote: "Auf Quelle anzeigen"
 common/views/components/poll.vue:
   vote-to: "Stimme für '{}'"
@@ -309,13 +311,15 @@ desktop/views/components/messaging-window.vue:
   title: "Nachrichten"
 desktop/views/components/note-detail.vue:
   more: "Lade weitere Konversationen"
-  private: "(Dieser Post ist privat)"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   reposted-by: "{}がRenote"
   location: "Ort"
   renote: "Anmerkung"
   add-reaction: "Reaktion hinzufügen"
 desktop/views/components/note-detail.sub.vue:
-  private: "(Dieser Post ist privat)"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 desktop/views/components/notes.note.vue:
   reposted-by: "Auch geteilt von"
   reply: "Antworten"
@@ -486,8 +490,9 @@ desktop/views/components/settings.profile.vue:
   is-bot: "このアカウントはBotです"
   is-cat: "このアカウントはCatです"
 desktop/views/components/sub-note-content.vue:
-  hidden: "(この投稿は非公開です)"
-  media: "つのメディア"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
   poll: "投票"
 desktop/views/components/taskmanager.vue:
   title: "タスクマネージャ"
@@ -651,13 +656,15 @@ mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
   more: "もっと見る"
   less: "隠す"
-  hidden: "この投稿は非公開です"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   location: "位置情報"
 mobile/views/components/note-detail.vue:
   reply: "返信"
   reaction: "リアクション"
   reposted-by: "{}がRenote"
-  hidden: "この投稿は非公開です"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   location: "位置情報"
 mobile/views/components/note-preview.vue:
   admin: "admin"
@@ -686,8 +693,9 @@ mobile/views/components/post-form.vue:
   error: "エラー"
   username-prompt: "ユーザー名を入力してください"
 mobile/views/components/sub-note-content.vue:
-  hidden: "この投稿は非公開です"
-  media-count: "{}個のメディア"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
   poll: "投票"
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
