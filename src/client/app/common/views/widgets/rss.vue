@@ -19,12 +19,12 @@ import define from '../../../common/define-widget';
 export default define({
 	name: 'rss',
 	props: () => ({
-		compact: false
+		compact: false,
+		url: 'http://news.yahoo.co.jp/pickup/rss.xml'
 	})
 }).extend({
 	data() {
 		return {
-			url: 'http://news.yahoo.co.jp/pickup/rss.xml',
 			items: [],
 			fetching: true,
 			clock: null
@@ -43,7 +43,7 @@ export default define({
 			this.save();
 		},
 		fetch() {
-			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`, {
+			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.props.url}`, {
 				cache: 'no-cache'
 			}).then(res => {
 				res.json().then(feed => {
@@ -53,7 +53,9 @@ export default define({
 			});
 		},
 		setting() {
-			alert('not implemented yet');
+			this.props.url =window.prompt('URL', this.props.url);
+			this.save();
+			this.fetch();
 		}
 	}
 });
