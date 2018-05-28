@@ -5,7 +5,7 @@
 		<mk-ellipsis-icon/>
 	</div>
 
-	<mk-notes ref="timeline" :more="canFetchMore ? more : null">
+	<mk-notes ref="timeline" :more="existMore ? more : null">
 		<p :class="$style.empty" slot="empty">
 			%fa:R comments%%i18n:@empty%
 		</p>
@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
 
 const fetchLimit = 10;
 
