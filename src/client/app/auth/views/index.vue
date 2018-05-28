@@ -51,7 +51,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		if (!this.$root.$data.$store.getters.isSignedIn) return;
+		if (!this.$store.getters.isSignedIn) return;
 
 		// Fetch session
 		(this as any).api('auth/session/show', {
@@ -72,6 +72,7 @@ export default Vue.extend({
 			}
 		}).catch(error => {
 			this.state = 'fetch-session-error';
+			this.fetching = false;
 		});
 	},
 	methods: {
