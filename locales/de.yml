@@ -3,7 +3,9 @@ meta:
   lang: "Deutsch"
   divider: ""
 common:
-  misskey: "Teile alles mit anderen mithilfe von Misskey"
+  misskey: "A planet of fediverse"
+  about-title: "A ⭐ of fediverse."
+  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
   time:
     unknown: "Unbekannt"
     future: "Zukunft"
@@ -326,6 +328,8 @@ desktop/views/components/notes.note.vue:
   renote: "Anmerken"
   add-reaction: "Eine Reaktion hinzufügen"
   detail: "Zeige Details"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 desktop/views/components/notes.vue:
   error: "Laden fehlgeschlagen."
   retry: "Erneut versuchen"
@@ -537,6 +541,8 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 desktop/views/pages/welcome.vue:
+  about: "詳しく..."
+  gotit: "わかった"
   signin: "ログイン"
   signup: "新規登録"
   signin-button: "やってる"
