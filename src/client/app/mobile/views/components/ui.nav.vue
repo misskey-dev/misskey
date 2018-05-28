@@ -16,7 +16,7 @@
 			<div class="links">
 				<ul>
 					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@home%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotification">%fa:circle%</template>%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
 					<li><router-link to="/othello" :data-active="$route.name == 'othello'">%fa:gamepad%ゲーム<template v-if="hasGameInvitations">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
@@ -46,47 +46,31 @@ export default Vue.extend({
 	props: ['isOpen'],
 	data() {
 		return {
-			hasUnreadNotifications: false,
-			hasUnreadMessagingMessages: false,
-			hasGameInvitations: false,
+			hasGameInvitation: false,
 			connection: null,
 			connectionId: null,
 			aboutUrl: `${docsUrl}/${lang}/about`
 		};
+	},
+	computed: {
+		hasUnreadNotification(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
+		},
+		hasUnreadMessagingMessage(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
+		}
 	},
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
-			this.connection.on('read_all_notifications', this.onReadAllNotifications);
-			this.connection.on('unread_notification', this.onUnreadNotification);
-			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
 			this.connection.on('othello_invited', this.onOthelloInvited);
 			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
-
-			// Fetch count of unread notifications
-			(this as any).api('notifications/get_unread_count').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadNotifications = true;
-				}
-			});
-
-			// Fetch count of unread messaging messages
-			(this as any).api('messaging/unread').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadMessagingMessages = true;
-				}
-			});
 		}
 	},
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('read_all_notifications', this.onReadAllNotifications);
-			this.connection.off('unread_notification', this.onUnreadNotification);
-			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
 			this.connection.off('othello_invited', this.onOthelloInvited);
 			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
@@ -98,23 +82,11 @@ export default Vue.extend({
 			if (query == null || query == '') return;
 			this.$router.push('/search?q=' + encodeURIComponent(query));
 		},
-		onReadAllNotifications() {
-			this.hasUnreadNotifications = false;
-		},
-		onUnreadNotification() {
-			this.hasUnreadNotifications = true;
-		},
-		onReadAllMessagingMessages() {
-			this.hasUnreadMessagingMessages = false;
-		},
-		onUnreadMessagingMessage() {
-			this.hasUnreadMessagingMessages = true;
-		},
 		onOthelloInvited() {
-			this.hasGameInvitations = true;
+			this.hasGameInvitation = true;
 		},
 		onOthelloNoInvites() {
-			this.hasGameInvitations = false;
+			this.hasGameInvitation = false;
 		},
 		dark() {
 			this.$store.commit('device/set', {

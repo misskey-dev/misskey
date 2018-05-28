@@ -280,11 +280,6 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'notifications/get_unread_count',
-		withCredential: true,
-		kind: 'notification-read'
-	},
-	{
 		name: 'notifications/delete',
 		withCredential: true,
 		kind: 'notification-write'
@@ -607,11 +602,6 @@ const endpoints: Endpoint[] = [
 
 	{
 		name: 'messaging/history',
-		withCredential: true,
-		kind: 'messaging-read'
-	},
-	{
-		name: 'messaging/unread',
 		withCredential: true,
 		kind: 'messaging-read'
 	},

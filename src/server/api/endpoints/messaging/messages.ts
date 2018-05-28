@@ -1,6 +1,3 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Message from '../../../../models/messaging-message';
 import User from '../../../../models/user';
@@ -9,10 +6,6 @@ import read from '../../common/read-messaging-message';
 
 /**
  * Get messages
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter

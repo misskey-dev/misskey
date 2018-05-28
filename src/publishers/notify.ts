@@ -3,6 +3,7 @@ import Notification from '../models/notification';
 import Mute from '../models/mute';
 import { pack } from '../models/notification';
 import stream from './stream';
+import User from '../models/user';
 
 export default (
 	notifiee: mongo.ObjectID,
@@ -28,6 +29,13 @@ export default (
 	// Publish notification event
 	stream(notifiee, 'notification',
 		await pack(notification));
+
+	// Update flag
+	User.update({ _id: notifiee }, {
+		$set: {
+			hasUnreadNotification: true
+		}
+	});
 
 	// 3秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 	setTimeout(async () => {

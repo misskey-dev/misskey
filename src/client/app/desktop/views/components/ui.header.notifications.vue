@@ -1,7 +1,7 @@
 <template>
 <div class="notifications">
 	<button :data-active="isOpen" @click="toggle" title="%i18n:@title%">
-		%fa:R bell%<template v-if="hasUnreadNotifications">%fa:circle%</template>
+		%fa:R bell%<template v-if="hasUnreadNotification">%fa:circle%</template>
 	</button>
 	<div class="pop" v-if="isOpen">
 		<mk-notifications/>
@@ -16,44 +16,15 @@ import contains from '../../../common/scripts/contains';
 export default Vue.extend({
 	data() {
 		return {
-			isOpen: false,
-			hasUnreadNotifications: false,
-			connection: null,
-			connectionId: null
+			isOpen: false
 		};
 	},
-	mounted() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection = (this as any).os.stream.getConnection();
-			this.connectionId = (this as any).os.stream.use();
-
-			this.connection.on('read_all_notifications', this.onReadAllNotifications);
-			this.connection.on('unread_notification', this.onUnreadNotification);
-
-			// Fetch count of unread notifications
-			(this as any).api('notifications/get_unread_count').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadNotifications = true;
-				}
-			});
-		}
-	},
-	beforeDestroy() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection.off('read_all_notifications', this.onReadAllNotifications);
-			this.connection.off('unread_notification', this.onUnreadNotification);
-			(this as any).os.stream.dispose(this.connectionId);
+	computed: {
+		hasUnreadNotification(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
 		}
 	},
 	methods: {
-		onReadAllNotifications() {
-			this.hasUnreadNotifications = false;
-		},
-
-		onUnreadNotification() {
-			this.hasUnreadNotifications = true;
-		},
-
 		toggle() {
 			this.isOpen ? this.close() : this.open();
 		},

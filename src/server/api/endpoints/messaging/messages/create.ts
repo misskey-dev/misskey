@@ -91,6 +91,13 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
 	publishUserStream(message.recipientId, 'messaging_message', messageObj);
 
+	// Update flag
+	User.update({ _id: recipient._id }, {
+		$set: {
+			hasUnreadMessagingMessage: true
+		}
+	});
+
 	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message._id }, { isRead: true });

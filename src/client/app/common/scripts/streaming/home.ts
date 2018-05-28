@@ -28,6 +28,30 @@ export class HomeStream extends Stream {
 			os.store.dispatch('mergeMe', i);
 		});
 
+		this.on('read_all_notifications', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadNotification: false
+			});
+		});
+
+		this.on('unread_notification', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadNotification: true
+			});
+		});
+
+		this.on('read_all_messaging_messages', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: false
+			});
+		});
+
+		this.on('unread_messaging_message', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: true
+			});
+		});
+
 		this.on('clientSettingUpdated', x => {
 			os.store.commit('settings/set', {
 				key: x.key,

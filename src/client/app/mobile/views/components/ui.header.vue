@@ -6,7 +6,7 @@
 		<p ref="welcomeback" v-if="$store.getters.isSignedIn">おかえりなさい、<b>{{ $store.state.i | userName }}</b>さん</p>
 		<div class="content" ref="mainContainer">
 			<button class="nav" @click="$parent.isDrawerOpening = true">%fa:bars%</button>
-			<template v-if="hasUnreadNotifications || hasUnreadMessagingMessages || hasGameInvitations">%fa:circle%</template>
+			<template v-if="hasUnreadNotification || hasUnreadMessagingMessage || hasGameInvitation">%fa:circle%</template>
 			<h1>
 				<slot>Misskey</slot>
 			</h1>
@@ -25,12 +25,18 @@ export default Vue.extend({
 	props: ['func'],
 	data() {
 		return {
-			hasUnreadNotifications: false,
-			hasUnreadMessagingMessages: false,
-			hasGameInvitations: false,
+			hasGameInvitation: false,
 			connection: null,
 			connectionId: null
 		};
+	},
+	computed: {
+		hasUnreadNotification(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
+		},
+		hasUnreadMessagingMessage(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
+		}
 	},
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', 48);
@@ -39,26 +45,8 @@ export default Vue.extend({
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
-			this.connection.on('read_all_notifications', this.onReadAllNotifications);
-			this.connection.on('unread_notification', this.onUnreadNotification);
-			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
 			this.connection.on('othello_invited', this.onOthelloInvited);
 			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
-
-			// Fetch count of unread notifications
-			(this as any).api('notifications/get_unread_count').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadNotifications = true;
-				}
-			});
-
-			// Fetch count of unread messaging messages
-			(this as any).api('messaging/unread').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadMessagingMessages = true;
-				}
-			});
 
 			const ago = (new Date().getTime() - new Date(this.$store.state.i.lastUsedAt).getTime()) / 1000;
 			const isHisasiburi = ago >= 3600;
@@ -110,33 +98,17 @@ export default Vue.extend({
 	},
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('read_all_notifications', this.onReadAllNotifications);
-			this.connection.off('unread_notification', this.onUnreadNotification);
-			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
 			this.connection.off('othello_invited', this.onOthelloInvited);
 			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 	methods: {
-		onReadAllNotifications() {
-			this.hasUnreadNotifications = false;
-		},
-		onUnreadNotification() {
-			this.hasUnreadNotifications = true;
-		},
-		onReadAllMessagingMessages() {
-			this.hasUnreadMessagingMessages = false;
-		},
-		onUnreadMessagingMessage() {
-			this.hasUnreadMessagingMessages = true;
-		},
 		onOthelloInvited() {
-			this.hasGameInvitations = true;
+			this.hasGameInvitation = true;
 		},
 		onOthelloNoInvites() {
-			this.hasGameInvitations = false;
+			this.hasGameInvitation = false;
 		}
 	}
 });
