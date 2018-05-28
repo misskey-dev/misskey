@@ -35,6 +35,12 @@ common:
     angry: "Wściekły"
     confused: "Zmieszany"
     pudding: "Pudding"
+  note-placeholders:
+    a: "今どうしてる？"
+    b: "何かありましたか？"
+    c: "言いたいことは？"
+    d: "ここに書いてください"
+    e: "あなたが書くのを待っています..."
   delete: "Usuń"
   loading: "Ładowanie"
   ok: "OK"
@@ -337,10 +343,9 @@ desktop/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
 desktop/views/components/post-form.vue:
-  note-placeholder: "Co się dzieje?"
   reply-placeholder: "Odpowiedz na ten wpis…"
   quote-placeholder: "Zacytuj ten wpis…"
-  note: "Wyślij"
+  submit: "投稿"
   reply: "Odpowiedz"
   renote: "Udostępnienie"
   posted: "Opublikowano!"
@@ -609,7 +614,6 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "Wpis"
   note: "Wpis"
-  placeholder: "Co się dzieje?"
 desktop/views/widgets/profile.vue:
   update-banner: "Naciśnij, aby zmienić baner"
   update-avatar: "Naciśnij, aby zmienić awatar"
@@ -693,7 +697,6 @@ mobile/views/components/post-form.vue:
   renote: "Udostępnij"
   renote-placeholder: "Zacytuj wpis… (nieobowiązkowe)"
   reply-placeholder: "Odpowiedź na ten wpis…"
-  note-placeholder: "Co się dzieje?"
   cw-placeholder: "Treść ostrzeżenia (opcjonalnie)"
   location-alert: "Twoje urządzenie nie pozwala na przekazywanie informacji o lokalizacji"
   error: "Błąd"
