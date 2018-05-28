@@ -57,6 +57,9 @@ module.exports = async (params, user, app) => {
 			$nin: mutedUserIds
 		},
 
+		// public only
+		visibility: 'public',
+
 		// local
 		'_user.host': null
 	} as any;
