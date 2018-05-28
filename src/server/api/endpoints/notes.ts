@@ -53,7 +53,9 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const sort = {
 		_id: -1
 	};
-	const query = {} as any;
+	const query = {
+		visibility: 'public'
+	} as any;
 	if (sinceId) {
 		sort._id = 1;
 		query._id = {
