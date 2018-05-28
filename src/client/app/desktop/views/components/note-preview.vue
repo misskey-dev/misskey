@@ -49,7 +49,7 @@ root(isDark)
 
 	> .main
 		float left
-		width calc(100% - 68px)
+		width calc(100% - 60px)
 
 		> header
 			display flex

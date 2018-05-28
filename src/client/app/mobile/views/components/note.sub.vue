@@ -62,21 +62,21 @@ root(isDark)
 		display block
 		float left
 		margin 0 10px 0 0
-		width 44px
-		height 44px
+		width 42px
+		height 42px
 		border-radius 8px
 
 		@media (min-width 500px)
-			margin-right 16px
-			width 52px
-			height 52px
+			margin-right 14px
+			width 50px
+			height 50px
 
 	> .main
 		float left
-		width calc(100% - 54px)
+		width calc(100% - 52px)
 
 		@media (min-width 500px)
-			width calc(100% - 68px)
+			width calc(100% - 64px)
 
 		> header
 			display flex

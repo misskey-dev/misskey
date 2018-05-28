@@ -63,6 +63,9 @@ root(isDark)
 		float left
 		width calc(100% - 60px)
 
+		@media (max-width 500px)
+			width calc(100% - 54px)
+
 		> header
 			display flex
 			align-items baseline
