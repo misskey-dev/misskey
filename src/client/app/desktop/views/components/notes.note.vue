@@ -348,7 +348,7 @@ root(isDark)
 	> .renote
 		display flex
 		align-items center
-		padding 16px 32px
+		padding 16px 32px 8px 32px
 		line-height 28px
 		white-space pre
 		color #9dbb00
