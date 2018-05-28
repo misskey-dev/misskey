@@ -3,7 +3,9 @@ meta:
   lang: "język polski"
   divider: ""
 common:
-  misskey: "Dziel się zawartością z innymi korzystając z Misskey."
+  misskey: "A planet of fediverse"
+  about-title: "A ⭐ of fediverse."
+  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
   time:
     unknown: "nieznany"
     future: "w przyszłości"
@@ -539,6 +541,8 @@ desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Zamknij"
 desktop/views/pages/welcome.vue:
+  about: "詳しく..."
+  gotit: "わかった"
   signin: "Zaloguj się"
   signup: "Zarejestruj się"
   signin-button: "Zaloguj się"
