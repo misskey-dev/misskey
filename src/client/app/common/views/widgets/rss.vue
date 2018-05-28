@@ -53,9 +53,12 @@ export default define({
 			});
 		},
 		setting() {
-			this.props.url =window.prompt('URL', this.props.url);
-			this.save();
-			this.fetch();
+			const url = window.prompt('URL', this.props.url);
+			if (url && url != '') {
+				this.props.url = url;
+				this.save();
+				this.fetch();
+			}
 		}
 	}
 });
