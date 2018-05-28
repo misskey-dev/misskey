@@ -541,8 +541,8 @@ desktop/views/components/window.vue:
   popout: "Popout"
   close: "Close"
 desktop/views/pages/welcome.vue:
-  about: "詳しく..."
-  gotit: "わかった"
+  about: "about"
+  gotit: "Got it!"
   signin: "Log In"
   signup: "Sign up"
   signin-button: "Log in"
