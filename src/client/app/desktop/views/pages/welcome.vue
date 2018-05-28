@@ -4,9 +4,20 @@
 		<template v-if="$store.state.device.darkmode">%fa:moon%</template>
 		<template v-else>%fa:R moon%</template>
 	</button>
-	<main>
+	<main v-if="about" class="about">
+		<article>
+			<h1>%i18n:common.about-title%</h1>
+			<p v-html="'%i18n:common.about%'"></p>
+			<span class="gotit" @click="about = false">%i18n:@gotit%</span>
+		</article>
+	</main>
+	<main v-else class="index">
 		<img :src="$store.state.device.darkmode ? 'assets/title-dark.svg' : 'assets/title.svg'" alt="Misskey">
-		<p><button class="signup" @click="signup">%i18n:@signup-button%</button><button class="signin" @click="signin">%i18n:@signin-button%</button></p>
+		<p class="desc"><b>%i18n:common.misskey%</b> - <span @click="about = true">%i18n:@about%</span></p>
+		<p class="account">
+			<button class="signup" @click="signup">%i18n:@signup-button%</button>
+			<button class="signin" @click="signin">%i18n:@signin-button%</button>
+		</p>
 
 		<div class="tl">
 			<header>%fa:comments R% %i18n:@timeline%<div><span></span><span></span><span></span></div></header>
@@ -33,12 +44,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { docsUrl, copyright, lang } from '../../../config';
+import { copyright } from '../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
-			aboutUrl: `${docsUrl}/${lang}/about`,
+			about: false,
 			copyright
 		};
 	},
@@ -73,9 +84,12 @@ root(isDark)
 	display flex
 	flex-direction column
 	flex 1
+	background-image isDark ? url('/assets/welcome-bg.dark.svg') : url('/assets/welcome-bg.light.svg')
+	background-size cover
+	background-position center
 
 	> button
-		position absolute
+		position fixed
 		z-index 1
 		top 0
 		left 0
@@ -87,81 +101,119 @@ root(isDark)
 		flex 1
 		padding 64px 0 0 0
 		text-align center
-		color isDark ? #9aa4b3 : #555
 
-		> img
-			width 350px
+		&.about
+			color isDark ? #fff : #627574
 
-		> p
-			margin 8px 0
-			line-height 2em
+			> article
+				max-width 700px
+				margin 42px auto 0 auto
+				padding 64px
+				background isDark ? #282C37 : #fff
+				box-shadow 0 8px 32px rgba(#000, 0.15)
 
-			button
-				padding 8px 16px
-				font-size inherit
+				> h1
+					margin 0
+					font-variant small-caps
 
-			.signup
-				color $theme-color
-				border solid 2px $theme-color
-				border-radius 4px
+				> p
+					margin 20px 0
+					line-height 2em
 
-				&:focus
-					box-shadow 0 0 0 3px rgba($theme-color, 0.2)
+				> .gotit
+					color $theme-color
+					cursor pointer
 
-				&:hover
-					color $theme-color-foreground
-					background $theme-color
+					&:hover
+						text-decoration underline
 
-				&:active
-					color $theme-color-foreground
-					background darken($theme-color, 10%)
-					border-color darken($theme-color, 10%)
+		&.index
+			color isDark ? #9aa4b3 : #555
 
-			.signin
-				&:hover
-					color isDark ? #fff : #000
+			> img
+				width 350px
 
-		> .tl
-			margin 32px auto 0 auto
-			width 410px
-			text-align left
-			background isDark ? #313543 : #fff
-			border-radius 8px
-			box-shadow 0 8px 32px rgba(#000, 0.15)
-			overflow hidden
+			> .desc
+				margin -12px 0 24px 0
+				color isDark ? #fff : #555
 
-			> header
-				z-index 1
-				padding 12px 16px
-				color isDark ? #e3e5e8 : #888d94
-				box-shadow 0 1px 0px rgba(#000, 0.1)
+				> span
+					color $theme-color
+					cursor pointer
 
-				> div
-					position absolute
-					top 0
-					right 0
-					padding inherit
+					&:hover
+						text-decoration underline
 
-					> span
-						display inline-block
-						height 11px
-						width 11px
-						margin-left 6px
-						border-radius 100%
-						vertical-align middle
+			> .account
+				margin 8px 0
+				line-height 2em
 
-						&:nth-child(1)
-							background #5BCC8B
+				button
+					padding 8px 16px
+					font-size inherit
 
-						&:nth-child(2)
-							background #E6BB46
+				.signup
+					color $theme-color
+					border solid 2px $theme-color
+					border-radius 4px
 
-						&:nth-child(3)
-							background #DF7065
+					&:focus
+						box-shadow 0 0 0 3px rgba($theme-color, 0.2)
 
-			> .mk-welcome-timeline
-				max-height 350px
-				overflow auto
+					&:hover
+						color $theme-color-foreground
+						background $theme-color
+
+					&:active
+						color $theme-color-foreground
+						background darken($theme-color, 10%)
+						border-color darken($theme-color, 10%)
+
+				.signin
+					&:hover
+						color isDark ? #fff : #000
+
+			> .tl
+				margin 32px auto 0 auto
+				width 410px
+				text-align left
+				background isDark ? #313543 : #fff
+				border-radius 8px
+				box-shadow 0 8px 32px rgba(#000, 0.15)
+				overflow hidden
+
+				> header
+					z-index 1
+					padding 12px 16px
+					color isDark ? #e3e5e8 : #888d94
+					box-shadow 0 1px 0px rgba(#000, 0.1)
+
+					> div
+						position absolute
+						top 0
+						right 0
+						padding inherit
+
+						> span
+							display inline-block
+							height 11px
+							width 11px
+							margin-left 6px
+							border-radius 100%
+							vertical-align middle
+
+							&:nth-child(1)
+								background #5BCC8B
+
+							&:nth-child(2)
+								background #E6BB46
+
+							&:nth-child(3)
+								background #DF7065
+
+				> .mk-welcome-timeline
+					max-height 350px
+					overflow auto
 
 	> footer
 		font-size 12px

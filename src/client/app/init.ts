@@ -67,14 +67,6 @@ const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
 
-//#region Set description meta tag
-const head = document.getElementsByTagName('head')[0];
-const meta = document.createElement('meta');
-meta.setAttribute('name', 'description');
-meta.setAttribute('content', '%i18n:common.misskey%');
-head.appendChild(meta);
-//#endregion
-
 // iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
 	localStorage.setItem('kyoppie', 'yuppie');
