@@ -697,7 +697,7 @@ mobile/views/components/post-form.vue:
 mobile/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
-  media-count: "{}つのメディア"
+  media-count: "{}zawartości multimedialnej"
   poll: "Ankieta"
 mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
