@@ -6,43 +6,26 @@
 *::input-placeholder
 	color #D8CBC5
 
-*
-	&:focus
-		outline none
-
-	&::scrollbar
-		width 5px
-		background transparent
-
-		&:horizontal
-			height 5px
-
-	&::scrollbar-button
-		width 0
-		height 0
-		background rgba(0, 0, 0, 0.2)
-
-	&::scrollbar-piece
-		background transparent
-
-		&:start
-			background transparent
-
-	&::scrollbar-thumb
-		background rgba(0, 0, 0, 0.2)
-
-		&:hover
-			background rgba(0, 0, 0, 0.4)
-
-		&:active
-			background $theme-color
-
-	&::scrollbar-corner
-		background rgba(0, 0, 0, 0.2)
+*:focus
+	outline none
 
 html
 	height 100%
 	background #f7f7f7
+
+	&, *
+		&::-webkit-scrollbar
+			width 6px
+			height 6px
+
+		&::-webkit-scrollbar-thumb
+			background rgba(0, 0, 0, 0.2)
+
+			&:hover
+				background rgba(0, 0, 0, 0.4)
+
+			&:active
+				background $theme-color
 
 	&[data-darkmode]
 		background #191B22
@@ -50,10 +33,6 @@ html
 		&, *
 			&::-webkit-scrollbar-track
 				background-color #282C37
-
-			&::-webkit-scrollbar
-				width 6px
-				height 6px
 
 			&::-webkit-scrollbar-thumb
 				background-color #454954
