@@ -77,6 +77,7 @@ export type INote = {
 		host: string;
 		inbox?: string;
 	};
+	_replyIds?: mongo.ObjectID[];
 };
 
 /**

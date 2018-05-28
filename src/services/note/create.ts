@@ -172,6 +172,24 @@ export default async (user: IUser, data: {
 		}
 	});
 
+	if (data.reply) {
+		Note.update({ _id: data.reply._id }, {
+			$push: {
+				_replyIds: note._id
+			}
+		});
+	}
+
+	const isQuote = data.renote && (data.text || data.poll || data.media);
+
+	if (isQuote) {
+		Note.update({ _id: data.renote._id }, {
+			$push: {
+				_quoteIds: note._id
+			}
+		});
+	}
+
 	// Serialize
 	const noteObj = await pack(note);
 
