@@ -84,6 +84,8 @@ export interface ILocalUser extends IUserBase {
 	twoFactorTempSecret?: string;
 	clientSettings: any;
 	settings: any;
+	hasUnreadNotification: boolean;
+	hasUnreadMessagingMessage: boolean;
 }
 
 export interface IRemoteUser extends IUserBase {
@@ -387,8 +389,9 @@ export const pack = (
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
 		delete _user.avatarId;
 		delete _user.bannerId;
-
 		delete _user.driveCapacity;
+		delete _user.hasUnreadMessagingMessage;
+		delete _user.hasUnreadNotification;
 	}
 
 	if (meId && !meId.equals(_user.id)) {
