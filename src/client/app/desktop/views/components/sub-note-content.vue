@@ -4,7 +4,7 @@
 		<span v-if="note.isHidden" style="opacity: 0.5">%i18n:@private%</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
 		<a class="reply" v-if="note.replyId">%fa:reply%</a>
-		<mk-note-html :text="note.text" :i="$store.state.i"/>
+		<mk-note-html v-if="note.text" :text="note.text" :i="$store.state.i"/>
 		<a class="rp" v-if="note.renoteId" :href="`/note:${note.renoteId}`">RP: ...</a>
 	</div>
 	<details v-if="note.media.length > 0">
