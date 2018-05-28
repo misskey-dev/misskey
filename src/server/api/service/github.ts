@@ -25,7 +25,7 @@ const post = async text => {
 		}
 	}
 
-	createNote(bot, { text });
+	createNote(bot, { text, visibility: 'home' });
 };
 
 // Init router
