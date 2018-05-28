@@ -5,11 +5,7 @@
 		<div>
 			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
 			<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
-			<button class="submit" :disabled="posting" @click="post">
-				<template v-if="reply">%i18n:@reply%</template>
-				<template v-else-if="renote">%i18n:@renote%</template>
-				<template v-else>%i18n:@submit%</template>
-			</button>
+			<button class="submit" :disabled="posting" @click="post">{{ submitText }}</button>
 		</div>
 	</header>
 	<div class="form">
@@ -20,7 +16,7 @@
 			<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
 		</div>
 		<input v-show="useCw" v-model="cw" placeholder="%i18n:@cw-placeholder%">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:@reply-placeholder%' : renote ? '%i18n:@renote-placeholder%' : '%i18n:@note-placeholder%'"></textarea>
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 				<div class="file" v-for="file in files" :key="file.id">
@@ -72,6 +68,44 @@ export default Vue.extend({
 			useCw: false,
 			cw: null
 		};
+	},
+
+	computed: {
+		draftId(): string {
+			return this.renote
+				? 'renote:' + this.renote.id
+				: this.reply
+					? 'reply:' + this.reply.id
+					: 'note';
+		},
+
+		placeholder(): string {
+			const x = [
+				'%i18n:common.note-placeholders.a%',
+				'%i18n:common.note-placeholders.b%',
+				'%i18n:common.note-placeholders.c%',
+				'%i18n:common.note-placeholders.d%',
+				'%i18n:common.note-placeholders.e%'
+			][Math.floor(Math.random() * 5)];
+
+			return this.renote
+				? '%i18n:@quote-placeholder%'
+				: this.reply
+					? '%i18n:@reply-placeholder%'
+					: x;
+		},
+
+		submitText(): string {
+			return this.renote
+				? '%i18n:@renote%'
+				: this.reply
+					? '%i18n:@reply%'
+					: '%i18n:@submit%';
+		},
+
+		canPost(): boolean {
+			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
+		}
 	},
 
 	mounted() {

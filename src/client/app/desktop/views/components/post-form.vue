@@ -86,11 +86,19 @@ export default Vue.extend({
 		},
 
 		placeholder(): string {
+			const x = [
+				'%i18n:common.note-placeholders.a%',
+				'%i18n:common.note-placeholders.b%',
+				'%i18n:common.note-placeholders.c%',
+				'%i18n:common.note-placeholders.d%',
+				'%i18n:common.note-placeholders.e%'
+			][Math.floor(Math.random() * 5)];
+
 			return this.renote
 				? '%i18n:@quote-placeholder%'
 				: this.reply
 					? '%i18n:@reply-placeholder%'
-					: '%i18n:@note-placeholder%';
+					: x;
 		},
 
 		submitText(): string {
@@ -98,7 +106,7 @@ export default Vue.extend({
 				? '%i18n:@renote%'
 				: this.reply
 					? '%i18n:@reply%'
-					: '%i18n:@note%';
+					: '%i18n:@submit%';
 		},
 
 		canPost(): boolean {
