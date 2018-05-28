@@ -2,7 +2,7 @@ import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { pack } from '../../../../models/note';
 
 /**
- * GEt replies of a note
+ * Get replies of a note
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
