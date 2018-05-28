@@ -346,7 +346,7 @@ desktop/views/components/notifications.vue:
 desktop/views/components/post-form.vue:
   reply-placeholder: "Reply to this note..."
   quote-placeholder: "Quote this note..."
-  submit: "投稿"
+  submit: "Post"
   reply: "Reply"
   renote: "Renote"
   posted: "Posted!"
