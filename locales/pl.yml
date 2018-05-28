@@ -113,8 +113,8 @@ common/views/components/nav.vue:
 common/views/components/note-menu.vue:
   favorite: "Dodaj do ulubionych"
   pin: "Przypnij do profilu"
-  delete: "削除"
-  delete-confirm: "この投稿を削除しますか？"
+  delete: "Usuń"
+  delete-confirm: "Czy na pewno chcesz usunąć ten wpis?"
   remote: "Pokaż oryginał"
 common/views/components/poll.vue:
   vote-to: "Zagłosuj na '{}'"
@@ -311,23 +311,23 @@ desktop/views/components/messaging-window.vue:
   title: "Wiadomości"
 desktop/views/components/note-detail.vue:
   more: "Załaduj więcej konwersacji"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "ten wpis jest prywatny"
+  deleted: "ten wpis został usunięty"
   reposted-by: "Udostępniono przez {}"
   location: "Informacje o lokalizacji"
   renote: "Udostępnienie"
   add-reaction: "Dodaj reakcję"
 desktop/views/components/note-detail.sub.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "ten wpis jest prywatny"
+  deleted: "ten wpis został usunięty"
 desktop/views/components/notes.note.vue:
   reposted-by: "Udostępniono przez {}"
   reply: "Odpowiedz"
   renote: "Udostępnij"
   add-reaction: "Dodaj reakcję"
   detail: "Pokaż szczegóły"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "ten wpis jest prywatny"
+  deleted: "ten wpis został usunięty"
 desktop/views/components/notes.vue:
   error: "Ładowanie nie powiodło się."
   retry: "Spróbuj ponownie"
