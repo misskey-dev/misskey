@@ -24,13 +24,15 @@ export default define({
 	},
 	computed: {
 		placeholder(): string {
-			return [
+			const xs = [
 				'%i18n:common.note-placeholders.a%',
 				'%i18n:common.note-placeholders.b%',
 				'%i18n:common.note-placeholders.c%',
 				'%i18n:common.note-placeholders.d%',
-				'%i18n:common.note-placeholders.e%'
-			][Math.floor(Math.random() * 5)];
+				'%i18n:common.note-placeholders.e%',
+				'%i18n:common.note-placeholders.f%'
+			];
+			return xs[Math.floor(Math.random() * xs.length)];
 		}
 	},
 	methods: {
