@@ -108,7 +108,7 @@ root(isDark)
 			> article
 				max-width 700px
 				margin 42px auto 0 auto
-				padding 64px
+				padding 64px 82px
 				background isDark ? #282C37 : #fff
 				box-shadow 0 8px 32px rgba(#000, 0.15)
 
