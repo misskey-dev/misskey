@@ -113,8 +113,8 @@ common/views/components/nav.vue:
 common/views/components/note-menu.vue:
   favorite: "Favorite this note"
   pin: "Pin to profile page"
-  delete: "削除"
-  delete-confirm: "この投稿を削除しますか？"
+  delete: "Delete"
+  delete-confirm: "Are you sure you want to delete this post?"
   remote: "Show on origin"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
@@ -311,15 +311,15 @@ desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/note-detail.vue:
   more: "Load more conversations"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "this post is private"
+  deleted: "this post has been deleted"
   reposted-by: "Renoted by {}"
   location: "Location"
   renote: "Renote"
   add-reaction: "Add a reaction"
 desktop/views/components/note-detail.sub.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "this post is private"
+  deleted: "this post has been deleted"
 desktop/views/components/notes.note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
@@ -490,9 +490,9 @@ desktop/views/components/settings.profile.vue:
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
 desktop/views/components/sub-note-content.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
-  media-count: "{}つのメディア"
+  private: "this post is private"
+  deleted: "this post has been deleted"
+  media-count: "{} media attached"
   poll: "Polls"
 desktop/views/components/taskmanager.vue:
   title: "Task Manager"
@@ -656,15 +656,15 @@ mobile/views/components/note.vue:
   reposted-by: "Renoted by {}"
   more: "See more"
   less: "Hide"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "this post is private"
+  deleted: "this post has been deleted"
   location: "Location"
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
   reposted-by: "Renoted by {}"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "this post is private"
+  deleted: "this post has been deleted"
   location: "Location"
 mobile/views/components/note-preview.vue:
   admin: "admin"
@@ -693,9 +693,9 @@ mobile/views/components/post-form.vue:
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
-  media-count: "{}つのメディア"
+  private: "this post is private"
+  deleted: "this post has been deleted"
+  media-count: "{} media attached"
   poll: "Poll"
 mobile/views/components/timeline.vue:
   empty: "No notes"
