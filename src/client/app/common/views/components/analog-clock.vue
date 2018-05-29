@@ -1,12 +1,10 @@
 <template>
 <svg class="mk-analog-clock" viewBox="0 0 10 10" preserveAspectRatio="none">
-	<line v-for="angle, i in graduations"
-		:x1="5 + (Math.sin(angle) * (5 - graduationsPadding))"
-		:y1="5 - (Math.cos(angle) * (5 - graduationsPadding))"
-		:x2="5 + (Math.sin(angle) * ((5 - graduationsPadding) - (i % 5 == 0 ? longGraduationLength : shortGraduationLength)))"
-		:y2="5 - (Math.cos(angle) * ((5 - graduationsPadding) - (i % 5 == 0 ? longGraduationLength : shortGraduationLength)))"
-		:stroke="i % 5 == 0 ? longGraduationColor : shortGraduationColor"
-		stroke-width="0.05"/>
+	<circle v-for="angle, i in graduations"
+		:cx="5 + (Math.sin(angle) * (5 - graduationsPadding))"
+		:cy="5 - (Math.cos(angle) * (5 - graduationsPadding))"
+		:r="i % 5 == 0 ? 0.125 : 0.05"
+		:fill="i % 5 == 0 ? majorGraduationColor : minorGraduationColor"/>
 
 	<line
 		:x1="5 - (Math.sin(sAngle) * (sHandLengthRatio * handsTailLength))"
@@ -43,14 +41,13 @@ export default Vue.extend({
 			default: false
 		}
 	},
+
 	data() {
 		return {
 			now: new Date(),
 			clock: null,
 
 			graduationsPadding: 0.5,
-			longGraduationLength: 0.3,
-			shortGraduationLength: 0.15,
 			handsPadding: 1,
 			handsTailLength: 0.7,
 			hHandLengthRatio: 0.75,
@@ -58,11 +55,12 @@ export default Vue.extend({
 			sHandLengthRatio: 1
 		};
 	},
+
 	computed: {
-		longGraduationColor(): string {
+		majorGraduationColor(): string {
 			return this.dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
 		},
-		shortGraduationColor(): string {
+		minorGraduationColor(): string {
 			return this.dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 		},
 
@@ -106,12 +104,15 @@ export default Vue.extend({
 			return angles;
 		}
 	},
+
 	mounted() {
 		this.clock = setInterval(this.tick, 1000);
 	},
+
 	beforeDestroy() {
 		clearInterval(this.clock);
 	},
+
 	methods: {
 		tick() {
 			this.now = new Date();
