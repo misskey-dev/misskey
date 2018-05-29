@@ -696,7 +696,7 @@ mobile/views/components/post-form.vue:
   submit: "Poster"
   reply: "返信"
   renote: "Renote"
-  renote-placeholder: "この投稿を引用... (オプション)"
+  quote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "Répondre à cette note"
   cw-placeholder: "内容への注釈 (オプション)"
   location-alert: "お使いの端末は位置情報に対応していません"

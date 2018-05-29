@@ -696,7 +696,7 @@ mobile/views/components/post-form.vue:
   submit: "Wyślij"
   reply: "Odpowiedz"
   renote: "Udostępnij"
-  renote-placeholder: "Zacytuj wpis… (nieobowiązkowe)"
+  quote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "Odpowiedź na ten wpis…"
   cw-placeholder: "Treść ostrzeżenia (opcjonalnie)"
   location-alert: "Twoje urządzenie nie pozwala na przekazywanie informacji o lokalizacji"
