@@ -326,9 +326,6 @@ desktop/views/components/note-detail.vue:
   location: "Informacje o lokalizacji"
   renote: "Udostępnienie"
   add-reaction: "Dodaj reakcję"
-desktop/views/components/note-detail.sub.vue:
-  private: "ten wpis jest prywatny"
-  deleted: "ten wpis został usunięty"
 desktop/views/components/notes.note.vue:
   reposted-by: "Udostępniono przez {}"
   reply: "Odpowiedz"
