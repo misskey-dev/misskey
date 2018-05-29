@@ -326,9 +326,6 @@ desktop/views/components/note-detail.vue:
   location: "Location"
   renote: "Renote"
   add-reaction: "Add a reaction"
-desktop/views/components/note-detail.sub.vue:
-  private: "this post is private"
-  deleted: "this post has been deleted"
 desktop/views/components/notes.note.vue:
   reposted-by: "Reposted by {}"
   reply: "Reply"
@@ -716,6 +713,10 @@ mobile/views/components/ui.nav.vue:
   messaging: "Messages"
   search: "Search"
   drive: "Drive"
+  favorites: "Favorites"
+  widgets: "Widgets"
+  game: "Games"
+  darkmode: "Dark mode"
   settings: "Settings"
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
@@ -726,8 +727,11 @@ mobile/views/components/users-list.vue:
   all: "All"
   known: "You know"
   load-more: "More"
+mobile/views/pages/favorites.vue:
+  title: "Favorites"
 mobile/views/pages/drive.vue:
   drive: "Drive"
+  more: "Load more"
 mobile/views/pages/followers.vue:
   followers-of: "Followers of {}"
 mobile/views/pages/following.vue:

@@ -326,9 +326,6 @@ desktop/views/components/note-detail.vue:
   location: "Informacje o lokalizacji"
   renote: "Udostępnienie"
   add-reaction: "Dodaj reakcję"
-desktop/views/components/note-detail.sub.vue:
-  private: "ten wpis jest prywatny"
-  deleted: "ten wpis został usunięty"
 desktop/views/components/notes.note.vue:
   reposted-by: "Udostępniono przez {}"
   reply: "Odpowiedz"
@@ -716,6 +713,10 @@ mobile/views/components/ui.nav.vue:
   messaging: "Wiadomości"
   search: "Szukaj"
   drive: "Dysk"
+  favorites: "お気に入り"
+  widgets: "ウィジェット"
+  game: "ゲーム"
+  darkmode: "ダークモード"
   settings: "Ustawienia"
   about: "O Misskey"
 mobile/views/components/user-timeline.vue:
@@ -726,8 +727,11 @@ mobile/views/components/users-list.vue:
   all: "Wszyscy"
   known: "Znasz"
   load-more: "Więcej"
+mobile/views/pages/favorites.vue:
+  title: "お気に入り"
 mobile/views/pages/drive.vue:
   drive: "Dysk"
+  more: "もっと見る"
 mobile/views/pages/followers.vue:
   followers-of: "Śledzący {}"
 mobile/views/pages/following.vue:
