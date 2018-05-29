@@ -32,9 +32,9 @@
 	//#region Detect app name
 	let app = null;
 
-	if (url.pathname == '/docs') app = 'docs';
-	if (url.pathname == '/dev') app = 'dev';
-	if (url.pathname == '/auth') app = 'auth';
+	if (url.pathname == '/docs' || url.pathname.startsWith('/docs/')) app = 'docs';
+	if (url.pathname == '/dev' || url.pathname.startsWith('/dev/')) app = 'dev';
+	if (url.pathname == '/auth' || url.pathname.startsWith('/auth/')) app = 'auth';
 	//#endregion
 
 	//#region Detect the user language
