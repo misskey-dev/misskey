@@ -716,6 +716,10 @@ mobile/views/components/ui.nav.vue:
   messaging: "Messages"
   search: "Rechercher"
   drive: "Drive"
+  favorites: "お気に入り"
+  widgets: "ウィジェット"
+  game: "ゲーム"
+  darkmode: "ダークモード"
   settings: "Réglages"
   about: "À propose de Misskey"
 mobile/views/components/user-timeline.vue:
@@ -726,8 +730,11 @@ mobile/views/components/users-list.vue:
   all: "Tout"
   known: "Vous connaissez"
   load-more: "Afficher plus"
+mobile/views/pages/favorites.vue:
+  title: "お気に入り"
 mobile/views/pages/drive.vue:
   drive: "Drive"
+  more: "もっと見る"
 mobile/views/pages/followers.vue:
   followers-of: "Abonnés de {}"
 mobile/views/pages/following.vue:
