@@ -62,7 +62,7 @@ export default Vue.extend({
 
 			// 既に連携していた場合
 			if (this.session.app.isAuthorized) {
-				this.$root.$data.os.api('auth/accept', {
+				(this as any).api('auth/accept', {
 					token: this.session.token
 				}).then(() => {
 					this.accepted();
