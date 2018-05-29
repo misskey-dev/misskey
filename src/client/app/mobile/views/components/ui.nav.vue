@@ -17,8 +17,8 @@
 				<ul>
 					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@home%%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotification">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/othello" :data-active="$route.name == 'othello'">%fa:gamepad%ゲーム<template v-if="hasGameInvitations">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/othello" :data-active="$route.name == 'othello'">%fa:gamepad%ゲーム<template v-if="hasGameInvitation">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
 					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:quidditch%%i18n:@widgets%%fa:angle-right%</router-link></li>
