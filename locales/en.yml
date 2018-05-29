@@ -709,12 +709,13 @@ mobile/views/components/timeline.vue:
   empty: "No notes"
   load-more: "More"
 mobile/views/components/ui.nav.vue:
-  home: "Home"
+  timeline: "Timeline"
   notifications: "Notifications"
   messaging: "Messages"
   search: "Search"
   drive: "Drive"
   favorites: "Favorites"
+  user-lists: "Lists"
   widgets: "Widgets"
   game: "Games"
   darkmode: "Dark mode"
@@ -730,6 +731,9 @@ mobile/views/components/users-list.vue:
   load-more: "More"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
+mobile/views/pages/user-lists.vue:
+  title: "Lists"
+  enter-list-name: "Enter list name"
 mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Load more"
