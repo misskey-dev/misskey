@@ -136,7 +136,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onContextmenu(e) {
-			contextmenu(e, [{
+			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.create-folder%',
 				icon: '%fa:R folder%',

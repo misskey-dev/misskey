@@ -52,7 +52,7 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			this.isContextmenuShowing = true;
-			contextmenu(e, [{
+			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.move-to-this-folder%',
 				icon: '%fa:arrow-right%',
