@@ -48,7 +48,7 @@ common:
   update-available: "A new version of Misskey is now available({newer}, current is {current}). Reload the page to apply the update."
   my-token-regenerated: "Your token has been generated. You will now get logged out."
   widgets:
-    analog-clock: "アナログ時計"
+    analog-clock: "Analog clock"
     profile: "Profile"
     calendar: "Calendar"
     timemachine: "Calendar (Time Machine)"
