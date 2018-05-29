@@ -26,7 +26,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('note not found');
 	}
 
-	const ids = note._replyIds.slice(offset, offset + limit);
+	const ids = (note._replyIds || []).slice(offset, offset + limit);
 
 	// Serialize
 	res(await Promise.all(ids.map(id => pack(id, user))));
