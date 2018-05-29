@@ -36,7 +36,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-ui-notification
+root(isDark)
 	display block
 	position fixed
 	z-index 10000
@@ -46,10 +46,10 @@ export default Vue.extend({
 	margin 0 auto
 	padding 128px 0 0 0
 	width 500px
-	color rgba(#000, 0.6)
-	background rgba(#fff, 0.9)
+	color rgba(isDark ? #fff : #000, 0.6)
+	background rgba(isDark ? #282C37 : #fff, 0.9)
 	border-radius 0 0 8px 8px
-	box-shadow 0 2px 4px rgba(#000, 0.2)
+	box-shadow 0 2px 4px rgba(#000, isDark ? 0.4 : 0.2)
 	transform translateY(-64px)
 	opacity 0
 
@@ -57,5 +57,11 @@ export default Vue.extend({
 		margin 0
 		line-height 64px
 		text-align center
+
+.mk-ui-notification[data-darkmode]
+	root(true)
+
+.mk-ui-notification:not([data-darkmode])
+	root(false)
 
 </style>
