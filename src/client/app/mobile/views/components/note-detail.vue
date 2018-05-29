@@ -216,8 +216,6 @@ export default Vue.extend({
 
 root(isDark)
 	overflow hidden
-	margin 0 auto
-	padding 0
 	width 100%
 	text-align left
 	background isDark ? #282C37 : #fff
