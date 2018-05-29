@@ -1,6 +1,6 @@
 <template>
 <div class="mk-media-list">
-	<div :data-count="mediaList.length">
+	<div :data-count="mediaList.length" ref="grid">
 		<template v-for="media in mediaList">
 			<mk-media-video :video="media" :key="media.id" v-if="media.type.startsWith('video')" :inline-playable="mediaList.length === 1"/>
 			<mk-media-image :image="media" :key="media.id" v-else :raw="raw"/>
@@ -20,6 +20,10 @@ export default Vue.extend({
 		raw: {
 			default: false
 		}
+	},
+	mounted() {
+		// for Safari bug
+		this.$refs.grid.style.height = `${this.$refs.grid.clientHeight}px`;
 	}
 });
 </script>
@@ -36,9 +40,9 @@ export default Vue.extend({
 	> div
 		position absolute
 		top 0
-		left 0
-		bottom 0
 		right 0
+		bottom 0
+		left 0
 		display grid
 		grid-gap 4px
 
@@ -54,7 +58,7 @@ export default Vue.extend({
 				grid-row 1 / 3
 			:nth-child(3)
 				grid-column 2 / 3
-				grid-row 2/3
+				grid-row 2 / 3
 		&[data-count="4"]
 			grid-template-columns 1fr 1fr
 			grid-template-rows 1fr 1fr
