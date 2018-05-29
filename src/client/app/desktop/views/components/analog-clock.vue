@@ -9,22 +9,22 @@
 		stroke-width="0.05"/>
 
 	<line
-		x1="5"
-		y1="5"
+		:x1="5 - (Math.sin(sAngle) * (sHandLengthRatio * handsTailLength))"
+		:y1="5 + (Math.cos(sAngle) * (sHandLengthRatio * handsTailLength))"
 		:x2="5 + (Math.sin(sAngle) * ((sHandLengthRatio * 5) - handsPadding))"
 		:y2="5 - (Math.cos(sAngle) * ((sHandLengthRatio * 5) - handsPadding))"
 		:stroke="sHandColor"
 		stroke-width="0.05"/>
 	<line
-		x1="5"
-		y1="5"
+		:x1="5 - (Math.sin(mAngle) * (mHandLengthRatio * handsTailLength))"
+		:y1="5 + (Math.cos(mAngle) * (mHandLengthRatio * handsTailLength))"
 		:x2="5 + (Math.sin(mAngle) * ((mHandLengthRatio * 5) - handsPadding))"
 		:y2="5 - (Math.cos(mAngle) * ((mHandLengthRatio * 5) - handsPadding))"
 		:stroke="mHandColor"
 		stroke-width="0.1"/>
 	<line
-		x1="5"
-		y1="5"
+		:x1="5 - (Math.sin(hAngle) * (hHandLengthRatio * handsTailLength))"
+		:y1="5 + (Math.cos(hAngle) * (hHandLengthRatio * handsTailLength))"
 		:x2="5 + (Math.sin(hAngle) * ((hHandLengthRatio * 5) - handsPadding))"
 		:y2="5 - (Math.cos(hAngle) * ((hHandLengthRatio * 5) - handsPadding))"
 		:stroke="hHandColor"
@@ -46,9 +46,10 @@ export default Vue.extend({
 			longGraduationLength: 0.3,
 			shortGraduationLength: 0.15,
 			handsPadding: 1,
+			handsTailLength: 0.7,
 			hHandLengthRatio: 0.75,
 			mHandLengthRatio: 1,
-			sHandLengthRatio: 1,
+			sHandLengthRatio: 1
 		};
 	},
 	computed: {
