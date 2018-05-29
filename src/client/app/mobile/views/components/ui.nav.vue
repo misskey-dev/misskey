@@ -180,6 +180,8 @@ root(isDark)
 
 				> [data-fa]:first-child
 					margin-right 0.5em
+					width 20px
+					text-align center
 
 				> [data-fa].circle
 					margin-left 6px
