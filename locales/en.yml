@@ -709,12 +709,13 @@ mobile/views/components/timeline.vue:
   empty: "No notes"
   load-more: "More"
 mobile/views/components/ui.nav.vue:
-  home: "Home"
+  timeline: "タイムライン"
   notifications: "Notifications"
   messaging: "Messages"
   search: "Search"
   drive: "Drive"
   favorites: "Favorites"
+  user-lists: "リスト"
   widgets: "Widgets"
   game: "Games"
   darkmode: "Dark mode"
@@ -730,6 +731,9 @@ mobile/views/components/users-list.vue:
   load-more: "More"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
+mobile/views/pages/user-lists.vue:
+  title: "リスト"
+  enter-list-name: "リスト名を入力してください"
 mobile/views/pages/drive.vue:
   drive: "Drive"
   more: "Load more"
