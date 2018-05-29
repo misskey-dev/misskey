@@ -73,6 +73,7 @@ root(isDark)
 			background isDark ? #282c37 : #fff
 			border none
 			border-bottom solid 1px isDark ? #1c2023 : #eee
+			border-radius 0
 
 		> button
 			display block
