@@ -48,6 +48,7 @@ common:
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   widgets:
+    analog-clock: "アナログ時計"
     profile: "プロフィール"
     calendar: "カレンダー"
     timemachine: "カレンダー(タイムマシン)"
