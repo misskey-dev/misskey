@@ -172,7 +172,7 @@ export default Vue.extend({
 	},
 
 	methods: {
-		fetchContext() {
+		fetchConversation() {
 			this.conversationFetching = true;
 
 			// Fetch conversation
