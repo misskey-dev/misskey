@@ -15,14 +15,15 @@
 			</router-link>
 			<div class="links">
 				<ul>
-					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@home%%fa:angle-right%</router-link></li>
+					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@timeline%%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotification">%fa:circle%</template>%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>%fa:angle-right%</router-link></li>
 					<li><router-link to="/othello" :data-active="$route.name == 'othello'">%fa:gamepad%%i18n:@game%<template v-if="hasGameInvitation">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:quidditch%%i18n:@widgets%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:R calendar-alt%%i18n:@widgets%%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'">%fa:star%%i18n:@favorites%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'">%fa:list%%i18n:@user-lists%%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'">%fa:cloud%%i18n:@drive%%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
@@ -157,7 +158,10 @@ root(isDark)
 		&:first-child
 			margin-top 0
 
-		li
+		&:last-child
+			margin-bottom 0
+
+		> li
 			display block
 			font-size 1em
 			line-height 1em
@@ -199,7 +203,7 @@ root(isDark)
 					opacity 0.5
 
 	.about
-		margin 0
+		margin 0 0 8px 0
 		padding 1em 0
 		text-align center
 		font-size 0.8em

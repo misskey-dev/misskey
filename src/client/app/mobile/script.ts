@@ -37,6 +37,8 @@ import MkSearch from './views/pages/search.vue';
 import MkFollowers from './views/pages/followers.vue';
 import MkFollowing from './views/pages/following.vue';
 import MkFavorites from './views/pages/favorites.vue';
+import MkUserLists from './views/pages/user-lists.vue';
+import MkUserList from './views/pages/user-list.vue';
 import MkSettings from './views/pages/settings.vue';
 import MkOthello from './views/pages/othello.vue';
 
@@ -74,6 +76,8 @@ init((launch) => {
 			{ path: '/i/settings', name: 'settings', component: MkSettings },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
+			{ path: '/i/lists', name: 'user-lists', component: MkUserLists },
+			{ path: '/i/lists/:list', name: 'user-list', component: MkUserList },
 			{ path: '/i/widgets', name: 'widgets', component: MkWidgets },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
