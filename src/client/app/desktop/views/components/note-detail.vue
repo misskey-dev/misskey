@@ -89,7 +89,7 @@ import MkPostFormWindow from './post-form-window.vue';
 import MkRenoteFormWindow from './renote-form-window.vue';
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
-import XSub from './note-detail.sub.vue';
+import XSub from './notes.note.sub.vue';
 
 export default Vue.extend({
 	components: {

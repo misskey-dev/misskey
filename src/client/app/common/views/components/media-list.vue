@@ -23,7 +23,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		// for Safari bug
-		this.$refs.grid.style.height = `${this.$refs.grid.clientHeight}px`;
+		this.$refs.grid.style.height = this.$refs.grid.clientHeight ? `${this.$refs.grid.clientHeight}px` : '128px';
 	}
 });
 </script>

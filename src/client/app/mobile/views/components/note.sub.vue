@@ -33,7 +33,17 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	props: ['note']
+	props: {
+		note: {
+			type: Object,
+			required: true
+		},
+		// TODO
+		truncate: {
+			type: Boolean,
+			default: true
+		}
+	}
 });
 </script>
 
@@ -144,11 +154,8 @@ root(isDark)
 					margin-left 6px
 
 		> .body
-			max-height 128px
-			overflow hidden
 
 			> .text
-				cursor default
 				margin 0
 				padding 0
 				color isDark ? #959ba7 : #717171

@@ -87,7 +87,7 @@ import parse from '../../../../../text/parse';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
-import XSub from './note-detail.sub.vue';
+import XSub from './note.sub.vue';
 
 export default Vue.extend({
 	components: {

@@ -115,8 +115,6 @@ root(isDark)
 					margin-left 6px
 
 		> .body
-			max-height 128px
-			overflow hidden
 
 			> .text
 				cursor default
