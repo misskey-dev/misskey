@@ -2,7 +2,7 @@
 <mk-ui>
 	<main v-if="!fetching">
 		<template v-for="favorite in favorites">
-			<mk-note-detail :note="favorite.note" :key="favorite.note.id"/>
+			<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
 		</template>
 		<a v-if="existMore" @click="more">%i18n:@more%</a>
 	</main>
@@ -70,4 +70,7 @@ main
 	margin 0 auto
 	padding 16px
 	max-width 700px
+
+	> .post
+		margin-bottom 16px
 </style>

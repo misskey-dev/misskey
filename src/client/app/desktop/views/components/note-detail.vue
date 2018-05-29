@@ -218,8 +218,6 @@ export default Vue.extend({
 @import '~const.styl'
 
 root(isDark)
-	margin 0 auto
-	padding 0
 	overflow hidden
 	text-align left
 	background isDark ? #282C37 : #fff
