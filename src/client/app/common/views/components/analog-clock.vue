@@ -37,6 +37,12 @@ import Vue from 'vue';
 import { themeColor } from '../../../config';
 
 export default Vue.extend({
+	props: {
+		dark: {
+			type: Boolean,
+			default: false
+		}
+	},
 	data() {
 		return {
 			now: new Date(),
@@ -54,16 +60,17 @@ export default Vue.extend({
 	},
 	computed: {
 		longGraduationColor(): string {
-			return 'rgba(255, 255, 255, 0.3)';
+			return this.dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
 		},
 		shortGraduationColor(): string {
-			return 'rgba(255, 255, 255, 0.2)';
+			return this.dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 		},
+
 		sHandColor(): string {
-			return 'rgba(255, 255, 255, 0.5)';
+			return this.dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
 		},
 		mHandColor(): string {
-			return '#fff';
+			return this.dark ? '#fff' : '#777';
 		},
 		hHandColor(): string {
 			return themeColor;
@@ -78,6 +85,7 @@ export default Vue.extend({
 		h(): number {
 			return this.now.getHours();
 		},
+
 		hAngle(): number {
 			return Math.PI * (this.h % 12 + this.m / 60) / 6;
 		},
@@ -115,6 +123,4 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-analog-clock
 	display block
-	width 256px
-	height 256px
 </style>

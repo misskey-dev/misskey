@@ -8,7 +8,7 @@
 		</time>
 	</div>
 	<div class="content">
-		<mk-analog-clock/>
+		<mk-analog-clock :dark="true"/>
 	</div>
 </div>
 </template>

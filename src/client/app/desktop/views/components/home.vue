@@ -7,6 +7,7 @@
 				<p>%i18n:@add-widget%</p>
 				<select v-model="widgetAdderSelected">
 					<option value="profile">%i18n:common.widgets.profile%</option>
+					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
 					<option value="calendar">%i18n:common.widgets.calendar%</option>
 					<option value="timemachine">%i18n:common.widgets.timemachine%</option>
 					<option value="activity">%i18n:common.widgets.activity%</option>

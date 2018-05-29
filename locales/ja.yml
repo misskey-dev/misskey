@@ -54,6 +54,7 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
 
   widgets:
+    analog-clock: "アナログ時計"
     profile: "プロフィール"
     calendar: "カレンダー"
     timemachine: "カレンダー(タイムマシン)"
