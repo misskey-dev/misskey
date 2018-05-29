@@ -80,6 +80,8 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
+@import url(https://fonts.googleapis.com/earlyaccess/notosansjp.css);
+
 root(isDark)
 	display flex
 	flex-direction column
@@ -103,6 +105,7 @@ root(isDark)
 		text-align center
 
 		&.about
+			font-family 'Noto Sans JP'
 			color isDark ? #fff : #627574
 
 			> article
@@ -114,7 +117,7 @@ root(isDark)
 
 				> h1
 					margin 0
-					font-variant small-caps
+					font-weight 900
 
 				> p
 					margin 20px 0
