@@ -9,9 +9,18 @@
 			<span class="is-bot" v-if="note.user.isBot">%i18n:@bot%</span>
 			<span class="is-cat" v-if="note.user.isCat">%i18n:@cat%</span>
 			<span class="username"><mk-acct :user="note.user"/></span>
-			<router-link class="time" :to="note | notePage">
-				<mk-time :time="note.createdAt"/>
-			</router-link>
+			<div class="info">
+				<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
+				<router-link class="created-at" :to="note | notePage">
+					<mk-time :time="note.createdAt"/>
+				</router-link>
+				<span class="visibility" v-if="note.visibility != 'public'">
+					<template v-if="note.visibility == 'home'">%fa:home%</template>
+					<template v-if="note.visibility == 'followers'">%fa:unlock%</template>
+					<template v-if="note.visibility == 'specified'">%fa:envelope%</template>
+					<template v-if="note.visibility == 'private'">%fa:lock%</template>
+				</span>
+			</div>
 		</header>
 		<div class="body">
 			<mk-sub-note-content class="text" :note="note"/>
@@ -30,14 +39,16 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
+	display flex
 	margin 0
 	padding 0
-	font-size 0.9em
+	font-size 10px
 
-	&:after
-		content ""
-		display block
-		clear both
+	@media (min-width 350px)
+		font-size 12px
+
+	@media (min-width 500px)
+		font-size 14px
 
 	&.smart
 		> .main
@@ -47,24 +58,26 @@ root(isDark)
 				align-items center
 
 	> .avatar
+		flex-shrink 0
 		display block
-		float left
-		margin 0 12px 0 0
-		width 48px
-		height 48px
+		margin 0 10px 0 0
+		width 40px
+		height 40px
 		border-radius 8px
 
-		@media (max-width 500px)
+		@media (min-width 350px)
 			margin 0 10px 0 0
 			width 44px
 			height 44px
 
-	> .main
-		float left
-		width calc(100% - 60px)
+		@media (min-width 500px)
+			margin 0 12px 0 0
+			width 48px
+			height 48px
 
-		@media (max-width 500px)
-			width calc(100% - 54px)
+	> .main
+		flex 1
+		min-width 0
 
 		> header
 			display flex
@@ -97,7 +110,7 @@ root(isDark)
 				align-self center
 				margin 0 0.5em 0 0
 				padding 1px 6px
-				font-size 10px
+				font-size 0.8em
 				color isDark ? #758188 : #aaa
 				border solid 1px isDark ? #57616f : #ddd
 				border-radius 3px
@@ -112,9 +125,18 @@ root(isDark)
 				text-overflow ellipsis
 				color isDark ? #606984 : #d1d8da
 
-			> .time
+			> .info
 				margin-left auto
-				color isDark ? #606984 : #b2b8bb
+				font-size 0.9em
+
+				> *
+					color isDark ? #606984 : #b2b8bb
+
+				> .mobile
+					margin-right 6px
+
+				> .visibility
+					margin-left 6px
 
 		> .body
 

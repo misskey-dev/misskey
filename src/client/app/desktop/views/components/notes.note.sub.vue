@@ -44,27 +44,23 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
+	display flex
 	margin 0
 	padding 16px 32px
 	font-size 0.9em
 	background isDark ? #21242d : #fcfcfc
 
-	&:after
-		content ""
-		display block
-		clear both
-
 	> .avatar
+		flex-shrink 0
 		display block
-		float left
 		margin 0 12px 0 0
 		width 48px
 		height 48px
 		border-radius 8px
 
 	> .main
-		float left
-		width calc(100% - 60px)
+		flex 1
+		min-width 0
 
 		> header
 			display flex

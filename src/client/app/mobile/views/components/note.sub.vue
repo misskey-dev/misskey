@@ -39,9 +39,16 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
+	display flex
 	padding 16px
-	font-size 0.9em
+	font-size 10px
 	background isDark ? #21242d : #fcfcfc
+
+	@media (min-width 350px)
+		font-size 12px
+
+	@media (min-width 500px)
+		font-size 14px
 
 	@media (min-width 600px)
 		padding 24px 32px
@@ -53,18 +60,18 @@ root(isDark)
 			> header
 				align-items center
 
-	&:after
-		content ""
-		display block
-		clear both
-
 	> .avatar
+		flex-shrink 0
 		display block
-		float left
-		margin 0 10px 0 0
-		width 42px
-		height 42px
+		margin 0 8px 0 0
+		width 38px
+		height 38px
 		border-radius 8px
+
+		@media (min-width 350px)
+			margin-right 10px
+			width 42px
+			height 42px
 
 		@media (min-width 500px)
 			margin-right 14px
@@ -72,11 +79,8 @@ root(isDark)
 			height 50px
 
 	> .main
-		float left
-		width calc(100% - 52px)
-
-		@media (min-width 500px)
-			width calc(100% - 64px)
+		flex 1
+		min-width 0
 
 		> header
 			display flex
@@ -112,7 +116,7 @@ root(isDark)
 				align-self center
 				margin 0 0.5em 0 0
 				padding 1px 5px
-				font-size 10px
+				font-size 0.8em
 				color isDark ? #758188 : #aaa
 				border solid 1px isDark ? #57616f : #ddd
 				border-radius 3px

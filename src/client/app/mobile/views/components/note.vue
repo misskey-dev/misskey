@@ -269,8 +269,6 @@ root(isDark)
 	&.smart
 		> article
 			> .main
-				width 100%
-
 				> header
 					align-items center
 					margin-bottom 4px
@@ -328,26 +326,27 @@ root(isDark)
 			padding-top 8px
 
 	> article
+		display flex
 		padding 16px 16px 9px
 
 		@media (min-width 600px)
 			padding 32px 32px 22px
 
-		&:after
-			content ""
-			display block
-			clear both
-
 		> .avatar
+			flex-shrink 0
 			display block
-			float left
 			margin 0 10px 8px 0
-			width 48px
-			height 48px
+			width 42px
+			height 42px
 			border-radius 6px
 			//position -webkit-sticky
 			//position sticky
 			//top 62px
+
+			@media (min-width 350px)
+				width 48px
+				height 48px
+				border-radius 6px
 
 			@media (min-width 500px)
 				margin-right 16px
@@ -356,11 +355,8 @@ root(isDark)
 				border-radius 8px
 
 		> .main
-			float left
-			width calc(100% - 58px)
-
-			@media (min-width 500px)
-				width calc(100% - 74px)
+			flex 1
+			min-width 0
 
 			> header
 				display flex
@@ -393,7 +389,7 @@ root(isDark)
 					align-self center
 					margin 0 0.5em 0 0
 					padding 1px 6px
-					font-size 12px
+					font-size 0.8em
 					color isDark ? #758188 : #aaa
 					border solid 1px isDark ? #57616f : #ddd
 					border-radius 3px
@@ -422,6 +418,8 @@ root(isDark)
 						margin-left 6px
 
 			> .body
+				@media (min-width 700px)
+					font-size 1.1em
 
 				> .cw
 					cursor default

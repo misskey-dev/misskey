@@ -387,20 +387,16 @@ root(isDark)
 			padding-top 8px
 
 	> article
+		display flex
 		padding 28px 32px 18px 32px
-
-		&:after
-			content ""
-			display block
-			clear both
 
 		&:hover
 			> .main > footer > button
 				color isDark ? #707b97 : #888
 
 		> .avatar
+			flex-shrink 0
 			display block
-			float left
 			margin 0 16px 10px 0
 			width 58px
 			height 58px
@@ -410,8 +406,8 @@ root(isDark)
 			//top 74px
 
 		> .main
-			float left
-			width calc(100% - 74px)
+			flex 1
+			min-width 0
 
 			> header
 				display flex

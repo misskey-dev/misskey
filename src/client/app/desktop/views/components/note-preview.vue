@@ -5,9 +5,18 @@
 		<header>
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</router-link>
 			<span class="username"><mk-acct :user="note.user"/></span>
-			<router-link class="time" :to="note | notePage">
-				<mk-time :time="note.createdAt"/>
-			</router-link>
+			<div class="info">
+				<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
+				<router-link class="created-at" :to="note | notePage">
+					<mk-time :time="note.createdAt"/>
+				</router-link>
+				<span class="visibility" v-if="note.visibility != 'public'">
+					<template v-if="note.visibility == 'home'">%fa:home%</template>
+					<template v-if="note.visibility == 'followers'">%fa:unlock%</template>
+					<template v-if="note.visibility == 'specified'">%fa:envelope%</template>
+					<template v-if="note.visibility == 'private'">%fa:lock%</template>
+				</span>
+			</div>
 		</header>
 		<div class="body">
 			<mk-sub-note-content class="text" :note="note"/>
@@ -32,24 +41,20 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
+	display flex
 	font-size 0.9em
 
-	&:after
-		content ""
-		display block
-		clear both
-
 	> .avatar
+		flex-shrink 0
 		display block
-		float left
 		margin 0 12px 0 0
 		width 48px
 		height 48px
 		border-radius 8px
 
 	> .main
-		float left
-		width calc(100% - 60px)
+		flex 1
+		min-width 0
 
 		> header
 			display flex
@@ -75,9 +80,18 @@ root(isDark)
 				text-overflow ellipsis
 				color isDark ? #606984 : #d1d8da
 
-			> .time
+			> .info
 				margin-left auto
-				color isDark ? #606984 : #b2b8bb
+				font-size 0.9em
+
+				> *
+					color isDark ? #606984 : #b2b8bb
+
+				> .mobile
+					margin-right 6px
+
+				> .visibility
+					margin-left 6px
 
 		> .body
 
