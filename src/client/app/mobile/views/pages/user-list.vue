@@ -4,7 +4,7 @@
 
 	<main v-if="!fetching">
 		<ul>
-			<li v-for="user in list.users" :key="user.id"><router-link :to="user | userPage">{{ user | userName }}</router-link></li>
+			<li v-for="user in users" :key="user.id"><router-link :to="user | userPage">{{ user | userName }}</router-link></li>
 		</ul>
 	</main>
 </mk-ui>
@@ -18,7 +18,8 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			list: null
+			list: null,
+			users: null
 		};
 	},
 	watch: {
@@ -39,6 +40,12 @@ export default Vue.extend({
 				this.fetching = false;
 
 				Progress.done();
+
+				(this as any).api('users/show', {
+					userIds: this.list.userIds
+				}).then(users => {
+					this.users = users;
+				});
 			});
 		}
 	}
