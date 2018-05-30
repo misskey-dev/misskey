@@ -45,7 +45,7 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
-  update-available: "A new version of Misskey is now available({newer}, current is {current}). Reload the page to apply the update."
+  update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been generated. You will now get logged out."
   widgets:
     analog-clock: "Analog clock"
