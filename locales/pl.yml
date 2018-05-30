@@ -3,8 +3,8 @@ meta:
   lang: "język polski"
   divider: ""
 common:
-  misskey: "A planet of fediverse"
-  about-title: "A ⭐ of fediverse."
+  misskey: "Planeta Fediwersum"
+  about-title: "⭐ Fediwersum"
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
   time:
     unknown: "nieznany"
@@ -36,19 +36,19 @@ common:
     confused: "Zmieszany"
     pudding: "Pudding"
   note-placeholders:
-    a: "今どうしてる？"
-    b: "何かありましたか？"
-    c: "何をお考えですか？"
-    d: "言いたいことは？"
-    e: "ここに書いてください"
-    f: "あなたが書くのを待っています..."
+    a: "Co robisz?"
+    b: "Co się wydarzyło?"
+    c: "Co Ci chodzi po głowie?"
+    d: "Czy masz coś do powiedzenia?"
+    e: "Napisz coś tutaj!"
+    f: "Czekamy, aż coś napiszesz."
   delete: "Usuń"
   loading: "Ładowanie"
   ok: "OK"
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   widgets:
-    analog-clock: "アナログ時計"
+    analog-clock: "Zegar analogowy"
     profile: "Profil"
     calendar: "Kalendarz"
     timemachine: "Kalendarz (wehikuł czasu)"
@@ -344,7 +344,7 @@ desktop/views/components/notifications.vue:
 desktop/views/components/post-form.vue:
   reply-placeholder: "Odpowiedz na ten wpis…"
   quote-placeholder: "Zacytuj ten wpis…"
-  submit: "投稿"
+  submit: "Wyślij"
   reply: "Odpowiedz"
   renote: "Udostępnienie"
   posted: "Opublikowano!"
@@ -427,7 +427,7 @@ desktop/views/components/settings.vue:
   cache-warn: "Pamięć podręczna informacji o koncie/wpisów/odpowiedzi/wiadomości/ustawień przechowywanych w przeglądarce zostanie usunięta. Będziesz musiał odświeżyć stronę po wyczyszczeniu."
   cache-cleared: "Wyczyszczono pamięć podręczną"
   cache-cleared-desc: "Proszę odświeżyć stronę."
-  auto-watch: "投稿の自動ウォッチ"
+  auto-watch: "Automatycznie nasłuchuj"
   auto-watch-desc: "Otrzymuj natychmiastowo informacje o wpisach/odpowiedziach/reakcjach."
   about: "O Misskey"
   operator: "Administrator instancji"
@@ -470,14 +470,14 @@ desktop/views/components/settings.2fa.vue:
   failed: "Nie udało się skonfigurować uwierzytelniania dwuetapowego, upewnij się że wprowadziłeś prawidłowy token."
   info: "Od teraz, wprowadzaj token wyświetlany na urządzeniu przy każdym logowaniu do Misskey."
 desktop/views/components/settings.api.vue:
-  intro: "APIを利用するには、上記のトークンを「i」というキーでパラメータに付加してリクエストします。"
+  intro: "Aby uzyskać dostęp do API, ustaw ten token jako klucz 'i' parametrów żądań."
   caution: "Nie pokazuj tego tokenu osobom trzecim (nie wprowadzaj go nigdzie indziej), aby konto nie trafiło w niepowołane ręce."
   regeneration-of-token: "W przypadku wycieku tokenu, możesz wygenerować nowy."
   regenerate-token: "Wygeneruj nowy token"
   token: "Token:"
   enter-password: "Wprowadź hasło"
-desktop/views/components/settings.app.vue:
-  no-apps: "Brak zautoryzowanych aplikacji"
+desktop/views/components/settings.apps.vue:
+  no-apps: "連携しているアプリケーションはありません"
 desktop/views/components/settings.mute.vue:
   no-users: "Brak wyciszonych użytkowników"
 desktop/views/components/settings.password.vue:
@@ -545,8 +545,8 @@ desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Zamknij"
 desktop/views/pages/welcome.vue:
-  about: "詳しく..."
-  gotit: "わかった"
+  about: "O Misskey"
+  gotit: "Rozumiem!"
   signin: "Zaloguj się"
   signup: "Zarejestruj się"
   signin-button: "Zaloguj się"
@@ -694,7 +694,7 @@ mobile/views/components/post-form.vue:
   submit: "Wyślij"
   reply: "Odpowiedz"
   renote: "Udostępnij"
-  quote-placeholder: "この投稿を引用... (オプション)"
+  quote-placeholder: "Zacytuj ten wpis… (nieobowiązkowe)"
   reply-placeholder: "Odpowiedź na ten wpis…"
   cw-placeholder: "Treść ostrzeżenia (opcjonalnie)"
   location-alert: "Twoje urządzenie nie pozwala na przekazywanie informacji o lokalizacji"
@@ -709,16 +709,16 @@ mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
   load-more: "Więcej"
 mobile/views/components/ui.nav.vue:
-  timeline: "タイムライン"
+  timeline: "Oś czasu"
   notifications: "Powiadomienia"
   messaging: "Wiadomości"
   search: "Szukaj"
   drive: "Dysk"
-  favorites: "お気に入り"
-  user-lists: "リスト"
-  widgets: "ウィジェット"
-  game: "ゲーム"
-  darkmode: "ダークモード"
+  favorites: "Ulubione"
+  user-lists: "Listy"
+  widgets: "Widżety"
+  game: "Gry"
+  darkmode: "Tryb ciemny"
   settings: "Ustawienia"
   about: "O Misskey"
 mobile/views/components/user-timeline.vue:
@@ -730,13 +730,13 @@ mobile/views/components/users-list.vue:
   known: "Znasz"
   load-more: "Więcej"
 mobile/views/pages/favorites.vue:
-  title: "お気に入り"
+  title: "Ulubione"
 mobile/views/pages/user-lists.vue:
-  title: "リスト"
-  enter-list-name: "リスト名を入力してください"
+  title: "Listy"
+  enter-list-name: "Wprowadź nazwę listy"
 mobile/views/pages/drive.vue:
   drive: "Dysk"
-  more: "もっと見る"
+  more: "Załaduj więcej"
 mobile/views/pages/followers.vue:
   followers-of: "Śledzący {}"
 mobile/views/pages/following.vue:
@@ -792,7 +792,7 @@ mobile/views/pages/settings.vue:
   show-renoted-my-notes: "Pokazuj udostępnienia moich wpisów"
   post-style: "Styl wpisów"
   post-style-standard: "Standardowy"
-  post-style-smart: "スマート"
+  post-style-smart: "Inteligentny"
   behavior: "Zachowanie"
   fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
   disable-via-mobile: "Nie oznaczaj wpisów jako „wysłane z telefonu”"
