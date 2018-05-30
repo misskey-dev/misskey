@@ -555,7 +555,7 @@ const endpoints: Endpoint[] = [
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
-			max: 100
+			max: 300
 		},
 		kind: 'reaction-write'
 	},
