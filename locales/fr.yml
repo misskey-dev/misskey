@@ -476,8 +476,8 @@ desktop/views/components/settings.api.vue:
   regenerate-token: "Regenerer le token"
   token: "Token:"
   enter-password: "Veuillez entrer le mot de passe"
-desktop/views/components/settings.app.vue:
-  no-apps: "Aucune application authorisée"
+desktop/views/components/settings.apps.vue:
+  no-apps: "連携しているアプリケーションはありません"
 desktop/views/components/settings.mute.vue:
   no-users: "Aucun utilisateurs mis en sourdine"
 desktop/views/components/settings.password.vue:
