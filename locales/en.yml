@@ -636,10 +636,10 @@ mobile/views/components/drive.vue:
   prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
   deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
-  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
-  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  root-rename-alert: "You're in the root; it can't be renamed because it's not a folder. Navigate to a folder you want to rename and try again."
+  root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
   url-prompt: "URL of file you want to upload"
-  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+  uploading: "Upload requested. It may take some time for the upload to complete."
 mobile/views/components/drive-file-detail.vue:
   rename: "Rename"
 mobile/views/components/drive-file-chooser.vue:
@@ -696,8 +696,8 @@ mobile/views/components/post-form.vue:
   renote: "Repost"
   quote-placeholder: "Quote this post... (optional)"
   reply-placeholder: "Reply to this note..."
-  cw-placeholder: "内容への注釈 (オプション)"
-  location-alert: "お使いの端末は位置情報に対応していません"
+  cw-placeholder: "Comments about content (optional)"
+  location-alert: "Your device does not support location services"
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
