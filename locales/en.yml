@@ -178,9 +178,9 @@ common/views/components/stream-indicator.vue:
 common/views/components/twitter-setting.vue:
   description: "If you connect your Twitter account to your Misskey account, you will be able to see your Twitter account information on your profile and you can sign-in using Twitter."
   connected-to: "You are connected to this Twitter account"
-  detail: "Detail..."
+  detail: "Details..."
   reconnect: "Reconnect"
-  connect: "Link your twitter account"
+  connect: "Link your Twitter account"
   disconnect: "Disconnect"
 common/views/components/uploader.vue:
   waiting: "Waiting"
@@ -200,7 +200,7 @@ common/views/widgets/broadcast.vue:
   next: "Next"
 common/views/widgets/donation.vue:
   title: "Donation"
-  text: "To keep Misskey up and running we spend money for our domain name, servers and so on.. We don't get any money from it, and we would really appreciate it if you could donate. If you're interested contact {}. Thank you for your contribution!"
+  text: "To keep Misskey up and running we spend money for our domain name, servers and so on. Since we don't get money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "No photos"
@@ -223,7 +223,7 @@ desktop/views/components/calendar.vue:
   title: "{1} / {2}"
   prev: "Previous month"
   next: "Next month"
-  go: "Click to naviguate"
+  go: "Click to navigate"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Choosing files"
   upload: "Upload files from your PC"
@@ -293,16 +293,16 @@ desktop/views/components/follow-button.vue:
   unfollow: "Unfollow"
   follow: "Follow"
 desktop/views/components/followers-window.vue:
-  followers: "Followers of {}"
+  followers: "{}'s followers"
 desktop/views/components/followers.vue:
-  empty: "Seems that you don’t have any followers."
+  empty: "Seems like you don’t have any followers."
 desktop/views/components/following-window.vue:
-  following: "Following of {}"
+  following: "Following {}"
 desktop/views/components/following.vue:
   empty: "You don’t follow anyone."
 desktop/views/components/friends-maker.vue:
   title: "Recommended users:"
-  empty: "Similar users weren’t found."
+  empty: "Couldn't find any recommended users."
   fetching: "Loading…"
   refresh: "More"
   close: "Close"
@@ -332,7 +332,7 @@ desktop/views/components/notes.note.vue:
   reply: "Reply"
   renote: "Repost"
   add-reaction: "Add a reaction"
-  detail: "Show detail"
+  detail: "Show details"
   private: "this post is private"
   deleted: "this post has been deleted"
 desktop/views/components/notes.vue:
