@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "A planet of fediverse"
   about-title: "A ⭐ of fediverse."
-  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging social media platform</b>. Because it exists within Fediverse (a universe which organizes various social media platforms), you can reciprocally link with other social media platforms. Why don't you get away from the hustle and bustle of the city for a while, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
@@ -477,7 +477,7 @@ desktop/views/components/settings.api.vue:
   token: "Token:"
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
-  no-apps: "連携しているアプリケーションはありません"
+  no-apps: "No authorized apps"
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
