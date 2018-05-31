@@ -93,6 +93,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 			notesCount,
 			name: person.name,
 			driveCapacity: 1024 * 1024 * 8, // 8MiB
+			isLocked: person.manuallyApprovesFollowers,
 			username: person.preferredUsername,
 			usernameLower: person.preferredUsername.toLowerCase(),
 			host,
