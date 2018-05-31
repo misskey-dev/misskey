@@ -11,8 +11,14 @@ export default async function(followee: IUser, follower: IUser) {
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
-	FollowRequest.remove({
+	await FollowRequest.remove({
 		followeeId: followee._id,
 		followerId: follower._id
+	});
+
+	User.update({ _id: followee._id }, {
+		$inc: {
+			pendingReceivedFollowRequestsCount: -1
+		}
 	});
 }

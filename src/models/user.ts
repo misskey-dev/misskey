@@ -62,6 +62,11 @@ type IUserBase = {
 	 */
 	isLocked: boolean;
 
+	/**
+	 * このアカウントに届いているフォローリクエストの数
+	 */
+	pendingReceivedFollowRequestsCount: number;
+
 	host: string;
 };
 

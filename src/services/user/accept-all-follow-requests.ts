@@ -15,4 +15,10 @@ export default async function(user: IUser) {
 		const follower = await User.findOne({ _id: request.followerId });
 		accept(user, follower);
 	});
+
+	User.update({ _id: user._id }, {
+		$set: {
+			pendingReceivedFollowRequestsCount: 0
+		}
+	});
 }

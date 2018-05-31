@@ -28,6 +28,12 @@ export default async function(follower: IUser, followee: IUser) {
 			}
 		});
 
+		User.update({ _id: followee._id }, {
+			$inc: {
+				pendingReceivedFollowRequestsCount: 1
+			}
+		});
+
 		// Publish reciveRequest event
 		if (isLocalUser(followee)) {
 			packUser(follower, followee).then(packed => event(followee._id, 'reciveRequest', packed)),
