@@ -22,7 +22,7 @@ import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
 import UserList, { deleteUserList } from './user-list';
-import FollowRequest, { deleteFollowRequest } from './follow-requests';
+import FollowRequest, { deleteFollowRequest } from './follow-request';
 
 const User = db.get<IUser>('users');
 
