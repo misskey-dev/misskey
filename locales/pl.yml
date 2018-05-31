@@ -477,7 +477,7 @@ desktop/views/components/settings.api.vue:
   token: "Token:"
   enter-password: "Wprowadź hasło"
 desktop/views/components/settings.apps.vue:
-  no-apps: "連携しているアプリケーションはありません"
+  no-apps: "Brak zautoryzowanych aplikacji"
 desktop/views/components/settings.mute.vue:
   no-users: "Brak wyciszonych użytkowników"
 desktop/views/components/settings.password.vue:
