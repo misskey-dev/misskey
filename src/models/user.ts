@@ -22,6 +22,7 @@ import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
 import UserList, { deleteUserList } from './user-list';
+import FollowRequest, { deleteFollowRequest } from './follow-requests';
 
 const User = db.get<IUser>('users');
 
@@ -50,7 +51,17 @@ type IUserBase = {
 	data: any;
 	description: string;
 	pinnedNoteId: mongo.ObjectID;
+
+	/**
+	 * 凍結されているか否か
+	 */
 	isSuspended: boolean;
+
+	/**
+	 * 鍵アカウントか否か
+	 */
+	isLocked: boolean;
+
 	host: string;
 };
 
@@ -239,6 +250,16 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await Promise.all((
 		await Following.find({ followeeId: u._id })
 	).map(x => deleteFollowing(x)));
+
+	// このユーザーのFollowRequestをすべて削除
+	await Promise.all((
+		await FollowRequest.find({ followerId: u._id })
+	).map(x => deleteFollowRequest(x)));
+
+	// このユーザーへのFollowRequestをすべて削除
+	await Promise.all((
+		await FollowRequest.find({ followeeId: u._id })
+	).map(x => deleteFollowRequest(x)));
 
 	// このユーザーのFollowingLogをすべて削除
 	await Promise.all((
