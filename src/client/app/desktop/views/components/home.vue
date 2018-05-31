@@ -63,9 +63,8 @@
 				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp"/>
 			</div>
 			<div class="main">
-				<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
-				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
-				<mk-mentions @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
+				<mk-post-form class="form" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
+				<mk-timeline class="tl" cref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 			</div>
 		</template>
 	</div>
@@ -299,10 +298,17 @@ root(isDark)
 			width calc(100% - 275px * 2)
 			order 2
 
-			.mk-post-form
+			> .form
 				margin-bottom 16px
 				border solid 1px rgba(#000, 0.075)
 				border-radius 4px
+
+			@media (max-width 700px)
+				padding 0
+
+				> .tl
+					border none
+					border-radius 0
 
 		> *:not(.main)
 			width 275px

@@ -1,6 +1,6 @@
 <template>
-<div>
-	<x-header/>
+<div class="mk-ui">
+	<x-header class="header"/>
 	<div class="content">
 		<slot></slot>
 	</div>
@@ -35,3 +35,9 @@ export default Vue.extend({
 });
 </script>
 
+<style lang="stylus" scoped>
+.mk-ui
+	> .header
+		@media (max-width 1000px)
+			display none
+</style>
