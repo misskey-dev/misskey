@@ -83,6 +83,10 @@ export interface IAccept extends IActivity {
 	type: 'Accept';
 }
 
+export interface IReject extends IActivity {
+	type: 'Reject';
+}
+
 export interface ILike extends IActivity {
 	type: 'Like';
 	_misskey_reaction: string;
@@ -100,5 +104,6 @@ export type Object =
 	IUndo |
 	IFollow |
 	IAccept |
+	IReject |
 	ILike |
 	IAnnounce;

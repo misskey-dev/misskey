@@ -2,15 +2,15 @@ import * as debug from 'debug';
 
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/user';
-import acceptFollow from './follow';
-import { IAccept } from '../../type';
+import rejectFollow from './follow';
+import { IReject } from '../../type';
 
 const log = debug('misskey:activitypub');
 
-export default async (actor: IRemoteUser, activity: IAccept): Promise<void> => {
+export default async (actor: IRemoteUser, activity: IReject): Promise<void> => {
 	const uri = activity.id || activity;
 
-	log(`Accept: ${uri}`);
+	log(`Reject: ${uri}`);
 
 	const resolver = new Resolver();
 
@@ -25,11 +25,11 @@ export default async (actor: IRemoteUser, activity: IAccept): Promise<void> => {
 
 	switch (object.type) {
 	case 'Follow':
-		acceptFollow(actor, object);
+		rejectFollow(actor, object);
 		break;
 
 	default:
-		console.warn(`Unknown accept type: ${object.type}`);
+		console.warn(`Unknown reject type: ${object.type}`);
 		break;
 	}
 };

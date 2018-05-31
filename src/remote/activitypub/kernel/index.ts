@@ -6,6 +6,8 @@ import follow from './follow';
 import undo from './undo';
 import like from './like';
 import announce from './announce';
+import accept from './accept';
+import reject from './reject';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	switch (activity.type) {
@@ -22,7 +24,11 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 		break;
 
 	case 'Accept':
-		// noop
+		await accept(actor, activity);
+		break;
+
+	case 'Reject':
+		await reject(actor, activity);
 		break;
 
 	case 'Announce':
