@@ -633,7 +633,7 @@ mobile/views/components/drive.vue:
   load-more: "Load more"
   nothing-in-drive: "Nothing"
   folder-is-empty: "This folder is empty"
-  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
   deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
   root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
