@@ -8,44 +8,11 @@ import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
 import { deliver } from '../../queue';
-import FollowRequest from '../../models/follow-request';
+import createFollowRequest from './requests/create';
 
 export default async function(follower: IUser, followee: IUser) {
 	if (followee.isLocked) {
-		await FollowRequest.insert({
-			createdAt: new Date(),
-			followerId: follower._id,
-			followeeId: followee._id,
-
-			// 非正規化
-			_follower: {
-				host: follower.host,
-				inbox: isRemoteUser(follower) ? follower.inbox : undefined
-			},
-			_followee: {
-				host: followee.host,
-				inbox: isRemoteUser(followee) ? followee.inbox : undefined
-			}
-		});
-
-		User.update({ _id: followee._id }, {
-			$inc: {
-				pendingReceivedFollowRequestsCount: 1
-			}
-		});
-
-		// Publish reciveRequest event
-		if (isLocalUser(followee)) {
-			packUser(follower, followee).then(packed => event(followee._id, 'reciveRequest', packed)),
-
-			// 通知を作成
-			notify(followee._id, follower._id, 'reciveRequest');
-		}
-
-		if (isLocalUser(follower) && isRemoteUser(followee)) {
-			const content = pack(renderFollow(follower, followee));
-			deliver(follower, content, followee.inbox);
-		}
+		await createFollowRequest(follower, followee);
 	} else {
 		const following = await Following.insert({
 			createdAt: new Date(),

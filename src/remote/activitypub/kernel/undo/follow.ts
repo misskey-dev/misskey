@@ -2,7 +2,9 @@ import * as mongo from 'mongodb';
 import User, { IRemoteUser } from '../../../../models/user';
 import config from '../../../../config';
 import unfollow from '../../../../services/following/delete';
+import cancelRequest from '../../../../services/following/requests/cancel';
 import { IFollow } from '../../type';
+import FollowRequest from '../../../../models/follow-request';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
@@ -23,5 +25,14 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		throw new Error('フォロー解除しようとしているユーザーはローカルユーザーではありません');
 	}
 
-	await unfollow(actor, followee);
+	const req = await FollowRequest.findOne({
+		followerId: actor._id,
+		followeeId: followee._id
+	});
+
+	if (req) {
+		await cancelRequest(actor, followee);
+	} else {
+		await unfollow(actor, followee);
+	}
 };
