@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "A planet of fediverse"
   about-title: "A ⭐ of fediverse."
-  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging social media platform</b>. Because it exists within Fediverse (a universe which organizes various social media platforms), you can reciprocally link with other social media platforms. Why don't you get away from the hustle and bustle of the city for a while, and dive into a new Internet?"
+  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within Fediverse (a universe where various social media platforms are organized) it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
