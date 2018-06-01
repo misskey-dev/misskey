@@ -1,6 +1,6 @@
-import User, { IUser } from "../../models/user";
-import FollowRequest from "../../models/follow-request";
-import accept from './accept-follow-request';
+import User, { IUser } from "../../../models/user";
+import FollowRequest from "../../../models/follow-request";
+import accept from './accept';
 
 /**
  * 指定したユーザー宛てのフォローリクエストをすべて承認

@@ -1,12 +1,12 @@
-import User, { IUser, isRemoteUser, ILocalUser } from "../../models/user";
-import FollowRequest from "../../models/follow-request";
-import pack from '../../remote/activitypub/renderer';
-import renderFollow from '../../remote/activitypub/renderer/follow';
-import renderAccept from '../../remote/activitypub/renderer/accept';
-import { deliver } from '../../queue';
-import Following from "../../models/following";
-import FollowingLog from "../../models/following-log";
-import FollowedLog from "../../models/followed-log";
+import User, { IUser, isRemoteUser, ILocalUser } from "../../../models/user";
+import FollowRequest from "../../../models/follow-request";
+import pack from '../../../remote/activitypub/renderer';
+import renderFollow from '../../../remote/activitypub/renderer/follow';
+import renderAccept from '../../../remote/activitypub/renderer/accept';
+import { deliver } from '../../../queue';
+import Following from "../../../models/following";
+import FollowingLog from "../../../models/following-log";
+import FollowedLog from "../../../models/followed-log";
 
 export default async function(followee: IUser, follower: IUser) {
 	const following = await Following.insert({

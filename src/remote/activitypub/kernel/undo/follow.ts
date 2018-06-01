@@ -23,5 +23,5 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		throw new Error('フォロー解除しようとしているユーザーはローカルユーザーではありません');
 	}
 
-	await unfollow(actor, followee, activity);
+	await unfollow(actor, followee);
 };

@@ -184,7 +184,6 @@ root(isDark)
 
 				> .mk-follow-button
 					float right
-					height 40px
 
 			> .title
 				margin 8px 0

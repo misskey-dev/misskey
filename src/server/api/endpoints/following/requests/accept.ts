@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
-import acceptFollowRequest from '../../../../../services/user/accept-follow-request';
+import acceptFollowRequest from '../../../../../services/following/requests/accept';
 import User from '../../../../../models/user';
 
 /**

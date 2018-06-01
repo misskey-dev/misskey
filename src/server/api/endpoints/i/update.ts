@@ -5,7 +5,7 @@ import $ from 'cafy'; import ID from '../../../../cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import event from '../../../../publishers/stream';
 import DriveFile from '../../../../models/drive-file';
-import acceptAllFollowRequests from '../../../../services/user/accept-all-follow-requests';
+import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 
 /**
  * Update myself

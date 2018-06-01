@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import User, { IRemoteUser } from '../../../../models/user';
 import config from '../../../../config';
-import reject from '../../../../services/user/reject-follow-request';
+import reject from '../../../../services/following/requests/reject';
 import { IFollow } from '../../type';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {

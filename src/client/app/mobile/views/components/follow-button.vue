@@ -1,13 +1,16 @@
 <template>
 <button class="mk-follow-button"
-	:class="{ wait: wait, follow: !user.isFollowing, unfollow: user.isFollowing }"
+	:class="{ wait: wait, following: user.isFollowing, unfollow: user.isFollowing }"
 	@click="onClick"
 	:disabled="wait"
 >
-	<template v-if="!wait && user.isFollowing">%fa:minus%</template>
-	<template v-if="!wait && !user.isFollowing">%fa:plus%</template>
-	<template v-if="wait">%fa:spinner .pulse .fw%</template>
-	{{ user.isFollowing ? '%i18n:@unfollow%' : '%i18n:@follow%' }}
+	<template v-if="!wait">
+		<template v-if="user.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
+		<template v-else-if="user.isFollowing">%fa:minus% %i18n:@unfollow%</template>
+		<template v-else-if="!user.isFollowing && user.isLocked">%fa:plus% %i18n:@follow-request%</template>
+		<template v-else-if="!user.isFollowing && !user.isLocked">%fa:plus% %i18n:@follow%</template>
+	</template>
+	<template v-else>%fa:spinner .pulse .fw%</template>
 </button>
 </template>
 
@@ -66,15 +69,27 @@ export default Vue.extend({
 					this.wait = false;
 				});
 			} else {
-				(this as any).api('following/create', {
-					userId: this.user.id
-				}).then(() => {
-					this.user.isFollowing = true;
-				}).catch(err => {
-					console.error(err);
-				}).then(() => {
-					this.wait = false;
-				});
+				if (this.user.isLocked && this.user.hasPendingFollowRequestFromYou) {
+					(this as any).api('following/requests/cancel', {
+						userId: this.user.id
+					}).then(() => {
+						this.user.hasPendingFollowRequestFromYou = false;
+					}).catch(err => {
+						console.error(err);
+					}).then(() => {
+						this.wait = false;
+					});
+				} else {
+					(this as any).api('following/create', {
+						userId: this.user.id
+					}).then(() => {
+						this.user.isFollowing = true;
+					}).catch(err => {
+						console.error(err);
+					}).then(() => {
+						this.wait = false;
+					});
+				}
 			}
 		}
 	}
@@ -90,11 +105,11 @@ export default Vue.extend({
 	cursor pointer
 	padding 0 16px
 	margin 0
-	height inherit
-	font-size 16px
+	line-height 36px
+	font-size 14px
 	outline none
 	border solid 1px $theme-color
-	border-radius 4px
+	border-radius 36px
 
 	*
 		pointer-events none
