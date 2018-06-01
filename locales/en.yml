@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "A planet of fediverse"
   about-title: "A ⭐ of fediverse."
-  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging social media platform</b>. Because it exists within Fediverse (a universe which organizes various social media platforms), you can reciprocally link with other social media platforms. Why don't you get away from the hustle and bustle of the city for a while, and dive into a new Internet?"
+  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within Fediverse (a universe where various social media platforms are organized) it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
@@ -438,11 +438,11 @@ desktop/views/components/settings.vue:
   do-update: "Check for update"
   update-settings: "Advanced settings"
   prevent-update: "Postpone updates (not recommended)"
-  prevent-update-desc: "You may reflect updates even if you select this setting. This setting is valid only this device."
+  prevent-update-desc: "Even if you turn this setting on updates may apply. This setting is valid only for this device."
   no-updates: "No updates available"
   no-updates-desc: "Your Misskey is up to date."
   update-available: "New version is available!"
-  update-available-desc: "To reload the page and updates are applied."
+  update-available-desc: "The updates will apply if you reload the page again."
   advanced-settings: "Advanced"
   debug-mode: "Enable the debug mode"
   debug-mode-desc: "This setting is stored in the browser."
@@ -477,7 +477,7 @@ desktop/views/components/settings.api.vue:
   token: "Token:"
   enter-password: "Please enter the password"
 desktop/views/components/settings.apps.vue:
-  no-apps: "No authorized apps"
+  no-apps: "No linked applications"
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
