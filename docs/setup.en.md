@@ -48,11 +48,18 @@ You need to generate config file via `npm run config` command.
 *5.* Build Misskey
 ----------------------------------------------------------------
 
-If you're on Debian, you will need to install the `build-essential` package.
-
-Then build misskey:
+Build misskey with the following:
 
 `npm run build`
+
+If you're on Debian, you will need to install the `build-essential` package.
+
+If you're still encountering errors about some modules, use node-gyp:
+
+1. `npm install -g node-gyp`
+2. `node-gyp configure`
+3. `node-gyp build`
+4. `npm run build`
 
 *6.* That is it.
 ----------------------------------------------------------------
