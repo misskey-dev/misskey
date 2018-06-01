@@ -23,7 +23,11 @@
 	</label>
 	<button class="ui primary" @click="save">%i18n:@save%</button>
 	<section>
-		<h2>その他</h2>
+		<h2>%i18n:@locked-account%</h2>
+		<mk-switch v-model="$store.state.i.isLocked" @change="onChangeIsLocked" text="%i18n:@is-locked%"/>
+	</section>
+	<section>
+		<h2>%i18n:@other%</h2>
 		<mk-switch v-model="$store.state.i.isBot" @change="onChangeIsBot" text="%i18n:@is-bot%"/>
 		<mk-switch v-model="$store.state.i.isCat" @change="onChangeIsCat" text="%i18n:@is-cat%"/>
 	</section>
@@ -60,6 +64,11 @@ export default Vue.extend({
 				birthday: this.birthday || null
 			}).then(() => {
 				(this as any).apis.notify('プロフィールを更新しました');
+			});
+		},
+		onChangeIsLocked() {
+			(this as any).api('i/update', {
+				isLocked: this.$store.state.i.isLocked
 			});
 		},
 		onChangeIsBot() {
