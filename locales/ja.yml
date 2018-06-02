@@ -618,9 +618,9 @@ desktop/views/components/ui.header.post.vue:
 desktop/views/components/ui.header.search.vue:
   placeholder: "検索"
 
-desktop/views/components/follow-requests-window.vue:
+desktop/views/components/received-follow-requests-window.vue:
   title: "フォロー申請"
-  accept: "許可"
+  accept: "承認"
   reject: "拒否"
 
 desktop/views/components/user-lists-window.vue:
@@ -852,6 +852,7 @@ mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
   notifications: "通知"
   messaging: "メッセージ"
+  follow-requests: "フォロー申請"
   search: "検索"
   drive: "ドライブ"
   favorites: "お気に入り"
@@ -899,6 +900,11 @@ mobile/views/pages/messaging.vue:
 
 mobile/views/pages/messaging-room.vue:
   messaging: "メッセージ"
+
+mobile/views/pages/received-follow-requests.vue:
+  title: "フォロー申請"
+  accept: "承認"
+  reject: "拒否"
 
 mobile/views/pages/note.vue:
   title: "投稿"

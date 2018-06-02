@@ -31,16 +31,16 @@ export default async function(follower: IUser, followee: IUser) {
 		}
 	});
 
-	// Publish reciveRequest event
+	// Publish receiveRequest event
 	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => event(followee._id, 'reciveFollowRequest', packed));
+		packUser(follower, followee).then(packed => event(followee._id, 'receiveFollowRequest', packed));
 
 		packUser(followee, followee, {
 			detail: true
 		}).then(packed => event(followee._id, 'meUpdated', packed));
 
 		// 通知を作成
-		notify(followee._id, follower._id, 'reciveFollowRequest');
+		notify(followee._id, follower._id, 'receiveFollowRequest');
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {

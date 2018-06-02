@@ -49,7 +49,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import MkUserListsWindow from './user-lists-window.vue';
-import MkFollowRequestsWindow from './follow-requests-window.vue';
+import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';

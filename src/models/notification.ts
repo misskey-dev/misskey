@@ -111,7 +111,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 
 	switch (_notification.type) {
 		case 'follow':
-		case 'reciveFollowRequest':
+		case 'receiveFollowRequest':
 			// nope
 			break;
 		case 'mention':
