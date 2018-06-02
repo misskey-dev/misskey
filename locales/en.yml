@@ -290,8 +290,10 @@ desktop/views/components/drive.vue:
     upload: "Upload a file"
     url-upload: "Upload from a URL"
 desktop/views/components/follow-button.vue:
-  unfollow: "Unfollow"
+  unfollow: "Following"
   follow: "Follow"
+  request-pending: "フォロー許可待ち"
+  follow-request: "Follow request"
 desktop/views/components/followers-window.vue:
   followers: "{}'s followers"
 desktop/views/components/followers.vue:
@@ -514,6 +516,7 @@ desktop/views/components/ui.header.account.vue:
   drive: "Drive"
   favorites: "Favorites"
   lists: "Lists"
+  follow-requests: "Follow requests"
   customize: "Customize"
   settings: "Settings"
   signout: "Sign out"
@@ -528,7 +531,12 @@ desktop/views/components/ui.header.post.vue:
   post: "Compose new Post"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Search"
+desktop/views/components/received-follow-requests-window.vue:
+  title: "Follow requests"
+  accept: "Accept"
+  reject: "Reject"
 desktop/views/components/user-lists-window.vue:
+  title: "User lists"
   create-list: "Create list"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
@@ -653,8 +661,10 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/follow-button.vue:
+  unfollow: "Following"
   follow: "Follow"
-  unfollow: "Unfollow"
+  request-pending: "フォロー許可待ち"
+  follow-request: "Follow request"
 mobile/views/components/friends-maker.vue:
   title: "Let's follow users"
   empty: "Featured user was not found."
@@ -712,6 +722,7 @@ mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
   notifications: "Notifications"
   messaging: "Messages"
+  follow-requests: "Follow requests"
   search: "Search"
   drive: "Drive"
   favorites: "Favorites"
@@ -749,6 +760,10 @@ mobile/views/pages/messaging.vue:
   messaging: "Messaging"
 mobile/views/pages/messaging-room.vue:
   messaging: "Messaging"
+mobile/views/pages/received-follow-requests.vue:
+  title: "Follow requests"
+  accept: "Accept"
+  reject: "Reject"
 mobile/views/pages/note.vue:
   title: "Post"
   prev: "Previous note"
