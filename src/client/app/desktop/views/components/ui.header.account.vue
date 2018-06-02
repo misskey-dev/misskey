@@ -19,6 +19,9 @@
 				<li @click="list">
 					<p>%fa:list%<span>%i18n:@lists%</span>%fa:angle-right%</p>
 				</li>
+				<li @click="followRequests" v-if="$store.state.i.isLocked">
+					<p>%fa:envelope R%<span>%i18n:@follow-requests%<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>%fa:angle-right%</p>
+				</li>
 			</ul>
 			<ul>
 				<li>
@@ -46,6 +49,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import MkUserListsWindow from './user-lists-window.vue';
+import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
@@ -90,6 +94,10 @@ export default Vue.extend({
 			w.$once('choosen', list => {
 				this.$router.push(`i/lists/${ list.id }`);
 			});
+		},
+		followRequests() {
+			this.close();
+			(this as any).os.new(MkFollowRequestsWindow);
 		},
 		settings() {
 			this.close();
@@ -224,6 +232,16 @@ root(isDark)
 
 					> span:first-child
 						padding-left 22px
+
+					> span:nth-child(2)
+						> i
+							margin-left 4px
+							padding 2px 8px
+							font-size 90%
+							font-style normal
+							background $theme-color
+							color $theme-color-foreground
+							border-radius 8px
 
 					> [data-fa]:first-child
 						margin-right 6px

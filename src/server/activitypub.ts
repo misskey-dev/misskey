@@ -7,7 +7,7 @@ const httpSignature = require('http-signature');
 import { createHttp } from '../queue';
 import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
-import User, { isLocalUser } from '../models/user';
+import User, { isLocalUser, ILocalUser } from '../models/user';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
@@ -69,7 +69,10 @@ router.get('/notes/:note', async (ctx, next) => {
 router.get('/users/:user/outbox', async ctx => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
-	const user = await User.findOne({ _id: userId });
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
 
 	if (user === null) {
 		ctx.status = 404;
@@ -91,7 +94,10 @@ router.get('/users/:user/outbox', async ctx => {
 router.get('/users/:user/publickey', async ctx => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
-	const user = await User.findOne({ _id: userId });
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
 
 	if (user === null) {
 		ctx.status = 404;
@@ -109,14 +115,17 @@ router.get('/users/:user/publickey', async ctx => {
 router.get('/users/:user', async ctx => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
-	const user = await User.findOne({ _id: userId });
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
 
 	if (user === null) {
 		ctx.status = 404;
 		return;
 	}
 
-	ctx.body = pack(renderPerson(user));
+	ctx.body = pack(renderPerson(user as ILocalUser));
 });
 
 // follow form

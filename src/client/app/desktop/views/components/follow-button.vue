@@ -1,19 +1,16 @@
 <template>
 <button class="mk-follow-button"
-	:class="{ wait, follow: !user.isFollowing, unfollow: user.isFollowing, big: size == 'big' }"
+	:class="{ wait, active: u.isFollowing || u.hasPendingFollowRequestFromYou, big: size == 'big' }"
 	@click="onClick"
 	:disabled="wait"
-	:title="user.isFollowing ? '%i18n:@unfollow%' : '%i18n:@follow%'"
 >
-	<template v-if="!wait && user.isFollowing">
-		<template v-if="size == 'compact'">%fa:minus%</template>
-		<template v-if="size == 'big'">%fa:minus%%i18n:@unfollow%</template>
+	<template v-if="!wait">
+		<template v-if="u.hasPendingFollowRequestFromYou">%fa:hourglass-half%<template v-if="size == 'big'"> %i18n:@request-pending%</template></template>
+		<template v-else-if="u.isFollowing">%fa:minus%<template v-if="size == 'big'"> %i18n:@unfollow%</template></template>
+		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow-request%</template></template>
+		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus%<template v-if="size == 'big'"> %i18n:@follow%</template></template>
 	</template>
-	<template v-if="!wait && !user.isFollowing">
-		<template v-if="size == 'compact'">%fa:plus%</template>
-		<template v-if="size == 'big'">%fa:plus%%i18n:@follow%</template>
-	</template>
-	<template v-if="wait">%fa:spinner .pulse .fw%</template>
+	<template v-else>%fa:spinner .pulse .fw%</template>
 </button>
 </template>
 
@@ -34,6 +31,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			u: this.user,
 			wait: false,
 			connection: null,
 			connectionId: null
@@ -56,39 +54,44 @@ export default Vue.extend({
 
 	methods: {
 		onFollow(user) {
-			if (user.id == this.user.id) {
+			if (user.id == this.u.id) {
 				this.user.isFollowing = user.isFollowing;
 			}
 		},
 
 		onUnfollow(user) {
-			if (user.id == this.user.id) {
+			if (user.id == this.u.id) {
 				this.user.isFollowing = user.isFollowing;
 			}
 		},
 
-		onClick() {
+		async onClick() {
 			this.wait = true;
-			if (this.user.isFollowing) {
-				(this as any).api('following/delete', {
-					userId: this.user.id
-				}).then(() => {
-					this.user.isFollowing = false;
-				}).catch(err => {
-					console.error(err);
-				}).then(() => {
-					this.wait = false;
-				});
-			} else {
-				(this as any).api('following/create', {
-					userId: this.user.id
-				}).then(() => {
-					this.user.isFollowing = true;
-				}).catch(err => {
-					console.error(err);
-				}).then(() => {
-					this.wait = false;
-				});
+
+			try {
+				if (this.u.isFollowing) {
+					this.u = await (this as any).api('following/delete', {
+						userId: this.u.id
+					});
+				} else {
+					if (this.u.isLocked && this.u.hasPendingFollowRequestFromYou) {
+						this.u = await (this as any).api('following/requests/cancel', {
+							userId: this.u.id
+						});
+					} else if (this.u.isLocked) {
+						this.u = await (this as any).api('following/create', {
+							userId: this.u.id
+						});
+					} else {
+						this.u = await (this as any).api('following/create', {
+							userId: this.user.id
+						});
+					}
+				}
+			} catch (e) {
+				console.error(e);
+			} finally {
+				this.wait = false;
 			}
 		}
 	}
@@ -124,7 +127,7 @@ root(isDark)
 			border 2px solid rgba($theme-color, 0.3)
 			border-radius 8px
 
-	&.follow
+	&:not(.active)
 		color isDark ? #fff : #888
 		background isDark ? linear-gradient(to bottom, #313543 0%, #282c37 100%) : linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%)
 		border solid 1px isDark ? #1c2023 : #e2e2e2
@@ -137,7 +140,7 @@ root(isDark)
 			background isDark ? #22262f : #ececec
 			border-color isDark ? #151a1d : #dcdcdc
 
-	&.unfollow
+	&.active
 		color $theme-color-foreground
 		background linear-gradient(to bottom, lighten($theme-color, 25%) 0%, lighten($theme-color, 10%) 100%)
 		border solid 1px lighten($theme-color, 15%)
@@ -161,9 +164,6 @@ root(isDark)
 		width 100%
 		height 38px
 		line-height 38px
-
-		i
-			margin-right 8px
 
 .mk-follow-button[data-darkmode]
 	root(true)

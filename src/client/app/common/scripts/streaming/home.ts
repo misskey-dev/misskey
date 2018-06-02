@@ -20,7 +20,7 @@ export class HomeStream extends Stream {
 		}, 1000 * 60);
 
 		// 自分の情報が更新されたとき
-		this.on('i_updated', i => {
+		this.on('meUpdated', i => {
 			if (os.debug) {
 				console.log('I updated:', i);
 			}

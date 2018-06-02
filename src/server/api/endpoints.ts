@@ -449,6 +449,26 @@ const endpoints: Endpoint[] = [
 		kind: 'following-write'
 	},
 	{
+		name: 'following/requests/accept',
+		withCredential: true,
+		kind: 'following-write'
+	},
+	{
+		name: 'following/requests/reject',
+		withCredential: true,
+		kind: 'following-write'
+	},
+	{
+		name: 'following/requests/cancel',
+		withCredential: true,
+		kind: 'following-write'
+	},
+	{
+		name: 'following/requests/list',
+		withCredential: true,
+		kind: 'following-read'
+	},
+	{
 		name: 'following/stalk',
 		withCredential: true,
 		limit: {

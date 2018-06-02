@@ -22,6 +22,7 @@ import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
 import UserList, { deleteUserList } from './user-list';
+import FollowRequest, { deleteFollowRequest } from './follow-request';
 
 const User = db.get<IUser>('users');
 
@@ -50,7 +51,22 @@ type IUserBase = {
 	data: any;
 	description: string;
 	pinnedNoteId: mongo.ObjectID;
+
+	/**
+	 * 凍結されているか否か
+	 */
 	isSuspended: boolean;
+
+	/**
+	 * 鍵アカウントか否か
+	 */
+	isLocked: boolean;
+
+	/**
+	 * このアカウントに届いているフォローリクエストの数
+	 */
+	pendingReceivedFollowRequestsCount: number;
+
 	host: string;
 };
 
@@ -240,6 +256,16 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 		await Following.find({ followeeId: u._id })
 	).map(x => deleteFollowing(x)));
 
+	// このユーザーのFollowRequestをすべて削除
+	await Promise.all((
+		await FollowRequest.find({ followerId: u._id })
+	).map(x => deleteFollowRequest(x)));
+
+	// このユーザーへのFollowRequestをすべて削除
+	await Promise.all((
+		await FollowRequest.find({ followeeId: u._id })
+	).map(x => deleteFollowRequest(x)));
+
 	// このユーザーのFollowingLogをすべて削除
 	await Promise.all((
 		await FollowingLog.find({ userId: u._id })
@@ -395,12 +421,20 @@ export const pack = (
 	}
 
 	if (meId && !meId.equals(_user.id)) {
-		const [following1, following2, mute] = await Promise.all([
+		const [following1, following2, followReq1, followReq2, mute] = await Promise.all([
 			Following.findOne({
 				followerId: meId,
 				followeeId: _user.id
 			}),
 			Following.findOne({
+				followerId: _user.id,
+				followeeId: meId
+			}),
+			_user.isLocked ? FollowRequest.findOne({
+				followerId: meId,
+				followeeId: _user.id
+			}) : Promise.resolve(null),
+			FollowRequest.findOne({
 				followerId: _user.id,
 				followeeId: meId
 			}),
@@ -413,6 +447,9 @@ export const pack = (
 		// Whether the user is following
 		_user.isFollowing = following1 !== null;
 		_user.isStalking = following1 && following1.stalk;
+
+		_user.hasPendingFollowRequestFromYou = followReq1 !== null;
+		_user.hasPendingFollowRequestToYou = followReq2 !== null;
 
 		// Whether the user is followed
 		_user.isFollowed = following2 !== null;

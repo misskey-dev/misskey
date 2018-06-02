@@ -5,6 +5,7 @@
 			<template v-for="(notification, i) in _notifications">
 				<div class="notification" :class="notification.type" :key="notification.id">
 					<mk-time :time="notification.createdAt"/>
+
 					<template v-if="notification.type == 'reaction'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
@@ -17,6 +18,7 @@
 							</router-link>
 						</div>
 					</template>
+
 					<template v-if="notification.type == 'renote'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
@@ -28,6 +30,7 @@
 							</router-link>
 						</div>
 					</template>
+
 					<template v-if="notification.type == 'quote'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
@@ -37,6 +40,7 @@
 							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
 						</div>
 					</template>
+
 					<template v-if="notification.type == 'follow'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
@@ -45,6 +49,16 @@
 							</p>
 						</div>
 					</template>
+
+					<template v-if="notification.type == 'receiveFollowRequest'">
+						<mk-avatar class="avatar" :user="notification.user"/>
+						<div class="text">
+							<p>%fa:user-clock%
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
+							</p>
+						</div>
+					</template>
+
 					<template v-if="notification.type == 'reply'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
@@ -54,6 +68,7 @@
 							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
 						</div>
 					</template>
+
 					<template v-if="notification.type == 'mention'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
@@ -63,6 +78,7 @@
 							<a class="note-preview" :href="notification.note | notePage">{{ getNoteSummary(notification.note) }}</a>
 						</div>
 					</template>
+
 					<template v-if="notification.type == 'poll_vote'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
@@ -73,6 +89,7 @@
 						</div>
 					</template>
 				</div>
+
 				<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date" :key="notification.id + '-time'">
 					<span>%fa:angle-up%{{ notification._datetext }}</span>
 					<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
@@ -250,6 +267,10 @@ root(isDark)
 				&.follow
 					.text p i
 						color #53c7ce
+
+				&.receiveFollowRequest
+					.text p i
+						color #888
 
 				&.reply, &.mention
 					.text p i

@@ -40,6 +40,17 @@
 		</div>
 	</div>
 
+	<div class="notification followRequest" v-if="notification.type == 'receiveFollowRequest'">
+		<mk-avatar class="avatar" :user="notification.user"/>
+		<div>
+			<header>
+				%fa:user-clock%
+				<router-link :to="notification.user | userPage">{{ notification.user | userName }}</router-link>
+				<mk-time :time="notification.createdAt"/>
+			</header>
+		</div>
+	</div>
+
 	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
@@ -155,6 +166,10 @@ root(isDark)
 		&.follow
 			> div > header i
 				color #53c7ce
+
+		&.receiveFollowRequest
+			> div > header i
+				color #888
 
 .mk-notification[data-darkmode]
 	root(true)

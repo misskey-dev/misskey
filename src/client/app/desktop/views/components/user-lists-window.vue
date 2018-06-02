@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
-	<span slot="header">%fa:list% リスト</span>
+	<span slot="header">%fa:list% %i18n:@title%</span>
 
 	<div data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82" :data-darkmode="$store.state.device.darkmode">
 		<button class="ui" @click="add">%i18n:@create-list%</button>

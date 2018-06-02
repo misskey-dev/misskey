@@ -36,6 +36,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			_id: {
 				$nin: followingIds.concat(mutedUserIds)
 			},
+			isLocked: false,
 			$or: [{
 				lastUsedAt: {
 					$gte: new Date(Date.now() - ms('7days'))

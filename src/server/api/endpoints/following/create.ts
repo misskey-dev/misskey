@@ -2,7 +2,7 @@
  * Module dependencies
  */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import User from '../../../../models/user';
+import User, { pack } from '../../../../models/user';
 import Following from '../../../../models/following';
 import create from '../../../../services/following/create';
 
@@ -49,5 +49,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	create(follower, followee);
 
 	// Send response
-	res();
+	res(await pack(followee, user));
 });
