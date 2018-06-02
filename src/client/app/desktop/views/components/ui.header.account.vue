@@ -238,6 +238,7 @@ root(isDark)
 							margin-left 4px
 							padding 2px 8px
 							font-size 90%
+							font-style normal
 							background $theme-color
 							color $theme-color-foreground
 							border-radius 8px

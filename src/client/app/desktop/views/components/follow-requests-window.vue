@@ -3,7 +3,12 @@
 	<span slot="header">%fa:envelope R% %i18n:@title%</span>
 
 	<div data-id="c1136cec-1278-49b1-9ea7-412c1ef794f4" :data-darkmode="$store.state.device.darkmode">
-		<router-link v-for="req in requests" :key="req.id" :to="req.followee | userPage">{{ req.followee | userName }}</router-link>
+		<div v-for="req in requests">
+			<router-link :key="req.id" :to="req.follower | userPage">{{ req.follower | userName }}</router-link>
+			<span>
+				<a @click="accept(req.follower)">%i18n:@accept%</a>|<a @click="reject(req.follower)">%i18n:@reject%</a>
+			</span>
+		</div>
 	</div>
 </mk-window>
 </template>
@@ -24,6 +29,16 @@ export default Vue.extend({
 		});
 	},
 	methods: {
+		accept(user) {
+			(this as any).api('following/requests/accept', { userId: user.id }).then(() => {
+				this.requests = this.requests.filter(r => r.follower.id != user.id);
+			});
+		},
+		reject(user) {
+			(this as any).api('following/requests/reject', { userId: user.id }).then(() => {
+				this.requests = this.requests.filter(r => r.follower.id != user.id);
+			});
+		},
 		close() {
 			(this as any).$refs.window.close();
 		}
@@ -39,11 +54,14 @@ root(isDark)
 	> button
 		margin-bottom 16px
 
-	> a
-		display block
+	> div
+		display flex
 		padding 16px
 		border solid 1px isDark ? #1c2023 : #eee
 		border-radius 4px
+
+		> span
+			margin 0 0 0 auto
 
 [data-id="c1136cec-1278-49b1-9ea7-412c1ef794f4"][data-darkmode]
 	root(true)
