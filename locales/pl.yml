@@ -290,8 +290,8 @@ desktop/views/components/drive.vue:
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
 desktop/views/components/follow-button.vue:
-  unfollow: "フォロー中"
-  follow: "フォロー"
+  unfollow: "Śledzisz"
+  follow: "Śledź"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
 desktop/views/components/followers-window.vue:
