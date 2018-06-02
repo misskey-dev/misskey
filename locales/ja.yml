@@ -598,6 +598,7 @@ desktop/views/components/ui.header.account.vue:
   drive: "ドライブ"
   favorites: "お気に入り"
   lists: "リスト"
+  follow-requests: "フォロー申請"
   customize: "カスタマイズ"
   settings: "設定"
   signout: "サインアウト"
@@ -617,7 +618,13 @@ desktop/views/components/ui.header.post.vue:
 desktop/views/components/ui.header.search.vue:
   placeholder: "検索"
 
+desktop/views/components/follow-requests-window.vue:
+  title: "フォロー申請"
+  accept: "許可"
+  reject: "拒否"
+
 desktop/views/components/user-lists-window.vue:
+  title: "リスト"
   create-list: "リストを作成"
 
 desktop/views/components/user-preview.vue:

@@ -78,10 +78,10 @@ export const pack = (
 	delete _request._id;
 
 	// Populate follower
-	_request.followerId = await packUser(_request.followerId, me);
+	_request.follower = await packUser(_request.followerId, me);
 
 	// Populate followee
-	_request.followeeId = await packUser(_request.followeeId, me);
+	_request.followee = await packUser(_request.followeeId, me);
 
 	resolve(_request);
 });
