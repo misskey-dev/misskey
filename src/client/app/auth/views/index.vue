@@ -27,7 +27,7 @@
 		<h1>サインインしてください</h1>
 		<mk-signin/>
 	</main>
-	<footer><img src="/assets/auth/logo.svg" alt="Misskey"/></footer>
+	<footer><img src="/assets/auth/icon.svg" alt="Misskey"/></footer>
 </div>
 </template>
 
@@ -144,8 +144,8 @@ export default Vue.extend({
 	> footer
 		> img
 			display block
-			width 64px
-			height 64px
-			margin 0 auto
+			width 32px
+			height 32px
+			margin 16px auto
 
 </style>
