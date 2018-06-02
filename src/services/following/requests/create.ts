@@ -33,10 +33,10 @@ export default async function(follower: IUser, followee: IUser) {
 
 	// Publish reciveRequest event
 	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => event(followee._id, 'reciveRequest', packed)),
+		packUser(follower, followee).then(packed => event(followee._id, 'reciveFollowRequest', packed)),
 
 		// 通知を作成
-		notify(followee._id, follower._id, 'reciveRequest');
+		notify(followee._id, follower._id, 'reciveFollowRequest');
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {

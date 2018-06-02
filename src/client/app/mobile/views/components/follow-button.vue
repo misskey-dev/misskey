@@ -1,14 +1,14 @@
 <template>
 <button class="mk-follow-button"
-	:class="{ wait: wait, following: user.isFollowing, unfollow: user.isFollowing }"
+	:class="{ wait: wait, following: u.isFollowing }"
 	@click="onClick"
 	:disabled="wait"
 >
 	<template v-if="!wait">
-		<template v-if="user.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
-		<template v-else-if="user.isFollowing">%fa:minus% %i18n:@unfollow%</template>
-		<template v-else-if="!user.isFollowing && user.isLocked">%fa:plus% %i18n:@follow-request%</template>
-		<template v-else-if="!user.isFollowing && !user.isLocked">%fa:plus% %i18n:@follow%</template>
+		<template v-if="u.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
+		<template v-else-if="u.isFollowing">%fa:minus% %i18n:@unfollow%</template>
+		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus% %i18n:@follow-request%</template>
+		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus% %i18n:@follow%</template>
 	</template>
 	<template v-else>%fa:spinner .pulse .fw%</template>
 </button>
@@ -25,6 +25,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
+			u: this.user,
 			wait: false,
 			connection: null,
 			connectionId: null
@@ -45,51 +46,44 @@ export default Vue.extend({
 	methods: {
 
 		onFollow(user) {
-			if (user.id == this.user.id) {
-				this.user.isFollowing = user.isFollowing;
+			if (user.id == this.u.id) {
+				this.u.isFollowing = user.isFollowing;
 			}
 		},
 
 		onUnfollow(user) {
-			if (user.id == this.user.id) {
-				this.user.isFollowing = user.isFollowing;
+			if (user.id == this.u.id) {
+				this.u.isFollowing = user.isFollowing;
 			}
 		},
 
-		onClick() {
+		async onClick() {
 			this.wait = true;
-			if (this.user.isFollowing) {
-				(this as any).api('following/delete', {
-					userId: this.user.id
-				}).then(() => {
-					this.user.isFollowing = false;
-				}).catch(err => {
-					console.error(err);
-				}).then(() => {
-					this.wait = false;
-				});
-			} else {
-				if (this.user.isLocked && this.user.hasPendingFollowRequestFromYou) {
-					(this as any).api('following/requests/cancel', {
-						userId: this.user.id
-					}).then(() => {
-						this.user.hasPendingFollowRequestFromYou = false;
-					}).catch(err => {
-						console.error(err);
-					}).then(() => {
-						this.wait = false;
+
+			try {
+				if (this.u.isFollowing) {
+					this.u = await (this as any).api('following/delete', {
+						userId: this.u.id
 					});
 				} else {
-					(this as any).api('following/create', {
-						userId: this.user.id
-					}).then(() => {
-						this.user.isFollowing = true;
-					}).catch(err => {
-						console.error(err);
-					}).then(() => {
-						this.wait = false;
-					});
+					if (this.u.isLocked && this.u.hasPendingFollowRequestFromYou) {
+						this.u = await (this as any).api('following/requests/cancel', {
+							userId: this.u.id
+						});
+					} else if (this.u.isLocked) {
+						this.u = await (this as any).api('following/create', {
+							userId: this.u.id
+						});
+					} else {
+						this.u = await (this as any).api('following/create', {
+							userId: this.user.id
+						});
+					}
 				}
+			} catch (e) {
+				console.error(e);
+			} finally {
+				this.wait = false;
 			}
 		}
 	}
@@ -107,6 +101,8 @@ export default Vue.extend({
 	margin 0
 	line-height 36px
 	font-size 14px
+	color $theme-color
+	background transparent
 	outline none
 	border solid 1px $theme-color
 	border-radius 36px
@@ -114,19 +110,15 @@ export default Vue.extend({
 	*
 		pointer-events none
 
-	&.follow
-		color $theme-color
-		background transparent
+	&.following
+		color $theme-color-foreground
+		background $theme-color
 
 		&:hover
 			background rgba($theme-color, 0.1)
 
 		&:active
 			background rgba($theme-color, 0.2)
-
-	&.unfollow
-		color $theme-color-foreground
-		background $theme-color
 
 	&.wait
 		cursor wait !important

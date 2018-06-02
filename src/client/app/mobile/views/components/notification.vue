@@ -40,7 +40,7 @@
 		</div>
 	</div>
 
-	<div class="notification followRequest" v-if="notification.type == 'followRequest'">
+	<div class="notification followRequest" v-if="notification.type == 'reciveFollowRequest'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>
@@ -167,7 +167,7 @@ root(isDark)
 			> div > header i
 				color #53c7ce
 
-		&.followRequest
+		&.reciveFollowRequest
 			> div > header i
 				color #888
 

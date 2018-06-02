@@ -6,9 +6,9 @@ import User from '../../../../../models/user';
  * Reject a follow request
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'followerId' parameter
-	const [followerId, followerIdErr] = $.type(ID).get(params.followerId);
-	if (followerIdErr) return rej('invalid followerId param');
+	// Get 'userId' parameter
+	const [followerId, followerIdErr] = $.type(ID).get(params.userId);
+	if (followerIdErr) return rej('invalid userId param');
 
 	// Fetch follower
 	const follower = await User.findOne({

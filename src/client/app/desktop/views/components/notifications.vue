@@ -50,7 +50,7 @@
 						</div>
 					</template>
 
-					<template v-if="notification.type == 'followRequest'">
+					<template v-if="notification.type == 'reciveFollowRequest'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p>%fa:user-clock%
@@ -268,7 +268,7 @@ root(isDark)
 					.text p i
 						color #53c7ce
 
-				&.followRequest
+				&.reciveFollowRequest
 					.text p i
 						color #888
 

@@ -1,26 +1,26 @@
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
-import User from '../../../../../models/user';
+import User, { pack } from '../../../../../models/user';
 
 /**
  * Cancel a follow request
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// Get 'followerId' parameter
-	const [followerId, followerIdErr] = $.type(ID).get(params.followerId);
-	if (followerIdErr) return rej('invalid followerId param');
+	// Get 'userId' parameter
+	const [followeeId, followeeIdErr] = $.type(ID).get(params.userId);
+	if (followeeIdErr) return rej('invalid userId param');
 
-	// Fetch follower
-	const follower = await User.findOne({
-		_id: followerId
+	// Fetch followee
+	const followee = await User.findOne({
+		_id: followeeId
 	});
 
-	if (follower === null) {
-		return rej('follower not found');
+	if (followee === null) {
+		return rej('followee not found');
 	}
 
-	await cancelFollowRequest(user, follower);
+	await cancelFollowRequest(followee, user);
 
 	// Send response
-	res();
+	res(await pack(followee._id, user));
 });
