@@ -28,6 +28,12 @@ export class HomeStream extends Stream {
 			os.store.dispatch('mergeMe', i);
 		});
 
+		this.on('reciveFollowRequest', () => {
+			os.store.dispatch('mergeMe', {
+				pendingReceivedFollowRequestsCount: (os.store.state.i.pendingReceivedFollowRequestsCount || 0) + 1
+			});
+		});
+
 		this.on('read_all_notifications', () => {
 			os.store.dispatch('mergeMe', {
 				hasUnreadNotification: false
