@@ -290,10 +290,10 @@ desktop/views/components/drive.vue:
     upload: "Upload a file"
     url-upload: "Upload from a URL"
 desktop/views/components/follow-button.vue:
-  unfollow: "フォロー中"
-  follow: "フォロー"
+  unfollow: "Following"
+  follow: "Follow"
   request-pending: "フォロー許可待ち"
-  follow-request: "フォロー申請"
+  follow-request: "Follow request"
 desktop/views/components/followers-window.vue:
   followers: "{}'s followers"
 desktop/views/components/followers.vue:
@@ -516,7 +516,7 @@ desktop/views/components/ui.header.account.vue:
   drive: "Drive"
   favorites: "Favorites"
   lists: "Lists"
-  follow-requests: "フォロー申請"
+  follow-requests: "Follow requests"
   customize: "Customize"
   settings: "Settings"
   signout: "Sign out"
@@ -532,11 +532,11 @@ desktop/views/components/ui.header.post.vue:
 desktop/views/components/ui.header.search.vue:
   placeholder: "Search"
 desktop/views/components/received-follow-requests-window.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
+  title: "Follow requests"
+  accept: "Accept"
+  reject: "Reject"
 desktop/views/components/user-lists-window.vue:
-  title: "リスト"
+  title: "User lists"
   create-list: "Create list"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
@@ -661,7 +661,7 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/follow-button.vue:
-  unfollow: "フォロー中"
+  unfollow: "Following"
   follow: "Follow"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
