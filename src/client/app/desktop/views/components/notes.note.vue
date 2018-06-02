@@ -463,7 +463,7 @@ root(isDark)
 					> .app
 						margin-right 8px
 						padding-right 8px
-						border-right solid 1px #eaeaea
+						border-right solid 1px isDark ? #1c2023 : #eaeaea
 
 					> .visibility
 						margin-left 8px
@@ -552,7 +552,7 @@ root(isDark)
 							padding 2px 8px 2px 16px
 							font-size 90%
 							color #8d969e
-							background #edf0f3
+							background isDark ? #313543 : #edf0f3
 							border-radius 4px
 
 							&:before
@@ -565,7 +565,7 @@ root(isDark)
 								width 8px
 								height 8px
 								margin auto 0
-								background #fff
+								background isDark ? #282c37 : #fff
 								border-radius 100%
 
 							&:hover

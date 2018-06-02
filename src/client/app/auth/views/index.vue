@@ -3,6 +3,7 @@
 	<main v-if="$store.getters.isSignedIn">
 		<p class="fetching" v-if="fetching">読み込み中<mk-ellipsis/></p>
 		<x-form
+			class="form"
 			ref="form"
 			v-if="state == 'waiting'"
 			:session="session"
@@ -102,7 +103,7 @@ export default Vue.extend({
 			padding 32px
 			color #555
 
-		> div
+		> div:not(.form)
 			padding 64px
 
 			> h1

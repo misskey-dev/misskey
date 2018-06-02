@@ -502,7 +502,7 @@ root(isDark)
 							padding 2px 8px 2px 16px
 							font-size 90%
 							color #8d969e
-							background #edf0f3
+							background isDark ? #313543 : #edf0f3
 							border-radius 4px
 
 							&:before
@@ -515,7 +515,7 @@ root(isDark)
 								width 8px
 								height 8px
 								margin auto 0
-								background #fff
+								background isDark ? #282c37 : #fff
 								border-radius 100%
 
 					> .media
