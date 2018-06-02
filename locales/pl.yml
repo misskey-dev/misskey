@@ -292,8 +292,8 @@ desktop/views/components/drive.vue:
 desktop/views/components/follow-button.vue:
   unfollow: "Śledzisz"
   follow: "Śledź"
-  request-pending: "フォロー許可待ち"
-  follow-request: "フォロー申請"
+  request-pending: "Oczekiwanie na pozwolenie"
+  follow-request: "Poproś o śledzenie"
 desktop/views/components/followers-window.vue:
   followers: "Śledzący"
 desktop/views/components/followers.vue:
@@ -516,7 +516,7 @@ desktop/views/components/ui.header.account.vue:
   drive: "Dysk"
   favorites: "Ulubione"
   lists: "Listy"
-  follow-requests: "フォロー申請"
+  follow-requests: "Prośby o śledzenie"
   customize: "Dostosuj"
   settings: "Ustawienia"
   signout: "Wyloguj się"
@@ -532,11 +532,11 @@ desktop/views/components/ui.header.post.vue:
 desktop/views/components/ui.header.search.vue:
   placeholder: "Szukaj"
 desktop/views/components/received-follow-requests-window.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
+  title: "Poproś o śledzenie"
+  accept: "Zatwierdź"
+  reject: "Odmów"
 desktop/views/components/user-lists-window.vue:
-  title: "リスト"
+  title: "Listy"
   create-list: "Utwórz listę"
 desktop/views/components/user-preview.vue:
   notes: "Wpisy"
@@ -661,10 +661,10 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/follow-button.vue:
-  unfollow: "フォロー中"
+  unfollow: "Śledzisz"
   follow: "Śledź"
-  request-pending: "フォロー許可待ち"
-  follow-request: "フォロー申請"
+  request-pending: "Oczekiwanie na pozwolenie"
+  follow-request: "Poproś o śledzenie"
 mobile/views/components/friends-maker.vue:
   title: "Zacznij śledzić ludzi takich jak Ty"
   empty: "Nie znaleziono podobnych użytkowników."
@@ -722,7 +722,7 @@ mobile/views/components/ui.nav.vue:
   timeline: "Oś czasu"
   notifications: "Powiadomienia"
   messaging: "Wiadomości"
-  follow-requests: "フォロー申請"
+  follow-requests: "Prośby o śledzenie"
   search: "Szukaj"
   drive: "Dysk"
   favorites: "Ulubione"
@@ -761,9 +761,9 @@ mobile/views/pages/messaging.vue:
 mobile/views/pages/messaging-room.vue:
   messaging: "Wiadomości"
 mobile/views/pages/received-follow-requests.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
+  title: "Prośby o śledzenie"
+  accept: "Zatwierdź"
+  reject: "Odmów"
 mobile/views/pages/note.vue:
   title: "Wpis"
   prev: "Poprzedni wpis"
