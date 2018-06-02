@@ -1,6 +1,6 @@
 <template>
 <button class="mk-follow-button"
-	:class="{ wait: wait, following: u.isFollowing }"
+	:class="{ wait: wait, active: u.isFollowing || u.hasPendingFollowRequestFromYou }"
 	@click="onClick"
 	:disabled="wait"
 >
@@ -99,6 +99,7 @@ export default Vue.extend({
 	cursor pointer
 	padding 0 16px
 	margin 0
+	min-width 150px
 	line-height 36px
 	font-size 14px
 	color $theme-color
@@ -107,24 +108,29 @@ export default Vue.extend({
 	border solid 1px $theme-color
 	border-radius 36px
 
-	*
-		pointer-events none
+	&:hover
+		background rgba($theme-color, 0.1)
 
-	&.following
+	&:active
+		background rgba($theme-color, 0.2)
+
+	&.active
 		color $theme-color-foreground
 		background $theme-color
 
 		&:hover
-			background rgba($theme-color, 0.1)
+			background lighten($theme-color, 10%)
+			border-color lighten($theme-color, 10%)
 
 		&:active
-			background rgba($theme-color, 0.2)
+			background darken($theme-color, 10%)
+			border-color darken($theme-color, 10%)
 
 	&.wait
 		cursor wait !important
 		opacity 0.7
 
-	> [data-fa]
-		margin-right 4px
+	*
+		pointer-events none
 
 </style>
