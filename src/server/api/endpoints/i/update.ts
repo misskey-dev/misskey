@@ -99,7 +99,7 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	res(iObj);
 
 	// Publish i updated event
-	event(user._id, 'i_updated', iObj);
+	event(user._id, 'meUpdated', iObj);
 
 	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 	if (user.isLocked && isLocked === false) {

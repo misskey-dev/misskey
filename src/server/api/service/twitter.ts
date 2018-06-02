@@ -49,7 +49,7 @@ router.get('/disconnect/twitter', async ctx => {
 	ctx.body = `Twitterの連携を解除しました :v:`;
 
 	// Publish i updated event
-	event(user._id, 'i_updated', await pack(user, user, {
+	event(user._id, 'meUpdated', await pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -174,7 +174,7 @@ if (config.twitter == null) {
 			ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
 
 			// Publish i updated event
-			event(user._id, 'i_updated', await pack(user, user, {
+			event(user._id, 'meUpdated', await pack(user, user, {
 				detail: true,
 				includeSecrets: true
 			}));

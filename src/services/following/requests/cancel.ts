@@ -1,9 +1,10 @@
-import User, { IUser, isRemoteUser, ILocalUser } from "../../../models/user";
+import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from "../../../models/user";
 import FollowRequest from "../../../models/follow-request";
 import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
 import { deliver } from '../../../queue';
+import event from '../../../publishers/stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(followee)) {
@@ -16,9 +17,13 @@ export default async function(followee: IUser, follower: IUser) {
 		followerId: follower._id
 	});
 
-	User.update({ _id: followee._id }, {
+	await User.update({ _id: followee._id }, {
 		$inc: {
 			pendingReceivedFollowRequestsCount: -1
 		}
 	});
+
+	packUser(followee, followee, {
+		detail: true
+	}).then(packed => event(followee._id, 'meUpdated', packed));
 }

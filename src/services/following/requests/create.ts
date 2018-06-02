@@ -25,7 +25,7 @@ export default async function(follower: IUser, followee: IUser) {
 		}
 	});
 
-	User.update({ _id: followee._id }, {
+	await User.update({ _id: followee._id }, {
 		$inc: {
 			pendingReceivedFollowRequestsCount: 1
 		}
@@ -33,7 +33,11 @@ export default async function(follower: IUser, followee: IUser) {
 
 	// Publish reciveRequest event
 	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => event(followee._id, 'reciveFollowRequest', packed)),
+		packUser(follower, followee).then(packed => event(followee._id, 'reciveFollowRequest', packed));
+
+		packUser(followee, followee, {
+			detail: true
+		}).then(packed => event(followee._id, 'meUpdated', packed));
 
 		// 通知を作成
 		notify(followee._id, follower._id, 'reciveFollowRequest');

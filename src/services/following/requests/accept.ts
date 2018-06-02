@@ -1,4 +1,4 @@
-import User, { IUser, isRemoteUser, ILocalUser } from "../../../models/user";
+import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from "../../../models/user";
 import FollowRequest from "../../../models/follow-request";
 import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
@@ -7,6 +7,7 @@ import { deliver } from '../../../queue';
 import Following from "../../../models/following";
 import FollowingLog from "../../../models/following-log";
 import FollowedLog from "../../../models/followed-log";
+import event from '../../../publishers/stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	const following = await Following.insert({
@@ -30,13 +31,13 @@ export default async function(followee: IUser, follower: IUser) {
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
-	FollowRequest.remove({
+	await FollowRequest.remove({
 		followeeId: followee._id,
 		followerId: follower._id
 	});
 
 	//#region Increment following count
-	User.update({ _id: follower._id }, {
+	await User.update({ _id: follower._id }, {
 		$inc: {
 			followingCount: 1
 		}
@@ -50,15 +51,20 @@ export default async function(followee: IUser, follower: IUser) {
 	//#endregion
 
 	//#region Increment followers count
-	User.update({ _id: followee._id }, {
+	await User.update({ _id: followee._id }, {
 		$inc: {
 			followersCount: 1
 		}
 	});
+
 	FollowedLog.insert({
 		createdAt: following.createdAt,
 		userId: followee._id,
 		count: followee.followersCount + 1
 	});
 	//#endregion
+
+	packUser(followee, followee, {
+		detail: true
+	}).then(packed => event(followee._id, 'meUpdated', packed));
 }

@@ -20,18 +20,12 @@ export class HomeStream extends Stream {
 		}, 1000 * 60);
 
 		// 自分の情報が更新されたとき
-		this.on('i_updated', i => {
+		this.on('meUpdated', i => {
 			if (os.debug) {
 				console.log('I updated:', i);
 			}
 
 			os.store.dispatch('mergeMe', i);
-		});
-
-		this.on('reciveFollowRequest', () => {
-			os.store.dispatch('mergeMe', {
-				pendingReceivedFollowRequestsCount: (os.store.state.i.pendingReceivedFollowRequestsCount || 0) + 1
-			});
 		});
 
 		this.on('read_all_notifications', () => {
