@@ -6,7 +6,7 @@
 >
 	<template v-if="!wait">
 		<template v-if="u.hasPendingFollowRequestFromYou">%fa:hourglass-half% %i18n:@request-pending%</template>
-		<template v-else-if="u.isFollowing">%fa:minus% %i18n:@unfollow%</template>
+		<template v-else-if="u.isFollowing">%fa:minus% %i18n:@following%</template>
 		<template v-else-if="!u.isFollowing && u.isLocked">%fa:plus% %i18n:@follow-request%</template>
 		<template v-else-if="!u.isFollowing && !u.isLocked">%fa:plus% %i18n:@follow%</template>
 	</template>
@@ -102,6 +102,7 @@ export default Vue.extend({
 	min-width 150px
 	line-height 36px
 	font-size 14px
+	font-weight bold
 	color $theme-color
 	background transparent
 	outline none

@@ -331,7 +331,7 @@ desktop/views/components/drive.vue:
     url-upload: "URLからアップロード"
 
 desktop/views/components/follow-button.vue:
-  unfollow: "フォロー中"
+  following: "フォロー中"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
@@ -780,7 +780,7 @@ mobile/views/components/drive.file-detail.vue:
   exif: "EXIF"
 
 mobile/views/components/follow-button.vue:
-  unfollow: "フォロー中"
+  following: "フォロー中"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
