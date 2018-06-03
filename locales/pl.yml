@@ -290,7 +290,7 @@ desktop/views/components/drive.vue:
     upload: "Wyślij plik"
     url-upload: "Wyślij z adresu URL"
 desktop/views/components/follow-button.vue:
-  unfollow: "Śledzisz"
+  following: "フォロー中"
   follow: "Śledź"
   request-pending: "Oczekiwanie na pozwolenie"
   follow-request: "Poproś o śledzenie"
@@ -661,7 +661,7 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/follow-button.vue:
-  unfollow: "Śledzisz"
+  following: "フォロー中"
   follow: "Śledź"
   request-pending: "Oczekiwanie na pozwolenie"
   follow-request: "Poproś o śledzenie"
