@@ -49,5 +49,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	deleteFollowing(follower, followee);
 
 	// Send response
-	res(await pack(followee, user));
+	res(await pack(followee._id, user));
 });
