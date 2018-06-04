@@ -290,7 +290,7 @@ desktop/views/components/drive.vue:
     upload: "Upload a file"
     url-upload: "Upload from a URL"
 desktop/views/components/follow-button.vue:
-  following: "フォロー中"
+  following: "Following"
   follow: "Follow"
   request-pending: "フォロー許可待ち"
   follow-request: "Follow request"
@@ -661,7 +661,7 @@ mobile/views/components/drive.file-detail.vue:
   hash: "Hash (md5)"
   exif: "EXIF"
 mobile/views/components/follow-button.vue:
-  following: "フォロー中"
+  following: "Following"
   follow: "Follow"
   request-pending: "フォロー許可待ち"
   follow-request: "Follow request"
