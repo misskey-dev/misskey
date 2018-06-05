@@ -14,10 +14,6 @@ export default Vue.extend({
 	},
 
 	props: {
-		root: {
-			type: Object,
-			required: false
-		},
 		src: {
 			type: String,
 			required: false,

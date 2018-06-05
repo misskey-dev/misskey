@@ -73,16 +73,20 @@ export default Vue.extend({
 		}
 	},
 
+	inject: ['getColumn', 'getScrollContainer'],
+
+	created() {
+		this.getColumn().$once('mounted', () => {
+			this.rootEl = this.getScrollContainer();
+			this.rootEl.addEventListener('scroll', this.onScroll);
+		})
+	},
+
 	beforeDestroy() {
-		this.root.removeEventListener('scroll', this.onScroll);
+		this.rootEl.removeEventListener('scroll', this.onScroll);
 	},
 
 	methods: {
-		mount(root) {
-			this.rootEl = root;
-			this.rootEl.addEventListener('scroll', this.onScroll);
-		},
-
 		isScrollTop() {
 			if (this.rootEl == null) return true;
 			return this.rootEl.scrollTop <= 8;

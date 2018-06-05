@@ -1,21 +1,20 @@
 <template>
 <mk-ui :class="$style.root">
 	<div class="qlvquzbjribqcaozciifydkngcwtyzje">
-		<x-column src="home"/>
-		<x-column src="home"/>
-		<x-column src="home"/>
-		<x-column src="home"/>
+		<x-tl-column src="home"/>
+		<x-tl-column src="local"/>
+		<x-tl-column src="global"/>
 	</div>
 </mk-ui>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import XColumn from './deck.column.vue';
+import XTlColumn from './deck.tl-column.vue';
 
 export default Vue.extend({
 	components: {
-		XColumn
+		XTlColumn
 	}
 });
 </script>

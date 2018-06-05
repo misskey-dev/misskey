@@ -1,10 +1,10 @@
 <template>
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs">
 	<header>
-		<slot name="header">Timeline</slot>
+		<slot name="header"></slot>
 	</header>
 	<div ref="body">
-		<x-tl ref="tl"/>
+		<slot></slot>
 	</div>
 </div>
 </template>
@@ -17,9 +17,23 @@ export default Vue.extend({
 	components: {
 		XTl
 	},
+	provide() {
+		return {
+			getColumn() {
+				return this;
+			},
+			getScrollContainer() {
+				return this.$refs.body;
+			}
+		};
+	},
 	mounted() {
 		this.$nextTick(() => {
-			this.$refs.tl.mount(this.$refs.body);
+			this.$emit('mounted');
+
+			setInterval(() => {
+				this.$emit('mounted');
+			}, 100);
 		});
 	}
 });
@@ -31,6 +45,7 @@ export default Vue.extend({
 root(isDark)
 	flex 1
 	min-width 330px
+	max-width 330px
 	height 100%
 	margin-right 16px
 	background isDark ? #282C37 : #fff
@@ -40,14 +55,14 @@ root(isDark)
 
 	> header
 		z-index 1
-		line-height 48px
+		line-height 42px
 		padding 0 16px
 		color isDark ? #e3e5e8 : #888
 		background isDark ? #313543 : #fff
 		box-shadow 0 1px rgba(#000, 0.15)
 
 	> div
-		height calc(100% - 48px)
+		height calc(100% - 42px)
 		overflow auto
 		overflow-x hidden
 

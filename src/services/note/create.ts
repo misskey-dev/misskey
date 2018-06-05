@@ -221,7 +221,9 @@ export default async (user: IUser, data: {
 		}
 
 		// Publish note to global timeline stream
-		publishGlobalTimelineStream(noteObj);
+		if (note.visibility == 'public' && note.replyId == null) {
+			publishGlobalTimelineStream(noteObj);
+		}
 
 		if (note.visibility == 'specified') {
 			data.visibleUsers.forEach(async u => {
