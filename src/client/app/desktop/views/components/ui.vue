@@ -37,7 +37,16 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-ui
+	display flex
+	flex-direction column
+	flex 1
+
 	> .header
 		@media (max-width 1000px)
 			display none
+
+	> .content
+		display flex
+		flex-direction column
+		flex 1
 </style>

@@ -23,6 +23,7 @@ import updateAvatar from './api/update-avatar';
 import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
+import MkDeck from './views/pages/deck/deck.vue';
 import MkUser from './views/pages/user/user.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
@@ -50,6 +51,7 @@ init(async (launch) => {
 		mode: 'history',
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
+			{ path: '/deck', name: 'deck', component: MkDeck },
 			{ path: '/i/customize-home', component: MkHomeCustomize },
 			{ path: '/i/favorites', component: MkFavorites },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
