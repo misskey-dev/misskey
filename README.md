@@ -20,6 +20,7 @@ ultimately sophisticated new type of mini-blog based SNS.
 ----------------------------------------------------------------
 * Reactions
 * User lists
+* Cusromizable column view (known as MisskeyDeck)
 * Private messages
 * Mute
 * Streaming
