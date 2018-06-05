@@ -7,6 +7,20 @@ import { hostname } from './config';
 const defaultSettings = {
 	home: [],
 	mobileHome: [],
+	deck: {
+		columns: [/*{
+			type: 'widgets',
+			widgets: []
+		}, */{
+			type: 'home'
+		}, {
+			type: 'notifications'
+		}, {
+			type: 'local'
+		}, {
+			type: 'global'
+		}]
+	},
 	fetchOnScroll: true,
 	showMaps: true,
 	showPostFormOnTopOfTl: false,
@@ -156,6 +170,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 			actions: {
 				merge(ctx, settings) {
+					if (settings == null) return;
 					Object.entries(settings).forEach(([key, value]) => {
 						ctx.commit('set', { key, value });
 					});

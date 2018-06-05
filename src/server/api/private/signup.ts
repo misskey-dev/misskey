@@ -1,4 +1,3 @@
-import * as uuid from 'uuid';
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
@@ -10,28 +9,6 @@ import config from '../../../config';
 recaptcha.init({
 	secret_key: config.recaptcha.secret_key
 });
-
-const home = {
-	left: [
-		'profile',
-		'calendar',
-		'activity',
-		'rss',
-		'trends',
-		'photo-stream',
-		'version'
-	],
-	right: [
-		'broadcast',
-		'notifications',
-		'users',
-		'polls',
-		'server',
-		'donation',
-		'nav',
-		'tips'
-	]
-};
 
 export default async (ctx: Koa.Context) => {
 	// Verify recaptcha
@@ -82,28 +59,6 @@ export default async (ctx: Koa.Context) => {
 	// Generate secret
 	const secret = generateUserToken();
 
-	//#region Construct home data
-	const homeData = [];
-
-	home.left.forEach(widget => {
-		homeData.push({
-			name: widget,
-			id: uuid(),
-			place: 'left',
-			data: {}
-		});
-	});
-
-	home.right.forEach(widget => {
-		homeData.push({
-			name: widget,
-			id: uuid(),
-			place: 'right',
-			data: {}
-		});
-	});
-	//#endregion
-
 	// Create account
 	const account: IUser = await User.insert({
 		avatarId: null,
@@ -135,9 +90,6 @@ export default async (ctx: Koa.Context) => {
 		},
 		settings: {
 			autoWatch: true
-		},
-		clientSettings: {
-			home: homeData
 		}
 	});
 
