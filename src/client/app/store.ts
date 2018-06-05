@@ -152,6 +152,44 @@ export default (os: MiOS) => new Vuex.Store({
 
 				removeMobileHomeWidget(state, widget) {
 					state.mobileHome = state.mobileHome.filter(w => w.id != widget.id);
+				},
+
+				addDeckColumn(state, column) {
+					if (state.deck.columns == null) state.deck.columns = [];
+					state.deck.columns.push(column);
+				},
+
+				removeDeckColumn(state, id) {
+					if (state.deck.columns == null) return;
+					state.deck.columns = state.deck.columns.filter(c => c.id != id);
+				},
+
+				swapLeftDeckColumn(state, id) {
+					if (state.deck.columns == null) return;
+					state.deck.columns.some((c, i) => {
+						if (c.id == id) {
+							const left = state.deck.columns[i - 1];
+							if (left) {
+								state.deck.columns[i - 1] = state.deck.columns[i];
+								state.deck.columns[i] = left;
+							}
+							return true;
+						}
+					});
+				},
+
+				swapRightDeckColumn(state, id) {
+					if (state.deck.columns == null) return;
+					state.deck.columns.some((c, i) => {
+						if (c.id == id) {
+							const right = state.deck.columns[i + 1];
+							if (right) {
+								state.deck.columns[i + 1] = state.deck.columns[i];
+								state.deck.columns[i] = right;
+							}
+							return true;
+						}
+					});
 				}
 			},
 
@@ -172,6 +210,42 @@ export default (os: MiOS) => new Vuex.Store({
 							value: x.value
 						});
 					}
+				},
+
+				addDeckColumn(ctx, column) {
+					ctx.commit('addDeckColumn', column);
+
+					os.api('i/update_client_setting', {
+						name: 'deck',
+						value: ctx.state.deck
+					});
+				},
+
+				removeDeckColumn(ctx, id) {
+					ctx.commit('removeDeckColumn', id);
+
+					os.api('i/update_client_setting', {
+						name: 'deck',
+						value: ctx.state.deck
+					});
+				},
+
+				swapLeftDeckColumn(ctx, id) {
+					ctx.commit('swapLeftDeckColumn', id);
+
+					os.api('i/update_client_setting', {
+						name: 'deck',
+						value: ctx.state.deck
+					});
+				},
+
+				swapRightDeckColumn(ctx, id) {
+					ctx.commit('swapRightDeckColumn', id);
+
+					os.api('i/update_client_setting', {
+						name: 'deck',
+						value: ctx.state.deck
+					});
 				},
 
 				addHomeWidget(ctx, widget) {

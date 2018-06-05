@@ -2,12 +2,13 @@
 <mk-ui :class="$style.root">
 	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
 		<template v-for="column in columns">
-			<x-notifications-column v-if="column.type == 'notifications'" :key="column.id"/>
-			<x-tl-column v-if="column.type == 'home'" :key="column.id" src="home"/>
-			<x-tl-column v-if="column.type == 'local'" :key="column.id" src="local"/>
-			<x-tl-column v-if="column.type == 'global'" :key="column.id" src="global"/>
+			<x-notifications-column v-if="column.type == 'notifications'" :key="column.id" :id="column.id"/>
+			<x-tl-column v-if="column.type == 'home'" :key="column.id" :column="column"/>
+			<x-tl-column v-if="column.type == 'local'" :key="column.id" :column="column"/>
+			<x-tl-column v-if="column.type == 'global'" :key="column.id" :column="column"/>
+			<x-tl-column v-if="column.type == 'list'" :key="column.id" :column="column"/>
 		</template>
-		<button>%fa:plus%</button>
+		<button ref="add" @click="add">%fa:plus%</button>
 	</div>
 </mk-ui>
 </template>
@@ -16,6 +17,8 @@
 import Vue from 'vue';
 import XTlColumn from './deck.tl-column.vue';
 import XNotificationsColumn from './deck.notifications-column.vue';
+import Menu from '../../../../common/views/components/menu.vue';
+import MkUserListsWindow from '../../components/user-lists-window.vue';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
@@ -53,6 +56,61 @@ export default Vue.extend({
 			this.$store.dispatch('settings/set', {
 				key: 'deck',
 				value: deck
+			});
+		}
+	},
+
+	methods: {
+		add() {
+			this.os.new(Menu, {
+				source: this.$refs.add,
+				compact: true,
+				items: [{
+					content: '%i18n:@home%',
+					onClick: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'home'
+						});
+					}
+				}, {
+					content: '%i18n:@local%',
+					onClick: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'local'
+						});
+					}
+				}, {
+					content: '%i18n:@global%',
+					onClick: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'global'
+						});
+					}
+				}, {
+					content: '%i18n:@list%',
+					onClick: () => {
+						const w = (this as any).os.new(MkUserListsWindow);
+						w.$once('choosen', list => {
+							this.$store.dispatch('settings/addDeckColumn', {
+								id: uuid(),
+								type: 'list',
+								list: list
+							});
+							w.close();
+						});
+					}
+				}, {
+					content: '%i18n:@notifications%',
+					onClick: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'notifications'
+						});
+					}
+				}]
 			});
 		}
 	}

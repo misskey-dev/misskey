@@ -5,6 +5,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import XNotes from './deck.notes.vue';
+import { UserListStream } from '../../../../common/scripts/streaming/user-list';
 
 const fetchLimit = 10;
 
@@ -14,10 +15,9 @@ export default Vue.extend({
 	},
 
 	props: {
-		src: {
-			type: String,
-			required: false,
-			default: 'home'
+		list: {
+			type: Object,
+			required: true
 		}
 	},
 
@@ -26,49 +26,22 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			existMore: false,
-			connection: null,
-			connectionId: null
+			connection: null
 		};
 	},
 
-	computed: {
-		stream(): any {
-			return this.src == 'home'
-				? (this as any).os.stream
-				: this.src == 'local'
-					? (this as any).os.streams.localTimelineStream
-					: (this as any).os.streams.globalTimelineStream;
-		},
-
-		endpoint(): string {
-			return this.src == 'home'
-				? 'notes/timeline'
-				: this.src == 'local'
-					? 'notes/local-timeline'
-					: 'notes/global-timeline';
-		}
-	},
-
 	mounted() {
-		this.connection = this.stream.getConnection();
-		this.connectionId = this.stream.use();
-
+		if (this.connection) this.connection.close();
+		this.connection = new UserListStream((this as any).os, this.$store.state.i, this.list.id);
 		this.connection.on('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.on('follow', this.onChangeFollowing);
-			this.connection.on('unfollow', this.onChangeFollowing);
-		}
+		this.connection.on('userAdded', this.onUserAdded);
+		this.connection.on('userRemoved', this.onUserRemoved);
 
 		this.fetch();
 	},
 
 	beforeDestroy() {
-		this.connection.off('note', this.onNote);
-		if (this.src == 'home') {
-			this.connection.off('follow', this.onChangeFollowing);
-			this.connection.off('unfollow', this.onChangeFollowing);
-		}
-		this.stream.dispose(this.connectionId);
+		this.connection.close();
 	},
 
 	methods: {
@@ -76,7 +49,8 @@ export default Vue.extend({
 			this.fetching = true;
 
 			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
-				(this as any).api(this.endpoint, {
+				(this as any).api('notes/user-list-timeline', {
+					listId: this.list.id,
 					limit: fetchLimit + 1,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
@@ -91,11 +65,11 @@ export default Vue.extend({
 				}, rej);
 			}));
 		},
-
 		more() {
 			this.moreFetching = true;
 
-			const promise = (this as any).api(this.endpoint, {
+			const promise = (this as any).api('notes/user-list-timeline', {
+				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -114,18 +88,15 @@ export default Vue.extend({
 
 			return promise;
 		},
-
 		onNote(note) {
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},
-
-		onChangeFollowing() {
+		onUserAdded() {
 			this.fetch();
 		},
-
-		focus() {
-			(this.$refs.timeline as any).focus();
+		onUserRemoved() {
+			this.fetch();
 		}
 	}
 });

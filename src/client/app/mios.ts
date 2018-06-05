@@ -73,12 +73,12 @@ export default class MiOS extends EventEmitter {
 	public app: Vue;
 
 	public new(vm, props) {
-		const w = new vm({
+		const x = new vm({
 			parent: this.app,
 			propsData: props
 		}).$mount();
-		document.body.appendChild(w.$el);
-		return w;
+		document.body.appendChild(x.$el);
+		return x;
 	}
 
 	/**

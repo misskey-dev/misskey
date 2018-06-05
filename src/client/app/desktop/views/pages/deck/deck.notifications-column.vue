@@ -1,6 +1,6 @@
 <template>
 <div>
-	<x-column>
+	<x-column :id="id">
 		<span slot="header">%fa:bell R% %i18n:@notifications%</span>
 
 		<x-notifications/>
@@ -17,6 +17,13 @@ export default Vue.extend({
 	components: {
 		XColumn,
 		XNotifications
+	},
+
+	props: {
+		id: {
+			type: String,
+			required: true
+		}
 	}
 });
 </script>
