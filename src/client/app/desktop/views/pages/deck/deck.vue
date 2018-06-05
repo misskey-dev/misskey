@@ -31,7 +31,8 @@ export default Vue.extend({
 root(isDark)
 	display flex
 	flex 1
-	padding 16px
+	padding 16px 0 16px 16px
+	overflow auto
 
 .qlvquzbjribqcaozciifydkngcwtyzje[data-darkmode]
 	root(true)

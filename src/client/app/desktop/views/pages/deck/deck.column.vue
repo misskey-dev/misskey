@@ -30,7 +30,7 @@ export default Vue.extend({
 
 root(isDark)
 	flex 1
-	max-width 330px
+	min-width 330px
 	height 100%
 	margin-right 16px
 	background isDark ? #282C37 : #fff
@@ -49,6 +49,7 @@ root(isDark)
 	> div
 		height calc(100% - 48px)
 		overflow auto
+		overflow-x hidden
 
 .dnpfarvgbnfmyzbdquhhzyxcmstpdqzs[data-darkmode]
 	root(true)
