@@ -22,7 +22,7 @@ ultimately sophisticated new type of mini-blog based SNS.
 * User lists
 * Private messages
 * Mute
-* Real time contents
+* Streaming
 * ActivityPub compatible
 
 and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
