@@ -208,13 +208,6 @@ root(isDark)
 			[data-fa]
 				margin-right 8px
 
-	> .newer-indicator
-		position -webkit-sticky
-		position sticky
-		z-index 100
-		height 3px
-		background $theme-color
-
 	> footer
 		> button
 			display block
