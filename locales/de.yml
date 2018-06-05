@@ -523,6 +523,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "Verdunkeln"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
+  deck: "デッキ"
   messaging: "Nachrichten"
   game: "Spielen"
 desktop/views/components/ui.header.notifications.vue:
