@@ -523,6 +523,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "Fall in dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
+  deck: "デッキ"
   messaging: "Messages"
   game: "Play Othello"
 desktop/views/components/ui.header.notifications.vue:
