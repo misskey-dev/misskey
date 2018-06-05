@@ -147,7 +147,7 @@ export default Vue.extend({
 
 	computed: {
 		home(): any[] {
-			return this.$store.state.settings.home;
+			return this.$store.state.settings.home || [];
 		},
 		left(): any[] {
 			return this.home.filter(w => w.place == 'left');
@@ -164,9 +164,11 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.$store.state.i.clientSettings == null || this.$store.state.i.clientSettings.home == null) {
+		if (this.$store.state.settings.home == null) {
 			this.api('i/update_home', {
 				home: _defaultDesktopHomeWidgets
+			}).then(() => {
+				this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
 			});
 		}
 	},

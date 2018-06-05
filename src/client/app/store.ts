@@ -5,7 +5,7 @@ import MiOS from './mios';
 import { hostname } from './config';
 
 const defaultSettings = {
-	home: [],
+	home: null,
 	mobileHome: [],
 	deck: {
 		columns: [/*{
