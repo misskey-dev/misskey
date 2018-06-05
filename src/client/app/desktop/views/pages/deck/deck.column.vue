@@ -61,7 +61,6 @@ root(isDark)
 	min-width 330px
 	max-width 330px
 	height 100%
-	margin-right 16px
 	background isDark ? #282C37 : #fff
 	border-radius 6px
 	box-shadow 0 2px 16px rgba(#000, 0.1)

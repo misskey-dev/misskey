@@ -2,7 +2,7 @@
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
 	<span slot="header">%fa:list% %i18n:@title%</span>
 
-	<div data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82" :data-darkmode="$store.state.device.darkmode">
+	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp" :data-darkmode="$store.state.device.darkmode">
 		<button class="ui" @click="add">%i18n:@create-list%</button>
 		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
 	</div>
@@ -60,10 +60,10 @@ root(isDark)
 		border solid 1px isDark ? #1c2023 : #eee
 		border-radius 4px
 
-[data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82"][data-darkmode]
+.xkxvokkjlptzyewouewmceqcxhpgzprp[data-darkmode]
 	root(true)
 
-[data-id="6e4caea3-d8f9-4ab7-96de-ab67fe8d5c82"]:not([data-darkmode])
+.xkxvokkjlptzyewouewmceqcxhpgzprp:not([data-darkmode])
 	root(false)
 
 </style>

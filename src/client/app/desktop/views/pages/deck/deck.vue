@@ -1,12 +1,13 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
 		<template v-for="column in columns">
 			<x-notifications-column v-if="column.type == 'notifications'" :key="column.id"/>
 			<x-tl-column v-if="column.type == 'home'" :key="column.id" src="home"/>
 			<x-tl-column v-if="column.type == 'local'" :key="column.id" src="local"/>
 			<x-tl-column v-if="column.type == 'global'" :key="column.id" src="global"/>
 		</template>
+		<button>%fa:plus%</button>
 	</div>
 </mk-ui>
 </template>
@@ -71,6 +72,22 @@ root(isDark)
 	flex 1
 	padding 16px 0 16px 16px
 	overflow auto
+
+	> div
+		margin-right 16px
+
+		&:last-of-type
+			margin-right 0
+
+	> button
+		padding 0 16px
+		color isDark ? #93a0a5 : #888
+
+		&:hover
+			color isDark ? #b8c5ca : #777
+
+		&:active
+			color isDark ? #fff : #555
 
 .qlvquzbjribqcaozciifydkngcwtyzje[data-darkmode]
 	root(true)

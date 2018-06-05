@@ -6,7 +6,7 @@ export default (os: OS) => opts => {
 	const o = opts || {};
 	if (o.renote) {
 		const vm = os.new(RenoteFormWindow, {
-			renote: o.renote
+			note: o.renote
 		});
 		document.body.appendChild(vm.$el);
 	} else {

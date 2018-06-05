@@ -111,14 +111,6 @@ export default Vue.extend({
 			return this.isRenote ? this.note.renote : this.note;
 		},
 
-		reactionsCount(): number {
-			return this.p.reactionCounts
-				? Object.keys(this.p.reactionCounts)
-					.map(key => this.p.reactionCounts[key])
-					.reduce((a, b) => a + b)
-				: 0;
-		},
-
 		urls(): string[] {
 			if (this.p.text) {
 				const ast = parse(this.p.text);
@@ -143,24 +135,6 @@ export default Vue.extend({
 
 		if (this.$store.getters.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
-		}
-
-		// Draw map
-		if (this.p.geo) {
-			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
-			if (shouldShowMap) {
-				(this as any).os.getGoogleMaps().then(maps => {
-					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
-					const map = new maps.Map(this.$refs.map, {
-						center: uluru,
-						zoom: 15
-					});
-					new maps.Marker({
-						position: uluru,
-						map: map
-					});
-				});
-			}
 		}
 	},
 

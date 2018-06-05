@@ -2,7 +2,7 @@
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="$destroy">
 	<span slot="header">%fa:envelope R% %i18n:@title%</span>
 
-	<div data-id="c1136cec-1278-49b1-9ea7-412c1ef794f4" :data-darkmode="$store.state.device.darkmode">
+	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc" :data-darkmode="$store.state.device.darkmode">
 		<div v-for="req in requests">
 			<router-link :key="req.id" :to="req.follower | userPage">{{ req.follower | userName }}</router-link>
 			<span>
@@ -63,10 +63,10 @@ root(isDark)
 		> span
 			margin 0 0 0 auto
 
-[data-id="c1136cec-1278-49b1-9ea7-412c1ef794f4"][data-darkmode]
+.slpqaxdoxhvglersgjukmvizkqbmbokc[data-darkmode]
 	root(true)
 
-[data-id="c1136cec-1278-49b1-9ea7-412c1ef794f4"]:not([data-darkmode])
+.slpqaxdoxhvglersgjukmvizkqbmbokc:not([data-darkmode])
 	root(false)
 
 </style>
