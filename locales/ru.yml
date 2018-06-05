@@ -523,6 +523,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "闇に飲まれる"
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
+  deck: "デッキ"
   messaging: "メッセージ"
   game: "ゲーム"
 desktop/views/components/ui.header.notifications.vue:
