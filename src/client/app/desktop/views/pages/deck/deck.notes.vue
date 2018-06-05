@@ -1,7 +1,5 @@
 <template>
 <div class="eamppglmnmimdhrlzhplwpvyeaqmmhxu">
-	<div class="newer-indicator" v-show="queue.length > 0"></div>
-
 	<slot name="empty" v-if="notes.length == 0 && !fetching && requestInitPromise == null"></slot>
 
 	<div v-if="!fetching && requestInitPromise != null">
@@ -42,6 +40,8 @@ export default Vue.extend({
 		XNote
 	},
 
+	inject: ['column', 'isScrollTop', 'indicate'],
+
 	props: {
 		more: {
 			type: Function,
@@ -73,25 +73,17 @@ export default Vue.extend({
 		}
 	},
 
-	inject: ['getColumn', 'getScrollContainer'],
-
 	created() {
-		this.getColumn().$once('mounted', () => {
-			this.rootEl = this.getScrollContainer();
-			this.rootEl.addEventListener('scroll', this.onScroll);
-		})
+		this.column.$on('top', this.onTop);
+		this.column.$on('bottom', this.onBottom);
 	},
 
 	beforeDestroy() {
-		this.rootEl.removeEventListener('scroll', this.onScroll);
+		this.column.$off('top', this.onTop);
+		this.column.$off('bottom', this.onBottom);
 	},
 
 	methods: {
-		isScrollTop() {
-			if (this.rootEl == null) return true;
-			return this.rootEl.scrollTop <= 8;
-		},
-
 		focus() {
 			(this.$el as any).children[0].focus();
 		},
@@ -149,6 +141,7 @@ export default Vue.extend({
 				}
 			} else {
 				this.queue.push(note);
+				this.indicate(true);
 			}
 		},
 
@@ -163,6 +156,7 @@ export default Vue.extend({
 		releaseQueue() {
 			this.queue.forEach(n => this.prepend(n, true));
 			this.queue = [];
+			this.indicate(false);
 		},
 
 		async loadMore() {
@@ -174,15 +168,12 @@ export default Vue.extend({
 			this.moreFetching = false;
 		},
 
-		onScroll() {
-			if (this.isScrollTop()) {
-				this.releaseQueue();
-			}
+		onTop() {
+			this.releaseQueue();
+		},
 
-			if (this.rootEl && this.$store.state.settings.fetchOnScroll !== false) {
-				const current = this.rootEl.scrollTop + this.rootEl.clientHeight;
-				if (current > this.rootEl.scrollHeight - 8) this.loadMore();
-			}
+		onBottom() {
+			this.loadMore();
 		}
 	}
 });

@@ -1,6 +1,6 @@
 <template>
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs">
-	<header>
+	<header :class="{ indicate }">
 		<slot name="header"></slot>
 	</header>
 	<div ref="body">
@@ -11,30 +11,44 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XTl from './deck.tl.vue';
 
 export default Vue.extend({
-	components: {
-		XTl
-	},
-	provide() {
+	data() {
 		return {
-			getColumn() {
-				return this;
-			},
-			getScrollContainer() {
-				return this.$refs.body;
-			}
+			indicate: false
 		};
 	},
-	mounted() {
-		this.$nextTick(() => {
-			this.$emit('mounted');
 
-			setInterval(() => {
-				this.$emit('mounted');
-			}, 100);
-		});
+	provide() {
+		return {
+			column: this,
+			isScrollTop: this.isScrollTop,
+			indicate: v => this.indicate = v
+		};
+	},
+
+	mounted() {
+		this.$refs.body.addEventListener('scroll', this.onScroll);
+	},
+	beforeDestroy() {
+		this.$refs.body.removeEventListener('scroll', this.onScroll);
+	},
+
+	methods: {
+		isScrollTop() {
+			return this.$refs.body.scrollTop == 0;
+		},
+
+		onScroll() {
+			if (this.isScrollTop()) {
+				this.$emit('top');
+			}
+
+			if (this.$store.state.settings.fetchOnScroll !== false) {
+				const current = this.$refs.body.scrollTop + this.$refs.body.clientHeight;
+				if (current > this.$refs.body.scrollHeight - 1) this.$emit('bottom');
+			}
+		}
 	}
 });
 </script>
@@ -60,6 +74,9 @@ root(isDark)
 		color isDark ? #e3e5e8 : #888
 		background isDark ? #313543 : #fff
 		box-shadow 0 1px rgba(#000, 0.15)
+
+		&.indicate
+			box-shadow 0 3px 0 0 $theme-color
 
 	> div
 		height calc(100% - 42px)
