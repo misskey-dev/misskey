@@ -2,6 +2,7 @@
 <mk-ui :class="$style.root">
 	<div class="qlvquzbjribqcaozciifydkngcwtyzje">
 		<x-tl-column src="home"/>
+		<x-notifications-column/>
 		<x-tl-column src="local"/>
 		<x-tl-column src="global"/>
 	</div>
@@ -11,10 +12,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import XTlColumn from './deck.tl-column.vue';
+import XNotificationsColumn from './deck.notifications-column.vue';
 
 export default Vue.extend({
 	components: {
-		XTlColumn
+		XTlColumn,
+		XNotificationsColumn
 	}
 });
 </script>
