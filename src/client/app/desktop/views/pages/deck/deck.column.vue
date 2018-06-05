@@ -130,7 +130,7 @@ root(isDark)
 				color isDark ? #b2c1d5 : #999
 
 	> div
-		height calc(100% - $header-height)
+		height "calc(100% - %s)" % $header-height
 		overflow auto
 		overflow-x hidden
 
