@@ -7,20 +7,7 @@ import { hostname } from './config';
 const defaultSettings = {
 	home: null,
 	mobileHome: [],
-	deck: {
-		columns: [/*{
-			type: 'widgets',
-			widgets: []
-		}, */{
-			type: 'home'
-		}, {
-			type: 'notifications'
-		}, {
-			type: 'local'
-		}, {
-			type: 'global'
-		}]
-	},
+	deck: null,
 	fetchOnScroll: true,
 	showMaps: true,
 	showPostFormOnTopOfTl: false,
