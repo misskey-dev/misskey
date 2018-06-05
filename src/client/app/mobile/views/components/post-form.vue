@@ -5,7 +5,7 @@
 		<div>
 			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
 			<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
-			<button class="submit" :disabled="posting" @click="post">{{ submitText }}</button>
+			<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 		</div>
 	</header>
 	<div class="form">
