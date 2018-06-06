@@ -80,6 +80,7 @@ common:
     swap-right: "右に移動"
     remove: "カラムを削除"
     add-column: "カラムを追加"
+    rename: "名前を変更"
 common/views/components/connect-failed.vue:
   title: "Verbindung zum Server ist fehlgeschlagen"
   description: "Es gibt entweder ein Problem mit deiner Internetverbindung, der Server ist nicht erreichbar oder wird gerade gewartet. Bitte versuche es später noch einmal."
