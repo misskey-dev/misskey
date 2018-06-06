@@ -29,12 +29,14 @@ export default Vue.extend({
 		XNotificationsColumn,
 		XWidgetsColumn
 	},
+
 	computed: {
 		columns() {
 			if (this.$store.state.settings.deck == null) return [];
 			return this.$store.state.settings.deck.columns;
 		}
 	},
+
 	created() {
 		if (this.$store.state.settings.deck == null) {
 			const deck = {
@@ -61,6 +63,14 @@ export default Vue.extend({
 				value: deck
 			});
 		}
+	},
+
+	mounted() {
+		document.documentElement.style.overflow = 'hidden';
+	},
+
+	beforeDestroy() {
+		document.documentElement.style.overflow = 'auto';
 	},
 
 	methods: {
