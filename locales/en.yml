@@ -80,6 +80,7 @@ common:
     swap-right: "Move Right"
     remove: "Remove"
     add-column: "Add a column"
+    rename: "名前を変更"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem either with your Internet connection, or the server may be down or under maintenance. Please {try again} later."
