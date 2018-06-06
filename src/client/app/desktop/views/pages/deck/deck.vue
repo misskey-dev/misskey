@@ -150,7 +150,6 @@ export default Vue.extend({
 root(isDark)
 	display flex
 	flex 1
-	justify-content center
 	padding 16px 0 16px 16px
 	overflow auto
 
@@ -159,6 +158,13 @@ root(isDark)
 
 		&:last-of-type
 			margin-right 0
+
+	> *
+		&:first-child
+			margin-left auto
+
+		&:last-child
+			margin-right auto
 
 	> button
 		padding 0 16px

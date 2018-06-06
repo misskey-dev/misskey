@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui">
+<div class="mk-ui" :style="style">
 	<x-header class="header"/>
 	<div class="content">
 		<slot></slot>
@@ -15,6 +15,15 @@ import XHeader from './ui.header.vue';
 export default Vue.extend({
 	components: {
 		XHeader
+	},
+	computed: {
+		style(): any {
+			if (!this.$store.getters.isSignedIn || this.$store.state.i.wallpaperUrl == null) return {};
+			return {
+				backgroundColor: this.$store.state.i.wallpaperColor && this.$store.state.i.wallpaperColor.length == 3 ? `rgb(${ this.$store.state.i.wallpaperColor.join(',') })` : null,
+				backgroundImage: `url(${ this.$store.state.i.wallpaperUrl })`
+			};
+		}
 	},
 	mounted() {
 		document.addEventListener('keydown', this.onKeydown);
@@ -40,6 +49,9 @@ export default Vue.extend({
 	display flex
 	flex-direction column
 	flex 1
+	background-size cover
+	background-position center
+	background-attachment fixed
 
 	> .header
 		@media (max-width 1000px)

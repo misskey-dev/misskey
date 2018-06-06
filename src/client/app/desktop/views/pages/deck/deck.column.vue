@@ -140,6 +140,7 @@ root(isDark)
 		z-index 1
 		line-height $header-height
 		padding 0 16px
+		font-size 14px
 		color isDark ? #e3e5e8 : #888
 		background isDark ? #313543 : #fff
 		box-shadow 0 1px rgba(#000, 0.15)

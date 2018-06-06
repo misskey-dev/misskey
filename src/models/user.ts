@@ -48,6 +48,7 @@ type IUserBase = {
 	usernameLower: string;
 	avatarId: mongo.ObjectID;
 	bannerId: mongo.ObjectID;
+	wallpaperId: mongo.ObjectID;
 	data: any;
 	description: string;
 	pinnedNoteId: mongo.ObjectID;
@@ -410,6 +411,10 @@ export const pack = (
 
 	_user.bannerUrl = _user.bannerId != null
 		? `${config.drive_url}/${_user.bannerId}`
+		: null;
+
+	_user.wallpaperUrl = _user.wallpaperId != null
+		? `${config.drive_url}/${_user.wallpaperId}`
 		: null;
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {

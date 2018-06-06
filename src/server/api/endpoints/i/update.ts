@@ -45,6 +45,11 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 	if (bannerIdErr) return rej('invalid bannerId param');
 	if (bannerId !== undefined) updates.bannerId = bannerId;
 
+	// Get 'wallpaperId' parameter
+	const [wallpaperId, wallpaperIdErr] = $.type(ID).optional().nullable().get(params.wallpaperId);
+	if (wallpaperIdErr) return rej('invalid wallpaperId param');
+	if (wallpaperId !== undefined) updates.wallpaperId = wallpaperId;
+
 	// Get 'isLocked' parameter
 	const [isLocked, isLockedErr] = $.bool.optional().get(params.isLocked);
 	if (isLockedErr) return rej('invalid isLocked param');
@@ -82,6 +87,16 @@ module.exports = async (params, user, app) => new Promise(async (res, rej) => {
 
 		if (banner != null && banner.metadata.properties.avgColor) {
 			updates.bannerColor = banner.metadata.properties.avgColor;
+		}
+	}
+
+	if (wallpaperId) {
+		const wallpaper = await DriveFile.findOne({
+			_id: wallpaperId
+		});
+
+		if (wallpaper != null && wallpaper.metadata.properties.avgColor) {
+			updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
 		}
 	}
 
