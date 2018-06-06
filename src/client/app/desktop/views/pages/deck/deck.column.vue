@@ -127,9 +127,7 @@ export default Vue.extend({
 root(isDark)
 	$header-height = 42px
 
-	flex 1
-	min-width 330px
-	max-width 330px
+	width 330px
 	height 100%
 	background isDark ? #282C37 : #fff
 	border-radius 6px
@@ -137,8 +135,7 @@ root(isDark)
 	overflow hidden
 
 	&.narrow
-		min-width 285px
-		max-width 285px
+		width 285px
 
 	&.naked
 		background rgba(#000, isDark ? 0.25 : 0.1)
