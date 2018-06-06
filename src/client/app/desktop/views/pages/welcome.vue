@@ -83,9 +83,7 @@ export default Vue.extend({
 @import url(https://fonts.googleapis.com/earlyaccess/notosansjp.css);
 
 root(isDark)
-	display flex
-	flex-direction column
-	flex 1
+	min-height 100vh
 	background-image isDark ? url('/assets/welcome-bg.dark.svg') : url('/assets/welcome-bg.light.svg')
 	background-size cover
 	background-position center

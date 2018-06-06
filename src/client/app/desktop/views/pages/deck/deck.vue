@@ -140,6 +140,7 @@ export default Vue.extend({
 root(isDark)
 	display flex
 	flex 1
+	justify-content center
 	padding 16px 0 16px 16px
 	overflow auto
 
