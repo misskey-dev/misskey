@@ -80,6 +80,7 @@ common:
     swap-right: "Przesuń w prawo"
     remove: "Usuń"
     add-column: "Dodaj kolumnę"
+    rename: "名前を変更"
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
