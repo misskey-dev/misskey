@@ -87,6 +87,7 @@ common:
     swap-right: "右に移動"
     remove: "カラムを削除"
     add-column: "カラムを追加"
+    rename: "名前を変更"
 
 common/views/components/connect-failed.vue:
   title: "サーバーに接続できません"

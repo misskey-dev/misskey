@@ -18,6 +18,11 @@ export default Vue.extend({
 		list: {
 			type: Object,
 			required: true
+		},
+		mediaOnly: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 
@@ -28,6 +33,12 @@ export default Vue.extend({
 			existMore: false,
 			connection: null
 		};
+	},
+
+	watch: {
+		mediaOnly() {
+			this.fetch();
+		}
 	},
 
 	mounted() {
@@ -52,6 +63,7 @@ export default Vue.extend({
 				(this as any).api('notes/user-list-timeline', {
 					listId: this.list.id,
 					limit: fetchLimit + 1,
+					mediaOnly: this.mediaOnly,
 					includeMyRenotes: this.$store.state.settings.showMyRenotes,
 					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
 				}).then(notes => {
@@ -72,6 +84,7 @@ export default Vue.extend({
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
+				mediaOnly: this.mediaOnly,
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
 			});
@@ -89,6 +102,8 @@ export default Vue.extend({
 			return promise;
 		},
 		onNote(note) {
+			if (this.mediaOnly && note.media.length == 0) return;
+
 			// Prepend a note
 			(this.$refs.timeline as any).prepend(note);
 		},

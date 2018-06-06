@@ -1,7 +1,7 @@
 <template>
 <div>
-	<x-column :id="id">
-		<span slot="header">%fa:bell R%%i18n:common.deck.notifications%</span>
+	<x-column :id="column.id" :name="name">
+		<span slot="header">%fa:bell R%{{ name }}</span>
 
 		<x-notifications/>
 	</x-column>
@@ -20,10 +20,17 @@ export default Vue.extend({
 	},
 
 	props: {
-		id: {
-			type: String,
+		column: {
+			type: Object,
 			required: true
 		}
-	}
+	},
+
+	computed: {
+		name(): string {
+			if (this.column.name) return this.column.name;
+			return '%i18n:common.deck.notifications%';
+		}
+	},
 });
 </script>

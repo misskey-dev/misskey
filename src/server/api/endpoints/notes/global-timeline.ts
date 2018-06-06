@@ -35,6 +35,10 @@ module.exports = async (params, user) => {
 		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
 	}
 
+	// Get 'mediaOnly' parameter
+	const [mediaOnly, mediaOnlyErr] = $.bool.optional().get(params.mediaOnly);
+	if (mediaOnlyErr) throw 'invalid mediaOnly param';
+
 	// ミュートしているユーザーを取得
 	const mutedUserIds = user ? (await Mute.find({
 		muterId: user._id
@@ -62,6 +66,10 @@ module.exports = async (params, user) => {
 		query['_renote.userId'] = {
 			$nin: mutedUserIds
 		};
+	}
+
+	if (mediaOnly) {
+		query.mediaIds = { $exists: true, $ne: [] };
 	}
 
 	if (sinceId) {

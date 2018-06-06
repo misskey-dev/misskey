@@ -44,6 +44,10 @@ module.exports = async (params, user, app) => {
 	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $.bool.optional().get(params.includeRenotedMyNotes);
 	if (includeRenotedMyNotesErr) throw 'invalid includeRenotedMyNotes param';
 
+	// Get 'mediaOnly' parameter
+	const [mediaOnly, mediaOnlyErr] = $.bool.optional().get(params.mediaOnly);
+	if (mediaOnlyErr) throw 'invalid mediaOnly param';
+
 	const [followings, mutedUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
@@ -134,6 +138,12 @@ module.exports = async (params, user, app) => {
 			}, {
 				poll: { $ne: null }
 			}]
+		});
+	}
+
+	if (mediaOnly) {
+		query.$and.push({
+			mediaIds: { $exists: true, $ne: [] }
 		});
 	}
 

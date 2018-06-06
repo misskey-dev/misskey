@@ -3,7 +3,7 @@
 	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
 		<template v-for="column in columns">
 			<x-widgets-column v-if="column.type == 'widgets'" :key="column.id" :column="column"/>
-			<x-notifications-column v-if="column.type == 'notifications'" :key="column.id" :id="column.id"/>
+			<x-notifications-column v-if="column.type == 'notifications'" :key="column.id" :column="column"/>
 			<x-tl-column v-if="column.type == 'home'" :key="column.id" :column="column"/>
 			<x-tl-column v-if="column.type == 'local'" :key="column.id" :column="column"/>
 			<x-tl-column v-if="column.type == 'global'" :key="column.id" :column="column"/>

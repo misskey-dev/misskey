@@ -1,15 +1,20 @@
 <template>
 <div>
-	<x-column :id="column.id">
+	<x-column :id="column.id" :menu="menu" :name="name">
 		<span slot="header">
-			<template v-if="column.type == 'home'">%fa:home%%i18n:common.deck.home%</template>
-			<template v-if="column.type == 'local'">%fa:R comments%%i18n:common.deck.local%</template>
-			<template v-if="column.type == 'global'">%fa:globe%%i18n:common.deck.global%</template>
-			<template v-if="column.type == 'list'">%fa:list%{{ column.list.title }}</template>
+			<template v-if="column.type == 'home'">%fa:home%</template>
+			<template v-if="column.type == 'local'">%fa:R comments%</template>
+			<template v-if="column.type == 'global'">%fa:globe%</template>
+			<template v-if="column.type == 'list'">%fa:list%</template>
+			<span>{{ name }}</span>
 		</span>
 
-		<x-list-tl v-if="column.type == 'list'" :list="column.list"/>
-		<x-tl v-else :src="column.type"/>
+		<div class="editor" v-if="edit">
+			<mk-switch v-model="column.isMediaOnly" @change="onChangeSettings" text="%i18n:@is-media-only%"/>
+			<mk-switch v-model="column.isMediaView" @change="onChangeSettings" text="%i18n:@is-media-view%"/>
+		</div>
+		<x-list-tl v-if="column.type == 'list'" :list="column.list" :media-only="column.isMediaOnly"/>
+		<x-tl v-else :src="column.type" :media-only="column.isMediaOnly"/>
 	</x-column>
 </div>
 </template>
@@ -31,6 +36,37 @@ export default Vue.extend({
 		column: {
 			type: Object,
 			required: true
+		}
+	},
+
+	data() {
+		return {
+			edit: false,
+			menu: [{
+				content: '%fa:cog% %i18n:@edit%',
+				onClick: () => {
+					this.edit = !this.edit;
+				}
+			}]
+		}
+	},
+
+	computed: {
+		name(): string {
+			if (this.column.name) return this.column.name;
+
+			switch (this.column.type) {
+				case 'home': return '%i18n:common.deck.home%';
+				case 'local': return '%i18n:common.deck.local%';
+				case 'global': return '%i18n:common.deck.global%';
+				case 'list': return this.column.list.title;
+			}
+		}
+	},
+
+	methods: {
+		onChangeSettings(v) {
+			this.$store.dispatch('settings/saveDeck');
 		}
 	}
 });

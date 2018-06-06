@@ -222,6 +222,12 @@ export default (os: MiOS) => new Vuex.Store({
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
 					column.widgets = column.widgets.filter(w => w.id != x.widget.id);
+				},
+
+				renameDeckColumn(state, x) {
+					const column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column.name = x.name;
 				}
 			},
 
@@ -278,6 +284,11 @@ export default (os: MiOS) => new Vuex.Store({
 
 				removeDeckWidget(ctx, x) {
 					ctx.commit('removeDeckWidget', x);
+					ctx.dispatch('saveDeck');
+				},
+
+				renameDeckColumn(ctx, x) {
+					ctx.commit('renameDeckColumn', x);
 					ctx.dispatch('saveDeck');
 				},
 

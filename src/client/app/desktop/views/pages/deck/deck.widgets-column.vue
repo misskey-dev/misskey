@@ -1,7 +1,7 @@
 <template>
 <div class="wtdtxvecapixsepjtcupubtsmometobz">
-	<x-column :id="column.id" :menu="menu" :naked="true" :narrow="true">
-		<span slot="header">%fa:calculator%%i18n:common.deck.widgets%</span>
+	<x-column :id="column.id" :menu="menu" :naked="true" :narrow="true" :name="name">
+		<span slot="header">%fa:calculator%{{ name }}</span>
 
 		<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
 			<template v-if="edit">
@@ -78,6 +78,13 @@ export default Vue.extend({
 			edit: false,
 			menu: null,
 			widgetAdderSelected: null
+		}
+	},
+
+	computed: {
+		name(): string {
+			if (this.column.name) return this.column.name;
+			return '%i18n:common.deck.widgets%';
 		}
 	},
 

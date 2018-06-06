@@ -20,6 +20,10 @@ export default Vue.extend({
 			type: String,
 			required: false
 		},
+		name: {
+			type: String,
+			required: false
+		},
 		menu: {
 			type: Array,
 			required: false
@@ -75,6 +79,17 @@ export default Vue.extend({
 
 		showMenu() {
 			const items = [{
+				content: '%fa:pencil-alt% %i18n:common.deck.rename%',
+				onClick: () => {
+					(this as any).apis.input({
+						title: '%i18n:common.deck.rename%',
+						default: this.name,
+						allowEmpty: false
+					}).then(name => {
+						this.$store.dispatch('settings/renameDeckColumn', { id: this.id, name });
+					});
+				}
+			}, null, {
 				content: '%fa:arrow-left% %i18n:common.deck.swap-left%',
 				onClick: () => {
 					this.$store.dispatch('settings/swapLeftDeckColumn', this.id);
@@ -84,7 +99,7 @@ export default Vue.extend({
 				onClick: () => {
 					this.$store.dispatch('settings/swapRightDeckColumn', this.id);
 				}
-			}, {
+			}, null, {
 				content: '%fa:trash-alt R% %i18n:common.deck.remove%',
 				onClick: () => {
 					this.$store.dispatch('settings/removeDeckColumn', this.id);
