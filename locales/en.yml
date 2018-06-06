@@ -69,6 +69,17 @@ common:
     donation: "Donation"
     nav: "Navigation"
     tips: "Tips"
+  deck:
+    widgets: "ウィジェット"
+    home: "ホーム"
+    local: "ローカル"
+    global: "グローバル"
+    notifications: "通知"
+    list: "リスト"
+    swap-left: "左に移動"
+    swap-right: "右に移動"
+    remove: "カラムを削除"
+    add-column: "カラムを追加"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem either with your Internet connection, or the server may be down or under maintenance. Please {try again} later."
