@@ -206,7 +206,7 @@ root(isDark)
 				margin 0
 				padding 16px
 				overflow-wrap break-word
-				font-size 0.9em
+				font-size 12px
 				border-bottom solid 1px isDark ? #1c2023 : rgba(#000, 0.05)
 
 				&:last-child

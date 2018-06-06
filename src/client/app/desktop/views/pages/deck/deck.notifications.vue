@@ -1,102 +1,14 @@
 <template>
 <div class="oxynyeqmfvracxnglgulyqfgqxnxmehl">
-	<div class="notifications" v-if="notifications.length != 0">
-		<transition-group name="mk-notifications" class="transition">
-			<template v-for="(notification, i) in _notifications">
-				<div class="notification" :class="notification.type" :key="notification.id">
-					<mk-time :time="notification.createdAt"/>
-
-					<template v-if="notification.type == 'reaction'">
-						<mk-avatar class="avatar" :user="notification.user"/>
-						<div class="text">
-							<p>
-								<mk-reaction-icon :reaction="notification.reaction"/>
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
-							</p>
-							<router-link class="note-ref" :to="notification.note | notePage">
-								%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
-							</router-link>
-						</div>
-					</template>
-
-					<template v-if="notification.type == 'renote'">
-						<mk-avatar class="avatar" :user="notification.note.user"/>
-						<div class="text">
-							<p>%fa:retweet%
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
-							</p>
-							<router-link class="note-ref" :to="notification.note | notePage">
-								%fa:quote-left%{{ getNoteSummary(notification.note.renote) }}%fa:quote-right%
-							</router-link>
-						</div>
-					</template>
-
-					<template v-if="notification.type == 'quote'">
-						<mk-avatar class="avatar" :user="notification.note.user"/>
-						<div class="text">
-							<p>%fa:quote-left%
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
-							</p>
-							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
-						</div>
-					</template>
-
-					<template v-if="notification.type == 'follow'">
-						<mk-avatar class="avatar" :user="notification.user"/>
-						<div class="text">
-							<p>%fa:user-plus%
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
-							</p>
-						</div>
-					</template>
-
-					<template v-if="notification.type == 'receiveFollowRequest'">
-						<mk-avatar class="avatar" :user="notification.user"/>
-						<div class="text">
-							<p>%fa:user-clock%
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</router-link>
-							</p>
-						</div>
-					</template>
-
-					<template v-if="notification.type == 'reply'">
-						<mk-avatar class="avatar" :user="notification.note.user"/>
-						<div class="text">
-							<p>%fa:reply%
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
-							</p>
-							<router-link class="note-preview" :to="notification.note | notePage">{{ getNoteSummary(notification.note) }}</router-link>
-						</div>
-					</template>
-
-					<template v-if="notification.type == 'mention'">
-						<mk-avatar class="avatar" :user="notification.note.user"/>
-						<div class="text">
-							<p>%fa:at%
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">{{ notification.note.user | userName }}</router-link>
-							</p>
-							<a class="note-preview" :href="notification.note | notePage">{{ getNoteSummary(notification.note) }}</a>
-						</div>
-					</template>
-
-					<template v-if="notification.type == 'poll_vote'">
-						<mk-avatar class="avatar" :user="notification.user"/>
-						<div class="text">
-							<p>%fa:chart-pie%<a :href="notification.user | userPage" v-user-preview="notification.user.id">{{ notification.user | userName }}</a></p>
-							<router-link class="note-ref" :to="notification.note | notePage">
-								%fa:quote-left%{{ getNoteSummary(notification.note) }}%fa:quote-right%
-							</router-link>
-						</div>
-					</template>
-				</div>
-
-				<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date" :key="notification.id + '-time'">
-					<span>%fa:angle-up%{{ notification._datetext }}</span>
-					<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
-				</p>
-			</template>
-		</transition-group>
-	</div>
+	<transition-group name="mk-notifications" class="transition notifications">
+		<template v-for="(notification, i) in _notifications">
+			<x-notification class="notification" :notification="notification" :key="notification.id"/>
+			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date" :key="notification.id + '-time'">
+				<span>%fa:angle-up%{{ notification._datetext }}</span>
+				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
+			</p>
+		</template>
+	</transition-group>
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
@@ -107,9 +19,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../../renderers/get-note-summary';
+import XNotification from './deck.notification.vue';
 
 export default Vue.extend({
+	components: {
+		XNotification
+	},
 	data() {
 		return {
 			fetching: true,
@@ -117,8 +32,7 @@ export default Vue.extend({
 			notifications: [],
 			moreNotifications: false,
 			connection: null,
-			connectionId: null,
-			getNoteSummary
+			connectionId: null
 		};
 	},
 	computed: {
@@ -191,6 +105,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
+
 	.transition
 		.mk-notifications-enter
 		.mk-notifications-leave-to
@@ -201,96 +116,25 @@ root(isDark)
 			transition transform .3s ease, opacity .3s ease
 
 	> .notifications
-		> *
-			> .notification
-				margin 0
-				padding 16px
-				overflow-wrap break-word
-				font-size 0.9em
-				border-bottom solid 1px isDark ? #1c2023 : rgba(#000, 0.05)
 
-				&:last-child
-					border-bottom none
+		> .notification:not(:last-child)
+			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
-				> .mk-time
-					display inline
-					position absolute
-					top 16px
-					right 12px
-					vertical-align top
-					color isDark ? #606984 : rgba(#000, 0.6)
-					font-size small
+		> .date
+			display block
+			margin 0
+			line-height 32px
+			text-align center
+			font-size 0.8em
+			color isDark ? #666b79 : #aaa
+			background isDark ? #242731 : #fdfdfd
+			border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
-				&:after
-					content ""
-					display block
-					clear both
+			span
+				margin 0 16px
 
-				> .avatar
-					display block
-					float left
-					position -webkit-sticky
-					position sticky
-					top 16px
-					width 36px
-					height 36px
-					border-radius 6px
-
-				> .text
-					float right
-					width calc(100% - 36px)
-					padding-left 8px
-
-					p
-						margin 0
-
-						i, .mk-reaction-icon
-							margin-right 4px
-
-				.note-preview
-					color isDark ? #c2cad4 : rgba(#000, 0.7)
-
-				.note-ref
-					color isDark ? #c2cad4 : rgba(#000, 0.7)
-
-					[data-fa]
-						font-size 1em
-						font-weight normal
-						font-style normal
-						display inline-block
-						margin-right 3px
-
-				&.renote, &.quote
-					.text p i
-						color #77B255
-
-				&.follow
-					.text p i
-						color #53c7ce
-
-				&.receiveFollowRequest
-					.text p i
-						color #888
-
-				&.reply, &.mention
-					.text p i
-						color #555
-
-			> .date
-				display block
-				margin 0
-				line-height 32px
-				text-align center
-				font-size 0.8em
-				color isDark ? #666b79 : #aaa
-				background isDark ? #242731 : #fdfdfd
-				border-bottom solid 1px isDark ? #1c2023 : rgba(#000, 0.05)
-
-				span
-					margin 0 16px
-
-				[data-fa]
-					margin-right 8px
+			i
+				margin-right 8px
 
 	> .more
 		display block
