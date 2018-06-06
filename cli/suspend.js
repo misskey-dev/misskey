@@ -3,16 +3,21 @@ const User = require('../built/models/user').default;
 
 const args = process.argv.slice(2);
 
-const userId = new mongo.ObjectID(args[0]);
+const user = args[0];
 
-console.log(`Suspending ${userId}...`);
+const q = user.startsWith('@') ? {
+	username: user.split('@')[1],
+	host: user.split('@')[2]
+} : { _id: new mongo.ObjectID(user) };
 
-User.update({ _id: userId }, {
+console.log(`Suspending ${user}...`);
+
+User.update(q, {
 	$set: {
 		isSuspended: true
 	}
 }).then(() => {
-	console.log(`Suspended ${userId}`);
+	console.log(`Suspended ${user}`);
 }, e => {
 	console.error(e);
 });
