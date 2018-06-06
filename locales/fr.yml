@@ -200,10 +200,10 @@ common/views/components/visibility-chooser.vue:
   home: "Accueil"
   home-desc: "ホームタイムラインにのみ公開"
   followers: "Abonnés"
-  followers-desc: "自分のフォロワーにのみ公開"
-  specified: "ダイレクト"
-  specified-desc: "指定したユーザーにのみ公開"
-  private: "非公開"
+  followers-desc: "Publier à vos abonnés uniquement"
+  specified: "Direct"
+  specified-desc: "Publier aux utilisateurs mentionnés"
+  private: "Privé"
 common/views/widgets/broadcast.vue:
   fetching: "Récuperation"
   no-broadcasts: "No broadcasts"
@@ -219,9 +219,9 @@ common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
 common/views/widgets/memo.vue:
-  title: "メモ"
-  memo: "ここに書いて！"
-  save: "保存"
+  title: "Note"
+  memo: "Écrivez ici !"
+  save: "Enregistrer"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -236,8 +236,8 @@ desktop/views/components/calendar.vue:
   next: "Mois prochain"
   go: "Cliquer pour naviguer"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "ファイル選択中"
-  upload: "PCからドライブにファイルをアップロード"
+  choose-file: "Sélection de fichiers"
+  upload: "Téléverser des fichiers à partir de votre PC"
   cancel: "Annuler"
   ok: "OK"
   choose-prompt: "Choisir un fichier"
@@ -246,7 +246,7 @@ desktop/views/components/choose-folder-from-drive-window.vue:
   ok: "OK"
   choose-prompt: "Choisir un dossier"
 desktop/views/components/crop-window.vue:
-  skip: "クロップをスキップ"
+  skip: "Ignorer la découpe"
   cancel: "Annuler"
   ok: "OK"
 desktop/views/components/drive-window.vue:
@@ -301,23 +301,23 @@ desktop/views/components/drive.vue:
     upload: "Uploader un fichier"
     url-upload: "Uploader d'un URL"
 desktop/views/components/follow-button.vue:
-  following: "フォロー中"
-  follow: "フォロー"
+  following: "Abonnements"
+  follow: "Suivre"
   request-pending: "フォロー許可待ち"
   follow-request: "Demande d'abonnement"
 desktop/views/components/followers-window.vue:
-  followers: "{} のフォロワー"
+  followers: "{} abonnés"
 desktop/views/components/followers.vue:
-  empty: "フォロワーはいないようです。"
+  empty: "Il semble que vous n'avez pas encore d'abonnés."
 desktop/views/components/following-window.vue:
-  following: "{} のフォロー"
+  following: "Suit {}"
 desktop/views/components/following.vue:
-  empty: "フォロー中のユーザーはいないようです。"
+  empty: "Vous ne suivez aucun compte."
 desktop/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー:"
+  title: "Utilisateurs recommandés :"
   empty: "おすすめのユーザーは見つかりませんでした。"
   fetching: "Chargement"
-  refresh: "もっと見る"
+  refresh: "Plus"
   close: "Fermer"
 desktop/views/components/game-window.vue:
   game: "Othello"
@@ -509,12 +509,12 @@ desktop/views/components/settings.profile.vue:
   birthday: "Date de naissance"
   save: "Mettre à jour le profil"
   is-bot: "Ce compte est un Bot"
-  is-cat: "このアカウントはCatです"
+  is-cat: "Ce compte est un Chat"
 desktop/views/components/sub-note-content.vue:
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
-  media-count: "{}つのメディア"
-  poll: "投票"
+  private: "cette publication est privée"
+  deleted: "cette publication a été supprimée"
+  media-count: "{} médias attachés"
+  poll: "Sondages"
 desktop/views/components/taskmanager.vue:
   title: "Gestionnaire de tâches"
 desktop/views/components/timeline.vue:
@@ -548,12 +548,12 @@ desktop/views/components/received-follow-requests-window.vue:
   accept: "Approuver"
   reject: "Refuser"
 desktop/views/components/user-lists-window.vue:
-  title: "リスト"
+  title: "Listes de l'utilisateur"
   create-list: "Créer une liste"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "フォロー"
-  followers: "フォロワー"
+  followers: "Abonnés"
 desktop/views/components/users-list.vue:
   all: "Tout"
   iknow: "Vous connaissez"
@@ -618,7 +618,7 @@ desktop/views/pages/user/user.profile.vue:
   unmute: "Enlever la sourdine"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
-  with-replies: "投稿と返信"
+  with-replies: "Publications et réponses"
   with-media: "Média"
   empty: "Cet utilisateur n'a rien posté encore."
 desktop/views/widgets/messaging.vue:
