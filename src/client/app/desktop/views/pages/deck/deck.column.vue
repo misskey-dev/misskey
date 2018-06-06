@@ -51,7 +51,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.$refs.body.addEventListener('scroll', this.onScroll);
+		this.$refs.body.addEventListener('scroll', this.onScroll, { passive: true });
 	},
 	beforeDestroy() {
 		this.$refs.body.removeEventListener('scroll', this.onScroll);

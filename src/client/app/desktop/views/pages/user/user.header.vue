@@ -37,7 +37,7 @@ export default Vue.extend({
 	mounted() {
 		if (this.user.bannerUrl) {
 			window.addEventListener('load', this.onScroll);
-			window.addEventListener('scroll', this.onScroll);
+			window.addEventListener('scroll', this.onScroll, { passive: true });
 			window.addEventListener('resize', this.onScroll);
 		}
 	},

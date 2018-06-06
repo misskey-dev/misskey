@@ -46,7 +46,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
-		window.addEventListener('scroll', this.onScroll);
+		window.addEventListener('scroll', this.onScroll, { passive: true });
 
 		this.fetch();
 	},

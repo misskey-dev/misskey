@@ -74,7 +74,7 @@ export default Vue.extend({
 
 	mounted() {
 		document.addEventListener('visibilitychange', this.onVisibilitychange, false);
-		window.addEventListener('scroll', this.onScroll);
+		window.addEventListener('scroll', this.onScroll, { passive: true });
 	},
 
 	beforeDestroy() {
