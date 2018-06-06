@@ -36,7 +36,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 root(isDark)
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.075)
+	border solid 1px rgba(#000, isDark ? 0.2 : 0.075)
 	border-radius 6px
 	overflow hidden
 

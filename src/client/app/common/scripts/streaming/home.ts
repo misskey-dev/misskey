@@ -58,25 +58,18 @@ export class HomeStream extends Stream {
 		});
 
 		this.on('home_updated', x => {
-			if (x.home) {
-				os.store.commit('settings/setHome', x.home);
-			} else {
-				os.store.commit('settings/setHomeWidget', {
-					id: x.id,
-					data: x.data
-				});
-			}
+			os.store.commit('settings/setHome', x);
 		});
 
 		this.on('mobile_home_updated', x => {
-			if (x.home) {
-				os.store.commit('settings/setMobileHome', x.home);
-			} else {
-				os.store.commit('settings/setMobileHomeWidget', {
-					id: x.id,
-					data: x.data
-				});
-			}
+			os.store.commit('settings/setMobileHome', x);
+		});
+
+		this.on('widgetUpdated', x => {
+			os.store.commit('settings/setWidget', {
+				id: x.id,
+				data: x.data
+			});
 		});
 
 		// トークンが再生成されたとき

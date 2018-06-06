@@ -2,6 +2,7 @@
 <mk-ui :class="$style.root">
 	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
 		<template v-for="column in columns">
+			<x-widgets-column v-if="column.type == 'widgets'" :key="column.id" :column="column"/>
 			<x-notifications-column v-if="column.type == 'notifications'" :key="column.id" :id="column.id"/>
 			<x-tl-column v-if="column.type == 'home'" :key="column.id" :column="column"/>
 			<x-tl-column v-if="column.type == 'local'" :key="column.id" :column="column"/>
@@ -17,6 +18,7 @@
 import Vue from 'vue';
 import XTlColumn from './deck.tl-column.vue';
 import XNotificationsColumn from './deck.notifications-column.vue';
+import XWidgetsColumn from './deck.widgets-column.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 import * as uuid from 'uuid';
@@ -24,7 +26,8 @@ import * as uuid from 'uuid';
 export default Vue.extend({
 	components: {
 		XTlColumn,
-		XNotificationsColumn
+		XNotificationsColumn,
+		XWidgetsColumn
 	},
 	computed: {
 		columns() {
@@ -108,6 +111,15 @@ export default Vue.extend({
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
 							type: 'notifications'
+						});
+					}
+				}, {
+					content: '%i18n:@widgets%',
+					onClick: () => {
+						this.$store.dispatch('settings/addDeckColumn', {
+							id: uuid(),
+							type: 'widgets',
+							widgets: []
 						});
 					}
 				}]

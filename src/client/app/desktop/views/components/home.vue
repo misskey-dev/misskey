@@ -47,7 +47,7 @@
 				:key="place"
 			>
 				<div v-for="widget in widgets[place]" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="desktop"/>
 				</div>
 			</x-draggable>
 			<div class="main">
@@ -60,7 +60,7 @@
 		</template>
 		<template v-else>
 			<div v-for="place in ['left', 'right']" :class="place">
-				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp"/>
+				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp" platform="desktop"/>
 			</div>
 			<div class="main">
 				<mk-post-form class="form" v-if="$store.state.settings.showPostFormOnTopOfTl"/>

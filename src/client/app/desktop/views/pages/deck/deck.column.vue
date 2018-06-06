@@ -1,8 +1,8 @@
 <template>
-<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs">
+<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow }">
 	<header :class="{ indicate }">
 		<slot name="header"></slot>
-		<button ref="menu" @click="menu">%fa:caret-down%</button>
+		<button ref="menu" @click="showMenu">%fa:caret-down%</button>
 	</header>
 	<div ref="body">
 		<slot></slot>
@@ -19,6 +19,20 @@ export default Vue.extend({
 		id: {
 			type: String,
 			required: false
+		},
+		menu: {
+			type: Array,
+			required: false
+		},
+		naked: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		narrow: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 
@@ -59,26 +73,33 @@ export default Vue.extend({
 			}
 		},
 
-		menu() {
+		showMenu() {
+			const items = [{
+				content: '%fa:arrow-left% %i18n:@swap-left%',
+				onClick: () => {
+					this.$store.dispatch('settings/swapLeftDeckColumn', this.id);
+				}
+			}, {
+				content: '%fa:arrow-right% %i18n:@swap-right%',
+				onClick: () => {
+					this.$store.dispatch('settings/swapRightDeckColumn', this.id);
+				}
+			}, {
+				content: '%fa:trash-alt R% %i18n:@remove%',
+				onClick: () => {
+					this.$store.dispatch('settings/removeDeckColumn', this.id);
+				}
+			}];
+
+			if (this.menu) {
+				items.unshift(null);
+				this.menu.reverse().forEach(i => items.unshift(i));
+			}
+
 			this.os.new(Menu, {
 				source: this.$refs.menu,
 				compact: false,
-				items: [{
-					content: '%fa:arrow-left% %i18n:@swap-left%',
-					onClick: () => {
-						this.$store.dispatch('settings/swapLeftDeckColumn', this.id);
-					}
-				}, {
-					content: '%fa:arrow-right% %i18n:@swap-right%',
-					onClick: () => {
-						this.$store.dispatch('settings/swapRightDeckColumn', this.id);
-					}
-				}, {
-					content: '%fa:trash-alt R% %i18n:@remove%',
-					onClick: () => {
-						this.$store.dispatch('settings/removeDeckColumn', this.id);
-					}
-				}]
+				items
 			});
 		}
 	}
@@ -99,6 +120,21 @@ root(isDark)
 	border-radius 6px
 	box-shadow 0 2px 16px rgba(#000, 0.1)
 	overflow hidden
+
+	&.narrow
+		min-width 285px
+		max-width 285px
+
+	&.naked
+		background rgba(#000, isDark ? 0.25 : 0.1)
+
+		> header
+			background transparent
+			box-shadow none
+
+			if !isDark
+				> button
+					color #bbb
 
 	> header
 		z-index 1

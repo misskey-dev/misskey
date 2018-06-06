@@ -190,6 +190,11 @@ const endpoints: Endpoint[] = [
 		secure: true
 	},
 	{
+		name: 'i/update_widget',
+		withCredential: true,
+		secure: true
+	},
+	{
 		name: 'i/change_password',
 		withCredential: true,
 		secure: true

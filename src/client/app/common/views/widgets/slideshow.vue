@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-slideshow" :data-mobile="isMobile">
+<div class="mkw-slideshow" :data-mobile="platform == 'mobile'">
 	<div @click="choose">
 		<p v-if="props.folder === undefined">
 			<template v-if="isCustomizeMode">フォルダを指定するには、カスタマイズモードを終了してください</template>

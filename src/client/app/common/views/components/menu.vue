@@ -2,7 +2,10 @@
 <div class="mk-menu">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ compact }" ref="popover">
-		<button v-for="item in items" @click="clicked(item.onClick)" v-html="item.content"></button>
+		<template v-for="item in items">
+			<div v-if="item == null"></div>
+			<button v-else @click="clicked(item.onClick)" v-html="item.content"></button>
+		</template>
 	</div>
 </div>
 </template>
@@ -149,5 +152,10 @@ $border-color = rgba(27, 31, 35, 0.15)
 			&:active
 				color $theme-color-foreground
 				background darken($theme-color, 10%)
+
+		> div
+			margin 8px 0
+			height 1px
+			background #eee
 
 </style>

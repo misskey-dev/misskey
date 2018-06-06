@@ -124,13 +124,6 @@ export default (os: MiOS) => new Vuex.Store({
 					state.home = data;
 				},
 
-				setHomeWidget(state, x) {
-					const w = state.home.find(w => w.id == x.id);
-					if (w) {
-						w.data = x.data;
-					}
-				},
-
 				addHomeWidget(state, widget) {
 					state.home.unshift(widget);
 				},
@@ -139,11 +132,36 @@ export default (os: MiOS) => new Vuex.Store({
 					state.mobileHome = data;
 				},
 
-				setMobileHomeWidget(state, x) {
-					const w = state.mobileHome.find(w => w.id == x.id);
-					if (w) {
-						w.data = x.data;
+				setWidget(state, x) {
+					let w;
+
+					//#region Decktop home
+					if (state.home) {
+						w = state.home.find(w => w.id == x.id);
+						if (w) {
+							w.data = x.data;
+						}
 					}
+					//#endregion
+
+					//#region Mobile home
+					if (state.mobileHome) {
+						w = state.mobileHome.find(w => w.id == x.id);
+						if (w) {
+							w.data = x.data;
+						}
+					}
+					//#endregion
+
+					//#region Deck
+					if (state.deck && state.deck.columns) {
+						state.deck.columns.filter(c => c.type == 'widgets').forEach(c => {
+							c.widgets.forEach(w => {
+								if (w.id == x.id) w.data = x.data;
+							});
+						});
+					}
+					//#endregion
 				},
 
 				addMobileHomeWidget(state, widget) {
@@ -190,6 +208,20 @@ export default (os: MiOS) => new Vuex.Store({
 							return true;
 						}
 					});
+				},
+
+				addDeckWidget(state, x) {
+					if (state.deck.columns == null) return;
+					const column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column.widgets.unshift(x.widget);
+				},
+
+				removeDeckWidget(state, x) {
+					if (state.deck.columns == null) return;
+					const column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column.widgets = column.widgets.filter(w => w.id != x.widget.id);
 				}
 			},
 
@@ -212,40 +244,41 @@ export default (os: MiOS) => new Vuex.Store({
 					}
 				},
 
-				addDeckColumn(ctx, column) {
-					ctx.commit('addDeckColumn', column);
-
+				saveDeck(ctx) {
 					os.api('i/update_client_setting', {
 						name: 'deck',
 						value: ctx.state.deck
 					});
+				},
+
+				addDeckColumn(ctx, column) {
+					ctx.commit('addDeckColumn', column);
+					ctx.dispatch('saveDeck');
 				},
 
 				removeDeckColumn(ctx, id) {
 					ctx.commit('removeDeckColumn', id);
-
-					os.api('i/update_client_setting', {
-						name: 'deck',
-						value: ctx.state.deck
-					});
+					ctx.dispatch('saveDeck');
 				},
 
 				swapLeftDeckColumn(ctx, id) {
 					ctx.commit('swapLeftDeckColumn', id);
-
-					os.api('i/update_client_setting', {
-						name: 'deck',
-						value: ctx.state.deck
-					});
+					ctx.dispatch('saveDeck');
 				},
 
 				swapRightDeckColumn(ctx, id) {
 					ctx.commit('swapRightDeckColumn', id);
+					ctx.dispatch('saveDeck');
+				},
 
-					os.api('i/update_client_setting', {
-						name: 'deck',
-						value: ctx.state.deck
-					});
+				addDeckWidget(ctx, x) {
+					ctx.commit('addDeckWidget', x);
+					ctx.dispatch('saveDeck');
+				},
+
+				removeDeckWidget(ctx, x) {
+					ctx.commit('removeDeckWidget', x);
+					ctx.dispatch('saveDeck');
 				},
 
 				addHomeWidget(ctx, widget) {

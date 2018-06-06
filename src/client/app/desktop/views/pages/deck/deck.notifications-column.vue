@@ -1,7 +1,7 @@
 <template>
 <div>
 	<x-column :id="id">
-		<span slot="header">%fa:bell R% %i18n:@notifications%</span>
+		<span slot="header">%fa:bell R%%i18n:@notifications%</span>
 
 		<x-notifications/>
 	</x-column>

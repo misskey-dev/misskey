@@ -35,13 +35,13 @@
 						<span class="handle">%fa:bars%</span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
 					</header>
 					<div @click="widgetFunc(widget.id)">
-						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :is-mobile="true"/>
+						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="mobile"/>
 					</div>
 				</div>
 			</x-draggable>
 		</template>
 		<template v-else>
-			<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :is-mobile="true"/>
+			<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="mobile"/>
 		</template>
 	</main>
 </mk-ui>
