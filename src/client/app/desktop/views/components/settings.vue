@@ -41,6 +41,7 @@
 			</div>
 			<div class="div">
 				<button class="ui" @click="updateWallpaper">%i18n:@choose-wallpaper%</button>
+				<button class="ui" @click="deleteWallpaper">%i18n:@delete-wallpaper%</button>
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
 				<mk-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons" text="%i18n:@circle-icons%"/>
 				<mk-switch v-model="$store.state.settings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="%i18n:@gradient-window-header%"/>
@@ -301,6 +302,11 @@ export default Vue.extend({
 				(this as any).api('i/update', {
 					wallpaperId: file.id
 				});
+			});
+		},
+		deleteWallpaper() {
+			(this as any).api('i/update', {
+				wallpaperId: null
 			});
 		},
 		onChangeFetchOnScroll(v) {
