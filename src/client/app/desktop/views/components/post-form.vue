@@ -209,7 +209,7 @@ export default Vue.extend({
 		},
 
 		onKeydown(e) {
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && canPost) this.post();
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey)) this.post();
 		},
 
 		onPaste(e) {
