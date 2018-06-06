@@ -69,6 +69,17 @@ common:
     donation: "Dotacje"
     nav: "Nawigacja"
     tips: "Wskazówki"
+  deck:
+    widgets: "ウィジェット"
+    home: "ホーム"
+    local: "ローカル"
+    global: "グローバル"
+    notifications: "通知"
+    list: "リスト"
+    swap-left: "左に移動"
+    swap-right: "右に移動"
+    remove: "カラムを削除"
+    add-column: "カラムを追加"
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
@@ -523,6 +534,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "Sprowadź ciemność"
 desktop/views/components/ui.header.nav.vue:
   home: "Strona główna"
+  deck: "デッキ"
   messaging: "Wiadomości"
   game: "Gra"
 desktop/views/components/ui.header.notifications.vue:

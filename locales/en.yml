@@ -69,6 +69,17 @@ common:
     donation: "Donation"
     nav: "Navigation"
     tips: "Tips"
+  deck:
+    widgets: "Widgets"
+    home: "Home"
+    local: "Local"
+    global: "Global"
+    notifications: "Notifications"
+    list: "List"
+    swap-left: "Move Left"
+    swap-right: "Move Right"
+    remove: "Remove"
+    add-column: "Add a column"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem either with your Internet connection, or the server may be down or under maintenance. Please {try again} later."
@@ -523,6 +534,7 @@ desktop/views/components/ui.header.account.vue:
   dark: "Fall in dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
+  deck: "Deck"
   messaging: "Messages"
   game: "Play Othello"
 desktop/views/components/ui.header.notifications.vue:
