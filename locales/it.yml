@@ -69,6 +69,17 @@ common:
     donation: "寄付のお願い"
     nav: "ナビゲーション"
     tips: "ヒント"
+  deck:
+    widgets: "ウィジェット"
+    home: "ホーム"
+    local: "ローカル"
+    global: "グローバル"
+    notifications: "通知"
+    list: "リスト"
+    swap-left: "左に移動"
+    swap-right: "右に移動"
+    remove: "カラムを削除"
+    add-column: "カラムを追加"
 common/views/components/connect-failed.vue:
   title: "サーバーに接続できません"
   description: "インターネット回線に問題があるか、サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから{再度お試し}ください。"
