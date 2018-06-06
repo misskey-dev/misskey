@@ -7,7 +7,7 @@ const user = args[0];
 
 const q = user.startsWith('@') ? {
 	username: user.split('@')[1],
-	host: user.split('@')[2]
+	host: user.split('@')[2] || null
 } : { _id: new mongo.ObjectID(user) };
 
 console.log(`Suspending ${user}...`);
