@@ -75,17 +75,17 @@ export default Vue.extend({
 
 		showMenu() {
 			const items = [{
-				content: '%fa:arrow-left% %i18n:@swap-left%',
+				content: '%fa:arrow-left% %i18n:common.deck.swap-left%',
 				onClick: () => {
 					this.$store.dispatch('settings/swapLeftDeckColumn', this.id);
 				}
 			}, {
-				content: '%fa:arrow-right% %i18n:@swap-right%',
+				content: '%fa:arrow-right% %i18n:common.deck.swap-right%',
 				onClick: () => {
 					this.$store.dispatch('settings/swapRightDeckColumn', this.id);
 				}
 			}, {
-				content: '%fa:trash-alt R% %i18n:@remove%',
+				content: '%fa:trash-alt R% %i18n:common.deck.remove%',
 				onClick: () => {
 					this.$store.dispatch('settings/removeDeckColumn', this.id);
 				}

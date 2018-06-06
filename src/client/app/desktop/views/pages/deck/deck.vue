@@ -9,7 +9,7 @@
 			<x-tl-column v-if="column.type == 'global'" :key="column.id" :column="column"/>
 			<x-tl-column v-if="column.type == 'list'" :key="column.id" :column="column"/>
 		</template>
-		<button ref="add" @click="add">%fa:plus%</button>
+		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
 </mk-ui>
 </template>
@@ -79,7 +79,7 @@ export default Vue.extend({
 				source: this.$refs.add,
 				compact: true,
 				items: [{
-					content: '%i18n:@home%',
+					content: '%i18n:common.deck.home%',
 					onClick: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -87,7 +87,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					content: '%i18n:@local%',
+					content: '%i18n:common.deck.local%',
 					onClick: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -95,7 +95,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					content: '%i18n:@global%',
+					content: '%i18n:common.deck.global%',
 					onClick: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -103,7 +103,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					content: '%i18n:@list%',
+					content: '%i18n:common.deck.list%',
 					onClick: () => {
 						const w = (this as any).os.new(MkUserListsWindow);
 						w.$once('choosen', list => {
@@ -116,7 +116,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					content: '%i18n:@notifications%',
+					content: '%i18n:common.deck.notifications%',
 					onClick: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -124,7 +124,7 @@ export default Vue.extend({
 						});
 					}
 				}, {
-					content: '%i18n:@widgets%',
+					content: '%i18n:common.deck.widgets%',
 					onClick: () => {
 						this.$store.dispatch('settings/addDeckColumn', {
 							id: uuid(),
@@ -155,7 +155,7 @@ root(isDark)
 	overflow auto
 
 	> div
-		margin-right 16px
+		margin-right 8px
 
 		&:last-of-type
 			margin-right 0

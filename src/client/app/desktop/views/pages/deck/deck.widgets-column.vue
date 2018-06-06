@@ -1,7 +1,7 @@
 <template>
 <div class="wtdtxvecapixsepjtcupubtsmometobz">
 	<x-column :id="column.id" :menu="menu" :naked="true" :narrow="true">
-		<span slot="header">%fa:calculator%%i18n:@widgets%</span>
+		<span slot="header">%fa:calculator%%i18n:common.deck.widgets%</span>
 
 		<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
 			<template v-if="edit">
@@ -29,7 +29,7 @@
 						<option value="nav">%i18n:common.widgets.nav%</option>
 						<option value="tips">%i18n:common.widgets.tips%</option>
 					</select>
-					<button @click="addWidget">追加</button>
+					<button @click="addWidget">%i18n:@add%</button>
 				</header>
 				<x-draggable
 					:list="column.widgets"

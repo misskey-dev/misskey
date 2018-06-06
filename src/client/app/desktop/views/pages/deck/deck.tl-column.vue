@@ -2,9 +2,9 @@
 <div>
 	<x-column :id="column.id">
 		<span slot="header">
-			<template v-if="column.type == 'home'">%fa:home%%i18n:@home%</template>
-			<template v-if="column.type == 'local'">%fa:R comments%%i18n:@local%</template>
-			<template v-if="column.type == 'global'">%fa:globe%%i18n:@global%</template>
+			<template v-if="column.type == 'home'">%fa:home%%i18n:common.deck.home%</template>
+			<template v-if="column.type == 'local'">%fa:R comments%%i18n:common.deck.local%</template>
+			<template v-if="column.type == 'global'">%fa:globe%%i18n:common.deck.global%</template>
 			<template v-if="column.type == 'list'">%fa:list%{{ column.list.title }}</template>
 		</span>
 
