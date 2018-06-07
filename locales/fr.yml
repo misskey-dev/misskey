@@ -36,10 +36,10 @@ common:
     confused: "Confus"
     pudding: "Pudding"
   note-placeholders:
-    a: "今どうしてる？"
-    b: "何かありましたか？"
+    a: "Que faîtes vous à cet instant ?"
+    b: "Quoi de neuf ?"
     c: "Qu'avez-vous en tête ?"
-    d: "言いたいことは？"
+    d: "Voulez-vous exprimer quelque chose ?"
     e: "Écrivez ici"
     f: "En attente de vos écrits"
   delete: "Supprimer"
@@ -80,7 +80,7 @@ common:
     swap-right: "Déplacer à droite"
     remove: "Supprimer"
     add-column: "Ajouter une colonne"
-    rename: "名前を変更"
+    rename: "Renommer"
 common/views/components/connect-failed.vue:
   title: "Impossible de se connecter au server."
   description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
@@ -104,7 +104,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   success: "Connexion au serveur de Misskey reussie!"
   success-desc: "La connexion au serveur a été reussie. Veuillez recharger la page."
   flush: "Vider le cache"
-  set-version: "バージョン指定"
+  set-version: "Choisissez une version"
 common/views/components/messaging.vue:
   search-user: "Trouver un utilisateur"
   you: "Vous"
