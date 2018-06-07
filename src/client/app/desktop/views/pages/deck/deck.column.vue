@@ -1,7 +1,8 @@
 <template>
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, isActive, isStacked }">
-	<header :class="{ indicate }" @click="toggleActive">
+	<header :class="{ indicate: count > 0 }" @click="toggleActive">
 		<slot name="header"></slot>
+		<span class="count" v-if="count > 0">({{ count }})</span>
 		<button ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
 	</header>
 	<div ref="body" v-show="isActive">
@@ -46,16 +47,24 @@ export default Vue.extend({
 
 	data() {
 		return {
-			indicate: false,
+			count: 0,
 			isActive: this._isActive
 		};
+	},
+
+	watch: {
+		isActive(v) {
+			if (v && this.isScrollTop()) {
+				this.$emit('top');
+			}
+		}
 	},
 
 	provide() {
 		return {
 			column: this,
 			isScrollTop: this.isScrollTop,
-			indicate: v => this.indicate = v
+			count: v => this.count = v
 		};
 	},
 
@@ -75,7 +84,7 @@ export default Vue.extend({
 		},
 
 		isScrollTop() {
-			return this.$refs.body.scrollTop == 0;
+			return this.isActive && this.$refs.body.scrollTop == 0;
 		},
 
 		onScroll() {
@@ -204,6 +213,10 @@ root(isDark)
 		> span
 			[data-fa]
 				margin-right 8px
+
+		> .count
+			margin-left 4px
+			opacity 0.5
 
 		> button
 			position absolute

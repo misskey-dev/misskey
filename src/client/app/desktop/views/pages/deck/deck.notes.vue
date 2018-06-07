@@ -28,8 +28,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { url } from '../../../config';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
 
 import XNote from './deck.note.vue';
 
@@ -40,7 +38,7 @@ export default Vue.extend({
 		XNote
 	},
 
-	inject: ['column', 'isScrollTop', 'indicate'],
+	inject: ['column', 'isScrollTop', 'count'],
 
 	props: {
 		more: {
@@ -55,7 +53,6 @@ export default Vue.extend({
 			requestInitPromise: null as () => Promise<any[]>,
 			notes: [],
 			queue: [],
-			unreadCount: 0,
 			fetching: true,
 			moreFetching: false
 		};
@@ -70,6 +67,12 @@ export default Vue.extend({
 				note._datetext = `${month}月 ${date}日`;
 				return note;
 			});
+		}
+	},
+
+	watch: {
+		queue(q) {
+			this.count(q.length);
 		}
 	},
 
@@ -141,7 +144,6 @@ export default Vue.extend({
 				}
 			} else {
 				this.queue.push(note);
-				this.indicate(true);
 			}
 		},
 
@@ -156,7 +158,6 @@ export default Vue.extend({
 		releaseQueue() {
 			this.queue.forEach(n => this.prepend(n, true));
 			this.queue = [];
-			this.indicate(false);
 		},
 
 		async loadMore() {
