@@ -199,7 +199,7 @@ common/views/components/uploader.vue:
 common/views/components/visibility-chooser.vue:
   public: "Public"
   home: "Accueil"
-  home-desc: "ホームタイムラインにのみ公開"
+  home-desc: "Publier sur le fil d'Accueil uniquement"
   followers: "Abonnés"
   followers-desc: "Publier à vos abonnés uniquement"
   specified: "Direct"
