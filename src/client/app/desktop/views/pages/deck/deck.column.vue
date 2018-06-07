@@ -127,7 +127,7 @@ export default Vue.extend({
 					this.$store.dispatch('settings/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				content: '%fa:window-restore R% %i18n:common.deck.pop-right%',
+				content: '%fa:window-maximize R% %i18n:common.deck.pop-right%',
 				onClick: () => {
 					this.$store.dispatch('settings/popRightDeckColumn', this.column.id);
 				}
