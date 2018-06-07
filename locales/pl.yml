@@ -78,6 +78,8 @@ common:
     list: "Listy"
     swap-left: "Przesuń w lewo"
     swap-right: "Przesuń w prawo"
+    swap-up: "上に移動"
+    swap-down: "下に移動"
     remove: "Usuń"
     add-column: "Dodaj kolumnę"
     rename: "Zmień nazwę"
