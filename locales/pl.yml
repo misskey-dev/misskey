@@ -81,6 +81,8 @@ common:
     remove: "Usuń"
     add-column: "Dodaj kolumnę"
     rename: "Zmień nazwę"
+    stack-left: "左に重ねる"
+    pop-right: "右に出す"
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
