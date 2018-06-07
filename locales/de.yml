@@ -81,8 +81,8 @@ common:
     swap-up: "Nach oben"
     swap-down: "Nach unten"
     remove: "Spalte löschen"
-    add-column: "カラムを追加"
-    rename: "名前を変更"
+    add-column: "Eine Spalte hinzufügen"
+    rename: "Umbenennen"
     stack-left: "左に重ねる"
     pop-right: "右に出す"
 common/views/components/connect-failed.vue:
