@@ -25,10 +25,6 @@ export default Vue.extend({
 			type: Boolean,
 			required: true
 		},
-		isActive: {
-			type: Boolean,
-			required: true
-		},
 		name: {
 			type: String,
 			required: false
@@ -57,7 +53,7 @@ export default Vue.extend({
 	data() {
 		return {
 			count: 0,
-			active: this.isActive
+			active: true
 		};
 	},
 

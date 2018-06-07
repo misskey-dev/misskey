@@ -4,7 +4,7 @@
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
-					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true" :is-active="i == 0"/>
+					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true"/>
 				</template>
 			</div>
 			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>

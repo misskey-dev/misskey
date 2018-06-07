@@ -1,5 +1,5 @@
 <template>
-<x-column :menu="menu" :naked="true" :narrow="true" :name="name" :column="column" :is-stacked="isStacked" :is-active="isActive" class="wtdtxvecapixsepjtcupubtsmometobz">
+<x-column :menu="menu" :naked="true" :narrow="true" :name="name" :column="column" :is-stacked="isStacked" class="wtdtxvecapixsepjtcupubtsmometobz">
 	<span slot="header">%fa:calculator%{{ name }}</span>
 
 	<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
@@ -70,10 +70,6 @@ export default Vue.extend({
 			required: true
 		},
 		isStacked: {
-			type: Boolean,
-			required: true
-		},
-		isActive: {
 			type: Boolean,
 			required: true
 		}
