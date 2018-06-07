@@ -70,8 +70,8 @@ common:
     nav: "Navigation"
     tips: "Tipps"
   deck:
-    widgets: "ウィジェット"
-    home: "ホーム"
+    widgets: "Widget hinzufügen:"
+    home: "Startseite"
     local: "ローカル"
     global: "グローバル"
     notifications: "通知"
