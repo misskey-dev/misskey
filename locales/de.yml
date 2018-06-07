@@ -72,7 +72,7 @@ common:
   deck:
     widgets: "Widget hinzufügen:"
     home: "Startseite"
-    local: "ローカル"
+    local: "Lokal"
     global: "グローバル"
     notifications: "通知"
     list: "リスト"
