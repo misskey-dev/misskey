@@ -563,7 +563,7 @@ desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
   load-more: "もっと"
-  fetching: "読み込んでいます"
+  fetching: "Lade…"
 desktop/views/components/users-list-item.vue:
   followed: "フォローされています"
 desktop/views/components/window.vue:
@@ -685,7 +685,7 @@ mobile/views/components/follow-button.vue:
 mobile/views/components/friends-maker.vue:
   title: "気になるユーザーをフォロー"
   empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
+  fetching: "Lade…"
   refresh: "もっと見る"
   close: "閉じる"
 mobile/views/components/note.vue:
