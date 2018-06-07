@@ -3,8 +3,8 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ hukidasi }" ref="popover">
 		<template v-for="item in items">
-			<div v-if="item == null"></div>
-			<button v-else @click="clicked(item.onClick)" v-html="item.content"></button>
+			<div v-if="item === null"></div>
+			<button v-if="item" @click="clicked(item.onClick)" v-html="item.content"></button>
 		</template>
 	</div>
 </div>

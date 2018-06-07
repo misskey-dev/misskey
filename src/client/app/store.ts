@@ -208,6 +208,34 @@ export default (os: MiOS) => new Vuex.Store({
 					});
 				},
 
+				swapUpDeckColumn(state, id) {
+					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
+					ids.some((x, i) => {
+						if (x == id) {
+							const up = ids[i - 1];
+							if (up) {
+								ids[i - 1] = id;
+								ids[i] = up;
+							}
+							return true;
+						}
+					});
+				},
+
+				swapDownDeckColumn(state, id) {
+					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
+					ids.some((x, i) => {
+						if (x == id) {
+							const down = ids[i + 1];
+							if (down) {
+								ids[i + 1] = id;
+								ids[i] = down;
+							}
+							return true;
+						}
+					});
+				},
+
 				stackLeftDeckColumn(state, id) {
 					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
 					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
@@ -285,6 +313,16 @@ export default (os: MiOS) => new Vuex.Store({
 
 				swapRightDeckColumn(ctx, id) {
 					ctx.commit('swapRightDeckColumn', id);
+					ctx.dispatch('saveDeck');
+				},
+
+				swapUpDeckColumn(ctx, id) {
+					ctx.commit('swapUpDeckColumn', id);
+					ctx.dispatch('saveDeck');
+				},
+
+				swapDownDeckColumn(ctx, id) {
+					ctx.commit('swapDownDeckColumn', id);
 					ctx.dispatch('saveDeck');
 				},
 

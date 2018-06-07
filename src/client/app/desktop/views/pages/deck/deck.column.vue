@@ -111,17 +111,27 @@ export default Vue.extend({
 				onClick: () => {
 					this.$store.dispatch('settings/swapRightDeckColumn', this.column.id);
 				}
-			}, null, {
+			}, this.isStacked ? {
+				content: '%fa:arrow-up% %i18n:common.deck.swap-up%',
+				onClick: () => {
+					this.$store.dispatch('settings/swapUpDeckColumn', this.column.id);
+				}
+			} : undefined, this.isStacked ? {
+				content: '%fa:arrow-down% %i18n:common.deck.swap-down%',
+				onClick: () => {
+					this.$store.dispatch('settings/swapDownDeckColumn', this.column.id);
+				}
+			} : undefined, null, {
 				content: '%fa:window-restore R% %i18n:common.deck.stack-left%',
 				onClick: () => {
 					this.$store.dispatch('settings/stackLeftDeckColumn', this.column.id);
 				}
-			}, {
+			}, this.isStacked ? {
 				content: '%fa:window-restore R% %i18n:common.deck.pop-right%',
 				onClick: () => {
 					this.$store.dispatch('settings/popRightDeckColumn', this.column.id);
 				}
-			}, null, {
+			} : undefined, null, {
 				content: '%fa:trash-alt R% %i18n:common.deck.remove%',
 				onClick: () => {
 					this.$store.dispatch('settings/removeDeckColumn', this.column.id);
