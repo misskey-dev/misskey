@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "Planeta Fediwersum"
   about-title: "⭐ Fediwersum"
-  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  about: "Dziękujemy za znalezienie Misskey. Misskey jest <b>zdecentralizowaną platformą mikroblogową</b> powstałą na Ziemi. Ponieważ działa ona w Fediwersum (uniwersum, w którego skład wchodzi wiele sieci społecznościowych), jest ona połączona z innymi platformami społecznościowymi. Spróbujesz odpocząć od zatłoczoneo miasta i zanurzyć się w nowym Internecie?"
   time:
     unknown: "nieznany"
     future: "w przyszłości"
@@ -80,7 +80,7 @@ common:
     swap-right: "Przesuń w prawo"
     remove: "Usuń"
     add-column: "Dodaj kolumnę"
-    rename: "名前を変更"
+    rename: "Zmień nazwę"
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
