@@ -1,5 +1,5 @@
 <template>
-<x-column :menu="menu" :naked="true" :narrow="true" :name="name" class="wtdtxvecapixsepjtcupubtsmometobz">
+<x-column :menu="menu" :naked="true" :narrow="true" :name="name" :column="column" :is-stacked="isStacked" :is-active="isActive" class="wtdtxvecapixsepjtcupubtsmometobz">
 	<span slot="header">%fa:calculator%{{ name }}</span>
 
 	<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
@@ -64,7 +64,20 @@ export default Vue.extend({
 		XDraggable
 	},
 
-	inject: ['column'],
+	props: {
+		column: {
+			type: Object,
+			required: true
+		},
+		isStacked: {
+			type: Boolean,
+			required: true
+		},
+		isActive: {
+			type: Boolean,
+			required: true
+		}
+	},
 
 	data() {
 		return {

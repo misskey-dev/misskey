@@ -1,10 +1,10 @@
 <template>
-<x-widgets-column v-if="column.type == 'widgets'"/>
-<x-notifications-column v-else-if="column.type == 'notifications'"/>
-<x-tl-column v-else-if="column.type == 'home'"/>
-<x-tl-column v-else-if="column.type == 'local'"/>
-<x-tl-column v-else-if="column.type == 'global'"/>
-<x-tl-column v-else-if="column.type == 'list'"/>
+<x-widgets-column v-if="column.type == 'widgets'" :column="column" :is-stacked="isStacked" :is-active="isActive"/>
+<x-notifications-column v-else-if="column.type == 'notifications'" :column="column" :is-stacked="isStacked" :is-active="isActive"/>
+<x-tl-column v-else-if="column.type == 'home'" :column="column" :is-stacked="isStacked" :is-active="isActive"/>
+<x-tl-column v-else-if="column.type == 'local'" :column="column" :is-stacked="isStacked" :is-active="isActive"/>
+<x-tl-column v-else-if="column.type == 'global'" :column="column" :is-stacked="isStacked" :is-active="isActive"/>
+<x-tl-column v-else-if="column.type == 'list'" :column="column" :is-stacked="isStacked" :is-active="isActive"/>
 </template>
 
 <script lang="ts">
@@ -35,14 +35,6 @@ export default Vue.extend({
 			required: false,
 			default: true
 		}
-	},
-
-	provide() {
-		return {
-			column: this.column,
-			isStacked: this.isStacked,
-			isActive: this.isActive
-		};
 	}
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-<x-column :menu="menu" :name="name">
+<x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked" :is-active="isActive">
 	<span slot="header">
 		<template v-if="column.type == 'home'">%fa:home%</template>
 		<template v-if="column.type == 'local'">%fa:R comments%</template>
@@ -30,7 +30,20 @@ export default Vue.extend({
 		XListTl
 	},
 
-	inject: ['column'],
+	props: {
+		column: {
+			type: Object,
+			required: true
+		},
+		isStacked: {
+			type: Boolean,
+			required: true
+		},
+		isActive: {
+			type: Boolean,
+			required: true
+		}
+	},
 
 	data() {
 		return {

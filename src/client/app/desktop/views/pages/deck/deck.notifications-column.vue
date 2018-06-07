@@ -1,5 +1,5 @@
 <template>
-<x-column :name="name">
+<x-column :name="name" :column="column" :is-stacked="isStacked" :is-active="isActive">
 	<span slot="header">%fa:bell R%{{ name }}</span>
 
 	<x-notifications/>
@@ -17,7 +17,20 @@ export default Vue.extend({
 		XNotifications
 	},
 
-	inject: ['column'],
+	props: {
+		column: {
+			type: Object,
+			required: true
+		},
+		isStacked: {
+			type: Boolean,
+			required: true
+		},
+		isActive: {
+			type: Boolean,
+			required: true
+		}
+	},
 
 	computed: {
 		name(): string {

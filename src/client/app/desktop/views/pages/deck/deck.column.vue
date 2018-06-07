@@ -1,11 +1,11 @@
 <template>
-<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, isActive, isStacked }">
+<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked }">
 	<header :class="{ indicate: count > 0 }" @click="toggleActive">
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
 		<button ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
 	</header>
-	<div ref="body" v-show="isActive">
+	<div ref="body" v-show="active">
 		<slot></slot>
 	</div>
 </div>
@@ -17,6 +17,18 @@ import Menu from '../../../../common/views/components/menu.vue';
 
 export default Vue.extend({
 	props: {
+		column: {
+			type: Object,
+			required: true
+		},
+		isStacked: {
+			type: Boolean,
+			required: true
+		},
+		isActive: {
+			type: Boolean,
+			required: true
+		},
 		name: {
 			type: String,
 			required: false
@@ -39,21 +51,18 @@ export default Vue.extend({
 	},
 
 	inject: {
-		column: { from: 'column' },
-		_isActive: { from: 'isActive' },
-		isStacked: { from: 'isStacked' },
 		getColumnVm: { from: 'getColumnVm' }
 	},
 
 	data() {
 		return {
 			count: 0,
-			isActive: this._isActive
+			active: this.isActive
 		};
 	},
 
 	watch: {
-		isActive(v) {
+		active(v) {
 			if (v && this.isScrollTop()) {
 				this.$emit('top');
 			}
@@ -79,12 +88,12 @@ export default Vue.extend({
 		toggleActive() {
 			if (!this.isStacked) return;
 			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
-			if (this.isActive && vms.filter(vm => vm.$el.classList.contains('isActive')).length == 1) return;
-			this.isActive = !this.isActive;
+			if (this.active && vms.filter(vm => vm.$el.classList.contains('active')).length == 1) return;
+			this.active = !this.active;
 		},
 
 		isScrollTop() {
-			return this.isActive && this.$refs.body.scrollTop == 0;
+			return this.active && this.$refs.body.scrollTop == 0;
 		},
 
 		onScroll() {
@@ -176,7 +185,7 @@ root(isDark)
 	box-shadow 0 2px 16px rgba(#000, 0.1)
 	overflow hidden
 
-	&:not(.isActive)
+	&:not(.active)
 		flex-basis $header-height
 		min-height $header-height
 
