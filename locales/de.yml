@@ -327,8 +327,8 @@ desktop/views/components/friends-maker.vue:
 desktop/views/components/game-window.vue:
   game: "オセロ"
 desktop/views/components/home.vue:
-  done: "完了"
-  add-widget: "ウィジェットを追加:"
+  done: "Verbunden"
+  add-widget: "Widget hinzufügen:"
   add: "Hinzufügen"
 desktop/views/input-dialog.vue:
   cancel: "Abbrechen"
@@ -339,9 +339,9 @@ desktop/views/components/messaging-window.vue:
   title: "Nachrichten"
 desktop/views/components/note-detail.vue:
   more: "Lade weitere Konversationen"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
-  reposted-by: "{}がRenote"
+  private: "Dieser Post ist privat"
+  deleted: "Dieser Beitrag wurde entfernt"
+  reposted-by: "Repostet von {}"
   location: "Ort"
   renote: "Anmerkung"
   add-reaction: "Reaktion hinzufügen"
@@ -351,8 +351,8 @@ desktop/views/components/notes.note.vue:
   renote: "Anmerken"
   add-reaction: "Eine Reaktion hinzufügen"
   detail: "Zeige Details"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  private: "Dieser Beitrag ist eine privat"
+  deleted: "Dieser Beitrag wurde entfernt"
 desktop/views/components/notes.vue:
   error: "Laden fehlgeschlagen."
   retry: "Erneut versuchen"
@@ -393,7 +393,7 @@ desktop/views/components/renote-form.vue:
   success: "Weitergesagt!"
   failure: "Weitersagen fehlgeschlagen"
 desktop/views/components/renote-form-window.vue:
-  title: "この投稿をRenoteしますか？"
+  title: "Bist du dir sicher, dass du das reposten willst?"
 desktop/views/components/settings-window.vue:
   settings: "設定"
 desktop/views/components/settings.vue:
