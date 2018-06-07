@@ -571,7 +571,7 @@ desktop/views/pages/welcome.vue:
   signin: "Connexion"
   signup: "S'enregistrer"
   signin-button: "Se connecter"
-  signup-button: "やる"
+  signup-button: "S'inscrire"
   timeline: "Fil d'actualité"
 desktop/views/pages/drive.vue:
   title: "Lecteur de Misskey"
