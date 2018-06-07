@@ -208,6 +208,7 @@ root(isDark)
 		color isDark ? #e3e5e8 : #888
 		background isDark ? #313543 : #fff
 		box-shadow 0 1px rgba(#000, 0.15)
+		cursor pointer
 
 		&, *
 			user-select none
@@ -229,6 +230,7 @@ root(isDark)
 			right 0
 			width $header-height
 			line-height $header-height
+			font-size 16px
 			color isDark ? #9baec8 : #ccc
 
 			&:hover
