@@ -1,7 +1,7 @@
 <template>
 <div class="mk-menu">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
-	<div class="popover" :class="{ compact }" ref="popover">
+	<div class="popover" :class="{ hukidasi }" ref="popover">
 		<template v-for="item in items">
 			<div v-if="item == null"></div>
 			<button v-else @click="clicked(item.onClick)" v-html="item.content"></button>
@@ -16,6 +16,11 @@ import * as anime from 'animejs';
 
 export default Vue.extend({
 	props: ['source', 'compact', 'items'],
+	data() {
+		return {
+			hukidasi: !this.compact
+		};
+	},
 	mounted() {
 		this.$nextTick(() => {
 			const popover = this.$refs.popover as any;
@@ -24,17 +29,33 @@ export default Vue.extend({
 			const width = popover.offsetWidth;
 			const height = popover.offsetHeight;
 
+			let left;
+			let top;
+
 			if (this.compact) {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + (this.source.offsetHeight / 2);
-				popover.style.left = (x - (width / 2)) + 'px';
-				popover.style.top = (y - (height / 2)) + 'px';
+				left = (x - (width / 2));
+				top = (y - (height / 2));
 			} else {
 				const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 				const y = rect.top + window.pageYOffset + this.source.offsetHeight;
-				popover.style.left = (x - (width / 2)) + 'px';
-				popover.style.top = y + 'px';
+				left = (x - (width / 2));
+				top = y;
 			}
+
+			if (left + width > window.innerWidth) {
+				left = window.innerWidth - width;
+				this.hukidasi = false;
+			}
+
+			if (top + height > window.innerHeight) {
+				top = window.innerHeight - height;
+				this.hukidasi = false;
+			}
+
+			popover.style.left = left + 'px';
+			popover.style.top = top + 'px';
 
 			anime({
 				targets: this.$refs.backdrop,
@@ -113,7 +134,7 @@ $border-color = rgba(27, 31, 35, 0.15)
 
 		$balloon-size = 16px
 
-		&:not(.compact)
+		&.hukidasi
 			margin-top $balloon-size
 			transform-origin center -($balloon-size)
 

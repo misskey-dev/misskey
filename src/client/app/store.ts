@@ -173,23 +173,22 @@ export default (os: MiOS) => new Vuex.Store({
 				},
 
 				addDeckColumn(state, column) {
-					if (state.deck.columns == null) state.deck.columns = [];
 					state.deck.columns.push(column);
+					state.deck.layout.push([column.id]);
 				},
 
 				removeDeckColumn(state, id) {
-					if (state.deck.columns == null) return;
 					state.deck.columns = state.deck.columns.filter(c => c.id != id);
+					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
 				},
 
 				swapLeftDeckColumn(state, id) {
-					if (state.deck.columns == null) return;
-					state.deck.columns.some((c, i) => {
-						if (c.id == id) {
-							const left = state.deck.columns[i - 1];
+					state.deck.layout.some((ids, i) => {
+						if (ids.indexOf(id) != -1) {
+							const left = state.deck.layout[i - 1];
 							if (left) {
-								state.deck.columns[i - 1] = state.deck.columns[i];
-								state.deck.columns[i] = left;
+								state.deck.layout[i - 1] = state.deck.layout[i];
+								state.deck.layout[i] = left;
 							}
 							return true;
 						}
@@ -197,28 +196,40 @@ export default (os: MiOS) => new Vuex.Store({
 				},
 
 				swapRightDeckColumn(state, id) {
-					if (state.deck.columns == null) return;
-					state.deck.columns.some((c, i) => {
-						if (c.id == id) {
-							const right = state.deck.columns[i + 1];
+					state.deck.layout.some((ids, i) => {
+						if (ids.indexOf(id) != -1) {
+							const right = state.deck.layout[i + 1];
 							if (right) {
-								state.deck.columns[i + 1] = state.deck.columns[i];
-								state.deck.columns[i] = right;
+								state.deck.layout[i + 1] = state.deck.layout[i];
+								state.deck.layout[i] = right;
 							}
 							return true;
 						}
 					});
 				},
 
+				stackLeftDeckColumn(state, id) {
+					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
+					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					const left = state.deck.layout[i - 1];
+					if (left) state.deck.layout[i - 1].push(id);
+					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
+				},
+
+				popRightDeckColumn(state, id) {
+					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
+					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout.splice(i + 1, 0, [id]);
+					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
+				},
+
 				addDeckWidget(state, x) {
-					if (state.deck.columns == null) return;
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
 					column.widgets.unshift(x.widget);
 				},
 
 				removeDeckWidget(state, x) {
-					if (state.deck.columns == null) return;
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
 					column.widgets = column.widgets.filter(w => w.id != x.widget.id);
@@ -274,6 +285,16 @@ export default (os: MiOS) => new Vuex.Store({
 
 				swapRightDeckColumn(ctx, id) {
 					ctx.commit('swapRightDeckColumn', id);
+					ctx.dispatch('saveDeck');
+				},
+
+				stackLeftDeckColumn(ctx, id) {
+					ctx.commit('stackLeftDeckColumn', id);
+					ctx.dispatch('saveDeck');
+				},
+
+				popRightDeckColumn(ctx, id) {
+					ctx.commit('popRightDeckColumn', id);
 					ctx.dispatch('saveDeck');
 				},
 

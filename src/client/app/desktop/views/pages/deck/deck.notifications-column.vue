@@ -1,11 +1,9 @@
 <template>
-<div>
-	<x-column :id="column.id" :name="name">
-		<span slot="header">%fa:bell R%{{ name }}</span>
+<x-column :name="name">
+	<span slot="header">%fa:bell R%{{ name }}</span>
 
-		<x-notifications/>
-	</x-column>
-</div>
+	<x-notifications/>
+</x-column>
 </template>
 
 <script lang="ts">
@@ -19,12 +17,7 @@ export default Vue.extend({
 		XNotifications
 	},
 
-	props: {
-		column: {
-			type: Object,
-			required: true
-		}
-	},
+	inject: ['column'],
 
 	computed: {
 		name(): string {

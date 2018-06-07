@@ -1,13 +1,13 @@
 <template>
 <mk-ui :class="$style.root">
 	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-darkmode="$store.state.device.darkmode">
-		<template v-for="column in columns">
-			<x-widgets-column v-if="column.type == 'widgets'" :key="column.id" :column="column"/>
-			<x-notifications-column v-if="column.type == 'notifications'" :key="column.id" :column="column"/>
-			<x-tl-column v-if="column.type == 'home'" :key="column.id" :column="column"/>
-			<x-tl-column v-if="column.type == 'local'" :key="column.id" :column="column"/>
-			<x-tl-column v-if="column.type == 'global'" :key="column.id" :column="column"/>
-			<x-tl-column v-if="column.type == 'list'" :key="column.id" :column="column"/>
+		<template v-for="ids in layout">
+			<div v-if="ids.length > 1" class="folder">
+				<template v-for="id, i in ids">
+					<x-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true" :is-active="i == 0"/>
+				</template>
+			</div>
+			<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])"/>
 		</template>
 		<button ref="add" @click="add" title="%i18n:common.deck.add-column%">%fa:plus%</button>
 	</div>
@@ -16,25 +16,32 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XTlColumn from './deck.tl-column.vue';
-import XNotificationsColumn from './deck.notifications-column.vue';
-import XWidgetsColumn from './deck.widgets-column.vue';
+import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../../common/views/components/menu.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
 	components: {
-		XTlColumn,
-		XNotificationsColumn,
-		XWidgetsColumn
+		XColumnCore
 	},
 
 	computed: {
-		columns() {
+		columns(): any[] {
 			if (this.$store.state.settings.deck == null) return [];
 			return this.$store.state.settings.deck.columns;
+		},
+		layout(): any[] {
+			if (this.$store.state.settings.deck == null) return [];
+			if (this.$store.state.settings.deck.layout == null) return this.$store.state.settings.deck.columns.map(c => [c.id]);
+			return this.$store.state.settings.deck.layout;
 		}
+	},
+
+	provide() {
+		return {
+			getColumnVm: this.getColumnVm
+		};
 	},
 
 	created() {
@@ -58,9 +65,21 @@ export default Vue.extend({
 				}]
 			};
 
+			deck.layout = deck.columns.map(c => [c.id]);
+
 			this.$store.dispatch('settings/set', {
 				key: 'deck',
 				value: deck
+			});
+		}
+
+		// 互換性のため
+		if (this.$store.state.settings.deck != null && this.$store.state.settings.deck.layout == null) {
+			this.$store.dispatch('settings/set', {
+				key: 'deck',
+				value: Object.assign({}, this.$store.state.settings.deck, {
+					layout: this.$store.state.settings.deck.columns.map(c => [c.id])
+				})
 			});
 		}
 	},
@@ -74,6 +93,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		getColumnVm(id) {
+			return this.$refs[id][0];
+		},
+
 		add() {
 			this.os.new(Menu, {
 				source: this.$refs.add,
@@ -158,6 +181,13 @@ root(isDark)
 
 		&:last-of-type
 			margin-right 0
+
+		&.folder
+			display flex
+			flex-direction column
+
+			> *:not(:last-child)
+				margin-bottom 8px
 
 	> *
 		&:first-child

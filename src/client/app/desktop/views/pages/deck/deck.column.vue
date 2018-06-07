@@ -1,10 +1,10 @@
 <template>
-<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow }">
-	<header :class="{ indicate }">
+<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, isActive, isStacked }">
+	<header :class="{ indicate }" @click="toggleActive">
 		<slot name="header"></slot>
-		<button ref="menu" @click="showMenu">%fa:caret-down%</button>
+		<button ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
 	</header>
-	<div ref="body">
+	<div ref="body" v-show="isActive">
 		<slot></slot>
 	</div>
 </div>
@@ -16,17 +16,14 @@ import Menu from '../../../../common/views/components/menu.vue';
 
 export default Vue.extend({
 	props: {
-		id: {
-			type: String,
-			required: false
-		},
 		name: {
 			type: String,
 			required: false
 		},
 		menu: {
 			type: Array,
-			required: false
+			required: false,
+			default: null
 		},
 		naked: {
 			type: Boolean,
@@ -40,9 +37,17 @@ export default Vue.extend({
 		}
 	},
 
+	inject: {
+		column: { from: 'column' },
+		_isActive: { from: 'isActive' },
+		isStacked: { from: 'isStacked' },
+		getColumnVm: { from: 'getColumnVm' }
+	},
+
 	data() {
 		return {
-			indicate: false
+			indicate: false,
+			isActive: this._isActive
 		};
 	},
 
@@ -62,6 +67,13 @@ export default Vue.extend({
 	},
 
 	methods: {
+		toggleActive() {
+			if (!this.isStacked) return;
+			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
+			if (this.isActive && vms.filter(vm => vm.$el.classList.contains('isActive')).length == 1) return;
+			this.isActive = !this.isActive;
+		},
+
 		isScrollTop() {
 			return this.$refs.body.scrollTop == 0;
 		},
@@ -86,23 +98,33 @@ export default Vue.extend({
 						default: this.name,
 						allowEmpty: false
 					}).then(name => {
-						this.$store.dispatch('settings/renameDeckColumn', { id: this.id, name });
+						this.$store.dispatch('settings/renameDeckColumn', { id: this.column.id, name });
 					});
 				}
 			}, null, {
 				content: '%fa:arrow-left% %i18n:common.deck.swap-left%',
 				onClick: () => {
-					this.$store.dispatch('settings/swapLeftDeckColumn', this.id);
+					this.$store.dispatch('settings/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
 				content: '%fa:arrow-right% %i18n:common.deck.swap-right%',
 				onClick: () => {
-					this.$store.dispatch('settings/swapRightDeckColumn', this.id);
+					this.$store.dispatch('settings/swapRightDeckColumn', this.column.id);
+				}
+			}, null, {
+				content: '%fa:window-restore R% %i18n:common.deck.stack-left%',
+				onClick: () => {
+					this.$store.dispatch('settings/stackLeftDeckColumn', this.column.id);
+				}
+			}, {
+				content: '%fa:window-restore R% %i18n:common.deck.pop-right%',
+				onClick: () => {
+					this.$store.dispatch('settings/popRightDeckColumn', this.column.id);
 				}
 			}, null, {
 				content: '%fa:trash-alt R% %i18n:common.deck.remove%',
 				onClick: () => {
-					this.$store.dispatch('settings/removeDeckColumn', this.id);
+					this.$store.dispatch('settings/removeDeckColumn', this.column.id);
 				}
 			}];
 
@@ -128,14 +150,20 @@ root(isDark)
 	$header-height = 42px
 
 	width 330px
+	min-width 330px
 	height 100%
 	background isDark ? #282C37 : #fff
 	border-radius 6px
 	box-shadow 0 2px 16px rgba(#000, 0.1)
 	overflow hidden
 
-	&.narrow
+	&:not(.isActive)
+		flex-basis $header-height
+		min-height $header-height
+
+	&:not(.isStacked).narrow
 		width 285px
+		min-width 285px
 
 	&.naked
 		background rgba(#000, isDark ? 0.25 : 0.1)
@@ -156,6 +184,9 @@ root(isDark)
 		color isDark ? #e3e5e8 : #888
 		background isDark ? #313543 : #fff
 		box-shadow 0 1px rgba(#000, 0.15)
+
+		&, *
+			user-select none
 
 		&.indicate
 			box-shadow 0 3px 0 0 $theme-color
