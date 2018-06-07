@@ -81,6 +81,8 @@ common:
     remove: "Supprimer"
     add-column: "Ajouter une colonne"
     rename: "Renommer"
+    stack-left: "左に重ねる"
+    pop-right: "右に出す"
 common/views/components/connect-failed.vue:
   title: "Impossible de se connecter au server."
   description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
