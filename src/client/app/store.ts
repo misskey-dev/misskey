@@ -182,6 +182,17 @@ export default (os: MiOS) => new Vuex.Store({
 					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
 				},
 
+				swapDeckColumn(state, x) {
+					const a = x.a;
+					const b = x.b;
+					const aX = state.deck.layout.findIndex(ids => ids.indexOf(a) != -1);
+					const aY = state.deck.layout[aX].findIndex(id => id == a);
+					const bX = state.deck.layout.findIndex(ids => ids.indexOf(b) != -1);
+					const bY = state.deck.layout[bX].findIndex(id => id == b);
+					state.deck.layout[aX][aY] = b;
+					state.deck.layout[bX][bY] = a;
+				},
+
 				swapLeftDeckColumn(state, id) {
 					state.deck.layout.some((ids, i) => {
 						if (ids.indexOf(id) != -1) {
@@ -303,6 +314,11 @@ export default (os: MiOS) => new Vuex.Store({
 
 				removeDeckColumn(ctx, id) {
 					ctx.commit('removeDeckColumn', id);
+					ctx.dispatch('saveDeck');
+				},
+
+				swapDeckColumn(ctx, id) {
+					ctx.commit('swapDeckColumn', id);
 					ctx.dispatch('saveDeck');
 				},
 

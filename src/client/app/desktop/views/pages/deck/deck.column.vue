@@ -1,6 +1,15 @@
 <template>
-<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked }">
-	<header :class="{ indicate: count > 0 }" @click="toggleActive">
+<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging }">
+	<header :class="{ indicate: count > 0 }"
+			draggable="true"
+			@click="toggleActive"
+			@dragstart="onDragstart"
+			@dragend="onDragend"
+			@dragover.prevent.stop="onDragover"
+			@dragenter.prevent="onDragenter"
+			@dragleave="onDragleave"
+			@drop.prevent.stop="onDrop"
+		>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
 		<button ref="menu" @click.stop="showMenu">%fa:caret-down%</button>
@@ -53,7 +62,9 @@ export default Vue.extend({
 	data() {
 		return {
 			count: 0,
-			active: true
+			active: true,
+			dragging: false,
+			draghover: false
 		};
 	},
 
@@ -162,6 +173,49 @@ export default Vue.extend({
 				compact: false,
 				items
 			});
+		},
+
+		onDragstart(e) {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('mk-deck-column', this.column.id);
+			this.dragging = true;
+		},
+
+		onDragend(e) {
+			this.dragging = false;
+		},
+
+		onDragover(e) {
+			// 自分自身がドラッグされている場合
+			if (this.dragging) {
+				// 自分自身にはドロップさせない
+				e.dataTransfer.dropEffect = 'none';
+				return;
+			}
+
+			const isDeckColumn = e.dataTransfer.types[0] == 'mk-deck-column';
+
+			e.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
+		},
+
+		onDragenter() {
+			if (!this.dragging) this.draghover = true;
+		},
+
+		onDragleave() {
+			this.draghover = false;
+		},
+
+		onDrop(e) {
+			this.draghover = false;
+
+			const id = e.dataTransfer.getData('mk-deck-column');
+			if (id != null && id != '') {
+				this.$store.dispatch('settings/swapDeckColumn', {
+					a: this.column.id,
+					b: id
+				});
+			}
 		}
 	}
 });
@@ -180,6 +234,10 @@ root(isDark)
 	border-radius 6px
 	box-shadow 0 2px 16px rgba(#000, 0.1)
 	overflow hidden
+
+	&.draghover
+	&.dragging
+		box-shadow 0 0 0 2px rgba($theme-color, 0.7)
 
 	&:not(.active)
 		flex-basis $header-height
@@ -212,6 +270,9 @@ root(isDark)
 
 		&, *
 			user-select none
+
+		*:not(button)
+			pointer-events none
 
 		&.indicate
 			box-shadow 0 3px 0 0 $theme-color
