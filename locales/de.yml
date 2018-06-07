@@ -307,9 +307,9 @@ desktop/views/components/drive.vue:
     url-upload: "Von einer URL hochladen"
 desktop/views/components/follow-button.vue:
   following: "Folge ich"
-  follow: "フォロー"
-  request-pending: "フォロー許可待ち"
-  follow-request: "フォロー申請"
+  follow: "Folgen"
+  request-pending: "Ausstehend"
+  follow-request: "Follower-Anfragen"
 desktop/views/components/followers-window.vue:
   followers: "{} のフォロワー"
 desktop/views/components/followers.vue:
@@ -317,13 +317,13 @@ desktop/views/components/followers.vue:
 desktop/views/components/following-window.vue:
   following: "{} のフォロー"
 desktop/views/components/following.vue:
-  empty: "フォロー中のユーザーはいないようです。"
+  empty: "Du folgst niemanden"
 desktop/views/components/friends-maker.vue:
-  title: "気になるユーザーをフォロー:"
-  empty: "おすすめのユーザーは見つかりませんでした。"
-  fetching: "読み込んでいます"
-  refresh: "もっと見る"
-  close: "閉じる"
+  title: "Wem folgen?"
+  empty: "Der ausgewählte Benutzer konnte nicht gefunden werden."
+  fetching: "Lade…"
+  refresh: "Mehr"
+  close: "Schließen"
 desktop/views/components/game-window.vue:
   game: "オセロ"
 desktop/views/components/home.vue:
