@@ -203,7 +203,7 @@ common/views/components/uploader.vue:
 common/views/components/visibility-chooser.vue:
   public: "Öffentlich"
   home: "Home"
-  home-desc: "ホームタイムラインにのみ公開"
+  home-desc: "Nur auf die Startseite posten"
   followers: "Folgende"
   followers-desc: "Nur für diejenigen sichtbar, die dir folgen"
   specified: "Direkt"
@@ -264,7 +264,7 @@ desktop/views/components/drive.file.vue:
     rename: "Umbenennen"
     copy-url: "URL kopieren"
     download: "Download"
-    else-files: "その他..."
+    else-files: "Anderes…"
     set-as-avatar: "Als Avatar festlegen"
     set-as-banner: "Setze als Banner"
     open-in-app: "In der App öffnen"
@@ -306,7 +306,7 @@ desktop/views/components/drive.vue:
     upload: "Eine Datei hochladen"
     url-upload: "Von einer URL hochladen"
 desktop/views/components/follow-button.vue:
-  following: "フォロー中"
+  following: "Folge ich"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
   follow-request: "フォロー申請"
