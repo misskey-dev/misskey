@@ -140,7 +140,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
-	if (text === undefined && files === null && renote === null && poll === undefined) {
+	if ((text === undefined || text === null) && files === null && renote === null && poll === undefined) {
 		return rej('text, mediaIds, renoteId or poll is required');
 	}
 
