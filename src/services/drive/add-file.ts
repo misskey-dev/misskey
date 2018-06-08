@@ -164,8 +164,8 @@ export default async function(
 			'metadata.deletedAt': { $exists: false }
 		});
 
-		if (much !== null) {
-			log('file with same hash is found');
+		if (much) {
+			log(`file with same hash is found: ${much._id}`);
 			return much;
 		}
 	}
