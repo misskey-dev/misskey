@@ -23,6 +23,7 @@ ultimately sophisticated professional microblogging software.
 * Reactions
 * User lists
 * Customizable column view (known as MisskeyDeck)
+  * and widgets!
 * Private messages
 * Mute
 * Streaming
