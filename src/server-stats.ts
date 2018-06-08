@@ -6,7 +6,7 @@ import Xev from 'xev';
 const ev = new Xev();
 
 /**
- * Report stats regularly
+ * Report server stats regularly
  */
 export default function() {
 	const log = [];

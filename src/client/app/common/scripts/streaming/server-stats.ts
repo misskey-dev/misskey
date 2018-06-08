@@ -3,15 +3,15 @@ import StreamManager from './stream-manager';
 import MiOS from '../../../mios';
 
 /**
- * Server stream connection
+ * Server stats stream connection
  */
-export class ServerStream extends Stream {
+export class ServerStatsStream extends Stream {
 	constructor(os: MiOS) {
-		super(os, 'server');
+		super(os, 'server-stats');
 	}
 }
 
-export class ServerStreamManager extends StreamManager<ServerStream> {
+export class ServerStatsStreamManager extends StreamManager<ServerStatsStream> {
 	private os: MiOS;
 
 	constructor(os: MiOS) {
@@ -22,7 +22,7 @@ export class ServerStreamManager extends StreamManager<ServerStream> {
 
 	public getConnection() {
 		if (this.connection == null) {
-			this.connection = new ServerStream(this.os);
+			this.connection = new ServerStatsStream(this.os);
 		}
 
 		return this.connection;

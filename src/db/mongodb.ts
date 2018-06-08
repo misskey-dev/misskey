@@ -12,7 +12,10 @@ const uri = u && p
  */
 import mongo from 'monk';
 
-const db = mongo(uri);
+const db = mongo(uri, {
+	poolSize: 16,
+	keepAlive: 1
+});
 
 export default db;
 

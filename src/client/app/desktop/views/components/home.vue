@@ -23,6 +23,7 @@
 					<option value="post-form">%i18n:common.widgets.post-form%</option>
 					<option value="messaging">%i18n:common.widgets.messaging%</option>
 					<option value="memo">%i18n:common.widgets.memo%</option>
+					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
 					<option value="server">%i18n:common.widgets.server%</option>
 					<option value="donation">%i18n:common.widgets.donation%</option>
 					<option value="nav">%i18n:common.widgets.nav%</option>

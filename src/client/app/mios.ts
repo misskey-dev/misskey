@@ -8,7 +8,8 @@ import Progress from './common/scripts/loading';
 import Connection from './common/scripts/streaming/stream';
 import { HomeStreamManager } from './common/scripts/streaming/home';
 import { DriveStreamManager } from './common/scripts/streaming/drive';
-import { ServerStreamManager } from './common/scripts/streaming/server';
+import { ServerStatsStreamManager } from './common/scripts/streaming/server-stats';
+import { NotesStatsStreamManager } from './common/scripts/streaming/notes-stats';
 import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
 import { OthelloStreamManager } from './common/scripts/streaming/othello';
 
@@ -104,14 +105,16 @@ export default class MiOS extends EventEmitter {
 		localTimelineStream: LocalTimelineStreamManager;
 		globalTimelineStream: GlobalTimelineStreamManager;
 		driveStream: DriveStreamManager;
-		serverStream: ServerStreamManager;
+		serverStatsStream: ServerStatsStreamManager;
+		notesStatsStream: NotesStatsStreamManager;
 		messagingIndexStream: MessagingIndexStreamManager;
 		othelloStream: OthelloStreamManager;
 	} = {
 		localTimelineStream: null,
 		globalTimelineStream: null,
 		driveStream: null,
-		serverStream: null,
+		serverStatsStream: null,
+		notesStatsStream: null,
 		messagingIndexStream: null,
 		othelloStream: null
 	};
@@ -218,7 +221,8 @@ export default class MiOS extends EventEmitter {
 		this.store = initStore(this);
 
 		//#region Init stream managers
-		this.streams.serverStream = new ServerStreamManager(this);
+		this.streams.serverStatsStream = new ServerStatsStreamManager(this);
+		this.streams.notesStatsStream = new NotesStatsStreamManager(this);
 
 		this.once('signedin', () => {
 			// Init home stream manager

@@ -18,6 +18,7 @@ import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 import serverStats from './server-stats';
+import notesStats from './notes-stats';
 
 import loadConfig from './config/load';
 import { Config } from './config/types';
@@ -50,6 +51,7 @@ function main() {
 
 		ev.mount();
 		serverStats();
+		notesStats();
 	} else {
 		workerMain(opt);
 	}

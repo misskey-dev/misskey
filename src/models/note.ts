@@ -16,6 +16,9 @@ import Following from './following';
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
+Note.createIndex({
+	createdAt: -1
+});
 export default Note;
 
 export function isValidText(text: string): boolean {

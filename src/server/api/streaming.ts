@@ -12,7 +12,8 @@ import messagingStream from './stream/messaging';
 import messagingIndexStream from './stream/messaging-index';
 import othelloGameStream from './stream/othello-game';
 import othelloStream from './stream/othello';
-import serverStream from './stream/server';
+import serverStatsStream from './stream/server-stats';
+import notesStatsStream from './stream/notes-stats';
 import requestsStream from './stream/requests';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
@@ -28,8 +29,13 @@ module.exports = (server: http.Server) => {
 	ws.on('request', async (request) => {
 		const connection = request.accept();
 
-		if (request.resourceURL.pathname === '/server') {
-			serverStream(request, connection);
+		if (request.resourceURL.pathname === '/server-stats') {
+			serverStatsStream(request, connection);
+			return;
+		}
+
+		if (request.resourceURL.pathname === '/notes-stats') {
+			notesStatsStream(request, connection);
 			return;
 		}
 
