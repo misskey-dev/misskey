@@ -14,7 +14,7 @@
 	<article>
 		<mk-avatar class="avatar" :user="p.user"/>
 		<div class="main">
-			<mk-note-header class="header" :note="p"/>
+			<mk-note-header class="header" :note="p" :mini="true"/>
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>

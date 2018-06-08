@@ -7,7 +7,7 @@
 	<span class="is-cat" v-if="note.user.isCat">cat</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
 	<div class="info">
-		<span class="app" v-if="note.app">via <b>{{ note.app.name }}</b></span>
+		<span class="app" v-if="note.app && !mini">via <b>{{ note.app.name }}</b></span>
 		<span class="mobile" v-if="note.viaMobile">%fa:mobile-alt%</span>
 		<router-link class="created-at" :to="note | notePage">
 			<mk-time :time="note.createdAt"/>
@@ -30,6 +30,11 @@ export default Vue.extend({
 		note: {
 			type: Object,
 			required: true
+		},
+		mini: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	}
 });

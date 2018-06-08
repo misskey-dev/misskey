@@ -2,7 +2,7 @@
 <div class="mk-note-preview" :class="{ smart: $store.state.device.postStyle == 'smart' }">
 	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle != 'smart'"/>
 	<div class="main">
-		<mk-note-header class="header" :note="note"/>
+		<mk-note-header class="header" :note="note" :mini="true"/>
 		<div class="body">
 			<mk-sub-note-content class="text" :note="note"/>
 		</div>
