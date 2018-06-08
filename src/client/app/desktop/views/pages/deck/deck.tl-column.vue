@@ -45,8 +45,9 @@ export default Vue.extend({
 		return {
 			edit: false,
 			menu: [{
-				content: '%fa:cog% %i18n:@edit%',
-				onClick: () => {
+				icon: '%fa:cog%',
+				text: '%i18n:@edit%',
+				action: () => {
 					this.edit = !this.edit;
 				}
 			}]

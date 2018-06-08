@@ -1,5 +1,5 @@
 <template>
-<div class="context-menu" :style="{ left: `${x}px`, top: `${y}px` }" @contextmenu.prevent="() => {}">
+<div class="context-menu" @contextmenu.prevent="() => {}">
 	<x-menu :menu="menu" @x="click"/>
 </div>
 </template>
@@ -17,6 +17,23 @@ export default Vue.extend({
 	props: ['x', 'y', 'menu'],
 	mounted() {
 		this.$nextTick(() => {
+			const width = this.$el.offsetWidth;
+			const height = this.$el.offsetHeight;
+
+			let x = this.x;
+			let y = this.y;
+
+			if (x + width > window.innerWidth) {
+				x = window.innerWidth - width;
+			}
+
+			if (y + height > window.innerHeight) {
+				y = window.innerHeight - height;
+			}
+
+			this.$el.style.left = x + 'px';
+			this.$el.style.top = y + 'px';
+
 			Array.from(document.querySelectorAll('body *')).forEach(el => {
 				el.addEventListener('mousedown', this.onMousedown);
 			});
@@ -38,7 +55,7 @@ export default Vue.extend({
 			return false;
 		},
 		click(item) {
-			if (item.onClick) item.onClick();
+			if (item.action) item.action();
 			this.close();
 		},
 		close() {
@@ -59,7 +76,6 @@ root(isDark)
 	$item-height = 38px
 	$padding = 10px
 
-	display none
 	position fixed
 	top 0
 	left 0

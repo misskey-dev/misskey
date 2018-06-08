@@ -13,23 +13,23 @@ export default Vue.extend({
 		items() {
 			const items = [];
 			items.push({
-				content: '%i18n:@favorite%',
-				onClick: this.favorite
+				text: '%i18n:@favorite%',
+				action: this.favorite
 			});
 			if (this.note.userId == this.$store.state.i.id) {
 				items.push({
-					content: '%i18n:@pin%',
-					onClick: this.pin
+					text: '%i18n:@pin%',
+					action: this.pin
 				});
 				items.push({
-					content: '%i18n:@delete%',
-					onClick: this.del
+					text: '%i18n:@delete%',
+					action: this.del
 				});
 			}
 			if (this.note.uri) {
 				items.push({
-					content: '%i18n:@remote%',
-					onClick: () => {
+					text: '%i18n:@remote%',
+					action: () => {
 						window.open(this.note.uri, '_blank');
 					}
 				});

@@ -4,7 +4,7 @@
 	<div class="popover" :class="{ hukidasi }" ref="popover">
 		<template v-for="item in items">
 			<div v-if="item === null"></div>
-			<button v-if="item" @click="clicked(item.onClick)" v-html="item.content"></button>
+			<button v-if="item" @click="clicked(item.action)" v-html="item.icon ? item.icon + ' ' + item.text : item.text"></button>
 		</template>
 	</div>
 </div>

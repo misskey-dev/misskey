@@ -66,37 +66,33 @@ export default Vue.extend({
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
-				onClick: this.rename
+				action: this.rename
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.copy-url%',
 				icon: '%fa:link%',
-				onClick: this.copyUrl
+				action: this.copyUrl
 			}, {
 				type: 'link',
 				href: `${this.file.url}?download`,
 				text: '%i18n:@contextmenu.download%',
 				icon: '%fa:download%',
-			}, {
-				type: 'divider',
-			}, {
+			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
 				icon: '%fa:R trash-alt%',
-				onClick: this.deleteFile
-			}, {
-				type: 'divider',
-			}, {
+				action: this.deleteFile
+			}, null, {
 				type: 'nest',
 				text: '%i18n:@contextmenu.else-files%',
 				menu: [{
 					type: 'item',
 					text: '%i18n:@contextmenu.set-as-avatar%',
-					onClick: this.setAsAvatar
+					action: this.setAsAvatar
 				}, {
 					type: 'item',
 					text: '%i18n:@contextmenu.set-as-banner%',
-					onClick: this.setAsBanner
+					action: this.setAsBanner
 				}]
 			}, {
 				type: 'nest',
@@ -104,7 +100,7 @@ export default Vue.extend({
 				menu: [{
 					type: 'item',
 					text: '%i18n:@contextmenu.add-app%...',
-					onClick: this.addApp
+					action: this.addApp
 				}]
 			}], {
 				closed: () => {

@@ -10,6 +10,7 @@
 			@click="toggleActive"
 			@dragstart="onDragstart"
 			@dragend="onDragend"
+			@contextmenu.prevent.stop="onContextmenu"
 		>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
@@ -24,6 +25,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Menu from '../../../../common/views/components/menu.vue';
+import contextmenu from '../../../api/contextmenu';
 
 export default Vue.extend({
 	props: {
@@ -132,10 +134,11 @@ export default Vue.extend({
 			}
 		},
 
-		showMenu() {
+		getMenu() {
 			const items = [{
-				content: '%fa:pencil-alt% %i18n:common.deck.rename%',
-				onClick: () => {
+				icon: '%fa:pencil-alt%',
+				text: '%i18n:common.deck.rename%',
+				action: () => {
 					(this as any).apis.input({
 						title: '%i18n:common.deck.rename%',
 						default: this.name,
@@ -145,38 +148,45 @@ export default Vue.extend({
 					});
 				}
 			}, null, {
-				content: '%fa:arrow-left% %i18n:common.deck.swap-left%',
-				onClick: () => {
+				icon: '%fa:arrow-left%',
+				text: '%i18n:common.deck.swap-left%',
+				action: () => {
 					this.$store.dispatch('settings/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
-				content: '%fa:arrow-right% %i18n:common.deck.swap-right%',
-				onClick: () => {
+				icon: '%fa:arrow-right%',
+				text: '%i18n:common.deck.swap-right%',
+				action: () => {
 					this.$store.dispatch('settings/swapRightDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				content: '%fa:arrow-up% %i18n:common.deck.swap-up%',
-				onClick: () => {
+				icon: '%fa:arrow-up%',
+				text: '%i18n:common.deck.swap-up%',
+				action: () => {
 					this.$store.dispatch('settings/swapUpDeckColumn', this.column.id);
 				}
 			} : undefined, this.isStacked ? {
-				content: '%fa:arrow-down% %i18n:common.deck.swap-down%',
-				onClick: () => {
+				icon: '%fa:arrow-down%',
+				text: '%i18n:common.deck.swap-down%',
+				action: () => {
 					this.$store.dispatch('settings/swapDownDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				content: '%fa:window-restore R% %i18n:common.deck.stack-left%',
-				onClick: () => {
+				icon: '%fa:window-restore R%',
+				text: '%i18n:common.deck.stack-left%',
+				action: () => {
 					this.$store.dispatch('settings/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				content: '%fa:window-maximize R% %i18n:common.deck.pop-right%',
-				onClick: () => {
+				icon: '%fa:window-maximize R%',
+				text: '%i18n:common.deck.pop-right%',
+				action: () => {
 					this.$store.dispatch('settings/popRightDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				content: '%fa:trash-alt R% %i18n:common.deck.remove%',
-				onClick: () => {
+				icon: '%fa:trash-alt R%',
+				text: '%i18n:common.deck.remove%',
+				action: () => {
 					this.$store.dispatch('settings/removeDeckColumn', this.column.id);
 				}
 			}];
@@ -186,10 +196,18 @@ export default Vue.extend({
 				this.menu.reverse().forEach(i => items.unshift(i));
 			}
 
+			return items;
+		},
+
+		onContextmenu(e) {
+			contextmenu((this as any).os)(e, this.getMenu());
+		},
+
+		showMenu() {
 			this.os.new(Menu, {
 				source: this.$refs.menu,
 				compact: false,
-				items
+				items: this.getMenu()
 			});
 		},
 

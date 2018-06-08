@@ -140,17 +140,17 @@ export default Vue.extend({
 				type: 'item',
 				text: '%i18n:@contextmenu.create-folder%',
 				icon: '%fa:R folder%',
-				onClick: this.createFolder
+				action: this.createFolder
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.upload%',
 				icon: '%fa:upload%',
-				onClick: this.selectLocalFile
+				action: this.selectLocalFile
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.url-upload%',
 				icon: '%fa:cloud-upload-alt%',
-				onClick: this.urlUpload
+				action: this.urlUpload
 			}]);
 		},
 

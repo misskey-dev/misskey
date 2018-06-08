@@ -56,26 +56,22 @@ export default Vue.extend({
 				type: 'item',
 				text: '%i18n:@contextmenu.move-to-this-folder%',
 				icon: '%fa:arrow-right%',
-				onClick: this.go
+				action: this.go
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.show-in-new-window%',
 				icon: '%fa:R window-restore%',
-				onClick: this.newWindow
-			}, {
-				type: 'divider',
-			}, {
+				action: this.newWindow
+			}, null, {
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
-				onClick: this.rename
-			}, {
-				type: 'divider',
-			}, {
+				action: this.rename
+			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
 				icon: '%fa:R trash-alt%',
-				onClick: this.deleteFolder
+				action: this.deleteFolder
 			}], {
 				closed: () => {
 					this.isContextmenuShowing = false;
