@@ -14,26 +14,7 @@
 	<article>
 		<mk-avatar class="avatar" :user="p.user"/>
 		<div class="main">
-			<header>
-				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
-				<span class="is-admin" v-if="p.user.isAdmin">admin</span>
-				<span class="is-bot" v-if="p.user.isBot">bot</span>
-				<span class="is-cat" v-if="p.user.isCat">cat</span>
-				<span class="username"><mk-acct :user="p.user"/></span>
-				<div class="info">
-					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
-					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
-					<router-link class="created-at" :to="p | notePage">
-						<mk-time :time="p.createdAt"/>
-					</router-link>
-					<span class="visibility" v-if="p.visibility != 'public'">
-						<template v-if="p.visibility == 'home'">%fa:home%</template>
-						<template v-if="p.visibility == 'followers'">%fa:unlock%</template>
-						<template v-if="p.visibility == 'specified'">%fa:envelope%</template>
-						<template v-if="p.visibility == 'private'">%fa:lock%</template>
-					</span>
-				</div>
-			</header>
+			<mk-note-header class="header" :note="p"/>
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
@@ -409,64 +390,8 @@ root(isDark)
 			flex 1
 			min-width 0
 
-			> header
-				display flex
-				align-items baseline
+			> .header
 				margin-bottom 4px
-				white-space nowrap
-
-				> .name
-					display block
-					margin 0 .5em 0 0
-					padding 0
-					overflow hidden
-					color isDark ? #fff : #627079
-					font-size 1em
-					font-weight bold
-					text-decoration none
-					text-overflow ellipsis
-
-					&:hover
-						text-decoration underline
-
-				> .is-admin
-				> .is-bot
-				> .is-cat
-					align-self center
-					margin 0 .5em 0 0
-					padding 1px 6px
-					font-size 12px
-					color isDark ? #758188 : #aaa
-					border solid 1px isDark ? #57616f : #ddd
-					border-radius 3px
-
-					&.is-admin
-						border-color isDark ? #d42c41 : #f56a7b
-						color isDark ? #d42c41 : #f56a7b
-
-				> .username
-					margin 0 .5em 0 0
-					overflow hidden
-					text-overflow ellipsis
-					color isDark ? #606984 : #ccc
-
-				> .info
-					margin-left auto
-					font-size 0.9em
-
-					> *
-						color isDark ? #606984 : #c0c0c0
-
-					> .mobile
-						margin-right 8px
-
-					> .app
-						margin-right 8px
-						padding-right 8px
-						border-right solid 1px isDark ? #1c2023 : #eaeaea
-
-					> .visibility
-						margin-left 8px
 
 			> .body
 

@@ -2,6 +2,7 @@ import Vue from 'vue';
 
 import analogClock from './analog-clock.vue';
 import menu from './menu.vue';
+import noteHeader from './note-header.vue';
 import signin from './signin.vue';
 import signup from './signup.vue';
 import forkit from './forkit.vue';
@@ -31,6 +32,7 @@ import welcomeTimeline from './welcome-timeline.vue';
 
 Vue.component('mk-analog-clock', analogClock);
 Vue.component('mk-menu', menu);
+Vue.component('mk-note-header', noteHeader);
 Vue.component('mk-signin', signin);
 Vue.component('mk-signup', signup);
 Vue.component('mk-forkit', forkit);
