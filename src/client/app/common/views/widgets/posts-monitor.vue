@@ -7,30 +7,6 @@
 		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }" :data-darkmode="$store.state.device.darkmode">
 			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" v-show="props.view != 2">
 				<defs>
-					<linearGradient :id="fediGradientId" x1="0" x2="0" y1="1" y2="0">
-						<stop offset="0%" stop-color="hsl(200, 80%, 70%)"></stop>
-						<stop offset="100%" stop-color="hsl(90, 80%, 70%)"></stop>
-					</linearGradient>
-					<mask :id="fediMaskId" x="0" y="0" :width="viewBoxX" :height="viewBoxY">
-						<polygon
-							:points="fediPolygonPoints"
-							fill="#fff"
-							fill-opacity="0.5"/>
-						<polyline
-							:points="fediPolylinePoints"
-							fill="none"
-							stroke="#fff"
-							stroke-width="1"/>
-					</mask>
-				</defs>
-				<rect
-					x="-1" y="-1"
-					:width="viewBoxX + 2" :height="viewBoxY + 2"
-					:style="`stroke: none; fill: url(#${ fediGradientId }); mask: url(#${ fediMaskId })`"/>
-				<text x="1" y="5">Fedi</text>
-			</svg>
-			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" v-show="props.view != 1">
-				<defs>
 					<linearGradient :id="localGradientId" x1="0" x2="0" y1="1" y2="0">
 						<stop offset="0%" stop-color="hsl(200, 80%, 70%)"></stop>
 						<stop offset="100%" stop-color="hsl(90, 80%, 70%)"></stop>
@@ -52,6 +28,30 @@
 					:width="viewBoxX + 2" :height="viewBoxY + 2"
 					:style="`stroke: none; fill: url(#${ localGradientId }); mask: url(#${ localMaskId })`"/>
 				<text x="1" y="5">Local</text>
+			</svg>
+			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" v-show="props.view != 1">
+				<defs>
+					<linearGradient :id="fediGradientId" x1="0" x2="0" y1="1" y2="0">
+						<stop offset="0%" stop-color="hsl(200, 80%, 70%)"></stop>
+						<stop offset="100%" stop-color="hsl(90, 80%, 70%)"></stop>
+					</linearGradient>
+					<mask :id="fediMaskId" x="0" y="0" :width="viewBoxX" :height="viewBoxY">
+						<polygon
+							:points="fediPolygonPoints"
+							fill="#fff"
+							fill-opacity="0.5"/>
+						<polyline
+							:points="fediPolylinePoints"
+							fill="none"
+							stroke="#fff"
+							stroke-width="1"/>
+					</mask>
+				</defs>
+				<rect
+					x="-1" y="-1"
+					:width="viewBoxX + 2" :height="viewBoxY + 2"
+					:style="`stroke: none; fill: url(#${ fediGradientId }); mask: url(#${ fediMaskId })`"/>
+				<text x="1" y="5">Fedi</text>
 			</svg>
 		</div>
 	</mk-widget-container>
