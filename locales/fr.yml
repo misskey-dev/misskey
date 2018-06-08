@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "Une planète du fédiverse"
   about-title: "Une ⭐ du fédiverse."
-  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
+  about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   time:
     unknown: "inconnu"
     future: "future"
@@ -24,7 +24,7 @@ common:
     wednesday: "M"
     thursday: "J"
     friday: "V"
-    saturday: "土"
+    saturday: "S"
   reactions:
     like: "Aime"
     love: "Adore"
@@ -78,13 +78,13 @@ common:
     list: "Liste"
     swap-left: "Déplacer à gauche"
     swap-right: "Déplacer à droite"
-    swap-up: "上に移動"
-    swap-down: "下に移動"
+    swap-up: "Vers le haut"
+    swap-down: "Vers le bas"
     remove: "Supprimer"
     add-column: "Ajouter une colonne"
     rename: "Renommer"
-    stack-left: "左に重ねる"
-    pop-right: "右に出す"
+    stack-left: "Vers la gauche"
+    pop-right: "Vers la droite"
 common/views/components/connect-failed.vue:
   title: "Impossible de se connecter au server."
   description: "Il y a soit un problème avec votre connexion internet, soit le serveur est hors-ligne ou en maintenance. Veuillez {ressayer} plus tard."
@@ -308,7 +308,7 @@ desktop/views/components/drive.vue:
 desktop/views/components/follow-button.vue:
   following: "Abonnements"
   follow: "Suivre"
-  request-pending: "フォロー許可待ち"
+  request-pending: "En attente d'approbation"
   follow-request: "Demande d'abonnement"
 desktop/views/components/followers-window.vue:
   followers: "{} abonnés"
@@ -320,7 +320,7 @@ desktop/views/components/following.vue:
   empty: "Vous ne suivez aucun compte."
 desktop/views/components/friends-maker.vue:
   title: "Utilisateurs recommandés :"
-  empty: "おすすめのユーザーは見つかりませんでした。"
+  empty: "Impossible de trouver des utilisateurs à recommander."
   fetching: "Chargement"
   refresh: "Plus"
   close: "Fermer"
@@ -411,7 +411,7 @@ desktop/views/components/settings.vue:
   behaviour: "Comportement"
   fetch-on-scroll: "Chargement lors du défilement"
   fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
-  auto-popout: "ウィンドウの自動ポップアウト"
+  auto-popout: "Fenêtre contextuelle automatique"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
   advanced: "Paramètres avancés"
   api-via-stream: "Requête API via le flux"
@@ -810,7 +810,7 @@ mobile/views/pages/selectdrive.vue:
 mobile/views/pages/settings.vue:
   signed-in-as: "Connecté en tant que {}"
   lang: "Langue"
-  lang-tip: "変更はページの再読み込み後に反映されます。"
+  lang-tip: "Le rechargement de la page est requis afin d'appliquer les modifications."
   recommended: "Recommandé"
   auto: "Automatique"
   specify-language: "Spécifier la langue"
