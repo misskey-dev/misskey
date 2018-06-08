@@ -59,7 +59,7 @@ export default Vue.extend({
 	created() {
 		if (this.mode == 'relative' || this.mode == 'detail') {
 			this.tick();
-			this.tickId = setInterval(this.tick, 5000);
+			this.tickId = setInterval(this.tick, 10000);
 		}
 	},
 	destroyed() {
