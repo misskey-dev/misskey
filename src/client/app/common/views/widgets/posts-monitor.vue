@@ -121,15 +121,15 @@ export default define({
 			this.save();
 		},
 		draw() {
-			const stats = this.props.view == 0 ? this.stats.slice(0, 50) : this.stats;
-			const fediPeak = Math.max.apply(null, this.stats.map(x => x.all)) || 1;
-			const localPeak = Math.max.apply(null, this.stats.map(x => x.local)) || 1;
+			const stats = this.props.view == 0 ? this.stats.slice(50, 100) : this.stats;
+			const fediPeak = Math.max.apply(null, stats.map(x => x.all)) || 1;
+			const localPeak = Math.max.apply(null, stats.map(x => x.local)) || 1;
 
-			this.fediPolylinePoints = this.stats.map((s, i) => `${this.viewBoxX - ((this.stats.length - 1) - i)},${(1 - (s.all / fediPeak)) * this.viewBoxY}`).join(' ');
-			this.localPolylinePoints = this.stats.map((s, i) => `${this.viewBoxX - ((this.stats.length - 1) - i)},${(1 - (s.local / localPeak)) * this.viewBoxY}`).join(' ');
+			this.fediPolylinePoints = stats.map((s, i) => `${this.viewBoxX - ((stats.length - 1) - i)},${(1 - (s.all / fediPeak)) * this.viewBoxY}`).join(' ');
+			this.localPolylinePoints = stats.map((s, i) => `${this.viewBoxX - ((stats.length - 1) - i)},${(1 - (s.local / localPeak)) * this.viewBoxY}`).join(' ');
 
-			this.fediPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.fediPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
-			this.localPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.localPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
+			this.fediPolygonPoints = `${this.viewBoxX - (stats.length - 1)},${ this.viewBoxY } ${ this.fediPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
+			this.localPolygonPoints = `${this.viewBoxX - (stats.length - 1)},${ this.viewBoxY } ${ this.localPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 		},
 		onStats(stats) {
 			this.stats.push(stats);
