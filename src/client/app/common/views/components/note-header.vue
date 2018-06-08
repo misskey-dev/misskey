@@ -75,7 +75,7 @@ root(isDark)
 		align-self center
 		margin 0 .5em 0 0
 		padding 1px 6px
-		font-size 12px
+		font-size 80%
 		color isDark ? #758188 : #aaa
 		border solid 1px isDark ? #57616f : #ddd
 		border-radius 3px
