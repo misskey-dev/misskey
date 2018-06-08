@@ -76,9 +76,15 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.connection.on('stats', this.onStats);
+		this.connection.on('statsLog', this.onStatsLog);
+		this.connection.send({
+			type: 'requestLog',
+			id: Math.random().toString()
+		});
 	},
 	beforeDestroy() {
 		this.connection.off('stats', this.onStats);
+		this.connection.off('statsLog', this.onStatsLog);
 	},
 	methods: {
 		onStats(stats) {
@@ -94,6 +100,9 @@ export default Vue.extend({
 
 			this.cpuP = (stats.cpu_usage * 100).toFixed(0);
 			this.memP = (stats.mem.used / stats.mem.total * 100).toFixed(0);
+		},
+		onStatsLog(statsLog) {
+			statsLog.forEach(stats => this.onStats(stats));
 		}
 	}
 });

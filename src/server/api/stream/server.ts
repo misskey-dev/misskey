@@ -11,9 +11,25 @@ export default function(request: websocket.request, connection: websocket.connec
 		}));
 	};
 
-	ev.addListener('stats', onStats);
+	connection.on('message', async data => {
+		const msg = JSON.parse(data.utf8Data);
+
+		switch (msg.type) {
+			case 'requestLog':
+				ev.once('serverStatsLog:' + msg.id, statsLog => {
+					connection.send(JSON.stringify({
+						type: 'statsLog',
+						body: statsLog
+					}));
+				});
+				ev.emit('requestServerStatsLog', msg.id);
+				break;
+		}
+	});
+
+	ev.addListener('serverStats', onStats);
 
 	connection.on('close', () => {
-		ev.removeListener('stats', onStats);
+		ev.removeListener('serverStats', onStats);
 	});
 }

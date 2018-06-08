@@ -9,10 +9,16 @@ const ev = new Xev();
  * Report stats regularly
  */
 export default function() {
+	const log = [];
+
+	ev.on('requestServerStatsLog', id => {
+		ev.emit('serverStatsLog:' + id, log);
+	});
+
 	setInterval(() => {
 		osUtils.cpuUsage(cpuUsage => {
 			const disk = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
-			ev.emit('stats', {
+			const stats = {
 				cpu_usage: cpuUsage,
 				mem: {
 					total: os.totalmem(),
@@ -21,7 +27,10 @@ export default function() {
 				disk,
 				os_uptime: os.uptime(),
 				process_uptime: process.uptime()
-			});
+			};
+			ev.emit('serverStats', stats);
+			log.push(stats);
+			if (log.length > 50) log.shift();
 		});
 	}, 1000);
 }
