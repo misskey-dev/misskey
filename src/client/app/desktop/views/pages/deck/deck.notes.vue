@@ -31,7 +31,7 @@ import Vue from 'vue';
 
 import XNote from './deck.note.vue';
 
-const displayLimit = 30;
+const displayLimit = 20;
 
 export default Vue.extend({
 	components: {

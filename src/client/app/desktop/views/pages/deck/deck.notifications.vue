@@ -21,20 +21,27 @@
 import Vue from 'vue';
 import XNotification from './deck.notification.vue';
 
+const displayLimit = 20;
+
 export default Vue.extend({
 	components: {
 		XNotification
 	},
+
+	inject: ['column', 'isScrollTop', 'count'],
+
 	data() {
 		return {
 			fetching: true,
 			fetchingMoreNotifications: false,
 			notifications: [],
+			queue: [],
 			moreNotifications: false,
 			connection: null,
 			connectionId: null
 		};
 	},
+
 	computed: {
 		_notifications(): any[] {
 			return (this.notifications as any).map(notification => {
@@ -46,11 +53,21 @@ export default Vue.extend({
 			});
 		}
 	},
+
+	watch: {
+		queue(q) {
+			this.count(q.length);
+		}
+	},
+
 	mounted() {
 		this.connection = (this as any).os.stream.getConnection();
 		this.connectionId = (this as any).os.stream.use();
 
 		this.connection.on('notification', this.onNotification);
+
+		this.column.$on('top', this.onTop);
+		this.column.$on('bottom', this.onBottom);
 
 		const max = 10;
 
@@ -66,10 +83,15 @@ export default Vue.extend({
 			this.fetching = false;
 		});
 	},
+
 	beforeDestroy() {
 		this.connection.off('notification', this.onNotification);
 		(this as any).os.stream.dispose(this.connectionId);
+
+		this.column.$off('top', this.onTop);
+		this.column.$off('bottom', this.onBottom);
 	},
+
 	methods: {
 		fetchMoreNotifications() {
 			this.fetchingMoreNotifications = true;
@@ -90,6 +112,7 @@ export default Vue.extend({
 				this.fetchingMoreNotifications = false;
 			});
 		},
+
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
 			this.connection.send({
@@ -97,7 +120,34 @@ export default Vue.extend({
 				id: notification.id
 			});
 
-			this.notifications.unshift(notification);
+			this.prepend(notification);
+		},
+
+		prepend(notification) {
+			if (this.isScrollTop()) {
+				// Prepend the notification
+				this.notifications.unshift(notification);
+
+				// オーバーフローしたら古い通知は捨てる
+				if (this.notifications.length >= displayLimit) {
+					this.notifications = this.notifications.slice(0, displayLimit);
+				}
+			} else {
+				this.queue.push(notification);
+			}
+		},
+
+		releaseQueue() {
+			this.queue.forEach(n => this.prepend(n));
+			this.queue = [];
+		},
+
+		onTop() {
+			this.releaseQueue();
+		},
+
+		onBottom() {
+			this.fetchMoreNotifications();
 		}
 	}
 });
