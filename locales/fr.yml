@@ -810,7 +810,7 @@ mobile/views/pages/selectdrive.vue:
 mobile/views/pages/settings.vue:
   signed-in-as: "Connecté en tant que {}"
   lang: "Langue"
-  lang-tip: "変更はページの再読み込み後に反映されます。"
+  lang-tip: "Le rechargement de la page est requis afin d'appliquer les modifications."
   recommended: "Recommandé"
   auto: "Automatique"
   specify-language: "Spécifier la langue"
