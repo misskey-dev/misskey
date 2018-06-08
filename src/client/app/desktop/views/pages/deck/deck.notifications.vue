@@ -96,7 +96,7 @@ export default Vue.extend({
 		fetchMoreNotifications() {
 			this.fetchingMoreNotifications = true;
 
-			const max = 30;
+			const max = 20;
 
 			(this as any).api('i/notifications', {
 				limit: max + 1,
