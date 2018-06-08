@@ -16,6 +16,8 @@ ultimately sophisticated new type of mini-blog based SNS.
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
+![](https://c10.patreonusercontent.com/3/e30%3D/patreon-posts/RsKWEDEKf8D_wYDQWAbex9CSb-1DnXW1nfqfLvuys5ROj2k0VF6_luuzHMTyf95n.png?token-time=1529539200&token-hash=RmcSP0947mw5o2-B6g1L6aU_OoDXANe198kLU6HMO30%3D)
+
 :sparkles: Features
 ----------------------------------------------------------------
 * Reactions
