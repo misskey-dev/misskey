@@ -57,6 +57,7 @@ common:
     memo: "Note"
     trends: "Tendances"
     photo-stream: "Flux de photos"
+    posts-monitor: "投稿チャート"
     slideshow: "Diaporama"
     version: "Version"
     broadcast: "Diffusion"
@@ -220,6 +221,9 @@ common/views/widgets/donation.vue:
 common/views/widgets/photo-stream.vue:
   title: "Flux de photo"
   no-photos: "Pas de photos"
+common/views/widgets/posts-monitor.vue:
+  title: "投稿チャート"
+  toggle: "表示を切り替え"
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
