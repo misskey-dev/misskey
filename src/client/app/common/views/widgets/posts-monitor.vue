@@ -12,6 +12,10 @@
 						<stop offset="100%" stop-color="hsl(90, 80%, 70%)"></stop>
 					</linearGradient>
 					<mask :id="fediMaskId" x="0" y="0" :width="viewBoxX" :height="viewBoxY">
+						<polygon
+							:points="fediPolygonPoints"
+							fill="#fff"
+							fill-opacity="0.5"/>
 						<polyline
 							:points="fediPolylinePoints"
 							fill="none"
@@ -32,6 +36,10 @@
 						<stop offset="100%" stop-color="hsl(90, 80%, 70%)"></stop>
 					</linearGradient>
 					<mask :id="localMaskId" x="0" y="0" :width="viewBoxX" :height="viewBoxY">
+						<polygon
+							:points="localPolygonPoints"
+							fill="#fff"
+							fill-opacity="0.5"/>
 						<polyline
 							:points="localPolylinePoints"
 							fill="none"
@@ -121,7 +129,7 @@ export default define({
 			this.save();
 		},
 		draw() {
-			const stats = this.props.view == 0 ? this.stats.slice(50, 100) : this.stats;
+			const stats = this.props.view == 0 ? this.stats.slice(-50) : this.stats;
 			const fediPeak = Math.max.apply(null, stats.map(x => x.all)) || 1;
 			const localPeak = Math.max.apply(null, stats.map(x => x.local)) || 1;
 
