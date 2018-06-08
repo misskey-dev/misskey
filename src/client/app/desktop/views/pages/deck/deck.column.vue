@@ -1,14 +1,15 @@
 <template>
-<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging }">
+<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
+		@dragover.prevent.stop="onDragover"
+		@dragenter.prevent="onDragenter"
+		@dragleave="onDragleave"
+		@drop.prevent.stop="onDrop"
+>
 	<header :class="{ indicate: count > 0 }"
 			draggable="true"
 			@click="toggleActive"
 			@dragstart="onDragstart"
 			@dragend="onDragend"
-			@dragover.prevent.stop="onDragover"
-			@dragenter.prevent="onDragenter"
-			@dragleave="onDragleave"
-			@drop.prevent.stop="onDrop"
 		>
 		<slot name="header"></slot>
 		<span class="count" v-if="count > 0">({{ count }})</span>
@@ -64,7 +65,8 @@ export default Vue.extend({
 			count: 0,
 			active: true,
 			dragging: false,
-			draghover: false
+			draghover: false,
+			dropready: false
 		};
 	},
 
@@ -73,6 +75,9 @@ export default Vue.extend({
 			if (v && this.isScrollTop()) {
 				this.$emit('top');
 			}
+		},
+		dragging(v) {
+			this.$root.$emit(v ? 'deck.column.dragStart' : 'deck.column.dragEnd');
 		}
 	},
 
@@ -86,12 +91,25 @@ export default Vue.extend({
 
 	mounted() {
 		this.$refs.body.addEventListener('scroll', this.onScroll, { passive: true });
+		this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
+		this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
 	},
+
 	beforeDestroy() {
 		this.$refs.body.removeEventListener('scroll', this.onScroll);
+		this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
+		this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
 	},
 
 	methods: {
+		onOtherDragStart() {
+			this.dropready = true;
+		},
+
+		onOtherDragEnd() {
+			this.dropready = false;
+		},
+
 		toggleActive() {
 			if (!this.isStacked) return;
 			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
@@ -208,6 +226,7 @@ export default Vue.extend({
 
 		onDrop(e) {
 			this.draghover = false;
+			this.$root.$emit('deck.column.dragEnd');
 
 			const id = e.dataTransfer.getData('mk-deck-column');
 			if (id != null && id != '') {
@@ -236,8 +255,14 @@ root(isDark)
 	overflow hidden
 
 	&.draghover
+		box-shadow 0 0 0 2px rgba($theme-color, 0.8)
+
 	&.dragging
-		box-shadow 0 0 0 2px rgba($theme-color, 0.7)
+		box-shadow 0 0 0 2px rgba($theme-color, 0.4)
+
+	&.dropready
+		*
+			pointer-events none
 
 	&:not(.active)
 		flex-basis $header-height
