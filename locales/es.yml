@@ -57,6 +57,7 @@ common:
     memo: "メモ"
     trends: "トレンド"
     photo-stream: "フォトストリーム"
+    posts-monitor: "投稿チャート"
     slideshow: "スライドショー"
     version: "バージョン"
     broadcast: "ブロードキャスト"
@@ -220,6 +221,9 @@ common/views/widgets/donation.vue:
 common/views/widgets/photo-stream.vue:
   title: "フォトストリーム"
   no-photos: "写真はありません"
+common/views/widgets/posts-monitor.vue:
+  title: "投稿チャート"
+  toggle: "表示を切り替え"
 common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
