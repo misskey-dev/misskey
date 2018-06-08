@@ -1,6 +1,6 @@
 <template>
 <div class="mk-ui" :style="style">
-	<x-header class="header"/>
+	<x-header class="header" v-show="!zenMode"/>
 	<div class="content">
 		<slot></slot>
 	</div>
@@ -15,6 +15,11 @@ import XHeader from './ui.header.vue';
 export default Vue.extend({
 	components: {
 		XHeader
+	},
+	data() {
+		return {
+			zenMode: false
+		};
 	},
 	computed: {
 		style(): any {
@@ -38,6 +43,11 @@ export default Vue.extend({
 			if (e.which == 80 || e.which == 78) { // p or n
 				e.preventDefault();
 				(this as any).apis.post();
+			}
+
+			if (e.which == 90) { // z
+				e.preventDefault();
+				this.zenMode = !this.zenMode;
 			}
 		}
 	}
