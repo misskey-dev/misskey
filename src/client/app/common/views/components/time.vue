@@ -58,18 +58,21 @@ export default Vue.extend({
 	},
 	created() {
 		if (this.mode == 'relative' || this.mode == 'detail') {
-			this.tick();
-			this.tickId = setInterval(this.tick, 10000);
+			this.tickId = window.requestAnimationFrame(this.tick);
 		}
 	},
 	destroyed() {
 		if (this.mode === 'relative' || this.mode === 'detail') {
-			clearInterval(this.tickId);
+			window.clearTimeout(this.tickId);
 		}
 	},
 	methods: {
 		tick() {
 			this.now = new Date();
+
+			this.tickId = setTimeout(() => {
+				window.requestAnimationFrame(this.tick);
+			}, 10000);
 		}
 	}
 });
