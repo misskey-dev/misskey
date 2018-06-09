@@ -64,7 +64,7 @@ common:
     notifications: "Benachrichtigungen"
     users: "Empfohlene Benutzer"
     polls: "Umfragen"
-    post-form: "投稿フォーム"
+    post-form: "Beitragsform"
     messaging: "Nachrichten"
     server: "Server-Info"
     donation: "Spenden"
@@ -84,7 +84,7 @@ common:
     remove: "Spalte löschen"
     add-column: "Eine Spalte hinzufügen"
     rename: "Umbenennen"
-    stack-left: "左に重ねる"
+    stack-left: "Nach links schichten"
     pop-right: "右に出す"
 common/views/components/connect-failed.vue:
   title: "Verbindung zum Server ist fehlgeschlagen"
@@ -471,7 +471,7 @@ desktop/views/components/settings.vue:
   experimental: "実験的機能を有効にする"
   experimental-desc: "Experimentelle Funktionen können die Stabilität von Misskey beeinträchtigen. Diese Einstellung wird im Browser gespeichert."
   tools: "Werkzeuge"
-  task-manager: "タスクマネージャ"
+  task-manager: "Taskmanager"
   third-parties: "サードパーティ"
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
@@ -525,7 +525,7 @@ desktop/views/components/sub-note-content.vue:
   media-count: "{}つのメディア"
   poll: "投票"
 desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
+  title: "Taskmanager"
 desktop/views/components/timeline.vue:
   home: "Home"
   local: "Lokal"
