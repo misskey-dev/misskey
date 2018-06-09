@@ -24,9 +24,9 @@ const handlers = {
 	},
 
 	hashtag({ document }, { hashtag }) {
-		const a = document.createElement('a');
-		a.href = '/search?q=#' + hashtag;
-		a.textContent = hashtag;
+		const span = document.createElement('span');
+		span.textContent = hashtag;
+		document.body.appendChild(span);
 	},
 
 	'inline-code'({ document }, { code }) {
