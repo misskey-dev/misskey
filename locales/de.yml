@@ -476,13 +476,13 @@ desktop/views/components/settings.vue:
 desktop/views/components/settings.2fa.vue:
   intro: "二段階認証を設定すると、サインイン時にパスワードだけでなく、予め登録しておいた物理的なデバイス(例えばあなたのスマートフォンなど)も必要になり、よりセキュリティが向上します。"
   detail: "詳細..."
-  url: "https://www.google.co.jp/intl/ja/landing/2step/"
+  url: "https://www.google.de/intl/de/landing/2step/"
   caution: "登録したデバイスを紛失するなどした場合、Misskeyにサインインできなくなりますのでご注意ください。"
-  register: "デバイスを登録する"
-  already-registered: "既に設定は完了しています。"
-  unregister: "設定を解除"
-  unregistered: "二段階認証が無効になりました。"
-  enter-password: "パスワードを入力してください"
+  register: "Ein Gerät registrieren"
+  already-registered: "Das Gerät wurde bereits registriert"
+  unregister: "Abschalten"
+  unregistered: "Zwei-Faktor-Authentifizierung wurde deaktiviert."
+  enter-password: "Bitte Passwort eingeben"
   authenticator: "まず、Google Authenticatorをお使いのデバイスにインストールします:"
   howtoinstall: "インストール方法はこちら"
   scan: "次に、表示されているQRコードをスキャンします:"
@@ -497,7 +497,7 @@ desktop/views/components/settings.api.vue:
   regeneration-of-token: "万が一このトークンが漏れたりその可能性がある場合はトークンを再生成できます。"
   regenerate-token: "トークンを再生成"
   token: "Token:"
-  enter-password: "パスワードを入力してください"
+  enter-password: "Bitte Passwort eingeben"
 desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 desktop/views/components/settings.mute.vue:
