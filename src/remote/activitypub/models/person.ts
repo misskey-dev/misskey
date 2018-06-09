@@ -118,19 +118,33 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 	}
 
 	//#region アイコンとヘッダー画像をフェッチ
-	const [avatarId, bannerId] = (await Promise.all([
+	const [avatar, banner] = (await Promise.all<IDriveFile>([
 		person.icon,
 		person.image
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
 			: resolveImage(user, img)
-	))).map(file => file != null ? file._id : null);
+	)));
 
-	User.update({ _id: user._id }, { $set: { avatarId, bannerId } });
+	const avatarId = avatar ? avatar._id : null;
+	const bannerId = banner ? banner._id : null;
+	const avatarUrl = avatar && avatar.metadata.isMetaOnly ? avatar.metadata.url : null;
+	const bannerUrl = banner && banner.metadata.isMetaOnly ? banner.metadata.url : null;
+
+	await User.update({ _id: user._id }, {
+		$set: {
+			avatarId,
+			bannerId,
+			avatarUrl,
+			bannerUrl
+		}
+	});
 
 	user.avatarId = avatarId;
 	user.bannerId = bannerId;
+	user.avatarUrl = avatarUrl;
+	user.bannerUrl = bannerUrl;
 	//#endregion
 
 	return user;

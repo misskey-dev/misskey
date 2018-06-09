@@ -48,6 +48,8 @@ type IUserBase = {
 	usernameLower: string;
 	avatarId: mongo.ObjectID;
 	bannerId: mongo.ObjectID;
+	avatarUrl?: string;
+	bannerUrl?: string;
 	wallpaperId: mongo.ObjectID;
 	data: any;
 	description: string;
