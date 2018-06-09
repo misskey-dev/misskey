@@ -24,9 +24,11 @@ const handlers = {
 	},
 
 	hashtag({ document }, { hashtag }) {
-		const span = document.createElement('span');
-		span.textContent = '#' + hashtag;
-		document.body.appendChild(span);
+		const a = document.createElement('a');
+		a.href = config.url + '/search?q=#' + hashtag;
+		a.textContent = '#' + hashtag;
+		a.setAttribute('rel', 'tag');
+		document.body.appendChild(a);
 	},
 
 	'inline-code'({ document }, { code }) {
