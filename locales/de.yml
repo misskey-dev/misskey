@@ -54,7 +54,7 @@ common:
     timemachine: "Kalender (Zeitmaschiene)"
     activity: "Aktivitäten"
     rss: "RSS Leser"
-    memo: "Notizen"
+    memo: "付箋"
     trends: "Trends"
     photo-stream: "Bilder"
     posts-monitor: "投稿チャート"
@@ -63,7 +63,7 @@ common:
     broadcast: "ブロードキャスト"
     notifications: "Benachrichtigungen"
     users: "Empfohlene Benutzer"
-    polls: "Umfragen"
+    polls: "アンケート"
     post-form: "Beitragsform"
     messaging: "Nachrichten"
     server: "Server-Info"
@@ -151,11 +151,11 @@ common/views/components/poll.vue:
   show-result: "Zeige Ergebnis"
   voted: "Abgestimmt"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "Du musst zwei oder mehr Entscheidungen angeben"
+  no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
   choice-n: "Auswahl {}"
   remove: "Diese Auswahl entfernen"
   add: "+ Eine Auswahl hinzufügen"
-  destroy: "Diese Abstimmung löschen"
+  destroy: "アンケートを破棄"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wähle eine Reaktion aus"
 common/views/components/signin.vue:
@@ -228,7 +228,7 @@ common/views/widgets/server.vue:
   title: "Serverinformationen"
   toggle: "Sicht umschalten"
 common/views/widgets/memo.vue:
-  title: "Notizen"
+  title: "付箋"
   memo: "Schreib hier!"
   save: "Speichern"
 desktop/views/components/activity.chart.vue:
@@ -380,7 +380,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-drive: "Medien von deinem Speicher hinzufügen"
   attach-cancel: "Hinzufügen abbrechen"
   insert-a-kao: "v(‘ω’)v"
-  create-poll: "Eine Abstimmung erstellen"
+  create-poll: "アンケートを作成"
   text-remain: "{} Zeichen verbleibend"
 desktop/views/components/post-form-window.vue:
   note: "Neue Notiz"
@@ -523,7 +523,7 @@ desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
-  poll: "投票"
+  poll: "アンケート"
 desktop/views/components/taskmanager.vue:
   title: "Taskmanager"
 desktop/views/components/timeline.vue:
@@ -573,6 +573,9 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
+desktop/views/pages/deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"
@@ -636,7 +639,7 @@ desktop/views/widgets/notifications.vue:
   title: "通知"
   settings: "通知の設定"
 desktop/views/widgets/polls.vue:
-  title: "投票"
+  title: "アンケート"
   refresh: "他を見る"
   nothing: "ありません！"
 desktop/views/widgets/post-form.vue:
@@ -735,7 +738,7 @@ mobile/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
-  poll: "投票"
+  poll: "アンケート"
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
   load-more: "もっと"
