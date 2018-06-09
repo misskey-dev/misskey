@@ -13,21 +13,25 @@ export default Vue.extend({
 		items() {
 			const items = [];
 			items.push({
+				icon: '%fa:star%',
 				text: '%i18n:@favorite%',
 				action: this.favorite
 			});
 			if (this.note.userId == this.$store.state.i.id) {
 				items.push({
+					icon: '%fa:thumbtack%',
 					text: '%i18n:@pin%',
 					action: this.pin
 				});
 				items.push({
+					icon: '%fa:trash-alt R%',
 					text: '%i18n:@delete%',
 					action: this.del
 				});
 			}
 			if (this.note.uri) {
 				items.push({
+					icon: '%fa:external-link-square-alt%',
 					text: '%i18n:@remote%',
 					action: () => {
 						window.open(this.note.uri, '_blank');
