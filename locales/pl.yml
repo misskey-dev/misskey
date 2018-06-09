@@ -54,16 +54,16 @@ common:
     timemachine: "Kalendarz (wehikuł czasu)"
     activity: "Aktywność"
     rss: "Czytnik RSS"
-    memo: "Notatki"
+    memo: "付箋"
     trends: "Na czasie"
     photo-stream: "Photostream"
-    posts-monitor: "投稿チャート"
+    posts-monitor: "Wykres wpisów"
     slideshow: "Pokaz slajdów"
     version: "Wersja"
     broadcast: "Transmisja"
     notifications: "Powiadomienia"
     users: "Polecani użytkownicy"
-    polls: "Ankiety"
+    polls: "アンケート"
     post-form: "Formularz tworzenia"
     messaging: "Wiadomości"
     server: "Informacje o serwerze"
@@ -151,11 +151,11 @@ common/views/components/poll.vue:
   show-result: "Pokaż wyniki"
   voted: "Zagłosowano"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "Musisz wprowadzić dwie lub więcej opcji."
+  no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
   choice-n: "Opcja {}"
   remove: "Usuń tą opcję"
   add: "+ Dodaj opcję"
-  destroy: "Usuń ankietę"
+  destroy: "アンケートを破棄"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wybierz reakcję"
 common/views/components/signin.vue:
@@ -222,13 +222,13 @@ common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "Brak zdjęć"
 common/views/widgets/posts-monitor.vue:
-  title: "投稿チャート"
-  toggle: "表示を切り替え"
+  title: "Wykres wpisów"
+  toggle: "Przełącz widok"
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
 common/views/widgets/memo.vue:
-  title: "Notatki"
+  title: "付箋"
   memo: "Napisz tutaj!"
   save: "Zapisz"
 desktop/views/components/activity.chart.vue:
@@ -380,7 +380,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
   attach-cancel: "Usuń załącznik"
   insert-a-kao: "v(‘ω’)v"
-  create-poll: "Utwórz ankietę"
+  create-poll: "アンケートを作成"
   text-remain: "pozostałe znaki: {}"
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
@@ -523,7 +523,7 @@ desktop/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
   media-count: "{}zawartości multimedialnej"
-  poll: "Ankiety"
+  poll: "アンケート"
 desktop/views/components/taskmanager.vue:
   title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
@@ -573,6 +573,9 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Zamknij"
+desktop/views/pages/deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   gotit: "Rozumiem!"
@@ -636,7 +639,7 @@ desktop/views/widgets/notifications.vue:
   title: "Powiadomienia"
   settings: "Ustawienia"
 desktop/views/widgets/polls.vue:
-  title: "Ankiety"
+  title: "アンケート"
   refresh: "Pokaż inne"
   nothing: "Pusto"
 desktop/views/widgets/post-form.vue:
@@ -735,7 +738,7 @@ mobile/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
   media-count: "{}zawartości multimedialnej"
-  poll: "Ankieta"
+  poll: "アンケート"
 mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
   load-more: "Więcej"

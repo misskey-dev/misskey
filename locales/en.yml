@@ -54,10 +54,10 @@ common:
     timemachine: "Calendar (Time Machine)"
     activity: "Activity"
     rss: "RSS reader"
-    memo: "Memo"
+    memo: "Sticky note"
     trends: "Trends"
     photo-stream: "Photo stream"
-    posts-monitor: "投稿チャート"
+    posts-monitor: "Chart of posts"
     slideshow: "Slideshow"
     version: "Version"
     broadcast: "Broadcast"
@@ -222,13 +222,13 @@ common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "No photos"
 common/views/widgets/posts-monitor.vue:
-  title: "投稿チャート"
-  toggle: "表示を切り替え"
+  title: "Chart of posts"
+  toggle: "Toggle views"
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
 common/views/widgets/memo.vue:
-  title: "Memo"
+  title: "Sticky note"
   memo: "Write here!"
   save: "Save"
 desktop/views/components/activity.chart.vue:
@@ -430,7 +430,7 @@ desktop/views/components/settings.vue:
   show-my-renotes: "Show my reposts in the timeline"
   show-renoted-my-notes: "Show my posts that have been shared in the timeline"
   show-maps: "Show the map"
-  show-maps-desc: "Automatically show the map of the location attached to the post."
+  show-maps-desc: "Automatically show the location on the map attached to this post."
   sound: "Sound"
   enable-sounds: "Enable sound"
   enable-sounds-desc: "Play a sound when you receive a post/message. This setting is stored in the browser."
@@ -523,7 +523,7 @@ desktop/views/components/sub-note-content.vue:
   private: "this post is private"
   deleted: "this post has been deleted"
   media-count: "{} media attached"
-  poll: "Polls"
+  poll: "Poll"
 desktop/views/components/taskmanager.vue:
   title: "Task Manager"
 desktop/views/components/timeline.vue:
@@ -573,6 +573,9 @@ desktop/views/components/users-list-item.vue:
 desktop/views/components/window.vue:
   popout: "Popout"
   close: "Close"
+desktop/views/pages/deck/deck.tl-column.vue:
+  is-media-only: "Only media posts"
+  is-media-view: "Media view"
 desktop/views/pages/welcome.vue:
   about: "about"
   gotit: "Got it!"
