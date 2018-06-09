@@ -8,12 +8,12 @@
 		<span>{{ name }}</span>
 	</span>
 
-	<div class="editor" v-if="edit">
+	<div class="editor" style="padding:0 12px" v-if="edit">
 		<mk-switch v-model="column.isMediaOnly" @change="onChangeSettings" text="%i18n:@is-media-only%"/>
 		<mk-switch v-model="column.isMediaView" @change="onChangeSettings" text="%i18n:@is-media-view%"/>
 	</div>
-	<x-list-tl v-if="column.type == 'list'" :list="column.list" :media-only="column.isMediaOnly"/>
-	<x-tl v-else :src="column.type" :media-only="column.isMediaOnly"/>
+	<x-list-tl v-if="column.type == 'list'" :list="column.list" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
+	<x-tl v-else :src="column.type" :media-only="column.isMediaOnly" :media-view="column.isMediaView"/>
 </x-column>
 </template>
 

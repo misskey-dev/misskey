@@ -1,5 +1,5 @@
 <template>
-	<x-notes ref="timeline" :more="existMore ? more : null"/>
+	<x-notes ref="timeline" :more="existMore ? more : null" :media-view="mediaView"/>
 </template>
 
 <script lang="ts">
@@ -20,6 +20,11 @@ export default Vue.extend({
 			required: true
 		},
 		mediaOnly: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		mediaView: {
 			type: Boolean,
 			required: false,
 			default: false

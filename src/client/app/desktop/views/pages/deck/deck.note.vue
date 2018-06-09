@@ -1,5 +1,5 @@
 <template>
-<div class="zyjjkidcqjnlegkqebitfviomuqmseqk" :class="{ renote: isRenote }">
+<div v-if="!mediaView" class="zyjjkidcqjnlegkqebitfviomuqmseqk" :class="{ renote: isRenote }">
 	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
@@ -55,6 +55,14 @@
 		</div>
 	</article>
 </div>
+<div v-else class="srwrkujossgfuhrbnvqkybtzxpblgchi">
+	<div v-if="note.media.length > 0">
+		<mk-media-list :media-list="note.media"/>
+	</div>
+	<div v-if="note.renote && note.renote.media.length > 0">
+		<mk-media-list :media-list="note.renote.media"/>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -71,7 +79,17 @@ export default Vue.extend({
 		XSub
 	},
 
-	props: ['note'],
+	props: {
+		note: {
+			type: Object,
+			required: true
+		},
+		mediaView: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 
 	data() {
 		return {
@@ -199,6 +217,16 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
+mediaRoot(isDark)
+	font-size 13px
+	margin 4px 12px
+
+	&:first-child
+		margin-top 12px
+
+	&:last-child
+		margin-bottom 12px
+
 root(isDark)
 	font-size 13px
 	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
@@ -257,7 +285,7 @@ root(isDark)
 
 	> article
 		display flex
-		padding 16px 16px 9px
+		padding 16px 16px 4px
 
 		> .avatar
 			flex-shrink 0
@@ -408,7 +436,7 @@ root(isDark)
 			> footer
 				> button
 					margin 0
-					padding 8px
+					padding 4px 8px 8px 8px
 					background transparent
 					border none
 					box-shadow none
@@ -435,5 +463,11 @@ root(isDark)
 
 .zyjjkidcqjnlegkqebitfviomuqmseqk:not([data-darkmode])
 	root(false)
+
+.srwrkujossgfuhrbnvqkybtzxpblgchi[data-darkmode]
+	mediaRoot(true)
+
+.srwrkujossgfuhrbnvqkybtzxpblgchi:not([data-darkmode])
+	mediaRoot(false)
 
 </style>

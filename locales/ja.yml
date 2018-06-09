@@ -668,6 +668,10 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 
+desktop/views/pages/deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
   gotit: "わかった"
