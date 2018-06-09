@@ -430,7 +430,7 @@ desktop/views/components/settings.vue:
   show-my-renotes: "Show my reposts in the timeline"
   show-renoted-my-notes: "Show my posts that have been shared in the timeline"
   show-maps: "Show the map"
-  show-maps-desc: "Automatically show the map of the location attached to the post."
+  show-maps-desc: "Automatically show the location on the map attached to this post."
   sound: "Sound"
   enable-sounds: "Enable sound"
   enable-sounds-desc: "Play a sound when you receive a post/message. This setting is stored in the browser."
