@@ -180,6 +180,7 @@ export default (os: MiOS) => new Vuex.Store({
 				removeDeckColumn(state, id) {
 					state.deck.columns = state.deck.columns.filter(c => c.id != id);
 					state.deck.layout = state.deck.layout.map(ids => ids.filter(x => x != id));
+					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},
 
 				swapDeckColumn(state, x) {
