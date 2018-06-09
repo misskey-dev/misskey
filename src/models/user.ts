@@ -405,13 +405,17 @@ export const pack = (
 		delete _user.publicKey;
 	}
 
-	_user.avatarUrl = _user.avatarId != null
-		? `${config.drive_url}/${_user.avatarId}`
-		: `${config.drive_url}/default-avatar.jpg`;
+	if (_user.avatarUrl == null) {
+		_user.avatarUrl = _user.avatarId != null
+			? `${config.drive_url}/${_user.avatarId}`
+			: `${config.drive_url}/default-avatar.jpg`;
+	}
 
-	_user.bannerUrl = _user.bannerId != null
-		? `${config.drive_url}/${_user.bannerId}`
-		: null;
+	if (_user.bannerUrl == null) {
+		_user.bannerUrl = _user.bannerId != null
+			? `${config.drive_url}/${_user.bannerId}`
+			: null;
+	}
 
 	_user.wallpaperUrl = _user.wallpaperId != null
 		? `${config.drive_url}/${_user.wallpaperId}`

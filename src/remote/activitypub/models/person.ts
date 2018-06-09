@@ -9,6 +9,7 @@ import webFinger from '../../webfinger';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, IObject, IPerson } from '../type';
+import { IDriveFile } from '../../../models/drive-file';
 
 const log = debug('misskey:activitypub');
 
@@ -190,21 +191,23 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 	const summaryDOM = JSDOM.fragment(person.summary);
 
 	// アイコンとヘッダー画像をフェッチ
-	const [avatarId, bannerId] = (await Promise.all([
+	const [avatar, banner] = (await Promise.all<IDriveFile>([
 		person.icon,
 		person.image
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
 			: resolveImage(exist, img)
-	))).map(file => file != null ? file._id : null);
+	)));
 
 	// Update user
 	await User.update({ _id: exist._id }, {
 		$set: {
 			updatedAt: new Date(),
-			avatarId,
-			bannerId,
+			avatarId: avatar ? avatar._id : null,
+			bannerId: banner ? banner._id : null,
+			avatarUrl: avatar && avatar.metadata.isMetaOnly ? avatar.metadata.url : null,
+			bannerUrl: banner && banner.metadata.isMetaOnly ? banner.metadata.url : null,
 			description: summaryDOM.textContent,
 			followersCount,
 			followingCount,
