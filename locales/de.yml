@@ -54,7 +54,7 @@ common:
     timemachine: "Kalender (Zeitmaschiene)"
     activity: "Aktivitäten"
     rss: "RSS Leser"
-    memo: "付箋"
+    memo: "Notizen"
     trends: "Trends"
     photo-stream: "Bilder"
     posts-monitor: "投稿チャート"
@@ -151,11 +151,11 @@ common/views/components/poll.vue:
   show-result: "Zeige Ergebnis"
   voted: "Abgestimmt"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
+  no-only-one-choice: "Du musst zwei oder mehr Entscheidungen angeben"
   choice-n: "Auswahl {}"
   remove: "Diese Auswahl entfernen"
   add: "+ Eine Auswahl hinzufügen"
-  destroy: "アンケートを破棄"
+  destroy: "Diese Abstimmung löschen"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wähle eine Reaktion aus"
 common/views/components/signin.vue:
@@ -228,7 +228,7 @@ common/views/widgets/server.vue:
   title: "Serverinformationen"
   toggle: "Sicht umschalten"
 common/views/widgets/memo.vue:
-  title: "付箋"
+  title: "Notizen"
   memo: "Schreib hier!"
   save: "Speichern"
 desktop/views/components/activity.chart.vue:
@@ -380,7 +380,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-drive: "Medien von deinem Speicher hinzufügen"
   attach-cancel: "Hinzufügen abbrechen"
   insert-a-kao: "v(‘ω’)v"
-  create-poll: "アンケートを作成"
+  create-poll: "Eine Abstimmung erstellen"
   text-remain: "{} Zeichen verbleibend"
 desktop/views/components/post-form-window.vue:
   note: "Neue Notiz"
