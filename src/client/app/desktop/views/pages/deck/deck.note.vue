@@ -200,7 +200,7 @@ export default Vue.extend({
 @import '~const.styl'
 
 root(isDark)
-	font-size 12px
+	font-size 13px
 	border-bottom solid 1px isDark ? #1c2023 : #eaeaea
 
 	&:last-of-type

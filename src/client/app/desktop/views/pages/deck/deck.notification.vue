@@ -112,7 +112,7 @@ export default Vue.extend({
 root(isDark)
 	> .notification
 		padding 16px
-		font-size 12px
+		font-size 13px
 		overflow-wrap break-word
 
 		&:after
