@@ -1,6 +1,6 @@
 <template>
 <div class="cpu-memory">
-	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none">
+	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
 		<defs>
 			<linearGradient :id="cpuGradientId" x1="0" x2="0" y1="1" y2="0">
 				<stop offset="0%" stop-color="hsl(180, 80%, 70%)"></stop>
@@ -16,15 +16,20 @@
 					fill="none"
 					stroke="#fff"
 					stroke-width="1"/>
+				<circle
+					:cx="cpuHeadX"
+					:cy="cpuHeadY"
+					r="1.5"
+					fill="#fff"/>
 			</mask>
 		</defs>
 		<rect
-			x="-1" y="-1"
-			:width="viewBoxX + 2" :height="viewBoxY + 2"
+			x="-2" y="-2"
+			:width="viewBoxX + 4" :height="viewBoxY + 4"
 			:style="`stroke: none; fill: url(#${ cpuGradientId }); mask: url(#${ cpuMaskId })`"/>
 		<text x="1" y="5">CPU <tspan>{{ cpuP }}%</tspan></text>
 	</svg>
-	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none">
+	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
 		<defs>
 			<linearGradient :id="memGradientId" x1="0" x2="0" y1="1" y2="0">
 				<stop offset="0%" stop-color="hsl(180, 80%, 70%)"></stop>
@@ -40,11 +45,16 @@
 					fill="none"
 					stroke="#fff"
 					stroke-width="1"/>
+				<circle
+					:cx="memHeadX"
+					:cy="memHeadY"
+					r="1.5"
+					fill="#fff"/>
 			</mask>
 		</defs>
 		<rect
-			x="-1" y="-1"
-			:width="viewBoxX + 2" :height="viewBoxY + 2"
+			x="-2" y="-2"
+			:width="viewBoxX + 4" :height="viewBoxY + 4"
 			:style="`stroke: none; fill: url(#${ memGradientId }); mask: url(#${ memMaskId })`"/>
 		<text x="1" y="5">MEM <tspan>{{ memP }}%</tspan></text>
 	</svg>
@@ -70,6 +80,10 @@ export default Vue.extend({
 			memPolylinePoints: '',
 			cpuPolygonPoints: '',
 			memPolygonPoints: '',
+			cpuHeadX: null,
+			cpuHeadY: null,
+			memHeadX: null,
+			memHeadY: null,
 			cpuP: '',
 			memP: ''
 		};
@@ -92,11 +106,18 @@ export default Vue.extend({
 			this.stats.push(stats);
 			if (this.stats.length > 50) this.stats.shift();
 
-			this.cpuPolylinePoints = this.stats.map((s, i) => `${this.viewBoxX - ((this.stats.length - 1) - i)},${(1 - s.cpu_usage) * this.viewBoxY}`).join(' ');
-			this.memPolylinePoints = this.stats.map((s, i) => `${this.viewBoxX - ((this.stats.length - 1) - i)},${(1 - (s.mem.used / s.mem.total)) * this.viewBoxY}`).join(' ');
+			const cpuPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - s.cpu_usage) * this.viewBoxY]);
+			const memPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.mem.used / s.mem.total)) * this.viewBoxY]);
+			this.cpuPolylinePoints = cpuPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
+			this.memPolylinePoints = memPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
 			this.cpuPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.cpuPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 			this.memPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${ this.viewBoxY } ${ this.memPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
+
+			this.cpuHeadX = cpuPolylinePoints[cpuPolylinePoints.length - 1][0];
+			this.cpuHeadY = cpuPolylinePoints[cpuPolylinePoints.length - 1][1];
+			this.memHeadX = memPolylinePoints[memPolylinePoints.length - 1][0];
+			this.memHeadY = memPolylinePoints[memPolylinePoints.length - 1][1];
 
 			this.cpuP = (stats.cpu_usage * 100).toFixed(0);
 			this.memP = (stats.mem.used / stats.mem.total * 100).toFixed(0);

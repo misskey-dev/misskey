@@ -5,7 +5,7 @@
 		<button slot="func" @click="toggle" title="%i18n:@toggle%">%fa:sort%</button>
 
 		<div class="qpdmibaztplkylerhdbllwcokyrfxeyj" :class="{ dual: props.view == 0 }" :data-darkmode="$store.state.device.darkmode">
-			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" v-show="props.view != 2">
+			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" v-show="props.view != 2">
 				<defs>
 					<linearGradient :id="localGradientId" x1="0" x2="0" y1="1" y2="0">
 						<stop offset="0%" stop-color="hsl(200, 80%, 70%)"></stop>
@@ -21,15 +21,20 @@
 							fill="none"
 							stroke="#fff"
 							stroke-width="1"/>
+						<circle
+							:cx="localHeadX"
+							:cy="localHeadY"
+							r="1.5"
+							fill="#fff"/>
 					</mask>
 				</defs>
 				<rect
-					x="-1" y="-1"
-					:width="viewBoxX + 2" :height="viewBoxY + 2"
+					x="-2" y="-2"
+					:width="viewBoxX + 4" :height="viewBoxY + 4"
 					:style="`stroke: none; fill: url(#${ localGradientId }); mask: url(#${ localMaskId })`"/>
 				<text x="1" y="5">Local</text>
 			</svg>
-			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" v-show="props.view != 1">
+			<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" v-show="props.view != 1">
 				<defs>
 					<linearGradient :id="fediGradientId" x1="0" x2="0" y1="1" y2="0">
 						<stop offset="0%" stop-color="hsl(200, 80%, 70%)"></stop>
@@ -45,11 +50,16 @@
 							fill="none"
 							stroke="#fff"
 							stroke-width="1"/>
+						<circle
+							:cx="fediHeadX"
+							:cy="fediHeadY"
+							r="1.5"
+							fill="#fff"/>
 					</mask>
 				</defs>
 				<rect
-					x="-1" y="-1"
-					:width="viewBoxX + 2" :height="viewBoxY + 2"
+					x="-2" y="-2"
+					:width="viewBoxX + 4" :height="viewBoxY + 4"
 					:style="`stroke: none; fill: url(#${ fediGradientId }); mask: url(#${ fediMaskId })`"/>
 				<text x="1" y="5">Fedi</text>
 			</svg>
@@ -82,7 +92,11 @@ export default define({
 			fediPolylinePoints: '',
 			localPolylinePoints: '',
 			fediPolygonPoints: '',
-			localPolygonPoints: ''
+			localPolygonPoints: '',
+			fediHeadX: null,
+			fediHeadY: null,
+			localHeadX: null,
+			localHeadY: null
 		};
 	},
 	computed: {
@@ -133,11 +147,18 @@ export default define({
 			const fediPeak = Math.max.apply(null, stats.map(x => x.all)) || 1;
 			const localPeak = Math.max.apply(null, stats.map(x => x.local)) || 1;
 
-			this.fediPolylinePoints = stats.map((s, i) => `${this.viewBoxX - ((stats.length - 1) - i)},${(1 - (s.all / fediPeak)) * this.viewBoxY}`).join(' ');
-			this.localPolylinePoints = stats.map((s, i) => `${this.viewBoxX - ((stats.length - 1) - i)},${(1 - (s.local / localPeak)) * this.viewBoxY}`).join(' ');
+			const fediPolylinePoints = stats.map((s, i) => [this.viewBoxX - ((stats.length - 1) - i), (1 - (s.all / fediPeak)) * this.viewBoxY]);
+			const localPolylinePoints = stats.map((s, i) => [this.viewBoxX - ((stats.length - 1) - i), (1 - (s.local / localPeak)) * this.viewBoxY]);
+			this.fediPolylinePoints = fediPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
+			this.localPolylinePoints = localPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
 			this.fediPolygonPoints = `${this.viewBoxX - (stats.length - 1)},${ this.viewBoxY } ${ this.fediPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 			this.localPolygonPoints = `${this.viewBoxX - (stats.length - 1)},${ this.viewBoxY } ${ this.localPolylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
+
+			this.fediHeadX = fediPolylinePoints[fediPolylinePoints.length - 1][0];
+			this.fediHeadY = fediPolylinePoints[fediPolylinePoints.length - 1][1];
+			this.localHeadX = localPolylinePoints[localPolylinePoints.length - 1][0];
+			this.localHeadY = localPolylinePoints[localPolylinePoints.length - 1][1];
 		},
 		onStats(stats) {
 			this.stats.push(stats);
