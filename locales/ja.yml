@@ -60,7 +60,7 @@ common:
     timemachine: "カレンダー(タイムマシン)"
     activity: "アクティビティ"
     rss: "RSSリーダー"
-    memo: "メモ"
+    memo: "付箋"
     trends: "トレンド"
     photo-stream: "フォトストリーム"
     posts-monitor: "投稿チャート"
@@ -69,7 +69,7 @@ common:
     broadcast: "ブロードキャスト"
     notifications: "通知"
     users: "おすすめユーザー"
-    polls: "投票"
+    polls: "アンケート"
     post-form: "投稿フォーム"
     messaging: "メッセージ"
     server: "サーバー情報"
@@ -168,11 +168,11 @@ common/views/components/poll.vue:
   voted: "投票済み"
 
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "投票には、選択肢が最低2つ必要です"
+  no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
   choice-n: "選択肢{}"
   remove: "この選択肢を削除"
   add: "+選択肢を追加"
-  destroy: "投票を破棄"
+  destroy: "アンケートを破棄"
 
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
@@ -259,7 +259,7 @@ common/views/widgets/server.vue:
   toggle: "表示を切り替え"
 
 common/views/widgets/memo.vue:
-  title: "メモ"
+  title: "付箋"
   memo: "ここに書いて！"
   save: "保存"
 
@@ -438,7 +438,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-drive: "ドライブからメディアを添付"
   attach-cancel: "添付取り消し"
   insert-a-kao: "v(‘ω’)v"
-  create-poll: "投票を作成"
+  create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
 
 desktop/views/components/post-form-window.vue:
@@ -604,7 +604,7 @@ desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
-  poll: "投票"
+  poll: "アンケート"
 
 desktop/views/components/taskmanager.vue:
   title: "タスクマネージャ"
@@ -751,7 +751,7 @@ desktop/views/widgets/notifications.vue:
   settings: "通知の設定"
 
 desktop/views/widgets/polls.vue:
-  title: "投票"
+  title: "アンケート"
   refresh: "他を見る"
   nothing: "ありません！"
 
@@ -869,7 +869,7 @@ mobile/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
-  poll: "投票"
+  poll: "アンケート"
 
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
