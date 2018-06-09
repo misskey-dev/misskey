@@ -23,12 +23,12 @@ export default Vue.extend({
 			let x = this.x;
 			let y = this.y;
 
-			if (x + width > window.innerWidth) {
-				x = window.innerWidth - width;
+			if (x + width - window.pageXOffset > window.innerWidth) {
+				x = window.innerWidth - width + window.pageXOffset;
 			}
 
-			if (y + height > window.innerHeight) {
-				y = window.innerHeight - height;
+			if (y + height - window.pageYOffset > window.innerHeight) {
+				y = window.innerHeight - height + window.pageYOffset;
 			}
 
 			this.$el.style.left = x + 'px';

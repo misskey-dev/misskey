@@ -15,7 +15,20 @@ import Vue from 'vue';
 import * as anime from 'animejs';
 
 export default Vue.extend({
-	props: ['source', 'compact', 'items'],
+	props: {
+		source: {
+			required: true
+		},
+		items: {
+			type: Array,
+			required: true
+		},
+		compact: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 	data() {
 		return {
 			hukidasi: !this.compact
@@ -44,13 +57,13 @@ export default Vue.extend({
 				top = y;
 			}
 
-			if (left + width > window.innerWidth) {
-				left = window.innerWidth - width;
+			if (left + width - window.pageXOffset > window.innerWidth) {
+				left = window.innerWidth - width + window.pageXOffset;
 				this.hukidasi = false;
 			}
 
-			if (top + height > window.innerHeight) {
-				top = window.innerHeight - height;
+			if (top + height - window.pageYOffset > window.innerHeight) {
+				top = window.innerHeight - height + window.pageYOffset;
 				this.hukidasi = false;
 			}
 
@@ -139,9 +152,13 @@ $border-color = rgba(27, 31, 35, 0.15)
 			transform-origin center -($balloon-size)
 
 			&:before
+			&:after
 				content ""
 				display block
 				position absolute
+				pointer-events none
+
+			&:before
 				top -($balloon-size * 2)
 				left s('calc(50% - %s)', $balloon-size)
 				border-top solid $balloon-size transparent
@@ -150,9 +167,6 @@ $border-color = rgba(27, 31, 35, 0.15)
 				border-bottom solid $balloon-size $border-color
 
 			&:after
-				content ""
-				display block
-				position absolute
 				top -($balloon-size * 2) + 1.5px
 				left s('calc(50% - %s)', $balloon-size)
 				border-top solid $balloon-size transparent

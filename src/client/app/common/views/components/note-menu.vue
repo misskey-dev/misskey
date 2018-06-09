@@ -1,6 +1,6 @@
 <template>
-<div class="mk-note-menu" style="position:initial">
-	<mk-menu ref="menu" :source="source" :compact="compact" :items="items" @closed="$destroy"/>
+<div style="position:initial">
+	<mk-menu :source="source" :compact="compact" :items="items" @closed="closed"/>
 </div>
 </template>
 
@@ -63,8 +63,10 @@ export default Vue.extend({
 			});
 		},
 
-		close() {
-			this.$refs.menu.close();
+		closed() {
+			this.$nextTick(() => {
+				this.$destroy();
+			});
 		}
 	}
 });
