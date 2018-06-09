@@ -25,7 +25,7 @@ const handlers = {
 
 	hashtag({ document }, { hashtag }) {
 		const span = document.createElement('span');
-		span.textContent = hashtag;
+		span.textContent = '#' + hashtag;
 		document.body.appendChild(span);
 	},
 
