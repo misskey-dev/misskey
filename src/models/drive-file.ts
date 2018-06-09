@@ -9,7 +9,7 @@ import User from './user';
 import DriveFileThumbnail, { deleteDriveFileThumbnail } from './drive-file-thumbnail';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
-DriveFile.createIndex('md5');
+DriveFile.createIndex('md5', { sparse: true });
 DriveFile.createIndex('metadata.uri', { sparse: true, unique: true });
 export default DriveFile;
 
