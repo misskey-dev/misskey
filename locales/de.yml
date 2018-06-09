@@ -504,9 +504,9 @@ desktop/views/components/settings.mute.vue:
   no-users: "ミュートしているユーザーはいません"
 desktop/views/components/settings.password.vue:
   reset: "パスワードを変更する"
-  enter-current-password: "現在のパスワードを入力してください"
-  enter-new-password: "新しいパスワードを入力してください"
-  enter-new-password-again: "もう一度新しいパスワードを入力してください"
+  enter-current-password: "Derzeitiges Passwort eingeben"
+  enter-new-password: "Neues Passwort eingeben"
+  enter-new-password-again: "Neues Passwort erneut eingeben"
   not-match: "新しいパスワードが一致しません"
   changed: "パスワードを変更しました"
 desktop/views/components/settings.profile.vue:
