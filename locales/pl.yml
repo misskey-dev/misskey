@@ -54,7 +54,7 @@ common:
     timemachine: "Kalendarz (wehikuł czasu)"
     activity: "Aktywność"
     rss: "Czytnik RSS"
-    memo: "付箋"
+    memo: "Notatka"
     trends: "Na czasie"
     photo-stream: "Photostream"
     posts-monitor: "Wykres wpisów"
@@ -63,7 +63,7 @@ common:
     broadcast: "Transmisja"
     notifications: "Powiadomienia"
     users: "Polecani użytkownicy"
-    polls: "アンケート"
+    polls: "Ankiety"
     post-form: "Formularz tworzenia"
     messaging: "Wiadomości"
     server: "Informacje o serwerze"
@@ -151,11 +151,11 @@ common/views/components/poll.vue:
   show-result: "Pokaż wyniki"
   voted: "Zagłosowano"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
+  no-only-one-choice: "Musisz wprowadzić przynajmniej dwie opcje."
   choice-n: "Opcja {}"
   remove: "Usuń tą opcję"
   add: "+ Dodaj opcję"
-  destroy: "アンケートを破棄"
+  destroy: "Usuń tę ankietę"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wybierz reakcję"
 common/views/components/signin.vue:
@@ -228,7 +228,7 @@ common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
 common/views/widgets/memo.vue:
-  title: "付箋"
+  title: "Notatka"
   memo: "Napisz tutaj!"
   save: "Zapisz"
 desktop/views/components/activity.chart.vue:
@@ -380,7 +380,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
   attach-cancel: "Usuń załącznik"
   insert-a-kao: "v(‘ω’)v"
-  create-poll: "アンケートを作成"
+  create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
@@ -523,7 +523,7 @@ desktop/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
   media-count: "{}zawartości multimedialnej"
-  poll: "アンケート"
+  poll: "Ankieta"
 desktop/views/components/taskmanager.vue:
   title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
@@ -574,8 +574,8 @@ desktop/views/components/window.vue:
   popout: "Pop-out"
   close: "Zamknij"
 desktop/views/pages/deck/deck.tl-column.vue:
-  is-media-only: "メディア投稿のみ"
-  is-media-view: "メディアビュー"
+  is-media-only: "Tylko wpisy z zawartością multimedialną"
+  is-media-view: "Widok multimediów"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   gotit: "Rozumiem!"
@@ -639,7 +639,7 @@ desktop/views/widgets/notifications.vue:
   title: "Powiadomienia"
   settings: "Ustawienia"
 desktop/views/widgets/polls.vue:
-  title: "アンケート"
+  title: "Ankiety"
   refresh: "Pokaż inne"
   nothing: "Pusto"
 desktop/views/widgets/post-form.vue:
@@ -738,7 +738,7 @@ mobile/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
   media-count: "{}zawartości multimedialnej"
-  poll: "アンケート"
+  poll: "Ankieta"
 mobile/views/components/timeline.vue:
   empty: "Brak wpisów"
   load-more: "Więcej"
