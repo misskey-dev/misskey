@@ -36,13 +36,13 @@ export default function load() {
 	mixin.scheme = url.protocol.replace(/:$/, '');
 	mixin.ws_scheme = mixin.scheme.replace('http', 'ws');
 	mixin.ws_url = `${mixin.ws_scheme}://${mixin.host}`;
-	mixin.api_url = `${mixin.scheme}://${mixin.host}/api`;
-	mixin.auth_url = `${mixin.scheme}://${mixin.host}/auth`;
-	mixin.dev_url = `${mixin.scheme}://${mixin.host}/dev`;
-	mixin.docs_url = `${mixin.scheme}://${mixin.host}/docs`;
-	mixin.stats_url = `${mixin.scheme}://${mixin.host}/stats`;
-	mixin.status_url = `${mixin.scheme}://${mixin.host}/status`;
-	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
+	mixin.api_url = `/api`;
+	mixin.auth_url = `/auth`;
+	mixin.dev_url = `/dev`;
+	mixin.docs_url = `/docs`;
+	mixin.stats_url = `/stats`;
+	mixin.status_url = `/status`;
+	mixin.drive_url = `/files`;
 
 	return Object.assign(config, mixin);
 }
