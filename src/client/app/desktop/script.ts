@@ -33,6 +33,7 @@ import MkHomeCustomize from './views/pages/home-customize.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
+import MkTag from './views/pages/tag.vue';
 import MkOthello from './views/pages/othello.vue';
 
 /**
@@ -60,6 +61,7 @@ init(async (launch) => {
 			{ path: '/i/lists/:list', component: MkUserList },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
+			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/othello', component: MkOthello },
 			{ path: '/othello/:game', component: MkOthello },
 			{ path: '/@:user', component: MkUser },

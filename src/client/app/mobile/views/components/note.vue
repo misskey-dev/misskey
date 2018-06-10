@@ -33,7 +33,7 @@
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
 					<div class="tags" v-if="p.tags && p.tags.length > 0">
-						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
+						<router-link v-for="tag in p.tags" :key="tag" :to="`/tags/${tag}`">{{ tag }}</router-link>
 					</div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>

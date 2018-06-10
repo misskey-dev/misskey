@@ -16,6 +16,7 @@ import Following from './following';
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
+Note.createIndex('tags', { sparse: true });
 Note.createIndex({
 	createdAt: -1
 });

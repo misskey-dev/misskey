@@ -526,6 +526,9 @@ const endpoints: Endpoint[] = [
 		name: 'notes/search'
 	},
 	{
+		name: 'notes/search_by_tag'
+	},
+	{
 		name: 'notes/timeline',
 		withCredential: true,
 		limit: {
