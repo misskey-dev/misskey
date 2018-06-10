@@ -94,7 +94,7 @@ export default async (user: IUser, data: {
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
 
-	const tags = data.tags || [];
+	let tags = data.tags || [];
 
 	let tokens: any[] = null;
 
@@ -113,6 +113,8 @@ export default async (user: IUser, data: {
 			}
 		});
 	}
+
+	tags = tags.filter(tag => tag.length <= 100);
 
 	if (data.visibleUsers) {
 		data.visibleUsers = data.visibleUsers.filter(x => x != null);
