@@ -1,6 +1,6 @@
 <template>
 <div class="mk-note-preview" :title="title">
-	<mk-avatar class="avatar" :user="note.user"/>
+	<mk-avatar class="avatar" :user="note.user" v-if="!mini"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note" :mini="true"/>
 		<div class="body">
@@ -15,7 +15,17 @@ import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 
 export default Vue.extend({
-	props: ['note'],
+	props: {
+		note: {
+			type: Object,
+			required: true
+		},
+		mini: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 	computed: {
 		title(): string {
 			return dateStringify(this.note.createdAt);
