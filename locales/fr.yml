@@ -576,6 +576,10 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
+desktop/views/pages/deck/deck.note.vue:
+  reposted-by: "{}がRenote"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   gotit: "J'ai compris !"

@@ -576,6 +576,10 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   is-media-view: "Media view"
+desktop/views/pages/deck/deck.note.vue:
+  reposted-by: "Reposted by {}"
+  private: "this post is private"
+  deleted: "this post has been deleted"
 desktop/views/pages/welcome.vue:
   about: "about"
   gotit: "Got it!"
