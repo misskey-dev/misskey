@@ -1,8 +1,8 @@
-import Note from './models/note';
+import Note from '../models/note';
 
 const interval = 5000;
 
-setInterval(async () => {
+async function tick() {
 	const [all, local] = await Promise.all([Note.count({
 		createdAt: {
 			$gte: new Date(Date.now() - interval)
@@ -19,4 +19,8 @@ setInterval(async () => {
 	};
 
 	process.send(stats);
-}, interval);
+}
+
+tick();
+
+setInterval(tick, interval);

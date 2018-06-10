@@ -5,6 +5,8 @@ import Xev from 'xev';
 
 const ev = new Xev();
 
+const interval = 1000;
+
 /**
  * Report server stats regularly
  */
@@ -15,7 +17,7 @@ export default function() {
 		ev.emit('serverStatsLog:' + id, log);
 	});
 
-	setInterval(() => {
+	async function tick() {
 		osUtils.cpuUsage(cpuUsage => {
 			const disk = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
 			const stats = {
@@ -32,5 +34,9 @@ export default function() {
 			log.push(stats);
 			if (log.length > 50) log.shift();
 		});
-	}, 1000);
+	}
+
+	tick();
+
+	setInterval(tick, interval);
 }
