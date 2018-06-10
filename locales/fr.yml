@@ -54,16 +54,16 @@ common:
     timemachine: "カレンダー(タイムマシン)"
     activity: "Activité"
     rss: "Lecteur de flux RSS"
-    memo: "付箋"
+    memo: "Pense-bête"
     trends: "Tendances"
     photo-stream: "Flux de photos"
-    posts-monitor: "投稿チャート"
+    posts-monitor: "Graph des publications"
     slideshow: "Diaporama"
     version: "Version"
     broadcast: "Diffusion"
     notifications: "Notifications"
     users: "Utilisateurs"
-    polls: "アンケート"
+    polls: "Sondages"
     post-form: "投稿フォーム"
     messaging: "Messagerie"
     server: "Info sur le serveur"
@@ -151,11 +151,11 @@ common/views/components/poll.vue:
   show-result: "Montrer les résultats"
   voted: "Voté"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
+  no-only-one-choice: "Vous devez saisir au moins deux choix."
   choice-n: "Choix {}"
   remove: "Supprimer ce choix"
   add: "+ Ajouter un choix"
-  destroy: "アンケートを破棄"
+  destroy: "Annuler ce sondage"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Choisissez votre réaction"
 common/views/components/signin.vue:
@@ -222,13 +222,13 @@ common/views/widgets/photo-stream.vue:
   title: "Flux de photo"
   no-photos: "Pas de photos"
 common/views/widgets/posts-monitor.vue:
-  title: "投稿チャート"
+  title: "Graph des publications"
   toggle: "表示を切り替え"
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
 common/views/widgets/memo.vue:
-  title: "付箋"
+  title: "Pense-bête"
   memo: "Écrivez ici !"
   save: "Enregistrer"
 desktop/views/components/activity.chart.vue:
@@ -380,7 +380,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-drive: "Joindre un media depuis votre Drive"
   attach-cancel: "Annuler la jointure de fichier"
   insert-a-kao: "v(‘ω’)v"
-  create-poll: "アンケートを作成"
+  create-poll: "Créer un sondage"
   text-remain: "{} charactères restants"
 desktop/views/components/post-form-window.vue:
   note: "Nouvelle note"
@@ -414,7 +414,7 @@ desktop/views/components/settings.vue:
   license: "License"
   behaviour: "Comportement"
   fetch-on-scroll: "Chargement lors du défilement"
-  fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
+  fetch-on-scroll-desc: "Chargement automatique du contenu lors du défilement de la page."
   auto-popout: "Fenêtre contextuelle automatique"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
   advanced: "Paramètres avancés"
@@ -523,7 +523,7 @@ desktop/views/components/sub-note-content.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
   media-count: "{} médias attachés"
-  poll: "アンケート"
+  poll: "Sondage"
 desktop/views/components/taskmanager.vue:
   title: "Gestionnaire de tâches"
 desktop/views/components/timeline.vue:
@@ -577,9 +577,9 @@ desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   is-media-view: "メディアビュー"
 desktop/views/pages/deck/deck.note.vue:
-  reposted-by: "{}がRenote"
-  private: "この投稿は非公開です"
-  deleted: "この投稿は削除されました"
+  reposted-by: "Reposté par {}"
+  private: "cette publication est privée"
+  deleted: "cette publication a été supprimée"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   gotit: "J'ai compris !"
@@ -643,7 +643,7 @@ desktop/views/widgets/notifications.vue:
   title: "Notifications"
   settings: "Réglages"
 desktop/views/widgets/polls.vue:
-  title: "アンケート"
+  title: "Sondages"
   refresh: "Afficher d'autres"
   nothing: "Rien"
 desktop/views/widgets/post-form.vue:
@@ -670,7 +670,7 @@ mobile/views/components/drive.vue:
   nothing-in-drive: "Rien"
   folder-is-empty: "Ce dossier est vide"
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
-  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  deletion-alert: "Désolé ! La suppression d’un dossier n’est pas encore implémentée."
   folder-name: "Nom du dossier"
   root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
   root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
