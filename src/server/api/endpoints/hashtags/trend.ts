@@ -1,13 +1,23 @@
 import Note from '../../../../models/note';
 
+/*
+トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
+ユニーク投稿数とはそのハッシュタグと投稿ユーザーのペアのカウントで、例えば同じユーザーが複数回同じハッシュタグを投稿してもそのハッシュタグのユニーク投稿数は1とカウントされる
+*/
+
+const rangeA = 1000 * 60 * 10; // 10分
+const rangeB = 1000 * 60 * 60; // 1時間
+const coefficient = 2; // 「n倍」の部分
+
 /**
  * Get trends of hashtags
  */
 module.exports = () => new Promise(async (res, rej) => {
+	//#region 1. 直近Aの内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{
 		$match: {
 			createdAt: {
-				$gt: new Date(Date.now() - 1000 * 60 * 60)
+				$gt: new Date(Date.now() - rangeA)
 			},
 			tags: {
 				$exists: true,
@@ -26,6 +36,7 @@ module.exports = () => new Promise(async (res, rej) => {
 			userId: any;
 		}
 	}>;
+	//#endregion
 
 	if (data.length == 0) {
 		return res([]);
@@ -33,6 +44,7 @@ module.exports = () => new Promise(async (res, rej) => {
 
 	const tags = [];
 
+	// カウント
 	data.map(x => x._id).forEach(x => {
 		const i = tags.findIndex(tag => tag.name == x.tags);
 		if (i != -1) {
@@ -45,11 +57,31 @@ module.exports = () => new Promise(async (res, rej) => {
 		}
 	});
 
-	const hots = tags
+	//#region 2. 1で取得したそれぞれのタグについて、「直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上」かどうかを判定する
+	const hotsPromises = tags.map(async tag => {
+		const passedCount = (await Note.distinct('userId', {
+			tags: tag,
+			createdAt: {
+				$lt: new Date(Date.now() - rangeA),
+				$gt: new Date(Date.now() - rangeB)
+			}
+		}) as any).length;
+
+		if (passedCount > (tag.count * coefficient)) {
+			return tag;
+		} else {
+			return null;
+		}
+	});
+	//#endregion
+
+	const hots = (await Promise.all(hotsPromises))
+		.filter(x => x != null)
 		.sort((a, b) => b.count - a.count)
 		.map(tag => tag.name)
 		.slice(0, 5);
 
+	//#region 2で話題と判定されたタグそれぞれについて過去の投稿数グラフを取得する
 	const countPromises: Array<Promise<any[]>> = [];
 
 	const range = 20;
@@ -75,6 +107,7 @@ module.exports = () => new Promise(async (res, rej) => {
 			$gt: new Date(Date.now() - (interval * range))
 		}
 	})));
+	//#endregion
 
 	const stats = hots.map((tag, i) => ({
 		tag,
