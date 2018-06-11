@@ -224,6 +224,8 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/posts-monitor.vue:
   title: "投稿チャート"
   toggle: "表示を切り替え"
+common/views/widgets/hashtags.vue:
+  title: "ハッシュタグ"
 common/views/widgets/server.vue:
   title: "Serverinformationen"
   toggle: "Sicht umschalten"
