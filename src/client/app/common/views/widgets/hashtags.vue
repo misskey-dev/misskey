@@ -66,7 +66,7 @@ root(isDark)
 	.mkw-hashtags--body
 		> .fetching
 			margin 0
-			padding 16px
+			padding 12px 16px
 			text-align center
 			color #aaa
 
