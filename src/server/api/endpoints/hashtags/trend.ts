@@ -67,7 +67,7 @@ module.exports = () => new Promise(async (res, rej) => {
 			}
 		}) as any).length;
 
-		if (passedCount > (tag.count * coefficient)) {
+		if (tag.count > (passedCount * coefficient)) {
 			return tag;
 		} else {
 			return null;
