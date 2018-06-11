@@ -70,6 +70,7 @@ common:
     donation: "Donation"
     nav: "Navigation"
     tips: "Tips"
+    hashtags: "Hashtags"
   deck:
     widgets: "Widgets"
     home: "Home"
