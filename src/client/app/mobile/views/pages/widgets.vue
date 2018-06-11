@@ -15,6 +15,7 @@
 					<option value="rss">%i18n:common.widgets.rss%</option>
 					<option value="photo-stream">%i18n:common.widgets.photo-stream%</option>
 					<option value="slideshow">%i18n:common.widgets.slideshow%</option>
+					<option value="hashtags">%i18n:common.widgets.hashtags%</option>
 					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
 					<option value="version">%i18n:common.widgets.version%</option>
 					<option value="server">%i18n:common.widgets.server%</option>

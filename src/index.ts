@@ -19,7 +19,6 @@ import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
-import hashtagsStats from './daemons/hashtags-stats';
 
 import loadConfig from './config/load';
 import { Config } from './config/types';
@@ -53,7 +52,6 @@ function main() {
 		ev.mount();
 		serverStats();
 		notesStats();
-		hashtagsStats();
 	} else {
 		workerMain(opt);
 	}

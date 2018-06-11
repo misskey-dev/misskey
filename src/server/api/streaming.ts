@@ -14,7 +14,6 @@ import othelloGameStream from './stream/othello-game';
 import othelloStream from './stream/othello';
 import serverStatsStream from './stream/server-stats';
 import notesStatsStream from './stream/notes-stats';
-import hashtagsStatsStream from './stream/hashtags-stats';
 import requestsStream from './stream/requests';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
@@ -37,11 +36,6 @@ module.exports = (server: http.Server) => {
 
 		if (request.resourceURL.pathname === '/notes-stats') {
 			notesStatsStream(request, connection);
-			return;
-		}
-
-		if (request.resourceURL.pathname === '/hashtags-stats') {
-			hashtagsStatsStream(request, connection);
 			return;
 		}
 

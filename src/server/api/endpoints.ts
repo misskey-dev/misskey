@@ -629,6 +629,11 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
+		name: 'hashtags/trend',
+		withCredential: true
+	},
+
+	{
 		name: 'messaging/history',
 		withCredential: true,
 		kind: 'messaging-read'

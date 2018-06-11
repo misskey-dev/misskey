@@ -13,6 +13,7 @@ import wSlideshow from './slideshow.vue';
 import wTips from './tips.vue';
 import wDonation from './donation.vue';
 import wNav from './nav.vue';
+import wHashtags from './hashtags.vue';
 
 Vue.component('mkw-analog-clock', wAnalogClock);
 Vue.component('mkw-nav', wNav);
@@ -27,3 +28,4 @@ Vue.component('mkw-posts-monitor', wPostsMonitor);
 Vue.component('mkw-memo', wMemo);
 Vue.component('mkw-rss', wRss);
 Vue.component('mkw-version', wVersion);
+Vue.component('mkw-hashtags', wHashtags);
