@@ -5,7 +5,7 @@
 
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
-			<div v-else>
+			<transition-group v-else tag="div" name="chart">
 				<div v-for="stat in stats" :key="stat.tag">
 					<div class="tag">
 						<router-link :to="`/tags/${ stat.tag }`" :title="stat.tag">#{{ stat.tag }}</router-link>
@@ -13,7 +13,7 @@
 					</div>
 					<x-chart class="chart" :src="stat.chart"/>
 				</div>
-			</div>
+			</transition-group>
 		</div>
 	</mk-widget-container>
 </div>
@@ -74,6 +74,14 @@ root(isDark)
 				margin-right 4px
 
 		> div
+			.chart-enter
+			.chart-leave-to
+				opacity 0
+				transform translateY(-30px)
+
+			> *
+				transition transform .3s ease, opacity .3s ease
+
 			> div
 				display flex
 				align-items center
