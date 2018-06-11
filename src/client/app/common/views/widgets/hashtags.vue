@@ -68,7 +68,7 @@ root(isDark)
 		> .fetching
 		> .empty
 			margin 0
-			padding 12px 16px
+			padding 16px
 			text-align center
 			color #aaa
 
@@ -87,7 +87,7 @@ root(isDark)
 			> div
 				display flex
 				align-items center
-				padding 16px
+				padding 14px 16px
 
 				&:not(:last-child)
 					border-bottom solid 1px isDark ? #393f4f : #eee
