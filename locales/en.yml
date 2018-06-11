@@ -225,7 +225,7 @@ common/views/widgets/posts-monitor.vue:
   title: "Chart of posts"
   toggle: "Toggle views"
 common/views/widgets/hashtags.vue:
-  title: "ハッシュタグ"
+  title: "Hashtags"
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
