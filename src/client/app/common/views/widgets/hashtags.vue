@@ -8,7 +8,7 @@
 			<div v-else>
 				<div v-for="stat in stats" :key="stat.tag">
 					<div class="tag">
-						<router-link :to="`/tags/${ stat.tag }`">#{{ stat.tag }}</router-link>
+						<router-link :to="`/tags/${ stat.tag }`" :title="stat.tag">#{{ stat.tag }}</router-link>
 						<p>{{ '%i18n:@count%'.replace('{}', stat.usersCount) }}</p>
 					</div>
 					<x-chart class="chart" :src="stat.chart"/>
@@ -84,10 +84,16 @@ root(isDark)
 
 				> .tag
 					flex 1
+					overflow hidden
 					font-size 14px
 					color isDark ? #9baec8 : #65727b
 
 					> a
+						display block
+						width 100%
+						white-space nowrap
+						overflow hidden
+						text-overflow ellipsis
 						color inherit
 
 					> p
