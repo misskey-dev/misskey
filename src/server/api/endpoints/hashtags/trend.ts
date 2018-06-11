@@ -4,13 +4,10 @@ import Note from '../../../../models/note';
  * Get trends of hashtags
  */
 module.exports = (params, user) => new Promise(async (res, rej) => {
-	// 10分
-	const interval = 1000 * 60 * 10;
-
 	const data = await Note.aggregate([{
 		$match: {
 			createdAt: {
-				$gt: new Date(Date.now() - interval)
+				$gt: new Date(Date.now() - 1000 * 60 * 60)
 			},
 			tags: {
 				$exists: true,
@@ -48,6 +45,10 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		}>
 	}>;
 
+	if (data.length == 0) {
+		return res([]);
+	}
+
 	const hots = data[0].tags
 		.sort((a, b) => a.count - b.count)
 		.map(tag => tag.tag)
@@ -56,6 +57,9 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const countPromises: Array<Promise<number[]>> = [];
 
 	for (let i = 0; i < 10; i++) {
+		// 10分
+		const interval = 1000 * 60 * 10;
+
 		countPromises.push(Promise.all(hots.map(tag => Note.count({
 			tags: tag,
 			createdAt: {

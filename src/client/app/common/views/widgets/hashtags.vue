@@ -6,7 +6,12 @@
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 			<div v-else>
-				<router-link v-for="stat in stats" :key="stat.tag" :to="`/tags/${ stat.tag }`">{{ stat.tag }}</router-link>
+				<div v-for="stat in stats" :key="stat.tag">
+					<div class="tag">
+						<router-link :to="`/tags/${ stat.tag }`">#{{ stat.tag }}</router-link>
+					</div>
+					<x-chart class="chart" :src="stat.chart"/>
+				</div>
 			</div>
 		</div>
 	</mk-widget-container>
@@ -15,12 +20,17 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import XChart from './hashtags.chart.vue';
+
 export default define({
 	name: 'hashtags',
 	props: () => ({
 		compact: false
 	})
 }).extend({
+	components: {
+		XChart
+	},
 	data() {
 		return {
 			stats: [],
@@ -52,21 +62,8 @@ export default define({
 
 <style lang="stylus" scoped>
 root(isDark)
-	.mkw-rss--body
-		.feed
-			padding 12px 16px
-			font-size 0.9em
-
-			> a
-				display block
-				padding 4px 0
-				color isDark ? #9aa4b3 : #666
-				border-bottom dashed 1px isDark ? #1c2023 : #eee
-
-				&:last-child
-					border-bottom none
-
-		.fetching
+	.mkw-hashtags--body
+		> .fetching
 			margin 0
 			padding 16px
 			text-align center
@@ -75,23 +72,29 @@ root(isDark)
 			> [data-fa]
 				margin-right 4px
 
-		&[data-mobile]
-			background isDark ? #21242f : #f3f3f3
+		> div
+			> div
+				display flex
+				align-items center
+				padding 16px
 
-			.feed
-				padding 0
+				&:not(:last-child)
+					border-bottom solid 1px #393f4f
 
-				> a
-					padding 8px 16px
-					border-bottom none
+				> .tag
+					flex 1
 
-					&:nth-child(even)
-						background isDark ? rgba(#000, 0.05) : rgba(#fff, 0.7)
+					> a
+						color #9baec8
 
-.mkw-rss[data-darkmode]
+				> .chart
+					width 50px
+					height 30px
+
+.mkw-hashtags[data-darkmode]
 	root(true)
 
-.mkw-rss:not([data-darkmode])
+.mkw-hashtags:not([data-darkmode])
 	root(false)
 
 </style>
