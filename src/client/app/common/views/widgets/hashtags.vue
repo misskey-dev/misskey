@@ -79,16 +79,16 @@ root(isDark)
 				padding 16px
 
 				&:not(:last-child)
-					border-bottom solid 1px #393f4f
+					border-bottom solid 1px isDark ? #393f4f : #eee
 
 				> .tag
 					flex 1
 
 					> a
-						color #9baec8
+						font-size 14px
+						color isDark ? #9baec8 : #65727b
 
 				> .chart
-					width 50px
 					height 30px
 
 .mkw-hashtags[data-darkmode]

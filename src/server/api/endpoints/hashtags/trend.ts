@@ -52,7 +52,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const hots = data[0].tags
 		.sort((a, b) => b.count - a.count)
 		.map(tag => tag.tag)
-		.slice(0, 10);
+		.slice(0, 5);
 
 	const countPromises: Array<Promise<number[]>> = [];
 

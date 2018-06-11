@@ -1,5 +1,5 @@
 <template>
-<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
+<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" style="overflow:visible">
 	<defs>
 		<linearGradient :id="gradientId" x1="0" x2="0" y1="1" y2="0">
 			<stop offset="0%" stop-color="hsl(200, 80%, 70%)"></stop>
@@ -14,17 +14,17 @@
 				:points="polylinePoints"
 				fill="none"
 				stroke="#fff"
-				stroke-width="0.7"/>
+				stroke-width="2"/>
 			<circle
 				:cx="headX"
 				:cy="headY"
-				r="1.2"
+				r="3"
 				fill="#fff"/>
 		</mask>
 	</defs>
 	<rect
-		x="-2" y="-2"
-		:width="viewBoxX + 4" :height="viewBoxY + 4"
+		x="-10" y="-10"
+		:width="viewBoxX + 20" :height="viewBoxY + 20"
 		:style="`stroke: none; fill: url(#${ gradientId }); mask: url(#${ maskId })`"/>
 </svg>
 </template>
@@ -65,10 +65,14 @@ export default Vue.extend({
 			const stats = this.src.slice().reverse();
 			const peak = Math.max.apply(null, stats) || 1;
 
-			const polylinePoints = stats.map((x, i) => [this.viewBoxX - ((stats.length - 1) - i), (1 - (x / peak)) * this.viewBoxY]);
+			const polylinePoints = stats.map((n, i) => [
+				i * (this.viewBoxX / (stats.length - 1)),
+				(1 - (n / peak)) * this.viewBoxY
+			]);
+
 			this.polylinePoints = polylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
-			this.polygonPoints = `${this.viewBoxX - (stats.length - 1)},${ this.viewBoxY } ${ this.polylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
+			this.polygonPoints = `0,${ this.viewBoxY } ${ this.polylinePoints } ${ this.viewBoxX },${ this.viewBoxY }`;
 
 			this.headX = polylinePoints[polylinePoints.length - 1][0];
 			this.headY = polylinePoints[polylinePoints.length - 1][1];
