@@ -49,7 +49,8 @@ export default Vue.extend({
 			polylinePoints: '',
 			polygonPoints: '',
 			headX: null,
-			headY: null
+			headY: null,
+			clock: null
 		};
 	},
 	watch: {
@@ -59,6 +60,12 @@ export default Vue.extend({
 	},
 	created() {
 		this.draw();
+
+		// Vueが何故かWatchを発動させない場合があるので
+		this.clock = setInterval(this.draw, 1000);
+	},
+	beforeDestroy() {
+		clearInterval(this.clock);
 	},
 	methods: {
 		draw() {
