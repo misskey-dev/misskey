@@ -228,7 +228,7 @@ common/views/widgets/posts-monitor.vue:
 common/views/widgets/hashtags.vue:
   title: "Hashtagi"
   count: "Wspomniany przez {} użytkowników"
-  empty: "トレンドなし"
+  empty: "Brak popularnych hashtagów"
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
