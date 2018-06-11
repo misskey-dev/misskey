@@ -18,49 +18,48 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		$unwind: '$tags'
 	}, {
 		$group: {
-			_id: '$tags',
-			count: {
-				$sum: 1
-			}
-		}
-	}, {
-		$group: {
-			_id: null,
-			tags: {
-				$push: {
-					tag: '$_id',
-					count: '$count'
-				}
-			}
-		}
-	}, {
-		$project: {
-			_id: false,
-			tags: true
+			_id: { tags: '$tags', userId: '$userId' }
 		}
 	}]) as Array<{
-		tags: Array<{
-			tag: string;
-			count: number;
-		}>
+		_id: {
+			tags: string;
+			userId: any;
+		}
 	}>;
 
 	if (data.length == 0) {
 		return res([]);
 	}
 
-	const hots = data[0].tags
+	const tags = [];
+
+	data.map(x => x._id).forEach(x => {
+		const i = tags.findIndex(tag => tag.name == x.tags);
+		if (i != -1) {
+			tags[i].count++;
+		} else {
+			tags.push({
+				name: x.tags,
+				count: 1
+			});
+		}
+	});
+
+	const hots = tags
 		.sort((a, b) => b.count - a.count)
-		.map(tag => tag.tag)
+		.map(tag => tag.name)
 		.slice(0, 5);
 
-	const countPromises: Array<Promise<number[]>> = [];
+	const countPromises: Array<Promise<any[]>> = [];
 
-	for (let i = 0; i < 10; i++) {
-		// 10分
-		const interval = 1000 * 60 * 10;
+	const range = 20;
 
-		countPromises.push(Promise.all(hots.map(tag => Note.count({
+	// 10分
+	const interval = 1000 * 60 * 10;
+
+	for (let i = 0; i < range; i++) {
+
+		countPromises.push(Promise.all(hots.map(tag => Note.distinct('userId', {
 			tags: tag,
 			createdAt: {
 				$lt: new Date(Date.now() - (interval * i)),
@@ -71,9 +70,17 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 
 	const countsLog = await Promise.all(countPromises);
 
+	const totalCounts: any = await Promise.all(hots.map(tag => Note.distinct('userId', {
+		tags: tag,
+		createdAt: {
+			$gt: new Date(Date.now() - (interval * range))
+		}
+	})));
+
 	const stats = hots.map((tag, i) => ({
 		tag,
-		chart: countsLog.map(counts => counts[i])
+		chart: countsLog.map(counts => counts[i].length),
+		usersCount: totalCounts[i].length
 	}));
 
 	res(stats);

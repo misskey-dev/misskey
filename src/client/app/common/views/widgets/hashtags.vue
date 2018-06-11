@@ -9,6 +9,7 @@
 				<div v-for="stat in stats" :key="stat.tag">
 					<div class="tag">
 						<router-link :to="`/tags/${ stat.tag }`">#{{ stat.tag }}</router-link>
+						<p>{{ '%i18n:@count%'.replace('{}', stat.usersCount) }}</p>
 					</div>
 					<x-chart class="chart" :src="stat.chart"/>
 				</div>
@@ -83,10 +84,16 @@ root(isDark)
 
 				> .tag
 					flex 1
+					font-size 14px
+					color isDark ? #9baec8 : #65727b
 
 					> a
-						font-size 14px
-						color isDark ? #9baec8 : #65727b
+						color inherit
+
+					> p
+						margin 0
+						font-size 75%
+						opacity 0.7
 
 				> .chart
 					height 30px
