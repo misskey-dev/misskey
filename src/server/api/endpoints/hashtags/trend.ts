@@ -50,7 +50,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	const hots = data[0].tags
-		.sort((a, b) => a.count - b.count)
+		.sort((a, b) => b.count - a.count)
 		.map(tag => tag.tag)
 		.slice(0, 10);
 
@@ -75,8 +75,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		tag,
 		chart: countsLog.map(counts => counts[i])
 	}));
-
-	console.log(stats);
 
 	res(stats);
 });
