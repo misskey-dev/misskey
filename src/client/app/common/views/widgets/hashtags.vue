@@ -41,7 +41,7 @@ export default define({
 	},
 	mounted() {
 		this.fetch();
-		this.clock = setInterval(this.fetch, 1000 * 60 * 10);
+		this.clock = setInterval(this.fetch, 1000 * 60);
 	},
 	beforeDestroy() {
 		clearInterval(this.clock);
