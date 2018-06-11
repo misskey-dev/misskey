@@ -76,6 +76,7 @@ common:
     donation: "寄付のお願い"
     nav: "ナビゲーション"
     tips: "ヒント"
+    hashtags: "ハッシュタグ"
 
   deck:
     widgets: "ウィジェット"
