@@ -8,6 +8,7 @@ import Note from '../../../../models/note';
 const rangeA = 1000 * 60 * 30; // 30分
 const rangeB = 1000 * 60 * 120; // 2時間
 const coefficient = 1.5; // 「n倍」の部分
+const requiredUsers = 3; // 最低何人がそのタグを投稿している必要があるか
 
 /**
  * Get trends of hashtags
@@ -42,7 +43,7 @@ module.exports = () => new Promise(async (res, rej) => {
 		return res([]);
 	}
 
-	const tags = [];
+	let tags = [];
 
 	// カウント
 	data.map(x => x._id).forEach(x => {
@@ -56,6 +57,9 @@ module.exports = () => new Promise(async (res, rej) => {
 			});
 		}
 	});
+
+	// 最低要求投稿者数を下回るならカットする
+	tags = tags.filter(tag => tag.count >= requiredUsers);
 
 	//#region 2. 1で取得したそれぞれのタグについて、「直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上」かどうかを判定する
 	const hotsPromises = tags.map(async tag => {
