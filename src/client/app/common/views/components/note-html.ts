@@ -40,6 +40,14 @@ export default Vue.component('mk-note-html', {
 			ast = this.ast;
 		}
 
+		if (ast.filter(x => x.type != 'hashtag').length == 0) {
+			return;
+		}
+
+		while (ast[ast.length - 1].type == 'hashtag') {
+			ast.pop();
+		}
+
 		// Parse ast to DOM
 		const els = flatten(ast.map(token => {
 			switch (token.type) {
