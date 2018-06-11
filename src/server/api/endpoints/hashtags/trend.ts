@@ -60,7 +60,7 @@ module.exports = () => new Promise(async (res, rej) => {
 	//#region 2. 1で取得したそれぞれのタグについて、「直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上」かどうかを判定する
 	const hotsPromises = tags.map(async tag => {
 		const passedCount = (await Note.distinct('userId', {
-			tags: tag,
+			tags: tag.name,
 			createdAt: {
 				$lt: new Date(Date.now() - rangeA),
 				$gt: new Date(Date.now() - rangeB)
