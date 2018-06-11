@@ -5,7 +5,7 @@
 	<div class="gqpwvtwtprsbmnssnbicggtwqhmylhnq">
 		<template v-if="edit">
 			<header>
-				<select v-model="widgetAdderSelected">
+				<select v-model="widgetAdderSelected" @change="addWidget">
 					<option value="profile">%i18n:common.widgets.profile%</option>
 					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
 					<option value="calendar">%i18n:common.widgets.calendar%</option>
@@ -30,20 +30,15 @@
 					<option value="nav">%i18n:common.widgets.nav%</option>
 					<option value="tips">%i18n:common.widgets.tips%</option>
 				</select>
-				<button @click="addWidget">%i18n:@add%</button>
 			</header>
 			<x-draggable
 				:list="column.widgets"
-				:options="{ handle: '.handle', animation: 150 }"
+				:options="{ animation: 150 }"
 				@sort="onWidgetSort"
 			>
-				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id">
-					<header>
-						<span class="handle">%fa:bars%</span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
-					</header>
-					<div @click="widgetFunc(widget.id)">
-						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="deck"/>
-					</div>
+				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="widgetFunc(widget.id)">
+					<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
+					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="deck"/>
 				</div>
 			</x-draggable>
 		</template>
@@ -142,6 +137,13 @@ export default Vue.extend({
 
 root(isDark)
 	.gqpwvtwtprsbmnssnbicggtwqhmylhnq
+		> header
+			padding 16px
+
+			> *
+				width 100%
+				padding 4px
+
 		.widget, .customize-container
 			margin 8px
 
@@ -149,7 +151,21 @@ root(isDark)
 				margin-top 0
 
 		.customize-container
-			background #fff
+			cursor move
+
+			> *:not(.remove)
+				pointer-events none
+
+			> .remove
+				position absolute
+				z-index 1
+				top 8px
+				right 8px
+				width 32px
+				height 32px
+				color #fff
+				background rgba(#000, 0.7)
+				border-radius 4px
 
 		> header
 			color isDark ? #fff : #000
