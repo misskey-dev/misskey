@@ -227,6 +227,7 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Przełącz widok"
 common/views/widgets/hashtags.vue:
   title: "ハッシュタグ"
+  count: "{}人が投稿"
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
