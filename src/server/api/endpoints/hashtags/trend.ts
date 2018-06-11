@@ -6,8 +6,8 @@ import Note from '../../../../models/note';
 */
 
 const rangeA = 1000 * 60 * 10; // 10分
-const rangeB = 1000 * 60 * 60; // 1時間
-const coefficient = 2; // 「n倍」の部分
+const rangeB = 1000 * 60 * 40; // 40分
+const coefficient = 1.5; // 「n倍」の部分
 
 /**
  * Get trends of hashtags
