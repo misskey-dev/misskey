@@ -3,7 +3,7 @@ import Note from '../../../../models/note';
 /**
  * Get trends of hashtags
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = () => new Promise(async (res, rej) => {
 	const data = await Note.aggregate([{
 		$match: {
 			createdAt: {
@@ -58,7 +58,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const interval = 1000 * 60 * 10;
 
 	for (let i = 0; i < range; i++) {
-
 		countPromises.push(Promise.all(hots.map(tag => Note.distinct('userId', {
 			tags: tag,
 			createdAt: {
