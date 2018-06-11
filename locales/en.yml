@@ -227,6 +227,7 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Toggle views"
 common/views/widgets/hashtags.vue:
   title: "Hashtags"
+  count: "{}人が投稿"
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
