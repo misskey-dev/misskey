@@ -224,6 +224,8 @@ common/views/widgets/photo-stream.vue:
 common/views/widgets/posts-monitor.vue:
   title: "Wykres wpisów"
   toggle: "Przełącz widok"
+common/views/widgets/hashtags.vue:
+  title: "ハッシュタグ"
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
