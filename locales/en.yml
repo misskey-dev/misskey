@@ -228,6 +228,7 @@ common/views/widgets/posts-monitor.vue:
 common/views/widgets/hashtags.vue:
   title: "Hashtags"
   count: "{} users mentioned"
+  empty: "トレンドなし"
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
