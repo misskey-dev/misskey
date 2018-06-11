@@ -5,6 +5,7 @@
 
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
+			<p class="empty" v-else-if="stats.length == 0">%fa:exclamation-circle%%i18n:@empty%<mk-ellipsis/></p>
 			<transition-group v-else tag="div" name="chart">
 				<div v-for="stat in stats" :key="stat.tag">
 					<div class="tag">
@@ -65,6 +66,7 @@ export default define({
 root(isDark)
 	.mkw-hashtags--body
 		> .fetching
+		> .empty
 			margin 0
 			padding 12px 16px
 			text-align center

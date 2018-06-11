@@ -258,6 +258,7 @@ common/views/widgets/posts-monitor.vue:
 common/views/widgets/hashtags.vue:
   title: "ハッシュタグ"
   count: "{}人が投稿"
+  empty: "トレンドなし"
 
 common/views/widgets/server.vue:
   title: "サーバー情報"
