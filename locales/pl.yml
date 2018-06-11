@@ -70,7 +70,7 @@ common:
     donation: "Dotacje"
     nav: "Nawigacja"
     tips: "Wskazówki"
-    hashtags: "ハッシュタグ"
+    hashtags: "Hashtagi"
   deck:
     widgets: "Widżety"
     home: "Strona główna"
@@ -226,8 +226,8 @@ common/views/widgets/posts-monitor.vue:
   title: "Wykres wpisów"
   toggle: "Przełącz widok"
 common/views/widgets/hashtags.vue:
-  title: "ハッシュタグ"
-  count: "{}人が投稿"
+  title: "Hashtagi"
+  count: "Wspomniany przez {} użytkowników"
 common/views/widgets/server.vue:
   title: "Informacje o serwerze"
   toggle: "Przełącz widok"
