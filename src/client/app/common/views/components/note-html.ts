@@ -44,10 +44,10 @@ export default Vue.component('mk-note-html', {
 			return;
 		}
 
-		while (
+		while (ast[ast.length - 1] && (
 			ast[ast.length - 1].type == 'hashtag' ||
 			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == ' ') ||
-			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == '\n')) {
+			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == '\n'))) {
 			ast.pop();
 		}
 
