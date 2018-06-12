@@ -15,6 +15,11 @@ const log = debug('misskey:activitypub');
 export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, note: INote): Promise<void> {
 	const uri = activity.id || activity;
 
+	// アナウンサーが凍結されていたらスキップ
+	if (actor.isSuspended) {
+		return;
+	}
+
 	if (typeof uri !== 'string') {
 		throw new Error('invalid announce');
 	}
