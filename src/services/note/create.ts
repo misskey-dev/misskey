@@ -204,6 +204,62 @@ export default async (user: IUser, data: {
 		return packAp(content);
 	};
 
+	//#region メンション
+	if (data.text) {
+		// TODO: Drop dupulicates
+		const mentionTokens = tokens
+			.filter(t => t.type == 'mention');
+
+		// TODO: Drop dupulicates
+		const mentionedUsers = (await Promise.all(mentionTokens.map(async m => {
+			try {
+				return await resolveUser(m.username, m.host);
+			} catch (e) {
+				return null;
+			}
+		}))).filter(x => x != null);
+
+		// Append mentions data
+		if (mentionedUsers.length > 0) {
+			const set = {
+				mentions: mentionedUsers.map(u => u._id),
+				mentionedRemoteUsers: mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
+					uri: (u as IRemoteUser).uri,
+					username: u.username,
+					host: u.host
+				}))
+			};
+
+			Note.update({ _id: note._id }, {
+				$set: set
+			});
+
+			Object.assign(note, set);
+		}
+
+		mentionedUsers.filter(u => isLocalUser(u)).forEach(async u => {
+			event(u, 'mention', noteObj);
+
+			// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
+			if (data.reply && data.reply.userId.equals(u._id)) return;
+			if (data.renote && data.renote.userId.equals(u._id)) return;
+
+			// Create notification
+			notify(u._id, user._id, 'mention', {
+				noteId: note._id
+			});
+
+			nm.push(u._id, 'mention');
+		});
+
+		if (isLocalUser(user)) {
+			mentionedUsers.filter(u => isRemoteUser(u)).forEach(async u => {
+				deliver(user, await render(), (u as IRemoteUser).inbox);
+			});
+		}
+	}
+	//#endregion
+
 	if (!silent) {
 		if (isLocalUser(user)) {
 			if (note.visibility == 'private' || note.visibility == 'followers' || note.visibility == 'specified') {
@@ -286,60 +342,6 @@ export default async (user: IUser, data: {
 		deliver(user, await render(), data.renote._user.inbox);
 	}
 	//#endergion
-
-	//#region メンション
-	if (data.text) {
-		// TODO: Drop dupulicates
-		const mentions = tokens
-			.filter(t => t.type == 'mention');
-
-		let mentionedUsers = await Promise.all(mentions.map(async m => {
-			try {
-				return await resolveUser(m.username, m.host);
-			} catch (e) {
-				return null;
-			}
-		}));
-
-		// TODO: Drop dupulicates
-		mentionedUsers = mentionedUsers.filter(x => x != null);
-
-		mentionedUsers.filter(u => isLocalUser(u)).forEach(async u => {
-			event(u, 'mention', noteObj);
-
-			// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
-			if (data.reply && data.reply.userId.equals(u._id)) return;
-			if (data.renote && data.renote.userId.equals(u._id)) return;
-
-			// Create notification
-			notify(u._id, user._id, 'mention', {
-				noteId: note._id
-			});
-
-			nm.push(u._id, 'mention');
-		});
-
-		if (isLocalUser(user)) {
-			mentionedUsers.filter(u => isRemoteUser(u)).forEach(async u => {
-				deliver(user, await render(), (u as IRemoteUser).inbox);
-			});
-		}
-
-		// Append mentions data
-		if (mentionedUsers.length > 0) {
-			Note.update({ _id: note._id }, {
-				$set: {
-					mentions: mentionedUsers.map(u => u._id),
-					mentionedRemoteUsers: mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
-						uri: (u as IRemoteUser).uri,
-						username: u.username,
-						host: u.host
-					}))
-				}
-			});
-		}
-	}
-	//#endregion
 
 	// If has in reply to note
 	if (data.reply) {
