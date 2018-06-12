@@ -4,7 +4,7 @@ import * as debug from 'debug';
 
 import User, { IUser } from '../../../models/user';
 import Mute from '../../../models/mute';
-import { pack as packNote } from '../../../models/note';
+import { pack as packNote, pack } from '../../../models/note';
 import readNotification from '../common/read-notification';
 import call from '../call';
 import { IApp } from '../../../models/app';
@@ -47,6 +47,14 @@ export default async function(
 						}
 					}
 					//#endregion
+
+					// Renoteなら再pack
+					if (x.type == 'note' && x.body.renoteId != null) {
+						x.body.renote = await pack(x.body.renoteId, user, {
+							detail: true
+						});
+						data = JSON.stringify(x);
+					}
 
 					connection.send(data);
 				} catch (e) {

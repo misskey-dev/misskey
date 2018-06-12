@@ -289,7 +289,7 @@ export const pack = async (
 
 		// Poll
 		if (meId && _note.poll && !hide) {
-			_note.poll = (async (poll) => {
+			_note.poll = (async poll => {
 				const vote = await PollVote
 					.findOne({
 						userId: meId,
