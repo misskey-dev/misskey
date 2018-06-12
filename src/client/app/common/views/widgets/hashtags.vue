@@ -76,13 +76,8 @@ root(isDark)
 				margin-right 4px
 
 		> div
-			.chart-enter
-			.chart-leave-to
-				opacity 0
-				transform translateY(-30px)
-
-			> *
-				transition transform .3s ease, opacity .3s ease
+			.chart-move
+				transition transform 1s ease
 
 			> div
 				display flex
