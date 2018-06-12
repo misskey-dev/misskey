@@ -1,5 +1,6 @@
 import renderDocument from './document';
 import renderHashtag from './hashtag';
+import renderMention from './mention';
 import config from '../../../config';
 import DriveFile from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
@@ -45,6 +46,18 @@ export default async function renderNote(note: INote, dive = true) {
 
 	const attributedTo = `${config.url}/users/${user._id}`;
 
+	const mentions = note.mentionedRemoteUsers && note.mentionedRemoteUsers.length > 0
+		? note.mentionedRemoteUsers.map(x => x.uri)
+		: [];
+
+	const cc = ['public', 'home', 'followers'].includes(note.visibility)
+		? [`${attributedTo}/followers`].concat(mentions)
+		: [];
+
+	const hashtagTags = (note.tags || []).map(renderHashtag);
+	const mentionTags = (note.mentionedRemoteUsers || []).map(renderMention);
+	const tag = hashtagTags.concat(mentionTags)
+
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
@@ -52,9 +65,9 @@ export default async function renderNote(note: INote, dive = true) {
 		content: toHtml(note),
 		published: note.createdAt.toISOString(),
 		to: 'https://www.w3.org/ns/activitystreams#Public',
-		cc: `${attributedTo}/followers`,
+		cc,
 		inReplyTo,
 		attachment: (await promisedFiles).map(renderDocument),
-		tag: (note.tags || []).map(renderHashtag)
+		tag
 	};
 }

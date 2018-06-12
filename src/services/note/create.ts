@@ -329,7 +329,12 @@ export default async (user: IUser, data: {
 		if (mentionedUsers.length > 0) {
 			Note.update({ _id: note._id }, {
 				$set: {
-					mentions: mentionedUsers.map(u => u._id)
+					mentions: mentionedUsers.map(u => u._id),
+					mentionedRemoteUsers: mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
+						uri: (u as IRemoteUser).uri,
+						username: u.username,
+						host: u.host
+					}))
 				}
 			});
 		}

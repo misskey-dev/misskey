@@ -48,6 +48,11 @@ export type INote = {
 	repliesCount: number;
 	reactionCounts: any;
 	mentions: mongo.ObjectID[];
+	mentionedRemoteUsers: Array<{
+		uri: string;
+		username: string;
+		host: string;
+	}>;
 
 	/**
 	 * public ... 公開
