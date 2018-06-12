@@ -20,6 +20,7 @@ export default async function(user: IUser, note: INote) {
 		$set: {
 			deletedAt: new Date(),
 			text: null,
+			tags: [],
 			mediaIds: [],
 			poll: null
 		}
