@@ -46,6 +46,7 @@ import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import getKao from '../../../common/scripts/get-kao';
 import parse from '../../../../../text/parse';
+import { host } from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -123,6 +124,7 @@ export default Vue.extend({
 
 				// 自分は除外
 				if (this.$store.state.i.username == x.username && x.host == null) return;
+				if (this.$store.state.i.username == x.username && x.host == host) return;
 
 				// 重複は除外
 				if (this.text.indexOf(`${mention} `) != -1) return;
