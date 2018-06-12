@@ -42,6 +42,7 @@ import MkUserLists from './views/pages/user-lists.vue';
 import MkUserList from './views/pages/user-list.vue';
 import MkSettings from './views/pages/settings.vue';
 import MkOthello from './views/pages/othello.vue';
+import MkTag from './views/pages/tag.vue';
 
 Vue.use(MdCard);
 Vue.use(MdButton);
@@ -88,6 +89,7 @@ init((launch) => {
 			{ path: '/i/drive/file/:file', component: MkDrive },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
+			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/othello', name: 'othello', component: MkOthello },
 			{ path: '/othello/:game', component: MkOthello },
 			{ path: '/@:user', component: MkUser },
