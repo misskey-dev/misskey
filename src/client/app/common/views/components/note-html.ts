@@ -103,7 +103,7 @@ export default Vue.component('mk-note-html', {
 				case 'hashtag':
 					return createElement('a', {
 						attrs: {
-							href: `${url}/tags/${token.content}`,
+							href: `${url}/tags/${token.hashtag}`,
 							target: '_blank'
 						}
 					}, token.content);
