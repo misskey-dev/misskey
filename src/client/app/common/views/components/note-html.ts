@@ -44,7 +44,10 @@ export default Vue.component('mk-note-html', {
 			return;
 		}
 
-		while (ast[ast.length - 1].type == 'hashtag') {
+		while (
+			ast[ast.length - 1].type == 'hashtag' ||
+			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == ' ') ||
+			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == '\n')) {
 			ast.pop();
 		}
 
@@ -100,7 +103,7 @@ export default Vue.component('mk-note-html', {
 				case 'hashtag':
 					return createElement('a', {
 						attrs: {
-							href: `${url}/search?q=${token.content}`,
+							href: `${url}/tags/${token.content}`,
 							target: '_blank'
 						}
 					}, token.content);
