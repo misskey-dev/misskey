@@ -29,6 +29,7 @@ import fileTypeIcon from './file-type-icon.vue';
 import Switch from './switch.vue';
 import Othello from './othello.vue';
 import welcomeTimeline from './welcome-timeline.vue';
+import uiInput from './material/input.vue';
 
 Vue.component('mk-analog-clock', analogClock);
 Vue.component('mk-menu', menu);
@@ -59,3 +60,4 @@ Vue.component('mk-file-type-icon', fileTypeIcon);
 Vue.component('mk-switch', Switch);
 Vue.component('mk-othello', Othello);
 Vue.component('mk-welcome-timeline', welcomeTimeline);
+Vue.component('ui-input', uiInput);

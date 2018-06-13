@@ -5,10 +5,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import { MdCard, MdButton, MdField, MdMenu, MdList, MdSwitch, MdSubheader, MdDialog, MdDialogAlert, MdRadio } from 'vue-material/dist/components';
-import 'vue-material/dist/vue-material.min.css';
-import 'vue-material/dist/theme/default.css';
-
 // Style
 import './style.styl';
 import '../../element.scss';
@@ -43,17 +39,6 @@ import MkUserList from './views/pages/user-list.vue';
 import MkSettings from './views/pages/settings.vue';
 import MkOthello from './views/pages/othello.vue';
 import MkTag from './views/pages/tag.vue';
-
-Vue.use(MdCard);
-Vue.use(MdButton);
-Vue.use(MdField);
-Vue.use(MdMenu);
-Vue.use(MdList);
-Vue.use(MdSwitch);
-Vue.use(MdSubheader);
-Vue.use(MdDialog);
-Vue.use(MdDialogAlert);
-Vue.use(MdRadio);
 
 /**
  * init

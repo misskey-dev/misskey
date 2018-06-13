@@ -7,9 +7,16 @@
 			<p>%fa:lock% ログイン</p>
 			<div>
 				<form @submit.prevent="onSubmit">
-					<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange"/>
-					<input v-model="password" type="password" placeholder="パスワード" required/>
-					<input v-if="user && user.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
+					<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange">
+						<span>ユーザー名</span>
+						<span slot="prefix">@</span>
+						<span slot="suffix">@{{ host }}</span>
+					</ui-input>
+					<ui-input v-model="password" type="password" placeholder="パスワード" required>
+						<span>パスワード</span>
+						<span slot="prefix">%fa:lock%</span>
+					</ui-input>
+					<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
 					<button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</button>
 				</form>
 				<div>
@@ -33,7 +40,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, copyright } from '../../../config';
+import { apiUrl, copyright, host } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -45,7 +52,8 @@ export default Vue.extend({
 			token: '',
 			apiUrl,
 			copyright,
-			users: []
+			users: [],
+			host
 		};
 	},
 	mounted() {
