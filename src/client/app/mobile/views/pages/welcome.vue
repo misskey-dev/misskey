@@ -1,27 +1,23 @@
 <template>
 <div class="welcome">
 	<div>
-		<h1><b>Misskey</b>へようこそ</h1>
-		<p>Twitter風ミニブログSNS、Misskeyへようこそ。共有したいことを投稿したり、タイムラインでみんなの投稿を読むこともできます。<br><a href="/signup">アカウントを作成する</a></p>
+		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey">
 		<div class="form">
-			<p>%fa:lock% ログイン</p>
+			<form @submit.prevent="onSubmit">
+				<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange">
+					<span>ユーザー名</span>
+					<span slot="prefix">@</span>
+					<span slot="suffix">@{{ host }}</span>
+				</ui-input>
+				<ui-input v-model="password" type="password" placeholder="パスワード" required>
+					<span>パスワード</span>
+					<span slot="prefix">%fa:lock%</span>
+				</ui-input>
+				<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
+				<ui-button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</ui-button>
+			</form>
 			<div>
-				<form @submit.prevent="onSubmit">
-					<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange">
-						<span>ユーザー名</span>
-						<span slot="prefix">@</span>
-						<span slot="suffix">@{{ host }}</span>
-					</ui-input>
-					<ui-input v-model="password" type="password" placeholder="パスワード" required>
-						<span>パスワード</span>
-						<span slot="prefix">%fa:lock%</span>
-					</ui-input>
-					<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
-					<button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</button>
-				</form>
-				<div>
-					<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
-				</div>
+				<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
 			</div>
 		</div>
 		<div class="tl">
@@ -92,81 +88,44 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .welcome
-	background linear-gradient(to bottom, #1e1d65, #bd6659)
+	background #fff
 
 	> div
 		padding 16px
 		margin 0 auto
 		max-width 500px
 
-		h1
-			margin 0
-			padding 8px
-			font-size 1.5em
-			font-weight normal
-			color #cacac3
-
-			& + p
-				margin 0 0 16px 0
-				padding 0 8px 0 8px
-				color #949fa9
+		> img
+			display block
+			max-width 200px
+			margin 0 auto
 
 		.form
 			margin-bottom 16px
-			background #fff
-			border solid 1px rgba(#000, 0.2)
-			border-radius 8px
-			overflow hidden
 
-			> p
-				margin 0
-				padding 12px 20px
-				color #555
-				background #f5f5f5
-				border-bottom solid 1px #ddd
+			> form
+				padding 16px
 
-			> div
-
-				> form
-					padding 16px
-					border-bottom solid 1px #ddd
-
-					input
-						display block
-						padding 12px
-						margin 0 0 16px 0
-						width 100%
-						font-size 1em
-						color rgba(#000, 0.7)
-						background #fff
-						outline none
-						border solid 1px #ddd
-						border-radius 4px
-
-					button
-						display block
-						width 100%
-						padding 10px
-						margin 0
-						color #333
-						font-size 1em
-						text-align center
-						text-decoration none
-						text-shadow 0 1px 0 rgba(255, 255, 255, 0.9)
-						background-image linear-gradient(#fafafa, #eaeaea)
-						border 1px solid #ddd
-						border-bottom-color #cecece
-						border-radius 4px
-
-						&:active
-							background-color #767676
-							background-image none
-							border-color #444
-							box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
-
-				> div
-					padding 16px
+				button
+					display block
+					width 100%
+					padding 10px
+					margin 0
+					color #333
+					font-size 1em
 					text-align center
+					text-decoration none
+					text-shadow 0 1px 0 rgba(255, 255, 255, 0.9)
+					background-image linear-gradient(#fafafa, #eaeaea)
+					border 1px solid #ddd
+					border-bottom-color #cecece
+					border-radius 4px
+
+					&:active
+						background-color #767676
+						background-image none
+						border-color #444
+						box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
 
 		> .tl
 			background #fff

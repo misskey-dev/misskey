@@ -30,6 +30,7 @@ import Switch from './switch.vue';
 import Othello from './othello.vue';
 import welcomeTimeline from './welcome-timeline.vue';
 import uiInput from './material/input.vue';
+import uiButton from './material/button.vue';
 
 Vue.component('mk-analog-clock', analogClock);
 Vue.component('mk-menu', menu);
@@ -61,3 +62,4 @@ Vue.component('mk-switch', Switch);
 Vue.component('mk-othello', Othello);
 Vue.component('mk-welcome-timeline', welcomeTimeline);
 Vue.component('ui-input', uiInput);
+Vue.component('ui-button', uiButton);

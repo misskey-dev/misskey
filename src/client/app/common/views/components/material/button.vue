@@ -1,0 +1,39 @@
+<template>
+<div class="ui-button">
+	<button>
+		<slot></slot>
+	</button>
+</div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+export default Vue.extend({
+	props: {
+		type: {
+			type: String,
+			required: false
+		}
+	}
+});
+</script>
+
+<style lang="stylus" scoped>
+@import '~const.styl'
+
+.ui-button
+	> button
+		display block
+		width 100%
+		padding 0
+		color $theme-color-foreground
+		font-weight bold
+		font-size 16px
+		line-height 44px
+		background $theme-color
+		border none
+		border-radius 6px
+		outline none
+		box-shadow none
+
+</style>

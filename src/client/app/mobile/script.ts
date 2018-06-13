@@ -2,13 +2,11 @@
  * Mobile Client
  */
 
-import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
 import './style.styl';
 import '../../element.scss';
-import '../../md.scss';
 
 import init from '../init';
 

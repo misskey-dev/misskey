@@ -24,7 +24,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.$refs.label.style.left = this.$refs.prefix.offsetWidth + 'px';
+		this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
 	},
 	methods: {
 		focus() {
@@ -38,39 +38,18 @@ export default Vue.extend({
 @import '~const.styl'
 
 .ui-input
-	padding-bottom 16px
+	margin-bottom 32px
 
 	> .input
 		display flex
 		margin-top 16px
-
-		&:before
-			content ''
-			display block
-			position absolute
-			bottom 0
-			left 0
-			right 0
-			height 1px
-			background rgba(#000, 0.42)
-
-		&:after
-			content ''
-			display block
-			position absolute
-			bottom 0
-			left 0
-			right 0
-			height 2px
-			background $theme-color
-			opacity 0
-			transform scaleX(0.12)
-			transition border 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
-			will-change border opacity transform
+		padding 6px 12px
+		background #f5f5f5
+		border-radius 6px
 
 		> .label
 			position absolute
-			top 0
+			top 6px
 			left 0
 			pointer-events none
 			transition 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)
@@ -85,6 +64,8 @@ export default Vue.extend({
 			flex 1
 			width 100%
 			padding 0
+			font inherit
+			font-weight bold
 			font-size 16px
 			line-height 32px
 			background transparent
@@ -110,9 +91,7 @@ export default Vue.extend({
 
 	&.focused
 		> .input
-			&:after
-				opacity 1
-				transform scaleX(1)
+			background #eee
 
 			> .label
 				color $theme-color
@@ -121,7 +100,7 @@ export default Vue.extend({
 	&.filled
 		> .input
 			> .label
-				top -16px
+				top -20px
 				left 0 !important
 				font-size 12px
 				line-height 20px
