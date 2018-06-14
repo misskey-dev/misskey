@@ -30,11 +30,13 @@
 		<ui-input type="file" @change="onAvatarChange">
 			<span>%i18n:@avatar%</span>
 			<span slot="icon">%fa:image%</span>
+			<span slot="text" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
 		</ui-input>
 
 		<ui-input type="file" @change="onBannerChange">
 			<span>%i18n:@banner%</span>
 			<span slot="icon">%fa:image%</span>
+			<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
 		</ui-input>
 
 		<ui-switch v-model="isCat">%i18n:@is-cat%</ui-switch>
@@ -62,7 +64,8 @@ export default Vue.extend({
 			isBot: false,
 			isCat: false,
 			saving: false,
-			uploading: false
+			avatarUploading: false,
+			bannerUploading: false
 		};
 	},
 
@@ -80,7 +83,7 @@ export default Vue.extend({
 
 	methods: {
 		onAvatarChange([file]) {
-			this.uploading = true;
+			this.avatarUploading = true;
 
 			const data = new FormData();
 			data.append('file', file);
@@ -93,16 +96,16 @@ export default Vue.extend({
 			.then(response => response.json())
 			.then(f => {
 				this.avatarId = f.id;
-				this.uploading = false;
+				this.avatarUploading = false;
 			})
 			.catch(e => {
-				this.uploading = false;
+				this.avatarUploading = false;
 				alert('%18n:!@upload-failed%');
 			});
 		},
 
 		onBannerChange([file]) {
-			this.uploading = true;
+			this.bannerUploading = true;
 
 			const data = new FormData();
 			data.append('file', file);
@@ -115,10 +118,10 @@ export default Vue.extend({
 			.then(response => response.json())
 			.then(f => {
 				this.bannerId = f.id;
-				this.uploading = false;
+				this.bannerUploading = false;
 			})
 			.catch(e => {
-				this.uploading = false;
+				this.bannerUploading = false;
 				alert('%18n:!@upload-failed%');
 			});
 		},

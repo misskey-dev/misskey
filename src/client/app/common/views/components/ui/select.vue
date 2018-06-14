@@ -48,7 +48,9 @@ export default Vue.extend({
 			this.v = v;
 		}
 	},
-	inject: ['isCardChild'],
+	inject: {
+		isCardChild: { default: false }
+	},
 	created() {
 		if (this.isCardChild) {
 			this.styl = 'line';
@@ -101,7 +103,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				height 1px
-				background rgba(#000, 0.42)
+				background isDark ? rgba(#fff, 0.7) : rgba(#000, 0.42)
 
 			&:after
 				content ''
@@ -141,14 +143,15 @@ root(isDark, fill)
 			font-weight fill ? bold : normal
 			font-size 16px
 			height 32px
+			color isDark ? #fff : #000
 			background transparent
 			border none
 			border-radius 0
 			outline none
 			box-shadow none
 
-			&[type='file']
-				display none
+			*
+				color #000
 
 		> .prefix
 		> .suffix

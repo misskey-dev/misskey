@@ -1,6 +1,6 @@
 <template>
-<div class="ui-button">
-	<button :type="type">
+<div class="ui-button" :class="[styl]">
+	<button :type="type" @click="$emit('click')">
 		<slot></slot>
 	</button>
 </div>
@@ -20,7 +20,9 @@ export default Vue.extend({
 			styl: 'fill'
 		};
 	},
-	inject: ['isCardChild'],
+	inject: {
+		isCardChild: { default: false }
+	},
 	created() {
 		if (this.isCardChild) {
 			this.styl = 'line';

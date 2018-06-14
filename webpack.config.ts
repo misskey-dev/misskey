@@ -79,6 +79,8 @@ const consts = {
 	_DEV_URL_: config.dev_url,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
+	_NAME_: config.name,
+	_DESCRIPTION_: config.description,
 	_HOST_: config.host,
 	_HOSTNAME_: config.hostname,
 	_URL_: config.url,

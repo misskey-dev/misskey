@@ -92,7 +92,7 @@ root(isDark)
 		margin 3px 0 0 0
 		width 34px
 		height 14px
-		background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.25)
+		background isDark ? rgba(#fff, 0.15) : rgba(#000, 0.25)
 		outline none
 		border-radius 14px
 		transition inherit

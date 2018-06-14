@@ -1,7 +1,7 @@
 <template>
 <div class="ui-input" :class="[{ focused, filled }, styl]">
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
-	<div class="input" @click="focus">
+	<div class="input" @click="focus" @mousedown="focus">
 		<div class="password-meter" v-if="withPasswordMeter" v-show="passwordStrength != ''" :data-strength="passwordStrength">
 			<div class="value" ref="passwordMetar"></div>
 		</div>
@@ -62,7 +62,6 @@ export default Vue.extend({
 			required: false
 		},
 		autocomplete: {
-			type: String,
 			required: false
 		},
 		withPasswordMeter: {
@@ -113,7 +112,9 @@ export default Vue.extend({
 			}
 		}
 	},
-	inject: ['isCardChild'],
+	inject: {
+		isCardChild: { default: false }
+	},
 	created() {
 		if (this.isCardChild) {
 			this.styl = 'line';
@@ -160,6 +161,7 @@ root(isDark, fill)
 
 	> .input
 		display flex
+		cursor text
 
 		if fill
 			padding 6px 12px

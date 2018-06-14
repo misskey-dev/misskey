@@ -1,6 +1,6 @@
 <template>
-<form class="mk-signup" @submit.prevent="onSubmit" autocomplete="off">
-	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" autocomplete="off" required @input="onChangeUsername">
+<form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" required @input="onChangeUsername">
 		<span>%i18n:@username%</span>
 		<span slot="prefix">@</span>
 		<span slot="suffix">@{{ host }}</span>
@@ -12,7 +12,7 @@
 		<p slot="text" v-if="usernameState == 'min-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-short%</p>
 		<p slot="text" v-if="usernameState == 'max-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-long%</p>
 	</ui-input>
-	<ui-input v-model="password" type="password" autocomplete="off" required @input="onChangePassword" :with-password-meter="true">
+	<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true">
 		<span>%i18n:@password%</span>
 		<span slot="prefix">%fa:lock%</span>
 		<div slot="text">
@@ -21,7 +21,7 @@
 			<p slot="text" v-if="passwordStrength == 'high'" style="color:#3CB7B5">%fa:check .fw% %i18n:@strong-password%</p>
 		</div>
 	</ui-input>
-	<ui-input v-model="retypedPassword" type="password" autocomplete="off" required @input="onChangePasswordRetype">
+	<ui-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
 		<span>%i18n:@password% (%i18n:@retype%)</span>
 		<span slot="prefix">%fa:lock%</span>
 		<div slot="text">
@@ -31,7 +31,7 @@
 	</ui-input>
 	<div class="g-recaptcha" :data-sitekey="recaptchaSitekey" style="margin: 16px 0;"></div>
 	<label class="agree-tou" style="display: block; margin: 16px 0;">
-		<input name="agree-tou" type="checkbox" autocomplete="off" required/>
+		<input name="agree-tou" type="checkbox" required/>
 		<p><a :href="touUrl" target="_blank">利用規約</a>に同意する</p>
 	</label>
 	<ui-button type="submit">%i18n:@create%</ui-button>

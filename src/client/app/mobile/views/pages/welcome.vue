@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, copyright, host } from '../../../config';
+import { apiUrl, copyright, host, name, description } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -48,7 +48,9 @@ export default Vue.extend({
 			apiUrl,
 			copyright,
 			users: [],
-			host
+			host,
+			name,
+			description
 		};
 	},
 	mounted() {

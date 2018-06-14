@@ -1,41 +1,27 @@
 <template>
 <mk-ui>
 	<span slot="header">%fa:cog%%i18n:@settings%</span>
-	<main>
-		<p v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></p>
+	<main :data-darkmode="$store.state.device.darkmode">
+		<div class="signin-as" v-html="'%i18n:@signed-in-as%'.replace('{}', '<b>' + name + '</b>')"></div>
+
 		<div>
 			<x-profile/>
 
 			<ui-card>
 				<div slot="title">%fa:palette% %i18n:@design%</div>
 
-				<div>
-					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
-				</div>
-
-				<div>
-					<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
-				</div>
+				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
+				<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
 
 				<div>
 					<div class="md-body-2">%i18n:@timeline%</div>
-
-					<div>
-						<ui-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</ui-switch>
-					</div>
-
-					<div>
-						<ui-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</ui-switch>
-					</div>
-
-					<div>
-						<ui-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
-					</div>
+					<ui-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</ui-switch>
+					<ui-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</ui-switch>
+					<ui-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
 				</div>
 
 				<div>
 					<div class="md-body-2">%i18n:@post-style%</div>
-
 					<ui-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</ui-radio>
 					<ui-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</ui-radio>
 				</div>
@@ -43,26 +29,11 @@
 
 			<ui-card>
 				<div slot="title">%fa:cog% %i18n:@behavior%</div>
-
-				<div>
-					<ui-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
-				</div>
-
-				<div>
-					<ui-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
-				</div>
-
-				<div>
-					<ui-switch v-model="loadRawImages">%i18n:@load-raw-images%</ui-switch>
-				</div>
-
-				<div>
-					<ui-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
-				</div>
-
-				<div>
-					<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
-				</div>
+				<ui-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
+				<ui-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
+				<ui-switch v-model="loadRawImages">%i18n:@load-raw-images%</ui-switch>
+				<ui-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
+				<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
 			</ui-card>
 
 			<ui-card>
@@ -98,13 +69,16 @@
 				<template v-if="latestVersion !== undefined">
 					<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
 				</template>
-				<md-button class="md-raised md-primary" @click="checkForUpdate" :disabled="checkingForUpdate">
+				<ui-button class="md-raised md-primary" @click="checkForUpdate" :disabled="checkingForUpdate">
 					<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
 					<template v-else>%i18n:@check-for-updates%</template>
-				</md-button>
+				</ui-button>
 			</ui-card>
 		</div>
-		<p><small>ver {{ version }} ({{ codename }})</small></p>
+
+		<footer>
+			<small>ver {{ version }} ({{ codename }})</small>
+		</footer>
 	</main>
 </mk-ui>
 </template>
@@ -249,13 +223,18 @@ root(isDark)
 	max-width 500px
 	width 100%
 
-	> p
-		display block
-		margin 16px 0
+	> .signin-as
+		margin 16px
 		padding 16px
 		text-align center
-		color isDark ? #cad2da : #2c662d
-		background #fcfff5
+		color isDark ? #49ab63 : #2c662d
+		background isDark ? #273c34 : #fcfff5
+		box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
+
+	> footer
+		margin 16px
+		text-align center
+		color isDark ? #c9d2e0 : #888
 
 main[data-darkmode]
 	root(true)

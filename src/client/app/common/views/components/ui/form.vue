@@ -11,7 +11,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: {
 		disabled: {
-			type: String,
+			type: Boolean,
 			required: false
 		}
 	}

@@ -15,6 +15,8 @@ export type Source = {
 		 */
 		url: string;
 	};
+	name?: string;
+	description?: string;
 	url: string;
 	port: number;
 	https?: { [x: string]: string };
