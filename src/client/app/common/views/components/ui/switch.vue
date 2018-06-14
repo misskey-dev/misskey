@@ -143,7 +143,6 @@ root(isDark)
 		> span
 			display block
 			line-height 20px
-			font-weight bold
 			color isDark ? #c4ccd2 : rgba(#000, 0.75)
 			transition inherit
 

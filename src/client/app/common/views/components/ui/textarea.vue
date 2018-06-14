@@ -65,13 +65,43 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.ui-textarea
+root(isDark, fill)
 	margin 32px 0
 
 	> .input
 		padding 12px
-		background rgba(#000, 0.035)
-		border-radius 6px
+
+		if fill
+			background rgba(#000, 0.035)
+			border-radius 6px
+		else
+			&:before
+				content ''
+				display block
+				position absolute
+				top 0
+				bottom 0
+				left 0
+				right 0
+				background none
+				border solid 1px rgba(#000, 0.42)
+				border-radius 3px
+				pointer-events none
+
+			&:after
+				content ''
+				display block
+				position absolute
+				top 0
+				bottom 0
+				left 0
+				right 0
+				background none
+				border solid 2px $theme-color
+				border-radius 3px
+				opacity 0
+				transition opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+				pointer-events none
 
 		> .label
 			position absolute
@@ -94,7 +124,7 @@ export default Vue.extend({
 			min-height 100px
 			padding 0
 			font inherit
-			font-weight bold
+			font-weight fill ? bold : normal
 			font-size 16px
 			background transparent
 			border none
@@ -111,7 +141,11 @@ export default Vue.extend({
 
 	&.focused
 		> .input
-			background rgba(#000, 0.05)
+			if fill
+				background rgba(#000, 0.05)
+			else
+				&:after
+					opacity 1
 
 			> .label
 				color $theme-color
@@ -123,5 +157,17 @@ export default Vue.extend({
 				top -24px
 				left 0 !important
 				transform scale(0.8)
+
+.ui-textarea[data-darkmode]
+	&.fill
+		root(true, true)
+	&:not(.fill)
+		root(true, false)
+
+.ui-textarea:not([data-darkmode])
+	&.fill
+		root(false, true)
+	&:not(.fill)
+		root(false, false)
 
 </style>

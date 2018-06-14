@@ -29,12 +29,12 @@
 
 		<ui-input type="file" @change="onAvatarChange">
 			<span>%i18n:@avatar%</span>
-			<span slot="prefix">%fa:picture-o%</span>
+			<span slot="icon">%fa:image%</span>
 		</ui-input>
 
 		<ui-input type="file" @change="onBannerChange">
 			<span>%i18n:@banner%</span>
-			<span slot="prefix">%fa:picture-o%</span>
+			<span slot="icon">%fa:image%</span>
 		</ui-input>
 
 		<ui-switch v-model="isCat">%i18n:@is-cat%</ui-switch>
