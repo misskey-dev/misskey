@@ -193,9 +193,9 @@ root(isDark, fill)
 	&.filled
 		> .input
 			> .label
-				top fill ? -24px : -16px
+				top fill ? -24px : -17px
 				left 0 !important
-				transform scale(0.8)
+				transform scale(0.75)
 
 .ui-select[data-darkmode]
 	&.fill

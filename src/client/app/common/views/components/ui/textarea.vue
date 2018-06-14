@@ -84,7 +84,7 @@ root(isDark, fill)
 				left 0
 				right 0
 				background none
-				border solid 1px rgba(#000, 0.42)
+				border solid 1px isDark ? rgba(#fff, 0.7) : rgba(#000, 0.42)
 				border-radius 3px
 				pointer-events none
 
@@ -112,7 +112,7 @@ root(isDark, fill)
 			transition-duration 0.3s
 			font-size 16px
 			line-height 32px
-			color rgba(#000, 0.54)
+			color isDark ? rgba(#fff, 0.7) : rgba(#000, 0.54)
 			pointer-events none
 			//will-change transform
 			transform-origin top left
@@ -126,6 +126,7 @@ root(isDark, fill)
 			font inherit
 			font-weight fill ? bold : normal
 			font-size 16px
+			color isDark ? #fff : #000
 			background transparent
 			border none
 			border-radius 0
@@ -156,7 +157,7 @@ root(isDark, fill)
 			> .label
 				top -24px
 				left 0 !important
-				transform scale(0.8)
+				transform scale(0.75)
 
 .ui-textarea[data-darkmode]
 	&.fill

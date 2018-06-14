@@ -5,15 +5,13 @@
 	role="switch"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
-	@click="switchValue"
-	@mouseover="mouseenter"
+	@click="toggle"
 >
 	<input
 		type="checkbox"
-		@change="handleChange"
 		ref="input"
 		:disabled="disabled"
-		@keydown.enter="switchValue"
+		@keydown.enter="toggle"
 	>
 	<span class="button">
 		<span></span>
@@ -30,6 +28,10 @@
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
+	model: {
+		prop: 'value',
+		event: 'change'
+	},
 	props: {
 		value: {
 			type: Boolean,
@@ -39,42 +41,15 @@ export default Vue.extend({
 			type: Boolean,
 			default: false
 		}
-	},/*
-	created() {
-		if (!~[true, false].indexOf(this.value)) {
-			this.$emit('input', false);
-		}
-	},*/
+	},
 	computed: {
 		checked(): boolean {
 			return this.value;
 		}
 	},
-	watch: {
-		value() {
-			(this.$el).style.transition = 'all 0.3s';
-			(this.$refs.input as any).checked = this.checked;
-		}
-	},
-	mounted() {
-		(this.$refs.input as any).checked = this.checked;
-	},
 	methods: {
-		mouseenter() {
-			(this.$el).style.transition = 'all 0s';
-		},
-		handleChange() {
-			(this.$el).style.transition = 'all 0.3s';
-			this.$emit('input', !this.checked);
+		toggle() {
 			this.$emit('change', !this.checked);
-			this.$nextTick(() => {
-				// set input's checked property
-				// in case parent refuses to change component's value
-				(this.$refs.input as any).checked = this.checked;
-			});
-		},
-		switchValue() {
-			!this.disabled && this.handleChange();
 		}
 	}
 });
@@ -117,7 +92,7 @@ root(isDark)
 		margin 3px 0 0 0
 		width 34px
 		height 14px
-		background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.07)
+		background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.25)
 		outline none
 		border-radius 14px
 		transition inherit

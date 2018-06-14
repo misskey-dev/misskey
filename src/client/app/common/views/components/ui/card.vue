@@ -22,15 +22,21 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.ui-card
+root(isDark)
 	margin 16px
 	padding 16px
-	background #fff
+	background isDark ? #282C37 : #fff
 	box-shadow 0 3px 1px -2px rgba(#000, 0.2), 0 2px 2px 0 rgba(#000, 0.14), 0 1px 5px 0 rgba(#000, 0.12)
 
 	> header
-		font-weight bold
-		font-size 28px
-		color #444
+		font-weight normal
+		font-size 24px
+		color isDark ? #fff : #444
+
+.ui-card[data-darkmode]
+	root(true)
+
+.ui-card:not([data-darkmode])
+	root(false)
 
 </style>
