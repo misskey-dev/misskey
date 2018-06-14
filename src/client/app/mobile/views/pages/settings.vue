@@ -14,14 +14,14 @@
 				<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
 
 				<div>
-					<div class="md-body-2">%i18n:@timeline%</div>
+					<div>%i18n:@timeline%</div>
 					<ui-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</ui-switch>
 					<ui-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</ui-switch>
 					<ui-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
 				</div>
 
 				<div>
-					<div class="md-body-2">%i18n:@post-style%</div>
+					<div>%i18n:@post-style%</div>
 					<ui-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</ui-radio>
 					<ui-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</ui-radio>
 				</div>
@@ -48,7 +48,7 @@
 						<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 					</optgroup>
 				</ui-select>
-				<span class="md-helper-text">%fa:info-circle% %i18n:@lang-tip%</span>
+				<span>%fa:info-circle% %i18n:@lang-tip%</span>
 			</ui-card>
 
 			<ui-card>
@@ -69,7 +69,7 @@
 				<template v-if="latestVersion !== undefined">
 					<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
 				</template>
-				<ui-button class="md-raised md-primary" @click="checkForUpdate" :disabled="checkingForUpdate">
+				<ui-button @click="checkForUpdate" :disabled="checkingForUpdate">
 					<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
 					<template v-else>%i18n:@check-for-updates%</template>
 				</ui-button>
