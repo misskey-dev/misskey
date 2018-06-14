@@ -1,6 +1,6 @@
 <template>
 <div class="ui-button">
-	<button>
+	<button :type="type">
 		<slot></slot>
 	</button>
 </div>
@@ -25,6 +25,7 @@ export default Vue.extend({
 	> button
 		display block
 		width 100%
+		margin 32px 0 16px 0
 		padding 0
 		color $theme-color-foreground
 		font-weight bold

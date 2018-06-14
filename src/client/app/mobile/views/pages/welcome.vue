@@ -2,7 +2,13 @@
 <div class="welcome">
 	<div>
 		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey">
-		<div class="form">
+		<p class="host">{{ host }}</p>
+		<div class="about">
+			<h2>{{ name || 'unidentified' }}</h2>
+			<p v-html="description || '%i18n:common.about%'"></p>
+			<router-link class="signup" to="/signup">新規登録</router-link>
+		</div>
+		<div class="login">
 			<form @submit.prevent="onSubmit">
 				<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange">
 					<span>ユーザー名</span>
@@ -19,13 +25,6 @@
 			<div>
 				<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
 			</div>
-		</div>
-		<div class="tl">
-			<p>%fa:comments R% タイムラインを見てみる</p>
-			<mk-welcome-timeline/>
-		</div>
-		<div class="users">
-			<mk-avatar class="avatar" v-for="user in users" :key="user.id" :user="user"/>
 		</div>
 		<footer>
 			<small>{{ copyright }}</small>
@@ -88,10 +87,11 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .welcome
-	background #fff
+	text-align center
+	//background #fff
 
 	> div
-		padding 16px
+		padding 32px
 		margin 0 auto
 		max-width 500px
 
@@ -100,11 +100,36 @@ export default Vue.extend({
 			max-width 200px
 			margin 0 auto
 
-		.form
-			margin-bottom 16px
+		> .host
+			display block
+			text-align center
+			padding 6px 12px
+			line-height 32px
+			font-weight bold
+			color #333
+			background rgba(#000, 0.035)
+			border-radius 6px
+
+		> .about
+			margin-top 16px
+			padding 16px
+			color #444
+			background #fff
+			border-radius 6px
+
+			> h2
+				margin 0
+
+			> p
+				margin 8px
+
+			> .signup
+				font-weight bold
+
+		> .login
+			margin 16px 0
 
 			> form
-				padding 16px
 
 				button
 					display block
@@ -127,36 +152,9 @@ export default Vue.extend({
 						border-color #444
 						box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
 
-		> .tl
-			background #fff
-			border solid 1px rgba(#000, 0.2)
-			border-radius 8px
-			overflow hidden
-
-			> p
-				margin 0
-				padding 12px 20px
-				color #555
-				background #f5f5f5
-				border-bottom solid 1px #ddd
-
-			> .mk-welcome-timeline
-				max-height 300px
-				overflow auto
-
-		> .users
-			margin 12px 0 0 0
-
-			> *
-				display inline-block
-				margin 4px
-				width 38px
-				height 38px
-				border-radius 6px
-
 		> footer
 			text-align center
-			color #fff
+			color #444
 
 			> small
 				display block

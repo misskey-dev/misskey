@@ -3,16 +3,40 @@
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
 		<div class="prefix" ref="prefix" @click="focus"><slot name="prefix"></slot></div>
-		<input ref="input" :value="value" @input="$emit('input', $event.target.value)" @focus="focused = true" @blur="focused = false">
+		<input ref="input"
+				:type="type"
+				:value="value"
+				:required="required"
+				:readonly="readonly"
+				@input="$emit('input', $event.target.value)"
+				@focus="focused = true"
+				@blur="focused = false">
 		<div class="suffix" @click="focus"><slot name="suffix"></slot></div>
 	</div>
+	<div class="text"><slot name="text"></slot></div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 export default Vue.extend({
-	props: ['value'],
+	props: {
+		value: {
+			required: false
+		},
+		type: {
+			type: String,
+			required: false
+		},
+		required: {
+			type: Boolean,
+			required: false
+		},
+		readonly: {
+			type: Boolean,
+			required: false
+		}
+	},
 	data() {
 		return {
 			focused: false
@@ -38,13 +62,13 @@ export default Vue.extend({
 @import '~const.styl'
 
 .ui-input
-	margin-bottom 32px
+	margin-bottom 16px
+	padding-top 16px
 
 	> .input
 		display flex
-		margin-top 16px
 		padding 6px 12px
-		background #f5f5f5
+		background rgba(#000, 0.035)
 		border-radius 6px
 
 		> .label
@@ -89,9 +113,16 @@ export default Vue.extend({
 		> .suffix
 			padding-left 4px
 
+	> .text
+		margin 8px 0
+		font-size 14px
+
+		> p
+			margin 0
+
 	&.focused
 		> .input
-			background #eee
+			background rgba(#000, 0.05)
 
 			> .label
 				color $theme-color
