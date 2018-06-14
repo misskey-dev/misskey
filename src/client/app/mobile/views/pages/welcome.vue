@@ -1,28 +1,30 @@
 <template>
 <div class="welcome">
 	<div>
-		<h1><b>Misskey</b>へようこそ</h1>
-		<p>Twitter風ミニブログSNS、Misskeyへようこそ。共有したいことを投稿したり、タイムラインでみんなの投稿を読むこともできます。<br><a href="/signup">アカウントを作成する</a></p>
-		<div class="form">
-			<p>%fa:lock% ログイン</p>
+		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey">
+		<p class="host">{{ host }}</p>
+		<div class="about">
+			<h2>{{ name || 'unidentified' }}</h2>
+			<p v-html="description || '%i18n:common.about%'"></p>
+			<router-link class="signup" to="/signup">新規登録</router-link>
+		</div>
+		<div class="login">
+			<form @submit.prevent="onSubmit">
+				<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" autofocus required @change="onUsernameChange">
+					<span>ユーザー名</span>
+					<span slot="prefix">@</span>
+					<span slot="suffix">@{{ host }}</span>
+				</ui-input>
+				<ui-input v-model="password" type="password" required>
+					<span>パスワード</span>
+					<span slot="prefix">%fa:lock%</span>
+				</ui-input>
+				<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
+				<ui-button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</ui-button>
+			</form>
 			<div>
-				<form @submit.prevent="onSubmit">
-					<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange"/>
-					<input v-model="password" type="password" placeholder="パスワード" required/>
-					<input v-if="user && user.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
-					<button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</button>
-				</form>
-				<div>
-					<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
-				</div>
+				<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
 			</div>
-		</div>
-		<div class="tl">
-			<p>%fa:comments R% タイムラインを見てみる</p>
-			<mk-welcome-timeline/>
-		</div>
-		<div class="users">
-			<mk-avatar class="avatar" v-for="user in users" :key="user.id" :user="user"/>
 		</div>
 		<footer>
 			<small>{{ copyright }}</small>
@@ -33,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl, copyright } from '../../../config';
+import { apiUrl, copyright, host, name, description } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -45,7 +47,10 @@ export default Vue.extend({
 			token: '',
 			apiUrl,
 			copyright,
-			users: []
+			users: [],
+			host,
+			name,
+			description
 		};
 	},
 	mounted() {
@@ -84,112 +89,74 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .welcome
-	background linear-gradient(to bottom, #1e1d65, #bd6659)
+	text-align center
+	//background #fff
 
 	> div
-		padding 16px
+		padding 32px
 		margin 0 auto
 		max-width 500px
 
-		h1
-			margin 0
-			padding 8px
-			font-size 1.5em
-			font-weight normal
-			color #cacac3
+		> img
+			display block
+			max-width 200px
+			margin 0 auto
 
-			& + p
-				margin 0 0 16px 0
-				padding 0 8px 0 8px
-				color #949fa9
+		> .host
+			display block
+			text-align center
+			padding 6px 12px
+			line-height 32px
+			font-weight bold
+			color #333
+			background rgba(#000, 0.035)
+			border-radius 6px
 
-		.form
-			margin-bottom 16px
+		> .about
+			margin-top 16px
+			padding 16px
+			color #555
 			background #fff
-			border solid 1px rgba(#000, 0.2)
-			border-radius 8px
-			overflow hidden
+			border-radius 6px
+
+			> h2
+				margin 0
 
 			> p
-				margin 0
-				padding 12px 20px
-				color #555
-				background #f5f5f5
-				border-bottom solid 1px #ddd
+				margin 8px
 
-			> div
+			> .signup
+				font-weight bold
 
-				> form
-					padding 16px
-					border-bottom solid 1px #ddd
+		> .login
+			margin 16px 0
 
-					input
-						display block
-						padding 12px
-						margin 0 0 16px 0
-						width 100%
-						font-size 1em
-						color rgba(#000, 0.7)
-						background #fff
-						outline none
-						border solid 1px #ddd
-						border-radius 4px
+			> form
 
-					button
-						display block
-						width 100%
-						padding 10px
-						margin 0
-						color #333
-						font-size 1em
-						text-align center
-						text-decoration none
-						text-shadow 0 1px 0 rgba(255, 255, 255, 0.9)
-						background-image linear-gradient(#fafafa, #eaeaea)
-						border 1px solid #ddd
-						border-bottom-color #cecece
-						border-radius 4px
-
-						&:active
-							background-color #767676
-							background-image none
-							border-color #444
-							box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
-
-				> div
-					padding 16px
+				button
+					display block
+					width 100%
+					padding 10px
+					margin 0
+					color #333
+					font-size 1em
 					text-align center
+					text-decoration none
+					text-shadow 0 1px 0 rgba(255, 255, 255, 0.9)
+					background-image linear-gradient(#fafafa, #eaeaea)
+					border 1px solid #ddd
+					border-bottom-color #cecece
+					border-radius 4px
 
-		> .tl
-			background #fff
-			border solid 1px rgba(#000, 0.2)
-			border-radius 8px
-			overflow hidden
-
-			> p
-				margin 0
-				padding 12px 20px
-				color #555
-				background #f5f5f5
-				border-bottom solid 1px #ddd
-
-			> .mk-welcome-timeline
-				max-height 300px
-				overflow auto
-
-		> .users
-			margin 12px 0 0 0
-
-			> *
-				display inline-block
-				margin 4px
-				width 38px
-				height 38px
-				border-radius 6px
+					&:active
+						background-color #767676
+						background-image none
+						border-color #444
+						box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
 
 		> footer
 			text-align center
-			color #fff
+			color #444
 
 			> small
 				display block
