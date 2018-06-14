@@ -1,6 +1,6 @@
 <template>
-<ui-group>
-	<div slot="title">%fa:pencil-alt% %i18n:@title%</div>
+<ui-card>
+	<div slot="title">%fa:user% %i18n:@title%</div>
 
 	<ui-form :disabled="saving">
 		<ui-input v-model="name" :max="30">
@@ -41,7 +41,7 @@
 
 		<ui-button @click="save">%i18n:@save%</ui-button>
 	</ui-form>
-</ui-group>
+</ui-card>
 </template>
 
 <script lang="ts">

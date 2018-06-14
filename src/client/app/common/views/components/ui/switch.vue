@@ -16,7 +16,7 @@
 		@keydown.enter="switchValue"
 	>
 	<span class="button">
-		<span :style="{ transform }"></span>
+		<span></span>
 	</span>
 	<span class="label">
 		<span :aria-hidden="!checked"><slot></slot></span>
@@ -48,9 +48,6 @@ export default Vue.extend({
 	computed: {
 		checked(): boolean {
 			return this.value;
-		},
-		transform(): string {
-			return this.checked ? 'translate3d(14px, 0, 0)' : '';
 		}
 	},
 	watch: {
@@ -88,7 +85,7 @@ export default Vue.extend({
 
 root(isDark)
 	display flex
-	margin 16px 0
+	margin 32px 0
 	cursor pointer
 	transition all 0.3s
 
@@ -101,31 +98,12 @@ root(isDark)
 
 	&.checked
 		> .button
-			background-color $theme-color
-			border-color $theme-color
+			background-color rgba($theme-color, 0.4)
+			border-color rgba($theme-color, 0.4)
 
-		> .label
-			> span
-				color $theme-color
-
-		&:hover
-			> .label
-				> span
-					color darken($theme-color, 10%)
-
-			> .button
-				background darken($theme-color, 10%)
-				border-color darken($theme-color, 10%)
-
-	&:hover
-		> .label
-			> span
-				color isDark ? #fff : #2e3338
-
-		> .button
-			$color = isDark ? #15181d : #ced2da
-			background $color
-			border-color $color
+			> *
+				background-color $theme-color
+				transform translateX(14px)
 
 	> input
 		position absolute
@@ -134,42 +112,26 @@ root(isDark)
 		opacity 0
 		margin 0
 
-		&:focus + .button
-			&:after
-				content ""
-				pointer-events none
-				position absolute
-				top -5px
-				right -5px
-				bottom -5px
-				left -5px
-				border 2px solid rgba($theme-color, 0.3)
-				border-radius 14px
-
 	> .button
-		$color = isDark ? #1c1f25 : #dcdfe6
-
 		display inline-block
-		margin 0
-		width 46px
-		min-width 46px
-		height 32px
-		min-height 32px
-		background $color
-		border 1px solid $color
+		margin 3px 0 0 0
+		width 34px
+		height 14px
+		background isDark ? rgba(#fff, 0.1) : rgba(#000, 0.05)
 		outline none
-		border-radius 6px
+		border-radius 14px
 		transition inherit
 
 		> *
 			position absolute
-			top 1px
-			left 1px
-			border-radius 6px
-			transition transform 0.3s
-			width 28px
-			height 28px
+			top -3px
+			left 0
+			border-radius 100%
+			transition background-color 0.3s, transform 0.3s
+			width 20px
+			height 20px
 			background-color #fff
+			box-shadow 0 2px 1px -1px rgba(#000, 0.2), 0 1px 1px 0 rgba(#000, 0.14), 0 1px 3px 0 rgba(#000, 0.12)
 
 	> .label
 		margin-left 8px
@@ -180,9 +142,9 @@ root(isDark)
 
 		> span
 			display block
-			line-height 32px
+			line-height 20px
 			font-weight bold
-			color isDark ? #c4ccd2 : #4a535a
+			color isDark ? #c4ccd2 : rgba(#000, 0.75)
 			transition inherit
 
 		> p

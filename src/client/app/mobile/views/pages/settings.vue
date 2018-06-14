@@ -6,7 +6,7 @@
 		<div>
 			<x-profile/>
 
-			<ui-group>
+			<ui-card>
 				<div slot="title">%fa:palette% %i18n:@design%</div>
 
 				<div>
@@ -39,9 +39,9 @@
 					<md-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</md-radio>
 					<md-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</md-radio>
 				</div>
-			</ui-group>
+			</ui-card>
 
-			<ui-group>
+			<ui-card>
 				<div slot="title">%fa:cog% %i18n:@behavior%</div>
 
 				<div>
@@ -63,9 +63,9 @@
 				<div>
 					<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
 				</div>
-			</ui-group>
+			</ui-card>
 
-			<ui-group>
+			<ui-card>
 				<div slot="title">%fa:language% %i18n:@lang%</div>
 
 				<md-field>
@@ -80,9 +80,9 @@
 					</md-select>
 				</md-field>
 				<span class="md-helper-text">%fa:info-circle% %i18n:@lang-tip%</span>
-			</ui-group>
+			</ui-card>
 
-			<ui-group>
+			<ui-card>
 				<div slot="title">%fa:B twitter% %i18n:@twitter%</div>
 
 				<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
@@ -91,9 +91,9 @@
 					<span v-if="$store.state.i.twitter"> or </span>
 					<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">%i18n:@twitter-disconnect%</a>
 				</p>
-			</ui-group>
+			</ui-card>
 
-			<ui-group>
+			<ui-card>
 				<div slot="title">%fa:sync-alt% %i18n:@update%</div>
 
 				<div>%i18n:@version% <i>{{ version }}</i></div>
@@ -104,7 +104,7 @@
 					<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
 					<template v-else>%i18n:@check-for-updates%</template>
 				</md-button>
-			</ui-group>
+			</ui-card>
 		</div>
 		<p><small>ver {{ version }} ({{ codename }})</small></p>
 	</main>
@@ -247,20 +247,17 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 root(isDark)
-	padding 0 16px
 	margin 0 auto
 	max-width 500px
 	width 100%
 
-	> div
-		> *
-			margin-bottom 16px
-
 	> p
 		display block
-		margin 24px
+		margin 16px 0
+		padding 16px
 		text-align center
-		color isDark ? #cad2da : #a2a9b1
+		color isDark ? #cad2da : #2c662d
+		background #fcfff5
 
 main[data-darkmode]
 	root(true)
