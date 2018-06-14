@@ -36,8 +36,8 @@
 				<div>
 					<div class="md-body-2">%i18n:@post-style%</div>
 
-					<md-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</md-radio>
-					<md-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</md-radio>
+					<ui-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</ui-radio>
+					<ui-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</ui-radio>
 				</div>
 			</ui-card>
 
@@ -68,17 +68,15 @@
 			<ui-card>
 				<div slot="title">%fa:language% %i18n:@lang%</div>
 
-				<md-field>
-					<md-select v-model="lang" placeholder="%i18n:@auto%">
-						<md-optgroup label="%i18n:@recommended%">
-							<md-option value="">%i18n:@auto%</md-option>
-						</md-optgroup>
+				<ui-select v-model="lang" placeholder="%i18n:@auto%">
+					<optgroup label="%i18n:@recommended%">
+						<option value="">%i18n:@auto%</option>
+					</optgroup>
 
-						<md-optgroup label="%i18n:@specify-language%">
-							<md-option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</md-option>
-						</md-optgroup>
-					</md-select>
-				</md-field>
+					<optgroup label="%i18n:@specify-language%">
+						<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+					</optgroup>
+				</ui-select>
 				<span class="md-helper-text">%fa:info-circle% %i18n:@lang-tip%</span>
 			</ui-card>
 

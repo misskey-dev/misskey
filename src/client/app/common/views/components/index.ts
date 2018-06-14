@@ -35,6 +35,8 @@ import uiCard from './ui/card.vue';
 import uiForm from './ui/form.vue';
 import uiTextarea from './ui/textarea.vue';
 import uiSwitch from './ui/switch.vue';
+import uiRadio from './ui/radio.vue';
+import uiSelect from './ui/select.vue';
 
 Vue.component('mk-analog-clock', analogClock);
 Vue.component('mk-menu', menu);
@@ -71,3 +73,5 @@ Vue.component('ui-card', uiCard);
 Vue.component('ui-form', uiForm);
 Vue.component('ui-textarea', uiTextarea);
 Vue.component('ui-switch', uiSwitch);
+Vue.component('ui-radio', uiRadio);
+Vue.component('ui-select', uiSelect);
