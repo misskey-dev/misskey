@@ -18,7 +18,7 @@ export default Vue.extend({});
 
 	h1
 		margin 0
-		padding 8px
+		padding 8px 0 0 0
 		font-size 1.5em
 		font-weight bold
 		color #444

@@ -1,17 +1,17 @@
 <template>
-<div class="ui-input" :class="{ focused, filled }">
+<div class="ui-textarea" :class="{ focused, filled }">
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
-		<div class="prefix" ref="prefix" @click="focus"><slot name="prefix"></slot></div>
-		<input ref="input"
-				:type="type"
+		<textarea ref="input"
 				:value="value"
 				:required="required"
 				:readonly="readonly"
+				:pattern="pattern"
+				:autocomplete="autocomplete"
 				@input="$emit('input', $event.target.value)"
 				@focus="focused = true"
 				@blur="focused = false">
-		<div class="suffix" @click="focus"><slot name="suffix"></slot></div>
+		</textarea>
 	</div>
 	<div class="text"><slot name="text"></slot></div>
 </div>
@@ -19,13 +19,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+const getPasswordStrength = require('syuilo-password-strength');
+
 export default Vue.extend({
 	props: {
 		value: {
-			required: false
-		},
-		type: {
-			type: String,
 			required: false
 		},
 		required: {
@@ -35,20 +33,26 @@ export default Vue.extend({
 		readonly: {
 			type: Boolean,
 			required: false
+		},
+		pattern: {
+			type: String,
+			required: false
+		},
+		autocomplete: {
+			type: String,
+			required: false
 		}
 	},
 	data() {
 		return {
-			focused: false
+			focused: false,
+			passwordStrength: ''
 		}
 	},
 	computed: {
 		filled(): boolean {
 			return this.value != '' && this.value != null;
 		}
-	},
-	mounted() {
-		this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
 	},
 	methods: {
 		focus() {
@@ -61,20 +65,18 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.ui-input
-	margin-bottom 16px
-	padding-top 16px
+.ui-textarea
+	margin 32px 0
 
 	> .input
-		display flex
-		padding 6px 12px
+		padding 12px
 		background rgba(#000, 0.035)
 		border-radius 6px
 
 		> .label
 			position absolute
 			top 6px
-			left 0
+			left 12px
 			pointer-events none
 			transition 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)
 			transition-duration 0.3s
@@ -82,42 +84,29 @@ export default Vue.extend({
 			line-height 32px
 			color rgba(#000, 0.54)
 			pointer-events none
+			//will-change transform
+			transform-origin top left
+			transform scale(1)
 
-		> input
+		> textarea
 			display block
-			flex 1
 			width 100%
+			min-height 100px
 			padding 0
 			font inherit
 			font-weight bold
 			font-size 16px
-			line-height 32px
 			background transparent
 			border none
 			border-radius 0
 			outline none
 			box-shadow none
 
-		> .prefix
-		> .suffix
-			display block
-			align-self center
-			justify-self center
-			font-size 16px
-			line-height 32px
-			color rgba(#000, 0.54)
-
-		> .prefix
-			padding-right 4px
-
-		> .suffix
-			padding-left 4px
-
 	> .text
-		margin 8px 0
-		font-size 14px
+		margin 6px 0
+		font-size 13px
 
-		> p
+		*
 			margin 0
 
 	&.focused
@@ -131,9 +120,8 @@ export default Vue.extend({
 	&.filled
 		> .input
 			> .label
-				top -20px
+				top -24px
 				left 0 !important
-				font-size 12px
-				line-height 20px
+				transform scale(0.8)
 
 </style>

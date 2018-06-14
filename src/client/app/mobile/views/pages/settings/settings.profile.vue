@@ -1,62 +1,47 @@
 <template>
-	<md-card>
-		<md-card-header>
-			<div class="md-title">%fa:pencil-alt% %i18n:@title%</div>
-		</md-card-header>
+<ui-group>
+	<div slot="title">%fa:pencil-alt% %i18n:@title%</div>
 
-		<md-card-content>
-			<md-field>
-				<label>%i18n:@name%</label>
-				<md-input v-model="name" :disabled="saving" md-counter="30"/>
-			</md-field>
+	<ui-form :disabled="saving">
+		<ui-input v-model="name" :max="30">
+			<span>%i18n:@name%</span>
+		</ui-input>
 
-			<md-field>
-				<label>%i18n:@account%</label>
-				<span class="md-prefix">@</span>
-				<md-input v-model="username" readonly></md-input>
-				<span class="md-suffix">@{{ host }}</span>
-			</md-field>
+		<ui-input v-model="username" readonly>
+			<span>%i18n:@account%</span>
+			<span slot="prefix">@</span>
+			<span slot="suffix">@{{ host }}</span>
+		</ui-input>
 
-			<md-field>
-				<md-icon>%fa:map-marker-alt%</md-icon>
-				<label>%i18n:@location%</label>
-				<md-input v-model="location" :disabled="saving"/>
-			</md-field>
+		<ui-input v-model="location">
+			<span>%i18n:@location%</span>
+			<span slot="prefix">%fa:map-marker-alt%</span>
+		</ui-input>
 
-			<md-field>
-				<md-icon>%fa:birthday-cake%</md-icon>
-				<label>%i18n:@birthday%</label>
-				<md-input type="date" v-model="birthday" :disabled="saving"/>
-			</md-field>
+		<ui-input v-model="birthday" type="date">
+			<span>%i18n:@birthday%</span>
+			<span slot="prefix">%fa:birthday-cake%</span>
+		</ui-input>
 
-			<md-field>
-				<label>%i18n:@description%</label>
-				<md-textarea v-model="description" :disabled="saving" md-counter="500"/>
-			</md-field>
+		<ui-textarea v-model="description" :max="500">
+			<span>%i18n:@description%</span>
+		</ui-textarea>
 
-			<md-field>
-				<label>%i18n:@avatar%</label>
-				<md-file @md-change="onAvatarChange"/>
-			</md-field>
+		<ui-input type="file" @change="onAvatarChange">
+			<span>%i18n:@avatar%</span>
+			<span slot="prefix">%fa:picture-o%</span>
+		</ui-input>
 
-			<md-field>
-				<label>%i18n:@banner%</label>
-				<md-file @md-change="onBannerChange"/>
-			</md-field>
+		<ui-input type="file" @change="onBannerChange">
+			<span>%i18n:@banner%</span>
+			<span slot="prefix">%fa:picture-o%</span>
+		</ui-input>
 
-			<md-dialog-alert
-					:md-active.sync="uploading"
-					md-content="%18n:!@uploading%"/>
+		<ui-switch v-model="isCat">%i18n:@is-cat%</ui-switch>
 
-			<div>
-				<md-switch v-model="isCat">%i18n:@is-cat%</md-switch>
-			</div>
-		</md-card-content>
-
-		<md-card-actions>
-			<md-button class="md-primary" :disabled="saving" @click="save">%i18n:@save%</md-button>
-		</md-card-actions>
-	</md-card>
+		<ui-button @click="save">%i18n:@save%</ui-button>
+	</ui-form>
+</ui-group>
 </template>
 
 <script lang="ts">

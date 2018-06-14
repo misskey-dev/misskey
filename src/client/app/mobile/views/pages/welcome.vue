@@ -10,16 +10,16 @@
 		</div>
 		<div class="login">
 			<form @submit.prevent="onSubmit">
-				<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="ユーザー名" autofocus required @change="onUsernameChange">
+				<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" autofocus required @change="onUsernameChange">
 					<span>ユーザー名</span>
 					<span slot="prefix">@</span>
 					<span slot="suffix">@{{ host }}</span>
 				</ui-input>
-				<ui-input v-model="password" type="password" placeholder="パスワード" required>
+				<ui-input v-model="password" type="password" required>
 					<span>パスワード</span>
 					<span slot="prefix">%fa:lock%</span>
 				</ui-input>
-				<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" placeholder="トークン" required/>
+				<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
 				<ui-button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</ui-button>
 			</form>
 			<div>
@@ -113,7 +113,7 @@ export default Vue.extend({
 		> .about
 			margin-top 16px
 			padding 16px
-			color #444
+			color #555
 			background #fff
 			border-radius 6px
 

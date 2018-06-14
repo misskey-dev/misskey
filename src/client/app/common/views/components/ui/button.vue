@@ -25,7 +25,7 @@ export default Vue.extend({
 	> button
 		display block
 		width 100%
-		margin 32px 0 16px 0
+		margin 0
 		padding 0
 		color $theme-color-foreground
 		font-weight bold
@@ -36,5 +36,11 @@ export default Vue.extend({
 		border-radius 6px
 		outline none
 		box-shadow none
+
+		&:hover
+			background lighten($theme-color, 5%)
+
+		&:active
+			background darken($theme-color, 5%)
 
 </style>

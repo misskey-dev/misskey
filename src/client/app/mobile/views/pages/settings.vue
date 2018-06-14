@@ -6,125 +6,105 @@
 		<div>
 			<x-profile/>
 
-			<md-card>
-				<md-card-header>
-					<div class="md-title">%fa:palette% %i18n:@design%</div>
-				</md-card-header>
+			<ui-group>
+				<div slot="title">%fa:palette% %i18n:@design%</div>
 
-				<md-card-content>
+				<div>
+					<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
+				</div>
+
+				<div>
+					<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
+				</div>
+
+				<div>
+					<div class="md-body-2">%i18n:@timeline%</div>
+
 					<div>
-						<md-switch v-model="darkmode">%i18n:@dark-mode%</md-switch>
+						<ui-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</ui-switch>
 					</div>
 
 					<div>
-						<md-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</md-switch>
+						<ui-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</ui-switch>
 					</div>
 
 					<div>
-						<div class="md-body-2">%i18n:@timeline%</div>
-
-						<div>
-							<md-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget">%i18n:@show-reply-target%</md-switch>
-						</div>
-
-						<div>
-							<md-switch v-model="$store.state.settings.showMyRenotes" @change="onChangeShowMyRenotes">%i18n:@show-my-renotes%</md-switch>
-						</div>
-
-						<div>
-							<md-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</md-switch>
-						</div>
+						<ui-switch v-model="$store.state.settings.showRenotedMyNotes" @change="onChangeShowRenotedMyNotes">%i18n:@show-renoted-my-notes%</ui-switch>
 					</div>
+				</div>
 
-					<div>
-						<div class="md-body-2">%i18n:@post-style%</div>
+				<div>
+					<div class="md-body-2">%i18n:@post-style%</div>
 
-						<md-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</md-radio>
-						<md-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</md-radio>
-					</div>
-				</md-card-content>
-			</md-card>
+					<md-radio v-model="postStyle" value="standard">%i18n:@post-style-standard%</md-radio>
+					<md-radio v-model="postStyle" value="smart">%i18n:@post-style-smart%</md-radio>
+				</div>
+			</ui-group>
 
-			<md-card>
-				<md-card-header>
-					<div class="md-title">%fa:cog% %i18n:@behavior%</div>
-				</md-card-header>
+			<ui-group>
+				<div slot="title">%fa:cog% %i18n:@behavior%</div>
 
-				<md-card-content>
-					<div>
-						<md-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</md-switch>
-					</div>
+				<div>
+					<ui-switch v-model="$store.state.settings.fetchOnScroll" @change="onChangeFetchOnScroll">%i18n:@fetch-on-scroll%</ui-switch>
+				</div>
 
-					<div>
-						<md-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</md-switch>
-					</div>
+				<div>
+					<ui-switch v-model="$store.state.settings.disableViaMobile" @change="onChangeDisableViaMobile">%i18n:@disable-via-mobile%</ui-switch>
+				</div>
 
-					<div>
-						<md-switch v-model="loadRawImages">%i18n:@load-raw-images%</md-switch>
-					</div>
+				<div>
+					<ui-switch v-model="loadRawImages">%i18n:@load-raw-images%</ui-switch>
+				</div>
 
-					<div>
-						<md-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</md-switch>
-					</div>
+				<div>
+					<ui-switch v-model="$store.state.settings.loadRemoteMedia" @change="onChangeLoadRemoteMedia">%i18n:@load-remote-media%</ui-switch>
+				</div>
 
-					<div>
-						<md-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</md-switch>
-					</div>
-				</md-card-content>
-			</md-card>
+				<div>
+					<ui-switch v-model="lightmode">%i18n:@i-am-under-limited-internet%</ui-switch>
+				</div>
+			</ui-group>
 
-			<md-card>
-				<md-card-header>
-					<div class="md-title">%fa:language% %i18n:@lang%</div>
-				</md-card-header>
+			<ui-group>
+				<div slot="title">%fa:language% %i18n:@lang%</div>
 
-				<md-card-content>
-					<md-field>
-						<md-select v-model="lang" placeholder="%i18n:@auto%">
-							<md-optgroup label="%i18n:@recommended%">
-								<md-option value="">%i18n:@auto%</md-option>
-							</md-optgroup>
+				<md-field>
+					<md-select v-model="lang" placeholder="%i18n:@auto%">
+						<md-optgroup label="%i18n:@recommended%">
+							<md-option value="">%i18n:@auto%</md-option>
+						</md-optgroup>
 
-							<md-optgroup label="%i18n:@specify-language%">
-								<md-option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</md-option>
-							</md-optgroup>
-						</md-select>
-					</md-field>
-					<span class="md-helper-text">%fa:info-circle% %i18n:@lang-tip%</span>
-				</md-card-content>
-			</md-card>
+						<md-optgroup label="%i18n:@specify-language%">
+							<md-option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</md-option>
+						</md-optgroup>
+					</md-select>
+				</md-field>
+				<span class="md-helper-text">%fa:info-circle% %i18n:@lang-tip%</span>
+			</ui-group>
 
-			<md-card>
-				<md-card-header>
-					<div class="md-title">%fa:B twitter% %i18n:@twitter%</div>
-				</md-card-header>
+			<ui-group>
+				<div slot="title">%fa:B twitter% %i18n:@twitter%</div>
 
-				<md-card-content>
-					<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
-					<p>
-						<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
-						<span v-if="$store.state.i.twitter"> or </span>
-						<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">%i18n:@twitter-disconnect%</a>
-					</p>
-				</md-card-content>
-			</md-card>
+				<p class="account" v-if="$store.state.i.twitter"><a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
+				<p>
+					<a :href="`${apiUrl}/connect/twitter`" target="_blank">{{ $store.state.i.twitter ? '%i18n:@twitter-reconnect%' : '%i18n:@twitter-connect%' }}</a>
+					<span v-if="$store.state.i.twitter"> or </span>
+					<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter">%i18n:@twitter-disconnect%</a>
+				</p>
+			</ui-group>
 
-			<md-card>
-				<md-card-header>
-					<div class="md-title">%fa:sync-alt% %i18n:@update%</div>
-				</md-card-header>
+			<ui-group>
+				<div slot="title">%fa:sync-alt% %i18n:@update%</div>
 
-				<md-card-content>
-					<div>%i18n:@version% <i>{{ version }}</i></div>
-					<template v-if="latestVersion !== undefined">
-						<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
-					</template>
-					<md-button class="md-raised md-primary" @click="checkForUpdate" :disabled="checkingForUpdate">
-						<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
-						<template v-else>%i18n:@check-for-updates%</template>
-					</md-button>
-				</md-card-content>
-			</md-card>
+				<div>%i18n:@version% <i>{{ version }}</i></div>
+				<template v-if="latestVersion !== undefined">
+					<div>%i18n:@latest-version% <i>{{ latestVersion ? latestVersion : version }}</i></div>
+				</template>
+				<md-button class="md-raised md-primary" @click="checkForUpdate" :disabled="checkingForUpdate">
+					<template v-if="checkingForUpdate">%i18n:@update-checking%<mk-ellipsis/></template>
+					<template v-else>%i18n:@check-for-updates%</template>
+				</md-button>
+			</ui-group>
 		</div>
 		<p><small>ver {{ version }} ({{ codename }})</small></p>
 	</main>
