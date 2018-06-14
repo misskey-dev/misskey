@@ -14,6 +14,17 @@ export default Vue.extend({
 			type: String,
 			required: false
 		}
+	},
+	data() {
+		return {
+			styl: 'fill'
+		};
+	},
+	inject: ['isCardChild'],
+	created() {
+		if (this.isCardChild) {
+			this.styl = 'line';
+		}
 	}
 });
 </script>
@@ -21,26 +32,49 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.ui-button
+root(isDark, fill)
 	> button
 		display block
 		width 100%
 		margin 0
 		padding 0
-		color $theme-color-foreground
 		font-weight bold
 		font-size 16px
 		line-height 44px
-		background $theme-color
 		border none
 		border-radius 6px
 		outline none
 		box-shadow none
 
-		&:hover
-			background lighten($theme-color, 5%)
+		if fill
+			color $theme-color-foreground
+			background $theme-color
 
-		&:active
-			background darken($theme-color, 5%)
+			&:hover
+				background lighten($theme-color, 5%)
+
+			&:active
+				background darken($theme-color, 5%)
+		else
+			color $theme-color
+			background none
+
+			&:hover
+				color darken($theme-color, 5%)
+
+			&:active
+				background rgba($theme-color, 0.3)
+
+.ui-button[data-darkmode]
+	&.fill
+		root(true, true)
+	&:not(.fill)
+		root(true, false)
+
+.ui-button:not([data-darkmode])
+	&.fill
+		root(false, true)
+	&:not(.fill)
+		root(false, false)
 
 </style>
