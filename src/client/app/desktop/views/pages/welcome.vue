@@ -7,13 +7,6 @@
 	</button>
 	<div class="body" :style="{ backgroundImage: `url('${ welcomeBgUrl }')` }">
 		<div class="container">
-			<div class="info">
-				<span>%i18n:common.misskey% <b>{{ host }}</b></span>
-				<span class="stats" v-if="stats">
-					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
-					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
-				</span>
-			</div>
 			<main>
 				<div class="about">
 					<h1 v-if="name">{{ name }}</h1>
@@ -26,6 +19,13 @@
 					<mk-signin/>
 				</div>
 			</main>
+			<div class="info">
+				<span>%i18n:common.misskey% <b>{{ host }}</b></span>
+				<span class="stats" v-if="stats">
+					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
+					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
+				</span>
+			</div>
 			<mk-nav class="nav"/>
 		</div>
 		<mk-forkit class="forkit"/>
@@ -165,23 +165,6 @@ root(isDark)
 			$loginWidth = 340px
 			$width = $aboutWidth + $loginWidth
 
-			> .info
-				margin 0 auto 16px auto
-				padding 12px
-				width $width
-				font-size 14px
-				color #fff
-				background rgba(#000, 0.2)
-				border-radius 8px
-
-				> .stats
-					margin-left 16px
-					padding-left 16px
-					border-left solid 1px #fff
-
-					> *
-						margin-right 16px
-
 			> main
 				display flex
 				margin auto
@@ -221,6 +204,23 @@ root(isDark)
 					width $loginWidth
 					padding 16px 32px 32px 32px
 					background #f5f5f5
+
+			> .info
+				margin 16px auto
+				padding 12px
+				width $width
+				font-size 14px
+				color #fff
+				background rgba(#000, 0.2)
+				border-radius 8px
+
+				> .stats
+					margin-left 16px
+					padding-left 16px
+					border-left solid 1px #fff
+
+					> *
+						margin-right 16px
 
 			> .nav
 				display block
