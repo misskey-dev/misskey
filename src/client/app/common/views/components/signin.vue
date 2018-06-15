@@ -1,22 +1,23 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
-	<label class="user-name">
-		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" placeholder="%i18n:@username%" autofocus required @change="onUsernameChange"/>%fa:at%
-	</label>
-	<label class="password">
-		<input v-model="password" type="password" placeholder="%i18n:@password%" required/>%fa:lock%
-	</label>
-	<label class="token" v-if="user && user.twoFactorEnabled">
-		<input v-model="token" type="number" placeholder="%i18n:@token%" required/>%fa:lock%
-	</label>
-	<button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</button>
-	もしくは <a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" autofocus required @change="onUsernameChange">
+		<span>%i18n:@username%</span>
+		<span slot="prefix">@</span>
+		<span slot="suffix">@{{ host }}</span>
+	</ui-input>
+	<ui-input v-model="password" type="password" required>
+		<span>%i18n:@password%</span>
+		<span slot="prefix">%fa:lock%</span>
+	</ui-input>
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
+	<ui-button type="submit" :disabled="signing">{{ signing ? '%i18n:@signing-in%' : '%i18n:@signin%' }}</ui-button>
+	<p style="margin: 8px 0;">または<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a></p>
 </form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { apiUrl } from '../../../config';
+import { apiUrl, host } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -27,6 +28,7 @@ export default Vue.extend({
 			password: '',
 			token: '',
 			apiUrl,
+			host
 		};
 	},
 	methods: {

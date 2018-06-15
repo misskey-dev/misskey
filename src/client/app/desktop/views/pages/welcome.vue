@@ -1,36 +1,39 @@
 <template>
 <div class="mk-welcome">
+	<img ref="pointer" class="pointer" src="/assets/pointer.png" alt="">
 	<button @click="dark">
 		<template v-if="$store.state.device.darkmode">%fa:moon%</template>
 		<template v-else>%fa:R moon%</template>
 	</button>
-	<main v-if="about" class="about">
-		<article>
-			<h1>%i18n:common.about-title%</h1>
-			<p v-html="'%i18n:common.about%'"></p>
-			<span class="gotit" @click="about = false">%i18n:@gotit%</span>
-		</article>
-	</main>
-	<main v-else class="index">
-		<img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey">
-		<p class="desc"><b>%i18n:common.misskey%</b> - <span @click="about = true">%i18n:@about%</span></p>
-		<p class="account">
-			<button class="signup" @click="signup">%i18n:@signup-button%</button>
-			<button class="signin" @click="signin">%i18n:@signin-button%</button>
-		</p>
-
-		<div class="tl">
-			<header>%fa:comments R% %i18n:@timeline%<div><span></span><span></span><span></span></div></header>
-			<mk-welcome-timeline/>
+	<div class="body" :style="{ backgroundImage: `url('${ welcomeBgUrl }')` }">
+		<div class="container">
+			<div class="info">
+				<span>%i18n:common.misskey% <b>{{ host }}</b></span>
+				<span class="stats" v-if="stats">
+					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
+					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
+				</span>
+			</div>
+			<main>
+				<div class="about">
+					<h1 v-if="name">{{ name }}</h1>
+					<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey"></h1>
+					<p class="powerd-by" v-if="name">powerd by <b>Misskey</b></p>
+					<p class="desc" v-html="description || '%i18n:common.about%'"></p>
+					<a ref="signup" @click="signup">%i18n:@signup%</a>
+				</div>
+				<div class="login">
+					<mk-signin/>
+				</div>
+			</main>
+			<mk-nav class="nav"/>
 		</div>
-	</main>
-	<mk-forkit/>
-	<footer>
-		<div>
-			<mk-nav :class="$style.nav"/>
-			<p class="c">{{ copyright }}</p>
-		</div>
-	</footer>
+		<mk-forkit class="forkit"/>
+		<img src="assets/title.dark.svg" alt="Misskey">
+	</div>
+	<div class="tl">
+		<mk-welcome-timeline/>
+	</div>
 	<modal name="signup" width="500px" height="auto" scrollable>
 		<header :class="$style.signupFormHeader">%i18n:@signup%</header>
 		<mk-signup :class="$style.signupForm"/>
@@ -44,14 +47,26 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { copyright } from '../../../config';
+import { host, copyright, welcomeBgUrl } from '../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
-			about: false,
-			copyright
+			stats: null,
+			copyright,
+			welcomeBgUrl,
+			host
 		};
+	},
+	created() {
+		(this as any).api('stats').then(stats => {
+			this.stats = stats;
+		});
+	},
+	mounted() {
+		const x = this.$refs.signup.getBoundingClientRect();
+		this.$refs.pointer.style.top = x.top + x.height + 'px';
+		this.$refs.pointer.style.left = x.left + 'px';
 	},
 	methods: {
 		signup() {
@@ -80,13 +95,20 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-@import url(https://fonts.googleapis.com/earlyaccess/notosansjp.css);
-
 root(isDark)
+	display flex
 	min-height 100vh
-	background-image isDark ? url('/assets/welcome-bg.dark.svg') : url('/assets/welcome-bg.light.svg')
-	background-size cover
-	background-position center
+
+	> .pointer
+		display block
+		position absolute
+		z-index 1
+		top 0
+		right 0
+		width 180px
+		margin 0 0 0 -180px
+		transform rotateY(180deg) translateX(-10px) translateY(-25px)
+		pointer-events none
 
 	> button
 		position fixed
@@ -95,140 +117,117 @@ root(isDark)
 		left 0
 		padding 16px
 		font-size 18px
-		color isDark ? #fff : #555
+		color #fff
 
-	> main
+		display none // TODO
+
+	> .body
 		flex 1
 		padding 64px 0 0 0
 		text-align center
+		background #578394
+		background-position center
+		background-size cover
 
-		&.about
-			font-family 'Noto Sans JP'
-			color isDark ? #fff : #627574
+		&:before
+			content ''
+			display block
+			position absolute
+			top 0
+			left 0
+			right 0
+			bottom 0
+			background rgba(#000, 0.5)
 
-			> article
-				max-width 700px
-				margin 42px auto 0 auto
-				padding 64px 82px
-				background isDark ? #282C37 : #fff
-				box-shadow 0 8px 32px rgba(#000, 0.15)
+		> .forkit
+			position absolute
+			top 0
+			right 0
 
-				> h1
-					margin 0
-					font-weight 900
+		> img
+			position absolute
+			bottom 16px
+			right 16px
+			width 150px
 
-				> p
-					margin 20px 0
-					line-height 2em
+		> .container
+			$aboutWidth = 380px
+			$loginWidth = 340px
+			$width = $aboutWidth + $loginWidth
 
-				> .gotit
-					color $theme-color
-					cursor pointer
-
-					&:hover
-						text-decoration underline
-
-		&.index
-			color isDark ? #9aa4b3 : #555
-
-			> img
-				width 350px
-
-			> .desc
-				margin -12px 0 24px 0
-				color isDark ? #fff : #555
-
-				> span
-					color $theme-color
-					cursor pointer
-
-					&:hover
-						text-decoration underline
-
-			> .account
-				margin 8px 0
-				line-height 2em
-
-				button
-					padding 8px 16px
-					font-size inherit
-
-				.signup
-					color $theme-color
-					border solid 2px $theme-color
-					border-radius 4px
-
-					&:focus
-						box-shadow 0 0 0 3px rgba($theme-color, 0.2)
-
-					&:hover
-						color $theme-color-foreground
-						background $theme-color
-
-					&:active
-						color $theme-color-foreground
-						background darken($theme-color, 10%)
-						border-color darken($theme-color, 10%)
-
-				.signin
-					&:hover
-						color isDark ? #fff : #000
-
-			> .tl
-				margin 32px auto 0 auto
-				width 410px
-				text-align left
-				background isDark ? #313543 : #fff
+			> .info
+				margin 0 auto 16px auto
+				padding 12px
+				width $width
+				font-size 14px
+				color #fff
+				background rgba(#000, 0.2)
 				border-radius 8px
-				box-shadow 0 8px 32px rgba(#000, 0.15)
+
+				> .stats
+					margin-left 16px
+					padding-left 16px
+					border-left solid 1px #fff
+
+					> *
+						margin-right 16px
+
+			> main
+				display flex
+				margin auto
+				width $width
+				border-radius 8px
 				overflow hidden
+				box-shadow 0 2px 8px rgba(#000, 0.3)
 
-				> header
-					z-index 1
-					padding 12px 16px
-					color isDark ? #e3e5e8 : #888d94
-					box-shadow 0 1px 0px rgba(#000, 0.1)
+				> .about
+					width $aboutWidth
+					color #444
+					background #fff
 
-					> div
-						position absolute
-						top 0
-						right 0
-						padding inherit
+					> h1
+						margin 0 0 16px 0
+						padding 32px 32px 0 32px
+						color #444
 
-						> span
-							display inline-block
-							height 11px
-							width 11px
-							margin-left 6px
-							border-radius 100%
-							vertical-align middle
+						> img
+							width 170px
+							vertical-align bottom
 
-							&:nth-child(1)
-								background #5BCC8B
+					> .powerd-by
+						margin 16px
+						opacity 0.7
 
-							&:nth-child(2)
-								background #E6BB46
+					> .desc
+						margin 0
+						padding 0 32px 16px 32px
 
-							&:nth-child(3)
-								background #DF7065
+					> a
+						display inline-block
+						margin 0 0 32px 0
+						font-weight bold
 
-				> .mk-welcome-timeline
-					max-height 350px
-					overflow auto
+				> .login
+					width $loginWidth
+					padding 16px 32px 32px 32px
+					background #f5f5f5
 
-	> footer
-		font-size 12px
-		color isDark ? #949ea5 : #737c82
+			> .nav
+				display block
+				margin 16px 0
+				font-size 14px
+				color #fff
 
-		> div
-			margin 0 auto
-			padding 64px
-			text-align center
+	> .tl
+		margin 0
+		width 410px
+		height 100vh
+		text-align left
+		background isDark ? #313543 : #fff
 
-			> .c
-				margin 16px 0 0 0
-				font-size 10px
-				opacity 0.7
+		> *
+			max-height 100%
+			overflow auto
 
 .mk-welcome[data-darkmode]
 	root(true)

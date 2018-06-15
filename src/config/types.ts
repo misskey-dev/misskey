@@ -17,6 +17,7 @@ export type Source = {
 	};
 	name?: string;
 	description?: string;
+	welcome_bg_url?: string;
 	url: string;
 	port: number;
 	https?: { [x: string]: string };

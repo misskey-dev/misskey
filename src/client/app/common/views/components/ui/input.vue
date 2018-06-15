@@ -10,13 +10,12 @@
 		<template v-if="type != 'file'">
 			<input ref="input"
 					:type="type"
-					:value="v"
+					v-model="v"
 					:required="required"
 					:readonly="readonly"
 					:pattern="pattern"
 					:autocomplete="autocomplete"
 					:spellcheck="spellcheck"
-					@input="$emit('input', $event.target.value)"
 					@focus="focused = true"
 					@blur="focused = false">
 		</template>
@@ -104,6 +103,8 @@ export default Vue.extend({
 			this.v = v;
 		},
 		v(v) {
+			this.$emit('input', v);
+
 			if (this.withPasswordMeter) {
 				if (v == '') {
 					this.passwordStrength = '';
