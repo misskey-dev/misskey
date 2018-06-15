@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { host, copyright, welcomeBgUrl } from '../../../config';
+import { host, name, description, copyright, welcomeBgUrl } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -55,7 +55,9 @@ export default Vue.extend({
 			stats: null,
 			copyright,
 			welcomeBgUrl,
-			host
+			host,
+			name,
+			description
 		};
 	},
 	created() {
