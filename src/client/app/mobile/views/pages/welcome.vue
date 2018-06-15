@@ -9,25 +9,14 @@
 			<router-link class="signup" to="/signup">新規登録</router-link>
 		</div>
 		<div class="login">
-			<form @submit.prevent="onSubmit">
-				<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" autofocus required @change="onUsernameChange">
-					<span>ユーザー名</span>
-					<span slot="prefix">@</span>
-					<span slot="suffix">@{{ host }}</span>
-				</ui-input>
-				<ui-input v-model="password" type="password" required>
-					<span>パスワード</span>
-					<span slot="prefix">%fa:lock%</span>
-				</ui-input>
-				<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
-				<ui-button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</ui-button>
-			</form>
-			<div style="margin: 8px 0;">
-				<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
-			</div>
+			<mk-signin :with-avatar="false"/>
 		</div>
 		<div class="tl">
 			<mk-welcome-timeline/>
+		</div>
+		<div class="stats" v-if="stats">
+			<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
+			<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
 		</div>
 		<footer>
 			<small>{{ copyright }}</small>
@@ -43,49 +32,18 @@ import { apiUrl, copyright, host, name, description } from '../../../config';
 export default Vue.extend({
 	data() {
 		return {
-			signing: false,
-			user: null,
-			username: '',
-			password: '',
-			token: '',
 			apiUrl,
 			copyright,
-			users: [],
+			stats: null,
 			host,
 			name,
 			description
 		};
 	},
-	mounted() {
-		(this as any).api('users', {
-			sort: '+follower',
-			limit: 20
-		}).then(users => {
-			this.users = users;
+	created() {
+		(this as any).api('stats').then(stats => {
+			this.stats = stats;
 		});
-	},
-	methods: {
-		onUsernameChange() {
-			(this as any).api('users/show', {
-				username: this.username
-			}).then(user => {
-				this.user = user;
-			});
-		},
-		onSubmit() {
-			this.signing = true;
-
-			(this as any).api('signin', {
-				username: this.username,
-				password: this.password,
-				token: this.user && this.user.twoFactorEnabled ? this.token : undefined
-			}).then(() => {
-				location.reload();
-			}).catch(() => {
-				alert('something happened');
-				this.signing = false;
-			});
-		}
 	}
 });
 </script>
@@ -163,6 +121,17 @@ export default Vue.extend({
 				border-radius 6px
 				overflow auto
 				-webkit-overflow-scrolling touch
+
+		> .stats
+			margin 16px 0
+			padding 8px
+			font-size 14px
+			color #444
+			background rgba(#000, 0.1)
+			border-radius 6px
+
+			> *
+				margin 0 8px
 
 		> footer
 			text-align center

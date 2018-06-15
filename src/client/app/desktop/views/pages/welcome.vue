@@ -38,10 +38,6 @@
 		<header :class="$style.signupFormHeader">%i18n:@signup%</header>
 		<mk-signup :class="$style.signupForm"/>
 	</modal>
-	<modal name="signin" width="500px" height="auto" scrollable>
-		<header :class="$style.signinFormHeader">%i18n:@signin%</header>
-		<mk-signin :class="$style.signinForm"/>
-	</modal>
 </div>
 </template>
 

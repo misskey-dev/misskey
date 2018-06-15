@@ -1,6 +1,6 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
-	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }"></div>
+	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
 	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
 		<span>%i18n:@username%</span>
 		<span slot="prefix">@</span>
@@ -21,6 +21,13 @@ import Vue from 'vue';
 import { apiUrl, host } from '../../../config';
 
 export default Vue.extend({
+	props: {
+		withAvatar: {
+			type: Boolean,
+			required: false,
+			default: true
+		}
+	},
 	data() {
 		return {
 			signing: false,
