@@ -42,9 +42,9 @@ common:
     d: "¿Quieres decir algo?"
     e: "¡Escribe aquí!"
     f: "Esperando a que escribas algo..."
-  delete: "削除"
-  loading: "読み込み中"
-  ok: "わかった"
+  delete: "eliminar"
+  loading: "cargando"
+  ok: "OK"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   widgets:
