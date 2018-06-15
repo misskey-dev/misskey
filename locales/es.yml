@@ -1,10 +1,10 @@
 ---
 meta:
-  lang: "日本語"
+  lang: "Español"
   divider: ""
 common:
-  misskey: "A ⭐ of fediverse"
-  about-title: "A ⭐ of fediverse."
+  misskey: "Una ⭐️ del fediverso"
+  about-title: "Una ⭐️ del fediverso"
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
   time:
     unknown: "なぞのじかん"
