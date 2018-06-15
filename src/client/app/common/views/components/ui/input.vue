@@ -244,6 +244,7 @@ root(isDark, fill)
 			display block
 			flex 1
 			width 100%
+			margin 0
 			padding 0
 			font inherit
 			font-weight fill ? bold : normal
