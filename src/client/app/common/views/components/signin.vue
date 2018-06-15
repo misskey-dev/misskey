@@ -1,6 +1,6 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
-	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" autofocus required @change="onUsernameChange">
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @change="onUsernameChange">
 		<span>%i18n:@username%</span>
 		<span slot="prefix">@</span>
 		<span slot="suffix">@{{ host }}</span>
