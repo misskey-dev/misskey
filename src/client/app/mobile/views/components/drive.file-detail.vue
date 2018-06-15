@@ -34,15 +34,10 @@
 	</div>
 	<div class="menu">
 		<div>
-			<a :href="`${file.url}?download`" :download="file.name">
-				%fa:download%%i18n:@download%
-			</a>
-			<button @click="rename">
-				%fa:pencil-alt%%i18n:@rename%
-			</button>
-			<button @click="move">
-				%fa:R folder-open%%i18n:@move%
-			</button>
+			<a :href="`${file.url}?download`" :download="file.name">%fa:download%%i18n:@download%</a>
+			<button @click="rename">%fa:pencil-alt%%i18n:@rename%</button>
+			<button @click="move">%fa:R folder-open%%i18n:@move%</button>
+			<button @click="del">%fa:trash-alt R%%i18n:@delete%</button>
 		</div>
 	</div>
 	<div class="exif" v-show="exif">
@@ -110,6 +105,13 @@ export default Vue.extend({
 				}).then(() => {
 					this.browser.cf(this.file, true);
 				});
+			});
+		},
+		del() {
+			(this as any).api('drive/files/delete', {
+				fileId: this.file.id
+			}).then(() => {
+				this.browser.cd(this.file.folderId, true);
 			});
 		},
 		showCreatedAt() {

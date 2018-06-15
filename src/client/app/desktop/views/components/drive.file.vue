@@ -145,7 +145,7 @@ export default Vue.extend({
 				(this as any).api('drive/files/update', {
 					fileId: this.file.id,
 					name: name
-				})
+				});
 			});
 		},
 
@@ -173,7 +173,9 @@ export default Vue.extend({
 		},
 
 		deleteFile() {
-			alert('not implemented yet');
+			(this as any).api('drive/files/delete', {
+				fileId: this.file.id
+			});
 		}
 	}
 });

@@ -9,13 +9,14 @@ import * as debug from 'debug';
 import fileType = require('file-type');
 import prominence = require('prominence');
 
-import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile, DriveFileChunk } from '../../models/drive-file';
+import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../../publishers/stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
-import DriveFileThumbnail, { getDriveFileThumbnailBucket, DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
+import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import genThumbnail from '../../drive/gen-thumbnail';
+import delFile from './delete-file';
 
 const gm = _gm.subClass({
 	imageMagick: true
@@ -58,31 +59,7 @@ async function deleteOldFile(user: IRemoteUser) {
 	});
 
 	if (oldFile) {
-		// チャンクをすべて削除
-		DriveFileChunk.remove({
-			files_id: oldFile._id
-		});
-
-		DriveFile.update({ _id: oldFile._id }, {
-			$set: {
-				'metadata.deletedAt': new Date(),
-				'metadata.isExpired': true
-			}
-		});
-
-		//#region サムネイルもあれば削除
-		const thumbnail = await DriveFileThumbnail.findOne({
-			'metadata.originalId': oldFile._id
-		});
-
-		if (thumbnail) {
-			DriveFileThumbnailChunk.remove({
-				files_id: thumbnail._id
-			});
-
-			DriveFileThumbnail.remove({ _id: thumbnail._id });
-		}
-		//#endregion
+		delFile(oldFile, true);
 	}
 }
 

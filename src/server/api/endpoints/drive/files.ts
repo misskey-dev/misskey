@@ -37,10 +37,13 @@ module.exports = async (params, user, app) => {
 	const sort = {
 		_id: -1
 	};
+
 	const query = {
 		'metadata.userId': user._id,
-		'metadata.folderId': folderId
+		'metadata.folderId': folderId,
+		'metadata.deletedAt': { $exists: false }
 	} as any;
+
 	if (sinceId) {
 		sort._id = 1;
 		query._id = {
@@ -51,6 +54,7 @@ module.exports = async (params, user, app) => {
 			$lt: untilId
 		};
 	}
+
 	if (type) {
 		query.contentType = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
 	}

@@ -100,6 +100,7 @@ export default Vue.extend({
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.on('file_deleted', this.onStreamDriveFileDeleted);
 		this.connection.on('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
 
@@ -118,6 +119,7 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('file_created', this.onStreamDriveFileCreated);
 		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.off('file_deleted', this.onStreamDriveFileDeleted);
 		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
 		(this as any).os.streams.driveStream.dispose(this.connectionId);
@@ -134,6 +136,10 @@ export default Vue.extend({
 			} else {
 				this.addFile(file, true);
 			}
+		},
+
+		onStreamDriveFileDeleted(fileId) {
+			this.removeFile(fileId);
 		},
 
 		onStreamDriveFolderCreated(folder) {
