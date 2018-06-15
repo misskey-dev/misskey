@@ -109,6 +109,9 @@ root(isDark)
 					> .created-at
 						color isDark ? #606984 : #c0c0c0
 
+			> .text
+				text-align left
+
 .mk-welcome-timeline[data-darkmode]
 	root(true)
 

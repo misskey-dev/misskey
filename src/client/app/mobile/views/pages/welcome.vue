@@ -22,9 +22,12 @@
 				<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required/>
 				<ui-button type="submit" :disabled="signing">{{ signing ? 'ログインしています' : 'ログイン' }}</ui-button>
 			</form>
-			<div>
+			<div style="margin: 8px 0;">
 				<a :href="`${apiUrl}/signin/twitter`">Twitterでログイン</a>
 			</div>
+		</div>
+		<div class="tl">
+			<mk-welcome-timeline/>
 		</div>
 		<footer>
 			<small>{{ copyright }}</small>
@@ -153,6 +156,13 @@ export default Vue.extend({
 						background-image none
 						border-color #444
 						box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
+
+		> .tl
+			> *
+				max-height 300px
+				border-radius 6px
+				overflow auto
+				-webkit-overflow-scrolling touch
 
 		> footer
 			text-align center

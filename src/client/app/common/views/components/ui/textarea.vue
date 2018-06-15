@@ -66,7 +66,7 @@ export default Vue.extend({
 @import '~const.styl'
 
 root(isDark, fill)
-	margin 32px 0
+	margin 42px 0 32px 0
 
 	> .input
 		padding 12px

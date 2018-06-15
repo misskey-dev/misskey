@@ -1,6 +1,6 @@
 <template>
 <div class="signup">
-	<h1>Misskeyをはじめる</h1>
+	<h1>📦 始めましょう</h1>
 	<mk-signup/>
 </div>
 </template>

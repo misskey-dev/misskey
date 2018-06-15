@@ -1,6 +1,6 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
-	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" required @input="onChangeUsername">
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
 		<span>%i18n:@username%</span>
 		<span slot="prefix">@</span>
 		<span slot="suffix">@{{ host }}</span>

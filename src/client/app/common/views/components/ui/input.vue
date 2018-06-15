@@ -15,6 +15,7 @@
 					:readonly="readonly"
 					:pattern="pattern"
 					:autocomplete="autocomplete"
+					:spellcheck="spellcheck"
 					@input="$emit('input', $event.target.value)"
 					@focus="focused = true"
 					@blur="focused = false">
@@ -62,6 +63,9 @@ export default Vue.extend({
 			required: false
 		},
 		autocomplete: {
+			required: false
+		},
+		spellcheck: {
 			required: false
 		},
 		withPasswordMeter: {
