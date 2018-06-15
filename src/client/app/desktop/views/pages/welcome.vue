@@ -57,7 +57,8 @@ export default Vue.extend({
 			welcomeBgUrl,
 			host,
 			name,
-			description
+			description,
+			pointerInterval: null
 		};
 	},
 	created() {
@@ -66,11 +67,18 @@ export default Vue.extend({
 		});
 	},
 	mounted() {
-		const x = this.$refs.signup.getBoundingClientRect();
-		this.$refs.pointer.style.top = x.top + x.height + 'px';
-		this.$refs.pointer.style.left = x.left + 'px';
+		this.point();
+		this.pointerInterval = setInterval(this.point, 100);
+	},
+	beforeDestroy() {
+		clearInterval(this.pointerInterval);
 	},
 	methods: {
+		point() {
+			const x = this.$refs.signup.getBoundingClientRect();
+			this.$refs.pointer.style.top = x.top + x.height + 'px';
+			this.$refs.pointer.style.left = x.left + 'px';
+		},
 		signup() {
 			this.$modal.show('signup');
 		},
@@ -109,7 +117,7 @@ root(isDark)
 		right 0
 		width 180px
 		margin 0 0 0 -180px
-		transform rotateY(180deg) translateX(-10px) translateY(-25px)
+		transform rotateY(180deg) translateX(-10px) translateY(-48px)
 		pointer-events none
 
 	> button
