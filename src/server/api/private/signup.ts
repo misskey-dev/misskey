@@ -5,6 +5,7 @@ import recaptcha = require('recaptcha-promise');
 import User, { IUser, validateUsername, validatePassword, pack } from '../../../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
+import Meta from '../../../models/meta';
 
 recaptcha.init({
 	secret_key: config.recaptcha.secret_key
@@ -92,6 +93,15 @@ export default async (ctx: Koa.Context) => {
 			autoWatch: true
 		}
 	});
+
+	//#region Increment users count
+	Meta.update({}, {
+		$inc: {
+			'stats.usersCount': 1,
+			'stats.originalUsersCount': 1
+		}
+	}, { upsert: true });
+	//#endregion
 
 	// Response
 	ctx.body = await pack(account);

@@ -5,4 +5,10 @@ export default Meta;
 
 export type IMeta = {
 	broadcasts: any[];
+	stats: {
+		notesCount: number;
+		originalNotesCount: number;
+		usersCount: number;
+		originalUsersCount: number;
+	};
 };

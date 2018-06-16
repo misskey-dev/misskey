@@ -18,6 +18,7 @@ import parse from '../../text/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
+import Meta from '../../models/meta';
 
 type Reason = 'reply' | 'quote' | 'mention';
 
@@ -167,7 +168,24 @@ export default async (user: IUser, data: {
 
 	res(note);
 
-	// Increment notes count
+	//#region Increment notes count
+	if (isLocalUser(user)) {
+		Meta.update({}, {
+			$inc: {
+				'stats.notesCount': 1,
+				'stats.originalNotesCount': 1
+			}
+		}, { upsert: true });
+	} else {
+		Meta.update({}, {
+			$inc: {
+				'stats.notesCount': 1
+			}
+		}, { upsert: true });
+	}
+	//#endregion
+
+	// Increment notes count (user)
 	User.update({ _id: user._id }, {
 		$inc: {
 			notesCount: 1

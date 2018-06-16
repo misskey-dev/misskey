@@ -10,6 +10,7 @@ import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, IObject, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
+import Meta from '../../../models/meta';
 
 const log = debug('misskey:activitypub');
 
@@ -116,6 +117,14 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 		console.error(e);
 		throw e;
 	}
+
+	//#region Increment users count
+	Meta.update({}, {
+		$inc: {
+			'stats.usersCount': 1
+		}
+	}, { upsert: true });
+	//#endregion
 
 	//#region アイコンとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<IDriveFile>([
