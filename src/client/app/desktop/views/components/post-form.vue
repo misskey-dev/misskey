@@ -58,7 +58,25 @@ export default Vue.extend({
 		MkVisibilityChooser
 	},
 
-	props: ['reply', 'renote'],
+	props: {
+		reply: {
+			type: Object,
+			required: false
+		},
+		renote: {
+			type: Object,
+			required: false
+		},
+		initialText: {
+			type: String,
+			required: false
+		},
+		instant: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 
 	data() {
 		return {
@@ -118,6 +136,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		if (this.initialText) {
+			this.text = this.initialText;
+		}
+
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
 		}
@@ -141,17 +163,19 @@ export default Vue.extend({
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
-			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
-			if (draft) {
-				this.text = draft.data.text;
-				this.files = draft.data.files;
-				if (draft.data.poll) {
-					this.poll = true;
-					this.$nextTick(() => {
-						(this.$refs.poll as any).set(draft.data.poll);
-					});
+			if (!this.instant) {
+				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
+				if (draft) {
+					this.text = draft.data.text;
+					this.files = draft.data.files;
+					if (draft.data.poll) {
+						this.poll = true;
+						this.$nextTick(() => {
+							(this.$refs.poll as any).set(draft.data.poll);
+						});
+					}
+					this.$emit('change-attached-media', this.files);
 				}
-				this.$emit('change-attached-media', this.files);
 			}
 
 			this.$nextTick(() => this.watch());
@@ -349,6 +373,8 @@ export default Vue.extend({
 		},
 
 		saveDraft() {
+			if (this.instant) return;
+
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
 			data[this.draftId] = {

@@ -54,7 +54,25 @@ export default Vue.extend({
 		MkVisibilityChooser
 	},
 
-	props: ['reply', 'renote'],
+	props: {
+		reply: {
+			type: Object,
+			required: false
+		},
+		renote: {
+			type: Object,
+			required: false
+		},
+		initialText: {
+			type: String,
+			required: false
+		},
+		instant: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 
 	data() {
 		return {
@@ -112,6 +130,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		if (this.initialText) {
+			this.text = this.initialText;
+		}
+
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
 		}
@@ -252,8 +274,10 @@ export default Vue.extend({
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
 				viaMobile: viaMobile
 			}).then(data => {
-				this.$emit('note');
-				this.$destroy();
+				this.$emit('posted');
+				this.$nextTick(() => {
+					this.$destroy();
+				});
 			}).catch(err => {
 				this.posting = false;
 			});

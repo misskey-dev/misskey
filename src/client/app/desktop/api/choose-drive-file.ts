@@ -21,7 +21,7 @@ export default (os: OS) => opts => {
 				res(file);
 			};
 
-			window.open(url + '/selectdrive',
+			window.open(url + `/selectdrive?multiple=${o.multiple}`,
 				'choose_drive_window',
 				'height=500, width=800');
 		}

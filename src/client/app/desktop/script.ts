@@ -35,6 +35,7 @@ import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
 import MkTag from './views/pages/tag.vue';
 import MkOthello from './views/pages/othello.vue';
+import MkShare from './views/pages/share.vue';
 
 /**
  * init
@@ -62,6 +63,7 @@ init(async (launch) => {
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
+			{ path: '/share', component: MkShare },
 			{ path: '/othello', component: MkOthello },
 			{ path: '/othello/:game', component: MkOthello },
 			{ path: '/@:user', component: MkUser },
