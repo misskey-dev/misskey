@@ -1,6 +1,17 @@
 ChangeLog
 =========
 
+4.0.0
+-----
+
+オセロがリバーシに変更されました。
+
+### Migration
+
+MongoDBの、`othelloGames`と`othelloMatchings`コレクションをそれぞれ`reversiGames`と`reversiMatchings`にリネームしてください。
+
+You need to rename `othelloGames` and `othelloMatchings` MongoDB collections to `reversiGames` and `reversiMatchings`.
+
 3.0.0
 -----
 
