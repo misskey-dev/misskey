@@ -84,7 +84,7 @@ const defaultDesktopHomeWidgets = {
 		'calendar',
 		'activity',
 		'rss',
-		'trends',
+		'hashtags',
 		'photo-stream',
 		'version'
 	],
