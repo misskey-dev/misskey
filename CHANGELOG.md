@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+破壊的変更のみ記載。
+
+This document only describes breaking changes.
+
 4.0.0
 -----
 
