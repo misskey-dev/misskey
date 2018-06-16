@@ -101,7 +101,7 @@ async function search(
 
 	let q: any = {
 		$and: [{
-			tags: tag
+			tagsLower: tag.toLowerCase()
 		}]
 	};
 

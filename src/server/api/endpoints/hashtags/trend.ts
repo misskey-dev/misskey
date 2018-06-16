@@ -7,7 +7,7 @@ import Note from '../../../../models/note';
 
 const rangeA = 1000 * 60 * 30; // 30分
 const rangeB = 1000 * 60 * 120; // 2時間
-const coefficient = 1.5; // 「n倍」の部分
+const coefficient = 1.25; // 「n倍」の部分
 const requiredUsers = 3; // 最低何人がそのタグを投稿している必要があるか
 
 const max = 5;
@@ -22,20 +22,20 @@ module.exports = () => new Promise(async (res, rej) => {
 			createdAt: {
 				$gt: new Date(Date.now() - rangeA)
 			},
-			tags: {
+			tagsLower: {
 				$exists: true,
 				$ne: []
 			}
 		}
 	}, {
-		$unwind: '$tags'
+		$unwind: '$tagsLower'
 	}, {
 		$group: {
-			_id: { tags: '$tags', userId: '$userId' }
+			_id: { tag: '$tagsLower', userId: '$userId' }
 		}
 	}]) as Array<{
 		_id: {
-			tags: string;
+			tag: string;
 			userId: any;
 		}
 	}>;
@@ -49,12 +49,12 @@ module.exports = () => new Promise(async (res, rej) => {
 
 	// カウント
 	data.map(x => x._id).forEach(x => {
-		const i = tags.findIndex(tag => tag.name == x.tags);
+		const i = tags.findIndex(tag => tag.name == x.tag);
 		if (i != -1) {
 			tags[i].count++;
 		} else {
 			tags.push({
-				name: x.tags,
+				name: x.tag,
 				count: 1
 			});
 		}
@@ -66,7 +66,7 @@ module.exports = () => new Promise(async (res, rej) => {
 	//#region 2. 1で取得したそれぞれのタグについて、「直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上」かどうかを判定する
 	const hotsPromises = limitedTags.map(async tag => {
 		const passedCount = (await Note.distinct('userId', {
-			tags: tag.name,
+			tagsLower: tag.name,
 			createdAt: {
 				$lt: new Date(Date.now() - rangeA),
 				$gt: new Date(Date.now() - rangeB)
@@ -108,7 +108,7 @@ module.exports = () => new Promise(async (res, rej) => {
 
 	for (let i = 0; i < range; i++) {
 		countPromises.push(Promise.all(hots.map(tag => Note.distinct('userId', {
-			tags: tag,
+			tagsLower: tag,
 			createdAt: {
 				$lt: new Date(Date.now() - (interval * i)),
 				$gt: new Date(Date.now() - (interval * (i + 1)))
@@ -119,7 +119,7 @@ module.exports = () => new Promise(async (res, rej) => {
 	const countsLog = await Promise.all(countPromises);
 
 	const totalCounts: any = await Promise.all(hots.map(tag => Note.distinct('userId', {
-		tags: tag,
+		tagsLower: tag,
 		createdAt: {
 			$gt: new Date(Date.now() - (interval * range))
 		}

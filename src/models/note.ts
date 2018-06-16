@@ -16,7 +16,7 @@ import Following from './following';
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
-Note.createIndex('tags', { sparse: true });
+Note.createIndex('tagsLower');
 Note.createIndex({
 	createdAt: -1
 });
@@ -40,6 +40,7 @@ export type INote = {
 	poll: any; // todo
 	text: string;
 	tags: string[];
+	tagsLower: string[];
 	cw: string;
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;

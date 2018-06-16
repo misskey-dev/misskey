@@ -130,6 +130,7 @@ export default async (user: IUser, data: {
 		poll: data.poll,
 		cw: data.cw == null ? null : data.cw,
 		tags,
+		tagsLower: tags.map(tag => tag.toLowerCase()),
 		userId: user._id,
 		viaMobile: data.viaMobile,
 		geo: data.geo || null,
