@@ -1,9 +1,9 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import Matching, { pack as packMatching } from '../../../../models/othello-matching';
-import OthelloGame, { pack as packGame } from '../../../../models/othello-game';
+import Matching, { pack as packMatching } from '../../../../models/reversi-matching';
+import ReversiGame, { pack as packGame } from '../../../../models/reversi-game';
 import User from '../../../../models/user';
-import publishUserStream, { publishOthelloStream } from '../../../../publishers/stream';
-import { eighteight } from '../../../../othello/maps';
+import publishUserStream, { publishReversiStream } from '../../../../publishers/stream';
+import { eighteight } from '../../../../reversi/maps';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
@@ -28,7 +28,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		});
 
 		// Create game
-		const game = await OthelloGame.insert({
+		const game = await ReversiGame.insert({
 			createdAt: new Date(),
 			user1Id: exist.parentId,
 			user2Id: user._id,
@@ -47,14 +47,14 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		// Reponse
 		res(await packGame(game, user));
 
-		publishOthelloStream(exist.parentId, 'matched', await packGame(game, exist.parentId));
+		publishReversiStream(exist.parentId, 'matched', await packGame(game, exist.parentId));
 
 		const other = await Matching.count({
 			childId: user._id
 		});
 
 		if (other == 0) {
-			publishUserStream(user._id, 'othello_no_invites');
+			publishUserStream(user._id, 'reversi_no_invites');
 		}
 	} else {
 		// Fetch child
@@ -88,8 +88,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		const packed = await packMatching(matching, child);
 
 		// 招待
-		publishOthelloStream(child._id, 'invited', packed);
+		publishReversiStream(child._id, 'invited', packed);
 
-		publishUserStream(child._id, 'othello_invited', packed);
+		publishUserStream(child._id, 'reversi_invited', packed);
 	}
 });

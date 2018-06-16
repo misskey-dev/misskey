@@ -43,7 +43,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as CRC32 from 'crc-32';
-import Othello, { Color } from '../../../../../othello/core';
+import Reversi, { Color } from '../../../../../reversi/core';
 import { url } from '../../../config';
 
 export default Vue.extend({
@@ -52,7 +52,7 @@ export default Vue.extend({
 	data() {
 		return {
 			game: null,
-			o: null as Othello,
+			o: null as Reversi,
 			logs: [],
 			logPos: 0,
 			pollingClock: null
@@ -98,7 +98,7 @@ export default Vue.extend({
 	watch: {
 		logPos(v) {
 			if (!this.game.isEnded) return;
-			this.o = new Othello(this.game.settings.map, {
+			this.o = new Reversi(this.game.settings.map, {
 				isLlotheo: this.game.settings.isLlotheo,
 				canPutEverywhere: this.game.settings.canPutEverywhere,
 				loopedBoard: this.game.settings.loopedBoard
@@ -115,7 +115,7 @@ export default Vue.extend({
 	created() {
 		this.game = this.initGame;
 
-		this.o = new Othello(this.game.settings.map, {
+		this.o = new Reversi(this.game.settings.map, {
 			isLlotheo: this.game.settings.isLlotheo,
 			canPutEverywhere: this.game.settings.canPutEverywhere,
 			loopedBoard: this.game.settings.loopedBoard
@@ -163,7 +163,7 @@ export default Vue.extend({
 
 			// サウンドを再生する
 			if (this.$store.state.device.enableSounds) {
-				const sound = new Audio(`${url}/assets/othello-put-me.mp3`);
+				const sound = new Audio(`${url}/assets/reversi-put-me.mp3`);
 				sound.volume = this.$store.state.device.soundVolume;
 				sound.play();
 			}
@@ -187,7 +187,7 @@ export default Vue.extend({
 
 			// サウンドを再生する
 			if (this.$store.state.device.enableSounds && x.color != this.myColor) {
-				const sound = new Audio(`${url}/assets/othello-put-you.mp3`);
+				const sound = new Audio(`${url}/assets/reversi-put-you.mp3`);
 				sound.volume = this.$store.state.device.soundVolume;
 				sound.play();
 			}
@@ -213,7 +213,7 @@ export default Vue.extend({
 		onRescue(game) {
 			this.game = game;
 
-			this.o = new Othello(this.game.settings.map, {
+			this.o = new Reversi(this.game.settings.map, {
 				isLlotheo: this.game.settings.isLlotheo,
 				canPutEverywhere: this.game.settings.canPutEverywhere,
 				loopedBoard: this.game.settings.loopedBoard

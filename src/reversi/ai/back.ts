@@ -7,7 +7,7 @@
  */
 
 import * as request from 'request-promise-native';
-import Othello, { Color } from '../core';
+import Reversi, { Color } from '../core';
 import conf from '../../config';
 import getUserName from '../../renderers/get-user-name';
 
@@ -17,12 +17,12 @@ let form;
 /**
  * BotアカウントのユーザーID
  */
-const id = conf.othello_ai.id;
+const id = conf.reversi_ai.id;
 
 /**
  * BotアカウントのAPIキー
  */
-const i = conf.othello_ai.i;
+const i = conf.reversi_ai.i;
 
 let note;
 
@@ -44,7 +44,7 @@ process.on('message', async msg => {
 
 		//#region TLに投稿する
 		const game = msg.body;
-		const url = `${conf.url}/othello/${game.id}`;
+		const url = `${conf.url}/reversi/${game.id}`;
 		const user = game.user1Id == id ? game.user2 : game.user1;
 		const isSettai = form[0].value === 0;
 		const text = isSettai
@@ -100,7 +100,7 @@ process.on('message', async msg => {
 	}
 });
 
-let o: Othello;
+let o: Reversi;
 let botColor: Color;
 
 // 各マスの強さ
@@ -113,8 +113,8 @@ let cellWeights;
 function onGameStarted(g) {
 	game = g;
 
-	// オセロエンジン初期化
-	o = new Othello(game.settings.map, {
+	// リバーシエンジン初期化
+	o = new Reversi(game.settings.map, {
 		isLlotheo: game.settings.isLlotheo,
 		canPutEverywhere: game.settings.canPutEverywhere,
 		loopedBoard: game.settings.loopedBoard

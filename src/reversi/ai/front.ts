@@ -17,12 +17,12 @@ import conf from '../../config';
 /**
  * BotアカウントのAPIキー
  */
-const i = conf.othello_ai.i;
+const i = conf.reversi_ai.i;
 
 /**
  * BotアカウントのユーザーID
  */
-const id = conf.othello_ai.id;
+const id = conf.reversi_ai.id;
 
 ////////////////////////////////////////////////////////////////
 
@@ -59,7 +59,7 @@ homeStream.on('message', message => {
 		});
 
 		if (note.text) {
-			if (note.text.indexOf('オセロ') > -1) {
+			if (note.text.indexOf('リバーシ') > -1) {
 				request.post(`${conf.api_url}/notes/create`, {
 					json: { i,
 						replyId: note.id,
@@ -76,7 +76,7 @@ homeStream.on('message', message => {
 	if (msg.type == 'messaging_message') {
 		const message = msg.body;
 		if (message.text) {
-			if (message.text.indexOf('オセロ') > -1) {
+			if (message.text.indexOf('リバーシ') > -1) {
 				request.post(`${conf.api_url}/messaging/messages/create`, {
 					json: { i,
 						userId: message.userId,
@@ -92,7 +92,7 @@ homeStream.on('message', message => {
 
 // ユーザーを対局に誘う
 function invite(userId) {
-	request.post(`${conf.api_url}/othello/match`, {
+	request.post(`${conf.api_url}/reversi/match`, {
 		json: { i,
 			userId: userId
 		}
@@ -100,21 +100,21 @@ function invite(userId) {
 }
 
 /**
- * オセロストリーム
+ * リバーシストリーム
  */
-const othelloStream = new ReconnectingWebSocket(`${conf.ws_url}/othello?i=${i}`, undefined, {
+const reversiStream = new ReconnectingWebSocket(`${conf.ws_url}/reversi?i=${i}`, undefined, {
 	constructor: WebSocket
 });
 
-othelloStream.on('open', () => {
-	console.log('othello stream opened');
+reversiStream.on('open', () => {
+	console.log('reversi stream opened');
 });
 
-othelloStream.on('close', () => {
-	console.log('othello stream closed');
+reversiStream.on('close', () => {
+	console.log('reversi stream closed');
 });
 
-othelloStream.on('message', message => {
+reversiStream.on('message', message => {
 	const msg = JSON.parse(message.toString());
 
 	// 招待されたとき
@@ -134,12 +134,12 @@ othelloStream.on('message', message => {
  */
 function gameStart(game) {
 	// ゲームストリームに接続
-	const gw = new ReconnectingWebSocket(`${conf.ws_url}/othello-game?i=${i}&game=${game.id}`, undefined, {
+	const gw = new ReconnectingWebSocket(`${conf.ws_url}/reversi-game?i=${i}&game=${game.id}`, undefined, {
 		constructor: WebSocket
 	});
 
 	gw.on('open', () => {
-		console.log('othello game stream opened');
+		console.log('reversi game stream opened');
 
 		// フォーム
 		const form = [{
@@ -210,19 +210,19 @@ function gameStart(game) {
 	});
 
 	gw.on('close', () => {
-		console.log('othello game stream closed');
+		console.log('reversi game stream closed');
 	});
 }
 
 /**
- * オセロの対局に招待されたとき
+ * リバーシの対局に招待されたとき
  * @param inviter 誘ってきたユーザー
  */
 async function onInviteMe(inviter) {
 	console.log(`Someone invited me: @${inviter.username}`);
 
 	// 承認
-	const game = await request.post(`${conf.api_url}/othello/match`, {
+	const game = await request.post(`${conf.api_url}/reversi/match`, {
 		json: {
 			i,
 			userId: inviter.id

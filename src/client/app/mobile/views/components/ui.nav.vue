@@ -19,7 +19,7 @@
 					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotification">%fa:circle%</template>%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>%fa:angle-right%</router-link></li>
 					<li v-if="$store.getters.isSignedIn && $store.state.i.isLocked"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'">%fa:R envelope%%i18n:@follow-requests%<template v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/othello" :data-active="$route.name == 'othello'">%fa:gamepad%%i18n:@game%<template v-if="hasGameInvitation">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'">%fa:gamepad%%i18n:@game%<template v-if="hasGameInvitation">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
 					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:R calendar-alt%%i18n:@widgets%%fa:angle-right%</router-link></li>
@@ -66,14 +66,14 @@ export default Vue.extend({
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
-			this.connection.on('othello_invited', this.onOthelloInvited);
-			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
+			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('othello_invited', this.onOthelloInvited);
-			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
+			this.connection.off('reversi_invited', this.onReversiInvited);
+			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
@@ -83,10 +83,10 @@ export default Vue.extend({
 			if (query == null || query == '') return;
 			this.$router.push('/search?q=' + encodeURIComponent(query));
 		},
-		onOthelloInvited() {
+		onReversiInvited() {
 			this.hasGameInvitation = true;
 		},
-		onOthelloNoInvites() {
+		onReversiNoInvites() {
 			this.hasGameInvitation = false;
 		},
 		dark() {

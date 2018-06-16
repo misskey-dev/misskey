@@ -1,6 +1,6 @@
 <template>
 <component :is="ui ? 'mk-ui' : 'div'">
-	<mk-othello v-if="!fetching" :init-game="game" @gamed="onGamed"/>
+	<mk-reversi v-if="!fetching" :init-game="game" @gamed="onGamed"/>
 </component>
 </template>
 
@@ -33,7 +33,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('othello/games/show', {
+			(this as any).api('reversi/games/show', {
 				gameId: this.$route.params.game
 			}).then(game => {
 				this.game = game;
@@ -43,7 +43,7 @@ export default Vue.extend({
 			});
 		},
 		onGamed(game) {
-			history.pushState(null, null, '/othello/' + game.id);
+			history.pushState(null, null, '/reversi/' + game.id);
 		}
 	}
 });

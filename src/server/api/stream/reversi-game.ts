@@ -1,10 +1,10 @@
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import * as CRC32 from 'crc-32';
-import OthelloGame, { pack } from '../../../models/othello-game';
-import { publishOthelloGameStream } from '../../../publishers/stream';
-import Othello from '../../../othello/core';
-import * as maps from '../../../othello/maps';
+import ReversiGame, { pack } from '../../../models/reversi-game';
+import { publishReversiGameStream } from '../../../publishers/stream';
+import Reversi from '../../../reversi/core';
+import * as maps from '../../../reversi/maps';
 import { ParsedUrlQuery } from 'querystring';
 
 export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user?: any): void {
@@ -12,7 +12,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	const gameId = q.game;
 
 	// Subscribe game stream
-	subscriber.subscribe(`misskey:othello-game-stream:${gameId}`);
+	subscriber.subscribe(`misskey:reversi-game-stream:${gameId}`);
 	subscriber.on('message', (_, data) => {
 		connection.send(data);
 	});
@@ -62,24 +62,24 @@ export default function(request: websocket.request, connection: websocket.connec
 	});
 
 	async function updateSettings(settings) {
-		const game = await OthelloGame.findOne({ _id: gameId });
+		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (game.isStarted) return;
 		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
 		if (game.user1Id.equals(user._id) && game.user1Accepted) return;
 		if (game.user2Id.equals(user._id) && game.user2Accepted) return;
 
-		await OthelloGame.update({ _id: gameId }, {
+		await ReversiGame.update({ _id: gameId }, {
 			$set: {
 				settings
 			}
 		});
 
-		publishOthelloGameStream(gameId, 'update-settings', settings);
+		publishReversiGameStream(gameId, 'update-settings', settings);
 	}
 
 	async function initForm(form) {
-		const game = await OthelloGame.findOne({ _id: gameId });
+		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (game.isStarted) return;
 		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
@@ -90,18 +90,18 @@ export default function(request: websocket.request, connection: websocket.connec
 			form2: form
 		};
 
-		await OthelloGame.update({ _id: gameId }, {
+		await ReversiGame.update({ _id: gameId }, {
 			$set: set
 		});
 
-		publishOthelloGameStream(gameId, 'init-form', {
+		publishReversiGameStream(gameId, 'init-form', {
 			userId: user._id,
 			form
 		});
 	}
 
 	async function updateForm(id, value) {
-		const game = await OthelloGame.findOne({ _id: gameId });
+		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (game.isStarted) return;
 		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
@@ -120,11 +120,11 @@ export default function(request: websocket.request, connection: websocket.connec
 			form1: form
 		};
 
-		await OthelloGame.update({ _id: gameId }, {
+		await ReversiGame.update({ _id: gameId }, {
 			$set: set
 		});
 
-		publishOthelloGameStream(gameId, 'update-form', {
+		publishReversiGameStream(gameId, 'update-form', {
 			userId: user._id,
 			id,
 			value
@@ -133,40 +133,40 @@ export default function(request: websocket.request, connection: websocket.connec
 
 	async function message(message) {
 		message.id = Math.random();
-		publishOthelloGameStream(gameId, 'message', {
+		publishReversiGameStream(gameId, 'message', {
 			userId: user._id,
 			message
 		});
 	}
 
 	async function accept(accept: boolean) {
-		const game = await OthelloGame.findOne({ _id: gameId });
+		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (game.isStarted) return;
 
 		let bothAccepted = false;
 
 		if (game.user1Id.equals(user._id)) {
-			await OthelloGame.update({ _id: gameId }, {
+			await ReversiGame.update({ _id: gameId }, {
 				$set: {
 					user1Accepted: accept
 				}
 			});
 
-			publishOthelloGameStream(gameId, 'change-accepts', {
+			publishReversiGameStream(gameId, 'change-accepts', {
 				user1: accept,
 				user2: game.user2Accepted
 			});
 
 			if (accept && game.user2Accepted) bothAccepted = true;
 		} else if (game.user2Id.equals(user._id)) {
-			await OthelloGame.update({ _id: gameId }, {
+			await ReversiGame.update({ _id: gameId }, {
 				$set: {
 					user2Accepted: accept
 				}
 			});
 
-			publishOthelloGameStream(gameId, 'change-accepts', {
+			publishReversiGameStream(gameId, 'change-accepts', {
 				user1: game.user1Accepted,
 				user2: accept
 			});
@@ -179,7 +179,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		if (bothAccepted) {
 			// 3秒後、まだacceptされていたらゲーム開始
 			setTimeout(async () => {
-				const freshGame = await OthelloGame.findOne({ _id: gameId });
+				const freshGame = await ReversiGame.findOne({ _id: gameId });
 				if (freshGame == null || freshGame.isStarted || freshGame.isEnded) return;
 				if (!freshGame.user1Accepted || !freshGame.user2Accepted) return;
 
@@ -198,7 +198,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 				const map = freshGame.settings.map != null ? freshGame.settings.map : getRandomMap();
 
-				await OthelloGame.update({ _id: gameId }, {
+				await ReversiGame.update({ _id: gameId }, {
 					$set: {
 						startedAt: new Date(),
 						isStarted: true,
@@ -208,7 +208,7 @@ export default function(request: websocket.request, connection: websocket.connec
 				});
 
 				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
-				const o = new Othello(map, {
+				const o = new Reversi(map, {
 					isLlotheo: freshGame.settings.isLlotheo,
 					canPutEverywhere: freshGame.settings.canPutEverywhere,
 					loopedBoard: freshGame.settings.loopedBoard
@@ -224,7 +224,7 @@ export default function(request: websocket.request, connection: websocket.connec
 						winner = null;
 					}
 
-					await OthelloGame.update({
+					await ReversiGame.update({
 						_id: gameId
 					}, {
 						$set: {
@@ -233,27 +233,27 @@ export default function(request: websocket.request, connection: websocket.connec
 						}
 					});
 
-					publishOthelloGameStream(gameId, 'ended', {
+					publishReversiGameStream(gameId, 'ended', {
 						winnerId: winner,
 						game: await pack(gameId, user)
 					});
 				}
 				//#endregion
 
-				publishOthelloGameStream(gameId, 'started', await pack(gameId, user));
+				publishReversiGameStream(gameId, 'started', await pack(gameId, user));
 			}, 3000);
 		}
 	}
 
 	// 石を打つ
 	async function set(pos) {
-		const game = await OthelloGame.findOne({ _id: gameId });
+		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
 		if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) return;
 
-		const o = new Othello(game.settings.map, {
+		const o = new Reversi(game.settings.map, {
 			isLlotheo: game.settings.isLlotheo,
 			canPutEverywhere: game.settings.canPutEverywhere,
 			loopedBoard: game.settings.loopedBoard
@@ -290,7 +290,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString());
 
-		await OthelloGame.update({
+		await ReversiGame.update({
 			_id: gameId
 		}, {
 			$set: {
@@ -303,12 +303,12 @@ export default function(request: websocket.request, connection: websocket.connec
 			}
 		});
 
-		publishOthelloGameStream(gameId, 'set', Object.assign(log, {
+		publishReversiGameStream(gameId, 'set', Object.assign(log, {
 			next: o.turn
 		}));
 
 		if (o.isEnded) {
-			publishOthelloGameStream(gameId, 'ended', {
+			publishReversiGameStream(gameId, 'ended', {
 				winnerId: winner,
 				game: await pack(gameId, user)
 			});
@@ -316,7 +316,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	}
 
 	async function check(crc32) {
-		const game = await OthelloGame.findOne({ _id: gameId });
+		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (!game.isStarted) return;
 

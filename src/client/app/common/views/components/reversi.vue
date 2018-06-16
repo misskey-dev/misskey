@@ -1,5 +1,5 @@
 <template>
-<div class="mk-othello">
+<div class="mk-reversi">
 	<div v-if="game">
 		<x-gameroom :game="game"/>
 	</div>
@@ -11,14 +11,14 @@
 	</div>
 	<div class="index" v-else>
 		<h1>Misskey %fa:circle%thell%fa:circle R%</h1>
-		<p>他のMisskeyユーザーとオセロで対戦しよう</p>
+		<p>他のMisskeyユーザーとリバーシで対戦しよう</p>
 		<div class="play">
 			<el-button round>フリーマッチ(準備中)</el-button>
 			<el-button type="primary" round @click="match">指名</el-button>
 			<details>
 				<summary>遊び方</summary>
 				<div>
-					<p>オセロは、相手と交互に石をボードに置いてゆき、相手の石を挟んでひっくり返しながら、最終的に残った石が多い方が勝ちというボードゲームです。</p>
+					<p>リバーシは、相手と交互に石をボードに置いてゆき、相手の石を挟んでひっくり返しながら、最終的に残った石が多い方が勝ちというボードゲームです。</p>
 					<dl>
 						<dt><b>フリーマッチ</b></dt>
 						<dd>ランダムなユーザーと対戦するモードです。</dd>
@@ -39,7 +39,7 @@
 		</section>
 		<section v-if="myGames.length > 0">
 			<h2>自分の対局</h2>
-			<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
+			<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 				<mk-avatar class="avatar" :user="g.user1"/>
 				<mk-avatar class="avatar" :user="g.user2"/>
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
@@ -48,7 +48,7 @@
 		</section>
 		<section v-if="games.length > 0">
 			<h2>みんなの対局</h2>
-			<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/othello/${g.id}`">
+			<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/reversi/${g.id}`">
 				<mk-avatar class="avatar" :user="g.user1"/>
 				<mk-avatar class="avatar" :user="g.user2"/>
 				<span><b>{{ g.user1.name }}</b> vs <b>{{ g.user2.name }}</b></span>
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XGameroom from './othello.gameroom.vue';
+import XGameroom from './reversi.gameroom.vue';
 
 export default Vue.extend({
 	components: {
@@ -93,24 +93,24 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		this.connection = (this as any).os.streams.othelloStream.getConnection();
-		this.connectionId = (this as any).os.streams.othelloStream.use();
+		this.connection = (this as any).os.streams.reversiStream.getConnection();
+		this.connectionId = (this as any).os.streams.reversiStream.use();
 
 		this.connection.on('matched', this.onMatched);
 		this.connection.on('invited', this.onInvited);
 
-		(this as any).api('othello/games', {
+		(this as any).api('reversi/games', {
 			my: true
 		}).then(games => {
 			this.myGames = games;
 		});
 
-		(this as any).api('othello/games').then(games => {
+		(this as any).api('reversi/games').then(games => {
 			this.games = games;
 			this.gamesFetching = false;
 		});
 
-		(this as any).api('othello/invitations').then(invitations => {
+		(this as any).api('reversi/invitations').then(invitations => {
 			this.invitations = this.invitations.concat(invitations);
 		});
 
@@ -126,13 +126,13 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('matched', this.onMatched);
 		this.connection.off('invited', this.onInvited);
-		(this as any).os.streams.othelloStream.dispose(this.connectionId);
+		(this as any).os.streams.reversiStream.dispose(this.connectionId);
 
 		clearInterval(this.pingClock);
 	},
 	methods: {
 		go(game) {
-			(this as any).api('othello/games/show', {
+			(this as any).api('reversi/games/show', {
 				gameId: game.id
 			}).then(game => {
 				this.matching = null;
@@ -146,7 +146,7 @@ export default Vue.extend({
 				(this as any).api('users/show', {
 					username
 				}).then(user => {
-					(this as any).api('othello/match', {
+					(this as any).api('reversi/match', {
 						userId: user.id
 					}).then(res => {
 						if (res == null) {
@@ -160,10 +160,10 @@ export default Vue.extend({
 		},
 		cancel() {
 			this.matching = null;
-			(this as any).api('othello/match/cancel');
+			(this as any).api('reversi/match/cancel');
 		},
 		accept(invitation) {
-			(this as any).api('othello/match', {
+			(this as any).api('reversi/match', {
 				userId: invitation.parent.id
 			}).then(game => {
 				if (game) {
@@ -186,7 +186,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.mk-othello
+.mk-reversi
 	color #677f84
 	background #fff
 

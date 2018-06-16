@@ -3,10 +3,10 @@ import * as deepcopy from 'deepcopy';
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
 
-const OthelloGame = db.get<IOthelloGame>('othelloGames');
-export default OthelloGame;
+const ReversiGame = db.get<IReversiGame>('reversiGames');
+export default ReversiGame;
 
-export interface IOthelloGame {
+export interface IReversiGame {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	startedAt: Date;
@@ -45,7 +45,7 @@ export interface IOthelloGame {
 }
 
 /**
- * Pack an othello game for API response
+ * Pack an reversi game for API response
  */
 export const pack = (
 	game: any,
@@ -62,11 +62,11 @@ export const pack = (
 
 	// Populate the game if 'game' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(game)) {
-		_game = await OthelloGame.findOne({
+		_game = await ReversiGame.findOne({
 			_id: game
 		});
 	} else if (typeof game === 'string') {
-		_game = await OthelloGame.findOne({
+		_game = await ReversiGame.findOne({
 			_id: new mongo.ObjectID(game)
 		});
 	} else {

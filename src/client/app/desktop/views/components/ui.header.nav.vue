@@ -56,23 +56,23 @@ export default Vue.extend({
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
-			this.connection.on('othello_invited', this.onOthelloInvited);
-			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
+			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
 	beforeDestroy() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection.off('othello_invited', this.onOthelloInvited);
-			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
+			this.connection.off('reversi_invited', this.onReversiInvited);
+			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 	methods: {
-		onOthelloInvited() {
+		onReversiInvited() {
 			this.hasGameInvitations = true;
 		},
 
-		onOthelloNoInvites() {
+		onReversiNoInvites() {
 			this.hasGameInvitations = false;
 		},
 

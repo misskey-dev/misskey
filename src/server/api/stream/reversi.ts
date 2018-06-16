@@ -1,12 +1,12 @@
 import * as mongo from 'mongodb';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
-import Matching, { pack } from '../../../models/othello-matching';
+import Matching, { pack } from '../../../models/reversi-matching';
 import publishUserStream from '../../../publishers/stream';
 
 export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
-	// Subscribe othello stream
-	subscriber.subscribe(`misskey:othello-stream:${user._id}`);
+	// Subscribe reversi stream
+	subscriber.subscribe(`misskey:reversi-stream:${user._id}`);
 	subscriber.on('message', (_, data) => {
 		connection.send(data);
 	});
@@ -22,7 +22,7 @@ export default function(request: websocket.request, connection: websocket.connec
 					childId: new mongo.ObjectID(msg.id)
 				});
 				if (matching == null) return;
-				publishUserStream(matching.childId, 'othello_invited', await pack(matching, matching.childId));
+				publishUserStream(matching.childId, 'reversi_invited', await pack(matching, matching.childId));
 				break;
 		}
 	});

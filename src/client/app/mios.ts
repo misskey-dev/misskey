@@ -11,7 +11,7 @@ import { DriveStreamManager } from './common/scripts/streaming/drive';
 import { ServerStatsStreamManager } from './common/scripts/streaming/server-stats';
 import { NotesStatsStreamManager } from './common/scripts/streaming/notes-stats';
 import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
-import { OthelloStreamManager } from './common/scripts/streaming/othello';
+import { ReversiStreamManager } from './common/scripts/streaming/reversi';
 
 import Err from './common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
@@ -108,7 +108,7 @@ export default class MiOS extends EventEmitter {
 		serverStatsStream: ServerStatsStreamManager;
 		notesStatsStream: NotesStatsStreamManager;
 		messagingIndexStream: MessagingIndexStreamManager;
-		othelloStream: OthelloStreamManager;
+		reversiStream: ReversiStreamManager;
 	} = {
 		localTimelineStream: null,
 		globalTimelineStream: null,
@@ -116,7 +116,7 @@ export default class MiOS extends EventEmitter {
 		serverStatsStream: null,
 		notesStatsStream: null,
 		messagingIndexStream: null,
-		othelloStream: null
+		reversiStream: null
 	};
 
 	/**
@@ -233,7 +233,7 @@ export default class MiOS extends EventEmitter {
 			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.store.state.i);
 			this.streams.driveStream = new DriveStreamManager(this, this.store.state.i);
 			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.store.state.i);
-			this.streams.othelloStream = new OthelloStreamManager(this, this.store.state.i);
+			this.streams.reversiStream = new ReversiStreamManager(this, this.store.state.i);
 		});
 		//#endregion
 

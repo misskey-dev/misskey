@@ -245,27 +245,27 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'othello/match',
+		name: 'reversi/match',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/match/cancel',
+		name: 'reversi/match/cancel',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/invitations',
+		name: 'reversi/invitations',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/games',
+		name: 'reversi/games',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/games/show'
+		name: 'reversi/games/show'
 	},
 
 	{

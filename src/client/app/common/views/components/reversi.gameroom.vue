@@ -7,9 +7,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XGame from './othello.game.vue';
-import XRoom from './othello.room.vue';
-import { OthelloGameStream } from '../../scripts/streaming/othello-game';
+import XGame from './reversi.game.vue';
+import XRoom from './reversi.room.vue';
+import { ReversiGameStream } from '../../scripts/streaming/reversi-game';
 
 export default Vue.extend({
 	components: {
@@ -25,7 +25,7 @@ export default Vue.extend({
 	},
 	created() {
 		this.g = this.game;
-		this.connection = new OthelloGameStream((this as any).os, this.$store.state.i, this.game);
+		this.connection = new ReversiGameStream((this as any).os, this.$store.state.i, this.game);
 		this.connection.on('started', this.onStarted);
 	},
 	beforeDestroy() {

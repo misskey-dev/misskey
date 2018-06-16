@@ -37,9 +37,9 @@ export type Undo = {
 };
 
 /**
- * オセロエンジン
+ * リバーシエンジン
  */
-export default class Othello {
+export default class Reversi {
 	public map: MapPixel[];
 	public mapWidth: number;
 	public mapHeight: number;

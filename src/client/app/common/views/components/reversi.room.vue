@@ -94,7 +94,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as maps from '../../../../../othello/maps';
+import * as maps from '../../../../../reversi/maps';
 
 export default Vue.extend({
 	props: ['game', 'connection'],

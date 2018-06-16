@@ -1,5 +1,5 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import OthelloGame, { pack } from '../../../../models/othello-game';
+import ReversiGame, { pack } from '../../../../models/reversi-game';
 
 module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Get 'my' parameter
@@ -50,7 +50,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	}
 
 	// Fetch games
-	const games = await OthelloGame.find(q, {
+	const games = await ReversiGame.find(q, {
 		sort,
 		limit
 	});

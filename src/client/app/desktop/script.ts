@@ -34,7 +34,7 @@ import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
 import MkTag from './views/pages/tag.vue';
-import MkOthello from './views/pages/othello.vue';
+import MkReversi from './views/pages/reversi.vue';
 import MkShare from './views/pages/share.vue';
 
 /**
@@ -64,8 +64,8 @@ init(async (launch) => {
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
 			{ path: '/share', component: MkShare },
-			{ path: '/othello', component: MkOthello },
-			{ path: '/othello/:game', component: MkOthello },
+			{ path: '/reversi', component: MkReversi },
+			{ path: '/reversi/:game', component: MkReversi },
 			{ path: '/@:user', component: MkUser },
 			{ path: '/notes/:note', component: MkNote }
 		]
@@ -166,8 +166,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 7000);
 		});
 
-		connection.on('othello_invited', matching => {
-			const _n = composeNotification('othello_invited', matching);
+		connection.on('reversi_invited', matching => {
+			const _n = composeNotification('reversi_invited', matching);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon

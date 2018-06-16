@@ -1,9 +1,9 @@
 import Stream from './stream';
 import MiOS from '../../../mios';
 
-export class OthelloGameStream extends Stream {
+export class ReversiGameStream extends Stream {
 	constructor(os: MiOS, me, game) {
-		super(os, 'othello-game', {
+		super(os, 'reversi-game', {
 			i: me ? me.token : null,
 			game: game.id
 		});

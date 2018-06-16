@@ -10,8 +10,8 @@ import userListStream from './stream/user-list';
 import driveStream from './stream/drive';
 import messagingStream from './stream/messaging';
 import messagingIndexStream from './stream/messaging-index';
-import othelloGameStream from './stream/othello-game';
-import othelloStream from './stream/othello';
+import reversiGameStream from './stream/reversi-game';
+import reversiStream from './stream/reversi';
 import serverStatsStream from './stream/server-stats';
 import notesStatsStream from './stream/notes-stats';
 import requestsStream from './stream/requests';
@@ -56,8 +56,8 @@ module.exports = (server: http.Server) => {
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
 
-		if (request.resourceURL.pathname === '/othello-game') {
-			othelloGameStream(request, connection, subscriber, user);
+		if (request.resourceURL.pathname === '/reversi-game') {
+			reversiGameStream(request, connection, subscriber, user);
 			return;
 		}
 
@@ -75,7 +75,7 @@ module.exports = (server: http.Server) => {
 			request.resourceURL.pathname === '/drive' ? driveStream :
 			request.resourceURL.pathname === '/messaging' ? messagingStream :
 			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
-			request.resourceURL.pathname === '/othello' ? othelloStream :
+			request.resourceURL.pathname === '/reversi' ? reversiStream :
 			null;
 
 		if (channel !== null) {

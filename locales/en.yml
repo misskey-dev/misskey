@@ -333,7 +333,7 @@ desktop/views/components/friends-maker.vue:
   refresh: "More"
   close: "Close"
 desktop/views/components/game-window.vue:
-  game: "Othello"
+  game: "Reversi"
 desktop/views/components/home.vue:
   done: "Submit"
   add-widget: "Add widget:"
@@ -549,7 +549,7 @@ desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
   messaging: "Messages"
-  game: "Play Othello"
+  game: "Play Reversi"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
 desktop/views/components/ui.header.post.vue:

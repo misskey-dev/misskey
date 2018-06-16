@@ -60,7 +60,7 @@ export type Source = {
 		hook_secret: string;
 		username: string;
 	};
-	othello_ai?: {
+	reversi_ai?: {
 		id: string;
 		i: string;
 	};

@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header">%fa:gamepad%オセロ</span>
-	<mk-othello v-if="!fetching" :init-game="game" @gamed="onGamed"/>
+	<span slot="header">%fa:gamepad%リバーシ</span>
+	<mk-reversi v-if="!fetching" :init-game="game" @gamed="onGamed"/>
 </mk-ui>
 </template>
 
@@ -23,7 +23,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = 'Misskey オセロ';
+		document.title = 'Misskey リバーシ';
 		document.documentElement.style.background = '#fff';
 	},
 	methods: {
@@ -33,7 +33,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('othello/games/show', {
+			(this as any).api('reversi/games/show', {
 				gameId: this.$route.params.game
 			}).then(game => {
 				this.game = game;
@@ -43,7 +43,7 @@ export default Vue.extend({
 			});
 		},
 		onGamed(game) {
-			history.pushState(null, null, '/othello/' + game.id);
+			history.pushState(null, null, '/reversi/' + game.id);
 		}
 	}
 });

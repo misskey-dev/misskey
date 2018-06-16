@@ -3,7 +3,7 @@ import * as deepcopy from 'deepcopy';
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
 
-const Matching = db.get<IMatching>('othelloMatchings');
+const Matching = db.get<IMatching>('reversiMatchings');
 export default Matching;
 
 export interface IMatching {
@@ -14,7 +14,7 @@ export interface IMatching {
 }
 
 /**
- * Pack an othello matching for API response
+ * Pack an reversi matching for API response
  */
 export const pack = (
 	matching: any,
