@@ -10,6 +10,8 @@ This document describes breaking changes only.
 
 オセロがリバーシに変更されました。
 
+Othello is now Reversi.
+
 ### Migration
 
 MongoDBの、`othelloGames`と`othelloMatchings`コレクションをそれぞれ`reversiGames`と`reversiMatchings`にリネームしてください。
