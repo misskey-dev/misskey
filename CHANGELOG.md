@@ -3,7 +3,7 @@ ChangeLog
 
 破壊的変更のみ記載。
 
-This document only describes breaking changes.
+This document describes breaking changes only.
 
 4.0.0
 -----
