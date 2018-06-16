@@ -4,11 +4,39 @@
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#313a42",
-	"icons": {
-		"16": "/assets/favicon/16.png",
-		"32": "/assets/favicon/32.png",
-		"64": "/assets/favicon/64.png",
-		"128": "/assets/favicon/128.png",
-		"256": "/assets/favicon/256.png"
+	"icons": [
+		{
+			"src": "/assets/favicon/16.png",
+			"size": "16x16",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/favicon/32.png",
+			"size": "32x32",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/favicon/64.png",
+			"size": "64x64",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/favicon/128.png",
+			"size": "128x128",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/favicon/192.png",
+			"size": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/favicon/256.png",
+			"size": "256x256",
+			"type": "image/png"
+		}
+	],
+	"share_target": {
+		"url_template": "share?text={title}%20-%20{text}%20-%20{url}"
 	}
 }
