@@ -56,7 +56,7 @@ export default async function renderNote(note: INote, dive = true) {
 
 	const hashtagTags = (note.tags || []).map(renderHashtag);
 	const mentionTags = (note.mentionedRemoteUsers || []).map(renderMention);
-	const tag = hashtagTags.concat(mentionTags)
+	const tag = hashtagTags.concat(mentionTags);
 
 	return {
 		id: `${config.url}/notes/${note._id}`,
