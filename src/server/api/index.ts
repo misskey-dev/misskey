@@ -6,6 +6,7 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as multer from 'koa-multer';
 import * as bodyParser from 'koa-bodyparser';
+const cors = require('@koa/cors');
 
 import endpoints from './endpoints';
 
@@ -13,6 +14,7 @@ const handler = require('./api-handler').default;
 
 // Init app
 const app = new Koa();
+app.use(cors());
 app.use(bodyParser({
 	// リクエストが multipart/form-data でない限りはJSONだと見なす
 	detectJSON: ctx => !ctx.is('multipart/form-data')
