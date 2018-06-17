@@ -343,6 +343,10 @@ export const pack = async (
 		_note.mediaIds = [];
 		_note.text = null;
 		_note.poll = null;
+		_note.cw = null;
+		_note.tags = [];
+		_note.tagsLower = [];
+		_note.geo = null;
 		_note.isHidden = true;
 	}
 
