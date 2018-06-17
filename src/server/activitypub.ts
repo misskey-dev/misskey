@@ -7,7 +7,7 @@ const httpSignature = require('http-signature');
 import { createHttp } from '../queue';
 import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
-import User, { isLocalUser, ILocalUser } from '../models/user';
+import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
@@ -41,17 +41,18 @@ function inbox(ctx: Koa.Context) {
 	ctx.status = 202;
 }
 
+function isActivityPubReq(ctx: Router.IRouterContext) {
+	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
+	return ['application/activity+json', 'application/ld+json'].includes(accepted as string);
+}
+
 // inbox
 router.post('/inbox', json(), inbox);
 router.post('/users/:user/inbox', json(), inbox);
 
 // note
 router.get('/notes/:note', async (ctx, next) => {
-	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
-	if (!['application/activity+json', 'application/ld+json'].includes(accepted as string)) {
-		await next();
-		return;
-	}
+	if (!isActivityPubReq(ctx)) return await next();
 
 	const note = await Note.findOne({
 		_id: new mongo.ObjectID(ctx.params.note)
@@ -112,6 +113,15 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
+function userInfo(ctx: Router.IRouterContext, user: IUser) {
+	if (user === null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = pack(renderPerson(user as ILocalUser));
+}
+
 router.get('/users/:user', async ctx => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
@@ -120,12 +130,18 @@ router.get('/users/:user', async ctx => {
 		host: null
 	});
 
-	if (user === null) {
-		ctx.status = 404;
-		return;
-	}
+	userInfo(ctx, user);
+});
 
-	ctx.body = pack(renderPerson(user as ILocalUser));
+router.get('/@:user', async (ctx, next) => {
+	if (!isActivityPubReq(ctx)) return await next();
+
+	const user = await User.findOne({
+		usernameLower: ctx.params.user.toLowerCase(),
+		host: null
+	});
+
+	userInfo(ctx, user);
 });
 
 // follow form
