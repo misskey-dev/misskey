@@ -14,7 +14,11 @@ const handler = require('./api-handler').default;
 
 // Init app
 const app = new Koa();
-app.use(cors());
+
+app.use(cors({
+	origin: '*'
+}));
+
 app.use(bodyParser({
 	// リクエストが multipart/form-data でない限りはJSONだと見なす
 	detectJSON: ctx => !ctx.is('multipart/form-data')
