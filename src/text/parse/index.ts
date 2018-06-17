@@ -2,6 +2,18 @@
  * Misskey Text Analyzer
  */
 
+import { TextElementBold } from "./elements/bold";
+import { TextElementCode } from "./elements/code";
+import { TextElementEmoji } from "./elements/emoji";
+import { TextElementHashtag } from "./elements/hashtag";
+import { TextElementInlineCode } from "./elements/inline-code";
+import { TextElementLink } from "./elements/link";
+import { TextElementMention } from "./elements/mention";
+import { TextElementQuote } from "./elements/quote";
+import { TextElementSearch } from "./elements/search";
+import { TextElementTitle } from "./elements/title";
+import { TextElementUrl } from "./elements/url";
+
 const elements = [
 	require('./elements/bold'),
 	require('./elements/title'),
@@ -14,17 +26,31 @@ const elements = [
 	require('./elements/quote'),
 	require('./elements/emoji'),
 	require('./elements/search')
-];
+].map(element => element.default as TextElementProcessor);
 
-export default (source: string): any[] => {
+export type TextElement = {type: "text", content: string}
+	| TextElementBold
+	| TextElementCode
+	| TextElementEmoji
+	| TextElementHashtag
+	| TextElementInlineCode
+	| TextElementLink
+	| TextElementMention
+	| TextElementQuote
+	| TextElementSearch
+	| TextElementTitle
+	| TextElementUrl;
+export type TextElementProcessor = (text: string, i: number) => TextElement | TextElement[];
+
+export default (source: string): TextElement[] => {
 
 	if (source == '') {
 		return null;
 	}
 
-	const tokens = [];
+	const tokens: TextElement[] = [];
 
-	function push(token) {
+	function push(token: TextElement) {
 		if (token != null) {
 			tokens.push(token);
 			source = source.substr(token.content.length);
@@ -59,9 +85,8 @@ export default (source: string): any[] => {
 	}
 
 	// テキストを纏める
-	tokens[0] = [tokens[0]];
 	return tokens.reduce((a, b) => {
-		if (a[a.length - 1].type == 'text' && b.type == 'text') {
+		if (a.length && a[a.length - 1].type == 'text' && b.type == 'text') {
 			const tail = a.pop();
 			return a.concat({
 				type: 'text',
@@ -70,5 +95,5 @@ export default (source: string): any[] => {
 		} else {
 			return a.concat(b);
 		}
-	});
+	}, [] as TextElement[]);
 };

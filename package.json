@@ -216,5 +216,8 @@
 		"websocket": "1.0.26",
 		"ws": "5.2.0",
 		"xev": "2.0.1"
+	},
+	"devDependencies": {
+		"@types/jsdom": "11.0.5"
 	}
 }

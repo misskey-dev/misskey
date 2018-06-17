@@ -2,7 +2,15 @@
  * Link
  */
 
-module.exports = text => {
+export type TextElementLink = {
+	type: "link"
+	content: string
+	title: string
+	url: string
+	silent: boolean
+};
+
+export default function(text: string) {
 	const match = text.match(/^\??\[([^\[\]]+?)\]\((https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.=\+\-]+?)\)/);
 	if (!match) return null;
 	const silent = text[0] == '?';
@@ -15,5 +23,5 @@ module.exports = text => {
 		title: title,
 		url: url,
 		silent: silent
-	};
-};
+	} as TextElementLink;
+}

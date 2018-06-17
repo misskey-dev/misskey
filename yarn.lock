@@ -277,6 +277,15 @@
   version "3.11.1"
   resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-3.11.1.tgz#ac5bab26be5f9c6f74b6b23420f2cfa5a7a6ba40"
 
+"@types/jsdom@11.0.5":
+  version "11.0.5"
+  resolved "https://registry.yarnpkg.com/@types/jsdom/-/jsdom-11.0.5.tgz#b12fffc73eb3731b218e9665a50f023b6b84b5cb"
+  dependencies:
+    "@types/events" "*"
+    "@types/node" "*"
+    "@types/tough-cookie" "*"
+    parse5 "^3.0.2"
+
 "@types/keygrip@*":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/keygrip/-/keygrip-1.0.1.tgz#ff540462d2fb4d0a88441ceaf27d287b01c3d878"
@@ -8220,6 +8229,12 @@ parse5@*, parse5@5.0.0:
 parse5@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-4.0.0.tgz#6d78656e3da8d78b4ec0b906f7c08ef1dfe3f608"
+
+parse5@^3.0.2:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/parse5/-/parse5-3.0.3.tgz#042f792ffdd36851551cf4e9e066b3874ab45b5c"
+  dependencies:
+    "@types/node" "*"
 
 parseurl@^1.3.0, parseurl@~1.3.2:
   version "1.3.2"

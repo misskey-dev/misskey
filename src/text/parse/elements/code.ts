@@ -4,7 +4,14 @@
 
 import genHtml from '../core/syntax-highlighter';
 
-module.exports = text => {
+export type TextElementCode = {
+	type: "code"
+	content: string
+	code: string
+	html: string
+};
+
+export default function(text: string) {
 	const match = text.match(/^```([\s\S]+?)```/);
 	if (!match) return null;
 	const code = match[0];
@@ -13,5 +20,5 @@ module.exports = text => {
 		content: code,
 		code: code.substr(3, code.length - 6).trim(),
 		html: genHtml(code.substr(3, code.length - 6).trim())
-	};
-};
+	} as TextElementCode;
+}
