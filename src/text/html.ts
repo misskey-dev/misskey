@@ -1,8 +1,9 @@
 import { lib as emojilib } from 'emojilib';
 import { JSDOM } from 'jsdom';
 import config from '../config';
+import { INote } from '../models/note';
 
-const handlers = {
+const handlers: {[key: string]: (window: any, token: any, mentionedRemoteUsers: INote["mentionedRemoteUsers"]) => void} = {
 	bold({ document }, { bold }) {
 		const b = document.createElement('b');
 		b.textContent = bold;
@@ -44,9 +45,10 @@ const handlers = {
 		document.body.appendChild(a);
 	},
 
-	mention({ document }, { content }) {
+	mention({ document }, { content, username, host }, mentionedRemoteUsers) {
 		const a = document.createElement('a');
-		a.href = `${config.url}/${content}`;
+		const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
+		a.href = remoteUserInfo ? remoteUserInfo.uri : `${config.url}/${content}`;
 		a.textContent = content;
 		document.body.appendChild(a);
 	},
@@ -88,11 +90,11 @@ const handlers = {
 	}
 };
 
-export default tokens => {
+export default (tokens, mentionedRemoteUsers: INote["mentionedRemoteUsers"] = []) => {
 	const { window } = new JSDOM('');
 
 	for (const token of tokens) {
-		handlers[token.type](window, token);
+		handlers[token.type](window, token, mentionedRemoteUsers);
 	}
 
 	return `<p>${window.document.body.innerHTML}</p>`;
