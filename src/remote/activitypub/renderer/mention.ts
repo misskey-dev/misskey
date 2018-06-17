@@ -1,9 +1,8 @@
-export default (mention: {
-	uri: string;
-	username: string;
-	host: string;
-}) => ({
+import { IUser, isRemoteUser } from "../../../models/user";
+import config from "../../../config";
+
+export default (mention: IUser) => ({
 	type: 'Mention',
-	href: mention.uri,
-	name: `@${mention.username}@${mention.host}`
+	href: isRemoteUser(mention) ? mention.uri : `${config.url}/@${mention.username}`,
+	name: isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${mention.username}`,
 });

@@ -54,9 +54,18 @@ export default async function renderNote(note: INote, dive = true) {
 		? [`${attributedTo}/followers`].concat(mentions)
 		: [];
 
+	const mentionUsers = await User.find({
+		_id: {
+			$in: note.mentions
+		}
+	});
+
 	const hashtagTags = (note.tags || []).map(renderHashtag);
-	const mentionTags = (note.mentionedRemoteUsers || []).map(renderMention);
-	const tag = hashtagTags.concat(mentionTags);
+	const mentionTags = mentionUsers.map(renderMention);
+	const tag = [
+		...hashtagTags,
+		...mentionTags,
+	];
 
 	return {
 		id: `${config.url}/notes/${note._id}`,
