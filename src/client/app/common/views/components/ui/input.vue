@@ -289,6 +289,10 @@ root(isDark, fill)
 			> *
 				display block
 				min-width 16px
+				max-width 150px
+				overflow hidden
+				white-space nowrap
+				text-overflow ellipsis
 
 		> .prefix
 			left 0
