@@ -116,6 +116,8 @@ export default Vue.extend({
 					data: {}
 				}
 			});
+
+			this.widgetAdderSelected = null;
 		},
 
 		removeWidget(widget) {
