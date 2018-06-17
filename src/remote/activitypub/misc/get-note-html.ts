@@ -6,7 +6,7 @@ import config from '../../../config';
 export default function(note: INote) {
 	if (note.text == null) return null;
 
-	let html = toHtml(parse(note.text));
+	let html = toHtml(parse(note.text), note.mentionedRemoteUsers);
 
 	if (note.poll != null) {
 		const url = `${config.url}/notes/${note._id}`;
