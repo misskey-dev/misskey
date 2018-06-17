@@ -70,7 +70,7 @@ common:
     donation: "Dons"
     nav: "Navigation"
     tips: "Conseils"
-    hashtags: "ハッシュタグ"
+    hashtags: "Étiquettes"
   deck:
     widgets: "Widgets"
     home: "Accueil"
@@ -226,7 +226,7 @@ common/views/widgets/posts-monitor.vue:
   title: "Graph des publications"
   toggle: "表示を切り替え"
 common/views/widgets/hashtags.vue:
-  title: "ハッシュタグ"
+  title: "Étiquettes"
   count: "{}人が投稿"
   empty: "トレンドなし"
 common/views/widgets/server.vue:
