@@ -5,12 +5,16 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
-const loadLang = lang => yaml.safeLoad(
-	fs.readFileSync(`./locales/${lang}.yml`, 'utf-8'));
+export type LangKey = 'de' | 'en' | 'fr' | 'ja' | 'pl';
+export type LocaleObjectChildren = LocaleObject | string | undefined;
+export type LocaleObject = {[key: string]: LocaleObjectChildren };
+
+const loadLang = (lang: LangKey) => yaml.safeLoad(
+	fs.readFileSync(`./locales/${lang}.yml`, 'utf-8')) as LocaleObject;
 
 const native = loadLang('ja');
 
-const langs = {
+const langs: {[key in LangKey]: LocaleObject} = {
 	'de': loadLang('de'),
 	'en': loadLang('en'),
 	'fr': loadLang('fr'),
@@ -22,5 +26,9 @@ Object.entries(langs).map(([, locale]) => {
 	// Extend native language (Japanese)
 	locale = Object.assign({}, native, locale);
 });
+
+export function isAvailableLanguage(lang: string): lang is LangKey {
+	return lang in langs;
+}
 
 export default langs;

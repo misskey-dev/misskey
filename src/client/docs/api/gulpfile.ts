@@ -19,9 +19,10 @@ import generateVars from '../vars';
 
 const langs = Object.keys(locales);
 
-const kebab = string => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
+const kebab = (string: string) => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 
-const parseParam = param => {
+// WIP type
+const parseParam = (param: any) => {
 	const id = param.type.match(/^id\((.+?)\)|^id/);
 	const entity = param.type.match(/^entity\((.+?)\)/);
 	const isObject = /^object/.test(param.type);
@@ -57,7 +58,7 @@ const parseParam = param => {
 	return param;
 };
 
-const sortParams = params => {
+const sortParams = (params: Array<{name: string}>) => {
 	params.sort((a, b) => {
 		if (a.name < b.name)
 			return -1;
@@ -68,14 +69,15 @@ const sortParams = params => {
 	return params;
 };
 
-const extractDefs = params => {
-	let defs = [];
+// WIP type
+const extractDefs = (params: any[]) => {
+	let defs: any[] = [];
 
 	params.forEach(param => {
 		if (param.def) {
 			defs.push({
 				name: param.defName,
-				params: sortParams(param.def.map(p => parseParam(p)))
+				params: sortParams(param.def.map((p: any) => parseParam(p)))
 			});
 
 			const childDefs = extractDefs(param.def);
@@ -109,8 +111,10 @@ gulp.task('doc:api:endpoints', async () => {
 					path: ep.endpoint
 				},
 				desc: ep.desc,
+				// @ts-ignore
 				params: sortParams(ep.params.map(p => parseParam(p))),
 				paramDefs: extractDefs(ep.params),
+				// @ts-ignore
 				res: ep.res ? sortParams(ep.res.map(p => parseParam(p))) : null,
 				resDefs: ep.res ? extractDefs(ep.res) : null,
 			};
@@ -155,7 +159,8 @@ gulp.task('doc:api:entities', async () => {
 			const vars = {
 				name: entity.name,
 				desc: entity.desc,
-				props: sortParams(entity.props.map(p => parseParam(p))),
+				// WIP type
+				props: sortParams(entity.props.map((p: any) => parseParam(p))),
 				propDefs: extractDefs(entity.props),
 			};
 			langs.forEach(lang => {

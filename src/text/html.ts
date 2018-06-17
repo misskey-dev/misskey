@@ -1,7 +1,8 @@
-import { lib as emojilib } from 'emojilib';
+const { lib: emojilib } = require('emojilib');
 import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
+import { TextElement } from './parse';
 
 const handlers: {[key: string]: (window: any, token: any, mentionedRemoteUsers: INote["mentionedRemoteUsers"]) => void} = {
 	bold({ document }, { bold }) {
@@ -90,7 +91,7 @@ const handlers: {[key: string]: (window: any, token: any, mentionedRemoteUsers: 
 	}
 };
 
-export default (tokens, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
+export default (tokens: TextElement[], mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
 	const { window } = new JSDOM('');
 
 	for (const token of tokens) {
