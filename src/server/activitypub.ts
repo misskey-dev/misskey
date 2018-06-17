@@ -1,5 +1,4 @@
 import * as mongo from 'mongodb';
-import * as Koa from 'koa';
 import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
@@ -20,7 +19,7 @@ const router = new Router();
 
 //#region Routing
 
-function inbox(ctx: Koa.Context) {
+function inbox(ctx: Router.IRouterContext) {
 	let signature;
 
 	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
