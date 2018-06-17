@@ -7,7 +7,7 @@ import * as crypto from 'crypto';
 import * as _gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
-import prominence = require('prominence');
+const prominence = require('prominence');
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
@@ -33,7 +33,7 @@ const writeChunks = (name: string, readable: stream.Readable, type: string, meta
 			readable.pipe(writeStream);
 		}));
 
-const writeThumbnailChunks = (name: string, readable: stream.Readable, originalId) =>
+const writeThumbnailChunks = (name: string, readable: stream.Readable, originalId: mongodb.ObjectID) =>
 	getDriveFileThumbnailBucket()
 		.then(bucket => new Promise((resolve, reject) => {
 			const writeStream = bucket.openUploadStream(name, {
@@ -89,7 +89,7 @@ export default async function(
 	const calcHash = new Promise<string>((res, rej) => {
 		const readable = fs.createReadStream(path);
 		const hash = crypto.createHash('md5');
-		const chunks = [];
+		const chunks: Buffer[] = [];
 		readable
 			.on('error', rej)
 			.pipe(hash)
@@ -201,7 +201,7 @@ export default async function(
 		return driveFolder;
 	};
 
-	const properties = {};
+	const properties: {[key: string]: any} = {};
 
 	let propPromises: Array<Promise<void>> = [];
 

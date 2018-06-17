@@ -218,6 +218,7 @@
 		"xev": "2.0.1"
 	},
 	"devDependencies": {
+		"@types/file-type": "5.2.1",
 		"@types/jsdom": "11.0.5"
 	}
 }

@@ -8,10 +8,12 @@ import * as request from 'request';
 import { IDriveFile, validateFileName } from '../../models/drive-file';
 import create from './add-file';
 import config from '../../config';
+import { IUser } from '../../models/user';
+import * as mongodb from "mongodb";
 
 const log = debug('misskey:drive:upload-from-url');
 
-export default async (url: string, user, folderId = null, uri: string = null): Promise<IDriveFile> => {
+export default async (url: string, user: IUser, folderId: mongodb.ObjectID = null, uri: string = null): Promise<IDriveFile> => {
 	log(`REQUESTED: ${url}`);
 
 	let name = URL.parse(url).pathname.split('/').pop();
