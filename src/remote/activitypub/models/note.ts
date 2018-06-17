@@ -170,6 +170,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		media,
 		reply,
 		renote: undefined,
+		cw: note.summary,
 		text: text,
 		viaMobile: false,
 		geo: undefined,

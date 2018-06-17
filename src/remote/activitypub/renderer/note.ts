@@ -62,6 +62,7 @@ export default async function renderNote(note: INote, dive = true) {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
 		attributedTo,
+		summary: note.cw,
 		content: toHtml(note),
 		published: note.createdAt.toISOString(),
 		to: 'https://www.w3.org/ns/activitystreams#Public',
