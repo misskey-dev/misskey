@@ -20,15 +20,27 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
-	const users = await User
+	let users = await User
 		.find({
+			host: null,
 			usernameLower: new RegExp(query.toLowerCase())
 		}, {
 			limit: limit,
 			skip: offset
 		});
 
+	if (users.length < limit) {
+		const remoteUsers = await User
+			.find({
+				host: { $ne: null },
+				usernameLower: new RegExp(query.toLowerCase())
+			}, {
+				limit: limit - users.length
+			});
+
+		users = users.concat(remoteUsers);
+	}
+
 	// Serialize
-	res(await Promise.all(users.map(async user =>
-		await pack(user, me, { detail: true }))));
+	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
 });

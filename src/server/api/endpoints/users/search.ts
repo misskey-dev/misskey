@@ -40,6 +40,7 @@ async function byNative(res, rej, me, query, offset, max) {
 	// Search users
 	const users = await User
 		.find({
+			host: null,
 			$or: [{
 				usernameLower: new RegExp(escapedQuery.replace('@', '').toLowerCase())
 			}, {
