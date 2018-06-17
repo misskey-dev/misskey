@@ -90,7 +90,7 @@ const handlers: {[key: string]: (window: any, token: any, mentionedRemoteUsers: 
 	}
 };
 
-export default (tokens, mentionedRemoteUsers: INote["mentionedRemoteUsers"] = []) => {
+export default (tokens, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
 	const { window } = new JSDOM('');
 
 	for (const token of tokens) {
