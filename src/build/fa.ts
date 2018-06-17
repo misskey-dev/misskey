@@ -3,18 +3,18 @@
  */
 
 import * as fontawesome from '@fortawesome/fontawesome';
-import * as regular from '@fortawesome/fontawesome-free-regular';
-import * as solid from '@fortawesome/fontawesome-free-solid';
-import * as brands from '@fortawesome/fontawesome-free-brands';
+import regular from '@fortawesome/fontawesome-free-regular';
+import solid from '@fortawesome/fontawesome-free-solid';
+import brands from '@fortawesome/fontawesome-free-brands';
 
 fontawesome.library.add(regular, solid, brands);
 
 export const pattern = /%fa:(.+?)%/g;
 
-export const replacement = (match, key) => {
+export const replacement = (match: string, key: string) => {
 	const args = key.split(' ');
 	let prefix = 'fas';
-	const classes = [];
+	const classes: string[] = [];
 	let transform = '';
 	let name;
 
@@ -34,12 +34,12 @@ export const replacement = (match, key) => {
 		}
 	});
 
-	const icon = fontawesome.icon({ prefix, iconName: name }, {
-		classes: classes
+	const icon = fontawesome.icon({ prefix, iconName: name } as fontawesome.IconLookup, {
+		classes: classes,
+		transform: fontawesome.parse.transform(transform)
 	});
 
 	if (icon) {
-		icon.transform = fontawesome.parse.transform(transform);
 		return `<i data-fa class="${name}">${icon.html[0]}</i>`;
 	} else {
 		console.warn(`'${name}' not found in fa`);

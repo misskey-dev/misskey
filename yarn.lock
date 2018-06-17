@@ -2,21 +2,33 @@
 # yarn lockfile v1
 
 
-"@fortawesome/fontawesome-free-brands@5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free-brands/-/fontawesome-free-brands-5.0.2.tgz#a1cc602eec40a379a3dd8a44c78b31110dd3d3d3"
+"@fortawesome/fontawesome-common-types@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.1.7.tgz#4336c4b06d0b5608ff1215464b66fcf9f4795284"
 
-"@fortawesome/fontawesome-free-regular@5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free-regular/-/fontawesome-free-regular-5.0.2.tgz#429af86bed14689f87648e6322983c65c782c017"
+"@fortawesome/fontawesome-free-brands@5.0.13":
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free-brands/-/fontawesome-free-brands-5.0.13.tgz#4d15ff4e1e862d5e4a4df3654f8e8acbd47e9c09"
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.1.7"
 
-"@fortawesome/fontawesome-free-solid@5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free-solid/-/fontawesome-free-solid-5.0.2.tgz#090ce2c59dd5ec76983f3da8a43e1ab0321b42d5"
+"@fortawesome/fontawesome-free-regular@5.0.13":
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free-regular/-/fontawesome-free-regular-5.0.13.tgz#eb78c30184e3f456a423a1dcfa0f682f7b50de4a"
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.1.7"
 
-"@fortawesome/fontawesome@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome/-/fontawesome-1.0.1.tgz#8ac60e1e7b437889baf9c9d6e3a61ef3b637170d"
+"@fortawesome/fontawesome-free-solid@5.0.13":
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free-solid/-/fontawesome-free-solid-5.0.13.tgz#24b61aaf471a9d34a5364b052d64a516285ba894"
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.1.7"
+
+"@fortawesome/fontawesome@1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome/-/fontawesome-1.1.8.tgz#75fe66a60f95508160bb16bd781ad7d89b280f5b"
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.1.7"
 
 "@gulp-sourcemaps/identity-map@1.X":
   version "1.0.1"
