@@ -209,15 +209,15 @@ common/views/components/visibility-chooser.vue:
   followers: "Seguidores"
   followers-desc: "Piblica solo para tus seguidores"
   specified: "Directo"
-  specified-desc: "指定したユーザーにのみ公開"
-  private: "非公開"
+  specified-desc: "Publica solo para los seguidores que quieras"
+  private: "Privada"
 common/views/widgets/broadcast.vue:
-  fetching: "確認中"
-  no-broadcasts: "お知らせはありません"
-  have-a-nice-day: "良い一日を！"
-  next: "次"
+  fetching: "Recuperando"
+  no-broadcasts: "Sin emisión"
+  have-a-nice-day: "¡Buenos dias!"
+  next: "Siguiente"
 common/views/widgets/donation.vue:
-  title: "寄付のお願い"
+  title: "Donaciones"
   text: "Misskeyの運営にはドメイン、サーバー等のコストが掛かります。Misskeyは広告を掲載したりしないため、収入を皆様からの寄付に頼っています。もしご興味があれば、{}までご連絡ください。ご協力ありがとうございます。"
 common/views/widgets/photo-stream.vue:
   title: "フォトストリーム"
