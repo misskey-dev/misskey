@@ -54,14 +54,14 @@ export default async function renderNote(note: INote, dive = true) {
 		? [`${attributedTo}/followers`].concat(mentions)
 		: [];
 
-	const mentionUsers = await User.find({
+	const mentionedUsers = await User.find({
 		_id: {
 			$in: note.mentions
 		}
 	});
 
-	const hashtagTags = (note.tags || []).map(renderHashtag);
-	const mentionTags = mentionUsers.map(renderMention);
+	const hashtagTags = (note.tags || []).map(tag => renderHashtag(tag));
+	const mentionTags = mentionedUsers.map(u => renderMention(u));
 	const tag = [
 		...hashtagTags,
 		...mentionTags,
