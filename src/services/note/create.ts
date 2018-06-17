@@ -33,7 +33,7 @@ class NotificationManager {
 		reason: Reason;
 	}> = [];
 
-	constructor(user, note) {
+	constructor(user: IUser, note: any) {
 		this.user = user;
 		this.note = note;
 	}
@@ -451,7 +451,7 @@ export default async (user: IUser, data: {
 		//		$ne: note._id
 		//	}
 		//});
-		const existRenote = null;
+		const existRenote: INote | null = null;
 		//#endregion
 
 		if (!existRenote) {
