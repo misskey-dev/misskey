@@ -47,6 +47,7 @@ common:
   ok: "OK"
   update-available: "Eine neue Version von Misskey ist verfügbar ({newer}, aktuell ist {current}). Lade die Seite neu um die aktuelle Version zu laden"
   my-token-regenerated: "Dein Token wurde generiert. Du wirst jetzt abgemeldet."
+  i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   widgets:
     analog-clock: "Analoge Uhr"
     profile: "Profil"
@@ -334,7 +335,7 @@ desktop/views/components/friends-maker.vue:
   refresh: "Mehr"
   close: "Schließen"
 desktop/views/components/game-window.vue:
-  game: "Reversi"
+  game: "リバーシ"
 desktop/views/components/home.vue:
   done: "Verbunden"
   add-widget: "Widget hinzufügen:"
