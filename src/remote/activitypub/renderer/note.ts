@@ -2,13 +2,13 @@ import renderDocument from './document';
 import renderHashtag from './hashtag';
 import renderMention from './mention';
 import config from '../../../config';
-import DriveFile from '../../../models/drive-file';
+import DriveFile, { IDriveFile } from '../../../models/drive-file';
 import Note, { INote } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 
-export default async function renderNote(note: INote, dive = true) {
-	const promisedFiles = note.mediaIds
+export default async function renderNote(note: INote, dive = true): Promise<any> {
+	const promisedFiles: Promise<IDriveFile[]> = note.mediaIds
 		? DriveFile.find({ _id: { $in: note.mediaIds } })
 		: Promise.resolve([]);
 

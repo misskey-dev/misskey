@@ -2,17 +2,17 @@
  * Misskey Text Analyzer
  */
 
-import { TextElementBold } from "./elements/bold";
-import { TextElementCode } from "./elements/code";
-import { TextElementEmoji } from "./elements/emoji";
-import { TextElementHashtag } from "./elements/hashtag";
-import { TextElementInlineCode } from "./elements/inline-code";
-import { TextElementLink } from "./elements/link";
-import { TextElementMention } from "./elements/mention";
-import { TextElementQuote } from "./elements/quote";
-import { TextElementSearch } from "./elements/search";
-import { TextElementTitle } from "./elements/title";
-import { TextElementUrl } from "./elements/url";
+import { TextElementBold } from './elements/bold';
+import { TextElementCode } from './elements/code';
+import { TextElementEmoji } from './elements/emoji';
+import { TextElementHashtag } from './elements/hashtag';
+import { TextElementInlineCode } from './elements/inline-code';
+import { TextElementLink } from './elements/link';
+import { TextElementMention } from './elements/mention';
+import { TextElementQuote } from './elements/quote';
+import { TextElementSearch } from './elements/search';
+import { TextElementTitle } from './elements/title';
+import { TextElementUrl } from './elements/url';
 
 const elements = [
 	require('./elements/bold'),
@@ -28,7 +28,7 @@ const elements = [
 	require('./elements/search')
 ].map(element => element.default as TextElementProcessor);
 
-export type TextElement = {type: "text", content: string}
+export type TextElement = { type: 'text', content: string }
 	| TextElementBold
 	| TextElementCode
 	| TextElementEmoji

@@ -1,4 +1,4 @@
-export default object => ({
+export default (object: any) => ({
 	type: 'Undo',
 	object
 });

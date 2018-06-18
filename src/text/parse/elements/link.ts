@@ -3,7 +3,7 @@
  */
 
 export type TextElementLink = {
-	type: "link"
+	type: 'link'
 	content: string
 	title: string
 	url: string

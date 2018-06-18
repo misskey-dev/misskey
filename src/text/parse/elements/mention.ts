@@ -4,7 +4,7 @@
 import parseAcct from '../../../acct/parse';
 
 export type TextElementMention = {
-	type: "mention"
+	type: 'mention'
 	content: string
 	username: string
 	host: string

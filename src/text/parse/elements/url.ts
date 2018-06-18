@@ -3,7 +3,7 @@
  */
 
 export type TextElementUrl = {
-	type: "url"
+	type: 'url'
 	content: string
 	url: string
 };

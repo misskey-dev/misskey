@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
-import sequential = require('promise-sequential');
+const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import Note, { pack as packNote, deleteNote } from './note';

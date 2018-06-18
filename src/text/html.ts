@@ -4,7 +4,7 @@ import config from '../config';
 import { INote } from '../models/note';
 import { TextElement } from './parse';
 
-const handlers: {[key: string]: (window: any, token: any, mentionedRemoteUsers: INote["mentionedRemoteUsers"]) => void} = {
+const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers: INote['mentionedRemoteUsers']) => void } = {
 	bold({ document }, { bold }) {
 		const b = document.createElement('b');
 		b.textContent = bold;

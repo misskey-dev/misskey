@@ -5,7 +5,7 @@
 import genHtml from '../core/syntax-highlighter';
 
 export type TextElementInlineCode = {
-	type: "inline-code"
+	type: 'inline-code'
 	content: string
 	code: string
 	html: string

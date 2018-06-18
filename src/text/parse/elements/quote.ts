@@ -3,7 +3,7 @@
  */
 
 export type TextElementQuote = {
-	type: "quote"
+	type: 'quote'
 	content: string
 	quote: string
 };

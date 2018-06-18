@@ -10,7 +10,7 @@ import { resolvePerson } from '../../../remote/activitypub/models/person';
 const log = debug('misskey:queue:inbox');
 
 // ユーザーのinboxにアクティビティが届いた時の処理
-export default async (job: kue.Job, done): Promise<void> => {
+export default async (job: kue.Job, done: any): Promise<void> => {
 	const signature = job.data.signature;
 	const activity = job.data.activity;
 
@@ -22,7 +22,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 	//#endregion
 
 	const keyIdLower = signature.keyId.toLowerCase();
-	let user;
+	let user: IRemoteUser;
 
 	if (keyIdLower.startsWith('acct:')) {
 		const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
@@ -36,7 +36,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 
 		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
 		if (user === null) {
-			user = await resolvePerson(activity.actor);
+			user = await resolvePerson(activity.actor) as IRemoteUser;
 		}
 	} else {
 		user = await User.findOne({
@@ -46,7 +46,7 @@ export default async (job: kue.Job, done): Promise<void> => {
 
 		// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
 		if (user === null) {
-			user = await resolvePerson(signature.keyId);
+			user = await resolvePerson(signature.keyId) as IRemoteUser;
 		}
 	}
 

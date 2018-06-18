@@ -3,7 +3,7 @@
  */
 
 export type TextElementBold = {
-	type: "bold"
+	type: 'bold'
 	content: string
 	bold: string
 };

@@ -2,7 +2,7 @@ import * as debug from 'debug';
 
 import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser, IUser } from '../../../../models/user';
 import { IAnnounce, INote } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
@@ -36,7 +36,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 
 	//#region Visibility
 	let visibility = 'public';
-	let visibleUsers = [];
+	let visibleUsers: IUser[] = [];
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
 		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';

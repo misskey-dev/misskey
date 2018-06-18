@@ -12,7 +12,7 @@ const queue = createQueue({
 	}
 });
 
-export function createHttp(data) {
+export function createHttp(data: any) {
 	return queue
 		.create('http', data)
 		.removeOnComplete(true)
@@ -21,7 +21,7 @@ export function createHttp(data) {
 		.backoff({ delay: 16384, type: 'exponential' });
 }
 
-export function deliver(user: ILocalUser, content, to) {
+export function deliver(user: ILocalUser, content: any, to: any) {
 	createHttp({
 		title: 'deliver',
 		type: 'deliver',

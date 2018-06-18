@@ -3,7 +3,7 @@
  */
 
 export type TextElementEmoji = {
-	type: "emoji"
+	type: 'emoji'
 	content: string
 	emoji: string
 };

@@ -3,7 +3,7 @@
  */
 
 export type TextElementTitle = {
-	type: "title"
+	type: 'title'
 	content: string
 	title: string
 };

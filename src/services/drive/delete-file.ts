@@ -1,4 +1,4 @@
-import DriveFile, { DriveFileChunk, IDriveFile } from "../../models/drive-file";
+import DriveFile, { DriveFileChunk, IDriveFile } from '../../models/drive-file';
 import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
 
 export default async function(file: IDriveFile, isExpired = false) {

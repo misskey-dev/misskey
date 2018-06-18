@@ -1,5 +1,5 @@
-import User, { IUser } from "../../../models/user";
-import FollowRequest from "../../../models/follow-request";
+import User, { IUser } from '../../../models/user';
+import FollowRequest from '../../../models/follow-request';
 import accept from './accept';
 
 /**

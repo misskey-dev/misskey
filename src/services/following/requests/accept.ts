@@ -1,12 +1,12 @@
-import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from "../../../models/user";
-import FollowRequest from "../../../models/follow-request";
+import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from '../../../models/user';
+import FollowRequest from '../../../models/follow-request';
 import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
-import Following from "../../../models/following";
-import FollowingLog from "../../../models/following-log";
-import FollowedLog from "../../../models/followed-log";
+import Following from '../../../models/following';
+import FollowingLog from '../../../models/following-log';
+import FollowedLog from '../../../models/followed-log';
 import event from '../../../publishers/stream';
 
 export default async function(followee: IUser, follower: IUser) {

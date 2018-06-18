@@ -1,5 +1,5 @@
-import { IUser, isRemoteUser } from "../../../models/user";
-import config from "../../../config";
+import { IUser, isRemoteUser } from '../../../models/user';
+import config from '../../../config';
 
 export default (mention: IUser) => ({
 	type: 'Mention',

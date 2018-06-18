@@ -12,7 +12,7 @@ export default class Resolver {
 		this.history = new Set();
 	}
 
-	public async resolveCollection(value) {
+	public async resolveCollection(value: any) {
 		const collection = typeof value === 'string'
 			? await this.resolve(value)
 			: value;
@@ -33,7 +33,7 @@ export default class Resolver {
 		return collection;
 	}
 
-	public async resolve(value): Promise<IObject> {
+	public async resolve(value: any): Promise<IObject> {
 		if (value == null) {
 			throw new Error('resolvee is null (or undefined)');
 		}

@@ -48,7 +48,7 @@ export default class Replacer {
 		if (error) {
 			console.warn(`key '${key}' not found in '${path}' of '${this.lang}'`);
 			return key; // Fallback
-		} else if (typeof text !== "string") {
+		} else if (typeof text !== 'string') {
 			console.warn(`key '${key}' is not string in '${path}' of '${this.lang}'`);
 			return key; // Fallback
 		} else {

@@ -3,7 +3,7 @@
  */
 
 export type TextElementHashtag = {
-	type: "hashtag"
+	type: 'hashtag'
 	content: string
 	hashtag: string
 };

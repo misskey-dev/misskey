@@ -16,8 +16,8 @@ export default (user: ILocalUser) => {
 		preferredUsername: user.username,
 		name: user.name,
 		summary: user.description,
-		icon: user.avatarId && renderImage({ _id: user.avatarId }),
-		image: user.bannerId && renderImage({ _id: user.bannerId }),
+		icon: user.avatarId && renderImage(user.avatarId),
+		image: user.bannerId && renderImage(user.bannerId),
 		manuallyApprovesFollowers: user.isLocked,
 		publicKey: renderKey(user)
 	};

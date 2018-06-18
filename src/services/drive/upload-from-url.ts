@@ -9,7 +9,7 @@ import { IDriveFile, validateFileName } from '../../models/drive-file';
 import create from './add-file';
 import config from '../../config';
 import { IUser } from '../../models/user';
-import * as mongodb from "mongodb";
+import * as mongodb from 'mongodb';
 
 const log = debug('misskey:drive:upload-from-url');
 

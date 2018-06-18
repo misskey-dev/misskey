@@ -1,4 +1,4 @@
-import { INote } from "../../../models/note";
+import { INote } from '../../../models/note';
 import toHtml from '../../../text/html';
 import parse from '../../../text/parse';
 import config from '../../../config';

@@ -220,7 +220,7 @@ export const pack = async (
 			hide = false;
 		} else {
 			// 指定されているかどうか
-			const specified = _note.visibleUserIds.some(id => id.equals(meId));
+			const specified = _note.visibleUserIds.some((id: mongo.ObjectID) => id.equals(meId));
 
 			if (specified) {
 				hide = false;
@@ -272,7 +272,7 @@ export const pack = async (
 	}
 
 	// Populate media
-	_note.media = hide ? [] : Promise.all(_note.mediaIds.map(fileId =>
+	_note.media = hide ? [] : Promise.all(_note.mediaIds.map((fileId: mongo.ObjectID) =>
 		packFile(fileId)
 	));
 

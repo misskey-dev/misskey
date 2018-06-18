@@ -1,5 +1,5 @@
-import User, { IUser, isRemoteUser, ILocalUser } from "../../../models/user";
-import FollowRequest from "../../../models/follow-request";
+import User, { IUser, isRemoteUser, ILocalUser } from '../../../models/user';
+import FollowRequest from '../../../models/follow-request';
 import pack from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderReject from '../../../remote/activitypub/renderer/reject';

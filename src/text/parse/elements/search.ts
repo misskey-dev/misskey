@@ -3,7 +3,7 @@
  */
 
 export type TextElementSearch = {
-	type: "search"
+	type: 'search'
 	content: string
 	query: string
 };
