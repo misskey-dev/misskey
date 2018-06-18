@@ -10,6 +10,7 @@ import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
 
 import docs from './docs';
+//import feed from './feed';
 import User from '../../models/user';
 import parseAcct from '../../acct/parse';
 import { fa } from '../../build/fa';
@@ -86,6 +87,22 @@ router.use('/docs', docs.routes());
 
 // URL preview endpoint
 router.get('/url', require('./url-preview'));
+
+/*// Atom
+router.get('/@:user.atom', async ctx => {
+	const { username, host } = parseAcct(ctx.params.user);
+	const user = await User.findOne({
+		usernameLower: username.toLowerCase(),
+		host
+	});
+
+	if (user != null) {
+		const atom = await feed(user);
+		ctx.body = atom;
+	} else {
+		ctx.status = 404;
+	}
+});*/
 
 //#region for crawlers
 // User
