@@ -1,7 +1,8 @@
 import config from '../../../config';
+import { IDriveFile } from '../../../models/drive-file';
 
-export default ({ _id, contentType }) => ({
+export default (file: IDriveFile) => ({
 	type: 'Document',
-	mediaType: contentType,
-	url: `${config.drive_url}/${_id}`
+	mediaType: file.contentType,
+	url: `${config.drive_url}/${file._id}`
 });

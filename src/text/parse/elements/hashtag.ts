@@ -2,7 +2,13 @@
  * Hashtag
  */
 
-module.exports = (text, i) => {
+export type TextElementHashtag = {
+	type: 'hashtag'
+	content: string
+	hashtag: string
+};
+
+export default function(text: string, i: number) {
 	if (!(/^\s#[^\s]+/.test(text) || (i == 0 && /^#[^\s]+/.test(text)))) return null;
 	const isHead = text[0] == '#';
 	const hashtag = text.match(/^\s?#[^\s]+/)[0];
@@ -15,5 +21,5 @@ module.exports = (text, i) => {
 		content: isHead ? hashtag : hashtag.substr(1),
 		hashtag: isHead ? hashtag.substr(1) : hashtag.substr(2)
 	});
-	return res;
-};
+	return res as TextElementHashtag[];
+}

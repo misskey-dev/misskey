@@ -66,9 +66,11 @@ router.get('/apple-touch-icon.png', async ctx => {
 });
 
 // ServiceWroker
-//router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
-//	await send(ctx, `${client}/assets/sw.${ctx.params[0]}.js`);
-//});
+router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
+	await send(ctx, `/assets/sw.${ctx.params[0]}.js`, {
+		root: client
+	});
+});
 
 // Manifest
 router.get('/manifest.json', async ctx => {

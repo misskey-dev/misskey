@@ -3,6 +3,7 @@ import * as redis from 'redis';
 
 import { IUser } from '../../../models/user';
 import Mute from '../../../models/mute';
+import { pack } from '../../../models/note';
 
 export default async function(
 	request: websocket.request,
@@ -30,6 +31,13 @@ export default async function(
 			return;
 		}
 		//#endregion
+
+		// Renoteなら再pack
+		if (note.renoteId != null) {
+			note.renote = await pack(note.renoteId, user, {
+				detail: true
+			});
+		}
 
 		connection.send(JSON.stringify({
 			type: 'note',

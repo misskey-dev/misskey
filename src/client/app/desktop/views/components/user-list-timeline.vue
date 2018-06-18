@@ -32,7 +32,7 @@ export default Vue.extend({
 	methods: {
 		init() {
 			if (this.connection) this.connection.close();
-			this.connection = new UserListStream((this as any).os, (this as any).os.i, this.list.id);
+			this.connection = new UserListStream((this as any).os, this.$store.state.i, this.list.id);
 			this.connection.on('note', this.onNote);
 			this.connection.on('userAdded', this.onUserAdded);
 			this.connection.on('userRemoved', this.onUserRemoved);
@@ -46,8 +46,8 @@ export default Vue.extend({
 				(this as any).api('notes/user-list-timeline', {
 					listId: this.list.id,
 					limit: fetchLimit + 1,
-					includeMyRenotes: (this as any).clientSettings.showMyRenotes,
-					includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
+					includeMyRenotes: this.$store.state.settings.showMyRenotes,
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
 				}).then(notes => {
 					if (notes.length == fetchLimit + 1) {
 						notes.pop();
@@ -62,13 +62,15 @@ export default Vue.extend({
 		more() {
 			this.moreFetching = true;
 
-			(this as any).api('notes/user-list-timeline', {
+			const promise = (this as any).api('notes/user-list-timeline', {
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: (this.$refs.timeline as any).tail().id,
-				includeMyRenotes: (this as any).clientSettings.showMyRenotes,
-				includeRenotedMyNotes: (this as any).clientSettings.showRenotedMyNotes
-			}).then(notes => {
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes
+			});
+
+			promise.then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 				} else {
@@ -77,6 +79,8 @@ export default Vue.extend({
 				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
+
+			return promise;
 		},
 		onNote(note) {
 			// Prepend a note

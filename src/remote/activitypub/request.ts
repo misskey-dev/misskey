@@ -1,5 +1,5 @@
 import { request } from 'https';
-import { sign } from 'http-signature';
+const { sign } = require('http-signature');
 import { URL } from 'url';
 import * as debug from 'debug';
 
@@ -8,7 +8,7 @@ import { ILocalUser } from '../../models/user';
 
 const log = debug('misskey:activitypub:deliver');
 
-export default (user: ILocalUser, url: string, object) => new Promise((resolve, reject) => {
+export default (user: ILocalUser, url: string, object: any) => new Promise((resolve, reject) => {
 	log(`--> ${url}`);
 
 	const { protocol, hostname, port, pathname, search } = new URL(url);

@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
-import jsonImporter from 'node-sass-json-importer';
+const jsonImporter = require('node-sass-json-importer');
 const minifyHtml = require('html-minifier').minify;
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -24,10 +24,17 @@ const meta = require('./package.json');
 const version = meta.clientVersion;
 const codename = meta.codename;
 
+declare var global: {
+	faReplacement: typeof faReplacement;
+	collapseSpacesReplacement: any;
+	base64replacement: any;
+	i18nReplacement: typeof i18nReplacement;
+};
+
 //#region Replacer definitions
 global['faReplacement'] = faReplacement;
 
-global['collapseSpacesReplacement'] = html => {
+global['collapseSpacesReplacement'] = (html: string) => {
 	return minifyHtml(html, {
 		collapseWhitespace: true,
 		collapseInlineTagWhitespace: true,
@@ -35,7 +42,7 @@ global['collapseSpacesReplacement'] = html => {
 	}).replace(/\t/g, '');
 };
 
-global['base64replacement'] = (_, key) => {
+global['base64replacement'] = (_: any, key: string) => {
 	return fs.readFileSync(__dirname + '/src/client/' + key, 'base64');
 };
 
@@ -79,17 +86,20 @@ const consts = {
 	_DEV_URL_: config.dev_url,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
+	_NAME_: config.name,
+	_DESCRIPTION_: config.description,
 	_HOST_: config.host,
 	_HOSTNAME_: config.hostname,
 	_URL_: config.url,
 	_LICENSE_: licenseHtml,
-	_GOOGLE_MAPS_API_KEY_: config.google_maps_api_key
+	_GOOGLE_MAPS_API_KEY_: config.google_maps_api_key,
+	_WELCOME_BG_URL_: config.welcome_bg_url
 };
 
-const _consts = {};
+const _consts: { [ key: string ]: any } = {};
 
 Object.keys(consts).forEach(key => {
-	_consts[key] = JSON.stringify(consts[key]);
+	_consts[key] = JSON.stringify((consts as any)[key]);
 });
 //#endregion
 
@@ -103,7 +113,7 @@ const plugins = [
 	new webpack.DefinePlugin({
 		'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
 	}),
-	new WebpackOnBuildPlugin(stats => {
+	new WebpackOnBuildPlugin((stats: any) => {
 		fs.writeFileSync('./built/client/meta.json', JSON.stringify({
 			version
 		}), 'utf-8');

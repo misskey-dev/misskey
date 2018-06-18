@@ -4,7 +4,7 @@
 
 export const pattern = /%i18n:([a-z0-9_\-@\.]+?)%/g;
 
-export const replacement = (ctx, match, key) => {
+export const replacement = (ctx: any, _: any, key: string) => {
 	const client = '/src/client/app/';
 	let name = null;
 

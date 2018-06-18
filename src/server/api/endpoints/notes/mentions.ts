@@ -1,19 +1,13 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Get mentions of myself
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following = false, followingError] =
 		$.bool.optional().get(params.following);

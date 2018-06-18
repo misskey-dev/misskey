@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-calendar" :data-special="special" :data-mobile="isMobile">
+<div class="mkw-calendar" :data-special="special" :data-mobile="platform == 'mobile'">
 	<mk-widget-container :naked="props.design == 1" :show-header="false">
 		<div class="mkw-calendar--body">
 			<div class="calendar" :data-is-holiday="isHoliday">
@@ -67,7 +67,7 @@ export default define({
 	},
 	methods: {
 		func() {
-			if (this.isMobile) return;
+			if (this.platform == 'mobile') return;
 			if (this.props.design == 2) {
 				this.props.design = 0;
 			} else {

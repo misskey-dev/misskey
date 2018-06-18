@@ -1,18 +1,24 @@
 <template>
 <div class="nav">
 	<ul>
-		<template v-if="os.isSignedIn">
+		<template v-if="$store.getters.isSignedIn">
 			<li class="home" :class="{ active: $route.name == 'index' }">
 				<router-link to="/">
 					%fa:home%
 					<p>%i18n:@home%</p>
 				</router-link>
 			</li>
+			<li class="deck" :class="{ active: $route.name == 'deck' }">
+				<router-link to="/deck">
+					%fa:columns%
+					<p>%i18n:@deck% <small>(beta)</small></p>
+				</router-link>
+			</li>
 			<li class="messaging">
 				<a @click="messaging">
 					%fa:comments%
 					<p>%i18n:@messaging%</p>
-					<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>
+					<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>
 				</a>
 			</li>
 			<li class="game">
@@ -35,53 +41,38 @@ import MkGameWindow from './game-window.vue';
 export default Vue.extend({
 	data() {
 		return {
-			hasUnreadMessagingMessages: false,
 			hasGameInvitations: false,
 			connection: null,
 			connectionId: null
 		};
 	},
+	computed: {
+		hasUnreadMessagingMessage(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
+		}
+	},
 	mounted() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
-			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
-			this.connection.on('othello_invited', this.onOthelloInvited);
-			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
-
-			// Fetch count of unread messaging messages
-			(this as any).api('messaging/unread').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadMessagingMessages = true;
-				}
-			});
+			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
 	beforeDestroy() {
-		if ((this as any).os.isSignedIn) {
-			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
-			this.connection.off('othello_invited', this.onOthelloInvited);
-			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
+		if (this.$store.getters.isSignedIn) {
+			this.connection.off('reversi_invited', this.onReversiInvited);
+			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
 	methods: {
-		onUnreadMessagingMessage() {
-			this.hasUnreadMessagingMessages = true;
-		},
-
-		onReadAllMessagingMessages() {
-			this.hasUnreadMessagingMessages = false;
-		},
-
-		onOthelloInvited() {
+		onReversiInvited() {
 			this.hasGameInvitations = true;
 		},
 
-		onOthelloNoInvites() {
+		onReversiNoInvites() {
 			this.hasGameInvitations = false;
 		},
 

@@ -95,7 +95,7 @@ export default Vue.extend({
 	methods: {
 		getAcct,
 		isMe(message) {
-			return message.userId == (this as any).os.i.id;
+			return message.userId == this.$store.state.i.id;
 		},
 		onMessage(message) {
 			this.messages = this.messages.filter(m => !(

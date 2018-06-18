@@ -8,7 +8,7 @@ import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
 
-export default async function(follower: IUser, followee: IUser, activity?) {
+export default async function(follower: IUser, followee: IUser) {
 	const following = await Following.findOne({
 		followerId: follower._id,
 		followeeId: followee._id

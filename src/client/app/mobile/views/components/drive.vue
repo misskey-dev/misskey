@@ -100,6 +100,7 @@ export default Vue.extend({
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.on('file_deleted', this.onStreamDriveFileDeleted);
 		this.connection.on('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
 
@@ -118,6 +119,7 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('file_created', this.onStreamDriveFileCreated);
 		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.off('file_deleted', this.onStreamDriveFileDeleted);
 		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
 		(this as any).os.streams.driveStream.dispose(this.connectionId);
@@ -134,6 +136,10 @@ export default Vue.extend({
 			} else {
 				this.addFile(file, true);
 			}
+		},
+
+		onStreamDriveFileDeleted(fileId) {
+			this.removeFile(fileId);
 		},
 
 		onStreamDriveFolderCreated(folder) {
@@ -372,7 +378,7 @@ export default Vue.extend({
 		},
 
 		openContextMenu() {
-			const fn = window.prompt('何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>');
+			const fn = window.prompt('%i18n:@prompt%');
 			if (fn == null || fn == '') return;
 			switch (fn) {
 				case '1':
@@ -391,7 +397,7 @@ export default Vue.extend({
 					this.moveFolder();
 					break;
 				case '6':
-					alert('ごめんなさい！フォルダの削除は未実装です...。');
+					alert('%i18n:@deletion-alert%');
 					break;
 			}
 		},
@@ -401,7 +407,7 @@ export default Vue.extend({
 		},
 
 		createFolder() {
-			const name = window.prompt('フォルダー名');
+			const name = window.prompt('%i18n:@folder-name%');
 			if (name == null || name == '') return;
 			(this as any).api('drive/folders/create', {
 				name: name,
@@ -413,10 +419,10 @@ export default Vue.extend({
 
 		renameFolder() {
 			if (this.folder == null) {
-				alert('現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。');
+				alert('%i18n:@root-rename-alert%');
 				return;
 			}
-			const name = window.prompt('フォルダー名', this.folder.name);
+			const name = window.prompt('%i18n:@folder-name%', this.folder.name);
 			if (name == null || name == '') return;
 			(this as any).api('drive/folders/update', {
 				name: name,
@@ -428,7 +434,7 @@ export default Vue.extend({
 
 		moveFolder() {
 			if (this.folder == null) {
-				alert('現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。');
+				alert('%i18n:@root-move-alert%');
 				return;
 			}
 			(this as any).apis.chooseDriveFolder().then(folder => {
@@ -442,13 +448,13 @@ export default Vue.extend({
 		},
 
 		urlUpload() {
-			const url = window.prompt('アップロードしたいファイルのURL');
+			const url = window.prompt('%i18n:@url-prompt%');
 			if (url == null || url == '') return;
 			(this as any).api('drive/files/upload_from_url', {
 				url: url,
 				folderId: this.folder ? this.folder.id : undefined
 			});
-			alert('アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。');
+			alert('%i18n:@uploading%');
 		},
 
 		onChangeLocalFile() {

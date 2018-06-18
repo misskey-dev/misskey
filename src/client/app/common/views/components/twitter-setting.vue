@@ -1,13 +1,13 @@
 <template>
 <div class="mk-twitter-setting">
 	<p>%i18n:@description%<a :href="`${docsUrl}/link-to-twitter`" target="_blank">%i18n:@detail%</a></p>
-	<p class="account" v-if="os.i.twitter" :title="`Twitter ID: ${os.i.twitter.userId}`">%i18n:@connected-to%: <a :href="`https://twitter.com/${os.i.twitter.screenName}`" target="_blank">@{{ os.i.twitter.screenName }}</a></p>
+	<p class="account" v-if="$store.state.i.twitter" :title="`Twitter ID: ${$store.state.i.twitter.userId}`">%i18n:@connected-to%: <a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
 	<p>
-		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ os.i.twitter ? '%i18n:@reconnect%' : '%i18n:@connect%' }}</a>
-		<span v-if="os.i.twitter"> or </span>
-		<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="os.i.twitter" @click.prevent="disconnect">%i18n:@disconnect%</a>
+		<a :href="`${apiUrl}/connect/twitter`" target="_blank" @click.prevent="connect">{{ $store.state.i.twitter ? '%i18n:@reconnect%' : '%i18n:@connect%' }}</a>
+		<span v-if="$store.state.i.twitter"> or </span>
+		<a :href="`${apiUrl}/disconnect/twitter`" target="_blank" v-if="$store.state.i.twitter" @click.prevent="disconnect">%i18n:@disconnect%</a>
 	</p>
-	<p class="id" v-if="os.i.twitter">Twitter ID: {{ os.i.twitter.userId }}</p>
+	<p class="id" v-if="$store.state.i.twitter">Twitter ID: {{ $store.state.i.twitter.userId }}</p>
 </div>
 </template>
 
@@ -24,8 +24,8 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.$watch('os.i', () => {
-			if ((this as any).os.i.twitter) {
+		this.$watch('$store.state.i', () => {
+			if (this.$store.state.i.twitter) {
 				if (this.form) this.form.close();
 			}
 		}, {

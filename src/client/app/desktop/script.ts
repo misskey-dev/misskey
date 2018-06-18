@@ -2,7 +2,6 @@
  * Desktop Client
  */
 
-import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Style
@@ -24,6 +23,7 @@ import updateAvatar from './api/update-avatar';
 import updateBanner from './api/update-banner';
 
 import MkIndex from './views/pages/index.vue';
+import MkDeck from './views/pages/deck/deck.vue';
 import MkUser from './views/pages/user/user.vue';
 import MkFavorites from './views/pages/favorites.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
@@ -33,7 +33,9 @@ import MkHomeCustomize from './views/pages/home-customize.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
-import MkOthello from './views/pages/othello.vue';
+import MkTag from './views/pages/tag.vue';
+import MkReversi from './views/pages/reversi.vue';
+import MkShare from './views/pages/share.vue';
 
 /**
  * init
@@ -51,6 +53,7 @@ init(async (launch) => {
 		mode: 'history',
 		routes: [
 			{ path: '/', name: 'index', component: MkIndex },
+			{ path: '/deck', name: 'deck', component: MkDeck },
 			{ path: '/i/customize-home', component: MkHomeCustomize },
 			{ path: '/i/favorites', component: MkFavorites },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
@@ -59,8 +62,10 @@ init(async (launch) => {
 			{ path: '/i/lists/:list', component: MkUserList },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
-			{ path: '/othello', component: MkOthello },
-			{ path: '/othello/:game', component: MkOthello },
+			{ path: '/tags/:tag', component: MkTag },
+			{ path: '/share', component: MkShare },
+			{ path: '/reversi', component: MkReversi },
+			{ path: '/reversi/:game', component: MkReversi },
 			{ path: '/@:user', component: MkUser },
 			{ path: '/notes/:note', component: MkNote }
 		]
@@ -68,12 +73,12 @@ init(async (launch) => {
 
 	// Launch the app
 	const [, os] = launch(router, os => ({
-		chooseDriveFolder,
-		chooseDriveFile,
-		dialog,
-		input,
-		post,
-		notify,
+		chooseDriveFolder: chooseDriveFolder(os),
+		chooseDriveFile: chooseDriveFile(os),
+		dialog: dialog(os),
+		input: input(os),
+		post: post(os),
+		notify: notify(os),
 		updateAvatar: updateAvatar(os),
 		updateBanner: updateBanner(os)
 	}));
@@ -161,8 +166,8 @@ function registerNotifications(stream: HomeStreamManager) {
 			setTimeout(n.close.bind(n), 7000);
 		});
 
-		connection.on('othello_invited', matching => {
-			const _n = composeNotification('othello_invited', matching);
+		connection.on('reversi_invited', matching => {
+			const _n = composeNotification('reversi_invited', matching);
 			const n = new Notification(_n.title, {
 				body: _n.body,
 				icon: _n.icon

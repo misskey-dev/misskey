@@ -2,7 +2,7 @@
 <div class="mkw-broadcast"
 	:data-found="broadcasts.length != 0"
 	:data-melt="props.design == 1"
-	:data-mobile="isMobile"
+	:data-mobile="platform == 'mobile'"
 >
 	<div class="icon">
 		<svg height="32" version="1.1" viewBox="0 0 32 32" width="32">

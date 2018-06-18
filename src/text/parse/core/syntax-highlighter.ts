@@ -1,4 +1,4 @@
-function escape(text) {
+function escape(text: string) {
 	return text
 		.replace(/>/g, '&gt;')
 		.replace(/</g, '&lt;');
@@ -110,7 +110,14 @@ const symbols = [
 	'?'
 ];
 
-const elements = [
+type Token = {
+	html: string
+	next: number
+};
+
+type Element = (code: string, i: number, source: string) => (Token | null);
+
+const elements: Element[] = [
 	// comment
 	code => {
 		if (code.substr(0, 2) != '//') return null;
@@ -305,7 +312,7 @@ export default (source: string, lang?: string) => {
 
 	let i = 0;
 
-	function push(token) {
+	function push(token: Token) {
 		html += token.html;
 		code = code.substr(token.next);
 		i += token.next;

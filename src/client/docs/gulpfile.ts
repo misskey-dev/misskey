@@ -8,8 +8,8 @@ import * as glob from 'glob';
 import * as gulp from 'gulp';
 import * as pug from 'pug';
 import * as mkdirp from 'mkdirp';
-import stylus = require('gulp-stylus');
-import cssnano = require('gulp-cssnano');
+const stylus = require('gulp-stylus');
+const cssnano = require('gulp-cssnano');
 
 import I18nReplacer from '../../build/i18n';
 import fa from '../../build/fa';

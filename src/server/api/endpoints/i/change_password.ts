@@ -1,14 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 
 /**
  * Change password
  */
-module.exports = async (params, user) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'currentPasword' parameter
 	const [currentPassword, currentPasswordErr] = $.str.get(params.currentPasword);
 	if (currentPasswordErr) return rej('invalid currentPasword param');

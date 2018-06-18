@@ -1,5 +1,4 @@
 import * as mongo from 'mongodb';
-import * as Koa from 'koa';
 import * as Router from 'koa-router';
 const json = require('koa-json-body');
 const httpSignature = require('http-signature');
@@ -7,7 +6,7 @@ const httpSignature = require('http-signature');
 import { createHttp } from '../queue';
 import pack from '../remote/activitypub/renderer';
 import Note from '../models/note';
-import User, { isLocalUser } from '../models/user';
+import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
@@ -20,7 +19,7 @@ const router = new Router();
 
 //#region Routing
 
-function inbox(ctx: Koa.Context) {
+function inbox(ctx: Router.IRouterContext) {
 	let signature;
 
 	ctx.req.headers.authorization = 'Signature ' + ctx.req.headers.signature;
@@ -41,17 +40,18 @@ function inbox(ctx: Koa.Context) {
 	ctx.status = 202;
 }
 
+function isActivityPubReq(ctx: Router.IRouterContext) {
+	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
+	return ['application/activity+json', 'application/ld+json'].includes(accepted as string);
+}
+
 // inbox
 router.post('/inbox', json(), inbox);
 router.post('/users/:user/inbox', json(), inbox);
 
 // note
 router.get('/notes/:note', async (ctx, next) => {
-	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
-	if (!['application/activity+json', 'application/ld+json'].includes(accepted as string)) {
-		await next();
-		return;
-	}
+	if (!isActivityPubReq(ctx)) return await next();
 
 	const note = await Note.findOne({
 		_id: new mongo.ObjectID(ctx.params.note)
@@ -69,7 +69,10 @@ router.get('/notes/:note', async (ctx, next) => {
 router.get('/users/:user/outbox', async ctx => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
-	const user = await User.findOne({ _id: userId });
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
 
 	if (user === null) {
 		ctx.status = 404;
@@ -91,7 +94,10 @@ router.get('/users/:user/outbox', async ctx => {
 router.get('/users/:user/publickey', async ctx => {
 	const userId = new mongo.ObjectID(ctx.params.user);
 
-	const user = await User.findOne({ _id: userId });
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
 
 	if (user === null) {
 		ctx.status = 404;
@@ -106,17 +112,35 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
-router.get('/users/:user', async ctx => {
-	const userId = new mongo.ObjectID(ctx.params.user);
-
-	const user = await User.findOne({ _id: userId });
-
+function userInfo(ctx: Router.IRouterContext, user: IUser) {
 	if (user === null) {
 		ctx.status = 404;
 		return;
 	}
 
-	ctx.body = pack(renderPerson(user));
+	ctx.body = pack(renderPerson(user as ILocalUser));
+}
+
+router.get('/users/:user', async ctx => {
+	const userId = new mongo.ObjectID(ctx.params.user);
+
+	const user = await User.findOne({
+		_id: userId,
+		host: null
+	});
+
+	userInfo(ctx, user);
+});
+
+router.get('/@:user', async (ctx, next) => {
+	if (!isActivityPubReq(ctx)) return await next();
+
+	const user = await User.findOne({
+		usernameLower: ctx.params.user.toLowerCase(),
+		host: null
+	});
+
+	userInfo(ctx, user);
 });
 
 // follow form

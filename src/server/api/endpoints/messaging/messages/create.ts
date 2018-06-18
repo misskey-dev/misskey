@@ -1,11 +1,8 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import History from '../../../../../models/messaging-history';
-import User from '../../../../../models/user';
+import User, { ILocalUser } from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
@@ -17,7 +14,7 @@ import config from '../../../../../config';
 /**
  * Create a message
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);
 	if (recipientIdErr) return rej('invalid userId param');
@@ -90,6 +87,13 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	publishMessagingStream(message.recipientId, message.userId, 'message', messageObj);
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
 	publishUserStream(message.recipientId, 'messaging_message', messageObj);
+
+	// Update flag
+	User.update({ _id: recipient._id }, {
+		$set: {
+			hasUnreadMessagingMessage: true
+		}
+	});
 
 	// 3秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {

@@ -1,11 +1,8 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
-import User from '../../../../../models/user';
+import User, { ILocalUser } from '../../../../../models/user';
 
-module.exports = async (params, user) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
 	const [token, tokenErr] = $.str.get(params.token);
 	if (tokenErr) return rej('invalid token param');

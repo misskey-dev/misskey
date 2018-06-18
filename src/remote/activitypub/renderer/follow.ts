@@ -1,8 +1,8 @@
 import config from '../../../config';
-import { IRemoteUser, ILocalUser } from '../../../models/user';
+import { IUser, isLocalUser } from '../../../models/user';
 
-export default (follower: ILocalUser, followee: IRemoteUser) => ({
+export default (follower: IUser, followee: IUser) => ({
 	type: 'Follow',
-	actor: `${config.url}/users/${follower._id}`,
-	object: followee.uri
+	actor: isLocalUser(follower) ? `${config.url}/users/${follower._id}` : follower.uri,
+	object: isLocalUser(followee) ? `${config.url}/users/${followee._id}` : followee.uri
 });

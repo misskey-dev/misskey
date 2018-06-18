@@ -9,27 +9,28 @@
 	</transition>
 	<transition name="nav">
 		<div class="body" v-if="isOpen">
-			<router-link class="me" v-if="os.isSignedIn" :to="`/@${os.i.username}`">
-				<img class="avatar" :src="`${os.i.avatarUrl}?thumbnail&size=128`" alt="avatar"/>
-				<p class="name">{{ os.i | userName }}</p>
+			<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
+				<img class="avatar" :src="`${$store.state.i.avatarUrl}?thumbnail&size=128`" alt="avatar"/>
+				<p class="name">{{ $store.state.i | userName }}</p>
 			</router-link>
 			<div class="links">
 				<ul>
-					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@home%%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotifications">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessages">%fa:circle%</template>%fa:angle-right%</router-link></li>
-					<li><router-link to="/othello" :data-active="$route.name == 'othello'">%fa:gamepad%ゲーム<template v-if="hasGameInvitations">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/" :data-active="$route.name == 'index'">%fa:home%%i18n:@timeline%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'">%fa:R bell%%i18n:@notifications%<template v-if="hasUnreadNotification">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'">%fa:R comments%%i18n:@messaging%<template v-if="hasUnreadMessagingMessage">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li v-if="$store.getters.isSignedIn && $store.state.i.isLocked"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'">%fa:R envelope%%i18n:@follow-requests%<template v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount">%fa:circle%</template>%fa:angle-right%</router-link></li>
+					<li><router-link to="/reversi" :data-active="$route.name == 'reversi'">%fa:gamepad%%i18n:@game%<template v-if="hasGameInvitation">%fa:circle%</template>%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
-					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:quidditch%%i18n:@widgets%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'">%fa:R calendar-alt%%i18n:@widgets%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'">%fa:star%%i18n:@favorites%%fa:angle-right%</router-link></li>
+					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'">%fa:list%%i18n:@user-lists%%fa:angle-right%</router-link></li>
 					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'">%fa:cloud%%i18n:@drive%%fa:angle-right%</router-link></li>
 				</ul>
 				<ul>
 					<li><a @click="search">%fa:search%%i18n:@search%%fa:angle-right%</a></li>
-				</ul>
-				<ul>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'">%fa:cog%%i18n:@settings%%fa:angle-right%</router-link></li>
-					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>ダークモード</span></p></li>
+					<li @click="dark"><p><template v-if="$store.state.device.darkmode">%fa:moon%</template><template v-else>%fa:R moon%</template><span>%i18n:@darkmode%</span></p></li>
 				</ul>
 			</div>
 			<a :href="aboutUrl"><p class="about">%i18n:@about%</p></a>
@@ -46,49 +47,33 @@ export default Vue.extend({
 	props: ['isOpen'],
 	data() {
 		return {
-			hasUnreadNotifications: false,
-			hasUnreadMessagingMessages: false,
-			hasGameInvitations: false,
+			hasGameInvitation: false,
 			connection: null,
 			connectionId: null,
 			aboutUrl: `${docsUrl}/${lang}/about`
 		};
 	},
+	computed: {
+		hasUnreadNotification(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
+		},
+		hasUnreadMessagingMessage(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
+		}
+	},
 	mounted() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
-			this.connection.on('read_all_notifications', this.onReadAllNotifications);
-			this.connection.on('unread_notification', this.onUnreadNotification);
-			this.connection.on('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.on('unread_messaging_message', this.onUnreadMessagingMessage);
-			this.connection.on('othello_invited', this.onOthelloInvited);
-			this.connection.on('othello_no_invites', this.onOthelloNoInvites);
-
-			// Fetch count of unread notifications
-			(this as any).api('notifications/get_unread_count').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadNotifications = true;
-				}
-			});
-
-			// Fetch count of unread messaging messages
-			(this as any).api('messaging/unread').then(res => {
-				if (res.count > 0) {
-					this.hasUnreadMessagingMessages = true;
-				}
-			});
+			this.connection.on('reversi_invited', this.onReversiInvited);
+			this.connection.on('reversi_no_invites', this.onReversiNoInvites);
 		}
 	},
 	beforeDestroy() {
-		if ((this as any).os.isSignedIn) {
-			this.connection.off('read_all_notifications', this.onReadAllNotifications);
-			this.connection.off('unread_notification', this.onUnreadNotification);
-			this.connection.off('read_all_messaging_messages', this.onReadAllMessagingMessages);
-			this.connection.off('unread_messaging_message', this.onUnreadMessagingMessage);
-			this.connection.off('othello_invited', this.onOthelloInvited);
-			this.connection.off('othello_no_invites', this.onOthelloNoInvites);
+		if (this.$store.getters.isSignedIn) {
+			this.connection.off('reversi_invited', this.onReversiInvited);
+			this.connection.off('reversi_no_invites', this.onReversiNoInvites);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
 	},
@@ -98,23 +83,11 @@ export default Vue.extend({
 			if (query == null || query == '') return;
 			this.$router.push('/search?q=' + encodeURIComponent(query));
 		},
-		onReadAllNotifications() {
-			this.hasUnreadNotifications = false;
+		onReversiInvited() {
+			this.hasGameInvitation = true;
 		},
-		onUnreadNotification() {
-			this.hasUnreadNotifications = true;
-		},
-		onReadAllMessagingMessages() {
-			this.hasUnreadMessagingMessages = false;
-		},
-		onUnreadMessagingMessage() {
-			this.hasUnreadMessagingMessages = true;
-		},
-		onOthelloInvited() {
-			this.hasGameInvitations = true;
-		},
-		onOthelloNoInvites() {
-			this.hasGameInvitations = false;
+		onReversiNoInvites() {
+			this.hasGameInvitation = false;
 		},
 		dark() {
 			this.$store.commit('device/set', {
@@ -186,7 +159,10 @@ root(isDark)
 		&:first-child
 			margin-top 0
 
-		li
+		&:last-child
+			margin-bottom 0
+
+		> li
 			display block
 			font-size 1em
 			line-height 1em
@@ -209,6 +185,8 @@ root(isDark)
 
 				> [data-fa]:first-child
 					margin-right 0.5em
+					width 20px
+					text-align center
 
 				> [data-fa].circle
 					margin-left 6px
@@ -226,7 +204,7 @@ root(isDark)
 					opacity 0.5
 
 	.about
-		margin 0
+		margin 0 0 8px 0
 		padding 1em 0
 		text-align center
 		font-size 0.8em

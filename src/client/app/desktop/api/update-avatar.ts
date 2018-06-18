@@ -6,17 +6,15 @@ import ProgressDialog from '../views/components/progress-dialog.vue';
 export default (os: OS) => (cb, file = null) => {
 	const fileSelected = file => {
 
-		const w = new CropWindow({
-			propsData: {
-				image: file,
-				title: 'アバターとして表示する部分を選択',
-				aspectRatio: 1 / 1
-			}
-		}).$mount();
+		const w = os.new(CropWindow, {
+			image: file,
+			title: 'アバターとして表示する部分を選択',
+			aspectRatio: 1 / 1
+		});
 
 		w.$once('cropped', blob => {
 			const data = new FormData();
-			data.append('i', os.i.token);
+			data.append('i', os.store.state.i.token);
 			data.append('file', blob, file.name + '.cropped.png');
 
 			os.api('drive/folders/find', {
@@ -42,11 +40,9 @@ export default (os: OS) => (cb, file = null) => {
 	};
 
 	const upload = (data, folder) => {
-		const dialog = new ProgressDialog({
-			propsData: {
-				title: '新しいアバターをアップロードしています'
-			}
-		}).$mount();
+		const dialog = os.new(ProgressDialog, {
+			title: '新しいアバターをアップロードしています'
+		});
 		document.body.appendChild(dialog.$el);
 
 		if (folder) data.append('folderId', folder.id);
@@ -70,8 +66,14 @@ export default (os: OS) => (cb, file = null) => {
 		os.api('i/update', {
 			avatarId: file.id
 		}).then(i => {
-			os.i.avatarId = i.avatarId;
-			os.i.avatarUrl = i.avatarUrl;
+			os.store.commit('updateIKeyValue', {
+				key: 'avatarId',
+				value: i.avatarId
+			});
+			os.store.commit('updateIKeyValue', {
+				key: 'avatarUrl',
+				value: i.avatarUrl
+			});
 
 			os.apis.dialog({
 				title: '%fa:info-circle%アバターを更新しました',

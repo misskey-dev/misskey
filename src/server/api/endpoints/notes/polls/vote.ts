@@ -1,6 +1,3 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import Vote from '../../../../../models/poll-vote';
 import Note from '../../../../../models/note';
@@ -8,11 +5,12 @@ import Watching from '../../../../../models/note-watching';
 import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../publishers/stream';
 import notify from '../../../../../publishers/notify';
+import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Vote poll of a note
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');
@@ -58,8 +56,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	// Send response
 	res();
 
-	const inc = {};
-	inc[`poll.choices.${findWithAttr(note.poll.choices, 'id', choice)}.votes`] = 1;
+	const inc: any = {};
+	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == choice)}.votes`] = 1;
 
 	// Increment votes count
 	await Note.update({ _id: note._id }, {
@@ -100,12 +98,3 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		watch(user._id, note);
 	}
 });
-
-function findWithAttr(array, attr, value) {
-	for (let i = 0; i < array.length; i += 1) {
-		if (array[i][attr] === value) {
-			return i;
-		}
-	}
-	return -1;
-}

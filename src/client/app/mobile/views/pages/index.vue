@@ -1,5 +1,5 @@
 <template>
-<component :is="os.isSignedIn ? 'home' : 'welcome'"></component>
+<component :is="$store.getters.isSignedIn ? 'home' : 'welcome'"></component>
 </template>
 
 <script lang="ts">

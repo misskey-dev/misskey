@@ -1,5 +1,5 @@
 <template>
-<svg viewBox="0 0 21 7" preserveAspectRatio="none">
+<svg viewBox="0 0 21 7">
 	<rect v-for="record in data" class="day"
 		width="1" height="1"
 		:x="record.x" :y="record.date.weekday"
@@ -15,7 +15,7 @@
 		style="pointer-events: none;"/>
 	<rect class="today"
 		width="1" height="1"
-		:x="data[data.length - 1].x" :y="data[data.length - 1].date.weekday"
+		:x="data[0].x" :y="data[0].date.weekday"
 		rx="1" ry="1"
 		fill="none"
 		stroke-width="0.1"
@@ -33,7 +33,7 @@ export default Vue.extend({
 		const peak = Math.max.apply(null, this.data.map(d => d.total));
 
 		let x = 0;
-		this.data.reverse().forEach(d => {
+		this.data.slice().reverse().forEach(d => {
 			d.x = x;
 			d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
 

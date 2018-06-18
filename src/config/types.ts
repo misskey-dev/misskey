@@ -15,6 +15,9 @@ export type Source = {
 		 */
 		url: string;
 	};
+	name?: string;
+	description?: string;
+	welcome_bg_url?: string;
 	url: string;
 	port: number;
 	https?: { [x: string]: string };
@@ -57,7 +60,7 @@ export type Source = {
 		hook_secret: string;
 		username: string;
 	};
-	othello_ai?: {
+	reversi_ai?: {
 		id: string;
 		i: string;
 	};

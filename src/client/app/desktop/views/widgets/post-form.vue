@@ -3,7 +3,7 @@
 	<template v-if="props.design == 0">
 		<p class="title">%fa:pencil-alt%%i18n:@title%</p>
 	</template>
-	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" placeholder="%i18n:@placeholder%"></textarea>
+	<textarea :disabled="posting" v-model="text" @keydown="onKeydown" :placeholder="placeholder"></textarea>
 	<button @click="post" :disabled="posting">%i18n:@note%</button>
 </div>
 </template>
@@ -21,6 +21,19 @@ export default define({
 			posting: false,
 			text: ''
 		};
+	},
+	computed: {
+		placeholder(): string {
+			const xs = [
+				'%i18n:common.note-placeholders.a%',
+				'%i18n:common.note-placeholders.b%',
+				'%i18n:common.note-placeholders.c%',
+				'%i18n:common.note-placeholders.d%',
+				'%i18n:common.note-placeholders.e%',
+				'%i18n:common.note-placeholders.f%'
+			];
+			return xs[Math.floor(Math.random() * xs.length)];
+		}
 	},
 	methods: {
 		func() {

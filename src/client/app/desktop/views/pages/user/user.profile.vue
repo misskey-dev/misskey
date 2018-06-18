@@ -1,6 +1,6 @@
 <template>
 <div class="profile">
-	<div class="friend-form" v-if="os.isSignedIn && os.i.id != user.id">
+	<div class="friend-form" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id">
 		<mk-follow-button :user="user" size="big"/>
 		<p class="followed" v-if="user.isFollowed">%i18n:@follows-you%</p>
 		<p class="stalk" v-if="user.isFollowing">

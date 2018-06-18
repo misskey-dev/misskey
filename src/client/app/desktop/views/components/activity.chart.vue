@@ -1,5 +1,5 @@
 <template>
-<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" preserveAspectRatio="none" @mousedown.prevent="onMousedown">
+<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" @mousedown.prevent="onMousedown">
 	<title>%i18n:@total%<br/>%i18n:@notes%<br/>%i18n:@replies%<br/>%i18n:@renotes%</title>
 	<polyline
 		:points="pointsNote"
@@ -55,7 +55,6 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.data.reverse();
 		this.data.forEach(d => d.total = d.notes + d.replies + d.renotes);
 		this.render();
 	},
@@ -63,10 +62,11 @@ export default Vue.extend({
 		render() {
 			const peak = Math.max.apply(null, this.data.map(d => d.total));
 			if (peak != 0) {
-				this.pointsNote = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.notes / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsReply = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsRenote = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsTotal = this.data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
+				const data = this.data.slice().reverse();
+				this.pointsNote = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.notes / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsReply = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsRenote = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsTotal = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
 			}
 		},
 		onMousedown(e) {

@@ -190,6 +190,11 @@ const endpoints: Endpoint[] = [
 		secure: true
 	},
 	{
+		name: 'i/update_widget',
+		withCredential: true,
+		secure: true
+	},
+	{
 		name: 'i/change_password',
 		withCredential: true,
 		secure: true
@@ -240,27 +245,27 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'othello/match',
+		name: 'reversi/match',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/match/cancel',
+		name: 'reversi/match/cancel',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/invitations',
+		name: 'reversi/invitations',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/games',
+		name: 'reversi/games',
 		withCredential: true
 	},
 
 	{
-		name: 'othello/games/show'
+		name: 'reversi/games/show'
 	},
 
 	{
@@ -279,11 +284,6 @@ const endpoints: Endpoint[] = [
 		kind: 'account/read'
 	},
 
-	{
-		name: 'notifications/get_unread_count',
-		withCredential: true,
-		kind: 'notification-read'
-	},
 	{
 		name: 'notifications/delete',
 		withCredential: true,
@@ -454,6 +454,26 @@ const endpoints: Endpoint[] = [
 		kind: 'following-write'
 	},
 	{
+		name: 'following/requests/accept',
+		withCredential: true,
+		kind: 'following-write'
+	},
+	{
+		name: 'following/requests/reject',
+		withCredential: true,
+		kind: 'following-write'
+	},
+	{
+		name: 'following/requests/cancel',
+		withCredential: true,
+		kind: 'following-write'
+	},
+	{
+		name: 'following/requests/list',
+		withCredential: true,
+		kind: 'following-read'
+	},
+	{
 		name: 'following/stalk',
 		withCredential: true,
 		limit: {
@@ -495,10 +515,18 @@ const endpoints: Endpoint[] = [
 		kind: 'note-write'
 	},
 	{
+		name: 'notes/delete',
+		withCredential: true,
+		kind: 'note-write'
+	},
+	{
 		name: 'notes/renotes'
 	},
 	{
 		name: 'notes/search'
+	},
+	{
+		name: 'notes/search_by_tag'
 	},
 	{
 		name: 'notes/timeline',
@@ -510,7 +538,6 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'notes/local-timeline',
-		withCredential: true,
 		limit: {
 			duration: ms('10minutes'),
 			max: 100
@@ -518,7 +545,6 @@ const endpoints: Endpoint[] = [
 	},
 	{
 		name: 'notes/global-timeline',
-		withCredential: true,
 		limit: {
 			duration: ms('10minutes'),
 			max: 100
@@ -557,7 +583,7 @@ const endpoints: Endpoint[] = [
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
-			max: 100
+			max: 300
 		},
 		kind: 'reaction-write'
 	},
@@ -603,12 +629,12 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'messaging/history',
-		withCredential: true,
-		kind: 'messaging-read'
+		name: 'hashtags/trend',
+		withCredential: true
 	},
+
 	{
-		name: 'messaging/unread',
+		name: 'messaging/history',
 		withCredential: true,
 		kind: 'messaging-read'
 	},

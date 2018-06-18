@@ -1,6 +1,6 @@
 <template>
 <div class="note" tabindex="-1" :title="title" @keydown="onKeydown">
-	<div class="reply-to" v-if="p.reply && (!os.isSignedIn || clientSettings.showReplyTarget)">
+	<div class="reply-to" v-if="p.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="p.reply"/>
 	</div>
 	<div class="renote" v-if="isRenote">
@@ -14,26 +14,7 @@
 	<article>
 		<mk-avatar class="avatar" :user="p.user"/>
 		<div class="main">
-			<header>
-				<router-link class="name" :to="p.user | userPage" v-user-preview="p.user.id">{{ p.user | userName }}</router-link>
-				<span class="is-admin" v-if="p.user.isAdmin">admin</span>
-				<span class="is-bot" v-if="p.user.isBot">bot</span>
-				<span class="is-cat" v-if="p.user.isCat">cat</span>
-				<span class="username"><mk-acct :user="p.user"/></span>
-				<div class="info">
-					<span class="app" v-if="p.app">via <b>{{ p.app.name }}</b></span>
-					<span class="mobile" v-if="p.viaMobile">%fa:mobile-alt%</span>
-					<router-link class="created-at" :to="p | notePage">
-						<mk-time :time="p.createdAt"/>
-					</router-link>
-					<span class="visibility" v-if="p.visibility != 'public'">
-						<template v-if="p.visibility == 'home'">%fa:home%</template>
-						<template v-if="p.visibility == 'followers'">%fa:unlock%</template>
-						<template v-if="p.visibility == 'specified'">%fa:envelope%</template>
-						<template v-if="p.visibility == 'private'">%fa:lock%</template>
-					</span>
-				</div>
-			</header>
+			<mk-note-header class="header" :note="p"/>
 			<div class="body">
 				<p v-if="p.cw != null" class="cw">
 					<span class="text" v-if="p.cw != ''">{{ p.cw }}</span>
@@ -41,9 +22,10 @@
 				</p>
 				<div class="content" v-show="p.cw == null || showContent">
 					<div class="text">
-						<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
+						<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
+						<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<mk-note-html v-if="p.text && !canHideText(p)" :text="p.text" :i="os.i" :class="$style.text"/>
+						<mk-note-html v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote">RP:</a>
 					</div>
 					<div class="media" v-if="p.media.length > 0">
@@ -51,7 +33,7 @@
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
 					<div class="tags" v-if="p.tags && p.tags.length > 0">
-						<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
+						<router-link v-for="tag in p.tags" :key="tag" :to="`/tags/${tag}`">{{ tag }}</router-link>
 					</div>
 					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
@@ -166,7 +148,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 		}
@@ -175,13 +157,13 @@ export default Vue.extend({
 	mounted() {
 		this.capture(true);
 
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
+			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -201,7 +183,7 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.decapture(true);
 
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.off('_connected_', this.onStreamConnected);
 			(this as any).os.stream.dispose(this.connectionId);
 		}
@@ -211,7 +193,7 @@ export default Vue.extend({
 		canHideText,
 
 		capture(withHandler = false) {
-			if ((this as any).os.isSignedIn) {
+			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
 					type: 'capture',
 					id: this.p.id
@@ -221,7 +203,7 @@ export default Vue.extend({
 		},
 
 		decapture(withHandler = false) {
-			if ((this as any).os.isSignedIn) {
+			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
 					type: 'decapture',
 					id: this.p.id
@@ -347,7 +329,7 @@ root(isDark)
 	> .renote
 		display flex
 		align-items center
-		padding 16px 32px
+		padding 16px 32px 8px 32px
 		line-height 28px
 		white-space pre
 		color #9dbb00
@@ -386,20 +368,16 @@ root(isDark)
 			padding-top 8px
 
 	> article
+		display flex
 		padding 28px 32px 18px 32px
-
-		&:after
-			content ""
-			display block
-			clear both
 
 		&:hover
 			> .main > footer > button
 				color isDark ? #707b97 : #888
 
 		> .avatar
+			flex-shrink 0
 			display block
-			float left
 			margin 0 16px 10px 0
 			width 58px
 			height 58px
@@ -409,66 +387,11 @@ root(isDark)
 			//top 74px
 
 		> .main
-			float left
-			width calc(100% - 74px)
+			flex 1
+			min-width 0
 
-			> header
-				display flex
-				align-items baseline
+			> .header
 				margin-bottom 4px
-				white-space nowrap
-
-				> .name
-					display block
-					margin 0 .5em 0 0
-					padding 0
-					overflow hidden
-					color isDark ? #fff : #627079
-					font-size 1em
-					font-weight bold
-					text-decoration none
-					text-overflow ellipsis
-
-					&:hover
-						text-decoration underline
-
-				> .is-admin
-				> .is-bot
-				> .is-cat
-					margin 0 .5em 0 0
-					padding 1px 6px
-					font-size 12px
-					color isDark ? #758188 : #aaa
-					border solid 1px isDark ? #57616f : #ddd
-					border-radius 3px
-
-					&.is-admin
-						border-color isDark ? #d42c41 : #f56a7b
-						color isDark ? #d42c41 : #f56a7b
-
-				> .username
-					margin 0 .5em 0 0
-					overflow hidden
-					text-overflow ellipsis
-					color isDark ? #606984 : #ccc
-
-				> .info
-					margin-left auto
-					font-size 0.9em
-
-					> *
-						color isDark ? #606984 : #c0c0c0
-
-					> .mobile
-						margin-right 8px
-
-					> .app
-						margin-right 8px
-						padding-right 8px
-						border-right solid 1px #eaeaea
-
-					> .visibility
-						margin-left 8px
 
 			> .body
 
@@ -478,7 +401,6 @@ root(isDark)
 					margin 0
 					padding 0
 					overflow-wrap break-word
-					font-size 1.1em
 					color isDark ? #fff : #717171
 
 					> .text
@@ -505,7 +427,6 @@ root(isDark)
 						margin 0
 						padding 0
 						overflow-wrap break-word
-						font-size 1.1em
 						color isDark ? #fff : #717171
 
 						>>> .title
@@ -556,7 +477,7 @@ root(isDark)
 							padding 2px 8px 2px 16px
 							font-size 90%
 							color #8d969e
-							background #edf0f3
+							background isDark ? #313543 : #edf0f3
 							border-radius 4px
 
 							&:before
@@ -569,7 +490,7 @@ root(isDark)
 								width 8px
 								height 8px
 								margin auto 0
-								background #fff
+								background isDark ? #282c37 : #fff
 								border-radius 100%
 
 							&:hover

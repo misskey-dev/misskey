@@ -55,7 +55,7 @@ export default function(type, data): Notification {
 				icon: data.user.avatarUrl + '?thumbnail&size=64'
 			};
 
-		case 'othello_invited':
+		case 'reversi_invited':
 			return {
 				title: '対局への招待があります',
 				body: `${getUserName(data.parent)}さんから`,

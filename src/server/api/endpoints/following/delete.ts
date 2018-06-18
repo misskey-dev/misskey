@@ -1,15 +1,12 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import User from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/user';
 import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
 
 /**
  * Unfollow a user
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'userId' parameter
@@ -49,5 +46,5 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	deleteFollowing(follower, followee);
 
 	// Send response
-	res();
+	res(await pack(followee._id, user));
 });

@@ -4,7 +4,7 @@
 		<template slot="header">%fa:rss-square%RSS</template>
 		<button slot="func" title="設定" @click="setting">%fa:cog%</button>
 
-		<div class="mkw-rss--body" :data-mobile="isMobile">
+		<div class="mkw-rss--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 			<div class="feed" v-else>
 				<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
@@ -19,12 +19,12 @@ import define from '../../../common/define-widget';
 export default define({
 	name: 'rss',
 	props: () => ({
-		compact: false
+		compact: false,
+		url: 'http://news.yahoo.co.jp/pickup/rss.xml'
 	})
 }).extend({
 	data() {
 		return {
-			url: 'http://news.yahoo.co.jp/pickup/rss.xml',
 			items: [],
 			fetching: true,
 			clock: null
@@ -43,7 +43,7 @@ export default define({
 			this.save();
 		},
 		fetch() {
-			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}`, {
+			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.props.url}`, {
 				cache: 'no-cache'
 			}).then(res => {
 				res.json().then(feed => {
@@ -53,7 +53,12 @@ export default define({
 			});
 		},
 		setting() {
-			alert('not implemented yet');
+			const url = window.prompt('URL', this.props.url);
+			if (url && url != '') {
+				this.props.url = url;
+				this.save();
+				this.fetch();
+			}
 		}
 	}
 });

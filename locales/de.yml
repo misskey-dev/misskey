@@ -334,7 +334,7 @@ desktop/views/components/friends-maker.vue:
   refresh: "Mehr"
   close: "Schließen"
 desktop/views/components/game-window.vue:
-  game: "リバーシ"
+  game: "Reversi"
 desktop/views/components/home.vue:
   done: "Verbunden"
   add-widget: "Widget hinzufügen:"

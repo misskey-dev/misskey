@@ -1,60 +1,58 @@
 <template>
-<form class="mk-signup" @submit.prevent="onSubmit" autocomplete="off">
-	<label class="username">
-		<p class="caption">%fa:at%%i18n:@username%</p>
-		<input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" placeholder="a~z、A~Z、0~9、-" autocomplete="off" required @input="onChangeUsername"/>
-		<p class="profile-page-url-preview" v-if="shouldShowProfileUrl">{{ `${url}/@${username}` }}</p>
-		<p class="info" v-if="usernameState == 'wait'" style="color:#999">%fa:spinner .pulse .fw%%i18n:@checking%</p>
-		<p class="info" v-if="usernameState == 'ok'" style="color:#3CB7B5">%fa:check .fw%%i18n:@available%</p>
-		<p class="info" v-if="usernameState == 'unavailable'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@unavailable%</p>
-		<p class="info" v-if="usernameState == 'error'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@error%</p>
-		<p class="info" v-if="usernameState == 'invalid-format'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@invalid-format%</p>
-		<p class="info" v-if="usernameState == 'min-range'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@too-short%</p>
-		<p class="info" v-if="usernameState == 'max-range'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@too-long%</p>
-	</label>
-	<label class="password">
-		<p class="caption">%fa:lock%%i18n:@password%</p>
-		<input v-model="password" type="password" placeholder="%i18n:@password-placeholder%" autocomplete="off" required @input="onChangePassword"/>
-		<div class="meter" v-show="passwordStrength != ''" :data-strength="passwordStrength">
-			<div class="value" ref="passwordMetar"></div>
+<form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
+		<span>%i18n:@username%</span>
+		<span slot="prefix">@</span>
+		<span slot="suffix">@{{ host }}</span>
+		<p slot="text" v-if="usernameState == 'wait'" style="color:#999">%fa:spinner .pulse .fw% %i18n:@checking%</p>
+		<p slot="text" v-if="usernameState == 'ok'" style="color:#3CB7B5">%fa:check .fw% %i18n:@available%</p>
+		<p slot="text" v-if="usernameState == 'unavailable'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@unavailable%</p>
+		<p slot="text" v-if="usernameState == 'error'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@error%</p>
+		<p slot="text" v-if="usernameState == 'invalid-format'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@invalid-format%</p>
+		<p slot="text" v-if="usernameState == 'min-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-short%</p>
+		<p slot="text" v-if="usernameState == 'max-range'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@too-long%</p>
+	</ui-input>
+	<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true">
+		<span>%i18n:@password%</span>
+		<span slot="prefix">%fa:lock%</span>
+		<div slot="text">
+			<p slot="text" v-if="passwordStrength == 'low'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@weak-password%</p>
+			<p slot="text" v-if="passwordStrength == 'medium'" style="color:#3CB7B5">%fa:check .fw% %i18n:@normal-password%</p>
+			<p slot="text" v-if="passwordStrength == 'high'" style="color:#3CB7B5">%fa:check .fw% %i18n:@strong-password%</p>
 		</div>
-		<p class="info" v-if="passwordStrength == 'low'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@weak-password%</p>
-		<p class="info" v-if="passwordStrength == 'medium'" style="color:#3CB7B5">%fa:check .fw%%i18n:@normal-password%</p>
-		<p class="info" v-if="passwordStrength == 'high'" style="color:#3CB7B5">%fa:check .fw%%i18n:@strong-password%</p>
-	</label>
-	<label class="retype-password">
-		<p class="caption">%fa:lock%%i18n:@password%(%i18n:@retype%)</p>
-		<input v-model="retypedPassword" type="password" placeholder="%i18n:@retype-placeholder%" autocomplete="off" required @input="onChangePasswordRetype"/>
-		<p class="info" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5">%fa:check .fw%%i18n:@password-matched%</p>
-		<p class="info" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw%%i18n:@password-not-matched%</p>
-	</label>
-	<label class="recaptcha">
-		<p class="caption"><template v-if="recaptchaed">%fa:toggle-on%</template><template v-if="!recaptchaed">%fa:toggle-off%</template>%i18n:@recaptcha%</p>
-		<div class="g-recaptcha" data-callback="onRecaptchaed" data-expired-callback="onRecaptchaExpired" :data-sitekey="recaptchaSitekey"></div>
-	</label>
-	<label class="agree-tou">
-		<input name="agree-tou" type="checkbox" autocomplete="off" required/>
+	</ui-input>
+	<ui-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
+		<span>%i18n:@password% (%i18n:@retype%)</span>
+		<span slot="prefix">%fa:lock%</span>
+		<div slot="text">
+			<p slot="text" v-if="passwordRetypeState == 'match'" style="color:#3CB7B5">%fa:check .fw% %i18n:@password-matched%</p>
+			<p slot="text" v-if="passwordRetypeState == 'not-match'" style="color:#FF1161">%fa:exclamation-triangle .fw% %i18n:@password-not-matched%</p>
+		</div>
+	</ui-input>
+	<div class="g-recaptcha" :data-sitekey="recaptchaSitekey" style="margin: 16px 0;"></div>
+	<label class="agree-tou" style="display: block; margin: 16px 0;">
+		<input name="agree-tou" type="checkbox" required/>
 		<p><a :href="touUrl" target="_blank">利用規約</a>に同意する</p>
 	</label>
-	<button type="submit">%i18n:@create%</button>
+	<ui-button type="submit">%i18n:@create%</ui-button>
 </form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 const getPasswordStrength = require('syuilo-password-strength');
-import { url, docsUrl, lang, recaptchaSitekey } from '../../../config';
+import { host, url, docsUrl, lang, recaptchaSitekey } from '../../../config';
 
 export default Vue.extend({
 	data() {
 		return {
+			host,
 			username: '',
 			password: '',
 			retypedPassword: '',
 			url,
 			touUrl: `${docsUrl}/${lang}/tou`,
 			recaptchaSitekey,
-			recaptchaed: false,
 			usernameState: null,
 			passwordStrength: '',
 			passwordRetypeState: null
@@ -104,7 +102,6 @@ export default Vue.extend({
 
 			const strength = getPasswordStrength(this.password);
 			this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
-			(this.$refs.passwordMetar as any).style.width = `${strength * 100}%`;
 		},
 		onChangePasswordRetype() {
 			if (this.retypedPassword == '') {
@@ -130,18 +127,8 @@ export default Vue.extend({
 				alert('%i18n:@some-error%');
 
 				(window as any).grecaptcha.reset();
-				this.recaptchaed = false;
 			});
 		}
-	},
-	created() {
-		(window as any).onRecaptchaed = () => {
-			this.recaptchaed = true;
-		};
-
-		(window as any).onRecaptchaExpired = () => {
-			this.recaptchaed = false;
-		};
 	},
 	mounted() {
 		const head = document.getElementsByTagName('head')[0];
@@ -157,100 +144,6 @@ export default Vue.extend({
 
 .mk-signup
 	min-width 302px
-
-	label
-		display block
-		margin 0 0 16px 0
-
-		> .caption
-			margin 0 0 4px 0
-			color #828888
-			font-size 0.95em
-
-			> [data-fa]
-				margin-right 0.25em
-				color #96adac
-
-		> .info
-			display block
-			margin 4px 0
-			font-size 0.8em
-
-			> [data-fa]
-				margin-right 0.3em
-
-		&.username
-			.profile-page-url-preview
-				display block
-				margin 4px 8px 0 4px
-				font-size 0.8em
-				color #888
-
-				&:empty
-					display none
-
-				&:not(:empty) + .info
-					margin-top 0
-
-		&.password
-			.meter
-				display block
-				margin-top 8px
-				width 100%
-				height 8px
-
-				&[data-strength='']
-					display none
-
-				&[data-strength='low']
-					> .value
-						background #d73612
-
-				&[data-strength='medium']
-					> .value
-						background #d7ca12
-
-				&[data-strength='high']
-					> .value
-						background #61bb22
-
-				> .value
-					display block
-					width 0%
-					height 100%
-					background transparent
-					border-radius 4px
-					transition all 0.1s ease
-
-	[type=text], [type=password]
-		user-select text
-		display inline-block
-		cursor auto
-		padding 0 12px
-		margin 0
-		width 100%
-		line-height 44px
-		font-size 1em
-		color #333 !important
-		background #fff !important
-		outline none
-		border solid 1px rgba(#000, 0.1)
-		border-radius 4px
-		box-shadow 0 0 0 114514px #fff inset
-		transition all .3s ease
-
-		&:hover
-			border-color rgba(#000, 0.2)
-			transition all .1s ease
-
-		&:focus
-			color $theme-color !important
-			border-color $theme-color
-			box-shadow 0 0 0 1024px #fff inset, 0 0 0 4px rgba($theme-color, 10%)
-			transition all 0s ease
-
-		&:disabled
-			opacity 0.5
 
 	.agree-tou
 		padding 4px
@@ -268,20 +161,5 @@ export default Vue.extend({
 		p
 			display inline
 			color #555
-
-	button
-		margin 0
-		padding 16px
-		width 100%
-		font-size 1em
-		color #fff
-		background $theme-color
-		border-radius 3px
-
-		&:hover
-			background lighten($theme-color, 5%)
-
-		&:active
-			background darken($theme-color, 5%)
 
 </style>

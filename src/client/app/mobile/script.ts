@@ -2,17 +2,11 @@
  * Mobile Client
  */
 
-import Vue from 'vue';
 import VueRouter from 'vue-router';
-
-import { MdCard, MdButton, MdField, MdMenu, MdList, MdSwitch, MdSubheader, MdDialog, MdDialogAlert, MdRadio } from 'vue-material/dist/components';
-import 'vue-material/dist/vue-material.min.css';
-import 'vue-material/dist/theme/default.css';
 
 // Style
 import './style.styl';
 import '../../element.scss';
-import '../../md.scss';
 
 import init from '../init';
 
@@ -32,23 +26,18 @@ import MkNotifications from './views/pages/notifications.vue';
 import MkWidgets from './views/pages/widgets.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
+import MkReceivedFollowRequests from './views/pages/received-follow-requests.vue';
 import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
 import MkFollowers from './views/pages/followers.vue';
 import MkFollowing from './views/pages/following.vue';
+import MkFavorites from './views/pages/favorites.vue';
+import MkUserLists from './views/pages/user-lists.vue';
+import MkUserList from './views/pages/user-list.vue';
 import MkSettings from './views/pages/settings.vue';
-import MkOthello from './views/pages/othello.vue';
-
-Vue.use(MdCard);
-Vue.use(MdButton);
-Vue.use(MdField);
-Vue.use(MdMenu);
-Vue.use(MdList);
-Vue.use(MdSwitch);
-Vue.use(MdSubheader);
-Vue.use(MdDialog);
-Vue.use(MdDialogAlert);
-Vue.use(MdRadio);
+import MkReversi from './views/pages/reversi.vue';
+import MkTag from './views/pages/tag.vue';
+import MkShare from './views/pages/share.vue';
 
 /**
  * init
@@ -72,6 +61,10 @@ init((launch) => {
 			{ path: '/signup', name: 'signup', component: MkSignup },
 			{ path: '/i/settings', name: 'settings', component: MkSettings },
 			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
+			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
+			{ path: '/i/lists', name: 'user-lists', component: MkUserLists },
+			{ path: '/i/lists/:list', name: 'user-list', component: MkUserList },
+			{ path: '/i/received-follow-requests', name: 'received-follow-requests', component: MkReceivedFollowRequests },
 			{ path: '/i/widgets', name: 'widgets', component: MkWidgets },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
@@ -80,8 +73,10 @@ init((launch) => {
 			{ path: '/i/drive/file/:file', component: MkDrive },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
-			{ path: '/othello', name: 'othello', component: MkOthello },
-			{ path: '/othello/:game', component: MkOthello },
+			{ path: '/tags/:tag', component: MkTag },
+			{ path: '/share', component: MkShare },
+			{ path: '/reversi', name: 'reversi', component: MkReversi },
+			{ path: '/reversi/:game', component: MkReversi },
 			{ path: '/@:user', component: MkUser },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },

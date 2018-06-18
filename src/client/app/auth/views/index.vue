@@ -1,8 +1,9 @@
 <template>
 <div class="index">
-	<main v-if="os.isSignedIn">
+	<main v-if="$store.getters.isSignedIn">
 		<p class="fetching" v-if="fetching">読み込み中<mk-ellipsis/></p>
 		<x-form
+			class="form"
 			ref="form"
 			v-if="state == 'waiting'"
 			:session="session"
@@ -22,11 +23,11 @@
 			<p>セッションが存在しません。</p>
 		</div>
 	</main>
-	<main class="signin" v-if="!os.isSignedIn">
+	<main class="signin" v-if="!$store.getters.isSignedIn">
 		<h1>サインインしてください</h1>
 		<mk-signin/>
 	</main>
-	<footer><img src="/assets/auth/logo.svg" alt="Misskey"/></footer>
+	<footer><img src="/assets/auth/icon.svg" alt="Misskey"/></footer>
 </div>
 </template>
 
@@ -51,7 +52,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		if (!this.$root.$data.os.isSignedIn) return;
+		if (!this.$store.getters.isSignedIn) return;
 
 		// Fetch session
 		(this as any).api('auth/session/show', {
@@ -62,7 +63,7 @@ export default Vue.extend({
 
 			// 既に連携していた場合
 			if (this.session.app.isAuthorized) {
-				this.$root.$data.os.api('auth/accept', {
+				(this as any).api('auth/accept', {
 					token: this.session.token
 				}).then(() => {
 					this.accepted();
@@ -72,6 +73,7 @@ export default Vue.extend({
 			}
 		}).catch(error => {
 			this.state = 'fetch-session-error';
+			this.fetching = false;
 		});
 	},
 	methods: {
@@ -101,7 +103,7 @@ export default Vue.extend({
 			padding 32px
 			color #555
 
-		> div
+		> div:not(.form)
 			padding 64px
 
 			> h1
@@ -142,8 +144,8 @@ export default Vue.extend({
 	> footer
 		> img
 			display block
-			width 64px
-			height 64px
-			margin 0 auto
+			width 32px
+			height 32px
+			margin 16px auto
 
 </style>

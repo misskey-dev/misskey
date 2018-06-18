@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import deepcopy = require('deepcopy');
+const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
@@ -111,6 +111,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 
 	switch (_notification.type) {
 		case 'follow':
+		case 'receiveFollowRequest':
 			// nope
 			break;
 		case 'mention':

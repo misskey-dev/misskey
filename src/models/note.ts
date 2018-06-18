@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import deepcopy = require('deepcopy');
+const deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
@@ -16,6 +16,10 @@ import Following from './following';
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
+Note.createIndex('tagsLower');
+Note.createIndex({
+	createdAt: -1
+});
 export default Note;
 
 export function isValidText(text: string): boolean {
@@ -33,9 +37,14 @@ export type INote = {
 	mediaIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
-	poll: any; // todo
+	poll: {
+		choices: Array<{
+			id: number;
+		}>
+	};
 	text: string;
 	tags: string[];
+	tagsLower: string[];
 	cw: string;
 	userId: mongo.ObjectID;
 	appId: mongo.ObjectID;
@@ -44,6 +53,11 @@ export type INote = {
 	repliesCount: number;
 	reactionCounts: any;
 	mentions: mongo.ObjectID[];
+	mentionedRemoteUsers: Array<{
+		uri: string;
+		username: string;
+		host: string;
+	}>;
 
 	/**
 	 * public ... 公開
@@ -77,6 +91,7 @@ export type INote = {
 		host: string;
 		inbox?: string;
 	};
+	_replyIds?: mongo.ObjectID[];
 };
 
 /**
@@ -205,7 +220,7 @@ export const pack = async (
 			hide = false;
 		} else {
 			// 指定されているかどうか
-			const specified = _note.visibleUserIds.some(id => id.equals(meId));
+			const specified = _note.visibleUserIds.some((id: mongo.ObjectID) => id.equals(meId));
 
 			if (specified) {
 				hide = false;
@@ -257,7 +272,7 @@ export const pack = async (
 	}
 
 	// Populate media
-	_note.media = hide ? [] : Promise.all(_note.mediaIds.map(fileId =>
+	_note.media = hide ? [] : Promise.all(_note.mediaIds.map((fileId: mongo.ObjectID) =>
 		packFile(fileId)
 	));
 
@@ -284,7 +299,7 @@ export const pack = async (
 
 		// Poll
 		if (meId && _note.poll && !hide) {
-			_note.poll = (async (poll) => {
+			_note.poll = (async poll => {
 				const vote = await PollVote
 					.findOne({
 						userId: meId,
@@ -293,7 +308,7 @@ export const pack = async (
 
 				if (vote != null) {
 					const myChoice = poll.choices
-						.filter(c => c.id == vote.choice)[0];
+						.filter((c: any) => c.id == vote.choice)[0];
 
 					myChoice.isVoted = true;
 				}
@@ -332,6 +347,10 @@ export const pack = async (
 		_note.mediaIds = [];
 		_note.text = null;
 		_note.poll = null;
+		_note.cw = null;
+		_note.tags = [];
+		_note.tagsLower = [];
+		_note.geo = null;
 		_note.isHidden = true;
 	}
 

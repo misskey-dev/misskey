@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
 import $ from 'cafy';
-import deepcopy = require('deepcopy');
+const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 import Reaction from './note-reaction';
 import { pack as packUser } from './user';

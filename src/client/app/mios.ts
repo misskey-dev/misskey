@@ -1,17 +1,17 @@
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import * as merge from 'object-assign-deep';
 import * as uuid from 'uuid';
 
 import initStore from './store';
-import { hostname, apiUrl, swPublickey, version, lang, googleMapsApiKey } from './config';
+import { apiUrl, swPublickey, version, lang, googleMapsApiKey } from './config';
 import Progress from './common/scripts/loading';
 import Connection from './common/scripts/streaming/stream';
 import { HomeStreamManager } from './common/scripts/streaming/home';
 import { DriveStreamManager } from './common/scripts/streaming/drive';
-import { ServerStreamManager } from './common/scripts/streaming/server';
+import { ServerStatsStreamManager } from './common/scripts/streaming/server-stats';
+import { NotesStatsStreamManager } from './common/scripts/streaming/notes-stats';
 import { MessagingIndexStreamManager } from './common/scripts/streaming/messaging-index';
-import { OthelloStreamManager } from './common/scripts/streaming/othello';
+import { ReversiStreamManager } from './common/scripts/streaming/reversi';
 
 import Err from './common/views/components/connect-failed.vue';
 import { LocalTimelineStreamManager } from './common/scripts/streaming/local-timeline';
@@ -74,24 +74,12 @@ export default class MiOS extends EventEmitter {
 	public app: Vue;
 
 	public new(vm, props) {
-		const w = new vm({
+		const x = new vm({
 			parent: this.app,
 			propsData: props
 		}).$mount();
-		document.body.appendChild(w.$el);
-		return w;
-	}
-
-	/**
-	 * A signing user
-	 */
-	public i: { [x: string]: any };
-
-	/**
-	 * Whether signed in
-	 */
-	public get isSignedIn() {
-		return this.i != null;
+		document.body.appendChild(x.$el);
+		return x;
 	}
 
 	/**
@@ -117,16 +105,18 @@ export default class MiOS extends EventEmitter {
 		localTimelineStream: LocalTimelineStreamManager;
 		globalTimelineStream: GlobalTimelineStreamManager;
 		driveStream: DriveStreamManager;
-		serverStream: ServerStreamManager;
+		serverStatsStream: ServerStatsStreamManager;
+		notesStatsStream: NotesStatsStreamManager;
 		messagingIndexStream: MessagingIndexStreamManager;
-		othelloStream: OthelloStreamManager;
+		reversiStream: ReversiStreamManager;
 	} = {
 		localTimelineStream: null,
 		globalTimelineStream: null,
 		driveStream: null,
-		serverStream: null,
+		serverStatsStream: null,
+		notesStatsStream: null,
 		messagingIndexStream: null,
-		othelloStream: null
+		reversiStream: null
 	};
 
 	/**
@@ -218,15 +208,8 @@ export default class MiOS extends EventEmitter {
 		console.error.apply(null, args);
 	}
 
-	public bakeMe() {
-		// ローカルストレージにキャッシュ
-		localStorage.setItem('me', JSON.stringify(this.i));
-	}
-
 	public signout() {
-		localStorage.removeItem('me');
-		localStorage.removeItem('settings');
-		document.cookie = `i=; domain=${hostname}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+		this.store.dispatch('logout');
 		location.href = '/';
 	}
 
@@ -238,18 +221,19 @@ export default class MiOS extends EventEmitter {
 		this.store = initStore(this);
 
 		//#region Init stream managers
-		this.streams.serverStream = new ServerStreamManager(this);
+		this.streams.serverStatsStream = new ServerStatsStreamManager(this);
+		this.streams.notesStatsStream = new NotesStatsStreamManager(this);
 
 		this.once('signedin', () => {
 			// Init home stream manager
-			this.stream = new HomeStreamManager(this, this.i);
+			this.stream = new HomeStreamManager(this, this.store.state.i);
 
 			// Init other stream manager
-			this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.i);
-			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.i);
-			this.streams.driveStream = new DriveStreamManager(this, this.i);
-			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.i);
-			this.streams.othelloStream = new OthelloStreamManager(this, this.i);
+			this.streams.localTimelineStream = new LocalTimelineStreamManager(this, this.store.state.i);
+			this.streams.globalTimelineStream = new GlobalTimelineStreamManager(this, this.store.state.i);
+			this.streams.driveStream = new DriveStreamManager(this, this.store.state.i);
+			this.streams.messagingIndexStream = new MessagingIndexStreamManager(this, this.store.state.i);
+			this.streams.reversiStream = new ReversiStreamManager(this, this.store.state.i);
 		});
 		//#endregion
 
@@ -300,51 +284,29 @@ export default class MiOS extends EventEmitter {
 		};
 
 		// フェッチが完了したとき
-		const fetched = me => {
-			this.i = me;
-
-			// ローカルストレージにキャッシュ
-			this.bakeMe();
-
+		const fetched = () => {
 			this.emit('signedin');
 
 			// Finish init
 			callback();
 
-			//#region Note
-
 			// Init service worker
 			if (this.shouldRegisterSw) this.registerSw();
-
-			//#endregion
 		};
 
-		// Get cached account data
-		const cachedMe = JSON.parse(localStorage.getItem('me'));
-
-		//#region キャッシュされた設定を復元
-		const cachedSettings = JSON.parse(localStorage.getItem('settings'));
-
-		if (cachedSettings) {
-			this.store.dispatch('settings/merge', cachedSettings);
-		}
-		//#endregion
-
 		// キャッシュがあったとき
-		if (cachedMe) {
-			if (cachedMe.token == null) {
+		if (this.store.state.i != null) {
+			if (this.store.state.i.token == null) {
 				this.signout();
 				return;
 			}
 
 			// とりあえずキャッシュされたデータでお茶を濁して(?)おいて、
-			fetched(cachedMe);
+			fetched();
 
 			// 後から新鮮なデータをフェッチ
-			fetchme(cachedMe.token, freshData => {
-				merge(cachedMe, freshData);
-
-				this.store.dispatch('settings/merge', freshData.clientSettings);
+			fetchme(this.store.state.i.token, freshData => {
+				this.store.dispatch('mergeMe', freshData);
 			});
 		} else {
 			// Get token from cookie
@@ -352,9 +314,8 @@ export default class MiOS extends EventEmitter {
 
 			fetchme(i, me => {
 				if (me) {
-					this.store.dispatch('settings/merge', me.clientSettings);
-
-					fetched(me);
+					this.store.dispatch('login', me);
+					fetched();
 				} else {
 					// Finish init
 					callback();
@@ -375,7 +336,7 @@ export default class MiOS extends EventEmitter {
 		if (!isSwSupported) return;
 
 		// Reject when not signed in to Misskey
-		if (!this.isSignedIn) return;
+		if (!this.store.getters.isSignedIn) return;
 
 		// When service worker activated
 		navigator.serviceWorker.ready.then(registration => {
@@ -484,7 +445,7 @@ export default class MiOS extends EventEmitter {
 				});
 			} else {
 				// Append a credential
-				if (this.isSignedIn) (data as any).i = this.i.token;
+				if (this.store.getters.isSignedIn) (data as any).i = this.store.state.i.token;
 
 				const req = {
 					id: uuid(),

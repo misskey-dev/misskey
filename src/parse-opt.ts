@@ -1,6 +1,6 @@
 import * as nopt from 'nopt';
 
-export default (vector, index) => {
+export default (vector: any, index: any) => {
 	const parsed = nopt({
 		'only-processor': Boolean,
 		'only-server': Boolean

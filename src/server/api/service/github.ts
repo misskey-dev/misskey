@@ -11,7 +11,7 @@ const handler = new EventEmitter();
 
 let bot: IUser;
 
-const post = async text => {
+const post = async (text: string) => {
 	if (bot == null) {
 		const account = await User.findOne({
 			usernameLower: config.github_bot.username.toLowerCase()
@@ -25,7 +25,7 @@ const post = async text => {
 		}
 	}
 
-	createNote(bot, { text });
+	createNote(bot, { text, visibility: 'home' });
 };
 
 // Init router
@@ -90,7 +90,7 @@ handler.on('push', event => {
 		case 'refs/heads/master':
 			const pusher = event.pusher;
 			const compare = event.compare;
-			const commits = event.commits;
+			const commits: any[] = event.commits;
 			post([
 				`Pushed by **${pusher.name}** with ?[${commits.length} commit${commits.length > 1 ? 's' : ''}](${compare}):`,
 				commits.reverse().map(commit => `・[?[${commit.id.substr(0, 7)}](${commit.url})] ${commit.message.split('\n')[0]}`).join('\n'),

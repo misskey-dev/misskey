@@ -2,7 +2,7 @@ import * as debug from 'debug';
 
 import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser, IUser } from '../../../../models/user';
 import { IAnnounce, INote } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
@@ -14,6 +14,11 @@ const log = debug('misskey:activitypub');
  */
 export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, note: INote): Promise<void> {
 	const uri = activity.id || activity;
+
+	// アナウンサーが凍結されていたらスキップ
+	if (actor.isSuspended) {
+		return;
+	}
 
 	if (typeof uri !== 'string') {
 		throw new Error('invalid announce');
@@ -31,7 +36,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 
 	//#region Visibility
 	let visibility = 'public';
-	let visibleUsers = [];
+	let visibleUsers: IUser[] = [];
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
 		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';

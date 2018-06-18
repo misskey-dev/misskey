@@ -24,7 +24,7 @@ export default Vue.extend({
 			const ok = window.confirm('%i18n:@read-all%');
 			if (!ok) return;
 
-			(this as any).api('notifications/markAsRead_all');
+			(this as any).api('notifications/mark_as_read_all');
 		},
 		onFetched() {
 			Progress.done();

@@ -5,11 +5,7 @@
 		<div>
 			<span class="text-count" :class="{ over: text.length > 1000 }">{{ 1000 - text.length }}</span>
 			<span class="geo" v-if="geo">%fa:map-marker-alt%</span>
-			<button class="submit" :disabled="posting" @click="post">
-				<template v-if="reply">%i18n:@reply%</template>
-				<template v-else-if="renote">%i18n:@renote%</template>
-				<template v-else>%i18n:@submit%</template>
-			</button>
+			<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
 		</div>
 	</header>
 	<div class="form">
@@ -17,10 +13,10 @@
 		<mk-note-preview v-if="renote" :note="renote"/>
 		<div v-if="visibility == 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">{{ u | userName }}<a @click="removeVisibleUser(u)">[x]</a></span>
-			<a @click="addVisibleUser">+ユーザーを追加</a>
+			<a @click="addVisibleUser">+%i18n:@add-visible-user%</a>
 		</div>
-		<input v-show="useCw" v-model="cw" placeholder="内容への注釈 (オプション)">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="reply ? '%i18n:@reply-placeholder%' : renote ? '%i18n:@renote-placeholder%' : '%i18n:@note-placeholder%'"></textarea>
+		<input v-show="useCw" v-model="cw" placeholder="%i18n:@cw-placeholder%">
+		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder"></textarea>
 		<div class="attaches" v-show="files.length != 0">
 			<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 				<div class="file" v-for="file in files" :key="file.id">
@@ -49,6 +45,8 @@ import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import getKao from '../../../common/scripts/get-kao';
+import parse from '../../../../../text/parse';
+import { host } from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -56,7 +54,25 @@ export default Vue.extend({
 		MkVisibilityChooser
 	},
 
-	props: ['reply', 'renote'],
+	props: {
+		reply: {
+			type: Object,
+			required: false
+		},
+		renote: {
+			type: Object,
+			required: false
+		},
+		initialText: {
+			type: String,
+			required: false
+		},
+		instant: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 
 	data() {
 		return {
@@ -73,9 +89,70 @@ export default Vue.extend({
 		};
 	},
 
+	computed: {
+		draftId(): string {
+			return this.renote
+				? 'renote:' + this.renote.id
+				: this.reply
+					? 'reply:' + this.reply.id
+					: 'note';
+		},
+
+		placeholder(): string {
+			const xs = [
+				'%i18n:common.note-placeholders.a%',
+				'%i18n:common.note-placeholders.b%',
+				'%i18n:common.note-placeholders.c%',
+				'%i18n:common.note-placeholders.d%',
+				'%i18n:common.note-placeholders.e%',
+				'%i18n:common.note-placeholders.f%'
+			];
+			const x = xs[Math.floor(Math.random() * xs.length)];
+
+			return this.renote
+				? '%i18n:@quote-placeholder%'
+				: this.reply
+					? '%i18n:@reply-placeholder%'
+					: x;
+		},
+
+		submitText(): string {
+			return this.renote
+				? '%i18n:@renote%'
+				: this.reply
+					? '%i18n:@reply%'
+					: '%i18n:@submit%';
+		},
+
+		canPost(): boolean {
+			return !this.posting && (this.text.length != 0 || this.files.length != 0 || this.poll || this.renote);
+		}
+	},
+
 	mounted() {
+		if (this.initialText) {
+			this.text = this.initialText;
+		}
+
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
+		}
+
+		if (this.reply && this.reply.text != null) {
+			const ast = parse(this.reply.text);
+
+			ast.filter(t => t.type == 'mention').forEach(x => {
+				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+
+				// 自分は除外
+				if (this.$store.state.i.username == x.username && x.host == null) return;
+				if (this.$store.state.i.username == x.username && x.host == host) return;
+
+				// 重複は除外
+				if (this.text.indexOf(`${mention} `) != -1) return;
+
+				this.text += `${mention} `;
+			});
 		}
 
 		this.$nextTick(() => {
@@ -124,14 +201,14 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert('お使いの端末は位置情報に対応していません');
+				alert('%i18n:@location-alert%');
 				return;
 			}
 
 			navigator.geolocation.getCurrentPosition(pos => {
 				this.geo = pos.coords;
 			}, err => {
-				alert('エラー: ' + err.message);
+				alert('%i18n:@error%: ' + err.message);
 			}, {
 				enableHighAccuracy: true
 			});
@@ -154,7 +231,7 @@ export default Vue.extend({
 
 		addVisibleUser() {
 			(this as any).apis.input({
-				title: 'ユーザー名を入力してください'
+				title: '%i18n:@username-prompt%'
 			}).then(username => {
 				(this as any).api('users/show', {
 					username
@@ -177,7 +254,7 @@ export default Vue.extend({
 
 		post() {
 			this.posting = true;
-			const viaMobile = (this as any).clientSettings.disableViaMobile !== true;
+			const viaMobile = this.$store.state.settings.disableViaMobile !== true;
 			(this as any).api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				mediaIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
@@ -197,8 +274,10 @@ export default Vue.extend({
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
 				viaMobile: viaMobile
 			}).then(data => {
-				this.$emit('note');
-				this.$destroy();
+				this.$emit('posted');
+				this.$nextTick(() => {
+					this.$destroy();
+				});
 			}).catch(err => {
 				this.posting = false;
 			});

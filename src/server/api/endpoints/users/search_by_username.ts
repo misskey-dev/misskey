@@ -1,13 +1,10 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/user';
 
 /**
  * Search a user by username
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
 	const [query, queryError] = $.str.get(params.query);
 	if (queryError) return rej('invalid query param');
@@ -20,15 +17,27 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
-	const users = await User
+	let users = await User
 		.find({
+			host: null,
 			usernameLower: new RegExp(query.toLowerCase())
 		}, {
 			limit: limit,
 			skip: offset
 		});
 
+	if (users.length < limit) {
+		const remoteUsers = await User
+			.find({
+				host: { $ne: null },
+				usernameLower: new RegExp(query.toLowerCase())
+			}, {
+				limit: limit - users.length
+			});
+
+		users = users.concat(remoteUsers);
+	}
+
 	// Serialize
-	res(await Promise.all(users.map(async user =>
-		await pack(user, me, { detail: true }))));
+	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
 });

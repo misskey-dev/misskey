@@ -2,6 +2,7 @@ import * as mongo from 'mongodb';
 import { default as Notification, INotification } from '../../../models/notification';
 import publishUserStream from '../../../publishers/stream';
 import Mute from '../../../models/mute';
+import User from '../../../models/user';
 
 /**
  * Mark as read notification(s)
@@ -57,6 +58,13 @@ export default (
 		});
 
 	if (count == 0) {
+		// Update flag
+		User.update({ _id: userId }, {
+			$set: {
+				hasUnreadNotification: false
+			}
+		});
+
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
 		publishUserStream(userId, 'read_all_notifications');
 	}

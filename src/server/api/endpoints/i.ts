@@ -1,12 +1,10 @@
-/**
- * Module dependencies
- */
-import User, { pack } from '../../../models/user';
+import User, { pack, ILocalUser } from '../../../models/user';
+import { IApp } from '../../../models/app';
 
 /**
  * Show myself
  */
-module.exports = (params, user, app) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	// Serialize

@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import * as parse5 from 'parse5';
+const parse5 = require('parse5');
 import * as debug from 'debug';
 
 import config from '../../../config';
@@ -9,30 +9,30 @@ import post from '../../../services/note/create';
 import { INote as INoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
-import { IRemoteUser } from '../../../models/user';
+import { IRemoteUser, IUser } from '../../../models/user';
 
 const log = debug('misskey:activitypub');
 
 function parse(html: string): string {
-	const dom = parse5.parseFragment(html) as parse5.AST.Default.Document;
+	const dom = parse5.parseFragment(html);
 
 	let text = '';
 
-	dom.childNodes.forEach(n => analyze(n));
+	dom.childNodes.forEach((n: any) => analyze(n));
 
 	return text.trim();
 
-	function getText(node) {
+	function getText(node: any) {
 		if (node.nodeName == '#text') return node.value;
 
 		if (node.childNodes) {
-			return node.childNodes.map(n => getText(n)).join('');
+			return node.childNodes.map((n: any) => getText(n)).join('');
 		}
 
 		return '';
 	}
 
-	function analyze(node) {
+	function analyze(node: any) {
 		switch (node.nodeName) {
 			case '#text':
 				text += node.value;
@@ -51,7 +51,7 @@ function parse(html: string): string {
 
 					if (part.length == 2) {
 						//#region ホスト名部分が省略されているので復元する
-						const href = new URL(node.attrs.find(x => x.name == 'href').value);
+						const href = new URL(node.attrs.find((x: any) => x.name == 'href').value);
 						const acct = txt + '@' + href.hostname;
 						text += acct;
 						break;
@@ -63,20 +63,20 @@ function parse(html: string): string {
 				}
 
 				if (node.childNodes) {
-					node.childNodes.forEach(n => analyze(n));
+					node.childNodes.forEach((n: any) => analyze(n));
 				}
 				break;
 
 			case 'p':
 				text += '\n\n';
 				if (node.childNodes) {
-					node.childNodes.forEach(n => analyze(n));
+					node.childNodes.forEach((n: any) => analyze(n));
 				}
 				break;
 
 			default:
 				if (node.childNodes) {
-					node.childNodes.forEach(n => analyze(n));
+					node.childNodes.forEach((n: any) => analyze(n));
 				}
 				break;
 		}
@@ -135,7 +135,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	//#region Visibility
 	let visibility = 'public';
-	let visibleUsers = [];
+	let visibleUsers: IUser[] = [];
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
 		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';
@@ -170,6 +170,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		media,
 		reply,
 		renote: undefined,
+		cw: note.summary,
 		text: text,
 		viaMobile: false,
 		geo: undefined,

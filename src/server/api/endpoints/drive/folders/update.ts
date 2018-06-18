@@ -1,14 +1,12 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../publishers/stream';
+import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Update a folder
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'folderId' parameter
 	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');
@@ -48,7 +46,7 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 			}
 
 			// Check if the circular reference will occur
-			async function checkCircle(folderId) {
+			async function checkCircle(folderId: any): Promise<boolean> {
 				// Fetch folder
 				const folder2 = await DriveFolder.findOne({
 					_id: folderId

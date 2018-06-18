@@ -1,14 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import event from '../../../../publishers/stream';
 
 /**
  * Update myself
  */
-module.exports = async (params, user) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $.str.get(params.name);
 	if (nameErr) return rej('invalid name param');
@@ -17,7 +14,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	const [value, valueErr] = $.any.nullable().get(params.value);
 	if (valueErr) return rej('invalid value param');
 
-	const x = {};
+	const x: any = {};
 	x[`clientSettings.${name}`] = value;
 
 	await User.update(user._id, {

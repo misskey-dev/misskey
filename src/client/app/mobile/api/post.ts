@@ -18,7 +18,7 @@ export default (os) => (opts) => {
 		}
 	}).$mount();
 	vm.$once('cancel', recover);
-	vm.$once('note', recover);
+	vm.$once('posted', recover);
 	document.body.appendChild(vm.$el);
 	(vm as any).focus();
 };

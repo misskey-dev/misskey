@@ -3,7 +3,9 @@ meta:
   divider: ""
 
 common:
-  misskey: "Misskeyで皆と共有しよう。"
+  misskey: "A ⭐ of fediverse"
+  about-title: "A ⭐ of fediverse."
+  about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
 
   time:
     unknown: "なぞのじかん"
@@ -37,11 +39,61 @@ common:
     confused: "こまこまのこまり"
     pudding: "Pudding"
 
+  note-placeholders:
+    a: "今どうしてる？"
+    b: "何かありましたか？"
+    c: "何をお考えですか？"
+    d: "言いたいことは？"
+    e: "ここに書いてください"
+    f: "あなたが書くのを待っています..."
+
   delete: "削除"
   loading: "読み込み中"
   ok: "わかった"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
+
+  widgets:
+    analog-clock: "アナログ時計"
+    profile: "プロフィール"
+    calendar: "カレンダー"
+    timemachine: "カレンダー(タイムマシン)"
+    activity: "アクティビティ"
+    rss: "RSSリーダー"
+    memo: "付箋"
+    trends: "トレンド"
+    photo-stream: "フォトストリーム"
+    posts-monitor: "投稿チャート"
+    slideshow: "スライドショー"
+    version: "バージョン"
+    broadcast: "ブロードキャスト"
+    notifications: "通知"
+    users: "おすすめユーザー"
+    polls: "アンケート"
+    post-form: "投稿フォーム"
+    messaging: "メッセージ"
+    server: "サーバー情報"
+    donation: "寄付のお願い"
+    nav: "ナビゲーション"
+    tips: "ヒント"
+    hashtags: "ハッシュタグ"
+
+  deck:
+    widgets: "ウィジェット"
+    home: "ホーム"
+    local: "ローカル"
+    global: "グローバル"
+    notifications: "通知"
+    list: "リスト"
+    swap-left: "左に移動"
+    swap-right: "右に移動"
+    swap-up: "上に移動"
+    swap-down: "下に移動"
+    remove: "カラムを削除"
+    add-column: "カラムを追加"
+    rename: "名前を変更"
+    stack-left: "左に重ねる"
+    pop-right: "右に出す"
 
 common/views/components/connect-failed.vue:
   title: "サーバーに接続できません"
@@ -104,6 +156,8 @@ common/views/components/nav.vue:
 common/views/components/note-menu.vue:
   favorite: "お気に入り"
   pin: "ピン留め"
+  delete: "削除"
+  delete-confirm: "この投稿を削除しますか？"
   remote: "投稿元で見る"
 
 common/views/components/poll.vue:
@@ -115,11 +169,11 @@ common/views/components/poll.vue:
   voted: "投票済み"
 
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "投票には、選択肢が最低2つ必要です"
+  no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
   choice-n: "選択肢{}"
   remove: "この選択肢を削除"
   add: "+選択肢を追加"
-  destroy: "投票を破棄"
+  destroy: "アンケートを破棄"
 
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
@@ -197,9 +251,23 @@ common/views/widgets/photo-stream.vue:
   title: "フォトストリーム"
   no-photos: "写真はありません"
 
+common/views/widgets/posts-monitor.vue:
+  title: "投稿チャート"
+  toggle: "表示を切り替え"
+
+common/views/widgets/hashtags.vue:
+  title: "ハッシュタグ"
+  count: "{}人が投稿"
+  empty: "トレンドなし"
+
 common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
+
+common/views/widgets/memo.vue:
+  title: "付箋"
+  memo: "ここに書いて！"
+  save: "保存"
 
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
@@ -291,8 +359,10 @@ desktop/views/components/drive.vue:
     url-upload: "URLからアップロード"
 
 desktop/views/components/follow-button.vue:
-  unfollow: "フォロー解除"
-  follow: "フォローする"
+  following: "フォロー中"
+  follow: "フォロー"
+  request-pending: "フォロー許可待ち"
+  follow-request: "フォロー申請"
 
 desktop/views/components/followers-window.vue:
   followers: "{} のフォロワー"
@@ -314,30 +384,11 @@ desktop/views/components/friends-maker.vue:
   close: "閉じる"
 
 desktop/views/components/game-window.vue:
-  game: "オセロ"
+  game: "リバーシ"
 
 desktop/views/components/home.vue:
   done: "完了"
   add-widget: "ウィジェットを追加:"
-  profile: "プロフィール"
-  calendar: "カレンダー"
-  timemachine: "カレンダー(タイムマシン)"
-  activity: "アクティビティ"
-  rss: "RSSリーダー"
-  trends: "トレンド"
-  photostream: "フォトストリーム"
-  slideshow: "スライドショー"
-  version: "バージョン"
-  broadcast: "ブロードキャスト"
-  notifications: "通知"
-  users: "おすすめユーザー"
-  polls: "投票"
-  post-form: "投稿フォーム"
-  messaging: "メッセージ"
-  server: "サーバー情報"
-  donation: "寄付のお願い"
-  nav: "ナビゲーション"
-  tips: "ヒント"
   add: "追加"
 
 desktop/views/input-dialog.vue:
@@ -352,14 +403,12 @@ desktop/views/components/messaging-window.vue:
 
 desktop/views/components/note-detail.vue:
   more: "会話をもっと読み込む"
-  private: "(この投稿は非公開です)"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
   reposted-by: "{}がRenote"
   location: "位置情報"
   renote: "Renote"
   add-reaction: "リアクション"
-
-desktop/views/components/note-detail.sub.vue:
-  private: "(この投稿は非公開です)"
 
 desktop/views/components/notes.note.vue:
   reposted-by: "{}がRenote"
@@ -367,6 +416,8 @@ desktop/views/components/notes.note.vue:
   renote: "Renote"
   add-reaction: "リアクション"
   detail: "詳細"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
 
 desktop/views/components/notes.vue:
   error: "読み込みに失敗しました。"
@@ -377,10 +428,9 @@ desktop/views/components/notifications.vue:
   empty: "ありません！"
 
 desktop/views/components/post-form.vue:
-  note-placeholder: "いまどうしてる？"
   reply-placeholder: "この投稿への返信..."
   quote-placeholder: "この投稿を引用..."
-  note: "投稿"
+  submit: "投稿"
   reply: "返信"
   renote: "Renote"
   posted: "投稿しました！"
@@ -394,7 +444,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-drive: "ドライブからメディアを添付"
   attach-cancel: "添付取り消し"
   insert-a-kao: "v(‘ω’)v"
-  create-poll: "投票を作成"
+  create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
 
 desktop/views/components/post-form-window.vue:
@@ -531,7 +581,7 @@ desktop/views/components/settings.api.vue:
   token: "Token:"
   enter-password: "パスワードを入力してください"
 
-desktop/views/components/settings.app.vue:
+desktop/views/components/settings.apps.vue:
   no-apps: "連携しているアプリケーションはありません"
 
 desktop/views/components/settings.mute.vue:
@@ -557,9 +607,10 @@ desktop/views/components/settings.profile.vue:
   is-cat: "このアカウントはCatです"
 
 desktop/views/components/sub-note-content.vue:
-  hidden: "(この投稿は非公開です)"
-  media: "つのメディア"
-  poll: "投票"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
+  poll: "アンケート"
 
 desktop/views/components/taskmanager.vue:
   title: "タスクマネージャ"
@@ -575,6 +626,7 @@ desktop/views/components/ui.header.account.vue:
   drive: "ドライブ"
   favorites: "お気に入り"
   lists: "リスト"
+  follow-requests: "フォロー申請"
   customize: "カスタマイズ"
   settings: "設定"
   signout: "サインアウト"
@@ -582,6 +634,7 @@ desktop/views/components/ui.header.account.vue:
 
 desktop/views/components/ui.header.nav.vue:
   home: "ホーム"
+  deck: "デッキ"
   messaging: "メッセージ"
   game: "ゲーム"
 
@@ -594,7 +647,13 @@ desktop/views/components/ui.header.post.vue:
 desktop/views/components/ui.header.search.vue:
   placeholder: "検索"
 
+desktop/views/components/received-follow-requests-window.vue:
+  title: "フォロー申請"
+  accept: "承認"
+  reject: "拒否"
+
 desktop/views/components/user-lists-window.vue:
+  title: "リスト"
   create-list: "リストを作成"
 
 desktop/views/components/user-preview.vue:
@@ -615,7 +674,18 @@ desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
 
+desktop/views/pages/deck/deck.tl-column.vue:
+  is-media-only: "メディア投稿のみ"
+  is-media-view: "メディアビュー"
+
+desktop/views/pages/deck/deck.note.vue:
+  reposted-by: "{}がRenote"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+
 desktop/views/pages/welcome.vue:
+  about: "詳しく..."
+  gotit: "わかった"
   signin: "ログイン"
   signup: "新規登録"
   signin-button: "やってる"
@@ -692,14 +762,13 @@ desktop/views/widgets/notifications.vue:
   settings: "通知の設定"
 
 desktop/views/widgets/polls.vue:
-  title: "投票"
+  title: "アンケート"
   refresh: "他を見る"
   nothing: "ありません！"
 
 desktop/views/widgets/post-form.vue:
   title: "投稿"
   note: "投稿"
-  placeholder: "いまどうしてる？"
 
 desktop/views/widgets/profile.vue:
   update-banner: "クリックでバナー編集"
@@ -724,6 +793,16 @@ mobile/views/components/drive.vue:
   load-more: "もっと読み込む"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
+  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
+  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
+  folder-name: "フォルダー名"
+  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
+  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  url-prompt: "アップロードしたいファイルのURL"
+  uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+
+mobile/views/components/drive-file-detail.vue:
+  rename: "名前を変更"
 
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
@@ -739,42 +818,86 @@ mobile/views/components/drive.file-detail.vue:
   exif: "EXIF"
 
 mobile/views/components/follow-button.vue:
+  following: "フォロー中"
   follow: "フォロー"
-  unfollow: "フォロー解除"
+  request-pending: "フォロー許可待ち"
+  follow-request: "フォロー申請"
+
+mobile/views/components/friends-maker.vue:
+  title: "気になるユーザーをフォロー"
+  empty: "おすすめのユーザーは見つかりませんでした。"
+  fetching: "読み込んでいます"
+  refresh: "もっと見る"
+  close: "閉じる"
 
 mobile/views/components/note.vue:
   reposted-by: "{}がRenote"
+  more: "もっと見る"
+  less: "隠す"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  location: "位置情報"
 
 mobile/views/components/note-detail.vue:
   reply: "返信"
   reaction: "リアクション"
+  reposted-by: "{}がRenote"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  location: "位置情報"
+
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+
+mobile/views/components/notes.vue:
+  failed: "読み込みに失敗しました。"
+  retry: "リトライ"
 
 mobile/views/components/notifications.vue:
   more: "もっと見る"
   empty: "ありません！"
 
 mobile/views/components/post-form.vue:
+  add-visible-user: "ユーザーを追加"
   submit: "投稿"
   reply: "返信"
   renote: "Renote"
-  renote-placeholder: "この投稿を引用... (オプション)"
+  quote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "この投稿への返信..."
-  note-placeholder: "いまどうしてる？"
+  cw-placeholder: "内容への注釈 (オプション)"
+  location-alert: "お使いの端末は位置情報に対応していません"
+  error: "エラー"
+  username-prompt: "ユーザー名を入力してください"
 
 mobile/views/components/sub-note-content.vue:
-  media-count: "{}個のメディア"
-  poll: "投票"
+  private: "この投稿は非公開です"
+  deleted: "この投稿は削除されました"
+  media-count: "{}つのメディア"
+  poll: "アンケート"
 
 mobile/views/components/timeline.vue:
   empty: "投稿がありません"
   load-more: "もっと"
 
 mobile/views/components/ui.nav.vue:
-  home: "ホーム"
+  timeline: "タイムライン"
   notifications: "通知"
   messaging: "メッセージ"
+  follow-requests: "フォロー申請"
   search: "検索"
   drive: "ドライブ"
+  favorites: "お気に入り"
+  user-lists: "リスト"
+  widgets: "ウィジェット"
+  game: "ゲーム"
+  darkmode: "ダークモード"
   settings: "設定"
   about: "Misskeyについて"
 
@@ -788,8 +911,16 @@ mobile/views/components/users-list.vue:
   known: "知り合い"
   load-more: "もっと"
 
+mobile/views/pages/favorites.vue:
+  title: "お気に入り"
+
+mobile/views/pages/user-lists.vue:
+  title: "リスト"
+  enter-list-name: "リスト名を入力してください"
+
 mobile/views/pages/drive.vue:
   drive: "ドライブ"
+  more: "もっと見る"
 
 mobile/views/pages/followers.vue:
   followers-of: "{}のフォロワー"
@@ -807,6 +938,11 @@ mobile/views/pages/messaging.vue:
 
 mobile/views/pages/messaging-room.vue:
   messaging: "メッセージ"
+
+mobile/views/pages/received-follow-requests.vue:
+  title: "フォロー申請"
+  accept: "承認"
+  reject: "拒否"
 
 mobile/views/pages/note.vue:
   title: "投稿"

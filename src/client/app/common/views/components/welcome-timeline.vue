@@ -13,7 +13,7 @@
 				</div>
 			</header>
 			<div class="text">
-				<mk-note-html :text="note.text"/>
+				<mk-note-html v-if="note.text" :text="note.text"/>
 			</div>
 		</div>
 	</div>
@@ -108,6 +108,9 @@ root(isDark)
 
 					> .created-at
 						color isDark ? #606984 : #c0c0c0
+
+			> .text
+				text-align left
 
 .mk-welcome-timeline[data-darkmode]
 	root(true)

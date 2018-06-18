@@ -1,6 +1,6 @@
 import * as mongo from 'mongodb';
-import deepcopy = require('deepcopy');
-import sequential = require('promise-sequential');
+const deepcopy = require('deepcopy');
+const sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import Note, { pack as packNote, deleteNote } from './note';
@@ -22,6 +22,7 @@ import FollowedLog, { deleteFollowedLog } from './followed-log';
 import SwSubscription, { deleteSwSubscription } from './sw-subscription';
 import Notification, { deleteNotification } from './notification';
 import UserList, { deleteUserList } from './user-list';
+import FollowRequest, { deleteFollowRequest } from './follow-request';
 
 const User = db.get<IUser>('users');
 
@@ -47,10 +48,28 @@ type IUserBase = {
 	usernameLower: string;
 	avatarId: mongo.ObjectID;
 	bannerId: mongo.ObjectID;
+	avatarUrl?: string;
+	bannerUrl?: string;
+	wallpaperId: mongo.ObjectID;
 	data: any;
 	description: string;
 	pinnedNoteId: mongo.ObjectID;
+
+	/**
+	 * 凍結されているか否か
+	 */
 	isSuspended: boolean;
+
+	/**
+	 * 鍵アカウントか否か
+	 */
+	isLocked: boolean;
+
+	/**
+	 * このアカウントに届いているフォローリクエストの数
+	 */
+	pendingReceivedFollowRequestsCount: number;
+
 	host: string;
 };
 
@@ -84,6 +103,8 @@ export interface ILocalUser extends IUserBase {
 	twoFactorTempSecret?: string;
 	clientSettings: any;
 	settings: any;
+	hasUnreadNotification: boolean;
+	hasUnreadMessagingMessage: boolean;
 }
 
 export interface IRemoteUser extends IUserBase {
@@ -132,14 +153,6 @@ export function isValidBirthday(birthday: string): boolean {
 }
 //#endregion
 
-export function init(user): IUser {
-	user._id = new mongo.ObjectID(user._id);
-	user.avatarId = new mongo.ObjectID(user.avatarId);
-	user.bannerId = new mongo.ObjectID(user.bannerId);
-	user.pinnedNoteId = new mongo.ObjectID(user.pinnedNoteId);
-	return user;
-}
-
 /**
  * Userを物理削除します
  */
@@ -169,9 +182,9 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	).map(x => deleteAccessToken(x)));
 
 	// このユーザーのNoteをすべて削除
-	//await sequential((
-	//	await Note.find({ userId: u._id })
-	//).map(x => () => deleteNote(x)));
+	await sequential((
+		await Note.find({ userId: u._id })
+	).map(x => () => deleteNote(x)));
 
 	// このユーザーのNoteReactionをすべて削除
 	await Promise.all((
@@ -237,6 +250,16 @@ export async function deleteUser(user: string | mongo.ObjectID | IUser) {
 	await Promise.all((
 		await Following.find({ followeeId: u._id })
 	).map(x => deleteFollowing(x)));
+
+	// このユーザーのFollowRequestをすべて削除
+	await Promise.all((
+		await FollowRequest.find({ followerId: u._id })
+	).map(x => deleteFollowRequest(x)));
+
+	// このユーザーへのFollowRequestをすべて削除
+	await Promise.all((
+		await FollowRequest.find({ followeeId: u._id })
+	).map(x => deleteFollowRequest(x)));
 
 	// このユーザーのFollowingLogをすべて削除
 	await Promise.all((
@@ -376,28 +399,45 @@ export const pack = (
 		delete _user.publicKey;
 	}
 
-	_user.avatarUrl = _user.avatarId != null
-		? `${config.drive_url}/${_user.avatarId}`
-		: `${config.drive_url}/default-avatar.jpg`;
+	if (_user.avatarUrl == null) {
+		_user.avatarUrl = _user.avatarId != null
+			? `${config.drive_url}/${_user.avatarId}`
+			: `${config.drive_url}/default-avatar.jpg`;
+	}
 
-	_user.bannerUrl = _user.bannerId != null
-		? `${config.drive_url}/${_user.bannerId}`
+	if (_user.bannerUrl == null) {
+		_user.bannerUrl = _user.bannerId != null
+			? `${config.drive_url}/${_user.bannerId}`
+			: null;
+	}
+
+	_user.wallpaperUrl = _user.wallpaperId != null
+		? `${config.drive_url}/${_user.wallpaperId}`
 		: null;
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {
 		delete _user.avatarId;
 		delete _user.bannerId;
-
 		delete _user.driveCapacity;
+		delete _user.hasUnreadMessagingMessage;
+		delete _user.hasUnreadNotification;
 	}
 
 	if (meId && !meId.equals(_user.id)) {
-		const [following1, following2, mute] = await Promise.all([
+		const [following1, following2, followReq1, followReq2, mute] = await Promise.all([
 			Following.findOne({
 				followerId: meId,
 				followeeId: _user.id
 			}),
 			Following.findOne({
+				followerId: _user.id,
+				followeeId: meId
+			}),
+			_user.isLocked ? FollowRequest.findOne({
+				followerId: meId,
+				followeeId: _user.id
+			}) : Promise.resolve(null),
+			FollowRequest.findOne({
 				followerId: _user.id,
 				followeeId: meId
 			}),
@@ -410,6 +450,9 @@ export const pack = (
 		// Whether the user is following
 		_user.isFollowing = following1 !== null;
 		_user.isStalking = following1 && following1.stalk;
+
+		_user.hasPendingFollowRequestFromYou = followReq1 !== null;
+		_user.hasPendingFollowRequestToYou = followReq2 !== null;
 
 		// Whether the user is followed
 		_user.isFollowed = following2 !== null;

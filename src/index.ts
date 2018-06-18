@@ -17,7 +17,8 @@ import ProgressBar from './utils/cli/progressbar';
 import EnvironmentInfo from './utils/environmentInfo';
 import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
-import stats from './utils/stats';
+import serverStats from './daemons/server-stats';
+import notesStats from './daemons/notes-stats';
 
 import loadConfig from './config/load';
 import { Config } from './config/types';
@@ -49,7 +50,8 @@ function main() {
 		masterMain(opt);
 
 		ev.mount();
-		stats();
+		serverStats();
+		notesStats();
 	} else {
 		workerMain(opt);
 	}
@@ -58,7 +60,7 @@ function main() {
 /**
  * Init master process
  */
-async function masterMain(opt) {
+async function masterMain(opt: any) {
 	let config: Config;
 
 	try {
@@ -89,7 +91,7 @@ async function masterMain(opt) {
 /**
  * Init worker process
  */
-async function workerMain(opt) {
+async function workerMain(opt: any) {
 	if (!opt['only-processor']) {
 		// start server
 		await require('./server').default();

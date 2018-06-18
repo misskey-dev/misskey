@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-	 y="0px" width="1024px" height="512px" viewBox="0 256 1024 512" enable-background="new 0 256 1024 512" xml:space="preserve">
-<polyline opacity="0.5" fill="none" stroke="#000000" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="
-	896.5,608.5 800.5,416.5 704.5,608.5 608.5,416.5 512.5,608.5 416.5,416.5 320.5,608.5 224.5,416.5 128.5,608.5 "/>
-</svg>

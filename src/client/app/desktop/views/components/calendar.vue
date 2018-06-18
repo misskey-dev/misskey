@@ -138,6 +138,7 @@ root(isDark)
 	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
+	overflow hidden
 
 	&[data-melt]
 		background transparent !important
@@ -151,8 +152,11 @@ root(isDark)
 		line-height 42px
 		font-size 0.9em
 		font-weight bold
-		color #888
+		color isDark ? #c5ced6 : #888
 		box-shadow 0 1px rgba(#000, 0.07)
+
+		if isDark
+			background #313543
 
 		> [data-fa]
 			margin-right 4px
@@ -165,13 +169,13 @@ root(isDark)
 		width 42px
 		font-size 0.9em
 		line-height 42px
-		color #ccc
+		color isDark ? #9baec8 : #ccc
 
 		&:hover
-			color #aaa
+			color isDark ? #b2c1d5 : #aaa
 
 		&:active
-			color #999
+			color isDark ? #b2c1d5 : #999
 
 		&:first-of-type
 			left 0
@@ -194,49 +198,49 @@ root(isDark)
 			font-size 14px
 
 			&.weekday
-				color #19a2a9
+				color isDark ? #43d5dc : #19a2a9
 
 				&[data-is-donichi]
-					color #ef95a0
+					color isDark ? #ff6679 : #ef95a0
 
 				&[data-today]
-					box-shadow 0 0 0 1px #19a2a9 inset
+					box-shadow 0 0 0 1px isDark ? #43d5dc : #19a2a9 inset
 					border-radius 6px
 
 					&[data-is-donichi]
-						box-shadow 0 0 0 1px #ef95a0 inset
+						box-shadow 0 0 0 1px isDark ? #ff6679 : #ef95a0 inset
 
 			&.day
 				cursor pointer
-				color #777
+				color isDark ? #c5ced6 : #777
 
 				> div
 					border-radius 6px
 
 				&:hover > div
-					background rgba(#000, 0.025)
+					background rgba(#000, isDark ? 0.1 : 0.025)
 
 				&:active > div
-					background rgba(#000, 0.05)
+					background rgba(#000, isDark ? 0.2 : 0.05)
 
 				&[data-is-donichi]
-					color #ef95a0
+					color isDark ? #ff6679 : #ef95a0
 
 				&[data-is-out-of-range]
 					cursor default
-					color rgba(#777, 0.5)
+					color rgba(isDark ? #c5ced6 : #777, 0.5)
 
 					&[data-is-donichi]
-						color rgba(#ef95a0, 0.5)
+						color rgba(isDark ? #ff6679 : #ef95a0, 0.5)
 
 				&[data-selected]
 					font-weight bold
 
 					> div
-						background rgba(#000, 0.025)
+						background rgba(#000, isDark ? 0.1 : 0.025)
 
 					&:active > div
-						background rgba(#000, 0.05)
+						background rgba(#000, isDark ? 0.2 : 0.05)
 
 				&[data-today]
 					> div

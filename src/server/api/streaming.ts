@@ -10,10 +10,10 @@ import userListStream from './stream/user-list';
 import driveStream from './stream/drive';
 import messagingStream from './stream/messaging';
 import messagingIndexStream from './stream/messaging-index';
-import othelloGameStream from './stream/othello-game';
-import othelloStream from './stream/othello';
-import serverStream from './stream/server';
-import requestsStream from './stream/requests';
+import reversiGameStream from './stream/reversi-game';
+import reversiStream from './stream/reversi';
+import serverStatsStream from './stream/server-stats';
+import notesStatsStream from './stream/notes-stats';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 
@@ -28,13 +28,13 @@ module.exports = (server: http.Server) => {
 	ws.on('request', async (request) => {
 		const connection = request.accept();
 
-		if (request.resourceURL.pathname === '/server') {
-			serverStream(request, connection);
+		if (request.resourceURL.pathname === '/server-stats') {
+			serverStatsStream(request, connection);
 			return;
 		}
 
-		if (request.resourceURL.pathname === '/requests') {
-			requestsStream(request, connection);
+		if (request.resourceURL.pathname === '/notes-stats') {
+			notesStatsStream(request, connection);
 			return;
 		}
 
@@ -50,8 +50,8 @@ module.exports = (server: http.Server) => {
 		const q = request.resourceURL.query as ParsedUrlQuery;
 		const [user, app] = await authenticate(q.i as string);
 
-		if (request.resourceURL.pathname === '/othello-game') {
-			othelloGameStream(request, connection, subscriber, user);
+		if (request.resourceURL.pathname === '/reversi-game') {
+			reversiGameStream(request, connection, subscriber, user);
 			return;
 		}
 
@@ -69,7 +69,7 @@ module.exports = (server: http.Server) => {
 			request.resourceURL.pathname === '/drive' ? driveStream :
 			request.resourceURL.pathname === '/messaging' ? messagingStream :
 			request.resourceURL.pathname === '/messaging-index' ? messagingIndexStream :
-			request.resourceURL.pathname === '/othello' ? othelloStream :
+			request.resourceURL.pathname === '/reversi' ? reversiStream :
 			null;
 
 		if (channel !== null) {

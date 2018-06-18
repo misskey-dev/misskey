@@ -17,7 +17,11 @@ export default Vue.extend({
 	},
 	methods: {
 		onSubmit() {
-			location.href = `/search?q=${encodeURIComponent(this.q)}`;
+			if (this.q.startsWith('#')) {
+				this.$router.push(`/tags/${encodeURIComponent(this.q.substr(1))}`);
+			} else {
+				this.$router.push(`/search?q=${encodeURIComponent(this.q)}`);
+			}
 		}
 	}
 });

@@ -1,5 +1,3 @@
-import * as merge from 'object-assign-deep';
-
 import Stream from './stream';
 import StreamManager from './stream-manager';
 import MiOS from '../../../mios';
@@ -20,14 +18,36 @@ export class HomeStream extends Stream {
 		}, 1000 * 60);
 
 		// 自分の情報が更新されたとき
-		this.on('i_updated', i => {
+		this.on('meUpdated', i => {
 			if (os.debug) {
 				console.log('I updated:', i);
 			}
-			merge(me, i);
 
-			// キャッシュ更新
-			os.bakeMe();
+			os.store.dispatch('mergeMe', i);
+		});
+
+		this.on('read_all_notifications', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadNotification: false
+			});
+		});
+
+		this.on('unread_notification', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadNotification: true
+			});
+		});
+
+		this.on('read_all_messaging_messages', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: false
+			});
+		});
+
+		this.on('unread_messaging_message', () => {
+			os.store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: true
+			});
 		});
 
 		this.on('clientSettingUpdated', x => {
@@ -38,25 +58,18 @@ export class HomeStream extends Stream {
 		});
 
 		this.on('home_updated', x => {
-			if (x.home) {
-				os.store.commit('settings/setHome', x.home);
-			} else {
-				os.store.commit('settings/setHomeWidget', {
-					id: x.id,
-					data: x.data
-				});
-			}
+			os.store.commit('settings/setHome', x);
 		});
 
 		this.on('mobile_home_updated', x => {
-			if (x.home) {
-				os.store.commit('settings/setMobileHome', x.home);
-			} else {
-				os.store.commit('settings/setMobileHomeWidget', {
-					id: x.id,
-					data: x.data
-				});
-			}
+			os.store.commit('settings/setMobileHome', x);
+		});
+
+		this.on('widgetUpdated', x => {
+			os.store.commit('settings/setWidget', {
+				id: x.id,
+				data: x.data
+			});
 		});
 
 		// トークンが再生成されたとき

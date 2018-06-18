@@ -9,9 +9,9 @@ export default function<T extends object>(data: {
 			widget: {
 				type: Object
 			},
-			isMobile: {
-				type: Boolean,
-				default: false
+			platform: {
+				type: String,
+				required: true
 			},
 			isCustomizeMode: {
 				type: Boolean,
@@ -66,17 +66,10 @@ export default function<T extends object>(data: {
 
 				this.bakeProps();
 
-				if (this.isMobile) {
-					(this as any).api('i/update_mobile_home', {
-						id: this.id,
-						data: this.props
-					});
-				} else {
-					(this as any).api('i/update_home', {
-						id: this.id,
-						data: this.props
-					});
-				}
+				(this as any).api('i/update_widget', {
+					id: this.id,
+					data: this.props
+				});
 			}
 		}
 	});

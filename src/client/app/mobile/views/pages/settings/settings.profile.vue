@@ -1,62 +1,49 @@
 <template>
-	<md-card>
-		<md-card-header>
-			<div class="md-title">%fa:pencil-alt% %i18n:@title%</div>
-		</md-card-header>
+<ui-card>
+	<div slot="title">%fa:user% %i18n:@title%</div>
 
-		<md-card-content>
-			<md-field>
-				<label>%i18n:@name%</label>
-				<md-input v-model="name" :disabled="saving" md-counter="30"/>
-			</md-field>
+	<ui-form :disabled="saving">
+		<ui-input v-model="name" :max="30">
+			<span>%i18n:@name%</span>
+		</ui-input>
 
-			<md-field>
-				<label>%i18n:@account%</label>
-				<span class="md-prefix">@</span>
-				<md-input v-model="username" readonly></md-input>
-				<span class="md-suffix">@{{ host }}</span>
-			</md-field>
+		<ui-input v-model="username" readonly>
+			<span>%i18n:@account%</span>
+			<span slot="prefix">@</span>
+			<span slot="suffix">@{{ host }}</span>
+		</ui-input>
 
-			<md-field>
-				<md-icon>%fa:map-marker-alt%</md-icon>
-				<label>%i18n:@location%</label>
-				<md-input v-model="location" :disabled="saving"/>
-			</md-field>
+		<ui-input v-model="location">
+			<span>%i18n:@location%</span>
+			<span slot="prefix">%fa:map-marker-alt%</span>
+		</ui-input>
 
-			<md-field>
-				<md-icon>%fa:birthday-cake%</md-icon>
-				<label>%i18n:@birthday%</label>
-				<md-input type="date" v-model="birthday" :disabled="saving"/>
-			</md-field>
+		<ui-input v-model="birthday" type="date">
+			<span>%i18n:@birthday%</span>
+			<span slot="prefix">%fa:birthday-cake%</span>
+		</ui-input>
 
-			<md-field>
-				<label>%i18n:@description%</label>
-				<md-textarea v-model="description" :disabled="saving" md-counter="500"/>
-			</md-field>
+		<ui-textarea v-model="description" :max="500">
+			<span>%i18n:@description%</span>
+		</ui-textarea>
 
-			<md-field>
-				<label>%i18n:@avatar%</label>
-				<md-file @md-change="onAvatarChange"/>
-			</md-field>
+		<ui-input type="file" @change="onAvatarChange">
+			<span>%i18n:@avatar%</span>
+			<span slot="icon">%fa:image%</span>
+			<span slot="text" v-if="avatarUploading">%i18n:@uploading%<mk-ellipsis/></span>
+		</ui-input>
 
-			<md-field>
-				<label>%i18n:@banner%</label>
-				<md-file @md-change="onBannerChange"/>
-			</md-field>
+		<ui-input type="file" @change="onBannerChange">
+			<span>%i18n:@banner%</span>
+			<span slot="icon">%fa:image%</span>
+			<span slot="text" v-if="bannerUploading">%i18n:@uploading%<mk-ellipsis/></span>
+		</ui-input>
 
-			<md-dialog-alert
-					:md-active.sync="uploading"
-					md-content="%18n:!@uploading%"/>
+		<ui-switch v-model="isCat">%i18n:@is-cat%</ui-switch>
 
-			<div>
-				<md-switch v-model="isCat">%i18n:@is-cat%</md-switch>
-			</div>
-		</md-card-content>
-
-		<md-card-actions>
-			<md-button class="md-primary" :disabled="saving" @click="save">%i18n:@save%</md-button>
-		</md-card-actions>
-	</md-card>
+		<ui-button @click="save">%i18n:@save%</ui-button>
+	</ui-form>
+</ui-card>
 </template>
 
 <script lang="ts">
@@ -77,29 +64,30 @@ export default Vue.extend({
 			isBot: false,
 			isCat: false,
 			saving: false,
-			uploading: false
+			avatarUploading: false,
+			bannerUploading: false
 		};
 	},
 
 	created() {
-		this.name = (this as any).os.i.name || '';
-		this.username = (this as any).os.i.username;
-		this.location = (this as any).os.i.profile.location;
-		this.description = (this as any).os.i.description;
-		this.birthday = (this as any).os.i.profile.birthday;
-		this.avatarId = (this as any).os.i.avatarId;
-		this.bannerId = (this as any).os.i.bannerId;
-		this.isBot = (this as any).os.i.isBot;
-		this.isCat = (this as any).os.i.isCat;
+		this.name = this.$store.state.i.name || '';
+		this.username = this.$store.state.i.username;
+		this.location = this.$store.state.i.profile.location;
+		this.description = this.$store.state.i.description;
+		this.birthday = this.$store.state.i.profile.birthday;
+		this.avatarId = this.$store.state.i.avatarId;
+		this.bannerId = this.$store.state.i.bannerId;
+		this.isBot = this.$store.state.i.isBot;
+		this.isCat = this.$store.state.i.isCat;
 	},
 
 	methods: {
 		onAvatarChange([file]) {
-			this.uploading = true;
+			this.avatarUploading = true;
 
 			const data = new FormData();
 			data.append('file', file);
-			data.append('i', (this as any).os.i.token);
+			data.append('i', this.$store.state.i.token);
 
 			fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
@@ -108,20 +96,20 @@ export default Vue.extend({
 			.then(response => response.json())
 			.then(f => {
 				this.avatarId = f.id;
-				this.uploading = false;
+				this.avatarUploading = false;
 			})
 			.catch(e => {
-				this.uploading = false;
+				this.avatarUploading = false;
 				alert('%18n:!@upload-failed%');
 			});
 		},
 
 		onBannerChange([file]) {
-			this.uploading = true;
+			this.bannerUploading = true;
 
 			const data = new FormData();
 			data.append('file', file);
-			data.append('i', (this as any).os.i.token);
+			data.append('i', this.$store.state.i.token);
 
 			fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
@@ -130,10 +118,10 @@ export default Vue.extend({
 			.then(response => response.json())
 			.then(f => {
 				this.bannerId = f.id;
-				this.uploading = false;
+				this.bannerUploading = false;
 			})
 			.catch(e => {
-				this.uploading = false;
+				this.bannerUploading = false;
 				alert('%18n:!@upload-failed%');
 			});
 		},
@@ -152,10 +140,10 @@ export default Vue.extend({
 				isCat: this.isCat
 			}).then(i => {
 				this.saving = false;
-				(this as any).os.i.avatarId = i.avatarId;
-				(this as any).os.i.avatarUrl = i.avatarUrl;
-				(this as any).os.i.bannerId = i.bannerId;
-				(this as any).os.i.bannerUrl = i.bannerUrl;
+				this.$store.state.i.avatarId = i.avatarId;
+				this.$store.state.i.avatarUrl = i.avatarUrl;
+				this.$store.state.i.bannerId = i.bannerId;
+				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				alert('%i18n:@saved%');
 			});

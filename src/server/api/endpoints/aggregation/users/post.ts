@@ -1,6 +1,3 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import User from '../../../../../models/user';
 import Note from '../../../../../models/note';
@@ -8,7 +5,7 @@ import Note from '../../../../../models/note';
 /**
  * Aggregate note of a user
  */
-module.exports = (params) => new Promise(async (res, rej) => {
+module.exports = (params: any) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
@@ -67,13 +64,13 @@ module.exports = (params) => new Promise(async (res, rej) => {
 			} }
 		]);
 
-	datas.forEach(data => {
+	datas.forEach((data: any) => {
 		data.date = data._id;
 		delete data._id;
 
-		data.notes = (data.data.filter(x => x.type == 'note')[0] || { count: 0 }).count;
-		data.renotes = (data.data.filter(x => x.type == 'renote')[0] || { count: 0 }).count;
-		data.replies = (data.data.filter(x => x.type == 'reply')[0] || { count: 0 }).count;
+		data.notes = (data.data.filter((x: any) => x.type == 'note')[0] || { count: 0 }).count;
+		data.renotes = (data.data.filter((x: any) => x.type == 'renote')[0] || { count: 0 }).count;
+		data.replies = (data.data.filter((x: any) => x.type == 'reply')[0] || { count: 0 }).count;
 
 		delete data.data;
 	});
@@ -83,7 +80,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	for (let i = 0; i < 30; i++) {
 		const day = new Date(new Date().setDate(new Date().getDate() - i));
 
-		const data = datas.filter(d =>
+		const data = datas.filter((d: any) =>
 			d.date.year == day.getFullYear() && d.date.month == day.getMonth() + 1 && d.date.day == day.getDate()
 		)[0];
 

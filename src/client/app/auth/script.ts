@@ -20,6 +20,7 @@ init(launch => {
 	// Init router
 	const router = new VueRouter({
 		mode: 'history',
+		base: '/auth/',
 		routes: [
 			{ path: '/:token', component: Index },
 		]

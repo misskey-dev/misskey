@@ -11,7 +11,7 @@ if (config.sw) {
 		config.sw.private_key);
 }
 
-export default async function(userId: mongo.ObjectID | string, type, body?) {
+export default async function(userId: mongo.ObjectID | string, type: string, body?: any) {
 	if (!config.sw) return;
 
 	if (typeof userId === 'string') {
@@ -34,7 +34,7 @@ export default async function(userId: mongo.ObjectID | string, type, body?) {
 
 		push.sendNotification(pushSubscription, JSON.stringify({
 			type, body
-		})).catch(err => {
+		})).catch((err: any) => {
 			//console.log(err.statusCode);
 			//console.log(err.headers);
 			//console.log(err.body);

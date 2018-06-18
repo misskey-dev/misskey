@@ -1,20 +1,13 @@
-/**
- * Module dependencies
- */
 const ms = require('ms');
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import Mute from '../../../../models/mute';
 
 /**
  * Get recommended users
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
@@ -36,6 +29,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			_id: {
 				$nin: followingIds.concat(mutedUserIds)
 			},
+			isLocked: false,
 			$or: [{
 				lastUsedAt: {
 					$gte: new Date(Date.now() - ms('7days'))

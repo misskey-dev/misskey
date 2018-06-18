@@ -3,7 +3,14 @@
  */
 import parseAcct from '../../../acct/parse';
 
-module.exports = text => {
+export type TextElementMention = {
+	type: 'mention'
+	content: string
+	username: string
+	host: string
+};
+
+export default function(text: string) {
 	const match = text.match(/^@[a-z0-9_]+(?:@[a-z0-9\.\-]+[a-z0-9])?/i);
 	if (!match) return null;
 	const mention = match[0];
@@ -13,5 +20,5 @@ module.exports = text => {
 		content: mention,
 		username,
 		host
-	};
-};
+	} as TextElementMention;
+}

@@ -9,10 +9,10 @@
 	@contextmenu.prevent.stop="onContextmenu"
 	:title="title"
 >
-	<div class="label" v-if="os.i.avatarId == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="$store.state.i.avatarId == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:@avatar%</p>
 	</div>
-	<div class="label" v-if="os.i.bannerId == file.id"><img src="/assets/label.svg"/>
+	<div class="label" v-if="$store.state.i.bannerId == file.id"><img src="/assets/label.svg"/>
 		<p>%i18n:@banner%</p>
 	</div>
 	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
@@ -62,41 +62,37 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			this.isContextmenuShowing = true;
-			contextmenu(e, [{
+			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.rename%',
 				icon: '%fa:i-cursor%',
-				onClick: this.rename
+				action: this.rename
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.copy-url%',
 				icon: '%fa:link%',
-				onClick: this.copyUrl
+				action: this.copyUrl
 			}, {
 				type: 'link',
 				href: `${this.file.url}?download`,
 				text: '%i18n:@contextmenu.download%',
 				icon: '%fa:download%',
-			}, {
-				type: 'divider',
-			}, {
+			}, null, {
 				type: 'item',
 				text: '%i18n:common.delete%',
 				icon: '%fa:R trash-alt%',
-				onClick: this.deleteFile
-			}, {
-				type: 'divider',
-			}, {
+				action: this.deleteFile
+			}, null, {
 				type: 'nest',
 				text: '%i18n:@contextmenu.else-files%',
 				menu: [{
 					type: 'item',
 					text: '%i18n:@contextmenu.set-as-avatar%',
-					onClick: this.setAsAvatar
+					action: this.setAsAvatar
 				}, {
 					type: 'item',
 					text: '%i18n:@contextmenu.set-as-banner%',
-					onClick: this.setAsBanner
+					action: this.setAsBanner
 				}]
 			}, {
 				type: 'nest',
@@ -104,7 +100,7 @@ export default Vue.extend({
 				menu: [{
 					type: 'item',
 					text: '%i18n:@contextmenu.add-app%...',
-					onClick: this.addApp
+					action: this.addApp
 				}]
 			}], {
 				closed: () => {
@@ -149,7 +145,7 @@ export default Vue.extend({
 				(this as any).api('drive/files/update', {
 					fileId: this.file.id,
 					name: name
-				})
+				});
 			});
 		},
 
@@ -177,7 +173,9 @@ export default Vue.extend({
 		},
 
 		deleteFile() {
-			alert('not implemented yet');
+			(this as any).api('drive/files/delete', {
+				fileId: this.file.id
+			});
 		}
 	}
 });

@@ -1,18 +1,12 @@
-/**
- * Module dependencies
- */
 const ms = require('ms');
 import $ from 'cafy';
 import Note, { pack } from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Get trend notes
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');

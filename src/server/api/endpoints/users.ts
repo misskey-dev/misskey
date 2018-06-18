@@ -1,13 +1,10 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
-import User, { pack } from '../../../models/user';
+import User, { pack, ILocalUser } from '../../../models/user';
 
 /**
  * Lists all users
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');

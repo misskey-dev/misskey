@@ -1,8 +1,6 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import AuthSess, { pack } from '../../../../../models/auth-session';
+import { ILocalUser } from '../../../../../models/user';
 
 /**
  * @swagger
@@ -46,12 +44,8 @@ import AuthSess, { pack } from '../../../../../models/auth-session';
 
 /**
  * Show a session
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
 	const [token, tokenErr] = $.str.get(params.token);
 	if (tokenErr) return rej('invalid token param');

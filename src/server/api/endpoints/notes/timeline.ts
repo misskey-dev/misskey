@@ -1,16 +1,14 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { getFriends } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Get timeline of myself
  */
-module.exports = async (params, user, app) => {
+module.exports = async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';
@@ -43,6 +41,10 @@ module.exports = async (params, user, app) => {
 	// Get 'includeRenotedMyNotes' parameter
 	const [includeRenotedMyNotes = true, includeRenotedMyNotesErr] = $.bool.optional().get(params.includeRenotedMyNotes);
 	if (includeRenotedMyNotesErr) throw 'invalid includeRenotedMyNotes param';
+
+	// Get 'mediaOnly' parameter
+	const [mediaOnly, mediaOnlyErr] = $.bool.optional().get(params.mediaOnly);
+	if (mediaOnlyErr) throw 'invalid mediaOnly param';
 
 	const [followings, mutedUserIds] = await Promise.all([
 		// フォローを取得
@@ -134,6 +136,12 @@ module.exports = async (params, user, app) => {
 			}, {
 				poll: { $ne: null }
 			}]
+		});
+	}
+
+	if (mediaOnly) {
+		query.$and.push({
+			mediaIds: { $exists: true, $ne: [] }
 		});
 	}
 

@@ -1,9 +1,7 @@
-/**
- * Module dependencies
- */
 import rndstr from 'rndstr';
 import $ from 'cafy';
 import App, { isValidNameId, pack } from '../../../../models/app';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * @swagger
@@ -60,12 +58,8 @@ import App, { isValidNameId, pack } from '../../../../models/app';
 
 /**
  * Create an app
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
-module.exports = async (params, user) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'nameId' parameter
 	const [nameId, nameIdErr] = $.str.pipe(isValidNameId).get(params.nameId);
 	if (nameIdErr) return rej('invalid nameId param');

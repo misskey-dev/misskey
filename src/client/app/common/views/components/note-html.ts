@@ -40,6 +40,17 @@ export default Vue.component('mk-note-html', {
 			ast = this.ast;
 		}
 
+		if (ast.filter(x => x.type != 'hashtag').length == 0) {
+			return;
+		}
+
+		while (ast[ast.length - 1] && (
+			ast[ast.length - 1].type == 'hashtag' ||
+			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == ' ') ||
+			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == '\n'))) {
+			ast.pop();
+		}
+
 		// Parse ast to DOM
 		const els = flatten(ast.map(token => {
 			switch (token.type) {
@@ -92,7 +103,7 @@ export default Vue.component('mk-note-html', {
 				case 'hashtag':
 					return createElement('a', {
 						attrs: {
-							href: `${url}/search?q=${token.content}`,
+							href: `${url}/tags/${token.hashtag}`,
 							target: '_blank'
 						}
 					}, token.content);

@@ -203,6 +203,7 @@ root(isDark)
 				justify-content center
 				align-items center
 				margin-right 10px
+				width 16px
 
 			> *:last-child
 				flex 1 1 auto

@@ -1,17 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import User from '../../../../../models/user';
 import Reaction from '../../../../../models/note-reaction';
 
 /**
  * Aggregate reaction of a user
- *
- * @param {any} params
- * @return {Promise<any>}
  */
-module.exports = (params) => new Promise(async (res, rej) => {
+module.exports = (params: any) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
@@ -48,7 +42,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 			}}
 		]);
 
-	datas.forEach(data => {
+	datas.forEach((data: any) => {
 		data.date = data._id;
 		delete data._id;
 	});
@@ -58,7 +52,7 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	for (let i = 0; i < 30; i++) {
 		const day = new Date(new Date().setDate(new Date().getDate() - i));
 
-		const data = datas.filter(d =>
+		const data = datas.filter((d: any) =>
 			d.date.year == day.getFullYear() && d.date.month == day.getMonth() + 1 && d.date.day == day.getDate()
 		)[0];
 

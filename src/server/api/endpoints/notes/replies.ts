@@ -1,17 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { pack } from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 
 /**
- * Show a replies of a note
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
+ * Get replies of a note
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');
@@ -24,10 +18,6 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
 	if (offsetErr) return rej('invalid offset param');
 
-	// Get 'sort' parameter
-	const [sort = 'desc', sortError] = $.str.optional().or('desc asc').get(params.sort);
-	if (sortError) return rej('invalid sort param');
-
 	// Lookup note
 	const note = await Note.findOne({
 		_id: noteId
@@ -37,17 +27,8 @@ module.exports = (params, user) => new Promise(async (res, rej) => {
 		return rej('note not found');
 	}
 
-	// Issue query
-	const replies = await Note
-		.find({ replyId: note._id }, {
-			limit: limit,
-			skip: offset,
-			sort: {
-				_id: sort == 'asc' ? 1 : -1
-			}
-		});
+	const ids = (note._replyIds || []).slice(offset, offset + limit);
 
 	// Serialize
-	res(await Promise.all(replies.map(async note =>
-		await pack(note, user))));
+	res(await Promise.all(ids.map(id => pack(id, user))));
 });

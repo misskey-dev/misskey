@@ -23,9 +23,9 @@ export default Vue.extend({
 	},
 	computed: {
 		withGradient(): boolean {
-			return (this as any).os.isSignedIn
-				? (this as any).clientSettings.gradientWindowHeader != null
-					? (this as any).clientSettings.gradientWindowHeader
+			return this.$store.getters.isSignedIn
+				? this.$store.state.settings.gradientWindowHeader != null
+					? this.$store.state.settings.gradientWindowHeader
 					: false
 				: false;
 		}
@@ -36,7 +36,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 root(isDark)
 	background isDark ? #282C37 : #fff
-	border solid 1px rgba(#000, 0.075)
+	border solid 1px rgba(#000, isDark ? 0.2 : 0.075)
 	border-radius 6px
 	overflow hidden
 

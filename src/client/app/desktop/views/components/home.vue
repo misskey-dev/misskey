@@ -6,25 +6,29 @@
 			<div class="adder">
 				<p>%i18n:@add-widget%</p>
 				<select v-model="widgetAdderSelected">
-					<option value="profile">%i18n:@profile%</option>
-					<option value="calendar">%i18n:@calendar%</option>
-					<option value="timemachine">%i18n:@timemachine%</option>
-					<option value="activity">%i18n:@activity%</option>
-					<option value="rss">%i18n:@rss%</option>
-					<option value="trends">%i18n:@trends%</option>
-					<option value="photo-stream">%i18n:@photo-stream%</option>
-					<option value="slideshow">%i18n:@slideshow%</option>
-					<option value="version">%i18n:@version%</option>
-					<option value="broadcast">%i18n:@broadcast%</option>
-					<option value="notifications">%i18n:@notifications%</option>
-					<option value="users">%i18n:@users%</option>
-					<option value="polls">%i18n:@polls%</option>
-					<option value="post-form">%i18n:@post-form%</option>
-					<option value="messaging">%i18n:@messaging%</option>
-					<option value="server">%i18n:@server%</option>
-					<option value="donation">%i18n:@donation%</option>
-					<option value="nav">%i18n:@nav%</option>
-					<option value="tips">%i18n:@tips%</option>
+					<option value="profile">%i18n:common.widgets.profile%</option>
+					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
+					<option value="calendar">%i18n:common.widgets.calendar%</option>
+					<option value="timemachine">%i18n:common.widgets.timemachine%</option>
+					<option value="activity">%i18n:common.widgets.activity%</option>
+					<option value="rss">%i18n:common.widgets.rss%</option>
+					<option value="trends">%i18n:common.widgets.trends%</option>
+					<option value="photo-stream">%i18n:common.widgets.photo-stream%</option>
+					<option value="slideshow">%i18n:common.widgets.slideshow%</option>
+					<option value="version">%i18n:common.widgets.version%</option>
+					<option value="broadcast">%i18n:common.widgets.broadcast%</option>
+					<option value="notifications">%i18n:common.widgets.notifications%</option>
+					<option value="users">%i18n:common.widgets.users%</option>
+					<option value="polls">%i18n:common.widgets.polls%</option>
+					<option value="post-form">%i18n:common.widgets.post-form%</option>
+					<option value="messaging">%i18n:common.widgets.messaging%</option>
+					<option value="memo">%i18n:common.widgets.memo%</option>
+					<option value="hashtags">%i18n:common.widgets.hashtags%</option>
+					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
+					<option value="server">%i18n:common.widgets.server%</option>
+					<option value="donation">%i18n:common.widgets.donation%</option>
+					<option value="nav">%i18n:common.widgets.nav%</option>
+					<option value="tips">%i18n:common.widgets.tips%</option>
 				</select>
 				<button @click="addWidget">%i18n:@add%</button>
 			</div>
@@ -45,25 +49,24 @@
 				:key="place"
 			>
 				<div v-for="widget in widgets[place]" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="onWidgetContextmenu(widget.id)">
-					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="desktop"/>
 				</div>
 			</x-draggable>
 			<div class="main">
 				<a @click="hint">カスタマイズのヒント</a>
 				<div>
-					<mk-post-form v-if="clientSettings.showPostFormOnTopOfTl"/>
+					<mk-post-form v-if="$store.state.settings.showPostFormOnTopOfTl"/>
 					<mk-timeline ref="tl" @loaded="onTlLoaded"/>
 				</div>
 			</div>
 		</template>
 		<template v-else>
 			<div v-for="place in ['left', 'right']" :class="place">
-				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp"/>
+				<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" @chosen="warp" platform="desktop"/>
 			</div>
 			<div class="main">
-				<mk-post-form v-if="clientSettings.showPostFormOnTopOfTl"/>
-				<mk-timeline ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
-				<mk-mentions @loaded="onTlLoaded" v-if="mode == 'mentions'"/>
+				<mk-post-form class="form" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
+				<mk-timeline class="tl" cref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 			</div>
 		</template>
 	</div>
@@ -74,6 +77,50 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import * as uuid from 'uuid';
+
+const defaultDesktopHomeWidgets = {
+	left: [
+		'profile',
+		'calendar',
+		'activity',
+		'rss',
+		'hashtags',
+		'photo-stream',
+		'version'
+	],
+	right: [
+		'broadcast',
+		'notifications',
+		'users',
+		'polls',
+		'server',
+		'donation',
+		'nav',
+		'tips'
+	]
+};
+
+//#region Construct home data
+const _defaultDesktopHomeWidgets = [];
+
+defaultDesktopHomeWidgets.left.forEach(widget => {
+	_defaultDesktopHomeWidgets.push({
+		name: widget,
+		id: uuid(),
+		place: 'left',
+		data: {}
+	});
+});
+
+defaultDesktopHomeWidgets.right.forEach(widget => {
+	_defaultDesktopHomeWidgets.push({
+		name: widget,
+		id: uuid(),
+		place: 'right',
+		data: {}
+	});
+});
+//#endregion
 
 export default Vue.extend({
 	components: {
@@ -102,7 +149,7 @@ export default Vue.extend({
 
 	computed: {
 		home(): any[] {
-			return this.$store.state.settings.home;
+			return this.$store.state.settings.home || [];
 		},
 		left(): any[] {
 			return this.home.filter(w => w.place == 'left');
@@ -115,6 +162,16 @@ export default Vue.extend({
 				left: this.left,
 				right: this.right
 			};
+		}
+	},
+
+	created() {
+		if (this.$store.state.settings.home == null) {
+			this.api('i/update_home', {
+				home: _defaultDesktopHomeWidgets
+			}).then(() => {
+				this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
+			});
 		}
 	},
 
@@ -297,10 +354,17 @@ root(isDark)
 			width calc(100% - 275px * 2)
 			order 2
 
-			.mk-post-form
+			> .form
 				margin-bottom 16px
 				border solid 1px rgba(#000, 0.075)
 				border-radius 4px
+
+			@media (max-width 700px)
+				padding 0
+
+				> .tl
+					border none
+					border-radius 0
 
 		> *:not(.main)
 			width 275px

@@ -18,6 +18,7 @@ import parse from '../../text/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
+import Meta from '../../models/meta';
 
 type Reason = 'reply' | 'quote' | 'mention';
 
@@ -32,7 +33,7 @@ class NotificationManager {
 		reason: Reason;
 	}> = [];
 
-	constructor(user, note) {
+	constructor(user: IUser, note: any) {
 		this.user = user;
 		this.note = note;
 	}
@@ -94,7 +95,7 @@ export default async (user: IUser, data: {
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
 
-	const tags = data.tags || [];
+	let tags = data.tags || [];
 
 	let tokens: any[] = null;
 
@@ -114,6 +115,8 @@ export default async (user: IUser, data: {
 		});
 	}
 
+	tags = tags.filter(tag => tag.length <= 100);
+
 	if (data.visibleUsers) {
 		data.visibleUsers = data.visibleUsers.filter(x => x != null);
 	}
@@ -127,6 +130,7 @@ export default async (user: IUser, data: {
 		poll: data.poll,
 		cw: data.cw == null ? null : data.cw,
 		tags,
+		tagsLower: tags.map(tag => tag.toLowerCase()),
 		userId: user._id,
 		viaMobile: data.viaMobile,
 		geo: data.geo || null,
@@ -165,12 +169,47 @@ export default async (user: IUser, data: {
 
 	res(note);
 
-	// Increment notes count
+	//#region Increment notes count
+	if (isLocalUser(user)) {
+		Meta.update({}, {
+			$inc: {
+				'stats.notesCount': 1,
+				'stats.originalNotesCount': 1
+			}
+		}, { upsert: true });
+	} else {
+		Meta.update({}, {
+			$inc: {
+				'stats.notesCount': 1
+			}
+		}, { upsert: true });
+	}
+	//#endregion
+
+	// Increment notes count (user)
 	User.update({ _id: user._id }, {
 		$inc: {
 			notesCount: 1
 		}
 	});
+
+	if (data.reply) {
+		Note.update({ _id: data.reply._id }, {
+			$push: {
+				_replyIds: note._id
+			}
+		});
+	}
+
+	const isQuote = data.renote && (data.text || data.poll || data.media);
+
+	if (isQuote) {
+		Note.update({ _id: data.renote._id }, {
+			$push: {
+				_quoteIds: note._id
+			}
+		});
+	}
 
 	// Serialize
 	const noteObj = await pack(note);
@@ -183,6 +222,62 @@ export default async (user: IUser, data: {
 			: renderCreate(await renderNote(note));
 		return packAp(content);
 	};
+
+	//#region メンション
+	if (data.text) {
+		// TODO: Drop dupulicates
+		const mentionTokens = tokens
+			.filter(t => t.type == 'mention');
+
+		// TODO: Drop dupulicates
+		const mentionedUsers = (await Promise.all(mentionTokens.map(async m => {
+			try {
+				return await resolveUser(m.username, m.host);
+			} catch (e) {
+				return null;
+			}
+		}))).filter(x => x != null);
+
+		// Append mentions data
+		if (mentionedUsers.length > 0) {
+			const set = {
+				mentions: mentionedUsers.map(u => u._id),
+				mentionedRemoteUsers: mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
+					uri: (u as IRemoteUser).uri,
+					username: u.username,
+					host: u.host
+				}))
+			};
+
+			Note.update({ _id: note._id }, {
+				$set: set
+			});
+
+			Object.assign(note, set);
+		}
+
+		mentionedUsers.filter(u => isLocalUser(u)).forEach(async u => {
+			event(u, 'mention', noteObj);
+
+			// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
+			if (data.reply && data.reply.userId.equals(u._id)) return;
+			if (data.renote && data.renote.userId.equals(u._id)) return;
+
+			// Create notification
+			notify(u._id, user._id, 'mention', {
+				noteId: note._id
+			});
+
+			nm.push(u._id, 'mention');
+		});
+
+		if (isLocalUser(user)) {
+			mentionedUsers.filter(u => isRemoteUser(u)).forEach(async u => {
+				deliver(user, await render(), (u as IRemoteUser).inbox);
+			});
+		}
+	}
+	//#endregion
 
 	if (!silent) {
 		if (isLocalUser(user)) {
@@ -203,7 +298,9 @@ export default async (user: IUser, data: {
 		}
 
 		// Publish note to global timeline stream
-		publishGlobalTimelineStream(noteObj);
+		if (note.visibility == 'public' && note.replyId == null) {
+			publishGlobalTimelineStream(noteObj);
+		}
 
 		if (note.visibility == 'specified') {
 			data.visibleUsers.forEach(async u => {
@@ -264,55 +361,6 @@ export default async (user: IUser, data: {
 		deliver(user, await render(), data.renote._user.inbox);
 	}
 	//#endergion
-
-	//#region メンション
-	if (data.text) {
-		// TODO: Drop dupulicates
-		const mentions = tokens
-			.filter(t => t.type == 'mention');
-
-		let mentionedUsers = await Promise.all(mentions.map(async m => {
-			try {
-				return await resolveUser(m.username, m.host);
-			} catch (e) {
-				return null;
-			}
-		}));
-
-		// TODO: Drop dupulicates
-		mentionedUsers = mentionedUsers.filter(x => x != null);
-
-		mentionedUsers.filter(u => isLocalUser(u)).forEach(async u => {
-			event(u, 'mention', noteObj);
-
-			// 既に言及されたユーザーに対する返信や引用renoteの場合も無視
-			if (data.reply && data.reply.userId.equals(u._id)) return;
-			if (data.renote && data.renote.userId.equals(u._id)) return;
-
-			// Create notification
-			notify(u._id, user._id, 'mention', {
-				noteId: note._id
-			});
-
-			nm.push(u._id, 'mention');
-		});
-
-		if (isLocalUser(user)) {
-			mentionedUsers.filter(u => isRemoteUser(u)).forEach(async u => {
-				deliver(user, await render(), (u as IRemoteUser).inbox);
-			});
-		}
-
-		// Append mentions data
-		if (mentionedUsers.length > 0) {
-			Note.update({ _id: note._id }, {
-				$set: {
-					mentions: mentionedUsers.map(u => u._id)
-				}
-			});
-		}
-	}
-	//#endregion
 
 	// If has in reply to note
 	if (data.reply) {
@@ -403,7 +451,7 @@ export default async (user: IUser, data: {
 		//		$ne: note._id
 		//	}
 		//});
-		const existRenote = null;
+		const existRenote: INote | null = null;
 		//#endregion
 
 		if (!existRenote) {

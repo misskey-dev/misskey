@@ -1,7 +1,7 @@
 import * as debug from 'debug';
 
 import { IRemoteUser } from '../../../../models/user';
-import { IUndo } from '../../type';
+import { IUndo, IFollow } from '../../type';
 import unfollow from './follow';
 import Resolver from '../../resolver';
 
@@ -29,7 +29,7 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 
 	switch (object.type) {
 		case 'Follow':
-			unfollow(actor, object);
+			unfollow(actor, object as IFollow);
 			break;
 	}
 

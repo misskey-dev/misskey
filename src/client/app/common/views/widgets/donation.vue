@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-donation" :data-mobile="isMobile">
+<div class="mkw-donation" :data-mobile="platform == 'mobile'">
 	<article>
 		<h1>%fa:heart%%i18n:@title%</h1>
 		<p>

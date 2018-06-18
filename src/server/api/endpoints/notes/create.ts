@@ -1,9 +1,6 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
-import User, { ILocalUser } from '../../../../models/user';
+import User, { ILocalUser, IUser } from '../../../../models/user';
 import DriveFile from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import { IApp } from '../../../../models/app';
@@ -11,7 +8,7 @@ import { IApp } from '../../../../models/app';
 /**
  * Create a note
  */
-module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	// Get 'visibility' parameter
 	const [visibility = 'public', visibilityErr] = $.str.optional().or(['public', 'home', 'followers', 'specified', 'private']).get(params.visibility);
 	if (visibilityErr) return rej('invalid visibility');
@@ -20,7 +17,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	const [visibleUserIds, visibleUserIdsErr] = $.arr($.type(ID)).optional().unique().min(1).get(params.visibleUserIds);
 	if (visibleUserIdsErr) return rej('invalid visibleUserIds');
 
-	let visibleUsers = [];
+	let visibleUsers: IUser[] = [];
 	if (visibleUserIds !== undefined) {
 		visibleUsers = await Promise.all(visibleUserIds.map(id => User.findOne({
 			_id: id
@@ -132,7 +129,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	if (pollErr) return rej('invalid poll');
 
 	if (poll) {
-		(poll as any).choices = (poll as any).choices.map((choice, i) => ({
+		(poll as any).choices = (poll as any).choices.map((choice: string, i: number) => ({
 			id: i, // IDを付与
 			text: choice.trim(),
 			votes: 0
@@ -140,7 +137,7 @@ module.exports = (params, user: ILocalUser, app: IApp) => new Promise(async (res
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
-	if (text === undefined && files === null && renote === null && poll === undefined) {
+	if ((text === undefined || text === null) && files === null && renote === null && poll === undefined) {
 		return rej('text, mediaIds, renoteId or poll is required');
 	}
 

@@ -1,8 +1,9 @@
 import renderImage from './image';
 import renderKey from './key';
 import config from '../../../config';
+import { ILocalUser } from '../../../models/user';
 
-export default user => {
+export default (user: ILocalUser) => {
 	const id = `${config.url}/users/${user._id}`;
 
 	return {
@@ -15,8 +16,9 @@ export default user => {
 		preferredUsername: user.username,
 		name: user.name,
 		summary: user.description,
-		icon: user.avatarId && renderImage({ _id: user.avatarId }),
-		image: user.bannerId && renderImage({ _id: user.bannerId }),
+		icon: user.avatarId && renderImage(user.avatarId),
+		image: user.bannerId && renderImage(user.bannerId),
+		manuallyApprovesFollowers: user.isLocked,
 		publicKey: renderKey(user)
 	};
 };

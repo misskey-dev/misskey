@@ -49,6 +49,8 @@ import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import getKao from '../../../common/scripts/get-kao';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
+import parse from '../../../../../text/parse';
+import { host } from '../../../config';
 
 export default Vue.extend({
 	components: {
@@ -56,7 +58,25 @@ export default Vue.extend({
 		MkVisibilityChooser
 	},
 
-	props: ['reply', 'renote'],
+	props: {
+		reply: {
+			type: Object,
+			required: false
+		},
+		renote: {
+			type: Object,
+			required: false
+		},
+		initialText: {
+			type: String,
+			required: false
+		},
+		instant: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 
 	data() {
 		return {
@@ -85,11 +105,21 @@ export default Vue.extend({
 		},
 
 		placeholder(): string {
+			const xs = [
+				'%i18n:common.note-placeholders.a%',
+				'%i18n:common.note-placeholders.b%',
+				'%i18n:common.note-placeholders.c%',
+				'%i18n:common.note-placeholders.d%',
+				'%i18n:common.note-placeholders.e%',
+				'%i18n:common.note-placeholders.f%'
+			];
+			const x = xs[Math.floor(Math.random() * xs.length)];
+
 			return this.renote
 				? '%i18n:@quote-placeholder%'
 				: this.reply
 					? '%i18n:@reply-placeholder%'
-					: '%i18n:@note-placeholder%';
+					: x;
 		},
 
 		submitText(): string {
@@ -97,7 +127,7 @@ export default Vue.extend({
 				? '%i18n:@renote%'
 				: this.reply
 					? '%i18n:@reply%'
-					: '%i18n:@note%';
+					: '%i18n:@submit%';
 		},
 
 		canPost(): boolean {
@@ -106,23 +136,46 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		if (this.initialText) {
+			this.text = this.initialText;
+		}
+
 		if (this.reply && this.reply.user.host != null) {
 			this.text = `@${this.reply.user.username}@${this.reply.user.host} `;
 		}
 
+		if (this.reply && this.reply.text != null) {
+			const ast = parse(this.reply.text);
+
+			ast.filter(t => t.type == 'mention').forEach(x => {
+				const mention = x.host ? `@${x.username}@${x.host}` : `@${x.username}`;
+
+				// 自分は除外
+				if (this.$store.state.i.username == x.username && x.host == null) return;
+				if (this.$store.state.i.username == x.username && x.host == host) return;
+
+				// 重複は除外
+				if (this.text.indexOf(`${mention} `) != -1) return;
+
+				this.text += `${mention} `;
+			});
+		}
+
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
-			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
-			if (draft) {
-				this.text = draft.data.text;
-				this.files = draft.data.files;
-				if (draft.data.poll) {
-					this.poll = true;
-					this.$nextTick(() => {
-						(this.$refs.poll as any).set(draft.data.poll);
-					});
+			if (!this.instant) {
+				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
+				if (draft) {
+					this.text = draft.data.text;
+					this.files = draft.data.files;
+					if (draft.data.poll) {
+						this.poll = true;
+						this.$nextTick(() => {
+							(this.$refs.poll as any).set(draft.data.poll);
+						});
+					}
+					this.$emit('change-attached-media', this.files);
 				}
-				this.$emit('change-attached-media', this.files);
 			}
 
 			this.$nextTick(() => this.watch());
@@ -320,6 +373,8 @@ export default Vue.extend({
 		},
 
 		saveDraft() {
+			if (this.instant) return;
+
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
 			data[this.draftId] = {

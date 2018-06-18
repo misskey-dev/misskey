@@ -1,15 +1,13 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import History from '../../../../models/messaging-history';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/messaging-message';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Show messaging history
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');

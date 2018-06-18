@@ -118,6 +118,7 @@ export default Vue.extend({
 
 		this.connection.on('file_created', this.onStreamDriveFileCreated);
 		this.connection.on('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.on('file_deleted', this.onStreamDriveFileDeleted);
 		this.connection.on('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.on('folder_updated', this.onStreamDriveFolderUpdated);
 
@@ -130,27 +131,28 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.connection.off('file_created', this.onStreamDriveFileCreated);
 		this.connection.off('file_updated', this.onStreamDriveFileUpdated);
+		this.connection.off('file_deleted', this.onStreamDriveFileDeleted);
 		this.connection.off('folder_created', this.onStreamDriveFolderCreated);
 		this.connection.off('folder_updated', this.onStreamDriveFolderUpdated);
 		(this as any).os.streams.driveStream.dispose(this.connectionId);
 	},
 	methods: {
 		onContextmenu(e) {
-			contextmenu(e, [{
+			contextmenu((this as any).os)(e, [{
 				type: 'item',
 				text: '%i18n:@contextmenu.create-folder%',
 				icon: '%fa:R folder%',
-				onClick: this.createFolder
+				action: this.createFolder
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.upload%',
 				icon: '%fa:upload%',
-				onClick: this.selectLocalFile
+				action: this.selectLocalFile
 			}, {
 				type: 'item',
 				text: '%i18n:@contextmenu.url-upload%',
 				icon: '%fa:cloud-upload-alt%',
-				onClick: this.urlUpload
+				action: this.urlUpload
 			}]);
 		},
 
@@ -165,6 +167,10 @@ export default Vue.extend({
 			} else {
 				this.addFile(file, true);
 			}
+		},
+
+		onStreamDriveFileDeleted(fileId) {
+			this.removeFile(fileId);
 		},
 
 		onStreamDriveFolderCreated(folder) {

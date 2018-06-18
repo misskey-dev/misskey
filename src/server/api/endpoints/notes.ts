@@ -7,7 +7,7 @@ import Note, { pack } from '../../../models/note';
 /**
  * Get all notes
  */
-module.exports = (params) => new Promise(async (res, rej) => {
+module.exports = (params: any) => new Promise(async (res, rej) => {
 	// Get 'local' parameter
 	const [local, localErr] = $.bool.optional().get(params.local);
 	if (localErr) return rej('invalid local param');
@@ -53,7 +53,9 @@ module.exports = (params) => new Promise(async (res, rej) => {
 	const sort = {
 		_id: -1
 	};
-	const query = {} as any;
+	const query = {
+		visibility: 'public'
+	} as any;
 	if (sinceId) {
 		sort._id = 1;
 		query._id = {

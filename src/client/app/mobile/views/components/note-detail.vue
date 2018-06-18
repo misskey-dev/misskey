@@ -17,7 +17,13 @@
 	</div>
 	<div class="renote" v-if="isRenote">
 		<p>
-			<mk-avatar class="avatar" :user="note.user"/>%fa:retweet%<router-link class="name" :to="note.user | userPage">{{ note.user | userName }}</router-link>がRenote
+			<mk-avatar class="avatar" :user="note.user"/>
+			%fa:retweet%
+			<router-link class="name" :href="note.user | userPage">{{ note.user | userName }}</router-link>
+			<span>{{ '%i18n:@reposted-by%'.substr(0, '%i18n:@reposted-by%'.indexOf('{')) }}</span>
+			<a class="name" :href="note.user | userPage" v-user-preview="note.userId">{{ note.user | userName }}</a>
+			<span>{{ '%i18n:@reposted-by%'.substr('%i18n:@reposted-by%'.indexOf('}') + 1) }}</span>
+			<mk-time :time="note.createdAt"/>
 		</p>
 	</div>
 	<article>
@@ -30,18 +36,19 @@
 		</header>
 		<div class="body">
 			<div class="text">
-				<span v-if="p.isHidden" style="opacity: 0.5">(この投稿は非公開です)</span>
-				<mk-note-html v-if="p.text" :text="p.text" :i="os.i"/>
+				<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
+				<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
+				<mk-note-html v-if="p.text" :text="p.text" :i="$store.state.i"/>
 			</div>
 			<div class="tags" v-if="p.tags && p.tags.length > 0">
-				<router-link v-for="tag in p.tags" :key="tag" :to="`/search?q=#${tag}`">{{ tag }}</router-link>
+				<router-link v-for="tag in p.tags" :key="tag" :to="`/tags/${tag}`">{{ tag }}</router-link>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media" :raw="true"/>
 			</div>
 			<mk-poll v-if="p.poll" :note="p"/>
 			<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
-			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
+			<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 			<div class="map" v-if="p.geo" ref="map"></div>
 			<div class="renote" v-if="p.renote">
 				<mk-note-preview :note="p.renote"/>
@@ -80,7 +87,7 @@ import parse from '../../../../../text/parse';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
-import XSub from './note-detail.sub.vue';
+import XSub from './note.sub.vue';
 
 export default Vue.extend({
 	components: {
@@ -147,7 +154,7 @@ export default Vue.extend({
 
 		// Draw map
 		if (this.p.geo) {
-			const shouldShowMap = (this as any).os.isSignedIn ? (this as any).clientSettings.showMaps : true;
+			const shouldShowMap = this.$store.getters.isSignedIn ? this.$store.state.settings.showMaps : true;
 			if (shouldShowMap) {
 				(this as any).os.getGoogleMaps().then(maps => {
 					const uluru = new maps.LatLng(this.p.geo.coordinates[1], this.p.geo.coordinates[0]);
@@ -165,7 +172,7 @@ export default Vue.extend({
 	},
 
 	methods: {
-		fetchContext() {
+		fetchConversation() {
 			this.conversationFetching = true;
 
 			// Fetch conversation
@@ -209,8 +216,6 @@ export default Vue.extend({
 
 root(isDark)
 	overflow hidden
-	margin 0 auto
-	padding 0
 	width 100%
 	text-align left
 	background isDark ? #282C37 : #fff

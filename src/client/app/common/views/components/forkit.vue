@@ -13,9 +13,6 @@
 
 .a
 	display block
-	position absolute
-	top 0
-	right 0
 
 	> svg
 		display block

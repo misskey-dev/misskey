@@ -36,7 +36,7 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 
 	res();
 
-	const inc = {};
+	const inc: {[key: string]: number} = {};
 	inc[`reactionCounts.${reaction}`] = 1;
 
 	// Increment reactions count

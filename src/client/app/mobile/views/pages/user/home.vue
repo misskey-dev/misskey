@@ -25,7 +25,7 @@
 			<x-friends :user="user"/>
 		</div>
 	</section>
-	<section class="followers-you-know" v-if="os.isSignedIn && os.i.id !== user.id">
+	<section class="followers-you-know" v-if="$store.getters.isSignedIn && $store.state.i.id !== user.id">
 		<h2>%fa:users%%i18n:@followers-you-know%</h2>
 		<div>
 			<x-followers-you-know :user="user"/>

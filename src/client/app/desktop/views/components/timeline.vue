@@ -31,8 +31,23 @@ export default Vue.extend({
 		};
 	},
 
+	watch: {
+		src() {
+			this.saveSrc();
+		},
+
+		list() {
+			this.saveSrc();
+		}
+	},
+
 	created() {
-		if ((this as any).os.i.followingCount == 0) {
+		if (this.$store.state.device.tl) {
+			this.src = this.$store.state.device.tl.src;
+			if (this.src == 'list') {
+				this.list = this.$store.state.device.tl.arg;
+			}
+		} else if (this.$store.state.i.followingCount == 0) {
 			this.src = 'local';
 		}
 	},
@@ -44,6 +59,13 @@ export default Vue.extend({
 	},
 
 	methods: {
+		saveSrc() {
+			this.$store.commit('device/setTl', {
+				src: this.src,
+				arg: this.list
+			});
+		},
+
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
 		},

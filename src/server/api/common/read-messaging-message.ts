@@ -4,6 +4,7 @@ import { IMessagingMessage as IMessage } from '../../../models/messaging-message
 import publishUserStream from '../../../publishers/stream';
 import { publishMessagingStream } from '../../../publishers/stream';
 import { publishMessagingIndexStream } from '../../../publishers/stream';
+import User from '../../../models/user';
 
 /**
  * Mark as read message(s)
@@ -62,6 +63,13 @@ export default (
 		});
 
 	if (count == 0) {
+		// Update flag
+		User.update({ _id: userId }, {
+			$set: {
+				hasUnreadMessagingMessage: false
+			}
+		});
+
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishUserStream(userId, 'read_all_messaging_messages');
 	}

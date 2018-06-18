@@ -37,7 +37,7 @@ export default Vue.extend({
 	mounted() {
 		if (this.user.bannerUrl) {
 			window.addEventListener('load', this.onScroll);
-			window.addEventListener('scroll', this.onScroll);
+			window.addEventListener('scroll', this.onScroll, { passive: true });
 			window.addEventListener('resize', this.onScroll);
 		}
 	},
@@ -63,7 +63,7 @@ export default Vue.extend({
 		},
 
 		onBannerClick() {
-			if (!(this as any).os.isSignedIn || (this as any).os.i.id != this.user.id) return;
+			if (!this.$store.getters.isSignedIn || this.$store.state.i.id != this.user.id) return;
 
 			(this as any).apis.updateBanner().then(i => {
 				this.user.bannerUrl = i.bannerUrl;

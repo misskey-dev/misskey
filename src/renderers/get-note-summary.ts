@@ -3,6 +3,10 @@
  * @param {*} note (packされた)投稿
  */
 const summarize = (note: any): string => {
+	if (note.deletedAt) {
+		return '(削除された投稿)';
+	}
+
 	if (note.isHidden) {
 		return '(非公開の投稿)';
 	}

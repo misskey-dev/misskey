@@ -3,7 +3,7 @@ import * as debug from 'debug';
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/user';
 import announceNote from './note';
-import { IAnnounce } from '../../type';
+import { IAnnounce, INote } from '../../type';
 
 const log = debug('misskey:activitypub');
 
@@ -25,7 +25,7 @@ export default async (actor: IRemoteUser, activity: IAnnounce): Promise<void> =>
 
 	switch (object.type) {
 	case 'Note':
-		announceNote(resolver, actor, activity, object);
+		announceNote(resolver, actor, activity, object as INote);
 		break;
 
 	default:

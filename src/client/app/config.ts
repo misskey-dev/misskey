@@ -1,6 +1,8 @@
 declare const _HOST_: string;
 declare const _HOSTNAME_: string;
 declare const _URL_: string;
+declare const _NAME_: string;
+declare const _DESCRIPTION_: string;
 declare const _API_URL_: string;
 declare const _WS_URL_: string;
 declare const _DOCS_URL_: string;
@@ -17,10 +19,13 @@ declare const _VERSION_: string;
 declare const _CODENAME_: string;
 declare const _LICENSE_: string;
 declare const _GOOGLE_MAPS_API_KEY_: string;
+declare const _WELCOME_BG_URL_: string;
 
 export const host = _HOST_;
 export const hostname = _HOSTNAME_;
 export const url = _URL_;
+export const name = _NAME_;
+export const description = _DESCRIPTION_;
 export const apiUrl = _API_URL_;
 export const wsUrl = _WS_URL_;
 export const docsUrl = _DOCS_URL_;
@@ -37,3 +42,4 @@ export const version = _VERSION_;
 export const codename = _CODENAME_;
 export const license = _LICENSE_;
 export const googleMapsApiKey = _GOOGLE_MAPS_API_KEY_;
+export const welcomeBgUrl = _WELCOME_BG_URL_;

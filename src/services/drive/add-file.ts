@@ -7,15 +7,16 @@ import * as crypto from 'crypto';
 import * as _gm from 'gm';
 import * as debug from 'debug';
 import fileType = require('file-type');
-import prominence = require('prominence');
+const prominence = require('prominence');
 
-import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile, DriveFileChunk } from '../../models/drive-file';
+import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
 import event, { publishDriveStream } from '../../publishers/stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
-import DriveFileThumbnail, { getDriveFileThumbnailBucket, DriveFileThumbnailChunk } from '../../models/drive-file-thumbnail';
+import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import genThumbnail from '../../drive/gen-thumbnail';
+import delFile from './delete-file';
 
 const gm = _gm.subClass({
 	imageMagick: true
@@ -32,7 +33,7 @@ const writeChunks = (name: string, readable: stream.Readable, type: string, meta
 			readable.pipe(writeStream);
 		}));
 
-const writeThumbnailChunks = (name: string, readable: stream.Readable, originalId) =>
+const writeThumbnailChunks = (name: string, readable: stream.Readable, originalId: mongodb.ObjectID) =>
 	getDriveFileThumbnailBucket()
 		.then(bucket => new Promise((resolve, reject) => {
 			const writeStream = bucket.openUploadStream(name, {
@@ -58,31 +59,7 @@ async function deleteOldFile(user: IRemoteUser) {
 	});
 
 	if (oldFile) {
-		// チャンクをすべて削除
-		DriveFileChunk.remove({
-			files_id: oldFile._id
-		});
-
-		DriveFile.update({ _id: oldFile._id }, {
-			$set: {
-				'metadata.deletedAt': new Date(),
-				'metadata.isExpired': true
-			}
-		});
-
-		//#region サムネイルもあれば削除
-		const thumbnail = await DriveFileThumbnail.findOne({
-			'metadata.originalId': oldFile._id
-		});
-
-		if (thumbnail) {
-			DriveFileThumbnailChunk.remove({
-				files_id: thumbnail._id
-			});
-
-			DriveFileThumbnail.remove({ _id: thumbnail._id });
-		}
-		//#endregion
+		delFile(oldFile, true);
 	}
 }
 
@@ -112,7 +89,7 @@ export default async function(
 	const calcHash = new Promise<string>((res, rej) => {
 		const readable = fs.createReadStream(path);
 		const hash = crypto.createHash('md5');
-		const chunks = [];
+		const chunks: Buffer[] = [];
 		readable
 			.on('error', rej)
 			.pipe(hash)
@@ -164,8 +141,8 @@ export default async function(
 			'metadata.deletedAt': { $exists: false }
 		});
 
-		if (much !== null) {
-			log('file with same hash is found');
+		if (much) {
+			log(`file with same hash is found: ${much._id}`);
 			return much;
 		}
 	}
@@ -224,9 +201,9 @@ export default async function(
 		return driveFolder;
 	};
 
-	const properties = {};
+	const properties: {[key: string]: any} = {};
 
-	let propPromises = [];
+	let propPromises: Array<Promise<void>> = [];
 
 	const isImage = ['image/jpeg', 'image/gif', 'image/png'].includes(mime);
 
@@ -271,7 +248,7 @@ export default async function(
 		propPromises = [calcWh(), calcAvg()];
 	}
 
-	const [folder] = await Promise.all([fetchFolder(), propPromises]);
+	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
 	const metadata = {
 		userId: user._id,

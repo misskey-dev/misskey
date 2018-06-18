@@ -8,7 +8,7 @@
 	<div class="content">
 		<slot></slot>
 	</div>
-	<mk-stream-indicator v-if="os.isSignedIn"/>
+	<mk-stream-indicator v-if="$store.getters.isSignedIn"/>
 </div>
 </template>
 
@@ -32,7 +32,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection = (this as any).os.stream.getConnection();
 			this.connectionId = (this as any).os.stream.use();
 
@@ -40,7 +40,7 @@ export default Vue.extend({
 		}
 	},
 	beforeDestroy() {
-		if ((this as any).os.isSignedIn) {
+		if (this.$store.getters.isSignedIn) {
 			this.connection.off('notification', this.onNotification);
 			(this as any).os.stream.dispose(this.connectionId);
 		}

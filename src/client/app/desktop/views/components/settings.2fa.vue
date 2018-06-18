@@ -2,8 +2,8 @@
 <div class="2fa">
 	<p>%i18n:@intro%<a href="%i18n:@url%" target="_blank">%i18n:@detail%</a></p>
 	<div class="ui info warn"><p>%fa:exclamation-triangle%%i18n:@caution%</p></div>
-	<p v-if="!data && !os.i.twoFactorEnabled"><button @click="register" class="ui primary">%i18n:@register%</button></p>
-	<template v-if="os.i.twoFactorEnabled">
+	<p v-if="!data && !$store.state.i.twoFactorEnabled"><button @click="register" class="ui primary">%i18n:@register%</button></p>
+	<template v-if="$store.state.i.twoFactorEnabled">
 		<p>%i18n:@already-registered%</p>
 		<button @click="unregister" class="ui">%i18n:@unregister%</button>
 	</template>
@@ -54,7 +54,7 @@ export default Vue.extend({
 					password: password
 				}).then(() => {
 					(this as any).apis.notify('%i18n:@unregistered%');
-					(this as any).os.i.twoFactorEnabled = false;
+					this.$store.state.i.twoFactorEnabled = false;
 				});
 			});
 		},
@@ -64,7 +64,7 @@ export default Vue.extend({
 				token: this.token
 			}).then(() => {
 				(this as any).apis.notify('%i18n:@success%');
-				(this as any).os.i.twoFactorEnabled = true;
+				this.$store.state.i.twoFactorEnabled = true;
 			}).catch(() => {
 				(this as any).apis.notify('%i18n:@failed%');
 			});

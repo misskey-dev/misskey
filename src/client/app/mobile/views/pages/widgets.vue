@@ -8,17 +8,21 @@
 		<template v-if="customizing">
 			<header>
 				<select v-model="widgetAdderSelected">
-					<option value="profile">プロフィール</option>
-					<option value="calendar">カレンダー</option>
-					<option value="activity">アクティビティ</option>
-					<option value="rss">RSSリーダー</option>
-					<option value="photo-stream">フォトストリーム</option>
-					<option value="slideshow">スライドショー</option>
-					<option value="version">バージョン</option>
-					<option value="server">サーバー情報</option>
-					<option value="donation">寄付のお願い</option>
-					<option value="nav">ナビゲーション</option>
-					<option value="tips">ヒント</option>
+					<option value="profile">%i18n:common.widgets.profile%</option>
+					<option value="analog-clock">%i18n:common.widgets.analog-clock%</option>
+					<option value="calendar">%i18n:common.widgets.calendar%</option>
+					<option value="activity">%i18n:common.widgets.activity%</option>
+					<option value="rss">%i18n:common.widgets.rss%</option>
+					<option value="photo-stream">%i18n:common.widgets.photo-stream%</option>
+					<option value="slideshow">%i18n:common.widgets.slideshow%</option>
+					<option value="hashtags">%i18n:common.widgets.hashtags%</option>
+					<option value="posts-monitor">%i18n:common.widgets.posts-monitor%</option>
+					<option value="version">%i18n:common.widgets.version%</option>
+					<option value="server">%i18n:common.widgets.server%</option>
+					<option value="memo">%i18n:common.widgets.memo%</option>
+					<option value="donation">%i18n:common.widgets.donation%</option>
+					<option value="nav">%i18n:common.widgets.nav%</option>
+					<option value="tips">%i18n:common.widgets.tips%</option>
 				</select>
 				<button @click="addWidget">追加</button>
 				<p><a @click="hint">カスタマイズのヒント</a></p>
@@ -33,13 +37,13 @@
 						<span class="handle">%fa:bars%</span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)">%fa:times%</button>
 					</header>
 					<div @click="widgetFunc(widget.id)">
-						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :is-mobile="true"/>
+						<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="mobile"/>
 					</div>
 				</div>
 			</x-draggable>
 		</template>
 		<template v-else>
-			<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :is-mobile="true"/>
+			<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="mobile"/>
 		</template>
 	</main>
 </mk-ui>
