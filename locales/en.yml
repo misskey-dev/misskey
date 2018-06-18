@@ -551,7 +551,7 @@ desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
   messaging: "Messages"
-  game: "Play Reversi"
+  game: "Games"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
 desktop/views/components/ui.header.post.vue:
