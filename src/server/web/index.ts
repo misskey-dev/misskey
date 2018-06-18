@@ -49,9 +49,7 @@ const router = new Router();
 //#region static assets
 
 router.get('/assets/*', async ctx => {
-	// 互換性のため
-	const path = ctx.path.replace('.raw.js', '.js').replace('.min.js', '.js');
-	await send(ctx, path, {
+	await send(ctx, ctx.path, {
 		root: client,
 		maxage: ms('7 days'),
 		immutable: true

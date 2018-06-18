@@ -1,8 +1,8 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "4.1.1",
-	"clientVersion": "1.0.6542",
+	"version": "4.3.0",
+	"clientVersion": "1.0.6630",
 	"codename": "nighthike",
 	"main": "./built/index.js",
 	"private": true,
@@ -215,9 +215,7 @@
 		"webpack-cli": "2.1.4",
 		"websocket": "1.0.26",
 		"ws": "5.2.0",
-		"xev": "2.0.1"
-	},
-	"devDependencies": {
+		"xev": "2.0.1",
 		"@types/file-type": "5.2.1",
 		"@types/jsdom": "11.0.5"
 	}
