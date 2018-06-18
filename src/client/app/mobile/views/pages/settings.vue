@@ -12,6 +12,7 @@
 
 				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
 				<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
+				<ui-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi">%i18n:common.i-like-sushi%</ui-switch>
 
 				<div>
 					<div>%i18n:@timeline%</div>
@@ -170,6 +171,13 @@ export default Vue.extend({
 		onChangeCircleIcons(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'circleIcons',
+				value: v
+			});
+		},
+
+		onChangeILikeSushi(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'iLikeSushi',
 				value: v
 			});
 		},

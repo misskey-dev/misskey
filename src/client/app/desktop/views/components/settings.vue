@@ -45,6 +45,7 @@
 				<mk-switch v-model="darkmode" text="%i18n:@dark-mode%"/>
 				<mk-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons" text="%i18n:@circle-icons%"/>
 				<mk-switch v-model="$store.state.settings.gradientWindowHeader" @change="onChangeGradientWindowHeader" text="%i18n:@gradient-window-header%"/>
+				<mk-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi" text="%i18n:common.i-like-sushi%"/>
 			</div>
 			<mk-switch v-model="$store.state.settings.showPostFormOnTopOfTl" @change="onChangeShowPostFormOnTopOfTl" text="%i18n:@post-form-on-timeline%"/>
 			<mk-switch v-model="$store.state.settings.showReplyTarget" @change="onChangeShowReplyTarget" text="%i18n:@show-reply-target%"/>
@@ -359,6 +360,12 @@ export default Vue.extend({
 		onChangeCircleIcons(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'circleIcons',
+				value: v
+			});
+		},
+		onChangeILikeSushi(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'iLikeSushi',
 				value: v
 			});
 		},

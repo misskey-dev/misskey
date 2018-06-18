@@ -13,7 +13,7 @@
 					<h1 v-else><img :src="$store.state.device.darkmode ? 'assets/title.dark.svg' : 'assets/title.light.svg'" alt="Misskey"></h1>
 					<p class="powerd-by" v-if="name">powerd by <b>Misskey</b></p>
 					<p class="desc" v-html="description || '%i18n:common.about%'"></p>
-					<a ref="signup" @click="signup">%i18n:@signup%</a>
+					<a ref="signup" @click="signup">📦 %i18n:@signup%</a>
 				</div>
 				<div class="login">
 					<mk-signin/>

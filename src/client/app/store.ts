@@ -18,7 +18,8 @@ const defaultSettings = {
 	showRenotedMyNotes: true,
 	loadRemoteMedia: true,
 	disableViaMobile: false,
-	memo: null
+	memo: null,
+	iLikeSushi: false
 };
 
 const defaultDeviceSettings = {
