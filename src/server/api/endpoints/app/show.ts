@@ -1,8 +1,6 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import App, { pack } from '../../../../models/app';
+import App, { pack, IApp } from '../../../../models/app';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * @swagger
@@ -37,7 +35,7 @@ import App, { pack } from '../../../../models/app';
 /**
  * Show an app
  */
-module.exports = (params, user, app) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	// Get 'appId' parameter

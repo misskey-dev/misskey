@@ -11,14 +11,14 @@ const interval = 1000;
  * Report server stats regularly
  */
 export default function() {
-	const log = [];
+	const log: any[] = [];
 
 	ev.on('requestServerStatsLog', id => {
 		ev.emit('serverStatsLog:' + id, log);
 	});
 
 	async function tick() {
-		osUtils.cpuUsage(cpuUsage => {
+		osUtils.cpuUsage((cpuUsage: number) => {
 			const disk = diskusage.checkSync(os.platform() == 'win32' ? 'c:' : '/');
 			const stats = {
 				cpu_usage: cpuUsage,

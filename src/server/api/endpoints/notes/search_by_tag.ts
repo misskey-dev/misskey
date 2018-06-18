@@ -1,6 +1,6 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import { getFriendIds } from '../../common/get-friends';
 import { pack } from '../../../../models/note';
@@ -8,7 +8,7 @@ import { pack } from '../../../../models/note';
 /**
  * Search notes by tag
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'tag' parameter
 	const [tag, tagError] = $.str.get(params.tag);
 	if (tagError) return rej('invalid tag param');
@@ -69,7 +69,6 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 	const [limit = 10, limitErr] = $.num.optional().range(1, 30).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
-	let includeUsers = includeUserIds;
 	if (includeUserUsernames != null) {
 		const ids = (await Promise.all(includeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
@@ -77,10 +76,10 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			});
 			return _user ? _user._id : null;
 		}))).filter(id => id != null);
-		includeUsers = includeUsers.concat(ids);
+
+		ids.forEach(id => includeUserIds.push(id));
 	}
 
-	let excludeUsers = excludeUserIds;
 	if (excludeUserUsernames != null) {
 		const ids = (await Promise.all(excludeUserUsernames.map(async (username) => {
 			const _user = await User.findOne({
@@ -88,16 +87,9 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 			});
 			return _user ? _user._id : null;
 		}))).filter(id => id != null);
-		excludeUsers = excludeUsers.concat(ids);
+
+		ids.forEach(id => excludeUserIds.push(id));
 	}
-
-	search(res, rej, me, tag, includeUsers, excludeUsers, following,
-			mute, reply, renote, media, poll, sinceDate, untilDate, offset, limit);
-});
-
-async function search(
-	res, rej, me, tag, includeUserIds, excludeUserIds, following,
-	mute, reply, renote, media, poll, sinceDate, untilDate, offset, max) {
 
 	let q: any = {
 		$and: [{
@@ -105,7 +97,7 @@ async function search(
 		}]
 	};
 
-	const push = x => q.$and.push(x);
+	const push = (x: any) => q.$and.push(x);
 
 	if (includeUserIds && includeUserIds.length != 0) {
 		push({
@@ -320,10 +312,10 @@ async function search(
 			sort: {
 				_id: -1
 			},
-			limit: max,
+			limit: limit,
 			skip: offset
 		});
 
 	// Serialize
 	res(await Promise.all(notes.map(note => pack(note, me))));
-}
+});

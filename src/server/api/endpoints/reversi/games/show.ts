@@ -1,8 +1,9 @@
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import ReversiGame, { pack } from '../../../../../models/reversi-game';
 import Reversi from '../../../../../reversi/core';
+import { ILocalUser } from '../../../../../models/user';
 
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'gameId' parameter
 	const [gameId, gameIdErr] = $.type(ID).get(params.gameId);
 	if (gameIdErr) return rej('invalid gameId param');

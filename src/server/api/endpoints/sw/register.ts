@@ -1,13 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
 import Subscription from '../../../../models/sw-subscription';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * subscribe service worker
  */
-module.exports = async (params, user, app) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'endpoint' parameter
 	const [endpoint, endpointErr] = $.str.get(params.endpoint);
 	if (endpointErr) return rej('invalid endpoint param');

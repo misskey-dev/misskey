@@ -14,7 +14,6 @@ import reversiGameStream from './stream/reversi-game';
 import reversiStream from './stream/reversi';
 import serverStatsStream from './stream/server-stats';
 import notesStatsStream from './stream/notes-stats';
-import requestsStream from './stream/requests';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 
@@ -36,11 +35,6 @@ module.exports = (server: http.Server) => {
 
 		if (request.resourceURL.pathname === '/notes-stats') {
 			notesStatsStream(request, connection);
-			return;
-		}
-
-		if (request.resourceURL.pathname === '/requests') {
-			requestsStream(request, connection);
 			return;
 		}
 

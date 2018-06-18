@@ -1,16 +1,14 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
+import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack, ILocalUser } from '../../../../models/user';
 import event from '../../../../publishers/stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
+import { IApp } from '../../../../models/app';
 
 /**
  * Update myself
  */
-module.exports = async (params, user, app) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	const updates = {} as any;

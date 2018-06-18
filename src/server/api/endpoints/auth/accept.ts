@@ -1,12 +1,10 @@
-/**
- * Module dependencies
- */
 import rndstr from 'rndstr';
 const crypto = require('crypto');
 import $ from 'cafy';
 import App from '../../../../models/app';
 import AuthSess from '../../../../models/auth-session';
 import AccessToken from '../../../../models/access-token';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * @swagger
@@ -33,12 +31,8 @@ import AccessToken from '../../../../models/access-token';
 
 /**
  * Accept
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
 	const [token, tokenErr] = $.str.get(params.token);
 	if (tokenErr) return rej('invalid token param');

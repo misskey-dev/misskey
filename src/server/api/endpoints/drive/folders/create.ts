@@ -1,14 +1,12 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../publishers/stream';
+import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Create drive folder
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name = '無題のフォルダー', nameErr] = $.str.optional().pipe(isValidFolderName).get(params.name);
 	if (nameErr) return rej('invalid name param');

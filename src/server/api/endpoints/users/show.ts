@@ -1,8 +1,5 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import User, { pack } from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 
 const cursorOption = { fields: { data: false } };
@@ -10,7 +7,7 @@ const cursorOption = { fields: { data: false } };
 /**
  * Show user(s)
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	let user;
 
 	// Get 'userId' parameter
@@ -49,7 +46,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 				return rej('failed to resolve remote user');
 			}
 		} else {
-			const q = userId !== undefined
+			const q: any = userId !== undefined
 				? { _id: userId }
 				: { usernameLower: username.toLowerCase(), host: null };
 

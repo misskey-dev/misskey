@@ -1,15 +1,13 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Get timeline of local
  */
-module.exports = async (params, user) => {
+module.exports = async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';

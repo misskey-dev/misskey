@@ -1,15 +1,12 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Mute from '../../../../models/mute';
-import { pack } from '../../../../models/user';
+import { pack, ILocalUser } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 
 /**
  * Get muted users of a user
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'iknow' parameter
 	const [iknow = false, iknowErr] = $.bool.optional().get(params.iknow);
 	if (iknowErr) return rej('invalid iknow param');

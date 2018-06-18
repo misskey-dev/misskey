@@ -61,7 +61,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		}
 	});
 
-	async function updateSettings(settings) {
+	async function updateSettings(settings: any) {
 		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (game.isStarted) return;
@@ -78,7 +78,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		publishReversiGameStream(gameId, 'update-settings', settings);
 	}
 
-	async function initForm(form) {
+	async function initForm(form: any) {
 		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (game.isStarted) return;
@@ -100,7 +100,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		});
 	}
 
-	async function updateForm(id, value) {
+	async function updateForm(id: string, value: any) {
 		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (game.isStarted) return;
@@ -108,7 +108,7 @@ export default function(request: websocket.request, connection: websocket.connec
 
 		const form = game.user1Id.equals(user._id) ? game.form2 : game.form1;
 
-		const item = form.find(i => i.id == id);
+		const item = form.find((i: any) => i.id == id);
 
 		if (item == null) return;
 
@@ -131,7 +131,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		});
 	}
 
-	async function message(message) {
+	async function message(message: any) {
 		message.id = Math.random();
 		publishReversiGameStream(gameId, 'message', {
 			userId: user._id,
@@ -246,7 +246,7 @@ export default function(request: websocket.request, connection: websocket.connec
 	}
 
 	// 石を打つ
-	async function set(pos) {
+	async function set(pos: number) {
 		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (!game.isStarted) return;
@@ -315,7 +315,7 @@ export default function(request: websocket.request, connection: websocket.connec
 		}
 	}
 
-	async function check(crc32) {
+	async function check(crc32: string) {
 		const game = await ReversiGame.findOne({ _id: gameId });
 
 		if (!game.isStarted) return;

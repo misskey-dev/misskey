@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import event from '../../../../publishers/stream';
 
-module.exports = async (params, user) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'home' parameter
 	const [home, homeErr] = $.arr(
 		$.obj.strict()

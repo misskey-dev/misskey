@@ -203,7 +203,7 @@ export default class Reversi {
 	 * 打つことができる場所を取得します
 	 */
 	public canPutSomewhere(color: Color): number[] {
-		const result = [];
+		const result: number[] = [];
 
 		this.board.forEach((x, i) => {
 			if (this.canPut(color, i)) result.push(i);
@@ -239,7 +239,7 @@ export default class Reversi {
 		const enemyColor = !color;
 
 		// ひっくり返せる石(の位置)リスト
-		let stones = [];
+		let stones: number[] = [];
 
 		const initPos = pos;
 

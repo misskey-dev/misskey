@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+const deepcopy = require('deepcopy');
 import sequential = require('promise-sequential');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
@@ -152,14 +152,6 @@ export function isValidBirthday(birthday: string): boolean {
 	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
 }
 //#endregion
-
-export function init(user): IUser {
-	user._id = new mongo.ObjectID(user._id);
-	user.avatarId = new mongo.ObjectID(user.avatarId);
-	user.bannerId = new mongo.ObjectID(user.bannerId);
-	user.pinnedNoteId = new mongo.ObjectID(user.pinnedNoteId);
-	return user;
-}
 
 /**
  * Userを物理削除します

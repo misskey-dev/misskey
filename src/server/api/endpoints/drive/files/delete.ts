@@ -2,11 +2,12 @@ import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../publishers/stream';
+import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Delete a file
  */
-module.exports = async (params, user) => {
+module.exports = async (params: any, user: ILocalUser) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
 	if (fileIdErr) throw 'invalid fileId param';

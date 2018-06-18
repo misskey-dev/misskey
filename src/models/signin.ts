@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+const deepcopy = require('deepcopy');
 import db from '../db/mongodb';
 
 const Signin = db.get<ISignin>('signin');

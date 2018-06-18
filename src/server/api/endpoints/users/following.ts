@@ -1,20 +1,13 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 
 /**
  * Get following users of a user
- *
- * @param {any} params
- * @param {any} me
- * @return {Promise<any>}
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');

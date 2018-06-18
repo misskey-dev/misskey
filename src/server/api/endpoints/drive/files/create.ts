@@ -1,15 +1,13 @@
-/**
- * Module dependencies
- */
 import * as fs from 'fs';
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
 import create from '../../../../../services/drive/add-file';
+import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Create a file
  */
-module.exports = async (file, params, user): Promise<any> => {
+module.exports = async (file: any, params: any, user: ILocalUser): Promise<any> => {
 	if (file == null) {
 		throw 'file is required';
 	}

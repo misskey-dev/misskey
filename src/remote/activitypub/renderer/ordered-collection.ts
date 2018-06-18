@@ -1,4 +1,4 @@
-export default (id, totalItems, orderedItems) => ({
+export default (id: string, totalItems: any, orderedItems: any) => ({
 	id,
 	type: 'OrderedCollection',
 	totalItems,

@@ -1,13 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import DriveFile, { pack } from '../../../../models/drive-file';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Get drive files
  */
-module.exports = async (params, user, app) => {
+module.exports = async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';

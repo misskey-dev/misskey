@@ -60,7 +60,7 @@ function main() {
 /**
  * Init master process
  */
-async function masterMain(opt) {
+async function masterMain(opt: any) {
 	let config: Config;
 
 	try {
@@ -91,7 +91,7 @@ async function masterMain(opt) {
 /**
  * Init worker process
  */
-async function workerMain(opt) {
+async function workerMain(opt: any) {
 	if (!opt['only-processor']) {
 		// start server
 		await require('./server').default();

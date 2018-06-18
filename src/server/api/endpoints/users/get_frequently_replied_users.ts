@@ -1,11 +1,8 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
-import User, { pack } from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/user';
 
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
@@ -64,7 +61,7 @@ module.exports = (params, me) => new Promise(async (res, rej) => {
 		}
 	});
 
-	const repliedUsers = {};
+	const repliedUsers: any = {};
 
 	// Extract replies from recent notes
 	replyTargetNotes.forEach(note => {

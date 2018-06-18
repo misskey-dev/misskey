@@ -1,9 +1,10 @@
 import DriveFile from '../../../models/drive-file';
+import { ILocalUser } from '../../../models/user';
 
 /**
  * Get drive information
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Calculate drive usage
 	const usage = await DriveFile
 		.aggregate([{

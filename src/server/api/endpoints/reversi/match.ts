@@ -1,11 +1,11 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Matching, { pack as packMatching } from '../../../../models/reversi-matching';
 import ReversiGame, { pack as packGame } from '../../../../models/reversi-game';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import publishUserStream, { publishReversiStream } from '../../../../publishers/stream';
 import { eighteight } from '../../../../reversi/maps';
 
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [childId, childIdErr] = $.type(ID).get(params.userId);
 	if (childIdErr) return rej('invalid userId param');

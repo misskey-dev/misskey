@@ -1,13 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
+import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Find a file(s)
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $.str.get(params.name);
 	if (nameErr) return rej('invalid name param');

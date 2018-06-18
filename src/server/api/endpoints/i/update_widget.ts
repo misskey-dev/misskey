@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 import event from '../../../../publishers/stream';
 
-module.exports = async (params, user) => new Promise(async (res, rej) => {
+module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'id' parameter
 	const [id, idErr] = $.str.get(params.id);
 	if (idErr) return rej('invalid id param');
@@ -18,7 +18,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	//#region Desktop home
 	if (widget == null && user.clientSettings.home) {
 		const desktopHome = user.clientSettings.home;
-		widget = desktopHome.find(w => w.id == id);
+		widget = desktopHome.find((w: any) => w.id == id);
 		if (widget) {
 				widget.data = data;
 
@@ -34,7 +34,7 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	//#region Mobile home
 	if (widget == null && user.clientSettings.mobileHome) {
 		const mobileHome = user.clientSettings.mobileHome;
-		widget = mobileHome.find(w => w.id == id);
+		widget = mobileHome.find((w: any) => w.id == id);
 		if (widget) {
 				widget.data = data;
 
@@ -50,8 +50,8 @@ module.exports = async (params, user) => new Promise(async (res, rej) => {
 	//#region Deck
 	if (widget == null && user.clientSettings.deck && user.clientSettings.deck.columns) {
 		const deck = user.clientSettings.deck;
-		deck.columns.filter(c => c.type == 'widgets').forEach(c => {
-			c.widgets.forEach(w => {
+		deck.columns.filter((c: any) => c.type == 'widgets').forEach((c: any) => {
+			c.widgets.forEach((w: any) => {
 				if (w.id == id) widget = w;
 			});
 		});

@@ -45,7 +45,10 @@ module.exports = () => new Promise(async (res, rej) => {
 		return res([]);
 	}
 
-	const tags = [];
+	const tags: Array<{
+		name: string;
+		count: number;
+	}> = [];
 
 	// カウント
 	data.map(x => x._id).forEach(x => {

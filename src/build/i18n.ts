@@ -2,7 +2,7 @@
  * Replace i18n texts
  */
 
-import locale, { isAvailableLanguage, LocaleObject, LocaleObjectChildren } from '../../locales';
+import locale, { isAvailableLanguage, LocaleObject } from '../../locales';
 
 export default class Replacer {
 	private lang: string;
@@ -24,7 +24,7 @@ export default class Replacer {
 
 		const texts = locale[this.lang];
 
-		let text: LocaleObjectChildren = texts;
+		let text = texts;
 
 		if (path) {
 			if (text.hasOwnProperty(path)) {

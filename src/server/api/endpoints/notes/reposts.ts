@@ -1,17 +1,11 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { pack } from '../../../../models/note';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Show a renotes of a note
- *
- * @param {any} params
- * @param {any} user
- * @return {Promise<any>}
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');

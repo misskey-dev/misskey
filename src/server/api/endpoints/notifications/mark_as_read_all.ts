@@ -1,11 +1,11 @@
 import Notification from '../../../../models/notification';
 import event from '../../../../publishers/stream';
-import User from '../../../../models/user';
+import User, { ILocalUser } from '../../../../models/user';
 
 /**
  * Mark as read all notifications
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Update documents
 	await Notification.update({
 		notifieeId: user._id,

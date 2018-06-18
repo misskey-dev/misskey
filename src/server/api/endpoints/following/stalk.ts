@@ -1,10 +1,11 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Following from '../../../../models/following';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Stalk a user
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'userId' parameter

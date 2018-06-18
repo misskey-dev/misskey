@@ -1,13 +1,10 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/user';
 
 /**
  * Search a user by username
  */
-module.exports = (params, me) => new Promise(async (res, rej) => {
+module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
 	const [query, queryError] = $.str.get(params.query);
 	if (queryError) return rej('invalid query param');

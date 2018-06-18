@@ -4,7 +4,7 @@ import Xev from 'xev';
 const ev = new Xev();
 
 export default function() {
-	const log = [];
+	const log: any[] = [];
 
 	const p = childProcess.fork(__dirname + '/notes-stats-child.js');
 

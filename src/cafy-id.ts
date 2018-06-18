@@ -1,8 +1,8 @@
 import * as mongo from 'mongodb';
 import { Query } from 'cafy';
 
-export const isAnId = x => mongo.ObjectID.isValid(x);
-export const isNotAnId = x => !isAnId(x);
+export const isAnId = (x: any) => mongo.ObjectID.isValid(x);
+export const isNotAnId = (x: any) => !isAnId(x);
 
 /**
  * ID

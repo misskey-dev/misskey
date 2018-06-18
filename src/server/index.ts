@@ -62,7 +62,7 @@ app.use(mount(require('./web')));
 
 function createServer() {
 	if (config.https) {
-		const certs = {};
+		const certs: any = {};
 		Object.keys(config.https).forEach(k => {
 			certs[k] = fs.readFileSync(config.https[k]);
 		});

@@ -1,17 +1,15 @@
-/**
- * Module dependencies
- */
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Notification from '../../../../models/notification';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/notification';
 import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
+import { ILocalUser } from '../../../../models/user';
 
 /**
  * Get notifications
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following = false, followingError] =
 		$.bool.optional().get(params.following);

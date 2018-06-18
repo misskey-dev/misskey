@@ -1,11 +1,11 @@
 import $ from 'cafy'; import ID from '../../../../../cafy-id';
 import acceptFollowRequest from '../../../../../services/following/requests/accept';
-import User from '../../../../../models/user';
+import User, { ILocalUser } from '../../../../../models/user';
 
 /**
  * Accept a follow request
  */
-module.exports = (params, user) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [followerId, followerIdErr] = $.type(ID).get(params.userId);
 	if (followerIdErr) return rej('invalid userId param');

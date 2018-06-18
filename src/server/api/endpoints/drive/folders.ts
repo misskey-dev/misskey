@@ -7,7 +7,7 @@ import DriveFolder, { pack } from '../../../../models/drive-folder';
 /**
  * Get drive folders
  */
-module.exports = (params, user, app) => new Promise(async (res, rej) => {
+module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');

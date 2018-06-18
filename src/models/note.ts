@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+const deepcopy = require('deepcopy');
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import { IUser, pack as packUser } from './user';
@@ -37,7 +37,11 @@ export type INote = {
 	mediaIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
-	poll: any; // todo
+	poll: {
+		choices: Array<{
+			id: number;
+		}>
+	};
 	text: string;
 	tags: string[];
 	tagsLower: string[];
@@ -304,7 +308,7 @@ export const pack = async (
 
 				if (vote != null) {
 					const myChoice = poll.choices
-						.filter(c => c.id == vote.choice)[0];
+						.filter((c: any) => c.id == vote.choice)[0];
 
 					myChoice.isVoted = true;
 				}
