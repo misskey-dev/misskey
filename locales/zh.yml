@@ -3,7 +3,7 @@ meta:
   lang: "中文(简体)"
   divider: ""
 common:
-  misskey: "A planet of fediverse"
+  misskey: "A ⭐ of fediverse"
   about-title: "A ⭐ of fediverse."
   about: "Misskeyを見つけていただき、ありがとうございます。Misskeyは、地球で生まれた<b>分散マイクロブログSNS</b>です。Fediverse(様々なSNSで構成される宇宙)の中に存在するため、他のSNSと相互に繋がっています。暫し都会の喧騒から離れて、新しいインターネットにダイブしてみませんか。"
   time:
@@ -228,6 +228,7 @@ common/views/widgets/posts-monitor.vue:
 common/views/widgets/hashtags.vue:
   title: "ハッシュタグ"
   count: "{}人が投稿"
+  empty: "トレンドなし"
 common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
