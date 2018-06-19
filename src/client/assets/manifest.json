@@ -37,6 +37,6 @@
 		}
 	],
 	"share_target": {
-		"url_template": "share?text={title}%20-%20{text}%20-%20{url}"
+		"url_template": "share?text=【{title}】%0A{text}%0A{url}"
 	}
 }
