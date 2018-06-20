@@ -1,8 +1,8 @@
 <template>
 <mk-ui>
 	<div class="zwwan0di1v4356rmdbjmwnn32tptpdp2" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
-		<div class="is-suspended" v-if="user.isSuspended || true">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
-		<div class="is-remote" v-if="user.host != null || true">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
+		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
+		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<main>
 			<div class="main">
 				<x-header :user="user"/>

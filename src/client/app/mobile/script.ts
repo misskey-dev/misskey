@@ -88,7 +88,7 @@ init((launch) => {
 	launch(router, os => ({
 		chooseDriveFolder,
 		chooseDriveFile,
-		dialog,
+		dialog: dialog(os),
 		input,
 		post: post(os),
 		notify
