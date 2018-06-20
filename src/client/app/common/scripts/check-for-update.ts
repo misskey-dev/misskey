@@ -31,10 +31,6 @@ export default async function(mios: MiOS, force = false, silent = false) {
 
 		return newer;
 	} else {
-		mios.apis.dialog({
-			title: '%i18n:common.update-available-title%',
-			text: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-		});
 		return null;
 	}
 }
