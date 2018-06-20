@@ -47,7 +47,7 @@ common:
   ok: "OK"
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
-  i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
+  i-like-sushi: "Wolę sushi od puddingu"
   widgets:
     analog-clock: "Zegar analogowy"
     profile: "Profil"
