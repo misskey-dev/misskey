@@ -40,7 +40,7 @@
 			<div class="text">
 				<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
 				<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
-				<mk-note-html v-if="p.text" :text="p.text" :i="$store.state.i"/>
+				<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
 			</div>
 			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media" :raw="true"/>

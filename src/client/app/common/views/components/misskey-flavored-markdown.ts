@@ -10,7 +10,7 @@ const flatten = list => list.reduce(
 	(a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
 );
 
-export default Vue.component('mk-note-html', {
+export default Vue.component('misskey-flavored-markdown', {
 	props: {
 		text: {
 			type: String,

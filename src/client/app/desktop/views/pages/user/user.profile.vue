@@ -15,7 +15,6 @@
 		</button>
 		<button class="mute ui" @click="list">%fa:list% リストに追加</button>
 	</div>
-	<div class="description" v-if="user.description">{{ user.description }}</div>
 	<div class="birthday" v-if="user.host === null && user.profile.birthday">
 		<p>%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
 	</div>
@@ -116,8 +115,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.profile
-	background #fff
+root(isDark)
+	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
@@ -153,11 +152,6 @@ export default Vue.extend({
 			&:not(:last-child)
 				margin-bottom 12px
 
-	> .description
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
 	> .birthday
 		padding 16px
 		color #555
@@ -191,5 +185,11 @@ export default Vue.extend({
 			> i
 				margin-left 8px
 				margin-right 8px
+
+.profile[data-darkmode]
+	root(true)
+
+.profile:not([data-darkmode])
+	root(false)
 
 </style>

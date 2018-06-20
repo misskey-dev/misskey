@@ -13,7 +13,7 @@
 				</div>
 			</header>
 			<div class="text">
-				<mk-note-html v-if="note.text" :text="note.text"/>
+				<misskey-flavored-markdown v-if="note.text" :text="note.text"/>
 			</div>
 		</div>
 	</div>

@@ -5,17 +5,15 @@
 	<div class="banner-container" :style="style">
 		<div class="banner" ref="banner" :style="style" @click="onBannerClick"></div>
 		<div class="fade"></div>
-	</div>
-	<div class="container">
-		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 		<div class="title">
 			<p class="name">{{ user | userName }}</p>
 			<p class="username"><mk-acct :user="user"/></p>
 			<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker%{{ user.profile.location }}</p>
 		</div>
-		<footer>
-			<router-link :to="user | userPage" :data-active="$parent.page == 'home'">%fa:home%ホーム</router-link>
-		</footer>
+	</div>
+	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+	<div class="body">
+		<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
 	</div>
 </div>
 </template>
@@ -76,12 +74,11 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.header
-	$footer-height = 58px
-
+root(isDark)
+	background isDark ? #282C37 : #fff
+	border 1px solid rgba(#000, 0.075)
+	border-radius 6px
 	overflow hidden
-	background #f7f7f7
-	box-shadow 0 1px 1px rgba(#000, 0.075)
 
 	> .is-suspended
 	> .is-remote
@@ -110,7 +107,6 @@ export default Vue.extend({
 			> .fade
 				background linear-gradient(transparent, rgba(#000, 0.7))
 
-		> .container
 			> .title
 				color #fff
 
@@ -118,7 +114,7 @@ export default Vue.extend({
 					text-shadow 0 0 8px #000
 
 	> .banner-container
-		height 320px
+		height 250px
 		overflow hidden
 		background-size cover
 		background-position center
@@ -136,37 +132,21 @@ export default Vue.extend({
 			width 100%
 			height 78px
 
-	> .container
-		max-width 1200px
-		margin 0 auto
-
-		> .avatar
-			display block
-			position absolute
-			bottom 16px
-			left 16px
-			z-index 2
-			width 160px
-			height 160px
-			border solid 3px #fff
-			border-radius 8px
-			box-shadow 1px 1px 3px rgba(#000, 0.2)
-
 		> .title
 			position absolute
-			bottom $footer-height
+			bottom 0
 			left 0
 			width 100%
-			padding 0 0 8px 195px
+			padding 0 0 8px 154px
 			color #5e6367
 			font-family '游ゴシック', 'YuGothic', 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'Meiryo', 'メイリオ', sans-serif
 
 			> .name
 				display block
 				margin 0
-				line-height 40px
+				line-height 32px
 				font-weight bold
-				font-size 2em
+				font-size 1.8em
 
 			> .username
 			> .location
@@ -178,41 +158,24 @@ export default Vue.extend({
 				> i
 					margin-right 4px
 
-		> footer
-			z-index 1
-			height $footer-height
-			padding-left 195px
+	> .avatar
+		display block
+		position absolute
+		top 170px
+		left 16px
+		z-index 2
+		width 120px
+		height 120px
+		box-shadow 1px 1px 3px rgba(#000, 0.2)
 
-			> a
-				display inline-block
-				margin 0
-				padding 0 16px
-				height $footer-height
-				line-height $footer-height
-				color #555
+	> .body
+		padding 16px 16px 16px 154px
+		color isDark ? #c5ced6 : #555
 
-				&[data-active]
-					border-bottom solid 4px $theme-color
+.header[data-darkmode]
+	root(true)
 
-				> i
-					margin-right 6px
-
-			> button
-				display block
-				position absolute
-				top 0
-				right 0
-				margin 8px
-				padding 0
-				width $footer-height - 16px
-				line-height $footer-height - 16px - 2px
-				font-size 1.2em
-				color #777
-				border solid 1px #eee
-				border-radius 4px
-
-				&:hover
-					color #555
-					border solid 1px #ddd
+.header:not([data-darkmode])
+	root(false)
 
 </style>

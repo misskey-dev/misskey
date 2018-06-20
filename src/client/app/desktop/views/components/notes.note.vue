@@ -25,7 +25,7 @@
 						<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
 						<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<mk-note-html v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i" :class="$style.text"/>
+						<misskey-flavored-markdown v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote">RP:</a>
 					</div>
 					<div class="media" v-if="p.media.length > 0">
