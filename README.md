@@ -26,7 +26,7 @@ ultimately sophisticated professional microblogging software.
   * and widgets!
 * Private messages
 * Mute
-* Streaming
+* Real-time timelines
 * ActivityPub compatible
 
 and more! You can see it with your own eyes at [misskey.xyz](https://misskey.xyz).
