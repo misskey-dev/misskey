@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parse from '../../../../../text/parse';
+import parse from '../../../../../mfm/parse';
 
 export default Vue.extend({
 	props: {

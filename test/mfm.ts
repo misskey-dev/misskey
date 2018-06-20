@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 
-import analyze from '../src/text/parse';
-import syntaxhighlighter from '../src/text/parse/core/syntax-highlighter';
+import analyze from '../src/mfm/parse';
+import syntaxhighlighter from '../src/mfm/parse/core/syntax-highlighter';
 
 describe('Text', () => {
 	it('can be analyzed', () => {

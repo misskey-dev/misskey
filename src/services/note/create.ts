@@ -14,7 +14,7 @@ import watch from './watch';
 import Mute from '../../models/mute';
 import pushSw from '../../publishers/push-sw';
 import event from '../../publishers/stream';
-import parse from '../../text/parse';
+import parse from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';

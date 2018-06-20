@@ -1,6 +1,6 @@
 import { INote } from '../../../models/note';
-import toHtml from '../../../text/html';
-import parse from '../../../text/parse';
+import toHtml from '../../../mfm/html';
+import parse from '../../../mfm/parse';
 import config from '../../../config';
 
 export default function(note: INote) {

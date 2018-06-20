@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parse from '../../../../../text/parse';
+import parse from '../../../../../mfm/parse';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';

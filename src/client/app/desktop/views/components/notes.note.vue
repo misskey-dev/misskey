@@ -76,7 +76,7 @@
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
 import canHideText from '../../../common/scripts/can-hide-text';
-import parse from '../../../../../text/parse';
+import parse from '../../../../../mfm/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
 import MkRenoteFormWindow from './renote-form-window.vue';
