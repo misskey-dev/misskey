@@ -218,5 +218,11 @@
 		"xev": "2.0.1",
 		"@types/file-type": "5.2.1",
 		"@types/jsdom": "11.0.5"
+	},
+	"greenkeeper": {
+		"ignore": [
+			"deepcopy",
+			"cafy"
+		]
 	}
 }
