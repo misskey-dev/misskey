@@ -1,8 +1,8 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "4.3.1",
-	"clientVersion": "1.0.6630",
+	"version": "4.4.0",
+	"clientVersion": "1.0.6655",
 	"codename": "nighthike",
 	"main": "./built/index.js",
 	"private": true,
@@ -87,13 +87,13 @@
 		"autwh": "0.1.0",
 		"bcryptjs": "2.4.3",
 		"bootstrap-vue": "2.0.0-rc.11",
-		"cafy": "10.0.0",
+		"cafy": "8.0.0",
 		"chalk": "2.4.1",
 		"crc-32": "1.2.0",
 		"css-loader": "0.28.11",
 		"debug": "3.1.0",
 		"deep-equal": "1.0.1",
-		"deepcopy": "1.0.0",
+		"deepcopy": "0.6.3",
 		"diskusage": "0.2.4",
 		"dompurify": "1.0.5",
 		"elasticsearch": "15.0.0",
@@ -218,5 +218,11 @@
 		"xev": "2.0.1",
 		"@types/file-type": "5.2.1",
 		"@types/jsdom": "11.0.6"
+	},
+	"greenkeeper": {
+		"ignore": [
+			"deepcopy",
+			"cafy"
+		]
 	}
 }
