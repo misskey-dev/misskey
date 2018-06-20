@@ -620,10 +620,10 @@ desktop/views/pages/user/user.friends.vue:
   title: "Personnes qui répondent le plus"
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
-desktop/views/pages/user/user.header.vue:
-  is-suspended: "This account has been suspended."
-  is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées "
-  view-remote: "Voir les informations détaillées"
+desktop/views/pages/user/user.vue:
+  is-suspended: "このユーザーは凍結されています。"
+  is-remote: "このユーザーはリモートユーザーです。"
+  view-remote: "正確な情報を見る"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last used at"
 desktop/views/pages/user/user.photos.vue:
