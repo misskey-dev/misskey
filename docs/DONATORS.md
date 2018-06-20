@@ -22,8 +22,4 @@ The list of people who have sent donation for Misskey.
 
 ---
 
-If your name is missing,  please contact us!
-
-If you want to donate to Misskey, please get in touch with [@syuilo][syuilo-link].
-
-[syuilo-link]: https://syuilo.com
+If your name is missing, please contact us!
