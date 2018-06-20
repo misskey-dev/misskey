@@ -45,6 +45,7 @@ common:
   delete: "削除"
   loading: "読み込み中"
   ok: "わかった"
+  update-available-title: "更新があります"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
