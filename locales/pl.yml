@@ -620,10 +620,10 @@ desktop/views/pages/user/user.friends.vue:
   title: "Najbardziej aktywni"
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
-desktop/views/pages/user/user.header.vue:
-  is-suspended: "To konto zostało zawieszone."
-  is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
-  view-remote: "Wyświetl dokładne informacje"
+desktop/views/pages/user/user.vue:
+  is-suspended: "このユーザーは凍結されています。"
+  is-remote: "このユーザーはリモートユーザーです。"
+  view-remote: "正確な情報を見る"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Ostatnio aktywny: "
 desktop/views/pages/user/user.photos.vue:
