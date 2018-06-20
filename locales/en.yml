@@ -620,10 +620,10 @@ desktop/views/pages/user/user.friends.vue:
   title: "Frequently replied"
   loading: "Loading"
   no-users: "No users"
-desktop/views/pages/user/user.header.vue:
-  is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information is not accurate. "
-  view-remote: "See accurate information"
+desktop/views/pages/user/user.vue:
+  is-suspended: "このユーザーは凍結されています。"
+  is-remote: "このユーザーはリモートユーザーです。"
+  view-remote: "正確な情報を見る"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active: "
 desktop/views/pages/user/user.photos.vue:
