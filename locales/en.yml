@@ -45,6 +45,7 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
+  update-available-title: "更新があります"
   update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been renewed so you will be signed out."
   i-like-sushi: "I like sushi rather than pudding"
@@ -621,9 +622,9 @@ desktop/views/pages/user/user.friends.vue:
   loading: "Loading"
   no-users: "No users"
 desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーは凍結されています。"
-  is-remote: "このユーザーはリモートユーザーです。"
-  view-remote: "正確な情報を見る"
+  is-suspended: "This account has been suspended."
+  is-remote: "This user is a remote user, so the information is not accurate. "
+  view-remote: "See accurate information"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active: "
 desktop/views/pages/user/user.photos.vue:
