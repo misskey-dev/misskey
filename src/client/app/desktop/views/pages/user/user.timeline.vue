@@ -1,9 +1,9 @@
 <template>
-<div class="timeline">
+<div class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
 	<header>
-		<span :data-active="mode == 'default'" @click="mode = 'default'">%i18n:@default%</span>
-		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'">%i18n:@with-replies%</span>
-		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'">%i18n:@with-media%</span>
+		<span :data-active="mode == 'default'" @click="mode = 'default'">%fa:comment-alt R% %i18n:@default%</span>
+		<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'">%fa:comments% %i18n:@with-replies%</span>
+		<span :data-active="mode == 'with-media'" @click="mode = 'with-media'">%fa:images% %i18n:@with-media%</span>
 	</header>
 	<div class="loading" v-if="fetching">
 		<mk-ellipsis-icon/>
@@ -114,25 +114,44 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~const.styl'
 
-.timeline
-	background #fff
+root(isDark)
+	background isDark ? #282C37 : #fff
 
 	> header
-		padding 8px 16px
-		border-bottom solid 1px #eee
+		padding 0 8px
+		z-index 10
+		background isDark ? #313543 : #fff
+		border-radius 6px 6px 0 0
+		box-shadow 0 1px isDark ? rgba(#000, 0.15) : rgba(#000, 0.08)
 
 		> span
-			margin-right 16px
-			line-height 27px
-			font-size 18px
-			color #555
+			display inline-block
+			padding 0 10px
+			line-height 42px
+			font-size 12px
+			user-select none
+
+			&[data-active]
+				color $theme-color
+				cursor default
+				font-weight bold
+
+				&:before
+					content ""
+					display block
+					position absolute
+					bottom 0
+					left -8px
+					width calc(100% + 16px)
+					height 2px
+					background $theme-color
 
 			&:not([data-active])
-				color $theme-color
+				color isDark ? #9aa2a7 : #6f7477
 				cursor pointer
 
 				&:hover
-					text-decoration underline
+					color isDark ? #d9dcde : #525a5f
 
 	> .loading
 		padding 64px 0
@@ -150,5 +169,11 @@ export default Vue.extend({
 			margin-bottom 16px
 			font-size 3em
 			color #ccc
+
+.oh5y2r7l5lx8j6jj791ykeiwgihheguk[data-darkmode]
+	root(true)
+
+.oh5y2r7l5lx8j6jj791ykeiwgihheguk:not([data-darkmode])
+	root(false)
 
 </style>

@@ -1,21 +1,25 @@
 <template>
 <mk-ui>
-	<div class="zwwan0di1v4356rmdbjmwnn32tptpdp2" v-if="!fetching">
-		<div class="main">
-			<x-header :user="user"/>
-			<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
-			<x-timeline class="timeline" ref="tl" :user="user"/>
-		</div>
-		<div class="side">
-			<x-profile :user="user"/>
-			<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
-			<mk-activity :user="user"/>
-			<x-photos :user="user"/>
-			<x-friends :user="user"/>
-			<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
-			<div class="nav"><mk-nav/></div>
-			<p v-if="user.host === null">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
-		</div>
+	<div class="zwwan0di1v4356rmdbjmwnn32tptpdp2" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
+		<div class="is-suspended" v-if="user.isSuspended || true">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
+		<div class="is-remote" v-if="user.host != null || true">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
+		<main>
+			<div class="main">
+				<x-header :user="user"/>
+				<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
+				<x-timeline class="timeline" ref="tl" :user="user"/>
+			</div>
+			<div class="side">
+				<x-profile :user="user"/>
+				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
+				<mk-activity :user="user"/>
+				<x-photos :user="user"/>
+				<x-friends :user="user"/>
+				<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
+				<div class="nav"><mk-nav/></div>
+				<p v-if="user.host === null">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
+			</div>
+		</main>
 	</div>
 </mk-ui>
 </template>
@@ -73,50 +77,77 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.zwwan0di1v4356rmdbjmwnn32tptpdp2
-	display flex
-	justify-content center
+root(isDark)
 	width 980px
 	padding 16px
 	margin 0 auto
 
-	> .main
-	> .side
-		> *:not(:last-child)
-			margin-bottom 16px
+	> .is-suspended
+	> .is-remote
+		margin-bottom 16px
+		padding 14px 16px
+		font-size 14px
+		border-radius 6px
 
-	> .main
-		flex 1
-		margin-right 16px
+		&.is-suspended
+			color isDark ? #ffb4b4 : #570808
+			background isDark ? #611d1d : #ffdbdb
+			border solid 1px isDarl ? #d64a4a : #e09696
 
-		> .timeline
-			border 1px solid rgba(#000, 0.075)
-			border-radius 6px
+		&.is-remote
+			color isDark ? #ffbd3e : #573c08
+			background isDark ? #42321c : #fff0db
+			border solid 1px isDark ? #90733c : #dcbb7b
 
-	> .side
-		width 275px
+		> a
+			font-weight bold
 
-		> p
-			display block
-			margin 0
-			padding 0 12px
-			text-align center
-			font-size 0.8em
-			color #aaa
+	> main
+		display flex
+		justify-content center
 
-		> .nav
-			padding 16px
-			font-size 12px
-			color #aaa
-			background #fff
-			border solid 1px rgba(#000, 0.075)
-			border-radius 6px
+		> .main
+		> .side
+			> *:not(:last-child)
+				margin-bottom 16px
 
-			a
-				color #999
+		> .main
+			flex 1
+			margin-right 16px
 
-			i
-				color #ccc
+			> .timeline
+				border 1px solid rgba(#000, 0.075)
+				border-radius 6px
 
+		> .side
+			width 275px
+
+			> p
+				display block
+				margin 0
+				padding 0 12px
+				text-align center
+				font-size 0.8em
+				color #aaa
+
+			> .nav
+				padding 16px
+				font-size 12px
+				color #aaa
+				background #fff
+				border solid 1px rgba(#000, 0.075)
+				border-radius 6px
+
+				a
+					color #999
+
+				i
+					color #ccc
+
+.zwwan0di1v4356rmdbjmwnn32tptpdp2[data-darkmode]
+	root(true)
+
+.zwwan0di1v4356rmdbjmwnn32tptpdp2:not([data-darkmode])
+	root(false)
 
 </style>

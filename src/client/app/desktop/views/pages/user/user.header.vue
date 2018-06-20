@@ -1,7 +1,5 @@
 <template>
 <div class="header" :data-is-dark-background="user.bannerUrl != null">
-	<div class="is-suspended" v-if="user.isSuspended"><p>%fa:exclamation-triangle% %i18n:@is-suspended%</p></div>
-	<div class="is-remote" v-if="user.host != null"><p>%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></p></div>
 	<div class="banner-container" :style="style">
 		<div class="banner" ref="banner" :style="style" @click="onBannerClick"></div>
 		<div class="fade"></div>
@@ -34,16 +32,16 @@ export default Vue.extend({
 	},
 	mounted() {
 		if (this.user.bannerUrl) {
-			window.addEventListener('load', this.onScroll);
-			window.addEventListener('scroll', this.onScroll, { passive: true });
-			window.addEventListener('resize', this.onScroll);
+			//window.addEventListener('load', this.onScroll);
+			//window.addEventListener('scroll', this.onScroll, { passive: true });
+			//window.addEventListener('resize', this.onScroll);
 		}
 	},
 	beforeDestroy() {
 		if (this.user.bannerUrl) {
-			window.removeEventListener('load', this.onScroll);
-			window.removeEventListener('scroll', this.onScroll);
-			window.removeEventListener('resize', this.onScroll);
+			//window.removeEventListener('load', this.onScroll);
+			//window.removeEventListener('scroll', this.onScroll);
+			//window.removeEventListener('resize', this.onScroll);
 		}
 	},
 	methods: {
@@ -79,25 +77,6 @@ root(isDark)
 	border 1px solid rgba(#000, 0.075)
 	border-radius 6px
 	overflow hidden
-
-	> .is-suspended
-	> .is-remote
-		&.is-suspended
-			color #570808
-			background #ffdbdb
-
-		&.is-remote
-			color #573c08
-			background #fff0db
-
-		> p
-			margin 0 auto
-			padding 14px 16px
-			max-width 1200px
-			font-size 14px
-
-			> a
-				font-weight bold
 
 	&[data-is-dark-background]
 		> .banner-container
