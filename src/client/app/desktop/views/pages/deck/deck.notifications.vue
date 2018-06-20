@@ -1,6 +1,8 @@
 <template>
 <div class="oxynyeqmfvracxnglgulyqfgqxnxmehl">
-	<transition-group name="mk-notifications" class="transition notifications">
+	<!-- トランジションを有効にするとなぜかメモリリークする -->
+	<!--<transition-group name="mk-notifications" class="transition notifications">-->
+	<div class="notifications">
 		<template v-for="(notification, i) in _notifications">
 			<x-notification class="notification" :notification="notification" :key="notification.id"/>
 			<p class="date" v-if="i != notifications.length - 1 && notification._date != _notifications[i + 1]._date" :key="notification.id + '-time'">
@@ -8,7 +10,8 @@
 				<span>%fa:angle-down%{{ _notifications[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</transition-group>
+	</div>
+	<!--</transition-group>-->
 	<button class="more" :class="{ fetching: fetchingMoreNotifications }" v-if="moreNotifications" @click="fetchMoreNotifications" :disabled="fetchingMoreNotifications">
 		<template v-if="fetchingMoreNotifications">%fa:spinner .pulse .fw%</template>{{ fetchingMoreNotifications ? '%i18n:common.loading%' : '%i18n:@more%' }}
 	</button>
