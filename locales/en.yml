@@ -45,7 +45,7 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
-  update-available-title: "更新があります"
+  update-available-title: "Update available"
   update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been renewed so you will be signed out."
   i-like-sushi: "I like sushi rather than pudding"
