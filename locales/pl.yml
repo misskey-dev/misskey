@@ -45,6 +45,7 @@ common:
   delete: "Usuń"
   loading: "Ładowanie"
   ok: "OK"
+  update-available-title: "更新があります"
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   i-like-sushi: "Wolę sushi od puddingu"
@@ -620,7 +621,7 @@ desktop/views/pages/user/user.friends.vue:
   title: "Najbardziej aktywni"
   loading: "Ładowanie"
   no-users: "Brak użytkowników"
-desktop/views/pages/user/user.header.vue:
+desktop/views/pages/user/user.vue:
   is-suspended: "To konto zostało zawieszone."
   is-remote: "To jest użytkownik zdalnej instancji, informacje mogą nie być w pełni dokładne."
   view-remote: "Wyświetl dokładne informacje"

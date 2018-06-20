@@ -45,6 +45,7 @@ common:
   delete: "Löschen"
   loading: "Laden"
   ok: "OK"
+  update-available-title: "更新があります"
   update-available: "Eine neue Version von Misskey ist verfügbar ({newer}, aktuell ist {current}). Lade die Seite neu um die aktuelle Version zu laden"
   my-token-regenerated: "Dein Token wurde generiert. Du wirst jetzt abgemeldet."
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
@@ -620,7 +621,7 @@ desktop/views/pages/user/user.friends.vue:
   title: "よく話すユーザー"
   loading: "読み込み中"
   no-users: "よく話すユーザーはいません"
-desktop/views/pages/user/user.header.vue:
+desktop/views/pages/user/user.vue:
   is-suspended: "このユーザーは凍結されています。"
   is-remote: "このユーザーはリモートユーザーです。"
   view-remote: "正確な情報を見る"

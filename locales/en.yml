@@ -45,6 +45,7 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
+  update-available-title: "Update available"
   update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been renewed so you will be signed out."
   i-like-sushi: "I like sushi rather than pudding"
@@ -620,7 +621,7 @@ desktop/views/pages/user/user.friends.vue:
   title: "Frequently replied"
   loading: "Loading"
   no-users: "No users"
-desktop/views/pages/user/user.header.vue:
+desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
   is-remote: "This user is a remote user, so the information is not accurate. "
   view-remote: "See accurate information"
