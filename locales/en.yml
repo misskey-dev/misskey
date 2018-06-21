@@ -319,7 +319,7 @@ desktop/views/components/drive.vue:
 desktop/views/components/follow-button.vue:
   following: "Following"
   follow: "Follow"
-  request-pending: "フォロー許可待ち"
+  request-pending: "Pending follow request"
   follow-request: "Follow request"
 desktop/views/components/followers-window.vue:
   followers: "{}'s followers"
@@ -698,7 +698,7 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/follow-button.vue:
   following: "Following"
   follow: "Follow"
-  request-pending: "フォロー許可待ち"
+  request-pending: "Pending follow request"
   follow-request: "Follow request"
 mobile/views/components/friends-maker.vue:
   title: "Let's follow users"
