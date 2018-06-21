@@ -85,6 +85,7 @@ root(isDark)
 			color isDark ? #d42c41 : #f56a7b
 
 	> .username
+		flex-shrink 10000
 		margin 0 .5em 0 0
 		overflow hidden
 		text-overflow ellipsis
