@@ -49,7 +49,7 @@
 		"@types/js-yaml": "3.11.1",
 		"@types/jsdom": "11.0.6",
 		"@types/koa": "2.0.46",
-		"@types/koa-bodyparser": "4.2.0",
+		"@types/koa-bodyparser": "5.0.0",
 		"@types/koa-compress": "2.0.8",
 		"@types/koa-favicon": "2.0.19",
 		"@types/koa-logger": "3.1.0",
