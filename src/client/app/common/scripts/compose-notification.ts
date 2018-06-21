@@ -20,34 +20,6 @@ export default function(type, data): Notification {
 				icon: data.url + '?thumbnail&size=64'
 			};
 
-		case 'mention':
-			return {
-				title: `${getUserName(data.user)}さんから:`,
-				body: getNoteSummary(data),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
-		case 'reply':
-			return {
-				title: `${getUserName(data.user)}さんから返信:`,
-				body: getNoteSummary(data),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
-		case 'quote':
-			return {
-				title: `${getUserName(data.user)}さんが引用:`,
-				body: getNoteSummary(data),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
-		case 'reaction':
-			return {
-				title: `${getUserName(data.user)}: ${getReactionEmoji(data.reaction)}:`,
-				body: getNoteSummary(data.note),
-				icon: data.user.avatarUrl + '?thumbnail&size=64'
-			};
-
 		case 'unread_messaging_message':
 			return {
 				title: `${getUserName(data.user)}さんからメッセージ:`,
@@ -61,6 +33,40 @@ export default function(type, data): Notification {
 				body: `${getUserName(data.parent)}さんから`,
 				icon: data.parent.avatarUrl + '?thumbnail&size=64'
 			};
+
+		case 'notification':
+			switch (data.type) {
+				case 'mention':
+					return {
+						title: `${getUserName(data.user)}さんから:`,
+						body: getNoteSummary(data),
+						icon: data.user.avatarUrl + '?thumbnail&size=64'
+					};
+
+				case 'reply':
+					return {
+						title: `${getUserName(data.user)}さんから返信:`,
+						body: getNoteSummary(data),
+						icon: data.user.avatarUrl + '?thumbnail&size=64'
+					};
+
+				case 'quote':
+					return {
+						title: `${getUserName(data.user)}さんが引用:`,
+						body: getNoteSummary(data),
+						icon: data.user.avatarUrl + '?thumbnail&size=64'
+					};
+
+				case 'reaction':
+					return {
+						title: `${getUserName(data.user)}: ${getReactionEmoji(data.reaction)}:`,
+						body: getNoteSummary(data.note),
+						icon: data.user.avatarUrl + '?thumbnail&size=64'
+					};
+
+				default:
+					return null;
+			}
 
 		default:
 			return null;

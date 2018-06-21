@@ -115,6 +115,15 @@ function registerNotifications(stream: HomeStreamManager) {
 	});
 
 	function attach(connection) {
+		connection.on('notification', notification => {
+			const _n = composeNotification('notification', notification);
+			const n = new Notification(_n.title, {
+				body: _n.body,
+				icon: _n.icon
+			});
+			setTimeout(n.close.bind(n), 6000);
+		});
+
 		connection.on('drive_file_created', file => {
 			const _n = composeNotification('drive_file_created', file);
 			const n = new Notification(_n.title, {
@@ -122,33 +131,6 @@ function registerNotifications(stream: HomeStreamManager) {
 				icon: _n.icon
 			});
 			setTimeout(n.close.bind(n), 5000);
-		});
-
-		connection.on('mention', note => {
-			const _n = composeNotification('mention', note);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			setTimeout(n.close.bind(n), 6000);
-		});
-
-		connection.on('reply', note => {
-			const _n = composeNotification('reply', note);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			setTimeout(n.close.bind(n), 6000);
-		});
-
-		connection.on('quote', note => {
-			const _n = composeNotification('quote', note);
-			const n = new Notification(_n.title, {
-				body: _n.body,
-				icon: _n.icon
-			});
-			setTimeout(n.close.bind(n), 6000);
 		});
 
 		connection.on('unread_messaging_message', message => {

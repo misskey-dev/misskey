@@ -1,9 +1,8 @@
-import { IUser, pack as packUser, isLocalUser, isRemoteUser } from '../../../models/user';
-import Note, { INote, pack as packNote } from '../../../models/note';
+import { IUser, isLocalUser, isRemoteUser } from '../../../models/user';
+import Note, { INote } from '../../../models/note';
 import NoteReaction from '../../../models/note-reaction';
 import { publishNoteStream } from '../../../publishers/stream';
 import notify from '../../../publishers/notify';
-import pushSw from '../../../publishers/push-sw';
 import NoteWatching from '../../../models/note-watching';
 import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
@@ -53,12 +52,6 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 			reaction: reaction
 		});
 	}
-
-	pushSw(note.userId, 'reaction', {
-		user: await packUser(user, note.userId),
-		note: await packNote(note, note.userId),
-		reaction: reaction
-	});
 
 	// Fetch watchers
 	NoteWatching

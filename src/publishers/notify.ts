@@ -4,6 +4,7 @@ import Mute from '../models/mute';
 import { pack } from '../models/notification';
 import stream from './stream';
 import User from '../models/user';
+import pushSw from '../publishers/push-sw';
 
 export default (
 	notifiee: mongo.ObjectID,
@@ -26,9 +27,10 @@ export default (
 
 	resolve(notification);
 
+	const packed = await pack(notification);
+
 	// Publish notification event
-	stream(notifiee, 'notification',
-		await pack(notification));
+	stream(notifiee, 'notification', packed);
 
 	// Update flag
 	User.update({ _id: notifiee }, {
@@ -52,7 +54,9 @@ export default (
 			}
 			//#endregion
 
-			stream(notifiee, 'unread_notification', await pack(notification));
+			stream(notifiee, 'unread_notification', packed);
+
+			pushSw(notifiee, 'notification', packed);
 		}
 	}, 3000);
 });
