@@ -49,9 +49,9 @@ If you want to...
 [![Backers][backers-image]][support-url]
 [![Sponsors][sponsors-image]][support-url]
 
-| ![][ooo-icon] |
-|:-:|
-| [ooo][ooo-link] |
+| ![][nagarus-icon] | ![][dansup-icon] |
+|:-:|:-:|
+| [nagarus][nagarus-link] | [dansup][dansup-link] |
 
 :four_leaf_clover: Copyright
 ----------------------------------------------------------------
@@ -82,5 +82,8 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 [syuilo-link]:      https://syuilo.com
 [syuilo-icon]:      https://avatars2.githubusercontent.com/u/4439005?v=3&s=70
 
-[ooo-link]:   https://www.patreon.com/user/creators?u=11601413
-[ooo-icon]:   https://c10.patreonusercontent.com/3/eyJ2IjoiMSIsInciOjIwMH0%3D/patreon-media/user/11601413/20cb15f209924302b399b99d3c98b850?token-time=2145916800&token-hash=IO31nK6VZCMWBWU2VAk2c824BX2QZ4DNPKyHHZXS0iw%3D
+[nagarus-link]: https://www.patreon.com/user/creators?u=11601413
+[nagarus-icon]: https://c10.patreonusercontent.com/3/eyJ2IjoiMSIsInciOjIwMH0%3D/patreon-media/user/11601413/20cb15f209924302b399b99d3c98b850?token-time=2145916800&token-hash=IO31nK6VZCMWBWU2VAk2c824BX2QZ4DNPKyHHZXS0iw%3D
+[dansup-link]: https://www.patreon.com/dansup
+[dansup-icon]: https://c10.patreonusercontent.com/3/eyJ2IjoiMSIsInciOjIwMH0%3D/patreon-media/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb?token-time=2145916800&token-hash=opXAM_pnhUTuN1jCA6p_Nn_YsaqohY465YFjWFqMEEE%3D
+
