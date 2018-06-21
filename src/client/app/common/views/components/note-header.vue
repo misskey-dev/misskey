@@ -57,6 +57,7 @@ root(isDark)
 
 	> .name
 		display block
+		flex-shrink 0
 		margin 0 .5em 0 0
 		padding 0
 		overflow hidden
@@ -72,6 +73,7 @@ root(isDark)
 	> .is-admin
 	> .is-bot
 	> .is-cat
+		flex-shrink 0
 		align-self center
 		margin 0 .5em 0 0
 		padding 1px 6px
@@ -85,7 +87,6 @@ root(isDark)
 			color isDark ? #d42c41 : #f56a7b
 
 	> .username
-		flex-shrink 10000
 		margin 0 .5em 0 0
 		overflow hidden
 		text-overflow ellipsis
