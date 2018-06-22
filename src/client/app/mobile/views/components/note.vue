@@ -427,7 +427,7 @@ root(isDark)
 							margin 0 0 4px 6px
 							padding 2px 8px 2px 16px
 							font-size 90%
-							color #f66e4f
+							color $theme-color
 							background isDark ? #313543 : #edf0f3
 							border-radius 4px
 
