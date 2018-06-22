@@ -92,7 +92,7 @@ root(isDark)
 		&.is-suspended
 			color isDark ? #ffb4b4 : #570808
 			background isDark ? #611d1d : #ffdbdb
-			border solid 1px isDarl ? #d64a4a : #e09696
+			border solid 1px isDark ? #d64a4a : #e09696
 
 		&.is-remote
 			color isDark ? #ffbd3e : #573c08
@@ -105,6 +105,7 @@ root(isDark)
 	> main
 		display flex
 		justify-content center
+		width 673px
 
 		> .main
 		> .side
