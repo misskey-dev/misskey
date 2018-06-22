@@ -105,7 +105,6 @@ root(isDark)
 	> main
 		display flex
 		justify-content center
-		width 673px
 
 		> .main
 		> .side
@@ -114,6 +113,7 @@ root(isDark)
 
 		> .main
 			flex 1
+			min-width 0 // SEE: http://kudakurage.hatenadiary.com/entry/2016/04/01/232722
 			margin-right 16px
 
 			> .timeline
@@ -122,6 +122,7 @@ root(isDark)
 
 		> .side
 			width 275px
+			flex-shrink 0
 
 			> p
 				display block
