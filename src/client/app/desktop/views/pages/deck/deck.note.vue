@@ -25,7 +25,7 @@
 						<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
 						<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<misskey-flavored-markdown v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i"/>
+						<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
 					</div>
 					<div class="media" v-if="p.media.length > 0">
@@ -68,7 +68,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import parse from '../../../../../../mfm/parse';
-import canHideText from '../../../../common/scripts/can-hide-text';
 
 import MkNoteMenu from '../../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../../common/views/components/reaction-picker.vue';
@@ -148,8 +147,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		canHideText,
-
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
