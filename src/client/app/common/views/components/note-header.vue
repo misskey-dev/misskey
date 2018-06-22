@@ -90,7 +90,7 @@ root(isDark)
 		overflow hidden
 		text-overflow ellipsis
 		color isDark ? #606984 : #ccc
-		flex-shrink 10000
+		flex-shrink 2147483647
 
 	> .info
 		margin-left auto
