@@ -5,8 +5,6 @@
 
 [![][travis-badge]][travis-link]
 [![][dependencies-badge]][dependencies-link]
-[![][himawari-badge]][himasaku]
-[![][sakurako-badge]][himasaku]
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/syuilo/misskey.svg)](https://greenkeeper.io/)
 
 > Lead Maintainer: [syuilo][syuilo-link]
@@ -67,9 +65,6 @@ Misskey is an open-source software licensed under [GNU AGPLv3](LICENSE).
 [travis-badge]:       http://img.shields.io/travis/syuilo/misskey/master.svg?style=flat-square
 [dependencies-link]:  https://david-dm.org/syuilo/misskey
 [dependencies-badge]: https://img.shields.io/david/syuilo/misskey.svg?style=flat-square
-[himasaku]:           https://himasaku.net
-[himawari-badge]:     https://img.shields.io/badge/%E5%8F%A4%E8%B0%B7-%E5%90%91%E6%97%A5%E8%91%B5-1684c5.svg?style=flat-square
-[sakurako-badge]:     https://img.shields.io/badge/%E5%A4%A7%E5%AE%A4-%E6%AB%BB%E5%AD%90-efb02a.svg?style=flat-square
 
 [backer-url]: #backers
 [backer-badge]: https://opencollective.com/misskey/backers/badge.svg
