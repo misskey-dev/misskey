@@ -57,7 +57,6 @@ root(isDark)
 
 	> .name
 		display block
-		flex-shrink 0
 		margin 0 .5em 0 0
 		padding 0
 		overflow hidden
@@ -91,6 +90,7 @@ root(isDark)
 		overflow hidden
 		text-overflow ellipsis
 		color isDark ? #606984 : #ccc
+		flex-shrink 10000
 
 	> .info
 		margin-left auto
