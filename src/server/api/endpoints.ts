@@ -629,8 +629,7 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'hashtags/trend',
-		withCredential: true
+		name: 'hashtags/trend'
 	},
 
 	{

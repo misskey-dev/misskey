@@ -24,6 +24,13 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+	props: {
+		max: {
+			type: Number,
+			required: false,
+			default: undefined
+		}
+	},
 	data() {
 		return {
 			fetching: true,
@@ -37,6 +44,7 @@ export default Vue.extend({
 		fetch(cb?) {
 			this.fetching = true;
 			(this as any).api('notes', {
+				limit: this.max,
 				local: true,
 				reply: false,
 				renote: false,
