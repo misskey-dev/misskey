@@ -424,10 +424,10 @@ root(isDark)
 
 						> *
 							display inline-block
-							margin 0 8px 0 0
+							margin 0 0 4px 6px
 							padding 2px 8px 2px 16px
 							font-size 90%
-							color #8d969e
+							color #f66e4f
 							background isDark ? #313543 : #edf0f3
 							border-radius 4px
 

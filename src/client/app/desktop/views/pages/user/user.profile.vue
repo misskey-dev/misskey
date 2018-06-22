@@ -126,7 +126,7 @@ root(isDark)
 	> .friend-form
 		padding 16px
 		text-align center
-		border-top solid 1px #eee
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		> .followed
 			margin 12px 0 0 0
@@ -144,7 +144,7 @@ root(isDark)
 	> .action-form
 		padding 16px
 		text-align center
-		border-top solid 1px #eee
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		> *
 			width 100%
@@ -154,8 +154,8 @@ root(isDark)
 
 	> .birthday
 		padding 16px
-		color #555
-		border-top solid 1px #eee
+		color isDark ? #e3e7ea : #555
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		> p
 			margin 0
@@ -165,8 +165,8 @@ root(isDark)
 
 	> .twitter
 		padding 16px
-		color #555
-		border-top solid 1px #eee
+		color isDark ? #e3e7ea : #555
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		> p
 			margin 0
@@ -176,8 +176,8 @@ root(isDark)
 
 	> .status
 		padding 16px
-		color #555
-		border-top solid 1px #eee
+		color isDark ? #e3e7ea : #555
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		> p
 			margin 8px 0

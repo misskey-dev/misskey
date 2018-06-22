@@ -199,7 +199,7 @@ root(isDark)
 				> .login
 					width $loginWidth
 					padding 16px 32px 32px 32px
-					background #f5f5f5
+					background isDark ? #2e3440 : #f5f5f5
 
 			> .info
 				margin 16px auto
