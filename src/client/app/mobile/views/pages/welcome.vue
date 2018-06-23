@@ -133,12 +133,12 @@ export default Vue.extend({
 				-webkit-overflow-scrolling touch
 
 		> .hashtags
+			padding 16px 0
 			border solid 2px #ddd
 			border-radius 8px
 
 			> *
-				display inline-block
-				margin 16px
+				margin 0 16px
 
 		> .stats
 			margin 16px 0
