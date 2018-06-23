@@ -11,6 +11,7 @@
 			</div>
 			<div class="side">
 				<x-profile :user="user"/>
+				<a-twitter :user="user" v-if="user.host === null && user.twitter"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>
@@ -35,6 +36,7 @@ import XProfile from './user.profile.vue';
 import XPhotos from './user.photos.vue';
 import XFollowersYouKnow from './user.followers-you-know.vue';
 import XFriends from './user.friends.vue';
+import XTwitter from './user.twitter.vue';
 
 export default Vue.extend({
 	components: {
@@ -43,7 +45,8 @@ export default Vue.extend({
 		XProfile,
 		XPhotos,
 		XFollowersYouKnow,
-		XFriends
+		XFriends,
+		XTwitter
 	},
 	data() {
 		return {

@@ -15,25 +15,12 @@
 		</button>
 		<button class="mute ui" @click="list">%fa:list% リストに追加</button>
 	</div>
-	<div class="birthday" v-if="user.host === null && user.profile.birthday">
-		<p>%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
-	</div>
-	<div class="twitter" v-if="user.host === null && user.twitter">
-		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">@{{ user.twitter.screenName }}</a></p>
-	</div>
-	<div class="status">
-		<p class="notes-count">%fa:angle-right%<a>{{ user.notesCount }}</a><b>投稿</b></p>
-		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.followingCount }}</a>人を<b>フォロー</b></p>
-		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followersCount }}</a>人の<b>フォロワー</b></p>
-	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import * as age from 's-age';
-import MkFollowingWindow from '../../components/following-window.vue';
-import MkFollowersWindow from '../../components/followers-window.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({
@@ -44,17 +31,6 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		showFollowing() {
-			(this as any).os.new(MkFollowingWindow, {
-				user: this.user
-			});
-		},
-
-		showFollowers() {
-			(this as any).os.new(MkFollowersWindow, {
-				user: this.user
-			});
-		},
 
 		stalk() {
 			(this as any).api('following/stalk', {
@@ -151,40 +127,6 @@ root(isDark)
 
 			&:not(:last-child)
 				margin-bottom 12px
-
-	> .birthday
-		padding 16px
-		color isDark ? #e3e7ea : #555
-		border-bottom solid 1px isDark ? #21242f : #eee
-
-		> p
-			margin 0
-
-			> i
-				margin-right 8px
-
-	> .twitter
-		padding 16px
-		color isDark ? #e3e7ea : #555
-		border-bottom solid 1px isDark ? #21242f : #eee
-
-		> p
-			margin 0
-
-			> i
-				margin-right 8px
-
-	> .status
-		padding 16px
-		color isDark ? #e3e7ea : #555
-		border-bottom solid 1px isDark ? #21242f : #eee
-
-		> p
-			margin 8px 0
-
-			> i
-				margin-left 8px
-				margin-right 8px
 
 .profile[data-darkmode]
 	root(true)

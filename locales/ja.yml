@@ -759,6 +759,11 @@ desktop/views/pages/user/user.profile.vue:
   muted: "ミュートしています"
   unmute: "ミュート解除"
 
+desktop/views/pages/user/user.header.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
