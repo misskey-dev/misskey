@@ -6,10 +6,10 @@
 		<div class="title">
 			<p class="name">{{ user | userName }}</p>
 			<div>
-				<template v-if="user.isBot">%fa:robot%</template>
+				<p v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</p>
 				<p class="username"><mk-acct :user="user"/></p>
-				<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker%{{ user.profile.location }}</p>
-				<p class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
+				<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</p>
+				<p class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
 			</div>
 		</div>
 	</div>
@@ -157,9 +157,6 @@ root(isDark)
 					margin 0 16px 0 0
 					line-height 20px
 					opacity 0.8
-
-					> i
-						margin-right 4px
 
 	> .avatar
 		display block

@@ -763,6 +763,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
+  is-bot: "このアカウントはBotです"
 
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
