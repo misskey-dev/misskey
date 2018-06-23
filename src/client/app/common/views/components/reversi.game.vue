@@ -3,13 +3,13 @@
 	<header><b>{{ blackUser.name }}</b>(黒) vs <b>{{ whiteUser.name }}</b>(白)</header>
 
 	<div style="overflow: hidden">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ turnUser.name }}のターンです<mk-ellipsis/></p>
-		<p class="turn" v-if="logPos != logs.length">{{ turnUser.name }}のターン</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">相手のターンです<mk-ellipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">あなたのターンです</p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', turnUser.name) }}<mk-ellipsis/></p>
+		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', turnUser.name) }}</p>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">%i18n:common.reversi.my-turn%</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
-			<template v-else>引き分け</template>
+			<template v-else>%i18n:common.reversi.drawn%</template>
 		</p>
 	</div>
 

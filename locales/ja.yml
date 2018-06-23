@@ -57,6 +57,13 @@ common:
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
 
+  reversi:
+    drawn: "引き分け"
+    my-turn: "あなたのターンです"
+    opponent-turn: "相手のターンです"
+    turn-of: "{}のターンです"
+    past-turn-of: "{}のターン"
+
   widgets:
     analog-clock: "アナログ時計"
     profile: "プロフィール"
