@@ -65,7 +65,7 @@
 		"@types/mocha": "5.2.3",
 		"@types/mongodb": "3.0.21",
 		"@types/ms": "0.7.30",
-		"@types/node": "10.3.4",
+		"@types/node": "10.3.5",
 		"@types/nopt": "3.0.29",
 		"@types/parse5": "5.0.0",
 		"@types/pug": "2.0.4",
