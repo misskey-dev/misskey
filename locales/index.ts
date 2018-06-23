@@ -18,7 +18,8 @@ const langs: { [key: string]: LocaleObject } = {
 	'en': loadLang('en'),
 	'fr': loadLang('fr'),
 	'ja': native,
-	'pl': loadLang('pl')
+	'pl': loadLang('pl'),
+	'es': loadLang('es')
 };
 
 Object.entries(langs).map(([, locale]) => {
