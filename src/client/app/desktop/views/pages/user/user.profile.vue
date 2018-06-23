@@ -20,18 +20,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as age from 's-age';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({
 	props: ['user'],
-	computed: {
-		age(): number {
-			return age(this.user.profile.birthday);
-		}
-	},
-	methods: {
 
+	methods: {
 		stalk() {
 			(this as any).api('following/stalk', {
 				userId: this.user.id

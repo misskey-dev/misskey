@@ -11,7 +11,7 @@
 			</div>
 			<div class="side">
 				<x-profile :user="user"/>
-				<a-twitter :user="user" v-if="user.host === null && user.twitter"/>
+				<x-twitter :user="user" v-if="user.host === null && user.twitter"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>

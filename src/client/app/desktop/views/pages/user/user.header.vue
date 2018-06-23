@@ -6,10 +6,10 @@
 		<div class="title">
 			<p class="name">{{ user | userName }}</p>
 			<div>
-				<p v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</p>
-				<p class="username"><mk-acct :user="user"/></p>
-				<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</p>
-				<p class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
+				<span class="username"><mk-acct :user="user"/></span>
+				<span v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</span>
+				<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
+				<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</span>
 			</div>
 		</div>
 	</div>
@@ -31,6 +31,7 @@
 import Vue from 'vue';
 import MkFollowingWindow from '../../components/following-window.vue';
 import MkFollowersWindow from '../../components/followers-window.vue';
+import * as age from 's-age';
 
 export default Vue.extend({
 	props: ['user'],
@@ -41,6 +42,10 @@ export default Vue.extend({
 				backgroundColor: this.user.bannerColor && this.user.bannerColor.length == 3 ? `rgb(${ this.user.bannerColor.join(',') })` : null,
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
+		},
+
+		age(): number {
+			return age(this.user.profile.birthday);
 		}
 	},
 	mounted() {
@@ -154,9 +159,12 @@ root(isDark)
 			> div
 				> *
 					display inline-block
-					margin 0 16px 0 0
+					margin-right 16px
 					line-height 20px
 					opacity 0.8
+
+					&.username
+						font-weight bold
 
 	> .avatar
 		display block
