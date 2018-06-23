@@ -193,7 +193,7 @@
 		"textarea-caret": "3.1.0",
 		"tmp": "0.0.33",
 		"ts-loader": "4.4.1",
-		"ts-node": "6.1.2",
+		"ts-node": "7.0.0",
 		"tslint": "5.10.0",
 		"typescript": "2.9.2",
 		"typescript-eslint-parser": "16.0.0",
