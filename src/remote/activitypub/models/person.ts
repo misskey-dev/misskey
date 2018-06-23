@@ -47,16 +47,28 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 
 	const object = await resolver.resolve(value) as any;
 
-	if (
-		object == null ||
-		object.type !== 'Person' ||
-		typeof object.preferredUsername !== 'string' ||
-		typeof object.inbox !== 'string' ||
-		!validateUsername(object.preferredUsername) ||
-		!isValidName(object.name == '' ? null : object.name)
-	) {
-		log(`invalid person: ${JSON.stringify(object, null, 2)}`);
-		throw new Error('invalid person');
+	if (object == null) {
+		throw new Error('invalid person: object is null');
+	}
+
+	if (object.type != 'Person' && object.type != 'Service') {
+		throw new Error('invalid person: object is not a person or service');
+	}
+
+	if (typeof object.preferredUsername !== 'string') {
+		throw new Error('invalid person: preferredUsername is not a string');
+	}
+
+	if (typeof object.inbox !== 'string') {
+		throw new Error('invalid person: inbox is not a string');
+	}
+
+	if (!validateUsername(object.preferredUsername)) {
+		throw new Error('invalid person: invalid username');
+	}
+
+	if (!isValidName(object.name == '' ? null : object.name)) {
+		throw new Error('invalid person: invalid name');
 	}
 
 	const person: IPerson = object;

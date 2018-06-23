@@ -7,7 +7,7 @@ export default (user: ILocalUser) => {
 	const id = `${config.url}/users/${user._id}`;
 
 	return {
-		type: 'Person',
+		type: user.isBot ? 'Service' : 'Person',
 		id,
 		inbox: `${id}/inbox`,
 		outbox: `${id}/outbox`,
