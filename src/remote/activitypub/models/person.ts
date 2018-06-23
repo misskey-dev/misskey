@@ -93,6 +93,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 
 	const host = toUnicode(finger.subject.replace(/^.*?@/, '')).toLowerCase();
 
+	const isBot = object.type == 'Service';
+
 	// Create user
 	let user: IRemoteUser;
 	try {
@@ -117,7 +119,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 			inbox: person.inbox,
 			endpoints: person.endpoints,
 			uri: person.id,
-			url: person.url
+			url: person.url,
+			isBot
 		}) as IRemoteUser;
 	} catch (e) {
 		// duplicate key error
