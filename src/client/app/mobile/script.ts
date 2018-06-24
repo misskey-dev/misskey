@@ -38,6 +38,7 @@ import MkSettings from './views/pages/settings.vue';
 import MkReversi from './views/pages/reversi.vue';
 import MkTag from './views/pages/tag.vue';
 import MkShare from './views/pages/share.vue';
+import MkFollow from '../common/views/pages/follow.vue';
 
 /**
  * init
@@ -80,7 +81,8 @@ init((launch) => {
 			{ path: '/@:user', component: MkUser },
 			{ path: '/@:user/followers', component: MkFollowers },
 			{ path: '/@:user/following', component: MkFollowing },
-			{ path: '/notes/:note', component: MkNote }
+			{ path: '/notes/:note', component: MkNote },
+			{ path: '/authorize-follow', component: MkFollow }
 		]
 	});
 

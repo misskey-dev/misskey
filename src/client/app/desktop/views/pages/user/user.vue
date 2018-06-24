@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<div class="zwwan0di1v4356rmdbjmwnn32tptpdp2" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
+	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
 		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
 		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<main>
@@ -149,10 +149,10 @@ root(isDark)
 				i
 					color #ccc
 
-.zwwan0di1v4356rmdbjmwnn32tptpdp2[data-darkmode]
+.xygkxeaeontfaokvqmiblezmhvhostak[data-darkmode]
 	root(true)
 
-.zwwan0di1v4356rmdbjmwnn32tptpdp2:not([data-darkmode])
+.xygkxeaeontfaokvqmiblezmhvhostak:not([data-darkmode])
 	root(false)
 
 </style>
