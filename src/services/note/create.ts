@@ -27,50 +27,29 @@ type Type = 'reply' | 'renote' | 'quote' | 'mention';
 class NotificationManager {
 	private notifier: IUser;
 	private note: any;
-	private queue: Array<{
-		notifiee: ILocalUser['_id'],
-		type: Type;
-	}> = [];
 
 	constructor(notifier: IUser, note: any) {
 		this.notifier = notifier;
 		this.note = note;
 	}
 
-	public push(notifiee: ILocalUser['_id'], type: Type) {
+	public async push(notifiee: ILocalUser['_id'], type: Type) {
 		// 自分自身へは通知しない
 		if (this.notifier._id.equals(notifiee)) return;
 
-		const exist = this.queue.find(x => x.notifiee.equals(notifiee));
+		// ミュート情報を取得
+		const mentioneeMutes = await Mute.find({
+			muterId: notifiee
+		});
 
-		if (exist) {
-			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
-			if (type != 'mention') {
-				exist.type = type;
-			}
-		} else {
-			this.queue.push({
-				notifiee, type
+		const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
+
+		// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
+		if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
+			notify(notifiee, this.notifier._id, type, {
+				noteId: this.note._id
 			});
 		}
-	}
-
-	public deliver() {
-		this.queue.forEach(async x => {
-			// ミュート情報を取得
-			const mentioneeMutes = await Mute.find({
-				muterId: x.notifiee
-			});
-
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
-
-			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
-				notify(x.notifiee, this.notifier._id, x.type, {
-					noteId: this.note._id
-				});
-			}
-		});
 	}
 }
 
