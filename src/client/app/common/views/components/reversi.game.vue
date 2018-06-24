@@ -30,6 +30,12 @@
 					<img v-if="stone === false" :src="`${whiteUser.avatarUrl}?thumbnail&size=128`" alt="">
 				</div>
 			</div>
+			<div class="labels-y" v-if="this.$store.state.settings.reversiBoardLabels">
+				<div v-for="i in game.settings.map.length">{{ i }}</div>
+			</div>
+		</div>
+		<div class="labels-x" v-if="this.$store.state.settings.reversiBoardLabels">
+			<span v-for="i in game.settings.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>
 
@@ -263,12 +269,12 @@ export default Vue.extend({
 		height 350px
 		margin 0 auto
 
-		$label-size = 32px
+		$label-size = 16px
 		$gap = 4px
 
 		> .labels-x
 			height $label-size
-			padding-left $label-size
+			padding 0 $label-size
 			display flex
 
 			> *
@@ -276,6 +282,7 @@ export default Vue.extend({
 				display flex
 				align-items center
 				justify-content center
+				font-size 12px
 
 				&:first-child
 					margin-left -($gap / 2)
@@ -296,6 +303,7 @@ export default Vue.extend({
 					display flex
 					align-items center
 					justify-content center
+					font-size 12px
 
 					&:first-child
 						margin-top -($gap / 2)
