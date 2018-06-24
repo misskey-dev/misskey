@@ -26,9 +26,9 @@ type Type = 'reply' | 'renote' | 'quote' | 'mention';
  */
 class NotificationManager {
 	private notifier: IUser;
-	private note: any;
+	private note: INote;
 
-	constructor(notifier: IUser, note: any) {
+	constructor(notifier: IUser, note: INote) {
 		this.notifier = notifier;
 		this.note = note;
 	}
@@ -192,7 +192,7 @@ export default async (user: IUser, data: {
 	// Serialize
 	const noteObj = await pack(note);
 
-	const nm = new NotificationManager(user, noteObj);
+	const nm = new NotificationManager(user, note);
 
 	const render = async () => {
 		const content = data.renote && data.text == null
