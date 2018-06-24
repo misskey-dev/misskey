@@ -42,6 +42,7 @@ common:
     d: "Czy masz coś do powiedzenia?"
     e: "Napisz coś tutaj!"
     f: "Czekamy, aż coś napiszesz."
+  search: "検索"
   delete: "Usuń"
   loading: "Ładowanie"
   ok: "OK"
@@ -49,6 +50,13 @@ common:
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   i-like-sushi: "Wolę sushi od puddingu"
+  show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
+  reversi:
+    drawn: "引き分け"
+    my-turn: "あなたのターンです"
+    opponent-turn: "相手のターンです"
+    turn-of: "{}のターンです"
+    past-turn-of: "{}のターン"
   widgets:
     analog-clock: "Zegar analogowy"
     profile: "Profil"
@@ -238,6 +246,12 @@ common/views/widgets/memo.vue:
   title: "Notatka"
   memo: "Napisz tutaj!"
   save: "Zapisz"
+common/views/pages/follow.vue:
+  signed-in-as: "{}としてサインイン中"
+  following: "フォロー中"
+  follow: "フォロー"
+  request-pending: "フォロー許可待ち"
+  follow-request: "フォロー申請"
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -639,6 +653,11 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Wycisz"
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
+desktop/views/pages/user/user.header.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  is-bot: "このアカウントはBotです"
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
