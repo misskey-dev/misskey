@@ -400,7 +400,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Attach media from your PC"
   attach-media-from-drive: "Attach media from your Drive"
   attach-cancel: "Cancel attachment"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Create a poll"
   text-remain: "{} characters remaining"
 desktop/views/components/post-form-window.vue:
