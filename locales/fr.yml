@@ -400,7 +400,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Joindre un media depuis votre PC"
   attach-media-from-drive: "Joindre un media depuis votre Drive"
   attach-cancel: "Annuler la jointure de fichier"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Créer un sondage"
   text-remain: "{} charactères restants"
 desktop/views/components/post-form-window.vue:

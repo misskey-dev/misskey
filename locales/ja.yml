@@ -461,7 +461,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "PCからメディアを添付"
   attach-media-from-drive: "ドライブからメディアを添付"
   attach-cancel: "添付取り消し"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
 

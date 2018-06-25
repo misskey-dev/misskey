@@ -400,7 +400,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "PCからメディアを添付"
   attach-media-from-drive: "Adjunta multimedia desde tu Disco"
   attach-cancel: "Quitar el archivo adjunto"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Crea una encuesta"
   text-remain: "quedan {} caracteres"
 desktop/views/components/post-form-window.vue:
