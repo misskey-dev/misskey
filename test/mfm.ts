@@ -115,6 +115,18 @@ describe('Text', () => {
 				{ type: 'search', content: 'a b c SEARCH', query: 'a b c'}
 			], tokens4);
 		});
+
+		it('title', () => {
+			const tokens1 = analyze('【yee】\nhaw');
+			assert.deepEqual(
+				{ type: 'title', content: '【yee】\n', title: 'yee'}
+			, tokens1[0]);
+
+			const tokens2 = analyze('[yee]\nhaw');
+			assert.deepEqual(
+				{ type: 'title', content: '[yee]\n', title: 'yee'}
+			, tokens2[0]);
+		});
 	});
 
 	describe('syntax highlighting', () => {
