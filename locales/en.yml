@@ -750,7 +750,7 @@ mobile/views/components/note-sub.vue:
   bot: "bot"
   cat: "cat"
 mobile/views/components/notes.vue:
-  failed: "Failed to load."
+  failed: "Failed to load"
   retry: "Retry"
 mobile/views/components/notifications.vue:
   more: "More"
