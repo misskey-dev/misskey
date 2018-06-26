@@ -541,7 +541,7 @@ desktop/views/components/settings.profile.vue:
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
 desktop/views/components/sub-note-content.vue:
-  private: "This post is a private"
+  private: "This post is private"
   deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
@@ -581,7 +581,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create list"
+  create-list: "Create a list"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
@@ -732,7 +732,7 @@ mobile/views/components/note.vue:
   more: "See more"
   less: "Hide"
   private: "This post is private"
-  deleted: "this post has been deleted"
+  deleted: "This post has been deleted"
   location: "Location"
 mobile/views/components/note-detail.vue:
   reply: "Reply"
@@ -767,7 +767,7 @@ mobile/views/components/post-form.vue:
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
-  private: "This post is a private"
+  private: "This post is private"
   deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
@@ -888,13 +888,13 @@ mobile/views/pages/user.vue:
   follows-you: "Follows you"
   following: "Following"
   followers: "Followers"
-  notes: "Posts"
+  notes: "Notes"
   overview: "Overview"
   timeline: "Timeline"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information is not accurate. "
-  view-remote: "See accurate information"
+  is-remote: "This user is a remote user, so the information about them that you see here is not complete."
+  view-remote: "See their complete profile"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"
