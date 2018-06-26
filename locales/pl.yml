@@ -552,6 +552,8 @@ desktop/views/components/timeline.vue:
   local: "Lokalne"
   global: "Globalne"
   list: "Listy"
+desktop/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
 desktop/views/components/ui.header.account.vue:
   profile: "Twój profil"
   drive: "Dysk"
