@@ -364,7 +364,7 @@ desktop/views/components/messaging-window.vue:
   title: "Messaging"
 desktop/views/components/note-detail.vue:
   more: "Load more conversations"
-  private: "this post is private"
+  private: "This post is private"
   deleted: "this post has been deleted"
   reposted-by: "Reposted by {}"
   location: "Location"
@@ -376,7 +376,7 @@ desktop/views/components/notes.note.vue:
   renote: "Repost"
   add-reaction: "Add a reaction"
   detail: "Show details"
-  private: "this post is private"
+  private: "This post is private"
   deleted: "this post has been deleted"
 desktop/views/components/notes.vue:
   error: "Loading failed."
@@ -601,7 +601,7 @@ desktop/views/pages/deck/deck.tl-column.vue:
   is-media-view: "Media view"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposted by {}"
-  private: "this post is private"
+  private: "This post is private"
   deleted: "this post has been deleted"
 desktop/views/pages/welcome.vue:
   about: "about"
@@ -614,7 +614,7 @@ desktop/views/pages/welcome.vue:
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
 desktop/views/pages/favorites.vue:
-  more: "Load More"
+  more: "Load more"
 desktop/views/pages/home-customize.vue:
   title: "Customize home"
 desktop/views/pages/note.vue:
@@ -639,8 +639,8 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No users"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information is not accurate. "
-  view-remote: "See accurate information"
+  is-remote: "This user is a remote user, so the information about them that you see here is not complete."
+  view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active: "
 desktop/views/pages/user/user.photos.vue:
@@ -656,13 +656,13 @@ desktop/views/pages/user/user.profile.vue:
   muted: "Muting"
   unmute: "Unmute"
 desktop/views/pages/user/user.header.vue:
-  posts: "Posts"
+  posts: "Notes"
   following: "Following"
   followers: "Followers"
   is-bot: "This account is a Bot"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
-  with-replies: "Posts and replies"
+  with-replies: "Notes and replies"
   with-media: "Media"
   empty: "This user has never posted yet."
 desktop/views/widgets/messaging.vue:
@@ -731,15 +731,15 @@ mobile/views/components/note.vue:
   reposted-by: "Reposted by {}"
   more: "See more"
   less: "Hide"
-  private: "this post is private"
+  private: "This post is private"
   deleted: "this post has been deleted"
   location: "Location"
 mobile/views/components/note-detail.vue:
   reply: "Reply"
   reaction: "Reaction"
   reposted-by: "Reposted by {}"
-  private: "this post is private"
-  deleted: "this post has been deleted"
+  private: "This post is private"
+  deleted: "This post has been deleted"
   location: "Location"
 mobile/views/components/note-preview.vue:
   admin: "admin"
@@ -832,15 +832,15 @@ mobile/views/pages/settings/settings.profile.vue:
   name: "Name"
   account: "Account"
   location: "Location"
-  description: "Description"
+  description: "Biography"
   birthday: "Birthday"
   avatar: "Avatar"
   banner: "Banner"
   is-cat: "This account is a Cat"
   save: "Update profile"
-  saved: "Profile updated successfully"
+  saved: "Profile updated"
   uploading: "Uploading"
-  upload-failed: "Upload failed"
+  upload-failed: "Failed to upload"
 mobile/views/pages/search.vue:
   search: "Search"
   empty: "No posts were found for '{}'"
