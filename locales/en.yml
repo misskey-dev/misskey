@@ -53,10 +53,10 @@ common:
   show-reversi-board-labels: "Show row and column labels in Reversi"
   reversi:
     drawn: "Game Drawn"
-    my-turn: "あなたのターンです"
-    opponent-turn: "相手のターンです"
-    turn-of: "{}のターンです"
-    past-turn-of: "{}のターン"
+    my-turn: "Your turn"
+    opponent-turn: "Opponent's turn"
+    turn-of: "It is {}'s turn"
+    past-turn-of: "{}' turn"
   widgets:
     analog-clock: "Analog clock"
     profile: "Profile"
@@ -553,7 +553,7 @@ desktop/views/components/timeline.vue:
   global: "Global"
   list: "Lists"
 desktop/views/components/ui.header.vue:
-  welcome-back: "Welcome back, "
+  welcome-back: "Welcome back,"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   drive: "Drive"
