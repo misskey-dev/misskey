@@ -40,17 +40,6 @@ export default Vue.component('misskey-flavored-markdown', {
 			ast = this.ast;
 		}
 
-		if (ast.filter(x => x.type != 'hashtag').length == 0) {
-			return;
-		}
-
-		while (ast[ast.length - 1] && (
-			ast[ast.length - 1].type == 'hashtag' ||
-			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == ' ') ||
-			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == '\n'))) {
-			ast.pop();
-		}
-
 		// Parse ast to DOM
 		const els = flatten(ast.map(token => {
 			switch (token.type) {

@@ -32,9 +32,6 @@
 						<mk-media-list :media-list="p.media"/>
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
-					<div class="tags" v-if="p.tags && p.tags.length > 0">
-						<router-link v-for="tag in p.tags" :key="tag" :to="`/tags/${tag}`">{{ tag }}</router-link>
-					</div>
 					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
 					<div class="renote" v-if="p.renote">
@@ -464,35 +461,6 @@ root(isDark)
 
 						&:empty
 							display none
-
-					> .tags
-						margin 4px 0 0 0
-
-						> *
-							display inline-block
-							margin 0 0 4px 6px
-							padding 2px 8px 2px 16px
-							font-size 90%
-							color $theme-color
-							background isDark ? #313543 : #edf0f3
-							border-radius 4px
-
-							&:before
-								content ""
-								display block
-								position absolute
-								top 0
-								bottom 0
-								left 4px
-								width 8px
-								height 8px
-								margin auto 0
-								background isDark ? #282c37 : #fff
-								border-radius 100%
-
-							&:hover
-								text-decoration none
-								background #e2e7ec
 
 					.mk-url-preview
 						margin-top 8px
