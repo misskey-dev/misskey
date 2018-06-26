@@ -199,7 +199,7 @@
 		"typescript-eslint-parser": "16.0.0",
 		"uglify-es": "3.3.9",
 		"url-loader": "1.0.1",
-		"uuid": "3.2.1",
+		"uuid": "3.3.0",
 		"v-animate-css": "0.0.2",
 		"vue": "2.5.16",
 		"vue-cropperjs": "2.2.1",
