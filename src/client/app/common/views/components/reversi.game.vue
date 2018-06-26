@@ -265,8 +265,8 @@ export default Vue.extend({
 		border-bottom dashed 1px #c4cdd4
 
 	> .board
-		width 350px
-		height 350px
+		width calc(100% - 16px)
+		max-width 500px
 		margin 0 auto
 
 		$label-size = 16px
