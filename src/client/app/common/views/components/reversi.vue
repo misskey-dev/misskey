@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	<div class="index" v-else>
-		<h1>Misskey %fa:circle%thell%fa:circle R%</h1>
+		<h1>Misskey Reversi</h1>
 		<p>他のMisskeyユーザーとリバーシで対戦しよう</p>
 		<div class="play">
 			<el-button round>フリーマッチ(準備中)</el-button>

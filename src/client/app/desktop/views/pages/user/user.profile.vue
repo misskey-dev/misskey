@@ -15,48 +15,17 @@
 		</button>
 		<button class="mute ui" @click="list">%fa:list% リストに追加</button>
 	</div>
-	<div class="description" v-if="user.description">{{ user.description }}</div>
-	<div class="birthday" v-if="user.host === null && user.profile.birthday">
-		<p>%fa:birthday-cake%{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</p>
-	</div>
-	<div class="twitter" v-if="user.host === null && user.twitter">
-		<p>%fa:B twitter%<a :href="`https://twitter.com/${user.twitter.screenName}`" target="_blank">@{{ user.twitter.screenName }}</a></p>
-	</div>
-	<div class="status">
-		<p class="notes-count">%fa:angle-right%<a>{{ user.notesCount }}</a><b>投稿</b></p>
-		<p class="following">%fa:angle-right%<a @click="showFollowing">{{ user.followingCount }}</a>人を<b>フォロー</b></p>
-		<p class="followers">%fa:angle-right%<a @click="showFollowers">{{ user.followersCount }}</a>人の<b>フォロワー</b></p>
-	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import * as age from 's-age';
-import MkFollowingWindow from '../../components/following-window.vue';
-import MkFollowersWindow from '../../components/followers-window.vue';
 import MkUserListsWindow from '../../components/user-lists-window.vue';
 
 export default Vue.extend({
 	props: ['user'],
-	computed: {
-		age(): number {
-			return age(this.user.profile.birthday);
-		}
-	},
+
 	methods: {
-		showFollowing() {
-			(this as any).os.new(MkFollowingWindow, {
-				user: this.user
-			});
-		},
-
-		showFollowers() {
-			(this as any).os.new(MkFollowersWindow, {
-				user: this.user
-			});
-		},
-
 		stalk() {
 			(this as any).api('following/stalk', {
 				userId: this.user.id
@@ -116,8 +85,8 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.profile
-	background #fff
+root(isDark)
+	background isDark ? #282C37 : #fff
 	border solid 1px rgba(#000, 0.075)
 	border-radius 6px
 
@@ -127,7 +96,7 @@ export default Vue.extend({
 	> .friend-form
 		padding 16px
 		text-align center
-		border-top solid 1px #eee
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		> .followed
 			margin 12px 0 0 0
@@ -145,7 +114,7 @@ export default Vue.extend({
 	> .action-form
 		padding 16px
 		text-align center
-		border-top solid 1px #eee
+		border-bottom solid 1px isDark ? #21242f : #eee
 
 		> *
 			width 100%
@@ -153,43 +122,10 @@ export default Vue.extend({
 			&:not(:last-child)
 				margin-bottom 12px
 
-	> .description
-		padding 16px
-		color #555
-		border-top solid 1px #eee
+.profile[data-darkmode]
+	root(true)
 
-	> .birthday
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
-		> p
-			margin 0
-
-			> i
-				margin-right 8px
-
-	> .twitter
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
-		> p
-			margin 0
-
-			> i
-				margin-right 8px
-
-	> .status
-		padding 16px
-		color #555
-		border-top solid 1px #eee
-
-		> p
-			margin 8px 0
-
-			> i
-				margin-left 8px
-				margin-right 8px
+.profile:not([data-darkmode])
+	root(false)
 
 </style>

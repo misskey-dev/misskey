@@ -54,6 +54,7 @@
 			<mk-switch v-model="$store.state.settings.showMaps" @change="onChangeShowMaps" text="%i18n:@show-maps%">
 				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
+			<mk-switch v-model="$store.state.settings.reversiBoardLabels" @change="onChangeReversiBoardLabels" text="%i18n:common.show-reversi-board-labels%"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -366,6 +367,12 @@ export default Vue.extend({
 		onChangeILikeSushi(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'iLikeSushi',
+				value: v
+			});
+		},
+		onChangeReversiBoardLabels(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'reversiBoardLabels',
 				value: v
 			});
 		},

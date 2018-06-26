@@ -7,6 +7,13 @@
 	</button>
 	<div class="body" :style="{ backgroundImage: `url('${ welcomeBgUrl }')` }">
 		<div class="container">
+			<div class="info">
+				<span>%i18n:common.misskey% <b>{{ host }}</b></span>
+				<span class="stats" v-if="stats">
+					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
+					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
+				</span>
+			</div>
 			<main>
 				<div class="about">
 					<h1 v-if="name">{{ name }}</h1>
@@ -19,12 +26,8 @@
 					<mk-signin/>
 				</div>
 			</main>
-			<div class="info">
-				<span>%i18n:common.misskey% <b>{{ host }}</b></span>
-				<span class="stats" v-if="stats">
-					<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
-					<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
-				</span>
+			<div class="hashtags">
+				<router-link v-for="tag in tags" :key="tag" :to="`/tags/${ tag }`" :title="tag">#{{ tag }}</router-link>
 			</div>
 			<mk-nav class="nav"/>
 		</div>
@@ -32,7 +35,7 @@
 		<img src="assets/title.dark.svg" alt="Misskey">
 	</div>
 	<div class="tl">
-		<mk-welcome-timeline/>
+		<mk-welcome-timeline :max="20"/>
 	</div>
 	<modal name="signup" width="500px" height="auto" scrollable>
 		<header :class="$style.signupFormHeader">%i18n:@signup%</header>
@@ -54,12 +57,17 @@ export default Vue.extend({
 			host,
 			name,
 			description,
-			pointerInterval: null
+			pointerInterval: null,
+			tags: []
 		};
 	},
 	created() {
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
+		});
+
+		(this as any).api('hashtags/trend').then(stats => {
+			this.tags = stats.map(x => x.tag);
 		});
 	},
 	mounted() {
@@ -161,6 +169,20 @@ root(isDark)
 			$loginWidth = 340px
 			$width = $aboutWidth + $loginWidth
 
+			> .info
+				margin 0 auto 16px auto
+				width $width
+				font-size 14px
+				color #fff
+
+				> .stats
+					margin-left 16px
+					padding-left 16px
+					border-left solid 1px #fff
+
+					> *
+						margin-right 16px
+
 			> main
 				display flex
 				margin auto
@@ -199,24 +221,19 @@ root(isDark)
 				> .login
 					width $loginWidth
 					padding 16px 32px 32px 32px
-					background #f5f5f5
+					background isDark ? #2e3440 : #f5f5f5
 
-			> .info
+			> .hashtags
 				margin 16px auto
-				padding 12px
 				width $width
 				font-size 14px
 				color #fff
-				background rgba(#000, 0.2)
+				background rgba(#000, 0.3)
 				border-radius 8px
 
-				> .stats
-					margin-left 16px
-					padding-left 16px
-					border-left solid 1px #fff
-
-					> *
-						margin-right 16px
+				> *
+					display inline-block
+					margin 14px
 
 			> .nav
 				display block

@@ -13,7 +13,9 @@
 		<button @click="resolveInitPromise">%i18n:@retry%</button>
 	</div>
 
-	<transition-group name="mk-notes" class="transition">
+	<!-- トランジションを有効にするとなぜかメモリリークする -->
+	<!-- <transition-group name="mk-notes" class="transition"> -->
+	<div class="transition">
 		<template v-for="(note, i) in _notes">
 			<mk-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
@@ -21,7 +23,8 @@
 				<span>%fa:angle-down%{{ _notes[i + 1]._datetext }}</span>
 			</p>
 		</template>
-	</transition-group>
+	</div>
+	<!-- </transition-group> -->
 
 	<footer v-if="more">
 		<button @click="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">

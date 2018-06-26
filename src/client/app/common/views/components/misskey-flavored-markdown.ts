@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
-import parse from '../../../../../text/parse';
+import parse from '../../../../../mfm/parse';
 import getAcct from '../../../../../acct/render';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
@@ -10,7 +10,7 @@ const flatten = list => list.reduce(
 	(a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
 );
 
-export default Vue.component('mk-note-html', {
+export default Vue.component('misskey-flavored-markdown', {
 	props: {
 		text: {
 			type: String,
@@ -38,17 +38,6 @@ export default Vue.component('mk-note-html', {
 			ast = parse(this.text);
 		} else {
 			ast = this.ast;
-		}
-
-		if (ast.filter(x => x.type != 'hashtag').length == 0) {
-			return;
-		}
-
-		while (ast[ast.length - 1] && (
-			ast[ast.length - 1].type == 'hashtag' ||
-			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == ' ') ||
-			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == '\n'))) {
-			ast.pop();
 		}
 
 		// Parse ast to DOM

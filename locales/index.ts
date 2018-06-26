@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
-export type LangKey = 'de' | 'en' | 'fr' | 'ja' | 'pl';
+export type LangKey = 'de' | 'en' | 'fr' | 'ja' | 'pl' | 'es';
 export type LocaleObject = { [key: string]: any };
 
 const loadLang = (lang: LangKey) => yaml.safeLoad(
@@ -18,7 +18,8 @@ const langs: { [key: string]: LocaleObject } = {
 	'en': loadLang('en'),
 	'fr': loadLang('fr'),
 	'ja': native,
-	'pl': loadLang('pl')
+	'pl': loadLang('pl'),
+	'es': loadLang('es')
 };
 
 Object.entries(langs).map(([, locale]) => {

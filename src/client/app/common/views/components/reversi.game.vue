@@ -3,24 +3,39 @@
 	<header><b>{{ blackUser.name }}</b>(黒) vs <b>{{ whiteUser.name }}</b>(白)</header>
 
 	<div style="overflow: hidden">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ turnUser.name }}のターンです<mk-ellipsis/></p>
-		<p class="turn" v-if="logPos != logs.length">{{ turnUser.name }}のターン</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">相手のターンです<mk-ellipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">あなたのターンです</p>
+		<p class="turn" v-if="!iAmPlayer && !game.isEnded">{{ '%i18n:common.reversi.turn-of%'.replace('{}', turnUser.name) }}<mk-ellipsis/></p>
+		<p class="turn" v-if="logPos != logs.length">{{ '%i18n:common.reversi.past-turn-of%'.replace('{}', turnUser.name) }}</p>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">%i18n:common.reversi.opponent-turn%<mk-ellipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">%i18n:common.reversi.my-turn%</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner"><b>{{ game.winner.name }}</b>の勝ち{{ game.settings.isLlotheo ? ' (ロセオ)' : '' }}</template>
-			<template v-else>引き分け</template>
+			<template v-else>%i18n:common.reversi.drawn%</template>
 		</p>
 	</div>
 
-	<div class="board" :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
-		<div v-for="(stone, i) in o.board"
-			:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
-			@click="set(i)"
-			:title="'[' + (o.transformPosToXy(i)[0] + 1) + ', ' + (o.transformPosToXy(i)[1] + 1) + '] (' + i + ')'"
-		>
-			<img v-if="stone === true" :src="`${blackUser.avatarUrl}?thumbnail&size=128`" alt="">
-			<img v-if="stone === false" :src="`${whiteUser.avatarUrl}?thumbnail&size=128`" alt="">
+	<div class="board">
+		<div class="labels-x" v-if="this.$store.state.settings.reversiBoardLabels">
+			<span v-for="i in game.settings.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
+		</div>
+		<div class="flex">
+			<div class="labels-y" v-if="this.$store.state.settings.reversiBoardLabels">
+				<div v-for="i in game.settings.map.length">{{ i }}</div>
+			</div>
+			<div class="cells" :style="cellsStyle">
+				<div v-for="(stone, i) in o.board"
+						:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
+						@click="set(i)"
+						:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`">
+					<img v-if="stone === true" :src="`${blackUser.avatarUrl}?thumbnail&size=128`" alt="">
+					<img v-if="stone === false" :src="`${whiteUser.avatarUrl}?thumbnail&size=128`" alt="">
+				</div>
+			</div>
+			<div class="labels-y" v-if="this.$store.state.settings.reversiBoardLabels">
+				<div v-for="i in game.settings.map.length">{{ i }}</div>
+			</div>
+		</div>
+		<div class="labels-x" v-if="this.$store.state.settings.reversiBoardLabels">
+			<span v-for="i in game.settings.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>
 
@@ -92,6 +107,12 @@ export default Vue.extend({
 		isMyTurn(): boolean {
 			if (this.turnUser == null) return null;
 			return this.turnUser.id == this.$store.state.i.id;
+		},
+		cellsStyle(): any {
+			return {
+				'grid-template-rows': `repeat(${ this.game.settings.map.length }, 1fr)`,
+				'grid-template-columns': `repeat(${ this.game.settings.map[0].length }, 1fr)`
+			};
 		}
 	},
 
@@ -244,54 +265,99 @@ export default Vue.extend({
 		border-bottom dashed 1px #c4cdd4
 
 	> .board
-		display grid
-		grid-gap 4px
-		width 350px
-		height 350px
+		width calc(100% - 16px)
+		max-width 500px
 		margin 0 auto
 
-		> div
-			background transparent
-			border-radius 6px
-			overflow hidden
+		$label-size = 16px
+		$gap = 4px
 
-			*
-				pointer-events none
-				user-select none
+		> .labels-x
+			height $label-size
+			padding 0 $label-size
+			display flex
 
-			&.empty
-				border solid 2px #eee
+			> *
+				flex 1
+				display flex
+				align-items center
+				justify-content center
+				font-size 12px
 
-			&.empty.can
-				background #eee
+				&:first-child
+					margin-left -($gap / 2)
 
-			&.empty.myTurn
-				border-color #ddd
+				&:last-child
+					margin-right -($gap / 2)
 
-				&.can
-					background #eee
-					cursor pointer
+		> .flex
+			display flex
 
-					&:hover
-						border-color darken($theme-color, 10%)
-						background $theme-color
+			> .labels-y
+				width $label-size
+				display flex
+				flex-direction column
 
-					&:active
-						background darken($theme-color, 10%)
+				> *
+					flex 1
+					display flex
+					align-items center
+					justify-content center
+					font-size 12px
 
-			&.prev
-				box-shadow 0 0 0 4px rgba($theme-color, 0.7)
+					&:first-child
+						margin-top -($gap / 2)
 
-			&.isEnded
-				border-color #ddd
+					&:last-child
+						margin-bottom -($gap / 2)
 
-			&.none
-				border-color transparent !important
+			> .cells
+				flex 1
+				display grid
+				grid-gap $gap
 
-			> img
-				display block
-				width 100%
-				height 100%
+				> div
+					background transparent
+					border-radius 6px
+					overflow hidden
+
+					*
+						pointer-events none
+						user-select none
+
+					&.empty
+						border solid 2px #eee
+
+					&.empty.can
+						background #eee
+
+					&.empty.myTurn
+						border-color #ddd
+
+						&.can
+							background #eee
+							cursor pointer
+
+							&:hover
+								border-color darken($theme-color, 10%)
+								background $theme-color
+
+							&:active
+								background darken($theme-color, 10%)
+
+					&.prev
+						box-shadow 0 0 0 4px rgba($theme-color, 0.7)
+
+					&.isEnded
+						border-color #ddd
+
+					&.none
+						border-color transparent !important
+
+					> img
+						display block
+						width 100%
+						height 100%
 
 	> .graph
 		display grid

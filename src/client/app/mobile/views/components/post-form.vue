@@ -45,7 +45,7 @@ import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import getKao from '../../../common/scripts/get-kao';
-import parse from '../../../../../text/parse';
+import parse from '../../../../../mfm/parse';
 import { host } from '../../../config';
 
 export default Vue.extend({

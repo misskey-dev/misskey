@@ -19,7 +19,8 @@ const defaultSettings = {
 	loadRemoteMedia: true,
 	disableViaMobile: false,
 	memo: null,
-	iLikeSushi: false
+	iLikeSushi: false,
+	reversiBoardLabels: false
 };
 
 const defaultDeviceSettings = {

@@ -23,7 +23,10 @@ export default async function(mios: MiOS, force = false, silent = false) {
 		}
 
 		if (!silent) {
-			alert('%i18n:common.update-available%'.replace('{newer}', newer).replace('{current}', current));
+			mios.apis.dialog({
+				title: '%i18n:common.update-available-title%',
+				text: '%i18n:common.update-available%'.replace('{newer}', newer).replace('{current}', current)
+			});
 		}
 
 		return newer;

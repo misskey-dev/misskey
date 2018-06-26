@@ -1,5 +1,4 @@
 import * as mongo from 'mongodb';
-import { JSDOM } from 'jsdom';
 import { toUnicode } from 'punycode';
 import * as debug from 'debug';
 
@@ -11,6 +10,7 @@ import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, IObject, IPerson } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
+import htmlToMFM from '../../../mfm/html-to-mfm';
 
 const log = debug('misskey:activitypub');
 
@@ -47,16 +47,28 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 
 	const object = await resolver.resolve(value) as any;
 
-	if (
-		object == null ||
-		object.type !== 'Person' ||
-		typeof object.preferredUsername !== 'string' ||
-		typeof object.inbox !== 'string' ||
-		!validateUsername(object.preferredUsername) ||
-		!isValidName(object.name == '' ? null : object.name)
-	) {
-		log(`invalid person: ${JSON.stringify(object, null, 2)}`);
-		throw new Error('invalid person');
+	if (object == null) {
+		throw new Error('invalid person: object is null');
+	}
+
+	if (object.type != 'Person' && object.type != 'Service') {
+		throw new Error('invalid person: object is not a person or service');
+	}
+
+	if (typeof object.preferredUsername !== 'string') {
+		throw new Error('invalid person: preferredUsername is not a string');
+	}
+
+	if (typeof object.inbox !== 'string') {
+		throw new Error('invalid person: inbox is not a string');
+	}
+
+	if (!validateUsername(object.preferredUsername)) {
+		throw new Error('invalid person: invalid username');
+	}
+
+	if (!isValidName(object.name == '' ? null : object.name)) {
+		throw new Error('invalid person: invalid name');
 	}
 
 	const person: IPerson = object;
@@ -80,7 +92,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 	]);
 
 	const host = toUnicode(finger.subject.replace(/^.*?@/, '')).toLowerCase();
-	const summaryDOM = JSDOM.fragment(person.summary);
+
+	const isBot = object.type == 'Service';
 
 	// Create user
 	let user: IRemoteUser;
@@ -89,7 +102,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 			avatarId: null,
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
-			description: summaryDOM.textContent,
+			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,
 			notesCount,
@@ -106,7 +119,8 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 			inbox: person.inbox,
 			endpoints: person.endpoints,
 			uri: person.id,
-			url: person.url
+			url: person.url,
+			isBot
 		}) as IRemoteUser;
 	} catch (e) {
 		// duplicate key error
@@ -211,8 +225,6 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 		)
 	]);
 
-	const summaryDOM = JSDOM.fragment(person.summary);
-
 	// アイコンとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<IDriveFile>([
 		person.icon,
@@ -231,7 +243,7 @@ export async function updatePerson(value: string | IObject, resolver?: Resolver)
 			bannerId: banner ? banner._id : null,
 			avatarUrl: avatar && avatar.metadata.isMetaOnly ? avatar.metadata.url : null,
 			bannerUrl: banner && banner.metadata.isMetaOnly ? banner.metadata.url : null,
-			description: summaryDOM.textContent,
+			description: htmlToMFM(person.summary),
 			followersCount,
 			followingCount,
 			notesCount,

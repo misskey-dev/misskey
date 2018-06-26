@@ -12,66 +12,44 @@ import notify from '../../publishers/notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
 import Mute from '../../models/mute';
-import pushSw from '../../publishers/push-sw';
 import event from '../../publishers/stream';
-import parse from '../../text/parse';
+import parse from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
 import Meta from '../../models/meta';
 
-type Reason = 'reply' | 'quote' | 'mention';
+type Type = 'reply' | 'renote' | 'quote' | 'mention';
 
 /**
- * ServiceWorkerへの通知を担当
+ * 通知を担当
  */
 class NotificationManager {
-	private user: IUser;
-	private note: any;
-	private list: Array<{
-		user: ILocalUser['_id'],
-		reason: Reason;
-	}> = [];
+	private notifier: IUser;
+	private note: INote;
 
-	constructor(user: IUser, note: any) {
-		this.user = user;
+	constructor(notifier: IUser, note: INote) {
+		this.notifier = notifier;
 		this.note = note;
 	}
 
-	public push(user: ILocalUser['_id'], reason: Reason) {
+	public async push(notifiee: ILocalUser['_id'], type: Type) {
 		// 自分自身へは通知しない
-		if (this.user._id.equals(user)) return;
+		if (this.notifier._id.equals(notifiee)) return;
 
-		const exist = this.list.find(x => x.user.equals(user));
+		// ミュート情報を取得
+		const mentioneeMutes = await Mute.find({
+			muterId: notifiee
+		});
 
-		if (exist) {
-			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
-			if (reason != 'mention') {
-				exist.reason = reason;
-			}
-		} else {
-			this.list.push({
-				user, reason
+		const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
+
+		// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
+		if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
+			notify(notifiee, this.notifier._id, type, {
+				noteId: this.note._id
 			});
 		}
-	}
-
-	public deliver() {
-		this.list.forEach(async x => {
-			const mentionee = x.user;
-
-			// ミュート情報を取得
-			const mentioneeMutes = await Mute.find({
-				muterId: mentionee
-			});
-
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
-
-			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.user._id.toString())) {
-				pushSw(mentionee, x.reason, this.note);
-			}
-		});
 	}
 }
 
@@ -214,7 +192,7 @@ export default async (user: IUser, data: {
 	// Serialize
 	const noteObj = await pack(note);
 
-	const nm = new NotificationManager(user, noteObj);
+	const nm = new NotificationManager(user, note);
 
 	const render = async () => {
 		const content = data.renote && data.text == null
@@ -264,10 +242,6 @@ export default async (user: IUser, data: {
 			if (data.renote && data.renote.userId.equals(u._id)) return;
 
 			// Create notification
-			notify(u._id, user._id, 'mention', {
-				noteId: note._id
-			});
-
 			nm.push(u._id, 'mention');
 		});
 
@@ -371,11 +345,6 @@ export default async (user: IUser, data: {
 			}
 		});
 
-		// (自分自身へのリプライでない限りは)通知を作成
-		notify(data.reply.userId, user._id, 'reply', {
-			noteId: note._id
-		});
-
 		// Fetch watchers
 		NoteWatching.find({
 			noteId: data.reply._id,
@@ -388,9 +357,7 @@ export default async (user: IUser, data: {
 			}
 		}).then(watchers => {
 			watchers.forEach(watcher => {
-				notify(watcher.userId, user._id, 'reply', {
-					noteId: note._id
-				});
+				nm.push(watcher.userId, 'reply');
 			});
 		});
 
@@ -399,6 +366,7 @@ export default async (user: IUser, data: {
 			watch(user._id, data.reply);
 		}
 
+		// (自分自身へのリプライでない限りは)通知を作成
 		nm.push(data.reply.userId, 'reply');
 	}
 
@@ -406,9 +374,7 @@ export default async (user: IUser, data: {
 	if (data.renote) {
 		// Notify
 		const type = data.text ? 'quote' : 'renote';
-		notify(data.renote.userId, user._id, type, {
-			noteId: note._id
-		});
+		nm.push(data.renote.userId, type);
 
 		// Fetch watchers
 		NoteWatching.find({
@@ -420,9 +386,7 @@ export default async (user: IUser, data: {
 			}
 		}).then(watchers => {
 			watchers.forEach(watcher => {
-				notify(watcher.userId, user._id, type, {
-					noteId: note._id
-				});
+				nm.push(watcher.userId, type);
 			});
 		});
 

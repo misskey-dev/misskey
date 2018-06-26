@@ -18,7 +18,9 @@
 					<span class="username"><mk-acct :user="user"/></span>
 					<span class="followed" v-if="user.isFollowed">%i18n:@follows-you%</span>
 				</div>
-				<div class="description">{{ user.description }}</div>
+				<div class="description">
+					<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+				</div>
 				<div class="info">
 					<p class="location" v-if="user.host === null && user.profile.location">
 						%fa:map-marker%{{ user.profile.location }}

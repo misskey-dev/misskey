@@ -14,6 +14,9 @@
 		<div class="tl">
 			<mk-welcome-timeline/>
 		</div>
+		<div class="hashtags">
+			<router-link v-for="tag in tags" :key="tag" :to="`/tags/${ tag }`" :title="tag">#{{ tag }}</router-link>
+		</div>
 		<div class="stats" v-if="stats">
 			<span>%fa:user% {{ stats.originalUsersCount | number }}</span>
 			<span>%fa:pencil-alt% {{ stats.originalNotesCount | number }}</span>
@@ -37,12 +40,17 @@ export default Vue.extend({
 			stats: null,
 			host,
 			name,
-			description
+			description,
+			tags: []
 		};
 	},
 	created() {
 		(this as any).api('stats').then(stats => {
 			this.stats = stats;
+		});
+
+		(this as any).api('hashtags/trend').then(stats => {
+			this.tags = stats.map(x => x.tag);
 		});
 	}
 });
@@ -116,11 +124,21 @@ export default Vue.extend({
 						box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
 
 		> .tl
+			margin 16px 0
+
 			> *
 				max-height 300px
 				border-radius 6px
 				overflow auto
 				-webkit-overflow-scrolling touch
+
+		> .hashtags
+			padding 16px 0
+			border solid 2px #ddd
+			border-radius 8px
+
+			> *
+				margin 0 16px
 
 		> .stats
 			margin 16px 0

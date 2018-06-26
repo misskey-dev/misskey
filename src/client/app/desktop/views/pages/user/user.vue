@@ -1,8 +1,26 @@
 <template>
 <mk-ui>
-	<div class="user" v-if="!fetching">
-		<x-header :user="user"/>
-		<x-home v-if="page == 'home'" :user="user"/>
+	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
+		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
+		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
+		<main>
+			<div class="main">
+				<x-header :user="user"/>
+				<mk-note-detail v-if="user.pinnedNote" :note="user.pinnedNote" :compact="true"/>
+				<x-timeline class="timeline" ref="tl" :user="user"/>
+			</div>
+			<div class="side">
+				<x-profile :user="user"/>
+				<x-twitter :user="user" v-if="user.host === null && user.twitter"/>
+				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
+				<mk-activity :user="user"/>
+				<x-photos :user="user"/>
+				<x-friends :user="user"/>
+				<x-followers-you-know v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
+				<div class="nav"><mk-nav/></div>
+				<p v-if="user.host === null">%i18n:@last-used-at%: <b><mk-time :time="user.lastUsedAt"/></b></p>
+			</div>
+		</main>
 	</div>
 </mk-ui>
 </template>
@@ -13,17 +31,22 @@ import parseAcct from '../../../../../../acct/parse';
 import getUserName from '../../../../../../renderers/get-user-name';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
-import XHome from './user.home.vue';
+import XTimeline from './user.timeline.vue';
+import XProfile from './user.profile.vue';
+import XPhotos from './user.photos.vue';
+import XFollowersYouKnow from './user.followers-you-know.vue';
+import XFriends from './user.friends.vue';
+import XTwitter from './user.twitter.vue';
 
 export default Vue.extend({
 	components: {
 		XHeader,
-		XHome
-	},
-	props: {
-		page: {
-			default: 'home'
-		}
+		XTimeline,
+		XProfile,
+		XPhotos,
+		XFollowersYouKnow,
+		XFriends,
+		XTwitter
 	},
 	data() {
 		return {
@@ -47,8 +70,89 @@ export default Vue.extend({
 				Progress.done();
 				document.title = getUserName(this.user) + ' | Misskey';
 			});
+		},
+
+		warp(date) {
+			(this.$refs.tl as any).warp(date);
 		}
 	}
 });
 </script>
 
+<style lang="stylus" scoped>
+root(isDark)
+	width 980px
+	padding 16px
+	margin 0 auto
+
+	> .is-suspended
+	> .is-remote
+		margin-bottom 16px
+		padding 14px 16px
+		font-size 14px
+		border-radius 6px
+
+		&.is-suspended
+			color isDark ? #ffb4b4 : #570808
+			background isDark ? #611d1d : #ffdbdb
+			border solid 1px isDark ? #d64a4a : #e09696
+
+		&.is-remote
+			color isDark ? #ffbd3e : #573c08
+			background isDark ? #42321c : #fff0db
+			border solid 1px isDark ? #90733c : #dcbb7b
+
+		> a
+			font-weight bold
+
+	> main
+		display flex
+		justify-content center
+
+		> .main
+		> .side
+			> *:not(:last-child)
+				margin-bottom 16px
+
+		> .main
+			flex 1
+			min-width 0 // SEE: http://kudakurage.hatenadiary.com/entry/2016/04/01/232722
+			margin-right 16px
+
+			> .timeline
+				border 1px solid rgba(#000, 0.075)
+				border-radius 6px
+
+		> .side
+			width 275px
+			flex-shrink 0
+
+			> p
+				display block
+				margin 0
+				padding 0 12px
+				text-align center
+				font-size 0.8em
+				color #aaa
+
+			> .nav
+				padding 16px
+				font-size 12px
+				color #aaa
+				background #fff
+				border solid 1px rgba(#000, 0.075)
+				border-radius 6px
+
+				a
+					color #999
+
+				i
+					color #ccc
+
+.xygkxeaeontfaokvqmiblezmhvhostak[data-darkmode]
+	root(true)
+
+.xygkxeaeontfaokvqmiblezmhvhostak:not([data-darkmode])
+	root(false)
+
+</style>

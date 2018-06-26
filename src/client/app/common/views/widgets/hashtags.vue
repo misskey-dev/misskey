@@ -6,7 +6,9 @@
 		<div class="mkw-hashtags--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching">%fa:spinner .pulse .fw%%i18n:common.loading%<mk-ellipsis/></p>
 			<p class="empty" v-else-if="stats.length == 0">%fa:exclamation-circle%%i18n:@empty%</p>
-			<transition-group v-else tag="div" name="chart">
+			<!-- トランジションを有効にするとなぜかメモリリークする -->
+			<!-- <transition-group v-else tag="div" name="chart"> -->
+			<div>
 				<div v-for="stat in stats" :key="stat.tag">
 					<div class="tag">
 						<router-link :to="`/tags/${ stat.tag }`" :title="stat.tag">#{{ stat.tag }}</router-link>
@@ -14,7 +16,8 @@
 					</div>
 					<x-chart class="chart" :src="stat.chart"/>
 				</div>
-			</transition-group>
+			</div>
+			<!-- </transition-group> -->
 		</div>
 	</mk-widget-container>
 </div>
