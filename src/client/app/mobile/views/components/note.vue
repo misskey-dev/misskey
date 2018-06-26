@@ -213,7 +213,8 @@ export default Vue.extend({
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p,
-				compact: true
+				compact: true,
+				big: true
 			});
 		},
 
