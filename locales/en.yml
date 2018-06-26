@@ -659,7 +659,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "Posts"
   following: "Following"
   followers: "Followers"
-  is-bot: "This account is a bot"
+  is-bot: "This account is a Bot"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
@@ -767,8 +767,8 @@ mobile/views/components/post-form.vue:
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
-  private: "this post is private"
-  deleted: "this post has been deleted"
+  private: "This post is a private"
+  deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
 mobile/views/components/timeline.vue:
@@ -880,7 +880,7 @@ mobile/views/pages/settings.vue:
   check-for-updates: "Check for updates"
   no-updates: "No updates available"
   no-updates-desc: "Your Misskey is up to date."
-  update-available: "New version is available!"
+  update-available: "A new version is available"
   update-available-desc: "Updates will be applied after reloading the page"
   settings: "Settings"
   signout: "Sign out"
