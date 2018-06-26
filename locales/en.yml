@@ -52,7 +52,7 @@ common:
   i-like-sushi: "I like sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
   reversi:
-    drawn: "Game Drawn"
+    drawn: "Draw"
     my-turn: "Your turn"
     opponent-turn: "Opponent's turn"
     turn-of: "It is {}'s turn"
@@ -122,11 +122,11 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "Clean cache"
   set-version: "Specify version"
 common/views/components/messaging.vue:
-  search-user: "Find an user"
+  search-user: "Find a user"
   you: "You"
   no-history: "No history"
 common/views/components/messaging-room.vue:
-  empty: "You haven't messaged this user"
+  empty: "No conversations"
   more: "Read more"
   no-history: "There is no more history"
   resize-form: "Drag to resize"
@@ -153,7 +153,7 @@ common/views/components/note-menu.vue:
   pin: "Pin to your profile page"
   delete: "Delete"
   delete-confirm: "Delete this post?"
-  remote: "Show on origin"
+  remote: "Show original note"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
