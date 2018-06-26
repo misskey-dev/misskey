@@ -639,6 +639,9 @@ desktop/views/components/timeline.vue:
   global: "グローバル"
   list: "リスト"
 
+desktop/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
+
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   drive: "ドライブ"
