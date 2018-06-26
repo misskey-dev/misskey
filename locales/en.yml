@@ -55,7 +55,7 @@ common:
     drawn: "Draw"
     my-turn: "Your turn"
     opponent-turn: "Opponent's turn"
-    turn-of: "It is {}'s turn"
+    turn-of: "{}'s turn"
     past-turn-of: "{}' turn"
   widgets:
     analog-clock: "Analog clock"
@@ -541,8 +541,8 @@ desktop/views/components/settings.profile.vue:
   is-bot: "This account is a Bot"
   is-cat: "This account is a Cat"
 desktop/views/components/sub-note-content.vue:
-  private: "this post is private"
-  deleted: "this post has been deleted"
+  private: "This post is a private"
+  deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
 desktop/views/components/taskmanager.vue:
