@@ -466,7 +466,7 @@ desktop/views/components/settings.vue:
   specify-language: "Specify language"
   language-desc: "You need to reload the page for the changes to take effect."
   cache: "Cache"
-  clean-cache: "Cleanup"
+  clean-cache: "Clear cache"
   cache-warn: "The cache of account info/posts/replies/messages/settings stored in the browser will be deleted. You need to reload the page after cleaning up."
   cache-cleared: "Cache cleared"
   cache-cleared-desc: "Please reload the page."
@@ -509,7 +509,7 @@ desktop/views/components/settings.2fa.vue:
   scan: "And then, scan the QR code:"
   done: "Please enter the token displaying on your device:"
   submit: "Submit"
-  success: "Setup completed successfully!"
+  success: "Settings saved!"
   failed: "Failed to setup. Please ensure that the token is correct."
   info: "From now on, enter the token that is displayed on your device in addition to your password when signing-in to Misskey."
 desktop/views/components/settings.api.vue:
@@ -524,12 +524,12 @@ desktop/views/components/settings.apps.vue:
 desktop/views/components/settings.mute.vue:
   no-users: "No muted users"
 desktop/views/components/settings.password.vue:
-  reset: "Change your password"
+  reset: "Change password"
   enter-current-password: "Enter the current password"
   enter-new-password: "Enter the new password"
-  enter-new-password-again: "Enter the new password again"
+  enter-new-password-again: "Enter new password again"
   not-match: "New password doesn't match"
-  changed: "Password updated successfully"
+  changed: "Password updated"
 desktop/views/components/settings.profile.vue:
   avatar: "Avatar"
   choice-avatar: "Choose an image"
@@ -604,7 +604,7 @@ desktop/views/pages/deck/deck.note.vue:
   private: "This post is private"
   deleted: "this post has been deleted"
 desktop/views/pages/welcome.vue:
-  about: "about"
+  about: "More details..."
   gotit: "Got it!"
   signin: "Log In"
   signup: "Sign up"
@@ -624,7 +624,7 @@ desktop/views/pages/selectdrive.vue:
   title: "Choose file(s)"
   ok: "OK"
   cancel: "Cancel"
-  upload: "Upload files from you PC"
+  upload: "Upload files from your PC"
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -852,7 +852,7 @@ mobile/views/pages/settings.vue:
   lang-tip: "You will need to reload the page for the changes to take effect."
   recommended: "Recommended"
   auto: "Auto"
-  specify-language: "Select the language"
+  specify-language: "Select your language"
   design: "Design and display"
   dark-mode: "Dark Mode"
   i-am-under-limited-internet: "I'm under limited internet"
@@ -865,7 +865,7 @@ mobile/views/pages/settings.vue:
   post-style-standard: "Standard"
   post-style-smart: "Smart"
   behavior: "Behavior"
-  fetch-on-scroll: "Fetch on scroll"
+  fetch-on-scroll: "Endless loading on scroll"
   disable-via-mobile: "Don't mark the post as 'from mobile'"
   load-raw-images: "Show attached images in high-quality"
   load-remote-media: "Show media on a remote server"
@@ -906,10 +906,10 @@ mobile/views/pages/user/home.vue:
   last-used-at: "Last active:"
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Loading"
-  no-users: "No users"
+  no-users: "No users that you know"
 mobile/views/pages/user/home.friends.vue:
   loading: "Loading"
-  no-users: "No users"
+  no-users: "There are no users that you know"
 mobile/views/pages/user/home.notes.vue:
   loading: "Loading"
   no-notes: "No notes"
