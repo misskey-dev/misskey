@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "A ⭐ of the fediverse"
   about-title: "A ⭐ of fediverse."
-  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within Fediverse (a universe where various social media platforms are organized) it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
+  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized) it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
@@ -96,10 +96,10 @@ common:
     add-column: "Add a column"
     rename: "Rename"
     stack-left: "Stack to left"
-    pop-right: "Pop to right"
+    pop-right: "Stack to right"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
-  description: "There is a problem either with your Internet connection, or the server may be down or under maintenance. Please {try again} later."
+  description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
   thanks: "Thank you for using Misskey."
   troubleshoot: "Troubleshoot"
 common/views/components/connect-failed.troubleshooter.vue:
@@ -228,7 +228,7 @@ common/views/widgets/broadcast.vue:
   next: "Next"
 common/views/widgets/donation.vue:
   title: "Donation"
-  text: "To keep Misskey up and running we spend money for our domain name, servers and so on. Since we don't get money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
+  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't get money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "No photos"
@@ -266,7 +266,7 @@ desktop/views/components/calendar.vue:
   next: "Next month"
   go: "Click to navigate"
 desktop/views/components/choose-file-from-drive-window.vue:
-  choose-file: "Choosing files"
+  choose-file: "Choose files"
   upload: "Upload files from your PC"
   cancel: "Cancel"
   ok: "OK"
