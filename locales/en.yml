@@ -227,8 +227,8 @@ common/views/widgets/broadcast.vue:
   have-a-nice-day: "Have a nice day!"
   next: "Next"
 common/views/widgets/donation.vue:
-  title: "Donation"
-  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't get money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
+  title: "Request for dnations"
+  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "No photos"
@@ -238,7 +238,7 @@ common/views/widgets/posts-monitor.vue:
 common/views/widgets/hashtags.vue:
   title: "Hashtags"
   count: "{} users mentioned"
-  empty: "No trend"
+  empty: "No popular hashtag trends"
 common/views/widgets/server.vue:
   title: "Server info"
   toggle: "Toggle views"
