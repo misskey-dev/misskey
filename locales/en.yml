@@ -632,7 +632,7 @@ desktop/views/pages/user-list.users.vue:
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Followers you know"
   loading: "Loading"
-  no-users: "There are no acquaintances"
+  no-users: "No followers you know"
 desktop/views/pages/user/user.friends.vue:
   title: "Frequently replied"
   loading: "Loading"
@@ -690,7 +690,7 @@ desktop/views/widgets/users.vue:
   no-one: "No one"
 mobile/views/components/drive.vue:
   drive: "Drive"
-  used: "Already in use"
+  used: "used"
   folder-count: "Folder(s)"
   count-separator: ", "
   file-count: "File(s)"
@@ -906,7 +906,7 @@ mobile/views/pages/user/home.vue:
   last-used-at: "Last active:"
 mobile/views/pages/user/home.followers-you-know.vue:
   loading: "Loading"
-  no-users: "No users that you know"
+  no-users: "No users you know"
 mobile/views/pages/user/home.friends.vue:
   loading: "Loading"
   no-users: "There are no users that you know"
