@@ -55,7 +55,7 @@ common:
     drawn: "引き分け"
     my-turn: "C’est votre tour"
     opponent-turn: "Tour de l’adversaire"
-    turn-of: "{}のターンです"
+    turn-of: "C’est le tour de {}"
     past-turn-of: "{}のターン"
   widgets:
     analog-clock: "Horloge analogique"
@@ -237,7 +237,7 @@ common/views/widgets/posts-monitor.vue:
   toggle: "Basculer les vues"
 common/views/widgets/hashtags.vue:
   title: "Étiquettes"
-  count: "{}人が投稿"
+  count: "{} utilisateurs mentionnés"
   empty: "Aucune tendance"
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
@@ -248,10 +248,10 @@ common/views/widgets/memo.vue:
   save: "Enregistrer"
 common/views/pages/follow.vue:
   signed-in-as: "Connecté en tant que {}"
-  following: "フォロー中"
+  following: "Suit"
   follow: "フォロー"
   request-pending: "Demande d'abonnement en attente"
-  follow-request: "フォロー申請"
+  follow-request: "Demande d'abonnement"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Bleu ... Notes"
@@ -659,7 +659,7 @@ desktop/views/pages/user/user.header.vue:
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"
-  is-bot: "このアカウントはBotです"
+  is-bot: "Ce compte est un Bot"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
