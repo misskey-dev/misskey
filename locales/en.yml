@@ -5,7 +5,7 @@ meta:
 common:
   misskey: "A ⭐ of the fediverse"
   about-title: "A ⭐ of fediverse."
-  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized) it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
+  about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
@@ -313,9 +313,9 @@ desktop/views/components/drive.nav-folder.vue:
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
-  empty-draghover: "Drop Welcome!"
+  empty-draghover: "Drop here, don't I look cute?"
   empty-drive: "Your drive is empty"
-  empty-drive-description: "You can also upload by right clicking and selecting \"Upload file\" or you can drag and drop a file onto the window."
+  empty-drive-description: "You can also upload by right clicking and selecting \"Upload file\", or you can drag and drop a file onto the window."
   empty-folder: "This folder is empty"
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
@@ -344,7 +344,7 @@ desktop/views/components/following-window.vue:
 desktop/views/components/following.vue:
   empty: "You don’t follow anyone."
 desktop/views/components/friends-maker.vue:
-  title: "Recommended users:"
+  title: "Recommended users to follow:"
   empty: "Couldn't find any recommended users."
   fetching: "Loading"
   refresh: "More"
@@ -365,7 +365,7 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   more: "Load more conversations"
   private: "This post is private"
-  deleted: "this post has been deleted"
+  deleted: "This post has been deleted"
   reposted-by: "Reposted by {}"
   location: "Location"
   renote: "Repost"
@@ -377,13 +377,13 @@ desktop/views/components/notes.note.vue:
   add-reaction: "Add a reaction"
   detail: "Show details"
   private: "This post is private"
-  deleted: "this post has been deleted"
+  deleted: "This post has been deleted"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
 desktop/views/components/notifications.vue:
   more: "More"
-  empty: "No notifications"
+  empty: "There are no notifications!"
 desktop/views/components/post-form.vue:
   reply-placeholder: "Reply to this note..."
   quote-placeholder: "Quote this note..."
@@ -437,7 +437,7 @@ desktop/views/components/settings.vue:
   fetch-on-scroll: "Fetch on scroll"
   fetch-on-scroll-desc: "When you scroll down the page automatically fetches additional content."
   auto-popout: "Auto pop-out window"
-  auto-popout-desc: "Pop-out an opened window if possible. This setting is stored in the browser."
+  auto-popout-desc: "Pops-out a newly opened window (onto a new tab), if possible. This setting is stored in the browser."
   advanced: "Advanced settings"
   api-via-stream: "API request via stream"
   api-via-stream-desc: "API request is performed via the WebSocket connection instead of native fetch API (for better performance). This setting is stored in the browser."
