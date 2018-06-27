@@ -152,7 +152,7 @@ common/views/components/note-menu.vue:
   favorite: "Favorite this note"
   pin: "Pin to your profile page"
   delete: "Delete"
-  delete-confirm: "Delete this post?"
+  delete-confirm: "Delete this post for sure?"
   remote: "Show original note"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
@@ -594,7 +594,7 @@ desktop/views/components/users-list.vue:
 desktop/views/components/users-list-item.vue:
   followed: "Follows you"
 desktop/views/components/window.vue:
-  popout: "Popout"
+  popout: "Pop-out"
   close: "Close"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
@@ -602,7 +602,7 @@ desktop/views/pages/deck/deck.tl-column.vue:
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposted by {}"
   private: "This post is private"
-  deleted: "this post has been deleted"
+  deleted: "This post has been deleted"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
@@ -632,7 +632,7 @@ desktop/views/pages/user-list.users.vue:
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Followers you know"
   loading: "Loading"
-  no-users: "No users"
+  no-users: "There are no acquaintances"
 desktop/views/pages/user/user.friends.vue:
   title: "Frequently replied"
   loading: "Loading"
@@ -642,7 +642,7 @@ desktop/views/pages/user/user.vue:
   is-remote: "This user is a remote user, so the information about them that you see here is not complete."
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
-  last-used-at: "Last active: "
+  last-used-at: "Last active:"
 desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
@@ -690,7 +690,7 @@ desktop/views/widgets/users.vue:
   no-one: "No one"
 mobile/views/components/drive.vue:
   drive: "Drive"
-  used: "used"
+  used: "Already in use"
   folder-count: "Folder(s)"
   count-separator: ", "
   file-count: "File(s)"
