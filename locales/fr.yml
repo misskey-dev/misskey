@@ -250,7 +250,7 @@ common/views/pages/follow.vue:
   signed-in-as: "Connecté en tant que {}"
   following: "フォロー中"
   follow: "フォロー"
-  request-pending: "フォロー許可待ち"
+  request-pending: "Demande d'abonnement en attente"
   follow-request: "フォロー申請"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
@@ -350,7 +350,7 @@ desktop/views/components/friends-maker.vue:
   refresh: "Plus"
   close: "Fermer"
 desktop/views/components/game-window.vue:
-  game: "リバーシ"
+  game: "Reversi"
 desktop/views/components/home.vue:
   done: "Envoyer"
   add-widget: "Ajouter un widget"
@@ -428,7 +428,7 @@ desktop/views/components/settings.vue:
   mute: "Mettre en sourdine"
   drive: "Drive"
   security: "Sécurité"
-  signin: "サインイン履歴"
+  signin: "Historique de connexion"
   password: "Mot de Passe"
   2fa: "Vérification en deux étapes"
   other: "Autres"
@@ -553,7 +553,7 @@ desktop/views/components/timeline.vue:
   global: "Global"
   list: "Listes"
 desktop/views/components/ui.header.vue:
-  welcome-back: "おかえりなさい、"
+  welcome-back: "Vous êtes de retour !"
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
@@ -638,7 +638,7 @@ desktop/views/pages/user/user.friends.vue:
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーは凍結されています。"
+  is-suspended: "Ce compte a été suspendu."
   is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées"
   view-remote: "Voir les informations détaillées"
 desktop/views/pages/user/user.home.vue:
