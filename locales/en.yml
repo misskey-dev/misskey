@@ -47,7 +47,7 @@ common:
   loading: "Loading"
   ok: "OK"
   update-available-title: "Update available"
-  update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
+  update-available: "A new version of Misskey, ({newer}, is now available. You are currently using {current}). Reloading the page will apply the update."
   my-token-regenerated: "Your token has been regenerated so you will be signed out."
   i-like-sushi: "I like sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
@@ -193,9 +193,9 @@ common/views/components/signup.vue:
   retype-placeholder: "Confirm your password"
   password-matched: "OK"
   password-not-matched: "Doesn't match"
-  recaptcha: "Verify"
+  recaptcha: "Verification"
   create: "Create an Account"
-  some-error: "Account creation failed for some reason. Please try again."
+  some-error: "Account creation has failed for some reason. Please try again."
 common/views/components/special-message.vue:
   new-year: "Happy New Year!"
   christmas: "Merry Christmas!"
@@ -204,7 +204,7 @@ common/views/components/stream-indicator.vue:
   reconnecting: "Reconnecting"
   connected: "Connected"
 common/views/components/twitter-setting.vue:
-  description: "If you connect your Twitter account to your Misskey account, you will be able to see your Twitter account information on your profile and you can sign-in using Twitter."
+  description: "Once you connect your Twitter account to your Misskey account, you will be able to see information about your Twitter account on your profile, and you will be able to sign-in using Twitter."
   connected-to: "You are connected to this Twitter account"
   detail: "Details..."
   reconnect: "Reconnect"
@@ -223,7 +223,7 @@ common/views/components/visibility-chooser.vue:
   private: "Private"
 common/views/widgets/broadcast.vue:
   fetching: "Fetching"
-  no-broadcasts: "No broadcasts"
+  no-broadcasts: "No announcements"
   have-a-nice-day: "Have a nice day!"
   next: "Next"
 common/views/widgets/donation.vue:
