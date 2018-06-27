@@ -3,7 +3,7 @@ meta:
   lang: "Français"
   divider: ""
 common:
-  misskey: "A ⭐ of fediverse"
+  misskey: "Une ⭐ du fédiverse"
   about-title: "Une ⭐ du fédiverse."
   about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   time:
@@ -42,19 +42,19 @@ common:
     d: "Voulez-vous exprimer quelque chose ?"
     e: "Écrivez ici"
     f: "En attente de vos écrits"
-  search: "検索"
+  search: "Recherche"
   delete: "Supprimer"
   loading: "Chargement"
   ok: "OK"
-  update-available-title: "更新があります"
+  update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
   reversi:
     drawn: "引き分け"
-    my-turn: "あなたのターンです"
-    opponent-turn: "相手のターンです"
+    my-turn: "C’est votre tour"
+    opponent-turn: "Tour de l’adversaire"
     turn-of: "{}のターンです"
     past-turn-of: "{}のターン"
   widgets:
@@ -153,7 +153,7 @@ common/views/components/note-menu.vue:
   pin: "Épingler sur votre profile"
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
-  remote: "投稿元で見る"
+  remote: "Afficher les note originale"
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
@@ -234,11 +234,11 @@ common/views/widgets/photo-stream.vue:
   no-photos: "Pas de photos"
 common/views/widgets/posts-monitor.vue:
   title: "Graph des publications"
-  toggle: "表示を切り替え"
+  toggle: "Basculer les vues"
 common/views/widgets/hashtags.vue:
   title: "Étiquettes"
   count: "{}人が投稿"
-  empty: "トレンドなし"
+  empty: "Aucune tendance"
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
@@ -247,7 +247,7 @@ common/views/widgets/memo.vue:
   memo: "Écrivez ici !"
   save: "Enregistrer"
 common/views/pages/follow.vue:
-  signed-in-as: "{}としてサインイン中"
+  signed-in-as: "Connecté en tant que {}"
   following: "フォロー中"
   follow: "フォロー"
   request-pending: "フォロー許可待ち"
