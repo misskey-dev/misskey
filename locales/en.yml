@@ -344,7 +344,7 @@ desktop/views/components/following-window.vue:
 desktop/views/components/following.vue:
   empty: "You don’t follow anyone."
 desktop/views/components/friends-maker.vue:
-  title: "Recommended users to follow:"
+  title: "Recommended users:"
   empty: "Couldn't find any recommended users."
   fetching: "Loading"
   refresh: "More"
@@ -383,7 +383,7 @@ desktop/views/components/notes.vue:
   retry: "Retry"
 desktop/views/components/notifications.vue:
   more: "More"
-  empty: "There are no notifications!"
+  empty: "No notifications!"
 desktop/views/components/post-form.vue:
   reply-placeholder: "Reply to this note..."
   quote-placeholder: "Quote this note..."
@@ -434,8 +434,8 @@ desktop/views/components/settings.vue:
   other: "Other"
   license: "License"
   behaviour: "Behavior"
-  fetch-on-scroll: "Fetch on scroll"
-  fetch-on-scroll-desc: "When you scroll down the page automatically fetches additional content."
+  fetch-on-scroll: "Endless loading on scroll"
+  fetch-on-scroll-desc: "When you scroll down the page, it automatically fetches additional content."
   auto-popout: "Auto pop-out window"
   auto-popout-desc: "Pops-out a newly opened window (onto a new tab), if possible. This setting is stored in the browser."
   advanced: "Advanced settings"
@@ -470,7 +470,7 @@ desktop/views/components/settings.vue:
   cache-warn: "The cache of account info/posts/replies/messages/settings stored in the browser will be deleted. You need to reload the page after cleaning up."
   cache-cleared: "Cache cleared"
   cache-cleared-desc: "Please reload the page."
-  auto-watch: "Auto watch"
+  auto-watch: "Automatic watch"
   auto-watch-desc: "Receive notifications about the post/reply/reaction automatically."
   about: "About Misskey"
   operator: "The admin of this instance"
