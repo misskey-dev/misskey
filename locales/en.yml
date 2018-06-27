@@ -563,7 +563,7 @@ desktop/views/components/ui.header.account.vue:
   customize: "Customize Layout"
   settings: "Settings"
   signout: "Sign out"
-  dark: "Fall in dark"
+  dark: "Fall into dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
