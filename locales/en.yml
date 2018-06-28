@@ -227,7 +227,7 @@ common/views/widgets/broadcast.vue:
   have-a-nice-day: "Have a nice day!"
   next: "Next"
 common/views/widgets/donation.vue:
-  title: "Request for dnations"
+  title: "Request for donations"
   text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
@@ -703,7 +703,7 @@ mobile/views/components/drive.vue:
   root-rename-alert: "You're in the root; it can't be renamed because it's not a folder. Navigate to a folder you want to rename and try again."
   root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
   url-prompt: "URL of file you want to upload"
-  uploading: "Upload requested. It may take some time for the upload to complete."
+  uploading: "Upload requested. It may take a while for the upload to finish."
 mobile/views/components/drive-file-detail.vue:
   rename: "Rename"
 mobile/views/components/drive-file-chooser.vue:
