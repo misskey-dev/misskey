@@ -274,7 +274,7 @@ desktop/views/components/choose-file-from-drive-window.vue:
 desktop/views/components/choose-folder-from-drive-window.vue:
   cancel: "Cancel"
   ok: "OK"
-  choose-prompt: "Choose a Folder"
+  choose-prompt: "Choose a folder"
 desktop/views/components/crop-window.vue:
   skip: "Skip cropping"
   cancel: "Cancel"
@@ -634,7 +634,7 @@ desktop/views/pages/user/user.followers-you-know.vue:
   loading: "Loading"
   no-users: "No followers you know"
 desktop/views/pages/user/user.friends.vue:
-  title: "Frequently replied"
+  title: "Frequent mentions"
   loading: "Loading"
   no-users: "No users"
 desktop/views/pages/user/user.vue:
@@ -689,7 +689,7 @@ desktop/views/widgets/users.vue:
   refresh: "Show others"
   no-one: "No one"
 mobile/views/components/drive.vue:
-  drive: "Drive"
+  drive: "Media storage"
   used: "used"
   folder-count: "Folder(s)"
   count-separator: ", "
@@ -763,7 +763,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Quote this post... (optional)"
   reply-placeholder: "Reply to this note..."
   cw-placeholder: "Comments about content (optional)"
-  location-alert: "Your device does not support location services"
+  location-alert: "Your device does not provide location services"
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
@@ -789,8 +789,8 @@ mobile/views/components/ui.nav.vue:
   settings: "Settings"
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "It seems this user hasn't posted yet"
-  no-notes-with-media: "There is no notes with attached media"
+  no-notes: "It seems this user hasn't posted anything yet."
+  no-notes-with-media: "There are no notes with media attachments"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
@@ -901,7 +901,7 @@ mobile/views/pages/user/home.vue:
   activity: "Activity"
   keywords: "Keywords"
   domains: "Domains"
-  frequently-replied-users: "Frequently talking users"
+  frequently-replied-users: "Frequently mentioned users"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
 mobile/views/pages/user/home.followers-you-know.vue:
