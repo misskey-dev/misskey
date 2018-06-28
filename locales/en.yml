@@ -315,7 +315,7 @@ desktop/views/components/drive.vue:
   load-more: "Load more"
   empty-draghover: "Drop here, don't I look cute?"
   empty-drive: "Your media storage is empty"
-  empty-drive-description: "Right-click to open the context menu, or drag and drop a file onto the window for uploading."
+  empty-drive-description: "Right-click to open the menu, or drag and drop a file onto here for uploading."
   empty-folder: "This folder is empty"
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
