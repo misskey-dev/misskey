@@ -581,7 +581,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create a list"
+  create-list: "Create new list"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
