@@ -87,7 +87,7 @@ common:
     local: "Local"
     global: "Global"
     notifications: "Notifications"
-    list: "List"
+    list: "Lists"
     swap-left: "Move left"
     swap-right: "Move right"
     swap-up: "Move upward"
@@ -95,8 +95,8 @@ common:
     remove: "Remove"
     add-column: "Add a column"
     rename: "Rename"
-    stack-left: "Stack to left"
-    pop-right: "Stack to right"
+    stack-left: "Stack to the left"
+    pop-right: "Stack to the right"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
@@ -128,7 +128,7 @@ common/views/components/messaging.vue:
 common/views/components/messaging-room.vue:
   empty: "No conversations"
   more: "Read more"
-  no-history: "There is no more history"
+  no-history: "There is no further history"
   resize-form: "Drag to resize"
   new-message: "New message"
 common/views/components/messaging-room.form.vue:
