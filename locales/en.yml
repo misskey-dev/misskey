@@ -4,12 +4,12 @@ meta:
   divider: ""
 common:
   misskey: "A ⭐ of the fediverse"
-  about-title: "A ⭐ of fediverse."
+  about-title: "A ⭐ of the fediverse."
   about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
-    just_now: "just now"
+    just_now: "Just now"
     seconds_ago: "{}s ago"
     minutes_ago: "{}m ago"
     hours_ago: "{}h ago"
@@ -90,13 +90,13 @@ common:
     list: "List"
     swap-left: "Move left"
     swap-right: "Move right"
-    swap-up: "Move upward"
-    swap-down: "Move downward"
+    swap-up: "Move up"
+    swap-down: "Move down"
     remove: "Remove"
     add-column: "Add a column"
     rename: "Rename"
-    stack-left: "Stack to left"
-    pop-right: "Stack to right"
+    stack-left: "Dock on the left"
+    pop-right: "Dock on the right"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
@@ -138,13 +138,13 @@ common/views/components/messaging-room.form.vue:
   attach-from-drive: "Attach files from your Drive"
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
-  deleted: "This message has been deleted"
+  deleted: "The message has been deleted"
 common/views/components/nav.vue:
   about: "About"
   stats: "Stats"
   status: "Status"
   wiki: "Wiki"
-  donors: "Donators"
+  donors: "Donors"
   repository: "Repository"
   develop: "Developers"
   feedback: "Feedback"
@@ -168,7 +168,7 @@ common/views/components/poll-editor.vue:
   add: "+ Add a choice"
   destroy: "Discard the poll"
 common/views/components/reaction-picker.vue:
-  choose-reaction: "Choose a reaction"
+  choose-reaction: "Express a reaction"
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
