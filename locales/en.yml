@@ -87,7 +87,7 @@ common:
     local: "Local"
     global: "Global"
     notifications: "Notifications"
-    list: "List"
+    list: "Lists"
     swap-left: "Move left"
     swap-right: "Move right"
     swap-up: "Move upward"
@@ -95,8 +95,8 @@ common:
     remove: "Remove"
     add-column: "Add a column"
     rename: "Rename"
-    stack-left: "Stack to left"
-    pop-right: "Stack to right"
+    stack-left: "Stack to the left"
+    pop-right: "Stack to the right"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
@@ -124,7 +124,7 @@ common/views/components/connect-failed.troubleshooter.vue:
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
-  no-history: "No history"
+  no-history: "Without history"
 common/views/components/messaging-room.vue:
   empty: "No conversations"
   more: "Read more"
@@ -790,7 +790,7 @@ mobile/views/components/ui.nav.vue:
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
   no-notes: "It seems this user hasn't posted yet"
-  no-notes-with-media: "There is no notes with attached media"
+  no-notes-with-media: "There are no notes with attached media"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
