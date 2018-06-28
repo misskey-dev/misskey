@@ -314,7 +314,7 @@ desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
   empty-draghover: "Drop here, don't I look cute?"
-  empty-drive: "Your drive is empty"
+  empty-drive: "Your media storage is empty"
   empty-drive-description: "You can also upload by right clicking and selecting \"Upload file\", or you can drag and drop a file onto the window."
   empty-folder: "This folder is empty"
   unable-to-process: "The operation could not be completed."
@@ -556,7 +556,7 @@ desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
-  drive: "Drive"
+  drive: "Media storage"
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
