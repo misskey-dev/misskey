@@ -44,9 +44,6 @@ If you want to...
 
 :heart: Backers & Sponsors
 ----------------------------------------------------------------
-[![Backers][backers-image]][support-url]
-[![Sponsors][sponsors-image]][support-url]
-
 | ![][nagarus-icon] | ![][dansup-icon] |
 |:-:|:-:|
 | [nagarus][nagarus-link] | [dansup][dansup-link] |
