@@ -47,7 +47,7 @@ common:
   loading: "Loading"
   ok: "OK"
   update-available-title: "Update available"
-  update-available: "A new version of Misskey, ({newer}, is now available. You are currently using {current}). Reloading the page will apply the update."
+  update-available: "A new version of Misskey, {newer}, is now available. You are currently using version {current}. Reloading the page will apply the update."
   my-token-regenerated: "Your token has been regenerated so you will be signed out."
   i-like-sushi: "I like sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
@@ -116,7 +116,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet: "There is no Internet connection"
   no-internet-desc: "Please make sure you are connected to the Internet."
   no-server: "Unable to connect to the Misskey server"
-  no-server-desc: "The network connection of your PC is normal, but you could not connect to the Misskey server. There is a possibility that the server is either down or under maintenance, please try again later."
+  no-server-desc: "The network connection of your device is normal, but you could not connect to the Misskey server. There is a possibility that the server is either down, or under maintenance. Please try again later."
   success: "Successfully connected to the Misskey server"
   success-desc: "It seems to be able to connect. Please reload the page."
   flush: "Clean cache"
@@ -267,7 +267,7 @@ desktop/views/components/calendar.vue:
   go: "Click to navigate"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Choose files"
-  upload: "Upload files from your PC"
+  upload: "Upload files from your device"
   cancel: "Cancel"
   ok: "OK"
   choose-prompt: "Choose a file"
@@ -313,7 +313,7 @@ desktop/views/components/drive.nav-folder.vue:
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
-  empty-draghover: "Drop here, don't I look cute?"
+  empty-draghover: "Drop it here, don't I look cute?"
   empty-drive: "Your drive is empty"
   empty-drive-description: "You can also upload by right clicking and selecting \"Upload file\", or you can drag and drop a file onto the window."
   empty-folder: "This folder is empty"
@@ -365,7 +365,7 @@ desktop/views/components/messaging-window.vue:
 desktop/views/components/note-detail.vue:
   more: "Load more conversations"
   private: "This post is private"
-  deleted: "This post has been removed"
+  deleted: "The post has been removed"
   reposted-by: "Reposted by {}"
   location: "Location"
   renote: "Repost"
@@ -428,7 +428,7 @@ desktop/views/components/settings.vue:
   mute: "Mute"
   drive: "Drive"
   security: "Security"
-  signin: "Sign in history"
+  signin: "Sign-in history"
   password: "Password"
   2fa: "Two-factor authentication"
   other: "Other"
@@ -463,7 +463,7 @@ desktop/views/components/settings.vue:
   pick-language: "Select a language"
   recommended: "Recommended"
   auto: "Automatic"
-  specify-language: "Specify language"
+  specify-language: "Specify your language"
   language-desc: "You need to reload the page for the changes to take effect."
   cache: "Cache"
   clean-cache: "Clear cache"
@@ -481,7 +481,7 @@ desktop/views/components/settings.vue:
   do-update: "Check for updates"
   update-settings: "Advanced settings"
   prevent-update: "Postpone updates (not recommended)"
-  prevent-update-desc: "Even if you turn this setting on, updates may apply. This setting is enabled only for this device."
+  prevent-update-desc: "Even if you turn this setting on, updates may apply. The setting is enabled only for this device."
   no-updates: "No updates available"
   no-updates-desc: "Your Misskey is up to date."
   update-available: "A new version is available"
@@ -542,7 +542,7 @@ desktop/views/components/settings.profile.vue:
   is-cat: "This account is a Cat"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
-  deleted: "This post has been deleted"
+  deleted: "The post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
 desktop/views/components/taskmanager.vue:
@@ -556,14 +556,14 @@ desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
-  drive: "Drive"
+  drive: "Mrdia libary"
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
   customize: "Customize Layout"
   settings: "Settings"
   signout: "Sign out"
-  dark: "Fall into dark"
+  dark: "Submerge in dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
@@ -606,13 +606,13 @@ desktop/views/pages/deck/deck.note.vue:
 desktop/views/pages/welcome.vue:
   about: "More details..."
   gotit: "Got it!"
-  signin: "Log In"
+  signin: "Log in"
   signup: "Sign up"
   signin-button: "Log in"
   signup-button: "Sign up"
   timeline: "Timeline"
 desktop/views/pages/drive.vue:
-  title: "Misskey Drive"
+  title: "Media storage"
 desktop/views/pages/favorites.vue:
   more: "Load more"
 desktop/views/pages/home-customize.vue:
@@ -624,7 +624,7 @@ desktop/views/pages/selectdrive.vue:
   title: "Choose file(s)"
   ok: "OK"
   cancel: "Cancel"
-  upload: "Upload files from your PC"
+  upload: "Upload files from your device"
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -632,9 +632,9 @@ desktop/views/pages/user-list.users.vue:
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "Followers you know"
   loading: "Loading"
-  no-users: "No followers you know"
+  no-users: "No followers that you know"
 desktop/views/pages/user/user.friends.vue:
-  title: "Frequently replied"
+  title: "Frequent mentions"
   loading: "Loading"
   no-users: "No users"
 desktop/views/pages/user/user.vue:
@@ -689,7 +689,7 @@ desktop/views/widgets/users.vue:
   refresh: "Show others"
   no-one: "No one"
 mobile/views/components/drive.vue:
-  drive: "Drive"
+  drive: "Media storage"
   used: "used"
   folder-count: "Folder(s)"
   count-separator: ", "
@@ -763,7 +763,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Quote this post... (optional)"
   reply-placeholder: "Reply to this note..."
   cw-placeholder: "Comments about content (optional)"
-  location-alert: "Your device does not support location services"
+  location-alert: "Your device does not provide location services"
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
@@ -780,7 +780,7 @@ mobile/views/components/ui.nav.vue:
   messaging: "Messages"
   follow-requests: "Follow requests"
   search: "Search"
-  drive: "Drive"
+  drive: "Media storage"
   favorites: "Favorites"
   user-lists: "Lists"
   widgets: "Widgets"
@@ -789,8 +789,8 @@ mobile/views/components/ui.nav.vue:
   settings: "Settings"
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "It seems this user hasn't posted yet"
-  no-notes-with-media: "There is no notes with attached media"
+  no-notes: "It seems this user hasn't posted anything yet"
+  no-notes-with-media: "There are no notes with media attachments"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
@@ -802,7 +802,7 @@ mobile/views/pages/user-lists.vue:
   title: "Lists"
   enter-list-name: "Enter list name"
 mobile/views/pages/drive.vue:
-  drive: "Drive"
+  drive: "Media storage"
   more: "Load more"
 mobile/views/pages/followers.vue:
   followers-of: "Followers of {}"
