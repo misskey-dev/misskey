@@ -281,7 +281,7 @@ desktop/views/components/crop-window.vue:
   ok: "OK"
 desktop/views/components/drive-window.vue:
   used: "used"
-  drive: "Drive"
+  drive: "Media storage"
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Banner"
@@ -309,11 +309,11 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "Rename folder"
     input-new-folder-name: "Enter new name"
 desktop/views/components/drive.nav-folder.vue:
-  drive: "Drive"
+  drive: "Media storage"
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
-  empty-draghover: "Drop here, don't I look cute?"
+  empty-draghover: "Drop it here, don't I look cute?"
   empty-drive: "Your media storage is empty"
   empty-drive-description: "Right-click to open the menu, or drag and drop a file onto here for uploading."
   empty-folder: "This folder is empty"
@@ -563,7 +563,7 @@ desktop/views/components/ui.header.account.vue:
   customize: "Customize layout"
   settings: "Settings"
   signout: "Sign out"
-  dark: "Fall into dark"
+  dark: "Submerge in dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
@@ -612,7 +612,7 @@ desktop/views/pages/welcome.vue:
   signup-button: "Sign up"
   timeline: "Timeline"
 desktop/views/pages/drive.vue:
-  title: "Misskey Drive"
+  title: "Misskey storage"
 desktop/views/pages/favorites.vue:
   more: "Load more"
 desktop/views/pages/home-customize.vue:
