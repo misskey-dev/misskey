@@ -377,7 +377,7 @@ desktop/views/components/notes.note.vue:
   add-reaction: "Add a reaction"
   detail: "Show details"
   private: "This post is private"
-  deleted: "This post has been deleted"
+  deleted: "The post has been deleted"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
@@ -528,7 +528,7 @@ desktop/views/components/settings.password.vue:
   enter-current-password: "Enter the current password"
   enter-new-password: "Enter the new password"
   enter-new-password-again: "Enter new password again"
-  not-match: "New password doesn't match"
+  not-match: "The new passwords do not match"
   changed: "Password updated"
 desktop/views/components/settings.profile.vue:
   avatar: "Avatar"
@@ -826,7 +826,7 @@ mobile/views/pages/note.vue:
   next: "Next note"
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
-  read-all: "Are you sure you want to mark all unread notifications as read?"
+  read-all: "Do you wish to mark all unread notifications as read?"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
   name: "Name"
