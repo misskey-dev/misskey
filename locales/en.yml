@@ -88,8 +88,8 @@ common:
     global: "Global"
     notifications: "Notifications"
     list: "Lists"
-    swap-left: "Move left"
-    swap-right: "Move right"
+    swap-left: "Move to the left"
+    swap-right: "Move to the right"
     swap-up: "Move upward"
     swap-down: "Move downward"
     remove: "Remove"
@@ -153,7 +153,7 @@ common/views/components/note-menu.vue:
   pin: "Pin to your profile page"
   delete: "Delete"
   delete-confirm: "Delete this post for sure?"
-  remote: "Show original note"
+  remote: "Show the originating note"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
@@ -195,7 +195,7 @@ common/views/components/signup.vue:
   password-not-matched: "Doesn't match"
   recaptcha: "Verification"
   create: "Create an Account"
-  some-error: "Account creation has failed for some reason. Please try again."
+  some-error: "An attempt at account creation has failed for some reason. Please try again."
 common/views/components/special-message.vue:
   new-year: "Happy New Year!"
   christmas: "Merry Christmas!"
@@ -228,7 +228,7 @@ common/views/widgets/broadcast.vue:
   next: "Next"
 common/views/widgets/donation.vue:
   title: "Request for donations"
-  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
+  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "No photos"
