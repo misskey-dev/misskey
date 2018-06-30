@@ -162,7 +162,7 @@ common/views/components/poll.vue:
   show-result: "Show results"
   voted: "Voted"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "At least two choices are required"
+  no-only-one-choice: "At least two choices are required for this survey."
   choice-n: "Choice {}"
   remove: "Delete this choice"
   add: "+ Add a choice"
