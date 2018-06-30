@@ -47,7 +47,7 @@ common:
   loading: "Loading"
   ok: "OK"
   update-available-title: "Update available"
-  update-available: "A new version of Misskey, ({newer}, is now available. You are currently using {current}). Reloading the page will apply the update."
+  update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   i-like-sushi: "I like sushi, rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
@@ -639,7 +639,7 @@ desktop/views/pages/user/user.friends.vue:
   no-users: "No users"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information about them that you see here is not complete."
+  is-remote: "This user is a remote user, so the information about them that you see here is not complete. "
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
@@ -868,7 +868,7 @@ mobile/views/pages/settings.vue:
   fetch-on-scroll: "Endless loading on scroll"
   disable-via-mobile: "Don't mark the post as 'from mobile'"
   load-raw-images: "Show attached images in high-quality"
-  load-remote-media: "Show media on a remote server"
+  load-remote-media: "Show media from a remote server"
   twitter: "Twitter integration"
   twitter-connect: "Connect to your Twitter account"
   twitter-reconnect: "Reconnect"
