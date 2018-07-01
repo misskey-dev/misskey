@@ -52,7 +52,7 @@ export async function createPerson(value: any, resolver?: Resolver): Promise<IUs
 	}
 
 	if (object.type != 'Person' && object.type != 'Service') {
-		throw new Error('invalid person: object is not a person or service');
+		throw new Error(`invalid person: object is not a person or service '${object.type}'`);
 	}
 
 	if (typeof object.preferredUsername !== 'string') {
