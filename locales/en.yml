@@ -826,7 +826,7 @@ mobile/views/pages/note.vue:
   next: "Next note"
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
-  read-all: "Do you wish to mark all unread notifications as read?"
+  read-all: "Do you wish to mark all notifications as read?"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
   name: "Name"
