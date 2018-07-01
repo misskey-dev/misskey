@@ -116,7 +116,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet: "There is no Internet connection"
   no-internet-desc: "Please make sure you are connected to the Internet."
   no-server: "Unable to connect to the Misskey server"
-  no-server-desc: "The network connection of your computer is normal, but you could not connect to the Misskey server. There is a possibility that the server is either down, or under maintenance, please try again later."
+  no-server-desc: "The network connection of your device is normal, but you could not connect to the Misskey server. There is a possibility that the server is either down, or under maintenance, please try again later."
   success: "Successfully connected to the Misskey server"
   success-desc: "It seems to be able to connect. Please reload the page."
   flush: "Clean cache"
@@ -134,7 +134,7 @@ common/views/components/messaging-room.vue:
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
-  attach-from-local: "Attach files from your computer"
+  attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
@@ -267,7 +267,7 @@ desktop/views/components/calendar.vue:
   go: "Click to navigate"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Choose files"
-  upload: "Upload files from your computer"
+  upload: "Upload files from your device"
   cancel: "Cancel"
   ok: "OK"
   choose-prompt: "Choose a file"
@@ -397,7 +397,7 @@ desktop/views/components/post-form.vue:
   reply-failed: "Failed to reply"
   renote-failed: "Failed to repost"
   posting: "Posting"
-  attach-media-from-local: "Attach media from your computer"
+  attach-media-from-local: "Attach media from your device"
   attach-media-from-drive: "Attach media from your Drive"
   attach-cancel: "Cancel attachment"
   insert-a-kao: "v('ω')v"
@@ -624,7 +624,7 @@ desktop/views/pages/selectdrive.vue:
   title: "Choose file(s)"
   ok: "OK"
   cancel: "Cancel"
-  upload: "Upload files from your computer"
+  upload: "Upload files from your device"
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
