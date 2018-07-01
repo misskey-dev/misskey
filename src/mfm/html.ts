@@ -92,6 +92,10 @@ const handlers: { [key: string]: (window: any, token: any, mentionedRemoteUsers:
 };
 
 export default (tokens: TextElement[], mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) => {
+	if (tokens == null) {
+		return null;
+	}
+
 	const { window } = new JSDOM('');
 
 	for (const token of tokens) {

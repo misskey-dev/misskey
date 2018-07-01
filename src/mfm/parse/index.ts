@@ -43,8 +43,7 @@ export type TextElement = { type: 'text', content: string }
 export type TextElementProcessor = (text: string, i: number) => TextElement | TextElement[];
 
 export default (source: string): TextElement[] => {
-
-	if (source == '') {
+	if (source == null || source == '') {
 		return null;
 	}
 
