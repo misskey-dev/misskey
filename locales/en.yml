@@ -4,12 +4,12 @@ meta:
   divider: ""
 common:
   misskey: "A ⭐ of the fediverse"
-  about-title: "A ⭐ of fediverse."
+  about-title: "A ⭐ of the fediverse."
   about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
-    just_now: "just now"
+    just_now: "now"
     seconds_ago: "{}s ago"
     minutes_ago: "{}m ago"
     hours_ago: "{}h ago"
@@ -96,7 +96,7 @@ common:
     add-column: "Add a column"
     rename: "Rename"
     stack-left: "Stack to the left"
-    pop-right: "Stack to the right"
+    pop-right: "Dock on the right"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
@@ -168,7 +168,7 @@ common/views/components/poll-editor.vue:
   add: "+ Add a choice"
   destroy: "Discard the poll"
 common/views/components/reaction-picker.vue:
-  choose-reaction: "Choose a reaction"
+  choose-reaction: "Express a reaction"
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
@@ -352,7 +352,7 @@ desktop/views/components/friends-maker.vue:
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
-  done: "Submit"
+  done: "Done"
   add-widget: "Add widget:"
   add: "Add"
 desktop/views/input-dialog.vue:
@@ -672,7 +672,7 @@ desktop/views/widgets/notifications.vue:
   settings: "Settings"
 desktop/views/widgets/polls.vue:
   title: "Polls"
-  refresh: "Show others"
+  refresh: "refresh"
   nothing: "Nothing"
 desktop/views/widgets/post-form.vue:
   title: "Post"
@@ -682,11 +682,11 @@ desktop/views/widgets/profile.vue:
   update-avatar: "Click to edit your avatar"
 desktop/views/widgets/trends.vue:
   title: "Trend"
-  refresh: "Show others"
+  refresh: "refresh"
   nothing: "Nothing"
 desktop/views/widgets/users.vue:
   title: "Recommended users"
-  refresh: "Show others"
+  refresh: "refresh"
   no-one: "No one"
 mobile/views/components/drive.vue:
   drive: "Media storage"
