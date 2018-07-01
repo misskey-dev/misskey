@@ -49,10 +49,10 @@ common:
   update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
-  i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
+  i-like-sushi: "Je préfère les sushis (au pudding)"
   show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
   reversi:
-    drawn: "引き分け"
+    drawn: "Partie nulle"
     my-turn: "C’est votre tour"
     opponent-turn: "Tour de l’adversaire"
     turn-of: "C’est le tour de {}"
@@ -249,7 +249,7 @@ common/views/widgets/memo.vue:
 common/views/pages/follow.vue:
   signed-in-as: "Connecté en tant que {}"
   following: "Suit"
-  follow: "フォロー"
+  follow: "Suivre"
   request-pending: "Demande d'abonnement en attente"
   follow-request: "Demande d'abonnement"
 desktop/views/components/activity.chart.vue:
