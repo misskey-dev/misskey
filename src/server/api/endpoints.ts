@@ -509,7 +509,7 @@ const endpoints: Endpoint[] = [
 		withCredential: true,
 		limit: {
 			duration: ms('1hour'),
-			max: 120,
+			max: 300,
 			minInterval: ms('1second')
 		},
 		kind: 'note-write'
