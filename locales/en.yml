@@ -4,12 +4,12 @@ meta:
   divider: ""
 common:
   misskey: "A ⭐ of the fediverse"
-  about-title: "A ⭐ of fediverse."
+  about-title: "A ⭐ of the fediverse."
   about: "Thanks for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   time:
     unknown: "unknown"
     future: "future"
-    just_now: "just now"
+    just_now: "now"
     seconds_ago: "{}s ago"
     minutes_ago: "{}m ago"
     hours_ago: "{}h ago"
@@ -39,17 +39,17 @@ common:
     a: "What are you doing?"
     b: "What's happening?"
     c: "What’s on your mind?"
-    d: "What do you want to talk about?"
-    e: "Write your thoughts here!"
+    d: "What do you wish to say?"
+    e: "Write here"
     f: "Waiting for your writing..."
   search: "Search"
   delete: "Delete"
   loading: "Loading"
   ok: "OK"
   update-available-title: "Update available"
-  update-available: "A new version of Misskey, ({newer}, is now available. You are currently using {current}). Reloading the page will apply the update."
-  my-token-regenerated: "Your token has been regenerated so you will be signed out."
-  i-like-sushi: "I like sushi rather than pudding"
+  update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
+  my-token-regenerated: "Your token has been regenerated, so you will be signed out."
+  i-like-sushi: "I prefer sushi rather than pudding"
   show-reversi-board-labels: "Show row and column labels in Reversi"
   reversi:
     drawn: "Draw"
@@ -77,7 +77,7 @@ common:
     post-form: "Post form"
     messaging: "Messages"
     server: "Server info"
-    donation: "Donations"
+    donation: "Request for donations"
     nav: "Navigation"
     tips: "Tips"
     hashtags: "Hashtags"
@@ -87,16 +87,16 @@ common:
     local: "Local"
     global: "Global"
     notifications: "Notifications"
-    list: "List"
-    swap-left: "Move left"
-    swap-right: "Move right"
+    list: "Lists"
+    swap-left: "Move to the left"
+    swap-right: "Move to the right"
     swap-up: "Move upward"
     swap-down: "Move downward"
     remove: "Remove"
     add-column: "Add a column"
     rename: "Rename"
-    stack-left: "Stack to left"
-    pop-right: "Stack to right"
+    stack-left: "Stack to the left"
+    pop-right: "Dock on the right"
 common/views/components/connect-failed.vue:
   title: "Unable to connect to the server"
   description: "There is a problem with your Internet connection, or the server may be down or under maintenance. Please try again later."
@@ -112,11 +112,11 @@ common/views/components/connect-failed.troubleshooter.vue:
   checking-server: "Checking server connection"
   finding: "Searching for issues"
   no-network: "No connection"
-  no-network-desc: "Please make sure you are connected to the network."
+  no-network-desc: "Please make sure that you have a network connection."
   no-internet: "There is no Internet connection"
   no-internet-desc: "Please make sure you are connected to the Internet."
   no-server: "Unable to connect to the Misskey server"
-  no-server-desc: "The network connection of your PC is normal, but you could not connect to the Misskey server. There is a possibility that the server is either down or under maintenance, please try again later."
+  no-server-desc: "The network connection of your device is normal, but you could not connect to the Misskey server. There is a possibility that the server is either down, or under maintenance, please try again later."
   success: "Successfully connected to the Misskey server"
   success-desc: "It seems to be able to connect. Please reload the page."
   flush: "Clean cache"
@@ -124,17 +124,17 @@ common/views/components/connect-failed.troubleshooter.vue:
 common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
-  no-history: "No history"
+  no-history: "Without history"
 common/views/components/messaging-room.vue:
   empty: "No conversations"
   more: "Read more"
-  no-history: "There is no more history"
+  no-history: "There is no further history"
   resize-form: "Drag to resize"
   new-message: "New message"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
-  attach-from-local: "Attach files from your PC"
+  attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
@@ -153,7 +153,7 @@ common/views/components/note-menu.vue:
   pin: "Pin to your profile page"
   delete: "Delete"
   delete-confirm: "Delete this post for sure?"
-  remote: "Show original note"
+  remote: "Show the originating note"
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
@@ -162,13 +162,13 @@ common/views/components/poll.vue:
   show-result: "Show results"
   voted: "Voted"
 common/views/components/poll-editor.vue:
-  no-only-one-choice: "At least two choices are required"
+  no-only-one-choice: "At least two choices are required for this survey."
   choice-n: "Choice {}"
   remove: "Delete this choice"
   add: "+ Add a choice"
   destroy: "Discard the poll"
 common/views/components/reaction-picker.vue:
-  choose-reaction: "Choose a reaction"
+  choose-reaction: "Express a reaction"
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
@@ -195,7 +195,7 @@ common/views/components/signup.vue:
   password-not-matched: "Doesn't match"
   recaptcha: "Verification"
   create: "Create an Account"
-  some-error: "Account creation has failed for some reason. Please try again."
+  some-error: "An attempt at account creation has failed for some reason. Please try again."
 common/views/components/special-message.vue:
   new-year: "Happy New Year!"
   christmas: "Merry Christmas!"
@@ -227,8 +227,8 @@ common/views/widgets/broadcast.vue:
   have-a-nice-day: "Have a nice day!"
   next: "Next"
 common/views/widgets/donation.vue:
-  title: "Request for dnations"
-  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested contact {}. Thank you for your contribution!"
+  title: "Request for donations"
+  text: "To keep Misskey up and running, we have to spend money on our domain name, the server costs and so on. Since we don't receive money from advertisements, we count on donations from all of you. If you're interested in helping, contact {}. Thank you for your contribution!"
 common/views/widgets/photo-stream.vue:
   title: "Photostream"
   no-photos: "No photos"
@@ -256,7 +256,7 @@ desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
   replies: "Red ... Replies"
-  renotes: "Green ... Renotes"
+  renotes: "Green ... Repost"
 desktop/views/components/activity.vue:
   title: "Activity"
   toggle: "Toggle views"
@@ -267,21 +267,21 @@ desktop/views/components/calendar.vue:
   go: "Click to navigate"
 desktop/views/components/choose-file-from-drive-window.vue:
   choose-file: "Choose files"
-  upload: "Upload files from your PC"
+  upload: "Upload files from your device"
   cancel: "Cancel"
   ok: "OK"
   choose-prompt: "Choose a file"
 desktop/views/components/choose-folder-from-drive-window.vue:
   cancel: "Cancel"
   ok: "OK"
-  choose-prompt: "Choose a Folder"
+  choose-prompt: "Choose a folder"
 desktop/views/components/crop-window.vue:
   skip: "Skip cropping"
   cancel: "Cancel"
   ok: "OK"
 desktop/views/components/drive-window.vue:
   used: "used"
-  drive: "Drive"
+  drive: "Media storage"
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Banner"
@@ -309,13 +309,13 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "Rename folder"
     input-new-folder-name: "Enter new name"
 desktop/views/components/drive.nav-folder.vue:
-  drive: "Drive"
+  drive: "Media storage"
 desktop/views/components/drive.vue:
   search: "Search"
   load-more: "Load more"
-  empty-draghover: "Drop here, don't I look cute?"
-  empty-drive: "Your drive is empty"
-  empty-drive-description: "You can also upload by right clicking and selecting \"Upload file\", or you can drag and drop a file onto the window."
+  empty-draghover: "Drop it here, don't I look cute?"
+  empty-drive: "Your media storage is empty"
+  empty-drive-description: "Right-click to open the menu, or drag and drop a file onto here for uploading."
   empty-folder: "This folder is empty"
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
@@ -352,7 +352,7 @@ desktop/views/components/friends-maker.vue:
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
-  done: "Submit"
+  done: "Done"
   add-widget: "Add widget:"
   add: "Add"
 desktop/views/input-dialog.vue:
@@ -377,7 +377,7 @@ desktop/views/components/notes.note.vue:
   add-reaction: "Add a reaction"
   detail: "Show details"
   private: "This post is private"
-  deleted: "This post has been deleted"
+  deleted: "The post has been deleted"
 desktop/views/components/notes.vue:
   error: "Loading failed."
   retry: "Retry"
@@ -397,7 +397,7 @@ desktop/views/components/post-form.vue:
   reply-failed: "Failed to reply"
   renote-failed: "Failed to repost"
   posting: "Posting"
-  attach-media-from-local: "Attach media from your computer"
+  attach-media-from-local: "Attach media from your device"
   attach-media-from-drive: "Attach media from your Drive"
   attach-cancel: "Cancel attachment"
   insert-a-kao: "v('ω')v"
@@ -490,12 +490,12 @@ desktop/views/components/settings.vue:
   debug-mode: "Enable the debug mode"
   debug-mode-desc: "This setting is stored in the browser."
   experimental: "Enable experimental features"
-  experimental-desc: "It would make Misskey client unstable. This setting is stored in the browser."
+  experimental-desc: "Activating this might make the Misskey client unstable. This setting is stored in the browser."
   tools: "Tools"
   task-manager: "Task Manager"
   third-parties: "Third-parties"
 desktop/views/components/settings.2fa.vue:
-  intro: "If you set up 2-step verification, you will need not only a password at sign-in but also a pre-registered physical device (such as your smartphone), which will improve security. "
+  intro: "If you set up 2-step verification, you will not only need a password at sign-in, but also a pre-registered physical device (such as your smartphone), which will improve security."
   detail: "See details..."
   url: "https://www.google.com/landing/2step/"
   caution: "If you lose access to your device, you won't be able to connect to Misskey anymore!"
@@ -504,7 +504,7 @@ desktop/views/components/settings.2fa.vue:
   unregister: "Disable"
   unregistered: "Two-factor authentication has been disabled."
   enter-password: "Enter the password"
-  authenticator: "First, you need install Google Authenticator on your device:"
+  authenticator: "First, you need to install Google Authenticator on your device:"
   howtoinstall: "How to install"
   scan: "And then, scan the QR code:"
   done: "Please enter the token displaying on your device:"
@@ -528,7 +528,7 @@ desktop/views/components/settings.password.vue:
   enter-current-password: "Enter the current password"
   enter-new-password: "Enter the new password"
   enter-new-password-again: "Enter new password again"
-  not-match: "New password doesn't match"
+  not-match: "The new passwords do not match"
   changed: "Password updated"
 desktop/views/components/settings.profile.vue:
   avatar: "Avatar"
@@ -556,14 +556,14 @@ desktop/views/components/ui.header.vue:
   welcome-back: "Welcome back,"
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
-  drive: "Drive"
+  drive: "Media storage"
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
-  customize: "Customize Layout"
+  customize: "Customize layout"
   settings: "Settings"
   signout: "Sign out"
-  dark: "Fall into dark"
+  dark: "Submerge in dark"
 desktop/views/components/ui.header.nav.vue:
   home: "Home"
   deck: "Deck"
@@ -581,7 +581,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create a list"
+  create-list: "Create new list"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
@@ -612,7 +612,7 @@ desktop/views/pages/welcome.vue:
   signup-button: "Sign up"
   timeline: "Timeline"
 desktop/views/pages/drive.vue:
-  title: "Misskey Drive"
+  title: "Misskey storage"
 desktop/views/pages/favorites.vue:
   more: "Load more"
 desktop/views/pages/home-customize.vue:
@@ -624,7 +624,7 @@ desktop/views/pages/selectdrive.vue:
   title: "Choose file(s)"
   ok: "OK"
   cancel: "Cancel"
-  upload: "Upload files from your PC"
+  upload: "Upload files from your device"
 desktop/views/pages/user-list.users.vue:
   users: "User"
   add-user: "Add a user"
@@ -634,12 +634,12 @@ desktop/views/pages/user/user.followers-you-know.vue:
   loading: "Loading"
   no-users: "No followers you know"
 desktop/views/pages/user/user.friends.vue:
-  title: "Frequently replied"
+  title: "Frequent mentions"
   loading: "Loading"
   no-users: "No users"
 desktop/views/pages/user/user.vue:
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information about them that you see here is not complete."
+  is-remote: "This user is a remote user, so the information about them that you see here is not complete. "
   view-remote: "See their complete profile"
 desktop/views/pages/user/user.home.vue:
   last-used-at: "Last active:"
@@ -672,7 +672,7 @@ desktop/views/widgets/notifications.vue:
   settings: "Settings"
 desktop/views/widgets/polls.vue:
   title: "Polls"
-  refresh: "Show others"
+  refresh: "refresh"
   nothing: "Nothing"
 desktop/views/widgets/post-form.vue:
   title: "Post"
@@ -682,28 +682,28 @@ desktop/views/widgets/profile.vue:
   update-avatar: "Click to edit your avatar"
 desktop/views/widgets/trends.vue:
   title: "Trend"
-  refresh: "Show others"
+  refresh: "refresh"
   nothing: "Nothing"
 desktop/views/widgets/users.vue:
   title: "Recommended users"
-  refresh: "Show others"
+  refresh: "refresh"
   no-one: "No one"
 mobile/views/components/drive.vue:
-  drive: "Drive"
+  drive: "Media storage"
   used: "used"
   folder-count: "Folder(s)"
   count-separator: ", "
   file-count: "File(s)"
   load-more: "Load more"
-  nothing-in-drive: "Nothing"
+  nothing-in-drive: "There's nothing stored."
   folder-is-empty: "This folder is empty"
   prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
   deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
   root-rename-alert: "You're in the root; it can't be renamed because it's not a folder. Navigate to a folder you want to rename and try again."
   root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
-  url-prompt: "URL of file you want to upload"
-  uploading: "Upload requested. It may take some time for the upload to complete."
+  url-prompt: "URL of the file you want to upload"
+  uploading: "Upload requested. It may take a while for the upload to finish."
 mobile/views/components/drive-file-detail.vue:
   rename: "Rename"
 mobile/views/components/drive-file-chooser.vue:
@@ -763,7 +763,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Quote this post... (optional)"
   reply-placeholder: "Reply to this note..."
   cw-placeholder: "Comments about content (optional)"
-  location-alert: "Your device does not support location services"
+  location-alert: "Your device does not provide location services"
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
@@ -789,8 +789,8 @@ mobile/views/components/ui.nav.vue:
   settings: "Settings"
   about: "About Misskey"
 mobile/views/components/user-timeline.vue:
-  no-notes: "It seems this user hasn't posted yet"
-  no-notes-with-media: "There is no notes with attached media"
+  no-notes: "It seems this user hasn't posted anything yet."
+  no-notes-with-media: "There are no notes with media attachments"
   load-more: "More"
 mobile/views/components/users-list.vue:
   all: "All"
@@ -826,7 +826,7 @@ mobile/views/pages/note.vue:
   next: "Next note"
 mobile/views/pages/notifications.vue:
   notifications: "Notifications"
-  read-all: "Are you sure you want to mark all unread notifications as read?"
+  read-all: "Do you wish to mark all notifications as read?"
 mobile/views/pages/settings/settings.profile.vue:
   title: "Profile"
   name: "Name"
@@ -868,7 +868,7 @@ mobile/views/pages/settings.vue:
   fetch-on-scroll: "Endless loading on scroll"
   disable-via-mobile: "Don't mark the post as 'from mobile'"
   load-raw-images: "Show attached images in high-quality"
-  load-remote-media: "Show media on a remote server"
+  load-remote-media: "Show media from a remote server"
   twitter: "Twitter integration"
   twitter-connect: "Connect to your Twitter account"
   twitter-reconnect: "Reconnect"
@@ -893,7 +893,7 @@ mobile/views/pages/user.vue:
   timeline: "Timeline"
   media: "Media"
   is-suspended: "This account has been suspended."
-  is-remote: "This user is a remote user, so the information about them that you see here is not complete."
+  is-remote: "This user is a remote user, so the information you see here is not complete."
   view-remote: "See their complete profile"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
@@ -901,7 +901,7 @@ mobile/views/pages/user/home.vue:
   activity: "Activity"
   keywords: "Keywords"
   domains: "Domains"
-  frequently-replied-users: "Frequently talking users"
+  frequently-replied-users: "Frequently mentioned users"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
 mobile/views/pages/user/home.followers-you-know.vue:
