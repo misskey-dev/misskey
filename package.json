@@ -124,7 +124,7 @@
 		"gulp-typescript": "4.0.2",
 		"gulp-uglify": "3.0.0",
 		"gulp-util": "3.0.8",
-		"hard-source-webpack-plugin": "0.10.0",
+		"hard-source-webpack-plugin": "0.10.1",
 		"highlight.js": "9.12.0",
 		"html-minifier": "3.5.17",
 		"http-signature": "1.2.0",
