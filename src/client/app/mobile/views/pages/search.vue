@@ -16,7 +16,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
-import parse from '../../../common/scripts/parse-search-query';
 
 const limit = 20;
 
@@ -47,9 +46,10 @@ export default Vue.extend({
 			this.fetching = true;
 			Progress.start();
 
-			(this as any).api('notes/search', Object.assign({
-				limit: limit + 1
-			}, parse(this.q))).then(notes => {
+			(this as any).api('notes/search', {
+				limit: limit + 1,
+				query: this.q
+			}).then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
 					this.existMore = true;
@@ -61,10 +61,11 @@ export default Vue.extend({
 		},
 		more() {
 			this.offset += limit;
-			(this as any).api('notes/search', Object.assign({
+			(this as any).api('notes/search', {
 				limit: limit + 1,
-				offset: this.offset
-			}, parse(this.q))).then(notes => {
+				offset: this.offset,
+				query: this.q
+			}).then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
 				} else {
