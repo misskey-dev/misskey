@@ -1,3 +1,4 @@
+import es from '../../db/elasticsearch';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
 import stream, { publishLocalTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../publishers/stream';
@@ -431,8 +432,6 @@ export default async (user: IUser, data: {
 
 	// Register to search database
 	if (note.text && config.elasticsearch) {
-		const es = require('../../../db/elasticsearch');
-
 		es.index({
 			index: 'misskey',
 			type: 'note',
