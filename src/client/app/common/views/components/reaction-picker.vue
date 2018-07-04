@@ -183,7 +183,7 @@ root(isDark)
 				border-right solid $balloon-size transparent
 				border-bottom solid $balloon-size $bgcolor
 
-		&.compact
+		&.big
 			> div
 				width 280px
 
