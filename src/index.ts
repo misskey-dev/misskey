@@ -19,7 +19,7 @@ import MachineInfo from './utils/machineInfo';
 import DependencyInfo from './utils/dependencyInfo';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
-
+import db from './db/mongodb';
 import loadConfig from './config/load';
 import { Config } from './config/types';
 
@@ -204,4 +204,6 @@ process.on('uncaughtException', err => {
 // Dying away...
 process.on('exit', code => {
 	Logger.info(`The process is going exit (${code})`);
+
+	db.close();
 });
