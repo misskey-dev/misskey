@@ -77,7 +77,6 @@ export default async (ctx: Koa.Context) => {
 		keypair: generateKeypair(),
 		token: secret,
 		email: null,
-		links: null,
 		password: hash,
 		profile: {
 			bio: null,
