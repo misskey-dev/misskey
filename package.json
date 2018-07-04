@@ -46,7 +46,7 @@
 		"@types/inquirer": "0.0.42",
 		"@types/is-root": "1.0.0",
 		"@types/is-url": "1.2.28",
-		"@types/js-yaml": "3.11.1",
+		"@types/js-yaml": "3.11.2",
 		"@types/jsdom": "11.0.6",
 		"@types/koa": "2.0.46",
 		"@types/koa-bodyparser": "5.0.0",
