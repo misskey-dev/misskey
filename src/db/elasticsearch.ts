@@ -43,7 +43,7 @@ if (client) {
 					properties: {
 						text: {
 							type: 'text',
-							index: 'analyzed',
+							index: true,
 							analyzer: 'bigram'
 						}
 					}
