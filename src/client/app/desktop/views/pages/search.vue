@@ -7,12 +7,7 @@
 		<mk-ellipsis-icon/>
 	</div>
 	<p :class="$style.empty" v-if="!fetching && empty">%fa:search%「{{ q }}」に関する投稿は見つかりませんでした。</p>
-	<mk-notes ref="timeline" :class="$style.notes" :notes="notes">
-		<div slot="footer">
-			<template v-if="!moreFetching">%fa:search%</template>
-			<template v-if="moreFetching">%fa:spinner .pulse .fw%</template>
-		</div>
-	</mk-notes>
+	<mk-notes ref="timeline" :class="$style.notes" :more="existMore ? more : null"/>
 </mk-ui>
 </template>
 
@@ -29,16 +24,13 @@ export default Vue.extend({
 			moreFetching: false,
 			existMore: false,
 			offset: 0,
-			notes: []
+			empty: false
 		};
 	},
 	watch: {
 		$route: 'fetch'
 	},
 	computed: {
-		empty(): boolean {
-			return this.notes.length == 0;
-		},
 		q(): string {
 			return this.$route.query.q;
 		}
@@ -65,41 +57,43 @@ export default Vue.extend({
 			this.fetching = true;
 			Progress.start();
 
-			(this as any).api('notes/search', {
-				limit: limit + 1,
-				offset: this.offset,
-				query: this.q
-			}).then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-					this.existMore = true;
-				}
-				this.notes = notes;
-				this.fetching = false;
-				Progress.done();
-			});
+			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
+				(this as any).api('notes/search', {
+					limit: limit + 1,
+					offset: this.offset,
+					query: this.q
+				}).then(notes => {
+					if (notes.length == 0) this.empty = true;
+					if (notes.length == limit + 1) {
+						notes.pop();
+						this.existMore = true;
+					}
+					res(notes);
+					this.fetching = false;
+					Progress.done();
+				}, rej);
+			}));
 		},
 		more() {
-			if (this.moreFetching || this.fetching || this.notes.length == 0 || !this.existMore) return;
 			this.offset += limit;
-			this.moreFetching = true;
-			return (this as any).api('notes/search', {
+
+			const promise = (this as any).api('notes/search', {
 				limit: limit + 1,
 				offset: this.offset,
 				query: this.q
-			}).then(notes => {
+			});
+
+			promise.then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
 				} else {
 					this.existMore = false;
 				}
-				this.notes = this.notes.concat(notes);
+				notes.forEach(n => (this.$refs.timeline as any).append(n));
 				this.moreFetching = false;
 			});
-		},
-		onScroll() {
-			const current = window.scrollY + window.innerHeight;
-			if (current > document.body.offsetHeight - 16) this.more();
+
+			return promise;
 		}
 	}
 });
