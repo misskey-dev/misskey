@@ -6,7 +6,7 @@ import User from '../../../../models/user';
  */
 module.exports = (params: any) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 365, limitErr] = $.num.optional().range(1, 365).get(params.limit);
+	const [limit = 365, limitErr] = $.num.optional.range(1, 365).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	const users = await User

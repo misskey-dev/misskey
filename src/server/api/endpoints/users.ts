@@ -6,15 +6,15 @@ import User, { pack, ILocalUser } from '../../../models/user';
  */
 module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'offset' parameter
-	const [offset = 0, offsetErr] = $.num.optional().min(0).get(params.offset);
+	const [offset = 0, offsetErr] = $.num.optional.min(0).get(params.offset);
 	if (offsetErr) return rej('invalid offset param');
 
 	// Get 'sort' parameter
-	const [sort, sortError] = $.str.optional().or('+follower|-follower').get(params.sort);
+	const [sort, sortError] = $.str.optional.or('+follower|-follower').get(params.sort);
 	if (sortError) return rej('invalid sort param');
 
 	// Construct query

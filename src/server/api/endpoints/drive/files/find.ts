@@ -11,7 +11,7 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
+	const [folderId = null, folderIdErr] = $.type(ID).optional.nullable.get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');
 
 	// Issue query

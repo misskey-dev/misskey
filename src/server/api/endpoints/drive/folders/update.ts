@@ -23,12 +23,12 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 	}
 
 	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional().pipe(isValidFolderName).get(params.name);
+	const [name, nameErr] = $.str.optional.pipe(isValidFolderName).get(params.name);
 	if (nameErr) return rej('invalid name param');
 	if (name) folder.name = name;
 
 	// Get 'parentId' parameter
-	const [parentId, parentIdErr] = $.type(ID).optional().nullable().get(params.parentId);
+	const [parentId, parentIdErr] = $.type(ID).optional.nullable.get(params.parentId);
 	if (parentIdErr) return rej('invalid parentId param');
 	if (parentId !== undefined) {
 		if (parentId === null) {

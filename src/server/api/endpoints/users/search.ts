@@ -11,7 +11,7 @@ module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) =
 	if (queryError) return rej('invalid query param');
 
 	// Get 'max' parameter
-	const [max = 10, maxErr] = $.num.optional().range(1, 30).get(params.max);
+	const [max = 10, maxErr] = $.num.optional.range(1, 30).get(params.max);
 	if (maxErr) return rej('invalid max param');
 
 	const escapedQuery = escapeRegexp(query);

@@ -11,19 +11,19 @@ module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) =
 	let user;
 
 	// Get 'userId' parameter
-	const [userId, userIdErr] = $.type(ID).optional().get(params.userId);
+	const [userId, userIdErr] = $.type(ID).optional.get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'userIds' parameter
-	const [userIds, userIdsErr] = $.arr($.type(ID)).optional().get(params.userIds);
+	const [userIds, userIdsErr] = $.arr($.type(ID)).optional.get(params.userIds);
 	if (userIdsErr) return rej('invalid userIds param');
 
 	// Get 'username' parameter
-	const [username, usernameErr] = $.str.optional().get(params.username);
+	const [username, usernameErr] = $.str.optional.get(params.username);
 	if (usernameErr) return rej('invalid username param');
 
 	// Get 'host' parameter
-	const [host, hostErr] = $.str.optional().nullable().get(params.host);
+	const [host, hostErr] = $.str.optional.nullable.get(params.host);
 	if (hostErr) return rej('invalid host param');
 
 	if (userIds) {

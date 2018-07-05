@@ -78,7 +78,7 @@ module.exports = async (params: any, user: ILocalUser) => new Promise(async (res
 
 	// Get 'callbackUrl' parameter
 	// TODO: Check it is valid url
-	const [callbackUrl = null, callbackUrlErr] = $.str.optional().nullable().get(params.callbackUrl);
+	const [callbackUrl = null, callbackUrlErr] = $.str.optional.nullable.get(params.callbackUrl);
 	if (callbackUrlErr) return rej('invalid callbackUrl param');
 
 	// Generate secret

@@ -16,7 +16,7 @@ module.exports = async (params: any, user: ILocalUser): Promise<any> => {
 	if (urlErr) throw 'invalid url param';
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
+	const [folderId = null, folderIdErr] = $.type(ID).optional.nullable.get(params.folderId);
 	if (folderIdErr) throw 'invalid folderId param';
 
 	return pack(await uploadFromUrl(url, user, folderId));

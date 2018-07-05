@@ -1,33 +1,83 @@
 import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
 import User, { ILocalUser, IUser } from '../../../../models/user';
-import DriveFile from '../../../../models/drive-file';
+import DriveFile, { IDriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import { IApp } from '../../../../models/app';
 import getParams from '../../get-params';
 
 export const meta = {
 	params: {
-		visibility: {
-			def: $.str.optional().or(['public', 'home', 'followers', 'specified', 'private']),
+		visibility: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']).note({
 			default: 'public',
 			desc: {
 				ja: '投稿の公開範囲'
 			}
-		},
-		visibleUserIds: {
-			def: $.arr($.type(ID)).optional().unique().min(1),
+		}),
+
+		visibleUserIds: $.arr($.type(ID)).optional.unique().min(1).note({
 			desc: {
 				ja: '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
 			}
-		},
-		text: {
-			def: $.str.optional().nullable().pipe(isValidText),
+		}),
+
+		text: $.str.optional.nullable.pipe(isValidText).note({
 			default: null,
 			desc: {
 				ja: '投稿内容'
 			}
-		},
+		}),
+
+		cw: $.str.optional.nullable.pipe(isValidCw).note({
+			desc: {
+				ja: 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
+			}
+		}),
+
+		viaMobile: $.bool.optional.note({
+			default: false,
+			desc: {
+				ja: 'モバイルデバイスからの投稿か否か。'
+			}
+		}),
+
+		geo: $.obj({
+			coordinates: $.arr().length(2)
+				.item(0, $.num.range(-180, 180))
+				.item(1, $.num.range(-90, 90)),
+			altitude: $.num.nullable,
+			accuracy: $.num.nullable,
+			altitudeAccuracy: $.num.nullable,
+			heading: $.num.nullable.range(0, 360),
+			speed: $.num.nullable
+		}).optional.nullable.strict().note({
+			desc: {
+				ja: '位置情報'
+			}
+		}),
+
+		mediaIds: $.arr($.type(ID)).optional.unique().range(1, 4).note({
+			desc: {
+				ja: '添付するメディア'
+			}
+		}),
+
+		renoteId: $.type(ID).optional.note({
+			desc: {
+				ja: 'Renote対象'
+			}
+		}),
+
+		poll: $.obj({
+			choices: $.arr($.str)
+				.unique()
+				.range(2, 10)
+				.each(c => c.length > 0 && c.length < 50)
+		}).optional.strict().note({
+			desc: {
+				ja: 'アンケート'
+			}
+		})
 	}
 };
 
@@ -45,45 +95,12 @@ module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async
 		})));
 	}
 
-	// Get 'text' parameter
-	const [text = null, textErr] = $.str.optional().nullable().pipe(isValidText).get(params.text);
-	if (textErr) return rej('invalid text');
-
-	// Get 'cw' parameter
-	const [cw, cwErr] = $.str.optional().nullable().pipe(isValidCw).get(params.cw);
-	if (cwErr) return rej('invalid cw');
-
-	// Get 'viaMobile' parameter
-	const [viaMobile = false, viaMobileErr] = $.bool.optional().get(params.viaMobile);
-	if (viaMobileErr) return rej('invalid viaMobile');
-
-	// Get 'tags' parameter
-	const [tags = [], tagsErr] = $.arr($.str.range(1, 32)).optional().unique().get(params.tags);
-	if (tagsErr) return rej('invalid tags');
-
-	// Get 'geo' parameter
-	const [geo, geoErr] = $.obj.optional().nullable().strict()
-		.have('coordinates', $.arr().length(2)
-			.item(0, $.num.range(-180, 180))
-			.item(1, $.num.range(-90, 90)))
-		.have('altitude', $.num.nullable())
-		.have('accuracy', $.num.nullable())
-		.have('altitudeAccuracy', $.num.nullable())
-		.have('heading', $.num.nullable().range(0, 360))
-		.have('speed', $.num.nullable())
-		.get(params.geo);
-	if (geoErr) return rej('invalid geo');
-
-	// Get 'mediaIds' parameter
-	const [mediaIds, mediaIdsErr] = $.arr($.type(ID)).optional().unique().range(1, 4).get(params.mediaIds);
-	if (mediaIdsErr) return rej('invalid mediaIds');
-
-	let files = [];
-	if (mediaIds !== undefined) {
+	let files: IDriveFile[] = [];
+	if (ps.mediaIds !== undefined) {
 		// Fetch files
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
-		for (const mediaId of mediaIds) {
+		for (const mediaId of ps.mediaIds) {
 			// Fetch file
 			// SELECT _id
 			const entity = await DriveFile.findOne({
@@ -101,15 +118,11 @@ module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async
 		files = null;
 	}
 
-	// Get 'renoteId' parameter
-	const [renoteId, renoteIdErr] = $.type(ID).optional().get(params.renoteId);
-	if (renoteIdErr) return rej('invalid renoteId');
-
 	let renote: INote = null;
-	if (renoteId !== undefined) {
+	if (ps.renoteId !== undefined) {
 		// Fetch renote to note
 		renote = await Note.findOne({
-			_id: renoteId
+			_id: ps.renoteId
 		});
 
 		if (renote == null) {
@@ -120,7 +133,7 @@ module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async
 	}
 
 	// Get 'replyId' parameter
-	const [replyId, replyIdErr] = $.type(ID).optional().get(params.replyId);
+	const [replyId, replyIdErr] = $.type(ID).optional.get(params.replyId);
 	if (replyIdErr) return rej('invalid replyId');
 
 	let reply: INote = null;
@@ -140,17 +153,8 @@ module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async
 		}
 	}
 
-	// Get 'poll' parameter
-	const [poll, pollErr] = $.obj.optional().strict()
-		.have('choices', $.arr($.str)
-			.unique()
-			.range(2, 10)
-			.each(c => c.length > 0 && c.length < 50))
-		.get(params.poll);
-	if (pollErr) return rej('invalid poll');
-
-	if (poll) {
-		(poll as any).choices = (poll as any).choices.map((choice: string, i: number) => ({
+	if (ps.poll) {
+		(ps.poll as any).choices = (ps.poll as any).choices.map((choice: string, i: number) => ({
 			id: i, // IDを付与
 			text: choice.trim(),
 			votes: 0
@@ -158,7 +162,7 @@ module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
-	if ((text === undefined || text === null) && files === null && renote === null && poll === undefined) {
+	if ((ps.text === undefined || ps.text === null) && files === null && renote === null && ps.poll === undefined) {
 		return rej('text, mediaIds, renoteId or poll is required');
 	}
 
@@ -166,17 +170,16 @@ module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async
 	const note = await create(user, {
 		createdAt: new Date(),
 		media: files,
-		poll,
-		text,
+		poll: ps.poll,
+		text: ps.text,
 		reply,
 		renote,
-		cw,
-		tags,
+		cw: ps.cw,
 		app,
-		viaMobile,
-		visibility,
+		viaMobile: ps.viaMobile,
+		visibility: ps.visibility,
 		visibleUsers,
-		geo
+		geo: ps.geo
 	});
 
 	const noteObj = await pack(note, user);

@@ -9,7 +9,7 @@ import { ILocalUser } from '../../../../models/user';
  */
 module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	const mute = await Mute.find({

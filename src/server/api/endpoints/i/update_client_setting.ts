@@ -11,7 +11,7 @@ module.exports = async (params: any, user: ILocalUser) => new Promise(async (res
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'value' parameter
-	const [value, valueErr] = $.any.nullable().get(params.value);
+	const [value, valueErr] = $.any.nullable.get(params.value);
 	if (valueErr) return rej('invalid value param');
 
 	const x: any = {};

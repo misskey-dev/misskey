@@ -11,7 +11,7 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $.type(ID).optional().nullable().get(params.parentId);
+	const [parentId = null, parentIdErr] = $.type(ID).optional.nullable.get(params.parentId);
 	if (parentIdErr) return rej('invalid parentId param');
 
 	// Issue query

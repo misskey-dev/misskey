@@ -8,7 +8,7 @@ module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) =
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Lookup user
