@@ -7,7 +7,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Create a file
  */
-module.exports = async (file: any, params: any, user: ILocalUser): Promise<any> => {
+export default async (file: any, params: any, user: ILocalUser): Promise<any> => {
 	if (file == null) {
 		throw 'file is required';
 	}

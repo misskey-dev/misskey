@@ -8,7 +8,7 @@ import { pack } from '../../../../models/note';
 /**
  * Search notes by tag
  */
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'tag' parameter
 	const [tag, tagError] = $.str.get(params.tag);
 	if (tagError) return rej('invalid tag param');

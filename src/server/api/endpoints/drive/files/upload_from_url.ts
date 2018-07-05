@@ -9,7 +9,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Create a file from a URL
  */
-module.exports = async (params: any, user: ILocalUser): Promise<any> => {
+export default async (params: any, user: ILocalUser): Promise<any> => {
 	// Get 'url' parameter
 	// TODO: Validate this url
 	const [url, urlErr] = $.str.get(params.url);

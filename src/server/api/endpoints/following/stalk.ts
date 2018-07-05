@@ -5,7 +5,7 @@ import { ILocalUser } from '../../../../models/user';
 /**
  * Stalk a user
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const follower = user;
 
 	// Get 'userId' parameter

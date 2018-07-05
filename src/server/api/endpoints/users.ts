@@ -4,7 +4,7 @@ import User, { pack, ILocalUser } from '../../../models/user';
 /**
  * Lists all users
  */
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');

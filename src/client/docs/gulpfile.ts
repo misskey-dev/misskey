@@ -15,11 +15,11 @@ import I18nReplacer from '../../build/i18n';
 import fa from '../../build/fa';
 import generateVars from './vars';
 
-require('./api/gulpfile.ts');
+//require('./api/gulpfile.ts');
 
 gulp.task('doc', [
 	'doc:docs',
-	'doc:api',
+	//'doc:api',
 	'doc:styles'
 ]);
 

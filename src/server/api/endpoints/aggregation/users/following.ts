@@ -8,7 +8,7 @@ import FollowingLog from '../../../../../models/following-log';
 /**
  * Aggregate following of a user
  */
-module.exports = (params: any) => new Promise(async (res, rej) => {
+export default (params: any) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');

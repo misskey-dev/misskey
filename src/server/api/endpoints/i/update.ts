@@ -8,7 +8,7 @@ import { IApp } from '../../../../models/app';
 /**
  * Update myself
  */
-module.exports = async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	const updates = {} as any;

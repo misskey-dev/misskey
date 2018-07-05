@@ -6,7 +6,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Create drive folder
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name = '無題のフォルダー', nameErr] = $.str.optional.pipe(isValidFolderName).get(params.name);
 	if (nameErr) return rej('invalid name param');

@@ -7,7 +7,7 @@ import Note, { pack } from '../../../models/note';
 /**
  * Get all notes
  */
-module.exports = (params: any) => new Promise(async (res, rej) => {
+export default (params: any) => new Promise(async (res, rej) => {
 	// Get 'local' parameter
 	const [local, localErr] = $.bool.optional.get(params.local);
 	if (localErr) return rej('invalid local param');

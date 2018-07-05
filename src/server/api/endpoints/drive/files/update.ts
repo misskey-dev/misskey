@@ -7,7 +7,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Update a file
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
 	if (fileIdErr) return rej('invalid fileId param');

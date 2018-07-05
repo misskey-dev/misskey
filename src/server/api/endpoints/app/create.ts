@@ -59,7 +59,7 @@ import { ILocalUser } from '../../../../models/user';
 /**
  * Create an app
  */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'nameId' parameter
 	const [nameId, nameIdErr] = $.str.pipe(isValidNameId).get(params.nameId);
 	if (nameIdErr) return rej('invalid nameId param');

@@ -16,12 +16,13 @@ import fa from '../../../build/fa';
 import config from './../../../config';
 
 import generateVars from '../vars';
+import { Context } from 'cafy';
+import ObjectContext from 'cafy/built/types/object';
 
 const langs = Object.keys(locales);
 
 const kebab = (string: string) => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 
-// WIP type
 const parseParam = (param: any) => {
 	const id = param.type.match(/^id\((.+?)\)|^id/);
 	const entity = param.type.match(/^entity\((.+?)\)/);
@@ -58,6 +59,14 @@ const parseParam = (param: any) => {
 	return param;
 };
 
+// WIP type
+const parseEPDefParam = (key: string, param: Context) => {
+	return Object.assign({
+		name: key,
+		type: param.getType()
+	}, param.data);
+};
+
 const sortParams = (params: Array<{name: string}>) => {
 	params.sort((a, b) => {
 		if (a.name < b.name)
@@ -70,17 +79,18 @@ const sortParams = (params: Array<{name: string}>) => {
 };
 
 // WIP type
-const extractDefs = (params: any[]) => {
+const extractDefs = (params: Context[]) => {
 	let defs: any[] = [];
 
 	params.forEach(param => {
-		if (param.def) {
+		if (param.data && param.data.ref) {
+			const props = (param as ObjectContext<any>).props;
 			defs.push({
-				name: param.defName,
-				params: sortParams(param.def.map((p: any) => parseParam(p)))
+				name: param.data.ref,
+				params: sortParams(Object.keys(props).map(k => parseEPDefParam(k, props[k])))
 			});
 
-			const childDefs = extractDefs(param.def);
+			const childDefs = extractDefs(Object.keys(props).map(k => props[k]));
 
 			defs = defs.concat(childDefs);
 		}
@@ -94,35 +104,33 @@ gulp.task('doc:api', [
 	'doc:api:entities'
 ]);
 
-gulp.task('doc:api:endpoints', async () => {
+gulp.task('doc:api:endpoints', ['build:ts'], async () => {
 	const commonVars = await generateVars();
-	glob('./src/client/docs/api/endpoints/**/*.yaml', (globErr, files) => {
+	glob('./built/server/api/endpoints/**/*.js', (globErr, files) => {
 		if (globErr) {
 			console.error(globErr);
 			return;
 		}
-		//console.log(files);
-		files.forEach(file => {
-			const ep: any = yaml.safeLoad(fs.readFileSync(file, 'utf-8'));
+		console.log(files.map(file => require('../../../../' + file)));
+
+		files.map(file => require('../../../../' + file)).filter(x => x.meta).map(x => x.meta).forEach(ep => {
+			console.log(ep);
 			const vars = {
-				endpoint: ep.endpoint,
+				endpoint: ep.name,
 				url: {
 					host: config.api_url,
-					path: ep.endpoint
+					path: ep.name
 				},
 				desc: ep.desc,
 				// @ts-ignore
-				params: sortParams(ep.params.map(p => parseParam(p))),
+				params: sortParams(ep.params.map(p => parseEPDefParam(p))),
 				paramDefs: extractDefs(ep.params),
-				// @ts-ignore
-				res: ep.res ? sortParams(ep.res.map(p => parseParam(p))) : null,
-				resDefs: ep.res ? extractDefs(ep.res) : null,
 			};
 			langs.forEach(lang => {
 				pug.renderFile('./src/client/docs/api/endpoints/view.pug', Object.assign({}, vars, {
 					lang,
-					title: ep.endpoint,
-					src: `https://github.com/syuilo/misskey/tree/master/src/client/docs/api/endpoints/${ep.endpoint}.yaml`,
+					title: ep.name,
+					src: `https://github.com/syuilo/misskey/tree/master/src/client/docs/api/endpoints/${ep.name}.yaml`,
 					kebab,
 					common: commonVars
 				}), (renderErr, html) => {
@@ -133,7 +141,7 @@ gulp.task('doc:api:endpoints', async () => {
 					const i18n = new I18nReplacer(lang);
 					html = html.replace(i18n.pattern, i18n.replacement);
 					html = fa(html);
-					const htmlPath = `./built/client/docs/${lang}/api/endpoints/${ep.endpoint}.html`;
+					const htmlPath = `./built/client/docs/${lang}/api/endpoints/${ep.name}.html`;
 					mkdirp(path.dirname(htmlPath), (mkdirErr) => {
 						if (mkdirErr) {
 							console.error(mkdirErr);

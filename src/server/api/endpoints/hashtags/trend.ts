@@ -15,7 +15,7 @@ const max = 5;
 /**
  * Get trends of hashtags
  */
-module.exports = () => new Promise(async (res, rej) => {
+export default () => new Promise(async (res, rej) => {
 	//#region 1. 直近Aの内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{
 		$match: {

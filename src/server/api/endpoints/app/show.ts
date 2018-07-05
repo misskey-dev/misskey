@@ -35,7 +35,7 @@ import { ILocalUser } from '../../../../models/user';
 /**
  * Show an app
  */
-module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	// Get 'appId' parameter

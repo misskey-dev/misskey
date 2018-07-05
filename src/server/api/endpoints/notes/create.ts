@@ -7,6 +7,8 @@ import { IApp } from '../../../../models/app';
 import getParams from '../../get-params';
 
 export const meta = {
+	name: 'notes/create',
+
 	desc: {
 		ja: '投稿します。'
 	},
@@ -57,7 +59,8 @@ export const meta = {
 		}).optional.nullable.strict().note({
 			desc: {
 				ja: '位置情報'
-			}
+			},
+			ref: 'geo'
 		}),
 
 		mediaIds: $.arr($.type(ID)).optional.unique().range(1, 4).note({
@@ -80,7 +83,8 @@ export const meta = {
 		}).optional.strict().note({
 			desc: {
 				ja: 'アンケート'
-			}
+			},
+			ref: 'poll'
 		})
 	},
 
@@ -100,7 +104,7 @@ export const meta = {
 /**
  * Create a note
  */
-module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const [ps, psErr] = getParams(meta, params);
 	if (psErr) return rej(psErr);
 

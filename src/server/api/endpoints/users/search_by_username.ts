@@ -4,7 +4,7 @@ import User, { pack, ILocalUser } from '../../../../models/user';
 /**
  * Search a user by username
  */
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
 	const [query, queryError] = $.str.get(params.query);
 	if (queryError) return rej('invalid query param');

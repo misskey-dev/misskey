@@ -5,7 +5,7 @@ import Mute from '../../../../models/mute';
 /**
  * Mute a user
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const muter = user;
 
 	// Get 'userId' parameter

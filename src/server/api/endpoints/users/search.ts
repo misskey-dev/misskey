@@ -5,7 +5,7 @@ const escapeRegexp = require('escape-regexp');
 /**
  * Search a user
  */
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'query' parameter
 	const [query, queryError] = $.str.pipe(x => x != '').get(params.query);
 	if (queryError) return rej('invalid query param');

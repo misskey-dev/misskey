@@ -5,7 +5,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Get all pending received follow requests
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const reqs = await FollowRequest.find({
 		followeeId: user._id
 	});

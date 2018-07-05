@@ -6,7 +6,7 @@ import { getFriendIds } from '../../common/get-friends';
 /**
  * Get muted users of a user
  */
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'iknow' parameter
 	const [iknow = false, iknowErr] = $.bool.optional.get(params.iknow);
 	if (iknowErr) return rej('invalid iknow param');

@@ -7,7 +7,7 @@ const cursorOption = { fields: { data: false } };
 /**
  * Show user(s)
  */
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	let user;
 
 	// Get 'userId' parameter

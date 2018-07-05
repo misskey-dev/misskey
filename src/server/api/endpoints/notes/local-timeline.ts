@@ -7,7 +7,7 @@ import { ILocalUser } from '../../../../models/user';
 /**
  * Get timeline of local
  */
-module.exports = async (params: any, user: ILocalUser) => {
+export default async (params: any, user: ILocalUser) => {
 	// Get 'limit' parameter
 	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) throw 'invalid limit param';

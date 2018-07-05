@@ -7,7 +7,7 @@ import { ILocalUser } from '../../../../models/user';
 /**
  * Get mentions of myself
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'following' parameter
 	const [following = false, followingError] =
 		$.bool.optional.get(params.following);

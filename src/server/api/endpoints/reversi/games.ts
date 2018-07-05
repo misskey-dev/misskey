@@ -2,7 +2,7 @@ import $ from 'cafy'; import ID from '../../../../cafy-id';
 import ReversiGame, { pack } from '../../../../models/reversi-game';
 import { ILocalUser } from '../../../../models/user';
 
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'my' parameter
 	const [my = false, myErr] = $.bool.optional.get(params.my);
 	if (myErr) return rej('invalid my param');
