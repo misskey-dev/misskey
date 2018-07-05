@@ -4,22 +4,43 @@ import User, { ILocalUser, IUser } from '../../../../models/user';
 import DriveFile from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import { IApp } from '../../../../models/app';
+import getParams from '../../get-params';
+
+export const meta = {
+	params: {
+		visibility: {
+			def: $.str.optional().or(['public', 'home', 'followers', 'specified', 'private']),
+			default: 'public',
+			desc: {
+				ja: '投稿の公開範囲'
+			}
+		},
+		visibleUserIds: {
+			def: $.arr($.type(ID)).optional().unique().min(1),
+			desc: {
+				ja: '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
+			}
+		},
+		text: {
+			def: $.str.optional().nullable().pipe(isValidText),
+			default: null,
+			desc: {
+				ja: '投稿内容'
+			}
+		},
+	}
+};
 
 /**
  * Create a note
  */
 module.exports = (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
-	// Get 'visibility' parameter
-	const [visibility = 'public', visibilityErr] = $.str.optional().or(['public', 'home', 'followers', 'specified', 'private']).get(params.visibility);
-	if (visibilityErr) return rej('invalid visibility');
-
-	// Get 'visibleUserIds' parameter
-	const [visibleUserIds, visibleUserIdsErr] = $.arr($.type(ID)).optional().unique().min(1).get(params.visibleUserIds);
-	if (visibleUserIdsErr) return rej('invalid visibleUserIds');
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	let visibleUsers: IUser[] = [];
-	if (visibleUserIds !== undefined) {
-		visibleUsers = await Promise.all(visibleUserIds.map(id => User.findOne({
+	if (ps.visibleUserIds !== undefined) {
+		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => User.findOne({
 			_id: id
 		})));
 	}
