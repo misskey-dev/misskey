@@ -10,6 +10,7 @@ export const meta = {
 	desc: {
 		ja: '投稿します。'
 	},
+
 	params: {
 		visibility: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']).note({
 			default: 'public',
@@ -82,8 +83,10 @@ export const meta = {
 			}
 		})
 	},
+
 	res: {
-		data: {
+		type: 'object',
+		object: {
 			createdNote: {
 				type: 'entity(Note)',
 				desc: {
