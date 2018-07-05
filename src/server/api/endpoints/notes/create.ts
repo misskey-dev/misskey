@@ -7,6 +7,9 @@ import { IApp } from '../../../../models/app';
 import getParams from '../../get-params';
 
 export const meta = {
+	desc: {
+		ja: '投稿します。'
+	},
 	params: {
 		visibility: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']).note({
 			default: 'public',
@@ -78,6 +81,16 @@ export const meta = {
 				ja: 'アンケート'
 			}
 		})
+	},
+	res: {
+		data: {
+			createdNote: {
+				type: 'entity(Note)',
+				desc: {
+					ja: '作成した投稿'
+				}
+			}
+		}
 	}
 };
 
