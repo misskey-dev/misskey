@@ -928,7 +928,4 @@ docs:
     props:
       name: "Nazwa"
       type: "Rodzaj"
-      optional: "Nieobowiązkowy"
       description: "Opis"
-      yes: "Tak"
-      no: "Nie"
