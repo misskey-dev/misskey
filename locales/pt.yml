@@ -928,7 +928,4 @@ docs:
     props:
       name: "名前"
       type: "型"
-      optional: "オプション"
       description: "説明"
-      yes: "はい"
-      no: "いいえ"
