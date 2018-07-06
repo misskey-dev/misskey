@@ -26,4 +26,8 @@ export default class ID extends Context<mongo.ObjectID> {
 			return true;
 		});
 	}
+
+	public getType() {
+		return super.getType('string');
+	}
 }
