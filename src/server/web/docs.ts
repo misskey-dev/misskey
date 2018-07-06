@@ -9,6 +9,7 @@ import { Context } from 'cafy';
 import ObjectContext from 'cafy/built/types/object';
 import config from '../../config';
 import generateVars from '../../client/docs/vars';
+import I18n from '../../build/i18n';
 
 const docs = `${__dirname}/../../client/docs/`;
 
@@ -63,6 +64,7 @@ router.get('/assets/*', async ctx => {
 });
 
 router.get('/*/api/endpoints/*', async ctx => {
+	const lang = ctx.params[0];
 	const ep = require('../../../built/server/api/endpoints/' + ctx.params[1]).meta;
 
 	const vars = {
@@ -76,14 +78,16 @@ router.get('/*/api/endpoints/*', async ctx => {
 		params: sortParams(Object.keys(ep.params).map(k => parseEPDefParam(k, ep.params[k]))),
 		paramDefs: extractDefs(Object.keys(ep.params).map(k => ep.params[k])),
 	};
-	console.log(vars);
 
 	const commonVars = await generateVars();
 
+	const i18n = new I18n(lang);
+
 	await ctx.render('../../../../src/client/docs/api/endpoints/view', Object.assign({}, vars, {
-		lang: 'ja',
+		lang,
 		title: ep.name,
 		kebab: (string: string) => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase(),
+		i18n: (key: string) => i18n.get(null, key),
 		common: commonVars
 	}));
 });

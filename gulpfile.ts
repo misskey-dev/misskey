@@ -20,7 +20,7 @@ import * as replace from 'gulp-replace';
 import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 
-import locales from './locales';
+const locales = require('./locales');
 import { fa } from './src/build/fa';
 const client = require('./built/client/meta.json');
 import config from './src/config';
