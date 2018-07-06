@@ -205,4 +205,11 @@ router.get('/*/api/entities/*', async ctx => {
 	}));
 });
 
+router.get('/*/*', async ctx => {
+	const lang = ctx.params[0];
+	const doc = ctx.params[1];
+
+	await ctx.render('../../../../src/client/docs/' + doc + '.' + lang, await genVars(lang));
+});
+
 export default router;
