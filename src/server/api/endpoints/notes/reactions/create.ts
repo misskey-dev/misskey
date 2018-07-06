@@ -3,22 +3,40 @@ import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';
 import { ILocalUser } from '../../../../../models/user';
+import getParams from '../../../get-params';
+
+export const meta = {
+	name: 'notes/reactions/create',
+
+	desc: {
+		ja: '投稿にリアクションします。'
+	},
+
+	params: {
+		noteId: $.type(ID).note({
+			desc: {
+				ja: '対象の投稿'
+			}
+		}),
+
+		reaction: $.str.pipe(validateReaction.ok).note({
+			desc: {
+				ja: 'リアクションの種類'
+			}
+		})
+	}
+};
 
 /**
  * React to a note
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
-	// Get 'noteId' parameter
-	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
-	if (noteIdErr) return rej('invalid noteId param');
-
-	// Get 'reaction' parameter
-	const [reaction, reactionErr] = $.str.pipe(validateReaction.ok).get(params.reaction);
-	if (reactionErr) return rej('invalid reaction param');
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+	const [ps, psErr] = getParams(meta, params);
+	if (psErr) return rej(psErr);
 
 	// Fetch reactee
 	const note = await Note.findOne({
-		_id: noteId
+		_id: ps.noteId
 	});
 
 	if (note === null) {
@@ -26,7 +44,7 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 	}
 
 	try {
-		await create(user, note, reaction);
+		await create(user, note, ps.reaction);
 	} catch (e) {
 		rej(e);
 	}

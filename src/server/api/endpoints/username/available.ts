@@ -5,7 +5,7 @@ import { validateUsername } from '../../../../models/user';
 /**
  * Check available username
  */
-module.exports = async (params: any) => new Promise(async (res, rej) => {
+export default async (params: any) => new Promise(async (res, rej) => {
 	// Get 'username' parameter
 	const [username, usernameError] = $.str.pipe(validateUsername).get(params.username);
 	if (usernameError) return rej('invalid username param');

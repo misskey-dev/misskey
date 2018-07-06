@@ -5,7 +5,7 @@ import User, { ILocalUser } from '../../../../models/user';
 import publishUserStream, { publishReversiStream } from '../../../../publishers/stream';
 import { eighteight } from '../../../../reversi/maps';
 
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [childId, childIdErr] = $.type(ID).get(params.userId);
 	if (childIdErr) return rej('invalid userId param');

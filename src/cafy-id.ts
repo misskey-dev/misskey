@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import { Query } from 'cafy';
+import { Context } from 'cafy';
 
 export const isAnId = (x: any) => mongo.ObjectID.isValid(x);
 export const isNotAnId = (x: any) => !isAnId(x);
@@ -7,7 +7,7 @@ export const isNotAnId = (x: any) => !isAnId(x);
 /**
  * ID
  */
-export default class ID extends Query<mongo.ObjectID> {
+export default class ID extends Context<mongo.ObjectID> {
 	constructor() {
 		super();
 
@@ -25,5 +25,9 @@ export default class ID extends Query<mongo.ObjectID> {
 			}
 			return true;
 		});
+	}
+
+	public getType() {
+		return super.getType('string');
 	}
 }

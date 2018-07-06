@@ -6,7 +6,7 @@ import { pack } from '../../../../models/user';
 /**
  * Pin note
  */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');

@@ -1,7 +1,7 @@
 import Matching, { pack as packMatching } from '../../../../models/reversi-matching';
 import { ILocalUser } from '../../../../models/user';
 
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Find session
 	const invitations = await Matching.find({
 		childId: user._id

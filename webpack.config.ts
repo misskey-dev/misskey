@@ -19,7 +19,7 @@ const constants = require('./src/const.json');
 import config from './src/config';
 import { licenseHtml } from './src/build/license';
 
-import locales from './locales';
+const locales = require('./locales');
 const meta = require('./package.json');
 const version = meta.clientVersion;
 const codename = meta.codename;

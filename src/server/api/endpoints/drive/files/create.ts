@@ -7,7 +7,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Create a file
  */
-module.exports = async (file: any, params: any, user: ILocalUser): Promise<any> => {
+export default async (file: any, params: any, user: ILocalUser): Promise<any> => {
 	if (file == null) {
 		throw 'file is required';
 	}
@@ -28,7 +28,7 @@ module.exports = async (file: any, params: any, user: ILocalUser): Promise<any> 
 	}
 
 	// Get 'folderId' parameter
-	const [folderId = null, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
+	const [folderId = null, folderIdErr] = $.type(ID).optional.nullable.get(params.folderId);
 	if (folderIdErr) throw 'invalid folderId param';
 
 	function cleanup() {

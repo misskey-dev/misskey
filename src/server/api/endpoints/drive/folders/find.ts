@@ -5,13 +5,13 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Find a folder(s)
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $.str.get(params.name);
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'parentId' parameter
-	const [parentId = null, parentIdErr] = $.type(ID).optional().nullable().get(params.parentId);
+	const [parentId = null, parentIdErr] = $.type(ID).optional.nullable.get(params.parentId);
 	if (parentIdErr) return rej('invalid parentId param');
 
 	// Issue query

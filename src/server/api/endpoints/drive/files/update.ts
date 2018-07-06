@@ -7,7 +7,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Update a file
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
 	if (fileIdErr) return rej('invalid fileId param');
@@ -24,12 +24,12 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 	}
 
 	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional().pipe(validateFileName).get(params.name);
+	const [name, nameErr] = $.str.optional.pipe(validateFileName).get(params.name);
 	if (nameErr) return rej('invalid name param');
 	if (name) file.filename = name;
 
 	// Get 'folderId' parameter
-	const [folderId, folderIdErr] = $.type(ID).optional().nullable().get(params.folderId);
+	const [folderId, folderIdErr] = $.type(ID).optional.nullable.get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');
 
 	if (folderId !== undefined) {

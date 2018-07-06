@@ -5,7 +5,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Create a user list
  */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'title' parameter
 	const [title, titleErr] = $.str.range(1, 100).get(params.title);
 	if (titleErr) return rej('invalid title param');

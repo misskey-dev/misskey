@@ -5,7 +5,7 @@ import User, { pack, ILocalUser } from '../../../../../models/user';
 /**
  * Cancel a follow request
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [followeeId, followeeIdErr] = $.type(ID).get(params.userId);
 	if (followeeIdErr) return rej('invalid userId param');

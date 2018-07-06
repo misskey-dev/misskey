@@ -2,7 +2,7 @@
  * Replace i18n texts
  */
 
-import locale, { isAvailableLanguage, LocaleObject } from '../../locales';
+const locale = require('../../locales');
 
 export default class Replacer {
 	private lang: string;
@@ -16,8 +16,8 @@ export default class Replacer {
 		this.replacement = this.replacement.bind(this);
 	}
 
-	private get(path: string, key: string): string {
-		if (!isAvailableLanguage(this.lang)) {
+	public get(path: string, key: string): string {
+		if (!(this.lang in locale)) {
 			console.warn(`lang '${this.lang}' is not supported`);
 			return key; // Fallback
 		}
@@ -28,7 +28,7 @@ export default class Replacer {
 
 		if (path) {
 			if (text.hasOwnProperty(path)) {
-				text = text[path] as LocaleObject;
+				text = text[path];
 			} else {
 				console.warn(`path '${path}' not found in '${this.lang}'`);
 				return key; // Fallback
@@ -38,7 +38,7 @@ export default class Replacer {
 		// Check the key existance
 		const error = key.split('.').some(k => {
 			if (text.hasOwnProperty(k)) {
-				text = (text as LocaleObject)[k];
+				text = text[k];
 				return false;
 			} else {
 				return true;

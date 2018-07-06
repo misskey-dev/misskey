@@ -5,7 +5,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Show a folder
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'folderId' parameter
 	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');

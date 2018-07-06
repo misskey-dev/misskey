@@ -14,7 +14,7 @@ import config from '../../../../../config';
 /**
  * Create a message
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [recipientId, recipientIdErr] = $.type(ID).get(params.userId);
 	if (recipientIdErr) return rej('invalid userId param');
@@ -38,11 +38,11 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 	}
 
 	// Get 'text' parameter
-	const [text, textErr] = $.str.optional().pipe(isValidText).get(params.text);
+	const [text, textErr] = $.str.optional.pipe(isValidText).get(params.text);
 	if (textErr) return rej('invalid text');
 
 	// Get 'fileId' parameter
-	const [fileId, fileIdErr] = $.type(ID).optional().get(params.fileId);
+	const [fileId, fileIdErr] = $.type(ID).optional.get(params.fileId);
 	if (fileIdErr) return rej('invalid fileId param');
 
 	let file = null;

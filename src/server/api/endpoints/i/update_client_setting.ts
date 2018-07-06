@@ -5,13 +5,13 @@ import event from '../../../../publishers/stream';
 /**
  * Update myself
  */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'name' parameter
 	const [name, nameErr] = $.str.get(params.name);
 	if (nameErr) return rej('invalid name param');
 
 	// Get 'value' parameter
-	const [value, valueErr] = $.any.nullable().get(params.value);
+	const [value, valueErr] = $.any.nullable.get(params.value);
 	if (valueErr) return rej('invalid value param');
 
 	const x: any = {};

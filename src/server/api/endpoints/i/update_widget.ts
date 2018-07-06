@@ -2,7 +2,7 @@ import $ from 'cafy';
 import User, { ILocalUser } from '../../../../models/user';
 import event from '../../../../publishers/stream';
 
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'id' parameter
 	const [id, idErr] = $.str.get(params.id);
 	if (idErr) return rej('invalid id param');

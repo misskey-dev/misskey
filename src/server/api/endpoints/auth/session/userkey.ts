@@ -49,7 +49,7 @@ import { pack } from '../../../../../models/user';
  * @param {any} params
  * @return {Promise<any>}
  */
-module.exports = (params: any) => new Promise(async (res, rej) => {
+export default (params: any) => new Promise(async (res, rej) => {
 	// Get 'appSecret' parameter
 	const [appSecret, appSecretErr] = $.str.get(params.appSecret);
 	if (appSecretErr) return rej('invalid appSecret param');

@@ -2,13 +2,13 @@ import $ from 'cafy'; import ID from '../../../../cafy-id';
 import Note from '../../../../models/note';
 import User, { pack, ILocalUser } from '../../../../models/user';
 
-module.exports = (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, me: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [userId, userIdErr] = $.type(ID).get(params.userId);
 	if (userIdErr) return rej('invalid userId param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Lookup user

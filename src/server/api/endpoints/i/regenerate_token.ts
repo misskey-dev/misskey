@@ -7,7 +7,7 @@ import generateUserToken from '../../common/generate-native-user-token';
 /**
  * Regenerate native token
  */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'password' parameter
 	const [password, passwordErr] = $.str.get(params.password);
 	if (passwordErr) return rej('invalid password param');

@@ -3,7 +3,7 @@ import ReversiGame, { pack } from '../../../../../models/reversi-game';
 import Reversi from '../../../../../reversi/core';
 import { ILocalUser } from '../../../../../models/user';
 
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'gameId' parameter
 	const [gameId, gameIdErr] = $.type(ID).get(params.gameId);
 	if (gameIdErr) return rej('invalid gameId param');

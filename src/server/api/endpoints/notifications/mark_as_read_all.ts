@@ -5,7 +5,7 @@ import User, { ILocalUser } from '../../../../models/user';
 /**
  * Mark as read all notifications
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Update documents
 	await Notification.update({
 		notifieeId: user._id,
