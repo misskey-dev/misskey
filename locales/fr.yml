@@ -928,7 +928,4 @@ docs:
     props:
       name: "Nom"
       type: "Type"
-      optional: "Optionel"
       description: "Description"
-      yes: "Oui"
-      no: "Non"
