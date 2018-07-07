@@ -4,7 +4,7 @@ Misskey's Translation
 If you find an untranslated part on Misskey:
 --------------------------------------------
 
-1. Look for untranslated parts in the miskey's source code.
+1. Look for untranslated parts in the misskey's source code.
 	- For instance, if you find an untranslated part in: `src/client/app/mobile/views/pages/home.vue`.
 
 2. Replace the untranslated portion with a character string of the form `%i18n:@foo%`.
