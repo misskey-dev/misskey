@@ -84,6 +84,8 @@ const consts = {
 	_API_URL_: config.api_url,
 	_WS_URL_: config.ws_url,
 	_DEV_URL_: config.dev_url,
+	_REPOSITORY_URL_: config.maintainer.repository_url,
+	_FEEDBACK_URL_: config.maintainer.feedback_url,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
 	_NAME_: config.name,
