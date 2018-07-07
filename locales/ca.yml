@@ -929,3 +929,5 @@ docs:
       name: "名前"
       type: "型"
       description: "説明"
+locked-account: "アカウントの保護"
+is-locked: "投稿を非公開にする"
