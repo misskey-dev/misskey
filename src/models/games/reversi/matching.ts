@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
-import db from '../db/mongodb';
-import { IUser, pack as packUser } from './user';
+import db from '../../../db/mongodb';
+import { IUser, pack as packUser } from '../../user';
 
 const Matching = db.get<IMatching>('reversiMatchings');
 export default Matching;

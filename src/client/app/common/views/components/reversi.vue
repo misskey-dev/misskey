@@ -99,18 +99,18 @@ export default Vue.extend({
 		this.connection.on('matched', this.onMatched);
 		this.connection.on('invited', this.onInvited);
 
-		(this as any).api('reversi/games', {
+		(this as any).api('games/reversi/games', {
 			my: true
 		}).then(games => {
 			this.myGames = games;
 		});
 
-		(this as any).api('reversi/games').then(games => {
+		(this as any).api('games/reversi/games').then(games => {
 			this.games = games;
 			this.gamesFetching = false;
 		});
 
-		(this as any).api('reversi/invitations').then(invitations => {
+		(this as any).api('games/reversi/invitations').then(invitations => {
 			this.invitations = this.invitations.concat(invitations);
 		});
 
@@ -132,7 +132,7 @@ export default Vue.extend({
 	},
 	methods: {
 		go(game) {
-			(this as any).api('reversi/games/show', {
+			(this as any).api('games/reversi/games/show', {
 				gameId: game.id
 			}).then(game => {
 				this.matching = null;
@@ -146,7 +146,7 @@ export default Vue.extend({
 				(this as any).api('users/show', {
 					username
 				}).then(user => {
-					(this as any).api('reversi/match', {
+					(this as any).api('games/reversi/match', {
 						userId: user.id
 					}).then(res => {
 						if (res == null) {
@@ -160,10 +160,10 @@ export default Vue.extend({
 		},
 		cancel() {
 			this.matching = null;
-			(this as any).api('reversi/match/cancel');
+			(this as any).api('games/reversi/match/cancel');
 		},
 		accept(invitation) {
-			(this as any).api('reversi/match', {
+			(this as any).api('games/reversi/match', {
 				userId: invitation.parent.id
 			}).then(game => {
 				if (game) {

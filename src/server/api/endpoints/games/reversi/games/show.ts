@@ -1,7 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
-import ReversiGame, { pack } from '../../../../../models/reversi-game';
-import Reversi from '../../../../../reversi/core';
-import { ILocalUser } from '../../../../../models/user';
+import $ from 'cafy'; import ID from '../../../../../../cafy-id';
+import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
+import Reversi from '../../../../../../games/reversi/core';
+import { ILocalUser } from '../../../../../../models/user';
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'gameId' parameter

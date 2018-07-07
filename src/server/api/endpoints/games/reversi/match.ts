@@ -1,9 +1,9 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
-import Matching, { pack as packMatching } from '../../../../models/reversi-matching';
-import ReversiGame, { pack as packGame } from '../../../../models/reversi-game';
-import User, { ILocalUser } from '../../../../models/user';
-import publishUserStream, { publishReversiStream } from '../../../../publishers/stream';
-import { eighteight } from '../../../../reversi/maps';
+import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
+import ReversiGame, { pack as packGame } from '../../../../../models/games/reversi/game';
+import User, { ILocalUser } from '../../../../../models/user';
+import publishUserStream, { publishReversiStream } from '../../../../../publishers/stream';
+import { eighteight } from '../../../../../games/reversi/maps';
 
 export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter

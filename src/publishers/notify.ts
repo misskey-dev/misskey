@@ -4,7 +4,7 @@ import Mute from '../models/mute';
 import { pack } from '../models/notification';
 import stream from './stream';
 import User from '../models/user';
-import pushSw from '../publishers/push-sw';
+import pushSw from './push-sw
 
 export default (
 	notifiee: mongo.ObjectID,

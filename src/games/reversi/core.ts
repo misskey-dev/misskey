@@ -1,3 +1,5 @@
+// MISSKEY REVERSI ENGINE
+
 /**
  * true ... 黒
  * false ... 白
@@ -18,7 +20,7 @@ export type Undo = {
 	/**
 	 * 色
 	 */
-	color: Color,
+	color: Color;
 
 	/**
 	 * どこに打ったか

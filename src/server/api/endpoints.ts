@@ -245,27 +245,27 @@ const endpoints: Endpoint[] = [
 	},
 
 	{
-		name: 'reversi/match',
+		name: 'games/reversi/match',
 		withCredential: true
 	},
 
 	{
-		name: 'reversi/match/cancel',
+		name: 'games/reversi/match/cancel',
 		withCredential: true
 	},
 
 	{
-		name: 'reversi/invitations',
+		name: 'games/reversi/invitations',
 		withCredential: true
 	},
 
 	{
-		name: 'reversi/games',
+		name: 'games/reversi/games',
 		withCredential: true
 	},
 
 	{
-		name: 'reversi/games/show'
+		name: 'games/reversi/games/show'
 	},
 
 	{
