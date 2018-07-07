@@ -538,6 +538,9 @@ desktop/views/components/settings.profile.vue:
   description: "Description"
   birthday: "Date de naissance"
   save: "Mettre à jour le profil"
+  locked-account: "アカウントの保護"
+  is-locked: "投稿を非公開にする"
+  other: "その他"
   is-bot: "Ce compte est un Bot"
   is-cat: "Ce compte est un Chat"
 desktop/views/components/sub-note-content.vue:
@@ -929,5 +932,3 @@ docs:
       name: "Nom"
       type: "Type"
       description: "Description"
-locked-account: "アカウントの保護"
-is-locked: "投稿を非公開にする"
