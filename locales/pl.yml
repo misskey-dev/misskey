@@ -538,6 +538,9 @@ desktop/views/components/settings.profile.vue:
   description: "Opis"
   birthday: "Data urodzenia"
   save: "Aktualizuj profil"
+  locked-account: "アカウントの保護"
+  is-locked: "投稿を非公開にする"
+  other: "その他"
   is-bot: "To konto jest prowadzone przez bota"
   is-cat: "To konto jest prowadzone przez kota"
 desktop/views/components/sub-note-content.vue:
@@ -929,5 +932,3 @@ docs:
       name: "Nazwa"
       type: "Rodzaj"
       description: "Opis"
-locked-account: "アカウントの保護"
-is-locked: "投稿を非公開にする"
