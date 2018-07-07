@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import User, { ILocalUser } from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import event from '../../../../stream';
 import generateUserToken from '../../common/generate-native-user-token';
 
 /**

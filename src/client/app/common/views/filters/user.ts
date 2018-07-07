@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import getAcct from '../../../../../acct/render';
-import getUserName from '../../../../../renderers/get-user-name';
+import getAcct from '../../../../../misc/acct/render';
+import getUserName from '../../../../../misc/get-user-name';
 
 Vue.filter('acct', user => {
 	return getAcct(user);

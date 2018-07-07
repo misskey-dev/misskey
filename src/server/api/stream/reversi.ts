@@ -2,7 +2,7 @@ import * as mongo from 'mongodb';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import Matching, { pack } from '../../../models/games/reversi/matching';
-import publishUserStream from '../../../publishers/stream';
+import publishUserStream from '../../../stream';
 
 export default function(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
 	// Subscribe reversi stream

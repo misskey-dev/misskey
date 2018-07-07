@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import Note from '../../../../../models/note';
 import create from '../../../../../services/note/reaction/create';
 import { validateReaction } from '../../../../../models/note-reaction';

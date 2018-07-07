@@ -2,7 +2,7 @@ import * as kue from 'kue';
 import * as debug from 'debug';
 
 const httpSignature = require('http-signature');
-import parseAcct from '../../../acct/parse';
+import parseAcct from '../../../misc/acct/parse';
 import User, { IRemoteUser } from '../../../models/user';
 import perform from '../../../remote/activitypub/perform';
 import { resolvePerson } from '../../../remote/activitypub/models/person';

@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { ILocalUser } from '../../../../../models/user';
 

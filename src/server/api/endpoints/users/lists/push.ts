@@ -1,7 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import User, { pack as packUser, isRemoteUser, getGhost, ILocalUser } from '../../../../../models/user';
-import { publishUserListStream } from '../../../../../publishers/stream';
+import { publishUserListStream } from '../../../../../stream';
 import ap from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';

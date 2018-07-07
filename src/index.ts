@@ -12,18 +12,16 @@ import chalk from 'chalk';
 import isRoot = require('is-root');
 import Xev from 'xev';
 
-import Logger from './utils/logger';
-import ProgressBar from './utils/cli/progressbar';
-import EnvironmentInfo from './utils/environmentInfo';
-import MachineInfo from './utils/machineInfo';
-import DependencyInfo from './utils/dependencyInfo';
+import Logger from './misc/logger';
+import ProgressBar from './misc/cli/progressbar';
+import EnvironmentInfo from './misc/environmentInfo';
+import MachineInfo from './misc/machineInfo';
+import DependencyInfo from './misc/dependencyInfo';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
 import db from './db/mongodb';
 import loadConfig from './config/load';
 import { Config } from './config/types';
-
-import parseOpt from './parse-opt';
 
 const clusterLog = debug('misskey:cluster');
 const ev = new Xev();
@@ -44,23 +42,21 @@ main();
  * Init process
  */
 function main() {
-	const opt = parseOpt(process.argv, 2);
-
 	if (cluster.isMaster) {
-		masterMain(opt);
+		masterMain();
 
 		ev.mount();
 		serverStats();
 		notesStats();
 	} else {
-		workerMain(opt);
+		workerMain();
 	}
 }
 
 /**
  * Init master process
  */
-async function masterMain(opt: any) {
+async function masterMain() {
 	let config: Config;
 
 	try {
@@ -75,32 +71,24 @@ async function masterMain(opt: any) {
 	Logger.info(chalk.green('Successfully initialized :)'));
 
 	spawnWorkers(() => {
-		if (!opt['only-processor']) {
-			Logger.info(chalk.bold.green(
-				`Now listening on port ${chalk.underline(config.port.toString())}`));
+		Logger.info(chalk.bold.green(
+			`Now listening on port ${chalk.underline(config.port.toString())}`));
 
-			Logger.info(chalk.bold.green(config.url));
-		}
+		Logger.info(chalk.bold.green(config.url));
 
-		if (!opt['only-server']) {
-			Logger.info(chalk.bold.green('Now processing jobs'));
-		}
+		Logger.info(chalk.bold.green('Now processing jobs'));
 	});
 }
 
 /**
  * Init worker process
  */
-async function workerMain(opt: any) {
-	if (!opt['only-processor']) {
-		// start server
-		await require('./server').default();
-	}
+async function workerMain() {
+	// start server
+	await require('./server').default();
 
-	if (!opt['only-server']) {
-		// start processor
-		require('./queue').default();
-	}
+	// start processor
+	require('./queue').default();
 
 	// Send a 'ready' message to parent process
 	process.send('ready');

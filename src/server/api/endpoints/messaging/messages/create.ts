@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import History from '../../../../../models/messaging-history';
@@ -6,9 +6,9 @@ import User, { ILocalUser } from '../../../../../models/user';
 import Mute from '../../../../../models/mute';
 import DriveFile from '../../../../../models/drive-file';
 import { pack } from '../../../../../models/messaging-message';
-import publishUserStream from '../../../../../publishers/stream';
-import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../publishers/stream';
-import pushSw from '../../../../../publishers/push-sw';
+import publishUserStream from '../../../../../stream';
+import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../stream';
+import pushSw from '../../../../../push-sw';
 import config from '../../../../../config';
 
 /**
@@ -116,7 +116,7 @@ export default (params: any, user: ILocalUser) => new Promise(async (res, rej) =
 	}, 3000);
 
 	// Register to search database
-	if (message.text && config.elasticsearch.enable) {
+	if (message.text && config.elasticsearch) {
 		const es = require('../../../db/elasticsearch');
 
 		es.index({

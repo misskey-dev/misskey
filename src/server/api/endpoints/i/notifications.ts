@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Notification from '../../../../models/notification';
 import Mute from '../../../../models/mute';
 import { pack } from '../../../../models/notification';

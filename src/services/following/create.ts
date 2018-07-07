@@ -2,8 +2,8 @@ import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../
 import Following from '../../models/following';
 import FollowingLog from '../../models/following-log';
 import FollowedLog from '../../models/followed-log';
-import event from '../../publishers/stream';
-import notify from '../../publishers/notify';
+import event from '../../stream';
+import notify from '../..//notify';
 import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';

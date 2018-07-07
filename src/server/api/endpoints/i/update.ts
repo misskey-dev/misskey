@@ -1,6 +1,6 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack, ILocalUser } from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import event from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';

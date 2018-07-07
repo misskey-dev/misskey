@@ -1,5 +1,5 @@
 import Notification from '../../../../models/notification';
-import event from '../../../../publishers/stream';
+import event from '../../../../stream';
 import User, { ILocalUser } from '../../../../models/user';
 
 /**

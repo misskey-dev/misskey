@@ -7,7 +7,7 @@ import { deliver } from '../../../queue';
 import Following from '../../../models/following';
 import FollowingLog from '../../../models/following-log';
 import FollowedLog from '../../../models/followed-log';
-import event from '../../../publishers/stream';
+import event from '../../../stream';
 
 export default async function(followee: IUser, follower: IUser) {
 	const following = await Following.insert({

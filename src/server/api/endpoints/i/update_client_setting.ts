@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import User, { ILocalUser } from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import event from '../../../../stream';
 
 /**
  * Update myself

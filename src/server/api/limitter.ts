@@ -2,7 +2,7 @@ import * as Limiter from 'ratelimiter';
 import * as debug from 'debug';
 import limiterDB from '../../db/redis';
 import { Endpoint } from './endpoints';
-import getAcct from '../../acct/render';
+import getAcct from '../../misc/acct/render';
 import { IUser } from '../../models/user';
 
 const log = debug('misskey:limitter');

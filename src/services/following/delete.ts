@@ -2,7 +2,7 @@ import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../
 import Following from '../../models/following';
 import FollowingLog from '../../models/following-log';
 import FollowedLog from '../../models/followed-log';
-import event from '../../publishers/stream';
+import event from '../../stream';
 import pack from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';

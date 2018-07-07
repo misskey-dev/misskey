@@ -31,8 +31,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parseAcct from '../../../../../acct/parse';
-import getUserName from '../../../../../renderers/get-user-name';
+import parseAcct from '../../../../../misc/acct/parse';
+import getUserName from '../../../../../misc/get-user-name';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({

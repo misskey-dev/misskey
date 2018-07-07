@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import rejectFollowRequest from '../../../../../services/following/requests/reject';
 import User, { ILocalUser } from '../../../../../models/user';
 

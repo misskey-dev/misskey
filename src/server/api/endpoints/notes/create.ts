@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Note, { INote, isValidText, isValidCw, pack } from '../../../../models/note';
 import User, { ILocalUser, IUser } from '../../../../models/user';
 import DriveFile, { IDriveFile } from '../../../../models/drive-file';

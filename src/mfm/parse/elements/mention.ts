@@ -1,7 +1,7 @@
 /**
  * Mention
  */
-import parseAcct from '../../../acct/parse';
+import parseAcct from '../../../misc/acct/parse';
 
 export type TextElementMention = {
 	type: 'mention'

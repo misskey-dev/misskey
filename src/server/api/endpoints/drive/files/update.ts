@@ -1,7 +1,7 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
-import { publishDriveStream } from '../../../../../publishers/stream';
+import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 
 /**

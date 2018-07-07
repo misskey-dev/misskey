@@ -1,6 +1,6 @@
-import getNoteSummary from '../../../../renderers/get-note-summary';
-import getReactionEmoji from '../../../../renderers/get-reaction-emoji';
-import getUserName from '../../../../renderers/get-user-name';
+import getNoteSummary from '../../../../misc/get-note-summary';
+import getReactionEmoji from '../../../../misc/get-reaction-emoji';
+import getUserName from '../../../../misc/get-user-name';
 
 type Notification = {
 	title: string;

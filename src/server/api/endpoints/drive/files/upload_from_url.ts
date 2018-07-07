@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 import { ILocalUser } from '../../../../../models/user';

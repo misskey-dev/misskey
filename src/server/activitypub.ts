@@ -11,7 +11,6 @@ import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
 import renderOrderedCollection from '../remote/activitypub/renderer/ordered-collection';
-import parseAcct from '../acct/parse';
 import config from '../config';
 
 // Init router

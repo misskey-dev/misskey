@@ -1,10 +1,10 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import Vote from '../../../../../models/poll-vote';
 import Note from '../../../../../models/note';
 import Watching from '../../../../../models/note-watching';
 import watch from '../../../../../services/note/watch';
-import { publishNoteStream } from '../../../../../publishers/stream';
-import notify from '../../../../../publishers/notify';
+import { publishNoteStream } from '../../../../../stream';
+import notify from '../../../../..//notify';
 import { ILocalUser } from '../../../../../models/user';
 
 /**

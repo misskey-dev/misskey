@@ -1,10 +1,10 @@
 import * as mongo from 'mongodb';
-import Notification from '../models/notification';
-import Mute from '../models/mute';
-import { pack } from '../models/notification';
+import Notification from './models/notification';
+import Mute from './models/mute';
+import { pack } from './models/notification';
 import stream from './stream';
-import User from '../models/user';
-import pushSw from './push-sw
+import User from './models/user';
+import pushSw from './push-sw';
 
 export default (
 	notifiee: mongo.ObjectID,

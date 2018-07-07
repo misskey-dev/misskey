@@ -1,4 +1,4 @@
-import getUserName from './get-user-name
+import getUserName from './get-user-name';
 import getNoteSummary from './get-note-summary';
 import getReactionEmoji from './get-reaction-emoji';
 

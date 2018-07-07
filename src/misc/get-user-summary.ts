@@ -1,5 +1,5 @@
 import { IUser, isLocalUser } from '../models/user';
-import getAcct from '../acct/render';
+import getAcct from '../misc/acct/render';
 import getUserName from './get-user-name';
 
 /**

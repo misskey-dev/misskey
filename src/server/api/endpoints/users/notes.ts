@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import getHostLower from '../../common/get-host-lower';
 import Note, { pack } from '../../../../models/note';
 import User, { ILocalUser } from '../../../../models/user';
