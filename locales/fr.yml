@@ -563,7 +563,7 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Listes"
   follow-requests: "Demandes de suivi"
-  customize: "Modifications"
+  customize: "ホームのカスタマイズ"
   settings: "Réglages"
   signout: "Déconnexion"
   dark: "Fall in dark"
