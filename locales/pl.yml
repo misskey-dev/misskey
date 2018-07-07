@@ -929,3 +929,5 @@ docs:
       name: "Nazwa"
       type: "Rodzaj"
       description: "Opis"
+locked-account: "アカウントの保護"
+is-locked: "投稿を非公開にする"
