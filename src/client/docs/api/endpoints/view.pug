@@ -30,3 +30,9 @@ block main
 		section
 			h2= i18n('docs.api.endpoints.res')
 			+propTable(res)
+
+			if resDefs
+				each resDef in resDefs
+					section(id= resDef.name)
+						h3= resDef.name
+						+propTable(resDef.props)

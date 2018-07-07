@@ -22,9 +22,9 @@ mixin propTable(props)
 							a(href=`/docs/${lang}/api/entities/${kebab(prop.entity)}`)= prop.entity
 							| )
 						else if prop.kind == 'object'
-							if prop.def
+							if prop.hasDef
 								|  (
-								a(href=`#${prop.defName}`)= prop.defName
+								a(href=`#${prop.name}`)= prop.name
 								| )
 						else if prop.kind == 'date'
 							|  (Date)

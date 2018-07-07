@@ -63,66 +63,64 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 }
 
 // WIP type
-const parseEPDefParam = (key: string, param: Context) => {
+const parseParamDefinition = (key: string, param: Context) => {
 	return Object.assign({
 		name: key,
 		type: param.getType()
 	}, param.data);
 };
 
-const parseParam = (param: any) => {
-	const id = param.type.match(/^id\((.+?)\)|^id/);
-	const entity = param.type.match(/^entity\((.+?)\)/);
-	const isObject = /^object/.test(param.type);
-	const isDate = /^date/.test(param.type);
-	const isArray = /\[\]$/.test(param.type);
+const parsePropDefinition = (key: string, prop: any) => {
+	const id = prop.type.match(/^id\((.+?)\)|^id/);
+	const entity = prop.type.match(/^entity\((.+?)\)/);
+	const isObject = /^object/.test(prop.type);
+	const isDate = /^date/.test(prop.type);
+	const isArray = /\[\]$/.test(prop.type);
 	if (id) {
-		param.kind = 'id';
-		param.type = 'string';
-		param.entity = id[1];
+		prop.kind = 'id';
+		prop.type = 'string';
+		prop.entity = id[1];
 		if (isArray) {
-			param.type += '[]';
+			prop.type += '[]';
 		}
 	}
 	if (entity) {
-		param.kind = 'entity';
-		param.type = 'object';
-		param.entity = entity[1];
+		prop.kind = 'entity';
+		prop.type = 'object';
+		prop.entity = entity[1];
 		if (isArray) {
-			param.type += '[]';
+			prop.type += '[]';
 		}
 	}
 	if (isObject) {
-		param.kind = 'object';
+		prop.kind = 'object';
+		if (prop.props) {
+			prop.hasDef = true;
+		}
 	}
 	if (isDate) {
-		param.kind = 'date';
-		param.type = 'string';
+		prop.kind = 'date';
+		prop.type = 'string';
 		if (isArray) {
-			param.type += '[]';
+			prop.type += '[]';
 		}
 	}
 
-	if (param.optional) {
-		param.type += '?';
+	if (prop.optional) {
+		prop.type += '?';
 	}
 
-	return param;
+	prop.name = key;
+
+	return prop;
 };
 
 const sortParams = (params: Array<{name: string}>) => {
-	params.sort((a, b) => {
-		if (a.name < b.name)
-			return -1;
-		if (a.name > b.name)
-			return 1;
-		return 0;
-	});
 	return params;
 };
 
 // WIP type
-const extractEPDefs = (params: Context[]) => {
+const extractParamDefRef = (params: Context[]) => {
 	let defs: any[] = [];
 
 	params.forEach(param => {
@@ -130,10 +128,10 @@ const extractEPDefs = (params: Context[]) => {
 			const props = (param as ObjectContext<any>).props;
 			defs.push({
 				name: param.data.ref,
-				params: sortParams(Object.keys(props).map(k => parseEPDefParam(k, props[k])))
+				params: sortParams(Object.keys(props).map(k => parseParamDefinition(k, props[k])))
 			});
 
-			const childDefs = extractEPDefs(Object.keys(props).map(k => props[k]));
+			const childDefs = extractParamDefRef(Object.keys(props).map(k => props[k]));
 
 			defs = defs.concat(childDefs);
 		}
@@ -142,17 +140,17 @@ const extractEPDefs = (params: Context[]) => {
 	return sortParams(defs);
 };
 
-const extractDefs = (params: any[]) => {
+const extractPropDefRef = (props: any[]) => {
 	let defs: any[] = [];
 
-	params.forEach(param => {
-		if (param.def) {
+	Object.entries(props).forEach(([k, v]) => {
+		if (v.props) {
 			defs.push({
-				name: param.defName,
-				params: sortParams(param.def.map((p: any) => parseParam(p)))
+				name: k,
+				props: sortParams(Object.entries(v.props).map(([k, v]) => parsePropDefinition(k, v)))
 			});
 
-			const childDefs = extractDefs(param.def);
+			const childDefs = extractPropDefRef(v.props);
 
 			defs = defs.concat(childDefs);
 		}
@@ -184,8 +182,10 @@ router.get('/*/api/endpoints/*', async ctx => {
 		},
 		desc: ep.desc,
 		// @ts-ignore
-		params: sortParams(Object.keys(ep.params).map(k => parseEPDefParam(k, ep.params[k]))),
-		paramDefs: extractEPDefs(Object.keys(ep.params).map(k => ep.params[k])),
+		params: sortParams(Object.entries(ep.params).map(([k, v]) => parseParamDefinition(k, v))),
+		paramDefs: extractParamDefRef(Object.entries(ep.params).map(([k, v]) => v)),
+		res: ep.res.props ? sortParams(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v))) : null,
+		resDefs: null//extractPropDefRef(Object.entries(ep.res.props).map(([k, v]) => parsePropDefinition(k, v)))
 	};
 
 	await ctx.render('../../../../src/client/docs/api/endpoints/view', Object.assign(await genVars(lang), vars));
@@ -200,8 +200,8 @@ router.get('/*/api/entities/*', async ctx => {
 	await ctx.render('../../../../src/client/docs/api/entities/view', Object.assign(await genVars(lang), {
 		name: x.name,
 		desc: x.desc,
-		props: sortParams(x.props.map((p: any) => parseParam(p))),
-		propDefs: extractDefs(x.props)
+		props: sortParams(Object.entries(x.props).map(([k, v]) => parsePropDefinition(k, v))),
+		propDefs: extractPropDefRef(x.props)
 	}));
 });
 

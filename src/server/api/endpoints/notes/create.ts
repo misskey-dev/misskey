@@ -90,7 +90,7 @@ export const meta = {
 
 	res: {
 		type: 'object',
-		object: {
+		props: {
 			createdNote: {
 				type: 'entity(Note)',
 				desc: {
