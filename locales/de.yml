@@ -563,7 +563,7 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favoriten"
   lists: "Listen"
   follow-requests: "フォロー申請"
-  customize: "Anpassen"
+  customize: "ホームのカスタマイズ"
   settings: "Einstellungen"
   signout: "Ausloggen"
   dark: "Verdunkeln"
