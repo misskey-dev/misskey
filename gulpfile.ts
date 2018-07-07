@@ -21,7 +21,7 @@ import * as htmlmin from 'gulp-htmlmin';
 const uglifyes = require('uglify-es');
 
 const locales = require('./locales');
-import { fa } from './src/build/fa';
+import { fa } from './src/misc/fa';
 const client = require('./built/client/meta.json');
 import config from './src/config';
 

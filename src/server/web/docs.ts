@@ -14,7 +14,7 @@ import ObjectContext from 'cafy/built/types/object';
 import config from '../../config';
 import I18n from '../../misc/i18n';
 import { fa } from '../../misc/fa';
-import { licenseHtml } from '../../build/license';
+import { licenseHtml } from '../../misc/license';
 const constants = require('../../const.json');
 
 const docs = `${__dirname}/../../client/docs/`;
