@@ -14,6 +14,8 @@ export type Source = {
 		 * メンテナの連絡先(URLかmailto形式のURL)
 		 */
 		url: string;
+		repository_url?: string;
+		feedback_url?: string;
 	};
 	name?: string;
 	description?: string;

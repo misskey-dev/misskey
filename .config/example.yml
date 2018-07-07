@@ -12,6 +12,12 @@ maintainer:
   # メンテナの連絡先(URLかmailto形式のURL)
   url:
 
+  # レポジトリのURL
+  repository_url:
+
+  # フィードバックのURL(issueなど)
+  feedback_url:
+
 # (Misskeyを動かす)URL
 url:
 

@@ -2,9 +2,9 @@
 <span class="mk-nav">
 	<a :href="aboutUrl">%i18n:@about%</a>
 	<i>・</i>
-	<a href="https://github.com/syuilo/misskey">%i18n:@repository%</a>
+	<a :href="repositoryUrl">%i18n:@repository%</a>
 	<i>・</i>
-	<a href="https://github.com/syuilo/misskey/issues/new" target="_blank">%i18n:@feedback%</a>
+	<a :href="feedbackUrl" target="_blank">%i18n:@feedback%</a>
 	<i>・</i>
 	<a :href="devUrl">%i18n:@develop%</a>
 	<i>・</i>
@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { docsUrl, statsUrl, statusUrl, devUrl, lang } from '../../../config';
+import { docsUrl, statsUrl, statusUrl, devUrl, repositoryUrl, feedbackUrl, lang } from '../../../config';
 
 export default Vue.extend({
 	data() {
@@ -22,7 +22,9 @@ export default Vue.extend({
 			aboutUrl: `${docsUrl}/${lang}/about`,
 			statsUrl,
 			statusUrl,
-			devUrl
+			devUrl,
+			repositoryUrl: repositoryUrl || `https://github.com/syuilo/misskey`,
+			feedbackUrl: feedbackUrl || `https://github.com/syuilo/misskey/issues/new`
 		}
 	}
 });
