@@ -49,7 +49,7 @@ recaptcha:
   site_key:
   secret_key:
 
-# ServiceWrokerの設定
+# ServiceWorkerの設定
 sw:
   # VAPIDの公開鍵
   public_key:
