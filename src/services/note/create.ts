@@ -9,7 +9,7 @@ import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import packAp from '../../remote/activitypub/renderer';
 import { IDriveFile } from '../../models/drive-file';
-import notify from '../..//notify';
+import notify from '../../notify;
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
 import Mute from '../../models/mute';

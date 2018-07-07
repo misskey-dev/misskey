@@ -4,7 +4,7 @@ import Note from '../../../../../models/note';
 import Watching from '../../../../../models/note-watching';
 import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../stream';
-import notify from '../../../../..//notify';
+import notify from '../../../../../notify;
 import { ILocalUser } from '../../../../../models/user';
 
 /**

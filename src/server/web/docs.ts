@@ -12,8 +12,8 @@ import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import ObjectContext from 'cafy/built/types/object';
 import config from '../../config';
-import I18n from '../../build/i18n';
-import { fa } from '../../build/fa';
+import I18n from '../../misc/i18n';
+import { fa } from '../../misc/fa';
 import { licenseHtml } from '../../build/license';
 const constants = require('../../const.json');
 

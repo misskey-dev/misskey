@@ -12,7 +12,7 @@ import * as views from 'koa-views';
 import docs from './docs';
 import User from '../../models/user';
 import parseAcct from '../../misc/acct/parse';
-import { fa } from '../../build/fa';
+import { fa } from '../../misc/fa';
 import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
 import getNoteSummary from '../../misc/get-note-summary';

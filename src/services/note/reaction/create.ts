@@ -2,7 +2,7 @@ import { IUser, isLocalUser, isRemoteUser } from '../../../models/user';
 import Note, { INote } from '../../../models/note';
 import NoteReaction from '../../../models/note-reaction';
 import { publishNoteStream } from '../../../stream';
-import notify from '../../..//notify';
+import notify from '../../../notify;
 import NoteWatching from '../../../models/note-watching';
 import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
