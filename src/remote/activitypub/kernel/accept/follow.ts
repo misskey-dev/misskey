@@ -5,7 +5,7 @@ import accept from '../../../../services/following/requests/accept';
 import { IFollow } from '../../type';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
-	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
+	const id = typeof activity.actor == 'string' ? activity.actor : activity.actor.id;
 
 	if (!id.startsWith(config.url + '/')) {
 		return null;
