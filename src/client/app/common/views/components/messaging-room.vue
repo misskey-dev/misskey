@@ -256,7 +256,7 @@ root(isDark)
 		max-width 600px
 		margin 0 auto
 		overflow-y auto
-		flex 1
+		flex 1 1 0
 
 		> .init
 			width 100%
