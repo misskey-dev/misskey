@@ -381,6 +381,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "Échec du chargement."
   retry: "Réessayer"
+  load-more: "もっと読み込む"
 desktop/views/components/notifications.vue:
   more: "Plus"
   empty: "Pas de notifications"
@@ -604,6 +605,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
   is-media-view: "Vue média"
+  edit: "オプション"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposté par {}"
   private: "cette publication est privée"
