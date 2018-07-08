@@ -381,6 +381,7 @@ desktop/views/components/notes.note.vue:
 desktop/views/components/notes.vue:
   error: "Ładowanie nie powiodło się."
   retry: "Spróbuj ponownie"
+  load-more: "もっと読み込む"
 desktop/views/components/notifications.vue:
   more: "Więcej"
   empty: "Brak powiadomień"
@@ -604,6 +605,7 @@ desktop/views/components/window.vue:
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Tylko wpisy z zawartością multimedialną"
   is-media-view: "Widok multimediów"
+  edit: "オプション"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Udostępniono przez {}"
   private: "ten wpis jest prywatny"
