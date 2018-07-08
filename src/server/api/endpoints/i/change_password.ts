@@ -5,7 +5,7 @@ import User, { ILocalUser } from '../../../../models/user';
 /**
  * Change password
  */
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'currentPasword' parameter
 	const [currentPassword, currentPasswordErr] = $.str.get(params.currentPasword);
 	if (currentPasswordErr) return rej('invalid currentPasword param');

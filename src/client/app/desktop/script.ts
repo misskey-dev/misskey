@@ -36,6 +36,7 @@ import MkSearch from './views/pages/search.vue';
 import MkTag from './views/pages/tag.vue';
 import MkReversi from './views/pages/reversi.vue';
 import MkShare from './views/pages/share.vue';
+import MkFollow from '../common/views/pages/follow.vue';
 
 /**
  * init
@@ -67,7 +68,8 @@ init(async (launch) => {
 			{ path: '/reversi', component: MkReversi },
 			{ path: '/reversi/:game', component: MkReversi },
 			{ path: '/@:user', component: MkUser },
-			{ path: '/notes/:note', component: MkNote }
+			{ path: '/notes/:note', component: MkNote },
+			{ path: '/authorize-follow', component: MkFollow }
 		]
 	});
 

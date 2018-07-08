@@ -25,16 +25,13 @@
 						<span v-if="p.isHidden" style="opacity: 0.5">(%i18n:@private%)</span>
 						<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<misskey-flavored-markdown v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i" :class="$style.text"/>
+						<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote != null">RP:</a>
 					</div>
 					<div class="media" v-if="p.media.length > 0">
 						<mk-media-list :media-list="p.media"/>
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
-					<div class="tags" v-if="p.tags && p.tags.length > 0">
-						<router-link v-for="tag in p.tags" :key="tag" :to="`/tags/${tag}`">{{ tag }}</router-link>
-					</div>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% %i18n:@location%</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
@@ -69,7 +66,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import parse from '../../../../../mfm/parse';
-import canHideText from '../../../common/scripts/can-hide-text';
 
 import MkNoteMenu from '../../../common/views/components/note-menu.vue';
 import MkReactionPicker from '../../../common/views/components/reaction-picker.vue';
@@ -165,8 +161,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		canHideText,
-
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
@@ -216,7 +210,8 @@ export default Vue.extend({
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p,
-				compact: true
+				compact: true,
+				big: true
 			});
 		},
 
@@ -418,31 +413,6 @@ root(isDark)
 
 					.mk-url-preview
 						margin-top 8px
-
-					> .tags
-						margin 4px 0 0 0
-
-						> *
-							display inline-block
-							margin 0 8px 0 0
-							padding 2px 8px 2px 16px
-							font-size 90%
-							color #8d969e
-							background isDark ? #313543 : #edf0f3
-							border-radius 4px
-
-							&:before
-								content ""
-								display block
-								position absolute
-								top 0
-								bottom 0
-								left 4px
-								width 8px
-								height 8px
-								margin auto 0
-								background isDark ? #282c37 : #fff
-								border-radius 100%
 
 					> .media
 						> img

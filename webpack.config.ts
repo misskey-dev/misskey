@@ -12,14 +12,14 @@ const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
-import I18nReplacer from './src/build/i18n';
+import I18nReplacer from './src/misc/i18n';
 import { pattern as i18nPattern, replacement as i18nReplacement } from './webpack/i18n';
-import { pattern as faPattern, replacement as faReplacement } from './src/build/fa';
+import { pattern as faPattern, replacement as faReplacement } from './src/misc/fa';
 const constants = require('./src/const.json');
 import config from './src/config';
-import { licenseHtml } from './src/build/license';
+import { licenseHtml } from './src/misc/license';
 
-import locales from './locales';
+const locales = require('./locales');
 const meta = require('./package.json');
 const version = meta.clientVersion;
 const codename = meta.codename;
@@ -84,6 +84,8 @@ const consts = {
 	_API_URL_: config.api_url,
 	_WS_URL_: config.ws_url,
 	_DEV_URL_: config.dev_url,
+	_REPOSITORY_URL_: config.maintainer.repository_url,
+	_FEEDBACK_URL_: config.maintainer.feedback_url,
 	_LANG_: '%lang%',
 	_LANGS_: Object.keys(locales).map(l => [l, locales[l].meta.lang]),
 	_NAME_: config.name,

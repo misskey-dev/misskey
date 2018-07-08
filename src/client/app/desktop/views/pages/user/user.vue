@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<div class="zwwan0di1v4356rmdbjmwnn32tptpdp2" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
+	<div class="xygkxeaeontfaokvqmiblezmhvhostak" v-if="!fetching" :data-darkmode="$store.state.device.darkmode">
 		<div class="is-suspended" v-if="user.isSuspended">%fa:exclamation-triangle% %i18n:@is-suspended%</div>
 		<div class="is-remote" v-if="user.host != null">%fa:exclamation-triangle% %i18n:@is-remote%<a :href="user.url || user.uri" target="_blank">%i18n:@view-remote%</a></div>
 		<main>
@@ -11,6 +11,7 @@
 			</div>
 			<div class="side">
 				<x-profile :user="user"/>
+				<x-twitter :user="user" v-if="user.host === null && user.twitter"/>
 				<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>
 				<mk-activity :user="user"/>
 				<x-photos :user="user"/>
@@ -26,8 +27,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import parseAcct from '../../../../../../acct/parse';
-import getUserName from '../../../../../../renderers/get-user-name';
+import parseAcct from '../../../../../../misc/acct/parse';
+import getUserName from '../../../../../../misc/get-user-name';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
 import XTimeline from './user.timeline.vue';
@@ -35,6 +36,7 @@ import XProfile from './user.profile.vue';
 import XPhotos from './user.photos.vue';
 import XFollowersYouKnow from './user.followers-you-know.vue';
 import XFriends from './user.friends.vue';
+import XTwitter from './user.twitter.vue';
 
 export default Vue.extend({
 	components: {
@@ -43,7 +45,8 @@ export default Vue.extend({
 		XProfile,
 		XPhotos,
 		XFollowersYouKnow,
-		XFriends
+		XFriends,
+		XTwitter
 	},
 	data() {
 		return {
@@ -92,7 +95,7 @@ root(isDark)
 		&.is-suspended
 			color isDark ? #ffb4b4 : #570808
 			background isDark ? #611d1d : #ffdbdb
-			border solid 1px isDarl ? #d64a4a : #e09696
+			border solid 1px isDark ? #d64a4a : #e09696
 
 		&.is-remote
 			color isDark ? #ffbd3e : #573c08
@@ -113,6 +116,7 @@ root(isDark)
 
 		> .main
 			flex 1
+			min-width 0 // SEE: http://kudakurage.hatenadiary.com/entry/2016/04/01/232722
 			margin-right 16px
 
 			> .timeline
@@ -121,6 +125,7 @@ root(isDark)
 
 		> .side
 			width 275px
+			flex-shrink 0
 
 			> p
 				display block
@@ -144,10 +149,10 @@ root(isDark)
 				i
 					color #ccc
 
-.zwwan0di1v4356rmdbjmwnn32tptpdp2[data-darkmode]
+.xygkxeaeontfaokvqmiblezmhvhostak[data-darkmode]
 	root(true)
 
-.zwwan0di1v4356rmdbjmwnn32tptpdp2:not([data-darkmode])
+.xygkxeaeontfaokvqmiblezmhvhostak:not([data-darkmode])
 	root(false)
 
 </style>

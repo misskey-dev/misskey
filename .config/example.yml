@@ -12,13 +12,19 @@ maintainer:
   # メンテナの連絡先(URLかmailto形式のURL)
   url:
 
+  # レポジトリのURL
+  repository_url:
+
+  # フィードバックのURL(issueなど)
+  feedback_url:
+
 # (Misskeyを動かす)URL
 url:
 
 # 待受ポート
 port:
 
-# TLSの設定(利用しない場合は省略してください)
+# TLSの設定(利用しない場合はフィールドごと削除してください)
 https:
   # 証明書のパス...
   key:
@@ -43,7 +49,7 @@ recaptcha:
   site_key:
   secret_key:
 
-# ServiceWrokerの設定
+# ServiceWorkerの設定
 sw:
   # VAPIDの公開鍵
   public_key:

@@ -1,11 +1,11 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { ILocalUser } from '../../../../models/user';
 import Mute from '../../../../models/mute';
 
 /**
  * Unmute a user
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	const muter = user;
 
 	// Get 'userId' parameter

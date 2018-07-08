@@ -64,7 +64,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as age from 's-age';
-import parseAcct from '../../../../../acct/parse';
+import parseAcct from '../../../../../misc/acct/parse';
 import Progress from '../../../common/scripts/loading';
 import XHome from './user/home.vue';
 

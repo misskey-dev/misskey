@@ -77,7 +77,6 @@ export interface ILocalUser extends IUserBase {
 	host: null;
 	keypair: string;
 	email: string;
-	links: string[];
 	password: string;
 	token: string;
 	twitter: {

@@ -13,6 +13,7 @@
 				<ui-switch v-model="darkmode">%i18n:@dark-mode%</ui-switch>
 				<ui-switch v-model="$store.state.settings.circleIcons" @change="onChangeCircleIcons">%i18n:@circle-icons%</ui-switch>
 				<ui-switch v-model="$store.state.settings.iLikeSushi" @change="onChangeILikeSushi">%i18n:common.i-like-sushi%</ui-switch>
+				<ui-switch v-model="$store.state.settings.reversiBoardLabels" @change="onChangeReversiBoardLabels">%i18n:common.show-reversi-board-labels%</ui-switch>
 
 				<div>
 					<div>%i18n:@timeline%</div>
@@ -178,6 +179,13 @@ export default Vue.extend({
 		onChangeILikeSushi(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'iLikeSushi',
+				value: v
+			});
+		},
+
+		onChangeReversiBoardLabels(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'reversiBoardLabels',
 				value: v
 			});
 		},

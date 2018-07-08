@@ -34,7 +34,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { url } from '../../../config';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
+import getNoteSummary from '../../../../../misc/get-note-summary';
 
 import XNote from './notes.note.vue';
 

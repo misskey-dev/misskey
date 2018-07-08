@@ -40,9 +40,6 @@
 				<span v-if="p.deletedAt" style="opacity: 0.5">(%i18n:@deleted%)</span>
 				<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i"/>
 			</div>
-			<div class="tags" v-if="p.tags && p.tags.length > 0">
-				<router-link v-for="tag in p.tags" :key="tag" :to="`/tags/${tag}`">{{ tag }}</router-link>
-			</div>
 			<div class="media" v-if="p.media.length > 0">
 				<mk-media-list :media-list="p.media" :raw="true"/>
 			</div>
@@ -197,7 +194,8 @@ export default Vue.extend({
 			(this as any).os.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.p,
-				compact: true
+				compact: true,
+				big: true
 			});
 		},
 		menu() {
@@ -368,31 +366,6 @@ root(isDark)
 				> img
 					display block
 					max-width 100%
-
-			> .tags
-				margin 4px 0 0 0
-
-				> *
-					display inline-block
-					margin 0 8px 0 0
-					padding 2px 8px 2px 16px
-					font-size 90%
-					color #8d969e
-					background #edf0f3
-					border-radius 4px
-
-					&:before
-						content ""
-						display block
-						position absolute
-						top 0
-						bottom 0
-						left 4px
-						width 8px
-						height 8px
-						margin auto 0
-						background #fff
-						border-radius 100%
 
 		> .time
 			font-size 16px

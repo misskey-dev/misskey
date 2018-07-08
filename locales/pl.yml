@@ -42,6 +42,7 @@ common:
     d: "Czy masz coś do powiedzenia?"
     e: "Napisz coś tutaj!"
     f: "Czekamy, aż coś napiszesz."
+  search: "Szukaj"
   delete: "Usuń"
   loading: "Ładowanie"
   ok: "OK"
@@ -49,6 +50,13 @@ common:
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   i-like-sushi: "Wolę sushi od puddingu"
+  show-reversi-board-labels: "Pokazuj podpisy wierszy i kolumn w Reversi"
+  reversi:
+    drawn: "Remis"
+    my-turn: "Twoja kolej"
+    opponent-turn: "Kolej na przeciwnika"
+    turn-of: "Kolej na {}"
+    past-turn-of: "Kolej {}"
   widgets:
     analog-clock: "Zegar analogowy"
     profile: "Profil"
@@ -238,6 +246,12 @@ common/views/widgets/memo.vue:
   title: "Notatka"
   memo: "Napisz tutaj!"
   save: "Zapisz"
+common/views/pages/follow.vue:
+  signed-in-as: "Zalogowany jako {}"
+  following: "Śledzisz"
+  follow: "Śledź"
+  request-pending: "Oczekiwanie na pozwolenie"
+  follow-request: "Poproś o śledzenie"
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -386,7 +400,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Załącz zawartość multimedialną z komputera"
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
   attach-cancel: "Usuń załącznik"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
 desktop/views/components/post-form-window.vue:
@@ -538,6 +552,8 @@ desktop/views/components/timeline.vue:
   local: "Lokalne"
   global: "Globalne"
   list: "Listy"
+desktop/views/components/ui.header.vue:
+  welcome-back: "Witaj ponownie,"
 desktop/views/components/ui.header.account.vue:
   profile: "Twój profil"
   drive: "Dysk"
@@ -639,6 +655,11 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Wycisz"
   muted: "Wyciszyłeś"
   unmute: "Cofnij wyciszenie"
+desktop/views/pages/user/user.header.vue:
+  posts: "Wpisy"
+  following: "Śledzeni"
+  followers: "Śledzący"
+  is-bot: "To konto jest botem"
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"

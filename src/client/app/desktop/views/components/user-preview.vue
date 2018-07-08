@@ -27,7 +27,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as anime from 'animejs';
-import parseAcct from '../../../../../acct/parse';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	props: {

@@ -1,11 +1,11 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Show a folder
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'folderId' parameter
 	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');

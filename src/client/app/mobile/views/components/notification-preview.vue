@@ -66,7 +66,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../renderers/get-note-summary';
+import getNoteSummary from '../../../../../misc/get-note-summary';
 
 export default Vue.extend({
 	props: ['notification'],

@@ -19,7 +19,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
-import parseAcct from '../../../../../acct/parse';
+import parseAcct from '../../../../../misc/acct/parse';
 
 export default Vue.extend({
 	data() {

@@ -93,6 +93,40 @@ describe('Text', () => {
 			assert.equal(tokens[0].type, 'inline-code');
 			assert.equal(tokens[0].content, '`var x = "Strawberry Pasta";`');
 		});
+
+		it('search', () => {
+			const tokens1 = analyze('a b c 検索');
+			assert.deepEqual([
+				{ type: 'search', content: 'a b c 検索', query: 'a b c'}
+			], tokens1);
+
+			const tokens2 = analyze('a b c Search');
+			assert.deepEqual([
+				{ type: 'search', content: 'a b c Search', query: 'a b c'}
+			], tokens2);
+
+			const tokens3 = analyze('a b c search');
+			assert.deepEqual([
+				{ type: 'search', content: 'a b c search', query: 'a b c'}
+			], tokens3);
+
+			const tokens4 = analyze('a b c SEARCH');
+			assert.deepEqual([
+				{ type: 'search', content: 'a b c SEARCH', query: 'a b c'}
+			], tokens4);
+		});
+
+		it('title', () => {
+			const tokens1 = analyze('【yee】\nhaw');
+			assert.deepEqual(
+				{ type: 'title', content: '【yee】\n', title: 'yee'}
+			, tokens1[0]);
+
+			const tokens2 = analyze('[yee]\nhaw');
+			assert.deepEqual(
+				{ type: 'title', content: '[yee]\n', title: 'yee'}
+			, tokens2[0]);
+		});
 	});
 
 	describe('syntax highlighting', () => {

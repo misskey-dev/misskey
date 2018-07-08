@@ -10,5 +10,4 @@ npm-debug.log
 *.pem
 run.bat
 api-docs.json
-package-lock.json
 *.log

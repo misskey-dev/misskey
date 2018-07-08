@@ -5,19 +5,33 @@
 		<div class="fade"></div>
 		<div class="title">
 			<p class="name">{{ user | userName }}</p>
-			<p class="username"><mk-acct :user="user"/></p>
-			<p class="location" v-if="user.host === null && user.profile.location">%fa:map-marker%{{ user.profile.location }}</p>
+			<div>
+				<span class="username"><mk-acct :user="user"/></span>
+				<span v-if="user.isBot" title="%i18n:@is-bot%">%fa:robot%</span>
+				<span class="location" v-if="user.host === null && user.profile.location">%fa:map-marker% {{ user.profile.location }}</span>
+				<span class="birthday" v-if="user.host === null && user.profile.birthday">%fa:birthday-cake% {{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ age }}歳)</span>
+			</div>
 		</div>
 	</div>
 	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 	<div class="body">
-		<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+		<div class="description">
+			<misskey-flavored-markdown v-if="user.description" :text="user.description" :i="$store.state.i"/>
+		</div>
+		<div class="status">
+			<span class="notes-count"><b>{{ user.notesCount | number }}</b>%i18n:@posts%</span>
+			<span class="following clickable" @click="showFollowing"><b>{{ user.followingCount | number }}</b>%i18n:@following%</span>
+			<span class="followers clickable" @click="showFollowers"><b>{{ user.followersCount | number }}</b>%i18n:@followers%</span>
+		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import MkFollowingWindow from '../../components/following-window.vue';
+import MkFollowersWindow from '../../components/followers-window.vue';
+import * as age from 's-age';
 
 export default Vue.extend({
 	props: ['user'],
@@ -28,6 +42,10 @@ export default Vue.extend({
 				backgroundColor: this.user.bannerColor && this.user.bannerColor.length == 3 ? `rgb(${ this.user.bannerColor.join(',') })` : null,
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
+		},
+
+		age(): number {
+			return age(this.user.profile.birthday);
 		}
 	},
 	mounted() {
@@ -64,7 +82,19 @@ export default Vue.extend({
 			(this as any).apis.updateBanner().then(i => {
 				this.user.bannerUrl = i.bannerUrl;
 			});
-		}
+		},
+
+		showFollowing() {
+			(this as any).os.new(MkFollowingWindow, {
+				user: this.user
+			});
+		},
+
+		showFollowers() {
+			(this as any).os.new(MkFollowersWindow, {
+				user: this.user
+			});
+		},
 	}
 });
 </script>
@@ -118,7 +148,6 @@ root(isDark)
 			width 100%
 			padding 0 0 8px 154px
 			color #5e6367
-			font-family '游ゴシック', 'YuGothic', 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'Meiryo', 'メイリオ', sans-serif
 
 			> .name
 				display block
@@ -127,15 +156,15 @@ root(isDark)
 				font-weight bold
 				font-size 1.8em
 
-			> .username
-			> .location
-				display inline-block
-				margin 0 16px 0 0
-				line-height 20px
-				opacity 0.8
+			> div
+				> *
+					display inline-block
+					margin-right 16px
+					line-height 20px
+					opacity 0.8
 
-				> i
-					margin-right 4px
+					&.username
+						font-weight bold
 
 	> .avatar
 		display block
@@ -150,6 +179,32 @@ root(isDark)
 	> .body
 		padding 16px 16px 16px 154px
 		color isDark ? #c5ced6 : #555
+
+		> .status
+			margin-top 16px
+			padding-top 16px
+			border-top solid 1px rgba(#000, isDark ? 0.2 : 0.1)
+			font-size 80%
+
+			> *
+				display inline-block
+				padding-right 16px
+				margin-right 16px
+
+				&:not(:last-child)
+					border-right solid 1px rgba(#000, isDark ? 0.2 : 0.1)
+
+				&.clickable
+					cursor pointer
+
+					&:hover
+						color isDark ? #fff : #000
+
+				> b
+					margin-right 4px
+					font-size 1rem
+					font-weight bold
+					color $theme-color
 
 .header[data-darkmode]
 	root(true)

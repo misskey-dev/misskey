@@ -32,7 +32,7 @@ import { ILocalUser } from '../../../../models/user';
 /**
  * Accept
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'token' parameter
 	const [token, tokenErr] = $.str.get(params.token);
 	if (tokenErr) return rej('invalid token param');

@@ -54,6 +54,7 @@
 			<mk-switch v-model="$store.state.settings.showMaps" @change="onChangeShowMaps" text="%i18n:@show-maps%">
 				<span>%i18n:@show-maps-desc%</span>
 			</mk-switch>
+			<mk-switch v-model="$store.state.settings.reversiBoardLabels" @change="onChangeReversiBoardLabels" text="%i18n:common.show-reversi-board-labels%"/>
 		</section>
 
 		<section class="web" v-show="page == 'web'">
@@ -369,6 +370,12 @@ export default Vue.extend({
 				value: v
 			});
 		},
+		onChangeReversiBoardLabels(v) {
+			this.$store.dispatch('settings/set', {
+				key: 'reversiBoardLabels',
+				value: v
+			});
+		},
 		onChangeGradientWindowHeader(v) {
 			this.$store.dispatch('settings/set', {
 				key: 'gradientWindowHeader',
@@ -403,7 +410,7 @@ export default Vue.extend({
 			localStorage.clear();
 			(this as any).apis.dialog({
 				title: '%i18n:@cache-cleared%',
-				text: '%i18n:@caache-cleared-desc%'
+				text: '%i18n:@cache-cleared-desc%'
 			});
 		},
 		soundTest() {

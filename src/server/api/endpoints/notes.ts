@@ -1,47 +1,47 @@
 /**
  * Module dependencies
  */
-import $ from 'cafy'; import ID from '../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../misc/cafy-id';
 import Note, { pack } from '../../../models/note';
 
 /**
  * Get all notes
  */
-module.exports = (params: any) => new Promise(async (res, rej) => {
+export default (params: any) => new Promise(async (res, rej) => {
 	// Get 'local' parameter
-	const [local, localErr] = $.bool.optional().get(params.local);
+	const [local, localErr] = $.bool.optional.get(params.local);
 	if (localErr) return rej('invalid local param');
 
 	// Get 'reply' parameter
-	const [reply, replyErr] = $.bool.optional().get(params.reply);
+	const [reply, replyErr] = $.bool.optional.get(params.reply);
 	if (replyErr) return rej('invalid reply param');
 
 	// Get 'renote' parameter
-	const [renote, renoteErr] = $.bool.optional().get(params.renote);
+	const [renote, renoteErr] = $.bool.optional.get(params.renote);
 	if (renoteErr) return rej('invalid renote param');
 
 	// Get 'media' parameter
-	const [media, mediaErr] = $.bool.optional().get(params.media);
+	const [media, mediaErr] = $.bool.optional.get(params.media);
 	if (mediaErr) return rej('invalid media param');
 
 	// Get 'poll' parameter
-	const [poll, pollErr] = $.bool.optional().get(params.poll);
+	const [poll, pollErr] = $.bool.optional.get(params.poll);
 	if (pollErr) return rej('invalid poll param');
 
 	// Get 'bot' parameter
-	//const [bot, botErr] = $.bool.optional().get(params.bot);
+	//const [bot, botErr] = $.bool.optional.get(params.bot);
 	//if (botErr) return rej('invalid bot param');
 
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
+	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
+	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Check if both of sinceId and untilId is specified

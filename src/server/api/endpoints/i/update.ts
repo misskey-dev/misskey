@@ -1,6 +1,6 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack, ILocalUser } from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import event from '../../../../stream';
 import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { IApp } from '../../../../models/app';
@@ -8,63 +8,63 @@ import { IApp } from '../../../../models/app';
 /**
  * Update myself
  */
-module.exports = async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser, app: IApp) => new Promise(async (res, rej) => {
 	const isSecure = user != null && app == null;
 
 	const updates = {} as any;
 
 	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional().nullable().pipe(isValidName).get(params.name);
+	const [name, nameErr] = $.str.optional.nullable.pipe(isValidName).get(params.name);
 	if (nameErr) return rej('invalid name param');
 	if (name) updates.name = name;
 
 	// Get 'description' parameter
-	const [description, descriptionErr] = $.str.optional().nullable().pipe(isValidDescription).get(params.description);
+	const [description, descriptionErr] = $.str.optional.nullable.pipe(isValidDescription).get(params.description);
 	if (descriptionErr) return rej('invalid description param');
 	if (description !== undefined) updates.description = description;
 
 	// Get 'location' parameter
-	const [location, locationErr] = $.str.optional().nullable().pipe(isValidLocation).get(params.location);
+	const [location, locationErr] = $.str.optional.nullable.pipe(isValidLocation).get(params.location);
 	if (locationErr) return rej('invalid location param');
 	if (location !== undefined) updates['profile.location'] = location;
 
 	// Get 'birthday' parameter
-	const [birthday, birthdayErr] = $.str.optional().nullable().pipe(isValidBirthday).get(params.birthday);
+	const [birthday, birthdayErr] = $.str.optional.nullable.pipe(isValidBirthday).get(params.birthday);
 	if (birthdayErr) return rej('invalid birthday param');
 	if (birthday !== undefined) updates['profile.birthday'] = birthday;
 
 	// Get 'avatarId' parameter
-	const [avatarId, avatarIdErr] = $.type(ID).optional().nullable().get(params.avatarId);
+	const [avatarId, avatarIdErr] = $.type(ID).optional.nullable.get(params.avatarId);
 	if (avatarIdErr) return rej('invalid avatarId param');
 	if (avatarId !== undefined) updates.avatarId = avatarId;
 
 	// Get 'bannerId' parameter
-	const [bannerId, bannerIdErr] = $.type(ID).optional().nullable().get(params.bannerId);
+	const [bannerId, bannerIdErr] = $.type(ID).optional.nullable.get(params.bannerId);
 	if (bannerIdErr) return rej('invalid bannerId param');
 	if (bannerId !== undefined) updates.bannerId = bannerId;
 
 	// Get 'wallpaperId' parameter
-	const [wallpaperId, wallpaperIdErr] = $.type(ID).optional().nullable().get(params.wallpaperId);
+	const [wallpaperId, wallpaperIdErr] = $.type(ID).optional.nullable.get(params.wallpaperId);
 	if (wallpaperIdErr) return rej('invalid wallpaperId param');
 	if (wallpaperId !== undefined) updates.wallpaperId = wallpaperId;
 
 	// Get 'isLocked' parameter
-	const [isLocked, isLockedErr] = $.bool.optional().get(params.isLocked);
+	const [isLocked, isLockedErr] = $.bool.optional.get(params.isLocked);
 	if (isLockedErr) return rej('invalid isLocked param');
 	if (isLocked != null) updates.isLocked = isLocked;
 
 	// Get 'isBot' parameter
-	const [isBot, isBotErr] = $.bool.optional().get(params.isBot);
+	const [isBot, isBotErr] = $.bool.optional.get(params.isBot);
 	if (isBotErr) return rej('invalid isBot param');
 	if (isBot != null) updates.isBot = isBot;
 
 	// Get 'isCat' parameter
-	const [isCat, isCatErr] = $.bool.optional().get(params.isCat);
+	const [isCat, isCatErr] = $.bool.optional.get(params.isCat);
 	if (isCatErr) return rej('invalid isCat param');
 	if (isCat != null) updates.isCat = isCat;
 
 	// Get 'autoWatch' parameter
-	const [autoWatch, autoWatchErr] = $.bool.optional().get(params.autoWatch);
+	const [autoWatch, autoWatchErr] = $.bool.optional.get(params.autoWatch);
 	if (autoWatchErr) return rej('invalid autoWatch param');
 	if (autoWatch != null) updates['settings.autoWatch'] = autoWatch;
 

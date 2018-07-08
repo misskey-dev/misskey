@@ -1,11 +1,11 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
 import User, { pack, ILocalUser } from '../../../../../models/user';
 
 /**
  * Cancel a follow request
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'userId' parameter
 	const [followeeId, followeeIdErr] = $.type(ID).get(params.userId);
 	if (followeeIdErr) return rej('invalid userId param');

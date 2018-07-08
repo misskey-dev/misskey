@@ -1,6 +1,7 @@
+import es from '../../db/elasticsearch';
 import Note, { pack, INote } from '../../models/note';
 import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
-import stream, { publishLocalTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../publishers/stream';
+import stream, { publishLocalTimelineStream, publishGlobalTimelineStream, publishUserListStream } from '../../stream';
 import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -8,16 +9,17 @@ import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import packAp from '../../remote/activitypub/renderer';
 import { IDriveFile } from '../../models/drive-file';
-import notify from '../../publishers/notify';
+import notify from '../../notify';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
 import Mute from '../../models/mute';
-import event from '../../publishers/stream';
+import event from '../../stream';
 import parse from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
 import Meta from '../../models/meta';
+import config from '../../config';
 
 type Type = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -26,51 +28,30 @@ type Type = 'reply' | 'renote' | 'quote' | 'mention';
  */
 class NotificationManager {
 	private notifier: IUser;
-	private note: any;
-	private queue: Array<{
-		notifiee: ILocalUser['_id'],
-		type: Type;
-	}> = [];
+	private note: INote;
 
-	constructor(notifier: IUser, note: any) {
+	constructor(notifier: IUser, note: INote) {
 		this.notifier = notifier;
 		this.note = note;
 	}
 
-	public push(notifiee: ILocalUser['_id'], type: Type) {
+	public async push(notifiee: ILocalUser['_id'], type: Type) {
 		// 自分自身へは通知しない
 		if (this.notifier._id.equals(notifiee)) return;
 
-		const exist = this.queue.find(x => x.notifiee.equals(notifiee));
+		// ミュート情報を取得
+		const mentioneeMutes = await Mute.find({
+			muterId: notifiee
+		});
 
-		if (exist) {
-			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
-			if (type != 'mention') {
-				exist.type = type;
-			}
-		} else {
-			this.queue.push({
-				notifiee, type
+		const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
+
+		// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
+		if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
+			notify(notifiee, this.notifier._id, type, {
+				noteId: this.note._id
 			});
 		}
-	}
-
-	public deliver() {
-		this.queue.forEach(async x => {
-			// ミュート情報を取得
-			const mentioneeMutes = await Mute.find({
-				muterId: x.notifiee
-			});
-
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
-
-			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
-				notify(x.notifiee, this.notifier._id, x.type, {
-					noteId: this.note._id
-				});
-			}
-		});
 	}
 }
 
@@ -213,7 +194,7 @@ export default async (user: IUser, data: {
 	// Serialize
 	const noteObj = await pack(note);
 
-	const nm = new NotificationManager(user, noteObj);
+	const nm = new NotificationManager(user, note);
 
 	const render = async () => {
 		const content = data.renote && data.text == null
@@ -387,7 +368,7 @@ export default async (user: IUser, data: {
 			watch(user._id, data.reply);
 		}
 
-		// (自分自身へのリプライでない限りは)通知を作成
+		// 通知
 		nm.push(data.reply.userId, 'reply');
 	}
 
@@ -447,5 +428,17 @@ export default async (user: IUser, data: {
 				}
 			});
 		}
+	}
+
+	// Register to search database
+	if (note.text && config.elasticsearch) {
+		es.index({
+			index: 'misskey',
+			type: 'note',
+			id: note._id.toString(),
+			body: {
+				text: note.text
+			}
+		});
 	}
 });

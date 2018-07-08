@@ -33,7 +33,7 @@ export default Vue.extend({
 			Progress.start();
 			this.fetching = true;
 
-			(this as any).api('reversi/games/show', {
+			(this as any).api('games/reversi/games/show', {
 				gameId: this.$route.params.game
 			}).then(game => {
 				this.game = game;

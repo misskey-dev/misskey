@@ -1,12 +1,12 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
-import { publishDriveStream } from '../../../../../publishers/stream';
+import { publishDriveStream } from '../../../../../stream';
 import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Update a folder
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'folderId' parameter
 	const [folderId, folderIdErr] = $.type(ID).get(params.folderId);
 	if (folderIdErr) return rej('invalid folderId param');
@@ -23,12 +23,12 @@ module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej)
 	}
 
 	// Get 'name' parameter
-	const [name, nameErr] = $.str.optional().pipe(isValidFolderName).get(params.name);
+	const [name, nameErr] = $.str.optional.pipe(isValidFolderName).get(params.name);
 	if (nameErr) return rej('invalid name param');
 	if (name) folder.name = name;
 
 	// Get 'parentId' parameter
-	const [parentId, parentIdErr] = $.type(ID).optional().nullable().get(params.parentId);
+	const [parentId, parentIdErr] = $.type(ID).optional.nullable.get(params.parentId);
 	if (parentIdErr) return rej('invalid parentId param');
 	if (parentId !== undefined) {
 		if (parentId === null) {

@@ -4,7 +4,7 @@ import * as uuid from 'uuid';
 import autwh from 'autwh';
 import redis from '../../../db/redis';
 import User, { pack, ILocalUser } from '../../../models/user';
-import event from '../../../publishers/stream';
+import event from '../../../stream';
 import config from '../../../config';
 import signin from '../common/signin';
 

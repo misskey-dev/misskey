@@ -66,7 +66,7 @@
 			</div>
 			<div class="main">
 				<mk-post-form class="form" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
-				<mk-timeline class="tl" cref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
+				<mk-timeline class="tl" ref="tl" @loaded="onTlLoaded" v-if="mode == 'timeline'"/>
 			</div>
 		</template>
 	</div>

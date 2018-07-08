@@ -1,7 +1,7 @@
 <template>
 <div class="mk-google">
 	<input type="search" v-model="query" :placeholder="q">
-	<button @click="search">検索</button>
+	<button @click="search">%fa:search% %i18n:common.search%</button>
 </div>
 </template>
 

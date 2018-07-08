@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import summary from '../../../../../renderers/get-note-summary';
+import summary from '../../../../../misc/get-note-summary';
 
 export default Vue.extend({
 	props: ['note'],

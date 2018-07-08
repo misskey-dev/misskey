@@ -1,7 +1,7 @@
 <template>
 <div class="mk-reaction-picker">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
-	<div class="popover" :class="{ compact }" ref="popover">
+	<div class="popover" :class="{ compact, big }" ref="popover">
 		<p v-if="!compact">{{ title }}</p>
 		<div>
 			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" title="%i18n:common.reactions.like%"><mk-reaction-icon reaction='like'/></button>
@@ -25,7 +25,28 @@ import * as anime from 'animejs';
 const placeholder = '%i18n:@choose-reaction%';
 
 export default Vue.extend({
-	props: ['note', 'source', 'compact', 'cb'],
+	props: {
+		note: {
+			type: Object,
+			required: true
+		},
+		source: {
+			required: true
+		},
+		compact: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		cb: {
+			required: false
+		},
+		big: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 	data() {
 		return {
 			title: placeholder
@@ -161,6 +182,16 @@ root(isDark)
 				border-left solid $balloon-size transparent
 				border-right solid $balloon-size transparent
 				border-bottom solid $balloon-size $bgcolor
+
+		&.big
+			> div
+				width 280px
+
+				> button
+					width 50px
+					height 50px
+					font-size 28px
+					border-radius 4px
 
 		> p
 			display block

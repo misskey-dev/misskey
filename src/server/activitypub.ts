@@ -11,7 +11,6 @@ import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
 import renderOrderedCollection from '../remote/activitypub/renderer/ordered-collection';
-//import parseAcct from '../acct/parse';
 import config from '../config';
 
 // Init router
@@ -142,20 +141,6 @@ router.get('/@:user', async (ctx, next) => {
 
 	userInfo(ctx, user);
 });
-
-// follow form
-router.get('/authorize-follow', async ctx => {
-	/* TODO
-	const { username, host } = parseAcct(ctx.query.acct);
-	if (host === null) {
-		res.sendStatus(422);
-		return;
-	}
-
-	const finger = await request(`https://${host}`)
-	*/
-});
-
 //#endregion
 
 export default router;

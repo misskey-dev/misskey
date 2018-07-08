@@ -72,6 +72,7 @@ root(isDark)
 	> .is-admin
 	> .is-bot
 	> .is-cat
+		flex-shrink 0
 		align-self center
 		margin 0 .5em 0 0
 		padding 1px 6px
@@ -89,6 +90,7 @@ root(isDark)
 		overflow hidden
 		text-overflow ellipsis
 		color isDark ? #606984 : #ccc
+		flex-shrink 2147483647
 
 	> .info
 		margin-left auto

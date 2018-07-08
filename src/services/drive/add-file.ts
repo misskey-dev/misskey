@@ -12,7 +12,7 @@ const prominence = require('prominence');
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
 import { pack } from '../../models/drive-file';
-import event, { publishDriveStream } from '../../publishers/stream';
+import event, { publishDriveStream } from '../../stream';
 import { isLocalUser, IUser, IRemoteUser } from '../../models/user';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import genThumbnail from '../../drive/gen-thumbnail';

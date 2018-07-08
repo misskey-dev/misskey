@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import getNoteSummary from '../../../../../../renderers/get-note-summary';
+import getNoteSummary from '../../../../../../misc/get-note-summary';
 import XNote from './deck.note.vue';
 
 export default Vue.extend({

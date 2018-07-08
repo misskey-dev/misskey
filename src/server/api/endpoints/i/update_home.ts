@@ -1,16 +1,15 @@
 import $ from 'cafy';
 import User, { ILocalUser } from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import event from '../../../../stream';
 
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'home' parameter
-	const [home, homeErr] = $.arr(
-		$.obj.strict()
-			.have('name', $.str)
-			.have('id', $.str)
-			.have('place', $.str)
-			.have('data', $.obj))
-		.get(params.home);
+	const [home, homeErr] = $.arr($.obj({
+		name: $.str,
+		id: $.str,
+		place: $.str,
+		data: $.obj()
+	}).strict()).get(params.home);
 	if (homeErr) return rej('invalid home param');
 
 	await User.update(user._id, {

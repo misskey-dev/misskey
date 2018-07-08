@@ -3,7 +3,7 @@ meta:
   lang: "Français"
   divider: ""
 common:
-  misskey: "A ⭐ of fediverse"
+  misskey: "Une ⭐ du fédiverse"
   about-title: "Une ⭐ du fédiverse."
   about: "Merci d'avoir découvert Misskey. Misskey est une <b>plateforme de micro-blogging distribuée</b> née sur Terre. Parce qu'il fait partie du Fédiverse (un univers composé de diverses plateformes de réseaux sociaux organisées), il est mutuellement connecté avec d'autres plateformes de réseaux sociaux. Désirez-vous prendre une pause, pendant un instant, loin de l'agitation de la ville et plonger dans un nouvel Internet ?"
   time:
@@ -42,13 +42,21 @@ common:
     d: "Voulez-vous exprimer quelque chose ?"
     e: "Écrivez ici"
     f: "En attente de vos écrits"
+  search: "Recherche"
   delete: "Supprimer"
   loading: "Chargement"
   ok: "OK"
-  update-available-title: "更新があります"
+  update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
   my-token-regenerated: "Votre token vient d'être généré, vous allez maintenant être déconnecté."
-  i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
+  i-like-sushi: "Je préfère les sushis (au pudding)"
+  show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
+  reversi:
+    drawn: "Partie nulle"
+    my-turn: "C’est votre tour"
+    opponent-turn: "Tour de l’adversaire"
+    turn-of: "C’est le tour de {}"
+    past-turn-of: "C'est au tour de {}"
   widgets:
     analog-clock: "Horloge analogique"
     profile: "Profil"
@@ -145,7 +153,7 @@ common/views/components/note-menu.vue:
   pin: "Épingler sur votre profile"
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
-  remote: "投稿元で見る"
+  remote: "Afficher les note originale"
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
@@ -226,11 +234,11 @@ common/views/widgets/photo-stream.vue:
   no-photos: "Pas de photos"
 common/views/widgets/posts-monitor.vue:
   title: "Graph des publications"
-  toggle: "表示を切り替え"
+  toggle: "Basculer les vues"
 common/views/widgets/hashtags.vue:
   title: "Étiquettes"
-  count: "{}人が投稿"
-  empty: "トレンドなし"
+  count: "{} utilisateurs mentionnés"
+  empty: "Aucune tendance"
 common/views/widgets/server.vue:
   title: "Info sur le serveur"
   toggle: "Afficher les vues"
@@ -238,8 +246,14 @@ common/views/widgets/memo.vue:
   title: "Pense-bête"
   memo: "Écrivez ici !"
   save: "Enregistrer"
+common/views/pages/follow.vue:
+  signed-in-as: "Connecté en tant que {}"
+  following: "Suit"
+  follow: "Suivre"
+  request-pending: "Demande d'abonnement en attente"
+  follow-request: "Demande d'abonnement"
 desktop/views/components/activity.chart.vue:
-  total: "Black ... Total"
+  total: "Noir ... Total"
   notes: "Bleu ... Notes"
   replies: "Rouge ... Réponses"
   renotes: "Vert ... Partages"
@@ -336,7 +350,7 @@ desktop/views/components/friends-maker.vue:
   refresh: "Plus"
   close: "Fermer"
 desktop/views/components/game-window.vue:
-  game: "リバーシ"
+  game: "Reversi"
 desktop/views/components/home.vue:
   done: "Envoyer"
   add-widget: "Ajouter un widget"
@@ -386,7 +400,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Joindre un media depuis votre PC"
   attach-media-from-drive: "Joindre un media depuis votre Drive"
   attach-cancel: "Annuler la jointure de fichier"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Créer un sondage"
   text-remain: "{} charactères restants"
 desktop/views/components/post-form-window.vue:
@@ -414,7 +428,7 @@ desktop/views/components/settings.vue:
   mute: "Mettre en sourdine"
   drive: "Drive"
   security: "Sécurité"
-  signin: "サインイン履歴"
+  signin: "Historique de connexion"
   password: "Mot de Passe"
   2fa: "Vérification en deux étapes"
   other: "Autres"
@@ -431,7 +445,7 @@ desktop/views/components/settings.vue:
   customize: "Personnaliser l'Accueil"
   dark-mode: "Mode nuit"
   circle-icons: "Utiliser des icônes circulaires"
-  gradient-window-header: "ウィンドウのタイトルバーにグラデーションを使用"
+  gradient-window-header: "Utiliser les dégradés sur la barre de titre de la fenêtre"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
   show-reply-target: "リプライ先を表示する"
   show-my-renotes: "Afficher mes republications dans le fil"
@@ -444,13 +458,13 @@ desktop/views/components/settings.vue:
   volume: "Volume"
   test: "Test"
   mobile: "Mobile"
-  disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
+  disable-via-mobile: "Enlever la mention publié via 'un périphérique mobile'"
   language: "Langue"
   pick-language: "Sélectionner une langue"
   recommended: "Recommandé"
   auto: "Automatique"
   specify-language: "Spécifier la langue"
-  language-desc: "変更はページの再度読み込み後に反映されます。"
+  language-desc: "Le rechargement de la page est requis afin d'appliquer les modifications."
   cache: "Cache"
   clean-cache: "Nettoyage"
   cache-warn: "クリーンアップを行うと、ブラウザに記憶されたアカウント情報のキャッシュ、書きかけの投稿・返信・メッセージ、およびその他のデータ(設定情報含む)が削除されます。クリーンアップを行った後はページを再度読み込みする必要があります。"
@@ -471,7 +485,7 @@ desktop/views/components/settings.vue:
   no-updates: "Aucune mise à jour disponible"
   no-updates-desc: "Votre Misskey est à jour."
   update-available: "Nouvelle version disponible !"
-  update-available-desc: "ページを再度読み込みすると更新が適用されます。"
+  update-available-desc: "Les mises à jour seront appliquées une fois la page est rechargée."
   advanced-settings: "Réglages avancés"
   debug-mode: "Activer le mode debug"
   debug-mode-desc: "Ce paramètre est stocké dans le navigateur."
@@ -538,6 +552,8 @@ desktop/views/components/timeline.vue:
   local: "Local"
   global: "Global"
   list: "Listes"
+desktop/views/components/ui.header.vue:
+  welcome-back: "Vous êtes de retour !"
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   drive: "Drive"
@@ -582,7 +598,7 @@ desktop/views/components/window.vue:
   close: "Fermer"
 desktop/views/pages/deck/deck.tl-column.vue:
   is-media-only: "Les publications médias uniquement"
-  is-media-view: "メディアビュー"
+  is-media-view: "Vue média"
 desktop/views/pages/deck/deck.note.vue:
   reposted-by: "Reposté par {}"
   private: "cette publication est privée"
@@ -622,7 +638,7 @@ desktop/views/pages/user/user.friends.vue:
   loading: "Chargement en cours"
   no-users: "Pas d'utilisateurs"
 desktop/views/pages/user/user.vue:
-  is-suspended: "このユーザーは凍結されています。"
+  is-suspended: "Ce compte a été suspendu."
   is-remote: "Cet utilisateur n'est pas un utilisateur de Misskey. Certaines informations peuvent être erronées"
   view-remote: "Voir les informations détaillées"
 desktop/views/pages/user/user.home.vue:
@@ -639,6 +655,11 @@ desktop/views/pages/user/user.profile.vue:
   mute: "Mettre en sourdine"
   muted: "Muting"
   unmute: "Enlever la sourdine"
+desktop/views/pages/user/user.header.vue:
+  posts: "投稿"
+  following: "Suit"
+  followers: "Abonnés"
+  is-bot: "Ce compte est un Bot"
 desktop/views/pages/user/user.timeline.vue:
   default: "Publications"
   with-replies: "Publications et réponses"
@@ -702,7 +723,7 @@ mobile/views/components/follow-button.vue:
   follow-request: "Demande d'abonnement"
 mobile/views/components/friends-maker.vue:
   title: "Abonnez-vous aux utilisateurs"
-  empty: "おすすめのユーザーは見つかりませんでした。"
+  empty: "Impossible de trouver des utilisateurs à recommander."
   fetching: "Chargement"
   refresh: "Voir plus"
   close: "Fermer"
@@ -845,7 +866,7 @@ mobile/views/pages/settings.vue:
   post-style-smart: "Intelligent"
   behavior: "Comportement"
   fetch-on-scroll: "Chargement lors du défilement"
-  disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
+  disable-via-mobile: "Ne pas mentionner que ma publication provient d'un 'périphérique mobile'"
   load-raw-images: "Afficher les photos jointes en haute qualité"
   load-remote-media: "Afficher les médias sur le serveur distant"
   twitter: "Intégration à Twitter"
@@ -860,7 +881,7 @@ mobile/views/pages/settings.vue:
   no-updates: "Aucune mise à jour disponible"
   no-updates-desc: "Votre Misskey est à jour."
   update-available: "Nouvelle version disponible !"
-  update-available-desc: "ページを再度読み込みすると更新が適用されます。"
+  update-available-desc: "Les mises à jour seront appliquées une fois la page est rechargée."
   settings: "Réglages"
   signout: "Déconnexion"
 mobile/views/pages/user.vue:

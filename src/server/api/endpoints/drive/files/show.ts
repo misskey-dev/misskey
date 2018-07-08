@@ -1,11 +1,11 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import { ILocalUser } from '../../../../../models/user';
 
 /**
  * Show a file
  */
-module.exports = async (params: any, user: ILocalUser) => {
+export default async (params: any, user: ILocalUser) => {
 	// Get 'fileId' parameter
 	const [fileId, fileIdErr] = $.type(ID).get(params.fileId);
 	if (fileIdErr) throw 'invalid fileId param';

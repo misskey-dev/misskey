@@ -1,4 +1,4 @@
-import $ from 'cafy'; import ID from '../../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../../misc/cafy-id';
 import Reaction from '../../../../../models/note-reaction';
 import Note from '../../../../../models/note';
 import { ILocalUser } from '../../../../../models/user';
@@ -6,7 +6,7 @@ import { ILocalUser } from '../../../../../models/user';
 /**
  * Unreact to a note
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'noteId' parameter
 	const [noteId, noteIdErr] = $.type(ID).get(params.noteId);
 	if (noteIdErr) return rej('invalid noteId param');

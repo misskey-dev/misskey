@@ -42,6 +42,7 @@ common:
     d: "Willst du etwas sagen?"
     e: "Schreib hier etwas!"
     f: "Warte darauf, das du schreibst."
+  search: "検索"
   delete: "Löschen"
   loading: "Laden"
   ok: "OK"
@@ -49,6 +50,13 @@ common:
   update-available: "Eine neue Version von Misskey ist verfügbar ({newer}, aktuell ist {current}). Lade die Seite neu um die aktuelle Version zu laden"
   my-token-regenerated: "Dein Token wurde generiert. Du wirst jetzt abgemeldet."
   i-like-sushi: "私は(プリンよりむしろ)寿司が好き"
+  show-reversi-board-labels: "リバーシのボードの行と列のラベルを表示"
+  reversi:
+    drawn: "引き分け"
+    my-turn: "あなたのターンです"
+    opponent-turn: "相手のターンです"
+    turn-of: "{}のターンです"
+    past-turn-of: "{}のターン"
   widgets:
     analog-clock: "Analoge Uhr"
     profile: "Profil"
@@ -238,6 +246,12 @@ common/views/widgets/memo.vue:
   title: "Notizen"
   memo: "Schreib hier!"
   save: "Speichern"
+common/views/pages/follow.vue:
+  signed-in-as: "{}としてサインイン中"
+  following: "フォロー中"
+  follow: "フォロー"
+  request-pending: "フォロー許可待ち"
+  follow-request: "フォロー申請"
 desktop/views/components/activity.chart.vue:
   total: "Schwarz ... komplett"
   notes: "Blau ... Hinweise"
@@ -386,7 +400,7 @@ desktop/views/components/post-form.vue:
   attach-media-from-local: "Medien von deinem PC hinzufügen"
   attach-media-from-drive: "Medien von deinem Speicher hinzufügen"
   attach-cancel: "Hinzufügen abbrechen"
-  insert-a-kao: "v(‘ω’)v"
+  insert-a-kao: "v('ω')v"
   create-poll: "Eine Abstimmung erstellen"
   text-remain: "{} Zeichen verbleibend"
 desktop/views/components/post-form-window.vue:
@@ -538,6 +552,8 @@ desktop/views/components/timeline.vue:
   local: "Lokal"
   global: "Global"
   list: "Listen"
+desktop/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
 desktop/views/components/ui.header.account.vue:
   profile: "Dein Profil"
   drive: "Speicher"
@@ -639,6 +655,11 @@ desktop/views/pages/user/user.profile.vue:
   mute: "ミュートする"
   muted: "ミュートしています"
   unmute: "ミュート解除"
+desktop/views/pages/user/user.header.vue:
+  posts: "投稿"
+  following: "フォロー"
+  followers: "フォロワー"
+  is-bot: "このアカウントはBotです"
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"

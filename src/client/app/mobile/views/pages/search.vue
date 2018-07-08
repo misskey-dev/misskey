@@ -1,14 +1,10 @@
 <template>
 <mk-ui>
 	<span slot="header">%fa:search% {{ q }}</span>
-	<main v-if="!fetching">
-		<mk-notes :class="$style.notes" :notes="notes">
-			<span v-if="notes.length == 0">{{ '%i18n:@empty%'.replace('{}', q) }}</span>
-			<button v-if="existMore" @click="more" :disabled="fetching" slot="tail">
-				<span v-if="!fetching">%i18n:@load-more%</span>
-				<span v-if="fetching">%i18n:common.loading%<mk-ellipsis/></span>
-			</button>
-		</mk-notes>
+
+	<main>
+		<p v-if="!fetching && empty">%fa:search%「{{ q }}」に関する投稿は見つかりませんでした。</p>
+		<mk-notes ref="timeline" :more="existMore ? more : null"/>
 	</main>
 </mk-ui>
 </template>
@@ -16,7 +12,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Progress from '../../../common/scripts/loading';
-import parse from '../../../common/scripts/parse-search-query';
 
 const limit = 20;
 
@@ -24,8 +19,9 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
+			moreFetching: false,
 			existMore: false,
-			notes: [],
+			empty: false,
 			offset: 0
 		};
 	},
@@ -47,31 +43,43 @@ export default Vue.extend({
 			this.fetching = true;
 			Progress.start();
 
-			(this as any).api('notes/search', Object.assign({
-				limit: limit + 1
-			}, parse(this.q))).then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-					this.existMore = true;
-				}
-				this.notes = notes;
-				this.fetching = false;
-				Progress.done();
-			});
+			(this.$refs.timeline as any).init(() => new Promise((res, rej) => {
+				(this as any).api('notes/search', {
+					limit: limit + 1,
+					offset: this.offset,
+					query: this.q
+				}).then(notes => {
+					if (notes.length == 0) this.empty = true;
+					if (notes.length == limit + 1) {
+						notes.pop();
+						this.existMore = true;
+					}
+					res(notes);
+					this.fetching = false;
+					Progress.done();
+				}, rej);
+			}));
 		},
 		more() {
 			this.offset += limit;
-			(this as any).api('notes/search', Object.assign({
+
+			const promise = (this as any).api('notes/search', {
 				limit: limit + 1,
-				offset: this.offset
-			}, parse(this.q))).then(notes => {
+				offset: this.offset,
+				query: this.q
+			});
+
+			promise.then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
 				} else {
 					this.existMore = false;
 				}
-				this.notes = this.notes.concat(notes);
+				notes.forEach(n => (this.$refs.timeline as any).append(n));
+				this.moreFetching = false;
 			});
+
+			return promise;
 		}
 	}
 });

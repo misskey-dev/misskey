@@ -1,21 +1,21 @@
-import $ from 'cafy'; import ID from '../../../../cafy-id';
+import $ from 'cafy'; import ID from '../../../../misc/cafy-id';
 import Signin, { pack } from '../../../../models/signin';
 import { ILocalUser } from '../../../../models/user';
 
 /**
  * Get signin history of my account
  */
-module.exports = (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'limit' parameter
-	const [limit = 10, limitErr] = $.num.optional().range(1, 100).get(params.limit);
+	const [limit = 10, limitErr] = $.num.optional.range(1, 100).get(params.limit);
 	if (limitErr) return rej('invalid limit param');
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.type(ID).optional().get(params.sinceId);
+	const [sinceId, sinceIdErr] = $.type(ID).optional.get(params.sinceId);
 	if (sinceIdErr) return rej('invalid sinceId param');
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.type(ID).optional().get(params.untilId);
+	const [untilId, untilIdErr] = $.type(ID).optional.get(params.untilId);
 	if (untilIdErr) return rej('invalid untilId param');
 
 	// Check if both of sinceId and untilId is specified

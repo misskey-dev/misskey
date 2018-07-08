@@ -5,169 +5,173 @@ desc:
   en: "A user."
 
 props:
-  - name: "id"
+  id:
     type: "id"
     optional: false
     desc:
       ja: "ユーザーID"
       en: "The ID of this user"
-  - name: "createdAt"
+
+  createdAt:
     type: "date"
     optional: false
     desc:
       ja: "アカウント作成日時"
       en: "The registered date of this user"
-  - name: "username"
+
+  username:
     type: "string"
     optional: false
     desc:
       ja: "ユーザー名"
       en: "The username of this user"
-  - name: "description"
+
+  description:
     type: "string"
     optional: false
     desc:
       ja: "アカウントの説明(自己紹介)"
       en: "The description of this user"
-  - name: "avatarId"
+
+  avatarId:
     type: "id(DriveFile)"
     optional: true
     desc:
       ja: "アバターのID"
       en: "The ID of the avatar of this user"
-  - name: "avatarUrl"
+
+  avatarUrl:
     type: "string"
     optional: false
     desc:
       ja: "アバターのURL"
       en: "The URL of the avatar of this user"
-  - name: "bannerId"
+
+  bannerId:
     type: "id(DriveFile)"
     optional: true
     desc:
       ja: "バナーのID"
       en: "The ID of the banner of this user"
-  - name: "bannerUrl"
+
+  bannerUrl:
     type: "string"
     optional: false
     desc:
       ja: "バナーのURL"
       en: "The URL of the banner of this user"
-  - name: "followersCount"
+
+  followersCount:
     type: "number"
     optional: false
     desc:
       ja: "フォロワーの数"
       en: "The number of the followers for this user"
-  - name: "followingCount"
+
+  followingCount:
     type: "number"
     optional: false
     desc:
       ja: "フォローしているユーザーの数"
       en: "The number of the following users for this user"
-  - name: "isFollowing"
+
+  isFollowing:
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーをフォローしているか"
-  - name: "isFollowed"
+
+  isFollowed:
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーにフォローされているか"
-  - name: "isMuted"
+
+  isMuted:
     type: "boolean"
     optional: true
     desc:
       ja: "自分がこのユーザーをミュートしているか"
       en: "Whether you muted this user"
-  - name: "notesCount"
+
+  notesCount:
     type: "number"
     optional: false
     desc:
       ja: "投稿の数"
       en: "The number of the notes of this user"
-  - name: "pinnedNote"
+
+  pinnedNote:
     type: "entity(Note)"
     optional: true
     desc:
       ja: "ピン留めされた投稿"
       en: "The pinned note of this user"
-  - name: "pinnedNoteId"
+
+  pinnedNoteId:
     type: "id(Note)"
     optional: true
     desc:
       ja: "ピン留めされた投稿のID"
       en: "The ID of the pinned note of this user"
-  - name: "driveCapacity"
+
+  driveCapacity:
     type: "number"
     optional: false
     desc:
       ja: "ドライブの容量(bytes)"
       en: "The capacity of drive of this user (bytes)"
-  - name: "host"
+
+  host:
     type: "string | null"
     optional: false
     desc:
       ja: "ホスト (例: example.com:3000)"
       en: "Host (e.g. example.com:3000)"
-  - name: "account"
+
+  twitter:
+    type: "object"
+    optional: true
+    desc:
+      ja: "連携されているTwitterアカウント情報"
+      en: "The info of the connected twitter account of this user"
+    props:
+      userId:
+        type: "string"
+        optional: false
+        desc:
+          ja: "ユーザーID"
+          en: "The user ID"
+      screenName:
+        type: "string"
+        optional: false
+        desc:
+          ja: "ユーザー名"
+          en: "The screen name of this user"
+
+  isBot:
+    type: "boolean"
+    optional: true
+    desc:
+      ja: "botか否か(自己申告であることに留意)"
+      en: "Whether is bot or not"
+
+  profile:
     type: "object"
     optional: false
     desc:
-      ja: "このサーバーにおけるアカウント"
-      en: "The account of this user on this server"
-    defName: "account"
-    def:
-      - name: "lastUsedAt"
-        type: "date"
-        optional: false
-        desc:
-          ja: "最終利用日時"
-          en: "The last used date of this user"
-      - name: "isBot"
-        type: "boolean"
+      ja: "プロフィール"
+      en: "The profile of this user"
+    props:
+      location:
+        type: "string"
         optional: true
         desc:
-          ja: "botか否か(自己申告であることに留意)"
-          en: "Whether is bot or not"
-      - name: "twitter"
-        type: "object"
+          ja: "場所"
+          en: "The location of this user"
+      birthday:
+        type: "string"
         optional: true
         desc:
-          ja: "連携されているTwitterアカウント情報"
-          en: "The info of the connected twitter account of this user"
-        defName: "twitter"
-        def:
-          - name: "userId"
-            type: "string"
-            optional: false
-            desc:
-              ja: "ユーザーID"
-              en: "The user ID"
-          - name: "screenName"
-            type: "string"
-            optional: false
-            desc:
-              ja: "ユーザー名"
-              en: "The screen name of this user"
-      - name: "profile"
-        type: "object"
-        optional: false
-        desc:
-          ja: "プロフィール"
-          en: "The profile of this user"
-        defName: "profile"
-        def:
-          - name: "location"
-            type: "string"
-            optional: true
-            desc:
-              ja: "場所"
-              en: "The location of this user"
-          - name: "birthday"
-            type: "string"
-            optional: true
-            desc:
-              ja: "誕生日 (YYYY-MM-DD)"
-              en: "The birthday of this user (YYYY-MM-DD)"
+          ja: "誕生日 (YYYY-MM-DD)"
+          en: "The birthday of this user (YYYY-MM-DD)"

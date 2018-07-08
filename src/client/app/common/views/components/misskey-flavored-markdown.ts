@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import parse from '../../../../../mfm/parse';
-import getAcct from '../../../../../acct/render';
+import getAcct from '../../../../../misc/acct/render';
 import { url } from '../../../config';
 import MkUrl from './url.vue';
 import MkGoogle from './google.vue';
@@ -38,17 +38,6 @@ export default Vue.component('misskey-flavored-markdown', {
 			ast = parse(this.text);
 		} else {
 			ast = this.ast;
-		}
-
-		if (ast.filter(x => x.type != 'hashtag').length == 0) {
-			return;
-		}
-
-		while (ast[ast.length - 1] && (
-			ast[ast.length - 1].type == 'hashtag' ||
-			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == ' ') ||
-			(ast[ast.length - 1].type == 'text' && ast[ast.length - 1].content == '\n'))) {
-			ast.pop();
 		}
 
 		// Parse ast to DOM

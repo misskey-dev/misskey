@@ -38,7 +38,7 @@ const client = require('../../../../built/client/meta.json');
 /**
  * Show core info
  */
-module.exports = (params: any) => new Promise(async (res, rej) => {
+export default () => new Promise(async (res, rej) => {
 	const meta: any = (await Meta.findOne()) || {};
 
 	res({

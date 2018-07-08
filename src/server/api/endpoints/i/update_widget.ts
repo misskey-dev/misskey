@@ -1,14 +1,14 @@
 import $ from 'cafy';
 import User, { ILocalUser } from '../../../../models/user';
-import event from '../../../../publishers/stream';
+import event from '../../../../stream';
 
-module.exports = async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
+export default async (params: any, user: ILocalUser) => new Promise(async (res, rej) => {
 	// Get 'id' parameter
 	const [id, idErr] = $.str.get(params.id);
 	if (idErr) return rej('invalid id param');
 
 	// Get 'data' parameter
-	const [data, dataErr] = $.obj.get(params.data);
+	const [data, dataErr] = $.obj().get(params.data);
 	if (dataErr) return rej('invalid data param');
 
 	if (id == null && data == null) return rej('you need to set id and data params if home param unset');

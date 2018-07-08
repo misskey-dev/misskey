@@ -25,16 +25,13 @@
 						<span v-if="p.isHidden" style="opacity: 0.5">%i18n:@private%</span>
 						<span v-if="p.deletedAt" style="opacity: 0.5">%i18n:@deleted%</span>
 						<a class="reply" v-if="p.reply">%fa:reply%</a>
-						<misskey-flavored-markdown v-if="p.text && !canHideText(p)" :text="p.text" :i="$store.state.i" :class="$style.text"/>
+						<misskey-flavored-markdown v-if="p.text" :text="p.text" :i="$store.state.i" :class="$style.text"/>
 						<a class="rp" v-if="p.renote">RP:</a>
 					</div>
 					<div class="media" v-if="p.media.length > 0">
 						<mk-media-list :media-list="p.media"/>
 					</div>
 					<mk-poll v-if="p.poll" :note="p" ref="pollViewer"/>
-					<div class="tags" v-if="p.tags && p.tags.length > 0">
-						<router-link v-for="tag in p.tags" :key="tag" :to="`/tags/${tag}`">{{ tag }}</router-link>
-					</div>
 					<a class="location" v-if="p.geo" :href="`http://maps.google.com/maps?q=${p.geo.coordinates[1]},${p.geo.coordinates[0]}`" target="_blank">%fa:map-marker-alt% 位置情報</a>
 					<div class="map" v-if="p.geo" ref="map"></div>
 					<div class="renote" v-if="p.renote">
@@ -75,7 +72,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import dateStringify from '../../../common/scripts/date-stringify';
-import canHideText from '../../../common/scripts/can-hide-text';
 import parse from '../../../../../mfm/parse';
 
 import MkPostFormWindow from './post-form-window.vue';
@@ -190,8 +186,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		canHideText,
-
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				this.connection.send({
@@ -467,35 +461,6 @@ root(isDark)
 
 						&:empty
 							display none
-
-					> .tags
-						margin 4px 0 0 0
-
-						> *
-							display inline-block
-							margin 0 8px 0 0
-							padding 2px 8px 2px 16px
-							font-size 90%
-							color #8d969e
-							background isDark ? #313543 : #edf0f3
-							border-radius 4px
-
-							&:before
-								content ""
-								display block
-								position absolute
-								top 0
-								bottom 0
-								left 4px
-								width 8px
-								height 8px
-								margin auto 0
-								background isDark ? #282c37 : #fff
-								border-radius 100%
-
-							&:hover
-								text-decoration none
-								background #e2e7ec
 
 					.mk-url-preview
 						margin-top 8px

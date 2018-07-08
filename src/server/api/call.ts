@@ -31,7 +31,7 @@ export default (endpoint: string | Endpoint, user: IUser, app: IApp, data: any, 
 		}
 	}
 
-	let exec = require(`${__dirname}/endpoints/${ep.name}`);
+	let exec = require(`${__dirname}/endpoints/${ep.name}`).default;
 
 	if (ep.withFile && file) {
 		exec = exec.bind(null, file);
