@@ -67,9 +67,11 @@ export default Vue.extend({
 	flex 1
 	flex-direction column
 	padding-top 48px
+	height 100%
 
 	> .content
 		display flex
 		flex 1
 		flex-direction column
+		height 100%
 </style>
